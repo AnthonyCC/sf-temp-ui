@@ -21,6 +21,7 @@ import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PlanResource;
 import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.model.ScribLabel;
+import com.freshdirect.transadmin.model.WaveInstance;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class DispatchManagerDaoHibernateImpl extends
@@ -55,25 +56,6 @@ public class DispatchManagerDaoHibernateImpl extends
 				.append(" order by p.planDate, p.firstDeliveryTime ,p.region, p.sequence");
 		return getDataList(strBuf.toString());
 	}
-
-	/*
-	 * public Collection getPlan(String day, String zone, String date) throws
-	 * DataAccessException {
-	 * 
-	 * StringBuffer strBuf = new StringBuffer();
-	 * strBuf.append("from TrnDispatchPlan tp");
-	 * strBuf.append(" where tp.planDate='").append(date).append("'");
-	 * 
-	 * if (!TransStringUtil.isEmpty(zone) && !zone.equals("0") &&
-	 * !zone.equals("null")) {
-	 * strBuf.append(" and tp.trnZone.zoneId='").append(zone).append("'"); }
-	 * 
-	 * strBuf.append(" and tp.planId").append(" not in(")
-	 * .append("select id.planId from TrnDispatch where id.dispatchDate='"
-	 * ).append(date).append("')");
-	 * 
-	 * return (Collection) getHibernateTemplate().find(strBuf.toString()); }
-	 */
 
 	public Collection getPlan(String day, String zone, String date)
 			throws DataAccessException {
@@ -321,7 +303,7 @@ public class DispatchManagerDaoHibernateImpl extends
 				.append(" where s.scribDate='")
 				.append(date)
 				.append(
-						"' order by s.scribDate,s.region,s.firstDlvTime,s.zone,s.startTime");
+						"' order by s.scribDate,s.region,s.firstDeliveryTime,s.zone,s.startTime");
 
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
@@ -337,11 +319,12 @@ public class DispatchManagerDaoHibernateImpl extends
 			if(region!=null)	
 				strBuf.append("and s.region.code='").append(region+"' ");
 			
-				strBuf.append("order by s.scribDate,s.region,s.firstDlvTime,s.zone,s.startTime");
+				strBuf.append("order by s.scribDate,s.region,s.firstDeliveryTime,s.zone,s.startTime");
 
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
-
+	
+	
 	public Scrib getScrib(String id) {
 		return (Scrib) getEntityById("Scrib", "scribId", id);
 	}
@@ -401,5 +384,87 @@ public class DispatchManagerDaoHibernateImpl extends
 		strBuf.append("order by sl.date");
 
 		return (Collection) getHibernateTemplate().find(strBuf.toString());		
+	}
+	
+	public Collection getPlan(Date planDate, String zone) throws DataAccessException {
+
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from Plan p where p.planDate = ? ");
+		if (zone != null) {
+			strBuf.append(" and p.zone.zoneCode = '").append(zone).append("'");
+		}
+		strBuf.append(" order by p.planDate, p.zone.zoneCode, p.startTime, p.firstDeliveryTime, p.cutOffTime, p.sequence");
+
+		return (Collection) getHibernateTemplate().find(strBuf.toString(),	new Object[] { planDate});		
+	}
+	
+	public Collection getScrib(Date scribDate, String zone) throws DataAccessException {
+
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from Scrib p where p.scribDate = ? ");
+		if (zone != null) {
+			strBuf.append(" and p.zone.zoneCode = '").append(zone).append("'");
+		}
+		strBuf.append(" order by p.scribDate, p.zone.zoneCode, p.startTime, p.firstDeliveryTime, p.cutOffTime");
+
+		return (Collection) getHibernateTemplate().find(strBuf.toString(),	new Object[] { scribDate});		
+	}
+	
+	public Collection getWaveInstancePublish(Date deliveryDate) throws DataAccessException {
+		return (Collection) getHibernateTemplate().find("from WaveInstancePublish p where p.deliveryDate = ? "
+															, new Object[] { deliveryDate});	
+	}
+	
+	public Collection getWaveInstance(Date deliveryDate, String area) throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from WaveInstance p where p.deliveryDate = ? ");
+		if (area != null) {
+			strBuf.append(" and p.area = '").append(area).append("'");
+		}
+		strBuf.append(" order by p.deliveryDate, p.area, p.dispatchTime, p.firstDeliveryTime, p.cutOffTime");	
+		return (Collection) getHibernateTemplate().find(strBuf.toString(),	new Object[] { deliveryDate });		
+	}
+	
+	public Collection getWaveInstance(Date deliveryDate, Date cutOff) throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from WaveInstance p where p.deliveryDate = ? ");
+		strBuf.append(" and p.cutOff = ?");
+		strBuf.append(" order by p.deliveryDate, p.area, p.dispatchTime, p.firstDeliveryTime, p.cutOffTime");	
+		return (Collection) getHibernateTemplate().find(strBuf.toString(),	new Object[] { deliveryDate,  cutOff});		
+	}
+	
+	public Collection getWaveInstance(Date cutOff) throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from WaveInstance p where p.deliveryDate > sysdate ");
+		if(cutOff != null) {
+			strBuf.append(" and p.cutOff = ?");
+		}
+		strBuf.append(" order by p.deliveryDate, p.area, p.dispatchTime, p.firstDeliveryTime, p.cutOffTime");
+		if(cutOff != null) {
+			return (Collection) getHibernateTemplate().find(strBuf.toString(),	new Object[] { cutOff});
+		} else {
+			return (Collection) getHibernateTemplate().find(strBuf.toString(),	new Object[] { });
+		}
+	}
+	
+	public WaveInstance getWaveInstance(String waveInstanceId) throws DataAccessException {
+
+		return (WaveInstance) getEntityById("WaveInstance", "waveInstanceId", waveInstanceId);
+
+	}
+	
+	public void deleteWaveInstance(final Date deliveryDate) throws DataAccessException {
+		
+		this.getHibernateTemplate().execute(new HibernateCallback() {
+			 public Object doInHibernate(Session session) throws HibernateException, SQLException {
+				 
+				 Query query = session.createQuery("delete from WaveInstance where DELIVERY_DATE = :rdate");
+				 query.setDate("rdate", deliveryDate);
+				 				 
+				 int rowCount = query.executeUpdate();
+			     
+				 return null;
+			 }
+		});
 	}
 }

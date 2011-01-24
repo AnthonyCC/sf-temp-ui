@@ -24,4 +24,11 @@ public interface IRoutingStopModel extends IOrderModel {
 	 
 	 String getRoutingRouteId();
 	 void setRoutingRouteId(String routingRouteId);
+	 
+
+	double getTravelTime();
+	void setTravelTime(double travelTime);
+	
+	double getServiceTime();
+	void setServiceTime(double serviceTime);
 }

@@ -22,8 +22,10 @@ import java.util.TreeMap;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import com.freshdirect.customer.ErpRouteMasterInfo;
+import com.freshdirect.framework.util.MD5Hasher;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.routing.constants.EnumArithmeticOperator;
+import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IRoutingStopModel;
@@ -48,6 +50,7 @@ import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
 import com.freshdirect.transadmin.model.UserPref;
+import com.freshdirect.transadmin.model.WaveInstancePublish;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.model.ZoneSupervisor;
 import com.freshdirect.transadmin.service.DispatchManagerI;
@@ -62,6 +65,7 @@ import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
 import com.freshdirect.transadmin.web.model.ScenarioZoneCommand;
 import com.freshdirect.transadmin.web.model.SpatialBoundary;
+import com.freshdirect.transadmin.web.model.WavePublishValidationResult;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
 import com.freshdirect.transadmin.web.model.ZoneSupervisorCommand;
@@ -776,5 +780,103 @@ public class DispatchProviderController extends JsonRpcController implements
 		}
 		return true;
 	}
+	
+	public boolean publishWave(String weekOf, String dayOfWeek) {
+		Date _dlvDate = null;
+		try {
+			_dlvDate = getDate(weekOf, dayOfWeek);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (_dlvDate != null) {
+			String actionBy = com.freshdirect.transadmin.security.SecurityManager.getUserName(getHttpServletRequest());
+			this.getDispatchManagerService().publishWaveInstance(_dlvDate, actionBy, EnumWaveInstancePublishSrc.SCRIB);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean publishWave(String deliveryDate) {
+		Date _dlvDate = null;
+		try {
+			_dlvDate = TransStringUtil.getDate(deliveryDate);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (_dlvDate != null) {
+			String actionBy = com.freshdirect.transadmin.security.SecurityManager.getUserName(getHttpServletRequest());
+			this.getDispatchManagerService().publishWaveInstance(_dlvDate, actionBy, EnumWaveInstancePublishSrc.PLAN);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public WavePublishValidationResult canPublishWave(String deliveryDate) {
+		WavePublishValidationResult result = new WavePublishValidationResult();
+		Date _dlvDate = null;
+		try {
+			_dlvDate = TransStringUtil.getDate(deliveryDate);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (_dlvDate != null) {
+			Collection wavePublishes = this.getDispatchManagerService().getWaveInstancePublish(_dlvDate);
+			if (wavePublishes != null && wavePublishes.size() > 0) {
+				WaveInstancePublish _publishInfo = (WaveInstancePublish) wavePublishes.iterator().next();
+				result.setHasPerviousPublish(true);
+				result.setPreviousPublishPlan(_publishInfo.getSource().equals(EnumWaveInstancePublishSrc.PLAN));
+				result.setPreviousPublishScrib(_publishInfo.getSource().equals(EnumWaveInstancePublishSrc.SCRIB));
+			}
+		}
+		return result;
+	}
+	
+	public WavePublishValidationResult canPublishWave(String weekOf, String dayOfWeek) {
+		WavePublishValidationResult result = new WavePublishValidationResult();
+		Date _dlvDate = null;
+		try {
+			_dlvDate = getDate(weekOf, dayOfWeek);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (_dlvDate != null) {
+			Collection wavePublishes = this.getDispatchManagerService().getWaveInstancePublish(_dlvDate);
+			if (wavePublishes != null && wavePublishes.size() > 0) {
+				WaveInstancePublish _publishInfo = (WaveInstancePublish) wavePublishes.iterator().next();
+				result.setHasPerviousPublish(true);
+				result.setPreviousPublishPlan(_publishInfo.getSource().equals(EnumWaveInstancePublishSrc.PLAN));
+				result.setPreviousPublishScrib(_publishInfo.getSource().equals(EnumWaveInstancePublishSrc.SCRIB));
+			}
+		}
+		return result;
+	}
+	
+	public int validatePlanGenAccessCode(String accessCode) {
+		String hashedAccessCode = MD5Hasher.hash(accessCode);
+		if(hashedAccessCode != null && hashedAccessCode.equals(TransportationAdminProperties.getGeneratePlanFeatureAccessKey())) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+	
+	private Date getDate(String weekOf, String dayOfWeek) throws Exception {
+		if (!TransStringUtil.isEmpty(weekOf) && !TransStringUtil.isEmpty(dayOfWeek)) {
+
+			String[] sourceDates = TransStringUtil.getDates(weekOf, dayOfWeek);
+			if (sourceDates != null && sourceDates.length > 0) {
+				return TransStringUtil.getDate(sourceDates[0]);
+			}
+		}
+		return null;
+	}
+	
+	
 	
 }

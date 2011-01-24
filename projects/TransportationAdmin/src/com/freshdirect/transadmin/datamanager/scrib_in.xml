@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<file-format>
+    <converter name="char" class="com.freshdirect.transadmin.datamanager.parser.converters.CoreConverters" method="convertChar" return-type="java.lang.String"/>
+    <converter name="decimal" class="com.freshdirect.transadmin.datamanager.parser.converters.CoreConverters" method="convertDecimal" return-type="java.lang.Double"/>
+    <converter name="integer" class="com.freshdirect.transadmin.datamanager.parser.converters.CoreConverters" method="convertInteger" return-type="java.lang.Integer"/>    
+    <converter name="date" class="com.freshdirect.transadmin.datamanager.parser.converters.CoreConverters" method="convertDate" return-type="java.lang.String"/>
+    <converter name="time" class="com.freshdirect.transadmin.datamanager.parser.converters.CoreConverters" method="convertDate" return-type="java.lang.String"/>
+    <record name="row">       
+        <record-definition>
+            <bean name="rowBean" class="com.freshdirect.transadmin.model.Scrib"/>
+            <line delimit=",">
+                <record-element length="0" beanref="rowBean.scribDate" type="date">
+                	<conversion-option name="format" value="MM/dd/yyyy"/>
+                </record-element>
+                <record-element length="0" beanref="rowBean.zoneS" type="char"/>
+                <record-element length="0" beanref="rowBean.startTimeS" type="char"/>
+                <record-element length="0" beanref="rowBean.firstDlvTimeS" type="char"/>
+                <record-element length="0" beanref="rowBean.endDlvTimeS" type="char"/>                
+                <record-element length="0" beanref="rowBean.count" type="integer"/>
+                <record-element length="0" beanref="rowBean.resources" type="integer"/>
+                <record-element length="0" beanref="rowBean.supervisorCode" type="char"/>
+                <record-element length="0" beanref="rowBean.cutOffTimeS" type="char"/>                                                                            
+            </line>
+        </record-definition>
+    </record>
+</file-format>

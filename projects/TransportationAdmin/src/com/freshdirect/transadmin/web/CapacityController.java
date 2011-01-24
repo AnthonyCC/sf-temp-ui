@@ -23,13 +23,16 @@ import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IUnassignedModel;
+import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.util.RoutingDateUtil;
+import com.freshdirect.routing.util.RoutingTimeOfDay;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.TrnCutOff;
 import com.freshdirect.transadmin.model.Zone;
+import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
@@ -37,12 +40,15 @@ import com.freshdirect.transadmin.web.model.Capacity;
 import com.freshdirect.transadmin.web.model.EarlyWarningCommand;
 import com.freshdirect.transadmin.web.model.TimeRange;
 import com.freshdirect.transadmin.web.model.UnassignedCommand;
+import com.freshdirect.transadmin.web.model.WaveInstanceCommand;
 
 public class CapacityController extends AbstractMultiActionController {
 	
 	private DomainManagerI domainManagerService;
 	
 	private ZoneManagerI zoneManagerService;
+	
+	private DispatchManagerI dispatchManagerService;
 		
 	public ZoneManagerI getZoneManagerService() {
 		return zoneManagerService;
@@ -60,6 +66,14 @@ public class CapacityController extends AbstractMultiActionController {
 		this.domainManagerService = domainManagerService;
 	}
 
+	public DispatchManagerI getDispatchManagerService() {
+		return dispatchManagerService;
+	}
+
+	public void setDispatchManagerService(DispatchManagerI dispatchManagerService) {
+		this.dispatchManagerService = dispatchManagerService;
+	}
+
 	/**
 	 * Custom handler for early warning
 	 * @param request current HTTP request
@@ -75,12 +89,12 @@ public class CapacityController extends AbstractMultiActionController {
 		ModelAndView mav = new ModelAndView("earlyWarningView");
 		Map<String, List<TimeRange>> discountMapping = null;
 		IServiceTimeScenarioModel srvScenario = null;
-		
 		try {
 			if(rDate != null) {
 				Date reportDate = TransStringUtil.getDate(rDate);
-                srvScenario = new RoutingInfoServiceProxy().getRoutingScenarioByDate(reportDate);
-                discountMapping = this.getZoneManagerService().getWindowSteeringDiscounts(reportDate);				
+				srvScenario = new RoutingInfoServiceProxy().getRoutingScenarioByDate(reportDate);
+				discountMapping = this.getZoneManagerService().getWindowSteeringDiscounts(reportDate);
+				
 			}			
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
@@ -594,6 +608,70 @@ public class CapacityController extends AbstractMultiActionController {
 		mav.getModel().put("autorefresh", request.getParameter("autorefresh"));
 		mav.getModel().put("unassigneds", unassigneds );
 		mav.getModel().put("zones", domainManagerService.getZones());
+		return mav;
+	}
+	
+	/**
+	 * Custom handler for early warning
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
+	public ModelAndView waveMonitorHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+
+		String rDate = request.getParameter("rDate");
+		String cutOff = request.getParameter("cutOff");
+		//String errorOnly = request.getParameter("erroronly");
+				
+		ModelAndView mav = new ModelAndView("waveMonitorView");
+		RoutingInfoServiceProxy proxy = new RoutingInfoServiceProxy();
+		Collection gridResult = new ArrayList<WaveInstanceCommand>();
+		
+		try {
+			Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> result = null;
+			List<IWaveInstance> waveInstances = new ArrayList<IWaveInstance>();
+			
+			if (rDate != null && rDate.trim().length() > 0) {
+				result = proxy.getWaveInstanceTree(TransStringUtil.getDate(rDate), null);
+			} else {
+				result = proxy.getWaveInstanceTree(null, null);
+			}
+			RoutingTimeOfDay rCutOff = null;
+			if(cutOff != null && cutOff.trim().length() > 0) {
+				rCutOff = new RoutingTimeOfDay(getCutOffTime(cutOff));
+			}
+			if(result != null) {
+				for(Map.Entry<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> _tmpDlvDateMpp : result.entrySet()) {
+					for(Map.Entry<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> _tmpZoneMpp : _tmpDlvDateMpp.getValue().entrySet()) {
+						for(Map.Entry<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>> _tmpDispatchTimeMpp : _tmpZoneMpp.getValue().entrySet()) {
+							for(Map.Entry<RoutingTimeOfDay, List<IWaveInstance>> _tmpCutOffMpp : _tmpDispatchTimeMpp.getValue().entrySet()) {
+								if(rCutOff != null && !rCutOff.equals(_tmpCutOffMpp.getKey())) {
+									continue;
+								} else {
+									waveInstances.addAll(_tmpCutOffMpp.getValue());
+								}
+							}
+						}
+					}
+				}
+				
+			}
+			for(IWaveInstance _inst : waveInstances) {
+				gridResult.add(new WaveInstanceCommand(_inst));
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
+		
+		mav.getModel().put("rDate", rDate);
+		mav.getModel().put("cutOff", cutOff);
+		mav.getModel().put("waveinstances", gridResult );
+		
+		//mav.getModel().put("erroronly", errorOnly);
+		mav.getModel().put("cutoffs", domainManagerService.getCutOffs());
+		
 		return mav;
 	}
 	

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.routing.model.IDeliveryModel;
+import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
@@ -35,7 +36,7 @@ public class ProcessContext implements Serializable {
 	
 	private Object lateDeliveryOrderList;
 
-	private Object handOffBatchId;
+	private IHandOffBatch handOffBatch;
 	
 	private Object userId;
 	
@@ -44,7 +45,7 @@ public class ProcessContext implements Serializable {
 	private int maxSessionSize;
 	
 	private boolean isHandOffProcess;
-		
+			
 	public boolean isHandOffProcess() {
 		return isHandOffProcess;
 	}
@@ -58,15 +59,14 @@ public class ProcessContext implements Serializable {
 		this.userId = userId;
 	}
 
-	public Object getHandOffBatchId() {
-		return handOffBatchId;
+	public IHandOffBatch getHandOffBatch() {
+		return handOffBatch;
 	}
-
-	public void setHandOffBatchId(Object handOffBatchId) {
-		this.handOffBatchId = handOffBatchId;
+	public void setHandOffBatch(IHandOffBatch handOffBatch) {
+		this.handOffBatch = handOffBatch;
 	}
-
-	 public Object getLocationList() {
+	
+	public Object getLocationList() {
 		return locationList;
 	}
 

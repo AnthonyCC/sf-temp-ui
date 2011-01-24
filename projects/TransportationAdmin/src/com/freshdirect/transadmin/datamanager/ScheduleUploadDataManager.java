@@ -28,19 +28,30 @@ import com.freshdirect.transadmin.util.TransportationAdminProperties;
 
 public class ScheduleUploadDataManager extends ScheduleDataManager{
 	
+	public List processUploadScrib(HttpServletRequest request, byte[] inputStream, String userName, DomainManagerI domainManagerService) {
+		
+		System.out.println(" #### Upload Scrib Process Start >"+Calendar.getInstance().getTime());		
+	
+		List updatedSchedules = new ArrayList();		
+		updatedSchedules = parseFile(TransportationAdminProperties.getScribOutputFormat(), 
+														new ByteArrayInputStream(inputStream), 
+														ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, null, null);
+		return updatedSchedules;	
+	}
+	
 	public List processUploadSchedules(HttpServletRequest request, byte[] inputStream, String userName, DomainManagerI domainManagerService) {
 		
 		System.out.println(" #### Upload Process Start >"+Calendar.getInstance().getTime());		
 	
 		List updatedSchedules = new ArrayList();		
-		updatedSchedules = parseEmployeeScheduleFile(TransportationAdminProperties.getEmployeeScheduleOutputFormat(), 
+		updatedSchedules = parseFile(TransportationAdminProperties.getEmployeeScheduleOutputFormat(), 
 														new ByteArrayInputStream(inputStream), 
 														ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, null, null);
 		return updatedSchedules;	
 	}
 	
 	
-	public List parseEmployeeScheduleFile(String configurationPath,InputStream in, String recordName,String beanName, IDataAssembler assembler, String encoding) {
+	public List parseFile(String configurationPath,InputStream in, String recordName,String beanName, IDataAssembler assembler, String encoding) {
 		
 		ConfigurationReader parser = new ConfigurationReader();
 		List inputList = new ArrayList();

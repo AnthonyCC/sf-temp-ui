@@ -170,12 +170,7 @@
                 <td>
                   &nbsp;<form:errors path="stemFromTime" />
                 </td>
-               </tr>
-               <tr>
-               		<td>Max Stem Time (Mins)</td>
-               		<td><form:input maxlength="50" size="30" path="maxstemTime"/></td>
-               		<td>&nbsp;<form:errors path="maxstemTime"/></td>
-               </tr>
+               </tr>              
                <tr>
                   <td>Loading Priority</td>
                   <td>                  

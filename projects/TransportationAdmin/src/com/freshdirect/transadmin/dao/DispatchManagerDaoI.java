@@ -10,6 +10,7 @@ import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.model.ScribLabel;
+import com.freshdirect.transadmin.model.WaveInstance;
 
 public interface DispatchManagerDaoI extends BaseManagerDaoI {
 
@@ -51,7 +52,7 @@ public interface DispatchManagerDaoI extends BaseManagerDaoI {
 	public Collection getScribList(String date);
 	
 	public Collection getScribList(String date, String region);
-	
+		
 	public Scrib getScrib(String id);
 
 	public Collection getUserPref(String userId);
@@ -71,4 +72,20 @@ public interface DispatchManagerDaoI extends BaseManagerDaoI {
 	Collection getDispatchForEZPass(Date dispatchDate, String assetId) throws DataAccessException;
 	
 	Collection getDispatchForMotKit(Date dispatchDate, String assetId) throws DataAccessException;
+	
+	Collection getPlan(Date planDate, String zone) throws DataAccessException;
+	
+	Collection getScrib(Date scribDate, String zone) throws DataAccessException;
+	
+	Collection getWaveInstance(Date deliveryDate, String area) throws DataAccessException;
+	
+	Collection getWaveInstance(Date deliveryDate, Date cutOff) throws DataAccessException;
+	
+	Collection getWaveInstance(Date cutOff) throws DataAccessException;
+	
+	WaveInstance getWaveInstance(String waveInstanceId) throws DataAccessException;
+	
+	Collection getWaveInstancePublish(Date deliveryDate) throws DataAccessException;
+	
+	void deleteWaveInstance(Date deliveryDate) throws DataAccessException;
 }

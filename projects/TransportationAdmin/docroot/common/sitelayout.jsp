@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ page import='com.freshdirect.transadmin.security.*' %>
+<%@ page import='com.freshdirect.transadmin.notification.*' %>
 <%@ page import='java.util.*' %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
@@ -61,9 +62,10 @@
 				<div class="Tlogo">
 					<img src="./images/TransAppLogo.gif" width="189" height="75" border="0" alt="" title="">
 				</div>
-				<div class="t_tab Tspacer">
-					&nbsp;
+				<div class="t_tab Tspacer" >
+					
 				</div>
+				
 				<div class="userinfo">
 					<% if(userId != null) { %>
 					<div class="loginout"><input type="button" value="LOG OUT" onclick="location.href='logout.jsp'"></div>
@@ -75,7 +77,17 @@
 				</div>
 
 				<div>
-					<div class="t_tab_hspacer">&nbsp;</div>
+					<div class="t_tab_hspacer" style="padding:0 450px;">
+						<% 
+						 String waveNotification = NotificationManager.getInstance().getWaveNotification(request);						 
+						 if(waveNotification != null) { %>
+							<div style="border:2px solid red;padding:3px;background-color:#b0c4de;font-size: 12px;font-style: italic;text-align:center;font-weight: bold;text-decoration: blink;">
+								<%= waveNotification %> 
+							</div>
+						<% } else { %>
+							 &nbsp;
+						<% } %>
+					</div>
 					<div class="<%= currentRootMenuId %>">
 							
 					<% while(itr.hasNext()) {

@@ -729,7 +729,7 @@ private DlvBuildingDetail encode(DlvBuildingDtl buildingDtl) {
 		this.locationManagerService = locationManagerService;
 	}
 
-	public List saveDomainObject(Object domainObject) {
+	public List saveDomainObject(HttpServletRequest request, Object domainObject) {
 
 		System.out.println("entering to save");
 		List errorList = new ArrayList();

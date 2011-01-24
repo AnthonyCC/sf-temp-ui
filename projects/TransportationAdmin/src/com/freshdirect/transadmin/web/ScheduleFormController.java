@@ -116,7 +116,7 @@ public class ScheduleFormController extends AbstractFormController {
 		// RegionPropertyEditor());
 	}
 
-	public List saveDomainObject(Object domainObject) {
+	public List saveDomainObject(HttpServletRequest request, Object domainObject) {
 
 		List errorList = null;
 		try {

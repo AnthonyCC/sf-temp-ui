@@ -63,13 +63,13 @@ public class TrnCutOff implements java.io.Serializable, TrnBaseEntityI {
 	public String getCutOffTimeEx() {
 		if(getCutOffTime() != null) {
 			try {
-				return TransStringUtil.getServerTime(getCutOffTime().getNormalDate());    
+				return TransStringUtil.getServerTime(getCutOffTime().getNormalDate());
 			} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		} 
 		return "null";
 	}
-
+	
 }

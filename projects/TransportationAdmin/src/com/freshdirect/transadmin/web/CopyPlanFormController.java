@@ -271,7 +271,7 @@ public class CopyPlanFormController extends AbstractFormController {
 		return "Copy Plan";
 	}
 	
-	public List saveDomainObject(Object domainObject) {	
+	public List saveDomainObject(HttpServletRequest request, Object domainObject) {	
 		return null;
 	}
 	

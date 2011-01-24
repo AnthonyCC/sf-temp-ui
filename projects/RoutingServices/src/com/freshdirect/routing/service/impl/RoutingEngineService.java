@@ -348,8 +348,8 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 			options.setPreRouteStemTimeAdjustmentSeconds(preRouteStemTime * 60);
 			options.setPostRouteStemTimeAdjustmentSeconds(postRouteStemTime * 60);*/
 			
-			options.setPreRouteStemTimeAdjustmentSeconds(schedulerId.getArea().getMaxStemTime() * 60);
-			options.setPostRouteStemTimeAdjustmentSeconds(schedulerId.getArea().getMaxStemTime() * 60);
+			//options.setPreRouteStemTimeAdjustmentSeconds(schedulerId.getArea().getMaxStemTime() * 60);
+			//options.setPostRouteStemTimeAdjustmentSeconds(schedulerId.getArea().getMaxStemTime() * 60);
 						
 			result = RoutingDataDecoder.decodeDeliveryWindowMetrics(
 											port.schedulerCalculateDeliveryWindowMetrics(

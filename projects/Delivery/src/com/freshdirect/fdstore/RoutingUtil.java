@@ -1,11 +1,13 @@
 package com.freshdirect.fdstore;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,6 +26,7 @@ import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.routing.ejb.RoutingGatewayHome;
 import com.freshdirect.delivery.routing.ejb.RoutingGatewaySB;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
 import com.freshdirect.routing.model.BuildingModel;
 import com.freshdirect.routing.model.DeliveryModel;
 import com.freshdirect.routing.model.DeliverySlot;
@@ -37,13 +40,16 @@ import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
+import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.model.LocationModel;
 import com.freshdirect.routing.model.OrderEstimationResult;
 import com.freshdirect.routing.model.OrderModel;
 import com.freshdirect.routing.model.PackagingModel;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
+import com.freshdirect.routing.model.WaveInstance;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
+import com.freshdirect.routing.service.proxy.CapacityEngineServiceProxy;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
 import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
 import com.freshdirect.routing.service.proxy.PlantServiceProxy;
@@ -51,6 +57,7 @@ import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingServicesProperties;
+import com.freshdirect.routing.util.RoutingTimeOfDay;
 
 public class RoutingUtil {
 
@@ -558,6 +565,149 @@ public class RoutingUtil {
 			return false;
 		}
 
+	}
+	
+		
+	private static boolean needsPurge(Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>> srcCutOffInstance) {
+		if(srcCutOffInstance != null) {
+			Collection<Map<RoutingTimeOfDay, List<IWaveInstance>>> _tmpCutOffMpp = srcCutOffInstance.values();
+			for(Map<RoutingTimeOfDay, List<IWaveInstance>> _tmpMpp : _tmpCutOffMpp) {
+				for(Map.Entry<RoutingTimeOfDay, List<IWaveInstance>> _tmpInnerMpp : _tmpMpp.entrySet()) {					
+					for(IWaveInstance _srcWaveInst : _tmpInnerMpp.getValue()) {
+						if(_srcWaveInst != null && _srcWaveInst.getRoutingWaveInstanceId() != null
+								&& _srcWaveInst.getRoutingWaveInstanceId().length() > 0) {
+							return false;
+						}
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	public static List<IWaveInstance> synchronizeWaveInstance(IRoutingSchedulerIdentity schedulerId
+								, Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree) {
+		
+		List<IWaveInstance> waveInstancesResult = new ArrayList<IWaveInstance>();
+		CapacityEngineServiceProxy capacityProxy = new CapacityEngineServiceProxy();
+		RoutingEngineServiceProxy routingProxy = new RoutingEngineServiceProxy();
+		
+		//Dispatch-> CutOff ->WaveInstance
+		Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>> srcCutOffInstance = waveInstanceTree.get(schedulerId.getDeliveryDate())
+																						.get(schedulerId.getArea().getAreaCode());
+		if(srcCutOffInstance != null) {
+			List<IWaveInstance> destinationInstances = null;
+			try {
+				if(needsPurge(srcCutOffInstance)) {
+					routingProxy.purgeOrders(schedulerId, true);
+				}
+				destinationInstances = capacityProxy.retrieveWaveInstances(schedulerId);
+			} catch(RoutingServiceException e) {
+				//e.printStackTrace();
+				LOGGER.info(" Unable to retrieve Wave for sync : " + schedulerId);
+			}
+			if(destinationInstances != null) {
+				Map<RoutingTimeOfDay, List<IWaveInstance>> blankWaveMpp = new TreeMap<RoutingTimeOfDay, List<IWaveInstance>>();
+				Map<RoutingTimeOfDay, List<IWaveInstance>> nonBlankWaveMpp = new TreeMap<RoutingTimeOfDay, List<IWaveInstance>>();
+				Map<String, IWaveInstance> waveIdMap = new HashMap<String, IWaveInstance>();
+				
+				for(IWaveInstance _destInst : destinationInstances) {
+					if(_destInst.getCutOffTime() != null) {
+						waveIdMap.put(_destInst.getRoutingWaveInstanceId(), _destInst);
+						if(_destInst.getNoOfResources() == 0) {
+							if(!blankWaveMpp.containsKey(_destInst.getCutOffTime())) {
+								blankWaveMpp.put(_destInst.getCutOffTime(), new ArrayList<IWaveInstance>());
+							}
+							blankWaveMpp.get(_destInst.getCutOffTime()).add(_destInst);
+						} else {
+							if(!nonBlankWaveMpp.containsKey(_destInst.getCutOffTime())) {
+								nonBlankWaveMpp.put(_destInst.getCutOffTime(), new ArrayList<IWaveInstance>());
+							}
+							nonBlankWaveMpp.get(_destInst.getCutOffTime()).add(_destInst);
+						}
+					}
+				}
+				Collection<Map<RoutingTimeOfDay, List<IWaveInstance>>> _tmpCutOffMpp = srcCutOffInstance.values();
+				//CutOff to Wave Instance Listing
+				Map<RoutingTimeOfDay, List<IWaveInstance>> toSyncWaveMpp = new TreeMap<RoutingTimeOfDay, List<IWaveInstance>>();
+				Map<String, List<IWaveInstance>> consolidationMap = new HashMap<String, List<IWaveInstance>>();
+								
+				for(Map<RoutingTimeOfDay, List<IWaveInstance>> _tmpMpp : _tmpCutOffMpp) {
+					for(Map.Entry<RoutingTimeOfDay, List<IWaveInstance>> _tmpInnerMpp : _tmpMpp.entrySet()) {
+						if(!toSyncWaveMpp.containsKey(_tmpInnerMpp.getKey())) {
+							toSyncWaveMpp.put(_tmpInnerMpp.getKey(), new ArrayList<IWaveInstance>());
+						}
+						for(IWaveInstance _srcWaveInst : _tmpInnerMpp.getValue()) {
+							if(_srcWaveInst.isNeedsConsolidation()) {
+								if(toSyncWaveMpp.get(_tmpInnerMpp.getKey()).size() == 0) {
+									toSyncWaveMpp.get(_tmpInnerMpp.getKey()).add(_srcWaveInst);
+									consolidationMap.put(_srcWaveInst.getWaveInstanceId(), new ArrayList<IWaveInstance>());
+								} else {
+									IWaveInstance _rootWaveInstance = toSyncWaveMpp.get(_tmpInnerMpp.getKey()).get(0);
+									WaveInstance.consolidateWaveInstance(_rootWaveInstance, _srcWaveInst);																		
+									consolidationMap.get(_rootWaveInstance.getWaveInstanceId()).add(_srcWaveInst);
+								}
+							} else {
+								toSyncWaveMpp.get(_tmpInnerMpp.getKey()).add(_srcWaveInst);
+							}
+						}											
+					}										
+				}
+				
+				for(Map.Entry<RoutingTimeOfDay, List<IWaveInstance>> _tmpMpp : toSyncWaveMpp.entrySet()) {
+					IWaveInstance syncWaveInstance = null;
+					for(IWaveInstance _syncWaveInst : _tmpMpp.getValue()) {
+						if(_syncWaveInst.getRoutingWaveInstanceId() == null) {
+							if(blankWaveMpp.containsKey(_tmpMpp.getKey())) {
+								List<IWaveInstance> blankWaveLst = blankWaveMpp.get(_tmpMpp.getKey());
+								if(blankWaveLst != null && blankWaveLst.size() > 0) {
+									syncWaveInstance = _syncWaveInst;
+									syncWaveInstance.setRoutingWaveInstanceId(blankWaveLst.remove(0).getRoutingWaveInstanceId());									
+								}
+							}
+						} else {
+							syncWaveInstance = _syncWaveInst;
+						}
+												
+						if(syncWaveInstance == null) {
+							System.out.println("UNABLE TO FIND WAVE TO SYNCHRONIZATION :"+schedulerId+"->"+_syncWaveInst);	
+						} else {
+							syncWaveInstance.copyBaseAttributes(waveIdMap.get(syncWaveInstance.getRoutingWaveInstanceId()));
+							System.out.println("SYNCHRONIZATIZING WAVE :"+schedulerId+"->"+_syncWaveInst);
+							List<String> unassignedOrder = null;
+							try {
+								unassignedOrder = capacityProxy.saveWaveInstances(schedulerId, syncWaveInstance, syncWaveInstance.isForce());
+							
+								syncWaveInstance.setNotificationMessage(null);
+								syncWaveInstance.setStatus(EnumWaveInstanceStatus.SYNCHRONIZED);
+								if(unassignedOrder != null && unassignedOrder.size() > 0) {
+									if(!syncWaveInstance.isForce()) {
+										syncWaveInstance.setStatus(EnumWaveInstanceStatus.NOTSYNCHRONIZED);
+										syncWaveInstance.setNotificationMessage(unassignedOrder.size() + " orders will be unassigned");
+									} else {
+										syncWaveInstance.setForce(false);
+									}
+								}
+								waveInstancesResult.add(syncWaveInstance);
+								if(consolidationMap.containsKey(syncWaveInstance.getWaveInstanceId())) {
+									for(IWaveInstance consolWaveInst : consolidationMap.get(syncWaveInstance.getWaveInstanceId())) {
+										consolWaveInst.setForce(syncWaveInstance.isForce());
+										consolWaveInst.setNotificationMessage(syncWaveInstance.getNotificationMessage());
+										consolWaveInst.setRoutingWaveInstanceId(syncWaveInstance.getRoutingWaveInstanceId());
+										consolWaveInst.setStatus(syncWaveInstance.getStatus());	
+										waveInstancesResult.add(consolWaveInst);
+									}
+								}
+							} catch(RoutingServiceException e) {
+								//e.printStackTrace();
+								LOGGER.info("FAILED to SYNCHRONIZE WAVE INSTANCE : " + schedulerId+" : "+syncWaveInstance);
+							}
+						}
+					}										
+				}
+			}								
+		}
+		return waveInstancesResult;
 	}
 	
 	private static void schedulerConfirmOrder(IOrderModel orderModel,DlvReservationModel reservation) throws RoutingServiceException {

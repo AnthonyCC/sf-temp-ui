@@ -11,5 +11,9 @@ public interface ICapacityEngineService {
 	
 	List<IWaveInstance> retrieveWaveInstances(IRoutingSchedulerIdentity schedulerId) throws RoutingServiceException;
 	
+	List<IWaveInstance> retrieveWaveInstancesBatch(IRoutingSchedulerIdentity schedulerId) throws RoutingServiceException;
+	
 	List<String> saveWaveInstances(IRoutingSchedulerIdentity schedulerId, IWaveInstance waveInstance, boolean force) throws RoutingServiceException;
+	
+	List<String> saveWaveInstancesBatch(IRoutingSchedulerIdentity schedulerId, IWaveInstance waveInstance, boolean force) throws RoutingServiceException;
 }

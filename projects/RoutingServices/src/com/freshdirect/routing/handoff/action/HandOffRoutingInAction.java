@@ -23,6 +23,7 @@ import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchStop;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
+import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.util.IRoutingParamConstants;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingServicesProperties;
@@ -48,6 +49,8 @@ public class HandOffRoutingInAction extends AbstractHandOffAction {
 		public void run() {
 			
 			HandOffServiceProxy proxy = new HandOffServiceProxy();
+			RoutingInfoServiceProxy routingInfoProxy = new RoutingInfoServiceProxy();
+			
 			Map paramMap = new HashMap();
 		    paramMap.put(IRoutingParamConstants.SERVICETIME_SCENARIO, HandOffRoutingInAction.this.getBatch().getServiceTimeScenario());
 		    paramMap.put(IRoutingParamConstants.ROUTING_USER, HandOffRoutingInAction.this.getUserId());
@@ -75,8 +78,9 @@ public class HandOffRoutingInAction extends AbstractHandOffAction {
 					IProcessManager rootProcessMgr = getRoutingInProcessChain();
 					ProcessContext context = new ProcessContext();
 					context.setHandOffProcess(true);
-					context.setHandOffBatchId(HandOffRoutingInAction.this.getBatch().getBatchId());
+					context.setHandOffBatch(HandOffRoutingInAction.this.getBatch());
 					context.setUserId(HandOffRoutingInAction.this.getUserId());
+					
 					
 					List outputDataList = new ArrayList();
 					

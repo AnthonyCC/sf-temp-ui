@@ -132,6 +132,8 @@ public class TransportationAdminProperties {
 	private final static String PROP_TRANSPORTATION_EARLYWARNING_PAGEREFRESHTIME = "transportation.earlywarning.pagerefreshtime";
 
 	private final static String PROP_TRANSPORTATION_EDITDYNAMICROUTINGFEATURE_ACCESSKEY = "transportation.editdynamicroutingfeature.accesskey";
+	
+	private final static String PROP_TRANSPORTATION_GENERATEPLAN_ACCESSKEY = "transportation.generateplan.accesskey";
 
 	//Ready View
 	private final static String PROP_TRANSPORTATION_DISPATCH_READY_VIEW_REFRESHTIME		= "transportation.dispatch.readyview.refreshtime";
@@ -184,6 +186,7 @@ public class TransportationAdminProperties {
 	private final static String PROP_HOLIDAY_PLANNING_LABELS		= "transportation.holidayplanning.lables";
 	private final static String PROP_EXPORT_SCHEDULES		= "transportation.filename.exportschedules";
 	private final static String PROP_TRANSPORTATION_FORMAT_EMPPLOYEESCHEDULE_UPLOAD	= "transportation.format.employeescheduleout";
+	private final static String PROP_TRANSPORTATION_FORMAT_SCRIB_UPLOAD	= "transportation.format.scribout";
 	private final static String PROP_TRANSPORTATION_CSVFILE_SEPARATOR	= "transportation.default.csvfileseparator";
 	
 	static {
@@ -284,6 +287,8 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_DISPATCH_VALIDATION, "false");
 
 		defaults.put(PROP_TRANSPORTATION_EDITDYNAMICROUTINGFEATURE_ACCESSKEY, "2746766f6bfb620d471e9a477fd63804");
+		
+		defaults.put(PROP_TRANSPORTATION_GENERATEPLAN_ACCESSKEY, "6a9d58f1ae9d7de8e8caab48b1dde402");
 
 		defaults.put(PROP_TRANSPORTATION_DISPATCH_READY_VIEW_REFRESHTIME, "45");
 		defaults.put(PROP_TRANSPORTATION_DISPATCH_READY_VIEW_PAGEREFRESHTIME, "10");
@@ -329,6 +334,7 @@ public class TransportationAdminProperties {
 
 		defaults.put(PROP_EXPORT_SCHEDULES,"Export_Schedules_");
 		defaults.put(PROP_TRANSPORTATION_FORMAT_EMPPLOYEESCHEDULE_UPLOAD, 	"com/freshdirect/transadmin/datamanager/employeeschedule_in.xml");
+		defaults.put(PROP_TRANSPORTATION_FORMAT_SCRIB_UPLOAD, 	"com/freshdirect/transadmin/datamanager/scrib_in.xml");
 
 		refresh();
 	}
@@ -607,6 +613,11 @@ public class TransportationAdminProperties {
 	public static String getDynamicRoutingFeatureAccessKey() {
 		return get(PROP_TRANSPORTATION_EDITDYNAMICROUTINGFEATURE_ACCESSKEY);
 	}
+	
+	public static String getGeneratePlanFeatureAccessKey() {
+		return get(PROP_TRANSPORTATION_GENERATEPLAN_ACCESSKEY);
+	}
+	
 
 	public static int getDispatchDashboardReadyViewRefreshTime()
 	{
@@ -690,4 +701,7 @@ public class TransportationAdminProperties {
     	return get(PROP_TRANSPORTATION_FORMAT_EMPPLOYEESCHEDULE_UPLOAD);
     }
 	
+	public static String getScribOutputFormat() {
+		return get(PROP_TRANSPORTATION_FORMAT_SCRIB_UPLOAD);
+	}
 }

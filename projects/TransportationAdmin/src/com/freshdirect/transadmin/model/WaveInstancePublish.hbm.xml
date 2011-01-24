@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 18, 2008 3:11:24 PM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp" >
+    <class name="com.freshdirect.transadmin.model.WaveInstancePublish" table="WAVE_INSTANCE_PUBLISH">
+       <id name="deliveryDate" type="date">
+            <column name="DELIVERY_DATE" length="7" />
+            <generator class="assigned" />
+        </id>
+        <property name="publishedBy" type="string">
+            <column name="PUBLISHED_BY" length="20" />
+        </property>
+        <property name="publishedAt" type="timestamp">
+            <column name="PUBLISHED_AT" length="7" />
+        </property>
+        <property name="source" column="SOURCE" type="com.freshdirect.transadmin.constants.EnumWaveInstancePublishSrcDT" />
+        
+    </class>
+</hibernate-mapping>

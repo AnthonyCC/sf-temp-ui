@@ -7,7 +7,7 @@ import java.util.TimeZone;
 
 import com.freshdirect.transadmin.util.TransStringUtil;
 
-public class Scrib 
+public class Scrib implements java.io.Serializable, IWaveInstanceSource
 {
 	
 	private String scribId;
@@ -15,8 +15,8 @@ public class Scrib
 	private Region region;
 	private Date scribDate;
 	private Date startTime;
-	private Date firstDlvTime;
-	private Date endDlvTime;
+	private Date firstDeliveryTime;
+	private Date lastDeliveryTime;
 	private Date maxReturnTime;
 	private int routeLength;
 	private int count;
@@ -32,6 +32,22 @@ public class Scrib
 	
 	private Date cutOffTime;
 	
+	public Date getFirstDeliveryTime() {
+		return firstDeliveryTime;
+	}
+
+	public Date getLastDeliveryTime() {
+		return lastDeliveryTime;
+	}
+
+	public void setFirstDeliveryTime(Date firstDeliveryTime) {
+		this.firstDeliveryTime = firstDeliveryTime;
+	}
+
+	public void setLastDeliveryTime(Date lastDeliveryTime) {
+		this.lastDeliveryTime = lastDeliveryTime;
+	}
+
 	public String getZoneModified() {
 		return zoneModified;
 	}
@@ -75,18 +91,7 @@ public class Scrib
 	public void setCount(int count) {
 		this.count = count;
 	}
-	public Date getEndDlvTime() {
-		return endDlvTime;
-	}
-	public void setEndDlvTime(Date endDlvTime) {
-		this.endDlvTime = endDlvTime;
-	}
-	public Date getFirstDlvTime() {
-		return firstDlvTime;
-	}
-	public void setFirstDlvTime(Date firstDlvTime) {
-		this.firstDlvTime = firstDlvTime;
-	}
+	
 	public Region getRegion() {
 		return region;
 	}
@@ -127,9 +132,9 @@ public class Scrib
 	
 	public Date getPrefRuturn()
 	{
-		if(endDlvTime==null)return null;
+		if(lastDeliveryTime==null)return null;
 		Calendar c=Calendar.getInstance();
-		c.setTime(endDlvTime);
+		c.setTime(lastDeliveryTime);
 		int stemTime=0;
 		if(zone.getStemNotNullFromTime()!=null)stemTime=zone.getStemNotNullFromTime().intValue();
 		c.add(Calendar.MINUTE, stemTime);
@@ -159,7 +164,7 @@ public class Scrib
 	public Date getWaveStart()
 	{
 		Calendar c=Calendar.getInstance();
-		c.setTime(firstDlvTime);
+		c.setTime(firstDeliveryTime);
 		int stemTime=0;
 		if(zone.getStemToTime()!=null)stemTime=zone.getStemToTime().intValue();
 		c.add(Calendar.MINUTE, -stemTime);
@@ -204,7 +209,7 @@ public class Scrib
 	public String getEndDlvTimeS() 
 	{
 		try {
-			if(endDlvTime!=null)return TransStringUtil.getServerTime(endDlvTime);
+			if(lastDeliveryTime!=null)return TransStringUtil.getServerTime(lastDeliveryTime);
 		} catch (ParseException e) 
 		{
 			
@@ -216,8 +221,8 @@ public class Scrib
 	{
 		try 
 		{
-			if(endDlvTimeS!=null&&endDlvTimeS.length()>0)endDlvTime=TransStringUtil.getServerTime(endDlvTimeS);
-			else endDlvTime=null;
+			if(endDlvTimeS!=null&&endDlvTimeS.length()>0)lastDeliveryTime=TransStringUtil.getServerTime(endDlvTimeS);
+			else lastDeliveryTime=null;
 		} catch (ParseException e) 
 		{
 			
@@ -226,7 +231,7 @@ public class Scrib
 	public String getFirstDlvTimeS() 
 	{
 		try {
-			if(firstDlvTime!=null)return TransStringUtil.getServerTime(firstDlvTime);
+			if(firstDeliveryTime!=null)return TransStringUtil.getServerTime(firstDeliveryTime);
 		} catch (ParseException e) 
 		{
 			
@@ -237,8 +242,8 @@ public class Scrib
 	{
 		try 
 		{
-			if(firstDlvTimeS!=null&&firstDlvTimeS.length()>0)firstDlvTime=TransStringUtil.getServerTime(firstDlvTimeS);
-			else firstDlvTime=null;
+			if(firstDlvTimeS!=null&&firstDlvTimeS.length()>0)firstDeliveryTime=TransStringUtil.getServerTime(firstDlvTimeS);
+			else firstDeliveryTime=null;
 		} catch (ParseException e) 
 		{
 			
@@ -349,6 +354,47 @@ public class Scrib
 		} catch (ParseException e) 
 		{
 			
+		}
+	}
+
+	@Override
+	public Date getDeliveryDate() {
+		// TODO Auto-generated method stub
+		return this.getScribDate();
+	}
+
+	@Override
+	public int getNoOfResources() {
+		// TODO Auto-generated method stub
+		return this.getZone() != null && this.getZone().getArea() != null 
+						&& "X".equalsIgnoreCase(this.getZone().getArea().getIsDepot()) ? this.getResources() : this.getCount() ;
+	}
+
+	@Override
+	public boolean isValid() {
+		// TODO Auto-generated method stub
+		return this.getDeliveryDate() != null && this.getStartTime()!= null 
+					&& this.getFirstDeliveryTime() != null && this.getLastDeliveryTime() != null 
+					&& this.getCutOffTime() != null && this.getZone() != null;
+	}
+
+	@Override
+	public boolean needsConsolidation() {
+		// For now consolidation will happen transparent to transapp it will be consolidated when sending it to UPS.
+		// It can be turned on anytime based on future business requirements
+		return false;
+		/*return this.getZone() != null && this.getZone().getArea() != null 
+				&& "X".equalsIgnoreCase(this.getZone().getArea().getIsDepot());*/
+	}
+
+	@Override
+	public void setNoOfResources(int value) {
+		// TODO Auto-generated method stub
+		if(this.getZone() != null && this.getZone().getArea() != null 
+				&& "X".equalsIgnoreCase(this.getZone().getArea().getIsDepot())) {
+			this.setResources(value);
+		} else {
+			this.setCount(value);
 		}
 	}
 	

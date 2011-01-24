@@ -6,7 +6,6 @@
 <%@ page import= 'java.util.*' %>
 <%@ page import= 'com.freshdirect.transadmin.web.model.*' %>
 <%@ page import= 'com.freshdirect.routing.model.*' %>
-
 <%  
    pageContext.setAttribute("HAS_ADDBUTTON", "false");
    pageContext.setAttribute("HAS_DELETEBUTTON", "false");
@@ -16,7 +15,7 @@
    String scenariotitle = "Service Time Scenario : ";
    IServiceTimeScenarioModel srvScenario = (IServiceTimeScenarioModel)request.getAttribute("srcscenario");
    if(srvScenario != null) {
-         scenariotitle += srvScenario.getDescription();
+	   scenariotitle += srvScenario.getDescription();
    }
  %>
   

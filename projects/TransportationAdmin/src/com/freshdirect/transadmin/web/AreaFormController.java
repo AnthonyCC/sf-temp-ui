@@ -57,7 +57,7 @@ public class AreaFormController extends AbstractFormController {
 		}
 	}
 	
-	public List saveDomainObject(Object domainObject) {
+	public List saveDomainObject(HttpServletRequest request, Object domainObject) {
 		List errorList = new ArrayList();
 		TrnArea modelNew = (TrnArea)domainObject;
 		if(!"X".equalsIgnoreCase(modelNew.getNeedsLoadBalance())) {

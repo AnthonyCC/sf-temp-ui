@@ -53,6 +53,7 @@ import com.freshdirect.routing.model.DeliverySlot;
 import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
+import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 import com.freshdirect.routing.util.RoutingUtil;
 
@@ -292,7 +293,7 @@ public class DlvManagerDAO {
 		_aModel.setDeliveryRate(rs.getDouble("AREA_DLV_RATE"));
 		_aModel.setStemFromTime(rs.getInt("stemfrom"));
 		_aModel.setStemToTime(rs.getInt("stemto"));
-		_aModel.setMaxStemTime(rs.getInt("stemmax"));
+		//_aModel.setMaxStemTime(rs.getInt("stemmax"));
 		
 		_schId.setRegionId(RoutingUtil.getRegion(_aModel));
 		_schId.setArea(_aModel);
@@ -1268,6 +1269,23 @@ public class DlvManagerDAO {
 		return timeslots;
 	}
 	
+	private static final String FUTURETIMESLOT_DATES = "select distinct  T.BASE_DATE FUTURE_DATE from dlv.timeslot t where T.BASE_DATE > sysdate order by BASE_DATE";
+	
+	public static List<Date> getFutureTimeslotDates(Connection conn) throws SQLException {
+		
+		PreparedStatement ps = conn.prepareStatement(FUTURETIMESLOT_DATES);
+				
+		ResultSet rs = ps.executeQuery();
+		List<Date> result = new ArrayList<Date>();
+		while (rs.next()) {			
+			result.add(rs.getDate("FUTURE_DATE"));
+		}
+		rs.close();
+		ps.close();
+		return result;
+	}
+	
+	
 	private static final String UPDATE_TIMESLOTS_BY_ID = "UPDATE DLV.TIMESLOT SET CAPACITY = ? , CT_CAPACITY = ? WHERE ID = ?";
 	
 	public static int updateTimeslotsCapacity(Connection conn, List<DlvTimeslotModel> dlvTimeSlots ) throws SQLException{
@@ -1289,6 +1307,33 @@ public class DlvManagerDAO {
 		return count.length;
 	}
 	
+	private static final String UPDATE_WAVEINSTANCE_BY_ID = "UPDATE TRANSP.WAVE_INSTANCE SET STATUS = ? " +
+																", MODIFIED_DTTM = sysdate " +
+																", REFERENCE_ID = ? " +
+																", NOTIFICATION_MSG = ? " +
+																", FORCE_SYNCHRONIZE = ? " +																
+																" WHERE WAVEINSTANCE_ID = ?";
+	
+	public static int updateWaveInstanceStatus(Connection conn, List<IWaveInstance> waveInstances ) throws SQLException{
+		
+		PreparedStatement ps = conn.prepareStatement(UPDATE_WAVEINSTANCE_BY_ID);		
+	    
+	    for (IWaveInstance _instance : waveInstances) {
+	    	if(_instance != null) {
+	    		ps.setString(1, _instance.getStatus().getName());
+	    		ps.setString(2, _instance.getRoutingWaveInstanceId());			    
+	    		ps.setString(3, _instance.getNotificationMessage());
+	    		ps.setString(4, _instance.isForce() ? "X" : null);
+	    		ps.setString(5, _instance.getWaveInstanceId());
+			    ps.addBatch();
+	    	}
+		}
+		int[] count = ps.executeBatch();
+		ps.close();
+		return count.length;
+	}
+	
+		
 	private static final String SELECT_ACTIVE_ZONES = "select ZONE_CODE from TRANSP.Zone where OBSOLETE IS NULL Order By ZONE_CODE";
 	
 	public static List getActiveZoneCodes(Connection conn)throws SQLException{

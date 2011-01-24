@@ -171,7 +171,7 @@
 			function uploadSchedules(){
 				 var confirmed = confirm ("You are about to upload Schedule data. Do you want to continue?");
 				 if(confirmed){
-					javascript:window.open('uploadschedules.do','upload','height=250,width=400,resizable=no');
+					javascript:window.open('uploadschedules.do?processType=SCH','upload','height=250,width=400,resizable=no');
 				 }
 			}		   	 	
 		   function exportSchedules(){

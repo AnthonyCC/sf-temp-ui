@@ -19,7 +19,6 @@ import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
 import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;
-import com.freshdirect.routing.handoff.action.AbstractHandOffAction.DispatchCorrelationResult;
 import com.freshdirect.routing.model.HandOffBatchDepotSchedule;
 import com.freshdirect.routing.model.HandOffBatchRoute;
 import com.freshdirect.routing.model.HandOffBatchStop;
@@ -142,6 +141,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 									s_stop.setBatchId(this.getBatch().getBatchId());
 									s_stop.setRouteId(route.getRouteId());
 									s_stop.setSessionName(sesEntry.getKey().getSessionName());
+									
 									if(s_stop.getRoutingRouteId() == null
 											&& route.getRoutingRouteId() != null
 												&& route.getRoutingRouteId().size() > 0) {
@@ -156,8 +156,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 								s_routes.add(s_route);
 							}
 						}
-					}
-			
+					}			
 				}
 			}
 		}

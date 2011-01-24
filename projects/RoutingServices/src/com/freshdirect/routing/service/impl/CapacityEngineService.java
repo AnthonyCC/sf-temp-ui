@@ -15,46 +15,86 @@ import com.freshdirect.routing.util.RoutingDataEncoder;
 
 public class CapacityEngineService extends BaseService implements ICapacityEngineService {
 		
+	public List<IWaveInstance> retrieveWaveInstancesBatch(IRoutingSchedulerIdentity schedulerId) throws RoutingServiceException {
+		try {
+			return retrieveWaveInstances(getTransportationSuiteBatchService(schedulerId), schedulerId);
+		}  catch (RemoteException exp) {
+			exp.printStackTrace();
+			throw new RoutingServiceException(exp, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);
+		}
+	}
+	
 	public List<IWaveInstance> retrieveWaveInstances(IRoutingSchedulerIdentity schedulerId) throws RoutingServiceException {
+		try {
+			return retrieveWaveInstances(getTransportationSuiteService(schedulerId), schedulerId);
+		}  catch (RemoteException exp) {
+			exp.printStackTrace();
+			throw new RoutingServiceException(exp, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);
+		}
+	}
+	
+	public List<IWaveInstance> retrieveWaveInstances(TransportationWebService port, IRoutingSchedulerIdentity schedulerId) throws RoutingServiceException {
 				
 		List<IWaveInstance> result = null;
 		
 		try {
-			TransportationWebService port = getTransportationSuiteService(schedulerId);
-								
+										
 			result = RoutingDataDecoder.decodeWaveInstanceList(port.schedulerRetrieveDeliveryWaveInstancesByCriteria(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId)
 																	, RoutingDataEncoder.encodeSchedulerDeliveryWaveInstanceCriteria()
 																	, RoutingDataEncoder.encodeSchedulerRetrieveDeliveryWaveInstanceOptions()));
 			
 			
 		} catch (RemoteException exp) {
+			exp.printStackTrace();
 			throw new RoutingServiceException(exp, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);
 		}
 
 		return result;
 	}
 	
+	public List<String> saveWaveInstancesBatch(IRoutingSchedulerIdentity schedulerId
+											, IWaveInstance waveInstance
+												, boolean force) throws RoutingServiceException {
+		try {
+			return this.saveWaveInstances(getTransportationSuiteBatchService(schedulerId), schedulerId, waveInstance, force);
+		}  catch (RemoteException exp) {
+			exp.printStackTrace();
+			throw new RoutingServiceException(exp, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);
+		}
+	}
+	
 	public List<String> saveWaveInstances(IRoutingSchedulerIdentity schedulerId
+											, IWaveInstance waveInstance
+												, boolean force) throws RoutingServiceException {
+		try {
+			return this.saveWaveInstances(getTransportationSuiteService(schedulerId), schedulerId, waveInstance, force);
+		}  catch (RemoteException exp) {
+			exp.printStackTrace();
+			throw new RoutingServiceException(exp, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);
+		}
+	}
+	
+	public List<String> saveWaveInstances(TransportationWebService port, IRoutingSchedulerIdentity schedulerId
 																, IWaveInstance waveInstance
 																, boolean force) throws RoutingServiceException {
 		
 		List<String> result = null;
 		try {
-			TransportationWebService port = getTransportationSuiteService(schedulerId);
-						
+									
 			String[] unassignedOrders = port.schedulerSaveDeliveryWaveInstance(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId)
 															, RoutingDataEncoder.encodeWaveInstanceIdentity(waveInstance)
 															, RoutingDataEncoder.encodeDeliveryWaveAttributes(waveInstance)
 															, RoutingDataEncoder.encodeSchedulerSaveDeliveryWaveInstanceOptions(force));
-			if(unassignedOrders != null) {
-				result = new ArrayList<String>();
+			result = new ArrayList<String>();
+			if(unassignedOrders != null) {				
 				for(String unassigned : unassignedOrders) {
 					result.add(unassigned);
 				}
 			}
 			
 		} catch (RemoteException exp) {
-			throw new RoutingServiceException(exp, IIssue.PROCESS_SAVEWAVEINSTANCE_UNSUCCESSFUL);
+			exp.printStackTrace();
+			throw new RoutingServiceException(exp, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);
 		}
 		return result;
 	}

@@ -10,12 +10,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
 
 import com.freshdirect.routing.constants.EnumArithmeticOperator;
+import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
 import com.freshdirect.routing.dao.IRoutingInfoDAO;
+import com.freshdirect.routing.model.AreaModel;
+import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.model.IWaveInstance;
@@ -259,6 +263,137 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 		return result;
 	}
 	
+	private static final String GET_WAVEINSTANCE_BYSTATUS_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
+	", P.DISPATCH_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.STATUS, P.NOTIFICATION_MSG " +
+	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, a.IS_DEPOT IS_DEPOT " +
+	"from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a where P.DELIVERY_DATE = ?  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE and STATUS = ? " +
+	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
+	
+	private static final String GET_WAVEINSTANCE_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
+	", P.DISPATCH_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.STATUS, P.NOTIFICATION_MSG " +
+	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, a.IS_DEPOT IS_DEPOT " +
+	"from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a where P.DELIVERY_DATE = ?  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE " +
+	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
+	
+	private static final String GET_FUTURE_WAVEINSTANCE_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
+	", P.DISPATCH_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.STATUS, P.NOTIFICATION_MSG " +
+	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, a.IS_DEPOT IS_DEPOT " +
+	"from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a where P.DELIVERY_DATE > sysdate  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE " +
+	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
+	
+	private static final String GET_FUTURE_WAVEINSTANCE_BYSTATUS_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
+	", P.DISPATCH_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.STATUS, P.NOTIFICATION_MSG " +
+	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, a.IS_DEPOT IS_DEPOT " +
+	"from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a where P.DELIVERY_DATE = ?  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE and STATUS = ? " +
+	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
+	
+	public Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> getWaveInstanceTree
+																							(final Date deliveryDate, final  EnumWaveInstanceStatus status)  throws SQLException {
+		final Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> result = new HashMap<Date, Map<String
+																, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>>();
+		PreparedStatementCreator creator=new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+
+				PreparedStatement ps = null;
+				if(deliveryDate != null) {
+					if(status == null) {
+						ps = connection.prepareStatement(GET_WAVEINSTANCE_QRY);
+						ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
+					} else {
+						ps = connection.prepareStatement(GET_WAVEINSTANCE_BYSTATUS_QRY);
+						ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
+						ps.setString(2, status.getName());
+					}		
+				} else {
+					if(status == null) {
+						ps = connection.prepareStatement(GET_FUTURE_WAVEINSTANCE_QRY);						
+					} else {
+						ps = connection.prepareStatement(GET_FUTURE_WAVEINSTANCE_BYSTATUS_QRY);						
+						ps.setString(2, status.getName());
+					}
+				}
+				return ps;
+			}
+		};
+
+		jdbcTemplate.query(creator, 
+				new RowCallbackHandler() { 
+			public void processRow(ResultSet rs) throws SQLException {				    	
+				do {
+					Date _dispatchDate = rs.getDate("DISPATCH_DATE");
+					Date _firstDeliveryTime = rs.getTimestamp("FIRST_DLV_TIME");
+					Date _lastDeliveryTime = rs.getTimestamp("LAST_DLV_TIME");
+					Date _startTime = rs.getTimestamp("DISPATCH_TIME");
+					RoutingTimeOfDay _cutOffTime = new RoutingTimeOfDay(rs.getTimestamp("CUT_OFF"));
+
+					String _zoneCode = rs.getString("ZONE");
+					String _routingWaveInstanceId = rs.getString("REFERENCE_ID");
+					String _waveInstanceId = rs.getString("WAVEINSTANCE_ID"); 
+					EnumWaveInstanceStatus status = EnumWaveInstanceStatus.getEnum(rs.getString("STATUS"));
+					
+					int toZoneTime = rs.getInt("TO_ZONETIME");
+					int fromZoneTime = rs.getInt("FROM_ZONETIME");
+					int noOfResources = rs.getInt("RESOURCE_COUNT");
+					boolean force = rs.getString("FORCE_SYNCHRONIZE") != null 
+										? "Y".equalsIgnoreCase(rs.getString("FORCE_SYNCHRONIZE")) : false;
+					boolean needsConsolidation = rs.getString("IS_DEPOT") != null 
+										? "X".equalsIgnoreCase(rs.getString("IS_DEPOT")) : false;
+					String notificationMsg = rs.getString("NOTIFICATION_MSG");
+					
+					if(_firstDeliveryTime != null && _lastDeliveryTime != null 
+							&& _startTime != null && _cutOffTime != null && _zoneCode != null) {
+
+						RoutingTimeOfDay _dispatchTime = new RoutingTimeOfDay(_startTime);
+
+						Date startTime = RoutingDateUtil.addMinutes(_firstDeliveryTime
+								, (toZoneTime != 0 ? -toZoneTime : -fromZoneTime));
+						Date endTime = RoutingDateUtil.addMinutes(_lastDeliveryTime
+								, (fromZoneTime != 0 ? fromZoneTime : toZoneTime));
+
+						int runTime = RoutingDateUtil.getDiffInSeconds(endTime, startTime);
+
+						RoutingTimeOfDay _waveStartTime = new RoutingTimeOfDay(startTime);
+
+						IWaveInstance waveInstance = new WaveInstance();
+						waveInstance.setCutOffTime(_cutOffTime);
+						waveInstance.setDispatchTime(_dispatchTime);
+						waveInstance.setWaveStartTime(_waveStartTime);
+						waveInstance.setMaxRunTime(runTime);
+						waveInstance.setPreferredRunTime(runTime);
+						waveInstance.setNoOfResources(noOfResources);
+						waveInstance.setForce(force);
+						waveInstance.setNeedsConsolidation(needsConsolidation);
+						waveInstance.setRoutingWaveInstanceId(_routingWaveInstanceId);
+						waveInstance.setWaveInstanceId(_waveInstanceId);
+						waveInstance.setDeliveryDate(_dispatchDate);
+						waveInstance.setNotificationMessage(notificationMsg);
+						waveInstance.setStatus(status);
+						
+						IAreaModel area = new AreaModel();
+						area.setAreaCode(_zoneCode);
+						waveInstance.setArea(area);
+						
+						if(!result.containsKey(_dispatchDate)) {
+							result.put(_dispatchDate, new TreeMap<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>());
+						}
+						if(!result.get(_dispatchDate).containsKey(_zoneCode)) {
+							result.get(_dispatchDate).put(_zoneCode, new HashMap<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>());
+						}
+						if(!result.get(_dispatchDate).get(_zoneCode).containsKey(_dispatchTime)) {
+							result.get(_dispatchDate).get(_zoneCode).put(_dispatchTime, new HashMap<RoutingTimeOfDay, List<IWaveInstance>>());
+						}
+						if(!result.get(_dispatchDate).get(_zoneCode).get(_dispatchTime).containsKey(_cutOffTime)) {
+							result.get(_dispatchDate).get(_zoneCode).get(_dispatchTime).put(_cutOffTime, new ArrayList<IWaveInstance>());
+						}
+						result.get(_dispatchDate).get(_zoneCode).get(_dispatchTime).get(_cutOffTime).add(waveInstance);
+					}
+				} while(rs.next());		        		    	
+			}
+		}
+		);
+		return result;
+	}
+	
 	private static final String GET_PLANBYDATE_QRY = "select P.PLAN_DATE DISPATCH_DATE, P.ZONE ZONE, P.CUTOFF_DATETIME CUT_OFF " +
 			", P.START_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME " +
 			", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY " +
@@ -266,10 +401,10 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 			"from transp.plan p, transp.zone z where P.PLAN_DATE = ? and P.ZONE = Z.ZONE_CODE and P.ZONE is not null " +
 			"order by P.ZONE, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
 	//Result Description -> Map<ZoneCode, Map<DispatchTIme, Map<CutOffTime, IWaveInstance>>>
-	public Map<String, Map<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>>> getPlannedDispatchTree(final Date deliveryDate)  throws SQLException {
+	public Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> getPlannedDispatchTree(final Date deliveryDate)  throws SQLException {
 		
-		final Map<String, Map<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>>> result = new HashMap<String
-																							, Map<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>>>();
+		final Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> result = new HashMap<String
+																							, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>();
 		PreparedStatementCreator creator=new PreparedStatementCreator() {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 				
@@ -288,7 +423,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 				    		Date _firstDeliveryTime = rs.getTimestamp("FIRST_DLV_TIME");
 				    		Date _lastDeliveryTime = rs.getTimestamp("LAST_DLV_TIME");
 				    		Date _startTime = rs.getTimestamp("DISPATCH_TIME");
-				    		Date _cutOffTime = rs.getTimestamp("CUT_OFF");
+				    		RoutingTimeOfDay _cutOffTime = new RoutingTimeOfDay(rs.getTimestamp("CUT_OFF"));
 				    		
 				    		String _zoneCode = rs.getString("ZONE");
 				    		int toZoneTime = rs.getInt("TO_ZONETIME");
@@ -316,10 +451,10 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 					    		waveInstance.setPreferredRunTime(runTime);
 					    		
 					    		if(!result.containsKey(_zoneCode)) {
-					    			result.put(_zoneCode, new HashMap<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>>());
+					    			result.put(_zoneCode, new HashMap<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>());
 					    		}
 					    		if(!result.get(_zoneCode).containsKey(_dispatchTime)) {
-					    			result.get(_zoneCode).put(_dispatchTime, new HashMap<Date, List<IWaveInstance>>());
+					    			result.get(_zoneCode).put(_dispatchTime, new HashMap<RoutingTimeOfDay, List<IWaveInstance>>());
 					    		}
 					    		
 					    		if(result.get(_zoneCode).get(_dispatchTime).containsKey(_cutOffTime)) {
@@ -347,6 +482,44 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 				      }
 				  }
 			);
+		return result;
+	}
+	
+	private static final String GET_FUTURE_WAVEINSTANCE_ERRORS_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
+	", P.DISPATCH_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.STATUS, P.NOTIFICATION_MSG " +
+	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, a.IS_DEPOT IS_DEPOT " +
+	"from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a where P.DELIVERY_DATE > sysdate and (P.STATUS = 'NYN' or P.NOTIFICATION_MSG is not null)  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE " +
+	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
+	
+	public List<IWaveInstance> getWaveInstanceWithErrors()  throws SQLException {
+		final List<IWaveInstance> result = new ArrayList<IWaveInstance>();
+		
+		PreparedStatementCreator creator=new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+
+				PreparedStatement ps = connection.prepareStatement(GET_FUTURE_WAVEINSTANCE_ERRORS_QRY);
+				return ps;
+			}
+		};
+
+		jdbcTemplate.query(creator, 
+				new RowCallbackHandler() { 
+			public void processRow(ResultSet rs) throws SQLException {				    	
+				do {
+					
+					EnumWaveInstanceStatus status = EnumWaveInstanceStatus.getEnum(rs.getString("STATUS"));
+					String notificationMsg = rs.getString("NOTIFICATION_MSG");
+
+					IWaveInstance waveInstance = new WaveInstance();
+					
+					waveInstance.setNotificationMessage(notificationMsg);
+					waveInstance.setStatus(status);
+					result.add(waveInstance);
+					
+				} while(rs.next());		        		    	
+			}
+		}
+		);
 		return result;
 	}
 }

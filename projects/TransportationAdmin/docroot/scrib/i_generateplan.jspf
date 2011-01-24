@@ -23,10 +23,22 @@
      } 
 	 
 
-     function showGeneratePlanForm() {          
-          addSysMessage("", false);
-          editPanel.render(document.body);
-          editPanel.show();
+     function showGeneratePlanForm() {  
+    	 var accesscode = prompt("You are about to perform Generate Plan.  IF PLANS ALREADY EXIST FOR THE DAY, ALL CHANGES WILL BE LOST.  Do you want to continue?","<Please enter access code>");
+    	 if (accesscode != null && accesscode != "")  {				
+				try {
+					var result = jsonrpcClient.AsyncDispatchProvider.validatePlanGenAccessCode(accesscode);
+					if(result == 1) {
+						addSysMessage("", false);
+				        editPanel.render(document.body);
+				        editPanel.show();
+					} else {
+						alert("Plan generation requires valid password!");
+					}
+				} catch(rpcException) {
+      				alert("Unable to validate Plan generation access key. Please try to refresh the browser window!\n"+e);
+      			}   
+    	 }          
      }
              
       function submitGeneratePlan(compId1,compId2,url,generatePlan) {       	                           

@@ -29,7 +29,7 @@ public class Zone implements java.io.Serializable {
 	private final BigDecimal DEFAULT_PRIORITY=new BigDecimal(-1);
     private BigInteger stemFromTime;
     private BigInteger stemToTime;
-    private BigInteger maxstemTime;
+    //private BigInteger maxstemTime;
     
 	private DlvServiceTimeType defaultServiceTimeType;
 	
@@ -223,13 +223,13 @@ public class Zone implements java.io.Serializable {
 		this.stemToTime = stemToTime;
 	}
 
-	public BigInteger getMaxstemTime() {
+	/*public BigInteger getMaxstemTime() {
 		return maxstemTime;
 	}
 
 	public void setMaxstemTime(BigInteger maxstemTime) {
 		this.maxstemTime = maxstemTime;
-	}
+	}*/
 
 	public BigDecimal getLoadingPriority() {
 		return loadingPriority;

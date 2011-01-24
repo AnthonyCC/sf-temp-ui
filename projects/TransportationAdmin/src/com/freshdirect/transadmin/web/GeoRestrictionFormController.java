@@ -170,7 +170,7 @@ public class GeoRestrictionFormController extends AbstractFormController {
 		return (modelIn.getName() == null); // tbr
 	}
 
-	public List saveDomainObject(Object domainObject) {
+	public List saveDomainObject(HttpServletRequest request, Object domainObject) {
 
 		List errorList = new ArrayList();
 		GeoRestriction modelIn = (GeoRestriction) domainObject;

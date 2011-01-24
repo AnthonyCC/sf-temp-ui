@@ -84,8 +84,7 @@
                               <ec:column alias="priority" property="priority" title="Priority"/>
                               <ec:column alias="enableCOS" property="cosEnabled" title="COS Enabled"/>
                               <ec:column alias="stemfrom" property="stemToTime" title="Avg To Stem Time(Mins)"/>
-							  <ec:column alias="stemto" property="stemFromTime" title="Avg From Stem Time(Mins)"/>
-							  <ec:column alias="maxstemTime" property="maxstemTime" title="Max Stem Time (Mins)"/>
+							  <ec:column alias="stemto" property="stemFromTime" title="Avg From Stem Time(Mins)"/>							  
 							  <ec:column alias="loadingPriority" property="loadingPriority" title="Loading Priority"/>
 							</ec:row>
 						  </ec:table>
@@ -108,8 +107,7 @@
                                <ec:column alias="enableCOS" property="cosEnabled" title="COS Enabled"/>
 							  <ec:column alias="unattended" property="unattended" title="Unattended"/>
 							  <ec:column alias="stemfrom" property="stemToTime" title="Avg To Stem Time(Mins)"/>
-							  <ec:column alias="stemto" property="stemFromTime" title="Avg From Stem Time(Mins)"/>
-							  <ec:column alias="maxstemTime" property="maxstemTime" title="Max Stem Time (Mins)"/>
+							  <ec:column alias="stemto" property="stemFromTime" title="Avg From Stem Time(Mins)"/>							  
 							  <ec:column alias="loadingPriority" property="loadingPriority" title="Loading Priority"/>
 							</ec:row>
 						  </ec:table>

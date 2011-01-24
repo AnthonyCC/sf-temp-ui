@@ -59,8 +59,8 @@ public class ScribController extends AbstractMultiActionController
 			{
 				List toInsert=new ArrayList();
 				List toDelate=new ArrayList();
-				String[] sourceDates=getDates(sourceDate, sourceDay);
-				String[] destDates=getDates(destDate, sourceDay);
+				String[] sourceDates = TransStringUtil.getDatesEx(sourceDate, sourceDay);
+				String[] destDates = TransStringUtil.getDatesEx(destDate, sourceDay);
 				if(sourceDates!=null&&sourceDates.length>0&&!sourceDates[0].equalsIgnoreCase(destDates[0]))
 				{	
 					for(int i=0;i<sourceDates.length;i++)
@@ -105,7 +105,7 @@ public class ScribController extends AbstractMultiActionController
 			Date _weekDate = getWeekOf(daterange);	
 			String day=request.getParameter("scribDay");
 			if(day==null)day="All";
-			String[] dates=getDates(daterange,day);
+			String[] dates = TransStringUtil.getDatesEx(daterange,day);
 			List allScribs=new ArrayList();
 			Set scribDates = new TreeSet();
 		
@@ -119,7 +119,7 @@ public class ScribController extends AbstractMultiActionController
 					for(Iterator j=scribs.iterator();j.hasNext();)
 					{
 						Scrib s=(Scrib)j.next();
-						if(!(s.getScribDate().before(TransStringUtil.getServerDateString(TransStringUtil.getCurrentServerDate()))))
+						//if(!(s.getScribDate().before(TransStringUtil.getServerDateString(TransStringUtil.getCurrentServerDate()))))
 							scribDates.add(TransStringUtil.getServerDate(s.getScribDate()));
 						if (scribLabel!=null)
 							s.setScribLabel(scribLabel.getScribLabel());
@@ -313,61 +313,7 @@ public class ScribController extends AbstractMultiActionController
 			detail.setDate(date);
 		}
 	}
-	
-	
-	public String[] getDates(String date,String day) throws Exception
-	{
-		
-		Date d=TransStringUtil.getDate(date);
-		Calendar c=Calendar.getInstance();
-		c.setFirstDayOfWeek(Calendar.MONDAY);
-		c.setTime(d);
-		if("All".equalsIgnoreCase(day))
-		{
-			String[] dates=new String[7];			
-			for(int i=2;i<=8;i++)
-			{
-			c.set(Calendar.DAY_OF_WEEK , i);
-			/*if(i==8)
-			{
-				c.set(Calendar.DAY_OF_WEEK , 7);
-				c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR)+1);
-			}*/
-			String ds=TransStringUtil.getServerDate(c.getTime());
-			dates[i-2]=ds;
-			}
-			return dates;
-		}
-		else
-		{
-			if(day==null)
-			{
-				return new String[]{TransStringUtil.getServerDate(c.getTime())};
-			}
-			else
-			{
-				try {
-					int k=Integer.parseInt(day);
-				//	if(k<8)
-					{
-					c.set(Calendar.DAY_OF_WEEK , k);
-					}
-				/*	else
-					{
-						c.set(Calendar.DAY_OF_WEEK , 7);
-						c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR)+1);
-					}*/
-					String ds=TransStringUtil.getServerDate(c.getTime());
-					return new String[]{ds};
-				} catch (Exception e) {
-					
-				}
-			}
-		}
-		return null;
-		
-	}
-	
+			
 	public ModelAndView scribSummaryHandler(HttpServletRequest request, HttpServletResponse response) 
 														throws ServletException, ParseException   {
 		
@@ -442,7 +388,7 @@ public class ScribController extends AbstractMultiActionController
 		if(scribs != null) {        	  
       	  for(Scrib _scrib : scribs) {
       		  if(_scrib.getZone() != null) {
-      			 _timeOfDay = new CustomTimeOfDay(_scrib.getFirstDlvTime());
+      			 _timeOfDay = new CustomTimeOfDay(_scrib.getFirstDeliveryTime());
       			allWindows.add(_timeOfDay);
       			if(!scribMapping.containsKey(_scrib.getZone().getZoneCode())) {
       				scribMapping.put(_scrib.getZone().getZoneCode(), new TreeMap<CustomTimeOfDay, Integer>());

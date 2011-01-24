@@ -75,7 +75,7 @@ public class ZoneTypeFormController extends AbstractFormController {
 		return zoneType;
 	}
 
-	public List saveDomainObject(Object domainObject) {			
+	public List saveDomainObject(HttpServletRequest request, Object domainObject) {			
 
 		ZoneTypeCommand model = (ZoneTypeCommand)domainObject;
 				

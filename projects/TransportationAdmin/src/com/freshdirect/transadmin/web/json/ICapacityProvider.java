@@ -14,4 +14,6 @@ public interface ICapacityProvider {
 	
 	int flagReRouteReservation(String deliveryDate, String zone);
 	
+	int forceWaveInstance(String waveInstanceId);
+	
 }

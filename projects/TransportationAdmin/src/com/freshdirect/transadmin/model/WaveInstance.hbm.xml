@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 18, 2008 3:11:24 PM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp" >
+    <class name="com.freshdirect.transadmin.model.WaveInstance" table="WAVE_INSTANCE">
+        <id name="waveInstanceId" type="string">
+            <column name="WAVEINSTANCE_ID" length="20" />
+           <generator class="sequence">
+    			<param name="sequence">WAVE_INSTANCE_SEQ</param>
+			</generator>
+        </id>
+        <property name="area" type="string">
+            <column name="AREA" length="10" not-null="true" />
+        </property>
+        <property name="deliveryDate" type="date">
+            <column name="DELIVERY_DATE" length="7" not-null="true" />
+        </property>
+        <property name="dispatchTime" type="timestamp">
+            <column name="DISPATCH_TIME" length="7" not-null="true" />
+        </property>
+        <property name="firstDeliveryTime" type="timestamp">
+            <column name="FIRST_DLV_TIME" length="7" not-null="true" />
+        </property>
+        <property name="lastDeliveryTime" type="timestamp">
+            <column name="LAST_DLV_TIME" length="7" not-null="true" />
+        </property>
+        <property name="cutOffTime" type="timestamp">
+            <column name="CUTOFF_DATETIME" length="7" not-null="true" />
+        </property>
+                
+        <property name="noOfResources" type="int">
+            <column name="RESOURCE_COUNT" precision="5" scale="0" not-null="true" />
+        </property>
+        <property name="status" column="STATUS" type="com.freshdirect.transadmin.constants.EnumWaveInstanceStatusDataType" />
+        
+        <property name="modifiedTime" type="timestamp">
+            <column name="MODIFIED_DTTM" length="7" />
+        </property>
+        
+        <property name="source" type="string">
+            <column name="SOURCE" length="20" />
+        </property>
+         <property name="changedBy" type="string">
+            <column name="CHANGED_BY" length="20" />
+        </property>
+         <property name="referenceId" type="string">
+            <column name="REFERENCE_ID" length="40" />
+        </property>
+        <property name="notificationMessage" type="string">
+            <column name="NOTIFICATION_MSG" length="4000" />
+        </property>
+        
+        <property name="forceSynchronize" type="yes_no">
+            <column name="FORCE_SYNCHRONIZE" length="1" />
+        </property>
+        
+    </class>
+</hibernate-mapping>

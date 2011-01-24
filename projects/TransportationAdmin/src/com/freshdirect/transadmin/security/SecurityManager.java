@@ -23,7 +23,7 @@ public class SecurityManager {
 		UNSECURED_URL.add("unassignedactiveemployees.do");
 		UNSECURED_URL.add("dispatchDashboardScreen.do");
 		UNSECURED_URL.add("gmapexport.do");
-		UNSECURED_URL.add("gpsadmin.do");
+		UNSECURED_URL.add("gpsadmin.do");		
 		UNSECURED_URL.add("cutoffreport.do");
 		UNSECURED_URL.add("sapupload.do"); 
 		UNSECURED_URL.add("communityreport.do");    

@@ -431,8 +431,8 @@ class TimeNode extends PlanTreeNode  {
 			p.setZone(s.getZone());
 			p.setRegion(s.getRegion());
 			p.setStartTime(s.getStartTime());
-			p.setFirstDeliveryTime(s.getFirstDlvTime());
-			p.setLastDeliveryTime(s.getEndDlvTime());
+			p.setFirstDeliveryTime(s.getFirstDeliveryTime());
+			p.setLastDeliveryTime(s.getLastDeliveryTime());
 			p.setCutOffTime(s.getCutOffTime());
 			p.setSupervisorId(s.getSupervisorCode());
 			p.setMaxTime(s.getMaxTime());
@@ -645,8 +645,8 @@ class DepotTimeNode extends PlanTreeNode  {
 			p.setZone(s.getZone());
 			p.setRegion(s.getRegion());
 			p.setStartTime(s.getStartTime());
-			p.setFirstDeliveryTime(s.getFirstDlvTime());
-			p.setLastDeliveryTime(s.getEndDlvTime());
+			p.setFirstDeliveryTime(s.getFirstDeliveryTime());
+			p.setLastDeliveryTime(s.getLastDeliveryTime());
 			p.setCutOffTime(s.getCutOffTime());
 			p.setSupervisorId(s.getSupervisorCode());
 			p.setMaxTime(s.getMaxTime());
@@ -713,7 +713,7 @@ class DepotTimeNode extends PlanTreeNode  {
 						}						
 					}
 					// Runner[add all the runners available]
-					List runners = getRunners(s.getFirstDlvTime());
+					List runners = getRunners(s.getFirstDeliveryTime());
 					if (runners != null) {
 						for (Iterator k = runners.iterator(); k.hasNext();) {
 							ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k

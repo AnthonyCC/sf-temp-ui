@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.model.IWaveInstance;
@@ -40,8 +41,16 @@ public class RoutingInfoServiceProxy  extends BaseServiceProxy  {
 		return getService().flagReRouteReservation(deliveryDate, zones);
 	}
 	
-	public Map<String, Map<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>>> getPlannedDispatchTree(Date deliveryDate)  throws RoutingServiceException {
+	public Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> getPlannedDispatchTree(Date deliveryDate)  throws RoutingServiceException {
 		return getService().getPlannedDispatchTree(deliveryDate);
+	}
+	
+	public Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> getWaveInstanceTree(Date deliveryDate, EnumWaveInstanceStatus status)  throws RoutingServiceException  {
+		return getService().getWaveInstanceTree(deliveryDate, status);
+	}
+	
+	public List<IWaveInstance> getWaveInstanceWithErrors()  throws RoutingServiceException {
+		return getService().getWaveInstanceWithErrors();
 	}
 		
 	public IRoutingInfoService getService() {

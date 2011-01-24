@@ -68,7 +68,7 @@ public class DlvServiceTimeScenarioFormController extends AbstractFormController
 		this.locationManagerService = locationManagerService;
 	}
 		
-	public List saveDomainObject(Object domainObject) {
+	public List saveDomainObject(HttpServletRequest request, Object domainObject) {
 		List errorList = new ArrayList();
 		DlvServiceTimeScenario modelNew = (DlvServiceTimeScenario)domainObject;
 		

@@ -25,6 +25,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
@@ -85,16 +88,21 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumOrderMetricsSource;
 import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
+import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IRoutingNotificationModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
+import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
+import com.freshdirect.routing.service.proxy.CapacityEngineServiceProxy;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
+import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.util.RoutingServicesProperties;
+import com.freshdirect.routing.util.RoutingTimeOfDay;
 
 public class DlvManagerSessionBean extends SessionBeanSupport {
 
@@ -2339,6 +2347,30 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
+	public void purgeSchedulerByIdentity(IRoutingSchedulerIdentity schedulerId) throws DlvResourceException {
+		
+		RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
+		try {
+			proxy.purgeOrders(schedulerId, true);
+			/*DeliveryServiceProxy dlvProxy = new DeliveryServiceProxy();
+			List<IOrderModel> reservationForSchedulerId = dlvProxy.getRoutingOrderByDate(schedulerId.getDeliveryDate()
+																							, schedulerId.getArea().getAreaCode()
+																							, true);
+			
+			if(reservationForSchedulerId == null || reservationForSchedulerId.size() == 0) {
+				LOGGER.info("DlvManagerSB purgeSchedulerByIdentity(): Purge: " + schedulerId);
+				proxy.purgeOrders(schedulerId, true);
+			} else {
+				LOGGER.info("DlvManagerSB purgeSchedulerByIdentity(): Unable to Purge: "+schedulerId+"-->" + reservationForSchedulerId);
+			}*/
+		} catch (RoutingServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			LOGGER.warn("DlvManagerSB purgeSchedulerByIdentity(): " + e);
+			throw new DlvResourceException(e);
+		}
+	}
+	
 	public List<IDeliveryWindowMetrics> retrieveCapacityMetrics(IRoutingSchedulerIdentity schedulerId, List<IDeliverySlot> slots
 																, boolean purge) 
 																throws DlvResourceException, RemoteException {
@@ -2387,6 +2419,48 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
+	public int updateWaveInstanceStatus(List<IWaveInstance> waveInstances) throws DlvResourceException {
+		
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+			return DlvManagerDAO.updateWaveInstanceStatus(conn, waveInstances);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			LOGGER.warn("DlvManagerSB updateWaveInstanceStatus(): " + e);
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.warn("DlvManagerSB updateWaveInstanceStatus(): Exception while cleaning: " + e);
+			}
+		}
+	}
+	
+	public List<Date> getFutureTimeslotDates() throws DlvResourceException {
+		
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+			return DlvManagerDAO.getFutureTimeslotDates(conn);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			LOGGER.warn("DlvManagerSB getFutureTimeslotDates(): " + e);
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.warn("DlvManagerSB getFutureTimeslotDates(): Exception while cleaning: " + e);
+			}
+		}
+	}
+	
 	public List<IRoutingNotificationModel> retrieveNotifications() throws DlvResourceException {
 		RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
 		try {
@@ -2397,6 +2471,27 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			e.printStackTrace();
 			LOGGER.warn("DlvManagerSB retrieveNotifications(): " + e);
 			throw new DlvResourceException(e);
+		}
+	}
+	
+	public Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> retrieveWaveInstanceTree(Date deliveryDate, EnumWaveInstanceStatus status) throws DlvResourceException {
+		RoutingInfoServiceProxy routeInfoProxy = new RoutingInfoServiceProxy();
+		try {
+			
+			return routeInfoProxy.getWaveInstanceTree(deliveryDate, status);
+		} catch (RoutingServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			LOGGER.warn("DlvManagerSB retrieveWaveInstanceTree(): " + e);
+			throw new DlvResourceException(e);
+		}
+	}
+	
+	public void synchronizeWaveInstance(IRoutingSchedulerIdentity schedulerId
+										, Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree) throws DlvResourceException {
+		List<IWaveInstance> waveInstances = RoutingUtil.synchronizeWaveInstance(schedulerId, waveInstanceTree);
+		if(waveInstances != null && waveInstances.size() > 0) {
+			updateWaveInstanceStatus(waveInstances);
 		}
 	}
 	

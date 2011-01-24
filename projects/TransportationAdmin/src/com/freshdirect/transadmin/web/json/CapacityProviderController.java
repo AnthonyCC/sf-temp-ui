@@ -9,11 +9,23 @@ import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
+import com.freshdirect.transadmin.model.WaveInstance;
+import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 
 public class CapacityProviderController extends JsonRpcController implements
 		ICapacityProvider  {
+	
+	private DispatchManagerI dispatchManagerService;
+	
+	public DispatchManagerI getDispatchManagerService() {
+		return dispatchManagerService;
+	}
+
+	public void setDispatchManagerService(DispatchManagerI dispatchManagerService) {
+		this.dispatchManagerService = dispatchManagerService;
+	}
 
 	@Override
 	public IOrderModel getRoutingOrderByReservation(String reservationId) {
@@ -56,6 +68,25 @@ public class CapacityProviderController extends JsonRpcController implements
 			e.printStackTrace();
 		}
 		
+		return 0;
+	}
+	
+	public int forceWaveInstance(String waveInstanceId) {
+		
+		try {
+			WaveInstance _instance = this.getDispatchManagerService().getWaveInstance(waveInstanceId);
+			if(_instance != null) {
+				if(_instance.getNotificationMessage() != null 
+						&& _instance.getNotificationMessage().indexOf("orders will be unassigned") > 0) {
+					_instance.setForceSynchronize(true);
+					this.getDispatchManagerService().saveEntity(_instance);
+					return 1;
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return 0;
 	}
 	

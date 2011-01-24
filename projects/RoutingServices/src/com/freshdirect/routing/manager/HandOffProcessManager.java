@@ -7,8 +7,10 @@ import static com.freshdirect.routing.manager.IProcessMessage.SENDROUTES_SUCCESS
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -16,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,11 +28,14 @@ import org.apache.commons.beanutils.BeanUtils;
 
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.routing.model.HandOffBatchSession;
+import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchSession;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
+import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
+import com.freshdirect.routing.model.WaveInstance;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder;
 import com.freshdirect.routing.service.IGeographyService;
 import com.freshdirect.routing.service.RoutingServiceLocator;
@@ -37,6 +43,7 @@ import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.Issue;
 import com.freshdirect.routing.service.exception.RoutingProcessException;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
+import com.freshdirect.routing.service.proxy.CapacityEngineServiceProxy;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
@@ -44,6 +51,7 @@ import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.util.IRoutingParamConstants;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingServicesProperties;
+import com.freshdirect.routing.util.RoutingTimeOfDay;
 import com.freshdirect.routing.util.RoutingUtil;
 
 public class HandOffProcessManager {
@@ -128,7 +136,7 @@ public class HandOffProcessManager {
 
     private Map<IHandOffBatchSession, Map<IRoutingSchedulerIdentity, List<IOrderModel>>> doBatchRouting(ProcessContext request) 
     																								throws  RoutingProcessException {
- 	
+ 	    	    	
     	Map<IHandOffBatchSession, Map<IRoutingSchedulerIdentity, List<IOrderModel>>> sessions;
     	List<Exception> exceptions = new ArrayList<Exception>();
 		try {
@@ -217,6 +225,8 @@ public class HandOffProcessManager {
 	    		//Purge Scheduler Instances
 	    		purgeOrders(sessionInfo.getValue().keySet());
 	    		
+	    		//Setup WaveInstances for DeliveryDate and CutOff and empty out resources for other cutoff
+	    		setupWaveInstances(context.getHandOffBatch(), sessionInfo.getValue().keySet());
 	    		//Bulk Reserve and Other Child Processes
 	    		Map<IRoutingSchedulerIdentity, List> unassignedOrders = schedulerBulkReserveOrders(sessionInfo.getValue().keySet()
 	    																		, sessionInfo.getValue()
@@ -258,11 +268,81 @@ public class HandOffProcessManager {
     	    	IRoutingSchedulerIdentity schedulerId = null;
     			while(tmpIterator.hasNext()) {
     				schedulerId = (IRoutingSchedulerIdentity)tmpIterator.next();
-    				proxy.purgeBatchOrders(schedulerId, false);
+    				proxy.purgeBatchOrders(schedulerId, true); //Changed to reload xml option
     			}
         	} catch (RoutingServiceException e) {
         		e.printStackTrace();
     			throw new RoutingProcessException(null,e,IIssue.PROCESS_PURGEORDERS_UNSUCCESSFUL);
+    		}
+        }
+        
+        private void setupWaveInstances(IHandOffBatch handOffBatch, Set schedulerIdLst) throws  RoutingProcessException {
+
+        	try {
+    	    	RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
+    	    	CapacityEngineServiceProxy capacityProxy = new CapacityEngineServiceProxy();
+    			RoutingInfoServiceProxy routeInfoProxy = new RoutingInfoServiceProxy();
+    			
+    			Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree = routeInfoProxy
+    																													.getWaveInstanceTree(handOffBatch.getDeliveryDate(), null);
+    			RoutingTimeOfDay cutOff = new RoutingTimeOfDay(handOffBatch.getCutOffDateTime());
+    			if(waveInstanceTree != null) {																																
+	    	    	Iterator tmpIterator = schedulerIdLst.iterator();
+	    	    	IRoutingSchedulerIdentity schedulerId = null;
+	    			while(tmpIterator.hasNext()) {
+	    				schedulerId = (IRoutingSchedulerIdentity)tmpIterator.next();
+	    				//Dispatch-> CutOff ->WaveInstance
+	    				Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>> srcInstance = waveInstanceTree.get(schedulerId.getDeliveryDate())
+	    																								.get(schedulerId.getArea().getAreaCode());
+	    				if(srcInstance != null) {
+	    					Collection<Map<RoutingTimeOfDay, List<IWaveInstance>>> _tmpCutOffMpp = srcInstance.values();
+	    					//CutOff to Wave Instance Listing
+	    					List<IWaveInstance> toSyncWaves = new ArrayList<IWaveInstance>();
+	    						    									
+	    					for(Map<RoutingTimeOfDay, List<IWaveInstance>> _tmpMpp : _tmpCutOffMpp) {
+	    						for(Map.Entry<RoutingTimeOfDay, List<IWaveInstance>> _tmpInnerMpp : _tmpMpp.entrySet()) {
+	    							if(handOffBatch.equals(cutOff)) {		    							
+		    							for(IWaveInstance _srcWaveInst : _tmpInnerMpp.getValue()) {
+		    								
+		    								if(_srcWaveInst.isNeedsConsolidation()) {
+		    									if(toSyncWaves.size() == 0) {
+		    										toSyncWaves.add(_srcWaveInst);		    										
+		    									} else {
+		    										IWaveInstance _rootWaveInstance = toSyncWaves.get(0);
+		    										WaveInstance.consolidateWaveInstance(_rootWaveInstance, _srcWaveInst);																    										
+		    									}
+		    								} else {
+		    									toSyncWaves.add(_srcWaveInst);
+		    								}
+		    							}
+	    							}
+	    						}										
+	    					}
+	    					
+	    					List<IWaveInstance> destinationInstances = capacityProxy.retrieveWaveInstancesBatch(schedulerId);
+	    					
+	    					for(IWaveInstance _destInst : destinationInstances) {
+	    						if(_destInst.getCutOffTime() != null) {
+	    							
+	    							if(_destInst.getCutOffTime().equals(cutOff) && toSyncWaves.size() > 0) {
+	    								IWaveInstance _tmpMatch = toSyncWaves.remove(0);
+	    								_destInst.setDispatchTime(_tmpMatch.getDispatchTime());
+	    								_destInst.setMaxRunTime(_tmpMatch.getMaxRunTime());
+	    								_destInst.setNoOfResources(_tmpMatch.getNoOfResources());
+	    								_destInst.setPreferredRunTime(_tmpMatch.getPreferredRunTime());
+	    								_destInst.setWaveStartTime(_tmpMatch.getWaveStartTime());
+	    							} else {
+	    								_destInst.setNoOfResources(0);
+	    							}
+	    							capacityProxy.saveWaveInstancesBatch(schedulerId, _destInst, true);
+	    						}
+	    					}
+	    				}
+	    			}
+    			}
+        	} catch (RoutingServiceException e) {
+        		e.printStackTrace();
+    			throw new RoutingProcessException(null,e,IIssue.PROCESS_SAVEWAVEINSTANCE_UNSUCCESSFUL);
     		}
         }
 
@@ -487,7 +567,7 @@ public class HandOffProcessManager {
 			sessionDescription = context.getUserId()+"_"+getSessionType(schEntry.getKey())+"_"
 									+ RoutingDateUtil.formatPlain(schEntry.getKey().getDeliveryDate())+"_"+currentTime
 																									 +"_"+currSize.size();
-			session = new HandOffBatchSession((String)context.getHandOffBatchId(), 
+			session = new HandOffBatchSession(context.getHandOffBatch().getBatchId(), 
 														sessionDescription, schEntry.getKey().getRegionId());
 			if(!result.containsKey(session)) {
 				result.put(session, new HashMap<IRoutingSchedulerIdentity, List<IOrderModel>>());
@@ -521,7 +601,7 @@ public class HandOffProcessManager {
 
     
     private String getSessionType(IRoutingSchedulerIdentity schedulerId) {
-    	return (schedulerId != null && schedulerId.isDepot()?"Depot":"Trucks");
+    	return (schedulerId != null && schedulerId.isDepot() ? "Depot":"Trucks");
     }
         
 

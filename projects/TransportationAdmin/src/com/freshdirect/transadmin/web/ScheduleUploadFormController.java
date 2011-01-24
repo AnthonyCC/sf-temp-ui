@@ -1,17 +1,14 @@
 package com.freshdirect.transadmin.web;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -23,23 +20,31 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.routing.util.RoutingDateUtil;
-
+import com.freshdirect.transadmin.constants.EnumUploadSource;
 import com.freshdirect.transadmin.datamanager.ScheduleUploadDataManager;
-
 import com.freshdirect.transadmin.model.ScheduleEmployee;
+import com.freshdirect.transadmin.model.Scrib;
+import com.freshdirect.transadmin.model.Zone;
+import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
-import com.freshdirect.transadmin.util.TransportationAdminProperties;
-
 import com.freshdirect.transadmin.web.model.ScheduleFileUploadCommand;
 
 public class ScheduleUploadFormController extends BaseFormController {
 	
 	private LocationManagerI locationManagerService;
 	private DomainManagerI domainManagerService;
+	private DispatchManagerI dispatchManagerService;
 		
+	public DispatchManagerI getDispatchManagerService() {
+		return dispatchManagerService;
+	}
+
+	public void setDispatchManagerService(DispatchManagerI dispatchManagerService) {
+		this.dispatchManagerService = dispatchManagerService;
+	}
+
 	public LocationManagerI getLocationManagerService() {
 		return locationManagerService;
 	}
@@ -73,25 +78,78 @@ public class ScheduleUploadFormController extends BaseFormController {
 	}
 
 	protected ModelAndView onSubmit(HttpServletRequest request,HttpServletResponse response,
-		      Object command, BindException errors) throws ServletException, IOException
-    {
+		      Object command, BindException errors) throws ServletException, IOException    {
 			
 		ScheduleFileUploadCommand bean = (ScheduleFileUploadCommand) command;
 		byte[] bytes = bean.getFile();
-
-		List<ScheduleEmployee> schedules = new ScheduleUploadDataManager()
-										.processUploadSchedules(request, bytes,
-														com.freshdirect.transadmin.security.SecurityManager.getUserName(request), domainManagerService);
-		
+		EnumUploadSource newSource = EnumUploadSource.SCHEDULE;
 		try{
-			getDomainManagerService().saveOrUpdateEmployeeSchedule(schedules);
-			saveMessage(request, getMessage("app.actionmessage.161", new Object[]{}));
-		}catch(DataIntegrityViolationException ex){
+			if(bean.getProcessType() != null) {
+				newSource = EnumUploadSource.getEnum(bean.getProcessType());
+				if(newSource != null) {
+					if(newSource.equals(EnumUploadSource.SCRIB)) {
+						
+						List<Scrib> scribs = new ScheduleUploadDataManager()
+																		.processUploadScrib(request
+																			, bytes
+																			, com.freshdirect.transadmin.security.SecurityManager.getUserName(request)
+																			, domainManagerService);
+						if(scribs != null) {
+							Set<Date> scribDates = new TreeSet<Date>();
+							Collection masterZones = getDomainManagerService().getZones();
+							Map<String, Zone> zoneMapping = new HashMap<String, Zone>();
+							if(masterZones != null) {
+								Iterator _zoneItr = masterZones.iterator();
+								Zone zone = null;
+								while(_zoneItr.hasNext()) {
+									zone = (Zone)_zoneItr.next();									
+									zoneMapping.put(zone.getZoneCode(), zone);
+								}
+								for(Scrib scrib : scribs) {
+									zone = zoneMapping.get(scrib.getZoneS());
+									if(zone != null) {
+										scrib.setZone(zone);
+										scrib.setRegion(zone.getRegion());
+									}
+									scribDates.add(scrib.getScribDate());
+								}
+								Set<Date> hasPublishedScrib = new TreeSet<Date>();
+								StringBuffer publishErrMsg = new StringBuffer();
+								for(Date scribDate : scribDates) {
+									Collection wavePublishes = getDispatchManagerService().getWaveInstancePublish(scribDate);
+									if(wavePublishes != null && wavePublishes.size() > 0) {
+										hasPublishedScrib.add(scribDate);
+										if(publishErrMsg.length() > 0) {
+											publishErrMsg.append(",");
+										}
+										publishErrMsg.append(TransStringUtil.getDate(scribDate));
+									}
+								}
+								if(hasPublishedScrib.size() == 0) {
+									this.getDispatchManagerService().uploadScrib(scribDates, scribs);
+									saveMessage(request, getMessage("app.actionmessage.161", new Object[]{newSource.getDescription()}));
+								} else {
+									saveErrorMessage(request, getMessage("app.error.132", new Object[] {publishErrMsg.toString()}));
+								}								
+							}
+						}
+					} else {
+						List<ScheduleEmployee> schedules = new ScheduleUploadDataManager()
+																		.processUploadSchedules(request
+																			, bytes
+																			, com.freshdirect.transadmin.security.SecurityManager.getUserName(request)
+																			, domainManagerService);
+						getDomainManagerService().saveOrUpdateEmployeeSchedule(schedules);
+						saveMessage(request, getMessage("app.actionmessage.161", new Object[]{newSource.getDescription()}));
+					}					
+				}
+			}					
+		} catch(DataIntegrityViolationException ex) {
 			ex.printStackTrace();
-			saveErrorMessage(request, getMessage("app.error.131", new Object[] {}));
-		}catch(Exception e){
+			saveErrorMessage(request, getMessage("app.error.131", new Object[] {newSource.getDescription()}));
+		} catch(Exception e) {
 			e.printStackTrace();
-			saveErrorMessage(request, getMessage("app.error.131", new Object[] {}));
+			saveErrorMessage(request, getMessage("app.error.131", new Object[] {newSource.getDescription()}));
 		}		
 		
 		ModelAndView mav = new ModelAndView(getSuccessView(), errors.getModel());

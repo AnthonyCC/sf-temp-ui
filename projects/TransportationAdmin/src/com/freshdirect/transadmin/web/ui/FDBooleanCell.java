@@ -10,6 +10,7 @@ public class FDBooleanCell extends FDBaseCell  {
 		
         try {        	
         	Boolean cellValue = (Boolean)column.getPropertyValue();
+        	
         	if(cellValue != null && cellValue) {
         		return "Match";
         	} else {

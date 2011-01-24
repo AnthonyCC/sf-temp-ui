@@ -9,6 +9,8 @@ import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.EJBObject;
 import javax.ejb.FinderException;
@@ -45,11 +47,14 @@ import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.StateCounty;
 import com.freshdirect.routing.constants.EnumOrderMetricsSource;
 import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
+import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IRoutingNotificationModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
+import com.freshdirect.routing.model.IWaveInstance;
+import com.freshdirect.routing.util.RoutingTimeOfDay;
 
 public interface DlvManagerSB extends EJBObject {
 	
@@ -183,6 +188,11 @@ public interface DlvManagerSB extends EJBObject {
 	void setReservationMetricsDetails(String reservationId, long noOfCartons, long noOfCases, long noOfFreezers, EnumRoutingUpdateStatus status
 												, EnumOrderMetricsSource source)  throws RemoteException;
 	
-	public List<GeographyRestriction> getGeographicDlvRestrictionsForReservation(AddressModel address)throws DlvResourceException, RemoteException;
-	public List<GeographyRestriction> getGeographicDlvRestrictionsForAvailable(AddressModel address)throws DlvResourceException, RemoteException;
+	List<GeographyRestriction> getGeographicDlvRestrictionsForReservation(AddressModel address)throws DlvResourceException, RemoteException;
+	List<GeographyRestriction> getGeographicDlvRestrictionsForAvailable(AddressModel address)throws DlvResourceException, RemoteException;
+	Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> retrieveWaveInstanceTree(Date deliveryDate, EnumWaveInstanceStatus status) throws DlvResourceException, RemoteException;
+	void synchronizeWaveInstance(IRoutingSchedulerIdentity schedulerId
+			, Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree) throws DlvResourceException, RemoteException;
+	List<Date> getFutureTimeslotDates() throws DlvResourceException, RemoteException;
+	void purgeSchedulerByIdentity(IRoutingSchedulerIdentity schedulerId) throws DlvResourceException, RemoteException;
 }   

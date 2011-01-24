@@ -48,11 +48,13 @@
 	                      		<option value="2">Monday</option><option value="3">Tuesday</option><option value="4">Wednesday</option><option value="5">Thurdsay</option><option value="6">Friday</option><option value="7">Saturday</option><option value="8">Sunday</option>
 	                    	 </select>				
 							<span><input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('daterange','scribDay','scrib.do')" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
-							<span>&nbsp;&nbsp;</span>
+							
 							<span> <input style="font-size:11px" type = "button" height="18" value="Generate Plan" onclick="javascript:showGeneratePlanForm();" /></span>
 							<span> <input style="font-size:11px" type = "button" height="18"  value="Add Label" onclick="javascript:showLabelForm();" /></span>
 							<span> <input style="font-size:11px" type = "button" height="18"  value="View Labels" onclick="javascript:showViewLabelsForm();" /></span>
-							<span>&nbsp;&nbsp;</span>
+							<span> <input style="font-size:11px" type = "button" height="18"  value="Publish" onclick="javascript:doPublish();" /></span>
+							<span> <input style="font-size:11px" type = "button" height="18"  value="Upload" onclick="javascript:uploadScribs();" /></span>							
+							
 						</div>
 					</div>			
 				</div>
@@ -83,8 +85,8 @@
               <ec:column property="regionS" sortable="true" title="Region" /> 
               <ec:column property="supervisorName" sortable="true" title="Supervisor" />                              
               <ec:column cell="date" format="hh:mm aaa"  property="startTime" title="Emp Start Time"/>
-              <ec:column cell="date" format="hh:mm aaa"  property="firstDlvTime" title="First Dlv Time"/>
-              <ec:column cell="date" format="hh:mm aaa"  property="endDlvTime" title="Last Dlv Time"/>
+              <ec:column cell="date" format="hh:mm aaa"  property="firstDeliveryTime" title="First Dlv Time"/>
+              <ec:column cell="date" format="hh:mm aaa"  property="lastDeliveryTime" title="Last Dlv Time"/>
               <ec:column cell="date" format="HH:mm"      property="stemToTime" title="To Zone Time"/>
               <ec:column cell="date" format="HH:mm"      property="stemFromTime" title="From Zone Time"/>
 			  <ec:column cell="date" format="hh:mm aaa"  property="prefRuturn" title="*Pref Return"/>  
@@ -103,7 +105,44 @@
 				</div>
      </div>   
      <script>
-
+	    function uploadScribs(){
+			 var confirmed = confirm ("You are about to upload scrib data. Do you want to continue?");
+			 if(confirmed){
+				javascript:window.open('uploadschedules.do?processType=SCR','upload','height=250,width=400,resizable=no');
+			 }
+		}	
+     	function doPublish(){
+     		var weekOff = document.getElementById('daterange').value;
+     		var dayOff = document.getElementById('scribDay').value;
+     		if(weekOff == null || weekOff.trim().length == 0 
+     	     		|| dayOff == null || dayOff.trim().length == 0 || "All" == dayOff) {
+         		alert("Please select valid Week Of and Day!");
+     		} else {
+     			var dispatchRpcClient = new JSONRpcClient("dispatchprovider.ax");
+     			var result = dispatchRpcClient.AsyncDispatchProvider.canPublishWave(weekOff, dayOff);
+     			if(result != null && result.hasPerviousPublish) {
+         			var source = "Plan";
+         			if(result.previousPublishScrib) {
+         				source = "Scrib";
+         			}
+         			if(source == "Plan") {
+	     				alert("No Scrib Publish allowed after Plan Publish!");
+	     				return;
+         			} else {
+         				if (!confirm ("Wave has already been publish from "+source)) {
+	         				return;
+	     				}
+         			}
+     			}
+     			try {
+     				dispatchRpcClient.AsyncDispatchProvider.publishWave(weekOff, dayOff);
+     				alert("Publish completed successfully");
+     			} catch(rpcException) {
+      				alert("Unable to publish wave. Please try to refresh the browser window!\n"+e);
+      			}         			
+     		}
+		}
+		
 		function showViewLabelsForm(){
 			javascript:window.open('viewscriblabel.do','y','height=450,width=400');
 		}
@@ -119,27 +158,11 @@
                        }
                       );
 
-        function doCompositeLink(compId1,compId2, url,generatePlan) 
-        {
-        	if(generatePlan!=null)
-        	{
-        		var hasConfirmed = confirm ("You are about to perform Generate Plan.  IF PLANS ALREADY EXIST FOR THE DAY, ALL CHANGES WILL BE LOST.  Do you want to continue?")
-				if (hasConfirmed) 
-				{
-			  		 var param1 = document.getElementById(compId1).value;         
-			          var param2 = document.getElementById(compId2).value;
-			          var param3="";
-			          if(generatePlan!=null)param3="&p="+generatePlan;
-			          location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+ param2+param3;
-				} 
-        	}
-        	else
-        	{
-	          var param1 = document.getElementById(compId1).value;         
+        function doCompositeLink(compId1,compId2, url,generatePlan) {
+        	var param1 = document.getElementById(compId1).value;         
 	          var param2 = document.getElementById(compId2).value;
 	          var param3="";         
 	          location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+ param2;
-          }
         } 
 
        	addRowHandlersFilterTest('ec_table', 'rowMouseOver', 'editscrib.do','scribId',0, 0);

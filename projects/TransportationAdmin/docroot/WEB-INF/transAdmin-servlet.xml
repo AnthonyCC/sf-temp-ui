@@ -120,7 +120,7 @@
                 <prop key="/timeslotlog.do">adminController</prop>
                 <prop key="/notification.do">adminController</prop>
                 <prop key="/gpsadmin.do">dispatchController</prop>
-                
+                                
                 <prop key="/uploadschedules.do">scheduleUploadFormController</prop>
                 
                 <prop key="/zoneexpansion.do">zoneExpansionFormController</prop>
@@ -134,7 +134,8 @@
                	
                	<prop key="/asset.do">assetController</prop> 
                	<prop key="/editasset.do">assetFormController</prop> 
-               	<prop key="/asset.ax">asyncAssetController</prop>               	         
+               	<prop key="/asset.ax">asyncAssetController</prop>  
+               	<prop key="/wavemonitor.do">capacityController</prop>             	         
 			</props>
 		</property>
 	</bean>
@@ -162,9 +163,11 @@
 	</bean>
 	
 	<bean id="capacityController" class="com.freshdirect.transadmin.web.CapacityController">
-		<property name="domainManagerService" ref="domainManager"/>
-		<property name="methodNameResolver" ref="transAdminControllerResolver"/>   
-		<property name="zoneManagerService" ref="zoneManager"/>     
+		<property name="domainManagerService" ref="domainManager"/>		   
+		<property name="zoneManagerService" ref="zoneManager"/>
+		<property name="dispatchManagerService" ref="dispatchManager"/>    
+		<property name="methodNameResolver" ref="transAdminControllerResolver"/>
+		   
 	</bean>
 	
 	<bean id="adminController" class="com.freshdirect.transadmin.web.AdminController">
@@ -268,10 +271,11 @@
             <prop key="/deletescrib.do">deleteScribHandler</prop>
             <prop key="/viewscriblabel.do">scribLabelHandler</prop>
             <prop key="/earlywarning.do">earlyWarningHandler</prop>
+            <prop key="/wavemonitor.do">waveMonitorHandler</prop>            
             <prop key="/unassigned.do">unassignedHandler</prop>
             <prop key="/timeslotlog.do">timeslotLogHandler</prop>
             <prop key="/notification.do">notificationHandler</prop>
-            <prop key="/gpsadmin.do">gpsDrivingDirectionsHandler</prop>
+            <prop key="/gpsadmin.do">gpsDrivingDirectionsHandler</prop>            
             <prop key="/geographyrestriction.do">geographyRestrictionsHandler</prop>
                             
             <prop key="/cutoffreport.do">cutOffReportHandler</prop>
@@ -426,6 +430,7 @@
 	<bean id="scheduleUploadFormController" class="com.freshdirect.transadmin.web.ScheduleUploadFormController">
 		<property name="locationManagerService" ref="locationManager"/>
 		<property name="domainManagerService" ref="domainManager"/>
+		<property name="dispatchManagerService" ref="dispatchManager"/>
         <property name="commandClass" value="com.freshdirect.transadmin.web.model.ScheduleFileUploadCommand"/>
         <property name="formView" value="uploadScheduleView"/>
         <property name="successView" value="uploadScheduleView"/>        
@@ -555,7 +560,7 @@
 	</bean>
 	
 	<bean name="asyncCapacityController" class="com.freshdirect.transadmin.web.json.CapacityProviderController">
-		
+		<property name="dispatchManagerService" ref="dispatchManager"/>
 		<property name="ajaxServices">
 			<map>
 				<entry key="AsyncCapacityProvider" value="com.freshdirect.transadmin.web.json.ICapacityProvider" />				

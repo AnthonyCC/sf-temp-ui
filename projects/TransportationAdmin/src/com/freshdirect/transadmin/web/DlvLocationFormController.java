@@ -65,7 +65,7 @@ public class DlvLocationFormController extends AbstractFormController {
 		this.locationManagerService = locationManagerService;
 	}
 	
-	public List saveDomainObject(Object domainObject) {
+	public List saveDomainObject(HttpServletRequest request, Object domainObject) {
 		
 		List errorList = new ArrayList();
 		DlvLocation modelIn = (DlvLocation)domainObject;

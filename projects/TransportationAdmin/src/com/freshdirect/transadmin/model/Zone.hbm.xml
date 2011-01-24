@@ -42,9 +42,9 @@
         <property name="stemToTime" type="big_integer">
             <column name="STEM_TO_TIME" precision="5" scale="0" />
         </property>
-        <property name="maxstemTime" type="big_integer">
+        <!-- <property name="maxstemTime" type="big_integer">
             <column name="STEM_MAX_TIME" precision="5" scale="0"  not-null="true"/>
-        </property> 
+        </property>  --> 
         <property name="loadingPriority" type="big_decimal">
             <column name="LOADING_PRIORITY" precision="22" scale="0"/>
         </property>

@@ -11,10 +11,13 @@ import java.util.List;
 
 import org.apache.axis2.databinding.types.Time;
 
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IGeoPoint;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IRoutingDepotId;
+import com.freshdirect.routing.model.IRoutingEquipmentType;
 import com.freshdirect.routing.model.IRoutingNotificationModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IWaveInstance;
@@ -28,6 +31,7 @@ import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrie
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveAttributes;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstanceIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow;
+import com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.Location;
 import com.freshdirect.routing.proxy.stub.transportation.LocationIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.NotificationCriteria;
@@ -357,7 +361,7 @@ public class RoutingDataEncoder {
 		SchedulerIdentity schId = new SchedulerIdentity();
 		schId.setRegionId(schedulerId.getRegionId());
 		schId.setArea(schedulerId.getArea().getAreaCode());
-		schId.setDeliveryDate(schedulerId.getDeliveryDate());
+		schId.setDeliveryDate(DateUtil.truncate(schedulerId.getDeliveryDate()));
 				
 		return schId;
 	}
@@ -526,8 +530,7 @@ public class RoutingDataEncoder {
 		SchedulerBalanceRoutesOptions schBalRoutesOptions = new SchedulerBalanceRoutesOptions();
 		SchedulerRouteBalancingOptions schRoutesOptions = new SchedulerRouteBalancingOptions();
 		schRoutesOptions.setBalanceBy(SchedulerBalancingFactor.Factory.fromValue(balanceBy));
-		schRoutesOptions.setCostVsBalanceWeight(balanceFactor);
-		schRoutesOptions.setDynamicWindowInfo(null);
+		schRoutesOptions.setCostVsBalanceWeight(balanceFactor);		
 		schBalRoutesOptions.setBalancingOptions(schRoutesOptions);
 		return schBalRoutesOptions;
 	}
@@ -710,7 +713,7 @@ public class RoutingDataEncoder {
 	public static DeliveryWaveInstanceIdentity encodeWaveInstanceIdentity(IWaveInstance waveInstance) {
 		
 		DeliveryWaveInstanceIdentity waveIdentity = new DeliveryWaveInstanceIdentity();
-		waveIdentity.setInternalWavePKey(waveInstance.getRoutingWaveInstanceId());		
+		waveIdentity.setInternalWavePKey(waveInstance.getRoutingWaveInstanceId() != null ? Integer.parseInt(waveInstance.getRoutingWaveInstanceId()) : 0);		
 		return waveIdentity;
 	}
 	
@@ -727,15 +730,46 @@ public class RoutingDataEncoder {
 		attributes.setMaximumRuntime(waveInstance.getMaxRunTime());
 		attributes.setPreferredRuntime(waveInstance.getPreferredRunTime());
 		attributes.setNumberOfVehicles(waveInstance.getNoOfResources());
-		//attributes.setStartTime(getTime(waveInstance.getWaveStartTime()));
-				
+		attributes.setStartTime(getTime(waveInstance.getWaveStartTime().getAsDate()));		
+		attributes.setWaveCode(RoutingDateUtil.getWaveCode(waveInstance.getCutOffTime().getAsDate()));	
+		
+		attributes.setAdvancedRushHour(waveInstance.isAdvancedRushHour());
+		attributes.setCapacityCheck1(waveInstance.isCapacityCheck1());
+		attributes.setCapacityCheck2(waveInstance.isCapacityCheck2());
+		attributes.setCapacityCheck3(waveInstance.isCapacityCheck3());
+		attributes.setDepot(encodeRoutingDepotId(waveInstance.getDepotId()));
+		attributes.setEquipmentType(encodeEquipmentType(waveInstance.getEquipmentType()));
+		attributes.setHourlyWage(waveInstance.getHourlyWage());
+		attributes.setHourlyWageDuration(waveInstance.getHourlyWageDuration());
+		attributes.setInboundStemTimeAdjustmentSeconds(waveInstance.getInboundStemTimeAdjustmentSeconds());
+		attributes.setOutboundStemTimeAdjustmentSeconds(waveInstance.getOutboundStemTimeAdjustmentSeconds());
+		attributes.setOvertimeWage(waveInstance.getOvertimeWage());
+		attributes.setRushHourModel(waveInstance.getRushHourModel());
+		
 		return attributes;
+	}
+	
+	public static EquipmentTypeIdentity encodeEquipmentType(IRoutingEquipmentType type) {
+		
+		EquipmentTypeIdentity equipmentType = new EquipmentTypeIdentity();
+		equipmentType.setEquipmentTypeID(type.getEquipmentTypeID());
+		equipmentType.setRegionID(type.getRegionID());
+		return equipmentType;
+	}
+	
+	public static LocationIdentity encodeRoutingDepotId(IRoutingDepotId id) {
+		
+		LocationIdentity depot = new LocationIdentity();
+		depot.setLocationID(id.getLocationId());
+		depot.setLocationType(id.getLocationType());
+		depot.setRegionID(id.getRegionID());
+		return depot;
 	}
 	
 	private static Time getTime(Date date) {
 		
 		try {
-			// Faking time zoen since Routing system doesn't consider timezone
+			// Faking time zone since Routing system doesn't consider timezone
 			return new Time(RoutingDateUtil.formatTime(date));
 		} catch(ParseException e) {
 			Calendar calendar = Calendar.getInstance();

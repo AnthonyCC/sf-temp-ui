@@ -146,7 +146,12 @@ public class RoutingDateUtil {
 		return  DateUtil.formatTimeAMPM(date);
 	}
 	
-	public static Date getWaveCutOffTime(String date) throws ParseException {
-		return  DateUtil.parseTimeAMPM(date);
+	public static Date getWaveCutOffTime(String date) {
+		try {
+			return  DateUtil.parseTimeAMPM(date);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			return null;
+		}
 	}
 }

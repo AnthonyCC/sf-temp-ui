@@ -29,6 +29,8 @@ import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IPathDirection;
 import com.freshdirect.routing.model.IRouteModel;
+import com.freshdirect.routing.model.IRoutingDepotId;
+import com.freshdirect.routing.model.IRoutingEquipmentType;
 import com.freshdirect.routing.model.IRoutingNotificationModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IRoutingStopModel;
@@ -38,6 +40,8 @@ import com.freshdirect.routing.model.LocationModel;
 import com.freshdirect.routing.model.OrderModel;
 import com.freshdirect.routing.model.PathDirection;
 import com.freshdirect.routing.model.RouteModel;
+import com.freshdirect.routing.model.RoutingDepotId;
+import com.freshdirect.routing.model.RoutingEquipmentType;
 import com.freshdirect.routing.model.RoutingNotificationModel;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 import com.freshdirect.routing.model.RoutingStopModel;
@@ -52,6 +56,8 @@ import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderIdenti
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryCost;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstance;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow;
+import com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeIdentity;
+import com.freshdirect.routing.proxy.stub.transportation.LocationIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.Notification;
 import com.freshdirect.routing.proxy.stub.transportation.ReserveResult;
 import com.freshdirect.routing.proxy.stub.transportation.ReserveResultType;
@@ -194,6 +200,9 @@ public class RoutingDataDecoder {
 						_stop.setStopDepartureTime(_refStop.getArrival() != null ? RoutingDateUtil.addSeconds(_refStop.getArrival().getTime()
 														, _refStop.getServiceTime()) : null);
 						
+						_stop.setTravelTime(_refStop.getTravelTime());
+						_stop.setServiceTime(_refStop.getServiceTime());
+						
 						result.getStops().add(_stop);
 					}
 				}
@@ -210,8 +219,7 @@ public class RoutingDataDecoder {
 			result = new ArrayList<IDeliveryWindowMetrics>(); 
 			for (SchedulerDeliveryWindowMetrics window : delWindowMetrics) {
 				result.add(deocdeDeliveryMetrics(window));
-			}
-			
+			}			
 		}
 		return result;
 	}
@@ -242,9 +250,7 @@ public class RoutingDataDecoder {
 		metrics.setReservedPickupQuantity(window.getReserved().getPickupQuantity());
 		metrics.setReservedServiceTime(window.getReserved().getServiceTime()/60.0);
 		metrics.setReservedTravelTime(window.getReserved().getTravelTime()/60.0);
-		
-		
-		
+				
 		return metrics;
 	}
 	
@@ -438,11 +444,42 @@ public class RoutingDataDecoder {
 			result.setMaxRunTime(waveInstance.getMaximumRuntime());
 			result.setNoOfResources(waveInstance.getNumberOfVehicles());
 			result.setPreferredRunTime(waveInstance.getPreferredRuntime());
-			result.setRoutingWaveInstanceId(waveInstance.getWaveIdentity().getInternalWavePKey());
-			//result.setWaveCode(RoutingDateUtil.getWaveCode(waveInstance.getWaveCode()));
-			//result.setWaveStartTime(waveInstance.getStartTime().getAsCalendar().getTime());
+			result.setRoutingWaveInstanceId(""+waveInstance.getWaveIdentity().getInternalWavePKey());
+			result.setCutOffTime(waveInstance.getWaveCode() != null ? new RoutingTimeOfDay(RoutingDateUtil.getWaveCutOffTime(waveInstance.getWaveCode())) : null);
+			result.setWaveStartTime(waveInstance.getStartTime() != null ? new RoutingTimeOfDay(waveInstance.getStartTime()
+																						.getAsCalendar().getTime()) : null);
+			result.setAdvancedRushHour(waveInstance.getAdvancedRushHour());
+			result.setCapacityCheck1(waveInstance.getCapacityCheck1());
+			result.setCapacityCheck2(waveInstance.getCapacityCheck2());
+			result.setCapacityCheck3(waveInstance.getCapacityCheck3());
+			result.setDepotId(decodeIRoutingDepotId(waveInstance.getDepot()));
+			result.setEquipmentType(decodeEquipmentType(waveInstance.getEquipmentType()));
+			result.setHourlyWage(waveInstance.getHourlyWage());
+			result.setHourlyWageDuration(waveInstance.getHourlyWageDuration());
+			result.setInboundStemTimeAdjustmentSeconds(waveInstance.getInboundStemTimeAdjustmentSeconds());
+			result.setOutboundStemTimeAdjustmentSeconds(waveInstance.getOutboundStemTimeAdjustmentSeconds());
+			result.setOvertimeWage(waveInstance.getOvertimeWage());
+			result.setRushHourModel(waveInstance.getRushHourModel());			
+			
 		}
 		return result;
+	}
+	
+	public static IRoutingEquipmentType decodeEquipmentType(EquipmentTypeIdentity type) {
+		
+		IRoutingEquipmentType equipmentType = new RoutingEquipmentType();
+		equipmentType.setEquipmentTypeID(type.getEquipmentTypeID());
+		equipmentType.setRegionID(type.getRegionID());
+		return equipmentType;
+	}
+	
+	public static IRoutingDepotId decodeIRoutingDepotId(LocationIdentity id) {
+		
+		IRoutingDepotId depot = new RoutingDepotId();
+		depot.setLocationId(id.getLocationID());
+		depot.setLocationType(id.getLocationType());
+		depot.setRegionID(id.getRegionID());
+		return depot;
 	}
 	
 }

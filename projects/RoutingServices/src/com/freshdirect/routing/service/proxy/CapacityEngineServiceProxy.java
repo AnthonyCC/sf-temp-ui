@@ -21,6 +21,17 @@ public class CapacityEngineServiceProxy extends BaseServiceProxy {
 		return getService().saveWaveInstances(schedulerId, waveInstance, force);
 	}
 	
+	public List<IWaveInstance> retrieveWaveInstancesBatch(IRoutingSchedulerIdentity schedulerId) throws RoutingServiceException {
+		return getService().retrieveWaveInstancesBatch(schedulerId);
+	}
+	
+	public List<String> saveWaveInstancesBatch(IRoutingSchedulerIdentity schedulerId
+												, IWaveInstance waveInstance
+													, boolean force) throws RoutingServiceException {
+		
+		return getService().saveWaveInstancesBatch(schedulerId, waveInstance, force);
+	}
+	
 	public ICapacityEngineService getService() {
 		return RoutingServiceLocator.getInstance().getCapacityEngineService();
 	}

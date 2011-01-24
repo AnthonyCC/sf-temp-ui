@@ -74,7 +74,7 @@ public class AssetFormController extends AbstractFormController {
 		}
 	}
 	
-	public List saveDomainObject(Object domainObject) {
+	public List saveDomainObject(HttpServletRequest request, Object domainObject) {
 		List errorList = new ArrayList();		
 		return errorList;
 	}

@@ -200,7 +200,7 @@ public class DispatchFormController extends AbstractFormController {
 		return errorList;
 	}
 
-	public List saveDomainObject(Object domainObject) {
+	public List saveDomainObject(HttpServletRequest request, Object domainObject) {
 		DispatchCommand command = (DispatchCommand) domainObject;
 		return saveDispatch(command);
 	}

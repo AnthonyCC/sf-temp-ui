@@ -82,6 +82,10 @@
      	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
      	 </menu>
      	 
+     	  <menu id="RUT008" title="Wave Monitor" orientation="RIGHT" link="wavemonitor.do">
+	     	<access-uris>wavemonitor.do</access-uris>
+     	 	<access-roles>TrnAdmin,TrnPlanning,TrnOperations</access-roles>
+     	 </menu>
      	       	 
 </menu>
 

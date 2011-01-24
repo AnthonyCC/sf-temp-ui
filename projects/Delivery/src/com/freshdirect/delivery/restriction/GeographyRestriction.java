@@ -140,7 +140,7 @@ public class GeographyRestriction extends ModelSupport   {
 									_tmpMessage.setShowMessage(geographicRestrictions.getShowMessage());
 									messages.add(_tmpMessage.getMessage());								
 								}
-								if(isRestricted && isWithinBaseRange(baseRange, timeslot.getBaseDate())) {
+								if(comments != null && isRestricted && isWithinBaseRange(baseRange, timeslot.getBaseDate())) {
 									comments.add(geographicRestrictions.getComments());
 								}
 								if(isRestricted) {

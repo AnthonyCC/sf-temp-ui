@@ -13,6 +13,9 @@ public class RoutingStopModel extends OrderModel implements IRoutingStopModel, C
 	
 	private String routingRouteId;
 	
+	private double travelTime;
+	private double serviceTime;
+	
 	public RoutingStopModel() {
 		super();	
 	}
@@ -60,6 +63,22 @@ public class RoutingStopModel extends OrderModel implements IRoutingStopModel, C
 
 	public void setRoutingRouteId(String routingRouteId) {
 		this.routingRouteId = routingRouteId;
+	}
+
+	public double getTravelTime() {
+		return travelTime;
+	}
+
+	public void setTravelTime(double travelTime) {
+		this.travelTime = travelTime;
+	}
+
+	public double getServiceTime() {
+		return serviceTime;
+	}
+
+	public void setServiceTime(double serviceTime) {
+		this.serviceTime = serviceTime;
 	}
 
 	public int hashCode() {

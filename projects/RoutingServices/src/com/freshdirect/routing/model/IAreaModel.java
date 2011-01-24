@@ -36,6 +36,6 @@ public interface IAreaModel {
 	String getDeliveryModel();
 	void setDeliveryModel(String deliveryModel);
 	
-	int getMaxStemTime();
-	void setMaxStemTime(int maxStemTime);
+	/*int getMaxStemTime();
+	void setMaxStemTime(int maxStemTime);*/
 }

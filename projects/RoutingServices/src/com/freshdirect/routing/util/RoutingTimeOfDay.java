@@ -33,8 +33,10 @@ public final class RoutingTimeOfDay extends TimeOfDay {
 	public boolean equals(Object o) {		
 		if (o instanceof RoutingTimeOfDay) {
 			return this.getNormalDate().equals(((RoutingTimeOfDay) o).getNormalDate());
+		} else {
+			throw new RuntimeException();
 		}
-		return false;
+		//return false;
 	}
 	
 	@Override

@@ -58,7 +58,7 @@ public class DlvServiceTimeTypeFormController extends AbstractFormController {
 		this.locationManagerService = locationManagerService;
 	}
 	
-	public List saveDomainObject(Object domainObject) {
+	public List saveDomainObject(HttpServletRequest request, Object domainObject) {
 		List errorList = new ArrayList();
 		DlvServiceTimeType modelNew = (DlvServiceTimeType)domainObject;	
 		if("true".equals(modelNew.getIsNew())) {

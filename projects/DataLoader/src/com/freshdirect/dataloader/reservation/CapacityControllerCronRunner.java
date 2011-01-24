@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.mail.MessagingException;
 import javax.naming.Context;
@@ -24,10 +26,13 @@ import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
+import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
+import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.util.RoutingServicesProperties;
+import com.freshdirect.routing.util.RoutingTimeOfDay;
 
 public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 
@@ -78,28 +83,45 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 				}
 			}
 			
-			LOGGER.info("##### CapacityControllerCronRunner Start: isTrialRun="+isTrialRun+"->isPurgeEnabled"+isPurgeEnabled+"->isSendEmail"+isSendEmail+"->isReverse"+isReverse+" ########");
+			LOGGER.info("##### CapacityControllerCronRunner Start: isTrialRun="+isTrialRun+"->isPurgeEnabled="+isPurgeEnabled+"->isSendEmail="+isSendEmail+"->isReverse="+isReverse+" ########");
 			if(jobDate.size() == 0) {
-
-				int incrementBy = isReverse ? -1 : 1;
+				
+				jobDate.addAll(dsb.getFutureTimeslotDates());
+				/*int incrementBy = isReverse ? -1 : 1;
 				Calendar baseDate = DateUtil.truncate(Calendar.getInstance());					
 				baseDate.add(Calendar.DATE, isReverse ? 7 : 1);
 				for(int i=0; i < DEFAULT_DAYS; i++) {
 					jobDate.add(baseDate.getTime());
 					baseDate.add(Calendar.DATE, incrementBy);
-				}
+				}*/
 			}
 
 
 			Iterator<Date> _dateItr = jobDate.iterator();
 			Date processDate = null;
+						
 			while(_dateItr.hasNext()) {
 				processDate = _dateItr.next();
 				try {
+					Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree = dsb.retrieveWaveInstanceTree
+																															(processDate, EnumWaveInstanceStatus.NOTSYNCHRONIZED);
 					List<DlvTimeslotModel> slots = dsb.getTimeslotsForDate(processDate);
+					
 					LOGGER.info("CapacityControllerCronRunner beginning to synchronize "+slots.size()
-							+" timeslots for date "+processDate+ (isTrialRun ? " and is a trail run" : ""));
-					Map<String, List<DlvTimeslotModel>> slotsByZone = groupDeliverySlotByZone(slots);
+										+" timeslots for date "+processDate+ (isTrialRun ? " and is a trail run" : ""));
+					TimeslotGroup group = groupDeliverySlotByZone(slots);
+					Map<String, List<DlvTimeslotModel>> slotsByZone = group.getGroupByZone();
+					
+					if(group.getSchedulerIds() != null && waveInstanceTree != null) {
+						for(IRoutingSchedulerIdentity schedulerId : group.getSchedulerIds()) {
+							if(waveInstanceTree.containsKey(schedulerId.getDeliveryDate())) {
+								if(waveInstanceTree.get(schedulerId.getDeliveryDate()).containsKey(schedulerId.getArea().getAreaCode())) {
+									dsb.synchronizeWaveInstance(schedulerId, waveInstanceTree);
+								}
+							}
+						}
+					}					
+					
 					Iterator<String> _itr = slotsByZone.keySet().iterator();
 
 					String _zoneCode = null;
@@ -130,23 +152,16 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-					LOGGER
-					.info(new StringBuilder(
-							"CapacityControllerCronRunner failed with exception : ")
-					.append(e.toString()).toString());
+					LOGGER.info(new StringBuilder("CapacityControllerCronRunner failed with exception : ").append(e.toString()).toString());
 					if(isSendEmail) { 
 						email(processDate, null, e.toString(), isTrialRun);
 					}
 				}
 			}
-
-
 			LOGGER.info("########################## CapacityControllerCronRunner Stop ##############################");
 		} catch (Exception e) {
 			e.printStackTrace();
-			LOGGER.info(new StringBuilder(
-			"CapacityControllerCronRunner failed with exception : ")
-			.append(e.toString()).toString());
+			LOGGER.info(new StringBuilder("CapacityControllerCronRunner failed with exception : ").append(e.toString()).toString());
 			LOGGER.error(e);
 			if(isSendEmail) { 
 				email(Calendar.getInstance().getTime(), null, e.toString(), isTrialRun);
@@ -162,14 +177,21 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 			}
 		}
 	}
-
-	private static Map<String, List<DlvTimeslotModel>> groupDeliverySlotByZone(List<DlvTimeslotModel> dlvTimeSlots ) {
-
+	
+		
+	private static TimeslotGroup groupDeliverySlotByZone(List<DlvTimeslotModel> dlvTimeSlots ) {
+		
+		TimeslotGroup group = new TimeslotGroup();
+		
 		Map<String, List<DlvTimeslotModel>> groupedSlots = new HashMap<String, List<DlvTimeslotModel>>();
-
+		Set<IRoutingSchedulerIdentity> schedulerIds = new HashSet<IRoutingSchedulerIdentity>();
+		group.setGroupByZone(groupedSlots);
+		group.setSchedulerIds(schedulerIds);
+		
 		for(int i=0;i<dlvTimeSlots.size();i++) {
 			DlvTimeslotModel dlvTimeSlot = dlvTimeSlots.get(i);
-
+			schedulerIds.add(dlvTimeSlot.getRoutingSlot().getSchedulerId());
+			
 			if(groupedSlots.containsKey(dlvTimeSlot.getZoneCode())) {
 				List<DlvTimeslotModel> _timeSlots = groupedSlots.get(dlvTimeSlot.getZoneCode());
 				_timeSlots.add(dlvTimeSlot);
@@ -181,7 +203,24 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 				groupedSlots.put(dlvTimeSlot.getZoneCode(), _timeSlots);
 			}
 		}		
-		return groupedSlots;
+		return group;
+	}
+	
+	static class TimeslotGroup {
+		Map<String, List<DlvTimeslotModel>> groupByZone;
+		Set<IRoutingSchedulerIdentity> schedulerIds;
+		public Map<String, List<DlvTimeslotModel>> getGroupByZone() {
+			return groupByZone;
+		}
+		public Set<IRoutingSchedulerIdentity> getSchedulerIds() {
+			return schedulerIds;
+		}
+		public void setGroupByZone(Map<String, List<DlvTimeslotModel>> groupByZone) {
+			this.groupByZone = groupByZone;
+		}
+		public void setSchedulerIds(Set<IRoutingSchedulerIdentity> schedulerIds) {
+			this.schedulerIds = schedulerIds;
+		}				
 	}
 
 	private static List<IDeliverySlot> collectRoutingSlots(List<DlvTimeslotModel> dlvTimeSlots) {

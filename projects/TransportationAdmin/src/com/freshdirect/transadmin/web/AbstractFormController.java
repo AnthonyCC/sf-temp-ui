@@ -34,7 +34,7 @@ public abstract class AbstractFormController extends BaseFormController {
 				: "app.actionmessage.102";
 
 		preProcessDomainObject(command);
-		List errorList = saveDomainObject(command);
+		List errorList = saveDomainObject(request, command);
 
 		ModelAndView mav = new ModelAndView(getSuccessView(), errors.getModel());
 		mav.getModel().put(this.getCommandName(), command);
@@ -56,7 +56,7 @@ public abstract class AbstractFormController extends BaseFormController {
 
 	public abstract String getDomainObjectName();
 
-	public abstract List saveDomainObject(Object domainObject);
+	public abstract List saveDomainObject(HttpServletRequest request, Object domainObject);
 
 	protected void preProcessDomainObject(Object domainObject) {
 		// Default Impl

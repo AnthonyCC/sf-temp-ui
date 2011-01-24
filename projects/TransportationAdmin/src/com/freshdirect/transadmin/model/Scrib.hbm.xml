@@ -22,10 +22,10 @@
         <property name="startTime" type="timestamp">
             <column name="START_TIME" length="7" />
         </property>
-        <property name="firstDlvTime" type="timestamp">
+        <property name="firstDeliveryTime" type="timestamp">
             <column name="FIRST_WINDOW_TIME" length="7" />
         </property>
-        <property name="endDlvTime" type="timestamp">
+        <property name="lastDeliveryTime" type="timestamp">
             <column name="END_WINDOW_TIME" length="7" />
         </property>
         <property name="maxReturnTime" type="timestamp">

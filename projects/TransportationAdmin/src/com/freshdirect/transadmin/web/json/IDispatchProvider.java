@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.freshdirect.transadmin.web.model.DispatchCommand;
+import com.freshdirect.transadmin.web.model.WavePublishValidationResult;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
 
 public interface IDispatchProvider {
@@ -34,4 +35,11 @@ public interface IDispatchProvider {
 	boolean hasDispatchForGPS(String dispatchDate, String dispatchId, String firstDeliveryTime, String assetId);
 	boolean hasDispatchForEZPass(String dispatchDate, String dispatchId, String firstDeliveryTime, String assetId);
 	boolean hasDispatchForMotKit(String dispatchDate, String dispatchId, String firstDeliveryTime, String assetId);
+	
+	boolean publishWave(String weekOf, String dayOfWeek);
+	boolean publishWave(String deliveryDate);
+	WavePublishValidationResult canPublishWave(String deliveryDate);
+	WavePublishValidationResult canPublishWave(String weekOf, String dayOfWeek);
+	
+	int validatePlanGenAccessCode(String accessCode);
 }

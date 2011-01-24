@@ -10,7 +10,7 @@
 	String zoneVal = request.getParameter("zone") != null ? request.getParameter("zone") : "";
 %>
 <% 
-	String pageTitle = "Planning";
+	String pageTitle = "Plan";
 %>
 
 <tmpl:insert template='/common/sitelayout.jsp'>
@@ -48,8 +48,9 @@
 	                   	  <span>&nbsp;<input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('daterange','weekdate','zone','plan.do');" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
 						  <span><input id="view_button" type="image" alt="Dispatch" src="./images/icons/dispatch.gif" onclick="javascript:doAutoDispatch('weekdate','daterange','zone','autoDispatch.do');" onmousedown="this.src='./images/icons/dispatch_ON.gif'" /> 
 							<a href="#"  onclick="javascript:doAutoDispatch('weekdate','daterange','zone','autoDispatch.do')" class="dispatch_link">Dispatch</a></span>
-	                      <input type = "button" value=" U/A " onclick="javascript:doUnavailable('plan.do','weekdate','daterange','y')" />
-	                      <input type = "button" value="Kronos Files" onclick="javascript:doKronos('plan.do','weekdate','daterange','y','1')" />                  
+	                      <input style="font-size:11px" type = "button" height="18" value=" U/A " onclick="javascript:doUnavailable('plan.do','weekdate','daterange','y')" />
+	                      <input style="font-size:11px" type = "button" height="18" value="Kronos" onclick="javascript:doKronos('plan.do','weekdate','daterange','y','1')" />                  
+	                      <input style="font-size:11px" type = "button" height="18" value="Publish" onclick="javascript:doPublish();" />
 	                   </div>  
 				</div>
 			</div>
@@ -98,6 +99,31 @@
      </div>   
      <script>
 
+     function doPublish(){
+  		var deliveryDate = document.getElementById('daterange').value;
+  		if(deliveryDate == null || deliveryDate.trim().length == 0) {
+      		alert("Please select valid Day!");
+  		} else {
+  			var dispatchRpcClient = new JSONRpcClient("dispatchprovider.ax");
+  			var result = dispatchRpcClient.AsyncDispatchProvider.canPublishWave(deliveryDate);
+  			if(result != null && result.hasPerviousPublish) {
+     			var source = "Plan";
+     			if(result.previousPublishScrib) {
+     				source = "Scrib";
+     			}
+ 				if (!confirm ("Wave has already been publish from "+source)) {
+     				return;
+ 				}
+ 			}
+ 			try {
+  				dispatchRpcClient.AsyncDispatchProvider.publishWave(deliveryDate);
+  				alert("Publish completed successfully");
+ 			} catch(rpcException) {
+  				alert("Unable to publish wave. Please try to refresh the browser window!\n"+e);
+  			} 
+  		}
+	 }
+		
       function doAutoDispatch(compId1,compId2,compId3, url) {
     	  	var param2 = document.getElementById(compId2).value;
     	  	if(param2==''){

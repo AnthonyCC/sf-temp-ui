@@ -20,7 +20,7 @@ public class AreaModel extends BaseModel implements IAreaModel  {
 	
     private int stemToTime;
     
-    private int maxStemTime;
+    //private int maxStemTime;
 	
     private String prefix;
     
@@ -83,13 +83,13 @@ public class AreaModel extends BaseModel implements IAreaModel  {
 	}
 	
 	
-	public int getMaxStemTime() {
+	/*public int getMaxStemTime() {
 		return maxStemTime;
 	}
 
 	public void setMaxStemTime(int maxStemTime) {
 		this.maxStemTime = maxStemTime;
-	}
+	}*/
 
 	public int hashCode() {
 		final int PRIME = 31;

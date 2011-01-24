@@ -321,7 +321,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 							_aModel.setDepot("X".equalsIgnoreCase(rs.getString("IS_DEPOT")) ? true : false);
 							_aModel.setStemFromTime(rs.getInt("STEM_FROM"));
 							_aModel.setStemToTime(rs.getInt("STEM_TO"));	
-							_aModel.setMaxStemTime(rs.getInt("STEM_MAX"));
+							//_aModel.setMaxStemTime(rs.getInt("STEM_MAX"));
 							
 							_schId.setRegionId(RoutingUtil.getRegion(_aModel));
 							_schId.setArea(_aModel);

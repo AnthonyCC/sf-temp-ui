@@ -104,10 +104,19 @@ public abstract class AbstractHandOffAction {
 	protected DispatchCorrelationResult correlateDispatch(List<IHandOffBatchRoute> routes
 															, Map<String, IAreaModel> areaLookup) throws RoutingServiceException {
 		
+		RoutingTimeOfDay rCutOff = new RoutingTimeOfDay(this.getBatch().getCutOffDateTime());
 		DispatchCorrelationResult result = new DispatchCorrelationResult();
 		RoutingInfoServiceProxy routingInfoProxy = new RoutingInfoServiceProxy();
 		//Map<ZoneCode, Map<DispatchTime, Map<CutOffTime, IWaveInstance>>>
-		Map<String, Map<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>>> plannedDispatchTree = routingInfoProxy.getPlannedDispatchTree(this.getBatch().getDeliveryDate());
+		Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> plannedDispatchTree = null;
+		//plannedDispatchTree = routingInfoProxy.getPlannedDispatchTree(this.getBatch().getDeliveryDate());
+		Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree = routingInfoProxy
+																										.getWaveInstanceTree(this.getBatch().getDeliveryDate(), null);
+		if(waveInstanceTree != null && waveInstanceTree.keySet().size() > 0) {
+			plannedDispatchTree = waveInstanceTree.get(waveInstanceTree.keySet().toArray()[0]);
+		}
+		
+		
 		List<IHandOffBatchRoute> mismatchRoutes = new ArrayList<IHandOffBatchRoute>();
 				
 		if(routes != null && areaLookup != null && plannedDispatchTree != null) {
@@ -116,11 +125,11 @@ public abstract class AbstractHandOffAction {
 				IAreaModel areaModel = areaLookup.get(routeModel.getArea());
 				
 				if(areaModel != null ) {					
-					Map<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>> dispatchMapping = plannedDispatchTree.get(routeModel.getArea());
+					Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>> dispatchMapping = plannedDispatchTree.get(routeModel.getArea());
 					
 					if(dispatchMapping != null) {
-						for(Map.Entry<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>> dispEntry : dispatchMapping.entrySet()) {
-							List<IWaveInstance> waveInstances = dispEntry.getValue().get(this.getBatch().getCutOffDateTime());
+						for(Map.Entry<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>> dispEntry : dispatchMapping.entrySet()) {
+							List<IWaveInstance> waveInstances = dispEntry.getValue().get(rCutOff);
 					
 							if(waveInstances != null) {
 								for(IWaveInstance waveInstance : waveInstances) {
@@ -154,13 +163,13 @@ public abstract class AbstractHandOffAction {
 		
 		Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus = new TreeMap<RoutingTimeOfDay, EnumHandOffDispatchStatus>();
 		if(plannedDispatchTree != null) {
-			for(Map.Entry<String, Map<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>>> areaEntry : plannedDispatchTree.entrySet()) {
-				for(Map.Entry<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>> dispEntry : areaEntry.getValue().entrySet()) {
-					for(Map.Entry<Date, List<IWaveInstance>> cutOffEntry : dispEntry.getValue().entrySet()) {
+			for(Map.Entry<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> areaEntry : plannedDispatchTree.entrySet()) {
+				for(Map.Entry<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>> dispEntry : areaEntry.getValue().entrySet()) {
+					for(Map.Entry<RoutingTimeOfDay, List<IWaveInstance>> cutOffEntry : dispEntry.getValue().entrySet()) {
 						if(!dispatchStatus.containsKey(dispEntry.getKey())) {
 							dispatchStatus.put(dispEntry.getKey(), EnumHandOffDispatchStatus.COMPLETE);
 						}
-						if(cutOffEntry.getKey().after(this.getBatch().getCutOffDateTime())) {
+						if(cutOffEntry.getKey().after(rCutOff)) {
 							dispatchStatus.put(dispEntry.getKey(), EnumHandOffDispatchStatus.PENDING);
 						}									
 					}

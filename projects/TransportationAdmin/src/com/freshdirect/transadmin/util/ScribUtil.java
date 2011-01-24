@@ -43,7 +43,7 @@ public class ScribUtil
 	public static Scrib reconstructWebPlanInfo(Scrib scribInfo,Zone zone,String isfirstDlvTimeModified,
 			EmployeeManagerI employeeManagerService, ZoneManagerI zoneManagerService) {		
 		
-		if(zone!=null && scribInfo.getFirstDlvTime()!=null 
+		if(zone!=null && scribInfo.getFirstDeliveryTime()!=null 
 				&& ("true".equalsIgnoreCase(isfirstDlvTimeModified)|| "true".equalsIgnoreCase(scribInfo.getZoneModified()))){
 			try {
 				String shift = getShiftForPlan(scribInfo);
@@ -82,7 +82,7 @@ public class ScribUtil
 	
 	private static String getShiftForPlan(Scrib model) throws ParseException {		
 		int day = TransStringUtil.getDayOfWeek(model.getScribDate());
-		double hourOfDay = Double.parseDouble(TransStringUtil.formatTimeFromDate(model.getFirstDlvTime()));
+		double hourOfDay = Double.parseDouble(TransStringUtil.formatTimeFromDate(model.getFirstDeliveryTime()));
 		if (hourOfDay < 12 && day != 7) {
 			return "AM";
 		} else if (hourOfDay < 10 && day == 7) {

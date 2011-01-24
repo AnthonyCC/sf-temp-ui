@@ -13,23 +13,23 @@ import java.util.Set;
 
 import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.DispatchManagerDaoI;
 import com.freshdirect.transadmin.dao.RouteManagerDaoI;
 import com.freshdirect.transadmin.dao.SpatialManagerDaoI;
 import com.freshdirect.transadmin.exception.TransAdminApplicationException;
 import com.freshdirect.transadmin.model.Dispatch;
-import com.freshdirect.transadmin.model.DispatchResource;
 import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.Plan;
-import com.freshdirect.transadmin.model.PlanResource;
 import com.freshdirect.transadmin.model.PunchInfoI;
 import com.freshdirect.transadmin.model.ResourceI;
-import com.freshdirect.transadmin.model.ResourceId;
 import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.model.ScribLabel;
+import com.freshdirect.transadmin.model.WaveInstance;
+import com.freshdirect.transadmin.model.WaveInstancePublish;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
@@ -38,6 +38,7 @@ import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
+import com.freshdirect.transadmin.util.WaveUtil;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 
 public class DispatchManagerImpl extends BaseManagerImpl implements DispatchManagerI {
@@ -170,13 +171,6 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			}
 			
 		}
-		
-		// now save the child
-		
-//		for(int i=0;i<childList.size();i++){
-//			Set resSet=(Set)childList.get(i);
-//			getDispatchManagerDao().saveEntityList(resSet);
-//		}
 	}
 
 	
@@ -306,59 +300,18 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		boolean isNew = TransStringUtil.isEmpty(dispatch.getDispatchId());
 		getDispatchManagerDao().saveDispatch(dispatch);
 		
-		if (!isNew) {
-			
-			/*Dispatch referenceDispatch = this.getDispatch(referenceContextId);
-			Dispatch currentDispatch = this.getDispatch(dispatch.getDispatchId());
-			if(referenceDispatch != null && currentDispatch != null) {
-				Collection bullpens = this.getDispatchManagerDao().getDispatch(currentDispatch.getDispatchDate(), 
-																		currentDispatch.getStartTime(), 
-																		true);
-				Dispatch bullPen = bullPen = new Dispatch();
-				
-				bullPen.setDispatchDate(currentDispatch.getDispatchDate());
-
-				bullPen.setRegion(currentDispatch.getRegion());
-				bullPen.setStartTime(currentDispatch.getStartTime());
-				bullPen.setFirstDlvTime(currentDispatch.getFirstDlvTime());
-				bullPen.setBullPen(true); 
-				if(referenceDispatch.getDispatchResources() != null) {
-					referenceDispatch.getDispatchResources().clear();
-				} else {
-					referenceDispatch.setDispatchResources(new HashSet(0));
-				}
-				for (Iterator i = currentDispatch.getDispatchResources().iterator(); i.hasNext();) {
-					DispatchResource _oldResource = (DispatchResource)i.next();
-					DispatchResource dispatchResource = new DispatchResource();
-					ResourceId resource = new ResourceId();
-					resource.setResourceId(_oldResource.getId().getResourceId());
-					resource.setContextId(referenceDispatch.getDispatchId());
-					resource.setAdjustmentTime(_oldResource.getId().getAdjustmentTime());
-					
-					dispatchResource.setEmployeeRoleType(_oldResource.getEmployeeRoleType());
-					dispatchResource.setId(resource);
-					dispatchResource.setNextTelNo(_oldResource.getNextTelNo());
-					dispatchResource.setDispatch(referenceDispatch);
-					referenceDispatch.getDispatchResources().add(dispatchResource);
-				}
-				//this.getDispatchManagerDao().removeEntityEx(referenceDispatch);
-				getDispatchManagerDao().saveDispatch(referenceDispatch);
-			}*/
-		} else if(!TransStringUtil.isEmpty(referenceContextId)) {
+		if(isNew && !TransStringUtil.isEmpty(referenceContextId)) {
 			String[] referenceDispatchIds = StringUtil.decodeStrings(referenceContextId);
 			if(referenceDispatchIds != null) {
 				for(String tmpDispatchId : referenceDispatchIds) {
 					Dispatch referenceDispatch = this.getDispatch(tmpDispatchId);
-					//this.getDispatchManagerDao().removeEntityEx(referenceDispatch);
+					
 					if(referenceDispatch.getDispatchResources() != null) {
 						referenceDispatch.getDispatchResources().clear();
 					} else {
 						referenceDispatch.setDispatchResources(new HashSet(0));
 					}
-					/*if(referenceDispatch.getDispatchResources() != null) {
-						referenceDispatch.getDispatchResources().clear();	
-						referenceDispatch.setConfirmed(false);
-					}*/
+					
 					referenceDispatch.setConfirmed(false);
 					this.getDispatchManagerDao().saveDispatch(referenceDispatch);
 				}
@@ -416,43 +369,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	}
 	
 	public void savePlan(Plan plan, String referencePlanId) {
-		if (!TransStringUtil.isEmpty(plan.getPlanId())) {
-			
-			/*Plan referencePlan = this.getPlan(referencePlanId);
-			Plan currentPlan = this.getPlan(plan.getPlanId());
-			if(referencePlan != null && currentPlan != null) {
-				Collection bullpens = this.getDispatchManagerDao().getPlan(currentPlan.getPlanDate(), 
-																		currentPlan.getStartTime(), 
-																		true);
-				Plan bullPen = bullPen = new Plan();
-				
-				bullPen.setPlanDate(currentPlan.getPlanDate());
-
-				bullPen.setRegion(currentPlan.getRegion());
-				bullPen.setStartTime(currentPlan.getStartTime());
-				bullPen.setFirstDeliveryTime(currentPlan.getFirstDeliveryTime());
-				bullPen.setIsBullpen("Y");
-				if(referencePlan.getPlanResources() != null) {
-					referencePlan.getPlanResources().clear();
-				} else {
-					referencePlan.setPlanResources(new HashSet(0));
-				}
-				for (Iterator i = currentPlan.getPlanResources().iterator(); i.hasNext();) {
-					PlanResource _oldResource = (PlanResource)i.next();
-					PlanResource planResource = new PlanResource();
-					ResourceId resource = new ResourceId();
-					resource.setResourceId(_oldResource.getId().getResourceId());
-					resource.setContextId(referencePlan.getPlanId());
-					planResource.setEmployeeRoleType(_oldResource.getEmployeeRoleType());
-					planResource.setId(resource);
-					
-					referencePlan.getPlanResources().add(planResource);
-				}
-				
-				this.getDispatchManagerDao().savePlan(referencePlan);
-				//getDispatchManagerDao().savePlan(bullPen);
-			}*/
-		} else if(!TransStringUtil.isEmpty(referencePlanId)) {
+		if(TransStringUtil.isEmpty(plan.getPlanId()) && !TransStringUtil.isEmpty(referencePlanId)) {
 			String[] referencePlanIds = StringUtil.decodeStrings(referencePlanId);
 			if(referencePlanIds != null) {
 				for(String tmpPlanId : referencePlanIds) {
@@ -466,11 +383,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 					this.getDispatchManagerDao().savePlan(referencePlan);
 				}
 			}
-			/*if(referencePlan.getPlanResources() != null) {
-				referencePlan.getPlanResources().clear();
-				referencePlan.setOpen("Y");
-			}
-			this.getDispatchManagerDao().savePlan(referencePlan);*/
+			
 		}
 		getDispatchManagerDao().savePlan(plan);
 	}
@@ -671,11 +584,11 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	public Collection getScribList(String date) {
 		return getDispatchManagerDao().getScribList(date);
 	}
-
+	
 	public Collection getScribList(String date, String region) {
 		return getDispatchManagerDao().getScribList(date, region);
 	}
-
+		
 	public Scrib getScrib(String id) {
 		return getDispatchManagerDao().getScrib(id);
 	}
@@ -714,4 +627,114 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	public Collection getDispatchForMotKit(Date dispatchDate, String assetId) {
 		return getDispatchManagerDao().getDispatchForMotKit(dispatchDate, assetId);
 	}
+	
+	public Collection getPlan(Date planDate, String zone) {
+		return getDispatchManagerDao().getPlan(planDate, zone);
+	}
+	
+	public Collection getScrib(Date scribDate, String zone) {
+		return getDispatchManagerDao().getScrib(scribDate, zone);
+	}
+	
+	public Collection getWaveInstancePublish(Date deliveryDate) {
+		return getDispatchManagerDao().getWaveInstancePublish(deliveryDate);
+	}
+	
+	public Collection getWaveInstance(Date deliveryDate, String area) {
+		return getDispatchManagerDao().getWaveInstance(deliveryDate, area);
+	}
+	
+	public Collection getWaveInstance(Date cutOff) {
+		return getDispatchManagerDao().getWaveInstance(cutOff);
+	}
+	
+	public Collection getWaveInstance(Date deliveryDate, Date cutOff) {
+		return getDispatchManagerDao().getWaveInstance(deliveryDate, cutOff);
+	}
+	
+	public WaveInstance getWaveInstance(String waveInstanceId)  {
+		return getDispatchManagerDao().getWaveInstance(waveInstanceId);
+	}
+	
+	public void recalculateWaveFromScrib(Date deliveryDate, Set<String> zones, String actionBy) {
+		List<List<WaveInstance>> waveInstancesResult = new ArrayList<List<WaveInstance>>();
+		if(deliveryDate != null && zones != null) {
+			for(String zone: zones) {
+				Collection scribs = this.getScrib(deliveryDate, zone);
+				waveInstancesResult = WaveUtil.getWavesForPublish(scribs, deliveryDate
+																	, actionBy, EnumWaveInstancePublishSrc.SCRIB
+																	, this);
+			}
+		}
+		if(waveInstancesResult.get(1).size() > 0) {
+			this.getDispatchManagerDao().removeEntity(waveInstancesResult.get(1));
+		}
+		if(waveInstancesResult.get(0).size() > 0) {
+			this.getDispatchManagerDao().saveEntityList(waveInstancesResult.get(0));
+		}
+	}
+		
+	public void recalculateWaveFromPlan(Date deliveryDate, Set<String> zones, String actionBy) {
+		List<List<WaveInstance>> waveInstancesResult = new ArrayList<List<WaveInstance>>();
+		if(deliveryDate != null && zones != null) {
+			for(String zone: zones) {
+				Collection plans = this.getPlan(deliveryDate, zone);
+				waveInstancesResult = WaveUtil.getWavesForPublish(plans, deliveryDate
+																	, actionBy, EnumWaveInstancePublishSrc.PLAN
+																	, this);
+			}
+		}
+		if(waveInstancesResult.get(1).size() > 0) {
+			this.getDispatchManagerDao().removeEntity(waveInstancesResult.get(1));
+		}
+		if(waveInstancesResult.get(0).size() > 0) {
+			this.getDispatchManagerDao().saveEntityList(waveInstancesResult.get(0));
+		}
+	}
+	
+	
+	
+	public void publishWaveInstance(Date deliveryDate, String actionBy, EnumWaveInstancePublishSrc source) {
+		
+		List<List<WaveInstance>> waveInstancesResult = new ArrayList<List<WaveInstance>>();
+		Collection wavePublish = this.getWaveInstancePublish(deliveryDate);
+		WaveInstancePublish publish = null;
+		if(wavePublish != null && wavePublish.size() > 0) {
+			publish = (WaveInstancePublish)wavePublish.iterator().next();
+		} else {
+			publish = new WaveInstancePublish();			
+		}
+		publish.setDeliveryDate(deliveryDate);
+		publish.setPublishedAt(new Date());
+		publish.setPublishedBy(actionBy);
+		publish.setSource(source);
+		
+		if(deliveryDate != null) {
+			Collection sourceData = null;			
+			if(EnumWaveInstancePublishSrc.SCRIB.equals(source)) {
+				sourceData = this.getScrib(deliveryDate, null);				
+			} else {
+				sourceData = this.getPlan(deliveryDate, null);		
+			}
+			waveInstancesResult = WaveUtil.getWavesForPublish(sourceData, deliveryDate, actionBy, source, this);
+		}
+		this.getDispatchManagerDao().saveEntity(publish);
+		//this.getDispatchManagerDao().deleteWaveInstance(deliveryDate);
+		if(waveInstancesResult.get(1).size() > 0) {
+			this.getDispatchManagerDao().removeEntity(waveInstancesResult.get(1));
+		}
+		if(waveInstancesResult.get(0).size() > 0) {
+			this.getDispatchManagerDao().saveEntityList(waveInstancesResult.get(0));
+		}
+	}
+	
+	public void uploadScrib(Set<Date> scribDates, List<Scrib> toSaveScribs) {
+		for(Date scribDate : scribDates) {
+			this.getDispatchManagerDao().removeEntity(this.getDispatchManagerDao().getScrib(scribDate, null));
+		}
+		if(toSaveScribs != null && toSaveScribs.size() > 0) {
+			this.getDispatchManagerDao().saveEntityList(toSaveScribs);
+		}
+	}
+	
 }

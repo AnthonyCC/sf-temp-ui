@@ -1,8 +1,8 @@
 package com.freshdirect.transadmin.web;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,28 +15,19 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.BindException;
-import org.springframework.web.HttpSessionRequiredException;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.servlet.ModelAndView;
-
-import com.freshdirect.transadmin.model.Dispatch;
+import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.Plan;
-import com.freshdirect.transadmin.model.PlanResource;
+import com.freshdirect.transadmin.model.WaveInstancePublish;
 import com.freshdirect.transadmin.model.Zone;
-import com.freshdirect.transadmin.model.ZonetypeResource;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
-import com.freshdirect.transadmin.util.TransStringUtil;
-import com.freshdirect.transadmin.web.model.DispatchCommand;
-import com.freshdirect.transadmin.web.model.WebPlanInfo;
 import com.freshdirect.transadmin.util.EnumResourceType;
+import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.web.model.WebPlanInfo;
 
 public class PlanningFormController extends AbstractFormController {
 
@@ -108,6 +99,7 @@ public class PlanningFormController extends AbstractFormController {
 		refData.put("drivers",drivers);
 		refData.put("helpers", DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.HELPER.getName())));
 		refData.put("runners", DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.RUNNER.getName())));
+		
 		refData.put("cutoffs", getDomainManagerService().getCutOffs());
 		return refData;
 	}
@@ -151,44 +143,59 @@ public class PlanningFormController extends AbstractFormController {
 		return "Plan";
 	}
 
-	/*protected ModelAndView onSubmit(HttpServletRequest request,
-			HttpServletResponse response, Object command, BindException errors)
-			throws Exception {
-
-		if("true".equalsIgnoreCase(((WebPlanInfo)command).getZoneModified())) {
-			((WebPlanInfo)command).setZoneModified("false");
-			preProcessDomainObject(command);
-			ModelAndView mav = new ModelAndView(getSuccessView(), errors.getModel());
-			mav.getModel().put(this.getCommandName(), command);
-			mav.getModel().putAll(referenceData(request));
-
-			return mav;
-		} else {
-			return super.onSubmit(request, response, command, errors);
-		}
-
-	}*/
-	public List saveDomainObject(Object command) {
+	public List saveDomainObject(HttpServletRequest request, Object command) {
 
 		List errorList = null;
-
+		Plan previousModel = null;
+		Plan model = null;
 		try {
 			WebPlanInfo _command = (WebPlanInfo)command;
-			Plan domainObject = getPlan(_command);
-			getDispatchManagerService().savePlan(domainObject, _command.getReferenceContextId());
-			_command.setPlanId(domainObject.getPlanId());
+			model = getPlan(_command);
+			previousModel = getDispatchManagerService().getPlan(model.getPlanId());
+			
+			getDispatchManagerService().savePlan(model, _command.getReferenceContextId());
+			_command.setPlanId(model.getPlanId());
 			_command.setReferenceContextId(null);
 		} catch (Exception objExp) {
 			objExp.printStackTrace();
 			errorList = new ArrayList();
 			errorList.add(this.getMessage("sys.error.1001", new Object[]{this.getDomainObjectName()}));
 		}
+		if(errorList == null && model != null) {
+			Map<Date, Set<String>> deliveryMapping = new HashMap<Date, Set<String>>();
+			if(previousModel != null && previousModel.getZone() != null) {
+				if(!deliveryMapping.containsKey(previousModel)) {
+					deliveryMapping.put(previousModel.getPlanDate(), new HashSet<String>());
+				}
+				deliveryMapping.get(previousModel.getPlanDate()).add(previousModel.getZone().getZoneCode());
+			}
+			if(model != null && model.getZone() != null) {
+				if(!deliveryMapping.containsKey(model)) {
+					deliveryMapping.put(model.getPlanDate(), new HashSet<String>());
+				}
+				deliveryMapping.get(model.getPlanDate()).add(model.getZone().getZoneCode());
+			}
+			String userId = com.freshdirect.transadmin.security.SecurityManager.getUserName(request);
+			recalculateWave(deliveryMapping,  userId);			
+		}
 		return errorList;
 	}
-
-
-
-
+	
+	private void recalculateWave(Map<Date, Set<String>> deliveryMapping, String userId) {
+		if(deliveryMapping != null) {
+			for(Map.Entry<Date, Set<String>> deliveryMapEntry : deliveryMapping.entrySet()) {
+				Collection wavePublishes = getDispatchManagerService().getWaveInstancePublish(deliveryMapEntry.getKey());
+				if(wavePublishes != null && wavePublishes.size() > 0) {
+					WaveInstancePublish wavePublish = (WaveInstancePublish)wavePublishes.iterator().next();
+					if(wavePublish.getSource() != null && wavePublish.getSource().equals(EnumWaveInstancePublishSrc.PLAN)) {
+						this.getDispatchManagerService().recalculateWaveFromPlan(deliveryMapEntry.getKey()
+																					, deliveryMapEntry.getValue()
+																					, userId);
+					}
+				}
+			}
+		}
+	}
 
 
 	public void saveErrorMessage(HttpServletRequest request, Object msg) {
@@ -198,14 +205,7 @@ public class PlanningFormController extends AbstractFormController {
 		}
 		super.saveErrorMessage(request, msg);
 	}
-
-	/*
-	private boolean canIgnoreError(WebPlanInfo tmpCommand) {
-		return "true".equalsIgnoreCase(tmpCommand.getIgnoreErrors()) && tmpCommand.getPlanDate().equals(tmpCommand.getErrorDate());
-
-	}
-
-	*/
+	
 	public DomainManagerI getDomainManagerService() {
 		return domainManagerService;
 	}
