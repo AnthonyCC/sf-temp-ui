@@ -110,4 +110,11 @@ public class ZonePriceInfoModel implements Serializable {
 	public boolean isShowBurstImage() {
 		return showBurstImage;
 	}
+	
+	 @Override
+     public String toString() {
+         return "ZonePriceInfoModel[" + sapZoneId + " sellingPrice:" + sellingPrice + " promoPrice:" + promoPrice + " itemOnSale:" + itemOnSale
+                 + " dealPercentage:" + dealPercentage + " tieredDealPercentage:" + tieredDealPercentage + " highestDealPercentage:" + highestDealPercentage
+                 + " showBurstImage:" + showBurstImage + "]";
+     }
 }

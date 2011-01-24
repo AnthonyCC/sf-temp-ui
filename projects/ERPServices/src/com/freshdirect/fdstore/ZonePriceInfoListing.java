@@ -40,4 +40,9 @@ public class ZonePriceInfoListing implements Serializable {
 		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
 		return dummyList;
 	}
+	
+	@Override
+    public String toString() {
+        return "ZonePriceInfoListing[" + zonePriceInfoMap + ']';
+    }
 }

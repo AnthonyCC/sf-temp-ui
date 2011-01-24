@@ -93,5 +93,14 @@ public class FDMaterial extends FDAttributeProxy {
 	public DayOfWeekSet getBlockedDays() {
 		return this.blockedDays == null ? DayOfWeekSet.EMPTY : this.blockedDays;
 	}
-
+	
+	@Override
+	public String toString() {
+	    return "FDMaterial[materialNumber:'" + materialNumber + "' atpRule:'" + atpRule 
+	        + "' salesUnitCharacteristic:'" + salesUnitCharacteristic
+                + "' quantityCharacteristic:'" + quantityCharacteristic 
+                + "' alcoholicContent:'" + alcoholicContent 
+                + "' taxable:'" + taxable + "' kosherProduction:'" + kosherProduction 
+                + "' platter:'" + platter + "' blockedDays:'" + blockedDays;
+	}
 }

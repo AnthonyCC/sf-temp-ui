@@ -485,15 +485,21 @@ public class FDProduct extends FDSku implements AttributesI {
 	}
 
 	public String toString() {
-		StringBuffer buf = new StringBuffer("FDProduct[");
-		buf.append(this.getSkuCode()).append(" v").append(this.getVersion()).append(" pd ").append(this.getPricingDate());
+		StringBuilder buf = new StringBuilder("FDProduct[");
+		buf.append(this.getSkuCode()).append(" v").append(this.getVersion()).append(" pd ").append(this.getPricingDate()).append("\n\tsalesUnits:");
 		for (int i = 0; i < this.salesUnits.length; i++) {
 			buf.append("\n\t").append(this.salesUnits[i].toString());
 		}
+		buf.append("\n\tvariations:");
 		for (int i = 0; i < this.variations.length; i++) {
 			buf.append("\n\t").append(this.variations[i].toString());
 		}
-		buf.append("\n]");
+                buf.append("\n\tdisplaySalesUnits:");
+                for (int i = 0; i < this.displaySalesUnits.length; i++) {
+                    buf.append("\n\t").append(this.displaySalesUnits[i].toString());
+                }
+                
+		buf.append("\n\t").append(this.material).append("\n]");
 		return buf.toString();
 	}
 
