@@ -309,7 +309,12 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	public Date getEarliestAvailability() {
 		Date         earliestAvailability = null;
 		
-		FDProduct fdp = getFDProduct();
+		FDProduct fdp = null;
+		try {
+			fdp = getFDProduct();
+		} catch (FDRuntimeException e) {
+			fdp = null;
+		}
 		if (fdp == null) {
 			return null;
 		}
