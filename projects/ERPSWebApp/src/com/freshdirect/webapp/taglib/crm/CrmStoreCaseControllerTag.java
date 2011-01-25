@@ -200,9 +200,9 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
 						caseInfo.setPriority(priority);
 						caseInfo.setSummary(summary);
 //						caseInfo.setAssignedAgentPK(this.getCurrentAgent().getPK());
-						if(!CrmManager.getInstance().isAgentValid(this.getCurrentAgentStr())){
+						/*if(!CrmManager.getInstance().isAgentValid(this.getCurrentAgentStr())){
 							actionResult.setError("Assigned agent:'"+this.getCurrentAgentStr()+"' is invalid.");
-						}
+						}*/
 						caseInfo.setAssignedAgentUserId(this.getCurrentAgentStr());
 						caseInfo.setCustomerPK(customerPK);
 						caseInfo.setSalePK(salePK);

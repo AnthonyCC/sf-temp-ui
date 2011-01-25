@@ -189,7 +189,7 @@ public class CrmRoleCaseStateBuilder {
 							CrmCaseActionType crmCaseActionType = (CrmCaseActionType) iterator2.next();
 							if(actionType.equals(crmCaseActionType)){
 								endState= actionStates.get(actionType);
-								break;
+								return endState;//break;
 							}
 							
 						}

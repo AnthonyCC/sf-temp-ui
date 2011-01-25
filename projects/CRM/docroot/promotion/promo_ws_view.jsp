@@ -12,7 +12,7 @@
 	<tmpl:put name='title' direct='true'>View Windows Steering Promotions</tmpl:put>
 	
 	<tmpl:put name='content' direct='true'>
-	<crm:GetCurrentAgent id='currentAgent'>
+
 		
 		<%@ include file="/includes/promotions/i_promo_trn_nav.jspf" %>
 		<fd:GetWSPromotions id="promotions">
@@ -80,6 +80,6 @@
 		</form>
 		</crm:WSPromoController>
 		</fd:GetWSPromotions>
-	</crm:GetCurrentAgent>
+	
 	</tmpl:put>
 </tmpl:insert>
