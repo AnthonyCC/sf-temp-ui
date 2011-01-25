@@ -437,17 +437,14 @@ if (errorMsg!=null) {%>
 	</td>
 </tr>
 <%}%>
-
 <%
 	if(user.getSelectedServiceType() == EnumServiceType.CORPORATE) {
 %>
 	
-	<TR>
-		<td width="100%" align="center"  align="center" colspan="2"><font class="title16" color="#339900">Delivery Charge $9.99 Tuesday-Friday ($14.99 Monday).</font><br><br></td>	
-	</TR>	
-<%}%>
-
-
+	<tr>
+		<td width="100%" colspan="2"><fd:IncludeMedia name='/media/editorial/fee/delivery_fee.html'/></td>
+	</tr>	
+<% } %>
 <%
 	if(user.getSelectedServiceType() == EnumServiceType.CORPORATE  && (user.isDlvPassActive() || cart.getDeliveryPassCount() > 0)) {
 %>
