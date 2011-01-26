@@ -35,7 +35,8 @@
 				<td width="50%" valign="top">
 					<table width="100%" cellpadding="0" cellspacing="0" border="0" class="module_header" style="height: 2.2em; <%=worklist?"padding: 0px;":""%>">
 					<tr><td width="70%" class="download" align="left">
-					<span class="module_header_text">Worklist (<span class='result'><%= cases.size()  %></span>)</span> 
+					<span class="module_header_text">Worklist (<span class='result'><%= cases.size()  %></span>)</span>
+					<%@ include file="/includes/queue_subject_populate.jspf" %> 
 					<%@ include file="/includes/filter_cases.jspf"%>
 					</td></tr></table>
 					<%@ include file="/includes/case_list.jspf"%>

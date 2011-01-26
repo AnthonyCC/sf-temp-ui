@@ -429,14 +429,17 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
                 
 //                CrmCaseOperation op = this.actionAllowed(agent.getRole().getCode(), caseInfo.getSubject().getCode(),
 //                cm.getState().getCode(), editAction.getType().getCode());
-                stateAfterInfo = CrmRoleCaseStateBuilder.getCaseEndState(agent.getRole(), cm.getState(), caseAction.getType());
-                if(null == stateAfterInfo){                
-                    this.getSessionContext().setRollbackOnly();
-                    throw new CrmAuthorizationException("Action not allowed");                    
+                stateAfterInfo = CrmRoleCaseStateBuilder.getCaseEndState(agent.getRole(), cm.getState(), editAction.getType());
+                if(null != stateAfterInfo){                
+//                    this.getSessionContext().setRollbackOnly();
+//                    throw new CrmAuthorizationException("Action not allowed");
+                    caseEB.updateCaseInfo(caseInfo);
+                    caseEB.addCaseAction(editAction);
+                    caseEB.setState(stateAfterInfo);
                 }
-                caseEB.updateCaseInfo(caseInfo);
-                caseEB.addCaseAction(editAction);
-                caseEB.setState(stateAfterInfo);
+//                caseEB.updateCaseInfo(caseInfo);
+//                caseEB.addCaseAction(editAction);
+//                caseEB.setState(stateAfterInfo);
                 
 //                stateAfterInfo = op.getEndState();
             }

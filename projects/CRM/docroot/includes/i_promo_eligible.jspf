@@ -1,13 +1,12 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*"%>
 <%@ taglib uri='crm' prefix='crm' %>
 
-<crm:GetCurrentAgent id='currentAgent'>
+
 <%
 	if (user.isFraudulent()) {
 %>
 <table width="100%" cellpadding="2" cellspacing="0" border="0">
-	<tr><td class="error">&nbsp;&nbsp;<b>** This account is currently ineligible for the signup promotion **</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (currentAgent.isSupervisor()) { %><a href="/customer_account/promo_eligibility.jsp?successPage=<%= request.getRequestURI() %>" class="new" style="width:220px;">RESTORE PROMOTION ELIGIBILITY</a><% } %></td>
+	<tr><td class="error">&nbsp;&nbsp;<b>** This account is currently ineligible for the signup promotion **</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (CrmAgentRole.isSupervisorOrUp(agentRole)) { %><a href="/customer_account/promo_eligibility.jsp?successPage=<%= request.getRequestURI() %>" class="new" style="width:220px;">RESTORE PROMOTION ELIGIBILITY</a><% } %></td>
 	</tr>
 </table>
 <% } %>
-</crm:GetCurrentAgent>

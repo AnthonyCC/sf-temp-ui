@@ -18,7 +18,8 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='crm' prefix='crm' %>
 <%CrmSession.invalidateCachedOrder((HttpSession) request.getSession());
-String userId = CrmSecurityManager.getUserName(request);
+String agentId = CrmSecurityManager.getUserName(request);
+CrmAgentRole agentRole = CrmSession.getCurrentAgentRole(request.getSession());
 %>
 <tmpl:insert template='/template/top_nav.jsp'>
 
@@ -106,7 +107,7 @@ String userId = CrmSecurityManager.getUserName(request);
 		<td>Pending</td>
 		<td><%=JspMethods.formatPrice(order.getTotal())%></td>
 		<td><%=CCFormatter.formatDateTime(Calendar.getInstance().getTime())%></td>
-		<td><%=userId%></td>
+		<td><%=agentId%></td>
 		<td>Telephone</td>
 		<td>--</td>
 		<td>--</td>
