@@ -27,6 +27,7 @@ import javax.swing.text.html.Option;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressVerificationException;
@@ -884,6 +885,15 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 							FDCartLineI newCartLine = new FDCartLineModel(newSku, oldCartLine.getProductRef().lookupProductModel(), newConfig
 									, oldCartLine.getVariantId(), 
 									oldCartLine.getPricingContext().getZoneId());
+							//Apply Line Item discount if Applicable.
+							Discount d = oldCartLine.getDiscount();
+							if( d != null && !(d.getDiscountType().isSample())) {
+								newCartLine.setDiscount(d);
+								newCartLine.setDiscountFlag(true);
+							}
+							if(oldCartLine.getSavingsId() != null)
+								newCartLine.setSavingsId(oldCartLine.getSavingsId());			
+
 							modCart.addOrderLine(newCartLine);
 							modified = true;
 						}catch(FDSkuNotFoundException se){
