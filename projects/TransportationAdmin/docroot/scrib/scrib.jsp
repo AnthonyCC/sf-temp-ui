@@ -135,10 +135,13 @@
          			}
      			}
      			try {
+     				document.getElementById('ajaxBusy').style.display = 'block';
      				dispatchRpcClient.AsyncDispatchProvider.publishWave(weekOff, dayOff);
+     				document.getElementById('ajaxBusy').style.display = 'none';
      				alert("Publish completed successfully");
      			} catch(rpcException) {
-      				alert("Unable to publish wave. Please try to refresh the browser window!\n"+e);
+     				document.getElementById('ajaxBusy').style.display = 'none';
+      				alert("Unable to publish wave. Please try to refresh the browser window!\n"+rpcException);
       			}         			
      		}
 		}

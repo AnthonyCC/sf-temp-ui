@@ -16,7 +16,7 @@
         <many-to-one name="region" class="com.freshdirect.transadmin.model.Region" fetch="select" lazy="false">
             <column name="REGION_ID" length="16" not-null="true" />
         </many-to-one>
-        <property name="scribDate" type="timestamp">
+        <property name="scribDate" type="date">
             <column name="SCRIB_DATE" length="7" />
         </property>
         <property name="startTime" type="timestamp">

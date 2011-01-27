@@ -111,15 +111,18 @@
      			if(result.previousPublishScrib) {
      				source = "Scrib";
      			}
- 				if (!confirm ("Wave has already been publish from "+source)) {
+ 				if (!confirm ("Wave has already been publish from "+source+". Do you want to continue?")) {
      				return;
  				}
  			}
  			try {
+ 				document.getElementById('ajaxBusy').style.display = 'block';
   				dispatchRpcClient.AsyncDispatchProvider.publishWave(deliveryDate);
+  				document.getElementById('ajaxBusy').style.display = 'none';
   				alert("Publish completed successfully");
  			} catch(rpcException) {
-  				alert("Unable to publish wave. Please try to refresh the browser window!\n"+e);
+ 				document.getElementById('ajaxBusy').style.display = 'none';
+  				alert("Unable to publish wave. Please try to refresh the browser window!\n"+rpcException);
   			} 
   		}
 	 }

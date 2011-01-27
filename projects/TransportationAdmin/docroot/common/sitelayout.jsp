@@ -41,6 +41,7 @@
 </head>
 
 <body id="body1" class="" marginwidth="0" marginheight="0" border="0">
+	
 	<script>
     var s='<tmpl:get name='yui-skin'/>';   
     if(s=='') s="yui-skin-sam";
@@ -75,9 +76,10 @@
 					<div><span class="nameTitle"><a href="javascript:showUserPref()"> User:</a></span> <span style=""><%= userId != null ? userId : ""%></span></div>
 					<div><span class="levelTitle">Level:</span> <span style=""><%=userRole != null ? userRole : ""%></span></div>
 				</div>
-
+				
 				<div>
 					<div class="t_tab_hspacer" style="padding:0 450px;">
+						<div style="display:none;" id="ajaxBusy"><img src="./images/rel_interstitial_loading.gif"></div>
 						<% 
 						 String waveNotification = NotificationManager.getInstance().getWaveNotification(request);						 
 						 if(waveNotification != null) { %>
@@ -88,6 +90,7 @@
 							 &nbsp;
 						<% } %>
 					</div>
+														
 					<div class="<%= currentRootMenuId %>">
 							
 					<% while(itr.hasNext()) {

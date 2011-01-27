@@ -1201,19 +1201,16 @@ div.eXor_Active, div.eXor_AdHoc { margin-left: 10px; width: 98%; }
 	padding-left: 3px;
 }
 
-.asset_gps 
-{
+.asset_gps {
 	background-color: #B1CFA8;
 }
-.asset_ezpass 
-{
+.asset_ezpass {
 	background-color: #4FCF26;
 }
-.asset_motkit 
-{
+.asset_motkit {
 	background-color: #2A7F0F;
 }
-.asset_additionalnextels 
-{
+.asset_additionalnextels {
 	background-color: #677F5F;
 }
+
