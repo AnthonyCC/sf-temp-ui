@@ -11,7 +11,6 @@ import javax.servlet.http.HttpSessionBindingListener;
 import org.apache.log4j.Category;
 
 import com.freshdirect.crm.CrmAgentModel;
-import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmCaseModel;
 import com.freshdirect.crm.CrmCaseTemplate;
 import com.freshdirect.crm.CrmCustomerHeaderInfo;
@@ -34,7 +33,6 @@ public class CrmSession {
 	private final static long LAST_FIND_EXPIRATION = 1 * 60 * 1000;
 
 	private final static String CRM_AGENT = "fd.crm.agent";
-	private final static String CRM_AGENT_ROLE = "fd.crm.agent.role";
 	private final static String CRM_LOCKED_CASE = "fd.crm.lockedCase";
 	private final static String CRM_SEARCH_TEMPLATE = "fd.crm.searchTemplate";
 
@@ -48,10 +46,6 @@ public class CrmSession {
 	
 	public static CrmAgentModel getCurrentAgent(HttpSession session) {
 		return (CrmAgentModel) session.getAttribute(CRM_AGENT);
-	}
-	
-	public static String getCurrentAgentStr(HttpSession session) {
-		return (String)session.getAttribute("fd.crm.agent.new");
 	}
 	
 	public static FDOrderI getOrder(HttpSession session, String orderId) throws FDResourceException {
@@ -76,18 +70,6 @@ public class CrmSession {
 	public static void setCurrentAgent(HttpSession session, CrmAgentModel agent) {
 		session.setAttribute(CRM_AGENT, agent);
 	}
-	
-	public static void setCurrentAgentStr(HttpSession session, String agentId) {
-		session.setAttribute("fd.crm.agent.new", agentId);
-	}
-	
-	public static void setCurrentAgentRole(HttpSession session, CrmAgentRole agentRole) {
-		session.setAttribute(CRM_AGENT_ROLE, agentRole);
-	}
-	
-	public static CrmAgentRole getCurrentAgentRole(HttpSession session){
-		return (CrmAgentRole)session.getAttribute(CRM_AGENT_ROLE);
-	}
 
 	public static CrmCaseModel getLockedCase(HttpSession session) {
 		LockedCaseWrapper wrapper = (LockedCaseWrapper) session.getAttribute(CRM_LOCKED_CASE);
@@ -97,18 +79,7 @@ public class CrmSession {
 	public static void setLockedCase(HttpSession session, CrmCaseModel cm) throws FDResourceException {
 		if (cm != null) {
 			session.setAttribute(CRM_LOCKED_CASE, new LockedCaseWrapper(cm));
-			CrmManager.getInstance().lockCase(getCurrentAgentStr(session), cm.getPK());
-			getSessionStatus(session).setCase(cm);
-		} else {
-			session.removeAttribute(CRM_LOCKED_CASE);
-			getSessionStatus(session).clear(true);
-		}
-	}
-	
-	public static void setLockedCase(HttpSession session, CrmCaseModel cm, String agentId) throws FDResourceException {
-		if (cm != null) {
-			session.setAttribute(CRM_LOCKED_CASE, new LockedCaseWrapper(cm));
-			CrmManager.getInstance().lockCase(agentId, cm.getPK());
+			CrmManager.getInstance().lockCase(getCurrentAgent(session).getPK(), cm.getPK());
 			getSessionStatus(session).setCase(cm);
 		} else {
 			session.removeAttribute(CRM_LOCKED_CASE);

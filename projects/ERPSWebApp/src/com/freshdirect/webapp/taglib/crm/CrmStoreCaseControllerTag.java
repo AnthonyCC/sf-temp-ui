@@ -13,7 +13,6 @@ import javax.servlet.jsp.JspException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.crm.CrmAgentModel;
-import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmAuthorizationException;
 import com.freshdirect.crm.CrmCaseAction;
 import com.freshdirect.crm.CrmCaseActionType;
@@ -23,7 +22,6 @@ import com.freshdirect.crm.CrmCaseOrigin;
 import com.freshdirect.crm.CrmCasePriority;
 import com.freshdirect.crm.CrmCaseState;
 import com.freshdirect.crm.CrmCaseSubject;
-import com.freshdirect.crm.CrmCurrentAgent;
 import com.freshdirect.crm.CrmDepartment;
 import com.freshdirect.crm.CrmManager;
 import com.freshdirect.fdstore.FDResourceException;
@@ -34,7 +32,6 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
-import com.freshdirect.webapp.crm.security.CrmSecurityManager;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 
 public class CrmStoreCaseControllerTag extends AbstractControllerTag {
@@ -54,11 +51,6 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
 
 		try {
 			if ("storeCase".equalsIgnoreCase(this.getActionName())) {
-				
-				String agentId = CrmSecurityManager.getUserName(request);
-				String userRole = CrmSecurityManager.getUserRole(request);
-				CrmAgentRole role = CrmAgentRole.getEnumByLDAPRole(userRole);
-				CrmCurrentAgent agent = new CrmCurrentAgent(agentId,role);
 				
 				CrmCaseInfo caseInfo = cm.isAnonymous() ? new CrmCaseInfo() : new CrmCaseInfo(cm);
 
@@ -81,8 +73,7 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
 				}
 				
 				String id = NVL.apply(request.getParameter("assignedAgent"), "");
-//				PrimaryKey assignedAgentPK = "".equals(id) ? null : new PrimaryKey(id);
-				String assignedAgentId = id;
+				PrimaryKey assignedAgentPK = "".equals(id) ? null : new PrimaryKey(id);
 
 				String custId = NVL.apply(request.getParameter("customerPK"), "");
 				PrimaryKey customerPK = "".equals(custId) ? null : new PrimaryKey(custId);
@@ -199,11 +190,7 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
 						caseInfo.setSubject(subject);
 						caseInfo.setPriority(priority);
 						caseInfo.setSummary(summary);
-//						caseInfo.setAssignedAgentPK(this.getCurrentAgent().getPK());
-						/*if(!CrmManager.getInstance().isAgentValid(this.getCurrentAgentStr())){
-							actionResult.setError("Assigned agent:'"+this.getCurrentAgentStr()+"' is invalid.");
-						}*/
-						caseInfo.setAssignedAgentUserId(this.getCurrentAgentStr());
+						caseInfo.setAssignedAgentPK(this.getCurrentAgent().getPK());
 						caseInfo.setCustomerPK(customerPK);
 						caseInfo.setSalePK(salePK);
 						caseInfo.setDepartments(departments);
@@ -224,24 +211,17 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
 						CrmCaseAction caseAction = new CrmCaseAction();
 						caseAction.setType(CrmCaseActionType.getEnum(CrmCaseActionType.CODE_NOTE));
 						caseAction.setTimestamp(new Date());
-//						caseAction.setAgentPK(this.getCurrentAgent().getPK());
-						caseAction.setAgentId(this.getCurrentAgentStr());
+						caseAction.setAgentPK(this.getCurrentAgent().getPK());
 						caseAction.setNote(note);
-						newCase.addAction(caseAction);	
-						if(actionResult.isSuccess()){
-							pk = CrmManager.getInstance().createCase(newCase);
-						}
+						newCase.addAction(caseAction);																		
+						pk = CrmManager.getInstance().createCase(newCase);
 
 					} else {
 
 						caseInfo.setSubject(subject);
 						caseInfo.setPriority(priority);
 						caseInfo.setSummary(summary);
-//						caseInfo.setAssignedAgentPK(assignedAgentPK);
-						if(!CrmManager.getInstance().isAgentValid(assignedAgentId)){
-							actionResult.setError("Assigned selected agent:'"+assignedAgentId+"' is invalid.");
-						}
-						caseInfo.setAssignedAgentUserId(assignedAgentId);
+						caseInfo.setAssignedAgentPK(assignedAgentPK);
 						caseInfo.setCustomerPK(customerPK);
 						caseInfo.setSalePK(salePK);
 						caseInfo.setDepartments(departments);
@@ -268,17 +248,12 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
 						}
 						System.out.println("actionType after "+actionType);
 						caseAction.setTimestamp(new Date());
-//						caseAction.setAgentPK(this.getCurrentAgent().getPK());
-						caseAction.setAgentId(CrmSecurityManager.getUserName(request));
-						caseAction.setNote(note); 
-						if(actionResult.isSuccess()){
-							CrmManager.getInstance().updateCase(caseInfo, caseAction, agent);
-							pk = cm.getPK();
-						}
+						caseAction.setAgentPK(this.getCurrentAgent().getPK());
+						caseAction.setNote(note);                        
+						CrmManager.getInstance().updateCase(caseInfo, caseAction, this.getCurrentAgent().getPK());
+						pk = cm.getPK();
 					}
-					if(actionResult.isSuccess()){
-						this.setSuccessPage(this.getSuccessPage() + "?case=" + pk.getId());
-					}
+					this.setSuccessPage(this.getSuccessPage() + "?case=" + pk.getId());
 				}
 			}
 
@@ -308,10 +283,6 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
 		return CrmSession.getCurrentAgent(pageContext.getSession());
 	}
 
-	private String getCurrentAgentStr() {
-		return CrmSession.getCurrentAgentStr(pageContext.getSession());
-	}
-	
 	public static class TagEI extends AbstractControllerTag.TagEI {
 	}
 

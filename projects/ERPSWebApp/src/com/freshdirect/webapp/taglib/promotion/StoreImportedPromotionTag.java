@@ -26,7 +26,6 @@ import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
-import com.freshdirect.webapp.crm.security.CrmSecurityManager;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 
 public class StoreImportedPromotionTag extends AbstractControllerTag {
@@ -52,7 +51,6 @@ public class StoreImportedPromotionTag extends AbstractControllerTag {
 			ActionResult actionResult) throws JspException {
 		
 		final String actionName = getActionName();
-		String userId = CrmSecurityManager.getUserName(request);
 		
 		if (promotion == null) {
 			actionResult.addError(true, "store.promo", "Promotion is NULL");
@@ -66,7 +64,7 @@ public class StoreImportedPromotionTag extends AbstractControllerTag {
 
 			promotion.doCleanup();
 			
-			promotion.setCreatedBy(userId);
+			promotion.setCreatedBy(agent.getUserId());
 			promotion.setCreatedDate(Calendar.getInstance().getTime());
 			
 			FDPromoChangeModel changeModel = new FDPromoChangeModel();

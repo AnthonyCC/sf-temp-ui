@@ -20,7 +20,7 @@
 <%! DateFormatSymbols symbols = new DateFormatSymbols();    
 
 final static CrmAgentRole[] ISSUING_ROLES = {
-		
+	
 	CrmAgentRole.getEnum(CrmAgentRole.COS_CODE),
 	CrmAgentRole.getEnum(CrmAgentRole.OPS_CODE),
 	CrmAgentRole.getEnum(CrmAgentRole.SOP_CODE),
@@ -55,7 +55,7 @@ final static CrmAgentRole[] APPROVAL_ROLES = {
 	criteria.setStoreCredits(request.getParameter("storeCredits") != null);
 	criteria.setCashbacks(request.getParameter("cashbacks") != null);
 	
-	Map<CrmAgentRole, List<String>> agents = CrmManager.getInstance().getAllAgentsFromLDAP(true);
+	CrmAgentList agents = CrmManager.getInstance().getAllAgents(true);
 %>
 
 <jsp:include page="/includes/reports_nav.jsp" />
@@ -106,15 +106,13 @@ final static CrmAgentRole[] APPROVAL_ROLES = {
                             <option value="">Any</option>
 							<logic:iterate id='role' collection="<%= ISSUING_ROLES %>" type="com.freshdirect.crm.CrmAgentRole">
 								<option class="header"><%= role.getName() %></option>
-								<% if(null != agents && null !=agents.get(CrmAgentRole.getEnum(role.getCode()))){ %>
-								<logic:iterate id='agent' collection="<%= agents.get(CrmAgentRole.getEnum(role.getCode())) %>" type="java.lang.String">
-								
-									<option value="<%=agent%>" <%=agent.equalsIgnoreCase(criteria.getIssuedBy()) ? "selected" : "" %>>
-										&nbsp;<%= agent %>
+								<logic:iterate id='agent' collection="<%= agents.getAgents(role) %>" type="com.freshdirect.crm.CrmAgentModel">
+								<% if (agent.isActive()) { %>
+									<option value="<%=agent.getUserId()%>" <%=agent.getUserId().equals(criteria.getIssuedBy()) ? "selected" : "" %>>
+										&nbsp;<%= agent.getUserId() %>
 									</option>
-								
-								</logic:iterate>
 								<% } %>
+								</logic:iterate>
 								<option></option>
 							</logic:iterate>
                         </select>
@@ -160,15 +158,13 @@ final static CrmAgentRole[] APPROVAL_ROLES = {
 							<option value="AUTO_APPROVED" <%="AUTO_APPROVED".equals(criteria.getApprovedBy()) ? "selected" : "" %>>&nbsp;AUTO_APPROVED</option>
 							<logic:iterate id='role' collection="<%= APPROVAL_ROLES %>" type="com.freshdirect.crm.CrmAgentRole">
 								<option class="header"><%= role.getName() %></option>
-								<% if(null != agents && null !=agents.get(CrmAgentRole.getEnum(role.getCode()))){ %>
-								<logic:iterate id='agent' collection="<%= agents.get(CrmAgentRole.getEnum(role.getCode())) %>" type="java.lang.String">
-								
-									<option value="<%=agent%>" <%=agent.equals(criteria.getApprovedBy()) ? "selected" : "" %>>
-										&nbsp;<%= agent %>
+								<logic:iterate id='agent' collection="<%= agents.getAgents(role) %>" type="com.freshdirect.crm.CrmAgentModel">
+								<% if (agent.isActive()) { %>
+									<option value="<%=agent.getUserId()%>" <%=agent.getUserId().equals(criteria.getApprovedBy()) ? "selected" : "" %>>
+										&nbsp;<%= agent.getUserId() %>
 									</option>
-								
-								</logic:iterate>
 								<% } %>
+								</logic:iterate>
 								<option></option>
 							</logic:iterate>
                         </select>

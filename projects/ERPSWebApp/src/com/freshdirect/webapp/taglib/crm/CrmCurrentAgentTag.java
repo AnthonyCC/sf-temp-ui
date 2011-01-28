@@ -22,7 +22,7 @@ public class CrmCurrentAgentTag extends com.freshdirect.framework.webapp.BodyTag
 		HttpSession session = pageContext.getSession();
 		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
 		if(agent == null){
-//			throw new JspException("Required Agent not Found");
+			throw new JspException("Required Agent not Found");
 		}
 		pageContext.setAttribute(this.id, agent);
 		return EVAL_BODY_BUFFERED;

@@ -69,7 +69,7 @@
 <tmpl:put name='title' direct='true'>Create Windows Steering Promotion</tmpl:put>
 	
 	<tmpl:put name='content' direct='true'>
-	
+	<crm:GetCurrentAgent id='currentAgent'>
 	<crm:WSPromoController result="result">		
 
 		<%@ include file="/includes/promotions/i_promo_trn_nav.jspf" %>
@@ -319,7 +319,7 @@
 			</table>			
 		</form>
 		</crm:WSPromoController>
-	
+	</crm:GetCurrentAgent>
 	</tmpl:put>
 	</fd:GetPromotionNew>
 </tmpl:insert>

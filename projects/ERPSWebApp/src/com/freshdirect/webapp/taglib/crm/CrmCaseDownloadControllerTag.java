@@ -22,7 +22,6 @@ public class CrmCaseDownloadControllerTag extends AbstractControllerTag {
 	private String selectedQueue;
 	private String subject;
 	private int numberToDownload = 0;
-	private String agentId;
 	
 	public void setAgentPk(PrimaryKey agentPK){
 		this.agentPK = agentPK;
@@ -34,7 +33,7 @@ public class CrmCaseDownloadControllerTag extends AbstractControllerTag {
 				this.processRequest(request);
 				this.validateRequest(actionResult);
 				if(actionResult.isSuccess()){
-					//CrmManager.getInstance().downloadCases(this.agentPK, this.selectedQueue, this.subject, this.numberToDownload); 
+//					CrmManager.getInstance().downloadCases(this.agentPK, this.selectedQueue, this.subject, this.numberToDownload); 
 				}
 			}
 			return true;
@@ -75,14 +74,6 @@ public class CrmCaseDownloadControllerTag extends AbstractControllerTag {
 	
 	public static class TagEI extends AbstractControllerTag.TagEI {
 		//default implementation
-	}
-
-	public String getAgentId() {
-		return agentId;
-	}
-
-	public void setAgentId(String agentId) {
-		this.agentId = agentId;
 	}
 
 }

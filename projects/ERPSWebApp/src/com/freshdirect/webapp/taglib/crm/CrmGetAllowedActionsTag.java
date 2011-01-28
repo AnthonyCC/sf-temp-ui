@@ -13,15 +13,12 @@ import com.freshdirect.crm.CrmCaseModel;
 import com.freshdirect.crm.CrmCaseOperation;
 import com.freshdirect.crm.CrmCaseQueue;
 import com.freshdirect.crm.CrmManager;
-import com.freshdirect.crm.CrmRoleCaseStateBuilder;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.webapp.crm.security.CrmSecurityManager;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 public class CrmGetAllowedActionsTag extends AbstractGetterTag {
 
 	private CrmCaseModel cm;
-	
 
 	public void setCase(CrmCaseModel cm) {
 		this.cm = cm;
@@ -32,54 +29,32 @@ public class CrmGetAllowedActionsTag extends AbstractGetterTag {
 			&& agent.getRole().equals(CrmAgentRole.getEnum(roleCode));
 	}
 
-	private boolean isMatchingAgent(String agentId, String queueCode, String roleCode, CrmAgentRole role) {
-		return cm.getSubject().getQueue().equals(CrmCaseQueue.getEnum(queueCode))
-			&& role.equals(CrmAgentRole.getEnum(roleCode));
-	}
-	
 	private boolean isAllowedOperation(CrmCaseOperation op, CrmAgentModel agent) {
 		boolean assignedToSelf = cm.getAssignedAgentPK().equals(agent.getPK());
 		boolean isCloseOp = op.getActionType().equals(CrmCaseActionType.getEnum(CrmCaseActionType.CODE_CLOSE));
 		if (!assignedToSelf && isCloseOp) {
 			return agent.isSupervisor()
-				|| isMatchingAgent(agent, CrmCaseQueue.CODE_ASQ, CrmAgentRole.ASV_CODE)
+				//|| isMatchingAgent(agent, CrmCaseQueue.CODE_ASQ, CrmAgentRole.ASV_CODE)
 				|| (CrmCaseQueue.isTrnQueue(cm.getSubject().getQueue().getCode())
 						&& agent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.TRN_CODE)));
 		}
 		return true;
 
 	}
-	
-	private boolean isAllowedOperation(CrmCaseOperation op, String agentId, CrmAgentRole role) {
-		boolean assignedToSelf = cm.getAssignedAgentUserId().equalsIgnoreCase(agentId);
-		boolean isCloseOp = op.getActionType().equals(CrmCaseActionType.getEnum(CrmCaseActionType.CODE_CLOSE));
-		if (!assignedToSelf && isCloseOp) {
-//			return agent.isSupervisor()
-//				|| isMatchingAgent(agent, CrmCaseQueue.CODE_ASQ, CrmAgentRole.ASV_CODE, role)
-//				|| (CrmCaseQueue.isTrnQueue(cm.getSubject().getQueue().getCode())
-//						&& agent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.TRN_CODE)));
-		}
-		return true;
-
-	}
-	
 	protected Object getResult() throws FDResourceException {
 		if (cm.getSubject() == null) {
 			return Collections.EMPTY_SET;
 		}
-		String role = CrmSecurityManager.getUserRole(request);
-		String agentId = CrmSecurityManager.getUserName(request);
-		CrmAgentRole crmRole = CrmAgentRole.getEnumByLDAPRole(role);
-//		CrmAgentModel currAgent = CrmSession.getCurrentAgent(pageContext.getSession());
 
-		List operations = CrmManager.getInstance().getOperations(crmRole, cm.getSubject(), cm.getState());
-//		Set allowedActionTypes = CrmRoleCaseStateBuilder.getCaseActions(crmRole, cm.getState());
+		CrmAgentModel currAgent = CrmSession.getCurrentAgent(pageContext.getSession());
+
+		List operations = CrmManager.getInstance().getOperations(currAgent.getRole(), cm.getSubject(), cm.getState());
 
 		Set allowedActionTypes = new HashSet();
 		for (Iterator i = operations.iterator(); i.hasNext();) {
 			CrmCaseOperation op = (CrmCaseOperation) i.next();
 
-			if (isAllowedOperation(op, agentId, crmRole)) {
+			if (isAllowedOperation(op, currAgent)) {
 				allowedActionTypes.add(op.getActionType());
 			}
 			

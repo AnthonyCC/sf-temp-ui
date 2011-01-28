@@ -5,10 +5,6 @@ import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 public class CrmGetAllAgentsTag extends AbstractGetterTag {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 6727768147461970837L;
 	private boolean useCache = true;
 
 	public void setUseCache(boolean b) {
@@ -16,13 +12,12 @@ public class CrmGetAllAgentsTag extends AbstractGetterTag {
 	}
 
 	protected Object getResult() throws Exception {
-		//return CrmManager.getInstance().getAllAgents(useCache);
-		return CrmManager.getInstance().getAllAgentsFromLDAP(useCache);
+		return CrmManager.getInstance().getAllAgents(useCache);
 	}
 
 	public static class TagEI extends AbstractGetterTag.TagEI {
 		protected String getResultType() {
-			return "java.util.HashMap";
+			return "com.freshdirect.crm.CrmAgentList";
 		}
 	}
 }

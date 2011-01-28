@@ -9,7 +9,6 @@
 <%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionStatus"%>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionProfileAttribute"%>
-<%@ page import='com.freshdirect.webapp.crm.security.*' %>
 <%@ taglib uri='crm' prefix='crm' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -17,10 +16,8 @@
 
 	<tmpl:put name='title' direct='true'>Promotion Details</tmpl:put>
 	<tmpl:put name='content' direct='true'>
-	
+	<crm:GetCurrentAgent id='currentAgent'>
 		<%
-			String userId = CrmSecurityManager.getUserName(request);
-			String userRole = CrmSecurityManager.getUserRole(request);
 			String promoId = request.getParameter("promoId");
 			
 		%>
@@ -144,6 +141,6 @@
 		</form>
 		</crm:PromotionStateSwitch>
 	</fd:GetPromotionNew>
-	
+	</crm:GetCurrentAgent>
 	</tmpl:put>
 </tmpl:insert>

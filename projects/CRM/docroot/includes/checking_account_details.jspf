@@ -111,7 +111,7 @@ String ccAccountNumberVerify = request.getParameter(PaymentMethodName.ACCOUNT_NU
 				}
 			}
 		</script>
-
+<crm:GetCurrentAgent id="agent">
 	<div class="cust_module">
 	<form name="checking_account" method="POST">
 		<table width="100%" cellpadding="0" cellspacing="0" class="cust_module_header">
@@ -221,10 +221,10 @@ String ccAccountNumberVerify = request.getParameter(PaymentMethodName.ACCOUNT_NU
 				<td>Since:</td>
 				<td colspan="3">Payment Method Added</td>
 			</tr>
-				
+				<% if (agent.isSupervisor()) { %>
 				<tr><td colspan="4"><hr class="gray1px"></td></tr>
 				<tr><td></td><td colspan="3"><a href="javascript:pop('/supervisor/add_bad_account.jsp?account_number=<%=paymentMethod.getAccountNumber()%>&aba_route_number=<%=paymentMethod.getAbaRouteNumber()%>&bank_account_type=<%=paymentMethod.getBankAccountType().getName()%>&first_name=<%=custInfo.getFirstName()%>&last_name=<%=custInfo.getLastName()%>', 280, 700);" class="order_modify_cancel">ADD TO BAD ACCOUNT</a></td></tr>
-				
+				<% }  // if isSupervisor %>
 			<% 
 			} else { // in bad account list 
 			%>
@@ -251,9 +251,9 @@ String ccAccountNumberVerify = request.getParameter(PaymentMethodName.ACCOUNT_NU
 				<td>Reason:</td>
 				<td colspan="3"><%=restrictedPaymentMethodModel.getReason().getDescription()%></td>
 				</tr>
-				
+				<%-- if (agent.isSupervisor()) { --%>
 				<tr><td></td><td colspan="3"><a href="javascript:pop('/supervisor/remove_bad_account.jsp?restrict_payment_method_id=<%=restrictedPaymentMethodModel.getId()%>', 350, 500);" class="order_modify_proceed">REMOVE FROM BAD ACCOUNT</a></td></tr>
-				
+				<%-- } --%>
 			<% } %>
 			</crm:CrmGetRestrictedPaymentMethod>
 			<% } %>
@@ -266,10 +266,10 @@ String ccAccountNumberVerify = request.getParameter(PaymentMethodName.ACCOUNT_NU
 			<br>
 			<span class="error_detail">This account matches an entry in our bad accounts database. Verify with customer that information is accurate, and alert Supervisor when deemed necessary.</span>
 			<br>
-			
+			<%-- if (agent.isSupervisor()) { --%>
 			<hr class="gray1px">
 			<input type="checkbox" name="bypassBadAccountCheck"> Bypass bad account check on next submission to force add/ update this payment information.
-			
+			<%--}--%>
 			</td></tr>
 			</fd:ErrorHandler>
 		</table><br>
@@ -279,6 +279,7 @@ String ccAccountNumberVerify = request.getParameter(PaymentMethodName.ACCOUNT_NU
 	<input type="hidden" name="<%=PaymentMethodName.PAYMENT_METHOD_TYPE%>" value="<%=paymentMethodType%>">
 	</form>
 	</div>
+</crm:GetCurrentAgent>
 </crm:GetErpCustomer>
 
 

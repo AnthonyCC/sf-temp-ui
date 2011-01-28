@@ -5,6 +5,5 @@
 
 <%
     CrmSession.getSessionStatus(session).clear(false);
-    //response.sendRedirect(response.encodeRedirectURL("/main/index.jsp"));
     response.sendRedirect(response.encodeRedirectURL("/main/main_index.jsp"));
 %>

@@ -164,8 +164,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 		String actionName = request.getParameter("actionName");
 		try {
 			HttpSession session = pageContext.getSession();
-			//CrmAgentModel agent = CrmSession.getCurrentAgent(session);
-			String agentId = CrmSession.getCurrentAgentStr(session);
+			CrmAgentModel agent = CrmSession.getCurrentAgent(session);
 			if(("publish").equals(actionName)) {
 				if(preValidate(request, actionResult)) {
 					String effectiveDate = request.getParameter("effectiveDate");
@@ -197,7 +196,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 						postValidate(promotion, actionResult);
 						if(actionResult.isSuccess()){
 							promotion.setStatus(EnumPromotionStatus.APPROVE);
-							promotion.setCreatedBy(agentId);
+							promotion.setCreatedBy(agent.getUserId());
 							promotion.setCreatedDate(new Date());
 							PrimaryKey pk = FDPromotionNewManager.createPromotion(promotion);
 							if(pk == null)
@@ -234,7 +233,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 							actionResult.addError(true, "actionfailure", buf.toString());
 							return true;
 						}
-						promotion.setModifiedBy(agentId);
+						promotion.setModifiedBy(agent.getUserId());
 						promotion.setModifiedDate(new Date());
 						updatePromotion(promotion, effectiveDate, zone, startTime, endTime, discount);
 						postValidate(promotion, actionResult);
@@ -262,14 +261,14 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 					}
 					promotion.setAuditChanges(FDPromotionNewManager.loadPromoAuditChanges(promotion.getId()));
 					promotion.setStatus(EnumPromotionStatus.CANCELLING);
-					promotion.setModifiedBy(agentId);
+					promotion.setModifiedBy(agent.getUserId());
 					promotion.setModifiedDate(new Date());						
 					FDPromoChangeModel changeModel = new FDPromoChangeModel();
 					List promoChanges = new ArrayList<FDPromoChangeModel>();
 					changeModel.setPromotionId(promotion.getId());
 					changeModel.setActionDate(new Date());
 					changeModel.setActionType(EnumPromoChangeType.CANCEL);
-					changeModel.setUserId(agentId);
+					changeModel.setUserId(agent.getUserId());
 					promoChanges.add(changeModel);
 					promotion.setAuditChanges(promoChanges);
 					
@@ -358,11 +357,11 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			}
 			
 			HttpSession session = pageContext.getSession();
-			String agentId = CrmSession.getCurrentAgentStr(session);
+			CrmAgentModel agent = CrmSession.getCurrentAgent(session);
 			
 			PromoPublisher publisher = new PromoPublisher();
 			publisher.setPromoList(ppList);
-			publisher.setAgentId(agentId);
+			publisher.setAgent(agent);
 	
 			final boolean result = publisher.doPublish();
 	

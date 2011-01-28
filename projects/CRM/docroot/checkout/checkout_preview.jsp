@@ -12,21 +12,17 @@
 <%@ page import="com.freshdirect.crm.CrmAgentRole"%>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession"%>
-<%@ page import='com.freshdirect.webapp.crm.security.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='crm' prefix='crm' %>
-<%CrmSession.invalidateCachedOrder((HttpSession) request.getSession());
-String agentId = CrmSecurityManager.getUserName(request);
-CrmAgentRole agentRole = CrmSession.getCurrentAgentRole(request.getSession());
-%>
+<%CrmSession.invalidateCachedOrder((HttpSession) request.getSession());%>
 <tmpl:insert template='/template/top_nav.jsp'>
 
 <tmpl:put name='title' direct='true'>Checkout > Order Preview</tmpl:put>
 <fd:FDShoppingCart id='cart' result="result">
 
-
+<crm:GetCurrentAgent id='currentAgent'>
 
 <fd:CheckoutController actionName="submitOrder" result="result" successPage="checkout_confirmation.jsp" ccdProblemPage="checkout_select_addr_payment.jsp">
 <%	
@@ -107,7 +103,7 @@ CrmAgentRole agentRole = CrmSession.getCurrentAgentRole(request.getSession());
 		<td>Pending</td>
 		<td><%=JspMethods.formatPrice(order.getTotal())%></td>
 		<td><%=CCFormatter.formatDateTime(Calendar.getInstance().getTime())%></td>
-		<td><%=agentId%></td>
+		<td><%=currentAgent.getUserId()%></td>
 		<td>Telephone</td>
 		<td>--</td>
 		<td>--</td>
@@ -145,6 +141,6 @@ CrmAgentRole agentRole = CrmSession.getCurrentAgentRole(request.getSession());
 </tmpl:put>
 
 </fd:CheckoutController>
-
+</crm:GetCurrentAgent>
 </fd:FDShoppingCart>
 </tmpl:insert>

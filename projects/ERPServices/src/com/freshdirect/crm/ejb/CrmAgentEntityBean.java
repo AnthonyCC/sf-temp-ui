@@ -107,5 +107,23 @@ public class CrmAgentEntityBean extends CrmEntityBeanSupport {
 	public boolean isMasqueradeAllowed() {
 		return ((CrmAgentModel)this.model).isMasqueradeAllowed();
 	}
+	
+	public PrimaryKey ejbFindAgentByLdapId(String ldapId) throws FinderException, ObjectNotFoundException {
+		Connection conn = null;
+		try{
+			conn = this.getConnection();
+			CrmAgentEntityDAO dao = (CrmAgentEntityDAO) this.getDAO();
+			return dao.findAgentByLdapId(conn, ldapId);
+		}catch(SQLException e){
+			throw new FinderException(e.getMessage());
+		}finally{
+			try{
+				if(conn != null){
+					conn.close();
+				}
+			}catch(SQLException ignored){
+			}
+		}
+	}
 
 }

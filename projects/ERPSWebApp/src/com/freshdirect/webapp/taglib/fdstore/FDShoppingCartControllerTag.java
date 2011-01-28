@@ -1778,10 +1778,9 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 	}
 
 	private void setComplaintDetails(ActionResult result, ErpComplaintModel complaintModel) {
-//		CrmAgentModel agent = CrmSession.getCurrentAgent(pageContext.getSession());
-		String agentId = CrmSession.getCurrentAgentStr(pageContext.getSession());
-		if (agentId != null) {
-			complaintModel.setCreatedBy(agentId);
+		CrmAgentModel agent = CrmSession.getCurrentAgent(pageContext.getSession());
+		if (agent != null) {
+			complaintModel.setCreatedBy(agent.getUserId());
 		} else {
 			CallcenterUser ccUser = (CallcenterUser) pageContext.getSession().getAttribute(SessionName.CUSTOMER_SERVICE_REP);
 			complaintModel.setCreatedBy(ccUser.getId());

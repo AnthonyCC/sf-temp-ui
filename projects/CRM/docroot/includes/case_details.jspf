@@ -29,16 +29,16 @@
 --%><%!
 final static CrmCaseActionType[] BUTTON_ACTION_TYPES = new CrmCaseActionType[] {
 	CrmCaseActionType.getEnum(CrmCaseActionType.CODE_CLOSE),
-	CrmCaseActionType.getEnum(CrmCaseActionType.CODE_ESCRVW),
-	CrmCaseActionType.getEnum(CrmCaseActionType.CODE_RETURN),
-	CrmCaseActionType.getEnum(CrmCaseActionType.CODE_APPROV),
-	CrmCaseActionType.getEnum(CrmCaseActionType.CODE_EML_OUT),
-	CrmCaseActionType.getEnum(CrmCaseActionType.CODE_CAL),
-	CrmCaseActionType.getEnum(CrmCaseActionType.CODE_CAL_MSG),
-	CrmCaseActionType.getEnum(CrmCaseActionType.CODE_CAL_SPK),
-	CrmCaseActionType.getEnum(CrmCaseActionType.CODE_CUST_CAL),
-	CrmCaseActionType.getEnum(CrmCaseActionType.CODE_ACT_DM_R),
-	CrmCaseActionType.getEnum(CrmCaseActionType.CODE_ACT_DM_A)
+	//CrmCaseActionType.getEnum(CrmCaseActionType.CODE_ESCRVW),
+	//CrmCaseActionType.getEnum(CrmCaseActionType.CODE_RETURN),
+	//CrmCaseActionType.getEnum(CrmCaseActionType.CODE_APPROV),
+	//CrmCaseActionType.getEnum(CrmCaseActionType.CODE_EML_OUT),
+	//CrmCaseActionType.getEnum(CrmCaseActionType.CODE_CAL),
+	//CrmCaseActionType.getEnum(CrmCaseActionType.CODE_CAL_MSG),
+	//CrmCaseActionType.getEnum(CrmCaseActionType.CODE_CAL_SPK),
+	//CrmCaseActionType.getEnum(CrmCaseActionType.CODE_CUST_CAL),
+	//CrmCaseActionType.getEnum(CrmCaseActionType.CODE_ACT_DM_R),
+	//CrmCaseActionType.getEnum(CrmCaseActionType.CODE_ACT_DM_A)
 };
 
 final static CrmAgentRole[] DISPLAY_ROLES = {
@@ -163,7 +163,7 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 			if ( !CloseButton ) { return false; }
 		}
 		/* END fix early call by IE */
-
+<% if(!isSecurityQueue){ %>
 		for ( var i=0,n=document.case_details.elements.length; i<n; i++ )
 		{
 			var field = document.case_details.elements[i];
@@ -287,7 +287,7 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 			}
 		}
 <% } %>
-
+<% } %>
 		if ( err ) { 
 			CaseButton.className = 'case_save_disabled';
 			CaseButton.disabled = true;
@@ -411,24 +411,25 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 		<% if (isEditAllowed && isAssignmentPriorityAllowed) { %>
 			<select id="assignedAgent" name="assignedAgent" class="pulldown">
 				<crm:GetAllAgents id="agentList">
-				<option class="title" value="<%= !thisCase.isAnonymous() ? (null !=(List)agentList.get(CrmAgentRole.getEnum(CrmAgentRole.SYS_CODE))?((List)agentList.get(CrmAgentRole.getEnum(CrmAgentRole.SYS_CODE))).get(0):"") : "" %>">-Select Agent-</option>
+				<option class="title" value="<%= !thisCase.isAnonymous() ? ((CrmAgentModel)agentList.getAgents(CrmAgentRole.getEnum(CrmAgentRole.SYS_CODE)).get(0)).getPK().getId() : "" %>">-Select Agent-</option>
 				<logic:iterate id='role' collection="<%= DISPLAY_ROLES %>" type="com.freshdirect.crm.CrmAgentRole">
-					<option class="header"><%= role.getName() %></option>
-					<% if(null != agentList && null !=agentList.get(CrmAgentRole.getEnum(role.getCode()))){ %>
-					<logic:iterate id='agent' collection="<%= agentList.get(CrmAgentRole.getEnum(role.getCode())) %>" type="java.lang.String">
-						<option value="<%= agent %>" <%= agent.equalsIgnoreCase(thisCase.getAssignedAgentUserId()) ? "selected" : "" %>>
-							&nbsp;<%= agent %>
-						</option>					
-					</logic:iterate>
-					<% } else { %>
-					<option></option>
+					<option class="header"><b><%= role.getName() %></b></option>
+					<logic:iterate id='agent' collection="<%= agentList.getAgents(role) %>" type="com.freshdirect.crm.CrmAgentModel">
+					<% if (agent.isActive()) { %>
+						<option value="<%= agent.getPK().getId() %>" <%= agent.getPK().equals(thisCase.getAssignedAgentPK()) ? "selected" : "" %>>
+							&nbsp;<%= agent.getUserId() %>
+						</option>
 					<% } %>
+					</logic:iterate>
+					<option></option>
 				</logic:iterate>
 				</crm:GetAllAgents>
 			</select>
 		<% } else { %>
-				<input type="hidden" name="assignedAgent" value="<%= thisCase.getAssignedAgentUserId() %>">
-				<%= thisCase.getAssignedAgentUserId() %>			
+				<crm:GetAgent id="agent" agentId="<%= thisCase.getAssignedAgentPK().getId() %>">
+				<input type="hidden" name="assignedAgent" value="<%= thisCase.getAssignedAgentPK().getId() %>">
+				<%= agent.getUserId() %>
+			</crm:GetAgent>			
 		<% } %>
 <fd:ErrorHandler result='<%= result %>' name='assignedAgent' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>

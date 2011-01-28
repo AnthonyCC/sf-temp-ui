@@ -23,5 +23,7 @@ public interface CrmAgentHome extends EJBHome {
 	public CrmAgentEB findByPrimaryKey(PrimaryKey pk) throws FinderException, RemoteException;
 
 	public CrmAgentEB findByUserIdAndPassword(String userId, String password) throws ObjectNotFoundException, FinderException, RemoteException;
+	
+	public CrmAgentEB findAgentByLdapId(String ldapId) throws FinderException, RemoteException;
 
 }

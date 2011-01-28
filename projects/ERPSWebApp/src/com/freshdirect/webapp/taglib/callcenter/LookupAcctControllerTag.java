@@ -30,8 +30,7 @@ public class LookupAcctControllerTag extends AbstractControllerTag {
 				String actionName = request.getParameter("actionName");
 
 				HttpSession session = pageContext.getSession();
-//				CrmAgentModel agent = CrmSession.getCurrentAgent(session);
-				String agent = CrmSession.getCurrentAgentStr(session);
+				CrmAgentModel agent = CrmSession.getCurrentAgent(session);
 
 				if(actionName.equals("lookup")){
 					//Remove the Session Values.
@@ -49,10 +48,10 @@ public class LookupAcctControllerTag extends AbstractControllerTag {
 						return true;
 					}
 
-					/*if(!agent.isAuthorizedToLookupAcctInfo()){
+					if(!agent.isAuthorizedToLookupAcctInfo()){
 						actionResult.addError(true, "authentication", "You are not authorized to see this info.");
 						return true;
-					}*/
+					}
 					session.setAttribute("acctNum", acctNumber);
 					session.setAttribute("lookupLoc", lookupLoc);
 					setSuccessPage("/supervisor/acct_lookup_auth.jsp");	
@@ -69,7 +68,7 @@ public class LookupAcctControllerTag extends AbstractControllerTag {
 						actionResult.addError(true, "inputerror", SystemMessageList.MSG_REQUIRED);
 						return true;
 					}else{
-//						CrmManager.getInstance().loginAgent(agent.getUserId(), password);
+						CrmManager.getInstance().loginAgent(agent.getUserId(), password);
 						if(lookupLoc.equals("1")){
 							//Lookup Customer's Account.
 							String userId = CrmManager.getInstance().lookupAccount(acctNumber);
@@ -92,10 +91,10 @@ public class LookupAcctControllerTag extends AbstractControllerTag {
 		} catch(FDResourceException e){
 			LOGGER.error("System Error ooccurred while performing the Account Lookup.", e);
 			actionResult.addError(true, "lookupfailure", SystemMessageList.MSG_TECHNICAL_ERROR);
-		} /*catch (CrmAuthenticationException e) {
+		} catch (CrmAuthenticationException e) {
 			LOGGER.error("Authentication Failure.", e);
 			actionResult.addError(true, "authentication", "Password is wrong");
-		}*/catch(Exception e){
+		}catch(Exception e){
 			LOGGER.error("Unknown Error occurred while performing the Account Lookup." ,e);
 			actionResult.addError(true, "lookupfailure", SystemMessageList.MSG_TECHNICAL_ERROR);
 		}

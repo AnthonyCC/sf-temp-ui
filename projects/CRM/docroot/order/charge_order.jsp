@@ -22,7 +22,7 @@
 
 <% FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER); %>
 
-
+<crm:GetCurrentAgent id="currentAgent">
 <fd:GetOrder id='order' saleId='<%= orderId %>'>
 
 <crm:GetErpCustomer id="customer" user="<%= user %>">
@@ -216,7 +216,7 @@ if(order.hasInvoice()) {
     <td><b>Date</b></td>
     <td><b>Description</b></td>
     <td align="right"><b>Fee</b></td>
-    <td align="center"><b>Waive?</b></td>
+    <td align="center"><b><%= (currentAgent.isSupervisor()) ? "Waive?" : "&nbsp;"%></b></td>
     <td>&nbsp;</td>
   </tr>
 <%
@@ -238,8 +238,18 @@ if(order.hasInvoice()) {
     <td><%=sdf.format(failedSettlementModel.getTransactionDate())%>&nbsp;</td>
     <td><%=paymentResponse.getName()%><B>&nbsp;<%=paymentResponse.getDescription()%></B></td>
     <td align="right"><%=ErpServicesProperties.getBouncedCheckFee()%></td>
+<%
+	if (currentAgent.isSupervisor()) {
+%>
     <td align="center"><input type="checkbox" name="waive" value="Y"></td>
-
+<%
+	} else {
+%>
+    <td align="center">&nbsp;</td>
+    <td align="center"><input type="hidden" name="waive"></td>
+<%
+	}
+%>
 	<input type="hidden" name="additional_charge" value="<%=ErpServicesProperties.getBouncedCheckFee()%>">
 <%
 		try {
@@ -265,7 +275,7 @@ if(order.hasInvoice()) {
   <tr bgcolor="#EEEEEE">
     <td colspan="4" align="right"><b>Total Charge</b></td>
     <td align="right"><b><input type="text" align="right" size="7" name="charge_amount_1" readonly value="<%=JspMethods.formatPrice(order.getInvoicedTotal()+totalFees)%>"></b></td>    
-    <td colspan="2">&nbsp;<a onclick="javascript:recalculateTotal(document.forms['charge_order']);"  class="update_price">RECALCULATE</a></td>
+    <td colspan="2">&nbsp;<% if (currentAgent.isSupervisor()) { %><a onclick="javascript:recalculateTotal(document.forms['charge_order']);"  class="update_price">RECALCULATE</a><% } %></td>
   </tr>
 </table>
 </td><td width="49%" style="border-left: solid 1px #999999; padding-left: 15px;">
@@ -500,5 +510,5 @@ if(order.hasInvoice()) {
 
 </crm:GetErpCustomer>
 </fd:GetOrder>
-
+</crm:GetCurrentAgent>
 </tmpl:insert>

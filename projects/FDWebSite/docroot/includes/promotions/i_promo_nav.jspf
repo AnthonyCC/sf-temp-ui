@@ -46,9 +46,8 @@
 	boolean promo_edit_cart = snav_pageURI.indexOf("/promo_edit_cart.jsp") > -1;
 	boolean promo_edit_delivery = snav_pageURI.indexOf("/promo_edit_delivery.jsp") > -1;
 	boolean promo_edit_payment = snav_pageURI.indexOf("/promo_edit_payment.jsp") > -1;
-	//CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());
-	String lUserRole = CrmSecurityManager.getUserRole(request);
-	boolean isPromoAllAccessUser = CrmSecurityManager.isPromoAllAccessUser(lUserRole);
+	CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());	
+	boolean isPromoAllAccessUser = CrmSecurityManager.isPromoAllAccessUser(agent.getRole().getLdapRoleName());
 %>
 
 <div class="promo_nav">

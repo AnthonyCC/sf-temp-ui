@@ -35,7 +35,7 @@ import com.freshdirect.webapp.util.JspMethods;
  *
  */
 public class AutoCaseGenerator {
-	public static CrmCaseModel createAutoCase(String agentId, FDOrderI order, ErpComplaintModel complaint, ServletRequest request) throws FDResourceException {
+	public static CrmCaseModel createAutoCase(CrmAgentModel agent, FDOrderI order, ErpComplaintModel complaint, ServletRequest request) throws FDResourceException {
 		/* create case info */
 		String ciMethod = "";
 		double ciAmount = 0;
@@ -85,8 +85,7 @@ public class AutoCaseGenerator {
 		caseInfo.setSummary("Credit issued for items in " + deptsString.toString());
 		
 		
-//		caseInfo.setAssignedAgentPK(agent.getPK());
-		caseInfo.setAssignedAgentUserId(agentId);
+		caseInfo.setAssignedAgentPK(agent.getPK());
 		caseInfo.setCustomerPK( new PrimaryKey(order.getCustomerId()) );
 		caseInfo.setSalePK(new PrimaryKey(order.getErpSalesId()) );
 		
@@ -147,8 +146,7 @@ public class AutoCaseGenerator {
 			CrmCaseAction caseAction = new CrmCaseAction();
 			caseAction.setType(CrmCaseActionType.getEnum( CrmCaseActionType.CODE_NOTE ) );
 			caseAction.setTimestamp(new Date());
-//			caseAction.setAgentPK(agent.getPK());
-			caseAction.setAgentId(agentId);
+			caseAction.setAgentPK(agent.getPK());
 
 			caseAction.setNote( complaint.getDescription() );
 			newCase.addAction(caseAction);																		
@@ -159,8 +157,7 @@ public class AutoCaseGenerator {
 			CrmCaseAction caseAction = new CrmCaseAction();
 			caseAction.setType(CrmCaseActionType.getEnum( CrmCaseActionType.CODE_CLOSE ) );
 			caseAction.setTimestamp(new Date());
-//			caseAction.setAgentPK(agent.getPK());
-			caseAction.setAgentId(agentId);
+			caseAction.setAgentPK(agent.getPK());
 
 			caseAction.setNote( "Auto-generated case" );
 			newCase.addAction(caseAction);																		
@@ -172,8 +169,7 @@ public class AutoCaseGenerator {
 			CrmCaseAction caseAction = new CrmCaseAction();
 			caseAction.setType(CrmCaseActionType.getEnum(CrmCaseActionType.CODE_NOTE));
 			caseAction.setTimestamp(new Date());
-//			caseAction.setAgentPK(agent.getPK());
-			caseAction.setAgentId(agentId);
+			caseAction.setAgentPK(agent.getPK());
 			
 			caseAction.setNote("Auto-approved credits ("+ JspMethods.formatPrice(ciAmount) +", "+ciMethod+")");
 			newCase.addAction(caseAction);																		

@@ -1,6 +1,6 @@
 <%@ taglib uri='crm' prefix='crm' %>
 <%@ taglib uri='template' prefix='tmpl' %>
-<%@ page import='com.freshdirect.webapp.crm.security.*' %>
+
 <%@page import="com.freshdirect.fdstore.promotion.management.FDPromotionNewModel"%>
 <%@page import="java.util.List"%>
 <%@page import="com.freshdirect.fdstore.promotion.management.FDPromoCustStrategyModel"%>
@@ -10,10 +10,8 @@
 	<tmpl:put name='title' direct='true'>Promotion Create Edit</tmpl:put>
 	
 	<tmpl:put name='content' direct='true'>
-	
-		<%
-		String userId = CrmSecurityManager.getUserName(request);
-		FDPromotionNewModel promotion = null; String promoId="";
+	<crm:GetCurrentAgent id='currentAgent'>
+		<% FDPromotionNewModel promotion = null; String promoId="";
 		// quick fix because of broken build, remove if this file is finished %>
 		<%@ include file="/includes/promotions/i_promo_nav.jspf" %>
 		<%-- Top-Row, page specific nav --%>
@@ -59,6 +57,6 @@
 			<%@ include file="/includes/promotions/i_promo_detail_payreq.jspf" %>
 		</div>
 	
-	
+	</crm:GetCurrentAgent>
 	</tmpl:put>
 </tmpl:insert>

@@ -25,6 +25,7 @@ public class CrmAgentModel extends ModelSupport {
 	private Date createDate;
 	private List<String> agentCaseQueues;
 	private boolean masqueradeAllowed = false;
+	private String ldapId;
 
 	public CrmAgentModel() {
 		super();
@@ -48,7 +49,8 @@ public class CrmAgentModel extends ModelSupport {
 	}
 
 	public String getUserId() {
-		return this.userId;
+		//return this.userId;
+		return this.ldapId;
 	}
 
 	public void setUserId(String userId) {
@@ -144,7 +146,9 @@ public class CrmAgentModel extends ModelSupport {
 
 	public boolean isSupervisor() {
 		if (CrmAgentRole.getEnum(this.roleCode).equals(CrmAgentRole.getEnum(CrmAgentRole.SUP_CODE))
-			|| CrmAgentRole.getEnum(this.roleCode).equals(CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE))) {
+			|| CrmAgentRole.getEnum(this.roleCode).equals(CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE))
+			|| CrmAgentRole.getEnum(this.roleCode).equals(CrmAgentRole.getEnum(CrmAgentRole.DEV_CODE))
+			|| CrmAgentRole.getEnum(this.roleCode).equals(CrmAgentRole.getEnum(CrmAgentRole.QA_CODE))) {
 			return true;
 		} else {
 			return false;
@@ -201,5 +205,13 @@ public class CrmAgentModel extends ModelSupport {
 	
 	public boolean isMasqueradeAllowed() {
 		return masqueradeAllowed;
+	}
+
+	public String getLdapId() {
+		return ldapId;
+	}
+
+	public void setLdapId(String ldapId) {
+		this.ldapId = ldapId;
 	}
 }

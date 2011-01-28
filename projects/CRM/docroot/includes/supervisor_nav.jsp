@@ -1,8 +1,8 @@
 <%@ taglib uri='crm' prefix='crm' %>
 <%@ page import='com.freshdirect.webapp.crm.security.*' %>
 <%
-String lAgentId = CrmSecurityManager.getUserName(request);
-String lAgentRole = CrmSecurityManager.getUserRole(request);
+//String lAgentId = CrmSecurityManager.getUserName(request);
+
 String snav_pageURI = request.getRequestURI();
 boolean agent_worklists = snav_pageURI.indexOf("/supervisor/index.jsp") > -1;
 boolean account_deactivations = snav_pageURI.indexOf("account_deactivations") > -1;
@@ -21,10 +21,11 @@ boolean acct_lookup = snav_pageURI.indexOf("acct_lookup") > -1;
 boolean canned_text = snav_pageURI.indexOf("canned_text") > -1;
 boolean connect = snav_pageURI.indexOf("connect") > -1;
 %>
-
+<crm:GetCurrentAgent id='currentAgent'>
 <div class="side_nav_module_supervisor" >
 <!-- <a href="/supervisor/index.jsp" class="<%=agent_worklists?"sup_nav_on_supervisor":"sup_nav_supervisor"%>">Agents</a>  -->
-<% if(CrmSecurityManager.hasAccessToPage(lAgentRole,"account_deactivations.jsp")){ %>
+<% String lAgentRole = currentAgent.getRole().getLdapRoleName();
+	if(CrmSecurityManager.hasAccessToPage(lAgentRole,"account_deactivations.jsp")){ %>
 	<div  class="<%=account_deactivations?"sup_nav_on_supervisor":""%>" style="height: auto;"><a href="/supervisor/account_deactivations.jsp" class="<%=account_deactivations?"sup_nav_on_supervisor":"sup_nav_supervisor"%>">Acct. Deactivations</a></div>
 <% } %>
 <% if(CrmSecurityManager.hasAccessToPage(lAgentRole,"payment_exceptions_list.jsp")){ %>
@@ -68,4 +69,4 @@ boolean connect = snav_pageURI.indexOf("connect") > -1;
 <% } %>
 
 </div>
-
+</crm:GetCurrentAgent>

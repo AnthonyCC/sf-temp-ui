@@ -58,8 +58,7 @@ public class ZipPlus4AddressExceptionTag extends AbstractControllerTag implement
 		ex.setAddressType(EnumAddressType.getEnum(request.getParameter("aptType")));
 		ex.setReason(EnumAddressExceptionReason.getEnum(request.getParameter("reason")));
 		ex.setState(request.getParameter("state"));
-//		ex.setUserId(CrmSession.getCurrentAgent(request.getSession()).getUserId());
-		ex.setUserId(CrmSession.getCurrentAgentStr(request.getSession()));
+		ex.setUserId(CrmSession.getCurrentAgent(request.getSession()).getUserId());
 
 		ex.setCounty(FDDeliveryManager.getInstance().getCounty(ex.getCity(), ex.getState()));
 

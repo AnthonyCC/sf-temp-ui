@@ -59,9 +59,9 @@ public class CrmCaseSubject extends EnumModel implements TerminableI {
 	public static final String CODE_GIFT_CARD_INFO = "GCQ-010";
 	
 	public static final String CODE_IPHONE_INFO = "IPQ-010";
-	
-	public static final String CODE_SECURITY_INTERNAL="SEQ-003";
 
+	public static final String CODE_SECURITY_INTERNAL="SEQ-003";
+	
 	private final boolean obsolete;
 	private final String queueCode;
 	private final String priorityCode;

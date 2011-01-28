@@ -20,7 +20,6 @@ import com.freshdirect.crm.CrmCaseInfo;
 import com.freshdirect.crm.CrmCaseModel;
 import com.freshdirect.crm.CrmCaseOperation;
 import com.freshdirect.crm.CrmCaseTemplate;
-import com.freshdirect.crm.CrmCurrentAgent;
 import com.freshdirect.crm.CrmCustomerHeaderInfo;
 import com.freshdirect.crm.CrmLateIssueModel;
 import com.freshdirect.crm.CrmQueueInfo;
@@ -37,7 +36,7 @@ import com.freshdirect.framework.core.PrimaryKey;
 
 public interface CrmManagerSB extends EJBObject {
 
-	public void createAgent(CrmAgentModel agent, PrimaryKey userPk) throws FDResourceException, CrmAuthorizationException, ErpDuplicateUserIdException, RemoteException;
+	public PrimaryKey createAgent(CrmAgentModel agent, PrimaryKey userPk) throws FDResourceException, CrmAuthorizationException, ErpDuplicateUserIdException, RemoteException;
 
 	public void updateAgent(CrmAgentModel agent, PrimaryKey userPk) throws FDResourceException, CrmAuthorizationException, RemoteException;
 
@@ -53,8 +52,6 @@ public interface CrmManagerSB extends EJBObject {
 
 	public boolean lockCase(PrimaryKey agentPK, PrimaryKey casePK) throws FDResourceException, RemoteException;
 	
-	public boolean lockCase(String agentId, PrimaryKey casePK) throws FDResourceException, RemoteException;
-	
 	public void unlockCase(PrimaryKey casePK) throws FDResourceException, RemoteException;
     
 	public boolean closeAutoCase(PrimaryKey casePK) throws FDResourceException, RemoteException;
@@ -66,8 +63,6 @@ public interface CrmManagerSB extends EJBObject {
 	public PrimaryKey createSystemCaseInSingleTx(CrmSystemCaseInfo caseInfo) throws FDResourceException, RemoteException;
     
 	public void updateCase(CrmCaseInfo caseInfo, CrmCaseAction action, PrimaryKey agentPk) throws FDResourceException, CrmAuthorizationException, RemoteException;
-	
-	public void updateCase(CrmCaseInfo caseInfo, CrmCaseAction action, CrmCurrentAgent agent) throws FDResourceException, CrmAuthorizationException, RemoteException;
     
 	public List<CrmQueueInfo> getQueueOverview() throws FDResourceException, RemoteException;
 
@@ -78,8 +73,6 @@ public interface CrmManagerSB extends EJBObject {
 	public void downloadCases(PrimaryKey agentPK, String queue, String subject, int numberToDownload) throws FDResourceException, RemoteException;
 	
 	public CrmStatus getSessionStatus(PrimaryKey agentPK) throws FDResourceException, RemoteException;
-	
-	public CrmStatus getSessionStatus(String agentId) throws FDResourceException, RemoteException;
 	
 	public void saveSessionStatus(CrmStatus status) throws FDResourceException, RemoteException;
 	
@@ -106,13 +99,6 @@ public interface CrmManagerSB extends EJBObject {
 			String reasonCode, 
 			String saleId)  throws FDResourceException, CrmAuthorizationException, RemoteException;
 	
-	public void incrDeliveryCount(DeliveryPassModel model, 
-			String agentId, 
-			int delta, 
-			String note, 
-			String reasonCode, 
-			String saleId)  throws FDResourceException, CrmAuthorizationException, RemoteException;
-	
 
 	public void incrExpirationPeriod(DeliveryPassModel model, 
 			CrmAgentModel agentmodel, 
@@ -121,22 +107,9 @@ public interface CrmManagerSB extends EJBObject {
 			String reasonCode, 
 			String saleId)  throws FDResourceException, CrmAuthorizationException, RemoteException;
 	
-	public void incrExpirationPeriod(DeliveryPassModel model, 
-			String agentId,  
-			int noOfDays, 
-			String note, 
-			String reasonCode, 
-			String saleId)  throws FDResourceException, CrmAuthorizationException, RemoteException;
-	
 	
 	public void cancelDeliveryPass(DeliveryPassModel model, 
 			CrmAgentModel agentmodel, 
-			String note, 
-			String reasonCode, 
-			String saleId) throws FDResourceException, RemoteException;
-	
-	public void cancelDeliveryPass(DeliveryPassModel model, 
-			String agentId, 
 			String note, 
 			String reasonCode, 
 			String saleId) throws FDResourceException, RemoteException;
@@ -148,6 +121,8 @@ public interface CrmManagerSB extends EJBObject {
 	public List<String> lookupOrders(String accountNum) throws FDResourceException, RemoteException;
 	
 	public void logViewAccount(CrmAgentModel agent, String customerID) throws FDResourceException, RemoteException;
+	
+	public void logViewAccount(CrmAgentModel agent, String customerID,EnumAccountActivityType activityType,String maskedAcctNumber)throws FDResourceException, RemoteException;
 	
 	public ErpCannedText createCannedText(ErpCannedText cannedText) throws FDResourceException, RemoteException;
 
@@ -165,9 +140,5 @@ public interface CrmManagerSB extends EJBObject {
 	
 	public String getLastDeliveredOrder(String erpCustomerId) throws FDResourceException, RemoteException;
 	
-//	public void logViewAccount(CrmAgentModel agent, String customerID,EnumAccountActivityType activityType,String maskedAcctNumber)throws FDResourceException,RemoteException;
-	
-	public void logViewAccount(String agentId, String customerID) throws FDResourceException, RemoteException;
-	
-	public void logViewAccount(String agentId, String customerID,EnumAccountActivityType activityType,String maskedAcctNumber)throws FDResourceException,RemoteException;
+	public CrmAgentModel getAgentByLdapId(String agentLdapId) throws FDResourceException, CrmAuthenticationException,RemoteException;
 }

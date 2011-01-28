@@ -15,6 +15,7 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmManager;
 import com.freshdirect.crm.CrmSystemCaseInfo;
@@ -54,8 +55,7 @@ public class CrmCCNumberControllerTag extends AbstractControllerTag {
 
 	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		HttpSession session = pageContext.getSession();
-//		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
-		String agentId = CrmSession.getCurrentAgentStr(session);
+		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
 		String accessCode = NVL.apply(request.getParameter("accesskey")," ");
 		String hashedAccessCode = MD5Hasher.hash(accessCode);
 		if(hashedAccessCode == null || !hashedAccessCode.equals(FDStoreProperties.getCrmCCDetailsAccessKey())) {
@@ -81,14 +81,14 @@ public class CrmCCNumberControllerTag extends AbstractControllerTag {
 			if(order.getPaymentMethod()!= null /*&& (order.getPaymentMethod() instanceof ErpECheckModel || order.getPaymentMethod() instanceof ErpCreditCardModel )*/){
 				
 				if(order.getPaymentMethod() instanceof ErpECheckModel){
-					CrmManager.getInstance().logViewAccount(agentId, order.getCustomerId(),EnumAccountActivityType.VIEW_ECHECK,order.getPaymentMethod().getMaskedAccountNumber());
+					CrmManager.getInstance().logViewAccount(agent, order.getCustomerId(),EnumAccountActivityType.VIEW_ECHECK,order.getPaymentMethod().getMaskedAccountNumber());
 				}
 				else if(order.getPaymentMethod() instanceof ErpCreditCardModel){
-					CrmManager.getInstance().logViewAccount(agentId, order.getCustomerId(),EnumAccountActivityType.VIEW_CC,order.getPaymentMethod().getMaskedAccountNumber());					
+					CrmManager.getInstance().logViewAccount(agent, order.getCustomerId(),EnumAccountActivityType.VIEW_CC,order.getPaymentMethod().getMaskedAccountNumber());					
 				}
 				checkCCViewsLimit();
 			}else{
-				CrmManager.getInstance().logViewAccount(agentId, order.getCustomerId());
+				CrmManager.getInstance().logViewAccount(agent, order.getCustomerId());
 			}
 			
  		} catch (FDResourceException e) {

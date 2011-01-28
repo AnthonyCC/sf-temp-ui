@@ -60,7 +60,6 @@ public class PromoPublisher {
 	
 	private List<FDPromotionNewModel> promoList;
 	private CrmAgentModel agent;
-	private String agentId;
 
 	/**
 	 * Result of publish per promotion. Each couple is a Code to TRUE/FALSE mapping.
@@ -114,11 +113,7 @@ public class PromoPublisher {
 			return false;
 		}
 
-		/*if (agent == null) {
-			LOGGER.error("Missing agent parameter");
-			return false;
-		}*/
-		if (agentId == null) {
+		if (agent == null) {
 			LOGGER.error("Missing agent parameter");
 			return false;
 		}
@@ -164,8 +159,7 @@ public class PromoPublisher {
 		
 		pairs[1] = new NameValuePair();
 		pairs[1].setName("agent");
-//		pairs[1].setValue(agent.getUserId());
-		pairs[1].setValue(agentId);
+		pairs[1].setValue(agent.getUserId());
 
 		meth.setRequestBody(pairs);
 		
@@ -227,8 +221,7 @@ public class PromoPublisher {
 
 			// log publish result
 			try {
-//				FDPromotionNewManager.logPublishEvent(agent, tStart, tEnd, promoPublishURL, lastResult, preStatuses, null, null);
-				FDPromotionNewManager.logPublishEvent(agentId, tStart, tEnd, promoPublishURL, lastResult, preStatuses, null, null);
+				FDPromotionNewManager.logPublishEvent(agent, tStart, tEnd, promoPublishURL, lastResult, preStatuses, null, null);
 			} catch (FDResourceException e) {
 				LOGGER.error("Failed log publish event", e);
 			}
@@ -458,13 +451,5 @@ public class PromoPublisher {
 		p.setPromoList(list);
 		
 		p.doPublish();
-	}
-
-	public String getAgentId() {
-		return agentId;
-	}
-
-	public void setAgentId(String agentId) {
-		this.agentId = agentId;
 	}
 }

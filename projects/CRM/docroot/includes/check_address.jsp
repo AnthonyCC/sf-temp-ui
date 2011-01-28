@@ -18,7 +18,7 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("addApa
 	actionName = "addressCheck";
 }
 %>
-
+<crm:GetCurrentAgent id='currentAgent'>
 <fd:ZipPlus4Address actionName='<%=actionName%>' result='result' id='dlvAddress'>
 <%
 	boolean addressOK = "post".equalsIgnoreCase(request.getMethod()) && ("addressCheck".equals(actionName) || "addApartment".equals(actionName)) && !result.hasError("dlv_address");
@@ -126,7 +126,7 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("addApa
         <td colspan="5" align="center"><img src="/media_stat/crm/images/clear.gif" width="1" height="8"><br>
 		<input type="submit" name="checkAddress" value="CHECK ADDRESS" class="submit">
                 <%=dlvAddress.getAddressType() != null ? "<br>Address Type = " + dlvAddress.getAddressType().getDescription() : ""%> 
-			<% if (addApartment ){//&& currentAgent.isSupervisor()  ) {%>
+			<% if (/*currentAgent.isSupervisor() &&*/ addApartment) {%>
 				<br><br>
 				<input type="submit" name="addApartment" value="ADD APARTMENT" class="new">
 				<br><br>
@@ -218,4 +218,4 @@ if (suggestions != null) {  %>
 <% 		}
 	} %>
 </fd:ZipPlus4Address>
-
+</crm:GetCurrentAgent>

@@ -11,7 +11,6 @@ public class CrmCaseAction extends ModelSupport {
 	private String note;
 	private Date timestamp;
 	private PrimaryKey agentPK;
-	private String agentId;
 
 	public void setPK(PrimaryKey pk) {
 		super.setPK(pk);
@@ -47,14 +46,6 @@ public class CrmCaseAction extends ModelSupport {
 
 	public void setAgentPK(PrimaryKey key) {
 		agentPK = key;
-	}
-
-	public String getAgentId() {
-		return agentId;
-	}
-
-	public void setAgentId(String agentId) {
-		this.agentId = agentId;
 	}
 
 }

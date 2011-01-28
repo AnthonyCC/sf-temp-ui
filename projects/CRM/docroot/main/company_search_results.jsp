@@ -25,7 +25,9 @@
     boolean isGuest = false; 
     String originalPage = "/main/index.jsp";
 %>
-
+<crm:GetCurrentAgent id="currentAgent">
+    <%--  isGuest = currentAgent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.GUE_CODE));  --%> 
+</crm:GetCurrentAgent>
 <crm:GenericLocator id="searchResults" searchParam='COMPANY_SEARCH' result="result">
 	<fd:ErrorHandler result='<%= result %>' name='inputerror' id='errorMsg'>
 	   <%@ include file="/includes/i_error_messages.jspf" %>   

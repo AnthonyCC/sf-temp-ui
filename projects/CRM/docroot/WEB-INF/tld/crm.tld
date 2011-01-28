@@ -223,11 +223,6 @@
         </attribute>
         <attribute>
             <name>agentPK</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>agentId</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -317,18 +312,18 @@
         </attribute>
     </tag>
 
-<!--    <tag>-->
-<!--        <name>GetAllAgents</name>-->
-<!--        <tagclass>com.freshdirect.webapp.taglib.crm.CrmGetAllAgentsTag</tagclass>-->
-<!--        <teiclass>com.freshdirect.webapp.taglib.crm.CrmGetAllAgentsTag$TagEI</teiclass>-->
-<!--        <bodycontent>JSP</bodycontent>-->
-<!--        <info></info>-->
-<!--        <attribute>-->
-<!--            <name>id</name>-->
-<!--            <required>true</required>-->
-<!--            <rtexprvalue>true</rtexprvalue>-->
-<!--        </attribute>-->
-<!--    </tag>-->
+    <tag>
+        <name>GetAllAgents</name>
+        <tagclass>com.freshdirect.webapp.taglib.crm.CrmGetAllAgentsTag</tagclass>
+        <teiclass>com.freshdirect.webapp.taglib.crm.CrmGetAllAgentsTag$TagEI</teiclass>
+        <bodycontent>JSP</bodycontent>
+        <info></info>
+        <attribute>
+            <name>id</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
 
     <tag>
         <name>FindCases</name>
@@ -1338,7 +1333,7 @@
 		</attribute>
 		<attribute>
 			<name>agent</name>
-			<required>false</required>
+			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>

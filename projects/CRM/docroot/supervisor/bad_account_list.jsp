@@ -7,7 +7,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='crm' prefix='crm' %>
 <crm:CrmGetRestrictedPaymentMethodList id="restrictedPaymentMethodList">
-
+<crm:GetCurrentAgent id="currentAgent">
 <tmpl:insert template='/template/supervisor_resources.jsp'>
 <tmpl:put name='title' direct='true'>Supervisor Resources > Bad Checking Accounts</tmpl:put>
 <tmpl:put name='content' direct='true'>
@@ -308,5 +308,5 @@ if (comp == null) {
 <%      }   %>
 </tmpl:put>
 </tmpl:insert>
-
+</crm:GetCurrentAgent>
 </crm:CrmGetRestrictedPaymentMethodList>

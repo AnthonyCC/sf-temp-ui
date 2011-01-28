@@ -12,7 +12,6 @@ import javax.servlet.jsp.JspException;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.crm.CrmAgentModel;
-import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmAuthenticationException;
 import com.freshdirect.crm.CrmManager;
 import com.freshdirect.common.customer.*;
@@ -27,7 +26,6 @@ import com.freshdirect.payment.fraud.EnumRestrictedPaymentMethodStatus;
 import com.freshdirect.payment.fraud.EnumRestrictionReason;
 import com.freshdirect.payment.fraud.PaymentFraudManager;
 import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
-import com.freshdirect.webapp.crm.security.CrmSecurityManager;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
@@ -59,12 +57,10 @@ public class CrmRestrictedPaymentMethodControllerTag extends AbstractControllerT
 
 	private void editRestrictedPaymentMethod(HttpServletRequest request, ActionResult actionResult) throws FDResourceException {
 		this.populateRestrictedPaymentMethod(request);
-//		CrmAgentModel agent = CrmSession.getCurrentAgent(pageContext.getSession());
-		String agentId = CrmSession.getCurrentAgentStr(pageContext.getSession());
-		this.restrictedPaymentMethod.setLastModifyUser(agentId);
+		CrmAgentModel agent = CrmSession.getCurrentAgent(pageContext.getSession());
+		this.restrictedPaymentMethod.setLastModifyUser(agent.getUserId());
 		this.restrictedPaymentMethod.setLastModifyDate(new Date());
-		CrmAgentRole role = CrmAgentRole.getEnumByLDAPRole(CrmSecurityManager.getUserRole(request));
-		validateRestrictedPaymentMethod(request, actionResult, agentId, role);
+		validateRestrictedPaymentMethod(request, actionResult, agent);
 		if (actionResult.isSuccess()) {
 			PaymentFraudManager.storeRestrictedPaymentMethod(restrictedPaymentMethod);
 		}
@@ -72,12 +68,10 @@ public class CrmRestrictedPaymentMethodControllerTag extends AbstractControllerT
 
 	private void addRestrictedPaymentMethod(HttpServletRequest request, ActionResult actionResult) throws FDResourceException {
 		this.populateRestrictedPaymentMethod(request);
-		//CrmAgentModel agent = CrmSession.getCurrentAgent(pageContext.getSession());
-		String agentId = CrmSession.getCurrentAgentStr(pageContext.getSession());
-		this.restrictedPaymentMethod.setCreateUser(agentId);
+		CrmAgentModel agent = CrmSession.getCurrentAgent(pageContext.getSession());
+		this.restrictedPaymentMethod.setCreateUser(agent.getUserId());
 		this.restrictedPaymentMethod.setCreateDate(new Date());
-		CrmAgentRole role = CrmAgentRole.getEnumByLDAPRole(CrmSecurityManager.getUserRole(request));
-		validateRestrictedPaymentMethod(request, actionResult, agentId, role);
+		validateRestrictedPaymentMethod(request, actionResult, agent);
 		if (actionResult.isSuccess()) {
 			ErpPaymentMethodModel paymentMethod = (ErpPaymentMethodModel)PaymentFraudManager.getPaymentMethodByAccountInfo(restrictedPaymentMethod);			
 			if (paymentMethod != null) { 
@@ -94,12 +88,10 @@ public class CrmRestrictedPaymentMethodControllerTag extends AbstractControllerT
 		String id = NVL.apply(request.getParameter("restrict_payment_method_id"), ""); 
 		this.restrictedPaymentMethod.setId(id);
 		this.restrictedPaymentMethod.setPK(new PrimaryKey(id));
-//		CrmAgentModel agent = CrmSession.getCurrentAgent(pageContext.getSession());
-		String agentId = CrmSession.getCurrentAgentStr(pageContext.getSession());		
-		CrmAgentRole role = CrmAgentRole.getEnumByLDAPRole(CrmSecurityManager.getUserRole(request));
-		validateRestrictedPaymentMethod(request, actionResult, agentId, role);		
+		CrmAgentModel agent = CrmSession.getCurrentAgent(pageContext.getSession());
+		validateRestrictedPaymentMethod(request, actionResult, agent);		
 		if (actionResult.isSuccess()) {
-			PaymentFraudManager.removeRestrictedPaymentMethod(new PrimaryKey(this.restrictedPaymentMethod.getId()), agentId);
+			PaymentFraudManager.removeRestrictedPaymentMethod(new PrimaryKey(this.restrictedPaymentMethod.getId()), agent.getUserId());
 		}
 	}
 
@@ -159,10 +151,10 @@ public class CrmRestrictedPaymentMethodControllerTag extends AbstractControllerT
 		this.restrictedPaymentMethod.setNote(NVL.apply(request.getParameter("note"), ""));		
 	}
 
-	private void validateRestrictedPaymentMethod(HttpServletRequest request, ActionResult result, String agentId, CrmAgentRole agentRole) {
+	private void validateRestrictedPaymentMethod(HttpServletRequest request, ActionResult result, CrmAgentModel agent) {
 		
 		if (this.getActionName().equalsIgnoreCase("delete")) {
-			if(agentId == null || "".equals(agentId) || null == agentRole || !CrmAgentRole.isSupervisorOrUp(agentRole)){
+			if(agent == null || !agent.isSupervisor()){
 				result.addError(true, "authentication", "Agent not authorized to delete restricted payment method.");
 			}
 			String password = NVL.apply(request.getParameter("password"), "");

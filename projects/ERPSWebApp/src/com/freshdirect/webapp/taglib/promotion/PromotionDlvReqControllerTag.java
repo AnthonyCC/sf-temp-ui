@@ -212,10 +212,8 @@ public class PromotionDlvReqControllerTag extends AbstractControllerTag {
 			
 			if(actionResult.isSuccess()){
 				HttpSession session = pageContext.getSession();
-//				CrmAgentModel agent = CrmSession.getCurrentAgent(session);
-				String agentId = CrmSession.getCurrentAgentStr(session);
-//				this.promotion.setModifiedBy(agent.getUserId());
-				this.promotion.setModifiedBy(agentId);
+				CrmAgentModel agent = CrmSession.getCurrentAgent(session);
+				this.promotion.setModifiedBy(agent.getUserId());
 				this.promotion.setModifiedDate(date);
 				populatePromoChangeModel(dlvZoneModel);
 				populatePromoChangeModel(zipRestriction);

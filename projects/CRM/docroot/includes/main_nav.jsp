@@ -4,28 +4,17 @@
 <%@ page import='com.freshdirect.webapp.crm.security.*' %>
 <%@ page import='java.util.*' %>
 <%@	taglib uri='crm' prefix='crm' %>
-
 <% String pageURI =	request.getRequestURI(); %>
-
+<crm:GetCurrentAgent id="currentAgent">
 <%
-	try {
-		
-		String userId = CrmSecurityManager.getUserName(request);
-		String userRole = CrmSecurityManager.getUserRole(request);
-		CrmAgentRole crmRole = CrmAgentRole.getEnumByLDAPRole(userRole);
-		List linksList = MenuManager.getInstance().getLinksForRole(request);
-		if(null == linksList){
-	linksList = new ArrayList();	
-		}
-		//menuGroup.get
+CrmAgentRole crmRole = currentAgent.getRole();
+List linksList = MenuManager.getInstance().getLinksForRole(request);
 %>
-
-
 <a name="top"></a>
 <table width="100%"	cellpadding="6"	cellspacing="0"	border="0" class="main_nav">
 	<tr>
 		<td	width="75%"	style="padding-left: 0px;">
-			<a href="/main/clear_session.jsp" class="<%=pageURI.indexOf("/main/index.jsp") > -1?"main_nav_on":"main_nav_link"%>">Home</a>
+			<a href="/main/clear_session.jsp" class="<%=pageURI.indexOf("/main/main_index.jsp") > -1?"main_nav_on":"main_nav_link"%>">Home</a>
 			<%-- if(currentAgent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.EXC_CODE))) {	%> 
 				<a href="javascript:javascript:popResize('http://reporting','715','940')" class="main_nav_link">Marketing Reports</a>
 			<% } --%>
@@ -65,7 +54,7 @@
 			<a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmMainHelpLink() %>','715','940','kbit')" class="<%=pageURI.indexOf("/main/help.jsp")	> -1?"main_nav_on":"main_nav_link"%>">Help</a>
 		</td>
 		<td	width="25%"	align="right">
-			<%=crmRole.getName()%>: <b><%=userId%></b>
+			<%=currentAgent.getRole().getName()%>: <b><%=currentAgent.getLdapId()%></b>
 		&nbsp;&middot;&nbsp;
 		<a href="/main/logout.jsp">Logout</a>
 		&nbsp;&middot;&nbsp;
@@ -73,7 +62,4 @@
 		</td>
 	</tr>
 </table>
-<% } catch (Exception e) {
-	e.printStackTrace();
-}%>
-
+</crm:GetCurrentAgent>

@@ -61,13 +61,12 @@ public class CancelDPControllerTag extends AbstractControllerTag {
 			HttpSession session = pageContext.getSession();
 			FDSessionUser currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
 			
-//			CrmAgentModel agentModel = CrmSession.getCurrentAgent(session);
-			String agentId =CrmSession.getCurrentAgentStr(session);
+			CrmAgentModel agentModel = CrmSession.getCurrentAgent(session);
 			CrmManager crmManager=CrmManager.getInstance();
 			if ("cancel_pass".equalsIgnoreCase(this.getActionName())||"cancel_RTU_pass".equalsIgnoreCase(this.getActionName())) {
 				int index=Integer.parseInt(request.getParameter("passNum"));
 				DeliveryPassModel dlvPass=((DeliveryPassInfo)passes.get(index)).getModel();
-				crmManager.cancelDeliveryPass(dlvPass, agentId, notes, cancelReason, orderAssigned);
+				crmManager.cancelDeliveryPass(dlvPass, agentModel, notes, cancelReason, orderAssigned);
 				currentUser.updateDlvPassInfo();
 				buffer = new StringBuffer(SystemMessageList.MSG_DLV_PASS_CANCELLED);
 				//Load the delivery pass status from DB.

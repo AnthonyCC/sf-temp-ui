@@ -20,16 +20,11 @@ session.setAttribute(SessionName.USER,null); %>
     <tmpl:put name='title' direct='true'>My Worklist</tmpl:put>
         
         <tmpl:put name='content' direct='true'>
-        
-            <% 
-            	String userId = CrmSecurityManager.getUserName(request);
-            	String userRole = CrmSecurityManager.getUserRole(request);
-            	CrmCaseTemplate template = new CrmCaseTemplate(); %>
-            
-            <% 
-            	template.setAssignedAgentId( userId );
-            %>
-            <% 
+        	<crm:GetCurrentAgent id='currentAgent'>
+            <%             	
+            	CrmCaseTemplate template = new CrmCaseTemplate();            
+            	template.setAssignedAgentPK( currentAgent.getPK() );
+             
             String currentQueryString = NVL.apply(request.getQueryString(),"");
             String filterQueue = request.getParameter("filterQueue");
             String filterSubject = request.getParameter("filterSubject");
@@ -126,7 +121,7 @@ session.setAttribute(SessionName.USER,null); %>
 			<iframe id="case_summary" name="case_summary" src="/includes/case_summary.jsp?<%=currentQueryString%>" width="100%" height="280" scrolling="no" FrameBoarder="0"></iframe>
 			
 			
-			
+			</crm:GetCurrentAgent>
 	    </tmpl:put>
 
 </tmpl:insert>

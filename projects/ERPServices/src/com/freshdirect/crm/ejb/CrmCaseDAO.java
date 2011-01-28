@@ -58,14 +58,14 @@ public class CrmCaseDAO implements EntityDAOI {
 	}
 
 	private final static String QUERY_CASEINFO =
-		"SELECT /*+ USE_NL (ci) */ rownum y, c.id, c.customer_id, c.assigned_agent_user_id, c. sale_id,"
-			+ " c.locked_agent_user_id, c.summary, c.case_origin, c.case_subject,"
+		"SELECT /*+ USE_NL (ci) */ rownum y, c.id, c.customer_id, c.assigned_agent_id, c. sale_id,"
+			+ " c.locked_agent_id, c.summary, c.case_origin, c.case_subject,"
 			+ "c.MEDIA,c.MORETHANONE_ISSUE,c.FIRSTCONTACT,c.FIRSTCONTACT_RESOLVED,c.REASONNOTRESOLVED,c.SatisfiedWithResolution,c.CustomerTone,"
-			+ " c.case_priority as case_priority, c.case_state, cs.name as subject_name,"
+			+ " c.case_priority as case_priority, c.case_state, a.user_id as assigned, cs.name as subject_name,"
 			+ " ci.first_name, ci.last_name, c.create_date, c.last_action_date, c.projected_quantity,"
-			+ " c.actual_quantity, c.PRIVATE_CASE"
-			+ " FROM CUST.CASE c,  CUST.CUSTOMERINFO ci, CUST.CASE_SUBJECT cs "
-			+ " WHERE c.customer_id=ci.customer_id(+) AND c.case_subject = cs.code";
+			+ " c.actual_quantity, c.PRIVATE_CASE "
+			+ " FROM CUST.CASE c, CUST.AGENT a, CUST.CUSTOMERINFO ci, CUST.CASE_SUBJECT cs "
+			+ " WHERE c.customer_id=ci.customer_id(+) AND c.assigned_agent_id = a.id AND c.case_subject = cs.code";
 	
 	private final static String QUERY_TOTALCASEINFO = 
 		"SELECT /*+ USE_NL (ci) */ count(*) AS TOTAL"
@@ -83,11 +83,9 @@ public class CrmCaseDAO implements EntityDAOI {
 		builder.addString("c.SUMMARY", ct.getSummary());
 		builder.addPK("c.CUSTOMER_ID", ct.getCustomerPK());
 		builder.addPK("c.SALE_ID", ct.getSalePK());
-//		builder.addPK("c.ASSIGNED_AGENT_ID", ct.getAssignedAgentPK());	
-//		builder.addPK("c.LOCKED_AGENT_ID", ct.getLockedAgentPK());
-		builder.addString("c.ASSIGNED_AGENT_USER_ID", ct.getAssignedAgentId());
-		builder.addString("c.LOCKED_AGENT_USER_ID", ct.getLockedAgentId());
-		
+		builder.addPK("c.ASSIGNED_AGENT_ID", ct.getAssignedAgentPK());
+		builder.addPK("c.LOCKED_AGENT_ID", ct.getLockedAgentPK());
+
 		builder.addInEnum("CASE_STATE", (CrmCaseState[]) ct.getStates().toArray(new CrmCaseState[0]));
 		
 		if (ct.getQueue() != null) {
@@ -162,7 +160,7 @@ public class CrmCaseDAO implements EntityDAOI {
 			+ "(select count(1) from cust.case c, cust.case_subject cs where c.case_subject = cs.code and c.case_state='"+CrmCaseState.CODE_OPEN+"' "  
 			  		 + "and cs.case_queue=cq.code ) as open, " 
 			+ "(select count(1) from cust.case c, cust.case_subject cs where c.case_subject = cs.code and c.case_state='"+CrmCaseState.CODE_OPEN+"' and cs.case_queue=cq.code " 
-			  	 	 + "and c.assigned_agent_user_id='system' ) as unassigned, "
+			  	 	 + "and c.assigned_agent_id=(select id from cust.agent where user_id='system') ) as unassigned, "
 			+ "(select min(ca.timestamp) from cust.case c, cust.case_subject cs, cust.caseaction ca where c.case_subject = cs.code and c.case_state='"+CrmCaseState.CODE_OPEN+"' "
 			  		 + "and ca.case_id=c.id and cs.case_queue=cq.code) as oldest " 
 			+ "from cust.case_queue cq ";
@@ -232,16 +230,9 @@ public class CrmCaseDAO implements EntityDAOI {
 		ps.executeUpdate();
 		ps.close();
 	}
-	
-	public void unlockAll(Connection conn, String agentId) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.CASE SET LOCKED_AGENT_USER_ID=NULL WHERE LOCKED_AGENT_USER_ID=?");
-		ps.setString(1, agentId);
-		ps.executeUpdate();
-		ps.close();
-	}
 
 	public void unlock(Connection conn, PrimaryKey casePK) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.CASE SET LOCKED_AGENT_USER_ID=NULL WHERE ID=?");
+		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.CASE SET LOCKED_AGENT_ID=NULL WHERE ID=?");
 		ps.setString(1, casePK.getId());
 		ps.executeUpdate();
 		ps.close();
@@ -259,23 +250,11 @@ public class CrmCaseDAO implements EntityDAOI {
 		return locked;
 	}
 
-	public boolean lock(Connection conn, String agentId, PrimaryKey casePK) throws SQLException {
-		PreparedStatement ps =
-			conn.prepareStatement(
-				"UPDATE CUST.CASE SET LOCKED_AGENT_USER_ID=? WHERE (LOCKED_AGENT_USER_ID IS NULL OR LOCKED_AGENT_USER_ID=?) AND ID=?");
-		ps.setString(1, agentId);
-		ps.setString(2, agentId);
-		ps.setString(3, casePK.getId());
-		boolean locked = ps.executeUpdate() == 1;
-		ps.close();
-		return locked;
-	}
-	
 	public void create(Connection conn, PrimaryKey pk, ModelI model) throws SQLException {
 		CrmCaseModel c = (CrmCaseModel) model;
 		PreparedStatement ps =
 			conn.prepareStatement(
-				"INSERT INTO CUST.CASE(ID, CASE_ORIGIN, CASE_STATE, CASE_PRIORITY, CASE_SUBJECT, SUMMARY, CUSTOMER_ID, SALE_ID, ASSIGNED_AGENT_USER_ID, LOCKED_AGENT_USER_ID, CREATE_DATE, LAST_ACTION_DATE,PROJECTED_QUANTITY,ACTUAL_QUANTITY,MEDIA,MORETHANONE_ISSUE,FIRSTCONTACT,FIRSTCONTACT_RESOLVED,REASONNOTRESOLVED,SatisfiedWithResolution,CustomerTone) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+				"INSERT INTO CUST.CASE(ID, CASE_ORIGIN, CASE_STATE, CASE_PRIORITY, CASE_SUBJECT, SUMMARY, CUSTOMER_ID, SALE_ID, ASSIGNED_AGENT_ID, LOCKED_AGENT_ID, CREATE_DATE, LAST_ACTION_DATE,PROJECTED_QUANTITY,ACTUAL_QUANTITY,MEDIA,MORETHANONE_ISSUE,FIRSTCONTACT,FIRSTCONTACT_RESOLVED,REASONNOTRESOLVED,SatisfiedWithResolution,CustomerTone) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		ps.setString(1, pk.getId());
 		ps.setString(2, c.getOrigin().getCode());
 		ps.setString(3, c.getState().getCode());
@@ -285,8 +264,8 @@ public class CrmCaseDAO implements EntityDAOI {
 
 		setNullable(ps, 7, c.getCustomerPK());
 		setNullable(ps, 8, c.getSalePK());
-		ps.setString(9,  c.getAssignedAgentUserId());
-		ps.setString(10, c.getLockedAgentUserId());
+		setNullable(ps, 9, c.getAssignedAgentPK());
+		setNullable(ps, 10, c.getLockedAgentPK());
 
 		ps.setTimestamp(11, new Timestamp(getActionDate(c.getActions(), false).getTime()));
 		ps.setTimestamp(12, new Timestamp(getActionDate(c.getActions(), true).getTime()));
@@ -429,12 +408,9 @@ public class CrmCaseDAO implements EntityDAOI {
 	private CrmCaseInfo loadFromResultSet(ResultSet rs) throws SQLException {
 		CrmCaseInfo ci = new CrmCaseInfo(new PrimaryKey(rs.getString("ID")));
 		ci.setCustomerPK(getNullable(rs, "CUSTOMER_ID"));
-//		ci.setAssignedAgentPK(getNullable(rs, "ASSIGNED_AGENT_ID"));
+		ci.setAssignedAgentPK(getNullable(rs, "ASSIGNED_AGENT_ID"));
 		ci.setSalePK(getNullable(rs, "SALE_ID"));
-//		ci.setLockedAgentPK(getNullable(rs, "LOCKED_AGENT_ID"));
-		
-		ci.setAssignedAgentUserId(rs.getString("ASSIGNED_AGENT_USER_ID"));
-		ci.setLockedAgentUserId(rs.getString("LOCKED_AGENT_USER_ID"));
+		ci.setLockedAgentPK(getNullable(rs, "LOCKED_AGENT_ID"));
 
 		ci.setSummary(rs.getString("SUMMARY"));
 		ci.setOrigin(CrmCaseOrigin.getEnum(rs.getString("CASE_ORIGIN")));
@@ -464,7 +440,7 @@ public class CrmCaseDAO implements EntityDAOI {
 	}
 
 	private final static String UPDATE_CASE =
-		"UPDATE CUST.CASE SET CASE_ORIGIN=?, CASE_STATE=?, CASE_PRIORITY=?, CASE_SUBJECT=?, SUMMARY=?, CUSTOMER_ID=?, SALE_ID=?, ASSIGNED_AGENT_USER_ID=?, LOCKED_AGENT_USER_ID=?, LAST_ACTION_DATE=?,  PROJECTED_QUANTITY=?, ACTUAL_QUANTITY=?,MEDIA=?,MORETHANONE_ISSUE=?,FIRSTCONTACT=?,FIRSTCONTACT_RESOLVED=?,REASONNOTRESOLVED=?,SatisfiedWithResolution=?,CustomerTone=?,PRIVATE_CASE=?   WHERE ID=?";
+		"UPDATE CUST.CASE SET CASE_ORIGIN=?, CASE_STATE=?, CASE_PRIORITY=?, CASE_SUBJECT=?, SUMMARY=?, CUSTOMER_ID=?, SALE_ID=?, ASSIGNED_AGENT_ID=?, LOCKED_AGENT_ID=?, LAST_ACTION_DATE=?,  PROJECTED_QUANTITY=?, ACTUAL_QUANTITY=?,MEDIA=?,MORETHANONE_ISSUE=?,FIRSTCONTACT=?,FIRSTCONTACT_RESOLVED=?,REASONNOTRESOLVED=?,SatisfiedWithResolution=?,CustomerTone=?,PRIVATE_CASE=?   WHERE ID=?";
 
 	public void store(Connection conn, ModelI model) throws SQLException {
 		CrmCaseModel c = (CrmCaseModel) model;
@@ -479,8 +455,8 @@ public class CrmCaseDAO implements EntityDAOI {
 
 		setNullable(ps, 6, c.getCustomerPK());
 		setNullable(ps, 7, c.getSalePK());
-		ps.setString(8, c.getAssignedAgentUserId());
-		ps.setString(9, c.getLockedAgentUserId());
+		setNullable(ps, 8, c.getAssignedAgentPK());
+		setNullable(ps, 9, c.getLockedAgentPK());
 
 		ps.setTimestamp(10, new Timestamp(getActionDate(c.getActions(), true).getTime()));
 		ps.setInt(11,c.getProjectedQuantity());
@@ -539,13 +515,10 @@ public class CrmCaseDAO implements EntityDAOI {
 
 		ps.setString(20, c.isPrivateCase()?"X":"");
 		ps.setString(21, c.getPK().getId());
-		
 
 		if (ps.executeUpdate() != 1) {
 			throw new SQLException("Row not updated");
 		}
-		
-		
 
 		ps.close();
 
@@ -655,7 +628,7 @@ public class CrmCaseDAO implements EntityDAOI {
 
 		PreparedStatement ps =
 			conn.prepareStatement(
-				"INSERT INTO CUST.CASEACTION(CASE_ID, ID, CASEACTION_TYPE, AGENT_USER_ID, TIMESTAMP, NOTE) VALUES (?,?,?,?,?,?)");
+				"INSERT INTO CUST.CASEACTION(CASE_ID, ID, CASEACTION_TYPE, AGENT_ID, TIMESTAMP, NOTE) VALUES (?,?,?,?,?,?)");
 		for (Iterator i = actions.iterator(); i.hasNext();) {
 			CrmCaseAction act = (CrmCaseAction) i.next();
 			act.setPK(new PrimaryKey(this.getNextId(conn)));
@@ -663,7 +636,7 @@ public class CrmCaseDAO implements EntityDAOI {
 			ps.setString(1, casePK.getId());
 			ps.setString(2, act.getPK().getId());
 			ps.setString(3, act.getType().getCode());
-			ps.setString(4, act.getAgentId());
+			ps.setString(4, act.getAgentPK().getId());
 			ps.setTimestamp(5, new Timestamp(act.getTimestamp().getTime()));
 			ps.setString(6, act.getNote());
 			ps.addBatch();
@@ -720,7 +693,7 @@ public class CrmCaseDAO implements EntityDAOI {
 	private List selectCaseActions(Connection conn, PrimaryKey casePK) throws SQLException {
 		PreparedStatement ps =
 			conn.prepareStatement(
-				"SELECT ID, CASEACTION_TYPE, AGENT_USER_ID, TIMESTAMP, NOTE FROM CUST.CASEACTION WHERE CASE_ID=? ORDER BY TIMESTAMP");
+				"SELECT ID, CASEACTION_TYPE, AGENT_ID, TIMESTAMP, NOTE FROM CUST.CASEACTION WHERE CASE_ID=? ORDER BY TIMESTAMP");
 		ps.setString(1, casePK.getId());
 
 		List actions = new ArrayList();
@@ -729,8 +702,7 @@ public class CrmCaseDAO implements EntityDAOI {
 			CrmCaseAction ca = new CrmCaseAction();
 			ca.setPK(new PrimaryKey(rs.getString("ID")));
 			ca.setType(CrmCaseActionType.getEnum(rs.getString("CASEACTION_TYPE")));
-			//ca.setAgentPK(new PrimaryKey(rs.getString("AGENT_ID")));
-			ca.setAgentId(rs.getString("AGENT_USER_ID"));
+			ca.setAgentPK(new PrimaryKey(rs.getString("AGENT_ID")));
 			ca.setTimestamp(rs.getTimestamp("TIMESTAMP"));
 			ca.setNote(rs.getString("NOTE"));
 			actions.add(ca);

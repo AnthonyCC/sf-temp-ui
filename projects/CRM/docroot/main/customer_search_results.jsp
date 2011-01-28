@@ -48,7 +48,9 @@
 <%
 boolean isGuest = false; 
 %>
-
+<crm:GetCurrentAgent id="currentAgent">
+	<%-- isGuest = currentAgent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.GUE_CODE)); --%> 
+</crm:GetCurrentAgent>
 <% String originalPage = "/main/main_index.jsp"; %>
 <fd:Locator originalPage='<%= originalPage %>' results='searchResults' searchType='customer' searchCriteria='<%=sc%>'>
 <%

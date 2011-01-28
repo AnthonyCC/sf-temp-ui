@@ -10,17 +10,16 @@
 <%@ page import="com.freshdirect.crm.CrmCustomerHeaderInfo" %>
 <%@ page import="com.freshdirect.framework.core.PrimaryKey" %>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
+<%@page import="com.freshdirect.webapp.crm.security.CrmSecurityManager"%>
 
 <%@ taglib uri="crm" prefix="crm" %>
 
 <%
     String pageURI = request.getRequestURI();
     FDUserI user = CrmSession.getUser(session);
-    String agentId = CrmSecurityManager.getUserName(request);
-    String agentRole = CrmSecurityManager.getUserRole(request);
 %>
-
-<%  if (user != null &&  user.getIdentity() != null) { %>
+<crm:GetCurrentAgent id="currentAgent">
+<%  if (user != null && user.getIdentity() != null) { %>
 <% CrmCustomerHeaderInfo info = CrmSession.getCustomerHeaderInfo(session, user.getIdentity()); 
     ProfileModel profile = user.getFDCustomer().getProfile();
     boolean newOrder = false;
@@ -30,8 +29,7 @@
     int validOrderCount=user.getAdjustedValidOrderCount() ;
     String label =  profile.isChefsTable() ? "chefs_club" : profile.isVIPCustomer() ? "vip" : validOrderCount >= 2 && validOrderCount <= 4 ? "newbie" : "" ;
 %>
-
-<%@page import="com.freshdirect.webapp.crm.security.CrmSecurityManager"%><table width="100%" cellpadding="0" cellspacing="0" class="cust_header_shell">
+<table width="100%" cellpadding="0" cellspacing="0" class="cust_header_shell">
 <tr><td>
     <div class="cust_header<%= info.isActive() ? "" : "_inactive" %>" <%= !"".equals(label) ? "style=\"padding-left:0px; padding-top:0px; padding-bottom:0px;\"" : "" %>>
         <table width="100%" cellpadding="0" cellspacing="0" class="cust_text">
@@ -64,7 +62,7 @@
                 <% if (info.isActive()) {
                     int promoValue = 0;
                 %>
-                    <%-- if (user.isFraudulent()) { %>
+                    <% if (user.isFraudulent()) { %>
                         <span class="error">! <b>Matching Information</b> !</span><span class="cust_header_field">Ineligible for Promotion</span>
                     <% } else if (user.isEligibleForSignupPromotion()) {
                             Promotion promo = (Promotion) user.getEligibleSignupPromotion();
@@ -75,7 +73,7 @@
                         
                         <% if (promoValue > 0) { %><span class="cust_header_field">Eligible for</span> <b>$<%= promoValue %></b> <span class="cust_header_field">promotion over</span> <b><%=rules.size()%></b> <span class="cust_header_field">order<%=rules.size() > 1 ? "s" : ""%>, next order:</span> <b>$<%=(int)rule.getMaxAmount()%></b> <span class="cust_header_field">off with</span> <b>$<%=(int)rule.getMinSubtotal()%></b> <span class="cust_header_field">purchase</span>
                         <% } %>
-                    <% }--%> <%
+                    <% } 
                         double availCredit = info.getRemainingAmount();
                     %>
                     
@@ -92,50 +90,49 @@
     </div>
 	</td></tr>
 	<tr><td class="cust_nav">
-		<% if(CrmSecurityManager.hasAccessToPage(agentRole,"summary.jsp")){ %>
+       <% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"summary.jsp")){ %>
         	<a href="/main/summary.jsp" class="<%= pageURI.indexOf("summary.jsp") > -1  ? "cust_nav_tab_on" : "cust_nav_tab" %>">Summary</a>
         <% } %>
-		<% if(CrmSecurityManager.hasAccessToPage(agentRole,"account_details.jsp")){ %>
+		<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"account_details.jsp")){ %>
         <a href="<%= response.encodeURL("/main/account_details.jsp") %>" class="<%= pageURI.indexOf("account_details.jsp") > -1 || pageURI.indexOf("/customer_account") > -1 ? "cust_nav_tab_on" : "cust_nav_tab" %>">Account Details</a>
     	<% } %>
-		<% if(CrmSecurityManager.hasAccessToPage(agentRole,"case_history.jsp")){ %>
+		<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"case_history.jsp")){ %>
         <a href="<%= response.encodeURL("/main/case_history.jsp?action=searchCase") %>" class="<%= pageURI.indexOf("case_history.jsp") > -1 ? "cust_nav_tab_on" : "cust_nav_tab" %>">Cases</a>
  		<% } %>
-		<% if(CrmSecurityManager.hasAccessToPage(agentRole,"order_history.jsp")){ %>
+		<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"order_history.jsp")){ %>
         <a href="<%= response.encodeURL("/main/order_history.jsp") %>" class="<%= pageURI.indexOf("order_history.jsp") > -1 ? "cust_nav_tab_on" : "cust_nav_tab" %>">Orders</a>
         <% } %>
-		<% if(CrmSecurityManager.hasAccessToPage(agentRole,"credit_history.jsp")){ %>
-        <a href="<%= response.encodeURL("/main/credit_history.jsp") %>" class="<%= pageURI.indexOf("credit_history.jsp") > -1 ? "cust_nav_tab_on" : "cust_nav_tab" %>">Credit History</a>
+		<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"credit_history.jsp")){ %>
+        <a href="<%= response.encodeURL("/main/credit_history.jsp") %>" class="<%= pageURI.indexOf("credit_history.jsp") > -1 ? "cust_nav_tab_on" : "cust_nav_tab" %>">Credits</a>
 		<% } %>
-		<% if(CrmSecurityManager.hasAccessToPage(agentRole,"promotion_history.jsp")){ %>                
+		<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"promotion_history.jsp")){ %>                
         <a href="<%= response.encodeURL("/main/promotion_history.jsp") %>" class="<%= pageURI.indexOf("promotion_history.jsp") > -1 ? "cust_nav_tab_on" : "cust_nav_tab" %>">Promotions</a>
         <% } %>
-		<% if(CrmSecurityManager.hasAccessToPage(agentRole,"place_order_build.jsp")){ %>
+		<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"place_order_build.jsp")){ %>
 		<a href="<%= response.encodeURL("/order/place_order_build.jsp") %>" class="<%= newOrder ? "cust_nav_tab_on" : "cust_nav_tab" %>">New Order</a>
 		<% } %>
-		<% if(CrmSecurityManager.hasAccessToPage(agentRole,"delivery_available_slots.jsp")){ %>
+		<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"delivery_available_slots.jsp")){ %>
 		<a href="<%= response.encodeURL("/main/delivery_available_slots.jsp") %>" class="<%= pageURI.indexOf("available_slots.jsp") > -1 ? "cust_nav_tab_on" : "cust_nav_tab" %>">Timeslots</a>
 		<% } %>
-		<% if(CrmSecurityManager.hasAccessToPage(agentRole,"activity_log.jsp")){ %>
+		<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"activity_log.jsp")){ %>
         <a href="<%= response.encodeURL("/main/activity_log.jsp") %>" class="<%= pageURI.indexOf("activity_log") > -1 ? "cust_nav_tab_on" : "cust_nav_tab" %>">Activity Log</a>
 		<% } %>
-		<% if(CrmSecurityManager.hasAccessToPage(agentRole,"referral_history.jsp")){ %>
+		<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"referral_history.jsp")){ %>
         <a href="<%= response.encodeURL("/main/referral_history.jsp") %>" class="<%= pageURI.indexOf("referral_history.jsp") > -1 ? "cust_nav_tab_on" : "cust_nav_tab" %>">Referrals</a>
         <% } %>
-		<%	if (CrmSecurityManager.hasAccessToPage(agentRole,"profile_list.jsp")) {		%>
+		<%	if (CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"profile_list.jsp")) {		%>
         <a href="<%= response.encodeURL("/main/profile_list.jsp") %>" class="<%= pageURI.indexOf("profile_list.jsp") > -1 ? "cust_nav_tab_on" : "cust_nav_tab" %>">Profiles</a>
 		<% } %>
-		<% if(CrmSecurityManager.hasAccessToPage(agentRole,"giftcard_summary.jsp")){ %>
+		<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"giftcard_summary.jsp")){ %>
     	<a href="<%= response.encodeURL("/gift_card/giftcard_summary.jsp") %>" class="<%= pageURI.indexOf("gift_card") > -1  ? "cust_nav_tab_on" : "cust_nav_tab" %>">GiftCard</a>
     	<% } %>
-		<% if(CrmSecurityManager.hasAccessToPage(agentRole,"delivery_pass.jsp")){ %>
+		<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"delivery_pass.jsp")){ %>
 		<a href="<%= response.encodeURL("/main/delivery_pass.jsp") %>" class="<%= pageURI.indexOf("delivery_pass.jsp") > -1  ? "cust_nav_tab_on" : "cust_nav_tab" %>">Delivery&nbsp;Pass</a>
 		<% } %>
-		<% if(CrmSecurityManager.hasAccessToPage(agentRole,"customer_profile_summary.jsp")){ %>
+		<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"customer_profile_summary.jsp")){ %>
     	<a href="<%= response.encodeURL("/customerprofile/customer_profile_summary.jsp") %>" class="<%= pageURI.indexOf("customer_profile") > -1  ? "cust_nav_tab_on" : "cust_nav_tab" %>">Preferences</a>
     	<% } %>
-		
 	</td></tr>
 </table>
 <%  } %>
-
+</crm:GetCurrentAgent>

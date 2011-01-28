@@ -18,7 +18,7 @@
 	
 	<tmpl:put name='content' direct='true'>
 	
-	
+	<crm:GetCurrentAgent id="currentAgent">
     <crm:SearchCaseController/>
 		
 		
@@ -72,26 +72,21 @@
             		CrmAgentRole.getEnum(CrmAgentRole.COS_CODE),
             		CrmAgentRole.getEnum(CrmAgentRole.MOP_CODE)};
 			%>
-			  <logic:iterate id='role' collection="<%= DISPLAY_ROLES %>" type="com.freshdirect.crm.CrmAgentRole">
-			        <div class="side_nav_module" style="position: relative; float: left; height:25%; width: <%= "ASV".equals(role.getCode())? "19" : "20"%>%;">
-			        <% if(null != agentList && null !=agentList.get(CrmAgentRole.getEnum(role.getCode()))){
-			        	List agents =(List)agentList.get(CrmAgentRole.getEnum(role.getCode()));
-			        %>
-			        	<%--
+			  <logic:iterate id='role' collection="<%= DISPLAY_ROLES %>" type="com.freshdirect.crm.CrmAgentRole"><div class="side_nav_module" style="position: relative; float: left; height:25%; width: <%= "ASV".equals(role.getCode())? "19" : "20"%>%;">
+			        	<%
                             List agents = agentList.getAgents(role);
                             Collections.sort(agents, AGENT_STATUS_COMPARATOR);
-                        --%>
+                        %>
 				        <div class="side_nav_module_header"><%=role.getCode()%>s <span style="font-weight:normal;">(<%=agents.size()%>)</span></div>
 			             <div class="side_nav_module_content">
-				         <logic:iterate id='agent' collection="<%= agents %>" type="java.lang.String">
-				                <a href="/supervisor/supervisor_index.jsp?agent_pk=<%=agent%>&action=searchCase" class="user_mgmt_agent"><%=agent%></a><br>
+				         <logic:iterate id='agent' collection="<%= agents %>" type="com.freshdirect.crm.CrmAgentModel">
+				                <a href="/supervisor/supervisor_index.jsp?agent_pk=<%=agent.getPK().getId()%>&action=searchCase" class="user_mgmt_agent"><%=agent.getFirstName()%>&nbsp;<%=agent.getLastName()%></a><br>
 			             </logic:iterate>
 			             </div>
-			           <%} %>
 			        </div>
 			  </logic:iterate>
 			</crm:GetAllAgents>
-		
+		</crm:GetCurrentAgent>
 		
 	
 	</tmpl:put>

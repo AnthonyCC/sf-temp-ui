@@ -540,28 +540,6 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public void logPublishEvent(String agentId,
-			java.util.Date start, java.util.Date end, String destURL,
-			Map<String, Boolean> publishResults,
-			Map<String, EnumPromotionStatus> preStatuses,
-			Map<String, EnumPromotionStatus> postStatuses,
-			Map<String, String> changeIDs) throws FDResourceException {
-		
-		Connection conn = null;
-		try {
-			conn = getConnection();
-
-			FDPromotionManagerNewDAO.logPublishEvent(conn, agentId, 
-					start, end, 
-					destURL,
-					publishResults, preStatuses, postStatuses, changeIDs);
-		} catch (SQLException sqle) {
-			throw new FDResourceException(sqle);
-		} finally {
-		    close(conn);
-		}
-	}
-	
 	public void storePromotionOfferInfo(FDPromotionNewModel promotion)
 	throws FDResourceException, FDDuplicatePromoFieldException,
 	FDPromoTypeNotFoundException, FDPromoCustNotFoundException {

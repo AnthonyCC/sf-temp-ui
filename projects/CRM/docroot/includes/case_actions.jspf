@@ -12,7 +12,9 @@
 			<td width="10%" class="case_action_timestamp">
 				<%= actionDateFormat.format(action.getTimestamp()) %><br>
 				<%= actionTimeFormat.format(action.getTimestamp()) %><br>
-				<%= action.getAgentId()%>
+				<crm:GetAgent id="agent" agentId="<%= action.getAgentPK().getId() %>">
+				<span class="case_action_user"><%= agent.getUserId() %></span>
+				</crm:GetAgent>
 			</td>
 			<td><img src="/media_stat/crm/images/clear.gif" width="6" height="1"></td>
 			<td width="90%">

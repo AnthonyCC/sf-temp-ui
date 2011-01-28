@@ -27,8 +27,6 @@ public class CrmCaseTemplate extends ModelSupport {
 	private PrimaryKey salePK;
 	private PrimaryKey assignedAgentPK;
 	private PrimaryKey lockedAgentPK;
-	private String assignedAgentId;
-	private String lockedAgentId;
 
 	public CrmCaseTemplate() {
 	}
@@ -45,10 +43,8 @@ public class CrmCaseTemplate extends ModelSupport {
 			&& summary == null
 			&& customerPK == null
 			&& salePK == null
-//			&& assignedAgentPK == null
-//			&& lockedAgentPK == null;
-			&& assignedAgentId == null
-			&& lockedAgentId == null;
+			&& assignedAgentPK == null
+			&& lockedAgentPK == null;
 	}
 	
 	public String toString(){
@@ -64,10 +60,8 @@ public class CrmCaseTemplate extends ModelSupport {
 			"End Date: "+ this.endDate + "\n" +
 			"Sort Order: "+ this.sortOrder + "\n"+
 			"Sort By: "+this.sortBy+"\n"+
-//			"AssignedAgent PK: "+ this.assignedAgentPK + "\n" +
-//			"Locked Agent PK: "+ this.lockedAgentPK + "\n" ;
-			"AssignedAgent ID: "+ this.assignedAgentId + "\n" +
-			"Locked Agent ID: "+ this.lockedAgentId + "\n" ;
+			"AssignedAgent PK: "+ this.assignedAgentPK + "\n" +
+			"Locked Agent PK: "+ this.lockedAgentPK + "\n" ;
 	}
 
 	public boolean equals(Object o) {
@@ -95,10 +89,8 @@ public class CrmCaseTemplate extends ModelSupport {
 			&& (totalRows == t.totalRows)
 			&& eq(customerPK, t.customerPK)
 			&& eq(salePK, t.salePK)
-//			&& eq(assignedAgentPK, t.assignedAgentPK)
-//			&& eq(lockedAgentPK, t.lockedAgentPK);
-			&& eq(assignedAgentId, t.assignedAgentId)
-			&& eq(lockedAgentId, t.lockedAgentId);
+			&& eq(assignedAgentPK, t.assignedAgentPK)
+			&& eq(lockedAgentPK, t.lockedAgentPK);
 	}
 
 	private boolean eq(Object o1, Object o2) {
@@ -265,22 +257,6 @@ public class CrmCaseTemplate extends ModelSupport {
 
 	public void setLockedAgentPK(PrimaryKey key) {
 		lockedAgentPK = key;
-	}
-
-	public String getAssignedAgentId() {
-		return assignedAgentId;
-	}
-
-	public void setAssignedAgentId(String assignedAgentId) {
-		this.assignedAgentId = assignedAgentId;
-	}
-
-	public String getLockedAgentId() {
-		return lockedAgentId;
-	}
-
-	public void setLockedAgentId(String lockedAgentId) {
-		this.lockedAgentId = lockedAgentId;
 	}
 
 }

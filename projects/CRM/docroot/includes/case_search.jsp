@@ -194,20 +194,16 @@ CrmCaseTemplate template = CrmSession.getSearchTemplate(session);
 					<option value="" class="title" value="">-Select Agent-</option>
 					<crm:GetAllAgents id="agentList">
 					<logic:iterate id='role' collection="<%= DISPLAY_ROLES %>" type="com.freshdirect.crm.CrmAgentRole">
-					<% if(null !=role) { %>
-						<% if (!role.equals(CrmAgentRole.getEnum(CrmAgentRole.SYS_CODE))) {%>
-							<option value="" class="header"><%= role.getName() %></option>
-						<% } %>
-						<% if(null != agentList && null !=agentList.get(CrmAgentRole.getEnum(role.getCode()))){ %>
-						<logic:iterate id='agent' collection="<%= agentList.get(CrmAgentRole.getEnum(role.getCode())) %>" type="java.lang.String">
-							<% if ( null !=role && role.equals(CrmAgentRole.getEnum(CrmAgentRole.SYS_CODE))) {%><option value=""></option><%}%>
-							<option value="<%= agent %>" <%= agent.equalsIgnoreCase(template.getAssignedAgentId()) ? "selected" : "" %>>
-								&nbsp;<%= (null !=role && role.equals(CrmAgentRole.getEnum(CrmAgentRole.SYS_CODE))) ? "Unassigned" : agent %>
+					<% if (!role.equals(CrmAgentRole.getEnum(CrmAgentRole.SYS_CODE))) {%>
+						<option value="" class="header"><%= role.getName() %></option>
+					<% } %>
+						<logic:iterate id='agent' collection="<%= agentList.getAgents(role) %>" type="com.freshdirect.crm.CrmAgentModel">
+							<% if (role.equals(CrmAgentRole.getEnum(CrmAgentRole.SYS_CODE))) {%><option value=""></option><%}%>
+							<option value="<%= agent.getPK().getId() %>" <%= agent.getPK().equals(template.getAssignedAgentPK()) ? "selected" : "" %>>
+								&nbsp;<%= role.equals(CrmAgentRole.getEnum(CrmAgentRole.SYS_CODE)) ? "Unassigned" : agent.getUserId() %>
 							</option>
 						</logic:iterate>
-						<% } %>
-							<option value=""></option>
-					<% } %>
+						<option value=""></option>
 					</logic:iterate>
 					</crm:GetAllAgents>
 				</select>

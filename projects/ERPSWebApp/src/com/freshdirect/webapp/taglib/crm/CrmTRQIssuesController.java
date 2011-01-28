@@ -325,8 +325,7 @@ public class CrmTRQIssuesController extends AbstractControllerTag {
 				if (caseInfo!=null) {
 					caseInfo.setProjectedQuantity(iReported);
 					caseInfo.setActualQuantity(iActual);
-//					caseInfo.setAssignedAgentPK(this.getCurrentAgent().getPK());
-					caseInfo.setAssignedAgentUserId(this.getCurrentAgentStr());
+					caseInfo.setAssignedAgentPK(this.getCurrentAgent().getPK());
 				} else {
 					caseInfo = new CrmCaseInfo();
 					caseInfo.setProjectedQuantity(iReported);
@@ -340,8 +339,7 @@ public class CrmTRQIssuesController extends AbstractControllerTag {
 					caseInfo.setSummary("Issue for Route: "+route
 						+" and Stop: "+strStopNumber+"; "
 						+caseSubject.getName() );
-//					caseInfo.setAssignedAgentPK(this.getCurrentAgent().getPK());
-					caseInfo.setAssignedAgentUserId(this.getCurrentAgentStr());
+					caseInfo.setAssignedAgentPK(this.getCurrentAgent().getPK());
 					caseInfo.setCustomerPK(new PrimaryKey(erpCustomerId));
 					caseInfo.setSalePK(new PrimaryKey(saleId));
 				}
@@ -356,8 +354,7 @@ public class CrmTRQIssuesController extends AbstractControllerTag {
 				CrmCaseAction caseAction = new CrmCaseAction();
 				caseAction.setType(CrmCaseActionType.getEnum(CrmCaseActionType.CODE_NOTE));
 				caseAction.setTimestamp(new Date());
-//				caseAction.setAgentPK(this.getCurrentAgent().getPK());
-				caseAction.setAgentId(this.getCurrentAgentStr());
+				caseAction.setAgentPK(this.getCurrentAgent().getPK());
 				caseAction.setNote(frmNote);
 				crmCase.addAction(caseAction);
 
@@ -376,10 +373,6 @@ public class CrmTRQIssuesController extends AbstractControllerTag {
 		return CrmSession.getCurrentAgent(pageContext.getSession());
 	}
 
-	private String getCurrentAgentStr() {
-		return CrmSession.getCurrentAgentStr(pageContext.getSession());
-	}
-	
 	private void storeCases(ActionResult result){
 		CrmCaseModel crmCase=null;
 		try {

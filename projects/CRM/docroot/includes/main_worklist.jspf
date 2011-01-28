@@ -44,12 +44,12 @@
 					</td>
 					<% } %>
 					<% if(showCustomerSearchSection && showOrderCutOffReportSection) { %>
-					<td width="25%">					
+					<td width="25%" valign="top">					
 							<%@ include file="/includes/order_cutoff_report.jspf"%>
 							</td>
 							<% } %>
 					<% if(showCustomerSearchSection && showOrderSummaryReportSection) { %>		
-							<td width="25%">
+							<td width="25%" valign="top">
 							<%@ include file="/includes/order_summary_report.jspf"%>
 					
 					</td>

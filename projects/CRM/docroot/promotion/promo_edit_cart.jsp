@@ -3,7 +3,6 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import="com.freshdirect.fdstore.promotion.*" %>
 <%@ page import="com.freshdirect.fdstore.promotion.management.*" %>
-<%@ page import='com.freshdirect.webapp.crm.security.*' %>
 <%@ page import="java.util.*" %>
 <tmpl:insert template='/template/top_nav.jsp'>
 <% String promoId = request.getParameter("promoId");%>
@@ -11,9 +10,8 @@
 	<tmpl:put name='title' direct='true'>Edit Cart Requirement</tmpl:put>
 	
 	<tmpl:put name='content' direct='true'>
-	
+	<crm:GetCurrentAgent id='currentAgent'>
 		<%
-		String userId = CrmSecurityManager.getUserName(request);
 		String successPage ="/promotion/promo_edit.jsp?promoId=";
 		%>
 		<fd:PromotionOfferController result="result" promotion="<%= promotion %>" actionName="promoCart" successPage="<%= successPage %>">
@@ -67,7 +65,7 @@
 		</div>
 		</form>
 		</fd:PromotionOfferController>
-	
+	</crm:GetCurrentAgent>
 	</tmpl:put>
 	</fd:GetPromotionNew>
 </tmpl:insert>

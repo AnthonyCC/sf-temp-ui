@@ -204,7 +204,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			if ( result.getStatus() != Status.SKIPPED ) {
 				try {
 					FDActionInfo info = new FDActionInfo(EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(),
-							INITIATOR_NAME, "Updating Standing Order Status", "");
+							INITIATOR_NAME, "Updating Standing Order Status", null);
 					soManager.save( info, so );
 				} catch (FDResourceException re) {
 					invalidateFCHome();
@@ -391,7 +391,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				so.clearLastError();
 				try {
 					FDActionInfo info = new FDActionInfo(EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(),
-							INITIATOR_NAME, "Resetting Standing Order Error Status", "");
+							INITIATOR_NAME, "Resetting Standing Order Error Status", null);
 					soManager.save( info, so );
 				} catch (FDResourceException re) {
 					invalidateFCHome();
@@ -562,7 +562,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		
 		
 		// making a reservation ...
-		FDActionInfo reserveActionInfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, customer, INITIATOR_NAME, "Reserving timeslot for Standing Order", "" );
+		FDActionInfo reserveActionInfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, customer, INITIATOR_NAME, "Reserving timeslot for Standing Order", null );
 		
 		FDReservation reservation = null;
 		FDTimeslot selectedTimeslot = null;
@@ -682,7 +682,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		// ==========================
 		
 		try {
-			FDActionInfo orderActionInfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, customer, INITIATOR_NAME, "Placing order for Standing Order", "" );
+			FDActionInfo orderActionInfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, customer, INITIATOR_NAME, "Placing order for Standing Order", null );
 			CustomerRatingI cra = new CustomerRatingAdaptor( customerUser.getFDCustomer().getProfile(), customerUser.isCorporateUser(), customerUser.getAdjustedValidOrderCount() );
 			String orderId = FDCustomerManager.placeOrder( orderActionInfo, cart, null, false, cra, null );
 

@@ -122,11 +122,7 @@ public interface CrmCaseI extends Serializable {
     // Set assigned cartons
     public void setCartonNumbers(List cartons);
     
-    public String getAssignedAgentUserId();
+    public boolean isPrivateCase() ;
 
-	public void setAssignedAgentUserId(String assignedAgentUserId);
-
-	public String getLockedAgentUserId() ;
-
-	public void setLockedAgentUserId(String lockedAgentUserId) ;
+	public void setPrivateCase(boolean isPrivateCase);
 }

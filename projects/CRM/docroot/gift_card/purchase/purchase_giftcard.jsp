@@ -18,7 +18,9 @@
 <%request.setAttribute("listPos", "CategoryNote");%>
 
 <% boolean isGuest = false; %>
-	
+	<crm:GetCurrentAgent id="currentAgent">
+		<%-- isGuest = currentAgent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.GUE_CODE)); --%> 
+	</crm:GetCurrentAgent>
 <script language="javascript" src="/assets/javascript/common_javascript.js"></script>    
 <tmpl:insert template='/template/top_nav.jsp'>
 

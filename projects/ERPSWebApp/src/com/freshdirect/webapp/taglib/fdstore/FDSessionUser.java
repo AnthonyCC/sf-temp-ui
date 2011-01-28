@@ -209,7 +209,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     private void logMasqueradeLogout( String masqueradeAgent ) {
         LOGGER.debug( "logMasqueradeLogout()" );
     	try {
-    		FDActionInfo ai = new FDActionInfo( EnumTransactionSource.WEBSITE, this.getIdentity(), "Masquerade logout", masqueradeAgent + " logged out as " + this.getUserId(), "", EnumAccountActivityType.MASQUERADE_LOGOUT );
+    		FDActionInfo ai = new FDActionInfo( EnumTransactionSource.WEBSITE, this.getIdentity(), "Masquerade logout", masqueradeAgent + " logged out as " + this.getUserId(), null, EnumAccountActivityType.MASQUERADE_LOGOUT );
     		ActivityLog.getInstance().logActivity( ai.createActivity() );
     	} catch ( FDResourceException ex ) {
     		LOGGER.error( "Activity logging failed due to FDResourceException.", ex );

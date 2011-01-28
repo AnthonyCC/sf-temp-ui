@@ -19,27 +19,24 @@
 	// remove current cust
 session.setAttribute(SessionName.USER,null);
 session.setAttribute(SessionName.APPLICATION, "CALLCENTER");
+%>
 
-/*CrmAgentModel agent = CrmManager.getInstance().loginAgent(userId, password);
-CrmSession.setCurrentAgent(session, agent);*/
-String userId = CrmSecurityManager.getUserName(request);
-String userRole = CrmSecurityManager.getUserRole(request);
-CrmAgentRole crmRole = CrmAgentRole.getEnumByLDAPRole(userRole);
+<tmpl:insert template='/template/top_nav.jsp'>
 
-CrmStatus status = CrmManager.getInstance().getSessionStatus(userId);
-if(status == null || status.getAgentId()== null){
-	status = new CrmStatus(userId);
-}
-CrmSessionStatus sessStatus = new CrmSessionStatus(status, session);
-CrmSession.setSessionStatus(session, sessStatus);
+<tmpl:put name='title' direct='true'>Home</tmpl:put>
+	
+<tmpl:put name='content' direct='true'>
+<crm:GetCurrentAgent id='currentAgent'>
+<% 
+CrmAgentRole crmRole = currentAgent.getRole();
 boolean showOrderRouteSection = crmRole.getCode().equals(CrmAgentRole.ADM_CODE)
-								|| crmRole.getCode().equals(CrmAgentRole.DEV_CODE)
-								|| crmRole.getCode().equals(CrmAgentRole.QA_CODE)
-								|| crmRole.getCode().equals(CrmAgentRole.SUP_CODE)
-								|| crmRole.getCode().equals(CrmAgentRole.SOP_CODE)
-								|| crmRole.getCode().equals(CrmAgentRole.COS_CODE)
-								|| crmRole.getCode().equals(CrmAgentRole.TRN_CODE)
-								|| crmRole.getCode().equals(CrmAgentRole.OPS_CODE);
+							|| crmRole.getCode().equals(CrmAgentRole.DEV_CODE)
+							|| crmRole.getCode().equals(CrmAgentRole.QA_CODE)
+							|| crmRole.getCode().equals(CrmAgentRole.SUP_CODE)
+							|| crmRole.getCode().equals(CrmAgentRole.SOP_CODE)
+							|| crmRole.getCode().equals(CrmAgentRole.COS_CODE)
+							|| crmRole.getCode().equals(CrmAgentRole.TRN_CODE)
+							|| crmRole.getCode().equals(CrmAgentRole.OPS_CODE);
 
 boolean showGiftCardSearchSection = crmRole.getCode().equals(CrmAgentRole.ADM_CODE)
 								|| crmRole.getCode().equals(CrmAgentRole.DEV_CODE)
@@ -71,7 +68,7 @@ boolean showWorkListSection = crmRole.getCode().equals(CrmAgentRole.ADM_CODE)
 							|| crmRole.getCode().equals(CrmAgentRole.SEC_CODE);
 
 boolean showCustomerSearchSection = !crmRole.getCode().equals(CrmAgentRole.ERP_CODE)
-									&& !crmRole.getCode().equals(CrmAgentRole.ETS_CODE);
+	&& !crmRole.getCode().equals(CrmAgentRole.ETS_CODE);
 
 //boolean showOrderSearchSection = !crmRole.getCode().equals(CrmAgentRole.ETS_CODE);
 
@@ -84,19 +81,13 @@ boolean showOrderCutOffReportSection = !crmRole.getCode().equals(CrmAgentRole.ET
 									&& !crmRole.getCode().equals(CrmAgentRole.SEC_CODE);
 
 boolean showOrderSummaryReportSection = !crmRole.getCode().equals(CrmAgentRole.ETS_CODE)
-									&& !crmRole.getCode().equals(CrmAgentRole.NCS_CODE)
-									&& !crmRole.getCode().equals(CrmAgentRole.CSR_CODE)
-									&& !crmRole.getCode().equals(CrmAgentRole.SCS_CODE)
-									&& !crmRole.getCode().equals(CrmAgentRole.FIN_CODE)
-									&& !crmRole.getCode().equals(CrmAgentRole.SEC_CODE);
-%>
+										&& !crmRole.getCode().equals(CrmAgentRole.NCS_CODE)
+										&& !crmRole.getCode().equals(CrmAgentRole.CSR_CODE)
+										&& !crmRole.getCode().equals(CrmAgentRole.SCS_CODE)
+										&& !crmRole.getCode().equals(CrmAgentRole.FIN_CODE)
+										&& !crmRole.getCode().equals(CrmAgentRole.SEC_CODE);
 
-<tmpl:insert template='/template/top_nav.jsp'>
-
-<tmpl:put name='title' direct='true'>Home</tmpl:put>
-	
-<tmpl:put name='content' direct='true'>
-<% // monitor
+		// monitor
 		boolean queue_overview = false;
 		boolean agent_monitor = false;
 		boolean worklist = true;
@@ -137,7 +128,7 @@ boolean showOrderSummaryReportSection = !crmRole.getCode().equals(CrmAgentRole.E
 			List cases = null;
 			CrmCaseTemplate template = new CrmCaseTemplate();
 			 
-		//	template.setAssignedAgentPK( currentAgent.getPK() );
+			template.setAssignedAgentPK( currentAgent.getPK() );
 			if (filterQueue!=null && !"".equals(filterQueue)) {
                 template.setQueue(CrmCaseQueue.getEnum(filterQueue));
             }
@@ -149,7 +140,7 @@ boolean showOrderSummaryReportSection = !crmRole.getCode().equals(CrmAgentRole.E
             if (filterPriority!=null && !"".equals(filterPriority)) {
                 template.setPriority(CrmCasePriority.getEnum(filterPriority));
             }
-			template.setAssignedAgentId(userId);
+			//template.setAssignedAgentId(userId);
 			template.setSortBy(request.getParameter("sortBy"));
 			template.setSortOrder(request.getParameter("sortOrder"));
 			template.setStartRecord(Integer.parseInt(NVL.apply(request.getParameter("startRecord"), "0")));
@@ -295,6 +286,7 @@ boolean showOrderSummaryReportSection = !crmRole.getCode().equals(CrmAgentRole.E
 		
 		
 	</div>
+</crm:GetCurrentAgent>
 </tmpl:put>
 
 </tmpl:insert>

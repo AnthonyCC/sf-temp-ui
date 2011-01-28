@@ -1,8 +1,6 @@
 <%@ taglib uri='crm' prefix='crm' %>
 <%@ page import='com.freshdirect.webapp.crm.security.*' %>
 <%
-String agentId = CrmSecurityManager.getUserName(request);
-String agentRole = CrmSecurityManager.getUserRole(request);
 String rnav_pageURI = request.getRequestURI();
 boolean subject_report = rnav_pageURI.indexOf("/reports/reports_index.jsp") > -1 || rnav_pageURI.indexOf("subject_report") > -1;
 boolean late_delivery_report = rnav_pageURI.indexOf("late_delivery_report") > -1;
@@ -12,9 +10,10 @@ boolean credit_summary_report = rnav_pageURI.indexOf("/reports/credit_summary_re
 boolean credit_report = rnav_pageURI.indexOf("/reports/credit_report") > -1;
 boolean settlement_problem_report = rnav_pageURI.indexOf("/reports/settlement_problem_report") > -1;
 %>
-
+<crm:GetCurrentAgent id='currentAgent'>
 <div class="rep_nav_bg">
-<% if(CrmSecurityManager.hasAccessToPage(agentRole,"subject_report.jsp")){ %>
+<%  String agentRole = currentAgent.getRole().getLdapRoleName(); 
+	if(CrmSecurityManager.hasAccessToPage(agentRole,"subject_report.jsp")){ %>
 <a href="/reports/subject_report.jsp" class="<%=subject_report?"rep_nav_on":"rep_nav"%>">Cases by Queues & Subjects</a>
 <% } %>
 <% if(CrmSecurityManager.hasAccessToPage(agentRole,"late_delivery_report.jsp")){ %>
@@ -37,3 +36,4 @@ boolean settlement_problem_report = rnav_pageURI.indexOf("/reports/settlement_pr
 <% } %>
 
 </div>
+</crm:GetCurrentAgent>

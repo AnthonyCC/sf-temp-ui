@@ -12,6 +12,7 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintLineModel;
@@ -469,7 +470,8 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		HttpSession session = pageContext.getSession();
 		FDIdentity identity = getUser().getIdentity();
 		String orderId = (String)session.getAttribute( "referencedOrder" );
-		CrmAgentRole agentRole = CrmSession.getCurrentAgentRole(session);
+		CrmAgentModel agentModel =CrmSession.getCurrentAgent(session);
+		CrmAgentRole agentRole = agentModel.getRole();
 		boolean autoApproveAuthorized = CrmSecurityManager.isAutoApproveAuthorized(agentRole.getLdapRoleName());
 		Double limit =CrmSecurityManager.getAutoApprovalLimit(agentRole.getLdapRoleName());
 		FDCustomerManager.addComplaint( complaintModel, orderId, identity,autoApproveAuthorized,limit );

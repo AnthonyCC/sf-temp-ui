@@ -11,7 +11,11 @@
 --%>
 <% if (promo_create_edit) { isEmptyPromoCustreq = true; } %>
 
+<%
 
+String userId = request.getParameter("userId");
+
+%>
 
 <%@page import="com.freshdirect.fdstore.promotion.EnumPromotionProfileAttribute"%><table width="100%" class="bordBotLgray">
 	<tr>

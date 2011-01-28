@@ -68,14 +68,13 @@ public class DeliveryPassControllerTag extends AbstractControllerTag {
 			HttpSession session = pageContext.getSession();
 			FDSessionUser currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
 			
-//			CrmAgentModel agentModel = CrmSession.getCurrentAgent(session);
-			String agentId = CrmSession.getCurrentAgentStr(session);
+			CrmAgentModel agentModel = CrmSession.getCurrentAgent(session);
 			CrmManager crmManager=CrmManager.getInstance();
 			if ("incr_dlvcount".equalsIgnoreCase(this.getActionName())) {
 				count=Integer.parseInt(request.getParameter("incrCount").trim());
 				FDCustomerInfo custInfo=getCustomerInfo(session);
 				setIncrement(count);
-				crmManager.incrDeliveryCount(this.dlvPass, agentId, increment, notes, extendReason, orderAssigned);
+				crmManager.incrDeliveryCount(this.dlvPass, agentModel, increment, notes, extendReason, orderAssigned);
 				
 				sendEmail(custInfo, orderAssigned,count,EnumDlvPassProfileType.BSGS);
 				if(count==1) {
@@ -91,7 +90,7 @@ public class DeliveryPassControllerTag extends AbstractControllerTag {
 				FDCustomerInfo custInfo=getCustomerInfo(session);
 				
 				setNoOfWeeks(count);
-				crmManager.incrExpirationPeriod(this.dlvPass, agentId, this.noOfWeeks * 7, notes, extendReason, orderAssigned);
+				crmManager.incrExpirationPeriod(this.dlvPass, agentModel, this.noOfWeeks * 7, notes, extendReason, orderAssigned);
 				sendEmail(custInfo,orderAssigned, count,EnumDlvPassProfileType.UNLIMITED);
 				
 				if(count==1) {
@@ -103,7 +102,7 @@ public class DeliveryPassControllerTag extends AbstractControllerTag {
 			}
 
 			if ("cancel_pass".equalsIgnoreCase(this.getActionName())) {
-				crmManager.cancelDeliveryPass(this.dlvPass, agentId, notes, cancelReason, orderAssigned);
+				crmManager.cancelDeliveryPass(this.dlvPass, agentModel, notes, cancelReason, orderAssigned);
 				//Load the delivery pass status from DB.
 				currentUser.updateDlvPassInfo();
 				buffer = new StringBuffer(SystemMessageList.MSG_DLV_PASS_CANCELLED);

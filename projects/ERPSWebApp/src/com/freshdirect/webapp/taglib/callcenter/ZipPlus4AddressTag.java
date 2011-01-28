@@ -195,8 +195,7 @@ public class ZipPlus4AddressTag extends AbstractControllerTag implements Session
 					streetAddress = AddressScrubber.standardizeForUSPS(dlvAddress.getAddress1());
 				}
 				
-//				CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());
-				String agentId = CrmSession.getCurrentAgentStr(request.getSession());
+				CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());
 				
 				ExceptionAddress ex = new ExceptionAddress();
 				ex.setStreetAddress(streetAddress);
@@ -205,8 +204,7 @@ public class ZipPlus4AddressTag extends AbstractControllerTag implements Session
 				ex.setZip(this.dlvAddress.getZipCode());
 				ex.setAddressType(EnumAddressType.HIGHRISE);
 				ex.setReason(EnumAddressExceptionReason.ADD_APT);
-//				ex.setUserId(agent.getUserId());
-				ex.setUserId(agentId);
+				ex.setUserId(agent.getUserId());
 				ex.setCounty(county);
 				ex.setState(this.dlvAddress.getState());
 				ex.setCity(this.dlvAddress.getCity());

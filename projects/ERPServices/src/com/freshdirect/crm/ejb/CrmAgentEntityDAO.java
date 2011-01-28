@@ -67,7 +67,7 @@ public class CrmAgentEntityDAO implements EntityDAOI {
 		CrmAgentModel agent = (CrmAgentModel) model;
 		PreparedStatement ps =
 			conn.prepareStatement(
-				"INSERT INTO CUST.AGENT(ID, USER_ID, PASSWORD, FIRST_NAME, LAST_NAME, ACTIVE, ROLE, CREATED, MASQUERADE_ALLOWED) VALUES(?,?,?,?,?,?,?,?,?)");
+				"INSERT INTO CUST.AGENT(ID, USER_ID, PASSWORD, FIRST_NAME, LAST_NAME, ACTIVE, ROLE, CREATED, MASQUERADE_ALLOWED,LDAP_ID) VALUES(?,?,?,?,?,?,?,?,?,?)");
 		ps.setString(1, pk.getId());
 		ps.setString(2, agent.getUserId());
 		ps.setString(3, agent.getPassword());
@@ -77,6 +77,7 @@ public class CrmAgentEntityDAO implements EntityDAOI {
 		ps.setString(7, agent.getRole().getCode());
 		ps.setTimestamp(8, new java.sql.Timestamp(new Date().getTime()));
 		ps.setString(9, agent.isMasqueradeAllowed() ? "Y" : "N");
+		ps.setString(10,agent.getLdapId());
 
 		if (ps.executeUpdate() != 1) {
 			ps.close();
@@ -88,7 +89,7 @@ public class CrmAgentEntityDAO implements EntityDAOI {
 
 	public ModelI load(Connection conn, PrimaryKey pk) throws SQLException {
 		PreparedStatement ps =
-			conn.prepareStatement("SELECT USER_ID, PASSWORD, FIRST_NAME, LAST_NAME, ACTIVE, ROLE, CREATED, MASQUERADE_ALLOWED FROM CUST.AGENT WHERE ID = ?");
+			conn.prepareStatement("SELECT USER_ID, PASSWORD, FIRST_NAME, LAST_NAME, ACTIVE, ROLE, CREATED, MASQUERADE_ALLOWED, LDAP_ID FROM CUST.AGENT WHERE ID = ?");
 		ps.setString(1, pk.getId());
 		ResultSet rs = ps.executeQuery();
 		if (!rs.next()) {
@@ -103,6 +104,7 @@ public class CrmAgentEntityDAO implements EntityDAOI {
 		agent.setRole(CrmAgentRole.getEnum(rs.getString("ROLE")));
 		agent.setCreateDate(rs.getTimestamp("CREATED"));
 		agent.setMasqueradeAllowed( "Y".equalsIgnoreCase( rs.getString("MASQUERADE_ALLOWED") ) );
+		agent.setLdapId(rs.getString("LDAP_ID"));
 
 		rs.close();
 		ps.close();
@@ -182,5 +184,20 @@ public class CrmAgentEntityDAO implements EntityDAOI {
 		ps.close();
 
 		return queues;
+	}
+	
+	public PrimaryKey findAgentByLdapId(Connection conn, String agentLdapId) throws SQLException, ObjectNotFoundException {
+		PreparedStatement ps = conn.prepareStatement("SELECT ID FROM CUST.AGENT WHERE LDAP_ID = ?");
+		ps.setString(1, agentLdapId);
+		ResultSet rs = ps.executeQuery();
+		if (rs.next()) {
+			String id = rs.getString("ID");
+			rs.close();
+			ps.close();
+			return new PrimaryKey(id);
+		}
+		rs.close();
+		ps.close();
+		throw new ObjectNotFoundException("No Agent Found for LDAP_ID: " + agentLdapId);
 	}
 }

@@ -15,8 +15,7 @@
 
 <%  
     FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-	String agentId = CrmSecurityManager.getUserName(request);
-	String agentRole = CrmSecurityManager.getUserRole(request);
+    
     // Get the order and complaint IDs from the session
     ErpPaymentMethodI paymentMethod = null;
     String orderId = request.getParameter("orderId");
@@ -84,12 +83,14 @@
         <input type="hidden" name="orderId" value="<%= orderId %>">
         <TR>
             <td align="center">
-                <%if(CrmSecurityManager.hasAccessToPage(agentRole,"approveCredit")){%>
+                <crm:GetCurrentAgent id="currentAgent">
+				<%if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"approveCredit")){%>
                     <input type="submit" class="submit" value="APPROVE THIS CREDIT" onClick="setThisAction(document.approve_credit,'approve');"> 
                 <%}%>
-                <%if(CrmSecurityManager.hasAccessToPage(agentRole,"rejectCredit")){%>
+                <%if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"rejectCredit")){%>
                 <input type="submit" class="clear" value="REJECT THIS CREDIT" onClick="setThisAction(document.approve_credit,'reject');"><br>
                 <% } %>
+                </crm:GetCurrentAgent>
             </td>
         </TR>
     </table>

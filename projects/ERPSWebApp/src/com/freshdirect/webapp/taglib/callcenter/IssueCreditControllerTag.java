@@ -119,7 +119,7 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 				throw new JspException(fdre.getMessage());
 			}
 
-			CrmAgentRole agentRole = CrmSession.getCurrentAgentRole(session);
+			CrmAgentRole agentRole = CrmSession.getCurrentAgent(session).getRole();
 			if ("POST".equalsIgnoreCase(request.getMethod())) { 
 				if (ACTION_APPROVE.equals(this.action)) {
 					//
@@ -221,7 +221,7 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 							addComplaint(actionResult, complaintModel,autoApproveAuthorized,limit);
 							
 							// Generate an auto case
-							CrmCaseModel autoCase = AutoCaseGenerator.createAutoCase(CrmSession.getCurrentAgentStr(session), order, complaintModel, pageContext.getRequest());
+							CrmCaseModel autoCase = AutoCaseGenerator.createAutoCase(CrmSession.getCurrentAgent(session), order, complaintModel, pageContext.getRequest());
 							// store case
 							PrimaryKey autoCasePK = CrmManager.getInstance().createCase(autoCase);
 
@@ -373,25 +373,22 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 	private void doApproval(HttpServletRequest request, ActionResult result, boolean isApproved, Double limit)
 		throws FDResourceException, ErpComplaintException, CrmAuthorizationException {
 		HttpSession session = pageContext.getSession();
-		//CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());
-		String agentId = CrmSession.getCurrentAgentStr(request.getSession());
+		CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());
 		
 		// Close auto case first
-		if (agentId != null && this.complaintModel.getAutoCaseId() != null) {
+		if (agent != null && this.complaintModel.getAutoCaseId() != null) {
 			CrmCaseModel aCase = CrmManager.getInstance().getCaseByPk(this.complaintModel.getAutoCaseId());
 			
 			// try to lock case
-//			PrimaryKey ownerPK = aCase.getLockedAgentPK();
-			String ownerId = aCase.getLockedAgentUserId();
+			PrimaryKey ownerPK = aCase.getLockedAgentPK();
 
 			boolean caseIsMine = false;
-			if (ownerId != null) {
-				if (!agentId.equalsIgnoreCase(ownerId)) {
+			if (ownerPK != null) {
+				if (!agent.getPK().equals(ownerPK)) {
 					// gosh .. someone already owning the case
-//					CrmAgentModel otherAgent = CrmManager.getInstance().getAgentByPk(ownerPK.getId());
+					CrmAgentModel otherAgent = CrmManager.getInstance().getAgentByPk(ownerPK.getId());
 					
-//					result.addError(true, "approval_error", "Requested action cannot be performed. Associated case is locked by another user "+otherAgent.getFirstName()+" "+otherAgent.getLastName()+".");
-					result.addError(true, "approval_error", "Requested action cannot be performed. Associated case is locked by another user "+ownerId+".");
+					result.addError(true, "approval_error", "Requested action cannot be performed. Associated case is locked by another user "+otherAgent.getLdapId()+".");
 					return;
 				}
 				caseIsMine = true;
@@ -424,8 +421,8 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 		boolean sendMail = true;
 		if(request.getParameter("sendMail") != null) sendMail = false;
 		
-		if (agentId != null) {
-			FDCustomerManager.approveComplaint(request.getParameter("complaintId"), isApproved, agentId, sendMail,limit);
+		if (agent != null) {
+			FDCustomerManager.approveComplaint(request.getParameter("complaintId"), isApproved, agent.getUserId(), sendMail,limit);
 		} else {
 			CallcenterUser ccUser = (CallcenterUser) session.getAttribute(SessionName.CUSTOMER_SERVICE_REP);
 			FDCustomerManager.approveComplaint(request.getParameter("complaintId"), isApproved, ccUser.getId(), sendMail,limit);

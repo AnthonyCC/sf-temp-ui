@@ -60,7 +60,7 @@ function blinkIt() {
 <crm:GetErpCustomer id="customer" user="<%=user%>">
 <crm:GetFdCustomer id="fdCustomer" user="<%=user%>">
 <fd:AccountActivity activities='activities'>
-
+<crm:GetCurrentAgent id="agent">
 <% ErpCustomerInfoModel custInfo = customer.getCustomerInfo();%> 
 
 <%!
@@ -177,7 +177,7 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
                 Created: <b><%= acctOpenActivity == null ? "<span class='not_set'>- No date -</span>" : CCFormatter.formatDate(acctOpenActivity.getDate()) %></b>
             </div>
             
-            <% if(customer.getSapId() == null) { %> 
+            <% if(customer.getSapId() == null ) { %> 
                 <crm:ResubmitCustomerController actionName="<%=actionName%>" result="resubmitResult" customerId="<%=user.getIdentity().getErpCustomerPK()%>" successPage="<%= successPage %>"/>
                 <form method='POST' action='<%=request.getRequestURI() + "?" + request.getQueryString()%>' name='resubmitCustomer' style="padding: 0; margin: 0">
                     <input type='hidden' name='actionName' value='resubmitCustomer'>
@@ -343,7 +343,7 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
 								</td></tr>
 						<% } %>
 						
-                        <% if (!isVIP) { %>
+                        <% if ( !isVIP) { %>
                                 <tr><td align="center">
                                 <% if(editable){ %>
                                     <a href="/supervisor/vip_info.jsp" class="edit" style="width: 140px;">ADD VIP STATUS</a>
@@ -730,7 +730,7 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
     </tmpl:put>
 
     </tmpl:insert>
-
+</crm:GetCurrentAgent>
 </fd:AccountActivity>
 </crm:GetFdCustomer>
 </crm:GetErpCustomer>

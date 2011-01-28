@@ -14,10 +14,10 @@ boolean top_faqs = snav_pageURI.indexOf("top_faqs") > -1;
 boolean click_to_call = snav_pageURI.indexOf("click_to_call") > -1;
 boolean search_orders = snav_pageURI.indexOf("search_orders_by_sku") > -1;
 boolean modify_orders = snav_pageURI.indexOf("modify_orders_by_sku") > -1;
-String lAgentId = CrmSecurityManager.getUserName(request);
-String lAgentRole = CrmSecurityManager.getUserRole(request);
-%>
 
+%>
+<crm:GetCurrentAgent id='currentAgent'>
+<% String lAgentRole = currentAgent.getRole().getLdapRoleName(); %>
 <div class="sup_nav_bg">
 <% if(CrmSecurityManager.hasAccessToPage(lAgentRole,"admintools_index.jsp")){ %>
 	<a href="/admintools/admintools_index.jsp" class="<%=resubmit_orders?"sup_nav_on":"sup_nav"%>">Resub. Orders</a>
@@ -57,3 +57,4 @@ String lAgentRole = CrmSecurityManager.getUserRole(request);
 <% } %>
 
 </div>
+</crm:GetCurrentAgent>

@@ -259,22 +259,6 @@ public class CrmCaseModel extends ModelSupport implements CrmCaseI {
 		this.caseInfo.setCartonNumbers(cartons);
 	}
 	
-	public String getAssignedAgentUserId() {
-		return this.caseInfo.getAssignedAgentUserId();
-	}
-
-	public void setAssignedAgentUserId(String assignedAgentUserId) {
-		this.caseInfo.setAssignedAgentUserId(assignedAgentUserId);
-	}
-
-	public String getLockedAgentUserId() {
-		return this.caseInfo.getLockedAgentUserId();
-	}
-
-	public void setLockedAgentUserId(String lockedAgentUserId) {
-		this.caseInfo.setLockedAgentUserId(lockedAgentUserId);
-	}
-	
 	public boolean isPrivateCase() {
 		return this.caseInfo.isPrivateCase();
 	}

@@ -48,8 +48,7 @@
 <%
 String orderId = request.getParameter("orderId");
 FDSessionUser user = null;
-String agentId = CrmSecurityManager.getUserName(request);
-String agentRole = CrmSecurityManager.getUserRole(request);
+
 if (orderId != null) {
 	// clear any lingering search terms
 	session.removeAttribute(SessionName.LIST_SEARCH_RAW);
@@ -192,13 +191,13 @@ if (ldlv != null) {
 </table>
 
 <%-- === Masquerade! === --%>
-
-<% if(CrmSecurityManager.hasAccessToPage(agentRole,"masquerade.jsp")){ %>
+<crm:GetCurrentAgent id="agent">
+<% if (CrmSecurityManager.hasAccessToPage(agent.getRole().getLdapRoleName(),"masquerade.jsp")) { %>
 	<hr/>
 		<a href="masquerade.jsp" target="_blank">Masquerade <%= user.getUserId() %></a><br/>
 	<hr/>
 <% } %>
-
+</crm:GetCurrentAgent>
 
 <%--
   ===== SECOND ROW =====
@@ -359,7 +358,6 @@ $E.on($('c-tr-<%= aCase.getId() %>'), 'click', function(e) {
 	background: #eee;
 	font-size: 90%;
 }
-
 .order-row td {
 	padding-left: 3px;
 	padding-right: 3px;

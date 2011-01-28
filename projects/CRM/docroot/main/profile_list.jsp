@@ -9,7 +9,6 @@
 <%@ page import="com.freshdirect.framework.util.*" %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='com.freshdirect.webapp.crm.security.*' %>
-
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -23,17 +22,15 @@ FDCustomerModel customer = user.getFDCustomer();
 ProfileModel profile = customer.getProfile();
 Map profileAttributes = profile.getAttributes();
 Map profileAttributeNames = FDCustomerManager.loadProfileAttributeNames();
-String agentId = CrmSecurityManager.getUserName(request);
-String agentRole = CrmSecurityManager.getUserRole(request);
 %>
 <tmpl:insert template='/template/top_nav.jsp'>
 <tmpl:put name='title' direct='true'>Profile List</tmpl:put>
 <tmpl:put name='content' direct='true'>
-
+<crm:GetCurrentAgent id="currentAgent">
 	<div class="sub_nav">
 	<table cellpadding="0" cellspacing="0" border="0" width="99%">
 	<tr><td width="80%"><span class="sub_nav_title">Profile List &nbsp;<a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmCustProfileHelpLink() %>','715','940','kbit')" onmouseover="return overlib('Click for Help.', AUTOSTATUS, WRAP);" onmouseout="nd();" class="help">?</a></span> </div></td>
-	<% if (CrmSecurityManager.hasAccessToPage(agentRole,"edit_profile")) { %><td width="20%"align="right"><a href="/customer_account/set_profile_attr.jsp">Add a Profile Attribute &raquo;</a></td><% } %>
+<% if (CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"edit_profile")) { %><td width="20%"align="right"><a href="/customer_account/set_profile_attr.jsp">Add a Profile Attribute &raquo;</a></td><% } %>
 	</tr>
 	</table>
 	</div>	
@@ -68,7 +65,7 @@ String agentRole = CrmSecurityManager.getUserRole(request);
         String name = (String) i.next();
         String value = (String) profileAttributes.get(name);        
         ProfileAttributeName profileAttributeName = (ProfileAttributeName) profileAttributeNames.get(name);	        
-        boolean isEditable = CrmSecurityManager.hasAccessToPage(agentRole,"edit_profile") && (profileAttributeName != null && profileAttributeName.getIsEditable());
+        boolean isEditable = CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"edit_profile") && (profileAttributeName != null && profileAttributeName.getIsEditable());
 %>
             <tr valign="top" <%= counter % 2 == 0 ? "class='list_odd_row'" : "" %> style="padding-top: 3px; padding-bottom: 3px;">
                 <td width="2%">&nbsp;</td>
@@ -95,6 +92,6 @@ String agentRole = CrmSecurityManager.getUserRole(request);
 %>
 </table>
 </div>    
-
+</crm:GetCurrentAgent>
 </tmpl:put>
 </tmpl:insert>

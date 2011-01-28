@@ -94,10 +94,6 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
     // holds assigned carton numbers (missing, misloaded, etc)
     private List cartonNumbers;
     
-    private String assignedAgentUserId;
-    
-    private String lockedAgentUserId;
-    
     private boolean isPrivateCase;
     
     public CrmCaseInfo() {
@@ -121,16 +117,14 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
         this();
         if (info != null) {
             setPK(info.getPK());
-//            setAssignedAgentPK(info.getAssignedAgentPK());
-            setAssignedAgentUserId(info.getAssignedAgentUserId());
+            setAssignedAgentPK(info.getAssignedAgentPK());
             setCreateDate(info.getCreateDate());
             setCustomerFirstName(info.getCustomerFirstName());
             setCustomerLastName(info.getCustomerLastName());
             setCustomerPK(info.getCustomerPK());
             setDepartments(info.getDepartments());
             setLastModDate(info.getLastModDate());
-//            setLockedAgentPK(info.getLockedAgentPK());
-            setLockedAgentUserId(info.getLockedAgentUserId());
+            setLockedAgentPK(info.getLockedAgentPK());
             setOrigin(info.getOrigin());
             setPriority(info.getPriority());
             setSalePK(info.getSalePK());
@@ -450,28 +444,7 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
 	public void setCartonNumbers(List cartons) {
 		this.cartonNumbers = cartons;
 	}
-
-	public String getAssignedAgentUserId() {
-		return assignedAgentUserId;
-	}
-
-	public void setAssignedAgentUserId(String assignedAgentUserId) {
-		 String old = this.getLockedAgentUserId();
-		 this.assignedAgentUserId = assignedAgentUserId;
-	     this.firePropertyChange("assignedAgentUserId", old, assignedAgentUserId);
-		
-	}
-
-	public String getLockedAgentUserId() {
-		return lockedAgentUserId;
-	}
-
-	public void setLockedAgentUserId(String lockedAgentUserId) {
-		String old = this.getLockedAgentUserId();
-		this.lockedAgentUserId = lockedAgentUserId;
-	    this.firePropertyChange("lockedAgentUserId", old, lockedAgentUserId);
-	}
-
+	
 	public boolean isPrivateCase() {
 		return isPrivateCase;
 	}

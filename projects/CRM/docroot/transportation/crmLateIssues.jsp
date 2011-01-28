@@ -65,7 +65,7 @@ String successPage = "/transportation/crmLateIssues.jsp?lateLog=true&dlvDate="+f
 		
     	<tmpl:put name='content' direct='true'>
 <%@ include file="/includes/transportation_nav.jsp"%>
-    		
+    		<crm:GetCurrentAgent id='currAgent'>
 			<crm:CrmLateIssue id="lateIssues" route="<%=route%>" successPage="<%=successPage%>" deliveryDate="<%=dlvDate%>" result="result">
 
 <%				if (result.isFailure()) { // show err messages that are not field specific %>
@@ -226,7 +226,7 @@ String successPage = "/transportation/crmLateIssues.jsp?lateLog=true&dlvDate="+f
 					<td align="right"><b>Delivery Window:</b>&nbsp;</td>
 					<td><input type="text" size='8' maxlength="10" name="frmDlvWindow_<%=i%>" value="<%=frmDlvWindow%>"></td>
 					<td align="right"><b>Reported By:</b>&nbsp;</td>
-				  	<td><input type="hidden" name="frmAgentUID_<%=i%>" value="<%= userId%>">
+				  	<td><input type="hidden" name="frmAgentUID_<%=i%>" value="<%= currAgent.getUserId()%>">
 				  	    <select name="frmReportedBy_<%=i%>">
 				  	    	<option value="">Select one</option>
 				  			<option <%=  "driver".equalsIgnoreCase(frmReportedBy) ? "selected" : "" %> value="Driver">Driver</option>
@@ -328,7 +328,7 @@ for (int i = 0; i < formsToShow && !logMode; i++) { %>
 </script>
 				</crm:CrmLateIssue>
 			
-
+			</crm:GetCurrentAgent>
 	    </tmpl:put>
 
 </tmpl:insert>

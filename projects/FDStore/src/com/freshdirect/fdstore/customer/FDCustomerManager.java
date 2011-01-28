@@ -834,7 +834,7 @@ public class FDCustomerManager {
 		custInfo.setRsvEndTime(endTime);
 		custInfo.setRsvAddressId(addressId);
 
-		FDActionInfo aInfo = new FDActionInfo(EnumTransactionSource.WEBSITE, identity, initiator, "Updated Recurring Reservation", "");
+		FDActionInfo aInfo = new FDActionInfo(EnumTransactionSource.WEBSITE, identity, initiator, "Updated Recurring Reservation", null);
 
 		updateCustomerInfo(aInfo, custInfo);
 

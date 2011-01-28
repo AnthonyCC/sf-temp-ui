@@ -20,8 +20,6 @@
 
 <%
 String pageURI = request.getRequestURI();
-String agentId1 = CrmSecurityManager.getUserName(request);
-String agentRole1 = CrmSecurityManager.getUserRole(request);
 boolean hasCustomerCase = CrmSession.hasCustomerCase(session);
 
 boolean o_details = pageURI.indexOf("order_details") > -1;
@@ -86,7 +84,8 @@ for (ErpComplaintModel complaint : nav_complaints ) {
 boolean hasCase = false;
 %>
 <crm:ResubmitOrderController orderId="<%= nav_orderId %>" actionName='<%=request.getParameter("action")%>' result="nav_result" successPage="<%= nav_successPage %>">
-
+<crm:GetCurrentAgent id='currentAgent'>
+<% String agentRole1 = currentAgent.getRole().getLdapRoleName(); %>
 <crm:GetLockedCase id="cm">
 	<% if (cm!= null) hasCase = true; %>
 </crm:GetLockedCase>
@@ -260,5 +259,5 @@ boolean hasCase = false;
 	</table>
 	</form>
 </div>
-
+</crm:GetCurrentAgent>
 </crm:ResubmitOrderController>

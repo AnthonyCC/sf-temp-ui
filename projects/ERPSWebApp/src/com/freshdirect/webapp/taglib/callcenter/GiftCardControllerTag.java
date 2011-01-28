@@ -340,9 +340,8 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
             		//HttpSession session = pageContext.getSession();
                     //FDSessionUser fs_user = (FDSessionUser)session.getAttribute(USER);        
                     user = fs_user.getUser();        	
-//            		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
-                    String agentId = CrmSession.getCurrentAgentStr(session);
-            		if(agentId == null){            			
+            		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
+            		if(agent == null){            			
             			result.addError(new ActionError("technical_difficulty", "Could not update profile due to technical difficulty."));            			
             		}
                     try{
@@ -354,7 +353,7 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
                     	model.setRecipientEmail(user.getCustomerInfoModel().getEmail());
                     	model.setRecipientName(user.getFirstName());
                     	model.setTemplateId("giftcard_system_default");
-                    	model.setPersonalMessage("New 0$ GiftCard is created by "+agentId);
+                    	model.setPersonalMessage("New 0$ GiftCard is created by "+agent.getFirstName()+" "+agent.getLastName());
                     	
                     	FDRecipientList list=new FDRecipientList();
                     	list.addRecipient(model);

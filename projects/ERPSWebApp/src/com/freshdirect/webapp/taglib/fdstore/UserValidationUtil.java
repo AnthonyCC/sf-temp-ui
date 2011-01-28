@@ -61,10 +61,9 @@ public class UserValidationUtil {
 			return false;
 		}
 		
-//		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
-		String agentId = CrmSession.getCurrentAgentStr(session);
+		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
 		CallcenterUser ccUser = (CallcenterUser) session.getAttribute(SessionName.CUSTOMER_SERVICE_REP);
-		if (ccUser!=null ||agentId!=null) {
+		if (ccUser!=null ||agent!=null) {
 			// callcenter users/CRM agents users are allowed to place orders less than $40
 			return true;
 		}
