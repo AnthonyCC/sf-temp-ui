@@ -17,8 +17,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.PasswordNotExpiredException;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.Login;
 import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
@@ -38,8 +42,14 @@ public class LoginController extends BaseController {
     public static final String ACTION_LOGIN = "login";
 
     public static final String ACTION_LOGOUT = "logout";
+    
+    public static final String ACTION_FORGOTPASSWORD = "forgotpassword";
 
     public static final String ACTION_PING = "ping";
+    
+    private final static String MSG_INVALID_EMAIL =
+					"Invalid or missing email address. If you need assistance please call us at 1-866-283-7374.";
+	private final static String MSG_EMAIL_NOT_EXPIRED = "An email was already sent. Please try again later.";
 
     private static Category LOGGER = LoggerFactory.getInstance(LoginController.class);
 
@@ -67,6 +77,22 @@ public class LoginController extends BaseController {
             model = ping(model, request, response);
         } else if (ACTION_LOGOUT.equals(action)) {
             model = logout(model, user, request, response);
+        }  else if (ACTION_FORGOTPASSWORD.equals(action)) {
+        	try {
+        		Login requestMessage = parseRequestObject(request, response, Login.class);
+				LOGGER.debug("Email is going to: " + requestMessage.getUsername());
+				FDCustomerManager.sendPasswordEmail(requestMessage.getUsername(), false);
+				Message responseMessage = Message.createSuccessMessage("Password sent successfully.");
+	            setResponseMessage(model, responseMessage, user);
+
+			} catch (FDResourceException ex) {
+				Message responseMessage = getErrorMessage(ERR_FORGOTPASSWORD_INVALID_EMAIL, MSG_INVALID_EMAIL);				
+				setResponseMessage(model, responseMessage, user);
+			} catch (PasswordNotExpiredException pe) {
+				Message responseMessage = getErrorMessage(ERR_FORGOTPASSWORD_EMAIL_NOT_EXPIRED, MSG_EMAIL_NOT_EXPIRED);
+				setResponseMessage(model, responseMessage, user);
+			}
+        	
         }
         return model;
     }

@@ -32,7 +32,7 @@ public class Department {
             images.add(detailImage);
         }
         
-        com.freshdirect.fdstore.content.Image fullImage = model.getPhotoSmall();
+        com.freshdirect.fdstore.content.Image fullImage = model.getPhoto();
         if(fullImage != null) {
         	Image detailImage = new Image();
         	detailImage.setHeight(fullImage.getHeight());

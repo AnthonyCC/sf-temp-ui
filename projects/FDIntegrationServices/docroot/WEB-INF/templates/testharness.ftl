@@ -228,6 +228,10 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/logout/");
   	$("#payload").val("");
   	$("#result").val("");
+  } else if (loaddata == "ForgotPassword") {
+  	$("#url").val("/saptest12@freshdirect.com/forgotpassword/");
+  	$("#payload").val('{ "username" : "saptest12@freshdirect.com"}');
+  	$("#result").val("");
   } else if (loaddata == "QuickShopOrder") {
   	$("#url").val("/saptest12@freshdirect.com/order/id/2153085854/quickshop/");
   	$("#payload").val("");
@@ -420,7 +424,22 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/login/refresh/");
   	$("#payload").val("");
   	$("#result").val("");
-  }  
+  } else if (loaddata == "BrowseDepartment") {
+  	$("#url").val("/browse/departments/");
+	var postdata = '{"page" : "1", "max" : "25"}';
+  	$("#payload").val(postdata);
+  	$("#result").val("");
+  }  else if (loaddata == "BrowseCategory") {
+  	$("#url").val("/browse/categories/");
+	var postdata = '{"department": "cof", "page" : "1", "max" : "25"}';
+  	$("#payload").val(postdata);
+  	$("#result").val("");
+  }   else if (loaddata == "BrowseCategoryContent") {
+  	$("#url").val("/browse/categorycontent/");
+	var postdata = '{"category": "cof_espres", "page" : "1", "max" : "25"}';
+  	$("#payload").val(postdata);
+  	$("#result").val("");
+  }
 }
 
 function doStuff() {
@@ -450,6 +469,7 @@ function doStuff() {
   <option value="Logout">Logout</option>
   <option value="Ping">Ping</option>
   <option value="LoginRefresh">Login Refresh</option>
+  <option value="ForgotPassword">Forgot Password</option>
   <option value=""> ========== CART ========== </option>
   <option value="AddPromo">CART - Apply Promo</option>
   <option value="RemovePromo">CART - Remove Promo</option>
@@ -481,6 +501,10 @@ function doStuff() {
   <option value="SearchSort">SEARCH - Sort</option>
   <option value="SearchFilter">SEARCH - Filter</option>
   <option value="SearchAutocomplete">SEARCH - Autocomplete</option>
+  <option value=""> ========== BROWSE ========== </option>
+  <option value="BrowseDepartment">BROWSE - DEPARTMENT</option>
+  <option value="BrowseCategory">BROWSE - CATEGORY</option>
+  <option value="BrowseCategoryContent">BROWSE - CATEGORYCONTENT</option>  
   <option value=""> ========== PRODUCT ========== </option>
   <option value="ProductDetail">PRODUCT - Product Detail</option>
   <option value="ProductDetailMoreInfo">PRODUCT - More Info</option>

@@ -289,8 +289,14 @@
 		<from>^/v/([0-9]+)/(.*)/logout/</from>
 		<to last="true">/login.do?action=logout&amp;ver=$1</to>
 	</rule>
-
-	<!-- Logout -->
+	
+	<!-- ForgotPassword -->
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/forgotpassword/$</from>
+		<to last="true">/login.do?action=forgotpassword&amp;ver=$1</to>
+	</rule>
+		
+	<!-- Ping -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/ping/</from>
 		<to last="true">/login.do?action=ping&amp;ver=$1</to>
@@ -452,7 +458,21 @@
 		<from>^/v/([0-9]+)/help/(.*)</from>
 		<to last="true">/help.do?action=$2&amp;ver=$1</to>
 	</rule>
-
+	
+	<!-- Browse -->
+	<rule>
+		<from>^/v/([0-9]+)/browse/departments/(.*)</from>
+		<to last="true">/browse.do?action=getDepartments&amp;browseTerm=$2&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/browse/categories/(.*)</from>
+		<to last="true">/browse.do?action=getCategories&amp;browseTerm=$2&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/browse/categorycontent/(.*)</from>
+		<to last="true">/browse.do?action=getCategoryContent&amp;browseTerm=$2&amp;ver=$1</to>
+	</rule>
+	
 	<!-- Test -->
 	<rule>
 		<from>^/v/([0-9]+)/test/$</from>

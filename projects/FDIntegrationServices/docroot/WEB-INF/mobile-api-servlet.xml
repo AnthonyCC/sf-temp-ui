@@ -50,7 +50,9 @@
 	<bean id="testController" class="com.freshdirect.mobileapi.controller.TestController" />
 
 	<bean id="helpController" class="com.freshdirect.mobileapi.controller.HelpController" />
-
+	
+	<bean id="browseController" class="com.freshdirect.mobileapi.controller.BrowseController"
+		parent="baseController" />
 
 	<bean id="urlMapping"
 		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
@@ -70,6 +72,7 @@
 				<prop key="**/configvalue.do">configurationController</prop>
 				<prop key="**/test.do">testController</prop>
 				<prop key="**/help.do">helpController</prop>
+				<prop key="**/browse.do">browseController</prop>
 			</props>
 		</property>
 	</bean>

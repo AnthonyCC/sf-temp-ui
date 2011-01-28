@@ -109,6 +109,13 @@ public interface MessageCodes {
     public static final String NOTICE_DELIVERY_CUTOFF = "NOTICE_DELIVERY_CUTOFF";
 
     // =============================================== helpers =============================== //
+    
+    //ForgotPassword - Unable to find customer
+    public static final String ERR_FORGOTPASSWORD_INVALID_EMAIL = "ERR_FORGOTPASSWORD_INVALID_EMAIL";
+    
+    //ForgotPassword - Unable to find customer
+    public static final String ERR_FORGOTPASSWORD_EMAIL_NOT_EXPIRED = "ERR_FORGOTPASSWORD_EMAIL_NOT_EXPIRED";
+    
     public static class ErrorMessage {
         public final static String PASS_THROUGH = "PASS_THROUGH";
 
