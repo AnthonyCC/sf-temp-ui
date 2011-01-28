@@ -9,7 +9,7 @@
       function init() {
         editPanel = new YAHOO.widget.Panel("panel-1", {       
         				  width: "600", 
-            			  height: "450px",
+            			  height: "250px",
                           fixedcenter: true, 
                           close: true, 
                           draggable: false, 
@@ -49,19 +49,20 @@
           var param5="&daterange="+_date;
           var param6="&scribDay="+_day;
       	  if(p1==''||p2==''){
-      		alert('please select atleast one DATE and REGION.');  
+      		alert('please select atleast one DATE.');  
       	  }else {
-          	var hasConfirmed = confirm ("You are about to perform Generate Plan.  If PLAN DATA exists for the SELECTED DATE(S) and REGION(S) WILL BE LOST.  Do you want to continue?");
+          	var hasConfirmed = confirm ("You are about to perform Generate Plan.  If PLAN DATA exists for the SELECTED DATE(S) WILL BE LOST.  Do you want to continue?");
 			if (hasConfirmed) 
 			{
-			  var hasConfirmed = confirm ("Do you want PLANS FOR REGION(S) other than the ones selected for DATE(S) selected get OVERRIDDEN?");	
-	  		  var param4 = "";
-	  		  if (hasConfirmed) { var param4="&o=y"; }
+				
+			  //var hasConfirmed = confirm ("Do you want PLANS FOR REGION(S) other than the ones selected for DATE(S) selected get OVERRIDDEN?");	
+	  		  //var param4 = "";
+	  		  //if (hasConfirmed) { var param4="&o=y"; }
 			  var param1 = getValues(compId1);         
 	          var param2 = getValues(compId2);
 	          var param3 = "";
 	          if(generatePlan!=null){ param3="&p="+generatePlan; }
-		          	location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+param3+param4+param5+param6;
+		          	location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+param3+param5+param6;
 			}
       	  } 	
       }
@@ -94,7 +95,7 @@
       	<div id="errContainer"></div>
       	<div style="background-color:#D7C8FF">
 	      	
-	      		<table class="forms1">
+	      		<table class="forms1" style="display:none;">
 										
 					<tr>
 						<td height="10px"><img width="0" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
@@ -122,7 +123,9 @@
 						</td>
 						<td style="padding:8px">
 							<select id="dlvregion_selected" name="dlvregion_selected" style="height:120px;width:200px;" size="2" multiple>
-													
+								<c:forEach var="region" items="${regions}">       
+		              				<option value="<c:out value="${region.code}"/>"><c:out value="${region.code}"/></option>
+			        			</c:forEach>   				
 							</select>
 						</td>
 					</tr>
