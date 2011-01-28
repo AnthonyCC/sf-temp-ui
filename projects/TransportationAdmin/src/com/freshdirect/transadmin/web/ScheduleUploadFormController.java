@@ -106,6 +106,15 @@ public class ScheduleUploadFormController extends BaseFormController {
 									zoneMapping.put(zone.getZoneCode(), zone);
 								}
 								for(Scrib scrib : scribs) {
+									int _codelength = scrib.getZoneS().length();				
+									if(_codelength < 3) {
+										StringBuffer strBuf = new StringBuffer();
+										while(3 - _codelength > 0) {
+											strBuf.append("0");
+											_codelength++;
+										}
+										scrib.setZoneS(strBuf.toString() + scrib.getZoneS());
+									}
 									zone = zoneMapping.get(scrib.getZoneS());
 									if(zone != null) {
 										scrib.setZone(zone);
