@@ -28,6 +28,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressVerificationException;
@@ -71,6 +72,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
+import com.freshdirect.fdstore.customer.ExtendDPDiscountModel;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
@@ -918,6 +920,17 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 					}
 					return 0;
 				}
+				//Add Sample Line items if Any from Original order if any as we don't load in the Modify Cart model.
+				List<FDCartLineI> sampleLines = modCart.getOriginalOrder().getSampleLines();
+				if ( sampleLines != null && sampleLines.size() > 0) {
+					for ( FDCartLineI oldSampleLine : sampleLines ) {
+						FDCartLineI newSampleLine =  new FDCartLineModel(oldSampleLine);
+						newSampleLine.setDiscount(oldSampleLine.getDiscount());
+						newSampleLine.setDiscountFlag(true);
+						modCart.addSampleLine(newSampleLine);
+					}
+				}
+
 				modCart.refreshAll();
 				modCart.recalculateTaxAndBottleDeposit(modCart.getDeliveryAddress().getZipCode());
 	        	//CustomerRatingAdaptor cra = new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
@@ -931,9 +944,14 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 	        	FDCustomerCreditUtil.applyCustomerCredit(modCart,identity);
 	        	modCart.setDlvPassApplied(originalOrder.isDlvPassApplied());
 	        	for(Iterator<String> it = appliedPromos.iterator(); it.hasNext();){
-	        		PromotionI promotion = PromotionFactory.getInstance().getPromotion(it.next());
+	        		Promotion promotion = (Promotion)PromotionFactory.getInstance().getPromotion(it.next());
 	        		if(promotion.isWaiveCharge()){
 	        			modCart.setDlvPromotionApplied(true);
+	        			break;
+	        		}
+	        		if(promotion.isExtendDeliveryPass()) {
+	        			ExtendDeliveryPassApplicator app = (ExtendDeliveryPassApplicator)promotion.getApplicator();
+	        			modCart.setDlvPassExtn(new ExtendDPDiscountModel(promotion.getPromotionCode(), app.getExtendDays()));
 	        			break;
 	        		}
 	        	}
