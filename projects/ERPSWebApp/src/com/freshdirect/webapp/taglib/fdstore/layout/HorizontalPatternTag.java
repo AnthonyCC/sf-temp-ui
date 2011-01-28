@@ -293,7 +293,7 @@ public class HorizontalPatternTag extends com.freshdirect.framework.webapp.BodyT
 				}				
 			}
 			
-			numOfItemsOnRow = i - itemsToShowIndex - 1;
+			numOfItemsOnRow = i == itemList.size() ? i - itemsToShowIndex : i - itemsToShowIndex - 1;
 			numOfItemsOnRow = Math.min( maxColumns, numOfItemsOnRow );
 			
 		} else {
