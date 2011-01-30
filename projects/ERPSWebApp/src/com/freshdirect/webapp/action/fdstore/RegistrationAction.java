@@ -240,8 +240,10 @@ public class RegistrationAction extends WebActionSupport {
 					|| (startedAsPickupOnly && user.isHomeUser())
 					|| (user.isDepotUser() && user.isHomeUser())
 					|| restrictedAddress;
+				//we can never get in here now, there's no SIGNUP promos anymore...
 				if (user.isEligibleForSignupPromotion() && (promoChanged || dlvChanged || !signupFromCheckout)) {
-					this.setSuccessPage(this.statusChangePage + "?promoChange=" + promoChanged + "&dlvChange=" + dlvChanged);
+					//make sure we use ?/& depending on if there's already query params
+					this.setSuccessPage(this.statusChangePage + ( ((this.statusChangePage).indexOf("?") == -1) ? "?" : "&" ) + "promoChange=" + promoChanged + "&dlvChange=" + dlvChanged);
 				}
 			}
 			//Set the

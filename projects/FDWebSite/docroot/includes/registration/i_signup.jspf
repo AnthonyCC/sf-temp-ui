@@ -79,33 +79,33 @@ if (fldZipCode==null && user!=null && user.getZipCode() !=null){//quite odd. we 
 <tr valign="top">
 	<td width="347" valign="bottom">
 <%if(user.isDepotUser() || user.isCorporateUser()){%>
-		<img src="/media_stat/images/template/depot/name_contact_info.gif" width="145" height="9" alt="" border="0">&nbsp;&nbsp;&nbsp;<FONT class="text9">* Required information</FONT>
+		<img src="/media_stat/images/template/depot/name_contact_info.gif" width="145" height="9" alt="" border="0" />&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font>
 <%}else{%>	
 		<img src="/media_stat/images/navigation/name_address.gif" width="108" height="9" border="0" alt="NAME AND ADDRESS">&nbsp;&nbsp;&nbsp;<FONT class="text9">* Required information</FONT>
 <%}%>
 	</td>
 	<td width="346" align="right">
-		<FONT class="bodyCopy"><b>Having problems signing up?</b><BR>
-		Call <%=user.getCustomerServiceContact()%> for help</FONT>
+		<font class="bodyCopy"><b>Having problems signing up?</b><br />
+		Call <%=user.getCustomerServiceContact()%> for help</font>
 	</td>
 </tr>
 <tr>
 	<td colspan="2" width="693">
-		<IMG src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" VSPACE="3"><BR>
+		<img src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" vspace="3" /><br />
 	</td>
 </tr>
 <%if(!user.isDepotUser() && !user.isCorporateUser()){%>
 <% if (user.isPickupOnly() || user.isEligibleForSignupPromotion()) {%>
 <tr><td colspan="3" align="center">
     <table cellpadding="0" cellspacing="0" width="600" border="0">
-    <tr><td class="bodyCopy"><font class="space4pix"><br></font>
+    <tr><td class="bodyCopy"><font class="space4pix"><br /></font>
         <% if (user.isPickupOnly()) {%>
 			<b>Please enter your home address.</b> We may not deliver to your home yet but if you live in
 			the Tri-State area you may be eligible for service at our <a href="javascript:popup('/delivery_popup.jsp','large')">pickup location</a>.</b>
 		<%} else if (user.isEligibleForSignupPromotion()) {%>
 			<b>To qualify for our trial offer, this address and the credit card billing address you'll enter during checkout must match.</b>
 		<% } %>
-		<br><br>
+		<br /><br />
 		</td></tr></table>
     </td>
 </tr>
@@ -136,7 +136,7 @@ if (fldZipCode==null && user!=null && user.getZipCode() !=null){//quite odd. we 
 		*&nbsp;First Name
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td width="565" colspan="2">&nbsp;&nbsp;<input maxlength="25" class="text11" SIZE="21" type="text" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" required="true" value="<%=fldName%>"> (full name or first initial)<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+	<td width="565" colspan="2">&nbsp;&nbsp;<input maxlength="25" class="text11" size="21" type="text" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" required="true" value="<%=fldName%>" /> (full name or first initial)<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 	</td>
 </tr>
 <tr valign="middle">
@@ -145,7 +145,7 @@ if (fldZipCode==null && user!=null && user.getZipCode() !=null){//quite odd. we 
 		*&nbsp;Last Name
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td width="565" colspan="2">&nbsp;&nbsp;<input maxlength="25" class="text11" SIZE="21" type="text" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" required="true" value="<%=fldLastName%>">
+	<td width="565" colspan="2">&nbsp;&nbsp;<input maxlength="25" class="text11" size="21" type="text" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" required="true" value="<%=fldLastName%>" />
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 	</td>
 </tr>
@@ -158,7 +158,7 @@ if (fldZipCode==null && user!=null && user.getZipCode() !=null){//quite odd. we 
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>'></span></fd:ErrorHandler>
 	</td>
 	<td width="565" colspan="2">
-		&nbsp;&nbsp;<input maxlength="25" class="text11" SIZE="21" type="text" name="workDepartment" required="true" value="<%=fldWorkDepartment%>">
+		&nbsp;&nbsp;<input maxlength="25" class="text11" size="21" type="text" name="workDepartment" required="true" value="<%=fldWorkDepartment%>" />
 		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 	</td>
 </tr>
@@ -173,7 +173,7 @@ if (fldZipCode==null && user!=null && user.getZipCode() !=null){//quite odd. we 
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_EMPLOYEE_ID.getCode()%>'></span></fd:ErrorHandler>
 	</td>
 	<td width="565" colspan="2">
-		&nbsp;&nbsp;<input maxlength="25" class="text11" SIZE="21" type="text" name="employeeId" required="true" value="<%=fldEmployeeId%>">
+		&nbsp;&nbsp;<input maxlength="25" class="text11" size="21" type="text" name="employeeId" required="true" value="<%=fldEmployeeId%>" />
 		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_EMPLOYEE_ID.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 	</td>
 </tr>
@@ -189,24 +189,24 @@ if (fldZipCode==null && user!=null && user.getZipCode() !=null){//quite odd. we 
 		*&nbsp;Home Phone #
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td width="565" colspan="2" class="text12">&nbsp;&nbsp;<input type="text" maxlength="14" size="21" class="text11" name="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>" required="true" value="<%=fldHomePhone%>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-	&nbsp;&nbsp;Ext.&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" name="homephoneext" value="<%=request.getParameter("homephoneext")%>">
+	<td width="565" colspan="2" class="text12">&nbsp;&nbsp;<input type="text" maxlength="14" size="21" class="text11" name="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>" required="true" value="<%=fldHomePhone%>" /> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+	&nbsp;&nbsp;Ext.&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" name="homephoneext" value="<%=request.getParameter("homephoneext")%>" />
 	</td>
 </tr>
 <tr valign="top">
-	<td width="120"><BR></td>
-	<td width="565" class="text9" colspan="2"> <fd:ErrorHandler result='<%=result%>' name='homephone' id='errorDesc'><FONT class="text11rbold"><%= errorDesc %></font><br></fd:ErrorHandler>&nbsp;&nbsp;&nbsp;i.e. (212) 555-1212</td>
+	<td width="120"><br /></td>
+	<td width="565" class="text9" colspan="2"> <fd:ErrorHandler result='<%=result%>' name='homephone' id='errorDesc'><font class="text11rbold"><%= errorDesc %></font><br /></fd:ErrorHandler>&nbsp;&nbsp;&nbsp;i.e. (212) 555-1212</td>
 </tr>
 
 <tr valign="middle">
 	<td width="120" align="right" class="text12">
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_PHONE.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
-		<%if(user.isDepotUser()){%>*&nbsp;<%}%>Work Phone #
+		<%if(user.isDepotUser()){%>*&nbsp;<%}%><span id="workPhone_lbl"><%=EnumServiceType.CORPORATE.equals(serviceType)? "*&nbsp;" : ""%>Work Phone #</span>
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_PHONE.getCode()%>'></span></fd:ErrorHandler>
 	</td>
 	<td width="565" colspan="2">
-		&nbsp;&nbsp;<input type="text" maxlength="14" size="21" class="text11" name="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" required="true" value="<%=fldBusinessPhone%>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-		&nbsp;&nbsp;<FONT class="text12">Ext.</FONT>&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" name="busphoneext" value="<%=fldBusinessPhoneExt%>">
+		&nbsp;&nbsp;<input type="text" maxlength="14" size="21" class="text11" name="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" id="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" value="<%=fldBusinessPhone%>" required="<%=EnumServiceType.CORPORATE.equals(serviceType) ? "true" : "false"%>" /> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		&nbsp;&nbsp;<font class="text12">Ext.</font>&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" name="busphoneext" value="<%=fldBusinessPhoneExt%>" />
 	</td>
 </tr>
 
@@ -217,8 +217,8 @@ if (fldZipCode==null && user!=null && user.getZipCode() !=null){//quite odd. we 
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ALT_PHONE.getCode()%>'></span></fd:ErrorHandler>
 	</td>
 	<td width="565" colspan="2">
-		&nbsp;&nbsp;<input type="text" maxlength="14" size="21" class="text11" name="cellphone" required="true" value="<%=fldCellPhone%>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ALT_PHONE.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-		&nbsp;&nbsp;<FONT class="text12">Ext.</FONT>&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" name="cellphoneext" value="<%=fldCellPhoneExt%>">
+		&nbsp;&nbsp;<input type="text" maxlength="14" size="21" class="text11" name="cellphone" value="<%=fldCellPhone%>" /> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ALT_PHONE.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		&nbsp;&nbsp;<font class="text12">Ext.</font>&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" name="cellphoneext" value="<%=fldCellPhoneExt%>" />
 	</td>
 </tr>
 
@@ -234,19 +234,19 @@ if(user.isDepotUser()){
 <table border="0" cellspacing="0" cellpadding="2" width="693">
 <tr valign="top">
 	<td width="693">
-		<img src="/media_stat/images/template/depot/home_address.gif" width="96" height="9" alt="" border="0">&nbsp;&nbsp;&nbsp;<FONT class="text9">* Required information</FONT><BR>
-		<IMG src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" VSPACE="3"><br>
-		If your home address is within a FreshDirect <a href="javascript:popup('/help/delivery_zones.jsp','large')">delivery zone</a>, you can also get deliveries there.<br>
+		<img src="/media_stat/images/template/depot/home_address.gif" width="96" height="9" alt="" border="0" />&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font><br />
+		<img src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" vspace="3" /><br />
+		If your home address is within a FreshDirect <a href="javascript:popup('/help/delivery_zones.jsp','large')">delivery zone</a>, you can also get deliveries there.<br />
 		<% if ("bnl".equalsIgnoreCase(user.getDepotCode())) {%>
-			<b>If you reside on the Brookhaven Labs Campus, please call FreshDirect at <%=user.getCustomerServiceContact()%> to assist you in registering your address.</b><br>
+			<b>If you reside on the Brookhaven Labs Campus, please call FreshDirect at <%=user.getCustomerServiceContact()%> to assist you in registering your address.</b><br />
 		<% } %>
-		<img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0">
+		<img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0" />
 	</td>
 </tr>
 </table>
 <table border="0" cellspacing="0" cellpadding="2" width="693">
 	<%@ include file="/shared/includes/registration/i_signup_address_fields.jspf" %>
-<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>
+<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0" /></td></tr>
 </table>
 <%
 // END D E P O T   L O C A T I O N S
@@ -254,92 +254,90 @@ if(user.isDepotUser()){
 
 <br>
 <br>
+<br />
 <table border="0" cellspacing="0" cellpadding="2" width="693">
 <tr valign="top">
 	<td width="693">
-		<img src="/media_stat/images/navigation/site_access_preferences.gif" width="160" height="9" border="0" alt="SITE ACCESS PREFERENCES">&nbsp;&nbsp;&nbsp;<FONT class="text9">* Required information</FONT><BR>
-		<IMG src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" VSPACE="3"><BR>
+		<img src="/media_stat/images/navigation/site_access_preferences.gif" width="160" height="9" border="0" alt="SITE ACCESS PREFERENCES" />&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font><br />
+		<img src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" vspace="3" /><br />
 	</td>
 </tr>
 </table>
 
-<table border="0" cellspacing="1" cellpadding="0" width="675">
-<tr valign="top">
+<table border="0" cellspacing="1" cellpadding="0" width="685">
+<tr valign="middle">
 	<td width="120" align="right" class="text12">
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
-		<FONT class="space2pix"><BR></FONT>*&nbsp;E-mail Address
+		*&nbsp;E-mail Address
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td colspan="3">&nbsp;&nbsp;<input size="21" class="text9" maxlength="128" type="text" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%= fldEmail%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+	<td colspan="3">&nbsp;&nbsp;<input size="21" class="text9" maxlength="128" type="text" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%= fldEmail%>" required="true" /> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
-<tr valign="top">
+<tr valign="middle">
 	<td width="120" align="right" class="text12">
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
-		<FONT CLASS="space2pix"><BR></FONT>*&nbsp;Repeat E-mail
+		*&nbsp;Repeat E-mail
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td colspan="3">&nbsp;&nbsp;<input size="21" class="text9" maxlength="128" type="text" name="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" value="<%= fldEmail %>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+	<td colspan="3">&nbsp;&nbsp;<input size="21" class="text9" maxlength="128" type="text" name="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" value="<%= fldEmail %>" required="true" /> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
-<tr valign="top">
+<tr valign="middle">
 	<td width="120"></td>
-	<td colspan="3" class="text11">
-		<IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">This will be your User Name. You will use this to access the site.<BR><FONT class="space4pix"><BR></FONT>
+	<td class="text11">
+		<img src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0" />This will be your User Name. You will use this to access the site.<br /><font class="space4pix"><br /></font>
 	</td>
 </tr>
 <tr valign="middle">
 	<td width="120" align="right" class="text12">
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
-		<FONT class="space4pix"><BR></FONT>*&nbsp;Password
+		*&nbsp;Password
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td colspan="3">&nbsp;&nbsp;<input class="text9" SIZE="21" type="password" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" required="true" value="<%= fldPassword %>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+	<td colspan="3">&nbsp;&nbsp;<input class="text9" size="21" type="password" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" required="true" value="<%= fldPassword %>" /> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
-<tr valign="top">
+<tr valign="middle">
 	<td width="120" align="right" class="text12">
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
-		<FONT class="space4pix"><BR></FONT>*&nbsp;Repeat Password
+		*&nbsp;Repeat Password
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td colspan="3">&nbsp;&nbsp;<input size="21" type="password" class="text9" name="<%= EnumUserInfoName.REPEAT_PASSWORD.getCode()%>" required="true" value="<%= fldRepeatPassword %>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+	<td colspan="3">&nbsp;&nbsp;<input class="text9" size="21" type="password" name="<%= EnumUserInfoName.REPEAT_PASSWORD.getCode()%>" required="" value="<%= fldRepeatPassword %>" /> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
 <tr valign="top">
 	<td width="120" align="right" class="text12"></td>
-	<td colspan="3" class="text11"><IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">Must be at least 4 characters. Passwords are case sensitive.<FONT class="space4pix"><BR></FONT></td>
+	<td class="text11"><img src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0" />Must be at least 4 characters. Passwords are case sensitive.<font class="space4pix"><br /></font></td>
 </tr>
 
 <tr valign="top">
-	<td><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"></td>
+	<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0" /></td>
 </tr>
 <tr valign="top">
-<td width="120" align="right" class="text12" rowspan="2">
-	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
-		*&nbsp;Town of Birth or<BR>Mother's Maiden<BR>Name
-	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>'></span></fd:ErrorHandler>
-</td>
-	<td colspan="3">
-		<FONT class="space2pix"><BR><BR><BR></FONT>&nbsp;&nbsp;<input size="21" type="text" maxlength="25" class="text9" name="<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>" required="true" value="<%= fldPasswordHint%>">
+	<td width="120" align="right" class="text12" rowspan="2">
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+			*&nbsp;Town of Birth or<br />Mother's Maiden<br />Name
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>'></span></fd:ErrorHandler>
+	</td>
+	<td height="25">
+		&nbsp;&nbsp;<input size="21" type="text" maxlength="25" class="text9" name="<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>" required="true" value="<%= fldPasswordHint%>" />
 		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
 <tr valign="top">
-	<td colspan="3" class="text11"><IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">If you forget your password, we'll use this security word to verify your identity.<FONT class="space4pix"><BR></FONT></td>
+	<td class="text11"><img src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0" />If you forget your password, we'll use this security word to verify your identity.<font class="space4pix"><br /></font></td>
 </tr>
 </table>
 
 
-<table border="0" cellspacing="0" cellpadding="2" width="693">
-<tr valign="top">
-
-<BR>
-<br>
+<br />
+<br />
 <!--  survey header -->
 <table border="0" cellspacing="0" cellpadding="2" width="693">
 	<td width="693">
-		<img src="/media_stat/images/navigation/help_us_serve_you.gif" width="169" height="9" border="0" alt="HELP US SERVE YOU"><BR>
-		<IMG src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" VSPACE="3"><BR>
+		<img src="/media_stat/images/navigation/help_us_serve_you.gif" width="169" height="9" border="0" alt="HELP US SERVE YOU" /><br />
+		<img src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" vspace="3" /><br />
 	</td>
 </tr>
 </table>
-<font class="space4pix"><br></font>
+<font class="space4pix"><br /></font>
 <script type="text/javascript">
 function setVisible(id, value) {
 			if (value) {
@@ -369,35 +367,39 @@ function showSurveys(element) {
 %>
 <%@ include file="/includes/i_survey.jspf" %>
 
-<BR>
+<br />
 <table border="0" cellspacing="0" cellpadding="2" width="693">
-<tr valign="top">
-<td width="693"><img src="/media_stat/images/navigation/customer_agreement.gif"  border="0" alt="TERMS OF SERVICE">&nbsp;&nbsp;&nbsp;<FONT class="text9">* Required information</FONT><BR>
-<IMG src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" VSPACE="3"><BR></td>
-</tr></table><br>
+	<tr valign="top">
+		<td width="693"><img src="/media_stat/images/navigation/customer_agreement.gif" border="0" alt="TERMS OF SERVICE" />&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font><br />
+		<img src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" vspace="3" /><br /></td>
+	</tr>
+</table><br />
 <textarea cols="60" rows="7" readonly xname="tos">
 	<%@ include file="/includes/registration/i_user_agreement.txt" %>
-</textarea><br><BR>
-<table cellpadding="0" cellspacing="0" border="0">
-<tr valign="top">
-	<td width="45" align="right">*&nbsp;<input type="checkbox" value="yes" name="terms" <%=fldTermsAndConditions%>></td>
-	<td>
-		<FONT class="space4pix"><BR></FONT><FONT class="text12bold">I have read and agree to the Customer Agreement</FONT><BR>
-		<a href="javascript:popup('/registration/user_agreement.jsp','large')"><FONT class="text12">Click here for a printable version</FONT></a><BR><br>
-	</td>
-</tr>
-<tr valign="top">
-	<td colspan="2" width="450"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CUSTOMER_AGREEMENT.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
-</tr>
+</textarea>
+<br /><br />
+<table cellpadding="0" cellspacing="0" border="0" width="390">
+	<tr valign="top">
+		<td colspan="2"><font class="space4pix"><br /></font></td>
+	</tr>
+	<tr valign="top">
+		<td width="45" align="right">*&nbsp;<input type="checkbox" value="yes" name="terms" <%=fldTermsAndConditions%> />&nbsp;&nbsp;</td>
+		<td>
+			<font class="text12bold">I have read and agree to the Customer Agreement</font><br />
+			<a href="javascript:popup('/registration/user_agreement.jsp','large')"><font class="text12">Click here for a printable version</font></a>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CUSTOMER_AGREEMENT.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler><font class="space4pix"><br /></font></td>
+	</tr>
 </table>
-<BR>
-<BR>
+<br /><br />
 <% if (request.getRequestURI().toLowerCase().indexOf("checkout")==-1){ %>
 <table cellpadding="0" cellspacing="0" border="0" width="675">
-	<tr valign="top" BGCOLOR="#999966"><td width="675"><IMG src="/media_stat/images/layout/999966.gif" hspace="0" width="1" height="1" border="0"></td></tr>
-		<td width="675" align="right"><input type="image" src="/media_stat/images/buttons/sign_up_2.gif" name="register_new_user" alt="SIGN UP" vspace="4" hspace="4" border="0"></td></tr>
-	<tr valign="top" BGCOLOR="#999966"><td width="675"><IMG src="/media_stat/images/layout/999966.gif" hspace="0" width="1" height="1" border="0"></td></tr>
-</table><BR>
+	<tr valign="top" bgcolor="#999966"><td width="675"><img src="/media_stat/images/layout/999966.gif" hspace="0" width="1" height="1" border="0" /></td></tr>
+		<td width="675" align="right"><input type="image" src="/media_stat/images/buttons/sign_up_2.gif" name="register_new_user" alt="SIGN UP" vspace="4" hspace="4" border="0" /></td></tr>
+	<tr valign="top" bgcolor="#999966"><td width="675"><img src="/media_stat/images/layout/999966.gif" hspace="0" width="1" height="1" border="0" /></td></tr>
+</table><br />
 <% } %>
 
 <%
@@ -407,10 +409,10 @@ if(uri.indexOf("registration")> -1){
 <table border="0" cellspacing="0" cellpadding="2" width="693">
 <tr valign="top">
 	<td width="693">
-		<b>Having problems signing up?</b><br>
+		<b>Having problems signing up?</b><br />
 		Call <%=user.getCustomerServiceContact()%> for help 
 	</td>
 </tr>
 </table>
-<br>
+<br />
 <%}%>

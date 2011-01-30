@@ -5,22 +5,54 @@
 	</td>
 	<td class="text12" colspan="2">
 		<script type="text/javascript">
-		<!--
-			function cosApt(e) {
+			function homeCorpToggle(e) {
 				if (e.checked) {
-					var aText = document.getElementById('aptText');
-					(e.value=="HOME")
-						?aText.innerHTML="Apt.#"
-						:aText.innerHTML="Floor/Suite&nbsp;#";
+					cosApt(e);
+					toggleAsterisks(e);
 				}
 			}
-		//-->
+			function cosApt(e) {
+				if ($('aptText')) {
+					(e.value=="HOME")
+						?$('aptText').innerHTML = 'Apt.#'
+						:$('aptText').innerHTML = 'Floor/Suite&nbsp;#';
+				}
+			}
+			function toggleAsterisks(e) {
+				if (e.value=="HOME") {
+					if ($('companyName_lbl')) {
+						$('companyName_lbl').innerHTML = 'Company Name';
+					}
+					if ($('workPhone_lbl')) {
+						$('workPhone_lbl').innerHTML = 'Work Phone #';
+					}
+					if ($('<%= EnumUserInfoName.DLV_COMPANY_NAME.getCode() %>')) {
+						$('<%= EnumUserInfoName.DLV_COMPANY_NAME.getCode() %>').setAttribute('required', 'false');
+					}
+					if ($('<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>')) {
+						$('<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>').setAttribute('required', 'false');
+					}
+				}else{
+					if ($('companyName_lbl')) {
+						$('companyName_lbl').innerHTML = '*&nbsp;Company Name';
+					}
+					if ($('workPhone_lbl')) {
+						$('workPhone_lbl').innerHTML = '*&nbsp;Work Phone #';
+					}
+					if ($('<%= EnumUserInfoName.DLV_COMPANY_NAME.getCode() %>')) {
+						$('<%= EnumUserInfoName.DLV_COMPANY_NAME.getCode() %>').setAttribute('required', 'true');
+					}
+					if ($('<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>')) {
+						$('<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>').setAttribute('required', 'true');
+					}
+				}
+			}
 		</script>
 		<table>
 			<tr>
-				<td><input <%=EnumServiceType.HOME.equals(serviceType)? "checked" : ""%> type="radio" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" required="true" value="<%=EnumServiceType.HOME.getName()%>" onchange="showSurveys(this);" onclick="cosApt(this);"></td>
+				<td><input <%=EnumServiceType.HOME.equals(serviceType)? "checked" : ""%> type="radio" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" required="true" value="<%=EnumServiceType.HOME.getName()%>" onchange="showSurveys(this);" onclick="homeCorpToggle(this);"></td>
 				<td><b>Residential</b></td>
-				<td><input <%=EnumServiceType.CORPORATE.equals(serviceType) ? "checked" : ""%> type="radio" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" required="true" value="<%=EnumServiceType.CORPORATE.getName()%>" onchange="showSurveys(this);" onclick="cosApt(this);"></td>
+				<td><input <%=EnumServiceType.CORPORATE.equals(serviceType) ? "checked" : ""%> type="radio" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" required="true" value="<%=EnumServiceType.CORPORATE.getName()%>" onchange="showSurveys(this);" onclick="homeCorpToggle(this);"></td>
 				<td><a href="javascript:popup('/cos_info.jsp','small')"><b>Commercial</b></a></td>
 			</tr>
 		</table>
@@ -29,10 +61,10 @@
 </tr>
 <tr valign="middle">
 	<td width="120" align="right" class="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_COMPANY_NAME.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>
-	Company Name
+	<span id="companyName_lbl"><%=EnumServiceType.CORPORATE.equals(serviceType)? "*&nbsp;" : ""%>Company Name</span>
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_COMPANY_NAME.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td width="565" colspan="2">&nbsp;&nbsp;<input type="text" maxlength="50" class="text11" SIZE="21" name="<%= EnumUserInfoName.DLV_COMPANY_NAME.getCode() %>" value="<%=fldCompanyName%>">&nbsp;(required for commercial addresses only)</td>
+	<td width="565" colspan="2">&nbsp;&nbsp;<input type="text" maxlength="50" class="text11" SIZE="21" name="<%= EnumUserInfoName.DLV_COMPANY_NAME.getCode() %>" id="<%= EnumUserInfoName.DLV_COMPANY_NAME.getCode() %>" value="<%=fldCompanyName%>" required="<%=EnumServiceType.CORPORATE.equals(serviceType) ? "true" : "false"%>">&nbsp;(required for commercial addresses only)</td>
 </tr>
 <tr valign="middle">
 	<td width="120" align="right" class="text12">

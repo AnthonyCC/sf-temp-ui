@@ -5,17 +5,16 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import="com.freshdirect.webapp.util.AccountUtil" %>
-
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
 <fd:CheckLoginStatus />
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(); %>
 <%
 	FDUserI userx = (FDUserI)session.getAttribute(SessionName.USER);
 	int regType = 0;
 	String regContSuccessPage = "/unattended_redirect.jsp?successPage=";
+	String regContFraudPage = "/unattended_redirect.jsp?successPage=/registration/registration_note.jsp";
 
 	if(userx.isCorporateUser()){
 		regType = AccountUtil.CORP_USER;
@@ -27,8 +26,9 @@
 		regType = AccountUtil.HOME_USER;
 		regContSuccessPage += "/index.jsp";
 	}
+	/* note here that statusChangePage is obsolete -batchley 2011.01.27_09.28.58.PM */
 %>
-<fd:RegistrationController actionName='register' successPage='<%= regContSuccessPage %>' result='result' fraudPage='registration_note.jsp' statusChangePage='registration_status_change.jsp' registrationType="<%=regType%>">
+<fd:RegistrationController actionName='register' successPage='<%= regContSuccessPage %>' result='result' fraudPage='<%= regContFraudPage %>' statusChangePage='registration_status_change.jsp' registrationType="<%=regType%>">
 <tmpl:insert template='/common/template/no_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Sign Up</tmpl:put>
 <tmpl:put name='content' direct='true'>

@@ -13,6 +13,7 @@
 	FDUserI usery = (FDUserI)session.getAttribute(SessionName.USER);
 	int regType = 0;
 	String regContSuccessPage = "/unattended_redirect.jsp?successPage=/checkout/step_1_choose.jsp";
+	String regContFraudPage = "/unattended_redirect.jsp?successPage=/checkout/registration_note.jsp";
 
 	if(usery.isCorporateUser()){
 		regType = AccountUtil.CORP_USER;
@@ -21,8 +22,9 @@
 	}else{
 		regType = AccountUtil.HOME_USER;
 	}
+	/* note here that statusChangePage is obsolete -batchley 2011.01.27_09.28.58.PM */
 %>
-<fd:RegistrationController actionName='register' successPage='<%= regContSuccessPage %>' result='result' fraudPage='registration_note.jsp' statusChangePage='registration_status_change.jsp' signupFromCheckout='true' registrationType="<%=regType%>">
+<fd:RegistrationController actionName='register' successPage='<%= regContSuccessPage %>' result='result' fraudPage='<%= regContFraudPage %>' statusChangePage='registration_status_change.jsp' signupFromCheckout='true' registrationType="<%=regType%>">
 <%
 ActionResult ar= new ActionResult();
 Collection aerrs=result.getErrors();
