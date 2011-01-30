@@ -79,7 +79,7 @@
 				
 				<div>
 					<div class="t_tab_hspacer" style="padding:0 450px;">
-						<div style="display:none;" id="ajaxBusy"><img src="./images/rel_interstitial_loading.gif"></div>
+						<div style="display:none;position:absolute;top:400px;left:600px" id="ajaxBusy"><img src="./images/ajaxload.gif"></div>
 						<% 
 						 String waveNotification = NotificationManager.getInstance().getWaveNotification(request);						 
 						 if(waveNotification != null) { %>
