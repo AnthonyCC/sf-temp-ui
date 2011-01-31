@@ -199,7 +199,7 @@ public class DomainCreator {
 			}
 		} else {
 			try {
-				InetAddress.getByName(SERVER_HOST);
+				InetAddress.getByName(serverHost);
 			} catch (UnknownHostException e) {
 				throw new InvalidDomainConfigurationException(SERVER_HOST + " is an unknown host");
 			}
