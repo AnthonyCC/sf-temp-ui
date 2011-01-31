@@ -28,26 +28,26 @@
         <display-name>CrmLoginFilter</display-name>
         <description>This filter makes sure that we have agent in session</description>
         <filter-class>com.freshdirect.webapp.crm.CrmLoginFilter</filter-class>
-        <init-param>
-            <param-name>allowedPage</param-name>
-            <param-value>/index.jsp;/promo_publish</param-value>
-        </init-param>
-        <init-param>
-            <param-name>adminDir</param-name>
-            <param-value>/user_mgmt</param-value>
-        </init-param>
-        <init-param>
-            <param-name>supervisorDir</param-name>
-            <param-value>/supervisor</param-value>
-        </init-param>
-        <init-param>
-            <param-name>monitorDir</param-name>
-            <param-value>/case_mgmt</param-value>
-        </init-param>
-        <init-param>
-            <param-name>promotionDir</param-name>
-            <param-value>/promotion</param-value>
-        </init-param>
+<!--        <init-param>-->
+<!--            <param-name>allowedPage</param-name>-->
+<!--            <param-value>/index.jsp;/promo_publish</param-value>-->
+<!--        </init-param>-->
+<!--        <init-param>-->
+<!--            <param-name>adminDir</param-name>-->
+<!--            <param-value>/user_mgmt</param-value>-->
+<!--        </init-param>-->
+<!--        <init-param>-->
+<!--            <param-name>supervisorDir</param-name>-->
+<!--            <param-value>/supervisor</param-value>-->
+<!--        </init-param>-->
+<!--        <init-param>-->
+<!--            <param-name>monitorDir</param-name>-->
+<!--            <param-value>/case_mgmt</param-value>-->
+<!--        </init-param>-->
+<!--        <init-param>-->
+<!--            <param-name>promotionDir</param-name>-->
+<!--            <param-value>/promotion</param-value>-->
+<!--        </init-param>-->
         <init-param>
             <param-name>noAuthPage</param-name>
             <param-value>/no_auth.jsp</param-value>
@@ -200,6 +200,10 @@
         <error-code>404</error-code>
         <location>/main/error.jsp</location>
     </error-page>
+    <error-page>
+        <error-code>403</error-code>
+        <location>/no_auth.jsp</location>
+    </error-page>
     <taglib>
         <taglib-uri>template</taglib-uri>
         <taglib-location>/WEB-INF/shared/tld/struts-template.tld</taglib-location>
@@ -229,6 +233,24 @@
         <taglib-location>/WEB-INF/shared/tld/struts-bean.tld</taglib-location>
     </taglib>
     
+    <security-constraint>
+		<web-resource-collection>
+		<web-resource-name>Unrestricted</web-resource-name>
+		<description>All users can view</description>
+		<url-pattern>/includes/*</url-pattern>
+		<url-pattern>/template/*</url-pattern>
+		<url-pattern>/media_stat/*</url-pattern>
+		<url-pattern>/media/*</url-pattern>
+		<url-pattern>/kbit/*</url-pattern>
+		<url-pattern>/assets/*</url-pattern>
+		<url-pattern>/images/*</url-pattern>
+		<url-pattern>/promo_publish</url-pattern>
+		<http-method>POST</http-method>
+      	<http-method>GET</http-method>
+      	<http-method>PUT</http-method>
+		</web-resource-collection>
+	</security-constraint>
+	
     <security-constraint>
     <display-name></display-name>
     <web-resource-collection>

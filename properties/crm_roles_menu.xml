@@ -267,7 +267,7 @@
 			step_2_green_popup.jsp,add_config_to_cart.jsp,build_order_browse.jsp,build_order_category.jsp,build_order_recipes.jsp,cancel_modify_order.jsp,
 			cancel_order.jsp,health_warning.jsp,order_modify.jsp,payment_exception.jsp,place_order_batch_search_results.jsp,place_order_recipe_search_results.jsp,
 			place_order_related_items.jsp,product.jsp,product_modify.jsp,recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,order_transaction_details.jsp</links>
-		<links name="supervisor">account_deactivations.jsp,payment_exceptions_list.jsp,pending_credits_list.jsp,order_details.jsp</links>
+		<links name="supervisor">account_deactivations.jsp,payment_exceptions_list.jsp,pending_credits_list.jsp,order_details.jsp,refusal_list.jsp,pending_return_list.jsp,order_cc_authorization.jsp,geocode_exception.jsp,broken_acct_list.jsp</links>		
 		<links name="customer">customer_search_results.jsp,summary_report.jsp,summary.jsp,delivery_pass.jsp,place_order_build.jsp</links>
 		<links name="returns">approve_credit.jsp,reverse_credit.jsp</links>
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
@@ -376,14 +376,18 @@
 	</role>
 	
 	<role name="CRM_Security">
-		<links>
-		main_index.jsp,supervisor_index.jsp,worklist.jsp,reports_index.jsp,settlement_problem_report.jsp,case_summary.jsp,case.jsp,acct_lookup.jsp,giftcard_landing.jsp,credit_card_info.jsp,customer_search_results.jsp,summary.jsp,gc_balance.jsp,order_details.jsp
+		<links name="main">
+		main_index.jsp,supervisor_index.jsp,worklist.jsp,reports_index.jsp,settlement_problem_report.jsp,case_summary.jsp,case.jsp,new_case.jsp,unlock.jsp,acct_lookup.jsp,giftcard_landing.jsp,credit_card_info.jsp,customer_search_results.jsp,summary.jsp,gc_balance.jsp
 		</links>
+		<links name="customer">
+		case_history.jsp,order_history.jsp,credit_history.jsp,activity_log.jsp
+		</links>
+		<links name="order">order_details.jsp,credit_card_info.jsp,order_cases.jsp,order_transaction_details.jsp</links>
 	</role>
 	
 	<role name="CRM_ERP">
 		<links>
-		main_index.jsp,summary_report.jsp,customer_search_results.jsp
+		main_index.jsp,summary_report.jsp,customer_search_results.jsp,order_details.jsp,summary.jsp
 		</links>
 	</role>
 	

@@ -89,15 +89,15 @@ public class ActivityDAO implements java.io.Serializable {
 		//Criteria specific to delivery pass changes.
 		builder.addString("DLV_PASS_ID", template.getDeliveryPassId() == null ? null : template.getDeliveryPassId()); 
 		builder.addString("SALE_ID", template.getChangeOrderId() == null ? null : template.getChangeOrderId());
-		/*if (template.getDate() != null) {
+		if (template.getDate() != null) {
 			builder.addSql("TIMESTAMP > ?", new Object[] { new Timestamp(template.getDate().getTime())});
-		}*/
-		if (template.getFromDate() != null) {
+		}
+		/*if (template.getFromDate() != null) {
 			builder.addSql("TIMESTAMP > ?", new Object[] { new Timestamp(template.getFromDate().getTime())});
 		}
 		if (template.getToDate() != null) {
 			builder.addSql("TIMESTAMP < ?", new Object[] { new Timestamp(template.getToDate().getTime())});
-		}
+		}*/
 		PreparedStatement ps = conn.prepareStatement("SELECT * FROM CUST.ACTIVITY_LOG WHERE " + builder.getCriteria());
 		Object[] par = builder.getParams();
 		for (int i = 0; i < par.length; i++) {

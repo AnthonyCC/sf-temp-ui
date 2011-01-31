@@ -76,7 +76,7 @@
 	}
 %>
 
-<tmpl:insert template='/template/top_nav.jsp'>
+<tmpl:insert template='/template/supervisor_resources.jsp'>
 
 	<tmpl:put name='title' direct='true'>Supervisor Resources > Account Deactivations</tmpl:put>
 
@@ -138,7 +138,7 @@ while(iterator.hasNext()){
         
 	%>
 	<tmpl:put name='content' direct='true'>
-	<jsp:include page="/includes/supervisor_nav.jsp" />
+	
 	<div class="sub_nav">
 	<table width="100%" cellpadding="0" cellspacing="2" border="0" ALIGN="CENTER" class="sub_nav_text">
 		<form method="POST" name="customer_details">
