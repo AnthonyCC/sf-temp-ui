@@ -19,6 +19,7 @@ public class CrmSecurityManager {
 		UNSECURED_URL.add("main_index.jsp");
 		UNSECURED_URL.add("logout.jsp");
 		UNSECURED_URL.add("clear_session.jsp");    
+		UNSECURED_URL.add("close_window.jsp");
 	}
 	
 	public static String getUserRole(ServletRequest request, Set roles) {		
@@ -61,10 +62,19 @@ public class CrmSecurityManager {
 	}
 	
 	public static boolean hasAccessToPage(ServletRequest request, String uri) {
-		if(UNSECURED_URL.contains(uri) || (uri != null && (uri.indexOf("/includes")>=0 || uri.indexOf("/postbacks")>=0|| uri.indexOf("/template")>=0 || uri.endsWith(".css")||uri.endsWith(".js")||uri.endsWith(".jspf")||uri.endsWith(".gif")||uri.endsWith(".ico")))) {
+		if(UNSECURED_URL.contains(uri) || (uri != null && (uri.endsWith(".css")||uri.endsWith(".js")||uri.endsWith(".jspf")||uri.endsWith(".gif")||uri.endsWith(".ico")||uri.endsWith(".xls")))) {
 			return true;
 		}
 		return MenuManager.getInstance().hasAccess(request, uri);
+	}
+	
+	public static boolean hasAccessToPage(HttpServletRequest request) {
+		String uri = request.getRequestURI();
+		if((uri != null && (uri.indexOf("/includes")>=0 || uri.indexOf("/postbacks")>=0|| uri.indexOf("/template")>=0 ))) {
+			return true;
+		}
+		//Do other checks if required after this check.
+		return false;
 	}
 	
 	public static boolean hasAccessToPage(String userRole, String uri) {		

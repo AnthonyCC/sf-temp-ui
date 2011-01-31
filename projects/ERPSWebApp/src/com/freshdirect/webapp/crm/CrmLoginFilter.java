@@ -76,8 +76,8 @@ public class CrmLoginFilter implements Filter {
 		
 		String noAuthPage = this.filterConfig.getInitParameter("noAuthPage");
 		String rootUri =  request.getRequestURI().substring(request.getRequestURI().lastIndexOf("/")+1, request.getRequestURI().length());
-		if(!CrmSecurityManager.hasAccessToPage(request, rootUri)){
-			LOGGER.info("**** Role:"+ldapRole+" Access Denied Resource:"+rootUri);
+		if(!CrmSecurityManager.hasAccessToPage(request, rootUri) && !CrmSecurityManager.hasAccessToPage(request)){
+			LOGGER.info("**** Role:"+ldapRole+" Access Denied Resource:"+request.getRequestURI());
 			response.sendRedirect(noAuthPage);
 			return;
 		}

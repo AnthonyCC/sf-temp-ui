@@ -174,7 +174,7 @@ boolean showOrderSummaryReportSection = !crmRole.getCode().equals(CrmAgentRole.E
 									"<span class='module_header_note'><b>Quick</b> | </span><a href='"+ pageLink +"?search=advanced"+ "&" + addtlSrchParam +"' class='module_header_note'>Advanced</a>":
 									"<a href='"+ pageLink +"?"+ addtlSrchParam +"' class='module_header_note'>Quick</a><span class='module_header_note'> | <b>Advanced</b></span>"%>
 							</td>
-							<% if(!crmRole.getCode().equals(CrmAgentRole.SUP_CODE)){ %>
+							<% if(CrmSecurityManager.hasAccessToPage(crmRole.getLdapRoleName(),"refusal_list.jsp")){ %>
 							<td align="right">
 								<%-- if (currentAgent.isSupervisor() || currentAgent.isMonitor()) { --%>
 									<a href="/supervisor/refusal_list.jsp" class="new">VIEW REFUSALS</a>
@@ -209,7 +209,7 @@ boolean showOrderSummaryReportSection = !crmRole.getCode().equals(CrmAgentRole.E
 									"<span class='module_header_note'><b>Quick</b> | </span><a href='"+ pageLink +"?search=advanced"+ "&" + addtlSrchParam +"' class='module_header_note'>Advanced</a>":
 									"<a href='"+ pageLink +"?"+ addtlSrchParam +"' class='module_header_note'>Quick</a><span class='module_header_note'> | <b>Advanced</b></span>"%>
 							</td>
-							<% if(!crmRole.getCode().equals(CrmAgentRole.FIN_CODE) && !crmRole.getCode().equals(CrmAgentRole.SEC_CODE)){ %>
+							<% if(CrmSecurityManager.hasAccessToPage(crmRole.getLdapRoleName(),"nw_cst_check_zone.jsp")){ %>
 							<td align="right">
 								<a href="<%=hasCase?"/case/unlock.jsp?redirect=new_customer":"/registration/nw_cst_check_zone.jsp"%>" class="new">
 									NEW&nbsp;CUSTOMER

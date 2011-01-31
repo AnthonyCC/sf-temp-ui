@@ -30,7 +30,7 @@
 		</links>
 		<links name="promotions">
 			promo_view.jsp,promo_home.jsp,promo_create.jsp,promo_details.jsp,promo_publish.jsp,promo_edit.jsp,promo_edit_basic.jsp,
-			promo_edit_cart.jsp,promo_edit_customer.jsp,promo_edit_delivery.jsp,promo_edit_offer.jsp,promo_edit_payment.jsp,export_promo_list.jsp,promo_import_clone.jsp,promo_activity.jsp
+			promo_edit_cart.jsp,promo_edit_customer.jsp,promo_edit_delivery.jsp,promo_edit_offer.jsp,promo_edit_payment.jsp,export_promo_list.jsp,promo_import_clone.jsp,promo_activity.jsp,promo.jsp
 		</links>		
 		<links name="cases">new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp,connect.jsp,connect.html</links>
 		<links name="reports">
@@ -49,7 +49,8 @@
 		</links>
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
 		<links name="customeraccount">add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,place_alert.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,set_profile_attr.jsp,username_password_option.jsp</links>
-		<links name="actions">approveCredit,rejectCredit,forceorder,edit_profile,autoApprove</links>
+		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp</links>
+		<links name="actions">approveCredit,rejectCredit,forceorder,edit_profile,autoApprove,lateLog,lateRoute</links>
 		<links name="others">charge_order.jsp,customer_alert_list.jsp,masquerade.jsp,credit_card_info.jsp,add_bad_account.jsp,acct_lookup_auth.jsp</links>
 
 		<limit name="autoApprove">40</limit>
@@ -81,7 +82,7 @@
 		</links>
 		<links name="reports">subject_report.jsp,late_delivery_report.jsp,route_stop_report.jsp,order_status_report.jsp,credit_summary_report.jsp,credit_report.jsp,settlement_problem_report.jsp,activity_log.jsp</links>
 		<links name="admintools">resubmit_customers.jsp,delete_reservations.jsp,mass_cancellation.jsp,mass_returns.jsp,delivery_restrictions.jsp,address_restrictions.jsp,settlement_batch.jsp,top_faqs.jsp,click_to_call.jsp,search_orders_by_sku.jsp,modify_orders_by_sku.jsp</links>
-		<links name="actions">forceorder,edit_profile</links>
+		<links name="actions">forceorder,edit_profile,lateLog,lateRoute</links>
 		<links name="giftcards">
 			giftcard_summary.jsp,gc_balance.jsp,add_giftcard.jsp,add_bulk_giftcard.jsp,receipt.jsp,purchase_giftcard.jsp,purchase_bulk_giftcard.jsp,
 			purchase_history.jsp,giftcard_addused.jsp,giftcard_usedorders.jsp,generate_new_giftcard.jsp,bt_giftcard.jsp
@@ -91,8 +92,9 @@
 		<links name="promotions">
 			promo_view.jsp,promo_home.jsp,promo_create.jsp,promo_details.jsp,promo_publish.jsp,
 			promo_edit.jsp,promo_edit_basic.jsp,promo_edit_cart.jsp,promo_edit_customer.jsp,promo_edit_delivery.jsp,
-			promo_edit_offer.jsp,promo_edit_payment.jsp,export_promo_list.jsp,promo_import_clone.jsp,promo_activity.jsp</links>
+			promo_edit_offer.jsp,promo_edit_payment.jsp,export_promo_list.jsp,promo_import_clone.jsp,promo_activity.jsp,promo.jsp</links>
 		<links name="transportation">crmLateIssues.jsp,crmTrqCases_step1.jsp</links>
+		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp</links>
 		<links name="others">charge_order.jsp,masquerade.jsp,add_bad_account.jsp,acct_lookup_auth.jsp</links>
 	</role>
 	
@@ -167,7 +169,8 @@
 		<links name="customeraccount">add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,place_alert.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,set_profile_attr.jsp,username_password_option.jsp</links>
 		<links name="returns">approve_credit.jsp,reverse_credit.jsp</links>
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
-		<links name="actions">approveCredit,rejectCredit,forceorder,autoApprove</links>
+		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp</links>
+		<links name="actions">approveCredit,rejectCredit,forceorder,autoApprove,lateLog</links>
 
 		<limit name="autoApprove">30</limit>
 		<limit name="approveCredit">200</limit>
@@ -176,7 +179,7 @@
 	</role>
 	<role name="CRM_MarketingOperations">
 		<links name="main">main_index.jsp,worklist.jsp,giftcard_landing.jsp,profile_list.jsp,edit_profile</links>
-		<links name="promotions">promotion_history.jsp,promotion_popup.jsp,promo_view.jsp,promo_home.jsp,promo_create.jsp,promo_details.jsp,promo_edit_basic.jsp,promo_edit_cart.jsp,promo_edit_customer.jsp,promo_edit_delivery.jsp,promo_edit_offer.jsp,promo_edit_payment.jsp,promo_publish.jsp,promo_edit.jsp,export_promo_list.jsp,promo_import_clone.jsp,promo_activity.jsp</links>
+		<links name="promotions">promotion_history.jsp,promotion_popup.jsp,promo_view.jsp,promo_home.jsp,promo_create.jsp,promo_details.jsp,promo_edit_basic.jsp,promo_edit_cart.jsp,promo_edit_customer.jsp,promo_edit_delivery.jsp,promo_edit_offer.jsp,promo_edit_payment.jsp,promo_publish.jsp,promo_edit.jsp,export_promo_list.jsp,promo_import_clone.jsp,promo_activity.jsp,promo.jsp</links>
 		<links name="giftcards">giftcard_summary.jsp,gc_balance.jsp</links>	
 		<links name="customer">customer_search_results.jsp,summary_report.jsp,summary.jsp,delivery_pass.jsp</links>	
 		<links name="returns">approve_credit.jsp,reverse_credit.jsp</links>
@@ -205,7 +208,8 @@
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
 		<links name="transportation">crmLateIssues.jsp,crmTrqCases_step1.jsp</links>
 		<links name="promotions">promo_view.jsp,promo_home.jsp,promo_details.jsp</links>
-		<links name="actions">approveCredit,autoApprove</links>
+		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp</links>
+		<links name="actions">approveCredit,autoApprove,lateLog</links>
 
 		<limit name="autoApprove">30</limit>
 		<limit name="approveCredit">50</limit>
@@ -217,6 +221,7 @@
 		</links>
 		<links name="cases">new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>
 		<links name="customer">customer_search_results.jsp,summary_report.jsp,summary.jsp,delivery_pass.jsp</links>
+		<links name="actions">lateLog</links>
 		
 	</role>
 	
@@ -238,7 +243,7 @@
 		<links name="customer">customer_search_results.jsp,summary_report.jsp,summary.jsp,delivery_pass.jsp,place_order_build.jsp</links>
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
 		<links name="customeraccount">add_delivery_address.jsp,deactivate_account.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,place_alert.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,set_profile_attr.jsp,username_password_option.jsp</links>
-		<links name="actions">rejectCredit,autoApprove</links>
+		<links name="actions">rejectCredit,autoApprove,lateLog,lateRoute</links>
 
 		<limit name="autoApprove">25</limit>
 
@@ -269,7 +274,7 @@
 		<links name="transportation">crmLateIssues.jsp,crmTrqCases_step1.jsp</links>
 		<links name="reports">order_status_report.jsp,late_delivery_report.jsp,settlement_problem_report.jsp</links>
 		<links name="customeraccount">add_delivery_address.jsp,deactivate_account.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,place_alert.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,set_profile_attr.jsp,username_password_option.jsp</links>
-		<links name="actions">approveCredit,rejectCredit,forceorder,autoApprove</links>
+		<links name="actions">approveCredit,rejectCredit,forceorder,autoApprove,lateLog,lateRoute</links>
 
 		<limit name="autoApprove">30</limit>
 		<limit name="approveCredit">200</limit>
@@ -303,6 +308,7 @@
 		<links name="returns">approve_credit.jsp,reverse_credit.jsp</links>
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
 		<links name="customeraccount">add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,place_alert.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,set_profile_attr.jsp,username_password_option.jsp</links>
+		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp</links>
 		<links name="actions">rejectCredit,autoApprove</links>
 
 		<limit name="autoApprove">25</limit>
@@ -326,6 +332,7 @@
 		<links name="returns">approve_credit.jsp,reverse_credit.jsp</links>
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
 		<links name="customeraccount">add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,place_alert.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,set_profile_attr.jsp,username_password_option.jsp</links>
+		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp</links>
 		<links name="actions">rejectCredit,autoApprove</links>
 
 		<limit name="autoApprove">20</limit>
@@ -353,7 +360,8 @@
 		<links name="promotions">promo_view.jsp,promo_home.jsp,promo_details.jsp</links>		
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
 		<links name="customeraccount">add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,place_alert.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,set_profile_attr.jsp,username_password_option.jsp</links>
-		<links name="actions">rejectCredit,autoApprove</links>
+		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp</links>
+		<links name="actions">rejectCredit,autoApprove,lateLog</links>
 
 		<limit name="autoApprove">30</limit>
 	</role>
@@ -369,7 +377,7 @@
 	
 	<role name="CRM_Security">
 		<links>
-		main_index.jsp,supervisor_index.jsp,worklist.jsp,reports_index.jsp,settlement_problem_report.jsp,case_summary.jsp,case.jsp,acct_lookup.jsp,giftcard_landing.jsp,credit_card_info.jsp,customer_search_results.jsp,summary.jsp,gc_balance.jsp
+		main_index.jsp,supervisor_index.jsp,worklist.jsp,reports_index.jsp,settlement_problem_report.jsp,case_summary.jsp,case.jsp,acct_lookup.jsp,giftcard_landing.jsp,credit_card_info.jsp,customer_search_results.jsp,summary.jsp,gc_balance.jsp,order_details.jsp
 		</links>
 	</role>
 	

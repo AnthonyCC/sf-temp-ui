@@ -86,8 +86,8 @@ criteria.setTransYear(NVL.apply(request.getParameter("transYear"), ""));
 		var amtChar;
 		var ccChar;
 		var okToSubmit= true;
-
-		if (date1.length < 7 || date1.length > 8 ) {
+	//	if (date1.length < 7 || date1.length > 8 ) {
+		if(year==""||month==""||date==""){
             alert('The date field is invalid. Please correct and try again.');
             okToSubmit = false;
         }

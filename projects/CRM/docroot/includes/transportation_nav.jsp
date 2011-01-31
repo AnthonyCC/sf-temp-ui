@@ -15,12 +15,17 @@ boolean isEdit = trans_qryString.indexOf("lateIssuePK")!=-1;;
 String userRole = CrmSession.getCurrentAgent(request.getSession()).getRole().getLdapRoleName();
 %>
 <div class="sup_nav_bg">
+<% if(CrmSecurityManager.hasAccessToPage(userRole,"lateLog")){ %>
 <a href="/transportation/crmLateIssues.jsp?lateLog=true<%= selected_date != null && !"".equals(selected_date) ? "&dlvDate=" + selected_date : ""%>" class="<%= incident_log ?"translog_nav_on":"translog_nav"%>">Late Route Incident Log</a>
+<% } %>
 <% if(CrmSecurityManager.hasAccessToPage(userRole,"route_stop_report.jsp")){ %>
 <a href="/reports/route_stop_report.jsp" class="<%=isRouteStopReport?"trans_nav_on":"trans_nav"%>">Orders by Route & Stop</a>
 <% } %>
+<% if(CrmSecurityManager.hasAccessToPage(userRole,"lateRoute")){ %>
 <a href="/transportation/crmLateIssues.jsp<%= selected_date != null && !"".equals(selected_date) ? "?dlvDate=" + selected_date : ""%>" class="<%= incident_entry && !isEdit ?"trans_nav_on":"trans_nav"%>">Report Late Routes</a>
+<% } %>
+<% if(CrmSecurityManager.hasAccessToPage(userRole,"crmTrqCases_step1.jsp")){ %>
 <a href="/transportation/crmTrqCases_step1.jsp<%= selected_date != null && !"".equals(selected_date) ? "?dlvDate=" + selected_date : ""%>" class="<%= trans_issues ?"trans_nav_on":"trans_nav"%>">Report New Transportation Issues</a>
-
+<% } %>
 <!-- <a href="/case_mgmt/index.jsp?action=searchCase&queue=TRQ&state=OPEN" class="translog_nav">Current Transportation Issues</a> -->
 </div>
