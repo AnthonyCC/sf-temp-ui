@@ -134,12 +134,12 @@ public class ScheduleUploadFormController extends BaseFormController {
 										publishErrMsg.append(TransStringUtil.getDate(scribDate));
 									}
 								}
-								if(hasPublishedScrib.size() == 0) {
+								//if(hasPublishedScrib.size() == 0) {
 									this.getDispatchManagerService().uploadScrib(scribDates, scribs);
 									saveMessage(request, getMessage("app.actionmessage.161", new Object[]{newSource.getDescription()}));
-								} else {
-									saveErrorMessage(request, getMessage("app.error.132", new Object[] {publishErrMsg.toString()}));
-								}								
+								//} else {
+									//saveErrorMessage(request, getMessage("app.error.132", new Object[] {publishErrMsg.toString()}));
+								//}								
 							}
 						}
 					} else {

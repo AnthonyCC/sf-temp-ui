@@ -670,10 +670,13 @@ public class RoutingUtil {
 						}
 												
 						if(syncWaveInstance == null) {
-							System.out.println("UNABLE TO FIND WAVE TO SYNCHRONIZATION :"+schedulerId+"->"+_syncWaveInst);	
+							System.out.println("UNABLE TO FIND WAVE TO SYNCHRONIZATION :"+schedulerId+"->"+_syncWaveInst);
+							_syncWaveInst.setNotificationMessage("WAVE TEMPLATE ERROR");
+							_syncWaveInst.setStatus(EnumWaveInstanceStatus.NOTSYNCHRONIZED);
+							waveInstancesResult.add(_syncWaveInst);
 						} else {
 							syncWaveInstance.copyBaseAttributes(waveIdMap.get(syncWaveInstance.getRoutingWaveInstanceId()));
-							System.out.println("SYNCHRONIZATIZING WAVE :"+schedulerId+"->"+_syncWaveInst);
+							System.out.println("SYNCHRONIZING WAVE :"+schedulerId+"->"+_syncWaveInst);
 							List<String> unassignedOrder = null;
 							try {
 								unassignedOrder = capacityProxy.saveWaveInstances(schedulerId, syncWaveInstance, syncWaveInstance.isForce());

@@ -301,7 +301,7 @@ public class HandOffProcessManager {
 	    						    									
 	    					for(Map<RoutingTimeOfDay, List<IWaveInstance>> _tmpMpp : _tmpCutOffMpp) {
 	    						for(Map.Entry<RoutingTimeOfDay, List<IWaveInstance>> _tmpInnerMpp : _tmpMpp.entrySet()) {
-	    							if(handOffBatch.equals(cutOff)) {		    							
+	    							if(_tmpInnerMpp.getKey().equals(cutOff)) {		    							
 		    							for(IWaveInstance _srcWaveInst : _tmpInnerMpp.getValue()) {
 		    								
 		    								if(_srcWaveInst.isNeedsConsolidation()) {
