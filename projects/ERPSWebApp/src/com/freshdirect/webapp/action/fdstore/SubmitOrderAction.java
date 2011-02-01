@@ -621,6 +621,7 @@ public class SubmitOrderAction extends WebActionSupport {
 						// update standing order + customer list
 						try {
 							info.setNote("Standing Order Modified w/New Order Checkout");
+							standingOrder.setPaymentMethodId( FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity()) );
 							FDStandingOrdersManager.getInstance().manageStandingOrder(info, cart, standingOrder, orderNumber);
 							
 							// perform cache cleanup
