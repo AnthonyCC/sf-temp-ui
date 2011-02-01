@@ -243,7 +243,13 @@
 		<url-pattern>/media/*</url-pattern>
 		<url-pattern>/kbit/*</url-pattern>
 		<url-pattern>/assets/*</url-pattern>
+		<url-pattern>/ccassets/*</url-pattern>
+		<url-pattern>/resource/*</url-pattern>
+		<url-pattern>/api/*</url-pattern>
 		<url-pattern>/images/*</url-pattern>
+		<url-pattern>/login.jsp</url-pattern>
+		<url-pattern>/no_auth.jsp</url-pattern>			
+		<url-pattern>/main/error.jsp</url-pattern>
 		<url-pattern>/promo_publish</url-pattern>
 		<http-method>POST</http-method>
       	<http-method>GET</http-method>
@@ -294,7 +300,7 @@
 		<realm-name>FreshDirect</realm-name>
 		<form-login-config>
 			<form-login-page>/login.jsp</form-login-page>
-			<form-error-page>/login.jsp</form-error-page>
+			<form-error-page>/main/error.jsp</form-error-page>
 		</form-login-config>
 	</login-config>
 	
