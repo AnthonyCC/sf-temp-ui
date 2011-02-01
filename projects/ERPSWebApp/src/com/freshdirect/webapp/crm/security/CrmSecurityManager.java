@@ -20,6 +20,7 @@ public class CrmSecurityManager {
 		UNSECURED_URL.add("logout.jsp");
 		UNSECURED_URL.add("clear_session.jsp");    
 		UNSECURED_URL.add("close_window.jsp");
+		UNSECURED_URL.add("error_cust_case_mismatch.jsp");
 	}
 	
 	public static String getUserRole(ServletRequest request, Set roles) {		

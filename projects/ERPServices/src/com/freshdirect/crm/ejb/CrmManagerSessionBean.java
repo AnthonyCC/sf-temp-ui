@@ -221,11 +221,18 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
-    public PrimaryKey createCase(CrmCaseModel caseModel) throws FDResourceException {
+    public PrimaryKey createCase(CrmCaseModel caseModel) throws FDResourceException,CrmAuthorizationException {
         try{
+        	 CrmAgentHome home = this.getCrmAgentHome();
+             CrmAgentEB agentEB = home.findByPrimaryKey(caseModel.getAssignedAgentPK());
+             CrmAgentModel agent = (CrmAgentModel) agentEB.getModel();
+        	 this.actionAllowed(agent.getRole().getCode(), caseModel.getSubject().getCode(),
+        			 CrmCaseState.CODE_NEW, CrmCaseActionType.CODE_NOTE);
             return getCrmCaseHome().create(caseModel).getPK();
         }catch(CreateException e){
             throw new FDResourceException(e, "CreateException");
+        }catch (FinderException e) {
+            throw new FDResourceException(e, "FinderException");
         }catch(RemoteException e){
             throw new FDResourceException(e, "Cannot talk to CrmCaseEB");
         }
@@ -336,7 +343,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
             
             if (audit.isChanged()) {
                 
-                /*CrmCaseAction editAction = new CrmCaseAction();
+                CrmCaseAction editAction = new CrmCaseAction();
                 editAction.setType(CrmCaseActionType.getEnum(CrmCaseActionType.CODE_EDIT));
                 editAction.setTimestamp(new Date());
                 editAction.setAgentPK(agent.getPK());
@@ -348,7 +355,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
                 caseEB.addCaseAction(editAction);
                 caseEB.setState(op.getEndState());
                 
-                stateAfterInfo = op.getEndState();*/
+                stateAfterInfo = op.getEndState();
             }
             
             if (caseAction != null) {

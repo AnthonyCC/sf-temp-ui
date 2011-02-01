@@ -51,7 +51,7 @@ function openURL(inLocationURL) {
 	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Discount</b></span></td>	
 	<td class="border_bold">&nbsp;</td>
 	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Status</b></span></td>
-	<% if(FDStoreProperties.isPromoPublishNodeMaster()) { %>
+	<% if(FDStoreProperties.isPromoPublishNodeMaster() && CrmSecurityManager.hasAccessToPage(agent.getRole().getLdapRoleName(),"promo_ws_create.jsp")) { %>
 	<td class="border_bold">&nbsp;</td>
 	<td valign="bottom" class="border_bold">&nbsp;</td>
 	<td class="border_bold">&nbsp;</td>
@@ -71,7 +71,7 @@ function openURL(inLocationURL) {
 	<logic:iterate id="promotion" collection="<%= promotions %>" type="com.freshdirect.fdstore.promotion.management.WSPromotionInfo" indexId="cnt">
 	<tr>
 	<td class="border_bottom"><span class="detail_text"><b>
-	<% if(FDStoreProperties.isPromoPublishNodeMaster()) { %>
+	<% if(FDStoreProperties.isPromoPublishNodeMaster() && CrmSecurityManager.hasAccessToPage(agent.getRole().getLdapRoleName(),"promo_ws_create.jsp")) { %>
 	<a onclick="javascript:openURL('/promotion/promo_ws_create.jsp?promoId=<%= promotion.getPromotionCode() %>')" href="#" style="color: #008800;font-size: 8pt;">
 		<%= promotion.getPromotionCode() %>
 	</a>
@@ -93,7 +93,7 @@ function openURL(inLocationURL) {
 	<td class="border_bottom"><span class="detail_text">$<%= df.format(promotion.getDiscount()) %></span></td>
 	<td class="border_bottom">&nbsp;</td>
 	<td class="border_bottom"><span class="detail_text"><%= promotion.getStatus().getName() %></span></td>
-	<% if(FDStoreProperties.isPromoPublishNodeMaster()) { %>
+	<% if(FDStoreProperties.isPromoPublishNodeMaster() && CrmSecurityManager.hasAccessToPage(agent.getRole().getLdapRoleName(),"promo_ws_create.jsp")) { %>
 		<td class="border_bottom">&nbsp;</td>
 		<td class="border_bottom"><span class="detail_text"><b><a onclick="javascript:openURL('/promotion/promo_ws_create.jsp?promoId=<%= promotion.getPromotionCode() %>')" href="#" style="color: #008800;font-size: 8pt;">EDIT</a></b></span></td>
 		<td class="border_bottom">&nbsp;</td>

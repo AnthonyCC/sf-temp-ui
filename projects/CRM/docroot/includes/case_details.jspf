@@ -793,7 +793,7 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 		<td class="<%=isSecurityQueue?"case_content_field_seq":"case_content_field"%>">Queue<span class="casedisp_Err_invis" id="queueErr">*</span></td>
 		<td>
 			<% if (!isSecurityQueue && isEditAllowed) { %>
-				<select id="queue" name="queue" class="pulldown" onChange="populateSubject(document.case_details.queue.value, document.case_details.subject);" onchange="verifyCaseDisp();">
+				<select id="queue" name="queue" class="pulldown" onChange="populateSubject(document.case_details.queue.value, document.case_details.subject);verifyCaseDisp();" >
 					<option class="title" value="">-Select Queue-</option>					
 					<logic:iterate id='queue' collection="<%=CrmCaseQueue.getEnumList()%>" type="com.freshdirect.crm.CrmCaseQueue">
 						<% if (!queue.isObsolete() && (thisCase.isAnonymous() || (!thisCase.isAnonymous() && !queue.getCode().equals("SEQ")))) { %>

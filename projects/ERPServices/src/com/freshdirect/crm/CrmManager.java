@@ -189,7 +189,7 @@ public class CrmManager {
 		}
 	}
 
-	public PrimaryKey createCase(CrmCaseModel caseModel) throws FDResourceException {
+	public PrimaryKey createCase(CrmCaseModel caseModel) throws FDResourceException,CrmAuthorizationException {
 		try {
 			return this.getCrmManagerSB().createCase(caseModel);
 		} catch (RemoteException e) {

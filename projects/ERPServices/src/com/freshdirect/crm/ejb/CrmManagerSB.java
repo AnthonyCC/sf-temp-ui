@@ -56,7 +56,7 @@ public interface CrmManagerSB extends EJBObject {
     
 	public boolean closeAutoCase(PrimaryKey casePK) throws FDResourceException, RemoteException;
 
-	public PrimaryKey createCase(CrmCaseModel caseModel) throws FDResourceException, RemoteException;
+	public PrimaryKey createCase(CrmCaseModel caseModel) throws FDResourceException, RemoteException,CrmAuthorizationException;
     
 	public PrimaryKey createSystemCase(CrmSystemCaseInfo caseInfo) throws FDResourceException, RemoteException;
 

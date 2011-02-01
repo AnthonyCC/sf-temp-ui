@@ -241,6 +241,9 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 						} catch (ErpComplaintException e) {
 							LOGGER.warn("ErpComplaintException: order status is not COMPLETE", e);
 							actionResult.addError(true, "invalid_complaint", e.getMessage());
+						} catch (CrmAuthorizationException e) {
+							System.out.println("CrmAuthorizationException :"+e);
+							actionResult.setError(e.getMessage());
 						} catch (FDResourceException ex) {
 							LOGGER.warn("FDResourceException while trying to add complaint", ex);
 							actionResult.addError(true, "technical_difficulty", "Complaint not logged due to technical difficulty.");

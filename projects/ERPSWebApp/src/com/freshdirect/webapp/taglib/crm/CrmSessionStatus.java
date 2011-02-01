@@ -18,6 +18,7 @@ import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.crm.security.CrmSecurityManager;
 
 
 public class CrmSessionStatus implements HttpSessionBindingListener{
@@ -55,13 +56,17 @@ public class CrmSessionStatus implements HttpSessionBindingListener{
 		}
 		
 		if(this.status.getSaleId() != null){
-			return "/main/order_details.jsp?orderId=" + status.getSaleId();
+			if(CrmSecurityManager.hasAccessToPage(CrmSession.getCurrentAgent(session).getRole().getLdapRoleName(), "order_details.jsp")){
+				return "/main/order_details.jsp?orderId=" + status.getSaleId();
+			}
 		} 
 		
 		if(this.status.getErpCustomerId() != null){
 			try {
 				FDCustomerModel cust = FDCustomerFactory.getFDCustomerFromErpId(status.getErpCustomerId());
-				return "/main/account_details.jsp?erpCustId=" + cust.getErpCustomerPK() + "&fdCustId=" + cust.getPK().getId();
+				if(CrmSecurityManager.hasAccessToPage(CrmSession.getCurrentAgent(session).getRole().getLdapRoleName(), "account_details.jsp")){
+					return "/main/account_details.jsp?erpCustId=" + cust.getErpCustomerPK() + "&fdCustId=" + cust.getPK().getId();
+				}
 			} catch (FDResourceException e) {
 				e.printStackTrace();
 			}

@@ -45,8 +45,11 @@ List linksList = MenuManager.getInstance().getLinksForRole(request);
 				<a href="/main/available_promotions.jsp" class="<%=(pageURI.indexOf("_promotion.jsp") > -1 || pageURI.indexOf("_promotions.jsp") > -1)?"main_nav_on":"main_nav_link"%>">P.(Old)</a> 
 			--%>
 			<% if(linksList.contains("promo_home.jsp")){ %>
-			<a href="/main/promo_home.jsp" class="<%=pageURI.indexOf("/main/promo_home.jsp") > -1 || pageURI.indexOf("/promotion/")	> -1?"main_nav_on":"main_nav_link"%>">Promotions</a>
+			<a href="/main/promo_home.jsp" class="<%=pageURI.indexOf("/main/promo_home.jsp") > -1 || (pageURI.indexOf("/promotion/")	> -1 &&  pageURI.indexOf("/promo_ws")	<= -1)?"main_nav_on":"main_nav_link"%>">Promotions</a>
 			<% } %> 
+			<% if(linksList.contains("promo_ws_view.jsp")){ %>
+			<a href="/promotion/promo_ws_view.jsp" class="<%=pageURI.indexOf("/promotion/promo_ws_view.jsp") > -1 || pageURI.indexOf("/promo_ws")	> -1?"main_nav_on":"main_nav_link"%>">WS Promotions</a>
+			<% } %>
 			<!-- <a	href="/main/information.jsp" class="<%=pageURI.indexOf("/main/information.jsp")	> -1?"main_nav_on":"main_nav_link"%>">Maps</a>  -->
 			<% if(linksList.contains("giftcard_landing.jsp")){%>
 			<a href="/gift_card/giftcard_landing.jsp" class="<%=pageURI.indexOf("/main/information.jsp") > -1?"main_nav_on":"main_nav_link"%>">GiftCard</a>

@@ -20,6 +20,7 @@
 <%@ page import="com.freshdirect.crm.CrmAgentModel" %>
 <%@ page import="com.freshdirect.crm.CrmAgentRole" %>
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession" %>
+<%@ page import="com.freshdirect.webapp.crm.security.CrmSecurityManager" %>
 <%@ taglib uri='logic' prefix='logic' %>
 
 <%-- include calendar setup/callbacks --%>
@@ -34,12 +35,12 @@
 %>
 
 <div class="promo_nav">
-<% if(FDStoreProperties.isPromoPublishNodeMaster()) { %>
+<% if(FDStoreProperties.isPromoPublishNodeMaster() ) { %>
 		<% if (promo_ws_create) { %>
 			<div class="promo_sub_nav_on">
 				Create
 			</div>
-		<% }else{ %>
+		<% }else if(CrmSecurityManager.hasAccessToPage(agent.getRole().getLdapRoleName(),"promo_ws_create.jsp")){ %>
 			<div class="promo_sub_nav">
 				<a href="/promotion/promo_ws_create.jsp">Create</a>
 			</div>
