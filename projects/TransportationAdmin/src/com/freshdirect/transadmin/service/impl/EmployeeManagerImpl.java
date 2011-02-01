@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
@@ -31,6 +32,7 @@ import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.ScheduleEmployeeInfo;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
+import com.freshdirect.transadmin.util.EnumCachedDataType;
 import com.freshdirect.transadmin.util.EnumResourceSubType;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransAdminCacheManager;
@@ -47,7 +49,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 	private EmployeeManagerDaoI employeeManagerDAO = null;
 	private DomainManagerDaoI domainManagerDao = null;
 	private PunchInfoDaoI punchInfoDAO = null;
-
+	
 	public PunchInfoDaoI getPunchInfoDAO() {
 		return punchInfoDAO;
 	}
@@ -676,7 +678,10 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 	}
 
 	public void syncEmployess() {
-
+		
+		employeeManagerDAO.refresh("KRONOS_EMPLOYEE");	
+		TransAdminCacheManager.getInstance().refreshCacheData(EnumCachedDataType.EMPLOYEE_DATA);
+		
 		Collection transAppEmployees = this.domainManagerDao
 				.getEmployeeStatus(null);
 		if (transAppEmployees != null && transAppEmployees.size() > 0) {
@@ -686,10 +691,10 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 				EmployeeStatus e = (EmployeeStatus) iterator.next();
 				EmployeeInfo em = TransAdminCacheManager.getInstance()
 						.getActiveInactiveEmployeeInfo(e.getPersonnum(), this);
-				if (e != null && em != null && !e.isStatus() && "Active".equalsIgnoreCase(em.getStatus())) {
+				if (e != null && em != null && e.isStatus() && "Active".equalsIgnoreCase(em.getStatus())) {
 					l.add(e);
 				}
-				if (e != null && em != null && e.isStatus()	&& "Inactive".equalsIgnoreCase(em.getStatus())) {
+				if (e != null && em != null && !e.isStatus() && "Inactive".equalsIgnoreCase(em.getStatus())) {
 					l.add(e);
 				}
 			}

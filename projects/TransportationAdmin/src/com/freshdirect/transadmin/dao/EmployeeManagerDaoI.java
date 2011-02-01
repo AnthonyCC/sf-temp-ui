@@ -13,5 +13,8 @@ public interface EmployeeManagerDaoI {
 	Collection getSupervisors() throws DataAccessException;
 	
 	public Collection getActiveInactiveEmployees() ;
+	
+	public void refresh(final String worktable) throws DataAccessException;
+	
 
 }

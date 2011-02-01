@@ -163,6 +163,9 @@ public class TransAdminCacheManager {
 		if(EnumCachedDataType.TRUCK_DATA.equals(dataType)){
 			truckDataHolder.forceRefresh();
 		}
+		if(EnumCachedDataType.EMPLOYEE_DATA.equals(dataType)){
+			employeeDataHolder.forceRefresh();
+		}
 
 	}
 

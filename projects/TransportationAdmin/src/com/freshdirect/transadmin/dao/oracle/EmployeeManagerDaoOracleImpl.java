@@ -1,5 +1,6 @@
 package com.freshdirect.transadmin.dao.oracle;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,6 +15,7 @@ import javax.sql.DataSource;
 
 import org.apache.log4j.Category;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
@@ -256,6 +258,21 @@ public class EmployeeManagerDaoOracleImpl implements EmployeeManagerDaoI {
         LOGGER.debug("EmployeeManagerDaoOracleImpl : getEmployee list  "+list.size());
         return list;
 
-	}	
+	}
+	
+	public void refresh(final String worktable) throws DataAccessException {
+		CallableStatementCreator creator=new CallableStatementCreator(){
+			public CallableStatement createCallableStatement(Connection connection) throws SQLException{
+				CallableStatement cs=
+						connection.prepareCall("{ call TRANSP.REFRESH_MVIEW(?) }");
+				cs.setString(1, worktable);
+				return cs;
+			}
+			
+		};
+		List params=new ArrayList();
+		jdbcTemplate.call(creator,params);
+		
+	}
 
 }
