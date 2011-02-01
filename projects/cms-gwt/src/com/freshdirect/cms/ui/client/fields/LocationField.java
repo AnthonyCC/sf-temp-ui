@@ -72,8 +72,11 @@ public class LocationField extends MultiField<String> {
 			@Override
 			public void handleEvent(BaseEvent be) {
 				LocationField f = LocationField.this;
-				f.fireChangeEvent(f.getOriginalValue(), innerField.getValue());
-				setMarker(stringToPos(innerField.getValue()), true);
+				String value = getValue();
+				f.fireChangeEvent(f.getOriginalValue(), value);
+				if ( value != null ) {
+					setMarker(stringToPos(value), true);
+				}
 			}			
 		});
 		mapsLink = new Anchor("Google Maps");
