@@ -46,6 +46,7 @@ import com.freshdirect.delivery.DlvRestrictionManager;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumAddressVerificationResult;
 import com.freshdirect.delivery.EnumRestrictedAddressReason;
+import com.freshdirect.delivery.EnumZipCheckResponses;
 import com.freshdirect.delivery.model.RestrictedAddressModel;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
@@ -70,6 +71,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.customer.ExtendDPDiscountModel;
@@ -863,7 +865,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 								//versions are still same. need to call second time if the cache is not refreshed yet.
 								pInfo = FDCachedFactory.getProductInfo(skuCode);
 							}
-
+							
 							if(oldSku.getVersion() == pInfo.getVersion()){
 								//Not yet refreshed. Log it as a failure and retry later.
 								failureMessage = skuCode+" : "+"No Version Change. Possible Cause: ProductInfo Cache is still holding the old version. Please try again.";
@@ -953,6 +955,13 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 	        			break;
 	        		}
 	        	}
+	        	//Set Delivery Region Info
+	        	FDTimeslot selectedTimeslot = modCart.getDeliveryReservation().getTimeslot();
+	        	DlvZoneInfoModel zInfo = FDDeliveryManager.getInstance().getZoneInfo(modCart.getDeliveryAddress(), selectedTimeslot.getBegDateTime());
+	        	if(zInfo != null){
+		        	DlvZoneInfoModel zoneInfo = new DlvZoneInfoModel(originalOrder.getDeliveryZone(), null, zInfo.getRegionId(), EnumZipCheckResponses.DELIVER,false,false);
+		        	modCart.setZoneInfo(zoneInfo);
+	        	}
 	        	FDActionInfo info = AccountActivityUtil.getActionInfo(session);
 	        	info.setIdentity(identity);
 	        	info.setSource(EnumTransactionSource.SYSTEM);
@@ -963,6 +972,14 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 					//ignore
 				}
 				return 1;
+			} catch (FDInvalidAddressException ex) {
+				LOGGER.warn("Invalid delivery Address ", ex);
+				try {
+					CallCenterServices.updateOrderModifiedStatus(orderId, "Failed", ex.getMessage());
+				}catch(FDResourceException fe){
+					//ignore
+				}
+				return -1;
 			} catch (ErpFraudException ex) {
 				LOGGER.warn("Possible fraud occured", ex);
 				try {
