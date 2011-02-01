@@ -44,7 +44,7 @@ public abstract class BaseAttribute implements Serializable, ContentNodeAttribut
     public final boolean isInheritable() {
         return inheritable;
     }
-
+    
     public final void setInheritable(boolean inheritable) {
         this.inheritable = inheritable;
     }

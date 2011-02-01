@@ -1,11 +1,17 @@
 package com.freshdirect.cms.ui.client.fields;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.MultiField;
+import com.freshdirect.cms.ui.model.GwtContentNode;
+import com.freshdirect.cms.ui.model.OneToManyModel;
 import com.google.gwt.user.client.Element;
 
 /**
@@ -24,6 +30,13 @@ public class InheritanceField<TYPE> extends MultiField<TYPE> {
     TYPE inheritedValue = null;
     TYPE explicitValue = null;
 
+    /**
+     * Collections.singleton(..) is not GWT friendly - not able to serialize it.
+     */
+    final static List<OneToManyModel> CLEAR_LIST = new ArrayList<OneToManyModel>(1);  
+    static {
+        CLEAR_LIST.add(OneToManyModel.NULL_MODEL); 
+    }
 
     public InheritanceField( Field<TYPE> field, boolean inherit, boolean readonly ) {
         super();
@@ -129,7 +142,11 @@ public class InheritanceField<TYPE> extends MultiField<TYPE> {
     @Override
     public TYPE getValue() {
         if ( checkbox.getValue() ) {
-            return innerField.getValue();
+            TYPE obj = innerField.getValue();
+            if (obj instanceof List<?> && ((List)obj).size() == 0) {
+                return (TYPE) CLEAR_LIST;
+            }
+            return obj;
         }
         if (innerField instanceof HasCustomDefaultValue) {
             return (TYPE) ((HasCustomDefaultValue) innerField).getDefaultValue();
@@ -156,6 +173,17 @@ public class InheritanceField<TYPE> extends MultiField<TYPE> {
      * Non null value means explicit / overridden state.
      */
     public void setValue(TYPE value) {
+        // translate between list with one 'null' node, and an empty list
+        if (value instanceof List) {
+            List l = (List) value;
+            if (isNullList(l)) {
+                // important, not to change the original 'value' object
+                value = (TYPE) new ArrayList<Object>(0);
+            } else if (l.size() == 0) {
+                // empty list means 'inherit' from parent
+                value = null;
+            }
+        }
     	if (value != null) {
         	explicitValue = value;
     		checkbox.setValue(true);
@@ -171,23 +199,33 @@ public class InheritanceField<TYPE> extends MultiField<TYPE> {
     	}
     }
 
-    public void setExplicitValue(TYPE value) {
-    	this.explicitValue = value;
-    	if ( checkbox.getValue() ) {
-    		innerField.setValue( value );
-    	}    	
+    static boolean isNullList(List l) {
+        if (l.size() == 1) {
+            if (l.get(0) instanceof OneToManyModel) {
+                OneToManyModel one = (OneToManyModel) l.get(0);
+                return (one.isNullType());
+            }
+        }
+        return false;
     }
     
+    public void setExplicitValue(TYPE value) {
+        this.explicitValue = value;
+        if (checkbox.getValue()) {
+            innerField.setValue(value);
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
     public void setInheritedValue(TYPE value) {
-    	this.inheritedValue = value;
-    	if ( !checkbox.getValue() ) {
-    		try {
-    			innerField.setValue( value );
-    		}
-    		catch(ClassCastException e) {
-    			System.out.println(e);
-    		}
-    	}
+        this.inheritedValue = value;
+        if (!checkbox.getValue()) {
+            try {
+                innerField.setValue(((TYPE) ((value instanceof List && isNullList((List) value)) ? new ArrayList() : value)));
+            } catch (ClassCastException e) {
+                System.out.println(e);
+            }
+        }
     }
     
     @Override

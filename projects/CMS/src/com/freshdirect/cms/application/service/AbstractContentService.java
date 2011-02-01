@@ -9,6 +9,8 @@ import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.framework.conf.FDRegistry;
@@ -56,9 +58,9 @@ public abstract class AbstractContentService implements ContentServiceI, Seriali
 
 	}
 		
-	public Map queryContentNodes(ContentType type, Predicate criteria) {
-		Set keys = this.getContentKeysByType(type);
-		Map nodes = this.getContentNodes(keys);
+	public Map<ContentKey, ContentNodeI> queryContentNodes(ContentType type, Predicate criteria) {
+		Set<ContentKey> keys = this.getContentKeysByType(type);
+		Map<ContentKey, ContentNodeI> nodes = this.getContentNodes(keys);
 		CollectionUtils.filter(nodes.values(), criteria);
 		return nodes;
 	}

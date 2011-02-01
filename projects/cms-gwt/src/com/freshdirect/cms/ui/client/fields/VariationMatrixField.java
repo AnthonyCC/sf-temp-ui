@@ -261,4 +261,13 @@ public class VariationMatrixField extends OneToManyRelationField implements Save
             WorkingSet.add(newNode);
         }
     }
+    
+    /**
+     * @return
+     */
+    protected boolean isSelectAllToolNeeded() {
+        //return !( this instanceof VariationMatrixField || this instanceof CustomGridField );
+        return false;
+    }
+    
 }

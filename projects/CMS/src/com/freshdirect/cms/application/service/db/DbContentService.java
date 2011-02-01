@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,6 +22,8 @@ import java.util.Set;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.apache.openjpa.lib.log.Log;
 
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.AttributeI;
@@ -39,10 +42,12 @@ import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.application.service.AbstractContentService;
 import com.freshdirect.cms.classgenerator.ContentNodeGenerator;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.meta.ContentTypeUtil;
 import com.freshdirect.cms.node.ContentNode;
 import com.freshdirect.cms.reverse.BidirectionalReferenceHandler;
 import com.freshdirect.cms.util.DaoUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * {@link com.freshdirect.cms.application.ContentServiceI} implementation
@@ -61,6 +66,8 @@ import com.freshdirect.cms.util.DaoUtil;
 public class DbContentService extends AbstractContentService implements ContentServiceI {
 
 	private final static boolean DEBUG_MISSING = false;
+	private final static Logger LOG = LoggerFactory.getInstance(DbContentService.class);
+	
 
 	private ContentTypeServiceI typeService;
 
@@ -200,20 +207,20 @@ public class DbContentService extends AbstractContentService implements ContentS
 		+ " where a.child_contentnode_id = (?)"
 		+ " and a.child_contentnode_id = c.id";
 
-	public Map getContentNodes(Set keys) {
+	public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 
 			String[] idChunks = DaoUtil.chunkContentKeys(keys);
 
-			Map nodeMap = new HashMap(keys.size());
+			Map<ContentKey, ContentNodeI> nodeMap = new HashMap<ContentKey, ContentNodeI>(keys.size());
 			for (int i = 0; i < idChunks.length; i++) {
 				process(conn, nodeMap, idChunks[i]);
 			}
 
 			if (DEBUG_MISSING && nodeMap.size() < keys.size()) {
-				Set s = new HashSet(keys);
+				Set<ContentKey> s = new HashSet<ContentKey>(keys);
 				s.removeAll(nodeMap.keySet());
 				System.err.println("DbContentService.getContentNodes() NULL for " + s);
 			}
@@ -227,8 +234,8 @@ public class DbContentService extends AbstractContentService implements ContentS
 		}
 	}
 	
-	public Set getParentKeys(ContentKey key) {
-		Set set = new HashSet();
+	public Set<ContentKey> getParentKeys(ContentKey key) {
+		Set<ContentKey> set = new HashSet<ContentKey>();
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -252,7 +259,7 @@ public class DbContentService extends AbstractContentService implements ContentS
 
 	private final static int FETCH_SIZE = 1000;
 
-	private void process(Connection conn, Map nodeMap, String ids) throws SQLException {
+	private void process(Connection conn, Map<ContentKey, ContentNodeI> nodeMap, String ids) throws SQLException {
 
 		Statement stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		stmt.setFetchSize(FETCH_SIZE);
@@ -308,6 +315,12 @@ public class DbContentService extends AbstractContentService implements ContentS
 			ps.executeQuery();
 			ps.close();
 
+			if (node.getKey().getType()==ContentType.NULL_TYPE) {
+                            LOG.warn("trying to insert null content node:" + node + " key : " + node.getKey());
+			    conn.commit();
+			    return;
+			}
+			
 			PreparedStatement insPs = conn.prepareStatement(INSERT_NODE);
 			addInsBatch(insPs, node.getKey());
 
@@ -370,14 +383,7 @@ public class DbContentService extends AbstractContentService implements ContentS
 		} catch (Exception sqle1) {
 			throw new CmsRuntimeException(sqle1);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.rollback();
-					conn.close();
-				} catch (SQLException sqle2) {
-					throw new CmsRuntimeException(sqle2);
-				}
-			}
+		    close(conn);
 		}
 
 	}
@@ -391,19 +397,26 @@ public class DbContentService extends AbstractContentService implements ContentS
     }
 
     private void addInsBatch(PreparedStatement insPs, ContentKey key) throws SQLException {
-		String id = key.getEncoded();
-		insPs.setString(1, id);
-		insPs.setString(2, key.getType().getName());
-		insPs.setString(3, id);
-		insPs.addBatch();
-	}
+        if (key.getType() == ContentType.NULL_TYPE) {
+            return;
+        }
+        String id = key.getEncoded();
+        insPs.setString(1, id);
+        insPs.setString(2, key.getType().getName());
+        insPs.setString(3, id);
+        insPs.addBatch();
+    }
 
 	private void addRelBatch(PreparedStatement relPs, ContentKey parent, String relationshipName, ContentKey destKey, int ordinal)
 		throws SQLException {
 		relPs.setString(1, parent.getEncoded());
 		relPs.setString(2, relationshipName);
-		relPs.setString(3, destKey.getType().getName());
-		relPs.setString(4, destKey.getEncoded());
+                relPs.setString(3, destKey.getType().getName());
+		if (ContentType.NULL_TYPE == destKey.getType()) {
+                    relPs.setNull(4, Types.VARCHAR);
+		} else {
+		    relPs.setString(4, destKey.getEncoded());
+		}
 		relPs.setInt(5, ordinal);
 		relPs.addBatch();
 	}
@@ -415,7 +428,7 @@ public class DbContentService extends AbstractContentService implements ContentS
 		return createContentNode(key);
 	}
 
-	private void processNodesResultSet(ResultSet rs, Map nodeMap) throws SQLException {
+	private void processNodesResultSet(ResultSet rs, Map<ContentKey, ContentNodeI> nodeMap) throws SQLException {
 		while (rs.next()) {
 			ContentKey key = ContentKey.decode(rs.getString("id"));
 			ContentNodeI node = createContentNode(key);
@@ -428,10 +441,10 @@ public class DbContentService extends AbstractContentService implements ContentS
         //return new ContentNode(this, key);
     }
 
-	private void processAttributesResultSet(ResultSet rs, Map nodeMap) throws SQLException {
+	private void processAttributesResultSet(ResultSet rs, Map<ContentKey, ContentNodeI> nodeMap) throws SQLException {
 		ContentKey currKey = null;
 		String currAttrName = null;
-		List currValue = new ArrayList();
+		List<String> currValue = new ArrayList<String>();
 
 		while (rs.next()) {
 			ContentKey key = ContentKey.decode(rs.getString(1));
@@ -443,7 +456,7 @@ public class DbContentService extends AbstractContentService implements ContentS
 				}
 				currKey = key;
 				currAttrName = attrName;
-				currValue = new ArrayList();
+				currValue = new ArrayList<String>();
 			}
 
 			currValue.add(rs.getString(3));
@@ -453,7 +466,7 @@ public class DbContentService extends AbstractContentService implements ContentS
 		}
 	}
 
-    private void recordAttribute(Map<ContentKey, ContentNodeI> nodeMap, ContentKey key, String attrName, List value) {
+    private void recordAttribute(Map<ContentKey, ContentNodeI> nodeMap, ContentKey key, String attrName, List<String> value) {
         ContentNodeI node = (ContentNodeI) nodeMap.get(key);
 
         AttributeDefI aDef = typeService.getContentTypeDefinition(node.getKey().getType()).getAttributeDef(attrName);

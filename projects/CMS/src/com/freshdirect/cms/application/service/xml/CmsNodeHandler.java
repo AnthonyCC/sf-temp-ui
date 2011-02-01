@@ -46,6 +46,6 @@ public abstract class CmsNodeHandler extends DefaultHandler {
 		return node;
 	}
 
-	public abstract Map getContentNodes();
+	public abstract Map<ContentKey, ContentNodeI> getContentNodes();
 
 }

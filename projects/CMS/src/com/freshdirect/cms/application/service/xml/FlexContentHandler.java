@@ -49,8 +49,8 @@ public class FlexContentHandler extends CmsNodeHandler {
 	
 	private final static Object IGNORE = new Object();
 
-	private final Map nodes = new HashMap();
-	private final Stack stack = new Stack();
+	private final Map<ContentKey, ContentNodeI> nodes = new HashMap<ContentKey, ContentNodeI>();
+	private final Stack<Object> stack = new Stack<Object>();
 
 	public FlexContentHandler() {
 	}
@@ -58,7 +58,8 @@ public class FlexContentHandler extends CmsNodeHandler {
 	/**
 	 * @return Map of ContentKey -> ContentNodeI
 	 */
-	public Map getContentNodes() {
+	@Override
+	public Map<ContentKey, ContentNodeI> getContentNodes() {
 		return nodes;
 	}
 
@@ -214,7 +215,7 @@ public class FlexContentHandler extends CmsNodeHandler {
 					if (rel.value == null) {
 						rel.value = new ArrayList();
 					}
-					((List) rel.value).add(key);
+					((List<ContentKey>) rel.value).add(key);
 				}
 			}
 		} else if (last instanceof Relationship) {
@@ -245,7 +246,7 @@ public class FlexContentHandler extends CmsNodeHandler {
 				if (rel.value == null) {
 					rel.value = new ArrayList();
 				}
-				((List) rel.value).add(key);
+				((List<ContentKey>) rel.value).add(key);
 			}
 		}
 	}

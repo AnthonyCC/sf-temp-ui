@@ -12,6 +12,9 @@ public class GwtContentNode implements Serializable {
 	
     public final static char SEPARATOR = ':';
     
+    public final static String NULL_TYPE = "Null";
+    public final static String NULL_ID = NULL_TYPE + SEPARATOR + "null";
+    
 	private static final long serialVersionUID = -350789619809583065L;
 	
 	private String nodeKey;
@@ -60,9 +63,9 @@ public class GwtContentNode implements Serializable {
 		originalAttributes.put(key, value);
 	}
 	
-	public void setOriginalAttributes (HashMap<String, ContentNodeAttributeI> attr) {
+	/*public void setOriginalAttributes (HashMap<String, ContentNodeAttributeI> attr) {
 		originalAttributes = attr;
-	}
+	}*/
 	
 	public void setLabel(String l) {
 		label = l;

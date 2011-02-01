@@ -21,6 +21,7 @@ public class ContentKey implements Serializable {
 	private final String id;
 
 	public final static Pattern NAME_PATTERN = Pattern.compile("([a-zA-Z]|\\d|_|-)+");
+	
 
 	/**
 	 * @param type content type (non-null)
@@ -151,5 +152,7 @@ public class ContentKey implements Serializable {
 
 	public static class InvalidContentKeyException extends FDException {
 	}
+
+	public final static ContentKey NULL_KEY = new ContentKey(ContentType.NULL_TYPE, "null");
 
 }

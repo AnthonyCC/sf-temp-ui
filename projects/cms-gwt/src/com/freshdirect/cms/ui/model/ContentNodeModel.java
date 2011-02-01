@@ -108,6 +108,10 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
 	public boolean isHtmlType() {
 		return "Html".equals( getType() );
 	}
+	
+	public boolean isNullType() {
+	    return GwtContentNode.NULL_TYPE.equals(getType());
+	}
 
     @Override
     public String toString() {

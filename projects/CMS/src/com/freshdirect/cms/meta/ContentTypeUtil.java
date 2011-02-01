@@ -82,7 +82,11 @@ public class ContentTypeUtil {
 	 */
 	public static Object coerce(EnumAttributeType type, Object value) {
 		if (value == null) {
-			return null;
+		    if (EnumAttributeType.RELATIONSHIP.equals(type)) {
+		        return ContentKey.NULL_KEY;
+		    } else {
+		        return null;
+		    }
 		}
 		
 		// convert from a string representation
@@ -161,19 +165,19 @@ public class ContentTypeUtil {
 			return coerce(valueType, (String) values.get(0));
 		}
 		// MANY
-		for (ListIterator i = values.listIterator(); i.hasNext();) {
-			String v = (String) i.next();
-			i.set(coerce(valueType, v));
+		List<Object> newValues = new ArrayList<Object>(values.size());
+		for (String v : values) {
+			newValues.add(coerce(valueType, v));
 		}
-		return values;
+		return newValues;
 	}
 	
-	@Deprecated
-	public static String attributeToString(AttributeI attr) {
-		AttributeDefI atrDef = attr.getDefinition();
-		Object value = attr.getValue();
-		return attributeToString(atrDef, value);
-	}
+//	@Deprecated
+//	public static String attributeToString(AttributeI attr) {
+//		AttributeDefI atrDef = attr.getDefinition();
+//		Object value = attr.getValue();
+//		return attributeToString(atrDef, value);
+//	}
 
     /**
      * @param atrDef

@@ -351,7 +351,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 			}
 
 			// ==================================== ADD ====================================
-			if ( !( this instanceof CustomGridField ) ) {
+			if ( isAddRelationToolNeeded() ) {
 				addButton = new ToolButton( "add-relation" );
 				addButton.setToolTip( new ToolTipConfig( "ADD", "Add a relation..." ) );
 				theToolBar.add( addButton );
@@ -380,7 +380,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 			theToolBar.add( moveButton );
 
 			// ==================================== SELECT CHECKBOX ====================================
-			if ( !( this instanceof VariationMatrixField || this instanceof CustomGridField ) ) {
+			if ( isSelectAllToolNeeded() ) {
 				selectCheckbox = new CheckBox();
 				selectCheckbox.setToolTip( new ToolTipConfig( "Select all/none", "Select all/none relations." ) );
 				theToolBar.add( selectCheckbox );
@@ -420,6 +420,22 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 		add(af);
 		setFireChangeEventOnSetValue(true);
 	}
+
+    /**
+     * @return
+     */
+    protected boolean isAddRelationToolNeeded() {
+        //return !( this instanceof CustomGridField );
+        return true;
+    }
+
+    /**
+     * @return
+     */
+    protected boolean isSelectAllToolNeeded() {
+        //return !( this instanceof VariationMatrixField || this instanceof CustomGridField );
+        return true;
+    }
 
 	protected List<ColumnConfig> setupExtraColumns() {
 		List<ColumnConfig> config = new ArrayList<ColumnConfig>();
@@ -475,40 +491,36 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 		allowedTypes = aTypes;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void setValue(final List<OneToManyModel> values) {
-		// TODO FIXME bad solution, needs some checking
+	    if (store.getCount() > 0) {
+	        store.removeAll();
+	    }
+            if (values != null) {
+                store.add(values);
+            }
+            super.setValue(values);
 		
-		if (values instanceof List) {
-			if (store.getCount() > 0) {
-				store.removeAll();
-			}
-			store.add(values);
-		}
-		super.setValue(values);
-		
-		
-		if (rendered) {
-			if (store.getCount() == 0) {
-				grid.hide();
-			} else {
-				grid.show();
-			}
-
-		} else {
-			addListener(Events.Render, new Listener<BaseEvent>() {
-				@Override
-				public void handleEvent(BaseEvent be) {
-					if (store.getCount() == 0) {
-						grid.hide();
-					} else {
-						grid.show();
-					}
-				}
-			});
-		}
-		fireEvent(Events.Change, new FieldEvent(OneToManyRelationField.this));
+            if (rendered) {
+                if (store.getCount() == 0) {
+                    grid.hide();
+                } else {
+                    grid.show();
+                }
+    
+            } else {
+                addListener(Events.Render, new Listener<BaseEvent>() {
+                    @Override
+                    public void handleEvent(BaseEvent be) {
+                        if (store.getCount() == 0) {
+                            grid.hide();
+                        } else {
+                            grid.show();
+                        }
+                    }
+                });
+            }
+            fireEvent(Events.Change, new FieldEvent(OneToManyRelationField.this));
 	}
 
 	@Override

@@ -63,5 +63,7 @@ public class ContentType implements Serializable {
 	public String toString() {
 		return this.name;
 	}
+	
+	public final static ContentType NULL_TYPE = get("Null");
 
 }

@@ -10,6 +10,8 @@ public class OneToManyModel extends ContentNodeModel {
 
     private static final long serialVersionUID = 1L;
 
+    public final static OneToManyModel NULL_MODEL = new OneToManyModel(GwtContentNode.NULL_TYPE, GwtContentNode.NULL_ID, "Empty list", 0); 
+
     GwtNodeData newNodeData;
     
     public OneToManyModel() {
@@ -68,5 +70,5 @@ public class OneToManyModel extends ContentNodeModel {
         }
         return super.renderLinkComponent();
     }
-    
+
 }

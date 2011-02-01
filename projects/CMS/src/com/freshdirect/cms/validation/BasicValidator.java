@@ -7,6 +7,7 @@ import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.EnumCardinality;
 import com.freshdirect.cms.RelationshipDefI;
@@ -84,6 +85,10 @@ public class BasicValidator implements ContentValidatorI {
 		if (values == null)
 			return;
 
+		if ((values.size() == 1) && (values.get(0) instanceof ContentKey) && (((ContentKey)values.get(0)).getType().equals(ContentType.NULL_TYPE))) {
+		    return;
+		}
+		
 		for ( Object o : values ) {
 
 			if (o == null) {
@@ -107,7 +112,7 @@ public class BasicValidator implements ContentValidatorI {
 
 			ContentNodeI destNode = service.getContentNode(destKey);
 			if (destNode == null) {
-				delegate.record(node.getKey(), def.getName(), "reference to nonexsistent node " + destKey);
+				delegate.record(node.getKey(), def.getName(), "reference to nonexistent node " + destKey);
 			}
 		}
 

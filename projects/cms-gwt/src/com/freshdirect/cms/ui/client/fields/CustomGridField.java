@@ -119,4 +119,23 @@ public class CustomGridField extends OneToManyRelationField implements SaveListe
         }
     }
     
+    
+    /**
+     * @return
+     */
+    @Override
+    protected boolean isAddRelationToolNeeded() {
+        //return !( this instanceof CustomGridField );
+        return false;
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    protected boolean isSelectAllToolNeeded() {
+        //return !( this instanceof VariationMatrixField || this instanceof CustomGridField );
+        return false;
+    }
+    
 }

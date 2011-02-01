@@ -136,7 +136,7 @@ public class TranslatorToGwt {
 		final ContentTypeDefI definition = node.getDefinition();
 		for ( String key : (Set<String>)definition.getAttributeNames() ) {
 			Object value = node.getAttributeValue( key );
-			ModifiableAttributeI attr = translateAttribute(definition.getAttributeDef(key), value, tabDefs != null ? tabDefs.getCustomFieldDefinition(key) : null, contentKey);
+			ModifiableAttributeI attr = translateAttribute(definition.getAttributeDef(key), value, tabDefs != null ? tabDefs.getCustomFieldDefinition(key) : null, node);
 			gwtNode.setOriginalAttribute( key, attr );
 		}
 
@@ -264,9 +264,10 @@ public class TranslatorToGwt {
 		
 		Map<String, ContentNodeAttributeI> translatedAttributes = new HashMap<String, ContentNodeAttributeI>();
 
+		ContentNodeI node = contentKey.getContentNode();
 		for ( String key : attributeMap.keySet() ) {
 		    AttributeI attributeI = attributeMap.get( key );
-		    ModifiableAttributeI attribute = translateAttribute( attributeI.getDefinition(), attributeI.getValue(), tabs != null ? tabs.getCustomFieldDefinition( key ) : null, contentKey );
+		    ModifiableAttributeI attribute = translateAttribute( attributeI.getDefinition(), attributeI.getValue(), tabs != null ? tabs.getCustomFieldDefinition( key ) : null, node );
 		    translatedAttributes.put( key, attribute );
 		}
 
@@ -281,16 +282,16 @@ public class TranslatorToGwt {
 	 * @return
 	 * @throws ServerException 
 	 */
-    public static ModifiableAttributeI translateAttribute(AttributeDefI definition, Object value, CustomFieldDefinition customFieldDefinition,ContentKey key) throws ServerException {
-        ModifiableAttributeI attr = translateAttribute(definition, customFieldDefinition, value, key.getContentNode() );
+    public static ModifiableAttributeI translateAttribute(AttributeDefI definition, Object value, CustomFieldDefinition customFieldDefinition,ContentNodeI node) throws ServerException {
+        ModifiableAttributeI attr = translateAttributeInternal(definition, customFieldDefinition, value, node );
         if (attr == null) {
-            throw new ServerException("Unknown attribute type "+ definition + ", in node :"+key);
+            throw new ServerException("Unknown attribute type "+ definition + ", in node :"+node.getKey());
         }
         return attr;
     }
 
     @SuppressWarnings( "unchecked" )
-	private static ModifiableAttributeI translateAttribute(AttributeDefI definition, CustomFieldDefinition customFieldDefinition, Object value, ContentNodeI node) {
+	private static ModifiableAttributeI translateAttributeInternal(AttributeDefI definition, CustomFieldDefinition customFieldDefinition, Object value, ContentNodeI node) {
         String name = definition.getLabel();
         EnumAttributeType type = definition.getAttributeType();
         ModifiableAttributeI attr = null;
@@ -362,25 +363,28 @@ public class TranslatorToGwt {
                 if (values != null) {
                     int idx = 0;
                     for (ContentKey k : values) {
-                        ContentNodeI contentNode = k.getContentNode();
-                        OneToManyModel model = toOneToManyModel( k, idx );
-                        
-                        if (customFieldDefinition != null) {
-                            if (customFieldDefinition.getGridColumns() != null) {
-                                for (String col : customFieldDefinition.getGridColumns()) {
-                                    Object attrValue = contentNode.getAttributeValue(col);
-                                    model.set(col, attrValue);
+                        if (!ContentType.NULL_TYPE.equals(k.getType())) {
+                            ContentNodeI contentNode = k.getContentNode();
+                            OneToManyModel model = toOneToManyModel(contentNode, idx);
+                            
+                            if (customFieldDefinition != null) {
+                                if (customFieldDefinition.getGridColumns() != null) {
+                                    for (String col : customFieldDefinition.getGridColumns()) {
+                                        Object attrValue = contentNode.getAttributeValue(col);
+                                        model.set(col, attrValue);
+                                    }
+                                }
+                                // for variation matrix, we need the skus other
+                                // properties too.
+                                if (customFieldDefinition.getType() == CustomFieldDefinition.Type.VariationMatrix) {
+                                    model.set("VARIATION_MATRIX", toClientValues(contentNode.getAttributeValue("VARIATION_MATRIX")));
+                                    model.set("VARIATION_OPTIONS", toClientValues(contentNode.getAttributeValue("VARIATION_OPTIONS")));
                                 }
                             }
-                            // for variation matrix, we need the skus other
-                            // properties too.
-                            if (customFieldDefinition.getType() == CustomFieldDefinition.Type.VariationMatrix) {
-                                model.set("VARIATION_MATRIX", toClientValues(contentNode.getAttributeValue("VARIATION_MATRIX")));
-                                model.set("VARIATION_OPTIONS", toClientValues(contentNode.getAttributeValue("VARIATION_OPTIONS")));
-                            }
+                            ooAttr.addValue(model);
+                        } else {
+                            ooAttr.addValue(OneToManyModel.NULL_MODEL);
                         }
-
-                        ooAttr.addValue(model);
                         idx++;
                     }
                 }
@@ -428,7 +432,7 @@ public class TranslatorToGwt {
         TableAttribute.ColumnType[] columnTypes = new TableAttribute.ColumnType[columns.length];
         
         for (int i=0;i<columnDefinitions.length;i++) {
-            columns[i] = translateAttribute(columnDefinitions[i], null, null, (ContentNodeI)null );
+            columns[i] = translateAttributeInternal(columnDefinitions[i], null, null, (ContentNodeI)null);
             String name = columnDefinitions[i].getName();
             if (name.toUpperCase().endsWith(SUFFIX_ATTR)) {
                 columnTypes[i] = TableAttribute.ColumnType.ATTRIB;
@@ -543,8 +547,8 @@ public class TranslatorToGwt {
         return result;
     }
     
-    private static OneToManyModel toOneToManyModel( ContentKey key, int idx ) {
-        ContentNodeI node = key.getContentNode();
+    private static OneToManyModel toOneToManyModel(ContentNodeI node, int idx ) {
+        ContentKey key = node.getKey();
         OneToManyModel result = new OneToManyModel(
                 key.getType().getName(), 
                 key.getEncoded(), 

@@ -16,6 +16,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.freshdirect.cms.CmsRuntimeException;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.application.service.ResourceInfoServiceI;
@@ -72,13 +74,13 @@ public class XmlContentService extends SimpleContentService implements ContentSe
             // Map allNodes = new HashMap();
             while (tok.hasMoreTokens()) {
                 String location = tok.nextToken();
-                Map nodes = loadNodes(nodeHandler, location);
+                Map<ContentKey, ContentNodeI> nodes = loadNodes(nodeHandler, location);
                 // allNodes.putAll(nodes);
                 putNodes(nodes);
             }
         }
 
-	private Map loadNodes(CmsNodeHandler nodeHandler, String location) {
+	private Map<ContentKey, ContentNodeI> loadNodes(CmsNodeHandler nodeHandler, String location) {
 		InputStream storeDataStream = null;
 		try {
 			LOGGER.info("Loading: " + location);

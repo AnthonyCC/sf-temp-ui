@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.content;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import com.freshdirect.cms.AttributeDefI;
@@ -80,8 +81,21 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
         if (node == null) return null;
 
         Object value = node.getAttributeValue(name);
-        if (value != null && !(value instanceof List && ((List<?>) value).isEmpty())) {
-            return value;
+        if (value != null) {
+            // empty list means 'inherit from parent' - legacy functionality
+            if (value instanceof List) {
+                List<?> listValue = (List<?>) value;
+                if (!listValue.isEmpty()) {
+                    if (listValue.size() == 1 && ContentKey.NULL_KEY.equals(listValue.get(0))) {
+                        return Collections.EMPTY_LIST;
+                    }
+                    return listValue;
+                } else {
+                    // inherit from parent
+                }
+            } else {
+                return value;
+            }
         }
 
         AttributeDefI def = node.getDefinition().getAttributeDef(name);
@@ -210,14 +224,6 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
 
     public int hashCode() {
     	return key.hashCode();
-    }
-
-    protected AttributeI getNotInheritedAttribute(String name) {
-        ContentNodeI node = this.getCMSNode();
-        if (node == null) {
-            return null;
-        }
-        return node.getAttribute(name);
     }
 
     public Object getNotInheritedAttributeValue(String name) {
