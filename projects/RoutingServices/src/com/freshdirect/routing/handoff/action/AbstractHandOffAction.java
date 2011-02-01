@@ -20,6 +20,7 @@ import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
+import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 
 public abstract class AbstractHandOffAction {
@@ -107,15 +108,20 @@ public abstract class AbstractHandOffAction {
 		RoutingTimeOfDay rCutOff = new RoutingTimeOfDay(this.getBatch().getCutOffDateTime());
 		DispatchCorrelationResult result = new DispatchCorrelationResult();
 		RoutingInfoServiceProxy routingInfoProxy = new RoutingInfoServiceProxy();
+		
 		//Map<ZoneCode, Map<DispatchTime, Map<CutOffTime, IWaveInstance>>>
 		Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> plannedDispatchTree = null;
-		//plannedDispatchTree = routingInfoProxy.getPlannedDispatchTree(this.getBatch().getDeliveryDate());
-		Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree = routingInfoProxy
-																										.getWaveInstanceTree(this.getBatch().getDeliveryDate(), null);
-		if(waveInstanceTree != null && waveInstanceTree.keySet().size() > 0) {
-			plannedDispatchTree = waveInstanceTree.get(waveInstanceTree.keySet().toArray()[0]);
-		}
 		
+		if(RoutingServicesProperties.getRoutingBatchSyncEnabled()) {
+			Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree = routingInfoProxy
+																										.getWaveInstanceTree(this.getBatch().getDeliveryDate(), null);
+
+			if(waveInstanceTree != null && waveInstanceTree.keySet().size() > 0) {
+				plannedDispatchTree = waveInstanceTree.get(waveInstanceTree.keySet().toArray()[0]);
+			}
+		} else {
+			plannedDispatchTree = routingInfoProxy.getPlannedDispatchTree(this.getBatch().getDeliveryDate());
+		}
 		
 		List<IHandOffBatchRoute> mismatchRoutes = new ArrayList<IHandOffBatchRoute>();
 				
@@ -133,6 +139,7 @@ public abstract class AbstractHandOffAction {
 					
 							if(waveInstances != null) {
 								for(IWaveInstance waveInstance : waveInstances) {
+									
 									if(areaModel.isDepot()) {
 										
 										if(waveInstance.getDispatchTime() != null 

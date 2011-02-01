@@ -439,7 +439,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 					    		Date endTime = RoutingDateUtil.addMinutes(_lastDeliveryTime
 					    														, (fromZoneTime != 0 ? fromZoneTime : toZoneTime));
 					    		
-					    		int runTime = RoutingDateUtil.getDiffInMinutes(endTime, startTime);
+					    		int runTime = RoutingDateUtil.getDiffInSeconds(endTime, startTime);
 					    		
 					    		RoutingTimeOfDay _waveStartTime = new RoutingTimeOfDay(startTime);
 					    		

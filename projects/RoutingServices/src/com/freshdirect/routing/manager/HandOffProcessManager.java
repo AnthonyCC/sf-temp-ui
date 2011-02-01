@@ -225,8 +225,10 @@ public class HandOffProcessManager {
 	    		//Purge Scheduler Instances
 	    		purgeOrders(sessionInfo.getValue().keySet());
 	    		
-	    		//Setup WaveInstances for DeliveryDate and CutOff and empty out resources for other cutoff
-	    		setupWaveInstances(context.getHandOffBatch(), sessionInfo.getValue().keySet());
+	    		if(RoutingServicesProperties.getRoutingBatchSyncEnabled()) {
+	    			//Setup WaveInstances for DeliveryDate and CutOff and empty out resources for other cutoff
+	    			setupWaveInstances(context.getHandOffBatch(), sessionInfo.getValue().keySet());
+	    		}
 	    		//Bulk Reserve and Other Child Processes
 	    		Map<IRoutingSchedulerIdentity, List> unassignedOrders = schedulerBulkReserveOrders(sessionInfo.getValue().keySet()
 	    																		, sessionInfo.getValue()

@@ -120,6 +120,10 @@ public class RoutingServicesProperties {
 	
 	private final static String PROP_HANDOFF_DISPATCHCORRELATIONENABLED		= "routingservices.handoff.dispatchcorrelationenabled";
 	
+	private final static String PROP_ROUTING_DYNASYNC_ENABLED		= "routingservices.routing.dynasyncenabled";
+	
+	private final static String PROP_ROUTING_BATCHSYNC_ENABLED		= "routingservices.handoff.batchsyncenabled";
+	
 	private static final Category LOGGER = LoggerFactory.getInstance( RoutingServicesProperties.class );
 	
 	static {
@@ -185,6 +189,9 @@ public class RoutingServicesProperties {
 		defaults.put(PROP_DEFAULT_SERVICETIME, "180");
 		
 		defaults.put(PROP_HANDOFF_DISPATCHCORRELATIONENABLED, "true");
+		
+		defaults.put(PROP_ROUTING_DYNASYNC_ENABLED, "true");
+		defaults.put(PROP_ROUTING_BATCHSYNC_ENABLED, "true");
 		
 		refresh();		
 	}
@@ -402,6 +409,14 @@ public class RoutingServicesProperties {
 	
 	public static boolean getHandOffDispatchCorrelationEnabled() {
 		return (new Boolean(get(PROP_HANDOFF_DISPATCHCORRELATIONENABLED))).booleanValue();
+	}
+	
+	public static boolean getRoutingDynaSyncEnabled() {
+		return (new Boolean(get(PROP_ROUTING_DYNASYNC_ENABLED))).booleanValue();
+	}
+	
+	public static boolean getRoutingBatchSyncEnabled() {
+		return (new Boolean(get(PROP_ROUTING_BATCHSYNC_ENABLED))).booleanValue();
 	}
 	
 	public static int getRoadnetSessionSizeThreshold() {

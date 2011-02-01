@@ -4,6 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ page import='com.freshdirect.transadmin.security.*' %>
 <%@ page import='com.freshdirect.transadmin.notification.*' %>
+<%@ page import='com.freshdirect.routing.util.*' %>
 <%@ page import='java.util.*' %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
@@ -82,7 +83,7 @@
 						<div style="display:none;position:absolute;top:400px;left:600px" id="ajaxBusy"><img src="./images/ajaxload.gif"></div>
 						<% 
 						 String waveNotification = NotificationManager.getInstance().getWaveNotification(request);						 
-						 if(waveNotification != null) { %>
+						 if(waveNotification != null && RoutingServicesProperties.getRoutingDynaSyncEnabled()) { %>
 							<div style="border:2px solid red;padding:3px;background-color:#b0c4de;font-size: 12px;font-style: italic;text-align:center;font-weight: bold;text-decoration: blink;">
 								<%= waveNotification %> 
 							</div>

@@ -70,19 +70,7 @@ import com.freshdirect.routing.proxy.stub.transportation.SchedulerOrdersCanceled
 
 public class RoutingDataDecoder {
 	
-	public static List decodeRouteList(RoutingRoute[] routes) {
 		
-		List result = null;
-		if(routes != null) {
-			result = new ArrayList();
-			
-			for(int intCount=0; intCount < routes.length; intCount++) {
-				result.add(decodeRoute(routes[intCount]));
-			}
-		}
-		return result;
-	}
-	
 	public static IDrivingDirection decodeDrivingDirection(DirectionData direction) {
 		
 		IDrivingDirection result = null;
@@ -129,6 +117,19 @@ public class RoutingDataDecoder {
 		return result;
 	}
 	
+	public static List decodeRouteList(RoutingRoute[] routes) {
+		
+		List result = null;
+		if(routes != null) {
+			result = new ArrayList();
+			
+			for(int intCount=0; intCount < routes.length; intCount++) {
+				result.add(decodeRoute(routes[intCount]));
+			}
+		}
+		return result;
+	}
+
 	public static IRouteModel decodeRoute(RoutingRoute route) {
 		
 		IRouteModel result = null;
@@ -145,8 +146,8 @@ public class RoutingDataDecoder {
 			result.setServiceTime(route.getServiceTime());
 						
 			//result.setCutOffTime(getWaveCutOffTime(route.); UPS Batch System doesnt have wavecode could be a problem for sameday
-			result.setMaxRunTime(route.getMaximumTime()/60);
-			result.setPreferredRunTime(route.getPreferredTime()/60);
+			result.setMaxRunTime(route.getMaximumTime());
+			result.setPreferredRunTime(route.getPreferredTime());
 						
 			result.setOriginId(route.getOrigin() != null ? route.getOrigin().getLocationID() : null);
 			
@@ -166,11 +167,7 @@ public class RoutingDataDecoder {
 					_refStop = route.getStops()[intCount];
 					
 					if(_refStop.getSequenceNumber() >= 0) {
-						
-						/*_stop = new RoutingStopModel((_refStop.getLocationIdentity() != null
-														&& _refStop.getLocationIdentity().getLocationID() != null
-															&& _refStop.getLocationIdentity().getLocationID().startsWith("MDP"))
-																? (intCount+1) : _refStop.getSequenceNumber());*/
+										
 						_stop = new RoutingStopModel(_refStop.getSequenceNumber());
 						
 						building = new BuildingModel();

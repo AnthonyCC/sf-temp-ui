@@ -96,7 +96,9 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 				}*/
 			}
 
-
+			boolean isDynaSyncEnabled = RoutingServicesProperties.getRoutingDynaSyncEnabled();
+			isPurgeEnabled =  isPurgeEnabled && !isDynaSyncEnabled;
+			
 			Iterator<Date> _dateItr = jobDate.iterator();
 			Date processDate = null;
 						
@@ -112,15 +114,17 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 					TimeslotGroup group = groupDeliverySlotByZone(slots);
 					Map<String, List<DlvTimeslotModel>> slotsByZone = group.getGroupByZone();
 					
-					if(group.getSchedulerIds() != null && waveInstanceTree != null) {
-						for(IRoutingSchedulerIdentity schedulerId : group.getSchedulerIds()) {
-							if(waveInstanceTree.containsKey(schedulerId.getDeliveryDate())) {
-								if(waveInstanceTree.get(schedulerId.getDeliveryDate()).containsKey(schedulerId.getArea().getAreaCode())) {
-									dsb.synchronizeWaveInstance(schedulerId, waveInstanceTree);
+					if(isDynaSyncEnabled) {
+						if(group.getSchedulerIds() != null && waveInstanceTree != null) {
+							for(IRoutingSchedulerIdentity schedulerId : group.getSchedulerIds()) {
+								if(waveInstanceTree.containsKey(schedulerId.getDeliveryDate())) {
+									if(waveInstanceTree.get(schedulerId.getDeliveryDate()).containsKey(schedulerId.getArea().getAreaCode())) {
+										dsb.synchronizeWaveInstance(schedulerId, waveInstanceTree);
+									}
 								}
 							}
-						}
-					}					
+						}	
+					}
 					
 					Iterator<String> _itr = slotsByZone.keySet().iterator();
 
