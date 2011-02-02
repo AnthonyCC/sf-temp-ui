@@ -108,8 +108,12 @@
     iframeBreaker();    
     </script>
 </head>
-<%CrmSession.getSessionStatus(session).clear(true);
-session.invalidate();
+<%
+if(null !=CrmSession.getSessionStatus(session)){
+	CrmSession.getSessionStatus(session).clear(true);
+	session.invalidate();
+}
+
 %>
 <body scroll="no">
     <br /><br />
