@@ -233,7 +233,8 @@ public class AddressForm implements WebFormI { //, AddressName
         
         if(EnumServiceType.CORPORATE.equals(serviceType)){
         	result.addError("".equals(companyName)||companyName==null, EnumUserInfoName.DLV_COMPANY_NAME.getCode(), SystemMessageList.MSG_REQUIRED);
-        	result.addError("".equals(altContactPhone)||altContactPhone==null, EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(), SystemMessageList.MSG_REQUIRED);
+        	/* remove alt contact as being required for COS users */
+        	//result.addError("".equals(altContactPhone)||altContactPhone==null, EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(), SystemMessageList.MSG_REQUIRED);
         }
     }
     
