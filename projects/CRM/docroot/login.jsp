@@ -2,6 +2,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ page import='com.freshdirect.framework.webapp.*' %>
+<%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession"%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -107,6 +108,9 @@
     iframeBreaker();    
     </script>
 </head>
+<%CrmSession.getSessionStatus(session).clear(true);
+session.invalidate();
+%>
 <body scroll="no">
     <br /><br />
 	<div align="center">
