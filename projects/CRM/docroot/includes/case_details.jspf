@@ -163,11 +163,11 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 			if ( !CloseButton ) { return false; }
 		}
 		/* END fix early call by IE */
-<% if(!isSecurityQueue){ %>
+
 		for ( var i=0,n=document.case_details.elements.length; i<n; i++ )
 		{
 			var field = document.case_details.elements[i];
-
+			<% if(!isSecurityQueue){ %>
 			//check for Media : other
 			if ( field.id == 'media' ) {
 				if ( field.value == 'Other' ) {
@@ -197,7 +197,7 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 					}
 				}
 			}
-
+			<% } %>
 			/* Disable all disp fields on Closed Case*/
 			if ( caseStatus == 'Closed' ) {	
 				$('media').disabled = true;
@@ -258,7 +258,7 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 			$('noteErr').className = 'casedisp_Err_invis';
 			$('requiredError').className = 'casedisp_Err_invis';
 		}
-
+<% if(!isSecurityQueue){ %>
 <% if (autoCaseComplaintId == null) { %>
 		/* check if subject requires one ore more checked cartons */
 		{
@@ -929,10 +929,15 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 	/* this verifies the form and enables the create button */
 	verifyCaseDisp();
 </script>
-<% } else { %>
+<% } else if(!isSecurityQueue){ %>
 <script type="text/javascript">
 	/* this causes any hidden fields that should be shown, to show*/
 	CaseDisp_FirstContact('Resolved', 'NotResolved');
+	/* this verifies the form and enables the create button */
+	verifyCaseDisp();
+</script>
+<% } else { %>
+<script type="text/javascript">	
 	/* this verifies the form and enables the create button */
 	verifyCaseDisp();
 </script>

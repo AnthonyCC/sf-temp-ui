@@ -236,9 +236,7 @@
     <security-constraint>
 		<web-resource-collection>
 		<web-resource-name>Unrestricted</web-resource-name>
-		<description>All users can view</description>
-		<url-pattern>/includes/*</url-pattern>
-		<url-pattern>/template/*</url-pattern>
+		<description>All users can view</description>		
 		<url-pattern>/media_stat/*</url-pattern>
 		<url-pattern>/media/*</url-pattern>
 		<url-pattern>/kbit/*</url-pattern>
@@ -300,7 +298,7 @@
 		<realm-name>FreshDirect</realm-name>
 		<form-login-config>
 			<form-login-page>/login.jsp</form-login-page>
-			<form-error-page>/main/error.jsp</form-error-page>
+			<form-error-page>/login.jsp</form-error-page>
 		</form-login-config>
 	</login-config>
 	

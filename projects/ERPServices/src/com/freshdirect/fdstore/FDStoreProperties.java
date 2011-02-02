@@ -488,6 +488,7 @@ public class FDStoreProperties {
 	private final static String PROP_CRM_CC_SECURITY_EMAIL_ENABLED="crm.cc.security.email.enabled";
 	private final static String PROP_CRM_CC_SECURITY_EMAIL_SUBJECT="crm.cc.security.email.subject";
 	private final static String PROP_CRM_CC_DETAILS_ACCESS_KEY="crm.cc.details.access.key";
+	private final static String PROP_CRM_FORGOT_LDAP_PASSWORD_URL="crm.ldap.password.reset.url";
 	
 	static {
 		defaults.put(PROP_ROUTING_PROVIDER_URL,"t3://localhost:7001");
@@ -856,6 +857,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_CRM_CC_SECURITY_EMAIL, "infosec@freshdirect.com");//infosec@freshdirect.com
 		defaults.put(PROP_CRM_CC_SECURITY_EMAIL_SUBJECT, "ALERT: CC/EC decryptions above threshold");
 		defaults.put(PROP_CRM_CC_DETAILS_ACCESS_KEY, "9ac7ec230e0e4513578f309d6d3579ad");
+		defaults.put(PROP_CRM_FORGOT_LDAP_PASSWORD_URL, "/login.jsp");
 		refresh();
 	}
 
@@ -2025,4 +2027,7 @@ public class FDStoreProperties {
 		return config.getProperty(PROP_CRM_CC_DETAILS_ACCESS_KEY);
 	}
 	
+	public static String getCrmForgotPasswordUrl(){
+		return config.getProperty(PROP_CRM_FORGOT_LDAP_PASSWORD_URL);
+	}
 }

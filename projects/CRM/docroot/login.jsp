@@ -2,6 +2,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ page import='com.freshdirect.framework.webapp.*' %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -144,7 +145,8 @@
 					document.forms[0].j_username.select();
 				</script>
 				</form>
-				
+				<tr></tr>
+				<tr><td colspan="2"><a href="#" >Forgot password?</a></td></tr>
 				<%--form method="POST">
 				<tr>
 				<input type="hidden" name="userId" value="guest">

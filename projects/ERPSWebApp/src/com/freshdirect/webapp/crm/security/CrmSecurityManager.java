@@ -17,6 +17,7 @@ public class CrmSecurityManager {
 		UNSECURED_URL.add("no_auth.jsp");
 		UNSECURED_URL.add("login.jsp");
 		UNSECURED_URL.add("main_index.jsp");
+		UNSECURED_URL.add("index.jsp");
 		UNSECURED_URL.add("logout.jsp");
 		UNSECURED_URL.add("clear_session.jsp");    
 		UNSECURED_URL.add("close_window.jsp");
@@ -64,7 +65,7 @@ public class CrmSecurityManager {
 	}
 	
 	public static boolean hasAccessToPage(ServletRequest request, String uri) {
-		if(UNSECURED_URL.contains(uri) || (uri != null && (uri.endsWith(".css")||uri.endsWith(".js")||uri.endsWith(".jspf")||uri.endsWith(".gif")||uri.endsWith(".ico")||uri.endsWith(".xls")))) {
+		if(UNSECURED_URL.contains(uri) || (uri != null && (uri.endsWith(".css")||uri.endsWith(".js")||uri.endsWith(".jspf")||uri.endsWith(".gif")||uri.endsWith(".jpg")||uri.endsWith(".ico")||uri.endsWith(".xls")))) {
 			return true;
 		}
 		return MenuManager.getInstance().hasAccess(request, uri);
@@ -72,7 +73,10 @@ public class CrmSecurityManager {
 	
 	public static boolean hasAccessToPage(HttpServletRequest request) {
 		String uri = request.getRequestURI();
-		if((uri != null && (uri.indexOf("/includes")>=0 || uri.indexOf("/postbacks")>=0|| uri.indexOf("/template")>=0 ))) {
+		if((uri != null && (uri.indexOf("/includes/")>=0 || uri.indexOf("/postbacks/")>=0|| uri.indexOf("/template/")>=0
+				||uri.indexOf("/media/")>=0 ||uri.indexOf("/media_stat/")>=0 ||uri.indexOf("/kbit/")>=0
+				||uri.indexOf("/assets/")>=0 ||uri.indexOf("/ccassets/")>=0 ||uri.indexOf("/resource/")>=0
+				||uri.indexOf("/images/")>=0 ||uri.indexOf("/api/")>=0||uri.indexOf("/test/debug/")>=0))) {
 			return true;
 		}
 		//Do other checks if required after this check.
