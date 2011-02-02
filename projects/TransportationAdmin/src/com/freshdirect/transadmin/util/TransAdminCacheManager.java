@@ -165,6 +165,8 @@ public class TransAdminCacheManager {
 		}
 		if(EnumCachedDataType.EMPLOYEE_DATA.equals(dataType)){
 			employeeDataHolder.forceRefresh();
+			activeInactivedEmployeeDataHolder.forceRefresh();
+			terminatedEmployeeDataHolder.forceRefresh();
 		}
 
 	}
