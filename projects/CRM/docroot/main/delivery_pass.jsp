@@ -15,6 +15,7 @@
 <%@ page import='com.freshdirect.deliverypass.EnumDPAutoRenewalType' %>
 <%@ page import='com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo' %>
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession"%>
+<%@ page import='com.freshdirect.webapp.crm.security.*' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -134,6 +135,7 @@ String caseRequiredForManualRenewal = "<span class=\"cust_module_content_edit\">
 	<tmpl:put name='title' direct='true'>DeliveryPass</tmpl:put>
 	
 	<tmpl:put name='content' direct='true'>
+	<crm:GetCurrentAgent id="currentAgent">
 	<fd:DlvPassSignupController result="result" callCenter="true">
 		<fd:ErrorHandler result='<%=result%>' name='dlvpass_discontinued' id='errorMsg'>
 		   <%@ include file="/includes/i_error_messages.jspf" %>   
@@ -154,10 +156,13 @@ String caseRequiredForManualRenewal = "<span class=\"cust_module_content_edit\">
 					EnumDlvPassStatus status = user.getDeliveryPassStatus();
 					if(user.isEligibleForDeliveryPass() && DeliveryPassUtil.isEligibleStatus(status)) {
 				%>	
+				<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"buyDeliveryPass")){%>
 				<form name="signup" method="POST">
 				<input type="hidden" name="action" value="">
 					<a href="#" onClick="javascript:redirectToSignup()"><span class="cust_header_field"><b>Buy DeliveryPass</b></span></a>, deliverable item required.
 				</form>
+				<% } %>
+				<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"buyDeliveryPass")){%>
 				<% if( (user.getDlvPassInfo().getAutoRenewUsablePassCount()==0) &&
 				     user.hasAutoRenewDP().equals(EnumDPAutoRenewalType.YES) ) {
 				     if(hasCustomerCase) {
@@ -166,7 +171,7 @@ String caseRequiredForManualRenewal = "<span class=\"cust_module_content_edit\">
 				 <%  } else {%>
 				 <%=caseRequiredForManualRenewal%>
 				 <%  }
-				   }
+				   } }
 				 %>  
                 
 				<%
@@ -181,20 +186,24 @@ String caseRequiredForManualRenewal = "<span class=\"cust_module_content_edit\">
 
 						<% if(user.hasAutoRenewDP().equals(EnumDPAutoRenewalType.YES) && (user.getDlvPassInfo().getAutoRenewUsablePassCount()>0)) {%>
 							<table border="0"><tr><td bgcolor=#00FF00><b>Auto-Renewal option: ON </b></td>
+							<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"buyDeliveryPass")){ %>
 							    <%if(editable){%> 
 							    	<td><A HREF="#" onClick="javascript:flipAutoRenewalOFF()"><font class="text12bold">Click here to turn off renewal.</A></td>
 							    <%} else {%> 
 							    	<td><%=caseRequiredForRenewal%></td>
 							    <%}%>
+							    <% } %>
 							    </tr>
 							</table>                            
 						<%} else if(user.hasAutoRenewDP().equals(EnumDPAutoRenewalType.NO) && (user.getDlvPassInfo().getAutoRenewUsablePassCount()>0)) {%>
 							<table border="0"><tr><td bgcolor=#FF0000><b>Auto-Renewal option: OFF</b></td>
+							<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"buyDeliveryPass")){ %>
 								<%if(editable){%> 
 									<td><A HREF="#" onClick="javascript:flipAutoRenewalON()"><font class="text12bold">Click here to turn renewal ON.</A></td>
 								<%} else {%> 
 							    		<td><%=caseRequiredForRenewal%></td>
 								<%}%>
+								<% } %>
 								</tr>
 							</table>
 						<%}%>
@@ -219,11 +228,13 @@ String caseRequiredForManualRenewal = "<span class=\"cust_module_content_edit\">
 						<% if(user.hasAutoRenewDP().equals(EnumDPAutoRenewalType.YES)&& (user.getDlvPassInfo().getAutoRenewUsablePassCount()>0))  {%>
 						<td width="40%">
 							<table border="0"><tr><td bgcolor=#00FF00><b>Auto-Renewal option: ON </b></td>
+							<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"buyDeliveryPass")){ %>
 							    <%if(editable){%> 
 							    	<td><A HREF="#" onClick="javascript:flipAutoRenewalOFF()"><font class="text12bold">Click here to turn off renewal.</A></td>
 							    <%} else {%> 
 							    	<td><%=caseRequiredForRenewal%></td>
 							    <%}%>
+							    <% } %>
 							    </tr>
 							</table>
 							
@@ -231,17 +242,20 @@ String caseRequiredForManualRenewal = "<span class=\"cust_module_content_edit\">
 						<%} else if(user.hasAutoRenewDP().equals(EnumDPAutoRenewalType.NO)&& (user.getDlvPassInfo().getAutoRenewUsablePassCount()>0)) {%>
 						<td width="40%">
 							<table border="0"><tr><td bgcolor=#FF0000><b>Auto-Renewal option: OFF</b></td>
+							<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"buyDeliveryPass")){ %>
 								<%if(editable){%> 
 									<td><A HREF="#" onClick="javascript:flipAutoRenewalON()"><font class="text12bold">Click here to turn renewal ON.</A></td>
 								<%} else {%> 
 							    		<td><%=caseRequiredForRenewal%></td>
 								<%}%>
+								<% } %>
 								</tr>
 							</table>	
 						</td>	
 						<%}%>
 				   
 				   </tr>
+				   <% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"buyDeliveryPass")){ %>
                         				<% if( (user.getDlvPassInfo().getAutoRenewUsablePassCount()==0) &&
 							     user.hasAutoRenewDP().equals(EnumDPAutoRenewalType.YES) ) {
 							     if(hasCustomerCase) {
@@ -250,7 +264,7 @@ String caseRequiredForManualRenewal = "<span class=\"cust_module_content_edit\">
 							 <%  } else {%>
 							 <%=caseRequiredForManualRenewal%>
 							 <%  }
-							   }
+							   } }
 							 %>  
 
 					</form>
@@ -320,6 +334,7 @@ String caseRequiredForManualRenewal = "<span class=\"cust_module_content_edit\">
 									<span class="info_text">Current refund amount: <b><%= JspMethods.formatPrice(refundAmt.doubleValue()) %></b> <br>(includes refundable tax)</span>
 								</td>
 							</tr>	
+							<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"buyDeliveryPass")){ %>
 							<%
 								if(editable && user.isDlvPassActive()) {
 							%>
@@ -419,7 +434,7 @@ String caseRequiredForManualRenewal = "<span class=\"cust_module_content_edit\">
 								</tr>	
 
 							<% } %>
-								
+							<% } %>	
 						</table>
 						</crm:DeliveryPassController>	
 				<%
@@ -585,6 +600,7 @@ String caseRequiredForManualRenewal = "<span class=\"cust_module_content_edit\">
 			<iframe id="history_pass_usage" name="history_pass_usage" src="/includes/deliverypass/pass_history_usage.jsp" width="100%" height="280" scrolling="auto" FrameBorder="0"></iframe>
 		</fd:GetDeliveryPasses>
 	</fd:DlvPassSignupController>
+	</crm:GetCurrentAgent>
 	</tmpl:put>
 
 </tmpl:insert>

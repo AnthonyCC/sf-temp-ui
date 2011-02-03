@@ -18,8 +18,8 @@
 
 <% if ( user == null || agent == null ) { %>
 	Sorry, your session seems to be invalid. Please try to refresh the page, or logout/login.<br/>
-<% } else if ( !agent.isMasqueradeAllowed() ) { %>
-	Sorry, masquerade feature is not allowed for <%= agent.getUserId() %>.<br/>
+<%-- } else if ( !agent.isMasqueradeAllowed() ) { --%>
+	<!-- Sorry, masquerade feature is not allowed for <%= agent.getUserId() %>.<br/> -->
 <% } else { %>
 	You are : <%= agent.getUserId() + " - " + agent.getFirstName() + ", " + agent.getLastName() %><br/>
 	Customer is : <%= user.getUserId() + " - " + user.getFirstName() + ", " + user.getLastName() + " [" + user.getFDCustomer().getErpCustomerPK() + "]" %><br/>
