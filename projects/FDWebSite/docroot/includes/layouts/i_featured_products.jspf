@@ -26,27 +26,20 @@
 
 <%-- Featured Products column --%>
 
-<%
-	DepartmentModel department = (DepartmentModel) currentFolder;
+<%	DepartmentModel department = (DepartmentModel) currentFolder; %>
 
-	int FAVS_PER_LINE		= DealsHelper.getMaxFeaturedDealsPerLine(); 				//number of products to show per line
-	int MAX_FAVSLINES2SHOW	= DealsHelper.getMaxFeaturedDealsForPage()/FAVS_PER_LINE; 	//number of lines of featured products
-	int MIN_FAVS2SHOW		= DealsHelper.getMinFeaturedDealsForPage(); 				//minimum featured products required to show featured section
-	int	MAX_FAVS2SHOW		= FAVS_PER_LINE * MAX_FAVSLINES2SHOW; 						//to keep each row matching
-%>
-
-<display:FeaturedProductsHelper currentFolder="<%=(DepartmentModel)currentFolder%>" maxFavsToShow="<%=MAX_FAVS2SHOW%>"/>
-
-<% if (true || favoritesToShow >= MIN_FAVS2SHOW) { %>
+<!-- brand name deals -->
+<fd:ProductGroupRecommender siteFeature="BRAND_NAME_DEALS" facility="brand_name_deals" currentNode="<%= department %>" id="brandDealRecommendations">
+	
 	<!-- separator  -->
 	<tr><td colspan="6">
 		<br /><img src="/media_stat/images/layout/cccccc.gif" width="550" height="1" border="0"><br />
 		<font class="space4pix"><br /><br /></font>
 	</td></tr>
-
+	
 	<!-- department middle media -->
 	<tr><td colspan="6">
-        <%
+	       <%
 		if (department.getDepartmentMiddleMedia() != null) {
 			for(Iterator<Html> deptBotItr = department.getDepartmentMiddleMedia().iterator(); deptBotItr.hasNext();) {
 				Html piece = deptBotItr.next();
@@ -56,26 +49,23 @@
 		    	}
 			}
 		}
-        %>
+	       %>
 	</td></tr>
-	
-	<!-- brand name deals -->
-	<fd:ProductGroupRecommender siteFeature="BRAND_NAME_DEALS" facility="what_is_facility" currentNode="<%= department %>" id="brandDealRecommendations">	
-		<tr><td colspan="6">
-			<display:Carousel id="test_carousel" carouselId="test_carousel" width="510" numItems="4" showCategories="false" itemsToShow="<%= brandDealRecommendations.getAllProducts() %>" trackingCode="test-brand-name-deals" maxItems="20">
-				<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
-					<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" 
-						useAlternateImage="false" className="productImage" height="90" enableQuickBuy="false"/>
-					<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
-					<div class="productname">
-						<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="true" />
-					</div>
-					<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>	
-				</display:GetContentNodeWebId>
-			</display:Carousel>
-		</td></tr>	
-	</fd:ProductGroupRecommender>
-        
+
+	<tr><td colspan="6">
+		<display:Carousel id="test_carousel" carouselId="test_carousel" width="510" numItems="4" showCategories="false" itemsToShow="<%= brandDealRecommendations.getAllProducts() %>" trackingCode="brand-name-deals" maxItems="20">
+			<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
+				<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" 
+					useAlternateImage="false" className="productImage" height="90" enableQuickBuy="false"/>
+				<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
+				<div class="productname">
+					<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="true" />
+				</div>
+				<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>	
+			</display:GetContentNodeWebId>
+		</display:Carousel>
+	</td></tr>
+		
 	<!-- department bottom media -->
 	<tr><td colspan="6">
 		<%    
@@ -87,7 +77,9 @@
 					%><fd:IncludeMedia name='<%= deptBotItm %>' /><%
 				}
 			}
-       	} %>    
+	      	} %>    
 	</td></tr>
-<% } %>
+	
+</fd:ProductGroupRecommender>
+       
 		
