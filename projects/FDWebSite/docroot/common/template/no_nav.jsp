@@ -9,6 +9,18 @@
     <title><tmpl:get name='title'/></title>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+	<% if (request.getRequestURI().contains("/myfd")) { %>
+	<script type="text/javascript" language="javascript" src="/assets/javascript/cufon-yui.js"></script>
+	<script type="text/javascript" language="javascript" src="/assets/javascript/EagleCufon.font.js"></script>
+	<script type="text/javascript" language="javascript" src="/assets/javascript/EagleCufonBold.font.js"></script>
+	<script type="text/javascript" language="javascript">
+		Cufon.replace('.myfd-header-text', { fontFamily: 'EagleCufonBold' });
+		Cufon.replace('.myfd-category a', { fontFamily: 'EagleCufon' });
+		Cufon.replace('.myfd-category a strong', { fontFamily: 'EagleCufonBold' });
+		Cufon.replace('.myfd-category a b', { fontFamily: 'EagleCufonBold' });
+		Cufon.replace('.eagle-bold', { fontFamily: 'EagleCufonBold' });
+	</script>
+	<% } %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<link rel="stylesheet" href="/assets/css/giftcards.css" type="text/css">
 

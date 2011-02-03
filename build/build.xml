@@ -85,7 +85,12 @@
         <pathelement location="${thirdparty.home}/jasypt-1.5.jar"/>
         <pathelement location="${thirdparty.home}/iText-2.0.8.jar"/>
         <pathelement location="${thirdparty.home}/core-renderer.jar"/>
-	<pathelement location="${thirdparty.home}/${scarab.jar}"/>
+		<pathelement location="${thirdparty.home}/httpclient-4.0.1.jar"/>
+		<pathelement location="${thirdparty.home}/httpcore-4.0.1.jar"/>
+		<pathelement location="${thirdparty.home}/httpmime-4.0.1.jar"/>
+		<pathelement location="${thirdparty.home}/${scarab.jar}"/>
+		<pathelement location="${thirdparty.home}/cobra-0.98.4.jar"/>
+		<pathelement location="${thirdparty.home}/js-0.98.4.jar"/>
 	</path>
 
 	<path id="testing.classpath">
@@ -1253,6 +1258,8 @@
 					<include name="JFEP-0.1.0.jar"/>
 					<include name="roadnetservices.jar"/>
 					<include name="httpcore-4.0.1.jar"/>
+				<include name="cobra-0.98.4.jar"/>
+				<include name="js-0.98.4.jar"/>
 					<lib/>
 				</zipfileset>
 				<extra/>
@@ -2459,7 +2466,28 @@
 	</target>
 
 	<target name="ears" description="build all apps"
-		depends="backend-app,sap-app,storefront-app,crm-app,dlv-app,erps-app,cms-app,fdadmin-app,fdintegrationservices-app">
+		depends="backend-app,sap-app,storefront-app,crm-app,dlv-app,erps-app,cms-app,fdadmin-app,fdintegrationservices-app,wpjar">
+	</target>
+
+	<target name="wpjar" description="make wordpress redistributable package">
+		<mkdir dir="${release.dir}/applications" />
+		<jar destfile="${release.dir}/applications/worpress-redist.jar">
+			<manifest>
+				<attribute name="Specification-Version" value="${build.counter}"/>
+				<attribute name="Specification-Vendor" value="FreshDirect LLC"/>
+				<attribute name="Implementation-Title" value="WordPress Redistributable"/>
+				<attribute name="Implementation-Version" value="${build.counter}"/>
+				<attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
+				<attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
+			</manifest>
+			<fileset dir="${projects.dir}/wordpress">
+				<exclude name="wp-config.php"/>
+			</fileset>
+			<!--zipfileset dir="${projects.dir}/Media/docroot" prefix="wp-content/themes/freshdirect">
+				<include name="assets/**"/>
+				<include name="media_stat/**"/>
+			</zipfileset-->
+		</jar>
 	</target>
 
 	<target name="media-checkout" >

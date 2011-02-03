@@ -22,6 +22,7 @@ import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.fdstore.ConfiguredProductLabelProvider;
 import com.freshdirect.cms.fdstore.DomainValueLabelProvider;
 import com.freshdirect.cms.fdstore.ErpMaterialLabelProvider;
+import com.freshdirect.cms.fdstore.HolidayGreetingLabelProvider;
 import com.freshdirect.cms.fdstore.MediaLabelProvider;
 import com.freshdirect.cms.fdstore.SearchRelevancyLabelProvider;
 import com.freshdirect.cms.fdstore.SkuLabelProvider;
@@ -46,6 +47,7 @@ public class ContentNodeUtil {
 		new ErpMaterialLabelProvider(),
 		new SearchRelevancyLabelProvider(),
 		new TileLabelProvider(),
+		new HolidayGreetingLabelProvider(),
 		new AttributeLabelProvider("FULL_NAME"),
 		new AttributeLabelProvider("NAV_NAME"),
 		new AttributeLabelProvider("GLANCE_NAME"),

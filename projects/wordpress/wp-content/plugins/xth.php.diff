@@ -1,0 +1,12 @@
+*** xth.php.old	2011-02-01 12:34:44.000000000 +0100
+--- xth.php	2011-02-01 12:34:40.000000000 +0100
+***************
+*** 101,106 ****
+--- 101,107 ----
+  
+  		# now make the end tag '/>' replacements
+  		if ( $safe_to_replace ) {
++ 			$i = preg_replace('/<script([^>]*)\/\s*>/', '<script${1}></script>', $i);
+  			$pat = '/\s*\/\s*>/';
+  			$rep = '>';
+  			$i = preg_replace($pat, $rep, $i );

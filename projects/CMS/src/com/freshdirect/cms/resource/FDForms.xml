@@ -10,6 +10,8 @@
 			<CmsEditor ref="product" />
 			<CmsEditor ref="configured_product" />
 			<CmsEditor ref="fdFolder" />
+			<CmsEditor ref="holidayGreeting" />
+			<CmsEditor ref="myFD" />
 			<CmsEditor ref="recipe" />
 			<CmsEditor ref="recipeDepartment" />
 			<CmsEditor ref="recipeCategory" />
@@ -1273,4 +1275,54 @@
             </CmsPage>
         </pages>
     </CmsEditor>
+
+	<CmsEditor id="holidayGreeting">
+		<contentType>HolidayGreeting</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>Holiday Greeting Attributes</title>
+						<fields>
+							<CmsField><attribute>FULL_NAME</attribute></CmsField>
+							<CmsField><attribute>CODE</attribute></CmsField>
+							<CmsField><attribute>GREETING_TEXT</attribute></CmsField>
+							<CmsCustomField>
+								<attribute>startDate</attribute>
+								<component>MonthDay</component>
+							</CmsCustomField>							
+							<CmsCustomField>
+								<attribute>endDate</attribute>
+								<component>MonthDay</component>
+							</CmsCustomField>							
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+
+	<CmsEditor id="myFD">
+		<contentType>MyFD</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>MyFD Attributes</title>
+						<fields>
+							<CmsField><attribute>HEADER</attribute></CmsField>
+							<CmsField><attribute>HOLIDAY_GREETINGS</attribute></CmsField>
+							<CmsField><attribute>POLL_DADDY_API_KEY</attribute></CmsField>
+							<CmsField><attribute>BLOG_URL</attribute></CmsField>
+							<CmsField><attribute>BLOG_ENTRY_COUNT</attribute></CmsField>
+							<CmsField><attribute>EDITORIAL_MAIN</attribute></CmsField>
+							<CmsField><attribute>EDITORIAL_SIDE</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
 </Content>

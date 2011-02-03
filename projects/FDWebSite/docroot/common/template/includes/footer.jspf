@@ -14,6 +14,10 @@
             %>
             <img src="/media_stat/images/navigation/global_nav/bottom_nav_aboutus.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
             <%
+                } else if (bottomUri.indexOf("/myfd") > -1) { 
+            %>
+            <img src="/media_stat/images/navigation/global_nav/bottom_nav_myfd.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
+            <%
                 } else if (bottomUri.indexOf("/jobs/intro") > -1) { 
             %>
             <img src="/media_stat/images/navigation/global_nav/bottom_nav_careers.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
@@ -85,16 +89,18 @@
 
 <br /><img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" />
 	<map name="bottomlinks" id="bottomlinks">
-      <area shape="rect" coords="71,1,123,22" href="<%=FDStoreProperties.getCareerLink()%>"  alt="Careers" title="Careers">
-      <area shape="rect" coords="123,1,218,22" href="/department.jsp?deptId=cmty&trk=bnav"  alt="Our Community" title="Our Community">
-      <area shape="rect" coords="218,1,328,22" href="/category.jsp?catId=about_billrights&trk=bnav"  alt="Your Bill of Rights" title="Your Bill of Rights">
-      <area shape="rect" coords="500,1,573,22" href="/department.jsp?deptId=COS&trk=bnav"  alt="At the Office" title="At the Office">
-      <area shape="rect" coords="637,1,745,22" href="/newproducts.jsp?trk=bnav"  alt="New Products" title="New Products">
-      <area shape="rect" coords="10,1,71,22" href="/department.jsp?deptId=about&trk=bnav"  alt="About Us" title="About Us">
-		<%
-			//since the gift card url is dynamic, check for other query values before adding the trk attribute
-			boolean gcUrlHasOtherQueryVals = FDStoreProperties.getGiftCardLandingUrl().indexOf("?") > -1;
-		%>
-      <area shape="rect" coords="573,1,637,22" href="<%=FDStoreProperties.getGiftCardLandingUrl()%><%=(gcUrlHasOtherQueryVals)?"&":"?"%>trk=bnav"  alt="Gift Cards" title="Gift Cards">
+      <area shape="rect" coords="11,1,67,22" href="/department.jsp?deptId=about&trk=bnav"  alt="About Us" title="About Us">
+      <area shape="rect" coords="67,1,120,22" href="<%=FDStoreProperties.getCareerLink()%>"  alt="Careers" title="Careers">
+      <area shape="rect" coords="120,1,215,22" href="/department.jsp?deptId=cmty&trk=bnav"  alt="Our Community" title="Our Community">
+      <area shape="rect" coords="215,1,329,22" href="/category.jsp?catId=about_billrights&trk=bnav"  alt="Your Bill of Rights" title="Your Bill of Rights">
+
+      <area shape="rect" coords="467,1,503,22" href="/myfd/index.jsp?trk=bnav"  alt="My FD" title="My FD">
+      <area shape="rect" coords="503,1,581,22" href="/department.jsp?deptId=COS&trk=bnav"  alt="At the Office" title="At the Office">
+      <%
+          //since the gift card url is dynamic, check for other query values before adding the trk attribute
+          boolean gcUrlHasOtherQueryVals = FDStoreProperties.getGiftCardLandingUrl().indexOf("?") > -1;
+      %>
+      <area shape="rect" coords="581,1,648,22" href="<%=FDStoreProperties.getGiftCardLandingUrl()%><%=(gcUrlHasOtherQueryVals)?"&":"?"%>trk=bnav"  alt="Gift Cards" title="Gift Cards">
+      <area shape="rect" coords="648,1,745,22" href="/newproducts.jsp?trk=bnav"  alt="New Products" title="New Products">
 	</map>
 <%@ include file="/includes/net_insight/i_tag_footer.jspf" %>

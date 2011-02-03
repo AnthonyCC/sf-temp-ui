@@ -1,0 +1,30 @@
+<%@page import="java.util.List"%>
+<%@page import="com.freshdirect.fdstore.myfd.poll.Poll"%>
+<%@page import="com.freshdirect.fdstore.myfd.poll.PollDaddyService"%>
+<%
+	Poll current = PollDaddyService.getFirstOpenPoll();
+	if (current != null) {
+%>
+<div>
+<div><img src="/media_stat/images/myfd/poll-header.png" width="212" height="26" border="0"></div>
+<div style="border: solid #F69638; border-width: 0px 1px;">
+<div style="padding: 15px 15px 5px">
+
+<!-- PollDaddy embed start -->
+<script type="text/javascript">
+var pd_tags = {};
+pd_tags["customer_id"] = "<%= user.getIdentity().getErpCustomerPK() %>";
+</script>
+<script type="text/javascript" charset="utf-8" src="http://static.polldaddy.com/p/<%= current.getId() %>.js"></script>
+<!-- PollDaddy embed end -->
+
+<div>
+<a href="/myfd/poll_archive.jsp?trk=myfd" style="display: block; font: normal normal normal 10px/10px Verdana, Arial, sans-serif; padding: 8px 10px 2px 0px; text-align: left;">More Polls</a>
+</div>
+</div>
+</div>
+<div><img src="/media_stat/images/myfd/poll-footer.png" width="212" height="16" border="0"></div>
+</div>
+<%
+	}
+%>

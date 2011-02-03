@@ -46,7 +46,7 @@
 <%							
 						}
 					}
-				if (count >= 10 /* && request.getRequestURI().indexOf("/quickshop/previous_orders.jsp") < 0 */) {
+				if (maxQuickshopItems != null && count >= maxQuickshopItems /* && request.getRequestURI().indexOf("/quickshop/previous_orders.jsp") < 0 */) {
 %>	<tr>
 		<td class="text12" <%= !hasSelected ? "colspan=\"2\"" : "" %>>
 			<br>

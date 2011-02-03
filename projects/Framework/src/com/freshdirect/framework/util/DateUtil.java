@@ -12,6 +12,9 @@ public class DateUtil {
 	public final static long MINUTE = 60 * SECOND;
 	public final static long HOUR = 60 * MINUTE;
 	public final static long DAY = 24 * HOUR;
+	public final static long WEEK = 7 * DAY;
+	public final static long MONTH = 30 * DAY + DAY / 2;
+	public final static long YEAR = 365 * DAY;
 
 	public final static int MORNING_END = 12; // 12:00 PM
 	private static final DateFormat DATE_YEAR_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
@@ -200,5 +203,36 @@ public class DateUtil {
 		else if (T < DAY) return "" + (T/HOUR) + " hours " + suffix;
 		else if (T < 2*DAY) return "1 day " + suffix;
 		else return "" + (T/DAY) + " days " + suffix;
+	}
+	
+	public static String relativeDifferenceAsString2(Date date1, Date date2) {
+		// time in milliseconds		
+		long T = date1.getTime() - date2.getTime();
+		
+		// display negative time as "T .. from now", with a positive T value
+		String suffix;
+		if (T >= 0) {
+			suffix = "ago";
+		} else {
+			suffix = "from now";
+			T = -T;
+		}
+		  
+		// a bit ugly, e.g a minute less than two days is one day.
+		if (T < SECOND) return "now";
+		else if (T < 2*SECOND) return "1 second " + suffix;
+		else if (T < MINUTE) return "" + T/SECOND + " seconds " + suffix;
+		else if (T < 2*MINUTE) return "1 minute " + suffix;
+		else if (T < HOUR) return "" + (T/MINUTE) + " minutes " + suffix;
+		else if (T < 2*HOUR) return "1 hour " + suffix;
+		else if (T < DAY) return "" + (T/HOUR) + " hours " + suffix;
+		else if (T < 2*DAY) return "1 day " + suffix;
+		else if (T < WEEK) return "" + (T/DAY) + " days " + suffix;
+		else if (T < 2*WEEK) return "1 week " + suffix;
+		else if (T < MONTH) return "" + (T/WEEK) + " weeks " + suffix;
+		else if (T < 2*MONTH) return "1 month " + suffix;
+		else if (T < YEAR) return "" + (T/MONTH) + " months " + suffix;
+		else if (T < 2*YEAR) return "1 year " + suffix;
+		else return "" + (T/YEAR) + " years " + suffix;
 	}
 } 

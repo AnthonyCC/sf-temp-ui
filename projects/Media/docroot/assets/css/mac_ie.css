@@ -112,6 +112,7 @@ A.list		    { line-height: 12px; }
 
 .text15	         { font-size: 15px; font-family: Verdana, Arial, sans-serif; }
 
+.text16 	     { font-size: 16px; font-weight: normal; font-family: Verdana, Arial, sans-serif; }
 .title16 	     { font-size: 16px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .title16or	     { font-size: 16px; color: #FF9933; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
 
@@ -704,3 +705,14 @@ img.COSSurvey_spacer04 { width: 140px; height: 8px; }
 
 #prod_container { word-wrap: break-word; }
 
+@font-face {
+	font-family: 'Eagle';
+	src: url('fonts/eagle-light-webfont.eot');
+	src: local('☺'), url('fonts/eagle-light-webfont.woff') format('woff'), url('fonts/eagle-light-webfont.ttf') format('truetype'), url('fonts/eagle-light-webfont.svg#webfont6RHzfdZb') format('svg');
+}
+
+@font-face {
+	font-family: 'Eagle-Bold';
+	src: url('fonts/eagle-book-webfont.eot');
+	src: local('☺'), url('fonts/eagle-book-webfont.woff') format('woff'), url('fonts/eagle-book-webfont.ttf') format('truetype'), url('fonts/eagle-book-webfont.svg#webfontXlJgVHrD') format('svg');
+}

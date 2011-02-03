@@ -858,6 +858,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_CRM_CC_SECURITY_EMAIL_SUBJECT, "ALERT: CC/EC decryptions above threshold");
 		defaults.put(PROP_CRM_CC_DETAILS_ACCESS_KEY, "9ac7ec230e0e4513578f309d6d3579ad");
 		defaults.put(PROP_CRM_FORGOT_LDAP_PASSWORD_URL, "/login.jsp");
+
 		refresh();
 	}
 
@@ -1968,7 +1969,7 @@ public class FDStoreProperties {
 	        listeners.add(listener);
 	    }
 	}
-
+	
 	private static void fireEvent() {
             synchronized (listeners) {
                 for (ConfigLoadedListener listener : listeners) {

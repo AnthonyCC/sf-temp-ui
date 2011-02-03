@@ -1,0 +1,92 @@
+<%@page import="com.freshdirect.fdstore.myfd.blog.MyFdFeed"%>
+<%@page import="com.freshdirect.fdstore.myfd.blog.MyFdPost"%>
+<%@page import="java.net.URLEncoder"%>
+<%@taglib uri='template' prefix='tmpl'%>
+<%@taglib uri='logic' prefix='logic'%>
+<%@taglib uri='freshdirect' prefix='fd'%>
+
+<%@page import="org.apache.commons.lang.StringEscapeUtils"%><script>
+	function twitter_share(link) {
+		window.open('http://twitter.com/share?url=' + link,
+					"twitter_popup","menubar=1,resizable=1,width=600,height=100");
+	}
+	var a2a_config = {};
+</script>
+<script type="text/javascript" src="http://static.addtoany.com/menu/page.js"></script>
+	<div class="myfd-blog-feed">
+<%
+try {
+	MyFdFeed feed = MyFdFeed.getInstance();
+	if (feed.getPosts().size() == 0)
+		throw new IllegalStateException("No entries have been returned by the feed");
+%>	
+	<!-- Feed Last Updated: <%= feed.getLastUpdated() %> -->
+	<div class="myfd-header"><a class="myfd-blog-link" href="<%=feed.getBlogUrl() %>">Click here for more.</a><span class="myfd-header-text">From the FreshDirect Feed</span></div>	
+<%
+	for (MyFdPost post : feed) {		
+%>
+
+	<div class="myfd-post">			
+			
+			<div class="myfd-post-content">
+				<%if (post.getMedia() !=null) {%> <%=post.getMedia() %> <%} %>
+				<%if (post.getCategory() != null && !post.getCategory().equals("") && !post.getCategory().equals("Uncategorized")) {%><div class="myfd-category"><a href="<%=post.getCategoryLink() %>"><%=post.getCategoryDescription() %></a></div><%} %>
+				<div class="myfd-title title16"><a href="<%=post.getPostLink()%>"><%=post.getTitle() %></a></div>
+				<%=post.getContent() %>
+			</div>
+			
+			<div class="post-links">
+				<div><%=post.getPostDayLink() %> by <%=post.getAuthorLink()%> 
+					<%if (post.getCategory() != null && !post.getCategory().equals("") && !post.getCategory().equals("Uncategorized")) {%>in <a href="<%=post.getCategoryLink() %>"><%=post.getCategoryDescription() %></a> <%} %>
+				</div>
+				
+				
+				<div class="myfd-linkbar">
+					<span class="myfd-share">											
+						<span class="a2a_kit a2a_default_style">
+							<a class="a2a_dd myfd-share-text" href="http://www.addtoany.com/share_save?linkurl=korte&amp;linkname=alma">Share &#9660;</a>							
+							<a class="a2a_button_facebook"></a>
+							<a class="a2a_button_twitter"></a>
+						</span><script type="text/javascript">												
+							a2a_config.linkname='<%=post.getTitle()%>';
+							a2a_config.linkurl='<%=post.getPostLink()%>';
+							a2a.init('page'); 
+						</script><span class="a2a_kit-fd a2a_default_style-fd">
+							<a class="a2a_button_email" href="<%= StringEscapeUtils.escapeHtml(post.getEmailLink()) %>">
+								<span class="a2a_img a2a_img_text a2a_i_email">&nbsp;</span>Email
+							</a><a class="a2a_button_print" href="<%= StringEscapeUtils.escapeHtml(post.getPrintLink()) %>" target="myfd_print">
+								<span class="a2a_img a2a_img_text a2a_i_email">&nbsp;</span>Print
+							</a>
+						</span>
+					</span>
+					
+				<% if (post.getTagLinks().size() > 0) {%> <span class="link">Tags:</span> <%} %>
+				<%
+					
+					for (String tag : post.getTagLinks()) {
+				%>
+					<span class="link"><%=tag %></span>
+				<%
+					}
+				%>					
+				</div>
+						
+			</div>
+	</div>
+<%
+	}	
+%>
+	<div class="title16" style="text-align: center"><a href="<%=feed.getBlogUrl() %>">Click here for more from the FreshDirect Feed.</a></div>
+	</div>
+<%
+} catch (IllegalStateException e) {
+	e.printStackTrace();
+%>
+<table cellpadding="0" cellspacing="0" border="0" style="width: 456px; height: 456px;">
+	<tr>
+		<td style="text-align: center; vertical-align: middle;" class="title18or">Sorry for the delay, but the FreshDirect Feed is currently unavailable. Please check back later!</td>
+	</tr>
+</table>
+<%
+}
+%>

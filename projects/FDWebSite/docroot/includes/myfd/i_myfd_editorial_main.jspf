@@ -1,0 +1,15 @@
+<%@taglib uri='freshdirect' prefix='fd'%>
+<%@page import="java.util.List"%>
+<%@page import="com.freshdirect.fdstore.content.MediaModel"%>
+<%--@page import="com.freshdirect.fdstore.content.MyFD"--%>
+<%-- MyFD myfd = null; --%>
+<% List<MediaModel> mainItems = myfd.getEditorialMain(); %>
+<% if (mainItems != null && !mainItems.isEmpty()) { %>
+<div>
+<% for (MediaModel item : mainItems) { %>
+<div>
+<fd:IncludeMedia name="<%= item.getPath() %>" media="<%= item %>"/>
+</div>
+<% } %>
+</div>
+<% } %>

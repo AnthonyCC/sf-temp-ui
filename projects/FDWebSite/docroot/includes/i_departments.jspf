@@ -1,4 +1,4 @@
-<%
+<%@page import="com.freshdirect.fdstore.content.MyFD"%><%
 String meat		= "/department.jsp?deptId=mea&trk=home";
 String seafood	= "/department.jsp?deptId=sea&trk=home";
 String fruit		= "/department.jsp?deptId=fru&trk=home";
@@ -24,9 +24,11 @@ String heatAndEat = "/department.jsp?deptId=hmr&trk=home";
 String fourMinMeals = "/department.jsp?deptId=fdi&trk=home";
 String pasta = "/department.jsp?deptId=pas&trk=home";
 String whatsGood = "/department.jsp?deptId=wgd&trk=home";
+String myfd = "/myfd/index.jsp?trk=home";
+String newprods = "/newproducts.jsp?trk=home";
 %>
-	<%-- start i_departments --%>
-		  <table width="500" border="0" cellspacing="0" cellpadding="0">
+	<%-- start i_departments --%>  
+<table width="500" border="0" cellspacing="0" cellpadding="0">
 		  <tr>
 			<td align="center">
 			<img src="/media_stat/images/navigation/department/home/fdhome_row1_header.gif" width="457" height="16" border="0" alt="DELICIOUS FOOD TREATED WITH LOVE & RESPECT"><br>
@@ -75,7 +77,37 @@ String whatsGood = "/department.jsp?deptId=wgd&trk=home";
 		  </tr>
 		  <tr>
 			<td align="center" class="text11" style="padding-top:10px;">
-			<a href="<%=whatsGood%>"><img src="/media_stat/images/navigation/department/home/fdhome_row3.gif" width="176" height="24" border="0" vspace="3"></a><br><a href="<%=whatsGood%>">Great Deals & Seasonal Favorites</a><br><br>
+				<div>
+					<table cellspacing="0" cellpadding="0" style="width: auto; text-align: center; margin: 0px auto;">
+						<tr>
+							<td class="text11" valign="top" style="width: 176px;">
+								<a href="<%=whatsGood%>"><img src="/media_stat/images/navigation/department/home/fdhome_row3.gif" width="176" height="24" border="0" hspace="3"></a>
+							</td>
+							<% if (MyFD.getMyFDInstance() != null) { %>
+							<td class="text11" valign="top" style="width: 99px;">
+								<a href="<%=myfd%>"><img src="/media_stat/images/navigation/department/home/myfd.gif" width="99" height="24" border="0" alt="MyFD Home" hspace="3"></a>
+							</td>
+							<% } %>
+							<td class="text11" valign="top" style="width: 164px;">
+								<a href="<%=newprods%>"><img src="/media_stat/images/navigation/department/home/newprods.gif" width="164" height="24" border="0" hspace="3"></a>
+							</td>
+						</tr>
+						<tr>
+							<td class="text11" valign="top" style="width: 176px; padding-top: 2px;">
+								<a href="<%=whatsGood%>">Savings & Seasonal Selections</a>
+							</td>
+							<% if (MyFD.getMyFDInstance() != null) { %>
+							<td class="text11" valign="top" style="width: 99px; padding-top: 2px;">
+								<a href="<%=myfd%>">Fresh Inspiration</a>
+							</td>
+							<% } %>
+							<td class="text11" valign="top" style="width: 164px; padding-top: 2px;">
+								<a href="<%=newprods%>">Find New Producs</a>
+							</td>
+						</tr>
+					</table>
+					<br>
+				</div>
 			<img src="/media_stat/images/navigation/department/home/fdhome_row4_header.gif" width="457" height="16" border="0" alt="EASY MEALS PREPARED BY EXPERT CHEFS" vspace="3"><br>
 			<img src="/media_stat/images/navigation/department/home/fdhome_row4.jpg" width="488" height="62" usemap="#Row4" border="0">
 			</td>

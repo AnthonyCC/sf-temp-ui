@@ -1,0 +1,196 @@
+/* MyFD */
+.myfd-blog-feed {
+	width: 481px;
+}
+
+.myfd-header {
+	text-align: left;
+	background-color: #959595;
+	color: white;
+	padding: 4px 5px;	
+	font-family: 'Eagle', verdana, arial, sans-serif;
+	font-size: 18px;
+	line-height: 18px;
+	font-weight: bold;
+}
+
+.myfd-blog-link,
+.myfd-blog-link:active,
+.myfd-blog-link:visited,
+.myfd-blog-link:link {
+	color: white;
+	float: right;
+	line-height: 18px;
+	font-size: 10px;
+	font-weight: normal;
+	vertical-align: middle;
+	font-family: verdana, arial, sans-serif;
+}
+
+.myfd-post {		
+	margin: 20px 0px;	
+ 		border-bottom: 1px solid grey;  		
+ 		overflow: hidden;
+ 		clear: both;  		  		
+ 		text-align: left;
+}
+
+.myfd-post .wp-caption-text {
+	margin: 5px ! important;
+}
+
+.myfd-day-link {
+	font-weight: bold;		
+}
+
+.wp-caption, .myfd-post object {				
+	text-align: center;			
+	width: 200px ! important;		
+	float: right;
+	margin-left: 5px;
+}
+
+.wp-caption img {
+	max-width: 200px ! important;
+	height: auto ! important;
+}
+
+.myfd-post .post-links {
+	clear: both;
+	margin-top: 10px;
+}
+
+.myfd-linkbar {
+	border-top: 1px dashed grey;
+	margin-top: 10px;
+	padding: 5px 0px;
+	overflow: hidden;
+	line-height: 26px;
+}
+
+.myfd-linkbar .link, .myfd-linkbar .twitter-share-button, .myfd-linkbar .FBConnectButton_Simple {
+	vertical-align: middle;		
+}
+
+.myfd-category a,
+.myfd-category a:link,
+.myfd-category a:visited,
+.myfd-category a:active {		
+	color: #499A38;
+	margin-bottom: 4px;
+	text-decoration: none;
+	font-family: 'Eagle', verdana, arial, sans-serif;
+	font-size: 18px;
+}
+
+.myfd-title {
+	margin: 2px 0px;
+}
+
+.myfd-title a,
+.myfd-title a:link,
+.myfd-title a:visited,
+.myfd-title a:active {
+	color: black;
+	text-decoration: none;
+}
+
+.myfd-post-content {
+	overflow: hidden;
+}
+
+.a2a_button_facebook .a2a_img {
+	background: url(/media_stat/images/myfd/facebook.png) no-repeat center ! important;		
+	display: inline-block ! important;
+	width: 26px ! important;
+	height: 26px ! important;
+}
+
+.a2a_button_twitter .a2a_img {
+	background: url(/media_stat/images/myfd/twitter.png) no-repeat center ! important;
+	display: inline-block ! important;
+	width: 26px ! important;
+	height: 26px ! important;
+}
+	
+.a2a_button_email .a2a_img {
+	background: url(/media_stat/images/myfd/email.png) no-repeat left center ! important;
+	display: inline-block ! important;
+	width: auto ! important;
+	height: 26px ! important;
+	text-decoration: none ! important;
+	padding-left: 20px;
+	margin-left: 2px;
+}
+
+.a2a_button_email:link,
+.a2a_button_email:active,
+.a2a_button_email:visited {
+	color: black;
+	text-decoration: none;
+}
+		
+
+.myfd-share {				
+	float: right;
+	vertical-align: middle;
+}
+
+.myfd-share > * {
+	margin-left: 2px;
+}
+
+.myfd-share-text {
+	vertical-align: middle ! important;
+	color: black ! important;		
+	text-decoration: none;
+}
+
+.myfd-share-text:visited,
+.myfd-share-text:link,
+.myfd-share-text:active {
+	color: black ! important;
+}
+
+.a2a_kit {
+	display: inline-block;
+	vertical-align: middle;
+	line-height: 26px;
+}
+
+.a2a_dd {
+	vertical-align: middle; 
+	border: 1px solid #EAECE7;
+	height: 24px;
+	margin-right: 2px;
+}
+
+.a2a_default_style a {
+	line-height: 26px !important;
+}
+
+.a2a_default_style .a2a_img {
+	display: none ! important;
+} 
+
+.myfd-quickshop-header {
+	margin-bottom: 10px;		
+}
+
+.myfd-quickshop .text13 {
+	font-size: 10px;
+	padding-left: 0px ! important;
+}
+
+.myfd-quickshop .text13 a {
+	margin-left: 0px ! important;
+}
+
+#content .wp-caption img {
+	margin: 0px ! important;
+}
+
+#content .wp-caption {
+	padding: 0px ! important;
+	background: white ! important;
+}

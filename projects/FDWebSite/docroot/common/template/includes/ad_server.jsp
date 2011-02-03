@@ -386,6 +386,8 @@ function OAS_NORMAL(pos) {
   document.write('<IMG SRC="' + OAS_url + 'adstream_nx.ads/' + OAS_sitepage + '/1' + OAS_rns +
 '@' + OAS_listpos + '!' + pos + '?' + OAS_query + '" BORDER=0><\/A>');
 }
+function OAS_RICH(pos) {
+}
 </script>
 <%
 	if (!FDStoreProperties.getAdServerUsesDeferredImageLoading()) {

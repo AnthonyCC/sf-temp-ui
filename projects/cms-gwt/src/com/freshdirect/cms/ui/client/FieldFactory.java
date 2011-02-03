@@ -34,6 +34,7 @@ import com.freshdirect.cms.ui.model.attributes.OneToManyAttribute;
 import com.freshdirect.cms.ui.model.attributes.OneToOneAttribute;
 import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute;
 import com.freshdirect.cms.ui.model.attributes.TableAttribute;
+import com.google.gwt.i18n.client.DateTimeFormat;
 
 /**
  * 	Creates the inner field for content editors depending on the attribute type. This will be optionally wrapped with an InheritanceField.
@@ -100,6 +101,11 @@ public final class FieldFactory {
 				aField.setOriginalValue(attribute.getValue());
 				aField.setValue(attribute.getValue());
 				break;
+			case MonthDay:
+				DateField field = new DateField();
+				field.setValue((Date) attribute.getValue());
+				field.getPropertyEditor().setFormat(DateTimeFormat.getFormat("MM/dd"));
+				aField = field;
 			}
 		}
 

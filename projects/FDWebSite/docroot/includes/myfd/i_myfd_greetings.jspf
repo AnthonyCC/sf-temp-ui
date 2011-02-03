@@ -1,0 +1,139 @@
+<%@page import="java.util.Date"%>
+<%@page import="java.util.Iterator"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="com.freshdirect.customer.EnumDeliveryType"%>
+<%@page import="com.freshdirect.customer.EnumSaleStatus"%>
+<%@page import="com.freshdirect.fdstore.FDTimeslot"%>
+<%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
+<%@page import="com.freshdirect.fdstore.customer.FDOrderInfoI"%>
+<%@taglib uri='freshdirect' prefix='fd'%>
+
+<%@page import="com.freshdirect.common.customer.EnumServiceType"%>
+<%@page import="com.freshdirect.fdstore.survey.FDSurvey"%>
+<%@page import="com.freshdirect.fdstore.survey.FDSurveyResponse"%>
+<%@page import="com.freshdirect.fdstore.survey.EnumSurveyType"%>
+<%@page import="com.freshdirect.fdstore.survey.FDSurveyFactory"%>
+<%@page import="com.freshdirect.fdstore.survey.FDSurveyConstants"%><div>
+<div style="float: right;">
+	<%
+	{
+		if (user.getLevel() < 1)
+			throw new IllegalStateException("Anonymous customer is attempting to access MyFD");
+		EnumServiceType serviceType = FDSurveyFactory.getServiceType(user, request);
+		FDSurvey customerProfileSurvey = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.CUSTOMER_PROFILE_SURVEY, serviceType);
+		FDSurveyResponse surveyResponse= FDSurveyFactory.getCustomerProfileSurveyInfo(user.getIdentity(), serviceType);
+		String profileImagePath = "";
+	    if (customerProfileSurvey != null) {
+	        if (surveyResponse != null && surveyResponse.getAnswer(FDSurveyConstants.PROFILE) != null) {
+	            profileImagePath = surveyResponse.getAnswer(FDSurveyConstants.PROFILE)[0].toLowerCase();
+	        } 
+	    }
+	%>
+	<div><a href="/your_account/customer_profile_summary.jsp"><img src="/media_stat/images/profile/<%= "".equals(profileImagePath) ? "unset" : profileImagePath %>.jpg" width="105" height="105" border="0"></a></div>
+	<div class="text9" style="text-align: center;">
+		<a href="/your_account/customer_profile_summary.jsp">
+			<% if ("".equals(profileImagePath)) { %>No icon?<br>Edit Your Profile<% } else { %>Edit Profile<% } %>
+		</a>
+	</div>
+	<%
+	}
+	%>
+</div>
+<div class="title18"><%= user.getGreeting() %></div>
+<div class="text9">(If you're not <%= user.getFirstName() %>, <a
+	href="/login/logout.jsp?logoutPage=site_access">click here</a>!)</div>
+<% 
+if (user.isChefsTable()) { 
+%>
+<div style="padding-top: 25px;">
+<div class="title12">Thanks for being one of our best customers!</div>
+<div class="title11" style="color: #336600;"><a href="/your_account/manage_account.jsp">Click here for Chef's Table offers.</a></div>
+</div>
+<% 
+} else {
+	Date registrationDate = user.getRegistrationDate();
+	// fall back to the date of first non pickup order
+	if (registrationDate == null)
+		registrationDate = user.getOrderHistory().getFirstNonPickupOrderDate();
+	final long MILLIS_IN_DAYS = 1000 * 60 * 60 * 24;
+	if (registrationDate != null) {
+		long diff = new Date().getTime() - registrationDate.getTime();
+		diff /= MILLIS_IN_DAYS;
+		long years = diff / 365;
+		long days = diff % 365;
+%>
+<div class="text11" style="padding-top: 25px;">
+<% if (diff > 0) { %>
+You've been a FreshDirect customer 
+for<% if (years > 0) { %> <%= years %> year<% if (years > 1) { %>s<% } %><% } %><%
+if (years > 0 && days > 0) {
+%> and<%
+}
+%><% if (days > 0) { %> <%= days %> day<% if (days > 1) { %>s<% } %><% } %>.
+<% } else { %>
+You're one of our most recent customers.
+<% } %>
+</div>
+<%
+	}
+}
+%>
+<% if (user.getLevel() >= FDUserI.RECOGNIZED) { %>
+<fd:OrderHistoryInfo id='orderHistoryInfo'>
+<%
+	// also need to know how many orders the customer has that are not still pending
+	int pendingOrderCount = 0;
+	for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
+		FDOrderInfoI orderInfo = (FDOrderInfoI) hIter.next();
+		if (orderInfo.isPending()) {
+			pendingOrderCount++;
+		}
+	} 			
+	if (orderHistoryInfo != null && orderHistoryInfo.size() != 0 && pendingOrderCount > 0) {
+		for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
+			FDOrderInfoI orderInfo = (FDOrderInfoI) hIter.next();
+			String ordDeliveryType = orderInfo.getDeliveryType().toString();
+			//gift cards
+			String gcCodePersonal = EnumDeliveryType.GIFT_CARD_PERSONAL.getCode();
+			String gcCodeCorporate = EnumDeliveryType.GIFT_CARD_CORPORATE.getCode();
+			//robin hood
+			String donatePersonal = EnumDeliveryType.DONATION_INDIVIDUAL.getCode();
+			String donateCorporate = EnumDeliveryType.DONATION_BUSINESS.getCode();		  					 
+			if (orderInfo.isPending() && orderInfo.getOrderStatus() != EnumSaleStatus.REFUSED_ORDER 
+					&& (!(ordDeliveryType).equals(gcCodePersonal) && !(ordDeliveryType).equals(gcCodeCorporate))
+					&& (!(ordDeliveryType).equals(donatePersonal) && !(ordDeliveryType).equals(donateCorporate))) {							
+%>
+			<div style="padding-top: 25px;">
+			<div style="float: left; padding-right: 5px;">
+				<img src="/media_stat/images/template/site_access/truck_ico.png" width="45" height="33" border="0">
+			</div>
+			<div class="text11">
+				<b>Your order will be delivered on:</b><br>
+				<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>">
+				<%= new SimpleDateFormat("EEE MM/dd/yy").format(orderInfo.getRequestedDate()) %> @
+				<%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%>
+				</a>
+			</div>
+			<% if (new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
+			<div class="text10">
+				To make changes, <a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>">click here</a>.
+			</div>
+			<div style="clear: both; font-size: 0px;"></div>
+			</div> 
+			<% } %>
+<%
+			} else if (orderInfo.getOrderStatus() == EnumSaleStatus.REFUSED_ORDER) {
+%>
+			<div class="text10rbold" style="padding-top: 25px;">
+				<b>Pending Order: Please contact us at <%= user.getCustomerServiceContact() %> as soon as possible to reschedule delivery.</b>
+			</div>
+<%
+			}
+		  	break;
+		} 
+	} 
+%>
+</fd:OrderHistoryInfo>
+<% } %>
+<div style="clear: both; font-size: 0px;"></div>
+</div>

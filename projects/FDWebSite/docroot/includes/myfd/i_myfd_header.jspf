@@ -1,0 +1,31 @@
+<%@taglib uri='freshdirect' prefix='fd'%>
+<%@page import="java.util.List"%>
+<%@page import="com.freshdirect.fdstore.content.Image"%>
+<%@page import="com.freshdirect.fdstore.myfd.blog.MyFdFeed"%>
+<%--@page import="com.freshdirect.fdstore.content.MyFD"--%>
+<%-- MyFD myfd = null; --%>
+<% if (myfd.getHeader() != null && myfd.getHeader().size() > 0) { %>
+<%
+List<Image> header = myfd.getHeader();
+int height = 0;
+for (Image img : header) height += img.getHeight();
+%>
+<div style="padding: 0px 25px;">
+<div style="width: 693px; height: <%= height %>px;">
+<div style="padding: 0px; text-align: center; position: relative;"><% 
+ for (Image img : header) { %><div><fd:IncludeImage image="<%= img %>"/></div><% } 
+%><div style="position: absolute; bottom: 0px; right: 0px;">
+<div class="text10bold" style="text-align: center; padding-bottom: 3px;">Follow us!</div>
+<div>
+<a href="http://twitter.com/freshdirect" target="_blank"><img src="/media_stat/images/myfd/twitter-icon.png" width="16" height="16" hspace="2" border="0"></a>
+<a href="http://facebook.com/freshdirect" target="_blank"><img src="/media_stat/images/myfd/facebook-icon.png" width="16" height="16" hspace="2" border="0"></a>
+<% if (myfd.getBlogURL() != null) { %>
+<a href="<%= myfd.getBlogURL() + MyFdFeed.FEED_URL %>" target="_blank"><img src="/media_stat/images/myfd/rss-icon.png" width="16" height="16" hspace="2" border="0"></a>
+<% } %>
+</div>
+</div>
+</div>
+</div>
+<div style="font-size: 0px; height: 2px; background-color: #dadada; margin-top: 20px;">&nbsp;</div>
+</div>
+<% } %>

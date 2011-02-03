@@ -66,6 +66,9 @@ public class FDContentTypes {
 
         public final static ContentType TILE = ContentType.get("Tile");
         public final static ContentType TILE_LIST = ContentType.get("TileList");
+
+	public final static ContentType HOLIDAY_GREETING = ContentType.get("HolidayGreetings");
+	public final static ContentType MYFD = ContentType.get("MyFD");
         
 	private FDContentTypes() {
 	}

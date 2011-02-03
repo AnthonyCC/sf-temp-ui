@@ -1,0 +1,60 @@
+<%@ page import='com.freshdirect.fdstore.customer.*'%>
+<%@ page import='com.freshdirect.fdstore.lists.*'%>
+<%@ page import='java.text.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
+<%@ page import='com.freshdirect.fdstore.promotion.*'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<div class="myfd-quickshop">
+
+<div class="myfd-quickshop-header">
+<a href="/quickshop/index.jsp"><img src="/media_stat/images/navigation/department/quickshop/qs_depnav.gif" width="158" height="28" border="0" alt="QUICKSHOP"></a>
+</div>
+<fd:FDShoppingCart id='cart' result='result' action='<%= actionName %>' successPage='<%= successPage %>' source='<%= cartSource %>'>
+	<% Integer maxQuickshopItems = 5; %>
+	<fd:QuickShopController id="quickCart" orderId="" action="">
+		<fd:OrderHistoryInfo id='orderHistoryInfo'>		
+			<%
+				int pendingOrderCount = 0;
+			    for (Iterator<FDOrderInfoI> hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
+			        FDOrderInfoI orderInfo = hIter.next();
+			        if (orderInfo.isPending()) {
+			            pendingOrderCount++;
+			        }
+			    }
+				if ((orderHistoryInfo.size() - pendingOrderCount) > 0) { %>				
+			<font class="text15"><b>Shop from Previous Orders</b></font><font class="space2pix"><br><br></font>
+			<div class="text12bold" style="padding-bottom: 2em; color: #FF9933">CHOOSE AN ORDER:</div>
+			<%@ include file="/quickshop/includes/order_nav_qs_index.jspf" %>
+			
+			<% } else { %>
+			<div>
+	        <font class="text15"><b>We store your orders here, details and all, so you can reorder fast.</b></font><br>
+				<br><span class="space2pix"><br></span>   
+	        <font class="text15"><b>Once you receive your first order, you can shop from:</b></font><br><br>                     
+	                        
+	        <font class="text12bold" color="#FF9933"><img src="/media_stat/images/layout/6x6_orange_dot.gif"> &nbsp; PREVIOUS ORDERS</font><br><br>
+	        <font class="text12bold" color="#FF9933"><img src="/media_stat/images/layout/6x6_orange_dot.gif"> &nbsp; YOUR RECIPES</font><br><br>
+	        <font class="text12bold" color="#FF9933"><img src="/media_stat/images/layout/6x6_orange_dot.gif"> &nbsp; EVERYTHING YOU'VE <br> &nbsp;&nbsp;&nbsp;&nbsp;EVER ORDERED</font><br><br>        
+			</div>
+			<% } %>
+			<img src="/media_stat/images/layout/clear.gif" width="0" height="25">									
+			
+			<!-- SHOPPING LISTS SECTION -->
+			<div id="shopping-list-section">
+				<fd:CCLCheck>			
+					<font class="text15"><b>Your Shopping Lists</b></font><span style="text-align: right;">&nbsp;&nbsp;&nbsp;</span>
+					<font class="space2pix"><br><br></font>
+					<font class="text12bold" color="#FF9933">EDIT OR SHOP FROM YOUR LISTS:</font><br><br>
+					<%@ include file="/quickshop/includes/ccl_lists.jspf" %>
+				</fd:CCLCheck>
+			</div>
+			
+		</fd:OrderHistoryInfo>
+	</fd:QuickShopController>
+
+</fd:FDShoppingCart>
+
+</div>

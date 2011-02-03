@@ -432,7 +432,9 @@ public class DlvDepotManagerSessionBean extends SessionBeanSupport {
 			throw new DlvResourceException(ne);
 		} finally {
 			try {
-				ctx.close();
+				if (ctx != null) {
+					ctx.close();
+				}
 			} catch (NamingException e) {
 			}
 		}

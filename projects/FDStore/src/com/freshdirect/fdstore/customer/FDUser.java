@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -28,11 +27,13 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.customer.ActivityLog;
+import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
@@ -53,8 +54,12 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ZonePriceListing;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.EnumWinePrice;
+import com.freshdirect.fdstore.content.HolidayGreeting;
+import com.freshdirect.fdstore.content.MyFD;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.fdstore.customer.adapter.FDOrderInfoAdapter;
 import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
@@ -75,6 +80,11 @@ import com.freshdirect.fdstore.rules.EligibilityCalculator;
 import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.rules.FeeCalculator;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
+import com.freshdirect.fdstore.survey.EnumSurveyType;
+import com.freshdirect.fdstore.survey.FDSurvey;
+import com.freshdirect.fdstore.survey.FDSurveyConstants;
+import com.freshdirect.fdstore.survey.FDSurveyFactory;
+import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.fdstore.util.SiteFeatureHelper;
@@ -195,6 +205,12 @@ public class FDUser extends ModelSupport implements FDUserI {
 	
 	private String masqueradeAgent;
 	
+	private Date registrationDate;
+	private static final Date EPOCH = new Date(0);
+	
+	private FDDeliveryTimeslotModel deliveryTimeslotModel;
+	private int ctSlots;
+
 	public FDUserDlvPassInfo getDlvPassInfo() {
 		return dlvPassInfo;
 	}
@@ -1849,6 +1865,121 @@ public class FDUser extends ModelSupport implements FDUserI {
             }
             return preferredWinePrice;
         }
+<<<<<<< HEAD
+=======
+
+	@Override
+	public String getGreeting() throws FDResourceException {
+		StoreModel store = (StoreModel) ContentFactory.getInstance().getContentNode("Store", "FreshDirect");
+		FDSurvey customerProfileSurvey = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.CUSTOMER_PROFILE_SURVEY, EnumServiceType.HOME);
+		FDSurveyResponse surveyResponse= FDSurveyFactory.getCustomerProfileSurveyInfo(getIdentity(), EnumServiceType.HOME);
+		if (customerProfileSurvey != null && surveyResponse != null) {
+		    String[] answers = surveyResponse.getAnswer("Occasions_Events");
+		    if (answers != null && answers.length != 0) {
+		    	boolean found = false;
+		    	for (String answer : answers)
+		    		if ("birthdays".equals(answer)) {
+		    			found = true;
+		    			break;
+		    		}
+		    	if (found) {
+					String[] birthday = surveyResponse.getAnswer(FDSurveyConstants.BIRTHDAY);
+					if (birthday != null && birthday.length == 2)
+						try {
+							String month = birthday[0];
+							int day = Integer.parseInt(birthday[1]);
+							Calendar cal = Calendar.getInstance();
+							Date now = new Date();
+							cal.setTime(now);
+							String thisMonth = new SimpleDateFormat("MMM").format(now);
+							if (thisMonth.equalsIgnoreCase(month) && cal.get(Calendar.DAY_OF_MONTH) == day)
+								return "Happy birthday, " + getFirstName() + "!";
+						} catch (NumberFormatException e) {
+						}
+		    	}
+		    }
+		}
+		MyFD myfd = null;
+		if (store != null) {
+			myfd = store.getMyFD();
+			if (myfd != null) {
+				List<HolidayGreeting> greetings = myfd.getHolidayGreetings();
+				Date now = new Date();
+				for (HolidayGreeting greeting : greetings) {
+					Date start = greeting.getIntervalStartDate();
+					Date end = greeting.getIntervalEndDate();
+					if (start == null || end == null)
+						continue;
+					if (now.before(start) || now.after(end))
+						continue;
+				    if (customerProfileSurvey == null || surveyResponse == null)
+				    	continue;
+					// SELECT a.name
+					// FROM CUST.survey_qa qa
+					// INNER JOIN CUST.survey_question q
+					// ON qa.question = q.id
+					// INNER JOIN cust.survey_answer a
+					// ON qa.answer = a.id
+					// WHERE q.name = 'Occasions_Events';
+				    String[] answers = surveyResponse.getAnswer("Occasions_Events");
+				    if (answers == null || answers.length == 0)
+				    	continue;
+				    boolean found = false;
+				    String code = greeting.getCode();
+				    for (String a : answers)
+				    	if (a != null && a.equals(code)) {
+				    		found = true;
+				    		break;
+				    	}
+				    if (!found) {
+				    	continue;
+				    }
+					String text = greeting.getGreetingText();
+					text = text.replace("%firstname", getFirstName());
+					return text;
+				}
+			}
+		}
+		return "Hello " + getFirstName() + "!";
+	}
+
+	@Override
+	public Date getRegistrationDate() {
+		if (registrationDate == null) {
+			if (getIdentity() != null && getIdentity().getErpCustomerPK() != null) {
+				ErpActivityRecord template = new ErpActivityRecord();
+				template.setCustomerId(getIdentity().getErpCustomerPK());
+				template.setActivityType(EnumAccountActivityType.CREATE_ACCOUNT);
+				try {
+					Collection<ErpActivityRecord> results = ActivityLog.getInstance().findActivityByTemplate(template);
+					if (results.size() > 1) {
+						registrationDate = results.iterator().next().getDate();
+					} else {
+						registrationDate = EPOCH;
+					}
+				} catch (FDResourceException e) {
+					registrationDate = EPOCH;
+				}
+			} else {
+				registrationDate = EPOCH;
+			}
+		}
+		if (registrationDate != EPOCH) {
+			return (Date) registrationDate;
+		} else {
+			return null;
+		}
+        }
+
+	
+	public int getTotalCTSlots(){
+		return ctSlots;
+	}	
+	public void setTotalCTSlots(int slots){
+		this.ctSlots = slots;
+	}
+
+>>>>>>> svn/features/myfd
 }
 
 

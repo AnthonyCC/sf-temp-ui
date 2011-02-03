@@ -11,7 +11,9 @@
 %><%@ page import="java.util.Iterator"
 %><%@ page import="java.util.Locale"
 %><%@ page import="com.freshdirect.fdstore.customer.FDCartLineModel"
+%><%@ page import="com.freshdirect.webapp.util.JspMethods"
 %>
+
 <style>
 .rol-tl {
 	width: 36px;
@@ -79,7 +81,7 @@ if(request.getRequestURI().indexOf("quickshop") > -1) {
 		<tr>
 			<td><%= orderLine.getDisplayQuantity() %></td>
 			<td><%= orderLine.getDescription() %></td>
-			<td><%= currencyFormatter.format(orderLine.getPrice()) %></td>
+			<td><%= JspMethods.formatPrice(orderLine.getPrice()) %></td>
 		</tr>
 <%
 		}

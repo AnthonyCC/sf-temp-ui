@@ -75,6 +75,9 @@
 			<RelationshipDef name="HOME_FEATURED_PRODUCTS" cardinality="Many">
 				<DestinationDef contentType="Product" />
 			</RelationshipDef>
+			<RelationshipDef name="myFD" navigable="true" cardinality="Many">
+				<DestinationDef contentType="MyFD" />
+			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
 	<!--
@@ -1642,6 +1645,40 @@
 				<DestinationDef contentType="Product"/>
 				<DestinationDef contentType="ConfiguredProduct"/>
 				<DestinationDef contentType="ConfiguredProductGroup"/>
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+	
+	<ContentTypeDef name="HolidayGreeting">
+		<AttributeDefs>
+			<AttributeDef type="S" name="CODE" label="Event/Occasion Code in Profile Survey" required="true"/>
+			<AttributeDef type="S" name="FULL_NAME" label="Description"/>
+			<AttributeDef type="DT" name="startDate" required="true"/>
+			<AttributeDef type="DT" name="endDate" />
+			<AttributeDef type="S" name="GREETING_TEXT" label="Greeting Text" required="true"/>
+		</AttributeDefs>
+	</ContentTypeDef>	
+
+	<ContentTypeDef name="MyFD">
+		<AttributeDefs>
+			<AttributeDef type="S" name="BLOG_URL" label="Base URL of the Blog"/>
+			<AttributeDef type="I" name="BLOG_ENTRY_COUNT" label="No. of Blog Entries to Display"/>
+			<AttributeDef type="S" name="POLL_DADDY_API_KEY" label="PollDaddy API Key"/>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="HEADER" cardinality="Many" navigable="false" label="MyFD Header">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="HOLIDAY_GREETINGS" cardinality="Many" navigable="true" label="Holiday Greetings">
+				<DestinationDef contentType="HolidayGreeting" />
+			</RelationshipDef>
+			<RelationshipDef name="EDITORIAL_MAIN" cardinality="Many" navigable="false" label="Editorial for Main Content">
+				<DestinationDef contentType="Html" />
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="EDITORIAL_SIDE" cardinality="Many" navigable="false" label="Editorial for Side Section">
+				<DestinationDef contentType="Html" />
+				<DestinationDef contentType="Image" />
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>	

@@ -1,0 +1,12 @@
+*** rich-text-tags/rich-text-tags.php.old	2011-02-01 14:43:29.000000000 +0100
+--- rich-text-tags/rich-text-tags.php	2011-02-01 14:43:01.000000000 +0100
+***************
+*** 205,210 ****
+--- 205,211 ----
+  		}
+  		$array['remove_linebreaks'] = false;
+  		$array['apply_source_formatting'] = true;
++ 		$array['invalid_elements'] = 'p,div,br,hr,button,input,form,iframe,script,table,td,tr,object,embed';
+  		return $array;
+  	}
+  	
