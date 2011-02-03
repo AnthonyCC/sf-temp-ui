@@ -271,8 +271,8 @@ public final class FieldFactory {
 		ContentNodeAttributeI attr = nodeData.getContexts() == null ? null : nodeData.getContexts().getInheritedAttribute( nodeData.getCurrentContext(), key );
 		Serializable inhvalue = attr == null ? null : attr.getValue();
 		
-		( (InheritanceField<Serializable>)field ).setInheritedValue( inhvalue );
 		( (InheritanceField<Serializable>)field ).setValue( nodeData.getNode().getOriginalAttributeValue(key) );
+		( (InheritanceField<Serializable>)field ).setInheritedValue( inhvalue );
 		
 		return field;
 	}
