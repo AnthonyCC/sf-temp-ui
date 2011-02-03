@@ -85,7 +85,7 @@ public class SmartYMALRecommendationService extends	AbstractRecommendationServic
 					input.getCustomerServiceType(), input.getPricingContext());
 			smartInput.setYmalSource(ymalSource);
 			smartInput.setCurrentNode(selectedProduct);
-			smartInput.setCartContents(addContentKeys(new HashSet<ContentKey>(), prodList));
+			smartInput.setCartContents(addContentKeys(new HashSet<ContentKey>(input.getCartContents()), prodList));
 			if (selectedProduct != null)
 				smartInput.getCartContents().add(selectedProduct.getContentKey());
 			smartInput.setNoShuffle(input.isNoShuffle());
