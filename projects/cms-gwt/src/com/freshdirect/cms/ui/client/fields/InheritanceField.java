@@ -190,16 +190,11 @@ public class InheritanceField<TYPE> extends MultiField<TYPE> {
     		innerField.setValue(value);
     	} else {
     		checkbox.setValue(false);
-    		try {
-    			innerField.setValue(inheritedValue);
-    		}
-    		catch(ClassCastException e) {
-    			System.out.println(e);
-    		}
+                setInnerFieldValue(value);
     	}
     }
 
-    static boolean isNullList(List l) {
+    static boolean isNullList(List<Object> l) {
         if (l.size() == 1) {
             if (l.get(0) instanceof OneToManyModel) {
                 OneToManyModel one = (OneToManyModel) l.get(0);
@@ -212,19 +207,26 @@ public class InheritanceField<TYPE> extends MultiField<TYPE> {
     public void setExplicitValue(TYPE value) {
         this.explicitValue = value;
         if (checkbox.getValue()) {
-            innerField.setValue(value);
+            setInnerFieldValue(value);
         }
     }
     
-    @SuppressWarnings("unchecked")
     public void setInheritedValue(TYPE value) {
         this.inheritedValue = value;
         if (!checkbox.getValue()) {
-            try {
-                innerField.setValue(((TYPE) ((value instanceof List && isNullList((List) value)) ? new ArrayList() : value)));
-            } catch (ClassCastException e) {
-                System.out.println(e);
-            }
+            setInnerFieldValue(value);
+        }
+    }
+
+    /**
+     * @param value
+     */
+    @SuppressWarnings("unchecked")
+    protected void setInnerFieldValue(TYPE value) {
+        try {
+            innerField.setValue(((TYPE) ((value instanceof List && isNullList((List<Object>) value)) ? new ArrayList<Object>() : value)));
+        } catch (ClassCastException e) {
+            System.out.println(e);
         }
     }
     
