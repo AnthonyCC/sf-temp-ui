@@ -38,13 +38,13 @@ public interface ContextualContentNodeI extends ContentNodeI {
 	 * 
 	 * @return Map of String (attr name) -> {@link AttributeI}
 	 */
-	public Map getInheritedAttributes();
+	public Map<String, AttributeI> getInheritedAttributes();
 	
 	/**
 	 * Get all attributes that would be inherited from the parent.
 	 * 
 	 * @return Map of String (attr name) -> {@link AttributeI}
 	 */
-	public Map getParentInheritedAttributes();
+	public Map<String, AttributeI> getParentInheritedAttributes();
 
 }

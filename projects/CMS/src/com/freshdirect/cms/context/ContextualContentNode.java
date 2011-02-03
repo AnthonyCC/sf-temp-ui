@@ -97,14 +97,14 @@ class ContextualContentNode implements ContextualContentNodeI {
 		return parent != null ? parent.getInheritedAttributes() : new HashMap();
 	}
 
-	public Map getInheritedAttributes() {
-		Map inherited = parent != null ? parent.getInheritedAttributes() : new HashMap();
-		Map self = node.getAttributes();
+	public Map<String, AttributeI> getInheritedAttributes() {
+		Map<String, AttributeI> inherited = parent != null ? parent.getInheritedAttributes() : new HashMap();
+		Map<String, AttributeI> self = node.getAttributes();
 		return inherit(inherited, self);
 	}
 
-    private Map inherit(Map inherited, Map self) {
-        Map inheritable = new HashMap();
+    private Map<String, AttributeI> inherit(Map<String, AttributeI> inherited, Map<String, AttributeI> self) {
+        Map<String, AttributeI> inheritable = new HashMap<String, AttributeI>();
         for (Iterator i = self.entrySet().iterator(); i.hasNext();) {
             Map.Entry e = (Map.Entry) i.next();
             String name = (String) e.getKey();
