@@ -9,11 +9,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 
 import org.apache.log4j.Category;
 
@@ -22,9 +22,9 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -408,12 +408,12 @@ public class ScoreProvider implements DataAccess {
 			return 0;
 		}
 		Map<ContentKey,double[]> userScores = storePersonalizedScores(userId);
-		double[] scores = (double[])userScores.get(key);
+		double[] scores = userScores.get(key);
 		return scores == null ? 0 : scores[idx];
 	}
 	
 	protected double getGlobalScore(ContentKey key, int idx) {
-		double[] scores = (double[])globalScores.get(key);
+		double[] scores = globalScores.get(key);
 		return scores == null ? 0 : scores[idx];
 	}
 	
@@ -449,7 +449,7 @@ public class ScoreProvider implements DataAccess {
 			} else if (globalIndexes.containsKey(var)) {
 				result[i] = getGlobalScore(contentNode.getContentKey(),((Number)globalIndexes.get(var)).intValue());
 			} else if (storeLookups.containsKey(var)) {
-				result[i] = ((StoreLookup)storeLookups.get(var)).getVariable(contentNode, pricingContext);
+				result[i] = (storeLookups.get(var)).getVariable(contentNode, pricingContext);
 			} else if (var.startsWith(EXTERNAL_PERSONALIZED_PREFIX)) {
 				String providerName = var.substring(EXTERNAL_PERSONALIZED_PREFIX.length());
 				try {
@@ -483,7 +483,7 @@ public class ScoreProvider implements DataAccess {
 	public boolean isGlobal(String factor) {
 		if (storeLookups.containsKey(factor)) return true;
 		try {
-			return !((FactorRangeConverter)rangeConverters.get(factor)).isPersonalized();
+			return !(rangeConverters.get(factor)).isPersonalized();
 		} catch (NullPointerException e) {
 			return false;
 		}
@@ -500,7 +500,7 @@ public class ScoreProvider implements DataAccess {
 	 */
 	public boolean isPersonalized(String factor) {
 		try {
-			return ((FactorRangeConverter)rangeConverters.get(factor)).isPersonalized();
+			return (rangeConverters.get(factor)).isPersonalized();
 		} catch (NullPointerException e) {
 			return false;
 		}
@@ -514,7 +514,7 @@ public class ScoreProvider implements DataAccess {
 	 * @return List<{@link ContentNodeModel>}
 	 */
 	public List getDatasource(SessionInput input, String name) {
-		CategoryModel category = input.getFICategory();
+		ProductContainer category = input.getFICategory();
 		if ("FeaturedItems".equals(name)) {
 			if (category != null) {
 				return HelperFunctions.getFeaturedItems(category);
@@ -563,7 +563,7 @@ public class ScoreProvider implements DataAccess {
             Map scores = storePersonalizedScores(erpCustomerId);
             
             if (scores != null && !scores.isEmpty()) {
-                Number position = ((Number)personalizedIndexes.get(ORIGINAL_SCORES_PERSONALIZED));
+                Number position = (personalizedIndexes.get(ORIGINAL_SCORES_PERSONALIZED));
                 if (position != null) {
                     int value = position.intValue();
                     Map<ContentKey,Float> originalScores = new HashMap<ContentKey,Float>();
@@ -607,7 +607,7 @@ public class ScoreProvider implements DataAccess {
             Map scores = storePersonalizedScores(erpCustomerId);
             
             if (scores != null && !scores.isEmpty()) {
-                Number position = ((Number)personalizedIndexes.get(ORIGINAL_SCORES_PERSONALIZED));
+                Number position = (personalizedIndexes.get(ORIGINAL_SCORES_PERSONALIZED));
                 if (position != null) {
                     int value = position.intValue();
                     double[] values = (double[]) scores.get(key);
@@ -707,7 +707,7 @@ public class ScoreProvider implements DataAccess {
 				}
 				result.add(name);
 			} else if (storeLookups.containsKey(name)) {
-				StoreLookup lookup = (StoreLookup) storeLookups.get(name);
+				StoreLookup lookup = storeLookups.get(name);
 				lookup.reloadCache();
 				loadedStoreLookups.add(name);
 				result.add(name);
@@ -772,7 +772,7 @@ public class ScoreProvider implements DataAccess {
 		for (Iterator i = globalIndexes.entrySet().iterator(); i.hasNext();) {
 			// Map.Entry<String,Number>
 			Map.Entry entry = (Map.Entry)i.next();
-			FactorRangeConverter converter = (FactorRangeConverter)rangeConverters.get(entry.getKey());
+			FactorRangeConverter converter = rangeConverters.get(entry.getKey());
 			double[] values = converter.map(null,globalScoreRangeProvider);
 			
 			storeScores(products, result, entry, values);
@@ -797,7 +797,7 @@ public class ScoreProvider implements DataAccess {
 		for (Iterator i = personalizedIndexes.entrySet().iterator(); i.hasNext();) {
 			// Map.Entry<String,Number>
 			Map.Entry entry = (Map.Entry)i.next();
-			FactorRangeConverter converter = (FactorRangeConverter)rangeConverters.get(entry.getKey().toString());
+			FactorRangeConverter converter = rangeConverters.get(entry.getKey().toString());
 			double[] values = converter.map(erpCustomerId,personalScores);
 			
 			storeScores(products, result, entry, values);

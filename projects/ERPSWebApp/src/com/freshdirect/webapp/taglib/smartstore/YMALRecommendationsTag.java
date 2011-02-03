@@ -29,6 +29,7 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
  * 
  */
 public class YMALRecommendationsTag extends RecommendationsTag implements SessionName {
+	
 	private static final long serialVersionUID = 5976696010559642821L;
 	
 	private YmalSource source = null;
@@ -81,20 +82,20 @@ public class YMALRecommendationsTag extends RecommendationsTag implements Sessio
 
         // -- AVAILABILITY CHECK --
         // remove unavailable recipes
-        for (Iterator it = relatedRecipes.iterator(); it.hasNext();) {
-                Recipe rec = (Recipe) it.next();
-                if (!rec.isAvailable()) {
-                        it.remove();
-                }
-        }
+		for ( Iterator<Recipe> it = relatedRecipes.iterator(); it.hasNext(); ) {
+			Recipe rec = it.next();
+			if ( !rec.isAvailable() ) {
+				it.remove();
+			}
+		}
 
         // sort out hidden categories
-        for (Iterator<CategoryModel> it = relatedCategories.iterator(); it.hasNext();) {
-                CategoryModel c = (CategoryModel) it.next();
-                if (c.isHidden()) {
-                        it.remove();
-                }
-        }
+		for ( Iterator<CategoryModel> it = relatedCategories.iterator(); it.hasNext(); ) {
+			CategoryModel c = it.next();
+			if ( c.isHidden() ) {
+				it.remove();
+			}
+		}
 
         // Pass parameters to YMAL display box
         request.setAttribute("ymal_products", relatedProducts);

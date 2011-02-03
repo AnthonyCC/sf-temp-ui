@@ -28,14 +28,17 @@ public class BrandUniquenessSorter extends WrapperRecommendationService {
 		LOGGER.debug("Items before brand uniqueness sorting: " + nodes);
 		List<ContentNodeModel> newNodes = new ArrayList<ContentNodeModel>(nodes.size());
 		Set<BrandModel> brands = new HashSet<BrandModel>();
-		while (nodes.size() > 0) {
+		
+		int prioritizedCount = input.getPrioritizedCount();
+		while ( nodes.size() > 0 ) {
 			ListIterator<ContentNodeModel> it = nodes.listIterator();
-			while (it.hasNext()) {
-				ProductModel p = (ProductModel) it.next();
-				if (!containsAny(brands, p.getBrands())) {
-					newNodes.add(p);
+			int i = 0;
+			while ( it.hasNext() ) {
+				ProductModel p = (ProductModel)it.next();
+				if ( i++ < prioritizedCount || !containsAny( brands, p.getBrands() ) ) {
+					newNodes.add( p );
 					it.remove();
-					brands.addAll(p.getBrands());
+					brands.addAll( p.getBrands() );
 				}
 			}
 			brands.clear();

@@ -10,31 +10,28 @@
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import="com.freshdirect.common.pricing.*" %>
 <%@ page import='java.util.*' %>
+<%@ page import="com.freshdirect.smartstore.SessionInput"%>
+<%@ page import="com.freshdirect.smartstore.fdstore.FDStoreRecommender"%>
+<%@ page import="com.freshdirect.framework.util.log.LoggerFactory"%>
+<%@ page import="org.apache.log4j.Logger"%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<%@ page import="com.freshdirect.smartstore.SessionInput"%>
-<%@ page import="com.freshdirect.smartstore.fdstore.FDStoreRecommender"%>
-<%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
-<%@page import="org.apache.log4j.Logger"%>
 <fd:CheckLoginStatus />
 <%
-	final Logger LOG = LoggerFactory.getInstance("ymal_set_preview.js");
-	if (request.getParameter("ymalSetId") == null) {
-%>
-	<div style="text-align: center; font-size: 14px; font-weight: bold; color: red;">Nothing to render...</div>
-<%		
-	} else {
-%>
-<%
-/*
- *  A page used for previewing ymal sets.
- *
- *  HTTP request parameters:
- *
- *  activeYmalSetId - the category id of the product.
- */
+final Logger LOG = LoggerFactory.getInstance("ymal_set_preview.jsp");
+
+if (request.getParameter("ymalSetId") == null) {
+	%><div style="text-align: center; font-size: 14px; font-weight: bold; color: red;">Nothing to render...</div><%		
+} else {
+	/*
+	 *  A page used for previewing ymal sets.
+	 *
+	 *  HTTP request parameters:
+	 *
+	 *  activeYmalSetId - the category id of the product.
+	 */
 
     String activeYmalSetId   = request.getParameter("ymalSetId");
     ContentFactory cf        = ContentFactory.getInstance();

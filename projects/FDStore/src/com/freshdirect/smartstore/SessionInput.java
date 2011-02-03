@@ -12,6 +12,7 @@ import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.content.YmalSource;
@@ -67,6 +68,13 @@ public class SessionInput {
 
 	//Added for Zone Pricing.
 	private PricingContext pricingCtx;
+	
+	/**
+	 * Size of the prioritized list. Used by ScriptedRecommender & BrandUniquenessSorter. 
+	 */
+	private int prioritizedCount = 0;
+	
+		
 	/**
 	 * Constructor.
 	 * 
@@ -102,7 +110,6 @@ public class SessionInput {
 	}
 
 	protected void initCartContents(FDUserI user) {
-		@SuppressWarnings("unchecked")
 		List<FDCartLineI> orderlines = user.getShoppingCart().getOrderLines();
 		Set<ContentKey> products = new HashSet<ContentKey>(orderlines.size());
 		Map<String, Set<ContentKey>> tempSavingItems = new HashMap<String, Set<ContentKey>>();
@@ -158,8 +165,7 @@ public class SessionInput {
 	public Set<ContentKey> getRecentItems() {
 		if (recentItems != null)
 			return recentItems;
-		else
-			return Collections.emptySet();
+		return Collections.emptySet();
 	}
 
 	/**
@@ -261,11 +267,11 @@ public class SessionInput {
 			return category;
 	}
 
-	public CategoryModel getFICategory() {
-		if (currentNode instanceof CategoryModel)
-			return (CategoryModel) currentNode;
-		else if (currentNode instanceof ProductModel && currentNode.getParentNode() instanceof CategoryModel)
-			return (CategoryModel) currentNode.getParentNode();
+	public ProductContainer getFICategory() {
+		if ( currentNode instanceof ProductContainer)
+			return (ProductContainer)currentNode;
+		else if ( currentNode instanceof ProductModel && currentNode.getParentNode() instanceof ProductContainer )
+			return (CategoryModel)currentNode.getParentNode();
 		else
 			return null;
 	}
@@ -281,9 +287,8 @@ public class SessionInput {
 	public Set<ContentKey> getExclusions() {
 		if (includeCartItems) {
 			return Collections.emptySet();
-		} else {
-			return getCartContents();
 		}
+		return getCartContents();
 	}
 
 	public void setUseAlternatives(boolean useAlternatives) {
@@ -292,15 +297,15 @@ public class SessionInput {
 
 	public boolean isUseAlternatives() {
 		return useAlternatives;
-        }
+    }
 	
 	public boolean isShowTemporaryUnavailable() {
-            return showTemporaryUnavailable;
-        }
+        return showTemporaryUnavailable;
+    }
 	
 	public void setShowTemporaryUnavailable(boolean showTemporaryUnavailable) {
-            this.showTemporaryUnavailable = showTemporaryUnavailable;
-        }
+        this.showTemporaryUnavailable = showTemporaryUnavailable;
+    }
 
 	public PricingContext getPricingContext() {
 		return pricingCtx;
@@ -309,4 +314,13 @@ public class SessionInput {
 	public void setPricingContext(PricingContext pricingCtx) {
 		this.pricingCtx = pricingCtx;
 	}
+	
+	public int getPrioritizedCount() {
+		return prioritizedCount;
+	}
+	
+	public void setPrioritizedCount( int prioritizedCount ) {
+		this.prioritizedCount = prioritizedCount;
+	}
+
 }

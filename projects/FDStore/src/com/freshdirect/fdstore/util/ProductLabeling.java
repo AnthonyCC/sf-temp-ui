@@ -84,7 +84,7 @@ public class ProductLabeling {
 	public ProductLabeling(FDUserI customer, ProductModel product, PriceCalculator calculator, Set<EnumBurstType> hideBursts) {
 		setCustomer(customer);
 		this.product = product;
-                this.calculator = calculator;
+        this.calculator = calculator;
 
 		this.hideBursts = hideBursts;
 
@@ -126,8 +126,7 @@ public class ProductLabeling {
 		displaybackInStock = false;
 		boolean showBurstImage=true;
                 
-		try {
-		    
+		try {		    
 			String skuCode = calculator.getSkuModel() != null ? calculator.getSkuModel().getSkuCode() : null;
 			if(skuCode != null) {
 				FDProductInfo info= FDCachedFactory.getProductInfo(skuCode);			
@@ -137,7 +136,7 @@ public class ProductLabeling {
 		} catch (FDResourceException e) {
 		    LOG.error("FDResourceException with "+product+", e:"+e.getMessage(), e);
 		} catch (FDSkuNotFoundException e) {
-                    LOG.error("FDResourceException with "+product+", e:"+e.getMessage(), e);
+            LOG.error("FDResourceException with "+product+", e:"+e.getMessage(), e);
 		}
 		
 		int deal = ((hideBursts == null || !hideBursts.contains(EnumBurstType.DEAL)) && showBurstImage ) ? calculator.getHighestDealPercentage() : 0;

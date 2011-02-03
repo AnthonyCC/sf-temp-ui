@@ -42,11 +42,11 @@ public abstract class CompilerBase {
 
     protected  void setupParser(Parser parser) {
         parser.getContext().addFunctionDef("between", new Context.FunctionDef(3, 3, Expression.RET_INT) {
-            public String toJavaCode(String name, List parameters) throws CompileException {
+            public String toJavaCode(String name, List<Expression> parameters) throws CompileException {
                 boolean hasDouble = false;
                 // check that every parameter is int ?
                 for (int i = 0; i < parameters.size(); i++) {
-                    hasDouble |= ((Expression) parameters.get(i)).getReturnType() != Expression.RET_INT;
+                    hasDouble |= (parameters.get(i)).getReturnType() != Expression.RET_INT;
                 }
 
                 StringBuffer buf = new StringBuffer();
@@ -57,7 +57,7 @@ public abstract class CompilerBase {
                     if (i > 0) {
                         buf.append(',');
                     }
-                    Expression expression = (Expression) parameters.get(i);
+                    Expression expression = parameters.get(i);
                     String statement = expression.toJavaCode();
                     // we have to cast to double, if there is one double
                     // parameter
@@ -72,22 +72,22 @@ public abstract class CompilerBase {
             }
         });
         parser.getContext().addFunctionDef("atLeast", new Context.FunctionDef(2, 2, Expression.RET_INT) {
-            public String toJavaCode(String name, List parameters) throws CompileException {
-                Expression p0 = (Expression) parameters.get(0);
-                Expression p1 = (Expression) parameters.get(1);
+            public String toJavaCode(String name, List<Expression> parameters) throws CompileException {
+                Expression p0 = parameters.get(0);
+                Expression p1 = parameters.get(1);
                 return "(" + p0.toJavaCode() + " >= " + p1.toJavaCode() + " ? 1 : 0)";
             }
         });
         parser.getContext().addFunctionDef("atMost", new Context.FunctionDef(2, 2, Expression.RET_INT) {
-            public String toJavaCode(String name, List parameters) throws CompileException {
-                Expression p0 = (Expression) parameters.get(0);
-                Expression p1 = (Expression) parameters.get(1);
+            public String toJavaCode(String name, List<Expression> parameters) throws CompileException {
+                Expression p0 = parameters.get(0);
+                Expression p1 = parameters.get(1);
                 return "(" + p0.toJavaCode() + " <= " + p1.toJavaCode() + " ? 1 : 0)";
             }
         });
     }
 
-    protected Class compileAlgorithm(String name, BlockExpression ast, String toStringMethod) throws CompileException {
+    protected Class<?> compileAlgorithm(String name, BlockExpression ast, String toStringMethod) throws CompileException {
         throw new CompileException("Not implemented!");
     }
     
@@ -142,7 +142,7 @@ public abstract class CompilerBase {
                                 "}", class1);
     }
     
-    public synchronized Class generateClass(String name, String expression) throws CompileException {
+    public synchronized Class<?> generateClass(String name, String expression) throws CompileException {
         BlockExpression ast = parse(expression);
         return compileAlgorithm(name, ast, expression);
     }

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.freshdirect.framework.content;
 
 import java.io.IOException;

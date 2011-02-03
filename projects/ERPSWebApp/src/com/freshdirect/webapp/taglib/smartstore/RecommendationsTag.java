@@ -24,6 +24,7 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.FDEventUtil;
 
 public abstract class RecommendationsTag extends AbstractGetterTag<Recommendations> {
+	
 	private static final Logger LOGGER = LoggerFactory.getInstance( RecommendationsTag.class );
 
 	private static final long serialVersionUID = -7592561069328056899L;
@@ -83,7 +84,8 @@ public abstract class RecommendationsTag extends AbstractGetterTag<Recommendatio
         }
     }
     
-    protected void initFromSession(SessionInput input) {
+    @SuppressWarnings( "unchecked" )
+	protected void initFromSession(SessionInput input) {
         HttpSession session = pageContext.getSession();
         input.setPreviousRecommendations((Map<String, List<ContentKey>>) session.getAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS));
     }
@@ -136,7 +138,7 @@ public abstract class RecommendationsTag extends AbstractGetterTag<Recommendatio
         Recommendations results = getRecommendations();
         
         final List<ProductModel> products = results.getProducts();
-		if (results != null && products.size() == 0) {
+		if (products.size() == 0) {
         	LOGGER.debug("Return empty result");
         	results = null;
         }

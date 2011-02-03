@@ -2,6 +2,8 @@
     "http://www.w3.org/TR/html4/loose.dtd">
 
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<%@page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Arrays"%>
 <%@page import="java.util.Collections"%>
@@ -57,20 +59,22 @@
 <%@page import="com.freshdirect.smartstore.impl.ScriptedRecommendationService"%>
 <%@page import="org.apache.log4j.Logger"%>
 <%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
+<%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
 
 <%@ taglib uri="freshdirect" prefix="fd"%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
-<fd:CheckLoginStatus noRedirect="true" /><%!
-	Map customRecommenders = new WeakHashMap();
-%><%
-Iterator it;
+<fd:CheckLoginStatus noRedirect="true" />
+
+<%
+Map<String,RecommendationService> customRecommenders = new WeakHashMap<String,RecommendationService>();
+Iterator<String> it;
 URLGenerator urlG = new URLGenerator(request);
 String origURL = urlG.build();
 
 /* site feature */
 EnumSiteFeature defaultSiteFeature = EnumSiteFeature.DYF;
-List siteFeatures = EnumSiteFeature.getSmartStoreEnumList();
+List<EnumSiteFeature> siteFeatures = EnumSiteFeature.getSmartStoreEnumList();
 Collections.sort(siteFeatures);
 
 EnumSiteFeature siteFeature = EnumSiteFeature.getEnum(urlG.get("siteFeature"));
@@ -83,9 +87,9 @@ if (siteFeature == null) {
 
 Map<String,Variant> variants = VariantRegistry.getInstance().getServices(siteFeature);
 VariantSelection helper = VariantSelection.getInstance();
-final Map assignment = helper.getVariantMap(siteFeature);
+final Map<String,String> assignment = helper.getVariantMap(siteFeature);
 
-List varIds = SmartStoreUtil.getVariantNamesSortedInUse(siteFeature);
+List<String> varIds = SmartStoreUtil.getVariantNamesSortedInUse(siteFeature);
 
 /* generator function */
 String generatorFunction = urlG.get("generatorFunction");
@@ -107,7 +111,7 @@ if (!(scoringFunction != null && scoringFunction.length() > 0)) {
 RecommendationService scriptedRecServ = null;  
 String compileErrorMessage = null;
 if (generatorFunction != null && generatorFunction.length() > 0) {
-    scriptedRecServ = (RecommendationService) customRecommenders.get(generatorFunction + "@@@" + scoringFunction);
+    scriptedRecServ = customRecommenders.get(generatorFunction + "@@@" + scoringFunction);
 	if (scriptedRecServ == null) {
         //SmartStoreServiceConfiguration.configureSampler(new RecommendationServiceConfig("scripted-test", RecommendationServiceType.SCRIPTED))
     	scriptedRecServ = RecommendationServiceFactory.configure(new Variant("scripted-test", siteFeature, new RecommendationServiceConfig("scripted-test",
@@ -126,12 +130,11 @@ if (generatorFunction != null && generatorFunction.length() > 0) {
 
 
 /* variant A */
-String defaultVariantA = null;
-
+String defaultVariantA;
 
 it = varIds.iterator();
 if (it.hasNext()) {
-	defaultVariantA = (String) it.next();
+	defaultVariantA = it.next();
 } else {
 	defaultVariantA = null;
 }
@@ -151,12 +154,9 @@ if (variantA != null && variantA.equals(defaultVariantA)) {
 String variantB = urlG.get("variantB");
 
 String defaultVariantB = null;
-it = varIds.iterator();
-if (!it.hasNext()) {
-	defaultVariantB = null;
-}
-else while (it.hasNext()) {
-	defaultVariantB = (String) it.next();
+it = varIds.iterator();	
+while (it.hasNext()) {
+	defaultVariantB = it.next();
 	if (!defaultVariantB.equals(variantA))
 		break;
 }
@@ -166,7 +166,7 @@ if (defaultVariantB != null && defaultVariantB.equals(variantA))
 if (variantB != null && !varIds.contains(variantB)) {
 	variantB = null;
 }
-if (variantB == null || (variantB != null && variantB.equals(variantA) && scriptedRecServ == null)) {
+if (variantB == null || (variantB.equals(variantA) && scriptedRecServ == null)) {
 	variantB = defaultVariantB;
 }
 if (variantB != null && variantB.equals(defaultVariantB)) {
@@ -238,11 +238,11 @@ if (defaultCartAlgorithm.equals(cartAlgorithm) || !useLoggedIn)
 
 String userVariant = null;
 if (assignment.containsKey(cohortId)) {
-	userVariant = (String) assignment.get(cohortId);
+	userVariant = assignment.get(cohortId);
 }
 if (user != null) {
 	try {
-		List ovariants = OverriddenVariantsHelper.getOverriddenVariantIds(user);
+		List<String> ovariants = OverriddenVariantsHelper.getOverriddenVariantIds(user);
 		OverriddenVariantsHelper.VariantInfoList vInfoList = OverriddenVariantsHelper.consolidateVariantsList(ovariants);
 	
 		OverriddenVariantsHelper.VariantInfo vi = vInfoList.get(siteFeature);
@@ -307,18 +307,18 @@ if (useLoggedIn && user != null) {
 				si.setCurrentNode(YmalUtil.getSelectedCartLine(user).lookupProduct());
 	}
 } else if (recentOrderlines != null && !"".equals(recentOrderlines)) {
-	List prods = new ArrayList();
-	Set cartItems = new HashSet();
+	List<ProductModel> prods = new ArrayList<ProductModel>();
+	Set<String> cartItems = new HashSet<String>();
 	StringTokenizer st = new StringTokenizer(recentOrderlines, ", \t\r\n");
 	while (st.hasMoreElements()) {
 		String cKey = (String) st.nextElement();
 		cartItems.add(cKey);
 	}
 	// transform content keys to prods
-	for (Iterator it2 = cartItems.iterator(); it2.hasNext(); ) {
-		String node = (String) it2.next();
+	for (Iterator<String> it2 = cartItems.iterator(); it2.hasNext(); ) {
+		String node = it2.next();
 		try {
-			Object o = ContentFactory.getInstance().getContentNodeByKey(ContentKey.create(FDContentTypes.PRODUCT, node));
+			ProductModel o = (ProductModel)ContentFactory.getInstance().getContentNodeByKey(ContentKey.create(FDContentTypes.PRODUCT, node));
 			if (o != null)
 				prods.add(o);
 			else 
@@ -336,17 +336,17 @@ si.setIncludeCartItems(!useLoggedIn);
 si.setMaxRecommendations(EnumSiteFeature.YMAL.equals(siteFeature) ? 6 : 5);
 
 String scopeNodes = urlG.get("scope");
-List scope = new ArrayList();
+List<ContentNodeModel> scope = new ArrayList<ContentNodeModel>();
 if (scopeNodes != null && scopeNodes.length() != 0) {
-	Set scopeItems = new HashSet();
+	Set<String> scopeItems = new HashSet<String>();
 	StringTokenizer st = new StringTokenizer(scopeNodes, ", \t\r\n");
 	while (st.hasMoreElements()) {
 		String cKey = (String) st.nextElement();
 		scopeItems.add(cKey);
 	}
 	// transform content keys to prods
-	for (Iterator it2 = scopeItems.iterator(); it2.hasNext(); ) {
-		String node = (String) it2.next();
+	for (Iterator<String> it2 = scopeItems.iterator(); it2.hasNext(); ) {
+		String node = it2.next();
 		try {
 			ContentNodeModel n = ContentFactory.getInstance().getContentNode(node);
 			if (n != null && (n.getContentType().equals(ContentNodeModel.TYPE_DEPARTMENT) ||
@@ -436,7 +436,7 @@ if (bRecService instanceof ScriptedRecommendationService) {
 
 %>
 
-<%@page import="com.freshdirect.fdstore.content.DepartmentModel"%><html>
+<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>VARIANT COMPARISON PAGE - <%= siteFeature.getName() %><%=
@@ -500,15 +500,15 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
     	</div>
     	<div style="float: right; text-align:right;">
 	    	<span style="text-transform: uppercase;">Recommendation type:</span>&nbsp;<%
-	    		it = siteFeatures.iterator();
-	    		if (!it.hasNext()) {
+	    		Iterator<EnumSiteFeature> it_sf = siteFeatures.iterator();
+	    		if (!it_sf.hasNext()) {
 			%><span class="disabled">No known site features.</span><%	    			
 	    		} else {
 	    	%>
 			<select name="siteFeature" onchange="this.form.submit();">
 			<%
-		    		while (it.hasNext()) {
-	    				EnumSiteFeature sf = (EnumSiteFeature) it.next();
+		    		while (it_sf.hasNext()) {
+	    				EnumSiteFeature sf = it_sf.next();
 	    	%>
 	    		<option value="<%= sf.getName() %>"<%= 
 	    				sf.equals(siteFeature) ?
@@ -568,29 +568,30 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	    				</p>
 	    				<% } %>
     				</td>
-<% if (EnumSiteFeature.FEATURED_ITEMS.equals(siteFeature) || siteFeature.getName().equals("PROD_GRP_POPULAR") || siteFeature.getName().equals("PROD_GRP_YF")) { %>
+<% if (EnumSiteFeature.FEATURED_ITEMS.equals(siteFeature) || EnumSiteFeature.BRAND_NAME_DEALS.equals(siteFeature) || siteFeature.getName().equals("PROD_GRP_POPULAR") || siteFeature.getName().equals("PROD_GRP_YF")) { %>
     				<td>
 	    				<p class="label">
-	    					Category/Department id
+	    					Category/Department id<br/>(currentNode)
 	    				</p>
 	    				<p>
 	    					<input type="text" name="categoryId" value="<%= categoryId %>"
 	    							onfocus="this.select();">
 	    				</p>
 	    				<% if (categoryName != null) { %>
-	    				<p class="result">
-	    					Cat/Dept name: <%= categoryName %>
-	    				</p>
+		    				<p class="result">
+		    					Cat/Dept name: <%= categoryName %>
+		    				</p>
 	    				<% } else { %>
-	    				<p class="not-found result">
-	    					&lt;not found&gt;
-	    				</p>
+		    				<p class="not-found result">
+		    					&lt;not found&gt;
+		    				</p>
 	    				<% } %>
     				</td>
 <% } %>
 <% if (!EnumSiteFeature.DYF.equals(siteFeature)
 			&& !EnumSiteFeature.FAVORITES.equals(siteFeature)
 			&& !EnumSiteFeature.FEATURED_ITEMS.equals(siteFeature)
+			&& !EnumSiteFeature.BRAND_NAME_DEALS.equals(siteFeature)
 			&& !siteFeature.getName().equals("PROD_GRP_POPULAR")
 			&& !siteFeature.getName().equals("PROD_GRP_YF")) { %>
 					<td>
@@ -622,11 +623,11 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	    				</p>
 	    				</div>
 	    				<% if (useLoggedIn && sessionUser != null) { %>
-	    					<% List cartItems = sessionUser.getShoppingCart().getRecentOrderLines();
+	    					<% List<FDCartLineI> cartItems = sessionUser.getShoppingCart().getRecentOrderLines();
 	    					   if (cartItems == null)
-	    						   cartItems = Collections.EMPTY_LIST; 
-							   it = cartItems.iterator(); %>
-	    					<% if (!it.hasNext()) {	%>
+	    						   cartItems = Collections.emptyList(); 
+							   Iterator<FDCartLineI> it_cl = cartItems.iterator(); %>
+	    					<% if (!it_cl.hasNext()) {	%>
 	    				<p class="result not-found">
 	    						No recent items in cart.
 	    				</p>
@@ -635,8 +636,8 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	    						Items in recent orderlines:
 	    				</p>
 	    					<% } %>
-	    					<% while (it.hasNext()) {
-	    						FDCartLineModel cartLine = (FDCartLineModel) it.next();
+	    					<% while (it_cl.hasNext()) {
+	    						FDCartLineModel cartLine = (FDCartLineModel) it_cl.next();
 	    					%>
 	    				<p style="font-weight: normal;" title="<%= cartLine.lookupProduct().getFullName() %>"
 	    						><%= cartLine.getProductRef().getContentKey().getId() %></p>
@@ -653,11 +654,11 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	    				</p>
 	    				<p class="result">
 	    					Selected YMAL set: <% 
-	    						if (source != null) { 
-	    						%><span style="font-weight: normal;" title="<%= source.getActiveYmalSet().getFullName() + " (" +
-	    								source.getActiveYmalSet().getContentKey().getType().getName() + ")" %>"><%= source.getActiveYmalSet().getContentKey().getId() %></span><% 
+	    						if (source != null && source.getActiveYmalSet() != null ) { 
+	    							%><span style="font-weight: normal;" title="<%= source.getActiveYmalSet().getFullName() + " (" +
+	    							source.getActiveYmalSet().getContentKey().getType().getName() + ")" %>"><%= source.getActiveYmalSet().getContentKey().getId() %></span><% 
 	    						} else { 
-	    						%><span class="not-found">&lt;unidentified&gt;</span><% 
+	    							%><span class="not-found">&lt;unidentified&gt;</span><% 
 	    						} %>
 	    				</p>
 	    				<%
@@ -693,8 +694,8 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						<p>
 							<textarea name="scope" id="scope" rows="4"><%= urlG.get("scope") %></textarea>
 						</p>
-    					<% it = scope.iterator(); %>
-    					<% if (!it.hasNext()) {	%>
+    					<% Iterator<ContentNodeModel> it_cn = scope.iterator(); %>
+    					<% if (!it_cn.hasNext()) {	%>
 	    				<p class="result not-found">
 	    						No items in scope.
 	    				</p>
@@ -703,8 +704,8 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	    						Items in scope:
 	    				</p>
     					<% } %>
-    					<% while (it.hasNext()) {
-	    						ContentNodeModel node = (ContentNodeModel) it.next();
+    					<% while (it_cn.hasNext()) {
+	    						ContentNodeModel node = it_cn.next();
     					%>
 	    				<p style="font-weight: normal;" title="<%= node.getFullName() + " (" + node.getContentKey().getType().getName() + ")" %>"
 	    						><%= node.getContentName() %></p>
@@ -743,7 +744,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
     	</table>
     </div>
     <% } // end if "simple".equals...
-    List recsA = null;
+    List<ContentNodeModel> recsA = null;
 	if (aRecService != null) {
 		LOG.info("variant A recommender: " + aRecService.getClass().getName());
 		try {
@@ -753,7 +754,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 			LOG.error("exception when recommend for A", e);
 		}
 	}
-	List recsB = null;
+	List<ContentNodeModel> recsB = null;
 	if (bRecService != null) {
 		LOG.info("variant B recommender: " + bRecService.getClass().getName());
 		try {
@@ -775,7 +776,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						String optGroup = "";
 						it = varIds.iterator();
 						if (it.hasNext()) {
-							String varId = (String) it.next();
+							String varId = it.next();
 							optGroup = assignment.containsValue(varId) ? "In Use" : "Not in Use";
 					%>
 					<optgroup label="<%= optGroup %>">
@@ -789,7 +790,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 							}
 						}
 						while (it.hasNext()) {
-							String varId = (String) it.next();
+							String varId = it.next();
 							String newGroup = assignment.containsValue(varId) ? "In Use" : "Not in Use";
 							if (!newGroup.equals(optGroup)) {
 								optGroup = newGroup;
@@ -838,10 +839,10 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						String optGroup = "";
 						it = varIds.iterator();
 						A: if (it.hasNext()) {
-							String varId = (String) it.next();
+							String varId = it.next();
 							while (varId.equals(variantA)) {
 								if (it.hasNext()) {
-									varId = (String) it.next();
+									varId = it.next();
 								} else {
 									break A;
 								}
@@ -859,7 +860,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 							}
 						}
 						while (it.hasNext()) {
-							String varId = (String) it.next();
+							String varId = it.next();
 							if (varId.equals(variantA))
 								continue;
 							String newGroup = assignment.containsValue(varId) ? "In Use" : "Not in Use";
@@ -908,10 +909,10 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 				%> 
 				<table class="prod-items">
 				<%
-						it = recsA.iterator();
+						Iterator<ContentNodeModel> it_ra = recsA.iterator();
 						int rank = 1;
-						while (it.hasNext()) {
-							ContentNodeModel cnm = (ContentNodeModel) it.next();
+						while (it_ra.hasNext()) {
+							ContentNodeModel cnm = it_ra.next();
 							ProductModel pm = (ProductModel) cnm;
 							pm = ProductPricingFactory.getInstance().getPricingAdapter(pm, si.getPricingContext() != null ? si.getPricingContext() : PricingContext.DEFAULT);
 							String actionURL = FDURLUtil.getProductURI(pm, "preview");
@@ -947,13 +948,13 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 								<div class="score text12">
 									<span style="white-space: nowrap">Brand<%= pm.getBrands().size() > 1 ? "s" : "" %>: <%
 										String brands = "";
-										Iterator bit = pm.getBrands().iterator();
+										Iterator<BrandModel> bit = pm.getBrands().iterator();
 										if (bit.hasNext()) {
-											BrandModel b = (BrandModel) bit.next();
+											BrandModel b = bit.next();
 											brands += b.getFullName();
 										}
 										while (bit.hasNext()) {
-											BrandModel b = (BrandModel) bit.next();
+											BrandModel b = bit.next();
 											brands += ", " + b.getFullName();
 										}
 									%><%= brands %></span><br>
@@ -980,10 +981,10 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 				%>
 				<table class="prod-items">
 				<%
-						it = recsB.iterator();
+						Iterator<ContentNodeModel> it_rb = recsB.iterator();
 						int idx = 0;
-						while (it.hasNext()) {
-							ContentNodeModel cnm = (ContentNodeModel) it.next();
+						while (it_rb.hasNext()) {
+							ContentNodeModel cnm = it_rb.next();
 							ProductModel pm = (ProductModel) cnm;
 							pm = ProductPricingFactory.getInstance().getPricingAdapter(pm, si.getPricingContext() != null ? si.getPricingContext() : PricingContext.DEFAULT);
 							String actionURL = FDURLUtil.getProductURI(pm, "preview");
@@ -1028,13 +1029,13 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 								<div class="score text12">
 									<span style="white-space: nowrap">Brand<%= pm.getBrands().size() > 1 ? "s" : "" %>: <%
 										String brands = "";
-										Iterator bit = pm.getBrands().iterator();
+										Iterator<BrandModel> bit = pm.getBrands().iterator();
 										if (bit.hasNext()) {
-											BrandModel b = (BrandModel) bit.next();
+											BrandModel b = bit.next();
 											brands += b.getFullName();
 										}
 										while (bit.hasNext()) {
-											BrandModel b = (BrandModel) bit.next();
+											BrandModel b = bit.next();
 											brands += ", " + b.getFullName();
 										}
 									%><%= brands %></span><br>

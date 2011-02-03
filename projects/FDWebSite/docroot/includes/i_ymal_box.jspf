@@ -70,9 +70,9 @@
 
 
 	// INPUT
-	List r_prods				= (List) request.getAttribute("ymal_products"); // [mandatory]
-	List r_cats					= (List) request.getAttribute("ymal_categories"); // [mandatory]
-	List r_recipes				= (List) request.getAttribute("ymal_recipes"); // [mandatory]
+	List<ProductModel> r_prods	= (List<ProductModel>) request.getAttribute("ymal_products"); // [mandatory]
+	List<CategoryModel> r_cats	= (List<CategoryModel>) request.getAttribute("ymal_categories"); // [mandatory]
+	List<Recipe> r_recipes		= (List<Recipe>) request.getAttribute("ymal_recipes"); // [mandatory]
 	YmalSet ym_aset				= (YmalSet) request.getAttribute("ymal_aset"); // [optional] active ymal set
 	ProductModel ym_product		= (ProductModel) request.getAttribute("ymal_product"); // [optional] originating product
 	Variant	variant				= (Variant) request.getAttribute("ymal_variant"); // [optional] variant
@@ -95,10 +95,10 @@
 
 	// Transform product to impressions
 	//   and count transactional ones
-	List impressions = new ArrayList();
+	List<ProductImpression> impressions = new ArrayList<ProductImpression>();
 	int nConfProd = 0;
-	for (Iterator it = r_prods.iterator(); it.hasNext(); ) {
-	    ProductImpression pi = cUtil.configure((ProductModel) it.next(), confContext);
+	for (Iterator<ProductModel> it = r_prods.iterator(); it.hasNext(); ) {
+	    ProductImpression pi = cUtil.configure(it.next(), confContext);
 	    impressions.add(pi);
 	    
 	    if (pi.isTransactional()) {
@@ -292,8 +292,8 @@
 %>				<img src="/media_stat/images/template/confirmation/ymal_recipes_hdr.gif" width="170" height="11" border="0" alt="YOU MIGHT ALSO LIKE"><br>
 				<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
 <%
-		for (Iterator it = r_recipes.iterator(); it.hasNext();) {
-			Recipe rec = (Recipe) it.next();
+		for (Iterator<Recipe> it = r_recipes.iterator(); it.hasNext();) {
+			Recipe rec = it.next();
 %>				<div><a href="/recipe.jsp?recipeId=<%= rec.getContentName() %>&trk=conf" class="text12"><%= rec.getName() %></a></div>
 <%
 		}
@@ -314,8 +314,8 @@
 					<div style="font-size:11px; color: #996699; font-weight: bold;">CONTINUE SHOPPING FOR</div>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
 <%
-		for (Iterator it = r_cats.iterator(); it.hasNext();) {
-			CategoryModel c = (CategoryModel) it.next();
+		for (Iterator<CategoryModel> it = r_cats.iterator(); it.hasNext();) {
+			CategoryModel c = it.next();
 				
 			CategoryModel aliasNode = c.getAliasCategory();
 			String relatedLink = FDURLUtil.getCategoryURI((aliasNode != null ? aliasNode : c), "conf");

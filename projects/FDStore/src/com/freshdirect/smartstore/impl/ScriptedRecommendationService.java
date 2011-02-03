@@ -99,6 +99,8 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
 
 		List<ContentNodeModel> sample;
 		List<ContentNodeModel> prioritized = dataAccess.getPrioritizedNodes();
+		input.setPrioritizedCount( prioritized.size() );
+		
 		sample = sample(input, rankedContents, aggregatable, prioritized);
 
 		List<ContentNodeModel> appended = new ArrayList<ContentNodeModel>(prioritized.size() + sample.size());

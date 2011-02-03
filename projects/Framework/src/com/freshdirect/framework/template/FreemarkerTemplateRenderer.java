@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.framework.content.TemplateRenderer;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 import freemarker.cache.ClassTemplateLoader;
@@ -25,7 +24,7 @@ import freemarker.template.TemplateExceptionHandler;
  */
 public class FreemarkerTemplateRenderer implements ITemplateRenderer {
 
-	private final static Logger LOGGER = LoggerFactory.getInstance(TemplateRenderer.class);
+	private final static Logger LOGGER = LoggerFactory.getInstance(FreemarkerTemplateRenderer.class);
 
 	private final Configuration cfg;
 	

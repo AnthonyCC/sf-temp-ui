@@ -47,17 +47,15 @@ public class CmsRecommenderRegistry {
 
 	private void load(boolean forceReload) {
 		ScarabInfrastructure.reload();
-		Map<String, RecommendationService> tmpSmartCatVariants = new HashMap();
-		Set rss = CmsManager.getInstance().getContentKeysByType(
-				FDContentTypes.RECOMMENDER_STRATEGY);
+		Map<String, RecommendationService> tmpSmartCatVariants = new HashMap<String, RecommendationService>();
+		Set<ContentKey> rss = CmsManager.getInstance().getContentKeysByType(FDContentTypes.RECOMMENDER_STRATEGY);
 		if (smartCatVariants == null) {
 			LOGGER.info("first time initialization");
 			forceReload = true;
 		}
 
 		if (!forceReload) {
-			if (System.currentTimeMillis() - lastReload >
-					FDStoreProperties.getCmsRecommenderRefreshRate() * 60 * 1000) {
+			if (System.currentTimeMillis() - lastReload > FDStoreProperties.getCmsRecommenderRefreshRate() * 60 * 1000) {
 				forceReload = true;
 				LOGGER.info("cache timed out, need reload");
 			}
@@ -75,15 +73,12 @@ public class CmsRecommenderRegistry {
 		Iterator<ContentKey> it = rss.iterator();
 		while (it.hasNext()) {
 			ContentKey key = it.next();
-			RecommenderStrategy strat = (RecommenderStrategy) ContentFactory
-					.getInstance().getContentNodeByKey(key);
-			RecommendationServiceConfig config = RecommendationServiceFactory
-					.createServiceConfig(strat);
+			RecommenderStrategy strat = (RecommenderStrategy) ContentFactory.getInstance().getContentNodeByKey(key);
+			RecommendationServiceConfig config = RecommendationServiceFactory.createServiceConfig(strat);
 
 			Variant v = new Variant("cms_" + strat.getContentName(),
 					EnumSiteFeature.SMART_CATEGORY, config, new TreeMap<Integer, SortedMap<Integer, CartTabStrategyPriority>>());
-			RecommendationService rs = RecommendationServiceFactory
-					.configure(v);
+			RecommendationService rs = RecommendationServiceFactory.configure(v);
 			if (rs instanceof FactorRequirer) {
 				((FactorRequirer) rs).collectFactors(factors);
 			}
@@ -92,8 +87,7 @@ public class CmsRecommenderRegistry {
 
 		LOGGER.info("needed factors :" + factors);
 		ScoreProvider.getInstance().acquireFactors(factors);
-		LOGGER.info("configured CMS recommenders:"
-				+ tmpSmartCatVariants.keySet());
+		LOGGER.info("configured CMS recommenders:" + tmpSmartCatVariants.keySet());
 
 		smartCatVariants = tmpSmartCatVariants;
 		lastReload = System.currentTimeMillis();

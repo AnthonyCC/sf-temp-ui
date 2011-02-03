@@ -224,7 +224,7 @@ public class RecommendationServiceFactory {
 		unused.removeAll(statuses.keySet());
 		Iterator<String> it = unused.iterator();
 		while (it.hasNext()) {
-			String param = (String) it.next();
+			String param = it.next();
 			statuses.put(param, new ConfigurationStatus(param, serviceConfig
 					.get(param), EnumConfigurationState.CONFIGURED_UNUSED)
 					.setWarning("Unused parameter. Maybe mistyped?!?"));
@@ -456,31 +456,28 @@ public class RecommendationServiceFactory {
 		return cosFilter;
 	}
 
-	protected static boolean extractBrandUniquenessSorter(
-			RecommendationServiceConfig config, Map<String,ConfigurationStatus> statuses) {
+	protected static boolean extractBrandUniquenessSorter( RecommendationServiceConfig config, Map<String, ConfigurationStatus> statuses ) {
 		boolean brandUniqueness = DEFAULT_BRAND_SORTER;
-		String brandUniquenessStr = config.get(CKEY_BRAND_SORTER);
-		if (brandUniquenessStr != null) {
-			if (brandUniquenessStr.equalsIgnoreCase("yes")
-					|| brandUniquenessStr.equalsIgnoreCase("true")
-					|| brandUniquenessStr.equals("1")) {
+		String brandUniquenessStr = config.get( CKEY_BRAND_SORTER );
+		if ( brandUniquenessStr != null ) {
+			if ( brandUniquenessStr.equalsIgnoreCase( "yes" ) || brandUniquenessStr.equalsIgnoreCase( "true" ) || brandUniquenessStr.equals( "1" ) ) {
 				brandUniqueness = true;
-				statuses.put(CKEY_BRAND_SORTER, new ConfigurationStatus(
-						CKEY_BRAND_SORTER, brandUniquenessStr, Boolean
-								.toString(brandUniqueness),
-						EnumConfigurationState.CONFIGURED_OK));
-			} else
-				statuses.put(CKEY_BRAND_SORTER, new ConfigurationStatus(
-						CKEY_BRAND_SORTER, brandUniquenessStr, Boolean
-								.toString(DEFAULT_BRAND_SORTER),
-						EnumConfigurationState.CONFIGURED_WRONG_DEFAULT,
-						"Unrecognized value defaulting to "
-								+ Boolean.toString(DEFAULT_BRAND_SORTER)));
+				statuses.put( CKEY_BRAND_SORTER, 
+					new ConfigurationStatus( CKEY_BRAND_SORTER, brandUniquenessStr, Boolean.toString( brandUniqueness ), 
+					EnumConfigurationState.CONFIGURED_OK ) );
+			} else if ( brandUniquenessStr.equalsIgnoreCase( "no" ) || brandUniquenessStr.equalsIgnoreCase( "false" ) || brandUniquenessStr.equals( "0" ) ) {
+				brandUniqueness = false;
+				statuses.put( CKEY_BRAND_SORTER, 
+					new ConfigurationStatus( CKEY_BRAND_SORTER, brandUniquenessStr, Boolean.toString( brandUniqueness ), 
+					EnumConfigurationState.CONFIGURED_OK ) );
+			} else {
+				statuses.put( CKEY_BRAND_SORTER, 
+					new ConfigurationStatus( CKEY_BRAND_SORTER, brandUniquenessStr, Boolean.toString( DEFAULT_BRAND_SORTER ), 
+					EnumConfigurationState.CONFIGURED_WRONG_DEFAULT, 
+					"Unrecognized value defaulting to " + Boolean.toString( DEFAULT_BRAND_SORTER ) ) );
+			}
 		} else
-			statuses.put(CKEY_BRAND_SORTER, new ConfigurationStatus(
-					CKEY_BRAND_SORTER, null, Boolean
-							.toString(DEFAULT_BRAND_SORTER),
-					EnumConfigurationState.UNCONFIGURED_DEFAULT));
+			statuses.put( CKEY_BRAND_SORTER, new ConfigurationStatus( CKEY_BRAND_SORTER, null, Boolean.toString( DEFAULT_BRAND_SORTER ), EnumConfigurationState.UNCONFIGURED_DEFAULT ) );
 		return brandUniqueness;
 	}
 
@@ -672,10 +669,8 @@ public class RecommendationServiceFactory {
 			sampler = new ComplicatedImpressionSampler(cl, catAggr, useAlternatives);
 		} else {
 			LOGGER.warn("Invalid strategy: " + samplingStrategy);
-			ConfigurationStatus status = (ConfigurationStatus) statuses
-					.get(CKEY_SAMPLING_STRATEGY);
-			throw new ConfigurationException(CKEY_SAMPLING_STRATEGY, status
-					.getState());
+			ConfigurationStatus status = statuses.get(CKEY_SAMPLING_STRATEGY);
+			throw new ConfigurationException(CKEY_SAMPLING_STRATEGY, status.getState());
 		}
 
 		// log sampler

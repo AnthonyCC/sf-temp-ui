@@ -30,12 +30,13 @@ public class FeaturedItemsRecommendationService extends AbstractRecommendationSe
 	 * @return a List<{@link ContentNodeModel}> of recommendations
 	 * 
 	 */
-	public List doRecommendNodes(SessionInput input) {
-		List featuredNodes = Collections.EMPTY_LIST;
+	@SuppressWarnings( "unchecked" )
+	public List<ContentNodeModel> doRecommendNodes(SessionInput input) {
+		List<ContentNodeModel> featuredNodes = Collections.emptyList();
 		if (input.getCurrentNode() != null) {
 			ContentNodeModel model = input.getCurrentNode();
 
-			featuredNodes = getFeaturedItems(model);
+			featuredNodes = (List<ContentNodeModel>)getFeaturedItems(model);
 			featuredNodes = sample(input, rankListByOrder(featuredNodes), false);
 		}
 
@@ -48,7 +49,7 @@ public class FeaturedItemsRecommendationService extends AbstractRecommendationSe
 	 * @param model
 	 * @return
 	 */
-	public static List getFeaturedItems(ContentNodeModel model) {
+	public static List<? extends ContentNodeModel> getFeaturedItems(ContentNodeModel model) {
 		return HelperFunctions.getFeaturedItems(model);
 	}
 }

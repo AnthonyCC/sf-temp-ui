@@ -166,6 +166,33 @@
 					<td width="205" valign="top" class="text13bold"><%= listColumn2.toString() %></td>
 				</tr><%-- end of categories --%>
 
+
+				<%-- Editorial media section--%>
+				<% 
+				DepartmentModel dept = (DepartmentModel) currentFolder;
+	        	List<Html> editorial = dept.getAssocEditorial();
+				if ( editorial != null && editorial.size() > 0 ) { %>
+					<!-- separator  -->
+					<tr>
+						<td colspan="6">
+							<br /><img src="/media_stat/images/layout/cccccc.gif" width="550" height="1" border="0"><br />
+							<font class="space4pix"><br /><br /></font>
+						</td>
+					</tr>
+					<!-- assoc editorial media -->
+					<tr>
+						<td colspan="6">
+					        <%
+							for ( Html media : editorial ) {
+								if (media != null) {
+		                            %><fd:IncludeMedia name='<%= media.getPath() %>' /><%
+						    	}
+							}
+					        %>						
+						</td>
+					</tr>
+				<% } %>
+
 				<%-- //Featured Products moved into Include --%>
 					<%@ include file="/includes/layouts/i_featured_products.jspf" %>
 				<%-- //END Featured Products --%>

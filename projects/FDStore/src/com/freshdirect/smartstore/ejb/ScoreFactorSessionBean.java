@@ -181,7 +181,7 @@ public class ScoreFactorSessionBean extends SessionBeanSupport {
 			int factorsSize = factors.size();
 			while(rs.next()) {
 				String productId = rs.getString("PRODUCT_ID");
-				double[] factorValues = (double[]) scores.get(productId);
+				double[] factorValues = scores.get(productId);
 				if (factorValues == null) {
 					factorValues = new double[factorsSize];
 					scores.put(productId, factorValues);

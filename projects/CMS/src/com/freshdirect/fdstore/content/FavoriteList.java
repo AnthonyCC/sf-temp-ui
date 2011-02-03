@@ -6,9 +6,10 @@ import java.util.List;
 import com.freshdirect.cms.ContentKey;
 
 public class FavoriteList extends ContentNodeModelImpl {
+	
 	private static final long serialVersionUID = 1205090955009726825L;
 
-	private final List items = new ArrayList();
+	private final List<ProductModel> items = new ArrayList<ProductModel>();
 
 	public FavoriteList(ContentKey key) {
 		super(key);
@@ -18,10 +19,10 @@ public class FavoriteList extends ContentNodeModelImpl {
 		return getAttribute("full_name", getContentName());
 	}
 
-	public List getFavoriteItems() {
+	public List<ProductModel> getFavoriteItems() {
 		ContentNodeModelUtil.refreshModels(this, "favoriteItems", items, false);
 
-		return new ArrayList(items);
+		return new ArrayList<ProductModel>(items);
 	}
 
 	/**
@@ -32,7 +33,7 @@ public class FavoriteList extends ContentNodeModelImpl {
 	 * @deprecated
 	 * @return
 	 */
-	public List getItems() {
+	public List<ProductModel> getItems() {
 		return getFavoriteItems();
 	}
 }

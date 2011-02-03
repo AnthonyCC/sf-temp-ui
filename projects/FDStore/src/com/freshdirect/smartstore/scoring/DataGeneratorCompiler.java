@@ -1,7 +1,6 @@
 package com.freshdirect.smartstore.scoring;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -87,7 +86,8 @@ public class DataGeneratorCompiler extends CompilerBase {
     
     private class NodeFunction extends Context.FunctionDef {
 
-        public NodeFunction() {
+        @SuppressWarnings( "unused" )
+		public NodeFunction() {
             super();
         }
 
@@ -95,11 +95,13 @@ public class DataGeneratorCompiler extends CompilerBase {
             super(min, max, retType);
         }
 
-        public NodeFunction(int min, int max) {
+        @SuppressWarnings( "unused" )
+		public NodeFunction(int min, int max) {
             super(min, max);
         }
 
-        public NodeFunction(int params) {
+        @SuppressWarnings( "unused" )
+		public NodeFunction(int params) {
             super(params);
         }
         
@@ -171,18 +173,18 @@ public class DataGeneratorCompiler extends CompilerBase {
             if (parameters.size() == 1) {
                 Expression param = parameters.get(0);
                 return handleOneParameteredFunction(param);
-            } else {
-                StringBuffer buffer = new StringBuffer();
-                buffer.append("  HelperFunctions.recursiveNodes(new Object[] { ");
-                for (int i = 0; i < parameters.size(); i++) {
-                    if (i > 0) {
-                        buffer.append(',');
-                    }
-                    buffer.append(parameters.get(i).toJavaCode());
-                }
-                buffer.append("})");
-                return buffer.toString();
             }
+            
+			StringBuffer buffer = new StringBuffer();
+			buffer.append("  HelperFunctions.recursiveNodes(new Object[] { ");
+			for (int i = 0; i < parameters.size(); i++) {
+			    if (i > 0) {
+			        buffer.append(',');
+			    }
+			    buffer.append(parameters.get(i).toJavaCode());
+			}
+			buffer.append("})");
+			return buffer.toString();
         }
 
 
@@ -217,8 +219,8 @@ public class DataGeneratorCompiler extends CompilerBase {
                         throw new CompileException(CompileException.PARAMETER_ERROR, "first parameter has unexpected type of "
                                 + Expression.getTypeName(param.getReturnType()) + ", but expected node or string");
                 }
-            } else
-            	throw new CompileException(CompileException.PARAMETER_ERROR, "too many parameters");
+            }
+			throw new CompileException(CompileException.PARAMETER_ERROR, "too many parameters");
         }
     }
 
@@ -240,8 +242,8 @@ public class DataGeneratorCompiler extends CompilerBase {
                     throw new CompileException(CompileException.PARAMETER_ERROR, "first parameter has unexpected type of "
                             + Expression.getTypeName(param.getReturnType()) + ", but expected node or string");
                 }
-            } else
-            	throw new CompileException(CompileException.PARAMETER_ERROR, "too many parameters");
+            }
+			throw new CompileException(CompileException.PARAMETER_ERROR, "too many parameters");
         }
     }
 
@@ -270,9 +272,9 @@ public class DataGeneratorCompiler extends CompilerBase {
                     throw new CompileException(CompileException.TYPE_ERROR, "The third parameter must have type INT!");
                 }
 
-		return "  HelperFunctions.getTopN(" + param0.toJavaCode() + ", \"" + factorName + "\", " + param2.toJavaCode() +", sessionInput, input)";
-            } else
-            	throw new CompileException(CompileException.PARAMETER_ERROR, "3 parameters expected");
+                return "  HelperFunctions.getTopN(" + param0.toJavaCode() + ", \"" + factorName + "\", " + param2.toJavaCode() +", sessionInput, input)";
+            }
+			throw new CompileException(CompileException.PARAMETER_ERROR, "3 parameters expected");
         }
 
         @Override
@@ -407,27 +409,23 @@ public class DataGeneratorCompiler extends CompilerBase {
             if (parameters.size() == 1) {
                 Expression param = parameters.get(0);
                 return handleOneParameteredFunction(param);
-            } else {
-                Expression param = parameters.get(0);
-                if (parameters.size() == 2) {
-                    Expression exp = parameters.get(1);
-                    return "  HelperFunctions.recursiveNodesExcept(" + createScriptConvertToNodeOrSet(param) + ",(Object) " + exp.toJavaCode() + ")";
-                } else {
-                    StringBuffer buffer = new StringBuffer();
-                    buffer.append("  HelperFunctions.recursiveNodesExcept("+ createScriptConvertToNodeOrSet(param)+ ",new Object[] { ");
-                    for (int i = 1; i < parameters.size(); i++) {
-                        if (i > 1) {
-                            buffer.append(',');
-                        }
-                        buffer.append(parameters.get(i).toJavaCode());
-                    }
-                    buffer.append("})");
-                    return buffer.toString();
-                }
-                
             }
-        }
-        
+			Expression param = parameters.get(0);
+			if (parameters.size() == 2) {
+			    Expression exp = parameters.get(1);
+			    return "  HelperFunctions.recursiveNodesExcept(" + createScriptConvertToNodeOrSet(param) + ",(Object) " + exp.toJavaCode() + ")";
+			}
+			StringBuffer buffer = new StringBuffer();
+			buffer.append("  HelperFunctions.recursiveNodesExcept("+ createScriptConvertToNodeOrSet(param)+ ",new Object[] { ");
+			for (int i = 1; i < parameters.size(); i++) {
+			    if (i > 1) {
+			        buffer.append(',');
+			    }
+			    buffer.append(parameters.get(i).toJavaCode());
+			}
+			buffer.append("})");
+			return buffer.toString();
+        }        
     }
 
     static class OperationCompileResult {
@@ -482,18 +480,17 @@ public class DataGeneratorCompiler extends CompilerBase {
                     }
                     throw new CompileException(CompileException.TYPE_ERROR, "The "+"first parameter"+" type is " + Expression.getTypeName(param.getReturnType())
                             + " instead of the expected node/set/string!");
-                } else {
-                    StringBuffer buffer = new StringBuffer();
-                    buffer.append("  HelperFunctions.toList(new Object[] { ");
-                    for (int i = 0; i < parameters.size(); i++) {
-                        if (i > 0) {
-                            buffer.append(',');
-                        }
-                        buffer.append(parameters.get(i).toJavaCode());
-                    }
-                    buffer.append("})");
-                    return buffer.toString();
                 }
+				StringBuffer buffer = new StringBuffer();
+				buffer.append("  HelperFunctions.toList(new Object[] { ");
+				for (int i = 0; i < parameters.size(); i++) {
+				    if (i > 0) {
+				        buffer.append(',');
+				    }
+				    buffer.append(parameters.get(i).toJavaCode());
+				}
+				buffer.append("})");
+				return buffer.toString();
             }
         });
         parser.getContext().addFunctionDef("ParentCategory", new Context.FunctionDef(1, 1, Expression.RET_NODE) {
@@ -525,9 +522,9 @@ public class DataGeneratorCompiler extends CompilerBase {
         parser.getContext().addFunctionDef("Top", new TopFunction());
 
         parser.getContext().addFunctionDef(FN_PRODUCT_RECOMMENDATION, new Context.FunctionDef(2, 2, Expression.RET_SET) {
-            public String toJavaCode(String name, List parameters) throws CompileException {
-                Expression param0 = (Expression) parameters.get(0);
-                Expression param1 = (Expression) parameters.get(1);
+            public String toJavaCode(String name, List<Expression> parameters) throws CompileException {
+                Expression param0 = parameters.get(0);
+                Expression param1 = parameters.get(1);
                 if (param0.getReturnType() != Expression.RET_STRING) {
                     throw new CompileException(CompileException.TYPE_ERROR, "First parameter should be a string for " + name + "!");
                 }
@@ -536,8 +533,8 @@ public class DataGeneratorCompiler extends CompilerBase {
         });
 
         parser.getContext().addFunctionDef(FN_USER_RECOMMENDATION, new Context.FunctionDef(1, 1, Expression.RET_SET) {
-            public String toJavaCode(String name, List parameters) throws CompileException {
-                Expression param0 = (Expression) parameters.get(0);
+            public String toJavaCode(String name, List<Expression> parameters) throws CompileException {
+                Expression param0 = parameters.get(0);
                 if (param0.getReturnType() != Expression.RET_STRING) {
                     throw new CompileException(CompileException.TYPE_ERROR, "First parameter should be a string for " + name + "!");
                 }
@@ -649,9 +646,7 @@ public class DataGeneratorCompiler extends CompilerBase {
             throw new ClassCompileException("NotFound:" + e.getMessage(), e);
         } catch (CannotCompileException e) {
             throw new ClassCompileException("CannotCompile:" + e.getMessage(), e);
-        } catch (VisitException e) {
-            throw new ClassCompileException("VisitException:" + e.getMessage(), e);
-        }
+        } 
     }
 
 
@@ -682,7 +677,7 @@ public class DataGeneratorCompiler extends CompilerBase {
         return CtNewMethod.make(b.toString(), class1);
     }
 
-    private CtMethod createGenerateMethod(CtClass class1, BlockExpression ast, boolean doCaching,VariableCollector vc) throws CannotCompileException, CompileException, VisitException {
+    private CtMethod createGenerateMethod(CtClass class1, BlockExpression ast, boolean doCaching,VariableCollector vc) throws CompileException {
         CompileState c = new CompileState();
 
         Expression expression = ast.get(0);
@@ -757,7 +752,7 @@ public class DataGeneratorCompiler extends CompilerBase {
         return new OperationCompileResult(varName, buffer.toString());
     }
 
-    private OperationCompileResult compileVariable(CompileState c, VariableExpression expression) throws CompileException {
+    private OperationCompileResult compileVariable(CompileState c, VariableExpression expression) {
         if (expression.getReturnType() != Expression.RET_SET) {
             return new OperationCompileResult();
         }
@@ -772,11 +767,9 @@ public class DataGeneratorCompiler extends CompilerBase {
             OperationCompileResult oc = new OperationCompileResult(varName, "  List " + varName + " = input.getDatasource(sessionInput, \"" + expression.getVariableName()
                     + "\");\n");
             return oc;
-        } else {
-            OperationCompileResult oc = new OperationCompileResult(varName, "  List " + varName + " = " + expression.getVariableName() + ";\n");
-            return oc;
         }
-            
+		OperationCompileResult oc = new OperationCompileResult(varName, "  List " + varName + " = " + expression.getVariableName() + ";\n");
+		return oc;            
     }
     
     protected boolean isVariableFromDatasource(String name) {
@@ -889,7 +882,7 @@ public class DataGeneratorCompiler extends CompilerBase {
             buffer.append("     double[] vars = input.getVariables(userId, pricingCtx, " + ITERATION_VARIABLE + "," + arrayName + ");\n");
             int index = 0;
             for (Iterator<String> iter=vc.getVariables().iterator();iter.hasNext();) {
-                buffer.append("   ").append(declareVariable(context, (String) iter.next(), "vars["+index+']'));
+                buffer.append("   ").append(declareVariable(context, iter.next(), "vars["+index+']'));
             }
         }
 //        if ("prioritize".equals(functionName)) {
@@ -1027,9 +1020,8 @@ public class DataGeneratorCompiler extends CompilerBase {
                 String key = getCacheKeyForVariable(varName);
                 if (key==null) {
                     return null;
-                } else {
-                    result.add(key);
                 }
+				result.add(key);
             }
         }
         return result;

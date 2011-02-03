@@ -272,6 +272,9 @@ class FDProductHelper {
 			//LOGGER.debug("tiered deal is out of bounds for SKU " + erpProductInfo.getSkuCode());
 			tieredDeal = 0;
 		}
+		if ( tieredDeal > 0 ) {
+			isShowBurstImage = true;
+		}
 		String[] ids = { skuCode };
 		FlatAttributeCollection rawAttrs = FDAttributeCache.getInstance().getAttributes(ids);
 		// SKU attributes are flat, hence no need for visitor 

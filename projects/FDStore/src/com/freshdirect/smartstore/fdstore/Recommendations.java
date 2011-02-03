@@ -16,7 +16,6 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
-import com.freshdirect.framework.util.Reference;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.VariantReference;
@@ -40,12 +39,12 @@ public class Recommendations implements Serializable {
 	 * List of all recommended products
 	 */
 	private transient List<ProductModel> products;
-        private List<ProductReference> productReferences;
+    private List<ProductReference> productReferences;
 
 	private Map<ContentKey,String> impressionIds;
 	private Map<String,String> prd2recommender;
 	private Map<String,String> prd2recommenderStrat;
-        private Map<String,List<ContentKey>> previousRecommendations;
+    private Map<String,List<ContentKey>> previousRecommendations;
 	private String requestId;
 
 	ContentNodeModelReference<CategoryModel> category;
@@ -62,9 +61,6 @@ public class Recommendations implements Serializable {
 	// array of logged products
 	boolean logged[];
 	
-	//Added for Zone Pricing.
-	private PricingContext pricingCtx;
-
 	/**
 	 * Constructor.
 	 * @param variant 
@@ -74,7 +70,6 @@ public class Recommendations implements Serializable {
 		this.variant = new VariantReference(variant);
 		this.productReferences = new ArrayList<ProductReference>(contentNodes.size());
 		this.products = new ArrayList<ProductModel>(contentNodes.size());
-		this.pricingCtx = pricingCtx;
 		for (ContentNodeModel m : contentNodes) {
 			//Convert to ProductModelPricingAdapter for Zone Pricing
 		    ProductModel p = ProductPricingFactory.getInstance().getPricingAdapter((ProductModel)m,pricingCtx);
@@ -94,20 +89,17 @@ public class Recommendations implements Serializable {
 		this.isSmartSavings = isSmartSavings;
 
 		if (AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get() != null) {
-			prd2recommender = (Map<String,String>)
-					AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get();
-	        
+			prd2recommender = AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get();	        
 	        AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.set(null);
 		} else {
-			prd2recommender = Collections.EMPTY_MAP;
+			prd2recommender = Collections.emptyMap();
 		}
 
 		if (AbstractRecommendationService.RECOMMENDER_STRATEGY_SERVICE_AUDIT.get() != null) {
-			prd2recommenderStrat = (Map<String,String>)
-					AbstractRecommendationService.RECOMMENDER_STRATEGY_SERVICE_AUDIT.get();
+			prd2recommenderStrat = AbstractRecommendationService.RECOMMENDER_STRATEGY_SERVICE_AUDIT.get();
 	        AbstractRecommendationService.RECOMMENDER_STRATEGY_SERVICE_AUDIT.set(null);
 		} else {
-			prd2recommenderStrat = Collections.EMPTY_MAP;			
+			prd2recommenderStrat = Collections.emptyMap();			
 		}
 	}
 
@@ -131,7 +123,7 @@ public class Recommendations implements Serializable {
 		if (sessionInput != null) {
 		    this.previousRecommendations = sessionInput.getPreviousRecommendations();
 		    this.category = new ContentNodeModelReference<CategoryModel> (sessionInput.getCategory());
-                    this.currentNode = new ContentNodeModelReference<ContentNodeModel> (sessionInput.getCurrentNode());
+            this.currentNode = new ContentNodeModelReference<ContentNodeModel> (sessionInput.getCurrentNode());
 		    this.ymalSource = new ContentNodeModelReference<YmalSource> (sessionInput.getYmalSource());
 		}
 	}
@@ -140,17 +132,17 @@ public class Recommendations implements Serializable {
 	 * Get recommended products.
 	 * @return List<{@link ProductModel}>
 	 */
-        public List<ProductModel> getProducts() {
-            if (productReferences.isEmpty()) {
-                return Collections.emptyList();
-            }
-    
-            if (offset < 0 || offset * wsize >= productReferences.size())
-                throw new IndexOutOfBoundsException();
-            final int p = offset * wsize;
-            // DEBUG System.err.println("pos: " + p + " num: " + Math.min(wsize, products.size()-p) + " / max products: " + products.size());
-            return getAllProducts().subList(p, Math.min(p + wsize, productReferences.size()));
-        }	
+    public List<ProductModel> getProducts() {
+        if (productReferences.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        if (offset < 0 || offset * wsize >= productReferences.size())
+            throw new IndexOutOfBoundsException();
+        final int p = offset * wsize;
+        // DEBUG System.err.println("pos: " + p + " num: " + Math.min(wsize, products.size()-p) + " / max products: " + products.size());
+        return getAllProducts().subList(p, Math.min(p + wsize, productReferences.size()));
+    }	
 	
 	public List<ProductModel> getAllProducts() {
 	    if (products == null) {
@@ -280,4 +272,16 @@ public class Recommendations implements Serializable {
     public void setRequestId(String requestId) {
 		this.requestId = requestId;
 	}
+    
+    @Override
+    public String toString() {
+    	StringBuilder sb = new StringBuilder();
+    	sb.append( "Recommendations[" );
+    	sb.append( "requestId=" );
+    	sb.append( requestId );
+    	sb.append( ", # of products=" );
+    	sb.append( products.size() );
+    	sb.append( "]" );
+    	return sb.toString();
+    }
 }

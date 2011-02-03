@@ -125,7 +125,7 @@ public class CategoryModel extends ProductContainer {
 	/**
 	 * List of ProductModels and CategoryModels.
 	 */
-	private List candidateList = new ArrayList();
+	private List<ContentNodeModel> candidateList = new ArrayList<ContentNodeModel>();
 	
 	// New Wine Store 
 
@@ -139,7 +139,7 @@ public class CategoryModel extends ProductContainer {
 	
 	private List<ProductModel> howToCookItProducts = new ArrayList<ProductModel> ();
 	
-        final private List<CategoryModel> virtualGroups = new ArrayList<CategoryModel>();
+    final private List<CategoryModel> virtualGroups = new ArrayList<CategoryModel>();
 	
 	public CategoryModel(com.freshdirect.cms.ContentKey cKey) {
 		super(cKey);
@@ -252,9 +252,9 @@ public class CategoryModel extends ProductContainer {
 		return new ArrayList<CategoryModel>(subcategoriesModels);
 	}
 	
-    public List getCandidateList() {
+    public List<ContentNodeModel> getCandidateList() {
         ContentNodeModelUtil.refreshModels(this, "CANDIDATE_LIST", candidateList, false);
-        return new ArrayList(candidateList);
+        return new ArrayList<ContentNodeModel>(candidateList);
     }
     
     public int getManualSelectionSlots() {

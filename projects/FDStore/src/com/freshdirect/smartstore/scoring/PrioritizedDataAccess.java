@@ -7,19 +7,18 @@ import java.util.List;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
-import com.freshdirect.smartstore.filter.FilterFactory;
 import com.freshdirect.smartstore.filter.ContentFilter;
+import com.freshdirect.smartstore.filter.FilterFactory;
 
 public class PrioritizedDataAccess implements DataAccess {
 	private List<ContentNodeModel> nodes;
 	ContentFilter filter;
 
-	public PrioritizedDataAccess(Collection cartItems, boolean useAlternatives, boolean showTempUnavailable) {
+	public PrioritizedDataAccess(Collection<ContentKey> cartItems, boolean useAlternatives, boolean showTempUnavailable) {
 		nodes = new ArrayList<ContentNodeModel>();
 		filter = FilterFactory.getInstance().createFilter(cartItems, useAlternatives, showTempUnavailable);
 	}

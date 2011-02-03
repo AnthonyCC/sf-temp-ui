@@ -1,10 +1,7 @@
 package com.freshdirect.webapp.util;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
@@ -15,27 +12,25 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 
 public class FDFaqUtil {
 
-	public static List getFaqsByCategory(String categoryId){
+	public static List<ContentNodeI> getFaqsByCategory(String categoryId){
 		CmsManager          manager     = CmsManager.getInstance();				
-		ContentKey key = new ContentKey(FDContentTypes.FDFOLDER, categoryId);
-		ContentNodeI contentNode = manager.getContentNode(key);
+		ContentKey 			key 		= new ContentKey(FDContentTypes.FDFOLDER, categoryId);
+		ContentNodeI 		contentNode = manager.getContentNode(key);
 		
-		List faqSubFolders = new LinkedList();
-		if(null != contentNode){			
-			Set subNodes = contentNode.getChildKeys();
-//			Map subNodesMap = new LinkedHashMap();
-			for (Object object : subNodes) {
-				ContentKey subContentKey= (ContentKey)object;
-				if(null!=subContentKey){
-					ContentType contentType=subContentKey.getType(); 
-					ContentNodeI subContentNode = manager.getContentNode(subContentKey);
-					if(FDContentTypes.FAQ.equals(contentType)){
-						faqSubFolders.add(subContentNode);
-					}						
-				}					
+		List<ContentNodeI> faqSubFolders = new LinkedList<ContentNodeI>();
+		if ( null != contentNode ) {
+			Set<ContentKey> subNodes = contentNode.getChildKeys();
+			for ( Object object : subNodes ) {
+				ContentKey subContentKey = (ContentKey)object;
+				if ( null != subContentKey ) {
+					ContentType contentType = subContentKey.getType();
+					ContentNodeI subContentNode = manager.getContentNode( subContentKey );
+					if ( FDContentTypes.FAQ.equals( contentType ) ) {
+						faqSubFolders.add( subContentNode );
+					}
+				}
 			}
-//			faqSubFolders.add(subNodesMap);
-			
+
 		}
 		return faqSubFolders;
 	}

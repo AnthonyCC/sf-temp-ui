@@ -55,6 +55,9 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
     //Product Group Your Favorites
     public final static EnumSiteFeature PROD_GRP_YF = new EnumSiteFeature("PROD_GRP_YF");
 
+    //Brand Name Deals
+    public final static EnumSiteFeature BRAND_NAME_DEALS = new EnumSiteFeature("BRAND_NAME_DEALS",true,"Brand Name Deals");
+    
     String name;
 	
 	/**

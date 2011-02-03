@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.freshdirect.fdstore.content;
 
 import com.freshdirect.cms.ContentKey;
@@ -15,7 +12,6 @@ public class Faq extends ContentNodeModelImpl {
 
 	public Faq(ContentKey key) {
 		super(key);
-		// TODO Auto-generated constructor stub
 	}
 	
 	public String getQuestion(){
@@ -26,9 +22,9 @@ public class Faq extends ContentNodeModelImpl {
 		return getAttribute("ANSWER", "");
 	}
 	
-	/*public String getKeywords() {
+	public String getKeywords() {
 		return getAttribute("KEYWORDS", "");
-	}*/
+	}
 	
 	public String getDescription() {
 		return getFullName();

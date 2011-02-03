@@ -1,12 +1,10 @@
-/**
- * 
- */
 package com.freshdirect.webapp.taglib.smartstore;
 
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -23,13 +21,11 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
  */
 public class ProductGroupRecommenderTag extends RecommendationsTag {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
+    
     ContentNodeModel nodeModel;
     private boolean noShuffle = false;
-    private Set shoppingCart = null;
+    private Set<ContentKey> shoppingCart = null;
     String siteFeature=null;
     
     public void setCurrentNode(ContentNodeModel cnm) {
@@ -82,7 +78,7 @@ public class ProductGroupRecommenderTag extends RecommendationsTag {
      * 
      * @param shoppingCart Set<ContentKey> of product keys
      */
-    public void setShoppingCart(Set shoppingCart) {
+    public void setShoppingCart(Set<ContentKey> shoppingCart) {
         this.shoppingCart = shoppingCart;
     }
 

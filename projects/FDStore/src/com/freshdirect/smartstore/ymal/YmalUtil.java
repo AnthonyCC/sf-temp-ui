@@ -118,11 +118,9 @@ public class YmalUtil {
 		List<FDCartLineI> orderLines = new ArrayList<FDCartLineI>(user.getShoppingCart().getRecentOrderLines());
 
 		FDCartLineModel selected = null;
-		if (orderLines == null || orderLines.size() == 0)
-			selected = null;
-		else if (orderLines.size() == 1)
+		if (orderLines.size() == 1)
 			selected = (FDCartLineModel) orderLines.get(0);
-		else {
+		else if (orderLines.size() > 1) {
 			Collections.sort(orderLines, new PriceComparator());
 			selected = (FDCartLineModel) orderLines.get(0);
 		}

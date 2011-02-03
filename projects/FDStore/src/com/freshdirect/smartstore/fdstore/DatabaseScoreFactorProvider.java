@@ -110,7 +110,7 @@ public class DatabaseScoreFactorProvider {
      * @return List<ContentKey>
      * @throws RemoteException
      */
-    public List getProductRecommendations(String recommender, ContentKey key) {
+    public List<ContentKey> getProductRecommendations(String recommender, ContentKey key) {
         try {
             return getSessionBean().getProductRecommendations(recommender, key);
         } catch (RemoteException e) {
@@ -128,7 +128,7 @@ public class DatabaseScoreFactorProvider {
      * @return List<ContentKey>
      * @throws RemoteException
      */
-    public List getPersonalRecommendations(String recommender, String erpCustomerId) {
+    public List<ContentKey> getPersonalRecommendations(String recommender, String erpCustomerId) {
         try {
             return getSessionBean().getPersonalRecommendations(recommender, erpCustomerId);
         } catch (RemoteException e) {
