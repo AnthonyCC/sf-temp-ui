@@ -36,7 +36,7 @@ public class CrmGetAllowedActionsTag extends AbstractGetterTag {
 			return agent.isSupervisor()
 				//|| isMatchingAgent(agent, CrmCaseQueue.CODE_ASQ, CrmAgentRole.ASV_CODE)
 				|| (CrmCaseQueue.isTrnQueue(cm.getSubject().getQueue().getCode())
-						&& agent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.TRN_CODE)));
+						&& (agent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.TRN_CODE))||agent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.TRNSP_CODE))));
 		}
 		return true;
 

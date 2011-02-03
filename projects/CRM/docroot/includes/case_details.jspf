@@ -57,7 +57,8 @@ final static CrmAgentRole[] DISPLAY_ROLES = {
 	CrmAgentRole.getEnum(CrmAgentRole.SOP_CODE),
 	CrmAgentRole.getEnum(CrmAgentRole.SCS_CODE),
 	CrmAgentRole.getEnum(CrmAgentRole.COS_CODE),
-	CrmAgentRole.getEnum(CrmAgentRole.MOP_CODE)};
+	CrmAgentRole.getEnum(CrmAgentRole.MOP_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.TRNSP_CODE)};
 
 
 %>
@@ -868,7 +869,7 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 			<fd:ErrorHandler result='<%= result %>' name='note' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
 	</tr>
-	<% if(!isSecurityQueue){ %>
+	<% if(!isSecurityQueue && CrmAgentRole.isPrivateCaseAllowedRole(crmRole)){ %>
 	<tr><td>&nbsp;</td><td align="left"><input id="privateCase" name="privateCase" type="checkbox" <%=(thisCase.isPrivateCase())?"checked ":"" %> onKeyUp="verifyCaseDisp();">Private Case</td><td>&nbsp;</td><td>&nbsp;</td></tr>
 	<% } %>
 	<tr>
@@ -891,6 +892,7 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 		</td>
 	</tr>
 	<tr><td>&nbsp;</td><td colspan="3"><span id="requiredError" class="casedisp_Err_invis">* These fields are required</span></td></tr>
+	<% if(!isSecuredCase || (isSecuredCase && CrmAgentRole.isSecurityOrAdmRole(crmRole))){ %>
 	<tr>
 		<td></td>
 		<td colspan="3">
@@ -916,6 +918,7 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 			<fd:ErrorHandler result='<%= result %>' name='<%= ActionError.GENERIC %>' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
 	</tr>
+	<% } %>
 </table>
 </form>
 <% if (thisCase.isAnonymous()) { %>

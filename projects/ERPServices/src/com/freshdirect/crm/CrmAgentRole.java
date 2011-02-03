@@ -40,6 +40,7 @@ public class CrmAgentRole extends EnumModel {
 	public static final String MOP_CODE = "MOP";
 	public static final String ERP_CODE = "ERP";
 	public static final String NCS_CODE = "NCS";
+	public static final String TRNSP_CODE="TRNSP";
 	
 	
 
@@ -100,6 +101,27 @@ public class CrmAgentRole extends EnumModel {
 		return isSupervisorOrUp;
 	}
 
+	public static boolean isSecurityOrAdmRole(CrmAgentRole role){
+		boolean isSecurityOrAdmUser = false;
+		if(null != role){
+			if(role.equals(CrmAgentRole.getEnum(CrmAgentRole.SEC_CODE))||role.equals(CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE))){
+				isSecurityOrAdmUser = true;
+			}
+		}
+		return isSecurityOrAdmUser;
+	}
+	
+	public static boolean isPrivateCaseAllowedRole(CrmAgentRole role){
+		boolean isPrivateCaseAllowedRole = false;
+		if(null != role){
+			if(role.equals(CrmAgentRole.getEnum(CrmAgentRole.SEC_CODE))||role.equals(CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE))||role.equals(CrmAgentRole.getEnum(CrmAgentRole.DEV_CODE))||role.equals(CrmAgentRole.getEnum(CrmAgentRole.QA_CODE))||role.equals(CrmAgentRole.getEnum(CrmAgentRole.SOP_CODE))){
+				isPrivateCaseAllowedRole = true;
+			}
+		}
+		return isPrivateCaseAllowedRole;
+	}
+	
+	
 	public String getLdapRoleName() {
 		return ldapRoleName;
 	}

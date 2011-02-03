@@ -1,6 +1,7 @@
 <%@ page import="com.freshdirect.framework.core.PrimaryKey" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 <%@ page import="com.freshdirect.crm.*" %>
+<%@ page import='com.freshdirect.webapp.crm.security.CrmSecurityManager'%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -12,6 +13,9 @@
 
 	<tmpl:put name='content' direct='true'>
 		<%
+		String userId = CrmSecurityManager.getUserName(request);
+    	String userRole = CrmSecurityManager.getUserRole(request);
+    	CrmAgentRole crmRole = CrmAgentRole.getEnumByLDAPRole(userRole);
 		CrmCaseModel cm = new CrmCaseModel();
 		cm.setState(CrmCaseState.getEnum(CrmCaseState.CODE_NEW));
 		cm.setOrigin(CrmCaseOrigin.getEnum(CrmCaseOrigin.CODE_PHONE));
@@ -23,7 +27,8 @@
 		if(saleId != null){
 			cm.setSalePK("".equals(saleId) ? null : new PrimaryKey(saleId));
 		}
-		boolean isSecurityQueue= false;		
+		boolean isSecurityQueue= false;
+		boolean isSecuredCase = false;
 		String lastPage = "/main/index.jsp";
 			if (custId!=null && !"".equals(custId)) lastPage = "/main/case_history.jsp";
 			if (saleId!=null && !"".equals(custId)) lastPage = "/main/order_details.jsp?orderId=" + saleId;

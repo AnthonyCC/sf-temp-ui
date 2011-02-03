@@ -74,6 +74,11 @@
   	<security-role-assignment>
   		<role-name>CRM_System</role-name>    
     	<externally-defined/>
+  	</security-role-assignment>
+  	<security-role-assignment>
+  		<role-name>CRM_TransportationSupervisor</role-name>    
+    	<externally-defined/>
+<!--<principal-name>CRM_TransportationSupervisor</principal-name>-->
   	</security-role-assignment>  
   	
     <session-descriptor>

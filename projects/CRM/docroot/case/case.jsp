@@ -125,7 +125,7 @@
 						<td colspan="1" class="<%=isSecurityQueue?"case_header_color_seq":"case_header_color"%>"><img src="/media_stat/crm/images/clear.gif" width="1" height="3"></td>
 					</tr>
 				</table>
-				<% if(!isSecuredCase || (isSecuredCase && CrmAgentRole.isSupervisorOrUp(crmRole))){ %>
+				<% if(!isSecuredCase || (isSecuredCase && CrmAgentRole.isSecurityOrAdmRole(crmRole))){ %>
 				<div class="case_content<%=forPrint?"":(isSecurityQueue?"_seq":"_scroll")%>" style="width: 100%; bottom: 0px;<%= (session.getAttribute(SessionName.USER) == null) ? " height: 35%;" : "" %>">
 					<%@ include file="/includes/case_actions.jspf" %>
 				</div>

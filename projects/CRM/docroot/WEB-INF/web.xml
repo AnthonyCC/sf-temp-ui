@@ -285,7 +285,8 @@
       <role-name>CRM_Business</role-name>
       <role-name>CRM_Security</role-name> 
       <role-name>CRM_ERP</role-name>    
-      <role-name>CRM_System</role-name>         
+      <role-name>CRM_System</role-name>
+      <role-name>CRM_TransportationSupervisor</role-name>          
     </auth-constraint>
     <user-data-constraint>
       <description>SSL not required</description>
@@ -373,5 +374,9 @@
   	 <security-role>
     	<description>CRM_System</description>
     	<role-name>CRM_System</role-name>
+  	 </security-role>
+  	 <security-role>
+    	<description>CRM_TransportationSupervisor</description>
+    	<role-name>CRM_TransportationSupervisor</role-name>
   	 </security-role> 
 </web-app>

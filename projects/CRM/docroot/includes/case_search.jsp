@@ -23,7 +23,8 @@ final static CrmAgentRole[] DISPLAY_ROLES = {
 	CrmAgentRole.getEnum(CrmAgentRole.SOP_CODE),
 	CrmAgentRole.getEnum(CrmAgentRole.SCS_CODE),
 	CrmAgentRole.getEnum(CrmAgentRole.COS_CODE),
-	CrmAgentRole.getEnum(CrmAgentRole.MOP_CODE) };
+	CrmAgentRole.getEnum(CrmAgentRole.MOP_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.TRNSP_CODE)};
 %>
 <%
 CrmCaseTemplate template = CrmSession.getSearchTemplate(session);

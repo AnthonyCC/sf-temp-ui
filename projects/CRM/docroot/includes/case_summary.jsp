@@ -43,9 +43,11 @@ if (caseId==null) {
 String erpCustId = request.getParameter("erpCustId");
 String fdCustId = request.getParameter("fdCustId");
 String userRole = currAgent.getRole().getLdapRoleName();
+CrmAgentRole crmRole = CrmAgentRole.getEnumByLDAPRole(userRole);
 if(null != cm){
 	isSecurityQueue=  cm.getSubject().getQueue().getCode().equals("SEQ");
 }
+boolean isSecuredCase = isSecurityQueue || cm.isPrivateCase();
 %><crm:GetFDUser id="user" useId="true" erpCustId="<%= erpCustId %>" fdCustId="<%= fdCustId %>">
 	<div class="<%= isSecurityQueue?"case_summary_header_seq":"case_summary_header" %>">
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="case_header_text">
@@ -178,10 +180,11 @@ if(null != cm){
 			</table>
 			</div>
 	</div>
-
+	<% if(!isSecuredCase || (isSecuredCase && CrmAgentRole.isSecurityOrAdmRole(crmRole))){ %>
 	<div class="case_content<%=(isSecurityQueue?"_seq":"_scroll")%>" style="width: <%= width %>%; height: <%= height %>%; <% if (!currAgent.getPK().equals(cm.getLockedAgentPK())) { %>background-color: #FFFFFF;<% } %>">
 		<%@ include file="/includes/case_actions.jspf" %>
 	</div>
+	<% } %>
 
 </crm:GetFDUser>
 </crm:GetCurrentAgent>

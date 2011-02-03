@@ -70,7 +70,8 @@
             		CrmAgentRole.getEnum(CrmAgentRole.SOP_CODE),
             		CrmAgentRole.getEnum(CrmAgentRole.SCS_CODE),
             		CrmAgentRole.getEnum(CrmAgentRole.COS_CODE),
-            		CrmAgentRole.getEnum(CrmAgentRole.MOP_CODE)};
+            		CrmAgentRole.getEnum(CrmAgentRole.MOP_CODE),
+            		CrmAgentRole.getEnum(CrmAgentRole.TRNSP_CODE)};
 			%>
 			  <logic:iterate id='role' collection="<%= DISPLAY_ROLES %>" type="com.freshdirect.crm.CrmAgentRole"><div class="side_nav_module" style="position: relative; float: left; height:25%; width: <%= "ASV".equals(role.getCode())? "19" : "20"%>%;">
 			        	<%
