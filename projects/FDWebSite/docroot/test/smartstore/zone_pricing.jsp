@@ -1,6 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
 
+<%@page import="com.freshdirect.cms.ContentKey"%>
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>
 <%!
@@ -116,7 +117,7 @@ Map<String,RecommendationService> recommenderCache = new WeakHashMap<String,Reco
 				generatorCache.put(generator, dg);
 			}
 			SessionInput input = new SessionInput(user);
-			nodes = new HashSet(dg.generate(input, new PrioritizedDataAccess(Collections.emptyList(), input.isUseAlternatives(), input.isShowTemporaryUnavailable())));
+			nodes = new HashSet(dg.generate(input, new PrioritizedDataAccess(Collections.<ContentKey>emptyList(), input.isUseAlternatives(), input.isShowTemporaryUnavailable())));
 		} catch (CompileException e) {
 			dataGeneratorError = "<span class=\"not-found\">Error in generator function!!!</span>";
 			e.printStackTrace(System.err);
