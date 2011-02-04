@@ -120,8 +120,7 @@ if(null !=CrmSession.getSessionStatus(session)){
     <br /><br />
 	<div align="center">
 		<div class="main_nav" style="background: #FFFFFF; border-bottom: 2px #000000 solid;">
-	    	<div class="login_header" style="padding: 12px; border-bottom: 1px #000000 solid;"><table align="center" cellpadding="0" cellspacing="0"><tr valign="bottom">
-	    	<td class="login_form_title">	    	<b><span class="login_direct">Fresh</span><span class="login_fresh">Direct&nbsp;</span>Customer Relationship Management</b></td></tr></table></div>
+	    	<div class="login_header" style="padding: 12px; border-bottom: 1px #000000 solid;"><table align="center" cellpadding="0" cellspacing="0"><tr valign="bottom"><td><img src="/media_stat/images/logos/fd_logo_sm_gl_nv.gif" width="195" height="38" border="0" alt="FreshDirect"></td><td class="login_header" style="padding-left:14px;">Customer Relationship Management</td></tr></table></div>
 		<br />
     	
 			<table align="center" cellpadding="6" cellspacing="0" class="login_field">
