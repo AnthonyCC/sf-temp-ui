@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -98,7 +99,7 @@ public class MyFdPost implements Serializable {
 		
 		if (imageNode != null) {
 			imageNode.getParentNode().removeChild(imageNode);				
-			processImageNode((Element) imageNode);
+			processImageNode((Element) imageNode, document);
 			content = DOMUtils.nodeToString(document);
 		}
 		
@@ -111,7 +112,7 @@ public class MyFdPost implements Serializable {
 		}		
 	}
 	
-	private void processImageNode(Element imageNode) {					
+	private void processImageNode(Element imageNode, Document document) {					
 		NodeList hrefs = imageNode.getElementsByTagName("a");
 		String mediaHref = null;
 		if (hrefs.getLength() > 0) {
@@ -132,10 +133,19 @@ public class MyFdPost implements Serializable {
 		NodeList ps = imageNode.getElementsByTagName("p");		
 		if (ps.getLength() > 0) {
 			Element caption = (Element) ps.item(0);
-			Element link = caption.getOwnerDocument().createElement("a");
+			Element link = document.createElement("a");
 			link.setAttribute("href", mediaHref);
-			link.setTextContent(caption.getTextContent());			
-			caption.setTextContent("");
+
+			// move content
+			link.setNodeValue(caption.getNodeValue());
+			caption.setNodeValue("");
+			List<Node> children = new ArrayList<Node>();
+			NodeList childNodes = caption.getChildNodes();
+			for (int i = 0; i < childNodes.getLength(); i++)
+				children.add(childNodes.item(i));
+			for (Node child : children)
+				link.appendChild(caption.removeChild(child));
+			
 			caption.appendChild(link);					
 		}
 		media = DOMUtils.nodeToString(imageNode);

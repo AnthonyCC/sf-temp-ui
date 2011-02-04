@@ -2231,10 +2231,18 @@ a .usq-rating-sm,a .usq-rating-lg,a .usq-rating-half-sm,a .usq-rating-half-lg {
  		text-align: left;
 }
 
-.
-
 .myfd-post .wp-caption-text {
-	margin: 5px ! important;
+	color: #888;
+	font-size: 12px;
+ 	margin: 5px ! important;
+}
+
+.myfd-post .wp-caption-text a,
+.myfd-post .wp-caption-text a:link,
+.myfd-post .wp-caption-text a:visited,
+.myfd-post .wp-caption-text a:active {
+	color: #888;
+	text-decoration: none;
 }
 
 .myfd-day-link {

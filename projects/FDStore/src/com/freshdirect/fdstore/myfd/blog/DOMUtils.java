@@ -16,13 +16,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.lobobrowser.html.UserAgentContext;
-import org.lobobrowser.html.parser.DocumentBuilderImpl;
-import org.lobobrowser.html.test.SimpleUserAgentContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.tidy.Tidy;
 import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class DOMUtils {
@@ -61,25 +59,17 @@ public class DOMUtils {
 	}
 	
 	public static Document stringToNode(String html) throws RuntimeException {
-		UserAgentContext context = new SimpleUserAgentContext();
-		DocumentBuilderImpl builder = new DocumentBuilderImpl(context);
-			
-		builder.setErrorHandler(new NullErrorHandler());
-		
+		Tidy jTidy = new Tidy();
 		StringReader reader = new StringReader(html);			
-		InputSource s = new InputSource(reader);			
-		try {
-			Document document = builder.parse(s);
-			return document;
-		} catch (SAXException e) {
-			throw new RuntimeException(e.getMessage());
-		} catch (IOException e) {
-			throw new RuntimeException(e.getMessage());
-		}
-				
+		return jTidy.parseDOM(reader, null);
 	}
 	
 	public static String nodeToString(Node node) throws RuntimeException {
+		if (node instanceof Document) {
+			NodeList list = ((Document) node).getElementsByTagName("body");
+			if (list.getLength() > 0)
+				node = list.item(0);
+		}
 		Source source = new DOMSource(node);
         StringWriter stringWriter = new StringWriter();
         Result result = new StreamResult(stringWriter);
@@ -89,7 +79,7 @@ public class DOMUtils {
 			Transformer transformer = tfactory.newTransformer();
 		    transformer.setOutputProperty("method","html");
 	        transformer.transform(source, result);
-	        return stringWriter.getBuffer().toString();
+	        return stringWriter.getBuffer().toString().replace("<body>", "").replace("</body>", "");
 		} catch (TransformerConfigurationException e) {
 			throw new RuntimeException(e.getMessage());
 		} catch (TransformerException e) {

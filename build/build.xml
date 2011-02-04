@@ -89,8 +89,7 @@
 		<pathelement location="${thirdparty.home}/httpcore-4.0.1.jar"/>
 		<pathelement location="${thirdparty.home}/httpmime-4.0.1.jar"/>
 		<pathelement location="${thirdparty.home}/${scarab.jar}"/>
-		<pathelement location="${thirdparty.home}/cobra-0.98.4.jar"/>
-		<pathelement location="${thirdparty.home}/js-0.98.4.jar"/>
+		<pathelement location="${thirdparty.home}/jtidy-r938.jar"/>
 	</path>
 
 	<path id="testing.classpath">
@@ -1258,8 +1257,7 @@
 					<include name="JFEP-0.1.0.jar"/>
 					<include name="roadnetservices.jar"/>
 					<include name="httpcore-4.0.1.jar"/>
-				<include name="cobra-0.98.4.jar"/>
-				<include name="js-0.98.4.jar"/>
+					<include name="jtidy-r938.jar"/>
 					<lib/>
 				</zipfileset>
 				<extra/>

@@ -19,6 +19,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class MyFdFeed implements Serializable, Iterable<MyFdPost> {
 	private static final long serialVersionUID = -8648764873781055003L;
 
+	private static final Logger LOGGER = LoggerFactory.getInstance(MyFdFeed.class);
+
 	private static long REFRESH_PERIOD = 1000 * 60 * 5; // 5 minutes
 
 	private static BalkingExpiringReference<MyFdFeed> THE_FEED;
@@ -87,6 +89,7 @@ public class MyFdFeed implements Serializable, Iterable<MyFdPost> {
 				try {
 					posts.add(new MyFdPost((Element) postNodes.item(i)));
 				} catch (RuntimeException e) {
+					LOGGER.error("exception while parsing blog entry #" + i, e);
 				}
 			}
 
