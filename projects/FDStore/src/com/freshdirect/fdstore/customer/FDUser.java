@@ -1865,8 +1865,6 @@ public class FDUser extends ModelSupport implements FDUserI {
             }
             return preferredWinePrice;
         }
-<<<<<<< HEAD
-=======
 
 	@Override
 	public String getGreeting() throws FDResourceException {
