@@ -105,11 +105,11 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
     public void updateAgent(CrmAgentModel agent, PrimaryKey userPk) throws CrmAuthorizationException, FDResourceException {
         try{
             CrmAgentHome home = this.getCrmAgentHome();
-            CrmAgentEB eb = home.findByPrimaryKey(userPk);
+            /*CrmAgentEB eb = home.findByPrimaryKey(userPk);
             CrmAgentModel user = (CrmAgentModel)eb.getModel();
             if(!user.isAdmin()){
                 throw new CrmAuthorizationException("You are not authorized to perform this acton");
-            }
+            }*/
             CrmAgentEB agentEB = home.findByPrimaryKey(agent.getPK());
             agentEB.setFromModel(agent);
         }catch(FinderException e){

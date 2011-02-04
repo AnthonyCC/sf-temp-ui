@@ -45,7 +45,10 @@ public class CrmLoginFilter implements Filter {
 		if(null != request.getRemoteUser() && null == agent && null !=ldapRole){
 			try {
 				try {
-					agent = CrmManager.getInstance().getAgentByLdapId(request.getRemoteUser());				
+					agent = CrmManager.getInstance().getAgentByLdapId(request.getRemoteUser());
+					if(null != agent && null != agentRole && !agentRole.equals(agent.getRole())){
+						agent = updateAgentsRole(agentRole, agent);
+					}
 				} catch (CrmAuthenticationException e) {
 					agent = createAgentByLdapId(request, agentRole);
 				}
@@ -84,6 +87,18 @@ public class CrmLoginFilter implements Filter {
 			return;
 		}
 		filterChain.doFilter(request, response);
+	}
+
+	private CrmAgentModel updateAgentsRole(CrmAgentRole agentRole, CrmAgentModel agent)
+			throws FDResourceException{
+		agent.setRole(agentRole);
+		agent.setActive(true);
+		try {
+			CrmManager.getInstance().updateAgent(agent, null);
+		}  catch (CrmAuthorizationException e) {
+			throw new FDResourceException(e.getMessage());
+		}
+		return agent;
 	}
 
 	private CrmAgentModel createAgentByLdapId(HttpServletRequest request,
