@@ -451,8 +451,4 @@ public interface FDUserI extends java.io.Serializable {
 	
 	public Date getRegistrationDate();
 
-	public int getTotalCTSlots();
-
-	public void setTotalCTSlots(int slots);
-
 }

@@ -207,9 +207,6 @@ public class FDUser extends ModelSupport implements FDUserI {
 	
 	private Date registrationDate;
 	private static final Date EPOCH = new Date(0);
-	
-	private FDDeliveryTimeslotModel deliveryTimeslotModel;
-	private int ctSlots;
 
 	public FDUserDlvPassInfo getDlvPassInfo() {
 		return dlvPassInfo;
@@ -1969,13 +1966,6 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
         }
 
-	
-	public int getTotalCTSlots(){
-		return ctSlots;
-	}	
-	public void setTotalCTSlots(int slots){
-		this.ctSlots = slots;
-	}
 
 }
 

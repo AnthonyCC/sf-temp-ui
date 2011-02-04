@@ -1170,13 +1170,5 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public Date getRegistrationDate() {
 		return user.getRegistrationDate();
 	}
-
-	public int getTotalCTSlots() {
-		return this.user.getTotalCTSlots();
-	}
-
-	public void setTotalCTSlots(int slots) {
-		this.user.setTotalCTSlots(slots);
-	}
 }
 
