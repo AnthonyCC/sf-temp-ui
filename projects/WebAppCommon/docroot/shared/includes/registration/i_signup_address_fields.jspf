@@ -27,10 +27,10 @@
 						$('workPhone_lbl').innerHTML = 'Work Phone #';
 					}
 					if ($('<%= EnumUserInfoName.DLV_COMPANY_NAME.getCode() %>')) {
-						$('<%= EnumUserInfoName.DLV_COMPANY_NAME.getCode() %>').setAttribute('required', 'false');
+						$('<%= EnumUserInfoName.DLV_COMPANY_NAME.getCode() %>').removeAttribute('required');
 					}
 					if ($('<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>')) {
-						$('<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>').setAttribute('required', 'false');
+						$('<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>').removeAttribute('required');
 					}
 				}else{
 					if ($('companyName_lbl')) {
