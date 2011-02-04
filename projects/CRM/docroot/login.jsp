@@ -4,6 +4,7 @@
 <%@ page import='com.freshdirect.framework.webapp.*' %>
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession"%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<script type="text/javascript" language="javascript" src="/ccassets/javascript/callcenter_javascript.js"></script>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -154,7 +155,7 @@ if(null !=CrmSession.getSessionStatus(session)){
 				</script>
 				</form>
 				<tr></tr>
-				<tr><td colspan="2"><a href="#" >Forgot password?</a></td></tr>
+				<tr><td colspan="2" align="center"><a href="javascript:popup('<%= FDStoreProperties.getCrmForgotPasswordUrl() %>','large');" >Forgot password?</a></td></tr>
 				<%--form method="POST">
 				<tr>
 				<input type="hidden" name="userId" value="guest">

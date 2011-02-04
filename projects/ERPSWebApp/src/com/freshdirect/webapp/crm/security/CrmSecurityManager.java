@@ -8,6 +8,9 @@ import java.util.Set;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.framework.util.StringUtil;
+
 public class CrmSecurityManager {
 	
 	private static List<String> UNSECURED_URL = new ArrayList<String>();
@@ -65,10 +68,27 @@ public class CrmSecurityManager {
 	}
 	
 	public static boolean hasAccessToPage(ServletRequest request, String uri) {
-		if(UNSECURED_URL.contains(uri) || (uri != null && (uri.endsWith(".css")||uri.endsWith(".js")||uri.endsWith(".jspf")||uri.endsWith(".gif")||uri.endsWith(".jpg")||uri.endsWith(".ico")||uri.endsWith(".xls")))) {
+		if(UNSECURED_URL.contains(uri) || (uri != null && (isSkippedFileType(uri)/*||uri.endsWith(".css")||uri.endsWith(".js")||uri.endsWith(".jspf")||uri.endsWith(".gif")||uri.endsWith(".jpg")||uri.endsWith(".ico")||uri.endsWith(".xls")*/))) {
 			return true;
 		}
 		return MenuManager.getInstance().hasAccess(request, uri);
+	}
+	
+	public static boolean isSkippedFileType(String uri){
+		boolean isSkippedFileType = false;
+		if(!uri.endsWith("jsp")){
+			String[] fileTypes = StringUtil.decodeStrings(FDStoreProperties.getCrmSecuritySkippedFileTypes());
+			if(null != fileTypes){
+				for (int i = 0; i < fileTypes.length; i++) {
+					isSkippedFileType = uri.toLowerCase().endsWith("."+fileTypes[i].trim());
+					if(isSkippedFileType){
+						break;
+					}
+				}
+			}
+		}
+		return isSkippedFileType;
+		
 	}
 	
 	public static boolean hasAccessToPage(HttpServletRequest request) {
@@ -76,13 +96,26 @@ public class CrmSecurityManager {
 		if((uri != null && (uri.indexOf("/includes/")>=0 || uri.indexOf("/postbacks/")>=0|| uri.indexOf("/template/")>=0
 				||uri.indexOf("/media/")>=0 ||uri.indexOf("/media_stat/")>=0 ||uri.indexOf("/kbit/")>=0
 				||uri.indexOf("/assets/")>=0 ||uri.indexOf("/ccassets/")>=0 ||uri.indexOf("/resource/")>=0
-				||uri.indexOf("/images/")>=0 ||uri.indexOf("/api/")>=0||uri.indexOf("/test/debug/")>=0))) {
+				||uri.indexOf("/images/")>=0 ||uri.indexOf("/api/")>=0||uri.indexOf("/test/debug/")>=0 || isSkippedFolder(uri)))) {
 			return true;
 		}
 		//Do other checks if required after this check.
 		return false;
 	}
 	
+	public static boolean isSkippedFolder(String uri){
+		boolean isSkippedFolder = false;
+		String[] folders=StringUtil.decodeStrings(FDStoreProperties.getCrmSecuritySkippedFolders());
+		if(null != folders){
+			for (int i = 0; i < folders.length; i++) {
+				isSkippedFolder = uri.toLowerCase().indexOf("/"+folders[i].trim()+"/") >=0;
+				if(isSkippedFolder){
+					break;
+				}
+			}
+		}
+		return isSkippedFolder;
+	}
 	public static boolean hasAccessToPage(String userRole, String uri) {		
 		return MenuManager.getInstance().hasAccess(userRole, uri);
 	}

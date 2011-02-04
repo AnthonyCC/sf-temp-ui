@@ -19,8 +19,8 @@ boolean modify_orders = snav_pageURI.indexOf("modify_orders_by_sku") > -1;
 <crm:GetCurrentAgent id='currentAgent'>
 <% String lAgentRole = currentAgent.getRole().getLdapRoleName(); %>
 <div class="sup_nav_bg">
-<% if(CrmSecurityManager.hasAccessToPage(lAgentRole,"admintools_index.jsp")){ %>
-	<a href="/admintools/admintools_index.jsp" class="<%=resubmit_orders?"sup_nav_on":"sup_nav"%>">Resub. Orders</a>
+<% if(CrmSecurityManager.hasAccessToPage(lAgentRole,"resubmit_orders.jsp")){ %>
+	<a href="/admintools/resubmit_orders.jsp" class="<%=resubmit_orders?"sup_nav_on":"sup_nav"%>">Resub. Orders</a>
 <% } %>
 <% if(CrmSecurityManager.hasAccessToPage(lAgentRole,"resubmit_customers.jsp")){ %>
 	<a href="/admintools/resubmit_customers.jsp" class="<%=resubmit_customers?"sup_nav_on":"sup_nav"%>">Resub. Customers</a>

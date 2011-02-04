@@ -168,7 +168,7 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 		for ( var i=0,n=document.case_details.elements.length; i<n; i++ )
 		{
 			var field = document.case_details.elements[i];
-			<% if(!isSecurityQueue){ %>
+			<% if(!isSecuredCase){ %>
 			//check for Media : other
 			if ( field.id == 'media' ) {
 				if ( field.value == 'Other' ) {
@@ -404,9 +404,9 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 
 <table width="96%" cellpadding="0" cellspacing="5" border="0" class="case_content_text">
 	<tr>
-		<td class="<%=isSecurityQueue?"case_content_field_seq":"case_content_field"%>">Status</td>
+		<td class="<%=isSecuredCase?"case_content_field_seq":"case_content_field"%>">Status</td>
 		<td><div id="CaseStatus"><%= thisCase.getState()==null ? "Open" : thisCase.getState().getName() %></div></td>
-		<td class="<%=isSecurityQueue?"case_content_field_seq":"case_content_field"%>">Assigned</td>
+		<td class="<%=isSecuredCase?"case_content_field_seq":"case_content_field"%>">Assigned</td>
 		<td>
 
 		<% if (isEditAllowed && isAssignmentPriorityAllowed) { %>
@@ -435,8 +435,8 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 <fd:ErrorHandler result='<%= result %>' name='assignedAgent' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
 		
-		<td rowspan="9" class="<%= isSecurityQueue?"casedisp_cell_seq":"casedisp_cell" %>">
-		<% if(!isSecurityQueue){ %>
+		<td rowspan="9" class="<%= isSecuredCase?"casedisp_cell_seq":"casedisp_cell" %>">
+		<% if(!isSecuredCase){ %>
 			<div class="casedisp_container">
 				<div class="casedisp_line">
 					<div class="casedisp_text">
@@ -791,7 +791,7 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 		</td>
 	</tr>
 	<tr>
-		<td class="<%=isSecurityQueue?"case_content_field_seq":"case_content_field"%>">Queue<span class="casedisp_Err_invis" id="queueErr">*</span></td>
+		<td class="<%=isSecuredCase?"case_content_field_seq":"case_content_field"%>">Queue<span class="casedisp_Err_invis" id="queueErr">*</span></td>
 		<td>
 			<% if (!isSecurityQueue && isEditAllowed) { %>
 				<select id="queue" name="queue" class="pulldown" onChange="populateSubject(document.case_details.queue.value, document.case_details.subject);verifyCaseDisp();" >
@@ -814,7 +814,7 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 			<% } %>
 			<fd:ErrorHandler result='<%= result %>' name='queue' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
-		<td class="<%=isSecurityQueue?"case_content_field_seq":"case_content_field"%>">Priority</td>
+		<td class="<%=isSecuredCase?"case_content_field_seq":"case_content_field"%>">Priority</td>
 		<td>
 			<% if (isEditAllowed && isAssignmentPriorityAllowed) { %>
 				<select id="priority" name="priority" class="pulldown">
@@ -831,7 +831,7 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 		</td>
 	</tr>
 	<tr>
-		<td class="<%=isSecurityQueue?"case_content_field_seq":"case_content_field"%>">Subject<span class="casedisp_Err_invis" id="subjectErr">*</span></td>
+		<td class="<%=isSecuredCase?"case_content_field_seq":"case_content_field"%>">Subject<span class="casedisp_Err_invis" id="subjectErr">*</span></td>
 		<td>
 			<% if (isEditAllowed) { %>
 				<select id="subject" name="subject" class="pulldown" disabled="disabled" onchange="verifyCaseDisp();">
@@ -849,26 +849,28 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 			<% } %>
 			<fd:ErrorHandler result='<%= result %>' name='subject' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
-		<td class="<%=isSecurityQueue?"case_content_field_seq":"case_content_field"%>">Quantities</td>
+		<td class="<%=isSecuredCase?"case_content_field_seq":"case_content_field"%>">Quantities</td>
 		<td>Reported: <input type="text" name="reported" value="<%=thisCase.getProjectedQuantity()%>" size="3" maxlength="3">&nbsp;&nbsp;&nbsp;
 		    Actual: <input type="text" name="actual"  value="<%=thisCase.getActualQuantity()%>" size="3" maxlength="3">&nbsp;&nbsp;&nbsp;
 		</td>
 	</tr>
 	<tr><td colspan="4"></td></tr>
 	<tr valign="top">
-		<td class="<%=isSecurityQueue?"case_content_field_seq":"case_content_field"%>">Summary<span class="casedisp_Err_invis" id="summaryErr">*</span></td>
+		<td class="<%=isSecuredCase?"case_content_field_seq":"case_content_field"%>">Summary<span class="casedisp_Err_invis" id="summaryErr">*</span></td>
 		<td colspan="3">
 			<textarea <%= isEditAllowed ? "" : "readonly" %> name="summary" id="summary" rows="2" wrap="VIRTUAL" style="width: 500px;" onkeyup="verifyCaseDisp(); return true;"><%= request.getParameter("summary")!= null ? request.getParameter("summary"):thisCase.getSummary() %></textarea>
 			<fd:ErrorHandler result='<%= result %>' name='summary' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
 	</tr>
+	<% if(!isSecuredCase || (isSecuredCase && CrmAgentRole.isSecurityOrAdmRole(crmRole))){ %>
 	<tr valign="top">
-		<td class="<%=isSecurityQueue?"case_content_field_seq":"case_content_field"%>">Notes<span class="casedisp_Err_invis" id="noteErr">*</span></td>
+		<td class="<%=isSecuredCase?"case_content_field_seq":"case_content_field"%>">Notes<span class="casedisp_Err_invis" id="noteErr">*</span></td>
 		<td colspan="3">
 			<textarea id="note" name="note" rows="4" wrap="VIRTUAL" style="width: 500px;" onkeyup="verifyCaseDisp(); return true;"><%= request.getParameter("note") %></textarea>
 			<fd:ErrorHandler result='<%= result %>' name='note' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
 	</tr>
+	<% } %>
 	<% if(!isSecurityQueue && CrmAgentRole.isPrivateCaseAllowedRole(crmRole)){ %>
 	<tr><td>&nbsp;</td><td align="left"><input id="privateCase" name="privateCase" type="checkbox" <%=(thisCase.isPrivateCase())?"checked ":"" %> onKeyUp="verifyCaseDisp();">Private Case</td><td>&nbsp;</td><td>&nbsp;</td></tr>
 	<% } %>
@@ -932,7 +934,7 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 	/* this verifies the form and enables the create button */
 	verifyCaseDisp();
 </script>
-<% } else if(!isSecurityQueue){ %>
+<% } else if(!isSecuredCase){ %>
 <script type="text/javascript">
 	/* this causes any hidden fields that should be shown, to show*/
 	CaseDisp_FirstContact('Resolved', 'NotResolved');

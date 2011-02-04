@@ -49,7 +49,7 @@ if(null != cm){
 }
 boolean isSecuredCase = isSecurityQueue || cm.isPrivateCase();
 %><crm:GetFDUser id="user" useId="true" erpCustId="<%= erpCustId %>" fdCustId="<%= fdCustId %>">
-	<div class="<%= isSecurityQueue?"case_summary_header_seq":"case_summary_header" %>">
+	<div class="<%= isSecuredCase?"case_summary_header_seq":"case_summary_header" %>">
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="case_header_text">
 		<tr>
 			<td width="50%">
@@ -132,7 +132,7 @@ boolean isSecuredCase = isSecurityQueue || cm.isPrivateCase();
 				</tr>
 			</table>
 		</div>
-		<div class="<%= isSecurityQueue?"case_content_seq":"case_content" %>">
+		<div class="<%= isSecuredCase?"case_content_seq":"case_content" %>">
 			<table width="100%" cellpadding="0" cellspacing="8" border="0" class="case_content_text">
 				<tr valign="top">
 					<td width="10%" align="right" class="case_content_field">Queue:</td>
@@ -181,7 +181,7 @@ boolean isSecuredCase = isSecurityQueue || cm.isPrivateCase();
 			</div>
 	</div>
 	<% if(!isSecuredCase || (isSecuredCase && CrmAgentRole.isSecurityOrAdmRole(crmRole))){ %>
-	<div class="case_content<%=(isSecurityQueue?"_seq":"_scroll")%>" style="width: <%= width %>%; height: <%= height %>%; <% if (!currAgent.getPK().equals(cm.getLockedAgentPK())) { %>background-color: #FFFFFF;<% } %>">
+	<div class="case_content<%=(isSecuredCase?"_seq":"_scroll")%>" style="width: <%= width %>%; height: <%= height %>%; <% if (!currAgent.getPK().equals(cm.getLockedAgentPK())) { %>background-color: #FFFFFF;<% } %>">
 		<%@ include file="/includes/case_actions.jspf" %>
 	</div>
 	<% } %>

@@ -114,7 +114,7 @@ public class CrmAgentRole extends EnumModel {
 	public static boolean isPrivateCaseAllowedRole(CrmAgentRole role){
 		boolean isPrivateCaseAllowedRole = false;
 		if(null != role){
-			if(role.equals(CrmAgentRole.getEnum(CrmAgentRole.SEC_CODE))||role.equals(CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE))||role.equals(CrmAgentRole.getEnum(CrmAgentRole.DEV_CODE))||role.equals(CrmAgentRole.getEnum(CrmAgentRole.QA_CODE))||role.equals(CrmAgentRole.getEnum(CrmAgentRole.SOP_CODE))){
+			if(isSupervisorOrUp(role)||role.equals(CrmAgentRole.getEnum(CrmAgentRole.SEC_CODE))||role.equals(CrmAgentRole.getEnum(CrmAgentRole.SOP_CODE))){
 				isPrivateCaseAllowedRole = true;
 			}
 		}

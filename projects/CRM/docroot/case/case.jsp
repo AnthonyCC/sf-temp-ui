@@ -49,10 +49,11 @@
 	
     	<tmpl:put name='content' direct='true'>
 			
-			<div class="<%= isSecurityQueue?"case_header_seq":"case_header" %>" style="padding-top: 2px; padding-bottom: 2px;">
+			<div class="<%= isSecuredCase?"case_header_seq":"case_header" %>" style="padding-top: 2px; padding-bottom: 2px;">
 				<table width="100%" cellpadding="0" cellspacing="0" border="0" class="case_header_text">
 					<tr>
-						<td width="20%" class="case_header_title_text"><b>Case # <span class="case_header_title_value"><%= cm.getPK().getId() %></span></b> &raquo; <%= cm.getState()==null ? "Open" : cm.getState().getName() %></td>
+						<td width="5%"><b><span class="cust_nav_tab"><% if(isSecurityQueue){ %>SECURITY<% } else if(isSecuredCase){ %>PRIVATE<% } %></span></b></td>
+						<td width="15%" class="case_header_title_text"><b>Case # <span class="case_header_title_value"><%= cm.getPK().getId() %></span></b> &raquo; <%= cm.getState()==null ? "Open" : cm.getState().getName() %></td>
 						<td width="60%">
 							<table width="100%" cellpadding="0" cellspacing="0" class="case_subheader" style="color: #000000; font-size: 8pt; border-bottom: none; padding: 2px;">
 								<tr>
@@ -110,23 +111,23 @@
 					</tr>
 				</table>
 			</div>
-						<div class="<%= isSecurityQueue?"case_content_seq":"case_content" %>">
+						<div class="<%= isSecuredCase?"case_content_seq":"case_content" %>">
 
 				<%@ include file="/includes/case_details.jspf" %>
 
 				<table width="100%" cellpadding="0" cellspacing="0" border="0">
 					<tr>
 						<td width="100%" style="vertical-align: bottom;">
-						<div class="<%=isSecurityQueue?"case_header_color_seq":"case_header_color"%>" style="padding: 0px; padding-left: 11px; padding-right: 11px; float: left;"><span class="case_header_title_text"><b>Actions</b></span></div>
+						<div class="<%=isSecuredCase?"case_header_color_seq":"case_header_color"%>" style="padding: 0px; padding-left: 11px; padding-right: 11px; float: left;"><span class="case_header_title_text"><b>Actions</b></span></div>
 						<div style="float: right; margin-right: 10px; background: #FFFFFF; padding-left: 5px; padding-right: 5px;"><a href="<%=request.getRequestURI()%>?case=<%= cm.getPK().getId() %><%= forPrint ?"":"&forPrint=YES"%>" class="case_action_text"><%= forPrint ?"Regular":"Print"%> View</a></div>
 						</td>
 					</tr>
 					<tr>
-						<td colspan="1" class="<%=isSecurityQueue?"case_header_color_seq":"case_header_color"%>"><img src="/media_stat/crm/images/clear.gif" width="1" height="3"></td>
+						<td colspan="1" class="<%=isSecuredCase?"case_header_color_seq":"case_header_color"%>"><img src="/media_stat/crm/images/clear.gif" width="1" height="3"></td>
 					</tr>
 				</table>
 				<% if(!isSecuredCase || (isSecuredCase && CrmAgentRole.isSecurityOrAdmRole(crmRole))){ %>
-				<div class="case_content<%=forPrint?"":(isSecurityQueue?"_seq":"_scroll")%>" style="width: 100%; bottom: 0px;<%= (session.getAttribute(SessionName.USER) == null) ? " height: 35%;" : "" %>">
+				<div class="case_content<%=forPrint?"":(isSecuredCase?"_seq":"_scroll")%>" style="width: 100%; bottom: 0px;<%= (session.getAttribute(SessionName.USER) == null) ? " height: 35%;" : "" %>">
 					<%@ include file="/includes/case_actions.jspf" %>
 				</div>
 				<% } %>

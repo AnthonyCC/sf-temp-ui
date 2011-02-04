@@ -18,7 +18,7 @@
 			broken_acct_list.jsp,acct_lookup.jsp,canned_text.jsp
 		</links>
 		<links name="admintools">
-			resubmit_customers.jsp,delete_reservations.jsp,mass_cancellation.jsp,mass_returns.jsp,delivery_restrictions.jsp,address_restrictions.jsp,
+			resubmit_orders.jsp,resubmit_customers.jsp,delete_reservations.jsp,mass_cancellation.jsp,mass_returns.jsp,delivery_restrictions.jsp,address_restrictions.jsp,
 			settlement_batch.jsp,top_faqs.jsp,click_to_call.jsp,search_orders_by_sku.jsp,modify_orders_by_sku.jsp
 		</links>
 		<links name="promotions">
@@ -67,7 +67,7 @@
 		</links>
 		<links name="customeraccount">add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,place_alert.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,set_profile_attr.jsp,username_password_option.jsp</links>
 		<links name="supervisor">account_deactivations.jsp,payment_exceptions_list.jsp,pending_credits_list.jsp,order_details.jsp,refusal_list.jsp,pending_return_list.jsp,order_cc_authorization.jsp,address_exception.jsp,geocode_exception.jsp,make_good_order.jsp,bad_account_list.jsp,broken_acct_list.jsp,acct_lookup.jsp,canned_text.jsp</links>
-		<links name="admintools">resubmit_customers.jsp,delete_reservations.jsp,mass_cancellation.jsp,mass_returns.jsp,delivery_restrictions.jsp,address_restrictions.jsp,settlement_batch.jsp,top_faqs.jsp,click_to_call.jsp,search_orders_by_sku.jsp,modify_orders_by_sku.jsp</links>
+		<links name="admintools">resubmit_orders.jsp,resubmit_customers.jsp,delete_reservations.jsp,mass_cancellation.jsp,mass_returns.jsp,delivery_restrictions.jsp,address_restrictions.jsp,settlement_batch.jsp,top_faqs.jsp,click_to_call.jsp,search_orders_by_sku.jsp,modify_orders_by_sku.jsp</links>
 		<links name="cases">new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>		
 		
 		<links name="reports">subject_report.jsp,late_delivery_report.jsp,route_stop_report.jsp,order_status_report.jsp,credit_summary_report.jsp,credit_report.jsp,settlement_problem_report.jsp</links>
@@ -238,7 +238,7 @@
 		<links name="transportation">crmLateIssues.jsp</links>
 		<links name="reports">late_delivery_report.jsp,route_stop_report.jsp</links>
 		<links name="cases">new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>
-		<links name="customer">order_details.jsp,order_search_results.jsp,account_details.jsp,order_cases.jsp,customer_search_results.jsp,summary_report.jsp,summary.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,delivery_pass.jsp</links>
+		<links name="customer">order_details.jsp,order_search_results.jsp,account_details.jsp,order_cases.jsp,customer_search_results.jsp,summary_report.jsp,summary.jsp,case_history.jsp,order_history.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,delivery_pass.jsp</links>
 		<links name="actions">lateLog</links>
 		
 	</role>
@@ -427,11 +427,10 @@
 		<links name="main">
 		main_index.jsp,supervisor_index.jsp,admintools_index.jsp,reports_index.jsp,worklist.jsp,promo_home.jsp,promo_ws_view.jsp
 		</links>
-		<links name="admintools">delete_reservations.jsp,mass_cancellation.jsp,delivery_restrictions.jsp,address_restrictions.jsp</links>
+		<links name="admintools">delivery_restrictions.jsp,address_restrictions.jsp</links>
 		<links name="supervisor">address_exception.jsp,geocode_exception.jsp</links>
 		<links name="promotions">promo_view.jsp,promo_create.jsp,promo_details.jsp,promo_ws_create.jsp,export_promo_list.jsp</links>
-		<links name="reports">
-			subject_report.jsp,late_delivery_report.jsp,route_stop_report.jsp,order_status_report.jsp,credit_summary_report.jsp,credit_report.jsp,settlement_problem_report.jsp
+		<links name="reports">late_delivery_report.jsp,route_stop_report.jsp,order_status_report.jsp,
 		</links>		
 		<links name="transportation">crmLateIssues.jsp,crmTrqCases_step1.jsp</links>			
 		<links name="cases">new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>
