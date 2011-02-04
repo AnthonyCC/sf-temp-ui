@@ -62,6 +62,7 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 	public void purgeOrders(IRoutingSchedulerIdentity schedulerId, boolean reloadXml) throws RoutingServiceException {
 		
 		try {
+			System.out.println("Purge UPS Scheduler :"+schedulerId);
 			TransportationWebService port = getTransportationSuiteService(schedulerId);//RoutingServiceLocator.getInstance().getTransportationSuiteService();
 			port.schedulerPurge(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId), reloadXml);
 		} catch (RemoteException exp) {

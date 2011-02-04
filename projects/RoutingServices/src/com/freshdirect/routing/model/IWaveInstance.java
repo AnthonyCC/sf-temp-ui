@@ -2,6 +2,7 @@ package com.freshdirect.routing.model;
 
 import java.util.Date;
 
+import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 
@@ -89,5 +90,8 @@ public interface IWaveInstance {
 	
 	IAreaModel getArea();
 	void setArea(IAreaModel area);
+	
+	EnumWaveInstancePublishSrc getSource();
+	void setSource(EnumWaveInstancePublishSrc source);
 
 }

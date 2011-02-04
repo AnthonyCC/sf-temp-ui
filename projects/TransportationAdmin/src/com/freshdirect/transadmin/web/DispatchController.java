@@ -45,6 +45,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.customer.ErpTruckMasterInfo;
 import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.routing.model.GeoPoint;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IGeoPoint;
@@ -79,6 +80,7 @@ import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.util.WaveUtil;
 import com.freshdirect.transadmin.util.TransStringUtil.DateFilterException;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.util.UPSDataCacheManager;
@@ -724,18 +726,28 @@ public class DispatchController extends AbstractMultiActionController {
 	 */
 	public ModelAndView planDeleteHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
-		Set employeeSet=new HashSet();
+		Set planSet=new HashSet();
 		String arrEntityList[] = getParamList(request);
+		Map<Date, Set<String>> deliveryMapping = new HashMap<Date, Set<String>>();
+		
 		if (arrEntityList != null) {
 			int arrLength = arrEntityList.length;
-			for (int intCount = 0; intCount < arrLength; intCount++) 
-			{
+			for (int intCount = 0; intCount < arrLength; intCount++) {
 				Plan p=dispatchManagerService.getPlan(arrEntityList[intCount]);
 				p.setUserId(SecurityManager.getUserName(request));
-				employeeSet.add(p);
+				planSet.add(p);
+				if(p != null && p.getZone() != null) {
+					if(!deliveryMapping.containsKey(p)) {
+						deliveryMapping.put(p.getPlanDate(), new HashSet<String>());
+					}
+					deliveryMapping.get(p.getPlanDate()).add(p.getZone().getZoneCode());
+				}
 			}
 		}
-		dispatchManagerService.removeEntity(employeeSet);
+		dispatchManagerService.removeEntity(planSet);
+		WaveUtil.recalculateWave(this.getDispatchManagerService(), deliveryMapping
+									,  com.freshdirect.transadmin.security.SecurityManager.getUserName(request)
+										, EnumWaveInstancePublishSrc.PLAN);
 		saveMessage(request, getMessage("app.actionmessage.103", null));
 
 		return planHandler(request, response);
@@ -1842,8 +1854,6 @@ public class DispatchController extends AbstractMultiActionController {
 		mav.getModel().put("dispDate", TransStringUtil.getCurrentDate());
 		
 		return mav;
-	}
-	
-	
+	}		
 
 }

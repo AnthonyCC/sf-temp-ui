@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
 import com.freshdirect.routing.dao.IRoutingInfoDAO;
@@ -96,6 +97,15 @@ public class RoutingInfoService extends BaseService implements IRoutingInfoServi
 	public List<IWaveInstance> getWaveInstanceWithErrors()  throws RoutingServiceException {
 		try {
 			return routingInfoDAOImpl.getWaveInstanceWithErrors();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);
+		}
+	}
+	
+	public Set<String> getInSyncWaveInstanceZones(Date deliveryDate)  throws RoutingServiceException {
+		try {
+			return routingInfoDAOImpl.getInSyncWaveInstanceZones(deliveryDate);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			throw new RoutingServiceException(e, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);

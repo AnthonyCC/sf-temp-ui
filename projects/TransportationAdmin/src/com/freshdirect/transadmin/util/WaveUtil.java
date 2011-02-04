@@ -4,14 +4,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
 import com.freshdirect.transadmin.model.IWaveInstanceSource;
 import com.freshdirect.transadmin.model.WaveInstance;
+import com.freshdirect.transadmin.model.WaveInstancePublish;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 
 public class WaveUtil {
@@ -27,32 +30,34 @@ public class WaveUtil {
 		waveInstancesResult.add(waveInstancesToSave);
 		waveInstancesResult.add(waveInstancesToDelete);
 		
-		List<String> zonesForConsolidation = new ArrayList<String>();
+		Set<String> zonesForConsolidation = new HashSet<String>();
 		Map<String, List<IWaveInstanceSource>> waveMapping = new HashMap<String, List<IWaveInstanceSource>>();
 		
 		Collection waveSourceForCalc = null;
+		// Group Wave Instance By Zone
 		if(sourceData != null) {
 			Iterator _itr = sourceData.iterator();
 			while(_itr.hasNext()) {
 				IWaveInstanceSource instanceSource = (IWaveInstanceSource)_itr.next();
 				if(instanceSource.getZone() != null) { 
-					if(!waveMapping.containsKey(instanceSource.getZone().getZoneCode())) {
-						if(instanceSource.needsConsolidation()) {
-							zonesForConsolidation.add(instanceSource.getZone().getZoneCode());
-						}
+					if(instanceSource.needsConsolidation()) {
+						zonesForConsolidation.add(instanceSource.getZone().getZoneCode());
+					}
+					if(!waveMapping.containsKey(instanceSource.getZone().getZoneCode())) {						
 						waveMapping.put(instanceSource.getZone().getZoneCode(), new ArrayList<IWaveInstanceSource>());
 					}
 					waveMapping.get(instanceSource.getZone().getZoneCode()).add(instanceSource);
 				}
 			}
 		}
+		// Calculate and consolidate Wave Instance as needed
 		for(Map.Entry<String, List<IWaveInstanceSource>> waveByZone: waveMapping.entrySet()) {	
 			waveSourceForCalc = waveByZone.getValue();
 			if(zonesForConsolidation.contains(waveByZone.getKey())) {
 				waveSourceForCalc = consolidateWaveInstance(waveSourceForCalc);
 			}
 			List<List<WaveInstance>> _tmpResult = calculateWaveInstance(waveSourceForCalc, deliveryDate, waveByZone.getKey()
-											, actionBy, source, dispManager);
+																			, actionBy, source, dispManager);
 			waveInstancesToSave.addAll(_tmpResult.get(0));
 			waveInstancesToDelete.addAll(_tmpResult.get(1));
 		}
@@ -71,7 +76,7 @@ public class WaveUtil {
 			IWaveInstanceSource _tmpWaveInstance = null;
 			IWaveInstanceSource _rootWaveInstance = null;
 			
-			if(_waveInstItr.hasNext()) {
+			while(_waveInstItr.hasNext()) {
 				_tmpWaveInstance = (IWaveInstanceSource)_waveInstItr.next();
 				if(cutOffConsolidation.containsKey(_tmpWaveInstance.getCutOffTime())) {
 					_rootWaveInstance = cutOffConsolidation.get(_tmpWaveInstance.getCutOffTime());
@@ -99,19 +104,22 @@ public class WaveUtil {
 	}
 	
 	private static List<List<WaveInstance>> calculateWaveInstance(Collection waveInstanceSources
-			, Date deliveryDate, String zone
-			, String actionBy, EnumWaveInstancePublishSrc source, DispatchManagerI dispManager) {
+												, Date deliveryDate, String zone
+													, String actionBy, EnumWaveInstancePublishSrc source, DispatchManagerI dispManager) {
 		
 		Collection waveInstances = dispManager.getWaveInstance(deliveryDate, zone);
 		Map<WaveInstanceKey, WaveInstance> waveMappingCurrent = new HashMap<WaveInstanceKey, WaveInstance>();
+		Set<WaveInstanceKey> foundCurrentKeys = new HashSet<WaveInstanceKey>();
+		Map<WaveInstanceKey, WaveInstance> waveMappingOrphans = new HashMap<WaveInstanceKey, WaveInstance>();
+		
 		WaveInstanceKey key = null;
 		WaveInstance _tmpWaveInstance = null;
 
 		if(waveInstances != null) {
-			Iterator _waveInstItr = waveInstances.iterator();
+			Iterator<WaveInstance> _waveInstItr = waveInstances.iterator();
 			// Loop to create the map of WaveInstanceKey and corresponding IWaveInstanceSource (For Current WaveInstances in DB)
 			while(_waveInstItr.hasNext()) {
-				_tmpWaveInstance = (WaveInstance)_waveInstItr.next();
+				_tmpWaveInstance = _waveInstItr.next();
 				key = new WaveInstanceKey();
 				key.setDeliveryDate(_tmpWaveInstance.getDeliveryDate());
 				key.setDispatchTime(_tmpWaveInstance.getDispatchTime());
@@ -124,14 +132,14 @@ public class WaveUtil {
 			}
 		}
 
-		Map<WaveInstanceKey, List<IWaveInstanceSource>> waveMappingNew = new HashMap<WaveInstanceKey, List<IWaveInstanceSource>>();
+		Map<WaveInstanceKey, Integer> waveMappingNew = new HashMap<WaveInstanceKey, Integer>();
 
 		if(waveInstanceSources != null) {
-			Iterator _itr = waveInstanceSources.iterator();
+			Iterator<IWaveInstanceSource> _itr = waveInstanceSources.iterator();
 			// Loop to create the map of WaveInstanceKey and corresponding IWaveInstanceSource (For New WaveInstances)
 			while(_itr.hasNext()) {
-				IWaveInstanceSource instanceSource = (IWaveInstanceSource)_itr.next();
-				if(instanceSource.isValid()) {
+				IWaveInstanceSource instanceSource = _itr.next();
+				if(instanceSource.isValidSource()) {
 					key = new WaveInstanceKey();
 					key.setDeliveryDate(instanceSource.getDeliveryDate());
 					key.setDispatchTime(instanceSource.getStartTime());
@@ -139,11 +147,21 @@ public class WaveUtil {
 					key.setLastDeliveryTime(instanceSource.getLastDeliveryTime());
 					key.setCutOffTime(instanceSource.getCutOffTime());
 					key.setZone(instanceSource.getZone().getZoneCode());
-					if(!waveMappingNew.containsKey(key)) {
-						waveMappingNew.put(key, new ArrayList<IWaveInstanceSource>());
+					int initialResource = 0;
+					if(waveMappingNew.containsKey(key)) {
+						initialResource = initialResource + waveMappingNew.get(key);
 					}
-					waveMappingNew.get(key).add(instanceSource);
+					waveMappingNew.put(key, initialResource + instanceSource.getNoOfResources());
+					if(waveMappingCurrent.containsKey(key)) {
+						foundCurrentKeys.add(key);
+					}
 				}
+			}
+		}
+		// Find me Orphans Please
+		for(Map.Entry<WaveInstanceKey, WaveInstance> waveMppEntry : waveMappingCurrent.entrySet()) {
+			if(!foundCurrentKeys.contains(waveMppEntry.getKey())) {
+				waveMappingOrphans.put(waveMppEntry.getKey(), waveMppEntry.getValue());
 			}
 		}
 
@@ -151,53 +169,68 @@ public class WaveUtil {
 		
 		List<WaveInstance> waveInstancesToSave = new ArrayList<WaveInstance>();
 		List<WaveInstance> waveInstancesToDelete = new ArrayList<WaveInstance>();
-		List<WaveInstance> waveInstancesNew = new ArrayList<WaveInstance>();
-		
+				
 		waveInstancesResult.add(waveInstancesToSave);
 		waveInstancesResult.add(waveInstancesToDelete);
-		
-		for(Map.Entry<WaveInstanceKey, List<IWaveInstanceSource>> waveMppEntry : waveMappingNew.entrySet()) {
+				
+		for(Map.Entry<WaveInstanceKey, Integer> waveMppEntry : waveMappingNew.entrySet()) {
 			_tmpWaveInstance = waveMappingCurrent.get(waveMppEntry.getKey());
-			int noOfResources = 0;
-			for(IWaveInstanceSource _instSrc : waveMppEntry.getValue()) {
-				noOfResources = noOfResources + _instSrc.getNoOfResources();
+			if(_tmpWaveInstance == null && waveMappingOrphans.keySet().size() > 0) {
+				_tmpWaveInstance = waveMappingOrphans.remove(waveMappingOrphans.keySet().toArray()[0]);
 			}
 			if(_tmpWaveInstance == null) {
-				WaveInstance _newWaveInstance = new WaveInstance();
-				_newWaveInstance.setArea(waveMppEntry.getKey().getZone());				
-				_newWaveInstance.setCutOffTime(waveMppEntry.getKey().getCutOffTime());
-				_newWaveInstance.setDeliveryDate(waveMppEntry.getKey().getDeliveryDate());
-				_newWaveInstance.setDispatchTime(waveMppEntry.getKey().getDispatchTime());
-				_newWaveInstance.setFirstDeliveryTime(waveMppEntry.getKey().getFirstDeliveryTime());
-				_newWaveInstance.setLastDeliveryTime(waveMppEntry.getKey().getLastDeliveryTime());
-
-				_newWaveInstance.setModifiedTime(new Date());				
-				_newWaveInstance.setChangedBy(actionBy);
-				_newWaveInstance.setNoOfResources(noOfResources);
-				_newWaveInstance.setSource(source.getName());
-				_newWaveInstance.setStatus(EnumWaveInstanceStatus.NOTSYNCHRONIZED);
-				waveInstancesToSave.add(_newWaveInstance);
-				waveInstancesNew.add(_newWaveInstance);
-			} else {
-				waveMappingCurrent.remove(waveMppEntry.getKey());
-				if(noOfResources != _tmpWaveInstance.getNoOfResources()) {
-					_tmpWaveInstance.setModifiedTime(new Date());				
-					_tmpWaveInstance.setChangedBy(actionBy);
-					_tmpWaveInstance.setNoOfResources(noOfResources);
-					_tmpWaveInstance.setSource(source.getName());
-					_tmpWaveInstance.setStatus(EnumWaveInstanceStatus.NOTSYNCHRONIZED);
-					waveInstancesToSave.add(_tmpWaveInstance);
-				}
-			}
+				_tmpWaveInstance = new WaveInstance();						
+			} 
+			_tmpWaveInstance.setArea(waveMppEntry.getKey().getZone());				
+			_tmpWaveInstance.setCutOffTime(waveMppEntry.getKey().getCutOffTime());
+			_tmpWaveInstance.setDeliveryDate(waveMppEntry.getKey().getDeliveryDate());
+			_tmpWaveInstance.setDispatchTime(waveMppEntry.getKey().getDispatchTime());
+			_tmpWaveInstance.setFirstDeliveryTime(waveMppEntry.getKey().getFirstDeliveryTime());
+			_tmpWaveInstance.setLastDeliveryTime(waveMppEntry.getKey().getLastDeliveryTime());
+			
+			_tmpWaveInstance.setModifiedTime(new Date());				
+			_tmpWaveInstance.setChangedBy(actionBy);
+			_tmpWaveInstance.setNoOfResources(waveMppEntry.getValue());
+			_tmpWaveInstance.setSource(source.getName());
+			_tmpWaveInstance.setStatus(EnumWaveInstanceStatus.NOTSYNCHRONIZED);
+			waveInstancesToSave.add(_tmpWaveInstance);
 		}
-		for(Map.Entry<WaveInstanceKey, WaveInstance> waveMppCurrEntry : waveMappingCurrent.entrySet()) {
-			waveInstancesToDelete.add(waveMppCurrEntry.getValue());
-			if(waveMppCurrEntry.getValue().getReferenceId() != null) {
-				if(waveInstancesNew.size() > 0) {
-					waveInstancesNew.remove(0).setReferenceId(waveMppCurrEntry.getValue().getReferenceId());
-				}
+		for(Map.Entry<WaveInstanceKey, WaveInstance> waveMppCurrEntry : waveMappingOrphans.entrySet()) {
+			_tmpWaveInstance = waveMppCurrEntry.getValue();
+			if(_tmpWaveInstance.getReferenceId() != null) {
+				_tmpWaveInstance.setModifiedTime(new Date());				
+				_tmpWaveInstance.setChangedBy(actionBy);
+				_tmpWaveInstance.setNoOfResources(0); // 0 out capacity for already linked orphans
+				_tmpWaveInstance.setSource(source.getName());
+				_tmpWaveInstance.setStatus(EnumWaveInstanceStatus.NOTSYNCHRONIZED);
+				waveInstancesToSave.add(_tmpWaveInstance);
+			} else {
+				waveInstancesToDelete.add(_tmpWaveInstance);
 			}
 		}
 		return waveInstancesResult;
+	}
+	
+	public static void recalculateWave(DispatchManagerI dispatchManagerService, Map<Date, Set<String>> deliveryMapping
+			, String userId, EnumWaveInstancePublishSrc source) {
+		if(deliveryMapping != null) {
+			for(Map.Entry<Date, Set<String>> deliveryMapEntry : deliveryMapping.entrySet()) {
+				Collection wavePublishes = dispatchManagerService.getWaveInstancePublish(deliveryMapEntry.getKey());
+				if(wavePublishes != null && wavePublishes.size() > 0) {
+					WaveInstancePublish wavePublish = (WaveInstancePublish)wavePublishes.iterator().next();
+					if(wavePublish.getSource() != null && wavePublish.getSource().equals(source)) {
+						if(source.equals(EnumWaveInstancePublishSrc.PLAN)) {
+							dispatchManagerService.recalculateWaveFromPlan(deliveryMapEntry.getKey()
+									, deliveryMapEntry.getValue()
+									, userId);
+						} else {
+							dispatchManagerService.recalculateWaveFromScrib(deliveryMapEntry.getKey()
+									, deliveryMapEntry.getValue()
+									, userId);
+						}
+					}
+				}
+			}
+		}
 	}
 }

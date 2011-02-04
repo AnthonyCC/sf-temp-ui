@@ -255,7 +255,7 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI, IWaveInstance
 	}
 
 	@Override
-	public boolean isValid() {
+	public boolean isValidSource() {
 		// TODO Auto-generated method stub
 		return this.getDeliveryDate() != null && this.getStartTime()!= null 
 						&& this.getFirstDeliveryTime() != null && this.getLastDeliveryTime() != null 
@@ -264,11 +264,11 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI, IWaveInstance
 	
 	@Override
 	public boolean needsConsolidation() {
-		// For now consolidation will happen transparent to transapp it will be consolidated when sending it to UPS
-		// It can be turned on anytime based on future business requirements
-		return false;
-		/*return this.getZone() != null && this.getZone().getArea() != null 
-				&& "X".equalsIgnoreCase(this.getZone().getArea().getIsDepot());*/
+		// For now consolidation will happen in UPS.
+		// It can be turned off anytime based on future business requirements
+		//return false;
+		return this.getZone() != null && this.getZone().getArea() != null 
+								&& "X".equalsIgnoreCase(this.getZone().getArea().getIsDepot());
 	}
 
 	@Override

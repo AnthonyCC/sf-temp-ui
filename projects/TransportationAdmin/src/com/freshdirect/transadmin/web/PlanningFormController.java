@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.Plan;
-import com.freshdirect.transadmin.model.WaveInstancePublish;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
@@ -27,6 +26,7 @@ import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.EnumResourceType;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.util.WaveUtil;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
 
 public class PlanningFormController extends AbstractFormController {
@@ -86,7 +86,7 @@ public class PlanningFormController extends AbstractFormController {
     		}
     	}
 		
-		printRequestParameters(request);
+		//printRequestParameters(request);
 		Map refData = new HashMap();
 		refData.put("days", domainManagerService.getDays());
 		refData.put("zones", zones);
@@ -176,28 +176,11 @@ public class PlanningFormController extends AbstractFormController {
 				deliveryMapping.get(model.getPlanDate()).add(model.getZone().getZoneCode());
 			}
 			String userId = com.freshdirect.transadmin.security.SecurityManager.getUserName(request);
-			recalculateWave(deliveryMapping,  userId);			
+			WaveUtil.recalculateWave(this.getDispatchManagerService(), deliveryMapping,  userId, EnumWaveInstancePublishSrc.PLAN);			
 		}
 		return errorList;
 	}
 	
-	private void recalculateWave(Map<Date, Set<String>> deliveryMapping, String userId) {
-		if(deliveryMapping != null) {
-			for(Map.Entry<Date, Set<String>> deliveryMapEntry : deliveryMapping.entrySet()) {
-				Collection wavePublishes = getDispatchManagerService().getWaveInstancePublish(deliveryMapEntry.getKey());
-				if(wavePublishes != null && wavePublishes.size() > 0) {
-					WaveInstancePublish wavePublish = (WaveInstancePublish)wavePublishes.iterator().next();
-					if(wavePublish.getSource() != null && wavePublish.getSource().equals(EnumWaveInstancePublishSrc.PLAN)) {
-						this.getDispatchManagerService().recalculateWaveFromPlan(deliveryMapEntry.getKey()
-																					, deliveryMapEntry.getValue()
-																					, userId);
-					}
-				}
-			}
-		}
-	}
-
-
 	public void saveErrorMessage(HttpServletRequest request, Object msg) {
 		List messages = (List)msg;
 		if (messages != null) {

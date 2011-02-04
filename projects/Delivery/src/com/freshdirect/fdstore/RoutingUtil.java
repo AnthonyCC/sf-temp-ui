@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -586,7 +587,8 @@ public class RoutingUtil {
 	}
 	
 	public static List<IWaveInstance> synchronizeWaveInstance(IRoutingSchedulerIdentity schedulerId
-								, Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree) {
+								, Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree
+								, Set<String> inSyncZones) {
 		
 		List<IWaveInstance> waveInstancesResult = new ArrayList<IWaveInstance>();
 		CapacityEngineServiceProxy capacityProxy = new CapacityEngineServiceProxy();
@@ -598,7 +600,8 @@ public class RoutingUtil {
 		if(srcCutOffInstance != null) {
 			List<IWaveInstance> destinationInstances = null;
 			try {
-				if(needsPurge(srcCutOffInstance)) {
+				//if(needsPurge(srcCutOffInstance)) {
+				if(!inSyncZones.contains(schedulerId.getArea().getAreaCode())) {
 					routingProxy.purgeOrders(schedulerId, true);
 				}
 				destinationInstances = capacityProxy.retrieveWaveInstances(schedulerId);
@@ -638,18 +641,7 @@ public class RoutingUtil {
 							toSyncWaveMpp.put(_tmpInnerMpp.getKey(), new ArrayList<IWaveInstance>());
 						}
 						for(IWaveInstance _srcWaveInst : _tmpInnerMpp.getValue()) {
-							if(_srcWaveInst.isNeedsConsolidation()) {
-								if(toSyncWaveMpp.get(_tmpInnerMpp.getKey()).size() == 0) {
-									toSyncWaveMpp.get(_tmpInnerMpp.getKey()).add(_srcWaveInst);
-									consolidationMap.put(_srcWaveInst.getWaveInstanceId(), new ArrayList<IWaveInstance>());
-								} else {
-									IWaveInstance _rootWaveInstance = toSyncWaveMpp.get(_tmpInnerMpp.getKey()).get(0);
-									WaveInstance.consolidateWaveInstance(_rootWaveInstance, _srcWaveInst);																		
-									consolidationMap.get(_rootWaveInstance.getWaveInstanceId()).add(_srcWaveInst);
-								}
-							} else {
-								toSyncWaveMpp.get(_tmpInnerMpp.getKey()).add(_srcWaveInst);
-							}
+							toSyncWaveMpp.get(_tmpInnerMpp.getKey()).add(_srcWaveInst);
 						}											
 					}										
 				}
@@ -670,13 +662,16 @@ public class RoutingUtil {
 						}
 												
 						if(syncWaveInstance == null) {
-							System.out.println("UNABLE TO FIND WAVE TO SYNCHRONIZATION :"+schedulerId+"->"+_syncWaveInst);
+							System.out.println("UNABLE TO FIND WAVE TO SYNCHRONIZATION :"+schedulerId+"->"+_syncWaveInst+"\n");
+							System.out.println("destinationInstances :"+schedulerId+"->"+destinationInstances);
+							
 							_syncWaveInst.setNotificationMessage("WAVE TEMPLATE ERROR");
 							_syncWaveInst.setStatus(EnumWaveInstanceStatus.NOTSYNCHRONIZED);
 							waveInstancesResult.add(_syncWaveInst);
-						} else {
-							syncWaveInstance.copyBaseAttributes(waveIdMap.get(syncWaveInstance.getRoutingWaveInstanceId()));
+						} else if (waveIdMap.get(syncWaveInstance.getRoutingWaveInstanceId()) != null) {
 							System.out.println("SYNCHRONIZING WAVE :"+schedulerId+"->"+_syncWaveInst);
+							syncWaveInstance.copyBaseAttributes(waveIdMap.get(syncWaveInstance.getRoutingWaveInstanceId()));
+							
 							List<String> unassignedOrder = null;
 							try {
 								unassignedOrder = capacityProxy.saveWaveInstances(schedulerId, syncWaveInstance, syncWaveInstance.isForce());
@@ -705,6 +700,9 @@ public class RoutingUtil {
 								//e.printStackTrace();
 								LOGGER.info("FAILED to SYNCHRONIZE WAVE INSTANCE : " + schedulerId+" : "+syncWaveInstance);
 							}
+						} else {
+							System.out.println("UNABLE TO FIND WAVE TO SYNCHRONIZATION :"+schedulerId+"->"+_syncWaveInst+"\n");
+							System.out.println("destinationInstances :"+schedulerId+"->"+destinationInstances);
 						}
 					}										
 				}

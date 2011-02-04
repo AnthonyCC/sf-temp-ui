@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +18,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.transadmin.model.Scrib;
-import com.freshdirect.transadmin.model.WaveInstancePublish;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
@@ -27,6 +25,7 @@ import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.ScribUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.util.WaveUtil;
 
 public class ScribFormController extends AbstractDomainFormController {
 			
@@ -161,27 +160,12 @@ public class ScribFormController extends AbstractDomainFormController {
 				deliveryMapping.get(model.getScribDate()).add(model.getZone().getZoneCode());
 			}
 			String userId = com.freshdirect.transadmin.security.SecurityManager.getUserName(request);
-			recalculateWave(deliveryMapping,  userId);			
+			WaveUtil.recalculateWave(this.getDispatchManagerService(), deliveryMapping,  userId, EnumWaveInstancePublishSrc.SCRIB);			
 		}
 		return errorList;
 	}
-	 
-	private void recalculateWave(Map<Date, Set<String>> deliveryMapping, String userId) {
-		if(deliveryMapping != null) {
-			for(Map.Entry<Date, Set<String>> deliveryMapEntry : deliveryMapping.entrySet()) {
-				Collection wavePublishes = getDispatchManagerService().getWaveInstancePublish(deliveryMapEntry.getKey());
-				if(wavePublishes != null && wavePublishes.size() > 0) {
-					WaveInstancePublish wavePublish = (WaveInstancePublish)wavePublishes.iterator().next();
-					if(wavePublish.getSource() != null && wavePublish.getSource().equals(EnumWaveInstancePublishSrc.SCRIB)) {
-						this.getDispatchManagerService().recalculateWaveFromScrib(deliveryMapEntry.getKey()
-																					, deliveryMapEntry.getValue()
-																					, userId);
-					}
-				}
-			}
-		}
-	}
-
+	
+	
 	protected String getIdFromRequest(HttpServletRequest request){
 		return request.getParameter("scribId");
 	}

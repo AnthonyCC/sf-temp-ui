@@ -55,7 +55,6 @@ public abstract class AbstractDomainFormController extends AbstractFormControlle
 			errorList.add(this.getMessage("app.actionmessage.119", new Object[]{this.getDomainObjectName()}));
 		}
 		return errorList;
-	}
-
+	}	
 
 }

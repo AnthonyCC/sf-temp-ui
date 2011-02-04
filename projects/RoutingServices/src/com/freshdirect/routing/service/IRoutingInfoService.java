@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
@@ -32,4 +33,6 @@ public interface IRoutingInfoService {
 	Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> getWaveInstanceTree(Date deliveryDate, EnumWaveInstanceStatus status)  throws RoutingServiceException;
 	
 	List<IWaveInstance> getWaveInstanceWithErrors()  throws RoutingServiceException;
+	
+	Set<String> getInSyncWaveInstanceZones(Date deliveryDate)  throws RoutingServiceException;
 }

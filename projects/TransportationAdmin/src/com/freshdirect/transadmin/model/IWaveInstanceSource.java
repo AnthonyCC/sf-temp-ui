@@ -12,7 +12,7 @@ public interface IWaveInstanceSource {
 	Date getLastDeliveryTime();
 	Date getCutOffTime();
 	int getNoOfResources();
-	boolean isValid();
+	boolean isValidSource();
 	boolean needsConsolidation();
 	
 	void setStartTime(Date value);

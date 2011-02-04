@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
 import com.freshdirect.transadmin.model.EmployeeTeam;
@@ -35,6 +36,7 @@ import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
+import com.freshdirect.transadmin.util.WaveUtil;
 import com.freshdirect.transadmin.util.scrib.PlanTree;
 import com.freshdirect.transadmin.util.scrib.ScheduleEmployeeDetails;
 import com.freshdirect.transadmin.web.model.CustomTimeOfDay;
@@ -284,15 +286,25 @@ public class ScribController extends AbstractMultiActionController
 		try {
 			Set scribSet=new HashSet();
 			String arrEntityList[] = getParamList(request);
+			Map<Date, Set<String>> deliveryMapping = new HashMap<Date, Set<String>>();
+			
 			if (arrEntityList != null) {
 				int arrLength = arrEntityList.length;
-				for (int intCount = 0; intCount < arrLength; intCount++) 
-				{
+				for (int intCount = 0; intCount < arrLength; intCount++) {
 					Scrib p=dispatchManagerService.getScrib(arrEntityList[intCount]);					
 					scribSet.add(p);
+					if(p != null && p.getZone() != null) {
+						if(!deliveryMapping.containsKey(p)) {
+							deliveryMapping.put(p.getScribDate(), new HashSet<String>());
+						}
+						deliveryMapping.get(p.getScribDate()).add(p.getZone().getZoneCode());
+					}
 				}
 			}
 			dispatchManagerService.removeEntity(scribSet);
+			WaveUtil.recalculateWave(this.getDispatchManagerService(), deliveryMapping
+					,  com.freshdirect.transadmin.security.SecurityManager.getUserName(request)
+						, EnumWaveInstancePublishSrc.SCRIB);
 			saveMessage(request, getMessage("app.actionmessage.103", null));
 			return scribHandler(request,response);
 		} catch (Exception e) {

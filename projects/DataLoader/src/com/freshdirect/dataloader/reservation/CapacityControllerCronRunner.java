@@ -107,6 +107,8 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 				try {
 					Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree = dsb.retrieveWaveInstanceTree
 																															(processDate, EnumWaveInstanceStatus.NOTSYNCHRONIZED);
+					Set<String> inSyncZones = dsb.getInSyncWaveInstanceZones(processDate);
+					
 					List<DlvTimeslotModel> slots = dsb.getTimeslotsForDate(processDate);
 					
 					LOGGER.info("CapacityControllerCronRunner beginning to synchronize "+slots.size()
@@ -119,7 +121,7 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 							for(IRoutingSchedulerIdentity schedulerId : group.getSchedulerIds()) {
 								if(waveInstanceTree.containsKey(schedulerId.getDeliveryDate())) {
 									if(waveInstanceTree.get(schedulerId.getDeliveryDate()).containsKey(schedulerId.getArea().getAreaCode())) {
-										dsb.synchronizeWaveInstance(schedulerId, waveInstanceTree);
+										dsb.synchronizeWaveInstance(schedulerId, waveInstanceTree, inSyncZones);
 									}
 								}
 							}

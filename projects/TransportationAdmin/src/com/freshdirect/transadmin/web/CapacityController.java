@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.framework.util.TimeOfDay;
+import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
@@ -621,8 +622,8 @@ public class CapacityController extends AbstractMultiActionController {
 
 		String rDate = request.getParameter("rDate");
 		String cutOff = request.getParameter("cutOff");
-		//String errorOnly = request.getParameter("erroronly");
-				
+		EnumWaveInstanceStatus waveStatus = EnumWaveInstanceStatus.getEnum(request.getParameter("waveStatus"));
+		
 		ModelAndView mav = new ModelAndView("waveMonitorView");
 		RoutingInfoServiceProxy proxy = new RoutingInfoServiceProxy();
 		Collection gridResult = new ArrayList<WaveInstanceCommand>();
@@ -632,9 +633,9 @@ public class CapacityController extends AbstractMultiActionController {
 			List<IWaveInstance> waveInstances = new ArrayList<IWaveInstance>();
 			
 			if (rDate != null && rDate.trim().length() > 0) {
-				result = proxy.getWaveInstanceTree(TransStringUtil.getDate(rDate), null);
+				result = proxy.getWaveInstanceTree(TransStringUtil.getDate(rDate), waveStatus);
 			} else {
-				result = proxy.getWaveInstanceTree(null, null);
+				result = proxy.getWaveInstanceTree(null, waveStatus);
 			}
 			RoutingTimeOfDay rCutOff = null;
 			if(cutOff != null && cutOff.trim().length() > 0) {
@@ -668,6 +669,7 @@ public class CapacityController extends AbstractMultiActionController {
 		mav.getModel().put("rDate", rDate);
 		mav.getModel().put("cutOff", cutOff);
 		mav.getModel().put("waveinstances", gridResult );
+		mav.getModel().put("waveStatus", waveStatus != null ? waveStatus.getName() : "" );		
 		
 		//mav.getModel().put("erroronly", errorOnly);
 		mav.getModel().put("cutoffs", domainManagerService.getCutOffs());

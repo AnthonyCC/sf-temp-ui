@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
@@ -32,4 +33,6 @@ public interface IRoutingInfoDAO {
 	Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> getWaveInstanceTree(final Date deliveryDate,final  EnumWaveInstanceStatus status)  throws SQLException;
 	
 	List<IWaveInstance> getWaveInstanceWithErrors()  throws SQLException;
+	
+	Set<String> getInSyncWaveInstanceZones(final Date deliveryDate)  throws SQLException;
 }

@@ -192,7 +192,10 @@ public interface DlvManagerSB extends EJBObject {
 	List<GeographyRestriction> getGeographicDlvRestrictionsForAvailable(AddressModel address)throws DlvResourceException, RemoteException;
 	Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> retrieveWaveInstanceTree(Date deliveryDate, EnumWaveInstanceStatus status) throws DlvResourceException, RemoteException;
 	void synchronizeWaveInstance(IRoutingSchedulerIdentity schedulerId
-			, Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree) throws DlvResourceException, RemoteException;
+			, Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree
+			, Set<String> inSyncZones) throws DlvResourceException, RemoteException;
 	List<Date> getFutureTimeslotDates() throws DlvResourceException, RemoteException;
 	void purgeSchedulerByIdentity(IRoutingSchedulerIdentity schedulerId) throws DlvResourceException, RemoteException;
+	
+	Set<String> getInSyncWaveInstanceZones(Date deliveryDate) throws DlvResourceException, RemoteException;
 }   

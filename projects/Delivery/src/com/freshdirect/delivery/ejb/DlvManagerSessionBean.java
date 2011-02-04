@@ -2487,9 +2487,23 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
+	public Set<String> getInSyncWaveInstanceZones(Date deliveryDate) throws DlvResourceException {
+		RoutingInfoServiceProxy routeInfoProxy = new RoutingInfoServiceProxy();
+		try {
+			
+			return routeInfoProxy.getInSyncWaveInstanceZones(deliveryDate);
+		} catch (RoutingServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			LOGGER.warn("DlvManagerSB getInSyncWaveInstanceZones(): " + e);
+			throw new DlvResourceException(e);
+		}
+	}
+	
 	public void synchronizeWaveInstance(IRoutingSchedulerIdentity schedulerId
-										, Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree) throws DlvResourceException {
-		List<IWaveInstance> waveInstances = RoutingUtil.synchronizeWaveInstance(schedulerId, waveInstanceTree);
+										, Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree
+										, Set<String> inSyncZones) throws DlvResourceException {
+		List<IWaveInstance> waveInstances = RoutingUtil.synchronizeWaveInstance(schedulerId, waveInstanceTree, inSyncZones);
 		if(waveInstances != null && waveInstances.size() > 0) {
 			updateWaveInstanceStatus(waveInstances);
 		}

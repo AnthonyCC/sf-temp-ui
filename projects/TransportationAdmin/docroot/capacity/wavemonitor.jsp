@@ -62,11 +62,12 @@
 
                      var currentUpdateSource;
                       
-                    function doCompositeLink(compId1,compId2, url) {
+                    function doCompositeLink(compId1, compId2, compId3, url) {
 			          var param1 = document.getElementById(compId1).value;
 			          var param2 = document.getElementById(compId2).value;
+			          var param3 = document.getElementById(compId3).value;
 			          			          			          
-			          location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2;
+			          location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+"&"+compId3+"="+param3;
         			} 
         			
         			function addTSRowHandlers(tableId, rowClassName) {
@@ -136,9 +137,17 @@
                    </select>
                 
                 </td>
-               
+                <td> 
+                  <select id="waveStatus" name="waveStatus"> 
+                  	  <option value="">----All----</option>                     
+                      <option <c:choose> <c:when test="${waveStatus == 'SYN'}" >selected </c:when> </c:choose> value="SYN">In Sync</option>  
+                      <option <c:choose> <c:when test="${waveStatus == 'NYN'}" >selected </c:when> </c:choose> value="NYN">Not In Sync</option>
+                   </select>
+                
+                </td>
+                   
                 <td>
-                     <input type = "button" value="&nbsp;View&nbsp;" onclick="javascript:doCompositeLink('rDate','cutOff','wavemonitor.do')" />
+                     <input type = "button" value="&nbsp;View&nbsp;" onclick="javascript:doCompositeLink('rDate','cutOff','waveStatus','wavemonitor.do')" />
                   </td>  
                   
               </tr>
@@ -173,7 +182,7 @@
 				              <ec:column property="maxRunTimeInfo" title="Max Time" />
 				              <ec:column property="noOfResources" title="Resources" />
 				              <ec:column property="cutOffTime" title="CutOff" />
-				              				              
+				              <ec:column property="source" title="Source" />				              
 				              <ec:column cell="bool" property="isInSync" title="Status"/>
 				              <ec:column cell="positive" property="force" title="Force"/>
 				              <ec:column property="notificationMessage" title="Notification" />				              				              																											  	                           
