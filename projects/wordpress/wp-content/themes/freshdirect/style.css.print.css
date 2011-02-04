@@ -3,91 +3,131 @@ Description:    Print css for FreshDirect theme
 Author:         Gergely Mark
 Version:        1.0
 */
-	body {
-		background: none !important;
-	}
-	#wrapper {
-		clear: both !important;
-		display: block !important;
-		float: none !important;
-		position: relative !important;
-	}
-	#header {
-		border-bottom: 2pt solid #000;
-		padding-bottom: 18pt;
-	}
-	#colophon {
-		border-top: 2pt solid #000;
-	}
-	#site-title,
-	#site-description {
-		float: none;
-		line-height: 1.4em;
-		margin: 0;
-		padding: 0;
-	}
-	#site-title {
-		font-size: 13pt;
-	}
-	.entry-content {
-		font-size: 14pt;
-		line-height: 1.6em;
-	}
-	.entry-title {
-		font-size: 21pt;
-	}
-	#access,
-	#branding img,
-	#respond,
-	.comment-edit-link,
-	.edit-link,
-	.navigation,
-	.page-link,
-	.widget-area {
-		display: none !important;
-	}
-	#container,
-	#header,
-	#footer {
-		margin: 0;
-		width: 100%;
-	}
-	#content,
-	.one-column #content {
-		margin: 24pt 0 0;
-		width: 100%;
-	}
-	.wp-caption p {
-		font-size: 11pt;
-	}
-	#site-info,
-	#site-generator {
-		float: none;
-		width: auto;
-	}
-	#colophon {
-		width: auto;
-	}
-	img#wpstats {
-		display: none;
-	}
-	#site-generator a {
-		margin: 0;
-		padding: 0;
-	}
-	#entry-author-info {
-		border: 1px solid #e7e7e7;
-	}
-	#main {
-		display: inline;
-	}
-	.home .sticky {
-		border: none;
-	}
-	#masthead,
-	#fd-main-header,
-	.myfd-main-footer,
-	#footer,
-	.myfd-linkbar {
-		display: none;
-	}
+body {
+	background: none !important;
+	margin: 10px !important;
+	padding: 0px !important;
+}
+#wrapper {
+	clear: both !important;
+	display: block !important;
+	float: none !important;
+	position: relative !important;
+}
+#colophon {
+	border-top: 2pt solid #000;
+}
+#site-title,
+#site-description {
+	float: none;
+	line-height: 1.4em;
+	margin: 0;
+	padding: 0;
+}
+#site-title {
+	font-size: 13pt;
+}
+.entry-content {
+	font-size: 14pt;
+	line-height: 1.6em;
+}
+.entry-title {
+	font-size: 21pt;
+}
+#access,
+#branding img,
+#respond,
+.comment-edit-link,
+.edit-link,
+.navigation,
+.page-link,
+.widget-area {
+	display: none !important;
+}
+#container,
+#header,
+#footer {
+	margin: 0;
+	width: 481px;
+}
+#content {
+	font-size: 10px;
+}
+.wp-caption p {
+	font-size: 11pt;
+}
+#site-info,
+#site-generator {
+	float: none;
+	width: auto;
+}
+#colophon {
+	width: auto;
+}
+img#wpstats {
+	display: none;
+}
+#site-generator a {
+	margin: 0;
+	padding: 0;
+}
+#entry-author-info {
+	border: 1px solid #e7e7e7;
+}
+#main {
+	display: inline;
+}
+.home .sticky {
+	border: none;
+}
+#masthead,
+#fd-main-header,
+.myfd-main-footer,
+#footer,
+.myfd-linkbar,
+.main-frame {
+	display: none;
+}
+
+.myfd-category,
+.myfd-category a,
+.myfd-category a:link,
+.myfd-category a:visited,
+.myfd-category a:active {
+	color: #499A38;
+	font-family: 'Eagle', verdana, arial, sans-serif;
+	text-decoration: none;
+	font-size: 18px;
+	margin-bottom: 4px;
+}
+
+.myfd-category strong {
+	font-family: 'Eagle-Bold', verdana, arial, sans-serif;
+	font-size: 19px;
+}
+
+.myfd-post {
+	padding: 0px !important;
+	margin: 0px !important;
+}
+
+.post-links {
+	margin-bottom: 20px;
+}
+
+.print-copyright {
+	display: block ! important;
+}
+.main-frame-side-header {
+	margin: 0px !important;
+	padding: 0px !important;
+}
+.fd-main-underneath-header {
+	height: 38px !important;
+	background: transparent url('./media_stat/images/logos/fd_logo_sm_gl_nv.gif') no-repeat 0px 0px !important;
+	margin: 0px 0px 15px !important;
+	padding: 0px !important;
+}
+a img {
+	border: none;
+}

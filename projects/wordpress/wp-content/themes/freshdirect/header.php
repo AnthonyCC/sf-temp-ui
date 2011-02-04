@@ -75,7 +75,7 @@
 	<div class="main-frame-side">
 	<img src="<?php bloginfo('template_url'); ?>/media_stat/images/layout/clear.gif" height="15" width="733">
 	<br>
-	<div style="padding: 0px 25px; margin-bottom: 30px;">
+	<div style="padding: 0px 25px; margin-bottom: 30px;" class="main-frame-side-header">
 	<div id="fd-main-header">
 		<a href="<?php echo home_url()?>"><img src="<?php bloginfo('template_url'); ?>/images/myfd_hdr.jpg"></a>
 		<div class="fd-social-links" style="position: absolute; bottom: 0px; right: 0px;">
@@ -87,6 +87,6 @@
 		</div>
 		</div>
 	</div>
-	<div style="font-size: 0px; height: 2px; background-color: #dadada; margin-top: 20px;">&nbsp;</div>
+	<div style="font-size: 0px; height: 2px; background-color: #dadada; margin-top: 20px;" class="fd-main-underneath-header">&nbsp;</div>
 	</div>
 

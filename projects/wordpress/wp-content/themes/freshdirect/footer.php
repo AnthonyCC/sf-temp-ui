@@ -11,6 +11,9 @@
  */
 ?>
 	<div style="clear: both; font-size: 0px;"></div>
+	<div style="display: none" class="print-copyright">
+	&copy; 2002 - 2011 FreshDirect. All Rights Reserved. 
+	</div>
 	</div><!-- main-frame-side -->
 	</div><!-- #main -->
 	<div class="myfd-main-footer">
