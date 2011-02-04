@@ -1977,7 +1977,6 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.ctSlots = slots;
 	}
 
->>>>>>> svn/features/myfd
 }
 
 
