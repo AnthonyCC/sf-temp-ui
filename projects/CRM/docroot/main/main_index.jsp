@@ -261,7 +261,7 @@ boolean showOrderSummaryReportSection = !crmRole.getCode().equals(CrmAgentRole.E
 						</div>
 					</div>
 				</td>
-			
+				
 			<% } else if(showOrderCutOffReportSection || showOrderSummaryReportSection) { %>
 				<%@ include file="/includes/order_cutoff_summary_report.jspf"%>
 			<% } %>
@@ -273,7 +273,6 @@ boolean showOrderSummaryReportSection = !crmRole.getCode().equals(CrmAgentRole.E
 
 		<%if(showOrderRouteSection){ %>
 			<%@ include file="/includes/main_route_stop.jspf"%>
-			<div class="separator"><img src="/media_stat/crm/images/clear.gif" width="1" height="8"></div>
 		<% } %>
 		<%if(showGiftCardSearchSection){ %>			
 			<div class="separator"><img src="/media_stat/crm/images/clear.gif" width="1" height="8"></div>

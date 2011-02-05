@@ -2,7 +2,7 @@
 			
 			<div id="monitor" class="home_module" style="width: 100%; border-bottom: 2px solid; height: auto;">
 					
-				<div id="home_monitor_content" class="content" style="padding-left: 0px; height: 18em; overflow-y: hidden;">
+				
 						<table width="100%" cellpadding="0" cellspacing="0" border="0" class="module_header" style="height: 2.2em; <%=worklist?"padding: 0px;":""%>">
 				<tr>
 					<% if(showWorkListSection){ %>
@@ -32,7 +32,8 @@
 			
 				//-->
 			</script>
-				<td width="50%" valign="top">
+					<td width="50%" valign="top">
+					<div id="home_monitor_content" class="content" style="padding-left: 0px; height: 18em; overflow-y: scroll;">
 					<table width="100%" cellpadding="0" cellspacing="0" border="0" class="module_header" style="height: 2.2em; <%=worklist?"padding: 0px;":""%>">
 					<tr><td width="70%" class="download" align="left">
 					<span class="module_header_text">Worklist (<span class='result'><%= cases.size()  %></span>)</span>
@@ -40,20 +41,38 @@
 					<%@ include file="/includes/filter_cases.jspf"%>
 					</td></tr></table>
 					<%@ include file="/includes/case_list.jspf"%>
-					
+					</div>
 					</td>
 					<% } %>
+					<% if(showWorkListSection && ((showCustomerSearchSection && showOrderCutOffReportSection)||(showCustomerSearchSection && showOrderSummaryReportSection))) { %>
+					
+					<td width="25%" valign="top">	
+					
+					<% if(showCustomerSearchSection && showOrderCutOffReportSection) { %>
+									<div id="home_monitor_content" class="content" style="padding-left: 0px; height: 13em; overflow-y: scroll;">
+							<%@ include file="/includes/order_cutoff_report.jspf"%>
+							</div>
+							<% } %>
+					<% if(showCustomerSearchSection && showOrderSummaryReportSection) { %>		
+							<div id="home_monitor_content" class="content" style="padding-left: 0px; height: 8em; overflow-y: hidden;">
+							<%@ include file="/includes/order_summary_report.jspf"%>
+							</div>
+					
+					<% } %></td>
+					<% } else { %>
 					<% if(showCustomerSearchSection && showOrderCutOffReportSection) { %>
 					<td width="25%" valign="top">					
 							<%@ include file="/includes/order_cutoff_report.jspf"%>
 							</td>
 							<% } %>
 					<% if(showCustomerSearchSection && showOrderSummaryReportSection) { %>		
-							<td width="25%" valign="top">
+							<td width="25%" valign="top" >
 							<%@ include file="/includes/order_summary_report.jspf"%>
 					
 					</td>
+					<% } %>
+					<td></td>
 					<% } %></tr></table>
-				</div>
+				
 				
 			</div>

@@ -67,7 +67,7 @@ session.setAttribute(SessionName.USER,null); %>
 			<table width="100%" cellpadding="0" cellspacing="0" border="0" class="sub_nav_text">
 			<form name="case_filter" method="POST" action="/main/worklist.jsp">
 				<tr valign="middle">
-					<td width="15%"><b>My Worklist</b> [<b><%= cases.size() %></b> / <%= cases.size() %>]</td>
+					<td width="12%"><b>My Worklist</b> [<b><%= cases.size() %></b> / <%= cases.size() %>]</td>
 					
 			<script language="javascript">
 				<!--
@@ -94,10 +94,10 @@ session.setAttribute(SessionName.USER,null); %>
 			
 				//-->
 			</script>
-			<td class="download" align="left"><%@ include file="/includes/filter_cases.jspf"%></td>
+			<td  class="download" align="left"><%@ include file="/includes/filter_cases.jspf"%></td>
 			
 			
-					<td width="20%" align="right">
+					<td width="15%" align="right">
 						<b>P</b> <span class="legend">PRIORITY:
 						<img src="/media_stat/crm/images/priority_hi.gif" width="11" height="11" hspace="3">HIGH
 						<img src="/media_stat/crm/images/priority_md.gif" width="11" height="11" hspace="3">MEDIUM
@@ -114,9 +114,7 @@ session.setAttribute(SessionName.USER,null); %>
 
 			</crm:FindCases>
 			
-			<div class="download">
 			
-			</div>
 			
 			<iframe id="case_summary" name="case_summary" src="/includes/case_summary.jsp?<%=currentQueryString%>" width="100%" height="280" scrolling="no" FrameBoarder="0"></iframe>
 			

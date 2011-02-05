@@ -5,7 +5,8 @@
 								<input type="hidden" name="cutoffSubmit" value="cutoffSubmit">
 								<jsp:include page='/includes/order_cutoff_search.jsp'/>
 							</form>
-							<!-- <table width="90%" cellpaddding="0" cellspacing="0" border="0" align="center">
+							<% if(!showCustomerSearchSection){ %>
+							 <table width="90%" cellpaddding="0" cellspacing="0" border="0" align="center">
 							<tr>
 								<td colspan="3"><u>*List of acceptable order statuses for wave drop/extract are:</u></td>
 							</tr>
@@ -34,6 +35,7 @@
 								<td colspan="3" style="padding-top:10px;"><strong>Wait 10 minutes and re-run cutoff report.</strong>
 								<br />If no change to order statuses observed, proceed with wave drop/extract and alert AppSupport, ERP & SA.</td>
 							</tr>
-							</table> -->
+							</table> 
+							<% } %>
 						</div>
 					</div>

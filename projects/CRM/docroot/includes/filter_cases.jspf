@@ -47,8 +47,8 @@
 			</td>
 			<td><a href="javascript:filterCases(document.case_filter.queue.value, document.case_filter.subject.value, document.case_filter.state.value, document.case_filter.priority.value)"><div class="submit" text-align="center" style="text-decoration:none;">&nbsp;&nbsp;FILTER&nbsp;&nbsp;</div></a>
 			</td>
-			<td>|</td>
-			<td><a href="/main/worklist.jsp"><div class="clear" text-align="center" style="text-decoration:none;">&nbsp;&nbsp;SHOW ALL&nbsp;&nbsp;</div></a></td>
+			<!-- <td>|</td>
+			<td><a href="/main/worklist.jsp"><div class="clear" text-align="center" style="text-decoration:none;">&nbsp;&nbsp;SHOW ALL&nbsp;&nbsp;</div></a></td> -->
 			</tr>
 		</form>
 		</table>
