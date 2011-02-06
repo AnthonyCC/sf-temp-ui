@@ -117,7 +117,7 @@ public class HandOffRoutingInAction extends AbstractHandOffAction {
 		    	exp.printStackTrace();
 		    	try {
 					proxy.updateHandOffBatchStatus(HandOffRoutingInAction.this.getBatch().getBatchId(), EnumHandOffBatchStatus.ROUTINGFAILED);
-					proxy.updateHandOffBatchMessage(HandOffRoutingInAction.this.getBatch().getBatchId(), exp.getMessage());
+					proxy.updateHandOffBatchMessage(HandOffRoutingInAction.this.getBatch().getBatchId(),  decodeErrorMessage(exp));
 				} catch (RoutingServiceException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

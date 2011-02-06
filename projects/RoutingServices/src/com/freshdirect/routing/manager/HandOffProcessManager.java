@@ -130,6 +130,13 @@ public class HandOffProcessManager {
 			}
 		} 
 		
+		if(RoutingServicesProperties.getRoutingBatchSyncEnabled()) {
+			RoutingInfoServiceProxy proxy = new RoutingInfoServiceProxy();
+			if(!proxy.isPlanPublished(request.getHandOffBatch().getDeliveryDate())) {
+				throw new RoutingProcessException(null, null,IIssue.PROCESS_WAVEINSTANCE_NOTPUBLISHED);
+			}
+		}
+		
 		return doBatchRouting(request);
 		
     }

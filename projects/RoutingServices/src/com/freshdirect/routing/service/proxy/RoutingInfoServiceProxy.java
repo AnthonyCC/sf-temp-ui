@@ -57,6 +57,10 @@ public class RoutingInfoServiceProxy  extends BaseServiceProxy  {
 	public Set<String> getInSyncWaveInstanceZones(Date deliveryDate)  throws RoutingServiceException {
 		return getService().getInSyncWaveInstanceZones(deliveryDate);
 	}
+	
+	public boolean isPlanPublished(Date deliveryDate)  throws RoutingServiceException {
+		return getService().isPlanPublished(deliveryDate);
+	}
 		
 	public IRoutingInfoService getService() {
 		return RoutingServiceLocator.getInstance().getRoutingInfoService();

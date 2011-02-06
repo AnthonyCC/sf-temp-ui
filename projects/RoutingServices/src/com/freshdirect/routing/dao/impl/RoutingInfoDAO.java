@@ -556,4 +556,38 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 		System.out.println("IN SYNC WAVE INSTANCE ZONES:"+result);
 		return result;
 	}
+	
+	private static final String GET_CHECK_WAVEPUBLISH_QRY = "select * from TRANSP.WAVE_INSTANCE_PUBLISH p " +
+						"where P.DELIVERY_DATE = ? ";
+
+	public boolean isPlanPublished(final Date deliveryDate)  throws SQLException {
+		final Set<String> result = new HashSet<String>();
+
+		PreparedStatementCreator creator=new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+
+				PreparedStatement ps = connection.prepareStatement(GET_CHECK_WAVEPUBLISH_QRY);
+				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
+				return ps;
+			}
+		};
+
+		jdbcTemplate.query(creator, 
+				new RowCallbackHandler() { 
+			public void processRow(ResultSet rs) throws SQLException {				    	
+				do {					
+					result.add(rs.getString("SOURCE"));
+				} while(rs.next());		        		    	
+			}
+		}
+		);
+		if(result.size() > 0) {
+			String src = result.iterator().next();
+			if(EnumWaveInstancePublishSrc.getEnum(src) != null 
+					&& EnumWaveInstancePublishSrc.PLAN.equals(EnumWaveInstancePublishSrc.getEnum(src))) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

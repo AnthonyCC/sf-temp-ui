@@ -35,4 +35,6 @@ public interface IRoutingInfoService {
 	List<IWaveInstance> getWaveInstanceWithErrors()  throws RoutingServiceException;
 	
 	Set<String> getInSyncWaveInstanceZones(Date deliveryDate)  throws RoutingServiceException;
+	
+	boolean isPlanPublished(Date deliveryDate)  throws RoutingServiceException;
 }

@@ -3,7 +3,6 @@ package com.freshdirect.routing.handoff.action;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -17,10 +16,10 @@ import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.service.exception.IIssue;
+import com.freshdirect.routing.service.exception.RoutingProcessException;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
-import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 
 public abstract class AbstractHandOffAction {
@@ -112,16 +111,16 @@ public abstract class AbstractHandOffAction {
 		//Map<ZoneCode, Map<DispatchTime, Map<CutOffTime, IWaveInstance>>>
 		Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> plannedDispatchTree = null;
 		
-		if(RoutingServicesProperties.getRoutingBatchSyncEnabled()) {
+		/*if(RoutingServicesProperties.getRoutingBatchSyncEnabled()) {
 			Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree = routingInfoProxy
 																										.getWaveInstanceTree(this.getBatch().getDeliveryDate(), null);
 
 			if(waveInstanceTree != null && waveInstanceTree.keySet().size() > 0) {
 				plannedDispatchTree = waveInstanceTree.get(waveInstanceTree.keySet().toArray()[0]);
 			}
-		} else {
+		} else {*/
 			plannedDispatchTree = routingInfoProxy.getPlannedDispatchTree(this.getBatch().getDeliveryDate());
-		}
+		//}
 		
 		List<IHandOffBatchRoute> mismatchRoutes = new ArrayList<IHandOffBatchRoute>();
 				
@@ -216,9 +215,9 @@ public abstract class AbstractHandOffAction {
 			
 			try {
 				if(getFailureStatus() != null) {
+					
 					proxy.updateHandOffBatchStatus(this.getBatch().getBatchId(), getFailureStatus());
-					proxy.updateHandOffBatchMessage(this.getBatch().getBatchId(), 
-														(exp.getMessage() != null ? exp.getMessage() : exp.toString()));
+					proxy.updateHandOffBatchMessage(this.getBatch().getBatchId(), decodeErrorMessage(exp));
 				}
 			} catch (RoutingServiceException e) {
 				// TODO Auto-generated catch block
@@ -229,6 +228,19 @@ public abstract class AbstractHandOffAction {
 		long endTime = System.currentTimeMillis();
 		System.out.println("HandOffAction "+this.getClass().getName()+" completed in"+ ((endTime - startTime)/60) +" secs");
 		return null;
+	}
+	
+	protected static String decodeErrorMessage(Exception exp) {
+		String strErrMessage = exp.getMessage() != null ? exp.getMessage() : "";
+		if(strErrMessage == null || strErrMessage.trim().length() == 0) {
+			if(exp instanceof RoutingProcessException) {
+				strErrMessage = ((RoutingProcessException)exp).getIssueMessage();
+			}
+		}
+		if(strErrMessage == null || strErrMessage.trim().length() == 0) {
+			strErrMessage = exp.toString();
+		}
+		return strErrMessage;
 	}
 	
 	class DispatchCorrelationResult {

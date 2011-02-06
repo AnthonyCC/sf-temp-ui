@@ -35,4 +35,6 @@ public interface IRoutingInfoDAO {
 	List<IWaveInstance> getWaveInstanceWithErrors()  throws SQLException;
 	
 	Set<String> getInSyncWaveInstanceZones(final Date deliveryDate)  throws SQLException;
+	
+	boolean isPlanPublished(final Date deliveryDate)  throws SQLException;
 }
