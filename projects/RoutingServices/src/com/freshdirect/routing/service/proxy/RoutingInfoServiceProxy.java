@@ -61,6 +61,10 @@ public class RoutingInfoServiceProxy  extends BaseServiceProxy  {
 	public boolean isPlanPublished(Date deliveryDate)  throws RoutingServiceException {
 		return getService().isPlanPublished(deliveryDate);
 	}
+	
+	public Map<Date, List<String>> getDynamicEnabledZoneMapping()  throws RoutingServiceException {
+		return getService().getDynamicEnabledZoneMapping();
+	}
 		
 	public IRoutingInfoService getService() {
 		return RoutingServiceLocator.getInstance().getRoutingInfoService();

@@ -16,7 +16,7 @@ public class FDCheckBoxImageCell extends FDBaseCell  {
         try {        	
         	String cellValue = (String)column.getPropertyValue();
         	if(cellValue != null && new Boolean(cellValue).booleanValue())
-        		columnBuilder.getHtmlBuilder().img("images/icons/confirmed.gif");            
+        		columnBuilder.getHtmlBuilder().img("images/icons/tick.gif");            
             //columnBuilder.getHtmlBuilder().xclose();
         } catch (Exception e) {e.printStackTrace();}
         columnBuilder.tdEnd();

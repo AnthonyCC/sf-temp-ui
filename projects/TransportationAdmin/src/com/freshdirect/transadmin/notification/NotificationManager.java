@@ -1,6 +1,8 @@
 package com.freshdirect.transadmin.notification;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletRequest;
 
@@ -28,15 +30,19 @@ public class NotificationManager {
 		RoutingInfoServiceProxy proxy = new RoutingInfoServiceProxy();
 		try {
 			List<IWaveInstance> waveInstances = proxy.getWaveInstanceWithErrors();
-			if(waveInstances != null) {			
+			Map<Date, List<String>> dynamicEnabledZoneMpp = proxy.getDynamicEnabledZoneMapping();
+			if(waveInstances != null && dynamicEnabledZoneMpp != null) {			
 				int notSyncCount = 0;
 				int errorCount = 0;
 				for(IWaveInstance waveInstance : waveInstances) {
-					if(EnumWaveInstanceStatus.NOTSYNCHRONIZED.equals(waveInstance.getStatus())) {
-						notSyncCount++;
-					}
-					if(waveInstance.getNotificationMessage() != null && waveInstance.getNotificationMessage().length() > 0) {
-						errorCount++;
+					if(waveInstance.getArea() != null && dynamicEnabledZoneMpp.containsKey(waveInstance.getDeliveryDate())
+							&& dynamicEnabledZoneMpp.get(waveInstance.getDeliveryDate()).contains(waveInstance.getArea().getAreaCode())) {
+						if(EnumWaveInstanceStatus.NOTSYNCHRONIZED.equals(waveInstance.getStatus())) {
+							notSyncCount++;
+						}
+						if(waveInstance.getNotificationMessage() != null && waveInstance.getNotificationMessage().length() > 0) {
+							errorCount++;
+						}
 					}
 				}
 				if(notSyncCount > 0 && errorCount > 0) {

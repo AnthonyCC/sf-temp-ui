@@ -120,7 +120,15 @@ public class RoutingInfoService extends BaseService implements IRoutingInfoServi
 			throw new RoutingServiceException(e, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);
 		}	
 	}
-
+	public Map<Date, List<String>> getDynamicEnabledZoneMapping()  throws RoutingServiceException {
+		try {
+			return routingInfoDAOImpl.getDynamicEnabledZoneMapping();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);
+		}	
+	}
+	
 	public IRoutingInfoDAO getRoutingInfoDAOImpl() {
 		return routingInfoDAOImpl;
 	}

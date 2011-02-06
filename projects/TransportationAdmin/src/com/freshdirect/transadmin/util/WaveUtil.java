@@ -175,8 +175,20 @@ public class WaveUtil {
 				
 		for(Map.Entry<WaveInstanceKey, Integer> waveMppEntry : waveMappingNew.entrySet()) {
 			_tmpWaveInstance = waveMappingCurrent.get(waveMppEntry.getKey());
-			if(_tmpWaveInstance == null && waveMappingOrphans.keySet().size() > 0) {
-				_tmpWaveInstance = waveMappingOrphans.remove(waveMappingOrphans.keySet().toArray()[0]);
+			if(_tmpWaveInstance == null) {
+				WaveInstance _tmpOrphan = null;
+				int intCount = 0;
+				while(waveMappingOrphans.keySet().size() > intCount) {
+					_tmpOrphan = waveMappingOrphans.get(waveMappingOrphans.keySet().toArray()[intCount]);
+					if(_tmpOrphan != null 
+								&& _tmpOrphan.getCutOffTime() != null 
+									&& _tmpOrphan.getCutOffTime().equals(waveMppEntry.getKey().getCutOffTime())) {
+						_tmpWaveInstance = waveMappingOrphans.remove(waveMappingOrphans.keySet().toArray()[intCount]);
+						break;
+					} else {
+						intCount++;
+					}					
+				}
 			}
 			if(_tmpWaveInstance == null) {
 				_tmpWaveInstance = new WaveInstance();						

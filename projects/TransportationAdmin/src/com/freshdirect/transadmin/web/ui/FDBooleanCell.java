@@ -26,9 +26,9 @@ public class FDBooleanCell extends FDBaseCell  {
         try {        	
         	Boolean cellValue = (Boolean)column.getPropertyValue();
         	if(cellValue != null && cellValue) {
-        		columnBuilder.getHtmlBuilder().img("images/icons/confirmed.gif");
+        		columnBuilder.getHtmlBuilder().img("images/icons/tick.gif");
         	} else {
-        		columnBuilder.getHtmlBuilder().img("images/icons/delete.gif");
+        		columnBuilder.getHtmlBuilder().img("images/icons/cross.gif");
         	}
             //columnBuilder.getHtmlBuilder().xclose();
         } catch (Exception e) {e.printStackTrace();}

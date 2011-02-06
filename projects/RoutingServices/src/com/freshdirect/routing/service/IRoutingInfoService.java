@@ -37,4 +37,6 @@ public interface IRoutingInfoService {
 	Set<String> getInSyncWaveInstanceZones(Date deliveryDate)  throws RoutingServiceException;
 	
 	boolean isPlanPublished(Date deliveryDate)  throws RoutingServiceException;
+	
+	Map<Date, List<String>> getDynamicEnabledZoneMapping()  throws RoutingServiceException;
 }

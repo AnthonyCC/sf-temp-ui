@@ -516,9 +516,14 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 					String notificationMsg = rs.getString("NOTIFICATION_MSG");
 
 					IWaveInstance waveInstance = new WaveInstance();
-					
+					waveInstance.setDeliveryDate(rs.getDate("DISPATCH_DATE"));
 					waveInstance.setNotificationMessage(notificationMsg);
 					waveInstance.setStatus(status);
+					
+					IAreaModel area = new AreaModel();
+					area.setAreaCode(rs.getString("ZONE"));
+					waveInstance.setArea(area);
+					
 					result.add(waveInstance);
 					
 				} while(rs.next());		        		    	
@@ -589,5 +594,35 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 			}
 		}
 		return false;
+	}
+	
+	private static final String GET_DYNAMIC_ZONEMAPPING_QRY = "select T.BASE_DATE D_DATE, Z.ZONE_CODE D_ZONE from dlv.timeslot t" +
+			", dlv.zone z where T.BASE_DATE > sysdate and T.ZONE_ID = Z.ID and T.IS_DYNAMIC = 'X' group by T.BASE_DATE, Z.ZONE_CODE";
+	
+	public Map<Date, List<String>> getDynamicEnabledZoneMapping()  throws SQLException {
+		final Map<Date, List<String>> result = new HashMap<Date, List<String>>();
+
+		PreparedStatementCreator creator=new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+
+				PreparedStatement ps = connection.prepareStatement(GET_DYNAMIC_ZONEMAPPING_QRY);				
+				return ps;
+			}
+		};
+
+		jdbcTemplate.query(creator, 
+				new RowCallbackHandler() { 
+			public void processRow(ResultSet rs) throws SQLException {				    	
+				do {
+					Date key = rs.getDate("D_DATE");
+					if(!result.containsKey(key)) {
+						result.put(key, new ArrayList<String>());
+					}
+					result.get(key).add(rs.getString("D_ZONE"));
+				} while(rs.next());		        		    	
+			}
+		}
+		);		
+		return result;
 	}
 }

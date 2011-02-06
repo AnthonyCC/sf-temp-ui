@@ -26,7 +26,7 @@ public class FDPositiveCell extends FDBaseCell  {
         try {        	
         	Boolean cellValue = (Boolean)column.getPropertyValue();
         	if(cellValue != null && cellValue) {
-        		columnBuilder.getHtmlBuilder().img("images/icons/confirmed.gif");
+        		columnBuilder.getHtmlBuilder().img("images/icons/tick.gif");
         	} else {
         		//columnBuilder.getHtmlBuilder().img("images/icons/delete.gif");
         	}

@@ -628,6 +628,8 @@ public class CapacityController extends AbstractMultiActionController {
 		RoutingInfoServiceProxy proxy = new RoutingInfoServiceProxy();
 		Collection gridResult = new ArrayList<WaveInstanceCommand>();
 		
+		Map<Date, List<String>> dynamicEnabledZoneMpp = proxy.getDynamicEnabledZoneMapping();
+		
 		try {
 			Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> result = null;
 			List<IWaveInstance> waveInstances = new ArrayList<IWaveInstance>();
@@ -658,7 +660,10 @@ public class CapacityController extends AbstractMultiActionController {
 				
 			}
 			for(IWaveInstance _inst : waveInstances) {
-				gridResult.add(new WaveInstanceCommand(_inst));
+				if(dynamicEnabledZoneMpp != null && _inst.getArea() != null && dynamicEnabledZoneMpp.containsKey(_inst.getDeliveryDate())
+						&& dynamicEnabledZoneMpp.get(_inst.getDeliveryDate()).contains(_inst.getArea().getAreaCode())) {
+					gridResult.add(new WaveInstanceCommand(_inst));
+				}
 			}
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block

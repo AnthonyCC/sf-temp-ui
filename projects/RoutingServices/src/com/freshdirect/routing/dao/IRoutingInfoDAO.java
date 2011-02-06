@@ -37,4 +37,6 @@ public interface IRoutingInfoDAO {
 	Set<String> getInSyncWaveInstanceZones(final Date deliveryDate)  throws SQLException;
 	
 	boolean isPlanPublished(final Date deliveryDate)  throws SQLException;
+	
+	Map<Date, List<String>> getDynamicEnabledZoneMapping()  throws SQLException;
 }
