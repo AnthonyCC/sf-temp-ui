@@ -184,7 +184,7 @@ public class WaveUtil {
 								&& _tmpOrphan.getCutOffTime() != null 
 									&& _tmpOrphan.getCutOffTime().equals(waveMppEntry.getKey().getCutOffTime())) {
 						_tmpWaveInstance = waveMappingOrphans.remove(waveMappingOrphans.keySet().toArray()[intCount]);
-						break;
+						break;//Found an orphan break
 					} else {
 						intCount++;
 					}					
