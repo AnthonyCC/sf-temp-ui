@@ -200,6 +200,7 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 			}
 			<% } %>
 			/* Disable all disp fields on Closed Case*/
+			<% if(!isSecuredCase){ %>
 			if ( caseStatus == 'Closed' ) {	
 				$('media').disabled = true;
 				$('morethenone').disabled = true;
@@ -209,7 +210,7 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 				$('satisfactoryReason').disabled = true;
 				$('customerTone').disabled = true;
 			}
-
+			<% } %>
 			if ( caseStatus == 'New' ) {
 			//check for NewCase only
 				if (  field.type.substring(0,6) == "select" && (field.id == 'queue' || field.id == 'subject') )
@@ -862,7 +863,7 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 			<fd:ErrorHandler result='<%= result %>' name='summary' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
 	</tr>
-	<% if(!isSecuredCase || (isSecuredCase && CrmAgentRole.isSecurityOrAdmRole(crmRole))){ %>
+	<% if(!isPrivateCase || (isPrivateCase && CrmAgentRole.isSecurityOrAdmRole(crmRole))){ %>
 	<tr valign="top">
 		<td class="<%=isSecuredCase?"case_content_field_seq":"case_content_field"%>">Notes<span class="casedisp_Err_invis" id="noteErr">*</span></td>
 		<td colspan="3">
@@ -872,7 +873,7 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 	</tr>
 	<% } %>
 	<% if(!isSecurityQueue && CrmAgentRole.isPrivateCaseAllowedRole(crmRole)){ %>
-	<tr><td>&nbsp;</td><td align="left"><input id="privateCase" name="privateCase" type="checkbox" <%=(thisCase.isPrivateCase())?"checked ":"" %> onKeyUp="verifyCaseDisp();">Private Case</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+	<tr><td>&nbsp;</td><td align="left"><input id="privateCase" name="privateCase" type="checkbox" <%=(thisCase.isPrivateCase())?"checked ":"" %> <%= !isEditAllowed?"disabled":"" %> onKeyUp="verifyCaseDisp();">Private Case</td><td>&nbsp;</td><td>&nbsp;</td></tr>
 	<% } %>
 	<tr>
 		<td></td>
@@ -894,7 +895,7 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 		</td>
 	</tr>
 	<tr><td>&nbsp;</td><td colspan="3"><span id="requiredError" class="casedisp_Err_invis">* These fields are required</span></td></tr>
-	<% if(!isSecuredCase || (isSecuredCase && CrmAgentRole.isSecurityOrAdmRole(crmRole))){ %>
+	<% if(!isPrivateCase || (isPrivateCase && CrmAgentRole.isSecurityOrAdmRole(crmRole))){ %>
 	<tr>
 		<td></td>
 		<td colspan="3">

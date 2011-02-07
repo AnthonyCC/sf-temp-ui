@@ -29,6 +29,7 @@
 		}
 		boolean isSecurityQueue= false;
 		boolean isSecuredCase = false;
+		boolean isPrivateCase = false;
 		String lastPage = "/main/index.jsp";
 			if (custId!=null && !"".equals(custId)) lastPage = "/main/case_history.jsp";
 			if (saleId!=null && !"".equals(custId)) lastPage = "/main/order_details.jsp?orderId=" + saleId;

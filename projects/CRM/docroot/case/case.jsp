@@ -37,6 +37,7 @@
 	        }
         }
         boolean isSecuredCase = isSecurityQueue || cm.isPrivateCase();
+        boolean isPrivateCase = cm.isPrivateCase();
     %>
 	<%-- get user put in session --%>
 	<crm:GetFDUser id="user" useId="true" erpCustId="<%=erpCustId%>" fdCustId="<%=fdCustId%>">
