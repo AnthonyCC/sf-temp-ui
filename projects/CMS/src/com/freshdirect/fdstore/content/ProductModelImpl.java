@@ -1129,7 +1129,7 @@ inner:
 
 
 	public List<Recipe> getRelatedRecipes() {
-		ContentNodeModelUtil.refreshModels(this, "RELATED_RECIPES", relatedRecipes, false);
+		ContentNodeModelUtil.refreshModels(this, "RELATED_RECIPES", relatedRecipes, false, true);
 		return Collections.unmodifiableList(relatedRecipes);
 	}
 
