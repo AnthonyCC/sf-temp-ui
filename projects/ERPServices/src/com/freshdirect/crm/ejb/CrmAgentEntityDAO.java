@@ -54,7 +54,7 @@ public class CrmAgentEntityDAO implements EntityDAOI {
 	}
 	
 	public Collection<PrimaryKey> findAll(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("SELECT ID FROM CUST.AGENT");
+		PreparedStatement ps = conn.prepareStatement("SELECT ID FROM CUST.AGENT WHERE LDAP_ID IS NOT NULL");
 		ResultSet rs = ps.executeQuery();
 		List<PrimaryKey> pks = new ArrayList<PrimaryKey>();
 		while(rs.next()){

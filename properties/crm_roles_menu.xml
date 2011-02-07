@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<menus roles="CRM_Administrator,CRM_Developer,CRM_QA,CRM_Supervisor,CRM_MarketingOperations,CRM_ETS,CRM_Transportation,CRM_OperationsCenter,CRM_SeniorOperationsCenter,CRM_Finance,CRM_Agent,CRM_NewAgent,CRM_SeniorAgent,CRM_Business,CRM_Security,CRM_ERP,CRM_COS,CRM_TransportationSupervisor">
+	<menus roles="CRM_Administrator,CRM_Developer,CRM_Supervisor,CRM_MarketingOperations,CRM_ETS,CRM_Transportation,CRM_OperationsCenter,CRM_SeniorOperationsCenter,CRM_Finance,CRM_Agent,CRM_NewAgent,CRM_SeniorAgent,CRM_Business,CRM_Security,CRM_ERP,CRM_COS,CRM_TransportationSupervisor">
 	
 	<role name="CRM_Administrator">
 		<links name="main">
 			main_index.jsp,supervisor_index.jsp,case_mgmt_index.jsp,admintools_index.jsp,reports_index.jsp,worklist.jsp,giftcard_landing.jsp
 		</links>
-				<links name="customer">
+		<links name="customer">
 			order_search_results.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,credit_history.jsp,promotion_history.jsp,
 			promotion_popup.jsp,place_order_build.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,
 			delivery_pass.jsp,customer_profile_summary.jsp,customer_profile.jsp,giftcard_summary.jsp
@@ -105,52 +105,7 @@
 		<links name="others">charge_order.jsp,masquerade.jsp,add_bad_account.jsp,acct_lookup_auth.jsp</links>
 	</role>
 	
-	<role name="CRM_QA">
-		<links name="main">main_index.jsp,supervisor_index.jsp,case_mgmt_index.jsp,connect.jsp,connect.html,admintools_index.jsp,reports_index.jsp,worklist.jsp,giftcard_landing.jsp</links>
-		<links name="customer">
-			order_search_results.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,credit_history.jsp,promotion_history.jsp,
-			promotion_popup.jsp,place_order_build.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,delivery_pass.jsp,
-			customer_profile_summary.jsp,customer_profile.jsp,giftcard_summary.jsp
-		</links>
-		<links name="customeraccount">add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,place_alert.jsp,customer_alert_list.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,set_profile_attr.jsp,username_password_option.jsp</links>
-		<links name="supervisor">account_deactivations.jsp,payment_exceptions_list.jsp,pending_credits_list.jsp,order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,refusal_list.jsp,pending_return_list.jsp,order_cc_authorization.jsp,address_exception.jsp,geocode_exception.jsp,make_good_order.jsp,bad_account_list.jsp,broken_acct_list.jsp,acct_lookup.jsp,canned_text.jsp</links>
-		<links name="admintools">resubmit_orders.jsp,resubmit_customers.jsp,delete_reservations.jsp,mass_cancellation.jsp,mass_returns.jsp,delivery_restrictions.jsp,platterForm.jsp,restrictionForm.jsp,restrictionForm_save.jsp,address_restrictions.jsp,addrRestrictionForm.jsp,settlement_batch.jsp,top_faqs.jsp,click_to_call.jsp,search_orders_by_sku.jsp,modify_orders_by_sku.jsp</links>
-		<links name="cases">summary_case_actions.jsp,new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>		
-		
-		<links name="reports">subject_report.jsp,late_delivery_report.jsp,route_stop_report.jsp,order_status_report.jsp,credit_summary_report.jsp,credit_report.jsp,settlement_problem_report.jsp</links>
-
-		<links name="promotions">
-			promo_view.jsp,promo_home.jsp,promo_create.jsp,promo_details.jsp,promo_publish.jsp,
-			promo_edit.jsp,promo_edit_basic.jsp,promo_edit_cart.jsp,promo_edit_customer.jsp,promo_edit_delivery.jsp,
-			promo_edit_offer.jsp,promo_edit_payment.jsp,export_promo_list.jsp,promo_import_clone.jsp,promo_activity.jsp,promo.jsp,promo_ws_view.jsp</links>		
-		<links name="giftcards">
-			giftcard_summary.jsp,gc_balance.jsp,add_giftcard.jsp,add_bulk_giftcard.jsp,receipt.jsp,purchase_giftcard.jsp,purchase_bulk_giftcard.jsp,
-			purchase_history.jsp,giftcard_addused.jsp,giftcard_usedorders.jsp,generate_new_giftcard.jsp,bt_giftcard.jsp
-		</links>
-
-		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
-
-		<links name="transportation">crmLateIssues.jsp,crmTrqCases_step1.jsp</links>
-				<links name="order">
-			build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,
-			checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,
-			checkout_new_address.jsp,checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,
-			checkout_preview.jsp,checkout_review_items.jsp,checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,
-			checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_green_popup.jsp,add_config_to_cart.jsp,build_order_browse.jsp,build_order_category.jsp,
-			build_order_recipes.jsp,cancel_modify_order.jsp,cancel_order.jsp,health_warning.jsp,order_modify.jsp,payment_exception.jsp,
-			place_order_batch_search_results.jsp,place_order_recipe_search_results.jsp,place_order_related_items.jsp,product.jsp,product_modify.jsp,recipe.jsp,
-			recipe_cat.jsp,recipe_subcat.jsp,order_transaction_details.jsp,carton_contents_view.jsp
-		</links>
-		<links name="quickshop">
-			quickshop_index.jsp,all_lists.jsp,ccl_item_modify.jsp,every_item.jsp,item_modify.jsp,makegood_from_order.jsp,recipes.jsp,
-			shop_from_list.jsp,shop_from_order.jsp
-		</links>
-
-		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp</links>
-
-		<links name="actions">forceorder,edit_profile,lateLog,lateRoute,buyDeliveryPass</links>
-		<links name="others">charge_order.jsp,masquerade.jsp,add_bad_account.jsp,acct_lookup_auth.jsp</links>
-	</role>
+	
 	<role name="CRM_Supervisor">
 		<links name="main">
 			main_index.jsp,supervisor_index.jsp,case_mgmt_index.jsp,reports_index.jsp,worklist.jsp,giftcard_landing.jsp,promo_details.jsp,order_search_results.jsp,
@@ -197,7 +152,7 @@
 		<links name="main">main_index.jsp,worklist.jsp,giftcard_landing.jsp,profile_list.jsp</links>
 		<links name="promotions">promotion_popup.jsp,promo_view.jsp,promo_home.jsp,promo_create.jsp,promo_details.jsp,promo_edit_basic.jsp,promo_edit_cart.jsp,promo_edit_customer.jsp,promo_edit_delivery.jsp,promo_edit_offer.jsp,promo_edit_payment.jsp,promo_publish.jsp,promo_edit.jsp,export_promo_list.jsp,promo_import_clone.jsp,promo_activity.jsp,promo.jsp,promo_ws_view.jsp,promo_ws_create.jsp</links>
 		<links name="giftcards">giftcard_summary.jsp,gc_balance.jsp</links>	
-		<links name="customer">order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,order_search_results.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,promotion_history.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,delivery_pass.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,customer_profile_summary.jsp</links>
+		<links name="customer">order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,order_search_results.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,masquerade.jsp,account_details.jsp,smartstore_info.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,promotion_history.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,delivery_pass.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,customer_profile_summary.jsp</links>
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
 		<links name="cases">summary_case_actions.jsp,new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>
 		<links name="actions">edit_profile,buyDeliveryPass</links>
@@ -213,7 +168,7 @@
 		<links>
 		main_index.jsp,worklist.jsp,case_summary.jsp,promo_home.jsp
 		</links>
-		<links name="customer">order_search_results.jsp,account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,activity_log.jsp,delivery_pass.jsp,customer_profile_summary.jsp,customer_profile.jsp</links>
+		<links name="customer">order_search_results.jsp,account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,masquerade.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,activity_log.jsp,delivery_pass.jsp,customer_profile_summary.jsp,customer_profile.jsp</links>
 		<links name="customeraccount">order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,order_cases.jsp,order_transaction_details.jsp,add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,place_alert.jsp,customer_alert_list.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,set_profile_attr.jsp,username_password_option.jsp</links>
 		<links name="cases">summary_case_actions.jsp,new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>
 		<links name="giftcards">
@@ -244,7 +199,7 @@
 		<links name="transportation">crmLateIssues.jsp</links>
 		<links name="reports">late_delivery_report.jsp,route_stop_report.jsp</links>
 		<links name="cases">summary_case_actions.jsp,new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>
-		<links name="customer">order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,order_search_results.jsp,account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,order_cases.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,case_history.jsp,order_history.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,delivery_pass.jsp</links>
+		<links name="customer">order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,order_search_results.jsp,account_details.jsp,smartstore_info.jsp,order_cases.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,case_history.jsp,order_history.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,delivery_pass.jsp</links>
 		<links name="actions">lateLog</links>
 		
 	</role>
@@ -252,8 +207,8 @@
 
 	
 	<role name="CRM_OperationsCenter">
-		<links name="main">
-			main_index.jsp,promotion_history.jsp,promotion_popup.jsp,reports_index.jsp,case_mgmt_index.jsp,worklist.jsp,account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp
+		<links>
+		main_index.jsp,case_mgmt_index.jsp,reports_index.jsp,worklist.jsp		
 		</links>
 		<links name="cases">summary_case_actions.jsp,new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>
 		<links name="order">
@@ -264,11 +219,11 @@
 			step_2_green_popup.jsp,add_config_to_cart.jsp,build_order_browse.jsp,build_order_category.jsp,build_order_recipes.jsp,cancel_modify_order.jsp,	cancel_order.jsp,health_warning.jsp,order_modify.jsp,payment_exception.jsp,place_order_batch_search_results.jsp,place_order_recipe_search_results.jsp,
 			place_order_related_items.jsp,product.jsp,product_modify.jsp,recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,order_transaction_details.jsp,carton_contents_view.jsp,makegood_from_order.jsp</links>
 		<links name="transportation">crmLateIssues.jsp,crmTrqCases_step1.jsp</links>
-		<links name="reports">late_delivery_report.jsp,route_stop_report.jsp</links>
+		<links name="reports">route_stop_report.jsp,late_delivery_report.jsp</links>
 		<links name="returns">approve_credit.jsp,reverse_credit.jsp,issue_credit.jsp,issue_credit_confirm.jsp,return_order.jsp</links>
-		<links name="customer">order_search_results.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,delivery_pass.jsp,place_order_build.jsp</links>
+		<links name="customer">order_search_results.jsp,customer_search_results.jsp,company_search_results.jsp,order_cases.jsp,order_transaction_details.jsp,summary_report.jsp,summary.jsp,case_history.jsp,order_history.jsp,credit_history.jsp,promotion_history.jsp,promotion_popup.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,delivery_pass.jsp,place_order_build.jsp</links>
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
-		<links name="customeraccount">order_details.jsp,order_cases.jsp,order_not_submitted.jsp,resubmit_success.jsp,add_delivery_address.jsp,deactivate_account.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,place_alert.jsp,customer_alert_list.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,set_profile_attr.jsp,username_password_option.jsp</links>
+		<links name="customeraccount">account_details.jsp,masquerade.jsp,order_search_results.jsp,depot_info.jsp,vip_info.jsp,add_delivery_address.jsp,deactivate_account.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,reserve_timeslot.jsp,set_profile_attr.jsp,username_password_option.jsp</links>
 		<links name="actions">rejectCredit,autoApprove,lateLog,lateRoute,buyDeliveryPass</links>
 
 		<limit name="autoApprove">25</limit>
@@ -277,13 +232,11 @@
 	
 	<role name="CRM_SeniorOperationsCenter">
 		<links>
-		main_index.jsp,supervisor_index.jsp,giftcard_landing.jsp,reports_index.jsp,worklist.jsp,
-		geocode_exception.jsp,broken_acct_list.jsp,activity_log.jsp,case_mgmt_index.jsp,promotion_history.jsp,promotion_popup.jsp,approve_credit.jsp,profile_list.jsp,masquerade.jsp,issue_credit.jsp,issue_credit_confirm.jsp,return_order.jsp,order_search_results.jsp
+		main_index.jsp,case_mgmt_index.jsp,supervisor_index.jsp,giftcard_landing.jsp,reports_index.jsp,worklist.jsp		
 		</links>
 		<links name="cases">summary_case_actions.jsp,new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>
 		<links name="giftcards">
-			giftcard_summary.jsp,gc_balance.jsp,add_giftcard.jsp,add_bulk_giftcard.jsp,receipt.jsp,purchase_giftcard.jsp,purchase_bulk_giftcard.jsp,
-			purchase_history.jsp,giftcard_addused.jsp,giftcard_usedorders.jsp,generate_new_giftcard.jsp,bt_giftcard.jsp
+			giftcard_summary.jsp,gc_balance.jsp,add_giftcard.jsp,add_bulk_giftcard.jsp,receipt.jsp,purchase_giftcard.jsp,purchase_bulk_giftcard.jsp,purchase_history.jsp,giftcard_addused.jsp,giftcard_usedorders.jsp,generate_new_giftcard.jsp,bt_giftcard.jsp
 		</links>
 		<links name="order">
 			build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,
@@ -294,12 +247,12 @@
 			cancel_order.jsp,health_warning.jsp,order_modify.jsp,payment_exception.jsp,place_order_batch_search_results.jsp,place_order_recipe_search_results.jsp,
 			place_order_related_items.jsp,product.jsp,product_modify.jsp,recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,order_transaction_details.jsp,carton_contents_view.jsp,makegood_from_order.jsp</links>
 		<links name="supervisor">account_deactivations.jsp,payment_exceptions_list.jsp,pending_credits_list.jsp,order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,refusal_list.jsp,pending_return_list.jsp,order_cc_authorization.jsp,geocode_exception.jsp,broken_acct_list.jsp</links>		
-		<links name="customer">customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,order_cases.jsp,activity_log.jsp,delivery_pass.jsp,place_order_build.jsp</links>
-		<links name="returns">approve_credit.jsp,reverse_credit.jsp</links>
+		<links name="customer">customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,order_cases.jsp,credit_history.jsp,promotion_history.jsp,promotion_popup.jsp,profile_list.jsp,activity_log.jsp,delivery_pass.jsp,place_order_build.jsp</links>
+		<links name="returns">approve_credit.jsp,reverse_credit.jsp,issue_credit.jsp,issue_credit_confirm.jsp,return_order.jsp</links>
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
 		<links name="transportation">crmLateIssues.jsp,crmTrqCases_step1.jsp</links>
 		<links name="reports">route_stop_report.jsp,order_status_report.jsp,late_delivery_report.jsp,settlement_problem_report.jsp</links>
-		<links name="customeraccount">account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,add_delivery_address.jsp,deactivate_account.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,place_alert.jsp,customer_alert_list.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,set_profile_attr.jsp,username_password_option.jsp</links>
+		<links name="customeraccount">account_details.jsp,masquerade.jsp,order_search_results.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,add_delivery_address.jsp,deactivate_account.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,place_alert.jsp,customer_alert_list.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,set_profile_attr.jsp,username_password_option.jsp</links>
 		<links name="actions">approveCredit,rejectCredit,forceorder,autoApprove,lateLog,lateRoute,buyDeliveryPass</links>
 
 		<limit name="autoApprove">30</limit>
@@ -308,48 +261,26 @@
 	
 	<role name="CRM_Finance">
 		<links>
-		main_index.jsp,bad_account_list.jsp,supervisor_index.jsp,acct_lookup.jsp,reports_index.jsp,credit_summary_report.jsp,credit_report.jsp,settlement_problem_report.jsp,
+		main_index.jsp,supervisor_index.jsp,reports_index.jsp,
 		worklist.jsp,case_summary.jsp,giftcard_landing.jsp,profile_list.jsp,credit_card_info.jsp,acct_lookup_auth.jsp,order_search_results.jsp
 		</links>
+		<links name="supervisor">bad_account_list.jsp,acct_lookup.jsp</links>
+		<links name="reports">credit_summary_report.jsp,credit_report.jsp,settlement_problem_report.jsp</links>
 		<links name="cases">summary_case_actions.jsp,new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>
 		<links name="promotions">promotion_popup.jsp,promo_view.jsp,promo_home.jsp,promo_details.jsp,export_promo_list.jsp</links>
-		<links name="giftcards">giftcard_summary.jsp,gc_balance.jsp</links>
-		<links name="customer">account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,customer_search_results.jsp,company_search_results.jsp,summary.jsp,order_history.jsp,order_cases.jsp,credit_history.jsp,promotion_history.jsp,delivery_pass.jsp</links>
+		<links name="giftcards">gc_balance.jsp,giftcard_addused.jsp</links>
+		<links name="customer">account_details.jsp,customer_alert_list.jsp,deactivate_account.jsp,credit_card_info.jsp,customer_search_results.jsp,company_search_results.jsp,summary.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,credit_history.jsp,promotion_history.jsp,giftcard_summary.jsp,profile_list.jsp,set_profile_attr.jsp,delivery_pass.jsp</links>
 		<links name="actions">edit_profile</links>
 	</role>
 	
-	<role name="CRM_Agent">
-		<links name="main">
-			main_index.jsp,worklist.jsp,build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_new_address.jsp,checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_green_popup.jsp,promotion_history.jsp,promotion_popup.jsp,promo_view.jsp,promo_home.jsp,promo_details.jsp,export_promo_list.jsp,giftcard_landing.jsp,profile_list.jsp,add_bad_account.jsp,checkout_edit_checkacct.jsp,order_search_results.jsp
-		</links>
-		<links name="order">
-			build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,
-			checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_new_address.jsp,
-			checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,
-			checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,
-			step_2_green_popup.jsp,add_config_to_cart.jsp,build_order_browse.jsp,build_order_category.jsp,build_order_recipes.jsp,cancel_modify_order.jsp,
-			cancel_order.jsp,health_warning.jsp,order_modify.jsp,payment_exception.jsp,place_order_batch_search_results.jsp,place_order_recipe_search_results.jsp,
-			place_order_related_items.jsp,product.jsp,product_modify.jsp,recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,order_transaction_details.jsp,carton_contents_view.jsp</links>
-		<links name="quickshop">quickshop_index.jsp,all_lists.jsp,ccl_item_modify.jsp,every_item.jsp,item_modify.jsp,makegood_from_order.jsp,recipes.jsp,shop_from_list.jsp,shop_from_order.jsp</links>
-		<links name="cases">summary_case_actions.jsp,new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>
-		<links name="giftcards">giftcard_summary.jsp,gc_balance.jsp,add_giftcard.jsp,receipt.jsp,purchase_giftcard.jsp,purchase_history.jsp,giftcard_addused.jsp,giftcard_usedorders.jsp,generate_new_giftcard.jsp,bt_giftcard.jsp</links>
-		<links name="customer">
-			order_search_results.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,credit_history.jsp,promotion_history.jsp,
-			promotion_popup.jsp,place_order_build.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,
-			delivery_pass.jsp,customer_profile_summary.jsp,customer_profile.jsp,giftcard_summary.jsp
-		</links>
-		<links name="returns">approve_credit.jsp,reverse_credit.jsp,issue_credit.jsp,issue_credit_confirm.jsp,return_order.jsp</links>
-		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
-		<links name="customeraccount">order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,place_alert.jsp,customer_alert_list.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,set_profile_attr.jsp,username_password_option.jsp</links>
-		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp</links>
-		<links name="actions">rejectCredit,autoApprove,buyDeliveryPass</links>
-
-		<limit name="autoApprove">25</limit>
-	</role>
+	
 	
 	<role name="CRM_NewAgent">
 		<links name="main">
-		main_index.jsp,worklist.jsp,quickshop_index.jsp,all_lists.jsp,ccl_item_modify.jsp,every_item.jsp,item_modify.jsp,recipes.jsp,shop_from_list.jsp,shop_from_order.jsp,build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_new_address.jsp,checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_green_popup.jsp,promotion_history.jsp,promotion_popup.jsp,promo_view.jsp,promo_home.jsp,promo_details.jsp,export_promo_list.jsp,giftcard_landing.jsp,profile_list.jsp,add_bad_account.jsp,checkout_edit_checkacct.jsp,return_order.jsp,order_search_results.jsp
+			main_index.jsp,worklist.jsp,giftcard_landing.jsp,profile_list.jsp,add_bad_account.jsp
+		</links>		
+		<links name="quickshop">
+			quickshop_index.jsp,all_lists.jsp,ccl_item_modify.jsp,every_item.jsp,item_modify.jsp,recipes.jsp,shop_from_list.jsp,shop_from_order.jsp
 		</links>
 		<links name="order">
 			build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,
@@ -358,26 +289,25 @@
 			checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,
 			step_2_green_popup.jsp,add_config_to_cart.jsp,build_order_browse.jsp,build_order_category.jsp,build_order_recipes.jsp,cancel_modify_order.jsp,
 			cancel_order.jsp,health_warning.jsp,order_modify.jsp,payment_exception.jsp,place_order_batch_search_results.jsp,place_order_recipe_search_results.jsp,
-			place_order_related_items.jsp,product.jsp,product_modify.jsp,recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,order_transaction_details.jsp,carton_contents_view.jsp</links>
+			place_order_related_items.jsp,product.jsp,product_modify.jsp,recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,order_transaction_details.jsp,order_search_results.jsp,carton_contents_view.jsp</links>
 		<links name="cases">summary_case_actions.jsp,new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>
-		<links name="giftcards">gc_balance.jsp,add_giftcard.jsp,receipt.jsp,purchase_giftcard.jsp,purchase_history.jsp,giftcard_addused.jsp,giftcard_usedorders.jsp,generate_new_giftcard.jsp,bt_giftcard.jsp</links>
-		<links name="customer">account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,customer_search_results.jsp,company_search_results.jsp,summary.jsp,order_history.jsp,order_cases.jsp,case_history.jsp,credit_history.jsp,promotion_history.jsp,
-			promotion_popup.jsp,place_order_build.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,
-			delivery_pass.jsp,customer_profile_summary.jsp,customer_profile.jsp,giftcard_summary.jsp</links>
-		<links name="returns">approve_credit.jsp,reverse_credit.jsp</links>
+		<links name="giftcards">giftcard_summary.jsp,gc_balance.jsp,add_giftcard.jsp,receipt.jsp,purchase_giftcard.jsp,purchase_history.jsp,giftcard_addused.jsp,giftcard_usedorders.jsp,generate_new_giftcard.jsp,bt_giftcard.jsp</links>
+		<links name="customer">account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,customer_search_results.jsp,company_search_results.jsp,summary.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,credit_history.jsp,promotion_history.jsp,
+			promotion_popup.jsp,place_order_build.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,delivery_pass.jsp,customer_profile_summary.jsp,customer_profile.jsp,giftcard_summary.jsp</links>
+		<links name="returns">approve_credit.jsp,reverse_credit.jsp,issue_credit.jsp,issue_credit_confirm.jsp,return_order.jsp</links>
+		<links name="promotions">promo_view.jsp,promo_home.jsp,promo_details.jsp,promotion_popup.jsp,export_promo_list.jsp</links>		
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
-		<links name="customeraccount">order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,place_alert.jsp,customer_alert_list.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,set_profile_attr.jsp,username_password_option.jsp</links>
-		<links name="returns">issue_credit.jsp,issue_credit_confirm.jsp</links>
+		<links name="customeraccount">order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,account_details.jsp,depot_info.jsp,vip_info.jsp,add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,username_password_option.jsp</links>
 		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp</links>
-		<links name="actions">rejectCredit,autoApprove,buyDeliveryPass</links>
+		<links name="actions">rejectCredit,autoApprove,lateLog,buyDeliveryPass</links>
 
 		<limit name="autoApprove">20</limit>
 	</role>
 	
-	<role name="CRM_SeniorAgent">
+	<role name="CRM_Agent">
 		<links name="main">
-			main_index.jsp,crmLateIssues.jsp,worklist.jsp,giftcard_landing.jsp,route_stop_report.jsp,profile_list.jsp,add_bad_account.jsp,issue_credit.jsp,issue_credit_confirm.jsp,return_order.jsp
-		</links>
+			main_index.jsp,worklist.jsp,giftcard_landing.jsp,profile_list.jsp,add_bad_account.jsp
+		</links>		
 		<links name="quickshop">
 			quickshop_index.jsp,all_lists.jsp,ccl_item_modify.jsp,every_item.jsp,item_modify.jsp,makegood_from_order.jsp,recipes.jsp,shop_from_list.jsp,shop_from_order.jsp
 		</links>
@@ -391,13 +321,42 @@
 			place_order_related_items.jsp,product.jsp,product_modify.jsp,recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,order_transaction_details.jsp,order_search_results.jsp,carton_contents_view.jsp</links>
 		<links name="cases">summary_case_actions.jsp,new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>
 		<links name="giftcards">giftcard_summary.jsp,gc_balance.jsp,add_giftcard.jsp,receipt.jsp,purchase_giftcard.jsp,purchase_history.jsp,giftcard_addused.jsp,giftcard_usedorders.jsp,generate_new_giftcard.jsp,bt_giftcard.jsp</links>
-		<links name="customer">account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,customer_search_results.jsp,company_search_results.jsp,summary.jsp,order_history.jsp,order_cases.jsp,case_history.jsp,credit_history.jsp,promotion_history.jsp,
-			promotion_popup.jsp,place_order_build.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,
-			delivery_pass.jsp,customer_profile_summary.jsp,customer_profile.jsp,giftcard_summary.jsp</links>
-		<links name="returns">approve_credit.jsp,reverse_credit.jsp</links>
-		<links name="promotions">promo_view.jsp,promo_home.jsp,promo_details.jsp,export_promo_list.jsp</links>		
+		<links name="customer">account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,customer_search_results.jsp,company_search_results.jsp,summary.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,credit_history.jsp,promotion_history.jsp,
+			promotion_popup.jsp,place_order_build.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,delivery_pass.jsp,customer_profile_summary.jsp,customer_profile.jsp,giftcard_summary.jsp</links>
+		<links name="returns">approve_credit.jsp,reverse_credit.jsp,issue_credit.jsp,issue_credit_confirm.jsp,return_order.jsp</links>
+		<links name="promotions">promo_view.jsp,promo_home.jsp,promo_details.jsp,promotion_popup.jsp,export_promo_list.jsp</links>		
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
-		<links name="customeraccount">order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,place_alert.jsp,customer_alert_list.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,set_profile_attr.jsp,username_password_option.jsp</links>
+		<links name="customeraccount">order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,username_password_option.jsp</links>
+		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp</links>
+		<links name="actions">rejectCredit,autoApprove,lateLog,buyDeliveryPass</links>
+
+		<limit name="autoApprove">25</limit>
+	</role>
+
+	<role name="CRM_SeniorAgent">
+		<links name="main">
+			main_index.jsp,crmLateIssues.jsp,worklist.jsp,giftcard_landing.jsp,profile_list.jsp,add_bad_account.jsp
+		</links>
+		<links name="reports">route_stop_report.jsp</links>
+		<links name="quickshop">
+			quickshop_index.jsp,all_lists.jsp,ccl_item_modify.jsp,every_item.jsp,item_modify.jsp,makegood_from_order.jsp,recipes.jsp,shop_from_list.jsp,shop_from_order.jsp
+		</links>
+		<links name="order">
+			build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,
+			checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_new_address.jsp,
+			checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,
+			checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,
+			step_2_green_popup.jsp,add_config_to_cart.jsp,build_order_browse.jsp,build_order_category.jsp,build_order_recipes.jsp,cancel_modify_order.jsp,
+			cancel_order.jsp,health_warning.jsp,order_modify.jsp,payment_exception.jsp,place_order_batch_search_results.jsp,place_order_recipe_search_results.jsp,
+			place_order_related_items.jsp,product.jsp,product_modify.jsp,recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,order_transaction_details.jsp,order_search_results.jsp,carton_contents_view.jsp</links>
+		<links name="cases">summary_case_actions.jsp,new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>
+		<links name="giftcards">giftcard_summary.jsp,gc_balance.jsp,add_giftcard.jsp,receipt.jsp,purchase_giftcard.jsp,purchase_history.jsp,giftcard_addused.jsp,giftcard_usedorders.jsp,generate_new_giftcard.jsp,bt_giftcard.jsp</links>
+		<links name="customer">account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,customer_search_results.jsp,company_search_results.jsp,summary.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,credit_history.jsp,promotion_history.jsp,
+			promotion_popup.jsp,place_order_build.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,delivery_pass.jsp,customer_profile_summary.jsp,customer_profile.jsp,giftcard_summary.jsp</links>
+		<links name="returns">approve_credit.jsp,reverse_credit.jsp,issue_credit.jsp,issue_credit_confirm.jsp,return_order.jsp</links>
+		<links name="promotions">promo_view.jsp,promo_home.jsp,promo_details.jsp,promotion_popup.jsp,export_promo_list.jsp</links>		
+		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
+		<links name="customeraccount">order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,username_password_option.jsp</links>
 		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp</links>
 		<links name="actions">rejectCredit,autoApprove,lateLog,buyDeliveryPass</links>
 
@@ -406,21 +365,24 @@
 	
 	<role name="CRM_Business">
 		<links name="main">
-		main_index.jsp,reports_index.jsp,credit_summary_report.jsp,credit_report.jsp,promo_view.jsp,promo_home.jsp,promo_create.jsp,promo_details.jsp,promo_edit.jsp,export_promo_list.jsp,promo_import_clone.jsp,promo_activity.jsp,giftcard_landing.jsp
+		main_index.jsp,reports_index.jsp,promo_home.jsp,giftcard_landing.jsp
 		</links>
-		<links name="giftcards">giftcard_summary.jsp</links>
+		<links name="reports">credit_summary_report.jsp,credit_report.jsp</links>
+		<links name="promotions">promo_view.jsp,promo_create.jsp,promo_details.jsp,promo_edit.jsp,export_promo_list.jsp,promo_activity.jsp</links>
 		<links name="cases">summary_case_actions.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>
-		<links name="customer">order_search_results.jsp,customer_search_results.jsp,company_search_results.jsp,summary.jsp,summary_report.jsp,delivery_pass.jsp,account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,case_history.jsp,order_history.jsp,credit_history.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,customer_profile_summary.jsp</links>
+		<links name="customer">order_search_results.jsp,customer_search_results.jsp,company_search_results.jsp,summary.jsp,summary_report.jsp,account_details.jsp,smartstore_info.jsp,case_history.jsp,order_history.jsp,order_details.jsp,order_cases.jsp,credit_history.jsp,promotion_history.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,giftcard_summary.jsp,delivery_pass.jsp,customer_profile_summary.jsp</links>
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>		
 	</role>
 	
 	<role name="CRM_Security">
 		<links name="main">
-		main_index.jsp,supervisor_index.jsp,worklist.jsp,reports_index.jsp,settlement_problem_report.jsp,acct_lookup.jsp,giftcard_landing.jsp,credit_card_info.jsp
+		main_index.jsp,supervisor_index.jsp,worklist.jsp,reports_index.jsp,giftcard_landing.jsp
 		</links>
+		<links name="supervisor">acct_lookup.jsp</links>
+		<links name="reports">settlement_problem_report.jsp</links>
 		<links name="cases">summary_case_actions.jsp,new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>
 		<links name="customer">
-		account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,case_history.jsp,order_history.jsp,credit_history.jsp,activity_log.jsp,customer_search_results.jsp,company_search_results.jsp,summary.jsp,gc_balance.jsp
+		account_details.jsp,customer_alert_list.jsp,deactivate_account.jsp,case_history.jsp,order_history.jsp,credit_history.jsp,activity_log.jsp,customer_search_results.jsp,company_search_results.jsp,summary.jsp,gc_balance.jsp
 		</links>
 		<links name="order">order_search_results.jsp,order_details.jsp,order_cases.jsp,order_not_submitted.jsp,resubmit_success.jsp,credit_card_info.jsp,order_transaction_details.jsp</links>
 	</role>
@@ -453,7 +415,7 @@
 			recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,order_transaction_details.jsp,carton_contents_view.jsp
 		</links>
 		<links name="returns">issue_credit.jsp,issue_credit_confirm.jsp,return_order.jsp</links>
-		<links name="customer">order_search_results.jsp,account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,case_history.jsp,order_history.jsp,place_order_build.jsp,activity_log.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,delivery_pass.jsp,promotion_popup.jsp</links>
+		<links name="customer">order_search_results.jsp,account_details.jsp,smartstore_info.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,case_history.jsp,order_history.jsp,place_order_build.jsp,activity_log.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,delivery_pass.jsp,promotion_popup.jsp</links>
 		<links name="customeraccount">order_cases.jsp,order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,extend_reservation.jsp,name_contact_info.jsp,reserve_timeslot.jsp</links>		
 		<links name="actions">lateLog,lateRoute,forceorder</links>		
 	</role>	
