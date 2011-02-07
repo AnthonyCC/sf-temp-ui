@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <%@page import="com.freshdirect.fdstore.content.util.FourMinuteMealsHelper"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
@@ -11,15 +13,14 @@
 <%@page import="java.util.List"%>
 <%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
 <%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
-
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="com.freshdirect.fdstore.content.util.SortStrategyElement"%>
 
 <%@ taglib uri="/WEB-INF/shared/tld/freshdirect.tld" prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri='logic' prefix='logic' %>
 
 
-<%@page import="com.freshdirect.fdstore.content.util.SortStrategyElement"%><fd:CheckLoginStatus id="user" guestAllowed="true" recognizedAllowed="true" noRedirect="true" />
+<fd:CheckLoginStatus id="user" guestAllowed="true" recognizedAllowed="true" />
 
 <display:InitLayout/>
 

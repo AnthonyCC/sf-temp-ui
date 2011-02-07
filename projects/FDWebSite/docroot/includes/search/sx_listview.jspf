@@ -1,14 +1,4 @@
-<%--
-
-Smart Search List View
-======================
-
-@author gmark
-
-@input productList	Instance of {@link Collection<ProductModel>}
-@input trk			Tracking code (String)
-
---%><%@ page import='com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.framework.webapp.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.content.attributes.*'%>
@@ -16,10 +6,8 @@ Smart Search List View
 <%@ page import="com.freshdirect.fdstore.content.*" %>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import="com.freshdirect.webapp.util.FDURLUtil" %>
-
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
 <%@ page import="java.text.SimpleDateFormat" %>
-
 <%@ page import="java.util.*" %>
 <%@ page import="java.text.DecimalFormat" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
@@ -30,9 +18,21 @@ Smart Search List View
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
 
-<fd:CheckLoginStatus />
-<%
+<%--
 
+Smart Search List View
+======================
+
+@author gmark
+
+@input productList	Instance of {@link Collection<ProductModel>}
+@input trk			Tracking code (String)
+
+--%>
+
+<fd:CheckLoginStatus />
+
+<%
 final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
 FDUserI u = (FDUserI) request.getSession().getAttribute(SessionName.USER);
 

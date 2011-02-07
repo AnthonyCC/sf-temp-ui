@@ -1,13 +1,4 @@
-<%--
-
-Smart Search Text View (Tree)
-=============================
-
-@author gmark
-
-@input trk (String) Tracking code
-
---%><%@ page import='com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.framework.webapp.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.content.attributes.*'%>
@@ -30,9 +21,20 @@ Smart Search Text View (Tree)
 <%@ taglib uri='oscache' prefix='oscache' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
-<fd:CheckLoginStatus />
-<%
+<%--
 
+Smart Search Text View (Tree)
+=============================
+
+@author gmark
+
+@input trk (String) Tracking code
+
+--%>
+
+<fd:CheckLoginStatus />
+
+<%
 final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
 final FDUserI u = (FDUserI) request.getSession().getAttribute(SessionName.USER);
 

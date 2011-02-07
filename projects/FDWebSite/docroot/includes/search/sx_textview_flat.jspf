@@ -1,20 +1,20 @@
-<%@   page import="java.util.List"
-%><%@ page import="java.util.Date"
-%><%@ page import="java.util.ArrayList"
-%><%@ page import="java.util.Locale"
-%><%@ page import="java.util.Iterator"
-%><%@ page import="com.freshdirect.webapp.util.ProductImpression"
-%><%@ page import="com.freshdirect.webapp.util.FDURLUtil"
-%><%@ page import="com.freshdirect.fdstore.util.DYFUtil"
-%><%@ page import="com.freshdirect.fdstore.content.ContentNodeModel"
-%><%@ page import="com.freshdirect.fdstore.content.ProductModel"
-%><%@ page import="com.freshdirect.fdstore.content.DepartmentModel"
-%><%@ page import="com.freshdirect.fdstore.customer.FDUserI"
-%><%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"
-%><%@ page import="java.text.SimpleDateFormat"
-%><%@page import="com.freshdirect.webapp.util.JspMethods"
-%><%@ page import="com.freshdirect.common.pricing.util.DealsHelper"
-%>
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.Date"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Locale"%>
+<%@ page import="java.util.Iterator"%>
+<%@ page import="com.freshdirect.webapp.util.ProductImpression"%>
+<%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
+<%@ page import="com.freshdirect.fdstore.util.DYFUtil"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@ page import="com.freshdirect.fdstore.content.DepartmentModel"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods"%>
+<%@ page import="com.freshdirect.common.pricing.util.DealsHelper"%>
+
 <%@ taglib uri="freshdirect" prefix="fd"%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri="logic" prefix="logic"%>
@@ -30,7 +30,11 @@ Smart Search Text View (Flat)
 @input trk			Instance of {@link String}
 @input nav			Instance of {@link SearchNavigator}
 
---%><%
+--%>
+
+<fd:CheckLoginStatus />
+
+<%
 final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
 final FDUserI u = (FDUserI) request.getSession().getAttribute(SessionName.USER);
 

@@ -1,20 +1,20 @@
-<%@   page import="java.util.List"
-%><%@ page import="java.util.Map"
-%><%@ page import="java.util.Date"
-%><%@ page import="java.util.ArrayList"
-%><%@ page import="java.util.Locale"
-%><%@ page import="java.util.Iterator"
-%><%@ page import="java.text.SimpleDateFormat"
-%><%@ page import="com.freshdirect.webapp.util.ProductImpression"
-%><%@ page import="com.freshdirect.webapp.util.FDURLUtil"
-%><%@ page import="com.freshdirect.fdstore.content.ProductModel"
-%><%@ page import="com.freshdirect.fdstore.customer.FDUserI"
-%><%@ page import="com.freshdirect.fdstore.customer.FDIdentity"
-%><%@ page import="com.freshdirect.fdstore.lists.FDListManager"
-%><%@ page import="com.freshdirect.fdstore.lists.FDCustomerProductListLineItem"
-%><%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"
-%><%@ page import="com.freshdirect.fdstore.util.DYFUtil"
-%>
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.Map"%>
+<%@ page import="java.util.Date"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Locale"%>
+<%@ page import="java.util.Iterator"%>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="com.freshdirect.webapp.util.ProductImpression"%>
+<%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDIdentity"%>
+<%@ page import="com.freshdirect.fdstore.lists.FDListManager"%>
+<%@ page import="com.freshdirect.fdstore.lists.FDCustomerProductListLineItem"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+<%@ page import="com.freshdirect.fdstore.util.DYFUtil"%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods"%>
 
 <%@ taglib uri="freshdirect" prefix="fd"%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
@@ -29,7 +29,11 @@ Smart Search Grid View
 @input productList	Instance of {@link Collection<ProductModel>}
 @input trk			Tracking code (String)
 @input results		Search results
---%><%
+--%>
+
+<fd:CheckLoginStatus />
+
+<%
 final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
 final FDUserI u = (FDUserI) request.getSession().getAttribute(SessionName.USER);
 
@@ -51,7 +55,7 @@ int n_cols = (int) Math.ceil((float)impressions.size()/GRID_ROW_SIZE); // number
 int rank = nav.getPageOffset()+1;
 %>
 
-<%@page import="com.freshdirect.webapp.util.JspMethods"%><table style="width:100%">
+<table style="width:100%">
 	<fd:PIPLayout id="piRow" rowSize="<%= GRID_ROW_SIZE %>" impressions="<%= impressions %>" maxRowHeight="rowHeight" singleRowMode="<%= false %>">
 		<tr>
 			<% int colCount = 0; %>

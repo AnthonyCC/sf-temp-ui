@@ -37,7 +37,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
 
-<fd:CheckLoginStatus id="user" guestAllowed="true" recognizedAllowed="true" noRedirect="true" />
+<fd:CheckLoginStatus id="user" guestAllowed="true" recognizedAllowed="true" />
 
 <tmpl:insert template='/common/template/right_dnav.jsp'>
 	<tmpl:put name='leftnav' direct='true'> <%-- <<< some whitespace is needed here --%></tmpl:put>

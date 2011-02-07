@@ -17,7 +17,7 @@
 <%@ taglib uri="/WEB-INF/shared/tld/freshdirect.tld" prefix='fd'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
 
-<fd:CheckLoginStatus id="user" guestAllowed="true" recognizedAllowed="true" noRedirect="true" />
+<fd:CheckLoginStatus id="user" guestAllowed="true" recognizedAllowed="true" />
 
 <display:InitLayout /> 
 

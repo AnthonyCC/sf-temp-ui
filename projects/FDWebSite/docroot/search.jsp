@@ -23,7 +23,7 @@
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri='oscache' prefix='oscache'%>
 
-<fd:CheckLoginStatus id="user" guestAllowed="true" recognizedAllowed="true" noRedirect="true" />
+<fd:CheckLoginStatus id="user" guestAllowed="true" recognizedAllowed="true"/>
 
 <%
 final String SEPARATOR = "&nbsp;<span class=\"text12\" style=\"color: #CCCCCC\">&bull;</span>&nbsp;";
