@@ -34,7 +34,7 @@ public class WaveUtil {
 		Map<String, List<IWaveInstanceSource>> waveMapping = new HashMap<String, List<IWaveInstanceSource>>();
 		
 		Collection waveSourceForCalc = null;
-		// Group Wave Instance By Zone
+		// Group Wave Instance Sources By Zone
 		if(sourceData != null) {
 			Iterator _itr = sourceData.iterator();
 			while(_itr.hasNext()) {
@@ -104,8 +104,9 @@ public class WaveUtil {
 	}
 	
 	private static List<List<WaveInstance>> calculateWaveInstance(Collection waveInstanceSources
-												, Date deliveryDate, String zone
-													, String actionBy, EnumWaveInstancePublishSrc source, DispatchManagerI dispManager) {
+													, Date deliveryDate, String zone
+													, String actionBy, EnumWaveInstancePublishSrc source
+													, DispatchManagerI dispManager) {
 		
 		Collection waveInstances = dispManager.getWaveInstance(deliveryDate, zone);
 		Map<WaveInstanceKey, WaveInstance> waveMappingCurrent = new HashMap<WaveInstanceKey, WaveInstance>();
@@ -225,24 +226,59 @@ public class WaveUtil {
 	
 	public static void recalculateWave(DispatchManagerI dispatchManagerService, Map<Date, Set<String>> deliveryMapping
 			, String userId, EnumWaveInstancePublishSrc source) {
+		List<WaveInstance> saveWaveInstances = new ArrayList<WaveInstance>();
+		List<WaveInstance> deleteWaveInstances  = new ArrayList<WaveInstance>();
+		
 		if(deliveryMapping != null) {
 			for(Map.Entry<Date, Set<String>> deliveryMapEntry : deliveryMapping.entrySet()) {
 				Collection wavePublishes = dispatchManagerService.getWaveInstancePublish(deliveryMapEntry.getKey());
 				if(wavePublishes != null && wavePublishes.size() > 0) {
 					WaveInstancePublish wavePublish = (WaveInstancePublish)wavePublishes.iterator().next();
 					if(wavePublish.getSource() != null && wavePublish.getSource().equals(source)) {
-						if(source.equals(EnumWaveInstancePublishSrc.PLAN)) {
-							dispatchManagerService.recalculateWaveFromPlan(deliveryMapEntry.getKey()
-									, deliveryMapEntry.getValue()
-									, userId);
-						} else {
-							dispatchManagerService.recalculateWaveFromScrib(deliveryMapEntry.getKey()
-									, deliveryMapEntry.getValue()
-									, userId);
-						}
+						if(deliveryMapEntry.getKey() != null && deliveryMapEntry.getValue() != null) {
+							Collection dataToProcess = null;
+							for(String zone: deliveryMapEntry.getValue()) {
+								if(source.equals(EnumWaveInstancePublishSrc.PLAN)) {
+									dataToProcess = dispatchManagerService.getPlan(deliveryMapEntry.getKey(), zone);
+								} else {
+									dataToProcess = dispatchManagerService.getScrib(deliveryMapEntry.getKey(), zone);
+								}
+								List<List<WaveInstance>> waveInstancesResult = WaveUtil.getWavesForPublish(dataToProcess
+																				, deliveryMapEntry.getKey()
+																				, userId, source
+																				, dispatchManagerService);
+								if(waveInstancesResult.get(1).size() > 0) {
+									deleteWaveInstances.addAll(waveInstancesResult.get(1));
+								}
+								if(waveInstancesResult.get(0).size() > 0) {
+									saveWaveInstances.addAll(waveInstancesResult.get(0));
+								}
+							}
+						}						
 					}
 				}
 			}
+			dispatchManagerService.saveWaveInstances(saveWaveInstances, deleteWaveInstances);
 		}
+	}
+	
+	public static void recalculateWave(DispatchManagerI dispatchManagerService, IWaveInstanceSource previousModel
+										, IWaveInstanceSource currentModel
+										, EnumWaveInstancePublishSrc source, String userId) {
+
+		Map<Date, Set<String>> deliveryMapping = new HashMap<Date, Set<String>>();
+		if(previousModel != null && previousModel.getZone() != null) {
+			if(!deliveryMapping.containsKey(previousModel.getDeliveryDate())) {
+				deliveryMapping.put(previousModel.getDeliveryDate(), new HashSet<String>());
+			}
+			deliveryMapping.get(previousModel.getDeliveryDate()).add(previousModel.getZone().getZoneCode());
+		}
+		if(currentModel != null && currentModel.getZone() != null) {
+			if(!deliveryMapping.containsKey(currentModel.getDeliveryDate())) {
+				deliveryMapping.put(currentModel.getDeliveryDate(), new HashSet<String>());
+			}
+			deliveryMapping.get(currentModel.getDeliveryDate()).add(currentModel.getZone().getZoneCode());
+		}		
+		WaveUtil.recalculateWave(dispatchManagerService, deliveryMapping,  userId, source);
 	}
 }

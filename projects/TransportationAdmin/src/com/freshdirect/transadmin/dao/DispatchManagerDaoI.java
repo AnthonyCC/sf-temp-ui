@@ -47,17 +47,17 @@ public interface DispatchManagerDaoI extends BaseManagerDaoI {
 
 	void savePlan(Plan plan) throws DataAccessException;
 	
-	public void evictDispatch(Dispatch d)throws DataAccessException ;
-	
-	public Collection getScribList(String date);
-	
-	public Collection getScribList(String date, String region);
+	void evictDispatch(Dispatch d)throws DataAccessException ;
 		
-	public Scrib getScrib(String id);
-
-	public Collection getUserPref(String userId);
+	Collection getScribList(String date);
 	
-	public Collection getDispatchReasons(boolean active);
+	Collection getScribList(String date, String region);
+		
+	Scrib getScrib(String id);
+
+	Collection getUserPref(String userId);
+	
+	Collection getDispatchReasons(boolean active);
 	
 	int addScenarioDayMapping(DlvScenarioDay scenarioDay)throws DataAccessException ;
 	

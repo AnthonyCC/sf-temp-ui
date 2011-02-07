@@ -45,7 +45,7 @@ public class NotificationManager {
 						}
 					}
 				}
-				if(notSyncCount > 0 && errorCount > 0) {
+				if(notSyncCount > 0 || errorCount > 0) {
 					return notSyncCount+" Waves not in Sync / "+errorCount+" Wave Sync Errors";
 				}
 			}

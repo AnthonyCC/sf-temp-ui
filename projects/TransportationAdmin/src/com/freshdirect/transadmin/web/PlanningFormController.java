@@ -2,20 +2,18 @@ package com.freshdirect.transadmin.web;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
+import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.Zone;
@@ -156,27 +154,21 @@ public class PlanningFormController extends AbstractFormController {
 			getDispatchManagerService().savePlan(model, _command.getReferenceContextId());
 			_command.setPlanId(model.getPlanId());
 			_command.setReferenceContextId(null);
+			
 		} catch (Exception objExp) {
 			objExp.printStackTrace();
 			errorList = new ArrayList();
 			errorList.add(this.getMessage("sys.error.1001", new Object[]{this.getDomainObjectName()}));
 		}
-		if(errorList == null && model != null) {
-			Map<Date, Set<String>> deliveryMapping = new HashMap<Date, Set<String>>();
-			if(previousModel != null && previousModel.getZone() != null) {
-				if(!deliveryMapping.containsKey(previousModel)) {
-					deliveryMapping.put(previousModel.getPlanDate(), new HashSet<String>());
-				}
-				deliveryMapping.get(previousModel.getPlanDate()).add(previousModel.getZone().getZoneCode());
+		if(errorList == null && model != null && RoutingServicesProperties.getRoutingDynaSyncEnabled()) {
+			try {
+				WaveUtil.recalculateWave(this.getDispatchManagerService(), previousModel, model, EnumWaveInstancePublishSrc.PLAN
+								, com.freshdirect.transadmin.security.SecurityManager.getUserName(request));
+			} catch(Exception e) {
+				e.printStackTrace();
+				errorList = new ArrayList();
+				errorList.add(this.getMessage("app.error.133", new Object[]{this.getDomainObjectName()}));
 			}
-			if(model != null && model.getZone() != null) {
-				if(!deliveryMapping.containsKey(model)) {
-					deliveryMapping.put(model.getPlanDate(), new HashSet<String>());
-				}
-				deliveryMapping.get(model.getPlanDate()).add(model.getZone().getZoneCode());
-			}
-			String userId = com.freshdirect.transadmin.security.SecurityManager.getUserName(request);
-			WaveUtil.recalculateWave(this.getDispatchManagerService(), deliveryMapping,  userId, EnumWaveInstancePublishSrc.PLAN);			
 		}
 		return errorList;
 	}
@@ -210,7 +202,8 @@ public class PlanningFormController extends AbstractFormController {
 		if(!TransStringUtil.isEmpty(model.getZoneCode())) {
 			zone=domainManagerService.getZone(model.getZoneCode());
 		}
-		model= DispatchPlanUtil.reconstructWebPlanInfo(model,zone,model.getFirstDeliveryTimeModified(),null,employeeManagerService,zoneManagerService);
+		model= DispatchPlanUtil.reconstructWebPlanInfo(model, zone, model.getFirstDeliveryTimeModified()
+															,null, employeeManagerService, zoneManagerService);
 
 		//set userId to command object
 		model.setUserId(getUserId(request));

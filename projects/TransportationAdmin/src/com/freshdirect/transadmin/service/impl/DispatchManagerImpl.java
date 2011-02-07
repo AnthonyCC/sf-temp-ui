@@ -22,6 +22,7 @@ import com.freshdirect.transadmin.exception.TransAdminApplicationException;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
+import com.freshdirect.transadmin.model.IWaveInstanceSource;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PunchInfoI;
 import com.freshdirect.transadmin.model.ResourceI;
@@ -385,8 +386,10 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			}
 			
 		}
-		getDispatchManagerDao().savePlan(plan);
+		Plan previousModel = getPlan(plan.getPlanId());
+		getDispatchManagerDao().savePlan(plan);		
 	}
+		
 	
 	public Collection getUnusedDispatchRoutes(String dispatchDate) {
 		
@@ -520,7 +523,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	{
 		this.dispatchManagerDao.evictDispatch(dispatch);
 	}
-
+	
 	public Map getHTInScan(Date routeDate) 
 	{
 		try {
@@ -655,45 +658,16 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	public WaveInstance getWaveInstance(String waveInstanceId)  {
 		return getDispatchManagerDao().getWaveInstance(waveInstanceId);
 	}
-	
-	public void recalculateWaveFromScrib(Date deliveryDate, Set<String> zones, String actionBy) {
-		List<List<WaveInstance>> waveInstancesResult = new ArrayList<List<WaveInstance>>();
-		if(deliveryDate != null && zones != null) {
-			for(String zone: zones) {
-				Collection scribs = this.getScrib(deliveryDate, zone);
-				waveInstancesResult = WaveUtil.getWavesForPublish(scribs, deliveryDate
-																	, actionBy, EnumWaveInstancePublishSrc.SCRIB
-																	, this);
-			}
+			
+	public void saveWaveInstances(List<WaveInstance> saveWaveInstances, List<WaveInstance> deleteWaveInstances) {
+		if(deleteWaveInstances != null && deleteWaveInstances.size() > 0) {
+			this.getDispatchManagerDao().removeEntity(deleteWaveInstances);
 		}
-		if(waveInstancesResult.get(1).size() > 0) {
-			this.getDispatchManagerDao().removeEntity(waveInstancesResult.get(1));
-		}
-		if(waveInstancesResult.get(0).size() > 0) {
-			this.getDispatchManagerDao().saveEntityList(waveInstancesResult.get(0));
+		if(saveWaveInstances != null && saveWaveInstances.size() > 0) {
+			this.getDispatchManagerDao().saveEntityList(saveWaveInstances);
 		}
 	}
 		
-	public void recalculateWaveFromPlan(Date deliveryDate, Set<String> zones, String actionBy) {
-		List<List<WaveInstance>> waveInstancesResult = new ArrayList<List<WaveInstance>>();
-		if(deliveryDate != null && zones != null) {
-			for(String zone: zones) {
-				Collection plans = this.getPlan(deliveryDate, zone);
-				waveInstancesResult = WaveUtil.getWavesForPublish(plans, deliveryDate
-																	, actionBy, EnumWaveInstancePublishSrc.PLAN
-																	, this);
-			}
-		}
-		if(waveInstancesResult.get(1).size() > 0) {
-			this.getDispatchManagerDao().removeEntity(waveInstancesResult.get(1));
-		}
-		if(waveInstancesResult.get(0).size() > 0) {
-			this.getDispatchManagerDao().saveEntityList(waveInstancesResult.get(0));
-		}
-	}
-	
-	
-	
 	public void publishWaveInstance(Date deliveryDate, String actionBy, EnumWaveInstancePublishSrc source) {
 		
 		List<List<WaveInstance>> waveInstancesResult = new ArrayList<List<WaveInstance>>();
@@ -719,7 +693,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			waveInstancesResult = WaveUtil.getWavesForPublish(sourceData, deliveryDate, actionBy, source, this);
 		}
 		this.getDispatchManagerDao().saveEntity(publish);
-		//this.getDispatchManagerDao().deleteWaveInstance(deliveryDate);
+		
 		if(waveInstancesResult.get(1).size() > 0) {
 			this.getDispatchManagerDao().removeEntity(waveInstancesResult.get(1));
 		}

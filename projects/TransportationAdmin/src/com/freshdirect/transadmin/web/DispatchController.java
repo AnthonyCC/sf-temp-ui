@@ -745,9 +745,11 @@ public class DispatchController extends AbstractMultiActionController {
 			}
 		}
 		dispatchManagerService.removeEntity(planSet);
-		WaveUtil.recalculateWave(this.getDispatchManagerService(), deliveryMapping
-									,  com.freshdirect.transadmin.security.SecurityManager.getUserName(request)
-										, EnumWaveInstancePublishSrc.PLAN);
+		if(RoutingServicesProperties.getRoutingDynaSyncEnabled()) {
+			WaveUtil.recalculateWave(this.getDispatchManagerService(), deliveryMapping
+										,  com.freshdirect.transadmin.security.SecurityManager.getUserName(request)
+											, EnumWaveInstancePublishSrc.PLAN);
+		}
 		saveMessage(request, getMessage("app.actionmessage.103", null));
 
 		return planHandler(request, response);

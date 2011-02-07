@@ -214,7 +214,7 @@ public class DispatchManagerDaoHibernateImpl extends
 	public void evictDispatch(Dispatch d) throws DataAccessException {
 		getSession().evict(d);
 	}
-
+	
 	public Plan getPlan(String id) throws DataAccessException {
 		return (Plan) getEntityById("Plan", "id.planId", id);
 	}
@@ -428,7 +428,7 @@ public class DispatchManagerDaoHibernateImpl extends
 	public Collection getWaveInstance(Date deliveryDate, Date cutOff) throws DataAccessException {
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from WaveInstance p where p.deliveryDate = ? ");
-		strBuf.append(" and p.cutOff = ?");
+		strBuf.append(" and p.cutOffTime = ?");
 		strBuf.append(" order by p.deliveryDate, p.area, p.dispatchTime, p.firstDeliveryTime, p.cutOffTime");	
 		return (Collection) getHibernateTemplate().find(strBuf.toString(),	new Object[] { deliveryDate,  cutOff});		
 	}
@@ -437,7 +437,7 @@ public class DispatchManagerDaoHibernateImpl extends
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from WaveInstance p where p.deliveryDate > sysdate ");
 		if(cutOff != null) {
-			strBuf.append(" and p.cutOff = ?");
+			strBuf.append(" and p.cutOffTime = ?");
 		}
 		strBuf.append(" order by p.deliveryDate, p.area, p.dispatchTime, p.firstDeliveryTime, p.cutOffTime");
 		if(cutOff != null) {

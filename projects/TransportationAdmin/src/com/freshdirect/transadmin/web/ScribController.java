@@ -25,6 +25,7 @@ import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
+import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.transadmin.model.EmployeeTeam;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.Region;
@@ -302,9 +303,11 @@ public class ScribController extends AbstractMultiActionController
 				}
 			}
 			dispatchManagerService.removeEntity(scribSet);
-			WaveUtil.recalculateWave(this.getDispatchManagerService(), deliveryMapping
-					,  com.freshdirect.transadmin.security.SecurityManager.getUserName(request)
-						, EnumWaveInstancePublishSrc.SCRIB);
+			if(RoutingServicesProperties.getRoutingDynaSyncEnabled()) {
+				WaveUtil.recalculateWave(this.getDispatchManagerService(), deliveryMapping
+						,  com.freshdirect.transadmin.security.SecurityManager.getUserName(request)
+							, EnumWaveInstancePublishSrc.SCRIB);
+		    }
 			saveMessage(request, getMessage("app.actionmessage.103", null));
 			return scribHandler(request,response);
 		} catch (Exception e) {

@@ -115,11 +115,10 @@ public interface DispatchManagerI extends BaseManagerI {
 	Collection getWaveInstancePublish(Date deliveryDate);	
 	Collection getWaveInstance(Date cutOff);
 	WaveInstance getWaveInstance(String waveInstanceId);
-	
-	void recalculateWaveFromScrib(Date deliveryDate, Set<String> zones, String actionBy);
-	void recalculateWaveFromPlan(Date deliveryDate, Set<String> zones, String actionBy);
-	
+		
 	void publishWaveInstance(Date deliveryDate, String actionBy, EnumWaveInstancePublishSrc source);
 	
-	void uploadScrib(Set<Date> scribDates, List<Scrib> toSaveScribs);	
+	void uploadScrib(Set<Date> scribDates, List<Scrib> toSaveScribs);
+		
+	void saveWaveInstances(List<WaveInstance> saveWaveInstances, List<WaveInstance> deleteWaveInstances);
 }

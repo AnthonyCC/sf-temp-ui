@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
+import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DispatchManagerI;
@@ -145,22 +146,16 @@ public class ScribFormController extends AbstractDomainFormController {
 			errorList.add(this.getMessage("app.actionmessage.119", new Object[]{this.getDomainObjectName()}));
 		}
 		
-		if(errorList == null && model != null) {
-			Map<Date, Set<String>> deliveryMapping = new HashMap<Date, Set<String>>();
-			if(previousModel != null && previousModel.getZone() != null) {
-				if(!deliveryMapping.containsKey(previousModel)) {
-					deliveryMapping.put(previousModel.getScribDate(), new HashSet<String>());
-				}
-				deliveryMapping.get(previousModel.getScribDate()).add(previousModel.getZone().getZoneCode());
+		if(errorList == null && model != null && RoutingServicesProperties.getRoutingDynaSyncEnabled()) {
+			try {
+				WaveUtil.recalculateWave(this.getDispatchManagerService(), previousModel, model
+												, EnumWaveInstancePublishSrc.SCRIB
+												, com.freshdirect.transadmin.security.SecurityManager.getUserName(request));		
+			} catch(Exception e) {
+				e.printStackTrace();
+				errorList = new ArrayList();
+				errorList.add(this.getMessage("app.error.133", new Object[]{this.getDomainObjectName()}));
 			}
-			if(model != null && model.getZone() != null) {
-				if(!deliveryMapping.containsKey(model)) {
-					deliveryMapping.put(model.getScribDate(), new HashSet<String>());
-				}
-				deliveryMapping.get(model.getScribDate()).add(model.getZone().getZoneCode());
-			}
-			String userId = com.freshdirect.transadmin.security.SecurityManager.getUserName(request);
-			WaveUtil.recalculateWave(this.getDispatchManagerService(), deliveryMapping,  userId, EnumWaveInstancePublishSrc.SCRIB);			
 		}
 		return errorList;
 	}
