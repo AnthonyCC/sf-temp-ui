@@ -48,9 +48,13 @@ public class CrmLoginFilter implements Filter {
 					agent = CrmManager.getInstance().getAgentByLdapId(request.getRemoteUser());
 					if(null != agent && null != agentRole && !agentRole.equals(agent.getRole())){
 						agent = updateAgentsRole(agentRole, agent);
+						//To update the cache for this agent.
+						CrmManager.getInstance().getAllAgents(false);
 					}
 				} catch (CrmAuthenticationException e) {
 					agent = createAgentByLdapId(request, agentRole);
+					//To update the cache with for this agent.
+					CrmManager.getInstance().getAllAgents(false);
 				}
 				CrmSession.setCurrentAgent(request.getSession(), agent);
 				status = CrmManager.getInstance().getSessionStatus(agent.getPK());
