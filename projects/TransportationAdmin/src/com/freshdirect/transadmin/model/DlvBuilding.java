@@ -22,31 +22,15 @@ public class DlvBuilding implements java.io.Serializable, TrnBaseEntityI  {
 	private BigDecimal serviceTimeOverride;
 	private BigDecimal serviceTimeAdjustable;
 	private String serviceTimeOperator;
+		
+	Set<DeliveryGroup> buildingGroups = new HashSet<DeliveryGroup>(0);
 	
-	private DlvBuildingDetail buildingDetail;
-	Set buildingDetails= new HashSet(0);
+	public Set<DeliveryGroup> getBuildingGroups() {		
+		return buildingGroups;
+	}
 	
-	public Set getBuildingDetails() {
-		return buildingDetails;
-	}
-	public void setBuildingDetails(Set buildingDetails) {
-		this.buildingDetails = buildingDetails;
-	}
-	public DlvBuildingDetail getBuildingDetail() {
-		Iterator itr= buildingDetails.iterator();
-		while(itr.hasNext()){
-			buildingDetail=(DlvBuildingDetail)itr.next();
-		}
-		if(buildingDetail==null){
-			buildingDetail=new DlvBuildingDetail();
-		}
-		return buildingDetail;
-	}
-	public void setBuildingDetail(DlvBuildingDetail buildingDetail) {
-		if(buildingDetail==null){
-			buildingDetail=new DlvBuildingDetail();
-		}
-		this.buildingDetail = buildingDetail;
+	public void setBuildingGroups(Set<DeliveryGroup> buildingGroups) {
+		this.buildingGroups = buildingGroups;
 	}
 	
 	public String getCountry() {

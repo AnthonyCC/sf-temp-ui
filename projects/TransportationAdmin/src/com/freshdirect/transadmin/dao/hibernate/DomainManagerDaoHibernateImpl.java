@@ -313,13 +313,20 @@ public class DomainManagerDaoHibernateImpl
 
 	public Collection getEmployeeStatus(String empId)
 			throws DataAccessException {
-		// TODO Auto-generated method stub
+		
 		StringBuffer strBuf = new StringBuffer();
+		
 		strBuf.append("from EmployeeStatus e ");
-		if(empId!=null)
+		if (empId != null)
 			strBuf.append("where  e.personnum ='").append(empId).append("'");
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
 	
+	public Collection getDeliveryGroups() throws DataAccessException {
+
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from DeliveryGroup e ");
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}	
 
 }

@@ -1,0 +1,145 @@
+<style>
+	.yui-skin-sam .yui-dt-body { cursor:pointer; } 
+	#single { margin-top:2em; }
+	
+</style>
+<script>
+      var groupDataTable;
+      var editGroupPanel; 
+     
+      var jsonrpcClient = new JSONRpcClient("geographyprovider.ax");
+           
+      function showDeliveryGroupsTable() {
+      	 
+         editGroupPanel = new YAHOO.widget.Panel("panel-Groups", {
+                          width: "400", 
+                          height: "370px",
+                          fixedcenter: true, 
+                          close: true, 
+                          draggable: false, 
+                          zindex:4,
+                          modal: true,
+                          visible: false,
+                          effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
+        
+         var groupDataIncrementer = function() {
+		var result = jsonrpcClient.AsyncGeographyProvider.getDeliveryGroups();
+	        return result.list;
+         };
+          
+        groupDataSource = new YAHOO.util.DataSource(groupDataIncrementer);
+
+	var groupColumns =  [ 
+			    {key:"groupName", label:"Group Name",sortable:true, width:225, className:"forms1"},
+			    {key:'delete',label:' ',formatter:function(elCell) {
+        				elCell.innerHTML = '<img src="images/icons/delete.gif" title="delete row" />';
+        					elCell.style.cursor = 'pointer';
+    					}
+				}
+		 ];
+	 
+  	groupDataTable = new YAHOO.widget.DataTable("contgrouptable", groupColumns, groupDataSource, { selectionMode:"single" });
+  		
+  	groupDataTable.subscribe('cellClickEvent',function(ev) {
+	    	var target = YAHOO.util.Event.getTarget(ev);
+    		var column = groupDataTable.getColumn(target);
+			if (column.key == 'delete') {
+				groupDataTable.deleteRow(target);
+			} 
+		});
+
+  	editGroupPanel.render(document.body);
+        editGroupPanel.show();
+     }
+      
+           
+     function doAdd() {
+		
+     		var _groupName = document.getElementById('gName').value;
+		var hasError=false;
+
+     		if(_groupName.trim().length==0){ 
+                  alert("Group Name cannot be empty. Please enter group name.");
+            	  hasError=true;
+		}            
+         
+		if(groupDataTable.getRecordSet() != null 
+     	  			&& groupDataTable.getRecordSet().getRecords() && !hasError) {
+            		var _data = new Array();
+ 			var records = groupDataTable.getRecordSet().getRecords();
+  			for(i=0; i<records.length; i++) {
+  				_data[i] = new Array();
+  				_data[i][0] = records[i].getData('groupName');
+  			}
+
+  			for(k=0; k < _data.length;k++){
+				if(_groupName ==_data[k][0]){
+					alert('Group entered already in the list.');
+					hasError=true;
+				}
+          		}
+      	  	}
+
+     		if(!hasError) {
+     			groupDataTable.addRow({groupName:_groupName});
+     		}
+     }
+         
+     function submitDeliveryGroupsTable() { 
+     	  var _data = new Array();
+     	  if(groupDataTable.getRecordSet() != null 
+     	  			&& groupDataTable.getRecordSet().getRecords()) {
+      	  	var records = groupDataTable.getRecordSet().getRecords();
+      	  	for(i=0; i < records.length; i++) {
+      	  		_data[i] = new Array();
+      	  		_data[i][0] = records[i].getData('groupName');
+		}
+      	  }
+       	  var result = jsonrpcClient.AsyncGeographyProvider.doDeliveryGroup(sendDeliveryGroupFormCallback, _data);
+       	 
+     }
+    
+     function sendDeliveryGroupFormCallback(result, exception) {
+     	 if(exception) {
+             alert('Unable to connect to host system. Please contact system administrator!');
+             return;
+         }
+         if(result){
+        	 editGroupPanel.hide();
+		 window.location.reload();
+         }else{
+        	 alert('Adding Groups failed.');
+        	 editGroupPanel.show();
+         }
+     }
+   </script>
+       
+   <div style='display:none;height:0px;width:0px;'> 
+      <div id="panel-Groups">
+	      <div class="hd">
+		<img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />
+			&nbsp;&nbsp;&nbsp;Delivery Groups
+		</div>
+	      <div id="errContainer"></div>
+	      <div class="bd">
+			<table cellpadding="1" cellspacing="0" style="font-size:12px; text-align:center">
+			   <tr>
+				<td>
+					Group Name&nbsp;<input style="margin-top:4px" id="gName" /> 
+				</td>
+			       <td>
+				   <input type="button" id="add" style="margin-top:6px" value="&nbsp;ADD&nbsp;" onclick="javascript:doAdd();" /> 
+			       </td>
+			</tr>
+		    </table>
+		    <hr/>
+		    <div id="parentcontgrouptable" style="height:250px;overflow-y:auto;background-color:#F2F2F2;border:1px solid #000;">
+				<div id="contgrouptable"></div> 
+		    </div>	
+			<hr/>
+			 <div align="center">
+				<input type="button" id="route_out" value="&nbsp;Submit&nbsp;" onclick="javascript:submitDeliveryGroupsTable();" />
+			 </div>	      
+		</div>
+    </div>
+   </div>

@@ -128,6 +128,44 @@ public class CapacityController extends AbstractMultiActionController {
 		return mav;
 	}
 	
+	/**
+	 * Custom handler for capacity Analyzer
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
+	public ModelAndView capacityAnalyzerHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		
+		String selectedDate = request.getParameter("selectedDate");
+		String cutOff = request.getParameter("cutOff");
+		String dlvGroup = request.getParameter("group");
+		
+		ModelAndView mav = new ModelAndView("capacityAnalyzerView");
+		
+		try {
+			if(selectedDate != null && dlvGroup != null) {
+				Date rDate = TransStringUtil.getDate(selectedDate);
+				
+				
+				
+			}			
+		} catch (ParseException e) {			
+			e.printStackTrace();
+		}
+		
+		if(TransStringUtil.isEmpty(selectedDate)) {
+			selectedDate = TransStringUtil.getNextDate();
+		}
+		mav.getModel().put("selectedDate", selectedDate);
+		mav.getModel().put("cutOff", cutOff);
+		mav.getModel().put("deliveryGroups",domainManagerService.getDeliveryGroups());
+		mav.getModel().put("autorefresh", request.getParameter("autorefresh"));
+		mav.getModel().put("cutoffs", domainManagerService.getCutOffs());
+		
+		return mav;
+	}
+
+	
 	private IDeliverySlot matchSlotToMetrics(List<IDeliverySlot> slots, IDeliveryWindowMetrics metrics) {
 		
 		IDeliverySlot result = null;
@@ -724,6 +762,6 @@ public class CapacityController extends AbstractMultiActionController {
 			return tmpModel.getCutOffTime().getAsDate();
 		}
 		return null;
-	}	
-
+	}
+	
 }

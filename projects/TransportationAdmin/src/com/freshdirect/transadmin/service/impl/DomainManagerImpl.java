@@ -801,6 +801,10 @@ public class DomainManagerImpl
 	public Collection getTeamInfo() {
 		return getDomainManagerDao().getTeamInfo();
 	}
+	
+	public Collection getDeliveryGroups(){
+		return getDomainManagerDao().getDeliveryGroups();
+	}
 
 	
 }

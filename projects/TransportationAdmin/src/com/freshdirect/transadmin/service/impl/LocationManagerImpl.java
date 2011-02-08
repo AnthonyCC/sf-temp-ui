@@ -9,6 +9,7 @@ import com.freshdirect.routing.constants.EnumGeocodeConfidenceType;
 import com.freshdirect.routing.constants.EnumGeocodeQualityType;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.LocationManagerDaoI;
+import com.freshdirect.transadmin.model.DeliveryGroup;
 import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvBuildingDetail;
 import com.freshdirect.transadmin.model.DlvLocation;
@@ -78,8 +79,8 @@ public class LocationManagerImpl extends BaseManagerImpl  implements LocationMan
 		return getLocationManagerDao().getDlvLocation(id); 
 	}	
 	
-	public Collection getDeliveryBuildings(String srubbedAddress, String zipCode, String confidence, String quality) {
-		return getLocationManagerDao().getDeliveryBuildings(srubbedAddress, zipCode, confidence, quality);
+	public Collection getDeliveryBuildings(String srubbedAddress, String zipCode, String confidence, String quality, String group) {
+		return getLocationManagerDao().getDeliveryBuildings(srubbedAddress, zipCode, confidence, quality, group);
 	}
 	
 	public DlvBuilding getDlvBuilding(String id) {
@@ -134,5 +135,13 @@ public class LocationManagerImpl extends BaseManagerImpl  implements LocationMan
 	}
     public Collection getDefaultZoneSupervisors(String zoneId)  {
 		return getLocationManagerDao().getDefaultZoneSupervisors(zoneId);
+	}
+    
+    public Collection getDeliveryGroups(){
+		return getLocationManagerDao().getDeliveryGroups();
+	}
+    
+    public DeliveryGroup getDeliveryGroupById(String id){
+		return getLocationManagerDao().getDeliveryGroupById(id);
 	}
 }

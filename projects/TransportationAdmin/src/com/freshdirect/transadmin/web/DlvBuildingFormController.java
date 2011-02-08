@@ -1,12 +1,20 @@
 package com.freshdirect.transadmin.web;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.propertyeditors.CustomCollectionEditor;
+import org.springframework.validation.BindException;
+import org.springframework.web.bind.ServletRequestDataBinder;
+
 
 import com.freshdirect.routing.constants.EnumGeocodeConfidenceType;
 import com.freshdirect.routing.constants.EnumGeocodeQualityType;
@@ -14,10 +22,12 @@ import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
 import com.freshdirect.routing.util.RoutingUtil;
+import com.freshdirect.transadmin.model.DeliveryGroup;
 import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
+import com.sap.mw.jco.JCO.Request;
 
 public class DlvBuildingFormController extends AbstractFormController {
 		
@@ -28,13 +38,38 @@ public class DlvBuildingFormController extends AbstractFormController {
 		refData.put("servicetimetypes", getLocationManagerService().getServiceTimeTypes());	
 		refData.put("confidencetypes", getLocationManagerService().getConfidenceTypes());	
 		refData.put("qualitytypes", getLocationManagerService().getQualityTypes());
+		refData.put("deliveryGroups", getLocationManagerService().getDeliveryGroups());
 		
 		return refData;
 	}
 	
+	
+	protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) {
+	       binder.registerCustomEditor(Set.class, "buildingGroups", new CustomCollectionEditor(Set.class) {
+	           protected Object convertElement(Object element) {
+	               if (element != null) {
+	                   String id = (String) element;
+	                   DeliveryGroup group = getLocationManagerService().getDeliveryGroupById(id);
+	                   return group;
+	               }
+	               return null;
+	           }
+	       });
+	}
+	
+	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
+	       String buildingId = getIdFromRequest(request);
+
+	       if ((buildingId != null) && request.getMethod().equalsIgnoreCase("get")) {
+	           return getLocationManagerService().getDlvBuilding(buildingId);
+	       } else {
+	           return new DlvBuilding();
+	       }
+	}
+	
 	public Object getBackingObject(String id) {
 		return getLocationManagerService().getDlvBuilding(id);
-	}
+	}	
 	
 	public Object getDefaultBackingObject() {
 		return new DlvBuilding();

@@ -2,6 +2,7 @@
 <%@ taglib uri="/tld/extremecomponents" prefix="ec" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 
@@ -16,7 +17,7 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
           <tr>
             <td class="screentitle">
-              Add/Edit Delivery Building              
+              Add/Edit Delivery Building
             </td>
           </tr>
           <tr>
@@ -145,7 +146,18 @@
                   &nbsp;<form:errors path="serviceTimeAdjustable" />&nbsp;<form:errors path="serviceTimeOperator" />
                	  </td>
                </tr>
-               
+				 <tr>
+                  <td>Select Group</td>
+                  <td>
+						<form:select path="buildingGroups" multiple="true">
+							<form:options items="${deliveryGroups}" itemValue="groupId" itemLabel="groupName"></form:options>
+						</form:select>
+	              </td>
+				    <td>
+	                  &nbsp;<form:errors path="buildingGroups" />
+		            </td>
+               </tr>
+			   
               <tr><td colspan="3">&nbsp;</td></tr>
               <tr>
                   <td colspan="3" align="center">

@@ -9,8 +9,10 @@
 %>
 
 <tmpl:insert template='/common/sitelayout.jsp'>
-
-    <tmpl:put name='title' direct='true'>Delivery Building</tmpl:put>
+<tmpl:put name='yui-lib'>
+	<%@ include file='/common/i_yui.jspf'%>	
+</tmpl:put>
+  <tmpl:put name='title' direct='true'>Delivery Building</tmpl:put>
 
   <tmpl:put name='content' direct='true'>
     <br/>
@@ -38,21 +40,19 @@
                 <td>ZipCode</td>
                   <td> 
                                 
-                    <input maxlength="20" size="20" name="zipCode"
+                    <input maxlength="5" size="5" name="zipCode"
                       id="zipCode" value="" />                    
                   </td>
                   
-                  <td>Select Confidence</td>
                   <td>
                     <select name='confidence' id='confidence'>
                       <option value="">--Please Select Geo Confidence</option> 
-                        <c:forEach var="confidenceTypeRow" items="${confidencetypes}">                                                        
+                        <c:forEach var="confidenceTypeRow" items="${confidencetypes}">
                               <option value='<c:out value="${confidenceTypeRow.name}"/>'><c:out value="${confidenceTypeRow.description}"/></option>
                         </c:forEach>   
                       </select>
                 </td>
-                
-                <td>Select Quality</td>
+               
                   <td>
                       <select name='quality' id='quality'>
                        <option value="">--Please Select Geo Quality</option> 
@@ -61,11 +61,24 @@
                         </c:forEach>   
                       </select>
                 </td>
+				 <td>Group</td>
+                  <td>
+                      <select name='group' id='group'>
+                       <option value="">--Please Select Group</option> 
+                        <c:forEach var="deliveryGroup" items="${deliveryGroups}">
+                              <option value='<c:out value="${deliveryGroup.groupId}"/>'><c:out value="${deliveryGroup.groupName}"/></option>
+                        </c:forEach>   
+                      </select>
+                </td>
                                      
-                   <td colspan="7" align="center">
-                     <input type = "button" value="&nbsp;Go&nbsp;" 
-                      onclick="javascript:doCompositeLink('srubbedAddress','zipCode','confidence','quality','dlvbuilding.do')" />
-                </td>     
+                <td colspan="7" align="center">
+						<input id="view_button" type="image" alt="View" src="./images/icons/view.gif"      onclick="javascript:doCompositeLink('srubbedAddress','zipCode','confidence','quality','group','dlvbuilding.do')"
+						onmousedown="this.src='./images/icons/view_ON.gif'" />
+                </td> 
+				
+				 <td colspan="7" align="center">
+					 <input id="group_button" type="image" alt="Group" src="./images/icons/groups.gif" onclick="javascript:showDeliveryGroupsTable();" />
+                </td>
                       
               </tr>
               </table>        
@@ -74,12 +87,13 @@
           </tr>               
         </table>    
        <script>
-       function doCompositeLink(compId1,compId2, compId3, compId4, url) {
+       function doCompositeLink(compId1,compId2, compId3, compId4,compId5, url) {
         var param1 = document.getElementById(compId1).value;
         var param2 = document.getElementById(compId2).value;
         var param3 = document.getElementById(compId3).value;
         var param4 = document.getElementById(compId4).value;
-        location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+"&"+compId3+"="+param3+"&"+compId4+"="+param4;
+	    var param5 = document.getElementById(compId5).value;
+        location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+"&"+compId3+"="+param3+"&"+compId4+"="+param4+"&"+compId5+"="+param5;
       } 
       
       function addCustomRowHandlers(tableId, rowClassName, url, paramName, columnIndex, checkCol, needKeyPress) {
@@ -157,6 +171,7 @@
      </div>
      <script>
       addCustomRowHandlers('ec_table', 'rowMouseOver', 'editdlvbuilding.do','id',0, 0, true);
-    </script>   
+    </script>
+	  <%@ include file='i_dlvgroupinfo.jspf'%>
   </tmpl:put>
 </tmpl:insert>

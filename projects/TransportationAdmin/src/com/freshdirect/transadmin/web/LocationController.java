@@ -201,17 +201,23 @@ public class LocationController extends AbstractMultiActionController  {
 	 * @return a ModelAndView to render the response
 	 */
 	public ModelAndView dlvBuildingHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {	
+		
 		String srubbedAddress = scrubStreet(request.getParameter("srubbedAddress"));
 		String zipCode = request.getParameter("zipCode");
 		String confidenceLevel = request.getParameter("confidence");
 		String qualityLevel = request.getParameter("quality");
+		String group = request.getParameter("group");
+		
 		ModelAndView mav = new ModelAndView("deliveryBuildingView");
+		
+		
 		mav.getModel().put("confidencetypes",locationManagerService.getConfidenceTypes());
 		mav.getModel().put("qualitytypes",locationManagerService.getQualityTypes());
+		mav.getModel().put("deliveryGroups",domainManagerService.getDeliveryGroups());
 		
 		if(!TransStringUtil.isEmpty(srubbedAddress) || !TransStringUtil.isEmpty(qualityLevel)
-				|| !TransStringUtil.isEmpty(confidenceLevel) || !TransStringUtil.isEmpty(zipCode)) {
-			Collection dataList = locationManagerService.getDeliveryBuildings(srubbedAddress, zipCode, confidenceLevel, qualityLevel);
+				|| !TransStringUtil.isEmpty(confidenceLevel) || !TransStringUtil.isEmpty(zipCode)|| !TransStringUtil.isEmpty(group)) {
+			Collection dataList = locationManagerService.getDeliveryBuildings(srubbedAddress, zipCode, confidenceLevel, qualityLevel, group);
 			mav.getModel().put("dlvbuildings",dataList);			
 		}
 		return mav;

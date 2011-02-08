@@ -96,5 +96,7 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 	Collection getScheduleEmployee(String employeeId, String weekOf, String day) throws DataAccessException;
 	Collection getScheduleEmployees(String weekOf, String day) throws DataAccessException;
 	Collection getUPSRouteInfo(String routeDate);
+	
+	Collection getDeliveryGroups()throws DataAccessException;
 		
 }

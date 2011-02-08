@@ -2,13 +2,12 @@ package com.freshdirect.transadmin.dao.hibernate;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Expression;
 import org.springframework.dao.DataAccessException;
 
 import com.freshdirect.transadmin.dao.LocationManagerDaoI;
+import com.freshdirect.transadmin.model.DeliveryGroup;
 import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvBuildingDetail;
 import com.freshdirect.transadmin.model.DlvLocation;
@@ -124,17 +123,17 @@ public class LocationManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 		return (Collection) getHibernateTemplate().find("from DlvLocation dl where dl.building.buildingId ='"+buildingId+"'");
 	}
 
-	public Collection getDeliveryBuildings(String srubbedAddress, String zipCode, String confidence, String quality) throws DataAccessException {
+	public Collection getDeliveryBuildings(String srubbedAddress, String zipCode, String confidence, String quality, String group) throws DataAccessException {
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from DlvBuilding dl");
 		boolean hasCondition = false;
-
+				
 		hasCondition = appendLocationQuery(strBuf, "srubbedStreet", srubbedAddress, hasCondition);
-
 
 		hasCondition = appendLocationQuery(strBuf, "zip", zipCode, hasCondition);
 		hasCondition = appendLocationQuery(strBuf, "geocodeConfidence", confidence, hasCondition);
 		hasCondition = appendLocationQuery(strBuf, "geocodeQuality", quality, hasCondition);
+		hasCondition = appendLocationQuery(strBuf, "buildingGroups.groupId", group, hasCondition);
 
 		strBuf.append(" order by dl.srubbedStreet desc");
 
@@ -197,6 +196,18 @@ public class LocationManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 		strBuf.append("from ZoneSupervisor s");			
 		strBuf.append(" where s.zone.zoneCode='").append(zoneCode).append("'");		
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
+	
+	public Collection getDeliveryGroups() throws DataAccessException {
+
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from DeliveryGroup e ");
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
+	
+	public DeliveryGroup getDeliveryGroupById(String id) throws DataAccessException {
+
+		return (DeliveryGroup)getEntityById("DeliveryGroup","id",id);
 	}
 
 

@@ -86,6 +86,10 @@
 	     	<access-uris>wavemonitor.do</access-uris>
      	 	<access-roles>TrnAdmin,TrnPlanning,TrnOperations</access-roles>
      	 </menu>
+     	 <menu id="RUT009" title="Capacity Analyzer" orientation="LEFT" link="capacityanalyzer.do">
+	     	<access-uris>capacityanalyzer.do</access-uris>
+     	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+     	 </menu>
      	       	 
 </menu>
 

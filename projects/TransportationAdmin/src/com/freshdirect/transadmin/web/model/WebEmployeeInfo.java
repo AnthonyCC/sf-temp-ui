@@ -315,13 +315,12 @@ private String employeeId;
 		if("Inactive".equalsIgnoreCase(status))
 		{
 			if("true".equalsIgnoreCase(trnStatus)){ trnStatus=null; return; }			
-			if(trnStatus==null){ trnStatus="true" ; return ; }
+			if(trnStatus==null || "false".equalsIgnoreCase(trnStatus)){ trnStatus="true" ; return ; }
 		}
 		if("Active".equalsIgnoreCase(status))
 		{
 			if("false".equalsIgnoreCase(trnStatus)){ trnStatus=null; return; }			
-			if(trnStatus==null) { trnStatus="false" ; return ;}
-			
+			if(trnStatus==null || "true".equalsIgnoreCase(trnStatus)) { trnStatus="false" ; return ;}			
 		}
 	}
 	

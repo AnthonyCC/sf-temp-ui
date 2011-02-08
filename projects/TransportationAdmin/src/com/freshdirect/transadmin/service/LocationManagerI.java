@@ -3,6 +3,7 @@ package com.freshdirect.transadmin.service;
 import java.util.Collection;
 import java.util.List;
 
+import com.freshdirect.transadmin.model.DeliveryGroup;
 import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvBuildingDetail;
 import com.freshdirect.transadmin.model.DlvLocation;
@@ -28,7 +29,7 @@ public interface LocationManagerI  extends BaseManagerI {
 	
 	Collection getQualityTypes();
 	
-	Collection getDeliveryBuildings(String srubbedAddress, String zipCode, String confidence, String quality);
+	Collection getDeliveryBuildings(String srubbedAddress, String zipCode, String confidence, String quality, String group);
 	
 	DlvBuilding getDlvBuilding(String id);
 	
@@ -62,5 +63,8 @@ public interface LocationManagerI  extends BaseManagerI {
    	void deleteServiceTimeScenario(DlvServiceTimeScenario scenario);
    	
    	Collection getDefaultZoneSupervisors(String zoneId);
-
+   	
+   	Collection getDeliveryGroups();
+   	
+   	DeliveryGroup getDeliveryGroupById(String Id);
 }

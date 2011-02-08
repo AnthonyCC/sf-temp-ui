@@ -133,4 +133,6 @@ public interface DomainManagerI extends BaseManagerI {
 	Collection getScheduleEmployee(String employeeId, String weekOf) throws DataAccessException;
 	
 	Collection getTeamInfo();
+	
+	Collection getDeliveryGroups();
 }
