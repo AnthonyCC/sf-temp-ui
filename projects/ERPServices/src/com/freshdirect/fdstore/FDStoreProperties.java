@@ -491,6 +491,7 @@ public class FDStoreProperties {
 	private final static String PROP_CRM_FORGOT_LDAP_PASSWORD_URL="crm.ldap.password.reset.url";
 	private final static String PROP_CRM_SECURITY_SKIP_FILE_TYPES="crm.security.skip.filetypes";
 	private final static String PROP_CRM_SECURITY_SKIP_FOLDERS="crm.security.skip.folders";
+	private final static String PROP_CRM_AGENTS_CACHE_REFRESH_PERIOD="crm.agents.cache.refresh.period";
 	
 	static {
 		defaults.put(PROP_ROUTING_PROVIDER_URL,"t3://localhost:7001");
@@ -853,6 +854,8 @@ public class FDStoreProperties {
 		
 		defaults.put(PROP_CRM_MENU_ROLES_REFRESH_PERIOD, "3600"); //every 60 mins
 		defaults.put(PROP_CRM_LDAP_USERS_REFRESH_PERIOD, "3600"); //every 60 mins
+		defaults.put(PROP_CRM_AGENTS_CACHE_REFRESH_PERIOD, "1800");//every 30 mins
+		
 		defaults.put(PROP_CRM_LDAP_ACCESS_HOST_NAME_PRIMARY, "t3://127.0.0.1:7001");
 		defaults.put(PROP_CRM_CC_DETAILS_LOOKUP_LIMIT, "10");//10
 		defaults.put(PROP_CRM_CC_SECURITY_EMAIL_ENABLED, Boolean.toString(false));
@@ -2008,6 +2011,10 @@ public class FDStoreProperties {
 	
 	public static int getCrmLDAPUsersRefreshPeriod() {
 		return Integer.parseInt(config.getProperty(PROP_CRM_LDAP_USERS_REFRESH_PERIOD));
+	}
+	
+	public static int getCrmAgentsCacheRefreshPeriod() {
+		return Integer.parseInt(config.getProperty(PROP_CRM_AGENTS_CACHE_REFRESH_PERIOD));
 	}
 	
 	public static String getCrmLDAPPrimaryHostName() {

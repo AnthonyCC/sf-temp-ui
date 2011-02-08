@@ -1,6 +1,7 @@
 package com.freshdirect.crm;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,6 +13,8 @@ import java.util.Set;
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
 import javax.naming.NamingException;
+
+import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.crm.ejb.CrmManagerHome;
@@ -25,9 +28,11 @@ import com.freshdirect.customer.ErpTruckInfo;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.ExpiringReference;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 
 /**
@@ -35,12 +40,33 @@ import com.freshdirect.framework.util.ExpiringReference;
  */
 public class CrmManager {
 
+	private static final Category LOGGER = LoggerFactory.getInstance(CrmManager.class);
 	private final ServiceLocator serviceLocator;
 	private static CrmManager manager = null;
 	private final CrmOperationCollection operations;
 
 	private final Map<String, CrmAgentModel> agentCache = new HashMap<String, CrmAgentModel>();
-	private CrmAgentList agentListCache = null;
+//	private static CrmAgentList agentListCache = null;
+	private static ExpiringReference<CrmAgentList> agentListCache = new ExpiringReference<CrmAgentList>(FDStoreProperties.getCrmAgentsCacheRefreshPeriod()*1000){
+		protected CrmAgentList load() {			
+				LOGGER.info("REFRESHING CRM AGENTS CACHE: ");
+				CrmAgentList list =populateAgentsCache();
+				
+				LOGGER.info("REFRESHED CRM AGENTS CACHE: ");
+				return list;			
+		}
+
+		private CrmAgentList populateAgentsCache(){
+			try {
+				return CrmManager.getInstance().getCrmManagerSB().getAllAgents();
+			} catch (RemoteException e) {
+				LOGGER.info("Cannot talk to CrmManagerSB");
+			} catch(FDResourceException fe){
+				LOGGER.info(fe.getMessage());
+			}
+			return new CrmAgentList(new ArrayList<CrmAgentModel>());
+		}
+	};
 
 	private final ExpiringReference<List<CrmQueueInfo>> queueOverviewCache = new ExpiringReference<List<CrmQueueInfo>>(5 * 60 * 1000) {
 
@@ -121,7 +147,7 @@ public class CrmManager {
 	}
 
 	public synchronized CrmAgentList getAllAgents(boolean useCache) throws FDResourceException {
-		try {
+		/*try {
 			if (useCache && agentListCache != null) {
 				return agentListCache;
 			}
@@ -131,7 +157,8 @@ public class CrmManager {
 
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
-		}
+		}*/
+		return agentListCache.get();
 	}
 
 	public Map<CrmAgentRole, List<String>> getAllAgentsFromLDAP(boolean useCache) throws FDResourceException {
@@ -521,5 +548,9 @@ public class CrmManager {
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while getting first delivered sale.");
 		}
+	}
+	
+	public void forceRefresh() {
+		agentListCache.forceRefresh();
 	}
 }
