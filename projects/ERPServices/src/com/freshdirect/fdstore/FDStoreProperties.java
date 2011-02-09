@@ -493,6 +493,8 @@ public class FDStoreProperties {
 	private final static String PROP_CRM_SECURITY_SKIP_FOLDERS="crm.security.skip.folders";
 	private final static String PROP_CRM_AGENTS_CACHE_REFRESH_PERIOD="crm.agents.cache.refresh.period";
 	
+	private final static String MYFD_ENABLED = "myfd.enabled";
+	
 	static {
 		defaults.put(PROP_ROUTING_PROVIDER_URL,"t3://localhost:7001");
 		defaults.put(PROP_PROVIDER_URL, 	"t3://localhost:7001");
@@ -865,6 +867,8 @@ public class FDStoreProperties {
 		defaults.put(PROP_CRM_FORGOT_LDAP_PASSWORD_URL, "http://myaccount.freshdirect.com/cp/login/Login.aspx");
 		defaults.put(PROP_CRM_SECURITY_SKIP_FILE_TYPES, "css,js,jspf,gif,jpg,xls,ico,txt");
 		defaults.put(PROP_CRM_SECURITY_SKIP_FOLDERS, "");
+		
+		defaults.put(MYFD_ENABLED, "false");
 
 		refresh();
 	}
@@ -2047,5 +2051,8 @@ public class FDStoreProperties {
 	}
 	public static String getCrmSecuritySkippedFolders(){
 		return config.getProperty(PROP_CRM_SECURITY_SKIP_FOLDERS);
+	}
+	public static boolean isMyfdEnabled() {
+		return Boolean.parseBoolean(config.getProperty(MYFD_ENABLED)); 
 	}
 }

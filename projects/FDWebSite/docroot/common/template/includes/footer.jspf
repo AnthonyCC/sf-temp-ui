@@ -1,7 +1,7 @@
 <%@ page import="java.net.URLEncoder" %>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
-
+<%@page import="com.freshdirect.fdstore.content.MyFD"%>
 <table width="745" cellpadding="0" cellspacing="0" border="0">
 	<tr>
 		<td>
@@ -10,41 +10,42 @@
                 String bottomUri = request.getRequestURI();
                 String deptId = request.getParameter("deptId") != null ? request.getParameter("deptId") : "";
                 String catId = request.getParameter("catId") != null ? request.getParameter("catId") : "";
+                String nomyfd = FDStoreProperties.isMyfdEnabled() && MyFD.getMyFDInstance() != null ? "" : "_nomyfd";
                 if (bottomUri.indexOf("/about/index.jsp") > -1) { 
             %>
-            <img src="/media_stat/images/navigation/global_nav/bottom_nav_aboutus.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
+            <img src="/media_stat/images/navigation/global_nav/bottom_nav_aboutus<%= nomyfd %>.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
             <%
                 } else if (bottomUri.indexOf("/myfd") > -1) { 
             %>
-            <img src="/media_stat/images/navigation/global_nav/bottom_nav_myfd.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
+            <img src="/media_stat/images/navigation/global_nav/bottom_nav_myfd<%= nomyfd %>.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
             <%
                 } else if (bottomUri.indexOf("/jobs/intro") > -1) { 
             %>
-            <img src="/media_stat/images/navigation/global_nav/bottom_nav_careers.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
+            <img src="/media_stat/images/navigation/global_nav/bottom_nav_careers<%= nomyfd %>.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
             <%
                 } else if (bottomUri.indexOf("/gift_card/purchase/landing.jsp") > -1) { 
             %>
-            <img src="/media_stat/images/navigation/global_nav/bottom_nav_giftcards.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
+            <img src="/media_stat/images/navigation/global_nav/bottom_nav_giftcards<%= nomyfd %>.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
             <%
                 } else if (bottomUri.indexOf("/newproducts.jsp") > -1 || bottomUri.indexOf("/newproducts_dfgs.jsp") > -1) { 
             %>
-            <img src="/media_stat/images/navigation/global_nav/bottom_nav_newprod.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
+            <img src="/media_stat/images/navigation/global_nav/bottom_nav_newprod<%= nomyfd %>.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
             <%
                 } else if(!deptId.equals("") && deptId.equalsIgnoreCase("cmty")) { 
             %>
-            <img src="/media_stat/images/navigation/global_nav/bottom_nav_community.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
+            <img src="/media_stat/images/navigation/global_nav/bottom_nav_community<%= nomyfd %>.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
             <%
                 } else if(!catId.equals("") && catId.equalsIgnoreCase("about_billrights")) { 
             %>
-            <img src="/media_stat/images/navigation/global_nav/bottom_nav_billorrights.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
+            <img src="/media_stat/images/navigation/global_nav/bottom_nav_billorrights<%= nomyfd %>.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
             <%
                 } else if(!deptId.equals("") && deptId.equalsIgnoreCase("COS")) { 
             %>
-            <img src="/media_stat/images/navigation/global_nav/bottom_nav_office.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
+            <img src="/media_stat/images/navigation/global_nav/bottom_nav_office<%= nomyfd %>.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
             <%            
                 } else {
             %>
-			<img src="/media_stat/images/navigation/global_nav/bottom_nav_off.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
+			<img src="/media_stat/images/navigation/global_nav/bottom_nav_off<%= nomyfd %>.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
             <%
                 }
             %>
@@ -94,7 +95,9 @@
       <area shape="rect" coords="120,1,215,22" href="/department.jsp?deptId=cmty&trk=bnav"  alt="Our Community" title="Our Community">
       <area shape="rect" coords="215,1,329,22" href="/category.jsp?catId=about_billrights&trk=bnav"  alt="Your Bill of Rights" title="Your Bill of Rights">
 
+      <% if (FDStoreProperties.isMyfdEnabled()) { %>
       <area shape="rect" coords="467,1,503,22" href="/myfd/index.jsp?trk=bnav"  alt="My FD" title="My FD">
+      <% } %>
       <area shape="rect" coords="503,1,581,22" href="/department.jsp?deptId=COS&trk=bnav"  alt="At the Office" title="At the Office">
       <%
           //since the gift card url is dynamic, check for other query values before adding the trk attribute

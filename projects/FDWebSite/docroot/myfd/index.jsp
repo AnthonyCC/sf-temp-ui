@@ -24,7 +24,7 @@
 	// MyFD content fabrication
 	MyFD myfd = MyFD.getMyFDInstance();
 	
-	if (myfd == null) {
+	if (!FDStoreProperties.isMyfdEnabled() || myfd == null) {
 		response.sendRedirect("/index.jsp");
 		return;
 	}

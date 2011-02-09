@@ -28,7 +28,8 @@ String myfd = "/myfd/index.jsp?trk=home";
 String newprods = "/newproducts.jsp?trk=home";
 %>
 	<%-- start i_departments --%>  
-<table width="500" border="0" cellspacing="0" cellpadding="0">
+
+<%@page import="com.freshdirect.fdstore.FDStoreProperties"%><table width="500" border="0" cellspacing="0" cellpadding="0">
 		  <tr>
 			<td align="center">
 			<img src="/media_stat/images/navigation/department/home/fdhome_row1_header.gif" width="457" height="16" border="0" alt="DELICIOUS FOOD TREATED WITH LOVE & RESPECT"><br>
@@ -83,27 +84,31 @@ String newprods = "/newproducts.jsp?trk=home";
 							<td class="text11" valign="top" style="width: 176px;">
 								<a href="<%=whatsGood%>"><img src="/media_stat/images/navigation/department/home/fdhome_row3.gif" width="176" height="24" border="0" hspace="3"></a>
 							</td>
-							<% if (MyFD.getMyFDInstance() != null) { %>
+							<% if (FDStoreProperties.isMyfdEnabled() && MyFD.getMyFDInstance() != null) { %>
 							<td class="text11" valign="top" style="width: 99px;">
 								<a href="<%=myfd%>"><img src="/media_stat/images/navigation/department/home/myfd.gif" width="99" height="24" border="0" alt="MyFD Home" hspace="3"></a>
 							</td>
 							<% } %>
+							<% if (FDStoreProperties.isMyfdEnabled()) { %>
 							<td class="text11" valign="top" style="width: 164px;">
 								<a href="<%=newprods%>"><img src="/media_stat/images/navigation/department/home/newprods.gif" width="164" height="24" border="0" hspace="3"></a>
 							</td>
+							<% } %>
 						</tr>
 						<tr>
 							<td class="text11" valign="top" style="width: 176px; padding-top: 2px;">
 								<a href="<%=whatsGood%>">Savings & Seasonal Selections</a>
 							</td>
-							<% if (MyFD.getMyFDInstance() != null) { %>
+							<% if (FDStoreProperties.isMyfdEnabled() && MyFD.getMyFDInstance() != null) { %>
 							<td class="text11" valign="top" style="width: 99px; padding-top: 2px;">
 								<a href="<%=myfd%>">Fresh Inspiration</a>
 							</td>
 							<% } %>
+							<% if (FDStoreProperties.isMyfdEnabled()) { %>
 							<td class="text11" valign="top" style="width: 164px; padding-top: 2px;">
 								<a href="<%=newprods%>">Find New Producs</a>
 							</td>
+							<% } %>
 						</tr>
 					</table>
 					<br>
