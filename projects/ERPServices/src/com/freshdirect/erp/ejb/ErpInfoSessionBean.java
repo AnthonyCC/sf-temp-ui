@@ -36,6 +36,7 @@ import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.erp.model.ErpMaterialInfoModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
+import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.core.VersionedPrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -60,7 +61,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		return "com.freshdirect.erp.ejb.ErpInfoHome";
 	}
 
-	public Collection findMaterialsByBatch(int batchNumber) {
+	public Collection<ErpMaterialInfoModel> findMaterialsByBatch(int batchNumber) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -70,7 +71,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			ps.setInt(1, batchNumber);
 			ResultSet rs = ps.executeQuery();
 
-			ArrayList materials = new ArrayList();
+			ArrayList<ErpMaterialInfoModel> materials = new ArrayList<ErpMaterialInfoModel>();
 			while (rs.next()) {
 				VersionedPrimaryKey vpk = new VersionedPrimaryKey(rs.getString(1), rs.getInt(2));
 				ErpMaterialInfoModel matlInfo = new ErpMaterialInfoModel(vpk, rs.getString(3), rs.getString(4));
@@ -95,7 +96,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			+ " from (select id, version, sap_id, description from erps.material where sap_id like ?)"
 			+ " group by sap_id, description order by description";
 
-	public Collection findMaterialsBySapId(String sapId) {
+	public Collection<ErpMaterialInfoModel> findMaterialsBySapId(String sapId) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -104,7 +105,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			ps.setString(1, "%" + sapId);
 			ResultSet rs = ps.executeQuery();
 
-			ArrayList materials = new ArrayList();
+			ArrayList<ErpMaterialInfoModel> materials = new ArrayList<ErpMaterialInfoModel>();
 			while (rs.next()) {
 				VersionedPrimaryKey vpk = new VersionedPrimaryKey(rs.getString(1), rs.getInt(2));
 				ErpMaterialInfoModel matlInfo = new ErpMaterialInfoModel(vpk, rs.getString(3), rs.getString(4));
@@ -130,7 +131,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			+ " from erps.material m, erps.materialproxy mpx, erps.product p where p.sku_code = ? and p.id = mpx.product_id and mpx.mat_id=m.id)"
 			+ " group by sap_id, description order by description";
 
-	public Collection findMaterialsBySku(String skuCode) {
+	public Collection<ErpMaterialInfoModel> findMaterialsBySku(String skuCode) {
 		Connection conn = null;
 
 		try {
@@ -140,7 +141,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			ps.setString(1, skuCode);
 			ResultSet rs = ps.executeQuery();
 
-			ArrayList materials = new ArrayList();
+			ArrayList<ErpMaterialInfoModel> materials = new ArrayList<ErpMaterialInfoModel>();
 			while (rs.next()) {
 				VersionedPrimaryKey vpk = new VersionedPrimaryKey(rs.getString(1), rs.getInt(2));
 				ErpMaterialInfoModel matlInfo = new ErpMaterialInfoModel(vpk, rs.getString(3), rs.getString(4));
@@ -165,7 +166,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			+ " from (select id, version, sap_id, description from erps.material where description like ?)"
 			+ " group by sap_id, description order by description";
 
-	public Collection findMaterialsByDescription(String description) {
+	public Collection<ErpMaterialInfoModel> findMaterialsByDescription(String description) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -174,7 +175,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			ps.setString(1, "%" + description.toUpperCase() + "%");
 			ResultSet rs = ps.executeQuery();
 
-			ArrayList materials = new ArrayList();
+			ArrayList<ErpMaterialInfoModel> materials = new ArrayList<ErpMaterialInfoModel>();
 			while (rs.next()) {
 				VersionedPrimaryKey vpk = new VersionedPrimaryKey(rs.getString(1), rs.getInt(2));
 				ErpMaterialInfoModel matlInfo = new ErpMaterialInfoModel(vpk, rs.getString(3), rs.getString(4));
@@ -236,8 +237,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				throw new ObjectNotFoundException("SKU " + skuCode + " not found");
 			}
 
-			List matNos = new ArrayList(5);
-			List matPrices = new ArrayList(5);
+			List<String> matNos = new ArrayList<String>(5);
+			List<ErpMaterialPrice> matPrices = new ArrayList<ErpMaterialPrice>(5);
 
 			int version = rs.getInt(1);
 			//double defPrice = rs.getDouble(2);
@@ -269,8 +270,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			return new ErpProductInfoModel(
 				skuCode,
 				version,
-				(String[]) matNos.toArray(new String[0]),
-				(ErpProductInfoModel.ErpMaterialPrice[]) matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
+				matNos.toArray(new String[0]),
+				matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
 				atpRule,
 				unavStatus,
 				unavDate,
@@ -311,8 +312,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			rs = ps.executeQuery();
 
 			if (rs.next()) {
-				List matNos = new ArrayList(5);
-				List matPrices = new ArrayList(5);
+				List<String> matNos = new ArrayList<String>(5);
+				List<ErpMaterialPrice> matPrices = new ArrayList<ErpMaterialPrice>(5);
 
 				//double defPrice = rs.getDouble(1);
 				//String defPriceUnit = rs.getString(2);
@@ -342,8 +343,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				return new ErpProductInfoModel(
 						skuCode,
 						version,
-						(String[]) matNos.toArray(new String[0]),
-						(ErpProductInfoModel.ErpMaterialPrice[]) matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
+						matNos.toArray(new String[0]),
+						matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
 						atpRule,
 						unavStatus,
 						unavDate,
@@ -364,11 +365,11 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public Collection findProductsBySku(String[] skuCodes) {
+	public Collection<ErpProductInfoModel> findProductsBySku(String[] skuCodes) {
 		Connection conn = null;
 		try {
 
-			List products = new ArrayList(skuCodes.length);
+			List<ErpProductInfoModel> products = new ArrayList<ErpProductInfoModel>(skuCodes.length);
 			conn = getConnection();
 
 			PreparedStatement ps = conn.prepareStatement(QUERY_PRODUCTS_BY_SKU);
@@ -378,8 +379,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				ResultSet rs = ps.executeQuery();
 
 				if (rs.next()) {
-					List matNos = new ArrayList(2);
-					List matPrices = new ArrayList(5);
+					List<String> matNos = new ArrayList<String>(2);
+					List<ErpMaterialPrice> matPrices = new ArrayList<ErpMaterialPrice>(5);
 
 					int version = rs.getInt(1);
 
@@ -410,8 +411,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 					products.add(new ErpProductInfoModel(
 						skuCodes[i],
 						version,
-						(String[]) matNos.toArray(new String[0]),
-						(ErpProductInfoModel.ErpMaterialPrice[]) matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
+						matNos.toArray(new String[0]),
+						matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
 						atpRule,
 						unavStatus,
 						unavDate,
@@ -433,7 +434,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public Collection findMaterialsByCharacteristic(String classAndCharName) {
+	public Collection<ErpMaterialInfoModel> findMaterialsByCharacteristic(String classAndCharName) {
 		int sep = classAndCharName.indexOf(":");
 		if (sep == -1)
 			throw new EJBException("Couldn't find \":\" separator character between class name and characteristic name");
@@ -449,7 +450,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			+ " and chr.name = ? and cls.sap_id = ?"
 			+ " and cls.version=(select max(version) from erps.characteristic where name = ?)";
 
-	public Collection findMaterialsByCharacteristic(String className, String charName) {
+	public Collection<ErpMaterialInfoModel> findMaterialsByCharacteristic(String className, String charName) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -459,7 +460,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			ps.setString(3, charName);
 			ResultSet rs = ps.executeQuery();
 
-			ArrayList materials = new ArrayList();
+			ArrayList<ErpMaterialInfoModel> materials = new ArrayList<ErpMaterialInfoModel>();
 			while (rs.next()) {
 				VersionedPrimaryKey vpk = new VersionedPrimaryKey(rs.getString(1), rs.getInt(2));
 				ErpMaterialInfoModel matlInfo = new ErpMaterialInfoModel(vpk, rs.getString(3), rs.getString(4));
@@ -485,7 +486,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			+ " where cls.id = mcl.class_id and mcl.mat_id = mtl.id"
 			+ " and cls.sap_id = ? and cls.version = (select max(version) from erps.class where sap_id = ?)";
 
-	public Collection findMaterialsByClass(String className) {
+	public Collection<ErpMaterialInfoModel> findMaterialsByClass(String className) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -494,7 +495,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			ps.setString(2, className);
 			ResultSet rs = ps.executeQuery();
 
-			ArrayList materials = new ArrayList();
+			ArrayList<ErpMaterialInfoModel> materials = new ArrayList<ErpMaterialInfoModel>();
 			while (rs.next()) {
 				VersionedPrimaryKey vpk = new VersionedPrimaryKey(rs.getString(1), rs.getInt(2));
 				ErpMaterialInfoModel matlInfo = new ErpMaterialInfoModel(vpk, rs.getString(3), rs.getString(4));
@@ -523,7 +524,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		+ " and p.version = (select max(version) from erps.product p2 where p2.sku_code = p.sku_code)"
 		+ " and m.sap_id like ? order by m.description";
 
-	public Collection findProductsBySapId(String sapId) {
+	public Collection<ErpProductInfoModel> findProductsBySapId(String sapId) {
 		Connection conn = null;
 		try {
 
@@ -533,10 +534,10 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			ps.setString(1, "%" + sapId);
 			ResultSet rs = ps.executeQuery();
 
-			List products = new ArrayList();
+			List<ErpProductInfoModel> products = new ArrayList<ErpProductInfoModel>();
 			while (rs.next()) {
-				List matNos = new ArrayList(2);
-				List matPrices = new ArrayList(5);
+				List<String> matNos = new ArrayList<String>(2);
+				List<ErpMaterialPrice> matPrices = new ArrayList<ErpMaterialPrice>(5);
 
 				String skuCode = rs.getString(1);
 				int version = rs.getInt(2);
@@ -564,8 +565,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 					new ErpProductInfoModel(
 						skuCode,
 						version,
-						(String[]) matNos.toArray(new String[0]),
-						(ErpProductInfoModel.ErpMaterialPrice[]) matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
+						matNos.toArray(new String[0]),
+						matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
 						atpRule,
 						unavStatus,
 						unavDate,
@@ -597,11 +598,11 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		+ " and m.description like ?"
 		+ " order by m.description";
 
-	public Collection findProductsByDescription(String description) {
+	public Collection<ErpProductInfoModel> findProductsByDescription(String description) {
 		Connection conn = null;
 		try {
 
-			List products = new ArrayList();
+			List<ErpProductInfoModel> products = new ArrayList<ErpProductInfoModel>();
 			conn = getConnection();
 
 			PreparedStatement ps = conn.prepareStatement(QUERY_PRODUCTS_BY_DESCRIPTION);
@@ -609,8 +610,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
-				List matNos = new ArrayList(2);
-				List matPrices = new ArrayList(5);
+				List<String> matNos = new ArrayList<String>(2);
+				List<ErpMaterialPrice> matPrices = new ArrayList<ErpMaterialPrice>(5);
 
 				String skuCode = rs.getString(1);
 				int version = rs.getInt(2);
@@ -638,8 +639,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 						 new ErpProductInfoModel(
 								skuCode,
 								version,
-								(String[]) matNos.toArray(new String[0]),
-								(ErpProductInfoModel.ErpMaterialPrice[]) matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
+								matNos.toArray(new String[0]),
+								matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
 								atpRule,
 								unavStatus,
 								unavDate,
@@ -670,60 +671,14 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id and p.sku_code like ?"
 		+ " and p.version = (select max(version) from erps.product where sku_code = p.sku_code)";
 
-	public Collection findProductsLikeSku(String skuCode) {
+	public Collection<ErpProductInfoModel> findProductsLikeSku(String skuCode) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 
 			PreparedStatement ps = conn.prepareStatement(QUERY_PRODUCTS_LIKE_SKU);
 			ps.setString(1, skuCode.toUpperCase() + "%");
-			ResultSet rs = ps.executeQuery();
-
-			ArrayList results = new ArrayList();
-			while (rs.next()) {
-				List matNos = new ArrayList(5);
-				List matPrices = new ArrayList(5);
-
-				String sc = rs.getString(1);
-				int version = rs.getInt(2);
-
-				//double defPrice = rs.getDouble(3);
-				//String defPriceUnit = rs.getString(4);
-
-				String unavStatus = rs.getString(4);
-				java.util.Date unavDate = rs.getDate(5);
-				String unavReason = rs.getString(6);
-				String descr = rs.getString(7);
-				EnumATPRule atpRule = EnumATPRule.getEnum(rs.getInt(8));
-				String rating=rs.getString(9);
-				//double basePrice = rs.getDouble(12);
-				//String basePriceUnit = rs.getString(13);
-
-				String days_fresh = rs.getString(16);
-				String days_in_house = rs.getString(17);
-				String freshness = getFreshnessValue(days_fresh, days_in_house);
-
-				matNos.add(rs.getString(3));
-				matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(10), rs.getString(11), rs.getDouble(12), rs.getString(13), rs.getDouble(14), rs.getString(15)));
-
-				results.add(
-						 new ErpProductInfoModel(
-								sc,
-								version,
-								(String[]) matNos.toArray(new String[0]),
-								(ErpProductInfoModel.ErpMaterialPrice[]) matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
-								atpRule,
-								unavStatus,
-								unavDate,
-								unavReason,
-								descr,
-								rating, freshness));
-			}
-
-			rs.close();
-			ps.close();
-
-			return results;
+			return queryProductInfoModel(ps);
 
 		} catch (SQLException sqle) {
 			LOGGER.error("Unable to find product for SKU " + skuCode, sqle);
@@ -742,61 +697,14 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id and m.upc = ?"
 		+ " and p.version = (select max(version) from erps.product where sku_code = p.sku_code)";
 
-	public Collection findProductsByUPC(String upc) {
+	public Collection<ErpProductInfoModel> findProductsByUPC(String upc) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 
 			PreparedStatement ps = conn.prepareStatement(QUERY_PRODUCTS_BY_UPC);
 			ps.setString(1, upc);
-			ResultSet rs = ps.executeQuery();
-
-			ArrayList results = new ArrayList();
-			while (rs.next()) {
-				List matNos = new ArrayList(5);
-				List matPrices = new ArrayList(5);
-
-				String sc = rs.getString(1);
-				int version = rs.getInt(2);
-
-				//double defPrice = rs.getDouble(3);
-				//String defPriceUnit = rs.getString(4);
-
-				String unavStatus = rs.getString(4);
-				java.util.Date unavDate = rs.getDate(5);
-				String unavReason = rs.getString(6);
-				String descr = rs.getString(7);
-				EnumATPRule atpRule = EnumATPRule.getEnum(rs.getInt(8));
-				String rating=rs.getString(9);
-				//double basePrice = rs.getDouble(12);
-				//String basePriceUnit = rs.getString(13);
-
-				String days_fresh = rs.getString(16);
-				String days_in_house = rs.getString(17);
-				String freshness = getFreshnessValue(days_fresh, days_in_house);
-
-				matNos.add(rs.getString(3));
-				matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(10), rs.getString(11), rs.getDouble(12), rs.getString(13), rs.getDouble(14), rs.getString(15)));
-
-				results.add(
-						 new ErpProductInfoModel(
-								sc,
-								version,
-								(String[]) matNos.toArray(new String[0]),
-								(ErpProductInfoModel.ErpMaterialPrice[]) matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
-								atpRule,
-								unavStatus,
-								unavDate,
-								unavReason,
-								descr,
-								rating,
-								freshness));
-			}
-
-			rs.close();
-			ps.close();
-
-			return results;
+			return queryProductInfoModel(ps);
 
 		} catch (SQLException sqle) {
 			LOGGER.error("Unable to find product by UPC " + upc, sqle);
@@ -815,61 +723,14 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id and m.upc like ?"
 		+ " and p.version = (select max(version) from erps.product where sku_code = p.sku_code)";
 
-	public Collection findProductsLikeUPC(String upc) {
+	public Collection<ErpProductInfoModel> findProductsLikeUPC(String upc) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 
 			PreparedStatement ps = conn.prepareStatement(QUERY_PRODUCTS_LIKE_UPC);
 			ps.setString(1, upc + "%");
-			ResultSet rs = ps.executeQuery();
-
-			ArrayList results = new ArrayList();
-			while (rs.next()) {
-				List matNos = new ArrayList(5);
-				List matPrices = new ArrayList(5);
-
-				String sc = rs.getString(1);
-				int version = rs.getInt(2);
-
-				//double defPrice = rs.getDouble(3);
-				//String defPriceUnit = rs.getString(4);
-
-				String unavStatus = rs.getString(4);
-				java.util.Date unavDate = rs.getDate(5);
-				String unavReason = rs.getString(6);
-				String descr = rs.getString(7);
-				EnumATPRule atpRule = EnumATPRule.getEnum(rs.getInt(8));
-				String rating=rs.getString(9);
-				//double basePrice = rs.getDouble(12);
-				//String basePriceUnit = rs.getString(13);
-
-				String days_fresh = rs.getString(16);
-				String days_in_house = rs.getString(17);
-				String freshness = getFreshnessValue(days_fresh, days_in_house);
-
-				matNos.add(rs.getString(3));
-				matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(10), rs.getString(11), rs.getDouble(12), rs.getString(13), rs.getDouble(14), rs.getString(15)));
-
-				results.add(
-						 new ErpProductInfoModel(
-								sc,
-								version,
-								(String[]) matNos.toArray(new String[0]),
-								(ErpProductInfoModel.ErpMaterialPrice[]) matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
-								atpRule,
-								unavStatus,
-								unavDate,
-								unavReason,
-								descr,
-								rating,
-								freshness));
-			}
-
-			rs.close();
-			ps.close();
-
-			return results;
+			return queryProductInfoModel(ps);
 
 		} catch (SQLException sqle) {
 			LOGGER.error("Unable to find product like UPC " + upc, sqle);
@@ -878,6 +739,62 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
                     close(conn);
 		}
 	}
+
+    /**
+     * @param ps
+     * @return
+     * @throws SQLException
+     */
+    protected Collection<ErpProductInfoModel> queryProductInfoModel(PreparedStatement ps) throws SQLException {
+        ResultSet rs = ps.executeQuery();
+
+        ArrayList<ErpProductInfoModel> results = new ArrayList<ErpProductInfoModel>();
+        while (rs.next()) {
+        	List<String> matNos = new ArrayList<String>(5);
+        	List<ErpMaterialPrice> matPrices = new ArrayList<ErpMaterialPrice>(5);
+
+        	String sc = rs.getString(1);
+        	int version = rs.getInt(2);
+
+        	//double defPrice = rs.getDouble(3);
+        	//String defPriceUnit = rs.getString(4);
+
+        	String unavStatus = rs.getString(4);
+        	java.util.Date unavDate = rs.getDate(5);
+        	String unavReason = rs.getString(6);
+        	String descr = rs.getString(7);
+        	EnumATPRule atpRule = EnumATPRule.getEnum(rs.getInt(8));
+        	String rating=rs.getString(9);
+        	//double basePrice = rs.getDouble(12);
+        	//String basePriceUnit = rs.getString(13);
+
+        	String days_fresh = rs.getString(16);
+        	String days_in_house = rs.getString(17);
+        	String freshness = getFreshnessValue(days_fresh, days_in_house);
+
+        	matNos.add(rs.getString(3));
+        	matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(10), rs.getString(11), rs.getDouble(12), rs.getString(13), rs.getDouble(14), rs.getString(15)));
+
+        	results.add(
+        			 new ErpProductInfoModel(
+        					sc,
+        					version,
+        					matNos.toArray(new String[0]),
+        					matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
+        					atpRule,
+        					unavStatus,
+        					unavDate,
+        					unavReason,
+        					descr,
+        					rating,
+        					freshness));
+        }
+
+        rs.close();
+        ps.close();
+
+        return results;
+    }
 
 	/** @return null if there's no inventory for material */
 	public ErpInventoryModel getInventoryInfo(String materialNo) {
@@ -900,7 +817,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 			java.util.Date dateModified = rs.getDate("DATE_MODIFIED");
 
-			List entryList = new ArrayList();
+			List<ErpInventoryEntryModel> entryList = new ArrayList<ErpInventoryEntryModel>();
 			do {
 				entryList.add(new ErpInventoryEntryModel(rs.getDate("START_DATE"), rs.getDouble("QUANTITY")));
 			} while (rs.next());
@@ -923,17 +840,17 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		+ "AND DATE_MODIFIED > ? "
 		+ "ORDER BY i.material_sap_id, date_modified ";
 	
-	public Map loadInventoryInfo(Date lastModified) {
+	public Map<String, ErpInventoryModel> loadInventoryInfo(Date lastModified) {
 		Connection conn = null;
 		try{
 			conn = this.getConnection();
-			Map m = new HashMap();
+			Map<String, ErpInventoryModel> m = new HashMap<String, ErpInventoryModel>();
 			
 			PreparedStatement ps = conn.prepareStatement(LOAD_INVENTORY);
 			ps.setTimestamp(1, new Timestamp(lastModified.getTime()));
 			ResultSet rs = ps.executeQuery();
 			String lastMatId = "";
-			List entryList = new ArrayList();
+			List<ErpInventoryEntryModel> entryList = new ArrayList<ErpInventoryEntryModel>();
 			Timestamp t = null;
 			while(rs.next()){
 				t = rs.getTimestamp("DATE_MODIFIED");
@@ -943,7 +860,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				}
 				if(!lastMatId.equals(matId)){
 					m.put(lastMatId, new ErpInventoryModel(lastMatId, t, entryList));
-					entryList = new ArrayList();
+					entryList = new ArrayList<ErpInventoryEntryModel>();
 					lastMatId = matId;
 				}
 				entryList.add(new ErpInventoryEntryModel(rs.getDate("START_DATE"), rs.getDouble("QUANTITY")));
@@ -970,7 +887,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			+ " and prd.unavailability_status is null"
 			+ " and hst.date_created >= (SYSDATE-?)";
 
-	public Collection findNewSkuCodes(int days) {
+	public Collection<String> findNewSkuCodes(int days) {
 		return this.querySkus(QUERY_NEW_SKUCODES, new int[] { days });
 	}
 	
@@ -989,7 +906,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			ps = conn.prepareStatement(QUERY_SKU_NEWNESS);
 			rs = ps.executeQuery();
 
-			Map skus = new HashMap();
+			Map<String, Integer> skus = new HashMap<String, Integer>();
 			while (rs.next()) {
 				skus.put(rs.getString(1), new Integer(rs.getInt(2)));
 			}
@@ -1021,7 +938,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			+ " minus "
 			+ QUERY_NEW_SKUCODES;
 
-	public Collection findReintroducedSkuCodes(int days) {
+	public Collection<String> findReintroducedSkuCodes(int days) {
 		return this.querySkus(QUERY_REINTRODUCED_SKUCODES, new int[] { days, days });
 	}
 
@@ -1046,11 +963,11 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			+ "  or (ie.start_date=(select max(start_date) from erps.inventory_entry"
 			+ "   where material_sap_id=ie.material_sap_id)) )";
 
-	public Collection findOutOfStockSkuCodes() {
+	public Collection<String> findOutOfStockSkuCodes() {
 		return this.querySkus(QUERY_OUTOFSTOCK_SKUCODES, new int[] {});
 	}
 
-	private Collection querySkus(String query, int[] days) {
+	private Collection<String> querySkus(String query, int[] days) {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -1062,7 +979,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			}
 			rs = ps.executeQuery();
 
-			List skus = new ArrayList();
+			List<String> skus = new ArrayList<String>();
 			while (rs.next()) {
 				skus.add(rs.getString(1));
 			}
@@ -1079,7 +996,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	public Collection findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes) {
+	public Collection<String> findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes) {
 		
 		
 		StringBuffer statement=new StringBuffer("SELECT p1.sku_code FROM erps.PRODUCT p1,erps.material m, erps.materialprice mp, erps.materialproxy mpr ") 
@@ -1126,7 +1043,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			}
 			ResultSet rs = ps.executeQuery();
 	
-			List lst = new ArrayList();
+			List<String> lst = new ArrayList<String>();
 			while (rs.next()) {
 				lst.add(rs.getString(1));
 			}
@@ -1144,7 +1061,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	}
 	
 	
-	public List findPeakProduceSKUsByDepartment(List skuPrefixes){
+	public List<String> findPeakProduceSKUsByDepartment(List skuPrefixes){
 		
 		StringBuffer statement=new StringBuffer("SELECT distinct p1.sku_code, rating "+ 
 		"FROM erps.PRODUCT p1 "+
@@ -1182,7 +1099,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 					
 					ResultSet rs = ps.executeQuery();
 				
-					List lst = new ArrayList();
+					List<String> lst = new ArrayList<String>();
 					while (rs.next()) {
 						lst.add(rs.getString(1));
 						System.out.println(rs.getString(1));
@@ -1303,29 +1220,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			ps = conn.prepareStatement("SELECT root_id, atr_value FROM erps.attributes WHERE atr_name = 'new_prod_date'");
 			rs = ps.executeQuery();
 
-			Map<String, Date> skus = new TreeMap<String, Date>();
-			while (rs.next()) {
-				String sku = rs.getString(1);
-				String ds = rs.getString(2);
-				Date date;
-				try {
-					date = DATE_FORMAT1.parse(ds);
-				} catch (ParseException e) {
-					try {
-						date = DATE_FORMAT3.parse(ds);
-					} catch (ParseException e1) {
-						try {
-							date = DATE_FORMAT2.parse(ds);
-						} catch (ParseException e2) {
-							// skip this bad date
-							continue;
-						}
-					}
-				}
-				skus.put(sku, date);
-			}
-
-			return skus;
+			return extractOverridenValues(rs);
 
 		} catch (SQLException sqle) {
 			LOGGER.error("Unable to find overridden new skus dates", sqle);
@@ -1337,6 +1232,37 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		}
 	}
 
+    /**
+     * @param rs
+     * @return
+     * @throws SQLException
+     */
+    protected Map<String, Date> extractOverridenValues(ResultSet rs) throws SQLException {
+        Map<String, Date> skus = new TreeMap<String, Date>();
+        while (rs.next()) {
+        	String sku = rs.getString(1);
+        	String ds = rs.getString(2);
+        	Date date;
+        	try {
+        		date = DATE_FORMAT1.parse(ds);
+        	} catch (ParseException e) {
+        		try {
+        			date = DATE_FORMAT3.parse(ds);
+        		} catch (ParseException e1) {
+        			try {
+        				date = DATE_FORMAT2.parse(ds);
+        			} catch (ParseException e2) {
+        				// skip this bad date
+        				continue;
+        			}
+        		}
+        	}
+        	skus.put(sku, date);
+        }
+
+        return skus;
+    }
+
 	public Map<String, Date> getOverriddenBackInStockSkus() {
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -1346,29 +1272,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			ps = conn.prepareStatement("SELECT root_id, atr_value FROM erps.attributes WHERE atr_name = 'back_in_stock'");
 			rs = ps.executeQuery();
 
-			Map<String, Date> skus = new TreeMap<String, Date>();
-			while (rs.next()) {
-				String sku = rs.getString(1);
-				String ds = rs.getString(2);
-				Date date;
-				try {
-					date = DATE_FORMAT1.parse(ds);
-				} catch (ParseException e) {
-					try {
-						date = DATE_FORMAT3.parse(ds);
-					} catch (ParseException e1) {
-						try {
-							date = DATE_FORMAT2.parse(ds);
-						} catch (ParseException e2) {
-							// skip this bad date
-							continue;
-						}
-					}
-				}
-				skus.put(sku, date);
-			}
-
-			return skus;
+			return extractOverridenValues(rs);
 
 		} catch (SQLException sqle) {
 			LOGGER.error("Unable to find overridden back in stock SKU dates", sqle);
