@@ -1,6 +1,5 @@
 package com.freshdirect.fdstore;
 
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,7 +8,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -494,7 +492,8 @@ public class FDStoreProperties {
 	private final static String PROP_CRM_AGENTS_CACHE_REFRESH_PERIOD="crm.agents.cache.refresh.period";
 	
 	private final static String MYFD_ENABLED = "myfd.enabled";
-	
+	private static final String MYFD_POLLDADDY_API_KEY = "myfd.pollDaddy.apiKey";
+
 	static {
 		defaults.put(PROP_ROUTING_PROVIDER_URL,"t3://localhost:7001");
 		defaults.put(PROP_PROVIDER_URL, 	"t3://localhost:7001");
@@ -2046,13 +2045,20 @@ public class FDStoreProperties {
 	public static String getCrmForgotPasswordUrl(){
 		return config.getProperty(PROP_CRM_FORGOT_LDAP_PASSWORD_URL);
 	}
+
 	public static String getCrmSecuritySkippedFileTypes(){
 		return config.getProperty(PROP_CRM_SECURITY_SKIP_FILE_TYPES);
 	}
+
 	public static String getCrmSecuritySkippedFolders(){
 		return config.getProperty(PROP_CRM_SECURITY_SKIP_FOLDERS);
 	}
+
 	public static boolean isMyfdEnabled() {
 		return Boolean.parseBoolean(config.getProperty(MYFD_ENABLED)); 
+	}
+
+	public static String getMyFdPollDaddyApiKey() {
+		return get(MYFD_POLLDADDY_API_KEY);
 	}
 }

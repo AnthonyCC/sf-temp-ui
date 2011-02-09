@@ -18,6 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.MyFD;
 
 public class PollDaddyClient {
@@ -37,8 +38,10 @@ public class PollDaddyClient {
 	}
 
 	public String getApiKey() {
+		String apiKey = FDStoreProperties.getMyFdPollDaddyApiKey();
+		if (apiKey != null)
+			return apiKey.trim();
 		MyFD myfd = MyFD.getMyFDInstance();
-		String apiKey = null;
 		if (myfd != null)
 			apiKey = myfd.getPollDaddyApiKey();
 		if (apiKey == null || apiKey.length() == 0)
