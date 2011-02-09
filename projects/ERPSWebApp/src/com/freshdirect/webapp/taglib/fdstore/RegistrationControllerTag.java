@@ -203,10 +203,14 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 
 		LOGGER.debug("ErpAddressModel:"+scrubbedAddress);
 
+		/*
+		 * Remove Alt Contact as required for Hamptons as well as COS (for Unattended Delivery process)
+		 * batchley 20110208
 		if("SUFFOLK".equals(FDDeliveryManager.getInstance().getCounty(scrubbedAddress)) && erpAddress.getAltContactPhone() == null){
 			actionResult.addError(true, EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(), SystemMessageList.MSG_REQUIRED);
 			return null;
 		}
+		*/
 
 		return erpAddress;
 	}
