@@ -27,7 +27,6 @@ import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
-import com.sap.mw.jco.JCO.Request;
 
 public class DlvBuildingFormController extends AbstractFormController {
 		
