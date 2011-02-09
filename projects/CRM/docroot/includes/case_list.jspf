@@ -90,7 +90,7 @@ if(template.getTotalRows() > increment && template.getStartRecord() == 0 && temp
 <%
 
 String page_URI = request.getRequestURI();
-String height = "42";
+String height = "142";
 boolean monitor = false;
 boolean own_worklist = page_URI.indexOf("/main/worklist") > -1;
 boolean user_mgmt = false;

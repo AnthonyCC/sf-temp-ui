@@ -254,7 +254,7 @@ public class CrmCaseDAO implements EntityDAOI {
 		CrmCaseModel c = (CrmCaseModel) model;
 		PreparedStatement ps =
 			conn.prepareStatement(
-				"INSERT INTO CUST.CASE(ID, CASE_ORIGIN, CASE_STATE, CASE_PRIORITY, CASE_SUBJECT, SUMMARY, CUSTOMER_ID, SALE_ID, ASSIGNED_AGENT_ID, LOCKED_AGENT_ID, CREATE_DATE, LAST_ACTION_DATE,PROJECTED_QUANTITY,ACTUAL_QUANTITY,MEDIA,MORETHANONE_ISSUE,FIRSTCONTACT,FIRSTCONTACT_RESOLVED,REASONNOTRESOLVED,SatisfiedWithResolution,CustomerTone) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+				"INSERT INTO CUST.CASE(ID, CASE_ORIGIN, CASE_STATE, CASE_PRIORITY, CASE_SUBJECT, SUMMARY, CUSTOMER_ID, SALE_ID, ASSIGNED_AGENT_ID, LOCKED_AGENT_ID, CREATE_DATE, LAST_ACTION_DATE,PROJECTED_QUANTITY,ACTUAL_QUANTITY,MEDIA,MORETHANONE_ISSUE,FIRSTCONTACT,FIRSTCONTACT_RESOLVED,REASONNOTRESOLVED,SatisfiedWithResolution,CustomerTone,PRIVATE_CASE) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		ps.setString(1, pk.getId());
 		ps.setString(2, c.getOrigin().getCode());
 		ps.setString(3, c.getState().getCode());
@@ -322,6 +322,7 @@ public class CrmCaseDAO implements EntityDAOI {
 			ps.setNull(21, Types.VARCHAR);
 		}
 
+		ps.setString(22, c.isPrivateCase()?"X":"");
 		
 		if (ps.executeUpdate() != 1) {
 			throw new SQLException("Row not created");

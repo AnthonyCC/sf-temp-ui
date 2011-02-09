@@ -1,5 +1,5 @@
 <%@ page import="java.text.*" %>
-<table width="100%" cellpadding="0" cellspacing="0" border="0" class="sub_nav_text">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="sub_nav_text" style="background-color:#CCFF99;border-bottom: 2px #000000 solid;border-top: 1px #000000 solid;">
 <form name="routestop_report" method="post" action="/reports/route_stop_report.jsp">
  <input type="hidden" name="xPortVS" value='no'>
  <input type="hidden" name="xPortSP" value='no'>
@@ -82,8 +82,8 @@
     }
 </script>
     <tr>
-        <td width="15%"><span class="sub_nav_title">Orders by Route & Stop</span></td>
-        <td width="55%" align="center">
+        <td width="15%"><table><tr><td><span class="sub_nav_title">Orders by Route & Stop</span></td></tr></table></td>
+        <td width="55%" align="center"><table><tr><td>
             Date* 
             <select name="month" required="true" class="pulldown">
                 <option value="">Month</option>
@@ -110,7 +110,7 @@
             &nbsp;
             Stop <input type="text" name="stop1" size="5" maxlength="5" class="text" value="<%=request.getParameter("stop1")%>"> to <input type="text" name="stop2" size="5" maxlength="5" class="text" value="<%=request.getParameter("stop2")%>">
 
-            <input type="submit" class="submit" onClick="javascript:checkForm(routestop_report); return false;" value="GO"> 
+            <input type="submit" class="submit" onClick="javascript:checkForm(routestop_report); return false;" value="GO"> </td></tr></table>
         </td>
        
     </tr>

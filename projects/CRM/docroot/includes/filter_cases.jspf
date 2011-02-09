@@ -4,7 +4,7 @@
 
 <form name="case_filter" method="POST" > <tr>
 			<td><strong>Show only:</strong></td>
-			<% template = CrmSession.getSearchTemplate(session); %>
+			<%-- template = CrmSession.getSearchTemplate(session); --%>
 			<td>
 				<select name="queue" class="pulldown" onChange="populateSubject(this.form.queue.value,this.form.subject)">
 					<option class="title" value="">-Select Queue-</option>
@@ -18,16 +18,7 @@
 					<option class="title" value="">-Select Queue then Subject-</option>
 				</select>
 			</td>
-				<% if (template.getQueue() != null) { %>
-				<script language="JavaScript">
-				<!--
-					populateSubject('<%= template.getQueue().getCode()%>', case_search.subject);
-					<% if (template.getSubject() != null) { %>
-						case_search.subject.value='<%= template.getSubject().getCode() %>';
-					<% } %>
-				//->
-				</script>
-				<% } %>
+				
 			<td>
 				<select name="state" class="pulldown">
 					<option class="title" value="">-Select Status-</option>

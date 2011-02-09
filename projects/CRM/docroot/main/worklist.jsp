@@ -48,8 +48,8 @@ session.setAttribute(SessionName.USER,null); %>
                 states.add( CrmCaseState.getEnum(filterState));
             } else {
                 states.add( CrmCaseState.getEnum("OPEN"));
-                states.add( CrmCaseState.getEnum("REVW"));
-                states.add( CrmCaseState.getEnum("APVD"));
+                //states.add( CrmCaseState.getEnum("REVW"));
+                //states.add( CrmCaseState.getEnum("APVD"));
             }
             template.setStates( states );
             template.setSortBy(request.getParameter("sortBy"));
@@ -65,7 +65,7 @@ session.setAttribute(SessionName.USER,null); %>
 
 			<div class="sub_nav" style="padding: 0px; padding-left: 6px; padding-right: 6px;">
 			<table width="100%" cellpadding="0" cellspacing="0" border="0" class="sub_nav_text">
-			<form name="case_filter" method="POST" action="/main/worklist.jsp">
+			
 				<tr valign="middle">
 					<td width="12%"><b>My Worklist</b> [<b><%= cases.size() %></b> / <%= cases.size() %>]</td>
 					
@@ -97,7 +97,7 @@ session.setAttribute(SessionName.USER,null); %>
 			<td  class="download" align="left"><%@ include file="/includes/filter_cases.jspf"%></td>
 			
 			
-					<td width="15%" align="right">
+					<td width="17%" align="right">
 						<b>P</b> <span class="legend">PRIORITY:
 						<img src="/media_stat/crm/images/priority_hi.gif" width="11" height="11" hspace="3">HIGH
 						<img src="/media_stat/crm/images/priority_md.gif" width="11" height="11" hspace="3">MEDIUM
@@ -106,7 +106,7 @@ session.setAttribute(SessionName.USER,null); %>
 					</td>
 				</tr>
 				
-			</form>
+			
 			</table>
 			</div>	
 			

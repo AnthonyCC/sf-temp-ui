@@ -62,7 +62,7 @@ boolean connect = snav_pageURI.indexOf("connect") > -1;
 	<div  class="<%=acct_lookup?"sup_nav_on_supervisor":""%>" style="height: auto;"><a href="javascript:pop('/supervisor/acct_lookup.jsp', '500', '580')" class="<%=acct_lookup?"sup_nav_on_supervisor":"sup_nav_supervisor"%>">Acct. Lookup</a></div>
 <% } %>
 <% if(CrmSecurityManager.hasAccessToPage(lAgentRole,"canned_text.jsp")){ %>
-	<div  class="<%=canned_text?"sup_nav_on_supervisor":""%>" style="height: auto;"><a href="/supervisor/canned_text.jsp" class="<%=canned_text?"sup_nav_on_supervisor":"sup_nav_supervisor"%>">Canned Text</a></div>
+	<!-- <div  class="<%=canned_text?"sup_nav_on_supervisor":""%>" style="height: auto;"><a href="/supervisor/canned_text.jsp" class="<%=canned_text?"sup_nav_on_supervisor":"sup_nav_supervisor"%>">Canned Text</a></div> -->
 <% } %>
 <% if(CrmSecurityManager.hasAccessToPage(lAgentRole,"connect.jsp")){ %>
 	<div  class="<%=connect?"sup_nav_on_supervisor":""%>" style="height: auto;"><a href="/supervisor/connect.jsp" class="<%=connect?"sup_nav_on_supervisor":"sup_nav_supervisor"%>">Givex Admin</a></div>

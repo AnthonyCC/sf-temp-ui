@@ -22,7 +22,7 @@
     <crm:SearchCaseController/>
 		
 		
-		<% //if (currentAgent.isSupervisor()) { 
+		<% if (currentAgent.isSupervisor()) { 
 			String selected_agent = request.getParameter("agent_pk");
 			String userId = CrmSecurityManager.getUserName(request);
 			String userRole = CrmSecurityManager.getUserRole(request);
@@ -88,6 +88,23 @@
 			        </div>
 			  </logic:iterate>
 			</crm:GetAllAgents>
+			<br clear="all">
+		
+			<%
+			if (selected_agent!=null && !"".equals(selected_agent)) {%>
+			<crm:GetAgent id="agent" agentId="<%= selected_agent %>">
+				<% //CrmCaseTemplate template = new CrmCaseTemplate();
+                CrmCaseTemplate template = CrmSession.getSearchTemplate(session);
+	    		template.setAssignedAgentPK( agent.getPK() ); %>
+				<crm:FindCases id='cases' template='<%= template %>'>
+ 				<div class="content" style="height: 40%;">
+					<%@ include file="/includes/case_list.jspf"%>
+				</div>
+				</crm:FindCases>
+			</crm:GetAgent>
+			<% } %>
+		<br clear="all">
+		<% } %>
 		</crm:GetCurrentAgent>
 		
 	

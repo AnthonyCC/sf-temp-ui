@@ -149,8 +149,8 @@ boolean showOrderSummaryReportSection = !crmRole.getCode().equals(CrmAgentRole.E
 			template.setEndRecord(Integer.parseInt(NVL.apply(request.getParameter("endRecord"), FDStoreProperties.getCaseListLength(request.getRequestURI().indexOf("case_history.jsp")>-1))));
 			Set states = new HashSet();
 			states.add( CrmCaseState.getEnum("OPEN"));
-			states.add( CrmCaseState.getEnum("REVW"));
-			states.add( CrmCaseState.getEnum("APVD"));
+			//states.add( CrmCaseState.getEnum("REVW"));
+			//states.add( CrmCaseState.getEnum("APVD"));
 			template.setStates( states );
 			%>
 			<crm:FindCases id='caseList' template='<%= template %>'>
