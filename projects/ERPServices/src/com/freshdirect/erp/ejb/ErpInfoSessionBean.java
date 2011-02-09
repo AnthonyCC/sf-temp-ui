@@ -236,49 +236,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			if (!rs.next()) {
 				throw new ObjectNotFoundException("SKU " + skuCode + " not found");
 			}
-
-			List<String> matNos = new ArrayList<String>(5);
-			List<ErpMaterialPrice> matPrices = new ArrayList<ErpMaterialPrice>(5);
-
-			int version = rs.getInt(1);
-			//double defPrice = rs.getDouble(2);
-			//String defPriceUnit = rs.getString(3);
-			String sapId = rs.getString(2);
-			String unavStatus = rs.getString(3);
-			java.util.Date unavDate = rs.getDate(4);
-			String unavReason = rs.getString(5);
 			
-			String descr = rs.getString(6);
-			EnumATPRule atpRule = EnumATPRule.getEnum(rs.getInt(7));
-			String rating=rs.getString(8);
-
-			String days_fresh = rs.getString(15);
-			String days_in_house = rs.getString(16);
-			String freshness = getFreshnessValue(days_fresh, days_in_house);
-
-			//double basePrice = rs.getDouble(11);
-			//String basePriceUnit = rs.getString(12);
+			return fetchErpProductInfoModel(rs, skuCode);
 			
-			matNos.add(rs.getString(2));
-			matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(9), rs.getString(10), rs.getDouble(11), rs.getString(12), rs.getDouble(13), rs.getString(14)));
-			while (rs.next()) {
-				matNos.add(rs.getString(2));
-				matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(9), rs.getString(10), rs.getDouble(11), rs.getString(12), rs.getDouble(13), rs.getString(14)));
-			}
-			
-
-			return new ErpProductInfoModel(
-				skuCode,
-				version,
-				matNos.toArray(new String[0]),
-				matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
-				atpRule,
-				unavStatus,
-				unavDate,
-				unavReason,
-				descr,
-				rating, 
-				freshness);
 
 		} catch (SQLException sqle) {
 			LOGGER.error("Unable to find product for SKU " + skuCode, sqle);
@@ -379,47 +339,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				ResultSet rs = ps.executeQuery();
 
 				if (rs.next()) {
-					List<String> matNos = new ArrayList<String>(2);
-					List<ErpMaterialPrice> matPrices = new ArrayList<ErpMaterialPrice>(5);
-
-					int version = rs.getInt(1);
-
-					//double defPrice = rs.getDouble(2);
-					//String defPriceUnit = rs.getString(3);
-
-					String unavStatus = rs.getString(3);
-					java.util.Date unavDate = rs.getDate(4);
-					String unavReason = rs.getString(5);
-					String descr = rs.getString(6);
-					EnumATPRule atpRule = EnumATPRule.getEnum(rs.getInt(7));
-					String rating =rs.getString(8);
-					//double basePrice = rs.getDouble(11);
-					//String basePriceUnit = rs.getString(12);					
-
-					String days_fresh = rs.getString(15);
-					String days_in_house = rs.getString(16);
-					String freshness = getFreshnessValue(days_fresh, days_in_house);
-
-					matNos.add(rs.getString(2));
-					matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(9), rs.getString(10), rs.getDouble(11), rs.getString(12), rs.getDouble(13), rs.getString(14)));
-
-					while (rs.next()) {
-						matNos.add(rs.getString(2));
-						matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(9), rs.getString(10), rs.getDouble(11), rs.getString(12), rs.getDouble(13), rs.getString(14)));
-					}
-
-					products.add(new ErpProductInfoModel(
-						skuCodes[i],
-						version,
-						matNos.toArray(new String[0]),
-						matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
-						atpRule,
-						unavStatus,
-						unavDate,
-						unavReason,
-						descr,
-						rating,
-						freshness));
+				    ErpProductInfoModel m = fetchErpProductInfoModel(rs, skuCodes[i]);
+				    products.add(m);
 				}
 				rs.close();
 			}
@@ -433,6 +354,58 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
                     close(conn);
 		}
 	}
+
+    /**
+     * @param rs
+     * @param skuCode
+     * @return
+     * @throws SQLException
+     */
+    private ErpProductInfoModel fetchErpProductInfoModel(ResultSet rs, String skuCode) throws SQLException {
+        
+        List<String> matNos = new ArrayList<String>(5);
+        List<ErpMaterialPrice> matPrices = new ArrayList<ErpMaterialPrice>(5);
+
+        int version = rs.getInt("version");
+
+        //double defPrice = rs.getDouble(2);
+        //String defPriceUnit = rs.getString(3);
+
+        String unavStatus = rs.getString("unavailability_status");
+        java.util.Date unavDate = rs.getDate("unavailability_date");
+        String unavReason = rs.getString("unavailability_reason");
+        
+        String descr = rs.getString("description");
+        EnumATPRule atpRule = EnumATPRule.getEnum(rs.getInt("atp_rule"));
+        String rating =rs.getString("rating");
+        //double basePrice = rs.getDouble(11);
+        //String basePriceUnit = rs.getString(12);					
+
+        String days_fresh = rs.getString("days_fresh");
+        String days_in_house = rs.getString("days_in_house");
+        String freshness = getFreshnessValue(days_fresh, days_in_house);
+
+        matNos.add(rs.getString("sap_id"));
+        matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble("price"), rs.getString("pricing_unit"), rs.getDouble("promo_price"), rs.getString("scale_unit"), rs.getDouble("scale_quantity"), rs.getString("sap_zone_id")));
+
+        while (rs.next()) {
+        	matNos.add(rs.getString("sap_id"));
+                matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble("price"), rs.getString("pricing_unit"), rs.getDouble("promo_price"), rs.getString("scale_unit"), rs.getDouble("scale_quantity"), rs.getString("sap_zone_id")));
+        }
+
+        return new ErpProductInfoModel(
+        	skuCode,
+        	version,
+        	matNos.toArray(new String[0]),
+        	matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
+        	atpRule,
+        	unavStatus,
+        	unavDate,
+        	unavReason,
+        	descr,
+        	rating,
+        	freshness);
+    }
 
 	public Collection<ErpMaterialInfoModel> findMaterialsByCharacteristic(String classAndCharName) {
 		int sep = classAndCharName.indexOf(":");
@@ -611,19 +584,18 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         	matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble("price"), rs.getString("pricing_unit"), rs.getDouble("promo_price"), rs.getString("scale_unit"), 
         	        rs.getDouble("scale_quantity"), rs.getString("sap_zone_id")));
 
-        	products.add(
-        			 new ErpProductInfoModel(
-        					skuCode,
-        					version,
-        					matNos.toArray(new String[0]),
-        					matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
-        					atpRule,
-        					unavStatus,
-        					unavDate,
-        					unavReason,
-        					descr,
-        					rating,
-        					freshness));
+        	products.add(new ErpProductInfoModel(
+			skuCode,
+			version,
+			matNos.toArray(new String[0]),
+			matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
+			atpRule,
+			unavStatus,
+			unavDate,
+			unavReason,
+			descr,
+			rating,
+			freshness));
         }
 
         rs.close();
