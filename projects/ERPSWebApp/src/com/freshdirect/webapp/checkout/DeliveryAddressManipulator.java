@@ -127,12 +127,15 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		erpAddress.setFrom( dlvAddress );
 		erpAddress.setAddressInfo( dlvAddress.getAddressInfo() );
 
+		/*
+		 * Remove Alt Contact as required for Hamptons as well as COS (for Unattended Delivery process)
+		 * batchley 20110209
 		if ( "SUFFOLK".equals( FDDeliveryManager.getInstance().getCounty( dlvAddress ) ) && erpAddress.getAltContactPhone() == null ) {
 			result.addError( true, EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(), SystemMessageList.MSG_REQUIRED );
 			return;
 		}
-
-
+		*/
+		
 		final boolean foundFraud = AddressUtil.updateShipToAddress( request, result, this.getUser(), addressId, erpAddress );
 
 		if ( !result.isSuccess() )
@@ -202,11 +205,15 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		AddressModel address = AddressUtil.scrubAddress( shippingAddress, result );
 		// if it is a Hamptons address without the altContactNumber have user
 		// edit and provide it.
+		/*
+		 * Remove Alt Contact as required for Hamptons as well as COS (for Unattended Delivery process)
+		 * batchley 20110209
 		if ( "SUFFOLK".equals( FDDeliveryManager.getInstance().getCounty( address ) ) && shippingAddress.getAltContactPhone() == null ) {
 			result.addError( true, "missingContactPhone", SystemMessageList.MSG_REQUIRED );
 			// this.redirectTo( this.noContactPhonePage + "?addressId=" + addressPK + "&missingContactPhone=true" );
 			throw new RedirectToPage( noContactPhonePage + "?addressId=" + addressPK + "&missingContactPhone=true");
 		}
+		*/
 		EnumRestrictedAddressReason reason = FDDeliveryManager.getInstance().checkAddressForRestrictions( address );
 		if ( !EnumRestrictedAddressReason.NONE.equals( reason ) ) {
 			result.addError( true, "undeliverableAddress", SystemMessageList.MSG_RESTRICTED_ADDRESS );
