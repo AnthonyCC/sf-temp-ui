@@ -532,50 +532,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 			PreparedStatement ps = conn.prepareStatement(QUERY_PRODUCTS_BY_SAP_ID);
 			ps.setString(1, "%" + sapId);
-			ResultSet rs = ps.executeQuery();
-
-			List<ErpProductInfoModel> products = new ArrayList<ErpProductInfoModel>();
-			while (rs.next()) {
-				List<String> matNos = new ArrayList<String>(2);
-				List<ErpMaterialPrice> matPrices = new ArrayList<ErpMaterialPrice>(5);
-
-				String skuCode = rs.getString(1);
-				int version = rs.getInt(2);
-
-				//double defPrice = rs.getDouble(3);
-				//String defPriceUnit = rs.getString(4);
-
-				String unavStatus = rs.getString(4);
-				java.util.Date unavDate = rs.getDate(5);
-				String unavReason = rs.getString(6);
-				String descr = rs.getString(7);
-				EnumATPRule atpRule = EnumATPRule.getEnum(rs.getInt(8));
-				String rating=rs.getString(9);
-				//double basePrice = rs.getDouble(12);
-				//String basePriceUnit = rs.getString(13);
-
-				String days_fresh = rs.getString(16);
-				String days_in_house = rs.getString(17);
-				String freshness = getFreshnessValue(days_fresh, days_in_house);
-
-				matNos.add(rs.getString(3));
-				matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(10), rs.getString(11), rs.getDouble(12), rs.getString(13), rs.getDouble(14), rs.getString(15)));
-
-				products.add(
-					new ErpProductInfoModel(
-						skuCode,
-						version,
-						matNos.toArray(new String[0]),
-						matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
-						atpRule,
-						unavStatus,
-						unavDate,
-						unavReason,
-						descr,
-						rating,freshness));
-			}
-
-			rs.close();
+			List<ErpProductInfoModel> products = fetchErpProductInfoModel(ps);
 			ps.close();
 
 			return products;
@@ -602,55 +559,11 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		Connection conn = null;
 		try {
 
-			List<ErpProductInfoModel> products = new ArrayList<ErpProductInfoModel>();
 			conn = getConnection();
 
 			PreparedStatement ps = conn.prepareStatement(QUERY_PRODUCTS_BY_DESCRIPTION);
 			ps.setString(1, "%" + description.toUpperCase() + "%");
-			ResultSet rs = ps.executeQuery();
-
-			while (rs.next()) {
-				List<String> matNos = new ArrayList<String>(2);
-				List<ErpMaterialPrice> matPrices = new ArrayList<ErpMaterialPrice>(5);
-
-				String skuCode = rs.getString(1);
-				int version = rs.getInt(2);
-
-				//double defPrice = rs.getDouble(3);
-				//String defPriceUnit = rs.getString(4);
-
-				String unavStatus = rs.getString(4);
-				java.util.Date unavDate = rs.getDate(5);
-				String unavReason = rs.getString(6);
-				String descr = rs.getString(7);
-				EnumATPRule atpRule = EnumATPRule.getEnum(rs.getInt(8));
-				String rating=rs.getString(3);
-				//double basePrice = rs.getDouble(12);
-				//String basePriceUnit = rs.getString(13);
-				matNos.add(rs.getString(5));
-
-				String days_fresh = rs.getString(16);
-				String days_in_house = rs.getString(17);
-				String freshness = getFreshnessValue(days_fresh, days_in_house);
-
-				matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(10), rs.getString(11), rs.getDouble(12), rs.getString(13), rs.getDouble(14), rs.getString(15)));
-
-				products.add(
-						 new ErpProductInfoModel(
-								skuCode,
-								version,
-								matNos.toArray(new String[0]),
-								matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
-								atpRule,
-								unavStatus,
-								unavDate,
-								unavReason,
-								descr,
-								rating,
-								freshness));
-			}
-
-			rs.close();
+			List<ErpProductInfoModel> products = fetchErpProductInfoModel(ps);
 			ps.close();
 
 			return products;
@@ -661,6 +574,61 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
                     close(conn);
 		}
 	}
+
+    /**
+     * @param ps
+     * @return
+     * @throws SQLException
+     */
+    private List<ErpProductInfoModel> fetchErpProductInfoModel(PreparedStatement ps) throws SQLException {
+        ResultSet rs = ps.executeQuery();
+
+        List<ErpProductInfoModel> products = new ArrayList<ErpProductInfoModel>();
+        while (rs.next()) {
+        	List<String> matNos = new ArrayList<String>(2);
+        	List<ErpMaterialPrice> matPrices = new ArrayList<ErpMaterialPrice>(5);
+
+        	String skuCode = rs.getString("sku_code");
+        	int version = rs.getInt("version");
+
+        	//double defPrice = rs.getDouble(3);
+        	//String defPriceUnit = rs.getString(4);
+
+        	String unavStatus = rs.getString("unavailability_status");
+        	java.util.Date unavDate = rs.getDate("unavailability_date");
+        	String unavReason = rs.getString("unavailability_reason");
+        	String descr = rs.getString("description");
+        	EnumATPRule atpRule = EnumATPRule.getEnum(rs.getInt("atp_rule"));
+        	String rating=rs.getString("rating");
+        	//double basePrice = rs.getDouble(12);
+        	//String basePriceUnit = rs.getString(13);
+        	matNos.add(rs.getString("sap_id"));
+
+        	String days_fresh = rs.getString("days_fresh");
+        	String days_in_house = rs.getString("days_in_house");
+        	String freshness = getFreshnessValue(days_fresh, days_in_house);
+
+        	matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble("price"), rs.getString("pricing_unit"), rs.getDouble("promo_price"), rs.getString("scale_unit"), 
+        	        rs.getDouble("scale_quantity"), rs.getString("sap_zone_id")));
+
+        	products.add(
+        			 new ErpProductInfoModel(
+        					skuCode,
+        					version,
+        					matNos.toArray(new String[0]),
+        					matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
+        					atpRule,
+        					unavStatus,
+        					unavDate,
+        					unavReason,
+        					descr,
+        					rating,
+        					freshness));
+        }
+
+        rs.close();
+        return products;
+    }
 
 	private final static String QUERY_PRODUCTS_LIKE_SKU =
 		"select p.sku_code, p.version, m.sap_id, p.unavailability_status, p.unavailability_date,"
