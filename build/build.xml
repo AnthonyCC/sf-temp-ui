@@ -2481,10 +2481,10 @@
 			<fileset dir="${projects.dir}/wordpress">
 				<exclude name="wp-config.php"/>
 			</fileset>
-			<!--zipfileset dir="${projects.dir}/Media/docroot" prefix="wp-content/themes/freshdirect">
+			<zipfileset dir="${projects.dir}/Media/docroot" prefix="wp-content/themes/freshdirect">
 				<include name="assets/**"/>
 				<include name="media_stat/**"/>
-			</zipfileset-->
+			</zipfileset>
 		</jar>
 	</target>
 
