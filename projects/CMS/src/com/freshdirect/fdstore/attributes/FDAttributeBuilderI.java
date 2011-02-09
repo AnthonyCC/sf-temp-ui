@@ -12,8 +12,6 @@ import com.freshdirect.cms.AttributeDefI;
  */
 public interface FDAttributeBuilderI {
     
-    public com.freshdirect.fdstore.attributes.EnumAttributeType getFDAttributeType();
-    
     public Object constructValue(AttributeDefI cmsAttrDef, Object value);
     
 }

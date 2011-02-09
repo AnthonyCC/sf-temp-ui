@@ -158,18 +158,18 @@ public class FDAttributeFactory {
 	
 	private final static Map<String,FDAttributeBuilderI> typeMap = new HashMap<String,FDAttributeBuilderI>();
 	static {
-		typeMap.put("Department", new GenericContentNodeBuilder(EnumAttributeType.DEPARTMENT));
-		typeMap.put("Category", new GenericContentNodeBuilder(EnumAttributeType.CATEGORYREF));
-		typeMap.put("Product", new GenericContentNodeBuilder(EnumAttributeType.PRODUCTREF));
-		typeMap.put("Sku", new GenericContentNodeBuilder(EnumAttributeType.SKUREF));
-		typeMap.put("Domain", new GenericContentNodeBuilder(EnumAttributeType.DOMAIN));
+		typeMap.put("Department", new GenericContentNodeBuilder());
+		typeMap.put("Category", new GenericContentNodeBuilder());
+		typeMap.put("Product", new GenericContentNodeBuilder());
+		typeMap.put("Sku", new GenericContentNodeBuilder());
+		typeMap.put("Domain", new GenericContentNodeBuilder());
 		typeMap.put("Image", new ImageBuilder());
 		typeMap.put("Html", new HtmlBuilder());
 		typeMap.put("DomainValue", new DomainValueBuilder());
-		typeMap.put("Integer", new PrimitiveBuilder(EnumAttributeType.INTEGER));
-		typeMap.put("Double", new PrimitiveBuilder(EnumAttributeType.DOUBLE));
-		typeMap.put("Boolean", new PrimitiveBuilder(EnumAttributeType.BOOLEAN));
-		typeMap.put("String", new PrimitiveBuilder(EnumAttributeType.STRING));
+		typeMap.put("Integer", new PrimitiveBuilder());
+		typeMap.put("Double", new PrimitiveBuilder());
+		typeMap.put("Boolean", new PrimitiveBuilder());
+		typeMap.put("String", new PrimitiveBuilder());
 	}
 
 }

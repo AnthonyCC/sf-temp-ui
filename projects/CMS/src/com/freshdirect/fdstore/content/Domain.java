@@ -16,10 +16,6 @@ public final class Domain extends ContentNodeModelImpl {
     	super(cKey);
 	}
     
-    public EnumDomainType getDomainType() {
-        return EnumDomainType.getDomainType(getAttribute("DOMAIN_TYPE", "V"));
-    }
-       
     public String getName(){
         return getAttribute("NAME", this.getCMSNode().getKey().getId());
     }
