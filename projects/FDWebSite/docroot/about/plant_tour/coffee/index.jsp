@@ -14,6 +14,6 @@
 <tmpl:insert template='<%= jspTemplate %>'>
 <tmpl:put name='title' direct='true'>FreshDirect - About FreshDirect</tmpl:put>
 <tmpl:put name='content' direct='true'>
-	<fd:IncludeMedia name="/media/editorial/site_access/tour/food_safety_index.html" />
+	<fd:IncludeMedia name="/media/editorial/site_access/tour/coffee_index.html" />
 </tmpl:put>
 </tmpl:insert>
