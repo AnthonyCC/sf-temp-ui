@@ -110,7 +110,7 @@ FreshDirect.Wine.addTabItem("top-rated", "<%="tab_price_" + price.name().toLower
 		%>
 			<fd:WineTopRatedFeed id="prods" price="<%= price %>" maxItems="12" useAlternateImage="true" imageHeightId="imgHeight">
 				<div id="tab_price_<%=price.name().toLowerCase()%>" class="fd-carousel-tab">
-					<display:Carousel id="carouselTag" carouselId="<%= carouselId %>" itemsToShow="<%= prods %>" maxItems="12"
+					<display:Carousel id="carouselTag" carouselId="<%= carouselId %>" itemsToShow="<%= prods %>" maxItems="12" useAlternateImage="<%= useAlternateImage %>" 
 							width="460" trackingCode="<%= trk %>" numItems="4" hideContainer="<%= tabId %>" parentId="topRatedContainer" offset="45"><%
 						ProductModel product = (ProductModel) currentItem;
 					%>
@@ -173,23 +173,12 @@ $E.onDOMReady(function() {
 <div class="usq-lightbrown usq-brown-border usq usq-popular" style="padding: 20px 0px 10px;">
 <fd:ProductGroupRecommender itemCount="24" siteFeature="PROD_GRP_POPULAR" facility="usq_dept_pop" currentNode="<%= usqRegion %>" id="deptPopular">
 	<display:UniqueFilter in="<%= deptPopular.getProducts() %>" out="prods" groupId="usq_popular">
-		<%
-			int imgHeight = 0;
-		%><display:ContentNodeIterator trackingCode="" itemsToShow="<%= prods %>" id="iterator1"><%
-			ProductModel prod = (ProductModel) currentItem;
-							Image img = useAlternateImage ? prod.getAlternateImage() : prod.getProdImage();
-							if (img == null)
-								img = prod.getProdImage();
-							if (imgHeight < img.getHeight())
-								imgHeight = img.getHeight();
-		%></display:ContentNodeIterator>
-		<display:Carousel id="carouselTag" carouselId="usq-popular" itemsToShow="<%= prods %>" maxItems="16"
-				width="460" trackingCode="<%= trk %>" numItems="4"><%
-			ProductModel product = (ProductModel) currentItem;
-		%>
+		<display:Carousel id="carouselTag" carouselId="usq-popular" itemsToShow="<%= prods %>" maxItems="16" useAlternateImage="<%= useAlternateImage %>" 
+				width="460" trackingCode="<%= trk %>" numItems="4">
+			<% ProductModel product = (ProductModel) currentItem; %>
 			<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 				<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>"
-						useAlternateImage="<%= useAlternateImage %>" className="productImage" height="<%= imgHeight %>" enableQuickBuy="true" webId="<%= webId %>"/>
+						useAlternateImage="<%= useAlternateImage %>" className="productImage" enableQuickBuy="true" webId="<%= webId %>"/>
 				<div><display:WinePrice product="<%= product %>" action="<%= actionUrl %>"/></div>
 				<div class="rating-small"><display:WineRating product="<%= product %>" small="true" action="<%= actionUrl %>"/></div>
 				<div class="productname">

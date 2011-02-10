@@ -6,7 +6,10 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
+import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.ProductModel;
 
 public class CarouselTag extends ContentNodeIteratorTag {
 
@@ -20,12 +23,16 @@ public class CarouselTag extends ContentNodeIteratorTag {
 	private String bottomHeader = null;
 	private String bottomHeaderClass = null;
 	private String hideContainer = null;
-
+	private boolean useAlternateImage = false;
+	
 	/**
 	 * Parent container to update with max. value
 	 */
 	private String parentId;
+	
+	
 	private int offset = 0;
+	private int maxHeight = 0;
 	
 	public int getNumItems() {
 		return numItems;
@@ -94,8 +101,43 @@ public class CarouselTag extends ContentNodeIteratorTag {
 		this.bottomHeaderClass = bottomHeaderClass;
 	}
 
+	public boolean isUseAlternateImage() {
+		return useAlternateImage;
+	}	
+	public void setUseAlternateImage( boolean useAlternateImage ) {
+		this.useAlternateImage = useAlternateImage;
+	}
+
+	/**
+	 * May not be initialized if called before doFirst()!
+	 * @return maximum image height
+	 */
+	public int getMaxImageHeight() {
+		return maxHeight;
+	}
+	
 	@Override
 	protected void doFirst() {
+		
+		// first calculate maximum image height
+		maxHeight = 0;
+		for ( ContentNodeModel node : itemsToShow ) {
+			Image img = null;
+			if ( node instanceof ProductModel && useAlternateImage ) {			
+				img = ((ProductModel)node).getAlternateImage();
+				// fall back to normal image if no alternate available
+				if ( img == null )
+					img = ((ProductModel)node).getProdImage();
+			} else if ( node instanceof ProductModel ) {				
+				img = ((ProductModel)node).getProdImage();
+			} else if ( node instanceof CategoryModel ) {
+				img = ((CategoryModel)node).getCategoryPhoto();
+			}
+			
+			if ( img != null )
+				maxHeight = Math.max( maxHeight, img.getHeight() );
+		}		
+		
 		println("<div id=\"carousel-" + carouselId + "\" class=\"fd-carousel fixedheight\" style=\"width:" + width + "\"><ol>");
 	}
 

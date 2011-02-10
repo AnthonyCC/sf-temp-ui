@@ -771,6 +771,11 @@
 		<required>false</required>
 		<rtexprvalue>true</rtexprvalue>
 	</attribute>
+	<attribute>
+		<name>useAlternateImage</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
  </tag>
  <tag>
  	<name>ContentNodeIterator</name>

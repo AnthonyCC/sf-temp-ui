@@ -157,7 +157,7 @@ public class ProductImageTag extends BodyTagSupport {
 		}
 
 		pageContext.setAttribute( imageWidthVariableName, new Integer( prodImg.getWidth() ) );
-		pageContext.setAttribute( imageHeightVariableName, new Integer( height > 0 ? prodImg.getHeight() : height ) );
+		pageContext.setAttribute( imageHeightVariableName, new Integer( getHeightInternal( prodImg ) ) );
 
 		
 		StringBuilder buf = new StringBuilder();
@@ -192,8 +192,8 @@ public class ProductImageTag extends BodyTagSupport {
 		buf.append("<div id=\"" + webId + "\" "
 				+ "style=\"padding: 0px; border: 0px; margin: 0px auto; "
 				+ "width: " + prodImg.getWidth() + "px; "
-				+ "height: " + (height > 0 ? height : prodImg.getHeight()) + "px; "
-				+ "line-height: " + (height > 0 ? height : prodImg.getHeight()) + "px; "
+				+ "height: " + getHeightInternal( prodImg ) + "px; "
+				+ "line-height: " + getHeightInternal( prodImg ) + "px; "
 				+ "position: relative;\"");
 
 		if (className != null && className.length() > 0) {
@@ -312,6 +312,22 @@ public class ProductImageTag extends BodyTagSupport {
 		}
 		
 		return EVAL_BODY_INCLUDE;
+	}
+
+	
+	private int getHeightInternal( Image prodImg ) {	
+		
+		// explicit height was set
+		if ( height > 0 )
+			return height;
+		
+		// if inside a carousel
+		CarouselTag carousel = (CarouselTag) findAncestorWithClass( this, CarouselTag.class );
+		if (carousel != null)
+			return carousel.getMaxImageHeight();
+		
+		// else use the image height
+		return prodImg.getHeight();
 	}
 
 
