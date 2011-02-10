@@ -422,7 +422,12 @@ public class ContentFactory {
 			LOGGER.debug("END CACHE STORE: " + new java.util.Date());
 
 		} catch (Exception ex) {
-			ex.printStackTrace();
+		    LOGGER.error("preLoad failed :" +ex.getMessage(), ex);
+		    if (ex instanceof RuntimeException) {
+		        throw (RuntimeException) ex;
+		    } else {
+                        throw new RuntimeException("PreLoad failed : " + ex.getMessage(), ex);
+		    }
 		}
 
 		LOGGER.debug("done with store preLoad");
