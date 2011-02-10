@@ -458,7 +458,7 @@ a.case_list_header_text:hover 	{ color: #FFFFCE; padding-left: 3px; padding-righ
 .case_list_content {
 	position: relative;
 	width: 100%;
-	height: 40%;
+	height: 250px;
 	padding: 0px;
 	background-color: #FFFFFF;
 	color: #000000;

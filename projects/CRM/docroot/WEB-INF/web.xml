@@ -63,18 +63,18 @@
         <filter-name>CrmMonitor</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-<!--    <filter-mapping>-->
-<!--        <filter-name>CrmCaseAndCustomerFilter</filter-name>-->
-<!--        <url-pattern>/*</url-pattern>-->
-<!--    </filter-mapping>-->
+    <filter-mapping>
+        <filter-name>CrmCaseAndCustomerFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
     <filter-mapping>
         <filter-name>CrmLoginFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-<!--    <filter-mapping>-->
-<!--        <filter-name>OncePerRequestDateFilter</filter-name>-->
-<!--        <url-pattern>/order/*</url-pattern>-->
-<!--    </filter-mapping>-->
+    <filter-mapping>
+        <filter-name>OncePerRequestDateFilter</filter-name>
+        <url-pattern>/order/*</url-pattern>
+    </filter-mapping>
 
     <servlet>
         <servlet-name>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-name>
@@ -183,7 +183,7 @@
         <url-pattern>/promo_publish</url-pattern>
     </servlet-mapping> 
     <session-config>
-        <session-timeout>60</session-timeout>
+        <session-timeout>15</session-timeout>
     </session-config>
     <welcome-file-list>
         <welcome-file>/main/main_index.jsp</welcome-file>

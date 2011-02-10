@@ -26,6 +26,7 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter" %>
 <%@ page import="com.freshdirect.framework.core.PrimaryKey"  %>
 <%@ page import="com.freshdirect.fdstore.referral.FDReferralManager" %>
+<%@ page import="com.freshdirect.webapp.crm.security.CrmSecurityManager" %>
 <%@ page import='java.util.*' %>
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -476,8 +477,10 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
                             <tr><td colspan="2" height="8"></td></tr>
                             <tr>
                                 <%if(editable){%>
-                                    <td><a href="javascript:confirmDelete(addressForm_<%=idx.intValue()%>,'address')" class="delete">DELETE</a></td>
-                                    <td align="right"><a href="/customer_account/edit_delivery_address.jsp?addressId=<%=address.getPK().getId()%>" class="edit">EDIT</a></td>
+                                	<% if(CrmSecurityManager.hasAccessToPage(agent.getRole().getLdapRoleName(),"editAddress")){ %>
+	                                    <td><a href="javascript:confirmDelete(addressForm_<%=idx.intValue()%>,'address')" class="delete">DELETE</a></td>
+	                                    <td align="right"><a href="/customer_account/edit_delivery_address.jsp?addressId=<%=address.getPK().getId()%>" class="edit">EDIT</a></td>
+                                    <% } %>
                                 <%}else{%>
                                     <td colspan="2" align="center" class="cust_module_content_edit"><%=case_required%></td>
                                 <%}%>
@@ -603,8 +606,10 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
                                 <tr><td colspan="3" height="8"></td></tr>
                                 <tr>
                                 <% if (editable) { %>
-                                    <% //if (numCreditCards > 1) {%><td><a href="javascript:confirmDelete(paymentForm_<%=idx.intValue()%>, 'payment method')" class="delete">DELETE</a></td><% //} %>
-                                    <td <%= numCreditCards > 1 ? "align=\"right\"" : "colspan=\"2\" align=\"center\""%> ><a href="/customer_account/edit_credit_card.jsp?paymentId=<%=((ErpPaymentMethodModel)payment).getPK().getId()%>" class="edit">EDIT</a></td>
+                                	<% if(CrmSecurityManager.hasAccessToPage(agent.getRole().getLdapRoleName(),"editPayment")){ %>
+	                                    <% //if (numCreditCards > 1) {%><td><a href="javascript:confirmDelete(paymentForm_<%=idx.intValue()%>, 'payment method')" class="delete">DELETE</a></td><% //} %>
+	                                    <td <%= numCreditCards > 1 ? "align=\"right\"" : "colspan=\"2\" align=\"center\""%> ><a href="/customer_account/edit_credit_card.jsp?paymentId=<%=((ErpPaymentMethodModel)payment).getPK().getId()%>" class="edit">EDIT</a></td>
+                                    <% } %>
                                 <% } else { %>
                                     <td colspan="2" align="center" class="cust_module_content_edit"><%=case_required%></td>
                                 <% } %>
