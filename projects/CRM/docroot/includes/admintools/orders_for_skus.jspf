@@ -48,14 +48,6 @@ function openURL(inLocationURL) {
 		} else {
 	%>	
 	<logic:iterate id="order" collection="<%= Orders %>" type="com.freshdirect.fdstore.customer.FDCustomerOrderInfo" indexId="cnt">
-	<%
-		if(cnt.intValue() < prcLimit) {
-	%>
-		<input type="hidden" name="custIds" value="<%= order.getIdentity().getErpCustomerPK() %>" />
-		<input type="hidden" name="saleIds" value="<%= order.getSaleId() %>" />
-	<%
-		}
-	%>	
 	<tr>
 	<td class="border_bottom"><span class="detail_text"><b><a onclick="javascript:openURL('/main/order_details.jsp?orderId=<%= order.getSaleId() %>')" href="#" style="color: #008800;font-size: 8pt;"><%= order.getSaleId() %></a></b></span></td>	
 	<td class="border_bottom">&nbsp;</td>

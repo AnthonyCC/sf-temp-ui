@@ -3,10 +3,84 @@
 	<tr>
 		<% 
 			String skuCodes = NVL.apply(request.getParameter("skuCodes"), "");
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DATE, 1); 
+			String fromDlvDate = 
+			NVL.apply(request.getParameter("deliveryDate"), CCFormatter.formatDateYear(cal.getTime()));
+			String toDlvDate = NVL.apply(request.getParameter("toDlvDate"), "");
+			
 		%>
 		<td>Enter Skus (to Search/Modify): </td>
 		<td align ="left">
 			<TEXTAREA NAME="skuCodes" COLS=40 ROWS=6><%= skuCodes %></TEXTAREA>
+		</td>
+		<td>Delivery Date From: </td>
+		<td>
+				<input type="hidden" name="deliveryDate" id="deliveryDate" value="<%=fromDlvDate%>">
+                <input type="text" name="dlvDate1" id="dlvDate1" size="10" value="<%=fromDlvDate%>" disabled="true" onchange="setFromDate(this);"> &nbsp;<a href="#" id="trigger_dlvDate1" style="font-size: 9px;">>></a>
+ 		        <script language="javascript">
+
+			    function setFromDate(field){
+			    document.getElementById("deliveryDate").value=field.value;
+
+			    }
+
+
+			    Calendar.setup(
+			    {
+			    showsTime : false,
+			    electric : false,
+			    inputField : "dlvDate1",
+			    ifFormat : "%Y-%m-%d",
+			    singleClick: true,
+			    button : "trigger_dlvDate1" 
+			    }
+			    );
+			    
+			    function clearAll(){
+			    	var d = new Date();
+					var date = d.getDate();
+					var month = d.getMonth()+1;
+					var year = d.getFullYear();
+			    	var fd = year + "-" + month + "-" + date;
+			    	document.getElementById("dlvDate1").value = fd;
+			    	document.getElementById("deliveryDate").value = fd;
+			    }
+			    </script>
+		</td>
+		<td>Delivery Date To: </td>
+		<td>
+				<input type="hidden" name="toDlvDate" id="toDlvDate" value="<%=toDlvDate%>">
+                <input type="text" name="dlvDate2" id="dlvDate2" size="10" value="<%=toDlvDate%>" disabled="true" onchange="setToDate(this);"> &nbsp;<a href="#" id="trigger_dlvDate2" style="font-size: 9px;">>></a>
+ 		        <script language="javascript">
+
+			    function setToDate(field){
+			    document.getElementById("toDlvDate").value=field.value;
+
+			    }
+
+
+			    Calendar.setup(
+			    {
+			    showsTime : false,
+			    electric : false,
+			    inputField : "dlvDate2",
+			    ifFormat : "%Y-%m-%d",
+			    singleClick: true,
+			    button : "trigger_dlvDate2" 
+			    }
+			    );
+			    
+			    function clearAll(){
+			    	var d = new Date();
+					var date = d.getDate();
+					var month = d.getMonth()+1;
+					var year = d.getFullYear();
+			    	var fd = year + "-" + month + "-" + date;
+			    	document.getElementById("dlvDate2").value = fd;
+			    	document.getElementById("toDlvDate").value = fd;
+			    }
+			</script>
 		</td>
 	</tr>		
 </table>

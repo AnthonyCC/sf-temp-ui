@@ -61,7 +61,6 @@
 <input type="hidden" name="actionName" id="actionName" value="">
 <%@ include file="/includes/admintools/i_search_order_for_skus.jspf"%>
 <%
-	int prcLimit = FDStoreProperties.getOrderProcessingLimit();
 	String sendEmail = NVL.apply(request.getParameter("sendEmail"), "false");
 %>
 <table class="home_search_module_field" border="0" cellpadding="2" cellspacing="2" width="100%">

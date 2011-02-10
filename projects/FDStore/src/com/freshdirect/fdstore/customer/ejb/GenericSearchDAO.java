@@ -129,6 +129,21 @@ public class GenericSearchDAO {
 		if(skuArray != null){
 			builder.addInString("OL.SKU_CODE", (String[])skuArray);	
 		}
+		java.util.Date fromDlvDate = (java.util.Date) criteria.getCriteriaMap().get("baseDate");
+		if(fromDlvDate != null){
+			builder.addSql("SA.REQUESTED_DATE >= ?", 
+						new Object[] {new Date(fromDlvDate.getTime())});
+			java.util.Date toDlvDate = (java.util.Date) criteria.getCriteriaMap().get("toBaseDate");
+			if(toDlvDate != null){
+				builder.addSql("SA.REQUESTED_DATE <= ?", 
+							new Object[] {new Date(toDlvDate.getTime())});
+			}
+		} else {
+			//default to SA.REQUESTED_DATE >= trunc(sysdate + 1)
+			builder.addSql("SA.REQUESTED_DATE >= ?", 
+					new Object[] {"trunc(sysdate + 1)"});
+			
+		}
 		return builder;
 	}
 
@@ -573,8 +588,9 @@ public class GenericSearchDAO {
 		+ "CI.CUSTOMER_ID = S.CUSTOMER_ID "
 		+ "and SA.ACTION_TYPE in ('MOD','CRO') "
 		+ "and SA.ACTION_DATE = S.CROMOD_DATE "
-		+ "and S.STATUS IN ('SUB','AUT','AUF','AVE') "
-		+ "and SA.REQUESTED_DATE >= trunc(sysdate + 1) ";
+		+ "and S.STATUS IN ('SUB','AUT','AUF','AVE') ";
+		//+ "and SA.REQUESTED_DATE >= trunc(sysdate + 1) "
+	
 	
 	public static  List<FDCustomerOrderInfo> findOrderForSkusByCriteria(Connection conn, GenericSearchCriteria criteria, CriteriaBuilder builder) throws SQLException {
 		String query = ORDER_SEARCH_BY_SKUS + " and " + builder.getCriteria();

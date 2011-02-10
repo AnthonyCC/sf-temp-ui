@@ -264,7 +264,13 @@ private GenericSearchCriteria buildRestrictedAddressCriteria(HttpServletRequest 
 					Date dlvDate  = dateFormat.parse(deliveryDate);
 					criteria.setCriteriaMap("baseDate", dlvDate);
 				}
-			    
+
+				String toDeliveryDate = NVL.apply(request.getParameter("toDlvDate"),"").trim();
+				if(toDeliveryDate != null && toDeliveryDate.length() > 0){
+					Date toDlvDate  = dateFormat.parse(toDeliveryDate);
+					criteria.setCriteriaMap("toBaseDate", toDlvDate);
+				}
+
 				String fromTimeSlot = NVL.apply(request.getParameter("fromTimeSlot"), "").trim();
 				String toTimeSlot = NVL.apply(request.getParameter("toTimeSlot"), "").trim();
 				

@@ -638,7 +638,7 @@ public class FDStoreProperties {
 		defaults.put(DLV_PASS_MAX_PURCHASE_LIMIT,"1");
 
 
-		defaults.put(PROP_CRM_ORDER_PRC_LIMIT, "100");
+		defaults.put(PROP_CRM_ORDER_PRC_LIMIT, "250");
 		defaults.put(RFL_PRG_PAGINATION_SIZE, "10");
 
 		defaults.put(SKU_AVAILABILITY_REFRESH_PERIOD, "30");
