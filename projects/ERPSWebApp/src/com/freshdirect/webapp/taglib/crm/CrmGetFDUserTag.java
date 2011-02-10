@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
+import com.freshdirect.crm.CrmStatus;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -61,8 +62,15 @@ public class CrmGetFDUserTag extends AbstractGetterTag {
 		}
 		
 		session.setAttribute(SessionName.USER, user);
-		
-		CrmSession.getSessionStatus(session).setFDUser(user);
+		CrmSessionStatus sessionStatus =CrmSession.getSessionStatus(session);
+		if(null !=sessionStatus){
+			sessionStatus.setFDUser(user);
+		}else{			
+			CrmStatus status = new CrmStatus(CrmSession.getCurrentAgent(session).getPK());			
+			sessionStatus = new CrmSessionStatus(status, session);
+			sessionStatus.setFDUser(user);
+			CrmSession.setSessionStatus(session, sessionStatus);
+		}
 		
 		return user;
 	}

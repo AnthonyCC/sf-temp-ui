@@ -920,6 +920,7 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 			<% } %>
 			<br>
 			<fd:ErrorHandler result='<%= result %>' name='<%= ActionError.GENERIC %>' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
+			<fd:ErrorHandler result='<%= result %>' name='carton' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
 	</tr>
 	<% } %>
