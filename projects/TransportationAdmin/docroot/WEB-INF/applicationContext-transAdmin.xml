@@ -67,6 +67,7 @@
 				<value>com/freshdirect/transadmin/model/AssetAttribute.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/WaveInstance.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/WaveInstancePublish.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/DeliveryGroup.hbm.xml</value>				
             </list>
         </property>
         <property name="hibernateProperties">
