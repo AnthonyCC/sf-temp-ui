@@ -90,6 +90,7 @@ import com.freshdirect.transadmin.web.model.WebDispatchStatistics;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
 import com.freshdirect.transadmin.web.model.WebPlanResource;
+import com.freshdirect.transadmin.web.util.CoPilotUtil;
 import com.freshdirect.transadmin.web.util.TransWebUtil;
 
 public class DispatchController extends AbstractMultiActionController {
@@ -1623,6 +1624,10 @@ public class DispatchController extends AbstractMultiActionController {
 		}
 		response.setContentType("application/pdf");
 		return null;
+	}
+	
+	public ModelAndView gpsDrivingDirectionsHandlerEx(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		return CoPilotUtil.gpsDrivingDirectionsHandlerEx(request, response, this.getDomainManagerService());
 	}
 	
 	

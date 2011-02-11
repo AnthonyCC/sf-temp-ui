@@ -33,10 +33,10 @@
               <table border = "0">
                 <tr>
                 <td> 
-                    <span style="font-size: 18px;font-weight: bold;">Dispatch</span>
+                    <span style="font-size: 14px;font-weight: bold;">Dispatch</span>
                 </td>                
                   <td> 
-                     <input style="width:85px;" maxlength="10" size="10" name="dispDate" id="dispDate" value='<c:out value="${dispDate}"/>' />
+                     <input style="width:85px;" maxlength="10" size="8" name="dispDate" id="dispDate" value='<c:out value="${dispDate}"/>' />
                      <a href="#" id="trigger_dispatchDate" style="font-size: 9px;">
                         		<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date">
                      </a>
@@ -182,7 +182,31 @@
                             alert('Please Select a Row!');
                           }
                       }
-              
+
+                    function loadGpsEx(tableId, url, columnIndex) {
+                        var table = document.getElementById(tableId);
+                         var checkboxList = table.getElementsByTagName("input");
+                          
+                          var dateField = document.getElementById("dispDate").value;    
+                          var paramValues = null;
+                          for (i = 0; i < checkboxList.length; i++) {
+                            if (checkboxList[i].type=="checkbox" && checkboxList[i].checked&& !checkboxList[i].disabled&&checkboxList[i].name.indexOf("_")==-1) {
+                              var routeId = checkboxList[i].parentNode.parentNode.getElementsByTagName("td")[columnIndex].innerHTML
+                              if(routeId != null && routeId.length > 0) {
+  	                            if (paramValues != null) {
+  	                              paramValues = paramValues+","+routeId;
+  	                            } else {
+  	                              paramValues = routeId;
+  	                            }
+  	                         }
+                            }
+                          }
+                          if (paramValues != null) {
+                        	  location.href = url+"?routeId="+ paramValues+"&rdate="+dateField;
+                          } else {
+                            alert('Please Select a Row!');
+                          }
+        			}
                   </script>
                 </td>
                 <td>
@@ -250,8 +274,12 @@
                     <a href="javascript:loadGps('ec_table','gpsadmin.do', 10)">
                   		<img src="./images/gpsadmin.gif" border="0" alt="Garmin" title="GPS Admin" />
                   	</a>
+                  </td>
                   <td>
-                  
+	                    <a href="javascript:loadGpsEx('ec_table','gpsadminex.do', 10)">
+	                  		<img src="./images/copilot.png" border="0" alt="CoPilot" title="CoPilot" />
+	                  	</a>
+	              </td>
               </tr>
               </table>        
               

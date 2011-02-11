@@ -136,7 +136,9 @@
                	<prop key="/asset.do">assetController</prop> 
                	<prop key="/editasset.do">assetFormController</prop> 
                	<prop key="/asset.ax">asyncAssetController</prop>  
-               	<prop key="/wavemonitor.do">capacityController</prop>
+               	<prop key="/wavemonitor.do">capacityController</prop>    
+               	
+               	<prop key="/gpsadminex.do">dispatchController</prop>         	         
 			</props>
 		</property>
 	</bean>
@@ -285,6 +287,7 @@
             <prop key="/communityreport.do">communityReportHandler</prop>
             
             <prop key="/asset.do">assetHandler</prop>
+            <prop key="/gpsadminex.do">gpsDrivingDirectionsHandlerEx</prop>
         </props>
 		</property>
 	</bean>
@@ -478,7 +481,7 @@
         <property name="successView" value="deliveryBuildingEdit" />
         <property name="formView" value="deliveryBuildingEdit" />
 	</bean>
-
+    
     <bean id="dlvServiceTimeScenarioFormController" class="com.freshdirect.transadmin.web.DlvServiceTimeScenarioFormController">
 		<property name="locationManagerService" ref="locationManager"/>
 		<property name="domainManagerService" ref="domainManager"/>
