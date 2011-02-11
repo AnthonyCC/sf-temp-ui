@@ -215,10 +215,12 @@ String caseRequiredForManualRenewal = "<span class=\"cust_module_content_edit\">
                    %>
                              <% if(user.isEligibleForDeliveryPass() && (user.getUsableDeliveryPassCount()<FDStoreProperties.getMaxDlvPassPurchaseLimit())) {
                               %>
+                              <% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"buyDeliveryPass")){%>
 				<form name="signup" method="POST">
 				<input type="hidden" name="action" value="">
 					<a href="#" onClick="javascript:redirectToSignup()"><span class="cust_header_field"><b>Buy DeliveryPass</b></span></a>, deliverable item required.
 				</form>
+				<% } %>
 				     <% }%>
 				     <tr>
 				     

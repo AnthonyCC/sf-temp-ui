@@ -48,10 +48,10 @@ public class LookupAcctControllerTag extends AbstractControllerTag {
 						return true;
 					}
 
-					if(!agent.isAuthorizedToLookupAcctInfo()){
+					/*if(!agent.isAuthorizedToLookupAcctInfo()){
 						actionResult.addError(true, "authentication", "You are not authorized to see this info.");
 						return true;
-					}
+					}*/
 					session.setAttribute("acctNum", acctNumber);
 					session.setAttribute("lookupLoc", lookupLoc);
 					setSuccessPage("/supervisor/acct_lookup_auth.jsp");	
