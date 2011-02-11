@@ -361,11 +361,13 @@ public class ProductImageTag extends BodyTagSupport {
 			deal = 0;
 		
 
-		buf.append("<div class=\"productImageBurst\" style=\"position: absolute; top: 0px; left: 0px\">\n");
+		buf.append("<div class=\"productImageBurst\" style=\"position: absolute; top: 0px; left: 0px; width: 35px; height: 35px; \">\n");
 		if (shouldGenerateAction) {
 			buf.append("<a href=\"");
 			buf.append(action);
-			buf.append("\">");
+			buf.append("\"");
+			buf.append("style=\"display: inline-block; width:35px; height:35px; line-height:35px;\"");
+			buf.append(">");
 		}
 
 		if (this.isInCart) {
