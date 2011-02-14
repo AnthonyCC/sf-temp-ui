@@ -265,5 +265,10 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 	public YmalSetSource getParentYmalSetSource() {
 		return YmalSetSourceUtil.getParentYmalSetSource( this );
 	}
+	
+        public boolean isHideIphone() {
+            return getAttribute("HIDE_IPHONE", false);
+        }
+	
 
 }

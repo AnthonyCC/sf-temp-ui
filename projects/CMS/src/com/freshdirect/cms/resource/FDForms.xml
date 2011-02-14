@@ -687,7 +687,8 @@
 					<CmsField><attribute>PROD_DESCR</attribute></CmsField>
 					<CmsField><attribute>PROD_DESCRIPTION_NOTE</attribute></CmsField>
 					<CmsField><attribute>PRODUCT_QUALITY_NOTE</attribute></CmsField>
-					<CmsField><attribute>FRESH_TIPS</attribute></CmsField>	
+					<CmsField><attribute>FRESH_TIPS</attribute></CmsField>
+					<CmsField><attribute>HIDE_IPHONE</attribute></CmsField>
 				</fields>
 			</CmsSection>
 			<CmsSection>
