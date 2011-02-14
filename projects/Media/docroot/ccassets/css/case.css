@@ -123,8 +123,8 @@ a.case_subheader_action:hover 	{ color: #FFFFCE; padding: 1px; padding-left: 3px
 	padding-bottom: 0px;
 	margin: 0px;
 	border-bottom: 8px solid #005555;
-	overflow-x: hidden;
-	overflow-y: hidden;
+	overflow-x: auto;
+	overflow-y: auto;
 }
 
 .case_content_seq {
@@ -137,8 +137,8 @@ a.case_subheader_action:hover 	{ color: #FFFFCE; padding: 1px; padding-left: 3px
 	padding-bottom: 0px;
 	margin: 0px;
 	border-bottom: 8px solid #666;
-	overflow-x: hidden;
-	overflow-y: hidden;
+	overflow-x: auto;
+	overflow-y: auto;
 }
 
 .case_content_scroll {
