@@ -2,7 +2,6 @@ package com.freshdirect.fdstore.myfd.blog;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
@@ -67,7 +66,6 @@ public class MyFdFeed implements Serializable, Iterable<MyFdPost> {
 	private ArrayList<MyFdPost> posts;
 	private String blogUrl;
 	private int blogEntryCount;
-	private final Date lastUpdated;
 
 	private MyFdFeed(String blogUrl, int blogEntryCount) {
 		this.blogUrl = blogUrl;
@@ -75,13 +73,9 @@ public class MyFdFeed implements Serializable, Iterable<MyFdPost> {
 		this.feedUrl = blogUrl + MYFD_FEED_URL;
 		this.posts = new ArrayList<MyFdPost>();
 		processFeedUrl();
-		lastUpdated = new Date();
 	}
 
-	protected void processFeedUrl() throws RuntimeException {
-		if (feedUrl == null)
-			return;
-
+	protected void processFeedUrl() {
 		try {
 			Document document = DOMUtils.urlToNode(feedUrl);
 			NodeList postNodes = document.getElementsByTagName("item");
@@ -92,9 +86,8 @@ public class MyFdFeed implements Serializable, Iterable<MyFdPost> {
 					LOGGER.error("exception while parsing blog entry #" + i, e);
 				}
 			}
-
 		} catch (RuntimeException e) {
-			throw new RuntimeException(e.getMessage());
+			LOGGER.error("exception while processing feed URL", e);
 		}
 	}
 
@@ -113,9 +106,5 @@ public class MyFdFeed implements Serializable, Iterable<MyFdPost> {
 	@Override
 	public Iterator<MyFdPost> iterator() {
 		return posts.iterator();
-	}
-
-	public Date getLastUpdated() {
-		return lastUpdated;
 	}
 }

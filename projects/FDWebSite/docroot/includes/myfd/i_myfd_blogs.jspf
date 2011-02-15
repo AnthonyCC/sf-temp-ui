@@ -20,7 +20,6 @@ try {
 	if (feed.getPosts().size() == 0)
 		throw new IllegalStateException("No entries have been returned by the feed");
 %>	
-	<!-- Feed Last Updated: <%= feed.getLastUpdated() %> -->
 	<div class="myfd-header"><a class="myfd-blog-link" href="<%=feed.getBlogUrl() %>">Click here for more.</a><span class="myfd-header-text">From the FreshDirect Feed</span></div>	
 <%
 	for (MyFdPost post : feed) {		
