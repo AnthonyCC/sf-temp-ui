@@ -1,0 +1,2 @@
+-- This is to be executed only in DBSTG
+update cust.agent a set A.LDAP_ID=A.USER_ID;
