@@ -33,4 +33,8 @@ public interface DataAccess {
     public boolean addPrioritizedNode(ContentNodeModel model);
     
     public List<ContentNodeModel> getPrioritizedNodes();
+
+    public boolean addPosteriorNode(ContentNodeModel model);
+
+    public List<ContentNodeModel> getPosteriorNodes();
 }

@@ -60,10 +60,13 @@ public class CmsFunctionsTest extends TestCase {
         }
         
         da = new DataAccess() {
-            public List getDatasource(SessionInput input, String name) {
+            @Override
+            public List<ContentNodeModel> getDatasource(SessionInput input, String name) {
                 LOGGER.info("getDatasource called with name: '"+name+"'");
-                return Collections.EMPTY_LIST;
+                return Collections.emptyList();
             }
+
+            @Override
             public double[] getVariables(String userId, PricingContext pricingContext, ContentNodeModel contentNode, String[] variables) {
                 LOGGER.info("getVariables called with name: '"+variables+"'");
                 return new double[variables.length];
@@ -76,7 +79,17 @@ public class CmsFunctionsTest extends TestCase {
             
             @Override
             public List<ContentNodeModel> getPrioritizedNodes() {
-            	return Collections.EMPTY_LIST;
+            	return Collections.emptyList();
+            }
+
+            @Override
+            public boolean addPosteriorNode(ContentNodeModel model) {
+            	return false;
+            }
+            
+            @Override
+            public List<ContentNodeModel> getPosteriorNodes() {
+            	return Collections.emptyList();
             }
         };
         

@@ -15,16 +15,26 @@ import com.freshdirect.smartstore.filter.ContentFilter;
 import com.freshdirect.smartstore.filter.FilterFactory;
 
 public class PrioritizedDataAccess implements DataAccess {
+	/**
+	 * List of priority nodes.
+	 */
 	private List<ContentNodeModel> nodes;
+	
+	/**
+	 * List of those nodes
+	 */
+	private List<ContentNodeModel> posteriorNodes;
+
 	ContentFilter filter;
 
 	public PrioritizedDataAccess(Collection<ContentKey> cartItems, boolean useAlternatives, boolean showTempUnavailable) {
 		nodes = new ArrayList<ContentNodeModel>();
+		posteriorNodes = new ArrayList<ContentNodeModel>();
 		filter = FilterFactory.getInstance().createFilter(cartItems, useAlternatives, showTempUnavailable);
 	}
 
 	@Override
-	public List getDatasource(SessionInput input, String name) {
+	public List<ContentNodeModel> getDatasource(SessionInput input, String name) {
 		return ScoreProvider.getInstance().getDatasource(input, name);
 	}
 
@@ -50,6 +60,23 @@ public class PrioritizedDataAccess implements DataAccess {
 	@Override
 	public List<ContentNodeModel> getPrioritizedNodes() {
 		return Collections.unmodifiableList(nodes);
+	}
+
+	@Override
+	public boolean addPosteriorNode(ContentNodeModel model) {
+		if (model instanceof ProductModel) {
+		    ContentNodeModel filteredModel = filter.filter(model);
+		    if (filteredModel != null) {
+		    	posteriorNodes.add(filteredModel);
+		        return true;
+		    }
+		} 
+		return false;
+	}
+
+	@Override
+	public List<ContentNodeModel> getPosteriorNodes() {
+		return Collections.unmodifiableList(posteriorNodes);
 	}
 
 }

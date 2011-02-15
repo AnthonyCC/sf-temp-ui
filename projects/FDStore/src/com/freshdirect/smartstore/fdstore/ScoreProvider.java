@@ -1231,4 +1231,14 @@ public class ScoreProvider implements DataAccess {
 	public List<ContentNodeModel> getPrioritizedNodes() {
 		throw new UnsupportedOperationException();
 	}
+	
+	@Override
+	public boolean addPosteriorNode(ContentNodeModel model) {
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public List<ContentNodeModel> getPosteriorNodes() {
+		throw new UnsupportedOperationException();
+	}
 }

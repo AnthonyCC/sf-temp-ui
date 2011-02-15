@@ -13,6 +13,7 @@ import com.freshdirect.smartstore.SessionInput;
 public abstract class MockDataAccess implements DataAccess {
     private final static Logger LOGGER = Logger.getLogger(MockDataAccess.class);
     List<ContentNodeModel> nodes = new ArrayList<ContentNodeModel>();
+	List<ContentNodeModel> posteriorNodes = new ArrayList<ContentNodeModel>();
 
     public List<ContentNodeModel> getDatasource(SessionInput input, String name) {
         LOGGER.info("getDatasource called with name: '"+name+"'");
@@ -45,6 +46,16 @@ public abstract class MockDataAccess implements DataAccess {
     @Override
     public List<ContentNodeModel> getPrioritizedNodes() {
     	return nodes;
+    }
+    
+    @Override
+    public boolean addPosteriorNode(ContentNodeModel model) {
+    	return posteriorNodes.add(model);
+    }
+    
+    @Override
+    public List<ContentNodeModel> getPosteriorNodes() {
+    	return posteriorNodes;
     }
     
     public void reset() {

@@ -119,6 +119,18 @@ public class ExternalRecommenderTest extends TestCase {
                     fail("should not be called");
                     return null;
 		}
+		
+		@Override
+		public boolean addPosteriorNode(ContentNodeModel model) {
+			fail("should not be called");
+			return false;
+		}
+		
+		@Override
+		public List<ContentNodeModel> getPosteriorNodes() {
+			fail("should not be called");
+			return null;
+		}
 	}
 
 	@Override

@@ -10,6 +10,7 @@ import junit.framework.TestCase;
 
 import com.freshdirect.cms.core.MockContentNodeModel;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.dsl.CompileException;
 import com.freshdirect.smartstore.dsl.Expression;
@@ -41,7 +42,7 @@ public class CachingCompilerTest extends TestCase {
         input.setNoShuffle(true);
         input.setCurrentNode(new MockContentNodeModel(FDContentTypes.PRODUCT, "prod1"));
         {
-            List explicitList = new ArrayList();
+            List<ContentNodeModel> explicitList = new ArrayList<ContentNodeModel>();
             explicitList.add(new MockContentNodeModel(FDContentTypes.PRODUCT, "exp1"));
             explicitList.add(new MockContentNodeModel(FDContentTypes.PRODUCT, "exp2"));
             input.setExplicitList(explicitList);
@@ -51,7 +52,7 @@ public class CachingCompilerTest extends TestCase {
         input2.setNoShuffle(true);
         input2.setCurrentNode(new MockContentNodeModel(FDContentTypes.PRODUCT, "prod1"));
         {
-            List explicitList = new ArrayList();
+            List<ContentNodeModel> explicitList = new ArrayList<ContentNodeModel>();
             explicitList.add(new MockContentNodeModel(FDContentTypes.PRODUCT, "exp2"));
             explicitList.add(new MockContentNodeModel(FDContentTypes.PRODUCT, "exp4"));
             input2.setExplicitList(explicitList);
@@ -59,7 +60,7 @@ public class CachingCompilerTest extends TestCase {
 
         dataAccess = new MockDataAccess() {
             protected Map getVariables(String id) {
-                Map result = new HashMap();
+                Map<String,Number> result = new HashMap<String,Number>();
                 if ("exp1".equals(id)) {
                     result.put("globalfact", new Double(3));
                     result.put("afact", new Double(10));
@@ -111,25 +112,25 @@ public class CachingCompilerTest extends TestCase {
         assertTrue("caching enabled", dataGenerator instanceof CachingDataGenerator);
         ((CachingDataGenerator)dataGenerator).setCacheEnabled(true);
 
-        List firstLiveResult = dataGenerator.generate(input, dataAccess);
+        List<ContentNodeModel> firstLiveResult = dataGenerator.generate(input, dataAccess);
         assertNotNull("result", firstLiveResult);
         assertEquals("result size 1", 1, firstLiveResult.size());
         assertEquals("one node", "[Mock[ContentKey[Product:exp1]]]", firstLiveResult.toString());
 
-        List secondLiveResult = dataGenerator.generate(input2, dataAccess);
+        List<ContentNodeModel> secondLiveResult = dataGenerator.generate(input2, dataAccess);
         assertNotNull("result", secondLiveResult);
         assertEquals("result size 1", 1, secondLiveResult.size());
         assertEquals("one node", "[Mock[ContentKey[Product:exp4]]]", secondLiveResult.toString());
         
         Thread.sleep(1000);
 
-        List firstResultFromCache = CachingDataGenerator.peekIntoCache("explicitList:atLeast(globalfact,1)$[exp1,exp2]");
-        List secondResultFromCache = CachingDataGenerator.peekIntoCache("explicitList:atLeast(globalfact,1)$[exp2,exp4]");
+        List<ContentNodeModel> firstResultFromCache = CachingDataGenerator.peekIntoCache("explicitList:atLeast(globalfact,1)$[exp1,exp2]");
+        List<ContentNodeModel> secondResultFromCache = CachingDataGenerator.peekIntoCache("explicitList:atLeast(globalfact,1)$[exp2,exp4]");
 
         assertEquals("first result get into the cache", firstLiveResult, firstResultFromCache);
         assertEquals("second result get into the cache", secondLiveResult, secondResultFromCache);
 
-        List cachedLiveResult = dataGenerator.generate(input, dataAccess);
+        List<ContentNodeModel> cachedLiveResult = dataGenerator.generate(input, dataAccess);
         assertEquals("first result get into the cache", firstLiveResult, cachedLiveResult);
     }
 }
