@@ -40,4 +40,8 @@ CREATE TABLE cust.case_operation_old  AS (SELECT * FROM cust.case_operation);
 
 DELETE from cust.case_operation;
 
--- New opeartions to be inserted.
+-- New opeartions 'APPDEV-661_CRM_CASEOPERATION.sql' has to be inserted.
+
+CREATE TABLE cust.case_backup as (select * from cust.case c where C.CASE_STATE='APVD' or c.case_state ='REVW');
+
+UPDATE cust.case c set c.case_state ='CLSD' where C.CASE_STATE='APVD' or c.case_state ='REVW';

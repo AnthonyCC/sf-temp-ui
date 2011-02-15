@@ -30,10 +30,12 @@
 	FDSurvey customerProfileSurvey = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.CUSTOMER_PROFILE_SURVEY, serviceType);
 	FDSurveyResponse surveyResponse= FDSurveyFactory.getCustomerProfileSurveyInfo(customerIdentity, serviceType);
     int coverage=SurveyHtmlHelper.getResponseCoverage(customerProfileSurvey,surveyResponse);
+    String agentLdapRole = CrmSecurityManager.getUserRole(request);
     %>
     <% if(coverage==0) {%>
-    <jsp:forward page='<%="/customerprofile/customer_profile.jsp?"+request.getQueryString()%>' />
-    
+    	<% if(CrmSecurityManager.hasAccessToPage(agentLdapRole,"customer_profile.jsp")) {%>    
+			<%@page import="com.freshdirect.webapp.crm.security.CrmSecurityManager"%><jsp:forward page='<%="/customerprofile/customer_profile.jsp?"+request.getQueryString()%>' />    	
+    	<% } %>
     <%}%>    
     
     <%
@@ -133,13 +135,17 @@ response.setHeader("Cache-Control", "no-cache");
 					<!--<td class="ico">
 						<img src="edit.gif" width="16" height="16" border="0" alt="" title="">
 					</td>-->
-					<td class="t12px bolded tLeft"><a href="/customerprofile/customer_profile.jsp" title="">Edit my profile</a></td>
+					<% if(CrmSecurityManager.hasAccessToPage(agentLdapRole,"customer_profile.jsp")) {%>   
+						<td class="t12px bolded tLeft"><a href="/customerprofile/customer_profile.jsp" title="">Edit my profile</a></td>
+					<% } %>
 				</tr>
 				</table>
                 <%} else {%>
                 <table class="col100per noBorder">
 				<tr>
-					<td class="t12px bolded tLeft"><a href="/customerprofile/customer_profile.jsp" title="">Edit my profile</a></td>
+					<% if(CrmSecurityManager.hasAccessToPage(agentLdapRole,"customer_profile.jsp")) {%>   
+						<td class="t12px bolded tLeft"><a href="/customerprofile/customer_profile.jsp" title="">Edit my profile</a></td>
+					<% } %>
 				</tr>
 				</table>
                 
@@ -214,7 +220,10 @@ response.setHeader("Cache-Control", "no-cache");
                 <tr>
                     <td class="padB6px">
                         <span class="t12px bolded tOrange"> <%=question.getShortDescr()%> </span>
-                        <a href="<%="/customerprofile/customer_profile.jsp#"+question.getName()%>" title="">Edit</a></td>
+                        <% if(CrmSecurityManager.hasAccessToPage(agentLdapRole,"customer_profile.jsp")) {%>
+                        <a href="<%="/customerprofile/customer_profile.jsp#"+question.getName()%>" title="">Edit</a>
+                        <% } %>
+                        </td>
                 </tr>
                <%=SurveyHtmlHelper.getAnswers(question,surveyResponse.getAnswerAsList(question.getName()))%>
             <%}%>

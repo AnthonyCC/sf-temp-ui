@@ -39,7 +39,7 @@
 			build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,
 			checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_new_address.jsp,
 			checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,
-			checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,
+			checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_verify_age.jsp,
 			step_2_green_popup.jsp,cancel_modify_order.jsp,cancel_order.jsp,add_config_to_cart.jsp,build_order_browse.jsp,build_order_category.jsp,
 			build_order_recipes.jsp,health_warning.jsp,order_modify.jsp,payment_exception.jsp,place_order_batch_search_results.jsp,place_order_recipe_search_results.jsp,place_order_related_items.jsp,product.jsp,product_modify.jsp,recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,order_transaction_details.jsp,carton_contents_view.jsp
 		</links>
@@ -89,7 +89,7 @@
 			checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,
 			checkout_new_address.jsp,checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,
 			checkout_preview.jsp,checkout_review_items.jsp,checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,
-			checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_green_popup.jsp,add_config_to_cart.jsp,build_order_browse.jsp,build_order_category.jsp,
+			checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_verify_age.jsp,step_2_green_popup.jsp,add_config_to_cart.jsp,build_order_browse.jsp,build_order_category.jsp,
 			build_order_recipes.jsp,cancel_modify_order.jsp,cancel_order.jsp,health_warning.jsp,order_modify.jsp,payment_exception.jsp,
 			place_order_batch_search_results.jsp,place_order_recipe_search_results.jsp,place_order_related_items.jsp,product.jsp,product_modify.jsp,recipe.jsp,
 			recipe_cat.jsp,recipe_subcat.jsp,order_transaction_details.jsp,carton_contents_view.jsp
@@ -128,7 +128,7 @@
 			checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_new_address.jsp,
 			checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,
 			checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,
-			no_alcohol_address.jsp,step_2_green_popup.jsp,add_config_to_cart.jsp,build_order_browse.jsp,build_order_category.jsp,
+			no_alcohol_address.jsp,step_2_verify_age.jsp,step_2_green_popup.jsp,add_config_to_cart.jsp,build_order_browse.jsp,build_order_category.jsp,
 			build_order_recipes.jsp,cancel_modify_order.jsp,cancel_order.jsp,health_warning.jsp,order_modify.jsp,payment_exception.jsp,
 			place_order_batch_search_results.jsp,place_order_recipe_search_results.jsp,place_order_related_items.jsp,product.jsp,product_modify.jsp,
 			recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,order_transaction_details.jsp,carton_contents_view.jsp
@@ -166,7 +166,8 @@
 		<links>
 		main_index.jsp,worklist.jsp,promo_home.jsp,giftcard_landing.jsp
 		</links>
-		<links name="customer">order_search_results.jsp,account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,masquerade.jsp,case_history.jsp,order_history.jsp,credit_history.jsp,promotion_history.jsp,promotion_popup.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,delivery_pass.jsp,customer_profile_summary.jsp,customer_profile.jsp</links>
+		<links name="customer">order_search_results.jsp,account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,masquerade.jsp,case_history.jsp,order_history.jsp,credit_history.jsp,promotion_history.jsp,promotion_popup.jsp,place_order_build.jsp,
+delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,delivery_pass.jsp,customer_profile_summary.jsp,customer_profile.jsp</links>
 		<links name="customeraccount">order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,order_cases.jsp,order_transaction_details.jsp,add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,place_alert.jsp,customer_alert_list.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,set_profile_attr.jsp,username_password_option.jsp</links>
 		<links name="cases">summary_case_actions.jsp,new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>
 		<links name="giftcards">
@@ -179,7 +180,10 @@
 		<links name="promotions">promo_view.jsp,promo_details.jsp,promotion_popup.jsp,export_promo_list.jsp</links>
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
 
-		<links name="order">build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_new_address.jsp,checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_green_popup.jsp,promotion_history.jsp,add_bad_account.jsp,checkout_edit_checkacct.jsp,carton_contents_view.jsp</links>
+		<links name="order">build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_new_address.jsp,checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_verify_age.jsp,step_2_green_popup.jsp,add_bad_account.jsp,add_config_to_cart.jsp,build_order_browse.jsp,build_order_category.jsp,
+			build_order_recipes.jsp,cancel_modify_order.jsp,cancel_order.jsp,health_warning.jsp,order_modify.jsp,payment_exception.jsp,
+			place_order_batch_search_results.jsp,place_order_recipe_search_results.jsp,place_order_related_items.jsp,product.jsp,product_modify.jsp,
+			recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,carton_contents_view.jsp</links>
 		
 		<links name="quickshop">quickshop_index.jsp,all_lists.jsp,ccl_item_modify.jsp,every_item.jsp,item_modify.jsp,makegood_from_order.jsp,recipes.jsp,shop_from_list.jsp,shop_from_order.jsp</links>
 		<links name="returns">approve_credit.jsp,reverse_credit.jsp,issue_credit.jsp,issue_credit_confirm.jsp,return_order.jsp</links>
@@ -213,7 +217,7 @@
 			build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,
 			checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_new_address.jsp,
 			checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,
-			checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,
+			checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_verify_age.jsp,
 			step_2_green_popup.jsp,add_config_to_cart.jsp,build_order_browse.jsp,build_order_category.jsp,build_order_recipes.jsp,cancel_modify_order.jsp,	cancel_order.jsp,health_warning.jsp,order_modify.jsp,payment_exception.jsp,place_order_batch_search_results.jsp,place_order_recipe_search_results.jsp,
 			place_order_related_items.jsp,product.jsp,product_modify.jsp,recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,order_transaction_details.jsp,carton_contents_view.jsp</links>
 		<links name="quickshop">
@@ -243,7 +247,7 @@
 			build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,
 			checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_new_address.jsp,
 			checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,
-			checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,
+			checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_verify_age.jsp,
 			step_2_green_popup.jsp,add_config_to_cart.jsp,build_order_browse.jsp,build_order_category.jsp,build_order_recipes.jsp,cancel_modify_order.jsp,
 			cancel_order.jsp,health_warning.jsp,order_modify.jsp,payment_exception.jsp,place_order_batch_search_results.jsp,place_order_recipe_search_results.jsp,
 			place_order_related_items.jsp,product.jsp,product_modify.jsp,recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,carton_contents_view.jsp</links>
@@ -265,7 +269,7 @@
 	
 	<role name="CRM_Finance">
 		<links>
-		main_index.jsp,supervisor_index.jsp,reports_index.jsp,
+		main_index.jsp,supervisor_index.jsp,reports_index.jsp,case_mgmt_index.jsp,
 		worklist.jsp,case_summary.jsp,giftcard_landing.jsp,profile_list.jsp,order_search_results.jsp
 		</links>
 		<links name="supervisor">bad_account_list.jsp,add_bad_account.jsp,acct_lookup.jsp,acct_lookup_auth.jsp</links>
@@ -290,7 +294,7 @@
 			build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,
 			checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_new_address.jsp,
 			checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,
-			checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,
+			checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_verify_age.jsp,
 			step_2_green_popup.jsp,add_config_to_cart.jsp,build_order_browse.jsp,build_order_category.jsp,build_order_recipes.jsp,cancel_modify_order.jsp,
 			cancel_order.jsp,health_warning.jsp,order_modify.jsp,payment_exception.jsp,place_order_batch_search_results.jsp,place_order_recipe_search_results.jsp,
 			place_order_related_items.jsp,product.jsp,product_modify.jsp,recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,order_transaction_details.jsp,order_search_results.jsp,carton_contents_view.jsp</links>
@@ -319,7 +323,7 @@
 			build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,
 			checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_new_address.jsp,
 			checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,
-			checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,
+			checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_verify_age.jsp,
 			step_2_green_popup.jsp,add_config_to_cart.jsp,build_order_browse.jsp,build_order_category.jsp,build_order_recipes.jsp,cancel_modify_order.jsp,
 			cancel_order.jsp,health_warning.jsp,order_modify.jsp,payment_exception.jsp,place_order_batch_search_results.jsp,place_order_recipe_search_results.jsp,
 			place_order_related_items.jsp,product.jsp,product_modify.jsp,recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,order_transaction_details.jsp,order_search_results.jsp,carton_contents_view.jsp</links>
@@ -349,7 +353,7 @@
 			build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,
 			checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_new_address.jsp,
 			checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,
-			checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,
+			checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_verify_age.jsp,
 			step_2_green_popup.jsp,add_config_to_cart.jsp,build_order_browse.jsp,build_order_category.jsp,build_order_recipes.jsp,cancel_modify_order.jsp,
 			cancel_order.jsp,health_warning.jsp,order_modify.jsp,payment_exception.jsp,place_order_batch_search_results.jsp,place_order_recipe_search_results.jsp,
 			place_order_related_items.jsp,product.jsp,product_modify.jsp,recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,order_transaction_details.jsp,order_search_results.jsp,carton_contents_view.jsp</links>
@@ -393,7 +397,7 @@
 	
 	<role name="CRM_ERP">
 		<links>
-		main_index.jsp,summary_report.jsp,order_details.jsp,order_cases.jsp,order_not_submitted.jsp,resubmit_success.jsp,summary.jsp
+		main_index.jsp,order_search_results.jsp,summary_case_actions.jsp,summary_report.jsp,order_details.jsp,order_cases.jsp,order_not_submitted.jsp,resubmit_success.jsp,summary.jsp,order_transaction_details.jsp
 		</links>
 	</role>
 	
@@ -412,7 +416,7 @@
 			build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,
 			checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_new_address.jsp,
 			checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,
-			checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,
+			checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_verify_age.jsp,
 			step_2_green_popup.jsp,cancel_modify_order.jsp,cancel_order.jsp,add_config_to_cart.jsp,build_order_category.jsp,
 			build_order_recipes.jsp,health_warning.jsp,order_modify.jsp,payment_exception.jsp,
 			place_order_batch_search_results.jsp,place_order_recipe_search_results.jsp,place_order_related_items.jsp,product.jsp,product_modify.jsp,
