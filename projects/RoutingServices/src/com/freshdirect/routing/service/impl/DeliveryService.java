@@ -348,5 +348,13 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 			throw new RoutingServiceException(e, IIssue.PROCESS_UNASSIGNED_UNSUCCESSFUL);
 		}
 	}
+	
+	public List<IDeliverySlot> getTimeslots(Date deliveryDate, Date cutOffTime, double latitude, double longitude, final String serviceType) throws RoutingServiceException {
+		try{
+			return deliveryDAOImpl.getTimeslots(deliveryDate, cutOffTime, latitude, longitude, serviceType);
+		}catch(SQLException e){
+			throw new RoutingServiceException(e, IIssue.PROCESS_LOADLATEDELIVERYORDERS_UNSUCCESSFUL);
+		}
+	}
 		
 }

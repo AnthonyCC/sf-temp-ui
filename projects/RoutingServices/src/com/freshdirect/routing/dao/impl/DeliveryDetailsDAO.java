@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.TreeMap;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
 
+import com.freshdirect.routing.constants.EnumReservationStatus;
 import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
 import com.freshdirect.routing.dao.IDeliveryDetailsDAO;
 import com.freshdirect.routing.model.AreaModel;
@@ -139,7 +141,24 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			"from (select NUM_REGULAR_CARTONS, NUM_FREEZER_CARTONS, NUM_ALCOHOL_CARTONS from cust.sale s " +
 			"where s.CUSTOMER_ID = ? and s.STATUS = 'STL' and s.TYPE = 'REG' order by s.CROMOD_DATE desc) tbl where rownum <= ?";
 	
-		
+	private static final String GET_TIMESLOTSBYDATEANDZONE_QRY =
+		"select t.id REF_ID, t.base_date, t.start_time, t.end_time, t.cutoff_time, t.status, t.zone_id, t.capacity, z.zone_code, t.ct_capacity" +
+		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stem_from, ta.STEM_TO_TIME stem_to, z.NAME ZONE_NAME, TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,  " 
+		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, " 
+		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, " 
+		+ "(select z.ct_release_time from dlv.zone z where z.id = t.zone_id) as ct_release_time, "
+		+ "(select z.ct_active from dlv.zone z where z.id = t.zone_id) as ct_active "
+		+ "from dlv.region r, dlv.region_data rd, dlv.timeslot t, dlv.zone z, transp.zone ta, transp.trn_area a "
+		+ "where r.service_type = ? and r.id = rd.region_id "
+		+ "and rd.id = z.region_data_id "
+		+ "and mdsys.sdo_relate(z.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(?, ?,NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE' "
+		+ "and (rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= ? and region_id = r.id) "
+		+ 	"or rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= ? and region_id = r.id)) "
+		+ "and t.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE and t.base_date >= rd.start_date "
+		+ "and t.base_date >= ? and t.base_date < ? "
+		+ "and to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE ";
+	
+
 	public IPackagingModel getHistoricOrderSize(final String customerId, final int range) throws SQLException {
 		
 		final IPackagingModel model = new PackagingModel();
@@ -728,6 +747,84 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			if(connection!=null) connection.close();
 		}
 		return result;
+	}
+	
+	public List<IDeliverySlot> getTimeslots(final Date deliveryDate, final Date cutOffTime, 
+			final double latitude, final double longitude, final String serviceType) throws SQLException {
+		
+		final List<IDeliverySlot> timeslots = new ArrayList<IDeliverySlot>();
+		
+		final StringBuffer query = new StringBuffer();
+		query.append(GET_TIMESLOTSBYDATEANDZONE_QRY);
+		
+		if(cutOffTime != null) {
+			query.append(" and t.cutoff_time = ?");
+		}
+		query.append(" order by t.base_date, z.zone_code, t.start_time");
+		
+		final Calendar endDate = Calendar.getInstance();					
+		endDate.setTime(deliveryDate);
+		endDate.add(Calendar.DATE, 1);
+		
+		
+		PreparedStatementCreator creator = new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+                PreparedStatement ps =
+                    connection.prepareStatement(query.toString());
+                ps.setInt(1, EnumReservationStatus.CANCELED.getCode());
+        		ps.setInt(2, EnumReservationStatus.EXPIRED.getCode());
+        		ps.setInt(3, EnumReservationStatus.CANCELED.getCode());
+        		ps.setInt(4, EnumReservationStatus.EXPIRED.getCode());
+        		ps.setString(5, serviceType);
+        		ps.setDouble(6, longitude);
+        		ps.setDouble(7, latitude);
+                
+        		ps.setDate(8, new java.sql.Date(deliveryDate.getTime()));
+        		ps.setDate(9, new java.sql.Date(endDate.getTime().getTime()));
+        		ps.setDate(10, new java.sql.Date(deliveryDate.getTime()));
+        		ps.setDate(11, new java.sql.Date(endDate.getTime().getTime()));
+                
+        		if(cutOffTime != null) {
+                	ps.setTimestamp(12, new java.sql.Timestamp(cutOffTime.getTime()));
+                }
+                return ps;
+            }  
+        };
+        
+		jdbcTemplate.query(creator, 
+				  new RowCallbackHandler() { 
+				      public void processRow(ResultSet rs) throws SQLException {				    	
+				    	do {        		    		
+				    		
+				    		IDeliverySlot tmpModel = new DeliverySlot();
+				    		tmpModel.setReferenceId(rs.getString("REF_ID"));
+				    		tmpModel.setStartTime(rs.getTimestamp("START_TIME"));
+				    		tmpModel.setStopTime(rs.getTimestamp("END_TIME"));
+				    		tmpModel.setZoneCode(rs.getString("ZONE_CODE"));
+				    		tmpModel.setWaveCode(rs.getString("WAVE_CODE"));
+				    		tmpModel.setDynamicActive("X".equalsIgnoreCase(rs.getString("IS_DYNAMIC")) ? true : false);
+				    		tmpModel.setManuallyClosed("X".equalsIgnoreCase(rs.getString("IS_CLOSED")) ? true : false);				    		
+				    					    						    		
+				    		IRoutingSchedulerIdentity _schId = new RoutingSchedulerIdentity();
+							_schId.setDeliveryDate(deliveryDate);
+							
+							IAreaModel _aModel = new AreaModel();
+							_aModel.setAreaCode(rs.getString("AREA_CODE"));
+							_aModel.setDepot("X".equalsIgnoreCase(rs.getString("IS_DEPOT")) ? true : false);
+							_aModel.setStemFromTime(rs.getInt("STEM_FROM"));
+							_aModel.setStemToTime(rs.getInt("STEM_TO"));							
+							
+							_schId.setRegionId(RoutingUtil.getRegion(_aModel));
+							_schId.setArea(_aModel);
+							
+							tmpModel.setSchedulerId(_schId);
+							
+							timeslots.add(tmpModel);
+				    	 } while(rs.next());		        		    	
+				      }
+				  }
+			);
+		return timeslots;
 	}
 
 }

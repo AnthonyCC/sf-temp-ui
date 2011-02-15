@@ -1,8 +1,11 @@
 package com.freshdirect.transadmin.service;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.transadmin.model.DeliveryGroup;
 import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvBuildingDetail;
@@ -67,4 +70,6 @@ public interface LocationManagerI  extends BaseManagerI {
    	Collection getDeliveryGroups();
    	
    	DeliveryGroup getDeliveryGroupById(String Id);
+   	
+   	List<DlvLocation> getBuildingGroup(String dlvGroup);
 }

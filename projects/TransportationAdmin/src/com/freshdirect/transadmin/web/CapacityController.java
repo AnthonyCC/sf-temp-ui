@@ -9,7 +9,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -19,25 +21,45 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
+import com.freshdirect.routing.model.BuildingModel;
+import com.freshdirect.routing.model.DeliveryModel;
+import com.freshdirect.routing.model.GeographicLocation;
+import com.freshdirect.routing.model.IBuildingModel;
+import com.freshdirect.routing.model.IDeliveryModel;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
+import com.freshdirect.routing.model.ILocationModel;
+import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
+import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.model.IUnassignedModel;
 import com.freshdirect.routing.model.IWaveInstance;
+import com.freshdirect.routing.model.IZoneModel;
+import com.freshdirect.routing.model.LocationModel;
+import com.freshdirect.routing.model.OrderEstimationResult;
+import com.freshdirect.routing.model.OrderModel;
+import com.freshdirect.routing.model.PackagingModel;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
+import com.freshdirect.routing.service.proxy.PlantServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.util.RoutingDateUtil;
+import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
+import com.freshdirect.transadmin.model.DlvBuilding;
+import com.freshdirect.transadmin.model.DlvLocation;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.TrnCutOff;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
+import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.Capacity;
+import com.freshdirect.transadmin.web.model.CapacityAnalyzerCommand;
 import com.freshdirect.transadmin.web.model.EarlyWarningCommand;
 import com.freshdirect.transadmin.web.model.TimeRange;
 import com.freshdirect.transadmin.web.model.UnassignedCommand;
@@ -50,6 +72,8 @@ public class CapacityController extends AbstractMultiActionController {
 	private ZoneManagerI zoneManagerService;
 	
 	private DispatchManagerI dispatchManagerService;
+	
+	private LocationManagerI locationManagerService;
 		
 	public ZoneManagerI getZoneManagerService() {
 		return zoneManagerService;
@@ -73,6 +97,14 @@ public class CapacityController extends AbstractMultiActionController {
 
 	public void setDispatchManagerService(DispatchManagerI dispatchManagerService) {
 		this.dispatchManagerService = dispatchManagerService;
+	}
+	
+	public LocationManagerI getLocationManagerService() {
+		return locationManagerService;
+	}
+
+	public void setLocationManagerService(LocationManagerI locationManagerService) {
+		this.locationManagerService = locationManagerService;
 	}
 
 	/**
@@ -134,20 +166,90 @@ public class CapacityController extends AbstractMultiActionController {
 	 * @param response current HTTP response
 	 * @return a ModelAndView to render the response
 	 */
+	@SuppressWarnings("unchecked")
 	public ModelAndView capacityAnalyzerHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		
 		String selectedDate = request.getParameter("selectedDate");
 		String cutOff = request.getParameter("cutOff");
 		String dlvGroup = request.getParameter("group");
+		String serviceType = request.getParameter("serviceType");
 		
 		ModelAndView mav = new ModelAndView("capacityAnalyzerView");
+		
+		Set<TimeRange> allWindows = new TreeSet<TimeRange>();		
+		Map<DlvBuilding, List<IDeliverySlot>> buildingsMap = new HashMap<DlvBuilding, List<IDeliverySlot>>();  
+		List<CapacityAnalyzerCommand> buildings = new ArrayList<CapacityAnalyzerCommand>();
 		
 		try {
 			if(selectedDate != null && dlvGroup != null) {
 				Date rDate = TransStringUtil.getDate(selectedDate);
 				
+				List<DlvLocation> locations = this.getLocationManagerService().getBuildingGroup(dlvGroup);
+				DeliveryServiceProxy dlvProxy = new DeliveryServiceProxy();
+				RoutingInfoServiceProxy routingInfoProxy = new RoutingInfoServiceProxy();
+				PlantServiceProxy plantServiceProxy = new PlantServiceProxy();
+				RoutingEngineServiceProxy routingEngine = new RoutingEngineServiceProxy();
+				
+				Map<String, IServiceTimeTypeModel> serviceTimeTypes = routingInfoProxy.getRoutingServiceTimeTypes();
+				IServiceTimeScenarioModel srvScenario = routingInfoProxy.getRoutingScenarioByDate(rDate);
 				
 				
+				if(locations != null) {
+					IOrderModel order = null;
+					for(DlvLocation location : locations) {
+						List<IDeliverySlot> timeslots = dlvProxy.getTimeslots(rDate, this.getCutOffTime(cutOff)
+													, location.getLatitude().doubleValue()
+													, location.getLongitude().doubleValue()
+													, serviceType);
+						List<IDeliverySlot> routingSlots = null;
+						
+						if(timeslots != null && timeslots.size() > 0 && isDynamicEnabled(timeslots)) {
+							location.getBuilding().setZoneCode(timeslots.get(0).getZoneCode());							
+							order = getOrderModel(location, getOrderNo(location));
+							IZoneModel zoneModel = dlvProxy.getDeliveryZone(timeslots.get(0).getZoneCode());
+							order.getDeliveryInfo().setDeliveryZone(zoneModel);
+							order.getDeliveryInfo().setDeliveryDate(rDate);
+							
+							OrderEstimationResult calculatedSize = plantServiceProxy.estimateOrderSize(order, srvScenario, null);
+							order.getDeliveryInfo().setPackagingDetail(calculatedSize.getPackagingModel());
+							order.getDeliveryInfo().setCalculatedOrderSize(calculatedSize.getCalculatedOrderSize());
+							
+							srvScenario.setZoneConfiguration(routingInfoProxy.getRoutingScenarioMapping(srvScenario.getCode()));
+							if(zoneModel.getServiceTimeType().getCode() != null) {
+								zoneModel.setServiceTimeType(serviceTimeTypes.get(zoneModel.getServiceTimeType().getCode()));
+							} else {
+								zoneModel.setServiceTimeType(null);
+							}
+							if(order.getDeliveryInfo().getDeliveryLocation().getServiceTimeType() != null) {
+								order.getDeliveryInfo().getDeliveryLocation().setServiceTimeType(serviceTimeTypes
+																			.get(order.getDeliveryInfo().getDeliveryLocation().getServiceTimeType().getCode()));
+							} else {
+								order.getDeliveryInfo().getDeliveryLocation().setServiceTimeType(null);
+							}
+							if(order.getDeliveryInfo().getDeliveryLocation().getBuilding() != null 
+									&& order.getDeliveryInfo().getDeliveryLocation().getBuilding().getServiceTimeType() != null) {
+								order.getDeliveryInfo().getDeliveryLocation().getBuilding().setServiceTimeType(serviceTimeTypes
+										.get(order.getDeliveryInfo().getDeliveryLocation().getBuilding().getServiceTimeType().getCode()));
+							} else {
+								order.getDeliveryInfo().getDeliveryLocation().getBuilding().setServiceTimeType(null);
+							}
+							
+							
+							order.getDeliveryInfo().setCalculatedServiceTime(dlvProxy.getServiceTime(order, srvScenario));
+							
+							routingSlots = routingEngine.schedulerAnalyzeOrder(order, 
+																RoutingServicesProperties.getDefaultLocationType(), 
+																	RoutingServicesProperties.getDefaultOrderType(), 
+																	rDate, 1, timeslots);
+						}
+						if(routingSlots!=null && routingSlots.size() > 0)
+							buildingsMap.put(location.getBuilding(), routingSlots);
+						else
+							buildingsMap.put(location.getBuilding(), new ArrayList<IDeliverySlot>());
+					}					
+				}
+				relateTimeRange(allWindows, buildingsMap);
+				processCapacityAnalzyer(buildings,allWindows,buildingsMap);
 			}			
 		} catch (ParseException e) {			
 			e.printStackTrace();
@@ -158,13 +260,145 @@ public class CapacityController extends AbstractMultiActionController {
 		}
 		mav.getModel().put("selectedDate", selectedDate);
 		mav.getModel().put("cutOff", cutOff);
+		mav.getModel().put("group", dlvGroup);
+		mav.getModel().put("serviceType", serviceType);
 		mav.getModel().put("deliveryGroups",domainManagerService.getDeliveryGroups());
 		mav.getModel().put("autorefresh", request.getParameter("autorefresh"));
 		mav.getModel().put("cutoffs", domainManagerService.getCutOffs());
+		mav.getModel().put("allBuildings", buildings);
+		mav.getModel().put("allWindows", allWindows);	
 		
 		return mav;
 	}
+	
+	private void relateTimeRange(Set<TimeRange> allWindows,
+			Map<DlvBuilding, List<IDeliverySlot>> buildingWindows) {
 
+		if (buildingWindows != null) {
+
+			for (Map.Entry<DlvBuilding, List<IDeliverySlot>> slotMapping : buildingWindows
+					.entrySet()) {
+				if (slotMapping.getValue() != null) {
+					for (IDeliverySlot slot : slotMapping.getValue()) {
+						allWindows.add(new TimeRange(slot.getStartTime(), slot
+								.getStopTime()));
+					}
+				}
+			}
+		}
+	}
+	
+	private void processCapacityAnalzyer(List<CapacityAnalyzerCommand> buildings, Set<TimeRange> allWindows,
+			Map<DlvBuilding, List<IDeliverySlot>> buildingWindows) {
+		
+		CapacityAnalyzerCommand _displayCommand = null;
+		DlvBuilding _dlvBuilding = null;
+		Map<TimeRange, String> slotsMap = null;
+		
+		if (buildingWindows != null && buildingWindows.size() > 0) {
+			Zone zoneModel = null;
+			for (Map.Entry<DlvBuilding, List<IDeliverySlot>> buildingMapping : buildingWindows.entrySet()) {
+				
+				_displayCommand = new CapacityAnalyzerCommand();
+				slotsMap = new HashMap<TimeRange, String>();
+				
+				_dlvBuilding = buildingMapping.getKey();				
+				_displayCommand.setBuildingId(_dlvBuilding.getBuildingId());
+				_displayCommand.setZoneCode(_dlvBuilding.getZoneCode());
+				_displayCommand.setAddress(_dlvBuilding.getSrubbedStreet()+", "+_dlvBuilding.getZip());
+				if(_dlvBuilding.getZoneCode()!= null)
+					zoneModel = domainManagerService.getZone(_dlvBuilding.getZoneCode());
+				_displayCommand.setDescription(zoneModel!=null ? zoneModel.getName():"");
+				
+				int soldOutCount = 0;				
+				if (buildingMapping.getValue() != null) {
+					
+					TimeRange _slotRange = null;
+					for(TimeRange range: allWindows){
+						boolean isDynamicCapacityAvailable = false;
+						boolean isMatching = false;
+						for (IDeliverySlot slot : buildingMapping.getValue()) {							
+							_slotRange = new TimeRange(slot.getStartTime(), slot.getStopTime());
+							if(range.getTimeRangeString().equals(_slotRange.getTimeRangeString())){
+								isMatching = true;
+								isDynamicCapacityAvailable = isDynamicCapacityAvailable(slot);
+							}
+						}
+						if(isMatching){
+							if(!isDynamicCapacityAvailable)
+								soldOutCount++;
+							slotsMap.put(range, isDynamicCapacityAvailable ? "Y":"N");
+						}else
+							slotsMap.put(range, "");
+						
+					}					
+				}
+				
+				_displayCommand.setSoldOutWindow(soldOutCount);				
+				_displayCommand.setTimeslots(slotsMap);
+				buildings.add(_displayCommand);
+			}
+		}
+	}
+	
+	public static String getOrderNo(DlvLocation location) {
+		return location.getBuilding().getBuildingId()!=null ? new StringBuilder("T").append(location.getBuilding().getBuildingId()).toString():new StringBuilder("T").append((int)(Math.random()/0.00001)).toString();
+	}
+
+	
+	public static IOrderModel getOrderModel(DlvLocation location, String orderNumber) {
+		
+		IBuildingModel building = new BuildingModel();
+		
+		building.setStreetAddress1(location.getBuilding().getSrubbedStreet());
+		building.setStreetAddress2(null);
+		
+		building.setCity(location.getBuilding().getCity());
+		building.setCountry(location.getBuilding().getCountry());
+		building.setState(location.getBuilding().getState());
+		building.setZipCode(location.getBuilding().getZip());
+		
+		ILocationModel _locModel= new LocationModel(building);
+		_locModel.setApartmentNumber(location.getApartment());
+		_locModel.setLocationId(location.getLocationId());
+		
+		GeographicLocation _geoLocModel = new GeographicLocation();
+		_geoLocModel.setLatitude(""+location.getLatitude());
+		_geoLocModel.setLongitude(""+location.getLongitude());
+						
+		
+		building.setGeographicLocation(_geoLocModel);
+		IDeliveryModel dlvInfo = new DeliveryModel();
+		dlvInfo.setDeliveryLocation(_locModel);
+		dlvInfo.setReservationId(orderNumber);		
+		
+		IOrderModel order= new OrderModel();
+		order.setDeliveryInfo(dlvInfo);
+		IPackagingModel pModel = new PackagingModel();
+		order.getDeliveryInfo().setPackagingDetail(pModel);			
+				
+		order.setCustomerName(new StringBuffer(100).append("SIMCUSTOMERNAME:").append(location.getBuilding().getBuildingId()).toString());
+		order.setCustomerNumber("SIMCUSTOMER:"+location.getBuilding().getBuildingId());
+		order.setOrderNumber(orderNumber);
+		//order.setErpOrderNumber(location.getLocationId());
+		return order;
+	}
+	
+	protected static boolean isDynamicEnabled(List<IDeliverySlot> timeSlots) {
+		boolean result = true;
+		if(timeSlots != null) {
+			for (IDeliverySlot slot : timeSlots) {			    	
+				result = result && slot.isDynamicActive();
+			}
+		} else {
+			result = false;
+		}
+		return result;
+	}
+	
+	public boolean isDynamicCapacityAvailable(IDeliverySlot slot) {
+		return slot != null && slot.getDeliveryCost() != null && slot.getDeliveryCost().isAvailable();
+	}
 	
 	private IDeliverySlot matchSlotToMetrics(List<IDeliverySlot> slots, IDeliveryWindowMetrics metrics) {
 		

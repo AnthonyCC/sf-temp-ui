@@ -22,7 +22,16 @@ public class DlvBuilding implements java.io.Serializable, TrnBaseEntityI  {
 	private BigDecimal serviceTimeOverride;
 	private BigDecimal serviceTimeAdjustable;
 	private String serviceTimeOperator;
-		
+	private String zoneCode;
+	
+	public String getZoneCode() {
+		return zoneCode;
+	}
+
+	public void setZoneCode(String zoneCode) {
+		this.zoneCode = zoneCode;
+	}
+
 	Set<DeliveryGroup> buildingGroups = new HashSet<DeliveryGroup>(0);
 	
 	public Set<DeliveryGroup> getBuildingGroups() {		

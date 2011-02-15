@@ -33,12 +33,13 @@ public class DlvBuildingFormController extends AbstractFormController {
 	private LocationManagerI locationManagerService;
 	
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
-		Map refData = new HashMap();		
+		Map refData = new HashMap();
+
 		refData.put("servicetimetypes", getLocationManagerService().getServiceTimeTypes());	
 		refData.put("confidencetypes", getLocationManagerService().getConfidenceTypes());	
 		refData.put("qualitytypes", getLocationManagerService().getQualityTypes());
 		refData.put("deliveryGroups", getLocationManagerService().getDeliveryGroups());
-		
+
 		return refData;
 	}
 	
@@ -58,9 +59,8 @@ public class DlvBuildingFormController extends AbstractFormController {
 	
 	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
 	       String buildingId = getIdFromRequest(request);
-
-	       if ((buildingId != null) && request.getMethod().equalsIgnoreCase("get")) {
-	           return getLocationManagerService().getDlvBuilding(buildingId);
+	       if ((buildingId != null && request.getMethod().equalsIgnoreCase("get"))) {
+	    	   return getLocationManagerService().getDlvBuilding(buildingId);
 	       } else {
 	           return new DlvBuilding();
 	       }

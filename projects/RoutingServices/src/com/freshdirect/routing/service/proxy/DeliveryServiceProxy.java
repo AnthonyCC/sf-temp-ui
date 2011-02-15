@@ -96,4 +96,8 @@ public class DeliveryServiceProxy extends BaseServiceProxy {
 	public List<IOrderModel> getRoutingOrderByDate(Date deliveryDate, String zoneCode, boolean filterExpiredCancelled) throws RoutingServiceException {
 		return getService().getRoutingOrderByDate(deliveryDate, zoneCode, filterExpiredCancelled);
 	}
+	
+	public List<IDeliverySlot> getTimeslots(Date deliveryDate, Date cutOffTime, double latitude, double longitude, final String serviceType) throws RoutingServiceException {
+		return getService().getTimeslots(deliveryDate, cutOffTime, latitude, longitude, serviceType);
+	}
 }

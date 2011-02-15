@@ -5,15 +5,15 @@
 </style>
 <script>
       var groupDataTable;
-      var editGroupPanel; 
-     
+      var editGroupPanel;  
+      var waitPanel;
+   
       var jsonrpcClient = new JSONRpcClient("geographyprovider.ax");
            
-      function showDeliveryGroupsTable() {
-      	 
-         editGroupPanel = new YAHOO.widget.Panel("panel-Groups", {
-                          width: "400", 
-                          height: "370px",
+      function init() {
+       
+        editGroupPanel = new YAHOO.widget.Panel("panel-Groups", {
+                          width: "400",
                           fixedcenter: true, 
                           close: true, 
                           draggable: false, 
@@ -21,13 +21,44 @@
                           modal: true,
                           visible: false,
                           effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
+        editGroupPanel.render();
         
-         var groupDataIncrementer = function() {
-		var result = jsonrpcClient.AsyncGeographyProvider.getDeliveryGroups();
-	        return result.list;
-         };
-          
-        groupDataSource = new YAHOO.util.DataSource(groupDataIncrementer);
+        waitPanel = new YAHOO.widget.Panel("wait", { width: "240px", 
+                                                          fixedcenter: true, 
+                                                          close: true, 
+                                                          draggable: false, 
+                                                          zindex:4,
+                                                          modal: true,
+                                                          visible: false
+                                                        } 
+                                                    );
+        
+        waitPanel.setHeader("Loading, please wait...");
+        waitPanel.setBody("<img src=\"images/rel_interstitial_loading.gif\"/>");
+        
+     }
+      
+      
+      
+     function showDeliveryGroupsTable() {
+
+	waitPanel.render(document.body);
+	waitPanel.show();
+	 
+	var result = jsonrpcClient.AsyncGeographyProvider.getDeliveryGroups(showDeliveryGroupsCallback);
+	
+     }
+
+     function showDeliveryGroupsCallback(result, exception) {
+        if(exception) { 
+            waitPanel.hide();
+            alert('Unable to connect to host system. Please contact system administrator!');               
+            return;
+        }
+	      
+        waitPanel.hide();
+	  
+	groupDataSource = new YAHOO.util.DataSource(result.list);
 
 	var groupColumns =  [ 
 			    {key:"groupName", label:"Group Name",sortable:true, width:225, className:"forms1"},
@@ -48,11 +79,10 @@
 			} 
 		});
 
-  	editGroupPanel.render(document.body);
+	editGroupPanel.render(document.body);
         editGroupPanel.show();
-     }
-      
-           
+      }
+
      function doAdd() {
 		
      		var _groupName = document.getElementById('gName').value;
@@ -112,6 +142,8 @@
         	 editGroupPanel.show();
          }
      }
+
+     YAHOO.util.Event.addListener(window, "load", init);
    </script>
        
    <div style='display:none;height:0px;width:0px;'> 

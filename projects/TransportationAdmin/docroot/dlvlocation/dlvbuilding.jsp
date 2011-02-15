@@ -4,8 +4,10 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 
-<%  pageContext.setAttribute("HAS_GEOCODEBUTTON", "true");  
-  
+<%  
+	pageContext.setAttribute("HAS_GEOCODEBUTTON", "true");  
+  String streetVal = request.getParameter("srubbedAddress") != null ? request.getParameter("srubbedAddress") : "";
+  String zipVal = request.getParameter("zipCode") != null ? request.getParameter("zipCode") : "";
 %>
 
 <tmpl:insert template='/common/sitelayout.jsp'>
@@ -34,21 +36,28 @@
                   <td> 
                                 
                     <input maxlength="50" size="20" name="srubbedAddress"
-                      id="srubbedAddress" value="" />                    
+                      id="srubbedAddress" value="<%= streetVal %>" />
                  </td>
                 
                 <td>ZipCode</td>
                   <td> 
                                 
                     <input maxlength="5" size="5" name="zipCode"
-                      id="zipCode" value="" />                    
+                      id="zipCode" value="<%= zipVal %>" />
                   </td>
                   
                   <td>
                     <select name='confidence' id='confidence'>
                       <option value="">--Please Select Geo Confidence</option> 
                         <c:forEach var="confidenceTypeRow" items="${confidencetypes}">
-                              <option value='<c:out value="${confidenceTypeRow.name}"/>'><c:out value="${confidenceTypeRow.description}"/></option>
+						 <c:choose>
+                            <c:when test="${confidence == confidenceTypeRow.name}" > 
+                              <option selected value="<c:out value="${confidenceTypeRow.name}"/>"><c:out value="${confidenceTypeRow.description}"/></option>
+                            </c:when>
+                            <c:otherwise> 
+                              <option value="<c:out value="${confidenceTypeRow.name}"/>"><c:out value="${confidenceTypeRow.description}"/></option>
+                            </c:otherwise> 
+                          </c:choose>
                         </c:forEach>   
                       </select>
                 </td>
@@ -57,7 +66,14 @@
                       <select name='quality' id='quality'>
                        <option value="">--Please Select Geo Quality</option> 
                         <c:forEach var="qualityTypeRow" items="${qualitytypes}">                                                        
-                              <option value='<c:out value="${qualityTypeRow.name}"/>'><c:out value="${qualityTypeRow.description}"/></option>
+                             <c:choose>
+								<c:when test="${quality == qualityTypeRow.name}" > 
+								  	<option selected value='<c:out value="${qualityTypeRow.name}"/>'><c:out value="${qualityTypeRow.description}"/></option>
+								</c:when>
+								<c:otherwise> 
+									<option value='<c:out value="${qualityTypeRow.name}"/>'><c:out value="${qualityTypeRow.description}"/></option>
+								</c:otherwise> 
+                          </c:choose>
                         </c:forEach>   
                       </select>
                 </td>
@@ -66,7 +82,15 @@
                       <select name='group' id='group'>
                        <option value="">--Please Select Group</option> 
                         <c:forEach var="deliveryGroup" items="${deliveryGroups}">
-                              <option value='<c:out value="${deliveryGroup.groupId}"/>'><c:out value="${deliveryGroup.groupName}"/></option>
+                               <c:choose>
+								<c:when test="${group == deliveryGroup.groupId}" > 
+								  	<option selected value='<c:out value="${deliveryGroup.groupId}"/>'><c:out value="${deliveryGroup.groupName}"/></option>
+								</c:when>
+								<c:otherwise> 
+									<option value='<c:out value="${deliveryGroup.groupId}"/>'><c:out value="${deliveryGroup.groupName}"/></option>
+								</c:otherwise> 
+                          </c:choose>
+							  
                         </c:forEach>   
                       </select>
                 </td>

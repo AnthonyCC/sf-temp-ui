@@ -39,13 +39,20 @@ public class TimeRange  implements java.io.Serializable, Comparable<TimeRange> {
 		return this.startTime.compareTo(o.getStartTime()) + this.endTime.compareTo(o.getEndTime());
 	}
 	
+	public boolean equals(Object o) {
+		if (o instanceof TimeRange) {
+			return this.startTime.equals(((TimeRange) o).getStartTime()) && this.endTime.equals(((TimeRange)o).getEndTime());
+		}
+		return false;
+	}
+	
 	@Override
 	public String toString() {
 		return "[startTime=" + startTime + ", endTime=" + endTime+ "]";
 	}	
 	
 	public String getTimeRangeString() {
-		return startTime.getTimeString()+ " - " + endTime.getTimeString();
+		return startTime.getTimeString()+ "\n" +" - " + "\n" + endTime.getTimeString();
 	}
 	
 }

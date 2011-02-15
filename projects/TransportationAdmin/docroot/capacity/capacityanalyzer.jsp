@@ -7,12 +7,23 @@
 <%@ page import= 'com.freshdirect.transadmin.util.*' %>
 <%@ page import= 'java.util.*' %>
 <%@ page import= 'com.freshdirect.transadmin.web.model.*' %>
+<%@ page import= 'com.freshdirect.routing.constants.EnumRoutingServiceType' %>
+<%@ page import= 'com.freshdirect.transadmin.web.model.*' %>
+<%@ page import= 'com.freshdirect.routing.model.*' %>
 
 <% 
 	String pageTitle = "Capacity Analyzer";
+	String serviceType = request.getParameter("serviceType");
 %>
 
 <tmpl:insert template='/common/sitelayout.jsp'>
+
+	<tmpl:put name='yui-lib'>
+		<%@ include file='/common/i_yui.jspf'%>
+	</tmpl:put>
+	<tmpl:put name='gmap-lib'>
+		<%@ include file='/common/i_gmap.jspf'%>
+	</tmpl:put>
 
   <tmpl:put name='title' direct='true'> Operations : <%=pageTitle%></tmpl:put>
   	
@@ -26,51 +37,33 @@
 
   <div class="contentroot">
 		<style>
-			.summaryTable th, .summaryTable td {
+			.capacityAnalyzerTable th, .capacityAnalyzerTable td {
 				cursor: pointer;
 				cursor: hand;
 			}
-			.summaryTable th.first {
-				border-right: 2px solid #000;
+			.capacityAnalyzerTable th.first {
+				border-right: 1px solid #333333;
 			}
-			.summaryTable th.last {
-				border-right: 2px solid #000;
+			.capacityAnalyzerTable th {
+				border-bottom: 1px solid #333333;
 			}
-			.summaryTable th {
-				border-bottom: 2px solid #000;
-			}
-			.summaryTable td.first {
+			.capacityAnalyzerTable td.first {
 				border: 1px solid #000;
-				border-right: 2px solid #000;
+				border-right: 2px solid #333333;
 				border-top: none;
 				font-weight: bold;
 			}
-			.summaryTable td.last {
-				border-right: 2px solid #000;
-			}
-			.summaryTable td {
-				border-right: 1px dashed #000;
+			.capacityAnalyzerTable td {
+				border: 1px solid #CCCCCC;
 				text-align: center;
+				height:25px;
+
 			}
-			.summaryTable td.red {
+			.capacityAnalyzerTable td.red {
 				background-color: red;
 			}
-			.summaryTable td.yellow {
-				background-color: yellow;
-			}
-			.redSummary {
-				background-color: red;
-				font-weight: bold;
-				padding:2px;
-				text-align:center;
-				width:350px;
-			}
-			.yellowSummary {
-				background-color: yellow;
-				font-weight: bold;
-				padding:2px;
-				text-align:center;
-				width:350px;
+			.capacityAnalyzerTable td.green {
+				background-color: green;
 			}
 		</style>
 		<div class="cont_topleft">
@@ -91,7 +84,7 @@
 							&nbsp;
 							<select id="cutOff" name="cutOff">
 								<option value="">--All Cut Off</option> 
-					              <c:forEach var="cutoff" items="${cutoffs}">                             
+					              <c:forEach var="cutoff" items="${cutoffs}">
 									  <c:choose>
 											<c:when test="${cutOff == cutoff.cutOffId}" > 
 											  <option selected value="<c:out value="${cutoff.cutOffId}"/>"><c:out value="${cutoff.name}"/></option>
@@ -107,8 +100,24 @@
 							  <select name='group' id='group'>
 							   <option value="">--Please Select Group</option> 
 								<c:forEach var="deliveryGroup" items="${deliveryGroups}">
-									  <option value='<c:out value="${deliveryGroup.groupId}"/>'><c:out value="${deliveryGroup.groupName}"/></option>
+									   <c:choose>
+											<c:when test="${group == deliveryGroup.groupId}" > 
+											  <option selected value="<c:out value="${deliveryGroup.groupId}"/>"><c:out value="${deliveryGroup.groupName}"/></option>
+											</c:when>
+											<c:otherwise> 
+											  <option value="<c:out value="${deliveryGroup.groupId}"/>"><c:out value="${deliveryGroup.groupName}"/></option>
+											</c:otherwise> 
+										</c:choose>
 								</c:forEach>   
+							  </select>
+						</span>
+						<span>
+							  <select name='serviceType' id='serviceType'>
+									 <option value="">--Please Select Service Type</option>
+									<option <c:choose> <c:when test="${serviceType == 'HOME'}" >selected </c:when> </c:choose> 
+										value="<%= EnumRoutingServiceType.HOME.getName() %>"><%= EnumRoutingServiceType.HOME.getName() %></option>  
+				                    <option <c:choose> <c:when test="${serviceType == 'CORPORATE'}" >selected </c:when> </c:choose> 
+										value="<%= EnumRoutingServiceType.CORPORATE.getName() %>"><%= EnumRoutingServiceType.CORPORATE.getName() %></option>
 							  </select>
 						</span>
 						<span style="font-size: 11px;">&nbsp;Auto Refresh:
@@ -116,8 +125,14 @@
 						</span>
 						&nbsp;&nbsp;&nbsp;
 						<span>
-							<input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('selectedDate','cutOff',''group','autorefresh','capacityanalyzer.do');" onmousedown="this.src='./images/icons/view_ON.gif'" /><br>
-						</span>  
+							<input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('selectedDate','cutOff','group','serviceType','autorefresh','capacityanalyzer.do');" onmousedown="this.src='./images/icons/view_ON.gif'" />
+							
+							&nbsp;&nbsp;<input id="mapview_button" type="button" value="Map View" alt="Google Maps Viewer" onclick="javascript:doBoundary()"/>
+							
+							&nbsp;&nbsp;<input id="selectall_button" type="button"  value="Select All" alt="select" onclick="javascript:doSelect()" />
+
+							&nbsp;&nbsp;<input id="clearall_button" type="button"  value="Clear All" alt="Clear" onclick="javascript:doClear()" /><br/>
+						</span>
 				</div>
 
 			</div>
@@ -131,30 +146,70 @@
 			<div class="cont_row">
 				<div class="cont_Ritem">
 				<br/><br/>
-
-
-
-
+				 <%
+					List<CapacityAnalyzerCommand> buildings = (List<CapacityAnalyzerCommand>)request.getAttribute("allBuildings");
+					Set<TimeRange> allWindows = (Set<TimeRange>)request.getAttribute("allWindows");
+					if(buildings!=null && buildings.size() > 0) {
+	    		%>
+	    		<form id="summaryForm" method="post" action="">		
+	    		
+	    		<table id="tbl_capacityAnalyzer" class="capacityAnalyzerTable" cellspacing="0" cellpadding="0" border="0" width="98%">
+				    	<tr>
+							<th class="first"></th>
+				    		<th class="first" width="40">Zone</th>
+							<th class="first" width="250">Address</th>
+							<th class="first" width="180">Description</th>
+							<th class="first" width="65">SoldOut Windows</th>
+				    		<%		
+				    			for(TimeRange range : allWindows) {  %>
+									<th><%= range.getTimeRangeString().replace("\n","<br/>") %></th>
+							<% 	}  %>
+						</tr>
+						<%
+							int i=0;
+							for(CapacityAnalyzerCommand _command : buildings) {
+						 %>
+						 	<tr>
+								<td class=""><input type="checkbox" name="<%=_command.getZoneCode()%>"/></td>
+								<td class=""><%= _command.getZoneCode()%></td>
+								<td class="" name="address"><%= _command.getAddress()%></td>
+								<td class="" ><%= _command.getDescription()%></td>
+								<td class=""><%= _command.getSoldOutWindow()%></td>
+						
+							 <%	
+								for(Map.Entry<TimeRange, String> slotsMapping : _command.getTimeslots().entrySet()) {
+	 							    String subClass = "";
+									if("N".equals(slotsMapping.getValue())) {
+										subClass = "red";
+									} else if("Y".equals(slotsMapping.getValue()))  {
+										subClass = "green";
+									}
+							 %>
+									<td  class="<%= subClass %>"><%= slotsMapping.getValue()%></td>
+								<% } %>
+							</tr>
+						 <% } %>
+						
+	    	     </table>
+	    	
+				 <% } %>
 				</div>
 			</div>
 	</div>
 
-
-
-
-
-
+<%@ include file='/common/i_gmapanalyzerviewer.jspf'%>
 <script>
       
-       function doCompositeLink(compId1,compId2,compId3,compId4,url) {
+       function doCompositeLink(compId1,compId2,compId3,compId4,compId5,url) {
 			          var param1 = document.getElementById(compId1).value;
 			          var param2 = document.getElementById(compId2).value;
 			          var param3 = document.getElementById(compId3).value;
-					  var param4 = document.getElementById(compId4).checked;
-			          if(param1.length == 0 | param3.length == 0) {
-			          		alert("Please select the required filter param (Date, Group)");
+					  var param4 = document.getElementById(compId4).value;
+					  var param5 = document.getElementById(compId5).checked;
+			          if(param1.length == 0 || param3.length == 0 || param4.length == 0) {
+			          		alert("Please select the required filter param (Date, Group, serviceType)");
 			          } else {
-			          	location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+"&"+compId3+"="+param3+"&"+compId4+"="+param4;
+			          	location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+"&"+compId3+"="+param3+"&"+compId4+"="+param4+"&"+compId5+"="+param5;
 			          }
         } 
 
@@ -169,21 +224,21 @@
                 }
                );
 		 
-		 addTSRowHandlers('ec_table', 'rowMouseOver');
-
-		 <% if(request.getParameter("cutOff") != null && request.getParameter("selectedDate") != null && request.getParameter("group") != null &&	"true".equalsIgnoreCase(request.getParameter("autorefresh"))) { %>
+		 <% if(request.getParameter("cutOff") != null && request.getParameter("selectedDate") != null && request.getParameter("serviceType") != null && request.getParameter("group") != null &&	"true".equalsIgnoreCase(request.getParameter("autorefresh"))) { %>
 		      		doRefresh(<%= TransportationAdminProperties.getCapacityRefreshTime() %>);
 		 <% } %>
 		
-		function doBoundary(doShow) {
-			var table_capacity = document.getElementById("capacity_analyzer_table");
+		function doBoundary() {
+			var table_capacity = document.getElementById("tbl_capacityAnalyzer");
 			var checkboxList_Address = table_capacity.getElementsByTagName("input");
+			var addressList = document.getElementsByName('address');
             var checked = "";
-            
+            var result = "";
             for (i = 0; i < checkboxList_Address.length; i++) {            
               if (checkboxList_Address[i].type=="checkbox" && !checkboxList_Address[i].disabled)  {
               	if(checkboxList_Address[i].checked) {
               		checked += checkboxList_Address[i].name+",";
+					result += addressList[i].innerHTML+"_";
               	}
               }
             }
@@ -191,21 +246,28 @@
              	alert('Please Select a Row!');
             }
             else {
-                if(doShow) {
-            		showBoundary(checked.substring(0,checked.length-1));
-                } else {
-                	location.href = "gmapexport.do?code="+checked.substring(0,checked.length-1);	
-                }
+              	showBoundary(checked.substring(0,checked.length-1), result);
             }
 		}
 
-		function doClear() {
-			var table_capacity = document.getElementById("capacity_analyzer_table");
+		function doSelect() {
+			var table_capacity = document.getElementById("tbl_capacityAnalyzer");
 			var checkboxList_Address = table_capacity.getElementsByTagName("input");
                         
             for (i = 0; i < checkboxList_Address.length; i++) {            
               if (checkboxList_Address[i].type=="checkbox" && !checkboxList_Address[i].disabled)  {
-            	  checkboxList_Address[i].checked = false;                       	
+            	  checkboxList_Address[i].checked = true;
+              }
+            }
+		}
+
+		function doClear() {
+			var table_capacity = document.getElementById("tbl_capacityAnalyzer");
+			var checkboxList_Address = table_capacity.getElementsByTagName("input");
+                        
+            for (i = 0; i < checkboxList_Address.length; i++) {            
+              if (checkboxList_Address[i].type=="checkbox" && !checkboxList_Address[i].disabled)  {
+            	  checkboxList_Address[i].checked = false;
               }
             }
 		}

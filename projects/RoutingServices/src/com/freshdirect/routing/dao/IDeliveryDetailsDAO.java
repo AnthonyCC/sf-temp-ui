@@ -10,7 +10,6 @@ import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IPackagingModel;
-import com.freshdirect.routing.model.IServiceTimeModel;
 import com.freshdirect.routing.model.IUnassignedModel;
 
 public interface IDeliveryDetailsDAO {
@@ -50,4 +49,7 @@ public interface IDeliveryDetailsDAO {
 	int updateTimeslotForDynamicStatusByRegion(final Date baseDate, final String regionCode,final String cutOff, final boolean isDynamic) throws SQLException;
 	
 	List<IOrderModel> getRoutingOrderByDate(final Date deliveryDate, final String zoneCode, final boolean filterExpiredCancelled) throws SQLException;
+	
+	List<IDeliverySlot> getTimeslots(final Date deliveryDate, final Date cutOffTime, 
+			final double latitude, final double longitude, final String serviceType) throws SQLException;
 }

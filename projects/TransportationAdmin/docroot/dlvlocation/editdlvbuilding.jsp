@@ -10,10 +10,17 @@
 
   <tmpl:put name='content' direct='true'>
   	<br/> 
+	<style>
+		.forms1 tr td span {
+			color: #333333;
+			font-size:8pt;
+		}
+	</style>
     <div align="center">
       <form:form commandName = "deliveryBuildingForm" method="post">
       <form:hidden path="buildingId"/>
       
+     
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
           <tr>
             <td class="screentitle">
@@ -149,22 +156,20 @@
 				 <tr>
                   <td>Select Group</td>
                   <td>
-						<form:select path="buildingGroups" multiple="true">
-							<form:options items="${deliveryGroups}" itemValue="groupId" itemLabel="groupName"></form:options>
-						</form:select>
+						<form:checkboxes path="buildingGroups" items="${deliveryGroups}" itemLabel="groupName" itemValue="groupId" delimiter="<br/>"/>
 	              </td>
-				    <td>
+				   <td>
 	                  &nbsp;<form:errors path="buildingGroups" />
-		            </td>
+		           </td>
                </tr>
 			   
               <tr><td colspan="3">&nbsp;</td></tr>
               <tr>
                   <td colspan="3" align="center">
                    <input type = "submit" value="&nbsp;Save&nbsp;"  />
-                </td>     
+				</td>
               </tr>
-              </table>        
+              </table>
               
             </td>
           </tr>               

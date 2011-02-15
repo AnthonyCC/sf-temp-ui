@@ -1,10 +1,10 @@
 package com.freshdirect.transadmin.service.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
-
 import com.freshdirect.routing.constants.EnumGeocodeConfidenceType;
 import com.freshdirect.routing.constants.EnumGeocodeQualityType;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
@@ -144,4 +144,29 @@ public class LocationManagerImpl extends BaseManagerImpl  implements LocationMan
     public DeliveryGroup getDeliveryGroupById(String id){
 		return getLocationManagerDao().getDeliveryGroupById(id);
 	}
+    
+    public List<DlvLocation> getBuildingGroup(String dlvGroup) {
+    	
+    	List<DlvBuilding> dlvBuildings = new ArrayList<DlvBuilding>();
+		List<DlvLocation> locations = new ArrayList<DlvLocation>();
+		
+		dlvBuildings = (List<DlvBuilding>) this.getLocationManagerDao()
+												.getDeliveryBuildings(null, null, null, null, dlvGroup);
+
+		List<DlvLocation> buildingLocations = null;
+		if (dlvBuildings != null) {
+			DlvLocation dlvlocation = null;
+			for (DlvBuilding building : dlvBuildings) {
+				buildingLocations = (List<DlvLocation>) getLocationManagerDao()
+														.getDeliveryLocations(building.getBuildingId());
+				if (buildingLocations != null && !buildingLocations.isEmpty()) {
+					dlvlocation = buildingLocations.get(0);
+					locations.add(dlvlocation);
+				}
+			}
+		}  		
+    	
+		return locations;					
+    }     
+    
 }

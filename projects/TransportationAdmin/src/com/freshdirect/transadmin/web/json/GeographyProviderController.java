@@ -129,8 +129,11 @@ public class GeographyProviderController extends JsonRpcController  implements I
 	public List<DeliveryGroup> getDeliveryGroups(){
 		
 		List<DeliveryGroup> groupsList = new ArrayList<DeliveryGroup>();
-		groupsList = (List<DeliveryGroup>) domainManagerService.getDeliveryGroups();
-					
+		try{
+			groupsList = (List<DeliveryGroup>) domainManagerService.getDeliveryGroups();
+		}catch(Exception ex){
+			ex.printStackTrace();			
+		}
 		return groupsList;	
 	}
 	

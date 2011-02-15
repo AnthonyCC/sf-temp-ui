@@ -1,0 +1,207 @@
+<script>
+            
+      var editPanel;
+      var waitPanel;
+      var map;   
+      var defaultZoomLevel = 15;
+      var selectedAddress = [];
+      var jsonrpcClient = new JSONRpcClient("geographyprovider.ax");
+      var currentBoundary;
+      
+      var locIndex = 0;
+       var currentAddresses;    
+      function init() {
+        editPanel = new YAHOO.widget.Panel("panel-1", {
+                          width: "960px", 
+                          fixedcenter: true, 
+                          close: true, 
+                          draggable: false, 
+                          zindex:4,
+                          modal: true,
+                          visible: false,
+                          effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
+        
+        editPanel.render();
+        
+        waitPanel = new YAHOO.widget.Panel("wait", { width: "240px", 
+                                                          fixedcenter: true, 
+                                                          close: true, 
+                                                          draggable: false, 
+                                                          zindex:4,
+                                                          modal: true,
+                                                          visible: false
+                                                        } 
+                                                    );
+        
+        waitPanel.setHeader("Loading, please wait...");
+        waitPanel.setBody("<img src=\"images/rel_interstitial_loading.gif\"/>");
+        
+        map = new GMap2(document.getElementById("map_canvas"));
+      
+	     map.addControl(new GSmallMapControl());
+		 map.addControl(new GMapTypeControl());
+		 map.enableDragging();
+		 
+	}
+       
+              
+      function showBoundary(boundaryKey, addresses) {
+        
+          waitPanel.render(document.body);
+          waitPanel.show();
+          
+    	  var result = jsonrpcClient.AsyncGeographyProvider.getBoundaries(showBoundaryCallback, boundaryKey); 
+    	  currentBoundary = boundaryKey;
+	  currentAddresses = addresses;
+      }
+      
+      function showBoundaryCallback(result, exception) {
+      	  map.clearOverlays();
+	  
+          if(exception) { 
+              waitPanel.hide();
+              alert('Unable to connect to host system. Please contact system administrator!');
+              return;
+          }
+
+	  var polygonDepth = "20";
+	  var fillColor = "#0000FF"; // blue fill
+	  var lineColor = "#000000"; // black line
+	  var opacity = .5;
+	  var lineWeight = .5; 
+	      
+          waitPanel.hide();
+          if(result.list != null) {
+        	  for (j=0; j < result.list.length; j++) {
+        		  
+        	  var centerpoint = new GLatLng(result.list[j].center['y'], result.list[j].center['x']);
+                  map.setCenter(centerpoint, 12);
+                  
+                  var markerCenter = createFlatMarker(centerpoint, result.list[j].code, result.list[j].zone, (result.list[j].code+"<br/>"+result.list[j].name));//createMarker(centerpoint,"P",(result.list[j].code+"<br/>"+result.list[j].name));
+                  map.addOverlay(markerCenter);
+		          if(result.list[j].geoloc.list != null) {
+		        	var polyPoints = [];
+		          	for (i=0; i < result.list[j].geoloc.list.length; i++) {
+		          		
+		          	 	var tmpPoint = result.list[j].geoloc.list[i];
+		          		polyPoints.push(new GLatLng(tmpPoint['y'], tmpPoint['x']));
+		          	}
+		          	var polyShape = new GPolygon(polyPoints,lineColor,lineWeight,opacity, genHexColor(),opacity);
+				map.addOverlay(polyShape);
+		          }
+        	  }
+          }
+         plotPoint('A', currentAddresses);
+	 
+	 editPanel.render(document.body);
+	 editPanel.show();
+
+      }
+
+      function genHexColor(){
+    	  colors = new Array(14)
+    	  colors[0]="0"
+    	  colors[1]="1"
+    	  colors[2]="2"
+    	  colors[3]="3"
+    	  colors[4]="4"
+    	  colors[5]="5"
+    	  colors[5]="6"
+    	  colors[6]="7"
+    	  colors[7]="8"
+    	  colors[8]="9"
+    	  colors[9]="a"
+    	  colors[10]="b"
+    	  colors[11]="c"
+    	  colors[12]="d"
+    	  colors[13]="e"
+    	  colors[14]="f"
+
+    	  digit = new Array(5)
+    	  color="#"
+    	  for (i=0; i<6; i++){
+    	  	digit[i]=colors[Math.round(Math.random()*14)]
+    	  	color = color+digit[i];
+    	  }
+    	  return color;
+   	  }
+       	  
+      function plotPoint(type, result) {
+      	if('A' == type) {
+      		// Create new geocoding object
+		var geocoder = new GClientGeocoder();
+		if(result != null) {
+			var currentAddress;
+			var address = [];
+			address = result.split('_');
+			selectedAddress = result.split('_');
+			alert(selectedAddress.length)
+			for (j=0; j < address.length; j++) {
+				//currentAddress = address[j];
+		 	       // Retrieve location information, pass it to addToMap()
+			    	geocoder.getLocations(address[j], addToMap);
+			}
+		}
+      	}
+      }
+      
+       function addToMap(response) {
+	 var addressMarker;
+         var addressPoint;
+	 for(i=0; i < selectedAddress.length; i++){
+	      var place = response.Placemark[0];
+	      addressPoint = new GLatLng(place.Point.coordinates[1],place.Point.coordinates[0]);
+	
+	      // Center the map on this point
+	      map.setCenter(addressPoint, 12);
+	      
+	          
+	      addressMarker = createLabelledMarker(addressPoint,"A",selectedAddress[i]+"<br/>"
+	      					+("Latitude="+place.Point.coordinates[1]+"<br/>"+"Longitude="+place.Point.coordinates[0]));
+	
+	      // Add the marker to map
+	      map.addOverlay(addressMarker);
+	}
+      }
+
+ 	function gotoPoint(valX, valY) {
+ 		 map.setCenter(new GLatLng(valX, valY), 12);
+ 	}
+
+ 	function createLabelledMarker(point, info, legend) {
+              var newIcon = MapIconMaker.createLabeledMarkerIcon({width: 30, height: 30, primaryColor: "#ff0000", label:info, labelColor:"#ffffff"});
+ 		   var marker = new GMarker(point, {icon: newIcon});
+ 			GEvent.addListener(marker, "click", function() {
+		    marker.openInfoWindowHtml(legend);
+		  });
+    	  return marker;
+   	} 
+    	
+       function createFlatMarker(point, info, isZone, legend) {
+           var shapeVal = "roundrect";
+           if(isZone) {
+        	   shapeVal = "circle";
+           }
+	       var newIcon = MapIconMaker.createFlatIcon({width: 30, height: 30, primaryColor: "#ff0000", label:info, shape: shapeVal, labelColor:"#ffffff"});
+   		   var marker = new GMarker(point, {icon: newIcon});
+   			GEvent.addListener(marker, "click", function() {
+			    marker.openInfoWindowHtml(legend);
+			});
+      	  return marker;
+     	}
+
+      YAHOO.util.Event.addListener(window, "load", init);
+      YAHOO.util.Event.addListener(window, "unload", GUnload);
+    </script>
+   
+    <div id="wait"></div>
+    <form name="panel-1-form" id="panel-1-form" method="post">
+      <div id="panel-1">
+      <div class="hd"></div>
+      <div class="bd">
+ 	 <div id="map_canvas" style="width: 940px; height: 600px"></div>
+ 	 <div id="loccontainer" style="overflow-y: scroll;width:940px; height: 35px;border: 1px solid #aaa;">
+ 	 	<div id="locdiv" style="height:50px;">&nbsp;</div>
+ 	  </div>	
+      </div>
+    </div>

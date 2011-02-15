@@ -210,7 +210,9 @@ public class LocationController extends AbstractMultiActionController  {
 		
 		ModelAndView mav = new ModelAndView("deliveryBuildingView");
 		
-		
+		mav.getModel().put("confidence", confidenceLevel);
+		mav.getModel().put("quality", qualityLevel);
+		mav.getModel().put("group", group);
 		mav.getModel().put("confidencetypes",locationManagerService.getConfidenceTypes());
 		mav.getModel().put("qualitytypes",locationManagerService.getQualityTypes());
 		mav.getModel().put("deliveryGroups",domainManagerService.getDeliveryGroups());
