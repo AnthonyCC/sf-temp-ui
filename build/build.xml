@@ -2469,7 +2469,7 @@
 
 	<target name="wpjar" description="make wordpress redistributable package">
 		<mkdir dir="${release.dir}/applications" />
-		<jar destfile="${release.dir}/applications/worpress-redist.jar">
+		<jar destfile="${release.dir}/applications/wordpress-redist.jar">
 			<manifest>
 				<attribute name="Specification-Version" value="${build.counter}"/>
 				<attribute name="Specification-Vendor" value="FreshDirect LLC"/>
@@ -2480,6 +2480,7 @@
 			</manifest>
 			<fileset dir="${projects.dir}/wordpress">
 				<exclude name="wp-config.php"/>
+				<exclude name="wp-content/uploads/**"/>
 			</fileset>
 			<zipfileset dir="${projects.dir}/Media/docroot" prefix="wp-content/themes/freshdirect">
 				<include name="assets/**"/>
