@@ -588,6 +588,19 @@ public class HelperFunctions {
         return 0;
     }
 
+    /**
+     * Adds node to the posterior nodes list and indicates removal from the active list
+     * by returning 0 value.
+     * 
+     * @param da the data access object
+     * @param model
+     * @return 0 (gets item removed from active nodes list)
+     */
+    public static int addDeprioritizedNode(DataAccess da, ContentNodeModel model) {
+        da.addPosteriorNode(model);
+        return 0;
+    }
+
     public static List<ContentNodeModel> getPersonalizedExternalRecommendations(String providerName, SessionInput input) {
     	try {
 			ExternalRecommender recommender = ExternalRecommenderRegistry.getInstance(providerName, ExternalRecommenderType.PERSONALIZED);

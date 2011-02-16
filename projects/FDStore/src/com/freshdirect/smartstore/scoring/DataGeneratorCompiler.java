@@ -519,6 +519,11 @@ public class DataGeneratorCompiler extends CompilerBase {
                 return "HelperFunctions.addPrioritizedNode(input," + ITERATION_VARIABLE + ")";
             }
         });
+        parser.getContext().addFunctionDef("deprioritize", new Context.FunctionDef(0, 0, Expression.RET_INT) {
+            public String toJavaCode(String name, List<Expression> parameters) throws CompileException {
+                return "HelperFunctions.addDeprioritizedNode(input," + ITERATION_VARIABLE + ")";
+            }
+        });
         parser.getContext().addFunctionDef("Top", new TopFunction());
 
         parser.getContext().addFunctionDef(FN_PRODUCT_RECOMMENDATION, new Context.FunctionDef(2, 2, Expression.RET_SET) {

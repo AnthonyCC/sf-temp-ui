@@ -146,7 +146,7 @@ public class DataGeneratorCompilerTest extends TestCase {
         {
             DataGenerator dataGenerator = comp.createDataGenerator("test1", "set + set2");
             assertNotNull("dataGenerator", dataGenerator);
-            Collection collection = dataGenerator.generate(s, input);
+            Collection<ContentNodeModel> collection = dataGenerator.generate(s, input);
             assertNotNull("result collection", collection);
             // a1, a2, a3, a3, b1
             assertEquals("result collection size", 5, collection.size());
@@ -160,7 +160,7 @@ public class DataGeneratorCompilerTest extends TestCase {
         {
             DataGenerator dataGenerator = comp.createDataGenerator("test2", "set - set2");
             assertNotNull("dataGenerator", dataGenerator);
-            Collection collection = dataGenerator.generate(s, input);
+            Collection<ContentNodeModel> collection = dataGenerator.generate(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 2, collection.size());
             assertTrue("contains a1", collection.contains("a1"));
@@ -170,7 +170,7 @@ public class DataGeneratorCompilerTest extends TestCase {
         {
             DataGenerator dataGenerator = comp.createDataGenerator("test3", "set * set2");
             assertNotNull("dataGenerator", dataGenerator);
-            Collection collection = dataGenerator.generate(s, input);
+            Collection<ContentNodeModel> collection = dataGenerator.generate(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 1, collection.size());
             assertTrue("contains a3", collection.contains("a3"));
@@ -183,7 +183,7 @@ public class DataGeneratorCompilerTest extends TestCase {
         {
             DataGenerator dataGenerator = comp.createDataGenerator("atest1", "content:(1-1)");
             assertNotNull("dataGenerator", dataGenerator);
-            Collection collection = dataGenerator.generate(s, input);
+            Collection<ContentNodeModel> collection = dataGenerator.generate(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 0, collection.size());
             assertEquals("no factor", 0, dataGenerator.getFactors().size());
@@ -192,10 +192,10 @@ public class DataGeneratorCompilerTest extends TestCase {
         {
             DataGenerator dataGenerator = comp.createDataGenerator("atest2", "content:between(afact,2,3)");
             assertNotNull("dataGenerator", dataGenerator);
-            Collection collection = dataGenerator.generate(s, input);
+            Collection<ContentNodeModel> collection = dataGenerator.generate(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 2, collection.size());
-            Collection strings = TestUtils.convertToStringList(collection);
+            Set<String> strings = TestUtils.convertToStringList(collection);
             assertTrue("contains a2", strings.contains("a2"));
             assertTrue("contains a3", strings.contains("a3"));
             assertEquals("afact factor", 1, dataGenerator.getFactors().size());
@@ -204,10 +204,10 @@ public class DataGeneratorCompilerTest extends TestCase {
         {
             DataGenerator dataGenerator = comp.createDataGenerator("atest3", "content:between(afact,2,3):between(afact,1,2)");
             assertNotNull("dataGenerator", dataGenerator);
-            Collection collection = dataGenerator.generate(s, input);
+            Collection<ContentNodeModel> collection = dataGenerator.generate(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 1, collection.size());
-            Collection strings = TestUtils.convertToStringList(collection);
+            Set<String> strings = TestUtils.convertToStringList(collection);
             assertTrue("contains a2", strings.contains("a2"));
 
             assertEquals("afact factor", 1, dataGenerator.getFactors().size());
@@ -216,11 +216,11 @@ public class DataGeneratorCompilerTest extends TestCase {
         {
             DataGenerator dataGenerator = comp.createDataGenerator("atest4", "content:between(afact,2,3) + content2");
             assertNotNull("dataGenerator", dataGenerator);
-            Collection collection = dataGenerator.generate(s, input);
+            Collection<ContentNodeModel> collection = dataGenerator.generate(s, input);
             assertNotNull("result collection", collection);
             // a2, a3, a2, bbb
             assertEquals("result collection size", 4, collection.size());
-            Collection strings = TestUtils.convertToStringList(collection);
+            Set<String> strings = TestUtils.convertToStringList(collection);
             assertTrue("contains a2", strings.contains("a2"));
             assertTrue("contains a3", strings.contains("a3"));
             assertTrue("contains bbb", strings.contains("bbb"));
@@ -231,10 +231,10 @@ public class DataGeneratorCompilerTest extends TestCase {
         {
             DataGenerator dataGenerator = comp.createDataGenerator("atest5", "content:(between(afact,2,3)*between(afact,1,2))");
             assertNotNull("dataGenerator", dataGenerator);
-            Collection collection = dataGenerator.generate(s, input);
+            Collection<ContentNodeModel> collection = dataGenerator.generate(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 1, collection.size());
-            Collection strings = TestUtils.convertToStringList(collection);
+            Set<String> strings = TestUtils.convertToStringList(collection);
             assertTrue("contains a2", strings.contains("a2"));
         }
     }
@@ -243,10 +243,10 @@ public class DataGeneratorCompilerTest extends TestCase {
         {
             DataGenerator dataGenerator = comp.createDataGenerator("atest6", "content:atLeast(afact,2)");
             assertNotNull("dataGenerator", dataGenerator);
-            Collection collection = dataGenerator.generate(s, input);
+            Collection<ContentNodeModel> collection = dataGenerator.generate(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 2, collection.size());
-            Collection strings = TestUtils.convertToStringList(collection);
+            Set<String> strings = TestUtils.convertToStringList(collection);
             assertTrue("contains a2", strings.contains("a2"));
             assertTrue("contains a3", strings.contains("a3"));
             assertEquals("afact factor", 1, dataGenerator.getFactors().size());
@@ -255,10 +255,10 @@ public class DataGeneratorCompilerTest extends TestCase {
         {
             DataGenerator dataGenerator = comp.createDataGenerator("atest7", "content:atMost(afact,2)");
             assertNotNull("dataGenerator", dataGenerator);
-            Collection collection = dataGenerator.generate(s, input);
+            Collection<ContentNodeModel> collection = dataGenerator.generate(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 2, collection.size());
-            Collection strings = TestUtils.convertToStringList(collection);
+            Set<String> strings = TestUtils.convertToStringList(collection);
             assertTrue("contains a2", strings.contains("a2"));
             assertTrue("contains a1", strings.contains("a1"));
             assertEquals("afact factor", 1, dataGenerator.getFactors().size());
@@ -306,7 +306,7 @@ public class DataGeneratorCompilerTest extends TestCase {
         DataGenerator dataGenerator = comp.createDataGenerator("prio1", "content:prioritize()");
         assertNotNull("dataGenerator", dataGenerator);
         input.reset();
-        Collection collection = dataGenerator.generate(s, input);
+        Collection<ContentNodeModel> collection = dataGenerator.generate(s, input);
         assertNotNull("result collection", collection);
         assertEquals("result collection size", 0, collection.size());
         assertNotNull("result prioritized nodes", input.getPrioritizedNodes());
@@ -319,11 +319,28 @@ public class DataGeneratorCompilerTest extends TestCase {
         		new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a3"))));
     }
 
+    public void testDeprioritize() throws CompileException {
+        DataGenerator dataGenerator = comp.createDataGenerator("deprio1", "content:deprioritize()");
+        assertNotNull("dataGenerator", dataGenerator);
+        input.reset();
+        Collection<ContentNodeModel> collection = dataGenerator.generate(s, input);
+        assertNotNull("result collection", collection);
+        assertEquals("result collection size", 0, collection.size());
+        assertNotNull("result deprioritized nodes", input.getPosteriorNodes());
+        assertEquals("result deprioritized nodes size", 3, input.getPosteriorNodes().size());
+        assertTrue("contains a1", input.getPosteriorNodes().contains(
+        		new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a1"))));
+        assertTrue("contains a2", input.getPosteriorNodes().contains(
+        		new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a2"))));
+        assertTrue("contains a3", input.getPosteriorNodes().contains(
+        		new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a3"))));
+    }
+
     public void testRecurseRecursiveNodes() throws CompileException {
         DataGenerator dataGenerator = comp.createDataGenerator("recRec", "RecursiveNodes(RecursiveNodes(RecursiveNodes(content)))");
         assertNotNull("dataGenerator", dataGenerator);
         input.reset();
-        Collection result = dataGenerator.generate(s, input);
+        Collection<ContentNodeModel> result = dataGenerator.generate(s, input);
         assertNotNull("result not null", result);
     }
     
@@ -331,7 +348,7 @@ public class DataGeneratorCompilerTest extends TestCase {
         DataGenerator dataGenerator = comp.createDataGenerator("topN", "Top(content,afact,3)");
         assertNotNull("dataGenerator", dataGenerator);
         input.reset();
-        Collection result = dataGenerator.generate(s, input);
+        Collection<ContentNodeModel> result = dataGenerator.generate(s, input);
         assertNotNull("result not null", result);
     }
     
@@ -339,7 +356,7 @@ public class DataGeneratorCompilerTest extends TestCase {
         DataGenerator dataGenerator = comp.createDataGenerator("prio2", "content + content2:prioritize()");
         assertNotNull("dataGenerator", dataGenerator);
         input.reset();
-        List result = dataGenerator.generate(s, input);
+        List<ContentNodeModel> result = dataGenerator.generate(s, input);
         assertNotNull("result not null", result);
         assertEquals("result length 3", 3, result.size());
         Set<String> resultNodes = TestUtils.convertToStringList(result);
