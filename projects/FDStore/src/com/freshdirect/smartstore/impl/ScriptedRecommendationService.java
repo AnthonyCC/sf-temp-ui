@@ -2,8 +2,10 @@ package com.freshdirect.smartstore.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 import com.freshdirect.common.pricing.PricingContext;
@@ -97,16 +99,31 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
 			aggregatable = false;
 		}
 
-		List<ContentNodeModel> sample;
 		List<ContentNodeModel> prioritized = dataAccess.getPrioritizedNodes();
+		List<ContentNodeModel> sample;
+		List<ContentNodeModel> deprioritized = dataAccess.getPosteriorNodes();
 		input.setPrioritizedCount( prioritized.size() );
-		
-		sample = sample(input, rankedContents, aggregatable, prioritized);
 
-		List<ContentNodeModel> appended = new ArrayList<ContentNodeModel>(prioritized.size() + sample.size());
-		appended.addAll(prioritized);
-		appended.addAll(sample);
-		return appended;
+		
+		// sample items excluding the union of low and high priority nodes
+		{
+			Set<ContentNodeModel> items2exclude = new HashSet<ContentNodeModel>(prioritized);
+			items2exclude.addAll(deprioritized);
+
+			sample = sample(input, rankedContents, aggregatable, items2exclude);
+		}
+
+
+		/** 
+		 *  put the final list together
+		 *  [priority items]+[sampled normal items]+[low priority items]
+		 */
+		List<ContentNodeModel> finalList = new ArrayList<ContentNodeModel>(prioritized.size() + sample.size() + deprioritized.size());
+		finalList.addAll(prioritized);
+		finalList.addAll(sample);
+		finalList.addAll(deprioritized);
+
+		return finalList;
 	}
 
 	/**
