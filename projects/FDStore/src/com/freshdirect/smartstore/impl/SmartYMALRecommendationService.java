@@ -43,7 +43,20 @@ public class SmartYMALRecommendationService extends	AbstractRecommendationServic
 	/**
 	 * Recommends products for the current node
 	 */
+	@Override
 	public List<ContentNodeModel> doRecommendNodes(SessionInput input) {
+		return recommendYmalItems(input);
+	}
+
+
+
+	/**
+	 * Does the job, gives YMAL recommendation based on session input
+	 * 
+	 * @param input
+	 * @return
+	 */
+	public static List<ContentNodeModel> recommendYmalItems(SessionInput input) {
 
 		List<ContentNodeModel> prodList = new ArrayList<ContentNodeModel>();
 		final YmalSource ymalSource = input.getYmalSource();
@@ -192,10 +205,12 @@ public class SmartYMALRecommendationService extends	AbstractRecommendationServic
 		return keys;
 	}
 
+	@Override
 	public void collectFactors(Collection<String> buffer) {
 		// XXX currently loaded in the SmartStoreServiceConfiguration
 	}
 
+	@Override
 	public boolean isRefreshable() {
 		return true;
 	}
