@@ -33,6 +33,7 @@ import com.freshdirect.smartstore.fdstore.DatabaseScoreFactorProvider;
 import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 import com.freshdirect.smartstore.filter.ContentFilter;
 import com.freshdirect.smartstore.filter.FilterFactory;
+import com.freshdirect.smartstore.impl.SmartYMALRecommendationService;
 import com.freshdirect.smartstore.sampling.RankedContent;
 import com.freshdirect.smartstore.sampling.RankedContent.Single;
 
@@ -641,5 +642,18 @@ public class HelperFunctions {
 		} catch (NullPointerException e) {
 		}
 		return new ArrayList<ContentNodeModel>();
+    }
+    
+    
+    
+
+    /**
+     * Produce Smart YMAL recommendation based on session input
+     * 
+     * @param input
+     * @return
+     */
+    public static List<ContentNodeModel> getSmartYMALRecommendation(SessionInput input) {
+    	return SmartYMALRecommendationService.recommendYmalItems(input);
     }
 }

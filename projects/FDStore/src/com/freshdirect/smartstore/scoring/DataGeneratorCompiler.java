@@ -53,6 +53,7 @@ public class DataGeneratorCompiler extends CompilerBase {
     private static final String CART_CONTENTS = "cartContents";
     private static final String RECENT_ITEMS = "recentItems";
 
+    private static final String FN_SMART_YMAL = "SmartYMAL";
 
     private final static Collection<String> GLOBAL_VARIABLES = new HashSet<String>(); 
     {
@@ -569,6 +570,13 @@ public class DataGeneratorCompiler extends CompilerBase {
 
         // you have to add alias variables here
         parser.getContext().addVariable(CURRENT_NODE, Expression.RET_NODE);
+
+
+        parser.getContext().addFunctionDef(FN_SMART_YMAL, new Context.FunctionDef(0, 0, Expression.RET_SET) {
+            public String toJavaCode(String name, List<Expression> parameters) throws CompileException {
+                return "HelperFunctions.getSmartYMALRecommendation(input)";
+            }
+        });
     }
 
     public synchronized DataGenerator createDataGenerator(String name, String expression) throws CompileException {
