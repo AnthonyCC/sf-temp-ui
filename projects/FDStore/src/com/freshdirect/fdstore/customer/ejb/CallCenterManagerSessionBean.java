@@ -57,10 +57,12 @@ import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumTransactionType;
+import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpComplaintException;
+import com.freshdirect.customer.ErpDeliveryInfoModel;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpRedeliveryModel;
@@ -74,6 +76,7 @@ import com.freshdirect.customer.ejb.ErpComplaintManagerSB;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
+import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.ejb.DlvManagerDAO;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DlvPassConstants;
@@ -82,6 +85,7 @@ import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
 import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.meal.MealModel;
 import com.freshdirect.fdstore.content.meal.ejb.MealPersistentBean;
@@ -924,16 +928,23 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 	}
 
 	public void resubmitOrder(String saleId, CustomerRatingI cra,EnumSaleType saleType) throws FDResourceException, ErpTransactionException {
-		try {
-			ErpCustomerManagerSB customerManagerSB = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
-			customerManagerSB.resubmitOrder(saleId, cra,saleType);
+        try {
+              ErpCustomerManagerSB customerManagerSB = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+              ErpSaleModel _order=customerManagerSB.getOrder(new PrimaryKey(saleId));
+              ErpAbstractOrderModel order =_order.getCurrentOrder();
+              ErpDeliveryInfoModel dlvInfo=order.getDeliveryInfo();
+              DlvZoneInfoModel zInfo = FDDeliveryManager.getInstance().getZoneInfo(dlvInfo.getDeliveryAddress(),dlvInfo.getDeliveryStartTime());
+              customerManagerSB.resubmitOrder(saleId, cra,saleType,zInfo.getRegionId());
+              
+        } catch (CreateException ce) {
+              throw new FDResourceException(ce);
+        } catch (RemoteException re) {
+              throw new FDResourceException(re);
+        } catch (FDInvalidAddressException e) {
+              throw new FDResourceException(e);
+        }
+  }
 
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
 
 	public void resubmitCustomer(String customerID) throws FDResourceException {
 		try {

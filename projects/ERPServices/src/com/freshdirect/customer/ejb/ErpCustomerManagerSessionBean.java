@@ -308,52 +308,56 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	 * @param saleId
 	 * @throws ErpTransactionException if the order is not in the NOT_SUBMITTED, NEW or MODIFIED state
 	 */
-	public void resubmitOrder(String saleId,CustomerRatingI cra,EnumSaleType saleType) throws ErpTransactionException {
-		try {
-			ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
+	public void resubmitOrder(String saleId,CustomerRatingI cra,EnumSaleType saleType, String regionId) throws ErpTransactionException {
+        try {
+              ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 
-			// check state
-			EnumSaleStatus status = saleEB.getStatus();
-			if (!(EnumSaleStatus.NOT_SUBMITTED.equals(status)
-				|| EnumSaleStatus.NEW.equals(status)
-				|| EnumSaleStatus.MODIFIED.equals(status)
-				|| EnumSaleStatus.MODIFIED_CANCELED.equals(status))) {
-				this.getSessionContext().setRollbackOnly();
-				throw new ErpTransactionException("Sale not in NSM, NEW, MOD or MOC state");
-			}
+              // check state
+              EnumSaleStatus status = saleEB.getStatus();
+              if (!(EnumSaleStatus.NOT_SUBMITTED.equals(status)
+                    || EnumSaleStatus.NEW.equals(status)
+                    || EnumSaleStatus.MODIFIED.equals(status)
+                    || EnumSaleStatus.MODIFIED_CANCELED.equals(status))) {
+                    this.getSessionContext().setRollbackOnly();
+                    throw new ErpTransactionException("Sale not in NSM, NEW, MOD or MOC state");
+              }
 
-			LOGGER.info("Resubmitting order. saleID=" + saleId + " status=" + status.getName());
-			String sapOrderNumber = saleEB.getSapOrderNumber();
+              LOGGER.info("Resubmitting order. saleID=" + saleId + " status=" + status.getName());
+              String sapOrderNumber = saleEB.getSapOrderNumber();
 
-			SapGatewaySB sapSB = this.getSapGatewayHome().create();
+              SapGatewaySB sapSB = this.getSapGatewayHome().create();
 
-			if (saleEB.getStatus().isCanceled()) {
-				sapSB.sendCancelSalesOrder(saleId, sapOrderNumber);
-				return;
-			}
+              if (saleEB.getStatus().isCanceled()) {
+                    sapSB.sendCancelSalesOrder(saleId, sapOrderNumber);
+                    return;
+              }
 
-			ErpAbstractOrderModel order = saleEB.getCurrentOrder();
+              ErpAbstractOrderModel order = saleEB.getCurrentOrder();
+              order.getDeliveryInfo().setDeliveryRegionId(regionId);
+              
+              
+              PrimaryKey customerPk = saleEB.getCustomerPk();
+              SapOrderAdapter sapOrder = this.adaptOrder(customerPk, order, cra);
+              sapOrder.setWebOrderNumber(saleId);
 
-			PrimaryKey customerPk = saleEB.getCustomerPk();
-			SapOrderAdapter sapOrder = this.adaptOrder(customerPk, order, cra);
-			sapOrder.setWebOrderNumber(saleId);
+              if (sapOrderNumber == null) {
+                    // it's not in SAP yet, create it
+                    sapSB.sendCreateSalesOrder(sapOrder,saleType);
+              } else {
+                    // it's already in SAP, so call change
+                    sapSB.sendChangeSalesOrder(saleId, sapOrderNumber, sapOrder);
+              }
 
-			if (sapOrderNumber == null) {
-				// it's not in SAP yet, create it
-				sapSB.sendCreateSalesOrder(sapOrder,saleType);
-			} else {
-				// it's already in SAP, so call change
-				sapSB.sendChangeSalesOrder(saleId, sapOrderNumber, sapOrder);
-			}
+        } catch (CreateException ce) {
+              throw new EJBException(ce);
+        } catch (FinderException fe) {
+              throw new EJBException(fe);
+        } catch (RemoteException re) {
+              throw new EJBException(re);
+        }
+  }
 
-		} catch (CreateException ce) {
-			throw new EJBException(ce);
-		} catch (FinderException fe) {
-			throw new EJBException(fe);
-		} catch (RemoteException re) {
-			throw new EJBException(re);
-		}
-	}
+
 
 	/**
 	 * Cancels a sale, enqueues request in SAP.

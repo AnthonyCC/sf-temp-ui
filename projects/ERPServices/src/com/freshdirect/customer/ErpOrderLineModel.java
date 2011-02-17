@@ -288,9 +288,11 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 		this.pricingCtx = pricingCtx;
 	}
 	
-    public String getPricingZoneId() {
-		return pricingZoneId;
+	public String getPricingZoneId() {
+	      return this.pricingCtx!=null? this.pricingCtx.getZoneId():"";
+	     //return pricingZoneId;
 	}
+
 
 	public void setPricingZoneId(String pricingZoneId) {
 		this.pricingZoneId = pricingZoneId;

@@ -103,7 +103,7 @@ public interface ErpCustomerManagerSB extends EJBObject {
      * @param saleId
      * @throws ErpTransactionException if the order is not in the NOT_SUBMITTED STATE
      */
-    public void resubmitOrder(String saleId,CustomerRatingI cra,EnumSaleType saleType) throws ErpTransactionException, RemoteException;
+    public void resubmitOrder(String saleId,CustomerRatingI cra,EnumSaleType saleType, String regionId) throws ErpTransactionException, RemoteException;
     
     /**
      * Cancels a sale, enqueues request in SAP.
