@@ -123,6 +123,7 @@
 		<url-pattern>/images/*</url-pattern>
 		<url-pattern>/js/*</url-pattern>
 		<url-pattern>/css/*</url-pattern>
+		<url-pattern>favicon.ico</url-pattern>
 		<url-pattern>download.do</url-pattern>
 		<url-pattern>dispatchDashboardScreen.do</url-pattern>
 		<http-method>GET</http-method>
