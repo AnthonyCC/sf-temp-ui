@@ -66,7 +66,6 @@ DESCRIPTION: Two-column fixed layout with one sidebar right of content
 }
 #content {
 	margin: 0 25px 0 25px;
-	font-size: 10px;
 }
 #primary,
 #fd-oas,
@@ -75,10 +74,8 @@ DESCRIPTION: Two-column fixed layout with one sidebar right of content
 	overflow: hidden;
 	width: 236px;
 	margin-right: 0px;
-	font-size: 10px;
 }
 #fd-oas .fd-oas-inner {
-	font-size: 10px;
 	padding-bottom: 20px;
 	margin-bottom: 24px;
 	margin-right: 24px;

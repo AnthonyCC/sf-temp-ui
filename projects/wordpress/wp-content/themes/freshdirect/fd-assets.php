@@ -21,7 +21,11 @@ var a2a_config = {};
 </style>
 <![endif]-->
 <link rel="stylesheet" href="<?php bloginfo('template_url'); ?>/assets/css/modalbox.css" type="text/css" />
+<?php if (strpos($_SERVER['HTTP_USER_AGENT'], 'Mac') !== false) { ?>
+<link rel="stylesheet" href="<?php bloginfo('template_url'); ?>/assets/css/mac_ie.css" type="text/css" />
+<?php } else { ?>
 <link rel="stylesheet" href="<?php bloginfo('template_url'); ?>/assets/css/pc_ie.css" type="text/css" />
+<?php } ?>
 <!--[if lte IE 6]>
 <link rel="stylesheet" href="<?php bloginfo('template_url'); ?>/assets/css/pngfix_ie6.css" type="text/css">
 <![endif]--> 

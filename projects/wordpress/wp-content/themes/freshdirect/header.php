@@ -72,7 +72,7 @@
 		<td class="frame-corner"><img src="<?php bloginfo('template_url'); ?>/images/corner_top_right.png" width="5" height="5" border="0"></td>
 	</tr></table>
 
-	<div class="main-frame-side">
+	<div class="main-frame-side text12">
 	<img src="<?php bloginfo('template_url'); ?>/media_stat/images/layout/clear.gif" height="15" width="733">
 	<br>
 	<div style="padding: 0px 25px; margin-bottom: 30px;" class="main-frame-side-header">
