@@ -589,7 +589,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 	}
 	
 	private static final String GET_DYNAMIC_ZONEMAPPING_QRY = "select T.BASE_DATE D_DATE, Z.ZONE_CODE D_ZONE from dlv.timeslot t" +
-			", dlv.zone z where T.BASE_DATE > sysdate and T.ZONE_ID = Z.ID and T.IS_DYNAMIC = 'X' group by T.BASE_DATE, Z.ZONE_CODE";
+			", dlv.zone z where T.BASE_DATE >= trunc(sysdate) and T.ZONE_ID = Z.ID and T.IS_DYNAMIC = 'X' group by T.BASE_DATE, Z.ZONE_CODE";
 	
 	public Map<Date, List<String>> getDynamicEnabledZoneMapping()  throws SQLException {
 		final Map<Date, List<String>> result = new HashMap<Date, List<String>>();
