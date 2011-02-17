@@ -1,1 +1,1 @@
-<jsp:forward page="/main/main_index.jsp"/>
+<jsp:forward page="/main/main_index.jsp?clearUser=false"/>

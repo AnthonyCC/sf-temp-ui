@@ -151,7 +151,7 @@
 		<links name="main">main_index.jsp,worklist.jsp,giftcard_landing.jsp,profile_list.jsp</links>
 		<links name="promotions">promotion_popup.jsp,promo_view.jsp,promo_home.jsp,promo_create.jsp,promo_details.jsp,promo_edit_basic.jsp,promo_edit_cart.jsp,promo_edit_customer.jsp,promo_edit_delivery.jsp,promo_edit_offer.jsp,promo_edit_payment.jsp,promo_publish.jsp,promo_edit.jsp,export_promo_list.jsp,promo_import_clone.jsp,promo_activity.jsp,promo.jsp,promo_ws_view.jsp,promo_ws_create.jsp</links>
 		<links name="giftcards">giftcard_summary.jsp,gc_balance.jsp</links>	
-		<links name="customer">order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,order_search_results.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,masquerade.jsp,account_details.jsp,smartstore_info.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,promotion_history.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,delivery_pass.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,set_profile_attr.jsp,customer_profile_summary.jsp</links>
+		<links name="customer">order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,order_search_results.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,masquerade.jsp,account_details.jsp,smartstore_info.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,promotion_history.jsp,promotion_popup.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,delivery_pass.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,set_profile_attr.jsp,customer_profile_summary.jsp</links>
 		<links name="cases">summary_case_actions.jsp,new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>
 		<links name="actions">edit_profile</links>
 	</role>
@@ -277,7 +277,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 		<links name="cases">summary_case_actions.jsp,new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>
 		<links name="promotions">promotion_popup.jsp,promo_view.jsp,promo_home.jsp,promo_details.jsp,export_promo_list.jsp</links>
 		<links name="giftcards">gc_balance.jsp,giftcard_addused.jsp</links>
-		<links name="customer">account_details.jsp,order_details.jsp,place_alert.jsp,customer_alert_list.jsp,deactivate_account.jsp,credit_card_info.jsp,customer_search_results.jsp,company_search_results.jsp,summary.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,credit_history.jsp,promotion_history.jsp,giftcard_summary.jsp,profile_list.jsp,set_profile_attr.jsp,delivery_pass.jsp</links>
+		<links name="customer">account_details.jsp,order_details.jsp,place_alert.jsp,customer_alert_list.jsp,deactivate_account.jsp,credit_card_info.jsp,customer_search_results.jsp,company_search_results.jsp,summary.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,credit_history.jsp,promotion_history.jsp,promotion_popup.jsp,giftcard_summary.jsp,profile_list.jsp,set_profile_attr.jsp,delivery_pass.jsp</links>
 		<links name="actions">edit_profile</links>
 	</role>
 	
@@ -378,7 +378,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 		<links name="reports">credit_summary_report.jsp,credit_report.jsp</links>
 		<links name="promotions">promo_view.jsp,promo_create.jsp,promo_details.jsp,promo_edit.jsp,export_promo_list.jsp,promo_activity.jsp</links>
 		<links name="cases">summary_case_actions.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>
-		<links name="customer">order_search_results.jsp,customer_search_results.jsp,company_search_results.jsp,summary.jsp,summary_report.jsp,account_details.jsp,smartstore_info.jsp,case_history.jsp,order_history.jsp,order_details.jsp,order_cases.jsp,credit_history.jsp,promotion_history.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,giftcard_summary.jsp,delivery_pass.jsp,customer_profile_summary.jsp</links>
+		<links name="customer">order_search_results.jsp,customer_search_results.jsp,company_search_results.jsp,summary.jsp,summary_report.jsp,account_details.jsp,smartstore_info.jsp,case_history.jsp,order_history.jsp,order_details.jsp,order_cases.jsp,credit_history.jsp,promotion_history.jsp,promotion_popup.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,giftcard_summary.jsp,delivery_pass.jsp,customer_profile_summary.jsp</links>
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>		
 	</role>
 	

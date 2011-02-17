@@ -17,7 +17,9 @@
 
 <%
 	// remove current cust
-session.setAttribute(SessionName.USER,null);
+	if(null ==request.getParameter("clearUser") || "true".equals(request.getParameter("clearUser"))){
+		session.setAttribute(SessionName.USER,null);
+	}
 session.setAttribute(SessionName.APPLICATION, "CALLCENTER");
 %>
 

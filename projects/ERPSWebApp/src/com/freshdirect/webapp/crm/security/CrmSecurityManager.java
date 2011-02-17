@@ -96,7 +96,7 @@ public class CrmSecurityManager {
 		if((uri != null && (uri.indexOf("/includes/")>=0 || uri.indexOf("/postbacks/")>=0|| uri.indexOf("/template/")>=0
 				||uri.indexOf("/media/")>=0 ||uri.indexOf("/media_stat/")>=0 ||uri.indexOf("/kbit/")>=0
 				||uri.indexOf("/assets/")>=0 ||uri.indexOf("/ccassets/")>=0 ||uri.indexOf("/resource/")>=0
-				||uri.indexOf("/images/")>=0 ||uri.indexOf("/api/")>=0||uri.indexOf("/test/debug/")>=0 ||uri.indexOf("/help/")>=0 || isSkippedFolder(uri)))) {
+				||uri.indexOf("/images/")>=0 ||uri.indexOf("/api/")>=0||uri.indexOf("/test/debug/")>=0 ||uri.indexOf("/help/")>=0 ||uri.indexOf("/shared/")>=0 || isSkippedFolder(uri)))) {
 			return true;
 		}
 		//Do other checks if required after this check.
