@@ -87,7 +87,7 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 				FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 				FDGiftCardInfoList giftCards = user.getGiftCardList();
 				if(certNum != null && certNum.length() > 0){
-					giftCards.setSelected(certNum, new Boolean(value).booleanValue());
+					giftCards.setSelected(certNum, Boolean.valueOf(value).booleanValue());
 				}
 			}
 			else if ("deleteGiftCard".equalsIgnoreCase(action)) {

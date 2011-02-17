@@ -100,7 +100,7 @@ public class YmalUtil {
 		if (request.getAttribute("freshdirect.ymalSource.reset") == null) {
 			if (source != null)
 				source.resetActiveYmalSetSession();
-			request.setAttribute("freshdirect.ymalSource.reset", new Boolean(true));
+			request.setAttribute("freshdirect.ymalSource.reset", Boolean.TRUE);
 		}
 	}
 

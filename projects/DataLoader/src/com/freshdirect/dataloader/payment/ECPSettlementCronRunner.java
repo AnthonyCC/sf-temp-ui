@@ -56,7 +56,7 @@ public class ECPSettlementCronRunner {
 						maxNumSales = Integer.parseInt(arg.substring("maxNumSales=".length()));
 					} else if (arg.startsWith("sendToSap=")) {
 						
-						sendToSap = new Boolean(arg.substring("sendToSap=".length())).booleanValue(); 
+						sendToSap = Boolean.valueOf(arg.substring("sendToSap=".length())).booleanValue(); 
 					} else if (arg.startsWith("inputFileName=")) {
 						inputFileName = arg.substring("inputFileName=".length()); 
 					}

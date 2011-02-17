@@ -23,10 +23,10 @@ params.put("fromZipCheck", Boolean.FALSE);
 params.put("isPopup", Boolean.FALSE);
 params.put("isPopupAndNotFromZipCheck", Boolean.FALSE); // = (isPopup && !fromZipCheck)
 if (user != null) {
-	params.put("isUserSignedIn", new Boolean(user.getLevel() >= FDUserI.RECOGNIZED) );
+	params.put("isUserSignedIn", Boolean.valueOf(user.getLevel() >= FDUserI.RECOGNIZED) );
 	params.put("minimumOrderAmount", new Double(user.getMinimumOrderAmount()) );
 	params.put("customerServiceContact", user.getCustomerServiceContact() ); // String
-	params.put("isUserEligibleForSignupPromotion", new Boolean(user.isEligibleForSignupPromotion()) );
+	params.put("isUserEligibleForSignupPromotion", Boolean.valueOf(user.isEligibleForSignupPromotion()) );
 } else {
     params.put("isUserSignedIn", Boolean.FALSE );
     params.put("minimumOrderAmount", new Double(0) );

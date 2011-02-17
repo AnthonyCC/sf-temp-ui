@@ -117,7 +117,7 @@ while (it.hasNext()) {
 
 Boolean needRefresh = null;
 if (defaultDate.equals(date) || latestDate.equals(date)) {
-	needRefresh = new Boolean(!SmartStoreUtil.isCohortAssigmentUptodate());
+	needRefresh = Boolean.valueOf(!SmartStoreUtil.isCohortAssigmentUptodate());
 }
 
 if (defaultDate.equals(date))

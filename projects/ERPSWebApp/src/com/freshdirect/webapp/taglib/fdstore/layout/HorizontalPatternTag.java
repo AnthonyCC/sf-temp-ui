@@ -168,10 +168,10 @@ public class HorizontalPatternTag extends com.freshdirect.framework.webapp.BodyT
 		prepareItemList();
 
 		if ( itemList == null || itemList.size() < 1 ) {
-			pageContext.setAttribute( onlyOneProductVariableName, new Boolean(false) );
+			pageContext.setAttribute( onlyOneProductVariableName, Boolean.FALSE );
 			return SKIP_BODY;
 		} else if ( useLayoutPattern && ( patternArray == null || patternArray.length < 1 ) ) {
-			pageContext.setAttribute( onlyOneProductVariableName, new Boolean(false) );
+			pageContext.setAttribute( onlyOneProductVariableName, Boolean.FALSE );
 			return SKIP_BODY;
 		} else {
 			return EVAL_BODY_BUFFERED;
@@ -329,7 +329,7 @@ public class HorizontalPatternTag extends com.freshdirect.framework.webapp.BodyT
 		pageContext.setAttribute( id, this );
 		pageContext.setAttribute( rowListVariableName, returnItems );
 		pageContext.setAttribute( tableWidthVariableName, new Integer(tableWidth) );		
-		pageContext.setAttribute( onlyOneProductVariableName, new Boolean(onlyOneProduct) );
+		pageContext.setAttribute( onlyOneProductVariableName, Boolean.valueOf(onlyOneProduct) );
 		if ( theOnlyProduct != null )
 			pageContext.setAttribute( theOnlyProductVariableName, theOnlyProduct );		
 	}

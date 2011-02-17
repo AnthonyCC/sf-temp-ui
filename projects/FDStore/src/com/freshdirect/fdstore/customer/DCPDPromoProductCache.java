@@ -62,22 +62,22 @@ public class DCPDPromoProductCache implements Serializable{
 	
 	protected class DCPDPromoInfoMap  {
 		
-		Map info = new HashMap();
+		Map<String, Boolean> info = new HashMap<String, Boolean>();
 		
 		public DCPDPromoInfoMap(){
 		}
 		
 		public void setEligibility(String promoId, boolean eligible){
-			info.put(promoId, new Boolean(eligible));
+			info.put(promoId, Boolean.valueOf(eligible));
 		}
 		
 		public boolean isEligibleFor(String promoId){
-			Boolean value = (Boolean)info.get(promoId);
+			Boolean value = info.get(promoId);
 			return (value != null ? value.booleanValue() : false); 
 		}
 		
 		public boolean isEvaluated(String promoId){
-			Boolean value = (Boolean)info.get(promoId);
+			Boolean value = info.get(promoId);
 			return (value != null ? true : false); 
 		}
 	}

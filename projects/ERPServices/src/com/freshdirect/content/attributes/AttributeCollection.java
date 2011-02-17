@@ -49,7 +49,7 @@ public class AttributeCollection implements AttributesI {
 	}
 
 	public void setAttribute(String name, boolean value) {
-		this.attributes.put(name, new Boolean(value));
+		this.attributes.put(name, Boolean.valueOf(value));
 	}
 
 	public void setAttribute(String name, int value) {

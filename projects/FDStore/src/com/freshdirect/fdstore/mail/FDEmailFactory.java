@@ -644,10 +644,10 @@ public class FDEmailFactory {
 
 		protected void decorateMap(Map map) {
 
-			map.put("preview", new Boolean(this.preview));
+			map.put("preview", Boolean.valueOf(this.preview));
 			map.put("mailInfo", this.mailInfo);
-			map.put("productEmail", new Boolean(mailInfo instanceof TellAFriendProduct));
-			map.put("tellAFriendEmail", new Boolean(true));
+			map.put("productEmail", Boolean.valueOf(mailInfo instanceof TellAFriendProduct));
+			map.put("tellAFriendEmail", Boolean.TRUE);
 			
 			if (mailInfo instanceof TellAFriendRecipe) {
 				TellAFriendRecipe	tafr   = (TellAFriendRecipe) mailInfo;

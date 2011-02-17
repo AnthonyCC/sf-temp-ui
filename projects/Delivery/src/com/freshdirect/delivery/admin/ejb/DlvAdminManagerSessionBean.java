@@ -396,7 +396,7 @@ public class DlvAdminManagerSessionBean extends SessionBeanSupport {
 			}
 			Query q = session.getNamedQuery("updateChefsTableZone");
 			q.setString("zoneCode", zoneCode);
-			q.setParameter("ctActive", new Boolean(ctActive), Hibernate.custom(BooleanType.class));
+			q.setParameter("ctActive", Boolean.valueOf(ctActive), Hibernate.custom(BooleanType.class));
 			q.setInteger("ctReleaseTime", ctReleaseTime);
 			q.executeUpdate();
 			
@@ -421,7 +421,7 @@ public class DlvAdminManagerSessionBean extends SessionBeanSupport {
 			
 			Query q = session.getNamedQuery("updateZoneUnattendedDeliveryStatus");
 			q.setString("zoneCode", zoneCode);
-			q.setParameter("unattended", new Boolean(unattended), Hibernate.custom(BooleanType.class));
+			q.setParameter("unattended", Boolean.valueOf(unattended), Hibernate.custom(BooleanType.class));
 			q.executeUpdate();
 			
 			session.flush();

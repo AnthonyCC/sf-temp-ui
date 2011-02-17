@@ -103,7 +103,7 @@ public class PromotionControllerTag extends AbstractControllerTag {
 				
 				String userId = request.getParameter("userId");
 				boolean isAssigned = this.promotion.isCustomerInAssignedList(userId);
-				request.setAttribute("IS_USER_ASSIGNED", new Boolean(isAssigned));
+				request.setAttribute("IS_USER_ASSIGNED", Boolean.valueOf(isAssigned));
 			}
 			return true;
 		}catch (FDResourceException e) {

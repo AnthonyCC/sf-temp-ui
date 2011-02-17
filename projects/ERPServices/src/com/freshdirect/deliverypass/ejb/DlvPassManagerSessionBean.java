@@ -768,7 +768,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 		int usablePassCount=0;
 		int autoRenewUsablePassCount=0;
 		allStatusMap.put(DlvPassConstants.USABLE_PASS_COUNT, "0");
-		allStatusMap.put(DlvPassConstants.IS_FREE_TRIAL_RESTRICTED, new Boolean(false));
+		allStatusMap.put(DlvPassConstants.IS_FREE_TRIAL_RESTRICTED, Boolean.FALSE);
 		allStatusMap.put(DlvPassConstants.AUTORENEW_USABLE_PASS_COUNT, "0");
 		allStatusMap.put(DlvPassConstants.AUTORENEW_DP_TYPE,null);
 		allStatusMap.put(DlvPassConstants.AUTORENEW_DP_PRICE,new Double(0));
@@ -792,7 +792,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 								dlvPassStatus = EnumDlvPassStatus.EXPIRED;
 							}
 							if(model.getType().isFreeTrialRestricted() && !EnumDlvPassStatus.ORDER_CANCELLED.equals(model.getStatus())) {
-								allStatusMap.put(DlvPassConstants.IS_FREE_TRIAL_RESTRICTED, new Boolean(true));
+								allStatusMap.put(DlvPassConstants.IS_FREE_TRIAL_RESTRICTED, Boolean.TRUE);
 							}
 						}
 					}

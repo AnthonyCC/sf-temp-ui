@@ -68,13 +68,13 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 							jobDate.add(DateUtil.truncate(DateUtil.toCalendar
 																(DateUtil.parse(arg.substring("jobDate=".length())))).getTime());
 						} else if (arg.startsWith("trail=")) {
-							isTrialRun =  new Boolean(arg.substring("trail=".length())).booleanValue(); 
+							isTrialRun =  Boolean.valueOf(arg.substring("trail=".length())).booleanValue(); 
 						} else if (arg.startsWith("purge=")) {								
-							isPurgeEnabled = new Boolean(arg.substring("purge=".length())).booleanValue(); 
+							isPurgeEnabled = Boolean.valueOf(arg.substring("purge=".length())).booleanValue(); 
 						}  else if (arg.startsWith("reverse=")) {								
-							isReverse = new Boolean(arg.substring("reverse=".length())).booleanValue(); 
+							isReverse = Boolean.valueOf(arg.substring("reverse=".length())).booleanValue(); 
 						}  else if (arg.startsWith("sendEmail=")) {								
-							isSendEmail = new Boolean(arg.substring("sendEmail=".length())).booleanValue(); 
+							isSendEmail = Boolean.valueOf(arg.substring("sendEmail=".length())).booleanValue(); 
 						}
 					} catch (Exception e) {
 						System.err.println("Usage: java com.freshdirect.dataloader.reservation.CapacityControllerCronRunner [jobDate={date value}] [trail={true | false}] [purge={true | false}] [reverse={true | false}] [sendEmail={true | false}]");

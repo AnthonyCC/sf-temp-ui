@@ -594,7 +594,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			// !!! refactor to doEndTag
 			this.finishCartCleanup();
 		}
-		pageContext.setAttribute("cartCleanupRemovedSomeStuff", new Boolean(!(this.removeIds == null || this.removeIds.size() == 0)));
+		pageContext.setAttribute("cartCleanupRemovedSomeStuff", Boolean.valueOf(!(this.removeIds == null || this.removeIds.size() == 0)));
 
 		//
 		// place the cart as a scripting variable in the page

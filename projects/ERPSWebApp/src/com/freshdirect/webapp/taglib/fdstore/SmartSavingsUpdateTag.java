@@ -75,7 +75,7 @@ public class SmartSavingsUpdateTag extends BodyTagSupport {
             //If current savings variant is different from previous savings variant
             user.updateUserState();
             session.setAttribute(SessionName.PREV_SAVINGS_VARIANT, usrVariant);
-            session.setAttribute(SessionName.PREV_VARIANT_FOUND, new Boolean(usrVariantFound));
+            session.setAttribute(SessionName.PREV_VARIANT_FOUND, Boolean.valueOf(usrVariantFound));
         }
 
         return EVAL_BODY_BUFFERED;

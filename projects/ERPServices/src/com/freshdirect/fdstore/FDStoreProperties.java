@@ -938,7 +938,7 @@ public class FDStoreProperties {
 	 * @return
 	 */
 	public static boolean getDisableTimeWindowCheck() {
-		return (new Boolean(get(PROP_CRM_DISABLE_TIME_WINDOW_CHECK)).booleanValue());
+		return (Boolean.valueOf(get(PROP_CRM_DISABLE_TIME_WINDOW_CHECK)).booleanValue());
 	}
 	
 	public static String getFDFactoryHome() {
@@ -1014,11 +1014,11 @@ public class FDStoreProperties {
 	}
 
 	public static boolean getPreviewMode() {
-        return (new Boolean(get(PROP_PREVIEW_MODE))).booleanValue();
+        return (Boolean.valueOf(get(PROP_PREVIEW_MODE))).booleanValue();
     }
 
     public static boolean isAnnotationMode() {
-        return (new Boolean(get(PROP_ANNOTATION_MODE))).booleanValue();
+        return (Boolean.valueOf(get(PROP_ANNOTATION_MODE))).booleanValue();
     }
 
     public static String getAnnotationErpsy() {
@@ -1180,7 +1180,7 @@ public class FDStoreProperties {
 	}
 
 	public static boolean getHamptons() {
-        return (new Boolean(get(PROP_HAMPTONS))).booleanValue();
+        return (Boolean.valueOf(get(PROP_HAMPTONS))).booleanValue();
     }
 
 	public static String getMaxReferrals() {
@@ -1271,7 +1271,7 @@ public class FDStoreProperties {
 	}
 
 	public static boolean isRetProgramCreateCase() {
-        return (new Boolean(get(PROP_RETPRG_CREATECASE))).booleanValue();
+        return (Boolean.valueOf(get(PROP_RETPRG_CREATECASE))).booleanValue();
     }
 
 	public static int getMaxDlvPassPurchaseLimit() {
@@ -1357,7 +1357,7 @@ public class FDStoreProperties {
 
 	// click to call display toggle
 	public static boolean getClickToCall() {
-        return (new Boolean(get(CLICK_TO_CALL))).booleanValue();
+        return (Boolean.valueOf(get(CLICK_TO_CALL))).booleanValue();
     }
 
 	// customer service hours
@@ -1366,7 +1366,7 @@ public class FDStoreProperties {
 	}
 
 	public static boolean isNewGeocodeFormat() {
-        return (new Boolean(get(PROP_GEOCODE_ISNEWFORMAT))).booleanValue();
+        return (Boolean.valueOf(get(PROP_GEOCODE_ISNEWFORMAT))).booleanValue();
     }
 
 
@@ -1539,11 +1539,11 @@ public class FDStoreProperties {
 	}
 
 	public static boolean canUseLocationDB() {
-        return (new Boolean(get(PROP_GEOCODE_USELOCATIONDB))).booleanValue();
+        return (Boolean.valueOf(get(PROP_GEOCODE_USELOCATIONDB))).booleanValue();
     }
 
 	public static boolean canSendRoutingAddress() {
-        return (new Boolean(get(PROP_ROUTING_SENDADDRESS))).booleanValue();
+        return (Boolean.valueOf(get(PROP_ROUTING_SENDADDRESS))).booleanValue();
     }
 
 
@@ -1557,7 +1557,7 @@ public class FDStoreProperties {
 	 * @deprecated Property is no longer used
 	 */
 	public static boolean isSmartSearchEnabled() {
-		return (new Boolean(get(SMART_SEARCH_ENABLED))).booleanValue();
+		return (Boolean.valueOf(get(SMART_SEARCH_ENABLED))).booleanValue();
 	}
 
 	public static int getSmartstoreNewproductsDays() {
@@ -1694,11 +1694,11 @@ public class FDStoreProperties {
 		return get(PROP_ROUTINGGATEWAY_HOME);
 	}
 	public static boolean isDynamicRoutingEnabled() {
-        return (new Boolean(get(DYNAMIC_ROUTING_ENABLED))).booleanValue();
+        return (Boolean.valueOf(get(DYNAMIC_ROUTING_ENABLED))).booleanValue();
     }
 
 	public static boolean isGivexBlackHoleEnabled() {
-        return (new Boolean(get(GIVEX_BLACK_HOLE_ENABLED))).booleanValue();
+        return (Boolean.valueOf(get(GIVEX_BLACK_HOLE_ENABLED))).booleanValue();
     }
 
 	public static String getRoutingProviderURL() {
@@ -2028,7 +2028,7 @@ public class FDStoreProperties {
 	}
 	
 	public static boolean isCrmCCSecurityNotificationEnabled() {
-        return (new Boolean(get(PROP_CRM_CC_SECURITY_EMAIL_ENABLED))).booleanValue();
+        return (Boolean.valueOf(get(PROP_CRM_CC_SECURITY_EMAIL_ENABLED))).booleanValue();
     }
 	
 	public static String getCrmCCSecurityEmail() {

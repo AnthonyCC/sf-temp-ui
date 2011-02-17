@@ -59,7 +59,7 @@ if (SearchNavigator.VIEW_DEFAULT == nav.getView() && request.getParameter("refin
 }
 
 request.setAttribute("sx.navigator", nav);
-request.setAttribute("recipes.show_all", new Boolean(nav.isRecipesDeptSelected())); // -> recipes.jspf
+request.setAttribute("recipes.show_all", Boolean.valueOf(nav.isRecipesDeptSelected())); // -> recipes.jspf
 %>
 
 

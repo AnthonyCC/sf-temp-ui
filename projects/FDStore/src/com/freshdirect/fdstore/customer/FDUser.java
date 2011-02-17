@@ -864,7 +864,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 //		return true;
 		if (checkEligible == null) {
 			EligibilityCalculator calc = new EligibilityCalculator("ECHECK");
-			checkEligible = new Boolean(calc.isEligible(new FDRulesContextImpl(this)));
+			checkEligible = Boolean.valueOf(calc.isEligible(new FDRulesContextImpl(this)));
 		}
 		return checkEligible.booleanValue();
     }
@@ -908,7 +908,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public boolean isReferrerEligible() throws FDResourceException {
 		if (referrerEligible == null) {
 			EligibilityCalculator calc = new EligibilityCalculator("REFERRER");
-			referrerEligible = new Boolean(calc.isEligible(new FDRulesContextImpl(this)));
+			referrerEligible = Boolean.valueOf(calc.isEligible(new FDRulesContextImpl(this)));
 		}
 		return referrerEligible.booleanValue();
 	}

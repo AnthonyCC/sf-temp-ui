@@ -68,7 +68,7 @@ public class InitLayoutTag extends com.freshdirect.framework.webapp.BodyTagSuppo
 		if ( deptId != null ) 
 			pageContext.setAttribute( departmentIdVariableName, deptId );
 		
-		pageContext.setAttribute( isDepartmentVariableName, new Boolean(isDepartment) );
+		pageContext.setAttribute( isDepartmentVariableName, Boolean.valueOf(isDepartment) );
 		pageContext.setAttribute( trackingCodeVariableName, trackingCode );
 		
 		if ( currentFolder != null ) {
@@ -78,10 +78,10 @@ public class InitLayoutTag extends com.freshdirect.framework.webapp.BodyTagSuppo
 				useAlternate = ((CategoryModel)currentFolder).isUseAlternateImages();
 			else if ( currentFolder instanceof DepartmentModel )
 				useAlternate = ((DepartmentModel)currentFolder).isUseAlternateImages();			
-			pageContext.setAttribute( useAlternateVariableName, new Boolean( useAlternate ) );			
+			pageContext.setAttribute( useAlternateVariableName, Boolean.valueOf( useAlternate ) );			
 		} else {
 			pageContext.setAttribute( currentFolderVariableName, null );			
-			pageContext.setAttribute( useAlternateVariableName, new Boolean( false ) );			
+			pageContext.setAttribute( useAlternateVariableName, Boolean.FALSE );			
 		}
 		
 		

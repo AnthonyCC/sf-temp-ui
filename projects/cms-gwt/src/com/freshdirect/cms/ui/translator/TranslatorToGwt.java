@@ -312,7 +312,7 @@ public class TranslatorToGwt {
             
         } else if (type == EnumAttributeType.BOOLEAN) {
         	if ( !definition.isInheritable() && value == null ) {
-        		value = new Boolean( false );
+        		value = Boolean.FALSE;
         	}
             attr = new SimpleAttribute<Boolean>("boolean", (Boolean) value, name);
             

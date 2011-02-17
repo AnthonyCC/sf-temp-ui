@@ -264,7 +264,7 @@ public class DispatchPlanUtil {
 		dispatch.setSupervisorId(command.getSupervisorCode());
 		dispatch.setRoute(command.getRoute());
 		dispatch.setTruck(command.getTruck());
-		dispatch.setBullPen(new Boolean(command.getIsBullpen()));
+		dispatch.setBullPen(Boolean.valueOf(command.getIsBullpen()));
 		try{
 			dispatch.setStartTime(TransStringUtil.getServerTime(command.getStartTime()));
 			dispatch.setFirstDlvTime(TransStringUtil.getServerTime(command.getFirstDeliveryTime()));
@@ -275,7 +275,7 @@ public class DispatchPlanUtil {
 		}catch(ParseException exp){
 			throw new RuntimeException("Unparseable date "+exp.getMessage());
 		}
-		dispatch.setConfirmed(new Boolean(command.isConfirmed()));
+		dispatch.setConfirmed(Boolean.valueOf(command.isConfirmed()));
 
 		dispatch.setPlanId(command.getPlanId());
 		dispatch.setComments(command.getComments());
@@ -283,8 +283,8 @@ public class DispatchPlanUtil {
 		dispatch.setUserId(command.getUserId());
 		dispatch.setGpsNumber(command.getGpsNumber());
 		dispatch.setEzpassNumber(command.getEzpassNumber());	
-		dispatch.setPhonesAssigned(new Boolean(command.isPhoneAssigned()));
-		dispatch.setKeysReady(new Boolean(command.isKeysReady()));
+		dispatch.setPhonesAssigned(Boolean.valueOf(command.isPhoneAssigned()));
+		dispatch.setKeysReady(Boolean.valueOf(command.isKeysReady()));
 		dispatch.setIsOverride(command.getIsOverride());
 		if(command.getOverrideReasonCode()!=null&&command.getOverrideReasonCode().length()>0)
 		{

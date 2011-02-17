@@ -143,7 +143,7 @@ public class CharacteristicTag extends com.freshdirect.framework.webapp.BodyTagS
         
         String optional = request.getParameter(FormElementNameHelper.getFormElementName(charac, EnumAttributeName.OPTIONAL.getName()));
         if (optional != null) {
-            charac.getAttributes().setAttribute(EnumAttributeName.OPTIONAL.getName(), new Boolean(optional).booleanValue());
+            charac.getAttributes().setAttribute(EnumAttributeName.OPTIONAL.getName(), Boolean.valueOf(optional).booleanValue());
         }
         String dispFormat = request.getParameter(FormElementNameHelper.getFormElementName(charac, EnumAttributeName.DISPLAY_FORMAT.getName()));
         if (dispFormat != null) {

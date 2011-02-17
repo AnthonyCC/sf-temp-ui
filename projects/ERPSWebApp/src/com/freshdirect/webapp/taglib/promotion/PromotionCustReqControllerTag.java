@@ -170,7 +170,7 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 			}else if("searchCustomerRestriction".equalsIgnoreCase(this.getActionName())){
 				String userId = request.getParameter("userId");
 				boolean isAssigned = this.promotion.isCustomerInAssignedList(userId);
-				request.setAttribute("IS_USER_ASSIGNED", new Boolean(isAssigned));
+				request.setAttribute("IS_USER_ASSIGNED", Boolean.valueOf(isAssigned));
 			}else if("updateCustomerRestriction".equalsIgnoreCase(this.getActionName())){
 				String custIds = request.getParameter("assignedCustIds");
 				if(null != custIds && !"".equals(custIds.trim())){

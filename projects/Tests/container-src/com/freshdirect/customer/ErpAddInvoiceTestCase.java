@@ -85,7 +85,7 @@ public class ErpAddInvoiceTestCase extends TestCase {
 					stop = args[i].substring("stop=".length());
 				} else if (args[i].startsWith("shortItem=")) {
 					String si = args[i].substring("shortItem=".length());
-					shortItem = new Boolean(si).booleanValue();
+					shortItem = Boolean.valueOf(si).booleanValue();
 				}
 			}
 		}

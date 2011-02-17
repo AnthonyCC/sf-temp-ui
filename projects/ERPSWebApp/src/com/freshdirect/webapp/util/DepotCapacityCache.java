@@ -93,13 +93,13 @@ public class DepotCapacityCache implements Runnable {
 						}
 					}
 					LOGGER.debug("Depot " + depot.getDepotCode() + " availability: " + available);
-					this.availability.put(depotCode, new Boolean(available));
+					this.availability.put(depotCode, Boolean.valueOf(available));
 				}
 			} catch (FDResourceException fe) {
 				LOGGER.warn("FDResourceException while trying to Referesh Cache", fe);
 			}
 
-			this.availability.put(depotCode, new Boolean(available));
+			this.availability.put(depotCode, Boolean.valueOf(available));
 		}
 		LOGGER.debug("Refresh cache done...");
 	}

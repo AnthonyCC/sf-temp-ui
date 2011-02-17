@@ -78,7 +78,7 @@ public class QueryStringBuilder {
 	 * @return this
 	 */
 	public QueryStringBuilder addParam(String key, boolean bv) {
-		return addParam(key,new Boolean(bv));
+		return addParam(key,Boolean.valueOf(bv));
 	}
 	
 	/**

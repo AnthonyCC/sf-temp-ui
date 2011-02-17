@@ -119,7 +119,7 @@ public class VerticalPatternTag extends com.freshdirect.framework.webapp.BodyTag
 		prepareColumns();
 
 		if ( columns == null || columns.length < 1 ) {
-			pageContext.setAttribute( onlyOneProductVariableName, new Boolean(false) );
+			pageContext.setAttribute( onlyOneProductVariableName, Boolean.FALSE );
 			return SKIP_BODY;
 		} else {
 			return EVAL_BODY_BUFFERED;
@@ -276,7 +276,7 @@ public class VerticalPatternTag extends com.freshdirect.framework.webapp.BodyTag
 		pageContext.setAttribute( id, this );
 		pageContext.setAttribute( rowListVariableName, returnItems );
 		pageContext.setAttribute( tableWidthVariableName, new Integer(tableWidth) );		
-		pageContext.setAttribute( onlyOneProductVariableName, new Boolean(onlyOneProduct) );
+		pageContext.setAttribute( onlyOneProductVariableName, Boolean.valueOf(onlyOneProduct) );
 		pageContext.setAttribute( rowIndexVariableName, new Integer( rowIndex-1 ) );
 		if ( theOnlyProduct != null )
 			pageContext.setAttribute( theOnlyProductVariableName, theOnlyProduct );		

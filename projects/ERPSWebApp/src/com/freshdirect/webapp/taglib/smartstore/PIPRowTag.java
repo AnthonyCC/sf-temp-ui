@@ -76,7 +76,7 @@ public class PIPRowTag extends AbstractGetterTag {
 		}
 
 		if (this.blankCellVarName != null)
-			pageContext.setAttribute(this.blankCellVarName, new Boolean(result == null));
+			pageContext.setAttribute(this.blankCellVarName, Boolean.valueOf(result == null));
 
 		if (result != null) {
 			ProductImpression pi = (ProductImpression) result;

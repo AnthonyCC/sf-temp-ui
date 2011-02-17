@@ -857,28 +857,28 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			OrderPermissionsI orderPermissions = new OrderPermissionsImpl(order.getOrderStatus(), application, makeGood, order.hasCreditIssued());
 			
 			// WHEN CAN I MODIFY AN ORDER?
-			pageContext.setAttribute("allowModifyOrder", new Boolean(orderPermissions.allowModifyOrder()));
+			pageContext.setAttribute("allowModifyOrder", Boolean.valueOf(orderPermissions.allowModifyOrder()));
 			
 			// WHEN CAN I RETURN AN ORDER?
-			pageContext.setAttribute("allowReturnOrder", new Boolean(orderPermissions.allowReturnOrder()));
+			pageContext.setAttribute("allowReturnOrder", Boolean.valueOf(orderPermissions.allowReturnOrder()));
 			
 			// 	REFUSED ORDER STATE
-			pageContext.setAttribute("isRefusedOrder", new Boolean(orderPermissions.isRefusedOrder()));
+			pageContext.setAttribute("isRefusedOrder", Boolean.valueOf(orderPermissions.isRefusedOrder()));
 			
 			// WHEN CAN I CANCEL AN ORDER?
-			pageContext.setAttribute("allowCancelOrder", new Boolean(orderPermissions.allowCancelOrder()));
+			pageContext.setAttribute("allowCancelOrder", Boolean.valueOf(orderPermissions.allowCancelOrder()));
 
 			// WHEN CAN I ISSUE A CREDIT REQUEST (COMPLAINT)?
-			pageContext.setAttribute("allowComplaint", new Boolean(orderPermissions.allowComplaint()));
+			pageContext.setAttribute("allowComplaint", Boolean.valueOf(orderPermissions.allowComplaint()));
 			
 			// WHEN CAN I LEVY FEES ON AN ORDER?
-			pageContext.setAttribute("allowNewCharges", new Boolean(orderPermissions.allowNewCharges()));
+			pageContext.setAttribute("allowNewCharges", Boolean.valueOf(orderPermissions.allowNewCharges()));
 			
 			// WHEN DOES AN ORDER HAVE PAYMENT EXCEPTIONS?
-			pageContext.setAttribute("hasPaymentException", new Boolean(orderPermissions.hasPaymentException()));
+			pageContext.setAttribute("hasPaymentException", Boolean.valueOf(orderPermissions.hasPaymentException()));
 			
 			// WHEN CAN I RESUBMIT AN ORDER?
-			pageContext.setAttribute("allowResubmitOrder", new Boolean(orderPermissions.allowResubmitOrder()));
+			pageContext.setAttribute("allowResubmitOrder", Boolean.valueOf(orderPermissions.allowResubmitOrder()));
 
 		} catch (FDResourceException ex) {
 			LOGGER.error("FDResourceException trying to get order information.", ex);

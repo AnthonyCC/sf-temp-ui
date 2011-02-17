@@ -81,8 +81,8 @@ public class AlternateAddressInfoTag extends com.freshdirect.framework.webapp.Bo
 		pageContext.setAttribute("fldAltPhone", fldAltPhone);
 		pageContext.setAttribute("fldDlvInstructions", fldDlvInstructions);
 
-		pageContext.setAttribute("leaveWithDoorman", new Boolean(leaveWithDoorman));
-		pageContext.setAttribute("leaveWithNeighbor", new Boolean(leaveWithNeighbor));
+		pageContext.setAttribute("leaveWithDoorman", Boolean.valueOf(leaveWithDoorman));
+		pageContext.setAttribute("leaveWithNeighbor", Boolean.valueOf(leaveWithNeighbor));
 
 		return EVAL_BODY_BUFFERED;
 	}

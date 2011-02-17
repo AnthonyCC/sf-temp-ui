@@ -26,7 +26,7 @@ public class RuleRuntime implements RuleRuntimeI {
 		Boolean result = evaluations.get(r.getId());
 		if (result == null) {
 			evalStack.add(r.getId());
-			result = new Boolean(r.evaluate(target, this));
+			result = Boolean.valueOf(r.evaluate(target, this));
 			this.evaluations.put(r.getId(), result);
 			evalStack.remove(r.getId());
 		}

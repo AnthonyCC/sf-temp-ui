@@ -18,7 +18,7 @@
 	}
 
 	//set up template parameters
-	params.put("isPage", new Boolean(
+	params.put("isPage", Boolean.valueOf(
 			request.getParameter("page") != null));
 	params.put("isPopup", true);
 %><%@ taglib uri='template' prefix='tmpl' 
@@ -32,7 +32,7 @@
 		params.put("fd_user", user2);
 		params.put("minimumOrderAmount", new Integer((int) user2
 				.getMinimumOrderAmount()));
-		params.put("isUserCheckEligible", new Boolean(
+		params.put("isUserCheckEligible", Boolean.valueOf(
 				(user2 != null && user2.isCheckEligible())));
 		params.put("customerServiceContact", user2
 				.getCustomerServiceContact());
@@ -60,7 +60,7 @@
 			.getCustomerServiceContact());
 	boolean flag = request.getRequestURI().toLowerCase().endsWith(
 			"delivery_info_faq.jsp");
-	params.put("deliveryInfoFaq", new Boolean(flag));
+	params.put("deliveryInfoFaq", Boolean.valueOf(flag));
 	params.put("careerLink", FDStoreProperties.getCareerLink());
 	if (user2 != null) {
 		params.put("corpDeliveryFee", new Double(user2
@@ -75,8 +75,8 @@
 		params.put("minCorpOrderAmount", new Integer(0));
 	}
 	if (user2 != null) {
-		params.put("isCorp", new Boolean(user2.isCorporateUser()));
-		params.put("isDepotUser", new Boolean(user2.isDepotUser()));
+		params.put("isCorp", Boolean.valueOf(user2.isCorporateUser()));
+		params.put("isDepotUser", Boolean.valueOf(user2.isDepotUser()));
 	} else {
 		params.put("isCorp", Boolean.FALSE);
 		params.put("isDepotUser", Boolean.FALSE);
