@@ -35,8 +35,8 @@ import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 
 public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
-	
-	private static final String GET_SCENARIOS_QRY = "SELECT * FROM DLV.SERVICETIME_SCENARIO";
+
+    private static final String GET_SCENARIOS_QRY = "SELECT * FROM DLV.SERVICETIME_SCENARIO";
 	
 	private static final String GET_SERVICETIMETYPE_QRY = "SELECT * FROM DLV.SERVICETIME_TYPE";
 	
@@ -499,15 +499,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 	public List<IWaveInstance> getWaveInstanceWithErrors()  throws SQLException {
 		final List<IWaveInstance> result = new ArrayList<IWaveInstance>();
 		
-		PreparedStatementCreator creator=new PreparedStatementCreator() {
-			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-
-				PreparedStatement ps = connection.prepareStatement(GET_FUTURE_WAVEINSTANCE_ERRORS_QRY);
-				return ps;
-			}
-		};
-
-		jdbcTemplate.query(creator, 
+		jdbcTemplate.query(GET_FUTURE_WAVEINSTANCE_ERRORS_QRY, 
 				new RowCallbackHandler() { 
 			public void processRow(ResultSet rs) throws SQLException {				    	
 				do {

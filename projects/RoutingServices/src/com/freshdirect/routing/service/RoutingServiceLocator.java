@@ -3,7 +3,7 @@ package com.freshdirect.routing.service;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.Stub;
 import org.apache.log4j.Category;
-import org.springframework.beans.factory.BeanFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -17,7 +17,7 @@ public class RoutingServiceLocator {
 
 	private static RoutingServiceLocator instance = null;
 
-	private BeanFactory factory = null;
+	private ApplicationContext factory = null;
 
 	private long SERVICE_TIMEOUT = 10 * 60 * 1000;
 
@@ -26,10 +26,8 @@ public class RoutingServiceLocator {
 
 	private RoutingServiceLocator() {
 		try {
-		ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext(
+		    factory = new ClassPathXmlApplicationContext(
 		        new String[] {"com/freshdirect/routing/service/applicationContext-RoutingServices.xml"});
-		//	of course, an ApplicationContext is just a BeanFactory
-		factory = (BeanFactory) appContext;
 		} catch (Error r) {
 			r.printStackTrace();
 		}
