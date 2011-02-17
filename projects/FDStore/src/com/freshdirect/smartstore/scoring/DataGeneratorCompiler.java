@@ -574,7 +574,7 @@ public class DataGeneratorCompiler extends CompilerBase {
 
         parser.getContext().addFunctionDef(FN_SMART_YMAL, new Context.FunctionDef(0, 0, Expression.RET_SET) {
             public String toJavaCode(String name, List<Expression> parameters) throws CompileException {
-                return "HelperFunctions.getSmartYMALRecommendation(input)";
+                return "HelperFunctions.getSmartYMALRecommendation(sessionInput)";
             }
         });
     }
@@ -663,11 +663,18 @@ public class DataGeneratorCompiler extends CompilerBase {
     }
 
 
+    /**
+     * return true if all the functions returns a deterministic values, so the script result 
+     * can be cached. 
+     * @param functions
+     * @return
+     */
     private boolean isCacheableByFunctions(Set<String> functions) {
     	for (String function : functions)
     		if (function.startsWith(FN_PERSONALIZED_ITEMS_PREFIX)
     				|| function.startsWith(FN_RELATED_ITEMS_PREFIX)
-    				|| function.equals(FN_USER_RECOMMENDATION))
+    				|| function.equals(FN_USER_RECOMMENDATION)
+    				|| function.equals(FN_SMART_YMAL))
     			return false;
         return true;
     }

@@ -103,6 +103,12 @@ if (scoringFunction != null) {
     scoringFunction = scoringFunction.trim();
 }
 
+/* sampling function */
+String samplingStrategy = urlG.get("samplingStrategy");
+if (samplingStrategy != null) {
+	samplingStrategy = samplingStrategy.trim();
+}
+
 if (!(scoringFunction != null && scoringFunction.length() > 0)) {
     urlG.remove("scoringFunction");
     scoringFunction = null;
@@ -111,11 +117,14 @@ if (!(scoringFunction != null && scoringFunction.length() > 0)) {
 RecommendationService scriptedRecServ = null;  
 String compileErrorMessage = null;
 if (generatorFunction != null && generatorFunction.length() > 0) {
+	// clear cache
+	customRecommenders.clear();
+	
     scriptedRecServ = customRecommenders.get(generatorFunction + "@@@" + scoringFunction);
 	if (scriptedRecServ == null) {
         //SmartStoreServiceConfiguration.configureSampler(new RecommendationServiceConfig("scripted-test", RecommendationServiceType.SCRIPTED))
     	scriptedRecServ = RecommendationServiceFactory.configure(new Variant("scripted-test", siteFeature, new RecommendationServiceConfig("scripted-test",
-    	        RecommendationServiceType.SCRIPTED).set("generator", generatorFunction).set("scoring", scoringFunction)));
+    	        RecommendationServiceType.SCRIPTED).set("generator", generatorFunction).set("scoring", scoringFunction).set("sampling_strat", samplingStrategy) ));
     	customRecommenders.put(generatorFunction + "@@@" + scoringFunction, scriptedRecServ);
 		if (scriptedRecServ instanceof NullRecommendationService)
     		compileErrorMessage = "Failed to create script recommender. Possible Script Compile Exception.";
@@ -123,6 +132,7 @@ if (generatorFunction != null && generatorFunction.length() > 0) {
 } else {
     urlG.remove("generatorFunction");
     urlG.remove("scoringFunction");
+    urlG.remove("samplingStrategy");
     scoringFunction = null;
     generatorFunction = null;
 }
@@ -331,7 +341,7 @@ if (useLoggedIn && user != null) {
 	si.setCurrentNode(source);
 }
 si.setYmalSource(source);
-si.setNoShuffle(true);
+si.setNoShuffle(false);
 si.setIncludeCartItems(!useLoggedIn);
 si.setMaxRecommendations(EnumSiteFeature.YMAL.equals(siteFeature) ? 6 : 5);
 
@@ -684,6 +694,20 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						<p>
 	    					<input type="text" name="scoringFunction" value="<%= StringEscapeUtils.escapeHtml(scoringFunction) %>"
 	    							title="scoring function">
+						</p>
+	    				<p class="label result">
+	    					Sampling Strategy:
+	    				</p>
+						<p>
+							<select name="samplingStrategy">
+								<option value=""></option>
+								<option value="deterministic" <% if ("deterministic".equalsIgnoreCase(samplingStrategy)) {%> selected="selected"<%} %>>deterministic</option>
+								<option value="power" <% if ("power".equalsIgnoreCase(samplingStrategy)) {%> selected="selected"<%} %>>power</option>
+								<option value="complicated" <% if ("complicated".equalsIgnoreCase(samplingStrategy)) {%> selected="selected"<%} %>>complicated</option>
+								<option value="sqrt" <% if ("sqrt".equalsIgnoreCase(samplingStrategy)) {%> selected="selected"<%} %>>sqrt</option>
+								<option value="cubic <% if ("cubic".equalsIgnoreCase(samplingStrategy)) {%> selected="selected"<%} %>">cubic</option>
+								<option value="harmonic" <% if ("harmonic".equalsIgnoreCase(samplingStrategy)) {%> selected="selected"<%} %>>harmonic</option>
+							</select>
 						</p>
 <%							if (compileErrorMessage!=null) { %>					
 	    				<p class="not-found result">

@@ -8,8 +8,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.dsl.CompileException;
@@ -31,6 +34,7 @@ import com.freshdirect.smartstore.scoring.ScoringAlgorithm;
  * 
  */
 public class ScriptedRecommendationService extends AbstractRecommendationService implements FactorRequirer {
+	private static Category LOGGER = LoggerFactory.getInstance(ScriptedRecommendationService.class);
 
 	private DataGenerator generator;
 	private ScoringAlgorithm scoring;
