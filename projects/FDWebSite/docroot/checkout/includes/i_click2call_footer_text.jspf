@@ -1,3 +1,4 @@
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
  <% boolean isSmall = request.getRequestURI().indexOf("step_4_receipt") > -1; 
 String width="693";
 if (isSmall) width="630";
@@ -8,9 +9,9 @@ if (isSmall) width="630";
 		<font class="space4pix"><br><br><br></font><font class="text13">
 		<img src="/media/editorial/site_pages/click_to_call/c2c_hdr_trouble_help.gif" alt="Timeslot Full?"><br>
 		<img src="/media_stat/images/layout/clear.gif" width="0" height="35">
-		<a href="javascript:popup('https://custserv.ca/fd/html/forms/callbackICMFrame.html','small')"><img src="/media/editorial/site_pages/click_to_call/button_call_me_now.gif"  border="0" alt="CLICK TO CALL"></a>
+		<a href="javascript:popup('<%= FDStoreProperties.getC2CCallBackUrl() %>','small')"><img src="/media/editorial/site_pages/click_to_call/button_call_me_now.gif"  border="0" alt="CLICK TO CALL"></a>
 		<br><img src="/media_stat/images/layout/clear.gif" width="0" height="15">
-		<a href="javascript:popup('https://custserv.ca/fd/html/forms/callbackICMFrame.html','small')"><b>NEW!  Call Me Now</b></a>.
+		<a href="javascript:popup('<%= FDStoreProperties.getC2CCallBackUrl() %>','small')"><b>NEW!  Call Me Now</b></a>.
 		Just enter your phone number and a specialist will call you back immediately. <br>
 		
 		Or reach out to us at:  <%=user.getCustomerServiceContact()%> or <a href="mailto:<%=user.getCustomerServiceEmail()%> "><%=user.getCustomerServiceEmail()%> </a>

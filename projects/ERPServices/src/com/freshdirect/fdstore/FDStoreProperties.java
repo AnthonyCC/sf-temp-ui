@@ -493,6 +493,8 @@ public class FDStoreProperties {
 	
 	private final static String MYFD_ENABLED = "myfd.enabled";
 	private static final String MYFD_POLLDADDY_API_KEY = "myfd.pollDaddy.apiKey";
+	
+	private static final String PROP_CLICK2CALL_CALL_BACL_URL="fdstore.c2c.callback.url";
 
 	static {
 		defaults.put(PROP_ROUTING_PROVIDER_URL,"t3://localhost:7001");
@@ -866,6 +868,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_CRM_FORGOT_LDAP_PASSWORD_URL, "http://myaccount.freshdirect.com/cp/login/Login.aspx");
 		defaults.put(PROP_CRM_SECURITY_SKIP_FILE_TYPES, "css,js,jspf,gif,jpg,xls,ico,txt");
 		defaults.put(PROP_CRM_SECURITY_SKIP_FOLDERS, "");
+		defaults.put(PROP_CLICK2CALL_CALL_BACL_URL, "https://cim1.custserv.ca/system/web/view/live/templates/freshdirect/callbackICMFrame.html");
 		
 		defaults.put(MYFD_ENABLED, "false");
 
@@ -2060,5 +2063,9 @@ public class FDStoreProperties {
 
 	public static String getMyFdPollDaddyApiKey() {
 		return get(MYFD_POLLDADDY_API_KEY);
+	}
+	
+	public static String getC2CCallBackUrl(){
+		return config.getProperty(PROP_CLICK2CALL_CALL_BACL_URL);
 	}
 }

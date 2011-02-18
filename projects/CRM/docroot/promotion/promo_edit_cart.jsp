@@ -58,6 +58,9 @@
 					<fd:ErrorHandler result="<%=result%>" name="invalidExcludeSkus" id="errorMsg">
 						 <%@ include file="/includes/i_error_messages.jspf" %>
 					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="minQtyError" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>
+					</fd:ErrorHandler>
 				</div>
 				<%-- Promotion edit, edit cart requirement --%>
 					<%@ include file="/includes/promotions/i_promo_edit_cartreq.jspf" %>

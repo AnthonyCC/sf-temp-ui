@@ -64,7 +64,7 @@
 				<tr>
 					<td class="promo_detail_label">Has SKU:</td>
 					<td class="alignL vTop padL8R16">
-						<div class="padB8"><span class="gray">Min. quantity </span><input type="text" id="skuQuantity" name="skuQuantity" class="w30px alignC" value="<%= promotion.getSkuQuantity()%>"/><span class="gray"> of any combination of the following</span></div>
+						<div class="padB8"><span class="gray">Min. quantity </span><input type="text" id="skuQuantity" name="skuQuantity" class="w30px alignC" value="<%= (null!=request.getParameter("skuQuantity")&&!"".equals(request.getParameter("skuQuantity")))?request.getParameter("skuQuantity"):promotion.getSkuQuantity()%>"/><span class="gray"> of any combination of the following</span></div>
 						<div class="fleft"><textarea id="eligibleSku" name="eligibleSku" rows="3" cols="30" class="w600px"><%= elgSkusCart.toString() %></textarea></div><div class="grayIta8pt fleft padL4">Enter comma-separated SKUs</div>
 					</td>
 				</tr>

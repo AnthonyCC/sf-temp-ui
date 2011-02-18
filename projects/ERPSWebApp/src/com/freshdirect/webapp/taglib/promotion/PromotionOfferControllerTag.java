@@ -237,7 +237,16 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 					actionResult.addError(true, "invalidExcludeSkus", invalidExcFromSubtotal.toString()+" are invalid SKUs for excluding from SubTotal." );
 				}
 			}
-			this.promotion.setSkuQuantity(Integer.parseInt(skuQuantity));
+			if("".equals(skuQuantity)){
+				this.promotion.setSkuQuantity(0);
+			}else{
+				try {
+					this.promotion.setSkuQuantity(Integer.parseInt(skuQuantity));
+				} catch (NumberFormatException e) {
+					actionResult.addError(true, "minQtyError", " Min. Sku quantity should be integer.");
+				}
+			}
+//			this.promotion.setSkuQuantity(Integer.parseInt(skuQuantity));
 			if(!NumberUtil.isDouble(subTotal)){
 				this.promotion.setMinSubtotal(subTotal);			
 				actionResult.addError(true, "subtotalNumber", " Subtotal value should be a number.");
