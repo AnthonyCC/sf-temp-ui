@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -22,7 +23,12 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.MyFD;
 
 public class PollDaddyClient {
-	private static DateFormat POLL_DADDY_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private final static DateFormat POLL_DADDY_DATE_FORMAT;
+	
+	static {
+		POLL_DADDY_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		POLL_DADDY_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
+	}
 
 	public static void main(String[] args) throws IOException, PollDaddyProtocolException, ParseException {
 		PollDaddyClient service = new PollDaddyClient();
@@ -60,8 +66,15 @@ public class PollDaddyClient {
 			Date created = POLL_DADDY_DATE_FORMAT.parse(isoDate);
 			Poll poll = new Poll(id, question, created);
 			int closed = obj.getInt("closed");
-			if (closed > 0)
+			if (closed == 2)
 				poll.setClosed(true);
+			else if (closed == 1) {
+				JSONObject pollObject = getPoll(id);
+				isoDate = pollObject.getString("closeDate");
+				Date closeDate = POLL_DADDY_DATE_FORMAT.parse(isoDate);
+				if (closeDate.before(new Date()))
+					poll.setClosed(true);
+			}
 			polls.add(poll);
 		}
 		return polls;
@@ -143,7 +156,6 @@ public class PollDaddyClient {
 			throw new PollDaddyProtocolException("response returned no entity");
 	}
 
-	@SuppressWarnings("unused")
 	private JSONObject getPoll(String pollId) throws IOException, PollDaddyProtocolException {
 		if (userCode == null)
 			userCode = getUserCode();
