@@ -251,7 +251,7 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
 		
 		String INSERT_NEW_ZONE_02 = INSERT_NEW_ZONE_01.replace("WORKTABLE", worktable);
 		
-		System.out.println("INSERT NEW ZONE QUERY"+INSERT_NEW_ZONE_02);
+		//System.out.println("INSERT NEW ZONE QUERY"+INSERT_NEW_ZONE_02);
 		
 		this.jdbcTemplate.update(INSERT_NEW_ZONE_02, new Object[]{secondMaxId, zoneCode});
 		System.out.println("Zone inserted");

@@ -148,8 +148,7 @@ public class GeoRestrictionFormController extends AbstractFormController {
 			}
 		}
 		model.setGeoRestrictionDays(restrictionDaysList);
-		System.out.println("size of the model detail:"
-				+ restrictionDaysList.size());
+		//System.out.println("size of the model detail:"+ restrictionDaysList.size());
 	}
 
 	public Object getBackingObject(String id) {

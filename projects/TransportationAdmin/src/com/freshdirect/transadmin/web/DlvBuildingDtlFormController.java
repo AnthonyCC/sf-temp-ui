@@ -731,7 +731,7 @@ private DlvBuildingDetail encode(DlvBuildingDtl buildingDtl) {
 
 	public List saveDomainObject(HttpServletRequest request, Object domainObject) {
 
-		System.out.println("entering to save");
+		//System.out.println("entering to save");
 		List errorList = new ArrayList();
 		DlvBuildingDtl modelIn = (DlvBuildingDtl)domainObject;
 		if("true".equalsIgnoreCase(modelIn.getSvcValidate())){
