@@ -45,3 +45,5 @@ DELETE from cust.case_operation;
 CREATE TABLE cust.case_backup as (select * from cust.case c where C.CASE_STATE='APVD' or c.case_state ='REVW');
 
 UPDATE cust.case c set c.case_state ='CLSD' where C.CASE_STATE='APVD' or c.case_state ='REVW';
+
+CREATE TABLE cust.agent_backup  AS (SELECT * FROM cust.agent);
