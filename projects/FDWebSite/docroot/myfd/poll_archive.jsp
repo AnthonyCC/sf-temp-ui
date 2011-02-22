@@ -59,7 +59,7 @@
 						<div style="width: 456px; overflow: hidden;">
 							<div class="title20 eagle-bold">POLL ARCHIVE</div>
 							<div style="padding: 6px 0px 10px;">
-							<a href="/myfd/?trk=pollarch" class="text14">Back to the myFD page</a>
+							<a href="/myfd/index.jsp?trk=pollarch" class="text14">Back to the myFD page</a>
 							</div>
 							<div style="font-size: 0px; height: 2px; background-color: #dadada;">&nbsp;</div>
 							<div style="padding-top: 20px;" class="text11">
