@@ -513,7 +513,7 @@ public class ScoreProvider implements DataAccess {
 	 * @param input session input
 	 * @return List<{@link ContentNodeModel>}
 	 */
-	public List getDatasource(SessionInput input, String name) {
+	public List fetchContentNodes(SessionInput input, String name) {
 		ProductContainer category = input.getFICategory();
 		if ("FeaturedItems".equals(name)) {
 			if (category != null) {

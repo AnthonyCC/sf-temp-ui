@@ -784,7 +784,7 @@ public class DataGeneratorCompiler extends CompilerBase {
         String varName = "tmp" + c.lastTempVariable++;
         expression.getContext().putJavaVariableId(expression.getVariableName(), varName);
         if (isVariableFromDatasource(expression.getVariableName())) {
-            OperationCompileResult oc = new OperationCompileResult(varName, "  List " + varName + " = input.getDatasource(sessionInput, \"" + expression.getVariableName()
+            OperationCompileResult oc = new OperationCompileResult(varName, "  List " + varName + " = input.fetchContentNodes(sessionInput, \"" + expression.getVariableName()
                     + "\");\n");
             return oc;
         }

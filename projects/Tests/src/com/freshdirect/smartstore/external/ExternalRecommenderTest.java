@@ -103,7 +103,7 @@ public class ExternalRecommenderTest extends TestCase {
 		}
 
 		@Override
-		public List<ContentNodeModel> getDatasource(SessionInput input, String name) {
+		public List<ContentNodeModel> fetchContentNodes(SessionInput input, String name) {
 			fail("should not be called");
 			return null;
 		}

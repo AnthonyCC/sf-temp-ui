@@ -61,7 +61,7 @@ public class CmsFunctionsTest extends TestCase {
         
         da = new DataAccess() {
             @Override
-            public List<ContentNodeModel> getDatasource(SessionInput input, String name) {
+            public List<ContentNodeModel> fetchContentNodes(SessionInput input, String name) {
                 LOGGER.info("getDatasource called with name: '"+name+"'");
                 return Collections.emptyList();
             }

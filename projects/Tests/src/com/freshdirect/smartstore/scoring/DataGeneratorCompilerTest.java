@@ -76,7 +76,7 @@ public class DataGeneratorCompilerTest extends TestCase {
 
         input = new MockDataAccess() {
             @SuppressWarnings("unchecked")
-            public List getDatasource(SessionInput input, String name) {
+            public List fetchContentNodes(SessionInput input, String name) {
                 List set = new ArrayList();
                 if ("set".equals(name)) {
                     set.add("a1");

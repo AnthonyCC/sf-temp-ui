@@ -52,7 +52,7 @@ public class GlobalCompilerTest extends TestCase {
         CmsManager.setInstance(new CmsManager(service, null));
     	
         input = new MockDataAccess() {
-            public List getDatasource(SessionInput input,  String name) {
+            public List fetchContentNodes(SessionInput input,  String name) {
                 List set = new ArrayList();
                 if ("set".equals(name)) {
                     set.add("a1");
