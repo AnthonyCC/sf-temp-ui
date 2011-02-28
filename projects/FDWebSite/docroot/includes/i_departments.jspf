@@ -106,7 +106,7 @@ String newprods = "/newproducts.jsp?trk=home";
 							<% } %>
 							<% if (FDStoreProperties.isMyfdEnabled()) { %>
 							<td class="text11" valign="top" style="width: 164px; padding-top: 2px;">
-								<a href="<%=newprods%>">Find New Producs</a>
+								<a href="<%=newprods%>">Find New Products</a>
 							</td>
 							<% } %>
 						</tr>
