@@ -138,7 +138,7 @@ if (prod.isNutritionMultiple()) {
 							} %>
                          <%@ include file="/shared/includes/i_nutrition_sheet.jspf" %>
                          <img src="/media_stat/images/layout/clear.gif" width="1" height="5"><br>
-                         <a href="product_nutrition_note.jsp">An important note about our nutrition and ingredients information.</a><br>
+                         <a href="/shared/product_nutrition_note.jsp">An important note about our nutrition and ingredients information.</a><br>
                     <% } else if( showIngredients ) {
 						if (multiple) {
                                 if (skus.size() > 1) {
@@ -179,7 +179,7 @@ if (prod.isNutritionMultiple()) {
                          <img src="/media_stat/images/layout/330000.gif" width="100%" height="6" vspace="2"><br>
                          <%= fdprd.getIngredients() %><br>
                          <img src="/media_stat/images/layout/clear.gif" width="1" height="5"><br>
-                         <a href="product_nutrition_note.jsp">An important note about our nutrition and ingredients information.</a>
+                         <a href="/shared/product_nutrition_note.jsp">An important note about our nutrition and ingredients information.</a>
                          </td>
                          </tr>
                          </table>

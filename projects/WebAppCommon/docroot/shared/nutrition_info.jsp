@@ -58,7 +58,7 @@
 					<% }
 				}
 				%><%@ include file="/shared/includes/product/allergens.jspf" %><br />
-				<a href="product_nutrition_note.jsp">An important note about our nutrition and ingredients information.</a><br />
+				<a href="/shared/product_nutrition_note.jsp">An important note about our nutrition and ingredients information.</a><br />
 			</td>
 		</tr>
 		</table>	

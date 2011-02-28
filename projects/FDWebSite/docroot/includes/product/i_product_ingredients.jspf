@@ -15,7 +15,7 @@
 			<%@ include file="/shared/includes/product/allergens.jspf" %>
 
             <% if (request.getRequestURI().indexOf("meal_item_detail.jsp") < 0) { %>
-				<br><a href="javascript:pop('/product_nutrition_note.jsp',335,375)">An important note about our nutrition and ingredients information.</a>
+				<br><a href="javascript:pop('/shared/product_nutrition_note.jsp',335,375)">An important note about our nutrition and ingredients information.</a>
 			<% } %>
         </td>
 	</tr>
