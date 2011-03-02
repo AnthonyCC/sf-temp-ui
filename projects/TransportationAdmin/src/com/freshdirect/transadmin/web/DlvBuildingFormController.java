@@ -45,14 +45,15 @@ public class DlvBuildingFormController extends AbstractFormController {
 	
 	
 	protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) {
-	       binder.registerCustomEditor(Set.class, "buildingGroups", new CustomCollectionEditor(Set.class) {
+		   binder.registerCustomEditor(Set.class, "buildingGroups", new CustomCollectionEditor(Set.class) {
 	           protected Object convertElement(Object element) {
-	               if (element != null) {
+	        	   DeliveryGroup group = null;
+	        	   if (element != null) {
 	                   String id = (String) element;
-	                   DeliveryGroup group = getLocationManagerService().getDeliveryGroupById(id);
+	                   group = getLocationManagerService().getDeliveryGroupById(id);
 	                   return group;
 	               }
-	               return null;
+	               return group;
 	           }
 	       });
 	}

@@ -156,7 +156,7 @@
 				 <tr>
                   <td>Select Group</td>
                   <td>
-						<form:checkboxes path="buildingGroups" items="${deliveryGroups}" itemLabel="groupName" itemValue="groupId" delimiter="<br/>"/>
+						<form:select multiple="true" path="buildingGroups" items="${deliveryGroups}" itemLabel="groupName" itemValue="groupId" />
 	              </td>
 				   <td>
 	                  &nbsp;<form:errors path="buildingGroups" />

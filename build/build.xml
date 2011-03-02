@@ -1987,7 +1987,6 @@
 			<pathelement location="${work.dir}/RoutingServices.jar"/>
             		<pathelement location="${work.dir}/ERPServices.jar"/>
 			<pathelement location="${thirdparty.home}/spring.jar"/>
-			<pathelement location="${thirdparty.home}/spring-webmvc.jar"/>
 			<pathelement location="${thirdparty.home}/jstl.jar"/>
 			<pathelement location="${thirdparty.home}/standard.jar"/>
 			<pathelement location="${thirdparty.home}/extremecomponents-1.0.1.jar"/>  

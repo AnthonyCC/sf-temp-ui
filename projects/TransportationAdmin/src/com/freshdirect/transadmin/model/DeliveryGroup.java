@@ -1,8 +1,5 @@
 package com.freshdirect.transadmin.model;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class DeliveryGroup implements java.io.Serializable {
 	
 	private String groupId;
@@ -20,4 +17,10 @@ public class DeliveryGroup implements java.io.Serializable {
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
 	}
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return this.groupId;
+	}
+	
 }
