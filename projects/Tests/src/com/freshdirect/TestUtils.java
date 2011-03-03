@@ -290,7 +290,7 @@ public class TestUtils {
      * @param coll
      * @return
      */
-    public static Set<String> convertToStringList(Collection<ContentNodeModel> coll) {
+    public static Set<String> convertToStringList(Collection<? extends ContentNodeModel> coll) {
         Set<String> set = new HashSet<String>();
         for (ContentNodeModel obj : coll) {
             set.add(obj.getContentKey().getId());
@@ -298,7 +298,7 @@ public class TestUtils {
         return set;
     }
 
-    public static String getId(List<ContentNodeModel> nodes, int pos) {
+    public static String getId(List<? extends ContentNodeModel> nodes, int pos) {
         return (nodes.get(pos)).getContentKey().getId();
     }
 
