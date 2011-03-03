@@ -34,8 +34,14 @@ public class PrioritizedDataAccess implements DataAccess {
 	}
 
 	@Override
-	public List<ContentNodeModel> fetchContentNodes(SessionInput input, String name) {
-		return ScoreProvider.getInstance().fetchContentNodes(input, name);
+	public List<? extends ContentNodeModel> fetchContentNodes(SessionInput input, String name) {
+		final List<? extends ContentNodeModel> dsNodes = ScoreProvider.getInstance().fetchContentNodes(input, name);
+		
+		if (input.isTraceMode()) {
+			input.traceContentNodes(name, dsNodes);
+		}
+		
+		return dsNodes;
 	}
 
 	@Override

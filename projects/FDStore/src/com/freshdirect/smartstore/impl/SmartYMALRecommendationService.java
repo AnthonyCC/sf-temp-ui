@@ -103,6 +103,9 @@ public class SmartYMALRecommendationService extends	AbstractRecommendationServic
 				smartInput.getCartContents().add(selectedProduct.getContentKey());
 			smartInput.setNoShuffle(input.isNoShuffle());
 
+			// APPDEV-1633
+			smartInput.setTraceMode(input.isTraceMode());
+
 			Map<String,String> recServiceAudit = new HashMap<String,String>();
 			RECOMMENDER_SERVICE_AUDIT.set(recServiceAudit);
 			Map<String,String> recStratServiceAudit = new HashMap<String,String>();
@@ -137,6 +140,20 @@ public class SmartYMALRecommendationService extends	AbstractRecommendationServic
 				}
 				addContentKeys(smartInput.getCartContents(), recNodes);
 				recommendations[i] = recNodes;
+
+				// APPDEV-1633
+				if (smartInput.isTraceMode()) {
+					Map<ContentKey, Set<String>> v = new HashMap<ContentKey, Set<String>>();
+					Map<ContentKey, Set<String>> otherMap = smartInput.getDataSourcesMap();
+					final Set<String> yss = new HashSet<String>(1);
+					yss.add(ymalSet.getContentKey().getEncoded());
+					for (ContentKey ck : otherMap.keySet()) {
+						v.put(ck, yss);
+					}
+
+					input.mergeDataSourcesMap(v);
+					
+				}
 			}
 
 			if (recommenders.size() == 1) {

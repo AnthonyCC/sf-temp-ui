@@ -34,31 +34,36 @@ public class CachingDataGenerator extends DataGenerator {
         return null;
     }
 
-    public final List<ContentNodeModel> generate(SessionInput sessionInput, final DataAccess input) {
-        if (cacheEnabled) {
+    public final List<? extends ContentNodeModel> generate(SessionInput sessionInput, final DataAccess da) {
+    	// APPDEV-1633 don't use cache if trace mode is enabled
+        if (cacheEnabled && !sessionInput.isTraceMode()) {
             String key = getKey(sessionInput);
-            final SessionInput inp = new SessionInput(sessionInput.getCustomerId(), sessionInput.getCustomerServiceType(), sessionInput.getPricingContext());
-            inp.setCurrentNode(sessionInput.getCurrentNode());
-            inp.setExplicitList(sessionInput.getExplicitList());
+            final SessionInput session = new SessionInput(sessionInput.getCustomerId(), sessionInput.getCustomerServiceType(), sessionInput.getPricingContext());
+            session.setCurrentNode(sessionInput.getCurrentNode());
+            session.setExplicitList(sessionInput.getExplicitList());
             if (cache.get(key) == null) {
-                cache.put(key, new BalkingExpiringReference<List<ContentNodeModel>>(HOUR_IN_MILLIS, threadPool, generateImpl(inp, input)) {
-                    protected List<ContentNodeModel> load() {
-                        List<ContentNodeModel> result = generateImpl(inp, input);
+                cache.put(key, new BalkingExpiringReference<List<? extends ContentNodeModel>>(HOUR_IN_MILLIS, threadPool, generateImpl(session, da)) {
+                    protected List<? extends ContentNodeModel> load() {
+                        List<? extends ContentNodeModel> result = generateImpl(session, da);
                         return result;
                     }
                 });
             }
-            List<ContentNodeModel> cached = (List<ContentNodeModel>) cache.get(key).get();
+            List<? extends ContentNodeModel> cached = (List<? extends ContentNodeModel>) cache.get(key).get();
             if (cached != null) {
                 return cached;
             }
             return Collections.<ContentNodeModel>emptyList();
         } else {
-            return generateImpl(sessionInput, input);
+            final List<? extends ContentNodeModel> nodes = generateImpl(sessionInput, da);
+            if (sessionInput.isTraceMode()) {
+            	sessionInput.traceContentNodes(this.toString().replaceAll(":.+", ""), nodes);
+            }
+			return nodes;
         }
     }
 
-    public List<ContentNodeModel> generateImpl(SessionInput sessionInput, DataAccess input) {
+    public List<? extends ContentNodeModel> generateImpl(SessionInput sessionInput, DataAccess input) {
         return Collections.<ContentNodeModel>emptyList();
     }
 

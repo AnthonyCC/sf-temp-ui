@@ -11,7 +11,7 @@ public class DataGenerator {
 
     Set<String> factors;
 
-    public List<ContentNodeModel> generate(SessionInput sessionInput, DataAccess input) {
+    public List<? extends ContentNodeModel> generate(SessionInput sessionInput, DataAccess input) {
         return Collections.<ContentNodeModel>emptyList();
     }
 

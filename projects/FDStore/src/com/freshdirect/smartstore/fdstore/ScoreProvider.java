@@ -9,11 +9,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Category;
 
@@ -437,6 +437,7 @@ public class ScoreProvider implements DataAccess {
 	 * @param variables requested variables
 	 * @return scores in the order of variables  
 	 */
+	@Override
 	public double[] getVariables(String userId, PricingContext pricingContext, ContentNodeModel contentNode, String[] variables) {
 		double[] result = new double[variables.length];
 		
@@ -513,7 +514,18 @@ public class ScoreProvider implements DataAccess {
 	 * @param input session input
 	 * @return List<{@link ContentNodeModel>}
 	 */
-	public List fetchContentNodes(SessionInput input, String name) {
+	@Override
+	public List<? extends ContentNodeModel> fetchContentNodes(SessionInput input, String name) {
+		List<? extends ContentNodeModel> nodez = _fetchContentNodes(input, name);
+
+		if (input.isTraceMode()) {
+			input.traceContentNodes(name, nodez);
+		}
+
+		return nodez;
+	}
+
+	protected List<? extends ContentNodeModel> _fetchContentNodes(SessionInput input, String name) {
 		ProductContainer category = input.getFICategory();
 		if ("FeaturedItems".equals(name)) {
 			if (category != null) {
@@ -545,7 +557,7 @@ public class ScoreProvider implements DataAccess {
 				}
 			}
 	    }
-	    return Collections.EMPTY_LIST;
+	    return Collections.emptyList();
 	}
 	
         /**
@@ -1206,20 +1218,6 @@ public class ScoreProvider implements DataAccess {
 			ORIGINAL_SCORES_GLOBAL,
 			FactorRangeConverter.getRawGlobalScores("Score")
 		);
-		
-		
-		/* These are for testing "graceful" handling of nonexisting factors
-		rangeConverters.put(
-			"NincsOttGlobal",
-			FactorRangeConverter.getRawGlobalScores("GlobalNincsOszlop")
-		);
-		
-		rangeConverters.put(
-			"NincsOttPersonalized",
-			FactorRangeConverter.getRawPersonalizedScores("PersonalizedNincsOszlop")
-		);
-		*/
-		
 	}
 
 	@Override
@@ -1228,7 +1226,7 @@ public class ScoreProvider implements DataAccess {
 	}
 
 	@Override
-	public List<ContentNodeModel> getPrioritizedNodes() {
+	public List<? extends ContentNodeModel> getPrioritizedNodes() {
 		throw new UnsupportedOperationException();
 	}
 	
@@ -1238,7 +1236,7 @@ public class ScoreProvider implements DataAccess {
 	}
 	
 	@Override
-	public List<ContentNodeModel> getPosteriorNodes() {
+	public List<? extends ContentNodeModel> getPosteriorNodes() {
 		throw new UnsupportedOperationException();
 	}
 }

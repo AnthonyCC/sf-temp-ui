@@ -28,13 +28,13 @@ public interface DataAccess {
      * @param name
      * @return
      */
-    public List<ContentNodeModel> fetchContentNodes(SessionInput input, String name);
+    public List<? extends ContentNodeModel> fetchContentNodes(SessionInput input, String name);
     
     public boolean addPrioritizedNode(ContentNodeModel model);
     
-    public List<ContentNodeModel> getPrioritizedNodes();
+    public List<? extends ContentNodeModel> getPrioritizedNodes();
 
     public boolean addPosteriorNode(ContentNodeModel model);
 
-    public List<ContentNodeModel> getPosteriorNodes();
+    public List<? extends ContentNodeModel> getPosteriorNodes();
 }

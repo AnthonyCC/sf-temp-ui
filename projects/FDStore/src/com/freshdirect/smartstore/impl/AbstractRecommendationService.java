@@ -54,7 +54,7 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 	 */
 	public static ThreadLocal<Map<String, String>> RECOMMENDER_STRATEGY_SERVICE_AUDIT = new ThreadLocal<Map<String, String>>();
 
-	protected static List<RankedContent.Single> rankListByOrder(List<ContentNodeModel> nodes) {
+	protected static List<RankedContent.Single> rankListByOrder(List<? extends ContentNodeModel> nodes) {
 		int size = nodes.size();
 		List<RankedContent.Single> rankedContents = new ArrayList<RankedContent.Single>(size);
 		for (int i = 0; i < size; i++) {

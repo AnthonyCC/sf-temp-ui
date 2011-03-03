@@ -62,7 +62,7 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
 
 	public List<ContentNodeModel> recommendNodes(SessionInput input, DataAccess dataAccess) {
 		// generate content node list based on the 'generator' expression.
-		List<ContentNodeModel> result = generator.generate(input, dataAccess);
+		List<? extends ContentNodeModel> result = generator.generate(input, dataAccess);
 
 		String userId = input.getCustomerId();
                 PricingContext pricingCtx = input.getPricingContext();
@@ -74,7 +74,7 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
 
 			if (scoring.getReturnSize() > 1) {
 				OrderingFunction orderingFunction = scoring.createOrderingFunction();
-				for (Iterator<ContentNodeModel> iter = result.iterator(); iter.hasNext();) {
+				for (Iterator<? extends ContentNodeModel> iter = result.iterator(); iter.hasNext();) {
 					ContentNodeModel contentNode = iter.next();
 					double[] values = dataAccess.getVariables(userId, pricingCtx, contentNode, variableNames);
 					double[] score = scoring.getScores(values);
@@ -87,7 +87,7 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
 				TreeSet<RankedContent.Single> scores = new TreeSet<RankedContent.Single>();
 				rankedContents = new ArrayList<RankedContent.Single>(result.size());
 
-				for (Iterator<ContentNodeModel> iter = result.iterator(); iter.hasNext();) {
+				for (Iterator<? extends ContentNodeModel> iter = result.iterator(); iter.hasNext();) {
 					ContentNodeModel contentNode = iter.next();
 					double[] values = dataAccess.getVariables(userId, pricingCtx, contentNode, variableNames);
 					double[] score = scoring.getScores(values);
@@ -103,9 +103,9 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
 			aggregatable = false;
 		}
 
-		List<ContentNodeModel> prioritized = dataAccess.getPrioritizedNodes();
+		List<? extends ContentNodeModel> prioritized = dataAccess.getPrioritizedNodes();
 		List<ContentNodeModel> sample;
-		List<ContentNodeModel> deprioritized = dataAccess.getPosteriorNodes();
+		List<? extends ContentNodeModel> deprioritized = dataAccess.getPosteriorNodes();
 		input.setPrioritizedCount( prioritized.size() );
 
 		
@@ -126,7 +126,7 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
 		finalList.addAll(prioritized);
 		finalList.addAll(sample);
 		finalList.addAll(deprioritized);
-
+		
 		return finalList;
 	}
 

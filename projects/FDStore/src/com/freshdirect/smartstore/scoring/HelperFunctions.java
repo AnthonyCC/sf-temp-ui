@@ -86,7 +86,8 @@ public class HelperFunctions {
                 result.addAll(recursiveNodes((List<ContentNodeModel>) obj));
             }
         }
-        return result;
+
+		return result;
     }
 
     /**
@@ -413,7 +414,7 @@ public class HelperFunctions {
         if (input!=null && input.getExplicitList()!=null) {
             StringBuffer buf = new StringBuffer("[");
             boolean first = true;
-            for (Iterator<ContentNodeModel> iter=input.getExplicitList().iterator();iter.hasNext();) {
+            for (Iterator<? extends ContentNodeModel> iter=input.getExplicitList().iterator();iter.hasNext();) {
                 ContentNodeModel model = iter.next();
                 if (!first) {
                     buf.append(',');
@@ -495,6 +496,8 @@ public class HelperFunctions {
 						slots--;
 					}
 				}
+				
+				input.traceContentNodes("FeaturedProducts", nodes);
 			}
 		}
 		return nodes;
@@ -514,8 +517,10 @@ public class HelperFunctions {
 
 					ProductModel pm = (ProductModel)product;
 					// it does all checks against cart include, displaying, uniqueness, etc.
-					if ( dataAccess.addPrioritizedNode( pm ) )
+					if ( dataAccess.addPrioritizedNode( pm ) ) {
 						slots--;
+						input.traceContentNode("FeaturedItems", (ContentNodeModel) product);
+					}
 					// we do not return prioritized nodes
 				}
 			}
@@ -612,11 +617,19 @@ public class HelperFunctions {
 				if (node != null)
 					nodes.add(node);
 			}
+			
+			// APPDEV-1633 trace nodes
+			input.traceContentNodes(providerName, nodes);
+			
 			return nodes;
 		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
 		} catch (NoSuchExternalRecommenderException e) {
+			e.printStackTrace();
 		} catch (ExternalRecommenderCommunicationException e) {
+			e.printStackTrace();
 		} catch (NullPointerException e) {
+			e.printStackTrace();
 		}
 		return new ArrayList<ContentNodeModel>();
     }
@@ -635,6 +648,10 @@ public class HelperFunctions {
 				if (node != null)
 					nodes.add(node);
 			}
+
+			// APPDEV-1633 trace nodes
+			input.traceContentNodes(providerName, nodes);
+
 			return nodes;
 		} catch (IllegalArgumentException e) {
 		} catch (NoSuchExternalRecommenderException e) {

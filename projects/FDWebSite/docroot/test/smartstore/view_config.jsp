@@ -22,6 +22,9 @@
 <%@page import="com.freshdirect.mail.EmailUtil"%>
 <%@page import="com.freshdirect.smartstore.RecommendationService"%>
 <%@page import="com.freshdirect.smartstore.RecommendationServiceConfig "%>
+<%@page import="com.freshdirect.smartstore.ConfigurationStatus"%>
+<%@page import="com.freshdirect.smartstore.RecommendationServiceType"%>
+<%@page import="com.freshdirect.smartstore.EnumConfigurationState"%>
 <%@page import="com.freshdirect.smartstore.SessionInput"%>
 <%@page import="com.freshdirect.smartstore.Variant"%>
 <%@page import="com.freshdirect.smartstore.service.RecommendationServiceFactory"%>
@@ -31,6 +34,8 @@
 <%@page import="com.freshdirect.smartstore.fdstore.VariantSelection"%>
 <%@page import="com.freshdirect.smartstore.fdstore.VariantSelectorFactory"%>
 <%@page import="com.freshdirect.smartstore.impl.AbstractRecommendationService"%>
+<%@page import="com.freshdirect.smartstore.impl.NullRecommendationService"%>
+<%@page import="com.freshdirect.smartstore.external.scarab.ScarabInfrastructure"%>
 <%@page import="com.freshdirect.test.TestSupport"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
@@ -46,6 +51,7 @@ String origURL = urlG.build();
 if (urlG.get("refresh") != null) {
 	VariantRegistry.getInstance().reload();
 	CmsRecommenderRegistry.getInstance().reload();
+	ScarabInfrastructure.reload(true);
 	VariantSelectorFactory.refresh();
 	urlG.remove("refresh");
 	urlG.set("reloaded", "1");
@@ -54,7 +60,7 @@ if (urlG.get("refresh") != null) {
 	return;
 } 
 
-List siteFeatures = EnumSiteFeature.getSmartStoreEnumList();
+List<EnumSiteFeature> siteFeatures = EnumSiteFeature.getSmartStoreEnumList();
 Collections.sort(siteFeatures);
 
 EnumSiteFeature expandSf = null;
@@ -65,14 +71,10 @@ Map varMap = new HashMap();
 
 VariantSelection helper = VariantSelection.getInstance();
 
-Map cohorts = helper.getCohorts();
+Map<String, Integer> cohorts = helper.getCohorts();
 
 %>
-
-<%@page import="com.freshdirect.smartstore.ConfigurationStatus"%>
-<%@page import="com.freshdirect.smartstore.RecommendationServiceType"%>
-<%@page import="com.freshdirect.smartstore.impl.NullRecommendationService"%>
-<%@page import="com.freshdirect.smartstore.EnumConfigurationState"%><html>
+<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>VARIANT CONFIGURATIONS PAGE</title>

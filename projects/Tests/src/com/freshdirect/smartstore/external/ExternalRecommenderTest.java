@@ -15,12 +15,6 @@ import com.freshdirect.TestUtils;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
-import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.application.ContentTypeServiceI;
-import com.freshdirect.cms.application.service.CompositeTypeService;
-import com.freshdirect.cms.application.service.xml.FlexContentHandler;
-import com.freshdirect.cms.application.service.xml.XmlContentService;
-import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.aspects.ScoreFactorGlobalNameAspect;
@@ -103,13 +97,13 @@ public class ExternalRecommenderTest extends TestCase {
 		}
 
 		@Override
-		public List<ContentNodeModel> fetchContentNodes(SessionInput input, String name) {
+		public List<? extends ContentNodeModel> fetchContentNodes(SessionInput input, String name) {
 			fail("should not be called");
 			return null;
 		}
 
 		@Override
-		public List<ContentNodeModel> getPrioritizedNodes() {
+		public List<? extends ContentNodeModel> getPrioritizedNodes() {
 			fail("should not be called");
 			return null;
 		}
@@ -127,7 +121,7 @@ public class ExternalRecommenderTest extends TestCase {
 		}
 		
 		@Override
-		public List<ContentNodeModel> getPosteriorNodes() {
+		public List<? extends ContentNodeModel> getPosteriorNodes() {
 			fail("should not be called");
 			return null;
 		}
@@ -239,7 +233,7 @@ public class ExternalRecommenderTest extends TestCase {
 		try {
 			DataGenerator generator = compiler.createDataGenerator("ext3", "PersonalizedItems_foo()");
 			SessionInput input = new SessionInput("123", EnumServiceType.CORPORATE, PricingContext.DEFAULT);
-			List<ContentNodeModel> nodes = generator.generate(input, new MockDataAccess());
+			List<? extends ContentNodeModel> nodes = generator.generate(input, new MockDataAccess());
 			assertEquals(0, nodes.size());
 
 			// should return different result for different user
@@ -311,7 +305,7 @@ public class ExternalRecommenderTest extends TestCase {
 			DataGenerator generator = compiler.createDataGenerator("ext7", "RelatedItems_baz(toList(currentNode,explicitList))");
 			SessionInput input = new SessionInput("123", EnumServiceType.CORPORATE, PricingContext.DEFAULT);
 			input.setCurrentNode(ContentFactory.getInstance().getContentNode("e1"));
-			List<ContentNodeModel> nodes = generator.generate(input, new MockDataAccess());
+			List<? extends ContentNodeModel> nodes = generator.generate(input, new MockDataAccess());
 			assertEquals(3, nodes.size());
 			assertEquals("e1", nodes.get(0).getContentKey().getId());
 			assertEquals("e2", nodes.get(1).getContentKey().getId());
@@ -365,7 +359,7 @@ public class ExternalRecommenderTest extends TestCase {
 			Set<ContentKey> recentItems = new HashSet<ContentKey>();
 			input.setRecentItems(recentItems);
 			recentItems.add(ContentKey.create(ContentType.get("Product"), "a1"));
-			List<ContentNodeModel> nodes = generator.generate(input, new MockDataAccess());
+			List<? extends ContentNodeModel> nodes = generator.generate(input, new MockDataAccess());
 			assertEquals(3, nodes.size());
 			assertEquals("a1", nodes.get(0).getContentKey().getId());
 			assertEquals("a2", nodes.get(1).getContentKey().getId());

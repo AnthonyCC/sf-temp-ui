@@ -293,6 +293,7 @@ if (category != null) {
 
 /* session input */
 SessionInput si = new SessionInput(user);
+si.setTraceMode(true); // trace data sources for each content keys
 si.setCurrentNode(category);
 
 String ymalError = "";
@@ -341,7 +342,7 @@ if (useLoggedIn && user != null) {
 	si.setCurrentNode(source);
 }
 si.setYmalSource(source);
-si.setNoShuffle(false);
+si.setNoShuffle(true);
 si.setIncludeCartItems(!useLoggedIn);
 si.setMaxRecommendations(EnumSiteFeature.YMAL.equals(siteFeature) ? 6 : 5);
 
@@ -446,7 +447,9 @@ if (bRecService instanceof ScriptedRecommendationService) {
 
 %>
 
-<html>
+
+<%@page import="com.freshdirect.framework.util.StringUtil"%>
+<%@page import="java.util.HashMap"%><html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>VARIANT COMPARISON PAGE - <%= siteFeature.getName() %><%=
@@ -478,7 +481,8 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 .prod-items td.rank{border:0px none !important;vertical-align:middle;color:gray;}
 .prod-items td.pic{width:100px;}
 .prod-items td.info{text-align:left;vertical-align:top;}
-.prod-items .taxonomy{font-style:italic;}
+.prod-items .taxonomy{color: #777; font-weight: bold;}
+.prod-items .source{color: #999; font-weight: bold;padding-top: 2px;}
 .prod-items td.info div{position:relative;height:80px;}
 .prod-items .position{font-weight:bold;position:absolute !important;height:auto !important;bottom:0px;right:0px;}
 .prod-items .score{font-weight:bold;position:absolute !important;height:auto !important;bottom:0px;left:0px;margin-right:25px;}
@@ -779,15 +783,22 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 		}
 	}
 	List<ContentNodeModel> recsB = null;
+	SessionInput si2 = (SessionInput) si.clone();
+	si2.setDataSourcesMap(new HashMap<ContentKey, Set<String>>());
 	if (bRecService != null) {
 		LOG.info("variant B recommender: " + bRecService.getClass().getName());
 		try {
-			recsB = bRecService.recommendNodes(si);
+			recsB = bRecService.recommendNodes(si2);
 			LOG.info("Recommender B node count: " + recsB.size());
 		} catch (RuntimeException e) {
 			LOG.error("exception when recommend for B", e);
 		}	
-	}	
+	}
+	
+	// DEBUG
+	LOG.warn("Sources[A]=\n" + si.getDataSourcesMap().toString());
+	LOG.warn("Sources[B]=\n" + si.getDataSourcesMap().toString());
+	
     %>
 	<table class="var-comparator">
 		<tr>
@@ -933,6 +944,9 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 				%> 
 				<table class="prod-items">
 				<%
+						Map<ContentKey,Set<String>> map = si.getDataSourcesMap();
+						if (map == null)
+							map = Collections.emptyMap();
 						Iterator<ContentNodeModel> it_ra = recsA.iterator();
 						int rank = 1;
 						while (it_ra.hasNext()) {
@@ -966,8 +980,8 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 							<display:ProductImage product="<%= pm %>" action="<%= actionURL %>" hideBursts="<%= urlG.get(\"variantAhideBursts\") != null ? aRecService.getVariant().getHideBursts() : null %>"/>
 						</td>
 						<td class="info"<%= notFound %>><div>
-								<span class="title16" title="<%= cnm.getContentName() %>"><%= cnm.getFullName() %></span><br>
-								<span class="taxonomy text13"><%= JspMethods.getTaxonomy(pm, true) %></span>
+								<span class="title14" title="<%= cnm.getContentName() %>"><%= cnm.getFullName() %></span><br>
+								<span class="taxonomy text12"><%= JspMethods.getTaxonomy(pm, true) %></span>
 								<% if ("detailed".equals(view)) { %>
 								<div class="score text12">
 									<span style="white-space: nowrap">Brand<%= pm.getBrands().size() > 1 ? "s" : "" %>: <%
@@ -988,6 +1002,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 									<span style="white-space: nowrap">Product Age: <%= days %></span>
 								</div>
 								<% } %>
+								<div class="source"><%= StringUtil.join(map.get(pm.getContentKey()), ", ") %></div>
 						</div></td>
 					</tr> 
 				<%
@@ -1005,12 +1020,15 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 				%>
 				<table class="prod-items">
 				<%
+						Map<ContentKey,Set<String>> map2 = si2.getDataSourcesMap();
+						if (map2 == null)
+							map2 = Collections.emptyMap();
 						Iterator<ContentNodeModel> it_rb = recsB.iterator();
 						int idx = 0;
 						while (it_rb.hasNext()) {
 							ContentNodeModel cnm = it_rb.next();
 							ProductModel pm = (ProductModel) cnm;
-							pm = ProductPricingFactory.getInstance().getPricingAdapter(pm, si.getPricingContext() != null ? si.getPricingContext() : PricingContext.DEFAULT);
+							pm = ProductPricingFactory.getInstance().getPricingAdapter(pm, si2.getPricingContext() != null ? si2.getPricingContext() : PricingContext.DEFAULT);
 							String actionURL = FDURLUtil.getProductURI(pm, "preview");
 							Integer change = recsA != null && recsA.indexOf(cnm) >= 0 ? new Integer(recsA.indexOf(cnm) - idx) : null;
 							String changeString = "N/A";
@@ -1035,7 +1053,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 							}
 							String days = "";
 							if ("detailed".equals(view)) {
-								int d = (int) nsLookup.getVariable(cnm, si.getPricingContext());
+								int d = (int) nsLookup.getVariable(cnm, si2.getPricingContext());
 								if (d < -2000000000)
 									days = "&lt;unknown&gt;";
 								else
@@ -1047,8 +1065,8 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 							<display:ProductImage product="<%= pm %>" action="<%= actionURL %>" hideBursts="<%= urlG.get(\"variantBhideBursts\") != null ? bRecService.getVariant().getHideBursts() : null  %>"/>
 						</td>
 						<td class="info"><div>
-								<span class="title16" title="<%= cnm.getContentName() %>"><%= cnm.getFullName() %></span><br>
-								<span class="taxonomy text13"><%= JspMethods.getTaxonomy(pm, true) %></span>
+								<span class="title14" title="<%= cnm.getContentName() %>"><%= cnm.getFullName() %></span><br>
+								<span class="taxonomy text12"><%= JspMethods.getTaxonomy(pm, true) %></span>
 								<% if ("detailed".equals(view)) { %>
 								<div class="score text12">
 									<span style="white-space: nowrap">Brand<%= pm.getBrands().size() > 1 ? "s" : "" %>: <%
@@ -1065,10 +1083,11 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 									%><%= brands %></span><br>
 									<span style="white-space: nowrap">Promo Deal: <%= pm.getDealPercentage() %>%</span>&nbsp;
 									<span style="white-space: nowrap">Tiered Deal: <%= pm.getTieredDealPercentage() %>%</span>&nbsp;
-									<span style="white-space: nowrap">Quality Rating: <%= qrLookup.getVariable(cnm, si.getPricingContext()) %></span>&nbsp;
+									<span style="white-space: nowrap">Quality Rating: <%= qrLookup.getVariable(cnm, si2.getPricingContext()) %></span>&nbsp;
 									<span style="white-space: nowrap">Product Age: <%= days %></span>
 								</div>
 								<% } %>
+								<div class="source"><%= StringUtil.join(map2.get(pm.getContentKey()), ", ") %></div>
 								<% if (!"simple".equals(view)) { %>
 								<div class="position text12 <%= changeColor %>"><%= changeString %></div>
 								<% } %>

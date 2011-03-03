@@ -112,25 +112,25 @@ public class CachingCompilerTest extends TestCase {
         assertTrue("caching enabled", dataGenerator instanceof CachingDataGenerator);
         ((CachingDataGenerator)dataGenerator).setCacheEnabled(true);
 
-        List<ContentNodeModel> firstLiveResult = dataGenerator.generate(input, dataAccess);
+        List<? extends ContentNodeModel> firstLiveResult = dataGenerator.generate(input, dataAccess);
         assertNotNull("result", firstLiveResult);
         assertEquals("result size 1", 1, firstLiveResult.size());
         assertEquals("one node", "[Mock[ContentKey[Product:exp1]]]", firstLiveResult.toString());
 
-        List<ContentNodeModel> secondLiveResult = dataGenerator.generate(input2, dataAccess);
+        List<? extends ContentNodeModel> secondLiveResult = dataGenerator.generate(input2, dataAccess);
         assertNotNull("result", secondLiveResult);
         assertEquals("result size 1", 1, secondLiveResult.size());
         assertEquals("one node", "[Mock[ContentKey[Product:exp4]]]", secondLiveResult.toString());
         
         Thread.sleep(1000);
 
-        List<ContentNodeModel> firstResultFromCache = CachingDataGenerator.peekIntoCache("explicitList:atLeast(globalfact,1)$[exp1,exp2]");
-        List<ContentNodeModel> secondResultFromCache = CachingDataGenerator.peekIntoCache("explicitList:atLeast(globalfact,1)$[exp2,exp4]");
+        List<? extends ContentNodeModel> firstResultFromCache = CachingDataGenerator.peekIntoCache("explicitList:atLeast(globalfact,1)$[exp1,exp2]");
+        List<? extends ContentNodeModel> secondResultFromCache = CachingDataGenerator.peekIntoCache("explicitList:atLeast(globalfact,1)$[exp2,exp4]");
 
         assertEquals("first result get into the cache", firstLiveResult, firstResultFromCache);
         assertEquals("second result get into the cache", secondLiveResult, secondResultFromCache);
 
-        List<ContentNodeModel> cachedLiveResult = dataGenerator.generate(input, dataAccess);
+        List<? extends ContentNodeModel> cachedLiveResult = dataGenerator.generate(input, dataAccess);
         assertEquals("first result get into the cache", firstLiveResult, cachedLiveResult);
     }
 }

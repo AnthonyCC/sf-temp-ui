@@ -61,7 +61,7 @@ public class CmsFunctionsTest extends TestCase {
         
         da = new DataAccess() {
             @Override
-            public List<ContentNodeModel> fetchContentNodes(SessionInput input, String name) {
+            public List<? extends ContentNodeModel> fetchContentNodes(SessionInput input, String name) {
                 LOGGER.info("getDatasource called with name: '"+name+"'");
                 return Collections.emptyList();
             }
@@ -78,7 +78,7 @@ public class CmsFunctionsTest extends TestCase {
             }
             
             @Override
-            public List<ContentNodeModel> getPrioritizedNodes() {
+            public List<? extends ContentNodeModel> getPrioritizedNodes() {
             	return Collections.emptyList();
             }
 
@@ -88,7 +88,7 @@ public class CmsFunctionsTest extends TestCase {
             }
             
             @Override
-            public List<ContentNodeModel> getPosteriorNodes() {
+            public List<? extends ContentNodeModel> getPosteriorNodes() {
             	return Collections.emptyList();
             }
         };

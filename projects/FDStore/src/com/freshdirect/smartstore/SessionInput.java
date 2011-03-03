@@ -1,5 +1,6 @@
 package com.freshdirect.smartstore;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,7 +29,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
  * @author istvan
  * 
  */
-public class SessionInput {
+public class SessionInput implements Cloneable {
 
 	private Set<ContentKey> cartContents = null;
 
@@ -36,13 +37,25 @@ public class SessionInput {
 
 	private ContentNodeModel currentNode; // used by FI recommenders
 
+	// For debugging purpose
 	private boolean noShuffle;
 
+	/**
+	 * Helps tracing which datastore feeded a content key
+	 */
+	private boolean traceMode = false;
+
+	/**
+	 * Map to record datasource ids for a generated content key.
+	 * This is populated only when traceMode is on. 
+	 */
+	private Map<ContentKey,Set<String>> dataSourcesMap = new HashMap<ContentKey,Set<String>>();
+	
 	private CategoryModel category;
 
 	private YmalSource ymalSource;
 
-	private List<ContentNodeModel> explicitList;
+	private List<? extends ContentNodeModel> explicitList;
 
 	private EnumServiceType customerServiceType;
 
@@ -74,7 +87,9 @@ public class SessionInput {
 	 */
 	private int prioritizedCount = 0;
 	
-		
+	protected SessionInput() {
+	}
+	
 	/**
 	 * Constructor.
 	 * 
@@ -94,7 +109,7 @@ public class SessionInput {
 	 * Constructor.
 	 * 
 	 * @param user
-	 *            the costumer to recommend for.
+	 *            the customer to recommend for.
 	 */
 	public SessionInput(FDUserI user) {
 		if (user != null) {
@@ -194,6 +209,72 @@ public class SessionInput {
 		this.noShuffle = noShuffle;
 	}
 
+	public boolean isTraceMode() {
+		return traceMode;
+	}
+
+	/**
+	 * Enables or disables tracing data sources. It is turned off by default.
+	 * @param traceMode
+	 */
+	public void setTraceMode(boolean traceMode) {
+		this.traceMode = traceMode;
+	}
+	
+	/**
+	 * Returns a mapping of content key to source names.
+	 * This map is available only if trace mode is on.
+	 * 
+	 * @return
+	 */
+	public Map<ContentKey, Set<String>> getDataSourcesMap() {
+		return dataSourcesMap;
+	}
+	
+	public void setDataSourcesMap(Map<ContentKey, Set<String>> feederMap) {
+		this.dataSourcesMap = feederMap;
+	}
+
+
+	public void traceContentNodes(String dsName, Collection<? extends ContentNodeModel> nodes) {
+		if (traceMode) {
+			for (ContentNodeModel node : nodes) {
+				_traceNode(dsName, node);
+			}
+		}
+	}
+	
+	public void traceContentNode(String dsName, ContentNodeModel node) {
+		if (traceMode) {
+			_traceNode(dsName, node);
+		}
+	}
+
+	protected void _traceNode(String dsName, ContentNodeModel node) {
+		ContentKey ck = node.getContentKey();
+		
+		Set<String> ds = dataSourcesMap.get(ck);
+		if (ds == null) {
+			ds = new HashSet<String>();
+			dataSourcesMap.put(ck, ds);
+		}
+		// store data source name for the given content key
+		ds.add(dsName);
+	}
+
+
+	public void mergeDataSourcesMap(Map<ContentKey, Set<String>> otherMap) {
+		for (ContentKey ck : otherMap.keySet()) {
+			Set<String> sourceNames = otherMap.get(ck);
+			if (dataSourcesMap.containsKey(ck)) {
+				dataSourcesMap.get(ck).addAll(sourceNames);
+			} else {
+				dataSourcesMap.put(ck, new HashSet<String>(sourceNames));
+			}
+		}
+		
+	}
+	
 	public YmalSource getYmalSource() {
 		return ymalSource;
 	}
@@ -202,11 +283,11 @@ public class SessionInput {
 		this.ymalSource = ymalSource;
 	}
 
-	public List<ContentNodeModel> getExplicitList() {
+	public List<? extends ContentNodeModel> getExplicitList() {
 		return explicitList != null ? explicitList : Collections.<ContentNodeModel>emptyList();
 	}
 
-	public void setExplicitList(List<ContentNodeModel> explicitList) {
+	public void setExplicitList(List<? extends ContentNodeModel> explicitList) {
 		this.explicitList = explicitList;
 	}
 
@@ -252,6 +333,11 @@ public class SessionInput {
 
 	public void setCategory(CategoryModel category) {
 		this.category = category;
+	}
+
+	// clone support
+	protected void setSavingsVariantId(String savingsVariantId) {
+		this.savingsVariantId = savingsVariantId;
 	}
 
 	public String getSavingsVariantId() {
@@ -323,4 +409,29 @@ public class SessionInput {
 		this.prioritizedCount = prioritizedCount;
 	}
 
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		SessionInput cloned = new SessionInput(this.customerId, this.customerServiceType, this.pricingCtx);
+		
+		cloned.setCartContents(this.cartContents);
+		// customerId <-- already set by constructor
+		cloned.setCurrentNode(currentNode);
+		cloned.setNoShuffle(noShuffle);
+		cloned.setTraceMode(traceMode);
+		cloned.setDataSourcesMap(dataSourcesMap);
+		cloned.setCategory(category);
+		cloned.setExplicitList(explicitList);
+		// customerServiceType <-- already set by constructor
+		cloned.setCartModel(cartModel);
+		cloned.setCheckForEnoughSavingsMode(checkForEnoughSavingsMode);
+		cloned.setSavingsVariantId(savingsVariantId);
+		cloned.setIncludeCartItems(includeCartItems);
+		cloned.setUseAlternatives(useAlternatives);
+		cloned.setShowTemporaryUnavailable(showTemporaryUnavailable);
+		cloned.setRecentItems(recentItems);
+		// pricingCtx <-- already set by constructor
+		cloned.setPrioritizedCount(prioritizedCount);
+		
+		return cloned;
+	}
 }
