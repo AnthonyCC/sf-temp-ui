@@ -18,7 +18,6 @@ import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.dsl.CompileException;
 import com.freshdirect.smartstore.fdstore.FactorRequirer;
-import com.freshdirect.smartstore.sampling.ImpressionSampler;
 import com.freshdirect.smartstore.service.RecommendationServiceFactory;
 import com.freshdirect.smartstore.service.VariantRegistry;
 
@@ -65,8 +64,14 @@ public class YmalYfRecommendationService extends AbstractRecommendationService i
 		i2.setCurrentNode(currentNode);
 		i2.setYmalSource(currentNode);
 		i2.setNoShuffle(input.isNoShuffle());
+		i2.setTraceMode(input.isTraceMode());
 		
 		List<ContentNodeModel> prods = smart.recommendNodes(i2);
+		
+		if (i2.isTraceMode()) {
+			input.mergeDataSourcesMap(i2.getDataSourcesMap());
+		}
+		
 		return prods;
 	}
 
