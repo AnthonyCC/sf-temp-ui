@@ -5,7 +5,7 @@
 <%@ page import="com.freshdirect.delivery.*" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter" %>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
-
+<%@ page import='com.freshdirect.webapp.crm.security.*' %>
 
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='crm' prefix='crm' %>
@@ -126,7 +126,7 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("addApa
         <td colspan="5" align="center"><img src="/media_stat/crm/images/clear.gif" width="1" height="8"><br>
 		<input type="submit" name="checkAddress" value="CHECK ADDRESS" class="submit">
                 <%=dlvAddress.getAddressType() != null ? "<br>Address Type = " + dlvAddress.getAddressType().getDescription() : ""%> 
-			<% if (/*currentAgent.isSupervisor() &&*/ addApartment) {%>
+			<% if (/*currentAgent.isSupervisor() &&*/!CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"skipAddApartment")&& addApartment) {%>
 				<br><br>
 				<input type="submit" name="addApartment" value="ADD APARTMENT" class="new">
 				<br><br>

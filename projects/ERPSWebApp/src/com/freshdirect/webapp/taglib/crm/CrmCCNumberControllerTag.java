@@ -7,12 +7,17 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.security.auth.Subject;
+import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
+
+import weblogic.security.SimpleCallbackHandler;
+import weblogic.security.services.Authentication;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.crm.CrmAgentModel;
@@ -33,7 +38,6 @@ import com.freshdirect.fdstore.mail.CrmSecurityCCCheckEmailVO;
 import com.freshdirect.fdstore.mail.CrmSecurityCCCheckInfo;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
-import com.freshdirect.framework.util.MD5Hasher;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
@@ -56,23 +60,24 @@ public class CrmCCNumberControllerTag extends AbstractControllerTag {
 	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		HttpSession session = pageContext.getSession();
 		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
-		String accessCode = NVL.apply(request.getParameter("accesskey")," ");
+		/*String accessCode = NVL.apply(request.getParameter("accesskey")," ");
 		String hashedAccessCode = MD5Hasher.hash(accessCode);
 		if(hashedAccessCode == null || !hashedAccessCode.equals(FDStoreProperties.getCrmCCDetailsAccessKey())) {
 			actionResult.addError(true, "authentication", "Please enter the correct access key.");
 			return true;
-		}
+		}*/
 		/*if(null != agent && !agent.isAuthorizedToSeeAuthAndCCInfo()){
 			actionResult.addError(true, "authentication", "You are not authorized to see this info.");
 			return true;
 		}*/
-		/*String password = NVL.apply(request.getParameter("password"), "");
+		String password = NVL.apply(request.getParameter("password"), "");
 		if("".equals(password)){
 			actionResult.addError(true, "password", SystemMessageList.MSG_REQUIRED);
 			return true;
-		}*/
+		}
 		try {
 //			CrmManager.getInstance().loginAgent(agent.getUserId(), password);
+			Subject subject = Authentication.login(new SimpleCallbackHandler(agent.getUserId(), password));
 			FDOrderI order = FDCustomerManager.getOrder(this.orderId);
 			List ccList = new ArrayList();
 			ccList.add(order.getPaymentMethod());
@@ -93,9 +98,9 @@ public class CrmCCNumberControllerTag extends AbstractControllerTag {
 			
  		} catch (FDResourceException e) {
 			actionResult.addError(true, "technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR);
-		} /*catch (CrmAuthenticationException e) {
+		} catch (LoginException e) {
 			actionResult.addError(true, "authentication", "Password is wrong");
-		}*/
+		}
 		return true;
 	}
 
