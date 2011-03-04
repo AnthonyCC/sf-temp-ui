@@ -796,8 +796,8 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	}
 	
 	// DEBUG
-	LOG.warn("Sources[A]=\n" + si.getDataSourcesMap().toString());
-	LOG.warn("Sources[B]=\n" + si.getDataSourcesMap().toString());
+	LOG.info("Sources[A]=\n" + si.getDataSourcesMap().toString());
+	LOG.info("Sources[B]=\n" + si2.getDataSourcesMap().toString());
 	
     %>
 	<table class="var-comparator">
