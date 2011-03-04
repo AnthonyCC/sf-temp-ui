@@ -690,6 +690,9 @@ public class StringUtil {
 	 * @return
 	 */
 	public static <T> String join(final Iterable<T> objs, final String delimiter) {
+		if (objs == null)
+			return "";
+		
 	    Iterator<T> iter = objs.iterator();
 	    if (!iter.hasNext())
 	        return "";
