@@ -57,7 +57,15 @@ public class CachingDataGenerator extends DataGenerator {
         } else {
             final List<? extends ContentNodeModel> nodes = generateImpl(sessionInput, da);
             if (sessionInput.isTraceMode()) {
-            	sessionInput.traceContentNodes(this.toString().replaceAll(":.+", ""), nodes);
+            	final String fullName = this.toString();
+            	final String niceName = fullName.replaceAll(":.+", "");
+				if (fullName.contains("prioritize()")) {
+    				sessionInput.traceContentNodes(niceName, da.getPrioritizedNodes());
+            	} else if (fullName.contains("deprioritize()")) {
+    				sessionInput.traceContentNodes(niceName, da.getPosteriorNodes());
+            	} else {
+    				sessionInput.traceContentNodes(niceName, nodes);
+            	}
             }
 			return nodes;
         }
