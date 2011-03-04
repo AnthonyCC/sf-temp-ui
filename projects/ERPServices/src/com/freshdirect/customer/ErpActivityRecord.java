@@ -159,19 +159,31 @@ public class ErpActivityRecord implements java.io.Serializable {
 		
 	public final static Comparator<ErpActivityRecord> COMP_ACTIVITY = new Comparator<ErpActivityRecord>() {
 		public int compare(ErpActivityRecord c1, ErpActivityRecord c2) {
-			return c1.getActivityType().getName().toLowerCase().compareTo(c2.getActivityType().getName().toLowerCase());
+			if(null !=c1.getActivityType() && null != c2.getActivityType()){
+				return c1.getActivityType().getName().toLowerCase().compareTo(c2.getActivityType().getName().toLowerCase());
+			}else{
+				return 0;
+			}
 		}
 	};
 	
 	public final static Comparator<ErpActivityRecord> COMP_INITIATOR = new Comparator<ErpActivityRecord>() {
 		public int compare(ErpActivityRecord c1, ErpActivityRecord c2) {
-			return c1.getInitiator().toLowerCase().compareTo(c2.getInitiator().toLowerCase());
+			if(null !=c1.getInitiator() && null != c2.getInitiator()){
+				return c1.getInitiator().toLowerCase().compareTo(c2.getInitiator().toLowerCase());
+			}else{
+				return 0;
+			}
 		}
 	};
 	
 	public final static Comparator<ErpActivityRecord> COMP_SOURCE = new Comparator<ErpActivityRecord>() {
 		public int compare(ErpActivityRecord c1, ErpActivityRecord c2){
-			return c1.getSource().getName().toLowerCase().compareTo(c2.getSource().getName().toLowerCase());
+			if(null !=c1.getSource() && null != c2.getSource()){
+				return c1.getSource().getName().toLowerCase().compareTo(c2.getSource().getName().toLowerCase());
+			}else{
+				return 0;
+			}			
 		}
 	};
 	

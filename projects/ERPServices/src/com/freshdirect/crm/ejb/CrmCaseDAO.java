@@ -731,7 +731,7 @@ public class CrmCaseDAO implements EntityDAOI {
 		PreparedStatement ps = conn.prepareStatement(
 			"update cust.case set case_state='"+CrmCaseState.CODE_CLOSED+"' " +
 			"where id=? " +
-			"and case_state='"+CrmCaseState.CODE_REVIEW+"' " /* +
+			"and case_state='"+CrmCaseState.CODE_OPEN+"' " /* +
 			"and " +
 			"(select count(id) from cust.complaint where auto_case_id=?)=1;" */
 		);

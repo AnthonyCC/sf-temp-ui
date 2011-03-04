@@ -15,7 +15,7 @@ public class AccountActivityUtil implements SessionName {
 
 	public static FDActionInfo getActionInfo(HttpSession session, String note) {
 		EnumTransactionSource src;
-		String initiator;
+		String initiator="SYSTEM";//default
 		CrmAgentModel agent;
 
 		String app = (String) session.getAttribute(SessionName.APPLICATION);

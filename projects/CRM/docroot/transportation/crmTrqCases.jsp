@@ -440,7 +440,7 @@ for (int j=0; j < loopControl; j++) {
 </div>
 	<input type="hidden" name="formsOnPage" value="<%=i%>">
 </form>
-<div class="content_fixed" style="padding: 3px; padding-right: 10px; padding-bottom: 6px; text-align:right;"><a class="cancel" href="/case_mgmt/index.jsp?action=searchCase&queue=TRQ&state=OPEN">CANCEL</a></div>
+<div class="content_fixed" style="padding: 3px; padding-right: 10px; padding-bottom: 6px; text-align:right;"><a class="cancel" href="/case_mgmt/case_mgmt_index.jsp?action=searchCase&queue=TRQ&state=OPEN">CANCEL</a></div>
 <script type="text/javascript">
 	function dlvDateChange() {
 		var currDate = document.trqIssues.dlvDate.value;

@@ -33,7 +33,7 @@ public class CrmGetAllowedActionsTag extends AbstractGetterTag {
 		boolean assignedToSelf = cm.getAssignedAgentPK().equals(agent.getPK());
 		boolean isCloseOp = op.getActionType().equals(CrmCaseActionType.getEnum(CrmCaseActionType.CODE_CLOSE));
 		if (!assignedToSelf && isCloseOp) {
-			return agent.isSupervisor()
+			return agent.isSupervisor() || agent.isOpsUser()
 				//|| isMatchingAgent(agent, CrmCaseQueue.CODE_ASQ, CrmAgentRole.ASV_CODE)
 				|| (CrmCaseQueue.isTrnQueue(cm.getSubject().getQueue().getCode())
 						&& (agent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.TRN_CODE))||agent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.TRNSP_CODE))));

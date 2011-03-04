@@ -115,9 +115,11 @@ Map map =(HashMap)pageContext.getAttribute("filterList");
 							<option value="">ALL</option>
 							<% List<EnumAccountActivityType> listActType =  (List<EnumAccountActivityType>)map.get("activity_id");
 						if(null != listActType){
-						for (EnumAccountActivityType name:listActType) { %>
+						for (EnumAccountActivityType name:listActType) {
+							if(null != name){
+							%>
 							<option value="<%=name.getCode() %>" <%=name.getCode().equalsIgnoreCase(actType)?"selected":"" %>><%= name.getName() %></option>
-						<% } }%>
+						<% } } }%>
 						</select>
 					</td>
 					
@@ -127,9 +129,11 @@ Map map =(HashMap)pageContext.getAttribute("filterList");
 						<option value="" selected="selected">ALL</option>
 						<% List<String> listInit =  (List<String>)map.get("initiator");
 						if(null != listInit){
-						for (String name:listInit) { %>
+						for (String name:listInit) {
+							if(null != name){
+						%>
 							<option value="<%=name %>" <%= name.equalsIgnoreCase(initiateBy)?"selected":"" %>><%= name %></option>
-						<% } }%>
+						<% } } }%>
 						</select>
 					</td>
 					<td>&nbsp;</td>
@@ -139,9 +143,11 @@ Map map =(HashMap)pageContext.getAttribute("filterList");
 						
 						<% List<EnumTransactionSource> list =  (List<EnumTransactionSource>)map.get("source");
 						if(null != list){
-						for (EnumTransactionSource name:list) { %>
+						for (EnumTransactionSource name:list) {
+							if(null != name){
+							%>
 							<option value="<%=name.getCode() %>" <%=name.getCode().equalsIgnoreCase(transactionSource)?"selected":"" %>><%= name.getName() %></option>
-						<% } }%>
+						<% } } }%>
 						</select>
 						
 					</td>

@@ -106,7 +106,7 @@ public class AutoCaseGenerator {
 			newCase.setState(CrmCaseState.getEnum(CrmCaseState.CODE_CLOSED));
 		} else {
 			// case needs to be reviewed / escalated to supervisor
-			newCase.setState(CrmCaseState.getEnum(CrmCaseState.CODE_REVIEW));
+			newCase.setState(CrmCaseState.getEnum(CrmCaseState.CODE_OPEN));
 		}
 		
 

@@ -155,6 +155,15 @@ public class CrmAgentModel extends ModelSupport {
 		}
 	}
 
+	public boolean isOpsUser() {
+		if (CrmAgentRole.getEnum(this.roleCode).equals(CrmAgentRole.getEnum(CrmAgentRole.OPS_CODE))
+			|| CrmAgentRole.getEnum(this.roleCode).equals(CrmAgentRole.getEnum(CrmAgentRole.SOP_CODE))) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public boolean isAdmin() {
 		if (CrmAgentRole.getEnum(this.roleCode).equals(CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE))) {
 			return true;
