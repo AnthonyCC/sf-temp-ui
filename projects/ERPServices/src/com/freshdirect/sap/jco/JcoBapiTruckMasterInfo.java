@@ -58,7 +58,7 @@ public class JcoBapiTruckMasterInfo extends JcoBapiFunction implements BapiTruck
 		truckMastarMap.put("truckTypes",truckTypes);
 		truckMastarMap.put("truckLicencePlates",truckLicencePlates);
 		truckMastarMap.put("location",location);
-		System.out.println("truckNumbers :"+truckNumbers.length);
+		//System.out.println("truckNumbers :"+truckNumbers.length);
 		
 	}
 

@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumSaleType;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdstore.FDException;
@@ -336,7 +337,7 @@ public class SessionUser {
      * @throws FDResourceException
      */
     public void setReservationAndPreselectedTimeslotIds(List<FDTimeslotList> timeslotLists,
-            TimeSlotCalculationResult timeSlotCalculationResult) throws FDResourceException {
+            TimeSlotCalculationResult timeSlotCalculationResult, ErpAddressModel address) throws FDResourceException {
         FDReservation reservation = getReservation();
 
         /*
@@ -347,7 +348,7 @@ public class SessionUser {
         * WHAT: Looping logic to determine timeslot ID of reoccuring reservation
         */
         //        if (rsv == null && hasWeeklyReservation) { //Removed "hasWeeklyReservation" condition because we don't care about it here.
-        if (reservation != null) {
+        if (reservation != null && matchReservationToAddress(reservation, address)) {
             timeSlotCalculationResult.setReservationTimeslotId(reservation.getTimeslotId());
         } else {
             //Specific reservation doesn't exist. try to match by day of week and time range.
@@ -386,11 +387,16 @@ public class SessionUser {
 
         //Set timeslot for checkout         
         FDReservation deliveryReservation = this.sessionUser.getShoppingCart().getDeliveryReservation();
-        if (deliveryReservation != null) {
+        if (deliveryReservation != null && matchReservationToAddress(reservation, address)) {
             timeSlotCalculationResult.setPreselectedTimeslotId(deliveryReservation.getTimeslotId());
         }
     }
-
+    
+    private boolean matchReservationToAddress(FDReservation deliveryReservation, ErpAddressModel address) {
+    	return (deliveryReservation != null && address != null && address.getPK() != null && address.getPK().getId() != null
+                   && address.getPK().getId().equals(deliveryReservation.getAddressId()));
+    }
+    
     public String getDefaultShipToAddress() throws FDResourceException {
         String addressId = FDCustomerManager.getDefaultShipToAddressPK(sessionUser.getIdentity());
         return addressId;

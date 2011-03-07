@@ -146,7 +146,7 @@ public class DeliveryAddress {
         DeliveryTimeSlotTagWrapper wrapper = new DeliveryTimeSlotTagWrapper(user);
         Result result = wrapper.getDeliveryTimeSlotResult(this.address);
         TimeSlotCalculationResult timeSlotCalculationResult = new TimeSlotCalculationResult(result, user.isChefsTable(), preReservationMode);
-        user.setReservationAndPreselectedTimeslotIds(result.getTimeslots(), timeSlotCalculationResult);
+        user.setReservationAndPreselectedTimeslotIds(result.getTimeslots(), timeSlotCalculationResult, this.address);
         
         return timeSlotCalculationResult;
     }
@@ -155,7 +155,7 @@ public class DeliveryAddress {
         DeliveryTimeSlotTagWrapper wrapper = new DeliveryTimeSlotTagWrapper(user);
         Result result = wrapper.getDeliveryTimeSlotResult(this.address,isAuthenticated);
         TimeSlotCalculationResult timeSlotCalculationResult = new TimeSlotCalculationResult(result, user.isChefsTable(), preReservationMode);
-        user.setReservationAndPreselectedTimeslotIds(result.getTimeslots(), timeSlotCalculationResult);
+        user.setReservationAndPreselectedTimeslotIds(result.getTimeslots(), timeSlotCalculationResult, this.address);
         
         return timeSlotCalculationResult;
     }
