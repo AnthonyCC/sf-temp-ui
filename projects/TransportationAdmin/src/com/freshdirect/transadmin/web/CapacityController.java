@@ -296,9 +296,9 @@ public class CapacityController extends AbstractMultiActionController {
 		Map<TimeRange, String> slotsMap = null;
 		
 		if (buildingWindows != null && buildingWindows.size() > 0) {
-			Zone zoneModel = null;
+
 			for (Map.Entry<DlvBuilding, List<IDeliverySlot>> buildingMapping : buildingWindows.entrySet()) {
-				
+				Zone zoneModel = null;
 				_displayCommand = new CapacityAnalyzerCommand();
 				slotsMap = new HashMap<TimeRange, String>();
 				

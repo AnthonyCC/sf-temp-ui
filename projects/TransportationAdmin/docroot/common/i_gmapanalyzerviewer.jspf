@@ -88,7 +88,7 @@
 		          }
         	  }
           }
-         plotPoint('A', currentAddresses);
+         plotAddresses('A', currentAddresses);
 	 
 	 editPanel.render(document.body);
 	 editPanel.show();
@@ -123,7 +123,7 @@
     	  return color;
    	  }
 
-      function plotPoint(type, result) {
+      function plotAddresses(type, result) {
       	if('A' == type) {
       		// Create new geocoding object
 		var geocoder = new GClientGeocoder();

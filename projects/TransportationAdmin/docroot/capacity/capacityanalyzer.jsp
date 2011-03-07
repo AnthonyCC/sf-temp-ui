@@ -155,7 +155,7 @@
 	    		
 	    		<table id="tbl_capacityAnalyzer" class="capacityAnalyzerTable" cellspacing="0" cellpadding="0" border="0" width="98%">
 				    	<tr>
-							<th class="first"></th>
+							<th class="first" width="40"></th>
 				    		<th class="first" width="40">Zone</th>
 							<th class="first" width="250">Address</th>
 							<th class="first" width="180">Description</th>
@@ -170,7 +170,7 @@
 							for(CapacityAnalyzerCommand _command : buildings) {
 						 %>
 						 	<tr>
-								<td class=""><input type="checkbox" name="<%=_command.getZoneCode()%>"/></td>
+								<td class=""><input type="checkbox" <%= (_command.getZoneCode()!=null ?  " " : " disabled=\"disabled\"") %>  name="<%=_command.getZoneCode()%>"/></td>
 								<td class=""><%= _command.getZoneCode()%></td>
 								<td class="" name="address"><%= _command.getAddress()%></td>
 								<td class="" ><%= _command.getDescription()%></td>
