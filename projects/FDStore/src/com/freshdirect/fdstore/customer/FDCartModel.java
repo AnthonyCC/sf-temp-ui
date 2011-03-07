@@ -1033,11 +1033,11 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 
 		this.setOrderLines(cleanLines);
 		this.sortOrderLines();
-		/*
+		
 		if( this.orderLines.size()>0){		  	
 			  this.calculateGroupPrice((orderLines.get(0).getPricingContext()!=null)?orderLines.get(0).getPricingContext().getZoneId():ZonePriceListing.MASTER_DEFAULT_ZONE);
 		}
-		*/
+		
 	}
 
 	public void refreshAll(boolean recalculateGroupScale) throws FDResourceException, FDInvalidConfigurationException {
