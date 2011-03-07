@@ -2462,3 +2462,34 @@ a.myfd-share-text {
 .eagle-bold {
 	font-family: Eagle-Bold;
 }
+
+.myfd-post-content .alignleft,
+.myfd-post-content img.alignleft {
+	display: inline;
+	float: left;
+	margin-right: 24px;
+	margin-top: 4px;
+}
+.myfd-post-content .alignright,
+.myfd-post-content img.alignright {
+	display: inline;
+	float: right;
+	margin-left: 24px;
+	margin-top: 4px;
+}
+.myfd-post-content .aligncenter,
+.myfd-post-content img.aligncenter {
+	clear: both;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+.myfd-post-content img.alignleft,
+.myfd-post-content img.alignright,
+.myfd-post-content img.aligncenter {
+	margin-bottom: 12px;
+}
+
+.myfd-post-content p {
+	margin: 0px 0px 24px;
+}

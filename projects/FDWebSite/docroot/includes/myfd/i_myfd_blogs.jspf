@@ -32,6 +32,7 @@ try {
 				<%if (post.getCategory() != null && !post.getCategory().equals("") && !post.getCategory().equals("Uncategorized")) {%><div class="myfd-category"><a href="<%=post.getCategoryLink() %>"><%=post.getCategoryDescription() %></a></div><%} %>
 				<div class="myfd-title title16"><a href="<%=post.getPostLink()%>"><%=post.getTitle() %></a></div>
 				<%=post.getContent() %>
+				<div style="clear: both; font-size: 0px;"></div>
 			</div>
 			
 			<div class="post-links">
