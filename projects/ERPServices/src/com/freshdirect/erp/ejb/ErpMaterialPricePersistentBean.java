@@ -8,6 +8,7 @@
  */
 package com.freshdirect.erp.ejb;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -159,12 +160,15 @@ public class ErpMaterialPricePersistentBean extends ErpPersistentBeanSupport {
 		ps.setString(2, this.getParentPK().getId());
 		ps.setInt(3, version);
 		ps.setString(4, this.sapId);
-		ps.setDouble(5, this.price);
+		//ps.setDouble(5, this.price);
+		ps.setBigDecimal(5, new BigDecimal(String.valueOf(this.price)));
 		ps.setString(6, this.pricingUnit);
-		ps.setDouble(7, this.scaleQuantity);
+		//ps.setDouble(7, this.scaleQuantity);
+		ps.setBigDecimal(7, new BigDecimal(String.valueOf(this.scaleQuantity)));
 		ps.setString(8, this.scaleUnit);
 		ps.setString(9, this.sapZoneId);
-		ps.setDouble(10, this.promoPrice);
+		//ps.setDouble(10, this.promoPrice);
+		ps.setBigDecimal(10, new BigDecimal(String.valueOf(this.promoPrice)));
 		if (ps.executeUpdate() != 1) {
 			throw new SQLException("No database rows created!");
 		}
