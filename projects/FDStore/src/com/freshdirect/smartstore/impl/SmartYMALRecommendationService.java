@@ -77,6 +77,9 @@ public class SmartYMALRecommendationService extends	AbstractRecommendationServic
 				ProductModel p = SmartStoreUtil.addConfiguredProductToCache( filteredModel );
 				if ( p != null ) {
 					prodList.add( p );
+					if (input.isTraceMode()) {
+						input.traceContentNode("Related Product of "+ymalSource.getContentName(), p);
+					}
 				}
 			}
 		}
@@ -140,8 +143,12 @@ public class SmartYMALRecommendationService extends	AbstractRecommendationServic
 				}
 				addContentKeys(smartInput.getCartContents(), recNodes);
 				recommendations[i] = recNodes;
+				if (input.isTraceMode()) {
+					input.traceContentNodes(ymalSet.getContentKey().getEncoded() + "[" + strategy.getContentKey().getEncoded() + "]", recNodes);
+				}
 
 				// APPDEV-1633
+				/**
 				if (smartInput.isTraceMode()) {
 					Map<ContentKey, Set<String>> v = new HashMap<ContentKey, Set<String>>();
 					Map<ContentKey, Set<String>> otherMap = smartInput.getDataSourcesMap();
@@ -154,11 +161,12 @@ public class SmartYMALRecommendationService extends	AbstractRecommendationServic
 					input.mergeDataSourcesMap(v);
 					
 				}
+				**/
 			}
 
 			if (recommenders.size() == 1) {
-
-				prodList.addAll(SmartStoreUtil.addConfiguredProductToCache(recommendations[0]));
+				final List<ProductModel> prds = SmartStoreUtil.addConfiguredProductToCache(recommendations[0]);
+				prodList.addAll(prds);
 
 			} else if (recommenders.size() > 1) {
 
@@ -200,6 +208,9 @@ public class SmartYMALRecommendationService extends	AbstractRecommendationServic
 				}
 			}
 			prodList.addAll(ymalProducts);
+			if (input.isTraceMode()) {
+				input.traceContentNodes("Related Product of "+ymalSource.getContentName(), ymalProducts);
+			}
 		} else {
 			LOGGER.info("ymal source is null");
 		}
