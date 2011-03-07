@@ -264,6 +264,14 @@
  		<required>false</required>
  		<rtexprvalue>true</rtexprvalue>
  	</attribute>
+  <attribute>
+   <name>grpDisplayType</name>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>showSaveText</name>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>  
  </tag>
  <tag>
  	<name>WineProductPrice</name>

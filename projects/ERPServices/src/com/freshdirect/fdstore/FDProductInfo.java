@@ -42,10 +42,15 @@ public class FDProductInfo extends FDSku  {
     //Zone Price Info Listing. 
     private final ZonePriceInfoListing zonePriceInfoList;
     
+    //FDGroup contains Group identity if applicable.
+    private final FDGroup group;
+    
+    private String sustainabilityRating="";
+    
     public FDProductInfo(String skuCode, int version, 
     		String[] materialNumbers, EnumATPRule atpRule, EnumAvailabilityStatus availStatus, Date availDate, 
     		 FDInventoryCacheI inventory, String rating, String freshness,
-    		 ZonePriceInfoListing zonePriceInfoList) {
+    		 ZonePriceInfoListing zonePriceInfoList, FDGroup group, String sustainabilityRating) {
 
 		super(skuCode, version);
 
@@ -59,6 +64,9 @@ public class FDProductInfo extends FDSku  {
         this.zonePriceInfoList = zonePriceInfoList;
 
         this.freshness=freshness;
+        this.group = group;
+        if(sustainabilityRating!=null)
+        	this.sustainabilityRating=sustainabilityRating;
 	}
 
 	/**
@@ -168,7 +176,7 @@ public class FDProductInfo extends FDSku  {
     public String toString() {
         return "FDProductInfo[" + this.getSkuCode() + " v" + this.getVersion() + "\n\tmaterialNumbers:" 
                 + (this.materialNumbers != null ? StringUtil.encodeString(this.materialNumbers) : null) + "\n\t" + this.availStatus.getShortDescription() 
-                + "\n\tavailDate:" + this.availDate + "\n\trating:" + this.rating + "\n\tatpRule:" + this.atpRule 
+                + "\n\tavailDate:" + this.availDate + "\n\trating:" + this.rating +"\n\tsustainabilityRating:" + this.sustainabilityRating + "\n\tatpRule:" + this.atpRule 
                 + "\n\tfreshness:" + this.freshness + "\n\tdefaultPriceUnit:" + this.getDefaultPriceUnit() + "\n\tavailDate:"+this.availDate 
                 + "\n\t" + this.zonePriceInfoList + "\n]";
     }
@@ -198,4 +206,17 @@ public class FDProductInfo extends FDSku  {
 		return this.zonePriceInfoList;
 	}
 
+	public FDGroup getGroup() {
+		return group;
+	}
+	
+	public boolean isGroupExists(){
+		return group != null;
+	}
+	/** Getter for property sustainabilityRating.
+     * @return Value of property sustainabilityRating.
+     */
+    public String getSustainabilityRating() {
+        return sustainabilityRating;
+    }	
 }

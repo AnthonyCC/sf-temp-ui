@@ -91,6 +91,14 @@
                 DataLoaderEJB-WL.jar
             </listener-uri>
     </listener>
+    <listener>
+        <listener-class>
+            com.freshdirect.dataloader.grp.WLSSapGrpServer
+        </listener-class>
+	<listener-uri>
+                DataLoaderEJB-WL.jar
+            </listener-uri>
+    </listener>
     <prefer-application-packages>
         <package-name>com.sun.jmx.*</package-name>
         <package-name>org.hibernate.*</package-name>

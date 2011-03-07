@@ -235,7 +235,7 @@ public class RecipeAvailabilityPreviewTest extends FDCustomerManagerTestSupport 
 	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
 	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null, dummyList);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null, dummyList, null,"");
 
 
 			} else if ("MEA0004562".equals(sku)) {
@@ -247,7 +247,7 @@ public class RecipeAvailabilityPreviewTest extends FDCustomerManagerTestSupport 
 	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
 	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null, dummyList);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null, dummyList, null,"");
 
 			} else if ("MEA0004563".equals(sku)) {
 				// return this item as available by tomorrow, but not today
@@ -258,7 +258,7 @@ public class RecipeAvailabilityPreviewTest extends FDCustomerManagerTestSupport 
 	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
 	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList,null,"");
 
 			} else if ("MEA0004564".equals(sku)) {
 				// return this item as available the day after tomorrow
@@ -270,7 +270,7 @@ public class RecipeAvailabilityPreviewTest extends FDCustomerManagerTestSupport 
 	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
 	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList,null,"");
 
 			} else if ("MEA0004565".equals(sku)) {
 				// return this item as available the day after tomorrow
@@ -281,7 +281,7 @@ public class RecipeAvailabilityPreviewTest extends FDCustomerManagerTestSupport 
 	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
 	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, -1, -1, ZonePriceListing.MASTER_DEFAULT_ZONE);
 	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList,null,"");
 
 			} else if ("MEA0004566".equals(sku)) {
 				// return a discontinued item
@@ -291,7 +291,7 @@ public class RecipeAvailabilityPreviewTest extends FDCustomerManagerTestSupport 
 	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
 	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.DISCONTINUED, now,inventoryCache,"",null,dummyList);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.DISCONTINUED, now,inventoryCache,"",null,dummyList,null,"");
 
 			} else if ("MEA0004567".equals(sku)) {
 				// return a temporarily unavailable item
@@ -301,7 +301,7 @@ public class RecipeAvailabilityPreviewTest extends FDCustomerManagerTestSupport 
 	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
 	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.TEMP_UNAV, now,inventoryCache,"",null,dummyList);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.TEMP_UNAV, now,inventoryCache,"",null,dummyList,null,"");
 
 			} else {
 				// fallback: return any unknown item as unavailable
@@ -311,7 +311,7 @@ public class RecipeAvailabilityPreviewTest extends FDCustomerManagerTestSupport 
 	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
 	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.DISCONTINUED, now,inventoryCache,"",null,dummyList);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.DISCONTINUED, now,inventoryCache,"",null,dummyList,null,"");
 			}
 
 			return productInfo;
@@ -359,7 +359,7 @@ public class RecipeAvailabilityPreviewTest extends FDCustomerManagerTestSupport 
 		    			                           variations,
 		    			                           salesUnits,
 		    			                           pricing,
-		    			                           nutrition);
+		    			                           nutrition,null);
 	    	
 	    	return product;
 	    }

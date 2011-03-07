@@ -347,6 +347,24 @@
 			</ejb-ref>
 		</session>        
 
+
+
+ 		<session>
+			<ejb-name>FDGrpInfoManager</ejb-name>
+			<home>com.freshdirect.fdstore.grp.ejb.FDGrpInfoHome</home>
+			<remote>com.freshdirect.fdstore.grp.ejb.FDGrpInfoSB</remote>
+			<ejb-class>com.freshdirect.fdstore.grp.ejb.FDGrpInfoSessionBean</ejb-class>
+			<session-type>Stateless</session-type>
+			<transaction-type>Container</transaction-type>
+        	<ejb-ref>
+				<ejb-ref-name>ejb/ErpGrpInfoManager</ejb-ref-name>
+				<ejb-ref-type>Session</ejb-ref-type>
+				<home>com.freshdirect.erp.ejb.ErpGrpInfoHome</home>
+				<remote>com.freshdirect.erp.ejb.ErpGrpInfoSB</remote>
+			</ejb-ref>
+		</session>   
+
+
 		<session>
 			<ejb-name>CreateEmail</ejb-name>
 			<home>com.freshdirect.fdstore.mail.CreateEmailHome</home>
@@ -433,6 +451,11 @@
 			</method>
 			<method>
 				<ejb-name>FDPromotionManagerNew</ejb-name>
+				<method-intf>Remote</method-intf>
+				<method-name>*</method-name>
+			</method>
+			<method>
+				<ejb-name>FDGrpInfoManager</ejb-name>
 				<method-intf>Remote</method-intf>
 				<method-name>*</method-name>
 			</method>                                    

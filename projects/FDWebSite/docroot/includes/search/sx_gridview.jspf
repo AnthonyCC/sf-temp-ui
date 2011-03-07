@@ -15,6 +15,8 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@ page import="com.freshdirect.fdstore.util.DYFUtil"%>
 <%@ page import="com.freshdirect.webapp.util.JspMethods"%>
+<%@ page import='com.freshdirect.common.pricing.util.GroupScaleUtil' %>
+<%@ page import='com.freshdirect.fdstore.FDGroup' %>
 
 <%@ taglib uri="freshdirect" prefix="fd"%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
@@ -101,13 +103,13 @@ int rank = nav.getPageOffset()+1;
 					<% } else { %>
 						<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" style="color: #999999;"/>
 					<% } %>
-					
-					<%
+                    <%
 					// Configuration description
 					//
 					if (pi.getConfigurationDescription() != null) {
 						%><div style="color: <%=pi.getProductModel().isFullyAvailable() ? "black" : "#999999" %>">(<%= pi.getConfigurationDescription() %>)</div>
-					<% }
+					<%	
+					 }  
 	
 					// Default price
 					//
@@ -126,18 +128,29 @@ int rank = nav.getPageOffset()+1;
 						<% } %>
 						</div>
 					<% }
-	
-					// Scaled prices
-					//
-					if (scaledPrices != null && scaledPrices.length > 0) { %>
-						<div class="save-price">
-							<% for (int ymalSci = 0; ymalSci < scaledPrices.length; ymalSci++) { %>
-								<%= scaledPrices[ymalSci] %><br/>
-							<% } %>
-						</div><%
+					boolean isGrpScale = false;
+					FDGroup group = pi.getFDGroup(); 
+					if(group != null && GroupScaleUtil.getGroupScalePrice(group, u.getPricingContext().getZoneId()) != null) { 
+						isGrpScale = true;	
 					}
-					rank++;
+					if(isGrpScale) {
 					%>
+						<display:ProductPrice impression="<%= pi %>" showDescription="false" showAboutPrice="false" showWasPrice="false" showRegularPrice="false"/>
+					<% 
+					} else {
+						// Scaled prices
+						//
+						if (!isGrpScale && scaledPrices != null && scaledPrices.length > 0) { %>
+							<div class="save-price">
+								<% for (int ymalSci = 0; ymalSci < scaledPrices.length; ymalSci++) { %>
+									<%= scaledPrices[ymalSci] %><br/>
+								<% } %>
+							</div><%
+						}
+						rank++;
+					}                    
+					%>
+                    
 				</td>
 			</fd:PIPRow>
 		</tr>

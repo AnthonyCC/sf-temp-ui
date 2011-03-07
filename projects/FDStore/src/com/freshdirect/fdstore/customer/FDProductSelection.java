@@ -2,8 +2,6 @@ package com.freshdirect.fdstore.customer;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Iterator;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -20,10 +18,12 @@ import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.fdstore.EnumOrderLineRating;
+import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDConfiguredPrice;
+import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDPricingEngine;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -431,16 +431,16 @@ public class FDProductSelection implements FDProductSelectionI {
 	protected void performPricing() {
 		try {
 			if(FDStoreProperties.getGiftcardSkucode().equalsIgnoreCase(this.getSkuCode()) || FDStoreProperties.getRobinHoodSkucode().equalsIgnoreCase(this.getSkuCode())){
-				this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getPricingContext());
+				this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getPricingContext(), null, 0.0);
 				this.orderLine.setPrice(this.getFixedPrice());
 				this.orderLine.setDiscountAmount(0);
 			}else
 			{
-				this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getPricingContext());
+				FDGroup group = this.getFDGroup();
+
+				this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getPricingContext(), group, this.getGroupQuantity());
 				this.orderLine.setPrice(price.getConfiguredPrice() - price.getPromotionValue());
 				this.orderLine.setDiscountAmount(price.getPromotionValue());
-				//this.orderLine.setTaxRate(price.getTaxRate());
-				//this.orderLine.setDepositValue(price.getDepositValue());
 			}	
 
 		} catch (PricingException e) {
@@ -529,6 +529,18 @@ public class FDProductSelection implements FDProductSelectionI {
 		this.orderLine.setDiscountAmount(discountAmount);
 	}
 	
+	public void setFDGroup(FDGroup group) {
+        this.orderLine.setFDGroup(group);
+	}
+	
+	 public FDGroup getFDGroup() {
+		 FDGroup group = this.orderLine.getFDGroup();
+			if(group == null)//If not in the line item level check sku level.
+				group = this.lookupFDProductInfo().getGroup();
+		 
+		 return group;
+	 }
+	
 	public boolean isDiscountFlag(){
 		return orderLine.isDiscountFlag();
 	}
@@ -565,5 +577,32 @@ public class FDProductSelection implements FDProductSelectionI {
 				}
 			}
 		return false;
+	}
+	
+	public void setGroupQuantity(double quantity){
+		this.orderLine.setGroupQuantity(quantity);
+		this.fireConfigurationChange();
+	}
+	
+	public double getGroupQuantity(){
+		return this.orderLine.getGroupQuantity();
+	}
+	
+	public double getGroupScaleSavings() {
+		double savings = 0.0;
+		try {
+				FDGroup group = this.getFDGroup();
+				if(group != null) {
+					FDConfiguredPrice regPrice = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getPricingContext(), group, 0.0);
+					savings = regPrice.getConfiguredPrice() - (regPrice.getPromotionValue() + this.orderLine.getPrice());
+				}
+		} catch (PricingException e) {
+			throw new FDRuntimeException(e, "PricingException occured in getGroupScaleSavings() on "+getSkuCode() + " - " + getConfiguration());
+		}
+		return savings;
+	}
+	@Override
+	public EnumSustainabilityRating getSustainabilityRating() {
+		return orderLine.getSustainabilityRating();
 	}
 }

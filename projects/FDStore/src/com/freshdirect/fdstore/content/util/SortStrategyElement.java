@@ -13,6 +13,7 @@ public class SortStrategyElement {
 	public final static int PRODUCTS_BY_RATING = 7;
 	public final static int PRODUCTS_BY_DOMAIN_RATING = 8;
 	public final static int PRODUCTS_BY_WINE_COUNTRY = 9;
+	public final static int PRODUCTS_BY_SEAFOOD_SUSTAINABILITY = 10;
 
 	public final static int GROUP_BY_CATEGORY_NAME = 200;
 	public final static int GROUP_BY_CATEGORY_PRIORITY = 201;

@@ -589,26 +589,33 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
     <%
     
     String scaledPrice = productNode.getTieredPrice(0);
-	int tieredPercentage = productNode.getTieredDealPercentage();
+
 	String productRating = "";
 	try {
 		productRating = productNode.getProductRating();
 	} catch (Exception e) {
 	}
 	String quickShopStyleScale = "line-height:16px; font-size: 11px; font-weight: bold; color: #C94747; font-family: Verdana, Arial, sans-serif;";
-	    
+	ProductImpression impression =  new ProductImpression(productNode);	    
      %>
-    <display:ProductRating product="<%= productNode %>" skuCode="<%= orderLine.getSkuCode() %>"  action="<%= actionUrl %>" noBr="true" leftAlign="true"/><% if (scaledPrice != null) { %>
+    <display:ProductRating product="<%= productNode %>" skuCode="<%= orderLine.getSkuCode() %>"  action="<%= actionUrl %>" noBr="true" leftAlign="true"/>
+    <%--
+    <% if (scaledPrice != null) { %>
     	<% if (productRating.length() != 0) { %>&nbsp;&nbsp;<% } %>
     	<span style="<%=quickShopStyleScale%>"><%="SAVE" + (tieredPercentage > 0 ? " " + tieredPercentage + "%" : "!") + "&nbsp;&nbsp;" + scaledPrice%></span>
     <% } %>
+	--%>
+	<NOBR>
+		<display:ProductPrice impression="<%= impression %>" 
+		skuCode="<%= orderLine.getSkuCode() %>" quickShop="true" showAboutPrice="false" showRegularPrice="false"  showWasPrice="false" showDescription="false" showScalePricing="true" showSaveText="true"/>
+	</NOBR>
     </td>
     
     <td align="right">
     	<NOBR>
 	
-	<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" 
-		skuCode="<%= orderLine.getSkuCode() %>" quickShop="true" showDescription="false" showScalePricing="false"/>
+	<display:ProductPrice impression="<%= impression %>" 
+		skuCode="<%= orderLine.getSkuCode() %>" quickShop="true" showDescription="false" showScalePricing="false" showSaveText="true"/>
 	
 	</NOBR>
 	    

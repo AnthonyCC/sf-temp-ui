@@ -24,18 +24,21 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDAttributeCache;
 import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDInventoryCache;
 import com.freshdirect.fdstore.FDNutritionCache;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.fdstore.content.WineFilterPriceIndex;
 import com.freshdirect.fdstore.content.WineFilterRatingIndex;
+import com.freshdirect.fdstore.grp.FDGrpInfoManager;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.service.CmsRecommenderRegistry;
@@ -210,7 +213,15 @@ public class Warmup {
 
 	}
 	
-
+	
+	
+	private void warmupGroupes() throws FDResourceException {
+		LOGGER.info("Loading grp data");
+		Collection<FDGroup> grpInfoList=FDGrpInfoManager.loadAllGrpInfoMaster();	
+		final List<GroupScalePricing> grpInfos = new ArrayList<GroupScalePricing>(FDCachedFactory.getGrpInfos((FDGroup[]) grpInfoList.toArray(new FDGroup[0])));
+		
+		LOGGER.info("Lightweight grp data loaded size is :"+grpInfos.size());
+	}
 	private void warmupProductNewness() throws FDResourceException {
 		// initiating the asynchronous load of new and reintroduced products cache
 		if (FDStoreProperties.isPreloadNewness()) {

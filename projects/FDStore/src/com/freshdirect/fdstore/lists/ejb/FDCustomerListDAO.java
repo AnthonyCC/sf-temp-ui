@@ -61,11 +61,13 @@ class FDCustomerListDAO {
 				throw new SQLException("Row not updated");
 			}
 		} catch(SQLException e)	{
+			throw e;
+		}
+		finally {
 			if (ps != null) {
 			    ps.close();
 			}
-			throw e;
-		}						
+		}
 	}
 
 	private FDCustomerList createList(Connection conn, PrimaryKey customerPk, EnumCustomerListType type, String name, Date createDate, Date modificationDate) throws SQLException {

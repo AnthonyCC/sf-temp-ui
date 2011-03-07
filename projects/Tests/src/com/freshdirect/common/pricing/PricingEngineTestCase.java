@@ -94,7 +94,7 @@ public class PricingEngineTestCase extends TestCase {
 		ZonePriceListing listing = new ZonePriceListing();
 		listing.addZonePrice(zpModel);
 		Pricing pricing = new Pricing(listing, cvPrices, salesUnits);
-		Price price = PricingEngine.getConfiguredPrice(pricing, conf, new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE)).getPrice();
+		Price price = PricingEngine.getConfiguredPrice(pricing, conf, new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE), null, 0.0).getPrice();
 
 		// verify
 		assertEquals(expectedBasePrice, price.getBasePrice(), 0.01);

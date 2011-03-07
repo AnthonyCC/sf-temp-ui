@@ -1,3 +1,4 @@
+<script type="text/javascript" language="javascript" src="/assets/javascript/FD_PromoEligibility.js"></script>
 <script language="javascript">	function returnAll(formName){
 		var frmObj = document.forms[formName];
 		var frmFldsCnt = frmObj.elements.length;
@@ -46,6 +47,40 @@
     // FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 %>
  
+<div class="groupScaleBox" style="display:none"><!--  -->
+		<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="groupScaleBoxContent" id="groupScaleBox" >
+			<tr>
+				<td colspan="2"><img src="/media_stat/images/layout/top_left_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
+				<td rowspan="2" style="background-color: #8A6637; color: #fff; font-size: 14px; line-height: 14px; font-weight: bold; padding: 3px;">GROUP DISCOUNT &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="Modalbox.hide(); return false;" style="text-decoration: none;border: 1px solid #5A3815; background-color: #BE973A; font-size: 10px;	"><img src="/media_stat/images/layout/clear.gif" width="10" height="10" border="0" alt="" /></a></td>
+				<td colspan="2"><img src="/media_stat/images/layout/top_right_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
+			</tr>
+			<tr>
+				<td colspan="2" style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" /></td>
+				<td colspan="2" style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" /></td>
+			</tr>
+			<tr>
+				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
+				<td>
+					<%-- all your content goes in this div, it controls the height/width --%>
+					<div id="group_info" style="display:none">This is the more info hidden div.<br /><br /></div>
+					<div style="height: auto; width: 200px; text-align: center; font-weight: bold;">
+					<br /><img onclick="Modalbox.hide(); return false;" src="/media_stat/images/buttons/close_window.gif" width="141" height="19" alt="" /><br />
+					</div>
+				</td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
+				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+			</tr>
+			<tr>
+				<td rowspan="2" colspan="2" style="background-color: #8A6637"><img src="/media_stat/images/layout/bottom_left_curve_8A6637.gif" width="6" height="6" alt="" /></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /></td>
+				<td rowspan="2" colspan="2" style="background-color: #8A6637"><img src="/media_stat/images/layout/bottom_right_curve_8A6637.gif" width="6" height="6" alt="" /></td>
+			</tr>
+			<tr>
+				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+			</tr>
+		</table>
+	</div>
 <%-- ======================= BEGIN LINE ITEM & CREDIT DETAILS SECTION ======================= --%>
 <table width="100%" cellpadding="1" cellspacing="0" border="0" class="order_detail">
     <tr>
@@ -111,14 +146,21 @@
 <%-- discount msg --%>
 <%
 	String discountMsg = null;
+	String groupDiscountMsg = null;
 	if(cartLine.getDiscount() != null) {
 		Discount discount = cartLine.getDiscount();
 		PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
 		discountMsg = promotion.getDescription()+" <span style=\"color: #ff0000;\">(You Saved "+JspMethods.formatPrice(cartLine.getDiscountAmount())+")</span> <a href=\"javascript:popup('/shared/promotion_popup.jsp?promoCode="+promotion.getPromotionCode()+"','small')\" style=\"font-weight: normal;\">See details</a>";
+	} else {
+		if(cartLine.getGroupQuantity() > 0) {
+			double savings = cartLine.getGroupScaleSavings();
+			if(savings > 0)
+				groupDiscountMsg = "Group Discount <span style=\"color: #ff0000;\">(You Saved "+JspMethods.formatPrice(savings)+")</span> <a href=\"#\" onclick=\"return fetchGroupScaleInfoCrm('"+cartLine.getFDGroup().getGroupId() +"','"+ cartLine.getFDGroup().getVersion() +"')\" style=\"font-weight: normal;\">See details</a>";
+		}
 	}
 %>
 <tr valign="middle">
-	<td align="center">
+	<td align="center" valign="top">
 		<%=cartLine.getDisplayQuantity()%>
 	</td>
 	<td>
@@ -129,6 +171,7 @@
 		<%=cartLine.getConfigurationDesc()%>
         <font color="#888888"><%= cartLine.getSkuCode() %></font>
 		<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span><%= discountMsg %></span><% } %>
+		<% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span><%= groupDiscountMsg %></span><% } %>
 	</TD>
 	<td><span <%= (cartLine.getDiscount() != null) ? "style=\"color: #CC0000;\"" : "" %>>(<%= cartLine.getUnitPrice() %>)</span></td>
 	<td ALIGN="RIGHT"><span <%= (cartLine.getDiscount() != null) ? "style=\"color: #CC0000;\"" : "" %>><%= JspMethods.formatPrice(cartLine.getPrice()) %></span></td>
@@ -138,7 +181,7 @@
 		        out.print("*");
 		 }%>
 	</TD>
-	<td colspan="3"><b><%= cartLine.hasTax() ? "&nbsp;T" : "&nbsp;" %><%= cartLine.hasScaledPricing() ? "&nbsp;S" : "&nbsp;" %><%= cartLine.hasDepositValue() ? "&nbsp;D" : "&nbsp;" %></b></td>
+	<td colspan="3"><b><%= cartLine.hasTax() ? "&nbsp;T" : "&nbsp;" %><%= cartLine.hasScaledPricing() || ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) ? "&nbsp;S" : "&nbsp;" %><%= cartLine.hasDepositValue() ? "&nbsp;D" : "&nbsp;" %></b></td>
 	<td></td>
 </TR>
 </logic:iterate>

@@ -203,7 +203,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
 			+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id and p.sku_code = ?"
 			+ " and p.version = (select max(version) from erps.product where sku_code = ?)";
-*/
+
 		" select version, sap_id, unavailability_status, unavailability_date,"
 		+ " unavailability_reason, description, atp_rule, rating, price,"
 		+ " pricing_unit, promo_price, scale_unit, scale_quantity, sap_zone_id,"
@@ -218,7 +218,14 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		+ " and mpx.mat_id = m.id"
 		+ " and mp.mat_id = m.id"
 		+ " and p.sku_code = ?)" 
-		+ " where rank = 1";
+		+ " where rank = 1";*/
+		   "SELECT p.version, m.sap_id, unavailability_status, unavailability_date, "+
+		   "unavailability_reason, description, atp_rule, rating, price, "+
+		   "pricing_unit, promo_price, scale_unit, scale_quantity, sap_zone_id, "+
+		   "days_fresh, days_in_house, sustainability_rating "+
+		   "FROM erps.materialprice mp, erps. material m,erps.materialproxy mpx, erps.product p, "+
+		   "(SELECT MAX(p1.version) AS V FROM erps.product p1 WHERE p1.sku_code =?) t "+
+		   "WHERE  m.id=mpx.mat_id AND m.id= mp.mat_id  AND p.id=mpx.product_id AND  p.version=t.V AND p.sku_code =?";
 		
 	public ErpProductInfoModel findProductBySku(String skuCode) throws ObjectNotFoundException {
 		Connection conn = null;
@@ -229,7 +236,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 			ps = conn.prepareStatement(QUERY_PRODUCTS_BY_SKU);
 			ps.setString(1, skuCode);
-			//ps.setString(2, skuCode);
+			ps.setString(2, skuCode);
 
 			rs = ps.executeQuery();
 
@@ -254,7 +261,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		        "select m.sap_id, p.unavailability_status, p.unavailability_date,"
 			+ " p.unavailability_reason, m.description, m.atp_rule, p.rating, mp.price,"
 		        + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id,"         
-   			+ " p.days_fresh, p.days_in_house "
+   			+ " p.days_fresh, p.days_in_house, p.sustainability_rating "
 			+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
 			+ " where p.id=mpx.product_id and mpx.mat_id=m.id and mp.mat_id = m.id and p.sku_code = ? and p.version = ?"; 
 	
@@ -290,6 +297,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 				String days_fresh = rs.getString(14);
 				String days_in_house = rs.getString(15);
+				String sustainabilityRating=rs.getString(16);
 				String freshness = getFreshnessValue(days_fresh, days_in_house);
 
 				matNos.add(rs.getString(1));
@@ -311,7 +319,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 						unavReason,
 						descr,
 						rating,
-						freshness);
+						freshness,
+						sustainabilityRating);
 			}
 			throw new ObjectNotFoundException("SKU " + skuCode + ", version " + version + " not found");
 
@@ -335,7 +344,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			PreparedStatement ps = conn.prepareStatement(QUERY_PRODUCTS_BY_SKU);
 			for (int i = 0; i < skuCodes.length; i++) {
 				ps.setString(1, skuCodes[i]);
-//				ps.setString(2, skuCodes[i]);
+				ps.setString(2, skuCodes[i]);
 				ResultSet rs = ps.executeQuery();
 
 				if (rs.next()) {
@@ -384,7 +393,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         String days_fresh = rs.getString("days_fresh");
         String days_in_house = rs.getString("days_in_house");
         String freshness = getFreshnessValue(days_fresh, days_in_house);
-
+        String sustainabilityRating=rs.getString("sustainability_rating");
         matNos.add(rs.getString("sap_id"));
         matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble("price"), rs.getString("pricing_unit"), rs.getDouble("promo_price"), rs.getString("scale_unit"), rs.getDouble("scale_quantity"), rs.getString("sap_zone_id")));
 
@@ -404,7 +413,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         	unavReason,
         	descr,
         	rating,
-        	freshness);
+        	freshness,
+        	sustainabilityRating);
     }
 
 	public Collection<ErpMaterialInfoModel> findMaterialsByCharacteristic(String classAndCharName) {
@@ -486,12 +496,50 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
                     close(conn);
 		}
 	}
+	
+    private final static String QUERY_SKUS_BY_SAP_ID =
+        "select p.sku_code "+
+        "from erps.product p, erps.materialproxy mpx, erps.material m "+
+        "where p.id = mpx.product_id and mpx.mat_id = m.id "+
+        "and p.version = (select max(version) from erps.product p2 where p2.sku_code = p.sku_code) "+
+        "and m.sap_id like ? order by p.id";
+
+    public Collection<String> findSkusBySapId(String sapId) {
+    	Connection conn = null;
+    	PreparedStatement ps =null;
+    	ResultSet rs =null;
+    	List<String> skuCodes = new ArrayList<String>();
+    	try {
+
+    		conn = getConnection();
+
+    		ps = conn.prepareStatement(QUERY_SKUS_BY_SAP_ID);
+    		ps.setString(1, "%" + sapId);
+    		rs = ps.executeQuery();
+
+    		while (rs.next()) {
+
+    			String skuCode = rs.getString(1);
+    			skuCodes.add(skuCode);
+    		}              
+    		return skuCodes;
+    	} catch (SQLException sqle) {
+    		LOGGER.error("Error finding SKUs ", sqle);
+    		throw new EJBException(sqle);
+    	} finally {
+    		
+    		close(rs);
+    		close(ps);
+    		close(conn);
+    	}
+    }
+
 
 	private final static String QUERY_PRODUCTS_BY_SAP_ID =
 		"select p.sku_code, p.version, m.sap_id, p.unavailability_status,"
 		+ " p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule, p.rating, mp.price,"
         	+ " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id,"
-		+ " p.days_fresh, p.days_in_house "
+		+ " p.days_fresh, p.days_in_house, p.sustainability_rating  "
 		+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
 		+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id"
 		+ " and p.version = (select max(version) from erps.product p2 where p2.sku_code = p.sku_code)"
@@ -499,20 +547,20 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	public Collection<ErpProductInfoModel> findProductsBySapId(String sapId) {
 		Connection conn = null;
+		PreparedStatement ps =null;
 		try {
 
 			conn = getConnection();
 
-			PreparedStatement ps = conn.prepareStatement(QUERY_PRODUCTS_BY_SAP_ID);
+			ps= conn.prepareStatement(QUERY_PRODUCTS_BY_SAP_ID);
 			ps.setString(1, "%" + sapId);
 			List<ErpProductInfoModel> products = fetchErpProductInfoModel(ps);
-			ps.close();
-
 			return products;
 		} catch (SQLException sqle) {
 			LOGGER.error("Error finding SKUs ", sqle);
 			throw new EJBException(sqle);
 		} finally {
+					close(ps);
                     close(conn);
 		}
 	}
@@ -521,7 +569,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		"select p.sku_code, p.version, m.sap_id, p.unavailability_status,"
 		+ " p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule, p.rating, mp.price,"
 	        + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id, " 
-		+ " p.days_fresh, p.days_in_house "
+		+ " p.days_fresh, p.days_in_house, p.sustainability_rating "
 		+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
 		+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id"
 		+ " and p.version = (select max(version) from erps.product p2 where p2.sku_code = p.sku_code)"
@@ -580,6 +628,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         	String days_fresh = rs.getString("days_fresh");
         	String days_in_house = rs.getString("days_in_house");
         	String freshness = getFreshnessValue(days_fresh, days_in_house);
+        	String sustainabilityRating=rs.getString("sustainability_rating");
 
         	matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble("price"), rs.getString("pricing_unit"), rs.getDouble("promo_price"), rs.getString("scale_unit"), 
         	        rs.getDouble("scale_quantity"), rs.getString("sap_zone_id")));
@@ -595,10 +644,11 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			unavReason,
 			descr,
 			rating,
-			freshness));
+			freshness,
+			sustainabilityRating));
         }
 
-        rs.close();
+        close(rs);
         return products;
     }
 
@@ -606,7 +656,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		"select p.sku_code, p.version, m.sap_id, p.unavailability_status, p.unavailability_date,"
 		+ " p.unavailability_reason, m.description, m.atp_rule, p.rating, mp.price,"
 	        + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id,"
-		+ " p.days_fresh, p.days_in_house "
+		+ " p.days_fresh, p.days_in_house, p.sustainability_rating "
 		+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
 		+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id and p.sku_code like ?"
 		+ " and p.version = (select max(version) from erps.product where sku_code = p.sku_code)";
@@ -632,7 +682,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		"select p.sku_code, p.version, m.sap_id, p.unavailability_status, p.unavailability_date, "
 		+ " p.unavailability_reason,m.description, m.atp_rule,p.rating, mp.price,"
 	        + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id, "
-		+ " p.days_fresh, p.days_in_house "
+		+ " p.days_fresh, p.days_in_house,p.sustainability_rating  "
 		+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
 		+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id and m.upc = ?"
 		+ " and p.version = (select max(version) from erps.product where sku_code = p.sku_code)";
@@ -658,7 +708,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
       		"select p.sku_code, p.version, m.sap_id, p.unavailability_status, p.unavailability_date,"
 		+ " p.unavailability_reason, m.description, m.atp_rule,p.rating, mp.price,"
 	        + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id,"
-		+ " p.days_fresh, p.days_in_house "
+		+ " p.days_fresh, p.days_in_house,p.sustainability_rating  "
 		+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
 		+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id and m.upc like ?"
 		+ " and p.version = (select max(version) from erps.product where sku_code = p.sku_code)";
@@ -711,6 +761,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         	String days_fresh = rs.getString(16);
         	String days_in_house = rs.getString(17);
         	String freshness = getFreshnessValue(days_fresh, days_in_house);
+        	String sustainabilityRating= rs.getString(18);
 
         	matNos.add(rs.getString(3));
         	matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(10), rs.getString(11), rs.getDouble(12), rs.getString(13), rs.getDouble(14), rs.getString(15)));
@@ -727,11 +778,12 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         					unavReason,
         					descr,
         					rating,
-        					freshness));
+        					freshness,
+        					sustainabilityRating));
         }
 
-        rs.close();
-        ps.close();
+        close(rs);
+        close(ps);
 
         return results;
     }
@@ -1024,7 +1076,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 						}
 						statement.append(" )");
 					}
-					System.out.println("Statement is : "+statement.toString());
+					//System.out.println("Statement is : "+statement.toString());
 					conn = this.getConnection();
 				
 					PreparedStatement ps = conn.prepareStatement(statement.toString());
@@ -1032,7 +1084,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 					
 					if(hasValue(skuPrefixes)) {
 						for(int i=0;i<skuPrefixes.size();i++) {
-							System.out.println(skuPrefixes.get(i).toString()+"%");
+							//System.out.println(skuPrefixes.get(i).toString()+"%");
 							ps.setString(i+1, skuPrefixes.get(i).toString()+"%");
 						}
 					}
@@ -1042,7 +1094,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 					List<String> lst = new ArrayList<String>();
 					while (rs.next()) {
 						lst.add(rs.getString(1));
-						System.out.println(rs.getString(1));
+						//System.out.println(rs.getString(1));
 					}
 				
 					rs.close();

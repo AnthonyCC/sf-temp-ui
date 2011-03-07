@@ -163,15 +163,13 @@
                         <td width="70" align="right"><font color="red">(<xsl:value-of select="unitPrice"/>)</font></td>                
                         <td width="60" align="right"><span class="text10bold"><font color="red"><xsl:value-of select="format-number(price, '$###,##0.00', 'USD')"/></font></span></td>
                         <td width="10"><xsl:if test="estimatedPrice = 'true'">*</xsl:if></td>
-                        <td colspan="3" width="70"><b><xsl:if test="tax = 'true'">&nbsp;T</xsl:if><xsl:if test="scaledPricing = 'true'">&nbsp;S</xsl:if><xsl:if test="depositValue = '
-                        true'">&nbsp;D</xsl:if></b></td>                    
-                    </xsl:when>
+                        <td colspan="3" width="70"><b><xsl:if test="tax = 'true'">&nbsp;T</xsl:if><xsl:if test="scaledPricing = 'true'">&nbsp;S</xsl:if><xsl:if test="depositValue = 'true'">&nbsp;D</xsl:if></b></td>                    
+                    </xsl:when>					
 					<xsl:otherwise>
                         <td width="70" align="right">(<xsl:value-of select="unitPrice"/>)</td>                
                         <td width="60" align="right"><span class="text10bold"><xsl:value-of select="format-number(price, '$###,##0.00', 'USD')"/></span></td>
                         <td width="10"><xsl:if test="estimatedPrice = 'true'">*</xsl:if></td>
-                        <td colspan="3" width="70"><b><xsl:if test="tax = 'true'">&nbsp;T</xsl:if><xsl:if test="scaledPricing = 'true'">&nbsp;S</xsl:if><xsl:if test="depositValue = '
-                        true'">&nbsp;D</xsl:if></b></td>                    
+                        <td colspan="3" width="70"><b><xsl:if test="tax = 'true'">&nbsp;T</xsl:if><xsl:if test="scaledPricing = 'true' or number(groupQuantity) &gt; 0">&nbsp;S</xsl:if><xsl:if test="depositValue = 'true'">&nbsp;D</xsl:if></b></td>                    
                     </xsl:otherwise>
 				</xsl:choose>
 			</tr>
@@ -184,6 +182,22 @@
 				<td colspan="2">
 				<div style="margin-left:16px; text-indent:-8px;">
 				<xsl:value-of select="discount/promotionDescription"/>&nbsp;<font color="red">(You Saved <xsl:value-of select="format-number(discountAmount, '$###,##0.00', 'USD')"/>)</font>
+				</div>
+				</td>
+				<td width="70" align="right"></td>
+				<td width="60" align="right"></td>
+				<td width="10"></td>
+				<td width="3" colspan="3"></td>
+			</tr>
+			</xsl:when>
+			<xsl:when test="number(groupQuantity) &gt; 0">
+			<tr valign="middle">
+				<td align="right" width="40"></td>
+				<td width="16"></td>
+				<td width="22"></td>
+				<td colspan="2">
+				<div style="margin-left:16px; text-indent:-8px;"> 
+				Group Discount&nbsp;<font color="red">(You Saved <xsl:value-of select="format-number(groupScaleSavings, '$###,##0.00', 'USD')"/>)</font>
 				</div>
 				</td>
 				<td width="70" align="right"></td>

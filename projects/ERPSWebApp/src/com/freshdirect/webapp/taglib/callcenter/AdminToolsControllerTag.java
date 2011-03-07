@@ -931,7 +931,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 					}
 				}
 
-				modCart.refreshAll();
+				modCart.refreshAll(true);
 				modCart.recalculateTaxAndBottleDeposit(modCart.getDeliveryAddress().getZipCode());
 	        	//CustomerRatingAdaptor cra = new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
 	        	Set<String> appliedPromos = originalOrder.getUsedPromotionCodes();

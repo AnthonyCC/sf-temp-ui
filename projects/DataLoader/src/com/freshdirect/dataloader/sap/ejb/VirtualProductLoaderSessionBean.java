@@ -248,7 +248,7 @@ public class VirtualProductLoaderSessionBean extends SessionBeanSupport {
                 // ask the pricing factory to figure out what the default price should be
                 // for a product consisting of only one material
                 //
-                Pricing pr = PricingFactory.getPricing(virtPrdModel.getProxiedMaterial(), new ErpCharacteristicValuePriceModel[0] );
+                Pricing pr = PricingFactory.getPricing(virtPrdModel.getProxiedMaterial(), new ErpCharacteristicValuePriceModel[0]);
                 //
                 // find the sales unit with the lowest ratio
                 //
@@ -263,7 +263,7 @@ public class VirtualProductLoaderSessionBean extends SessionBeanSupport {
                 try {
 					FDConfiguration prConf = new FDConfiguration( 1.0, lowestRatio.getAlternativeUnit() );
                     
-                    MaterialPrice pricingCondition = PricingEngine.getConfiguredPrice( pr, prConf, new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE)) .getPricingCondition();
+                    MaterialPrice pricingCondition = PricingEngine.getConfiguredPrice( pr, prConf, new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE), null, 0.0) .getPricingCondition();
                     
                     defaultPrice = pricingCondition.getPrice();
                     defaultPriceUnit = pricingCondition.getPricingUnit();

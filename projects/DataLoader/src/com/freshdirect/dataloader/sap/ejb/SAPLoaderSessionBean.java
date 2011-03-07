@@ -527,7 +527,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
                 String rating = (String) extraInfo.get("RATING");
                 String days_fresh = (String) extraInfo.get("DAYS_FRESH");
                 String days_in_house = (String) extraInfo.get("DAYS_IN_HOUSE");
-                //
+                String sustainabilityRating = (String) extraInfo.get("SUSTAINABILITY_RATING");                //
                 // now get the real material model that we created previously to we can create the
                 // material proxy and product objects that relate to a material
                 //
@@ -660,7 +660,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
                     // ask the pricing factory to figure out what the default price should be
                     // for a product consisting of only one material
                     //
-                    Pricing pr = PricingFactory.getPricing(erpMatlModel, new ErpCharacteristicValuePriceModel[0] );
+                    Pricing pr = PricingFactory.getPricing(erpMatlModel, new ErpCharacteristicValuePriceModel[0]);
                     double defaultPrice = 0.0;
                     String defaultPriceUnit = " ";
                     //
@@ -715,6 +715,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
 
 					erpProductModel.setDaysFresh(days_fresh);
 					erpProductModel.setDaysInHouse(days_in_house);
+					erpProductModel.setSustainabilityRating(sustainabilityRating);
 					//erpProductModel.setBasePrice(anonMatlModel.getBasePrice());
 					//erpProductModel.setBasePriceUnit(anonMatlModel.getBasePricingUnit());
 
@@ -746,6 +747,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
                             // in the deactivateDeletedProducts step, remove and then re-create
                             //
                             try {
+                            	System.out.println("skuCode :"+skuCode);
                                 erpProductEB  = productHome.findBySkuCodeAndVersion(skuCode, this.batchNumber);
                                 erpProductEB.remove();
                                 erpProductEB = productHome.create(this.batchNumber, erpProductModel);

@@ -269,6 +269,34 @@
 				<%
 				}
 				%>
+				
+				<fd:SeafoodSustainCheck>
+					<fd:FDProductInfo id="productInfo" skuCode="<%= defaultSku.getSkuCode() %>">
+					<%
+						if ( productInfo.getSustainabilityRating() != null && productInfo.getSustainabilityRating().trim().length() > 0 ) { 
+								
+							String rating="";
+							EnumSustainabilityRating enumRating=EnumSustainabilityRating.getEnumByStatusCode(productInfo.getSustainabilityRating());
+							
+								rating = enumRating.getStatusCodeInDisplayFormat();
+								%>
+								<table cellpadding="0" cellspacing="0" border="0">
+									<tr valign="middle">
+										<td class="ssRatingLearnMore ssRating<%=rating%>LearnMore">
+											Sustainability -&nbsp;<a href="javascript:pop('/common/template/generic_popup.jsp?contentPath=/media/editorial/seafood/sustainability/sustainability_rating.html&amp;windowSize=custom&amp;name=Learn more about seafood sustainability&amp;w=390', 535, 450)"><img src="/media_stat/images/ratings/fish_<%=rating%>.gif" name="ss_rating_<%=rating%>" height="15" width="35" alt="<%=enumRating.getShortDescription()%>" border="0" /></a>
+										</td>
+									</tr>
+									<tr>
+										<td class="ssRatingLearnMore">
+											<a href="javascript:pop('/common/template/generic_popup.jsp?contentPath=/media/editorial/seafood/sustainability/sustainability_rating.html&amp;windowSize=custom&amp;name=Learn more about seafood sustainability&amp;w=390', 535, 450)">Click here to learn more</a>
+										</td>
+									</tr>
+								</table>
+							<% 
+						}
+					%>
+					</fd:FDProductInfo>
+				</fd:SeafoodSustainCheck>
 			
                 <fd:ProduceRatingCheck>
                  <% 

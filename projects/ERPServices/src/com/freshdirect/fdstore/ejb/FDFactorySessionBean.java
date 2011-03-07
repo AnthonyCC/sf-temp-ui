@@ -24,8 +24,12 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import com.freshdirect.common.ERPServiceLocator;
+import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.SkuAvailabilityHistory;
+import com.freshdirect.erp.ejb.ErpGrpInfoHome;
+import com.freshdirect.erp.ejb.ErpGrpInfoSB;
+import com.freshdirect.erp.ejb.ErpInfoHome;
 import com.freshdirect.erp.ejb.ErpInfoSB;
 import com.freshdirect.erp.ejb.ErpProductEB;
 import com.freshdirect.erp.ejb.ErpProductHome;
@@ -33,12 +37,15 @@ import com.freshdirect.erp.ejb.ErpZoneInfoHome;
 import com.freshdirect.erp.ejb.ErpZoneInfoSB;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.erp.model.ErpProductModel;
+import com.freshdirect.fdstore.FDGroup;
+import com.freshdirect.fdstore.FDGroupNotFoundException;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.framework.core.SessionBeanSupport;
 
 /**
@@ -52,7 +59,7 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 
 	private transient ErpProductHome productHome = null;
 	private transient ErpZoneInfoHome zoneHome = null;
-	
+	private transient ErpGrpInfoHome grpHome = null;
 	
 	private FDProductHelper productHelper = new FDProductHelper();
 
@@ -89,6 +96,25 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		}
 	}
     
+	
+	public Collection getFilteredSkus(List skuList) throws RemoteException, FDResourceException{
+		if (this.grpHome==null) {
+			this.lookupGrpInfoHome();
+		}
+		try {
+			// find ErpProduct by sku & version		
+			ErpGrpInfoSB infoSB = grpHome.create();
+		    return infoSB.getFilteredSkus(skuList);
+
+		} catch (CreateException fe) {
+			throw new FDResourceException(fe);
+		} catch (RemoteException re) {
+			this.productHome=null;
+			throw new FDResourceException(re);
+		}
+	}
+	
+	
     /**
 	 * Get current product information object for a specific version of a sku.
 	 *
@@ -192,6 +218,20 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		}
 	}
     
+    
+	public Collection getSkuCodes(String sapId) throws FDResourceException{
+		try {
+			ErpInfoSB infoSB = this.getErpInfoSB();
+
+			return infoSB.findSkusBySapId(sapId);
+
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
+
+    
+    
     public Map<String, Integer> getSkusOldness() throws FDResourceException {
 		try {
 			ErpInfoSB infoSB = this.getErpInfoSB();
@@ -285,7 +325,66 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		}
     }
 	
+	
+	
 
+	/**
+	 * Get product with specified version. 
+	 *
+	 * @param sku SKU code
+	 * @param version requested version
+	 *
+	 * @return FDProduct object
+	 *
+	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
+	 */
+	public GroupScalePricing getGrpInfo(FDGroup group) throws FDGroupNotFoundException, FDResourceException {
+		if (this.grpHome==null) {
+			this.lookupGrpInfoHome();
+		}
+		try {
+			// find ErpProduct by sku & version
+					
+			ErpGrpInfoSB infoSB = grpHome.create();		
+			return infoSB.findGrpInfoMaster(group);
+
+		} catch (CreateException fe) {
+			throw new FDResourceException(fe);
+		} catch (RemoteException re) {
+			this.productHome=null;
+			throw new FDResourceException(re);
+		}
+    }
+    
+	
+	/**
+	 * Get product with specified version. 
+	 *
+	 * @param sku SKU code
+	 * @param version requested version
+	 *
+	 * @return FDProduct object
+	 *
+	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
+	 */
+	public Collection<GroupScalePricing> getGrpInfos(FDGroup grpIds[]) throws FDResourceException {
+		if (this.grpHome==null) {
+			this.lookupGrpInfoHome();
+		}
+		try {
+			// find ErpProduct by sku & version		
+			ErpGrpInfoSB infoSB = grpHome.create();
+		    return infoSB.findGrpInfoMaster(grpIds);
+
+		} catch (CreateException fe) {
+			throw new FDResourceException(fe);
+		} catch (RemoteException re) {
+			this.productHome=null;
+			throw new FDResourceException(re);
+		}
+    }
+	
+	
 	private void lookupProductHome() throws FDResourceException {
 		Context ctx = null;
 		try {
@@ -310,6 +409,28 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		try {
 			ctx = FDStoreProperties.getInitialContext();
 			zoneHome = (ErpZoneInfoHome) ctx.lookup("freshdirect.erp.ZoneInfoManager");
+		} catch (NamingException ne) {
+			throw new FDResourceException(ne);
+		} finally {
+			try {
+				if (ctx != null) {
+					ctx.close();
+				}
+			} catch (NamingException ne) {
+				ne.printStackTrace();
+			}
+		}
+	}
+    
+    
+    private  void lookupGrpInfoHome() throws FDResourceException {
+		if (grpHome != null) {
+			return;
+		}
+		Context ctx = null;
+		try {
+			ctx = FDStoreProperties.getInitialContext();
+			grpHome = (ErpGrpInfoHome) ctx.lookup("freshdirect.erp.GrpInfoManager");
 		} catch (NamingException ne) {
 			throw new FDResourceException(ne);
 		} finally {

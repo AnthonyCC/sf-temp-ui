@@ -40,9 +40,12 @@ import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
 import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
+import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.erp.PricingFactory;
 import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceEB;
 import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceHome;
+import com.freshdirect.erp.ejb.ErpGrpInfoHome;
+import com.freshdirect.erp.ejb.ErpGrpInfoSB;
 import com.freshdirect.erp.model.ErpCharacteristicModel;
 import com.freshdirect.erp.model.ErpCharacteristicValueModel;
 import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
@@ -54,6 +57,7 @@ import com.freshdirect.erp.model.ErpSalesUnitModel;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
 import com.freshdirect.fdstore.EnumAvailabilityStatus;
 import com.freshdirect.fdstore.FDAttributeCache;
+import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDMaterial;
 import com.freshdirect.fdstore.FDNutrition;
 import com.freshdirect.fdstore.FDNutritionCache;
@@ -83,6 +87,7 @@ class FDProductHelper {
 
 	private transient ErpCharacteristicValuePriceHome charValueHome = null;
 	private transient ErpNutritionHome nutritionHome = null;
+	private transient ErpGrpInfoHome grpHome = null;
 
 	public FDProduct getFDProduct(ErpProductModel product) throws FDResourceException {
 		// debug
@@ -97,7 +102,9 @@ class FDProductHelper {
 		// construct variations
 		FDVariation[] variations = this.getVariations(product.getCharacteristics());
 		
-		// build Pricing object
+		
+		
+	// build Pricing object
 		Pricing pricing = this.getPricing(product.getProxiedMaterial());
 		
 		// get version
@@ -142,8 +149,7 @@ class FDProductHelper {
 	}
 	
 	public FDProductInfo getFDProductInfo(ErpProductInfoModel erpProductInfo) throws FDResourceException {
-
-
+		
 		String s = erpProductInfo.getUnavailabilityStatus();
 		EnumAvailabilityStatus status = null;
 		if ("TEST".equals(s)){
@@ -181,6 +187,23 @@ class FDProductHelper {
 			zonePriceInfoList.addZonePriceInfo(sapZoneId, zpInfoModel);
 			subList.clear();
 		}		
+		//Get Group Identify if applicable.
+		FDGroup group = null;
+		ErpGrpInfoSB remote;
+		try {
+			if (this.grpHome ==null) {
+				this.lookupGroupPriceHome();
+			}
+			remote = this.grpHome.create();
+			group = remote.getGroupIdentityForMaterial(erpProductInfo.getMaterialSapIds()[0]);
+		} catch (RemoteException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (CreateException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}					
+
 		return new FDProductInfo(
 			erpProductInfo.getSkuCode(),
 			erpProductInfo.getVersion(),
@@ -191,7 +214,9 @@ class FDProductHelper {
 			null,
 			erpProductInfo.getRating(),
 			erpProductInfo.getFreshness(),
-			zonePriceInfoList
+			zonePriceInfoList,
+			group,
+			erpProductInfo.getSustainabilityRating()
 		);
 	
 	}
@@ -407,6 +432,7 @@ class FDProductHelper {
 		if (this.charValueHome==null) {
 			this.lookupCharValueHome();
 		}
+		
 		try {
 			Collection cvPriceEBs = this.charValueHome.findByMaterial( (VersionedPrimaryKey)material.getPK() );
 			ErpCharacteristicValuePriceModel[] cvPrices = new ErpCharacteristicValuePriceModel[cvPriceEBs.size()];
@@ -416,9 +442,11 @@ class FDProductHelper {
 			for (Iterator i=cvPriceEBs.iterator(); i.hasNext(); count++) {
 				cvPrices[count]= (ErpCharacteristicValuePriceModel) ((ErpCharacteristicValuePriceEB)i.next()).getModel();
 			}
-	
+			
+						
 			return PricingFactory.getPricing( material, cvPrices );
-		} catch (RemoteException ex) {
+			
+		}  catch (RemoteException ex) {
 			this.charValueHome=null;
 			throw new FDResourceException(ex);
 		} catch (FinderException ex) {
@@ -456,4 +484,19 @@ class FDProductHelper {
 	}
 
 
+	private void lookupGroupPriceHome() throws FDResourceException {
+		Context ctx = null;
+		try {
+			ctx = new InitialContext();
+			this.grpHome = (ErpGrpInfoHome) ctx.lookup("java:comp/env/ejb/GrpPriceInfo");
+		} catch (NamingException ex) {
+			throw new FDResourceException(ex);
+		} finally {
+			try {
+				ctx.close();
+			} catch (NamingException ne) {}
+		}
+	}
+
+	
 }

@@ -275,7 +275,7 @@ public class SmartStoreConfigurationStrategyTest extends FDCustomerManagerTestSu
 				ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
 				ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, -1, -1, ZonePriceListing.MASTER_DEFAULT_ZONE);
 				dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-				productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"", null, dummyList);
+				productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"", null, dummyList, null,"");
 				
 			} else {
 				// fallback: return all other items as available
@@ -286,7 +286,7 @@ public class SmartStoreConfigurationStrategyTest extends FDCustomerManagerTestSu
 				ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
 				ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 				dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-				productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"", null, dummyList);
+				productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"", null, dummyList, null,"");
 				
 			}
 
@@ -411,7 +411,7 @@ class TestFDProduct extends FDProduct {
 			FDMaterial material, FDVariation[] variations,
 			FDSalesUnit[] salesUnits, Pricing pricing, ArrayList nutrition) {
 		super(skuCode, version, pricingDate, material, variations, salesUnits, pricing,
-				nutrition);
+				nutrition,null);
 	}
 
 	

@@ -109,6 +109,7 @@ A.list		    { line-height: 12px; }
 .text14			 { font-size: 14px; font-weight: normal; font-family: Verdana, Arial, sans-serif; }
 .title14		 { font-size: 14px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .titleor14		 { font-size: 14px; color: #FF9933; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+.text14rbold 	 { font-size: 14px; color: #CC0000; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 
 .text15	         { font-size: 15px; font-family: Verdana, Arial, sans-serif; }
 
@@ -716,3 +717,15 @@ img.COSSurvey_spacer04 { width: 140px; height: 8px; }
 	src: url('fonts/eagle-book-webfont.eot');
 	src: local('☺'), url('fonts/eagle-book-webfont.woff') format('woff'), url('fonts/eagle-book-webfont.ttf') format('truetype'), url('fonts/eagle-book-webfont.svg#webfontXlJgVHrD') format('svg');
 }
+
+.ssRating { padding-top:4px; font-size: 10px;  font-family: Verdana, Arial, sans-serif; }
+.ssRating a:link, .ssRating a:active, .ssRating a:hover, .ssRating a:hover { color: #333; }
+.ssRating01 { color: #C94A35; }
+.ssRating02 { color: #EC9612; }
+.ssRating03 { color: #DBC635; }
+.ssRating04 { color: #96B73E; }
+.ssRating05 { color: #51994A; }
+.ssRating06 { color: #4A5D99; }
+.ssRatingLearnMore { font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif; text-align: left; }
+.ssRatingPop, .ssRatingPop td { font-size: 13px; font-family: Verdana, Arial, sans-serif; }
+.ssRatingPop th, .ssRatingPop a { font-size: 14px; }

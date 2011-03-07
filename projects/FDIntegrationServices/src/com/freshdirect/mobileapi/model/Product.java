@@ -32,11 +32,13 @@ import org.apache.log4j.Logger;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.ConfiguredPrice;
+import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.PricingEngine;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.common.pricing.SalesUnitRatio;
+import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.content.nutrition.EnumAllergenValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
@@ -45,6 +47,7 @@ import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -53,6 +56,8 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
+import com.freshdirect.fdstore.GroupScalePricing;
+import com.freshdirect.fdstore.GrpZonePriceModel;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ComponentGroupModel;
@@ -1492,16 +1497,18 @@ public class Product {
     public double getPrice(Sku sku, SalesUnit salesUnit, double quantity, Map<String, String> options) throws PricingException {
         double price = 0.0;
         //Pricing pricing = this.product.getFDProduct().getPricing();
-        Pricing pricing = getFDProduct(sku.getSkuCode()).getPricing();
+        String skuCode = sku.getSkuCode();
+        Pricing pricing = getFDProduct(skuCode).getPricing();
         FDConfiguration configuration = new FDConfiguration(quantity, salesUnit.getName(), options);
 
         if (sku != null && salesUnit != null && quantity > 0.0) {
-            ConfiguredPrice configuredPrice = PricingEngine.getConfiguredPrice(pricing, configuration, pricingContext);
+            ConfiguredPrice configuredPrice = PricingEngine.getConfiguredPrice(pricing, configuration, pricingContext, getFDProductInfo(skuCode).getGroup(),quantity);
             price = configuredPrice.getPrice().getPrice();
         }
         return price;
     }
 
+    
     public double getEstimatedQuantity(Sku sku, SalesUnit salesUnit, double quantity) throws PricingException {
         double estimatedQuantity = 0.0;
 
@@ -1545,6 +1552,19 @@ public class Product {
 
     }
 
+    private FDProductInfo getFDProductInfo(String skuCode) {
+
+        try {
+            FDProductInfo productInfo = FDCachedFactory.getProductInfo(skuCode);
+            return productInfo;
+        } catch (FDResourceException e) {
+            throw new FDRuntimeException(e);
+        } catch (FDSkuNotFoundException e) {
+            throw new FDRuntimeException(e);
+        }
+
+    }
+    
     public String getSellBySalesUnit() {
         return sellBySalesUnit;
 

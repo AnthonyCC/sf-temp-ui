@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -15,6 +16,11 @@ public class PricingContext implements Serializable {
 	
 
 	private final String pZoneId;
+	public double  getGrpDiscountScale() {
+		return discountScale;
+	}
+		
+	private double discountScale;
 	
 	public static final PricingContext DEFAULT = new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE);
 
@@ -27,6 +33,11 @@ public class PricingContext implements Serializable {
 	    this.pZoneId = pZoneId;
 	}
 
+	public PricingContext(String pZoneId,double discountScale) {
+		this.discountScale = discountScale;
+		this.pZoneId = pZoneId;		
+	}
+	
 	public String getZoneId() {
 		return this.pZoneId;
 	}
@@ -59,5 +70,18 @@ public class PricingContext implements Serializable {
 	@Override
 	public String toString() {
 		return "PricingContext[" + pZoneId + "]";
+	}
+	
+	public EnumServiceType getServiceType() {
+		if(pZoneId != null && pZoneId.length()>= 10){
+			String serviceTypeCode = pZoneId.substring(8); //00 0r 01 0r 02
+			if(serviceTypeCode.equals("01"))
+				return EnumServiceType.HOME;
+			else if(serviceTypeCode.equals("02"))
+				return EnumServiceType.CORPORATE;
+			else
+				return EnumServiceType.PICKUP;
+		}
+		return null;
 	}
 }

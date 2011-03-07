@@ -3,22 +3,21 @@ package com.freshdirect.customer.ejb;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 
 import javax.ejb.EJBException;
 
-import org.hibernate.SQLQuery;
-
 import com.freshdirect.affiliate.ErpAffiliate;
-import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDConfiguration;
+import com.freshdirect.fdstore.EnumSustainabilityRating;
+import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.framework.core.ModelI;
@@ -93,7 +92,7 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 	 */
 	public static List findByParent(Connection conn, PrimaryKey parentPK) throws SQLException {
 		java.util.List lst = new java.util.LinkedList();
-		PreparedStatement ps = conn.prepareStatement("SELECT ID, ORDERLINE_NUMBER, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE, TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT, VARIANT_ID, SAVINGS_ID,PRICING_ZONE_ID FROM CUST.ORDERLINE WHERE SALESACTION_ID=? ORDER BY ORDERLINE_NUMBER");
+		PreparedStatement ps = conn.prepareStatement("SELECT ID, ORDERLINE_NUMBER, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE, TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT, VARIANT_ID, SAVINGS_ID,PRICING_ZONE_ID,GROUP_ID,GROUP_VERSION,GROUP_QTY,SUSTAINABILITY_RATING FROM CUST.ORDERLINE WHERE SALESACTION_ID=? ORDER BY ORDERLINE_NUMBER");
 		ps.setString(1, parentPK.getId());
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
@@ -110,8 +109,8 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 		"INSERT INTO CUST.ORDERLINE (ID, SALESACTION_ID, ORDERLINE_NUMBER, SKU_CODE, VERSION,"
 		+ " QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN,"
 		+ " DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE,"
-		+ " TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION,RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT,VARIANT_ID,SAVINGS_ID,PRICING_ZONE_ID)"
-		+ " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		+ " TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION,RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT,VARIANT_ID,SAVINGS_ID,PRICING_ZONE_ID,GROUP_ID,GROUP_VERSION,GROUP_QTY,SUSTAINABILITY_RATING)"
+		+ " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String id = this.getNextId(conn, "CUST");
@@ -189,8 +188,21 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 		} else {
 			ps.setNull(31, Types.VARCHAR);
 		}
-		
-		
+
+		FDGroup group = this.model.getFDGroup();
+		if(group != null){
+			ps.setString(32,group.getGroupId());
+			ps.setInt(33,group.getVersion());
+			ps.setDouble(34,this.model.getGroupQuantity());
+		}else{
+			ps.setNull(32, Types.VARCHAR);
+			ps.setNull(33, Types.INTEGER);
+			ps.setNull(34, Types.DOUBLE);
+		}
+		if(this.model.getSustainabilityRating()!=null)
+			   ps.setString(35, this.model.getSustainabilityRating().getStatusCode());	
+			else
+				ps.setNull(35, Types.NULL);		
 		try {
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");
@@ -208,7 +220,7 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 
 	public void load(Connection conn) throws SQLException {
 				
-		PreparedStatement ps = conn.prepareStatement("SELECT ORDERLINE_NUMBER, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE, TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT,VARIANT_ID,SAVINGS_ID,PRICING_ZONE_ID FROM CUST.ORDERLINE WHERE ID=?");
+		PreparedStatement ps = conn.prepareStatement("SELECT ORDERLINE_NUMBER, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE, TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT,VARIANT_ID,SAVINGS_ID,PRICING_ZONE_ID,GROUP_ID,GROUP_VERSION,GROUP_QTY,SUSTAINABILITY_RATING FROM CUST.ORDERLINE WHERE ID=?");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
@@ -247,8 +259,13 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
         this.model.setVariantId(rs.getString("VARIANT_ID"));
         this.model.setSavingsId(rs.getString("SAVINGS_ID"));
         String pricingZoneId=rs.getString("PRICING_ZONE_ID");
+        String grpId = rs.getString("GROUP_ID");
+        int version = rs.getInt("GROUP_VERSION");
+        if(grpId!=null)
+        	this.model.setFDGroup(new FDGroup(grpId, version));
+        this.model.setGroupQuantity(rs.getDouble("GROUP_QTY"));
         this.model.setPricingContext(new PricingContext(pricingZoneId==null?ZonePriceListing.MASTER_DEFAULT_ZONE:pricingZoneId)); 
-
+        this.model.setSustainabilityRating(EnumSustainabilityRating.getEnumByStatusCode(NVL.apply(rs.getString("SUSTAINABILITY_RATING"), "X")));
         
 		// deal with no promotion (PROMOTION_TYPE is NULL)
 		int type = rs.getInt("PROMOTION_TYPE");

@@ -19,6 +19,9 @@ import com.freshdirect.fdstore.FDConfiguration;
 class FDModifyCartLineModel extends FDCartLineModel implements FDModifyCartLineI {
 	private static final long serialVersionUID = 7177055603220148537L;
 
+	/**
+	 * 
+	 */
 	private final FDCartLineI originalOrderLine;
 
 	public FDModifyCartLineModel(FDCartLineI origLine) {

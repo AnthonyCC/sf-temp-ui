@@ -51,8 +51,6 @@ public class FDProduct extends FDSku implements AttributesI {
 	private final List<FDNutrition> nutrition;
 
 	private FDSalesUnit[] displaySalesUnits;
-	
-
 
 	public FDProduct(
 		String skuCode,
@@ -62,7 +60,8 @@ public class FDProduct extends FDSku implements AttributesI {
 		FDVariation[] variations,
 		FDSalesUnit[] salesUnits,
 		Pricing pricing,
-		List<FDNutrition> nutrition) {
+		List<FDNutrition> nutrition
+		) {
 		super(skuCode, version);
 		this.pricingDate = pricingDate;
 		this.material = material;
@@ -71,7 +70,7 @@ public class FDProduct extends FDSku implements AttributesI {
 		this.pricing = pricing;
 		
 		this.nutrition = nutrition;
-		
+	
 	}
 	
 	public FDProduct(
@@ -83,17 +82,16 @@ public class FDProduct extends FDSku implements AttributesI {
 			FDSalesUnit[] salesUnits,
 			Pricing pricing,
 			List<FDNutrition> nutrition,
-			FDSalesUnit[] displaySalesUnits) {
+			FDSalesUnit[] displaySalesUnits
+	) {
 			super(skuCode, version);
 			this.pricingDate = pricingDate;
 			this.material = material;
 			this.variations = variations;
 			this.salesUnits = salesUnits;
 			this.pricing = pricing;
-			
 			this.nutrition = nutrition;
 			this.displaySalesUnits = displaySalesUnits;
-			
 		}
 	/**
 	 * Get effective pricing date.

@@ -363,7 +363,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 					break;
 				}
 			}
-			cart.refreshAll();
+			cart.refreshAll(true);
 			currentUser.setCurrentStandingOrder(null);
 			currentUser.setCheckoutMode(EnumCheckoutMode.NORMAL);
 			currentUser.setShoppingCart( cart );
@@ -550,7 +550,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 					}
 
 					modCart.setZoneInfo(zoneInfo);
-					modCart.refreshAll();
+					modCart.refreshAll(true);
 					currentUser.updateUserState();
 
 					//FDCustomerManager.doNewAuthorization(currentUser.getIdentity(), this.orderId, modCart, paymentMethod);
@@ -675,7 +675,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 						//Otherwise store the applied list.
 						appliedPromos = user.getPromotionEligibility().getAppliedPromotionCodes();; 
 					}
-					modCart.refreshAll();
+					modCart.refreshAll(true);
 					FDCustomerManager.modifyOrder(AccountActivityUtil.getActionInfo(session), modCart, appliedPromos, false,cra, user.getDeliveryPassStatus());
 
 				}

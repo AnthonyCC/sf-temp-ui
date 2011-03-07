@@ -1653,6 +1653,33 @@
 		</attribute>			
 	</tag>	
 	<tag>
+		<name>GetGSProducts</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.GetGSProductsTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.GetGSProductsTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>productList</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>skuModelList</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>groupId</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>		
+			<name>version</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>				
+	</tag>
+	<tag>
 		<name>SmartSearch</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.SmartSearchTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.fdstore.SmartSearchTagEI</teiclass>
@@ -4478,5 +4505,11 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+	</tag>
+	<tag>
+		<name>SeafoodSustainCheck</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.SeafoodSustainCheckTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
 	</tag>
 </taglib>

@@ -637,7 +637,7 @@ public class YmalTest extends FDCustomerManagerTestSupport {
 				ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
 				ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 				dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-				productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList);
+				productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList, null,"");
 				
 			} else {
 				// fallback: return all other items as available
@@ -647,7 +647,7 @@ public class YmalTest extends FDCustomerManagerTestSupport {
 				ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
 				ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 				dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-				productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList);
+				productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList, null,"");
 				
 			}
 
@@ -696,7 +696,7 @@ public class YmalTest extends FDCustomerManagerTestSupport {
 		    			                           variations,
 		    			                           salesUnits,
 		    			                           pricing,
-		    			                           nutrition);
+		    			                           nutrition,null);
 	    	
 	    	return product;
 	    }

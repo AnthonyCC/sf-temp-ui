@@ -39,12 +39,24 @@ public class MaterialPrice implements Serializable {
 	/** Scale upper bound (exclusive - qty < scaleUpperBound). Double.POSITIVE_INFINITY if no scales apply. */
 	private double scaleUpperBound;
 
+	public void setScaleUpperBound(double scaleUpperBound) {
+		this.scaleUpperBound = scaleUpperBound;
+	}
+
+
+
 	/** Scale unit of measure. Empty string if no scales apply. */
 	private String scaleUnit;
 
 	private double promoPrice;
 	
-	public MaterialPrice(double price, String pricingUnit, double promoPrice) {
+	public double getPromoPrice() {
+		return promoPrice;
+	}
+
+
+
+	public MaterialPrice(double price, String pricingUnit,double promoPrice) {
 		this(price, pricingUnit, 0.0, Double.POSITIVE_INFINITY, "", promoPrice);
 	}
 	

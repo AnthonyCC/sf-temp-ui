@@ -24,7 +24,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.content.attributes.*;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.rsa.jsafe.ba;
+//import com.rsa.jsafe.ba;
 
 import org.apache.log4j.Category;
 

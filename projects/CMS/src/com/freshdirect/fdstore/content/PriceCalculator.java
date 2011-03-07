@@ -2,7 +2,9 @@ package com.freshdirect.fdstore.content;
 
 import java.util.Locale;
 
+import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDKosherInfo;
 import com.freshdirect.fdstore.FDProduct;
@@ -455,4 +457,78 @@ public class PriceCalculator {
 			throw new FDRuntimeException(e);
 		}
 	}
+	
+	public double getGroupPrice() {
+		try{
+			if(getProductInfo().getGroup() == null) return 0.0;
+			MaterialPrice grpMatPrice = GroupScaleUtil.getGroupScalePrice(getProductInfo().getGroup(), ctx.getZoneId());
+			if(grpMatPrice != null)
+				return grpMatPrice.getPrice();
+			else
+				return 0.0;
+		} catch (FDSkuNotFoundException e) {
+			throw new FDRuntimeException(e);
+		}  catch (FDResourceException e) {
+			throw new FDRuntimeException(e);
+		}    	
+	}
+	public double getGroupQuantity() {
+		try{
+			if(getProductInfo().getGroup() == null) return 0.0;
+			MaterialPrice grpMatPrice = GroupScaleUtil.getGroupScalePrice(getProductInfo().getGroup(), ctx.getZoneId());
+			if(grpMatPrice != null)
+				return grpMatPrice.getScaleLowerBound();
+			else
+				return 0.0;
+		}  catch (FDSkuNotFoundException e) {
+			throw new FDRuntimeException(e);
+		}  catch (FDResourceException e) {
+			throw new FDRuntimeException(e);
+		}     	
+	}
+
+	public String getGroupScaleUnit() {
+		try{
+			if(getProductInfo().getGroup() == null) return null;
+			MaterialPrice grpMatPrice = GroupScaleUtil.getGroupScalePrice(getProductInfo().getGroup(), ctx.getZoneId());
+			if(grpMatPrice != null)
+				return grpMatPrice.getScaleUnit();
+			else
+				return null;
+		}catch (FDSkuNotFoundException e) {
+			throw new FDRuntimeException(e);
+		}  catch (FDResourceException e) {
+			throw new FDRuntimeException(e);
+		}      	
+	}
+
+	public String getGroupPricingUnit() {
+		try{
+			if(getProductInfo().getGroup() == null) return null;
+			MaterialPrice grpMatPrice = GroupScaleUtil.getGroupScalePrice(getProductInfo().getGroup(), ctx.getZoneId());
+			if(grpMatPrice != null)
+				return grpMatPrice.getPricingUnit();
+			else
+				return null;
+
+		} catch (FDSkuNotFoundException e) {
+			throw new FDRuntimeException(e);
+		}  catch (FDResourceException e) {
+			throw new FDRuntimeException(e);
+		}     	
+	}
+
+	public MaterialPrice[] getGroupScalePrices() {
+		try {
+			if (getProductInfo().getGroup() == null)
+				return null;
+			MaterialPrice[] matPrices = GroupScaleUtil.getGroupScalePrices(getProductInfo().getGroup(), ctx.getZoneId());
+			return matPrices;
+		}  catch (FDSkuNotFoundException e) {
+			throw new FDRuntimeException(e);
+		}  catch (FDResourceException e) {
+			throw new FDRuntimeException(e);
+		} 
+	}
+
 }

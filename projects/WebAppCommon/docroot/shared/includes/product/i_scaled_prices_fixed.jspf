@@ -1,29 +1,41 @@
+<%@ page import='com.freshdirect.webapp.util.ProductImpression' %>
+<%@ page import='com.freshdirect.common.pricing.util.GroupScaleUtil' %>
+<%@ page import='com.freshdirect.fdstore.FDGroup' %>
 <%
 	//
 	// Display scaled pricing for FDProduct product.
 	//
-	
-	String[] scales = null;
-
-	if ( isWineLayout ) {
-		scales = product.getPricing().getZonePrice(user.getPricingContext().getZoneId()).getWineScaleDisplay(true);
-	} else {
-		scales = product.getPricing().getZonePrice(user.getPricingContext().getZoneId()).getScaleDisplay();
-	}
-	
-	if ( scales.length > 0 ) {
-		%>
-		<font class="specialPrice">Save!
-		<%
-		for ( int sci = 0; sci < scales.length; sci++ ) {
-			//out.print( scales[sci] );
-			//out.println("<br/>");
-			if(scales[sci].indexOf(" or ") >= -1){
-				scales[sci]=scales[sci].replaceFirst(" or ","<br>or ");
-			}
-			out.print( scales[sci] );
-			out.println("<br/>");
+    boolean isGrpScale = false;
+    FDGroup grp = productInfo.getGroup(); 
+    if(grp != null && GroupScaleUtil.getGroupScalePrice(grp,user.getPricingContext().getZoneId()) != null) {                                                                                                                                                                                                                                                                                                                                                                                        
+        isGrpScale = true;	
+    }	
+    if(isGrpScale) {
+	%>
+		<%-- changed here to use ProductPrice tag for group scale --%>
+	        <display:ProductPrice impression="<%= new ProductImpression(__prd) %>" grcyProd="true" showRegularPrice="false" showAboutPrice="false" showScalePricing="true" showWasPrice="false" showDescription="false" grpDisplayType="LARGE" skuCode="<%=product.getSkuCode() %>" showSaveText="true"/>
+	<%
+	} else {//do Regular scale pricing
+		String[] scales = null;
+		if ( isWineLayout ) {
+			    scales = product.getPricing().getZonePrice(user.getPricingContext().getZoneId()).getWineScaleDisplay(true);
+		} else {  
+			    scales = product.getPricing().getZonePrice(user.getPricingContext().getZoneId()).getScaleDisplay();
 		}
-		%></font><%
-	}
+		if ( scales!= null && scales.length > 0 ) {
+			%>
+			<font class="specialPrice">Save!
+			<%
+			for ( int sci = 0; sci < scales.length; sci++ ) {
+				//out.print( scales[sci] );
+				//out.println("<br/>");
+				if(scales[sci].indexOf(" or ") >= -1){
+					scales[sci]=scales[sci].replaceFirst(" or ","<br>or ");
+				}
+				out.print( scales[sci] );
+				out.println("<br/>");
+			}
+			%></font><%
+		}
+	}	
 %>

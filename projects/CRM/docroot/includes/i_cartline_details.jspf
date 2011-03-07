@@ -11,7 +11,7 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
-
+<script type="text/javascript" language="javascript" src="/assets/javascript/FD_PromoEligibility.js"></script>
 <%
     boolean firstRecipe = true;
 	final boolean __cld_hasInvoice = hasInvoice; // defined in i_cart_details.jspf
@@ -40,7 +40,7 @@
         if (lastDept.startsWith("Recipe: ")) {
             if (firstRecipe) {
 %>
-                
+	                
 <tr class="order_item_dept">
                     <td colspan="1"></td>
                     <td colspan="5"><b>RECIPES</b></td>
@@ -92,12 +92,20 @@
 %>
 <%
 	String discountMsg = null;
+	String groupDiscountMsg = null;
 	if(cartLine.getDiscount() != null) {
 		Discount discount = cartLine.getDiscount();
 		PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
 		discountMsg = "<a href=\"javascript:popup('/shared/promotion_popup.jsp?promoCode="+promotion.getPromotionCode()+"','small')\" style=\"color: #ff0000; font-weight: bold;\">"+promotion.getDescription()+"</a>";
+	} else {
+				if(cartLine.getGroupQuantity() > 0) {
+					double savings = cartLine.getGroupScaleSavings();
+					if(savings > 0)
+						groupDiscountMsg = "Group Discount <span style=\"color: #ff0000;\">(You Saved "+JspMethods.formatPrice(savings)+")</span> <a href=\"#\" onclick=\"return fetchGroupScaleInfoCrm('"+cartLine.getFDGroup().getGroupId() +"','"+ cartLine.getFDGroup().getVersion() +"')\" style=\"font-weight: normal;\">See details</a>";
+				}
 	}
 %>
+
 <tr valign="middle">
     <td align="center">
         <%=cartLine.getDisplayQuantity()%>
@@ -153,6 +161,7 @@
 			&nbsp;<img src="/media_stat/images/ratings/product_<%=cartLine.getProduceRating().getStatusCodeInDisplayFormat()%>.gif"  name="rating" alt="<%=cartLine.getProduceRating().getStatusCodeInDisplayFormat()%>"  height="11" border="0">
 		<% } %> 
 			<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span><%= discountMsg %></span><% } %>
+			<% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span><%= groupDiscountMsg %></span><% } %>
     </td>
     <td width="6%" align="center"> 
     <%if(__cld_hasInvoice && cartLine.isPricedByLb()){%>
@@ -174,7 +183,7 @@
         <%= (cartLine.hasTax())  ? "T" : "&nbsp;" %>
     </td>
     <td style="font-weight: bold; text-align: center;">
-        <%= (cartLine.hasScaledPricing()) ? "S" : "&nbsp;" %>
+        <%= (cartLine.hasScaledPricing()) || ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) ? "S" : "&nbsp;" %>
     </td>
     <td style="font-weight: bold; text-align: center;">
         <%=(cartLine.hasDepositValue())  ? "D" : "&nbsp;" %>

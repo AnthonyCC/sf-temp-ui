@@ -3,8 +3,14 @@ package com.freshdirect.fdstore.util;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.freshdirect.common.pricing.MaterialPrice;
+import com.freshdirect.common.pricing.util.GroupScaleUtil;
+import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.GroupScalePricing;
+import com.freshdirect.fdstore.GrpZonePriceModel;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ConfiguredProductGroup;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -99,5 +105,32 @@ public class ProductDisplayUtil {
 		uri.append("productId=" + getRealProduct(productNode).getContentName());
 
 		return uri.toString();
+	}
+	/**
+	 * This method returns only regular deals percentage if product's default sku
+	 * is part of a group scale else returns product's highest deals percentage.
+	 * @param productNode
+	 * @param user
+	 * @return
+	 */
+	public static int getDealsPercentage(ProductModel productNode, FDUserI user) {
+		try {
+			int tieredPercentage = productNode.getTieredDealPercentage();
+			FDGroup group = productNode.getFDGroup();
+			if(tieredPercentage > 0 && group != null){
+				//Check to see current pricing zone has group price defined.
+				if(group != null) {
+					MaterialPrice gsPrice = GroupScaleUtil.getGroupScalePrice(group, user.getPricingZoneId());
+					if(gsPrice != null) {
+						//return regular deal percentage
+						return productNode.getDealPercentage();
+					}
+				}
+			}
+		} catch (FDResourceException e) {
+			//ignore
+		}
+		//At this point there is no gs price defined for default sku.
+		return productNode.getHighestDealPercentage();
 	}
 }

@@ -4935,9 +4935,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 		try {
 			if (FDStoreProperties.isGivexBlackHoleEnabled()) {
-				// THis is $0 card with no value created for balance transfer.
-				// At this point reject the
-				// user action since register transaction will not go through.
 				throw new ServiceUnavailableException(
 						"This service is unavailable at this time. Please try again later.");
 			}

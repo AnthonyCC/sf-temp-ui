@@ -52,6 +52,9 @@ public interface ErpInfoSB extends EJBObject {
     
     public Collection findProductsBySapId(String sapId) throws RemoteException;
     
+	public Collection findSkusBySapId(String sapId) throws RemoteException;
+
+    
     public Collection findProductsByDescription(String description) throws RemoteException;
     
     public Collection findProductsLikeSku(String skuCode) throws RemoteException;

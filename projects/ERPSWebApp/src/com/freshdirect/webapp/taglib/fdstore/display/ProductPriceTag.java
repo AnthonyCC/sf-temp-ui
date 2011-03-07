@@ -1,16 +1,32 @@
 package com.freshdirect.webapp.taglib.fdstore.display;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.pricing.MaterialPrice;
+import com.freshdirect.common.pricing.util.GroupScaleUtil;
+import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDGroup;
+import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.GroupScalePricing;
+import com.freshdirect.fdstore.GrpZonePriceModel;
+import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.PriceCalculator;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 import com.freshdirect.webapp.util.ConfigurationUtil;
@@ -60,6 +76,11 @@ public class ProductPriceTag extends BodyTagSupport {
 	boolean quickShop = false; // special font for quick shop
 	boolean grcyProd = false; // special font for grocery product
 	String skuCode = null;
+	String grpDisplayType=null; //change group price display
+	boolean showSaveText = false; //show scale pricing
+	
+	private final static NumberFormat FORMAT_CURRENCY = NumberFormat.getCurrencyInstance(Locale.US);
+	private final static DecimalFormat FORMAT_QUANTITY = new java.text.DecimalFormat("0.##");
 	
 	/**
 	 * [APPDEV-1283] Exclude 6 and 12 wine bottles deals
@@ -107,6 +128,9 @@ public class ProductPriceTag extends BodyTagSupport {
 		this.skuCode = skuCode;
 	}
 
+	public void setGrpDisplayType(String grpDisplay){
+	  this.grpDisplayType=grpDisplay;	
+	}
 	private static double excludedTiers[] = new double[]{6, 12 };
 	
 	public void setExcludeCaseDeals(boolean excludeCaseDeals) {
@@ -116,16 +140,24 @@ public class ProductPriceTag extends BodyTagSupport {
 	@Override
 	public int doStartTag() {
 		StringBuffer buf = new StringBuffer();
-		
-		
-		buf.append( "<span class=\"price\">" );
-		buf.append(ProductPriceTag.getHTMLFragment(
-			impression,
-			savingsPercentage, showDescription, showAboutPrice, showRegularPrice, showWasPrice, showScalePricing,
-			quickShop, grcyProd, skuCode, excludeCaseDeals
-		));
-		buf.append("</span>\n");
-
+		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+		String catId = request.getParameter("catId");
+		if(!quickShop){
+			buf.append( "<span class=\"price\">" );
+			buf.append(ProductPriceTag.getHTMLFragment(
+				impression,
+				savingsPercentage, showDescription, showAboutPrice, showRegularPrice, showWasPrice, showScalePricing,
+				quickShop, grcyProd, skuCode, excludeCaseDeals, grpDisplayType, showSaveText, catId
+			));
+			buf.append("</span>\n");
+		}else {
+			buf.append(ProductPriceTag.getHTMLFragment(
+					impression,
+					savingsPercentage, showDescription, showAboutPrice, showRegularPrice, showWasPrice, showScalePricing,
+					quickShop, grcyProd, skuCode, excludeCaseDeals, grpDisplayType, showSaveText, catId
+				));
+			buf.append("\n");
+		}
 
 		try {
 			// write out
@@ -153,7 +185,8 @@ public class ProductPriceTag extends BodyTagSupport {
 	 * 
 	 * @return HTML piece
 	 */
-	public static String getHTMLFragment(ProductImpression impression, double savingsPercentage, boolean showDescription, boolean showAboutPrice, boolean showRegularPrice, boolean showWasPrice, boolean showScalePricing, boolean quickShop, boolean grcyProd, String skuCode, boolean excludeCaseDeals) {
+	public static String getHTMLFragment(ProductImpression impression, double savingsPercentage, boolean showDescription, boolean showAboutPrice, boolean showRegularPrice, boolean showWasPrice, boolean showScalePricing, boolean quickShop, boolean grcyProd, String skuCode, 
+			boolean excludeCaseDeals, String grpDisplayType, boolean showSaveText,String catId) {
 		StringBuffer buf = new StringBuffer();
 
 		String confDescription = null;
@@ -162,8 +195,13 @@ public class ProductPriceTag extends BodyTagSupport {
 			TransactionalProductImpression tpi = (TransactionalProductImpression)impression;
 			confDescription = ConfigurationUtil.getConfigurationDescription(tpi);
 		}
-
-		PriceCalculator priceCalculator = impression.getProductModel().getPriceCalculator();
+		ProductModel prodModel = impression.getProductModel();
+		PriceCalculator priceCalculator = null;
+		if(skuCode != null)	
+			priceCalculator = prodModel.getPriceCalculator(skuCode);
+		else
+			priceCalculator = prodModel.getPriceCalculator();
+		
 		
 		if (confDescription == null) {
 			try {
@@ -177,13 +215,210 @@ public class ProductPriceTag extends BodyTagSupport {
 		if ( showDescription && confDescription != null ) {
 			buf.append("<div>" + confDescription + "</div>\n");
 		}
-
+		FDProductInfo productInfo = null;
 		// display price
-		FDProductInfo productInfo = impression.getProductInfo();
+		if(skuCode != null) {
+			//SkuCode will be not null when coming from product page
+			try{
+				//Load the productInfo based on sku.
+				productInfo = FDCachedFactory.getProductInfo(skuCode);
+			}catch(Exception e){
+				//load default sku 
+				productInfo = impression.getProductInfo();
+			}
+		} else {
+			//SkuCode is null initialize to default sku.
+			productInfo = impression.getProductInfo();
+		}
 		
-		if ( productInfo != null ) {	
-			String priceString = impression.getProductModel().getPriceCalculator(skuCode).getPriceFormatted(savingsPercentage);
-			String scaleString = priceCalculator.getTieredPrice(savingsPercentage, excludeCaseDeals ? excludedTiers : null);
+		if ( productInfo != null ) {
+			//SkuCode is null initialize to default skucode.
+			if(skuCode == null) skuCode = productInfo.getSkuCode();
+			String priceString = priceCalculator.getPriceFormatted(savingsPercentage);
+			String scaleString=null;
+			FDGroup group = productInfo.getGroup();
+			if(group == null) {
+				//Try getting the group from Product Impression which loops through all skus
+				//if product has multiple skus. So in case product's non default sku is associated
+				//with a group then it will display that group.
+				group = impression.getFDGroup();
+			}
+			if(group != null){
+				try {
+					MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, impression.getPricingZoneId());
+					if(matPrice != null) {
+						//catId=pr&prodCatId=pr&productId=pr_bartlett&skuCode=FRU0005348&grpId=ORG_PEARS&version=10443&trk=trkCode
+						String prodCatId=prodModel.getParentNode().getContentName(); 
+                        String productId=prodModel.getContentName();
+
+						if (prodCatId == null) {
+							if (prodModel != null && prodModel.getParentNode() instanceof CategoryModel) {
+								prodCatId = prodModel.getParentNode().toString();
+								LOGGER.debug("prodCatId "+catId);
+							}
+						}
+						StringBuffer buffer = new StringBuffer();
+						if(catId!=null && catId.length() > 0 && productId != null && productId.length() > 0 && skuCode != null
+								&& skuCode.length() > 0){
+							buffer.append("&catId=");
+							buffer.append(catId);
+							buffer.append("&productId=");
+							buffer.append(productId);
+							buffer.append("&prodCatId=");
+							buffer.append(prodCatId);
+							buffer.append("&skuCode=");
+							buffer.append(skuCode);
+						}
+						double displayPrice = 0.0;
+						boolean isSaleUnitDiff = false;
+						if(matPrice.getPricingUnit().equals(matPrice.getScaleUnit())){
+							if(matPrice.getPricingUnit().equals("EA"))
+								displayPrice = matPrice.getPrice() * matPrice.getScaleLowerBound();
+							else {
+									//other than eaches.
+									displayPrice = matPrice.getPrice();
+									isSaleUnitDiff = true;
+							}
+						} else {
+							displayPrice = matPrice.getPrice();
+							isSaleUnitDiff = true;
+						}
+						GroupScalePricing grpPricing = GroupScaleUtil.lookupGroupPricing(group);
+						StringBuffer buf1 = new StringBuffer();
+						if(quickShop) buf1.append("SAVE!").append(" ");
+						if("LARGE".equalsIgnoreCase(grpDisplayType) ){
+							//if(impression.isGroupExists(skuCode)) {
+								buf1.append( " <span class=\"text12rbold\">Buy More &amp; Save!</span><br />" );
+								buf1.append( "<span class=\"text12bold\" style=\"color:black\">Any Combination of "+grpPricing.getLongDesc()+"</span><br />" );
+								buf1.append( "<span class=\"text14rbold\">" );
+								buf1.append( FORMAT_QUANTITY.format( matPrice.getScaleLowerBound() ) );
+								if(matPrice.getScaleUnit().equals("LB"))//Other than eaches append the /pricing unit for clarity.
+									buf1.append(matPrice.getScaleUnit().toLowerCase());
+								buf1.append( " for " );
+								buf1.append( FORMAT_CURRENCY.format(displayPrice ) );
+								if(isSaleUnitDiff)
+									buf1.append("/").append(matPrice.getPricingUnit().toLowerCase());
+								buf1.append( "</span><br />" );
+								buf1.append( "<a href=\"/group.jsp?grpId="+group.getGroupId()+"&version="+group.getVersion()+buffer.toString()+"\">" );
+								buf1.append( "All " );
+								buf1.append( grpPricing.getShortDesc() );
+								buf1.append( " - click here" );
+								buf1.append( "</a>" );
+							//}
+						}else if("LARGE_NOLINK".equalsIgnoreCase(grpDisplayType)){ //obsolete, no replacement
+							//if(impression.isGroupExists(skuCode)) {
+								buf1.append( " <span class=\"titleor14\">SAVE!</span> <span class=\"title14\">" );
+								buf1.append( FORMAT_QUANTITY.format( matPrice.getScaleLowerBound() ) );
+								if(matPrice.getScaleUnit().equals("LB"))//Other than eaches append the /pricing unit for clarity.
+									buf1.append(matPrice.getScaleUnit().toLowerCase());
+								buf1.append( " for " );
+								buf1.append( FORMAT_CURRENCY.format(displayPrice) );
+								if(isSaleUnitDiff)
+									buf1.append("/").append(matPrice.getPricingUnit().toLowerCase());
+								buf1.append( "</span>" );
+							//}
+						}else if("LARGE_RED".equalsIgnoreCase(grpDisplayType)){
+							//if(impression.isGroupExists(skuCode)) {
+								buf1.append( " <span class=\"text14rbold\">Any " );
+								buf1.append( FORMAT_QUANTITY.format( matPrice.getScaleLowerBound() ) );
+								if(matPrice.getScaleUnit().equals("LB"))//Other than eaches append the /pricing unit for clarity.
+									buf1.append(matPrice.getScaleUnit().toLowerCase());
+								buf1.append( " " );
+								buf1.append( grpPricing.getShortDesc() );
+								buf1.append( " for " );
+								buf1.append( FORMAT_CURRENCY.format( displayPrice ) );
+								if(isSaleUnitDiff)
+									buf1.append("/").append(matPrice.getPricingUnit().toLowerCase());
+								buf1.append( "</span>" );
+							//}
+						}else if("SMALL_NOLINK".equalsIgnoreCase(grpDisplayType)){ //obsolete, use small_red
+							//if(impression.isGroupExists(skuCode)) {
+								buf1.append( " <span class=\"text12orbold\">SAVE!</span> <span class=\"title12\">" );
+								buf1.append( FORMAT_QUANTITY.format( matPrice.getScaleLowerBound() ) );
+								if(matPrice.getScaleUnit().equals("LB"))//Other than eaches append the /pricing unit for clarity.
+									buf1.append(matPrice.getScaleUnit().toLowerCase());
+								buf1.append( " for " );
+								buf1.append( FORMAT_CURRENCY.format( displayPrice) );
+								if(isSaleUnitDiff)
+									buf1.append("/").append(matPrice.getPricingUnit().toLowerCase());
+								buf1.append( "</span>" );
+							//}
+						}else if("SMALL_RED".equalsIgnoreCase(grpDisplayType)){
+							//if(impression.isGroupExists(skuCode)) {
+								buf1.append( " <span class=\"text10rbold\">Any " );
+								buf1.append( FORMAT_QUANTITY.format( matPrice.getScaleLowerBound() ) );
+								if(matPrice.getScaleUnit().equals("LB"))//Other than eaches append the /pricing unit for clarity.
+									buf1.append(matPrice.getScaleUnit().toLowerCase());
+								buf1.append( " " );
+								buf1.append( grpPricing.getShortDesc() );
+								buf1.append( " for " );
+								buf1.append( FORMAT_CURRENCY.format(displayPrice) );
+								if(isSaleUnitDiff)
+									buf1.append("/").append(matPrice.getPricingUnit().toLowerCase());
+								buf1.append( "</span>" );
+							//} 
+						}else{
+							//default to "SMALL".equalsIgnoreCase(grpDisplayType) a short, linked, description
+							if(matPrice.getScaleUnit().equals("LB")) {//Other than eaches append the /pricing unit for clarity.
+								buf1.append("<a href=\"/group.jsp?grpId="+group.getGroupId()+"&version="+group.getVersion()+buffer.toString()+"\" class=\"text10rbold\" style=\"color: #CC0000;\">");
+								buf1.append( FORMAT_QUANTITY.format( matPrice.getScaleLowerBound() ) );
+								buf1.append(matPrice.getScaleUnit().toLowerCase());
+								buf1.append( " " );
+								buf1.append( "of any " );
+								buf1.append( " " );
+								buf1.append( grpPricing.getShortDesc() );
+								buf1.append( " for " );
+								buf1.append( FORMAT_CURRENCY.format( displayPrice) );
+								buf1.append("/").append(matPrice.getPricingUnit().toLowerCase());
+								buf1.append( "</a>" );
+
+							} else {
+								buf1.append( "<a href=\"/group.jsp?grpId="+group.getGroupId()+"&version="+group.getVersion()+buffer.toString()+"\" class=\"text10rbold\" style=\"color: #CC0000;\">Any " );
+								buf1.append( FORMAT_QUANTITY.format( matPrice.getScaleLowerBound() ) );
+								buf1.append( " " );
+								buf1.append( grpPricing.getShortDesc() );
+								buf1.append( " for " );
+								buf1.append( FORMAT_CURRENCY.format( displayPrice) );
+								if(isSaleUnitDiff)
+									buf1.append("/").append(matPrice.getPricingUnit().toLowerCase());
+								buf1.append( "</a>" );
+
+							}
+						}
+						
+						scaleString= buf1.toString();
+					}
+				} catch (FDResourceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+			if(scaleString == null) {
+				//no group, do the normal scale string fetch
+				
+				scaleString = priceCalculator.getTieredPrice(savingsPercentage, excludeCaseDeals ? excludedTiers : null);
+				if(scaleString != null && showSaveText){
+					StringBuffer buffer  = new StringBuffer();
+					buffer.append("SAVE");
+					if(quickShop){
+						int tieredPercentage = impression.getProductModel().getTieredDealPercentage();
+						buffer.append(tieredPercentage > 0 ? " " + tieredPercentage + "%" : "!");
+						buffer.append("&nbsp;&nbsp;");
+					}else {
+						buffer.append("!");
+						buffer.append("&nbsp;");
+					}
+					
+					//buffer.append(priceCalculator.getTieredPrice(savingsPercentage));
+					scaleString = buffer.toString() + scaleString;
+				}
+				
+				
+				
+				//LOGGER.debug("scaleString: "+scaleString);
+			
+			}
 			String wasString = priceCalculator.getWasPriceFormatted(savingsPercentage);
 			
 			if (wasString != null)
@@ -239,9 +474,9 @@ public class ProductPriceTag extends BodyTagSupport {
 				}
 				if(quickShop) {
 					buf.append(
-							"<div" + quickShopStyleScale + ">" +
+							"<span" + quickShopStyleScale + ">" +
 							scaleString + 
-							"</div>"
+							"</span>"
 					);
 				}else if(grcyProd) {
 					buf.append(
@@ -307,5 +542,9 @@ public class ProductPriceTag extends BodyTagSupport {
 		public VariableInfo[] getVariableInfo(TagData data) {
 			return new VariableInfo[] {};
 		}
+	}
+
+	public void setShowSaveText(boolean showSaveText) {
+		this.showSaveText = showSaveText;
 	}
 }

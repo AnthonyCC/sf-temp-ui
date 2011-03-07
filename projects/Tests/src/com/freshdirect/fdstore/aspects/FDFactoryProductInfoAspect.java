@@ -127,7 +127,7 @@ public class FDFactoryProductInfoAspect extends BaseAspect {
     		
     		fillZonePriceList(sku, dummyList);
     		
-            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"", null, dummyList);
+            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"", null, dummyList, null,"");
         } else if (tomorrowAvailable.contains(sku)) {
             // return this item as available by tomorrow, but not today
             Date tomorrow = DateUtil.addDays(now, 1);
@@ -139,7 +139,7 @@ public class FDFactoryProductInfoAspect extends BaseAspect {
     		ZonePriceInfoModel dummy = new ZonePriceInfoModel(price, promoPrice, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
                 fillZonePriceList(sku, dummyList);
     		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null, dummyList);
+            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null, dummyList, null,"");
         } else {
             // fallback: return any unknown item as unavailable
             // a 0 units available starting now
@@ -148,7 +148,7 @@ public class FDFactoryProductInfoAspect extends BaseAspect {
        		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
     		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 0.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
     		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);            
-            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.DISCONTINUED, now,inventoryCache,"", null, dummyList);
+            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.DISCONTINUED, now,inventoryCache,"", null, dummyList, null,"");
         }
 
         return productInfo;

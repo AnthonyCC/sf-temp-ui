@@ -788,7 +788,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 					vr.increment();
 				}
 			}
-			cart.refreshAll();			
+			cart.refreshAll(true);			
 		} catch ( FDInvalidConfigurationException e ) {
 			LOGGER.info( "Shopping list contains some items with invalid configuration." );
 			vr.increment();

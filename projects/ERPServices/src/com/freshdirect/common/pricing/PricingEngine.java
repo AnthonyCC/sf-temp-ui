@@ -13,7 +13,12 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.pricing.util.GroupScaleUtil;
+import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
+import com.freshdirect.fdstore.FDGroup;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -79,12 +84,12 @@ public class PricingEngine {
 	 *
 	 * @throws PricingException
 	 */
-	public static ConfiguredPrice getConfiguredPrice(Pricing pricing, FDConfigurableI configuration, PricingContext pCtx) throws PricingException {
+	public static ConfiguredPrice getConfiguredPrice(Pricing pricing, FDConfigurableI configuration, PricingContext pCtx, FDGroup group, double grpQuantity) throws PricingException {
 
 		if (DEBUG) LOGGER.debug("getConfiguredPrice got " + configuration);
 
 		// calculate base price
-		ConfiguredPrice basePrice = calculateMaterialPrice(pricing, configuration, pCtx.getZoneId());
+		ConfiguredPrice basePrice = calculateMaterialPrice(pricing, configuration, pCtx, group, grpQuantity);
 		if (DEBUG) LOGGER.debug("getConfiguredPrice basePrice: "+basePrice);
 
 		// calculate characteristic value prices
@@ -110,16 +115,70 @@ public class PricingEngine {
 	 *
 	 * @throws PricingException
 	 */
-	private static ConfiguredPrice calculateMaterialPrice(Pricing pricing, FDConfigurableI configuration, String pZoneId) throws PricingException {
+	private static ConfiguredPrice calculateMaterialPrice(Pricing pricing, FDConfigurableI configuration, PricingContext ctx, FDGroup group, double grpQuantity) throws PricingException {
 		// calculate price
-		if (pricing.getZonePrice(pZoneId).hasScales()) {
-			return calculateScalePrice(pricing, configuration, pZoneId);
-		
+		// check grpPrice exists
+		//Group Scale Pricing
+		if (group != null)
+		{
+				try{
+					MaterialPrice grpMaterialPrice = GroupScaleUtil.getGroupScalePrice(group, ctx.getZoneId());
+					if(grpMaterialPrice != null) {
+						//Group Price exists for this zone.
+						if(grpQuantity > 0 && grpQuantity >= grpMaterialPrice.getScaleLowerBound()){
+							//Required when multiple group scale prices are supported.
+							// find pricing condition for quantity (in scaleUnit)
+							//MaterialPrice grpMaterialPrice = GroupScaleUtil.getGroupScalePriceByQty(group, ctx.getZoneId(), grpQuantity);
+							return calculateGrpScalePrice(pricing, configuration, grpQuantity, grpMaterialPrice);		
+						} else {
+							return calculateSimplePrice(pricing, configuration, ctx.getZoneId());
+						}
+					}
+				}catch(FDResourceException fe){
+					throw new PricingException(fe);
+				}
+		}
+		//Regular Pricing
+		if (pricing.getZonePrice(ctx.getZoneId()).hasScales()) {
+			return calculateScalePrice(pricing, configuration, ctx.getZoneId());		
 		} else {
-			return calculateSimplePrice(pricing, configuration, pZoneId);
+			return calculateSimplePrice(pricing, configuration, ctx.getZoneId());
 		}
 	}
 
+	
+	/**
+	 * Perform pricing with scales.
+	 *
+	 * @return material price
+	 *
+	 * @throws PricingException
+	 */
+	private static ConfiguredPrice calculateGrpScalePrice(Pricing pricing, FDConfigurableI configuration, double grpQuantity, MaterialPrice grpMaterialPrice) throws PricingException {
+		
+		double quantity = configuration.getQuantity();
+		String salesUnit = configuration.getSalesUnit();
+		if (DEBUG) LOGGER.debug("group Scale pricing - scaledQuantity "+grpQuantity+" "+grpMaterialPrice.getScaleUnit());
+		double pricingQuantity;
+		if ( !salesUnit.equals(grpMaterialPrice.getPricingUnit()) ) { //Eg: EA vs LB
+			// we need a ratio
+			SalesUnitRatio ratio = pricing.findSalesUnitRatio(salesUnit);
+			if (ratio==null) {
+				throw new PricingException("No salesUnitRatio found for "+salesUnit+" in "+pricing);
+			}
+			pricingQuantity = quantity * ratio.getRatio();
+		} else {
+			pricingQuantity = quantity;
+		}
+
+		if (DEBUG) LOGGER.debug("Scale pricing [" + pricingQuantity + " * " + grpMaterialPrice.getPrice() + "]");
+
+		double price = pricingQuantity * grpMaterialPrice.getPrice();
+		return new ConfiguredPrice(new Price(price), grpMaterialPrice);
+	}
+
+	
+	
 	/**
 	 * Perform pricing with scales.
 	 *

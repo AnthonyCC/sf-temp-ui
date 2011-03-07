@@ -1,9 +1,12 @@
 package com.freshdirect.webapp.util;
 
 
+import java.util.Iterator;
+
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.util.DealsHelper;
 import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -196,5 +199,51 @@ public class ProductImpression {
 	public String getPricingZoneId(){
 		PricingContext pCtx = this.productModel.getPricingContext();
 		return pCtx.getZoneId();
+	}
+	
+	public boolean isGroupExists(String skuCode) {
+		boolean groupExists = false;
+		Iterator<SkuModel> it = this.getProductModel().getSkus().iterator();
+		while(it.hasNext()){
+			SkuModel sku = it.next();
+			try{
+				if(sku != null && !sku.isUnavailable() && sku.getProductInfo().isGroupExists() && sku.getSkuCode().equals(skuCode)) {
+					//if atleast one sku participates in a group.
+					groupExists = true;
+					break;
+				}
+					
+			}catch(FDSkuNotFoundException se){
+				//ignore
+			}catch(FDResourceException se){
+				//ignore
+			}
+		}
+		return groupExists;
+	}
+	/**
+	 * Returns the FDGroup that is associated to any sku in that Product.
+	 * @return
+	 */
+	public FDGroup getFDGroup() {
+		FDGroup group = null;
+		Iterator<SkuModel> it = this.getProductModel().getSkus().iterator();
+		while(it.hasNext()){
+			SkuModel sku = it.next();
+			try{
+				if(sku != null && !sku.isUnavailable()) {
+					//if atleast one sku participates in a group.
+					group = sku.getProductInfo().getGroup() ;
+					if(group != null)
+						break;
+				}
+					
+			}catch(FDSkuNotFoundException se){
+				//ignore
+			}catch(FDResourceException se){
+				//ignore
+			}
+		}
+		return group;
 	}
 }

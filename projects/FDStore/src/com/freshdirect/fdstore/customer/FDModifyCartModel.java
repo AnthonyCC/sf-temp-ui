@@ -8,12 +8,18 @@
  */
 package com.freshdirect.fdstore.customer;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.MaterialPrice;
+import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumZipCheckResponses;
+import com.freshdirect.fdstore.FDGroup;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.promotion.EnumOfferType;
 import com.freshdirect.fdstore.promotion.ExtendDeliveryPassApplicator;
@@ -49,7 +55,10 @@ public class FDModifyCartModel extends FDCartModel {
 				cartLine.setDiscountFlag(true);
 			}
 			if(origLine.getSavingsId() != null)
-				cartLine.setSavingsId(origLine.getSavingsId());			
+				cartLine.setSavingsId(origLine.getSavingsId());
+			if(origLine.getFDGroup() != null)
+				cartLine.setFDGroup(origLine.getFDGroup());			
+			
 			this.addOrderLine(cartLine);
 		}
 
@@ -84,5 +93,76 @@ public class FDModifyCartModel extends FDCartModel {
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	protected void checkNewLinesForUpgradedGroup(String pZoneId,
+			Map<FDGroup, Double> groupMap,
+			Map<FDGroup, Double> qualifiedGroupMap,
+			Map<String, FDGroup> qualifiedGrpIdMap) throws FDResourceException {
+		//Map to maintain the unqualified groups for further evaluation.
+			Map<String, FDGroup> nonQualifiedGrpIdMap = new HashMap<String, FDGroup>(); 
+		//Only do this for Modify Order.
+		Iterator<FDGroup> it = groupMap.keySet().iterator();
+		while(it.hasNext()){
+			FDGroup newGroup = it.next();
+			String grpId = newGroup.getGroupId();
+			if(!qualifiedGroupMap.containsKey(newGroup)){
+				if(qualifiedGrpIdMap.containsKey(grpId)) {
+					//Group Id is a part of a fully qualified Group
+					//This is a different version of same group. Check if the old version and new version
+					//has same price and same scale qty. 
+					FDGroup qGroup = qualifiedGrpIdMap.get(grpId);
+					MaterialPrice qMatPrice = GroupScaleUtil.getGroupScalePrice(qGroup, pZoneId);
+					MaterialPrice newMatPrice = GroupScaleUtil.getGroupScalePrice(newGroup, pZoneId);
+					//Check if the old version and new version has same price and same scale qty. 
+					//If yes add the old qty to new qty and set it both old group and new group.
+					if(qMatPrice!= null && newMatPrice != null && qMatPrice.getPrice() == newMatPrice.getPrice() &&
+							qMatPrice.getScaleLowerBound() == newMatPrice.getScaleLowerBound()){
+						double quantity = groupMap.get(qGroup);
+						double newQty = groupMap.get(newGroup);
+						quantity += newQty;
+						qualifiedGroupMap.put(qGroup, quantity);
+						qualifiedGroupMap.put(newGroup, quantity);
+						if(newGroup.getVersion() > qGroup.getVersion()){
+							qualifiedGrpIdMap.put(grpId, newGroup);
+						}
+					 }
+				}else{
+					//Group Id can be a part of a partially qualified Group
+					if(nonQualifiedGrpIdMap.containsKey(grpId)){
+						//This is a different version of same group. Check if the old version and new version
+						//has same price and same scale qty. 
+						FDGroup nqGroup = nonQualifiedGrpIdMap.get(grpId);
+						MaterialPrice qMatPrice = GroupScaleUtil.getGroupScalePrice(nqGroup, pZoneId);
+						MaterialPrice newMatPrice = GroupScaleUtil.getGroupScalePrice(newGroup, pZoneId);
+						//Check if the old version and new version has same price and same scale qty. 
+						//If yes add the old qty to new qty and set it both old group and new group.
+						if(qMatPrice!= null && newMatPrice != null && qMatPrice.getPrice() == newMatPrice.getPrice() &&
+								qMatPrice.getScaleLowerBound() == newMatPrice.getScaleLowerBound()){
+							double quantity = groupMap.get(nqGroup);
+							double newQty = groupMap.get(newGroup);
+							quantity += newQty;
+							FDGroup maxGroup = nqGroup;
+							if(newGroup.getVersion() > nqGroup.getVersion()){
+								maxGroup = newGroup;
+							} 
+							
+							if(quantity >= qMatPrice.getScaleLowerBound()){
+								//Reached qualified limit. Add both Groups to qualified Map.
+								qualifiedGroupMap.put(nqGroup, quantity);
+								qualifiedGroupMap.put(newGroup, quantity);
+								//Max version group to qualifiedGrpIdMap.
+								qualifiedGrpIdMap.put(grpId, maxGroup);
+							}
+							nonQualifiedGrpIdMap.put(grpId, maxGroup);
+						 } 
+					} else {
+						 //add the group Id to nonQualifiedGrpIdMap
+						 nonQualifiedGrpIdMap.put(grpId, newGroup);
+					}
+				}
+			}
+		}
 	}
 }

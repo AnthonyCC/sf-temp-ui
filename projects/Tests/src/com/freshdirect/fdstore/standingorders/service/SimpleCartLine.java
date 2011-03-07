@@ -14,8 +14,10 @@ import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpReturnLineI;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.fdstore.EnumOrderLineRating;
+import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
+import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -591,4 +593,31 @@ public class SimpleCartLine implements FDCartLineI {
 	public String getSalesUnit() {
 		return configuration.getSalesUnit();
 	}
+	
+	public double getGroupScaleSavings(){
+		return 0.0;
+	}
+	
+	public void setGroupQuantity(double quantity){
+		
+	}
+	
+	public double getGroupQuantity(){
+		return 0.0;
+	}
+	public void setFDGroup(FDGroup group){
+		
+	}
+
+	public FDGroup getFDGroup(){
+		return null;
+	}
+
+	
+	public EnumSustainabilityRating getSustainabilityRating() {
+		
+		return null;
+	}
+	
+
 }

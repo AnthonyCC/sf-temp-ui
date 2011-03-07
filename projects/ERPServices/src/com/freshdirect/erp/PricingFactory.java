@@ -10,12 +10,14 @@ package com.freshdirect.erp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Category;
 
@@ -23,6 +25,8 @@ import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.common.pricing.SalesUnitRatio;
+import com.freshdirect.customer.ErpGrpPriceModel;
+import com.freshdirect.customer.ErpGrpPriceZoneModel;
 import com.freshdirect.erp.model.ErpCharacteristicModel;
 import com.freshdirect.erp.model.ErpCharacteristicValueModel;
 import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
@@ -31,6 +35,9 @@ import com.freshdirect.erp.model.ErpMaterialPriceModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.erp.model.ErpSalesUnitModel;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
+import com.freshdirect.fdstore.GroupScalePricing;
+import com.freshdirect.fdstore.GrpZonePriceListing;
+import com.freshdirect.fdstore.GrpZonePriceModel;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.ZonePriceModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -90,7 +97,7 @@ public class PricingFactory {
 			}
 			else if(!sapZoneId.equals(erpMaterialPrice.getSapZoneId())) {
 				MaterialPrice[] materialPrices = buildMaterialPrices(
-						(ErpMaterialPriceModel[]) subList.toArray(new ErpMaterialPriceModel[0]));
+						(ErpMaterialPriceModel[]) subList.toArray(new ErpMaterialPriceModel[0]),sapZoneId);
 				ZonePriceModel zpModel = new ZonePriceModel(sapZoneId, materialPrices);
 				zonePriceList.addZonePrice(zpModel);
 				subList.clear();
@@ -98,9 +105,9 @@ public class PricingFactory {
 			}
 			sapZoneId = erpMaterialPrice.getSapZoneId();
 		} 
-		//Do the same for the last zone in the list.
+		
 		MaterialPrice[] materialPrices = buildMaterialPrices(
-				(ErpMaterialPriceModel[]) subList.toArray(new ErpMaterialPriceModel[0]));
+				(ErpMaterialPriceModel[]) subList.toArray(new ErpMaterialPriceModel[0]),sapZoneId);
 		ZonePriceModel zpModel = new ZonePriceModel(sapZoneId, materialPrices);
 		zonePriceList.addZonePrice(sapZoneId, zpModel);
 		subList.clear();
@@ -132,7 +139,7 @@ public class PricingFactory {
 	 *
 	 * @param erpPrices array of ErpMaterialPriceModel objects
 	 */
-	private static MaterialPrice[] buildMaterialPrices(ErpMaterialPriceModel[] erpPrices) {
+	private static MaterialPrice[] buildMaterialPrices(ErpMaterialPriceModel[] erpPrices,String sapZoneId) {
 
 		MaterialPrice[] prices = new MaterialPrice[ erpPrices.length ];
 		if (prices.length==0) {
@@ -141,15 +148,16 @@ public class PricingFactory {
 
 		// get scale unit from first erp price
 		String scaleUnit = erpPrices[0].getScaleUnit();
+		
+							
 
 		if ("".equals(scaleUnit.trim())) {
 			// no scales
 			for (int i=0; i<prices.length; i++) {
 				ErpMaterialPriceModel p=erpPrices[i];
 				if (DEBUG) LOGGER.debug("Adding new MaterialPrice ["+ p.getPrice() +","+ p.getPricingUnit() +"]");
-				prices[i] = new MaterialPrice(p.getPrice(), p.getPricingUnit(), p.getPromoPrice());
-			}
-
+				prices[i] = new MaterialPrice(p.getPrice(), p.getPricingUnit(), p.getPromoPrice());							
+			}					
 		} else {
 			// with scales
 
@@ -161,13 +169,12 @@ public class PricingFactory {
 					return d1.compareTo(d2);
 				}
 			} );
-			
-			
+									
 			if(erpPrices.length>1)
-			{
+			{					
 				List newSubList=new ArrayList();												
 				ErpMaterialPriceModel basePrice=(ErpMaterialPriceModel)erpPrices[0];
-				newSubList.add(basePrice);						
+				newSubList.add(basePrice);				
 				for(int i=1;i<erpPrices.length;i++){								
 					ErpMaterialPriceModel nextPrice=(ErpMaterialPriceModel)erpPrices[i];
 					if(basePrice.getPromoPrice()>0){
@@ -176,11 +183,11 @@ public class PricingFactory {
 					}else if(basePrice.getPrice() >=nextPrice.getPrice()){
 						newSubList.add(nextPrice);
 					}else{
-						LOGGER.debug("scale price is less then promo price :"+basePrice.getSapId());
+						LOGGER.debug("scale price is greater than promo price :"+basePrice.getSapId());
 					}
 				}
 				erpPrices=(ErpMaterialPriceModel[])newSubList.toArray(new ErpMaterialPriceModel[0]);
-				prices = new MaterialPrice[ erpPrices.length ];
+				prices = new MaterialPrice[ erpPrices.length ];										
 			}								 												
 			
 			double lower;
@@ -195,8 +202,8 @@ public class PricingFactory {
 					upper=erpPrices[i+1].getScaleQuantity();
 				}
 				if (DEBUG) LOGGER.debug("Adding new MaterialPrice w/ scale ["+ p.getPrice() +","+ p.getPricingUnit() +","+ lower +","+ upper +","+ scaleUnit +","+p.getPromoPrice()+"]");
-				prices[i] = new MaterialPrice(p.getPrice(), p.getPricingUnit(), lower, upper, scaleUnit, p.getPromoPrice());
-			}
+				prices[i] = new MaterialPrice(p.getPrice(), p.getPricingUnit(), lower, upper, scaleUnit, p.getPromoPrice());																	
+			}								
 		}
 		return prices;
 	}
@@ -277,5 +284,89 @@ public class PricingFactory {
 		return ratios;
 	}
 
-
+	public static GroupScalePricing convertToGroupScalePricing(ErpGrpPriceModel erpGrpPriceModel) {
+		List<ErpGrpPriceZoneModel> allZonePriceList = erpGrpPriceModel.getOrderedZoneModelList();
+		List<ErpGrpPriceZoneModel> zonePriceList = new ArrayList<ErpGrpPriceZoneModel>();
+		String currZoneId = "";
+		GrpZonePriceListing grpZonePriceListing = null;
+		for(Iterator<ErpGrpPriceZoneModel> it=allZonePriceList.iterator() ;it.hasNext();){
+			ErpGrpPriceZoneModel zonePriceModel = it.next();
+	   	 	String sapZoneId=zonePriceModel.getZoneId();
+		   	 if(currZoneId.length() == 0 || currZoneId.equals(sapZoneId)){
+		   		zonePriceList.add(zonePriceModel);
+		   	 } else {
+		   		 //Different Zone. Process the previous zone price list.
+		   		ErpGrpPriceZoneModel[] erpGrpPrices=(ErpGrpPriceZoneModel[])zonePriceList.toArray(new ErpGrpPriceZoneModel[0]);
+				// sort by scale quantity ascending
+				Arrays.sort(erpGrpPrices, new Comparator<ErpGrpPriceZoneModel>() {
+					public int compare(ErpGrpPriceZoneModel z1, ErpGrpPriceZoneModel z2) {
+						Double d1 = new Double( z1.getQty() );
+						Double d2 = new Double( z2.getQty() );
+						return d1.compareTo(d2);
+					}
+				} );
+				//Current Implementation only supports single group scale price. so it always keep the first element
+				ErpGrpPriceZoneModel[] finalGrpPrices = new ErpGrpPriceZoneModel[] {erpGrpPrices[0]};
+		   		MaterialPrice[] prices = new MaterialPrice[ finalGrpPrices.length ];										
+				double lower;
+				double upper;
+				for (int i=0; i<prices.length; i++) {
+					ErpGrpPriceZoneModel p=finalGrpPrices[i];
+					lower=p.getQty();
+					if (i==prices.length-1) {
+						// last one
+						upper=Double.POSITIVE_INFINITY;
+					} else {
+						upper=finalGrpPrices[i+1].getQty();
+					}
+					if (DEBUG) LOGGER.debug("Adding new MaterialPrice w/ scale ["+ p.getPrice() +","+ p.getUnitOfMeasure() +","+ lower +","+ upper +","+ p.getScaleUnit()+"]");
+					prices[i] = new MaterialPrice(p.getPrice(), p.getUnitOfMeasure(), lower, upper, p.getScaleUnit(), 0.0);																	
+				}		
+				GrpZonePriceModel grpZonePriceModel = new GrpZonePriceModel(currZoneId, prices);
+				if(grpZonePriceListing == null)
+					grpZonePriceListing = new GrpZonePriceListing();
+				grpZonePriceListing.addGrpZonePrice(currZoneId, grpZonePriceModel);
+				zonePriceList.clear();
+				zonePriceList.add(zonePriceModel);
+			}
+			currZoneId = sapZoneId; 
+		}
+		//Process the Group Scale Pricing for last zone.
+   		ErpGrpPriceZoneModel[] erpGrpPrices=(ErpGrpPriceZoneModel[])zonePriceList.toArray(new ErpGrpPriceZoneModel[0]);
+		// sort by scale quantity ascending
+		Arrays.sort(erpGrpPrices, new Comparator<ErpGrpPriceZoneModel>() {
+			public int compare(ErpGrpPriceZoneModel z1, ErpGrpPriceZoneModel z2) {
+				Double d1 = new Double( z1.getQty() );
+				Double d2 = new Double( z2.getQty() );
+				return d1.compareTo(d2);
+			}
+		} );
+		//Current Implementation only supports single group scale price. so it always keep the first element
+		ErpGrpPriceZoneModel[] finalGrpPrices = new ErpGrpPriceZoneModel[] {erpGrpPrices[0]};
+						   		
+   		MaterialPrice[] prices = new MaterialPrice[ finalGrpPrices.length ];										
+		double lower;
+		double upper;
+		for (int i=0; i<prices.length; i++) {
+			ErpGrpPriceZoneModel p=finalGrpPrices[i];
+			lower=p.getQty();
+			if (i==prices.length-1) {
+				// last one
+				upper=Double.POSITIVE_INFINITY;
+			} else {
+				upper=finalGrpPrices[i+1].getQty();
+			}
+			if (DEBUG) LOGGER.debug("Adding new MaterialPrice w/ scale ["+ p.getPrice() +","+ p.getUnitOfMeasure() +","+ lower +","+ upper +","+ p.getScaleUnit()+"]");
+			prices[i] = new MaterialPrice(p.getPrice(), p.getUnitOfMeasure(), lower, upper, p.getScaleUnit(), 0.0);																	
+		}		
+		GrpZonePriceModel grpZonePriceModel = new GrpZonePriceModel(currZoneId, prices);
+		if(grpZonePriceListing == null)
+			grpZonePriceListing = new GrpZonePriceListing();
+		grpZonePriceListing.addGrpZonePrice(currZoneId, grpZonePriceModel);
+		//zonePriceList.clear();
+		
+		GroupScalePricing pricing = new GroupScalePricing(erpGrpPriceModel.getGrpId(), erpGrpPriceModel.getVersion(), erpGrpPriceModel.getLongDesc(), 
+				erpGrpPriceModel.getShortDesc(), erpGrpPriceModel.isActive(), grpZonePriceListing, erpGrpPriceModel.getMatList(), erpGrpPriceModel.getSkuList());
+		return pricing;
+	}
 }

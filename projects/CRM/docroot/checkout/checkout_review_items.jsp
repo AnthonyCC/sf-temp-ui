@@ -25,7 +25,8 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<script type="text/javascript" language="javascript" src="/assets/javascript/FD_PromoEligibility.js"></script>
+    
 <tmpl:insert template='/template/top_nav.jsp'>
 
 <tmpl:put name='title' direct='true'>Checkout > Review Items</tmpl:put>
@@ -79,6 +80,42 @@
 	<fd:ErrorHandler result='<%=result%>' name='system' id='errorMsg'>
 		<%@ include file="/includes/i_error_messages.jspf" %>   
 	</fd:ErrorHandler>
+	
+	<div class="groupScaleBox" style="display:none"><!--  -->
+		<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="groupScaleBoxContent" id="groupScaleBox" >
+			<tr>
+				<td colspan="2"><img src="/media_stat/images/layout/top_left_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
+				<td rowspan="2" style="background-color: #8A6637; color: #fff; font-size: 14px; line-height: 14px; font-weight: bold; padding: 3px;">GROUP DISCOUNT &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="Modalbox.hide(); return false;" style="text-decoration: none;border: 1px solid #5A3815; background-color: #BE973A; font-size: 10px;	"><img src="/media_stat/images/layout/clear.gif" width="10" height="10" border="0" alt="" /></a></td>
+				<td colspan="2"><img src="/media_stat/images/layout/top_right_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
+			</tr>
+			<tr>
+				<td colspan="2" style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" /></td>
+				<td colspan="2" style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" /></td>
+			</tr>
+			<tr>
+				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
+				<td>
+					<%-- all your content goes in this div, it controls the height/width --%>
+					<div id="group_info" style="display:none">This is the more info hidden div.<br /><br /></div>
+					<div style="height: auto; width: 200px; text-align: center; font-weight: bold;">
+					<br /><img onclick="Modalbox.hide(); return false;" src="/media_stat/images/buttons/close_window.gif" width="141" height="19" alt="" /><br />
+					</div>
+				</td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
+				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+			</tr>
+			<tr>
+				<td rowspan="2" colspan="2" style="background-color: #8A6637"><img src="/media_stat/images/layout/bottom_left_curve_8A6637.gif" width="6" height="6" alt="" /></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /></td>
+				<td rowspan="2" colspan="2" style="background-color: #8A6637"><img src="/media_stat/images/layout/bottom_right_curve_8A6637.gif" width="6" height="6" alt="" /></td>
+			</tr>
+			<tr>
+				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+			</tr>
+		</table>
+	</div>
+
 
 		<table width="90%" cellpadding="2" cellspacing="0" border="0" align="center" class="checkout_header<%= (user.isActive()) ? "" : "_warning" %>">
 			<tr valign="top">
@@ -358,10 +395,17 @@
 						<%-- discount msg --%>
 						<%
 							String discountMsg = null;
+							String groupDiscountMsg = null;
 							if(cartLine.getDiscount() != null) {
 								Discount discount = cartLine.getDiscount();
 								PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
 								discountMsg = promotion.getDescription()+" <span style=\"color: #ff0000;\">(You Saved "+JspMethods.formatPrice(cartLine.getDiscountAmount())+")</span> <a href=\"javascript:popup('/shared/promotion_popup.jsp?promoCode="+promotion.getPromotionCode()+"','small')\" style=\"font-weight: normal;\">See details</a>";
+							} else {
+								if(cartLine.getGroupQuantity() > 0) {
+									double savings = cartLine.getGroupScaleSavings();
+									if(savings > 0)
+										groupDiscountMsg = "Group Discount <span style=\"color: #ff0000;\">(You Saved "+JspMethods.formatPrice(savings)+")</span> <a href=\"#\" onclick=\"return fetchGroupScaleInfoCrm('"+cartLine.getFDGroup().getGroupId() +"','"+ cartLine.getFDGroup().getVersion() +"')\" style=\"font-weight: normal;\">See details</a>";
+								}
 							}
 						%>
 			
@@ -369,6 +413,7 @@
 							<%= fdProduct.getKosherInfo().isKosherProduction() ? " <span class=\"kosher\">**</span>":""  %>
 							<%= cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.PLATTER) ? " <font color=\"#FF9933\">**</font>":""  %>
 							<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= discountMsg %></span><% } %>
+							<% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= groupDiscountMsg %></span><% } %>
 							<% if ((cart instanceof FDModifyCartModel) && !(cartLine instanceof FDModifyCartLineI)) { %><span class="text10rbold">(new)</span><% } %>
 							<% if (displayShortTermUnavailability && earliestAvailability != null && !(cartLine instanceof FDModifyCartLineI)) { %><br />&nbsp;&nbsp;<span class="text10rbold">Earliest Delivery <%=earliestAvailability%></span><% }%></div>
 							</td>
@@ -388,7 +433,7 @@
 
 							<td align="right"><span class="<%= (cartLine.getDiscount() != null) ? "text10rbold" : "text10bold" %>"><%= JspMethods.formatPrice(cartLine.getPrice()) %></span></td>
 							<td><%= cartLine.isEstimatedPrice() ? "*" : "" %><strong><%=cartLine.hasTax() ? "&nbsp;T" : ""%></strong></td>
-							<td><strong><%= cartLine.hasScaledPricing() ? "&nbsp;S" : "" %><%= cartLine.hasDepositValue() ? "&nbsp;D" : "" %></strong></td>
+							<td><strong><%= cartLine.hasScaledPricing() || ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) ? "&nbsp;S" : "" %><%= cartLine.hasDepositValue() ? "&nbsp;D" : "" %></strong></td>
 
 							<% if (!makegood){ %>
 								<td align="right">&nbsp;<a href="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %>" class="note">Remove</a></td>

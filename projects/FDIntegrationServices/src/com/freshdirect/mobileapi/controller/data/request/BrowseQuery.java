@@ -18,6 +18,10 @@ public class BrowseQuery extends Message {
 
 	private String department;
 	
+	private String groupId;
+	
+	private String groupVersion;
+	
 	public String getNutritionName() {
 		return nutritionName;
 	}
@@ -64,6 +68,22 @@ public class BrowseQuery extends Message {
 
 	public void setDepartment(String department) {
 		this.department = department;
+	}
+
+	public String getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
+	}
+
+	public String getGroupVersion() {
+		return groupVersion;
+	}
+
+	public void setGroupVersion(String groupVersion) {
+		this.groupVersion = groupVersion;
 	}
 
 }

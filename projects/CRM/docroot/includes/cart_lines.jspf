@@ -3,7 +3,43 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 
 			
-<%@page import="com.freshdirect.webapp.util.JspMethods"%><TABLE WIDTH="100%" CELLPADDING="0" CELLSPACING="0" BORDER="0" class="order_detail">
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
+<script type="text/javascript" language="javascript" src="/assets/javascript/FD_PromoEligibility.js"></script>
+<div class="groupScaleBox" style="display:none"><!--  -->
+		<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="groupScaleBoxContent" id="groupScaleBox" >
+			<tr>
+				<td colspan="2"><img src="/media_stat/images/layout/top_left_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
+				<td rowspan="2" style="background-color: #8A6637; color: #fff; font-size: 14px; line-height: 14px; font-weight: bold; padding: 3px;">GROUP DISCOUNT &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="Modalbox.hide(); return false;" style="text-decoration: none;border: 1px solid #5A3815; background-color: #BE973A; font-size: 10px;	"><img src="/media_stat/images/layout/clear.gif" width="10" height="10" border="0" alt="" /></a></td>
+				<td colspan="2"><img src="/media_stat/images/layout/top_right_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
+			</tr>
+			<tr>
+				<td colspan="2" style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" /></td>
+				<td colspan="2" style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" /></td>
+			</tr>
+			<tr>
+				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
+				<td>
+					<%-- all your content goes in this div, it controls the height/width --%>
+					<div id="group_info" style="display:none">This is the more info hidden div.<br /><br /></div>
+					<div style="height: auto; width: 200px; text-align: center; font-weight: bold;">
+					<br /><img onclick="Modalbox.hide(); return false;" src="/media_stat/images/buttons/close_window.gif" width="141" height="19" alt="" /><br />
+					</div>
+				</td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
+				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+			</tr>
+			<tr>
+				<td rowspan="2" colspan="2" style="background-color: #8A6637"><img src="/media_stat/images/layout/bottom_left_curve_8A6637.gif" width="6" height="6" alt="" /></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /></td>
+				<td rowspan="2" colspan="2" style="background-color: #8A6637"><img src="/media_stat/images/layout/bottom_right_curve_8A6637.gif" width="6" height="6" alt="" /></td>
+			</tr>
+			<tr>
+				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+			</tr>
+		</table>
+	</div>
+<TABLE WIDTH="100%" CELLPADDING="0" CELLSPACING="0" BORDER="0" class="order_detail">
 <%
 	if (cart.getOrderLines().size() < 1) { // Cart is empty, so print out empty cart message...
 %>
@@ -161,7 +197,18 @@
 <td WIDTH="3%"><A HREF="javascript:cartChgQty<%=itemsShown%>(<%= _productNode.getQuantityIncrement() %>);"><img src="/media_stat/crm/images/arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></A><BR><A HREF="javascript:cartChgQty<%=itemsShown%>(<%= -_productNode.getQuantityIncrement() %>);"><img src="/media_stat/crm/images/arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></A></td>
 <td WIDTH="3%"><%= cartLine.getSalesUnitDescription() %></td>
 <%	} %>
-<TD WIDTH="46%"><A HREF="<%= response.encodeURL("/order/product_modify.jsp?cartLine=" + cartLine.getRandomId()) %>"><%= cartLine.getDescription() %></A> </TD>
+	<%
+		String groupDiscountMsg = null;
+		if(cartLine.getGroupQuantity() > 0) {
+			double savings = cartLine.getGroupScaleSavings();
+			if(savings > 0)
+				groupDiscountMsg = "Group Discount <span style=\"color: #ff0000;\">(You Saved "+JspMethods.formatPrice(savings)+")</span> <a href=\"#\" onclick=\"return fetchGroupScaleInfoCrm('"+cartLine.getFDGroup().getGroupId() +"','"+ cartLine.getFDGroup().getVersion() +"')\" style=\"font-weight: normal;\">See details</a>";
+		}
+	%>	
+
+<TD WIDTH="46%"><A HREF="<%= response.encodeURL("/order/product_modify.jsp?cartLine=" + cartLine.getRandomId()) %>"><%= cartLine.getDescription() %></A> 
+<% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<%= groupDiscountMsg %><% } %>
+</TD>
 				<TD WIDTH="18%"><a href="javascript:popResize('/shared/product_summary.jsp?productId=<%=_productNode%>&catId=<%=_productNode.getParentNode()%>','740','555','summ')" title="Product description & Information" class="help" style="font-size: 4pt; padding: 1px;">?</a> (<%= cartLine.getUnitPrice() %>)</TD>
 				<TD WIDTH="14%" align="right"><%= JspMethods.formatPrice(cartLine.getPrice()) %></TD>
 				<TD WIDTH="5%" align="right"><A HREF="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %><%= paramBuf.toString() %>" class="remove" title="Remove">X</A></TD>

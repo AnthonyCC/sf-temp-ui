@@ -133,7 +133,6 @@ public class Pricing implements Serializable {
 		catch(FDResourceException fe){
 			throw new FDRuntimeException(fe, "Unexcepted error happened while fetching the Zone Price Model");
 		}
-
 	}
 	
 	public ZonePriceListing getZonePriceList(){

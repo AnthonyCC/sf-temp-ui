@@ -205,4 +205,13 @@ public interface RequestParamName {
     public static final String REQ_PARAM_IGNORE_PROMO_ERRORS = "ignorePromoErrors";
     
     public static final String  REQ_PARAM_PROMO_ERROR_FLAG = "promoError";
+    
+    //Group Scale
+    public static final String  REQ_PARAM_GRP_TOTAL_PRICE = "grpTotalPrice";
+    
+    public static final String  REQ_PARAM_GRP_SHORT_DESC = "grpShortDesc";
+    
+    public static final String  REQ_PARAM_GRP_LONG_DESC = "grpLongDesc";
+    
+    public static final String  REQ_PARAM_GRP_QTY = "grpQty";
 }

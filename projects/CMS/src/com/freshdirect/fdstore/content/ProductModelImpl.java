@@ -24,8 +24,10 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.EnumOrderLineRating;
+import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
+import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -1650,4 +1652,122 @@ inner:
 		
 		return true;
 	}
+
+	@Override
+	public EnumSustainabilityRating getSustainabilityRatingEnum()
+			throws FDResourceException {
+		return getSustainabilityRatingEnum(null);
+	}
+
+	@Override
+	public String getSustainabilityRating() throws FDResourceException {
+		return getSustainabilityRating(null);
+	}
+
+	@Override
+	public String getSustainabilityRating(String skuCode)throws FDResourceException {
+		
+		EnumSustainabilityRating rating = getSustainabilityRatingEnum(skuCode);
+    	if (rating == EnumSustainabilityRating.NO_RATING) {
+    		return "";
+    	}
+    	return rating.getStatusCodeInDisplayFormat();
+	}
+	
+	
+	public EnumSustainabilityRating getSustainabilityRatingEnum(String skuCode) throws FDResourceException {
+		EnumSustainabilityRating rating = EnumSustainabilityRating.NO_RATING;
+
+        FDProductInfo productInfo = null;
+        if(skuCode == null || skuCode.trim().equals("")) {
+        	List<SkuModel> skus = getPrimarySkus();
+            SkuModel sku = null;
+            // remove the unavailable sku's
+            for (ListIterator<SkuModel> li = skus.listIterator(); li.hasNext();) {
+                sku = li.next();
+                if (sku.isUnavailable()) {
+                    li.remove();
+                }
+            }
+	        if (skus.size() == 0)
+	            return rating; // skip this item..it has no skus. Hmmm?
+	        if (skus.size() == 1) {
+	            sku = skus.get(0); // we only need one sku
+	        } else {
+	            sku = Collections.max(skus, SUSTAINABILITY_COMPARATOR);
+	        }
+	        if (sku != null && sku.getSkuCode() != null) {
+	        	skuCode = sku.getSkuCode();
+	        }
+        }
+        if (skuCode != null) {
+            //
+            // get the FDProductInfo from the FDCachedFactory
+            //
+            try {
+                /*
+                 * grab property to determine which sku prefixes to display
+                 * ratings for
+                 * 
+                 * assuming some prefixes are set, loop, checking to see if the
+                 * current product's sku prefix matches an allowed prefix.
+                 * 
+                 * exit loop on a match.
+                 */
+
+                /*
+                 * There is a similar setup in the GetPeakProduceTag.java file
+                 * and in ProductModelImpl.java
+                 */
+                // LOG.debug("===== in getProductRating in ProductModelImpl :"+sku.getSkuCode());
+
+                // grab sku prefixes that should show ratings
+                String _skuPrefixes = FDStoreProperties.getRatingsSkuPrefixes();
+                // LOG.debug("* getRatingsSkuPrefixes :"+_skuPrefixes);
+
+                // if we have prefixes then check them
+                if (_skuPrefixes != null && !"".equals(_skuPrefixes)) {
+                    StringTokenizer st = new StringTokenizer(_skuPrefixes, ","); // setup for splitting property
+                    String curPrefix = ""; // holds prefix to check against
+                    String spacer = "* "; // spacing for sysOut calls
+                    boolean matchFound = false;
+
+                    // loop and check each prefix
+                    while (st.hasMoreElements()) {
+
+                        curPrefix = st.nextToken();
+                        // LOG.debug(spacer+"Rating _skuPrefixes checking :"+curPrefix);
+
+                        // if prefix matches get product info
+                        if (skuCode.startsWith(curPrefix)) {
+                            productInfo = FDCachedFactory.getProductInfo(skuCode);
+                            // LOG.debug(" Rating productInfo :"+productInfo);
+                            String tmpRating = productInfo.getSustainabilityRating();
+
+                            if (tmpRating != null && tmpRating.trim().length() > 0) {
+                            	EnumSustainabilityRating enumRating = EnumSustainabilityRating.getEnumByStatusCode(tmpRating);
+                                // LOG.debug(" enumRating :"+enumRating);
+
+                                if (enumRating != null && enumRating.isEligibleToDisplay()) {
+                                    rating = enumRating;
+                                    // LOG.debug(" rating in display format  :"+rating);
+                                }
+                            }
+                            matchFound = true;
+                        }
+                        // exit on matched sku prefix
+                        // LOG.debug(spacer+"Rating matchFound :"+matchFound);
+                        if (matchFound) {
+                            break;
+                        }
+                        spacer = spacer + "   ";
+                    }
+                }
+            } catch (FDSkuNotFoundException ignore) {
+            }
+        }
+
+        return rating;
+    }
+
 }

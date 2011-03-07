@@ -13,6 +13,9 @@
 <%@ page import="com.freshdirect.fdstore.content.ContentNodeTree.TreeElement" %>
 <%@ page import="com.freshdirect.common.pricing.util.DealsHelper"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
+<%@ page import='com.freshdirect.common.pricing.util.GroupScaleUtil' %>
+<%@ page import='com.freshdirect.fdstore.FDGroup' %>
+
 <%@ page import="java.text.SimpleDateFormat" %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -153,15 +156,26 @@ ContentNodeModel lastSubCategory = null;
 		}		
 		// Scaled prices
 		//
-		if (defaultPrice != null) {
-			if (scaledPrices != null && scaledPrices.length > 0) {
-				for (int ymalSci = 0; ymalSci < scaledPrices.length; ymalSci++) { 
-			%>
-				<div style="margin-left:20px;">
-					<% if (scaledPercents[ymalSci] > 0) { %><span class="save-label">SAVE <%= "" + scaledPercents[ymalSci] %>%</span>&nbsp;<% } %>
-					<span class="save-price"><%= scaledPrices[ymalSci] %></span>
-				</div>
-			<%
+		boolean isGrpScale = false;
+		FDGroup group = pi.getFDGroup(); 
+		if(group != null && GroupScaleUtil.getGroupScalePrice(group, u.getPricingContext().getZoneId()) != null) { 
+			isGrpScale = true;	
+		}
+		if(isGrpScale) {
+		%>
+			<display:ProductPrice impression="<%= pi %>" showDescription="false" showAboutPrice="false" showWasPrice="false" showRegularPrice="false"/>
+		<% } else { 
+			//show regular scale pricing
+			if (defaultPrice != null) {
+				if (scaledPrices != null && scaledPrices.length > 0) {
+					for (int ymalSci = 0; ymalSci < scaledPrices.length; ymalSci++) { 
+				%>
+					<div style="margin-left:20px;">
+						<% if (scaledPercents[ymalSci] > 0) { %><span class="save-label">SAVE <%= "" + scaledPercents[ymalSci] %>%</span>&nbsp;<% } %>
+						<span class="save-price"><%= scaledPrices[ymalSci] %></span>
+					</div>
+				<%
+					}
 				}
 			}
 		}

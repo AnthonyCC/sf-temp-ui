@@ -233,7 +233,7 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 					                           EnumATPRule.MATERIAL,
 					                           EnumAvailabilityStatus.AVAILABLE,
 					                           now,
-					                           inventoryCache,"",null,ZonePriceInfoListing.getDummy());
+					                           inventoryCache,"",null,ZonePriceInfoListing.getDummy(), null,"");
 
 			return productInfo;
 		}
@@ -408,7 +408,7 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 				                     variations,
 				                     salesUnits,
 				                     pricing,
-				                     nutrition);
+				                     nutrition,null);
 	    	
 	    	return product;
 	    }

@@ -226,6 +226,22 @@ public class JspMethods {
 		}
 	}
 
+	public static String getSustainabilityRating(ProductModel theProduct)
+			throws JspException {
+		return getSustainabilityRating(theProduct, null);
+	}
+
+	public static String getSustainabilityRating(ProductModel theProduct, String skuCode)
+			throws JspException {
+		try {
+			return theProduct.getSustainabilityRating(skuCode);
+		} catch (FDResourceException fdre) {
+			LOGGER.warn("FDResourceException occured", fdre);
+			throw new JspException(
+					"JspMethods.getPrice method caught an FDResourceException");
+		}
+	}
+
 	public static String getFreshnessGuaranteed(ProductModel theProduct)
 			throws JspException {
 		try {

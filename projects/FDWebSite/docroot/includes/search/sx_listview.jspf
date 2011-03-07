@@ -7,6 +7,9 @@
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import="com.freshdirect.webapp.util.FDURLUtil" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
+<%@ page import='com.freshdirect.common.pricing.util.GroupScaleUtil' %>
+<%@ page import='com.freshdirect.fdstore.FDGroup' %>
+
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.*" %>
 <%@ page import="java.text.DecimalFormat" %>
@@ -132,15 +135,27 @@ int rank = nav.getPageOffset()+1;
 		<%
 		// Scaled prices
 		//
-		if (scaledPrices != null && scaledPrices.length > 0) {
-			for (int ymalSci = 0; ymalSci < scaledPrices.length; ymalSci++) { 
-		%>
-		<div style="white-space: nowrap" class="text13 save-price">
-			<%= scaledPrices[ymalSci] %>
-		</div>
-		<%
-			}
+		boolean isGrpScale = false;
+		FDGroup group = pi.getFDGroup(); 
+		if(group != null && GroupScaleUtil.getGroupScalePrice(group, u.getPricingContext().getZoneId()) != null) { 
+			isGrpScale = true;	
 		}
+		if(isGrpScale) {
+		%>
+			<display:ProductPrice impression="<%= pi %>" showDescription="false" showAboutPrice="false" showWasPrice="false" showRegularPrice="false"/>
+		<% } else { 
+		//show regular scale pricing
+				
+				if (scaledPrices != null && scaledPrices.length > 0) {
+					for (int ymalSci = 0; ymalSci < scaledPrices.length; ymalSci++) { 
+				%>
+				<div style="white-space: nowrap" class="text13 save-price">
+					<%= scaledPrices[ymalSci] %>
+				</div>
+				<%
+					}
+				}					
+			}
 		%>		
 	</td>
 </tr>

@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.EnumWineRating;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -164,48 +165,100 @@ public class ProductRatingTag extends BodyTagSupport {
 				throw new JspException(e);
 			}
 		} else {
-			// [B] STANDARD PRODUCE RATIN
+			// [B] STANDARD PRODUCE RATING
+			// [C] SEAFOOD SUSTAINABILITY RATING
 			
-			if (!user.isProduceRatingEnabled()) {
+			if (!user.isProduceRatingEnabled() && !FDStoreProperties.isSeafoodSustainEnabled()) {
 				return SKIP_BODY;
 			}
 
-			String rating = JspMethods.getProductRating(product, skuCode);
-
-			StringBuilder buf = new StringBuilder();
-
-			if (rating != null && rating.trim().length() > 0) {
-				if (action != null) {
-					buf.append("<a href=\"");
-					buf.append(action);
-					buf.append("\">");
+			// [B] STANDARD PRODUCE RATING
+			if (user.isProduceRatingEnabled()) {
+				String rating = JspMethods.getProductRating(product, skuCode);
+	
+				StringBuilder buf = new StringBuilder();
+	
+				if (rating != null && rating.trim().length() > 0) {
+					if (action != null) {
+						buf.append("<a href=\"");
+						buf.append(action);
+						buf.append("\">");
+					}
+	
+					buf.append("<img src=\"/media_stat/images/ratings/"
+							+ (leftAlign ? "left_" : "") + rating + ".gif\"");
+	
+					buf.append(" name=\"" + rating + "\"");
+	
+					buf.append(" width=\"59\"");
+	
+					buf.append(" height=\"11\"");
+	
+					buf.append(" border=\"0\"");
+	
+					buf.append(">");
+	
+					if (action != null) {
+						buf.append("</a>");
+					}
+	
+					if (!noBr)
+						buf.append("<br>");
 				}
 
-				buf.append("<img src=\"/media_stat/images/ratings/"
-						+ (leftAlign ? "left_" : "") + rating + ".gif\"");
-
-				buf.append(" name=\"" + rating + "\"");
-
-				buf.append(" width=\"59\"");
-
-				buf.append(" height=\"11\"");
-
-				buf.append(" border=\"0\"");
-
-				buf.append(">");
-
-				if (action != null) {
-					buf.append("</a>");
+				try {
+					pageContext.getOut().println(buf.toString());
+				} catch (IOException e) {
+					throw new JspException(e);
 				}
-
-				if (!noBr)
-					buf.append("<br>");
+			}else{
+				LOGGER.error("user.isProduceRatingEnabled()=false! Skipping ...");
 			}
+			
+			// [C] SEAFOOD SUSTAINABILITY RATING
+			if (FDStoreProperties.isSeafoodSustainEnabled()) {
+				String ratingSS = JspMethods.getSustainabilityRating(product, skuCode);
 
-			try {
-				pageContext.getOut().println(buf.toString());
-			} catch (IOException e) {
-				throw new JspException(e);
+				StringBuilder bufSS = new StringBuilder();
+
+				if (ratingSS != null && ratingSS.trim().length() > 0) {
+					if (action != null) {
+						bufSS.append("<a href=\"");
+						bufSS.append(action);
+						bufSS.append("\">");
+					}
+	
+					bufSS.append("<img src=\"/media_stat/images/ratings/"
+							+ "fish_" + ratingSS + ".gif\"");
+	
+					bufSS.append(" name=\"ss_rating_" + ratingSS + "\"");
+
+					bufSS.append(" width=\"35\"");
+
+					bufSS.append(" height=\"15\"");
+
+					bufSS.append(" border=\"0\"");
+					
+					bufSS.append(" alt=\"ss_rating_" + ratingSS + "\"");
+
+					bufSS.append(" />");
+	
+					if (action != null) {
+						bufSS.append("</a>");
+					}
+	
+					if (!noBr)
+						bufSS.append("<br>");
+				}
+	
+				try {
+					pageContext.getOut().println(bufSS.toString());
+				} catch (IOException e) {
+					throw new JspException(e);
+				}
+			
+			}else{
+				LOGGER.error("fdstore.seafoodsustain.enabled=false! Skipping ...");
 			}
 		}
 

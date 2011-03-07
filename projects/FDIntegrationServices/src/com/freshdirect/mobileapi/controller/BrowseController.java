@@ -28,6 +28,7 @@ import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.Category;
 import com.freshdirect.mobileapi.model.Department;
+import com.freshdirect.mobileapi.model.FDGroup;
 import com.freshdirect.mobileapi.model.Product;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.tagwrapper.ItemGrabberTagWrapper;
@@ -52,7 +53,7 @@ public class BrowseController extends BaseController {
 
     private static final String ACTION_GET_CATEGORYCONTENT = "getCategoryContent";
 
-        
+    private static final String ACTION_GET_GROUP_PRODUCTS = "getGroupProducts";        
     
     /* (non-Javadoc)
      * @see com.freshdirect.mobileapi.controller.BaseController#processRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.springframework.web.servlet.ModelAndView, java.lang.String, com.freshdirect.mobileapi.model.SessionUser)
@@ -126,6 +127,9 @@ public class BrowseController extends BaseController {
 		        		result.setTotalResultCount(result.getProducts() != null ? result.getProducts().size() : 0);
 	        		}
 	        	}
+	        } else if (ACTION_GET_GROUP_PRODUCTS.equals(action)) {
+	        	List<Product> products = FDGroup.getGroupScaleProducts(requestMessage.getGroupId(), requestMessage.getGroupVersion(), user);
+	        	result.setProductsFromModel(products);
 	        }
         }
         

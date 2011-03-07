@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.EnumOrderLineRating;
+import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
+import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
@@ -231,6 +233,52 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 
 	}
 
+	public static class SustainabilityComparator implements Comparator<SkuModel> {
+
+		private int flips;
+
+		public int compare(SkuModel obj1, SkuModel obj2) {
+			try {
+				FDProductInfo pi1 = FDCachedFactory.getProductInfo(obj1.getSkuCode());
+				FDProductInfo pi2 = FDCachedFactory.getProductInfo(obj2.getSkuCode());
+				
+				EnumSustainabilityRating oli1=EnumSustainabilityRating.getEnumByStatusCode(pi1.getSustainabilityRating());
+				EnumSustainabilityRating oli2=EnumSustainabilityRating.getEnumByStatusCode(pi2.getSustainabilityRating());
+				
+				
+				if(oli1==null && oli2==null) return 0;
+				
+				if(oli1!=null && oli2==null) return 1;
+				
+				if(oli1==null && oli2!=null) return -1;
+				
+				if (oli1.getId()>oli2.getId()) {
+					flips++;
+					return 1;
+				} 
+				if (oli1.getId()<oli2.getId()) {
+					flips++;
+					return -1;
+				}
+				return 0;
+			} catch (FDResourceException fdre) {
+				// rethrow as a runtime exception
+				throw new RuntimeException(fdre.getMessage());
+			} catch (FDSkuNotFoundException fdsnfe) {
+				// rethrow as a runtime exception
+				throw new RuntimeException(fdsnfe.getMessage());
+			}
+		}
+
+		public void reset() {
+			flips = 0;
+		}
+
+		public boolean allTheSame() {
+			return (flips == 0);
+		}
+
+	}
 	/** Don't use allTheSame/reset, that's not thread-safe */
 	public final static Comparator<SkuModel> PRICE_COMPARATOR = new ProductModel.PriceComparator();
 
@@ -240,6 +288,9 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	
 	/** Don't use allTheSame/reset, that's not thread-safe */
 	public final static Comparator<SkuModel> RATING_COMPARATOR = new ProductModel.RatingComparator();
+	
+	/** Don't use allTheSame/reset, that's not thread-safe */
+	public final static Comparator<SkuModel> SUSTAINABILITY_COMPARATOR = new ProductModel.SustainabilityComparator();
 
 	public static NumberFormat CURRENCY_FORMAT = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 
@@ -811,4 +862,12 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	 * @return
 	 */
 	public boolean isShowWineRatings();
+	
+	public EnumSustainabilityRating getSustainabilityRatingEnum() throws FDResourceException;
+	
+	public String getSustainabilityRating() throws FDResourceException; 
+	
+	public String getSustainabilityRating(String skuCode) throws FDResourceException;
+	
+	public FDGroup getFDGroup() throws FDResourceException;
 }

@@ -31,6 +31,18 @@ String deptId = request.getParameter("deptId");
 String catId = request.getParameter("catId");
 String globalUri = request.getRequestURI();
 
+
+//fallback and check attributes on param fail
+	if (deptId == null || "".equals(deptId)) {
+		deptId = (request.getAttribute("deptId")!=null)?request.getAttribute("deptId").toString():"";
+		if ("".equals(deptId.toString())) { deptId = null; }
+	}
+	if (catId == null || "".equals(catId)) {
+		catId = (request.getAttribute("catId")!=null)?request.getAttribute("catId").toString():"";
+		if ("".equals(catId.toString())) { catId = null; }
+	}
+
+
 String thisDept = "";
 
 if (catId != null){

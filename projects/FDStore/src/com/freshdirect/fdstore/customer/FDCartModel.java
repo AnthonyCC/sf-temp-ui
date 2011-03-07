@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -12,20 +13,31 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.JspException;
+
+import oracle.net.aso.q;
+
+import weblogic.management.deploy.internal.MasterDeployerLogger;
+
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.MunicipalityInfoWrapper;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAppliedCreditModel;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
+import com.freshdirect.customer.ErpGrpPriceModel;
+import com.freshdirect.customer.ErpGrpPriceZoneModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
@@ -33,11 +45,19 @@ import com.freshdirect.delivery.restriction.FDRestrictedAvailabilityInfo;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.deliverypass.DlvPassAvailabilityInfo;
 import com.freshdirect.deliverypass.DlvPassConstants;
+import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDGroup;
+import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.GroupScalePricing;
+import com.freshdirect.fdstore.GrpZonePriceModel;
+import com.freshdirect.fdstore.ZonePriceInfoModel;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.atp.FDAvailabilityHelper;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
@@ -45,6 +65,7 @@ import com.freshdirect.fdstore.atp.FDCompositeAvailabilityInfo;
 import com.freshdirect.fdstore.atp.NullAvailability;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeSource;
@@ -207,12 +228,93 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		setPaymentMethod(cart.paymentMethod);
 	}
 
+	
+	
+	//public void calculateGroupPrice(String zoneId){		
+		
+		/*
+		Map grpMap=new HashMap();	
+		List<FDCartLineI> lineList=this.getOrderLines();
+		
+		for(FDCartLineI line:lineList){												
+			String grpId=null;
+			FDProduct product;
+			try {
+				product = FDCachedFactory.getProduct(line.getSku());
+				grpId=product.getGrpId();
+				if(grpId!=null){
+					List cartList=(List)grpMap.get(grpId);
+					if(cartList==null){
+						cartList=new ArrayList();
+						cartList.add(line);
+						grpMap.put(grpId, cartList);
+					}else{
+						cartList.add(line);
+					}
+					
+					if(grpMap.size()>0){
+						Set<String> keySet=grpMap.keySet();
+						for(String key:keySet){
+							ErpGrpPriceModel model=FDCachedFactory.getGrpInfo(key);
+							if(model!=null){
+								List<FDCartLineI> cartLines=(List)grpMap.get(key);																
+							     ErpGrpPriceZoneModel zonePriceModel= model.getGrpPriceModel(zoneId).;
+								 double reqQty=zonePriceModel.getQty();								 
+								 double totalQty=0.0;
+								 
+								 for(FDCartLineI li:cartLines){
+									 totalQty=totalQty+li.getQuantity();
+								 }
+								 
+								 if(reqQty>=totalQty){									 
+									 for(FDCartLineI li:cartLines){
+										li.setGrpId(key);
+										li.setGrpVersion(zonePriceModel.getVersion());
+										try {
+											li.refreshConfiguration();
+										} catch (FDException e) {
+											// !!! improve error handling
+											throw new FDRuntimeException(e);
+										}							
+									 } 
+								 }
+								 else{
+									 for(FDCartLineI li:cartLines){
+											li.setGrpId(null);
+											li.setGrpVersion(0);
+											try {
+												li.refreshConfiguration();
+											} catch (FDException e) {
+												// !!! improve error handling
+												throw new FDRuntimeException(e);
+											}							
+										 } 									 
+								 }
+							}																													
+						}
+					}
+				}
+				
+			} catch (FDResourceException fdre) {
+				//LOGGER.warn("Error accessing resource", fdre);
+				throw new RuntimeException("Error accessing resource " + fdre.getMessage());
+			} catch (FDSkuNotFoundException fdsnfe) {
+				//LOGGER.warn("SKU not found", fdsnfe);
+				throw new RuntimeException("SKU not found", fdsnfe);
+			}		
+		}
+		*/
+	//}
+	
+	
+	
 	public void addOrderLine(FDCartLineI orderLine) {
 		checkLimitPlus(1);
 		this.orderLines.add(orderLine);
 		this.recentOrderLines.clear();
 		this.recentOrderLines.add(orderLine);
 		this.clearAvailability();
+		
 	}
 
 	public void addOrderLines(Collection<FDCartLineI> cartLines) {
@@ -931,14 +1033,97 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 
 		this.setOrderLines(cleanLines);
 		this.sortOrderLines();
+		/*
+		if( this.orderLines.size()>0){		  	
+			  this.calculateGroupPrice((orderLines.get(0).getPricingContext()!=null)?orderLines.get(0).getPricingContext().getZoneId():ZonePriceListing.MASTER_DEFAULT_ZONE);
+		}
+		*/
 	}
 
-	public void refreshAll() throws FDResourceException, FDInvalidConfigurationException {
+	public void refreshAll(boolean recalculateGroupScale) throws FDResourceException, FDInvalidConfigurationException {
+		if( this.orderLines.size()>0 && recalculateGroupScale){		  	
+			  this.calculateGroupPrice((orderLines.get(0).getPricingContext()!=null)?orderLines.get(0).getPricingContext().getZoneId():ZonePriceListing.MASTER_DEFAULT_ZONE);
+		}
+
 		for ( FDCartLineI cartLine : orderLines ) {
 			cartLine.refreshConfiguration();
 		}
+		
 	}
 
+	protected void calculateGroupPrice(String pZoneId) throws FDResourceException{
+		List<FDCartLineI> eligibleCartLines = new ArrayList<FDCartLineI>();
+		Map<FDGroup, Double> groupMap = new HashMap<FDGroup, Double>();
+		Map<FDGroup, Double> qualifiedGroupMap = new HashMap<FDGroup, Double>();
+		Map<String, FDGroup> qualifiedGrpIdMap = new HashMap<String, FDGroup>();
+		for ( FDCartLineI cartLine : orderLines ) {
+			//Clear group quantity.
+			cartLine.setGroupQuantity(0.0);
+			FDGroup group = cartLine.getFDGroup();
+			if(group != null){
+				MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, pZoneId);
+				if(matPrice != null){
+					eligibleCartLines.add(cartLine);
+					if(!groupMap.containsKey(group)){
+						groupMap.put(group, cartLine.getQuantity());
+					}else{
+						//Group already in Map.
+						double quantity = groupMap.get(group);
+						quantity += cartLine.getQuantity();
+						groupMap.put(group, quantity);
+					}
+					double qty = groupMap.get(group);
+					if(qty >= matPrice.getScaleLowerBound()){
+						//Reached qualified limit. Add Group to qualified Map.
+						qualifiedGroupMap.put(group, qty);
+						if(qualifiedGrpIdMap.containsKey(group.getGroupId())){
+							//Already a group with same id with diff. version was qualified.
+							//add the group that has max version.
+							FDGroup qGroup = qualifiedGrpIdMap.get(group.getGroupId());
+							if(group.getVersion() > qGroup.getVersion())
+								qualifiedGrpIdMap.put(group.getGroupId(), group);
+						} else {
+							qualifiedGrpIdMap.put(group.getGroupId(), group);
+						}
+					}
+					/*if(true) {
+						String grpId = group.getGroupId();
+						//Evaluate for duplicate groups(Groups with same ID and different version).
+						if(duplicateGrps == null) 
+							duplicateGrps = new HashMap<String, Set<FDGroup>>();
+						Set<FDGroup> groups = duplicateGrps.get(grpId);
+						if(groups == null){
+							groups = new HashSet<FDGroup>();
+							duplicateGrps.put(grpId, groups);
+						}
+						groups.add(group);
+						if(duplicateGrpsQtyMap == null)
+							duplicateGrpsQtyMap =  new HashMap<String, Double>();
+						double duplicateGrpQty = duplicateGrpsQtyMap.get(grpId);
+						duplicateGrpQty += cartLine.getQuantity();
+						duplicateGrpsQtyMap.put(grpId, duplicateGrpQty);
+					}*/
+				}
+			}
+		} 
+		checkNewLinesForUpgradedGroup(pZoneId, groupMap, qualifiedGroupMap,
+				qualifiedGrpIdMap);
+		for ( FDCartLineI qCartLine : eligibleCartLines ) {
+			FDGroup qGroup = qCartLine.getFDGroup();
+			if(qualifiedGroupMap.containsKey(qGroup)){
+				//set the group quantity to the qualified cartline.
+				qCartLine.setGroupQuantity(qualifiedGroupMap.get(qGroup));
+			}
+		}
+	}
+
+	protected void checkNewLinesForUpgradedGroup(String pZoneId,
+			Map<FDGroup, Double> groupMap,
+			Map<FDGroup, Double> qualifiedGroupMap,
+			Map<String, FDGroup> qualifiedGrpIdMap) throws FDResourceException{
+		//Default implementation
+		return;
+	}
 
 	//
 	// order views

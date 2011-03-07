@@ -329,7 +329,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 											temporaryCart.addOrderLine( cartLine );
 										}
 									}
-									temporaryCart.refreshAll();			
+									temporaryCart.refreshAll(true);			
 								} catch ( FDInvalidConfigurationException e ) {
 								} catch ( FDInvalidAddressException e ){									
 								}
@@ -433,7 +433,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 				if (!inCallCenter && successPage != null && successPage.indexOf("checkout/step") > -1)
 					try {
 						LOGGER.debug("  about to call calidate Order min");
-						cart.refreshAll();
+						cart.refreshAll(true);
 						UserValidationUtil.validateCartNotEmpty(request, result);
 					} catch (FDResourceException ex) {
 						throw new JspException(ex);
@@ -538,7 +538,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 
 		if (affectedLines > 0) {
 			try {
-				cart.refreshAll();
+				cart.refreshAll(true);
 			} catch (FDException e) {
 				LOGGER.warn("Error refreshing cart", e);
 				throw new JspException(e.getMessage());

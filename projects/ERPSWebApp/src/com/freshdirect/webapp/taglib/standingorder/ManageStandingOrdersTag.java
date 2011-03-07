@@ -145,7 +145,7 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 			
 			/* Create a new transient cart */
 			FDCartModel cart = new FDTransientCartModel();
-			cart.refreshAll();
+
 			if (so.isAlcoholAgreement())
 				cart.setAgeVerified(true);
 			
@@ -153,7 +153,7 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 			
 			/* Load list items to cart */
 			addListItemsToCart(so, user, cart);
-			
+			cart.refreshAll(true);
 			throw new RedirectToPage( "/checkout/view_cart.jsp" );
 		}
 	}
@@ -170,18 +170,14 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 		List<FDProductSelectionI> pi = OrderLineUtil.getValidProductSelectionsFromCCLItems(l.getLineItems());
 		// OrderLineUtil.update(pi, true);
 		for (FDProductSelectionI p : pi) {
-			try {
 				// p.refreshConfiguration();
 
-				final ProductModel prd = p.getProductRef().lookupProductModel();
-				
-				FDCartLineI cartLine = new FDCartLineModel(p.getSku(), prd, p.getConfiguration(), null, p.getPricingContext().getZoneId());
-				cartLine.refreshConfiguration();
+			final ProductModel prd = p.getProductRef().lookupProductModel();
+			
+			FDCartLineI cartLine = new FDCartLineModel(p.getSku(), prd, p.getConfiguration(), null, p.getPricingContext().getZoneId());
+			//cartLine.refreshConfiguration();
 
-				cart.addOrderLine(cartLine);
-			} catch (FDInvalidConfigurationException e) {
-				throw new FDResourceException(e);
-			}
+			cart.addOrderLine(cartLine);
 		}
 	}
 	

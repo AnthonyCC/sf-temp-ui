@@ -70,6 +70,9 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 	/** product days in house */
 	private String days_in_house;
 	
+	/** sustainability rating */
+	private String sustainabilityRating;
+	
 	/**
 	 * Default constructor.
 	 */
@@ -85,7 +88,7 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 	 * @param defaultPriceUnit pricing unit for default price
 	 * @param materialProxies collection of material proxy model objects
 	 */
-	public ErpProductModel(String skuCode, double defaultPrice, String defaultPriceUnit, String unavailabilityStatus, Date unavailabilityDate, String unavailabilityReason, Date pricingDate, ErpMaterialModel material, VersionedPrimaryKey[] suPKs, VersionedPrimaryKey[] cvPKs, String _rating, String days_fresh, String days_in_house, double basePrice, String basePriceUnit ) {
+	public ErpProductModel(String skuCode, double defaultPrice, String defaultPriceUnit, String unavailabilityStatus, Date unavailabilityDate, String unavailabilityReason, Date pricingDate, ErpMaterialModel material, VersionedPrimaryKey[] suPKs, VersionedPrimaryKey[] cvPKs, String _rating, String days_fresh, String days_in_house, double basePrice, String basePriceUnit,String _sustainabilityRating ) {
 		super();
 		if (skuCode==null) {
 			throw new IllegalArgumentException("SKU code cannot be null");
@@ -106,6 +109,7 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 		//this.setBasePriceUnit(basePriceUnit);
 		this.setDaysFresh(days_fresh);
 		this.setDaysInHouse(days_in_house);
+		this.setSustainabilityRating(_sustainabilityRating);
 	}
 
 	/**
@@ -388,5 +392,17 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 	public List getDisplaySalesUnits() {
 		return Collections.unmodifiableList( this.material.getDisplaySalesUnits() );
 	} 
+	/** Setter for property sustainabilityRating.
+	    * @param  _sustainabilityRating
+	     */
+	    public void setSustainabilityRating(String _sustainabilityRating) {
+	    	sustainabilityRating=_sustainabilityRating;
+	    }
+		/** Getter for property sustainabilityRating.
+	     * @return Value of property sustainabilityRating.
+	     */
+	    public String getSustainabilityRating() {
+	        return sustainabilityRating;
+	    }	
 
 }

@@ -483,7 +483,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 				//Added the following line for zone pricing to keep user service type up-to-date.
 				user.setZPServiceType(serviceType);
 				user.setAvailableServices(availableServices);
-
+				//Need to reset the pricing context so the pricing context can be recalculated.
+				user.resetPricingContext();
 				CookieMonster.storeCookie(user, response);
 				FDCustomerManager.storeUser(user.getUser());
 				session.setAttribute(SessionName.USER, user);

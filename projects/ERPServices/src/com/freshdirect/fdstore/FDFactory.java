@@ -24,6 +24,10 @@ import javax.ejb.CreateException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
+import com.freshdirect.common.pricing.GrpMaterialPrice;
+import com.freshdirect.common.pricing.MaterialPrice;
+import com.freshdirect.customer.ErpGrpPriceModel;
+import com.freshdirect.customer.ErpGrpPriceZoneModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.SkuAvailabilityHistory;
@@ -114,6 +118,46 @@ class FDFactory {
 	}
 
 	
+	
+	public static Collection<String> getSkuCodes(String sapId) throws FDResourceException, FDSkuNotFoundException {
+		if (factoryHome==null) {
+			lookupFactoryHome();
+		}
+		try {
+			FDFactorySB sb = factoryHome.create();
+
+            return sb.getSkuCodes(sapId);
+           
+		} catch (CreateException ce) {
+			factoryHome=null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			factoryHome=null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	public static Collection<String> getSkuCodes(List<String> sapIds) throws FDResourceException, FDSkuNotFoundException {
+		List skuCodes = new ArrayList<String>();
+		if (factoryHome==null) {
+			lookupFactoryHome();
+		}
+		try {
+			FDFactorySB sb = factoryHome.create();
+			for(Iterator<String>it = sapIds.iterator();it.hasNext();) {
+				String sapId = it.next();
+				skuCodes.addAll(sb.getSkuCodes(sapId));
+			}
+            return skuCodes;
+           
+		} catch (CreateException ce) {
+			factoryHome=null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			factoryHome=null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
 	  /**
 	 * Get product information object for a specific version of a sku.
 	 *
@@ -144,6 +188,41 @@ class FDFactory {
 	}
 	
 	
+	
+	/**
+	 * Get product information object for a specific version of a sku.
+	 *
+	 * @param sku SKU code
+     * @param version requested version
+	 *
+	 * @return FDProductInfo object
+	 *
+ 	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
+	 * @throws FDResourceException if an error occured using remote resources
+	 */
+	public static GroupScalePricing getGrpInfo(FDGroup group) throws FDGroupNotFoundException, FDResourceException  {
+		if (factoryHome==null) {
+			lookupFactoryHome();
+		}
+		GroupScalePricing pi;
+		try {
+			FDFactorySB sb = factoryHome.create();                                       		
+			pi = sb.getGrpInfo(group);				
+				
+		}catch (CreateException ce) {
+			factoryHome=null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			factoryHome=null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+		return pi;
+	}
+	
+	
+	
+	
+	
 	  /**
 	 * Get product information object for a specific version of a sku.
 	 *
@@ -172,6 +251,37 @@ class FDFactory {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
+	
+	
+
+	  /**
+	 * Get product information object for a specific version of a sku.
+	 *
+	 * @param sku SKU code
+   * @param version requested version
+	 *
+	 * @return FDProductInfo object
+	 *
+	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
+	 * @throws FDResourceException if an error occured using remote resources
+	 */
+	public static Collection<GroupScalePricing> getGrpInfo(FDGroup grpIds[]) throws FDResourceException {
+		if (factoryHome==null) {
+			lookupFactoryHome();
+		}
+		try {
+			FDFactorySB sb = factoryHome.create();
+          return sb.getGrpInfos(grpIds);
+         
+		} catch (CreateException ce) {
+			factoryHome=null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			factoryHome=null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
 	
 	
 	/**
@@ -303,7 +413,7 @@ class FDFactory {
 			EnumATPRule.JIT,
 			EnumAvailabilityStatus.AVAILABLE,
 			new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),
-			null,pinfo.getRating(),pinfo.getFreshness(), pinfo.getZonePriceInfoList());
+			null,pinfo.getRating(),pinfo.getFreshness(), pinfo.getZonePriceInfoList(),pinfo.getGroup(),pinfo.getSustainabilityRating());
 	}
 	
 	/**
@@ -317,7 +427,7 @@ class FDFactory {
 			EnumATPRule.JIT,
 			EnumAvailabilityStatus.TEMP_UNAV,
 			new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),
-			null,"",null,ZonePriceInfoListing.getDummy());
+			null,"",null,ZonePriceInfoListing.getDummy(), null,"");
 	}
 
 
@@ -372,6 +482,27 @@ class FDFactory {
 	 *
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
+	
+	
+	public static Collection getFilteredSkus(List skuList) throws FDResourceException {
+		if (factoryHome==null) {
+			lookupFactoryHome();
+		}
+		try {
+			FDFactorySB sb = factoryHome.create();
+
+            return sb.getFilteredSkus(skuList);
+           
+		} catch (CreateException ce) {
+			factoryHome=null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			factoryHome=null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	
 	public static Collection getProducts(FDSku[] skus) throws FDResourceException {
 		// !!! optimize this, so that it only makes one call to the session bean
 		List products = new ArrayList(skus.length);

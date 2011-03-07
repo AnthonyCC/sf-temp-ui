@@ -1,0 +1,134 @@
+<%@ page import="java.text.NumberFormat" %>
+<fd:FDProductInfo id="productInfo" skuCode="<%=sku.getSkuCode()%>">
+<%
+	FDProduct product = null;
+
+	{
+		String salesUnitDescription = "NA";
+		String salesUnitName = "NA";
+		FDSalesUnit[] salesUnits;
+		boolean skuAvailable = !sku.isUnavailable();
+		qtyFldName = "quantity_"+itemShownIndex;
+		
+		
+		String productURL = response.encodeURL(
+			"/group.jsp?catId=" + currentFolder
+			+ "&prodCatId=" + displayProduct.getParentNode()
+			+ "&productId=" + displayProduct 
+			+ "&skuCode=" + sku.getSkuCode()
+			+ "&grpId=" + grpId
+			+ "&version=" + version
+			+ "&trk=" + trkCode
+		);
+
+		String productURLviaJavascript = "javascript:selectProduct('"+productURL+"', '"+qtyFldName+"')";
+
+		if (skuAvailable) {
+			try {
+				product = FDCachedFactory.getProduct(productInfo);
+				salesUnits = product.getSalesUnits();
+				if (salesUnits.length>0) {
+						salesUnitDescription = salesUnits[0].getDescription();
+						salesUnitName = salesUnits[0].getName();
+				}
+			 } catch (FDSkuNotFoundException fdsnf) {
+				JspLogger.PRODUCT.warn("Group Scale Page: catching FDSkuNotFoundException and Continuing:\n FDProductInfo:="+productInfo+"\nException message:= "+fdsnf.getMessage());
+				throw new JspException("FDProduct not found for available product",fdsnf);
+			}
+		}
+	%>
+		<tr <%=skuAvailable && jj % 2 ==0 && "false".equalsIgnoreCase(request.getParameter("showThumbnails"))?"bgcolor='#eeeeee'":""%>>
+		<td width="40" align="center">
+			<%
+				LOGGER.debug("jj: "+jj);
+				LOGGER.debug("itemShownIndex: "+itemShownIndex);
+				LOGGER.debug("txCount: "+txCount);
+			%>
+		<% if (!skuAvailable) { %>
+			<font color="#999999">NA</font>
+		<%
+			itemShownIndex--; /* no qty box, decrease display count */
+		} else { %>
+			<% if ( txCount < impressions.size() && impressions.get(txCount) instanceof TransactionalProductImpression ) { %>
+				<nobr><div class="groceryProductLinePrice" style="text-align: left; padding-left: 2px;">QTY</div>
+				<img width="1" height="4" src="/media_stat/images/layout/clear.gif" alt="" /><br />
+				<fd:TxProductControl txNumber="<%= tpCount %>" namespace="<%= TX_JS_NAMESPACE %>" impression="<%= (TransactionalProductImpression) impressions.get(txCount) %>"/></nobr>
+			<%} else { %>
+				<span class="text10"><A HREF="/product.jsp?productId=<%= displayProduct %>&catId=<%= displayProduct.getParentNode() %>&trk=pmod">(click here to buy)</A></span>
+				<% itemShownIndex--; /* no qty box, decrease display count */ %>
+			<% } %>
+		<% } %>
+		</td>
+		<td width="10" align="center" valign="middle">
+			<img src="/media_stat/images/layout/clear.gif" name="bullet<%= itemShownIndex %>" width="6" height="6" border="0" alt="" />
+		</td>
+		<td align="center" valign="middle">
+			<display:ProductImage product="<%= displayProduct %>" action="<%= productURLviaJavascript %>" showRolloverImage="true" />
+		</td>
+		<td width="10" align="center" valign="middle">
+			<img src="/media_stat/images/layout/clear.gif" name="bullet<%= itemShownIndex %>" width="6" height="6" border="0" alt="" />
+		</td>
+		<td width="275" valign="top">
+			<%
+				String unAvailableFontStart = "";
+				String unAvailableFontEnd = "";
+				//add correct unavailable color for links
+				String unAvailableStyle = "";
+				if (!skuAvailable) {  
+					unAvailableFontStart = "<font color=\"#999999\">";
+					unAvailableFontEnd = "</font>";
+					//set style color
+					unAvailableStyle = " style=\"color:#999;\"";
+				}
+
+				String thisProdBrandLabel = displayProduct.getPrimaryBrandName();
+				List domains = sku.getVariationMatrix();
+				StringBuffer key = new StringBuffer();
+				for(Iterator mi = domains.iterator(); mi.hasNext(); ){
+					DomainValue domainValue = (DomainValue)mi.next();
+					key.append(domainValue.getLabel());
+					key.append("  ");
+					key.deleteCharAt(key.length()-1);
+				}
+				String prodMatrix= (key.length()>0 ? ", " + key.toString() : "");
+
+			%>
+			<%= unAvailableFontStart %>
+			<a href="<%= productURLviaJavascript %>"<%=unAvailableStyle%>>
+				<font class="text10bold"><%= unAvailableFontStart %><%= thisProdBrandLabel %><%= unAvailableFontEnd %></font>
+				<font class="text10"><%= unAvailableFontStart %><%= displayProduct.getFullName().substring(thisProdBrandLabel.length()).trim()+prodMatrix %><%= unAvailableFontEnd %></font>
+			</a><br />
+			<%= unAvailableFontStart %> <nobr><%= unAvailableFontEnd %><%="nutrition".equalsIgnoreCase(sortBy)?"&nbsp;<b>" + currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) + "</b>":"" %></nobr>
+			<%
+				Date earliestDate = sku.getEarliestAvailability();
+				Calendar testDate = new GregorianCalendar();
+				testDate.add(Calendar.DATE, 1);
+				// cheat: if no availability indication, show the horizon as the earliest availability
+				if (earliestDate == null) {
+					earliestDate = DateUtil.addDays(DateUtil.truncate(new Date()), ErpServicesProperties.getHorizonDays());
+				}
+				if(skuAvailable && QuickDateFormat.SHORT_DATE_FORMATTER.format(testDate.getTime()).compareTo(QuickDateFormat.SHORT_DATE_FORMATTER.format(earliestDate)) < 0){
+					SimpleDateFormat sf = new SimpleDateFormat("MM/dd");
+					%><b><font color="#999999">Earliest Delivery - <%= sf.format(earliestDate) %></font></b><%
+				}
+			%>
+			<img src="/media_stat/images/layout/clear.gif"  width="6" height="6" border="0" alt="" /><br />
+			<table cellspacing="0">
+				<tr>
+					<% if (!skuAvailable) { %>
+						<td colspan="3" width="85" align="center"><font color="#999999"><%=(productInfo.isOutOfSeason()?"Out&nbsp;of&nbsp;Season": "Not&nbsp;Available")%></font></td>
+					<% } else if (productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale()) { %>
+						<td width="55" align="left" colspan="3">&nbsp;<font class="groceryProductLinePrice" style="COLOR: #c00"><%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %>&nbsp;<%= "/&nbsp;"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font></td>
+					<% } else { %>
+						<td width="55" align="left" colspan="2" class="groceryProductLinePrice">Reg.&nbsp;<font class="groceryProductLinePrice"><%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %>&nbsp;<%= "/&nbsp;"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font></td>
+						<td><display:ProductPrice impression="<%= new ProductImpression(displayProduct) %>"  showScalePricing="false" showRegularPrice="false" showWasPrice="true" showDescription="false" skuCode="<%= sku.getSkuCode() %>" /> </td>
+					</tr>
+					<tr>
+						<td colspan="3"><display:ProductPrice impression="<%= new ProductImpression(displayProduct) %>"  showScalePricing="true" showRegularPrice="false" showWasPrice="false" showDescription="false" grpDisplayType="SMALL_RED" skuCode="<%= sku.getSkuCode() %>"/></td>
+					<% } %>
+				</tr>
+			</table>
+		</td>
+	<% } %>
+</tr>
+</fd:FDProductInfo>

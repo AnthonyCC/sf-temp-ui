@@ -18,10 +18,13 @@ import javax.ejb.EJBObject;
 
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.SkuAvailabilityHistory;
+import com.freshdirect.fdstore.FDGroup;
+import com.freshdirect.fdstore.FDGroupNotFoundException;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.GroupScalePricing;
 
 /**
  * Factory session bean for FD objects.
@@ -99,7 +102,16 @@ public interface FDFactorySB extends EJBObject {
 	public ErpZoneMasterInfo getZoneInfo(String zoneId) throws RemoteException, FDResourceException;
 	
 	public Collection getZoneInfos(String zoneIds[]) throws RemoteException, FDResourceException;
-
+	
+	
+	public Collection getSkuCodes(String sapId) throws RemoteException, FDResourceException;
+	
+	public GroupScalePricing getGrpInfo(FDGroup group) throws RemoteException, FDGroupNotFoundException, FDResourceException;
+	
+	public Collection getFilteredSkus(List skuList) throws RemoteException, FDResourceException;
+	
+	public Collection<GroupScalePricing> getGrpInfos(FDGroup grpIds[]) throws RemoteException, FDResourceException;
+	
 	public Map<String, Date> getNewSkus() throws RemoteException, FDResourceException;
 
 	public Map<String, Date> getBackInStockSkus() throws RemoteException, FDResourceException;

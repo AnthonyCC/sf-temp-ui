@@ -10,6 +10,8 @@ import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
+import com.freshdirect.fdstore.FDGroup;
+import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.framework.core.ModelSupport;
 
@@ -55,6 +57,30 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     
     private EnumOrderLineRating produceRating=null;
     
+	private FDGroup group;
+    
+	private double grpQuantity;
+	
+// sustainability rating
+    
+    private EnumSustainabilityRating sustainabilityRating=null;
+	
+    public FDGroup getFDGroup() {
+		return group;
+	}
+
+	public void setFDGroup(FDGroup group) {
+		this.group = group;
+	}
+
+	public void setGroupQuantity(double quantity){
+		this.grpQuantity = quantity;
+	}
+	
+	public double getGroupQuantity(){
+		return this.grpQuantity;
+	}
+	
 
 	/**
      *  The ID of the category shown when this product was displayed as a YMAL
@@ -301,7 +327,14 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 	public List<ErpClientCode> getClientCodes() {
 		return clientCodes;
 	}
-}
 
+	public EnumSustainabilityRating getSustainabilityRating() {
+		return sustainabilityRating;
+	}
+
+	public void setSustainabilityRating(EnumSustainabilityRating sustainabilityRating) {
+		this.sustainabilityRating = sustainabilityRating;
+	}
+}
 
 

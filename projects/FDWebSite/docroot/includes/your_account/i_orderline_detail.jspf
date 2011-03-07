@@ -42,17 +42,24 @@ if (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) 
 <%-- discount msg --%>
 <%
 	String discountMsg = null;
+	String groupDiscountMsg = null;
 	if(cartLine.getDiscount() != null) {
 		Discount discount = cartLine.getDiscount();
 		PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
 		discountMsg = promotion.getDescription()+" <span style=\"color: #ff0000;\">(You Saved "+currencyFormatter.format(cartLine.getDiscountAmount())+")</span> <a href=\"javascript:popup('/shared/promotion_popup.jsp?promoCode="+promotion.getPromotionCode()+"','small')\" style=\"font-weight: normal;\">See details</a>";
+	} else {
+		if(cartLine.getGroupQuantity() > 0) {
+			double savings = cartLine.getGroupScaleSavings();
+			if(savings > 0)
+				groupDiscountMsg = "Group Discount <span style=\"color: #ff0000;\">(You Saved "+currencyFormatter.format(savings)+")</span> <a href=\"#\" onclick=\"return fetchGroupScaleInfo('"+cartLine.getFDGroup().getGroupId() +"','"+ cartLine.getFDGroup().getVersion() +"')\" style=\"font-weight: normal;\">See details</a>";
+		}
 	}
 %>
 <tr valign="top" align="center">
 	<td><%=quantity.toString()%><%=(cart.hasSettledReturn() && cartLine.hasReturnLine())? "<span style='color:#cc0000'>/"+cartLine.getReturnedQuantity()+"</span>":""%><%=" "+cartLine.getUnitsOfMeasure()%> <%=cartLine.getLabel()%><%=cartLine.hasRestockingFee()?"**":""%></td>
 	<td align="left"><div style="margin-left:8px; text-indent:-7px;"><font class="text10bold"><%= cartLine.getDescription() %></font>
 		<% if (cartLine.getConfigurationDesc()!=null && !"".equals(cartLine.getConfigurationDesc().trim())) { %>(<%= cartLine.getConfigurationDesc() %>)<% } %>
-		<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= discountMsg %></span><% } %></div><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br></td>
+		<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= discountMsg %></span><% } %><% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= groupDiscountMsg %></span><% } %></div><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br></td>
 	<td><%if(cartLine.hasInvoiceLine() && cartLine.isPricedByLb()){%><%=invoiceLine.getWeight()%>&nbsp;lb <%}%></td>
     <% if(cartLine.getDiscount() != null) { %>
         <td><font color="#FF0000"><%=cartLine.getUnitPrice()%></font></td>
@@ -69,7 +76,7 @@ if (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) 
 	        	out.print("*");
 			}
 		 }%><%=(cartLine.hasTax() ? "<b>T</b>" : "")%></td>
-	<td class="text10bold"><b><%= cartLine.hasScaledPricing() ? "S" : "" %></b></td>
+	<td class="text10bold"><b><%= cartLine.hasScaledPricing() || ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) ? "S" : "" %></b></td>
 	<td class="text10bold"><b><%= cartLine.hasDepositValue() ? "D" : "" %></b></td>
 </tr>
 <%

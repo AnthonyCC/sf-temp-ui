@@ -2,17 +2,20 @@ package com.freshdirect.fdstore.customer;
 
 import java.util.List;
 
+import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpReturnLineModel;
 import com.freshdirect.fdstore.EnumOrderLineRating;
+import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.sap.PosexUtil;
@@ -70,11 +73,24 @@ public class FDCartLineModel extends AbstractCartLine {
 
 				FDProductInfo productInfo = FDCachedFactory.getProductInfo(ol.getSku().getSkuCode());
 				EnumOrderLineRating rating=EnumOrderLineRating.getEnumByStatusCode(productInfo.getRating());
+				EnumSustainabilityRating sustainabilityRating=EnumSustainabilityRating.getEnumByStatusCode(productInfo.getSustainabilityRating());
 				ol.setProduceRating(rating);
+				ol.setSustainabilityRating(sustainabilityRating);
 				ol.setBasePrice(productInfo.getZonePriceInfo(getPricingContext().getZoneId()).getSellingPrice());
 				ol.setBasePriceUnit(productInfo.getDefaultPriceUnit());	
-				//ol.setUserZoneId(getPricingContext().getZoneId());				
-				ol.setPricingZoneId(productInfo.getZonePriceInfo(getPricingContext().getZoneId()).getSapZoneId());
+				//Check if qualified group  scale qty > 0. If yes then set FDGroup appropriately.
+				if(ol.getGroupQuantity() > 0){
+					if(ol.getFDGroup() == null){
+						//then set it from product info. else leave the FDGroup as it is.
+						ol.setFDGroup(productInfo.getGroup());
+					}
+					GroupScalePricing groupPricing = GroupScaleUtil.lookupGroupPricing(ol.getFDGroup());
+					ol.setPricingZoneId(groupPricing.getGrpZonePrice(getPricingContext().getZoneId()).getSapZoneId());
+				} else {
+					//not qualified for group scale. clear FD group if present.
+					ol.setFDGroup(null);
+					ol.setPricingZoneId(productInfo.getZonePriceInfo(getPricingContext().getZoneId()).getSapZoneId());
+				}
 			}			
 		} catch (FDResourceException e) {
 			e.printStackTrace();

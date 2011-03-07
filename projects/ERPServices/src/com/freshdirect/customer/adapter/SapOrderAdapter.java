@@ -424,7 +424,7 @@ public class SapOrderAdapter implements SapOrderI {
 				Pricing pricing = fdProduct.getPricing();
 				FDConfigurableI prConf = new FDConfiguration(orderLine.getQuantity(), orderLine.getSalesUnit(), orderLine
 					.getOptions());
-				ConfiguredPrice confPrice = PricingEngine.getConfiguredPrice(pricing, prConf, orderLine.getPricingContext());
+				ConfiguredPrice confPrice = PricingEngine.getConfiguredPrice(pricing, prConf, orderLine.getPricingContext(), orderLine.getFDGroup(), orderLine.getGroupQuantity());
 				return confPrice.getPricingCondition();
 			} catch (PricingException e) {
 				throw new IllegalStateException("Unable to determine pricing condition");

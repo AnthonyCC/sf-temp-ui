@@ -12,11 +12,16 @@ import java.util.StringTokenizer;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.fdstore.EnumOrderLineRating;
+import com.freshdirect.fdstore.EnumSustainabilityRating;
+import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.SkuModel;
@@ -56,6 +61,10 @@ public class Sku {
     private ProductDomain domain;
 
     private String fdContentType;
+    
+    private String sustainabilityRating="";
+
+    private String sustainabilityRatingDescription;
 
     private Sku(PriceCalculator priceCalc, SkuModel skuModel) throws FDResourceException, FDSkuNotFoundException {
         this.skuModel = skuModel;
@@ -106,6 +115,13 @@ public class Sku {
                 if (enumRating != null && enumRating.isEligibleToDisplay()) {
                     this.rating = enumRating.getStatusCodeInDisplayFormat();
                     this.ratingDescription = enumRating.getShortDescription();
+                }
+            }
+            if (this.productInfo.getSustainabilityRating() != null && this.productInfo.getSustainabilityRating().trim().length() > 0) {
+                EnumSustainabilityRating enumRating = EnumSustainabilityRating.getEnumByStatusCode(this.productInfo.getSustainabilityRating());
+                if (enumRating != null && enumRating.isEligibleToDisplay()) {
+                    this.sustainabilityRating = enumRating.getStatusCodeInDisplayFormat();
+                    this.sustainabilityRatingDescription = enumRating.getShortDescription();
                 }
             }
         }
@@ -365,5 +381,62 @@ public class Sku {
     public List<DomainValue> getVariationMatrix() {
         return this.variationMatrix;
     }
+    
+    //Added for Group Scale
+    public FDGroup getFDGroup(){
+    	if(getGroupPrice() > 0.0)
+    		return productInfo.getGroup();
+    	else 
+    		return null;
+   }
+   
+   public double getGroupPrice() {
+	   return priceCalc.getGroupPrice();
+   }
+   public double getGroupQuantity() {
+	   return priceCalc.getGroupQuantity();
+   }
 
+   public String getGroupScaleUnit() {
+	   return priceCalc.getGroupScaleUnit();
+   }
+   
+   public String getGroupPricingUnit() {
+	   return priceCalc.getGroupPricingUnit();
+   }
+   
+   public String getGroupShortDescription() {
+   	try{
+   		if(getFDGroup() == null) return null;
+   		GroupScalePricing pricing = GroupScaleUtil.lookupGroupPricing(getFDGroup());
+   		if(pricing != null)
+   			return pricing.getShortDesc();
+   		else
+   			return null;
+
+	    } catch (FDResourceException e) {
+	        throw new FDRuntimeException(e);
+	    }    	
+   }
+
+   public String getGroupLongDescription() {
+   	try{
+   		if(getFDGroup() == null) return null;
+   		GroupScalePricing pricing = GroupScaleUtil.lookupGroupPricing(getFDGroup());
+   		if(pricing != null)
+   			return pricing.getLongDesc();
+   		else
+   			return null;
+	    } catch (FDResourceException e) {
+	        throw new FDRuntimeException(e);
+	    }    	
+   }
+
+   public String getSustainabilityRating() {
+       return sustainabilityRating;
+   }
+
+   public String getSustainabilityRatingDescription() {
+       return sustainabilityRatingDescription;
+   }
 }

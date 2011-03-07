@@ -45,10 +45,14 @@ function Pricing_updatePrice() {
 function Pricing_getPrice() {
 	return this.price==0 ? "" : "$" + currencyFormat(this.price);
 }
+function Pricing_getQuantity() {
+	return this.quantity;
+}
 function Pricing_getEstimatedQuantity() {
 	return this.estimatedQuantity==null ? "" : (currencyFormat(this.estimatedQuantity) + " lb");
 }
 function Pricing() {
+	this.useGroupScalePricing = false;
 	this.callback = null;
 	this.price = 0.0;
 	this.estimatedQuantity = null;
@@ -59,6 +63,7 @@ function Pricing() {
 	this.setCallbackFunction = Pricing_setCallbackFunction;
 	this.setSKU = Pricing_setSKU;
 	this.setQuantity = Pricing_setQuantity;
+	this.getQuantity = Pricing_getQuantity;
 	this.setSalesUnit = Pricing_setSalesUnit;
 	this.setOption = Pricing_setOption;
 	this.updatePrice = Pricing_updatePrice;
@@ -96,8 +101,10 @@ function SalesUnitRatio(alternateUnit, salesUnit, ratio) {
 /// Helper methods
 /////////////////////////////////////
 function currencyFormat(price) {
+	if (price.price) { price = price.price; }
 	//if the price has a decimal point then make sure two digits appear after it..
 	var sPrice = "" + (Math.round(price*100)/100);
+	if (isNaN(sPrice)) { sPrice = "0"; }
 	var dotIndex = sPrice.indexOf(".");
 	if (dotIndex!=-1) {
 		if (sPrice.substring(dotIndex+1).length == 1) {
@@ -123,19 +130,64 @@ function getConfiguredPrice(selectedSkuCode, qty, salesUnit, configuration) {
 	return p;
 }
 
-function calculateMaterialPrice(selectedSkuCode, qty, salesUnit) {
-	if (hasScales(selectedSkuCode) == true) {
-		return calculateScalePrice(selectedSkuCode, qty, salesUnit);
+
+function calculateMaterialPrice(selectedSkuCode, qty, salesUnit, selectedIndex) {
+	var selectedIndex = selectedIndex || 0;
+		if (selectedIndex <= 0) {
+			for (var i=0; i<document.materialPricesArray[selectedSkuCode].length; i++) {
+				if ( isWithinBounds(qty, document.materialPricesArray[selectedSkuCode][i]) == true ){
+					selectedIndex = i;
+					break;
+				}
+			}
+		}
+	if (hasScales(selectedSkuCode, selectedIndex) == true) {
+		return calculateScalePrice(selectedSkuCode, qty, salesUnit, selectedIndex);
 	} else {
 		return calculateSimplePrice(selectedSkuCode, qty, salesUnit);
 	}
 }
 
-function calculateScalePrice(selectedSkuCode, qty, salesUnit) {
+function calculateScalePrice(selectedSkuCode, qty, salesUnit, selectedIndex) {
+	var selectedIndex = selectedIndex || 0;
 	var p = new Object();
 	
-	var scaleUnit = getScaleUnit(selectedSkuCode);
+	var scaleUnit = getScaleUnit(selectedSkuCode, selectedIndex);
 	var scaledQuantity = qty;
+	var obj_salesUnitRatio = null;
+	if ( salesUnit != scaleUnit ) {
+		// different UOMs, perform conversion
+		obj_salesUnitRatio = findSalesUnitRatio(selectedSkuCode, salesUnit);
+		// multiply by ratio
+		scaledQuantity = parseFloat(qty) * parseFloat(obj_salesUnitRatio.ratio);
+		if ( scaleUnit != obj_salesUnitRatio.salesUnit ) {
+			// this is not the scale unit yet, we need another conversion (division)
+			obj_salesUnitRatio = findSalesUnitRatio(selectedSkuCode, scaleUnit);
+			scaledQuantity = parseFloat(scaledQuantity) / parseFloat(obj_salesUnitRatio.ratio);
+		}
+	}
+	
+	// find pricing condition for quantity (in scaleUnit)
+	var obj_materialPrice = findMaterialPriceByQuantity(selectedSkuCode, scaledQuantity);
+	
+	var pricingQuantity = qty;
+	if ( salesUnit != obj_materialPrice.pricingUnit ) {
+		// we need a ratio
+		obj_salesUnitRatio = findSalesUnitRatio(selectedSkuCode, salesUnit);
+		pricingQuantity = parseFloat(qty) * parseFloat(obj_salesUnitRatio.ratio);
+	}
+
+	p.price = parseFloat(pricingQuantity) * parseFloat(obj_materialPrice.price);
+	p.salesUnitRatio = obj_salesUnitRatio;
+	return p;
+}
+
+function calculateGroupScalePrice(selectedSkuCode, grpQty, qty, salesUnit, selectedIndex) {
+	var selectedIndex = selectedIndex || 0;
+	var p = new Object();
+	
+	var scaleUnit = getScaleUnit(selectedSkuCode, selectedIndex);
+	var scaledQuantity = grpQty;
 	var obj_salesUnitRatio = null;
 	if ( salesUnit != scaleUnit ) {
 		// different UOMs, perform conversion
@@ -210,8 +262,9 @@ function calculateCVPrices(selectedSkuCode, qty, salesUnit, configuration) {
 
 ///// various helper methods...
 
-function hasScales(selectedSkuCode) {
-	var scaleUnit = document.materialPricesArray[selectedSkuCode][0].scaleUnit;
+function hasScales(selectedSkuCode, selectedIndex) {
+	var selectedIndex = selectedIndex || 0;
+	var scaleUnit = document.materialPricesArray[selectedSkuCode][selectedIndex].scaleUnit;
 	if (scaleUnit == "") {
 		return false;
 	} else {
@@ -219,8 +272,9 @@ function hasScales(selectedSkuCode) {
 	}
 }
 
-function getScaleUnit(selectedSkuCode) {
-	return document.materialPricesArray[selectedSkuCode][0].scaleUnit;
+function getScaleUnit(selectedSkuCode, selectedIndex) {
+	var selectedIndex = selectedIndex || 0;
+	return document.materialPricesArray[selectedSkuCode][selectedIndex].scaleUnit;
 
 }
 

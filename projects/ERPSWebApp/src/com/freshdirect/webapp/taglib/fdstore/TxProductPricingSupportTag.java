@@ -15,11 +15,16 @@ import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.common.pricing.SalesUnitRatio;
+import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.GroupScalePricing;
+import com.freshdirect.fdstore.GrpZonePriceModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -247,7 +252,55 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 
 	private static void appendCoreScriptInternal(StringBuffer buf, FDUserI customer, FDProductInfo productInfo, FDProduct product) {
 		Pricing pricing = product.getPricing();
-		MaterialPrice[] matPrices = pricing.getZonePrice(customer.getPricingZoneId()).getMaterialPrices();
+		MaterialPrice[] availMatPrices = pricing.getZonePrice(customer.getPricingZoneId()).getMaterialPrices();
+		MaterialPrice[] matPrices = null;
+		List<MaterialPrice> matPriceList=  new ArrayList<MaterialPrice>();
+		if(productInfo.isGroupExists()) {
+			//Has a Group Scale associated with it. Check if there is GS price defined for
+			//current pricing zone.
+			FDGroup group = productInfo.getGroup();
+			MaterialPrice[] grpPrices = null;
+			try {
+				grpPrices = GroupScaleUtil.getGroupScalePrices(group, customer.getPricingZoneId());
+			}catch(FDResourceException fe){
+				//Never mind. Show regular price for the material.
+			}
+			if(grpPrices != null){
+				//Group scale price applicable to this material. So modify material prices array
+				//to accomodate GS price.
+				MaterialPrice regularPrice = availMatPrices[0];//Get the regular price/single unit price first.				
+				
+
+				if(grpPrices != null && grpPrices.length > 0){
+					//Get the first group scale price and set the lower bound to be upper bound of regular price.
+					MaterialPrice newRegularPrice = new MaterialPrice(regularPrice.getPrice(),regularPrice.getPricingUnit(),regularPrice.getScaleLowerBound(),
+													grpPrices[0].getScaleLowerBound(),grpPrices[0].getScaleUnit(), regularPrice.getPromoPrice());
+					//Add the modified regular price.
+					matPriceList.add(newRegularPrice);
+					//Add the remaining group scale prices.
+					for(int i = 0; i < grpPrices.length ; i++){
+						matPriceList.add(grpPrices[i]);
+					}
+					matPrices = (MaterialPrice[])matPriceList.toArray(new MaterialPrice[0]);
+				}
+			}
+			
+		}
+		if(matPrices == null){
+			//Set the default prices defined for the material.
+			matPrices = availMatPrices;
+		}
+		/*
+		MaterialPrice[] matPrices = null;
+		if(productInfo.getSkuCode().equals("FRU0005343")){
+			matPrices =
+				new MaterialPrice[] {
+					new MaterialPrice(matPrices1[0].getPrice(), matPrices1[0].getPricingUnit(), 0.0, 2,matPrices1[0].getPricingUnit(), matPrices1[0].getPromoPrice()),
+					new MaterialPrice(2.50, "EA", 2, 4, "EA", 0.0),
+					new MaterialPrice(2.00, "EA", 4, Double.POSITIVE_INFINITY, "EA", 0.0)
+					};
+		}
+		*/
 		CharacteristicValuePrice[] cvPrices = pricing.getCharacteristicValuePrices();
 		SalesUnitRatio[] suRatios = pricing.getSalesUnitRatios();
 
@@ -308,20 +361,51 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 		buf.append("  "+ nsObj +" = new Object();\n");
 		buf.append("\n");
 		buf.append("\n");
+		buf.append("  "+ nsObj +".useGroupScalePricing = false;\n");
 		buf.append("  "+ nsObj +".pricings = new Array("+ nConfProd +");\n");
 		buf.append("  "+ nsObj +".updateTotal = function() {\n");
 		buf.append("    var total=0;\n");
+		buf.append("    var totalQty=0;\n");
 		buf.append("    var p;\n");
+		buf.append("    var selectedSkuCode = '';\n");
 		buf.append("    for(i=0; i<"+ nsObj +".pricings.length; i++ ) {\n");
 		buf.append("      if ("+ nsObj +".pricings[i] == undefined)\n");
 		buf.append("        continue;\n");
 		buf.append("\n");
 		buf.append("        p = "+ nsObj +".pricings[i].getPrice();\n");
 		buf.append("        if (p!=\"\") {\n");
-		buf.append("        total+=Number(p.substring(1));\n");
+		buf.append("        totalQty+=Number("+ nsObj +".pricings[i].getQuantity());\n");
 		buf.append("      }\n");
 		buf.append("    }\n");
-		buf.append("    document.forms['"+ formName +"'][\"total\"].value=\"$\"+currencyFormat(total);\n");
+		buf.append("\n");
+		buf.append("    for(i=0; i<"+ nsObj +".pricings.length; i++ ) {\n");
+		buf.append("      if ("+ nsObj +".pricings[i] == undefined)\n");
+		buf.append("        continue;\n");
+		buf.append("\n");
+		buf.append("      if ("+ nsObj +".useGroupScalePricing) { selectedSkuCode = "+ nsObj +".pricings[i].selectedSku; }\n");
+		buf.append("\n");
+		buf.append("      if (selectedSkuCode!='') {\n");
+
+		buf.append("      	for (var j=0; j<document.materialPricesArray[selectedSkuCode].length; j++) {\n");
+		buf.append("        	if ( isWithinBounds(totalQty, document.materialPricesArray[selectedSkuCode][j]) == true ){\n");
+		buf.append("          		if (hasScales(selectedSkuCode, j) == true) {\n");
+		buf.append("						var price = (calculateGroupScalePrice(selectedSkuCode, totalQty, Number("+ nsObj + ".pricings[i].getQuantity()),"+ nsObj +".pricings[i].salesUnit, j)).price;\n");
+		buf.append("            		total += price;\n");
+		buf.append("            		break;\n");
+		buf.append("          		}\n");
+		buf.append("        	}\n");
+		buf.append("      	}\n");
+		buf.append("      }\n");		
+		buf.append("    }\n");
+		buf.append("\n");
+		buf.append("	var totalFields = document.getElementsByName('total');\n");
+		buf.append("\n");
+		buf.append("    for(i=0; i<totalFields.length; i++ ) {\n");
+		buf.append("      totalFields[i].value=\"$\"+currencyFormat(total);\n");
+		buf.append("    }\n");
+		buf.append("\n");
+		buf.append("    if (document.forms['"+ formName +"'][\"totalQty\"])\n");
+		buf.append("      document.forms['"+ formName +"'][\"totalQty\"].value=totalQty;\n");
 		buf.append("  };\n");
 		buf.append("\n");
 		buf.append("  "+ nsObj +".changeShopQty = function(idx, delta, min, max, increment, qty_inp) {\n");
@@ -351,8 +435,8 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 		buf.append("\n");
 		buf.append("\n");
 
-		buf.append("  // update 'total' form field\n");
-		buf.append("  if (qty_inp != null)\n");
+		buf.append("    // update 'total' (per item) form field\n");
+		buf.append("    if (qty_inp != null)\n");
 		buf.append("	  qty_inp.value = qty;\n");
 		buf.append("\n");
 		buf.append("    "+ nsObj +".pricings[idx].setQuantity(qty);\n");
@@ -410,3 +494,4 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 		}
 	}
 }
+

@@ -439,7 +439,12 @@ function loadStuff() {
 	var postdata = '{"category": "cof_espres", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
   	$("#result").val("");
-  }
+  } else if (loaddata == "BrowseGroupContents") {
+  	$("#url").val("/browse/groupproducts/");
+	var postdata = '{"groupId": "FD_PIZZA-1", "groupVersion" : "10460"}';
+  	$("#payload").val(postdata);
+  	$("#result").val("");
+  } 
 }
 
 function doStuff() {
@@ -504,7 +509,8 @@ function doStuff() {
   <option value=""> ========== BROWSE ========== </option>
   <option value="BrowseDepartment">BROWSE - DEPARTMENT</option>
   <option value="BrowseCategory">BROWSE - CATEGORY</option>
-  <option value="BrowseCategoryContent">BROWSE - CATEGORYCONTENT</option>  
+  <option value="BrowseCategoryContent">BROWSE - CATEGORYCONTENT</option>
+  <option value="BrowseGroupContents">BROWSE - GROUP CONTENTS</option>  
   <option value=""> ========== PRODUCT ========== </option>
   <option value="ProductDetail">PRODUCT - Product Detail</option>
   <option value="ProductDetailMoreInfo">PRODUCT - More Info</option>

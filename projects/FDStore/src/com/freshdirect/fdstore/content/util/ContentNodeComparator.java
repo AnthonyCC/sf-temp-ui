@@ -108,6 +108,8 @@ public class ContentNodeComparator implements Comparator<ContentNodeModel> {
 						descending);
 			case SortStrategyElement.PRODUCTS_BY_RATING :
 				return compareByProductRating(node1, node2, descending);
+			case SortStrategyElement.PRODUCTS_BY_SEAFOOD_SUSTAINABILITY :
+				return compareByProductSeafoodSustainabilityRating(node1, node2, descending);
 			default :
 				throw new IllegalArgumentException("Unknown sort type " + strategyElement.getSortType());
 		}
@@ -448,10 +450,42 @@ public class ContentNodeComparator implements Comparator<ContentNodeModel> {
 		}
 	}
 	
+	private Integer getSustainabilityRating(ContentNodeModel node) {
+		if(!(node instanceof ProductModel))
+			return null;
+		ProductModel pm = (ProductModel) node;
+		try {
+			int rating = Integer.parseInt(pm.getSustainabilityRating());
+			return new Integer(rating);
+		}catch(Exception exp){
+			return null;
+		}
+	}
+	
 	private int compareByProductRating( ContentNodeModel node1, ContentNodeModel node2, boolean descending ) {
 		
 		Integer attrib1 = getProductRating(node1);
 		Integer attrib2 = getProductRating(node2);
+		
+		if (attrib1 == null && attrib2 == null)
+			return 0;
+
+		if (attrib1 == null)
+			return descending ? -1 : 1;
+
+		if (attrib2 == null)
+			return  descending ? 1 : -1;
+
+		if (attrib1.equals(attrib2))
+			return 0;
+
+		return attrib1.compareTo(attrib2);
+	}
+	
+	private int compareByProductSeafoodSustainabilityRating( ContentNodeModel node1, ContentNodeModel node2, boolean descending ) {
+		
+		Integer attrib1 = getSustainabilityRating(node1);
+		Integer attrib2 = getSustainabilityRating(node2);
 		
 		if (attrib1 == null && attrib2 == null)
 			return 0;

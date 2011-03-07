@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.template;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,9 +17,15 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.fdstore.PreviewLinkProvider;
+import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.common.pricing.util.GroupScaleUtil;
+import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.GroupScalePricing;
+import com.freshdirect.fdstore.GrpZonePriceModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -36,6 +43,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.fdstore.display.GetContentNodeWebIdTag;
 import com.freshdirect.webapp.util.FDURLUtil;
 import com.freshdirect.webapp.util.JspMethods;
+import com.freshdirect.webapp.util.ProductImpression;
 
 /**
  * Collection of helper methods made available to templates.
@@ -204,6 +212,8 @@ public class TemplateContext extends BaseTemplateContext{
 	}
 
 	public static NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.US);
+	
+	private final static DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 
 	/**
 	 *  Return the pricing with the correct sales unit for the node.
@@ -406,5 +416,51 @@ public class TemplateContext extends BaseTemplateContext{
 		}
 		
 		return ProductPricingFactory.getInstance().getPricingAdapter(node, pricingContext);
+	}
+	
+	public String getScaleDisplay(ContentNodeModel node) {
+		String scaleDisplay = "";
+		if (node.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
+			ProductModel productNode = (ProductModel) node;
+			ProductImpression impression = new ProductImpression(productNode);
+			FDGroup group = impression.getFDGroup(); //Returns if group is associated with any sku linked to this product.
+			if(group != null) {
+				try {
+					MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, impression.getPricingZoneId());
+					if(matPrice != null) {
+							double displayPrice = 0.0;
+							boolean isSaleUnitDiff = false;
+							if(matPrice.getPricingUnit().equals(matPrice.getScaleUnit()))
+								displayPrice = matPrice.getPrice() * matPrice.getScaleLowerBound();
+							else {
+								displayPrice = matPrice.getPrice();
+								isSaleUnitDiff = true;
+							}
+							GroupScalePricing grpPricing = GroupScaleUtil.lookupGroupPricing(group);
+							StringBuffer buf1 = new StringBuffer();
+							buf1.append( "<a href=\"/group.jsp?grpId="+group.getGroupId()+"&version="+group.getVersion()+"\" class=\"text10rbold\" style=\"color: #CC0000;\">Any " );
+							buf1.append( quantityFormatter.format( matPrice.getScaleLowerBound() ) );
+							if(!isSaleUnitDiff && !matPrice.getPricingUnit().equals("EA"))//Other than eaches append the /pricing unit for clarity.
+								buf1.append(matPrice.getPricingUnit().toLowerCase());
+							buf1.append( " " );
+							buf1.append( grpPricing.getShortDesc() );
+							buf1.append( " for " );
+							buf1.append( currencyFormatter.format( displayPrice) );
+							if(isSaleUnitDiff)
+								buf1.append("/").append(matPrice.getPricingUnit().toLowerCase());
+							buf1.append( "</a>" );
+							scaleDisplay= buf1.toString();
+					}
+				} catch (FDResourceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}else{
+				//no group, do the normal scale string fetch
+				PriceCalculator priceCalculator = impression.getProductModel().getPriceCalculator();
+				scaleDisplay = priceCalculator.getTieredPrice(0);
+			}
+		}
+		return scaleDisplay;
 	}
 }

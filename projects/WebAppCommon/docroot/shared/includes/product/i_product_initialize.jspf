@@ -130,6 +130,37 @@
 	List<Image> brandLogos = new ArrayList<Image>();
 	List<String> brandPopupLinks = new ArrayList<String>();
 	
+	if(productNode.getDefaultSku() != null) {
+
+		/* add seafood sustainability (ocean-friendly brand) */
+		%><fd:SeafoodSustainCheck>
+			<fd:FDProductInfo id="productInfo" skuCode="<%= productNode.getDefaultSku().getSkuCode() %>">
+			<%
+				if ( productInfo.getSustainabilityRating() != null && productInfo.getSustainabilityRating().trim().length() > 0 ) {
+					EnumSustainabilityRating enumRating=EnumSustainabilityRating.getEnumByStatusCode(productInfo.getSustainabilityRating());
+					//rating id is +1, only display here for rating of 4,5,6 (or id 5,6,7)
+					if ( enumRating != null && enumRating.isEligibleToDisplay() && enumRating.getId() > 4 ) {
+						//qualifies, get Brand and add to list
+						ContentNodeModel ssBrandCheck = null;
+						BrandModel ssBrand = null;
+						ssBrandCheck = ContentFactory.getInstance().getContentNode("bd_ocean_friendly");
+						
+						//make sure we have a brand model
+						if (ssBrandCheck instanceof BrandModel) {
+							//set it
+							ssBrand = (BrandModel)ssBrandCheck;
+						}
+						/* we're not verifying that it's not already in the list because we're not using this like a real Brand, it's display only */
+						//add it to list
+						if (ssBrand != null) {
+							prodBrands.add(ssBrand);
+						}
+					}
+				}
+			%>
+			</fd:FDProductInfo>
+		</fd:SeafoodSustainCheck><%
+	}
 	Iterator<BrandModel> itr = prodBrands.iterator();
 	while ( itr.hasNext() ) {
 	    BrandModel bm = (BrandModel)itr.next();

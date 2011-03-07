@@ -597,13 +597,13 @@ if(productCode!=null && prodCatId !=null ) {
 						</td>
 					</tr>
 				</table>
-						<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" grcyProd="true" showRegularPrice="false" showScalePricing="true" showWasPrice="false" showDescription="false"/>
+						<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" grcyProd="true" showRegularPrice="false" showScalePricing="true" showWasPrice="false" showDescription="false" grpDisplayType="LARGE" />
 			</div>
 <%
 	} else {
 %>    
 			<div>
-					<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" grcyProd="true" showDescription="false"/>
+					<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" grcyProd="true" showDescription="false" grpDisplayType="LARGE" />
 			<br></div>
 <%
 	}
@@ -629,7 +629,7 @@ if(productCode!=null && prodCatId !=null ) {
 <%@ include file="/includes/product/i_cancellation_note.jspf" %>
 
 
-<br><img src="/media_stat/images/layout/999999.gif" width="225" height="1" border="0" vspace"5"><br>
+<br><img src="/media_stat/images/layout/999999.gif" width="225" height="1" border="0" vspace="5"><br>
 	<fd:CCLCheck>
 		<div style="margin: 15px 5px 0 5px;">       
 			<a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('grocery_form',this,'action=CCL:AddMultipleToList&source=ccl_sidebar_big')"><img src="/media_stat/ccl/lists_link_with_icon_dfgs.gif" width="112" height="15"  style="padding: 0 14px 0 0; border: 0;"></a><fd:CCLNew/>

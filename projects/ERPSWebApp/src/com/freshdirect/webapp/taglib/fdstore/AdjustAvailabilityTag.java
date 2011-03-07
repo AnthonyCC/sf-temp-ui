@@ -99,7 +99,7 @@ public class AdjustAvailabilityTag extends
 		}
 		
 		try {
-			cart.refreshAll();
+			cart.refreshAll(true);
 			//This method retains all product keys that are in the cart in the dcpd promo product info.
 			user.getDCPDPromoProductCache().retainAll(cart.getProductKeysForLineItems());
 		} catch (FDException e) {

@@ -3,15 +3,21 @@ package com.freshdirect.fdstore;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import com.freshdirect.common.pricing.MaterialPrice;
+import com.freshdirect.erp.model.ErpMaterialPriceModel;
 
 public class ZonePriceModel implements Serializable {
 	private static final long serialVersionUID = 3299833903663122981L;
 
 	private MaterialPrice[] materialPrices;
-	private String sapZoneId;
+	public void setMaterialPrices(MaterialPrice[] materialPrices) {
+		this.materialPrices = materialPrices;
+	}
 
+	private String sapZoneId;
 	/**
 	 * Get all material pricing conditions.
 	 *
@@ -69,8 +75,32 @@ public class ZonePriceModel implements Serializable {
 		}
 		return lowest;
 	}
-
 	
+	
+	public void sortMaterialPrice(){	
+		if(this.materialPrices==null || this.materialPrices.length==1) return;
+		Arrays.sort(this.materialPrices, new Comparator() {
+			public int compare(Object o1, Object o2) {
+				Double d1 = new Double( ((MaterialPrice)o1).getScaleLowerBound() );
+				Double d2 = new Double( ((MaterialPrice)o2).getScaleLowerBound() );
+				return d1.compareTo(d2);
+			}
+		} );						
+		double upper;
+		for (int i=0; i<this.materialPrices.length; i++) {
+			MaterialPrice p=this.materialPrices[i];		
+			if (i==this.materialPrices.length-1) {
+				// last one
+				upper=Double.POSITIVE_INFINITY;
+			} else {
+				upper=this.materialPrices[i+1].getScaleLowerBound();
+			}
+			p.setScaleUpperBound(upper);
+			//if (DEBUG) LOGGER.debug("Adding new MaterialPrice w/ scale ["+ p.getPrice() +","+ p.getPricingUnit() +","+ lower +","+ upper +","+ scaleUnit +","+p.getPromoPrice()+"]");																		
+		}		
+	}
+	
+
 	
 	/**
 	 * Determine if scales apply.

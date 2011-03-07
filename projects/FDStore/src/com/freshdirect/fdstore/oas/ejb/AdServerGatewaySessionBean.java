@@ -17,14 +17,21 @@ import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.ZonePromoDiscount;
+import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDGroup;
+import com.freshdirect.fdstore.FDGroupNotFoundException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.GroupScalePricing;
+import com.freshdirect.fdstore.GrpZonePriceListing;
+import com.freshdirect.fdstore.GrpZonePriceModel;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.ZonePriceModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.grp.FDGrpInfoManager;
 import com.freshdirect.framework.core.GatewaySessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -44,7 +51,21 @@ public class AdServerGatewaySessionBean extends GatewaySessionBeanSupport {
 			ProductModel pm = (ProductModel) ContentFactory.getInstance().getContentNode(k.getId());
 			this.visit(pm);
 		}
-		
+		try {
+			//Pass Group scale Info if available. Group id along with pricing information to the ad server.
+			Collection<FDGroup> grpInfoList=FDGrpInfoManager.loadAllGrpInfoMaster();
+			for (Iterator<FDGroup> i = grpInfoList.iterator(); i.hasNext(); ){
+				FDGroup group = (FDGroup)i.next();
+				try {
+					GroupScalePricing gsPricing = FDCachedFactory.getGrpInfo(group);
+					this.visitGroupScale(gsPricing);
+				}catch(FDGroupNotFoundException fe) {
+					// keep going if this happens
+				}
+			}
+		}catch(FDResourceException fe){
+			throw new RuntimeException(fe);
+		}
 		LOGGER.info("Enqueueing results");
 		enqueue(results);
 		LOGGER.info("Enqueueing finished");
@@ -101,6 +122,44 @@ public class AdServerGatewaySessionBean extends GatewaySessionBeanSupport {
 		} catch (FDSkuNotFoundException e) {
 			//keep going if this happens
 			e.printStackTrace();
+		}
+	}
+	/*
+	 * For each group get all the pricing tiers
+	 * and send to OAS
+	 */
+	public void visitGroupScale(GroupScalePricing gsPricing) {
+		//if default sku is null we dont care about pricing
+		if( gsPricing.getGrpZonePriceList() == null){
+			results.add(new AdServerRow(gsPricing.getGroupId(), false, null, null, null));
+		} else {
+			evaluateGroupScalePrices(gsPricing);
+		}
+
+		
+	}
+
+	private void evaluateGroupScalePrices(GroupScalePricing gsPricing) {
+		GrpZonePriceListing gsZonePriceList = gsPricing.getGrpZonePriceList();
+		if(null != gsZonePriceList){ 
+			Collection<GrpZonePriceModel> zonePrices = gsZonePriceList.getGrpZonePrices();
+			if(zonePrices!= null && zonePrices.size() > 0){
+				for (Iterator<GrpZonePriceModel> iterator = zonePrices.iterator(); iterator.hasNext();) {
+					GrpZonePriceModel grpPriceModel = (GrpZonePriceModel) iterator.next();
+					MaterialPrice[] prices =grpPriceModel.getMaterialPrices();
+					for (int i=0; i<prices.length; i++) {
+						MaterialPrice mp = prices[i];
+						String price = mp.getScaleLowerBound() + "@" + mp.getPrice();
+						if(!FDStoreProperties.isZonePricingAdEnabled()){
+							if("M".equalsIgnoreCase(getZoneType(grpPriceModel.getSapZoneId())))
+							results.add(new AdServerRow(gsPricing.getGroupId(), gsPricing.isActive(), price, grpPriceModel.getSapZoneId(), getZoneType(grpPriceModel.getSapZoneId())));
+						}else{
+							results.add(new AdServerRow(gsPricing.getGroupId(), gsPricing.isActive(), price, grpPriceModel.getSapZoneId(), getZoneType(grpPriceModel.getSapZoneId())));
+						}
+					}
+				}
+			}
+		
 		}
 	}
 

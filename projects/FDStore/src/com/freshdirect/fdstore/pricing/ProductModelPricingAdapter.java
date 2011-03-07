@@ -13,7 +13,9 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.EnumOrderLineRating;
+import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDConfigurableI;
+import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.content.BrandModel;
@@ -1135,6 +1137,25 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 		return this.pricingCtx;
 	}
 
+	@Override
+	public EnumSustainabilityRating getSustainabilityRatingEnum()throws FDResourceException {
+		return this.prodModel.getSustainabilityRatingEnum();
+	}
+
+	@Override
+	public String getSustainabilityRating() throws FDResourceException {
+		return this.prodModel.getSustainabilityRating();
+	}
+
+	@Override
+	public String getSustainabilityRating(String skuCode)throws FDResourceException {
+		return this.prodModel.getSustainabilityRating(skuCode);
+	}
+	
+	@Override
+	public FDGroup getFDGroup() throws FDResourceException {
+		return this.prodModel.getFDGroup();
+	}
 	@Override
 	public String getDefaultSkuCode() {
 		SkuModel sku = getDefaultSku();

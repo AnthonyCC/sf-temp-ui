@@ -76,6 +76,7 @@ public class MaterialParser extends SAPParser {
 		fields.add(new Field(RATING,                         3, false));
 		fields.add(new Field(DAYS_FRESH,                     3, false));
 		fields.add(new Field(DAYS_IN_HOUSE,                  3, false));
+		fields.add(new Field(SUSTAINABILITY_RATING,          2, false));
     }
     
     /** gets the collection of materials that need to be created or updated in an export
@@ -185,6 +186,7 @@ public class MaterialParser extends SAPParser {
         String rating=getString(tokens,RATING);
         String days_fresh = getString(tokens,DAYS_FRESH);
         String days_in_house = getString(tokens, DAYS_IN_HOUSE);
+        String sustainabilityRating=getString(tokens,SUSTAINABILITY_RATING);
         
         if ((sku == null) || (sku.trim().equals(""))) {
             //
@@ -197,6 +199,7 @@ public class MaterialParser extends SAPParser {
         extraInfo.put("RATING", rating);
         extraInfo.put("DAYS_FRESH", days_fresh);
         extraInfo.put("DAYS_IN_HOUSE", days_in_house);
+        extraInfo.put("SUSTAINABILITY_RATING", sustainabilityRating);
         if ((!"".equals(getString(tokens, DELETION_FLAG).trim())) ||
             "33".equals(getString(tokens, CROSS_CHAIN_SALES_STATUS)) || "33".equals(getString(tokens, DIST_CHAIN_SPEC_STATUS)) ||
             "30".equals(getString(tokens, CROSS_CHAIN_SALES_STATUS)) || "30".equals(getString(tokens, DIST_CHAIN_SPEC_STATUS))

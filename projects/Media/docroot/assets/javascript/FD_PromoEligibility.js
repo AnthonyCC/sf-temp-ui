@@ -173,6 +173,61 @@ function checkPromoPaymentPopup(JSONstring) {
 	}
 
 }
+
+//Group Scale Popup
+function fetchGroupScaleInfo(grpId, version){
+		new Ajax.Request('/group_scale_info.jsp', {
+			parameters: {
+				grpId: grpId,
+				version: version						
+			},
+			onComplete: function(transport) {
+				checkGroupScalePopup(transport.responseText);
+			}
+		});	
+			
+		return true;
+}
+
+function fetchGroupScaleInfoCrm(grpId, version){
+		new Ajax.Request('/includes/group_scale_info.jsp', {
+			parameters: {
+				grpId: grpId,
+				version: version						
+			},
+			onComplete: function(transport) {
+				checkGroupScalePopup(transport.responseText);
+			}
+		});	
+			
+		return true;
+}
+
+function checkGroupScalePopup(JSONstring) {
+	
+	var params = JSONstring.evalJSON(true);
+	if (params.status == "ok") {
+		//stick values into overlay html		
+		$('group_info').innerHTML = params.groupScaleInfo;
+	}
+	else {
+		$('group_info').innerHTML = params.errorInfo;
+	}
+
+	//$('MB_frame').style.border = 'none';
+	Modalbox.show($('groupScaleBox'), {
+		loadingString: 'Loading Group Scale Info...',
+		title: '',
+		overlayOpacity: .85,
+		overlayClose: false,
+		width: 225,
+		transitions: false,
+		autoFocusing: false,
+		centered: true,
+		afterLoad: function() { $('MB_frame').style.border = 'none'; window.scrollTo(0,0); },
+		afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
+	})
+}
 			
 
 function checkPromoEligibilityByMaxRedemptions(promotion){

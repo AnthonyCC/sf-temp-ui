@@ -16,9 +16,13 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.EnumOrderLineRating;
+import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDConfigurableI;
+import com.freshdirect.fdstore.FDGroup;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -1970,5 +1974,38 @@ public class MockProductModel extends MockContentNodeModel implements
 	@Override
 	public boolean isShowWineRatings() {
 		return false;
+	}
+
+	@Override
+	public String getSustainabilityRating() throws FDResourceException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getSustainabilityRating(String skuCode)
+			throws FDResourceException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public EnumSustainabilityRating getSustainabilityRatingEnum()
+			throws FDResourceException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public FDGroup getFDGroup() throws FDResourceException {
+		SkuModel sku = getDefaultSku();
+		if(sku != null){
+			try {
+				FDProductInfo pInfo = sku.getProductInfo();
+				return pInfo.getGroup();
+			} catch (FDSkuNotFoundException e) {				
+			}			
+		}
+		return null;
 	}
 }

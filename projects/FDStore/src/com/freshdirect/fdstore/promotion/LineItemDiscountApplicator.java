@@ -128,7 +128,8 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 			if(appliedCnt <= 0) return false;
 			//Update Pricing after discount application.
 			try {
-					cart.refreshAll();
+					//by pass recalculating group scale as it is not required.
+					cart.refreshAll(false);
 			} catch (FDResourceException e) {
 				// TODO Auto-generated catch block
 				throw new FDRuntimeException(e);

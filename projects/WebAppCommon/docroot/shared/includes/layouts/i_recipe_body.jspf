@@ -1,3 +1,4 @@
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="java.util.Iterator"%>
@@ -485,7 +486,9 @@ int prodIdx = 0;
                 String earliestAvailability = sku.getEarliestAvailabilityMessage();
                 
                 FDProductInfo productInfo = orderLine.lookupFDProductInfo();
-                FDProduct product = orderLine.lookupFDProduct();               
+                FDProduct product = orderLine.lookupFDProduct();   
+				
+				
                 %>
                 <td><font class="text10bold"><%= orderLine.getDescription() %> - <%= JspMethods.formatPrice(productInfo, user.getPricingContext()) %></font>
                     <%@include file="/includes/product/i_price_taxdeposit.jspf"%>
@@ -493,7 +496,10 @@ int prodIdx = 0;
                     <br><font class="text9nb">&nbsp;<%= orderLine.getConfigurationDesc()%></font>
                     <% if (earliestAvailability != null) { %>
                         <br><font class="text10rbold">Earliest Delivery <%= earliestAvailability %></font>
-                    <% } %>
+                    <% } 
+					if(orderLine.getFDGroup() != null) { %>
+						&nbsp; <display:ProductPrice impression="<%= new ProductImpression(_productNode) %>" showScalePricing="true" showRegularPrice="false" showWasPrice="false" showDescription="false"/>
+					<%} %>
                 </td>
 			
                 <td><input type="text" style="width: 60px" name="estPrice_<%=prodIdx%>" value="" size="6" class="<%=boxStyle%>" onChange="" onFocus="blur()"></td>

@@ -12,6 +12,7 @@ import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
@@ -460,5 +461,20 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		return YmalSetSourceUtil.getParentYmalSetSource( this );
 	}
 
-	
+	/**
+	 * Returns the FDGroup that is associated with default sku in that Product.
+	 * @return
+	 */	
+	public FDGroup getFDGroup() throws FDResourceException {
+		SkuModel sku = getDefaultSku();
+		if(sku != null){
+			try {
+				FDProductInfo pInfo = sku.getProductInfo();
+				return pInfo.getGroup();
+			} catch (FDSkuNotFoundException e) {
+				//ignore
+			}			
+		}
+		return null;
+	}
 }

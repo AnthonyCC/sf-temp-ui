@@ -52,9 +52,39 @@ public class FDCachedFactory {
 
 	
 	/**
+	 * FDProduct instances hashed by FDSku instances.
+	 */
+	private final static LazyTimedCache<FDGroup, GroupScalePricing> grpCache = new LazyTimedCache<FDGroup, GroupScalePricing>("FDGroupInfo",FDStoreProperties.getGrpCacheSize(), FDStoreProperties.getRefreshSecsProduct() * 1000);
+
+	
+	/**
 	 * Thread that reloads expired productInfos, every 10 seconds.
 	 */
-	private final static Thread zRefreshThread = new LazyTimedCache.RefreshThread(zoneCache, 10000) {
+	private final static Thread gRefreshThread = new LazyTimedCache.RefreshThread(grpCache, 10000) {
+		protected void refresh(List expiredKeys) {
+			try {
+				LOGGER.debug("FDGrpRefresh reloading "+expiredKeys.size()+" grpInfos");
+				Collection<GroupScalePricing> pis = FDFactory.getGrpInfo((FDGroup[])expiredKeys.toArray(new FDGroup[0]));
+
+				// cache these
+				GroupScalePricing tempi;
+				for (Iterator i=pis.iterator(); i.hasNext(); ) {
+					tempi = (GroupScalePricing)i.next();
+					this.cache.put(tempi, tempi);
+				}
+
+			} catch (Exception ex) {
+				LOGGER.warn("Error occured in FDGrpInfoRefresh", ex);
+			}
+		}
+	};
+
+	
+	
+	/**
+	 * Thread that reloads expired productInfos, every 10 seconds.
+	 */
+	private final static Thread zRefreshThread = new LazyTimedCache.RefreshThread(zoneCache,10000) {
 		protected void refresh(List expiredKeys) {
 			try {
 				LOGGER.debug("FDZoneRefresh reloading "+expiredKeys.size()+" zoneInfos");
@@ -185,6 +215,29 @@ public class FDCachedFactory {
 	
 
 	/**
+	 * Get zone information.
+	 * 
+	 * @param zoneId
+	 * @return
+	 * @throws FDResourceException
+	 */
+	public static GroupScalePricing getGrpInfo(FDGroup group) throws FDResourceException, FDGroupNotFoundException{
+		GroupScalePricing cached = grpCache.get(group);
+		GroupScalePricing pi;
+		if (cached==null) {
+			try { 
+				pi = FDFactory.getGrpInfo(group);
+				grpCache.put(pi, pi);
+			} catch (FDResourceException ex) {				
+				throw ex;	
+			}
+		}  else {
+			pi = (GroupScalePricing) cached;
+		}
+		return pi;
+	}
+	
+	/**
 	 * Get current product information object for multiple SKUs.
 	 *
 	 * @param skus array of SKU codes
@@ -291,6 +344,59 @@ public class FDCachedFactory {
 			foundZoneInfos.add(tempi);
 		}				
 		return foundZoneInfos;						
+	}
+	
+	
+	/**
+	 * Get current product information object for multiple SKUs.
+	 *
+	 * @param skus array of SKU codes
+	 *
+	 * @return a list of FDProductInfo objects found
+	 *
+	 * @throws FDResourceException if an error occured using remote resources
+	 */
+	public static Collection getGrpInfos(FDGroup[] grpIds) throws FDResourceException {
+				
+		FDGroup[] missingGrpIds = new FDGroup[grpIds.length];
+		int missingCount = 0;
+		List<GroupScalePricing> foundGrpInfos = new ArrayList<GroupScalePricing>(grpIds.length);
+
+		// find Groups already in the cache
+		GroupScalePricing tempo;		
+		for (int i=0; i<grpIds.length; i++) {
+			tempo = grpCache.get(grpIds[i]);
+			if (tempo==null) {
+				missingGrpIds[missingCount++]=grpIds[i];
+			} else if (tempo!=SKU_NOT_FOUND) {
+				foundGrpInfos.add(tempo);
+			}
+		}
+
+		if (missingCount==0) {
+			// nothing's missing
+			return foundGrpInfos;
+		}
+
+		// get what's missing
+		FDGroup[] loadGrpIds;
+		if (missingCount==missingGrpIds.length) {
+			// everything's missing
+			loadGrpIds = missingGrpIds;
+		} else {
+			loadGrpIds = new FDGroup[missingCount];
+			System.arraycopy(missingGrpIds, 0, loadGrpIds, 0, missingCount);
+		}
+		GroupScalePricing tempi;
+		// cache these
+		Collection<GroupScalePricing> gsInfos = FDFactory.getGrpInfo(loadGrpIds);
+		for (Iterator<GroupScalePricing> i=gsInfos.iterator(); i.hasNext(); ) {
+			tempi = (GroupScalePricing)i.next();
+			grpCache.put(tempi, tempi);
+		}
+		
+		foundGrpInfos.addAll(gsInfos);
+		return foundGrpInfos;		
 	}
 	
 	

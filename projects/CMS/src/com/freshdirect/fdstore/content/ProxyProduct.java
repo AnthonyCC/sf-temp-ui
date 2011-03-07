@@ -8,6 +8,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.EnumOrderLineRating;
+import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -698,5 +699,16 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	@Override
 	public boolean isShowWineRatings() {
 		return getProduct().isShowWineRatings();
+	}
+	public String getSustainabilityRating() throws FDResourceException {
+		return getProduct().getSustainabilityRating();
+	}
+
+	public String getSustainabilityRating(String skuCode) throws FDResourceException {
+		return getProduct().getSustainabilityRating(skuCode);
+	}
+
+	public EnumSustainabilityRating getSustainabilityRatingEnum() throws FDResourceException {
+		return getProduct().getSustainabilityRatingEnum();
 	}
 }

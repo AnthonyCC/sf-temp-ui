@@ -13,7 +13,7 @@
 	boolean supportsPNG = !(browserInfo.isInternetExplorer() && browserInfo.getVersionNumber() < 8.0);
 	
 	//boolean isDeal = __pi_prd.hasWasPrice();
-	int dealPercentage = __pi_prd.getHighestDealPercentage();
+	int dealPercentage = (int)ProductDisplayUtil.getDealsPercentage(__pi_prd, user);
 	//boolean isDeal = dealPercentage > 0;
 	boolean isDeal = false;
 	if ( (FDStoreProperties.getBurstsLowerLimit()<=dealPercentage) && (FDStoreProperties.getBurstUpperLimit()>=dealPercentage )){
@@ -24,7 +24,8 @@
         
 	if ( zoomImage != null && zoomImage.getPath().indexOf("clear.gif") == -1 ) {
 		if ( isDeal ) { %>
-			<div style="padding: 0px; border: 0px; margin: 0px auto; position: relative;" width="<%= productImage.getWidth() %>px" height="<%= productImage.getHeight() %>px">
+			
+<%@page import="com.freshdirect.fdstore.util.ProductDisplayUtil"%><div style="padding: 0px; border: 0px; margin: 0px auto; position: relative;" width="<%= productImage.getWidth() %>px" height="<%= productImage.getHeight() %>px">
 					<div style="position: absolute; top: 0px; left: 0px">
 						<a href="javascript:pop('/shared/prodpop.jsp?productId=<%= __pi_prd %>&catId=<%= __pi_prd.getParentNode() %>',335,375)">
 							<img alt="SAVE" src="<%=burstImage %>" width="55px" height="55px" style="border: 0">

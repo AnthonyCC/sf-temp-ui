@@ -85,6 +85,8 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
 	
 	private String basePriceUnit;
 	
+	private String sustainabilityRating;
+	
     /**
      * Default constructor.
      */
@@ -112,7 +114,7 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
 			this.getProxiedMaterial(),
 			this.getHiddenSalesUnitPKs(),
 			this.getHiddenCharacteristicValuePKs(),
-			this.rating,this.days_fresh,this.days_in_house,this.basePrice,this.basePriceUnit);
+			this.rating,this.days_fresh,this.days_in_house,this.basePrice,this.basePriceUnit,this.sustainabilityRating);
         super.decorateModel(model);
         return model;
     }
@@ -143,6 +145,7 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
 		//this.basePriceUnit=m.getBasePriceUnit();
 		this.days_fresh=m.getDaysFresh();
 		this.days_in_house=m.getDaysInHouse();
+		this.sustainabilityRating=m.getSustainabilityRating();
 
     }
     
@@ -151,7 +154,7 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
         try {
             conn = getConnection();
 			//PreparedStatement ps = conn.prepareStatement("select id, p.version, sku_code, default_price, default_unit, unavailability_status, unavailability_date, unavailability_reason, date_created as pricing_date, rating, base_price, base_pricing_unit from erps.product p, erps.history h where sku_code = ? and p.version=(select max(version) from erps.product where sku_code = ?) and h.version=p.version");
-            PreparedStatement ps = conn.prepareStatement("select id, p.version, sku_code, unavailability_status, unavailability_date, unavailability_reason, date_created as pricing_date, rating, days_fresh, days_in_house from erps.product p, erps.history h where sku_code = ? and p.version=(select max(version) from erps.product where sku_code = ?) and h.version=p.version");
+            PreparedStatement ps = conn.prepareStatement("select id, p.version, sku_code, unavailability_status, unavailability_date, unavailability_reason, date_created as pricing_date, rating, days_fresh, days_in_house,sustainability_rating from erps.product p, erps.history h where sku_code = ? and p.version=(select max(version) from erps.product where sku_code = ?) and h.version=p.version");
 
 	    ps.setString(1, sku);
             ps.setString(2, sku);
@@ -192,6 +195,7 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
 		p.rating=rs.getString(8);
 		p.days_fresh=rs.getString(9);
 		p.days_in_house=rs.getString(10);
+		p.sustainabilityRating=rs.getString(11);
 		//p.basePrice=rs.getDouble(11);
 		//p.basePriceUnit=rs.getString(12);
 		
@@ -231,7 +235,7 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
         try {
             conn = getConnection();
 	    //PreparedStatement ps = conn.prepareStatement("select id, p.version, sku_code, default_price, default_unit, unavailability_status, unavailability_date, unavailability_reason, date_created as pricing_date, rating, base_price, base_pricing_unit  from erps.product p, erps.history h where sku_code = ? and p.version = ? and h.version=p.version");
-            PreparedStatement ps = conn.prepareStatement("select id, p.version, sku_code,  unavailability_status, unavailability_date, unavailability_reason, date_created as pricing_date, rating, days_fresh, days_in_house  from erps.product p, erps.history h where sku_code = ? and p.version = ? and h.version=p.version");
+            PreparedStatement ps = conn.prepareStatement("select id, p.version, sku_code,  unavailability_status, unavailability_date, unavailability_reason, date_created as pricing_date, rating, days_fresh, days_in_house,sustainability_rating  from erps.product p, erps.history h where sku_code = ? and p.version = ? and h.version=p.version");
 
             ps.setString(1, sku);
             ps.setInt(2, version);
@@ -269,7 +273,7 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
     	String id = this.getNextId(conn, "ERPS");
 
         //PreparedStatement ps = conn.prepareStatement("insert into erps.product (id, version, sku_code, default_price, default_unit, unavailability_status, unavailability_date, unavailability_reason, rating, base_price, base_pricing_unit ) values (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)");
-    	PreparedStatement ps = conn.prepareStatement("insert into erps.product (id, version, sku_code, unavailability_status, unavailability_date, unavailability_reason, rating,days_fresh, days_in_house) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    	PreparedStatement ps = conn.prepareStatement("insert into erps.product (id, version, sku_code, unavailability_status, unavailability_date, unavailability_reason, rating,days_fresh, days_in_house,sustainability_rating) values (?, ?, ?, ?, ?, ?, ?, ?, ?,?)");
         ps.setString(1, id);
         ps.setInt(2, version);
         ps.setString(3, this.skuCode);
@@ -281,6 +285,7 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
         ps.setString(7, this.rating);
         ps.setString(8, this.days_fresh);
         ps.setString(9, this.days_in_house);
+        ps.setString(10,this.sustainabilityRating);
         //ps.setDouble(10, this.basePrice);
         //ps.setString(11, this.basePriceUnit);
 
@@ -336,6 +341,7 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
 		this.materialId = p.materialId;
 		this.hiddenSalesUnitRefs = p.hiddenSalesUnitRefs;
 		this.hiddenCharValueRefs = p.hiddenCharValueRefs;
+		this.sustainabilityRating=p.sustainabilityRating;
     }
     
     /**
@@ -350,7 +356,7 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
      */
     public PayloadI loadRowPayload(Connection conn, PrimaryKey pk) throws SQLException {
         //PreparedStatement ps = conn.prepareStatement("select sku_code, default_price, default_unit, unavailability_status, unavailability_date, unavailability_reason, date_created as pricing_date, rating,base_price, base_pricing_unit from erps.product p, erps.history h where id = ? and h.version=p.version");
-    	PreparedStatement ps = conn.prepareStatement("select sku_code, unavailability_status, unavailability_date, unavailability_reason, date_created as pricing_date, rating,days_fresh, days_in_house from erps.product p, erps.history h where id = ? and h.version=p.version");
+    	PreparedStatement ps = conn.prepareStatement("select sku_code, unavailability_status, unavailability_date, unavailability_reason, date_created as pricing_date, rating,days_fresh, days_in_house,sustainability_rating from erps.product p, erps.history h where id = ? and h.version=p.version");
 
         ps.setString(1, pk.getId());
         ResultSet rs = ps.executeQuery();
@@ -371,7 +377,7 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
 		p.rating=rs.getString(6);
 		p.days_fresh=rs.getString(7);
 		p.days_in_house=rs.getString(8);
-        
+        p.sustainabilityRating=rs.getString(9);
         rs.close();
         ps.close();
         
@@ -397,6 +403,7 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
         this.rating=null;
         this.days_fresh=null;
         this.days_in_house=null;
+        this.sustainabilityRating=null;
     }
     
 	private VersionedPrimaryKey[] getHiddenSalesUnitPKs() {
@@ -479,6 +486,8 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
 		String rating;
 		String days_fresh;
 		String days_in_house;
+		String sustainabilityRating;
+		
     }
     
 

@@ -80,7 +80,7 @@ public interface SAPConstants {
 	public static final String ZONE_ID="Zone Price";
 	public static final String DAYS_FRESH = "Days Fresh";
 	public static final String DAYS_IN_HOUSE = "Days In House";
-
+	public static final String SUSTAINABILITY_RATING="Sustainability Rating";
 	//
 	// some constants for properties of materials that aren't well defined in SAP
 	//

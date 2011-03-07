@@ -78,10 +78,17 @@ int idx = 0;
 		<%-- discount msg --%>
 		<%
 			String discountMsg = null;
+			String groupDiscountMsg = null;
 			if(cartLine.getDiscount() != null) {
 				Discount discount = cartLine.getDiscount();
 				PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
 				discountMsg = promotion.getDescription()+" <span style=\"color: #ff0000;\">(You Saved "+JspMethods.formatPrice(cartLine.getDiscountAmount())+")</span> <a href=\"javascript:popup('/shared/promotion_popup.jsp?promoCode="+promotion.getPromotionCode()+"','small')\" style=\"font-weight: normal;\">See details</a>";
+			} else {
+				if(cartLine.getGroupQuantity() > 0) {
+					double savings = cartLine.getGroupScaleSavings();
+					if(savings > 0)
+						groupDiscountMsg = "Group Discount <span style=\"color: #ff0000;\">(You Saved "+JspMethods.formatPrice(savings)+")</span> <a href=\"#\" onclick=\"return fetchGroupScaleInfo('"+cartLine.getFDGroup().getGroupId() +"','"+ cartLine.getFDGroup().getVersion() +"')\" style=\"font-weight: normal;\">See details</a>";
+				}
 			}
 		%>
 		
@@ -96,6 +103,7 @@ int idx = 0;
 				<div style="margin-left:16px; text-indent:-8px;">
 					<span class="text10bold"><%= cartLine.getDescription() %></span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
 					<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= discountMsg %></span><% } %>
+					<% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= groupDiscountMsg %></span><% } %>
 				</div>
 			</td>
             <% if(cartLine.getDiscount() != null) { %>
@@ -106,7 +114,7 @@ int idx = 0;
 			<td align="right"><span class="text10bold"><%= JspMethods.formatPrice(cartLine.getPrice()) %></span></td>
             <% } %>
 			<td width="10"><%= cartLine.isEstimatedPrice() ? "*" : " " %></td>
-			<td width="70"><b><%=cartLine.hasTax() ? "&nbsp;T" : ""%><%= cartLine.hasScaledPricing() ? "&nbsp;S" : "" %><%= cartLine.hasDepositValue() ? "&nbsp;D" : "" %></b></td>
+			<td width="70"><b><%=cartLine.hasTax() ? "&nbsp;T" : ""%><%= cartLine.hasScaledPricing() || ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) ? "&nbsp;S" : "" %><%= cartLine.hasDepositValue() ? "&nbsp;D" : "" %></b></td>
 		</tr>
 		
 		<%

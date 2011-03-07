@@ -64,7 +64,7 @@
 		FDEventUtil.logAddToCartEvent(cartLine, request);
 
 			try {
-				cart.refreshAll();
+				cart.refreshAll(true);
 			} catch (FDException e) {
 				throw new JspException(e.getMessage());
 			}

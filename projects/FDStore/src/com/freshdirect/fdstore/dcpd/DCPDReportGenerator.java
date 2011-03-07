@@ -97,12 +97,12 @@ public class DCPDReportGenerator {
 		    // write header
 	        if (ctx.isProductsOnlyView()) {
 				printToCSV(new Object[]{
-					"Available", quoted("Product / Folder ID"), quoted("Full Name"), "SKU", "Rating", "Material", "Eligible","Price","BasePrice","IsDeal"
+					"Available", quoted("Product / Folder ID"), quoted("Full Name"), "SKU", "Rating","Sustainability Rating", "Material", "Eligible","Price","BasePrice","IsDeal"
 				});
 	            /// out.println("Available;\"Product / Folder ID\";\"Full Name\";SKU;Material;Eligible");
 	        } else {
 				printToCSV(new Object[]{
-					"Depth", "Type", "Flag", "Available", quoted("Product / Folder ID"), quoted("Full Name"), "SKU", "Rating", "Material", "Eligible","Price","BasePrice","IsDeal"
+					"Depth", "Type", "Flag", "Available", quoted("Product / Folder ID"), quoted("Full Name"), "SKU", "Rating","Sustainability Rating", "Material", "Eligible","Price","BasePrice","IsDeal"
 				});
 	        }
 		}
@@ -309,10 +309,12 @@ public class DCPDReportGenerator {
 	        String price="N/A";
 	        String basePrice="N/A";
 	        String isDeal="false";
+	        String sustainabilityRating="";
 	        try {
 	        	
 	            if (skuNode.getProductInfo() != null) {
 	            	rating = skuNode.getProductInfo().getRating();
+	            	sustainabilityRating=skuNode.getProductInfo().getSustainabilityRating();
 	            	price="$"+String.valueOf(skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE).getDefaultPrice());
 		        	if(skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE).getSellingPrice()!=0) {
 		        		basePrice="$"+String.valueOf(skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE).getSellingPrice());
@@ -329,12 +331,12 @@ public class DCPDReportGenerator {
 			if (ctx.isRenderCSV()) {
 			    if (ctx.isProductsOnlyView()) {
 					printToCSV(new Object[]{
-						(isUna ? "N" : ""), quoted(parentCName), quoted(skuNode.getFullName()), quoted(skuNode.getContentName()), (rating != null && rating.trim().length() > 0 ? rating: ""), quoted(sku_val!=null ? sku_val : "N/A"), eligible,price,basePrice,isDeal
+						(isUna ? "N" : ""), quoted(parentCName), quoted(skuNode.getFullName()), quoted(skuNode.getContentName()), (rating != null && rating.trim().length() > 0 ? rating: ""),(sustainabilityRating != null && sustainabilityRating.trim().length() > 0 ? sustainabilityRating: ""), quoted(sku_val!=null ? sku_val : "N/A"), eligible,price,basePrice,isDeal
 					});
 	                /// out.println((isUna ? "N" : "") + ";\"" + parentCName + "\";\"" + skuNode.getFullName() + "\";\"" + skuNode.getContentName() + "\";\"" + (sku_val!=null ? sku_val : "N/A") + "\"");
 			    } else {
 					printToCSV(new Object[]{
-						Integer.toString(level), "P", "", (isUna ? "N" : ""), quoted(parentCName), quoted(skuNode.getFullName()), quoted(skuNode.getContentName()), (rating != null && rating.trim().length() > 0 ? rating: ""), quoted(sku_val!=null ? sku_val : "N/A"), eligible,price,basePrice,isDeal
+						Integer.toString(level), "P", "", (isUna ? "N" : ""), quoted(parentCName), quoted(skuNode.getFullName()), quoted(skuNode.getContentName()), (rating != null && rating.trim().length() > 0 ? rating: ""),(sustainabilityRating != null && sustainabilityRating.trim().length() > 0 ? sustainabilityRating: ""), quoted(sku_val!=null ? sku_val : "N/A"), eligible,price,basePrice,isDeal
 					});
 			    	/// out.println(level + ";P;;" + (isUna ? "N" : "") + ";\"" + parentCName + "\";\"" + skuNode.getFullName() + "\";\"" + skuNode.getContentName() + "\";\"" + (sku_val!=null ? sku_val : "N/A") + "\"");
 			    }
@@ -348,6 +350,7 @@ public class DCPDReportGenerator {
 		        
 
 		        out.println("<td style='"+cs+"'>" + (rating != null && rating.trim().length() > 0 ? rating: "&nbsp;") + "</td>");
+		        out.println("<td style='"+cs+"'>" + (sustainabilityRating != null && sustainabilityRating.trim().length() > 0 ? sustainabilityRating: "&nbsp;") + "</td>");
 		        out.println("<td style='"+cs+"'>" + (sku_val!=null ? sku_val : "N/A") + "</td>");
 	            out.println("<td style='"+cs+"'>" + (eligible!=null ? eligible : "N/A") + "</td>");
 	            out.println("<td style='"+cs+"'>" + (price!=null ? price : "N/A") + "</td>");

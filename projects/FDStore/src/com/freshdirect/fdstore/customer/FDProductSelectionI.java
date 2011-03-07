@@ -10,7 +10,9 @@ import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.fdstore.EnumOrderLineRating;
+import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDConfigurableI;
+import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -222,6 +224,11 @@ public interface FDProductSelectionI extends FDConfigurableI {
 
 	public void setPricingContext(PricingContext pCtx);
 
+	
+	public void setFDGroup(FDGroup group);
+
+	 public FDGroup getFDGroup();
+	
 	/**
 	 * Get the ID of the originating product for which this product was shown as
 	 * a YMAL. Only applicable if the product was added to the cart from a YMAL
@@ -243,4 +250,13 @@ public interface FDProductSelectionI extends FDConfigurableI {
 	public boolean hasBrandName(Set<String> brandNames);
 
 	public List<ErpClientCode> getClientCodes();
+	
+	public void setGroupQuantity(double quantity);
+	
+	public double getGroupQuantity();	
+	
+	public double getGroupScaleSavings();
+	// sustainability rating changes
+	public EnumSustainabilityRating getSustainabilityRating();
+	
 }

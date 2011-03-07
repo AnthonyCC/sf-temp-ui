@@ -98,7 +98,7 @@ public class ProductPriceFixer {
                 ErpMaterialEB erpMatlEB = matlHome.findBySapId(matlId);
                 ErpMaterialModel erpMatl = (ErpMaterialModel) erpMatlEB.getModel();
                 
-                Pricing pr = PricingFactory.getPricing(erpMatl, new ErpCharacteristicValuePriceModel[0] );
+                Pricing pr = PricingFactory.getPricing(erpMatl, new ErpCharacteristicValuePriceModel[0]);
                 List units = erpMatl.getSalesUnits();
                 Collections.sort(units, new SalesUnitComparator());
                 ErpSalesUnitModel lowestRatio = (ErpSalesUnitModel) units.get(0);
@@ -107,7 +107,7 @@ public class ProductPriceFixer {
                 
                 try { 
 
-                    MaterialPrice pricingCondition = PricingEngine.getConfiguredPrice( pr, prConf, PricingContext.DEFAULT).getPricingCondition();
+                    MaterialPrice pricingCondition = PricingEngine.getConfiguredPrice( pr, prConf, PricingContext.DEFAULT, null, 0.0).getPricingCondition();
 
                     double defaultPrice = pricingCondition.getPrice();
                     String defaultPriceUnit = pricingCondition.getPricingUnit();

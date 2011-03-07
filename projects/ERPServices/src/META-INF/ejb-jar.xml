@@ -39,6 +39,12 @@
                 <home>com.freshdirect.content.nutrition.ejb.ErpNutritionHome</home>
                 <remote>com.freshdirect.content.nutrition.ejb.ErpNutritionSB</remote>
             </ejb-ref>
+                <ejb-ref>
+                <ejb-ref-name>ejb/GrpPriceInfo</ejb-ref-name>
+                <ejb-ref-type>Session</ejb-ref-type>                
+	             <home>com.freshdirect.erp.ejb.ErpGrpInfoHome</home>
+    	        <remote>com.freshdirect.erp.ejb.ErpGrpInfoSB</remote>
+            </ejb-ref>
         </session>
         <session>
             <ejb-name>FraudManager</ejb-name>
@@ -370,6 +376,21 @@
                 <res-auth>Container</res-auth>
             </resource-ref>
         </session>
+        
+          <session>
+            <ejb-name>GrpInfoManager</ejb-name>
+            <home>com.freshdirect.erp.ejb.ErpGrpInfoHome</home>
+            <remote>com.freshdirect.erp.ejb.ErpGrpInfoSB</remote>
+            <ejb-class>com.freshdirect.erp.ejb.ErpGrpInfoSessionBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+            <resource-ref>
+                <res-ref-name>jdbc/dbpool</res-ref-name>
+                <res-type>javax.sql.DataSource</res-type>
+                <res-auth>Container</res-auth>
+            </resource-ref>
+        </session>
+        
         
         <entity>
             <ejb-name>ErpProduct</ejb-name>
@@ -900,7 +921,11 @@
                 <method-intf>Remote</method-intf>
                 <method-name>*</method-name>
             </method>
-            
+              <method>
+                <ejb-name>GrpInfoManager</ejb-name>
+                <method-intf>Remote</method-intf>
+                <method-name>*</method-name>
+            </method>
             
           <trans-attribute>Required</trans-attribute>
         </container-transaction>

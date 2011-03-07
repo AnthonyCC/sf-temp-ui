@@ -14,6 +14,7 @@ import com.freshdirect.fdstore.content.EnumBurstType;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.util.ProductDisplayUtil;
 import com.freshdirect.fdstore.util.ProductLabeling;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 import com.freshdirect.webapp.taglib.fdstore.BrowserInfo;
@@ -354,7 +355,8 @@ public class ProductImageTag extends BodyTagSupport {
 		if (savingsPercentage > 0) {
 			deal = (int)(savingsPercentage*100);
 		} else if (pl.isDisplayDeal()) {
-			deal = product.getHighestDealPercentage();
+			//deal = product.getHighestDealPercentage();
+			deal = (int)ProductDisplayUtil.getDealsPercentage(product, (FDUserI) pageContext.getSession().getAttribute(SessionName.USER));
 		}
 
 		if (deal < FDStoreProperties.getBurstsLowerLimit() || deal > FDStoreProperties.getBurstUpperLimit())
@@ -406,6 +408,8 @@ public class ProductImageTag extends BodyTagSupport {
 		buf.append("</div>\n");
 	}
 
+	
+	@SuppressWarnings("unchecked")
 	
 	public static class TagEI extends TagExtraInfo {
 		public VariableInfo[] getVariableInfo(TagData data) {

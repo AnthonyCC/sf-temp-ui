@@ -152,5 +152,4 @@ public interface FDCartLineI extends FDProductSelectionI {
 	
 	public void setCartonNumber(String no);
 	public String getCartonNumber();
-
 }

@@ -145,10 +145,10 @@ public class ErpGenerateInvoiceCommand {
 		Pricing pricing = fdProduct.getPricing();
 		FDConfiguration prConf = new FDConfiguration(quantity, orderLine.getSalesUnit(), orderLine.getOptions());
 		try {
-			FDConfiguredPrice price = FDPricingEngine.doPricing(fdProduct, prConf, orderLine.getDiscount(), orderLine.getPricingContext());
+			FDConfiguredPrice price = FDPricingEngine.doPricing(fdProduct, prConf, orderLine.getDiscount(), orderLine.getPricingContext(), orderLine.getFDGroup(), orderLine.getGroupQuantity());
 			orderLine.setPrice(price.getConfiguredPrice() - price.getPromotionValue());
 			orderLine.setDiscountAmount(price.getPromotionValue());			
-			Price oldPrice=PricingEngine.getConfiguredPrice(pricing, prConf, orderLine.getPricingContext()).getPrice();
+			Price oldPrice=PricingEngine.getConfiguredPrice(pricing, prConf, orderLine.getPricingContext(),orderLine.getFDGroup(), orderLine.getGroupQuantity()).getPrice();
 			Price pr = new Price(MathUtil.roundDecimal(oldPrice.getBasePrice()-price.getPromotionValue()), MathUtil.roundDecimal(oldPrice.getSurcharge()));
 			return pr;
 		} catch (PricingException e) {
@@ -166,7 +166,7 @@ public class ErpGenerateInvoiceCommand {
 		Pricing pricing = fdProduct.getPricing();
 		FDConfiguration prConf = new FDConfiguration(quantity, orderLine.getSalesUnit(), orderLine.getOptions());
 		try {
-			return PricingEngine.getConfiguredPrice(pricing, prConf, orderLine.getPricingContext()).getPrice();
+			return PricingEngine.getConfiguredPrice(pricing, prConf, orderLine.getPricingContext(),orderLine.getFDGroup(), orderLine.getGroupQuantity()).getPrice();
 		} catch (PricingException e) {
 			throw new EJBException(e);
 		}						

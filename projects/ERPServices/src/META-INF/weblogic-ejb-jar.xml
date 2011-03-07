@@ -35,6 +35,10 @@
                 <ejb-ref-name>ejb/ErpNutrition</ejb-ref-name>
                 <jndi-name>freshdirect.content.Nutrition</jndi-name>
             </ejb-reference-description>
+            <ejb-reference-description>
+                <ejb-ref-name>ejb/GrpPriceInfo</ejb-ref-name>
+                <jndi-name>freshdirect.erp.GrpInfoManager</jndi-name>
+            </ejb-reference-description>                                    
         </reference-descriptor>
         <jndi-name>freshdirect.fdstore.Factory</jndi-name>
     </weblogic-enterprise-bean>
@@ -191,6 +195,26 @@
         <jndi-name>freshdirect.erp.ZoneInfoManager</jndi-name>
     </weblogic-enterprise-bean>
     
+    
+      
+    <weblogic-enterprise-bean>
+        <ejb-name>GrpInfoManager</ejb-name>
+        <stateless-session-descriptor>
+            <pool>
+                <max-beans-in-free-pool>50</max-beans-in-free-pool>
+                <initial-beans-in-free-pool>10</initial-beans-in-free-pool>
+            </pool>
+            <stateless-clustering></stateless-clustering>
+        </stateless-session-descriptor>
+        <transaction-descriptor></transaction-descriptor>
+        <reference-descriptor>
+            <resource-description>
+                <res-ref-name>jdbc/dbpool</res-ref-name>
+                <jndi-name>fddatasource</jndi-name>
+            </resource-description>
+        </reference-descriptor>
+        <jndi-name>freshdirect.erp.GrpInfoManager</jndi-name>
+    </weblogic-enterprise-bean>
     
     <weblogic-enterprise-bean>
         <ejb-name>SapGateway</ejb-name>

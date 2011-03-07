@@ -106,6 +106,9 @@ public class ErpProductInfoModel extends ModelSupport {
 	/** sap product shelf life **/
 	private final String freshness;
 	
+	
+	private String sustainabilityRating;
+	
 
 	/**
 	 * Constructor with all properties.
@@ -120,6 +123,7 @@ public class ErpProductInfoModel extends ModelSupport {
 	 * @param description
 	 * @param rating
 	 * @param freshness 
+	 * @param sustainabilityRating
 	 */
 	public ErpProductInfoModel(
 		String skuCode,
@@ -132,7 +136,8 @@ public class ErpProductInfoModel extends ModelSupport {
 		String unavailabilityReason,
 		String description,
 		String rating,
-		String freshness) {
+		String freshness,
+		String sustainabilityRating) {
 
 		super();
 		this.skuCode = skuCode;
@@ -146,6 +151,7 @@ public class ErpProductInfoModel extends ModelSupport {
 		this.description = description;
 		this.rating=rating;
 		this.freshness=freshness;
+		this.sustainabilityRating=sustainabilityRating;
 	}
 
 	/**
@@ -232,6 +238,24 @@ public class ErpProductInfoModel extends ModelSupport {
 			return freshness;
 		}
 		return null;
+	}
+
+	/**
+	 * Setter for property sustainabilityRating.
+	 * 
+	 * @param _sustainabilityRating
+	 */
+	public void setSustainabilityRating(String _sustainabilityRating) {
+		sustainabilityRating = _sustainabilityRating;
+	}
+
+	/**
+	 * Getter for property sustainabilityRating.
+	 * 
+	 * @return Value of property sustainabilityRating.
+	 */
+	public String getSustainabilityRating() {
+		return sustainabilityRating;
 	}
 
 }
