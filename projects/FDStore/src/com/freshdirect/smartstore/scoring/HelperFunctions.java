@@ -673,4 +673,19 @@ public class HelperFunctions {
     public static List<ContentNodeModel> getSmartYMALRecommendation(SessionInput input) {
     	return SmartYMALRecommendationService.recommendYmalItems(input);
     }
+
+
+    /**
+     * APPDEV-1633 Trace nodes
+     * @param input
+     * @param dsName
+     * @param nodes
+     * @return
+     */
+    public static List<ContentNodeModel> trace(SessionInput input, String dsName, List<ContentNodeModel> nodes) {
+    	if (input.isTraceMode()) {
+    		input.traceContentNodes(dsName, nodes);
+    	}
+    	return nodes;
+    }
 }

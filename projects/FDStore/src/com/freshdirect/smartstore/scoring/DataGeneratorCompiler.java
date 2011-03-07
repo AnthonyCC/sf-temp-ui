@@ -177,14 +177,14 @@ public class DataGeneratorCompiler extends CompilerBase {
             }
             
 			StringBuffer buffer = new StringBuffer();
-			buffer.append("  HelperFunctions.recursiveNodes(new Object[] { ");
+			buffer.append("  HelperFunctions.trace(sessionInput, \"Recursive Nodes\", HelperFunctions.recursiveNodes(new Object[] { ");
 			for (int i = 0; i < parameters.size(); i++) {
 			    if (i > 0) {
 			        buffer.append(',');
 			    }
 			    buffer.append(parameters.get(i).toJavaCode());
 			}
-			buffer.append("})");
+			buffer.append("}))");
 			return buffer.toString();
         }
 
@@ -194,7 +194,7 @@ public class DataGeneratorCompiler extends CompilerBase {
                 case Expression.RET_NODE:
                 case Expression.RET_STRING:
                 case Expression.RET_SET:
-                    return "  HelperFunctions.recursiveNodes(" + createScriptConvertToNodeOrSet(param) + ")";
+                    return "  HelperFunctions.trace(sessionInput, \"Recursive Nodes\", HelperFunctions.recursiveNodes(" + createScriptConvertToNodeOrSet(param) + "))";
                 default:
 					throw new CompileException(CompileException.TYPE_ERROR, "The "+"first parameter"+" type is "
 							+ Expression.getTypeName(param.getReturnType())
