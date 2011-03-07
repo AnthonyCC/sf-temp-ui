@@ -85,7 +85,7 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("cutoff
 								<logic:iterate collection="<%= cutoffReport%>" id="cReport" type="com.freshdirect.fdstore.customer.FDCutoffTimeInfo">
 									<tr>
 										<td><%=CCFormatter.formatDeliveryTime(cReport.getCutoffTime())%></td>
-										<td><a href='javascript:changeAction(document.forms["searchByCutoff"], "order_quicksearch_results.jsp?status=<%=cReport.getStatus().getStatusCode()%>&cutoffTime=<%=cReport.getCutoffTime()%>&day=<%=request.getParameter("day")%>&month=<%=request.getParameter("month")%>&year=<%=request.getParameter("year")%>");'><%=cReport.getStatus()%></a></td>
+										<td><!-- a href='javascript:changeAction(document.forms["searchByCutoff"], "order_quicksearch_results.jsp?status=<%=cReport.getStatus().getStatusCode()%>&cutoffTime=<%=cReport.getCutoffTime()%>&day=<%=request.getParameter("day")%>&month=<%=request.getParameter("month")%>&year=<%=request.getParameter("year")%>");'--><%=cReport.getStatus()%><!-- /a--></td>
 										<td align="right"><%=cReport.getOrderCount()%></td>
 									</tr>
 									<tr class="list_separator" style="padding: 0px;"><td colspan="3"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>

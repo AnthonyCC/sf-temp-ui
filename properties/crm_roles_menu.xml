@@ -404,7 +404,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 	
 	<role name="CRM_TransportationSupervisor">
 		<links name="main">
-		main_index.jsp,supervisor_index.jsp,admintools_index.jsp,case_mgmt_index,reports_index.jsp,worklist.jsp,promo_home.jsp,promo_ws_view.jsp
+		main_index.jsp,supervisor_index.jsp,admintools_index.jsp,case_mgmt_index.jsp,reports_index.jsp,worklist.jsp,promo_home.jsp,promo_ws_view.jsp
 		</links>
 		<links name="admintools">delivery_restrictions.jsp,platterForm.jsp,restrictionForm.jsp,restrictionForm_save.jsp,address_restrictions.jsp,addrRestrictionForm.jsp</links>
 		<links name="supervisor">address_exception.jsp,geocode_exception.jsp</links>
