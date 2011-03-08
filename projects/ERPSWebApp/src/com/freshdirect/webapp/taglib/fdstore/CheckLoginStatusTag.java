@@ -14,7 +14,6 @@ import com.freshdirect.fdstore.content.WineFilter;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.semPixel.FDSemPixelCache;
 import com.freshdirect.fdstore.semPixel.SemPixelModel;
