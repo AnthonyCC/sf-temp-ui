@@ -1,5 +1,7 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
+import java.text.MessageFormat;
+
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
@@ -71,7 +73,7 @@ public class DeliveryAddressValidator {
 		}
 
 		scrubbedAddress.setServiceType(address.getServiceType());
-
+		String geocodeResult = "";
 		try {
 			// [2] Check services for scrubbed address
 
@@ -91,7 +93,7 @@ public class DeliveryAddressValidator {
 			
 			// [3] since address looks alright need geocode
 			DlvAddressGeocodeResponse geocodeResponse = doGeocodeAddress(scrubbedAddress);		
-		    String geocodeResult = geocodeResponse.getResult();
+		    geocodeResult = geocodeResponse.getResult();
 		    
 			if ( !"GEOCODE_OK".equalsIgnoreCase( geocodeResult ) ) {
 				//
@@ -110,8 +112,17 @@ public class DeliveryAddressValidator {
 			//
 			// Other comment came from RegistrationAction:
 			// <i>geocoding failed. if user is pickup or depot, we don't care</i>
+			/*
+			 * batchley 20110203 -
+			 * except, if it's pickup only AND geocode fails, we need an error here.
+			 * otherwise, we end up with the MSG_TECHNICAL_ERROR msg, which is less than helpful
+			 */
 			if (this.strictCheck) {
 				actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
+				return false;
+			}else if (!"GEOCODE_OK".equalsIgnoreCase( geocodeResult ) && serviceResult == null) {
+				actionResult.addError(true, EnumUserInfoName.DLV_CANT_GEOCODE.getCode(), 
+					MessageFormat.format(SystemMessageList.MSG_CANT_GEOCODE, new Object[] {SystemMessageList.CUSTOMER_SERVICE_CONTACT}));
 				return false;
 			}
 		}
