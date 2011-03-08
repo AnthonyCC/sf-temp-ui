@@ -10,7 +10,7 @@
 <head>
     <title><tmpl:get name='title'/></title>
     <%@ include file="/common/template/includes/metatags.jspf" %>
-	
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
     <script src="/assets/javascript/prototype.js" type="text/javascript" language="javascript"></script>
     <script src="/assets/javascript/scriptaculous.js?load=effects,builder" type="text/javascript" language="javascript"></script>
     <script  src="/assets/javascript/modalbox.js" type="text/javascript" language="javascript"></script>

@@ -9,6 +9,7 @@
 	<head>
     	<title><tmpl:get name='title'/></title>
 		<script language="javascript" src="/assets/javascript/common_javascript.js"></script>
+		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
      	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	</head>
 	
