@@ -158,7 +158,6 @@
 							<th class="first" width="40"></th>
 				    		<th class="first" width="40">Zone</th>
 							<th class="first" width="250">Address</th>
-							<th class="first" width="180">Description</th>
 							<th class="first" width="65">SoldOut Windows</th>
 				    		<%		
 				    			for(TimeRange range : allWindows) {  %>
@@ -173,7 +172,6 @@
 								<td class=""><input type="checkbox" <%= (_command.getZoneCode()!=null ?  " " : " disabled=\"disabled\"") %>  name="<%=_command.getZoneCode()%>"/></td>
 								<td class=""><%= _command.getZoneCode()%></td>
 								<td class="" name="address"><%= _command.getAddress()%></td>
-								<td class="" ><%= _command.getDescription()%></td>
 								<td class=""><%= _command.getSoldOutWindow()%></td>
 						
 							 <%	

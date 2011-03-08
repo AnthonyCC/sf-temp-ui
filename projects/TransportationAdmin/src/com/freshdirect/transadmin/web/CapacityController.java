@@ -305,7 +305,7 @@ public class CapacityController extends AbstractMultiActionController {
 				_dlvBuilding = buildingMapping.getKey();				
 				_displayCommand.setBuildingId(_dlvBuilding.getBuildingId());
 				_displayCommand.setZoneCode(_dlvBuilding.getZoneCode());
-				_displayCommand.setAddress(_dlvBuilding.getSrubbedStreet()+", "+_dlvBuilding.getZip());
+				_displayCommand.setAddress(_dlvBuilding.getSrubbedStreet()+", "+_dlvBuilding.getCity()+", "+_dlvBuilding.getZip());
 				if(_dlvBuilding.getZoneCode()!= null)
 					zoneModel = domainManagerService.getZone(_dlvBuilding.getZoneCode());
 				_displayCommand.setDescription(zoneModel!=null ? zoneModel.getName():"");
