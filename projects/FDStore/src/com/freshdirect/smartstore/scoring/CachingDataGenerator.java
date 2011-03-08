@@ -15,84 +15,84 @@ import com.freshdirect.smartstore.SessionInput;
 
 public class CachingDataGenerator extends DataGenerator {
 
-    private static final int HOUR_IN_MILLIS = 60 * 60 * 1000;
+	private static final int HOUR_IN_MILLIS = 60 * 60 * 1000;
 
-    protected static LruCache<String, BalkingExpiringReference> cache          = new LruCache<String, BalkingExpiringReference>(FDStoreProperties.getSmartStoreDataSourceCacheSize());
+	protected static LruCache<String, BalkingExpiringReference<List<? extends ContentNodeModel>>> cache = new LruCache<String, BalkingExpiringReference<List<? extends ContentNodeModel>>>(
+			FDStoreProperties.getSmartStoreDataSourceCacheSize());
 
-    private static Executor        threadPool     = new ThreadPoolExecutor(1, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
-                                                          new ThreadPoolExecutor.DiscardPolicy());
+	private static Executor threadPool = new ThreadPoolExecutor(1, 1, 60,
+			TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
+			new ThreadPoolExecutor.DiscardPolicy());
 
-    boolean cacheEnabled;
+	boolean cacheEnabled;
 
-    
-    public CachingDataGenerator() {
-        super();
-        cacheEnabled = FDStoreProperties.isSmartstoreDataSourcesCached();
-    }
+	public CachingDataGenerator() {
+		super();
+		cacheEnabled = FDStoreProperties.isSmartstoreDataSourcesCached();
+	}
 
-    public String getKey(SessionInput input) {
-        return null;
-    }
+	public String getKey(SessionInput input) {
+		return null;
+	}
 
-    public final List<? extends ContentNodeModel> generate(SessionInput sessionInput, final DataAccess da) {
-    	// APPDEV-1633 don't use cache if trace mode is enabled
-        if (cacheEnabled && !sessionInput.isTraceMode()) {
-            String key = getKey(sessionInput);
-            final SessionInput session = new SessionInput(sessionInput.getCustomerId(), sessionInput.getCustomerServiceType(), sessionInput.getPricingContext());
-            session.setCurrentNode(sessionInput.getCurrentNode());
-            session.setExplicitList(sessionInput.getExplicitList());
-            if (cache.get(key) == null) {
-                cache.put(key, new BalkingExpiringReference<List<? extends ContentNodeModel>>(HOUR_IN_MILLIS, threadPool, generateImpl(session, da)) {
-                    protected List<? extends ContentNodeModel> load() {
-                        List<? extends ContentNodeModel> result = generateImpl(session, da);
-                        return result;
-                    }
-                });
-            }
-            List<? extends ContentNodeModel> cached = (List<? extends ContentNodeModel>) cache.get(key).get();
-            if (cached != null) {
-                return cached;
-            }
-            return Collections.<ContentNodeModel>emptyList();
-        } else {
-            final List<? extends ContentNodeModel> nodes = generateImpl(sessionInput, da);
-            if (sessionInput.isTraceMode()) {
-            	final String fullName = this.toString();
-            	final String niceName = fullName.replaceAll(":.+", "");
-				if (fullName.contains("prioritize()")) {
-    				sessionInput.traceContentNodes(niceName, da.getPrioritizedNodes());
-            	} else if (fullName.contains("deprioritize()")) {
-    				sessionInput.traceContentNodes(niceName, da.getPosteriorNodes());
-            	} else {
-    				sessionInput.traceContentNodes(niceName, nodes);
-            	}
-            }
-			return nodes;
-        }
-    }
+	public final List<? extends ContentNodeModel> generate(
+			SessionInput sessionInput, final DataAccess input) {
+		if (cacheEnabled) {
+			String key = getKey(sessionInput);
+			final SessionInput inp = new SessionInput(sessionInput
+					.getCustomerId(), sessionInput.getCustomerServiceType(),
+					sessionInput.getPricingContext());
+			inp.setCurrentNode(sessionInput.getCurrentNode());
+			inp.setExplicitList(sessionInput.getExplicitList());
+			if (cache.get(key) == null) {
+				cache
+						.put(
+								key,
+								new BalkingExpiringReference<List<? extends ContentNodeModel>>(
+										HOUR_IN_MILLIS, threadPool,
+										generateImpl(inp, input)) {
+									protected List<? extends ContentNodeModel> load() {
+										List<? extends ContentNodeModel> result = generateImpl(
+												inp, input);
+										return result;
+									}
+								});
+			}
+			List<? extends ContentNodeModel> cached = (List<? extends ContentNodeModel>) cache
+					.get(key).get();
+			if (cached != null) {
+				return cached;
+			}
+			return Collections.<ContentNodeModel> emptyList();
+		} else {
+			return generateImpl(sessionInput, input);
+		}
+	}
 
-    public List<? extends ContentNodeModel> generateImpl(SessionInput sessionInput, DataAccess input) {
-        return Collections.<ContentNodeModel>emptyList();
-    }
+	public List<? extends ContentNodeModel> generateImpl(
+			SessionInput sessionInput, DataAccess input) {
+		return Collections.<ContentNodeModel> emptyList();
+	}
 
-    public static List<ContentNodeModel> peekIntoCache(String key) {
-        if (cache.get(key) == null) {
-            return Collections.<ContentNodeModel>emptyList();
-        }
+	public static List<? extends ContentNodeModel> peekIntoCache(String key) {
+		if (cache.get(key) == null) {
+			return Collections.<ContentNodeModel> emptyList();
+		}
 
-        List<ContentNodeModel> cached = (List<ContentNodeModel>) cache.get(key).get();
-        if (cached != null) {
-            return cached;
-        }
-        return Collections.<ContentNodeModel>emptyList();
-    }
-    
-    public boolean isCacheEnabled() {
-        return cacheEnabled;
-    }
-    
-    public void setCacheEnabled(boolean cacheEnabled) {
-        this.cacheEnabled = cacheEnabled;
-    }
+		List<? extends ContentNodeModel> cached = (List<? extends ContentNodeModel>) cache
+				.get(key).get();
+		if (cached != null) {
+			return cached;
+		}
+		return Collections.<ContentNodeModel> emptyList();
+	}
+
+	public boolean isCacheEnabled() {
+		return cacheEnabled;
+	}
+
+	public void setCacheEnabled(boolean cacheEnabled) {
+		this.cacheEnabled = cacheEnabled;
+	}
 
 }
