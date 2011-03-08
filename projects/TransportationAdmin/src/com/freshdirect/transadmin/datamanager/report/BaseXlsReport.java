@@ -37,7 +37,9 @@ public class BaseXlsReport {
         HSSFCellStyle boldRightAlignStyle = wb.createCellStyle();
         HSSFCellStyle textStyleNoWrap = wb.createCellStyle();
         HSSFCellStyle numericStyle = wb.createCellStyle();
+        HSSFCellStyle numericStyleHighlight = wb.createCellStyle();
         HSSFCellStyle numericStyleBold = wb.createCellStyle();
+        HSSFCellStyle numericStyleBoldHighlight = wb.createCellStyle();
         
         HSSFCellStyle numericStyle_Totals = wb.createCellStyle();
         HSSFCellStyle percentStyle_Totals = wb.createCellStyle();
@@ -52,7 +54,9 @@ public class BaseXlsReport {
         result.put("textStyleNoWrap", textStyleNoWrap);
         
         result.put("numericStyle", numericStyle);
+        result.put("numericStyleHighlight", numericStyleHighlight);
         result.put("numericStyleBold", numericStyleBold);
+        result.put("numericStyleBoldHighlight", numericStyleBoldHighlight);
         result.put("numericStyle_Totals", numericStyle_Totals);
         result.put("percentStyle_Totals", percentStyle_Totals);
         result.put("textStyle_Totals", textStyle_Totals);
@@ -81,10 +85,22 @@ public class BaseXlsReport {
         // Standard Numeric Style
         numericStyle.setFont(font);
         numericStyle.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
+        
+        // Highlighted Numeric Style
+        numericStyleHighlight.setFont(font);
+        numericStyleHighlight.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
+        numericStyleHighlight.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
+        numericStyleHighlight.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 
         // Standard Numeric Style Bold
         numericStyleBold.setFont(fontBold);
         numericStyleBold.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
+        
+     // Highlighted Bold Numeric Style
+        numericStyleBoldHighlight.setFont(fontBold);
+        numericStyleBoldHighlight.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
+        numericStyleBoldHighlight.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
+        numericStyleBoldHighlight.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 
         // Title Style
         titleStyle.setFont(titleFont);

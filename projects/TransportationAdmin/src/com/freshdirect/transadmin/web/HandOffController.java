@@ -28,6 +28,7 @@ import com.freshdirect.routing.model.IHandOffBatchSession;
 import com.freshdirect.routing.model.IHandOffBatchStop;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
+import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.transadmin.datamanager.IRouteFileManager;
 import com.freshdirect.transadmin.datamanager.RouteFileManager;
@@ -279,9 +280,11 @@ public class HandOffController extends AbstractMultiActionController  {
 												+System.currentTimeMillis()+".xls";
 
 				CutOffReportData result = new CutOffReportData();
-
+				
+				result.setBatch(batch);
+				result.setPlannedDispatchTree(new RoutingInfoServiceProxy().getPlannedDispatchTree(batch.getDeliveryDate()));
 				result.setCutOff(TransStringUtil.getServerTime(batch.getCutOffDateTime()));
-
+				result.setRouteMapping(routeMapping);
 				result.setReportData(new TreeMap());
 				result.setTripReportData(new TreeMap());
 				result.setSummaryData(new TreeMap());

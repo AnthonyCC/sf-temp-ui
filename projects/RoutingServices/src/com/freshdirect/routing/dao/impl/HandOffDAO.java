@@ -344,6 +344,10 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 						deliveryModel.setServiceType(rs.getString("DELIVERY_TYPE"));
 						deliveryModel.setDeliveryModel(rs.getString("DELIVERYMODEL"));
 						
+						IZoneModel zoneModel = new ZoneModel();
+						zoneModel.setZoneNumber(rs.getString("AREA"));
+						deliveryModel.setDeliveryZone(zoneModel);
+						
 						IBuildingModel bmodel = new BuildingModel();		
 						
 						bmodel.setSrubbedStreet(rs.getString("bSCRUBBED_STREET"));

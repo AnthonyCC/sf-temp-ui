@@ -1,13 +1,13 @@
 package com.freshdirect.transadmin.datamanager.report;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -19,6 +19,10 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.Region;
 
+import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;
+import com.freshdirect.routing.model.IHandOffBatchRoute;
+import com.freshdirect.routing.model.IWaveInstance;
+import com.freshdirect.routing.util.RoutingTimeOfDay;
 import com.freshdirect.transadmin.datamanager.RouteFileManager;
 import com.freshdirect.transadmin.datamanager.model.OrderRouteInfoModel;
 import com.freshdirect.transadmin.datamanager.report.model.CutOffReportData;
@@ -122,6 +126,11 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
 		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 		        hssfCell.setCellValue(new HSSFRichTextString(CUTOFFREPORT_ROUTETITLE));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Dispatch"));
 		        		        
 		        while (_colsItr.hasNext()) {
 
@@ -141,26 +150,50 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 		        hssfCell.setCellValue(new HSSFRichTextString(CUTOFFREPORT_STOPSTITLE));
 		        
 				Iterator _routeItr = routIds.iterator();
+				String currentZone = null;
+				boolean rowStyleSwitch = false;
 				
 				while (_routeItr.hasNext()) {
 
 					String routeId = (String) _routeItr.next();
 					Iterator _timeSlotItr = timeSlots.iterator();
 					
+					IHandOffBatchRoute routeModel = reportData.getRouteMapping().get(routeId);
+					       			        
+			        Date dispatchTime = null;
+			        String zone = null;
+			        
+			        if(routeModel != null && routeModel.getDispatchTime() != null) {			              	
+			        	dispatchTime = routeModel.getDispatchTime().getAsDate();
+			        	zone = routeModel.getArea();
+			        }
+			        
+			        if(currentZone == null || !currentZone.equals(zone)) {
+						currentZone = zone;
+						rowStyleSwitch = !rowStyleSwitch;
+					}
+			        
 					cellnum = 0;
 					row = sheet.createRow(rownum++);
 			        hssfCell = row.createCell(cellnum++);		        
-			        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+			        hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyle" : "textStyleHighlight"));
 			        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
-			        hssfCell.setCellValue(new HSSFRichTextString(routeId));
+			        hssfCell.setCellValue(new HSSFRichTextString(routeId));			            
 			        totalRoutes++;
+			        
+			        
+			        
+			        //Change to display the dispatch Time
+			        hssfCell = row.createCell(cellnum++);		        
+			        hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyle" : "textStyleHighlight"));
+			        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			        hssfCell.setCellValue(new HSSFRichTextString(dispatchTime != null 
+			        											? TransStringUtil.formatTime(dispatchTime) : ""));
 			        
 			        int totalStops = 0;
 					while (_timeSlotItr.hasNext()) {
-
-						TimeWindow timeWindow = (TimeWindow) _timeSlotItr
-								.next();
-						
+												
+						TimeWindow timeWindow = (TimeWindow) _timeSlotItr.next();						
 
 						CutOffReportKey tmpKey = new CutOffReportKey(orderDate,
 								timeWindow.getTimeWindowStart(), timeWindow
@@ -173,7 +206,7 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 							stopCnt = stopLst.size();
 						}
 						hssfCell = row.createCell(cellnum++);		        
-				        hssfCell.setCellStyle((HSSFCellStyle) styles.get("numericStyle"));
+						hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "numericStyle" : "numericStyleHighlight"));
 				        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 				        if(stopCnt == 0) {
 				        	hssfCell.setCellValue(new HSSFRichTextString(""));
@@ -182,8 +215,8 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 				        }
 				        totalStops = totalStops + stopCnt;
 					}
-					hssfCell = row.createCell(cellnum++);		        
-			        hssfCell.setCellStyle((HSSFCellStyle) styles.get("numericStyleBold"));
+					hssfCell = row.createCell(cellnum++);	
+					hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "numericStyleBold" : "numericStyleBoldHighlight"));			        
 			        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 			        if(totalStops == 0) {
 			        	hssfCell.setCellValue(new HSSFRichTextString(""));
@@ -196,8 +229,10 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 			}
 			
 			createSummarySheet(wb, reportData, styles);
+			createDispatchSummarySheet(wb, reportData, styles);
 			createTripInfoSheet(wb, reportData, styles);
 			createDetailInfoSheet(wb, reportData, styles);
+			createDispatchStatusSheet(wb, reportData, styles);
 		}		 
 
 		new RouteFileManager().generateReportFile(file, wb);
@@ -810,8 +845,8 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 	private short createSummarySheet(HSSFWorkbook wb, CutOffReportData reportData, Map styles) {
 		
 		if(reportData.getSummaryData() != null) {
-			Set summaryKeys = reportData.getSummaryData().keySet();
-			
+			List<String> summaryKeys = reportData.getSummaryKeys();
+						
 			Iterator _itr = summaryKeys.iterator();
 			
 			short rownum = 0;	
@@ -907,6 +942,278 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 		}
 		       
         return rownum;
+	}
+	
+	private short createDispatchSummarySheet(HSSFWorkbook wb, CutOffReportData reportData, Map styles) {
+		
+		Map<String, DispatchSummaryInfo> dispatchSummaryInfo = getDispatchSummaryInfo(reportData);
+		short rownum = 0;	
+	    short cellnum = 0;
+	   		    
+	    HSSFSheet sheet = wb.createSheet("Dispatch Summary");
+	    sheet.setDefaultColumnWidth((short)DEFAULT_WIDTH);	
+		sheet.setPrintGridlines(true);
+	    
+	    HSSFPrintSetup ps = sheet.getPrintSetup();
+	    sheet.setAutobreaks(true);
+        ps.setFitHeight((short) 1);
+        ps.setFitWidth((short) 1);
+       		    
+	    HSSFRow row = sheet.createRow(rownum++);
+	    HSSFCell hssfCell = row.createCell(cellnum);
+
+        hssfCell.setCellStyle((HSSFCellStyle) styles.get("titleStyle"));
+        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+        hssfCell.setCellValue(new HSSFRichTextString("Dispatch Summary Report"));
+        			        
+		sheet.addMergedRegion(new Region(0,(short)0,0,(short)10));
+		row = sheet.createRow(rownum++);//blank Row
+		
+        row = sheet.createRow(rownum++);
+        
+        hssfCell = row.createCell(cellnum++);		        
+        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+        hssfCell.setCellValue(new HSSFRichTextString("Zone"));
+       
+        		        
+        hssfCell = row.createCell(cellnum++);		        
+        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+        hssfCell.setCellValue(new HSSFRichTextString("Store Orders"));
+        
+        hssfCell = row.createCell(cellnum++);		        
+        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+        hssfCell.setCellValue(new HSSFRichTextString("Routing Orders"));
+        
+        hssfCell = row.createCell(cellnum++);		        
+        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+        hssfCell.setCellValue(new HSSFRichTextString("Exception"));
+        
+		for(Map.Entry<String, DispatchSummaryInfo> zoneEntry : dispatchSummaryInfo.entrySet()) {
+			cellnum = 0;
+        	
+        	row = sheet.createRow(rownum++);
+        	
+			hssfCell = row.createCell(cellnum++);		        
+		    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		    hssfCell.setCellValue(new HSSFRichTextString(zoneEntry.getKey()));
+		   		    
+		    hssfCell = row.createCell(cellnum++);		        
+		    hssfCell.setCellStyle((HSSFCellStyle) styles.get("numericStyle"));
+		    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		    hssfCell.setCellValue(new HSSFRichTextString(zoneEntry.getValue().getStoreOrderCnt()+""));
+		    
+		    hssfCell = row.createCell(cellnum++);		        
+		    hssfCell.setCellStyle((HSSFCellStyle) styles.get("numericStyle"));
+		    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		    hssfCell.setCellValue(new HSSFRichTextString(zoneEntry.getValue().getRoutingOrderCnt()+""));
+		    
+		    hssfCell = row.createCell(cellnum++);		        
+		    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		    hssfCell.setCellValue(new HSSFRichTextString( (zoneEntry.getValue().getStoreOrderCnt() != zoneEntry.getValue().getRoutingOrderCnt() ?
+		    		                "X" : "")));
+		}
+				       
+        return rownum;
+	}
+	
+	private short createDispatchStatusSheet(HSSFWorkbook wb, CutOffReportData reportData, Map styles) {
+		
+		Map<RoutingTimeOfDay, DispatchStatusInfo> dispatchStatusInfo = getDispatchStatusInfo(reportData);
+		short rownum = 0;	
+	    short cellnum = 0;
+	   		    
+	    HSSFSheet sheet = wb.createSheet("Dispatch Status");
+	    sheet.setDefaultColumnWidth((short)DEFAULT_WIDTH);	
+		sheet.setPrintGridlines(true);
+	    
+	    HSSFPrintSetup ps = sheet.getPrintSetup();
+	    sheet.setAutobreaks(true);
+        ps.setFitHeight((short) 1);
+        ps.setFitWidth((short) 1);
+       		    
+	    HSSFRow row = sheet.createRow(rownum++);
+	    HSSFCell hssfCell = row.createCell(cellnum);
+
+        hssfCell.setCellStyle((HSSFCellStyle) styles.get("titleStyle"));
+        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+        hssfCell.setCellValue(new HSSFRichTextString("Dispatch Status Report"));
+        			        
+		sheet.addMergedRegion(new Region(0,(short)0,0,(short)10));
+		row = sheet.createRow(rownum++);//blank Row
+		
+        row = sheet.createRow(rownum++);
+        
+        hssfCell = row.createCell(cellnum++);		        
+        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+        hssfCell.setCellValue(new HSSFRichTextString("Dispatch Time"));
+       
+        		        
+        hssfCell = row.createCell(cellnum++);		        
+        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+        hssfCell.setCellValue(new HSSFRichTextString("Status"));
+        
+        hssfCell = row.createCell(cellnum++);		        
+        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+        hssfCell.setCellValue(new HSSFRichTextString("Pending Zone"));
+        
+        hssfCell = row.createCell(cellnum++);		        
+        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+        hssfCell.setCellValue(new HSSFRichTextString("Pending CutOff"));
+        
+		for(Map.Entry<RoutingTimeOfDay, DispatchStatusInfo> dispatchEntry : dispatchStatusInfo.entrySet()) {
+			cellnum = 0;
+        	
+        	row = sheet.createRow(rownum++);
+        	
+			hssfCell = row.createCell(cellnum++);		        
+		    hssfCell.setCellStyle((HSSFCellStyle) styles.get(dispatchEntry.getValue().getStatus().equals(EnumHandOffDispatchStatus.COMPLETE) 
+										? "textStyle" : "textStyleHighlight"));
+		    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		    hssfCell.setCellValue(new HSSFRichTextString(dispatchEntry.getKey() != null 
+								? TransStringUtil.formatTime(dispatchEntry.getKey().getAsDate()) : ""));
+		   		    
+		    hssfCell = row.createCell(cellnum++);		        
+		    hssfCell.setCellStyle((HSSFCellStyle) styles.get(dispatchEntry.getValue().getStatus().equals(EnumHandOffDispatchStatus.COMPLETE) 
+		    							? "textStyle" : "textStyleHighlight"));
+		    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		    hssfCell.setCellValue(new HSSFRichTextString(dispatchEntry.getValue().getStatus().name()));
+		    
+		    if(dispatchEntry.getValue().getPendingDetails() != null && 
+		    		dispatchEntry.getValue().getPendingDetails().keySet().size() > 0) {
+		    	for(Map.Entry<String, List<RoutingTimeOfDay>> zoneEntry : dispatchEntry.getValue().getPendingDetails().entrySet()) {
+		    		for(RoutingTimeOfDay cutOff : zoneEntry.getValue()) {
+		    			cellnum = 2;
+		    			row = sheet.createRow(rownum++);
+		    			hssfCell = row.createCell(cellnum++);		        
+		    		    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		    		    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		    		    hssfCell.setCellValue(new HSSFRichTextString(zoneEntry.getKey()));
+		    		    
+		    		    hssfCell = row.createCell(cellnum++);		        
+		    		    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		    		    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		    		    hssfCell.setCellValue(new HSSFRichTextString(cutOff != null 
+		    					? TransStringUtil.formatTime(cutOff.getAsDate()) : ""));
+		    		}
+		    	}
+		    }
+		    
+		}
+				       
+        return rownum;
+	}
+	
+	private Map<RoutingTimeOfDay, DispatchStatusInfo> getDispatchStatusInfo(CutOffReportData reportData) {
+		
+		Map<RoutingTimeOfDay, DispatchStatusInfo> result = new TreeMap<RoutingTimeOfDay, DispatchStatusInfo>();
+		Map<String, List<RoutingTimeOfDay>> pendingDetails = null;
+		String area = null;
+		
+		if(reportData.getPlannedDispatchTree() != null && reportData.getBatch() != null) {
+			RoutingTimeOfDay rCutOff = new RoutingTimeOfDay(reportData.getBatch().getCutOffDateTime());
+			for(Map.Entry<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> areaEntry : reportData.getPlannedDispatchTree().entrySet()) {
+				for(Map.Entry<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>> dispEntry : areaEntry.getValue().entrySet()) {
+					for(Map.Entry<RoutingTimeOfDay, List<IWaveInstance>> cutOffEntry : dispEntry.getValue().entrySet()) {
+						if(!result.containsKey(dispEntry.getKey())) {
+							result.put(dispEntry.getKey(), new DispatchStatusInfo());
+						}
+						if(cutOffEntry.getKey().after(rCutOff)) {
+							result.get(dispEntry.getKey()).setStatus(EnumHandOffDispatchStatus.PENDING);
+							pendingDetails = result.get(dispEntry.getKey()).getPendingDetails();
+							if(cutOffEntry.getValue().size() > 0) { 
+								area = cutOffEntry.getValue().get(0).getArea().getAreaCode();
+								if(!pendingDetails.containsKey(area)) {
+									pendingDetails.put(area, new ArrayList<RoutingTimeOfDay>());
+								}
+								pendingDetails.get(area).add(cutOffEntry.getKey());
+							}
+						} else {
+							if(result.get(dispEntry.getKey()).getStatus() == null) {
+								result.get(dispEntry.getKey()).setStatus(EnumHandOffDispatchStatus.COMPLETE);
+							}
+						}
+					}
+				}
+			}
+		}		
+		return result;
+	}
+	
+	private Map<String, DispatchSummaryInfo> getDispatchSummaryInfo(CutOffReportData reportData) {
+		Map<String, DispatchSummaryInfo> result = new HashMap<String, DispatchSummaryInfo>();
+		if(reportData.getSummaryData() != null) {
+			List<String> summaryKeys = reportData.getSummaryKeys();
+			Iterator _itr = summaryKeys.iterator();
+			IHandOffBatchRoute routeInfo = null;
+			String _routeId = null;
+			
+			while (_itr.hasNext()) {
+				_routeId = (String) _itr.next();
+				List<OrderRouteInfoModel> _orders = 	(List<OrderRouteInfoModel>)reportData.getSummaryData().get(_routeId); 
+				for(OrderRouteInfoModel info : _orders) {
+					if(info.getDeliveryZone() != null) {
+						if(!result.containsKey(info.getDeliveryZone())) {
+							result.put(info.getDeliveryZone(), new DispatchSummaryInfo());
+						}
+						result.get(info.getDeliveryZone()).setStoreOrderCnt(result.get(info.getDeliveryZone()).getStoreOrderCnt()+1);
+						routeInfo = reportData.getRouteMapping().get(_routeId); 
+						if(routeInfo != null) {
+							if(!result.containsKey(routeInfo.getArea())) {
+								result.put(routeInfo.getArea(), new DispatchSummaryInfo());
+							}
+							result.get(routeInfo.getArea()).setRoutingOrderCnt(result.get(routeInfo.getArea()).getRoutingOrderCnt()+1);
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
+	
+	class DispatchSummaryInfo {
+		private int storeOrderCnt;
+		private int routingOrderCnt;
+		public int getStoreOrderCnt() {
+			return storeOrderCnt;
+		}
+		public void setStoreOrderCnt(int storeOrderCnt) {
+			this.storeOrderCnt = storeOrderCnt;
+		}
+		public int getRoutingOrderCnt() {
+			return routingOrderCnt;
+		}
+		public void setRoutingOrderCnt(int routingOrderCnt) {
+			this.routingOrderCnt = routingOrderCnt;
+		}
+			
+	}
+	
+	class DispatchStatusInfo {
+		private EnumHandOffDispatchStatus status;
+		private Map<String, List<RoutingTimeOfDay>> pendingDetails = new HashMap<String, List<RoutingTimeOfDay>>();
+		
+		public EnumHandOffDispatchStatus getStatus() {
+			return status;
+		}
+		public void setStatus(EnumHandOffDispatchStatus status) {
+			this.status = status;
+		}
+		public Map<String, List<RoutingTimeOfDay>> getPendingDetails() {
+			return pendingDetails;
+		}
+		public void setPendingDetails(Map<String, List<RoutingTimeOfDay>> pendingDetails) {
+			this.pendingDetails = pendingDetails;
+		}					
 	}
 
 	private List getCutOffReportKeys(Set keys) {

@@ -455,6 +455,10 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 					    		waveInstance.setMaxRunTime(runTime);
 					    		waveInstance.setPreferredRunTime(runTime);
 					    		
+					    		IAreaModel areaModel = new AreaModel();
+					    		areaModel.setAreaCode(_zoneCode);
+					    		waveInstance.setArea(areaModel);
+					    		
 					    		if(!result.containsKey(_zoneCode)) {
 					    			result.put(_zoneCode, new HashMap<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>());
 					    		}
