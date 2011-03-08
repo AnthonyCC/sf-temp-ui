@@ -75,6 +75,7 @@ public class CrmAgentDAOTestCase extends DbTestCaseSupport {
 		List<CrmCaseQueue> agentQueues = new ArrayList<CrmCaseQueue>();
 		agentQueues.add(CrmCaseQueue.getEnum("QA"));
 		agentQueues.add(CrmCaseQueue.getEnum("QB"));
+		agent.setLdapId("mrose");
 		PrimaryKey pk = new PrimaryKey("a3");
 		dao.create(conn, pk, agent);
 
