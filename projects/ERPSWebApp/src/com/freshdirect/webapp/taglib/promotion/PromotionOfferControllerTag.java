@@ -241,7 +241,12 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 				this.promotion.setSkuQuantity(0);
 			}else{
 				try {
-					this.promotion.setSkuQuantity(Integer.parseInt(skuQuantity));
+					Integer skuQty = Integer.parseInt(skuQuantity);
+					if(skuQty < 0 || skuQty > 999){
+						actionResult.addError(true, "minQtyError", " Min. Sku quantity should be positive integer and less than 1000.");
+					}else{
+						this.promotion.setSkuQuantity(Integer.parseInt(skuQuantity));
+					}
 				} catch (NumberFormatException e) {
 					actionResult.addError(true, "minQtyError", " Min. Sku quantity should be integer.");
 				}
