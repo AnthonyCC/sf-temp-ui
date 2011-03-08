@@ -12,7 +12,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<script type="text/javascript" language="javascript" src="/assets/javascript/FD_PromoEligibility.js"></script>
+
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <%  String orderId = request.getParameter("orderId"); %>
 <fd:ModifyOrderController orderId="<%= orderId %>" result="result" successPage='<%= "/your_account/order_details.jsp?orderId=" + orderId %>'>
