@@ -290,8 +290,13 @@ FDIdentity identity = user.getIdentity();
 			} else {
 				if(cartLine.getGroupQuantity() > 0) {
 					double savings = cartLine.getGroupScaleSavings();
-					if(savings > 0)
-						groupDiscountMsg = "Group Discount <span style=\"color: #ff0000;\">(You Saved "+currencyFormatter.format(savings)+")</span> <a href=\"#\" onclick=\"return fetchGroupScaleInfoFromCheckout('"+cartLine.getFDGroup().getGroupId() +"','"+ cartLine.getFDGroup().getVersion() +"')\" style=\"font-weight: normal;\">See details</a>";
+					if(savings > 0) {
+						if(http_link) {
+							groupDiscountMsg = "Group Discount <span style=\"color: #ff0000;\">(You Saved "+currencyFormatter.format(savings)+")</span> <a href=\"#\" onclick=\"return fetchGroupScaleInfo('"+cartLine.getFDGroup().getGroupId() +"','"+ cartLine.getFDGroup().getVersion() +"')\" style=\"font-weight: normal;\">See details</a>";
+						} else {
+							groupDiscountMsg = "Group Discount <span style=\"color: #ff0000;\">(You Saved "+currencyFormatter.format(savings)+")</span> <a href=\"#\" onclick=\"return fetchGroupScaleInfoFromCheckout('"+cartLine.getFDGroup().getGroupId() +"','"+ cartLine.getFDGroup().getVersion() +"')\" style=\"font-weight: normal;\">See details</a>";
+						}
+					}
 				}
 			}
 		%>
