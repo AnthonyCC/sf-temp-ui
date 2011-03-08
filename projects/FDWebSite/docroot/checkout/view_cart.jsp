@@ -176,6 +176,8 @@ StringBuffer buffer = new StringBuffer(
 <IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="693" HEIGHT="1" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
+<% boolean http_link = false; %>
+
 <%@ include file="/includes/i_cartcleanup.jspf" %>
 
 <%@ include file="/includes/i_viewcart.jspf" %> 
