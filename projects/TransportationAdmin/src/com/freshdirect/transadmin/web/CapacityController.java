@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.framework.util.EnumLogicalOperator;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
 import com.freshdirect.routing.model.BuildingModel;
@@ -118,6 +119,7 @@ public class CapacityController extends AbstractMultiActionController {
 		String rDate = request.getParameter("rDate");
 		String cutOff = request.getParameter("cutOff");
 		String rType = request.getParameter("rType");
+		String condition = request.getParameter("condition");
 		
 		ModelAndView mav = new ModelAndView("earlyWarningView");
 		Map<String, List<TimeRange>> discountMapping = null;
@@ -137,11 +139,11 @@ public class CapacityController extends AbstractMultiActionController {
 		
 		if("T".equalsIgnoreCase(rType)) {			
 			processEarlyWarning(mav, new TimeEarlyWarningFormatter()
-												, executeEarlyWarningTime(mav, rDate, cutOff, rType)
+												, executeEarlyWarningTime(mav, rDate, cutOff, rType, EnumLogicalOperator.getEnum(condition))
 												, discountMapping);
 		} else {
 			processEarlyWarning(mav, new OrderEarlyWarningFormatter()
-												, executeEarlyWarningOrder(mav, rDate, cutOff, rType)
+												, executeEarlyWarningOrder(mav, rDate, cutOff, rType, EnumLogicalOperator.getEnum(condition))
 												, discountMapping);
 		}
 		
@@ -156,6 +158,8 @@ public class CapacityController extends AbstractMultiActionController {
 		mav.getModel().put("autorefresh", request.getParameter("autorefresh"));
 		mav.getModel().put("cutoffs", domainManagerService.getCutOffs());
 		mav.getModel().put("srcscenario", srvScenario);
+		mav.getModel().put("conditions", (List) EnumLogicalOperator.getEnumList());
+		mav.getModel().put("condition", condition);
 		
 		return mav;
 	}
@@ -437,7 +441,7 @@ public class CapacityController extends AbstractMultiActionController {
 		return result;
 	}
 	
-	private Map<String, List<Capacity>> executeEarlyWarningOrder(ModelAndView mav, String rDate, String cutOff, String rType) {
+	private Map<String, List<Capacity>> executeEarlyWarningOrder(ModelAndView mav, String rDate, String cutOff, String rType, EnumLogicalOperator condition) {
 		
 		Map<String, List<Capacity>> capacityMapping = new TreeMap<String, List<Capacity>>();
 				
@@ -448,10 +452,10 @@ public class CapacityController extends AbstractMultiActionController {
 				DeliveryServiceProxy deliveryProxy = new DeliveryServiceProxy();
 				
 				Map<String, List<IDeliverySlot>> refSlotsByZone = deliveryProxy.getTimeslotsByDate
-																	(deliveryDate, getCutOffTime(cutOff), null);
+																	(deliveryDate, getCutOffTime(cutOff), null, condition);
 				
 				Map<String, List<IDeliveryWindowMetrics>> slotsByZone = deliveryProxy.getTimeslotsByDateEx
-																			(deliveryDate, getCutOffTime(cutOff), null);
+																			(deliveryDate, getCutOffTime(cutOff), null, condition);
 									
 				Iterator<String> _itr = slotsByZone.keySet().iterator();
 								
@@ -504,7 +508,7 @@ public class CapacityController extends AbstractMultiActionController {
 		return capacityMapping;
 	}
 
-	private Map<String, List<Capacity>> executeEarlyWarningTime(ModelAndView mav, String rDate, String cutOff, String rType) {
+	private Map<String, List<Capacity>> executeEarlyWarningTime(ModelAndView mav, String rDate, String cutOff, String rType, EnumLogicalOperator condition) {
 		
 		Map<String, List<Capacity>> capacityMapping = new TreeMap<String, List<Capacity>>();
 		
@@ -517,7 +521,7 @@ public class CapacityController extends AbstractMultiActionController {
 				RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
 				
 				Map<String, List<IDeliverySlot>> slotsByZone = deliveryProxy.getTimeslotsByDate
-																	(deliveryDate, getCutOffTime(cutOff), null);
+																	(deliveryDate, getCutOffTime(cutOff), null, condition);
 								
 				Iterator<String> _itr = slotsByZone.keySet().iterator();
 												

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.framework.util.EnumLogicalOperator;
 import com.freshdirect.routing.model.IDeliveryModel;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
@@ -61,12 +62,12 @@ public class DeliveryServiceProxy extends BaseServiceProxy {
 		return getService().getDeliveryZone(zoneCode);
 	}
 	
-	public Map<String, List<IDeliverySlot>> getTimeslotsByDate(Date deliveryDate, Date cutOffTime, String zoneCode) throws RoutingServiceException {
-		return getService().getTimeslotsByDate(deliveryDate, cutOffTime, zoneCode);
+	public Map<String, List<IDeliverySlot>> getTimeslotsByDate(Date deliveryDate, Date cutOffTime, String zoneCode, EnumLogicalOperator condition) throws RoutingServiceException {
+		return getService().getTimeslotsByDate(deliveryDate, cutOffTime, zoneCode, condition);
 	}
 	
-	public Map<String, List<IDeliveryWindowMetrics>> getTimeslotsByDateEx(Date deliveryDate, Date cutOffTime, String zoneCode) throws RoutingServiceException { 
-		return getService().getTimeslotsByDateEx(deliveryDate, cutOffTime, zoneCode);
+	public Map<String, List<IDeliveryWindowMetrics>> getTimeslotsByDateEx(Date deliveryDate, Date cutOffTime, String zoneCode, EnumLogicalOperator condition) throws RoutingServiceException { 
+		return getService().getTimeslotsByDateEx(deliveryDate, cutOffTime, zoneCode, condition);
 	}
 	
 	public List<IUnassignedModel> getUnassigned(Date deliveryDate, Date cutOffTime, String zoneCode) throws RoutingServiceException {

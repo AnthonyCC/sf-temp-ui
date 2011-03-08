@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.axis2.client.Stub;
 
+import com.freshdirect.framework.util.EnumLogicalOperator;
 import com.freshdirect.routing.constants.EnumArithmeticOperator;
 import com.freshdirect.routing.dao.IDeliveryDetailsDAO;
 import com.freshdirect.routing.model.IBuildingModel;
@@ -229,20 +230,20 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 	}
 	
 	
-	public Map<String, List<IDeliverySlot>> getTimeslotsByDate(Date deliveryDate, Date cutOffTime, String zoneCode) throws RoutingServiceException {
+	public Map<String, List<IDeliverySlot>> getTimeslotsByDate(Date deliveryDate, Date cutOffTime, String zoneCode, EnumLogicalOperator condition) throws RoutingServiceException {
 		
 		try {
-			return deliveryDAOImpl.getTimeslotsByDate(deliveryDate, cutOffTime, zoneCode);
+			return deliveryDAOImpl.getTimeslotsByDate(deliveryDate, cutOffTime, zoneCode, condition);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			throw new RoutingServiceException(e, IIssue.PROCESS_LOADLATEDELIVERYORDERS_UNSUCCESSFUL);
 		}
 	}
 	
-	public Map<String, List<IDeliveryWindowMetrics>> getTimeslotsByDateEx(Date deliveryDate, Date cutOffTime, String zoneCode) throws RoutingServiceException {
+	public Map<String, List<IDeliveryWindowMetrics>> getTimeslotsByDateEx(Date deliveryDate, Date cutOffTime, String zoneCode, EnumLogicalOperator condition) throws RoutingServiceException {
 		
 		try {
-			return deliveryDAOImpl.getTimeslotsByDateEx(deliveryDate, cutOffTime, zoneCode);
+			return deliveryDAOImpl.getTimeslotsByDateEx(deliveryDate, cutOffTime, zoneCode, condition);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			throw new RoutingServiceException(e, IIssue.PROCESS_LOADLATEDELIVERYORDERS_UNSUCCESSFUL);

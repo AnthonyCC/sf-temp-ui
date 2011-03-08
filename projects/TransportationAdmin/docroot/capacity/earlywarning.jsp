@@ -68,16 +68,17 @@
 
                      var currentUpdateSource;
                       
-                    function doCompositeLink(compId1,compId2,compId3,compId4, url) {
+                    function doCompositeLink(compId1,compId2,compId3,compId4,compId5, url) {
 			          var param1 = document.getElementById(compId1).value;
 			          var param2 = document.getElementById(compId2).value;
 			          var param3 = document.getElementById(compId3).value;
 			          var param4 = document.getElementById(compId4).checked;
+			          var param5 = document.getElementById(compId5).value;
 			          			          
 			          if(param1.length == 0) { // || param2.length == 0) {
 			          		alert("Please select the required filter param (Date)");
 			          } else {
-			          	location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+"&"+compId3+"="+param3+"&"+compId4+"="+param4;
+			          	location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+"&"+compId3+"="+param3+"&"+compId4+"="+param4+"&"+compId5+"="+param5;
 			          }
         			} 
         			
@@ -191,6 +192,28 @@
                   &nbsp;<form:errors path="rDate" />
                 </td>
                 <td> 
+                  <select id="condition" name="condition">
+                      <option value="">EQUAL</option> 
+                      <c:forEach var="_condition" items="${conditions}">
+                      	  <c:choose>                          	
+	                            <c:when test="${_condition.name != '<>'}" > 
+	                              <c:choose>                          	
+		                            <c:when test="${condition == _condition.name}" > 
+		                              <option selected value="<c:out value="${_condition.name}"/>"><c:out value="${_condition.description}"/></option>
+		                            </c:when>
+		                            <c:otherwise> 
+		                              <option value="<c:out value="${_condition.name}"/>"><c:out value="${_condition.description}"/></option>
+		                            </c:otherwise> 
+                         		   </c:choose>
+                                </c:when>
+                            	<c:otherwise/> 
+                          </c:choose>                             
+                                
+                        </c:forEach>   
+                   </select>
+                
+                </td>
+                <td> 
                   <select id="cutOff" name="cutOff">
                       <option value="">--All Cut Off</option> 
                       <c:forEach var="cutoff" items="${cutoffs}">                             
@@ -216,7 +239,7 @@
                 </td>
                 <td><span style="font-size: 12px">&nbsp;Auto Refresh :</span><input type="checkbox" name="autorefresh" id="autorefresh" <%= ("on".equalsIgnoreCase(request.getParameter("autorefresh")) ? "checked=\"true\"" : "false") %>  /></td>
                    <td>
-                     <input type = "button" value="&nbsp;View&nbsp;" onclick="javascript:doCompositeLink('rDate','cutOff','rType','autorefresh','earlywarning.do')" />
+                     <input type = "button" value="&nbsp;View&nbsp;" onclick="javascript:doCompositeLink('rDate','cutOff','rType','autorefresh','condition','earlywarning.do')" />
                   </td>  
                   
               </tr>

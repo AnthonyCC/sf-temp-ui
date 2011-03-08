@@ -15,6 +15,7 @@ import java.util.TreeMap;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
 
+import com.freshdirect.framework.util.EnumLogicalOperator;
 import com.freshdirect.routing.constants.EnumReservationStatus;
 import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
 import com.freshdirect.routing.dao.IDeliveryDetailsDAO;
@@ -289,15 +290,18 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		return lateDeliveryOrders;
 	}
 	
-	public Map<String, List<IDeliverySlot>> getTimeslotsByDate(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws SQLException {
+	public Map<String, List<IDeliverySlot>> getTimeslotsByDate(final Date deliveryDate, final Date cutOffTime, final String zoneCode, final EnumLogicalOperator condition) throws SQLException {
 		
 		final Map<String, List<IDeliverySlot>> timeslotByArea = new TreeMap<String, List<IDeliverySlot>>();
 		
 		final StringBuffer query = new StringBuffer();
 		query.append(GET_TIMESLOTSBYDATE_QRY);
-		
+		String conditionValue = "=";
+		if(condition != null) {
+			conditionValue = condition.getName();
+		}
 		if(cutOffTime != null) {
-			query.append(" and t.cutoff_time = ?");
+			query.append(" and t.cutoff_time "+conditionValue+" ?");
 		}
 		query.append(" order by z.ZONE_CODE, t.START_TIME");
 		
@@ -353,16 +357,21 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		return timeslotByArea;
 	}
 	
-	public Map<String, List<IDeliveryWindowMetrics>> getTimeslotsByDateEx(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws SQLException {
+	public Map<String, List<IDeliveryWindowMetrics>> getTimeslotsByDateEx(final Date deliveryDate, final Date cutOffTime, final String zoneCode, final EnumLogicalOperator condition) throws SQLException {
 		
 		final Map<String, List<IDeliveryWindowMetrics>> timeslotByZone = new TreeMap<String, List<IDeliveryWindowMetrics>>();
 		
 		final StringBuffer query = new StringBuffer();
 		query.append(EARLY_WARNING_QUERY);
 		
-		if(cutOffTime != null) {
-			query.append(" and ts.CUTOFF_TIME =  ? ");
+		String conditionValue = "=";
+		if(condition != null) {
+			conditionValue = condition.getName();
 		}
+		if(cutOffTime != null) {
+			query.append(" and ts.CUTOFF_TIME "+conditionValue+" ?");
+		}
+		
 		query.append(") group by code, name, st, et order by code");
 		
 		PreparedStatementCreator creator = new PreparedStatementCreator() {
