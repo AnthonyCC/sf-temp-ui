@@ -3,7 +3,6 @@
 
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<%@page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Arrays"%>
 <%@page import="java.util.Collections"%>
@@ -14,6 +13,9 @@
 <%@page import="java.util.Set"%>
 <%@page import="java.util.HashSet"%>
 <%@page import="java.util.StringTokenizer"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="com.freshdirect.framework.util.StringUtil"%>
+<%@page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
 <%@page import="com.freshdirect.cms.ContentKey"%>
 <%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
 <%@page import="com.freshdirect.cms.ContentKey.InvalidContentKeyException"%>
@@ -47,7 +49,6 @@
 <%@page import="com.freshdirect.common.pricing.PricingContext"%>
 <%@page import="com.freshdirect.test.TestSupport"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
-<%@page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@page import="com.freshdirect.smartstore.Variant"%>
 <%@page import="com.freshdirect.smartstore.RecommendationServiceConfig"%>
 <%@page import="com.freshdirect.smartstore.RecommendationServiceType"%>
@@ -57,9 +58,10 @@
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@page import="com.freshdirect.smartstore.scoring.ScoringAlgorithm"%>
 <%@page import="com.freshdirect.smartstore.impl.ScriptedRecommendationService"%>
-<%@page import="org.apache.log4j.Logger"%>
 <%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
 <%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
+<%@page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@page import="org.apache.log4j.Logger"%>
 
 <%@ taglib uri="freshdirect" prefix="fd"%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
@@ -446,10 +448,7 @@ if (bRecService instanceof ScriptedRecommendationService) {
 
 
 %>
-
-
-<%@page import="com.freshdirect.framework.util.StringUtil"%>
-<%@page import="java.util.HashMap"%><html>
+<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>VARIANT COMPARISON PAGE - <%= siteFeature.getName() %><%=
@@ -482,7 +481,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 .prod-items td.pic{width:100px;}
 .prod-items td.info{text-align:left;vertical-align:top;}
 .prod-items .taxonomy{color: #777; font-weight: bold;}
-.prod-items .source{color: #999; font-weight: bold;padding-top: 2px;}
+.prod-items .source{color: #888; x-font-weight: bold;}
 .prod-items td.info div{position:relative;height:80px;}
 .prod-items .position{font-weight:bold;position:absolute !important;height:auto !important;bottom:0px;right:0px;}
 .prod-items .score{font-weight:bold;position:absolute !important;height:auto !important;bottom:0px;left:0px;margin-right:25px;}
@@ -794,11 +793,6 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 			LOG.error("exception when recommend for B", e);
 		}	
 	}
-	
-	// DEBUG
-	LOG.info("Sources[A]=\n" + si.getDataSourcesMap().toString());
-	LOG.info("Sources[B]=\n" + si2.getDataSourcesMap().toString());
-	
     %>
 	<table class="var-comparator">
 		<tr>
@@ -1002,7 +996,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 									<span style="white-space: nowrap">Product Age: <%= days %></span>
 								</div>
 								<% } %>
-								<div class="source"><%= StringUtil.join(map.get(pm.getContentKey()), ", ") %></div>
+								<div class="source text12"><%= StringUtil.join(map.get(pm.getContentKey()), ", ") %></div>
 						</div></td>
 					</tr> 
 				<%
@@ -1087,7 +1081,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 									<span style="white-space: nowrap">Product Age: <%= days %></span>
 								</div>
 								<% } %>
-								<div class="source"><%= StringUtil.join(map2.get(pm.getContentKey()), ", ") %></div>
+								<div class="source text12"><%= StringUtil.join(map2.get(pm.getContentKey()), ", ") %></div>
 								<% if (!"simple".equals(view)) { %>
 								<div class="position text12 <%= changeColor %>"><%= changeString %></div>
 								<% } %>

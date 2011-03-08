@@ -144,24 +144,8 @@ public class SmartYMALRecommendationService extends	AbstractRecommendationServic
 				addContentKeys(smartInput.getCartContents(), recNodes);
 				recommendations[i] = recNodes;
 				if (input.isTraceMode()) {
-					input.traceContentNodes(ymalSet.getContentKey().getEncoded() + "[" + strategy.getContentKey().getEncoded() + "]", recNodes);
+					input.traceContentNodes(ymalSet.getContentKey().getEncoded() + "[" + rec.getContentKey().getEncoded() + "]", recNodes);
 				}
-
-				// APPDEV-1633
-				/**
-				if (smartInput.isTraceMode()) {
-					Map<ContentKey, Set<String>> v = new HashMap<ContentKey, Set<String>>();
-					Map<ContentKey, Set<String>> otherMap = smartInput.getDataSourcesMap();
-					final Set<String> yss = new HashSet<String>(1);
-					yss.add(ymalSet.getContentKey().getEncoded());
-					for (ContentKey ck : otherMap.keySet()) {
-						v.put(ck, yss);
-					}
-
-					input.mergeDataSourcesMap(v);
-					
-				}
-				**/
 			}
 
 			if (recommenders.size() == 1) {
