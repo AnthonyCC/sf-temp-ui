@@ -8,8 +8,8 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.semPixel.FDSemPixelCache;
-import com.freshdirect.fdstore.semPixel.SemPixelModel;
+import com.freshdirect.fdstore.sempixel.FDSemPixelCache;
+import com.freshdirect.fdstore.sempixel.SemPixelModel;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;

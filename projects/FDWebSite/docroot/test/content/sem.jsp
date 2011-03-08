@@ -1,5 +1,5 @@
-<%@ page import='com.freshdirect.fdstore.FDStoreProperties, java.util.*, com.freshdirect.framework.util.NVL, com.freshdirect.fdstore.semPixel.FDSemPixelCache,
-com.freshdirect.fdstore.semPixel.SemPixelModel, java.net.URL' %><%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties, java.util.*, com.freshdirect.framework.util.NVL, com.freshdirect.fdstore.sempixel.FDSemPixelCache,
+com.freshdirect.fdstore.sempixel.SemPixelModel, java.net.URL' %><%@ taglib uri='freshdirect' prefix='fd' %>
 <% String semPixelNames = NVL.apply(request.getParameter("pixelNames"), ""); %>
 <fd:CheckLoginStatus pixelNames="<%= semPixelNames %>" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

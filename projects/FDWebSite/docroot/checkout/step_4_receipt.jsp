@@ -7,8 +7,8 @@
 <%@ page import='com.freshdirect.customer.*' %>
 <%@ page import="java.text.SimpleDateFormat, java.util.*" %>
 <%@ page import='com.freshdirect.framework.util.NVL'%>
-<%@ page import='com.freshdirect.fdstore.semPixel.FDSemPixelCache' %>
-<%@ page import='com.freshdirect.fdstore.semPixel.SemPixelModel' %>
+<%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
+<%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
 <%@ page import='java.text.DecimalFormat' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>

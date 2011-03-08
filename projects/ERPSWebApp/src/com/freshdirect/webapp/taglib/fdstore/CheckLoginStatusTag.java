@@ -15,8 +15,8 @@ import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUser;
-import com.freshdirect.fdstore.semPixel.FDSemPixelCache;
-import com.freshdirect.fdstore.semPixel.SemPixelModel;
+import com.freshdirect.fdstore.sempixel.FDSemPixelCache;
+import com.freshdirect.fdstore.sempixel.SemPixelModel;
 
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
