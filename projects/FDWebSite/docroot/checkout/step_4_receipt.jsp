@@ -13,11 +13,6 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-	<script type="text/javascript" language="javascript" src="/assets/javascript/FD_PromoEligibility.js"></script>
-	    <script src="/assets/javascript/prototype.js" type="text/javascript" language="javascript"></script>
-    <script src="/assets/javascript/scriptaculous.js?load=effects,builder" type="text/javascript" language="javascript"></script>
-    <script  src="/assets/javascript/modalbox.js" type="text/javascript" language="javascript"></script>
-    <link rel="stylesheet" href="/assets/css/modalbox.css" type="text/css">
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 <tmpl:insert template='/common/template/blank.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Order Placed</tmpl:put>
