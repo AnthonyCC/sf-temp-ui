@@ -203,6 +203,34 @@ function fetchGroupScaleInfoCrm(grpId, version){
 		return true;
 }
 
+function fetchGroupScaleInfoFromCheckout(grpId, version){
+		new Ajax.Request('/checkout/group_scale_info.jsp', {
+			parameters: {
+				grpId: grpId,
+				version: version						
+			},
+			onComplete: function(transport) {
+				checkGroupScalePopup(transport.responseText);
+			}
+		});	
+			
+		return true;
+}
+
+function fetchGroupScaleInfoFromYourAccount(grpId, version){
+		new Ajax.Request('/your_account/group_scale_info.jsp', {
+			parameters: {
+				grpId: grpId,
+				version: version						
+			},
+			onComplete: function(transport) {
+				checkGroupScalePopup(transport.responseText);
+			}
+		});	
+			
+		return true;
+}
+
 function checkGroupScalePopup(JSONstring) {
 	
 	var params = JSONstring.evalJSON(true);
