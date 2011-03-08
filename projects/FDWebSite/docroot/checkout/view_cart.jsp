@@ -6,7 +6,6 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<script type="text/javascript" language="javascript" src="/assets/javascript/FD_PromoEligibility.js"></script>
 
 <%! final java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
 <%! final java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##"); %>

@@ -12,11 +12,6 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<script type="text/javascript" language="javascript" src="/assets/javascript/prototype.js"></script>
-	<script type="text/javascript" language="javascript" src="/assets/javascript/scriptaculous.js?load=effects,builder"></script>
-	<script type="text/javascript" language="javascript" src="/assets/javascript/modalbox.js"></script>	
-	<link rel="stylesheet" type="text/css" href="/assets/css/modalbox.css" />
-	<script type="text/javascript" language="javascript" src="/assets/javascript/FD_PromoEligibility.js"></script>
 <%!
 java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 %>
