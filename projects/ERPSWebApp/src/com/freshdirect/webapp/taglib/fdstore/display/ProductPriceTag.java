@@ -78,6 +78,7 @@ public class ProductPriceTag extends BodyTagSupport {
 	String skuCode = null;
 	String grpDisplayType=null; //change group price display
 	boolean showSaveText = false; //show scale pricing
+	boolean useTarget = false; //true for quick buy windows
 	
 	private final static NumberFormat FORMAT_CURRENCY = NumberFormat.getCurrencyInstance(Locale.US);
 	private final static DecimalFormat FORMAT_QUANTITY = new java.text.DecimalFormat("0.##");
@@ -147,14 +148,14 @@ public class ProductPriceTag extends BodyTagSupport {
 			buf.append(ProductPriceTag.getHTMLFragment(
 				impression,
 				savingsPercentage, showDescription, showAboutPrice, showRegularPrice, showWasPrice, showScalePricing,
-				quickShop, grcyProd, skuCode, excludeCaseDeals, grpDisplayType, showSaveText, catId
+				quickShop, grcyProd, skuCode, excludeCaseDeals, grpDisplayType, showSaveText, catId, useTarget
 			));
 			buf.append("</span>\n");
 		}else {
 			buf.append(ProductPriceTag.getHTMLFragment(
 					impression,
 					savingsPercentage, showDescription, showAboutPrice, showRegularPrice, showWasPrice, showScalePricing,
-					quickShop, grcyProd, skuCode, excludeCaseDeals, grpDisplayType, showSaveText, catId
+					quickShop, grcyProd, skuCode, excludeCaseDeals, grpDisplayType, showSaveText, catId, useTarget
 				));
 			buf.append("\n");
 		}
@@ -186,7 +187,7 @@ public class ProductPriceTag extends BodyTagSupport {
 	 * @return HTML piece
 	 */
 	public static String getHTMLFragment(ProductImpression impression, double savingsPercentage, boolean showDescription, boolean showAboutPrice, boolean showRegularPrice, boolean showWasPrice, boolean showScalePricing, boolean quickShop, boolean grcyProd, String skuCode, 
-			boolean excludeCaseDeals, String grpDisplayType, boolean showSaveText,String catId) {
+			boolean excludeCaseDeals, String grpDisplayType, boolean showSaveText,String catId, boolean useTarget) {
 		StringBuffer buf = new StringBuffer();
 
 		String confDescription = null;
@@ -299,7 +300,11 @@ public class ProductPriceTag extends BodyTagSupport {
 								if(isSaleUnitDiff)
 									buf1.append("/").append(matPrice.getPricingUnit().toLowerCase());
 								buf1.append( "</span><br />" );
-								buf1.append( "<a href=\"/group.jsp?grpId="+group.getGroupId()+"&version="+group.getVersion()+buffer.toString()+"\">" );
+								if(useTarget) {
+									buf1.append( "<a href=\"/group.jsp?grpId="+group.getGroupId()+"&version="+group.getVersion()+buffer.toString()+"\" target=\"_top\">" );
+								} else {								
+									buf1.append( "<a href=\"/group.jsp?grpId="+group.getGroupId()+"&version="+group.getVersion()+buffer.toString()+"\">" );
+								}
 								buf1.append( "All " );
 								buf1.append( grpPricing.getShortDesc() );
 								buf1.append( " - click here" );
@@ -360,7 +365,11 @@ public class ProductPriceTag extends BodyTagSupport {
 						}else{
 							//default to "SMALL".equalsIgnoreCase(grpDisplayType) a short, linked, description
 							if(matPrice.getScaleUnit().equals("LB")) {//Other than eaches append the /pricing unit for clarity.
-								buf1.append("<a href=\"/group.jsp?grpId="+group.getGroupId()+"&version="+group.getVersion()+buffer.toString()+"\" class=\"text10rbold\" style=\"color: #CC0000;\">");
+								if(useTarget) {
+									buf1.append("<a href=\"/group.jsp?grpId="+group.getGroupId()+"&version="+group.getVersion()+buffer.toString()+"\" target=\"_top\" class=\"text10rbold\" style=\"color: #CC0000;\">");
+								} else {
+									buf1.append("<a href=\"/group.jsp?grpId="+group.getGroupId()+"&version="+group.getVersion()+buffer.toString()+"\" class=\"text10rbold\" style=\"color: #CC0000;\">");
+								}
 								buf1.append( FORMAT_QUANTITY.format( matPrice.getScaleLowerBound() ) );
 								buf1.append(matPrice.getScaleUnit().toLowerCase());
 								buf1.append( " " );
@@ -373,7 +382,11 @@ public class ProductPriceTag extends BodyTagSupport {
 								buf1.append( "</a>" );
 
 							} else {
-								buf1.append( "<a href=\"/group.jsp?grpId="+group.getGroupId()+"&version="+group.getVersion()+buffer.toString()+"\" class=\"text10rbold\" style=\"color: #CC0000;\">Any " );
+								if(useTarget) {
+									buf1.append( "<a href=\"/group.jsp?grpId="+group.getGroupId()+"&version="+group.getVersion()+buffer.toString()+"\" target=\"_top\" class=\"text10rbold\" style=\"color: #CC0000;\">Any " );
+								} else {
+									buf1.append( "<a href=\"/group.jsp?grpId="+group.getGroupId()+"&version="+group.getVersion()+buffer.toString()+"\" class=\"text10rbold\" style=\"color: #CC0000;\">Any " );
+								}
 								buf1.append( FORMAT_QUANTITY.format( matPrice.getScaleLowerBound() ) );
 								buf1.append( " " );
 								buf1.append( grpPricing.getShortDesc() );
@@ -546,5 +559,9 @@ public class ProductPriceTag extends BodyTagSupport {
 
 	public void setShowSaveText(boolean showSaveText) {
 		this.showSaveText = showSaveText;
+	}
+	
+	public void setUseTarget(boolean useTarget) {
+		this.useTarget = useTarget;
 	}
 }
