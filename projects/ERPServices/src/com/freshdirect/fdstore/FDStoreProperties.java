@@ -7,7 +7,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 import org.apache.log4j.Category;
 
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -412,6 +411,11 @@ public class FDStoreProperties {
 	private static final String PROP_CLICK2CALL_CALL_BACL_URL="fdstore.c2c.callback.url";
     //APPDEV-1215 Sustainable Seafood
     private final static String PROP_SEAFOODSUSTAIN_ENABLED = "fdstore.seafoodsustain.enabled";
+	
+	 //SEM Project (APPDEV-1598)
+    private static final String PROP_SEM_PIXELS = "fdstore.sem.pixels";
+    private static final String PROP_SEM_CONFIGS = "fdstore.sem.configs";
+    private static final String PROP_SEM_REFRESH_PERIOD = "fdstore.sem.refresh";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -827,6 +831,11 @@ public class FDStoreProperties {
 		defaults.put(MYFD_ENABLED, "false");		
 		//APPDEV-1215 Sustainable Seafood
 		defaults.put(PROP_SEAFOODSUSTAIN_ENABLED, "false");
+		
+		//SEM Project (APPDEV-1598)
+		defaults.put(PROP_SEM_PIXELS, "");
+		defaults.put(PROP_SEM_CONFIGS, "");
+		defaults.put(PROP_SEM_REFRESH_PERIOD, "5"); //MINUTE * this value
 
         refresh();
     }
@@ -2119,7 +2128,21 @@ public class FDStoreProperties {
 	public static String getC2CCallBackUrl(){
 		return config.getProperty(PROP_CLICK2CALL_CALL_BACL_URL);
 	}
-	
+
+	//SEM Project (APPDEV-1598
+	public static String getSemPixels() {
+		return config.getProperty(PROP_SEM_PIXELS);
+	}
+
+	public static String getSemConfigs() {
+		return config.getProperty(PROP_SEM_CONFIGS);
+	}
+
+	public static int getSemPixelRefreshPeriod() {
+		return Integer.parseInt(config.getProperty(PROP_SEM_REFRESH_PERIOD));
+	}
+
+	//APPDEV-1215 Sustainable Seafood
 	public static boolean isSeafoodSustainEnabled() {
         return (new Boolean(get(PROP_SEAFOODSUSTAIN_ENABLED))).booleanValue();
     }

@@ -33,7 +33,7 @@ public abstract class FDAbstractCache {
 		}
 	}
 	
-	private  synchronized void refresh() {
+	private synchronized void refresh() {
 		
 		Map m = loadData(lastMaxModifiedDate);
 		if (!m.isEmpty()) {
@@ -55,6 +55,9 @@ public abstract class FDAbstractCache {
 		return this.cache.get(key);
 	}
 	
+	protected Map getCache() {
+		return this.cache;
+	}
 	
 	private final class RefreshThread extends Thread {
 	        public RefreshThread(String name) {

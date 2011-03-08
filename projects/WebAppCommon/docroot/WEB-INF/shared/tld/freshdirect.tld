@@ -47,6 +47,22 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	<tag>
+		<name>SemPixelIncludeMedia</name>
+		<tagclass>com.freshdirect.webapp.taglib.SemPixelIncludeMediaTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>withErrorReport</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>pixelNames</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 
 	<tag>
 		<name>IncludeHtml</name>
@@ -1115,8 +1131,12 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>pixelNames</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
-
 	<tag>
 		<name>UnattendedDelivery</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.UnattendedDeliveryTag</tagclass>

@@ -6,6 +6,10 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.customer.*' %>
 <%@ page import="java.text.SimpleDateFormat, java.util.*" %>
+<%@ page import='com.freshdirect.framework.util.NVL'%>
+<%@ page import='com.freshdirect.fdstore.semPixel.FDSemPixelCache' %>
+<%@ page import='com.freshdirect.fdstore.semPixel.SemPixelModel' %>
+<%@ page import='java.text.DecimalFormat' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -84,6 +88,44 @@
 </TABLE>
 
 <%@include file="/checkout/includes/i_checkout_receipt.jspf"%>
+
+
+<%
+	//do not send on order modify
+	if ( !Boolean.parseBoolean(NVL.apply((String)request.getAttribute("modifyOrderMode"), "false")) ) {
+		//get ref to Pixel
+		SemPixelModel semPixel = FDSemPixelCache.getInstance().getSemPixel("TheSearchAgency");
+		
+		FDUserI sem_user = (FDUserI)session.getAttribute(SessionName.USER);
+
+		String sem_validOrderCount = "0";
+		double sem_checkCartSubtotal = 0;
+		String sem_cartSubtotal = "0";
+		String sem_orderNumber = "0";
+		DecimalFormat sem_df = new DecimalFormat("0.00");
+		String sem_totalDiscountAmount = "0";
+		
+		if(sem_user != null && sem_user.getShoppingCart() != null && request.getRequestURI().startsWith("/checkout/step_4_receipt.jsp")) {
+			sem_validOrderCount = Integer.toString(sem_user.getAdjustedValidOrderCount());
+			sem_cartSubtotal = NVL.apply((String)request.getAttribute("cartSubtotal"), "0").replace("$", "");
+			sem_orderNumber = NVL.apply((String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER), "0");
+			sem_totalDiscountAmount = NVL.apply((String)request.getAttribute("totalDiscountAmount"), "0").replace("$", "");
+			//string -> double -> formatted - > replace
+			sem_cartSubtotal = sem_df.format(Double.parseDouble(sem_cartSubtotal)).replace(".", "");
+			sem_totalDiscountAmount = sem_df.format(Double.parseDouble(sem_totalDiscountAmount)).replace(".", "");
+			//change triple zero ($0.00 -> 000) to single zero
+			if ("000".equals(sem_cartSubtotal)) { sem_cartSubtotal = "0"; }
+			if ("000".equals(sem_totalDiscountAmount)) { sem_totalDiscountAmount = "0"; }
+		}
+
+		//add a param to the params sent to the FTL
+		semPixel.setParam("subtotal", sem_cartSubtotal);
+		semPixel.setParam("orderId", sem_orderNumber);
+		semPixel.setParam("validOrders", sem_validOrderCount);
+		semPixel.setParam("discountAmount", sem_totalDiscountAmount);
+		%><fd:SemPixelIncludeMedia pixelNames="TheSearchAgency" /><%
+	}
+%>
 
 </tmpl:put>
 </tmpl:insert>

@@ -16,7 +16,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 
-<fd:CheckLoginStatus guestAllowed='true' />
+<fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" />
 
 <%
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
@@ -187,25 +187,25 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 	        	}
 	      } else if (!showAltHome && location2Media) {
 	%>      
-	      <%@ include file="includes/home/i_intro_hdr.jspf"%>
-	      		<% if (user.getLevel() >= FDUserI.RECOGNIZED) { %>
-	      						
-	      			<fd:OrderHistoryInfo id='orderHistoryInfo'>
-	      			<%
-	      			// also need to know how many orders the customer has that are not still pending
-	      			int pendingOrderCount = 0;
-	      			for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
-	      				FDOrderInfoI orderInfo = (FDOrderInfoI) hIter.next();
-	      				if (orderInfo.isPending()) {
-	      					pendingOrderCount++;
-	      				}
-	      			} 			
-	      			if (orderHistoryInfo != null && orderHistoryInfo.size() != 0 && pendingOrderCount > 0) {
-	      			%>
-	      				<table width="490" cellpadding="0" cellspacing="0" border="0">
-	      				<%
-	      				for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
-	      				     FDOrderInfoI orderInfo = (FDOrderInfoI) hIter.next();
+			<%@ include file="includes/home/i_intro_hdr.jspf"%>
+				<% if (user.getLevel() >= FDUserI.RECOGNIZED) { %>
+					<% int pendingOrderCount = 0;%>
+					<fd:OrderHistoryInfo id='orderHistoryInfo'>
+					<%
+					// also need to know how many orders the customer has that are not still pending
+					pendingOrderCount = 0;
+					for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
+						FDOrderInfoI orderInfo = (FDOrderInfoI) hIter.next();
+						if (orderInfo.isPending()) {
+							pendingOrderCount++;
+						}
+					} 			
+					if (orderHistoryInfo != null && orderHistoryInfo.size() != 0 && pendingOrderCount > 0) {
+					%>
+						<table width="490" cellpadding="0" cellspacing="0" border="0">
+						<%
+						for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
+							FDOrderInfoI orderInfo = (FDOrderInfoI) hIter.next();
                             String ordDeliveryType = orderInfo.getDeliveryType().toString();
                             //gift cards
                             String gcCodePersonal = EnumDeliveryType.GIFT_CARD_PERSONAL.getCode();

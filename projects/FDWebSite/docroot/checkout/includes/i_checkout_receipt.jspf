@@ -42,6 +42,7 @@ String fmtDlvDateTime = dateFormatter.format(reservation.getStartTime()).toUpper
 String deliveryTime = FDTimeslot.format(reservation.getStartTime(), reservation.getEndTime());
  
 boolean modifyOrderMode = cart.isModifiedOrder();
+request.setAttribute("modifyOrderMode", Boolean.toString(cart.isModifiedOrder())); //for sem use
 
 boolean displayReminder = false;
 if (user.getAdjustedValidOrderCount() > 1 && custInfo.getReminderFrequency() == 0){

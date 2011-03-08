@@ -4,4 +4,7 @@
 	<script src="/assets/javascript/scriptaculous.js?load=effects,builder" type="text/javascript" language="javascript"></script>
 	<script src="/assets/javascript/modalbox.js" type="text/javascript" language="javascript"></script>
 	<script src="/assets/javascript/common_javascript.js" type="text/javascript" language="javascript"></script>
+	<script src="/assets/javascript/scriptaculous.js?load=effects,builder" type="text/javascript" language="javascript"></script>
+	<script type="text/javascript" language="javascript" src="/assets/javascript/FD_PromoEligibility.js"></script>
+	<fd:SemPixelIncludeMedia pixelNames="GoogleAnalytics" />
 	<fd:IncludeMedia name="/media/editorial/site_pages/javascript.html"/>
