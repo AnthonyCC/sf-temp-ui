@@ -2,8 +2,11 @@ package com.freshdirect.dataloader.grp;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.ejb.CreateException;
@@ -90,70 +93,79 @@ public class SAPGrpInfoContentLoader implements BapiFunctionI {
 
 		// build carton details
 
-		List grpInfos = new ArrayList();
+		List<ErpGrpPriceModel> grpInfos = new ArrayList<ErpGrpPriceModel>();
+		Map<String, String> existingGrps = new HashMap<String, String>();
+		try {
+			for (int i = 0; i < groupTable.getNumRows(); i++) {
+				
+				// First retrieve all data from current row.
+				String matNumber = groupTable.getString("ZMATNR").trim();
+				String grpId = groupTable.getString("ZGROUP_ID").trim();			
+				String shortDesc = groupTable.getString("ZGROUP_SHORT_DESC").trim();
+				String LongDesc = groupTable.getString("ZGROUP_LONG_DESC").trim();			
+				String zoneId = groupTable.getString("ZZONE_ID").trim();
+				String grpQtyStr = groupTable.getString("ZSGRP_QTY").trim();
+				String grpUOM = groupTable.getString("ZSGRP_UOM").trim();
+				String grpPriceStr = groupTable.getString("ZSGRP_PRICE").trim();
+				String grpSUOM = groupTable.getString("ZSGRP_SUOM").trim();
+				String grpExpiryInd = groupTable.getString("ZSGRP_EXP_IND").trim();
+				double  grpQty=0;
+				double grpPrice=0;
+
 	
-		for (int i = 0; i < groupTable.getNumRows(); i++) {
-			
-			// First retrieve all data from current row.
-			String matNumber = groupTable.getString("ZMATNR").trim();
-			String grpId = groupTable.getString("ZGROUP_ID").trim();			
-			String shortDesc = groupTable.getString("ZGROUP_SHORT_DESC").trim();
-			String LongDesc = groupTable.getString("ZGROUP_LONG_DESC").trim();			
-			String zoneId = groupTable.getString("ZZONE_ID").trim();
-			String grpQtyStr = groupTable.getString("ZSGRP_QTY").trim();
-			String grpUOM = groupTable.getString("ZSGRP_UOM").trim();
-			String grpPriceStr = groupTable.getString("ZSGRP_PRICE").trim();
-			String grpSUOM = groupTable.getString("ZSGRP_SUOM").trim();
-			String grpExpiryInd = groupTable.getString("ZSGRP_EXP_IND").trim();
-			double  grpQty=0;
-			double grpPrice=0;
-			/*
-			 System.out.println("matNumber :"+matNumber);
-			 System.out.println("grpId :"+grpId);
-			 System.out.println("shortDesc :"+shortDesc);
-			 System.out.println("LongDesc :"+LongDesc);
-			 System.out.println("zoneId :"+zoneId);
-			 System.out.println("grpQty :"+grpQtyStr);
-			 System.out.println("grpUOM :"+grpUOM);
-			 System.out.println("grpPrice :"+grpPriceStr);
-			 System.out.println("grpExpiryInd :"+grpExpiryInd);			 			 
-			 */
-			try {
 				
 				if(grpQtyStr!=null && grpQtyStr.trim().length()>0) grpQty =Double.parseDouble(grpQtyStr);
 				
 				if(grpPriceStr!=null && grpPriceStr.trim().length()>0) grpPrice =Double.parseDouble(grpPriceStr);
-				//Validate if any material in the incoming message is already participating in an active group
-				//validateIfMaterialAlreadyExistsInActiveGroup(grpId, matNumber);
+				
+				if(!existingGrps.containsValue(matNumber)) {//Only if material id is not found so far any existing groups.
+					//Validate if this material in the incoming message is already participating in an existing group
+					String existingGrpId = checkIfMaterialAlreadyExistsInActiveGroup(grpId, matNumber);
+					if(existingGrpId != null && existingGrpId.length() > 0){
+						existingGrps.put(existingGrpId, matNumber);
+					} 
+				}
+				
 				constructGrpInfoModel(grpId,shortDesc,LongDesc,zoneId,grpQty,grpUOM,grpPrice,"X".equalsIgnoreCase(grpExpiryInd),matNumber,grpInfos, grpSUOM);
-			} catch (LoaderException ex) {
-				// TODO Auto-generated catch block
-				ex.printStackTrace();
-				LOGGER.warn("Failed to store Group info", ex);
-				String errorMsg = ex.toString();
-				errorMsg = errorMsg.substring(0, Math.min(255, errorMsg.length()));
-				LOGGER.info("Error message to SAP: '" + errorMsg + "'");
-				output.setValue("E", "RETURN");
-				output.setValue(errorMsg, "MESSAGE");
-				return;
-			} 
-            //zoneInfos.add(zoneDetail); 			 
-			//cartonDetails.add(detail);
 			
-			groupTable.nextRow();
-		}
-
-		try {
-			LOGGER.debug("Storing group content info");
-
+				groupTable.nextRow();
+			}
+			if(existingGrps.size() > 0){//IF there are materials in existing groups
+				//Validate for material present more than one active group.
+				Map<String, String> activeGrps = new HashMap<String, String>(existingGrps); 
+				for(Iterator<ErpGrpPriceModel> it = grpInfos.iterator(); it.hasNext();){
+					ErpGrpPriceModel grpModel = it.next();
+					if(existingGrps.containsKey(grpModel.getGrpId())){
+						//remove the group from active group map if active group is expired or if this group no more contains the material
+						//being checked against.  
+						Set<String> grpMatList = grpModel.getMatList();
+						String checkMatId = existingGrps.get(grpModel.getGrpId());
+						if(!grpModel.isActive() || !grpMatList.contains(checkMatId)) {
+							activeGrps.remove(grpModel.getGrpId());
+						}
+					}
+				}
+				if(activeGrps.size() > 0){
+					//Active groups exists. Stop further processing the export.
+					throw new LoaderException("Material(s) From this Export Already exists in an Active Group. "+activeGrps.toString());
+				}
+			}
+			LOGGER.debug ("Storing group content info");
 			this.storeGrpInfo(grpInfos);
 
 			output.setValue("S", "RETURN");
 			output.setValue("All good...", "MESSAGE");
 
-		} catch (Exception ex) {
+		} catch (LoaderException ex) {
+			LOGGER.warn("Failed to store Group info", ex);
+			String errorMsg = ex.toString();
+			errorMsg = errorMsg.substring(0, Math.min(255, errorMsg.length()));
+			LOGGER.info("Error message to SAP: '" + errorMsg + "'");
+			output.setValue("E", "RETURN");
+			output.setValue(errorMsg, "MESSAGE");
+			return;
+		}  catch (Exception ex) {
 			LOGGER.warn("Failed to store wave info", ex);
-
 			String errorMsg = ex.toString();
 			errorMsg = errorMsg.substring(0, Math.min(255, errorMsg.length()));
 			LOGGER.info("Error message to SAP: '" + errorMsg + "'");
@@ -162,15 +174,18 @@ public class SAPGrpInfoContentLoader implements BapiFunctionI {
 		}
 	}
 	
-	private void validateIfMaterialAlreadyExistsInActiveGroup(String grpId, String matId) throws LoaderException{
+	private String checkIfMaterialAlreadyExistsInActiveGroup(String grpId, String matId) {
 		Context ctx = null;
+		String existingGrpId = null;
 		try{
 			ctx = ErpServicesProperties.getInitialContext();
 			ErpGrpInfoHome mgr = (ErpGrpInfoHome) ctx.lookup("freshdirect.erp.GrpInfoManager");
 			ErpGrpInfoSB sb = mgr.create();
 			FDGroup group = sb.getGroupIdentityForMaterial(matId);
+			
 			if(group != null && !group.getGroupId().equals(grpId)) {//and its does not match with current active group.
-				throw new LoaderException("Material Number : "+matId+" Already exists in Active Group "+group.getGroupId());
+				//throw new LoaderException("Material Number : "+matId+" Already exists in Active Group "+group.getGroupId());
+				existingGrpId = group.getGroupId();
 			}
 		}catch(Exception ex) {
 			throw new EJBException("Failed to validate if Material Already Exists In Active Group: " + matId + "Msg: " + ex.toString());
@@ -182,6 +197,7 @@ public class SAPGrpInfoContentLoader implements BapiFunctionI {
 				}
 			}
 		}
+		return existingGrpId;
 	}
 	
 	public void constructGrpInfoModel(String grpId,String shortDesc,String longDesc,String zoneId,double grpQty,String grpUOM ,double grpPrice,boolean isExpired,String matId,List grpInfos, String grpSUOM ) throws LoaderException {
