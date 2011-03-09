@@ -2,6 +2,8 @@ package com.freshdirect.fdstore.customer;
 
 import java.util.List;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpInvoiceLineI;
@@ -16,8 +18,10 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.GroupScalePricing;
+import com.freshdirect.fdstore.GrpZonePriceModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.event.EnumEventSource;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.sap.PosexUtil;
 
 /**
@@ -29,7 +33,7 @@ import com.freshdirect.sap.PosexUtil;
 public class FDCartLineModel extends AbstractCartLine {
 
 	private static final long	serialVersionUID	= 6554964787371568944L;
-	
+	private final static Category LOGGER = LoggerFactory.getInstance(FDCartLineModel.class);
 	private EnumEventSource source;
 	private String cartonNumber;
 	
@@ -79,13 +83,8 @@ public class FDCartLineModel extends AbstractCartLine {
 				ol.setBasePrice(productInfo.getZonePriceInfo(getPricingContext().getZoneId()).getSellingPrice());
 				ol.setBasePriceUnit(productInfo.getDefaultPriceUnit());	
 				//Check if qualified group  scale qty > 0. If yes then set FDGroup appropriately.
-				if(ol.getGroupQuantity() > 0){
-					if(ol.getFDGroup() == null){
-						//then set it from product info. else leave the FDGroup as it is.
-						ol.setFDGroup(productInfo.getGroup());
-					}
-					GroupScalePricing groupPricing = GroupScaleUtil.lookupGroupPricing(ol.getFDGroup());
-					ol.setPricingZoneId(groupPricing.getGrpZonePrice(getPricingContext().getZoneId()).getSapZoneId());
+				if(ol.getGroupQuantity() > 0 && ol.getFDGroup() != null){
+						ol.setPricingZoneId(GroupScaleUtil.getGroupPricingZoneId(ol.getFDGroup(), getPricingContext().getZoneId()));
 				} else {
 					//not qualified for group scale. clear FD group if present.
 					ol.setFDGroup(null);

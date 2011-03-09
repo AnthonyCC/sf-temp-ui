@@ -294,7 +294,7 @@ public class ProductPriceTag extends BodyTagSupport {
 								buf1.append( "<span class=\"text14rbold\">" );
 								buf1.append( FORMAT_QUANTITY.format( matPrice.getScaleLowerBound() ) );
 								if(matPrice.getScaleUnit().equals("LB"))//Other than eaches append the /pricing unit for clarity.
-									buf1.append(matPrice.getScaleUnit().toLowerCase());
+									buf1.append(matPrice.getScaleUnit().toLowerCase()).append("s");
 								buf1.append( " for " );
 								buf1.append( FORMAT_CURRENCY.format(displayPrice ) );
 								if(isSaleUnitDiff)
@@ -315,7 +315,7 @@ public class ProductPriceTag extends BodyTagSupport {
 								buf1.append( " <span class=\"titleor14\">SAVE!</span> <span class=\"title14\">" );
 								buf1.append( FORMAT_QUANTITY.format( matPrice.getScaleLowerBound() ) );
 								if(matPrice.getScaleUnit().equals("LB"))//Other than eaches append the /pricing unit for clarity.
-									buf1.append(matPrice.getScaleUnit().toLowerCase());
+									buf1.append(matPrice.getScaleUnit().toLowerCase()).append("s");
 								buf1.append( " for " );
 								buf1.append( FORMAT_CURRENCY.format(displayPrice) );
 								if(isSaleUnitDiff)
@@ -327,7 +327,7 @@ public class ProductPriceTag extends BodyTagSupport {
 								buf1.append( " <span class=\"text14rbold\">Any " );
 								buf1.append( FORMAT_QUANTITY.format( matPrice.getScaleLowerBound() ) );
 								if(matPrice.getScaleUnit().equals("LB"))//Other than eaches append the /pricing unit for clarity.
-									buf1.append(matPrice.getScaleUnit().toLowerCase());
+									buf1.append(matPrice.getScaleUnit().toLowerCase()).append("s");;
 								buf1.append( " " );
 								buf1.append( grpPricing.getShortDesc() );
 								buf1.append( " for " );
@@ -341,7 +341,7 @@ public class ProductPriceTag extends BodyTagSupport {
 								buf1.append( " <span class=\"text12orbold\">SAVE!</span> <span class=\"title12\">" );
 								buf1.append( FORMAT_QUANTITY.format( matPrice.getScaleLowerBound() ) );
 								if(matPrice.getScaleUnit().equals("LB"))//Other than eaches append the /pricing unit for clarity.
-									buf1.append(matPrice.getScaleUnit().toLowerCase());
+									buf1.append(matPrice.getScaleUnit().toLowerCase()).append("s");
 								buf1.append( " for " );
 								buf1.append( FORMAT_CURRENCY.format( displayPrice) );
 								if(isSaleUnitDiff)
@@ -353,7 +353,7 @@ public class ProductPriceTag extends BodyTagSupport {
 								buf1.append( " <span class=\"text10rbold\">Any " );
 								buf1.append( FORMAT_QUANTITY.format( matPrice.getScaleLowerBound() ) );
 								if(matPrice.getScaleUnit().equals("LB"))//Other than eaches append the /pricing unit for clarity.
-									buf1.append(matPrice.getScaleUnit().toLowerCase());
+									buf1.append(matPrice.getScaleUnit().toLowerCase()).append("s");
 								buf1.append( " " );
 								buf1.append( grpPricing.getShortDesc() );
 								buf1.append( " for " );
@@ -371,7 +371,7 @@ public class ProductPriceTag extends BodyTagSupport {
 									buf1.append("<a href=\"/group.jsp?grpId="+group.getGroupId()+"&version="+group.getVersion()+buffer.toString()+"\" class=\"text10rbold\" style=\"color: #CC0000;\">");
 								}
 								buf1.append( FORMAT_QUANTITY.format( matPrice.getScaleLowerBound() ) );
-								buf1.append(matPrice.getScaleUnit().toLowerCase());
+								buf1.append(matPrice.getScaleUnit().toLowerCase()).append("s");
 								buf1.append( " " );
 								buf1.append( "of any " );
 								buf1.append( " " );

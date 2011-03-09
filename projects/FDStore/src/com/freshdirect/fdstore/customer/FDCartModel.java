@@ -1113,6 +1113,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			if(qualifiedGroupMap.containsKey(qGroup)){
 				//set the group quantity to the qualified cartline.
 				qCartLine.setGroupQuantity(qualifiedGroupMap.get(qGroup));
+				//Associate the FDgroup to the cartline.
+				qCartLine.setFDGroup(qGroup);
 			}
 		}
 	}

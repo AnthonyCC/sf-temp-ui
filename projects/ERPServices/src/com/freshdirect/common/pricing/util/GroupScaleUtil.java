@@ -123,5 +123,18 @@ public class GroupScaleUtil {
 			throw fe;
 		}
 	}
-
+	public static String getGroupPricingZoneId(FDGroup group, String pricingZoneId) throws FDResourceException{
+		try{
+			GroupScalePricing groupPricing = GroupScaleUtil.lookupGroupPricing(group);
+			if(groupPricing!=null) {
+				GrpZonePriceModel grpPriceModel = groupPricing.getGrpZonePrice(pricingZoneId);
+				if(grpPriceModel != null) {
+					return grpPriceModel.getSapZoneId();
+				} 
+			}
+		} catch(FDResourceException fe){
+			throw fe;
+		}
+		return null;
+	}
 }

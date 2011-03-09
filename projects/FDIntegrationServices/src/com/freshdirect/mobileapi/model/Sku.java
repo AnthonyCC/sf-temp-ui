@@ -267,8 +267,9 @@ public class Sku {
      */
     public String[] getScaledPrices() {
         String[] scales = new String[] {};
-
+        
         try {
+        	if(getGroupPrice() > 0.0) return scales; //return empty array. If group scale is present do not return regular scales.
             if (wineLayout) {
                 scales = priceCalc.getZonePriceModel().getWineScaleDisplay(true);;
             } else {

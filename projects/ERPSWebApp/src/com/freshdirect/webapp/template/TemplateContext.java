@@ -438,17 +438,31 @@ public class TemplateContext extends BaseTemplateContext{
 							}
 							GroupScalePricing grpPricing = GroupScaleUtil.lookupGroupPricing(group);
 							StringBuffer buf1 = new StringBuffer();
-							buf1.append( "<a href=\"/group.jsp?grpId="+group.getGroupId()+"&version="+group.getVersion()+"\" class=\"text10rbold\" style=\"color: #CC0000;\">Any " );
-							buf1.append( quantityFormatter.format( matPrice.getScaleLowerBound() ) );
-							if(!isSaleUnitDiff && !matPrice.getPricingUnit().equals("EA"))//Other than eaches append the /pricing unit for clarity.
-								buf1.append(matPrice.getPricingUnit().toLowerCase());
-							buf1.append( " " );
-							buf1.append( grpPricing.getShortDesc() );
-							buf1.append( " for " );
-							buf1.append( currencyFormatter.format( displayPrice) );
-							if(isSaleUnitDiff)
+							if(matPrice.getScaleUnit().equals("LB")) {//Other than eaches append the /pricing unit for clarity.
+								buf1.append( "<a href=\"/group.jsp?grpId="+group.getGroupId()+"&version="+group.getVersion()+"\" class=\"text10rbold\" style=\"color: #CC0000;\">Any " );
+								buf1.append( quantityFormatter.format( matPrice.getScaleLowerBound() ) );
+								buf1.append(matPrice.getScaleUnit().toLowerCase()).append("s");
+								buf1.append( " " );
+								buf1.append( "of any " );
+								buf1.append( " " );
+								buf1.append( grpPricing.getShortDesc() );
+								buf1.append( " for " );
+								buf1.append( currencyFormatter.format( displayPrice) );
 								buf1.append("/").append(matPrice.getPricingUnit().toLowerCase());
-							buf1.append( "</a>" );
+								buf1.append( "</a>" );
+
+							} else {
+								buf1.append( "<a href=\"/group.jsp?grpId="+group.getGroupId()+"&version="+group.getVersion()+"\" class=\"text10rbold\" style=\"color: #CC0000;\">Any " );
+								buf1.append( quantityFormatter.format( matPrice.getScaleLowerBound() ) );
+								buf1.append( " " );
+								buf1.append( grpPricing.getShortDesc() );
+								buf1.append( " for " );
+								buf1.append( currencyFormatter.format( displayPrice) );
+								if(isSaleUnitDiff)
+									buf1.append("/").append(matPrice.getPricingUnit().toLowerCase());
+								buf1.append( "</a>" );
+
+							}
 							scaleDisplay= buf1.toString();
 					}
 				} catch (FDResourceException e) {
