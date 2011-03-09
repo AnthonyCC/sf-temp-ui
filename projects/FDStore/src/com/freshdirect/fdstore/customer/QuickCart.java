@@ -146,7 +146,7 @@ public class QuickCart implements FDProductCollectionI {
 		for (Iterator<FDProductSelectionI> i = this.orderLines.iterator(); i.hasNext();) {
 			FDProductSelectionI productSelection = (FDProductSelectionI) i.next();
 			ProductModel product = productSelection.lookupProduct();
-			if (product.getDepartment().getContentName().equalsIgnoreCase(deptId)) {
+			if (product!=null && product.getDepartment()!=null && product.getDepartment().getContentName().equalsIgnoreCase(deptId)) {
 				deptProducts.add(productSelection);
 			}
 		}

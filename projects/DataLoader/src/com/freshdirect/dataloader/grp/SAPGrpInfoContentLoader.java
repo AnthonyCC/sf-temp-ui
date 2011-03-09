@@ -163,7 +163,7 @@ public class SAPGrpInfoContentLoader implements BapiFunctionI {
 			LOGGER.info("Error message to SAP: '" + errorMsg + "'");
 			output.setValue("E", "RETURN");
 			output.setValue(errorMsg, "MESSAGE");
-			return;
+			//return;
 		}  catch (Exception ex) {
 			LOGGER.warn("Failed to store wave info", ex);
 			String errorMsg = ex.toString();

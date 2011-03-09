@@ -37,8 +37,13 @@ java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 
         SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE MM/dd/yy");
         FDReservation reservation = cart.getDeliveryReservation();
-        String fmtDlvDateTime = dateFormatter.format(reservation.getStartTime()).toUpperCase();
-		String deliveryTime = FDTimeslot.format(reservation.getStartTime(), reservation.getEndTime());
+        String fmtDlvDateTime = "";
+	String deliveryTime ="";
+	if(reservation!=null && null!=reservation.getStartTime()) {
+		fmtDlvDateTime=dateFormatter.format(reservation.getStartTime()).toUpperCase();
+		if(null!=reservation.getEndTime() && !"".equals(reservation.getStartTime()) && !"".equals(reservation.getEndTime())) 
+			deliveryTime=FDTimeslot.format(reservation.getStartTime(), reservation.getEndTime());
+	}
 
 		boolean orderAmountFraud = result.hasError("order_amount_fraud");
 		boolean doubleSubmit = result.hasError("processing_order");
