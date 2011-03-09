@@ -308,7 +308,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
 		<links name="customeraccount">order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,account_details.jsp,add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,username_password_option.jsp</links>
 		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp</links>
-		<links name="actions">rejectCredit,autoApprove,lateLog,buyDeliveryPass,editAddress,editPayment</links>
+		<links name="actions">rejectCredit,autoApprove,lateLog,buyDeliveryPass,editAddress,editPayment,skipAddApartment</links>
 
 		<limit name="autoApprove">20</limit>
 	</role>
