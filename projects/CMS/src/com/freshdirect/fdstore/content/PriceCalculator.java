@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore.content;
 
+import java.text.DecimalFormat;
 import java.util.Locale;
 
 import com.freshdirect.common.pricing.MaterialPrice;
@@ -13,12 +14,15 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.ZonePriceModel;
 
 public class PriceCalculator {
 
 	private final static java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
+	
+	private final static DecimalFormat FORMAT_QUANTITY = new java.text.DecimalFormat("0.##");
 
     PricingContext ctx;
     SkuModel skuModel;
@@ -529,6 +533,104 @@ public class PriceCalculator {
 		}  catch (FDResourceException e) {
 			throw new FDRuntimeException(e);
 		} 
+	}
+	
+	public String getGroupLongOfferDescription() {
+		
+		StringBuffer buf1 = new StringBuffer();
+		try{
+			if(getProductInfo().getGroup() == null) {
+				return null;
+			}
+			GroupScalePricing grpPricing = GroupScaleUtil.lookupGroupPricing(getProductInfo().getGroup());
+			MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(getProductInfo().getGroup(), ctx.getZoneId());
+			if(grpPricing != null && matPrice != null) {
+				double displayPrice = 0.0;
+				boolean isSaleUnitDiff = false;
+				if(matPrice.getPricingUnit().equals(matPrice.getScaleUnit())){
+					if(matPrice.getPricingUnit().equals("EA"))
+						displayPrice = matPrice.getPrice() * matPrice.getScaleLowerBound();
+					else {
+						//other than eaches.
+						displayPrice = matPrice.getPrice();
+						isSaleUnitDiff = true;
+					}
+				} else {
+					displayPrice = matPrice.getPrice();
+					isSaleUnitDiff = true;
+				}
+				
+				buf1.append( "Any Combination of "+grpPricing.getLongDesc()+" ");				
+				buf1.append( FORMAT_QUANTITY.format( matPrice.getScaleLowerBound() ) );
+				if(matPrice.getScaleUnit().equals("LB")) {//Other than eaches append the /pricing unit for clarity.
+					buf1.append(matPrice.getScaleUnit().toLowerCase());
+				}
+				buf1.append( " for " );
+				buf1.append( currencyFormatter.format(displayPrice ) );
+				if(isSaleUnitDiff) {
+					buf1.append("/").append(matPrice.getPricingUnit().toLowerCase());
+				}								
+			} else {
+				return null;
+			}
+
+		} catch (FDSkuNotFoundException e) {
+			throw new FDRuntimeException(e);
+		}  catch (FDResourceException e) {
+			throw new FDRuntimeException(e);
+		}  
+		
+		return buf1.toString();
+	}
+	
+	public String getGroupShortOfferDescription() {
+		
+		StringBuffer buf1 = new StringBuffer();
+		try{
+			if(getProductInfo().getGroup() == null) {
+				return null;
+			}
+			GroupScalePricing grpPricing = GroupScaleUtil.lookupGroupPricing(getProductInfo().getGroup());
+			MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(getProductInfo().getGroup(), ctx.getZoneId());
+			if(grpPricing != null && matPrice != null) {
+				double displayPrice = 0.0;
+				boolean isSaleUnitDiff = false;
+				if(matPrice.getPricingUnit().equals(matPrice.getScaleUnit())){
+					if(matPrice.getPricingUnit().equals("EA"))
+						displayPrice = matPrice.getPrice() * matPrice.getScaleLowerBound();
+					else {
+						//other than eaches.
+						displayPrice = matPrice.getPrice();
+						isSaleUnitDiff = true;
+					}
+				} else {
+					displayPrice = matPrice.getPrice();
+					isSaleUnitDiff = true;
+				}
+				
+				buf1.append( "Any " );
+				buf1.append( FORMAT_QUANTITY.format( matPrice.getScaleLowerBound() ) );
+				if(matPrice.getScaleUnit().equals("LB")) {//Other than eaches append the /pricing unit for clarity.
+					buf1.append(matPrice.getScaleUnit().toLowerCase());
+				}
+				buf1.append( " " );
+				buf1.append( grpPricing.getShortDesc() );
+				buf1.append( " for " );
+				buf1.append( currencyFormatter.format(displayPrice) );
+				if(isSaleUnitDiff) {
+					buf1.append("/").append(matPrice.getPricingUnit().toLowerCase());
+				}							
+			} else {
+				return null;
+			}
+
+		} catch (FDSkuNotFoundException e) {
+			throw new FDRuntimeException(e);
+		}  catch (FDResourceException e) {
+			throw new FDRuntimeException(e);
+		}  
+		
+		return buf1.toString();
 	}
 
 }
