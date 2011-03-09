@@ -400,27 +400,8 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             URL sem_refUrl = new URL(sem_referer);
             sem_referer = sem_refUrl.getHost();
 
-            //parse out zip code from referer params
-            String sem_refererQueryParams = NVL.apply(sem_refUrl.getQuery(), "");
-
-            if (!"".equals(sem_refererQueryParams)) {
-                sem_zipParse = sem_refererQueryParams.split("&");
-
-                for (int m = 0; m < sem_zipParse.length; m++) {
-                    StringTokenizer sem_stQueryParams = new StringTokenizer(sem_zipParse[m],
-                            "=");
-
-                    while (sem_stQueryParams.hasMoreTokens()) {
-                        String key = sem_stQueryParams.nextToken();
-                        String val = sem_stQueryParams.nextToken();
-
-                        //we only care about zip code here
-                        if ("zipcode".equals(key)) {
-                            sem_zipCode = val;
-                        }
-                    }
-                }
-            }
+            //get zip code from request params
+            sem_zipCode = NVL.apply(request.getParameter("zipcode"), "");
         }
 
         //make sure we have values to check against
