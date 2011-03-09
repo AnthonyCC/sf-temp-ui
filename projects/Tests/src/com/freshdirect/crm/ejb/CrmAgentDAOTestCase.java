@@ -100,6 +100,7 @@ public class CrmAgentDAOTestCase extends DbTestCaseSupport {
 		PrimaryKey pk = new PrimaryKey("a1");
 		CrmAgentModel agent = new CrmAgentModel(pk);
 		agent.setUserId("knadeem");
+		agent.setLdapId("knadeem");
 		agent.setPassword("martini");
 		agent.setFirstName("Kashif");
 		agent.setLastName("Nadeem");
