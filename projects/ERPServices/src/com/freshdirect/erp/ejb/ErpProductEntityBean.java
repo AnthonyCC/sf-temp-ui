@@ -459,8 +459,7 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
 			throw new EJBException(ex);
 		} catch (javax.naming.NamingException ex) {
 			throw new EJBException(ex);
-		} catch (java.rmi.RemoteException ex) {
-			System.out.println("testing exe1 bastards");
+		} catch (java.rmi.RemoteException ex) {			
 			ex.printStackTrace();
 			throw new EJBException(ex);
 		}
