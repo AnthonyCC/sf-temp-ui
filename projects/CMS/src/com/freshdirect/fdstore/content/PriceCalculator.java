@@ -560,7 +560,7 @@ public class PriceCalculator {
 					isSaleUnitDiff = true;
 				}
 				
-				buf1.append( "Any Combination of "+grpPricing.getLongDesc()+" ");				
+				buf1.append( "Any "+grpPricing.getLongDesc()+" ");				
 				buf1.append( FORMAT_QUANTITY.format( matPrice.getScaleLowerBound() ) );
 				if(matPrice.getScaleUnit().equals("LB")) {//Other than eaches append the /pricing unit for clarity.
 					buf1.append(matPrice.getScaleUnit().toLowerCase()).append("s");
