@@ -431,6 +431,14 @@ public class Sku {
 	        throw new FDRuntimeException(e);
 	    }    	
    }
+   
+   public String getGroupLongOfferDescription() {
+	   return priceCalc.getGroupLongOfferDescription();
+   }
+   
+   public String getGroupShortOfferDescription() {
+	   return priceCalc.getGroupShortOfferDescription();
+   }
 
    public String getSustainabilityRating() {
        return sustainabilityRating;

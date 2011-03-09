@@ -70,7 +70,13 @@ public class Sku {
     
     private String groupLongDesc;
     
-    private String skuSustainabilityRating;
+    private String groupLongOfferDescription;
+    
+    private String groupShortOfferDescription;
+    
+    private String sustainabilityRating;
+    
+    private String sustainabilityRatingDescription;
 
     public Sku() {
     }
@@ -86,7 +92,7 @@ public class Sku {
         result.basePrice = sku.getBasePrice();
         result.basePriceUnit = sku.getBasePriceUnit();
         result.skuRating = sku.getRating();
-        result.skuSustainabilityRating=sku.getSustainabilityRating();
+        
         result.hasWasPrice = sku.hasWasPrice();
         result.domainLabel = sku.getDomainLabel();
         result.salesUnitDescription = sku.getSalesUnitDescription();
@@ -118,6 +124,18 @@ public class Sku {
         result.setGroupShortDesc(shortDesc != null ? shortDesc : "");
         String longDesc = sku.getGroupLongDescription();
         result.setGroupLongDesc(longDesc != null ? longDesc : "");
+        
+        String longOfferDesc = sku.getGroupLongOfferDescription();
+        result.setGroupLongOfferDescription(longOfferDesc != null ? longOfferDesc : "");
+        
+        String shortOfferDesc = sku.getGroupShortOfferDescription();
+        result.setGroupShortOfferDescription(shortOfferDesc != null ? shortOfferDesc : "");
+      
+        String _skuSustainabilityRating = sku.getSustainabilityRating();
+        result.setSustainabilityRating(_skuSustainabilityRating != null ? _skuSustainabilityRating : "");
+        
+        String _sustainabilityRatingDescription = sku.getSustainabilityRatingDescription();
+        result.setSustainabilityRatingDescription(_sustainabilityRatingDescription != null ? _sustainabilityRatingDescription : "");
         return result;
     }
 
@@ -285,4 +303,38 @@ public class Sku {
 		this.groupLongDesc = groupLongDesc;
 	}
 
+	public String getGroupLongOfferDescription() {
+		return groupLongOfferDescription;
+	}
+
+	public void setGroupLongOfferDescription(String groupLongOfferDescription) {
+		this.groupLongOfferDescription = groupLongOfferDescription;
+	}
+
+	public String getGroupShortOfferDescription() {
+		return groupShortOfferDescription;
+	}
+
+	public void setGroupShortOfferDescription(String groupShortOfferDescription) {
+		this.groupShortOfferDescription = groupShortOfferDescription;
+	}
+
+	
+	public String getSustainabilityRating() {
+		return sustainabilityRating;
+	}
+
+	public void setSustainabilityRating(String sustainabilityRating) {
+		this.sustainabilityRating = sustainabilityRating;
+	}
+
+	public String getSustainabilityRatingDescription() {
+		return sustainabilityRatingDescription;
+	}
+
+	public void setSustainabilityRatingDescription(
+			String sustainabilityRatingDescription) {
+		this.sustainabilityRatingDescription = sustainabilityRatingDescription;
+	}
+	
 }
