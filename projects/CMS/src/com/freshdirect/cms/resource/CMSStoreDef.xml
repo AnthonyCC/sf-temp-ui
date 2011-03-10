@@ -486,6 +486,7 @@
 				<EnumValue value="27" label="Featured Menu"/>				
 				<EnumValue value="40" label="4minute-meals landing page"/><!-- 4minute-meals department page -->
 				<EnumValue value="41" label="4minute-meals restaurant page"/><!-- 4minute-meals category page -->
+				<EnumValue value="42" label="Bakery department"/>
                 <EnumValue value="97" label="Media No Nav"/><!-- [APPREQ-77] new layout -->
 				<EnumValue value="98" label="Multi Item Layout - Horizontal"/>
 				<EnumValue value="99" label="Multi Item Layout - Vertical"/>

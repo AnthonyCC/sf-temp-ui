@@ -167,11 +167,6 @@
 				%><%@ include file="/departments/wine/bc_home.jspf"%><%
 			} else if ("usq".equals(deptId)) { //usq wine page
 				%><%@ include file="/departments/wine/usq_home.jspf"%><% 
-			} else if ("bak".equals(deptId)) { // bak needs top buffer 
-				String trkCode= "dpage"; 
-				%><img src="/media_stat/images/layout/clear.gif" width="1" height="12" />
-				<%@ include file="/includes/layouts/bakerydpt.jspf" %><br />
-				<%@ include file="/includes/department_bottom.jspf"%><%
 			} else {
 				//use this spacer image if not on buy big department (media include available for spacing)
 				if (!"big".equals(deptId)) {

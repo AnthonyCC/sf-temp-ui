@@ -56,7 +56,11 @@ public enum EnumLayoutType implements Serializable {
     FOURMM_CATEGORY		("4minute-meals restaurant page",41),
     
     WINE_DEALS							("Wine Deals", 103),
-    WINE_EXPERTS_FAVS					("Wine Expert's Favs", 104);
+    WINE_EXPERTS_FAVS					("Wine Expert's Favs", 104),
+    
+    BAKERY_DEPARTMENT ("Bakery department", 42),
+    
+    ;
 
     public static List<EnumLayoutType> getLayoutTypes() {
         return Arrays.asList(values());

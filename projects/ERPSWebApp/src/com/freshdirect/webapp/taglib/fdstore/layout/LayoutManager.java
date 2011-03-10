@@ -386,7 +386,8 @@ public class LayoutManager extends BodyTagSupport {
 		} else if (layoutType == EnumLayoutType.FOURMM_CATEGORY.getId()) {
 			s.setLayoutFileName("/includes/layouts/4mm/restaurant_page_layout.jsp");
 			s.setGrabberDepth(-1);
-			
+		} else if (layoutType == EnumLayoutType.BAKERY_DEPARTMENT.getId()) {
+		        s.setLayoutFileName("/includes/layouts/bakerydpt.jsp");
 		} else {
 			// default to the generic layout using the default settings for the ItemGrabber
 			s.setLayoutFileName("/includes/layouts/generic_layout.jsp");

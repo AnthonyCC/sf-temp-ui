@@ -1,3 +1,4 @@
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <table width="550" cellspacing="0" cellpadding="0" border="0">
 <tr align="center" valign="top">
 <td width="325" align="center">
