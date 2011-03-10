@@ -223,6 +223,19 @@ order by cn.id
 						</script>
 					</CmsReport>
 					
+
+					<CmsReport id="scarabRules">
+						<name>Scarab merchandising rules</name>
+						<description>Shows the active Scarab merchandising rules (include,exclude,promote,demote)</description>
+						<script>
+<![CDATA[
+select parent_contentnode_id as parent_key$, def_name, child_contentnode_id as child_key$ 
+from cms.relationship
+where def_name in ('SCARAB_YMAL_INCLUDE', 'SCARAB_YMAL_EXCLUDE', 'SCARAB_YMAL_PROMOTE', 'SCARAB_YMAL_DEMOTE')
+]]>
+						</script>
+					</CmsReport>
+
 					
 				</queries>
 			</CmsQueryFolder>
