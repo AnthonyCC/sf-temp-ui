@@ -222,16 +222,50 @@ order by cn.id
 ]]>
 						</script>
 					</CmsReport>
+				</queries>
+			</CmsQueryFolder>
 					
+
+			<CmsQueryFolder>
+				<name>Smart Store Reports</name>
+				<queries>
+
 
 					<CmsReport id="scarabRules">
 						<name>Scarab merchandising rules</name>
 						<description>Shows the active Scarab merchandising rules (include,exclude,promote,demote)</description>
 						<script>
 <![CDATA[
-select parent_contentnode_id as parent_key$, def_name, child_contentnode_id as child_key$ 
+select parent_contentnode_id as parent_key$, def_name as group$, child_contentnode_id as child_key$ 
 from cms.relationship
 where def_name in ('SCARAB_YMAL_INCLUDE', 'SCARAB_YMAL_EXCLUDE', 'SCARAB_YMAL_PROMOTE', 'SCARAB_YMAL_DEMOTE')
+order by def_name
+]]>
+						</script>
+					</CmsReport>
+
+
+					<CmsReport id="ymalSets">
+						<name>YMAL sets</name>
+						<description>Smart YMAL sets</description>
+						<script>
+<![CDATA[
+select parent_contentnode_id as node_key$, child_contentnode_id as ymalset_key$ 
+from cms.relationship
+where def_name = 'ymalSets'
+]]>
+						</script>
+					</CmsReport>
+
+
+					<CmsReport id="smartCatRecs">
+						<name>Smart categories</name>
+						<description>Smart category recommenders</description>
+						<script>
+<![CDATA[
+select parent_contentnode_id as category_key$, child_contentnode_id as recommender_key$ 
+from cms.relationship
+where def_name = 'recommender'
 ]]>
 						</script>
 					</CmsReport>
