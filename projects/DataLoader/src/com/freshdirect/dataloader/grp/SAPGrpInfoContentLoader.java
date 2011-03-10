@@ -1,5 +1,8 @@
 package com.freshdirect.dataloader.grp;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -100,6 +103,10 @@ public class SAPGrpInfoContentLoader implements BapiFunctionI {
 		List<ErpGrpPriceModel> grpInfos = new ArrayList<ErpGrpPriceModel>();
 		Map<String, String> existingGrps = new HashMap<String, String>();
 		Map<String, String> matNumbers = new HashMap<String, String>();
+		List<List<String>> rawData = new ArrayList<List<String>>();
+		List<String> tmpRawRowData = null;
+		List<String> intermittentErrors = new ArrayList<String>();
+		
 		try {
 			for (int i = 0; i < groupTable.getNumRows(); i++) {
 				
@@ -114,6 +121,21 @@ public class SAPGrpInfoContentLoader implements BapiFunctionI {
 				String grpPriceStr = groupTable.getString("ZSGRP_PRICE").trim();
 				String grpSUOM = groupTable.getString("ZSGRP_SUOM").trim();
 				String grpExpiryInd = groupTable.getString("ZSGRP_EXP_IND").trim();
+				
+				tmpRawRowData = new ArrayList<String>();
+				tmpRawRowData.add(matNumber);
+				tmpRawRowData.add(grpId);
+				tmpRawRowData.add(shortDesc);
+				tmpRawRowData.add(LongDesc);
+				tmpRawRowData.add(zoneId);
+				tmpRawRowData.add(grpQtyStr);
+				tmpRawRowData.add(grpUOM);
+				tmpRawRowData.add(grpPriceStr);
+				tmpRawRowData.add(grpSUOM);
+				tmpRawRowData.add(grpExpiryInd);
+				
+				rawData.add(tmpRawRowData);
+				
 				double  grpQty=0;
 				double grpPrice=0;
 
@@ -125,8 +147,8 @@ public class SAPGrpInfoContentLoader implements BapiFunctionI {
 
 				if(!"X".equals(grpExpiryInd)){
 					if(matNumbers.containsKey(matNumber) && !matNumbers.get(matNumber).equals(grpId)){
-						//Same Material appears in More than one Group in the export; throw Loader Exception
-					 	throw new LoaderException("Same Material Appears in More than One Active Group in the Batch. Please check the Batch for Material Number: "+matNumber);
+						//Same Material appears in More than one Group in the export; throw Loader Exception						
+						intermittentErrors.add(matNumber);
 					}else{
 						matNumbers.put(matNumber, grpId);
 					}
@@ -143,6 +165,9 @@ public class SAPGrpInfoContentLoader implements BapiFunctionI {
 				constructGrpInfoModel(grpId,shortDesc,LongDesc,zoneId,grpQty,grpUOM,grpPrice,"X".equalsIgnoreCase(grpExpiryInd),matNumber,grpInfos, grpSUOM);
 			
 				groupTable.nextRow();
+			}
+			if(intermittentErrors.size() > 0) {
+				throw new LoaderException("Same Material Appears in More than One Active Group in the Batch. Please check the Batch for Material Number: "+intermittentErrors.toString());
 			}
 			if(existingGrps.size() > 0){//IF there are materials in existing groups
 				//Validate for material present more than one active group.
@@ -185,6 +210,8 @@ public class SAPGrpInfoContentLoader implements BapiFunctionI {
 			LOGGER.info("Error message to SAP: '" + errorMsg + "'");
 			output.setValue("E", "RETURN");
 			output.setValue(errorMsg, "MESSAGE");
+		} finally {
+			generateInputDumpFile(rawData);
 		}
 	}
 
@@ -288,6 +315,32 @@ public class SAPGrpInfoContentLoader implements BapiFunctionI {
 				}
 			}
 		}
+	}
+	
+	public boolean generateInputDumpFile(List<List<String>> rawData) {
+		StringBuffer strBuf = new StringBuffer();
+		for(List<String> row : rawData) {
+			boolean isFirst = true;
+			for(String cell : row) {
+				if(!isFirst) {
+					strBuf.append(",");
+				}
+				strBuf.append(cell);
+				isFirst = false;
+			}
+			strBuf.append("\n");
+		}
+        try {
+        	
+        	BufferedWriter out = new BufferedWriter(new FileWriter("GROUPEXPORT_"+System.currentTimeMillis()+".csv"));
+            out.write(strBuf.toString());
+            out.close();
+
+            return true;
+        } catch (Exception ioExp) {
+        	ioExp.printStackTrace();  
+        } 
+        return false;
 	}
 	/*
 	String matNumber = groupTable.get("ZMATNR").trim();
