@@ -33,6 +33,10 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.sap.mw.jco.JCO;
 
+/**
+ * @author skrishnasamy
+ *
+ */
 public class SAPGrpInfoContentLoader implements BapiFunctionI {
 
 	private final static Category LOGGER = LoggerFactory.getInstance( SAPGrpInfoContentLoader.class );
@@ -95,6 +99,7 @@ public class SAPGrpInfoContentLoader implements BapiFunctionI {
 
 		List<ErpGrpPriceModel> grpInfos = new ArrayList<ErpGrpPriceModel>();
 		Map<String, String> existingGrps = new HashMap<String, String>();
+		Map<String, String> matNumbers = new HashMap<String, String>();
 		try {
 			for (int i = 0; i < groupTable.getNumRows(); i++) {
 				
@@ -117,7 +122,16 @@ public class SAPGrpInfoContentLoader implements BapiFunctionI {
 				if(grpQtyStr!=null && grpQtyStr.trim().length()>0) grpQty =Double.parseDouble(grpQtyStr);
 				
 				if(grpPriceStr!=null && grpPriceStr.trim().length()>0) grpPrice =Double.parseDouble(grpPriceStr);
-				
+
+				if(!"X".equals(grpExpiryInd)){
+					if(matNumbers.containsKey(matNumber) && !matNumbers.get(matNumber).equals(grpId)){
+						//Same Material appears in More than one Group in the export; throw Loader Exception
+					 	throw new LoaderException("Same Material Appears in More than One Active Group in the Batch. Please check the Batch for Material Number: "+matNumber);
+					}else{
+						matNumbers.put(matNumber, grpId);
+					}
+				}
+
 				if(!existingGrps.containsValue(matNumber)) {//Only if material id is not found so far any existing groups.
 					//Validate if this material in the incoming message is already participating in an existing group
 					String existingGrpId = checkIfMaterialAlreadyExistsInActiveGroup(grpId, matNumber);
@@ -173,7 +187,7 @@ public class SAPGrpInfoContentLoader implements BapiFunctionI {
 			output.setValue(errorMsg, "MESSAGE");
 		}
 	}
-	
+
 	private String checkIfMaterialAlreadyExistsInActiveGroup(String grpId, String matId) {
 		Context ctx = null;
 		String existingGrpId = null;
@@ -275,8 +289,261 @@ public class SAPGrpInfoContentLoader implements BapiFunctionI {
 			}
 		}
 	}
+	/*
+	String matNumber = groupTable.get("ZMATNR").trim();
+	String grpId = groupTable.get("ZGROUP_ID").trim();			
+	String shortDesc = groupTable.get("ZGROUP_SHORT_DESC").trim();
+	String LongDesc = groupTable.get("ZGROUP_LONG_DESC").trim();			
+	String zoneId = groupTable.get("ZZONE_ID").trim();
+	String grpQtyStr = groupTable.get("ZSGRP_QTY").trim();
+	String grpUOM = groupTable.get("ZSGRP_UOM").trim();
+	String grpPriceStr = groupTable.get("ZSGRP_PRICE").trim();
+	String grpSUOM = groupTable.get("ZSGRP_SUOM").trim();
+	String grpExpiryInd = groupTable.get("ZSGRP_EXP_IND").trim();
+	*/
+	public static void main(String[] values){
+		SAPGrpInfoContentLoader loader = new SAPGrpInfoContentLoader();
+		Map<String, Map<String, String>> groupTables = new HashMap<String, Map<String, String>>();
+		Map<String, String> group1M1Z1 = new HashMap<String, String>();
+
+		group1M1Z1.put("ZMATNR", "000000000300700326");
+		group1M1Z1.put("ZGROUP_ID", "LOCAL_VEG");
+		group1M1Z1.put("ZGROUP_SHORT_DESC", "LOCAL_VEG");
+		group1M1Z1.put("ZGROUP_LONG_DESC", "LOCAL_VEG");
+		group1M1Z1.put("ZZONE_ID", "0000100000");
+		group1M1Z1.put("ZSGRP_QTY", "5");
+		group1M1Z1.put("ZSGRP_UOM", "EA");
+		group1M1Z1.put("ZSGRP_PRICE", "3.59");
+		group1M1Z1.put("ZSGRP_SUOM", "EA");
+		group1M1Z1.put("ZSGRP_EXP_IND", "X");
+		groupTables.put("1", group1M1Z1);
+		
+		Map<String, String> group1M1Z2 = new HashMap<String, String>();
+		group1M1Z2.put("ZMATNR", "000000000300700326");
+		group1M1Z2.put("ZGROUP_ID", "LOCAL_VEG");
+		group1M1Z2.put("ZGROUP_SHORT_DESC", "LOCAL_VEG");
+		group1M1Z2.put("ZGROUP_LONG_DESC", "LOCAL_VEG");
+		group1M1Z2.put("ZZONE_ID", "0000100001");
+		group1M1Z2.put("ZSGRP_QTY", "5");
+		group1M1Z2.put("ZSGRP_UOM", "EA");
+		group1M1Z2.put("ZSGRP_PRICE", "3.59");
+		group1M1Z2.put("ZSGRP_SUOM", "EA");
+		group1M1Z2.put("ZSGRP_EXP_IND", "X");
+		groupTables.put("2", group1M1Z2);
+		
+		Map<String, String> group1M2Z1 = new HashMap<String, String>();
+		group1M2Z1.put("ZMATNR", "000000000300700323");
+		group1M2Z1.put("ZGROUP_ID", "LOCAL_VEG");
+		group1M2Z1.put("ZGROUP_SHORT_DESC", "LOCAL_VEG");
+		group1M2Z1.put("ZGROUP_LONG_DESC", "LOCAL_VEG");
+		group1M2Z1.put("ZZONE_ID", "0000100000");
+		group1M2Z1.put("ZSGRP_QTY", "5");
+		group1M2Z1.put("ZSGRP_UOM", "EA");
+		group1M2Z1.put("ZSGRP_PRICE", "3.59");
+		group1M2Z1.put("ZSGRP_SUOM", "EA");
+		group1M2Z1.put("ZSGRP_EXP_IND", "X");
+		groupTables.put("3", group1M2Z1);
+		
+		Map<String, String> group1M2Z2 = new HashMap<String, String>();
+		group1M2Z2.put("ZMATNR", "000000000300700323");
+		group1M2Z2.put("ZGROUP_ID", "LOCAL_VEG");
+		group1M2Z2.put("ZGROUP_SHORT_DESC", "LOCAL_VEG");
+		group1M2Z2.put("ZGROUP_LONG_DESC", "LOCAL_VEG");
+		group1M2Z2.put("ZZONE_ID", "0000100001");
+		group1M2Z2.put("ZSGRP_QTY", "5");
+		group1M2Z2.put("ZSGRP_UOM", "EA");
+		group1M2Z2.put("ZSGRP_PRICE", "3.59");
+		group1M2Z2.put("ZSGRP_SUOM", "EA");
+		group1M2Z2.put("ZSGRP_EXP_IND", "X");
+		groupTables.put("4", group1M2Z2);
+		/*
+		Map<String, String> group2M1Z1 = new HashMap<String, String>();
+		group2M1Z1.put("ZMATNR", "000000000200001798");
+		group2M1Z1.put("ZGROUP_ID", "LOCAL_FRU");
+		group2M1Z1.put("ZGROUP_SHORT_DESC", "LOCAL_FRU");
+		group2M1Z1.put("ZGROUP_LONG_DESC", "LOCAL_FRU");
+		group2M1Z1.put("ZZONE_ID", "0000100000");
+		group2M1Z1.put("ZSGRP_QTY", "6");
+		group2M1Z1.put("ZSGRP_UOM", "EA");
+		group2M1Z1.put("ZSGRP_PRICE", "2.59");
+		group2M1Z1.put("ZSGRP_SUOM", "EA");
+		group2M1Z1.put("ZSGRP_EXP_IND", "X");
+		
+		groupTables.put("5", group2M1Z1);
+		Map<String, String> group2M1Z2 = new HashMap<String, String>();
+		group2M1Z2.put("ZMATNR", "000000000200001798");
+		group2M1Z2.put("ZGROUP_ID", "LOCAL_FRU");
+		group2M1Z2.put("ZGROUP_SHORT_DESC", "LOCAL_FRU");
+		group2M1Z2.put("ZGROUP_LONG_DESC", "LOCAL_FRU");
+		group2M1Z2.put("ZZONE_ID", "0000100001");
+		group2M1Z2.put("ZSGRP_QTY", "6");
+		group2M1Z2.put("ZSGRP_UOM", "EA");
+		group2M1Z2.put("ZSGRP_PRICE", "2.59");
+		group2M1Z2.put("ZSGRP_SUOM", "EA");
+		group2M1Z2.put("ZSGRP_EXP_IND", "X");
+		groupTables.put("6", group2M1Z2);
+		
+		Map<String, String> group2M2Z1 = new HashMap<String, String>();
+		group2M2Z1.put("ZMATNR", "000000000200001799");
+		group2M2Z1.put("ZGROUP_ID", "LOCAL_FRU");
+		group2M2Z1.put("ZGROUP_SHORT_DESC", "LOCAL_FRU");
+		group2M2Z1.put("ZGROUP_LONG_DESC", "LOCAL_FRU");
+		group2M2Z1.put("ZZONE_ID", "0000100000");
+		group2M2Z1.put("ZSGRP_QTY", "6");
+		group2M2Z1.put("ZSGRP_UOM", "EA");
+		group2M2Z1.put("ZSGRP_PRICE", "2.59");
+		group2M2Z1.put("ZSGRP_SUOM", "EA");
+		group2M2Z1.put("ZSGRP_EXP_IND", "X");
+		groupTables.put("7", group2M2Z1);
+		
+		Map<String, String> group2M2Z2 = new HashMap<String, String>();
+		group2M2Z2.put("ZMATNR", "000000000200001799");
+		group2M2Z2.put("ZGROUP_ID", "LOCAL_FRU");
+		group2M2Z2.put("ZGROUP_SHORT_DESC", "LOCAL_FRU");
+		group2M2Z2.put("ZGROUP_LONG_DESC", "LOCAL_FRU");
+		group2M2Z2.put("ZZONE_ID", "0000100001");
+		group2M2Z2.put("ZSGRP_QTY", "6");
+		group2M2Z2.put("ZSGRP_UOM", "EA");
+		group2M2Z2.put("ZSGRP_PRICE", "2.59");
+		group2M2Z2.put("ZSGRP_SUOM", "EA");
+		group2M2Z2.put("ZSGRP_EXP_IND", "X");
+		groupTables.put("8", group2M2Z2);
+		
+		Map<String, String> groupM1Z1 = new HashMap<String, String>();
+
+		groupM1Z1.put("ZMATNR", "000000000300700326");
+		groupM1Z1.put("ZGROUP_ID", "LOCAL_WINE");
+		groupM1Z1.put("ZGROUP_SHORT_DESC", "LOCAL_WINE");
+		groupM1Z1.put("ZGROUP_LONG_DESC", "LOCAL_WINE");
+		groupM1Z1.put("ZZONE_ID", "0000100000");
+		groupM1Z1.put("ZSGRP_QTY", "5");
+		groupM1Z1.put("ZSGRP_UOM", "EA");
+		groupM1Z1.put("ZSGRP_PRICE", "3.59");
+		groupM1Z1.put("ZSGRP_SUOM", "EA");
+		groupM1Z1.put("ZSGRP_EXP_IND", "X");
+		
+		groupTables.put("9", groupM1Z1);
+		Map<String, String> groupM1Z2 = new HashMap<String, String>();
+		groupM1Z2.put("ZMATNR", "000000000300700326");
+		groupM1Z2.put("ZGROUP_ID", "LOCAL_WINE");
+		groupM1Z2.put("ZGROUP_SHORT_DESC", "LOCAL_WINE");
+		groupM1Z2.put("ZGROUP_LONG_DESC", "LOCAL_WINE");
+		groupM1Z2.put("ZZONE_ID", "0000100001");
+		groupM1Z2.put("ZSGRP_QTY", "5");
+		groupM1Z2.put("ZSGRP_UOM", "EA");
+		groupM1Z2.put("ZSGRP_PRICE", "3.59");
+		groupM1Z2.put("ZSGRP_SUOM", "EA");
+		groupM1Z2.put("ZSGRP_EXP_IND", "X");
+		groupTables.put("10", groupM1Z2);
+		Map<String, String> groupM2Z1 = new HashMap<String, String>();
+		groupM2Z1.put("ZMATNR", "000000000300700323");
+		groupM2Z1.put("ZGROUP_ID", "LOCAL_WINE");
+		groupM2Z1.put("ZGROUP_SHORT_DESC", "LOCAL_WINE");
+		groupM2Z1.put("ZGROUP_LONG_DESC", "LOCAL_WINE");
+		groupM2Z1.put("ZZONE_ID", "0000100000");
+		groupM2Z1.put("ZSGRP_QTY", "5");
+		groupM2Z1.put("ZSGRP_UOM", "EA");
+		groupM2Z1.put("ZSGRP_PRICE", "3.59");
+		groupM2Z1.put("ZSGRP_SUOM", "EA");
+		groupM2Z1.put("ZSGRP_EXP_IND", "X");
+		groupTables.put("11", groupM2Z1);
+		Map<String, String> groupM2Z2 = new HashMap<String, String>();
+		groupM2Z2.put("ZMATNR", "000000000300700323");
+		groupM2Z2.put("ZGROUP_ID", "LOCAL_WINE");
+		groupM2Z2.put("ZGROUP_SHORT_DESC", "LOCAL_WINE");
+		groupM2Z2.put("ZGROUP_LONG_DESC", "LOCAL_WINE");
+		groupM2Z2.put("ZZONE_ID", "0000100001");
+		groupM2Z2.put("ZSGRP_QTY", "5");
+		groupM2Z2.put("ZSGRP_UOM", "EA");
+		groupM2Z2.put("ZSGRP_PRICE", "3.59");
+		groupM2Z2.put("ZSGRP_SUOM", "EA");
+		groupM2Z2.put("ZSGRP_EXP_IND", "X");
+		groupTables.put("12", groupM2Z2);
+	*/
+		loader.testExecute(groupTables);
+	}
+	private void testExecute(Map<String, Map<String, String>> groupTables) {
+		List<ErpGrpPriceModel> grpInfos = new ArrayList<ErpGrpPriceModel>();
+		Map<String, String> existingGrps = new HashMap<String, String>();
+		Map<String, String> matNumbers = new HashMap<String, String>();
+		try {
+			for (Iterator<String> it = groupTables.keySet().iterator(); it.hasNext();) {
+				Map<String, String> groupTable = groupTables.get(it.next());
+				// First retrieve all data from current row.
+				String matNumber = groupTable.get("ZMATNR").trim();
+				String grpId = groupTable.get("ZGROUP_ID").trim();			
+				String shortDesc = groupTable.get("ZGROUP_SHORT_DESC").trim();
+				String LongDesc = groupTable.get("ZGROUP_LONG_DESC").trim();			
+				String zoneId = groupTable.get("ZZONE_ID").trim();
+				String grpQtyStr = groupTable.get("ZSGRP_QTY").trim();
+				String grpUOM = groupTable.get("ZSGRP_UOM").trim();
+				String grpPriceStr = groupTable.get("ZSGRP_PRICE").trim();
+				String grpSUOM = groupTable.get("ZSGRP_SUOM").trim();
+				String grpExpiryInd = groupTable.get("ZSGRP_EXP_IND").trim();
+				double  grpQty=0;
+				double grpPrice=0;
 
 	
+				
+				if(grpQtyStr!=null && grpQtyStr.trim().length()>0) grpQty =Double.parseDouble(grpQtyStr);
+				
+				if(grpPriceStr!=null && grpPriceStr.trim().length()>0) grpPrice =Double.parseDouble(grpPriceStr);
+				
+				if(!"X".equals(grpExpiryInd)){
+					if(matNumbers.containsKey(matNumber) && !matNumbers.get(matNumber).equals(grpId)){
+						//Same Material appears in More than one Group; throw Loader Exception
+					 	throw new LoaderException("Same Material Appears in More than One Active Group in the Batch. Please check the Batch for Material Number: "+matNumber);
+					}else{
+						matNumbers.put(matNumber, grpId);
+					}
+				}
+				if(!existingGrps.containsValue(matNumber)) {//Only if material id is not found so far any existing groups.
+					//Validate if this material in the incoming message is already participating in an existing group
+					String existingGrpId = checkIfMaterialAlreadyExistsInActiveGroup(grpId, matNumber);
+					if(existingGrpId != null && existingGrpId.length() > 0){
+						existingGrps.put(existingGrpId, matNumber);
+					} 
+				}
+				
+				constructGrpInfoModel(grpId,shortDesc,LongDesc,zoneId,grpQty,grpUOM,grpPrice,"X".equalsIgnoreCase(grpExpiryInd),matNumber,grpInfos, grpSUOM);
+			}
+			if(existingGrps.size() > 0){//IF there are materials in existing groups
+				//Validate for material present more than one active group.
+				Map<String, String> activeGrps = new HashMap<String, String>(existingGrps); 
+				for(Iterator<ErpGrpPriceModel> it = grpInfos.iterator(); it.hasNext();){
+					ErpGrpPriceModel grpModel = it.next();
+					if(existingGrps.containsKey(grpModel.getGrpId())){
+						//remove the group from active group map if active group is expired or if this group no more contains the material
+						//being checked against.  
+						Set<String> grpMatList = grpModel.getMatList();
+						String checkMatId = existingGrps.get(grpModel.getGrpId());
+						if(!grpModel.isActive() || !grpMatList.contains(checkMatId)) {
+							activeGrps.remove(grpModel.getGrpId());
+						}
+					}
+				}
+				if(activeGrps.size() > 0){
+					//Active groups exists. Stop further processing the export.
+					throw new LoaderException("Material(s) From this Export Already exists in an Active Group. "+activeGrps.toString());
+				}
+			}
+			LOGGER.debug ("Storing group content info");
+			this.storeGrpInfo(grpInfos);
+
+			LOGGER.info("SUCCESS");
+
+		} catch (LoaderException ex) {
+			LOGGER.warn("Failed to store Group info", ex);
+			String errorMsg = ex.toString();
+			errorMsg = errorMsg.substring(0, Math.min(255, errorMsg.length()));
+			LOGGER.info("Error message to SAP: '" + errorMsg + "'");
+		}  catch (Exception ex) {
+			LOGGER.warn("Failed to store wave info", ex);
+			String errorMsg = ex.toString();
+			errorMsg = errorMsg.substring(0, Math.min(255, errorMsg.length()));
+			LOGGER.info("Error message to SAP: '" + errorMsg + "'");
+		}
+	}	
 }
 
 class DataStructure {
