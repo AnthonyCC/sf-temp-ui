@@ -239,7 +239,7 @@ order by cn.id
 select parent_contentnode_id as parent_key$, def_name as group$, child_contentnode_id as child_key$ 
 from cms.relationship
 where def_name in ('SCARAB_YMAL_INCLUDE', 'SCARAB_YMAL_EXCLUDE', 'SCARAB_YMAL_PROMOTE', 'SCARAB_YMAL_DEMOTE')
-order by def_name
+order by def_name, parent_contentnode_id, ordinal
 ]]>
 						</script>
 					</CmsReport>
@@ -253,6 +253,7 @@ order by def_name
 select parent_contentnode_id as node_key$, child_contentnode_id as ymalset_key$ 
 from cms.relationship
 where def_name = 'ymalSets'
+order by parent_contentnode_id, ordinal
 ]]>
 						</script>
 					</CmsReport>
@@ -266,6 +267,7 @@ where def_name = 'ymalSets'
 select parent_contentnode_id as category_key$, child_contentnode_id as recommender_key$ 
 from cms.relationship
 where def_name = 'recommender'
+order by parent_contentnode_id, ordinal
 ]]>
 						</script>
 					</CmsReport>
