@@ -38,6 +38,7 @@ import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceEB;
 import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceHome;
 import com.freshdirect.erp.ejb.ErpClassEB;
 import com.freshdirect.erp.ejb.ErpClassHome;
+import com.freshdirect.erp.ejb.ErpGrpInfoSB;
 import com.freshdirect.erp.ejb.ErpInfoHome;
 import com.freshdirect.erp.ejb.ErpInfoSB;
 import com.freshdirect.erp.ejb.ErpMaterialEB;
@@ -52,7 +53,9 @@ import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.erp.model.ErpProductModel;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.VersionedPrimaryKey;
+import com.freshdirect.erp.ejb.ErpGrpInfoHome;
 
 /**
  * Singleton class for accessing the ERP-layer remote objects.
@@ -663,6 +666,30 @@ public class ErpFactory {
 			} catch (NamingException e) {
 			}
 		}
+	}
+	
+	private ErpGrpInfoHome erpGrpInfoHome = null;
+
+	public Collection findGrpsForMaterial(String matId) throws FDResourceException {
+		if (erpGrpInfoHome == null) {
+			lookupGrpInfoHome();
+		}
+		try {
+			ErpGrpInfoSB remote = erpGrpInfoHome.create();
+			return remote.findGrpsForMaterial(matId);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
+	
+	private void lookupGrpInfoHome() throws FDResourceException {
+		try {
+			erpGrpInfoHome = (ErpGrpInfoHome) new ServiceLocator().getRemoteHome("freshdirect.erp.GrpInfoManager");			
+		} catch (NamingException ne) {
+			throw new FDResourceException(ne);
+		} 
 	}
 
 }
