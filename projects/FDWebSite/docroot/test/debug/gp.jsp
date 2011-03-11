@@ -255,7 +255,186 @@
 			</table>
 		<%
 	}
+	
+	String matId=request.getParameter("matId");
+	if(matId != null && !"".equals(matId)) {
+		//Display the groups attached to this material
+	%>
+		<table border='1' width='50%' cellpadding="3" cellspacing="0">
+			<tr>
+				<th align="center" style="font-size: 14px;" width="150">GROUPS ATTACHED TO MATERIAL</th>
+				<td>
+				<% if (zoneId!=null && !"".equals(zoneId)) { %>
+					<table border="0" cellpadding="3" cellspacing="0" width="100%">
+					<tr>
+						<td align="right">SERVICE TYPE :</td>
+						<td><%=serviceType.getName()%></td>
+					</tr>
+					<tr>
+						<td align="right">ZIP CODE :</td>
+						<td><%=zipCode%></td>
+					</tr>
+					<tr>
+						<td align="right">ZONE ID :</td>
+						<td><%=zoneId%></td>
+					</tr>					
+					</table>
+				<% } %>
+				</td>
+			</tr>
+			<tr>
+						<td align="right">MATERIAL ID</td>
+						<td><%=matId%></td>
+					</tr>
+				
+	<%
+		ErpFactory factory = ErpFactory.getInstance();
+		Collection<FDGroup> groups = factory.findGrpsForMaterial(matId);
+		%>
+					<tr>
+						<td align="right"><b>No. of groups this material is attached to </b></td>
+						<td><b><%=groups.size()%></b></td>
+					</tr>
+		<%
+		Iterator<FDGroup> gI = groups.iterator();
+		while(gI.hasNext()) {		
+			FDGroup group = (FDGroup) gI.next();
+			GroupScalePricing model1 = null;
+			try {
+				model1=FDCachedFactory.getGrpInfo(new FDGroup(group.getGroupId(), group.getVersion()));
+			}catch(FDGroupNotFoundException fe){
+				//do nothing
+			} 
+			if (model1 != null) {
+
+			%>
+			<table border='4' width='50%' cellpadding="3" cellspacing="0">
+				<tr>
+					<td align="right">GroupId :</td><td><%=model1.getGroupId()%></td>
+				</tr>
+				<tr>
+					<td align="right"> GRP SHORT DESC :</td><td><%=model1.getShortDesc()%></td>
+				</tr>
+				<tr>
+					<td align="right"> GRP LONG DESC :</td><td><%=model1.getLongDesc()%></td>
+				</tr>
+				<tr>
+					<td align="right"> ACTIVE :</td><td><%=model1.isActive()%></td>
+				</tr>
+				<tr>
+					<td align="right"> Version :</td><td><%=model1.getVersion()%></td>
+				</tr>
+				<tr>
+					<td align="right"> GrpZonePriceModel :</td><td>
+						<table>
+						<%
+							Collection<GrpZonePriceModel> gpm = model1.getGrpZonePriceList().getGrpZonePrices();
+							Iterator<GrpZonePriceModel> gpmI=gpm.iterator();
+							while(gpmI.hasNext()){
+								GrpZonePriceModel gpModel=(GrpZonePriceModel)gpmI.next();
+								%>
+									<tr>
+										<td align="right">ZONE ID :</td>
+											<td><%=gpModel.getSapZoneId()%></td>
+									</tr>
+									<%
+										MaterialPrice[] matPrices = gpModel.getMaterialPrices();
+										for(int i = 0; i < matPrices.length; i++) {
+									%>
+									
+									<tr>
+										<td align="right">QTY :</td>
+										<td><%=matPrices[i].getScaleLowerBound()%></td>
+									</tr>
+									<tr>
+										<td align="right">SCALE UNIT :</td>
+										<td><%=matPrices[i].getPricingUnit()%></td>
+									</tr>
+									<tr>
+										<td align="right">PRICE :</td>
+										<td><%=matPrices[i].getPrice()%></td>
+									</tr>
+									</tr>
+									<tr>
+										<td align="right">SELLING UNIT :</td>
+										<td><%=matPrices[i].getScaleUnit()%></td>
+									</tr>		
+									<% } %>	
+									<% if (gpmI.hasNext()){ %>
+										<tr>
+											<td colspan="2"><hr /></td>
+										</tr>
+									<% } %>
+								<% } %>
+							</table>
+						</td>
+					</tr>
+					<%Set<String> mList = model1.getMatList(); %>					
+					<tr>
+						<td align="right"> Material List :<br />(with SKUs)</td><td>
+							<table>
+							<tr>
+								<td valign="top" align="right" width="100">SAP ID (Sku) :</td><td>
+							<%
+								Iterator<String> mI_skus=mList.iterator();
+								while(mI_skus.hasNext()) {
+									Object gpmModel=mI_skus.next();
+									%><%=gpmModel%><%
+										Collection<ErpProductInfoModel> searchResults = factory.findProductsBySapId(gpmModel.toString());
+										Iterator<ErpProductInfoModel> srI=searchResults.iterator();
+										if(srI.hasNext()){
+											ErpProductInfoModel pim = (ErpProductInfoModel)srI.next();
+											FDProductInfo prodInfo=FDCachedFactory.getProductInfo(pim.getSkuCode());
+											%><%= " (Sku:"+pim.getSkuCode()+")"%>
+											<%	double price = pim.getMaterialPrices()[0].getPrice();
+												boolean redText = false;
+												gpmI = gpm.iterator();
+												while(gpmI.hasNext()){
+													GrpZonePriceModel gpModel=(GrpZonePriceModel)gpmI.next();
+													MaterialPrice[] matPrices = gpModel.getMaterialPrices();
+													for(int i = 0; i < matPrices.length; i++) {
+														if(price < matPrices[i].getPrice()) {
+															redText = true;
+															break;
+														}
+													}
+												}
+												if(redText) {
+											%>
+												<span style="background:red; color: white;">
+												<%= "(Material Price: "  + pim.getMaterialPrices()[0].getPrice() + " ) (Promo Price: " + pim.getMaterialPrices()[0].getPromoPrice()  + " )"%>
+												</span>
+											<% } else { %>
+												<%= "(Material Price: "  + pim.getMaterialPrices()[0].getPrice() + " ) (Promo Price: " + pim.getMaterialPrices()[0].getPromoPrice()  + " )"%>
+											<% } } %> 											
+											<% if (mI_skus.hasNext()){ %>,<br /><% } %>
+								<% } %>
+								</td>
+							</tr>
+							</table>
+						</td>
+					</tr>
+				<%
+				}else{
+				%>
+					<tr>
+						<td align="right">GroupId: </td><td class="error"><%=grpId%> is null!</td> 
+					</tr>
+				<%
+				}
+				
+				%>
+					</table>
+				<%
+				
+			}
+			%>
+					</table>
+			<%
+		}
+	
 %>
+
 <div id="error" style="clear: both;"></div>
 
 </body>
