@@ -17,6 +17,7 @@ import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.ZonePromoDiscount;
+import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDGroupNotFoundException;
@@ -40,10 +41,10 @@ public class AdServerGatewaySessionBean extends GatewaySessionBeanSupport {
 
 	private static Category LOGGER = LoggerFactory.getInstance(AdServerGatewaySessionBean.class);
 	
-	private HashSet results;
+	private HashSet<AdServerRow> results;
 	
 	public void run() throws RemoteException{
-		results = new HashSet();
+		results = new HashSet<AdServerRow>();
 
 		Set productKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.PRODUCT);
 		for (Iterator i = productKeys.iterator(); i.hasNext(); ){
@@ -140,27 +141,34 @@ public class AdServerGatewaySessionBean extends GatewaySessionBeanSupport {
 	}
 
 	private void evaluateGroupScalePrices(GroupScalePricing gsPricing) {
-		GrpZonePriceListing gsZonePriceList = gsPricing.getGrpZonePriceList();
-		if(null != gsZonePriceList){ 
-			Collection<GrpZonePriceModel> zonePrices = gsZonePriceList.getGrpZonePrices();
-			if(zonePrices!= null && zonePrices.size() > 0){
-				for (Iterator<GrpZonePriceModel> iterator = zonePrices.iterator(); iterator.hasNext();) {
-					GrpZonePriceModel grpPriceModel = (GrpZonePriceModel) iterator.next();
-					MaterialPrice[] prices =grpPriceModel.getMaterialPrices();
-					for (int i=0; i<prices.length; i++) {
-						MaterialPrice mp = prices[i];
-						String price = mp.getScaleLowerBound() + "@" + mp.getPrice();
-						if(!FDStoreProperties.isZonePricingAdEnabled()){
-							if("M".equalsIgnoreCase(getZoneType(grpPriceModel.getSapZoneId())))
-							results.add(new AdServerRow(gsPricing.getGroupId(), gsPricing.isActive(), price, grpPriceModel.getSapZoneId(), getZoneType(grpPriceModel.getSapZoneId())));
-						}else{
-							results.add(new AdServerRow(gsPricing.getGroupId(), gsPricing.isActive(), price, grpPriceModel.getSapZoneId(), getZoneType(grpPriceModel.getSapZoneId())));
+		try {
+			GrpZonePriceListing gsZonePriceList = gsPricing.getGrpZonePriceList();
+			if(null != gsZonePriceList){ 
+				Collection<GrpZonePriceModel> zonePrices = gsZonePriceList.getGrpZonePrices();
+				if(zonePrices!= null && zonePrices.size() > 0){
+					for (Iterator<GrpZonePriceModel> iterator = zonePrices.iterator(); iterator.hasNext();) {
+						GrpZonePriceModel grpPriceModel = (GrpZonePriceModel) iterator.next();
+						MaterialPrice[] prices =grpPriceModel.getMaterialPrices();
+						for (int i=0; i<prices.length; i++) {
+							MaterialPrice mp = prices[i];
+							if(!GroupScaleUtil.isGroupPriceValid(gsPricing, grpPriceModel.getSapZoneId(), mp)){
+								//Group Price is invalid. so ignore
+								continue;
+							}
+							String price = mp.getScaleLowerBound() + "@" + mp.getPrice();
+							if(!FDStoreProperties.isZonePricingAdEnabled()){
+								if("M".equalsIgnoreCase(getZoneType(grpPriceModel.getSapZoneId())))
+								results.add(new AdServerRow(gsPricing.getGroupId(), gsPricing.isActive(), price, grpPriceModel.getSapZoneId(), getZoneType(grpPriceModel.getSapZoneId())));
+							}else{
+								results.add(new AdServerRow(gsPricing.getGroupId(), gsPricing.isActive(), price, grpPriceModel.getSapZoneId(), getZoneType(grpPriceModel.getSapZoneId())));
+							}
 						}
 					}
 				}
 			}
-		
-		}
+		}catch (FDResourceException e) {
+			throw new RuntimeException(e);
+		}  
 	}
 
 	private String getZoneType(String sapZoneId) {

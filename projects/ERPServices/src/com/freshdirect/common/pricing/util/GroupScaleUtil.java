@@ -69,7 +69,7 @@ public class GroupScaleUtil {
 		return matPrice;
 	}
 
-	private static boolean isGroupPriceValid(GroupScalePricing grpPricing, String pricingZoneId, MaterialPrice grpMatPrice) throws FDResourceException{
+	public static boolean isGroupPriceValid(GroupScalePricing grpPricing, String pricingZoneId, MaterialPrice grpMatPrice) throws FDResourceException{
 		List<String> skuList = grpPricing.getSkuList();
 		for(Iterator<String> it = skuList.iterator(); it.hasNext();){
 			try {
