@@ -290,7 +290,7 @@ public class ProductPriceTag extends BodyTagSupport {
 						if("LARGE".equalsIgnoreCase(grpDisplayType) ){
 							//if(impression.isGroupExists(skuCode)) {
 								buf1.append( " <span class=\"text12rbold\">Buy More &amp; Save!</span><br />" );
-								buf1.append( "<span class=\"text12bold\" style=\"color:black\">Any Combination of "+grpPricing.getLongDesc()+"</span><br />" );
+								buf1.append( "<span class=\"text12bold\" style=\"color:black\">Any "+grpPricing.getLongDesc()+"</span><br />" );
 								buf1.append( "<span class=\"text14rbold\">" );
 								buf1.append( FORMAT_QUANTITY.format( matPrice.getScaleLowerBound() ) );
 								if(matPrice.getScaleUnit().equals("LB"))//Other than eaches append the /pricing unit for clarity.
