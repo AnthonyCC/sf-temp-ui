@@ -35,7 +35,7 @@ public class ErpGrpInfoDAO {
     private static Category LOGGER = LoggerFactory.getInstance( ErpGrpInfoDAO.class );
 	
     
-private static final String ALL_GRP_PRICING_SELECT_SQL="SELECT MAX(VERSION) VERSION,SAP_ID  FROM ERPS.GRP_SCALE_MASTER GROUP BY (SAP_ID) ";
+    private static final String ALL_GRP_PRICING_SELECT_SQL="SELECT MAX(VERSION) VERSION,SAP_ID  FROM ERPS.GRP_SCALE_MASTER GROUP BY (SAP_ID) ";
    	
 	public static Collection<FDGroup> getAllGroupIds(Connection con) throws SQLException{
 		
@@ -363,4 +363,36 @@ private static final String ALL_GRP_PRICING_SELECT_SQL="SELECT MAX(VERSION) VERS
 	       Logger.info("Latest Version of Group ID : "+grpId);
 		   return version; 		 
 	 }
+	 
+	private static final String ALL_GRPS_FOR_MAT_ID_SQL=
+		"SELECT distinct GSM.SAP_ID, max(GSM.VERSION) VERSION " + 
+			 "FROM  ERPS.MATERIAL_GRP mg, ERPS.GRP_SCALE_MASTER gsm " +
+			"WHERE  MG.MAT_ID = ? " +
+			   "AND MG.GRP_ID = GSM.ID " +
+			   "AND GSM.ACTIVE = 'X' " +
+			   "group by sap_id";
+	   	
+	public static Collection<FDGroup> getAllGroupsForMaterial(Connection con, String matId) throws SQLException {
+		Connection conn = con;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<FDGroup> groups = new ArrayList<FDGroup>();
+		try {
+			ps = conn.prepareStatement(ALL_GRPS_FOR_MAT_ID_SQL);
+			ps.setString(1, matId);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				groups.add(new FDGroup(rs.getString("SAP_ID"), rs
+						.getInt("VERSION")));
+			}
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			if (rs != null)
+				rs.close();
+			if (ps != null)
+				ps.close();
+		}
+		return groups;
+	}
 }

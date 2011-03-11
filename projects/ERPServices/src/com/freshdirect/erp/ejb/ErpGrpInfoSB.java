@@ -27,5 +27,7 @@ public interface ErpGrpInfoSB extends EJBObject{
 	public Collection getFilteredSkus(List skuList) throws RemoteException;
 	
     public int getLatestVersionNumber(String grpId) throws RemoteException;	
+    
+    public Collection<FDGroup> findGrpsForMaterial(String matId) throws RemoteException;
        
 }

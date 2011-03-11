@@ -179,4 +179,28 @@ public class ErpGrpInfoSessionBean extends SessionBeanSupport{
 		return "com.freshdirect.erp.ejb.ErpGrpInfoHome" ;
 	}
 	
+	public Collection<FDGroup> findGrpsForMaterial(String matId) throws RemoteException {
+		Connection conn = null;
+		Collection<FDGroup> groups = null;
+		try {
+			conn = getConnection();
+			groups = ErpGrpInfoDAO.getAllGroupsForMaterial(conn, matId);
+			if (groups == null || groups.isEmpty())
+				throw new FDRuntimeException("No Groups to display");
+		} catch (SQLException sqle) {
+			LOGGER.error("Unable to load all loadAllGrpInfoMaster ", sqle);
+			throw new EJBException(sqle);
+		} finally {
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException sqle) {
+				LOGGER.error("Unable to close db resources", sqle);
+				throw new EJBException(sqle);
+			}
+		}
+		return groups;
+	}
+    
+	
 }
