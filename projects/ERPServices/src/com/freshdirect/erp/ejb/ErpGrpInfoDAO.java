@@ -365,9 +365,9 @@ public class ErpGrpInfoDAO {
 	 }
 	 
 	private static final String ALL_GRPS_FOR_MAT_ID_SQL=
-		"SELECT DISTINCT GSM.SAP_ID, MAX (GSM.VERSION) " +
+		"SELECT DISTINCT GSM.SAP_ID, MAX (GSM.VERSION) VERSION " +
 		"FROM ERPS.MATERIAL_GRP mg, ERPS.GRP_SCALE_MASTER gsm " +
-		"WHERE     MG.MAT_ID in (select sap_id from material where ID in ( " +
+		"WHERE     MG.MAT_ID in (select sap_id from erps.material where ID in ( " +
                                     "SELECT mat_id FROM erps.materialproxy mp WHERE product_id in " + 
                                       "(select id from (select * from erps.product where sku_code = ? order by version desc) where rownum =1) " + 
                                           "and mp.version in " +
