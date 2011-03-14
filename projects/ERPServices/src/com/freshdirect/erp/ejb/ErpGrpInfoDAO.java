@@ -365,12 +365,17 @@ public class ErpGrpInfoDAO {
 	 }
 	 
 	private static final String ALL_GRPS_FOR_MAT_ID_SQL=
-		"SELECT distinct GSM.SAP_ID, max(GSM.VERSION) VERSION " + 
-			 "FROM  ERPS.MATERIAL_GRP mg, ERPS.GRP_SCALE_MASTER gsm " +
-			"WHERE  MG.MAT_ID = ? " +
-			   "AND MG.GRP_ID = GSM.ID " +
-			   "AND GSM.ACTIVE = 'X' " +
-			   "group by sap_id";
+		"SELECT DISTINCT GSM.SAP_ID, MAX (GSM.VERSION) " +
+		"FROM ERPS.MATERIAL_GRP mg, ERPS.GRP_SCALE_MASTER gsm " +
+		"WHERE     MG.MAT_ID in (select sap_id from material where ID in ( " +
+                                    "SELECT mat_id FROM erps.materialproxy mp WHERE product_id in " + 
+                                      "(select id from (select * from erps.product where sku_code = ? order by version desc) where rownum =1) " + 
+                                          "and mp.version in " +
+                                             "(select version from (select * from erps.product where sku_code = ? order by version desc) where rownum =1) " +
+                                      ")       ) " +
+         "AND MG.GRP_ID = GSM.ID " +
+         "AND GSM.ACTIVE = 'X' " +
+         "GROUP BY sap_id";
 	   	
 	public static Collection<FDGroup> getAllGroupsForMaterial(Connection con, String matId) throws SQLException {
 		Connection conn = con;
@@ -380,6 +385,7 @@ public class ErpGrpInfoDAO {
 		try {
 			ps = conn.prepareStatement(ALL_GRPS_FOR_MAT_ID_SQL);
 			ps.setString(1, matId);
+			ps.setString(2, matId);
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				groups.add(new FDGroup(rs.getString("SAP_ID"), rs
