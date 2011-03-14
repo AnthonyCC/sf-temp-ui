@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.oas.ejb;
 
 import java.rmi.RemoteException;
+import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -40,7 +41,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class AdServerGatewaySessionBean extends GatewaySessionBeanSupport {
 
 	private static Category LOGGER = LoggerFactory.getInstance(AdServerGatewaySessionBean.class);
-	
+	protected final static DecimalFormat PRICE_FORMATTER = new DecimalFormat("0.00");
 	private HashSet<AdServerRow> results;
 	
 	public void run() throws RemoteException{
@@ -155,7 +156,7 @@ public class AdServerGatewaySessionBean extends GatewaySessionBeanSupport {
 								//Group Price is invalid. so ignore
 								continue;
 							}
-							String price = mp.getScaleLowerBound() + "@" + mp.getPrice();
+							String price = mp.getScaleLowerBound() + "@" + PRICE_FORMATTER.format(mp.getPrice());
 							if(!FDStoreProperties.isZonePricingAdEnabled()){
 								if("M".equalsIgnoreCase(getZoneType(grpPriceModel.getSapZoneId())))
 								results.add(new AdServerRow(gsPricing.getGroupId(), gsPricing.isActive(), price, grpPriceModel.getSapZoneId(), getZoneType(grpPriceModel.getSapZoneId())));

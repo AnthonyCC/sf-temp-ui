@@ -7,6 +7,7 @@ import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDKosherInfo;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -130,6 +131,13 @@ public class PriceCalculator {
         }
     }
 
+	/**
+	 * This method has been modified to return only regular deals percentage if this sku
+	 * is part of a group scale else returns sku's highest deals percentage.
+	 * @param productInfo
+	 * @param user
+	 * @return
+	 */
 
     public String getDefaultUnitOnly() {
         try {
@@ -174,14 +182,30 @@ public class PriceCalculator {
     public int getHighestDealPercentage() {
         if (skuModel != null) {
             try {
-                return getZonePriceInfoModel().getHighestDealPercentage();
+                //return getZonePriceInfoModel().getHighestDealPercentage();
+    			ZonePriceInfoModel priceModel = getZonePriceInfoModel();
+    			if(priceModel != null) {
+    				int tieredPercentage = priceModel.getTieredDealPercentage();
+    				FDGroup group = productInfo.getGroup();
+    				if(tieredPercentage > 0 && group != null){
+    					//Check to see current pricing zone has group price defined.
+    					if(group != null) {
+    						MaterialPrice gsPrice = GroupScaleUtil.getGroupScalePrice(group, ctx.getZoneId());
+    						if(gsPrice != null) {
+    							//return regular deal percentage
+    							return priceModel.getDealPercentage();
+    						}
+    					}
+    				}
+    			}
+    			//At this point there is no gs price defined for default sku.
+    			return priceModel.getHighestDealPercentage();
             } catch (FDSkuNotFoundException ex) {
             } catch (FDResourceException e) {
             }
         }
         return 0;
     }
-
 
     public String getTieredPrice(double savingsPercentage) {
     	return getTieredPrice(savingsPercentage, null);
