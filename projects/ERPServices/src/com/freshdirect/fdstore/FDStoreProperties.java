@@ -416,7 +416,9 @@ public class FDStoreProperties {
     private static final String PROP_SEM_PIXELS = "fdstore.sem.pixels";
     private static final String PROP_SEM_CONFIGS = "fdstore.sem.configs";
     private static final String PROP_SEM_REFRESH_PERIOD = "fdstore.sem.refresh";
-
+    
+    private final static String PROP_DUMPGROUPEXPORT_ENABLED = "fdstore.dumpgroupexport.enabled";
+    
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -836,6 +838,8 @@ public class FDStoreProperties {
 		defaults.put(PROP_SEM_PIXELS, "");
 		defaults.put(PROP_SEM_CONFIGS, "");
 		defaults.put(PROP_SEM_REFRESH_PERIOD, "5"); //MINUTE * this value
+		
+		defaults.put(PROP_DUMPGROUPEXPORT_ENABLED, "false");
 
         refresh();
     }
@@ -2150,4 +2154,11 @@ public class FDStoreProperties {
     public static interface ConfigLoadedListener {
         void configLoaded();
     }
+    
+  //Property to enable dumping data from SAP for Group Scale Export
+	public static boolean isDumpGroupExportEnabled() {
+        return (new Boolean(get(PROP_DUMPGROUPEXPORT_ENABLED))).booleanValue();
+    }
+    
+    
 }

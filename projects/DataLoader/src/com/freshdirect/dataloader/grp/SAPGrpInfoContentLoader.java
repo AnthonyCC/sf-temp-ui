@@ -33,6 +33,7 @@ import com.freshdirect.erp.ejb.ErpGrpInfoHome;
 import com.freshdirect.erp.ejb.ErpGrpInfoSB;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.sap.mw.jco.JCO;
 
@@ -184,10 +185,11 @@ public class SAPGrpInfoContentLoader implements BapiFunctionI {
 						}
 					}
 				}
-				if(activeGrps.size() > 0){
+				// As per the new storefront design we dont need to validate duplicates in storefront.
+				/*if(activeGrps.size() > 0){
 					//Active groups exists. Stop further processing the export.
 					throw new LoaderException("Material(s) From this Export Already exists in an Active Group. "+activeGrps.toString());
-				}
+				}*/
 			}
 			LOGGER.debug ("Storing group content info");
 			this.storeGrpInfo(grpInfos);
@@ -211,7 +213,9 @@ public class SAPGrpInfoContentLoader implements BapiFunctionI {
 			output.setValue("E", "RETURN");
 			output.setValue(errorMsg, "MESSAGE");
 		} finally {
-			generateInputDumpFile(rawData);
+			if(FDStoreProperties.isDumpGroupExportEnabled()) {
+				generateInputDumpFile(rawData);
+			}
 		}
 	}
 
