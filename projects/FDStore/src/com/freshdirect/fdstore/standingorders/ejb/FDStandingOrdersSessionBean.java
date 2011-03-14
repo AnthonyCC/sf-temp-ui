@@ -1,13 +1,16 @@
 package com.freshdirect.fdstore.standingorders.ejb;
 
+import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.fdstore.FDResourceException;
@@ -17,6 +20,8 @@ import com.freshdirect.fdstore.customer.ejb.FDSessionBeanSupport;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDStandingOrderList;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
+import com.freshdirect.fdstore.standingorders.FDStandingOrderFilterCriteria;
+import com.freshdirect.fdstore.standingorders.FDStandingOrderInfoList;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -198,5 +203,58 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 
 	public void logActivity(ErpActivityRecord record) {
 		new ErpLogActivityCommand(LOCATOR, record).execute();
+	}
+	
+	public FDStandingOrderInfoList getActiveStandingOrdersCustInfo(FDStandingOrderFilterCriteria filter) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();
+			
+			FDStandingOrderInfoList ret = dao.getActiveStandingOrdersCustInfo(conn,filter);
+			
+			return ret;
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in loadActiveStandingOrders() : " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public void clearStandingOrderErrors(String[] soIDs,String agentId)throws FDResourceException{
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();
+			
+			if(null !=soIDs && soIDs.length>0){
+				Date date = new Date();
+				String[] ids = new String[soIDs.length];
+				for (int i = 0; i < soIDs.length; i++) {
+					ids[i]=soIDs[i].split(",")[0];
+				}
+				dao.clearStandingOrderErrors(conn,ids);
+				
+				for (int i = 0; i < soIDs.length; i++) {
+					ErpActivityRecord rec = new ErpActivityRecord();
+					rec.setActivityType(EnumAccountActivityType.STANDINGORDER_ERROR_CLEARED);
+					rec.setSource(EnumTransactionSource.CUSTOMER_REP);
+					rec.setInitiator(agentId);
+					rec.setStandingOrderId(soIDs[i].split(",")[0]);
+					rec.setCustomerId(soIDs[i].split(",")[1]);
+					rec.setDate(date);
+					this.logActivity(rec);
+				}
+				
+			}			
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in loadActiveStandingOrders() : " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
 	}
 }

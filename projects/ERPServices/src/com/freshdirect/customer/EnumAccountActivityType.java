@@ -103,6 +103,7 @@ public class EnumAccountActivityType implements java.io.Serializable {
 	public final static EnumAccountActivityType		STANDINGORDER_MODIFIED				= new EnumAccountActivityType( "SO-Modified", "Standing Order modified." );
 	public final static EnumAccountActivityType		STANDINGORDER_DELETED				= new EnumAccountActivityType( "SO-Deleted", "Standing Order deleted." );
 	public final static EnumAccountActivityType		STANDINGORDER_SAVE_FAILED			= new EnumAccountActivityType( "SO-SaveFailed", "Standing Order update/save failed." );
+	public final static EnumAccountActivityType		STANDINGORDER_ERROR_CLEARED			= new EnumAccountActivityType( "SO-ErrorCleared", "Standing Order error cleared." );
 	
     private EnumAccountActivityType(String code, String name) {
         this.id = idCounter++;

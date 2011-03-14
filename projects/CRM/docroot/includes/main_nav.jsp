@@ -54,13 +54,16 @@ List linksList = MenuManager.getInstance().getLinksForRole(request);
 			<% if(linksList.contains("giftcard_landing.jsp")){%>
 			<a href="/gift_card/giftcard_landing.jsp" class="<%=pageURI.indexOf("/main/information.jsp") > -1?"main_nav_on":"main_nav_link"%>">GiftCard</a>
 			<% } %> 
+			<%-- if(linksList.contains("crm_standing_orders.jsp")){--%>
+			<a href="/main/crm_standing_orders.jsp" class="<%=pageURI.indexOf("/main/crm_standing_orders.jsp") > -1?"main_nav_on":"main_nav_link"%>">Standing Orders</a>
+			<%-- } --%> 
 			<a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmMainHelpLink() %>','715','940','kbit')" class="<%=pageURI.indexOf("/main/help.jsp")	> -1?"main_nav_on":"main_nav_link"%>">Help</a>
 		</td>
-		<td	width="25%"	align="right">
-			<%=currentAgent.getRole().getName()%>: <b><%=currentAgent.getLdapId()%></b>
-		&nbsp;&middot;&nbsp;
+		<td	width="16%"	align="right">
+			<%=currentAgent.getRole().getName()%>: <b><%=currentAgent.getLdapId()%></b></td>
+		<td	width="7%"	align="right">
 		<a href="/main/logout.jsp">Logout</a>
-		&nbsp;&middot;&nbsp;
+		&middot;
 		<a href="javascript:popResize('http://www.freshdirect.com','715','940','freshdirect')"><img	src="/media_stat/crm/images/fd_icon.gif" width="13"	height="14"	border="0" alt="FreshDirect"></a>
 		</td>
 	</tr>

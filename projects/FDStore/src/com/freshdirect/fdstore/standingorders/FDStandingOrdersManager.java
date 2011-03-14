@@ -352,4 +352,33 @@ public class FDStandingOrdersManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
+
+	public Object getActiveStandingOrdersCustInfo(FDStandingOrderFilterCriteria filter) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();
+			
+			return sb.getActiveStandingOrdersCustInfo(filter);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	public void clearStandingOrderErrors(String[] soIDs,String agentId) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();			
+			sb.clearStandingOrderErrors(soIDs,agentId);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
 }

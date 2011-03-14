@@ -11,8 +11,12 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.crm.ejb.CriteriaBuilder;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
+import com.freshdirect.fdstore.standingorders.FDStandingOrderFilterCriteria;
+import com.freshdirect.fdstore.standingorders.FDStandingOrderInfo;
+import com.freshdirect.fdstore.standingorders.FDStandingOrderInfoList;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -394,5 +398,134 @@ public class FDStandingOrderDAO {
 				ps.close();
 			}
 		}
+	}
+	
+	
+	private static final String GET_ACTIVE_STANDING_ORDERS_CUST_INFO =
+		"select  so.id,c.user_id,A.COMPANY_NAME,SO.NEXT_DATE ,SO.CUSTOMER_ID,SO.FREQUENCY, SO.ERROR_HEADER,SO.LAST_ERROR,SO.START_TIME,SO.END_TIME," +
+		" A.ADDRESS1||', '||a.ADDRESS2||', '||a.APARTMENT||', '||a.CITY||', '||a.STATE||', '||a.ZIP as address," +
+		" NVL(CI.BUSINESS_PHONE||'-'||CI.BUSINESS_EXT,'') as BUSINESS_PHONE,NVL(CI.CELL_PHONE,'') as CELL_PHONE" +
+		" from cust.address a, cust.customerinfo ci,cust.customer c,CUST.STANDING_ORDER so " +
+		" where SO.ADDRESS_ID=a.id(+) and c.id=ci.customer_id and so.customer_id=c.id  ";
+	
+
+	public FDStandingOrderInfoList getActiveStandingOrdersCustInfo(Connection conn,FDStandingOrderFilterCriteria filter) throws SQLException {
+		
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+	
+		List<FDStandingOrderInfo> soOrders = new ArrayList<FDStandingOrderInfo>();
+		FDStandingOrderInfoList infoList = new FDStandingOrderInfoList(soOrders);
+	
+		try {
+			/*String query = 
+				"select  so.id,c.user_id,A.COMPANY_NAME,SO.NEXT_DATE ,SO.CUSTOMER_ID,SO.FREQUENCY, SO.ERROR_HEADER,SO.LAST_ERROR,SO.START_TIME,SO.END_TIME," +
+				" A.ADDRESS1||', '||a.ADDRESS2||', '||a.APARTMENT||', '||a.CITY||', '||a.STATE||', '||a.ZIP as address," +
+				" NVL(CI.BUSINESS_PHONE||'-'||CI.BUSINESS_EXT,'') as BUSINESS_PHONE,NVL(CI.CELL_PHONE,'') as CELL_PHONE" +
+				" from cust.address a, cust.customerinfo ci,cust.customer c,CUST.STANDING_ORDER so " +
+				" where SO.ADDRESS_ID=a.id(+) and c.id=ci.customer_id and so.customer_id=c.id  ";*/
+//			ps = conn.prepareStatement(GET_ACTIVE_STANDING_ORDERS_CUST_INFO);
+			
+			CriteriaBuilder builder = new CriteriaBuilder();
+			boolean isActiveOnly = true;
+			if(null!=filter){
+				if(filter.getFrequency()!=null){
+					builder.addObject("SO.FREQUENCY", filter.getFrequency());
+				}
+				if(null !=filter.getErrorType() && !"".equals(filter.getErrorType().trim())){
+					builder.addString("SO.LAST_ERROR", filter.getErrorType());
+				}
+				if(null !=filter.getDayOfWeek()){
+					builder.addObject(" to_char(SO.NEXT_DATE,'D')", filter.getDayOfWeek());
+				}
+				if(true == filter.isActiveOnly()){
+					builder.addObject(" SO.DELETED", "0");
+				}else{
+					isActiveOnly = false;
+				}
+			}
+//			ps = conn.prepareStatement(query);
+			Object[] par = builder.getParams();
+			if(null != par && par.length > 0){
+				ps = conn.prepareStatement(GET_ACTIVE_STANDING_ORDERS_CUST_INFO+" and "+builder.getCriteria());
+			}else{
+				if(isActiveOnly){
+					ps = conn.prepareStatement(GET_ACTIVE_STANDING_ORDERS_CUST_INFO+ " and SO.DELETED= 0");
+				}else{
+					ps = conn.prepareStatement(GET_ACTIVE_STANDING_ORDERS_CUST_INFO);
+				}
+			}
+			for (int i = 0; i < par.length; i++) {
+				ps.setObject(i + 1, par[i]);
+			}
+			rs = ps.executeQuery();
+			
+			while (rs.next()) {
+				FDStandingOrderInfo soInfo = new FDStandingOrderInfo();
+				soInfo.setSoID(rs.getString("ID"));
+				soInfo.setUserId(rs.getString("USER_ID"));
+				soInfo.setCompanyName(rs.getString("COMPANY_NAME"));
+				soInfo.setCustomerId(rs.getString("CUSTOMER_ID"));
+				soInfo.setAddress(rs.getString("ADDRESS"));
+				soInfo.setBusinessPhone(rs.getString("BUSINESS_PHONE"));
+				soInfo.setCellPhone(rs.getString("CELL_PHONE"));
+				soInfo.setNextDate( rs.getDate("NEXT_DATE") );
+				soInfo.setFrequency(rs.getInt("FREQUENCY"));
+				soInfo.setLastError(rs.getString("LAST_ERROR"));
+				soInfo.setErrorHeader(rs.getString("ERROR_HEADER"));
+				soInfo.setStartTime(rs.getTime("START_TIME"));
+				soInfo.setEndTime(rs.getTime("END_TIME"));
+				soOrders.add( soInfo );
+			}
+	
+			rs.close();
+			ps.close();
+		} catch (SQLException exc) {
+			throw exc;
+		} finally {
+			if(rs != null){
+				rs.close();
+			}
+			if(ps != null) {
+				ps.close();
+			}
+		}
+		
+		return infoList;
+	}
+
+
+	private static final String CLEAR_ERRORS_STANDING_ORDERS =
+		"UPDATE CUST.STANDING_ORDER SO SET SO.LAST_ERROR = null, SO.ERROR_HEADER=null, SO.ERROR_DETAIL= null WHERE ";
+	public void clearStandingOrderErrors(Connection conn,String[] soIDs) throws SQLException{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		CriteriaBuilder builder = new CriteriaBuilder();
+		try {
+			
+			builder.addInString("SO.ID", soIDs);
+			
+			Object[] par = builder.getParams();
+			if(null != par && par.length > 0){
+				ps = conn.prepareStatement(CLEAR_ERRORS_STANDING_ORDERS+builder.getCriteria());
+			}
+			for (int i = 0; i < par.length; i++) {
+				ps.setObject(i + 1, par[i]);
+			}
+			int total = ps.executeUpdate();			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		 finally {
+				if(rs != null){
+					rs.close();
+				}
+				if(ps != null) {
+					ps.close();
+				}
+			}
 	}
 }

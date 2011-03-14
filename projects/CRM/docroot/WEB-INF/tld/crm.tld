@@ -1389,4 +1389,27 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	
+	<tag>
+        <name>CrmStandingOrders</name>
+        <tagclass>com.freshdirect.webapp.taglib.crm.CrmStandingOrdersTag</tagclass>
+        <teiclass>com.freshdirect.webapp.taglib.crm.CrmStandingOrdersTag$TagEI</teiclass>
+        <bodycontent>JSP</bodycontent>
+        <info></info>
+        <attribute>
+            <name>id</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+         <attribute>
+            <name>result</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+			<name>filter</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+    </tag>
 </taglib>

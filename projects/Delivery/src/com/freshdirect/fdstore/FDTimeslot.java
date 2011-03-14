@@ -150,5 +150,7 @@ public class FDTimeslot implements Serializable {
 		return dlvTimeslot.toString();
 	}
 	
-	
+	public static String getDisplayString(boolean forceAmPm, Date startTime, Date endTime) {
+		return format(forceAmPm, DateUtil.toCalendar(startTime), DateUtil.toCalendar(endTime));
+	}
 }
