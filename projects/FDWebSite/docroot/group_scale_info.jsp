@@ -43,7 +43,7 @@ if(result == null){
 else {
 	MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, user.getPricingZoneId());
 	buf1.append( " <span class=\"text14rbold\">Buy More &amp; Save!</span><br />" );
-	buf1.append( "<span class=\"text12bold\">Any Combination of "+result.getLongDesc()+"</span><br />" );
+	buf1.append( "<span class=\"text12bold\">Any "+result.getLongDesc()+"</span><br />" );
 	buf1.append( "<span class=\"text14rbold\">" );
 	buf1.append( FORMAT_QUANTITY.format( matPrice.getScaleLowerBound() ) );
 	if(matPrice.getScaleUnit().equals("LB"))//Other than eaches append the /pricing unit for clarity.
