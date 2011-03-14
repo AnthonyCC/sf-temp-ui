@@ -3,7 +3,7 @@
 	
 	<role name="CRM_Administrator">
 		<links name="main">
-			main_index.jsp,supervisor_index.jsp,case_mgmt_index.jsp,admintools_index.jsp,reports_index.jsp,worklist.jsp,giftcard_landing.jsp
+			main_index.jsp,supervisor_index.jsp,case_mgmt_index.jsp,admintools_index.jsp,reports_index.jsp,worklist.jsp,giftcard_landing.jsp,crm_standing_orders.jsp
 		</links>
 		<links name="customer">
 			order_search_results.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,credit_history.jsp,promotion_history.jsp,
@@ -59,7 +59,7 @@
 	</role>
 	
 	<role name="CRM_Developer">
-		<links name="main">main_index.jsp,supervisor_index.jsp,case_mgmt_index.jsp,connect.jsp,connect.html,admintools_index.jsp,reports_index.jsp,worklist.jsp,giftcard_landing.jsp</links>
+		<links name="main">main_index.jsp,supervisor_index.jsp,case_mgmt_index.jsp,connect.jsp,connect.html,admintools_index.jsp,reports_index.jsp,worklist.jsp,giftcard_landing.jsp,crm_standing_orders.jsp</links>
 		<links name="customer">
 			order_search_results.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,credit_history.jsp,promotion_history.jsp,
 			promotion_popup.jsp,place_order_build.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,delivery_pass.jsp,
@@ -108,7 +108,7 @@
 	
 	<role name="CRM_Supervisor">
 		<links name="main">
-			main_index.jsp,supervisor_index.jsp,case_mgmt_index.jsp,reports_index.jsp,worklist.jsp,giftcard_landing.jsp,promo_home.jsp,order_search_results.jsp,charge_order.jsp,masquerade.jsp,checkout_edit_checkacct.jsp
+			main_index.jsp,supervisor_index.jsp,case_mgmt_index.jsp,reports_index.jsp,worklist.jsp,giftcard_landing.jsp,crm_standing_orders.jsp,promo_home.jsp,order_search_results.jsp,charge_order.jsp,masquerade.jsp,checkout_edit_checkacct.jsp
 		</links>
 		<links name="customer">summary.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,credit_history.jsp,promotion_history.jsp,promotion_popup.jsp,place_order_build.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,delivery_pass.jsp,customer_profile_summary.jsp,customer_profile.jsp,giftcard_summary.jsp</links>
 		<links name="customeraccount">add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,place_alert.jsp,customer_alert_list.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,username_password_option.jsp</links>
@@ -164,7 +164,7 @@
 	
 	<role name="CRM_COS">
 		<links>
-		main_index.jsp,worklist.jsp,promo_home.jsp,giftcard_landing.jsp
+		main_index.jsp,worklist.jsp,promo_home.jsp,giftcard_landing.jsp,crm_standing_orders.jsp
 		</links>
 		<links name="customer">order_search_results.jsp,account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,masquerade.jsp,case_history.jsp,order_history.jsp,credit_history.jsp,promotion_history.jsp,promotion_popup.jsp,place_order_build.jsp,
 delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,delivery_pass.jsp,customer_profile_summary.jsp,customer_profile.jsp</links>
@@ -385,7 +385,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 	
 	<role name="CRM_Security">
 		<links name="main">
-		main_index.jsp,supervisor_index.jsp,worklist.jsp,reports_index.jsp,giftcard_landing.jsp
+		main_index.jsp,supervisor_index.jsp,worklist.jsp,case_mgmt_index.jsp,reports_index.jsp,giftcard_landing.jsp
 		</links>
 		<links name="supervisor">acct_lookup.jsp,acct_lookup_auth.jsp</links>
 		<links name="reports">settlement_problem_report.jsp</links>

@@ -86,7 +86,7 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
 				
 				boolean isPrivateCase = "on".equalsIgnoreCase(NVL.apply(request.getParameter("privateCase"), "off"));
 				
-				String summary = NVL.apply(request.getParameter("summary"), "").trim();
+				String summary = NVL.apply(request.getParameter("summary"), "");
 
 				String[] deptCodes = request.getParameterValues("departments");
 				Set departments = new HashSet();

@@ -358,7 +358,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 						.append(auth.getAuthCode())
 						.append(" for merchant ")
 						.append(auth.getMerchantId())
-						.append(".\n");
+						.append(".");
 				
 			}
 		}

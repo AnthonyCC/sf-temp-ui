@@ -54,9 +54,9 @@ List linksList = MenuManager.getInstance().getLinksForRole(request);
 			<% if(linksList.contains("giftcard_landing.jsp")){%>
 			<a href="/gift_card/giftcard_landing.jsp" class="<%=pageURI.indexOf("/main/information.jsp") > -1?"main_nav_on":"main_nav_link"%>">GiftCard</a>
 			<% } %> 
-			<%-- if(linksList.contains("crm_standing_orders.jsp")){--%>
+			<% if(linksList.contains("crm_standing_orders.jsp")){%>
 			<a href="/main/crm_standing_orders.jsp" class="<%=pageURI.indexOf("/main/crm_standing_orders.jsp") > -1?"main_nav_on":"main_nav_link"%>">Standing Orders</a>
-			<%-- } --%> 
+			<% } %> 
 			<a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmMainHelpLink() %>','715','940','kbit')" class="<%=pageURI.indexOf("/main/help.jsp")	> -1?"main_nav_on":"main_nav_link"%>">Help</a>
 		</td>
 		<td	width="16%"	align="right">
