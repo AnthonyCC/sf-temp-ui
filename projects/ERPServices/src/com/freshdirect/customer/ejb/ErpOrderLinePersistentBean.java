@@ -259,6 +259,8 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
         this.model.setVariantId(rs.getString("VARIANT_ID"));
         this.model.setSavingsId(rs.getString("SAVINGS_ID"));
         String pricingZoneId=rs.getString("PRICING_ZONE_ID");
+        this.model.setPricingZoneId(pricingZoneId);
+        
         String grpId = rs.getString("GROUP_ID");
         int version = rs.getInt("GROUP_VERSION");
         if(grpId!=null)
