@@ -167,8 +167,8 @@ public class SAPGrpInfoContentLoader implements BapiFunctionI {
 			
 				groupTable.nextRow();
 			}
-			if(FDStoreProperties.isValidationGroupExportEnabled() && intermittentErrors.size() > 0) {
-				throw new LoaderException("Same Material Appears in More than One Active Group in the Batch. Please check the Batch for Material Number: "+intermittentErrors.toString());
+			if(FDStoreProperties.isValidationGroupExportInputEnabled() && intermittentErrors.size() > 0) {
+				throw new LoaderException("SAP INPUT VALIDATION: Same Material Appears in More than One Active Group in the Batch. Please check the Batch for Material Number: "+intermittentErrors.toString());
 			}
 			if(existingGrps.size() > 0){//IF there are materials in existing groups
 				//Validate for material present more than one active group.
@@ -188,7 +188,7 @@ public class SAPGrpInfoContentLoader implements BapiFunctionI {
 				
 				if(FDStoreProperties.isValidationGroupExportEnabled() && activeGrps.size() > 0){
 					//Active groups exists. Stop further processing the export.
-					throw new LoaderException("Material(s) From this Export Already exists in an Active Group. "+activeGrps.toString());
+					throw new LoaderException("STOREFRONT STATE VALIDATION: Material(s) From this Export Already exists in an Active Group. "+activeGrps.toString());
 				}
 			}
 			LOGGER.debug ("Storing group content info");

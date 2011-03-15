@@ -419,6 +419,7 @@ public class FDStoreProperties {
     
     private final static String PROP_DUMPGROUPEXPORT_ENABLED = "fdstore.dumpgroupexport.enabled";
     private final static String PROP_VALIDATIONGROUPEXPORT_ENABLED = "fdstore.validation.groupexport.enabled";
+    private final static String PROP_VALIDATIONGROUPEXPORTSAPINPUT_ENABLED = "fdstore.validation.groupexportsapinput.enabled";
     private final static String PROP_GROUPSCALE_ENABLED = "fdstore.groupscale.enabled";
     
     
@@ -844,6 +845,7 @@ public class FDStoreProperties {
 		
 		defaults.put(PROP_DUMPGROUPEXPORT_ENABLED, "false");
 		defaults.put(PROP_VALIDATIONGROUPEXPORT_ENABLED, "true");
+		defaults.put(PROP_VALIDATIONGROUPEXPORTSAPINPUT_ENABLED, "true");
 		defaults.put(PROP_GROUPSCALE_ENABLED, "true");
 
         refresh();
@@ -2167,7 +2169,13 @@ public class FDStoreProperties {
 	  //Property to enable validation on storefront for Group Scale Export
 	public static boolean isValidationGroupExportEnabled() {
         return (new Boolean(get(PROP_VALIDATIONGROUPEXPORT_ENABLED))).booleanValue();
-    }    
+    }  
+	
+	  //Property to enable validation on storefront for Group Scale Export Input from SAP
+	public static boolean isValidationGroupExportInputEnabled() {
+        return (new Boolean(get(PROP_VALIDATIONGROUPEXPORTSAPINPUT_ENABLED))).booleanValue();
+    }  
+	
 	  //Property to enable or disbale group scale storefront.
 	public static boolean isGroupScaleEnabled() {
         return (new Boolean(get(PROP_GROUPSCALE_ENABLED))).booleanValue();
