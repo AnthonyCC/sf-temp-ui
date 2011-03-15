@@ -449,8 +449,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		
 		String deliveryAddressId = so.getAddressId();
 		AddressModel deliveryAddressModel = FDCustomerManager.getAddress( customer, deliveryAddressId );
-		//Allowing COS customers to use HOME zone capacity for the configured set of HOME zones
-		 deliveryAddressModel = performCosResidentialMerge(deliveryAddressModel);
+		
 		
 		if ( deliveryAddressModel == null ) {
 			LOGGER.warn( "No delivery address found for this ID. ["+deliveryAddressId+"]" );
@@ -551,7 +550,8 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		//   Validate Timeslot reservation
 		// ==================================
 		
-		
+		//Allowing COS customers to use HOME zone capacity for the configured set of HOME zones
+		 deliveryAddressModel = performCosResidentialMerge(deliveryAddressModel);
 		// WARNING: getAllTimeslotsForDateRange-s select will ignore houre:minute in start/end dates!
 		List<FDTimeslot> timeslots = FDDeliveryManager.getInstance().getAllTimeslotsForDateRange( deliveryTimes.getDayStart(), deliveryTimes.getDayEnd(), deliveryAddressModel );
 				
@@ -1010,6 +1010,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			 			//Clone the address model object
 			 			timeslotAddress=cloneAddress(address);
 			 			timeslotAddress.setServiceType(EnumServiceType.HOME);
+			 			LOGGER.info("Address "+address+" is COS Enabled. ServiceType set to HOME.");
 			 		}
 			 		
 				}catch (FDInvalidAddressException iae) {
