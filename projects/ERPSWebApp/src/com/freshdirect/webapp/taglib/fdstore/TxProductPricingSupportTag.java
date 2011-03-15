@@ -372,9 +372,16 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 		buf.append("      if ("+ nsObj +".pricings[i] == undefined)\n");
 		buf.append("        continue;\n");
 		buf.append("\n");
+		buf.append("      if ("+ nsObj +".useGroupScalePricing) { \n");
 		buf.append("        p = "+ nsObj +".pricings[i].getPrice();\n");
 		buf.append("        if (p!=\"\") {\n");
-		buf.append("        totalQty+=Number("+ nsObj +".pricings[i].getQuantity());\n");
+		buf.append("           totalQty+=Number("+ nsObj +".pricings[i].getQuantity());\n");
+		buf.append("        }\n");
+		buf.append("      } else { \n");
+		buf.append("        p = "+ nsObj +".pricings[i].getPrice();\n");
+		buf.append("        if (p!=\"\") {\n");
+		buf.append("           total+=Number(p.substring(1));\n");
+		buf.append("        }\n");
 		buf.append("      }\n");
 		buf.append("    }\n");
 		buf.append("\n");
