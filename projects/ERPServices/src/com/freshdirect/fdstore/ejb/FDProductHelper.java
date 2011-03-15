@@ -65,6 +65,7 @@ import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.ZonePriceInfoListing;
@@ -189,21 +190,22 @@ class FDProductHelper {
 		}		
 		//Get Group Identify if applicable.
 		FDGroup group = null;
-		ErpGrpInfoSB remote;
-		try {
-			if (this.grpHome ==null) {
-				this.lookupGroupPriceHome();
-			}
-			remote = this.grpHome.create();
-			group = remote.getGroupIdentityForMaterial(erpProductInfo.getMaterialSapIds()[0]);
-		} catch (RemoteException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (CreateException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}					
-
+		if(FDStoreProperties.isGroupScaleEnabled()) {//otherwise group will not be associated with the product.
+			ErpGrpInfoSB remote;
+			try {
+				if (this.grpHome ==null) {
+					this.lookupGroupPriceHome();
+				}
+				remote = this.grpHome.create();
+				group = remote.getGroupIdentityForMaterial(erpProductInfo.getMaterialSapIds()[0]);
+			} catch (RemoteException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (CreateException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}					
+		}
 		return new FDProductInfo(
 			erpProductInfo.getSkuCode(),
 			erpProductInfo.getVersion(),

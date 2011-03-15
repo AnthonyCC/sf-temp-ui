@@ -167,7 +167,7 @@ public class SAPGrpInfoContentLoader implements BapiFunctionI {
 			
 				groupTable.nextRow();
 			}
-			if(intermittentErrors.size() > 0) {
+			if(FDStoreProperties.isValidationGroupExportEnabled() && intermittentErrors.size() > 0) {
 				throw new LoaderException("Same Material Appears in More than One Active Group in the Batch. Please check the Batch for Material Number: "+intermittentErrors.toString());
 			}
 			if(existingGrps.size() > 0){//IF there are materials in existing groups
@@ -185,11 +185,11 @@ public class SAPGrpInfoContentLoader implements BapiFunctionI {
 						}
 					}
 				}
-				// As per the new storefront design we dont need to validate duplicates in storefront.
-				/*if(activeGrps.size() > 0){
+				
+				if(FDStoreProperties.isValidationGroupExportEnabled() && activeGrps.size() > 0){
 					//Active groups exists. Stop further processing the export.
 					throw new LoaderException("Material(s) From this Export Already exists in an Active Group. "+activeGrps.toString());
-				}*/
+				}
 			}
 			LOGGER.debug ("Storing group content info");
 			this.storeGrpInfo(grpInfos);

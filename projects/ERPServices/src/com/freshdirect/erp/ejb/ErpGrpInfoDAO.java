@@ -71,16 +71,17 @@ public class ErpGrpInfoDAO {
 		FDGroup group=null;
 	   PreparedStatement ps = null;
 	   ResultSet rs = null;
-		
+	   int resultCount = 0;	
 		try {	    	   	    	   	    	   
 			ps = conn.prepareStatement(GRP_PRICING_SELECT_MAT_SQL);
 			ps.setString(1,matId);
 			//ps.setString(2,matId);
-			rs = ps.executeQuery();	    	   
-			if(rs.next()) {
+			rs = ps.executeQuery();	 
+			while (rs.next()) {
 				String sapId=rs.getString("SAP_ID");
 				int version=rs.getInt("VERSION");
 				group = new FDGroup(sapId, version);
+				resultCount++;
 			}
 		}catch(SQLException e){
 			throw e;
@@ -88,7 +89,11 @@ public class ErpGrpInfoDAO {
 	    	   if(rs != null) rs.close();
 	    	   if(ps != null) ps.close();
 	    }
- 	    
+ 	    if(resultCount > 1){
+ 	    	Logger.error("There are multiple active groups assciated with the same Material Number : "+matId);
+ 	    	//Do not associate the group info with the material/product.
+ 	    	return null;
+ 	    }
 		Logger.debug("Group ID for loading matId:"+matId+" : and FDGroup: "+group);
 		return group; 			
 }

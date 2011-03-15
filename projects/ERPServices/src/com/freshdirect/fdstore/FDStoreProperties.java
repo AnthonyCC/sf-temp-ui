@@ -418,6 +418,9 @@ public class FDStoreProperties {
     private static final String PROP_SEM_REFRESH_PERIOD = "fdstore.sem.refresh";
     
     private final static String PROP_DUMPGROUPEXPORT_ENABLED = "fdstore.dumpgroupexport.enabled";
+    private final static String PROP_VALIDATIONGROUPEXPORT_ENABLED = "fdstore.validation.groupexport.enabled";
+    private final static String PROP_GROUPSCALE_ENABLED = "fdstore.groupscale.enabled";
+    
     
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -840,6 +843,8 @@ public class FDStoreProperties {
 		defaults.put(PROP_SEM_REFRESH_PERIOD, "5"); //MINUTE * this value
 		
 		defaults.put(PROP_DUMPGROUPEXPORT_ENABLED, "false");
+		defaults.put(PROP_VALIDATIONGROUPEXPORT_ENABLED, "true");
+		defaults.put(PROP_GROUPSCALE_ENABLED, "true");
 
         refresh();
     }
@@ -2159,6 +2164,12 @@ public class FDStoreProperties {
 	public static boolean isDumpGroupExportEnabled() {
         return (new Boolean(get(PROP_DUMPGROUPEXPORT_ENABLED))).booleanValue();
     }
-    
-    
+	  //Property to enable validation on storefront for Group Scale Export
+	public static boolean isValidationGroupExportEnabled() {
+        return (new Boolean(get(PROP_VALIDATIONGROUPEXPORT_ENABLED))).booleanValue();
+    }    
+	  //Property to enable or disbale group scale storefront.
+	public static boolean isGroupScaleEnabled() {
+        return (new Boolean(get(PROP_GROUPSCALE_ENABLED))).booleanValue();
+    }   
 }
