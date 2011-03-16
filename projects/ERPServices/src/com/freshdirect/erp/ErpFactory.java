@@ -685,11 +685,24 @@ public class ErpFactory {
 	}
 	
 	private void lookupGrpInfoHome() throws FDResourceException {
+		if (erpGrpInfoHome != null) {
+			return;
+		}
+		Context ctx = null;
 		try {
-			erpGrpInfoHome = (ErpGrpInfoHome) new ServiceLocator().getRemoteHome("freshdirect.erp.GrpInfoManager");			
+			ctx = ErpServicesProperties.getInitialContext();
+			erpGrpInfoHome = (ErpGrpInfoHome) ctx.lookup("freshdirect.erp.GrpInfoManager");
 		} catch (NamingException ne) {
 			throw new FDResourceException(ne);
-		} 
+		} finally {
+			try {
+				if (ctx != null) {
+					ctx.close();
+				}
+			} catch (NamingException ne) {
+				ne.printStackTrace();
+			}
+		}
 	}
 
 }
