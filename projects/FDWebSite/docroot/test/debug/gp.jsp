@@ -289,7 +289,18 @@
 				
 	<%
 		ErpFactory factory = ErpFactory.getInstance();
-		Collection<FDGroup> groups = factory.findGrpsForMaterial(matId);
+		Collection<FDGroup> groups = null;
+		try {
+			groups = factory.findGrpsForMaterial(matId);
+		} catch (Exception e) {
+		%>
+			<tr>
+				<td align="right"><b>Groups </b></td>
+				<td><b>No groups found for this SKU</b></td>
+			</tr>
+		<%
+			return;
+		}
 		%>
 					<tr>
 						<td align="right"><b>No. of groups this material is attached to </b></td>
