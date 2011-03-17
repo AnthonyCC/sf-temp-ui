@@ -148,16 +148,15 @@ shouldRenderBlankCells = (itr.hasNext() || shouldRenderBlankCells); //check if b
 							<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" style="color: #999999;"/>
 						<% } %>
 						
-                        <display:ProductPrice impression="<%= new ProductImpression(productNode) %>" showDescription="false"/>
-	
-<%--
+
                     <%
 					// Configuration description
 					//
 					if (pi.getConfigurationDescription() != null) {
 						%><div style="color: <%=pi.getProductModel().isFullyAvailable() ? "black" : "#999999" %>">(<%= pi.getConfigurationDescription() %>)</div>
-					<% }
-	
+					<% } %>
+                    <display:ProductPrice impression="<%= new ProductImpression(productNode) %>" showDescription="false"/>
+<%--	
 					// Default price
 					//
 					String scaledPrices[] = pi.getScaledPrices();
