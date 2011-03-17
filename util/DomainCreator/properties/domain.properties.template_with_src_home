@@ -1,0 +1,7 @@
+weblogic.home=/home/tamas/local/bea/wlserver_10.3
+domain.home=/home/tamas/FreshDirect
+domain.name=domain
+server.port=7001
+domain.home.ignoreSourceRepositoryCheck
+
+src.home=/home/tamas/src/FreshDirect/01

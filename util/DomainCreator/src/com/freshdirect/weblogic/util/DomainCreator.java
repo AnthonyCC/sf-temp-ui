@@ -35,7 +35,9 @@ public class DomainCreator {
 	private static final String SERVER_HOST = "server.host";
 
 	private static final String SERVER_PORT = "server.port";
-
+	
+	private static final String SRC_HOME = "src.home";
+	
 	
 	private static final String DOMAIN_TEMPLATE_FILE = "/common/templates/domains/wls.jar";
 
@@ -78,6 +80,8 @@ public class DomainCreator {
 	private String serverHost;
 	
 	private int serverPort;
+
+	private String srcHome;
 
 
 	public DomainCreator() throws IOException {
@@ -215,6 +219,15 @@ public class DomainCreator {
 		} catch (IllegalArgumentException e) {
 			throw new InvalidDomainConfigurationException(SERVER_PORT + " is out of range (out of 0-65535)");
 		}
+		
+
+		// Src Home
+		srcHome = properties.getProperty(SRC_HOME);
+		if (srcHome == null) {
+			srcHome = domainHome;
+		}
+		System.out.println(SRC_HOME + ": " + srcHome);
+
 	}
 
 	private void validateFreshDirectSourceRepository(File domainFile) throws InvalidDomainConfigurationException {
@@ -447,7 +460,7 @@ public class DomainCreator {
 	 */
 	private void runStageThree() {
 		final String PSEP = System.getProperty("file.separator");
-		File projectsDir = new File(domainHome + PSEP + "projects");
+		File projectsDir = new File(srcHome + PSEP + "projects");
 		
 		// Extract dependendent libs from classpaths
 		List<String> libs = LibUtil.collectLibs(projectsDir);
@@ -457,7 +470,7 @@ public class DomainCreator {
 			public void appendAfter(String line, Appendable out) {
 				if (line.startsWith("DOMAIN_HOME=")) {
 					try {
-						out.append("FD_BASE=\""+domainHome+"\"").append(LINE_SEP);
+						out.append("FD_BASE=\""+srcHome+"\"").append(LINE_SEP);
 						out.append("FD_LIBS=\"$FD_BASE/lib\"").append(LINE_SEP);
 						out.append(LINE_SEP);
 
@@ -473,6 +486,7 @@ public class DomainCreator {
 
 						File pDir = (File) param2;
 
+				
 						// check for binary dirs
 						for (File prj : pDir.listFiles() ) {
 							if (!prj.isDirectory())
@@ -496,6 +510,7 @@ public class DomainCreator {
 						out.append("export EXT_PRE_CLASSPATH");
 						out.append(LINE_SEP);
 						out.append(LINE_SEP);
+						//System.err.print(out.toString());
 					} catch (IOException e) {}
 				}
 			}
@@ -550,7 +565,7 @@ public class DomainCreator {
 			sb.append("wl_url='t3://" + serverHost + ":" + serverPort + "'").append(LINE_SEP);
 	
 			sb.append("domainName='" + domainName + "'").append(LINE_SEP);
-			sb.append("FD_HOME='" + domainHome + "'").append(LINE_SEP);
+			sb.append("FD_HOME='" + srcHome + "'").append(LINE_SEP);
 			sb.append("serverName='" + serverHost + "'").append(LINE_SEP);
 			sb.append("vHostName='" + ("crm"+serverHost) + "'").append(LINE_SEP);
 			sb.append("vHostPort=" + 7007).append(LINE_SEP);
