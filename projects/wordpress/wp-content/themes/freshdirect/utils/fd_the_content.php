@@ -19,7 +19,8 @@ function fd_the_content() {
 			$element = $divs->item($i);
 			$isCaption = strpos($element->getAttribute('class'), 'wp-caption');
 			if ($isCaption !== false) {
-				$imageNode = $element;				
+				$imageNode = $element;
+				break;
 			}
 		}
 	}
