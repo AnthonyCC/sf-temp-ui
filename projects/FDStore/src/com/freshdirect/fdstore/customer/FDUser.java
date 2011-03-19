@@ -1947,7 +1947,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 				template.setActivityType(EnumAccountActivityType.CREATE_ACCOUNT);
 				try {
 					Collection<ErpActivityRecord> results = ActivityLog.getInstance().findActivityByTemplate(template);
-					if (results.size() > 1) {
+					if (results.size() > 0) {
 						registrationDate = results.iterator().next().getDate();
 					} else {
 						registrationDate = EPOCH;
