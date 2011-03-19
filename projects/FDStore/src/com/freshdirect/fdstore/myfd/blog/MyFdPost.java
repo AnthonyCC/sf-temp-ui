@@ -93,6 +93,7 @@ public class MyFdPost implements Serializable {
 					attributes.getNamedItem("class").getNodeValue() != null &&
 					attributes.getNamedItem("class").getNodeValue().contains("wp-caption")) {
 					imageNode = divs.item(i);
+					break;
 				}
 			}
 		}					
