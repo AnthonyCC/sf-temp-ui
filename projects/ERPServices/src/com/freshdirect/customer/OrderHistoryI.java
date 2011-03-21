@@ -11,7 +11,9 @@ import java.util.Date;
 public interface OrderHistoryI extends Serializable {
 	
 	public int getDeliveredOrderCount();
-	
+
+	public Date getFirstOrderDate();
+
 	public Date getFirstNonPickupOrderDate();
 	
 	public Date getLastOrderCreateDate();

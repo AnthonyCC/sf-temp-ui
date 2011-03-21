@@ -15,6 +15,7 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 	private Map orderHistoryInfo = new HashMap();
 	
 	private static final String DELIVERED_ORDER_COUNT = "deliveredOrderCount";
+	private static final String FIRST_ORDER_DATE = "firstOrderDate";
 	private static final String FIRST_NON_PICKUP_ORDER_DATE = "firstNonPickupOrderDate";
 	private static final String LAST_ORDER_CREATE_DATE = "lastOrderCreateDate";
 	private static final String LAST_ORDER_DELIVERY_DATE = "lastOrderDlvDate";
@@ -36,6 +37,7 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 	public ErpWebOrderHistory(Collection erpSaleInfos){
 		//Populate the orderHistoryInfo using erpSaleInfos Collection.
 		orderHistoryInfo.put(DELIVERED_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getDeliveredOrderCount(erpSaleInfos)));
+		orderHistoryInfo.put(FIRST_ORDER_DATE, ErpOrderHistoryUtil.getFirstOrderDate(erpSaleInfos));
 		orderHistoryInfo.put(FIRST_NON_PICKUP_ORDER_DATE, ErpOrderHistoryUtil.getFirstNonPickupOrderDate(erpSaleInfos));
 		orderHistoryInfo.put(LAST_ORDER_CREATE_DATE, ErpOrderHistoryUtil.getLastOrderCreateDate(erpSaleInfos));
 		orderHistoryInfo.put(LAST_ORDER_DELIVERY_DATE, ErpOrderHistoryUtil.getLastOrderDlvDate(erpSaleInfos));
@@ -56,6 +58,10 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 		return ((Integer)orderHistoryInfo.get(DELIVERED_ORDER_COUNT)).intValue();
 	}
 
+	public Date getFirstOrderDate(){
+		return ((Date)orderHistoryInfo.get(FIRST_ORDER_DATE));
+	}
+	
 	public Date getFirstNonPickupOrderDate(){
 		return ((Date)orderHistoryInfo.get(FIRST_NON_PICKUP_ORDER_DATE));
 	}
@@ -133,6 +139,7 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 		buf.append("TotalOrderCount "+getTotalOrderCount()+"\n");
 		buf.append("LastOrderCreateDate "+getLastOrderCreateDate()+"\n");
 		buf.append("SecondToLastSaleId "+getSecondToLastSaleId()+"\n");
+		buf.append("FirstOrderDate "+getFirstOrderDate()+"\n");
 		buf.append("FirstNonPickupOrderDate "+getFirstNonPickupOrderDate()+"\n");
 		buf.append("lastOrderType "+getLastOrderType()+"\n");
 		buf.append("lastOrderDlvDate "+getLastOrderDlvDate());

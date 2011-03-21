@@ -32,6 +32,11 @@ public class ErpOrderHistory implements OrderHistoryI {
 		return ErpOrderHistoryUtil.getDeliveredOrderCount(erpRegSaleInfos);
 	}
 
+	@Override
+	public Date getFirstOrderDate() {
+		return ErpOrderHistoryUtil.getFirstOrderDate(erpRegSaleInfos);
+	}
+
 	public Date getFirstNonPickupOrderDate(){
 		return ErpOrderHistoryUtil.getFirstNonPickupOrderDate(erpRegSaleInfos);
 	}
@@ -113,6 +118,7 @@ public class ErpOrderHistory implements OrderHistoryI {
 		buf.append("TotalOrderCount "+getTotalOrderCount()+"\n");
 		buf.append("LastOrderCreateDate "+getLastOrderCreateDate()+"\n");
 		buf.append("SecondToLastSaleId "+getSecondToLastSaleId()+"\n");
+		buf.append("FirstOrderDate "+getFirstOrderDate()+"\n");
 		buf.append("FirstNonPickupOrderDate "+getFirstNonPickupOrderDate()+"\n");
 		buf.append("lastOrderType "+getLastOrderType()+"\n");
 		buf.append("lastOrderDlvDate "+getLastOrderDlvDate());
@@ -125,4 +131,5 @@ public class ErpOrderHistory implements OrderHistoryI {
 		buf.append("OrderSubTotalForChefsTableEligibility "+getOrderSubTotalForChefsTableEligibility()+"\n");
 		return buf.toString();
 	}
+
 }

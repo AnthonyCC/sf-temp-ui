@@ -130,6 +130,23 @@ public class ErpOrderHistoryUtil {
 	 * 
 	 * @param erpSaleInfos
 	 */
+	public static Date getFirstOrderDate(Collection erpSaleInfos){
+		Date date = null;
+		for (Iterator i = erpSaleInfos.iterator(); i.hasNext();) {
+			ErpSaleInfo saleInfo = (ErpSaleInfo) i.next();
+			Date createDate = saleInfo.getCreateDate();
+			if (date==null || createDate.before(date)) {
+				date = createDate;
+			}
+		}
+		return date;
+	}
+
+	
+	/**
+	 * 
+	 * @param erpSaleInfos
+	 */
 	public static Date getFirstNonPickupOrderDate(Collection erpSaleInfos){
 		Date date = null;
 		for (Iterator i = erpSaleInfos.iterator(); i.hasNext();) {
