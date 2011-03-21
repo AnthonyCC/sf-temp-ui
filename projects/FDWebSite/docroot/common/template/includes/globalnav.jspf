@@ -87,7 +87,8 @@ if (catId != null){
 		globalUri.indexOf("survey")> -1 ||
 		globalUri.indexOf("/department.jsp")> -1 ||
 		globalUri.indexOf("/whatsgood.jsp")> -1 ||
-		globalUri.indexOf("view_cart")> -1){
+		globalUri.indexOf("view_cart")> -1 ||
+		globalUri.indexOf("myfd")> -1) {
 		isAtHome = false;
 	}
 	%>
