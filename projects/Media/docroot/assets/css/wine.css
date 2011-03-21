@@ -2313,7 +2313,7 @@ a .usq-rating-sm,a .usq-rating-lg,a .usq-rating-half-sm,a .usq-rating-half-lg {
 .myfd-title a:link,
 .myfd-title a:visited,
 .myfd-title a:active {
-	color: black;
+	color: #333333;
 	text-decoration: none;
 }
 
