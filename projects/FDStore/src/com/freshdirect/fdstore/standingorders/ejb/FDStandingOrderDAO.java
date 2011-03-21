@@ -37,7 +37,7 @@ public class FDStandingOrderDAO {
 		"select " + FIELDZ_ALL + " " +
 		"from CUST.STANDING_ORDER SO " +
 		"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
-		"where SO.DELETED<>1 and NAME='GS Test' " +
+		"where SO.DELETED<>1 " +
 		"order by CCL.NAME";
 
 	private static final String CREATE_EMPTY_STANDING_ORDER = "INSERT INTO CUST.STANDING_ORDER(ID, CUSTOMER_ID, CUSTOMERLIST_ID) VALUES(?,?,?)";
