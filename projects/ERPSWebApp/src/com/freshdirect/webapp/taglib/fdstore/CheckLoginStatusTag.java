@@ -405,8 +405,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         }
 
         //make sure we have values to check against
-        if (!"".equals(sem_pixels) && !"".equals(sem_zipCode) &&
-                !"null".equals(sem_referer)) {
+        if (!"".equals(sem_pixels) && !"".equals(sem_zipCode)) {
             //load cache
             FDSemPixelCache spc = FDSemPixelCache.getInstance();
 
