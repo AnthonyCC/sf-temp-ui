@@ -163,10 +163,12 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	            src = EnumTransactionSource.CUSTOMER_REP;
 	        } else if (EnumTransactionSource.IPHONE_WEBSITE.getCode().equals(app)) {
 	            src = EnumTransactionSource.IPHONE_WEBSITE;
+	        } else if (EnumTransactionSource.ANDROID_WEBSITE.getCode().equals(app)) {
+	            src = EnumTransactionSource.ANDROID_WEBSITE;
 	        } //else get defaulted to website
 	    }
 		this.user.setApplication(src);
-
+		
         lastCartSaveTime = System.currentTimeMillis();
     }
 

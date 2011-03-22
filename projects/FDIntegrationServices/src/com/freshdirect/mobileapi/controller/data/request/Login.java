@@ -13,6 +13,8 @@ public class Login extends Message {
 
     //be defensive until proven otherwise. marking it transient so that it won't be serialized
     private transient String password;
+    
+    private String source;
 
     public String getUsername() {
         return username;
@@ -30,4 +32,12 @@ public class Login extends Message {
         this.password = password;
     }
 
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+        
 }

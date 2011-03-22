@@ -300,9 +300,13 @@ public abstract class BaseController extends AbstractController implements Messa
     protected abstract ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model,
             String action, SessionUser user) throws JsonException, FDException, ServiceException, NoSessionException;
 
-    protected void createUserSession(User user, HttpServletRequest request, HttpServletResponse response) throws FDResourceException {
+    protected void createUserSession(User user, String source, HttpServletRequest request, HttpServletResponse response) throws FDResourceException {
         //Order is important here as "UserUtil.createSessionUser" will refer to the code set in the previous step
-        request.getSession().setAttribute(SessionName.APPLICATION, EnumTransactionSource.IPHONE_WEBSITE.getCode());
+    	if(source != null && source.trim().length() > 0 && EnumTransactionSource.getTransactionSource(source) != null) {
+    		request.getSession().setAttribute(SessionName.APPLICATION, EnumTransactionSource.getTransactionSource(source).getCode());
+    	} else {
+    		request.getSession().setAttribute(SessionName.APPLICATION, EnumTransactionSource.IPHONE_WEBSITE.getCode());
+    	}
         UserUtil.createSessionUser(request, response, user.getFDUser());
     }
 

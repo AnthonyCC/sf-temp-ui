@@ -25,20 +25,29 @@ public class AccountActivityUtil implements SessionName {
 			if (agent != null) {
 				initiator = agent.getUserId();
 			} else {
-				CallcenterUser ccUser = (CallcenterUser) session.getAttribute(SessionName.CUSTOMER_SERVICE_REP);
+				CallcenterUser ccUser = (CallcenterUser) session
+						.getAttribute(SessionName.CUSTOMER_SERVICE_REP);
 				initiator = ccUser.getId();
 			}
 
-                } else if (app != null && app.equalsIgnoreCase(EnumTransactionSource.IPHONE_WEBSITE.getCode())) { 
-                    src = EnumTransactionSource.IPHONE_WEBSITE;
-                    agent = null;
-                    initiator = "CUSTOMER";                    
-		} else {
+		} else if (app != null
+				&& app.equalsIgnoreCase(EnumTransactionSource.IPHONE_WEBSITE
+						.getCode())) {
+			src = EnumTransactionSource.IPHONE_WEBSITE;
+			agent = null;
+			initiator = "CUSTOMER";
+		} else if (app != null
+				&& app.equalsIgnoreCase(EnumTransactionSource.ANDROID_WEBSITE
+						.getCode())) {
+			src = EnumTransactionSource.ANDROID_WEBSITE;
+			agent = null;
+			initiator = "CUSTOMER";
+		}else {
 			src = EnumTransactionSource.WEBSITE;
 			agent = null;
 			initiator = "CUSTOMER";
 		}
-
+		
 		FDSessionUser currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
 
 		FDIdentity identity = currentUser == null ? null : currentUser.getIdentity();

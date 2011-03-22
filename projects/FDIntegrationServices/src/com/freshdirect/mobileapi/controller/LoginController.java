@@ -153,12 +153,13 @@ public class LoginController extends BaseController {
             throws FDException, NoSessionException, JsonException {
         String username = requestMessage.getUsername();
         String password = requestMessage.getPassword();
+        String source = requestMessage.getSource();
         Message responseMessage = null;
         SessionUser user = null;
         try {
 
             //Log in user and store in session
-            createUserSession(User.login(username, password), request, response);
+            createUserSession(User.login(username, password), source, request, response);
             user = getUserFromSession(request, response);
             user.setUserPricingContext();
             responseMessage = formatLoginMessage(user);
