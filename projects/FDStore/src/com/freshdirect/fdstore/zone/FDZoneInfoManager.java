@@ -20,46 +20,9 @@ import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDZoneInfoManager {
-
-		private final static ServiceLocator LOCATOR = new ServiceLocator();
-		private final static Category LOGGER = LoggerFactory.getInstance(FDZoneInfoManager.class);
+	private final static Category LOGGER = LoggerFactory.getInstance(FDZoneInfoManager.class);
 
 		
-		private static FDZoneInfoHome managerHome = null;
-		
-		
-	   
-	   
-	    
-	    
-	  
-	    
-	    private static void lookupManagerHome() throws FDResourceException {
-			if (managerHome != null) {
-				return;
-			}
-			Context ctx = null;
-			try {
-				ctx = FDStoreProperties.getInitialContext();
-				managerHome = (FDZoneInfoHome) ctx.lookup("freshdirect.fdstore.ZoneInfoManager");
-			} catch (NamingException ne) {
-				throw new FDResourceException(ne);
-			} finally {
-				try {
-					if (ctx != null) {
-						ctx.close();
-					}
-				} catch (NamingException ne) {
-					LOGGER.warn("Cannot close Context while trying to cleanup", ne);
-				}
-			}
-		}
-	    
-	    
-	    private static void invalidateManagerHome() {
-			managerHome = null;
-		}
-
     public static ErpZoneMasterInfo findZoneInfoMaster(String zoneId) throws FDResourceException {
         try {
             return FDServiceLocator.getInstance().getFDZoneInfoSessionBean().findZoneInfoMaster(zoneId);

@@ -139,7 +139,7 @@ public class ErpGrpInfoSessionBean extends SessionBeanSupport{
 		try{
 			conn = getConnection();
 			groups=ErpGrpInfoDAO.getAllGroupIds(conn);
-			if(groups==null || groups.isEmpty()) throw new FDRuntimeException("No Groups to display");			
+
 		}catch(SQLException sqle){
 			LOGGER.error("Unable to load all loadAllGrpInfoMaster " , sqle);
 			throw new EJBException(sqle);

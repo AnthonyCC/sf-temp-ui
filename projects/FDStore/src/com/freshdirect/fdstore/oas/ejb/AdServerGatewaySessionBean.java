@@ -53,21 +53,24 @@ public class AdServerGatewaySessionBean extends GatewaySessionBeanSupport {
 			ProductModel pm = (ProductModel) ContentFactory.getInstance().getContentNode(k.getId());
 			this.visit(pm);
 		}
-		try {
-			//Pass Group scale Info if available. Group id along with pricing information to the ad server.
-			Collection<FDGroup> grpInfoList=FDGrpInfoManager.loadAllGrpInfoMaster();
-			for (Iterator<FDGroup> i = grpInfoList.iterator(); i.hasNext(); ){
-				FDGroup group = (FDGroup)i.next();
-				try {
-					GroupScalePricing gsPricing = FDCachedFactory.getGrpInfo(group);
-					this.visitGroupScale(gsPricing);
-				}catch(FDGroupNotFoundException fe) {
-					// keep going if this happens
+		if(FDStoreProperties.isGroupScaleEnabled()){
+			try {
+				//Pass Group scale Info if available. Group id along with pricing information to the ad server.
+				Collection<FDGroup> grpInfoList=FDGrpInfoManager.loadAllGrpInfoMaster();
+				for (Iterator<FDGroup> i = grpInfoList.iterator(); i.hasNext(); ){
+					FDGroup group = (FDGroup)i.next();
+					try {
+						GroupScalePricing gsPricing = FDCachedFactory.getGrpInfo(group);
+						this.visitGroupScale(gsPricing);
+					}catch(FDGroupNotFoundException fe) {
+						// keep going if this happens
+					}
 				}
+			}catch(FDResourceException fe){
+				throw new RuntimeException(fe);
 			}
-		}catch(FDResourceException fe){
-			throw new RuntimeException(fe);
 		}
+		
 		LOGGER.info("Enqueueing results");
 		enqueue(results);
 		LOGGER.info("Enqueueing finished");

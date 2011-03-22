@@ -101,6 +101,7 @@ public class Warmup {
 					warmupZones();
 					warmupProducts();
 					warmupProductNewness();
+					warmupGroupes();
 					
 					contentFactory.refreshWineIndex(true);
 					WineFilterPriceIndex.getInstance();

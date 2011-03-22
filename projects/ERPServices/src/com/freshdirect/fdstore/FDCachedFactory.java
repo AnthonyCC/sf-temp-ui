@@ -32,6 +32,8 @@ public class FDCachedFactory {
 	/*#FDFactory lnkFDFactory;*/
 
 	private final static Object SKU_NOT_FOUND = new Object();
+	
+	private final static Object GROUP_NOT_FOUND = new Object();
 
 	/** 
 	 * FDProductInfo instances hashed by SKU strings.
@@ -368,7 +370,7 @@ public class FDCachedFactory {
 			tempo = grpCache.get(grpIds[i]);
 			if (tempo==null) {
 				missingGrpIds[missingCount++]=grpIds[i];
-			} else if (tempo!=SKU_NOT_FOUND) {
+			} else if (tempo!=GROUP_NOT_FOUND) {
 				foundGrpInfos.add(tempo);
 			}
 		}
