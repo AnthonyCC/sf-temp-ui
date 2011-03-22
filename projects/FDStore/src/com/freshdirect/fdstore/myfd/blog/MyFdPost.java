@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -16,6 +18,39 @@ public class MyFdPost implements Serializable {
 	private static final long serialVersionUID = -3164510601369737759L;
 	
 	private static final String WP_PRINT = "?print=true";
+
+	private static final int MAX_CHAR = 0xff;
+	private static final Map<Character, String> CHAR_REPLACE_MAP = new HashMap<Character, String>();
+
+	static {
+		CHAR_REPLACE_MAP.put('\u20AC', "EUR");
+		CHAR_REPLACE_MAP.put('\u201A', ",");
+		CHAR_REPLACE_MAP.put('\u0192', "f");
+		CHAR_REPLACE_MAP.put('\u201E', "\"");
+		CHAR_REPLACE_MAP.put('\u2026', "...");
+		CHAR_REPLACE_MAP.put('\u2020', "+");
+		CHAR_REPLACE_MAP.put('\u2021', "++");
+		CHAR_REPLACE_MAP.put('\u02C6', "^");
+		CHAR_REPLACE_MAP.put('\u2030', "%o");
+		CHAR_REPLACE_MAP.put('\u0160', "S");
+		CHAR_REPLACE_MAP.put('\u2039', "<");
+		CHAR_REPLACE_MAP.put('\u0152', "OE");
+		CHAR_REPLACE_MAP.put('\u017D', "Z");
+		CHAR_REPLACE_MAP.put('\u2018', "'");
+		CHAR_REPLACE_MAP.put('\u2019', "'");
+		CHAR_REPLACE_MAP.put('\u201C', "\"");
+		CHAR_REPLACE_MAP.put('\u201D', "\"");
+		CHAR_REPLACE_MAP.put('\u2022', "*");
+		CHAR_REPLACE_MAP.put('\u2013', "--");
+		CHAR_REPLACE_MAP.put('\u2014', "---");
+		CHAR_REPLACE_MAP.put('\u02DC', "-");
+		CHAR_REPLACE_MAP.put('\u2122', "(TM)");
+		CHAR_REPLACE_MAP.put('\u0161', "S");
+		CHAR_REPLACE_MAP.put('\u203A', ">");
+		CHAR_REPLACE_MAP.put('\u0153', "oe");
+		CHAR_REPLACE_MAP.put('\u017E', "z");
+		CHAR_REPLACE_MAP.put('\u0178', "Y");
+	}
 	
 	private String title;
 	
@@ -152,17 +187,35 @@ public class MyFdPost implements Serializable {
 		media = DOMUtils.nodeToString(imageNode);
 	}
 		
+	private static String convertIllegalChars(String origString){
+		StringBuilder newString = new StringBuilder();
+
+		for (char origChar : origString.toCharArray()){
+			String newChars = CHAR_REPLACE_MAP.get(origChar);
+			
+			if (newChars == null ){
+				if (origChar <= MAX_CHAR) {
+					newString.append(origChar);
+				}
+
+			} else {
+				newString.append(newChars);	
+			}
+		}
+		
+		return newString.toString();
+	}
 	
 	public String getTitle() {
-		return title;
+		return convertIllegalChars(title);
 	}	
 
 	public String getCategory() {
-		return category;
+		return convertIllegalChars(category);
 	}
 	
 	public String getCategoryDescription() {
-		return categoryDescription;
+		return convertIllegalChars(categoryDescription);
 	}
 	
 	public ArrayList<String> getTagLinks() {
@@ -170,11 +223,11 @@ public class MyFdPost implements Serializable {
 	}
 	
 	public String getContent() {
-		return content;
+		return convertIllegalChars(content);
 	}
 	
 	public String getAuthor() {
-		return author;
+		return convertIllegalChars(author);
 	}
 	
 	public String getAuthorLink() {
