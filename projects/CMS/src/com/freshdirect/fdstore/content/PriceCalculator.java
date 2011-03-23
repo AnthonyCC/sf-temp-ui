@@ -25,9 +25,9 @@ public class PriceCalculator {
 	
 	private final static DecimalFormat FORMAT_QUANTITY = new java.text.DecimalFormat("0.##");
 
-    PricingContext ctx;
-    SkuModel skuModel;
-    ProductModel product;
+    final PricingContext ctx;
+    final SkuModel skuModel;
+    final ProductModel product;
 
     transient FDProductInfo productInfo;
     transient FDProduct fdProduct;
@@ -284,6 +284,10 @@ public class PriceCalculator {
             }
         }
         return null;
+    }
+    
+    public PricingContext getPricingContext() {
+        return ctx;
     }
 
     public String getWasPriceFormatted(double savingsPercentage) {

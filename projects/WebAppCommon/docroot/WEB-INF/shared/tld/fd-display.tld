@@ -224,10 +224,6 @@
    <rtexprvalue>true</rtexprvalue>
   </attribute>
   <attribute>
-   <name>skuCode</name>
-   <rtexprvalue>true</rtexprvalue>
-  </attribute>
-  <attribute>
    <name>savingsPercentage</name>
    <rtexprvalue>true</rtexprvalue>
   </attribute>

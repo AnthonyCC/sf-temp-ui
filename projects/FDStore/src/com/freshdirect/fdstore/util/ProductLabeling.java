@@ -5,7 +5,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
@@ -129,7 +128,7 @@ public class ProductLabeling {
 		try {		    
 			String skuCode = calculator.getSkuModel() != null ? calculator.getSkuModel().getSkuCode() : null;
 			if(skuCode != null) {
-				FDProductInfo info= FDCachedFactory.getProductInfo(skuCode);			
+				FDProductInfo info= calculator.getProductInfo();			
 				ZonePriceInfoModel model=info.getZonePriceInfo(customer!=null?customer.getPricingZoneId():pricingZoneId);
 				showBurstImage=model.isShowBurstImage();			
 			}

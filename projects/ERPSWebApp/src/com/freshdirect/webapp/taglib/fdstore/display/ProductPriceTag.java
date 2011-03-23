@@ -6,27 +6,22 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
-import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDGroup;
-import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.GroupScalePricing;
-import com.freshdirect.fdstore.GrpZonePriceModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 import com.freshdirect.webapp.util.ConfigurationUtil;
@@ -63,8 +58,7 @@ public class ProductPriceTag extends BodyTagSupport {
 	private static final String groceryStyleWas = " style=\"font-weight: normal; color: gray;\"";			// normal, light grey
 	private static final String groceryStyleScale = " style=\"line-height:16px; font-size: 13px; font-weight: bold; color: #C94747; font-family: Verdana, Arial, sans-serif;\"";		// bold, red
 	
-	@SuppressWarnings("unused")
-	private final static Category LOGGER = LoggerFactory.getInstance( ProductPriceTag.class );
+	private final static Logger LOGGER = LoggerFactory.getInstance( ProductPriceTag.class );
 	
 	private ProductImpression impression;
 	double savingsPercentage = 0 ; // savings % off
@@ -75,7 +69,6 @@ public class ProductPriceTag extends BodyTagSupport {
 	boolean showScalePricing = true; //show scale pricing
 	boolean quickShop = false; // special font for quick shop
 	boolean grcyProd = false; // special font for grocery product
-	String skuCode = null;
 	String grpDisplayType=null; //change group price display
 	boolean showSaveText = false; //show scale pricing
 	boolean useTarget = false; //true for quick buy windows
@@ -125,10 +118,6 @@ public class ProductPriceTag extends BodyTagSupport {
 		this.quickShop = quickShop;
 	}
 
-	public void setSkuCode(String skuCode) {
-		this.skuCode = skuCode;
-	}
-
 	public void setGrpDisplayType(String grpDisplay){
 	  this.grpDisplayType=grpDisplay;	
 	}
@@ -148,14 +137,14 @@ public class ProductPriceTag extends BodyTagSupport {
 			buf.append(ProductPriceTag.getHTMLFragment(
 				impression,
 				savingsPercentage, showDescription, showAboutPrice, showRegularPrice, showWasPrice, showScalePricing,
-				quickShop, grcyProd, skuCode, excludeCaseDeals, grpDisplayType, showSaveText, catId, useTarget
+				quickShop, grcyProd, excludeCaseDeals, grpDisplayType, showSaveText, catId, useTarget
 			));
 			buf.append("</span>\n");
 		}else {
 			buf.append(ProductPriceTag.getHTMLFragment(
 					impression,
 					savingsPercentage, showDescription, showAboutPrice, showRegularPrice, showWasPrice, showScalePricing,
-					quickShop, grcyProd, skuCode, excludeCaseDeals, grpDisplayType, showSaveText, catId, useTarget
+					quickShop, grcyProd, excludeCaseDeals, grpDisplayType, showSaveText, catId, useTarget
 				));
 			buf.append("\n");
 		}
@@ -186,7 +175,7 @@ public class ProductPriceTag extends BodyTagSupport {
 	 * 
 	 * @return HTML piece
 	 */
-	public static String getHTMLFragment(ProductImpression impression, double savingsPercentage, boolean showDescription, boolean showAboutPrice, boolean showRegularPrice, boolean showWasPrice, boolean showScalePricing, boolean quickShop, boolean grcyProd, String skuCode, 
+	private static String getHTMLFragment(ProductImpression impression, double savingsPercentage, boolean showDescription, boolean showAboutPrice, boolean showRegularPrice, boolean showWasPrice, boolean showScalePricing, boolean quickShop, boolean grcyProd,  
 			boolean excludeCaseDeals, String grpDisplayType, boolean showSaveText,String catId, boolean useTarget) {
 		StringBuffer buf = new StringBuffer();
 
@@ -197,12 +186,7 @@ public class ProductPriceTag extends BodyTagSupport {
 			confDescription = ConfigurationUtil.getConfigurationDescription(tpi);
 		}
 		ProductModel prodModel = impression.getProductModel();
-		PriceCalculator priceCalculator = null;
-		if(skuCode != null)	
-			priceCalculator = prodModel.getPriceCalculator(skuCode);
-		else
-			priceCalculator = prodModel.getPriceCalculator();
-		
+		PriceCalculator priceCalculator = impression.getCalculator();
 		
 		if (confDescription == null) {
 			try {
@@ -217,24 +201,32 @@ public class ProductPriceTag extends BodyTagSupport {
 			buf.append("<div>" + confDescription + "</div>\n");
 		}
 		FDProductInfo productInfo = null;
+		try {
+		    productInfo = priceCalculator.getProductInfo();
+		} catch (FDSkuNotFoundException e) {
+                    LOGGER.info("sku not found :" + e, e);
+		} catch (FDResourceException e) {
+		    LOGGER.info("resource error :" + e, e);
+	        }
+
 		// display price
-		if(skuCode != null) {
-			//SkuCode will be not null when coming from product page
-			try{
-				//Load the productInfo based on sku.
-				productInfo = FDCachedFactory.getProductInfo(skuCode);
-			}catch(Exception e){
-				//load default sku 
-				productInfo = impression.getProductInfo();
-			}
-		} else {
-			//SkuCode is null initialize to default sku.
-			productInfo = impression.getProductInfo();
-		}
-		
+//		if(skuCode != null) {
+//			//SkuCode will be not null when coming from product page
+//			try{
+//				//Load the productInfo based on sku.
+//				productInfo = FDCachedFactory.getProductInfo(skuCode);
+//			}catch(Exception e){
+//				//load default sku 
+//				productInfo = impression.getProductInfo();
+//			}
+//		} else {
+//			//SkuCode is null initialize to default sku.
+//			productInfo = impression.getProductInfo();
+//		}
+ 		
 		if ( productInfo != null ) {
 			//SkuCode is null initialize to default skucode.
-			if(skuCode == null) skuCode = productInfo.getSkuCode();
+			String skuCode = productInfo.getSkuCode();
 			String priceString = priceCalculator.getPriceFormatted(savingsPercentage);
 			String scaleString=null;
 			FDGroup group = productInfo.getGroup();

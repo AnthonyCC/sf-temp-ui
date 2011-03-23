@@ -630,20 +630,23 @@
 						%>
 							<br />
 							<%-- Product Pricing START --%>
-								<% if (hasWas) { %>
+								<% 
+								ProductSkuImpression imp = new ProductSkuImpression(productNode, syncProdSkuCode);
+								if (hasWas) { 
+								%>
 									<div>
 										<table cellpadding="0" border="0">
 											<tr>
 												<td style="line-height: 16px; font-size: 13px; font-weight: bold; font-family: Verdana,Arial,sans-serif; color: #555;">Reg. </td>
 												<td>
-													<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" grcyProd="true" showRegularPrice="true" showScalePricing="false" showWasPrice="false" showDescription="false" skuCode="<%=syncProdSkuCode%>"/>
+													<display:ProductPrice impression="<%= imp %>" grcyProd="true" showRegularPrice="true" showScalePricing="false" showWasPrice="false" showDescription="false" />
 												</td>
 												<td>
-													<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" grcyProd="true" showRegularPrice="false" showScalePricing="false" showWasPrice="true" showDescription="false" skuCode="<%=syncProdSkuCode%>"/>
+													<display:ProductPrice impression="<%= imp %>" grcyProd="true" showRegularPrice="false" showScalePricing="false" showWasPrice="true" showDescription="false" />
 												</td>
 											</tr>
 										</table>
-										<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" grcyProd="true" showRegularPrice="false" showScalePricing="true" showWasPrice="false" showDescription="false" grpDisplayType="LARGE_RED" skuCode="<%=syncProdSkuCode%>"/>
+										<display:ProductPrice impression="<%= new imp %>" grcyProd="true" showRegularPrice="false" showScalePricing="true" showWasPrice="false" showDescription="false" grpDisplayType="LARGE_RED" />
 									</div>
 								<% } else { %>
 									<div>
@@ -651,11 +654,11 @@
 											<tr>
 												<td style="line-height: 16px; font-size: 13px; font-weight: bold; font-family: Verdana,Arial,sans-serif; color: #555;">Reg. </td>
 												<td>
-													<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" grcyProd="true" showRegularPrice="true" showScalePricing="false" showWasPrice="false" showDescription="false" skuCode="<%=syncProdSkuCode%>"/>
+													<display:ProductPrice impression="<%= imp %>" grcyProd="true" showRegularPrice="true" showScalePricing="false" showWasPrice="false" showDescription="false"/>
 												</td>
 											</tr>
 										</table>
-										<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" grcyProd="true" showRegularPrice="false" showScalePricing="true" showWasPrice="false" showDescription="false" grpDisplayType="LARGE_RED" skuCode="<%=syncProdSkuCode%>"/>
+										<display:ProductPrice impression="<%= imp %>" grcyProd="true" showRegularPrice="false" showScalePricing="true" showWasPrice="false" showDescription="false" grpDisplayType="LARGE_RED"/>
 									</div>
 								<% } %>
 								<%@include file="/includes/product/i_price_taxdeposit.jspf"%>

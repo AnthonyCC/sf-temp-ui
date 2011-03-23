@@ -1,17 +1,16 @@
 package com.freshdirect.webapp.util.prodconf;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.util.ConfigurationContext;
 import com.freshdirect.webapp.util.ProductImpression;
 import com.freshdirect.webapp.util.TransactionalProductImpression;
 
 public class AutoConfigurationStrategy extends SimpleConfigurationStrategy {
-	private static Category LOGGER = LoggerFactory.getInstance(AutoConfigurationStrategy.class);
+	private static Logger LOGGER = LoggerFactory.getInstance(AutoConfigurationStrategy.class);
 
 	public ProductImpression configure(ProductModel productModel,
 			ConfigurationContext context) {

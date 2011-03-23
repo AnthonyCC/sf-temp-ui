@@ -1,4 +1,4 @@
-<%@ page import='com.freshdirect.webapp.util.ProductImpression' %>
+<%@ page import='com.freshdirect.webapp.util.ProductSkuImpression' %>
 <%@ page import='com.freshdirect.common.pricing.util.GroupScaleUtil' %>
 <%@ page import='com.freshdirect.fdstore.FDGroup' %>
 <%
@@ -13,7 +13,7 @@
     if(isGrpScale) {
 	%>
 		<%-- changed here to use ProductPrice tag for group scale --%>
-	        <display:ProductPrice impression="<%= new ProductImpression(__prd) %>" grcyProd="true" showRegularPrice="false" showAboutPrice="false" showScalePricing="true" showWasPrice="false" showDescription="false" grpDisplayType="LARGE" skuCode="<%=product.getSkuCode() %>" showSaveText="true" useTarget="true"/>
+	        <display:ProductPrice impression="<%= new ProductSkuImpression(__prd, product.getSkuCode()) %>" grcyProd="true" showRegularPrice="false" showAboutPrice="false" showScalePricing="true" showWasPrice="false" showDescription="false" grpDisplayType="LARGE" showSaveText="true" useTarget="true"/>
 	<%
 	} else {//do Regular scale pricing
 		String[] scales = null;

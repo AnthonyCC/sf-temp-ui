@@ -119,12 +119,14 @@
 						<td colspan="3" width="85" align="center"><font color="#999999"><%=(productInfo.isOutOfSeason()?"Out&nbsp;of&nbsp;Season": "Not&nbsp;Available")%></font></td>
 					<% } else if (productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale()) { %>
 						<td width="55" align="left" colspan="3">&nbsp;<font class="groceryProductLinePrice" style="COLOR: #c00"><%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %>&nbsp;<%= "/&nbsp;"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font></td>
-					<% } else { %>
+					<% } else { 
+					    ProductSkuImpression psi = new ProductSkuImpression(displayProduct, sku);
+					%>
 						<td width="55" align="left" colspan="2" class="groceryProductLinePrice">Reg.&nbsp;<font class="groceryProductLinePrice"><%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %>&nbsp;<%= "/&nbsp;"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font></td>
-						<td><display:ProductPrice impression="<%= new ProductImpression(displayProduct) %>"  showScalePricing="false" showRegularPrice="false" showWasPrice="true" showDescription="false" skuCode="<%= sku.getSkuCode() %>" /> </td>
+						<td><display:ProductPrice impression="<%= psi %>"  showScalePricing="false" showRegularPrice="false" showWasPrice="true" showDescription="false" /> </td>
 					</tr>
 					<tr>
-						<td colspan="3"><display:ProductPrice impression="<%= new ProductImpression(displayProduct) %>"  showScalePricing="true" showRegularPrice="false" showWasPrice="false" showDescription="false" grpDisplayType="SMALL_RED" skuCode="<%= sku.getSkuCode() %>"/></td>
+						<td colspan="3"><display:ProductPrice impression="<%= psi %>"  showScalePricing="true" showRegularPrice="false" showWasPrice="false" showDescription="false" grpDisplayType="SMALL_RED"/></td>
 					<% } %>
 				</tr>
 			</table>

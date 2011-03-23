@@ -112,18 +112,10 @@
    String kosherSymbol= "";
    String kosherType = "";
    if (product!=null) {
-	   FDKosherInfo ki = product.getKosherInfo();
-	   if (ki.hasKosherSymbol() && ki.getKosherSymbol().display()) {
-			kosherSymbol = ki.getKosherSymbol().getCode();
-		} else {
-			kosherSymbol= "";
-		}
+       PriceCalculator pc = product.getPriceCalculator();
+       kosherSymbol = pc.getKosherSymbol();
 		/** get the kosher type **/
-		if (ki.hasKosherType() && ki.getKosherType().display()) {
-			kosherType= ki.getKosherType().getName();
-		} else {
-			kosherType= "";
-		}
+		kosherType = pc.getKosherType();
 	}
 	
     if (!"".equalsIgnoreCase(kosherSymbol) && kosherSymbol != null) {

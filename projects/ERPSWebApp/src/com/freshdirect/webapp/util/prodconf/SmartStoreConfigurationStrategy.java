@@ -2,12 +2,11 @@ package com.freshdirect.webapp.util.prodconf;
 
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDConfigurableI;
@@ -29,6 +28,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.util.ConfigurationContext;
 import com.freshdirect.webapp.util.ConfigurationStrategy;
 import com.freshdirect.webapp.util.ProductImpression;
+import com.freshdirect.webapp.util.ProductSkuImpression;
 import com.freshdirect.webapp.util.TransactionalProductImpression;
 
 /**
@@ -43,7 +43,7 @@ public class SmartStoreConfigurationStrategy extends FallbackConfigurationStrate
 	
 	private final static int MAX_CONFIGURATION_DURATION = 10 * 60 * 1000;
 	
-	private final static Category LOGGER = LoggerFactory.getInstance(SmartStoreConfigurationStrategy.class);
+	private final static Logger LOGGER = LoggerFactory.getInstance(SmartStoreConfigurationStrategy.class);
 	
 	/**
 	 * Wrapper for a customer id and a content key.
@@ -129,15 +129,15 @@ public class SmartStoreConfigurationStrategy extends FallbackConfigurationStrate
 	 * {Customer,ConentKey} -> {Sku,Configuration} 
 	 *
 	 */
-	protected static Map cache; 
+	protected static Map<CustomerContentPair, SkuConfigurationPair> cache; 
 	
 	protected static void setupCache() {
 		final int maxEntries = FDStoreProperties.getMaxDyfStrategyCacheEntries();
-		cache = new LinkedHashMap(3 * maxEntries / 2 + 1, 0.75f, true) {
+		cache = new LinkedHashMap<CustomerContentPair, SkuConfigurationPair>(3 * maxEntries / 2 + 1, 0.75f, true) {
 			
 			private static final long serialVersionUID = 4998658502428769840L;
 
-			protected boolean removeEldestEntry(Map.Entry e) {
+			protected boolean removeEldestEntry(Map.Entry<CustomerContentPair, SkuConfigurationPair> e) {
 				return (size() > maxEntries);
 			}		
 		};
@@ -193,22 +193,26 @@ public class SmartStoreConfigurationStrategy extends FallbackConfigurationStrate
 				erpCustomerPK,
 				productModel.getContentKey());
 
-		SkuConfigurationPair storedConfiguration = (SkuConfigurationPair) cache.get(key);
-        if (storedConfiguration != null && !storedConfiguration.expired()) {
-        	if (storedConfiguration.getSkuCode() != null) {
-        		return new TransactionalProductImpression(
-        			productModel,
-        			storedConfiguration.getSkuCode(),
-        			storedConfiguration.getConfiguration());
-        	} else {
-        		return super.configure(productModel, context);
-        	}
-        }
+		SkuConfigurationPair storedConfiguration = cache.get(key);
+                if (storedConfiguration != null && !storedConfiguration.expired()) {
+                    if (storedConfiguration.getSkuCode() != null) {
+                        if (storedConfiguration.getConfiguration() != null) {
+                            // there is a configuration ...
+                            return new TransactionalProductImpression(productModel, storedConfiguration.getSkuCode(), 
+                                    storedConfiguration.getConfiguration());
+                        } else {
+                            // no configuration present, return a ProductSkuImpression
+                            return new ProductSkuImpression(productModel, storedConfiguration.getSkuCode());
+                        }
+                    } else {
+                        return super.configure(productModel, context);
+                    }
+                }
 		
 		try {
 			// Get order details
 			// List<FDCustomerProductListLineItem>
-			List lineItems = getUserLineItems(erpCustomerPK, productModel.getSkuCodes());
+			List<FDCustomerProductListLineItem> lineItems = getUserLineItems(erpCustomerPK, productModel.getSkuCodes());
 
 			// fallback if no answer
 			if (lineItems.size() == 0) {
@@ -218,10 +222,8 @@ public class SmartStoreConfigurationStrategy extends FallbackConfigurationStrate
 			
 			// sort items by recency
 			Collections.sort(lineItems,
-				new Comparator() {
-					public int compare(Object o1, Object o2) {
-						FDCustomerListItem item1 = (FDCustomerListItem)o1;
-						FDCustomerListItem item2 = (FDCustomerListItem)o2;
+				new Comparator<FDCustomerListItem>() {
+					public int compare(FDCustomerListItem item1, FDCustomerListItem item2) {
 						// flip sign, since the newer (larger date) the better
 						return - item1.getLastPurchase().compareTo(item2.getLastPurchase());
 					}
@@ -229,8 +231,7 @@ public class SmartStoreConfigurationStrategy extends FallbackConfigurationStrate
 			);
 
 			// go through list and get first good one
-			for(Iterator i = lineItems.iterator(); i.hasNext(); ) {
-				FDCustomerProductListLineItem item = (FDCustomerProductListLineItem) i.next();
+			for(FDCustomerProductListLineItem item : lineItems) {
 				
 				String selectedSkuCode = item.getSkuCode();
 				SkuModel skuModel = (SkuModel) ContentFactory.getInstance().getContentNode(selectedSkuCode); 
@@ -240,9 +241,11 @@ public class SmartStoreConfigurationStrategy extends FallbackConfigurationStrate
 					continue;
 
 				FDConfigurableI configuration = item.getConfiguration();
-				// no stored configuration and no auto-configuration, skip
-				if (configuration == null)
-					continue;
+				// no stored configuration, so it's an unconfigurable product model
+				if (configuration == null) {
+				    cache.put(key, new SkuConfigurationPair(selectedSkuCode, null));
+				    return new ProductSkuImpression(productModel, selectedSkuCode);
+				}
 				
 				// there was a stored configuration, lets see if ok
 				try {
@@ -317,8 +320,10 @@ public class SmartStoreConfigurationStrategy extends FallbackConfigurationStrate
 	 * 
 	 * @return List<FDCustomerProductListLineItem>
 	 */
-	protected List<FDCustomerListItem> getUserLineItems(String erpCustomerPK, List<String> skuCodes) throws FDResourceException {
-		FDCustomerProductList details = FDListManager.getOrderDetails(erpCustomerPK, skuCodes);
-		return details.getLineItems();
-	}
+	@SuppressWarnings("unchecked")
+        protected List<FDCustomerProductListLineItem> getUserLineItems(String erpCustomerPK, List<String> skuCodes) throws FDResourceException {
+            FDCustomerProductList details = FDListManager.getOrderDetails(erpCustomerPK, skuCodes);
+            // FDCustomerProductList contains only FDCustomerProductListLineItem-s 
+            return (List<FDCustomerProductListLineItem>) (List) details.getLineItems();
+        }
 }

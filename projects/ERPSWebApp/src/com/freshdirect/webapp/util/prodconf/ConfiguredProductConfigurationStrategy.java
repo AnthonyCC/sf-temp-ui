@@ -5,7 +5,7 @@ package com.freshdirect.webapp.util.prodconf;
 
 import java.util.Map;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -18,14 +18,14 @@ import com.freshdirect.webapp.util.ProductImpression;
 import com.freshdirect.webapp.util.TransactionalProductImpression;
 
 public final class ConfiguredProductConfigurationStrategy extends FallbackConfigurationStrategy {
-	private static Category LOGGER = LoggerFactory.getInstance(ConfiguredProductConfigurationStrategy.class);
+	private static Logger LOGGER = LoggerFactory.getInstance(ConfiguredProductConfigurationStrategy.class);
 
 	public ConfiguredProductConfigurationStrategy(ConfigurationStrategy fallback) {
 		super(fallback);
 	}
 
 	public ProductImpression configure(ProductModel productModel, ConfigurationContext context) {
-		Map cfgProds = SmartStoreUtil.getConfiguredProductCache();
+		Map<String, ProductModel> cfgProds = SmartStoreUtil.getConfiguredProductCache();
 		ConfiguredProduct configuredProduct = (ConfiguredProduct)
 				cfgProds.get(productModel.getContentKey().getId());
 		if (configuredProduct != null) {

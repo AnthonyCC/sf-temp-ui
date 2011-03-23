@@ -5,13 +5,13 @@ import java.util.Iterator;
 
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.util.DealsHelper;
-import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 
@@ -25,7 +25,8 @@ import com.freshdirect.fdstore.content.SkuModel;
  */
 public class ProductImpression {
 	
-	protected ProductModel productModel;
+	protected final ProductModel productModel;
+	protected PriceCalculator calculator;
 	
 	/**
 	 * Constructor.
@@ -33,7 +34,23 @@ public class ProductImpression {
 	 */
 	public ProductImpression(ProductModel productModel) {
 		this.productModel = productModel;
+		this.calculator = productModel.getPriceCalculator();
 	}
+	
+	protected ProductImpression(ProductModel productModel, PriceCalculator calculator) {
+            this.productModel = productModel;
+            this.calculator = calculator;
+        }
+	
+	protected void setCalculator(PriceCalculator calculator) {
+            this.calculator = calculator;
+        }
+	
+	public PriceCalculator getCalculator() {
+            return calculator;
+        }
+	
+    
 	
 	/**
 	 * Get product model.
@@ -58,22 +75,15 @@ public class ProductImpression {
 	 * 
 	 * @return the {@link FDProduct} corresponding to the default sku
 	 */
-	public FDProduct getFDProduct() {
-		SkuModel sku = getSku();
-		
-		if (sku == null)
-			return null;
-		
-		try {
-			FDProductInfo productInfo = 
-				FDCachedFactory.getProductInfo(sku.getSkuCode());
-			return FDCachedFactory.getProduct(productInfo);
-		} catch (FDResourceException e) {
-			throw new FDRuntimeException(e);
-		} catch (FDSkuNotFoundException e) {
-			throw new FDRuntimeException(e);
-		}
-	}
+        public FDProduct getFDProduct() {
+            try {
+                return this.calculator.getProduct();
+            } catch (FDResourceException e) {
+                throw new FDRuntimeException(e);
+            } catch (FDSkuNotFoundException e) {
+                throw new FDRuntimeException(e);
+            }
+        }
 	
 	/**
 	 * Get the default sku.
@@ -82,30 +92,21 @@ public class ProductImpression {
 	 * @see ProductModel#getDefaultSku()
 	 */
 	public SkuModel getSku() {
-		return getProductModel().getDefaultSku();
+	    return calculator.getSkuModel();
 	}
 	
-
-	
-	/**
-	 * @deprecated
-	 */
-	public String getConfigurationDescrpition() {
-		return getConfigurationDescription();
-	}
 	
 	/**
 	 * Returns configuration description
 	 * @return
 	 */
-	public String getConfigurationDescription() {
-		try {
-			return productModel.getSizeDescription();
-		} catch (FDResourceException e) {
-			throw new FDRuntimeException(e);
-		}
-	}
-	
+        public String getConfigurationDescription() {
+            try {
+                return calculator.getSizeDescription();
+            } catch (FDResourceException e) {
+                throw new FDRuntimeException(e);
+            }
+        }	
 
 	/**
 	 * Returns scaled price labels
@@ -113,8 +114,8 @@ public class ProductImpression {
 	 * @return
 	 */
 	public String[] getScaledPrices() {
-        FDProduct fdProduct = getFDProduct();
-		return fdProduct != null ? fdProduct.getPricing().getZonePrice(getPricingZoneId()).getScaleDisplay() : new String[0];
+            FDProduct fdProduct = getFDProduct();
+            return fdProduct != null ? fdProduct.getPricing().getZonePrice(getPricingZoneId()).getScaleDisplay() : new String[0];
 	}
 
 
@@ -123,42 +124,32 @@ public class ProductImpression {
 	 *
 	 * @return
 	 */
-	public int[] getScaledPercentages(double basePrice) {
-        FDProduct fdProduct = getFDProduct();
-        if (fdProduct != null) {
-        	int[] scalePercentage = fdProduct.getPricing().getZonePrice(getPricingZoneId()).getScalePercentage(basePrice);
-        	for (int i = 0; i < scalePercentage.length; i++)
-        		if (DealsHelper.isDealOutOfBounds(scalePercentage[i]))
-        			scalePercentage[i] = 0;
-			return scalePercentage;
-        } else {
-        	return new int[0];
-        }
-	}
-	
+        public int[] getScaledPercentages(double basePrice) {
+            FDProduct fdProduct = getFDProduct();
+            if (fdProduct != null) {
+                int[] scalePercentage = fdProduct.getPricing().getZonePrice(getPricingZoneId()).getScalePercentage(basePrice);
+                for (int i = 0; i < scalePercentage.length; i++)
+                    if (DealsHelper.isDealOutOfBounds(scalePercentage[i]))
+                        scalePercentage[i] = 0;
+                return scalePercentage;
+            } else {
+                return new int[0];
+            }
+        }	
 
 	/**
 	 * Returns productInfo instance
 	 * @return
 	 */
 	public FDProductInfo getProductInfo() {
-		SkuModel sku = getSku();
-                if (sku == null) {
-			return null;
-		}
-		String skuCode = sku.getSkuCode();
-		
-		FDProductInfo productInfo = null;
-		if (skuCode != null) {
-			try {
-				productInfo = FDCachedFactory.getProductInfo(skuCode);
-			} catch (FDSkuNotFoundException ex) {
-				// sku not found ...
-			} catch (FDResourceException e) {
-				// resource not found ...
-			}
-		}
-		return productInfo;
+            try {
+                return this.calculator.getProductInfo();
+            } catch (FDSkuNotFoundException ex) {
+                // sku not found ...
+            } catch (FDResourceException e) {
+                // resource not found ...
+            }
+            return null;
 	}
 
 
@@ -197,7 +188,7 @@ public class ProductImpression {
 	}
 	
 	public String getPricingZoneId(){
-		PricingContext pCtx = this.productModel.getPricingContext();
+		PricingContext pCtx = this.calculator.getPricingContext();
 		return pCtx.getZoneId();
 	}
 	

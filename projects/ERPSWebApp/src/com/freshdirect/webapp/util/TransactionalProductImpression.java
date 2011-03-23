@@ -1,10 +1,8 @@
 package com.freshdirect.webapp.util;
 
 import com.freshdirect.fdstore.FDConfigurableI;
-import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SkuModel;
 
 /**
  * A product with configuration and selected sku.
@@ -12,9 +10,8 @@ import com.freshdirect.fdstore.content.SkuModel;
  * @author istvan
  *
  */
-public class TransactionalProductImpression extends ProductImpression {
+public class TransactionalProductImpression extends ProductSkuImpression {
 	private FDConfigurableI configuration;
-	private SkuModel selectedSku;
 	
 	/**
 	 * Constructor.
@@ -24,16 +21,7 @@ public class TransactionalProductImpression extends ProductImpression {
 	 */
 	public TransactionalProductImpression(
 		ProductModel productModel, String selectedSkuCode, FDConfigurableI configuration) {
-		super(productModel);
-		this.selectedSku = null;
-		for (SkuModel skuModel :  productModel.getSkus()) {
-			if (selectedSkuCode.equals(skuModel.getSkuCode())) {
-				this.selectedSku = skuModel;
-				break;
-			}
-		}
-		if (selectedSku == null) 
-			throw new FDRuntimeException(selectedSkuCode + " not in " + productModel.getFullName());
+		super(productModel, selectedSkuCode);
 		this.configuration = configuration;
 	}
 	
@@ -53,15 +41,6 @@ public class TransactionalProductImpression extends ProductImpression {
 		return configuration;
 	}
 	
-	/**
-	 * Get the default sku.
-	 * This method masks the product model's sku with 
-	 * the {@link #getSelectedSku() selected sku}.
-	 * @return selected sku
-	 */
-	public SkuModel getSku() {
-		return selectedSku;
-	}
 
 	/**
 	 * Get if product is sold by sales units.
@@ -106,14 +85,7 @@ public class TransactionalProductImpression extends ProductImpression {
 	}
 	
 
-	/**
-	 * @deprecated
-	 */
-	public String getConfigurationDescrpition() {
-		return getConfigurationDescription();
-	}
-	
-	
+	@Override
 	public String getConfigurationDescription() {
 		String desc = ConfigurationUtil.getConfigurationDescription(this);
 		return desc != null ? desc : super.getConfigurationDescription();
