@@ -397,7 +397,6 @@ public class LayoutManager extends BodyTagSupport {
 			s.setGrabberDepth(-1); // we don't need itemgrabber here, 4mm helper class has everything cached
 			
 		} else if (layoutType == EnumLayoutType.BAKERY_DEPARTMENT.getId()) {
-			// TODO Bakery layout params
 	        s.setLayoutFileName("/includes/layouts/bakerydpt.jsp");
 	        s.addSortStrategyElement( new SortStrategyElement(SortStrategyElement.NO_SORT) );
 	        s.setIgnoreShowChildren( true );
