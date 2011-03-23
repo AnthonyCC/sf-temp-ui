@@ -27,7 +27,6 @@
 	boolean sortDescending = "true".equalsIgnoreCase(request.getParameter("sortDescending"));
 %>
 
-
 <display:LayoutManager
 		result='result' 
 		currentNode='<%=currentFolder%>' 

@@ -105,6 +105,12 @@ public class LayoutManager extends BodyTagSupport {
 		//**** end of test block ****/
 		
 		Settings s = new Settings();
+
+		// Default value for departments
+		if (isDepartment) {
+			s.setGrabberDepth(0);
+		}
+
 		if (layoutType == EnumLayoutType.GENERIC.getId()) {
 			s.setLayoutFileName("/includes/layouts/generic_layout.jsp");
 			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_AVAILABILITY));
@@ -127,7 +133,7 @@ public class LayoutManager extends BodyTagSupport {
 			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRICE,sortDescending));
 		} else if (layoutType == EnumLayoutType.FEATURED_CATEGORY.getId()) {
 			s.setLayoutFileName("/includes/layouts/featured_category.jsp");
-			s.setGrabberDepth(1);
+			s.setGrabberDepth(isDepartment?0:1);
 			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_AVAILABILITY));
 			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_PRIORITY, sortDescending));
 			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortNameAttrib, false));
@@ -376,6 +382,7 @@ public class LayoutManager extends BodyTagSupport {
 			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_AVAILABILITY));
 			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_PRIORITY, sortDescending));
 			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortNameAttrib, false));
+			
 		} else if (layoutType == EnumLayoutType.FOURMM_DEPARTMENT.getId()) {
 			s.setLayoutFileName("/includes/layouts/4mm/landing_page_layout.jsp");
 			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_PRIORITY, sortDescending));
@@ -383,18 +390,22 @@ public class LayoutManager extends BodyTagSupport {
 			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortNameAttrib, false));
 			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRICE,sortDescending));
 			s.setReturnHiddenFolders(false);
+			s.setGrabberDepth(0);
+			
 		} else if (layoutType == EnumLayoutType.FOURMM_CATEGORY.getId()) {
 			s.setLayoutFileName("/includes/layouts/4mm/restaurant_page_layout.jsp");
-			s.setGrabberDepth(-1);
+			s.setGrabberDepth(-1); // we don't need itemgrabber here, 4mm helper class has everything cached
+			
 		} else if (layoutType == EnumLayoutType.BAKERY_DEPARTMENT.getId()) {
-		        s.setLayoutFileName("/includes/layouts/bakerydpt.jsp");
+			// TODO Bakery layout params
+	        s.setLayoutFileName("/includes/layouts/bakerydpt.jsp");
+	        s.addSortStrategyElement( new SortStrategyElement(SortStrategyElement.NO_SORT) );
+	        s.setIgnoreShowChildren( true );
+	        s.setGrabberDepth( 1 );	// depth of 1 means: two levels deep
+	        
 		} else {
 			// default to the generic layout using the default settings for the ItemGrabber
 			s.setLayoutFileName("/includes/layouts/generic_layout.jsp");
-		}
-
-		if (isDepartment && !"LOCAL".equalsIgnoreCase(currentNode.getContentName())) {
-			s.setGrabberDepth(0);
 		}
 
 		//*** we some categories/departments may need to alter the layout settings to itemgrabber
@@ -448,15 +459,15 @@ public class LayoutManager extends BodyTagSupport {
 			s.setIncludeUnavailable(false);
 			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.NO_SORT));
 		} else if (layoutType == EnumLayoutType.TRANSAC_MULTI_PAIRED_ITEMS.getId()) {				
-				s.setLayoutFileName("/includes/layouts/trans_multi_paired_items.jsp");
-				s.setGrabberDepth(1);
-				s.setReturnHiddenFolders(true);
-				s.setIgnoreShowChildren(false);
-				s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_AVAILABILITY));
-				s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_PRIORITY, sortDescending));
-				s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, sortDescending));
-				s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortNameAttrib, false));
-				// TODO: what more I need to do here?
+			s.setLayoutFileName("/includes/layouts/trans_multi_paired_items.jsp");
+			s.setGrabberDepth(1);
+			s.setReturnHiddenFolders(true);
+			s.setIgnoreShowChildren(false);
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_AVAILABILITY));
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_PRIORITY, sortDescending));
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, sortDescending));
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortNameAttrib, false));
+			// TODO: what more I need to do here?
 		} // top 10
 		
 		if (layoutType == EnumLayoutType.TEMPLATE_LAYOUT.getId()) {				

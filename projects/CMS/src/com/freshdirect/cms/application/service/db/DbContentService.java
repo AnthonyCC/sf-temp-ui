@@ -108,7 +108,7 @@ public class DbContentService extends AbstractContentService implements ContentS
         try {
             conn = getConnection();
             for (RelationshipDefI destinationType : handler.getDestinationTypes()) {
-                PreparedStatement ps = conn.prepareStatement("select parent_contentnode_id, child_contentnode_id from cms.relationship where parent_contentnode_id in (select id from cms.cms_contentnode where contenttype_id = ?) and def_contenttype=? and def_name=?");
+                PreparedStatement ps = conn.prepareStatement("select parent_contentnode_id, child_contentnode_id from cms.relationship where parent_contentnode_id in (select id from cms.contentnode where contenttype_id = ?) and def_contenttype=? and def_name=?");
                 ps.setString(1, handler.getSourceType().getName());
                 ps.setString(2, destinationType.getName());
                 ps.setString(3, handler.getRelationName());

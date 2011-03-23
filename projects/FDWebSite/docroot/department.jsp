@@ -166,7 +166,19 @@
 			if ("win".equals(deptId)) { // bc wine page
 				%><%@ include file="/departments/wine/bc_home.jspf"%><%
 			} else if ("usq".equals(deptId)) { //usq wine page
-				%><%@ include file="/departments/wine/usq_home.jspf"%><% 
+				%><%@ include file="/departments/wine/usq_home.jspf"%><%
+				
+			//-----------------------------------------------------------------------------------
+			// compatibility dept page for bakery
+			// this is the old bakery page for the old cms data
+			// when the bakery related cms changes are done this section is to be removed!
+			} else if ("bak".equals(deptId) && !ContentNodeModelUtil.getLayout(departmentModel, null).equals(EnumLayoutType.BAKERY_DEPARTMENT) ) { 
+				String trkCode= "dpage";	 
+				%><img src="/media_stat/images/layout/clear.gif" width="1" height="12" />	 
+				<%@ include file="/includes/layouts/bakerydpt.jspf" %><br />	 
+				<%@ include file="/includes/department_bottom.jspf"%><%
+			//-----------------------------------------------------------------------------------	
+			
 			} else {
 				//use this spacer image if not on buy big department (media include available for spacing)
 				if (!"big".equals(deptId)) {
@@ -190,9 +202,6 @@
 					%>
 					<%@ include file="/includes/department_brand_category_dropdown.jspf" %>					
 					<%@ include file="/includes/department_bottom_featured.jspf"%><%
-				} else if("fdi".equals(deptId) && !ContentNodeModelUtil.getLayout(departmentModel, null).equals(EnumLayoutType.FOURMM_DEPARTMENT) ) {
-					// old 4mm bottom page - remove this section if 4mm is finished
-					%><%@ include file="/includes/department_fea_edit_bottom.jspf"%><%
 				} else { 
 					if (isIncludeDeptBottom) {
 						%><%@ include file="/includes/department_bottom.jspf"%><%

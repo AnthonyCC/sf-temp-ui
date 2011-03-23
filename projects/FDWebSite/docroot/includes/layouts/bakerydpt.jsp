@@ -1,73 +1,93 @@
+<%@page import="com.freshdirect.fdstore.content.Html"%>
+<%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<table width="550" cellspacing="0" cellpadding="0" border="0">
-<tr align="center" valign="top">
-<td width="325" align="center">
-    <%-- Start Par Baked Bread Area --%>
-    <table cellspacing="0" width="325" cellpadding="0" border="0">
-        <tr><td colspan="3" width="300"><%-- intro copy for parbaked goes here --%><fd:IncludeMedia name="/media/editorial/bakery/intro/bak_top_media_left.html"/></td>
-        </tr>
-        <tr align="center" valign="top"><%-- Row 1--%>
-            <td width="108"><%-- item cell_1 --%>
-            <a href="<%=response.encodeURL("/category.jsp?catId=whit&trk=dpage")%>"><img src="/media_stat/bakery_tmp/whit_cat.jpg" alt="Beautiful, Rich White Breads" width="83" height="53" border="0"></a><br><a href="<%=response.encodeURL("/category.jsp?catId=whit&trk=dpage")%>">White Bread</a></td>
-            <td width="109"><%-- item cell_2 --%>
-            <a href="<%=response.encodeURL("/category.jsp?catId=ppry&trk=dpage")%>"><img src="/media_stat/bakery_tmp/ppry_cat.jpg" alt="Hearty Ryes & Pumpernickels" width="83" height="53" border="0"></a><br><a href="<%=response.encodeURL("/category.jsp?catId=ppry&trk=dpage")%>">Pumpernickel & Rye</a></td>
-            <td width="108"><%-- item cell_3 --%>
-            <a href="<%=response.encodeURL("/category.jsp?catId=whlmlt&trk=dpage")%>"><img src="/media_stat/bakery_tmp/whlmlt_cat.jpg" alt="Homey, Nutritious, Whole-Grain Loaves" width="83" height="53" border="0"></a><br><a href="<%=response.encodeURL("/category.jsp?catId=whlmlt&trk=dpage")%>">Whole Wheat & Multigrain</a></td>
-        </tr>
-        <tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" height="14" width="325"></td></tr>
-        <tr align="center" valign="top"><%-- Row 2--%>
-            <td><%-- item cell_1 --%>
-            <a href="<%=response.encodeURL("/category.jsp?catId=srdh&trk=dpage")%>"><img src="/media_stat/bakery_tmp/srdh_cat.jpg" alt="Tangy, Crusty Sourdough" width="96" height="56" border="0"></a><br><a href="<%=response.encodeURL("/category.jsp?catId=srdh&trk=dpage")%>">Sourdough</a></td>
-            <td><%-- item cell_2 --%>
-            <a href="<%=response.encodeURL("/category.jsp?catId=bfruitnutherb&trk=dpage")%>"><img src="/media_stat/bakery_tmp/bfruitnutherb_cat.jpg" alt="Artisanal Fruit, Nut, & Herb Breads" width="96" height="56" border="0"></a><br><a href="<%=response.encodeURL("/category.jsp?catId=bfruitnutherb&trk=dpage")%>">Fruit &<br>Specialty</a></td>
-            <td><%-- item cell_3 --%>
-            <a href="<%=response.encodeURL("/category.jsp?catId=pullman&trk=dpage")%>"><img src="/media_stat/bakery_tmp/pullman_cat.jpg" alt="Wholesome Sandwich Loaves" width="96" height="56" border="0"></a><br><a href="<%=response.encodeURL("/category.jsp?catId=pullman&trk=dpage")%>">Pullman</a></td>
-        </tr>
-        <tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" height="14" width="325"></td></tr>
-        <tr align="center" valign="top"><%-- Row 3--%>
-               <td><%-- item cell_1 --%>
-            <a href="<%=response.encodeURL("/category.jsp?catId=bgtt&trk=dpage")%>"><img src="/media_stat/bakery_tmp/bgtt_cat.jpg" alt="Crisp, Airy Baguettes" width="101" height="53" border="0"></a><br><a href="<%=response.encodeURL("/category.jsp?catId=bgtt&trk=dpage")%>">Baguettes</a></td>
-            <td><%-- item cell_2 --%>
-            <a href="<%=response.encodeURL("/category.jsp?catId=bak_rolls&trk=dpage")%>"><img src="/media_stat/images/template/bakery/i_rolls.jpg" alt="Dinner & Sandwich Rolls" width="60" height="53" border="0"></a><br><a href="<%=response.encodeURL("/category.jsp?catId=bak_rolls&trk=dpage")%>">Rolls</a></td>
-            <td><%-- item cell_3 --%>
-            <a href="<%=response.encodeURL("/category.jsp?catId=bak_bagelcrsnt&trk=dpage")%>"><img src="/media_stat/images/template/bakery/i_bagels_croissants.jpg" alt="Bagels & Croissants" width="101" height="53" border="0"></a><br><a href="<%=response.encodeURL("/category.jsp?catId=bak_bagelcrsnt&trk=dpage")%>">Bagels & Croissants</a></td>
-        </tr></table>
-    <%-- End Par Baked Bread Area   --%></td>
-<%-- spacers --%>
-        <td width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1"></td>
-        <td width="1" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-        <td width="26"><img src="/media_stat/images/layout/clear.gif" width="26" height="1"></td>
-<%-- end spacers --%>
-        <td width="178" align="center">
-        <%-- Start Pastries Area --%>
-        <table width="178" cellspacing="0" cellpadding="0" border="0">
-                <tr>
-                    <td colspan="2"><%-- intro copy for pastry goes here --%><fd:IncludeMedia name="/media/editorial/bakery/intro/bak_top_media_right.html"/></td>
-                </tr>
-                <tr align="center" valign="top"><%-- Row 1--%>
-                    <td><%-- item cell_1 --%>
-                        <a href="<%=response.encodeURL("/category.jsp?catId=cake&trk=dpage")%>"><img src="/media_stat/bakery_tmp/cake_cat.jpg" alt="Cakes & Cupcakes" width="83" height="53" border="0"></a><br><a href="<%=response.encodeURL("/category.jsp?catId=cake&trk=dpage")%>">Cakes & Cupcakes</a>
-                    </td>
-                    <td><%-- item cell_2 --%>
-                        <a href="<%=response.encodeURL("/category.jsp?catId=pietrt&trk=dpage")%>"><img src="/media_stat/bakery_tmp/pietrt_cat.jpg" alt="Pies & Tarts" width="83" height="53" border="0"></a><br><a href="<%=response.encodeURL("/category.jsp?catId=pietrt&trk=dpage")%>">Pies & Tarts</a>
-                    </td>
-                </tr>
-                <tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" height="14" width="1" border="0"></td></tr><%-- spacer row --%>
-                <tr align="center" valign="top"><%-- Row 2--%>
-                    <td><%-- item cell_1 --%>
-                        <a href="<%=response.encodeURL("/category.jsp?catId=bak_cake_coffee&trk=dpage")%>"><img src="/media_stat/bakery_tmp/muffnspoundck_cat.jpg" alt="Muffins  & Pound Cakes" width="83" height="53" border="0"></a><br><a href="<%=response.encodeURL("/category.jsp?catId=bak_cake_coffee&trk=dpage")%>">Muffins  & Pound Cakes</a>
-                    </td>
-                    <td><%-- item cell_2 --%>
-                        <a href="<%=response.encodeURL("/category.jsp?catId=ckibni&trk=dpage")%>"><img src="/media_stat/bakery_tmp/ckibni_cat.jpg" alt="Cookies & Brownies" width="83" height="53" border="0"></a><br><a href="<%=response.encodeURL("/category.jsp?catId=ckibni&trk=dpage")%>">Cookies & Brownies</a>
-                    </td></tr>
-                <tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" height="14" width="1" border="0"></td></tr><%-- spacer row --%>
-                <tr align="center" valign="top"><%-- Row 3--%>
-                    <td><%-- item cell_1 --%>
-                        <a href="<%=response.encodeURL("/category.jsp?catId=pudfl&trk=dpage")%>"><img src="/media_stat/bakery_tmp/pudfl_cat.jpg" alt="Pudding & Flan" width="83" height="53" border="0"></a><br><a href="<%=response.encodeURL("/category.jsp?catId=pudfl&trk=dpage")%>">Pudding & Souffl&eacute;</a>
-                    </td>
-                    <td><%-- item cell_2 --%>
-                        <a href="<%=response.encodeURL("/category.jsp?catId=chclt&trk=dpage")%>"><img src="/media_stat/bakery_tmp/chclt_cat.jpg" alt="Chocolate Treats" width="83" height="53" border="0"></a><br><a href="<%=response.encodeURL("/category.jsp?catId=chclt&trk=dpage")%>">Chocolate Treats</a>
-                    </td></tr>
-                </table><%-- End Pastries Area --%></td></tr>
-                <tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="22"></td></tr>
-</table>
+<%@ taglib uri='oscache' prefix='oscache' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+
+<%-- New bakery dept layout page --%>
+<% %>
+
+<display:InitLayout/>
+
+<%
+	int i = -1;
+	CategoryModel[] tlcat = new CategoryModel[2];
+	List<CategoryModel>[] catList = new ArrayList[2];
+
+	for ( ContentNodeModel cn : sortedCollection ) {
+		
+		// skip if not category
+		if ( ! (cn instanceof CategoryModel) )
+			continue;
+		
+		if ( cn.getParentId().equals(departmentId) ) {
+			// top-level category
+			tlcat[++i] = (CategoryModel)cn;
+			catList[i] = new ArrayList<CategoryModel>();
+		} else if ( i >= 0 && i < 2 && catList[i] != null ) {
+			// sub-category
+			catList[i].add( (CategoryModel)cn );
+		} 
+		
+	}
+%>
+
+<div id="bak_editorial_div" style="width: 550px; height: auto; display: block; overflow: hidden; position:relative; margin-bottom: 20px;">
+	<%
+	Html edtMed = currentFolder.getEditorial();
+	if ( edtMed != null ) { %>	
+		<fd:IncludeMedia name="<%= edtMed.getPath() %>"></fd:IncludeMedia>
+	<% } %>
+</div>
+
+<div id="bak_media_div" style="width: 550px; height: auto; display: block; overflow: hidden; position:relative;">
+	
+	<div id="bak_left_media" style="width: 324px; height: auto; display: block; overflow: hidden; float: left;">
+		<%
+		List<Html> topMed0 = tlcat[0].getTopMedia();
+		if ( topMed0 != null && topMed0.size() > 0 ) { %>	
+			<fd:IncludeMedia name="<%= topMed0.get(0).getPath() %>"></fd:IncludeMedia>
+		<% } %>
+	</div>
+	
+	<div style="position:absolute; top:0px; left:325px; width:1px; height:100%; background:#cccccc; margin-left: 4px; margin-right: 5px;"></div>
+	
+	<div id="bak_right_media" style="width: 216px; height: auto; display: block; overflow: hidden; float: right;">
+		<%
+		List<Html> topMed1 = tlcat[1].getTopMedia();
+		if ( topMed1 != null && topMed1.size() > 0 ) { %>	
+			<fd:IncludeMedia name="<%= topMed1.get(0).getPath() %>"></fd:IncludeMedia>
+		<% } %>
+	</div>
+	
+</div>
+
+<div id="bak_main_div" style="width: 550px; height: auto; display: block; overflow: hidden; position:relative;">
+	
+	<div id="bak_left_column" style="width: 324px; height: auto; display: block; overflow: hidden; float: left; font-size: 0px;">
+		<display:ContentNodeIterator id="cn_it_0" trackingCode="<%= trackingCode %>" itemsToShow="<%= catList[0] %>">
+			<div class="text12" style="display: inline-block; overflow: hidden; vertical-align: bottom; padding-top:10px; width: 108px; height: 100px;">
+				<display:CategoryImage category="<%= (CategoryModel)currentItem %>" action="<%= actionUrl %>"/>
+				<display:CategoryName category="<%= (CategoryModel)currentItem %>" action="<%= actionUrl %>" style="font-style:normal"/>
+			</div>
+		</display:ContentNodeIterator>
+	</div>
+	
+	<div style="position:absolute; top:0px; left:325px; width:1px; height:100%; background:#cccccc; margin-left: 4px; margin-right: 5px;"></div>
+		
+	<div id="bak_right_column" style="width: 216px; height: auto; display: block; overflow: hidden; float: right; font-size: 0px;">
+		<display:ContentNodeIterator id="cn_it_1" trackingCode="<%= trackingCode %>" itemsToShow="<%= catList[1] %>">
+			<div class="text12" style="display: inline-block; overflow: hidden; vertical-align: bottom; padding-top:10px; width: 108px; height: 100px;">
+				<display:CategoryImage category="<%= (CategoryModel)currentItem %>" action="<%= actionUrl %>"/>
+				<display:CategoryName category="<%= (CategoryModel)currentItem %>" action="<%= actionUrl %>" style="font-style:normal"/>
+			</div>
+		</display:ContentNodeIterator>
+	</div>
+	
+</div>
+
