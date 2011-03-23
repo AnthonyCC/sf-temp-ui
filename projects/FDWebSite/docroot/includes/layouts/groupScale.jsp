@@ -646,7 +646,7 @@
 												</td>
 											</tr>
 										</table>
-										<display:ProductPrice impression="<%= new imp %>" grcyProd="true" showRegularPrice="false" showScalePricing="true" showWasPrice="false" showDescription="false" grpDisplayType="LARGE_RED" />
+										<display:ProductPrice impression="<%= imp %>" grcyProd="true" showRegularPrice="false" showScalePricing="true" showWasPrice="false" showDescription="false" grpDisplayType="LARGE_RED" />
 									</div>
 								<% } else { %>
 									<div>

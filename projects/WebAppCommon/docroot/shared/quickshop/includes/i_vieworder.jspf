@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.webapp.util.ProductSkuImpression"%>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import="com.freshdirect.fdstore.util.ProductLabeling"%>
@@ -596,7 +597,7 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
 	} catch (Exception e) {
 	}
 	String quickShopStyleScale = "line-height:16px; font-size: 11px; font-weight: bold; color: #C94747; font-family: Verdana, Arial, sans-serif;";
-	ProductImpression impression =  new ProductImpression(productNode);	    
+	ProductSkuImpression impression =  new ProductSkuImpression(productNode, orderLine.getSkuCode());	    
      %>
     <display:ProductRating product="<%= productNode %>" skuCode="<%= orderLine.getSkuCode() %>"  action="<%= actionUrl %>" noBr="true" leftAlign="true"/>
     <%--
@@ -606,16 +607,14 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
     <% } %>
 	--%>
 	<NOBR>
-		<display:ProductPrice impression="<%= impression %>" 
-		skuCode="<%= orderLine.getSkuCode() %>" quickShop="true" showAboutPrice="false" showRegularPrice="false"  showWasPrice="false" showDescription="false" showScalePricing="true" showSaveText="true"/>
+		<display:ProductPrice impression="<%= impression %>" quickShop="true" showAboutPrice="false" showRegularPrice="false"  showWasPrice="false" showDescription="false" showScalePricing="true" showSaveText="true"/>
 	</NOBR>
     </td>
     
     <td align="right">
     	<NOBR>
 	
-	<display:ProductPrice impression="<%= impression %>" 
-		skuCode="<%= orderLine.getSkuCode() %>" quickShop="true" showDescription="false" showScalePricing="false" showSaveText="true"/>
+	<display:ProductPrice impression="<%= impression %>" quickShop="true" showDescription="false" showScalePricing="false" showSaveText="true"/>
 	
 	</NOBR>
 	    
