@@ -1,7 +1,15 @@
 <%@page import="com.freshdirect.fdstore.FDProductInfo"%><%@page import="com.freshdirect.fdstore.content.PriceCalculator"%><%@ page import="java.text.NumberFormat" %><%
 {
     	PriceCalculator priceCalculator = displayProduct.getPriceCalculator(sku);
-    	FDProductInfo productInfo = null;;
+    	FDProductInfo productInfo = null;
+    	try {
+    	    productInfo = priceCalculator.getProductInfo();
+    	} catch (FDSkuNotFoundException fdsnf){
+            JspLogger.PRODUCT.warn("Grocery Page: catching FDSkuNotFoundException and Continuing:\n FDProductInfo:="+productInfo+"\nException message:= "+fdsnf.getMessage());
+            throw new JspException("FDProduct not found for available product",fdsnf);
+    	}
+
+    	
         FDProduct product = null;
         String salesUnitDescription = "NA";
         String salesUnitName = "NA";
@@ -10,8 +18,7 @@
 
         if (skuAvailable) {
             try {
-                productInfo = pc.getProductInfo();
-                product = pc.getProduct();
+                product = priceCalculator.getProduct();
                 salesUnits = product.getSalesUnits();
                 if (salesUnits.length>0) {
                         salesUnitDescription = salesUnits[0].getDescription();
