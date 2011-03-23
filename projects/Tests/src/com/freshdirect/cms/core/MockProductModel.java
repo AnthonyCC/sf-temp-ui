@@ -1930,6 +1930,11 @@ public class MockProductModel extends MockContentNodeModel implements
 		return new PriceCalculator(getPricingContext(), this, getValidSkuCode(
 				getPricingContext(), skuCode));
 	}
+	
+	@Override
+	public PriceCalculator getPriceCalculator(SkuModel sku) {
+	    return new PriceCalculator(getPricingContext(), this, sku);
+	}
 
 	@Override
 	public boolean isFullyAvailable() {

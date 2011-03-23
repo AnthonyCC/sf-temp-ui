@@ -148,6 +148,10 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
         return new PriceCalculator(getPricingContext(), this, this.getValidSkuCode(getPricingContext(), skuCode));
     }
 
+    public PriceCalculator getPriceCalculator(SkuModel sku) {
+        return new PriceCalculator(getPricingContext(), this, sku);
+    }
+    
     /**
      * @param skuCode
      * @return the default sku code, if sku code is not specified or the sku is

@@ -839,11 +839,18 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 
 	/**
 	 * 
-	 * @return a price calculator which encapsulates the default sku, if the given skuCode is invalid, otherwise the sku
+	 * @return a price calculator which encapsulates the specified sku, if the given skuCode is invalid, otherwise the sku
 	 *         which is specified, and the pricing context.
 	 */
 	public PriceCalculator getPriceCalculator( String skuCode );
 
+	
+        /**
+         * 
+         * @return a price calculator which encapsulates the specified sku.
+         */
+        public PriceCalculator getPriceCalculator(SkuModel sku);
+	
 	/**
 	 * This is used for getting a media attribute, if the usage of the normal getters are not feasible. For example,
 	 * when the name of the attribute comes from the client side. It's not a very fortunate situation.

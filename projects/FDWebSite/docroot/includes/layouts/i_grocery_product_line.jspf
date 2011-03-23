@@ -1,9 +1,7 @@
-<%@ page import="java.text.NumberFormat" %>
-
-<fd:FDProductInfo id="productInfo" skuCode="<%=sku.getSkuCode()%>">
-
-<%
+<%@page import="com.freshdirect.fdstore.FDProductInfo"%><%@page import="com.freshdirect.fdstore.content.PriceCalculator"%><%@ page import="java.text.NumberFormat" %><%
 {
+    	PriceCalculator priceCalculator = displayProduct.getPriceCalculator(sku);
+    	FDProductInfo productInfo = null;;
         FDProduct product = null;
         String salesUnitDescription = "NA";
         String salesUnitName = "NA";
@@ -12,7 +10,8 @@
 
         if (skuAvailable) {
             try {
-                product = FDCachedFactory.getProduct(productInfo);
+                productInfo = pc.getProductInfo();
+                product = pc.getProduct();
                 salesUnits = product.getSalesUnits();
                 if (salesUnits.length>0) {
                         salesUnitDescription = salesUnits[0].getDescription();
@@ -115,10 +114,9 @@
    String kosherSymbol= "";
    String kosherType = "";
    if (product!=null) {
-       PriceCalculator pc = product.getPriceCalculator();
-       kosherSymbol = pc.getKosherSymbol();
+       kosherSymbol = priceCalculator.getKosherSymbol();
 		/** get the kosher type **/
-		kosherType = pc.getKosherType();
+		kosherType = priceCalculator.getKosherType();
 	}
 	
     if (!"".equalsIgnoreCase(kosherSymbol) && kosherSymbol != null) {
