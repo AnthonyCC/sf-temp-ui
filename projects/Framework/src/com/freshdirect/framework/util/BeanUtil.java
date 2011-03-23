@@ -25,7 +25,7 @@ public class BeanUtil {
 		}
 		
 		try {
-			return method.invoke(bean, NO_PARAMETERS);
+			return method.invoke(bean);
 		} catch (IllegalAccessException e) {
 			throw new IllegalArgumentException("Getter for property "+propertyName+" not accessible in "+clazz);
 
