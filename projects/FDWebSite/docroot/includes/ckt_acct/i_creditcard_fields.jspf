@@ -196,7 +196,7 @@ WIDTH="132" HEIGHT="9" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<F
 		for(Iterator ccItr = ccTypes.iterator();ccItr.hasNext();) { 
 		    EnumCardType ccType = (EnumCardType)ccItr.next();
 		%>
-		<OPTION <%=ccType.getFdName().equals(ccCardType)?"selected":""%> value="<%=ccType.getFdName()%>"><%=ccType.getDisplayName()%>
+		<option <%=ccType.getFdName().equals(ccCardType)?"selected":""%> value="<%=ccType.getFdName()%>"><%=ccType.getDisplayName()%></option>
 		<%}%>
 		</select> <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.CARD_BRAND%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 	</td>
