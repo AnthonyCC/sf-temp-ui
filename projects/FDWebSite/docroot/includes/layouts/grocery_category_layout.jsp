@@ -327,7 +327,9 @@ String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVaria
 <%
             }
             currentRow = 0;
-            breakPoint = breakPoints[++currentColumn];
+	     try {
+		breakPoint = breakPoints[++currentColumn];
+	     }catch(Exception e){}
         }
 
 
