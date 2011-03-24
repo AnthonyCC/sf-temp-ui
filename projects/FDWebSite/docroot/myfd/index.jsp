@@ -37,6 +37,9 @@
 		<%@ include file="/includes/myfd/i_myfd_header.jspf" %>
 		</div>
 		<%-- MyFD content --%>
+		<fd:FDShoppingCart id='cart' action='<%= actionName %>'
+			result='result' successPage="<%= successPage %>"
+			source="<%= cartSource %>">
 		<div style="padding: 30px 25px;">
 			<table cellpadding="0" cellspacing="0" style="width: 693px; text-align: center; margin: 0px auto;">
 				<tr>
@@ -80,9 +83,6 @@
 			</table>
 		</div>
 		<%-- Cart'n'Tabs --%>
-		<fd:FDShoppingCart id='cart' action='<%= actionName %>'
-			result='result' successPage="<%= successPage %>"
-			source="<%= cartSource %>">
 			<a name="cartRec"></a>
 			<div style="padding-top: 1em"><%-- display items just added to cart  --%>
 			<%
