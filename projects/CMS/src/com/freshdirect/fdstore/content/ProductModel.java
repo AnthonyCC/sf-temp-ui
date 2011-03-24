@@ -692,14 +692,39 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	 */
 	public String getPrimaryBrandName(String productName);
 
+        /**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+        @Deprecated
 	public String getSizeDescription() throws FDResourceException;
 
+        /**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+        @Deprecated
 	public String getKosherSymbol() throws FDResourceException;
 
+        /**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+        @Deprecated
 	public String getKosherType() throws FDResourceException;
 
+        /**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+        @Deprecated
 	public boolean isKosherProductionItem() throws FDResourceException;
 
+        /**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+        @Deprecated
 	public int getKosherPriority() throws FDResourceException;
 
 	public boolean isCharacteristicsComponentsAvailable(FDConfigurableI config);
@@ -716,6 +741,11 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	
 	public boolean isShowTopTenImage();
 
+        /**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+	@Deprecated
 	String getDefaultPrice();
 
 	public boolean isSoldBySalesUnits();
@@ -790,28 +820,88 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	
 	public double getAge();
 	
+	/**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+        @Deprecated
 	public int getDealPercentage();
 
+        /**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+        @Deprecated
 	public int getDealPercentage(String skuCode);
 	
+        /**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+        @Deprecated
 	public int getTieredDealPercentage();
 
+        /**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+        @Deprecated
 	public int getTieredDealPercentage(String skuCode);
 
+        /**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+        @Deprecated
 	public int getHighestDealPercentage();
 
+        /**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+        @Deprecated
 	public int getHighestDealPercentage(String skuCode);
 	
+        /**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+        @Deprecated
 	public String getTieredPrice(double savingsPercentage);
 	
+        /**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+        @Deprecated
 	public double getPrice(double savingsPercentage);
 
+        /**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+        @Deprecated
 	public String getPriceFormatted(double savingsPercentage);
 	
+        /**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+        @Deprecated
 	public String getPriceFormatted(double savingsPercentage, String skuCode);
 	
+        /**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+        @Deprecated
 	public String getWasPriceFormatted(double savingsPercentage);
 	
+        /**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+        @Deprecated
 	public String getAboutPriceFormatted(double savingsPercentage);
 	
 	public int getExpertWeight();
@@ -850,7 +940,7 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
          * @return a price calculator which encapsulates the specified sku.
          */
         public PriceCalculator getPriceCalculator(SkuModel sku);
-	
+        
 	/**
 	 * This is used for getting a media attribute, if the usage of the normal getters are not feasible. For example,
 	 * when the name of the attribute comes from the client side. It's not a very fortunate situation.
@@ -875,6 +965,8 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	public String getSustainabilityRating() throws FDResourceException; 
 	
 	public String getSustainabilityRating(String skuCode) throws FDResourceException;
+	
+	
 	
 	public FDGroup getFDGroup() throws FDResourceException;
 }

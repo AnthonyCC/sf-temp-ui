@@ -19,6 +19,14 @@ import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.ZonePriceModel;
 
+/**
+ * This class is encapsulates a product with a sku and a pricing context, which is essential most of the price calculations happening on the site. 
+ * This object is intended to shared for a request, as it cache the FDProduct and FDProductInfo objects, so passing this around ensures that
+ * unneeded cache lookup doesn't happens.
+ *    
+ * @author zsombor
+ *
+ */
 public class PriceCalculator {
 
 	private final static java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
@@ -44,6 +52,10 @@ public class PriceCalculator {
         this.product = product;
         this.skuModel = product.getDefaultSku(ctx);
     }
+    
+    public ProductModel getProductModel() {
+        return product;
+    }
 
     
     /**
@@ -68,6 +80,15 @@ public class PriceCalculator {
         return fdProduct;
     }
     
+    public FDGroup getFDGroup() {
+        try {
+            return getProductInfo().getGroup();
+        } catch (FDResourceException e) {
+            return null;
+        } catch (FDSkuNotFoundException e) {
+            return null;
+        }
+    }
     
     
     public double getDefaultPriceValue() {

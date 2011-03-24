@@ -49,7 +49,7 @@ public class ProductReference implements Serializable {
 
     public ProductModel lookupProductModel() {
         if (model == null) {
-            model = ContentFactory.getInstance().getProduct(categoryId, productId);
+            model = ContentFactory.getInstance().getProductByName(categoryId, productId);
         }
         return model;
     }

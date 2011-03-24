@@ -651,31 +651,6 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		return displayableBrands;
 	}
 	
-	/* price calculator calls */ 
-	
-	public String getSizeDescription() throws FDResourceException {
-	    return getPriceCalculator().getSizeDescription();
-	}
-	
-	public String getKosherSymbol() throws FDResourceException {
-	    return getPriceCalculator().getKosherSymbol();
-	}
-	
-	public String getKosherType() throws FDResourceException {
-        return getPriceCalculator().getKosherType();
-	}
-
-	
-	public boolean isKosherProductionItem() throws FDResourceException {
-        return getPriceCalculator().isKosherProductionItem();
-	}
-
-	public int getKosherPriority() throws FDResourceException {
-	    return getPriceCalculator().getKosherPriority();
-	}
-
-        /* price calculator call end */ 
-	
 	public boolean hasComponentGroups() {
 		return !getComponentGroups().isEmpty();
 	}
