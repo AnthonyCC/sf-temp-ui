@@ -407,7 +407,7 @@ public class ProductPriceTag extends BodyTagSupport {
 					StringBuffer buffer  = new StringBuffer();
 					buffer.append("SAVE");
 					if(quickShop){
-						int tieredPercentage = impression.getProductModel().getTieredDealPercentage();
+						int tieredPercentage = priceCalculator.getTieredDealPercentage();
 						buffer.append(tieredPercentage > 0 ? " " + tieredPercentage + "%" : "!");
 						buffer.append("&nbsp;&nbsp;");
 					}else {

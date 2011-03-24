@@ -7,6 +7,7 @@ import javax.servlet.jsp.JspException;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.DYFUtil;
@@ -18,6 +19,8 @@ public class ProductBurstTag extends BodyTagSupportEx {
 	private static final long serialVersionUID = 1052411080367169416L;
 
 	private ProductModel product;
+	
+	private PriceCalculator calculator;
 
 	private boolean large;
 
@@ -35,7 +38,13 @@ public class ProductBurstTag extends BodyTagSupportEx {
 		this.excludeCaseDeals = excludeCaseDeals;
 	}
 
-
+        PriceCalculator getCalculator() {
+            if (calculator == null) {
+                calculator = product.getPriceCalculator();
+            }
+            return calculator;
+        }
+	
 	@Override
 	public int doStartTag() throws JspException {
 		if (!renderPrecondition()) {
@@ -44,7 +53,7 @@ public class ProductBurstTag extends BodyTagSupportEx {
 		
 		FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
 		StringBuilder buf = new StringBuilder();
-		int highestDeal = product.getHighestDealPercentage();
+		int highestDeal = getCalculator().getHighestDealPercentage();
 		if (highestDeal < FDStoreProperties.getBurstsLowerLimit() || highestDeal > FDStoreProperties.getBurstUpperLimit())
 			highestDeal = 0;
 
@@ -155,9 +164,9 @@ public class ProductBurstTag extends BodyTagSupportEx {
 
 	
 	private boolean renderPrecondition() {
-		if (!excludeCaseDeals || product.getHighestDealPercentage() > product.getTieredDealPercentage())
+		if (!excludeCaseDeals || getCalculator().getHighestDealPercentage() > getCalculator().getTieredDealPercentage())
 			return true;
 		
-		return product.getPriceCalculator().getTieredPrice(0, excludedTiers) != null;
+		return getCalculator().getTieredPrice(0, excludedTiers) != null;
 	}
 }

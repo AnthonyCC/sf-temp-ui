@@ -47,9 +47,9 @@ public class RatingPlusScalePriceTag extends ProductRatingTag {
 			
 			ProductImpression impression = new ProductImpression(ProductPricingFactory.getInstance().getPricingAdapter(product, user.getPricingContext()));			
 			
-			String scaleString = impression.getProductModel().getTieredPrice(savingsPercentage);
+			String scaleString = impression.getCalculator().getTieredPrice(savingsPercentage);
 			
-			int tieredPercentage = impression.getProductModel().getTieredDealPercentage();
+			int tieredPercentage = impression.getCalculator().getTieredDealPercentage();
 			
 			// TODO include this calculation into the material / tiered pricing model
 			if (savingsPercentage > 0.0) {
