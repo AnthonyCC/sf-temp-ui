@@ -43,7 +43,7 @@ public class ProductDisplayUtil {
 		Set<EnumBurstType> hb = new HashSet<EnumBurstType>();
 		if (EnumSiteFeature.DYF.equals(siteFeature))
 			hb.add(EnumBurstType.YOUR_FAVE);
-		return new ProductLabeling(user, product, calculator, hb).getBurstCode();
+		return new ProductLabeling(user, calculator, hb).getBurstCode();
 	}
 
 	public static String getProductRatingCode(FDUserI user, ProductModel product)
@@ -106,31 +106,47 @@ public class ProductDisplayUtil {
 
 		return uri.toString();
 	}
-	/**
-	 * This method returns only regular deals percentage if product's default sku
-	 * is part of a group scale else returns product's highest deals percentage.
-	 * @param productNode
-	 * @param user
-	 * @return
-	 */
-	public static int getDealsPercentage(ProductModel productNode, FDUserI user) {
-		try {
-			int tieredPercentage = productNode.getTieredDealPercentage();
-			FDGroup group = productNode.getFDGroup();
-			if(tieredPercentage > 0 && group != null){
-				//Check to see current pricing zone has group price defined.
-				if(group != null) {
-					MaterialPrice gsPrice = GroupScaleUtil.getGroupScalePrice(group, user.getPricingZoneId());
-					if(gsPrice != null) {
-						//return regular deal percentage
-						return productNode.getDealPercentage();
-					}
-				}
-			}
-		} catch (FDResourceException e) {
-			//ignore
-		}
-		//At this point there is no gs price defined for default sku.
-		return productNode.getHighestDealPercentage();
-	}
+
+    /**
+     * This method returns only regular deals percentage if product's default
+     * sku is part of a group scale else returns product's highest deals
+     * percentage.
+     * 
+     * @param productNode
+     * @param user
+     * @return
+     */
+    public static int getDealsPercentage(ProductModel productNode, FDUserI user) {
+        PriceCalculator calculator = new PriceCalculator(user.getPricingContext(), productNode);
+        return getDealsPercentage(calculator);
+    }
+
+    /**
+     * This method returns only regular deals percentage if product's default
+     * sku is part of a group scale else returns product's highest deals
+     * percentage.
+     * 
+     * @param calculator
+     * @return
+     */
+    public static int getDealsPercentage(PriceCalculator calculator) {
+        try {
+            int tieredPercentage = calculator.getTieredDealPercentage();
+            FDGroup group = calculator.getFDGroup();
+            if (tieredPercentage > 0 && group != null) {
+                // Check to see current pricing zone has group price defined.
+                if (group != null) {
+                    MaterialPrice gsPrice = GroupScaleUtil.getGroupScalePrice(group, calculator.getPricingContext().getZoneId());
+                    if (gsPrice != null) {
+                        // return regular deal percentage
+                        return calculator.getDealPercentage();
+                    }
+                }
+            }
+        } catch (FDResourceException e) {
+            // ignore
+        }
+        // At this point there is no gs price defined for default sku.
+        return calculator.getHighestDealPercentage();
+    }
 }

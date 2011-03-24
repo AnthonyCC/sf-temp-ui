@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDResourceException;
@@ -234,17 +235,16 @@ public class SmartStoreConfigurationStrategy extends FallbackConfigurationStrate
 			for(FDCustomerProductListLineItem item : lineItems) {
 				
 				String selectedSkuCode = item.getSkuCode();
-				SkuModel skuModel = (SkuModel) ContentFactory.getInstance().getContentNode(selectedSkuCode); 
+				SkuModel skuModel = (SkuModel) ContentFactory.getInstance().getContentNode(FDContentTypes.SKU, selectedSkuCode); 
 				
 				// not available, skip
 				if (skuModel.isUnavailable())
 					continue;
 
 				FDConfigurableI configuration = item.getConfiguration();
-				// no stored configuration, so it's an unconfigurable product model
+				// no stored configuration, it can't happen
 				if (configuration == null) {
-				    cache.put(key, new SkuConfigurationPair(selectedSkuCode, null));
-				    return new ProductSkuImpression(productModel, selectedSkuCode);
+				    continue;
 				}
 				
 				// there was a stored configuration, lets see if ok

@@ -12,6 +12,7 @@ import javax.servlet.jsp.tagext.VariableInfo;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.EnumBurstType;
 import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.ProductDisplayUtil;
@@ -30,7 +31,8 @@ public class ProductImageTag extends BodyTagSupport {
 	
 	private static final long serialVersionUID = 8159061278833068855L;
 
-	ProductModel	product; 					// product (mandatory)
+	ProductModel	product; 					// product (mandatory if calculator is null)
+	PriceCalculator calculator;                                    // calculator (mandatory if product is null)
 	String			style; 						// CSS style modification (optional)
 	String			className;					// CSS class name (optional)
 	String			action; 					// URL (optional)
@@ -59,6 +61,10 @@ public class ProductImageTag extends BodyTagSupport {
 	public void setProduct(ProductModel prd) {
 		this.product = prd;
 	}
+	
+	public void setPriceCalculator(PriceCalculator calculator) {
+            this.calculator = calculator;
+        }
 
 	public void setNewProductPage(boolean isNewProductPage) {
 		this.isNewProductPage = isNewProductPage;
@@ -144,7 +150,17 @@ public class ProductImageTag extends BodyTagSupport {
 	
 	@Override
 	public int doStartTag() {
-		
+	
+	    if (product == null) {
+	        if (calculator == null) {
+	            throw new RuntimeException("'product' and 'priceCalculator' is null!");
+	        }
+	        product = calculator.getProductModel();
+	    } else if (calculator == null) {
+	        calculator = product.getPriceCalculator();
+	    } 
+	    
+	    
 		Image prodImg = null;
 		
 		if ( useAlternateImage ) {
@@ -163,7 +179,7 @@ public class ProductImageTag extends BodyTagSupport {
 		
 		StringBuilder buf = new StringBuilder();
 
-		ProductLabeling pl = new ProductLabeling((FDUserI) pageContext.getSession().getAttribute(SessionName.USER), product, hideBursts);
+		ProductLabeling pl = new ProductLabeling((FDUserI) pageContext.getSession().getAttribute(SessionName.USER), calculator, hideBursts);
 		
 		if (browserInfo == null)
 			browserInfo = new BrowserInfo((HttpServletRequest) pageContext.getRequest());
@@ -356,7 +372,7 @@ public class ProductImageTag extends BodyTagSupport {
 			deal = (int)(savingsPercentage*100);
 		} else if (pl.isDisplayDeal()) {
 			//deal = product.getHighestDealPercentage();
-			deal = (int)ProductDisplayUtil.getDealsPercentage(product, (FDUserI) pageContext.getSession().getAttribute(SessionName.USER));
+			deal = (int)ProductDisplayUtil.getDealsPercentage(calculator);
 		}
 
 		if (deal < FDStoreProperties.getBurstsLowerLimit() || deal > FDStoreProperties.getBurstUpperLimit())
@@ -408,8 +424,6 @@ public class ProductImageTag extends BodyTagSupport {
 		buf.append("</div>\n");
 	}
 
-	
-	@SuppressWarnings("unchecked")
 	
 	public static class TagEI extends TagExtraInfo {
 		public VariableInfo[] getVariableInfo(TagData data) {

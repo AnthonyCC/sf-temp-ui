@@ -219,7 +219,7 @@ if (typeof(OST_<%= tx_pricing_FormName %>) == "undefined") {
 										// product cell
 											
 										ProductModel product = recommendations_row.getProductModel();
-										ProductLabeling pl = new ProductLabeling(pip_u, product, genericRecommendationsVariant.getHideBursts());
+										ProductLabeling pl = new ProductLabeling(pip_u, recommendations_row.getCalculator(), genericRecommendationsVariant.getHideBursts());
 										// pl.setHideYourFave(true);
 
 										// TRKD := recommender ID (if recommender is Smart YMAL) otherwise burst code
@@ -249,9 +249,9 @@ if (typeof(OST_<%= tx_pricing_FormName %>) == "undefined") {
 											<tr>
 												<td style="padding: 0; height: <%= maxPrdHeight %>px; vertical-align: bottom; text-align: center">
 													<% if (isVariantSavings) { %>
-														<display:ProductImage product="<%= product %>" action="<%= actionURI %>" savingsPercentage="<%= pvm.getPercentageOff() %>" inCart="<%= shouldDimProduct %>" browserInfo="<%= bi %>" opacity="<%= shouldDimProduct ? 0.5 : 1.0 %>" showRolloverImage="true"/>
+														<display:ProductImage priceCalculator="<%= recommendations_row.getCalculator() %>" action="<%= actionURI %>" savingsPercentage="<%= pvm.getPercentageOff() %>" inCart="<%= shouldDimProduct %>" browserInfo="<%= bi %>" opacity="<%= shouldDimProduct ? 0.5 : 1.0 %>" showRolloverImage="true"/>
 													<% } else {%>
-														<display:ProductImage product="<%= product %>" action="<%= actionURI %>" hideBursts="<%= recommendations.getVariant().getHideBursts() %>" browserInfo="<%= bi %>" showRolloverImage="true"/>
+														<display:ProductImage priceCalculator="<%= recommendations_row.getCalculator() %>" action="<%= actionURI %>" hideBursts="<%= recommendations.getVariant().getHideBursts() %>" browserInfo="<%= bi %>" showRolloverImage="true"/>
 													<% } %>
 												</td>
 											</tr>

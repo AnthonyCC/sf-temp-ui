@@ -18,6 +18,11 @@
    <rtexprvalue>true</rtexprvalue>
   </attribute>
   <attribute>
+   <name>priceCalculator</name>
+   <required>false</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
    <name>style</name>
    <rtexprvalue>true</rtexprvalue>
   </attribute>

@@ -374,10 +374,10 @@ public class OrderLineUtil {
 	public static void cleanup(FDProductSelectionI prodSel) throws FDResourceException, FDInvalidConfigurationException {
 
 		ProductModel prodNode;
-		try {
-			prodNode = ContentFactory.getInstance().getProduct(prodSel.getSkuCode());
-		} catch (FDSkuNotFoundException e) {
-			throw new FDInvalidConfigurationException(e);
+                prodNode = prodSel.getProductRef().lookupProductModel();
+                if (prodNode == null) {
+                    throw new FDInvalidConfigurationException("Product is missing : " + prodSel.getProductRef().getCategoryId() + '/'
+                            + prodSel.getProductRef().getProductId() + ", sku :" + prodSel.getSkuCode());
 		}
 
 		// find most recent fd product based on sku

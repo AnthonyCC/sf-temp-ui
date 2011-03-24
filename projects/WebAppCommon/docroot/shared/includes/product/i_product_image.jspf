@@ -1,7 +1,7 @@
-<%@ page import="com.freshdirect.fdstore.content.Image"%>
-<%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
-<%@ page import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo"%>
-<%
+<%@ page import="com.freshdirect.fdstore.content.Image"
+%><%@ page import="com.freshdirect.fdstore.FDStoreProperties"
+%><%@ page import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo"
+%><%@page import="com.freshdirect.fdstore.util.ProductDisplayUtil"%><%
 	final ProductModel __pi_prd = (ProductModel) productNode;
 
 	Image productImage = __pi_prd.getDetailImage();
@@ -24,8 +24,7 @@
         
 	if ( zoomImage != null && zoomImage.getPath().indexOf("clear.gif") == -1 ) {
 		if ( isDeal ) { %>
-			
-<%@page import="com.freshdirect.fdstore.util.ProductDisplayUtil"%><div style="padding: 0px; border: 0px; margin: 0px auto; position: relative;" width="<%= productImage.getWidth() %>px" height="<%= productImage.getHeight() %>px">
+<div style="padding: 0px; border: 0px; margin: 0px auto; position: relative;" width="<%= productImage.getWidth() %>px" height="<%= productImage.getHeight() %>px">
 					<div style="position: absolute; top: 0px; left: 0px">
 						<a href="javascript:pop('/shared/prodpop.jsp?productId=<%= __pi_prd %>&catId=<%= __pi_prd.getParentNode() %>',335,375)">
 							<img alt="SAVE" src="<%=burstImage %>" width="55px" height="55px" style="border: 0">

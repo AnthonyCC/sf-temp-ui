@@ -80,14 +80,13 @@ public class ProductLabeling {
 	 * 
 	 * @param hideBursts Set of burst types to hide. Can be null.
 	 */
-	public ProductLabeling(FDUserI customer, ProductModel product, PriceCalculator calculator, Set<EnumBurstType> hideBursts) {
-		setCustomer(customer);
-		this.product = product;
-        this.calculator = calculator;
+	public ProductLabeling(FDUserI customer, PriceCalculator calculator, Set<EnumBurstType> hideBursts) {
+	    setCustomer(customer);
+            this.calculator = calculator;
+            this.product = calculator.getProductModel();
 
-		this.hideBursts = hideBursts;
-
-		setDisplayFlags();
+            this.hideBursts = hideBursts;
+            setDisplayFlags();
 	}
 
         /**
@@ -97,7 +96,7 @@ public class ProductLabeling {
          * @param hideBursts Set of burst types to hide. Can be null.
          */
         public ProductLabeling(FDUserI customer, ProductModel product, Set<EnumBurstType> hideBursts) {
-            this(customer, product, product.getPriceCalculator(), hideBursts);
+            this(customer, product.getPriceCalculator(), hideBursts);
         }
 
     /**
@@ -196,7 +195,7 @@ public class ProductLabeling {
 	public String getBurstCode() {
 		String burst = null;
 		if (isDisplayDeal())
-			burst = Integer.toString(product.getHighestDealPercentage());
+			burst = Integer.toString(calculator.getHighestDealPercentage());
 		else if (isDisplayFave())
 			burst = "YF";
 		else if (isDisplayNew())
