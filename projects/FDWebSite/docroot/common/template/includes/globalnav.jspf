@@ -88,7 +88,9 @@ if (catId != null){
 		globalUri.indexOf("/department.jsp")> -1 ||
 		globalUri.indexOf("/whatsgood.jsp")> -1 ||
 		globalUri.indexOf("view_cart")> -1 ||
-		globalUri.indexOf("myfd")> -1) {
+		globalUri.indexOf("myfd")> -1 ||
+		globalUri.indexOf("health_warning")> -1 ||
+		globalUri.indexOf("product_modify")> -1	) {
 		isAtHome = false;
 	}
 	%>
