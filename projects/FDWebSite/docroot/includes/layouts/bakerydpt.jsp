@@ -71,10 +71,10 @@
 	
 	<div id="bak_left_column" style="width: 324px; height: auto; display: block; overflow: hidden; float: left; font-size: 0px;">
 		<display:ContentNodeIterator id="cn_it_0" trackingCode="<%= trackingCode %>" itemsToShow="<%= catList[0] %>">
-			<div class="text12" style="display: inline-block; overflow: hidden; vertical-align: bottom; padding-top:10px; width: 108px; height: 100px;">
+			<span class="text12" style="display: inline-block; overflow: hidden; vertical-align: bottom; padding-top:10px; width: 108px; height: 100px;">
 				<display:CategoryImage category="<%= (CategoryModel)currentItem %>" action="<%= actionUrl %>"/>
 				<display:CategoryName category="<%= (CategoryModel)currentItem %>" action="<%= actionUrl %>" style="font-style:normal"/>
-			</div>
+			</span>
 		</display:ContentNodeIterator>
 	</div>
 	
@@ -82,10 +82,10 @@
 		
 	<div id="bak_right_column" style="width: 216px; height: auto; display: block; overflow: hidden; float: right; font-size: 0px;">
 		<display:ContentNodeIterator id="cn_it_1" trackingCode="<%= trackingCode %>" itemsToShow="<%= catList[1] %>">
-			<div class="text12" style="display: inline-block; overflow: hidden; vertical-align: bottom; padding-top:10px; width: 108px; height: 100px;">
+			<span class="text12" style="display: inline-block; overflow: hidden; vertical-align: bottom; padding-top:10px; width: 108px; height: 100px;">
 				<display:CategoryImage category="<%= (CategoryModel)currentItem %>" action="<%= actionUrl %>"/>
 				<display:CategoryName category="<%= (CategoryModel)currentItem %>" action="<%= actionUrl %>" style="font-style:normal"/>
-			</div>
+			</span>
 		</display:ContentNodeIterator>
 	</div>
 	
