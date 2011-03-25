@@ -11,6 +11,7 @@
 					"twitter_popup","menubar=1,resizable=1,width=600,height=100");
 	}
 	var a2a_config = {};
+	a2a_config.color_link_text = "336600";
 </script>
 <script type="text/javascript" src="http://static.addtoany.com/menu/page.js"></script>
 	<div class="myfd-blog-feed">
