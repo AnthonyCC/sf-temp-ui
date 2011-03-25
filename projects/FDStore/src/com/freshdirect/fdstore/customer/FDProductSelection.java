@@ -535,8 +535,11 @@ public class FDProductSelection implements FDProductSelectionI {
 	
 	 public FDGroup getFDGroup() {
 		 FDGroup group = this.orderLine.getFDGroup();
-			if(group == null)//If not in the line item level check sku level.
-				group = this.lookupFDProductInfo().getGroup();
+			if(group == null) {//If not in the line item level check sku level.
+				FDProductInfo _p=this.lookupFDProductInfo();
+				if(_p!=null)
+					group = _p.getGroup();
+			}
 		 
 		 return group;
 	 }
