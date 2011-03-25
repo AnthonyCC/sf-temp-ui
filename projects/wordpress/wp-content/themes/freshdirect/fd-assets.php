@@ -12,6 +12,7 @@
 </script>
 <script>
 var a2a_config = {};
+a2a_config.color_link_text = "336600";
 </script>
 <link rel='stylesheet' id='A2A_SHARE_SAVE-css'  href='<?php echo home_url()?>/wp-content/plugins/add-to-any/addtoany.min.css?ver=1.3' type='text/css' media='all' /> 
 <!--[if IE]>
