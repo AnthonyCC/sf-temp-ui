@@ -1,4 +1,4 @@
-package com.freshdirect.fdstore.semPixel;
+package com.freshdirect.fdstore.sempixel;
 
 import java.util.Date;
 import java.util.HashMap;
