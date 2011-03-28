@@ -45,9 +45,9 @@
 	<% } %>
 </div>
 
-<div id="bak_media_div" style="width: 550px; height: 100%; display: block; overflow: hidden; position:relative; font-size: 0px;">
+<div id="bak_media_div" style="width: 554px; height: 100%; display: block; overflow: hidden; position:relative; font-size: 0px;">
 	
-	<span id="bak_left_media" style="width: 324px; height: 100%; display: inline-block; overflow: hidden; font-size: 0px; vertical-align: top; border-right: 1px solid #cccccc; padding-right: 4px;">
+	<span id="bak_left_media" style="width: 326px; height: 100%; display: inline-block; overflow: hidden; font-size: 0px; vertical-align: top; border-right: 1px solid #cccccc; padding-right: 4px;">
 		<%
 		List<Html> topMed0 = tlcat[0].getTopMedia();
 		if ( topMed0 != null && topMed0.size() > 0 ) { %>	
@@ -55,7 +55,7 @@
 		<% } %>
 	</span>
 	
-	<span id="bak_right_media" style="width: 216px; height: 100%; display: inline-block; overflow: hidden; font-size: 0px; vertical-align: top; margin-left: -1px; border-left: 1px solid #cccccc; padding-left: 4px;">
+	<span id="bak_right_media" style="width: 217px; height: 100%; display: inline-block; overflow: hidden; font-size: 0px; vertical-align: top; position: relative; left: -1px; border-left: 1px solid #cccccc; padding-left: 4px;">
 		<%
 		List<Html> topMed1 = tlcat[1].getTopMedia();
 		if ( topMed1 != null && topMed1.size() > 0 ) { %>	
@@ -65,9 +65,9 @@
 	
 </div>
 
-<div id="bak_main_div" style="width: 550px; height: 100%; display: block; overflow: hidden; position:relative; font-size: 0px;">
+<div id="bak_main_div" style="width: 554px; height: 100%; display: block; overflow: hidden; position:relative; font-size: 0px;">
 	
-	<span id="bak_left_column" style="width: 324px; display: inline-block; overflow: hidden; font-size: 0px; vertical-align: top; border-right: 1px solid #cccccc; padding-right: 4px;">
+	<span id="bak_left_column" style="width: 326px; display: inline-block; overflow: hidden; font-size: 0px; vertical-align: top; border-right: 1px solid #cccccc; padding-right: 4px;">
 		<display:ContentNodeIterator id="cn_it_0" trackingCode="<%= trackingCode %>" itemsToShow="<%= catList[0] %>">
 			<span class="text12" style="display: inline-block; overflow: hidden; vertical-align: bottom; padding-top:10px; width: 108px; height: 100px;">
 				<display:CategoryImage category="<%= (CategoryModel)currentItem %>" action="<%= actionUrl %>"/>
@@ -76,7 +76,7 @@
 		</display:ContentNodeIterator>
 	</span>
 	
-	<span id="bak_right_column" style="width: 216px; display: inline-block; overflow: hidden; font-size: 0px; vertical-align: top; margin-left: -1px; border-left: 1px solid #cccccc; padding-left: 4px;">
+	<span id="bak_right_column" style="width: 217px; display: inline-block; overflow: hidden; font-size: 0px; vertical-align: top; position: relative; left: -1px; border-left: 1px solid #cccccc; padding-left: 4px;">
 		<display:ContentNodeIterator id="cn_it_1" trackingCode="<%= trackingCode %>" itemsToShow="<%= catList[1] %>">
 			<span class="text12" style="display: inline-block; overflow: hidden; vertical-align: bottom; padding-top:10px; width: 108px; height: 100px;">
 				<display:CategoryImage category="<%= (CategoryModel)currentItem %>" action="<%= actionUrl %>"/>
