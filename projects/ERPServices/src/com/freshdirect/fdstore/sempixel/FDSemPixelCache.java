@@ -1,6 +1,5 @@
-package com.freshdirect.fdstore.sempixel;
+package com.freshdirect.fdstore.semPixel;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +10,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.fdstore.FDAbstractCache;
+import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 
 public class FDSemPixelCache extends FDAbstractCache {
@@ -31,57 +31,68 @@ public class FDSemPixelCache extends FDAbstractCache {
 	protected Map<String, SemPixelModel> loadData(Date since){
 		LOGGER.info("REFRESHING SemPixel Cache");
 		Map<String, SemPixelModel> data = new HashMap<String, SemPixelModel>(); 
-		//load pixel models
-		String semConfigs = FDStoreProperties.getSemConfigs();
-		String[] sem_step1 = new String[0];
-		String[] sem_step2 = new String[0];
 		
-		SemPixelModel curSemPixel = null;
-		
-		sem_step1 = semConfigs.split(";");
-		for (int n = 0; n < sem_step1.length; n++) {
-			curSemPixel = new SemPixelModel();
+		try {
+			//load pixel models
+			String semConfigs = FDStoreProperties.getSemConfigs();
 			
-			sem_step2 = sem_step1[n].split(":");
+			String[] sem_step1 = new String[0];
+			String[] sem_step2 = new String[0];
 			
-			for (int o = 0; o < sem_step2.length; o++) {
-				StringTokenizer sem_st = new StringTokenizer(sem_step2[o], "=");
-				while(sem_st.hasMoreTokens()) {
-
-					String key = sem_st.nextToken();
-					String value = sem_st.nextToken();
-					
-					curSemPixel.setParam(key, value);
-					
-					if ("enabled".equalsIgnoreCase(key)) {
-						curSemPixel.setEnabled(Boolean.parseBoolean(value));
-					}
-					if ("name".equalsIgnoreCase(key)) {
-						curSemPixel.setName(value);
-					}
-					if ("refs".equals(key)) {
-						String[] sem_curRefs = value.split(",");
-						for (int i = 0; i < sem_curRefs.length; i++) {
-							curSemPixel.addValidReferer(sem_curRefs[i]);
+			SemPixelModel curSemPixel = null;
+			
+			sem_step1 = semConfigs.split(";");
+			for (int n = 0; n < sem_step1.length; n++) {
+				curSemPixel = new SemPixelModel();
+				
+				sem_step2 = sem_step1[n].split(":");
+				
+				for (int o = 0; o < sem_step2.length; o++) {
+					StringTokenizer sem_st = new StringTokenizer(sem_step2[o], "=");
+					while(sem_st.hasMoreTokens()) {
+	
+						String key = sem_st.nextToken();
+						String value = "";
+						if (sem_st.hasMoreTokens()) { //only get if we have a val TO get
+							value = sem_st.nextToken();
+						}
+						
+						curSemPixel.setParam(key, value);
+						
+						if ("enabled".equalsIgnoreCase(key)) {
+							curSemPixel.setEnabled(Boolean.parseBoolean(value));
+						}
+						if ("name".equalsIgnoreCase(key)) {
+							curSemPixel.setName(value);
+						}
+						if ("refs".equals(key)) {
+							String[] sem_curRefs = value.split(",");
+							for (int i = 0; i < sem_curRefs.length; i++) {
+								curSemPixel.addValidReferer(sem_curRefs[i]);
+							}
+						}
+						if ("zips".equals(key)) {
+							String[] sem_curZips = value.split(",");
+							for (int i = 0; i < sem_curZips.length; i++) {
+								curSemPixel.addValidZipCode(sem_curZips[i]);
+							}
+						}
+						if ("media".equals(key)) {
+							curSemPixel.setMediaPath(value);
 						}
 					}
-					if ("zips".equals(key)) {
-						String[] sem_curZips = value.split(",");
-						for (int i = 0; i < sem_curZips.length; i++) {
-							curSemPixel.addValidZipCode(sem_curZips[i]);
-						}
-					}
-					if ("media".equals(key)) {
-						curSemPixel.setMediaPath(value);
-					}
+				}
+	
+				//add pixel only if a name exists for it
+				String pName = curSemPixel.getName();
+				if (pName != null) {
+					data.put(pName, curSemPixel);
 				}
 			}
 
-			//add pixel only if a name exists for it
-			String pName = curSemPixel.getName();
-			if (pName != null) {
-				data.put(pName, curSemPixel);
-			}
+		} catch (FDRuntimeException e) {
+			e.printStackTrace();
+			//throw new FDRuntimeException(e);
 		}
 		
 	
