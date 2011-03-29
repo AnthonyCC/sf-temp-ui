@@ -205,7 +205,7 @@ if (fldZipCode==null && user!=null && user.getZipCode() !=null){//quite odd. we 
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_PHONE.getCode()%>'></span></fd:ErrorHandler>
 	</td>
 	<td width="565" colspan="2">
-		&nbsp;&nbsp;<input type="text" maxlength="14" size="21" class="text11" name="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" id="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" value="<%=fldBusinessPhone%>" required="<%=EnumServiceType.CORPORATE.equals(serviceType) ? "true" : "false"%>" /> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		&nbsp;&nbsp;<input type="text" maxlength="14" size="21" class="text11" name="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" id="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" value="<%=fldBusinessPhone%>" <%=EnumServiceType.CORPORATE.equals(serviceType) ? "required=\"true\"" : ""%> /> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 		&nbsp;&nbsp;<font class="text12">Ext.</font>&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" name="busphoneext" value="<%=fldBusinessPhoneExt%>" />
 	</td>
 </tr>
