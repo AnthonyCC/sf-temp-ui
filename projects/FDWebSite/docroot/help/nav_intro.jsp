@@ -8,7 +8,10 @@
 <html>
 <head>
 	<title>FreshDirect - Help</title>
-	 <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+
+	<%@ include file="/common/template/includes/metatags.jspf" %>
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333" CLASS="text10">
 

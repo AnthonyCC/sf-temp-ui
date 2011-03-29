@@ -13,6 +13,10 @@ response.setDateHeader ("Expires", 0);
 <HTML>
 <HEAD>
 <TITLE>FreshDirect - Checkout - Checking Inventory</TITLE>
+
+	<%@ include file="/common/template/includes/metatags.jspf" %>
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 <STYLE>
 BODY { font-size: 13px; font-family: Verdana, Arial, sans-serif; }
 TD { font-size: 13px; font-family: Verdana, Arial, sans-serif; }

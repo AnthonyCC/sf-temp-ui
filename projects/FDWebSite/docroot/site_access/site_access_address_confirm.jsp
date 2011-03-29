@@ -9,8 +9,10 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 <html>
 	<head>
 		<title>FreshDirect</title>
-		<script language="javascript" src="/assets/javascript/common_javascript.js"></script>
-		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+
+	<%@ include file="/common/template/includes/metatags.jspf" %>
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	</head>
 	<body bgcolor="#ffffff" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
 		<div align="center"><br>

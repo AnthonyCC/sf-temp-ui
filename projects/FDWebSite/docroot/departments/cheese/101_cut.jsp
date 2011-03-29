@@ -2,7 +2,10 @@
 <html>
 <head>
 <title>FreshDirect - Cheese 101</title>
-<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+
+	<%@ include file="/common/template/includes/metatags.jspf" %>
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 </head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" onLoad="window.focus()">
 <a name="top"></a>

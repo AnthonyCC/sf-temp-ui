@@ -9,9 +9,10 @@
 <html>
 <head>
     <title><tmpl:get name='title'/></title>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <script type="text/javascript" src="/assets/javascript/common_javascript.js"></script>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+
+	<%@ include file="/common/template/includes/metatags.jspf" %>
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
     <%-- @ include file="/shared/template/includes/ccl.jspf" --%>
 	<script type="text/javascript" src="http://www.google.com/jsapi?key=<%= gmap_api_key %>"></script>
 	<script type="text/javascript">

@@ -7,8 +7,10 @@
 <html>
 <head>
 <title>FreshDirect</title>
-<script language="javascript" src="/assets/javascript/common_javascript.js"></script>
-<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+
+	<%@ include file="/common/template/includes/metatags.jspf" %>
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 </head>
 <body bgcolor="#FFFFFF" text="#333333" class="text10" leftmargin="0" topmargin="0" onLoad="<%= request.getParameter("depotAccessCode")!=null && request.getMethod().equals("GET") ? "document.site_access.submit();" : ""%>">
 

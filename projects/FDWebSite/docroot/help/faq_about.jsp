@@ -7,6 +7,10 @@ if(request.getParameter("qNumber") != null){
 <html>
 <head>
 	<title>FreshDirect - Help - About FreshDirect</title>
+
+	<%@ include file="/common/template/includes/metatags.jspf" %>
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 </head>
 <FRAMESET ROWS="47,*" BORDER="0" FRAMEBORDER="0" FRAMESPACING="0" BORDERCOLOR="#FFFFFF">
 <FRAME MARGINWIDTH="0" 

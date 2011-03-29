@@ -7,8 +7,10 @@
 <html>
 <head>
 <title><tmpl:get name='title'/></title>
- <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
- <script language="javascript" src="/assets/javascript/common_javascript.js"></script>
+
+	<%@ include file="/common/template/includes/metatags.jspf" %>
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333"  MARGINHEIGHT="0" MARGINWIDTH="0" TOPMARGIN="0" LEFTMARGIN="0" onLoad="window.focus()">
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="550">

@@ -8,8 +8,10 @@
 <HEAD>
 
 <TITLE>FreshDirect - Our Freshness Guarantee</TITLE>
-<script language="javascript" src="/assets/javascript/common_javascript.js"></script>
- <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+
+	<%@ include file="/common/template/includes/metatags.jspf" %>
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 </HEAD>
 
 <body bgcolor="#FFFFFF" text="#333333" onLoad="window.resizeTo(375,335); window.focus();">

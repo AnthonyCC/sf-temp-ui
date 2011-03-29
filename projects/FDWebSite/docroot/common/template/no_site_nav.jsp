@@ -6,9 +6,10 @@
 <HTML>
 <HEAD>
     <title><tmpl:get name='title'/></title>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <script language="javascript" src="/assets/javascript/common_javascript.js"></script>
-     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+
+	<%@ include file="/common/template/includes/metatags.jspf" %>
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 </HEAD>
 <BODY BGCOLOR="#ffffff" TEXT="#333333" CLASS="text10">
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="100%" HEIGHT="100%">
