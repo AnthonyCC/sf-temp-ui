@@ -82,7 +82,7 @@ public class PriceCalculator {
     
     public FDGroup getFDGroup() {
         try {
-            return getProductInfo().getGroup();
+            return skuModel != null ? getProductInfo().getGroup() : null; 
         } catch (FDResourceException e) {
             return null;
         } catch (FDSkuNotFoundException e) {
