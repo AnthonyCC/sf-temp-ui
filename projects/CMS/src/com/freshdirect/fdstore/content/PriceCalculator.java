@@ -74,7 +74,7 @@ public class PriceCalculator {
 
     
     public FDProduct getProduct() throws FDResourceException, FDSkuNotFoundException {
-        if (fdProduct == null) {
+        if (fdProduct == null && skuModel != null) {
             fdProduct = FDCachedFactory.getProduct(getProductInfo());
         }
         return fdProduct;
