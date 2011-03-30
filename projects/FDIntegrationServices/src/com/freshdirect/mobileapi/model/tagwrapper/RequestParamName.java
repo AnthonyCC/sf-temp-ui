@@ -214,4 +214,49 @@ public interface RequestParamName {
     public static final String  REQ_PARAM_GRP_LONG_DESC = "grpLongDesc";
     
     public static final String  REQ_PARAM_GRP_QTY = "grpQty";
+    
+    public static final String  REQ_PARAM_CARD_EXP_MONTH = "cardMonth";
+    
+    public static final String  REQ_PARAM_CARD_EXP_YEAR = "cardYear";
+    
+    public static final String  REQ_PARAM_CARD_BRAND = "cardBrand";
+    
+    public static final String  REQ_PARAM_ACCOUNT_NUMBER = "cardNum";
+    
+    public static final String  REQ_PARAM_ABA_ROUTE_NUMBER = "abaRouteNumber";
+    
+    public static final String  REQ_PARAM_BANK_NAME = "bankName";
+    
+    public static final String  REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK = "bypassBadAccountCheck";
+    
+    public static final String  REQ_PARAM_TERMS = "terms";
+    
+    public static final String  REQ_PARAM_ACCOUNT_NUMBER_VERIFY = "cardNumVerify";
+    
+    public static final String  REQ_PARAM_BANK_ACCOUNT_TYPE = "bankAccountType";
+    
+    public static final String  REQ_PARAM_ACCOUNT_HOLDER = "cardHolderName";
+    
+    public static final String  REQ_PARAM_BIL_ADDRESS_1 = "bil_address1";
+    
+    public static final String  REQ_PARAM_BIL_ADDRESS_2 = "bil_address2";
+    
+    public static final String  REQ_PARAM_BIL_APARTMENT = "bil_apartment";
+    
+    public static final String  REQ_PARAM_BIL_CITY = "bil_city";
+    
+    public static final String  REQ_PARAM_BIL_STATE = "bil_state";
+    
+    public static final String  REQ_PARAM_BIL_ZIPCODE= "bil_zipcode";
+    
+    public static final String  REQ_PARAM_PAYMENT_METHOD_TYPE = "paymentMethodType";
+    
+    public static final String  REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD = "gift_card";
+    
+    public static final String  REQ_PARAM_IS_PAYMENT_METHOD_DONATION = "donation";    
+    
+    public static final String  REQ_PARAM_DELETE_PAYMENT_ID = "deletePaymentId";
+    
+    public static final String  REQ_PARAM_EDIT_PAYMENT_ID = "paymentId";
+
 }

@@ -12,6 +12,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.mobileapi.controller.data.request.PaymentMethodRequest;
 import com.freshdirect.mobileapi.model.MessageCodes;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
@@ -36,14 +37,16 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
     public static final String ACTION_SUBMIT_ORDER = "submitOrder";
 
     public static final String ACTION_SET_PAYMENT_METHOD = "setPaymentMethod";
+    
+    public static final String ACTION_ADD_SET_PAYMENT_METHOD = "addAndSetPaymentMethod"; 
 
-    public static final String ACTION_ADD_SET_PAYMENT_METHOD = "addAndSetPaymentMethod"; //Not supported
-
-    public static final String ACTION_ADD_PAYMENT_METHOD = "addPaymentMethod"; //Not supported
+    public static final String ACTION_ADD_PAYMENT_METHOD = "addPaymentMethod"; 
+    
+    public static final String ACTION_EDIT_PAYMENT_METHOD = "editPaymentMethod";
 
     public static final String ACTION_SET_PAYMENT_METHOD_AND_SUBMIT = "setPaymentAndSubmit"; //Not supported
 
-    public static final String ACTION_DELETE_PAYMENT_METHOD = "deletePaymentMethod"; //Not supported
+    public static final String ACTION_DELETE_PAYMENT_METHOD = "deletePaymentMethod";
 
     public static final String ACTION_SET_DELIVERY_ADDRESS_AND_PAYMENT = "setDeliveryAddressAndPayment"; //Not supported
 
@@ -119,6 +122,122 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         return new ResultBundle(executeTagLogic(), this);
     }
 
+    public ResultBundle addPaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT },
+                new String[] { SESSION_PARAM_USER }); //gets,sets
+        addExpectedRequestValues(new String[] { REQ_PARAM_CARD_EXP_MONTH, REQ_PARAM_CARD_EXP_YEAR, REQ_PARAM_CARD_BRAND,
+        		REQ_PARAM_ACCOUNT_NUMBER, REQ_PARAM_ABA_ROUTE_NUMBER, REQ_PARAM_BANK_NAME, REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, REQ_PARAM_TERMS,
+        		REQ_PARAM_ACCOUNT_NUMBER_VERIFY,REQ_PARAM_BANK_ACCOUNT_TYPE,REQ_PARAM_ACCOUNT_HOLDER,REQ_PARAM_BIL_ADDRESS_1,
+        		REQ_PARAM_BIL_ADDRESS_2,REQ_PARAM_BIL_APARTMENT,REQ_PARAM_BIL_CITY,REQ_PARAM_BIL_STATE,REQ_PARAM_BIL_ZIPCODE, REQ_PARAM_PAYMENT_METHOD_TYPE,
+        		REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, REQ_PARAM_IS_PAYMENT_METHOD_DONATION}, new String[] {});//gets,sets
+        addRequestValue(REQ_PARAM_CARD_EXP_MONTH, paymentMethod.getCardExpMonth());
+        addRequestValue(REQ_PARAM_CARD_EXP_YEAR, paymentMethod.getCardExpYear());
+        addRequestValue(REQ_PARAM_CARD_BRAND, paymentMethod.getCardBrand());
+        addRequestValue(REQ_PARAM_ACCOUNT_NUMBER, paymentMethod.getAccountNumber());
+        addRequestValue(REQ_PARAM_ABA_ROUTE_NUMBER, paymentMethod.getAbaRouteNumber());
+        addRequestValue(REQ_PARAM_BANK_NAME, paymentMethod.getBankName());        
+        addRequestValue(REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, null);
+        addRequestValue(REQ_PARAM_TERMS, paymentMethod.getTerms());
+        addRequestValue(REQ_PARAM_ACCOUNT_NUMBER_VERIFY, paymentMethod.getAccountNumberVerify());
+        addRequestValue(REQ_PARAM_BANK_ACCOUNT_TYPE, paymentMethod.getBankAccountType());        
+        addRequestValue(REQ_PARAM_ACCOUNT_HOLDER, paymentMethod.getAccountHolder());
+        addRequestValue(REQ_PARAM_BIL_ADDRESS_1, paymentMethod.getBillAddress1());
+        addRequestValue(REQ_PARAM_BIL_ADDRESS_2, paymentMethod.getBillAddress2());
+        addRequestValue(REQ_PARAM_BIL_APARTMENT, paymentMethod.getBillApt());        
+        addRequestValue(REQ_PARAM_BIL_CITY, paymentMethod.getBillCity());
+        addRequestValue(REQ_PARAM_BIL_STATE, paymentMethod.getBillState());
+        addRequestValue(REQ_PARAM_BIL_ZIPCODE, paymentMethod.getBillZipCode());        
+        addRequestValue(REQ_PARAM_PAYMENT_METHOD_TYPE, paymentMethod.getPaymentMethodType());
+        addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, "false");
+        addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_DONATION, "false");
+        
+
+        getWrapTarget().setActionName(ACTION_ADD_PAYMENT_METHOD);
+        setMethodMode(true);
+        return new ResultBundle(executeTagLogic(), this);
+    }
+
+    public ResultBundle addAndSetPaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT },
+                new String[] { SESSION_PARAM_USER }); //gets,sets
+        addExpectedRequestValues(new String[] { REQ_PARAM_CARD_EXP_MONTH, REQ_PARAM_CARD_EXP_YEAR, REQ_PARAM_CARD_BRAND,
+        		REQ_PARAM_ACCOUNT_NUMBER, REQ_PARAM_ABA_ROUTE_NUMBER, REQ_PARAM_BANK_NAME, REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, REQ_PARAM_TERMS,
+        		REQ_PARAM_ACCOUNT_NUMBER_VERIFY,REQ_PARAM_BANK_ACCOUNT_TYPE,REQ_PARAM_ACCOUNT_HOLDER,REQ_PARAM_BIL_ADDRESS_1,
+        		REQ_PARAM_BIL_ADDRESS_2,REQ_PARAM_BIL_APARTMENT,REQ_PARAM_BIL_CITY,REQ_PARAM_BIL_STATE,REQ_PARAM_BIL_ZIPCODE, REQ_PARAM_PAYMENT_METHOD_TYPE,
+        		REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, REQ_PARAM_IS_PAYMENT_METHOD_DONATION}, new String[] {});//gets,sets
+        addRequestValue(REQ_PARAM_CARD_EXP_MONTH, paymentMethod.getCardExpMonth());
+        addRequestValue(REQ_PARAM_CARD_EXP_YEAR, paymentMethod.getCardExpYear());
+        addRequestValue(REQ_PARAM_CARD_BRAND, paymentMethod.getCardBrand());
+        addRequestValue(REQ_PARAM_ACCOUNT_NUMBER, paymentMethod.getAccountNumber());
+        addRequestValue(REQ_PARAM_ABA_ROUTE_NUMBER, paymentMethod.getAbaRouteNumber());
+        addRequestValue(REQ_PARAM_BANK_NAME, paymentMethod.getBankName());        
+        addRequestValue(REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, null);
+        addRequestValue(REQ_PARAM_TERMS, paymentMethod.getTerms());
+        addRequestValue(REQ_PARAM_ACCOUNT_NUMBER_VERIFY, paymentMethod.getAccountNumberVerify());
+        addRequestValue(REQ_PARAM_BANK_ACCOUNT_TYPE, paymentMethod.getBankAccountType());        
+        addRequestValue(REQ_PARAM_ACCOUNT_HOLDER, paymentMethod.getAccountHolder());
+        addRequestValue(REQ_PARAM_BIL_ADDRESS_1, paymentMethod.getBillAddress1());
+        addRequestValue(REQ_PARAM_BIL_ADDRESS_2, paymentMethod.getBillAddress2());
+        addRequestValue(REQ_PARAM_BIL_APARTMENT, paymentMethod.getBillApt());        
+        addRequestValue(REQ_PARAM_BIL_CITY, paymentMethod.getBillCity());
+        addRequestValue(REQ_PARAM_BIL_STATE, paymentMethod.getBillState());
+        addRequestValue(REQ_PARAM_BIL_ZIPCODE, paymentMethod.getBillZipCode());        
+        addRequestValue(REQ_PARAM_PAYMENT_METHOD_TYPE, paymentMethod.getPaymentMethodType());
+        addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, "false");
+        addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_DONATION, "false");
+        addRequestValue(REQ_PARAM_BILLING_REF, paymentMethod.getBillingRef());
+
+        getWrapTarget().setActionName(ACTION_ADD_SET_PAYMENT_METHOD);
+        setMethodMode(true);
+        return new ResultBundle(executeTagLogic(), this);
+    }
+
+    public ResultBundle editPaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT },
+                new String[] { SESSION_PARAM_USER }); //gets,sets
+        addExpectedRequestValues(new String[] { REQ_PARAM_CARD_EXP_MONTH, REQ_PARAM_CARD_EXP_YEAR, REQ_PARAM_CARD_BRAND,
+        		REQ_PARAM_ACCOUNT_NUMBER, REQ_PARAM_ABA_ROUTE_NUMBER, REQ_PARAM_BANK_NAME, REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, REQ_PARAM_TERMS,
+        		REQ_PARAM_ACCOUNT_NUMBER_VERIFY,REQ_PARAM_BANK_ACCOUNT_TYPE,REQ_PARAM_ACCOUNT_HOLDER,REQ_PARAM_BIL_ADDRESS_1,
+        		REQ_PARAM_BIL_ADDRESS_2,REQ_PARAM_BIL_APARTMENT,REQ_PARAM_BIL_CITY,REQ_PARAM_BIL_STATE,REQ_PARAM_BIL_ZIPCODE, REQ_PARAM_PAYMENT_METHOD_TYPE,
+        		REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, REQ_PARAM_IS_PAYMENT_METHOD_DONATION}, new String[] {});//gets,sets
+        addRequestValue(REQ_PARAM_CARD_EXP_MONTH, paymentMethod.getCardExpMonth());
+        addRequestValue(REQ_PARAM_CARD_EXP_YEAR, paymentMethod.getCardExpYear());
+        addRequestValue(REQ_PARAM_CARD_BRAND, paymentMethod.getCardBrand());
+        addRequestValue(REQ_PARAM_ACCOUNT_NUMBER, paymentMethod.getAccountNumber());
+        addRequestValue(REQ_PARAM_ABA_ROUTE_NUMBER, paymentMethod.getAbaRouteNumber());
+        addRequestValue(REQ_PARAM_BANK_NAME, paymentMethod.getBankName());        
+        addRequestValue(REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, null);
+        addRequestValue(REQ_PARAM_TERMS, paymentMethod.getTerms());
+        addRequestValue(REQ_PARAM_ACCOUNT_NUMBER_VERIFY, paymentMethod.getAccountNumberVerify());
+        addRequestValue(REQ_PARAM_BANK_ACCOUNT_TYPE, paymentMethod.getBankAccountType());        
+        addRequestValue(REQ_PARAM_ACCOUNT_HOLDER, paymentMethod.getAccountHolder());
+        addRequestValue(REQ_PARAM_BIL_ADDRESS_1, paymentMethod.getBillAddress1());
+        addRequestValue(REQ_PARAM_BIL_ADDRESS_2, paymentMethod.getBillAddress2());
+        addRequestValue(REQ_PARAM_BIL_APARTMENT, paymentMethod.getBillApt());        
+        addRequestValue(REQ_PARAM_BIL_CITY, paymentMethod.getBillCity());
+        addRequestValue(REQ_PARAM_BIL_STATE, paymentMethod.getBillState());
+        addRequestValue(REQ_PARAM_BIL_ZIPCODE, paymentMethod.getBillZipCode());        
+        addRequestValue(REQ_PARAM_PAYMENT_METHOD_TYPE, paymentMethod.getPaymentMethodType());
+        addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, "false");
+        addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_DONATION, "false");
+        addRequestValue(REQ_PARAM_EDIT_PAYMENT_ID, paymentMethod.getPaymentMethodId());
+
+        getWrapTarget().setActionName(ACTION_EDIT_PAYMENT_METHOD);
+        setMethodMode(true);
+        return new ResultBundle(executeTagLogic(), this);
+    }
+
+    public ResultBundle deletePaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT },
+                new String[] { SESSION_PARAM_USER }); //gets,sets
+        addExpectedRequestValues(new String[] { REQ_PARAM_DELETE_PAYMENT_ID}, new String[] {});//gets,sets
+        addRequestValue(REQ_PARAM_DELETE_PAYMENT_ID, paymentMethod.getPaymentMethodId());
+        getWrapTarget().setActionName(ACTION_DELETE_PAYMENT_METHOD);
+        setMethodMode(true);
+        return new ResultBundle(executeTagLogic(), this);
+    }
+
+    
     public ResultBundle reserveDeliveryTimeslot(String deliveryTimeslotId) throws FDException {
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION }, new String[] { SESSION_PARAM_USER }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_CHEF_TABLE, REQ_PARAM_SLOT_ID }, new String[] { REQ_PARAM_SLOT_ID });//gets,sets

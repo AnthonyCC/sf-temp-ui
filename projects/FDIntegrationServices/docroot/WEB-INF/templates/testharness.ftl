@@ -156,7 +156,23 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/set/");
   	$("#payload").val('{ "paymentMethodId" : "2148933362", "billingRef" : "" }');
   	$("#result").val("");
-  } else if (loaddata == "OrderDetail") {
+  } else if (loaddata == "AddPaymentMethod") {
+  	$("#url").val("/saptest12@freshdirect.com/paymentmethod/add/");
+  	$("#payload").val('{ "cardExpMonth" : "06", "cardExpYear" : "2012", "cardBrand" : "VISA",  "accountNumber" : "4184798082857938", "abaRouteNumber" : "", "bankName" : "AMC Bank", "terms" : "", "accountNumberVerify" : "", "bankAccountType" : "", "accountHolder" : "Sairam","billAddress1" : "2100 Rachel Terrace", "billAddress2" : "", "billApt" : "14", "billCity" : "Pinebrook", "billState" : "NJ", "billZipCode" : "07058", "paymentMethodType" : "CC"}');
+  	$("#result").val("");
+  } else if (loaddata == "AddAndSetPaymentMethod") {
+  	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/addandset/");
+  	$("#payload").val('{ "billingRef": "", "cardExpMonth" : "06", "cardExpYear" : "2012", "cardBrand" : "VISA",  "accountNumber" : "4184798082857938", "abaRouteNumber" : "", "bankName" : "AMC Bank", "terms" : "", "accountNumberVerify" : "", "bankAccountType" : "", "accountHolder" : "Sairam","billAddress1" : "2100 Rachel Terrace", "billAddress2" : "", "billApt" : "14", "billCity" : "Pinebrook", "billState" : "NJ", "billZipCode" : "07058", "paymentMethodType" : "CC"}');
+  	$("#result").val("");
+  } else if (loaddata == "EditPaymentMethod") {
+  	$("#url").val("/saptest12@freshdirect.com/paymentmethod/edit/");
+  	$("#payload").val('{"paymentMethodId" : "", "cardExpMonth" : "06", "cardExpYear" : "2012", "cardBrand" : "VISA",  "accountNumber" : "4184798082857938", "abaRouteNumber" : "", "bankName" : "AMC Bank", "terms" : "", "accountNumberVerify" : "", "bankAccountType" : "", "accountHolder" : "Sairam","billAddress1" : "2100 Rachel Terrace", "billAddress2" : "", "billApt" : "14", "billCity" : "Pinebrook", "billState" : "NJ", "billZipCode" : "07058", "paymentMethodType" : "CC"}');
+  	$("#result").val("");
+  } else if (loaddata == "DeletePaymentMethod") {
+  	$("#url").val("/saptest12@freshdirect.com/paymentmethod/delete/");
+  	$("#payload").val('{ "paymentMethodId" : ""}');
+  	$("#result").val("");
+  }  else if (loaddata == "OrderDetail") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/orderdetail/");
   	$("#payload").val('');
   	$("#result").val("");
@@ -498,6 +514,9 @@ function doStuff() {
   <option value="ATPRemove">CHECKOUT - Remove all unavailable items</option>
   <option value="GetPaymentMethods">CHECKOUT - Get Payment Methods</option>
   <option value="SetPaymentMethods">CHECKOUT - Set Payment Methods</option>
+  <option value="AddAndSetPaymentMethod">CHECKOUT - Add and Set Payment Method</option>
+  <option value="EditPaymentMethod">CHECKOUT - Edit Payment Method</option>
+  <option value="DeletePaymentMethod">CHECKOUT - Delete Payment Method</option>
   <option value="OrderDetail">CHECKOUT - Order Detail</option>
   <option value="SubmitOrder">CHECKOUT - Submit Order</option>
   <option value=""> ========== SEARCH ========== </option>
@@ -546,6 +565,9 @@ function doStuff() {
   <option value="AccountDeliveryTimeslots">ACCOUNT - Get Delivery Timeslots</option>
   <option value="AccountCancelTimeslotsReservation">ACCOUNT - Cancel Timeslot Reservation</option>
   <option value="AccountReservedTimeslots">ACCOUNT - Reserve Delivery Timeslots</option>
+  <option value="AddPaymentMethod">ACCOUNT - Add Payment Method</option>
+  <option value="EditPaymentMethod">ACCOUNT - Edit Payment Method</option>
+  <option value="DeletePaymentMethod">ACCOUNT - Delete Payment Method</option>
   <option value=""> ========== MISC ========== </option>
   <option value="EmailCapture">Email Capture</option>
   <option value="ConfiguredValues">Configured Values</option>

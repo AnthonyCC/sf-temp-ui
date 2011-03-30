@@ -246,6 +246,16 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 
 	}
 
+	public void performEditPaymentMethod() throws FDResourceException {
+    	ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processEditForm(request, result, getIdentity());	            	
+        if(result.isSuccess()){
+            PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, result, getUser());
+            if(result.isSuccess()){
+            	paymentMethod.setAvsCkeckFailed(false);
+                PaymentMethodUtil.editPaymentMethod(request, result, paymentMethod);
+            }
+        }
+	}
 	public void performDeletePaymentMethod() throws FDResourceException {
 		String paymentId = request.getParameter( "deletePaymentId" );
 		if ( paymentId == null || paymentId.length() <= 0 ) {

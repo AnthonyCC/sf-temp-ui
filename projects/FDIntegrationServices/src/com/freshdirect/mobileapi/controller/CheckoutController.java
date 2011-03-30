@@ -19,6 +19,7 @@ import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressSelection;
 import com.freshdirect.mobileapi.controller.data.request.DeliverySlotReservation;
 import com.freshdirect.mobileapi.controller.data.request.Login;
+import com.freshdirect.mobileapi.controller.data.request.PaymentMethodRequest;
 import com.freshdirect.mobileapi.controller.data.request.PaymentMethodSelection;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryAddresses;
 import com.freshdirect.mobileapi.controller.data.response.OrderReceipt;
@@ -63,6 +64,14 @@ public class CheckoutController extends BaseController {
     private final static String ACTION_GET_PAYMENT_METHODS = "getpaymentmethods";
 
     private final static String ACTION_SET_PAYMENT_METHOD = "setpaymentmethod";
+    
+    private final static String ACTION_ADD_PAYMENT_METHOD = "addpaymentmethod";
+    
+    private final static String ACTION_ADD_AND_SET_PAYMENT_METHOD = "addandsetpaymentmethod";
+    
+    private final static String ACTION_EDIT_PAYMENT_METHOD = "editpaymentmethod";
+    
+    private final static String ACTION_DELETE_PAYMENT_METHOD = "deletepaymentmethod";
 
     private final static String ACTION_SUBMIT_ORDER = "submitorder";
 
@@ -114,6 +123,18 @@ public class CheckoutController extends BaseController {
             model = removeUnavailableItemsFromCart(model, user, request);
         } else if (ACTION_ALCOHOL_AGE_VERIFY.equals(action)) {
             model = verifyAlcoholAge(model, user, request);
+        }else if (ACTION_ADD_PAYMENT_METHOD.equals(action)) {
+        	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
+            model = addPaymentMethod(model, user, requestMessage, request);
+        }else if (ACTION_ADD_AND_SET_PAYMENT_METHOD.equals(action)) {
+        	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
+            model = addAndSetPaymentMethod(model, user, requestMessage, request);
+        }else if (ACTION_EDIT_PAYMENT_METHOD.equals(action)) {
+        	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
+            model = editPaymentMethod(model, user, requestMessage, request);
+        }else if (ACTION_DELETE_PAYMENT_METHOD.equals(action)) {
+        	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
+            model = deletePaymentMethod(model, user, requestMessage, request);
         }
         return model;
     }
@@ -438,6 +459,81 @@ public class CheckoutController extends BaseController {
         return model;
     }
 
+    private ModelAndView addPaymentMethod(ModelAndView model, SessionUser user, PaymentMethodRequest reqestMessage,
+            HttpServletRequest request) throws FDException, JsonException {
+        Checkout checkout = new Checkout(user);
+        ResultBundle resultBundle = checkout.addPaymentMethod(reqestMessage);
+        ActionResult result = resultBundle.getActionResult();
+
+        propogateSetSessionValues(request.getSession(), resultBundle);
+
+        Message responseMessage = null;
+        if (result.isSuccess()) {
+            responseMessage = Message.createSuccessMessage("Payment method added successfully.");
+        } else {
+            responseMessage = getErrorMessage(result, request);
+        }
+        responseMessage.addWarningMessages(result.getWarnings());
+        setResponseMessage(model, responseMessage, user);
+        return model;
+    }
+
+    private ModelAndView addAndSetPaymentMethod(ModelAndView model, SessionUser user, PaymentMethodRequest reqestMessage,
+            HttpServletRequest request) throws FDException, JsonException {
+        Checkout checkout = new Checkout(user);
+        ResultBundle resultBundle = checkout.addAndSetPaymentMethod(reqestMessage);
+        ActionResult result = resultBundle.getActionResult();
+
+        propogateSetSessionValues(request.getSession(), resultBundle);
+
+        Message responseMessage = null;
+        if (result.isSuccess()) {
+            responseMessage = Message.createSuccessMessage("Payment method added successfully.");
+        } else {
+            responseMessage = getErrorMessage(result, request);
+        }
+        responseMessage.addWarningMessages(result.getWarnings());
+        setResponseMessage(model, responseMessage, user);
+        return model;
+    }
+
+    private ModelAndView editPaymentMethod(ModelAndView model, SessionUser user, PaymentMethodRequest reqestMessage,
+            HttpServletRequest request) throws FDException, JsonException {
+        Checkout checkout = new Checkout(user);
+        ResultBundle resultBundle = checkout.editPaymentMethod(reqestMessage);
+        ActionResult result = resultBundle.getActionResult();
+
+        propogateSetSessionValues(request.getSession(), resultBundle);
+
+        Message responseMessage = null;
+        if (result.isSuccess()) {
+            responseMessage = Message.createSuccessMessage("Payment method updated successfully.");
+        } else {
+            responseMessage = getErrorMessage(result, request);
+        }
+        responseMessage.addWarningMessages(result.getWarnings());
+        setResponseMessage(model, responseMessage, user);
+        return model;
+    }
+    
+    private ModelAndView deletePaymentMethod(ModelAndView model, SessionUser user, PaymentMethodRequest reqestMessage,
+            HttpServletRequest request) throws FDException, JsonException {
+        Checkout checkout = new Checkout(user);
+        ResultBundle resultBundle = checkout.deletePaymentMethod(reqestMessage);
+        ActionResult result = resultBundle.getActionResult();
+
+        propogateSetSessionValues(request.getSession(), resultBundle);
+
+        Message responseMessage = null;
+        if (result.isSuccess()) {
+            responseMessage = Message.createSuccessMessage("Payment method deleted successfully.");
+        } else {
+            responseMessage = getErrorMessage(result, request);
+        }
+        responseMessage.addWarningMessages(result.getWarnings());
+        setResponseMessage(model, responseMessage, user);
+        return model;
+    }
     /**
      * @param model
      * @param user

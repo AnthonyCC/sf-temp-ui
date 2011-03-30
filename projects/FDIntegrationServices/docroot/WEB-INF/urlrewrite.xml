@@ -196,6 +196,26 @@
 		<to last="true">/checkout.do?action=setpaymentmethod&amp;ver=$1</to>
 	</rule>
 
+	<!-- xxxxxxxxxxxxxxxxxxx -->
+	<!-- Add/Edit/Delete Payment Method -->
+	<!-- xxxxxxxxxxxxxxxxxxx -->
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/paymentmethod/add/</from>
+		<to last="true">/checkout.do?action=addpaymentmethod&amp;ver=$1</to>
+	</rule>
+	<!-- New -->
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/checkout/paymentmethod/addandset/</from>
+		<to last="true">/checkout.do?action=addandsetpaymentmethod&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/paymentmethod/edit/</from>
+		<to last="true">/checkout.do?action=editpaymentmethod&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/paymentmethod/delete/</from>
+		<to last="true">/checkout.do?action=deletepaymentmethod&amp;ver=$1</to>
+	</rule>
 	<!-- Submit Order -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/checkout/ordersubmit/</from>

@@ -226,6 +226,10 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, action);
 				m.performAddPaymentMethod();
 
+			}else if ( "editPaymentMethod".equalsIgnoreCase( action )) {
+				PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, action);
+				m.performEditPaymentMethod();
+
 			} else if ( "setPaymentAndSubmit".equalsIgnoreCase( action ) ) {
 				if ( UserValidationUtil.validateOrderMinimum( request, result ) ) {
 					String outcome = performSetPaymentAndSubmit( request, result );

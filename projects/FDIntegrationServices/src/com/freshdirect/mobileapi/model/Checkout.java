@@ -39,6 +39,7 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
+import com.freshdirect.mobileapi.controller.data.request.PaymentMethodRequest;
 import com.freshdirect.mobileapi.controller.data.response.AtpError;
 import com.freshdirect.mobileapi.controller.data.response.Order;
 import com.freshdirect.mobileapi.controller.data.response.OrderReceipt;
@@ -94,7 +95,32 @@ public class Checkout {
         ResultBundle result = tagWrapper.setPaymentMethod(paymentMethodId, billingReference);
         return result;
     }
+    
+    public ResultBundle addPaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
+        CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
+        ResultBundle result = tagWrapper.addPaymentMethod(paymentMethod);
+        return result;
+    }
+    
+    public ResultBundle addAndSetPaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
+        CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
+        ResultBundle result = tagWrapper.addAndSetPaymentMethod(paymentMethod);
+        return result;
+    }
 
+    public ResultBundle editPaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
+        CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
+        ResultBundle result = tagWrapper.editPaymentMethod(paymentMethod);
+        return result;
+    }
+    
+    public ResultBundle deletePaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
+        CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
+        ResultBundle result = tagWrapper.deletePaymentMethod(paymentMethod);
+        return result;
+    }
+
+    
     public String getPreselectedPaymethodMethodId() {
         String preselectedPaymethodMethodId = null;
 
