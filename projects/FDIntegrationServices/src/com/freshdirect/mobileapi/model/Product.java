@@ -1602,7 +1602,7 @@ public class Product {
         ProductModel productModel = null;
         Product result = null;
 
-        productModel = ContentFactory.getInstance().getProduct(categoryId, id);
+        productModel = ContentFactory.getInstance().getProductByName(categoryId, id);
 
         if (productModel == null) {
             LOG.info("Unable to get product, trying with content node key");
@@ -1720,8 +1720,8 @@ public class Product {
      */
     public Image getKosherSymbol() throws FDResourceException {
         Image result = null;
-        String kosherType = product.getProductModel().getKosherType();
-        String kosherSymbol = product.getProductModel().getKosherSymbol();
+        String kosherType = product.getCalculator().getKosherType();
+        String kosherSymbol = product.getCalculator().getKosherSymbol();
         if ((!"".equalsIgnoreCase(kosherSymbol) && kosherSymbol != null) || (!"".equalsIgnoreCase(kosherType) && kosherType != null)) {
             result = new Image();
             result.setPath("/media/editorial/kosher/symbols/" + kosherSymbol.toLowerCase() + "_s.gif");
@@ -1731,7 +1731,7 @@ public class Product {
     }
 
     public String getKosherType() throws FDResourceException {
-        String kosherType = product.getProductModel().getKosherType();
+        String kosherType = product.getCalculator().getKosherType();
         return kosherType;
     }
 

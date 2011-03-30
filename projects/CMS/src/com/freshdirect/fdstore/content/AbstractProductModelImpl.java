@@ -310,23 +310,6 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
         return getPriceCalculator().getSizeDescription();
     }
     
-    public String getKosherSymbol() throws FDResourceException {
-        return getPriceCalculator().getKosherSymbol();
-    }
-    
-    public String getKosherType() throws FDResourceException {
-        return getPriceCalculator().getKosherType();
-    }
-
-    
-    public boolean isKosherProductionItem() throws FDResourceException {
-        return getPriceCalculator().isKosherProductionItem();
-    }
-
-    public int getKosherPriority() throws FDResourceException {
-        return getPriceCalculator().getKosherPriority();
-    }
-    
     /* end of the price calculator calls */
 
 

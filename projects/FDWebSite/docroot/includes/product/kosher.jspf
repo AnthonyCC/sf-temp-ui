@@ -1,7 +1,7 @@
-<%-- KOSHER --%>
-				<%
-				String kosherType = productNode.getKosherType();
-                String kosherSymbol = productNode.getKosherSymbol();
+<%-- KOSHER --%><%@page import="com.freshdirect.fdstore.content.PriceCalculator"%><%
+				PriceCalculator _pc = productNode.getPriceCalculator();
+				String kosherType = _pc.getKosherType();
+                String kosherSymbol = _pc.getKosherSymbol();
 				%>
 				<% if ((!"".equalsIgnoreCase(kosherSymbol) && kosherSymbol != null) || (!"".equalsIgnoreCase(kosherType) && kosherType != null)) { %>
 					<br>

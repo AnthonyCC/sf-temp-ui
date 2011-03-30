@@ -149,22 +149,6 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 		return getProduct().getSizeDescription();
 	}
 
-	public String getKosherSymbol() throws FDResourceException {
-		return getProduct().getKosherSymbol();
-	}
-
-	public String getKosherType() throws FDResourceException {
-		return getProduct().getKosherType();
-	}
-
-	public boolean isKosherProductionItem() throws FDResourceException {
-		return getProduct().isKosherProductionItem();
-	}
-
-	public int getKosherPriority() throws FDResourceException {
-		return getProduct().getKosherPriority();
-	}
-
 	public boolean hasComponentGroups() {
 		return getProduct().hasComponentGroups();
 	}

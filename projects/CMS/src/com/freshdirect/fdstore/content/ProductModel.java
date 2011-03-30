@@ -699,34 +699,6 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
         @Deprecated
 	public String getSizeDescription() throws FDResourceException;
 
-        /**
-         * use priceCalculator which can be cached for a request. 
-         * @return
-         */
-        @Deprecated
-	public String getKosherSymbol() throws FDResourceException;
-
-        /**
-         * use priceCalculator which can be cached for a request. 
-         * @return
-         */
-        @Deprecated
-	public String getKosherType() throws FDResourceException;
-
-        /**
-         * use priceCalculator which can be cached for a request. 
-         * @return
-         */
-        @Deprecated
-	public boolean isKosherProductionItem() throws FDResourceException;
-
-        /**
-         * use priceCalculator which can be cached for a request. 
-         * @return
-         */
-        @Deprecated
-	public int getKosherPriority() throws FDResourceException;
-
 	public boolean isCharacteristicsComponentsAvailable(FDConfigurableI config);
 	
 	public boolean isPreconfigured();

@@ -331,7 +331,7 @@ public class FDProductSelection implements FDProductSelectionI {
 	public boolean isKosher() {
 		try {
 			ProductModel pm = this.lookupProduct();
-			return pm == null ? false : pm.isKosherProductionItem();
+			return pm == null ? false : pm.getPriceCalculator().isKosherProductionItem();
 		} catch (FDResourceException e) {
 			throw new FDRuntimeException(e);
 		}

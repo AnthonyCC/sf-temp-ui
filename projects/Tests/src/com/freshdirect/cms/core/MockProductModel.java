@@ -483,36 +483,6 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.fdstore.content.ProductModel#getKosherPriority()
-	 */
-	@Override
-	public int getKosherPriority() throws FDResourceException {
-		return 0;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.freshdirect.fdstore.content.ProductModel#getKosherSymbol()
-	 */
-	@Override
-	public String getKosherSymbol() throws FDResourceException {
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.freshdirect.fdstore.content.ProductModel#getKosherType()
-	 */
-	@Override
-	public String getKosherType() throws FDResourceException {
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see com.freshdirect.fdstore.content.ProductModel#getLayout()
 	 */
 	@Override
@@ -1529,16 +1499,6 @@ public class MockProductModel extends MockContentNodeModel implements
 	 */
 	@Override
 	public boolean isInvisible() {
-		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.freshdirect.fdstore.content.ProductModel#isKosherProductionItem()
-	 */
-	@Override
-	public boolean isKosherProductionItem() throws FDResourceException {
 		return false;
 	}
 
