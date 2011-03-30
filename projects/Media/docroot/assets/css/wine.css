@@ -2389,7 +2389,7 @@ a .usq-rating-sm,a .usq-rating-lg,a .usq-rating-half-sm,a .usq-rating-half-lg {
 
 .a2a_kit, .a2a_kit-fd {
 	display: inline-block;
-	vertical-align: baseline;
+	vertical-align: top;
 	line-height: 20px;
 }
 
