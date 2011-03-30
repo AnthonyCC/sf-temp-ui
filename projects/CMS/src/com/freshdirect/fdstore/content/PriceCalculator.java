@@ -393,7 +393,7 @@ public class PriceCalculator {
     
     
     public ZonePriceModel getZonePriceModel() throws FDResourceException, FDSkuNotFoundException {
-        return getProduct().getPricing().getZonePrice(ctx.getZoneId());
+        return skuModel != null ? getProduct().getPricing().getZonePrice(ctx.getZoneId()) : null;
     }
     
 
