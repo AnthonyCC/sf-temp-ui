@@ -12,6 +12,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.WineFilter;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUser;
@@ -270,6 +271,12 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             LOGGER.warn("cannot set pricing context");
             WineFilter.clearAvailabilityCache(PricingContext.DEFAULT);
         }
+
+        if (user != null){
+        	user.setDeliveryTimeslotModel(new FDDeliveryTimeslotModel());
+        }else{
+        	LOGGER.warn("Cannot set FDDeliveryTimeslotModel");
+        } 
 
         // Set/clear masquerade agent for activity logging
         if (user != null) {

@@ -48,6 +48,9 @@
         <property name="loadingPriority" type="big_decimal">
             <column name="LOADING_PRIORITY" precision="22" scale="0"/>
         </property>
+        <property name="ecoFriendly" type="big_decimal">
+            <column name="ZONE_ECOFRIENDLY" precision="22" scale="0"/>
+        </property>
         <many-to-one name="defaultServiceTimeType" class="com.freshdirect.transadmin.model.DlvServiceTimeType" fetch="select" lazy="false">
             <column name="SERVICETIME_TYPE" length="8" />
         </many-to-one>

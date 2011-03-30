@@ -16,7 +16,7 @@
         <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="310">
         <TR VALIGN="TOP">
             <TD WIDTH="310" COLSPAN="2">
-            <img src="/media_stat/images/navigation/delivery_info.gif" WIDTH="92" HEIGHT="9" border="0" alt="DELIVERY INFO"><BR>
+            <img src="/media_stat/images/navigation/delivery_info.gif" WIDTH="102" HEIGHT="15" border="0" alt="DELIVERY INFO"><BR>
             <IMG src="/media_stat/images/layout/999966.gif" WIDTH="260" HEIGHT="1" BORDER="0" VSPACE="3" ><BR>
             </TD>
         </TR>
@@ -74,7 +74,7 @@
     </TD>
     <TD WIDTH="73"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="73" HEIGHT="1" BORDER="0"></TD>
     <TD WIDTH="310">
-        <img src="/media_stat/images/navigation/payment_info.gif" WIDTH="91" HEIGHT="9" border="0" alt="PAYMENT INFO"><BR>
+        <img src="/media_stat/images/navigation/payment_info.gif" WIDTH="100" HEIGHT="15" border="0" alt="PAYMENT INFO"><BR>
         <IMG src="/media_stat/images/layout/999966.gif" WIDTH="260" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
         <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="310">
         <TR VALIGN="TOP">

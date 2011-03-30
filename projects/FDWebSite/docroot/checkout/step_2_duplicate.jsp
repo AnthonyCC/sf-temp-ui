@@ -9,6 +9,7 @@
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import='java.text.DateFormat'%>
 <%@ page import='java.text.SimpleDateFormat'%>
+<%@ page import='com.freshdirect.fdstore.util.ClickToCallUtil'%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
@@ -62,24 +63,56 @@ if (sameDayPendingOrderCount == 1) {
 			<table cellpadding="1" cellspacing="0" border="0"><tr><td rowspan="2" width="32"><a href="<%=modifyLink%>"><img src="/media_stat/images/buttons/arrow_blue_left.gif" width="29" height="30" border="0" alt="MODIFY ORDER"></a></td><td class="text12" valign="bottom"><a href="<%=modifyLink%>"><img src="/media_stat/images/buttons/modify_order.gif" width="82" height="9" border="0" alt="MODIFY ORDER"></a></td></tr><tr><td valign="top">Go to Your Account</td></tr></table>
 			<br><br>
 			<b>Place this additional order</b> for the same day.<br><img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
-			<table cellpadding="1" cellspacing="0" border="0"><tr><td align="right" valign="bottom"><a href="/checkout/step_3_choose.jsp?duplicateCheck=skip"><img src="/media_stat/images/buttons/continue_checkout.gif" width="117" height="9" border="0" alt="CONTINUE CHECKOUT"></a></td><td rowspan="2" width="32" align="right"><a href="/checkout/step_3_choose.jsp?duplicateCheck=skip"><img src="/media_stat/images/buttons/checkout_arrow.gif" width="29" height="29" border="0" alt="CONTINUE CHECKOUT"></a></td></tr><tr><td align="right" valign="top">Go to Step 3: Payment Info</td></tr></table>
+			<table cellpadding="1" cellspacing="0" border="0"><tr>
+			<td align="right" valign="bottom"><a href="/checkout/step_3_choose.jsp?duplicateCheck=skip">
+			<img src="/media_stat/images/buttons/continue_checkout.gif" width="91" height="11" border="0" alt="CONTINUE CHECKOUT"></a></td>
+			<td rowspan="2" width="32" align="right"><a href="/checkout/step_3_choose.jsp?duplicateCheck=skip">
+			<img src="/media_stat/images/buttons/checkout_arrow.gif" width="26" height="26" border="0" alt="CONTINUE CHECKOUT"></a></td></tr><tr><td align="right" valign="top">Go to Step 3: Payment Info</td></tr></table>
 			</td></tr>
 		</table><br><br>
 		</td>
 	</tr>
 	<tr><td>
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br>
-		<img src="/media_stat/images/layout/ff9933.gif" width="675" height="1" border="0"><br>
+		<img src="/media_stat/images/layout/dotted_line.gif" width="675" height="1" border="0"><br>
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br>
 		<table border="0" cellspacing="0" cellpadding="0">
 		    <tr valign="top">
-			<td width="25"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc ")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="cancelX"><img src="/media_stat/images/buttons/x_green.gif" width="20" height="19" border="0" alt="CONTINUE SHOPPING"></a></td>
-			<td width="350"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc ")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="cancelText"><img src="/media_stat/images/buttons/cancel_checkout.gif" width="92" height="7" border="0" alt="CANCEL CHECKOUT"></a><br>and return to your cart.<br><img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0"></td>
+				<TD width="35">
+					<a href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>" id="previousX">
+					<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
+				</TD>
+				<TD width="350">
+					<a href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>" id="cancelText">
+					<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
+					Delivery Address<br/>
+					<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
+				</TD>
+				<TD align="right" valign="middle" WIDTH="265">
+					<a href="/checkout/step_3_choose.jsp?duplicateCheck=skip">
+					<img src="/media_stat/images/buttons/continue_checkout.gif" width="91" height="11" border="0" alt="CONTINUE CHECKOUT"></a><BR>Payment Method<BR>
+				</TD>
+				<TD width="35" align="right" VALIGN="MIDDLE">
+					<a href="/checkout/step_3_choose.jsp?duplicateCheck=skip">
+					<img src="/media_stat/images/buttons/checkout_arrow.gif" width="26" height="26" border="0" alt="CONTINUE CHECKOUT"></a>
+				</TD>
 		    </tr>
 		</table>
 	</td></tr>
-	<tr><td><br><%@ include file="/checkout/includes/i_footer_text.jspf" %></td></tr>
+	<tr><td><br>
+
+	<%@ include file="/checkout/includes/i_footer_text.jspf" %></td></tr>
 </table>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
+	<img src="/media_stat/images/layout/dotted_line.gif" width="675" height="1" border="0"><br/>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+
+<%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
+
+	<%@ include file="/includes/delivery/i_bottom_modules.jspf" %>
+	
+<%-- ~~~~~~~~~~~~~~~~~~~~~~ END BOTTOM MODEULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
+
 </fd:OrderHistoryInfo>
 </fd:FDShoppingCart>
 </tmpl:put>

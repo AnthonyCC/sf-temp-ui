@@ -38,6 +38,7 @@ if("true".equals(request.getParameter("gc"))) {
 }else if("true".equals(request.getParameter("rh"))) { //Robin Hood..
 	successRedirect = "/robin_hood/rh_submit_order.jsp";
 }
+boolean proceedThruCheckout=false;
 %>
 
 <fd:PaymentMethodController actionName='editPaymentMethod' result='result' successPage='<%=successRedirect%>'>
@@ -68,7 +69,10 @@ if("true".equals(request.getParameter("gc"))) {
 <FONT CLASS="space4pix"><BR><BR></FONT>
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675">
 	<TR VALIGN="TOP">
-	<TD WIDTH="675" ALIGN="RIGHT"><a href="<%=cancelPage%>"><img src="/media_stat/images/buttons/cancel.gif" WIDTH="54" HEIGHT="16"  HSPACE="4" VSPACE="4" alt="CANCEL" border="0"></a><input type="image" name="checkout_credit_card_edit" src="/media_stat/images/buttons/save_changes.gif" WIDTH="84" HEIGHT="16" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0"></TD>
+		<TD WIDTH="675" ALIGN="RIGHT">
+			<a href="<%=cancelPage%>"><img src="/media_stat/images/buttons/cancel.gif" WIDTH="72" HEIGHT="19"  HSPACE="19" VSPACE="4" alt="CANCEL" border="0"></a>
+			<input type="image" name="checkout_credit_card_edit" src="/media_stat/images/buttons/save_changes.gif" WIDTH="91" HEIGHT="18" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0">
+		</TD>
 </TR>
 </TABLE>
 <br>

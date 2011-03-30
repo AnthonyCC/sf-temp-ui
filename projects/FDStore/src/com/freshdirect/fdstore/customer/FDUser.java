@@ -78,7 +78,6 @@ import com.freshdirect.fdstore.promotion.SignupDiscountRule;
 import com.freshdirect.fdstore.promotion.WaiveDeliveryCharge;
 import com.freshdirect.fdstore.rules.EligibilityCalculator;
 import com.freshdirect.fdstore.rules.FDRulesContextImpl;
-import com.freshdirect.fdstore.rules.FeeCalculator;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.survey.EnumSurveyType;
 import com.freshdirect.fdstore.survey.FDSurvey;
@@ -205,6 +204,9 @@ public class FDUser extends ModelSupport implements FDUserI {
 	
 	private String masqueradeAgent;
 	
+	private FDDeliveryTimeslotModel deliveryTimeslotModel;
+	private int ctSlots;
+
 	private Date registrationDate;
 	private static final Date EPOCH = new Date(0);
 
@@ -1849,6 +1851,15 @@ public class FDUser extends ModelSupport implements FDUserI {
 		return masqueradeAgent;
 	}
 	
+	public FDDeliveryTimeslotModel getDeliveryTimeslotModel() {
+		return deliveryTimeslotModel;
+	}
+
+	public void setDeliveryTimeslotModel(
+			FDDeliveryTimeslotModel deliveryTimeslotModel) {
+		this.deliveryTimeslotModel = deliveryTimeslotModel;
+	}
+	
 	@Override
         public EnumWinePrice getPreferredWinePrice() {
 	    if (identity == null) {
@@ -1862,6 +1873,13 @@ public class FDUser extends ModelSupport implements FDUserI {
             }
             return preferredWinePrice;
         }
+
+	public int getTotalCTSlots(){
+		return ctSlots;
+	}	
+	public void setTotalCTSlots(int slots){
+		this.ctSlots = slots;
+	}
 
 	@Override
 	public String getGreeting() throws FDResourceException {
@@ -1968,6 +1986,5 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 
 }
-
 
 

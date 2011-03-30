@@ -1,0 +1,138 @@
+<%
+boolean clickToCall = false;
+if(ClickToCallUtil.evaluateClick2CallInfoDisplay(user,null)) {
+	clickToCall = true;
+}
+String ctMember = FDStoreProperties.getCustomerServiceEmail();
+if(user!=null && user.isChefsTable())ctMember = FDStoreProperties.getChefsTableEmail();
+DecimalFormat twoDForm = new DecimalFormat("#.##");
+SimpleDateFormat dateFormatter = new SimpleDateFormat("EEEE, MMM. dd");
+SimpleDateFormat MIN_HOUR_FORMATTER = new SimpleDateFormat("h:mm aa");
+String reservationDate="";
+String reservationStartTime="";
+String reservationEndTime="";
+String reservationExpDate="";
+String reservationExpTime="";
+if ( user!=null && user.getReservation()!=null ) { 
+	reservationDate = dateFormatter.format(user.getReservation().getStartTime());
+	reservationStartTime = MIN_HOUR_FORMATTER.format(user.getReservation().getStartTime());
+	reservationEndTime =  MIN_HOUR_FORMATTER.format(user.getReservation().getEndTime());
+	reservationExpDate = dateFormatter.format(user.getReservation().getExpirationDateTime());
+	reservationExpTime = MIN_HOUR_FORMATTER.format(user.getReservation().getExpirationDateTime());
+}
+boolean duplicateFaq = false;
+
+Calendar cal=Calendar.getInstance();
+cal.setTime(new Date());
+int h = cal.get(Calendar.HOUR);
+double m = cal.get(Calendar.MINUTE)/60;
+double currentHour = h+m;
+%>
+<script>
+	var maxpromodiscount = "<%= CCFormatter.formatQuantity(deliveryModel.getMaxDiscount()) %>";
+	var rsvDate = "<%= reservationDate %>";
+	var rsvSTime = "<%= reservationStartTime %>";	var rsvETime = "<%= reservationEndTime %>";
+	var rsvExpDate = "<%= reservationExpDate %>";
+	var rsvExpTime = "<%= reservationExpTime %>";
+	var DPSavings = "<%= Double.valueOf(twoDForm.format(user.getDlvPassInfo().getDPSavings()))%>";
+	var CTMember = "<%=ctMember%>";
+</script>
+<table width="695" cellpadding="0" cellpadding="0" border="0" align="center">
+	<tr valign="TOP">
+		<td width="230" rowspan="2">
+			<%if(user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName())){%>
+				
+				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/corporate_top_module.html"/>
+
+			<%}else if(user.isChefsTable() && !(user.isCorporateUser() && "CORPORATE".equals(address.getServiceType().getName()))){
+				if(deliveryModel.getPercSlotsSold() < 80 || (deliveryModel.getPercSlotsSold() == 100 && (currentHour > 21 && currentHour < 1))){
+			%>
+					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/preferredctaccess_top_module.html"/>
+				<%}else{%>
+					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/nextdayguarantee_short_topmodule.html"/>
+				<%}%>
+			<%}else if(!user.isChefsTable()&& !user.isDlvPassNone()){
+				if(user.getDlvPassInfo()!=null && user.getDlvPassInfo().getDPSavings()<10){
+			%>
+					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_usage_1.html"/>
+				<%}else{%>
+					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_usage_2.html"/>
+				<%}%>
+			<%}else if(deliveryModel.getMaxDiscount()>0 && user.isDlvPassNone() && !user.isChefsTable() 
+						&& !(user.isCorporateUser() && "CORPORATE".equals(address.getServiceType().getName()))){%>
+				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/promotion_discount.html"/>	
+			<%}else {
+				duplicateFaq = true;
+			%>
+				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/faq_top_module.html"/>
+			<%}%>
+		</td>
+		<td bgcolor="#cccccc" width="1" rowspan="4">
+			<img height="1" border="0" width="1" src="/media_stat/images/layout/dotted_line.gif"><br>
+		</td>
+		<td width="15" rowspan="2"><img height="1" border="0" width="15" src="/media_stat/images/layout/clear.gif"></td>
+		
+		<td width="230" rowspan="2">
+			<%if((deliveryModel.getMaxDiscount()>0 && !user.isDlvPassNone())||(deliveryModel.getMaxDiscount()>0 
+							&& (user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName())))){%>
+				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/promotion_discount.html"/>
+			<%}else if(user.isChefsTable()&& !user.isDlvPassNone() && user.isDlvPassActive() 
+						&& !(user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName()))){
+				if(user.getDlvPassInfo()!=null && user.getDlvPassInfo().getDPSavings()<10){
+			%>
+				
+					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_usage_1.html"/>
+				<%}else{%>
+					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_usage_2.html"/>
+				<%}%>
+			<%}else if(user.isDlvPassNone() && clickToCall){%>
+				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/click-to-call_top_module.html"/>
+			<%}else if(!user.isChefsTable()&& !user.isDlvPassNone()){%>
+				<%if(user.getReservation()!=null){%>
+					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_has_reservation.html"/>
+				<%}else{%>
+					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_no_reservation.html"/>
+				<%}%>
+			<%}else if(!duplicateFaq){%>
+				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/faq_top_module.html"/>
+			<%}%>
+		</td>
+	
+		<td bgcolor="#cccccc" width="1" rowspan="4">
+			<img height="1" border="0" width="1" src="/media_stat/images/layout/dotted_line.gif"><br>
+		</td>
+		<td width="15" rowspan="2"><img height="1" border="0" width="15" src="/media_stat/images/layout/clear.gif"></td>
+		
+		<td width="230" rowspan="2">
+			<%if(clickToCall && !user.isDlvPassNone()){%>
+				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/click-to-call_top_module.html"/>
+			<%}else if(user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName())){%>
+				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_notapplied_top_module.html"/>
+			<%}else if(user.isChefsTable() && !clickToCall && !user.isDlvPassNone()){%>
+				<%if(user.getReservation()!=null){%>
+					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_has_reservation.html"/>
+				<%}else{%>
+					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_no_reservation.html"/>
+				<%}%>
+			<%}else if(user.isChefsTable() && deliveryModel.getMaxDiscount()>0 && user.isDlvPassNone()){%>
+				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/promotion_discount.html"/>
+			<%}else if(user.isDlvPassNone()||(user.getDlvPassInfo()!=null && EnumDlvPassStatus.EXPIRED.equals(user.getDlvPassInfo().getStatus()))){
+			
+				if(user.getDlvPassInfo()!=null && (EnumDlvPassStatus.EXPIRED.equals(user.getDlvPassInfo().getStatus()) && user.getDlvPassInfo().getDaysSinceDPExpiry()>0)){
+			%>
+				
+					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_acquisition_notrial.html"/>
+				<%}else{%>
+					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_acquisition_trail.html"/>
+				<%}%>
+			<%}else{%>
+				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/faq_top_module.html"/>
+			<%}%>
+		</td>
+	</tr>
+
+</table>
+
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="693" HEIGHT="3" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>

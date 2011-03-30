@@ -29,8 +29,8 @@ if(request.getRequestURI().toLowerCase().indexOf("checkout")>-1) {
     cancelPage = successPage;
 }
 
-FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
-FDIdentity identity  = user.getIdentity();
+FDUserI yuzer = (FDUserI)session.getAttribute(SessionName.USER);
+FDIdentity identity  = yuzer.getIdentity();
 String paymentId = request.getParameter("paymentId");
 //ErpPaymentMethodI thisPaymentMethod = null;
 ErpPaymentMethodI thisPaymentMethod =null; //(ErpPaymentMethodI) recentOrder.getPaymentMethod();
@@ -90,7 +90,7 @@ if (isValidPaymentId) {
 	//
 	// If user is new (i.e., no orders placed), prepopulate billing address fields with delivery address
 	//
-	if (user.getOrderHistory().getTotalOrderCount() == 0) {
+	if (yuzer.getOrderHistory().getTotalOrderCount() == 0) {
 		try {
 			Collection dlvAddresses = FDCustomerManager.getShipToAddresses(identity);
 			if (dlvAddresses.size() > 0) {
@@ -145,7 +145,7 @@ if (isValidPaymentId) {
 
 %>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="693" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="693" HEIGHT="1" BORDER="0"><BR>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
     <%-- error system messages happen here --%>
     <fd:ErrorHandler result='<%=result%>' name='matching_addresses' id='errorMsg'>
@@ -168,12 +168,22 @@ if (isValidPaymentId) {
 <% } %>
 <%-- IF NO PAYMENT METHOD YET, FIRST TIME, DEFAULTED HERE, SHOW CHECK PROMO--%>
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="693">
-	<TR VALIGN="TOP">
-	<TD WIDTH="693"><img src="/media_stat/images/navigation/credit_card_details.gif"
-WIDTH="132" HEIGHT="9" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<FONT CLASS="text12">* Required information</FONT><BR>
-<IMG src="/media_stat/images/layout/999966.gif" WIDTH="693" HEIGHT="1" BORDER="0" VSPACE="3"><BR></TD>
-</TR></TABLE>
-<br>
+	<TR VALIGN="bottom">
+		<TD WIDTH="<%=proceedThruCheckout?"693":"493" %>">
+			<img src="/media_stat/images/navigation/credit_card_details.gif" WIDTH="152" HEIGHT="15" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;
+			<FONT CLASS="text12">* Required information</FONT>
+		</TD>
+		<%if (!proceedThruCheckout) { %>
+		<TD WIDTH="200" ALIGN="RIGHT">
+			<a href="<%=cancelPage%>">
+			<image src="/media_stat/images/buttons/cancel.gif" WIDTH="72" HEIGHT="19"  HSPACE="4" VSPACE="4" alt="CANCEL" border="0"></a>
+			<input type="image" name="checkout_credit_card_edit" src="/media_stat/images/buttons/save_changes.gif" WIDTH="91" HEIGHT="18" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0">
+		</TD>
+		<%}%>
+	</TR>
+
+</TABLE>
+<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="693" HEIGHT="1" BORDER="0" VSPACE="3"><BR><BR>
 
 <TABLE BORDER="0" CELLSPACING="1" CELLPADDING="0" WIDTH="675">
 <TR VALIGN="MIDDLE">
@@ -253,10 +263,10 @@ WIDTH="132" HEIGHT="9" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<F
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="693">
 <TR VALIGN="TOP">
 	<TD WIDTH="693">
-		<img src="/media_stat/images/navigation/billing_address_for_card.gif" WIDTH="206" HEIGHT="9" border="0" alt="BILLING ADDRESS">&nbsp;&nbsp;&nbsp;<FONT CLASS="text12">* Required information</FONT><BR>
-		<IMG src="/media_stat/images/layout/999966.gif" WIDTH="693" HEIGHT="1" BORDER="0" vspace="3"><BR>
+		<img src="/media_stat/images/navigation/billing_address_for_card.gif" WIDTH="229" HEIGHT="15" border="0" alt="BILLING ADDRESS">&nbsp;&nbsp;&nbsp;<FONT CLASS="text12">* Required information</FONT><BR>
+		<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="693" HEIGHT="1" BORDER="0" vspace="3"><BR>
 <%
-		if (user.isEligibleForSignupPromotion()) {
+		if (yuzer.isEligibleForSignupPromotion()) {
 			%><img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br><b>NOTE</b>: <font class="text11orbold">On your first home delivery order, to receive the free food promotion, your billing and delivery address must match.</font><% } else { %><font class="text12">Please enter billing address as it appears on your credit card statement.</font><%
 		}
 %>
@@ -272,7 +282,7 @@ WIDTH="132" HEIGHT="9" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<F
 	<TR VALIGN="MIDDLE">
 	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*Street Address&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>"></span></fd:ErrorHandler></TD>
 		<TD WIDTH="565"><input type="text" maxlength="50" SIZE="21" class="text11" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>" required="true" value = "<%=ccAddress1%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-		&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><% if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){ %>Floor/Suite #<% }else{ %>Apt. #<% } %>&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>"></span></fd:ErrorHandler><input type="text" maxlength="10" size="4" class="text11" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>" value ="<%=ccApartment%>">
+		&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><% if(EnumServiceType.CORPORATE.equals(yuzer.getSelectedServiceType())){ %>Floor/Suite #<% }else{ %>Apt. #<% } %>&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>"></span></fd:ErrorHandler><input type="text" maxlength="10" size="4" class="text11" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>" value ="<%=ccApartment%>">
 		</TD>
 	</TR>
 	<TR VALIGN="MIDDLE">

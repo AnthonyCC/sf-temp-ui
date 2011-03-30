@@ -17,7 +17,6 @@ import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
-import com.freshdirect.fdstore.FDTimeslotList;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
@@ -29,6 +28,7 @@ import com.freshdirect.fdstore.customer.FDPromotionEligibility;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.QuickCart;
 import com.freshdirect.fdstore.promotion.PromotionI;
+import com.freshdirect.fdstore.util.FDTimeslotUtil;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResult;
@@ -336,7 +336,7 @@ public class SessionUser {
      * @return
      * @throws FDResourceException
      */
-    public void setReservationAndPreselectedTimeslotIds(List<FDTimeslotList> timeslotLists,
+    public void setReservationAndPreselectedTimeslotIds(List<FDTimeslotUtil> timeslotLists,
             TimeSlotCalculationResult timeSlotCalculationResult, ErpAddressModel address) throws FDResourceException {
         FDReservation reservation = getReservation();
 
@@ -367,7 +367,7 @@ public class SessionUser {
                     cal.add(Calendar.DATE, 1);
                     index++;
                 }
-                OUTTER: for (FDTimeslotList timeslots : timeslotLists) {
+                OUTTER: for (FDTimeslotUtil timeslots : timeslotLists) {
                     for (Iterator i = timeslots.getDays().iterator(); i.hasNext();) {
                         Date day = (Date) i.next();
                         for (Iterator j = timeslots.getTimeslotsForDate(day).iterator(); j.hasNext();) {

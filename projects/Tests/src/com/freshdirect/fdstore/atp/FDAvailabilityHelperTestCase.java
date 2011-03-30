@@ -68,7 +68,7 @@ public class FDAvailabilityHelperTestCase extends TestCase {
 			"Friday",
 			Calendar.FRIDAY,
 			new TimeOfDay("00:00 AM"),
-			new TimeOfDay("11:59 PM")));
+			new TimeOfDay("11:59 PM"),""));
 		res.add(new RecurringRestriction("343345231",
 			EnumDlvRestrictionCriterion.DELIVERY,
 			EnumDlvRestrictionReason.KOSHER,
@@ -76,7 +76,7 @@ public class FDAvailabilityHelperTestCase extends TestCase {
 			"Saturday",
 			Calendar.SATURDAY,
 			new TimeOfDay("00:00 AM"),
-			new TimeOfDay("11:59 PM")));
+			new TimeOfDay("11:59 PM"),""));
 
 		DlvRestrictionsList restrictionList = new DlvRestrictionsList(res);
 

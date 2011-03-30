@@ -19,6 +19,14 @@ public class DeliverySlot extends BaseModel implements IDeliverySlot  {
 	
 	private String referenceId;
 	
+	private int ecoFriendly;
+	
+	public int getEcoFriendly() {
+		return ecoFriendly;
+	}
+	public void setEcoFriendly(int ecoFriendly) {
+		this.ecoFriendly = ecoFriendly;
+	}
 	public String getReferenceId() {
 		return referenceId;
 	}

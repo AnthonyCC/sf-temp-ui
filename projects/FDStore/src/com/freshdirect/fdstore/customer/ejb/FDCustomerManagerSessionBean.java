@@ -439,12 +439,15 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return dlvPassInfo;
 	}
 
 	private FDUserDlvPassInfo getDlvPassInfo(FDIdentity identity)
-			throws CreateException, RemoteException, FDResourceException {
+			throws CreateException, RemoteException, FDResourceException, SQLException {
 		FDUserDlvPassInfo dlvPassInfo;
 		if (identity != null) {
 			String customerPk = identity.getErpCustomerPK();
@@ -598,6 +601,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				autoRenewDPType = (DeliveryPassType) statusMap
 						.get(DlvPassConstants.AUTORENEW_DP_TYPE);
 			}
+				
 			dlvPassInfo = new FDUserDlvPassInfo(dlvPassStatus, type,
 					expDate, originalOrderId, remDlvs, usedDlvs,
 					usablePassCount, isFreeTrialRestricted,
@@ -615,11 +619,30 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 						customerPk, model.getId()));
 			}
 
+			double savings = 0.0;
+			String result="";
+			// Get the Active delivery Pass for this account.
+			DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
+			List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(customerPk,EnumDlvPassStatus.ACTIVE);
+			if (dlvPasses == null
+					|| (dlvPasses != null && dlvPasses.size() == 0)) {
+				dlvPassInfo.setDPSavings(0.0);
+		} else {
+				// Get the Active delivery pass from the list.
+				DeliveryPassModel dlvPass = dlvPasses.get(0);	
+				Connection conn = null;
+				conn = getConnection();
+				result = FDCustomerOrderInfoDAO.getActiveDeliveryPassSavings(conn, customerPk, dlvPass.getPK().getId());
+				close(conn);
+				savings = Double.parseDouble(result);
+				dlvPassInfo.setDPSavings(savings);
+			}
 		} else {
 			// Identity will be null when he/she is a anonymous user. Create
 			// a default info object.
 			dlvPassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE,
 					null, null, null, 0, 0, 0, false, 0, null, 0);
+			dlvPassInfo.setDPSavings(0.0);
 		}
 		return dlvPassInfo;
 	}
@@ -6005,7 +6028,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			DeliveryPassException, 
 			ErpAddressVerificationException,
 			InvalidCardException,
-			FDPaymentInadequateException {
+			FDPaymentInadequateException, SQLException {
 			try {
 				EnumDlvPassStatus status = getDlvPassInfo(identity).getStatus();
 				FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomerFromErpId(identity.getErpCustomerPK());

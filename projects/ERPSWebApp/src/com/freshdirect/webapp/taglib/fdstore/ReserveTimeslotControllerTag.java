@@ -122,7 +122,7 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 
 	private void validate(ActionResult actionResult) {
 		if ("".equals(timeslotId)) {
-			actionResult.addError(true, "deliveryTime", "Please select a delivery time.");
+			actionResult.addError(true, "deliveryTime", "You must select a timeslot to reserve. Please select one from below or contact us for help.");
 		}
 
 		if (rsvType == null) {

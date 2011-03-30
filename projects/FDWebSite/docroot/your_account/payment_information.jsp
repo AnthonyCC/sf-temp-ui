@@ -97,7 +97,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 <table width="675" border="0" cellspacing="0" cellpadding="2">
 <tr valign="top">
     <td><img src="/media_stat/images/navigation/credit_card_details.gif"
-WIDTH="132" HEIGHT="9" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<BR>
+WIDTH="152" HEIGHT="15" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<BR>
     <IMG src="/media_stat/images/layout/999966.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
     </td>
 </tr>

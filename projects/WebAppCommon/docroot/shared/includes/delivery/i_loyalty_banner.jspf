@@ -3,80 +3,57 @@
 <%@ page import='com.freshdirect.fdstore.util.ClickToCallUtil'%>
 <%@ page import='java.util.Calendar'%>
 
-
 <%
-	
 if (user.isChefsTable() && zoneCtActive ) { 
 	%>
-	<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
+
 		<table cellspacing="0" cellpadding="0" border="0" width="695">
-		<tr>
-			<td colspan="3" align="center"><br />
+		
 			<%
-			boolean chefsTable = timeslot_page_type == TimeslotLogic.PAGE_CHEFSTABLE;
-			if (!chefsTable) { 
+			
+			if (!user.isChefsTable()) { 
 				String loyaltyAddressId = request.getParameter("addressId");
-				if (loyaltyAddressId == null && rsv != null) loyaltyAddressId = rsv.getAddressId();
+				if (loyaltyAddressId == null && deliveryModel.getRsv() != null) loyaltyAddressId = deliveryModel.getRsv().getAddressId();
 				if (loyaltyAddressId == null) loyaltyAddressId = address.getPK().getId();
 	    		%>
-				<a href="?chefstable=true&addressId=<%= loyaltyAddressId %>"><img
-				src="/media_stat/images/template/checkout/loy_hdr_wevemademore.gif"
+		<tr>
+			<td colspan="3" align="center"><br />
+				<a href="?chefstable=true&addressId=<%= loyaltyAddressId %>">
+					<img src="/media_stat/images/template/checkout/loy_hdr_wevemademore.gif"
 				width="608" height="19" border="0"
 				alt="We've made more delivery slots available to our best customers."></a>
-				<%	
-			} else {
-				%> <!-- <img
-				src="/media_stat/images/template/checkout/loy_hdr_preferredaccess.gif"
-				border="0" alt="Preferred access to our best delivery times."> -->
-				<%
-			}
-	    %>
 			</td>
 		</tr>
+		<%}%>
+			
 		<tr>
 			<td colspan="3" align="center">
-			<%
-	    	if (!chefsTable ) {
-	    		%> If the time you're looking for is full, click the button below
+				<%if (!user.isChefsTable() ) {%> 
+					If the time you're looking for is full, click the button below
 					for Chef's Table preferred access.
-				<%	
-	    	} else {
-            
-            
+				<%} else {
 	       if(ClickToCallUtil.evaluateClick2CallInfoDisplay(user,address))
 			{
-	    	  // if(!ClickToCallUtil.isNextDayTimeSlotsCheckRequired() ||( ClickToCallUtil.isNextDayTimeSlotsCheckRequired() && isNextDayTimeSlotNotAvailable0))
-	   		//{
 			%>
-			<div id="loyalty1" style="display:none;" >	<fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_pre_click2call.html" /></div>
-			<div id="loyalty2" style="display:none;" ><fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_post.html" /></div>            
-			<%        
-	   		//}
-			}else
-			{
-
-			%>
-				<div id="loyalty2" style="display:none;" ><fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_post.html" /></div>                        
-			<%                            
-			}   
-			}
-		   %>			
+					<div id="loyalty1" style="display:none;" >
+						<fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_pre_click2call.html" /></div>
+					<div id="loyalty2" style="display:none;" >
+						<fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_post.html" /></div>
+				<%}else{%>
+					<div id="loyalty2" style="display:none;" >
+						<fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_post.html" /></div>                        
+				<%}}%>
 			</td>
 		</tr>
 	</table>
 
-<%
-} else {
+<%} else {
 	if(!user.isChefsTable() && ClickToCallUtil.evaluateClick2CallInfoDisplay(user,address))
 	{
-	
-	//	if(!ClickToCallUtil.isNextDayTimeSlotsCheckRequired() ||( ClickToCallUtil.isNextDayTimeSlotsCheckRequired() && isNextDayTimeSlotNotAvailable0))
-	//	{
 	%>
-		<div id="loyalty3" style="display:none;" ><fd:IncludeMedia name="/media/editorial/site_pages/click_to_call/timeslot_note_click2call.html" /></div>            
-	<%        
-		//}
-	}
-}
-%>
+		<div id="loyalty3" style="display:none;" >
+			<fd:IncludeMedia name="/media/editorial/site_pages/click_to_call/timeslot_note_click2call.html" />
+		</div>
+	<%}
+}%>
 

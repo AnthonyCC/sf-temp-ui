@@ -100,8 +100,12 @@ public class DateUtil {
 		cal.add(Calendar.DATE, 1);
 		return cal.getTime();
 	}
+	public static Date getCurrentTime() {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());		
+		return cal.getTime();
+	}
 	
-
 	public static boolean isSameDay(Date d1, Date d2) {
 		return isSameDay(toCalendar(d1), toCalendar(d2));
 	}

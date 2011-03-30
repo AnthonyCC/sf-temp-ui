@@ -1514,6 +1514,7 @@
 			<pathelement location="${work.dir}/FDStoreEJB-WL.jar"/>
 			<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
 			<pathelement location="${work.dir}/CMS.jar"/>
+			<pathelement location="${work.dir}/RoutingServices.jar"/>
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
 			<pathelement location="${work.dir}/DataLoaderEJB-WL.jar"/>
             <pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>

@@ -86,6 +86,7 @@
                               <ec:column alias="stemfrom" property="stemToTime" title="Avg To Stem Time(Mins)"/>
 							  <ec:column alias="stemto" property="stemFromTime" title="Avg From Stem Time(Mins)"/>							  
 							  <ec:column alias="loadingPriority" property="loadingPriority" title="Loading Priority"/>
+							  <ec:column property="ecoFriendly" title="Eco Friendly Radius"/>
 							</ec:row>
 						  </ec:table>
 		<% }else{ %>
@@ -109,6 +110,7 @@
 							  <ec:column alias="stemfrom" property="stemToTime" title="Avg To Stem Time(Mins)"/>
 							  <ec:column alias="stemto" property="stemFromTime" title="Avg From Stem Time(Mins)"/>							  
 							  <ec:column alias="loadingPriority" property="loadingPriority" title="Loading Priority"/>
+							  <ec:column property="ecoFriendly" title="Eco Friendly Radius"/>
 							</ec:row>
 						  </ec:table>
 		<% } %>

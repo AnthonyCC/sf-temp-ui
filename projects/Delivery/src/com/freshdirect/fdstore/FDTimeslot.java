@@ -6,8 +6,10 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.delivery.EnumDayShift;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -15,7 +17,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * @author $Author:Kashif Nadeem$
  */
 
-public class FDTimeslot implements Serializable {
+public class FDTimeslot implements Serializable, Comparable {
 
 	private static final long	serialVersionUID	= 4180048326412481300L;
 
@@ -23,6 +25,9 @@ public class FDTimeslot implements Serializable {
 	private final static Logger LOGGER = LoggerFactory.getInstance( FDTimeslot.class );
 	
 	private final DlvTimeslotModel dlvTimeslot;
+	private boolean isAlcoholRestricted;
+	private boolean normalAvailCapacity;
+	private boolean availCTCapacity;
 
 	/** Creates new FDTimeslot */
 	public FDTimeslot(DlvTimeslotModel dlvTimeslot) {
@@ -37,12 +42,24 @@ public class FDTimeslot implements Serializable {
 		return dlvTimeslot.getStartTimeAsDate();
 	}
 
+	public Date getBegTime() {
+		return dlvTimeslot.getStartTime().getNormalDate();
+	}
+
 	public Date getEndDateTime() {
 		return dlvTimeslot.getEndTimeAsDate();
 	}
 
+	public Date getEndTime() {
+		return dlvTimeslot.getEndTime().getNormalDate();
+	}
+
 	public Date getCutoffDateTime() {
 		return dlvTimeslot.getCutoffTimeAsDate();
+	}
+
+	public Date getCutoffNormalDateTime() {
+		return dlvTimeslot.getCutoffTimeAsNormalDate();
 	}
 
 	public String getZoneId() {
@@ -97,10 +114,11 @@ public class FDTimeslot implements Serializable {
 					&& endCal.get(Calendar.HOUR_OF_DAY) > DateUtil.MORNING_END));
 
 		formatCal(startCal, false, sb);
-
+		if(forceAmPm)
 		sb.append(" - ");
-
-		formatCal(endCal, showMarker, sb);
+		else
+			sb.append("-");
+		formatCal(endCal, true, sb);
 
 		return sb.toString();
 	}
@@ -110,11 +128,11 @@ public class FDTimeslot implements Serializable {
 		int minute = cal.get(Calendar.MINUTE);
 		int marker = cal.get(Calendar.AM_PM);
 
-		if (hour == 0) {
+		/*if (hour == 0) {
 			sb.append("midnight");
 		} else if (hour == 12) {
-			sb.append("noon");
-		} else if (hour > 12) {
+			sb.append("noon");*/
+		if (hour > 12) {
 			sb.append(hour - 12);
 		} else {
 			sb.append(hour);
@@ -123,8 +141,7 @@ public class FDTimeslot implements Serializable {
 		if (minute != 0) {
 			sb.append(":").append(minute);
 		}
-
-		if (showAmPm && hour != 12 && hour != 0) {
+		if (showAmPm) {
 			if (marker == Calendar.AM) {
 				sb.append("am");
 			} else {
@@ -145,9 +162,57 @@ public class FDTimeslot implements Serializable {
 		return dlvTimeslot.getSteeringDiscount();
 	}
 
+	public boolean isAlcoholRestricted() {
+		return isAlcoholRestricted;
+	}
 	
+	public void setAlcoholRestricted(boolean isAlcoholRestricted) {
+		this.isAlcoholRestricted = isAlcoholRestricted;
+	}
+	
+	public boolean hasNormalAvailCapacity() {
+		return normalAvailCapacity;
+	}
+
+	public void setNormalAvailCapacity(boolean normalAvailCapacity) {
+		this.normalAvailCapacity = normalAvailCapacity;
+	}
+
+	public boolean hasAvailCTCapacity() {
+		return availCTCapacity;
+	}
+
+	public void setAvailCTCapacity(boolean availCTCapacity) {
+		this.availCTCapacity = availCTCapacity;
+	}
+	
+	/* Eco Friendly timeslot*/
+	public boolean isEcoFriendly() {
+		return dlvTimeslot.isEcoFriendly();
+	}
+	
+	/* is_Depot timeslot*/
+	public boolean isDepot() {
+		return dlvTimeslot.isDepot();
+	}
+	
+	public String getTimeslotShift() {
+		Calendar startTimeCal = DateUtil.toCalendar(this.getBegDateTime());
+		int startHour = startTimeCal.get(Calendar.HOUR_OF_DAY);
+		if(startHour > 12)
+			return EnumDayShift.DAY_SHIFT_PM.getName();
+		else
+			return EnumDayShift.DAY_SHIFT_AM.getName();		
+	}
+
 	public String toString() {
 		return dlvTimeslot.toString();
+	}
+	
+	@Override
+	public int compareTo(Object o) {
+		FDTimeslot t1 =(FDTimeslot)o;
+		return this.getBegTime().compareTo(t1.getBegTime());
 	}
 	
 	public static String getDisplayString(boolean forceAmPm, Date startTime, Date endTime) {

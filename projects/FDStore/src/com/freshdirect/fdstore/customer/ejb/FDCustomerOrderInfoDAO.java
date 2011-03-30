@@ -323,4 +323,25 @@ class FDCustomerOrderInfoDAO {
 		}
 		return lst;
 	}
+	
+	private static final String DELIVERY_PASS_SAVINGS =
+		"select (sum(CL.AMOUNT+CL.AMOUNT*tax_rate)-(select amount from cust.delivery_pass dp where dp.id= ?)) as SAVINGS from CUST.CHARGELINE CL, cust.salesaction sa, cust.sale s"
+		+" where cl.type='DLV' and CL.SALESACTION_ID=sa.id and s.DLV_PASS_ID= ? and s.status<>'CAN' and s.id=sa.sale_id and sa.ACTION_TYPE in ('CRO','MOD') and"
+		+" s.CROMOD_DATE=sa.action_date and s.customer_id =? group by s.CUSTOMER_ID";
+		
+	public static String getActiveDeliveryPassSavings(Connection conn, String customerPK,String dpNumber) throws SQLException {
+		String savings="0";
+		PreparedStatement ps = conn.prepareStatement(DELIVERY_PASS_SAVINGS);
+		ps.setString(1, dpNumber);
+		ps.setString(2, dpNumber);
+		ps.setString(3, customerPK);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			savings = rs.getString("SAVINGS");
+		}
+		rs.close();
+		ps.close();
+
+		return savings;
+	}
 }

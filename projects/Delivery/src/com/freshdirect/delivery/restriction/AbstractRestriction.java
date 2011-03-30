@@ -8,13 +8,14 @@ abstract class AbstractRestriction extends ModelSupport implements RestrictionI 
 	private final EnumDlvRestrictionReason reason;
 	private final String name;
 	private final String message;
+	private final String path;	
 
 	protected AbstractRestriction(
 		String id,	
 		EnumDlvRestrictionCriterion criterion,
 		EnumDlvRestrictionReason reason,
 		String name,
-		String message) {
+		String message,String path) {
 		if(id!=null && id.trim().length()>0){
 		    this.setId(id);
 		}
@@ -22,6 +23,7 @@ abstract class AbstractRestriction extends ModelSupport implements RestrictionI 
 		this.reason = reason;
 		this.name = name;
 		this.message = message;
+		this.path= path;
 	}
 
 	public String getName() {
@@ -32,6 +34,10 @@ abstract class AbstractRestriction extends ModelSupport implements RestrictionI 
 		return this.message;
 	}
 
+	public String getPath() {
+		return path;
+	}
+	
 	public EnumDlvRestrictionCriterion getCriterion() {
 		return criterion;
 	}

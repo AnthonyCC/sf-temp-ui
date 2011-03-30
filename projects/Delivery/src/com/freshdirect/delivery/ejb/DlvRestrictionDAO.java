@@ -33,7 +33,7 @@ public class DlvRestrictionDAO {
 	private static Category LOGGER = LoggerFactory.getInstance(DlvRestrictionDAO.class);
 	
 	private static String DELIVERY_RESTRICTIONS_RETURN = 
-		"select ID,TYPE,NAME,DAY_OF_WEEK,START_TIME,END_TIME,REASON,MESSAGE,CRITERION FROM dlv.restricted_days where id=?";
+		"select ID,TYPE,NAME,DAY_OF_WEEK,START_TIME,END_TIME,REASON,MESSAGE,CRITERION,MEDIA_PATH FROM dlv.restricted_days where id=?";
 	
 	public static RestrictionI getDlvRestriction(Connection conn, String restrictionId) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(DELIVERY_RESTRICTIONS_RETURN);									
@@ -45,6 +45,7 @@ public class DlvRestrictionDAO {
 			String id = rs.getString("ID");
 			String name = rs.getString("NAME");
 			String msg = rs.getString("MESSAGE");
+			String path = rs.getString("MEDIA_PATH");
 			EnumDlvRestrictionCriterion criterion = EnumDlvRestrictionCriterion.getEnum(rs.getString("CRITERION"));
 			if (criterion == null) {
 				// skip unknown criteria
@@ -73,9 +74,9 @@ public class DlvRestrictionDAO {
 
 				// FIXME one-time reverse restrictions should have a different EnumDlvRestrictionType 
 				if (reason.isSpecialHoliday()) {
-					restriction=new OneTimeReverseRestriction(id,criterion, reason, name, msg, startDate, endDate);
+					restriction=new OneTimeReverseRestriction(id,criterion, reason, name, msg, startDate, endDate,path);
 				} else {
-					restriction=new OneTimeRestriction(id,criterion, reason, name, msg, startDate, endDate);
+					restriction=new OneTimeRestriction(id,criterion, reason, name, msg, startDate, endDate,path);
 				}
 
 			} else if (EnumDlvRestrictionType.RECURRING_RESTRICTION.equals(type)) {
@@ -86,7 +87,7 @@ public class DlvRestrictionDAO {
 				if (JUST_BEFORE_MIDNIGHT.equals(endTime)) {
 					endTime = TimeOfDay.NEXT_MIDNIGHT;
 				}
-				restriction=new RecurringRestriction(id,criterion, reason, name, msg, dayOfWeek, startTime, endTime);
+				restriction=new RecurringRestriction(id,criterion, reason, name, msg, dayOfWeek, startTime, endTime,path);
 
 			} else {
 				// ignore	
@@ -118,6 +119,7 @@ public class DlvRestrictionDAO {
 			String id = rs.getString("ID");
 			String name = rs.getString("NAME");
 			String msg = rs.getString("MESSAGE");
+			String path = rs.getString("MEDIA_PATH");
 			EnumDlvRestrictionCriterion criterion = EnumDlvRestrictionCriterion.getEnum(rs.getString("CRITERION"));
 			if (criterion == null) {
 				// skip unknown criteria
@@ -146,9 +148,9 @@ public class DlvRestrictionDAO {
 
 				// FIXME one-time reverse restrictions should have a different EnumDlvRestrictionType 
 				if (reason.isSpecialHoliday()) {
-					restriction=new OneTimeReverseRestriction(id,criterion, reason, name, msg, startDate, endDate);
+					restriction=new OneTimeReverseRestriction(id,criterion, reason, name, msg, startDate, endDate, path);
 				} else {
-					restriction=new OneTimeRestriction(id,criterion, reason, name, msg, startDate, endDate);
+					restriction=new OneTimeRestriction(id,criterion, reason, name, msg, startDate, endDate, path);
 				}
 
 			} else if (EnumDlvRestrictionType.RECURRING_RESTRICTION.equals(type)) {
@@ -159,7 +161,7 @@ public class DlvRestrictionDAO {
 				if (JUST_BEFORE_MIDNIGHT.equals(endTime)) {
 					endTime = TimeOfDay.NEXT_MIDNIGHT;
 				}
-				restriction=new RecurringRestriction(id,criterion, reason, name, msg, dayOfWeek, startTime, endTime);
+				restriction=new RecurringRestriction(id,criterion, reason, name, msg, dayOfWeek, startTime, endTime, path);
 
 			} else {
 				// ignore	
@@ -226,7 +228,7 @@ public class DlvRestrictionDAO {
 	private final static String DEFAULT_RECURRING_DATE = "01/01/2004 ";
 	private static final SimpleDateFormat format=new SimpleDateFormat("MM/dd/yyyy hh:mm a");
 	
-	private static final String DELIVERY_RESTRICTIONS_UPDATE="update dlv.restricted_days set type=?, NAME= ?, REASON=?, MESSAGE=?, CRITERION=?, DAY_OF_WEEK=? , START_TIME=?, END_TIME=? where ID=?";
+	private static final String DELIVERY_RESTRICTIONS_UPDATE="update dlv.restricted_days set type=?, NAME= ?, REASON=?, MESSAGE=?, MEDIA_PATH=?, CRITERION=?, DAY_OF_WEEK=? , START_TIME=?, END_TIME=? where ID=?";
 	
 	public static void updateDeliveryRestriction(Connection conn, RestrictionI restriction) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(DELIVERY_RESTRICTIONS_UPDATE);
@@ -235,21 +237,22 @@ public class DlvRestrictionDAO {
 		ps.setString(2, restriction.getName());		
 		ps.setString(3, restriction.getReason().getName());
 		ps.setString(4, restriction.getMessage());
-		ps.setString(5, restriction.getCriterion().getName());
+		ps.setString(5, restriction.getPath());
+		ps.setString(6, restriction.getCriterion().getName());
 		if(restriction instanceof OneTimeReverseRestriction){
 			OneTimeReverseRestriction otrRestriction=(OneTimeReverseRestriction)restriction;
-			ps.setNull(6,Types.INTEGER);
-			ps.setDate(7,new java.sql.Date(otrRestriction.getDateRange().getStartDate().getTime()));			
-			ps.setTimestamp(8,new Timestamp(otrRestriction.getDateRange().getEndDate().getTime()));
+			ps.setNull(7,Types.INTEGER);
+			ps.setDate(8,new java.sql.Date(otrRestriction.getDateRange().getStartDate().getTime()));			
+			ps.setTimestamp(9,new Timestamp(otrRestriction.getDateRange().getEndDate().getTime()));
 		}else if(restriction instanceof OneTimeRestriction){
 			OneTimeRestriction otRestriction=(OneTimeRestriction)restriction;
-			ps.setNull(6,Types.INTEGER);
-			ps.setDate(7,new java.sql.Date(otRestriction.getDateRange().getStartDate().getTime()));
+			ps.setNull(7,Types.INTEGER);
+			ps.setDate(8,new java.sql.Date(otRestriction.getDateRange().getStartDate().getTime()));
 			LOGGER.debug("otRestriction.getDateRange().getEndDate() :"+otRestriction.getDateRange().getEndDate());
-			ps.setTimestamp(8,new Timestamp(otRestriction.getDateRange().getEndDate().getTime()));
+			ps.setTimestamp(9,new Timestamp(otRestriction.getDateRange().getEndDate().getTime()));
 		}else if(restriction instanceof RecurringRestriction){
 			RecurringRestriction rRestriction=(RecurringRestriction)restriction;
-			ps.setInt(6,rRestriction.getDayOfWeek());			
+			ps.setInt(7,rRestriction.getDayOfWeek());			
 			Date newStartDate=null;
 			Date newEndDate=null;
 			try {
@@ -259,10 +262,10 @@ public class DlvRestrictionDAO {
 				// TODO Auto-generated catch block
 				LOGGER.warn(e);				
 			}			
-			ps.setTimestamp(7,new Timestamp(newStartDate.getTime()));
-			ps.setTimestamp(8,new Timestamp(newEndDate.getTime()));			
+			ps.setTimestamp(8,new Timestamp(newStartDate.getTime()));
+			ps.setTimestamp(9,new Timestamp(newEndDate.getTime()));			
 		}
-		ps.setString(9, restriction.getId());		
+		ps.setString(10, restriction.getId());		
 		int rowCount= ps.executeUpdate();
 		if(rowCount==0){
 			throw new SQLException("restriction data could not be updated"+restriction);
@@ -352,8 +355,8 @@ public class DlvRestrictionDAO {
 		ps.close();				
 	}
 	
-	private static final String DELIVERY_RESTRICTION_INSERT="insert into dlv.restricted_days(ID,TYPE,NAME,REASON,MESSAGE,CRITERION,DAY_OF_WEEK,START_TIME,END_TIME)"+ 
-                                                            "values(?,?,?,?,?,?,?,?,?)";
+	private static final String DELIVERY_RESTRICTION_INSERT="insert into dlv.restricted_days(ID,TYPE,NAME,REASON,MESSAGE,CRITERION,DAY_OF_WEEK,START_TIME,END_TIME.MEDIA_PATH)"+ 
+                                                            "values(?,?,?,?,?,?,?,?,?,?)";
 	
 	public static void insertDeliveryRestriction(Connection conn, RestrictionI restriction) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(DELIVERY_RESTRICTION_INSERT);
@@ -380,6 +383,7 @@ public class DlvRestrictionDAO {
 			ps.setDate(8,new java.sql.Date(rRestriction.getTimeRange().getStartTime().getNormalDate().getTime()));
 			ps.setTimestamp(9,new Timestamp(rRestriction.getTimeRange().getEndTime().getNormalDate().getTime()));			
 		}
+		ps.setString(10, restriction.getPath());
 		//ps.setString(9, restriction.getId());		
 		int rowCount= ps.executeUpdate();
 		if(rowCount==0){

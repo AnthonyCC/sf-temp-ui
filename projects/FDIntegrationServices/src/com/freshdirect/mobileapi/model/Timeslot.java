@@ -149,4 +149,13 @@ public class Timeslot {
 		return slot.getSteeringDiscount();
 	}
 
+	/* Eco Friendly timeslot*/
+	public boolean isEcoFriendly() {
+		return slot.isEcoFriendly();
+}
+
+	/* Building Favs timeslot*/
+	public boolean isDepot() {
+		return slot.isDepot();
+	}
 }

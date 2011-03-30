@@ -28,19 +28,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<style>
 
-span.control img{
-margin: 7px 8px 0 4px;
-}
-
-span.time {
-float:left;
-position:relative;
-top:1px;
-}
-
-</style>
 <%
 int timeslot_page_type = TimeslotLogic.PAGE_NORMAL;
 if("true".equals(request.getParameter("chefstable"))) {
@@ -48,17 +36,13 @@ if("true".equals(request.getParameter("chefstable"))) {
 }
 
 boolean isStaticSlot = true;
-boolean hasPreReserved = false;
-boolean hasReservation = false;
-boolean hasWeeklyReservation=false;
 String timeSlotId="";
-String preReserveSlotId="";
-String[] checkErrorType=null;
 ActionResult result=null;
+FDReservation rsv = null;
+String actionName = null;
 
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 ErpCustomerInfoModel customerInfo = FDCustomerFactory.getErpCustomerInfo(user.getIdentity());
-FDReservation rsv = user.getReservation();
 
 if (user.isChefsTable()) {
 	timeslot_page_type = TimeslotLogic.PAGE_CHEFSTABLE;
@@ -87,6 +71,18 @@ if(isCheckAddress){
 	<tmpl:put name='title' direct='true'>Available Delivery TimeSlots</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 
+<style>
+span.control img{
+	margin: 7px 8px 0 4px;
+}
+
+span.time {
+	float:left;
+	position:relative;
+	top:1px;
+}
+</style>
+
 	<div class="sub_nav">
 		<span class="sub_nav_title">Available Delivery TimeSlots</span> | <a href="/main/delivery_check_slots.jsp">Check available Slots for a new address</a>
 	</div>
@@ -97,7 +93,14 @@ if(isCheckAddress){
 			<td class="text12" align="left" width="71%"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
 		</tr>
 		<tr>
-			<td colspan="3" class="text12" align="left">Here are the currently available timeslots for delivery to this <%=isCheckAddress ? "address" : "customer's addresses"%>:</td>
+			<td colspan="3" class="text12" align="left">Here are the currently available timeslots for delivery to this <%=isCheckAddress ? "address" : "customer's addresses"%>:
+					<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR><BR>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3">
+				<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
+			</td>
 		</tr>
 			
 		<%//Finds the address%>
@@ -133,21 +136,11 @@ if(isCheckAddress){
 </tr>
 <%  }   %>
 
-	
 <tr>
 	<td colspan="3">
 		<img src="/media_stat/images/layout/clear.gif" width="693" height="15">
 	</td>
 </tr>
-
-<tr>
-	<td colspan="3">
-				<%//Delivery timeslot display%>
-				<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
-
-	</td>
-</tr>
-
 
 </table>
 </div>

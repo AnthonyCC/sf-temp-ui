@@ -19,11 +19,13 @@ public class TimeslotPageUtil {
 	public static final int AFTERNOON_END = 15;		// 3:00 PM
 	public static final int EVENING_END = 24;		// midnight
 	
-	private final static SimpleDateFormat dayNameFormatter = new SimpleDateFormat("EEEE");
+	private final static SimpleDateFormat dayNameFormatterExp = new SimpleDateFormat("EEEE");
+	private final static SimpleDateFormat dayNameFormatter = new SimpleDateFormat("EEE");
 	private final static SimpleDateFormat hourFormatter = new SimpleDateFormat("h");
 	private final static SimpleDateFormat yearFormatter = new SimpleDateFormat("yyyy");
-	private final static SimpleDateFormat monthDayFormatter = new java.text.SimpleDateFormat("MMM. d");
+	private final static SimpleDateFormat monthDayFormatter = new java.text.SimpleDateFormat("MMM d");
 	private final static SimpleDateFormat mayMonthDayFormatter = new java.text.SimpleDateFormat("MMM d");
+	private final static SimpleDateFormat monthDayFormatterExp = new java.text.SimpleDateFormat("MMMM");
 
 	public static List getBand(EnumDlvRestrictionReason reason, DlvRestrictionsList restrictions, Date startDate, Date endDate) {
 		return aggregate(getDailyRestrictions(reason, restrictions, startDate, endDate));
@@ -105,11 +107,32 @@ public class TimeslotPageUtil {
 	}
 	
 	public static synchronized String formatDayName(Date day) {
-		return dayNameFormatter.format(day);
+		return dayNameFormatter.format(day).toUpperCase();
+	}
+
+	public static synchronized String formatDayNameExp(Date day) {
+		return dayNameFormatterExp.format(day).toUpperCase();
 	}
 
 	public static synchronized String formatCutoffTime(Date day) {
 		return hourFormatter.format(day);
+	}
+
+	public static synchronized String getCutoffTimeDisplay(Date cutoffTime){
+		int cutoffTimeHour = (DateUtil.toCalendar(cutoffTime)).get(Calendar.HOUR_OF_DAY);	
+		int cutoffTimeMinute = (DateUtil.toCalendar(cutoffTime)).get(Calendar.MINUTE);
+
+		StringBuffer sb = new StringBuffer();
+
+		sb.append(com.freshdirect.webapp.util.TimeslotPageUtil.formatCutoffTime(cutoffTime));
+		if(cutoffTimeMinute != 0){
+			String minute = Integer.toString(cutoffTimeMinute);
+			if(minute.length()== 1)
+				sb.append(":0").append(minute);
+		}
+		sb.append((cutoffTimeHour >= DateUtil.MORNING_END ? "pm" : "am"));
+		
+		return sb.toString();
 	}
 
 	public static String formatFirstOrderYear(Date day) {
@@ -128,4 +151,19 @@ public class TimeslotPageUtil {
 		}
 		return mayMonthDayFormatter.format( cal.getTime() );
 	}
+	public static synchronized String formatDeliveryDateExp(Date day){
+		Calendar cal = DateUtil.toCalendar(day);
+		if ( cal.get(Calendar.MONTH) >= Calendar.MAY && cal.get(Calendar.MONTH) <= Calendar.JULY ) {
+			return monthDayFormatterExp.format( cal.getTime() );
+}
+		return mayMonthDayFormatter.format( cal.getTime() );
+	}
+	public static String getCutoffDay(Date day) {
+		Calendar requestedDate = Calendar.getInstance();
+		requestedDate.setTime(day);
+		requestedDate.add(Calendar.DATE, -1);
+	
+		return dayNameFormatterExp.format(requestedDate.getTime());
+	}
+	
 }

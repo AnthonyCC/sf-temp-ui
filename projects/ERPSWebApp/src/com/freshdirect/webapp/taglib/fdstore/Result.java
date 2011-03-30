@@ -9,6 +9,8 @@ public class Result extends ActionResult {
 	public boolean isZoneCtActive() {
 		return zoneCtActive;
 	}
+	Result(){
+	}
 	Result(List timeslots, Map zones, boolean zoneCtActive, List messages, List comments) {
 		this.timeslots = timeslots;
 		this.zones  =zones;

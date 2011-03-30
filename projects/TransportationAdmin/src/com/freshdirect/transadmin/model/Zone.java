@@ -40,6 +40,8 @@ public class Zone implements java.io.Serializable {
 	
 	private BigDecimal loadingPriority;
 	
+	private BigDecimal ecoFriendly;
+	
     public Set getZoneSupervisors() {
 		return zoneSupervisors;
 	}
@@ -239,4 +241,12 @@ public class Zone implements java.io.Serializable {
 		this.loadingPriority = loadingPriority;
 	}	
 		
+	public BigDecimal getEcoFriendly() {
+		return ecoFriendly;
+}
+
+	public void setEcoFriendly(BigDecimal ecoFriendly) {
+		this.ecoFriendly = ecoFriendly;
+	}
+
 }

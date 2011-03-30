@@ -436,7 +436,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				e.printStackTrace();
 			}			
 									
-			OneTimeRestriction rNew=new OneTimeRestriction(r.getId(),r.getCriterion(),r.getReason(),r.getName(),r.getMessage(),newStartDate,newEndDate);
+			OneTimeRestriction rNew=new OneTimeRestriction(r.getId(),r.getCriterion(),r.getReason(),r.getName(),r.getMessage(),newStartDate,newEndDate,r.getPath());
 			DlvRestrictionManager.storeDlvRestriction(rNew);
 		}						
 	}
@@ -465,7 +465,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 			TimeOfDay tStart=new TimeOfDay(calendarStart.getTime());
 			TimeOfDay tEnd=new TimeOfDay(calendarEnd.getTime());
 			// stupid thing this class is immutable
-			RecurringRestriction rNew=new RecurringRestriction(r.getId(),r.getCriterion(),r.getReason(),r.getName(),r.getMessage(),r.getDayOfWeek(),tStart,tEnd);
+			RecurringRestriction rNew=new RecurringRestriction(r.getId(),r.getCriterion(),r.getReason(),r.getName(),r.getMessage(),r.getDayOfWeek(),tStart,tEnd,r.getPath());
 			DlvRestrictionManager.storeDlvRestriction(rNew);
 		}						
 	}
@@ -558,7 +558,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 			String message=request.getParameter("blkMessage");						
 			String startTimeStr=request.getParameter("blkStartDate");
 			String endTimeStr=request.getParameter("blkEndDate");		
-			
+			String path=request.getParameter("blkPath");
 			
 			result.addError(
 					message==null || message.trim().length()==0,
@@ -568,6 +568,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 			LOGGER.debug("message"+message);					
 			LOGGER.debug("startTimeStr0"+startTimeStr);
 			LOGGER.debug("endTimeStr"+endTimeStr);			
+			LOGGER.debug("message"+path);
 						   
 			Date startDate  = dateFormat.parse(startTimeStr);
 			Date endDate  = endDateFormat.parse(endTimeStr+" 11:59 PM");
@@ -584,7 +585,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 			}	
 			
 			// FIXME one-time reverse restrictions should have a different EnumDlvRestrictionType 
-				restriction=new OneTimeRestriction(null, EnumDlvRestrictionCriterion.DELIVERY, EnumDlvRestrictionReason.CLOSED, "Closed",message, startDate, endDate);		
+				restriction=new OneTimeRestriction(null, EnumDlvRestrictionCriterion.DELIVERY, EnumDlvRestrictionReason.CLOSED, "Closed",message, startDate, endDate,path);
 						
 		}catch (Exception pe) {
 			throw new FDResourceException(pe);
@@ -605,7 +606,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 			String startTimeStr=request.getParameter("startDate");
 			String endTimeStr=request.getParameter("endDate");		
 			String dayOfWeekStr=request.getParameter("dayOfWeek");
-			
+			String path=request.getParameter("path");
 			
 			result.addError(
 					name==null || name.trim().length()==0,
@@ -692,9 +693,9 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				
 				// FIXME one-time reverse restrictions should have a different EnumDlvRestrictionType 
 				if (reason.isSpecialHoliday()) {
-					restriction=new OneTimeReverseRestriction(id,criterion, reason, name, message, startDate, endDate);
+					restriction=new OneTimeReverseRestriction(id,criterion, reason, name, message, startDate, endDate,path);
 				} else {
-					restriction=new OneTimeRestriction(id,criterion, reason, name, message, startDate, endDate);
+					restriction=new OneTimeRestriction(id,criterion, reason, name, message, startDate, endDate,path);
 				}
 
 			} else if (EnumDlvRestrictionType.RECURRING_RESTRICTION.equals(restrictedType)) {
@@ -705,7 +706,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				if (JUST_BEFORE_MIDNIGHT.equals(endTime)) {
 					endTime = TimeOfDay.NEXT_MIDNIGHT;
 				}
-				restriction=new RecurringRestriction(id,criterion, reason, name, message, dayOfWeek, startTime, endTime);
+				restriction=new RecurringRestriction(id,criterion, reason, name, message, dayOfWeek, startTime, endTime,path);
 			} 
 			
 		}catch (Exception pe) {

@@ -32,8 +32,8 @@ if(request.getRequestURI().toLowerCase().indexOf("checkout")>-1) {
 
 
 
-FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
-FDIdentity identity  = user.getIdentity();
+FDUserI yuzer = (FDUserI)session.getAttribute(SessionName.USER);
+FDIdentity identity  = yuzer.getIdentity();
 String paymentId = request.getParameter("paymentId");
 ErpPaymentMethodI thisPaymentMethod =null; //(ErpPaymentMethodI) recentOrder.getPaymentMethod();
 ErpCustomerInfoModel customerModel = FDCustomerFactory.getErpCustomerInfo(identity);
@@ -102,7 +102,7 @@ if (isValidPaymentId) {
 	//
 	// If user is new (i.e., no orders placed), prepopulate billing address fields with delivery address
 	//
-	if (user.getOrderHistory().getTotalOrderCount() == 0) {
+	if (yuzer.getOrderHistory().getTotalOrderCount() == 0) {
 		try {
 			Collection dlvAddresses = FDCustomerManager.getShipToAddresses(identity);
 			if (dlvAddresses.size() > 0) {
@@ -161,15 +161,26 @@ if (isValidPaymentId) {
 %>
 
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="693" HEIGHT="1" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<br>
+<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="693" HEIGHT="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR><br>
+
 	<table border="0" cellspacing="0" cellpadding="2" width="693">
-	<tr valign="top">
-	<td class="text12"><img src="/media_stat/images/headers/check_acct_details.gif" width="181" height="9" border="0" alt="CHECKING ACCOUNT DETAILS">&nbsp;&nbsp;&nbsp;* Required information<br>
-<img src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" VSPACE="3"><br></td>
-</tr></table>
-<br>
+	<tr valign="bottom">
+		<TD WIDTH="<%=proceedThruCheckout?"693":"493" %>">
+			<img src="/media_stat/images/headers/check_acct_details.gif" width="181" height="9" border="0" alt="CHECKING ACCOUNT DETAILS">
+			&nbsp;&nbsp;&nbsp;<FONT CLASS="text12">* Required information</FONT>
+		</TD>
+		<%if (!proceedThruCheckout) { %>
+		<TD WIDTH="200" ALIGN="RIGHT">
+			<a href="<%=cancelPage%>">
+			<image src="/media_stat/images/buttons/cancel.gif" WIDTH="72" HEIGHT="19"  HSPACE="4" VSPACE="4" alt="CANCEL" border="0"></a>
+			<input type="image" name="checkout_credit_card_edit" src="/media_stat/images/buttons/save_changes.gif" WIDTH="91" HEIGHT="18" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0">
+		</TD>
+		<%}%>
+	</tr>
+</table>
+
+<img src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" VSPACE="3"><BR><BR>
 
 <input type="hidden" name="<%=PaymentMethodName.PAYMENT_METHOD_TYPE%>" value="<%=paymentMethodType%>">
 <table border="0" cellspacing="1" cellpadding="0" width="693">
@@ -221,7 +232,7 @@ if (isValidPaymentId) {
 	<tr valign="middle">
 	    <td width="150" align="right" class="text12">*&nbsp;Street Address&nbsp;&nbsp;</td>
 		<td width="542"  class="text12"><input type="text" maxlength="50" SIZE="21" class="text11" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>" required="true" value ="<%=ccAddress1%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-		&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><% if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){ %>Floor/Suite #<% }else{ %>Apt. #<% } %>&nbsp;&nbsp;<input type="text" maxlength="10" size="4" class="text11" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>" value ="<%=ccApartment%>"></td>
+		&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><% if(EnumServiceType.CORPORATE.equals(yuzer.getSelectedServiceType())){ %>Floor/Suite #<% }else{ %>Apt. #<% } %>&nbsp;&nbsp;<input type="text" maxlength="10" size="4" class="text11" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>" value ="<%=ccApartment%>"></td>
 	</tr>
 	<tr valign="middle">
 	    <td align="right" class="text12">&nbsp;Address Line 2&nbsp;&nbsp;</td>

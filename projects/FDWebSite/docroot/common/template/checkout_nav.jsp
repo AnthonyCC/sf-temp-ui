@@ -8,9 +8,14 @@
 <html>
 	<head>
     	<title><tmpl:get name='title'/></title>
-		<script language="javascript" src="/assets/javascript/common_javascript.js"></script>
+		<%@ include file="/common/template/includes/metatags.jspf" %>
+		<meta http-equiv="X-UA-Compatible" content="IE=8" />
+		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+		<script src="/assets/javascript/timeslots.js" type="text/javascript" language="javascript"></script>
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
      	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+		<link href="/assets/css/timeslots.css" rel="stylesheet" type="text/css" />
+		<%@ include file="/shared/template/includes/ccl.jspf" %>
 	</head>
 	
 	<body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" class="text10">

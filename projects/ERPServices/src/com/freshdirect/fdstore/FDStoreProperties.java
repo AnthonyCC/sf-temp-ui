@@ -422,6 +422,12 @@ public class FDStoreProperties {
     private final static String PROP_VALIDATIONGROUPEXPORTSAPINPUT_ENABLED = "fdstore.validation.groupexportsapinput.enabled";
     private final static String PROP_GROUPSCALE_ENABLED = "fdstore.groupscale.enabled";
     
+	//[APPDEV-1208] Time slot Redesign
+	private static final String PROP_CT_TIMESLOT_LABEL = "fdstore.chefstable.ts.label";
+	private static final String PROP_PROMO_TIMESLOT_LABEL = "fdstore.promo.ts.label";
+	private static final String PROP_ALCOHOL_TIMESLOT_LABEL = "fdstore.alcohol.ts.label";
+	private static final String PROP_ECOFRIENDLY_TIMESLOT_LABEL = "fdstore.ecofriendly.ts.label";
+	private static final String PROP_BUILDINGFAVS_TIMESLOT_LABEL = "fdstore.buildingfavs.ts.label";
     
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -848,6 +854,12 @@ public class FDStoreProperties {
 		defaults.put(PROP_VALIDATIONGROUPEXPORTSAPINPUT_ENABLED, "true");
 		defaults.put(PROP_GROUPSCALE_ENABLED, "true");
 
+        defaults.put(PROP_CT_TIMESLOT_LABEL, "Chef's Table Delivery Times");
+		defaults.put(PROP_PROMO_TIMESLOT_LABEL,"Discount Delivery Times");
+		defaults.put(PROP_ALCOHOL_TIMESLOT_LABEL, "Alcohol Delivery Restriction");
+		defaults.put(PROP_ECOFRIENDLY_TIMESLOT_LABEL, "Eco-Friendly");
+		defaults.put(PROP_BUILDINGFAVS_TIMESLOT_LABEL,"My Building Favourites");
+		
         refresh();
     }
 
@@ -2180,4 +2192,24 @@ public class FDStoreProperties {
 	public static boolean isGroupScaleEnabled() {
         return (new Boolean(get(PROP_GROUPSCALE_ENABLED))).booleanValue();
     }   
+	
+	public static String getChefstableLabel(){
+		return config.getProperty(PROP_CT_TIMESLOT_LABEL);
+}
+	
+	public static String getPromotionLabel(){
+		return config.getProperty(PROP_PROMO_TIMESLOT_LABEL);
+	}
+	
+	public static String getEcoFriendlyLabel(){
+		return config.getProperty(PROP_ECOFRIENDLY_TIMESLOT_LABEL);
+	}
+	
+	public static String getMyBuildingFavsLabel(){
+		return config.getProperty(PROP_BUILDINGFAVS_TIMESLOT_LABEL);
+	}
+	
+	public static String getAlcoholRestrictedLabel(){
+		return config.getProperty(PROP_ALCOHOL_TIMESLOT_LABEL);
+	}
 }

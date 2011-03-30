@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
@@ -30,33 +29,43 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.delivery.DlvServiceSelectionResult;
 import com.freshdirect.delivery.EnumDeliveryStatus;
+import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneModel;
+import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.OneTimeRestriction;
 import com.freshdirect.delivery.restriction.OneTimeReverseRestriction;
+import com.freshdirect.delivery.restriction.RecurringRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
+import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDDynamicTimeslotList;
 import com.freshdirect.fdstore.FDInvalidAddressException;
+import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
-import com.freshdirect.fdstore.FDTimeslotList;
 import com.freshdirect.fdstore.FDZoneNotFoundException;
+import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.promotion.PromotionHelper;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder;
+import com.freshdirect.fdstore.util.CTDeliveryCapacityLogic;
+import com.freshdirect.fdstore.util.FDTimeslotUtil;
 import com.freshdirect.fdstore.util.TimeslotContext;
+import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
+
 
 /**
  *
@@ -73,6 +82,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 	
 	private boolean containsAdvanceOrderItem = false;
 	private TimeslotContext timeSlotContext = null;
+	private String timeSlotId = "";
 	
 	public void setAddress(ErpAddressModel address) {
 		this.address = address;
@@ -84,6 +94,10 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 
 	public void setTimeSlotContext(TimeslotContext timeSlotContext) {
 		this.timeSlotContext = timeSlotContext;
+	}
+
+	public void setTimeSlotid(String timeSlotId) {
+		this.timeSlotId = timeSlotId;
 	}
 
 	private DateRange getBaseRange() {
@@ -115,12 +129,28 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		Result result = null;
 		HttpSession session = pageContext.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+		FDDeliveryTimeslotModel deliverymodel = user.getDeliveryTimeslotModel();
+		if(deliverymodel==null){
+			deliverymodel = new FDDeliveryTimeslotModel();
+			user.setDeliveryTimeslotModel(deliverymodel);
+		}
+		FDCartModel cart = user.getShoppingCart();
 
+		//check if preReservedSlotId exits
+		checkForPreReservedSlotId(deliverymodel, cart, user, result, timeSlotId);
+		
+		//getRestriction reasons
+		getRestrictionReason(cart, deliverymodel);
+		
 		DateRange baseRange = getBaseRange();
 		DateRange geoRestrictionRange = getStandardRange();
 		
 		DlvRestrictionsList restrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
 
+		List<RestrictionI> alcoholRestrictions = restrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY,getAlcoholRestrictionReasons(),baseRange);
+		
+		LOGGER.debug("AlcoholRestrictions :"+alcoholRestrictions.size());
+		
 		EnumDlvRestrictionReason specialHoliday = getNextHoliday(restrictions, baseRange, FDStoreProperties
 			.getHolidayLookaheadDays());
 
@@ -131,8 +161,13 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 
 		LOGGER.debug("containsSpecialHoliday :"+containsSpecialHoliday+" :containsAdvanceOrderItem:"+containsAdvanceOrderItem);
 		
+		List dateRanges = getDateRanges(baseRange,
+				(containsSpecialHoliday && !deliveryInfo), restrictions,
+				specialHoliday, containsAdvanceOrderItem);
 		
-		List dateRanges = getDateRanges(baseRange, (containsSpecialHoliday && !deliveryInfo), restrictions, specialHoliday, containsAdvanceOrderItem);
+		/*Holiday & specialItems restrictions*/
+		getHolidayRestrctions(restrictions, baseRange, deliverymodel);
+		//getSpecialItemDeliveryRestrctions(restrictions, baseRange, deliverymodel, user);
 
 		List timeslotList = new ArrayList();
 		Exception dynaError = null;
@@ -145,28 +180,12 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 			address.setCustomerId(user.getIdentity().getErpCustomerPK());
 		}
 		
-		//Allowing COS customers to use HOME zone capacity for the configured set of HOME zones
+		//Allowing COS customers to use HOME capacity for the configured set of HOME zones
 		ErpAddressModel timeslotAddress = performCosResidentialMerge();
 		
-		for (Iterator i = dateRanges.iterator(); i.hasNext();) {
-			DateRange range = (DateRange) i.next();
+		timeslotList = getFDTimeslotListForDateRange(restrictions, dateRanges,
+				timeslotList, dynaError, timeslotAddress, user);
 			
-			FDDynamicTimeslotList dynamicTimeslots = this.getTimeslots(
-					timeslotAddress,
-				range.getStartDate(),
-				range.getEndDate());
-			
-			if(dynamicTimeslots == null || dynamicTimeslots.getError() != null) {
-				dynaError = dynamicTimeslots.getError();
-			} 
-			List timeslots = dynamicTimeslots.getTimeslots();
-			
-			timeslotList.add(new FDTimeslotList(timeslots, DateUtil.toCalendar(range.getStartDate()), DateUtil.toCalendar(range
-				.getEndDate()), restrictions));
-		}
-		boolean ctActive = false;
-		HashMap zonesMap = new HashMap();
-		
 		// list of timeslots that must be shown regardless of capacity
 		Set retainTimeslotIds = new HashSet();
 		if (user.getReservation() != null) {
@@ -179,7 +198,223 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 			retainTimeslotIds.add(tsId);
 		}
 		
-		List geographicRestrictions = null;
+		//get GeographicRestrictions
+		List geographicRestrictions = getGeographicRestrictions();
+				
+		List messages = new ArrayList();
+		List comments = new ArrayList();
+		boolean isKosherSlotAvailable = false;
+		boolean hasCapacity = true;
+		boolean ctActive = false;
+		HashMap zonesMap = new HashMap();
+				
+		/*setDiscounts & apply Geo-restrictions to timeslots*/
+		filterDeliveryTimeSlots(user, geoRestrictionRange, restrictions,
+				timeslotList, zonesMap, retainTimeslotIds,
+				geographicRestrictions, messages, comments,
+				isKosherSlotAvailable, hasCapacity, deliverymodel, alcoholRestrictions);
+		
+		deliverymodel.setZoneId(cart.getDeliveryZone());		
+		
+		//get zone Promotion amount
+		deliverymodel.setZonePromoAmount(PromotionHelper.getDiscount(user, deliverymodel.getZoneId()));
+		//set cart to model
+		deliverymodel.setShoppingCart(cart);
+		
+		result = new Result(deliverymodel.getTimeslotList(),deliverymodel.getZones(),deliverymodel.isZoneCtActive(),
+									deliverymodel.getGeoRestrictionmessages(),deliverymodel.getComments());
+		if(dynaError != null) {
+			result.addError(new ActionError("deliveryTime", "We are sorry. Our system is temporarily experiencing a problem " +
+					"displaying the available timeslots. Please try to refresh this page in about three minutes. " +
+					"If you continue to experience difficulties loading this page, " +
+					"please call our customer service department"+
+					(user != null ? " at " + user.getCustomerServiceContact() : "")));
+			}
+			
+		return result;
+	}
+
+	private void checkForPreReservedSlotId(FDDeliveryTimeslotModel deliverymodel,FDCartModel cart, FDUserI user, Result result, String timeSlotId) throws FDResourceException{
+		FDReservation rsv;
+		boolean hasPreReserved = false;
+		String preReserveSlotId = "";
+		FDStandingOrder currentStandingOrder = null;
+				
+		if ( EnumCheckoutMode.NORMAL == user.getCheckoutMode() || EnumCheckoutMode.CREATE_SO == user.getCheckoutMode() ) {
+			rsv = user.getReservation();
+
+			if(rsv != null){
+				preReserveSlotId = rsv.getTimeslotId();
+				hasPreReserved = address.getPK()!=null && address.getPK().getId().equals(rsv.getAddressId());
+			}
+			if (cart.getDeliveryReservation() != null) {
+				rsv = cart.getDeliveryReservation();
+			}
+			if (timeSlotId == null) {
+				if(rsv != null && (address != null && address.getPK() != null && address.getPK().getId() != null 
+						&& address.getPK().getId().equals(rsv.getAddressId()))){
+					timeSlotId = rsv.getTimeslotId();
+		}else{
+					timeSlotId = "";
+		}
+			}
+		
+			if(cart instanceof FDModifyCartModel && rsv != null && !EnumReservationType.STANDARD_RESERVATION.equals(rsv.getReservationType()) && "".equals(preReserveSlotId) && !hasPreReserved){
+				preReserveSlotId = rsv.getTimeslotId();
+				hasPreReserved = address.getPK()!=null && address.getPK().getId().equals(rsv.getAddressId());
+		}
+		} else { //if ( EnumCheckoutMode.MODIFY_SO == user.getCheckoutMode() ) {
+			currentStandingOrder = user.getCurrentStandingOrder();
+			timeSlotId = "";
+			rsv = null;
+			/* STANDING ORDER - UNFINISHED CODE */
+		}
+		if(deliverymodel!=null){
+			deliverymodel.setTimeSlotId(timeSlotId);		
+			deliverymodel.setPreReserved(hasPreReserved);
+			deliverymodel.setPreReserveSlotId(preReserveSlotId);
+			deliverymodel.setRsv(rsv);
+			deliverymodel.setCurrentStandingOrder(currentStandingOrder);
+		}
+	}
+				
+	private List<FDTimeslotUtil> getFDTimeslotListForDateRange(DlvRestrictionsList restrictions, List<DateRange> dateRanges,List<FDTimeslotUtil> timeslotList, Exception dynaError,
+			ErpAddressModel timeslotAddress,FDUserI user) throws FDResourceException {
+		
+		for (Iterator<DateRange> i = dateRanges.iterator(); i.hasNext();) {
+			DateRange range = i.next();
+			
+			FDDynamicTimeslotList dynamicTimeslots = this.getTimeslots(
+					timeslotAddress,
+				range.getStartDate(),
+				range.getEndDate());
+			
+			if(dynamicTimeslots == null || dynamicTimeslots.getError() != null) {
+				dynaError = dynamicTimeslots.getError();				
+			} 
+			List<FDTimeslot> timeslots = dynamicTimeslots.getTimeslots();
+			
+			timeslotList.add(new FDTimeslotUtil(timeslots, DateUtil.toCalendar(range.getStartDate()), DateUtil.toCalendar(range
+				.getEndDate()), restrictions));
+		}
+		return timeslotList;
+	}
+
+	private void filterDeliveryTimeSlots(FDUserI user, DateRange geoRestrictionRange, DlvRestrictionsList restrictions,List<FDTimeslotUtil> timeslotList, HashMap<String, DlvZoneModel> zonesMap, Set retainTimeslotIds,
+			List<GeographyRestriction> geographicRestrictions, List<String> messages, List comments, boolean isKosherSlotAvailable, boolean hasCapacity,
+			FDDeliveryTimeslotModel deliveryModel,List<RestrictionI> alcoholRestrictions) throws FDResourceException {
+
+		boolean ctActive = false;
+		double maxDiscount = 0.0;
+		int ctSlots = 0;int alcoholSlots =0;int ecoFriendlySlots = 0;int neighbourhoodSlots=0;int soldOut = 0;int totalSlots = 0;
+
+		boolean isAlcoholDelivery = FDDeliveryManager.getInstance().checkForAlcoholDelivery(address);
+		deliveryModel.setAlcoholDelivery(isAlcoholDelivery);
+
+		for (Iterator<FDTimeslotUtil> i = timeslotList.iterator(); i.hasNext();) {
+			
+			FDTimeslotUtil list = i.next();
+			for (Iterator<List<FDTimeslot>> j = list.getTimeslots().iterator(); j.hasNext();) {
+				Collection<FDTimeslot> col = j.next();
+				for (Iterator<FDTimeslot> k = col.iterator(); k.hasNext();) {
+					FDTimeslot timeslot = k.next();
+					DlvTimeslotModel ts = timeslot.getDlvTimeslot();
+					ts.setSteeringDiscount(PromotionHelper.getDiscount(user, timeslot));
+					boolean isTimeslotRemoved = false;
+					if ((ts.getCapacity() <= 0 || GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions,
+													timeslot, messages, geoRestrictionRange,comments))&& !retainTimeslotIds.contains(ts.getId())) {
+						LOGGER.debug("Timeslot Removed By Tag :"+ts);
+						k.remove();
+						isTimeslotRemoved = true;
+					}
+					String zoneCode = timeslot.getZoneId();
+					if (!zonesMap.containsKey(zoneCode)) {
+						try {
+							FDDeliveryManager deliveryManager = FDDeliveryManager.getInstance();
+							DlvZoneModel zoneModel = deliveryManager.findZoneById(zoneCode);
+							if(zoneModel.isCtActive()) {
+								ctActive = true;
+							}
+							zonesMap.put(zoneCode, zoneModel);
+						} catch (FDZoneNotFoundException e) {
+							LOGGER.error("Referenced zone not found, database error. Zone:"+zoneCode+" timeslot id:"+timeslot.getTimeslotId());
+						}
+					}
+					
+					if(isAlcoholDelivery && isTimeslotAlcoholRestricted(alcoholRestrictions, timeslot)&& !isTimeslotRemoved){
+						timeslot.setAlcoholRestricted(true);
+						alcoholSlots = alcoholSlots+1;
+				}
+					checkTimeslotCapacity(user, zonesMap, timeslot);
+					if (ts.getSteeringDiscount() > maxDiscount && !isTimeslotRemoved)
+						maxDiscount = ts.getSteeringDiscount();
+					if(!timeslot.hasNormalAvailCapacity()&& timeslot.hasAvailCTCapacity() && !isTimeslotRemoved)
+						ctSlots = ctSlots+1;
+					if(timeslot.isEcoFriendly() && !isTimeslotRemoved)
+						ecoFriendlySlots = ecoFriendlySlots+1;
+					if(timeslot.isDepot() && timeslot.isEcoFriendly() && !isTimeslotRemoved)
+						neighbourhoodSlots = neighbourhoodSlots+1;
+					
+					if (!isTimeslotRemoved && !timeslot.hasAvailCTCapacity() && !(timeslot.getTimeslotId().equals(deliveryModel.getTimeSlotId()) || 
+							(timeslot.getTimeslotId().equals(deliveryModel.getPreReserveSlotId()) && deliveryModel.isPreReserved())) 
+						&& (timeslot.getDlvTimeslot() != null && timeslot.getDlvTimeslot().getRoutingSlot() != null
+							&& (timeslot.getDlvTimeslot().getRoutingSlot().isManuallyClosed()
+								|| !timeslot.getDlvTimeslot().getRoutingSlot().isDynamicActive()))) {
+							soldOut = soldOut + 1;;
+			}
+					if(!isTimeslotRemoved)
+						totalSlots = totalSlots + 1; 
+		}  
+			}
+			
+			isKosherSlotAvailable = isKosherSlotAvailable || list.isKosherSlotAvailable(restrictions);
+			hasCapacity = hasCapacity || list.hasCapacity();
+		}
+		 
+		deliveryModel.setTimeslotList(timeslotList);
+		deliveryModel.setZones(zonesMap);
+		deliveryModel.setZoneCtActive(ctActive);
+		deliveryModel.setHasCapacity(hasCapacity);
+		deliveryModel.setKosherSlotAvailable(isKosherSlotAvailable);
+		deliveryModel.setGeoRestrictionmessages(messages);
+		deliveryModel.setMaxDiscount(maxDiscount);
+		deliveryModel.setAlcoholRestrictedCount(alcoholSlots);
+		deliveryModel.setEcoFriendlyCount(ecoFriendlySlots);
+		deliveryModel.setNeighbourhoodCount(neighbourhoodSlots);
+		deliveryModel.setPercSlotsSold(totalSlots > 0 ? Math.round((soldOut/totalSlots)*100):0.0);
+		user.setTotalCTSlots(ctSlots);
+	}
+		
+	private void checkTimeslotCapacity(FDUserI user, HashMap zonesMap, FDTimeslot timeslot) {
+		DlvZoneModel tempZoneModel = null;
+		try{
+			int pageType_ct = user.isChefsTable() ? TimeslotLogic.PAGE_CHEFSTABLE : TimeslotLogic.PAGE_NORMAL;
+			//Check the timeslot capacity
+			tempZoneModel = (DlvZoneModel) zonesMap.get(timeslot.getZoneId());
+			
+			boolean isCTCapacity=false;
+			if(CTDeliveryCapacityLogic.isEligible(user,timeslot)!=null)
+			{
+				pageType_ct = TimeslotLogic.PAGE_CHEFSTABLE;
+				isCTCapacity = true;
+	}
+
+			boolean availCapacity = TimeslotLogic.getAvailableCapacity(timeslot.getDlvTimeslot(), new Date(), pageType_ct, tempZoneModel.getCtReleaseTime());
+			boolean normalAvailCapacity = availCapacity;
+	
+			if (TimeslotLogic.PAGE_CHEFSTABLE == pageType_ct && !isCTCapacity) {
+				normalAvailCapacity = TimeslotLogic.getAvailableCapacity(timeslot.getDlvTimeslot(), new Date(), TimeslotLogic.PAGE_NORMAL, tempZoneModel.getCtReleaseTime());
+			}
+	
+			timeslot.setNormalAvailCapacity(normalAvailCapacity);
+			timeslot.setAvailCTCapacity(availCapacity);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
+
+	private List getGeographicRestrictions() throws FDResourceException {
+		List geographicRestrictions = new ArrayList();
 		if(null != timeSlotContext){
 			if(timeSlotContext.equals(TimeslotContext.RESERVE_TIMESLOTS) || timeSlotContext.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM)){
 				geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictionsForReservation(address);
@@ -196,53 +431,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 			LOGGER.debug("GeoRestriction Address :"+address);
 			LOGGER.debug("GeoRestriction Restrictions :"+geographicRestrictions);
 		}
-				
-		List messages = new ArrayList();
-		List comments = new ArrayList();
-		for (Iterator i = timeslotList.iterator(); i.hasNext();) {
-			FDTimeslotList list = (FDTimeslotList) i.next();
-			for (Iterator j = list.getTimeslots().iterator(); j.hasNext();) {
-				Collection col = (Collection) j.next();
-				for(Iterator k = col.iterator(); k.hasNext();){
-					FDTimeslot timeslot = (FDTimeslot) k.next();
-					DlvTimeslotModel ts = timeslot.getDlvTimeslot();
-					ts.setSteeringDiscount(PromotionHelper.getDiscount(user, timeslot));
-					
-					if ((ts.getCapacity() <= 0 ||  
-							GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, timeslot, messages, geoRestrictionRange, comments)) 
-								&& !retainTimeslotIds.contains(ts.getId())) {
-						// filter off empty timeslots (unless they must be retained)
-						LOGGER.debug("Timeslot Removed By Tag :"+ts);
-						k.remove();
-					}
-					String zoneCode = timeslot.getZoneId();
-					if (!zonesMap.containsKey(zoneCode)) {
-						try {
-							FDDeliveryManager deliveryManager = FDDeliveryManager.getInstance();
-							DlvZoneModel zoneModel = deliveryManager.findZoneById(zoneCode);
-							if(zoneModel.isCtActive()) {
-								ctActive = true;
-							}
-							zonesMap.put(zoneCode, zoneModel);
-						} catch (FDZoneNotFoundException e) {
-							LOGGER.error("Referenced zone not found, database error. Zone:"+zoneCode+" timeslot id:"+timeslot.getTimeslotId());
-						}
-					}
-				}
-			}
-		}  
-		result = new Result(timeslotList, zonesMap, ctActive, messages, comments);
-		if(dynaError != null) {
-			
-			result.addError(new ActionError("deliveryTime", "We are sorry. Our system is temporarily experiencing a problem " +
-					"displaying the available timeslots. Please try to refresh this page in about three minutes. " +
-					"If you continue to experience difficulties loading this page, " +
-					"please call our customer service department"+
-					(user != null ? " at " + user.getCustomerServiceContact() : "")));
-		}
-		 
-		
-		return result;
+		return geographicRestrictions;
 	}
 
 	private ErpAddressModel performCosResidentialMerge()
@@ -478,6 +667,143 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 			}
 		}
 		return null;
+	}
+
+	private void getRestrictionReason(FDCartModel cart, FDDeliveryTimeslotModel deliveryModel){
+		boolean thxgivingRestriction = false;
+		boolean easterRestriction = false;
+		boolean easterMealRestriction = false; 
+		boolean valentineRestriction = false;
+		boolean kosherRestriction = false;
+		boolean alcoholRestriction = false;
+	    boolean thxgiving_meal_Restriction=false;
+		
+		for(Iterator<EnumDlvRestrictionReason> i = cart.getApplicableRestrictions().iterator(); i.hasNext(); ){
+			EnumDlvRestrictionReason reason = i.next();
+			if(EnumDlvRestrictionReason.THANKSGIVING.equals(reason)){
+				thxgivingRestriction = true;
+				deliveryModel.setThxgivingRestriction(thxgivingRestriction);
+				continue;
+			}
+	        if(EnumDlvRestrictionReason.THANKSGIVING_MEALS.equals(reason)){
+	           thxgiving_meal_Restriction=true;
+	           deliveryModel.setThxgiving_meal_Restriction(thxgiving_meal_Restriction);
+	           continue;
+	        }
+	        if(EnumDlvRestrictionReason.EASTER.equals(reason)){
+	           easterRestriction=true;
+	           deliveryModel.setEasterRestriction(easterRestriction);
+	           continue;
+	        }
+			if(EnumDlvRestrictionReason.EASTER_MEALS.equals(reason)){
+	           easterMealRestriction=true;
+	           deliveryModel.setEasterMealRestriction(easterMealRestriction);
+	           continue;
+	        }
+			if(EnumDlvRestrictionReason.ALCOHOL.equals(reason)){
+				alcoholRestriction = true;
+				deliveryModel.setAlcoholRestriction(alcoholRestriction);
+				continue;
+			}
+			if(EnumDlvRestrictionReason.KOSHER.equals(reason)){
+				kosherRestriction = true;
+				deliveryModel.setKosherRestriction(kosherRestriction);
+				continue;
+			}
+			if(EnumDlvRestrictionReason.VALENTINES.equals(reason)){
+				valentineRestriction = true;
+				deliveryModel.setValentineRestriction(valentineRestriction);
+				continue;
+			}
+		}
+	}
+	
+	public List<RestrictionI> getHolidayRestrctions(DlvRestrictionsList restrictions, DateRange baseRange, FDDeliveryTimeslotModel deliveryModel){
+		List<RestrictionI> holidayRes = new ArrayList<RestrictionI>();
+		DateRange validRange = new DateRange(baseRange.getStartDate(), baseRange.getEndDate());
+		
+		for (Iterator<RestrictionI> i = restrictions.getRestrictions(EnumDlvRestrictionReason.CLOSED, validRange).iterator(); i.hasNext();) {
+			RestrictionI r = i.next();
+			holidayRes.add(r);			
+		}
+		deliveryModel.setHolidayRestrictions(holidayRes);
+		return holidayRes;
+	}
+	
+	private void getSpecialItemDeliveryRestrctions(DlvRestrictionsList restrictions, DateRange baseRange, FDDeliveryTimeslotModel deliveryModel, FDUserI user){
+		
+		int daysInAdvance = FDStoreProperties.getHolidayLookaheadDays();
+		Set<EnumDlvRestrictionReason> specialHolidays = getSpecialHolidays(restrictions, baseRange, daysInAdvance);
+			
+		Calendar restrictionEndCal = Calendar.getInstance();
+		restrictionEndCal.setTime(baseRange.getStartDate());
+		restrictionEndCal.add(Calendar.DATE, daysInAdvance);
+
+		List<RestrictionI> specialRestrictions = new ArrayList<RestrictionI>();
+		for (Iterator<EnumDlvRestrictionReason> itr = specialHolidays.iterator(); itr.hasNext();) {
+			EnumDlvRestrictionReason _specialHoliday = (EnumDlvRestrictionReason) itr.next();
+			if(user.getShoppingCart()!=null && user.getShoppingCart().getApplicableRestrictions().contains(_specialHoliday)){
+				specialRestrictions.addAll(restrictions.getRestrictions(
+						EnumDlvRestrictionCriterion.DELIVERY,
+						_specialHoliday,
+						null,
+						new DateRange(baseRange.getStartDate(), restrictionEndCal.getTime())));
+				
+			}			
+		}
+		
+		deliveryModel.setSpecialItemDlvRestrctions(specialRestrictions);		
+	}
+
+	protected static Set<EnumDlvRestrictionReason> getSpecialHolidays(DlvRestrictionsList restrictions, DateRange baseRange, int lookahead) {
+		Set<EnumDlvRestrictionReason> holidays = new HashSet<EnumDlvRestrictionReason>();
+		for (Iterator<EnumDlvRestrictionReason> i = EnumDlvRestrictionReason.iterator(); i.hasNext();) {
+			EnumDlvRestrictionReason reason = i.next();
+			if (reason.isSpecialHoliday()) {
+				holidays.add(reason);
+			}
+		}
+		Set<EnumDlvRestrictionReason> reasons = new HashSet<EnumDlvRestrictionReason>();
+		DateRange holidayRange = new DateRange(baseRange.getStartDate(), DateUtil.addDays(baseRange.getEndDate(), lookahead));
+		for (Iterator i = restrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY, holidays).iterator(); i.hasNext();) {
+			RestrictionI r = (RestrictionI) i.next();
+			if (r instanceof OneTimeReverseRestriction) {
+				OneTimeReverseRestriction rev = (OneTimeReverseRestriction) r;
+				if (holidayRange.contains(rev.getDateRange().getStartDate())) {
+					reasons.add(r.getReason());
+				}
+			}
+		}
+		return reasons;
+	}
+	
+	protected Set<EnumDlvRestrictionReason> getAlcoholRestrictionReasons(){
+		Set<EnumDlvRestrictionReason> alcoholReasons = new HashSet<EnumDlvRestrictionReason>();
+		for (Iterator<EnumDlvRestrictionReason> i = EnumDlvRestrictionReason.iterator(); i.hasNext();) {
+			EnumDlvRestrictionReason reason = i.next();
+			if ("WIN".equals(reason.getName())||"BER".equals(reason.getName())
+										||"ACL".equals(reason.getName())) {
+				alcoholReasons.add(reason);
+			}
+		}
+		return alcoholReasons;
+	}
+	
+	protected static boolean isTimeslotAlcoholRestricted(List<RestrictionI> alcoholRestrictions, FDTimeslot slot) {
+		if(alcoholRestrictions.size()>0 && slot != null){
+			DateRange slotRange = new DateRange(slot.getBegDateTime(),slot.getEndDateTime());		
+			for (Iterator<RestrictionI> i = alcoholRestrictions.iterator(); i.hasNext();) {
+				RestrictionI r = i.next();
+				if (r instanceof OneTimeReverseRestriction) {
+					OneTimeReverseRestriction or = (OneTimeReverseRestriction) r;
+					if (or.overlaps(slotRange)) return true;
+				}else if(r instanceof RecurringRestriction){
+					RecurringRestriction rr = (RecurringRestriction)r;
+					if(rr.overlaps(slotRange) && (rr.getDayOfWeek()==slot.getDayOfWeek()))return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public static class TagEI extends AbstractGetterTag.TagEI {

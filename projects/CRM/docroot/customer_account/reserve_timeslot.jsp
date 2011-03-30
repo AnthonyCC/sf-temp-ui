@@ -13,7 +13,7 @@
 <%@ page import="com.freshdirect.customer.ErpCustomerInfoModel"%>
 <%@ page import="com.freshdirect.fdstore.util.TimeslotContext" %>
 <%@ page import="com.freshdirect.fdstore.util.AddressFinder" %>
-
+<%@ page import="java.text.SimpleDateFormat" %>
 <%@ taglib uri="template" prefix="tmpl"%>
 <%@ taglib uri="logic" prefix="logic"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>
@@ -35,9 +35,6 @@
 		<%
 			boolean isStaticSlot = false;
 			boolean isCheckAddress =false;
-			boolean hasReservation =false;
-			boolean hasWeeklyReservation =false;
-			ErpCustomerInfoModel customerInfo = null;
 
 			String addressId = request.getParameter("addressId");
 			String pageURI = request.getRequestURI();
@@ -57,6 +54,7 @@
 			}
 
 			FDReservation rsv = user.getReservation();
+			boolean hasReservation = rsv != null && addressId.equals(rsv.getAddressId());
 			TimeslotContext timeSlotCtx=TimeslotContext.RESERVE_TIMESLOTS_CRM; 
 		%>
 		
@@ -84,39 +82,18 @@
 				</tr>
 				<tr>
 					<td>		
-					<%//Finds the address%>
+						<%//Timeslot section display%>
 					<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
 					</td>
 				</tr>	
-			<%
-				String preReserveSlotId = "";
-				boolean hasPreReserved = false;
-				if(rsv != null){ 
-					if(!rsv.getAddressId().equals(addressId)){
-						rsv = null;
-					}else{
-						preReserveSlotId = rsv.getTimeslotId();
-						hasPreReserved = true;
-					}
-				}
-			%>	
 				
+			</table>
 		
 <form name="reserveTimeslot" method="POST" action="/customer_account/reserve_timeslot.jsp?chefstable=<%=user.isChefsTable()%>&addressId=<%=request.getParameter("addressId")%>" name="reserveTimeslot">
 				<input type="hidden" name="chefstable" value="<%= user.isChefsTable() %>"/>
 							
-				<% String[] checkErrorType = {"deliveryTime", "reservationType", "reservation", "technical_difficulty", "addressId"}; %>
-					
 				<% String timeSlotId = ""; %> 
-				<tr>
-					<td>				
-				<%//Timeslot section display%>
-				<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
-					</td>	
-				</tr>	
 				
-			</table>		
-					
 					<table width="90%" cellpadding="0" cellspacing="0" border="0" align="center">
 						<tr>
 							<td colspan="7"><img src="/media_stat/images/template/youraccount/choose_reservation_type.gif"
@@ -158,7 +135,7 @@
 						<tr>
 							<td colspan="7" align="center"><img
 								src="/media_stat/images/layout/clear.gif" width="1" height="14"><br>
-							<%if(rsv == null || rsv.isAnonymous()){%> 
+							<%if((rsv == null || rsv.isAnonymous()) && !hasReservation){%> 
 								<input type="image"
 										src="/media_stat/images/buttons/reserve_delivery.gif"
 											onclick="reserveTimeslot.actionName.value='reserveTimeslot'">

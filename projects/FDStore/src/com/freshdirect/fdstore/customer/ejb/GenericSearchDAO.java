@@ -726,7 +726,7 @@ public class GenericSearchDAO {
 	}
 	
 	private static String DELIVERY_RESTRICTIONS_RETURN = 
-		"select ID,TYPE,NAME,DAY_OF_WEEK,START_TIME,END_TIME,REASON,MESSAGE,CRITERION FROM dlv.restricted_days";
+		"select ID,TYPE,NAME,DAY_OF_WEEK,START_TIME,END_TIME,REASON,MESSAGE,CRITERION,MEDIA_PATH FROM dlv.restricted_days";
 
 	private static List processDeliveryRestriction(Connection conn, GenericSearchCriteria criteria, CriteriaBuilder builder) throws SQLException {
 		List restrictions=new ArrayList();		
@@ -765,6 +765,7 @@ public class GenericSearchDAO {
 			String id = rs.getString("ID");
 			String name = rs.getString("NAME");
 			String msg = rs.getString("MESSAGE");
+			String path = rs.getString("MEDIA_PATH");
 			EnumDlvRestrictionCriterion criterion = EnumDlvRestrictionCriterion.getEnum(rs.getString("CRITERION"));
 			if (criterion == null) {
 				// skip unknown criteria
@@ -793,9 +794,9 @@ public class GenericSearchDAO {
 
 				// FIXME one-time reverse restrictions should have a different EnumDlvRestrictionType 
 				if (reason.isSpecialHoliday()) {
-					restrictions.add(new OneTimeReverseRestriction(id,criterion, reason, name, msg, startDate, endDate));
+					restrictions.add(new OneTimeReverseRestriction(id,criterion, reason, name, msg, startDate, endDate,path));
 				} else {
-					restrictions.add(new OneTimeRestriction(id,criterion, reason, name, msg, startDate, endDate));
+					restrictions.add(new OneTimeRestriction(id,criterion, reason, name, msg, startDate, endDate,path));
 				}
 
 			} else if (EnumDlvRestrictionType.RECURRING_RESTRICTION.equals(type)) {
@@ -806,7 +807,7 @@ public class GenericSearchDAO {
 				if (JUST_BEFORE_MIDNIGHT.equals(endTime)) {
 					endTime = TimeOfDay.NEXT_MIDNIGHT;
 				}
-				restrictions.add(new RecurringRestriction(id,criterion, reason, name, msg, dayOfWeek, startTime, endTime));
+				restrictions.add(new RecurringRestriction(id,criterion, reason, name, msg, dayOfWeek, startTime, endTime,path));
 
 			} else {
 				// ignore	
