@@ -4,12 +4,12 @@ Plugin Name: WP-Paginate
 Plugin URI: http://www.ericmmartin.com/projects/wp-paginate/
 Description: A simple and flexible pagination plugin for WordPress posts and comments.
 Author: Eric Martin
-Version: 1.2.2
+Version: 1.2.3
 Author URI: http://www.ericmmartin.com
-Revision: $Id: wp-paginate.php 315138 2010-11-24 04:55:42Z emartin24 $
+Revision: $Id: wp-paginate.php 358882 2011-03-11 18:39:08Z emartin24 $
 */
 
-/*  Copyright 2010 Eric Martin (eric@ericmmartin.com)
+/*  Copyright 2011 Eric Martin (eric@ericmmartin.com)
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ if (!class_exists('WPPaginate')) {
 		/**
 		 * @var string The plugin version
 		 */
-		var $version = '1.2.2';
+		var $version = '1.2.3';
 
 		/**
 		 * @var string The options string name for this plugin
@@ -256,7 +256,7 @@ if (!class_exists('WPPaginate')) {
 		 * @desc Adds the options subpanel
 		 */
 		function admin_menu_link() {
-			add_options_page('WP-Paginate', 'WP-Paginate', 10, basename(__FILE__), array(&$this, 'admin_options_page'));
+			add_options_page('WP-Paginate', 'WP-Paginate', 'manage_options', basename(__FILE__), array(&$this, 'admin_options_page'));
 			add_filter('plugin_action_links_' . plugin_basename(__FILE__), array(&$this, 'filter_plugin_actions'), 10, 2 );
 		}
 
