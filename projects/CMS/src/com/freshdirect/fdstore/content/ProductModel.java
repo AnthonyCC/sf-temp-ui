@@ -692,13 +692,6 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	 */
 	public String getPrimaryBrandName(String productName);
 
-        /**
-         * use priceCalculator which can be cached for a request. 
-         * @return
-         */
-        @Deprecated
-	public String getSizeDescription() throws FDResourceException;
-
 	public boolean isCharacteristicsComponentsAvailable(FDConfigurableI config);
 	
 	public boolean isPreconfigured();

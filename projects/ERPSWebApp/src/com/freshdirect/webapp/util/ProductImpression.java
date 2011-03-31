@@ -172,8 +172,8 @@ public class ProductImpression {
 				sku.getSkuCode() == null ||
 				productModel.getFullName() == null ||
 				productModel.getPrimaryBrandName() == null ||
-				productModel.getSizeDescription() == null ||
-				productModel.getDefaultPrice() == null ||
+				calculator.getSizeDescription() == null ||
+				calculator.getDefaultPrice() == null ||
 				p == null ||
 				p.getPricing() == null
 			);

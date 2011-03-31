@@ -145,10 +145,6 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 		return getProduct().getPrimaryBrandName(productName);
 	}
 
-	public String getSizeDescription() throws FDResourceException {
-		return getProduct().getSizeDescription();
-	}
-
 	public boolean hasComponentGroups() {
 		return getProduct().hasComponentGroups();
 	}

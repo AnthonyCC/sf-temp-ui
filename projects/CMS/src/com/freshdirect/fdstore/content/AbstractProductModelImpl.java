@@ -306,10 +306,6 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
         return getPriceCalculator().getAboutPriceFormatted(savingsPercentage);
     }
 
-    public String getSizeDescription() throws FDResourceException {
-        return getPriceCalculator().getSizeDescription();
-    }
-    
     /* end of the price calculator calls */
 
 

@@ -151,10 +151,6 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 		return getPriceCalculator().getAboutPriceFormatted(savingsPercentage);
 	}
 
-	public String getSizeDescription() throws FDResourceException {
-		return getPriceCalculator().getSizeDescription();
-	}
-
 	public String getKosherSymbol() throws FDResourceException {
 		return getPriceCalculator().getKosherSymbol();
 	}

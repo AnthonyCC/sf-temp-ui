@@ -939,16 +939,6 @@ public class MockProductModel extends MockContentNodeModel implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.freshdirect.fdstore.content.ProductModel#getSizeDescription()
-	 */
-	@Override
-	public String getSizeDescription() throws FDResourceException {
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see com.freshdirect.fdstore.content.ProductModel#getSku(int)
 	 */
 	@Override
