@@ -14,7 +14,6 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,11 +24,8 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.fdstore.FDCachedFactory;
-import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -167,48 +163,14 @@ public class JspMethods {
 		return prodNode.getFullName();
 	}
 
-	public static double getPrice(ProductModel theProduct) throws JspException {
-		List<SkuModel> skus = theProduct.getSkus();
-		SkuModel sku = null;
-		// remove the unavailable sku's
-		for (ListIterator<SkuModel> li = skus.listIterator(); li.hasNext();) {
-			sku = li.next();
-			if (sku.isUnavailable()) {
-				li.remove();
-			}
-		}
-
-		FDProductInfo productInfo = null;
-		// ProductModel.PriceComparator priceComp = new
-		// ProductModel.PriceComparator();
-		double prodPrice = 0.0;
-		if (skus.size() == 0)
-			return prodPrice; // skip this item..it has no skus. Hmmm?
-		if (skus.size() == 1) {
-			sku = (SkuModel) skus.get(0); // we only need one sku
-		} else {
-			sku = (SkuModel) Collections.min(skus, priceComp);
-		}
-		if (sku != null && sku.getSkuCode() != null) {
-			//
-			// get the FDProductInfo from the FDCachedFactory
-			//
-			try {
-				productInfo = FDCachedFactory.getProductInfo(sku.getSkuCode());
-				prodPrice = productInfo.getZonePriceInfo(
-						theProduct.getPricingContext().getZoneId()).getDefaultPrice();
-			} catch (FDResourceException fdre) {
-				LOGGER.warn("FDResourceException occured", fdre);
-				throw new JspException(
-						"JspMethods.getPrice method caught an FDResourceException");
-			} catch (FDSkuNotFoundException fdsnfe) {
-				LOGGER.warn("FDSkuNotFoundException occured", fdsnfe);
-				throw new JspException(
-						"JspMethods.getPrice method caught an FDSkuNotFoundException");
-			}
-		}
-		return prodPrice;
-	}
+        public static double getPrice(ProductModel theProduct) throws JspException {
+            try {
+                return theProduct.getPriceCalculator().getDefaultPriceValue();
+            } catch (RuntimeException e) {
+                LOGGER.warn("FDResourceException occured", e);
+                throw new JspException("JspMethods.getPrice method caught an RuntimeException", e);
+            }
+        }
 
 	public static String getProductRating(ProductModel theProduct)
 			throws JspException {
@@ -846,42 +808,6 @@ public class JspMethods {
 			return str != null ? str : "";
 		}
 		return "";
-	}
-
-	/**
-	 * Apple Pricing - APPDEV-209. This method will be used to display the about
-	 * weight and price/lb in product with single sku and multiple sku pages.
-	 * 
-	 * @param prodInfo
-	 * @return
-	 * @throws JspException
-	 */
-	public static String getAboutPriceAndWeightForDisplay(FDProductInfo prodInfo,
-			PricingContext pricingContext) throws JspException {
-		String displayPriceString = "";
-		try {
-			FDProduct fdProduct = FDCachedFactory.getProduct(prodInfo);
-			if (null != fdProduct.getDisplaySalesUnits()
-					&& fdProduct.getDisplaySalesUnits().length > 0) {
-				FDSalesUnit fdSalesUnit = fdProduct.getDisplaySalesUnits()[0];
-				double salesUnitRatio = (double) fdSalesUnit.getDenominator()
-						/ (double) fdSalesUnit.getNumerator();
-				String alternateUnit = fdSalesUnit.getName();
-				double displayPrice = prodInfo.getZonePriceInfo(
-						pricingContext.getZoneId()).getDefaultPrice()
-						/ salesUnitRatio;
-				if (displayPrice > 0) {
-					displayPriceString = "about " + salesUnitRatio
-							+ alternateUnit.toLowerCase() + ", "
-							+ JspMethods.formatPrice(displayPrice, alternateUnit);
-				}
-			}
-		} catch (FDResourceException fdre) {
-			throw new JspException(fdre);
-		} catch (FDSkuNotFoundException fdse) {
-			throw new JspException(fdse);
-		}
-		return displayPriceString;
 	}
 
 	/**
