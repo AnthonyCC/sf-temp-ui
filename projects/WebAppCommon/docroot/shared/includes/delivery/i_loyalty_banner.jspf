@@ -32,9 +32,9 @@ if (user.isChefsTable() && zoneCtActive ) {
 					If the time you're looking for is full, click the button below
 					for Chef's Table preferred access.
 				<%} else {
-	       if(ClickToCallUtil.evaluateClick2CallInfoDisplay(user,address))
-			{
-			%>
+				if(ClickToCallUtil.evaluateClick2CallInfoDisplay(user,address))
+				{
+				%>
 					<div id="loyalty1" style="display:none;" >
 						<fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_pre_click2call.html" /></div>
 					<div id="loyalty2" style="display:none;" >

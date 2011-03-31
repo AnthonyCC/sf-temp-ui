@@ -114,10 +114,7 @@ public class FDTimeslot implements Serializable, Comparable {
 					&& endCal.get(Calendar.HOUR_OF_DAY) > DateUtil.MORNING_END));
 
 		formatCal(startCal, false, sb);
-		if(forceAmPm)
-		sb.append(" - ");
-		else
-			sb.append("-");
+		sb.append("-");
 		formatCal(endCal, true, sb);
 
 		return sb.toString();

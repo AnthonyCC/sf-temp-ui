@@ -169,8 +169,8 @@ StringBuffer buffer = new StringBuffer(
 	      <FONT CLASS="space2pix"><BR></FONT>
 			<table>
 				<tr>
-					<td align="left">Delivery Charge:</td>
-					<td align="right">
+					<td align="left" style="color:#666666;font-weight:bold;">Delivery Charge:</td>
+					<td align="right" style="color:#666666;font-weight:bold;">
 						<%	
 								String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge() );								
 							if(cart.isDlvPassApplied()) {
@@ -200,8 +200,8 @@ StringBuffer buffer = new StringBuffer(
 							</tr>
 				<%}	}%>
 				<tr>
-					<td align="left"><A HREF="javascript:popup('/help/estimated_price.jsp','small')"></A>Estimated Total:</td>
-					<td align="right"><%= currencyFormatter.format(cart.getTotal()) %></td>
+					<td align="left" style="color:#666666;font-weight:bold;"><A HREF="javascript:popup('/help/estimated_price.jsp','small')"></A>Estimated Total:</td>
+					<td align="right" style="color:#666666;font-weight:bold;"><%= currencyFormatter.format(cart.getTotal()) %></td>
 				</tr>
 			</table>
 	    </TD>

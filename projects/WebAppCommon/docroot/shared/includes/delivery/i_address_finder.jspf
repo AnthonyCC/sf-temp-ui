@@ -271,7 +271,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 						<td valign="middle" align="right">
 					 	<table>
 							<tr>
-									<%if(user.isChefsTable() && user.getTotalCTSlots()>0){%>
+							<!--		<%if(user.isChefsTable() && user.getTotalCTSlots()>0){%>
 									<td>
 										<img src="/media/editorial/timeslots/images/star_ct_delivery_time.gif" WIDTH="15" HEIGHT="18" border="0" alt="">
 									</td>
@@ -279,7 +279,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 										<div onClick="showLegendOverlay('/media/editorial/timeslots/msg_chefstable_timeslot.html','Chef\'s Table Information'); return false;"><%= FDStoreProperties.getChefstableLabel()%></div>
 									</td>
 								<%}%>
-							<!--	<%if(deliveryModel.getMaxDiscount()>0){%>
+								<%if(deliveryModel.getMaxDiscount()>0){%>
 									<td>
 										<img src="/media/editorial/timeslots/images/dollar_discount_delivery_time.gif" WIDTH="15" HEIGHT="18" border="0" alt="">
 									</td>

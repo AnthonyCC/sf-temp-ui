@@ -336,7 +336,7 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 				if ($('ts_d'+d+'_ts'+t+'_time')) {
 					$('ts_d'+d+'_ts'+t+'_time').style.width = '60px';
 					if ($('ts_d'+d+'_ts'+t+'_time').innerHTML.length > 9) {
-						$('ts_d'+d+'_ts'+t+'_time').style.paddingTop = '5px';
+						//$('ts_d'+d+'_ts'+t+'_time').style.paddingTop = '5px';
 					}
 				}
 				
@@ -452,7 +452,7 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 						$('ts_d'+d+'_ts'+t+'_time').style.width = '60px';
 					}
 					if ($('ts_d'+d+'_ts'+t+'_time').style.width == '60px' && $('ts_d'+d+'_ts'+t+'_time').innerHTML.length > 9) {
-						$('ts_d'+d+'_ts'+t+'_time').style.paddingTop = '5px';
+						//$('ts_d'+d+'_ts'+t+'_time').style.paddingTop = '5px';
 					}
 				}
 				/* Alcohol Restriction */

@@ -139,7 +139,7 @@
 				      // Center the map on this point
 				      map.setCenter(addressPoint, 12);
 
-				      var addressMarker = createLabelledMarker(addressPoint,"A",place.address+"<br/>"
+				      var addressMarker = createLabelledMarker(addressPoint,"A"+j,place.address+"<br/>"
 	      					+("Latitude="+place.Point.coordinates[1]+"<br/>"+"Longitude="+place.Point.coordinates[0]));
 
 				      // Add the marker to map

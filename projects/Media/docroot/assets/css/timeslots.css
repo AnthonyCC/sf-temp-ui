@@ -319,6 +319,7 @@ div.tsHeaderE {
 	font:Vernada, Regular,10px, #333333;
 	background-color: #E2E2E2;
 }
+
 /*Steering Discount slot*/
 .tsDiscountE {
 	color:#E99722;
@@ -363,10 +364,10 @@ div.tsHeaderE {
 }
 /*Reservation slot*/
 div.tsContentResC {
-	background-color:#FDFAC7;
+	background-color:#E6E2FD;
 }
 div.tsContentResE {
-	background-color:#FDFAC7; /*#6D6968*/
+	background-color:#E6E2FD;
 }
 .tsReservationE {
 	color:#666666;

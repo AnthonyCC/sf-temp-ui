@@ -220,7 +220,9 @@ zonePromoEnabled=true;
 	if(timeslotList.size()>1 && idx.intValue()==0){
 	%>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
-	<span class="text12"><b>SPECIAL DELIVERY</b></span>
+	<span class="text12 fleft tsAdvanceHeader"><b>SPECIAL DELIVERY</b>&nbsp;&nbsp;
+	<a class="tsDivHide" id="displayAdvanceOrderGrid" href="javascript:hideAdvanceOrder();">Hide Details</a></span>
+	<BR>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
 <%}%>
 
@@ -261,24 +263,52 @@ zonePromoEnabled=true;
 <table cellpadding="0" cellspacing="0" width="675" id="legendCheckout">
 	<tr>
 		<td align="right">
-				<table>
-						<tr>
-								<%if(user.isChefsTable()){%>
+					<table>
+							<tr>
+							<!--	<%if(user.isChefsTable() && user.getTotalCTSlots()>0){%>
 									<td>
-										<img src="/media/editorial/timeslots/images/star_ct_delivery_time.gif" WIDTH="15" HEIGHT="18" border="0" alt="PREVIOUS STEP">
-		</td>
-									<td style="color:#794E79;">Chef's Table Delivery Times</td>
+										<img src="/media/editorial/timeslots/images/star_ct_delivery_time.gif" WIDTH="15" HEIGHT="18" border="0" alt="">
+									</td>
+									<td>
+										<div onClick="showLegendOverlay('/media/editorial/timeslots/msg_chefstable_timeslot.html','Chef\'s Table Information'); return false;"><%= FDStoreProperties.getChefstableLabel()%></div>
+									</td>
 								<%}%>
 								<%if(deliveryModel.getMaxDiscount()>0){%>
 									<td>
-										<img src="/media/editorial/timeslots/images/dollar_discount_delivery_time.gif" WIDTH="15" HEIGHT="18" border="0" alt="PREVIOUS STEP">
+										<img src="/media/editorial/timeslots/images/dollar_discount_delivery_time.gif" WIDTH="15" HEIGHT="18" border="0" alt="">
 									</td>
-									<td style="color:#77A642;">Discount Delivery Times</td>
+									<td>
+										<div onClick="showLegendOverlay('/media/editorial/timeslots/msg_discount_timeslot.html','Promotion Discount'); return false;">
+										<%= FDStoreProperties.getPromotionLabel()%></div>
+									</td>
+								<%}%> -->
+								<%if(deliveryModel.getEcoFriendlyCount() > 0){%>
+									<td>
+										<img src="/media_stat/images/timeslots/ecofriendly_leaf.gif" WIDTH="16" HEIGHT="16" border="0">
+									</td>
+									<td>
+										<div onClick="showLegendOverlay('/media/editorial/timeslots/msg_ecofriendly_timeslot.html','Eco-Friendly'); return false;"><%= FDStoreProperties.getEcoFriendlyLabel()%></div>
+									</td>
 								<%}%>
-	</tr>
-</table>
+								<%if(deliveryModel.getNeighbourhoodCount() > 0){%>
+									<td>
+										<img src="/media_stat/images/timeslots/neighbourhood_favs.gif" WIDTH="15" HEIGHT="20" border="0">
+									</td>
+									<td>
+										<div onClick="showLegendOverlay('/media/editorial/timeslots/msg_neighbourhood_timeslot.html','My Building Favourites'); return false;"><%= FDStoreProperties.getMyBuildingFavsLabel()%></div>
+									</td>
+								<%}%>
+								<%if(deliveryModel.getAlcoholRestrictedCount() > 0){%>
+									<td>
+										<img src="/media_stat/images/timeslots/no_alcohol.gif" WIDTH="16" HEIGHT="16" border="0">
+									</td>
+									<td> 
+										<div onClick="showLegendOverlay('/media/editorial/timeslots/msg_alcoholrestriction_timeslot.html','Alcohol Delivery Restriction'); return false;"><%= FDStoreProperties.getAlcoholRestrictedLabel()%></div>
+									</td>
+								<%}%>
+							</tr>
+					</table>
 		</td>
-
 	</tr>
 </table>
 <BR><BR>
