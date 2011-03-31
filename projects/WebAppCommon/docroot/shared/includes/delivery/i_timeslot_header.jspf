@@ -14,7 +14,7 @@ if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)|| timeSlotCtx.equals(Ti
 		if(hasPreReserved) {
 		%>
 			You can use this page to update or cancel your reservation. Please note that <b>your reservation will expire at
-			<%= CCFormatter.formatDeliveryTime(deliveryModel.getRsv().getExpirationDateTime()) %> on <%= CCFormatter.formatDayName(deliveryModel.getRsv().getExpirationDateTime()) %>
+			<%= CCFormatter.formatDeliveryTime(user.getReservation().getExpirationDateTime()) %> on <%= CCFormatter.formatDayName(user.getReservation().getExpirationDateTime()) %>
 			(<%= timeMsg %> prior to cutoff),</b> so be sure to complete checkout by that time to guarantee your timeslot remains available.
 			Timeslots unavailable for reservation now may become available at time of checkout.
 		<%} else { %>

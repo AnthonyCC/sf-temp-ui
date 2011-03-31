@@ -167,6 +167,7 @@ public class FDTimeslotUtil implements Serializable {
 			if (cutOff != null) {
 				Calendar requestedDate = Calendar.getInstance();
 				requestedDate.setTime(day);
+				requestedDate.add(Calendar.DATE, -1);
 
 				Calendar timeDate = Calendar.getInstance();
 				timeDate.setTime(cutOff);

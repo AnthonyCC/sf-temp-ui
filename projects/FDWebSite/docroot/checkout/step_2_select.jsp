@@ -388,7 +388,7 @@ if (errorMsg!=null) {%>
 									</td>
 									<td>&nbsp;</td>
 	<%}%>
-								<%if(deliveryModel.getMaxDiscount()>0){%>
+					<!--			<%if(deliveryModel.getMaxDiscount()>0){%>
 									<td>
 										<img src="/media/editorial/timeslots/images/dollar_discount_delivery_time.gif" WIDTH="15" HEIGHT="18" border="0" alt="">
 	</td>
@@ -397,7 +397,7 @@ if (errorMsg!=null) {%>
 										<%= FDStoreProperties.getPromotionLabel()%></div>
 	</td>
 									<td>&nbsp;</td>
-	<%}%>
+	<%}%> -->
 								<%if(deliveryModel.getEcoFriendlyCount() > 0){%>
 									<td>
 										<img src="/media_stat/images/timeslots/ecofriendly_leaf.gif" WIDTH="16" HEIGHT="16" border="0">

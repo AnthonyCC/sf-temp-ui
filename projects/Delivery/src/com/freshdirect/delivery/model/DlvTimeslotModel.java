@@ -59,9 +59,14 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	private double steeringDiscount;
 	
 	public boolean isEcoFriendly() {		
-		if(this.getRoutingSlot() != null && this.getRoutingSlot().getDeliveryCost() != null
-				&& this.getRoutingSlot().getDeliveryCost().getAdditionalDistance() <= this.getRoutingSlot().getEcoFriendly()) {
-			return true;
+		if(this.getRoutingSlot() != null && this.getRoutingSlot().getDeliveryCost() != null){
+			if(this.getRoutingSlot().getEcoFriendly()!= 0)	{
+				if(this.getRoutingSlot().getDeliveryCost().getAdditionalDistance() <= this.getRoutingSlot().getEcoFriendly())
+						return true;
+			}else{
+				if(this.getRoutingSlot().getDeliveryCost().getAdditionalDistance()== 0) 
+					return true;
+			}
 		}
 		return false;
 	}

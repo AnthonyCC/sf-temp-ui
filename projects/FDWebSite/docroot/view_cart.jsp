@@ -144,7 +144,7 @@ StringBuffer buffer = new StringBuffer(
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="695">
     <TR VALIGN="TOP">
 	    <TD CLASS="text11" WIDTH="395" VALIGN="bottom">
-	        <FONT CLASS="title18">VIEW CART</FONT><BR>
+	        <FONT CLASS="title18">YOUR CART</FONT><BR>
 	        Please review the items in your cart before going to Checkout.<BR>
 	        <IMG src="/media_stat/images/layout/clear.gif" WIDTH="375" HEIGHT="1" BORDER="0">
 		</TD>

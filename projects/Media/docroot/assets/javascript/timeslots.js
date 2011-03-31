@@ -947,6 +947,10 @@ function defaultColumnExpand(dayIndex, slotIndex) {
 function hideAdvanceOrder() { 
 	$("timeslots_grid0").toggle();
 
+	if($("timeslots_grid2")){
+		$("timeslots_grid1").toggle();
+	}
+	
 	if($("timeslots_grid0").style.display != "none") {
 		$('displayAdvanceOrderGrid').innerHTML = "Hide Details";
 	}else{
