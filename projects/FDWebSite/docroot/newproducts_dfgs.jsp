@@ -10,7 +10,6 @@
 %><%@ page import="com.freshdirect.cms.fdstore.FDContentTypes"
 %><%@ page import="com.freshdirect.fdstore.content.*"
 %><%@ page import='com.freshdirect.fdstore.attributes.*'
-%><%@ page import='com.freshdirect.webapp.util.SearchResultUtil'
 %><%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName'
 %><%@ page import="java.util.*"
 %><%@ page import="java.net.URLEncoder"

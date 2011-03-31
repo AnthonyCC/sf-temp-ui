@@ -11,7 +11,6 @@
 %><%@ page import="com.freshdirect.fdstore.*"
 %><%@ page import="com.freshdirect.fdstore.content.*"
 %><%@ page import='com.freshdirect.fdstore.attributes.*'
-%><%@ page import='com.freshdirect.webapp.util.SearchResultUtil'
 %><%@ page import="java.util.*"
 %><%@ page import="java.net.URLEncoder"
 %><%@ page import="java.text.DecimalFormat"
