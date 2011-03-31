@@ -100,9 +100,6 @@
 	}
 %>
 
-<%--<jsp:include page="/includes/department_peakproduce.jsp" flush="true"/>--%>
-<%--<jsp:include page="/includes/department_featured_deals.jsp" flush="true"/>--%>	
-
 <display:InitLayout/>
 
 <%
