@@ -57,10 +57,7 @@
 			boolean hasReservation = rsv != null && addressId.equals(rsv.getAddressId());
 			TimeslotContext timeSlotCtx=TimeslotContext.RESERVE_TIMESLOTS_CRM; 
 		%>
-		
-	
-	
-	
+
 			<div class="cust_module" style="width: 90%;"><%--form name="delivery_reservation" method="POST"--%>
 			<div class="cust_module_header">
 				<table width="100%" cellpadding="0" cellspacing="0">
@@ -74,25 +71,25 @@
 			</div>
 			<div class="cust_module_content" style="padding-top: 10px; padding-bottom: 18px;">
 				
-			
-			<table width="90%" cellpadding="0" cellspacing="0" border="0" align="center">
-				<tr>
-					<td colspan="2" class="text12" align="left" width="29%"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
-					<td class="text12" align="left" width="71%"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
-				</tr>
-				<tr>
-					<td>		
-						<%//Timeslot section display%>
-					<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
-					</td>
-				</tr>	
-				
-			</table>
-		
+			<%//Finds the address & render the timeslots %>
+			<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
+
 <form name="reserveTimeslot" method="POST" action="/customer_account/reserve_timeslot.jsp?chefstable=<%=user.isChefsTable()%>&addressId=<%=request.getParameter("addressId")%>" name="reserveTimeslot">
 				<input type="hidden" name="chefstable" value="<%= user.isChefsTable() %>"/>
-							
+
 				<% String timeSlotId = ""; %> 
+					<table width="90%" cellpadding="0" cellspacing="0" border="0" align="center">
+						<tr>
+							<td colspan="2" class="text12" align="left" width="29%"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+							<td class="text12" align="left" width="71%"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+						</tr>
+						<tr>
+							<td>
+								<%//Timeslot section display%>
+								<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
+							</td>
+						</tr>	
+					</table>
 				
 					<table width="90%" cellpadding="0" cellspacing="0" border="0" align="center">
 						<tr>

@@ -1,33 +1,29 @@
-			
 <%
 if(timeSlotCtx!=null){
-
 if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)|| timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM)){
-
 %>
 <table  width="693" border="0" cellspacing="0" cellpadding="0">
-<tr>
-	<td colspan="3" class="text12">
-		<%
-		String timeMsg = java.text.MessageFormat.format( "{0,choice,1#one hour|1<{0,number,integer} hours}", new Object[] { new Integer(FDStoreProperties.getPreReserveHours()) });
-		
-		if(hasPreReserved) {
-		%>
-			You can use this page to update or cancel your reservation. Please note that <b>your reservation will expire at
-			<%= CCFormatter.formatDeliveryTime(user.getReservation().getExpirationDateTime()) %> on <%= CCFormatter.formatDayName(user.getReservation().getExpirationDateTime()) %>
-			(<%= timeMsg %> prior to cutoff),</b> so be sure to complete checkout by that time to guarantee your timeslot remains available.
-			Timeslots unavailable for reservation now may become available at time of checkout.
-		<%} else { %>
-			You can use this page to place a standing weekly timeslot reservation or to reserve a time for just this week. Please note
-			that <b>delivery timeslot reservations expire <%= timeMsg %> prior to cutoff</b>, so be sure to complete checkout by that time
-			to guarantee your timeslot remains open. Timeslots unavailable for reservation now may become available at time of checkout.
-		
-		<%} if(user.isChefsTable()){ %>
-			<fd:IncludeMedia name="/media/editorial/site_pages/ct/preferred_access_timeslots.html" />
-		<%}%>	
-		<img height="1" border="0" width="693" src="/media_stat/images/layout/dotted_line.gif"><br><br>	
-	</td>
-</tr>
+	<tr>
+		<td colspan="3" class="text12">
+			<%
+			String timeMsg = java.text.MessageFormat.format( "{0,choice,1#one hour|1<{0,number,integer} hours}", new Object[] { new Integer(FDStoreProperties.getPreReserveHours()) });
+			if(hasPreReserved) {
+			%>
+				You can use this page to update or cancel your reservation. Please note that <b>your reservation will expire at
+				<%= CCFormatter.formatDeliveryTime(user.getReservation().getExpirationDateTime()) %> on <%= CCFormatter.formatDayName(user.getReservation().getExpirationDateTime()) %>
+				(<%= timeMsg %> prior to cutoff),</b> so be sure to complete checkout by that time to guarantee your timeslot remains available.
+				Timeslots unavailable for reservation now may become available at time of checkout.
+			<%} else { %>
+				You can use this page to place a standing weekly timeslot reservation or to reserve a time for just this week. Please note
+				that <b>delivery timeslot reservations expire <%= timeMsg %> prior to cutoff</b>, so be sure to complete checkout by that time
+				to guarantee your timeslot remains open. Timeslots unavailable for reservation now may become available at time of checkout.
+			
+			<%} if(user.isChefsTable()){ %>
+				<fd:IncludeMedia name="/media/editorial/site_pages/ct/preferred_access_timeslots.html" />
+			<%}%>	
+			<img height="1" border="0" width="693" src="/media_stat/images/layout/dotted_line.gif"><br><br>	
+		</td>
+	</tr>
 </table>
 
 <%// CONFIRMATION MESSAGE %>
@@ -51,10 +47,15 @@ if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)|| timeSlotCtx.equals(Ti
 			
 		%>
 		<%@ include file="/shared/includes/i_confirmation_messages.jspf"%>
-			<%}%>
+	<%}%>
+
 <!-- Error Messages -->
 <% String[] checkErrorType = {"deliveryTime", "reservationType", "reservation", "technical_difficulty", "addressId"}; %>
-    <fd:ErrorHandler result='<%=result%>' field='<%=checkErrorType%>' id='errorMsg'>
-		<%@ include file="/includes/i_timeslot_error_messages.jspf" %>
-    </fd:ErrorHandler>
-<%}}%>
+<fd:ErrorHandler result='<%=result%>' field='<%=checkErrorType%>' id='errorMsg'>
+	<%@ include file="/includes/i_timeslot_error_messages.jspf" %>
+</fd:ErrorHandler>
+
+<%
+	}
+}
+%>

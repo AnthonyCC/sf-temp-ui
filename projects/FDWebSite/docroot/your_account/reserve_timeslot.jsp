@@ -45,19 +45,19 @@ String actionName = request.getParameter("actionName");
     <tmpl:put name='content' direct='true'>
 	<fd:ReserveTimeslotController actionName="<%=actionName%>" result="result">
 	
-	
-
-<form name="reserveTimeslot" method="POST" action="/your_account/reserve_timeslot.jsp" name="reserveTimeslot">
-		<input type="hidden" name="chefstable" value="<%= user.isChefsTable() %>"/>
-
 	<%	
 		FDReservation rsv = user.getReservation();
 		boolean hasReservation = rsv != null && addressId.equals(rsv.getAddressId());
 	%>
+
+		<%//Finds the address & render the timeslots %>
+		<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
 	
-	<%//Finds the address & render the timeslots %>
-	<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
+<form name="reserveTimeslot" method="POST" action="/your_account/reserve_timeslot.jsp" name="reserveTimeslot">
+		<input type="hidden" name="chefstable" value="<%= user.isChefsTable() %>"/>
 	
+		<%//Render the timeslots %>
+		<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
 	
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="10">
 		<%//Reservation stuff%>

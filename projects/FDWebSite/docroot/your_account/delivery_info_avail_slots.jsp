@@ -67,6 +67,8 @@ SimpleDateFormat deliveryDayFormat = new SimpleDateFormat("EEE MM/d");
 				<%//Finds the address%>
 				<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
 
+				<%//Finds the address & render the timeslots %>
+				<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
 
 </tmpl:put>
 </tmpl:insert>

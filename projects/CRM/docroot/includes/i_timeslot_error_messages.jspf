@@ -10,14 +10,16 @@
 </tr>
 <tr>
     <td colspan="1" bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
-    <td colspan="1" bgcolor="#E7FAFA"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
+    <td colspan="1" bgcolor="#FFDAD7"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
 </tr>
 <tr>
     <td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
     <td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
     <td bgcolor="#FFFFFF">
-	<img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"><img src="/media_stat/images/layout/cccccc.gif" width="10" height="10" style="margin:0 5px;"></td>
-    <td class="text11gbold" width="100%" bgcolor=" #E7FAFA">
+	<img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0">
+	<img src="/media_stat/images/timeslots/error.gif" width="75" height="34" border="0" style="margin:0 5px;">
+    </td>
+    <td style="font-size: 10px; font-weight: bold; color: #333333; font-family: Verdana, Arial, sans-serif;" width="100%" bgcolor="#FFDAD7">
 			<div style="padding: 3px 5px 3px 5px"><%= errorMsg %></div>
 <%
     List<String> ERROR_LIST = (List<String>) request.getAttribute("errorList");
@@ -44,13 +46,13 @@
 	}
 %>
 	</td>
-    <td bgcolor="#E7FAFA"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
+    <td bgcolor="#FFDAD7"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
     <td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
 </tr>
 <tr>
     <td rowspan="2" colspan="2"><img src="/media_stat/images/layout/bottom_left_curve.gif" width="6" height="5" border="0"></td>
     <td bgcolor="#FFFFFF"  colspan="1"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
-    <td bgcolor="#E7FAFA"  colspan="1"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
+    <td bgcolor="#FFDAD7"  colspan="1"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
     <td rowspan="2" colspan="2"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="5" border="0"></td>
 </tr>
 <tr>

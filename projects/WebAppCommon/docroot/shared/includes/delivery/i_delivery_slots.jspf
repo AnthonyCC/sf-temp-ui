@@ -317,7 +317,7 @@ if (timeslots.size() > 0) {
 										stringBuffer.append("<div class=\"tsSelectedSlotPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">")
 											.append("<div><img src=\"/media_stat/images/timeslots/check_mark.gif\" width=\"17\" height=\"13\" border=\"0\"></div>")
 											.append("</div>");
-									}else if(request.getAttribute("SHOW_WINDOWS_STEERING")!=null && slot.getSteeringDiscount()>0) {
+									}else if(request.getAttribute("SHOW_WINDOWS_STEERING")!=null && "true".equals(request.getAttribute("SHOW_WINDOWS_STEERING")) && slot.getSteeringDiscount()>0) {
 										stringBuffer.append("<div class=\"tsDiscountPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
 											.append("<div>")
 											.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
@@ -627,7 +627,7 @@ if (timeslots.size() > 0) {
 										stringBuffer.append("<div class=\"tsSelectedSlotPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">")
 											.append("<div><img src=\"/media_stat/images/timeslots/check_mark.gif\" width=\"17\" height=\"13\" border=\"0\"></div>")
 											.append("</div>");
-									}else if(request.getAttribute("SHOW_WINDOWS_STEERING")!=null && slot.getSteeringDiscount()>0) {
+									}else if(request.getAttribute("SHOW_WINDOWS_STEERING")!=null && "true".equals(request.getAttribute("SHOW_WINDOWS_STEERING")) && slot.getSteeringDiscount()>0) {
 										stringBuffer.append("<div class=\"tsDiscountPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
 											.append("<div>")
 											.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")

@@ -91,8 +91,8 @@
 var zonePromoString="";
 var zonePromoEnabled=false;
 <%if(zonePromoAmount>0){ %>
-zonePromoString="<%=zonePromoString %>";
-zonePromoEnabled=true;
+	zonePromoString="<%=zonePromoString %>";
+	zonePromoEnabled=true;
 <%} %>
 </script>
 

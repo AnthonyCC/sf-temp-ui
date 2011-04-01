@@ -81,12 +81,16 @@ span.time {
 	position:relative;
 	top:1px;
 }
+.content_fixed {
+	padding:10px 0 0 200px;
+}
+
 </style>
 
 	<div class="sub_nav">
 		<span class="sub_nav_title">Available Delivery TimeSlots</span> | <a href="/main/delivery_check_slots.jsp">Check available Slots for a new address</a>
 	</div>
-	<div class="content_fixed">
+	<div class="content_fixed" align="center">
 	<table width="90%" cellpadding="0" cellspacing="0" border="0">
 		<tr>
 			<td colspan="2" class="text12" align="left" width="29%"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
@@ -106,6 +110,8 @@ span.time {
 		<%//Finds the address%>
 		<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
 		
+		<%//Render timeslots %>
+		<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
 
 <%  
    if(user.isHomeUser())

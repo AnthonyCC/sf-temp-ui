@@ -14,48 +14,15 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 	address = AddressFinder.getShipToAddress(user, addressId, timeSlotCtx, request);
 %>
 
-<fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%=address%>" deliveryInfo="<%=true%>" timeSlotContext="<%=timeSlotCtx %>">
-	<%	
-		FDDeliveryTimeslotModel deliveryModel = user.getDeliveryTimeslotModel();
-		
-		List<FDTimeslotUtil> timeslotList = deliveryModel.getTimeslotList();
-		Map zones = deliveryModel.getZones();
-		boolean zoneCtActive = deliveryModel.isZoneCtActive();
-		List messages = deliveryModel.getGeoRestrictionmessages();
-
-		String selectedSlotId = deliveryModel.getTimeSlotId();
-		String preReserveSlotId = deliveryModel.getPreReserveSlotId();
-		boolean hasPreReserved = deliveryModel.isPreReserved();
-		boolean isForAdvOrdSlots = false;
-		boolean isForNewAdvOrdSlots = false;
-		boolean defaultColExp = false;
-		//get amount for zone promotion
-		double zonePromoAmount = AddressFinder.getZonePromoAmount(user, address, timeSlotCtx);
-		String zonePromoString=null;
-
-		//if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS) 
-		//		|| timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM) 
-		//			|| timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)) {
-		
-			if(zonePromoAmount >0) {
-				zonePromoString = CCFormatter.formatQuantity(zonePromoAmount);
-				request.setAttribute("SHOW_WINDOWS_STEERING","true");
-			}
-		//}
-	%>
-
-
-
 <%if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM) && !timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)){%>
 
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
-<% if (user.isChefsTable()) { %>
+
 	<%@ include file="/shared/includes/i_loyalty_bar.jspf" %> <br>
-<% } %>
 
-<table width="693" cellpadding="0" cellspacing="0" border="0">
+	<table width="693" cellpadding="0" cellspacing="0" border="0">
 		
 			<%if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS) ||(timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))){ %>
 				<tr>
@@ -79,10 +46,10 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 				       <td>&nbsp;</td>
 			<%} else if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)){%>
 				<tr>
-					<td colspan="3" class="title16"><%=(hasPreReserved) ? "Your Delivery Timeslot Is Reserved" : "Reserve a Delivery Time"%><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td>
+					<td colspan="3" class="title16"><%=(user != null && user.getDeliveryTimeslotModel() != null && user.getDeliveryTimeslotModel().isPreReserved()) ? "Your Delivery Timeslot Is Reserved" : "Reserve a Delivery Time"%><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td>
 				</tr>
 				<tr>
-					<td colspan="3" class="text12"><%= (hasPreReserved) ? "Displayed below is your current delivery reservation for" : "Displayed below are the timeslots currently available to be reserved for"%>:</td>
+					<td colspan="3" class="text12"><%= (user != null && user.getDeliveryTimeslotModel() != null && user.getDeliveryTimeslotModel().isPreReserved()) ? "Displayed below is your current delivery reservation for" : "Displayed below are the timeslots currently available to be reserved for"%>:</td>
 				</tr>
 				<tr>
 				       <td>&nbsp;</td>
@@ -142,7 +109,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 						<%}else if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS)){%>
 							<a href="/your_account/delivery_info_check_slots.jsp" class="text11">change address</a>
 						<%}else if(timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM) && isCheckAddress){%>
-							<a href="/main/delivery_available_slots.jsp" class="order_detail">View all addresses for this customer</a>
+							<br/><a href="/main/delivery_available_slots.jsp" class="order_detail">View all addresses for this customer</a>
 						<%}%>
 					</td>
 					<td>&nbsp;</td>
@@ -242,128 +209,5 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 
 <%}%>
 
-<%@ include file="/shared/includes/delivery/i_timeslot_header.jspf"%>
-
-<%if(!timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)&& !timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM)){%>
-		<%@ include file="/shared/includes/delivery/i_loyalty_banner.jspf" %>
-<%}%>
-<img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br>
-<!-- GEO Restriction Message Added -->
-<% if(messages != null && messages.size() >= 1) { %>
-	<%@ include file="/shared/includes/delivery/i_geowarning_message.jspf"%>
-	
-<% } %>
-<img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br><br>
-<!-- Error Messages -->
-
-<%if(DeliveryTimeSlotResult != null && !DeliveryTimeSlotResult.isSuccess() ){%>
-	<fd:ErrorHandler result='<%=DeliveryTimeSlotResult%>' name='deliveryTime' id='errorMsg'>
-		<%@ include file="/includes/i_timeslot_error_messages.jspf" %>
-	</fd:ErrorHandler>
-<%}%>
-
-<!-- ~~~~~~~~~~~~~~~~~~~~~~ LEGEND DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ -->
-	<table cellpadding="0" cellspacing="0" width="693" border="0" id="legendCheckout">
-		<tr>
-			<td>
-				<table cellpadding="0" cellspacing="0" width="675">
-					<tr>
-						<td valign="middle" align="right">
-					 	<table>
-							<tr>
-							<!--		<%if(user.isChefsTable() && user.getTotalCTSlots()>0){%>
-									<td>
-										<img src="/media/editorial/timeslots/images/star_ct_delivery_time.gif" WIDTH="15" HEIGHT="18" border="0" alt="">
-									</td>
-									<td>
-										<div onClick="showLegendOverlay('/media/editorial/timeslots/msg_chefstable_timeslot.html','Chef\'s Table Information'); return false;"><%= FDStoreProperties.getChefstableLabel()%></div>
-									</td>
-								<%}%>
-								<%if(deliveryModel.getMaxDiscount()>0){%>
-									<td>
-										<img src="/media/editorial/timeslots/images/dollar_discount_delivery_time.gif" WIDTH="15" HEIGHT="18" border="0" alt="">
-									</td>
-									<td>
-										<div onClick="showLegendOverlay('/media/editorial/timeslots/msg_discount_timeslot.html','Promotion Discount'); return false;">
-										<%= FDStoreProperties.getPromotionLabel()%></div>
-									</td>
-								<%}%> -->
-								<%if(deliveryModel.getEcoFriendlyCount() > 0){%>
-									<td>
-										<img src="/media_stat/images/timeslots/ecofriendly_leaf.gif" WIDTH="16" HEIGHT="16" border="0">
-									</td>
-									<td>
-										<div onClick="showLegendOverlay('/media/editorial/timeslots/msg_ecofriendly_timeslot.html','Eco-Friendly'); return false;"><%= FDStoreProperties.getEcoFriendlyLabel()%></div>
-									</td>
-								<%}%>
-								<%if(deliveryModel.getNeighbourhoodCount() > 0){%>
-									<td>
-										<img src="/media_stat/images/timeslots/neighbourhood_favs.gif" WIDTH="15" HEIGHT="20" border="0">
-									</td>
-									<td>
-										<div onClick="showLegendOverlay('/media/editorial/timeslots/msg_neighbourhood_timeslot.html','My Building Favourites'); return false;"><%= FDStoreProperties.getMyBuildingFavsLabel()%></div>
-									</td>
-								<%}%>
-								<%if(deliveryModel.getAlcoholRestrictedCount() > 0){%>
-									<td>
-										<img src="/media_stat/images/timeslots/no_alcohol.gif" WIDTH="16" HEIGHT="16" border="0">
-									</td>
-									<td> 
-										<div onClick="showLegendOverlay('/media/editorial/timeslots/msg_alcoholrestriction_timeslot.html','Alcohol Delivery Restriction'); return false;"><%= FDStoreProperties.getAlcoholRestrictedLabel()%></div>
-									</td>
-								<%}%>
-							</tr>
-						</table>
-						</td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-	</table>
-	<img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br><br>
-<!-- ~~~~~~~~~~~~~~~~~~~~~~ END LEGEND DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ -->
-
-<!-- ~~~~~~~~~~~~~~~~~~~~~~ START TIMESLOT GRID ~~~~~~~~~~~~~~~~~~~~~~ -->
-<table CELLSPACING="0" CELLPADDING="0" id="tsContainer" width="735">
-	<logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.util.FDTimeslotUtil" indexId="idx">
-		<tr>
-			<td>
-			<% // fix for advance orders showing on this page
-			if (idx.intValue() == timeslotList.size()-1 && timeslotList.size() > idx.intValue()) { %>
-				<%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
-			<% } %>
-			</td>
-		</tr>
-	</logic:iterate>
-</table>
-<!-- ~~~~~~~~~~~~~~~~~~~~~~ END TIMESLOT GRID ~~~~~~~~~~~~~~~~~~~~~~ -->
-
-<script language="javascript">
-	
-	var c2ctimeslot = document.getElementById("c2cnextdaytimeslot");	
-	var timeslotvalue=c2ctimeslot.value;	
-	if(timeslotvalue==1){
-		if(document.getElementById("loyalty1")){
-			document.getElementById("loyalty1").style.display="block";
-		}
-		if(document.getElementById("loyalty3")){
-			document.getElementById("loyalty3").style.display="block";
-		}
-	}else{
-		if(document.getElementById("loyalty2")){
-			document.getElementById("loyalty2").style.display="block";
-		}
-	}
-	
-</script>
 
 
-<script type="text/javascript" language="javascript">
-	var zonePromoString=""; 
-	var zonePromoEnabled=false;
-	<%if(zonePromoAmount>0) { %>
-		zonePromoString="<%=zonePromoString %>"; 
-		zonePromoEnabled=true;
-	<%} %>
-</script>
-</fd:DeliveryTimeSlot>
