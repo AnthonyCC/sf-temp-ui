@@ -580,7 +580,7 @@ if(showAltDelivery){
 		<td width="620" class="text12"><b>Doorman</b> (Please make sure doorman will accept packages)<br></td>
 	</tr>
 	<tr valign="top">
-		<td width="55" align="right"><input type="radio" class="radio" name="<%=EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode() %>" value="<%=EnumUserInfoName.LEAVE_WITH_NEIGHBOR.getCode()%>" <%=deliverToNeighbor==true?"checked":""%>></td>
+		<td width="55" align="right" valign="middle"><input type="radio" class="radio" name="<%=EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode() %>" value="<%=EnumUserInfoName.LEAVE_WITH_NEIGHBOR.getCode()%>" <%=deliverToNeighbor==true?"checked":""%>></td>
 		<td width="620" class="text12">
 			<font class="space2pix"><br></font><b>Someone else in your building</b>&nbsp;&nbsp;&nbsp;<br>
 			Must be in your building, please enter all contact info below.<br></td> 
