@@ -1,5 +1,5 @@
 --
--- Change cohort distributions according to requirements of the ticket APPDEV-1674
+-- Change cohort distributions according to requirements of the ticket APPDEV-1764
 --
 -- The desired configuration is (as per Viktor):
 --   sc_related2: C3, C4, C10, C19
