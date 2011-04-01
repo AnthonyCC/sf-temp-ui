@@ -3,9 +3,9 @@
 --
 
 -- Drop new variants
-delete from CUST.SS_VARIANT_ASSIGNMENT where VARIANT_ID in ('ymal_ss_c3', 'sc_related_2');
-delete from CUST.SS_VARIANT_PARAMS where id in ('ymal_ss_c3', 'sc_related_2', 'sc_related_merch');
-delete from CUST.SS_VARIANTS where id in ('ymal_ss_c3', 'sc_related_2', 'sc_related_merch');
+delete from CUST.SS_VARIANT_ASSIGNMENT where VARIANT_ID in ('ymal_ss_c3', 'sc_related2');
+delete from CUST.SS_VARIANT_PARAMS where id in ('ymal_ss_c3', 'sc_related2', 'sc_related_merch');
+delete from CUST.SS_VARIANTS where id in ('ymal_ss_c3', 'sc_related2', 'sc_related_merch');
 
 
 --
