@@ -139,8 +139,10 @@ if (timeslots.size() > 0) {
 							.append("</tr>")
 							.append("<tr>")
 								.append("<td align=\"center\" colspan=\"3\" valign=\"middle\">")
+								.append("<div class=\"tsHeadE\" id=\"ts_d"+dayIndex+"_ts_hE_content\" style=\"display: none;\">")
 								.append("<div class=\"tsDayNameE\"><b>"+TimeslotPageUtil.formatDayNameExp(day)+"</b></div>")
 								.append("<div class=\"tsDayDateE\">"+TimeslotPageUtil.formatDeliveryDate(day)+"</div>")
+								.append("</div>")
 								.append("</td>")
 							.append("</tr>")
 							.append("</table>")
@@ -296,6 +298,16 @@ if (timeslots.size() > 0) {
 										stringBuffer.append("<div class=\"tsSoldoutPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
 											.append("<div><img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\"><div><font class=\"tsSoldoutE\">SOLD&nbsp;OUT</font></div></div>")
 											.append("</div>");
+									}else if(isSelectedSlotId){
+										stringBuffer.append("<div class=\"tsSelectedSlotPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
+											.append("<div>")
+											.append("<img src=\"/media_stat/images/timeslots/check_mark.gif\" width=\"17\" height=\"13\" border=\"0\">")
+											.append("<font class=\"tsSelectedSlotE\">Selected</font>")
+											.append("</div>")
+											.append("</div>");
+										stringBuffer.append("<div class=\"tsSelectedSlotPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">")
+											.append("<div><img src=\"/media_stat/images/timeslots/check_mark.gif\" width=\"17\" height=\"13\" border=\"0\"></div>")
+											.append("</div>");
 									}else if(isPreReservedSlotId && hasPreReserved ){
 										stringBuffer.append("<div class=\"tsReservationPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
 											.append("<div>");
@@ -306,16 +318,6 @@ if (timeslots.size() > 0) {
 											}
 											stringBuffer.append("<font class=\"tsReservationE\">Reserved</font>")
 												.append("</div>")
-											.append("</div>");
-									}else if(isSelectedSlotId){
-										stringBuffer.append("<div class=\"tsSelectedSlotPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
-											.append("<div>")
-											.append("<img src=\"/media_stat/images/timeslots/check_mark.gif\" width=\"17\" height=\"13\" border=\"0\">")
-											.append("<font class=\"tsSelectedSlotE\">Selected</font>")
-											.append("</div>")
-											.append("</div>");
-										stringBuffer.append("<div class=\"tsSelectedSlotPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">")
-											.append("<div><img src=\"/media_stat/images/timeslots/check_mark.gif\" width=\"17\" height=\"13\" border=\"0\"></div>")
 											.append("</div>");
 									}else if(request.getAttribute("SHOW_WINDOWS_STEERING")!=null && "true".equals(request.getAttribute("SHOW_WINDOWS_STEERING")) && slot.getSteeringDiscount()>0) {
 										stringBuffer.append("<div class=\"tsDiscountPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
@@ -467,7 +469,7 @@ if (timeslots.size() > 0) {
 		%>
 			<logic:iterate id="slot" collection="<%= timeslots.getTimeslotsForDayAndShift(day,EnumDayShift.DAY_SHIFT_PM.getName()) %>" type="com.freshdirect.fdstore.FDTimeslot">
 			<%
-				stringBuffer.append("<tr id=\""+((isForAdvOrdSlots || isForNewAdvOrdSlots)? "coAdv_ts"+slotIndex+"_row":"co_d"+dayIndex+"_ts"+slotIndex+"_row")+"\" style=\"display: none;\">");
+				stringBuffer.append("<tr id=\""+((isForAdvOrdSlots || isForNewAdvOrdSlots)? "coAdv_d"+dayIndex+"_ts"+slotIndex+"_row":"co_d"+dayIndex+"_ts"+slotIndex+"_row")+"\" style=\"display: none;\">");
 				
 					boolean isPreReservedSlotId = slot.getTimeslotId().equals(preReserveSlotId);
 					boolean isSelectedSlotId = slot.getTimeslotId().equals(selectedSlotId);
@@ -606,6 +608,16 @@ if (timeslots.size() > 0) {
 										stringBuffer.append("<div class=\"tsSoldoutPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
 											.append("<div><img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\"><div><font class=\"tsSoldoutE\">SOLD&nbsp;OUT</font></div></div>")
 											.append("</div>");
+									}else if(isSelectedSlotId){
+										stringBuffer.append("<div class=\"tsSelectedSlotPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
+											.append("<div>")
+											.append("<img src=\"/media_stat/images/timeslots/check_mark.gif\" width=\"17\" height=\"13\" border=\"0\">")
+											.append("<font class=\"tsSelectedSlotE\">Selected</font>")
+											.append("</div>")
+											.append("</div>");
+										stringBuffer.append("<div class=\"tsSelectedSlotPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">")
+											.append("<div><img src=\"/media_stat/images/timeslots/check_mark.gif\" width=\"17\" height=\"13\" border=\"0\"></div>")
+											.append("</div>");
 									}else if(isPreReservedSlotId && hasPreReserved ){
 										stringBuffer.append("<div class=\"tsReservationPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
 											.append("<div>");
@@ -616,16 +628,6 @@ if (timeslots.size() > 0) {
 											}
 											stringBuffer.append("<font class=\"tsReservationE\">Reserved</font>")
 												.append("<div>")
-											.append("</div>");
-									}else if(isSelectedSlotId){
-										stringBuffer.append("<div class=\"tsSelectedSlotPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
-											.append("<div>")
-											.append("<img src=\"/media_stat/images/timeslots/check_mark.gif\" width=\"17\" height=\"13\" border=\"0\">")
-											.append("<font class=\"tsSelectedSlotE\">Selected</font>")
-											.append("</div>")
-											.append("</div>");
-										stringBuffer.append("<div class=\"tsSelectedSlotPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">")
-											.append("<div><img src=\"/media_stat/images/timeslots/check_mark.gif\" width=\"17\" height=\"13\" border=\"0\"></div>")
 											.append("</div>");
 									}else if(request.getAttribute("SHOW_WINDOWS_STEERING")!=null && "true".equals(request.getAttribute("SHOW_WINDOWS_STEERING")) && slot.getSteeringDiscount()>0) {
 										stringBuffer.append("<div class=\"tsDiscountPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
@@ -775,7 +777,7 @@ if (timeslots.size() > 0) {
 	stringBuffer.append("<tr>");
 
 	for(Date day: days){
-		stringBuffer.append("<td valign=\"top\">");
+		stringBuffer.append("<td valign=\"top\" class=\"footer_container\">");
 				stringBuffer.append("<div id=\"ts_d"+fdayIndex+"_ts_fE\" style=\"display: none;\">")
 							.append("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">")
 								.append("<tr>")
@@ -824,27 +826,27 @@ and the Element.Morph effect to use their attributes instead of passing them eac
 <% } %>
 
 <%
-Calendar nextDayVal = Calendar.getInstance();
-nextDayVal.add(Calendar.DATE, 1);
- if(address != null) {
- 	try { 
-	  	DlvZoneInfoModel tmpModel = FDDeliveryManager.getInstance().getZoneInfo(address, nextDayVal.getTime());
-	  	if(tmpModel != null) {
-	  		String defZoneCode = tmpModel.getZoneCode();
-	  		if(defZoneCode != null) { %>
-	  			<img width="1" height="1" border="0" alt="" src="/media_stat/images/template/tracker.gif?datakey=zone_code&dataval=<%= defZoneCode %>&refid=<%= System.currentTimeMillis() %>"/>		
-		    <% }
-	  	}	  		 	
-	 } catch(Exception exp) {
-	 	// Don't have to worry about invalid addresses for zone check
-	 } 	 
-}
+	Calendar nextDayVal = Calendar.getInstance();
+	nextDayVal.add(Calendar.DATE, 1);
+	 if(address != null) {
+		try { 
+			DlvZoneInfoModel tmpModel = FDDeliveryManager.getInstance().getZoneInfo(address, nextDayVal.getTime());
+			if(tmpModel != null) {
+				String defZoneCode = tmpModel.getZoneCode();
+				if(defZoneCode != null) { %>
+					<img width="1" height="1" border="0" alt="" src="/media_stat/images/template/tracker.gif?datakey=zone_code&dataval=<%= defZoneCode %>&refid=<%= System.currentTimeMillis() %>"/>		
+<%				}
+			}
+		 } catch(Exception exp) {
+			// Don't have to worry about invalid addresses for zone check
+		 } 	 
+	}
 
- request.setAttribute("isNextDayTimeSlotNotAvailable", isNextDayTimeSlotNotAvailable);
- if(ClickToCallUtil.evaluateClick2CallInfoDisplay(user,address) &&(!ClickToCallUtil.isNextDayTimeSlotsCheckRequired() ||(ClickToCallUtil.isNextDayTimeSlotsCheckRequired() && isNextDayTimeSlotNotAvailable))){
+	request.setAttribute("isNextDayTimeSlotNotAvailable", isNextDayTimeSlotNotAvailable);
+	if(ClickToCallUtil.evaluateClick2CallInfoDisplay(user,address) &&(!ClickToCallUtil.isNextDayTimeSlotsCheckRequired() ||(ClickToCallUtil.isNextDayTimeSlotsCheckRequired() && isNextDayTimeSlotNotAvailable))){
  %>
-<input type="hidden" id="c2cnextdaytimeslot" name="c2cnextdaytimeslot" value="1"/>
-<% } else { %>
-<input type="hidden" id="c2cnextdaytimeslot" name="c2cnextdaytimeslot" value="0"/>
+		<input type="hidden" id="c2cnextdaytimeslot" name="c2cnextdaytimeslot" value="1"/>
+<%	} else { %>
+		<input type="hidden" id="c2cnextdaytimeslot" name="c2cnextdaytimeslot" value="0"/>
 <% } %>
 

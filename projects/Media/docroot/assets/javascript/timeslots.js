@@ -1,6 +1,10 @@
 var styleStrExp = '';
 var styleStrCon = '';
 var globalTS = -1;
+var expandDuration = 0; //seconds
+var appearDuration = 0.5; //seconds
+var contractDuration = 1; //seconds
+var timedExpandWait = 500; //ms
 
 //morph effect will match each of these styles from ref elem.
 var styleArr = [];
@@ -13,10 +17,12 @@ function buildStyleStr(ref) {
 
 	var styleString = '';
 	for (var i=0; i < styleArr.length; i++)	{
-		styleString += styleArr[i];
-		styleString += ':';
-		styleString += $(ref).getStyle(styleArr[i]);
-		styleString += ';';
+		if ($(ref).getStyle) {
+			styleString += styleArr[i];
+			styleString += ':';
+			styleString += $(ref).getStyle(styleArr[i]);
+			styleString += ';';
+		}
 	}
 
 	return styleString;
@@ -250,7 +256,7 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 			}
 			//expanded
 			if ($('ts_d'+d+'_ts_hE')) {
-				$('ts_d'+d+'_ts_hE').show();
+				//$('ts_d'+d+'_ts_hE').show();
 			}
 			//line fix
 			if ($('ts_d'+d+'_ts_header')) {
@@ -279,7 +285,7 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 					}
 				}
 
-				if (refDataCur[d][1][t]) {
+				if (refDataCur[d][1][t] != 'undefined' && refDataCur[d][1][t] != '') {
 					if ($('co_d'+d+'_ts'+t)) {
 						$('co_d'+d+'_ts'+t).show();
 						//rows
@@ -289,8 +295,8 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 					}
 				}else{
 					//rows
-					if ($('co'+advId+'_ts'+t+'_row')) {
-						$('co'+advId+'_ts'+t+'_row').hide();
+					if ($('co'+advId+'_d'+d+'_ts'+t+'_row')) {
+						$('co'+advId+'_d'+d+'_ts'+t+'_row').hide();
 					}
 				}
 				//radios
@@ -384,8 +390,8 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 						$('co_d'+d+'_ts'+t).hide();
 					}
 				}
-				if ($('co_d'+d+'_ts'+t+'_row')) {
-					$('co_d'+d+'_ts'+t+'_row').hide();
+				if ($('co'+advId+'_d'+d+'_ts'+t+'_row')) {
+					$('co'+advId+'_d'+d+'_ts'+t+'_row').hide();
 				}
 				if ($('co_d'+d+'_ts'+t)) {
 					$('co_d'+d+'_ts'+t).parentNode.className = 'cutoff';
@@ -484,7 +490,7 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 		for (d = 0; d < refDataCur.length; d++) {
 			//always add borders for outer cutoffs, and show row 0
 			if ($('co'+advId+'_d'+d+'_ts0_row')) {
-				$('co'+advId+'_d'+d+'_ts0_row').show();
+				if (d != day) { $('co'+advId+'_d'+d+'_ts0_row').show(); }
 				if ($('co'+advId+'_d'+d+'_ts0_row').childNodes[0].className == 'cutoff' && $('co'+advId+'_d'+d+'_ts0_row').childNodes[0].style.display == 'none') {
 					$('co'+advId+'_d'+d+'_ts0_row').childNodes[0].show();
 					$('co'+advId+'_d'+d+'_ts0_row').childNodes[0].style.height = '27px';
@@ -495,8 +501,8 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 		//do the same for the opposite
 		for (t = 0; t < refDataCur[sequenceKeyTemp][1].length; t++) {
 			if ($('co_d'+sequenceKeyTemp+'_ts'+t)) {
-				if ($('co_d'+lbnd+'_ts'+t)) {
-					$('co_d'+lbnd+'_ts'+t).parentNode.style.borderLeft = '1px solid #ccc';
+				if ($('co_d'+sequenceKeyTemp+'_ts'+t)) {
+					$('co_d'+sequenceKeyTemp+'_ts'+t).parentNode.style.borderLeft = '1px solid #ccc';
 				}
 				if ($('co_d'+(refDataCur.length-1)+'_ts'+t)) {
 					$('co_d'+(refDataCur.length-1)+'_ts'+t).parentNode.style.borderRight = '1px solid #ccc';
@@ -542,9 +548,9 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 					lastShownTS = $('ts_d'+day+'_ts'+t);
 				}
 			}
-			//if we hid rows, find missing height and make last row match
+			//if we hide rows, find missing height and make last row match
 			if (rowsHidden > 0 && lastShownTS !== '') {
-				lastShownTS.style.height = (rowsHidden*31)+31+rowsHidden+3+'px';
+				lastShownTS.style.height = getCalcdRowHeight(rowsHidden, null, true, 1);
 			}
 		}else{
 			//hide rows in expanded view
@@ -588,9 +594,9 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 					parentTable = parentTable.parentNode;
 				}
 				if ($('ts_d'+day+'_ts0').style.height != '100%') {
-					$('ts_d'+day+'_ts0').style.height = getCalcdRowHeight(refDataCur[day][0].length, false, true);
+					$('ts_d'+day+'_ts0').style.height = getCalcdRowHeight(refDataCur[day][0].length, null, false, 1);
 				}
-				parentTable.style.height = getCalcdRowHeight(refDataCur[day][0].length, false, true, 1);
+				parentTable.style.height = getCalcdRowHeight(refDataCur[day][0].length, null, false, 1);
 			}
 
 		}
@@ -610,8 +616,8 @@ function getCalcdRowHeight(numRowsArg, pxEachArg, addOneArg, pxSubtractArg) {
 	var numRows = numRowsArg || 1;
 	var pxEach = pxEachArg || 32;
 	var addOne = addOneArg || false;
-	var pxTotal;
 	var pxSubtract = pxSubtractArg || 0;
+	var pxTotal;
 
 	pxTotal = pxEach * numRows;
 	if (addOne) { pxTotal = pxTotal + pxEach; }
@@ -729,7 +735,7 @@ function getReorganizerData(refDataCurArg, daypartIndexCurArg, dayArg) {
 				//reset reorgs
 				if ($('ts_d'+d+'_ts'+t)) {
 					if ($('ts_d'+d+'_ts'+t).rowSpan > 1 || refDataCur[d][0][t] == '') { //blanks only
-						$('ts_d'+d+'_ts'+t).innerHTML = '<div class="tsContent 1"><div class="fleft ts_rb" id="ts_d'+d+'_ts'+t+'_rbCont"></div><div class="fleft tsCont " id="ts_d'+d+'_ts'+t+'_time" style="width: 80px;">&nbsp;</div></div>';
+						$('ts_d'+d+'_ts'+t).innerHTML = '<div class="tsContent "><div class="fleft ts_rb" id="ts_d'+d+'_ts'+t+'_rbCont"></div><div class="fleft tsCont " id="ts_d'+d+'_ts'+t+'_time" style="width: 80px;">&nbsp;</div></div>';
 					}
 					$('ts_d'+d+'_ts'+t).rowSpan = 1;
 					$('ts_d'+d+'_ts'+t).show();
@@ -833,6 +839,7 @@ function tsReorganizer(reorganizer) {
 
 var lastTS_expanded = -1;
 function tsExpand(elemIdArg, autoCheckRadioArg, retryArg) {
+	if (lastTS_expanded != -1 && parseDay(elemIdArg) == parseDay(lastTS_expanded)) { return true; }
 	var retry = true;
 	if (retryArg !== undefined) { retry = retryArg; }
 	var elemId = elemIdArg || '';
@@ -861,6 +868,7 @@ function tsExpand(elemIdArg, autoCheckRadioArg, retryArg) {
 
 		//set as last expanded
 		lastTS_expanded = elemId;
+		set_02_last = elemId;
 
 		var day = parseDay(elemId); //should now be the day index
 		
@@ -875,12 +883,25 @@ function tsExpand(elemIdArg, autoCheckRadioArg, retryArg) {
 			}
 		}
 
-		if ($(elemId)) {
-			if ( parseDay(elemId) < 10) { globalTS  = elemId; }
-			$(elemId).morph(styleStrExp);
-			//hide bottom border on final ts of displayed ts
-			$(elemId).style.borderBottomWidth = '0';
-		}
+		if ( parseDay(elemId) < 10) { globalTS  = elemId; }
+
+		$('ts_d'+day+'_ts_hE').show();
+		$(elemId).morph(styleStrExp, {
+			duration: expandDuration,
+			beforeStart: function() {
+				$('ts_d'+day+'_ts_hE').morph(styleStrExp, { duration: expandDuration });
+				$('ts_d'+day+'_ts_hE_content').hide();
+				$('ts_d'+day+'_tsTable').hide();
+			},
+			afterFinish: function() {
+				$('ts_d'+day+'_ts_hE_content').appear({duration: appearDuration});
+				$('ts_d'+day+'_tsTable').appear({duration: appearDuration});
+			}
+		});
+
+		//hide bottom border on final ts of displayed ts
+		$(elemId).style.borderBottomWidth = '0';
+
 	}else{
 		if (retry) {
 			//run through solve display and try again
@@ -898,6 +919,7 @@ function tsExpand(elemIdArg, autoCheckRadioArg, retryArg) {
  *	exceptId = an id of a child div under the parentId to NOT contract
  */
 function tsContractAll(parentIdArg, exceptIdArg) {
+	if (parseDay(set_02) == -1 || parseDay(set_02) == parseDay(set_02_last)) { return true; }
 	var parentId = parentIdArg || '';
 	var exceptId = exceptIdArg || '';
 	var refs = $$('td.tsCol'); //style ref
@@ -924,14 +946,14 @@ function tsContractAll(parentIdArg, exceptIdArg) {
 		if ($(refs[i]).id != exceptId && ($(refs[i]).descendantOf(parentId) || $(refs[i]).id == parentId) ) {
 			//skip exceptions
 			if (($(refs[i]).id).indexOf(conExcepDay) == -1) {
-				$(refs[i]).morph(styleStrCon);
+				$(refs[i]).morph(styleStrCon, {duration: contractDuration});
 			}
 			//children
 			var refsChildren = $(refs[i]).getElementsByTagName('table');
 			for (var j=0; j< refsChildren.length; j++) {
 				//skip exceptions
 				if (($(refsChildren[j]).id).indexOf(conExcepDay) == -1) {
-					$(refsChildren[j]).morph(styleStrCon);
+					$(refsChildren[j]).morph(styleStrCon, {duration: contractDuration});
 				}
 			}
 		}
@@ -940,9 +962,12 @@ function tsContractAll(parentIdArg, exceptIdArg) {
 }
 
 function defaultColumnExpand(dayIndex, slotIndex) {
-	tsExpand('ts_d'+dayIndex+'_ts'+slotIndex);
+	if(dayIndex == 0 && slotIndex == 0){
+		tsExpand('ts_d'+dayIndex+'_ts'+slotIndex, false);
+	}else{
+		tsExpand('ts_d'+dayIndex+'_ts'+slotIndex);
+	}
 }
-
 
 function hideAdvanceOrder() { 
 	$("timeslots_grid0").toggle();
@@ -950,7 +975,7 @@ function hideAdvanceOrder() {
 	if($("timeslots_grid2")){
 		$("timeslots_grid1").toggle();
 	}
-	
+
 	if($("timeslots_grid0").style.display != "none") {
 		$('displayAdvanceOrderGrid').innerHTML = "Hide Details";
 	}else{
@@ -999,24 +1024,36 @@ function showLegendOverlay(mediaPath, title) {
 					closeValue: '<img src="/media_stat/images/giftcards/your_account/close.gif" border="0" alt="" />',
 					closeString: 'Close Window',
 					title: title,
-					overlayOpacity: .30,
-					overlayClose: false,
+					overlayOpacity: .40,
+					overlayClose: true,
 					width: contentWidth,
 					transitions: false,
 					autoFocusing: false,
 					centered: true,
-					afterLoad: function() { $('MB_content').style.overflow='hidden';window.scrollTo(0,0); },
+					afterLoad: function() { $('MB_content').style.overflow='hidden'; },
 					afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
 				})
 		
 }
 
 var timer;
-var timedExpandWait = 1000; //ms
 clickOnly = false;
 
 /* add even listeners for mouse over expands, needs to be on window load for refData */
 Event.observe(window, 'load', function() {
+	
+	//return $ to control of prototype
+	$ = function $(element) {
+	  if (arguments.length > 1) {
+		for (var i = 0, elements = [], length = arguments.length; i < length; i++)
+		  elements.push($(arguments[i]));
+		return elements;
+	  }
+	  if (Object.isString(element))
+		element = document.getElementById(element);
+	  return Element.extend(element);
+	}
+
 	var refDataCur = null;
 
 	//add adv ts events (if they exist)
@@ -1036,6 +1073,8 @@ Event.observe(window, 'load', function() {
 				createMouseOverOutEvents('ts_d'+d+'_ts'+t, 'tsContainer');
 				createMouseOverOutEvents('co_d'+d+'_ts'+t, 'tsContainer');
 			}
+			//radio buttons
+			createMouseOverOutEvents('ts_d'+d+'_ts'+t+'_rb', 'tsContainer');
 		}
 	}
 
@@ -1072,22 +1111,29 @@ function createMouseOverOutEvents(elemIdArg, parentIdArg) {
 	}
 }
 
+var set_01 = '';
+var set_02 = '';
+var set_02_last = '';
 function setter(e, set01, set02) {
 	if (!clickOnly) {
 		set_01 = set01;
 		set_02 = set02;
-		timer=setTimeout('timedExpand()', timedExpandWait);
+		timer = setTimeout('timedExpand()', timedExpandWait);
 	}
 }
 
 function forgetter() {
-	set_01 = '';
-	set_02 = '';
+	set_01 = '-2';
+	set_02 = '-2';
 	clearTimeout(timer);
 }
 
 function timedExpand() {
-	tsContractAll(set_01, set_02);
-	tsExpand(set_02, false);
+	//check that it's not the same element and we're not in the same column
+	if (set_02_last != set_02 && parseDay(set_02) != parseDay(set_02_last)) {
+		tsContractAll(set_01, set_02);
+		tsExpand(set_02, false);
+		set_02_last = set_02;
+	}
 	forgetter();
 }

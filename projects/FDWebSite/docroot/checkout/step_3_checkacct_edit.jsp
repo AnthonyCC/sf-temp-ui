@@ -67,10 +67,10 @@ Learn more about how this service works.
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675">
 	<TR VALIGN="TOP">
 			<TD WIDTH="675" ALIGN="RIGHT">
-				<a href="<%=cancelPage%>"><img src="/media_stat/images/buttons/cancel.gif" WIDTH="72" HEIGHT="19"  HSPACE="19" VSPACE="4" alt="CANCEL" border="0"></a>
+				<a href="<%=cancelPage%>"><img src="/media_stat/images/buttons/cancel.gif" WIDTH="72" HEIGHT="19"  HSPACE="4" VSPACE="4" alt="CANCEL" border="0"></a>
 				<input type="image" name="checkout_credit_card_edit" src="/media_stat/images/buttons/save_changes.gif" WIDTH="91" HEIGHT="18" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0">
 			</TD>
-</TR>
+	</TR>
 </TABLE>
 
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
@@ -78,18 +78,18 @@ Learn more about how this service works.
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675">
-	<TR VALIGN="TOP">
-		<td width="35">
+		<TR VALIGN="TOP">
+				<td width="35">
 					<a href="<%=response.encodeURL("/checkout/step_2_select.jsp ")%>" id="previousX">
-					<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
-			</td>
-		    <td width="640">
-				<a href="<%=response.encodeURL("/checkout/step_2_select.jsp  ")%>" id="previousX">
-				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
-				Delivery Time<br/>
-				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
-			</td>
-	</TR>
+						<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
+				</td>
+				<td width="640">
+					<a href="<%=response.encodeURL("/checkout/step_2_select.jsp  ")%>" id="previousX">
+					<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
+					Delivery Time<br/>
+					<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
+				</td>
+		</TR>
 	</TABLE>
 
 <%@ include file="/checkout/includes/i_footer_text.jspf" %>

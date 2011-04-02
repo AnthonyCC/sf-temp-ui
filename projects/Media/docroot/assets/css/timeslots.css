@@ -30,16 +30,25 @@ table.tsContainer td {
 .tsHeaderC {
 	height: 56px;
 	width: 88px;
+	background: transparent url('/media/editorial/timeslots/images/date_gradient.gif') repeat-y;
 }
 .tsHeaderE {
 	height: 76px; /* +20 for margin-top */
+	overflow: hidden;
+}
+.tsHeadE {
 	width: 100%;
+}
+.tsHeadE div {
+	/*width: 89px;
+	margin-left: auto ;
+	margin-right: auto ;*/
 }
 
 table.tsHeaderC, .tsHeaderC {
 	border: 1px solid #ccc;
 	height: 56px;
-	width: 90px;
+	width: 89px;
 	background-color: #FBFBFB;
 	padding-top: 0px;
 }
@@ -58,6 +67,10 @@ table.tsHeaderE, .tsHeaderE {
 	width: 100%;
 	background-color: #78ABDC;
 	padding-top: 0px;
+}
+
+td.footer_container {
+	width: 88px;
 }
 
 .tsFooter table {
@@ -104,18 +117,20 @@ table.tsHeaderE, .tsHeaderE {
 	font-size:11px;
 	font-family: Verdana, Arial, sans-serif;
 }
-.tsDayNameE {
+div.tsDayNameE {
 	font-size:24px;
 	color:#FFFFFF;
 	font-weight:bold;
 	font-family: Verdana, Arial, sans-serif;
 	padding-top:8px;
+	/*margin-left: 20%;*/
 }
 .tsDayDateE {
 	font-size:12px;
 	color:#FFFFFF;
 	font-weight:bold;
 	font-family: Verdana, Arial, sans-serif;
+	overflow: hidden;
 }
 
 .tsContentC a, .tsContainerE a {
@@ -298,6 +313,7 @@ table.tsTable td table.tsTable td {
 }
 div.tsHeaderE {
     margin-top: -10px;
+	min-width: 100px;
 }
 .cutoffDisp {
 	border-left: 1px solid #ccc;
@@ -642,4 +658,34 @@ td.noTopBorder {
 	height: 100%;
 	margin-left: 8px;
 	line-height: 14px;
+}
+
+.tcSelectionBGC {
+	background-color: #FDFAC7;
+}
+
+/* modalbox rounded corner and drop shadow */
+#MB_frame {
+	/*padding-bottom: 4px;*/
+	
+	-webkit-border-bottom-left-radius: 4px;
+	-webkit-border-bottom-right-radius: 4px;
+	-webkit-border-top-left-radius: 4px;
+	-webkit-border-top-right-radius: 4px;
+
+	-moz-border-radius-bottomleft: 4px;
+	-moz-border-radius-bottomright: 4px;
+	-moz-border-radius-topleft: 4px;
+	-moz-border-radius-topright: 4px;
+
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+}
+#MB_window {
+	background-color: transparent;
+	-webkit-box-shadow: 0 0 4px 4px #333; 
+	-moz-box-shadow: #333 0 0 4px 4px; 
+	box-shadow: 0 0 4px 4px #333;
 }
