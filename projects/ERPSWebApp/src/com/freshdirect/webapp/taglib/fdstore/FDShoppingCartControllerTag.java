@@ -39,6 +39,7 @@ import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -1164,8 +1165,21 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		 * Get the original cartlineId if one is present else set it blank.
 		 */
 		String origCartLineId = originalLine == null ? "" : originalLine .getCartlineId();
-
-		FDCartLineI theCartLine = processSimple(suffix, prodNode, product, quantity, salesUnit, origCartLineId, variantId, user.getPricingZoneId());
+		/*
+		 * The following fix is for a zone pricing bug seems to be there for a
+		 * while now which was identified when fixing IPHONE-57 bug.
+		 */
+		PricingContext origPricingCtx = originalLine.getPricingContext();
+		String pricingZoneId;
+		if(origPricingCtx != null) {
+			pricingZoneId = origPricingCtx.getZoneId();
+		} else {
+			pricingZoneId = user.getPricingZoneId();
+		}
+		
+		FDGroup originalGrp = originalLine.getOriginalGroup();
+		
+		FDCartLineI theCartLine = processSimple(suffix, prodNode, product, quantity, salesUnit, origCartLineId, variantId, pricingZoneId ,originalGrp);
 
 		// recipe source tracking
 		String recipeId;
@@ -1229,7 +1243,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 
 	private FDCartLineI processSimple(String suffix, ProductModel prodNode,
 			FDProduct product, double quantity, FDSalesUnit salesUnit,
-			String origCartLineId, String variantId, String pZoneId) {
+			String origCartLineId, String variantId, String pZoneId, FDGroup group) {
 
 		//
 		// walk through the variations to see what's been set and try to build a
@@ -1312,6 +1326,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			cartLine = new FDCartLineModel(new FDSku(product), prodNode,
 					new FDConfiguration(quantity, salesUnit .getName(), varMap), 
 					origCartLineId, null, false, variantId, pZoneId, clientCodes);
+			//Any group info from original cartline is moved to new cartline on modify.
+			cartLine.setFDGroup(group);
 		}
 
 		return cartLine;
