@@ -1164,7 +1164,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		/*
 		 * Get the original cartlineId if one is present else set it blank.
 		 */
-		String origCartLineId = originalLine == null ? "" : originalLine .getCartlineId();
+		String origCartLineId = originalLine == null ? "" : originalLine.getCartlineId();
 		/*
 		 * The following fix is for a zone pricing bug seems to be there for a
 		 * while now which was identified when fixing IPHONE-57 bug.
@@ -1177,9 +1177,9 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			pricingZoneId = user.getPricingZoneId();
 		}
 		
-		FDGroup originalGrp = originalLine.getOriginalGroup();
+		//FDGroup originalGrp = originalLine.getOriginalGroup();
 		
-		FDCartLineI theCartLine = processSimple(suffix, prodNode, product, quantity, salesUnit, origCartLineId, variantId, pricingZoneId ,originalGrp);
+		//FDCartLineI theCartLine = processSimple(suffix, prodNode, product, quantity, salesUnit, origCartLineId, variantId, pricingZoneId ,originalGrp);
 
 		// recipe source tracking
 		String recipeId;
