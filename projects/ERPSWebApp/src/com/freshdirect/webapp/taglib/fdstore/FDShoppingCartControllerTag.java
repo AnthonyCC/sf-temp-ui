@@ -1169,7 +1169,9 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		 * The following fix is for a zone pricing bug seems to be there for a
 		 * while now which was identified when fixing IPHONE-57 bug.
 		 */
-		PricingContext origPricingCtx = originalLine.getPricingContext();
+		PricingContext origPricingCtx = null; 
+		if (originalLine != null)
+			origPricingCtx = originalLine.getPricingContext();
 		String pricingZoneId;
 		if(origPricingCtx != null) {
 			pricingZoneId = origPricingCtx.getZoneId();
@@ -1177,7 +1179,9 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			pricingZoneId = user.getPricingZoneId();
 		}
 		
-		FDGroup originalGrp = originalLine.getOriginalGroup();
+		FDGroup originalGrp = null;
+		if (originalLine != null)
+			originalLine.getOriginalGroup();
 				
 		FDCartLineI theCartLine = processSimple(suffix, prodNode, product, quantity, salesUnit, origCartLineId, variantId, pricingZoneId ,originalGrp);
 

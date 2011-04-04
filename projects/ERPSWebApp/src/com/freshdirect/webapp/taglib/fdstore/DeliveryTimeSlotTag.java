@@ -344,7 +344,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 					if(isAlcoholDelivery && isTimeslotAlcoholRestricted(alcoholRestrictions, timeslot)&& !isTimeslotRemoved){
 						timeslot.setAlcoholRestricted(true);
 						alcoholSlots = alcoholSlots+1;
-				}
+					}
 					checkTimeslotCapacity(user, zonesMap, timeslot);
 					if (ts.getSteeringDiscount() > maxDiscount && !isTimeslotRemoved)
 						maxDiscount = ts.getSteeringDiscount();

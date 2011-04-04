@@ -1136,8 +1136,11 @@ function createMouseOverOutEvents(elemIdArg, parentIdArg) {
 function checkRadio(event, elemIdArg) {
 	if ($(elemIdArg+'_rb')) {
 		$(elemIdArg+'_rb').checked = true;
-		
-		checkTsBgColor(refData, refAdvData);
+		if(window.refAdvData !== undefined){
+			checkTsBgColor(refData, refAdvData);
+		}else{
+			checkTsBgColor(refData);
+		}
 	}
 }
 
