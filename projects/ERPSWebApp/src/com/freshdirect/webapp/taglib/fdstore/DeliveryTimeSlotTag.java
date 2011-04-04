@@ -254,15 +254,15 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 				if(rsv != null && (address != null && address.getPK() != null && address.getPK().getId() != null 
 						&& address.getPK().getId().equals(rsv.getAddressId()))){
 					timeSlotId = rsv.getTimeslotId();
-		}else{
+				}else{
 					timeSlotId = "";
-		}
+				}
 			}
 		
 			if(cart instanceof FDModifyCartModel && rsv != null && !EnumReservationType.STANDARD_RESERVATION.equals(rsv.getReservationType()) && "".equals(preReserveSlotId) && !hasPreReserved){
 				preReserveSlotId = rsv.getTimeslotId();
 				hasPreReserved = address.getPK()!=null && address.getPK().getId().equals(rsv.getAddressId());
-		}
+			}
 		} else { //if ( EnumCheckoutMode.MODIFY_SO == user.getCheckoutMode() ) {
 			currentStandingOrder = user.getCurrentStandingOrder();
 			timeSlotId = "";

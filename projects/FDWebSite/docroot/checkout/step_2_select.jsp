@@ -402,7 +402,7 @@ if (errorMsg!=null) {%>
 									<td>
 										<img src="/media_stat/images/timeslots/ecofriendly_leaf.gif" WIDTH="16" HEIGHT="16" border="0">
 									</td>
-									<td><div onClick="showLegendOverlay('/media/editorial/timeslots/msg_ecofriendly_timeslot.html','Eco-Friendly'); return false;"><%= FDStoreProperties.getEcoFriendlyLabel()%></div></td>
+									<td><div onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_ecofriendly_timeslot.html&windowSize=small&name=Eco Friendly','small');"><%= FDStoreProperties.getEcoFriendlyLabel()%></div></td>
 									<td>&nbsp;</td>
 								<%}%>
 								<%if(deliveryModel.getNeighbourhoodCount() > 0){%>
@@ -410,7 +410,7 @@ if (errorMsg!=null) {%>
 										<img src="/media_stat/images/timeslots/neighbourhood_favs.gif" WIDTH="15" HEIGHT="20" border="0">
 									</td>
 									<td>
-										<div onClick="showLegendOverlay('/media/editorial/timeslots/msg_neighbourhood_timeslot.html','My Building Favourites'); return false;"><%= FDStoreProperties.getMyBuildingFavsLabel()%></div>
+										<div onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_neighbourhood_timeslot.html&windowSize=small&name=Neighbourhood+Favs','small');"><%= FDStoreProperties.getMyBuildingFavsLabel()%></div>
 									</td>
 									<td>&nbsp;</td>
 								<%}%>
@@ -419,7 +419,7 @@ if (errorMsg!=null) {%>
 										<img src="/media_stat/images/timeslots/no_alcohol.gif" WIDTH="16" HEIGHT="16" border="0">
 								</td>
 									<td> 
-										<div onClick="showLegendOverlay('/media/editorial/timeslots/msg_alcoholrestriction_timeslot.html','Alcohol Delivery Restriction'); return false;"><%= FDStoreProperties.getAlcoholRestrictedLabel()%></div>
+										<div onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_alcoholrestriction_timeslot.html&windowSize=small&name=Alcohol Restriction','small');"><%= FDStoreProperties.getAlcoholRestrictedLabel()%></div>
 									</td>
 									<td>&nbsp;</td>
 								<%}%>

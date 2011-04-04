@@ -20,6 +20,8 @@
 boolean isForce =  "true".equalsIgnoreCase(request.getParameter("forceorder")) ;
 boolean isNextDayTimeSlotNotAvailable = false;
 Date nextDay = DateUtil.getNextDate();
+Calendar nextDayVal = Calendar.getInstance();
+nextDayVal.add(Calendar.DATE, 1);
 
 if (timeslots.size() > 0) { 
     request.setAttribute("AddressType",address.getServiceType().getName());
@@ -34,10 +36,11 @@ if (timeslots.size() > 0) {
 			RestrictionI closedResExp = timeslots.getHolidayRestrictionForDate(day); 
 			if(closedResExp!=null){ 
 				String path = closedResExp.getPath()+"/msg_timeslots.html"; 
-				%><div id="day<%=holidayIndex%>" style="display: none;">
+%>
+				<div id="day<%=holidayIndex%>" style="display: none;">
 					<fd:IncludeMedia name='<%= path %>'/>
 				</div>
-				<%
+<%
 			} 
 		}
 		holidayIndex++;
@@ -53,7 +56,7 @@ if (timeslots.size() > 0) {
 	<fd:IncludeMedia name="/media/editorial/timeslots/msgC_nodelivery.html"/> 
 </div>
 <div id="CPday" style="display: none;"> 
-	<fd:IncludeMedia name="/media/editorial/timeslots/msg_cutoffpassed.html"/> 
+	<fd:IncludeMedia name="/media/editorial/timeslots/msg_cutoff_passed.html"/> 
 </div>
 <div class="learnMoreTimeslot">
 	<fd:IncludeMedia name="/media/editorial/timeslots/holidays/msg_learnmore_nodelivery.html"/>
@@ -64,7 +67,7 @@ if (timeslots.size() > 0) {
 	var slotIndex = 0;
 	var daypartIndex = -1;
 	var daypartAdvIndex = -1;
-	var reserveDayIndex; var reserveSlotIndex;var selectedDayIndex; var selectedSlotIndex;
+	var dayName = '';
 		<%
 			int hDayIndex=0; int dayIndex=0; int fdayIndex=0;
 			if(isForAdvOrdSlots){
@@ -100,15 +103,22 @@ if (timeslots.size() > 0) {
 			boolean showCutoffMedia = false;
 			boolean cutOffpassed = false;
 
-		%><logic:iterate id="day" collection="<%= timeslots.getDays() %>" type="java.util.Date"><%
+		%>
+			<logic:iterate id="day" collection="<%= timeslots.getDays() %>" type="java.util.Date">
+		<%
 			if(!isForAdvOrdSlots && !isForNewAdvOrdSlots && !cutOffpassed){
 				cutOffpassed = true;
-				Date cutoffDate = timeslots.getMaxCutoffForDate(day);
+				DlvZoneInfoModel tmpZoneModel = null;
+				if(address != null){
+					tmpZoneModel = FDDeliveryManager.getInstance().getZoneInfo(address, nextDayVal.getTime());
+				}
+				Date cutoffDate = timeslots.getMaxCutoffForDate(tmpZoneModel !=null ? tmpZoneModel.getZoneCode():"", day);
 				if(cutoffDate != null){
 					if((DateUtil.getCurrentTime().equals(cutoffDate) || DateUtil.getCurrentTime().after(cutoffDate)) && DateUtil.getCurrentTime().before(nextDay)){
 						showCutoffMedia = true;
-						%>var dayName = '<%=TimeslotPageUtil.getCutoffDay(day)%>';
-						<%
+		%>
+						dayName = "<%= TimeslotPageUtil.getCutoffDay(day) %>";
+		<%
 					}
 				}
 			}
@@ -214,10 +224,10 @@ if (timeslots.size() > 0) {
 										(
 										soldOut 
 										? ""
-										:(isPreReservedSlotId && hasPreReserved)
-												?"tsContentResE"
-												:(isSelectedSlotId)
-														?"tsContentSelE"
+										:(isSelectedSlotId)
+											?"tsContentSelE"
+												:(isPreReservedSlotId && hasPreReserved)
+													?"tsContentResE"
 														:""
 										)
 								+"\">");
@@ -262,11 +272,11 @@ if (timeslots.size() > 0) {
 										(
 										soldOut 
 										? "tsSoldoutC"
-										: (isPreReservedSlotId && hasPreReserved)
-											? "tsReservationTimeE"
-											: (isSelectedSlotId)
-												? "tsContentSelC"
-												: (slot.getSteeringDiscount()>0)
+										: (isSelectedSlotId)
+											? "tsContentSelC"
+												: (isPreReservedSlotId && hasPreReserved)
+												? "tsReservationTimeE"
+													: (slot.getSteeringDiscount()>0)
 													? "tsDiscountTimeC"
 													: (slot.isEcoFriendly() && slot.isDepot() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()))
 														? "tsNeighbourhoodTimeC"
@@ -326,12 +336,12 @@ if (timeslots.size() > 0) {
 									}else if(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()) { 
 										stringBuffer.append("<div class=\"tsChefstablePropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
 												.append("<div>")
-													.append("<img src=\"/media_stat/images/timeslots/purple_star.gif\" width=\"16\" height=\"16\" border=\"0\">\n")
+													.append("<img src=\"/media_stat/images/timeslots/purple_star.gif\" width=\"16\" height=\"15\" border=\"0\">\n")
 													.append("<font class=\"tsChefstableE\">CHEF'S&nbsp;TABLE</font>")
 												.append("</div>")
 											.append("</div>");
 										stringBuffer.append("<div class=\"tsChefstablePropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">")
-											.append("<img src=\"/media_stat/images/timeslots/purple_star.gif\" width=\"16\" height=\"16\" border=\"0\">\n")
+											.append("<img src=\"/media_stat/images/timeslots/purple_star.gif\" width=\"16\" height=\"15\" border=\"0\">\n")
 											.append("</div>");
 									}else if(slot.isEcoFriendly()){
 										if(!slot.isDepot()){
@@ -366,19 +376,17 @@ if (timeslots.size() > 0) {
 									 if(isSelectedSlotId && !defaultColExp){
 										defaultColExp = true;
 
-										%>dayIndex = <%= dayIndex %>;
+								%>	
+										dayIndex = <%= dayIndex %>;
 										slotIndex = <%= slotIndex %>;
-										selectedDayIndex = <%= dayIndex %>
-										selectedSlotIndex = <%= slotIndex %>;
-										<%
+								<%
 									}else if (isPreReservedSlotId && hasPreReserved && !defaultColExp) {
 										defaultColExp = true;
 
-										%>dayIndex = <%= dayIndex %>;
+								%>
+										dayIndex = <%= dayIndex %>;
 										slotIndex= <%= slotIndex %>;
-										reserveDayIndex= <%= dayIndex %>
-										reserveSlotIndex= <%= slotIndex %>;
-										<%
+								<%
 									}
 								stringBuffer.append("</td>\n");
 							stringBuffer.append("</tr>\n");
@@ -485,11 +493,13 @@ if (timeslots.size() > 0) {
 						.append("<div><b>Order&nbsp;by&nbsp;"+TimeslotPageUtil.getCutoffTimeDisplay(slot.getCutoffNormalDateTime())+"&nbsp;"+TimeslotPageUtil.getCutoffDay(day)+"</b></div></div>");
 					stringBuffer.append("</td>\n");
 					if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
-						%>refData[<%=dayIndex%>][1][<%=slotIndex%>]='refCutoff';
-						<%
+				%>		
+						refData[<%=dayIndex%>][1][<%=slotIndex%>]='refCutoff';
+				<%
 					}else{
-						%>refAdvData[<%=dayIndex%>][1][<%=slotIndex%>]='refCutoff';
-						<%
+				%>
+						refAdvData[<%=dayIndex%>][1][<%=slotIndex%>]='refCutoff';
+				<%
 					}
 				}else{
 						stringBuffer.append("<td class=\"cutoff\" style=\"display: none;\" onclick=\"tsContractAll(\'tsContainer\', \'co_d"+dayIndex+"_ts"+slotIndex+"\'); tsExpand(\'co_d"+dayIndex+"_ts"+slotIndex+"\');\">")
@@ -523,10 +533,10 @@ if (timeslots.size() > 0) {
 										(
 										soldOut 
 										? ""
-										:(isPreReservedSlotId && hasPreReserved)
-												?"tsContentResE"
-												:(isSelectedSlotId)
-														?"tsContentSelE"
+										:(isSelectedSlotId)
+											?"tsContentSelE"
+												:(isPreReservedSlotId && hasPreReserved)
+													?"tsContentResE"
 														:""
 										)
 								+"\">");
@@ -567,12 +577,12 @@ if (timeslots.size() > 0) {
 										(
 										soldOut 
 										? "tsSoldoutC"
-										:(isPreReservedSlotId && hasPreReserved)
+										:(isSelectedSlotId)
+											?"tsContentSelC"
+												:(isPreReservedSlotId && hasPreReserved)
 												?"tsReservationTimeE"
-												:(isSelectedSlotId)
-													?"tsContentSelC"
 													:(slot.getSteeringDiscount()>0)
-														?"tsDiscountTimeC"
+													?"tsDiscountTimeC"
 														:(!(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()) && slot.isEcoFriendly() && slot.isDepot())
 															?"tsNeighbourhoodTimeC"
 																:(slot.isEcoFriendly() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()))
@@ -631,12 +641,12 @@ if (timeslots.size() > 0) {
 									}else if(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()) { 
 										stringBuffer.append("<div class=\"tsChefstablePropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
 												.append("<div>")
-													.append("<img class=\"chefstableImage\" src=\"/media_stat/images/timeslots/purple_star.gif\" width=\"16\" height=\"16\" border=\"0\">")
+													.append("<img class=\"chefstableImage\" src=\"/media_stat/images/timeslots/purple_star.gif\" width=\"16\" height=\"15\" border=\"0\">")
 													.append("<font class=\"tsChefstableE\">CHEF'S&nbsp;TABLE</font>")
 												.append("</div>")
 											.append("</div>");
 										stringBuffer.append("<div class=\"tsChefstablePropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">")
-											.append("<img src=\"/media_stat/images/timeslots/purple_star.gif\" width=\"16\" height=\"16\" border=\"0\">\n")
+											.append("<img src=\"/media_stat/images/timeslots/purple_star.gif\" width=\"16\" height=\"15\" border=\"0\">\n")
 											.append("</div>");
 									}else if(slot.isEcoFriendly()){
 										if(!slot.isDepot()){
@@ -671,19 +681,15 @@ if (timeslots.size() > 0) {
 									 if(isSelectedSlotId && !defaultColExp){
 										defaultColExp = true;
 
-										%>dayIndex = <%= dayIndex %>;
+								%>		dayIndex = <%= dayIndex %>;
 										slotIndex= <%= slotIndex %>;
-										selectedDayIndex= <%= dayIndex %>
-										selectedSlotIndex= <%= slotIndex %>;
-										<%
+								<%
 									}else if(isPreReservedSlotId && hasPreReserved && !defaultColExp){
 										defaultColExp = true;
-										
-										%>dayIndex = <%= dayIndex %>;
+								%>
+										dayIndex = <%= dayIndex %>;
 										slotIndex= <%= slotIndex %>;
-										reserveDayIndex= <%= dayIndex %>
-										reserveSlotIndex= <%= slotIndex %>;
-										<%
+								<%
 									}
 								stringBuffer.append("</td>\n");
 				stringBuffer.append("</tr>\n");
@@ -804,14 +810,12 @@ if (timeslots.size() > 0) {
 	stringBuffer.append("</center>");
 	out.write(stringBuffer.toString());
 
-%><div id="tsRefcol_contracted"><!--  --></div>
+%>
+<div id="tsRefcol_contracted"><!--  --></div>
 <div id="tsRefcol_expanded"><!--  --></div>
 <%
 
-}
-
-	Calendar nextDayVal = Calendar.getInstance();
-	nextDayVal.add(Calendar.DATE, 1);
+}	
 	 if(address != null) {
 		try { 
 			DlvZoneInfoModel tmpModel = FDDeliveryManager.getInstance().getZoneInfo(address, nextDayVal.getTime());

@@ -384,10 +384,10 @@ div.tsHeaderE {
 }
 /*Reservation slot*/
 div.tsContentResC {
-	background-color:#E6E2FD;
+	background: transparent url('/media/editorial/timeslots/images/reservedSlotBGC.gif') repeat-x left top;
 }
 div.tsContentResE {
-	background-color:#E6E2FD;
+	background: transparent url('/media/editorial/timeslots/images/reservedSlotBGC.gif') repeat-x left top;
 }
 .tsReservationE {
 	color:#666666;
@@ -545,7 +545,7 @@ div.tsContentResE {
 
 /*Selected slot*/
 .tsContentSelE {
-	background-color:#FDFAC7; 
+	background: transparent url('/media/editorial/timeslots/images/selectedSlotBGC.gif') repeat-x left top;
 	color:#333333;
 }
 
@@ -666,6 +666,7 @@ td.noTopBorder {
 }
 
 .tcSelectionBGC {
+	font-weight: bold;
 	background: transparent url('/media/editorial/timeslots/images/selectedBGC.gif') repeat-x left top;
 }
 

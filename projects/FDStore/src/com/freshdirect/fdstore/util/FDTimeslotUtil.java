@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+import com.freshdirect.delivery.DlvZoneCutoffInfo;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
@@ -24,6 +26,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.TimeOfDay;
 
 public class FDTimeslotUtil implements Serializable {
 	
@@ -154,16 +157,23 @@ public class FDTimeslotUtil implements Serializable {
 		}
 	}
 	
-	public Date getMaxCutoffForDate( Date day ) {
+	public Date getMaxCutoffForDate( String zoneCode, Date day ) {
 		Date cutOff = null;
-		List<Date> cTimes = null;
+		List<DlvZoneCutoffInfo> cutoffInfo = null;
+		List<Date> cTimes = new ArrayList<Date>();
 		try {
-			cTimes = FDDeliveryManager.getInstance().getCutofftimesByDate(day);
-			Collections.sort(cTimes);
-			for (Date _cutoff : cTimes) {
-				cutOff = _cutoff;
+			cutoffInfo = FDDeliveryManager.getInstance().getCutofftimeForZone(zoneCode, day);
+			
+			for(DlvZoneCutoffInfo zoneCutoff : cutoffInfo){
+				TimeOfDay timeOfday = zoneCutoff.getCutoffTime();
+				cTimes.add(timeOfday.getAsDate());
 			}
-
+			if(cTimes.size() > 0){
+				Collections.sort(cTimes);
+				for (Date _cutoff : cTimes) {
+					cutOff = _cutoff;
+				}
+			}
 			if (cutOff != null) {
 				Calendar requestedDate = Calendar.getInstance();
 				requestedDate.setTime(day);
