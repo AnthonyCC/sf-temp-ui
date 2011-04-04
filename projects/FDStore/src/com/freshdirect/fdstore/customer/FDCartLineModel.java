@@ -13,6 +13,7 @@ import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
+import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
@@ -168,6 +169,8 @@ public class FDCartLineModel extends AbstractCartLine {
 		this.cartonNumber=no;
 	}
 
- 
+	public FDGroup getOriginalGroup() {
+		return this.orderLine.getFDGroup();
+	}
 	
 }

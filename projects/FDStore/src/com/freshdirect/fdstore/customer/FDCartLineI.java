@@ -8,6 +8,7 @@ import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpReturnLineI;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
+import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.event.EnumEventSource;
 
@@ -152,4 +153,6 @@ public interface FDCartLineI extends FDProductSelectionI {
 	
 	public void setCartonNumber(String no);
 	public String getCartonNumber();
+	public FDGroup getOriginalGroup();
+	
 }

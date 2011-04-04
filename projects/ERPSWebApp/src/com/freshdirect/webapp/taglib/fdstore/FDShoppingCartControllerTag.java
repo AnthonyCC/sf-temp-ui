@@ -1177,9 +1177,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			pricingZoneId = user.getPricingZoneId();
 		}
 		
-		//temp revert for build fix
-		//FDGroup originalGrp = originalLine.getOriginalGroup();
-		FDGroup originalGrp = originalLine.getFDGroup();
+		FDGroup originalGrp = originalLine.getOriginalGroup();
 				
 		FDCartLineI theCartLine = processSimple(suffix, prodNode, product, quantity, salesUnit, origCartLineId, variantId, pricingZoneId ,originalGrp);
 
