@@ -618,6 +618,8 @@ public class SimpleCartLine implements FDCartLineI {
 		
 		return null;
 	}
-	
+	public FDGroup getOriginalGroup() {
+		return null;
+	}
 
 }
