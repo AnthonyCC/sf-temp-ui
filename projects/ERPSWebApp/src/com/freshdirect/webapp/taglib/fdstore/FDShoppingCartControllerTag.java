@@ -1181,7 +1181,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		
 		FDGroup originalGrp = null;
 		if (originalLine != null)
-			originalLine.getOriginalGroup();
+			originalGrp = originalLine.getOriginalGroup();
 				
 		FDCartLineI theCartLine = processSimple(suffix, prodNode, product, quantity, salesUnit, origCartLineId, variantId, pricingZoneId ,originalGrp);
 
