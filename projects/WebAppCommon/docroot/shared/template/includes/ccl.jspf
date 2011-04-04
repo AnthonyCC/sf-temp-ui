@@ -14,7 +14,18 @@
 </jsp:useBean>
 <% 
 	FDUserI fdUser = (FDUserI) session.getAttribute(SessionName.USER);
-	if (fdUser != null && fdUser.isCCLEnabled()) {
+
+	/*	add skip pages option
+	 * these libs cause problems in ie7, so if we don't need them on the page, just skip out
+	 */
+	boolean onSkipPage = false;
+	if (
+		request.getRequestURI().indexOf("/checkout/step_2_select.jsp") > -1
+	) {
+		onSkipPage = true;
+	}
+
+	if (fdUser != null && fdUser.isCCLEnabled() && !onSkipPage) {
 		boolean sessionStateChanged = false;
 		if (JSONRPCBridge.lookupObject("MediaFacade") == null) {
 			JSONRPCBridge.registerObject("MediaFacade", MediaAjaxFacade.create());					
