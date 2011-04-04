@@ -395,7 +395,7 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 			this.log('this.display[1] '+this.display[1]);
 			this.log('this.display[2] '+this.display[2]);
 
-			if ($(this.left_img_containerId)) {
+			if ($(this.left_img_containerId) && this.display[0] && this.cards[this.display[0]]) {
 				$(this.left_img_containerId).src = this.mediaRoot+this.cards[this.display[0]].id+this.left_img_suffix;
 				$(this.left_img_containerId).alt = this.cards[this.display[0]].displayName;
 				this.log('updateDisplay: '+this.display[0]+' '+this.mediaRoot+this.cards[this.display[0]].id+this.left_img_suffix);
@@ -403,7 +403,7 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 				this.err('Cannot get left_img_containerId ('+this.left_img_containerId+')');
 			}
 
-			if ($(this.center_img_containerId)) {
+			if ($(this.center_img_containerId) && this.display[1] && this.cards[this.display[1]]) {
 				$(this.center_img_containerId).src = this.mediaRoot+this.cards[this.display[1]].id+this.center_img_suffix;
 				$(this.center_img_containerId).alt = this.cards[this.display[1]].displayName;
 				if ($(this.curCard_containerId)) {
@@ -417,7 +417,7 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 				this.err('Cannot get center_img_containerId ('+this.center_img_containerId+')');
 			}
 
-			if ($(this.right_img_containerId)) {
+			if ($(this.right_img_containerId) && this.display[2] && this.cards[this.display[2]]) {
 				$(this.right_img_containerId).src = this.mediaRoot+this.cards[this.display[2]].id+this.right_img_suffix;
 				$(this.right_img_containerId).alt = this.cards[this.display[2]].displayName;
 				this.log('updateDisplay: '+this.display[2]+' '+this.mediaRoot+this.cards[this.display[2]].id+this.right_img_suffix);
@@ -436,8 +436,10 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 
 				//update gcId_containerId now if not a select box (otherwise wait till end of function)
 				if (typeof(this.gcId_containerId) != 'undefined' && this.gcId_containerId != '' && $(this.gcId_containerId)) {
-					$(this.gcId_containerId).value = this.cards[this.display[1]].id;
-					this.log('gcId_containerId ('+this.gcId_containerId+') = ('+this.cards[this.display[1]].id+')');
+					if ( this.display[1] && this.cards[this.display[1]]) {
+						$(this.gcId_containerId).value = this.cards[this.display[1]].id;
+						this.log('gcId_containerId ('+this.gcId_containerId+') = ('+this.cards[this.display[1]].id+')');
+					}
 				}else{
 					try{
 						this.err('Cannot set gcId_containerId ('+this.gcId_containerId+')');
@@ -464,7 +466,7 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 				this.curSelectedIndex = $(this.selectBoxId).selectedIndex;
 					this.log('selectCard inside IF '+this.curSelectedIndex);
 				// change src to match selection
-				if ($(imgContainerId)) {
+				if ($(imgContainerId) && $(this.selectBoxId)[this.curSelectedIndex]) {
 					$(imgContainerId).src = this.mediaRoot+$(this.selectBoxId)[this.curSelectedIndex].value+this.center_img_suffix;
 					$(imgContainerId).alt = $(this.selectBoxId)[this.curSelectedIndex].innerHTML;
 				}
@@ -474,11 +476,17 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 
 			//update gcId_containerId now if a select box
 			if (typeof(this.gcId_containerId) != 'undefined' && this.gcId_containerId != '' && $(this.gcId_containerId)) {
-				$(this.gcId_containerId).value = $(this.selectBoxId)[this.curSelectedIndex].value;
-				this.log('2 gcId_containerId ('+this.gcId_containerId+') = ('+$(this.selectBoxId)[this.curSelectedIndex].value+')');
+				if ($(this.selectBoxId)[this.curSelectedIndex]) {
+					$(this.gcId_containerId).value = $(this.selectBoxId)[this.curSelectedIndex].value;
+				}
+				if (this.curSelectedIndex && $(this.selectBoxId)[this.curSelectedIndex]) {
+					this.log('2 gcId_containerId ('+this.gcId_containerId+') = ('+$(this.selectBoxId)[this.curSelectedIndex].value+')');
+				}
 			}else{
 				this.err('2 Cannot set gcId_containerId ('+this.gcId_containerId+')');
-				this.err('2 Cannot set gcId_containerId to value ('+$(this.selectBoxId)[this.curSelectedIndex].value+')');
+				if (this.curSelectedIndex && $(this.selectBoxId)[this.curSelectedIndex]) {
+					this.err('2 Cannot set gcId_containerId to value ('+$(this.selectBoxId)[this.curSelectedIndex].value+')');
+				}
 			}
 			return true;
 		}

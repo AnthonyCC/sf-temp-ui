@@ -1,7 +1,5 @@
 .tsCol {
-	border: 1px solid red;
 	margin-top: 20px;
-	width: 88px;
 	border: 1px solid #ccc;
 }
 #tsRefcol_contracted {
@@ -30,7 +28,7 @@ table.tsContainer td {
 .tsHeaderC {
 	height: 56px;
 	width: 88px;
-	background: transparent url('/media/editorial/timeslots/images/date_gradient.gif') repeat-y;
+	background: transparent url('/media/editorial/timeslots/images/date_gradient.gif') repeat-x;
 }
 .tsHeaderE {
 	height: 76px; /* +20 for margin-top */
@@ -70,7 +68,7 @@ table.tsHeaderE, .tsHeaderE {
 }
 
 td.footer_container {
-	width: 88px;
+	/*width: 88px;*/
 }
 
 .tsFooter table {
@@ -322,24 +320,30 @@ div.tsHeaderE {
 }
 
 .tsContainerBGC {
-	font:Vernada, Regular,10px, #333333;
+	color: #333333;
+	font-size: 10px;
+	font-family: Vernada, Regular;
 	background-color: #F7F7F7;
 	
 }
 .tsContainerBGE {
-	font:Vernada, Regular,10px, #333333;
+	color: #333333;
+	font-size: 10px;
+	font-family: Vernada, Regular;
 	background-color: #FFFFFF;
 }
 
 .tsContainerNoDelBGC {
-	font:Vernada, Regular,10px, #333333;
+	color: #333333;
+	font-size: 10px;
+	font-family: Vernada, Regular;
 	background-color: #E2E2E2;
 }
 
 /*Steering Discount slot*/
 .tsDiscountE {
-	color:#E99722;
-	font-weight:bold;
+	color: #E99722;
+	font-weight: bold;
 	font-size: 11px; 
 	font-family: Verdana, Arial, sans-serif;
 }
@@ -351,7 +355,7 @@ div.tsHeaderE {
 }
 
 .tsCol div.tsContent div.tsDiscountPropE {
-	height:28px;
+	height: 28px;
 }
 .tsDiscountC {
 	color: #e99722;
@@ -389,7 +393,7 @@ div.tsContentResE {
 	color:#666666;
 	font-weight:bold;
 	font-size: 10px; 
-	font-family: Verdana, Arial, sans-serif;	
+	font-family: Verdana, Arial, sans-serif;
 }
 
 .tsReservationPropE {
@@ -616,6 +620,7 @@ td.noTopBorder {
 }
 .tsCont {
 	width: 60px;
+	white-space: nowrap;
 }
 .emptyDayCont {
 	border: 0 none;
@@ -661,7 +666,7 @@ td.noTopBorder {
 }
 
 .tcSelectionBGC {
-	background-color: #FDFAC7;
+	background: transparent url('/media/editorial/timeslots/images/selectedBGC.gif') repeat-x left top;
 }
 
 /* modalbox rounded corner and drop shadow */

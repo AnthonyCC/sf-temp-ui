@@ -210,7 +210,7 @@ var Class = (function() {
 
   function toJSON(value) {
     return Str('', { '': value }, []);
-    }
+  }
 
   function Str(key, holder, stack) {
     var value = holder[key],
@@ -227,7 +227,7 @@ var Class = (function() {
       case BOOLEAN_CLASS:
       case STRING_CLASS:
         value = value.valueOf();
-  }
+    }
 
     switch (value) {
       case null: return 'null';
@@ -287,7 +287,7 @@ var Class = (function() {
     var results = [];
     for (var property in object) {
       if (object.hasOwnProperty(property)) {
-      results.push(property);
+        results.push(property);
       }
     }
     return results;
@@ -458,10 +458,10 @@ Object.extend(Function.prototype, (function() {
 
   function toISOString() {
     return this.getUTCFullYear() + '-' +
-    (this.getUTCMonth() + 1).toPaddedString(2) + '-' +
-    this.getUTCDate().toPaddedString(2) + 'T' +
-    this.getUTCHours().toPaddedString(2) + ':' +
-    this.getUTCMinutes().toPaddedString(2) + ':' +
+      (this.getUTCMonth() + 1).toPaddedString(2) + '-' +
+      this.getUTCDate().toPaddedString(2) + 'T' +
+      this.getUTCHours().toPaddedString(2) + ':' +
+      this.getUTCMinutes().toPaddedString(2) + ':' +
       this.getUTCSeconds().toPaddedString(2) + 'Z';
   }
 
@@ -1089,7 +1089,7 @@ Array.from = $A;
   function each(iterator, context) {
     for (var i = 0, length = this.length >>> 0; i < length; i++) {
       if (i in this) iterator.call(context, this[i], i, this);
-  }
+    }
   }
   if (!_each) _each = each;
 
@@ -1508,7 +1508,7 @@ Ajax.Request = Class.create(Ajax.Base, {
     }
 
     if (params && this.method === 'get') {
-        this.url += (this.url.include('?') ? '&' : '?') + params;
+      this.url += (this.url.include('?') ? '&' : '?') + params;
     }
 
     this.parameters = params.toQueryParams();
@@ -1668,14 +1668,14 @@ Ajax.Response = Class.create({
     var transport  = this.transport  = request.transport,
         readyState = this.readyState = transport.readyState;
 
-    if((readyState > 2 && !Prototype.Browser.IE) || readyState == 4) {
+    if ((readyState > 2 && !Prototype.Browser.IE) || readyState == 4) {
       this.status       = this.getStatus();
       this.statusText   = this.getStatusText();
       this.responseText = String.interpret(transport.responseText);
       this.headerJSON   = this._getHeaderJSON();
     }
 
-    if(readyState == 4) {
+    if (readyState == 4) {
       var xml = transport.responseXML;
       this.responseXML  = Object.isUndefined(xml) ? null : xml;
       this.responseJSON = this._getResponseJSON();
@@ -2036,7 +2036,7 @@ Element.Methods = {
         } else if (LINK_ELEMENT_INNERHTML_BUGGY && Object.isString(content) && content.indexOf('<link') > -1) {
           while (element.firstChild) {
             element.removeChild(element.firstChild);
-        }
+          }
           var nodes = Element._getContentFromAnonymousElement(tagName, content.stripScripts(), true);
           nodes.each(function(node) { element.appendChild(node) });
         }
@@ -2754,7 +2754,7 @@ else if (Prototype.Browser.WebKit) {
       (value < 0.00001) ? 0 : value;
 
     if (value == 1)
-      if(element.tagName.toUpperCase() == 'IMG' && element.width) {
+      if (element.tagName.toUpperCase() == 'IMG' && element.width) {
         element.width++; element.width--;
       } else try {
         var n = document.createTextNode(' ');
@@ -2956,9 +2956,9 @@ Element.extend = (function() {
 })();
 
 if (document.documentElement.hasAttribute) {
-Element.hasAttribute = function(element, attribute) {
+  Element.hasAttribute = function(element, attribute) {
     return element.hasAttribute(attribute);
-};
+  };
 }
 else {
   Element.hasAttribute = Element.Methods.Simulated.hasAttribute;
@@ -3181,7 +3181,7 @@ Element.addMethods({
     var match = pctString.match(/^(\d+)%?$/i);
     if (!match) return null;
     return (Number(match[1]) / 100);
-    }
+  }
 
   function getPixelValue(value, property, context) {
     var element = null;
@@ -3209,7 +3209,7 @@ Element.addMethods({
       element.runtimeStyle.left = rStyle;
 
       return value;
-      }
+    }
 
     if (element && isPercentage) {
       context = context || element.parentNode;
@@ -3259,8 +3259,8 @@ Element.addMethods({
       }
       element = $(element.parentNode);
     }
-      return true;
-    }
+    return true;
+  }
 
   var hasLayout = Prototype.K;
   if ('currentStyle' in document.documentElement) {
@@ -3292,12 +3292,12 @@ Element.addMethods({
         Element.Layout.PROPERTIES.each( this._compute, this );
         this._end();
         this._preComputing = false;
-    }
+      }
     },
 
     _set: function(property, value) {
       return Hash.prototype.set.call(this, property, value);
-  },
+    },
 
     set: function(property, value) {
       throw "Properties of Element.Layout are read-only.";
@@ -3314,8 +3314,8 @@ Element.addMethods({
       var element = this.element;
       if (isDisplayed(element)) {
         this._prepared = true;
-      return;
-    }
+        return;
+      }
 
       var originalStyles = {
         position:   element.style.position   || '',
@@ -3332,7 +3332,7 @@ Element.addMethods({
       if (width === "0px" || width === null) {
         element.style.display = 'block';
         width = element.getStyle('width');
-        }
+      }
 
       var context = (position === 'fixed') ? document.viewport :
        element.parentNode;
@@ -3360,12 +3360,12 @@ Element.addMethods({
          this.get('padding-right') -
          this.get('border-right') -
          this.get('margin-right');
-        }
+      }
 
       element.setStyle({ width: newWidth + 'px' });
 
       this._prepared = true;
-  },
+    },
 
     _end: function() {
       var element = this.element;
@@ -3379,7 +3379,7 @@ Element.addMethods({
       var COMPUTATIONS = Element.Layout.COMPUTATIONS;
       if (!(property in COMPUTATIONS)) {
         throw "Property not found.";
-        }
+      }
 
       return this._set(property, COMPUTATIONS[property].call(this, this.element));
     },
@@ -3395,7 +3395,7 @@ Element.addMethods({
         if (value != null) obj[key] = value;
       }, this);
       return obj;
-  },
+    },
 
     toHash: function() {
       var obj = this.toObject.apply(this, arguments);
@@ -3420,7 +3420,7 @@ Element.addMethods({
 
     inspect: function() {
       return "#<Element.Layout>";
-          }
+    }
   });
 
   Object.extend(Element.Layout, {
@@ -3436,7 +3436,7 @@ Element.addMethods({
         if (bHeight <= 0) {
           if (!this._preComputing) this._end();
           return 0;
-      }
+        }
 
         var bTop = this.get('border-top'),
          bBottom = this.get('border-bottom');
@@ -3447,7 +3447,7 @@ Element.addMethods({
         if (!this._preComputing) this._end();
 
         return bHeight - bTop - bBottom - pTop - pBottom;
-  },
+      },
 
       'width': function(element) {
         if (!this._preComputing) this._begin();
@@ -3456,7 +3456,7 @@ Element.addMethods({
         if (bWidth <= 0) {
           if (!this._preComputing) this._end();
           return 0;
-  }
+        }
 
         var bLeft = this.get('border-left'),
          bRight = this.get('border-right');
@@ -3467,7 +3467,7 @@ Element.addMethods({
         if (!this._preComputing) this._end();
 
         return bWidth - bLeft - bRight - pLeft - pRight;
-    },
+      },
 
       'padding-box-height': function(element) {
         var height = this.get('height'),
@@ -3475,7 +3475,7 @@ Element.addMethods({
          pBottom = this.get('padding-bottom');
 
         return height + pTop + pBottom;
-    },
+      },
 
       'padding-box-width': function(element) {
         var width = this.get('width'),
@@ -3483,21 +3483,21 @@ Element.addMethods({
          pRight = this.get('padding-right');
 
         return width + pLeft + pRight;
-    },
+      },
 
       'border-box-height': function(element) {
         if (!this._preComputing) this._begin();
         var height = element.offsetHeight;
         if (!this._preComputing) this._end();
         return height;
-    },
+      },
 
       'border-box-width': function(element) {
         if (!this._preComputing) this._begin();
         var width = element.offsetWidth;
         if (!this._preComputing) this._end();
         return width;
-    },
+      },
 
       'margin-box-height': function(element) {
         var bHeight = this.get('border-box-height'),
@@ -3559,19 +3559,19 @@ Element.addMethods({
 
       'padding-left': function(element) {
         return getPixelValue(element, 'paddingLeft');
-  },
+      },
 
       'padding-right': function(element) {
         return getPixelValue(element, 'paddingRight');
-    },
+      },
 
       'border-top': function(element) {
         return getPixelValue(element, 'borderTopWidth');
-    },
+      },
 
       'border-bottom': function(element) {
         return getPixelValue(element, 'borderBottomWidth');
-  },
+      },
 
       'border-left': function(element) {
         return getPixelValue(element, 'borderLeftWidth');
@@ -3583,15 +3583,15 @@ Element.addMethods({
 
       'margin-top': function(element) {
         return getPixelValue(element, 'marginTop');
-    },
+      },
 
       'margin-bottom': function(element) {
         return getPixelValue(element, 'marginBottom');
-    },
+      },
 
       'margin-left': function(element) {
         return getPixelValue(element, 'marginLeft');
-    },
+      },
 
       'margin-right': function(element) {
         return getPixelValue(element, 'marginRight');
@@ -3607,7 +3607,7 @@ Element.addMethods({
          pRect = parent.getBoundingClientRect();
 
         return (pRect.right - rect.right).round();
-    },
+      },
 
       'bottom': function(element) {
         var parent = hasLayout(element.getOffsetParent());
@@ -3615,7 +3615,7 @@ Element.addMethods({
          pRect = parent.getBoundingClientRect();
 
         return (pRect.bottom - rect.bottom).round();
-    }
+      }
     });
   }
 
@@ -3626,7 +3626,7 @@ Element.addMethods({
 
       this[0] = this.left;
       this[1] = this.top;
-  },
+    },
 
     relativeTo: function(offset) {
       return new Element.Offset(
@@ -3917,7 +3917,7 @@ Element.addMethods({
       }
     });
   }
-      })();
+})();
 window.$$ = function() {
   var expression = $A(arguments).join(', ');
   return Prototype.Selector.select(expression, document);
@@ -3927,11 +3927,11 @@ Prototype.Selector = (function() {
 
   function select() {
     throw new Error('Method "Prototype.Selector.select" must be defined.');
-        }
+  }
 
   function match() {
     throw new Error('Method "Prototype.Selector.match" must be defined.');
-        }
+  }
 
   function find(elements, expression, index) {
     index = index || 0;
@@ -3947,7 +3947,7 @@ Prototype.Selector = (function() {
   function extendElements(elements) {
     for (var i = 0, length = elements.length; i < length; i++) {
       Element.extend(elements[i]);
-        }
+    }
     return elements;
   }
 
@@ -3988,10 +3988,10 @@ var Sizzle = function(selector, context, results, seed) {
 
 	if ( context.nodeType !== 1 && context.nodeType !== 9 ) {
 		return [];
-      }
+	}
 
 	if ( !selector || typeof selector !== "string" ) {
-      return results;
+		return results;
 	}
 
 	var parts = [], m, set, checkSet, check, mode, extra, prune = true, contextXML = isXML(context),
@@ -4005,7 +4005,7 @@ var Sizzle = function(selector, context, results, seed) {
 		if ( m[2] ) {
 			extra = m[3];
 			break;
-      }
+		}
 	}
 
 	if ( parts.length > 1 && origPOS.exec( selector ) ) {
@@ -4097,7 +4097,7 @@ var Sizzle = function(selector, context, results, seed) {
 		Sizzle.uniqueSort( results );
 	}
 
-            return results;
+	return results;
 };
 
 Sizzle.uniqueSort = function(results){
@@ -4109,12 +4109,12 @@ Sizzle.uniqueSort = function(results){
 			for ( var i = 1; i < results.length; i++ ) {
 				if ( results[i] === results[i-1] ) {
 					results.splice(i--, 1);
-        }
+				}
 			}
 		}
 	}
 
-        return results;
+	return results;
 };
 
 Sizzle.matches = function(expr, set){
@@ -4186,27 +4186,27 @@ Sizzle.filter = function(expr, set, inplace, not){
 							if ( inplace && found != null ) {
 								if ( pass ) {
 									anyFound = true;
-      } else {
+								} else {
 									curLoop[i] = false;
-          }
+								}
 							} else if ( pass ) {
 								result.push( item );
 								anyFound = true;
-        }
-      }
+							}
+						}
 					}
 				}
 
 				if ( found !== undefined ) {
 					if ( !inplace ) {
 						curLoop = result;
-        }
+					}
 
 					expr = expr.replace( Expr.match[ type ], "" );
 
 					if ( !anyFound ) {
-        return [];
-      }
+						return [];
+					}
 
 					break;
 				}
@@ -4238,7 +4238,7 @@ var Expr = Sizzle.selectors = {
 		CHILD: /:(only|nth|last|first)-child(?:\((even|odd|[\dn+-]*)\))?/,
 		POS: /:(nth|eq|gt|lt|first|last|even|odd)(?:\((\d*)\))?(?=[^-]|$)/,
 		PSEUDO: /:((?:[\w\u00c0-\uFFFF-]|\\.)+)(?:\((['"]*)((?:\([^\)]+\)|[^\2\(\)]*)+)\2\))?/
-    },
+	},
 	leftMatch: {},
 	attrMap: {
 		"class": "className",
@@ -4272,7 +4272,7 @@ var Expr = Sizzle.selectors = {
 			if ( isPartStrNotTag ) {
 				Sizzle.filter( part, checkSet, true );
 			}
-    },
+		},
 		">": function(checkSet, part, isXML){
 			var isPartStr = typeof part === "string";
 
@@ -4284,7 +4284,7 @@ var Expr = Sizzle.selectors = {
 					if ( elem ) {
 						var parent = elem.parentNode;
 						checkSet[i] = parent.nodeName === part ? parent : false;
-      }
+					}
 				}
 			} else {
 				for ( var i = 0, l = checkSet.length; i < l; i++ ) {
@@ -4300,7 +4300,7 @@ var Expr = Sizzle.selectors = {
 					Sizzle.filter( part, checkSet, true );
 				}
 			}
-    },
+		},
 		"": function(checkSet, part, isXML){
 			var doneName = done++, checkFn = dirCheck;
 
@@ -4310,18 +4310,18 @@ var Expr = Sizzle.selectors = {
 			}
 
 			checkFn("parentNode", part, doneName, checkSet, nodeCheck, isXML);
-    },
+		},
 		"~": function(checkSet, part, isXML){
 			var doneName = done++, checkFn = dirCheck;
 
 			if ( typeof part === "string" && !/\W/.test(part) ) {
 				var nodeCheck = part = isXML ? part : part.toUpperCase();
 				checkFn = dirNodeCheck;
-      }
+			}
 
 			checkFn("previousSibling", part, doneName, checkSet, nodeCheck, isXML);
 		}
-    },
+	},
 	find: {
 		ID: function(match, context, isXML){
 			if ( typeof context.getElementById !== "undefined" && !isXML ) {
@@ -4336,12 +4336,12 @@ var Expr = Sizzle.selectors = {
 				for ( var i = 0, l = results.length; i < l; i++ ) {
 					if ( results[i].getAttribute("name") === match[1] ) {
 						ret.push( results[i] );
-    }
+					}
 				}
 
 				return ret.length === 0 ? null : ret;
 			}
-  },
+		},
 		TAG: function(match, context){
 			return context.getElementsByTagName(match[1]);
 		}
@@ -4352,7 +4352,7 @@ var Expr = Sizzle.selectors = {
 
 			if ( isXML ) {
 				return match;
-      }
+			}
 
 			for ( var i = 0, elem; (elem = curLoop[i]) != null; i++ ) {
 				if ( elem ) {
@@ -4366,7 +4366,7 @@ var Expr = Sizzle.selectors = {
 			}
 
 			return false;
-    },
+		},
 		ID: function(match){
 			return match[1].replace(/\\/g, "");
 		},
@@ -4382,12 +4382,12 @@ var Expr = Sizzle.selectors = {
 
 				match[2] = (test[1] + (test[2] || 1)) - 0;
 				match[3] = test[3] - 0;
-      }
+			}
 
 			match[0] = done++;
 
 			return match;
-    },
+		},
 		ATTR: function(match, curLoop, inplace, result, not, isXML){
 			var name = match[1].replace(/\\/g, "");
 
@@ -4400,7 +4400,7 @@ var Expr = Sizzle.selectors = {
 			}
 
 			return match;
-    },
+		},
 		PSEUDO: function(match, curLoop, inplace, result, not){
 			if ( match[1] === "not" ) {
 				if ( ( chunker.exec(match[3]) || "" ).length > 1 || /^\w/.test(match[3]) ) {
@@ -4417,29 +4417,29 @@ var Expr = Sizzle.selectors = {
 			}
 
 			return match;
-    },
+		},
 		POS: function(match){
 			match.unshift( true );
 			return match;
 		}
-    },
+	},
 	filters: {
 		enabled: function(elem){
 			return elem.disabled === false && elem.type !== "hidden";
-    },
+		},
 		disabled: function(elem){
 			return elem.disabled === true;
-    },
+		},
 		checked: function(elem){
 			return elem.checked === true;
-    },
+		},
 		selected: function(elem){
 			elem.parentNode.selectedIndex;
 			return elem.selected === true;
-    },
+		},
 		parent: function(elem){
 			return !!elem.firstChild;
-    },
+		},
 		empty: function(elem){
 			return !elem.firstChild;
 		},
@@ -4525,7 +4525,7 @@ var Expr = Sizzle.selectors = {
 
 				return true;
 			}
-    },
+		},
 		CHILD: function(elem, match){
 			var type = match[1], node = elem;
 			switch (type) {
@@ -4546,7 +4546,7 @@ var Expr = Sizzle.selectors = {
 
 					if ( first == 1 && last == 0 ) {
 						return true;
-        }
+					}
 
 					var doneName = match[0],
 						parent = elem.parentNode;
@@ -4556,25 +4556,25 @@ var Expr = Sizzle.selectors = {
 						for ( node = parent.firstChild; node; node = node.nextSibling ) {
 							if ( node.nodeType === 1 ) {
 								node.nodeIndex = ++count;
-      }
-        }
+							}
+						}
 						parent.sizcache = doneName;
-      }
+					}
 
 					var diff = elem.nodeIndex - last;
 					if ( first == 0 ) {
 						return diff == 0;
 					} else {
 						return ( diff % first == 0 && diff / first >= 0 );
-      }
+					}
 			}
-    },
+		},
 		ID: function(elem, match){
 			return elem.nodeType === 1 && elem.getAttribute("id") === match;
-    },
+		},
 		TAG: function(elem, match){
 			return (match === "*" && elem.nodeType === 1) || elem.nodeName === match;
-    },
+		},
 		CLASS: function(elem, match){
 			return (" " + (elem.className || elem.getAttribute("class")) + " ")
 				.indexOf( match ) > -1;
@@ -4609,7 +4609,7 @@ var Expr = Sizzle.selectors = {
 				type === "|=" ?
 				value === check || value.substr(0, check.length + 1) === check + "-" :
 				false;
-    },
+		},
 		POS: function(elem, match, i, array){
 			var name = match[2], filter = Expr.setFilters[ name ];
 
@@ -4632,8 +4632,8 @@ var makeArray = function(array, results) {
 
 	if ( results ) {
 		results.push.apply( results, array );
-      return results;
-    }
+		return results;
+	}
 
 	return array;
 };
@@ -4764,7 +4764,7 @@ if ( document.documentElement.compareDocumentPosition ) {
 				results = tmp;
 			}
 
-    return results;
+			return results;
 		};
 	}
 
@@ -4774,7 +4774,7 @@ if ( document.documentElement.compareDocumentPosition ) {
 		Expr.attrHandle.href = function(elem){
 			return elem.getAttribute("href", 2);
 		};
-    }
+	}
 
 	div = null; // release memory in IE
 })();
@@ -4785,7 +4785,7 @@ if ( document.querySelectorAll ) (function(){
 
 	if ( div.querySelectorAll && div.querySelectorAll(".TEST").length === 0 ) {
 		return;
-    }
+	}
 
 	Sizzle = function(query, context, extra, seed){
 		context = context || document;
@@ -4794,14 +4794,14 @@ if ( document.querySelectorAll ) (function(){
 			try {
 				return makeArray( context.querySelectorAll(query), extra );
 			} catch(e){}
-  }
+		}
 
 		return oldSizzle(query, context, extra, seed);
 	};
 
 	for ( var prop in oldSizzle ) {
 		Sizzle[ prop ] = oldSizzle[ prop ];
-    }
+	}
 
 	div = null; // release memory in IE
 })();
@@ -4822,7 +4822,7 @@ if ( document.getElementsByClassName && document.documentElement.getElementsByCl
 	Expr.find.CLASS = function(match, context, isXML) {
 		if ( typeof context.getElementsByClassName !== "undefined" && !isXML ) {
 			return context.getElementsByClassName(match[1]);
-}
+		}
 	};
 
 	div = null; // release memory in IE
@@ -4836,7 +4836,7 @@ function dirNodeCheck( dir, cur, doneName, checkSet, nodeCheck, isXML ) {
 			if ( sibDir && elem.nodeType === 1 ){
 				elem.sizcache = doneName;
 				elem.sizset = i;
-}
+			}
 			elem = elem[dir];
 			var match = false;
 
@@ -4994,8 +4994,8 @@ var Form = {
         if (value != null && element.type != 'file' && (element.type != 'submit' || (!submitted &&
             submit !== false && (!submit || key == submit) && (submitted = true)))) {
           result = accumulator(result, key, value);
-          }
         }
+      }
       return result;
     });
   }
@@ -5198,19 +5198,19 @@ Form.Element.Serializers = (function() {
     if (Object.isUndefined(value))
       return (element.type === 'select-one' ? selectOne : selectMany)(element);
 
-      var opt, currentValue, single = !Object.isArray(value);
-      for (var i = 0, length = element.length; i < length; i++) {
-        opt = element.options[i];
-        currentValue = this.optionValue(opt);
-        if (single) {
-          if (currentValue == value) {
-            opt.selected = true;
-            return;
-          }
+    var opt, currentValue, single = !Object.isArray(value);
+    for (var i = 0, length = element.length; i < length; i++) {
+      opt = element.options[i];
+      currentValue = this.optionValue(opt);
+      if (single) {
+        if (currentValue == value) {
+          opt.selected = true;
+          return;
         }
-        else opt.selected = value.include(currentValue);
       }
+      else opt.selected = value.include(currentValue);
     }
+  }
 
   function selectOne(element) {
     var index = element.selectedIndex;
@@ -5241,7 +5241,7 @@ Form.Element.Serializers = (function() {
     selectMany:    selectMany,
     optionValue:   optionValue,
     button:        valueSelector
-};
+  };
 })();
 
 /*--------------------------------------------------------------------------*/
@@ -5379,22 +5379,22 @@ Form.EventObserver = Class.create(Abstract.EventObserver, {
   }
 
   function _isButtonForWebKit(event, code) {
-      switch (code) {
-        case 0: return event.which == 1 && !event.metaKey;
+    switch (code) {
+      case 0: return event.which == 1 && !event.metaKey;
       case 1: return event.which == 2 || (event.which == 1 && event.metaKey);
       case 2: return event.which == 3;
-        default: return false;
-      }
+      default: return false;
+    }
   }
 
   if (window.attachEvent) {
     if (!window.addEventListener) {
       _isButton = _isButtonForLegacyEvents;
-  } else {
-    _isButton = function(event, code) {
+    } else {
+      _isButton = function(event, code) {
         return isIELegacyEvent(event) ? _isButtonForLegacyEvents(event, code) :
          _isButtonForDOMEvents(event, code);
-  }
+      }
     }
   } else if (Prototype.Browser.WebKit) {
     _isButton = _isButtonForWebKit;
@@ -5434,7 +5434,7 @@ Form.EventObserver = Class.create(Abstract.EventObserver, {
     while (element) {
       if (Object.isElement(element) && Prototype.Selector.match(element, expression)) {
         return Element.extend(element);
-  }
+      }
       element = element.parentNode;
     }
   }
@@ -5472,14 +5472,14 @@ Form.EventObserver = Class.create(Abstract.EventObserver, {
 
 
   Event.Methods = {
-    isLeftClick: isLeftClick,
+    isLeftClick:   isLeftClick,
     isMiddleClick: isMiddleClick,
-    isRightClick: isRightClick,
+    isRightClick:  isRightClick,
 
-    element: element,
+    element:     element,
     findElement: findElement,
 
-    pointer: pointer,
+    pointer:  pointer,
     pointerX: pointerX,
     pointerY: pointerY,
 
@@ -5670,11 +5670,11 @@ Form.EventObserver = Class.create(Abstract.EventObserver, {
       return element;
     }
 
-      var responders = registry.get(eventName);
+    var responders = registry.get(eventName);
     if (!responders) return element;
 
     if (!handler) {
-      responders.each( function(r) {
+      responders.each(function(r) {
         stopObserving(element, eventName, r.handler);
       });
       return element;
@@ -5685,7 +5685,7 @@ Form.EventObserver = Class.create(Abstract.EventObserver, {
       if (responders[i].handler === handler) {
         responder = responders[i];
         break;
-    }
+      }
     }
     if (!responder) return element;
 

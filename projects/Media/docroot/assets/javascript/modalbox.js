@@ -14,7 +14,7 @@ if (!window.Modalbox)
 
 Modalbox.Methods = {
 	overrideAlert: false, // Override standard browser alert message with ModalBox
-	focusableElements: new Array,
+	focusableElements: new Array(),
 	currFocused: 0,
 	initialized: false,
 	active: true,
@@ -94,6 +94,8 @@ Modalbox.Methods = {
 	
 	show: function(content, options) {
 		if(!this.initialized) this._init(options); // Check for is already initialized
+
+		this._cleanUpContentIDs();
 		
 		this.content = content;
 		this.setOptions(options);
@@ -127,6 +129,7 @@ Modalbox.Methods = {
 				$(this.MBwindow).hide();
 				this._deinit();
 			}
+			Event.stopObserving(window, 'scroll');
 		} else throw("Modalbox is not initialized.");
 	},
 	
@@ -178,7 +181,7 @@ Modalbox.Methods = {
 	
 	resize: function(byWidth, byHeight, options) { // Change size of MB without loading content
 		// release any MB_content height set prior to establish scrollbars in content area
-		$(this.MBcontent).setStyle({height:''});
+		//$(this.MBcontent).setStyle({height:''});
 		
 		var oWidth = $(this.MBoverlay).getWidth();
 		var wHeight = $(this.MBwindow).getHeight();
@@ -188,15 +191,22 @@ Modalbox.Methods = {
 		var newHeight = ((wHeight - hHeight + byHeight) < cHeight) ? (cHeight + hHeight) : (wHeight + byHeight);
 
 		var el = $(this.MBwindow);
-		var windowBottomMargin = 10;		
+		var contentEl = $(this.MBcontent);
+		var windowBottomMargin = 10;
+		newHeight += windowBottomMargin;
 		var windowOffset = (parseInt(el.getStyle('margin-top'), 0) + parseInt(el.getStyle('margin-bottom'), 0) + parseInt(el.getStyle('border-top-width'), 0) + parseInt(el.getStyle('border-bottom-width'), 0)) + windowBottomMargin;
+		var contentPadding = (parseInt(contentEl.getStyle('padding-top')) + parseInt(contentEl.getStyle('padding-bottom')));
 		
-		if ((newHeight + windowOffset) > document.viewport.getHeight()) {
+		if ((newHeight + windowOffset + contentPadding) > document.viewport.getHeight()) {
 			// adjust window height to account for margins and border widths
 			newHeight = document.viewport.getHeight() - windowOffset - windowBottomMargin;
 			// calculate content height including header height and padding values
 			newcHeight = newHeight - hHeight - parseInt($(this.MBframe).getStyle('padding-bottom'), 0) - parseInt($(this.MBcontent).getStyle('padding-bottom'), 0);
 			$(this.MBcontent).setStyle({height:newcHeight + 'px'});
+		}
+		else if ($(this.MBcontent).getStyle('height')) {
+			// release any MB_content height set prior to establish scrollbars in content area
+			$(this.MBcontent).setStyle({height:''});				
 		}
 		var newWidth = wWidth + byWidth;	
         this.options.width = newWidth;
@@ -204,7 +214,7 @@ Modalbox.Methods = {
 		if(this.options.transitions && !Modalbox.animating) {
 			Modalbox.animating = true;
 			new Effect.Morph(this.MBwindow, {
-				style: "width:" + newWidth + "px; height:" + newHeight + "px; left:" + ((oWidth - newWidth)/2) + "px",
+				style: "width:" + newWidth + "px; height:" + newHeight + "px;",
 				duration: this.options.resizeDuration, 
 				beforeStart: function(fx){
 					fx.element.setStyle({overflow:"hidden"}); // Fix for MSIE 6 to resize correctly
@@ -281,8 +291,8 @@ Modalbox.Methods = {
 			var byWidth = 0;
 		}
 		if(byHeight != 0) {
-			if(options) this.setOptions(options); // Passing callbacks
-			Modalbox.resize(0, byHeight);
+			if(options) this.setOptions(options); // Passing callbacks			
+			Modalbox.resize(byWidth, byHeight);
 		}
 	},
 	
@@ -438,8 +448,12 @@ Modalbox.Methods = {
 	},
 	
 	_findFocusableElements: function(){ // Collect form elements or links from MB content
-		this.MBcontent.select('input:not([type~=hidden]), select, textarea, button, a[href]').invoke('addClassName', 'MB_focusable');
-		return this.MBcontent.select('.MB_focusable');
+		if (this.options.autoFocusing === true) {
+			// TODO maybe add :enabled to select and textarea elements
+			this.MBcontent.select('input:not([type=hidden]):enabled, select, textarea, button, a[href]').invoke('addClassName', 'MB_focusable');
+			return this.MBcontent.select('.MB_focusable');
+		}
+		return this.focusableElements; //avoid returning nothing
 	},
 	
 	_kbdHandler: function(event) {
@@ -511,22 +525,28 @@ Modalbox.Methods = {
 		}
 		$(this.MBcontent).setStyle({overflow: '', height: ''});
 	},
-	
+
+	_cleanUpContentIDs: function () {
+		/* Replace prefixes 'MB_' in IDs for the original content */
+		if (typeof this.content == 'object') {
+			if(this.content.id && this.content.id.match(/MB_/)) {
+				this.content.id = this.content.id.replace(/MB_/, "");
+			}
+
+			this.content.select('*[id]').each(function(el) { el.id = el.id.replace(/MB_/, ""); });
+		}
+	},
+
 	_removeElements: function () {
 		$(this.MBoverlay).remove();
-		$(this.MBwindow).remove();
+		$(this.MBwindowwrapper).remove();
 		if(Prototype.Browser.IE && !navigator.appVersion.match(/\b7.0\b/)) {
 			this._prepareIE("", ""); // If set to auto MSIE will show horizontal scrolling
 			window.scrollTo(this.initScrollX, this.initScrollY);
 		}
+
+		this._cleanUpContentIDs();
 		
-		/* Replacing prefixes 'MB_' in IDs for the original content */
-		if(typeof this.content == 'object') {
-			if(this.content.id && this.content.id.match(/MB_/)) {
-				this.content.id = this.content.id.replace(/MB_/, "");
-			}
-			this.content.select('*[id]').each(function(el){ el.id = el.id.replace(/MB_/, ""); });
-		}
 		/* Initialized will be set to false */
 		this.initialized = false;
 		this.event("afterHide"); // Passing afterHide callback

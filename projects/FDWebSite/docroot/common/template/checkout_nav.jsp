@@ -12,8 +12,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=8" />
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 		<script src="/assets/javascript/timeslots.js" type="text/javascript" language="javascript"></script>
-		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-     	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 		<link href="/assets/css/timeslots.css" rel="stylesheet" type="text/css" />
 		<%@ include file="/shared/template/includes/ccl.jspf" %>
 	</head>
