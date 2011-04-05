@@ -375,29 +375,10 @@ if (errorMsg!=null) {%>
 <tr>
 		<td>
 			<table cellpadding="0" cellspacing="0" width="675" id="legendCheckout">
-	<tr>	
+				<tr>	
 					<td Valign="middle" align="right">
 					 	<table>
 							<tr>
-					<!--			<%if(user.isChefsTable() && user.getTotalCTSlots()>0){%>
-									<td>
-										<img src="/media/editorial/timeslots/images/star_ct_delivery_time.gif" WIDTH="15" HEIGHT="18" border="0" alt="">
-									</td>
-									<td>
-										<div onClick="showLegendOverlay('/media/editorial/timeslots/msg_chefstable_timeslot.html','Chef\'s Table Information'); return false;"><%= FDStoreProperties.getChefstableLabel()%></div>
-									</td>
-									<td>&nbsp;</td>
-								<%}%>
-								<%if(deliveryModel.getMaxDiscount()>0){%>
-									<td>
-										<img src="/media/editorial/timeslots/images/dollar_discount_delivery_time.gif" WIDTH="15" HEIGHT="18" border="0" alt="">
-									</td>
-									<td>
-										<div onClick="showLegendOverlay('/media/editorial/timeslots/msg_discount_timeslot.html','Promotion Discount'); return false;">
-										<%= FDStoreProperties.getPromotionLabel()%></div>
-									</td>
-									<td>&nbsp;</td>
-								<%}%> -->
 								<%if(deliveryModel.getEcoFriendlyCount() > 0){%>
 									<td>
 										<img src="/media_stat/images/timeslots/ecofriendly_leaf.gif" WIDTH="16" HEIGHT="16" border="0">
@@ -443,10 +424,18 @@ if (errorMsg!=null) {%>
 	if(timeslotList.size()>1 && idx.intValue()==0){
 %>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0">
-	<span class="text12 fleft tsAdvanceHeader"><b>SPECIAL DELIVERY</b>&nbsp;&nbsp;<a class="tsDivHide" id="displayAdvanceOrderGrid" href="javascript:hideAdvanceOrder();">Hide Details</a></span>
+	<span class="text12 fleft tsAdvanceHeader"><b>ADVANCE DELIVERY</b>&nbsp;&nbsp;<a class="tsDivHide" id="displayAdvanceOrderGrid" href="javascript:hideAdvanceOrder();">Hide Timeslots</a></span>
 	<BR>
 
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
+<% } %>
+
+<%
+	if(timeslotList.size()==3 && idx.intValue()==1){
+%>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
+		<span class="text12 fleft tsAdvanceHeader"><b>ADVANCE DELIVERY</b></span>
+	<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
 <% } %>
 
 
@@ -505,9 +494,6 @@ if (errorMsg!=null) {%>
 </table>
 	<%}%>
 
-
-
-
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="693" HEIGHT="3" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
@@ -549,22 +535,6 @@ if (errorMsg!=null) {%>
 	
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ END BOTTOM MODEULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
 
-
-<!--<%
-if(ClickToCallUtil.evaluateClick2CallInfoDisplay(user,null)) {
-	Boolean isNextDayTimeSlotNotAvailable0 = false;
-	if(null !=request.getAttribute("isNextDayTimeSlotNotAvailable")){
-		isNextDayTimeSlotNotAvailable0 =(Boolean)request.getAttribute("isNextDayTimeSlotNotAvailable");
-	}	
-	if(!ClickToCallUtil.isNextDayTimeSlotsCheckRequired() ||( ClickToCallUtil.isNextDayTimeSlotsCheckRequired() && isNextDayTimeSlotNotAvailable0))
-	{
-%>
-	<%@ include file="/checkout/includes/i_click2call_footer_text.jspf" %>
-<% } } else { %>
-	<%@ include file="/checkout/includes/i_footer_text.jspf" %>
-<% } %>
-
--->
 
 </FORM>
 <script language="javascript">

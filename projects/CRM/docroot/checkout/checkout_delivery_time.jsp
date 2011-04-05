@@ -218,20 +218,27 @@ var zonePromoEnabled=false;
 		<td>
 <%
 	if(timeslotList.size()>1 && idx.intValue()==0){
-	%>
+%>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
-	<span class="text12 fleft tsAdvanceHeader"><b>SPECIAL DELIVERY</b>&nbsp;&nbsp;
-	<a class="tsDivHide" id="displayAdvanceOrderGrid" href="javascript:hideAdvanceOrder();">Hide Details</a></span>
-	<BR>
+		<span class="text12 fleft tsAdvanceHeader"><b>ADVANCE DELIVERY</b>&nbsp;&nbsp;
+			<a class="tsDivHide" id="displayAdvanceOrderGrid" href="javascript:hideAdvanceOrder();">Hide Timeslots</a>
+		</span>
+	<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
+<% } %>
+
+<%
+	if(timeslotList.size()==3 && idx.intValue()==1){
+%>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
-<%}%>
+		<span class="text12 fleft tsAdvanceHeader"><b>ADVANCE DELIVERY</b></span>
+	<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
+<% } %>
 
-
-<%	
+<%
 	Boolean isForAdvOrdSlots = false;
 	if(timeslotList.size()>1 && idx.intValue()==0){
 		isForAdvOrdSlots = true;
-      }
+    }
 	Boolean isForNewAdvOrdSlots = false;
 	if(timeslotList.size()==3 && idx.intValue()==1){
 		isForNewAdvOrdSlots = true;
@@ -265,23 +272,6 @@ var zonePromoEnabled=false;
 		<td align="right">
 					<table>
 							<tr>
-							<!--	<%if(user.isChefsTable() && user.getTotalCTSlots()>0){%>
-									<td>
-										<img src="/media/editorial/timeslots/images/star_ct_delivery_time.gif" WIDTH="15" HEIGHT="18" border="0" alt="">
-									</td>
-									<td>
-										<div onClick="showLegendOverlay('/media/editorial/timeslots/msg_chefstable_timeslot.html','Chef\'s Table Information'); return false;"><%= FDStoreProperties.getChefstableLabel()%></div>
-									</td>
-								<%}%>
-								<%if(deliveryModel.getMaxDiscount()>0){%>
-									<td>
-										<img src="/media/editorial/timeslots/images/dollar_discount_delivery_time.gif" WIDTH="15" HEIGHT="18" border="0" alt="">
-									</td>
-									<td>
-										<div onClick="showLegendOverlay('/media/editorial/timeslots/msg_discount_timeslot.html','Promotion Discount'); return false;">
-										<%= FDStoreProperties.getPromotionLabel()%></div>
-									</td>
-								<%}%> -->
 								<%if(deliveryModel.getEcoFriendlyCount() > 0){%>
 									<td>
 										<img src="/media_stat/images/timeslots/ecofriendly_leaf.gif" WIDTH="16" HEIGHT="16" border="0">

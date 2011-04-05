@@ -74,6 +74,9 @@ function fillRef(refDataCur, startIndex) {
 	if (day >= 10 && window.refAdvData !== undefined) {
 		dayPartIndexCur = daypartAdvIndex;
 	}
+	if (day >= 20 && window.refAdvData !== undefined) {
+		dayPartIndexCur = daypartAdvNewIndex;
+	}
 	if (dayPartIndexCur == -1) {
 		tsLog('WARN! dayPartIndexCur is -1, why is that?');
 		dayPartIndexCur = 1;
@@ -145,7 +148,11 @@ function fillRefAddRows(refDataCur, startIndexArg) {
 			advId = 'Adv';
 			dayPartIndexCur = daypartAdvIndex;
 		}
-		//get table ref, because this is the
+		if (startIndex >= 20) {
+			advId = 'Adv';
+			dayPartIndexCur = daypartAdvNewIndex;
+		}
+		//get table ref
 		var node = $('ts_d'+d+'_tsTable');
 
 		//find daypart td in table
@@ -297,7 +304,7 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 				if (addRowsAdv) {
 					while (!fillRef(refDataCur, startIndex)) {}
 					//make sure we have this
-					dayPartIndexCur = daypartAdvIndex;
+					dayPartIndexCur = daypartAdvNewIndex;
 				}
 			}
 			
@@ -609,9 +616,6 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 		
 	}
 
-	//skip out if day is invalid, this shouldn't normally happen
-	//if (day != '9999' && (day == -1 || sequenceKey == -1)) { return true; }
-
 	var reorganizer = []; //hold elems to be reorganized
 
 	tsLog('starting getReorganizerData');
@@ -830,17 +834,13 @@ function getReorganizerData(refDataCurArg, daypartIndexCurArg, dayArg) {
 				sequenceKey = lbnd;
 			}
 			
-			
-			//skip out if day is invalid, this shouldn't normally happen
-			//if (day == -1 || sequenceKey == -1) { return reorganizer; }
-			
 			for (var t = 0; t < refDataCur[d][0].length; t++) {
 				if (refDataCur[d][0][t] === undefined) { continue; }
 				
 				//reset reorgs
 				if ($('ts_d'+d+'_ts'+t)) {
 					if ($('ts_d'+d+'_ts'+t).rowSpan > 1 || refDataCur[d][0][t] == '') { //blanks only
-						$('ts_d'+d+'_ts'+t).innerHTML = '<div class="tsContent "><div class="fleft ts_rb" id="ts_d'+d+'_ts'+t+'_rbCont"></div><div class="fleft tsCont " id="ts_d'+d+'_ts'+t+'_time" style="width: 80px;">&nbsp;</div></div>';
+						$('ts_d'+d+'_ts'+t).innerHTML = '<div class="tsContent "><div class="fleft ts_rb" id="ts_d'+d+'_ts'+t+'_rbCont"></div><div class="fleft tsCont " id="ts_d'+d+'_ts'+t+'_time" style="width: 60px;">&nbsp;</div></div>';
 					}
 					$('ts_d'+d+'_ts'+t).rowSpan = 1;
 					$('ts_d'+d+'_ts'+t).show();
@@ -1088,9 +1088,9 @@ function hideAdvanceOrder() {
 	}
 
 	if($("timeslots_grid0").style.display != "none") {
-		$('displayAdvanceOrderGrid').innerHTML = "Hide Details";
+		$('displayAdvanceOrderGrid').innerHTML = "Hide Timeslots";
 	}else{
-		$('displayAdvanceOrderGrid').innerHTML = "Show Details";
+		$('displayAdvanceOrderGrid').innerHTML = "Show Timeslots";
 		tsContractAll('tsContainer');
 		if (globalTS != -1) {
 			tsExpand(globalTS);

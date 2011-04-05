@@ -64,8 +64,9 @@ if (timeslots.size() > 0) {
 	var timeslot_info = <%=isStaticSlot%>;
 	var dayIndex = 0;
 	var slotIndex = 0;
-	var daypartIndex = -1;
-	var daypartAdvIndex = -1;
+	var daypartIndex<%= (!isForAdvOrdSlots && !isForNewAdvOrdSlots) ? " = -1" : "" %>;
+	var daypartAdvIndex<%= (isForAdvOrdSlots) ? " = -1" : "" %>;
+	var daypartAdvNewIndex<%= (isForNewAdvOrdSlots) ? " = -1" : "" %>;
 	var dayName = '';
 		<%
 			int hDayIndex=0; int dayIndex=0; int fdayIndex=0;
@@ -354,7 +355,7 @@ if (timeslots.size() > 0) {
 											stringBuffer.append("<div class=\"tsNeighbourhoodPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
 													.append("<div>")
 														.append("<img src=\"/media_stat/images/timeslots/neighbourhood_favs.gif\" width=\"15\" height=\"20\" border=\"0\">\n")
-														.append("<div><font class=\"tsNeighbourhoodE\">My&nbsp;Building Favorites</font></div>\n")
+														.append("<div class=\"tsNeighbourhoodE\">My&nbsp;Building Favorites</font></div>\n")
 													.append("</div>")
 												.append("</div>");
 											stringBuffer.append("<div class=\"tsNeighbourhoodPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">\n")
@@ -454,10 +455,13 @@ if (timeslots.size() > 0) {
 			if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
 				%>daypartIndex = <%=slotIndex%>;
 				<%
-			}else{
+			}else if(isForAdvOrdSlots){
 				%>daypartAdvIndex = <%=slotIndex%>;
 				<%
-			} 
+			}else if(isForNewAdvOrdSlots){
+				%>daypartAdvNewIndex = <%=slotIndex%>;
+				<%
+			}
 
 			//PM Timeslots
 			int maxPmSlots = timeslots.getMaxNumShiftTimeslots(EnumDayShift.DAY_SHIFT_PM.getName());
