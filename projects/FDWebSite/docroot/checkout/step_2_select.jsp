@@ -424,7 +424,7 @@ if (errorMsg!=null) {%>
 	if(timeslotList.size()>1 && idx.intValue()==0){
 %>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0">
-	<span class="title13 fleft tsAdvanceHeader"><b>Advance Order Delivery Timeslots&nbsp;&nbsp;<a class="tsDivHide" id="displayAdvanceOrderGrid" href="javascript:hideAdvanceOrder();">Hide Delivery Timeslots</a></span>
+	<span class="title13 fleft tsAdvanceHeader">Advance Order Delivery Timeslots&nbsp;&nbsp;<a class="tsDivHide" id="displayAdvanceOrderGrid" href="javascript:hideAdvanceOrder();">Hide Delivery Timeslots</a></span>
 	<BR>
 
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
@@ -434,7 +434,7 @@ if (errorMsg!=null) {%>
 	if(timeslotList.size()==3 && idx.intValue()==1){
 %>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
-		<span class="title13 fleft tsAdvanceHeader"><b>Advance Order Delivery Timeslots</b></span>
+		<span class="title13 fleft tsAdvanceHeader">Advance Order Delivery Timeslots</span>
 	<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
 <% } %>
 

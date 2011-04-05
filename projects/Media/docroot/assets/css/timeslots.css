@@ -282,7 +282,7 @@ div#MB_content {
 }
 
 a.tsDivHide {
-	color:#78ABDC;
+	color:#669933;
 	float:right;
 	padding:0 20px 0 0;
 }
@@ -491,8 +491,10 @@ div.tsContentResE {
 	height:28px;
 }
 .tsDivHide a, .tsDivHide div {
-	color:#78ABDC;
+	color:#669933;
 	text-align:right;
+	font-weight:normal;
+	font-size:11px;
 }
 
 .tsEcoFriendlyTimeC {
