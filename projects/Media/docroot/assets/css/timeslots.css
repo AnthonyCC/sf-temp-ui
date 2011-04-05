@@ -429,6 +429,15 @@ div.tsContentResE {
 	height: 28px;
 }
 
+.tsChefstablePropE div div { 
+	padding:6px 0 0 0px;
+}
+
+.tsChefstablePropE div img { 
+	float: left; 
+	margin-top: 5px; 
+	margin-bottom: -5px;
+}
 /*SoldOut slot*/
 .tsSoldoutE {
 	color:#666666;
@@ -639,7 +648,7 @@ td.noTopBorder {
 	height: 30px;
 }
 
-.tsChefstablePropE div img, .tsEcoFriendlyPropE div img, .tsNeighbourhoodPropE div img, .tsReservationPropE div img, .tsSelectedSlotPropE div img, .tsSoldoutPropE div img {
+.tsEcoFriendlyPropE div img, .tsNeighbourhoodPropE div img, .tsReservationPropE div img, .tsSelectedSlotPropE div img, .tsSoldoutPropE div img {
 	margin-top: 5px;
 	margin-bottom: -5px;
 }

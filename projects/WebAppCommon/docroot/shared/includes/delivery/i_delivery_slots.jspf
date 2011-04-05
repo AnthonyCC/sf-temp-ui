@@ -73,28 +73,32 @@ if (timeslots.size() > 0) {
 			if(isForAdvOrdSlots){
 				hDayIndex = 10;	dayIndex  = 10; fdayIndex=10;
 		
-				%>if (!window['refAdvData']) { window['refAdvData'] = new Array(); }
-				<%
+		%>	
+			if (!window['refAdvData']) { window['refAdvData'] = new Array(); }
+		<%
 			}else if(isForNewAdvOrdSlots) { 
 				hDayIndex = 20;
 				dayIndex  = 20;
 				fdayIndex=20;
-				%>if (!window['refAdvData']) { window['refAdvData'] = new Array(); }
-				<%
+		%>	
+			if (!window['refAdvData']) { window['refAdvData'] = new Array(); }
+		<%
 			}else{
-				%>if (!window['refData']) { window['refData'] = new Array(); }
-				<%
+		%>	if (!window['refData']) { window['refData'] = new Array(); }
+		<%
 				hDayIndex = 0;
 				dayIndex  = 0;
 				fdayIndex=0;
 			}
 			for(Date day: days){
 				if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
-					%>refData[<%=hDayIndex%>] = new Array(new Array(),new Array());
-					<%
+		%>			
+					refData[<%=hDayIndex%>] = new Array(new Array(),new Array());
+		<%
 				}else{
-					%>refAdvData[<%=hDayIndex%>] = new Array(new Array(),new Array());
-					<%
+		%>			
+					refAdvData[<%=hDayIndex%>] = new Array(new Array(),new Array());
+		<%
 				} 
 				hDayIndex++;
 			}
@@ -153,12 +157,14 @@ if (timeslots.size() > 0) {
 			
 			stringBuffer.append("<table border=\"0\" id=\"ts_d"+dayIndex+"_tsTable\" class=\"tsTable\" cellspacing=\"0\" cellpadding=\"0\">");
 			int slotIndex = 0;
-						Date cutoffTime = null;
+			Date cutoffTime = null;
 			//AM Timeslots
 			int maxAmSlots = timeslots.getMaxNumShiftTimeslots(EnumDayShift.DAY_SHIFT_AM.getName());
 			int dayAmSlots = timeslots.getNumDayShiftTimeslots(day,EnumDayShift.DAY_SHIFT_AM.getName());
 
-			%><logic:iterate id="slot" collection="<%= timeslots.getTimeslotsForDayAndShift(day,EnumDayShift.DAY_SHIFT_AM.getName()) %>" type="com.freshdirect.fdstore.FDTimeslot"><%
+		%>
+			<logic:iterate id="slot" collection="<%= timeslots.getTimeslotsForDayAndShift(day,EnumDayShift.DAY_SHIFT_AM.getName()) %>" type="com.freshdirect.fdstore.FDTimeslot"><%
+		
 				stringBuffer.append("<tr id=\""+((isForAdvOrdSlots || isForNewAdvOrdSlots) ? "coAdv_d"+dayIndex+"_ts"+slotIndex+"_row":"co_d"+dayIndex+"_ts"+slotIndex+"_row")+"\" style=\"display: none;\">\n");
 
 					boolean isPreReservedSlotId = slot.getTimeslotId().equals(preReserveSlotId);
@@ -184,11 +190,13 @@ if (timeslots.size() > 0) {
 						.append("<div><b>Order&nbsp;by&nbsp;"+TimeslotPageUtil.getCutoffTimeDisplay(slot.getCutoffNormalDateTime())+"&nbsp;"+TimeslotPageUtil.getCutoffDay(day)+"</b></div></div>");
 					stringBuffer.append("</td>\n");
 					if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
-						%>refData[<%=dayIndex%>][1][<%=slotIndex%>]='refCutoff';
-						<%
+			%>
+						refData[<%=dayIndex%>][1][<%=slotIndex%>]='refCutoff';
+			<%
 					}else{
-						%>refAdvData[<%=dayIndex%>][1][<%=slotIndex%>]='refCutoff';
-						<%
+			%>
+						refAdvData[<%=dayIndex%>][1][<%=slotIndex%>]='refCutoff';
+			<%
 					}
 				}else{
 					stringBuffer.append("<td class=\"cutoff\" style=\"display: none;\" onclick=\"tsContractAll(\'tsContainer\', \'co_d"+dayIndex+"_ts"+slotIndex+"\'); tsExpand(\'co_d"+dayIndex+"_ts"+slotIndex+"\');\">")
@@ -198,20 +206,24 @@ if (timeslots.size() > 0) {
 					stringBuffer.append("</td>\n");
 
 					if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
-						%>refData[<%=dayIndex%>][1][<%=slotIndex%>]='';
-						<%
+			%>			
+						refData[<%=dayIndex%>][1][<%=slotIndex%>]='';
+			<%
 					}else{
-						%>refAdvData[<%=dayIndex%>][1][<%=slotIndex%>]='';
-						<%
+			%>			
+						refAdvData[<%=dayIndex%>][1][<%=slotIndex%>]='';
+			<%
 					}
 				}
 				stringBuffer.append("</tr>\n");
 					if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
-						%>refData[<%=dayIndex%>][0][<%=slotIndex%>]='refTimeslot';
-						<%
+			%>
+						refData[<%=dayIndex%>][0][<%=slotIndex%>]='refTimeslot';
+			<%
 					}else{
-						%>refAdvData[<%=dayIndex%>][0][<%=slotIndex%>]='refTimeslot';
-						<%
+			%>			
+						refAdvData[<%=dayIndex%>][0][<%=slotIndex%>]='refTimeslot';
+			<%
 					}
 				
 				//timeslot row
@@ -221,15 +233,15 @@ if (timeslots.size() > 0) {
 							
 							stringBuffer.append("<div class=\"tsContent ")
 								.append(
-										(
-										soldOut 
+									(
+									(soldOut) 
 										? ""
 										:(isSelectedSlotId)
 											?"tsContentSelE"
 												:(isPreReservedSlotId && hasPreReserved)
 													?"tsContentResE"
 														:""
-										)
+									)
 								+"\">");
 								
 							stringBuffer.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rbCont\" class=\"fleft ts_rb\">");
@@ -245,7 +257,8 @@ if (timeslots.size() > 0) {
 							} else {
 								if (isStaticSlot){
 									//do nothing?
-									%><%
+			%>
+			<%
 								} else {
 									if (!slot.hasAvailCTCapacity() && !(isSelectedSlotId || isPreReservedSlotId) && isForce) { 
 									}
@@ -263,7 +276,8 @@ if (timeslots.size() > 0) {
 												: slot.getTimeslotId()
 											)+"\" />"
 										);
-										%><%
+			%>
+			<%
 								}	
 							}
 							stringBuffer.append("</div>");
@@ -337,7 +351,7 @@ if (timeslots.size() > 0) {
 										stringBuffer.append("<div class=\"tsChefstablePropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
 												.append("<div>")
 													.append("<img src=\"/media_stat/images/timeslots/purple_star.gif\" width=\"16\" height=\"15\" border=\"0\">\n")
-													.append("<font class=\"tsChefstableE\">CHEF'S&nbsp;TABLE</font>")
+													.append("<div><font class=\"tsChefstableE\">&nbsp;CHEF'S&nbsp;TABLE</font></div>")
 												.append("</div>")
 											.append("</div>");
 										stringBuffer.append("<div class=\"tsChefstablePropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">")
@@ -375,25 +389,23 @@ if (timeslots.size() > 0) {
 									// Check eligibility column to expand on page load
 									 if(isSelectedSlotId && !defaultColExp){
 										defaultColExp = true;
-
-								%>	
+				%>
 										dayIndex = <%= dayIndex %>;
 										slotIndex = <%= slotIndex %>;
-								<%
+				<%
 									}else if (isPreReservedSlotId && hasPreReserved && !defaultColExp) {
 										defaultColExp = true;
-
-								%>
+				%>
 										dayIndex = <%= dayIndex %>;
 										slotIndex= <%= slotIndex %>;
-								<%
+				<%
 									}
 								stringBuffer.append("</td>\n");
 							stringBuffer.append("</tr>\n");
-				
-				slotIndex++;
-			%></logic:iterate><%
-
+					slotIndex++;
+			%>
+				</logic:iterate>
+			<%
 				if( dayAmSlots < maxAmSlots){
 					for(int i=dayAmSlots;i < maxAmSlots;i++){
 						//generate empty cutoffs
@@ -413,19 +425,21 @@ if (timeslots.size() > 0) {
 							.append("</tr>\n");
 
 						if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
-							%>refData[<%=dayIndex%>][0][<%=slotIndex%>]='';
+			%>			
+							refData[<%=dayIndex%>][0][<%=slotIndex%>]='';
 							refData[<%=dayIndex%>][1][<%=slotIndex%>]='';
-							<%
+			<%
 						}else{
-							%>refAdvData[<%=dayIndex%>][0][<%=slotIndex%>]='';
+			%>
+							refAdvData[<%=dayIndex%>][0][<%=slotIndex%>]='';
 							refAdvData[<%=dayIndex%>][1][<%=slotIndex%>]='';
-							<%
+			<%
 						}
 						slotIndex++;
 					}
 				}else if(dayAmSlots==0){
 					//generate empty cutoffs
-						stringBuffer.append("<tr id=\""+((isForAdvOrdSlots || isForNewAdvOrdSlots) ? "coAdv_d"+dayIndex+"_ts"+slotIndex+"_row":"co_d"+dayIndex+"_ts"+slotIndex+"_row")+"\" style=\"display: none;\">\n");
+					stringBuffer.append("<tr id=\""+((isForAdvOrdSlots || isForNewAdvOrdSlots) ? "coAdv_d"+dayIndex+"_ts"+slotIndex+"_row":"co_d"+dayIndex+"_ts"+slotIndex+"_row")+"\" style=\"display: none;\">\n");
 						stringBuffer.append("<td class=\"cutoff\" style=\"display: none;\" onclick=\"tsContractAll(\'tsContainer\', \'co_d"+dayIndex+"_ts"+slotIndex+"\'); tsExpand(\'co_d"+dayIndex+"_ts"+slotIndex+"\');\">")
 							.append("<div id=\"co_d"+dayIndex+"_ts"+slotIndex+"\"")
 							.append(">&nbsp;</div>\n")
@@ -440,15 +454,16 @@ if (timeslots.size() > 0) {
 						.append("</td>\n")
 						.append("</tr>\n");
 					if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
-						%>refData[<%=dayIndex%>][0][<%=slotIndex%>]='';
+			%>
+						refData[<%=dayIndex%>][0][<%=slotIndex%>]='';
 						refData[<%=dayIndex%>][1][<%=slotIndex%>]='';
-						<%
+			<%
 					}else{
-						%>refAdvData[<%=dayIndex%>][0][<%=slotIndex%>]='';
+			%>
+						refAdvData[<%=dayIndex%>][0][<%=slotIndex%>]='';
 						refAdvData[<%=dayIndex%>][1][<%=slotIndex%>]='';
-						<%
+			<%
 					}
-					
 					slotIndex++;
 				}
 				
@@ -458,17 +473,18 @@ if (timeslots.size() > 0) {
 				.append("<IMG src=\"/media_stat/images/layout/clear.gif\" WIDTH=\"1\" HEIGHT=\"1\" BORDER=\"0\"></td>")
 				.append("</tr>\n");
 			if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
-				%>//daypartIndex = <%=slotIndex%>;
-				<%
-			}else{
-				%>daypartAdvIndex = <%=slotIndex%>;
-				<%
-			} 
-
+		%>		
+				daypartIndex = <%=slotIndex%>;
+		<%	}else{	%>
+				daypartAdvIndex = <%=slotIndex%>;
+		<%
+			}
 			//PM Timeslots
 			int maxPmSlots = timeslots.getMaxNumShiftTimeslots(EnumDayShift.DAY_SHIFT_PM.getName());
 			int dayPmSlots = timeslots.getNumDayShiftTimeslots(day,EnumDayShift.DAY_SHIFT_PM.getName());
-		%><logic:iterate id="slot" collection="<%= timeslots.getTimeslotsForDayAndShift(day,EnumDayShift.DAY_SHIFT_PM.getName()) %>" type="com.freshdirect.fdstore.FDTimeslot"><%
+		%>
+			<logic:iterate id="slot" collection="<%= timeslots.getTimeslotsForDayAndShift(day,EnumDayShift.DAY_SHIFT_PM.getName()) %>" type="com.freshdirect.fdstore.FDTimeslot">
+		<%
 				stringBuffer.append("<tr id=\""+((isForAdvOrdSlots || isForNewAdvOrdSlots)? "coAdv_d"+dayIndex+"_ts"+slotIndex+"_row":"co_d"+dayIndex+"_ts"+slotIndex+"_row")+"\" style=\"display: none;\">");
 				
 					boolean isPreReservedSlotId = slot.getTimeslotId().equals(preReserveSlotId);
@@ -493,13 +509,13 @@ if (timeslots.size() > 0) {
 						.append("<div><b>Order&nbsp;by&nbsp;"+TimeslotPageUtil.getCutoffTimeDisplay(slot.getCutoffNormalDateTime())+"&nbsp;"+TimeslotPageUtil.getCutoffDay(day)+"</b></div></div>");
 					stringBuffer.append("</td>\n");
 					if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
-				%>		
+			%>
 						refData[<%=dayIndex%>][1][<%=slotIndex%>]='refCutoff';
-				<%
+			<%
 					}else{
-				%>
+			%>
 						refAdvData[<%=dayIndex%>][1][<%=slotIndex%>]='refCutoff';
-				<%
+			<%
 					}
 				}else{
 						stringBuffer.append("<td class=\"cutoff\" style=\"display: none;\" onclick=\"tsContractAll(\'tsContainer\', \'co_d"+dayIndex+"_ts"+slotIndex+"\'); tsExpand(\'co_d"+dayIndex+"_ts"+slotIndex+"\');\">")
@@ -508,30 +524,31 @@ if (timeslots.size() > 0) {
 					
 						stringBuffer.append("</td>\n");
 					if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
-						%>refData[<%=dayIndex%>][1][<%=slotIndex%>]='';
-						<%
+			%>
+						refData[<%=dayIndex%>][1][<%=slotIndex%>]='';
+			<%
 					}else{
-						%>refAdvData[<%=dayIndex%>][1][<%=slotIndex%>]='';
-						<%
+			%>			refAdvData[<%=dayIndex%>][1][<%=slotIndex%>]='';
+			<%
 					}
 				}
-				stringBuffer.append("</tr>\n");
+					stringBuffer.append("</tr>\n");
 					if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
-						%>refData[<%=dayIndex%>][0][<%=slotIndex%>]='refTimeslot';
-						<%
+			%>
+						refData[<%=dayIndex%>][0][<%=slotIndex%>]='refTimeslot';
+			<%
 					}else{
-						%>refAdvData[<%=dayIndex%>][0][<%=slotIndex%>]='refTimeslot';
-						<%
+			%>			refAdvData[<%=dayIndex%>][0][<%=slotIndex%>]='refTimeslot';
+			<%
 					}
-				
 				stringBuffer.append("<tr id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_tr\">\n");
 				
-					stringBuffer.append("<td id=\"ts_d"+dayIndex+"_ts"+slotIndex+"\" class=\"tsCol tsContainerC tsContainerBGC\" onclick=\"tsContractAll(\'tsContainer\', \'ts_d"+dayIndex+"_ts"+slotIndex+"\'); tsExpand(\'ts_d"+dayIndex+"_ts"+slotIndex+"\');\">");
+				stringBuffer.append("<td id=\"ts_d"+dayIndex+"_ts"+slotIndex+"\" class=\"tsCol tsContainerC tsContainerBGC\" onclick=\"tsContractAll(\'tsContainer\', \'ts_d"+dayIndex+"_ts"+slotIndex+"\'); tsExpand(\'ts_d"+dayIndex+"_ts"+slotIndex+"\');\">");
 							
-							stringBuffer.append("<div class=\"tsContent ")
+						stringBuffer.append("<div class=\"tsContent ")
 								.append(
 										(
-										soldOut 
+										(soldOut) 
 										? ""
 										:(isSelectedSlotId)
 											?"tsContentSelE"
@@ -550,7 +567,7 @@ if (timeslots.size() > 0) {
 								}
 								if(!isNextDayTimeSlotNotAvailable){
 									isNextDayTimeSlotNotAvailable = day != null && nextDay != null && day.equals(nextDay);
-								}										
+								}
 							} else {
 								if (isStaticSlot){
 								} else {
@@ -642,7 +659,7 @@ if (timeslots.size() > 0) {
 										stringBuffer.append("<div class=\"tsChefstablePropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
 												.append("<div>")
 													.append("<img class=\"chefstableImage\" src=\"/media_stat/images/timeslots/purple_star.gif\" width=\"16\" height=\"15\" border=\"0\">")
-													.append("<font class=\"tsChefstableE\">CHEF'S&nbsp;TABLE</font>")
+													.append("<div><font class=\"tsChefstableE\">&nbsp;CHEF'S&nbsp;TABLE</font></div>")
 												.append("</div>")
 											.append("</div>");
 										stringBuffer.append("<div class=\"tsChefstablePropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">")
@@ -681,21 +698,23 @@ if (timeslots.size() > 0) {
 									 if(isSelectedSlotId && !defaultColExp){
 										defaultColExp = true;
 
-								%>		dayIndex = <%= dayIndex %>;
+				%>						dayIndex = <%= dayIndex %>;
 										slotIndex= <%= slotIndex %>;
-								<%
+				<%
 									}else if(isPreReservedSlotId && hasPreReserved && !defaultColExp){
 										defaultColExp = true;
-								%>
+				%>
 										dayIndex = <%= dayIndex %>;
 										slotIndex= <%= slotIndex %>;
-								<%
+				<%
 									}
-								stringBuffer.append("</td>\n");
-				stringBuffer.append("</tr>\n");
-								
-				slotIndex++;
-			%></logic:iterate><%
+						stringBuffer.append("</td>\n");
+					stringBuffer.append("</tr>\n");
+
+					slotIndex++;
+			%>
+				</logic:iterate>
+			<%
 				if( dayPmSlots < maxPmSlots){
 					for(int i=dayPmSlots;i < maxPmSlots;i++){
 					
@@ -716,13 +735,15 @@ if (timeslots.size() > 0) {
 							.append("</tr>\n");
 
 						if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
-							%>refData[<%=dayIndex%>][0][<%=slotIndex%>]='';
+			%>
+							refData[<%=dayIndex%>][0][<%=slotIndex%>]='';
 							refData[<%=dayIndex%>][1][<%=slotIndex%>]='';
-							<%
+			<%
 						}else{
-							%>refAdvData[<%=dayIndex%>][0][<%=slotIndex%>]='';
+			%>				
+							refAdvData[<%=dayIndex%>][0][<%=slotIndex%>]='';
 							refAdvData[<%=dayIndex%>][1][<%=slotIndex%>]='';
-							<%
+			<%
 						}
 						slotIndex++;
 					}
@@ -743,24 +764,27 @@ if (timeslots.size() > 0) {
 						.append("</td>\n")
 						.append("</tr>\n");
 					if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
-						%>refData[<%=dayIndex%>][0][<%=slotIndex%>]='';
+			%>
+						refData[<%=dayIndex%>][0][<%=slotIndex%>]='';
 						refData[<%=dayIndex%>][1][<%=slotIndex%>]='';
-						<%
+			<%
 					}else{
-						%>refAdvData[<%=dayIndex%>][0][<%=slotIndex%>]='';
+			%>
+						refAdvData[<%=dayIndex%>][0][<%=slotIndex%>]='';
 						refAdvData[<%=dayIndex%>][1][<%=slotIndex%>]='';
-						<%
+			<%
 					}
-
 					slotIndex++;
 				}
 
-			stringBuffer.append("</table>");
+				stringBuffer.append("</table>");
 			
 				stringBuffer.append("</td>\n");
 			dayIndex++;
 			showCutoffMedia = false;
-		%></logic:iterate><% 
+		%>
+			</logic:iterate>
+		<% 
 	
 	stringBuffer.append("</tr>\n");
 
@@ -793,15 +817,15 @@ if (timeslots.size() > 0) {
 						.append("</div>");
 		stringBuffer.append("</td>\n");
 		fdayIndex++;
- } 
+	} 
 	stringBuffer.append("</tr>\n");
 
 	if (!isForAdvOrdSlots && !isForNewAdvOrdSlots){
-		%>document.observe("dom:loaded", function() { defaultColumnExpand(dayIndex,slotIndex); });
-		<%
-	}
-
-%>
+	%>
+		document.observe("dom:loaded", function() { 
+			defaultColumnExpand(dayIndex,slotIndex); 
+		});
+	<% } %>
 </script>
 <%
 	stringBuffer.append("</table>");
@@ -809,12 +833,10 @@ if (timeslots.size() > 0) {
 	stringBuffer.append("</div>");
 	stringBuffer.append("</center>");
 	out.write(stringBuffer.toString());
-
 %>
 <div id="tsRefcol_contracted"><!--  --></div>
 <div id="tsRefcol_expanded"><!--  --></div>
 <%
-
 }	
 	 if(address != null) {
 		try { 
@@ -822,8 +844,9 @@ if (timeslots.size() > 0) {
 			if(tmpModel != null) {
 				String defZoneCode = tmpModel.getZoneCode();
 				if (defZoneCode != null) {
-					%><img width="1" height="1" border="0" alt="" src="/media_stat/images/template/tracker.gif?datakey=zone_code&dataval=<%= defZoneCode %>&refid=<%= System.currentTimeMillis() %>" />
-					<%
+%>					
+					<img width="1" height="1" border="0" alt="" src="/media_stat/images/template/tracker.gif?datakey=zone_code&dataval=<%= defZoneCode %>&refid=<%= System.currentTimeMillis() %>" />
+<%
 				}
 			}
 		 } catch(Exception exp) {
@@ -833,10 +856,9 @@ if (timeslots.size() > 0) {
 
 	request.setAttribute("isNextDayTimeSlotNotAvailable", isNextDayTimeSlotNotAvailable);
 	if (ClickToCallUtil.evaluateClick2CallInfoDisplay(user,address) &&(!ClickToCallUtil.isNextDayTimeSlotsCheckRequired() ||(ClickToCallUtil.isNextDayTimeSlotsCheckRequired() && isNextDayTimeSlotNotAvailable))) {
-	
-		%><input type="hidden" id="c2cnextdaytimeslot" name="c2cnextdaytimeslot" value="1" />
-		<%
+%>
+		<input type="hidden" id="c2cnextdaytimeslot" name="c2cnextdaytimeslot" value="1" />
+<%
 	} else {
-		%><input type="hidden" id="c2cnextdaytimeslot" name="c2cnextdaytimeslot" value="0" />
-		<%
-	} %>
+%>		<input type="hidden" id="c2cnextdaytimeslot" name="c2cnextdaytimeslot" value="0" />
+<%	} %>
