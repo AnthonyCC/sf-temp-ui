@@ -5,6 +5,8 @@ var expandDuration = 0; //seconds
 var appearDuration = 0.5; //seconds
 var contractDuration = 1; //seconds
 var timedExpandWait = 500; //ms
+var global_tsDebug = true;
+var tsdebug_timeDif = 0;
 
 //morph effect will match each of these styles from ref elem.
 var styleArr = [];
@@ -31,7 +33,7 @@ function buildStyleStr(ref) {
 }
 
 function parseDay(elemId) {
-	if (elemId === undefined || elemId === '') {
+	if (elemId === undefined || elemId === '' || elemId === null) {
 		return -1;
 	}else{
 		elemId = elemId.split('_');
@@ -71,6 +73,10 @@ function fillRef(refDataCur, startIndex) {
 	var reorganizer = []; //hold elems to be reorganized
 	if (day >= 10 && window.refAdvData !== undefined) {
 		dayPartIndexCur = daypartAdvIndex;
+	}
+	if (dayPartIndexCur == -1) {
+		tsLog('WARN! dayPartIndexCur is -1, why is that?');
+		dayPartIndexCur = 1;
 	}
 
 	//check if refData is empty
@@ -182,6 +188,7 @@ function fillRefAddRows(refDataCur, startIndexArg) {
 				continue;
 			}
 			newRow = node.insertRow(tRows.length);
+			newRow.id = 'ts_d'+d+'_ts'+t+'_tr';
 			newCell = newRow.insertCell(cellIndex);
 			newCell.innerHTML = '<div class="tsContent "><div class="fleft ts_rb" id="ts_d'+d+'_ts'+t+'_rbCont"></div><div class="fleft tsCont " id="ts_d'+d+'_ts'+t+'_time" style="width: 80px;">&nbsp;</div></div>';
 			newCell.className = 'tsCol tsContainerC tsContainerBGC';
@@ -204,6 +211,26 @@ function fillRefAddRows(refDataCur, startIndexArg) {
 	return true;
 }
 
+/* pass in an array, index to start at, and index to stop at
+ *	returns when an undefined it hit
+ *	(counts items between start and undefined)
+ */
+function seekUntilUndef(arrayArg, startIndexArg, indexLimitArg) {
+	var array = arrayArg || [];
+	var startIndex = startIndexArg || 0;
+	var indexLimit = indexLimitArg || array.length-1;
+	var count = 0;
+	if (array[startIndex] !== undefined) {
+		for (var i = startIndex; startIndex < indexLimitArg; i++) {
+			if (array[i] === undefined) {
+				return count;
+			}
+			count++;
+		}
+	}
+	return count;
+}
+
 var addRows = true;
 var addRowsAdv = true;
 
@@ -214,6 +241,7 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 	if (autoCheckRadioArg !== undefined) { autoCheckRadio = autoCheckRadioArg; }
 
 	var day = parseDay(elemId); //should now be the day index
+
 	var d = 0, t = 0, i = 0;
 
 	var sequenceKey = -1;
@@ -222,10 +250,61 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 	var refDataCur = refData;
 	var dayPartIndexCur = daypartIndex;
 	var advId = '';
+	var refDataCurTemp = [];
 	if (day >= 10 && window.refAdvData !== undefined) {
 		refDataCur = refAdvData;
 		advId = 'Adv';
 		dayPartIndexCur = daypartAdvIndex;
+
+		if (refDataCur[10] !== undefined && refDataCur[20] !== undefined) {
+			//split off multiple ao sets
+			var endIndex = 10+seekUntilUndef(refAdvData, 10, 19);
+			refDataCurTemp = refAdvData.slice(10, endIndex);
+			refDataCur = [];
+			var indexCount = 10;
+			for (var i = 0; i < refDataCurTemp.length; i++) {
+				refDataCur[indexCount] = refDataCurTemp[i];
+				indexCount++;
+			}
+			tsLog('part 1 '+refDataCur.length);
+			
+			//if rows haven't been added already, do so now
+			if (addRowsAdv && refDataCur.join("").replace(/,/g,"") === "") {
+				var startIndex = 1;
+				if (advId !== '') { startIndex = 10; }
+				if (addRowsAdv) {
+					while (!fillRef(refDataCur, startIndex)) {}
+					//make sure we have this
+					dayPartIndexCur = daypartAdvIndex;
+				}
+			}
+
+			//split off multiple ao sets
+			refDataCurTemp = refAdvData.slice(20);
+			refDataCur = [];
+			var indexCount = 20;
+			for (var i = 0; i < refDataCurTemp.length; i++) {
+				refDataCur[indexCount] = refDataCurTemp[i];
+				indexCount++;
+			}
+			tsLog('part 2 '+refDataCur.length);
+
+			
+			//if rows haven't been added already, do so now
+			if (addRowsAdv && refDataCur.join("").replace(/,/g,"") === "") {
+				var startIndex = 1;
+				if (advId !== '') { startIndex = 20; }
+				if (addRowsAdv) {
+					while (!fillRef(refDataCur, startIndex)) {}
+					//make sure we have this
+					dayPartIndexCur = daypartAdvIndex;
+				}
+			}
+			
+			refDataCur = refAdvData;
+			addRowsAdv = false;
+		}
+
 	}
 
 	//if rows haven't been added already, do so now
@@ -244,76 +323,100 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 		}
 	}
 
+	tsLog('starting refData navigate');
+	//setup vars
+	var tsHc = null;
+	var tsHe = null;
+	var tsHeader = null;
+	var daypart = null;
+	var daypartParentId = null;
+	var tsFc = null;
+	var tsFE = null;
+	var tsId = null;
+	var coId = null;
+	var coRowId = null;
+	var tsRbCont = null;
+	var tsRb = null;
+	var tsForceX = null;
+	var tsMsgC = null;
+	var tsMsgE = null;
+	var tsMsgAre = null;
+	var tsTime = null;
+
 	//navigate refDataCur matrix
+	tsLog('Starting refData navigate');
 	for (d = 0; d < refDataCur.length; d++) {
 		if (refDataCur[d] === undefined) { continue; }
+		
+		//extend once per day
+		tsHc = $('ts_d'+d+'_ts_hC');
+		tsHe = $('ts_d'+d+'_ts_hE');
+		tsHeader = $('ts_d'+d+'_ts_header');
+		daypart = $('day_part'+d);
+		if (daypart) { daypartParentId = $(daypart.parentNode.id); }
+		tsFc = $('ts_d'+d+'_ts_fC');
+		tsFE = $('ts_d'+d+'_ts_fE');
+
 		//show for current day
 		if (d == day) {
+			if (lastTS_expanded == -1 && (day == -1 || day == 9999)) { continue; }
+
 			//this is our sequence ref key
 			sequenceKey = d;
 			//header
 			//collapsed
-			if ($('ts_d'+d+'_ts_hC')) {
-				$('ts_d'+d+'_ts_hC').hide();
-			}
+			if (tsHc) { tsHc.hide(); }
 			//expanded
-			if ($('ts_d'+d+'_ts_hE')) {
-				//$('ts_d'+d+'_ts_hE').show();
-			}
+			if (tsHe) { /* $('ts_d'+d+'_ts_hE').show(); */ }
 			//line fix
-			if ($('ts_d'+d+'_ts_header')) {
-				$('ts_d'+d+'_ts_header').className = 'noTopBorder';
-			}
+			if (tsHeader) { tsHeader.className = 'noTopBorder'; }
 			/* AM/PM split */
-			if ($('day_part'+d)) {
-				var eId = $('day_part'+d).parentNode.id;
+			if (daypart) {
+				var eId = daypart.parentNode.id;
 				if ($(eId)) { $(eId).hide(); }
 			}
 
 			//footer
 			//collapsed
-			if ($('ts_d'+d+'_ts_fC')) {
-				$('ts_d'+d+'_ts_fC').hide();
-			}
+			if (tsFc) { $('ts_d'+d+'_ts_fC').hide(); }
 			//expanded
-			if ($('ts_d'+d+'_ts_fE')) {
-				$('ts_d'+d+'_ts_fE').show();
-			}
-			for (t = 0; t < refDataCur[d][0].length; t++) {
-				//cutoffs
-				if ($('co_d'+d+'_ts'+t)) {
-					$('co_d'+d+'_ts'+t).parentNode.className = 'cutoffDisp';
-					if ($('co_d'+d+'_ts'+t).innerHTML === '&nbsp;'){
-						$('co_d'+d+'_ts'+t).parentNode.className = $('co_d'+d+'_ts'+t).parentNode.className.replace("cutoffDisp","cutoffDispBGC");
-					}
-				}
+			if (tsFE) { tsFE.show(); }
 
-				if (refDataCur[d][1][t] != 'undefined' && refDataCur[d][1][t] != '') {
-					if ($('co_d'+d+'_ts'+t)) {
-						$('co_d'+d+'_ts'+t).show();
-						//rows
-						if ($('co'+advId+'_d'+d+'_ts'+t+'_row')) {
-							$('co'+advId+'_d'+d+'_ts'+t+'_row').show();
-						}
+			for (t = 0; t < refDataCur[d][0].length; t++) {
+				//extend once per timeslot
+				tsId = $('ts_d'+d+'_ts'+t);
+				coId = $('co_d'+d+'_ts'+t);
+				coRowId = $('co'+advId+'_d'+d+'_ts'+t+'_row');
+				tsRbCont = $('ts_d'+d+'_ts'+t+'_rbCont');
+				tsRb = $('ts_d'+d+'_ts'+t+'_rb');
+				tsForceX = $('ts_d'+d+'_ts'+t+'_forceX');
+				tsMsgC = $('ts_d'+d+'_ts'+t+'_msgC');
+				tsMsgE = $('ts_d'+d+'_ts'+t+'_msgE');
+				tsMsgAre = $('ts_d'+d+'_ts'+t+'_msgARE');
+				tsTime = $('ts_d'+d+'_ts'+t+'_time');
+				//cutoffs
+				if (coId) {
+					coId.parentNode.className = 'cutoffDisp';
+					if (coId.innerHTML === '&nbsp;'){
+						coId.parentNode.className = coId.parentNode.className.replace("cutoffDisp","cutoffDispBGC");
 					}
-				}else{
-					//rows
-					if ($('co'+advId+'_d'+d+'_ts'+t+'_row')) {
-						$('co'+advId+'_d'+d+'_ts'+t+'_row').hide();
+					
+
+					if (refDataCur[d][1][t] !== undefined && refDataCur[d][1][t] != '') {
+						coId.show();
+						//rows
+						if (coRowId) { coRowId.show(); }
+					}else{
+						//rows
+						if (coRowId) { coRowId.hide(); }
 					}
 				}
 				//radios
-				if ($('ts_d'+d+'_ts'+t+'_rbCont')) {
-					$('ts_d'+d+'_ts'+t+'_rbCont').show();
-				}
+				if (tsRbCont) { tsRbCont.show(); }
 				if (timeslot_info) { //timeslot_info page
-					if ($('ts_d'+d+'_ts'+t+'_rb')) {
-						$('ts_d'+d+'_ts'+t+'_rb').hide();
-					}
+					if (tsRb) { tsRb.hide(); }
 				}else{ //checkout
-					if ($('ts_d'+d+'_ts'+t+'_rb')) {
-						$('ts_d'+d+'_ts'+t+'_rb').show();
-					}
+					if (tsRb) { tsRb.show(); }
 					//check the radio button on the clicked slot
 					if ((elemId == 'ts_d'+d+'_ts'+t) && $(elemId+'_rb')) {
 						if (autoCheckRadio) {
@@ -321,40 +424,36 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 						}
 					}
 				}
-				//Force order fix
-				if ($('ts_d'+d+'_ts'+t+'_forceX')) {
-						$('ts_d'+d+'_ts'+t+'_forceX').show();
-				}
-				//msging
-				if ($('ts_d'+d+'_ts'+t+'_msgC')) {
-					$('ts_d'+d+'_ts'+t+'_msgC').hide();
-				}
-				if ($('ts_d'+d+'_ts'+t+'_msgE')) {
-					$('ts_d'+d+'_ts'+t+'_msgE').show();
-				}
-				//borders
-				if (t == refDataCur[d][0].length) {
-					$('ts_d'+d+'_ts'+t).style.borderBottom = '1px solid #ccc';
-				}
-				//background color
-				if ($('ts_d'+d+'_ts'+t)) {
-					$('ts_d'+d+'_ts'+t).className = $('ts_d'+d+'_ts'+t).className.replace("tsContainerC", "tsContainerE");
-					$('ts_d'+d+'_ts'+t).className = $('ts_d'+d+'_ts'+t).className.replace("tsContainerBGC", "tsContainerBGE");
-					$('ts_d'+d+'_ts'+t).className = $('ts_d'+d+'_ts'+t).className.replace("tsContainerNoDelBGC", "tsContainerBGE");
-				}
-				//fix margins for wrapped times
-				if ($('ts_d'+d+'_ts'+t+'_time')) {
-					$('ts_d'+d+'_ts'+t+'_time').style.width = '60px';
-					if ($('ts_d'+d+'_ts'+t+'_time').innerHTML.length > 9) {
-						$('ts_d'+d+'_ts'+t+'_time').innerHTML = $('ts_d'+d+'_ts'+t+'_time').innerHTML.split(' ').join('&nbsp;');
-					}
-				}
 				
-				/* Alcohol Restriction */
-				if ($('ts_d'+d+'_ts'+t+'_msgARE')) {
-					$('ts_d'+d+'_ts'+t+'_msgARE').show();
-					if ($('ts_d'+d+'_ts'+t+'_msgARE').childElements().length >= 1 && $('ts_d'+d+'_ts'+t+'_msgARE').childElements()[0].tagName == 'IMG') {
-						$('ts_d'+d+'_ts'+t+'_msgARE').childElements()[0].show();
+				if (tsId) {
+					//background color
+					tsId.className = tsId.className.replace("tsContainerC", "tsContainerE");
+					tsId.className = tsId.className.replace("tsContainerBGC", "tsContainerBGE");
+					tsId.className = tsId.className.replace("tsContainerNoDelBGC", "tsContainerBGE");
+					//Force order fix
+					if (tsForceX) { tsForceX.show(); }
+					//msging
+					if (tsMsgC) { tsMsgC.hide(); }
+					if (tsMsgE) { tsMsgE.show(); }
+					//borders
+					if (t == refDataCur[d][0].length) {
+						tsId.style.borderBottom = '1px solid #ccc';
+					}
+					//fix margins for wrapped times
+					if (tsTime) {
+						tsTime.style.width = '60px';
+						//if (tsTime.innerHTML.length > 9) {
+							//tsTime.innerHTML = tsTime.innerHTML.split(' ').join('&nbsp;');
+						//}
+					}
+					
+					/* Alcohol Restriction */
+					if (tsMsgAre) {
+						tsMsgAre.show();
+						var children = tsMsgAre.childElements();
+						if (children.length >= 1 && children[0].tagName == 'IMG') {
+							children[0].show();
+						}
 					}
 				}
 			}
@@ -362,127 +461,108 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 			//hide others
 			//header
 			//collapsed
-			if ($('ts_d'+d+'_ts_hC')) {
-				$('ts_d'+d+'_ts_hC').show();
-			}
+			if (tsHc) { tsHc.show(); }
 			//expanded
-			if ($('ts_d'+d+'_ts_hE')) {
-				$('ts_d'+d+'_ts_hE').hide();
-			}
+			if (tsHe) { tsHe.hide(); }
 			//line fix
-			if ($('ts_d'+d+'_ts_header')) {
-				$('ts_d'+d+'_ts_header').className = '';
+			if (tsHeader) {
+				tsHeader.className = '';
 			}
 			/* AM/PM split */
-			if ($('day_part'+d)) {
-				var eId = $('day_part'+d).parentNode.id;
-				if ($(eId)) { $(eId).show(); }
-			}
+			if (daypartParentId) { daypartParentId.show(); }
 
 			//footer
 			//collapsed
-			if ($('ts_d'+d+'_ts_fC')) {
-				$('ts_d'+d+'_ts_fC').show();
-			}
+			if (tsFc) { tsFc.show(); }
 			//expanded
-			if ($('ts_d'+d+'_ts_fE')) {
-				$('ts_d'+d+'_ts_fE').hide();
-			}
+			if (tsFE) { tsFE.hide(); }
 
 			for (t = 0; t < refDataCur[d][0].length; t++) {
+				//extend once per timeslot
+				tsId = $('ts_d'+d+'_ts'+t);
+				coId = $('co_d'+d+'_ts'+t);
+				coRowId = $('co'+advId+'_d'+d+'_ts'+t+'_row');
+				tsRbCont = $('ts_d'+d+'_ts'+t+'_rbCont');
+				tsRb = $('ts_d'+d+'_ts'+t+'_rb');
+				tsForceX = $('ts_d'+d+'_ts'+t+'_forceX');
+				tsMsgC = $('ts_d'+d+'_ts'+t+'_msgC');
+				tsMsgE = $('ts_d'+d+'_ts'+t+'_msgE');
+				tsMsgAre = $('ts_d'+d+'_ts'+t+'_msgARE');
+				tsTime = $('ts_d'+d+'_ts'+t+'_time');
+
 				//cutoffs
 				if (refDataCur[d][1][t] !== '') {
-					if ($('co_d'+d+'_ts'+t)) {
-						$('co_d'+d+'_ts'+t).hide();
-					}
+					if (coId) { coId.hide(); }
 				}
-				if ($('co'+advId+'_d'+d+'_ts'+t+'_row')) {
-					$('co'+advId+'_d'+d+'_ts'+t+'_row').hide();
-				}
-				if ($('co_d'+d+'_ts'+t)) {
-					$('co_d'+d+'_ts'+t).parentNode.className = 'cutoff';
-				}
+				if (coRowId) { coRowId.hide(); }
+				if (coId) { coId.parentNode.className = 'cutoff'; }
 				
 				//background color
-				if ($('ts_d'+d+'_ts'+t)) {
-					$('ts_d'+d+'_ts'+t).className = $('ts_d'+d+'_ts'+t).className.replace("tsContainerE", "tsContainerC");
-					$('ts_d'+d+'_ts'+t).className = $('ts_d'+d+'_ts'+t).className.replace("tsContainerBGE", "tsContainerBGC");
+				if (tsId) {
+					tsId.className = tsId.className.replace("tsContainerE", "tsContainerC");
+					tsId.className = tsId.className.replace("tsContainerBGE", "tsContainerBGC");
 				}
 
 				//we can skip out here if ts is hidden already
-				if ($('ts_d'+d+'_ts'+t) && $('ts_d'+d+'_ts'+t).style.display == 'none') {
-					continue;
-				}
+				if (tsId && tsId.style.display == 'none') { continue; }
+
 				//radios
-				if ($('ts_d'+d+'_ts'+t+'_rbCont')) {
-					$('ts_d'+d+'_ts'+t+'_rbCont').hide();
-				}
+				if (tsRbCont) { tsRbCont.hide(); }
 				if (timeslot_info) { //timeslot_info page
-					if ($('ts_d'+d+'_ts'+t+'_rbCont')) {
-						$('ts_d'+d+'_ts'+t+'_rbCont').hide();
-					}
+					if (tsRbCont) { tsRbCont.hide(); }
 				}else{ //checkout
-					if ($('ts_d'+d+'_ts'+t+'_rb')) {
-						$('ts_d'+d+'_ts'+t+'_rb').hide();
-					}
+					if (tsRb) { tsRb.hide(); }
 				}
 				//Force order fix
-				if ($('ts_d'+d+'_ts'+t+'_forceX')) {
-						$('ts_d'+d+'_ts'+t+'_forceX').hide();
-				}
+				if (tsForceX) { tsForceX.hide(); }
+
 				hasSpace = false;
 				//msging
-				if ($('ts_d'+d+'_ts'+t+'_msgC')) {
-					$('ts_d'+d+'_ts'+t+'_msgC').show();
+				if (tsMsgC) {
+					tsMsgC.show();
 					//check if ts has more space to use to display
-					if ( !$('ts_d'+d+'_ts'+t+'_msgC').getElementsByTagName('IMG') ) {
+					if ( !tsMsgC.getElementsByTagName('IMG') ) {
 						hasSpace = true;
 					}
 				}else{
 					hasSpace = true;
 				}
-				if ($('ts_d'+d+'_ts'+t+'_msgE')) {
-					$('ts_d'+d+'_ts'+t+'_msgE').hide();
-				}
+				if (tsMsgE) { tsMsgE.hide(); }
 				//borders
-				if ($('ts_d'+d+'_ts'+t)) {
-					$('ts_d'+d+'_ts'+t).style.borderBottom = '1px solid #ccc';
-					$('ts_d'+d+'_ts'+t).style.borderTop = '1px solid #ccc';
+				if (tsId) {
+					tsId.style.borderBottom = '1px solid #ccc';
+					tsId.style.borderTop = '1px solid #ccc';
 					//fix row heights, unless it's spanned, then assume the height is ok
-					if ($('ts_d'+d+'_ts'+t).rowSpan === undefined || $('ts_d'+d+'_ts'+t).rowSpan <= 1) {
-						$('ts_d'+d+'_ts'+t).style.height = '31px';
+					if (tsId.rowSpan === undefined || tsId.rowSpan <= 1) {
+						tsId.style.height = '31px';
 					}
 				}
 
 				//fix margins for wrapped times
-				if ($('ts_d'+d+'_ts'+t+'_time')) {
+				if (tsTime) {
 					if (hasSpace) {
-						if ($('ts_d'+d+'_ts'+t+'_msgC')) {
-							$('ts_d'+d+'_ts'+t+'_msgC').hide();
-						}
-						$('ts_d'+d+'_ts'+t+'_time').style.width = '80px';
+						if (tsMsgC) { tsMsgC.hide(); }
+						tsTime.style.width = '80px';
 					}else{
-						$('ts_d'+d+'_ts'+t+'_time').style.width = '60px';
+						tsTime.style.width = '60px';
 					}
-					if ($('ts_d'+d+'_ts'+t+'_time').style.width == '60px' && $('ts_d'+d+'_ts'+t+'_time').innerHTML.length > 9) {
-						$('ts_d'+d+'_ts'+t+'_time').innerHTML = $('ts_d'+d+'_ts'+t+'_time').innerHTML.split(' ').join('&nbsp;');
+					if (tsTime.style.width == '60px' && tsTime.innerHTML.length > 9) {
+						tsTime.innerHTML = tsTime.innerHTML.split(' ').join('&nbsp;');
 					}
 				}
 				/* Alcohol Restriction */
-				if ($('ts_d'+d+'_ts'+t+'_msgARE')) {
-					$('ts_d'+d+'_ts'+t+'_msgARE').hide();
-					if ($('ts_d'+d+'_ts'+t+'_msgARE').childElements().length >= 1 && 
-						(
-							$('ts_d'+d+'_ts'+t+'_msgARE').childElements()[0].tagName != undefined && 
-							$('ts_d'+d+'_ts'+t+'_msgARE').childElements()[0].tagName == 'IMG'
-						)
-					) {
-						$('ts_d'+d+'_ts'+t+'_msgARE').childElements()[0].hide();
+				if (tsMsgAre) {
+					tsMsgAre.hide();
+					var children = tsMsgAre.childElements();
+					if (children.length >= 1 && children[0].tagName == 'IMG') {
+						children[0].hide();
 					}
 				}
+				
 			}
 		}
 	}
+	tsLog('Ending refData navigate');
 
 	var lbnd = getLBound(refDataCur);
 	var sequenceKeyTemp = sequenceKey;
@@ -534,7 +614,9 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 
 	var reorganizer = []; //hold elems to be reorganized
 
+	tsLog('starting getReorganizerData');
 	reorganizer = getReorganizerData(refDataCur, dayPartIndexCur, day);
+	tsLog('ending getReorganizerData');
 
 	if (day != '9999' && day != '-1') {
 		//deal with expanded view
@@ -859,6 +941,7 @@ function tsReorganizer(reorganizer) {
 var lastTS_expanded = -1;
 function tsExpand(elemIdArg, autoCheckRadioArg, retryArg) {
 	if (lastTS_expanded != -1 && parseDay(elemIdArg) == parseDay(lastTS_expanded)) { return true; }
+
 	var retry = true;
 	if (retryArg !== undefined) { retry = retryArg; }
 	var elemId = elemIdArg || '';
@@ -877,12 +960,19 @@ function tsExpand(elemIdArg, autoCheckRadioArg, retryArg) {
 
 		//solve display issues selectively
 		if (lastTS_expanded == -1 || parseDay(lastTS_expanded) < 10) {
+			tsLog('starting solveDisplay -1');
 			while (!solveDisplay('ts_d-1_ts0', autoCheckRadio)) { };
+			tsLog('ending solveDisplay');
 		}
 		if (lastTS_expanded == -1 || parseDay(lastTS_expanded) >= 10) {
+			tsLog('starting solveDisplay 9999');
 			while (!solveDisplay('ts_d9999_ts0', autoCheckRadio)) { };
+			tsLog('ending solveDisplay');
 		}
+
+		tsLog('starting solveDisplay DAY');
 		while (!solveDisplay(elemId, autoCheckRadio)) { };
+		tsLog('ending solveDisplay DAY');
 
 		//set as last expanded
 		lastTS_expanded = elemId;
@@ -1136,6 +1226,7 @@ function createMouseOverOutEvents(elemIdArg, parentIdArg) {
 function checkRadio(event, elemIdArg) {
 	if ($(elemIdArg+'_rb')) {
 		$(elemIdArg+'_rb').checked = true;
+		
 		if(window.refAdvData !== undefined){
 			checkTsBgColor(refData, refAdvData);
 		}else{
@@ -1157,6 +1248,18 @@ function checkTsBgColor() {
 							if (!$('ts_d'+d+'_ts'+t+'_rb').checked) {
 								//only if rb present and false
 								$('ts_d'+d+'_ts'+t).className = $('ts_d'+d+'_ts'+t).className.replace(' tcSelectionBGC', '');
+								if ($('ts_d'+d+'_ts'+t+'_msgE')) {
+									if ($('ts_d'+d+'_ts'+t+'_msgE').parentNode.className.indexOf('tsContentSelE') != -1) {
+										$('ts_d'+d+'_ts'+t+'_msgE').parentNode.className = $('ts_d'+d+'_ts'+t+'_msgE').parentNode.className.replace('tsContentSelE', '');
+										$('ts_d'+d+'_ts'+t+'_msgE').innerHTML = '&nbsp;';
+										if ($('ts_d'+d+'_ts'+t+'_msgC')) {
+											$('ts_d'+d+'_ts'+t+'_msgC').innerHTML = '&nbsp;';
+										}
+										if ($('ts_d'+d+'_ts'+t+'_time')) {
+											$('ts_d'+d+'_ts'+t+'_time').className = $('ts_d'+d+'_ts'+t+'_time').className.replace('tsContentSelC', '');
+										}
+									}
+								}
 							}else{
 								//only if rb present and true
 								if ($('ts_d'+d+'_ts'+t).className.indexOf('tcSelectionBGC') == -1) {
@@ -1197,4 +1300,13 @@ function timedExpand() {
 		set_02_last = set_02;
 	}
 	forgetter();
+}
+
+
+function tsLog(logMsg) {
+	var d = new Date();
+	var now = d.getTime();
+	var took = ' (Time to here: ' +(now-tsdebug_timeDif)+'ms) ';
+	tsdebug_timeDif = now;
+	if (global_tsDebug && window.console) { console.log(d.toUTCString()+took+'Log: '+logMsg); }
 }
