@@ -81,10 +81,6 @@ span.time {
 	position:relative;
 	top:1px;
 }
-.content_fixed {
-	padding:10px 0 0 200px;
-}
-
 </style>
 
 	<div class="sub_nav">
