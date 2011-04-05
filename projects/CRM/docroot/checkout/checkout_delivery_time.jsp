@@ -220,8 +220,8 @@ var zonePromoEnabled=false;
 	if(timeslotList.size()>1 && idx.intValue()==0){
 %>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
-		<span class="text12 fleft tsAdvanceHeader"><b>ADVANCE DELIVERY</b>&nbsp;&nbsp;
-			<a class="tsDivHide" id="displayAdvanceOrderGrid" href="javascript:hideAdvanceOrder();">Hide Timeslots</a>
+		<span class="title13 fleft tsAdvanceHeader">Advance Order Delivery Timeslots&nbsp;&nbsp;
+			<a class="tsDivHide" id="displayAdvanceOrderGrid" href="javascript:hideAdvanceOrder();">Hide Delivery Timeslots</a>
 		</span>
 	<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
 <% } %>
@@ -230,7 +230,7 @@ var zonePromoEnabled=false;
 	if(timeslotList.size()==3 && idx.intValue()==1){
 %>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
-		<span class="text12 fleft tsAdvanceHeader"><b>ADVANCE DELIVERY</b></span>
+		<span class="title13 fleft tsAdvanceHeader">ADVANCE DELIVERY</span>
 	<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
 <% } %>
 
@@ -252,7 +252,7 @@ var zonePromoEnabled=false;
 	
 	showAdvanceOrderBand=false;
  %>
-	<span class="text12"><b>REGULAR DELIVERY</b></span><BR>
+	<span class="title13">Standard Delivery Timeslots</span><BR>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
 			
 <%} else { 

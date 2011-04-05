@@ -152,7 +152,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 					<tr>
 						<td align="right" style="padding:10px 5px 0 0;">
 							<a href="/your_account/reserve_timeslot.jsp">
-								<img src="/media_stat/images/template/youraccount/make_a_reservation.gif" width="164" height="18" border="0" alt="Reserve a Delivery Time" vspace="4">
+								<img src="/media_stat/images/template/youraccount/make_a_reservation.gif" width="164" height="24" border="0" alt="Reserve a Delivery Time" vspace="4">
 							</a><br>
 						</td>
 					</tr>
@@ -184,7 +184,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 					<tr>
 						<td align="right" style="padding:10px 10px 0 0;">
 							<a href="/your_account/reserve_timeslot.jsp">
-								<img src="/media_stat/images/template/youraccount/make_a_reservation.gif" width="164" height="18" border="0" alt="Reserve a Delivery Time" vspace="4">
+								<img src="/media_stat/images/template/youraccount/make_a_reservation.gif" width="164" height="24" border="0" alt="Reserve a Delivery Time" vspace="4">
 							</a><br>
 						</td>
 					</tr>
