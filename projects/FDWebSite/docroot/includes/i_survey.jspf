@@ -1,21 +1,22 @@
+<%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
 <%@page import="com.freshdirect.fdstore.survey.FDSurvey,
 		com.freshdirect.fdstore.survey.FDSurveyFactory,
 		com.freshdirect.fdstore.survey.EnumSurveyType,
 		com.freshdirect.common.customer.EnumServiceType,
 		com.freshdirect.webapp.taglib.fdstore.FDSessionUser
 		"%><link rel="stylesheet" href="/assets/css/customerprofile.css" type="text/css"><% {  
-		
 EnumServiceType userType = (EnumServiceType) request.getAttribute("userType");
 String surveyType = request.getAttribute("Survey").toString();
 boolean invisible = "true".equals(request.getAttribute("HideSurvey"));
-FDSurvey survey = userType != null ? FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.getEnum(surveyType), userType) : 
-    FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.getEnum(surveyType), FDSessionUser.getFDSessionUser(session));
+EnumSurveyType _surveyType = EnumSurveyType.getEnum(surveyType);
+FDSurvey survey = userType != null ? FDSurveyFactory.getInstance().getSurvey(_surveyType, userType) : 
+    FDSurveyFactory.getInstance().getSurvey(_surveyType, FDSessionUser.getFDSessionUser(session)); 
 request.removeAttribute("userType");
 request.removeAttribute("Survey");
-	
-    List questions = survey.getQuestions();
-    List surveyResponse=null;
-    int quesCount = 1; 
+	if (survey != null) {
+	    List questions = survey.getQuestions();
+    	List surveyResponse=null;
+    	int quesCount = 1; 
 %><table border="0" cellspacing="1" cellpadding="0" width="675" id="survey_<%= survey.getHtmlFriendlyKey() %>" <%= invisible ? "style='display:none'" : ""%>>
 
 	<logic:iterate id="question" collection="<%= questions %>" type="com.freshdirect.fdstore.survey.FDSurveyQuestion" indexId='index'>
@@ -60,4 +61,7 @@ request.removeAttribute("Survey");
                 
                 </tr>
 		</logic:iterate>
-</table><% } %>
+</table><% } else {
+    LoggerFactory.getInstance(this.getClass()).warn("Survey {"+_surveyType+", "+userType+"} is missing !");
+}
+	} %>
