@@ -5,7 +5,7 @@ var expandDuration = 0; //seconds
 var appearDuration = 0.5; //seconds
 var contractDuration = 1; //seconds
 var timedExpandWait = 500; //ms
-var global_tsDebug = true;
+var global_tsDebug = false;
 var tsdebug_timeDif = 0;
 
 //morph effect will match each of these styles from ref elem.

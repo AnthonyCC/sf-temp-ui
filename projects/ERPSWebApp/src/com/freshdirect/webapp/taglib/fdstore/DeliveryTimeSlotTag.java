@@ -252,7 +252,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 			}
 			if (timeSlotId == null) {
 				if(rsv != null && (address != null && address.getPK() != null && address.getPK().getId() != null 
-						&& address.getPK().getId().equals(rsv.getAddressId()))){
+						&& address.getPK().getId().equals(rsv.getAddressId())) && cart.getDeliveryReservation() != null){
 					timeSlotId = rsv.getTimeslotId();
 				}else{
 					timeSlotId = "";
@@ -350,7 +350,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 						maxDiscount = ts.getSteeringDiscount();
 					if(!timeslot.hasNormalAvailCapacity()&& timeslot.hasAvailCTCapacity() && !isTimeslotRemoved)
 						ctSlots = ctSlots+1;
-					if(timeslot.isEcoFriendly() && !isTimeslotRemoved)
+					if(!timeslot.isDepot() && timeslot.isEcoFriendly() && !isTimeslotRemoved)
 						ecoFriendlySlots = ecoFriendlySlots+1;
 					if(timeslot.isDepot() && timeslot.isEcoFriendly() && !isTimeslotRemoved)
 						neighbourhoodSlots = neighbourhoodSlots+1;
