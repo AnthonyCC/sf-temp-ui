@@ -616,6 +616,8 @@ public class CartDetail {
 
         private boolean hasTax;
 
+        private double groupScaleSavings;
+        
         public boolean isHasDepositValue() {
             return hasDepositValue;
         }
@@ -655,6 +657,14 @@ public class CartDetail {
         public void setCartLineId(String cartLineId) {
             this.cartLineId = cartLineId;
         }
+
+		public double getGroupScaleSavings() {
+			return groupScaleSavings;
+		}
+
+		public void setGroupScaleSavings(double groupScaleSavings) {
+			this.groupScaleSavings = groupScaleSavings;
+		}
 
     }
 

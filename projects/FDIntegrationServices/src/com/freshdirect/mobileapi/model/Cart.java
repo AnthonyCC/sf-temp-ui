@@ -661,6 +661,7 @@ public class Cart {
                 productLineItem.setEstimatedPrice(cartLine.isEstimatedPrice());
                 productLineItem.setHasTax(cartLine.hasTax());
                 productLineItem.setCartLineId(Integer.toString(cartLine.getRandomId()));
+                productLineItem.setGroupScaleSavings(cartLine.getGroupScaleSavings());
 
                 //Slightly altering condition logic.  do only once and add to cart level later. 
                 if ((platterCutoffTime == null) && productLineItem.hasPlatterRestriction()) {
