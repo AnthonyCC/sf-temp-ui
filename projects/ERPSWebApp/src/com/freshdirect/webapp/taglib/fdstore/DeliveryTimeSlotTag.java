@@ -239,10 +239,10 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		boolean hasPreReserved = false;
 		String preReserveSlotId = "";
 		FDStandingOrder currentStandingOrder = null;
-				
+		ErpDepotAddressModel depotAddress = null;		
+		
 		if ( EnumCheckoutMode.NORMAL == user.getCheckoutMode() || EnumCheckoutMode.CREATE_SO == user.getCheckoutMode() ) {
 			rsv = user.getReservation();
-
 			if(rsv != null){
 				preReserveSlotId = rsv.getTimeslotId();
 				hasPreReserved = address.getPK()!=null && address.getPK().getId().equals(rsv.getAddressId());
@@ -251,11 +251,19 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 				rsv = cart.getDeliveryReservation();
 			}
 			if (timeSlotId == null) {
-				if(rsv != null && (address != null && address.getPK() != null && address.getPK().getId() != null 
-						&& address.getPK().getId().equals(rsv.getAddressId())) && cart.getDeliveryReservation() != null){
-					timeSlotId = rsv.getTimeslotId();
+				if(address != null && address instanceof ErpDepotAddressModel){
+					depotAddress = (ErpDepotAddressModel) address;
+					if(depotAddress.isPickup() && rsv != null && cart.getDeliveryReservation() != null)
+						timeSlotId = rsv.getTimeslotId();						
+					else
+						timeSlotId = "";											
 				}else{
-					timeSlotId = "";
+					if(rsv != null && (address != null && address.getPK() != null && address.getPK().getId() != null 
+							&& address.getPK().getId().equals(rsv.getAddressId())) && cart.getDeliveryReservation() != null){
+						timeSlotId = rsv.getTimeslotId();
+					}else{
+						timeSlotId = "";
+					}
 				}
 			}
 		
@@ -263,11 +271,10 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 				preReserveSlotId = rsv.getTimeslotId();
 				hasPreReserved = address.getPK()!=null && address.getPK().getId().equals(rsv.getAddressId());
 			}
-		} else { //if ( EnumCheckoutMode.MODIFY_SO == user.getCheckoutMode() ) {
+		} else {
 			currentStandingOrder = user.getCurrentStandingOrder();
 			timeSlotId = "";
 			rsv = null;
-			/* STANDING ORDER - UNFINISHED CODE */
 		}
 		if(deliverymodel!=null){
 			deliverymodel.setTimeSlotId(timeSlotId);		

@@ -1145,9 +1145,9 @@ function hideAdvanceOrder() {
 	}
 
 	if($("timeslots_grid0").style.display != "none") {
-		$('displayAdvanceOrderGrid').innerHTML = "Hide Details";
+		$('displayAdvanceOrderGrid').innerHTML = "Hide Delivery Timeslots";
 	}else{
-		$('displayAdvanceOrderGrid').innerHTML = "Show Details";
+		$('displayAdvanceOrderGrid').innerHTML = "Show Delivery Timeslots";
 		tsContractAll('tsContainer');
 		if (globalTS != -1) {
 			tsExpand(globalTS);

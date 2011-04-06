@@ -86,7 +86,7 @@ span.time {
 	<div class="sub_nav">
 		<span class="sub_nav_title">Available Delivery TimeSlots</span> | <a href="/main/delivery_check_slots.jsp">Check available Slots for a new address</a>
 	</div>
-	<div class="content_fixed" align="center">
+	<div class="content_fixed" align="left">
 	<table width="90%" cellpadding="0" cellspacing="0" border="0">
 		<tr>
 			<td colspan="2" class="text12" align="left" width="29%"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
