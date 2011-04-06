@@ -99,7 +99,8 @@ RequestUtil.appendToAttribute(request,"windowOnBeforeUnload","FormChangeUtil.war
 %>
 	<fd:QuickShopController id="quickCart" orderId="every" action="<%= actionName %>">
 	
-	<%  String qsPage = "every_item.jsp"; %>
+	<%  String qsPage = "every_item.jsp";
+	request.setAttribute("crm_source","true");%>
 	<%@ include file="/shared/quickshop/includes/i_vieworder.jspf"%>
 	</fd:QuickShopController>
 
