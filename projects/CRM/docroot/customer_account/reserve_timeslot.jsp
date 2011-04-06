@@ -28,6 +28,10 @@
 	</tmpl:put>
 
 	<tmpl:put name='content' direct='true'>
+		
+		<link rel="stylesheet" type="text/css" href="/assets/css/timeslots.css"/>
+		<script type="text/javascript" language="javascript" src="/assets/javascript/timeslots.js"></script>
+
 		<crm:GetFDUser id="user">
 		<%String actionName = request.getParameter("actionName");%>
 		<fd:ReserveTimeslotController	actionName="<%=actionName%>" result="result">

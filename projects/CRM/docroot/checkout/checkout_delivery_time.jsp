@@ -87,13 +87,16 @@
 
 <tmpl:put name='content' direct='true'>
 
+<link rel="stylesheet" type="text/css" href="/assets/css/timeslots.css"/>
+<script type="text/javascript" language="javascript" src="/assets/javascript/timeslots.js"></script>
+
 <script type="text/javascript">
-var zonePromoString="";
-var zonePromoEnabled=false;
-<%if(zonePromoAmount>0){ %>
-	zonePromoString="<%=zonePromoString %>";
-	zonePromoEnabled=true;
-<%} %>
+	var zonePromoString="";
+	var zonePromoEnabled=false;
+	<%if(zonePromoAmount>0){ %>
+		zonePromoString="<%=zonePromoString %>";
+		zonePromoEnabled=true;
+	<%} %>
 </script>
 
 <jsp:include page='/includes/order_header.jsp'/>
@@ -230,7 +233,7 @@ var zonePromoEnabled=false;
 	if(timeslotList.size()==3 && idx.intValue()==1){
 %>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
-		<span class="title13 fleft tsAdvanceHeader">ADVANCE DELIVERY</span>
+		<span class="title13 fleft tsAdvanceHeader">Advance Order Delivery Timeslots</span>
 	<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
 <% } %>
 

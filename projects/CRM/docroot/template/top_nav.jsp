@@ -16,7 +16,6 @@
 	<link rel="stylesheet" type="text/css" href="/ccassets/css/case.css" />
 	<link rel="stylesheet" type="text/css" href="/ccassets/javascript/jscalendar-1.0/calendar-system.css" />
 	<link rel="stylesheet" type="text/css" href="/ccassets/css/promo.css" />
-	<link rel="stylesheet" type="text/css" href="/assets/css/timeslots.css"/>
 	<%-- YUI --%>
 	<!-- Sam Skin CSS -->
 	<link rel="stylesheet" type="text/css" href="/assets/yui/container/assets/skins/sam/container.css">
@@ -41,7 +40,7 @@
 	<script type="text/javascript" language="javascript" src="/ccassets/javascript/overlibmws_shadow.js"></script>
 	<script type="text/javascript" language="javascript" src="/ccassets/javascript/overlibmws_draggable.js"></script>
 	<script type="text/javascript" language="javascript" src="/ccassets/javascript/timepicker/picker.js"></script>
-	<script type="text/javascript" language="javascript" src="/assets/javascript/timeslots.js"></script>
+
 
 <% if ("true".equals(request.getAttribute("needsCCL"))) {%>
     <%@ include file="/shared/template/includes/ccl.jspf"%>

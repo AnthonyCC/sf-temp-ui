@@ -71,6 +71,9 @@ if(isCheckAddress){
 	<tmpl:put name='title' direct='true'>Available Delivery TimeSlots</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 
+<link rel="stylesheet" type="text/css" href="/assets/css/timeslots.css"/>
+<script type="text/javascript" language="javascript" src="/assets/javascript/timeslots.js"></script>
+
 <style>
 span.control img{
 	margin: 7px 8px 0 4px;
