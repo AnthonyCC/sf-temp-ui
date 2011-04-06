@@ -94,7 +94,7 @@ public final class ScarabInfrastructure {
 					
 					&& ExternalRecommenderRegistry.getInstance("scarabRelated", ExternalRecommenderType.RELATED) != null
 					&& ExternalRecommenderRegistry.getInstance("scarabAlsoBought", ExternalRecommenderType.RELATED) != null
-					&& ExternalRecommenderRegistry.getInstance("scarabViewed", ExternalRecommenderType.RELATED) != null					
+					&& ExternalRecommenderRegistry.getInstance("scarabAlsoViewed", ExternalRecommenderType.RELATED) != null					
 					&& ExternalRecommenderRegistry.getInstance("scarabPersonalized", ExternalRecommenderType.PERSONALIZED) != null
 					
 					&& ExternalRecommenderRegistry.getInstance("scarabCart", ExternalRecommenderType.RELATED) != null
