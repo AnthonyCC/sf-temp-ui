@@ -2,11 +2,11 @@ var styleStrExp = '';
 var styleStrCon = '';
 var globalTS = -1;
 var expandDuration = 0; //seconds
-var appearDuration = 0.5; //seconds
+var appearDuration = 0.8; //seconds
 var contractDuration = 1; //seconds
 var timedExpandWait = 500; //ms
 var global_tsDebug = false;
-var tsdebug_timeDif = 0;
+var tsdebugTimeDif = 0;
 
 //morph effect will match each of these styles from ref elem.
 var styleArr = [];
@@ -77,10 +77,6 @@ function fillRef(refDataCur, startIndex) {
 	if (day >= 20 && window.refAdvData !== undefined) {
 		dayPartIndexCur = daypartAdvNewIndex;
 	}
-	if (dayPartIndexCur == -1) {
-		tsLog('WARN! dayPartIndexCur is -1, why is that?');
-		dayPartIndexCur = 1;
-	}
 
 	//check if refData is empty
 	if (refDataCur.join("").replace(/,/g,"") === "") {
@@ -102,11 +98,14 @@ function fillRef(refDataCur, startIndex) {
 			if (day >= 10) {
 				daypartAdvIndex = 4;
 				dayPartIndexCur = 4;
-				day = 9999;
+			}else if (day >= 20) {
+				daypartAdvNewIndex = 4;
+				dayPartIndexCur = 4;
 			}else{
 				daypartIndex = 4;
 				dayPartIndexCur = 4;
 			}
+			if (day >= 10) { day = 9999; }
 
 		}
 
@@ -144,16 +143,20 @@ function fillRefAddRows(refDataCur, startIndexArg) {
 		
 		var advId = '';
 		var dayPartIndexCur = daypartIndex;
+		/* only recalc dayPartIndexCur in here if it's missing */
 		if (startIndex >= 10) {
 			advId = 'Adv';
 			dayPartIndexCur = daypartAdvIndex;
+			if (dayPartIndexCur == -1) { dayPartIndexCur = 4; }
 		}
 		if (startIndex >= 20) {
 			advId = 'Adv';
 			dayPartIndexCur = daypartAdvNewIndex;
+			if (dayPartIndexCur == -1) { dayPartIndexCur = 4; }
 		}
 		//get table ref
 		var node = $('ts_d'+d+'_tsTable');
+		if (!node) { continue; }
 
 		//find daypart td in table
 		var tRows = node.getElementsByTagName('TR');
@@ -257,7 +260,9 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 	var refDataCur = refData;
 	var dayPartIndexCur = daypartIndex;
 	var advId = '';
-	var refDataCurTemp = [];
+	//we'll need these two further down...
+	var refDataCurTemp1 = [];
+	var refDataCurTemp2 = [];
 	if (day >= 10 && window.refAdvData !== undefined) {
 		refDataCur = refAdvData;
 		advId = 'Adv';
@@ -266,13 +271,15 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 		if (refDataCur[10] !== undefined && refDataCur[20] !== undefined) {
 			//split off multiple ao sets
 			var endIndex = 10+seekUntilUndef(refAdvData, 10, 19);
-			refDataCurTemp = refAdvData.slice(10, endIndex);
+			refDataCurTemp1 = refAdvData.slice(10, endIndex);
 			refDataCur = [];
 			var indexCount = 10;
-			for (var i = 0; i < refDataCurTemp.length; i++) {
-				refDataCur[indexCount] = refDataCurTemp[i];
+			for (var i = 0; i < refDataCurTemp1.length; i++) {
+				refDataCur[indexCount] = refDataCurTemp1[i];
 				indexCount++;
 			}
+			//reset to corrected format for tsReorganizer
+			refDataCurTemp1 = refDataCur;
 			tsLog('part 1 '+refDataCur.length);
 			
 			//if rows haven't been added already, do so now
@@ -287,13 +294,15 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 			}
 
 			//split off multiple ao sets
-			refDataCurTemp = refAdvData.slice(20);
+			refDataCurTemp2 = refAdvData.slice(20);
 			refDataCur = [];
 			var indexCount = 20;
-			for (var i = 0; i < refDataCurTemp.length; i++) {
-				refDataCur[indexCount] = refDataCurTemp[i];
+			for (var i = 0; i < refDataCurTemp2.length; i++) {
+				refDataCur[indexCount] = refDataCurTemp2[i];
 				indexCount++;
 			}
+			//reset to corrected format for tsReorganizer
+			refDataCurTemp2 = refDataCur;
 			tsLog('part 2 '+refDataCur.length);
 
 			
@@ -430,6 +439,10 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 							$(elemId+'_rb').checked = true;
 						}
 					}
+					if (tsId && tsRb && tsRb.checked && tsId.className.indexOf('tcSelectionBGC') == -1) {
+						//and if it's not already selected
+						tsId.className += ' tcSelectionBGC';
+					}
 				}
 				
 				if (tsId) {
@@ -519,6 +532,10 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 					if (tsRbCont) { tsRbCont.hide(); }
 				}else{ //checkout
 					if (tsRb) { tsRb.hide(); }
+					if (tsId && tsRb && tsRb.checked && tsId.className.indexOf('tcSelectionBGC') == -1) {
+						//and if it's not already selected
+						tsId.className += ' tcSelectionBGC';
+					}
 				}
 				//Force order fix
 				if (tsForceX) { tsForceX.hide(); }
@@ -613,22 +630,49 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 				}
 			}
 		}
+
+		if (sequenceKeyTemp == 10 && refDataCur[20] !== undefined) {
+			//do the second ao as well, so we're doing set01's end and set02's start
+			sequenceKeyTemp = 20;
+			var endIndex = 10+seekUntilUndef(refAdvData, 10, 19);
+
+			for (t = 0; t < refDataCur[sequenceKeyTemp][1].length; t++) {
+				if ($('co_d'+sequenceKeyTemp+'_ts'+t)) {
+					if ($('co_d'+sequenceKeyTemp+'_ts'+t)) {
+						$('co_d'+sequenceKeyTemp+'_ts'+t).parentNode.style.borderLeft = '1px solid #ccc';
+					}
+					if ($('co_d'+(endIndex-1)+'_ts'+t)) {
+						$('co_d'+(endIndex-1)+'_ts'+t).parentNode.style.borderRight = '1px solid #ccc';
+					}
+				}
+			}
+
+		}
 		
 	}
 
 	var reorganizer = []; //hold elems to be reorganized
+	var reorganizer1 = []; //hold elems to be reorganized
+	var reorganizer2 = []; //hold elems to be reorganized
+	var emptyDay = false;
 
 	tsLog('starting getReorganizerData');
-	reorganizer = getReorganizerData(refDataCur, dayPartIndexCur, day);
+	
+	if (day == '9999' && refDataCur[10] !== undefined && refDataCur[20] !== undefined) {
+		reorganizer1 = getReorganizerData(refDataCurTemp1, -1, day);
+		reorganizer2 = getReorganizerData(refDataCurTemp2, -1, day);
+	}else{
+		//check if whole day is empty
+		if (refDataCur[day] !== undefined && (refDataCur[day][0]).join('') == '') {
+			emptyDay = true;
+			dayPartIndexCur = -1;
+		}
+		reorganizer = getReorganizerData(refDataCur, dayPartIndexCur, day);
+	}
 	tsLog('ending getReorganizerData');
 
 	if (day != '9999' && day != '-1') {
 		//deal with expanded view
-		//check if whole day is empty
-		var emptyDay = false;
-		if ((refDataCur[day][0]).join('') == '') {
-			emptyDay = true;
-		}
 
 		if (!emptyDay) {
 			//find cutoffs and display it/them
@@ -713,7 +757,12 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 	}
 
 	//call reorg
-	while (!tsReorganizer(reorganizer)) {}
+	if (day == '9999' && refDataCur[10] !== undefined && refDataCur[20] !== undefined) {
+		while (!tsReorganizer(reorganizer1)) {}
+		while (!tsReorganizer(reorganizer2)) {}
+	}else{
+		while (!tsReorganizer(reorganizer)) {}
+	}
 
 	return true;
 }
@@ -921,7 +970,7 @@ function tsReorganizer(reorganizer) {
 			}
 			//readjust for height
 			//this is the default collapsed no delivery, don't add a row and use negative subtraction
-			$('ts_d'+d+'_ts'+reorgStart).style.height = getCalcdRowHeight(sequenceCount, null, false, -2);
+			$('ts_d'+d+'_ts'+reorgStart).style.height = getCalcdRowHeight(sequenceCount, null, false, 2);
 			
 		}
 		//now hide extra tds
@@ -1028,6 +1077,7 @@ function tsExpand(elemIdArg, autoCheckRadioArg, retryArg) {
  *		check via descendantOf, so does not need to be direct child
  *	exceptId = an id of a child div under the parentId to NOT contract
  */
+var contract;
 function tsContractAll(parentIdArg, exceptIdArg) {
 	if (parseDay(set_02) == -1 || parseDay(set_02) == parseDay(set_02_last)) { return true; }
 	var parentId = parentIdArg || '';
@@ -1056,14 +1106,21 @@ function tsContractAll(parentIdArg, exceptIdArg) {
 		if ($(refs[i]).id != exceptId && ($(refs[i]).descendantOf(parentId) || $(refs[i]).id == parentId) ) {
 			//skip exceptions
 			if (($(refs[i]).id).indexOf(conExcepDay) == -1) {
-				$(refs[i]).morph(styleStrCon, {duration: contractDuration});
+				contract = new Effect.Morph(refs[i], {
+					style: styleStrCon,
+					duration: contractDuration
+				});
 			}
 			//children
 			var refsChildren = $(refs[i]).getElementsByTagName('table');
 			for (var j=0; j< refsChildren.length; j++) {
 				//skip exceptions
 				if (($(refsChildren[j]).id).indexOf(conExcepDay) == -1) {
-					$(refsChildren[j]).morph(styleStrCon, {duration: contractDuration});
+					//required?
+					contract = new Effect.Morph(refsChildren[j], {
+						style: styleStrCon,
+						duration: contractDuration
+					});
 				}
 			}
 		}
@@ -1088,9 +1145,9 @@ function hideAdvanceOrder() {
 	}
 
 	if($("timeslots_grid0").style.display != "none") {
-		$('displayAdvanceOrderGrid').innerHTML = "Hide Delivery Timeslots";
+		$('displayAdvanceOrderGrid').innerHTML = "Hide Details";
 	}else{
-		$('displayAdvanceOrderGrid').innerHTML = "Show Delivery Timeslots";
+		$('displayAdvanceOrderGrid').innerHTML = "Show Details";
 		tsContractAll('tsContainer');
 		if (globalTS != -1) {
 			tsExpand(globalTS);
@@ -1306,7 +1363,7 @@ function timedExpand() {
 function tsLog(logMsg) {
 	var d = new Date();
 	var now = d.getTime();
-	var took = ' (Time to here: ' +(now-tsdebug_timeDif)+'ms) ';
-	tsdebug_timeDif = now;
+	var took = ' (Time to here: ' +(now-tsdebugTimeDif)+'ms) ';
+	tsdebugTimeDif = now;
 	if (global_tsDebug && window.console) { console.log(d.toUTCString()+took+'Log: '+logMsg); }
 }
