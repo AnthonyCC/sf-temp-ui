@@ -34,8 +34,14 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 									//-->
 								</SCRIPT>
 							<% } %>
-
-						<br>Available Delivery TimeSlots<br>
+						<table>
+							<tr>
+								<td class="title16">Available Delivery TimeSlots</td>
+								<td>
+									<fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots.html"/>
+								</td>
+							</tr>
+						</table>
 						<img src="/media_stat/images/layout/clear.gif" width="1" height="3">
 					</td>
 				</tr>
@@ -46,7 +52,18 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 				       <td>&nbsp;</td>
 			<%} else if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)){%>
 				<tr>
-					<td colspan="3" class="title16"><%=(user != null && user.getDeliveryTimeslotModel() != null && user.getDeliveryTimeslotModel().isPreReserved()) ? "Your Delivery Timeslot Is Reserved" : "Reserve a Delivery Time"%><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td>
+					<td colspan="3" class="title16">
+						<table>
+							<tr>
+								<td class="title16">
+									<%=(user != null && user.getDeliveryTimeslotModel() != null && user.getDeliveryTimeslotModel().isPreReserved()) ? "Your Delivery Timeslot Is Reserved" : "Reserve a Delivery Time"%>
+								</td>
+								<td>
+									<fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots_learnmore.html"/>
+								</td>
+							</tr>
+						</table>
+					</td>
 				</tr>
 				<tr>
 					<td colspan="3" class="text12"><%= (user != null && user.getDeliveryTimeslotModel() != null && user.getDeliveryTimeslotModel().isPreReserved()) ? "Displayed below is your current delivery reservation for" : "Displayed below are the timeslots currently available to be reserved for"%>:</td>

@@ -102,49 +102,13 @@ span.time {
 				<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
 			</td>
 		</tr>
-			
+	</table>
+	
 		<%//Finds the address%>
 		<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
 		
 		<%//Render timeslots %>
 		<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
-
-<%  
-   if(user.isHomeUser())
-       zone = FDDeliveryManager.getInstance().getZoneInfo(address, tomorrow.getTime()).getZoneCode();
-       
-   if ("005".equals(zone) || "008".equals(zone)) { %>
-
-<tr>
-	<td colspan="3">
-		<table width="693" cellpadding="0" cellspacing="1" border="0">
-				<tr>
-					<td valign="top" align="center" class="text11" width="97"></td>
-					<td valign="top" align="center" colspan="5" class="text11">
-						<b><font class="text12" color="#CC0000">DELIVERY TIMESLOT NOTE: </font></b><br>
-						Due to heightened security around the Midtown Tunnel and the 59th Street Bridge
-						we have limited the number of deliveries in your area during the 4-6 PM and 6-8 PM time slots.
-						This will allow us to deliver orders in a more timely manner.
-						We hope this situation improves soon and will add more delivery availability as soon as possible.
-					</td>
-					<td valign="top" align="center" class="text11" width="97"></td>
-				</tr>
-				<TR>
-					<td align="center" valign="top" colspan="7"><br>
-					</TD>
-				</TR>
-		</table>
-	</td>
-</tr>
-<%  }   %>
-
-<tr>
-	<td colspan="3">
-		<img src="/media_stat/images/layout/clear.gif" width="693" height="15">
-	</td>
-</tr>
-
-</table>
-</div>
+	</div>
 </tmpl:put>
 </tmpl:insert>

@@ -180,18 +180,22 @@ zonePromoEnabled=true;
 <!--START TIMESLOT PAGE HEADER-->
 <table border="0" cellspacing="0" cellpadding="0" width="695">
 	<TR VALIGN="TOP">
-		<TD CLASS="text11" WIDTH="395" VALIGN="bottom">
-<%if (isDepotAddress) {%>
-			<FONT CLASS="title18">CHOOSE A <%=user.isCorporateUser() ? "DELIVERY" : "PICKUP"%> TIME</FONT><BR>
-                <%} else {%>
-			<FONT CLASS="title18">CHOOSE TIME</FONT><BR>
-<%}%>
-			<IMG src="/media_stat/images/layout/clear.gif" WIDTH="375" HEIGHT="1" BORDER="0">
+		<TD CLASS="text11" WIDTH="495" VALIGN="bottom">
+			<table>
+				<tr>
+					<td><FONT CLASS="title18">CHOOSE TIME</FONT>
+						<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1" BORDER="0">
+					</td>
+					<td>
+						<fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots_learnmore.html"/>
+					</td>
+				</tr>
+			</table>
 		</TD>
 		
 	<%if(hasCapacity){%>
 
-			<TD WIDTH="265" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10">
+			<TD WIDTH="165" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10">
 		      <FONT CLASS="space2pix"><BR></FONT>
 				<table>
 					<tr>
@@ -238,7 +242,7 @@ zonePromoEnabled=true;
 					BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2">
 				</TD>
 	<%}else{%>
-				<td width="265" align="right" valign="middle" class="text10bold">&nbsp;</td>
+				<td width="165" align="right" valign="middle" class="text10bold">&nbsp;</td>
 		<td width="35" align="right" valign="middle">&nbsp;</td>
 	<%}%>
 		
@@ -433,9 +437,9 @@ if (errorMsg!=null) {%>
 <%
 	if(timeslotList.size()==3 && idx.intValue()==1){
 %>
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
-		<span class="title13 fleft tsAdvanceHeader">Advance Order Delivery Timeslots</span>
-	<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
+	<div><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
+		<span class="title13 fleft tsAdvanceHeader" id="displayAdvanceOrderHeader">Advance Order Delivery Timeslots</span>
+	<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR></div>
 <% } %>
 
 

@@ -26,9 +26,7 @@ nextDayVal.add(Calendar.DATE, 1);
 if (timeslots.size() > 0) { 
     request.setAttribute("AddressType",address.getServiceType().getName());
     Collection<Date> days = timeslots.getDays();
-	%>	
 
-<%
 	StringBuffer stringBuffer = new StringBuffer();
 	int holidayIndex=0;
 	for(Date day: days){ 
@@ -67,6 +65,12 @@ if (timeslots.size() > 0) {
 	var daypartIndex<%= (!isForAdvOrdSlots && !isForNewAdvOrdSlots) ? " = -1" : "" %>;
 	var daypartAdvIndex<%= (isForAdvOrdSlots) ? " = -1" : "" %>;
 	var daypartAdvNewIndex<%= (isForNewAdvOrdSlots) ? " = -1" : "" %>;
+	var maxAmSlots<%= (!isForAdvOrdSlots && !isForNewAdvOrdSlots) ? " = -1" : "" %>;
+	var maxAmAdvSlots<%= (isForAdvOrdSlots) ? " = -1" : "" %>;
+	var maxAmAdvNewSlots<%= (isForNewAdvOrdSlots) ? " = -1" : "" %>;
+	var maxPmSlots<%= (!isForAdvOrdSlots && !isForNewAdvOrdSlots) ? " = -1" : "" %>;
+	var maxPmAdvSlots<%= (isForAdvOrdSlots) ? " = -1" : "" %>;
+	var maxPmAdvNewSlots<%= (isForNewAdvOrdSlots) ? " = -1" : "" %>;
 	var dayName = '';
 		<%
 			int hDayIndex=0; int dayIndex=0; int fdayIndex=0;
@@ -154,7 +158,17 @@ if (timeslots.size() > 0) {
 			//AM Timeslots
 			int maxAmSlots = timeslots.getMaxNumShiftTimeslots(EnumDayShift.DAY_SHIFT_AM.getName());
 			int dayAmSlots = timeslots.getNumDayShiftTimeslots(day,EnumDayShift.DAY_SHIFT_AM.getName());
-
+			
+			if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
+				%>maxAmSlots = <%=maxAmSlots%>;
+				<%
+			}else if(isForAdvOrdSlots){
+				%>maxAmAdvSlots = <%=maxAmSlots%>;
+				<%
+			}else if(isForNewAdvOrdSlots){
+				%>maxAmAdvNewSlots = <%=maxAmSlots%>;
+				<%
+			}
 			%><logic:iterate id="slot" collection="<%= timeslots.getTimeslotsForDayAndShift(day,EnumDayShift.DAY_SHIFT_AM.getName()) %>" type="com.freshdirect.fdstore.FDTimeslot"><%
 				stringBuffer.append("<tr id=\""+((isForAdvOrdSlots || isForNewAdvOrdSlots) ? "coAdv_d"+dayIndex+"_ts"+slotIndex+"_row":"co_d"+dayIndex+"_ts"+slotIndex+"_row")+"\" style=\"display: none;\">\n");
 
@@ -466,6 +480,17 @@ if (timeslots.size() > 0) {
 			//PM Timeslots
 			int maxPmSlots = timeslots.getMaxNumShiftTimeslots(EnumDayShift.DAY_SHIFT_PM.getName());
 			int dayPmSlots = timeslots.getNumDayShiftTimeslots(day,EnumDayShift.DAY_SHIFT_PM.getName());
+		
+			if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
+				%>maxPmSlots = <%=maxPmSlots%>;
+				<%
+			}else if(isForAdvOrdSlots){
+				%>maxPmAdvSlots = <%=maxPmSlots%>;
+				<%
+			}else if(isForNewAdvOrdSlots){
+				%>maxPmAdvNewSlots = <%=maxPmSlots%>;
+				<%
+			}
 		%><logic:iterate id="slot" collection="<%= timeslots.getTimeslotsForDayAndShift(day,EnumDayShift.DAY_SHIFT_PM.getName()) %>" type="com.freshdirect.fdstore.FDTimeslot"><%
 				stringBuffer.append("<tr id=\""+((isForAdvOrdSlots || isForNewAdvOrdSlots)? "coAdv_d"+dayIndex+"_ts"+slotIndex+"_row":"co_d"+dayIndex+"_ts"+slotIndex+"_row")+"\" style=\"display: none;\">");
 				

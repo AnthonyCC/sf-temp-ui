@@ -1040,7 +1040,7 @@ function tsExpand(elemIdArg, autoCheckRadioArg, retryArg) {
 			}
 		}
 
-		if ( parseDay(elemId) < 10) { globalTS  = elemId; }
+		if ( parseDay(elemId) < 10) { globalTS  = lastTS_expanded; }
 
 		$('ts_d'+day+'_ts_hE').show();
 		$(elemId).morph(styleStrExp, {
@@ -1142,6 +1142,7 @@ function hideAdvanceOrder() {
 
 	if($("timeslots_grid2")){
 		$("timeslots_grid1").toggle();
+		$("displayAdvanceOrderHeader").toggle();
 	}
 
 	if($("timeslots_grid0").style.display != "none") {
