@@ -127,7 +127,7 @@
 <%@ include file="/includes/i_modifyorder.jspf" %>
 
 
-<div class="content_scroll" style="height: 72%;">
+<div class="cust_module_content" style="height: 100%;">
 <TABLE width="730" cellpadding="2" cellspacing="0" border="0" class="order" align="center">
 	<TR>
 		<TD  align="center" class="order_detail">	
@@ -339,7 +339,6 @@
 
 	</FORM>
 </TABLE>
-<BR><BR>
 </div>
 </tmpl:put>
 	</fd:CheckoutController>

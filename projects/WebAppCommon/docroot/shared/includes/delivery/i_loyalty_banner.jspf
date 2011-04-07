@@ -7,15 +7,14 @@
 if (user.isChefsTable() && zoneCtActive ) { 
 	%>
 
-		<table cellspacing="0" cellpadding="0" border="0" width="695">
+	<table cellspacing="0" cellpadding="0" border="0" width="695">
 		
-			<%
-			
+		<%
 			if (!user.isChefsTable()) { 
 				String loyaltyAddressId = request.getParameter("addressId");
 				if (loyaltyAddressId == null && deliveryModel.getRsv() != null) loyaltyAddressId = deliveryModel.getRsv().getAddressId();
 				if (loyaltyAddressId == null) loyaltyAddressId = address.getPK().getId();
-	    		%>
+	   	%>
 		<tr>
 			<td colspan="3" align="center"><br />
 				<a href="?chefstable=true&addressId=<%= loyaltyAddressId %>">

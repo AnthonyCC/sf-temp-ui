@@ -38,7 +38,7 @@
 		<%@ include file="/shared/includes/delivery/i_loyalty_banner.jspf" %>
 <%}%>
 
-<img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br>
+<img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br/>
 <!-- GEO Restriction Message Added -->
 <% if(messages != null && messages.size() >= 1) { %>
 	<%@ include file="/shared/includes/delivery/i_geowarning_message.jspf"%>
@@ -62,23 +62,6 @@
 						<td valign="middle" align="right">
 					 	<table>
 							<tr>
-							<!--	<%if(user.isChefsTable() && user.getTotalCTSlots()>0){%>
-									<td>
-										<img src="/media/editorial/timeslots/images/star_ct_delivery_time.gif" WIDTH="15" HEIGHT="18" border="0" alt="">
-									</td>
-									<td>
-										<div onClick="showLegendOverlay('/media/editorial/timeslots/msg_chefstable_timeslot.html','Chef\'s Table Information'); return false;"><%= FDStoreProperties.getChefstableLabel()%></div>
-									</td>
-								<%}%>
-								<%if(deliveryModel.getMaxDiscount()>0){%>
-									<td>
-										<img src="/media/editorial/timeslots/images/dollar_discount_delivery_time.gif" WIDTH="15" HEIGHT="18" border="0" alt="">
-									</td>
-									<td>
-										<div onClick="showLegendOverlay('/media/editorial/timeslots/msg_discount_timeslot.html','Promotion Discount'); return false;">
-										<%= FDStoreProperties.getPromotionLabel()%></div>
-									</td>
-								<%}%> -->
 								<%if(deliveryModel.getEcoFriendlyCount() > 0){%>
 									<td>
 										<img src="/media_stat/images/timeslots/ecofriendly_leaf.gif" WIDTH="16" HEIGHT="16" border="0">
@@ -112,7 +95,7 @@
 			</td>
 		</tr>
 	</table>
-	<img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br><br>
+	<img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br/><br/>
 <!-- ~~~~~~~~~~~~~~~~~~~~~~ END LEGEND DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ -->
 
 <!-- ~~~~~~~~~~~~~~~~~~~~~~ START TIMESLOT GRID ~~~~~~~~~~~~~~~~~~~~~~ -->

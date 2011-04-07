@@ -11,7 +11,6 @@
 <%@ page import='com.freshdirect.fdstore.util.TimeslotLogic'%>
 <%@ page import='com.freshdirect.fdstore.promotion.FDPromotionZoneRulesEngine' %>
 <%@ page import='com.freshdirect.delivery.DlvZoneInfoModel' %>
-<%@ page import='com.freshdirect.fdstore.FDDeliveryManager' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import="com.freshdirect.delivery.restriction.GeographyRestrictionMessage"%>
 <%@ page import='com.freshdirect.fdstore.promotion.FDPromotionZoneRulesEngine' %>
@@ -30,11 +29,6 @@
 
 
 <%
-int timeslot_page_type = TimeslotLogic.PAGE_NORMAL;
-if("true".equals(request.getParameter("chefstable"))) {
-	timeslot_page_type = TimeslotLogic.PAGE_CHEFSTABLE;
-}
-
 boolean isStaticSlot = true;
 String timeSlotId="";
 ActionResult result=null;
@@ -44,15 +38,7 @@ String actionName = null;
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 ErpCustomerInfoModel customerInfo = FDCustomerFactory.getErpCustomerInfo(user.getIdentity());
 
-if (user.isChefsTable()) {
-	timeslot_page_type = TimeslotLogic.PAGE_CHEFSTABLE;
-}
-
-String zone = null;
 String addressId = request.getParameter("addressId");
-
-Calendar tomorrow = Calendar.getInstance();
-tomorrow.add(Calendar.DATE, 1);
 
 
 
@@ -71,47 +57,39 @@ if(isCheckAddress){
 	<tmpl:put name='title' direct='true'>Available Delivery TimeSlots</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 
-<link rel="stylesheet" type="text/css" href="/assets/css/timeslots.css"/>
-<script type="text/javascript" language="javascript" src="/assets/javascript/timeslots.js"></script>
+	<link rel="stylesheet" type="text/css" href="/assets/css/timeslots.css"/>
+	<script type="text/javascript" language="javascript" src="/assets/javascript/timeslots.js"></script>
 
-<style>
-span.control img{
-	margin: 7px 8px 0 4px;
-}
+	<style>
+		span.control img{
+			margin: 7px 8px 0 4px;
+		}
 
-span.time {
-	float:left;
-	position:relative;
-	top:1px;
-}
-</style>
+		span.time {
+			float:left;
+			position:relative;
+			top:1px;
+		}
+	</style>
 
 	<div class="sub_nav">
 		<span class="sub_nav_title">Available Delivery TimeSlots</span> | <a href="/main/delivery_check_slots.jsp">Check available Slots for a new address</a>
 	</div>
-	<div class="content_fixed" align="left">
-	<table width="90%" cellpadding="0" cellspacing="0" border="0">
-		<tr>
-			<td colspan="2" class="text12" align="left" width="29%"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
-			<td class="text12" align="left" width="71%"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
-		</tr>
-		<tr>
-			<td colspan="3" class="text12" align="left">Here are the currently available timeslots for delivery to this <%=isCheckAddress ? "address" : "customer's addresses"%>:
-					<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR><BR>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="3">
-				<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
-			</td>
-		</tr>
-	</table>
-	
-		<%//Finds the address%>
-		<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
+	<div class="content_fixed" align="left" height="100%">
+		<table width="90%" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td colspan="3" class="text12" align="left" width="100%"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+			</tr>
+			<tr>
+				<td colspan="3" class="text12" align="left">Here are the currently available timeslots for delivery to this <%=isCheckAddress ? "address" : "customer's addresses"%>:
+						<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0">
+				</td>
+			</tr>
+		</table>
 		
-		<%//Render timeslots %>
+		<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
 		<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
+		
 	</div>
 </tmpl:put>
 </tmpl:insert>

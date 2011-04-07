@@ -9,21 +9,32 @@
 <%
 Collection shipToAddresses = new ArrayList();
 ErpAddressModel address = null;
+
 if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 	shipToAddresses = AddressFinder.getShipToAddresses(user);
 	address = AddressFinder.getShipToAddress(user, addressId, timeSlotCtx, request);
 %>
 
+<%
+	String actionPage="";
+	if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS))
+		actionPage = "/your_account/delivery_info_avail_slots.jsp";
+	else if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS))
+		actionPage = "/your_account/reserve_timeslot.jsp";
+	else if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM))
+		actionPage = "/customer_account/reserve_timeslot.jsp";
+	else 
+		actionPage = "/main/delivery_available_slots.jsp";
+%>
+
+<img src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0">
+<img src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0">
+
+<%@ include file="/shared/includes/i_loyalty_bar.jspf" %> <br/>
+
+<table width="693" cellpadding="0" cellspacing="0" border="0">
 <%if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM) && !timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)){%>
 
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-
-
-	<%@ include file="/shared/includes/i_loyalty_bar.jspf" %> <br>
-
-	<table width="693" cellpadding="0" cellspacing="0" border="0">
-		
 			<%if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS) ||(timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))){ %>
 				<tr>
 					<td colspan="3" class="title16">
@@ -48,15 +59,13 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 				<tr>
 					<td colspan="3" class="text12">Here are the currently available timeslots for delivery to this address:</td>
 				</tr>
-				<tr>
-				       <td>&nbsp;</td>
 			<%} else if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)){%>
 				<tr>
 					<td colspan="3" class="title16">
 						<table>
 							<tr>
 								<td class="title16">
-									<%=(user != null && user.getDeliveryTimeslotModel() != null && user.getDeliveryTimeslotModel().isPreReserved()) ? "Your Delivery Timeslot Is Reserved" : "Reserve a Delivery Time"%>
+									<%=(user != null && user.getReservation() != null) ? "Your Delivery Timeslot Is Reserved" : "Reserve a Delivery Time"%>
 								</td>
 								<td>
 									<fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots_learnmore.html"/>
@@ -66,36 +75,25 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 					</td>
 				</tr>
 				<tr>
-					<td colspan="3" class="text12"><%= (user != null && user.getDeliveryTimeslotModel() != null && user.getDeliveryTimeslotModel().isPreReserved()) ? "Displayed below is your current delivery reservation for" : "Displayed below are the timeslots currently available to be reserved for"%>:</td>
+					<td colspan="3" class="text12"><%= (user != null && user.getReservation() != null) ? " Displayed below is your current delivery reservation for" : " Displayed below are the timeslots currently available to be reserved for"%>:</td>
 				</tr>
-				<tr>
-				       <td>&nbsp;</td>
 				
 			<%}else if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM)){%>
 				<tr>
 					<td colspan="3" class="text12">Displayed below are the timeslots currently available to be reserved for:</td>
 				</tr>
-				<tr>
-					<td>&nbsp;</td>
 			<%}%>
 <%}%>
+				<tr>
+					<td>&nbsp;</td>
+				
 			<% 
 			if ((shipToAddresses.size() > 1 && !timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)&&!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)) || (timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER) && shipToAddresses.size()>1 && !isCheckAddress)) { 
 			%>
-				<%if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS)){%>
-				     <FORM name="addressForm" method="POST" action="/your_account/delivery_info_avail_slots.jsp">
-				 <%}else if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)){%>
-				     <FORM name="addressForm" method="POST" action="/your_account/reserve_timeslot.jsp">
-				 <%}else if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM)){%>
-				     <FORM name="addressForm" method="POST"action="/customer_account/reserve_timeslot.jsp">
-				 <%}else{%>
-				     <FORM name="addressForm" method="POST" action="/main/delivery_available_slots.jsp">
-				 <%}%>
-				<%if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)){%>
-					<tr>
-						<td>&nbsp;</td>
-				<%}%>
-					<td class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br>
+					<td class="text12">
+						<FORM name="addressForm" method="POST" action="<%= actionPage %>">
+						<img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br/>
+						
 						<SELECT name="addressId" onChange="javascript:submit()" CLASS="text12" style="width: 250px;">
 							<% 
 							for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
@@ -108,19 +106,20 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 							</OPTION>
 							<% } %>
 						</SELECT><br /><br />
+						</FORM>
 					</td>
-					<%if(!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)){%>
+					<%if(!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM) && !timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)){%>
 						<td class="text12">
-							<b>Please note that you may only have a delivery<br>timeslot reservation for one address at a time.</b>
+							<b>Please note that you may only have a delivery<br/>timeslot reservation for one address at a time.</b>
 						</td>
 					<%}%>
-				</FORM>
+				
 
 			<% } else {
 				if(address!=null){ %>
-					<td class="text12">
-						<img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br>
-						<b><%=address.getAddress1()%><br><%=address.getCity()%> <%=address.getState()%> <%=address.getZipCode()%></b><br>
+					<td class="text12" colspan="2">
+						<img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br/>
+						<b><%=address.getAddress1()%><br/><%=address.getCity()%> <%=address.getState()%> <%=address.getZipCode()%></b><br/>
 						<%if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)){%>
 							<a href="/help/delivery_info_check_slots.jsp" class="text11">change address</a>
 						<%}else if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS)){%>
@@ -129,16 +128,13 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 							<br/><a href="/main/delivery_available_slots.jsp" class="order_detail">View all addresses for this customer</a>
 						<%}%>
 					</td>
-					<td>&nbsp;</td>
 				<% } %>
 			<% } %>
-			
-			</tr>
+				</tr>
+
 			<%if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)&&!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)){%>
 				<tr>
-					<td><img src="/media_stat/images/layout/clear.gif" width="15" height="15"></td>
-					<td><img src="/media_stat/images/layout/clear.gif" width="15" height="15"></td>
-					<td><img src="/media_stat/images/layout/clear.gif" width="400" height="15"></td>
+					<td  colspan="3"><img src="/media_stat/images/layout/clear.gif" width="430" height="15"></td>
 				</tr>
 				<tr>
 					<td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
@@ -147,18 +143,20 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 </table>
 
 
-<%if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)&&!timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)
-		&&!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)&& !timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM) && user.isEligibleForPreReservation()){// move to Reservation page%>
+<%
+	if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)&&!timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)
+		&&!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)&& !timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM) && user.isEligibleForPreReservation()){
+%>
 
-<table width="693" cellpadding="0" cellspacing="0" style="border:1px solid #ccc;">
+<table width="693" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC;">
 	<tr>
 		<td colspan="7">
-			<img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br>
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br/>
 	<% if(user.isEligibleForPreReservation() && (!"true".equals(request.getParameter("chefstable"))) && user.isDlvPassActive()) { %>
 			<div align="left" style="float:left;padding:7px 5px;">
 				 <table>
 					<tr>
-						<td  align="left"><font class="text14"><b>Want to Plan Ahead?</b></font><br>
+						<td  align="left"><font class="text14"><b>Want to Plan Ahead?</b></font><br/>
 							<span class="text12">As a Chef's table customer, you may reserve a timeslot ahead of time.</span>
 						</td>
 					</tr>
@@ -170,26 +168,26 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 						<td align="right" style="padding:10px 5px 0 0;">
 							<a href="/your_account/reserve_timeslot.jsp">
 								<img src="/media_stat/images/template/youraccount/make_a_reservation.gif" width="164" height="24" border="0" alt="Reserve a Delivery Time" vspace="4">
-							</a><br>
+							</a><br/>
 						</td>
 					</tr>
 				</table>
 			</div>
 	<% }else if(!user.isDlvPassActive() && !(user.isEligibleForPreReservation() && (!"true".equals(request.getParameter("chefstable"))))) {%>
-			<div align="center"><br>
+			<div align="center"><br/>
 				<% if (FDStoreProperties.isAdServerEnabled()) { %>
 					<SCRIPT LANGUAGE=JavaScript>
 						<!--
 						OAS_AD('TimeslotBottom');
 						//-->
-					</SCRIPT><br><br>
+					</SCRIPT><br/><br/>
 				<% } %>
 			 </div>
 	<% }else if(!user.isDlvPassActive() && user.isEligibleForPreReservation() && (!"true".equals(request.getParameter("chefstable")))) {%>
 			<div align="left" style="float:left;padding:7px 5px;">
 				 <table>
 					<tr>
-						<td  align="left"><font class="text14"><b>Want to Plan Ahead?</b></font><br>
+						<td  align="left"><font class="text14"><b>Want to Plan Ahead?</b></font><br/>
 							<span class="text12">As a Chef's table customer, you may reserve a timeslot ahead of time.
 							</span>
 						</td>
@@ -202,7 +200,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 						<td align="right" style="padding:10px 10px 0 0;">
 							<a href="/your_account/reserve_timeslot.jsp">
 								<img src="/media_stat/images/template/youraccount/make_a_reservation.gif" width="164" height="24" border="0" alt="Reserve a Delivery Time" vspace="4">
-							</a><br>
+							</a><br/>
 						</td>
 					</tr>
 				</table>
@@ -211,7 +209,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 		</td>
 	</tr>
 	<tr>
-		<td align="center">
+		<td align="center" colspan="7">
 			<% if (FDStoreProperties.isAdServerEnabled()) { %>
 				<SCRIPT LANGUAGE=JavaScript>
 					<!--
@@ -222,7 +220,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 		</td>
 	</tr>
 </table>
-<img src="/media_stat/images/layout/clear.gif" width="1" height="12"><br>
+<img src="/media_stat/images/layout/clear.gif" width="1" height="12"><br/>
 
 <%}%>
 

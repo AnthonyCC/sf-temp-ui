@@ -62,7 +62,7 @@
 			TimeslotContext timeSlotCtx=TimeslotContext.RESERVE_TIMESLOTS_CRM; 
 		%>
 
-			<div class="cust_module" style="width: 90%;"><%--form name="delivery_reservation" method="POST"--%>
+		<div class="cust_module" style="width: 90%;">
 			<div class="cust_module_header">
 				<table width="100%" cellpadding="0" cellspacing="0">
 					<tr>
@@ -73,23 +73,21 @@
 					</tr>
 				</table>
 			</div>
-			<div class="cust_module_content" style="padding-top: 10px; padding-bottom: 18px;">
+
+			<div class="cust_module_content">
 				
 			<%//Finds the address & render the timeslots %>
 			<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
 
 <form name="reserveTimeslot" method="POST" action="/customer_account/reserve_timeslot.jsp?chefstable=<%=user.isChefsTable()%>&addressId=<%=request.getParameter("addressId")%>" name="reserveTimeslot">
 				<input type="hidden" name="chefstable" value="<%= user.isChefsTable() %>"/>
+				<input type="hidden" name="addressId" value="<%=address.getPK().getId()%>" />
+				<input type="hidden" name="actionName" value="" />
 
 				<% String timeSlotId = ""; %> 
 					<table width="90%" cellpadding="0" cellspacing="0" border="0" align="center">
 						<tr>
-							<td colspan="2" class="text12" align="left" width="29%"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
-							<td class="text12" align="left" width="71%"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
-						</tr>
-						<tr>
 							<td>
-								<%//Timeslot section display%>
 								<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
 							</td>
 						</tr>	
@@ -106,33 +104,27 @@
 								<%=(rsv == null || EnumReservationType.ONETIME_RESERVATION.equals(rsv.getReservationType())) ? "checked" : "" %>
 								value="<%=EnumReservationType.ONETIME_RESERVATION.getName()%>"
 								class="radio">&nbsp;</td>
-							<td colspan="6"><img
-								src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
-							<span class="text12"><b>Reserve for this week only.</b></span></td>
+							<td colspan="6">
+								<span class="text12"><b>Reserve for this week only.</b></span>
+							</td>
 						</tr>
-						<tr>
-							<td colspan="7"><img
-								src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
-						</tr>
+						
 						<tr valign="top">
 							<td><input type="radio" name="reservationType"
 								<%=(rsv != null && EnumReservationType.RECURRING_RESERVATION.equals(rsv.getReservationType())) ? "checked" : "" %>
 								value="<%=EnumReservationType.RECURRING_RESERVATION.getName()%>"
 								class="radio">&nbsp;</td>
 							<td colspan="6">
-								<img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
 								<span class="text12">
-									<b>Reserve this day and time for
-									me every week</b>
-								</span><br>
+									<b>Reserve this day and time for me every week</b>
+								</span><br/>
 								Select this option to make this a standing, weekly reservation.
 								Please note that reservations not used for two weeks will be
 								cleared. At any time you can return to re-place or update your
 								reservation.
 							</td>
 						</tr>
-						<input type="hidden" name="addressId" value="<%=address.getPK().getId()%>">
-						<input type="hidden" name="actionName" value="">
+
 						<tr>
 							<td colspan="7" align="center"><img
 								src="/media_stat/images/layout/clear.gif" width="1" height="14"><br>
@@ -151,13 +143,12 @@
 							</td>
 						</tr>
 					</table>
-</form>
+		</form>
 
 		</fd:ReserveTimeslotController>
 			</div>
-			</div>
+		</div>
 		</crm:GetFDUser>
-		<br clear="all">
 	</tmpl:put>
 
 </tmpl:insert>

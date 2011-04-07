@@ -55,7 +55,9 @@ String actionName = request.getParameter("actionName");
 	
 <form name="reserveTimeslot" method="POST" action="/your_account/reserve_timeslot.jsp" name="reserveTimeslot">
 		<input type="hidden" name="chefstable" value="<%= user.isChefsTable() %>"/>
-	
+		<input type="hidden" name="addressId" value="<%=address.getPK()!=null ? address.getPK().getId(): null %>">
+		<input type="hidden" name="actionName" value="">
+		
 		<%//Render the timeslots %>
 		<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
 	
@@ -90,9 +92,6 @@ String actionName = request.getParameter("actionName");
 					Select this option to make this a standing weekly reservation. Please note that reservations not used will be released. At any time you can return to this page to update your reservation.
 				</td>
 			</tr>
-				<input type="hidden" name="addressId" value="<%=address.getPK()!=null ? address.getPK().getId(): null %>">
-				<input type="hidden" name="actionName" value="">
-			
 			<tr>
 				<td colspan="7" align="center">
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br>
@@ -105,7 +104,6 @@ String actionName = request.getParameter("actionName");
 					<%}%>
 				</td>
 			</tr>
-			
 		</table>
 </form>
 		</fd:ReserveTimeslotController>
