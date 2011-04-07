@@ -46,9 +46,6 @@ public class StoreModel extends ContentNodeModelImpl {
 
 	public void setBrands(List<BrandModel> brands) {
 		this.brands = brands;
-		for (BrandModel brand : brands) {
-			brand.setParentNode(this);
-		}
 	}
 
 	public List<Domain> getDomains() {
@@ -57,9 +54,6 @@ public class StoreModel extends ContentNodeModelImpl {
 
 	public void setDomains(List<Domain> domains) {
 		this.domains = domains;
-		for (Domain domain : domains) {
-			domain.setParentNode(this);
-		}
 	}
 
 	public MyFD getMyFD() {
