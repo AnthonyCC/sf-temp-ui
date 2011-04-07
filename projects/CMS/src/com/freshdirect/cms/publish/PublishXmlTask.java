@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
@@ -23,6 +24,7 @@ import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.service.xml.ContentNodeSerializer;
 import com.freshdirect.framework.util.QuickDateFormat;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * Publisk task to export all content nodes from a given service to an XML
@@ -39,6 +41,8 @@ import com.freshdirect.framework.util.QuickDateFormat;
  */
 public class PublishXmlTask implements PublishTask {
 
+    final static Logger LOG = LoggerFactory.getInstance(PublishXmlTask.class);
+    
 	public final static String NS_DC = "http://purl.org/dc/elements/1.1";
 
 	private final ContentServiceI contentService;
@@ -78,7 +82,7 @@ public class PublishXmlTask implements PublishTask {
 			File file = new File(publish.getPath(), storeFilePath);
 			createParentDirectory(file);
 
-			System.out.println("writing out doc to " + file.getPath());
+			LOG.info("writing out doc to " + file.getPath());
 			Writer writer;
 			if (file.getName().endsWith(".gz")) {
 				writer = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(file)));

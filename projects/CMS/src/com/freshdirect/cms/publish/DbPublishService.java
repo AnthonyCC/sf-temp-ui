@@ -138,7 +138,7 @@ public class DbPublishService extends DbService implements PublishServiceI {
 				publish.setLastModified(new Date());
 				updatePublish(publish);
 
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				LOGGER.error("Exception occured during publish", e);
 				publish.setStatus(EnumPublishStatus.FAILED);
 				publish.setLastModified(new Date());
