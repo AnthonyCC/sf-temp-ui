@@ -1,3 +1,8 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<%@page import="com.freshdirect.common.pricing.PricingContext"%>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.*'%>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
@@ -5,19 +10,10 @@
 <%@ page import='com.freshdirect.content.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
-
 <%@ page import='java.util.*'%>
-
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%!
-	java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
-%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-<head>
 <%
 String brandId = request.getParameter("brandId");
 String brandName = "";
@@ -43,7 +39,7 @@ if (brandId!=null) {
             widthValue = popupType.getWidth();
         }
         // Build the featured item list, if any
-        List favorites = brandNode.getFeaturedProducts();
+        List<ProductModel> favorites = brandNode.getFeaturedProducts();
         String imgName = null;
         boolean folderAsProduct = false;
         ContentNodeModel aliasNode = null;
@@ -53,6 +49,9 @@ if (brandId!=null) {
         int favItemCount = favorites.size();
         int imgSizeSum = 0;
         int itemCount = 0;
+        FDUserI sessionuser = (FDUserI) request.getSession().getAttribute(SessionName.USER);
+        PricingContext pc = sessionuser != null ? sessionuser.getPricingContext() : PricingContext.DEFAULT;
+        
     %>
         <logic:iterate id='contentRef' collection="<%=favorites%>" type="java.lang.Object">
     <% 
@@ -73,24 +72,23 @@ if (brandId!=null) {
 				continue;
 			}
 
-            SkuModel sku = product.getDefaultSku();
+            SkuModel sku = product.getDefaultSku(pc);
             if (sku==null) {
 			favItemCount--;
 			continue;
 			}
 			
             String prodPrice = null;
-            FDUserI sessionuser = (FDUserI) request.getSession().getAttribute(SessionName.USER);
 %>
             <fd:FDProductInfo id="productInfo" skuCode="<%=  sku.getSkuCode() %>">
 <%   
-            prodPrice = JspMethods.formatPrice(productInfo, sessionuser.getPricingContext());
+            prodPrice = JspMethods.formatPrice(productInfo, pc);
 %>  					
             </fd:FDProductInfo>
 <%
             Image favAllImage = (Image)product.getCategoryImage();
 
-            String productPageLink = "javascript:backtoWin('" + response.encodeURL("product.jsp?catId=" + product.getParentNode()  + "&productId=" + product + (skuCode==null?"":"&skuCode="+skuCode))+"&trk=bpop"+"')";
+            String productPageLink = "javascript:backtoWin('" + response.encodeURL("/product.jsp?catId=" + product.getParentNode()  + "&productId=" + product + (skuCode==null?"":"&skuCode="+skuCode))+"&trk=bpop"+"')";
                if (itemCount == 0) { //first prod
                featProdStringBuffer.append("<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr valign=\"top\">");
                }
