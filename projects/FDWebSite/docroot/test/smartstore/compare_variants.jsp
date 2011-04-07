@@ -309,13 +309,15 @@ if (useLoggedIn && user != null) {
 	    source = si.getYmalSource();
 	    if (!EnumSiteFeature.FEATURED_ITEMS.equals(siteFeature) 
 	    		&& !siteFeature.getName().equals("PROD_GRP_POPULAR")
-	    		&& !siteFeature.getName().equals("PROD_GRP_YF"))
+	    		&& !siteFeature.getName().equals("PROD_GRP_YF")
+	    		&& !EnumSiteFeature.BRAND_NAME_DEALS.equals(siteFeature))
 	    	si.setCurrentNode(source);
 	} else if ("recentlyAdded".equals(cartAlgorithm)) {
 		source = YmalUtil.resolveYmalSource(user, request);
 	    if (!EnumSiteFeature.FEATURED_ITEMS.equals(siteFeature) 
 	    		&& !siteFeature.getName().equals("PROD_GRP_POPULAR")
-	    		&& !siteFeature.getName().equals("PROD_GRP_YF"))
+	    		&& !siteFeature.getName().equals("PROD_GRP_YF")
+	    		&& !EnumSiteFeature.BRAND_NAME_DEALS.equals(siteFeature))
 			if (YmalUtil.getSelectedCartLine(user) != null)
 				si.setCurrentNode(YmalUtil.getSelectedCartLine(user).lookupProduct());
 	}
