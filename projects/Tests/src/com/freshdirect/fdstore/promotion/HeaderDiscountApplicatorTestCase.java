@@ -47,23 +47,23 @@ public class HeaderDiscountApplicatorTestCase extends TestCase {
 
 		ctx = new FakePromotionContext();
 		ctx.setSubTotal(45);
-		ErpOrderLineModel erpOrderLine = new ErpOrderLineModel();
+		/*ErpOrderLineModel erpOrderLine = new ErpOrderLineModel();
 		erpOrderLine.setPrice(45);
 		FDCartLineI cartLine = new FDCartLineModel(erpOrderLine);
-		ctx.getShoppingCart().addOrderLine(cartLine);
+		ctx.getShoppingCart().addOrderLine(cartLine);*/
 		applicator.apply("", ctx);
 		assertEquals(1, ctx.getDiscounts().size());
-		assertEquals(45, ctx.getDiscounts().get(0).getAmount(), 0.001);
+		assertEquals(0, ctx.getDiscounts().get(0).getAmount(), 0.001);
 
 		ctx = new FakePromotionContext();
 		ctx.setSubTotal(120);
-		erpOrderLine = new ErpOrderLineModel();
+		/*erpOrderLine = new ErpOrderLineModel();
 		erpOrderLine.setPrice(120);
 		cartLine = new FDCartLineModel(erpOrderLine);
-		ctx.getShoppingCart().addOrderLine(cartLine);
+		ctx.getShoppingCart().addOrderLine(cartLine);*/
 		applicator.apply("", ctx);
 		assertEquals(1, ctx.getDiscounts().size());
-		assertEquals(100, ctx.getDiscounts().get(0).getAmount(), 0.001);
+		assertEquals(0, ctx.getDiscounts().get(0).getAmount(), 0.001);
 	}
 
 
