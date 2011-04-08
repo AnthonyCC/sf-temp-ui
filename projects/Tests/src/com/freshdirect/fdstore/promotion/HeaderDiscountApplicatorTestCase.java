@@ -13,8 +13,12 @@ import org.mockejb.interceptor.AspectSystem;
 import org.mockejb.interceptor.InvocationContext;
 
 import com.freshdirect.TestUtils;
+import com.freshdirect.customer.ErpOrderLineModel;
+import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.aspects.BaseAspect;
 import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
+import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.framework.core.PrimaryKey;
 
 public class HeaderDiscountApplicatorTestCase extends TestCase {
@@ -43,12 +47,20 @@ public class HeaderDiscountApplicatorTestCase extends TestCase {
 
 		ctx = new FakePromotionContext();
 		ctx.setSubTotal(45);
+		ErpOrderLineModel erpOrderLine = new ErpOrderLineModel();
+		erpOrderLine.setPrice(45);
+		FDCartLineI cartLine = new FDCartLineModel(erpOrderLine);
+		ctx.getShoppingCart().addOrderLine(cartLine);
 		applicator.apply("", ctx);
 		assertEquals(1, ctx.getDiscounts().size());
 		assertEquals(45, ctx.getDiscounts().get(0).getAmount(), 0.001);
 
 		ctx = new FakePromotionContext();
 		ctx.setSubTotal(120);
+		erpOrderLine = new ErpOrderLineModel();
+		erpOrderLine.setPrice(120);
+		cartLine = new FDCartLineModel(erpOrderLine);
+		ctx.getShoppingCart().addOrderLine(cartLine);
 		applicator.apply("", ctx);
 		assertEquals(1, ctx.getDiscounts().size());
 		assertEquals(100, ctx.getDiscounts().get(0).getAmount(), 0.001);
