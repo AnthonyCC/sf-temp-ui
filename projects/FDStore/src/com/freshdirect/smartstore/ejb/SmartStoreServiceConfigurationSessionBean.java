@@ -32,11 +32,11 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 
 	private static final Logger LOGGER = Logger.getLogger(SmartStoreServiceConfigurationSessionBean.class);
 
-	private static final String GET_VARIANTS_QUERY = "SELECT v.id, v.type, v.alias_id FROM cust.ss_variants v WHERE v.feature = ? and v.archived = 'N'";
+	private static final String GET_VARIANTS_QUERY = "SELECT v.id, v.type, v.alias_id FROM cust.ss_variants v WHERE v.feature = ?";
 
 	private static final String GET_VARIANT_CONFIG = "SELECT * FROM cust.SS_VARIANT_PARAMS WHERE ID = ?";
 
-	private static final String GET_VARIANT_ALIAS = "SELECT v.id, v.type, v.feature FROM cust.ss_variants v WHERE id = ? and v.archived = 'N'";
+	private static final String GET_VARIANT_ALIAS = "SELECT v.id, v.type, v.feature FROM cust.ss_variants v WHERE id = ?";
 
 	private static final String GET_ALL_SITE_FEATURES_QUERY = "SELECT sf.id, sf.title, sf.prez_title, sf.prez_desc, sf.smart_saving FROM cust.ss_site_feature sf";
 
