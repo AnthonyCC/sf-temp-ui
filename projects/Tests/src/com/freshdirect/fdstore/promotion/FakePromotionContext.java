@@ -14,6 +14,8 @@ import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
+import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 
 public class FakePromotionContext implements PromotionContextI {
@@ -22,6 +24,7 @@ public class FakePromotionContext implements PromotionContextI {
 	private double subTotal;
 	private List<Discount> discounts = new ArrayList<Discount>();
 	private final Date now = new Date();
+	private final FDCartModel cart = new FDCartModel();
 
 	public FakePromotionContext() {
 		this(EnumOrderType.HOME);
@@ -61,8 +64,8 @@ public class FakePromotionContext implements PromotionContextI {
 	}
 
 	@Override
-	public FDCartModel getShoppingCart() {
-		return null;
+	public FDCartModel getShoppingCart() {		
+		return cart;
 	}
 
 	@Override
