@@ -154,10 +154,13 @@
                	  </td>
                </tr>
 				 <tr>
-                  <td>Select Group</td>
+                  <td>Choose Groups</td>
                   <td>
-						<form:select multiple="true" path="buildingGroups" items="${deliveryGroups}" itemLabel="groupName" itemValue="groupId" />
-	              </td>
+	                  <form:select path="buildingGroups" multiple="multiple">
+	                        <form:option value="" label="--N/A--"/>
+	                    	<form:options items="${deliveryGroups}" itemLabel="groupName" itemValue="groupId"  />
+	                   </form:select>
+	               </td>
 				   <td>
 	                  &nbsp;<form:errors path="buildingGroups" />
 		           </td>

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -103,6 +104,13 @@ public class DlvBuildingFormController extends AbstractFormController {
 		
 		List errorList = new ArrayList();
 		DlvBuilding modelIn = (DlvBuilding)domainObject;
+
+		if(modelIn.getBuildingGroups().size() > 0){
+			for(Iterator<DeliveryGroup> itr = modelIn.getBuildingGroups().iterator();itr.hasNext();){
+				DeliveryGroup group = itr.next();
+				if(group == null)itr.remove();
+			}
+		}
 		GeographyServiceProxy proxy = new GeographyServiceProxy();
 				
 		modelIn.setCountry(TransportationAdminProperties.getDefaultCountry());
