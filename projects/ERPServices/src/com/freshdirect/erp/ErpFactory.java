@@ -243,13 +243,27 @@ public class ErpFactory {
 		}
 	}
 
-	public Collection<ErpProductInfoModel> findProductsByUPC(String searchterm) throws FDResourceException {
+	public Collection<ErpProductInfoModel> findProductsByUPC(String upc) throws FDResourceException {
 		if (erpInfoHome == null) {
 			lookupInfoHome();
 		}
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
-			return infoSB.findProductsByUPC(searchterm);
+			return infoSB.findProductsByUPC(upc);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
+	
+	public Collection<String> findProductsByCustomerUPC(String erpCustomerPK, String upc) throws FDResourceException {
+		if (erpInfoHome == null) {
+			lookupInfoHome();
+		}
+		try {
+			ErpInfoSB infoSB = erpInfoHome.create();
+			return infoSB.findProductsByCustomerUPC(erpCustomerPK, upc);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {

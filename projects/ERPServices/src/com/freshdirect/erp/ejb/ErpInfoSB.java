@@ -61,6 +61,8 @@ public interface ErpInfoSB extends EJBObject {
     
     public Collection findProductsByUPC(String upc) throws RemoteException;
     
+    public Collection findProductsByCustomerUPC(String erpCustomerPK, String upc) throws RemoteException;
+    
     public Collection findProductsLikeUPC(String upc) throws RemoteException;
     
     /** @return null if there's no inventory for material */

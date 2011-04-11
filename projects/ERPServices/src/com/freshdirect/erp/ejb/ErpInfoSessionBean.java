@@ -703,6 +703,42 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
                     close(conn);
 		}
 	}
+	
+	private final static String QUERY_PRODUCTS_BY_CUSTOMERUPC =
+		"select T.\"sku\" from CUST.CARTON_DETAIL cd, (select s.id as \"s\", OL.SKU_CODE as \"sku\", OL.ORDERLINE_NUMBER as \"ol\" " +
+				"from cust.orderline ol, cust.salesaction sa, cust.sale s where  s.type='REG' and sa.id=OL.SALESACTION_ID " +
+				"and s.customer_id=? and s.customer_id=sa.customer_id and  s.id=sa.sale_id  and S.CROMOD_DATE=SA.ACTION_DATE " +
+				"and SA.ACTION_TYPE in ('CRO','MOD')  and sa.requested_Date>(sysdate-60)) T " +
+				"where CD.ORDERLINE_NUMBER=T.\"ol\" and cd.sale_id=T.\"s\" and CD.BARCODE=? ";
+
+	public Collection<String> findProductsByCustomerUPC(String erpCustomerPK, String upc) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
+
+			ps = conn.prepareStatement(QUERY_PRODUCTS_BY_CUSTOMERUPC);
+			ps.setString(1, erpCustomerPK);
+			ps.setString(2, upc);
+			
+			rs = ps.executeQuery();
+
+	        ArrayList<String> results = new ArrayList<String>();
+	        while (rs.next()) {
+	        	results.add(rs.getString(1));
+	        }
+			return results;
+
+		} catch (SQLException sqle) {
+			LOGGER.error("Unable to find product by Customer:" + erpCustomerPK + ", UPC:"+ upc, sqle);
+			throw new EJBException(sqle);
+		} finally {
+			close(rs);
+		    close(ps);
+            close(conn);
+		}
+	}
 
 	private final static String QUERY_PRODUCTS_LIKE_UPC =
       		"select p.sku_code, p.version, m.sap_id, p.unavailability_status, p.unavailability_date,"

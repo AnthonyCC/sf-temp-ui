@@ -156,15 +156,17 @@ public class SmartSearchTag extends BodyTagSupport {
             LOGGER.debug("search criteria was null or empty");
             return EVAL_BODY_BUFFERED;
         }
-
+        
+        String userId = getUserId(); // ErpCustomerPK
+        
         SearchResults res;
         if (upc != null) {
-            res = ContentSearch.getInstance().searchUpc(upc);        	
+            res = ContentSearch.getInstance().searchUpc(userId, upc);        	
         } else {
             res = ContentSearch.getInstance().search(searchTerm);        	
         }
 
-        String userId = getUserId();
+        
         String departmentId = request.getParameter("deptId");
         if (departmentId != null && departmentId.length() == 0) {
             departmentId = null;

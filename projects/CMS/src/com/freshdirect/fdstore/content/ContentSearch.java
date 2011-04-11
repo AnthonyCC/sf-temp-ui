@@ -3,9 +3,11 @@ package com.freshdirect.fdstore.content;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -13,8 +15,8 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.cms.search.AutocompleteService;
 import com.freshdirect.cms.search.AutoComplete;
+import com.freshdirect.cms.search.AutocompleteService;
 import com.freshdirect.cms.search.BrandNameExtractor;
 import com.freshdirect.cms.search.BrandNameWordList;
 import com.freshdirect.cms.search.CounterCreatorImpl;
@@ -331,21 +333,31 @@ public class ContentSearch {
         return filteredResults;
     }
 
-    public SearchResults searchUpc(String upc) {
+    public SearchResults searchUpc(String erpCustomerPK, String upc) {
     	List<ProductModel> products = new ArrayList<ProductModel>();
     	ErpFactory erpFactory = ErpFactory.getInstance();
+    	Set<String> skuCodes = new HashSet<String>();
+    	
     	try {
 			Collection<ErpProductInfoModel> productInfos = erpFactory.findProductsByUPC(upc);
-			for (ErpProductInfoModel productInfo : productInfos) {
-				String skuCode = productInfo.getSkuCode();
-				if (skuCode != null) {
-					SkuModel sku = (SkuModel) ContentFactory.getInstance().getContentNode(FDContentTypes.SKU, skuCode);
-					if (sku == null)
-						continue;
-					ProductModel product = sku.getProductModel();
-					if (product != null)
-						products.add(product);
+			for (ErpProductInfoModel productInfo : productInfos) {				
+				if (productInfo.getSkuCode() != null) {
+					skuCodes.add(productInfo.getSkuCode());					
 				}
+			}
+			//If system is not able to find the skus by the material upccodes in erpsy then go search in the customer order
+			// history for the last 60 days for a product with the barcode
+			if(skuCodes.size() == 0 && erpCustomerPK != null && erpCustomerPK.trim().length() > 0) {
+				skuCodes.addAll(erpFactory.findProductsByCustomerUPC(erpCustomerPK, upc));
+			}
+			
+			for(String skuCode : skuCodes) {
+				SkuModel sku = (SkuModel) ContentFactory.getInstance().getContentNode(FDContentTypes.SKU, skuCode);
+				if (sku == null)
+					continue;
+				ProductModel product = sku.getProductModel();
+				if (product != null)
+					products.add(product);
 			}
 		} catch (FDResourceException e) {
 			LOGGER.error("failed to retrieve product info for upc: " + upc, e);
