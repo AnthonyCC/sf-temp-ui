@@ -453,7 +453,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		
 		if ( deliveryAddressModel == null ) {
 			LOGGER.warn( "No delivery address found for this ID. ["+deliveryAddressId+"]" );
-			return new Result( ErrorCode.ADDRESS, customerInfo, customerUser );
+			return new Result( ErrorCode.NO_ADDRESS, customerInfo, customerUser );
 		}
 		
 		DeliveryAddressValidator addressValidator = new DeliveryAddressValidator( deliveryAddressModel );
