@@ -183,7 +183,7 @@
 				              <ec:column property="noOfResources" title="Resources" />
 				              <ec:column property="cutOffTime" title="CutOff" />
 				              <ec:column property="source" title="Source" />				              
-				              <ec:column cell="bool" property="isInSync" title="Status"/>
+				              <ec:column cell="waveinstancestatus" property="isInSync" title="Status"/>
 				              <ec:column cell="positive" property="force" title="Force"/>
 				              <ec:column property="notificationMessage" title="Notification" />				              				              																											  	                           
 				            </ec:row>

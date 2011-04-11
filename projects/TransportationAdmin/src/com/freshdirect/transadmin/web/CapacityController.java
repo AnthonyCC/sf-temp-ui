@@ -935,11 +935,14 @@ public class CapacityController extends AbstractMultiActionController {
 				}
 				
 			}
+			WaveInstanceCommand _tmpWaveCmd = null;
 			for(IWaveInstance _inst : waveInstances) {
+				_tmpWaveCmd = new WaveInstanceCommand(_inst);
 				if(dynamicEnabledZoneMpp != null && _inst.getArea() != null && dynamicEnabledZoneMpp.containsKey(_inst.getDeliveryDate())
 						&& dynamicEnabledZoneMpp.get(_inst.getDeliveryDate()).contains(_inst.getArea().getAreaCode())) {
-					gridResult.add(new WaveInstanceCommand(_inst));
+					_tmpWaveCmd.setIsInValid(false);					
 				}
+				gridResult.add(_tmpWaveCmd);
 			}
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block

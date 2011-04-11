@@ -9,6 +9,8 @@ public class WaveInstanceCommand extends WaveInstance {
 	
 	private Boolean isInSync;
 	
+	private Boolean isInValid = true;
+	
 	public WaveInstanceCommand() {
 		super();
 	}
@@ -38,7 +40,16 @@ public class WaveInstanceCommand extends WaveInstance {
 	public void setIsInSync(Boolean isInSync) {
 		this.isInSync = isInSync;
 	}
+		
 	
+	public Boolean getIsInValid() {
+		return isInValid;
+	}
+
+	public void setIsInValid(Boolean isInValid) {
+		this.isInValid = isInValid;
+	}
+
 	public String getPreferredRunTimeInfo() {
 		return RoutingStringUtil.calcHM(this.getPreferredRunTime());
 	}
