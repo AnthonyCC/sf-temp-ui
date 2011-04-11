@@ -320,7 +320,7 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 		return zoneModel;
 	}
 	
-	public List<IRouteModel> retrieveRoutingSession(IRoutingSchedulerIdentity schedulerId, String sessionDescription) throws RoutingServiceException {
+	public List<IRouteModel> retrieveRoutingSession(IRoutingSchedulerIdentity schedulerId, String sessionDescription, boolean retrieveBlankStops) throws RoutingServiceException {
 		
 		try {
 			TransportationWebService port = getTransportationSuiteBatchService(schedulerId);//RoutingServiceLocator.getInstance().getTransportationSuiteService();
@@ -329,7 +329,7 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 			if(sessions != null) {
 				for(RoutingSession session : sessions) {
 					RoutingRoute[] routes = session.getRoutes();
-					return RoutingDataDecoder.decodeRouteList(routes);
+					return RoutingDataDecoder.decodeRouteListEx(routes, retrieveBlankStops);
 				}
 			}
 			

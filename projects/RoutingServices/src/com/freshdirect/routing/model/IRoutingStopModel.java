@@ -4,7 +4,7 @@ import java.util.Date;
 
 public interface IRoutingStopModel extends IOrderModel {
 	
-	String DEPOT_STOPNO = "9999999999";
+	String DEPOT_STOPNO = "DPT";
 	
 	 boolean isDepot();
 

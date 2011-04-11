@@ -90,8 +90,8 @@ public class DeliveryServiceProxy extends BaseServiceProxy {
 		return getService().updateTimeslotForDynamicStatus(timeslotId, isDynamic, type, baseDate, cutOff);
 	}
 	
-	public List<IRouteModel> retrieveRoutingSession(IRoutingSchedulerIdentity schedulerId, String sessionDescription) throws RoutingServiceException {
-		return getService().retrieveRoutingSession(schedulerId, sessionDescription);
+	public List<IRouteModel> retrieveRoutingSession(IRoutingSchedulerIdentity schedulerId, String sessionDescription, boolean retrieveBlankStops) throws RoutingServiceException {
+		return getService().retrieveRoutingSession(schedulerId, sessionDescription, retrieveBlankStops);
 	}
 	
 	public List<IOrderModel> getRoutingOrderByDate(Date deliveryDate, String zoneCode, boolean filterExpiredCancelled) throws RoutingServiceException {

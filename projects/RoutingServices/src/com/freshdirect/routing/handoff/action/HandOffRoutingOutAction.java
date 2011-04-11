@@ -94,7 +94,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 						schedulerId.setRegionId(session.getRegion());
 						schedulerId.setDeliveryDate(this.getBatch().getDeliveryDate());
 						schedulerId.setDepot(session.isDepot());
-						List<IRouteModel> routes = dlvProxy.retrieveRoutingSession(schedulerId, session.getSessionName());
+						List<IRouteModel> routes = dlvProxy.retrieveRoutingSession(schedulerId, session.getSessionName(), session.isDepot());
 						Map<String, Set<IRouteModel>> routeMapping = new HashMap<String, Set<IRouteModel>>();
 						
 						String routeArea = null;
@@ -341,7 +341,8 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 						}
 						
 						if(_order.getOrderNumber() == null || _order.getOrderNumber().trim().length() == 0
-								|| IRoutingStopModel.DEPOT_STOPNO.equalsIgnoreCase(_order.getOrderNumber())) {
+								//|| IRoutingStopModel.DEPOT_STOPNO.equalsIgnoreCase(_order.getOrderNumber())) {
+								|| _order.getOrderNumber().startsWith(IRoutingStopModel.DEPOT_STOPNO)) {
 							currDepotDeparture = _order.getStopArrivalTime();
 							continue;
 						} else if(currRouteId != null && !currRouteId.equalsIgnoreCase(routeID)) {

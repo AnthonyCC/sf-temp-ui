@@ -339,9 +339,9 @@ public class HandOffProcessManager {
 	    								_destInst.setMaxRunTime(_tmpMatch.getMaxRunTime());
 	    								_destInst.setNoOfResources(_tmpMatch.getNoOfResources());
 	    								_destInst.setPreferredRunTime(_tmpMatch.getPreferredRunTime());
-	    								_destInst.setWaveStartTime(_tmpMatch.getWaveStartTime());
+	    								_destInst.setWaveStartTime(_tmpMatch.getWaveStartTime());	    								
 	    							} else {
-	    								_destInst.setNoOfResources(0);
+	    								_destInst.setNoOfResources(0);	    								
 	    							}
 	    							capacityProxy.saveWaveInstancesBatch(schedulerId, _destInst, true);
 	    						}

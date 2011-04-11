@@ -112,25 +112,29 @@ public class RoutingDataDecoder {
 			result = new DrivingDirectionArc();
 			result.setTime(arc.getTime());
 			result.setDistance(arc.getDistance());
-			result.setInstruction(arc.getInstruction());
+			result.setInstruction(arc.getInstruction());			
 		}
 		return result;
 	}
 	
 	public static List decodeRouteList(RoutingRoute[] routes) {
+		return decodeRouteListEx(routes, false);
+	}
+	
+	public static List decodeRouteListEx(RoutingRoute[] routes, boolean retrieveBlankStops) {
 		
 		List result = null;
 		if(routes != null) {
 			result = new ArrayList();
 			
 			for(int intCount=0; intCount < routes.length; intCount++) {
-				result.add(decodeRoute(routes[intCount]));
+				result.add(decodeRoute(routes[intCount], retrieveBlankStops));
 			}
 		}
 		return result;
 	}
 
-	public static IRouteModel decodeRoute(RoutingRoute route) {
+	public static IRouteModel decodeRoute(RoutingRoute route, boolean retrieveBlankStops) {
 		
 		IRouteModel result = null;
 		
@@ -160,16 +164,18 @@ public class RoutingDataDecoder {
 			IDeliveryModel deliveryInfo = null;
 			
 			RoutingStop _refStop = null;
+			int lastSequence = 0;
 			
 			if(route.getStops() != null) {
-				
+				//System.out.println(route.getRouteID()+"->"+route.getStops().length+retrieveBlankStops);
 				for(int intCount=0;intCount<route.getStops().length ;intCount++) {
 					_refStop = route.getStops()[intCount];
 					
-					if(_refStop.getSequenceNumber() >= 0) {
+					if(_refStop.getSequenceNumber() >= 0 || retrieveBlankStops) {
 										
-						_stop = new RoutingStopModel(_refStop.getSequenceNumber());
-						
+						_stop = new RoutingStopModel(_refStop.getSequenceNumber() >= 0 ? _refStop.getSequenceNumber() : lastSequence);
+						lastSequence =  _refStop.getSequenceNumber();
+							
 						building = new BuildingModel();
 						
 						building.setSrubbedStreet(_refStop.getAddress().getLine1());
@@ -192,7 +198,8 @@ public class RoutingDataDecoder {
 						
 						//_stop.setStopArrivalTime(Calendar.getInstance().getTime());
 						_stop.setOrderNumber((_refStop.getOrders() != null
-													&& _refStop.getOrders().length > 0 ? _refStop.getOrders()[0].getOrderNumber() : IRoutingStopModel.DEPOT_STOPNO));
+													&& _refStop.getOrders().length > 0 ? _refStop.getOrders()[0].getOrderNumber() 
+																							: IRoutingStopModel.DEPOT_STOPNO + _refStop.getArrival().getTimeInMillis()));
 						_stop.setStopArrivalTime(_refStop.getArrival() != null ? _refStop.getArrival().getTime() : null);
 						_stop.setStopDepartureTime(_refStop.getArrival() != null ? RoutingDateUtil.addSeconds(_refStop.getArrival().getTime()
 														, _refStop.getServiceTime()) : null);
@@ -203,6 +210,7 @@ public class RoutingDataDecoder {
 						result.getStops().add(_stop);
 					}
 				}
+				//System.out.println(result.getRouteId()+"->"+result.getStops().size());
 			}
 			
 		}

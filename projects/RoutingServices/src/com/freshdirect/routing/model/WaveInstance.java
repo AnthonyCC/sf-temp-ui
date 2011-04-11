@@ -340,7 +340,7 @@ public class WaveInstance  extends BaseModel implements IWaveInstance {
 
 	@Override
 	public String toString() {
-		return "WaveInstance [dispatchTime=" + dispatchTime
+		return "WaveInstance [area="+(area != null ? area.getAreaCode() : null)+", dispatchTime=" + dispatchTime
 				+ ", waveStartTime=" + waveStartTime + ", cutOffTime="
 				+ cutOffTime + ", preferredRunTime=" + preferredRunTime
 				+ ", maxRunTime=" + maxRunTime + ", noOfResources="
