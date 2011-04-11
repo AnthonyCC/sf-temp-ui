@@ -390,7 +390,7 @@ if (timeslots.size() > 0) {
 										%>dayIndex = <%= dayIndex %>;
 										slotIndex = <%= slotIndex %>;
 								<%
-									}else if (isPreReservedSlotId && hasPreReserved && !defaultColExp) {
+									}else if ("".equals(selectedSlotId) && isPreReservedSlotId && hasPreReserved && !defaultColExp) {
 										defaultColExp = true;
 
 										%>dayIndex = <%= dayIndex %>;
@@ -705,7 +705,7 @@ if (timeslots.size() > 0) {
 										%>dayIndex = <%= dayIndex %>;
 										slotIndex= <%= slotIndex %>;
 								<%
-									}else if(isPreReservedSlotId && hasPreReserved && !defaultColExp){
+									}else if("".equals(selectedSlotId) && isPreReservedSlotId && hasPreReserved && !defaultColExp){
 										defaultColExp = true;
 										
 										%>dayIndex = <%= dayIndex %>;

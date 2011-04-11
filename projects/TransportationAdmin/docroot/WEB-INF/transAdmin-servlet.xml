@@ -134,11 +134,18 @@
                	<prop key="/communityreport.do">handOffController</prop> 
                	
                	<prop key="/asset.do">assetController</prop> 
-               	<prop key="/editasset.do">assetFormController</prop> 
+               	<prop key="/editasset.do">assetFormController</prop>
+               	<prop key="/assettemplate.do">assetController</prop> 
+               	<prop key="/editassettemplate.do">assetTemplateFormController</prop>  
                	<prop key="/asset.ax">asyncAssetController</prop>  
                	<prop key="/wavemonitor.do">capacityController</prop>    
                	
-               	<prop key="/gpsadminex.do">dispatchController</prop>         	         
+               	<prop key="/gpsadminex.do">dispatchController</prop>
+               	<prop key="/virrecordlog.do">domainController</prop>
+               	<prop key="/maintenancelog.do">domainController</prop>
+               	<prop key="/editvirrecordlog.do">vitRecordLogFormController</prop>
+               	<prop key="/editmaintenancelog.do">maintenanceLogFormController</prop>
+    
 			</props>
 		</property>
 	</bean>
@@ -288,7 +295,10 @@
             <prop key="/communityreport.do">communityReportHandler</prop>
             
             <prop key="/asset.do">assetHandler</prop>
+            <prop key="/assettemplate.do">assetTemplateHandler</prop>
             <prop key="/gpsadminex.do">gpsDrivingDirectionsHandlerEx</prop>
+            <prop key="/virrecordlog.do">virRecordLogHandler</prop>
+            <prop key="/maintenancelog.do">maintenanceLogHandler</prop>	         
         </props>
 		</property>
 	</bean>
@@ -541,6 +551,40 @@
         <property name="formView" value="assetEdit" />
 	</bean>
 	
+	<bean id="assetTemplateFormController" class="com.freshdirect.transadmin.web.AssetTemplateFormController">
+		<property name="assetManagerService" ref="assetManagerService"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="assetTemplateForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.AssetTemplate"/>
+        <property name="validator" ref="assetTemplateValidator"/>
+        <property name="successView" value="assetTemplateEdit" />
+        <property name="formView" value="assetTemplateEdit" />
+	</bean>
+	
+	<bean id="vitRecordLogFormController" class="com.freshdirect.transadmin.web.VIRRecordLogFormController">
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="dispatchManagerService" ref="dispatchManager"/>
+        <property name="employeeManagerService" ref="employeeManager"/>        
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="virRecordForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.VIRRecord"/>
+        <property name="validator" ref="virRecordValidator"/> 
+        <property name="successView" value="virRecordEdit" />
+        <property name="formView" value="virRecordEdit" />
+	</bean>
+	
+	<bean id="maintenanceLogFormController" class="com.freshdirect.transadmin.web.MaintenanceLogFormController">
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="dispatchManagerService" ref="dispatchManager"/>
+        <property name="employeeManagerService" ref="employeeManager"/>        
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="maintenanceRecordForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.MaintenanceIssue"/>
+        <property name="validator" ref="maintenanceRecordValidator"/> 
+        <property name="successView" value="maintenanceRecordEdit" />
+        <property name="formView" value="maintenanceRecordEdit" />
+	</bean>
+	
 	<bean name="asyncGeographyController" class="com.freshdirect.transadmin.web.json.GeographyProviderController">
 		<property name="restrictionManagerService" ref="restrictionManager"/>
 	  	<property name="domainManagerService" ref="zoneExpansionBase"/>
@@ -666,5 +710,8 @@
 	
 	<bean id="handOffValidator" class="com.freshdirect.transadmin.web.validation.HandOffValidator"/>
 	<bean id="assetValidator" class="com.freshdirect.transadmin.web.validation.AssetValidator"/>
+	<bean id="assetTemplateValidator" class="com.freshdirect.transadmin.web.validation.AssetTemplateValidator"/>
+	<bean id="virRecordValidator" class="com.freshdirect.transadmin.web.validation.VIRRecordValidator"/>
+	<bean id="maintenanceRecordValidator" class="com.freshdirect.transadmin.web.validation.MaintenanceRecordValidator"/>	
 		
 </beans>

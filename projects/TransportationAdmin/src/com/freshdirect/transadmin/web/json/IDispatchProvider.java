@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.freshdirect.transadmin.web.model.DispatchCommand;
+import com.freshdirect.transadmin.web.model.IssueSubTypeCommand;
 import com.freshdirect.transadmin.web.model.WavePublishValidationResult;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
 
@@ -42,4 +43,8 @@ public interface IDispatchProvider {
 	WavePublishValidationResult canPublishWave(String weekOf, String dayOfWeek);
 	
 	int validatePlanGenAccessCode(String accessCode);
+	
+	boolean addIssueType(String date, String createdBy, String name,String desc, String isActive);
+	boolean addIssueSubType(String date, String createdBy, String name,String desc, String isActive, String issueType);
+	List<IssueSubTypeCommand> getIssueSubTypes(String issueTypeId);
 }

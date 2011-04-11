@@ -41,6 +41,8 @@ import com.freshdirect.transadmin.model.DispatchReason;
 import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.DlvScenarioZones;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
+import com.freshdirect.transadmin.model.IssueSubType;
+import com.freshdirect.transadmin.model.IssueType;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.RouteMapping;
 import com.freshdirect.transadmin.model.ScenarioZonesId;
@@ -63,6 +65,7 @@ import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
+import com.freshdirect.transadmin.web.model.IssueSubTypeCommand;
 import com.freshdirect.transadmin.web.model.ScenarioZoneCommand;
 import com.freshdirect.transadmin.web.model.SpatialBoundary;
 import com.freshdirect.transadmin.web.model.WavePublishValidationResult;
@@ -877,6 +880,95 @@ public class DispatchProviderController extends JsonRpcController implements
 		return null;
 	}
 	
+	public boolean addIssueType(String date, String createdBy, String name,
+			String desc, String checked) {
+		try {
+			IssueType _issueType = new IssueType();
+			if (!TransStringUtil.isEmpty(date)
+					&& !TransStringUtil.isEmpty(createdBy)
+					&& !TransStringUtil.isEmpty(name)) {
+
+				_issueType.setCreatedBy(createdBy);
+				_issueType.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+				_issueType.setIsActive("true".equals(checked) ? 1 : 0);
+				_issueType.setIssueTypeName(name);
+				_issueType.setIssueTypeDescription(desc);
+
+				IssueType issueType = domainManagerService.getIssueType(name.trim());
+
+				if (issueType != null)
+					getDispatchManagerService().removeEntityEx(issueType);
+
+				dispatchManagerService.saveEntityEx(_issueType);
+				return true;
+			}
+		} catch (DataIntegrityViolationException ex) {
+			ex.printStackTrace();
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public boolean addIssueSubType(String date, String createdBy, String name,
+			String desc, String checked, String issueTypeName) {
+		try {
+			IssueSubType _issueSubType = new IssueSubType();
+			if (!TransStringUtil.isEmpty(date)
+					&& !TransStringUtil.isEmpty(createdBy)
+					&& !TransStringUtil.isEmpty(name)) {
+
+				_issueSubType.setCreatedBy(createdBy);
+				_issueSubType.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+				_issueSubType.setIsActive("true".equals(checked) ? 1 : 0);
+				_issueSubType.setIssueSubTypeName(name);
+				_issueSubType.setIssueSubTypeDescription(desc);
+				
+				IssueType _issueType = domainManagerService.getIssueType(issueTypeName.trim());
+				_issueSubType.setIssueType(_issueType);
+				
+				dispatchManagerService.saveEntityEx(_issueSubType);
+				return true;
+			}
+		} catch (DataIntegrityViolationException ex) {
+			ex.printStackTrace();
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+
+	public List<IssueSubTypeCommand> getIssueSubTypes(String issueTypeId) {
+		List<IssueSubType> issueSubTypes = null;
+		List<IssueSubTypeCommand> result = new ArrayList<IssueSubTypeCommand>();
+		try {
+			IssueType _issueType = new IssueType();
+			if (!TransStringUtil.isEmpty(issueTypeId)) {		
+
+				IssueType issueType = domainManagerService.getIssueTypeById(issueTypeId);
+
+				if (issueType != null)
+					issueSubTypes = new ArrayList<IssueSubType>(issueType.getIssueSubTypes());
+				
+				for (Iterator iterator = issueSubTypes.iterator(); iterator.hasNext();) {
+					
+					IssueSubType issueSubType = (IssueSubType) iterator.next();
+					result.add(new IssueSubTypeCommand(issueSubType));							
+				}
+				
+				return result;
+			}
+		} catch (DataIntegrityViolationException ex) {
+			ex.printStackTrace();
+			return null;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
 	
 }

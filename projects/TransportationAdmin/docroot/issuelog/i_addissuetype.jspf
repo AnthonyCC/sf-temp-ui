@@ -1,0 +1,124 @@
+<%@ include file='/common/i_calendar.jspf'%> 
+<script>
+            
+      var editIssueTypePanel;
+      var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+	  var errColor = "#FF0000";
+	  var msgColor = "#00FF00";
+                                 
+      function init() {
+        editIssueTypePanel = new YAHOO.widget.Panel("issueTypepanel-1", {
+                          width: "400px", 
+                          fixedcenter: true, 
+                          close: true, 
+                          draggable: false, 
+                          zindex:4,
+                          modal: true,
+                          visible: false,
+                          effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
+        
+		fillOptions("createdBy");
+	}
+     
+     function fillOptions(dest) {
+	document.getElementById(dest).value = '<%= com.freshdirect.transadmin.security.SecurityManager.getUserName(request)%>';
+     }
+
+     function showIssueTypeForm() {
+          addSysMessage("", false);
+          editIssueTypePanel.render(document.body);
+          editIssueTypePanel.show();
+     }
+             
+      function sendIssueTypeForm() {
+      	  
+    	  var issue_createDate = YAHOO.util.Dom.get("createdDate").value;
+	  var issue_createdBy = YAHOO.util.Dom.get("createdBy").value;
+	  var issue_name = YAHOO.util.Dom.get("issueTypeName").value;
+	  var issue_desc = YAHOO.util.Dom.get("issueTypeDesc").value;
+
+       	  var isActive_checkBox = 'false'; 
+
+          if(YAHOO.util.Dom.get("isActiveCheckBox").checked==true){
+        	  isActive_checkBox= 'true';
+          }  
+
+		  if(issue_name.trim().length == 0 || issue_desc.trim().length == 0) {
+      	  		addSysMessage("Please enter the required values", true);
+      	  } else {
+	    	  var result = jsonrpcClient.AsyncDispatchProvider.addIssueType(sendIssueTypeFormCallback, issue_createDate ,issue_createdBy,issue_name,issue_desc,isActive_checkBox);
+	  }
+      }
+      
+      function addSysMessage(msg, isError) {
+      		var errContObj = YAHOO.util.Dom.get("errContainer");
+		    if(isError) {
+		    	errContObj.style.color = errColor;
+	      	} else {
+	      		errContObj.style.color = msgColor;
+	      	}
+	      	errContObj.style.fontWeight="bold";
+      		YAHOO.util.Dom.get("errContainer").innerHTML = msg;
+      }
+      
+      function sendIssueTypeFormCallback(result, exception) {
+      	  
+          if(exception) {               
+              alert('Unable to connect to host system. Please contact system administrator!');
+              return;
+          }
+          if(result) {
+          	addSysMessage("Issue Type added successfully", false);
+          	editIssueTypePanel.hide();
+          	location.href = location.href;
+          }else {
+          	addSysMessage("Issue Type failed to add", true);
+          }                           
+      }
+      
+      function hideForm() { 
+      	  YAHOO.util.Dom.get("errContainer").value = "";
+      	  editIssueTypePanel.hide();
+      }
+      
+      YAHOO.util.Event.addListener(window, "load", init);
+      YAHOO.util.Event.addListener(window, "unload", hideForm);
+    </script>
+   
+  <div style='display:none;height:0px;width:0px;'>
+      <div id="issueTypepanel-1">
+      <div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />&nbsp;&nbsp;&nbsp;Add Issue Type</div>
+      <div class="bd">
+      	<div id="errContainer"></div>
+      	<div style="background-color:#D7C8FF">
+	      	<table class="forms1">
+		      	 <tr>
+		              <td>Date Created</td>
+		              <td>
+		                  	<span><input maxlength="10" size="10" name="createdDate" id="createdDate" value='<c:out value="${currentDate}"/>' readonly="readonly"/></span>
+				</td> 
+		         </tr>
+			 <tr>
+		                  <td>Created By</td>
+		                  <td><input type="text" size="29" id="createdBy" value="" readonly="readonly"/></td> 
+		         </tr>
+			 <tr>
+		                  <td>IssueType Name</td>
+		                  <td><input type="text" size="29" id="issueTypeName" value=""/></td> 
+		         </tr>
+			 <tr>
+		                  <td>IssueType Description</td>
+		                  <td><input type="text" size="29" id="issueTypeDesc" value=""/></td> 
+		         </tr>
+		         <tr>
+		                  <td>Is Active</td>
+		                  <td><INPUT type="checkbox" name="isActiveCheckBox" id="isActiveCheckBox"></td>
+		         </tr>
+		         <tr>
+		                  <td colspan="2" align="center"><input type="button" value="Add/Update" onclick="javascript:sendIssueTypeForm()" /> </td>
+		         </tr> 
+		      </table>   
+	      </div>      
+        </div>
+    </div>
+    </div>

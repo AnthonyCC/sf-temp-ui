@@ -19,13 +19,15 @@
         <property name="assetDescription" type="string">
             <column name="ASSET_DESCRIPTION" length="256" />
         </property>
-        <property name="assetStatus" column="ASSET_STATUS" type="com.freshdirect.transadmin.constants.EnumAssetStatusDataType" />              
+        <property name="assetStatus" column="ASSET_STATUS" type="com.freshdirect.transadmin.constants.EnumAssetStatusDataType" />
+        <many-to-one name="assetTemplate" class="com.freshdirect.transadmin.model.AssetTemplate" fetch="select" lazy="false">
+            <column name="ASSET_TEMPLATE" length="40" />
+        </many-to-one>              
         <set name="assetAttributes" inverse="true" lazy="false" cascade="all,delete-orphan">
             <key>
                 <column name="ASSET_ID" length="40" not-null="true" />
             </key>
             <one-to-many class="com.freshdirect.transadmin.model.AssetAttribute" />
-        </set>
-        
+        </set>        
     </class>
 </hibernate-mapping>

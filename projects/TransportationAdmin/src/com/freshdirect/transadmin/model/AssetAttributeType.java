@@ -13,13 +13,17 @@ public class AssetAttributeType implements java.io.Serializable {
 	private String description;
 	
 	private String dataType;
+	
+	private AssetType assetType;
 		
 	public AssetAttributeType() {
 	}
 
-	public AssetAttributeType(String code, String description) {
+	public AssetAttributeType(String code, String description, String dataType, AssetType assetType) {
 		this.code = code;
 		this.description = description;
+		this.dataType = dataType;
+		this.assetType = assetType;
 	}
 
 	public String getCode() {
@@ -44,6 +48,14 @@ public class AssetAttributeType implements java.io.Serializable {
 
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
+	}
+	
+	public AssetType getAssetType() {
+		return assetType;
+	}
+
+	public void setAssetType(AssetType assetType) {
+		this.assetType = assetType;
 	}
 
 	@Override

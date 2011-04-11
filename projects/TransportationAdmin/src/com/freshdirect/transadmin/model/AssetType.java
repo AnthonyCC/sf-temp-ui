@@ -61,4 +61,8 @@ public class AssetType implements java.io.Serializable {
 		return true;
 	}
 	
+	public String toString(){
+		return this.code;
+	}
+	
 }

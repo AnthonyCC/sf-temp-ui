@@ -65,4 +65,6 @@ public interface ZoneExpansionDaoI {
 	
 	void refreshGeoRestrictionWorktable(String worktable) throws DataAccessException;
 
+	void updateDisassociatedTimeslots() throws DataAccessException;
+
 }

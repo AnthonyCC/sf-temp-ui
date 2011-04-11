@@ -83,10 +83,11 @@ public class GeographyProviderController extends JsonRpcController  implements I
 			}else{
 				return false;
 			}
-			//saveMessage(request, getMessage("app.actionmessage.153", new Object[]{}));
 		}catch(Exception ex){
 			ex.printStackTrace();
 			return false;
+		}finally{
+			domainManagerService.updateDisassociatedTimeslots();
 		}
 		return true;
 	}

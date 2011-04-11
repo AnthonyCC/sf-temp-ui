@@ -15,16 +15,21 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.HibernateCallback;
 
 import com.freshdirect.transadmin.dao.DomainManagerDaoI;
+import com.freshdirect.transadmin.model.Asset;
 import com.freshdirect.transadmin.model.DispositionType;
 import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
 import com.freshdirect.transadmin.model.EmployeeSubRoleType;
+import com.freshdirect.transadmin.model.IssueSubType;
+import com.freshdirect.transadmin.model.IssueType;
+import com.freshdirect.transadmin.model.MaintenanceIssue;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.RouteMappingId;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
 import com.freshdirect.transadmin.model.TrnZoneType;
+import com.freshdirect.transadmin.model.VIRRecord;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.model.ZonetypeResource;
 import com.freshdirect.transadmin.util.TransStringUtil;
@@ -327,6 +332,113 @@ public class DomainManagerDaoHibernateImpl
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from DeliveryGroup e ");
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
-	}	
+	}
+
+	public Collection getIssueTypes() throws DataAccessException {
+
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from IssueType Order By issueTypeName");
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
+	
+	public IssueType getIssueType(String issueTypeName) throws DataAccessException {
+
+		return (IssueType)getEntityById("IssueType", "issueTypeName", issueTypeName);
+	}
+	
+	public IssueType getIssueTypeById(String issueTypeId) throws DataAccessException {
+
+		return (IssueType)getEntityById("IssueType", "issueTypeId", issueTypeId);
+	}
+	
+	public Collection getIssueSubTypes() throws DataAccessException {
+
+		return getDataList("IssueSubType Order By issueSubTypeName");
+	}
+	
+	public Collection getVIRRecords() throws DataAccessException {
+
+		return getDataList("VIRRecord Order By createDate desc");
+	}
+	
+	public Collection getVIRRecords(String createDate, String enteredBy,
+			String truckNumber) throws DataAccessException {
+		
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from VIRRecord v where");
+				
+		if (createDate != null && !createDate.equals(""))
+			strBuf.append(" v.createDate='").append(createDate).append("'");
+		if(!createDate.equals("") && !enteredBy.equals(""))
+			strBuf.append(" and");
+		if (enteredBy != null && !enteredBy.equals(""))
+			strBuf.append(" v.createdBy='").append(enteredBy).append("'");
+		if(!truckNumber.equals("") && !enteredBy.equals(""))
+			strBuf.append(" and");
+		if (truckNumber != null && !truckNumber.equals(""))
+			strBuf.append(" v.truckNumber='").append(truckNumber).append("'");		
+		
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+}
+
+	
+	public VIRRecord getVIRRecord(String id) throws DataAccessException{
+		return (VIRRecord)getEntityById("VIRRecord", "id", id);
+	}
+	
+	public Collection getMaintenanceIssue(String truckNumber, IssueType issueType, IssueSubType issueSubType) throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from MaintenanceIssue m ");
+		if(truckNumber != null && issueType !=null && issueSubType != null){
+			strBuf.append("where m.truckNumber='").append(truckNumber).append("'");
+			strBuf.append("and m.issueType='").append(issueType).append("'");
+			strBuf.append("and m.issueSubType='").append(issueSubType).append("'");
+			strBuf.append("and m.issueStatus='Open'");
+		}
+		
+		return (Collection)getHibernateTemplate().find(strBuf.toString());
+	}
+	
+	public Collection getMaintenanceIssue(IssueType issueType, IssueSubType issueSubType) throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from MaintenanceIssue m ");
+		if(issueType !=null && issueSubType != null){			
+			strBuf.append("where  m.issueType='").append(issueType).append("'");
+			strBuf.append("and m.issueSubType='").append(issueSubType).append("'");
+			strBuf.append("and m.issueStatus='Open'");
+		}
+		
+		return (Collection)getHibernateTemplate().find(strBuf.toString());
+	}
+	public MaintenanceIssue getMaintenanceIssue(String id) throws DataAccessException{
+		return (MaintenanceIssue)getEntityById("MaintenanceIssue", "id", id);
+	}
+	
+	public Collection getMaintenanceIssues() throws DataAccessException {
+
+		return getDataList("MaintenanceIssue Order By createDate desc");
+	}
+	
+	public Collection getMaintenanceIssues(String issueStatus, String serviceStatus) throws DataAccessException {
+		
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("MaintenanceIssue m where");
+		if(issueStatus != null && !"".equals(issueStatus))
+			strBuf.append(" m.issueStatus='"+issueStatus+"'");
+		if(!"".equals(issueStatus) && !"".equals(serviceStatus))
+			strBuf.append(" and");
+		if(issueStatus != null && !"".equals(serviceStatus))
+			strBuf.append(" m.serviceStatus='"+serviceStatus+"'");		
+		
+		return (Collection) getDataList(strBuf.toString());		
+	}
+	
+	public void saveMaintenanceIssue(MaintenanceIssue command) throws DataAccessException {
+		if (command.getId() == null || "".equals(command.getId())) {
+			getHibernateTemplate().save(command);		
+		}else{
+			saveEntity(command);		
+		}		
+	}
 
 }

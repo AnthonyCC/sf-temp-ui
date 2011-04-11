@@ -17,6 +17,7 @@ public class Asset implements java.io.Serializable{
 	private String assetDescription;
 	private AssetType assetType;
 	private EnumAssetStatus assetStatus;
+	private AssetTemplate assetTemplate;
 	
 	private Set assetAttributes = new HashSet(0);
 		
@@ -29,16 +30,17 @@ public class Asset implements java.io.Serializable{
 	}
 
 	public Asset(String assetId, String assetNo, String assetDescription,
-			AssetType assetType) {
+			AssetType assetType, AssetTemplate assetTemplate) {
 		super();
 		this.assetId = assetId;
 		this.assetNo = assetNo;
 		this.assetDescription = assetDescription;
 		this.assetType = assetType;
+		this.assetTemplate = assetTemplate;
 	}
 
 	public Asset(String assetId, String assetNo, String assetDescription,
-			AssetType assetType, EnumAssetStatus assetStatus, Set assetAttributes) {
+			AssetType assetType, EnumAssetStatus assetStatus, AssetTemplate assetTemplate, Set assetAttributes) {
 		super();
 		this.assetId = assetId;
 		this.assetNo = assetNo;
@@ -46,6 +48,7 @@ public class Asset implements java.io.Serializable{
 		this.assetType = assetType;
 		this.assetStatus = assetStatus;
 		this.assetAttributes = assetAttributes;
+		this.assetTemplate = assetTemplate;
 	}
 
 	public String getAssetId() {
@@ -94,6 +97,14 @@ public class Asset implements java.io.Serializable{
 
 	public void setAssetAttributes(Set assetAttributes) {
 		this.assetAttributes = assetAttributes;
+	}
+	
+	public AssetTemplate getAssetTemplate() {
+		return assetTemplate;
+	}
+
+	public void setAssetTemplate(AssetTemplate assetTemplate) {
+		this.assetTemplate = assetTemplate;
 	}
 
 	@Override

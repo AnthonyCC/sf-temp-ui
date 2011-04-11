@@ -10,6 +10,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,10 +28,13 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.transadmin.constants.EnumIssueStatus;
+import com.freshdirect.transadmin.constants.EnumServiceStatus;
 import com.freshdirect.transadmin.datamanager.assembler.IDataAssembler;
 import com.freshdirect.transadmin.datamanager.parser.FileCreator;
 import com.freshdirect.transadmin.datamanager.parser.errors.FlatwormCreatorException;
 import com.freshdirect.transadmin.model.EmployeeInfo;
+import com.freshdirect.transadmin.model.MaintenanceIssue;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.ResourceI;
 import com.freshdirect.transadmin.model.ResourceInfoI;
@@ -39,8 +44,10 @@ import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
 import com.freshdirect.transadmin.model.TrnZoneType;
+import com.freshdirect.transadmin.model.VIRRecord;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.model.ZoneSupervisor;
+import com.freshdirect.transadmin.model.comparator.AlphaNumericComparator;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
@@ -756,8 +763,107 @@ public class DomainController extends AbstractMultiActionController {
 		return mav;
 	}
 
+	/**
+	 * Custom handler for Transportation Truck Maintenance Log
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
+	public ModelAndView virRecordLogHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		
+		ModelAndView mav = new ModelAndView("virRecordLogView");
+		
+		String currentDate = request.getParameter("currentDate");
+		String createDate = request.getParameter("createDate");
+		String enteredBy = request.getParameter("employee");
+		String truckNumber = request.getParameter("truckNumber");
+		
+		Collection virRecords = null;
+		try{
+			if(!TransStringUtil.isEmpty(createDate) || !TransStringUtil.isEmpty(enteredBy) || !TransStringUtil.isEmpty(truckNumber)){				
+				virRecords = getDomainManagerService().getVIRRecords(!TransStringUtil.isEmpty(createDate) ? TransStringUtil.getServerDate(createDate):"", enteredBy, truckNumber);
+			}else{
+				virRecords = getDomainManagerService().getVIRRecords();
+			}			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		Collections.sort((List)virRecords, new VIRRecordComparator());
+		
+		if(TransStringUtil.isEmpty(currentDate))
+			currentDate = TransStringUtil.getCurrentDate();
+		
+		mav.getModel().put("createDate",createDate);
+		mav.getModel().put("enteredBy", enteredBy);
+		mav.getModel().put("truckNumber", truckNumber);
+		mav.getModel().put("currentDate",currentDate);
+		
+		mav.getModel().put("issueTypes", getDomainManagerService().getIssueTypes());
+		mav.getModel().put("issueSubTypes", getDomainManagerService().getIssueSubTypes());
+		mav.getModel().put("virRecords", virRecords);
+		return mav;
+	}
+	
+	/**
+	 * Custom handler for Transportation Truck Maintenance Log
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
+	public ModelAndView maintenanceLogHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		ModelAndView mav = new ModelAndView("maintenanceLogView");
+		String serviceStatus = request.getParameter("serviceStatus");
+		String issueStatus = request.getParameter("issueStatus");
+		
+		Collection maintenaceRecords = null;
+		try{
+			if((issueStatus !=null && !TransStringUtil.isEmpty(issueStatus)) || (serviceStatus != null && !TransStringUtil.isEmpty(serviceStatus))){
+				maintenaceRecords = getDomainManagerService().getMaintenanceIssues(issueStatus, serviceStatus);
+			}else{
+				maintenaceRecords = getDomainManagerService().getMaintenanceIssues();
+			}		
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		Collections.sort((List)maintenaceRecords, new MaintenanceIssueComparator());
+		
+		mav.getModel().put("serviceStatus", serviceStatus);
+		mav.getModel().put("issueStatus", issueStatus);
+		
+		mav.getModel().put("issueStatuses", EnumIssueStatus.getEnumList());
+		mav.getModel().put("serviceStatuses", EnumServiceStatus.getEnumList());
+		mav.getModel().put("issueTypes", getDomainManagerService().getIssueTypes());
+		mav.getModel().put("maintenanceRecords", maintenaceRecords);
+		
+		return mav;
+	}
 
+	private static class MaintenanceIssueComparator implements Comparator{
 
+		public int compare(Object o1, Object o2) {
+			if(o1 instanceof MaintenanceIssue && o2 instanceof MaintenanceIssue)
+			{
+				MaintenanceIssue m1=(MaintenanceIssue)o1;
+				MaintenanceIssue m2=(MaintenanceIssue)o2;				
+				return m1.getCreateDate().compareTo(m2.getCreateDate());
+			}
+			return 0;
+		}
+	}
+	
+	private static class VIRRecordComparator implements Comparator{
+
+		public int compare(Object o1, Object o2) {
+			if(o1 instanceof VIRRecord && o2 instanceof VIRRecord)
+			{
+				VIRRecord v1=(VIRRecord)o1;
+				VIRRecord v2=(VIRRecord)o2;				
+				return v1.getCreateDate().compareTo(v2.getCreateDate());
+			}
+			return 0;
+		}
+	}
 
 	public DomainManagerI getDomainManagerService() {
 		return domainManagerService;

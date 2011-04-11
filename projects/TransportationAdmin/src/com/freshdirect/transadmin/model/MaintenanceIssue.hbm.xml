@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Mar 11, 2011 by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp" >
+    <class name="com.freshdirect.transadmin.model.MaintenanceIssue" table="MAINTENANCEISSUE">
+        <id name="id" type="string" >
+           <column name="id" length="30"/>           
+           <generator class="sequence">
+    			<param name="sequence">MaintenanceIssue_id_SEQ</param>
+			</generator>
+        </id>
+        <property name="truckNumber" type="string">
+            <column name="TRUCKNUMBER" not-null="true" />
+        </property>        
+        <property name="createdBy" type="string">
+            <column name="CREATEDBY" not-null="true" />
+        </property>
+        <property name="createDate" type="timestamp">
+            <column name="DATECREATED" not-null="true" />
+        </property>
+         <property name="modifiedDate" type="timestamp">
+            <column name="MODIFIEDDATE" not-null="true" />
+        </property>
+        <property name="vendor" type="string">
+            <column name="VENDORNAME" />
+        </property>
+        <many-to-one name="issueType" class="com.freshdirect.transadmin.model.IssueType" fetch="select" lazy="false">
+            <column name="ISSUETYPE" length="10" not-null="true"/>
+        </many-to-one>       
+        <many-to-one name="issueSubType" class="com.freshdirect.transadmin.model.IssueSubType" fetch="select" lazy="false">
+            <column name="ISSUESUBTYPE" length="10" not-null="true"/>
+        </many-to-one>    
+         <property name="comments" type="string">
+            <column name="COMMENTS" />
+        </property>        
+        <property name="damageLocation" type="string">
+            <column name="ISSUELOCATION"  />
+        </property>
+        <property name="issueSide" type="string">
+            <column name="ISSUESIDE" />
+        </property>      
+        <property name="issueStatus" type="string">
+            <column name="ISSUESTATUS" />
+        </property>
+         <property name="estimatedRepairDate" type="timestamp">
+            <column name="ESTIMATED_REPAIRDATE" />
+        </property>
+         <property name="actualRepairDate" type="timestamp">
+            <column name="ACTUAL_REPAIRDATE" />
+        </property>
+         <property name="verificationDate" type="timestamp">
+            <column name="DATE_VERIFIED" />
+        </property>
+        <property name="serviceStatus" type="string">
+            <column name="SERVICESTATUS" />
+        </property>
+         <property name="verifiedBy" type="string">
+            <column name="VERIFIEDBY"  />
+        </property>
+         <property name="repairedBy" type="string">
+            <column name="REPAIREDBY" />
+        </property> 
+        
+    </class>
+</hibernate-mapping>

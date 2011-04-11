@@ -326,6 +326,7 @@ public class CapacityController extends AbstractMultiActionController {
 							if(range.getTimeRangeString().equals(_slotRange.getTimeRangeString())){
 								isMatching = true;
 								isDynamicCapacityAvailable = isDynamicCapacityAvailable(slot);
+								break;
 							}
 						}
 						if(isMatching){

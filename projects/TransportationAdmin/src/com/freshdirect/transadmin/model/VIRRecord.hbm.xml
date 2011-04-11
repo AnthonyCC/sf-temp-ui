@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Mar 11, 2011 by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp" >
+    <class name="com.freshdirect.transadmin.model.VIRRecord" table="ISSUELOG">
+        <id name="id" type="string" column="id">            
+           <generator class="sequence">
+    			<param name="sequence">IssueLog_id_SEQ</param>
+			</generator>
+        </id>
+        <many-to-one name="maintenanceIssue" class="com.freshdirect.transadmin.model.MaintenanceIssue" fetch="select" lazy="false">
+            <column name="MAINTENANCEISSUEID" length="10" />
+        </many-to-one>
+         <property name="truckNumber" type="string">
+            <column name="TRUCKNUMBER" length="45" not-null="true"/>
+        </property>
+        <property name="vendor" type="string">
+            <column name="VENDORNAME" length="45" not-null="true"/>
+        </property>
+        <many-to-one name="issueType" class="com.freshdirect.transadmin.model.IssueType" fetch="select" lazy="false">
+            <column name="ISSUETYPE" length="10" not-null="true"/>
+        </many-to-one>       
+        <many-to-one name="issueSubType" class="com.freshdirect.transadmin.model.IssueSubType" fetch="select" lazy="false">
+            <column name="ISSUESUBTYPE" length="10" not-null="true"/>
+        </many-to-one>        
+        <property name="comments" type="string">
+            <column name="COMMENTS" length="200" not-null="true"/>
+        </property>        
+        <property name="damageLocation" type="string">
+            <column name="ISSUELOCATION" length="45" not-null="true"/>
+        </property>
+        <property name="issueSide" type="string">
+            <column name="ISSUESIDE" length="45" not-null="true"/>
+        </property>
+        <property name="driver" type="string">
+            <column name="REPORTINGDRIVER" length="60" not-null="true"/>
+        </property>
+        <property name="createDate" type="timestamp">
+            <column name="DATECREATED" not-null="true" />
+        </property>
+        <property name="createdBy" type="string">
+            <column name="CREATEDBY" not-null="true" />
+        </property>
+              
+    </class>
+</hibernate-mapping>

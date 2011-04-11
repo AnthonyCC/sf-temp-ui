@@ -25,12 +25,16 @@ import com.freshdirect.transadmin.dao.ZoneExpansionDaoI;
 import com.freshdirect.transadmin.datamanager.model.WorkTableModel;
 import com.freshdirect.transadmin.model.DispositionType;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
+import com.freshdirect.transadmin.model.IssueSubType;
+import com.freshdirect.transadmin.model.IssueType;
+import com.freshdirect.transadmin.model.MaintenanceIssue;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
 import com.freshdirect.transadmin.model.TrnZoneType;
+import com.freshdirect.transadmin.model.VIRRecord;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.model.comparator.AlphaNumericComparator;
 import com.freshdirect.transadmin.service.DomainManagerI;
@@ -509,6 +513,15 @@ public class DomainManagerImpl
 		 LOGGER.debug("Making DEV live for testing!!");
 	}
 	
+	public void updateDisassociatedTimeslots(){
+		try{
+			LOGGER.debug("checking disassociated timeslots if Any");
+			getZoneExpansionDao().updateDisassociatedTimeslots();
+			LOGGER.debug("Fixing disassociated timeslots completed!!");
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
 	
 	//Geo Restrictions
 	
@@ -805,7 +818,59 @@ public class DomainManagerImpl
 	public Collection getDeliveryGroups(){
 		return getDomainManagerDao().getDeliveryGroups();
 	}
-
+	
+	public Collection getIssueTypes(){
+		return getDomainManagerDao().getIssueTypes();
+	}
+	
+	public IssueType getIssueType(String name){
+		return getDomainManagerDao().getIssueType(name);
+	}
+	
+	public IssueType getIssueTypeById(String id){
+		return getDomainManagerDao().getIssueTypeById(id);
+	}
+	
+	public Collection getIssueSubTypes(){
+		return getDomainManagerDao().getIssueSubTypes();
+	}
+	
+	public Collection getVIRRecords(){
+		return getDomainManagerDao().getVIRRecords();
+	}
+	
+	public Collection getVIRRecords(String createDate, String enteredBy,
+			String truckNumber){
+		return getDomainManagerDao().getVIRRecords(createDate, enteredBy, truckNumber);
+	}
+	
+	public VIRRecord getVIRRecord(String id){
+		return getDomainManagerDao().getVIRRecord(id);
+	}
+	
+	public Collection getMaintenanceIssue(String truckNumber, IssueType issueTypeId, IssueSubType issueSubTypeId){
+		return getDomainManagerDao().getMaintenanceIssue(truckNumber, issueTypeId, issueSubTypeId);
+	}
+	
+	public Collection getMaintenanceIssue(IssueType issueTypeId, IssueSubType issueSubTypeId){
+		return getDomainManagerDao().getMaintenanceIssue(issueTypeId, issueSubTypeId);
+	}
+	
+	public MaintenanceIssue getMaintenanceIssue(String id){
+		return getDomainManagerDao().getMaintenanceIssue(id);
+	}
+	
+	public Collection getMaintenanceIssues(){
+		return getDomainManagerDao().getMaintenanceIssues();
+	}
+	
+	public Collection getMaintenanceIssues(String issueStatus, String serviceStatus) {
+		return getDomainManagerDao().getMaintenanceIssues(issueStatus, serviceStatus);
+	}
+	
+	public void saveMaintenanceIssue(MaintenanceIssue model){
+	    getDomainManagerDao().saveMaintenanceIssue(model);
+	}
 	
 }
 

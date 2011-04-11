@@ -8,11 +8,15 @@ import org.springframework.dao.DataAccessException;
 import com.freshdirect.transadmin.model.DispositionType;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
 import com.freshdirect.transadmin.model.EmployeeSubRoleType;
+import com.freshdirect.transadmin.model.IssueSubType;
+import com.freshdirect.transadmin.model.IssueType;
+import com.freshdirect.transadmin.model.MaintenanceIssue;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
 import com.freshdirect.transadmin.model.TrnZoneType;
+import com.freshdirect.transadmin.model.VIRRecord;
 import com.freshdirect.transadmin.model.Zone;
 
 public interface DomainManagerDaoI extends BaseManagerDaoI {
@@ -98,5 +102,33 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 	Collection getUPSRouteInfo(String routeDate);
 	
 	Collection getDeliveryGroups()throws DataAccessException;
-		
+	
+	Collection getIssueTypes() throws DataAccessException;
+	
+	IssueType getIssueType(String name) throws DataAccessException;
+	
+	IssueType getIssueTypeById(String id) throws DataAccessException;
+	
+	Collection getIssueSubTypes() throws DataAccessException;
+	
+	Collection getVIRRecords() throws DataAccessException;
+	
+	Collection getVIRRecords(String createDate, String enteredBy,
+			String truckNumber) throws DataAccessException;
+	
+	VIRRecord getVIRRecord(String id) throws DataAccessException;
+	
+	Collection getMaintenanceIssue(String truckNumber, IssueType issueTypeId, IssueSubType issueSubTypeId) throws DataAccessException;
+	
+	Collection getMaintenanceIssue(IssueType issueTypeId, IssueSubType issueSubTypeId) throws DataAccessException;
+	
+	MaintenanceIssue getMaintenanceIssue(String id) throws DataAccessException;
+	
+	Collection getMaintenanceIssues() throws DataAccessException;
+	
+	Collection getMaintenanceIssues(String issueStatus, String serviceStatus) throws DataAccessException;
+	
+	void saveMaintenanceIssue(MaintenanceIssue model) throws DataAccessException;
+	
+	
 }

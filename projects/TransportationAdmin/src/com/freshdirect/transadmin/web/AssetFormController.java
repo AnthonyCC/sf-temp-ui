@@ -1,6 +1,7 @@
 package com.freshdirect.transadmin.web;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,9 +30,13 @@ public class AssetFormController extends AbstractFormController {
 	}
 
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
-		Map refData = new HashMap();
+		Map<String, Collection> refData = new HashMap<String, Collection>();
+		
 		refData.put("assetstatuses", EnumAssetStatus.getEnumList());
-		refData.put("assettypes", getAssetManagerService().getAssetAttributeTypes());
+		refData.put("assetAttributeTypes"
+				, getAssetManagerService().getAssetAttributeTypes(null, new AssetType(request.getParameter("pAssetType")==null ? request.getParameter("assetType"): request.getParameter("pAssetType"), null)));
+		refData.put("assetTemplates"
+				, getAssetManagerService().getAssetTemplates(request.getParameter("pAssetType")==null ? request.getParameter("assetType"): request.getParameter("pAssetType")));
 		return refData;
 	}
 	
@@ -40,7 +45,7 @@ public class AssetFormController extends AbstractFormController {
 	}
 	
 	protected Object formBackingObject(HttpServletRequest request)
-	throws Exception {
+														throws Exception {
 		String id = getIdFromRequest(request);
 
 		if (StringUtils.hasText(id)) {
@@ -77,6 +82,14 @@ public class AssetFormController extends AbstractFormController {
 	public List saveDomainObject(HttpServletRequest request, Object domainObject) {
 		List errorList = new ArrayList();		
 		return errorList;
+	}
+	
+	protected String getIdFromRequest(HttpServletRequest request){
+		String id = request.getParameter("id");
+		if(TransStringUtil.isEmpty(id)) {
+			id = request.getParameter("assetId");
+		}
+		return id;
 	}
 
 }

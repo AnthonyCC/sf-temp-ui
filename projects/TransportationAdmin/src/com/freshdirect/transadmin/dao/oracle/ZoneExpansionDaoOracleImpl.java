@@ -612,4 +612,22 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
 		
 	}
 	
+	//fix disassociated Timeslots
+	public void updateDisassociatedTimeslots(){
+		
+		this.jdbcTemplate.update(
+				   "UPDATE dlv.timeslot ts set zone_id = ("
+					+" select z.id from dlv.zone z, dlv.region_data rd where z.region_data_id=rd.id"
+					+" and zone_code=(select zone_code from dlv.zone where ts.zone_id=id)"
+					+" and start_date=(select max(start_date) from dlv.region_data"
+					+" where region_id=rd.region_id and start_date<=ts.base_date)"
+					+" ) where ts.base_date > sysdate"
+					+" and ts.zone_id <> ("
+					+" select z.id from dlv.zone z, dlv.region_data rd where z.region_data_id=rd.id"
+					+" and zone_code=(select zone_code from dlv.zone where ts.zone_id=id)"
+					+" and start_date=(select max(start_date) from dlv.region_data"
+					+" where region_id=rd.region_id and start_date<=ts.base_date)"
+					+" );", new Object[] {});
+	}
+
 }

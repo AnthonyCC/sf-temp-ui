@@ -10,12 +10,16 @@ import org.springframework.dao.DataAccessException;
 import com.freshdirect.customer.ErpTruckMasterInfo;
 import com.freshdirect.transadmin.model.DispositionType;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
+import com.freshdirect.transadmin.model.IssueSubType;
+import com.freshdirect.transadmin.model.IssueType;
+import com.freshdirect.transadmin.model.MaintenanceIssue;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
 import com.freshdirect.transadmin.model.TrnZoneType;
+import com.freshdirect.transadmin.model.VIRRecord;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
 import com.freshdirect.transadmin.web.model.WebSchedule;
@@ -135,4 +139,32 @@ public interface DomainManagerI extends BaseManagerI {
 	Collection getTeamInfo();
 	
 	Collection getDeliveryGroups();
+	
+	Collection getIssueTypes();
+	
+	IssueType getIssueType(String name);
+	
+	IssueType getIssueTypeById(String id);
+	
+	Collection getIssueSubTypes();
+	
+	Collection getVIRRecords();
+	
+	Collection getVIRRecords(String createDate, String enteredBy,String truckNumber);
+	
+	VIRRecord getVIRRecord(String id);
+	
+	Collection getMaintenanceIssue(String truckNumber, IssueType issueType, IssueSubType issueSubType);
+	
+	Collection getMaintenanceIssue(IssueType issueType, IssueSubType issueSubType);
+	
+	MaintenanceIssue getMaintenanceIssue(String id);
+	
+	Collection getMaintenanceIssues();
+	
+	Collection getMaintenanceIssues(String issueStatus, String serviceStatus);
+	
+	void saveMaintenanceIssue(MaintenanceIssue model);
+	
+	void updateDisassociatedTimeslots();
 }

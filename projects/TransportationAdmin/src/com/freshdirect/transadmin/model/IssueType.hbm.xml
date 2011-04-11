@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Mar 07, 2011 3:11:24 PM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp" >
+    <class name="com.freshdirect.transadmin.model.IssueType" table="ISSUETYPE">
+        <id name="issueTypeId" type="string">
+            <column name="ID" length="10" />
+           <generator class="sequence">
+    			<param name="sequence">IssueType_id_SEQ</param>
+			</generator>
+        </id>
+        <property name="issueTypeName" type="string">
+            <column name="IssueTypeName" length="45" not-null="true" />
+        </property>
+        <property name="issueTypeDescription" type="string">
+            <column name="IssueTypeDescription" length="45" not-null="true" />
+        </property>
+        <property name="isActive" type="int">
+            <column name="isActive" not-null="true" />
+        </property>
+        <property name="createdDate" type="timestamp">
+            <column name="DateCreated" not-null="true" />
+        </property>
+         <property name="createdBy" type="string">
+            <column name="CreatedBy" length="45" not-null="true" />
+        </property>
+        
+        <set name="issueSubTypes" inverse="true" lazy="false" cascade="all,delete-orphan">
+            <key>
+                <column name="IssueTypeId" length="10" not-null="true" />
+            </key>
+            <one-to-many class="com.freshdirect.transadmin.model.IssueSubType" />
+        </set>
+    </class>
+</hibernate-mapping>

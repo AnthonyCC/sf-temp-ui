@@ -18,8 +18,24 @@
 	<tmpl:put name='yui-skin'>yui-skin-sam</tmpl:put>
 	
   <tmpl:put name='content' direct='true'>
-  
-  
+		<div class="subs MNM004">
+			<div class="subs_left">	
+				<div class="sub_tableft sub_tabL_MNM004 <% if(request.getParameter("tAssetType")== null) { %>activeL<% } %>">&nbsp;</div>
+				<div class="subtab <%if(request.getParameter("tAssetType")== null) { %>activeT<% } %>">
+					<div class="minwidth"><!-- --></div>
+					<a href="asset.do?pAssetType=GPS" class="<% if(request.getParameter("tAssetType")== null) { %>MNM004<% } %>">Asset</a>
+				</div>
+				<div class="sub_tabright sub_tabR_MNM004 <% if(request.getParameter("tAssetType")== null) { %>activeR<% } %>">&nbsp;</div>
+		
+				<div class="sub_tableft sub_tabL_MNM004 <% if(request.getParameter("tAssetType")!= null) { %>activeL<% } %>">&nbsp;</div>
+				<div class="subtab <%if(request.getParameter("tAssetType")!= null) { %>activeT<% } %>">
+					<div class="minwidth"><!-- --></div>
+					<a href="assettemplate.do?tAssetType=GPS" class="<% if(request.getParameter("tAssetType")!= null) { %>MNM004<% } %>">Asset Template</a>
+				</div>
+				<div class="sub_tabright sub_tabR_MNM004 <% if(request.getParameter("tAssetType")!= null) { %>activeR<% } %>">&nbsp;</div>
+			</div>
+		</div>
+
 	<c:if test="${not empty messages}">
 		<div class="err_messages">
 			<jsp:include page='/common/messages.jsp'/>
@@ -71,8 +87,9 @@
 							           
 							  <ec:column property="assetNo" title="Asset No"/>
 							  <ec:column property="assetDescription" title="Description"/>	
-							  <ec:column property="assetType.code" title="Type"/>				  							  
-							  <ec:column property="assetStatus" title="Status" />							 
+							  <ec:column property="assetType.code" title="Type"/>
+							  <ec:column property="assetStatus" title="Status" />
+							  <ec:column property="assetTemplate.assetTemplateName" title="Attribute Type" />
 							</ec:row>
 						  </ec:table>
 					   </form> 
@@ -81,7 +98,8 @@
 		</div>
 	</div>
      <script>
-      addRowHandlers('ec_table', 'rowMouseOver', 'editasset.do','id',0, 0);
+	  addMultiRowHandlersColumn('ec_table', 'rowMouseOver', 'editasset.do','id',0,0,'assetType');
+
       function doCompositeLink() {
     	  location.href = "asset.do?pAssetType="+document.getElementById('assetType').value;
       }

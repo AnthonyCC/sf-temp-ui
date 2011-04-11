@@ -15,5 +15,8 @@
         <property name="attributeValue" type="string">
             <column name="ATTRIBUTE_VALUE" length="40" />
         </property>
+        <property name="attributeMatch" type="string">
+            <column name="ATTRIBUTE_MATCH" length="1" />
+        </property>
     </class>
 </hibernate-mapping>

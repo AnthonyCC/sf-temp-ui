@@ -9,6 +9,9 @@ import org.springframework.dao.DataAccessException;
 import com.freshdirect.transadmin.dao.AssetManagerDaoI;
 import com.freshdirect.transadmin.model.Asset;
 import com.freshdirect.transadmin.model.AssetAttribute;
+import com.freshdirect.transadmin.model.AssetTemplate;
+import com.freshdirect.transadmin.model.AssetTemplateAttribute;
+import com.freshdirect.transadmin.model.AssetType;
 
 public class AssetManagerDaoHibernateImpl
 		extends BaseManagerDaoHibernateImpl  implements AssetManagerDaoI {
@@ -58,5 +61,52 @@ public class AssetManagerDaoHibernateImpl
 			saveEntity(asset);
 		}
 	}
+	
+	public AssetTemplate getAssetTemplate(String assetTemplateId){
+		return (AssetTemplate)getEntityById("AssetTemplate", "assetTemplateId", assetTemplateId);
+	}
+	
+	public void saveAssetTemplate(AssetTemplate assetTemplate) throws DataAccessException {
 
+		if (assetTemplate.getAssetTemplateId() == null || "".equals(assetTemplate.getAssetTemplateId())) {
+			Set attributes = assetTemplate.getAssetTemplateAttributes();
+			assetTemplate.setAssetTemplateAttributes(null);
+			getHibernateTemplate().save(assetTemplate);
+			if (attributes != null && attributes.size() > 0) {
+				Iterator it = attributes.iterator();
+				while (it.hasNext()) {
+					AssetTemplateAttribute dr = (AssetTemplateAttribute) it.next();
+					dr.getId().setAssetTemplateId(assetTemplate.getAssetTemplateId());
+				}
+			}
+			assetTemplate.setAssetTemplateAttributes(attributes);
+			saveEntityList(assetTemplate.getAssetTemplateAttributes());
+		} else {
+			saveEntity(assetTemplate);
+		}
+	}
+	
+	public Collection getAssetTemplates(String assetType) throws DataAccessException {
+
+		return getDataList("AssetTemplate where ASSET_TYPE = '"+assetType+"' Order By assetTemplateName");
+	}
+	
+	public AssetType getAssetType(String assetType) throws DataAccessException{
+		return (AssetType)getEntityById("AssetType", "code", assetType);
+	}
+	
+	public Collection getAssetAttributeTypes(String attributeCode, AssetType assetType) throws DataAccessException{
+		
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("AssetAttributeType a where");
+		if(attributeCode != null && !"".equals(attributeCode))
+			strBuf.append(" a.code='"+attributeCode+"'");
+		if(attributeCode != null && assetType != null)
+			strBuf.append(" and");
+		if(assetType != null)
+			strBuf.append(" a.assetType='"+assetType+"'");		
+		
+		return (Collection) getDataList(strBuf.toString());		
+	}
+	
 }

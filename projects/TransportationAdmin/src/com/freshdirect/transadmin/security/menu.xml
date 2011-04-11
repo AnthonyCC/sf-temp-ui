@@ -40,7 +40,11 @@
 	     	<access-uris>truck.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnOperations</access-roles>
      	</menu>
-   	     
+     	<menu id="OPR009" title="Maintenance Log" orientation="RIGHT" link="virrecordlog.do">
+	     	<access-uris>virrecordlog.do,editvirrecordlog.do,maintenancelog.do,editmaintenancelog.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnOperations,TrnDispatch,TrnPlanning</access-roles>
+     	</menu>
+
  </menu>
 
 	<menu id="MNM002" title="ROUTING" orientation="LEFT" link="">
@@ -189,8 +193,9 @@
 	     </menu>    	     
          
          <menu id="ADO009" title="Asset" orientation="RIGHT" link="asset.do?pAssetType=GPS">
-	     	<access-uris>asset.do,editasset.do</access-uris>
+	     	<access-uris>asset.do,editasset.do,assettemplate.do,editassettemplate.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
 	     </menu> 
+
 </menu>
 </menus>

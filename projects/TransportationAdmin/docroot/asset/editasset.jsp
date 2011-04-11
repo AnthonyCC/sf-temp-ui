@@ -18,7 +18,24 @@
     <tmpl:put name='title' direct='true'> Admin : Asset : Add/Edit Asset (<%= request.getParameter("pAssetType") %>)</tmpl:put>
   
   <tmpl:put name='content' direct='true'>
-    <br/> 
+		<div class="subs MNM004">
+			<div class="subs_left">	
+				<div class="sub_tableft sub_tabL_MNM004 <% if(request.getParameter("tAssetType")== null) { %>activeL<% } %>">&nbsp;</div>
+				<div class="subtab <%if(request.getParameter("tAssetType")== null) { %>activeT<% } %>">
+					<div class="minwidth"><!-- --></div>
+					<a href="asset.do?pAssetType=GPS" class="<% if(request.getParameter("tAssetType")== null) { %>MNM004<% } %>">Asset</a>
+				</div>
+				<div class="sub_tabright sub_tabR_MNM004 <% if(request.getParameter("tAssetType")== null) { %>activeR<% } %>">&nbsp;</div>
+		
+				<div class="sub_tableft sub_tabL_MNM004 <% if(request.getParameter("tAssetType")!= null) { %>activeL<% } %>">&nbsp;</div>
+				<div class="subtab <%if(request.getParameter("tAssetType")!= null) { %>activeT<% } %>">
+					<div class="minwidth"><!-- --></div>
+					<a href="assettemplate.do?tAssetType=GPS" class="<% if(request.getParameter("tAssetType")!= null) { %>MNM004<% } %>">Asset Template</a>
+				</div>
+				<div class="sub_tabright sub_tabR_MNM004 <% if(request.getParameter("tAssetType")!= null) { %>activeR<% } %>">&nbsp;</div>
+			</div>
+		</div>
+    <br/><br/><br/><br/>
     <div align="center">
       <form:form commandName="assetForm" method="post">
            
@@ -27,9 +44,8 @@
             <td class="screentitle">Add/Edit Asset</td>
           </tr>
           <tr>
-            <td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>
+            <td class="screenmessages"><jsp:include page='/common/messages.jsp'/> <div id="errContainer" style='margin:0 auto;'></div></td>
           </tr>
-          
           <tr>
             <td class="screencontent">
               <form:hidden path="assetId"/>
@@ -78,6 +94,19 @@
                   &nbsp;<form:errors path="assetStatus" />
                 </td>
                </tr>
+
+			    <tr>
+                  <td>Asset Template</td>
+                  <td> 
+					   <form:select path="assetTemplate">
+							<form:option value="null" label="--Please Select Template"/>
+							<form:options items="${assetTemplates}" itemLabel="assetTemplateName" itemValue="assetTemplateId" />
+					   </form:select>
+                </td>
+                <td>
+                  &nbsp;<form:errors path="assetTemplate" />
+                </td>
+               </tr>
               
               </table>        
               
@@ -94,9 +123,11 @@
 <script>
       var attributeDataTable;
       var jsonrpcClient = new JSONRpcClient("asset.ax");
-      
+      var errColor = "#FF0000";
+	  var msgColor = "#0066CC";
+     
       var assetData = { 
-            attributeData: [					
+            attributeData: [
   	    <% 
             		Asset coreAsset = (Asset)request.getAttribute("assetForm");
             		StringBuffer dataBuffer = new StringBuffer();
@@ -110,10 +141,11 @@
         							if(_attrId != null) {
         								dataBuffer.append("{attributeType:\"").append(_attrId.getAttributeType()).append("\",");
         								dataBuffer.append("attributeValue:\"").append(_attribute.getAttributeValue()).append("\",");
+										dataBuffer.append("attributeMatch:\"").append(_attribute.getAttributeMatch()).append("\",");
         								dataBuffer.append("deleteBtn:\"\"}");
         								if(_itr.hasNext()) {
         									dataBuffer.append(",");	
-        								}      								
+        								}	
         							}
         						}
         					}
@@ -121,27 +153,71 @@
         			}
             	%> 
             	<%= dataBuffer.toString() %>
+            ]};
+	  
+	  var assetTemplateData = { 
+            attributeTemplateData: [
+  	    <% 
+            		Asset asset = (Asset)request.getAttribute("assetForm");
+            		StringBuffer templateDataBuffer = new StringBuffer();
+        			if(asset != null) {
+						if(asset.getAssetTemplate()!=null){
+							if(asset.getAssetTemplate().getAssetTemplateAttributes() != null) {
+								Iterator _itr = asset.getAssetTemplate().getAssetTemplateAttributes().iterator();
+								while(_itr.hasNext()) {
+									AssetTemplateAttribute _attribute = (AssetTemplateAttribute)_itr.next();
+									if(_attribute != null) {
+										AssetTemplateAttributeId _attrId = _attribute.getId();
+										if(_attrId != null) {
+											templateDataBuffer.append("{attributeType:\"").append(_attrId.getAttributeType()).append("\",");
+											templateDataBuffer.append("attributeValue:\"").append(_attribute.getAttributeValue()).append("\"}");
+											if(_itr.hasNext()) {
+												templateDataBuffer.append(",");	
+											}	
+										}
+									}
+								}
+							}
+						}
+        			}
+            	%> 
+            	<%= templateDataBuffer.toString() %>
             ]}; 
            
       YAHOO.util.Event.addListener(window, "load", function() {
                  
         attributeDataSource = new YAHOO.util.DataSource(assetData.attributeData);        
         attributeDataSource.responseType = YAHOO.util.DataSource.TYPE_JSARRAY; 
-        attributeDataSource.responseSchema = {fields: ["attributeType","attributeValue","deleteBtn"] }; 
+        attributeDataSource.responseSchema = {fields: ["attributeType","attributeValue","attributeMatch","deleteBtn"] }; 
                             		  
 		var attributeColumns =  [ 
-			    {key:"attributeType", label:"Attribute Type", sortable:false, width: 250, className:"forms1"}, 
-			    {key:"attributeValue", label:"Attribute Value", sortable:false, width: 400, className:"forms1"},
-			    {key:'deleteBtn',label:' ',formatter:function(elCell) {
+			    {key:"attributeType", label:"Attribute Type", sortable:true, sortOptions: { defaultDir: YAHOO.widget.DataTable.CLASS_ASC }, className:"forms1"}, 
+			    {key:"attributeValue", label:"Attribute Value", sortable:false, className:"forms1"},
+				{key:'attributeMatch',label:'Is Matched',formatter:function(elCell, oRecord, oColumn, oData) {
+												console.log(oData);
+												if(oData === '1'){
+        											elCell.innerHTML = '<img src="images/icons/tick.gif" title="matched row" />';
+        										}else if(oData === '0'){
+													elCell.innerHTML = '<img src="images/icons/cross.gif" title="non-matched row" />';
+												}
+    			}},
+				{key:'deleteBtn',label:' ',formatter:function(elCell) {
         										elCell.innerHTML = '<img src="images/icons/delete.gif" title="delete row" />';
         										elCell.style.cursor = 'pointer';
-    			}}			    
+    			}}
 		 ];
 				 	 
+		 var sMyConfigs = { 
+			    paginator : new YAHOO.widget.Paginator({ 
+			        rowsPerPage    : 10
+			    }) 
+		  }; 
+		 	 
 		attributeDataTable = new YAHOO.widget.DataTable("contattributetable"
 															, attributeColumns
 																	, attributeDataSource
-																			, { selectionMode:"single" });
+																				, sMyConfigs
+																					, { selectionMode:"single" });
   		
   		attributeDataTable.subscribe('cellClickEvent', function(ev) {
 	    	var target = YAHOO.util.Event.getTarget(ev);
@@ -156,6 +232,38 @@
   			};
      });
      
+	  YAHOO.util.Event.addListener(window, "load", function() {
+                 
+        attributeTemplateDataSource = new YAHOO.util.DataSource(assetTemplateData.attributeTemplateData);
+        attributeTemplateDataSource.responseType = YAHOO.util.DataSource.TYPE_JSARRAY; 
+        attributeTemplateDataSource.responseSchema = {fields: ["attributeType","attributeValue"] }; 
+                            		  
+		var attributeTemplateColumns =  [ 
+			    {key:"attributeType", label:"Attribute Type", sortable:true, sortOptions: { field: "attributeType" }, className:"forms1"}, 
+			    {key:"attributeValue", label:"Attribute Value", sortable:false, className:"forms1"},
+				{key:'deleteBtn',label:' ',formatter:function(elCell) {
+        										elCell.innerHTML = '<img src="images/icons/delete.gif" title="delete row" />';
+    			}}
+		 ];
+				 	 
+		 var sTemplateConfigs = { 
+			    paginator : new YAHOO.widget.Paginator({ 
+			        rowsPerPage    : 10
+			    }) 
+		 };
+
+		attributeTemplateDataTable = new YAHOO.widget.DataTable("conttemplateattributetable"
+															, attributeTemplateColumns
+																, attributeTemplateDataSource
+																	, sTemplateConfigs
+																		, {selectionMode:"single"});
+  		
+  		 return { 
+  			            oDS: attributeTemplateDataSource, 
+  			            oDT: attributeTemplateDataTable 
+  			};
+     });
+
      function doAdd() {
      		var _attributeType = document.getElementById('dAttributeType').value;
      		var _attributeValue = document.getElementById('dAttributeValue').value;
@@ -175,73 +283,123 @@
       	  	for(i=0; i<records.length; i++) {
       	  		_data[i] = new Array();
       	  		_data[i][0] = records[i].getData('attributeType');
-      	  		_data[i][1] = records[i].getData('attributeValue');      	  		
+      	  		_data[i][1] = records[i].getData('attributeValue');	
       	  	}
       	  }
       	  try { 
           	if(document.getElementById('assetNo').value == null || document.getElementById('assetNo').value.length == 0) {
-              	alert("Asset no is a required field");
+              	addSysMessage("Asset no is a required field", truw);
           	} else if(document.getElementById('assetNo').value == null || document.getElementById('assetDescription').value.length == 0) {
-          		alert("Asset Description is a required field");
+          		addSysMessage("Asset Description is a required field", truw);
           	} else if(document.getElementById('assetStatus').value == null 
                   	|| document.getElementById('assetStatus').value.length == 0
                   		|| document.getElementById('assetStatus').value == 'null') {
-          		alert("Asset Status is a required field");
+          		addSysMessage("Asset Status is a required field", true);
           	}  else { 
 	     	 	var result = jsonrpcClient.AsyncAssetProvider.saveAsset(document.getElementById('assetId').value
 	     													, document.getElementById('assetType.code').value
 	     													, document.getElementById('assetNo').value
 	     													, document.getElementById('assetDescription').value
 	     													, document.getElementById('assetStatus').value
+															, document.getElementById('assetTemplate').value
 	     	     	 										, _data);
 	     	 	document.getElementById('assetId').value = result;
 	     	 	if(result != null) {
-	     	 		alert("Asset saved successfully");
+	     	 		addSysMessage("Asset saved successfully", false);
+					<%if(request.getParameter("id")!=null){%>
+						window.location.href = window.location.href;
+					<%}%>
 	     	 	}
           	}
       	  }  catch(rpcException) {
-          	  
-          	  if(rpcException != null && rpcException.name != null 
+          	   if(rpcException != null && rpcException.name != null 
                   	  && rpcException.name == ("org.springframework.dao.DataIntegrityViolationException")) {
-          	     alert("Unable to save asset. Asset with same no already exists.");
+	          	 addSysMessage("Unable to save asset. Asset with same name already exists.", true);
           	  } else {
-				alert("There was a problem in communication to the server. Please try to refresh the browser window!");
+				 addSysMessage("There was a problem in communication to the server. Please try to refresh the browser window!", true);
           	  }
-		  }
-	  
-			      	  
+		  } 
      }
+
+    function addSysMessage(msg, isError) {
+      		var errContObj = YAHOO.util.Dom.get("errContainer");
+		    if(isError) {
+		    	errContObj.style.color = errColor;
+	      	} else {
+	      		errContObj.style.color = msgColor;
+	      	}
+	      	errContObj.style.fontWeight="bold";
+      		YAHOO.util.Dom.get("errContainer").innerHTML = msg;
+      }
  </script>
-    <br/>   
-   <div style='display:none;background-color:#F2F2F2;border:1px solid #000;width: 65%; margin:0 auto;'>  
-       <div class="bd">
-      	 	<table cellpadding="1" cellspacing="0">
-		    	<tr>
-                   <td><b>&nbsp;&nbsp;&nbsp;Attribute Type: </b> &nbsp;&nbsp;&nbsp;                 
-                      <select id="dAttributeType" style="width: 40;" name="dAttributeType"> 
-                      	<option value="">--Select a Type</option> 
-                    	<c:forEach var="aType" items="${assettypes}">       
-		              		<option value="<c:out value="${aType.code}"/>"><c:out value="${aType.code}"/></option>
-			        	</c:forEach>                                      
-			          </select>
-                   </td>                               
-                   <td>                 
-	                   <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attribute Value:</b>&nbsp;&nbsp;&nbsp;
-	                   			<input size="40" id="dAttributeValue" value="" /> 
-	               </td>                                      
-                  
-	               <td>                 
-	                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" id="add" value="&nbsp;ADD&nbsp;" onclick="javascript:doAdd();" /> 
-	               </td>	               
-               </tr>
-            </table>
-            <hr/>
-            <div id="parentcontattributetable" style="height:250px;overflow-y:auto;background-color:#F2F2F2;">
-	      	 	<div id="contattributetable" align="center"></div> 
-	      	 </div>	
-	      	      
+    <br/>
+	
+	<table width="100%">
+		<tr>
+			<td align="center" valign="top"><b>Asset Attributes</b></td>
+			<td align="center" valign="top"><b>Asset Template Attributes</b></td>
+		</tr>
+		<tr><td colspan="2">&nbsp;</tr>
+		<tr>
+			<td align="center" valign="top">
+				 <div style='background-color:#F2F2F2;border:1px solid #000; margin-left:10px;'>  
+				   <div class="bd">
+						<table cellpadding="1" cellspacing="0">
+							<tr>
+							   <td><b>&nbsp;&nbsp;&nbsp;Attribute Type: </b> &nbsp;&nbsp;&nbsp;                 
+								  <select id="dAttributeType" style="width: 40;" name="dAttributeType"> 
+									<option value="">--Select a Type</option> 
+									<c:forEach var="aType" items="${assetAttributeTypes}">       
+										<option value="<c:out value="${aType.code}"/>"><c:out value="${aType.code}"/></option>
+									</c:forEach>                                      
+								  </select><br>
+								   <b>&nbsp;&nbsp;&nbsp;Attribute Value:</b>&nbsp;&nbsp;&nbsp;
+									<input size="30" id="dAttributeValue" value="" /> 
+							   </td>
+							   <td>                 
+								   &nbsp;&nbsp;&nbsp;<input type="button" id="add" value="&nbsp;ADD&nbsp;" onclick="javascript:doAdd();" /> 
+							   </td>	               
+						   </tr>
+						</table>
+						<hr/>
+						<div id="parentcontattributetable" style="height:100%;overflow-y:auto;background-color:#F2F2F2;">
+							<div id="contattributetable" align="center"></div> 
+						 </div>	
+							  
+					</div>
+				 </div>
+			</td>
+			<td align="center" valign="top">
+				 <div style='background-color:#F2F2F2;border:1px solid #000; margin-left:10px;'>  
+				 <div class="bd">
+					<table cellpadding="1" cellspacing="0">
+						<tr>
+						   <td><b>&nbsp;&nbsp;&nbsp;Attribute Type: </b> &nbsp;&nbsp;&nbsp;                 
+							  <select id="dAttributeType" style="width: 40;" name="dAttributeType" disabled="true"> 
+								<option value="">--Select a Type</option> 
+								<c:forEach var="aType" items="${assetAttributeTypes}">       
+									<option value="<c:out value="${aType.code}"/>"><c:out value="${aType.code}"/></option>
+								</c:forEach>                                      
+							  </select><br>
+							   <b>&nbsp;&nbsp;&nbsp;Attribute Value:</b>&nbsp;&nbsp;&nbsp;
+								<input size="30" id="dAttributeValue" value="" disabled="true"/> 
+						   </td>
+						   <td>                 
+							   &nbsp;&nbsp;&nbsp;<input type="button" id="add" disabled="true" value="&nbsp;ADD&nbsp;" onclick="javascript:doAdd();" /> 
+						   </td>	               
+					   </tr>
+					</table>
+					<hr/>
+					<div id="parentconttemplateattributetable" style="height:100%;overflow-y:auto;background-color:#F2F2F2;">
+						<div id="conttemplateattributetable" align="center">
+					</div> 
+				 </div>
         </div>
    	 </div>
+			</td>
+		</tr>
+	</table>
+  
    	<br/>
    	 <table width="100%" cellpadding="0" cellspacing="0" border="0">
    	 <tr>
@@ -251,5 +409,10 @@
 			</td>
 	</tr>		
    	 </table>
+	<style>
+		 .yui-skin-sam .yui-dt table {
+			width:98%;	 
+		 }
+	 </style>
   </tmpl:put>
 </tmpl:insert>

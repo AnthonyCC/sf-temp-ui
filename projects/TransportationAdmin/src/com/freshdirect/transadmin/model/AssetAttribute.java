@@ -9,6 +9,7 @@ public class AssetAttribute implements java.io.Serializable {
 
 	private AssetAttributeId id;
 	private String attributeValue;
+	private String attributeMatch;
 	
 	public AssetAttribute() {
 	}
@@ -31,7 +32,15 @@ public class AssetAttribute implements java.io.Serializable {
 	}
 
 	public void setAttributeValue(String attributeValue) {
-		this.attributeValue = attributeValue;
+		this.attributeValue = attributeValue;		
+	}
+	
+	public String getAttributeMatch() {
+		return attributeMatch;
+	}
+
+	public void setAttributeMatch(String attributeMatch) {
+		this.attributeMatch = attributeMatch;
 	}
 
 	@Override

@@ -188,6 +188,10 @@ public class TransportationAdminProperties {
 	private final static String PROP_TRANSPORTATION_FORMAT_EMPPLOYEESCHEDULE_UPLOAD	= "transportation.format.employeescheduleout";
 	private final static String PROP_TRANSPORTATION_FORMAT_SCRIB_UPLOAD	= "transportation.format.scribout";
 	private final static String PROP_TRANSPORTATION_CSVFILE_SEPARATOR	= "transportation.default.csvfileseparator";
+	//Maintenance Log
+	private final static String PROP_VENDOR_DETAILS		= "transportation.issuelog.vendors";
+	private final static String PROP_TRUCK_DAMAGE_LOCATIONS = "transportation.issuelog.truckdamagelocations";
+
 	
 	static {
 
@@ -335,6 +339,8 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_EXPORT_SCHEDULES,"Export_Schedules_");
 		defaults.put(PROP_TRANSPORTATION_FORMAT_EMPPLOYEESCHEDULE_UPLOAD, 	"com/freshdirect/transadmin/datamanager/employeeschedule_in.xml");
 		defaults.put(PROP_TRANSPORTATION_FORMAT_SCRIB_UPLOAD, 	"com/freshdirect/transadmin/datamanager/scrib_in.xml");
+		defaults.put(PROP_VENDOR_DETAILS,"HUB,MILEA,PUBLIC SERVICE,RYDER,UTF");
+		defaults.put(PROP_TRUCK_DAMAGE_LOCATIONS,"Front,Back");	
 
 		refresh();
 	}
@@ -704,4 +710,13 @@ public class TransportationAdminProperties {
 	public static String getScribOutputFormat() {
 		return get(PROP_TRANSPORTATION_FORMAT_SCRIB_UPLOAD);
 	}
+	
+	public static String getTransportationVendors() {
+		return get(PROP_VENDOR_DETAILS);
+    }
+	
+	public static String getTruckDamageLocations() {
+		return get(PROP_TRUCK_DAMAGE_LOCATIONS);
+    }
+
 }

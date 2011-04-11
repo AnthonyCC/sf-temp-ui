@@ -175,15 +175,21 @@
 								<td class=""><%= _command.getSoldOutWindow()%></td>
 						
 							 <%	
-								for(Map.Entry<TimeRange, String> slotsMapping : _command.getTimeslots().entrySet()) {
+								 for(TimeRange range : allWindows) {
 	 							    String subClass = "";
-									if("N".equals(slotsMapping.getValue())) {
-										subClass = "red";
-									} else if("Y".equals(slotsMapping.getValue()))  {
-										subClass = "green";
+									String isDynamic = "";
+									for(Map.Entry<TimeRange, String> slotsMapping : _command.getTimeslots().entrySet()) { 
+										if(range.getTimeRangeString().equals(slotsMapping.getKey().getTimeRangeString())){
+											isDynamic = slotsMapping.getValue();
+											if("N".equals(slotsMapping.getValue()))
+												subClass = "red";
+											else if("Y".equals(slotsMapping.getValue()))
+												subClass = "green";
+											break;
+										}
 									}
 							 %>
-									<td  class="<%= subClass %>"><%= slotsMapping.getValue()%></td>
+									<td  class="<%= subClass %>"><%= isDynamic %></td>
 								<% } %>
 							</tr>
 						 <% } %>
