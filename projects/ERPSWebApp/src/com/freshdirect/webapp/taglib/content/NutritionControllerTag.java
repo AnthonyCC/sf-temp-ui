@@ -78,7 +78,8 @@ public class NutritionControllerTag extends com.freshdirect.framework.webapp.Bod
             
             if (didSomething) {
                 try {
-                    ErpFactory.getInstance().saveNutrition(nutrition);
+                	String user = request.getRemoteUser();
+                    ErpFactory.getInstance().saveNutrition(nutrition, user);
                     //
                     // set the success message
                     //

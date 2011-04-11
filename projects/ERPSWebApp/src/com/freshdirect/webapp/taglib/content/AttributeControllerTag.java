@@ -59,13 +59,16 @@ public class AttributeControllerTag extends com.freshdirect.framework.webapp.Tag
         //
         // anything that finds stuff goes first
         //
+        String user = request.getRemoteUser();
+        String sapId = request.getParameter("sapId");
+        
         if ("save".equalsIgnoreCase(action)) {
             //
             // save the atibutes for the erpObject and its children
             //
-            doSaveAttributes(erpObject);
+            doSaveAttributes(erpObject, user, sapId);
         } else if("copy".equalsIgnoreCase(action)){
-        	doCopyAttributes(erpObject, request.getParameter("sourceId"), request.getParameter("skuCode"));
+        	doCopyAttributes(erpObject, request.getParameter("sourceId"), request.getParameter("skuCode"), user);
         }
         
         if ((userMessage != null) && !"".equals(userMessage.trim())) {
@@ -83,14 +86,14 @@ public class AttributeControllerTag extends com.freshdirect.framework.webapp.Tag
 	 * @param erpObject2
      * @throws JspException
 	 */
-	private void doCopyAttributes(ErpModelSupport targetModel, String sourceSku, String targetSku) throws JspException {
+	private void doCopyAttributes(ErpModelSupport targetModel, String sourceSku, String targetSku, String user) throws JspException {
 		try {
 			ErpFactory factory = ErpFactory.getInstance();
 			ErpProductModel source = factory.getProduct(sourceSku.trim());
 			if(source.getSkuCode() != null && targetSku != null){			
 				ErpNutritionModel nutrition =factory.getNutrition(sourceSku);
 				nutrition.setSkuCode(targetSku);
-				factory.saveNutrition(nutrition);
+				factory.saveNutrition(nutrition, user);
 			} else {
 				if(source.getSkuCode() == null){
 					feedback = "Invalid sku entered, nothing saved";
@@ -110,7 +113,7 @@ public class AttributeControllerTag extends com.freshdirect.framework.webapp.Tag
 		
 	}
 
-	private void doSaveAttributes(ErpModelSupport erpModel) throws JspException {
+	private void doSaveAttributes(ErpModelSupport erpModel, String user, String sapId) throws JspException {
         if (erpModel == null) {
             feedback = "No ERP object to edit";
             return;
@@ -118,7 +121,7 @@ public class AttributeControllerTag extends com.freshdirect.framework.webapp.Tag
         try {
         	feedback = validateAttributes(erpModel);
         	if (feedback == null) {
-        		ErpFactory.getInstance().saveAttributes(erpModel);
+        		ErpFactory.getInstance().saveAttributes(erpModel, user, sapId);
         		feedback = "Attributes saved";
         	}
         } catch (FDResourceException fdre) {

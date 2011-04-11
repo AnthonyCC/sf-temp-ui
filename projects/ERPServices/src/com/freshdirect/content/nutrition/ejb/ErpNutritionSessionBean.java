@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.NutritionInfoAttribute;
 import com.freshdirect.content.nutrition.NutritionValueEnum;
+import com.freshdirect.erp.model.ActivityLog;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -304,7 +306,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
      * database resources.
      */
     public void createNutrition(ErpNutritionModel nutrition) {
-        updateNutrition(nutrition);
+        updateNutrition(nutrition, "");
     }
     
     /** Updates the nutrition information by first deleting all the old information for given
@@ -312,14 +314,33 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
      * @param nutrition Updated Nutrion model
      * @throws EJBException throws EJBException if there is any exception in accessing the database
      */
-    public void updateNutrition(ErpNutritionModel nutrition) {
+    public void updateNutrition(ErpNutritionModel nutrition, String user) {
         
         Connection con = null;
         try {
             con = getConnection();
+            String skuCode = nutrition.getSkuCode();
+            
+            PreparedStatement pstmt = con.prepareStatement("select nutrition_type, uom, value from erps.nutrition where SKU_CODE = ?");
+            pstmt.setString(1, skuCode);
+            ResultSet rset = pstmt.executeQuery();
+            Hashtable<String, String> oldHash = new Hashtable<String, String>();
+            while(rset.next()) {
+            	if(rset.getString(2) == null)
+            		oldHash.put(rset.getString(1) + "|UOM", "");
+            	else
+            		oldHash.put(rset.getString(1) + "|UOM", rset.getString(2));
+            	if(rset.getString(3) == null)
+            		oldHash.put(rset.getString(1), "");
+            	else
+            		oldHash.put(rset.getString(1), rset.getString(3));
+            }
+            if(pstmt != null)
+            	pstmt.close();
+            if(rset != null)
+            	rset.close();
             
             PreparedStatement ps = con.prepareStatement("delete from erps.nutrition where SKU_CODE = ?");
-            String skuCode = nutrition.getSkuCode();
             ps.setString(1, skuCode);
             ps.executeUpdate();
             ps.close();
@@ -329,6 +350,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
 
 			//get timestamp to replace sysdate
 			Timestamp ts = new Timestamp(new Date().getTime());
+			List<ActivityLog> aLog = new ArrayList<ActivityLog>();
 			
             while (it.hasNext()) {
                 String nutritionType = it.next();
@@ -344,6 +366,30 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
 				//use timestamp instead of sysdate
 				ps.setTimestamp(5, ts);
                 
+				//newHash.put(nutritionType + "|UOM", uom);
+				String oldValue = "";
+	            if(oldHash.containsKey(nutritionType + "|UOM")) {
+	            	oldValue = (String) oldHash.get(nutritionType + "|UOM");
+	            }
+	            if(!oldValue.equalsIgnoreCase(uom)) {
+	            	ActivityLog al = new ActivityLog(null, skuCode, "UOM", oldValue, uom, ts, user);
+	            	al.setNutritionType(nutritionType);
+	            	aLog.add(al);
+	            }
+	            
+	            String val_string = value>0?Double.toString(value):"0";
+	            oldValue = "";
+	            if(oldHash.containsKey(nutritionType)) {
+	            	oldValue = (String) oldHash.get(nutritionType);
+	            }
+	            if(!oldValue.equalsIgnoreCase(val_string)) {
+	            	ActivityLog al = new ActivityLog(null, skuCode, "VALUE", oldValue, val_string, ts, user);
+	            	al.setNutritionType(nutritionType);
+	            	aLog.add(al);
+	            	LOGGER.debug(al.toString());
+	            }
+				
+                
                 try {
                     ps.executeUpdate();
                 } catch (SQLException sqle) {
@@ -352,6 +398,13 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
                 }
             }
             ps.close();
+            
+            pstmt = con.prepareStatement("select type, info, priority from erps.nutrition_info where skucode = ?");
+            pstmt.setString(1, skuCode);
+            rset = pstmt.executeQuery();
+            while (rset.next()) {
+            	oldHash.put(ErpNutritionInfoType.getInfoType(rset.getString(1)).getName() +"|" + rset.getString(1) + "|" + rset.getString(3), rset.getString(2));
+            }
             
             ps = con.prepareStatement("delete from erps.nutrition_info where skucode=?");
             ps.setString(1, skuCode);
@@ -366,20 +419,41 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
                     ps.setString(1, skuCode);
                     ps.setString(2, attr.getNutritionInfoType().getCode());
                     ps.setInt(3, attr.getPriority());
+                    String info_value = "";
                     if (attr.getValue() instanceof NutritionValueEnum) {
+                    	//newHash.put(attr.getNutritionInfoType().getName()+ "|"+attr.getNutritionInfoType().getCode(), ((NutritionValueEnum)attr.getValue()).getCode());
+                    	info_value = ((NutritionValueEnum)attr.getValue()).getCode();
                         ps.setString(4, ((NutritionValueEnum)attr.getValue()).getCode());
                     } else {
+                    	//newHash.put(attr.getNutritionInfoType().getName()+ "|"+attr.getNutritionInfoType().getCode(), (String) attr.getValue());
+                    	info_value = (String) attr.getValue();
                         ps.setString(4, (String) attr.getValue());
                     }
     				//use timestamp instead of sysdate
     				ps.setTimestamp(5, ts);
                     ps.executeUpdate();
+                    
+                    String oldValue = "";
+                    String key = attr.getNutritionInfoType().getName()+ "|"+attr.getNutritionInfoType().getCode() + "|" + attr.getPriority();
+    	            if(oldHash.containsKey(key)) {
+    	            	oldValue = (String) oldHash.get(key);
+                }
+    	            if(!oldValue.equalsIgnoreCase(info_value)) {
+    	            	ActivityLog al = new ActivityLog(null, skuCode, "INFO", oldValue, info_value, ts, user);
+    	            	al.setNutInfoType(attr.getNutritionInfoType().getCode());
+    	            	al.setNutritionPriority(attr.getPriority());
+    	            	aLog.add(al);
+    	            	LOGGER.debug(al.toString());
+            }
                 }
             }
             ps.close();
             
+            //call activity log method
+			com.freshdirect.erp.ejb.ErpActivityLogDAO.logActivity(con, aLog);
+            
         } catch (SQLException se) {
-            LOGGER.error("Following SQLException occurred " + se.getMessage());
+            LOGGER.error("Following SQLException occurred " , se);
             throw new EJBException(se.getMessage());
         } finally {
             close(con);

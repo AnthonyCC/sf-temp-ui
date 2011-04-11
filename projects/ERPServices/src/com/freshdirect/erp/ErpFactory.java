@@ -532,7 +532,7 @@ public class ErpFactory {
 		}
 	}
 
-	public void saveAttributes(ErpModelSupport erpModel) throws FDResourceException {
+	public void saveAttributes(ErpModelSupport erpModel, String user, String sapId) throws FDResourceException {
 		if (attributeHome == null) {
 			lookupAttributesHome();
 		}
@@ -552,7 +552,7 @@ public class ErpFactory {
 			//
 			// ask it to save the attributes
 			//
-			atrSB.storeAttributes(attrs);
+			atrSB.storeAttributes(attrs, user, sapId);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
@@ -653,13 +653,13 @@ public class ErpFactory {
 		}
 	}
 
-	public void saveNutrition(ErpNutritionModel nutrition) throws FDResourceException {
+	public void saveNutrition(ErpNutritionModel nutrition, String user) throws FDResourceException {
 		if (nutritionHome == null) {
 			lookupNutritionHome();
 		}
 		try {
 			ErpNutritionSB nutrSB = nutritionHome.create();
-			nutrSB.updateNutrition(nutrition);
+			nutrSB.updateNutrition(nutrition, user);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {

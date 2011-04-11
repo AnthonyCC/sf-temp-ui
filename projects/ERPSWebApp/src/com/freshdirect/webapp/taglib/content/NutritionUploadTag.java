@@ -135,7 +135,7 @@ public class NutritionUploadTag extends AbstractControllerTag {
 					enm.setIngredients(oldEnm.getIngredients());
 				
 				System.out.println("Loading nutrition for " + enm.getSkuCode());
-				sb.updateNutrition(enm);
+				sb.updateNutrition(enm, "");
 				updatedSkus.add(enm.getSkuCode());
 			}
 

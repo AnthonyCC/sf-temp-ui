@@ -106,7 +106,7 @@ public class EshaLoader {
                     enm.setIngredients(oldEnm.getIngredients());
                 
                 System.out.println("Loading nutrition for " + enm.getSkuCode());
-                sb.updateNutrition(enm);
+                sb.updateNutrition(enm, "dataloader");
             }
             
             System.out.println("\n----- normally exiting doLoad() -----");

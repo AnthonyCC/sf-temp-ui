@@ -29,7 +29,7 @@ public interface AttributeFacadeSB extends EJBObject {
 
 	public FlatAttributeCollection getAttributes(String[] rootIds) throws AttributeException, RemoteException;
 	
-	public void storeAttributes(FlatAttributeCollection attributes) throws AttributeException, RemoteException;
+	public void storeAttributes(FlatAttributeCollection attributes, String user, String sapId) throws AttributeException, RemoteException;
 
 }
 

@@ -3,6 +3,7 @@
 <%@ page import='com.freshdirect.content.attributes.*' %>
 <%@ page import='com.freshdirect.webapp.util.FormElementNameHelper' %>
 <%@ page import='com.freshdirect.erp.model.*' %>
+<%@ page import='com.freshdirect.erp.security.SecurityManager' %>
 <%@ page import='java.util.*' %>
 <%@ page import='java.text.DecimalFormat' %>
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -47,7 +48,9 @@ function copyConfirm(value){
             </form>
         </fd:ProductSearch>
 
-
+		<% if(!SecurityManager.isUserAdmin(request)) {%>
+			<%@ include file='/product/product_view_reader.jsp' %>
+		<%} else { %>
             <fd:ErpProduct id="product" skuCode='<%= skuCode %>'>
             <%
                 if ((skuCode == null) && (product != null)) skuCode = product.getSkuCode();
@@ -88,6 +91,7 @@ function copyConfirm(value){
                 <%  if (product.getSkuCode() != null) { %>
                 <form action="product_view.jsp" method="post">
                 <input type=hidden name=action value=save>
+				<input type=hidden name="sku_code" value="<%= skuCode %>">
                 <table width="600" cellspacing="2" cellpadding="0">
                     <tr><th align="left">Default Pricing Unit Description</th></tr>
                     <tr>                    
@@ -146,6 +150,8 @@ function copyConfirm(value){
             <%  } %>
             </fd:ErpProduct>
 
+			<%}%>
+
             <%  if (skuCode != null) { %>
                 <fd:Nutrition id="nutrition" skuCode='<%= skuCode %>'>
 
@@ -154,7 +160,9 @@ function copyConfirm(value){
                     </table>
                     <table width="600">
                         <tr><td><%= nutrition.getIngredients() %></td></tr>
+						<% if(SecurityManager.isUserAdmin(request)) {%>
                         <tr><td align="left"><a href="ingredients_edit.jsp">Edit Ingredients</td></tr>
+						<% } %>
                     </table>
                     <br>
 
@@ -163,7 +171,9 @@ function copyConfirm(value){
                     </table>
                     <table width="600">
                         <tr><td><%= nutrition.getHiddenIngredients() %></td></tr>
+						<% if(SecurityManager.isUserAdmin(request)) {%>
                         <tr><td align="left"><a href="hidden_ingredients_edit.jsp">Edit Hidden Ingredients</td></tr>
+						<% } %>
                     </table>
                     <br>
 
@@ -172,7 +182,9 @@ function copyConfirm(value){
                     </table>
                     <table width="600">
                         <tr><td><%= nutrition.getHeatingInstructions() %></td></tr>
+						<% if(SecurityManager.isUserAdmin(request)) {%>
                         <tr><td align="left"><a href="heating_edit.jsp">Edit Heating Instructions</td></tr>
+						<% } %>
                     </table>
                     <br>
 
@@ -187,7 +199,9 @@ function copyConfirm(value){
                         <tr><td><% if (nutrition.getKosherType() != null) { %>
                             Kosher type: <%= nutrition.getKosherType().getName() %>
                         <% } %></td></tr>
+						<% if(SecurityManager.isUserAdmin(request)) {%>
                         <tr><td align="left"><a href="kosher_edit.jsp">Edit Kosher Information</td></tr>
+						<% } %>
                     </table>
                     <br>
 
@@ -215,7 +229,9 @@ function copyConfirm(value){
                                 </td></tr>
                             </table>
                         </td></tr>
+						<% if(SecurityManager.isUserAdmin(request)) {%>
                         <tr><td align="left"><a href="claims_edit.jsp">Edit Claims, Allergens and Organic Statements</td></tr>
+						<% } %>
                     </table>
                     <br>
 
@@ -223,7 +239,9 @@ function copyConfirm(value){
                         <tr><td align="left" class="section_title">Nutritional Information</td></tr>
                     </table>
                     <table width="600">
+					<% if(SecurityManager.isUserAdmin(request)) {%>
                         <tr><td align="left"><a href="nutrition_edit.jsp">Edit Nutritional Information</td></tr>
+					<% } %>
                         <tr><td align="center">
                             Information source: <%= nutrition.getUomFor(ErpNutritionType.SOURCE) %><br>
                             <br>
@@ -248,11 +266,11 @@ function copyConfirm(value){
                     }
 %>
 <%@ include file="i_nutrition_sheet.jspf" %>
-
                     </td></tr>
                     </table>
                 </fd:Nutrition>
             <%  } %>
+                                
                                 
      </tmpl:put>
 </tmpl:insert>

@@ -136,7 +136,7 @@ public class EZFormLoader {
 				if(enm.getIngredients().equals(""))
 					enm.setIngredients(oldEnm.getIngredients());
 
-                sb.updateNutrition(enm);
+                sb.updateNutrition(enm, "dataloader");
             }
             
             System.out.println("\n----- normally exiting doLoad() -----");

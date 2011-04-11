@@ -31,8 +31,6 @@
 	        <% if (searchResults.size() > 0) { 
                 System.out.println("Found " + searchResults.size() + " products");
             %>
-                <a href="nutrition_info_download.jsp">Download label info for these products</a><br>
-                <a href="label_testing_download.jsp">Download for SAP label testing</a><br>
 	            <%= searchResults.size() %> Products found
 	            <table>
 	                <tr><th>SKU</th><th>Description</th></tr>

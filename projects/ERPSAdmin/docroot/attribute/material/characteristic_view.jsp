@@ -31,6 +31,7 @@
 
                     <form action="characteristic_view.jsp" method="post">
                     <input type=hidden name=action value=save>
+					<input type=hidden name=sapId value="<%= material.getSapId() %>">
 
                     <table>
                         <tr>

@@ -27,7 +27,7 @@ public interface ErpNutritionSB extends EJBObject{
 	 public ErpNutritionModel getNutrition(String skuCode) throws RemoteException;
 	 public Map<String, ErpNutritionModel> loadNutrition(Date lastModified) throws RemoteException;
 	 public void createNutrition(ErpNutritionModel nutrition) throws RemoteException;
-	 public void updateNutrition(ErpNutritionModel nutrition) throws RemoteException;
+	 public void updateNutrition(ErpNutritionModel nutrition, String user) throws RemoteException;
 	 public void removeNutrition(String skuCode) throws RemoteException;
 	 public void createUpcSkuMapping(String skuCode, String upc) throws RemoteException;
 	 public String getSkuCodeForUpc(String upc) throws FinderException, RemoteException;

@@ -1,37 +1,10 @@
 <%@ page import='com.freshdirect.content.attributes.*' %>
 <%@ page import='com.freshdirect.webapp.util.FormElementNameHelper' %>
-<%@ page import='com.freshdirect.erp.security.SecurityManager' %>
 <%@ page import='java.util.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<tmpl:insert template='/common/templates/main.jsp'>
-    <tmpl:put name='title' content='material search page' direct='true'/>
-
-    <tmpl:put name='content' direct='true'>
-
-        <fd:MaterialSearch results="searchResults">
-            <form action="material_search.jsp" method="post">
-                <table width="600" cellspacing=2 cellpadding=0>
-                	<tr><td align="left" class="section_title">Search Materials</td></tr>
-                	<tr><td>
-                		<input name=searchterm type=text size=30 value="<%= searchterm %>">
-                		<input type=submit value="FIND">
-		        		<a href="material_search.jsp">Return to Search Results</a><br>
-                	</td></tr>
-                    <tr><td>
-                            <input type=radio name=searchtype value="SAPID" <%= ("SAPID".equals(searchtype)||"".equals(searchtype))?"CHECKED":"" %>> SAP ID
-                            <input type=radio name=searchtype value="WEBID" <%= "WEBID".equals(searchtype)?"CHECKED":"" %>> Web ID
-                            <input type=radio name=searchtype value="DESCR" <%= "DESCR".equals(searchtype)?"CHECKED":"" %>> SAP Description
-                    </td></tr>
-                </table>
-            </form>
-        </fd:MaterialSearch>
-    
-		<% if(!SecurityManager.isUserAdmin(request)) {%>
-			<%@ include file='/attribute/material/material_view_reader.jsp' %>
-		<%} else { %>
-    
+		
         <fd:Material id='material' sapId='<%= request.getParameter("sapId") %>'>
 
             <fd:AttributeController erpObject="<%= material %>" userMessage="feedback" />
@@ -52,7 +25,7 @@
             <table>
                 <tr><td class="field_title">SAP ID</td><td class="field"><%= material.getSapId() %></td></tr>
                 <tr><td class="field_title">SAP Description</td><td class="field"><%= material.getDescription() %></td></tr>
-                <tr><td class="field_title">Label Name</td><td><input type=text size=60 name='<%= FormElementNameHelper.getFormElementName(material, EnumAttributeName.LABEL_NAME.getName()) %>' value='<%= material.getAttribute(EnumAttributeName.LABEL_NAME) %>'></td></tr>
+                <tr><td class="field_title">Label Name</td><td><%= material.getAttribute(EnumAttributeName.LABEL_NAME) %></td></tr>
                 <tr><td class="field_title">Base Unit</td><td class="field"><%= material.getBaseUnit() %></td></tr>
                 <tr><td class="field_title">ATP Rule</td><td class="field"><%= material.getATPRule().getDisplayName() %></td></tr>
             </table>
@@ -60,27 +33,25 @@
             
             <!-- taxable, promotional and kosher production status -->
             <table cellspacing=2 cellpadding=2>
-                <tr><td class="field_title">Taxable</td><td><%= material.isTaxable()%></td><tr>
-                <tr><td class="field_title">Kosher Production</td><td><%= material.isKosherProduction() %></td><tr>
-                <tr><td class="field_title">Eligible for Perishable Only Promotion</td><td><input type='checkbox' value='true' name='<%= FormElementNameHelper.getFormElementName(material, EnumAttributeName.CUST_PROMO.getName()) %>' <%= (true == material.getAttributeBoolean(EnumAttributeName.CUST_PROMO))?"CHECKED":"" %>></td><tr>
+                <tr><td class="field_title">Taxable:</td><td><%= material.isTaxable()%></td><tr>
+                <tr><td class="field_title">Kosher Production:</td><td><%= material.isKosherProduction() %></td><tr>
+                <tr><td class="field_title">Eligible for Perishable Only Promotion:</td><td> <%= (true == material.getAttributeBoolean(EnumAttributeName.CUST_PROMO))?"YES":"NO" %></td><tr>
             </table>
 
             <!-- bottle deposit amount -->
             <table cellspacing=2 cellpadding=2>
-                <tr><td class="field_title">Deposit amount</td><td><input size='3' name='<%= FormElementNameHelper.getFormElementName(material, EnumAttributeName.DEPOSIT_AMOUNT.getName()) %>' value='<%= material.getAttributeInt(EnumAttributeName.DEPOSIT_AMOUNT) %>'>
+                <tr><td class="field_title">Deposit amount:</td><td><%= material.getAttributeInt(EnumAttributeName.DEPOSIT_AMOUNT) %>
                 (number of returnable bottles/cans in this package)
                 </td><tr>
             </table>
             
             <!-- restrictions -->
 			<table cellspacing=2 cellpadding=2>
-                <tr><td class="field_title">Restrictions</td><td><input size='12' name='<%= FormElementNameHelper.getFormElementName(material, EnumAttributeName.RESTRICTIONS.getName()) %>' value='<%= material.getAttribute(EnumAttributeName.RESTRICTIONS) %>'>
-                (comma separated list of additional delivery restriction reason codes, eg. "TKG,VAL,EAS").
+                <tr><td class="field_title">Restrictions:</td><td><%= material.getAttribute(EnumAttributeName.RESTRICTIONS) %>
                 </td><tr>
             </table>
 			<table cellspacing=2 cellpadding=2>
-                <tr><td class="field_title">Advance Order</td><td><input type='checkbox' name='<%= FormElementNameHelper.getFormElementName(material, EnumAttributeName.ADVANCE_ORDER_FLAG.getName()) %>' <%= (true == material.getAttributeBoolean(EnumAttributeName.ADVANCE_ORDER_FLAG))?"CHECKED":"" %>>
-                product qualifies for 'advance order' timeslots
+                <tr><td class="field_title">Advance Order:</td><td><%= (true == material.getAttributeBoolean(EnumAttributeName.ADVANCE_ORDER_FLAG))?"product qualifies for 'advance order' timeslots":"product does 'not' qualifies for 'advance order' timeslots" %>                
                 </td><tr>
             </table>
 			
@@ -94,18 +65,12 @@
                     <td><%= salesUnit.getNumerator() %> / <%= salesUnit.getDenominator() %></td>
                     <td><%= salesUnit.getBaseUnit() %></td>
                     <td><%= salesUnit.getDescription() %></td>
-                    <td><input type=text size=40 name='<%= FormElementNameHelper.getFormElementName(salesUnit, EnumAttributeName.DESCRIPTION.getName()) %>' value='<%= salesUnit.getAttribute(EnumAttributeName.DESCRIPTION) %>'></td>
-                    <td align=left><input type=radio name='selected' value='<%= FormElementNameHelper.getFormElementName(salesUnit, EnumAttributeName.SELECTED.getName()) %>' <%= (true == salesUnit.getAttributeBoolean(EnumAttributeName.SELECTED))?"CHECKED":"" %>>
-                    <%
-                     if (idx.intValue()==0) { %>
-                        &nbsp;&nbsp;Clear Selected:<input type="radio" name="selected" value="clearSelected" onClick="clearSelected();">
-                     <% } %>
+                    <td><%= salesUnit.getAttribute(EnumAttributeName.DESCRIPTION) %></td>
+                    <td align=left><%= (true == salesUnit.getAttributeBoolean(EnumAttributeName.SELECTED))?"Selected":"" %>
                     </td>
                 </tr>
                 </logic:iterate>
-                <tr><td colspan=5 align=center><table cellpadding=2><tr>
-                    <td align=right><input type=button value=cancel></td><td align=left><input type=submit value="save changes"></td>
-                </tr></td></table></tr>
+                <tr><td colspan=5 align=center></tr>
             </table>
             
 
@@ -130,7 +95,6 @@
             %>
             <logic:iterate id="charac" collection="<%= chs %>" type="com.freshdirect.erp.model.ErpCharacteristicModel">
                 <table>
-                    <tr><td colspan=2 align=center><a href="characteristic_view.jsp?characteristic=<%= charac.getName() %>">Edit</a></td></tr>
                     <!-- characteristic attributes -->
                     <tr><td class="field_title">Characteristic</td><td class="field"><%= charac.getName() %></td></tr>
                     <tr><td class="field_title">Description</td><td class="field"><%= charac.getAttribute(EnumAttributeName.DESCRIPTION) %></td></tr>
@@ -188,8 +152,3 @@
 
         </fd:Material>
 
-		<%} %>
-
-    </tmpl:put>
-
-</tmpl:insert>

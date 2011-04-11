@@ -1,5 +1,6 @@
 <%@ page import='com.freshdirect.webapp.util.FormElementNameHelper' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
+<%@ page import='com.freshdirect.erp.security.SecurityManager' %>
 <%@ page import='java.util.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -26,6 +27,7 @@
 
             <form action="class_view.jsp" method="post">
             <input type=hidden name=action value=save>
+			<input type=hidden name=sapId value="<%= request.getParameter("sapId") %>">
 
                 <fd:AttributeController erpObject="<%= erpClass %>" userMessage="feedback" />
                 
@@ -50,25 +52,28 @@
                 <logic:iterate id="charac" collection="<%= chs %>" type="com.freshdirect.erp.model.ErpCharacteristicModel">
                     <tr>
                         <td><%= charac.getName() %></td>
-                        <td><select name="<%= FormElementNameHelper.getFormElementName(charac, EnumAttributeName.PRIORITY.getName()) %>">
+                        <td><% if(SecurityManager.isUserAdmin(request)) {%>
+						<select name="<%= FormElementNameHelper.getFormElementName(charac, EnumAttributeName.PRIORITY.getName()) %>">
                             <option>
                             <% for (int i=1;i<erpClass.numberOfCharacteristics()+1;i++) {
                                 out.print("<option");
                                 if (i == charac.getAttributeInt(EnumAttributeName.PRIORITY)) out.print(" SELECTED");
                                     out.println(">" + i);
                             } %>
-                        </select></td>
-                        <td><a href="characteristic_view.jsp?characteristic=<%= charac.getName() %>">View/Edit</a></td>
+                        </select>
+						<% } else {%>
+						<%= charac.getAttributeInt(EnumAttributeName.PRIORITY) %>
+						<% } %>
+						</td>
+                        <td><% if(SecurityManager.isUserAdmin(request)) {%>
+						<a href="characteristic_view.jsp?characteristic=<%= charac.getName() %>">View/Edit</a>
+						<% } else {%>
+						<a href="characteristic_view_reader.jsp?characteristic=<%= charac.getName() %>">View</a>
+						<% } %>
+						</td>
                     </tr>
                 </logic:iterate>
-                    <tr>
-                        <td colspan=3 align=center>
-                            <table cellpadding=2>
-                                <tr><td align=right><input type=button value=cancel></td><td align=left><input type=submit value="save changes"></td></tr>
                             </table>
-                        </td>
-                    </tr>
-                 </table>
 
             </form>
 

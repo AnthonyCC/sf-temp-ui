@@ -16,6 +16,7 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,6 +32,7 @@ import com.freshdirect.content.attributes.FlatAttribute;
 import com.freshdirect.content.attributes.FlatAttributeCollection;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.erp.model.ActivityLog;
 
 /**
  *
@@ -43,6 +45,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  */
 public class AttributeFacadeSessionBean extends SessionBeanSupport {
 
+	private static final long serialVersionUID = 1L;
 	private static Category LOGGER = LoggerFactory.getInstance(AttributeFacadeSessionBean.class);
 	private final static boolean DEBUG = false;
 
@@ -214,7 +217,7 @@ public class AttributeFacadeSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public void storeAttributes(FlatAttributeCollection attributes) throws AttributeException {
+	public void storeAttributes(FlatAttributeCollection attributes, String user, String sapId) throws AttributeException {
 
 		FlatAttribute[] rawAttributes = attributes.getFlatAttributes();
 
@@ -229,22 +232,65 @@ public class AttributeFacadeSessionBean extends SessionBeanSupport {
 			}
 
 			// remove everything below them
+			PreparedStatement ps1 = conn.prepareStatement("select root_id, child1_ID, child2_ID, atr_type, atr_name, atr_value from erps.attributes where root_id = ?");
 			PreparedStatement ps = conn.prepareStatement("delete from erps.attributes where root_id = ?");
+			ResultSet rset = null;
+			java.util.Hashtable<String,ActivityLog> oldHash = new java.util.Hashtable<String,ActivityLog>();
+			//get timestamp to replace sysdate
+			Timestamp ts = new Timestamp(new Date().getTime());
+			
 			for (Iterator i = rootIds.iterator(); i.hasNext();) {
-				ps.setString(1, (String) i.next());
+				/*
+				 * Swathi: Before removing everything read them into hash. 
+				 * We need to save these old values for a while for audit trail			  
+				 */
+				String root_id = (String) i.next();
+				LOGGER.debug("RootID: " + root_id);
+				ps1.setString(1, root_id);
+				rset = ps1.executeQuery();
+				while(rset.next()) {
+					StringBuffer sb = new StringBuffer(rset.getString("root_id"));
+					sb.append("|");
+					if(rset.getString("child1_ID") != null) {						
+						sb.append(rset.getString("child1_ID"));
+						sb.append("|");
+					}
+					if(rset.getString("child2_ID") != null) {
+						sb.append(rset.getString("child2_ID"));
+						sb.append("|");
+					}
+					sb.append(rset.getString("atr_name"));
+					String key = sb.toString();
+					String value = rset.getString("atr_value");
+					ActivityLog al = new ActivityLog(sapId, null, "ATTR_VALUE", value, null, ts, user);
+	            	al.setRootId(rset.getString("root_id"));
+	            	al.setChild1Id(rset.getString("child1_ID"));
+	            	al.setChild2Id(rset.getString("child2_ID"));
+	            	al.setAtrType(rset.getString("atr_type"));
+	            	al.setAtrName(rset.getString("atr_name"));
+					oldHash.put(key, al);
+				}
+				//now delete them
+				ps.setString(1, root_id);
 				ps.executeUpdate();
 			}
 
+			LOGGER.debug("OldHash = " + oldHash);
+
 			ps.close();
+			if(ps1 != null)
+				ps1.close();
+			if(rset != null)
+				rset.close();
 
 			// store new attributes			
 			ps = conn.prepareStatement(
 					"insert into erps.attributes (id, root_id, child1_id, child2_id, atr_type, atr_name, atr_value, date_modified) values (?, ?, ?, ?, ?, ?, ?, ?)");
 			
-			//get timestamp to replace sysdate
-			Timestamp ts = new Timestamp(new Date().getTime());
+			List<ActivityLog> aLog = new ArrayList<ActivityLog>();
 
 			for (int i = 0; i < rawAttributes.length; i++) {
+				StringBuffer sb = new StringBuffer();
 				FlatAttribute ra = rawAttributes[i];
 				if ((ra.getValue() == null) || ("".equals(ra.getValue())))
 					continue;
@@ -252,6 +298,11 @@ public class AttributeFacadeSessionBean extends SessionBeanSupport {
 				ps.clearParameters();
 				ps.setString(1, getNextId(conn, "ERPS"));
 				ps.setString(2, ids[0]);
+				sb.append(ids[0]);
+				sb.append("|");
+				String value = ra.getValue().toString();
+				String child1 = null;
+				String child2 = null;
 				switch (ids.length) {
 					case 1 :
 						ps.setNull(3, Types.VARCHAR);
@@ -260,15 +311,25 @@ public class AttributeFacadeSessionBean extends SessionBeanSupport {
 					case 2 :
 						ps.setString(3, ids[1]);
 						ps.setNull(4, Types.VARCHAR);
+						child1 = ids[1];
+						sb.append(ids[1]);
+						sb.append("|");
 						break;
 					case 3 :
 						ps.setString(3, ids[1]);
 						ps.setString(4, ids[2]);
+						child1 = ids[1];
+						child2 = ids[2];
+						sb.append(ids[1]);
+						sb.append("|");
+						sb.append(ids[2]);
+						sb.append("|");
 						break;
 					default :
 						getSessionContext().setRollbackOnly();
 						throw new AttributeException("Attribute hierarchy too deep " + ra);
 				}
+				sb.append(ra.getName());
 
 				ps.setString(5, ra.getAttributeType().getName());
 				ps.setString(6, ra.getName());
@@ -280,9 +341,40 @@ public class AttributeFacadeSessionBean extends SessionBeanSupport {
 					getSessionContext().setRollbackOnly();
 					throw new AttributeException("Update failed");
 				}
+				
+				LOGGER.debug("newvalue:" + value);
+				if(sb != null && value != null) {					
+					String key = sb.toString();
+					String oldValue = "";
+					if(oldHash.containsKey(key)) {
+		            	oldValue = ((ActivityLog) oldHash.get(key)).getOldValue();
+		            	oldHash.remove(key);
+			}
+		            if(!oldValue.equalsIgnoreCase(value)) {
+		            	ActivityLog al = new ActivityLog(sapId, null, "ATTR_VALUE", oldValue, value, ts, user);
+		            	al.setRootId(ids[0]);
+		            	al.setChild1Id(child1);
+		            	al.setChild2Id(child2);
+		            	al.setAtrType(ra.getAttributeType().getName());
+		            	al.setAtrName(ra.getName());
+		            	aLog.add(al);
+		            	LOGGER.debug("ActivityLog:" + al.toString());
+		            }
+				}				
 			}
 
 			ps.close();
+
+			Enumeration e = oldHash.keys();
+			//iterate through Hashtable keys Enumeration
+			while(e.hasMoreElements()) {
+				String key = (String) e.nextElement();
+				ActivityLog al = (ActivityLog) oldHash.get(key);
+				aLog.add(al);
+			}
+			
+			//call activity log method
+			com.freshdirect.erp.ejb.ErpActivityLogDAO.logActivity(conn, aLog);
 
 		} catch (SQLException se) {
 			getSessionContext().setRollbackOnly();
