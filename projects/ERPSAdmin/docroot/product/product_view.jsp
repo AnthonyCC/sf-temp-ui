@@ -49,7 +49,7 @@ function copyConfirm(value){
         </fd:ProductSearch>
 
 		<% if(!SecurityManager.isUserAdmin(request)) {%>
-			<%@ include file='/product/product_view_reader.jsp' %>
+			<%@ include file='/product/product_view_reader.jspf' %>
 		<%} else { %>
             <fd:ErpProduct id="product" skuCode='<%= skuCode %>'>
             <%
