@@ -9,7 +9,7 @@ CREATE TABLE IssueLog
     VendorName VARCHAR2 (40) DEFAULT  '' NOT NULL ,   
     IssueType NUMBER (10) NOT NULL , 
     IssueSubType NUMBER (10) NOT NULL , 
-    Comments VARCHAR2 (200) DEFAULT  '' NOT NULL , 
+    Comments VARCHAR2 (200) DEFAULT  '', 
     IssueLocation VARCHAR2 (40) DEFAULT  '' NOT NULL , 
     IssueSide VARCHAR2 (40) DEFAULT  '' NOT NULL , 
     ReportingDriver VARCHAR2 (60) DEFAULT  '' NOT NULL , 

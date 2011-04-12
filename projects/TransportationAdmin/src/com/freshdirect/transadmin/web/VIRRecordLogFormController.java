@@ -22,6 +22,7 @@ import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.MaintenanceIssue;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.Zone;
+import com.freshdirect.transadmin.service.AssetManagerI;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
@@ -39,10 +40,17 @@ public class VIRRecordLogFormController extends AbstractFormController {
 
 	private DomainManagerI domainManagerService;
 
-	private DispatchManagerI dispatchManagerService;
-
 	private EmployeeManagerI employeeManagerService;
 	
+	private AssetManagerI assetManagerService;
+	
+	public AssetManagerI getAssetManagerService() {
+		return assetManagerService;
+	}
+
+	public void setAssetManagerService(AssetManagerI assetManagerService) {
+		this.assetManagerService = assetManagerService;
+	}
 	
 	public DomainManagerI getDomainManagerService() {
 		return domainManagerService;
@@ -50,14 +58,6 @@ public class VIRRecordLogFormController extends AbstractFormController {
 
 	public void setDomainManagerService(DomainManagerI domainManagerService) {
 		this.domainManagerService = domainManagerService;
-	}
-	
-	public DispatchManagerI getDispatchManagerService() {
-		return dispatchManagerService;
-	}
-
-	public void setDispatchManagerService(DispatchManagerI dispatchManagerService) {
-		this.dispatchManagerService = dispatchManagerService;
 	}
 
 	public EmployeeManagerI getEmployeeManagerService() {
@@ -76,7 +76,7 @@ public class VIRRecordLogFormController extends AbstractFormController {
 		if("true".equalsIgnoreCase(isRefreshReqd)){
 			domainManagerService.refreshCachedData(EnumCachedDataType.TRUCK_DATA);
 		}
-		refData.put("trucks",  domainManagerService.getTrucks());
+		refData.put("truckAssets",  getAssetManagerService().getAssets("TRUCK"));
 		
 		List drivers = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.DRIVER.getName()));
 		drivers.addAll(DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.MANAGER.getName())));
@@ -141,15 +141,7 @@ public class VIRRecordLogFormController extends AbstractFormController {
 		errorList = MaintenanceLogUtil.processVIRRecord(errorList, model, domainManagerService);
 				
 		return errorList;
-	}
-	
-	public void saveErrorMessage(HttpServletRequest request, Object msg) {
-		List messages = (List)msg;
-		if (messages != null) {
-			messages.add(getMessage("app.actionmessage.109", new Object[]{}));
-		}
-		super.saveErrorMessage(request, msg);
-	}	
+	}		
 
 	protected void onBind(HttpServletRequest request, Object command) {
 

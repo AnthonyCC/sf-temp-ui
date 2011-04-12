@@ -563,7 +563,7 @@
 	
 	<bean id="vitRecordLogFormController" class="com.freshdirect.transadmin.web.VIRRecordLogFormController">
 		<property name="domainManagerService" ref="domainManager"/>
-		<property name="dispatchManagerService" ref="dispatchManager"/>
+		<property name="assetManagerService" ref="assetManagerService"/>
         <property name="employeeManagerService" ref="employeeManager"/>        
 		<property name="sessionForm" value="true"/>
         <property name="commandName" value="virRecordForm"/>
@@ -575,7 +575,7 @@
 	
 	<bean id="maintenanceLogFormController" class="com.freshdirect.transadmin.web.MaintenanceLogFormController">
 		<property name="domainManagerService" ref="domainManager"/>
-		<property name="dispatchManagerService" ref="dispatchManager"/>
+		<property name="assetManagerService" ref="assetManagerService"/>
         <property name="employeeManagerService" ref="employeeManager"/>        
 		<property name="sessionForm" value="true"/>
         <property name="commandName" value="maintenanceRecordForm"/>

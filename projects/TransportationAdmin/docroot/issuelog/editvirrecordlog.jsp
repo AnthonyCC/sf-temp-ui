@@ -67,6 +67,7 @@
 		<br/> 
 		<div>
 		  <form:form commandName = "virRecordForm" method="post">
+				 <form:hidden path="subTypeId" />
 		 		<table width="100%" cellpadding="0" cellspacing="0" border="0">
 				  <tr>
 					<td class="screentitle">
@@ -96,7 +97,7 @@
 								  <td>                  
 									<form:select path="truckNumber">
 							                <form:option value="" label="--Please Select Truck"/>
-										    <form:options items="${trucks}" itemLabel="truckNumber" itemValue="truckNumber" />
+										    <form:options items="${truckAssets}" itemLabel="assetNo" itemValue="assetNo" />
 					                </form:select>
 								  </td>
 								  <td>

@@ -16,10 +16,7 @@
 		pageTitle = "VIR Record";
 	}else if("M".equalsIgnoreCase(recordType)) {
 		pageTitle = "Maintenance Record";
-	}else{
-		pageTitle = "Closed Record";
 	}
-
 	String truckNumberVal = request.getParameter("truckNumber") != null ? request.getParameter("truckNumber") : "";
 %>
 <tmpl:insert template='/common/sitelayout.jsp'>
@@ -98,7 +95,7 @@
 							  <option value=""></option> 
 							  <c:forEach var="e" items="${employees}">
 								  <c:choose>
-									<c:when test="${employee == e.cutOffId}" > 
+									<c:when test="${employee == e.employeeId}" > 
 									  <option selected value="<c:out value="${e.employeeId}"/>"><c:out value="${e.name}"/></option>
 									</c:when>
 									<c:otherwise> 
@@ -161,7 +158,7 @@
 					  <ec:column property="comments" title="Comments" />
   					  <ec:column property="maintenanceIssue.id" title="Maintenance IssueID" />
     				  <ec:column cell="bool" property="maintenanceIssue.truckInService" title="In Service?" />
-  					  <ec:column cell="issueStatusCell" property="maintenanceIssue.issueStatus" title="Issue Status" />
+  					  <!--<ec:column cell="issueStatusCell" property="maintenanceIssue.issueStatus" title="Issue Status" />-->
   					  <ec:column property="driver" title="Reporting Driver" />
   					  <ec:column property="createdBy" title="Entered By" />
 					</ec:row>

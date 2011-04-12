@@ -27,6 +27,7 @@ import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.MaintenanceIssue;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.Zone;
+import com.freshdirect.transadmin.service.AssetManagerI;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
@@ -43,26 +44,25 @@ import com.freshdirect.transadmin.model.VIRRecord;
 public class MaintenanceLogFormController extends AbstractFormController {
 
 	private DomainManagerI domainManagerService;
-
-	private DispatchManagerI dispatchManagerService;
-
+	
 	private EmployeeManagerI employeeManagerService;
 	
+	private AssetManagerI assetManagerService;
 	
+	public AssetManagerI getAssetManagerService() {
+		return assetManagerService;
+	}
+
+	public void setAssetManagerService(AssetManagerI assetManagerService) {
+		this.assetManagerService = assetManagerService;
+	}
+
 	public DomainManagerI getDomainManagerService() {
 		return domainManagerService;
 	}
 
 	public void setDomainManagerService(DomainManagerI domainManagerService) {
 		this.domainManagerService = domainManagerService;
-	}
-	
-	public DispatchManagerI getDispatchManagerService() {
-		return dispatchManagerService;
-	}
-
-	public void setDispatchManagerService(DispatchManagerI dispatchManagerService) {
-		this.dispatchManagerService = dispatchManagerService;
 	}
 
 	public EmployeeManagerI getEmployeeManagerService() {
@@ -81,7 +81,7 @@ public class MaintenanceLogFormController extends AbstractFormController {
 		if("true".equalsIgnoreCase(isRefreshReqd)){
 			domainManagerService.refreshCachedData(EnumCachedDataType.TRUCK_DATA);
 		}
-		refData.put("trucks",  domainManagerService.getTrucks());
+		refData.put("truckAssets",  getAssetManagerService().getAssets("TRUCK"));
 		
 		List drivers = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.DRIVER.getName()));
 		drivers.addAll(DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.MANAGER.getName())));
@@ -160,6 +160,7 @@ public class MaintenanceLogFormController extends AbstractFormController {
 								|| EnumIssueStatus.REVERIFIED.getName().equalsIgnoreCase(_command.getIssueStatus()))){
 					_command.setRepairedBy(getUserId(request));
 					_command.setIssueStatus(EnumIssueStatus.RESOLVED.getName());
+					_command.setServiceStatus(EnumServiceStatus.INSERVICE.getDescription());
 				}
 				if(_command.getVerifiedBy() == null 
 						&& EnumIssueStatus.OPEN.getName().equalsIgnoreCase(_command.getIssueStatus())){

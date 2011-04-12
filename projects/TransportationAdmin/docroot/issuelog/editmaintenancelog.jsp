@@ -112,7 +112,7 @@
 								  <td>                  
 									<form:select path="truckNumber" disabled="${hasId}">
 											<form:option value="" label="--Please Select Truck"/>
-											<form:options items="${trucks}" itemLabel="truckNumber" itemValue="truckNumber" />
+											<form:options items="${truckAssets}" itemLabel="assetNo" itemValue="assetNo" />
 									</form:select>
 								  </td>
 								  <td>

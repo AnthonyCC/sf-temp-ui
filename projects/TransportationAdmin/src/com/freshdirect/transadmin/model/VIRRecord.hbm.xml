@@ -25,7 +25,7 @@
             <column name="ISSUESUBTYPE" length="10" not-null="true"/>
         </many-to-one>        
         <property name="comments" type="string">
-            <column name="COMMENTS" length="200" not-null="true"/>
+            <column name="COMMENTS" length="200" />
         </property>        
         <property name="damageLocation" type="string">
             <column name="ISSUELOCATION" length="45" not-null="true"/>

@@ -52,7 +52,7 @@ public class MaintenanceLogUtil {
 			mIssue.setIssueSide(command.getIssueSide());
 			mIssue.setModifiedDate(new Timestamp(System.currentTimeMillis()));
 			mIssue.setVendor(command.getVendor());
-			mIssue.setServiceStatus(EnumServiceStatus.INSERVICE.getName());
+			mIssue.setServiceStatus(EnumServiceStatus.INSERVICE.getDescription());
 			mIssue.setIssueStatus(EnumIssueStatus.OPEN.getName());
 			
 			try{				
@@ -60,7 +60,7 @@ public class MaintenanceLogUtil {
 				command.setMaintenanceIssue(mIssue);
 				domainManagerService.saveEntityEx(command);
 			}catch(Exception e){
-				errorList.add("Problem in saving VIR Issue");
+				errorList.add("Adding VIR Record failed.");
 			}
 		}	
 		

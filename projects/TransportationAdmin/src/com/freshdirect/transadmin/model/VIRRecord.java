@@ -23,7 +23,19 @@ public class VIRRecord extends BaseCommand {
 	private String createdBy;
 	private EmployeeInfo reportingDriver;
 	private String driver;
-	private MaintenanceIssue maintenanceIssue;	
+	private MaintenanceIssue maintenanceIssue;
+	private String subTypeId;
+	
+	public String getSubTypeId() {
+		if(getIssueSubType() == null)
+			return null;
+		subTypeId = getIssueSubType().getIssueSubTypeId();	
+		return subTypeId;
+	}
+
+	public void setSubTypeId(String subTypeId) {
+		this.subTypeId = subTypeId;
+	}
 	
 	public String getIssueSide() {
 		return issueSide;
