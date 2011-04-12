@@ -87,6 +87,8 @@ public class SessionInput implements Cloneable {
 	 */
 	private int prioritizedCount = 0;
 	
+	private boolean brandUniqSort = false;
+	
 	protected SessionInput() {
 	}
 	
@@ -407,6 +409,14 @@ public class SessionInput implements Cloneable {
 	
 	public void setPrioritizedCount( int prioritizedCount ) {
 		this.prioritizedCount = prioritizedCount;
+	}
+
+	public void setBrandUniqSort( boolean brandUniqSort ) {
+		this.brandUniqSort = brandUniqSort;
+	}
+
+	public boolean isBrandUniqSort() {
+		return brandUniqSort;
 	}
 
 	@Override

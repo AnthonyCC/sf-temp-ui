@@ -80,7 +80,7 @@ public class ErpCharacteristicModel extends ErpModelSupport implements DurableMo
 	 *
 	 * @return collection of ErpCharacteristicValueModel objects
 	 */
-	public List getCharacteristicValues() {
+	public List<ErpCharacteristicValueModel> getCharacteristicValues() {
 		return Collections.unmodifiableList( this.characteristicValues );
 	}
 

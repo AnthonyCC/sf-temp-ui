@@ -1,6 +1,5 @@
 package com.freshdirect.smartstore;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.apache.commons.lang.enums.Enum;
@@ -10,7 +9,7 @@ import org.apache.commons.lang.enums.Enum;
  * @author istvan
  *
  */
-public class RecommendationServiceType extends Enum implements Serializable {
+public class RecommendationServiceType extends Enum {
 
 	// generated id.
 	private static final long serialVersionUID = -14506744566071264L;
@@ -82,7 +81,8 @@ public class RecommendationServiceType extends Enum implements Serializable {
 	 * Helper to make a list of enums.
 	 * @return
 	 */
-	public static List all() {
+	@SuppressWarnings( "unchecked" )
+	public static List<RecommendationServiceType> all() {
 	    return getEnumList(RecommendationServiceType.class);
 	}
 

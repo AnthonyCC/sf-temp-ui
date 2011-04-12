@@ -1,22 +1,14 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore;
 
 import java.io.Serializable;
 
 /**
  * Lightweight class representing a SKU code / version pair.
- *
- * @version $Revision$
- * @author $Author$
+ * 
  */
 public class FDSku implements Serializable {
+
+	private static final long	serialVersionUID	= -535972609840131406L;
 
 	/** SKU code */
 	private final String skuCode;

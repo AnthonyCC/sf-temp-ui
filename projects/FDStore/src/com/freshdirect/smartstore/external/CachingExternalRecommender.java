@@ -27,9 +27,9 @@ class CachingExternalRecommender implements ExternalRecommender {
 				items = new IndexedList<RecommendationItem>(items);
 				cache.put(request, items);
 				return items;
-			} else
-				return Collections.emptyList();
-		} else
-			return originalRecommender.recommendItems(request);
+			}
+			return Collections.emptyList();
+		}
+		return originalRecommender.recommendItems(request);
 	}
 }

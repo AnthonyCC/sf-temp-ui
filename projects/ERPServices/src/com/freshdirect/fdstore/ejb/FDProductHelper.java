@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore.ejb;
 
 import java.rmi.RemoteException;
@@ -25,7 +17,6 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.common.pricing.util.DealsHelper;
 import com.freshdirect.content.attributes.AttributeCollection;
@@ -39,8 +30,6 @@ import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
-import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
-import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.erp.PricingFactory;
 import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceEB;
 import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceHome;
@@ -50,11 +39,10 @@ import com.freshdirect.erp.model.ErpCharacteristicModel;
 import com.freshdirect.erp.model.ErpCharacteristicValueModel;
 import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
 import com.freshdirect.erp.model.ErpMaterialModel;
-import com.freshdirect.erp.model.ErpMaterialPriceModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
+import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
 import com.freshdirect.erp.model.ErpProductModel;
 import com.freshdirect.erp.model.ErpSalesUnitModel;
-import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
 import com.freshdirect.fdstore.EnumAvailabilityStatus;
 import com.freshdirect.fdstore.FDAttributeCache;
 import com.freshdirect.fdstore.FDGroup;
@@ -70,7 +58,6 @@ import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.ZonePriceInfoListing;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
-import com.freshdirect.fdstore.ZonePriceModel;
 import com.freshdirect.framework.core.VersionedPrimaryKey;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -78,8 +65,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 /**
  *
  *
- * @version $Revision$
- * @author $Author$
  */
 class FDProductHelper {
 
@@ -105,7 +90,7 @@ class FDProductHelper {
 		
 		
 		
-	// build Pricing object
+		// build Pricing object
 		Pricing pricing = this.getPricing(product.getProxiedMaterial());
 		
 		// get version
@@ -138,9 +123,9 @@ class FDProductHelper {
 				material.getBlockedDays());
 		
 		// Construct FDNutrition from ErpNutritionModel.value map
-		ArrayList nutrition = new ArrayList();
-		for (Iterator nIter = nutrModel.getKeyIterator(); nIter.hasNext(); ) {
-			String key = (String) nIter.next();
+		ArrayList<FDNutrition> nutrition = new ArrayList<FDNutrition>();
+		for (Iterator<String> nIter = nutrModel.getKeyIterator(); nIter.hasNext(); ) {
+			String key = nIter.next();
 			FDNutrition fdn = new FDNutrition(ErpNutritionType.getType(key).getDisplayName(), nutrModel.getValueFor(key), nutrModel.getUomFor(key));
 			nutrition.add(fdn);
 		}
@@ -156,8 +141,7 @@ class FDProductHelper {
 		if ("TEST".equals(s)){
 			status = EnumAvailabilityStatus.DISCONTINUED;
 		} else {
-			status = (EnumAvailabilityStatus) NVL.apply(EnumAvailabilityStatus.getEnumByStatusCode(erpProductInfo.getUnavailabilityStatus()),
-				EnumAvailabilityStatus.AVAILABLE);
+			status = NVL.apply(EnumAvailabilityStatus.getEnumByStatusCode(erpProductInfo.getUnavailabilityStatus()), EnumAvailabilityStatus.AVAILABLE);
 		}
 		
 
@@ -168,9 +152,9 @@ class FDProductHelper {
 		if(erpProductInfo.getUnavailabilityStatus() == null || !erpProductInfo.getUnavailabilityStatus().equals(EnumAvailabilityStatus.DISCONTINUED)){
 			//Form zone price listing only if product is not discontinued.
 			String sapZoneId = "";
-			List subList = new ArrayList<ErpMaterialPrice>();
-			for(Iterator it = matPrices.iterator() ; it.hasNext();){
-				ErpMaterialPrice matPrice = (ErpMaterialPrice) it.next();
+			List<ErpMaterialPrice> subList = new ArrayList<ErpMaterialPrice>();
+			for(Iterator<ErpMaterialPrice> it = matPrices.iterator() ; it.hasNext();){
+				ErpMaterialPrice matPrice = it.next();
 				
 				if(sapZoneId.length() == 0 || sapZoneId.equals(matPrice.getSapZoneId())){
 					subList.add(matPrice);
@@ -199,11 +183,11 @@ class FDProductHelper {
 				remote = this.grpHome.create();
 				group = remote.getGroupIdentityForMaterial(erpProductInfo.getMaterialSapIds()[0]);
 			} catch (RemoteException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				throw new FDResourceException( e1 );
 			} catch (CreateException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				throw new FDResourceException( e1 );
 			}					
 		}
 		return new FDProductInfo(
@@ -223,17 +207,15 @@ class FDProductHelper {
 	
 	}
 	
-	 private Comparator matlPriceComparator = new Comparator() {
-	        public int compare(Object obj1, Object obj2) {
-	        	ErpMaterialPrice price1 = (ErpMaterialPrice) obj1;
-	        	ErpMaterialPrice price2 = (ErpMaterialPrice) obj2;
+	 private Comparator<ErpMaterialPrice> matlPriceComparator = new Comparator<ErpMaterialPrice>() {
+	        public int compare(ErpMaterialPrice price1, ErpMaterialPrice price2) {
 	            if (price1.getScaleQuantity() == price2.getScaleQuantity()) return 0;
 	            else if (price1.getScaleQuantity() < price2.getScaleQuantity()) return -1;
 	            else return 1;
 	        }
 	    };
 
-	private ZonePriceInfoModel buildZonePriceInfo(String skuCode, List matPriceList, String sapZoneId) {
+	private ZonePriceInfoModel buildZonePriceInfo(String skuCode, List<ErpMaterialPrice> matPriceList, String sapZoneId) {
 		double defaultPrice=0.0;
 		String defaultPriceUnit = "";
 		double promoPrice = 0.0;
@@ -244,12 +226,12 @@ class FDProductHelper {
 		
 		if(matPriceList.size()>1)
 		{
-			List newSubList=new ArrayList();
+			List<ErpMaterialPrice> newSubList=new ArrayList<ErpMaterialPrice>();
 			Collections.sort(matPriceList, matlPriceComparator);												
-			ErpMaterialPrice basePrice=(ErpMaterialPrice)matPriceList.get(0);
+			ErpMaterialPrice basePrice=matPriceList.get(0);
 			newSubList.add(basePrice);						
 			for(int i=1;i<matPriceList.size();i++){								
-				ErpProductInfoModel.ErpMaterialPrice nextPrice=(ErpProductInfoModel.ErpMaterialPrice)matPriceList.get(i);								
+				ErpProductInfoModel.ErpMaterialPrice nextPrice=matPriceList.get(i);								
 				//ErpMaterialPriceModel nextPrice=(ErpMaterialPriceModel)erpPrices[i];
 				if(basePrice.getPromoPrice()>0){
 				    if(basePrice.getPromoPrice()>=nextPrice.getPrice())
@@ -267,7 +249,7 @@ class FDProductHelper {
 			matPriceList=newSubList;
 		}										 						
 		
-		ErpMaterialPrice matPrice = (ErpMaterialPrice) matPriceList.get(0);
+		ErpMaterialPrice matPrice = matPriceList.get(0);
 		if(matPrice.getScaleUnit().length() == 0){
 			//no scales
 			defaultPrice = matPrice.getPrice();
@@ -278,7 +260,7 @@ class FDProductHelper {
 											
 			//Collections.sort(matPriceList, PricingFactory.scaleQuantityComparator);
 			//Get the lowet scale quantity element from the list which is the first element after sorting.
-			matPrice = (ErpProductInfoModel.ErpMaterialPrice) matPriceList.get(0);
+			matPrice = matPriceList.get(0);
 			defaultPrice = matPrice.getPrice();
 			defaultPriceUnit = matPrice.getUnit();
 			promoPrice = matPrice.getPromoPrice();
@@ -293,7 +275,7 @@ class FDProductHelper {
 		
 		boolean isShowBurstImage = DealsHelper.isShowBurstImage(defaultPrice,promoPrice);;
 		
-		ErpMaterialPrice[] matPrices = (ErpMaterialPrice[]) matPriceList.toArray(new ErpMaterialPrice[0]);
+		ErpMaterialPrice[] matPrices = matPriceList.toArray(new ErpMaterialPrice[0]);
 		int tieredDeal = DealsHelper.determineTieredDeal(defaultPrice, matPrices);
 		if (tieredDeal > 0 && DealsHelper.isDealOutOfBounds(tieredDeal)) {
 			//LOGGER.debug("tiered deal is out of bounds for SKU " + erpProductInfo.getSkuCode());
@@ -321,7 +303,7 @@ class FDProductHelper {
 				);
 	}
 	
-	protected void bindAttributes(ErpProductModel product) throws FDResourceException {
+	protected void bindAttributes(ErpProductModel product) {
 		
 		GetRootNodesErpVisitor rootNodesVisitor = new GetRootNodesErpVisitor(product);
 		String[] rootIds = rootNodesVisitor.getRootIds();
@@ -352,10 +334,8 @@ class FDProductHelper {
 		}
 	}
 
-	private static class SalesUnitComparator implements Comparator {
-		public int compare(Object o1, Object o2) {
-			ErpSalesUnitModel su1 = (ErpSalesUnitModel) o1;
-			ErpSalesUnitModel su2 = (ErpSalesUnitModel) o2;
+	private static class SalesUnitComparator implements Comparator<ErpSalesUnitModel> {
+		public int compare(ErpSalesUnitModel su1, ErpSalesUnitModel su2) {
 			double ratio1 = ((double)su1.getNumerator()) / ((double)su1.getDenominator());
 			double ratio2 = ((double)su2.getNumerator()) / ((double)su2.getDenominator());
 			if (ratio1 < ratio2)
@@ -367,14 +347,14 @@ class FDProductHelper {
 		}
 	}
 
-	protected FDSalesUnit[] getSalesUnits(List erpSalesUnits) {
-		List suList = new ArrayList( erpSalesUnits );
+	protected FDSalesUnit[] getSalesUnits(List<ErpSalesUnitModel> erpSalesUnits) {
+		List<ErpSalesUnitModel> suList = new ArrayList<ErpSalesUnitModel>( erpSalesUnits );
 		
 		Collections.sort(suList, new SalesUnitComparator() );
 		
 		FDSalesUnit[] salesUnits = new FDSalesUnit[suList.size()];
 		for (int i=0; i<salesUnits.length; i++) {
-			ErpSalesUnitModel su = (ErpSalesUnitModel) suList.get(i);
+			ErpSalesUnitModel su = suList.get(i);
 			if (DEBUG) LOGGER.debug("Setting SalesUnit attributes from "+su);
 
 			// get attributes
@@ -386,10 +366,10 @@ class FDProductHelper {
 		return salesUnits;
 	}
 
-	protected FDVariation[] getVariations(List chList) {
+	protected FDVariation[] getVariations(List<ErpCharacteristicModel> chList) {
 		FDVariation[] variations = new FDVariation[chList.size()];
 		for (int i=0; i<variations.length; i++) {
-			ErpCharacteristicModel ch = (ErpCharacteristicModel) chList.get(i);
+			ErpCharacteristicModel ch = chList.get(i);
 
 			if (DEBUG) LOGGER.debug("Setting Variation attributes from "+ch);
 			// get attributes
@@ -400,26 +380,26 @@ class FDProductHelper {
 		return variations;
 	}
 
-	private static class VariationOptionComparator extends AttributeComparator.Priority {
-		public int compare(Object o1, Object o2) {
+	private static class VariationOptionComparator extends AttributeComparator.Priority<ErpCharacteristicValueModel> {
+		public int compare(ErpCharacteristicValueModel o1, ErpCharacteristicValueModel o2) {
 			int prio = super.compare(o1, o2);
 			if (prio!=0) {
 				return prio;
 			}
-			String a1 = ((ErpCharacteristicValueModel)o1).getDescription();
-			String a2 = ((ErpCharacteristicValueModel)o2).getDescription();
+			String a1 = o1.getDescription();
+			String a2 = o2.getDescription();
 			return a1.compareTo(a2);
 		}
 	}
 
 	protected FDVariationOption[] getVariationOptions(ErpCharacteristicModel characteristic) {
-		List cvList = new ArrayList( characteristic.getCharacteristicValues() );
+		List<ErpCharacteristicValueModel> cvList = new ArrayList<ErpCharacteristicValueModel>( characteristic.getCharacteristicValues() );
 
 		Collections.sort(cvList, new VariationOptionComparator() );
 
 		FDVariationOption[] variationOptions = new FDVariationOption[cvList.size()];
 		for (int i=0; i<variationOptions.length; i++) {
-			ErpCharacteristicValueModel cv = (ErpCharacteristicValueModel) cvList.get(i);
+			ErpCharacteristicValueModel cv = cvList.get(i);
 
 			if (DEBUG) LOGGER.debug("Setting VariationOption attributes from "+cv);
 			// get attributes
@@ -436,13 +416,13 @@ class FDProductHelper {
 		}
 		
 		try {
-			Collection cvPriceEBs = this.charValueHome.findByMaterial( (VersionedPrimaryKey)material.getPK() );
+			Collection<ErpCharacteristicValuePriceEB> cvPriceEBs = this.charValueHome.findByMaterial( (VersionedPrimaryKey)material.getPK() );
 			ErpCharacteristicValuePriceModel[] cvPrices = new ErpCharacteristicValuePriceModel[cvPriceEBs.size()];
 			
 			// create model array
 			int count=0;
-			for (Iterator i=cvPriceEBs.iterator(); i.hasNext(); count++) {
-				cvPrices[count]= (ErpCharacteristicValuePriceModel) ((ErpCharacteristicValuePriceEB)i.next()).getModel();
+			for (Iterator<ErpCharacteristicValuePriceEB> i=cvPriceEBs.iterator(); i.hasNext(); count++) {
+				cvPrices[count]= (ErpCharacteristicValuePriceModel) i.next().getModel();
 			}
 			
 						

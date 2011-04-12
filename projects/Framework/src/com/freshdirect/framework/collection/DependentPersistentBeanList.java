@@ -14,8 +14,10 @@ import java.util.*;
  * @version $Revision$
  * @author $Author$
  */ 
-public abstract class DependentPersistentBeanList extends PersistentBeanList {
+public abstract class DependentPersistentBeanList<E extends DependentPersistentBeanI> extends PersistentBeanList<E> {
 
+	private static final long	serialVersionUID	= 7633700635750134770L;
+	
 	/** Primary key of parent object
      */
 	private PrimaryKey parentPK;
@@ -40,7 +42,7 @@ public abstract class DependentPersistentBeanList extends PersistentBeanList {
 	public void setParentPK(PrimaryKey parentPK) {
 		this.parentPK = parentPK;
 		if (!this.isEmpty()) {
-			for (Iterator i=this.iterator(); i.hasNext(); ) {
+			for (Iterator<E> i=this.iterator(); i.hasNext(); ) {
 				applyParentPK(i.next()); 
 			}
 		}
@@ -57,21 +59,20 @@ public abstract class DependentPersistentBeanList extends PersistentBeanList {
 	
     /** private helper method to set the parent primary key of a dependent child bean
      * @param obj the dependent child object to set the parent primary key on
-     * @return the child object after theprimary key has been applied
+     * @return the child object after the primary key has been applied
      */    
-	private DependentPersistentBeanI applyParentPK(Object obj) {
-		DependentPersistentBeanI bean = (DependentPersistentBeanI) obj;
+	private E applyParentPK(E bean) {
 		bean.setParentPK( this.parentPK );
 		return bean;
 	}
 	
-	////////////////// overriden add stuff //////////////////
+	////////////////// overridden add stuff //////////////////
 
     /** adds a dependent child object to this collection
      * @param obj the dependent child object to add
      * @return true
      */    
-	public synchronized boolean add(Object obj) {
+	public synchronized boolean add(E obj) {
 		return super.add( applyParentPK(obj) );
 	}
 
@@ -79,16 +80,16 @@ public abstract class DependentPersistentBeanList extends PersistentBeanList {
      * @param idx the position in the collection to add the child object at
      * @param obj the child object to add
      */    
-	public synchronized void add(int idx, Object obj) {
+	public synchronized void add(int idx, E obj) {
 		super.add(idx, applyParentPK(obj));
 	}
 	
     /** adds all of the dependent child objects in the collection to this collection
-     * @param coll the collectionof child objects to add
+     * @param coll the collection of child objects to add
      * @return true if the list was modified
      */    
-	public synchronized boolean addAll(Collection coll) {
-		for (Iterator i=coll.iterator(); i.hasNext(); ) {
+	public synchronized boolean addAll(Collection<? extends E> coll) {
+		for (Iterator<? extends E> i=coll.iterator(); i.hasNext(); ) {
 			applyParentPK( i.next() );
 		}
 		return super.addAll(coll);
@@ -99,41 +100,41 @@ public abstract class DependentPersistentBeanList extends PersistentBeanList {
      * @param coll the collection of child objects to add
      * @return true if the list was modified
      */    
-	public synchronized boolean addAll(int idx, Collection coll) {
-		for (Iterator i=coll.iterator(); i.hasNext(); ) {
+	public synchronized boolean addAll(int idx, Collection<? extends E> coll) {
+		for (Iterator<? extends E> i=coll.iterator(); i.hasNext(); ) {
 			applyParentPK( i.next() );
 		}
 		return super.addAll(idx, coll);
 	}
 
-	////////////////// overriden set stuff //////////////////
+	////////////////// overridden set stuff //////////////////
 
     /** replaces a child object at the specified index
      * @param idx the index at which to replace the child object
      * @param obj the new object to replace the previous object with
      * @return the child object previous at the specified position
      */    
-	public synchronized Object set(int idx, Object obj) {
+	public synchronized E set(int idx, E obj) {
 		return super.set(idx, applyParentPK(obj));
 	}
 	
-	public synchronized void update(ModelSupport element) {
+	public synchronized void update(E element) {
 		this.applyParentPK(element);
 		super.update(element);
 	}
 
 
-	public static interface DependentFactory {
-		public DependentPersistentBeanI createBeanFromModel(ModelI model);		
+	public static interface DependentFactory<T extends DependentPersistentBeanI> {
+		public T createBeanFromModel(T model);		
 	}
 
-	public void setDependentsFromModel(DependentFactory factory, Collection col){
+	public void setDependentsFromModel(DependentFactory<E> factory, Collection<E> col){
 
 		if (this.isEmpty()) {
-			List persistentBeans = new ArrayList();
-			for (Iterator i=col.iterator(); i.hasNext(); ) {
-				ModelI model = (ModelI) i.next();
-				DependentPersistentBeanI pb = factory.createBeanFromModel(model);
+			List<E> persistentBeans = new ArrayList<E>();
+			for (Iterator<E> i=col.iterator(); i.hasNext(); ) {
+				E model = i.next();
+				E pb = factory.createBeanFromModel(model);
 				this.applyParentPK(pb);
 				persistentBeans.add( pb );
 			}
@@ -141,22 +142,22 @@ public abstract class DependentPersistentBeanList extends PersistentBeanList {
 			return;
 		}
 
-		Map currentItems = new HashMap(this.size());
+		Map<PrimaryKey,E> currentItems = new HashMap<PrimaryKey,E>(this.size());
 		
-		for (Iterator i = this.iterator(); i.hasNext(); ) {
-			PersistentBeanI pb = (PersistentBeanI)i.next();
+		for (Iterator<E> i = this.iterator(); i.hasNext(); ) {
+			E pb = i.next();
 			currentItems.put(pb.getPK(), pb);
 		}
 
-		for (Iterator i = col.iterator(); i.hasNext(); ) {
-			ModelI model = (ModelI)i.next();
+		for (Iterator<E> i = col.iterator(); i.hasNext(); ) {
+			E model = i.next();
 			if (model.isAnonymous()) {
-				DependentPersistentBeanI pb = factory.createBeanFromModel(model);
+				E pb = factory.createBeanFromModel(model);
 				this.applyParentPK(pb);
 				this.add(pb);
 
 			} else {
-				PersistentBeanI pb = (PersistentBeanI)currentItems.get(model.getPK());
+				PersistentBeanI pb = currentItems.get(model.getPK());
 				
 				if (pb!=null) {
 					pb.setFromModel(model);
@@ -165,8 +166,8 @@ public abstract class DependentPersistentBeanList extends PersistentBeanList {
 			}
 		}
 		
-		for(Iterator i = currentItems.values().iterator(); i.hasNext(); ){
-			PersistentBeanI pb = (PersistentBeanI)i.next();
+		for(Iterator<E> i = currentItems.values().iterator(); i.hasNext(); ){
+			PersistentBeanI pb = i.next();
 			this.removeByPK(pb.getPK());
 		}
 		

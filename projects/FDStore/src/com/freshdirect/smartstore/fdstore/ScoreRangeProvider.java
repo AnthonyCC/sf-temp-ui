@@ -33,7 +33,7 @@ public interface ScoreRangeProvider {
 	 * @param userId customer id, may be null for non-personalized factors
 	 * @return
 	 */
-	public List products(String userId);
+	public List<String> products(String userId);
 	
 	/**
 	 * If there is some caching involved, purge that cache.

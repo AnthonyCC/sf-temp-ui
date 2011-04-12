@@ -102,17 +102,17 @@ public class ScoreProvider implements DataAccess {
 	 */
 	protected static abstract class DatabaseScoreRangeProvider implements ScoreRangeProvider {
 	
-		private Map factorIndexes = new HashMap();
-		private List factors;
+		private Map<String,Number> factorIndexes = new HashMap<String,Number>();
+		private List<String> factors;
 		
 		// products in a particular order
-		private List products = null;
+		private List<String> products = null;
 		
 		// double arrays in the same order as factorIndexes.values() 
 		// thus factors
 		// values in the same order as products
 		// List<double[]>
-		private List values = null;
+		private List<double[]> values = null;
 		
 		
 		public void purge() {
@@ -120,7 +120,7 @@ public class ScoreProvider implements DataAccess {
 			values = null;
 		}
 		
-		protected List getProductNames() {
+		protected List<String> getProductNames() {
 			return products;
 		}
 		
@@ -130,12 +130,12 @@ public class ScoreProvider implements DataAccess {
 	 
 		/**
 		 * 
-		 * @param dbProductScores assumed to contain only the scores in good order Map<ProductId:String,Scores:doube[]>
+		 * @param dbProductScores assumed to contain only the scores in good order Map<ProductId:String,Scores:double[]>
  		 */
-		protected void reCache(Map dbProductScores) {
+		protected void reCache(Map<String,double[]> dbProductScores) {
 			
-			List newProducts = new ArrayList(dbProductScores.size());
-			List newValues = new ArrayList(factorIndexes.size());
+			List<String> newProducts = new ArrayList<String>(dbProductScores.size());
+			List<double[]> newValues = new ArrayList<double[]>(factorIndexes.size());
 
 			for(int i = 0; i<  factorIndexes.size(); ++i) {
 				newValues.add(new double[dbProductScores.size()]);
@@ -143,16 +143,16 @@ public class ScoreProvider implements DataAccess {
 			
 				
 			int r = 0;
-			for(Iterator i = dbProductScores.entrySet().iterator(); i.hasNext(); ++r) {
-				Map.Entry entry = (Map.Entry)i.next();
+			for(Iterator<Map.Entry<String,double[]>> i = dbProductScores.entrySet().iterator(); i.hasNext(); ++r) {
+				Map.Entry<String,double[]> entry = i.next();
 				newProducts.add(entry.getKey());
 				int c = 0;
-				for(Iterator j = factors.iterator(); j.hasNext(); ++c) {
+				for(Iterator<String> j = factors.iterator(); j.hasNext(); ++c) {
 						
 					String factor = j.next().toString();
-					int idx = ((Number)factorIndexes.get(factor)).intValue();
-					double[] scores = (double[])entry.getValue();
-					double[] range = (double[])newValues.get(c);
+					int idx = factorIndexes.get(factor).intValue();
+					double[] scores = entry.getValue();
+					double[] range = newValues.get(c);
 					range[r] = scores[idx];
 				}
 			}
@@ -163,24 +163,24 @@ public class ScoreProvider implements DataAccess {
 			}
 		}
 		
-		protected DatabaseScoreRangeProvider(List factors) {
+		protected DatabaseScoreRangeProvider(List<String> factors) {
 			this.factors = factors;
 			int idx = 0;
-			for(Iterator i = factors.iterator(); i.hasNext();++idx) {
+			for(Iterator<String> i = factors.iterator(); i.hasNext();++idx) {
 				factorIndexes.put(i.next(), new Integer(idx));
 			}
 		}
 		
-		protected List getFactorNames() {
+		protected List<String> getFactorNames() {
 			return factors;
 		}
 		
 		protected int getFactorIndex(String factor) {
-			return ((Number)factorIndexes.get(factor)).intValue();
+			return factorIndexes.get(factor).intValue();
 		}
 		
 		protected double[] getCachedRange(String factor) {
-			return (double[])values.get(((Number)factorIndexes.get(factor)).intValue());
+			return values.get(factorIndexes.get(factor).intValue());
 		}
 	}
 	
@@ -195,12 +195,12 @@ public class ScoreProvider implements DataAccess {
 			}
 		}
 					
-		protected GlobalScoreRangeProvider(List factors) {
+		protected GlobalScoreRangeProvider(List<String> factors) {
 			super(factors);
 		}
 		
 
-		public List products(String userId) {
+		public List<String> products(String userId) {
 			cache(userId);
 			return getProductNames();
 		}
@@ -218,7 +218,7 @@ public class ScoreProvider implements DataAccess {
 		
 		private String userId = null;
 		
-		protected PersonalizedScoreRangeProvider(List factors) {
+		protected PersonalizedScoreRangeProvider(List<String> factors) {
 			super(factors);
 		}
 		
@@ -255,15 +255,15 @@ public class ScoreProvider implements DataAccess {
 	 * Information for factors;
 	 */
 	protected class FactorInfo {
-		private Comparator lowerCaseComparator = new Comparator() {
+		private Comparator<String> lowerCaseComparator = new Comparator<String>() {
 
-			public int compare(Object s1, Object s2) {
+			public int compare(String s1, String s2) {
 				return s1.toString().compareToIgnoreCase(s2.toString());
 			}
 		};
 		
-		private SortedSet globalDBFactors = new TreeSet(lowerCaseComparator);
-		private SortedSet personalizedDBFactors = new TreeSet(lowerCaseComparator);
+		private SortedSet<String> globalDBFactors = new TreeSet<String>(lowerCaseComparator);
+		private SortedSet<String> personalizedDBFactors = new TreeSet<String>(lowerCaseComparator);
 		
 		private FactorInfo() {	
 			reloadNames();
@@ -304,15 +304,15 @@ public class ScoreProvider implements DataAccess {
         // Score indexes tell what position the score is stored in globalScores or personalizesScores
         // in the double array
 	protected Map<String, Integer> globalIndexes = new TreeMap<String, Integer>();
-        protected Map<String, Integer> personalizedIndexes = new TreeMap<String, Integer>();
+    protected Map<String, Integer> personalizedIndexes = new TreeMap<String, Integer>();
         
         
-        // Map<ContentKey, double[]>
-        protected Map<ContentKey, double[]> globalScores = new HashMap<ContentKey, double[]>();
-        
-        // SessionCache<UserId:String, SessionCache.TimedEntry<Map<ContentKey,double[]>>>
-        private SessionCache<String, SessionCache.TimedEntry<Map<ContentKey,double[]>>> personalizedScores 
-            = new SessionCache<String, SessionCache.TimedEntry<Map<ContentKey,double[]>>>(FDStoreProperties.getSmartstorePersonalizedScoresCacheEntries(),0.75f);
+    // Map<ContentKey, double[]>
+    protected Map<ContentKey, double[]> globalScores = new HashMap<ContentKey, double[]>();
+    
+    // SessionCache<UserId:String, SessionCache.TimedEntry<Map<ContentKey,double[]>>>
+    private SessionCache<String, SessionCache.TimedEntry<Map<ContentKey,double[]>>> personalizedScores 
+        = new SessionCache<String, SessionCache.TimedEntry<Map<ContentKey,double[]>>>(FDStoreProperties.getSmartstorePersonalizedScoresCacheEntries(),0.75f);
         
 
 	/**
@@ -366,14 +366,14 @@ public class ScoreProvider implements DataAccess {
 	 * 
 	 * @return
 	 */
-	public Set getNonPersonalizedFactors() {
-            Set result = new HashSet();
+	public Set<String> getNonPersonalizedFactors() {
+            Set<String> result = new HashSet<String>();
             result.addAll(storeLookups.keySet());
-            for (Iterator iter=rangeConverters.entrySet().iterator();iter.hasNext();) {
-                Map.Entry e = (Entry) iter.next();
-                FactorRangeConverter converter = (FactorRangeConverter) e.getValue();
+            for (Iterator<Map.Entry<String, FactorRangeConverter>> iter=rangeConverters.entrySet().iterator();iter.hasNext();) {
+                Map.Entry<String, FactorRangeConverter> e = iter.next();
+                FactorRangeConverter converter = e.getValue();
                 if (!converter.isPersonalized()) {
-                    String name = (String) e.getKey();
+                    String name = e.getKey();
                     result.add(name);
                 }
             }
@@ -391,7 +391,7 @@ public class ScoreProvider implements DataAccess {
 				);
 			} catch (Exception e) {
 				LOGGER.debug("Could not load personalized scores for " + userId, e);
-				return Collections.EMPTY_MAP;
+				return Collections.emptyMap();
 			}
 			LOGGER.info("Caching personalized scores for " + userId);
 			personalizedScores.put(userId,entry);
@@ -446,9 +446,9 @@ public class ScoreProvider implements DataAccess {
 			if (contentNode == null) {
 				result[i] = 0;
 			} else if (personalizedIndexes.containsKey(var)) { // personalized factor
-				result[i] = getPersonalizedScore(userId,contentNode.getContentKey(),((Number)personalizedIndexes.get(var)).intValue());
+				result[i] = getPersonalizedScore(userId,contentNode.getContentKey(),personalizedIndexes.get(var).intValue());
 			} else if (globalIndexes.containsKey(var)) {
-				result[i] = getGlobalScore(contentNode.getContentKey(),((Number)globalIndexes.get(var)).intValue());
+				result[i] = getGlobalScore(contentNode.getContentKey(),globalIndexes.get(var).intValue());
 			} else if (storeLookups.containsKey(var)) {
 				result[i] = (storeLookups.get(var)).getVariable(contentNode, pricingContext);
 			} else if (var.startsWith(EXTERNAL_PERSONALIZED_PREFIX)) {
@@ -538,10 +538,10 @@ public class ScoreProvider implements DataAccess {
 		} else if ("PurchaseHistory".equals(name)) {
 			if (input.getCustomerId() != null) {
 				try {
-					Map scores = storePersonalizedScores(input.getCustomerId());
-					List result = new ArrayList(scores.size());
-					for(Iterator i = scores.keySet().iterator(); i.hasNext();) {
-						ContentKey key = (ContentKey)i.next();
+					Map<ContentKey,double[]> scores = storePersonalizedScores(input.getCustomerId());
+					List<ContentNodeModel> result = new ArrayList<ContentNodeModel>(scores.size());
+					for(Iterator<ContentKey> i = scores.keySet().iterator(); i.hasNext();) {
+						ContentKey key = i.next();
 						try {
 						    ContentNodeModel nodeModel = ContentFactory.getInstance().getContentNodeByKey(key);
 						    if (nodeModel!=null) {
@@ -572,7 +572,7 @@ public class ScoreProvider implements DataAccess {
         		return Collections.emptyMap();
         	}
 
-            Map scores = storePersonalizedScores(erpCustomerId);
+            Map<ContentKey,double[]> scores = storePersonalizedScores(erpCustomerId);
             
             if (scores != null && !scores.isEmpty()) {
                 Number position = (personalizedIndexes.get(ORIGINAL_SCORES_PERSONALIZED));
@@ -794,13 +794,13 @@ public class ScoreProvider implements DataAccess {
 	}
 	
 	
-	private Map loadPersonalizedDBScores(String erpCustomerId) throws Exception {
+	private Map<ContentKey,double[]> loadPersonalizedDBScores(String erpCustomerId) throws Exception {
 		
 		ScoreRangeProvider personalScores = ((PersonalizedScoreRangeProvider)personalizedScoreRangeProvider).replicate();
 		
 		List products = personalScores.products(erpCustomerId);
 		
-		Map result = new HashMap(5*products.size()/3+1,0.75f);
+		Map<ContentKey,double[]> result = new HashMap<ContentKey,double[]>(5*products.size()/3+1,0.75f);
 		
 		for(Iterator i = products.iterator(); i.hasNext();) {
 			result.put(new ContentKey(FDContentTypes.PRODUCT,i.next().toString()), new double[personalizedIndexes.size()]);
@@ -817,13 +817,13 @@ public class ScoreProvider implements DataAccess {
 		return result;
 	}
 
-    private void storeScores(List products, Map result, Map.Entry entry, double[] values) {
+    private void storeScores(List products, Map<ContentKey,double[]> result, Map.Entry entry, double[] values) {
         if (values.length != products.size()) {
         	throw new FDRuntimeException(
         		"Product list length and range values size differ: " + values.length + " and " + products.size());
         }
         for(int j=0; j< values.length; ++j) {
-        	double[] productScores = ((double[])result.get(new ContentKey(FDContentTypes.PRODUCT,products.get(j).toString())));
+        	double[] productScores = result.get(new ContentKey(FDContentTypes.PRODUCT,products.get(j).toString()));
         	productScores[((Number)entry.getValue()).intValue()] = values[j];
         }
     }
@@ -842,23 +842,23 @@ public class ScoreProvider implements DataAccess {
 			final String[] factors = new String[personalizedIndexes.size() + globalIndexes.size() + storeLookups.size()];
 			
 			int j = 0;
-			for(Iterator i = personalizedIndexes.keySet().iterator(); i.hasNext();++j) {
+			for(Iterator<String> i = personalizedIndexes.keySet().iterator(); i.hasNext();++j) {
 				String factor = i.next().toString();
 				factors[j] = factor;
 			}
 			
-			for(Iterator i = globalIndexes.keySet().iterator(); i.hasNext(); ++j) {
+			for(Iterator<String> i = globalIndexes.keySet().iterator(); i.hasNext(); ++j) {
 				String factor = i.next().toString();
 				factors[j] = factor;
 				
 			}
 			
-			for(Iterator i = storeLookups.keySet().iterator(); i.hasNext();++j) {
+			for(Iterator<String> i = storeLookups.keySet().iterator(); i.hasNext();++j) {
 				String factor = i.next().toString();
 				factors[j] = factor;
 			}
 			
-			final List values = new ArrayList();
+			final List<List<Comparable>> values = new ArrayList<List<Comparable>>();
 			
 			for(Iterator i = userIds.iterator(); i.hasNext();) {
 				String userId = i.next().toString();
@@ -868,7 +868,7 @@ public class ScoreProvider implements DataAccess {
 				
 				for(Iterator pi = productIds.iterator(); pi.hasNext();) {
 					String productId = pi.next().toString();
-					List row = new ArrayList(factors.length + 2);
+					List<Comparable> row = new ArrayList<Comparable>(factors.length + 2);
 					row.add(userId);
 					row.add(productId);
 					
@@ -893,7 +893,7 @@ public class ScoreProvider implements DataAccess {
 					}
 				}
 
-				public Iterator getRows() {
+				public Iterator<List<Comparable>> getRows() {
 					return values.iterator();
 				}
 			};
@@ -914,13 +914,13 @@ public class ScoreProvider implements DataAccess {
 				factors[j] = factor;
 			}
 			
-			final List values = new ArrayList();
+			final List<List<Comparable>> values = new ArrayList<List<Comparable>>();
 			
 			Set productIds = DatabaseScoreFactorProvider.getInstance().getGlobalProducts();
 			
 			for(Iterator pi = productIds.iterator(); pi.hasNext();) {
 				String productId = pi.next().toString();
-				List row = new ArrayList(factors.length + 1);
+				List<Comparable> row = new ArrayList<Comparable>(factors.length + 1);
 				row.add(productId);
 				
 				double[] scores = getVariables(null, pricingCtx, new ContentKey(FDContentTypes.PRODUCT, productId), factors);
@@ -942,7 +942,7 @@ public class ScoreProvider implements DataAccess {
 					}
 				}
 
-				public Iterator getRows() {
+				public Iterator<List<Comparable>> getRows() {
 					return values.iterator();
 				}
 				

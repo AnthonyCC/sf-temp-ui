@@ -22,6 +22,7 @@ import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class AllDealsCache {
+	
 	private static final Logger LOGGER = LoggerFactory.getInstance(AllDealsCache.class);
 
 	private static final Logger LOGGER_LOADER = LoggerFactory.getInstance(Loader.class);
@@ -138,11 +139,10 @@ public class AllDealsCache {
 
 			if (dealIndex < 0)
 				return Math.max(value[0][zoneIndex], value[1][zoneIndex]);
-			else
-				return value[dealIndex][zoneIndex];
-		} else {
-			return 0.;
-		}
+			
+			return value[dealIndex][zoneIndex];
+		}		
+		return 0.;
 	}
 
 	// synchronized protects only the lastRefresh and initialized variables
@@ -161,7 +161,7 @@ public class AllDealsCache {
      */
     public void forceReload() {
         if (initialized) {
-        	// reload cach asynchronously
+        	// reload cache asynchronously
         	LOGGER.info("reloading deals cache asynchronously");
         	cacheThreadPool.execute(new Loader());
         } else {

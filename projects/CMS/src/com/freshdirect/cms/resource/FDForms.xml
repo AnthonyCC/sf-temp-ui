@@ -1241,6 +1241,7 @@
                             <CmsField><attribute>generator</attribute></CmsField>
                             <CmsField><attribute>scoring</attribute></CmsField>
                             <CmsField><attribute>show_temp_unavailable</attribute></CmsField>
+                            <CmsField><attribute>brand_uniq_sort</attribute></CmsField>
                         </fields>
                     </CmsSection>
                     <CmsSection>

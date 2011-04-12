@@ -41,7 +41,7 @@
 </TR>
 </TABLE>
 <%@ include file="/includes/ckt_acct/i_delivery_address_field.jspf" %><br><br>
-<%//@ include file="/includes/ckt_acct/i_delivery_special_field.jspf" %><BR><BR>
+<BR><BR>
 <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="675">
 <TR VALIGN="TOP" BGCOLOR="#FF9933">
 	<TD WIDTH="675" COLSPAN="2"><IMG src="/media_stat/images/layout/ff9933.gif" HSPACE="0" WIDTH="1" HEIGHT="1" BORDER="0"></TD>

@@ -134,12 +134,14 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
 		return "EnumSiteFeature[" + name + "]";
 	}
 	
+	@SuppressWarnings( "unused" )
 	protected static void loadDynamicSiteFeatures() {
 		synchronized (loaded) {
 			if (loaded.isReset()) {
 				if (mocked.isReset()) {
 					Iterator<DynamicSiteFeature> it = SmartStoreServiceConfiguration.getInstance().loadDynamicSiteFeatures().iterator();
 					while (it.hasNext()) {
+						// creating an instance for side effects
 						new EnumSiteFeature( it.next() );
 					}
 				}
@@ -230,19 +232,19 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
 		return title;
 	}
 	
-        public static List<EnumSiteFeature> getSmartStoreEnumList() {
-            List<EnumSiteFeature> list = new ArrayList<EnumSiteFeature>();
-    
-            Iterator<EnumSiteFeature> it = iterator();
-            while (it.hasNext()) {
-                EnumSiteFeature sf = it.next();
-                if (sf.isSmartStore) {
-                    list.add(sf);
-                }
+    public static List<EnumSiteFeature> getSmartStoreEnumList() {
+        List<EnumSiteFeature> list = new ArrayList<EnumSiteFeature>();
+
+        Iterator<EnumSiteFeature> it = iterator();
+        while (it.hasNext()) {
+            EnumSiteFeature sf = it.next();
+            if (sf.isSmartStore) {
+                list.add(sf);
             }
-    
-            return list;
         }
+
+        return list;
+    }
 
 	public static List<EnumSiteFeature> getSmartSavingsFeatureList() {
 		List<EnumSiteFeature> list = new ArrayList<EnumSiteFeature>();

@@ -49,8 +49,8 @@ import com.freshdirect.smartstore.sampling.ListSampler;
 import com.freshdirect.smartstore.sampling.SimpleLimit;
 
 public class RecommendationServiceFactory {
-	private static final Logger LOGGER = LoggerFactory
-			.getInstance(RecommendationServiceFactory.class);
+	
+	private static final Logger LOGGER = LoggerFactory.getInstance(RecommendationServiceFactory.class);
 
 	public static final String CKEY_SAMPLING_STRATEGY = "sampling_strat";
 	public static final String CKEY_TOP_PERC = "top_perc";
@@ -63,6 +63,7 @@ public class RecommendationServiceFactory {
 	public static final String CKEY_FI_LABEL = "fi_label";
 	
 	public static final String CKEY_SHOW_TEMP_UNAVAILABLE = "show_temp_unavailable";
+	public static final String CKEY_BRAND_UNIQ_SORT = "brand_uniq_sort";
 
 	public static final String CKEY_CAT_AGGR = "cat_aggr";
 	public static final String CKEY_INCLUDE_CART_ITEMS = "include_cart_items";
@@ -862,19 +863,19 @@ public class RecommendationServiceFactory {
 		return exponent;
 	}
 
-	public static RecommendationServiceConfig createServiceConfig(
-			RecommenderStrategy strat) {
+	public static RecommendationServiceConfig createServiceConfig( RecommenderStrategy strat ) {
 		RecommendationServiceConfig config = new RecommendationServiceConfig(
-				"cms_" + strat.getContentName(),
-				RecommendationServiceType.SCRIPTED);
-		config.set(CKEY_SAMPLING_STRATEGY, strat.getSampling());
-		config.set(CKEY_TOP_N, Integer.toString(strat.getTopN()));
-		config.set(CKEY_TOP_PERC, Double.toString(strat.getTopPercent()));
-		config.set(CKEY_EXPONENT, Double.toString(strat.getExponent()));
-		config.set(CKEY_SHOW_TEMP_UNAVAILABLE, Boolean.toString(strat.isShowTemporaryUnavailable()));
-		config.set(CKEY_GENERATOR, strat.getGenerator());
-		config.set(CKEY_SCORING, strat.getScoring());
-		config.set(CKEY_USE_ALTS, Boolean.FALSE.toString());
+				"cms_" + strat.getContentName(), RecommendationServiceType.SCRIPTED);
+		
+		config.set( CKEY_SAMPLING_STRATEGY, strat.getSampling() );
+		config.set( CKEY_TOP_N, Integer.toString( strat.getTopN() ) );
+		config.set( CKEY_TOP_PERC, Double.toString( strat.getTopPercent() ) );
+		config.set( CKEY_EXPONENT, Double.toString( strat.getExponent() ) );
+		config.set( CKEY_SHOW_TEMP_UNAVAILABLE, Boolean.toString( strat.isShowTemporaryUnavailable() ) );
+		config.set( CKEY_BRAND_UNIQ_SORT, Boolean.toString( strat.isBrandUniqSort() ) );
+		config.set( CKEY_GENERATOR, strat.getGenerator() );
+		config.set( CKEY_SCORING, strat.getScoring() );
+		config.set( CKEY_USE_ALTS, Boolean.FALSE.toString() );
 		return config;
 	}
 }

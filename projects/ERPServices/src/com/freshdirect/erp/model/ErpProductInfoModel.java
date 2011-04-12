@@ -1,12 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.erp.model;
 
 import java.io.Serializable;
@@ -25,7 +16,12 @@ import com.freshdirect.framework.core.ModelSupport;
  */
 public class ErpProductInfoModel extends ModelSupport {
 	
+	private static final long	serialVersionUID	= -8185580401974680369L;
+
 	public static class ErpMaterialPrice implements Serializable{
+		
+		private static final long	serialVersionUID	= 610096190678790338L;
+
 		private final double price;
 		
 		private final String unit;

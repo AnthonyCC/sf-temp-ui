@@ -37,7 +37,7 @@ public class ProductStatisticsProvider {
         /**
          * Global product frequency map, Map<@link {@link ContentKey},Float>.
          */
-        protected Map globalProductScores = new HashMap();
+        protected Map<ContentKey,Float> globalProductScores = new HashMap<ContentKey,Float>();
         
 	/**
 	 * Get provider instance.
@@ -79,7 +79,7 @@ public class ProductStatisticsProvider {
 	 * @return global popularity, -1
 	 */
 	public float getGlobalProductScore(ContentKey key) {
-		Float score = (Float)globalProductScores.get(key);
+		Float score = globalProductScores.get(key);
 		return score == null ? -1 : score.floatValue();
 	}
     	

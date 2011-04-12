@@ -7,6 +7,7 @@ import java.io.Serializable;
  * @author csongor
  */
 public class ConfigurationStatus implements Comparable<ConfigurationStatus>, Serializable {
+	
 	private static final long serialVersionUID = 5347738460088039431L;
 
 	String name;
@@ -51,8 +52,7 @@ public class ConfigurationStatus implements Comparable<ConfigurationStatus>, Ser
 		return result;
 	}
 	
-	public int compareTo(ConfigurationStatus o) {
-		ConfigurationStatus status = (ConfigurationStatus) o;
+	public int compareTo(ConfigurationStatus status) {
 		return this.name.compareTo(status.name);
 	}
 
@@ -95,8 +95,8 @@ public class ConfigurationStatus implements Comparable<ConfigurationStatus>, Ser
 	public String getError() {
 		if (message == null || message.startsWith("WARNING: "))
 			return null;
-		else
-			return message;
+		
+		return message;
 	}
 	
 	public ConfigurationStatus setError(String error) {
@@ -107,8 +107,8 @@ public class ConfigurationStatus implements Comparable<ConfigurationStatus>, Ser
 	public String getWarning() {
 		if (message != null && message.startsWith("WARNING: "))
 			return message.substring(9);
-		else
-			return null;
+		
+		return null;
 	}
 
 	public ConfigurationStatus setWarning(String warning) {
@@ -118,16 +118,12 @@ public class ConfigurationStatus implements Comparable<ConfigurationStatus>, Ser
 	
 	public boolean isValueSame() {
 		if (appliedValue == null) {
-			if (loadedValue == null)
-				return true;
-			else
-				return false;
-		} else {
-			if (loadedValue == null)
-				return true;
-			else
-				return appliedValue.equals(loadedValue);
+			return loadedValue == null;
 		}
+		if (loadedValue == null)
+			return true; // FIXME ? appliedValue not null and loadedValue is null - why we return true for isValueSame when they are definitely not equal? (seems like it should be false...)
+		
+		return appliedValue.equals(loadedValue);
 	}
 
 	public boolean isConfigured() {

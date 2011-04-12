@@ -5,6 +5,7 @@ import java.util.List;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 
 public class TabRecommendation {
+	
     public static final String PIP_DEFAULT_DESC = "These are some of the items we recommend you:";
 
     final List<Variant> variants;
@@ -13,7 +14,7 @@ public class TabRecommendation {
     String[] featureImpId;
     int selected;
 
-    public TabRecommendation(Variant tabVariant, List variants) {
+    public TabRecommendation(Variant tabVariant, List<Variant> variants) {
         this.tabVariant = tabVariant;
         this.variants = variants;
         this.featureImpId = new String[variants.size()];
@@ -32,7 +33,7 @@ public class TabRecommendation {
     }
 
     public Variant get(int index) {
-        return (Variant) variants.get(index);
+        return variants.get(index);
     }
 
     public String getTabTitle(int index) {
@@ -49,8 +50,8 @@ public class TabRecommendation {
         }
         if (!variant.isSmartSavings() || prezTitle.toLowerCase().startsWith("save on "))
         	return prezTitle;
-        else
-        	return "Save on " + prezTitle;
+        
+		return "Save on " + prezTitle;
     }
 
     public String getTabDescription(int index) {

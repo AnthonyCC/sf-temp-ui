@@ -1,5 +1,7 @@
 package com.freshdirect.framework.collection;
 
+import com.freshdirect.framework.core.ModelI;
+import com.freshdirect.framework.core.PersistentBeanI;
 import com.freshdirect.framework.core.PersistentI;
 
 /**
@@ -7,14 +9,14 @@ import com.freshdirect.framework.core.PersistentI;
  * persistent store and also produce a list of model objects of its
  * members
  */ 
-public interface PersistentListI extends ListI, PersistentI {
+public interface PersistentListI<E extends PersistentBeanI> extends ListI<E>, PersistentI {
     
     /** 
      * gets a list of model objects of this lists members.
      *
      * @return a list of model objects
      */    
-    public LocalObjectList getModelList();
+    public LocalObjectList<ModelI> getModelList();
 
 }
 

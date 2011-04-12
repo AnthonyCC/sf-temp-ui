@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -178,15 +177,12 @@ public class FactorUtil {
 		return new StoreLookup() {
 
 			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
-				return 
-					contentNode instanceof ProductModel ?
-							((ProductModel)contentNode).getExpertWeight() : 0;
+				return contentNode instanceof ProductModel ? 
+						((ProductModel)contentNode).getExpertWeight() : 0;
 			}
 			
 			@Override
-			public void reloadCache() {
-			// TODO Auto-generated method stub
-			                
+			public void reloadCache() {			                
 			}
 		};
 	}
@@ -389,7 +385,7 @@ public class FactorUtil {
 				return false;
 			}
 			
-			public Set requiresGlobalDatabaseColumns() {
+			public Set<String> requiresGlobalDatabaseColumns() {
 				return Collections.singleton(GLOBAL_POPULARITY_COLUMN);
 			}
 		};
@@ -482,12 +478,12 @@ public class FactorUtil {
 		}
 		
 		protected double[] discretizeRange(double[] range) {
+			
 			// store values in decreasing order
-			SortedMap histo = new TreeMap(
-				new Comparator() {
-
-					public int compare(Object o1, Object o2) {
-						double diff = ((Number)o2).doubleValue() - ((Number)o1).doubleValue() ;
+			SortedMap<Number,Bucket> histo = new TreeMap<Number,Bucket>(
+				new Comparator<Number>() {
+					public int compare(Number o1, Number o2) {
+						double diff = o2.doubleValue() - o1.doubleValue() ;
 						return diff < 0 ? -1 : diff > 0 ? +1 : 0;
 					}
 				}
@@ -496,7 +492,7 @@ public class FactorUtil {
 			// sum up the value occurrences
 			for(int i = 0; i< range.length; ++i) {
 				Double value = new Double(range[i]);
-				Bucket count = (Bucket)histo.get(value);
+				Bucket count = histo.get(value);
 				if (count == null) {
 					histo.put(value,new Bucket());
 				} else {
@@ -506,16 +502,16 @@ public class FactorUtil {
 			
 			// calculate the CDF
 			int total = 0;
-			for(Iterator i = histo.entrySet().iterator(); i.hasNext(); ) {
-				Map.Entry entry = (Map.Entry)i.next();
-				Bucket bucket = (Bucket)entry.getValue();
+			for(Iterator<Map.Entry<Number,Bucket>> i = histo.entrySet().iterator(); i.hasNext(); ) {
+				Map.Entry<Number,Bucket> entry = i.next();
+				Bucket bucket = entry.getValue();
 				total += bucket.intValue();
 				bucket.accumulate(total);
 			}
 			
 			// calculate the norms
-			for(Iterator i = histo.values().iterator(); i.hasNext();) {
-				Bucket bucket = (Bucket)i.next();
+			for(Iterator<Bucket> i = histo.values().iterator(); i.hasNext();) {
+				Bucket bucket = i.next();
 				bucket.caculateNorm(total);
 			}
 			
@@ -523,7 +519,7 @@ public class FactorUtil {
 			
 			// assign the values
 			for(int i = 0; i< range.length; ++i) {
-				results[i] = range[i] == 0 ? 0 : ((Bucket)histo.get(new Double(range[i]))).normValue();
+				results[i] = range[i] == 0 ? 0 : histo.get(new Double(range[i])).normValue();
 			}
 			
 			return results;
@@ -558,7 +554,7 @@ public class FactorUtil {
 				return false;
 			}
 			
-			public Set requiresGlobalDatabaseColumns() {
+			public Set<String> requiresGlobalDatabaseColumns() {
 				return Collections.singleton(column);
 			}		
 		};
@@ -583,7 +579,7 @@ public class FactorUtil {
 				return false;
 			}
 			
-			public Set requiresGlobalDatabaseColumns() {
+			public Set<String> requiresGlobalDatabaseColumns() {
 				return Collections.singleton(column);
 			}
 			
@@ -627,9 +623,9 @@ public class FactorUtil {
 		 * @param provider
 		 * @return Map<DepartmentId:String,List<Index:Integer>>
 		 */
-		protected static Map departmentMap(String userId, ScoreRangeProvider provider) {
+		protected static Map<String, List<Integer>> departmentMap(String userId, ScoreRangeProvider provider) {
 			List products = provider.products(userId);
-			Map map = new HashMap();
+			Map<String, List<Integer>> map = new HashMap<String, List<Integer>>();
 			for(int i=0; i< products.size(); ++i) {
 				String dept = "";
 				try {
@@ -639,9 +635,9 @@ public class FactorUtil {
 					dept = productNode.getDepartment().getContentKey().getId();
 				} catch (Exception e) {
 				}
-				List indexes = (List)map.get(dept);
+				List<Integer> indexes = map.get(dept);
 				if (indexes == null) {
-					indexes = new ArrayList();
+					indexes = new ArrayList<Integer>();
 					map.put(dept, indexes);
 				}
 				indexes.add(new Integer(i));
@@ -650,19 +646,19 @@ public class FactorUtil {
 		}
 		
 		protected double[] maxNormalize(double[] values, String userId, ScoreRangeProvider provider) throws Exception {
-			Map deptMap = departmentMap(userId, provider);
-			for(Iterator i = deptMap.values().iterator(); i.hasNext();) {
-				List indexes = (List)i.next();
+			Map<String, List<Integer>> deptMap = departmentMap(userId, provider);
+			for(Iterator<List<Integer>> i = deptMap.values().iterator(); i.hasNext();) {
+				List<Integer> indexes = i.next();
 				double max = Double.MIN_VALUE;
-				for(Iterator j = indexes.iterator(); j.hasNext();) {
-					int index = ((Integer)j.next()).intValue();
+				for(Iterator<Integer> j = indexes.iterator(); j.hasNext();) {
+					int index = j.next().intValue();
 					if (values[index] > max) {
 						max = values[index];
 					}
 				}
 				if (max != 0) {
-					for(Iterator j = indexes.iterator(); j.hasNext();) {
-						int index = ((Integer)j.next()).intValue();
+					for(Iterator<Integer> j = indexes.iterator(); j.hasNext();) {
+						int index = j.next().intValue();
 						values[index] /= max;
 					}
 				}
@@ -742,14 +738,14 @@ public class FactorUtil {
 	public static FactorRangeConverter getDiscretizedSeasonality() {
 		return new FactorRangeConverter() {
 			
-			private Set dbColumns =
-				new HashSet(Arrays.asList(new String[]{GLOBAL_WEEKLY_FREQUENCY_COLUMN, GLOBAL_AVERAGE_FREQUENCY_COLUMN}));
+			private Set<String> dbColumns =
+				new HashSet<String>(Arrays.asList(new String[]{GLOBAL_WEEKLY_FREQUENCY_COLUMN, GLOBAL_AVERAGE_FREQUENCY_COLUMN}));
 			
 			public boolean isPersonalized() {
 				return false;
 			}
 			
-			public Set requiresGlobalDatabaseColumns() {
+			public Set<String> requiresGlobalDatabaseColumns() {
 				return dbColumns;
 			}
 

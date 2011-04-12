@@ -45,7 +45,7 @@
 		</table>
 
 		<font class="space4pix"><br /></font><%@ include file="/includes/ckt_acct/i_delivery_address_field.jspf" %><br /><br />
-		<%//@ include file="/includes/ckt_acct/i_delivery_special_field.jspf" %><br /><br />
+		<br /><br />
 
 		<table cellpadding="0" cellspacing="0" border="0" width="675">
 			<tr valign="top" bgcolor="#ff9933">

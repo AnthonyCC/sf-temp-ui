@@ -17,6 +17,7 @@ import java.util.Map;
  *
  */
 public class CohortSelector {
+	
 	private static Map<String, Integer> cohorts = null;
 	private static int cohortSum = 0;
 	private static List<String> cohortNames = null;
@@ -27,14 +28,14 @@ public class CohortSelector {
 	 * Compare variants by mass. Used explicitly to (binary) search the cohort
 	 * the user belongs to.
 	 */
-	protected static Comparator MASS_COMPARATOR = new Comparator() {
+	protected static Comparator<Object> MASS_COMPARATOR = new Comparator<Object>() {
 		// get mass as integer
 		private int getMass(Object o) {
 			if (o instanceof Integer) {
 				return ((Integer) o).intValue();
-			} else {
-				return ((CohortAssignment) o).getMass();
 			}
+			
+			return ((CohortAssignment) o).getMass();
 		}
 
 		public int compare(Object o1, Object o2) {
@@ -155,8 +156,8 @@ public class CohortSelector {
 
     private static int calculateSum() {
         int sum = 0;
-        for (Iterator iter = cohorts.values().iterator(); iter.hasNext();) {
-            Integer n = (Integer) iter.next();
+        for (Iterator<Integer> iter = cohorts.values().iterator(); iter.hasNext();) {
+            Integer n = iter.next();
             sum += n.intValue();
         }
         return sum;
@@ -183,8 +184,8 @@ public class CohortSelector {
      */
     public synchronized static List<String> getCohortNames() {
         if (cohortNames == null) {
-                // cache cohort map
-                cohortNames = VariantSelection.getInstance().getCohortNames();
+            // cache cohort map
+            cohortNames = VariantSelection.getInstance().getCohortNames();
         }
         return cohortNames;
     }
@@ -194,7 +195,7 @@ public class CohortSelector {
      * 
      * @param cohortNames
      */
-    public synchronized static void setCohortNames(List cohortNames) {
+    public synchronized static void setCohortNames(List<String> cohortNames) {
         CohortSelector.cohortNames = cohortNames;
     }
 
@@ -210,13 +211,13 @@ public class CohortSelector {
 
     public synchronized static CohortSelector getInstance() {
         if (instance == null) {
-            Map ch = getCohorts();
-            List cohortNames = CohortSelector.getCohortNames();
+            Map<String,Integer> ch = getCohorts();
+            List<String> cohortNames = CohortSelector.getCohortNames();
 
             CohortSelector cs = new CohortSelector();
             
-            for (Iterator iter = cohortNames.iterator(); iter.hasNext();) {
-                String name = (String) iter.next();
+            for (Iterator<String> iter = cohortNames.iterator(); iter.hasNext();) {
+                String name = iter.next();
                 int freq = ((Number) ch.get(name)).intValue();
                 cs.addCohort(name, freq);
             }

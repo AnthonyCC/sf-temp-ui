@@ -439,17 +439,6 @@
 					/*
 					 *	This feature is not 100% ready, skip out.
 					 */
-				
-				if (false) {
-					//START multi
-						//use multi
-						myDebugStr = "???: including: MULTI:/includes/i_dynamicRows_multi.jspf";
-							log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
-						myDebugStr = "???: including: MULTI:deptId="+deptId+", catId="+catId;
-							log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
-						%><%@include file="/includes/i_dynamicRows_multi.jspf" %><%
-					//END multi
-				}
 
 			//no specials
 			}else{

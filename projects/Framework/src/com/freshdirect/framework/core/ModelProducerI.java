@@ -1,12 +1,3 @@
-/*
- * $Workfile: ModelProducerI.java$
- *
- * $Date: 8/1/2001 11:20:21 AM$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.framework.core;
 
 import java.rmi.RemoteException;

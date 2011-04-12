@@ -34,16 +34,16 @@ public class OverriddenVariantsHelper {
 	}
 
 	public static class VariantInfoList {
-		List info;
+		List<VariantInfo> info;
 
-		public VariantInfoList(List infoList) {
+		public VariantInfoList(List<VariantInfo> infoList) {
 			this.info = infoList;
 		}
 
 		public VariantInfo get(EnumSiteFeature feature) {
 			if (feature != null) {
-				for (Iterator it = info.iterator(); it.hasNext();) {
-					VariantInfo vi = (VariantInfo) it.next();
+				for (Iterator<VariantInfo> it = info.iterator(); it.hasNext();) {
+					VariantInfo vi = it.next();
 					if (feature.equals(vi.feature))
 						return vi;
 				}
@@ -55,15 +55,15 @@ public class OverriddenVariantsHelper {
 			return info.size() > 0;
 		}
 
-		public Iterator iterator() {
+		public Iterator<VariantInfo> iterator() {
 			return info.iterator();
 		}
 	}
 
-	public static VariantInfoList consolidateVariantsList(List variantList) {
-		ArrayList features = new ArrayList();
-		HashMap featVarsMap = new HashMap();
-		ArrayList variantInfoList = new ArrayList();
+	public static VariantInfoList consolidateVariantsList(List<String> variantList) {
+		ArrayList<EnumSiteFeature> features = new ArrayList<EnumSiteFeature>();
+		HashMap<EnumSiteFeature, List<String>> featVarsMap = new HashMap<EnumSiteFeature, List<String>>();
+		ArrayList<VariantInfo> variantInfoList = new ArrayList<VariantInfo>();
 
 		// fill feature->variants map
 		for (Iterator<EnumSiteFeature> it = EnumSiteFeature
@@ -73,8 +73,8 @@ public class OverriddenVariantsHelper {
 					.getVariants(feature));
 		}
 
-		for (Iterator it = variantList.iterator(); it.hasNext();) {
-			String v = (String) it.next();
+		for (Iterator<String> it = variantList.iterator(); it.hasNext();) {
+			String v = it.next();
 
 			VariantInfo vi = new VariantInfo(v);
 
@@ -82,7 +82,7 @@ public class OverriddenVariantsHelper {
 					.getSmartStoreEnumList().iterator(); fit.hasNext();) {
 				EnumSiteFeature feature = fit.next();
 
-				if (((List) featVarsMap.get(feature)).contains(v)) {
+				if (featVarsMap.get(feature).contains(v)) {
 					vi.feature = feature;
 					vi.exists = true;
 					vi.duplicate = features.contains(feature);
@@ -140,7 +140,7 @@ public class OverriddenVariantsHelper {
 			StringBuffer buf = new StringBuffer();
 			final int s = variantsList.size();
 			for (int i = 0; i < s; ++i) {
-				buf.append(((String) variantsList.get(i)).trim());
+				buf.append(variantsList.get(i).trim());
 				if (i < s - 1)
 					buf.append(",");
 			}

@@ -6,6 +6,11 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * 
+ * Layout types marked as deprecated, which are not used in production, in March 29, 2011. 
+ *
+ */
 public enum EnumLayoutType implements Serializable {
     
     GENERIC              ("Generic", 0),             //(CATEGORY AND DEPARTMENT LAYOUT)
@@ -22,22 +27,30 @@ public enum EnumLayoutType implements Serializable {
     GROCERY_PRODUCT      ("Grocery Product", 11),    //( Grocery/Frozen/Dair/Specialty Product page)
     BULK_MEAT_PRODUCT    ("Bulk Meat Product", 12),    //( Bulk meat category/Product page)
     HOW_TO_COOK_IT	 ("How To Cook It", 13),    //( How to Cook It layout)
-    MEALS_STYLE	    	 ("Meals Style", 14),    //( Meals department layout)
+    @Deprecated // not used
+    MEALS_STYLE	    	 ("Meals Style", 14),    //( Meals department layout)  
     MULTI_CATEGORY	 ("Multi Category Layout", 15),    //( Multi Category Layout)
     TRANSAC_MULTI_CATEGORY	       ("Transactional Multi Category", 16),    //( Transactional Multi Category)
+    @Deprecated // not used
     MULTI_CATEGORY_PROD_REDIRECT       ("Multi Category Product Redirect", 17),    //( Transactional Multi Category)
     TRANSAC_GROUPED_ITEMS	       ("Transactional Grouped Items", 18),    //( Transactional grouped Items)
     HOLIDAY_MENU	               ("Holiday Menu", 19),    //( menu layout)
     THANKSGIVING_CATEGORY              ("Thanksgiving layout", 20),    //( Composite transaction 1)
+    @Deprecated  // used by hidden categories
     GENERIC_WITH_PAGING                ("Generic with Paging",22),
+    @Deprecated // used by hidden categories
     VALENTINES_CATEGORY                ("Valentine's Category",23),
     PARTY_PLATTER_CATEGORY             ("Party Platter Category",24),
     PICKS_PROMO                        ("Our Picks",25), //Our picks layout
-    VERTICAL_LABELED_CATEGORY          ("Vertical Labeled Category", 26), //(DEPARTMENT LAYOUT, Local Foods)
+    @Deprecated // not used
+    VERTICAL_LABELED_CATEGORY          ("Vertical Labeled Category", 26), //(DEPARTMENT LAYOUT, Local Foods) 
+    @Deprecated // used by hidden categories
     FEATURED_MENU                      ("Featured Menu", 27), //(CATEGORY LAYOUT, Easy Meals)
+    @Deprecated // not used
     TOP_TEN                            ("Top Ten", 28), //(Top Ten Picks)
-	
+
     MEAT_DEPT                          ("Meat Dept", 29), //(Meat Dept Redesign)
+    @Deprecated // not used
     MEAT_DEALS                         ("Meat Deals", 30), //(Best Meat Deals and EDLP)
     MEAT_CATEGORY                      ("Meat Category", 31), //(Meat Categories to display Deals and EDLP)
 	
@@ -48,8 +61,10 @@ public enum EnumLayoutType implements Serializable {
     TEMPLATE_LAYOUT	               ("Template Layout", 102), // Wine Layout
 	
     // this is never rendered by layout manager
+    @Deprecated // used by hidden categories
     MULTI_ITEM_MEAL_OPTION_HORZ        ("Multi Item Meal Layout Option 1", 98), //(Optional category layout 1, Salad Meal)
-    MULTI_ITEM_MEAL_OPTION_VERT        ("Multi Item Meal Layout Option 2", 99), //(Optional category layout 2, Salad Meal)
+    @Deprecated // not used
+    MULTI_ITEM_MEAL_OPTION_VERT        ("Multi Item Meal Layout Option 2", 99), //(Optional category layout 2, Salad Meal)  --- NOT USED
     
     // 4mm specific layouts    
     FOURMM_DEPARTMENT	("4minute-meals landing page", 40),

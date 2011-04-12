@@ -124,7 +124,7 @@ public class FDStoreRecommender {
 			throw new FDResourceException("error in configuration, recommender not configured for variant " + variant.getId() + " (site feature " + variant.getSiteFeature().getName() + ")");
 
 		input.setShowTemporaryUnavailable(variant.getServiceConfig().isShowTempUnavailable());
-		
+		input.setBrandUniqSort( variant.getServiceConfig().isBrandUniqSort() );
 		List<ContentNodeModel> contentModels = service.recommendNodes(input);
 
 		return new Recommendations(variant, contentModels, input, service.isRefreshable(), service.isSmartSavings());

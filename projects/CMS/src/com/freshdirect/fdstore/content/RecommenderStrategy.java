@@ -55,5 +55,9 @@ public class RecommenderStrategy extends ContentNodeModelImpl {
 	public boolean isShowTemporaryUnavailable() {
 	    return getAttribute("show_temp_unavailable", false);
 	}
-	
+
+	public boolean isBrandUniqSort() {
+	    return getAttribute("brand_uniq_sort", false);
+	}
+
 }

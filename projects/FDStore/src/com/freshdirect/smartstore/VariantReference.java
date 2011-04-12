@@ -5,7 +5,9 @@ import com.freshdirect.smartstore.service.VariantRegistry;
 
 public class VariantReference extends Reference<Variant, String> {
 
-    public VariantReference(Variant model) {
+	private static final long	serialVersionUID	= 8673286022336858477L;
+
+	public VariantReference(Variant model) {
         super(model);
     }
     

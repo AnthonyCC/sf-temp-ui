@@ -24,11 +24,12 @@ public class AttributeComparator {
     private static int      NO_INTEGER_VALUE  = Integer.MAX_VALUE;
 //    private static boolean  NO_BOOLEAN_VALUE  = false;
 
-    public static Comparator PRIORITY = new Priority();
-    public static class Priority implements Comparator {
-        public int compare(Object o1, Object o2) {
-            int p1 = ((AttributesI) o1).getAttributeInt(EnumAttributeName.PRIORITY.getName(), NO_INTEGER_VALUE);
-            int p2 = ((AttributesI) o2).getAttributeInt(EnumAttributeName.PRIORITY.getName(), NO_INTEGER_VALUE);
+    public static Comparator<AttributesI> PRIORITY = new Priority<AttributesI>();
+    
+    public static class Priority<T extends AttributesI> implements Comparator<T> {
+        public int compare(T o1, T o2) {
+            int p1 = o1.getAttributeInt(EnumAttributeName.PRIORITY.getName(), NO_INTEGER_VALUE);
+            int p2 = o2.getAttributeInt(EnumAttributeName.PRIORITY.getName(), NO_INTEGER_VALUE);
             return p1 - p2;
         }
     }

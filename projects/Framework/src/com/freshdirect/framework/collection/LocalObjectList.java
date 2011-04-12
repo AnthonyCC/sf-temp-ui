@@ -11,7 +11,9 @@ import com.freshdirect.framework.core.PrimaryKey;
  * Collection of Model objects.  It assumes that all objects in
  * the list are local to the same VM as the list.
  */
-public class LocalObjectList extends ArrayList implements ListI {
+public class LocalObjectList<E extends ModelI> extends ArrayList<E> implements ListI<E> {
+
+	private static final long	serialVersionUID	= 121631381438557884L;
 
 	/** default constructor.  creates an empty list.
      */
@@ -22,14 +24,14 @@ public class LocalObjectList extends ArrayList implements ListI {
     /** creates a list which is a shallow copy of the original.
      * @param mlist another <CODE>LocalObjectList</CODE> to copy
      */
-    public LocalObjectList(LocalObjectList mlist) {
+    public LocalObjectList(LocalObjectList<? extends E> mlist) {
         super(mlist);
     }
     
     /** creates a list that contains all the elements of the supplied collection
      * @param models the models to add to the new list
      */
-    public LocalObjectList(Collection models) {
+    public LocalObjectList(Collection<? extends E> models) {
         super(models);
     }
     
@@ -39,7 +41,7 @@ public class LocalObjectList extends ArrayList implements ListI {
      * @param pk the primary key to search for
      * @return the object identified by the primary key
      */
-    public Object get(PrimaryKey pk) {
+    public E get(PrimaryKey pk) {
         return get( indexOf(pk) );
     }
     
@@ -65,8 +67,8 @@ public class LocalObjectList extends ArrayList implements ListI {
      * @param obj element to be appended to this list
      * @return  true
      */
-    public synchronized boolean add(Object obj) {
-        return super.add((ModelI)obj);
+    public synchronized boolean add(E obj) {
+        return super.add(obj);
     }
     
     /**
@@ -75,8 +77,8 @@ public class LocalObjectList extends ArrayList implements ListI {
      * @param idx index at which the specified element is to be inserted
      * @param obj element to be inserted
      */
-    public synchronized void add(int idx, Object obj) {
-        super.add(idx, (ModelI) obj);
+    public synchronized void add(int idx, E obj) {
+        super.add(idx, obj);
     }
     
     /**
@@ -86,8 +88,7 @@ public class LocalObjectList extends ArrayList implements ListI {
      * @param coll collection whose elements are to be added to this list
      * @return  true if this list changed as a result of the call
      */
-    public synchronized boolean addAll(Collection coll) {
-        // !!! enforce ModelI
+    public synchronized boolean addAll(Collection<? extends E> coll) {
         return super.addAll(coll);
     }
     
@@ -98,8 +99,7 @@ public class LocalObjectList extends ArrayList implements ListI {
      * @param coll elements to be inserted into this list
      * @return true if this list changed as a result of the call
      */
-    public synchronized boolean addAll(int idx, Collection coll) {
-        // !!! enforce ModelI
+    public synchronized boolean addAll(int idx, Collection<? extends E> coll) {
         return super.addAll(idx, coll);
     }
     
@@ -141,7 +141,8 @@ public class LocalObjectList extends ArrayList implements ListI {
      * @param pk the primary key to search for
      * @return  the index in this list of the last occurrence of the specified primary key, or -1 if this list contains no such element
      */
-    private int lastIndexOf(PrimaryKey pk) {
+    @SuppressWarnings( "unused" )
+	private int lastIndexOf(PrimaryKey pk) {
         if (pk!=null) {
             for (int i=this.size()-1; i>=0; i--) {
                 if (pk.equals( ((ModelI)this.get(i)).getPK() )) {
@@ -159,7 +160,7 @@ public class LocalObjectList extends ArrayList implements ListI {
      *
      * @param coll  the collection of new elements
      */
-    public synchronized void set(Collection coll) {
+    public synchronized void set(Collection<? extends E> coll) {
         this.clear();
         this.addAll(coll);
     }
@@ -171,8 +172,8 @@ public class LocalObjectList extends ArrayList implements ListI {
      * @param obj element to be stored at the specified position
      * @return the element previously at the specified position
      */
-    public synchronized Object set(int idx, Object obj) {
-        return super.set(idx, (ModelI) obj);
+    public synchronized E set(int idx, E obj) {
+        return super.set(idx, obj);
     }
     
     /**
@@ -180,7 +181,7 @@ public class LocalObjectList extends ArrayList implements ListI {
      *
      * @param element the model to use to update the collection's corrspeonding element
      */
-    public synchronized void update(ModelI element) {
+    public synchronized void update(E element) {
 	        int idx = this.indexOf(element.getPK());
 	        if (idx==-1) {
 	            throw new CollectionException("Element not found, PK "+element.getPK());
@@ -202,11 +203,11 @@ public class LocalObjectList extends ArrayList implements ListI {
      * @param idx the index of the element to removed
      * @return  the element previously at the specified position
      */
-    public synchronized Object remove(int idx) {
+    public synchronized E remove(int idx) {
         if ((idx < 0) || (idx >= this.size()))
             return null;
-        else
-            return super.remove(idx);
+        
+		return super.remove(idx);
     }
     
     /**
@@ -226,7 +227,7 @@ public class LocalObjectList extends ArrayList implements ListI {
      * @return true if this list contained the specified element
      */
     public synchronized boolean remove(Object obj) {
-        return super.remove((ModelI)obj);
+        return super.remove(obj);
     }
     
     /**
@@ -235,7 +236,7 @@ public class LocalObjectList extends ArrayList implements ListI {
      * @param coll collection that defines which elements will be removed from this list
      * @return true if this list changed as a result of the call
      */
-    public synchronized boolean removeAll(Collection coll) {
+    public synchronized boolean removeAll(Collection<?> coll) {
         return super.removeAll(coll);
     }
     
@@ -246,7 +247,7 @@ public class LocalObjectList extends ArrayList implements ListI {
      * @param coll collection that defines which elements this set will retain
      * @return true if this list changed as a result of the call
      */
-    public synchronized boolean retainAll(Collection coll) {
+    public synchronized boolean retainAll(Collection<?> coll) {
         return super.retainAll(coll);
     }
     
@@ -271,12 +272,12 @@ public class LocalObjectList extends ArrayList implements ListI {
         if (!(obj instanceof LocalObjectList)) {
             return false;
         }
-        LocalObjectList other = (LocalObjectList) obj;
+        LocalObjectList<?> other = (LocalObjectList<?>) obj;
         if (size() != other.size()) {
             return false;
         }
-        Iterator myIter = iterator();
-        Iterator otherIter = other.iterator();
+        Iterator<E> myIter = iterator();
+        Iterator<?> otherIter = other.iterator();
         while (myIter.hasNext()) {
             if (!myIter.next().equals(otherIter.next())) {
                 return false;
@@ -291,7 +292,7 @@ public class LocalObjectList extends ArrayList implements ListI {
      * @return a shallow copy of this list
      */
     public Object clone() {
-        return new LocalObjectList( this );
+        return new LocalObjectList<E>( this );
     }
     
 }

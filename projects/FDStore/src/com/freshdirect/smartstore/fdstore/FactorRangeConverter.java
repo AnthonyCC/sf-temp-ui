@@ -60,6 +60,7 @@ public abstract class FactorRangeConverter {
 	}
 	
 	// average value
+	@SuppressWarnings( "cast" )
 	protected static double average(double[] range) {
 		return sum(range)/(double)range.length;
 	}
@@ -70,6 +71,7 @@ public abstract class FactorRangeConverter {
 	}
 	
 	// variance of range
+	@SuppressWarnings( "cast" )
 	protected static double variance(double[] range) {
 		if (range.length == 0) return Double.NaN;
 		double a = average(range);
@@ -208,7 +210,5 @@ public abstract class FactorRangeConverter {
 		};
 		
 	}
-	
-	
-	
+
 }

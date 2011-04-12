@@ -2,7 +2,8 @@ package com.freshdirect.smartstore;
 
 import java.io.Serializable;
 
-public class CartTabStrategyPriority implements Comparable, Serializable {
+public class CartTabStrategyPriority implements Comparable<CartTabStrategyPriority>, Serializable {
+	
 	private static final long serialVersionUID = -7596346515085057189L;
 
 	private String strategy;
@@ -54,8 +55,7 @@ public class CartTabStrategyPriority implements Comparable, Serializable {
 		return true;
 	}
 
-	public int compareTo(Object o) {
-		CartTabStrategyPriority p = (CartTabStrategyPriority) o;
+	public int compareTo(CartTabStrategyPriority p) {
 		if (primaryPriority != p.primaryPriority)
 			return primaryPriority - p.primaryPriority;
 		else if (secondaryPriority != p.secondaryPriority)

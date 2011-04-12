@@ -7,27 +7,22 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.naming.NamingException;
-
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
-import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.Variant;
-import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationHome;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSB;
 import com.freshdirect.smartstore.external.scarab.ScarabInfrastructure;
 import com.freshdirect.smartstore.fdstore.FactorRequirer;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 
 final public class VariantRegistry {
-	private static final Logger LOGGER = LoggerFactory
-			.getInstance(VariantRegistry.class);
+	
+	private static final Logger LOGGER = LoggerFactory.getInstance(VariantRegistry.class);
 	private static VariantRegistry instance;
 
 	private Map<String, Variant> variantMap;
@@ -75,8 +70,7 @@ final public class VariantRegistry {
 		return siteFeatureMap.get(siteFeature);
 	}
 
-	private SmartStoreServiceConfigurationSB getServiceConfiguration()
-			throws NamingException {
+	private SmartStoreServiceConfigurationSB getServiceConfiguration() {
 	    return FDServiceLocator.getInstance().getSmartStoreServiceConfiguration();
 	}
 

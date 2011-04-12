@@ -84,8 +84,8 @@ public class FourMinuteMealsHelper {
 	
 	// === Constant price and nutrition infos ===
 	
-	private static final List<String> priceFilterIds = Arrays.asList( "LT6", "LT8", "LT10", "LT13" );
-	private static final double[] priceLimits = { 6.0, 8.0, 10.0, 13.0 };
+	private static final List<String> defaultPriceFilterIds = Arrays.asList( "LT6", "LT8", "LT10", "LT13", "LT15", "LT20", "LT100" );
+	private static final double[] priceLimits = { 6.0, 8.0, 10.0, 13.0, 15.0, 20.0, 100.0 };
 
 	private static final List<EnumClaimValue> nutritionClaims = Arrays.asList( 
 			EnumClaimValue.NUTRITION_4MM_LOWCALORIE, 
@@ -160,82 +160,11 @@ public class FourMinuteMealsHelper {
 		private MediaI siasVegetableMedia;
 		private MediaI siasStarchMedia;
 
+		private List<String> priceFilterIds;
 	}
 	
 	// private cache instance
 	private static FilterCache cache;
-
-	// First time init.
-	static { 
-		try {
-			init(); 
-		} catch (Exception e) {
-			LOGGER.error( "Four-minute-meals helper cache initialization failed. Please check CMS data.", e );
-		}
-	}
-	
-	
-	// === Public getters ===
-	
-	public static DepartmentModel get4mmDepartment() {
-		return cache.department;
-	}	
-	public static CategoryModel getAboutPage() {
-		return cache.aboutPage;
-	}
-	public static CategoryModel getFilterPage() {
-		return cache.filterPage;
-	}
-	
-	public static List<CategoryModel> getRestaurants() {
-		// init if needed
-		initLazy();
-		return Collections.unmodifiableList( cache.restaurants );
-	}	
-	public static Domain getIngredientsDomain() {
-		return cache.ingredientsDomain;
-	}	
-	public static List<DomainValue> getIngredientsDomainValues() {
-		return Collections.unmodifiableList( cache.ingredientsDomainValues );
-	}	
-	public static List<EnumClaimValue> getNutritionClaims() {
-		return Collections.unmodifiableList( nutritionClaims );
-	}
-	
-	public static List<String> getRestaurantFilterIds() {
-		return Collections.unmodifiableList( cache.restaurantFilterIds );
-	}	
-	public static List<String> getNutritionFilterIds() {
-		return Collections.unmodifiableList( nutritionFilterIds );
-	}	
-	public static List<String> getIngredientsFilterIds() {
-		return Collections.unmodifiableList( cache.ingredientsFilterIds );
-	}
-	public static List<String> getPriceFilterIds() {
-		return Collections.unmodifiableList( priceFilterIds );
-	}
-	
-	public static Map<String, FilterInfo> getFilterInfos() {
-		// init if needed
-		initLazy();
-		return Collections.unmodifiableMap( cache.filterInfos );
-	}	
-
-	public static Map<String, FilterInfo> getRestaurantCounts() {
-		return Collections.unmodifiableMap( cache.restaurantCounts );
-	}
-
-	public static int getTotalCount() {
-		return cache.totalCount;
-	}
-	
-	public static boolean isSidesInASnapCategory( ContentNodeModel cat ) {
-		return cat.getContentKey().equals( sidesInASnapKey );
-	}
-
-	public static CategoryModel get4mmEditorialRecommender() {
-		return cache.editorial;
-	}	
 
 	
 	/**
@@ -264,6 +193,79 @@ public class FourMinuteMealsHelper {
 	// Price comparator instances 
     public final static Comparator<ProductModelPricingAdapter> PRICE_COMPARATOR_ASC = new PriceComparator(false);
     public final static Comparator<ProductModelPricingAdapter> PRICE_COMPARATOR_DESC = new PriceComparator(true);
+
+	
+
+	// === Public getters ===
+	
+	public static DepartmentModel get4mmDepartment() {
+		initLazy();
+		return cache.department;
+	}	
+	public static CategoryModel getAboutPage() {
+		initLazy();
+		return cache.aboutPage;
+	}
+	public static CategoryModel getFilterPage() {
+		initLazy();
+		return cache.filterPage;
+	}
+	
+	public static List<CategoryModel> getRestaurants() {
+		initLazy();
+		return Collections.unmodifiableList( cache.restaurants );
+	}	
+	public static Domain getIngredientsDomain() {
+		initLazy();
+		return cache.ingredientsDomain;
+	}	
+	public static List<DomainValue> getIngredientsDomainValues() {
+		initLazy();
+		return Collections.unmodifiableList( cache.ingredientsDomainValues );
+	}	
+	public static List<EnumClaimValue> getNutritionClaims() {
+		return Collections.unmodifiableList( nutritionClaims );
+	}
+	
+	public static List<String> getRestaurantFilterIds() {
+		initLazy();
+		return Collections.unmodifiableList( cache.restaurantFilterIds );
+	}	
+	public static List<String> getNutritionFilterIds() {
+		return Collections.unmodifiableList( nutritionFilterIds );
+	}	
+	public static List<String> getIngredientsFilterIds() {
+		initLazy();
+		return Collections.unmodifiableList( cache.ingredientsFilterIds );
+	}
+	public static List<String> getPriceFilterIds() {
+		initLazy();
+		return Collections.unmodifiableList( cache.priceFilterIds );
+	}
+	
+	public static Map<String, FilterInfo> getFilterInfos() {
+		initLazy();
+		return Collections.unmodifiableMap( cache.filterInfos );
+	}	
+
+	public static Map<String, FilterInfo> getRestaurantCounts() {
+		initLazy();
+		return Collections.unmodifiableMap( cache.restaurantCounts );
+	}
+
+	public static int getTotalCount() {
+		initLazy();
+		return cache.totalCount;
+	}
+	
+	public static boolean isSidesInASnapCategory( ContentNodeModel cat ) {
+		return cat.getContentKey().equals( sidesInASnapKey );
+	}
+
+	public static CategoryModel get4mmEditorialRecommender() {
+		initLazy();
+		return cache.editorial;
+	}	
 
 	
 	/**
@@ -405,24 +407,56 @@ public class FourMinuteMealsHelper {
 			this.mediaList = mediaList;
 		}
 	}
+
+	
+	// ======================
+	// initialization methods
+	// ======================	
+	
+	
+	// First time init.
+	static { 
+		try {
+			initLazy(); 
+		} catch (Exception e) {
+			lastInitTimeStamp = 0;
+			LOGGER.error( "Four-minute-meals helper cache initialization failed. Please check CMS data.", e );
+		}
+	}
 	
 
-	private static synchronized void initLazy() {
-		// check timestamp if we need to reinitialize
-		long now = System.currentTimeMillis();
+	public static synchronized void initLazy() {
 		
-		LOGGER.debug(  "Last refresh was " + (now-lastInitTimeStamp)/1000.0f + " seconds ago." );
+		// check if we have initialized ever
+		if ( lastInitTimeStamp == 0 ) {
+			LOGGER.info( "Starting first time initialization." );
+			try {
+				init(); 
+			} catch (Exception e) {
+				lastInitTimeStamp = 0;
+				LOGGER.error( "Four-minute-meals helper cache initialization failed. Nothing will work. Please check CMS data.", e );
+			}
+			return;
+		}
+		
+		// check timestamp if we need to reinitialize
+		long now = System.currentTimeMillis();		
+		LOGGER.debug( "Last refresh was " + (now-lastInitTimeStamp)/1000.0f + " seconds ago." );
 		if ( now - lastInitTimeStamp > initFrequency ) {
-			init();
+			LOGGER.info( "Starting reinitialization." );
+			try {
+				init();
+			} catch (Exception e) {
+				LOGGER.error( "Four-minute-meals helper cache reloading failed. Cache contents were not updated. Please check CMS data.", e );
+			}
 		}
 	}
 	
 	@SuppressWarnings( "unchecked" )
 	private static synchronized void init() {
 		
-		LOGGER.info( "4mm helper cache reloading." );
+		LOGGER.info( "Building 4mm helper cache." );
 		long startTime = System.currentTimeMillis();
-		lastInitTimeStamp = startTime;
 		
 		// === Basic initializing ===
 		FilterCache newCache = new FilterCache();
@@ -668,12 +702,25 @@ public class FourMinuteMealsHelper {
 		}
 		
 		// === Price initializing ===
+				
+		// scan prices for max price filter		
+		List<ProductModelPricingAdapter> pricedProducts = new ArrayList<ProductModelPricingAdapter>( newCache.allProducts.size() );
+		for ( ProductModel p : newCache.allProducts ) {
+			pricedProducts.add( ProductPricingFactory.getInstance().getPricingAdapter( p, PricingContext.DEFAULT ) );
+		}		
+		double maxPrice = Collections.max( pricedProducts, PRICE_COMPARATOR_ASC ).getDefaultPriceValue();
+
+		
+		// init price filter infos
+		newCache.priceFilterIds = new ArrayList<String>( defaultPriceFilterIds.size() );		
 		int i = 0;
-		for ( String prId : priceFilterIds ) {
-			newCache.filterInfos.put( prId, new FilterInfo( "Under $" + (int)priceLimits[i++], 1 ) );	
+		for ( String prId : defaultPriceFilterIds ) {
+			if ( priceLimits[i] < maxPrice ) {
+				newCache.priceFilterIds.add( prId );
+				newCache.filterInfos.put( prId, new FilterInfo( "Under $" + (int)priceLimits[i++], 1 ) );
+			}
 		}
-		
-		
+
 		// count items for nutrition
 		for ( EnumClaimValue claim : nutritionClaims ) {
 			String id = claim.getCode();
@@ -694,7 +741,8 @@ public class FourMinuteMealsHelper {
 		// update timestamp of last init
 		long endTime = System.currentTimeMillis();
 		
-		LOGGER.info( "4mm helper cache reloaded. Took " + (endTime-startTime)/1000.0f + " seconds." );
+		lastInitTimeStamp = endTime;
+		LOGGER.info( "4mm helper cache built successfully. Took " + (endTime-startTime)/1000.0f + " seconds." );
 	}
 
 	/**
@@ -712,7 +760,7 @@ public class FourMinuteMealsHelper {
 		
 		LOGGER.debug(  "4mm filtering started." );
 		long startTime = System.currentTimeMillis();
-		long time = startTime;
+//		long time = startTime;
 
 		boolean filterForSides = false;
 		
@@ -761,8 +809,8 @@ public class FourMinuteMealsHelper {
 			}
 		}
 
-		LOGGER.debug( "Phase1[base filters] took " + (System.currentTimeMillis()-time)/1000.0f + " seconds." );
-		time = System.currentTimeMillis();
+//		LOGGER.debug( "Phase1[base filters] took " + (System.currentTimeMillis()-time)/1000.0f + " seconds." );
+//		time = System.currentTimeMillis();
 		
 		// create product pricing adapters from actual pricing context
 		List<ProductModelPricingAdapter> pricedWorkSet = new ArrayList<ProductModelPricingAdapter>( workSet.size() );
@@ -770,14 +818,14 @@ public class FourMinuteMealsHelper {
 			pricedWorkSet.add( ProductPricingFactory.getInstance().getPricingAdapter( prod , pricingContext ) );
 		}
 
-		LOGGER.debug( "Phase2[pricing adapters] took " + (System.currentTimeMillis()-time)/1000.0f + " seconds." );
-		time = System.currentTimeMillis();
+//		LOGGER.debug( "Phase2[pricing adapters] took " + (System.currentTimeMillis()-time)/1000.0f + " seconds." );
+//		time = System.currentTimeMillis();
 
 
 		// filter by price
 		if ( priceFilters != null && priceFilters.size() > 0 ) {
 			// take the first one
-			int ndx = priceFilterIds.indexOf( priceFilters.get( 0 ) );
+			int ndx = cache.priceFilterIds.indexOf( priceFilters.get( 0 ) );
 			double priceLimit = 999.0;
 			if ( ndx != -1 )
 				priceLimit = priceLimits[ndx];
@@ -794,12 +842,15 @@ public class FourMinuteMealsHelper {
 			}
 		}
 		
-		LOGGER.debug( "Phase3[price filter] took " + (System.currentTimeMillis()-time)/1000.0f + " seconds." );
-		time = System.currentTimeMillis();
+//		LOGGER.debug( "Phase3[price filter] took " + (System.currentTimeMillis()-time)/1000.0f + " seconds." );
+//		time = System.currentTimeMillis();
 		
 		// filtering done, workset contains the result
 		
-		// update filter infos
+		
+		// ====================
+		// Update filter infos
+		// ====================
 		Map<String, FilterInfo> infos = new HashMap<String, FilterInfo>();
 		
 		if ( filterForSides ) {			
@@ -828,12 +879,12 @@ public class FourMinuteMealsHelper {
 			infos.put( iId, info );
 		}
 
-		LOGGER.debug( "Phase4[base filter infos] took " + (System.currentTimeMillis()-time)/1000.0f + " seconds." );
-		time = System.currentTimeMillis();
+//		LOGGER.debug( "Phase4[base filter infos] took " + (System.currentTimeMillis()-time)/1000.0f + " seconds." );
+//		time = System.currentTimeMillis();
 
 		if ( priceFilters != null && priceFilters.size() > 0 ) {
 			String priceFilter = priceFilters.get( 0 );
-			for ( String pId : priceFilterIds ) {
+			for ( String pId : cache.priceFilterIds ) {
 				FilterInfo info = new FilterInfo( cache.filterInfos.get( pId ) );
 				if ( pId.equals( priceFilter ) ) {
 					info.setCount( 1 );
@@ -844,9 +895,9 @@ public class FourMinuteMealsHelper {
 			}
 		} else {
 			double min = Collections.min( pricedWorkSet, PRICE_COMPARATOR_ASC ).getDefaultPriceValue();
-			for ( String pId : priceFilterIds ) {
+			for ( String pId : cache.priceFilterIds ) {
 				FilterInfo info = new FilterInfo( cache.filterInfos.get( pId ) );
-				double limit = priceLimits[ priceFilterIds.indexOf( pId ) ];
+				double limit = priceLimits[ cache.priceFilterIds.indexOf( pId ) ];
 				if ( limit < min ) {
 					info.setCount( 0 );
 				} else {
@@ -858,11 +909,15 @@ public class FourMinuteMealsHelper {
 
 		result.setFilterInfos( infos );
 		
-		LOGGER.debug( "Phase5[price filter infos] took " + (System.currentTimeMillis()-time)/1000.0f + " seconds." );
-		time = System.currentTimeMillis();
+//		LOGGER.debug( "Phase5[price filter infos] took " + (System.currentTimeMillis()-time)/1000.0f + " seconds." );
+//		time = System.currentTimeMillis();
 
 		
-		// sort the items		
+		
+		// ===============
+		// Sort the items
+		// ===============
+		
 		String sortMode = parseSortParam( pageContext );
 		
 		if ( sortBrand.equals( sortMode ) ) {
@@ -980,8 +1035,8 @@ public class FourMinuteMealsHelper {
 			result.setMultiList( separatedList );
 		} 
 		
-		LOGGER.debug( "Phase6[sorting by "+sortMode+"] took " + (System.currentTimeMillis()-time)/1000.0f + " seconds." );
-		time = System.currentTimeMillis();
+//		LOGGER.debug( "Phase6[sorting by "+sortMode+"] took " + (System.currentTimeMillis()-time)/1000.0f + " seconds." );
+//		time = System.currentTimeMillis();
 
 			
 		LOGGER.debug( "4mm filtering done. Returning " + result.getResultSize() + " items. Took " + (System.currentTimeMillis()-startTime)/1000.0f + " seconds." );

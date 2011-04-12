@@ -22,8 +22,8 @@ public class URLRewriteManager {
 	private final ServiceLocator locator;
 	private static URLRewriteManager instance;
 
-	private ExpiringReference rewriteRules = new ExpiringReference(5 * 60 * 1000) {
-		protected Object load() {
+	private ExpiringReference<List<URLRewriteRule>> rewriteRules = new ExpiringReference<List<URLRewriteRule>>(5 * 60 * 1000) {
+		protected List<URLRewriteRule> load() {
 			return loadRewriteRules();
 		}
 	};
@@ -46,9 +46,9 @@ public class URLRewriteManager {
 	}
 
 	public URLRewriteRule getRedirect(String originalURL) {
-		List lst = (List) this.rewriteRules.get();
-		for (Iterator i = lst.iterator(); i.hasNext();) {
-			URLRewriteRule r = (URLRewriteRule) i.next();
+		List<URLRewriteRule> lst = this.rewriteRules.get();
+		for (Iterator<URLRewriteRule> i = lst.iterator(); i.hasNext();) {
+			URLRewriteRule r = i.next();
 			if (!r.isDisabled() && r.match(originalURL)) {
 				return r;
 			}
@@ -56,13 +56,13 @@ public class URLRewriteManager {
 		return null;
 	}
 
-	private List loadRewriteRules() {
+	private List<URLRewriteRule> loadRewriteRules() {
 		try {
 			FDCustomerManagerSB sb = getFDCustomerManager();
 			return sb.loadRewriteRules();
 		} catch (Exception e) {
 			LOGGER.error("Could not load rewrite rules due to: ", e);
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		}
 	}
 

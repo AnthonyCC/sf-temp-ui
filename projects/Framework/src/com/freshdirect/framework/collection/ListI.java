@@ -1,11 +1,11 @@
 package com.freshdirect.framework.collection;
 
-import java.util.List;
-import java.util.Enumeration;
-import java.util.Collection;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
 
-import com.freshdirect.framework.core.*;
+import com.freshdirect.framework.core.ModelI;
+import com.freshdirect.framework.core.PrimaryKey;
 
 /**
  * a collection class that extends java.util.List.  It adds some additional
@@ -13,7 +13,7 @@ import com.freshdirect.framework.core.*;
  * Individual elements can be updated by passing the collection a model.
  * The elements can be returned as an enumeration for EJB 1.0 compatibility.
  */ 
-public interface ListI extends Serializable, List {
+public interface ListI<E extends ModelI> extends Serializable, List<E> {
 
 	/**
      * Find element by primary key.
@@ -53,13 +53,13 @@ public interface ListI extends Serializable, List {
      * the supplied collection
      * @param coll the new elements to be held by this collection
      */    
-	public void set(Collection coll);
+	public void set(Collection<? extends E> c);
 
     /** locates an object within the collectoin based on the model's
      * primary key and sets it properties from the model
      * @param element the model to use to update a collection element
      */    
-	public void update(ModelI element);
+	public void update(E element);
 
     /** removes an element from the collection that are identified by
      * this primary key

@@ -85,6 +85,8 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 			input.setUseAlternatives(sampler.isUseAlternatives());
 		}
 		input.setShowTemporaryUnavailable(variant.getServiceConfig().isShowTempUnavailable());
+		input.setBrandUniqSort( variant.getServiceConfig().isBrandUniqSort() );
+		
 		List<ContentNodeModel> recNodes = doRecommendNodes(input);
 		input.setIncludeCartItems(saveIncludeCartItems);
 		return recNodes;

@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PersistentBeanI;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -16,10 +17,12 @@ import com.freshdirect.framework.core.PrimaryKey;
  *
  * Client needs to implement load(Connection).
  */
-public abstract class PersistentBeanList extends LocalObjectList implements PersistentListI {
+public abstract class PersistentBeanList<E extends PersistentBeanI> extends LocalObjectList<E> implements PersistentListI<E> {
 
+	private static final long	serialVersionUID	= -8449586625863872684L;
+	
 	/** List of removed persistent beans, that need to be removed from database */
-	private List removedElements = new LinkedList();
+	private List<E> removedElements = new LinkedList<E>();
 
     /**
      * default constructor
@@ -31,7 +34,7 @@ public abstract class PersistentBeanList extends LocalObjectList implements Pers
 	/**
      * Copy constructor (shallow copy).
      * @param plist  */
-	public PersistentBeanList(PersistentBeanList plist) {
+	public PersistentBeanList(PersistentBeanList<? extends E> plist) {
 		super(plist);
 	}
 
@@ -48,8 +51,8 @@ public abstract class PersistentBeanList extends LocalObjectList implements Pers
 		if (removedElements.size()>0) {
 			return true;
 		}
-		for (Iterator i=this.iterator(); i.hasNext(); ) {
-				PersistentBeanI pb = (PersistentBeanI)i.next();
+		for (Iterator<E> i=this.iterator(); i.hasNext(); ) {
+				PersistentBeanI pb = i.next();
 				if ( pb.isModified() || pb.isAnonymous() ) {
 					return true;
 				}
@@ -66,8 +69,8 @@ public abstract class PersistentBeanList extends LocalObjectList implements Pers
      * @param obj element to be appended to this list
      * @return  true
      */
-	public synchronized boolean add(Object obj) {
-		boolean b = super.add((PersistentBeanI)obj);
+	public synchronized boolean add(E obj) {
+		boolean b = super.add(obj);
 		return b;
 	}
 
@@ -77,8 +80,8 @@ public abstract class PersistentBeanList extends LocalObjectList implements Pers
      * @param idx index at which the specified element is to be inserted
      * @param obj element to be inserted
      */
-	public synchronized void add(int idx, Object obj) {
-		super.add(idx, (PersistentBeanI) obj);
+	public synchronized void add(int idx, E obj) {
+		super.add(idx, obj);
 	}
 
     /**
@@ -88,8 +91,7 @@ public abstract class PersistentBeanList extends LocalObjectList implements Pers
      * @param coll collection whose elements are to be added to this list
      * @return  true if this list changed as a result of the call
      */
-	public synchronized boolean addAll(Collection coll) {
-		// !!! enforce PersistentBeanI
+	public synchronized boolean addAll(Collection<? extends E> coll) {
 		boolean b = super.addAll(coll);
 		return b;
 	}
@@ -101,8 +103,7 @@ public abstract class PersistentBeanList extends LocalObjectList implements Pers
      * @param coll elements to be inserted into this list
      * @return true if this list changed as a result of the call
      */
-	public synchronized boolean addAll(int idx, Collection coll) {
-		// !!! enforce PersistentBeanI
+	public synchronized boolean addAll(int idx, Collection<? extends E> coll) {
 		boolean b = super.addAll(idx, coll);
 		return b;
 	}
@@ -114,7 +115,7 @@ public abstract class PersistentBeanList extends LocalObjectList implements Pers
      *
      * @param coll  the collection of new elements
      */
-	public synchronized void set(Collection coll) {
+	public synchronized void set(Collection<? extends E> coll) {
 		this.clear();
 		this.addAll(coll);
 	}
@@ -126,9 +127,9 @@ public abstract class PersistentBeanList extends LocalObjectList implements Pers
      * @param obj element to be stored at the specified position
      * @return the element previously at the specified position
      */
-	public synchronized Object set(int idx, Object obj) {
-		PersistentBeanI newBean = (PersistentBeanI) obj;
-		PersistentBeanI original = (PersistentBeanI) super.set(idx, newBean);
+	public synchronized E set(int idx, E obj) {
+		E newBean = obj;
+		E original = super.set(idx, newBean);
 		if (original.hashCode()!=newBean.hashCode()) {
 			// not the same, it was removed
 			this.removedElements.add(original);
@@ -139,10 +140,10 @@ public abstract class PersistentBeanList extends LocalObjectList implements Pers
     /**
      * Update an existing element, based on the primary key of the supplied model object.
      *
-     * @param element the model to use to update the collection's corrspeonding element
+     * @param element the model to use to update the collection's corresponding element
      */
     public synchronized void update(ModelSupport element) {
-		PersistentBeanI found = (PersistentBeanI) this.get( element.getPK() );
+		PersistentBeanI found = this.get( element.getPK() );
 		if (found==null) {
 			throw new CollectionException("Element not found, PK "+element.getPK());
 		}
@@ -161,8 +162,8 @@ public abstract class PersistentBeanList extends LocalObjectList implements Pers
     /**
      * @param idx
      * @return  */
-	public synchronized Object remove(int idx) {
-		Object removed = super.remove(idx);
+	public synchronized E remove(int idx) {
+		E removed = super.remove(idx);
 		if (removed!=null) {
 			removedElements.add(removed);
 		}
@@ -175,8 +176,8 @@ public abstract class PersistentBeanList extends LocalObjectList implements Pers
      * @param idx the index of the element to removed
      * @return  the element previously at the specified position
      */
-	public synchronized boolean remove(Object obj) {
-		boolean b = super.remove((PersistentBeanI)obj);
+	public synchronized boolean remove(E obj) {
+		boolean b = super.remove(obj);
 		if (b) {
 			removedElements.add(obj);
 		}
@@ -190,11 +191,11 @@ public abstract class PersistentBeanList extends LocalObjectList implements Pers
      *
      * @return a deep copy of the list and its children
      */
-	public LocalObjectList getModelList() {
-		LocalObjectList lst = new LocalObjectList();
+	public LocalObjectList<ModelI> getModelList() {
+		LocalObjectList<ModelI> lst = new LocalObjectList<ModelI>();
 		lst.ensureCapacity( this.size() );
-		for (Iterator i=this.iterator(); i.hasNext(); ) {
-			lst.add( ((PersistentBeanI)i.next()).getModel() );
+		for (Iterator<E> i=this.iterator(); i.hasNext(); ) {
+			lst.add( i.next().getModel() );
 		}
 		return lst;
 	}
@@ -238,14 +239,14 @@ public abstract class PersistentBeanList extends LocalObjectList implements Pers
      */
 	protected void syncToDatabase(Connection conn) throws SQLException {
 		// remove
-		for (Iterator i=removedElements.iterator(); i.hasNext(); ) {
-			PersistentBeanI bean = (PersistentBeanI)i.next();
+		for (Iterator<E> i=removedElements.iterator(); i.hasNext(); ) {
+			PersistentBeanI bean = i.next();
 			//LOGGER.debug("syncToDatabase remove "+bean);
 			bean.remove(conn);
 		}
 		// store
-		for (Iterator i=this.iterator(); i.hasNext(); ) {
-			PersistentBeanI bean = (PersistentBeanI)i.next();
+		for (Iterator<E> i=this.iterator(); i.hasNext(); ) {
+			PersistentBeanI bean = i.next();
 				if (bean.isAnonymous()) {
 					// new bean
 					//LOGGER.debug("syncToDatabase create "+bean);

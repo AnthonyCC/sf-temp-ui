@@ -43,24 +43,24 @@ public class CategoryModel extends ProductContainer {
 	private final class RecommendedProductsRef extends BalkingExpiringReference<List<ProductModel>> {
 	    String zoneId;
 
-            private RecommendedProductsRef(Executor executor, String zoneId) {
-                super(FIVE_MINUTES, executor);
-                this.zoneId = zoneId;
-                // synchronous load
-                try {
-                    set(load());
-                } catch (RuntimeException e) {
-                    LOGGER.error("failed to initialize smart products for category " + CategoryModel.this.getContentName() + " and zone " + zoneId
-                            + " synchronously");
-                }
+        private RecommendedProductsRef(Executor executor, String zoneId) {
+            super(FIVE_MINUTES, executor);
+            this.zoneId = zoneId;
+            // synchronous load
+            try {
+                set(load());
+            } catch (RuntimeException e) {
+                LOGGER.error("failed to initialize smart products for category " + CategoryModel.this.getContentName() + " and zone " + zoneId
+                        + " synchronously");
             }
+        }
 
 		@Override
 		protected List<ProductModel> load() {
 			CmsRecommenderService recommenderService = getRecommenderService();
 			ContentKey categoryId = CategoryModel.this.getContentKey();
 			final Recommender recommender = CategoryModel.this.getRecommender();
-                        ContentKey recommenderId = recommender != null ? recommender.getContentKey() : null;
+            ContentKey recommenderId = recommender != null ? recommender.getContentKey() : null;
 			LOGGER.debug("loader started for category " + categoryId + ", zone " + zoneId + ", recommender: " + recommenderId);
 			
 			if ( recommenderService == null || recommenderId == null ) {
@@ -72,16 +72,16 @@ public class CategoryModel extends ProductContainer {
 				throw new RuntimeException();
 			}
 			
-				List<String> prodIds = recommenderService.recommendNodes(recommenderId, categoryId, zoneId);
-				List<ProductModel> products = new ArrayList<ProductModel>( prodIds.size() );
-				for ( String productId : prodIds ) {
-					ContentNodeModel product = ContentFactory.getInstance().getContentNode( productId );
-					if ( product instanceof ProductModel && !products.contains( product ) )
-						products.add( (ProductModel)product );
-				}
-				LOGGER.debug( "found " + products.size() + " products for category " + categoryId + ", zone " + zoneId);
-				return products;
+			List<String> prodIds = recommenderService.recommendNodes(recommenderId, categoryId, zoneId);
+			List<ProductModel> products = new ArrayList<ProductModel>( prodIds.size() );
+			for ( String productId : prodIds ) {
+				ContentNodeModel product = ContentFactory.getInstance().getContentNode( productId );
+				if ( product instanceof ProductModel && !products.contains( product ) )
+					products.add( (ProductModel)product );
 			}
+			LOGGER.debug( "found " + products.size() + " products for category " + categoryId + ", zone " + zoneId);
+			return products;
+		}
 		
 		private CmsRecommenderService getRecommenderService() {
 			try {

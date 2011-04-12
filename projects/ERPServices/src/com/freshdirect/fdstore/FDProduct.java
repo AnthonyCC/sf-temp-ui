@@ -271,7 +271,7 @@ public class FDProduct extends FDSku implements AttributesI {
 		return FDNutritionCache.getInstance().getNutrition(this.getSkuCode()).getIngredients();
 	}
 
-	public Set getNutritionInfoNames() {
+	public Set<ErpNutritionInfoType> getNutritionInfoNames() {
 		return FDNutritionCache.getInstance().getNutrition(this.getSkuCode()).getNutritionInfoNames();
 	}
 
@@ -294,7 +294,7 @@ public class FDProduct extends FDSku implements AttributesI {
 	
 	public boolean hasClaim(EnumClaimValue claimValue) {
 		boolean rtnValue = false;
-		List ni = getNutritionInfoList(ErpNutritionInfoType.CLAIM);
+		List<EnumClaimValue> ni = getNutritionInfoList(ErpNutritionInfoType.CLAIM);
 
 		if (ni != null) {
 			if (ni.contains(claimValue)) {

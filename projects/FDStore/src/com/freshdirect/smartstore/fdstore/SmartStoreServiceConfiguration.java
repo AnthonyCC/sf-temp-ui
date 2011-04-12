@@ -11,6 +11,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.smartstore.ejb.DynamicSiteFeature;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSB;
 
 /**
@@ -20,9 +21,9 @@ import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSB;
  * 
  */
 public class SmartStoreServiceConfiguration {
+	
 	// logger instance
-	private static Category LOGGER = LoggerFactory
-			.getInstance(SmartStoreServiceConfiguration.class);
+	private static Category LOGGER = LoggerFactory.getInstance(SmartStoreServiceConfiguration.class);
 
 	// static instance
 	private static SmartStoreServiceConfiguration instance = null;
@@ -44,20 +45,20 @@ public class SmartStoreServiceConfiguration {
 	}
 
 
-	public Collection loadDynamicSiteFeatures() {
+	public Collection<DynamicSiteFeature> loadDynamicSiteFeatures() {
 		try {
 			SmartStoreServiceConfigurationSB sb;
 			sb = FDServiceLocator.getInstance().getSmartStoreServiceConfiguration();
 			return sb.getSiteFeatures();
 		} catch (RemoteException e) {
 			LOGGER.warn("SmartStore Service Configuration", e);
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		} catch (EJBException e) {
 			LOGGER.warn("SmartStore Service Configuration", e);
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		} catch (SQLException e) {
 			LOGGER.warn("SmartStore Service Configuration", e);
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		}
 	}
 }

@@ -93,11 +93,12 @@ public class ExternalRecommenderRegistry {
 			throw new IllegalArgumentException("providerName cannot be null");
 		if (recommenderType == null)
 			throw new IllegalArgumentException("recommenderType cannot be null");
+		
 		ExternalRecommender recommender = recommenders.get(new RegistryKey(providerName, recommenderType));
 		if (recommender == null)
 			throw new NoSuchExternalRecommenderException();
-		else
-			return recommender;
+		
+		return recommender;
 	}
 
 	/**

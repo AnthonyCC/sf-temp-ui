@@ -44,10 +44,10 @@ public class DatabaseScoreFactorProvider {
         return instance;
     }
 
-    public Map getPersonalizedFactors(String erpCustomerId, List factors) {
+    public Map<String,double[]> getPersonalizedFactors(String erpCustomerId, List<String> factors) {
         try {
             if (erpCustomerId == null) {
-                return Collections.EMPTY_MAP;
+                return Collections.emptyMap();
             }
             return getSessionBean().getPersonalizedFactors(erpCustomerId, factors);
         } catch (RemoteException e) {
@@ -56,7 +56,7 @@ public class DatabaseScoreFactorProvider {
         }
     }
 
-    public Map getGlobalFactors(List factors) {
+    public Map<String,double[]> getGlobalFactors(List<String> factors) {
         try {
             return getSessionBean().getGlobalFactors(factors);
         } catch (RemoteException e) {
@@ -65,7 +65,7 @@ public class DatabaseScoreFactorProvider {
         }
     }
 
-    public Set getGlobalFactorNames() {
+    public Set<String> getGlobalFactorNames() {
         try {
             return getSessionBean().getGlobalFactorNames();
         } catch (RemoteException e) {
@@ -74,7 +74,7 @@ public class DatabaseScoreFactorProvider {
         }
     }
 
-    public Set getPersonalizedFactorNames() {
+    public Set<String> getPersonalizedFactorNames() {
         try {
             return getSessionBean().getPersonalizedFactorNames();
         } catch (RemoteException e) {
@@ -83,7 +83,7 @@ public class DatabaseScoreFactorProvider {
         }
     }
 
-    public Set getPersonalizedProducts(String erpCustomerId) {
+    public Set<String> getPersonalizedProducts(String erpCustomerId) {
         try {
             return getSessionBean().getPersonalizedProducts(erpCustomerId);
         } catch (RemoteException e) {
@@ -92,7 +92,7 @@ public class DatabaseScoreFactorProvider {
         }
     }
 
-    public Set getGlobalProducts() {
+    public Set<String> getGlobalProducts() {
         try {
             return getSessionBean().getGlobalProducts();
         } catch (RemoteException e) {

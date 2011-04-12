@@ -32,7 +32,7 @@ public class ProductImageTag extends BodyTagSupport {
 	private static final long serialVersionUID = 8159061278833068855L;
 
 	ProductModel	product; 					// product (mandatory if calculator is null)
-	PriceCalculator calculator;                                    // calculator (mandatory if product is null)
+	PriceCalculator calculator;                 // calculator (mandatory if product is null)
 	String			style; 						// CSS style modification (optional)
 	String			className;					// CSS class name (optional)
 	String			action; 					// URL (optional)

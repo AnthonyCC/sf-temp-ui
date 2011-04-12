@@ -104,8 +104,10 @@ public class Variant implements Comparable<Variant>, Serializable {
 	 * @return whether the parameter is a {@link Variant} and has the same {@link #getId() id}
 	 */
 	public boolean equals(Object o) {
-		if (!(o instanceof Variant)) return false;
-		else return ((Variant)o).getId().equals(getId());
+		if (!(o instanceof Variant)) 
+			return false;
+		
+		return ((Variant)o).getId().equals(getId());
 	}
 
 	

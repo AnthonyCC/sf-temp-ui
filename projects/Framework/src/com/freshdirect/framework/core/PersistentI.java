@@ -29,7 +29,7 @@ public interface PersistentI {
     /** reads an object from the persistent store
      * @param conn a SQLConnection to use when reading this object
      * from the persistent store
-     * @throws SQLException any problems entountered while reading this object
+     * @throws SQLException any problems encountered while reading this object
      * from the persistent store
      */    
     public void load(Connection conn) throws SQLException;
@@ -37,7 +37,7 @@ public interface PersistentI {
     /** saves this object's state to the persistent store
      * @param conn a SQLConnection to use when saving this object
      * to the persistent store
-     * @throws SQLException any problems entountered while saving this object
+     * @throws SQLException any problems encountered while saving this object
      * from the persistent store
      */    
     public void store(Connection conn) throws SQLException;
@@ -45,7 +45,7 @@ public interface PersistentI {
     /** removes this object from the persistent store
      * @param conn a SQLConnection to use when removing this object
      * from the persistent store
-     * @throws SQLException any problems entountered while removing this object
+     * @throws SQLException any problems encountered while removing this object
      * from the persistent store
      */    
     public void remove(Connection conn) throws SQLException;

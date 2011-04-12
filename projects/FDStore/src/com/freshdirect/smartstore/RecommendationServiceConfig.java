@@ -102,8 +102,8 @@ public class RecommendationServiceConfig implements Serializable {
 		buf.append("config:{");
 
 		if (params != null) {
-			for (Iterator it = params.keySet().iterator(); it.hasNext();) {
-				String key = (String) it.next();
+			for (Iterator<String> it = params.keySet().iterator(); it.hasNext();) {
+				String key = it.next();
 				buf.append(key + ":" + params.get(key));
 				if (it.hasNext())
 					buf.append(", ");
@@ -115,12 +115,11 @@ public class RecommendationServiceConfig implements Serializable {
 	}
 
 	public String get(String key) {
-		return (String) (params != null ? params.get(key) : null);
+		return (params != null ? params.get(key) : null);
 	}
 
 	public String get(String key, String defaultValue) {
-		String value = (String) (params != null ? params.get(key)
-				: defaultValue);
+		String value = (params != null ? params.get(key) : defaultValue);
 		if (value == null) {
 			return defaultValue;
 		}
@@ -148,6 +147,10 @@ public class RecommendationServiceConfig implements Serializable {
 	    return "true".equals(get(RecommendationServiceFactory.CKEY_SHOW_TEMP_UNAVAILABLE));
 	}
 	
+	public boolean isBrandUniqSort() {
+	    return "true".equals(get(RecommendationServiceFactory.CKEY_BRAND_UNIQ_SORT));
+	}
+	
 	public RecommendationServiceConfig set(String key, String value) {
 		if (params == null) {
 			params = new HashMap<String,String>();
@@ -157,7 +160,7 @@ public class RecommendationServiceConfig implements Serializable {
 	}
 
 	public Set<String> keys() {
-		return params != null ? params.keySet() : Collections.EMPTY_SET;
+		return params != null ? params.keySet() : Collections.<String>emptySet();
 	}
 
 	public SortedMap<String,ConfigurationStatus> getConfigStatus() {

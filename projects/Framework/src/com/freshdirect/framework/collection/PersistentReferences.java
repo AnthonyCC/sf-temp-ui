@@ -1,11 +1,3 @@
-/*
- * $Workfile: PersistentReferences.java$
- *
- * $Date: 8/14/2001 5:42:43 PM$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.framework.collection;
 
 import java.sql.*;
@@ -115,7 +107,7 @@ public class PersistentReferences implements PersistentI {
 	}
 	
 	public void load(Connection conn) throws SQLException {
-		List lst = new LinkedList();
+		List<String> lst = new LinkedList<String>();
 		PreparedStatement ps = conn.prepareStatement("SELECT "+refFieldName+" FROM "+tableName+" WHERE "+parentFieldName+"=?");
 		ps.setString(1, parentId);
 		ResultSet rs = ps.executeQuery();
@@ -124,7 +116,7 @@ public class PersistentReferences implements PersistentI {
 		}
 		rs.close();
 		ps.close();
-		this.refs = (String[])lst.toArray(new String[0]);
+		this.refs = lst.toArray(new String[0]);
 	}
 	
 	public void store(Connection conn) throws SQLException {

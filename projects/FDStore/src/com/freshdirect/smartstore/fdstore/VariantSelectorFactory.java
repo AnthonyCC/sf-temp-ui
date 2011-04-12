@@ -25,10 +25,10 @@ import com.freshdirect.smartstore.service.VariantRegistry;
  * 
  */
 public class VariantSelectorFactory {
+	
 	private final static Logger LOGGER = LoggerFactory.getInstance(VariantSelectorFactory.class);
 
-    private static Map<EnumSiteFeature, VariantSelector> selectors =
-    		new HashMap<EnumSiteFeature, VariantSelector>();
+    private static Map<EnumSiteFeature, VariantSelector> selectors = new HashMap<EnumSiteFeature, VariantSelector>();
 
     /**
 	 * Get the appropriate variant selector.
@@ -41,7 +41,7 @@ public class VariantSelectorFactory {
 	 */
     public synchronized static VariantSelector getSelector(final EnumSiteFeature siteFeature) {
 
-        VariantSelector selector = (VariantSelector) selectors.get(siteFeature);
+        VariantSelector selector = selectors.get(siteFeature);
         if (selector == null || selector.isNeedUpdate()) {
             try {
 				VariantSelector tmpSelector = new VariantSelector(siteFeature);
@@ -61,19 +61,17 @@ public class VariantSelectorFactory {
 				selectors.put(siteFeature, tmpSelector);
 				LOGGER.info("loaded selector for " + siteFeature.getName()
 						+ " with " + variants.size() + " variant for " + assignment.size() + " cohorts");
+				
 				return tmpSelector;
+				
 			} catch (RuntimeException e) {
-				if (selector == null)
-					throw new FDRuntimeException(e,
-							"failed to initialize variant mappings for " + siteFeature.getName());
-				else {
-					LOGGER.warn("failed to reload variant mappings for "
-							+ siteFeature.getName() + ", returning previous mapping");
-					return selector;
+				if (selector == null) {
+					throw new FDRuntimeException(e,	"failed to initialize variant mappings for " + siteFeature.getName());
 				}
+				LOGGER.warn("failed to reload variant mappings for " + siteFeature.getName() + ", returning previous mapping");
 			}
-        } else
-        	return selector;
+        }
+		return selector;
     }
     
     /**

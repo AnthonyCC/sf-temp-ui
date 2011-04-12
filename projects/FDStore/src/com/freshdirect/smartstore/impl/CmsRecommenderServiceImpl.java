@@ -20,43 +20,41 @@ import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.service.CmsRecommenderRegistry;
 
 public class CmsRecommenderServiceImpl implements CmsRecommenderService {
-	private static final Logger LOG = LoggerFactory
-			.getInstance(CmsRecommenderServiceImpl.class);
-	private static final long serialVersionUID = 7555105742910594364L;
+
+	private static final Logger	LOG					= LoggerFactory.getInstance( CmsRecommenderServiceImpl.class );
+	private static final long	serialVersionUID	= 7555105742910594364L;
 
 	@Override
-	public List<String> recommendNodes(ContentKey recommenderId, ContentKey categoryId, String zoneId) {
+	public List<String> recommendNodes( ContentKey recommenderId, ContentKey categoryId, String zoneId ) {
 		// TODO handle zoneId
-		ContentNodeModel node = ContentFactory.getInstance().getContentNodeByKey(
-				recommenderId);
-		if (node instanceof Recommender) {
-			Recommender recommenderNode = (Recommender) node;
+		ContentNodeModel node = ContentFactory.getInstance().getContentNodeByKey( recommenderId );
+		if ( node instanceof Recommender ) {
+			Recommender recommenderNode = (Recommender)node;
 			RecommenderStrategy strategy = recommenderNode.getStrategy();
-			if (strategy == null)
-				return Collections.emptyList();
-			RecommendationService recommender = CmsRecommenderRegistry
-					.getInstance().getService(
-							strategy.getContentName());
-			if (recommender != null) {
-				node = ContentFactory.getInstance().getContentNodeByKey(categoryId);
-				CategoryModel category = null;
-				if (node instanceof CategoryModel)
-					category = (CategoryModel) node;
-				SessionInput input = new SessionInput(null);
-				input.setCurrentNode(category);
-				input.setExplicitList(recommenderNode.getScope());
-				input.setPricingContext(new PricingContext(zoneId));
-				List<ContentNodeModel> products = recommender.recommendNodes(input);
-				List<String> prodIds = new ArrayList<String>(products.size());
-				for (int i = 0; i < products.size(); i++) {
-					prodIds.add(products.get(i).getContentKey().getId());
-				}
-				return prodIds;
-			} else {
-				LOG.debug("recommender " + recommenderId + " is not found");
+			if ( strategy == null ) {
 				return Collections.emptyList();
 			}
-		} else
-			return Collections.emptyList();
+			RecommendationService recommender = CmsRecommenderRegistry.getInstance().getService( strategy.getContentName() );
+			if ( recommender == null ) {
+				LOG.debug( "recommender " + recommenderId + " is not found" );
+				return Collections.emptyList();
+			}
+			node = ContentFactory.getInstance().getContentNodeByKey( categoryId );
+			CategoryModel category = null;
+			if ( node instanceof CategoryModel )
+				category = (CategoryModel)node;
+			SessionInput input = new SessionInput( null );
+			input.setCurrentNode( category );
+			input.setExplicitList( recommenderNode.getScope() );
+			input.setPricingContext( new PricingContext( zoneId ) );
+			List<ContentNodeModel> products = recommender.recommendNodes( input );
+			List<String> prodIds = new ArrayList<String>( products.size() );
+			for ( int i = 0; i < products.size(); i++ ) {
+				prodIds.add( products.get( i ).getContentKey().getId() );
+			}
+			return prodIds;
+			
+		}
+		return Collections.emptyList();
 	}
 }

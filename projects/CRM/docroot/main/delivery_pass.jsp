@@ -598,7 +598,6 @@ String caseRequiredForManualRenewal = "<span class=\"cust_module_content_edit\">
 				}
 			%>	
 			</table>
-			<%-- <%@ include file="/includes/deliverypass/pass_history_usage.jspf" %>  --%>
 			<iframe id="history_pass_usage" name="history_pass_usage" src="/includes/deliverypass/pass_history_usage.jsp" width="100%" height="280" scrolling="auto" FrameBorder="0"></iframe>
 		</fd:GetDeliveryPasses>
 	</fd:DlvPassSignupController>
