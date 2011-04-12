@@ -10,45 +10,35 @@
                 String bottomUri = request.getRequestURI();
                 String deptId = request.getParameter("deptId") != null ? request.getParameter("deptId") : "";
                 String catId = request.getParameter("catId") != null ? request.getParameter("catId") : "";
-                String nomyfd = FDStoreProperties.isMyfdEnabled() && MyFD.getMyFDInstance() != null ? "" : "_nomyfd";
-                if (bottomUri.indexOf("/about/index.jsp") > -1) { 
-            %>
-            <img src="/media_stat/images/navigation/global_nav/bottom_nav_aboutus<%= nomyfd %>.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
-            <%
-                } else if (bottomUri.indexOf("/myfd") > -1) { 
-            %>
-            <img src="/media_stat/images/navigation/global_nav/bottom_nav_myfd<%= nomyfd %>.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
-            <%
-                } else if (bottomUri.indexOf("/jobs/intro") > -1) { 
-            %>
-            <img src="/media_stat/images/navigation/global_nav/bottom_nav_careers<%= nomyfd %>.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
-            <%
-                } else if (bottomUri.indexOf("/gift_card/purchase/landing.jsp") > -1) { 
-            %>
-            <img src="/media_stat/images/navigation/global_nav/bottom_nav_giftcards<%= nomyfd %>.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
-            <%
-                } else if (bottomUri.indexOf("/newproducts.jsp") > -1 || bottomUri.indexOf("/newproducts_dfgs.jsp") > -1) { 
-            %>
-            <img src="/media_stat/images/navigation/global_nav/bottom_nav_newprod<%= nomyfd %>.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
-            <%
-                } else if(!deptId.equals("") && deptId.equalsIgnoreCase("cmty")) { 
-            %>
-            <img src="/media_stat/images/navigation/global_nav/bottom_nav_community<%= nomyfd %>.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
-            <%
-                } else if(!catId.equals("") && catId.equalsIgnoreCase("about_billrights")) { 
-            %>
-            <img src="/media_stat/images/navigation/global_nav/bottom_nav_billorrights<%= nomyfd %>.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
-            <%
-                } else if(!deptId.equals("") && deptId.equalsIgnoreCase("COS")) { 
-            %>
-            <img src="/media_stat/images/navigation/global_nav/bottom_nav_office<%= nomyfd %>.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
-            <%            
+
+                String botNav = "off";
+                boolean hasMyFD = FDStoreProperties.isMyfdEnabled() && MyFD.getMyFDInstance() != null;
+
+                if (bottomUri.indexOf("/about/index.jsp") > -1) {
+                    botNav = "aboutus";
+                } else if (bottomUri.indexOf("/myfd") > -1) {
+                    botNav = "myfd";
+                } else if (bottomUri.indexOf("/jobs/intro") > -1) {
+                    botNav = "careers";
+                } else if (bottomUri.indexOf("/gift_card/purchase/landing.jsp") > -1) {
+                    botNav = "giftcards";
+                } else if (bottomUri.indexOf("/newproducts.jsp") > -1 || bottomUri.indexOf("/newproducts_dfgs.jsp") > -1) {
+                    botNav = "newprod";
+                } else if(!deptId.equals("") && deptId.equalsIgnoreCase("cmty")) {
+                    botNav = "community";
+                } else if(!catId.equals("") && catId.equalsIgnoreCase("about_billrights")) {
+                    botNav = "billorrights";
+                } else if(!deptId.equals("") && deptId.equalsIgnoreCase("COS")) {
+                    botNav = "office";
                 } else {
-            %>
-			<img src="/media_stat/images/navigation/global_nav/bottom_nav_off<%= nomyfd %>.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
-            <%
+                    botNav = "off";
                 }
-            %>
+                //since the gift card url is dynamic, check for other query values before adding the trk attribute
+                boolean gcUrlHasOtherQueryVals = FDStoreProperties.getGiftCardLandingUrl().indexOf("?") > -1;
+                String giftPath = FDStoreProperties.getGiftCardLandingUrl() + (gcUrlHasOtherQueryVals?"&":"?")+"trk=bnav";
+
+                %>
+            <%@ include file="/common/template/includes/footer_table.jspf" %>
 	</td>
 	</tr>
 	<tr>
@@ -89,21 +79,4 @@
 %>
 
 <br /><img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" />
-	<map name="bottomlinks" id="bottomlinks">
-      <area shape="rect" coords="11,1,67,22" href="/department.jsp?deptId=about&trk=bnav"  alt="About Us" title="About Us">
-      <area shape="rect" coords="67,1,120,22" href="<%=FDStoreProperties.getCareerLink()%>"  alt="Careers" title="Careers">
-      <area shape="rect" coords="120,1,215,22" href="/department.jsp?deptId=cmty&trk=bnav"  alt="Our Community" title="Our Community">
-      <area shape="rect" coords="215,1,329,22" href="/category.jsp?catId=about_billrights&trk=bnav"  alt="Your Bill of Rights" title="Your Bill of Rights">
-
-      <% if (FDStoreProperties.isMyfdEnabled()) { %>
-      <area shape="rect" coords="467,1,503,22" href="/myfd/index.jsp?trk=bnav"  alt="My FD" title="My FD">
-      <% } %>
-      <area shape="rect" coords="503,1,581,22" href="/department.jsp?deptId=COS&trk=bnav"  alt="At the Office" title="At the Office">
-      <%
-          //since the gift card url is dynamic, check for other query values before adding the trk attribute
-          boolean gcUrlHasOtherQueryVals = FDStoreProperties.getGiftCardLandingUrl().indexOf("?") > -1;
-      %>
-      <area shape="rect" coords="581,1,648,22" href="<%=FDStoreProperties.getGiftCardLandingUrl()%><%=(gcUrlHasOtherQueryVals)?"&":"?"%>trk=bnav"  alt="Gift Cards" title="Gift Cards">
-      <area shape="rect" coords="648,1,745,22" href="/newproducts.jsp?trk=bnav"  alt="New Products" title="New Products">
-	</map>
 <%@ include file="/includes/net_insight/i_tag_footer.jspf" %>

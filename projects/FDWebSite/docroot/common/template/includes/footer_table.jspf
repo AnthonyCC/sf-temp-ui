@@ -1,0 +1,56 @@
+<!-- /media_stat/images/navigation/global_nav/bottom_nav_off.gif -->
+<table border='0' cellpadding='0' cellspacing='0'>
+  <tr height='22px'>
+    <td width='10px'><img src='/media_stat/images/navigation/footer_parts/off0.png'/></td>
+    <% if ("aboutus".equals(botNav)) { %>
+    <td width='57px'><a href='/department.jsp?deptId=about&trk=bnav'><img src='/media_stat/images/navigation/footer_parts/aboutus_selected.png' alt='About Us'/></a></td>
+    <% } else { %>
+    <td width='57px'><a href='/department.jsp?deptId=about&trk=bnav'><img src='/media_stat/images/navigation/footer_parts/aboutus.png' alt='About Us'/></a></td>
+    <% } %>
+    <% if ("careers".equals(botNav)) { %>
+    <td width='52px'><a href='<%=FDStoreProperties.getCareerLink()%>'><img src='/media_stat/images/navigation/footer_parts/careers_selected.png' alt='Careers'/></a></td>
+    <% } else { %>
+    <td width='52px'><a href='<%=FDStoreProperties.getCareerLink()%>'><img src='/media_stat/images/navigation/footer_parts/careers.png' alt='Careers'/></a></td>
+    <% } %>
+    <% if ("community".equals(botNav)) { %>
+    <td width='1px'><img src='/media_stat/images/navigation/footer_parts/community20.png'/></td>
+    <td width='94px'><a href='/department.jsp?deptId=cmty&trk=bnav'><img src='/media_stat/images/navigation/footer_parts/community_selected.png' alt='Our Community'/></a></td>
+    <% } else { %>
+    <td width='1px'><img src='/media_stat/images/navigation/footer_parts/off3.png'/></td>
+    <td width='94px'><a href='/department.jsp?deptId=cmty&trk=bnav'><img src='/media_stat/images/navigation/footer_parts/community.png' alt='Our Community'/></a></td>
+    <% } %>
+    <td width='2px'><img src='/media_stat/images/navigation/footer_parts/off5.png'/></td>
+    <% if ("billorrights".equals(botNav)) { %>
+    <td width='116px'><a href='/category.jsp?catId=about_billrights&trk=bnav'><img src='/media_stat/images/navigation/footer_parts/billorrights_selected.png' alt='Your Bill of Rights'/></a></td>
+    <% } else { %>
+    <td width='116px'><a href='/category.jsp?catId=about_billrights&trk=bnav'><img src='/media_stat/images/navigation/footer_parts/billorrights.png' alt='Your Bill of Rights'/></a></td>
+    <% } %>
+    <td width='134px'><img src='/media_stat/images/navigation/footer_parts/off7.png'/></td>
+    <% if (hasMyFD) { %>
+	  <%   if ("myfd".equals(botNav)) { %>
+           <td width='38px'><a href='/myfd/index.jsp?trk=bnav'><img src='/media_stat/images/navigation/footer_parts/myfd_selected.png' alt='My FD'/></a></td>
+        <% } else { %>
+           <td width='38px'><a href='/myfd/index.jsp?trk=bnav'><img src='/media_stat/images/navigation/footer_parts/myfd.png' alt='My FD'/></a></td>
+        <% } %>
+    <% } else { %>
+           <td width='38px'><img src='/media_stat/images/navigation/footer_parts/no_myfd.png'/></td>
+    <% } %>
+    <% if ("office".equals(botNav)) { %>
+    <td width='76px'><a href='/department.jsp?deptId=COS&trk=bnav'><img src='/media_stat/images/navigation/footer_parts/office_selected.png' alt='At the Office'/></a></td>
+    <td width='2px'><img src='/media_stat/images/navigation/footer_parts/office25.png'/></td>
+    <% } else { %>
+    <td width='76px'><a href='/department.jsp?deptId=COS&trk=bnav'><img src='/media_stat/images/navigation/footer_parts/office.png' alt='At the Office'/></a></td>
+    <td width='2px'><img src='/media_stat/images/navigation/footer_parts/off10.png'/></td>
+    <% } %>
+    <% if ("giftcards".equals(botNav)) { %>
+    <td width='67px'><a href='<%=giftPath%>'><img src='/media_stat/images/navigation/footer_parts/giftcards_selected.png' alt='Gift Cards'/></a></td>
+    <% } else { %>
+    <td width='67px'><a href='<%=giftPath%>'><img src='/media_stat/images/navigation/footer_parts/giftcards.png' alt='Gift Cards'/></a></td>
+    <% } %>
+    <% if ("newprod".equals(botNav)) { %>
+    <td width='97px'><a href='/newproducts.jsp?trk=bnav'><img src='/media_stat/images/navigation/footer_parts/newprod_selected.png' alt='New Products'/></a></td>
+    <% } else { %>
+    <td width='97px'><a href='/newproducts.jsp?trk=bnav'><img src='/media_stat/images/navigation/footer_parts/newprod.png' alt='New Products'/></a></td>
+    <% } %>
+  </tr>
+</table>

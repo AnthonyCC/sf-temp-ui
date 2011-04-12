@@ -94,48 +94,14 @@ if (catId != null){
 		isAtHome = false;
 	}
 	%>
-<tr><td><% if(!thisDept.equals("") && !thisDept.equalsIgnoreCase("about") && !thisDept.equalsIgnoreCase("cmty")){%>
-<img src="/media_stat/images/navigation/global_nav/topnav_<%=thisDept%>.gif" width="745" height="44" alt="" border="0" usemap="#globalNav" vspace="0" />
-<%}else{
-		if(isAtHome == true){
-%>
-		<img src="/media_stat/images/navigation/global_nav/topnav_home.gif" width="745" height="44" alt="" border="0" usemap="#globalNav" vspace="0" />
-<% } else { %>
-		<img src="/media_stat/images/navigation/global_nav/topnav_off.gif" width="745" height="44" alt="" border="0" usemap="#globalNav" vspace="0" />	
-<% }
-	} %></td></tr><tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" /></td></tr></table>
+<tr><td><% 
+	String navigation = isAtHome ? "home" : "off";
+if(!thisDept.equals("") && !thisDept.equalsIgnoreCase("about") && !thisDept.equalsIgnoreCase("cmty")){
+	navigation = thisDept;
+}
+%><%@ include file="/common/template/includes/globalnav_table.jspf" %>
+</td></tr><tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" /></td></tr></table>
 <% } catch (Exception ex) {
 		ex.printStackTrace();
 %><oscache:usecached />
 <% } %></oscache:cache>
-
-	<map name="globalNav" id="globalNav">
-		<area shape="rect" coords="0,0,34,44" href="/index.jsp" alt="Home" />
-		<area shape="rect" coords="35,0,74,21" href="/department.jsp?deptId=fru&amp;trk=gnav" alt="Fruit" />
-		<area shape="rect" coords="75,0,143,21" href="/department.jsp?deptId=veg&amp;trk=gnav" alt="Vegetables" />
-		<area shape="rect" coords="144,0,180,21" href="/department.jsp?deptId=mea&amp;trk=gnav" alt="Meat" />
-		<area shape="rect" coords="181,0,237,21" href="/department.jsp?deptId=sea&amp;trk=gnav" alt="Seafood" />
-		<area shape="rect" coords="238,0,270,21" href="/department.jsp?deptId=del&amp;trk=gnav" alt="Deli" />
-		<area shape="rect" coords="271,0,317,21" href="/department.jsp?deptId=che&amp;trk=gnav" alt="Cheese" />
-		<area shape="rect" coords="318,0,357,21" href="/department.jsp?deptId=dai&amp;trk=gnav" alt="Dairy" />
-		<area shape="rect" coords="384,0,473,21" href="/department.jsp?deptId=fdi&amp;trk=gnav" alt="4-Minute Meals" />
-		<area shape="rect" coords="474,0,562,21" href="/department.jsp?deptId=rtc&amp;trk=gnav" alt="Ready to Cook" />
-		<area shape="rect" coords="563,0,627,21" href="/department.jsp?deptId=hmr&amp;trk=gnav" alt="Heat &amp; Eat" />
-		<area shape="rect" coords="628,0,675,21" href="/department.jsp?deptId=bak&amp;trk=gnav" alt="Bakery" />
-		<area shape="rect" coords="676,0,734,21" href="/department.jsp?deptId=cat&amp;trk=gnav" alt="Catering" />
-
-		<area shape="rect" coords="35,22,114,44" href="/department.jsp?deptId=wgd&amp;trk=gnav" alt="What's Good" />
-		<area shape="rect" coords="115,22,171,44" href="/department.jsp?deptId=orgnat&amp;trk=gnav" alt="Organic" />
-		<area shape="rect" coords="172,22,211,44" href="/department.jsp?deptId=local&amp;trk=gnav" alt="Local" />
-		<area shape="rect" coords="212,22,262,44" href="/department.jsp?deptId=kos&amp;trk=gnav" alt="Kosher" />
-		<area shape="rect" coords="263,22,313,44" href="/department.jsp?deptId=rec&amp;trk=gnav" alt="Recipes" />
-		<area shape="rect" coords="353,22,393,44" href="/department.jsp?deptId=pas&amp;trk=gnav" alt="Pasta" />
-		<area shape="rect" coords="394,22,441,44" href="/department.jsp?deptId=cof&amp;trk=gnav" alt="Coffee" />
-		<area shape="rect" coords="442,22,496,44" href="/department.jsp?deptId=gro&amp;trk=gnav" alt="Grocery" />
-		<area shape="rect" coords="497,22,596,44" href="/department.jsp?deptId=hba&amp;trk=gnav" alt="Health &amp; Beauty" />
-		<area shape="rect" coords="597,22,647,44" href="/department.jsp?deptId=big&amp;trk=gnav" alt="Buy Big" />
-		<area shape="rect" coords="648,22,696,44" href="/department.jsp?deptId=fro&amp;trk=gnav" alt="Frozen" />
-		<area shape="rect" coords="697,22,734,44" href="/department.jsp?deptId=usq&amp;trk=gnav" alt="USQ" />
-	</map>
-
-	

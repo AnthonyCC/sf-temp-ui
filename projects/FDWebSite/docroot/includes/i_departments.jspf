@@ -33,7 +33,27 @@ String newprods = "/newproducts.jsp?trk=home";
 		  <tr>
 			<td align="center">
 			<img src="/media_stat/images/navigation/department/home/fdhome_row1_header.gif" width="457" height="16" border="0" alt="DELICIOUS FOOD TREATED WITH LOVE & RESPECT"><br>
-			<img src="/media_stat/images/navigation/department/home/fdhome_row1.jpg" width="491" height="52" usemap="#Row1" border="0" vspace="3">
+			<!-- <img src="/media_stat/images/navigation/department/home/fdhome_row1.jpg" width="491" height="52" usemap="#Row1" border="0" vspace="3"> -->
+				<!-- /media_stat/images/navigation/department/home/fdhome_row1.jpg -->
+				<table border='0' cellpadding='0' cellspacing='0'>
+				  <tr height='52px'>
+				    <td width='63px'><a href='<%=fruit%>'><img src='/media_stat/images/navigation/department_selection/row1_0.png' alt='Fruit'/></a></td>
+				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row1_1.png'/></td>
+				    <td width='78px'><a href='<%=vegetables%>'><img src='/media_stat/images/navigation/department_selection/row1_2.png' alt='Vegetables'/></a></td>
+				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row1_1.png'/></td>
+				    <td width='68px'><a href='<%=meat%>'><img src='/media_stat/images/navigation/department_selection/row1_3.png' alt='Meat'/></a></td>
+				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row1_1.png'/></td>
+				    <td width='69px'><a href='<%=seafood%>'><img src='/media_stat/images/navigation/department_selection/row1_4.png' alt='Seafood'/></a></td>
+				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row1_1.png'/></td>
+				    <td width='68px'><a href='<%=deli%>'><img src='/media_stat/images/navigation/department_selection/row1_5.png' alt='Deli'/></a></td>
+				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row1_1.png'/></td>
+				    <td width='69px'><a href='<%=cheese%>'><img src='/media_stat/images/navigation/department_selection/row1_6.png' alt='Cheese'/></a></td>
+				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row1_1.png'/></td>
+				    <td width='70px'><a href='<%=dairy%>'><img src='/media_stat/images/navigation/department_selection/row1_7.png' alt='Dairy'/></a></td>
+				  </tr>
+				</table>
+			
+			
 			</td>
 		  </tr>
 		  <tr>
@@ -58,7 +78,20 @@ String newprods = "/newproducts.jsp?trk=home";
 			</td>
 		  </tr>
 		  <tr>
-			<td align="center" style="padding-top:11px;"><img src="/media_stat/images/navigation/department/home/fdhome_row2.jpg" width="465" height="53" usemap="#Row2" border="0"></td>
+			<td align="center" style="padding-top:11px;">
+				<!-- /media_stat/images/navigation/department/home/fdhome_row2.jpg -->
+				<table border='0' cellpadding='0' cellspacing='0'>
+				  <tr height='53px'>
+				    <td width='110px'><a href='<%=organic%>'><img src='/media_stat/images/navigation/department_selection/row2_0.png' alt='Organic & All-Natural'/></a></td>
+				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row2_1.png'/></td>
+				    <td width='123px'><a href='<%=localFoods%>'><img src='/media_stat/images/navigation/department_selection/row2_2.png' alt='Local Foods'/></a></td>
+				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row2_1.png'/></td>
+				    <td width='110px'><a href='<%=kosher%>'><img src='/media_stat/images/navigation/department_selection/row2_3.png' alt='Kosher'/></a></td>
+				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row2_1.png'/></td>
+				    <td width='119px'><a href='<%=pasta%>'><img src='/media_stat/images/navigation/department_selection/row2_4.png' alt='Pasta'/></a></td>
+				  </tr>
+				</table>
+			</td>
 		  </tr>
 		  <tr>
 			<td align="center" style="padding-top:3px;">
@@ -114,7 +147,20 @@ String newprods = "/newproducts.jsp?trk=home";
 					<br>
 				</div>
 			<img src="/media_stat/images/navigation/department/home/fdhome_row4_header.gif" width="457" height="16" border="0" alt="EASY MEALS PREPARED BY EXPERT CHEFS" vspace="3"><br>
-			<img src="/media_stat/images/navigation/department/home/fdhome_row4.jpg" width="488" height="62" usemap="#Row4" border="0">
+				<!-- /media_stat/images/navigation/department/home/fdhome_row4.jpg -->
+				<table border='0' cellpadding='0' cellspacing='0'>
+				  <tr height='62px'>
+				    <td width='90px'><a href='<%=bakery%>'><img src='/media_stat/images/navigation/department_selection/row4_0.png' alt='Bakery'/></a></td>
+				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row4_1.png'/></td>
+				    <td width='104px'><a href='<%=readyToCook%>'><img src='/media_stat/images/navigation/department_selection/row4_2.png' alt='Ready to Cook'/></a></td>
+				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row4_3.png'/></td>
+				    <td width='96px'><a href='<%=heatAndEat%>'><img src='/media_stat/images/navigation/department_selection/row4_4.png' alt='Heat and Eat'/></a></td>
+				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row4_3.png'/></td>
+				    <td width='102px'><a href='<%=catering%>'><img src='/media_stat/images/navigation/department_selection/row4_5.png' alt='Catering'/></a></td>
+				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row4_3.png'/></td>
+				    <td width='92px'><a href='<%=fourMinMeals%>'><img src='/media_stat/images/navigation/department_selection/row4_6.png' alt='4-Minute Meals'/></a></td>
+				  </tr>
+				</table>
 			</td>
 		  </tr>
 		  <tr>
@@ -137,7 +183,22 @@ String newprods = "/newproducts.jsp?trk=home";
 		  <tr>
 			<td align="center" style="padding-top:16px;">
 				<img src="/media_stat/images/navigation/department/home/fdhome_row5_header.gif" width="457" height="16" border="0" alt="POPULAR BRANDS & EVERYDAY PANTRY NEEDS"><br>
-				<img src="/media_stat/images/navigation/department/home/fdhome_row5.jpg" width="436" height="50" usemap="#Row5" border="0" vspace="4">
+				<!-- /media_stat/images/navigation/department/home/fdhome_row5.jpg -->
+				<table border='0' cellpadding='0' cellspacing='0'>
+				  <tr height='50px'>
+				    <td width='56px'><a href='<%=coffee%>'><img src='/media_stat/images/navigation/department_selection/row5_0.png' alt='Coffee'/></a></td>
+				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row5_1.png'/></td>
+				    <td width='83px'><a href='<%=grocery%>'><img src='/media_stat/images/navigation/department_selection/row5_2.png' alt='Grocery'/></a></td>
+				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row5_1.png'/></td>
+				    <td width='62px'><a href='<%=frozen%>'><img src='/media_stat/images/navigation/department_selection/row5_3.png' alt='Frozen'/></a></td>
+				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row5_1.png'/></td>
+				    <td width='60px'><a href='<%=healthAndBeauty%>'><img src='/media_stat/images/navigation/department_selection/row5_4.png' alt='Health & Beauty'/></a></td>
+				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row5_1.png'/></td>
+				    <td width='103px'><a href='<%=buyBig%>'><img src='/media_stat/images/navigation/department_selection/row5_5.png' alt='Buy Big'/></a></td>
+				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row5_1.png'/></td>
+				    <td width='67px'><a href='<%=wine%>'><img src='/media_stat/images/navigation/department_selection/row5_6.png' alt='Wine'/></a></td>
+				  </tr>
+				</table>
 			</td>
 		  </tr>
 		  <tr>
@@ -161,44 +222,3 @@ String newprods = "/newproducts.jsp?trk=home";
 		  </tr>
 	</table>
       <%-- end i_departments --%>
-
-	 	<map name="Row1">
-  		<area shape="rect" coords="0,0,63,52" href="<%=fruit%>" alt="Fruit">
-  		<area shape="rect" coords="64,0,142,52" href="<%=vegetables%>" alt="Vegetables">
-  		<area shape="rect" coords="143,0,211,52" href="<%=meat%>" alt="Meat">
-  		<area shape="rect" coords="212,0,281,52" href="<%=seafood%>" alt="Seafood">
-  		<area shape="rect" coords="282,0,350,52" href="<%=deli%>" alt="Deli">
-  		<area shape="rect" coords="351,0,420,52" href="<%=cheese%>" alt="Cheese">
-  		<area shape="rect" coords="421,0,491,52" href="<%=dairy%>" alt="Dairy">
-		</map>
-		
-		<map name="Row2">
-  		<area shape="rect" coords="0,0,110,53" href="<%=organic%>" alt="Organic & All-Natural">
-  		<area shape="rect" coords="111,0,234,53" href="<%=localFoods%>" alt="Local Foods">
-  		<area shape="rect" coords="235,0,345,53" href="<%=kosher%>" alt="Kosher">
-		<area shape="rect" coords="346,0,465,53" href="<%=pasta%>" alt="Pasta">
-		</map>
-		
-		<map name="Row4">
-		<area shape="rect" coords="0,0,90,62" href="<%=bakery%>" alt="Bakery">
-  		<area shape="rect" coords="91,0,195,62" href="<%=readyToCook%>" alt="Ready to Cook">
-  		<area shape="rect" coords="196,0,292,62" href="<%=heatAndEat%>" alt="Heat and Eat">
-  		<area shape="rect" coords="293,0,395,62" href="<%=catering%>" alt="Catering">
-		<area shape="rect" coords="396,0,488,62" href="<%=fourMinMeals%>" alt="4-Minute Meals">
-		</map>
-		
-		<map name="Row5">
-  		<area shape="rect" coords="0,0,56,50" href="<%=coffee%>" alt="Coffee">
-  		<area shape="rect" coords="57,0,140,50" href="<%=grocery%>" alt="Grocery">
-		<area shape="rect" coords="141,0,203,50" href="<%=frozen%>" alt="Frozen">
-  		<area shape="rect" coords="204,0,264,50" href="<%=healthAndBeauty%>" alt="Health & Beauty">
-  		<area shape="rect" coords="265,0,368,50" href="<%=buyBig%>" alt="Buy Big">
-  		<area shape="rect" coords="369,0,436,50" href="<%=wine%>" alt="Wine">
-		</map>
-
-
-
-
-
-
-
