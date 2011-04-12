@@ -90,7 +90,7 @@
 							  );
 						  </script>
 					</div>
-					<div style="float:left;text-align:center;font-weight:bold">Entered By<br>&nbsp;
+					<!--<div style="float:left;text-align:center;font-weight:bold">Entered By<br>&nbsp;
 						 <select id="employee" name="employee" style="width:200px;">
 							  <option value=""></option> 
 							  <c:forEach var="e" items="${employees}">
@@ -104,7 +104,7 @@
 								  </c:choose>      
 								</c:forEach>   
 					   </select>
-					</div>
+					</div>-->
 					<div style="float:left;text-align:center;font-weight:bold">Truck Number<br>&nbsp;
 						<input maxlength="40" size="20" name="truckNumber" id="truckNumber" value="<%= truckNumberVal %>" style="width:100px" />
 					</div>&nbsp;&nbsp;&nbsp;
