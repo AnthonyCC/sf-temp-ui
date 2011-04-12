@@ -2,11 +2,14 @@ package com.freshdirect.fdstore.standingorders.service;
 
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
-import javax.mail.MessagingException;
+import java.util.List;
 
 import javax.ejb.CreateException;
+import javax.mail.MessagingException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
@@ -22,9 +25,12 @@ public class StandingOrdersServiceCmd {
 
 	private static final Logger LOGGER = LoggerFactory.getInstance(StandingOrdersServiceCmd.class); 
 	
+	
 	public static void main( String[] args ) {
 		try{
-			placeStandingOrders();
+			//placeStandingOrders();
+			List<String> soList=new ArrayList<String>(10) {{add("123");add("2201264415");}};
+ 			placeStandingOrders(soList);
 		}catch(Exception e){
 			LOGGER.info(new StringBuilder("StandingOrdersServiceCmd failed with Exception...").append(e.toString()).toString());
 			LOGGER.error(e);
@@ -68,6 +74,32 @@ public class StandingOrdersServiceCmd {
 			LOGGER.info( "Starting to place orders..." );
 			
 			StandingOrdersServiceResult.Counter result = sb.placeStandingOrders();
+			
+			LOGGER.info( "Finished placing orders." );
+			LOGGER.info( "  success : " + result.getSuccessCount() );
+			LOGGER.info( "  failed  : " + result.getFailedCount() );
+			LOGGER.info( "  skipped : " + result.getSkippedCount() );
+			LOGGER.info( "  total   : " + result.getTotalCount() );
+			
+		} catch ( CreateException e ) {
+			invalidateSOSHome();
+			e.printStackTrace();
+		} catch ( RemoteException e ) {
+			invalidateSOSHome();
+			e.printStackTrace();
+		} catch ( FDResourceException e ) {
+			invalidateSOSHome();
+			e.printStackTrace();
+		}
+	}
+	private static void placeStandingOrders(Collection<String> soList) {
+		try {
+			lookupSOSHome();
+			StandingOrdersServiceSB sb = sosHome.get().create();
+			
+			LOGGER.info( "Starting to place orders..." );
+			
+			StandingOrdersServiceResult.Counter result = sb.placeStandingOrders(soList);
 			
 			LOGGER.info( "Finished placing orders." );
 			LOGGER.info( "  success : " + result.getSuccessCount() );

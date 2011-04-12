@@ -72,10 +72,11 @@ import com.freshdirect.fdstore.rules.FDRuleContextI;
 import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.standingorders.DeliveryInterval;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
-import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 import com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceResult.Result;
 import com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceResult.Status;
+import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -1026,5 +1027,66 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 	private AddressModel cloneAddress(AddressModel address) {
 		ErpAddressModel model=new ErpAddressModel(address);
 		return model;
+	}
+	
+	public StandingOrdersServiceResult.Counter placeStandingOrders(Collection<String> soList) {
+		
+		lookupFCHome();
+		lookupMailerHome();
+		
+		
+		if ( soList == null || soList.size()==0) {
+			LOGGER.error( "Empty List passed." );
+			sendTechnicalMail( "Empty List passed." );
+			return null;
+		}
+		
+		StandingOrdersServiceResult.Counter resultCounter = new StandingOrdersServiceResult.Counter();
+		
+		LOGGER.info( "Processing " + soList.size() + " standing orders." );
+		for ( String _so : soList ) {
+			Result result;
+			FDStandingOrder so=null;
+			try {
+				so=soManager.load(new PrimaryKey(_so));
+				result = process( so );
+				
+			} catch (FDResourceException re) {
+				invalidateFCHome();
+				invalidateMailerHome();
+				LOGGER.error( "Processing standing order failed with FDResourceException!", re );
+				result = new Result( ErrorCode.TECHNICAL, ErrorCode.TECHNICAL.getErrorHeader(), "Processing standing order failed with FDResourceException!", null );
+			}
+			
+			if ( result.isError() ) {
+				if ( result.isTechnicalError() ) {
+					// technical error
+					sendTechnicalMail( result.getErrorDetail() );
+				} else {
+					// other error -> set so to error state
+					so.setLastError( result.getErrorCode(), result.getErrorHeader(), result.getErrorDetail() );
+					sendErrorMail( so, result.getCustomerInfo() );
+				}
+			}
+			
+			resultCounter.count( result.getStatus() );
+			
+			if ( result.getStatus() != Status.SKIPPED ) {
+				try {
+					FDActionInfo info = new FDActionInfo(EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(),
+							INITIATOR_NAME, "Updating Standing Order Status", null);
+					soManager.save( info, so );
+				} catch (FDResourceException re) {
+					invalidateFCHome();
+					invalidateMailerHome();
+					LOGGER.error( "Saving standing order failed! (FDResourceException)", re );
+				}
+				
+				logActivity( so, result );
+			}			
+		}
+		
+		return resultCounter;		
+			
 	}
 }
