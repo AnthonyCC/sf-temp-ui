@@ -299,12 +299,12 @@ public class PriceCalculator {
 
                     return ProductModel.CURRENCY_FORMAT.format(price) + "/" + productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
                 }
-                return null;
+                return "";
             } catch (FDSkuNotFoundException ex) {
             } catch (FDResourceException e) {
             }
         }
-        return null;
+        return "";
     }
     
     public PricingContext getPricingContext() {

@@ -238,10 +238,9 @@ public class TemplateContext extends BaseTemplateContext{
 			ProductModel product    = (ProductModel) node;
 			PriceCalculator calc = new PriceCalculator(pricingContext, product);
 			try{
+				if(calc.getSkuModel() == null) return price;//SAFE CHECK: Returns empty string when product's sku is unavailable or null.
 				if(calc.getZonePriceInfoModel().isItemOnSale()){
 					price = calc.getSellingPriceOnly();	
-				}else{
-					
 				}
 			}catch(FDResourceException fe){
 				LOGGER.error("Error Occurred while getting base price "+fe.getMessage());
@@ -475,6 +474,6 @@ public class TemplateContext extends BaseTemplateContext{
 				scaleDisplay = priceCalculator.getTieredPrice(0);
 			}
 		}
-		return scaleDisplay;
+		return scaleDisplay != null ? scaleDisplay : "";
 	}
 }
