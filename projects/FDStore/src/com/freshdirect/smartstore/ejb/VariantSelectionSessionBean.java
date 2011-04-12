@@ -36,10 +36,10 @@ public class VariantSelectionSessionBean extends SessionBeanSupport {
 			"  FROM CUST.SS_VARIANT_ASSIGNMENT T3 " +
 			"  WHERE T3.COHORT_ID=T1.ID " +
 			"  AND TO_DATE(T3.\"DATE\") < " + parameter + 
-			" and T3.variant_id in (SELECT ID FROM CUST.SS_VARIANTS WHERE FEATURE=?) " +
+			" and T3.variant_id in (SELECT ID FROM CUST.SS_VARIANTS WHERE FEATURE=? AND ARCHIVED = 'N') " +
 			") " +
 			"AND T2.VARIANT_ID IN ( " +
-			"  SELECT ID FROM CUST.SS_VARIANTS WHERE FEATURE=? " +
+			"  SELECT ID FROM CUST.SS_VARIANTS WHERE FEATURE=? AND ARCHIVED = 'N' " +
 			") " +
 			"ORDER BY COHORT_ID";
 	}
@@ -176,7 +176,7 @@ public class VariantSelectionSessionBean extends SessionBeanSupport {
 		try {
 			conn = getConnection();
 			
-			PreparedStatement ps = conn.prepareStatement("SELECT ID FROM CUST.SS_VARIANTS WHERE FEATURE=?");
+			PreparedStatement ps = conn.prepareStatement("SELECT ID FROM CUST.SS_VARIANTS WHERE FEATURE=?  AND ARCHIVED = 'N'");
 			ps.setString(1, feature.getName());
 			
 			ResultSet rs = ps.executeQuery();

@@ -288,7 +288,7 @@ public class FDPromotionManagerDAO {
 	
 	private static final String PROMO_VARIANT_QUERY="SELECT VP.VARIANT_ID, VP.PROMO_CODE, VP.PROMO_PRIORITY, V.FEATURE, VP.VARIANT_PRIORITY FROM CUST.PROMO_VARIANTS VP, "+
 													"CUST.SS_VARIANTS V, CUST.PROMOTION P WHERE P.CODE = VP.PROMO_CODE AND V.ID = VP.VARIANT_ID AND P.ACTIVE='X' AND (P.EXPIRATION_DATE > (SYSDATE-7) "+
-													" OR P.EXPIRATION_DATE IS NULL) AND P.RECOMMENDED_ITEMS_ONLY='X' AND P.CODE=?";
+													" OR P.EXPIRATION_DATE IS NULL) AND P.RECOMMENDED_ITEMS_ONLY='X' AND P.CODE=? and v.archived = 'N'";
 	
 	public static List<PromoVariantModel> getPromotionVariants(Connection conn,String promoId) throws SQLException {
 		

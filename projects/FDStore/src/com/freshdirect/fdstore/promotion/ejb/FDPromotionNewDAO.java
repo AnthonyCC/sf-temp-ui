@@ -1135,7 +1135,7 @@ public class FDPromotionNewDAO {
 	
 	private final static String GET_ALL_ACTIVE_PROMO_VARIANTS = "select vp.VARIANT_ID, vp.PROMO_CODE, vp.PROMO_PRIORITY, v.FEATURE, vp.VARIANT_PRIORITY from cust.PROMO_VARIANTS vp, " +
 			"cust.SS_VARIANTS v, cust.PROMOTION_NEW p where p.CODE = vp.PROMO_CODE and v.ID = vp.VARIANT_ID and p.status STATUSES and (p.expiration_date > (sysdate-7) " +
-			"or p.expiration_date is null) and p.FAVORITES_ONLY='X'";
+			"or p.expiration_date is null) and p.FAVORITES_ONLY='X' and v.archived = 'N'";
 	
 	public static List<PromoVariantModel> loadAllActivePromoVariants(Connection conn, List<EnumSiteFeature> smartSavingFeatures) throws SQLException {
 		StringBuffer preparedStmtQry = new StringBuffer( GET_ALL_ACTIVE_PROMO_VARIANTS.replace("STATUSES", getStatusReplacementString()) ); 
