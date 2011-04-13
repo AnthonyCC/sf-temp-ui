@@ -1543,8 +1543,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				pk = sb.placeOrder(new PrimaryKey(customerPk), createOrder,
 						usedPromotionCodes, cra, agentRole, null,
 						EnumSaleType.REGULAR);
-				LOGGER.debug("In Place order getDeliveryPassCount "
-						+ createOrder.getDeliveryPassCount());
+				LOGGER.debug("Order : "+createOrder.getPK().toString()+" deliveryPassCount=>"+createOrder.getDeliveryPassCount());
 				if (createOrder.getDeliveryPassCount() > 0) {
 					// order contains delivery pass.
 					DeliveryPassModel newPass = DeliveryPassUtil
