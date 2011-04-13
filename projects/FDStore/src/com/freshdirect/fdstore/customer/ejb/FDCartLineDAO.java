@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore.customer.ejb;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -116,7 +117,7 @@ public class FDCartLineDAO {
 			ps.setString(2, fdUserPk.getId());
 			ps.setString(3, line.getSku().getSkuCode());
 			ps.setInt(4, line.getSku().getVersion());
-			ps.setDouble(5, line.getQuantity());
+			ps.setBigDecimal(5, new BigDecimal(String.valueOf(line.getQuantity())));
 			ps.setString(6, line.getSalesUnit());
 			ps.setString(7, convertHashMapToString(line.getOptions()));
 			ps.setString(8, line.getRecipeSourceId());
