@@ -528,4 +528,138 @@ public class FDStandingOrderDAO {
 				}
 			}
 	}
+	
+	private static final String GET_FAILED_STANDING_ORDERS_CUST_INFO =
+		"select  so.id ,cl.name, c.user_id ,NVL(A.COMPANY_NAME,'--') as COMPANY_NAME ,SO.NEXT_DATE ,SO.FREQUENCY,SO.START_TIME,SO.END_TIME,SO.ERROR_HEADER ,SO.CUSTOMER_ID,"+
+		"A.ADDRESS1||', '||a.ADDRESS2||', '||a.APARTMENT||', '||a.CITY||', '||a.STATE||', '||a.ZIP as ADDRESS,NVL(CI.BUSINESS_PHONE||'-'||CI.BUSINESS_EXT,'--') as BUSINESS_PHONE,"+
+		"NVL(CI.CELL_PHONE,'--') as CELL_PHONE, MAX(AL.TIMESTAMP) as FAILED_ON,case when pm.id is null then 'Not Exists' else 'Exists' end  as PAYMENT_METHOD "+
+		"from cust.activity_log al,cust.address a,cust.paymentmethod_new pm, cust.customerinfo ci,cust.customer c,CUST.STANDING_ORDER so,CUST.CUSTOMERLIST cl "+ 
+		"where  AL.ACTIVITY_ID='SO-Failed' and so.id=AL.STANDINGORDER_ID and SO.CUSTOMERLIST_ID=CL.ID and SO.CUSTOMER_ID=AL.CUSTOMER_ID and SO.ADDRESS_ID=a.id(+) and SO.PAYMENTMETHOD_ID=pm.id(+) "+
+		"and c.id=ci.customer_id and so.customer_id=c.id and SO.DELETED='0' and SO.ERROR_HEADER is not null group by so.id ,cl.name,c.user_id  ,NVL(CI.BUSINESS_PHONE||'-'||CI.BUSINESS_EXT,'--') , "+
+		"NVL(CI.CELL_PHONE,'--') ,A.COMPANY_NAME ,SO.NEXT_DATE  ,SO.FREQUENCY,SO.START_TIME,SO.END_TIME,SO.CUSTOMER_ID ,A.ADDRESS1||', '||a.ADDRESS2||', '||a.APARTMENT||', '||a.CITY||', '||a.STATE||', '||a.ZIP , "+
+		"case when pm.id is null then 'Not Exists' else 'Exists' end,SO.ERROR_HEADER order by MAX(AL.TIMESTAMP)  desc";
+	
+	public FDStandingOrderInfoList getFailedStandingOrdersCustInfo(Connection conn) throws SQLException {
+		
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+	
+		List<FDStandingOrderInfo> soOrders = new ArrayList<FDStandingOrderInfo>();
+		FDStandingOrderInfoList infoList = new FDStandingOrderInfoList(soOrders);
+	
+		try {
+			/*String query = 
+				"select  so.id,c.user_id,A.COMPANY_NAME,SO.NEXT_DATE ,SO.CUSTOMER_ID,SO.FREQUENCY, SO.ERROR_HEADER,SO.LAST_ERROR,SO.START_TIME,SO.END_TIME," +
+				" A.ADDRESS1||', '||a.ADDRESS2||', '||a.APARTMENT||', '||a.CITY||', '||a.STATE||', '||a.ZIP as address," +
+				" NVL(CI.BUSINESS_PHONE||'-'||CI.BUSINESS_EXT,'') as BUSINESS_PHONE,NVL(CI.CELL_PHONE,'') as CELL_PHONE" +
+				" from cust.address a, cust.customerinfo ci,cust.customer c,CUST.STANDING_ORDER so " +
+				" where SO.ADDRESS_ID=a.id(+) and c.id=ci.customer_id and so.customer_id=c.id  ";*/
+//			ps = conn.prepareStatement(GET_ACTIVE_STANDING_ORDERS_CUST_INFO);
+			
+			
+			ps = conn.prepareStatement(GET_FAILED_STANDING_ORDERS_CUST_INFO);
+			rs = ps.executeQuery();
+			
+			while (rs.next()) {
+				FDStandingOrderInfo soInfo = new FDStandingOrderInfo();
+				soInfo.setSoID(rs.getString("ID"));
+				soInfo.setSoName(rs.getString("NAME"));
+				soInfo.setUserId(rs.getString("USER_ID"));
+				soInfo.setCompanyName(rs.getString("COMPANY_NAME"));
+				soInfo.setCustomerId(rs.getString("CUSTOMER_ID"));
+				soInfo.setAddress(rs.getString("ADDRESS"));
+				soInfo.setBusinessPhone(rs.getString("BUSINESS_PHONE"));
+				soInfo.setCellPhone(rs.getString("CELL_PHONE"));
+				soInfo.setNextDate( rs.getDate("NEXT_DATE") );
+				soInfo.setFrequency(rs.getInt("FREQUENCY"));
+//				soInfo.setLastError(rs.getString("LAST_ERROR"));
+				soInfo.setErrorHeader(rs.getString("ERROR_HEADER"));
+				soInfo.setStartTime(rs.getTime("START_TIME"));
+				soInfo.setEndTime(rs.getTime("END_TIME"));
+				soInfo.setFailedOn(rs.getTimestamp("FAILED_ON"));
+				soInfo.setPaymentMethod(rs.getString("PAYMENT_METHOD"));
+				soOrders.add( soInfo );
+			}
+	
+			rs.close();
+			ps.close();
+		} catch (SQLException exc) {
+			throw exc;
+		} finally {
+			if(rs != null){
+				rs.close();
+			}
+			if(ps != null) {
+				ps.close();
+			}
+		}
+		
+		return infoList;
+	}
+	
+	
+	private static final String GET_MECHANICAL_FAILED_STANDING_ORDERS_CUST_INFO =
+		"select  so.id ,cl.name,c.user_id ,NVL(A.COMPANY_NAME,'--') as COMPANY_NAME,	SO.CUSTOMER_ID ,		A.ADDRESS1||', '||a.ADDRESS2||', '||a.APARTMENT||', '||a.CITY||', '||a.STATE||', '||a.ZIP as ADDRESS,"+
+		"NVL(CI.BUSINESS_PHONE||'-'||CI.BUSINESS_EXT,'--') as BUSINESS_PHONE,		NVL(CI.CELL_PHONE,'--') as CELL_PHONE,	SO.NEXT_DATE "+ 
+		"from cust.address a,cust.customerinfo ci,cust.customer c,CUST.STANDING_ORDER so,CUST.CUSTOMERLIST cl "+ 
+		"where 	SO.ADDRESS_ID=a.id(+) and c.id=ci.customer_id and so.customer_id=c.id and SO.CUSTOMERLIST_ID=CL.ID and SO.ERROR_HEADER is null and SO.DELETED='0' and SO.NEXT_DATE <= trunc( sysdate+7) order by so.next_date desc";
+	
+	public FDStandingOrderInfoList getMechanicalFailedStandingOrdersCustInfo(Connection conn) throws SQLException {
+		
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+	
+		List<FDStandingOrderInfo> soOrders = new ArrayList<FDStandingOrderInfo>();
+		FDStandingOrderInfoList infoList = new FDStandingOrderInfoList(soOrders);
+	
+		try {
+			/*String query = 
+				"select  so.id,c.user_id,A.COMPANY_NAME,SO.NEXT_DATE ,SO.CUSTOMER_ID,SO.FREQUENCY, SO.ERROR_HEADER,SO.LAST_ERROR,SO.START_TIME,SO.END_TIME," +
+				" A.ADDRESS1||', '||a.ADDRESS2||', '||a.APARTMENT||', '||a.CITY||', '||a.STATE||', '||a.ZIP as address," +
+				" NVL(CI.BUSINESS_PHONE||'-'||CI.BUSINESS_EXT,'') as BUSINESS_PHONE,NVL(CI.CELL_PHONE,'') as CELL_PHONE" +
+				" from cust.address a, cust.customerinfo ci,cust.customer c,CUST.STANDING_ORDER so " +
+				" where SO.ADDRESS_ID=a.id(+) and c.id=ci.customer_id and so.customer_id=c.id  ";*/
+//			ps = conn.prepareStatement(GET_ACTIVE_STANDING_ORDERS_CUST_INFO);
+			
+			
+			ps = conn.prepareStatement(GET_MECHANICAL_FAILED_STANDING_ORDERS_CUST_INFO);
+			rs = ps.executeQuery();
+			
+			while (rs.next()) {
+				FDStandingOrderInfo soInfo = new FDStandingOrderInfo();
+				soInfo.setSoID(rs.getString("ID"));
+				soInfo.setSoName(rs.getString("NAME"));
+				soInfo.setUserId(rs.getString("USER_ID"));
+				soInfo.setCompanyName(rs.getString("COMPANY_NAME"));
+				soInfo.setCustomerId(rs.getString("CUSTOMER_ID"));
+				soInfo.setAddress(rs.getString("ADDRESS"));
+				soInfo.setBusinessPhone(rs.getString("BUSINESS_PHONE"));
+				soInfo.setCellPhone(rs.getString("CELL_PHONE"));
+				soInfo.setNextDate( rs.getDate("NEXT_DATE") );
+//				soInfo.setFrequency(rs.getInt("FREQUENCY"));
+//				soInfo.setLastError(rs.getString("LAST_ERROR"));
+//				soInfo.setErrorHeader(rs.getString("ERROR_HEADER"));
+//				soInfo.setStartTime(rs.getTime("START_TIME"));
+//				soInfo.setEndTime(rs.getTime("END_TIME"));
+//				soInfo.setFailedOn(rs.getTime("FAILED_ON"));
+//				soInfo.setPaymentMethod(rs.getString("PAYMENT_METHOD"));
+				soOrders.add( soInfo );
+			}
+	
+			rs.close();
+			ps.close();
+		} catch (SQLException exc) {
+			throw exc;
+		} finally {
+			if(rs != null){
+				rs.close();
+			}
+			if(ps != null) {
+				ps.close();
+			}
+		}
+		
+		return infoList;
+	}
+	
 }

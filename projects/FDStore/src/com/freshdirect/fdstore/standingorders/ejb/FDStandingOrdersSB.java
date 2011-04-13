@@ -26,4 +26,6 @@ public interface FDStandingOrdersSB extends EJBObject {
 	public void logActivity(ErpActivityRecord record) throws RemoteException;
 	public FDStandingOrderInfoList getActiveStandingOrdersCustInfo(FDStandingOrderFilterCriteria filter)throws RemoteException;
 	public void clearStandingOrderErrors(String[] soIDs,String agentId)throws RemoteException;
+	public FDStandingOrderInfoList getFailedStandingOrdersCustInfo()throws RemoteException;
+	public FDStandingOrderInfoList getMechanicalFailedStandingOrdersCustInfo()throws RemoteException;
 }

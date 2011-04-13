@@ -428,6 +428,9 @@ public class FDStoreProperties {
 	private static final String PROP_ALCOHOL_TIMESLOT_LABEL = "fdstore.alcohol.ts.label";
 	private static final String PROP_ECOFRIENDLY_TIMESLOT_LABEL = "fdstore.ecofriendly.ts.label";
 	private static final String PROP_BUILDINGFAVS_TIMESLOT_LABEL = "fdstore.buildingfavs.ts.label";
+	
+	private final static String PROP_STANDING_ORDER_REPORT_TO_EMAIL = "fdstore.standingorder.report.email.to";
+	private final static String PROP_STANDING_ORDER_REPORT_EMAIL_SUBJECT = "fdstore.standingorder.report.email.subject";
     
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -473,7 +476,7 @@ public class FDStoreProperties {
         defaults.put(PROP_ANNOTATION_ERPSY,
             "http://ems1.nyc1.freshdirect.com:8000/ERPSAdmin");
         defaults.put(PROP_CALLCENTER_PW, "");
-        defaults.put(PROP_CUSTOMER_SERVICE_EMAIL, "service@freshdirect.com");
+        defaults.put(PROP_CUSTOMER_SERVICE_EMAIL, "service@freshdirect.com");        
         defaults.put(PROP_EMAIL_PRODUCT, "products@freshdirect.com");
         defaults.put(PROP_EMAIL_FEEDBACK, "feedback@freshdirect.com");
         defaults.put(PROP_EMAIL_CHEFSTABLE, "chefstable@freshdirect.com");
@@ -859,6 +862,9 @@ public class FDStoreProperties {
 		defaults.put(PROP_ALCOHOL_TIMESLOT_LABEL, "Alcohol Delivery Restriction");
 		defaults.put(PROP_ECOFRIENDLY_TIMESLOT_LABEL, "Eco-Friendly");
 		defaults.put(PROP_BUILDINGFAVS_TIMESLOT_LABEL,"My Building Favourites");
+		
+		defaults.put(PROP_STANDING_ORDER_REPORT_TO_EMAIL, "applicationdevelopment@freshdirect.com");
+		defaults.put(PROP_STANDING_ORDER_REPORT_EMAIL_SUBJECT, "Standing Orders Cron Report: ");
 		
         refresh();
     }
@@ -2212,4 +2218,12 @@ public class FDStoreProperties {
 	public static String getAlcoholRestrictedLabel(){
 		return config.getProperty(PROP_ALCOHOL_TIMESLOT_LABEL);
 	}
+	
+	public static String getStandingOrderReportToEmail() {
+        return get(PROP_STANDING_ORDER_REPORT_TO_EMAIL);
+    }
+	
+	public static String getStandingOrderReportEmailSubject() {
+        return get(PROP_STANDING_ORDER_REPORT_EMAIL_SUBJECT);
+    }
 }

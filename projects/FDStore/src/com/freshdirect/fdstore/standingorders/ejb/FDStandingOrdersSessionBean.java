@@ -257,4 +257,40 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
+	
+	public FDStandingOrderInfoList getFailedStandingOrdersCustInfo() throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();
+			
+			FDStandingOrderInfoList ret = dao.getFailedStandingOrdersCustInfo(conn);
+			
+			return ret;
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in loadActiveStandingOrders() : " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public FDStandingOrderInfoList getMechanicalFailedStandingOrdersCustInfo() throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();
+			
+			FDStandingOrderInfoList ret = dao.getMechanicalFailedStandingOrdersCustInfo(conn);
+			
+			return ret;
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in loadActiveStandingOrders() : " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}
 }

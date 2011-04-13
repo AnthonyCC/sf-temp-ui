@@ -28,6 +28,9 @@ public class FDStandingOrderInfo implements Serializable  {
 	private String errorHeader;
 	private Date startTime;
 	private Date endTime;
+	private Date failedOn;
+	private String paymentMethod;
+	private String soName;
 	
 	public String getUserId() {
 		return userId;
@@ -179,4 +182,23 @@ public class FDStandingOrderInfo implements Serializable  {
 			
 		}
 	};
+
+	public Date getFailedOn() {
+		return failedOn;
+	}
+	public void setFailedOn(Date failedOn) {
+		this.failedOn = failedOn;
+	}
+	public String getPaymentMethod() {
+		return paymentMethod;
+	}
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
+	}
+	public String getSoName() {
+		return soName;
+	}
+	public void setSoName(String soName) {
+		this.soName = soName;
+	}
 }
