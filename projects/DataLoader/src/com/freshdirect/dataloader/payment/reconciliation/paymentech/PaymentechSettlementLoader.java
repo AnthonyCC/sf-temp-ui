@@ -43,6 +43,7 @@ public class PaymentechSettlementLoader {
 	
 	private static final String [] VALID_PDE_TOKENS = {"HPDE0017", "RPDE0017S", "HPDE0018", "RPDE0018S", "RPDE0018D", "HPDE0020", "RPDE0022"};
 	
+	private static final String NO_DATA="No data to send back at this time";
 	
 	public static void main(String[] args) {
 		PaymentechSettlementLoader loader = new PaymentechSettlementLoader();
@@ -138,7 +139,18 @@ public class PaymentechSettlementLoader {
 				}
 			}else{
 				LOGGER.error("Got Paymentech file with unrecognized Data");
-				throw new FDRuntimeException("Paymentech File contained unreconized data: "+line);
+				if(line!=null && line.indexOf(NO_DATA)!=-1) {
+					StringBuilder msg= new StringBuilder(300);
+					msg.append("Paymentech Reconciliation file does not have any data at this time.\n");
+					msg.append("Please verify that the settlement batch was submitted for the previous day.");
+					msg.append("If settlement batch was submitted the previous day, and it contained orders,\n");
+					msg.append("Please re-run the settlement loader job after 2 hours and if it still fails,");
+					msg.append("Please contact Paymentech Support at 6038968320.");
+					
+					throw new FDRuntimeException(msg.toString());
+				} else { 
+					throw new FDRuntimeException("Paymentech File contained unrecognized data: "+line);
+				}
 			}
 		} else {
 			LOGGER.error("Got Empty Files from Paymentech");
