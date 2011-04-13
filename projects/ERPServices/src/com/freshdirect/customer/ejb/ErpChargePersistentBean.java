@@ -2,6 +2,7 @@
 
 package com.freshdirect.customer.ejb;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -110,7 +111,7 @@ public class ErpChargePersistentBean extends ErpTransactionPersistentBean {
 		ps.setTimestamp(3, new java.sql.Timestamp(this.model.getTransactionDate().getTime()));
 		ps.setString(4, EnumTransactionType.CHARGE.getCode());
 		ps.setString(5, this.model.getTransactionSource().getCode() );
-		ps.setDouble(6, this.model.getAmount());
+		ps.setBigDecimal(6, new BigDecimal(String.valueOf(this.model.getAmount())));
 		ps.setString(7, this.model.getCustomerId());
 		/* -------- Commenting out this line until ISSUED_BY column created into DB -------- */
 		//ps.setString(7, this.issuedBy);

@@ -2,6 +2,7 @@
 
 package com.freshdirect.customer.ejb;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.*;
 
@@ -146,8 +147,8 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 			ps.setString(29, "");				
 		}
         
-		ps.setDouble(30, address.getLongitude());
-		ps.setDouble(31, address.getLatitude());
+        ps.setBigDecimal(30, new BigDecimal(String.valueOf(address.getLongitude())));
+        ps.setBigDecimal(31, new BigDecimal(String.valueOf(address.getLatitude())));
 		
 		String unattendedDeliveryInstructions = null;
 		

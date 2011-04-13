@@ -1,6 +1,7 @@
 
 package com.freshdirect.customer.ejb;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -111,18 +112,18 @@ abstract class ErpAbstractOrderPersistentBean extends ErpTransactionPersistentBe
 		ps.setString(2, this.getParentPK().getId());
 		ps.setTimestamp(3, new java.sql.Timestamp(this.model.getTransactionDate().getTime()));
 		ps.setString(4, this.model.getTransactionType().getCode());
-		ps.setDouble(5, this.model.getAmount());
+		ps.setBigDecimal(5, new BigDecimal(String.valueOf(this.model.getAmount())));		
 		ps.setString(6, this.model.getTransactionSource().getCode());
 		ps.setDate(7, new java.sql.Date(this.model.getPricingDate().getTime()));
 		ps.setDate(8, new java.sql.Date(this.model.getRequestedDate().getTime()));
-		ps.setDouble(9, this.model.getSubTotal());
-		ps.setDouble(10, this.model.getTax());
+		ps.setBigDecimal(9, new BigDecimal(String.valueOf(this.model.getSubTotal())));
+		ps.setBigDecimal(10, new BigDecimal(String.valueOf(this.model.getTax())));
 		ps.setString(11, this.model.getCustomerServiceMessage());
 		ps.setString(12, this.model.getMarketingMessage());
 		ps.setString(13, this.model.getTransactionInitiator());
 		ps.setString(14, this.model.getGlCode());
 		ps.setString(15, this.model.getCustomerId());
-		ps.setDouble(16, this.model.getBufferAmt());
+		ps.setBigDecimal(16, new BigDecimal(String.valueOf(this.model.getBufferAmt())));
 		try {
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");

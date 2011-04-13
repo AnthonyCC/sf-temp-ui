@@ -11,6 +11,7 @@ package com.freshdirect.customer.ejb;
  * @author  knadeem
  * @version 
  */
+import java.math.BigDecimal;
 import java.sql.*;
 
 import com.freshdirect.framework.core.*;
@@ -62,7 +63,7 @@ public abstract class ErpPaymentMethodTransactionPersistentBean extends ErpTrans
 		ps.setString(2, this.getParentPK().getId());
 		ps.setTimestamp(3, new java.sql.Timestamp(model.getTransactionDate().getTime()));
 		ps.setString(4, this.getTransactionType());
-		ps.setDouble(5, model.getAmount());
+		ps.setBigDecimal(5, new BigDecimal(String.valueOf(model.getAmount())));
 		ps.setString(6, model.getTransactionSource().getCode());
 		ps.setString(7, model.getCustomerId());
 		

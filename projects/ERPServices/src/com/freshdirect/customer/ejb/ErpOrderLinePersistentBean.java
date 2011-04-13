@@ -1,5 +1,6 @@
 package com.freshdirect.customer.ejb;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -120,14 +121,14 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 		ps.setString(3, this.model.getOrderLineNumber());
 		ps.setString(4, this.model.getSku().getSkuCode());
 		ps.setInt(5, this.model.getSku().getVersion());
-		ps.setDouble(6, this.model.getConfiguration().getQuantity());
+		ps.setBigDecimal(6, new BigDecimal(String.valueOf(this.model.getConfiguration().getQuantity())));
 		ps.setString(7, this.model.getConfiguration().getSalesUnit());
 		ps.setString(8, ErpOrderLineUtil.convertHashMapToString(this.model.getConfiguration().getOptions()));
 
 		Discount d = this.model.getDiscount();
 		if (d!=null) {		
 			ps.setInt(9, d.getDiscountType().getId());
-			ps.setDouble(10, d.getAmount());
+			ps.setBigDecimal(10, new BigDecimal(String.valueOf(d.getAmount())));
 			ps.setString(11, d.getPromotionCode());
 		} else {
 			ps.setNull(9, Types.INTEGER);
@@ -139,10 +140,10 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 		ps.setString(13, this.model.getConfigurationDesc());
 		ps.setString(14, this.model.getDepartmentDesc());
 		ps.setString(15, this.model.getMaterialNumber());
-		ps.setDouble(16, this.model.getActualPrice());
+		ps.setBigDecimal(16, new BigDecimal(String.valueOf(this.model.getActualPrice())));
 		ps.setString(17, (this.model.isPerishable() ? "X" : ""));
-		ps.setDouble(18, this.model.getTaxRate());
-		ps.setDouble(19, this.model.getDepositValue());
+		ps.setBigDecimal(18, new BigDecimal(String.valueOf(this.model.getTaxRate())));
+		ps.setBigDecimal(19, new BigDecimal(String.valueOf(this.model.getDepositValue())));
 		ps.setString(20, (this.model.isAlcohol() ? "X" : ""));
 		ps.setString(21, this.model.getAffiliate().getCode());
 		ps.setString(22, this.model.getCartlineId());
@@ -153,7 +154,7 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 		else
 			ps.setNull(25, Types.NULL);
 		if(this.model.getBasePrice()!=0) {
-			ps.setDouble(26, this.model.getBasePrice());
+			ps.setBigDecimal(26, new BigDecimal(String.valueOf(this.model.getBasePrice())));
 		} else {
 			ps.setNull(26, Types.NULL);
 		}
@@ -163,7 +164,7 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 			ps.setNull(27, Types.VARCHAR);
 		}
 		
-		ps.setDouble(28,model.getDiscountAmount());
+		ps.setBigDecimal(28, new BigDecimal(String.valueOf(this.model.getDiscountAmount())));
 		
 		if(this.model.getVariantId()!=null) {
 			ps.setString(29,this.model.getVariantId());
@@ -193,7 +194,7 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 		if(group != null){
 			ps.setString(32,group.getGroupId());
 			ps.setInt(33,group.getVersion());
-			ps.setDouble(34,this.model.getGroupQuantity());
+			ps.setBigDecimal(34, new BigDecimal(String.valueOf(this.model.getGroupQuantity())));
 		}else{
 			ps.setNull(32, Types.VARCHAR);
 			ps.setNull(33, Types.INTEGER);
