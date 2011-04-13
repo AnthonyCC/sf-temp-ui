@@ -166,7 +166,7 @@ td.no-use{border-color:#999 !important;}
 	it = siteFeatures.iterator();
 	while (it.hasNext()) {
 		EnumSiteFeature sf = (EnumSiteFeature) it.next();
-		Map curVars = VariantRegistry.getInstance().getServices(sf);
+		Map<String, Variant> curVars = VariantRegistry.getInstance().getServices(sf);
 		Map sortedVars = SmartStoreUtil.getVariantsSortedInWeight(sf);
 		varMap.put(sf, curVars);
 
@@ -174,15 +174,19 @@ td.no-use{border-color:#999 !important;}
  		List varErrors = new ArrayList();
 		while (it2.hasNext()) {
 			String varId = (String) it2.next();
-			RecommendationService service = ((Variant) curVars.get(varId)).getRecommender();
-   			Variant variant = service.getVariant();
-			int weight = ((Integer) sortedVars.get(varId)).intValue();
-  			boolean faulty = (!variant.getServiceConfig().getType().equals(RecommendationServiceType.NIL)
-  					&& !variant.getServiceConfig().getType().equals(RecommendationServiceType.TAB_STRATEGY)) &&
-  					service instanceof NullRecommendationService;
-  			if (weight > 0 && faulty) {
-  				varErrors.add(varId);
-  			}
+			Variant variant = ((Variant) curVars.get(varId));
+			if (variant != null) {
+				RecommendationService service = variant.getRecommender();
+				int weight = ((Integer) sortedVars.get(varId)).intValue();
+	  			boolean faulty = (!variant.getServiceConfig().getType().equals(RecommendationServiceType.NIL)
+	  					&& !variant.getServiceConfig().getType().equals(RecommendationServiceType.TAB_STRATEGY)) &&
+	  					service instanceof NullRecommendationService;
+	  			if (weight > 0 && faulty) {
+	  				varErrors.add(varId);
+	  			}
+			} else {
+			    varErrors.add(varId);
+			}
 		}
 		it2 = varErrors.iterator();
 		String sfError = "";
@@ -232,8 +236,14 @@ td.no-use{border-color:#999 !important;}
     		int newInUse;
    			while (it2.hasNext()) {
    				String varId = (String) it2.next();
-   				RecommendationService service = ((Variant) curVars.get(varId)).getRecommender();
-    			Variant variant = service.getVariant();
+    			Variant variant = (Variant) curVars.get(varId);
+    			if (variant == null) {
+    			    %><tr><td class="text13bold space" colspan="2"><a name="<%= varId %>">&nbsp;</a></td></tr>
+    			    <tr><td class="text13bold faulty" colspan="2"><%= varId %> is missing ! (Probably <%= varId %> is an alias to an archived variant, which is not archived?)</td></tr>
+    			    <%
+    			    continue;
+    			}
+   				RecommendationService service = variant.getRecommender();
    				int weight = ((Integer) sortedVars.get(varId)).intValue();
    				boolean faulty = (!variant.getServiceConfig().getType().equals(RecommendationServiceType.NIL)
    						&& !variant.getServiceConfig().getType().equals(RecommendationServiceType.TAB_STRATEGY)) &&
