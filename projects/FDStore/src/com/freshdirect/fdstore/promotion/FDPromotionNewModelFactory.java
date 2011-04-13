@@ -39,7 +39,13 @@ public class FDPromotionNewModelFactory {
 		protected List<FDPromotionNewModel> load() {
 			try {
 				LOGGER.info("REFRESHING FDPROMOTION MAP FOR ANY NEW PROMOTIONS FROM LAST MODIFIED TIME "+maxLastModified);
-				List<FDPromotionNewModel> promoList = FDPromotionNewManager.getModifiedOnlyPromotions(maxLastModified);
+				List<FDPromotionNewModel> promoList = new ArrayList<FDPromotionNewModel>();
+				if(null !=maxLastModified){
+					promoList = FDPromotionNewManager.getModifiedOnlyPromotions(maxLastModified);
+				}else{
+					loadAllPromotions();
+				}
+//				List<FDPromotionNewModel> promoList = FDPromotionNewManager.getModifiedOnlyPromotions(maxLastModified);
 				LOGGER.info("REFRESHED FDPROMOTION MAP FOR ANY NEW PROMOTIONS. FOUND "+promoList.size());
 				return promoList;
 			} catch (FDResourceException ex) {
