@@ -51,16 +51,16 @@ double currentHour = h+m;
 				<%}else{%>
 					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/nextdayguarantee_short_topmodule.html"/>
 				<%}%>
-			<%}else if(!user.isChefsTable()&& !user.isDlvPassNone()){
+			<%}else if(!user.isChefsTable()&& user.isDlvPassActive()){
 				if(user.getDlvPassInfo()!=null && user.getDlvPassInfo().getDPSavings()<10){
 			%>
 					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_usage_1.html"/>
 				<%}else{%>
 					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_usage_2.html"/>
 				<%}%>
-			<%}else if(deliveryModel.getMaxDiscount()>0 && user.isDlvPassNone() && !user.isChefsTable() 
+			<%}else if(deliveryModel.getMaxDiscount()>0 && !user.isDlvPassActive() && !user.isChefsTable() 
 						&& !(user.isCorporateUser() && "CORPORATE".equals(address.getServiceType().getName()))){%>
-				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/promotion_discount.html"/>	
+				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/promotion_discount.html"/>
 			<%}else {
 				duplicateFaq = true;
 			%>
@@ -73,10 +73,11 @@ double currentHour = h+m;
 		<td width="15" rowspan="2"><img height="1" border="0" width="15" src="/media_stat/images/layout/clear.gif"></td>
 		
 		<td width="230" rowspan="2">
-			<%if((deliveryModel.getMaxDiscount()>0 && !user.isDlvPassNone())||(deliveryModel.getMaxDiscount()>0 
-							&& (user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName())))){%>
+			<%if(deliveryModel.getMaxDiscount()>0 && user.isDlvPassActive()){%>
 				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/promotion_discount.html"/>
-			<%}else if(user.isChefsTable()&& !user.isDlvPassNone() && user.isDlvPassActive() 
+			<%}else if(deliveryModel.getMaxDiscount()>0 && (user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName()))){%>
+				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/promotion_discount.html"/>
+			<%}else if(user.isChefsTable() && user.isDlvPassActive() 
 						&& !(user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName()))){
 				if(user.getDlvPassInfo()!=null && user.getDlvPassInfo().getDPSavings()<10){
 			%>
@@ -85,15 +86,15 @@ double currentHour = h+m;
 				<%}else{%>
 					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_usage_2.html"/>
 				<%}%>
-			<%}else if(user.isDlvPassNone() && clickToCall){%>
+			<%}else if(!user.isDlvPassActive() && clickToCall && !(user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName()))){%>
 				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/click-to-call_top_module.html"/>
-			<%}else if(!user.isChefsTable()&& !user.isDlvPassNone()){%>
+			<%}else if(!user.isChefsTable() && user.isDlvPassActive()){%>
 				<%if(user.getReservation()!=null){%>
 					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_has_reservation.html"/>
 				<%}else{%>
 					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_no_reservation.html"/>
 				<%}%>
-			<%}else if(!duplicateFaq){%>
+			<%}else if(!duplicateFaq && user.isChefsTable()){%>
 				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/faq_top_module.html"/>
 			<%}%>
 		</td>
@@ -104,11 +105,11 @@ double currentHour = h+m;
 		<td width="15" rowspan="2"><img height="1" border="0" width="15" src="/media_stat/images/layout/clear.gif"></td>
 		
 		<td width="230" rowspan="2">
-			<%if(clickToCall && !user.isDlvPassNone()){%>
+			<%if(clickToCall && (user.isDlvPassActive() || (user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName())))){%>
 				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/click-to-call_top_module.html"/>
 			<%}else if(user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName())){%>
 				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_notapplied_top_module.html"/>
-			<%}else if(user.isChefsTable() && !clickToCall && !user.isDlvPassNone()){%>
+			<%}else if(user.isChefsTable() && !clickToCall && user.isDlvPassActive()){%>
 				<%if(user.getReservation()!=null){%>
 					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_has_reservation.html"/>
 				<%}else{%>
@@ -116,17 +117,17 @@ double currentHour = h+m;
 				<%}%>
 			<%}else if(user.isChefsTable() && deliveryModel.getMaxDiscount()>0 && user.isDlvPassNone()){%>
 				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/promotion_discount.html"/>
-			<%}else if(user.isDlvPassNone()||(user.getDlvPassInfo()!=null && EnumDlvPassStatus.EXPIRED.equals(user.getDlvPassInfo().getStatus()))){
+			<%}else if(!user.isDlvPassActive()||(user.getDlvPassInfo()!=null && EnumDlvPassStatus.EXPIRED.equals(user.getDlvPassInfo().getStatus()))){
 			
 				if(user.getDlvPassInfo()!=null && (EnumDlvPassStatus.EXPIRED.equals(user.getDlvPassInfo().getStatus()) && user.getDlvPassInfo().getDaysSinceDPExpiry()>0)){
 			%>
 					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_acquisition_notrial.html"/>
 				<%}else if(deliveryModel.getShoppingCart() != null && deliveryModel.getShoppingCart().getDeliveryPassCount()>0){%>
-					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_no_reservation.html"/>
+					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_usage_1.html"/>
 				<%}else{%>
 					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_acquisition_trail.html"/>
 				<%}%>
-			<%}else{%>
+			<%}else if(!duplicateFaq && user.isDlvPassActive()){%>
 				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/faq_top_module.html"/>
 			<%}%>
 		</td>

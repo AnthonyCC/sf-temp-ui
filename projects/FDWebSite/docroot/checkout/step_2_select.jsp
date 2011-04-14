@@ -180,7 +180,7 @@ zonePromoEnabled=true;
 <!--START TIMESLOT PAGE HEADER-->
 <table border="0" cellspacing="0" cellpadding="0" width="695">
 	<TR VALIGN="TOP">
-		<TD CLASS="text11" WIDTH="495" VALIGN="bottom">
+		<TD CLASS="text11" WIDTH="395" VALIGN="bottom">
 			<table>
 				<tr>
 					<td><FONT CLASS="title18">CHOOSE TIME</FONT>
@@ -195,7 +195,7 @@ zonePromoEnabled=true;
 		
 	<%if(hasCapacity){%>
 
-			<TD WIDTH="165" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10">
+			<TD WIDTH="265" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10">
 		      <FONT CLASS="space2pix"><BR></FONT>
 				<table>
 					<tr>
@@ -242,7 +242,7 @@ zonePromoEnabled=true;
 					BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2">
 				</TD>
 	<%}else{%>
-				<td width="165" align="right" valign="middle" class="text10bold">&nbsp;</td>
+				<td width="265" align="right" valign="middle" class="text10bold">&nbsp;</td>
 		<td width="35" align="right" valign="middle">&nbsp;</td>
 	<%}%>
 		
@@ -387,7 +387,7 @@ if (errorMsg!=null) {%>
 									<td>
 										<img src="/media_stat/images/timeslots/ecofriendly_leaf.gif" WIDTH="16" HEIGHT="16" border="0">
 									</td>
-									<td><div onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_ecofriendly_timeslot.html&windowSize=small&name=Eco Friendly','small');"><%= FDStoreProperties.getEcoFriendlyLabel()%></div></td>
+									<td><a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_ecofriendly_timeslot.html&windowSize=small&name=Eco Friendly','small');return false;"><%= FDStoreProperties.getEcoFriendlyLabel()%></a></td>
 									<td>&nbsp;</td>
 								<%}%>
 								<%if(deliveryModel.getNeighbourhoodCount() > 0){%>
@@ -395,7 +395,7 @@ if (errorMsg!=null) {%>
 										<img src="/media_stat/images/timeslots/neighbourhood_favs.gif" WIDTH="15" HEIGHT="20" border="0">
 									</td>
 									<td>
-										<div onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_neighbourhood_timeslot.html&windowSize=small&name=Neighbourhood+Favs','small');"><%= FDStoreProperties.getMyBuildingFavsLabel()%></div>
+										<a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_neighbourhood_timeslot.html&windowSize=small&name=Neighbourhood+Favs','small');return false;"><%= FDStoreProperties.getMyBuildingFavsLabel()%></a>
 									</td>
 									<td>&nbsp;</td>
 								<%}%>
@@ -404,7 +404,7 @@ if (errorMsg!=null) {%>
 										<img src="/media_stat/images/timeslots/no_alcohol.gif" WIDTH="16" HEIGHT="16" border="0">
 								</td>
 									<td> 
-										<div onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_alcoholrestriction_timeslot.html&windowSize=small&name=Alcohol Restriction','small');"><%= FDStoreProperties.getAlcoholRestrictedLabel()%></div>
+										<a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_alcoholrestriction_timeslot.html&windowSize=small&name=Alcohol Restriction','small');return false;"><%= FDStoreProperties.getAlcoholRestrictedLabel()%></a>
 									</td>
 									<td>&nbsp;</td>
 								<%}%>

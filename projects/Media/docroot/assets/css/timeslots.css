@@ -230,6 +230,10 @@ a.tsHiperlink {
 	text-decoration:none;
 }
 
+a:hover.tsHiperlink {
+	text-decoration:underline;
+}
+
 div.content_fixed td{
 	font-family:Verdana,Arial,sans-serif;
 	font-size:10px;
@@ -683,6 +687,9 @@ td.noTopBorder {
 	background: transparent url('/media/editorial/timeslots/images/selectedBGC.gif') repeat-x left top;
 }
 
+#legendCheckout a:hover {
+	text-decoration:underline;
+}
 /* modalbox rounded corner and drop shadow */
 #MB_frame {
 	/*padding-bottom: 4px;*/
