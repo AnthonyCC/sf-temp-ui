@@ -1,6 +1,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%-- this file will be included in the <head> tag --%>
 	<link rel="stylesheet" href="/assets/css/modalbox.css" type="text/css" />
+	<link rel="stylesheet" href="/assets/css/global.css" type="text/css" />
 	<%
 	if (request.getHeader("User-Agent").indexOf("Mac") > -1) {
 	%><link rel="stylesheet" href="/assets/css/mac_ie.css" type="text/css" /><%
