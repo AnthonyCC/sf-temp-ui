@@ -27,13 +27,14 @@ public class FDIssueLogCell extends FDBaseCell  {
 	        	while(iterator.hasNext()) {
 	        		issueLog = (IssueLog)iterator.next();
 	        		response.append(issueLog.getIssueType()).append("/").append(issueLog.getIssueSubType())
-	        				.append("/").append(issueLog.getMaintenanceIssue().getId())
-	        				.append("/").append(issueLog.getVirRecord().getId()).toString();	        		
+	        								.append("/").append(issueLog.getVirRecord().getId()).append("/").append(issueLog.getComments());
+	        		if(issueLog.getMaintenanceIssue() !=null)
+	        			response.append("/").append(issueLog.getMaintenanceIssue().getId());
 	        	}
 	        	
 	        	return response.toString();
-	        }             
-		return "";       
+	        }
+		return "";
     }
 
     public String getHtmlDisplay(TableModel model, Column column) {    	
@@ -52,12 +53,12 @@ public class FDIssueLogCell extends FDBaseCell  {
 	        		html.tr(0).close();
 	        		html.td(0).close().append(issueLog.getIssueType()+"/ "+issueLog.getIssueSubType()).tdEnd();
 	        		HtmlBuilder td = html.td(0);       			
-        			if(EnumIssueStatus.OPEN.getName().equals(issueLog.getMaintenanceIssue().getIssueStatus()))
+        			if(issueLog.getMaintenanceIssue() !=null && EnumIssueStatus.OPEN.getName().equals(issueLog.getMaintenanceIssue().getIssueStatus()))
         				td.styleClass("employee_off");
         			else 
         				td.styleClass("employee_on");
         			td.close();
-        			if(issueLog.getMaintenanceIssue().getId()!=null)
+        			if(issueLog.getMaintenanceIssue() !=null && issueLog.getMaintenanceIssue().getId()!=null)
         				td.append(" ["+issueLog.getMaintenanceIssue().getId()+"]");
         			else
         				td.append(" 		");

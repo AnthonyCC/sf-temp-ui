@@ -43,7 +43,12 @@ if (timeslots.size() > 0) {
 		holidayIndex++;
 	}
 	stringBuffer.append("<center>");
-	stringBuffer.append("<div class=\""+(timeslots.size()>1 ? "float_children":"float_children_noborder")+"\" id=\"timeslots_grid"+idx.intValue()+"\">");
+	/* specify content id based on context */
+	String contentId = "";
+	if (isForAdvOrdSlots) { contentId = "Adv"; }
+	if (isForNewAdvOrdSlots) { contentId = "AdvNew"; }
+
+	stringBuffer.append("<div class=\""+(timeslots.size()>1 ? "float_children":"float_children_noborder")+"\" id=\"timeslots_grid"+contentId+"\">");
 	stringBuffer.append("<table border=\"0\" class=\"tsTable\" cellspacing=\"0\" cellpadding=\"0\">");
 %>
 <div id="NDdayE" style="display: none;"> 
@@ -73,6 +78,8 @@ if (timeslots.size() > 0) {
 	var maxPmAdvNewSlots<%= (isForNewAdvOrdSlots) ? " = -1" : "" %>;
 	var dayName = '';
 		<%
+			int emptySectionMinRows = 4;
+
 			int hDayIndex=0; int dayIndex=0; int fdayIndex=0;
 			if(isForAdvOrdSlots){
 				hDayIndex = 10;	dayIndex  = 10; fdayIndex=10;
@@ -124,35 +131,35 @@ if (timeslots.size() > 0) {
 				}
 			}
 			stringBuffer.append("<td valign=\"top\">");
-			stringBuffer.append("<div id=\"ts_d"+dayIndex+"_ts_hC\" class=\"tsHeaderC\" onclick=\"tsContractAll(\'tsContainer\', \'ts_d"+dayIndex+"_ts0\'); tsExpand(\'ts_d"+dayIndex+"_ts0\');return false;\">")
+			stringBuffer.append("<div id=\"ts_d"+dayIndex+"_hC\" class=\"tsHeaderC\" >")
 							.append("<table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">")
 							.append("<tr>\n")
 								.append("<td align=\"center\" colspan=\"3\">")
-								.append("<div class=\"tsDayNameC\"><b>"+TimeslotPageUtil.formatDayName(day)+"</b></div>")
-								.append("<div class=\"tsDayDateC\">"+TimeslotPageUtil.formatDeliveryDate(day)+"</div>")
+									.append("<div class=\"tsDayNameC\"><b>"+TimeslotPageUtil.formatDayName(day)+"</b></div>")
+									.append("<div class=\"tsDayDateC\">"+TimeslotPageUtil.formatDeliveryDate(day)+"</div>")
 								.append("</td>\n")
 							.append("</tr>\n")
 							.append("</table>")
 				.append("</div>")
-				.append("<div id=\"ts_d"+dayIndex+"_ts_hE\" class=\"tsHeaderE\" style=\"display: none;\">")
+				.append("<div id=\"ts_d"+dayIndex+"_hE\" class=\"tsHeaderE\" style=\"display: none;\">")
 							.append("<table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">")
 							.append("<tr>\n")
-								.append("<td style=\"line-height: 0px;\" width=\"6\"><img src=\"/media_stat/images/layout/top_left.gif\" width=\"6\" height=\"6\"></td>")
-								.append("<td style=\"line-height: 0px;\"><img src=\"/media_stat/images/layout/clear.gif\" alt=\"\"></td>")
-								.append("<td style=\"line-height: 0px;\" width=\"6\" align=\"right\"><img src=\"/media_stat/images/layout/top_right.gif\" width=\"6\" height=\"6\"></td>")
+								.append("<td class=\"tsHeaderE_top\" width=\"6\"><img src=\"/media_stat/images/layout/top_left.gif\" width=\"6\" height=\"6\" /></td>")
+								.append("<td class=\"tsHeaderE_topC\"><img src=\"/media_stat/images/layout/clear.gif\" alt=\"\" /></td>")
+								.append("<td class=\"tsHeaderE_top\" width=\"6\" align=\"right\"><img src=\"/media_stat/images/layout/top_right.gif\" width=\"6\" height=\"6\" /></td>")
 							.append("</tr>\n")
 							.append("<tr>\n")
 								.append("<td align=\"center\" colspan=\"3\" valign=\"middle\">")
-								.append("<div class=\"tsHeadE\" id=\"ts_d"+dayIndex+"_ts_hE_content\" style=\"display: none;\">")
-								.append("<div class=\"tsDayNameE\"><b>"+TimeslotPageUtil.formatDayNameExp(day)+"</b></div>")
-								.append("<div class=\"tsDayDateE\">"+TimeslotPageUtil.formatDeliveryDate(day)+"</div>")
-								.append("</div>")
+									.append("<div class=\"tsHeadE\" id=\"ts_d"+dayIndex+"_hE_content\" style=\"display: none;\">")
+										.append("<div class=\"tsDayNameE\"><b>"+TimeslotPageUtil.formatDayNameExp(day)+"</b></div>")
+										.append("<div class=\"tsDayDateE\">"+TimeslotPageUtil.formatDeliveryDate(day)+"</div>")
+									.append("</div>")
 								.append("</td>\n")
 							.append("</tr>\n")
 							.append("</table>")
 				.append("</div>");
 			
-			stringBuffer.append("<table border=\"0\" id=\"ts_d"+dayIndex+"_tsTable\" class=\"tsTable\" cellspacing=\"0\" cellpadding=\"0\">");
+			stringBuffer.append("<table border=\"0\" id=\"ts_d"+dayIndex+"_tsTable\" class=\"tsTable tsTableC\" cellspacing=\"0\" cellpadding=\"0\">");
 			int slotIndex = 0;
 						Date cutoffTime = null;
 			//AM Timeslots
@@ -170,7 +177,7 @@ if (timeslots.size() > 0) {
 				<%
 			}
 			%><logic:iterate id="slot" collection="<%= timeslots.getTimeslotsForDayAndShift(day,EnumDayShift.DAY_SHIFT_AM.getName()) %>" type="com.freshdirect.fdstore.FDTimeslot"><%
-				stringBuffer.append("<tr id=\""+((isForAdvOrdSlots || isForNewAdvOrdSlots) ? "coAdv_d"+dayIndex+"_ts"+slotIndex+"_row":"co_d"+dayIndex+"_ts"+slotIndex+"_row")+"\" style=\"display: none;\">\n");
+				stringBuffer.append("<tr id=\""+"co_d"+dayIndex+"_ts"+slotIndex+"_tr"+"\" class=\"cutoff_tr\""+((slotIndex!=0)?" style=\"display: none;\"":"")+">\n");
 
 					boolean isPreReservedSlotId = slot.getTimeslotId().equals(preReserveSlotId);
 					boolean isSelectedSlotId = slot.getTimeslotId().equals(selectedSlotId);
@@ -190,8 +197,8 @@ if (timeslots.size() > 0) {
 							
 					cutoffTime = slot.getCutoffDateTime();
 
-					stringBuffer.append("<td class=\"cutoff\" onclick=\"tsContractAll(\'tsContainer\', \'co_d"+dayIndex+"_ts"+slotIndex+"\'); tsExpand(\'co_d"+dayIndex+"_ts"+slotIndex+"\');\">")
-						.append("<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"\">")
+					stringBuffer.append("<td class=\"cutoff\">")
+						.append("<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"\" style=\"display: none;\">")
 						.append("<div><b>Order&nbsp;by&nbsp;"+TimeslotPageUtil.getCutoffTimeDisplay(slot.getCutoffNormalDateTime())+"&nbsp;"+TimeslotPageUtil.getCutoffDay(day)+"</b></div></div>");
 					stringBuffer.append("</td>\n");
 					if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
@@ -202,7 +209,7 @@ if (timeslots.size() > 0) {
 						<%
 					}
 				}else{
-					stringBuffer.append("<td class=\"cutoff\" style=\"display: none;\" onclick=\"tsContractAll(\'tsContainer\', \'co_d"+dayIndex+"_ts"+slotIndex+"\'); tsExpand(\'co_d"+dayIndex+"_ts"+slotIndex+"\');\">")
+					stringBuffer.append("<td class=\"cutoff\">")
 						.append("<div id=\"co_d"+dayIndex+"_ts"+slotIndex+"\"")
 						.append(">&nbsp;</div>");
 					
@@ -228,20 +235,20 @@ if (timeslots.size() > 0) {
 				//timeslot row
 				stringBuffer.append("<tr id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_tr\">\n");
 				
-					stringBuffer.append("<td id=\"ts_d"+dayIndex+"_ts"+slotIndex+"\" class=\"tsCol tsContainerC tsContainerBGC\" onclick=\"tsContractAll(\'tsContainer\', \'ts_d"+dayIndex+"_ts"+slotIndex+"\'); tsExpand(\'ts_d"+dayIndex+"_ts"+slotIndex+"\');\">");
-							
-							stringBuffer.append("<div class=\"tsContent ")
+					stringBuffer.append("<td id=\"ts_d"+dayIndex+"_ts"+slotIndex+"\" class=\"tsCol tsContainerC tsContainerBGC")
 								.append(
 									(
-									(soldOut) 
-										? ""
-										:(isSelectedSlotId)
-											?"tsContentSelE"
-												:(isPreReservedSlotId && hasPreReserved)
-													?"tsContentResE"
-														:""
-										)
+										(soldOut) 
+											? ""
+											:(isSelectedSlotId)
+												?" tsContentSelE"
+													:(isPreReservedSlotId && hasPreReserved)
+														?" tsContentResE"
+															:""
+									)
 								+"\">");
+							
+							stringBuffer.append("<div class=\"tsContent\">");
 								
 							stringBuffer.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rbCont\" class=\"fleft ts_rb\">");
 
@@ -261,7 +268,7 @@ if (timeslots.size() > 0) {
 									if (!slot.hasAvailCTCapacity() && !(isSelectedSlotId || isPreReservedSlotId) && isForce) { 
 									}
 
-									stringBuffer.append("<input style=\"display: none;\" type=\"radio\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\" name=\"deliveryTimeslotId\"") 
+									stringBuffer.append("<input type=\"radio\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\" name=\"deliveryTimeslotId\"") 
 										.append(
 											( isSelectedSlotId || ("".equals(selectedSlotId) && isPreReservedSlotId && hasPreReserved) ) 
 											? "checked" : ""
@@ -299,20 +306,20 @@ if (timeslots.size() > 0) {
 								
 									// START Timeslot promotion display 
 									if(!soldOut && deliveryModel.isAlcoholDelivery() && slot.isAlcoholRestricted()){
-										stringBuffer.append("<div class=\"fleft tsAlcoholResPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgARE\" style=\"display: none;\">")
+										stringBuffer.append("<div class=\"fleft tsAlcoholResPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgARE\">")
 											.append("<img class=\"tsAlcoholImage\" src=\"/media_stat/images/timeslots/no_alcohol.gif\" width=\"16\" height=\"16\" border=\"0\">")
 											.append("</div>");
 									}else{
-										stringBuffer.append("<div class=\"fleft tsAlcoholResPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgARE\" style=\"display: none;\">")
+										stringBuffer.append("<div class=\"fleft tsAlcoholResPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgARE\">")
 											.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
 											.append("</div>");
 									}
 									if (soldOut) {
-										stringBuffer.append("<div class=\"tsSoldoutPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
-											.append("<div><img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\"><div><font class=\"tsSoldoutE\">SOLD&nbsp;OUT</font></div></div>")
+										stringBuffer.append("<div class=\"tsSoldoutPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
+											.append("<div class=\"tsSoldoutE_cont\"><img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\"><div><font class=\"tsSoldoutE\">SOLD&nbsp;OUT</font></div></div>")
 											.append("</div>");
 									}else if(isSelectedSlotId){
-										stringBuffer.append("<div class=\"tsSelectedSlotPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
+										stringBuffer.append("<div class=\"tsSelectedSlotPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
 											.append("<div>")
 											.append("<img src=\"/media_stat/images/timeslots/check_mark.gif\" width=\"17\" height=\"13\" border=\"0\">\n")
 											.append("<font class=\"tsSelectedSlotE\">Selected</font>\n")
@@ -322,7 +329,7 @@ if (timeslots.size() > 0) {
 											.append("<div><img src=\"/media_stat/images/timeslots/check_mark.gif\" width=\"17\" height=\"13\" border=\"0\"></div>")
 											.append("</div>");
 									}else if(isPreReservedSlotId && hasPreReserved ){
-										stringBuffer.append("<div class=\"tsReservationPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
+										stringBuffer.append("<div class=\"tsReservationPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
 											.append("<div>");
 											if(isSelectedSlotId){
 												stringBuffer.append("<img src=\"/media_stat/images/timeslots/check_mark.gif\" width=\"17\" height=\"13\" border=\"0\">\n");
@@ -333,7 +340,7 @@ if (timeslots.size() > 0) {
 												.append("</div>")
 											.append("</div>");
 									}else if(request.getAttribute("SHOW_WINDOWS_STEERING")!=null && "true".equals(request.getAttribute("SHOW_WINDOWS_STEERING")) && slot.getSteeringDiscount()>0) {
-										stringBuffer.append("<div class=\"tsDiscountPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
+										stringBuffer.append("<div class=\"tsDiscountPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
 											.append("<div>")
 											.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
 											.append("<div><font class=\"tsDiscountE\">Save&nbsp;$"+CCFormatter.formatQuantity(slot.getSteeringDiscount())+"</font></div>")
@@ -345,7 +352,7 @@ if (timeslots.size() > 0) {
 											.append("<div>")
 											.append("</div>");
 									}else if(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()) { 
-										stringBuffer.append("<div class=\"tsChefstablePropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
+										stringBuffer.append("<div class=\"tsChefstablePropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
 												.append("<div>")
 													.append("<img src=\"/media_stat/images/timeslots/purple_star.gif\" width=\"16\" height=\"15\" border=\"0\">\n")
 													.append("<div><font class=\"tsChefstableE\">&nbsp;CHEF'S&nbsp;TABLE</font></div>")
@@ -356,7 +363,7 @@ if (timeslots.size() > 0) {
 											.append("</div>");
 									}else if(slot.isEcoFriendly()){
 										if(!slot.isDepot()){
-											stringBuffer.append("<div class=\"tsEcoFriendlyPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">\n")
+											stringBuffer.append("<div class=\"tsEcoFriendlyPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")
 													.append("<div>")
 														.append("<img src=\"/media_stat/images/timeslots/ecofriendly_leaf.gif\" width=\"16\" height=\"16\" border=\"0\">\n")
 														.append("<font class=\"tsEcoFriendlyE\">Eco-Friendly</font>\n")
@@ -366,7 +373,7 @@ if (timeslots.size() > 0) {
 												.append("<img class=\"tsEcoFriendlyImage\" src=\"/media_stat/images/timeslots/ecofriendly_leaf.gif\" width=\"16\" height=\"16\" border=\"0\">\n")
 												.append("</div>");
 										}else{
-											stringBuffer.append("<div class=\"tsNeighbourhoodPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
+											stringBuffer.append("<div class=\"tsNeighbourhoodPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
 													.append("<div>")
 														.append("<img src=\"/media_stat/images/timeslots/neighbourhood_favs.gif\" width=\"15\" height=\"20\" border=\"0\">\n")
 														.append("<div class=\"tsNeighbourhoodE\">My&nbsp;Building Favorites</font></div>\n")
@@ -399,27 +406,26 @@ if (timeslots.size() > 0) {
 									}
 								stringBuffer.append("</td>\n");
 							stringBuffer.append("</tr>\n");
-				
 				slotIndex++;
 			%></logic:iterate><%
-
 				if( dayAmSlots < maxAmSlots){
 					for(int i=dayAmSlots;i < maxAmSlots;i++){
 						//generate empty cutoffs
-						stringBuffer.append("<tr id=\""+((isForAdvOrdSlots || isForNewAdvOrdSlots) ? "coAdv_d"+dayIndex+"_ts"+slotIndex+"_row":"co_d"+dayIndex+"_ts"+slotIndex+"_row")+"\" style=\"display: none;\">\n");
-						stringBuffer.append("<td class=\"cutoff\" style=\"display: none;\" onclick=\"tsContractAll(\'tsContainer\', \'co_d"+dayIndex+"_ts"+slotIndex+"\'); tsExpand(\'co_d"+dayIndex+"_ts"+slotIndex+"\');\">")
-							.append("<div id=\"co_d"+dayIndex+"_ts"+slotIndex+"\"")
-							.append(">&nbsp;</div>\n")
+						stringBuffer.append("<tr id=\""+"co_d"+dayIndex+"_ts"+slotIndex+"_tr"+"\" class=\"cutoff_tr\""+((slotIndex!=0)?" style=\"display: none;\"":"")+">\n");
+							stringBuffer.append("<td class=\"cutoff\">")
+								.append("<div id=\"co_d"+dayIndex+"_ts"+slotIndex+"\">&nbsp;</div>\n")
 							.append("</td>\n");
 						stringBuffer.append("</tr>\n");
 						
 						//generate empty timeslots
-						stringBuffer.append("<tr id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_tr\">\n")
-							.append("<td class=\"tsCol tsContainerC tsContainerBGC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"\" onclick=\"tsContractAll(\'tsContainer\', \'ts_d"+dayIndex+"_ts"+slotIndex+"\'); tsExpand(\'ts_d"+dayIndex+"_ts"+slotIndex+"\');\" name=\""+(timeslots.getHolidays().contains(day)? "holiday_day"+dayIndex:(showCutoffMedia)? "cutoffpassed_CPday":(!timeslots.getHolidays().contains(day) && timeslots.getTimeslotsForDate(day).size()==0)? "nodelivery_NDday":"")+"\">\n")
-							.append("<div class=\"tsContent\">")
-							.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rbCont\" class=\"fleft ts_rb\">&nbsp;</div><div class=\"fleft tsCont\">&nbsp;</div></div>\n")
+						stringBuffer.append("<tr id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_tr\" class=\"tsEmp\">\n")
+							.append("<td class=\"tsCol tsContainerC tsContainerBGC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"\" name=\""+(timeslots.getHolidays().contains(day)? "holiday_day"+dayIndex:(showCutoffMedia)? "cutoffpassed_CPday":(!timeslots.getHolidays().contains(day) && timeslots.getTimeslotsForDate(day).size()==0)? "nodelivery_NDday":"")+"\">\n")
+								.append("<div class=\"tsContent\">")
+									.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rbCont\" class=\"fleft ts_rb\">&nbsp;</div>")
+									.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_time\" class=\"fleft tsCont \">&nbsp;</div>")
+								.append("</div>\n")
 							.append("</td>\n")
-							.append("</tr>\n");
+						.append("</tr>\n");
 
 						if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
 							%>refData[<%=dayIndex%>][0][<%=slotIndex%>]='';
@@ -433,38 +439,45 @@ if (timeslots.size() > 0) {
 						slotIndex++;
 					}
 				}else if(dayAmSlots==0){
-					//generate empty cutoffs
-						stringBuffer.append("<tr id=\""+((isForAdvOrdSlots || isForNewAdvOrdSlots) ? "coAdv_d"+dayIndex+"_ts"+slotIndex+"_row":"co_d"+dayIndex+"_ts"+slotIndex+"_row")+"\" style=\"display: none;\">\n");
-						stringBuffer.append("<td class=\"cutoff\" style=\"display: none;\" onclick=\"tsContractAll(\'tsContainer\', \'co_d"+dayIndex+"_ts"+slotIndex+"\'); tsExpand(\'co_d"+dayIndex+"_ts"+slotIndex+"\');\">")
-							.append("<div id=\"co_d"+dayIndex+"_ts"+slotIndex+"\"")
-							.append(">&nbsp;</div>\n")
+					//generate empty cells for empty sections
+					for (int i = 0; i < emptySectionMinRows; i++){
+						//generate empty cutoffs
+						stringBuffer.append("<tr id=\""+"co_d"+dayIndex+"_ts"+slotIndex+"_tr"+"\" class=\"cutoff_tr\""+((slotIndex!=0)?" style=\"display: none;\"":"")+">\n");
+							stringBuffer.append("<td class=\"cutoff\">")
+								.append("<div id=\"co_d"+dayIndex+"_ts"+slotIndex+"\">&nbsp;</div>\n")
 							.append("</td>\n");
 						stringBuffer.append("</tr>\n");
 
-					//generate empty timeslots
-					stringBuffer.append("<tr id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_tr\">\n")
-						.append("<td class=\"tsCol tsContainerC tsContainerBGC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"\" onclick=\"tsContractAll(\'tsContainer\', \'ts_d"+dayIndex+"_ts"+slotIndex+"\'); tsExpand(\'ts_d"+dayIndex+"_ts"+slotIndex+"\');\" name=\""+(timeslots.getHolidays().contains(day)? "holiday_day"+dayIndex:(showCutoffMedia)? "cutoffpassed_CPday":(!timeslots.getHolidays().contains(day) && timeslots.getTimeslotsForDate(day).size()==0)? "nodelivery_NDday":"")+"\">\n")
-						.append("<div class=\"tsContent\">")
-						.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rbCont\" class=\"fleft ts_rb\">&nbsp;</div><div class=\"fleft tsCont\">&nbsp;</div></div>\n")
-						.append("</td>\n")
-						.append("</tr>\n");
-					if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
-						%>refData[<%=dayIndex%>][0][<%=slotIndex%>]='';
-						refData[<%=dayIndex%>][1][<%=slotIndex%>]='';
-						<%
-					}else{
-						%>refAdvData[<%=dayIndex%>][0][<%=slotIndex%>]='';
-						refAdvData[<%=dayIndex%>][1][<%=slotIndex%>]='';
-						<%
+						//generate empty timeslots
+						stringBuffer.append("<tr id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_tr\" class=\"tsEmp\">\n")
+							.append("<td class=\"tsCol tsContainerC tsContainerBGC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"\" name=\""+(timeslots.getHolidays().contains(day)? "holiday_day"+dayIndex:(showCutoffMedia)? "cutoffpassed_CPday":(!timeslots.getHolidays().contains(day) && timeslots.getTimeslotsForDate(day).size()==0)? "nodelivery_NDday":"")+"\">\n")
+								.append("<div class=\"tsContent\">")
+									.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rbCont\" class=\"fleft ts_rb\">&nbsp;</div>")
+									.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_time\" class=\"fleft tsCont \">&nbsp;</div>")
+								.append("</div>\n")
+							.append("</td>\n")
+							.append("</tr>\n");
+						if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
+							%>refData[<%=dayIndex%>][0][<%=slotIndex%>]='';
+							refData[<%=dayIndex%>][1][<%=slotIndex%>]='';
+							<%
+						}else{
+							%>refAdvData[<%=dayIndex%>][0][<%=slotIndex%>]='';
+							refAdvData[<%=dayIndex%>][1][<%=slotIndex%>]='';
+							<%
+						}
+						
+						slotIndex++;
+						
 					}
-					
-					slotIndex++;
+					dayAmSlots = emptySectionMinRows;
+					maxAmSlots = emptySectionMinRows;
 				}
 				
 			//dayPart line
-			stringBuffer.append("<tr id=\""+((isForAdvOrdSlots || isForNewAdvOrdSlots) ? "dayAdv_part"+dayIndex+"_row":"day_part"+dayIndex+"_row")+"\">")
-				.append("<td id=\"day_part"+dayIndex+"\" class=\"dayPart\">")
-				.append("<IMG src=\"/media_stat/images/layout/clear.gif\" WIDTH=\"1\" HEIGHT=\"1\" BORDER=\"0\"></td>")
+			stringBuffer.append("<tr id=\""+"daypart_d"+dayIndex+"_tr"+"\" class=\"dayPart\">")
+				.append("<td id=\"daypart_d"+dayIndex+"\">")
+				.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"1\" height=\"1\" border=\"0\" /></td>")
 				.append("</tr>\n");
 			if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
 				%>daypartIndex = <%=slotIndex%>;
@@ -492,7 +505,7 @@ if (timeslots.size() > 0) {
 				<%
 			}
 		%><logic:iterate id="slot" collection="<%= timeslots.getTimeslotsForDayAndShift(day,EnumDayShift.DAY_SHIFT_PM.getName()) %>" type="com.freshdirect.fdstore.FDTimeslot"><%
-				stringBuffer.append("<tr id=\""+((isForAdvOrdSlots || isForNewAdvOrdSlots)? "coAdv_d"+dayIndex+"_ts"+slotIndex+"_row":"co_d"+dayIndex+"_ts"+slotIndex+"_row")+"\" style=\"display: none;\">");
+				stringBuffer.append("<tr id=\""+"co_d"+dayIndex+"_ts"+slotIndex+"_tr"+"\" class=\"cutoff_tr\""+((slotIndex!=0)?" style=\"display: none;\"":"")+">");
 				
 					boolean isPreReservedSlotId = slot.getTimeslotId().equals(preReserveSlotId);
 					boolean isSelectedSlotId = slot.getTimeslotId().equals(selectedSlotId);
@@ -511,8 +524,8 @@ if (timeslots.size() > 0) {
 				
 					cutoffTime = slot.getCutoffDateTime();
 					
-					stringBuffer.append("<td class=\"cutoff\" onclick=\"tsContractAll(\'tsContainer\', \'co_d"+dayIndex+"_ts"+slotIndex+"\'); tsExpand(\'co_d"+dayIndex+"_ts"+slotIndex+"\');\">")
-						.append("<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"\">")
+					stringBuffer.append("<td class=\"cutoff\">")
+						.append("<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"\" style=\"display: none;\">")
 						.append("<div><b>Order&nbsp;by&nbsp;"+TimeslotPageUtil.getCutoffTimeDisplay(slot.getCutoffNormalDateTime())+"&nbsp;"+TimeslotPageUtil.getCutoffDay(day)+"</b></div></div>");
 					stringBuffer.append("</td>\n");
 					if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
@@ -523,7 +536,7 @@ if (timeslots.size() > 0) {
 						<%
 					}
 				}else{
-						stringBuffer.append("<td class=\"cutoff\" style=\"display: none;\" onclick=\"tsContractAll(\'tsContainer\', \'co_d"+dayIndex+"_ts"+slotIndex+"\'); tsExpand(\'co_d"+dayIndex+"_ts"+slotIndex+"\');\">")
+						stringBuffer.append("<td class=\"cutoff\">")
 							.append("<div id=\"co_d"+dayIndex+"_ts"+slotIndex+"\"")
 							.append(">&nbsp;</div>");
 					
@@ -547,20 +560,20 @@ if (timeslots.size() > 0) {
 				
 				stringBuffer.append("<tr id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_tr\">\n");
 				
-					stringBuffer.append("<td id=\"ts_d"+dayIndex+"_ts"+slotIndex+"\" class=\"tsCol tsContainerC tsContainerBGC\" onclick=\"tsContractAll(\'tsContainer\', \'ts_d"+dayIndex+"_ts"+slotIndex+"\'); tsExpand(\'ts_d"+dayIndex+"_ts"+slotIndex+"\');\">");
-							
-							stringBuffer.append("<div class=\"tsContent ")
+					stringBuffer.append("<td id=\"ts_d"+dayIndex+"_ts"+slotIndex+"\" class=\"tsCol tsContainerC tsContainerBGC")
 								.append(
-										(
+									(
 										(soldOut) 
 										? ""
 										:(isSelectedSlotId)
-											?"tsContentSelE"
+											?" tsContentSelE"
 												:(isPreReservedSlotId && hasPreReserved)
-													?"tsContentResE"
+													?" tsContentResE"
 														:""
-										)
-								+"\">");
+									)
+									+"\">");
+							
+							stringBuffer.append("<div class=\"tsContent \">");
 								
 							stringBuffer.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rbCont\" class=\"fleft ts_rb\">");
 
@@ -578,7 +591,7 @@ if (timeslots.size() > 0) {
 									if (!slot.hasAvailCTCapacity() && !(isSelectedSlotId || isPreReservedSlotId) && isForce) {
 									}
 			
-									stringBuffer.append("<input style=\"display: none;\" type=\"radio\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\" name=\"deliveryTimeslotId\"") 
+									stringBuffer.append("<input type=\"radio\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\" name=\"deliveryTimeslotId\"") 
 										.append(
 											(
 											isSelectedSlotId || ("".equals(selectedSlotId) && isPreReservedSlotId && hasPreReserved)
@@ -623,11 +636,11 @@ if (timeslots.size() > 0) {
 											.append("</div>");
 									}
 									if (soldOut) {
-										stringBuffer.append("<div class=\"tsSoldoutPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
-											.append("<div><img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\"><div><font class=\"tsSoldoutE\">SOLD&nbsp;OUT</font></div></div>")
+										stringBuffer.append("<div class=\"tsSoldoutPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
+											.append("<div class=\"tsSoldoutE_cont\"><img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\"><div><font class=\"tsSoldoutE\">SOLD&nbsp;OUT</font></div></div>")
 											.append("</div>");
 									}else if(isSelectedSlotId){
-										stringBuffer.append("<div class=\"tsSelectedSlotPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
+										stringBuffer.append("<div class=\"tsSelectedSlotPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
 											.append("<div>")
 											.append("<img src=\"/media_stat/images/timeslots/check_mark.gif\" width=\"17\" height=\"13\" border=\"0\">\n")
 											.append("<font class=\"tsSelectedSlotE\">Selected</font>\n")
@@ -637,7 +650,7 @@ if (timeslots.size() > 0) {
 											.append("<div><img src=\"/media_stat/images/timeslots/check_mark.gif\" width=\"17\" height=\"13\" border=\"0\"></div>")
 											.append("</div>");
 									}else if(isPreReservedSlotId && hasPreReserved ){
-										stringBuffer.append("<div class=\"tsReservationPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
+										stringBuffer.append("<div class=\"tsReservationPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
 											.append("<div>");
 											if(isSelectedSlotId){
 												stringBuffer.append("<img src=\"/media_stat/images/timeslots/check_mark.gif\" width=\"17\" height=\"13\" border=\"0\">\n");
@@ -648,7 +661,7 @@ if (timeslots.size() > 0) {
 												.append("<div>")
 											.append("</div>");
 									}else if(request.getAttribute("SHOW_WINDOWS_STEERING")!=null && "true".equals(request.getAttribute("SHOW_WINDOWS_STEERING")) && slot.getSteeringDiscount()>0) {
-										stringBuffer.append("<div class=\"tsDiscountPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
+										stringBuffer.append("<div class=\"tsDiscountPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
 											.append("<div>")
 											.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
 											.append("<div><font class=\"tsDiscountE\">Save&nbsp;$"+CCFormatter.formatQuantity(slot.getSteeringDiscount())+"</font></div>")
@@ -660,7 +673,7 @@ if (timeslots.size() > 0) {
 											.append("</div>")
 											.append("</div>");
 									}else if(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()) { 
-										stringBuffer.append("<div class=\"tsChefstablePropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
+										stringBuffer.append("<div class=\"tsChefstablePropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
 												.append("<div>")
 													.append("<img class=\"chefstableImage\" src=\"/media_stat/images/timeslots/purple_star.gif\" width=\"16\" height=\"15\" border=\"0\">")
 													.append("<div><font class=\"tsChefstableE\">&nbsp;CHEF'S&nbsp;TABLE</font></div>")
@@ -671,7 +684,7 @@ if (timeslots.size() > 0) {
 											.append("</div>");
 									}else if(slot.isEcoFriendly()){
 										if(!slot.isDepot()){
-											stringBuffer.append("<div class=\"tsEcoFriendlyPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">\n")
+											stringBuffer.append("<div class=\"tsEcoFriendlyPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")
 													.append("<div>")
 														.append("<img src=\"/media_stat/images/timeslots/ecofriendly_leaf.gif\" width=\"16\" height=\"16\" border=\"0\">\n")
 														.append("<font class=\"tsEcoFriendlyE\">Eco-Friendly</font>\n")
@@ -681,7 +694,7 @@ if (timeslots.size() > 0) {
 												.append("<img src=\"/media_stat/images/timeslots/ecofriendly_leaf.gif\" width=\"16\" height=\"16\" border=\"0\">\n")
 												.append("</div>");
 										}else{
-											stringBuffer.append("<div class=\"tsNeighbourhoodPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
+											stringBuffer.append("<div class=\"tsNeighbourhoodPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
 													.append("<div>")
 														.append("<img src=\"/media_stat/images/timeslots/neighbourhood_favs.gif\" width=\"15\" height=\"20\" border=\"0\">\n")
 														.append("<div class=\"tsNeighbourhoodE\">My&nbsp;Building Favorites</div>")
@@ -721,20 +734,21 @@ if (timeslots.size() > 0) {
 					for(int i=dayPmSlots;i < maxPmSlots;i++){
 					
 						//generate empty cutoffs
-							stringBuffer.append("<tr id=\""+((isForAdvOrdSlots || isForNewAdvOrdSlots) ? "coAdv_d"+dayIndex+"_ts"+slotIndex+"_row":"co_d"+dayIndex+"_ts"+slotIndex+"_row")+"\" style=\"display: none;\">\n");
-							stringBuffer.append("<td class=\"cutoff\" style=\"display: none;\" onclick=\"tsContractAll(\'tsContainer\', \'co_d"+dayIndex+"_ts"+slotIndex+"\'); tsExpand(\'co_d"+dayIndex+"_ts"+slotIndex+"\');\">")
-								.append("<div id=\"co_d"+dayIndex+"_ts"+slotIndex+"\"")
-								.append(">&nbsp;</div>\n")
-								.append("</td>\n");
-							stringBuffer.append("</tr>\n");
+						stringBuffer.append("<tr id=\""+"co_d"+dayIndex+"_ts"+slotIndex+"_tr"+"\" class=\"cutoff_tr\""+((slotIndex!=0)?" style=\"display: none;\"":"")+">\n");
+							stringBuffer.append("<td class=\"cutoff\">")
+								.append("<div id=\"co_d"+dayIndex+"_ts"+slotIndex+"\">&nbsp;</div>\n")
+							.append("</td>\n");
+						stringBuffer.append("</tr>\n");
 						
 						//generate empty timeslots
 						stringBuffer.append("<tr id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_tr\">\n")
-							.append("<td class=\"tsCol tsContainerC tsContainerBGC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"\" onclick=\"tsContractAll(\'tsContainer\', \'ts_d"+dayIndex+"_ts"+slotIndex+"\'); tsExpand(\'ts_d"+dayIndex+"_ts"+slotIndex+"\');\" name=\""+(timeslots.getHolidays().contains(day)? "holiday_day"+dayIndex:(showCutoffMedia)?"cutoffpassed_CPday":(!timeslots.getHolidays().contains(day) && timeslots.getTimeslotsForDate(day).size()==0)? "nodelivery_NDday":"")+"\">")
-							.append("<div class=\"tsContent\">")
-							.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rbCont\" class=\"fleft ts_rb\">&nbsp;</div><div class=\"fleft tsCont\">&nbsp;</div></div>\n")
+							.append("<td class=\"tsCol tsContainerC tsContainerBGC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"\" name=\""+(timeslots.getHolidays().contains(day)? "holiday_day"+dayIndex:(showCutoffMedia)?"cutoffpassed_CPday":(!timeslots.getHolidays().contains(day) && timeslots.getTimeslotsForDate(day).size()==0)? "nodelivery_NDday":"")+"\">")
+								.append("<div class=\"tsContent\">")
+									.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rbCont\" class=\"fleft ts_rb\">&nbsp;</div>")
+									.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_time\" class=\"fleft tsCont \">&nbsp;</div>")
+								.append("</div>\n")
 							.append("</td>\n")
-							.append("</tr>\n");
+						.append("</tr>\n");
 
 						if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
 							%>refData[<%=dayIndex%>][0][<%=slotIndex%>]='';
@@ -748,37 +762,42 @@ if (timeslots.size() > 0) {
 						slotIndex++;
 					}
 				}else if( dayPmSlots == 0){
-					//generate empty cutoffs
-					stringBuffer.append("<tr id=\""+((isForAdvOrdSlots || isForNewAdvOrdSlots) ? "coAdv_d"+dayIndex+"_ts"+slotIndex+"_row":"co_d"+dayIndex+"_ts"+slotIndex+"_row")+"\" style=\"display: none;\">\n");
-						stringBuffer.append("<td class=\"cutoff\" style=\"display: none;\" onclick=\"tsContractAll(\'tsContainer\', \'co_d"+dayIndex+"_ts"+slotIndex+"\'); tsExpand(\'co_d"+dayIndex+"_ts"+slotIndex+"\');\">")
-							.append("<div id=\"co_d"+dayIndex+"_ts"+slotIndex+"\"")
-							.append(">&nbsp;</div>\n")
+					//generate empty cells for empty sections
+					for(int i = 0; i < emptySectionMinRows; i++){
+						//generate empty cutoffs
+						stringBuffer.append("<tr id=\""+"co_d"+dayIndex+"_ts"+slotIndex+"_tr"+"\" class=\"cutoff_tr\""+((slotIndex!=0)?" style=\"display: none;\"":"")+">\n");
+							stringBuffer.append("<td class=\"cutoff\">")
+								.append("<div id=\"co_d"+dayIndex+"_ts"+slotIndex+"\">&nbsp;</div>\n")
 							.append("</td>\n");
 						stringBuffer.append("</tr>\n");
 
-					//generate empty timeslot
-					stringBuffer.append("<tr id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_tr\">\n")
-						.append("<td class=\"tsCol tsContainerC tsContainerBGC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"\" onclick=\"tsContractAll(\'tsContainer\', \'ts_d"+dayIndex+"_ts"+slotIndex+"\'); tsExpand(\'ts_d"+dayIndex+"_ts"+slotIndex+"\');\" name=\""+(timeslots.getHolidays().contains(day)? "holiday_day"+dayIndex:(showCutoffMedia)? "cutoffpassed_CPday":(!timeslots.getHolidays().contains(day) && timeslots.getTimeslotsForDate(day).size()==0)? "nodelivery_NDday":"")+"\">\n")
-						.append("<div class=\"tsContent\">")
-						.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rbCont\" class=\"fleft ts_rb\">&nbsp;</div><div class=\"fleft tsCont\">&nbsp;</div></div>\n")
-						.append("</td>\n")
+						//generate empty timeslot
+						stringBuffer.append("<tr id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_tr\">\n")
+							.append("<td class=\"tsCol tsContainerC tsContainerBGC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"\" name=\""+(timeslots.getHolidays().contains(day)? "holiday_day"+dayIndex:(showCutoffMedia)? "cutoffpassed_CPday":(!timeslots.getHolidays().contains(day) && timeslots.getTimeslotsForDate(day).size()==0)? "nodelivery_NDday":"")+"\">\n")
+								.append("<div class=\"tsContent\">")
+									.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rbCont\" class=\"fleft ts_rb\">&nbsp;</div>")
+									.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_time\" class=\"fleft tsCont \">&nbsp;</div>")
+								.append("</div>\n")
+							.append("</td>\n")
 						.append("</tr>\n");
-					if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
-						%>refData[<%=dayIndex%>][0][<%=slotIndex%>]='';
-						refData[<%=dayIndex%>][1][<%=slotIndex%>]='';
-						<%
-					}else{
-						%>refAdvData[<%=dayIndex%>][0][<%=slotIndex%>]='';
-						refAdvData[<%=dayIndex%>][1][<%=slotIndex%>]='';
-						<%
-					}
 
-					slotIndex++;
+						if(!isForAdvOrdSlots && !isForNewAdvOrdSlots){
+							%>refData[<%=dayIndex%>][0][<%=slotIndex%>]='';
+							refData[<%=dayIndex%>][1][<%=slotIndex%>]='';
+							<%
+						}else{
+							%>refAdvData[<%=dayIndex%>][0][<%=slotIndex%>]='';
+							refAdvData[<%=dayIndex%>][1][<%=slotIndex%>]='';
+							<%
+						}
+
+						slotIndex++;
+					}
 				}
 
 			stringBuffer.append("</table>");
 			
-				stringBuffer.append("</td>\n");
+		stringBuffer.append("</td>\n");
 			dayIndex++;
 			showCutoffMedia = false;
 		%></logic:iterate><% 
@@ -790,15 +809,15 @@ if (timeslots.size() > 0) {
 
 	for(Date day: days){
 		stringBuffer.append("<td valign=\"top\" class=\"footer_container\">");
-				stringBuffer.append("<div id=\"ts_d"+fdayIndex+"_ts_fE\" style=\"display: none;\">")
+				stringBuffer.append("<div id=\"ts_d"+fdayIndex+"_fE\" style=\"display: none;\">")
 							.append("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">")
 								.append("<tr>\n")
 									.append("<td width=\"1\"><img src=\"/media_stat/images/layout/cccccc.gif\" width=\"1\" height=\"5\"></td>")
-									.append("<td width=\"5\" bgcolor=\"#FFFFFF\"><img src=\"/media_stat/images/layout/clear.gif\" width=\"5\" height=\"5\" alt=\"\" border=\"0\"></td>")
-									.append("<td bgcolor=\"#FFFFFF\">")
+									.append("<td width=\"5\" bgcolor=\"#ffffff\"><img src=\"/media_stat/images/layout/clear.gif\" width=\"5\" height=\"5\" alt=\"\" border=\"0\"></td>")
+									.append("<td bgcolor=\"#ffffff\">")
 										.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"1\" height=\"5\" alt=\"\">")
 									.append("</td>\n")
-									.append("<td width=\"5\"bgcolor=\"#FFFFFF\"><img src=\"/media_stat/images/layout/clear.gif\" width=\"5\" height=\"5\" alt=\"\"></td>")
+									.append("<td width=\"5\"bgcolor=\"#ffffff\"><img src=\"/media_stat/images/layout/clear.gif\" width=\"5\" height=\"5\" alt=\"\"></td>")
 									.append("<td width=\"1\"><img src=\"/media_stat/images/layout/cccccc.gif\" width=\"1\" height=\"5\"></td>")
 								.append("</tr>\n")
 								.append("<tr>\n")
@@ -831,9 +850,11 @@ if (timeslots.size() > 0) {
 	stringBuffer.append("</center>");
 	out.write(stringBuffer.toString());
 
-%><div id="tsRefcol_contracted"><!--  --></div>
-<div id="tsRefcol_expanded"><!--  --></div>
-<%
+%><%= 
+	(isForAdvOrdSlots) ? "<div id=\"timeslots_gridAdv_ERef\"><!--  --></div><div id=\"timeslots_gridAdv_CRef\"><!--  --></div>" :
+	(isForNewAdvOrdSlots) ? "<div id=\"timeslots_gridAdvNew_ERef\"><!--  --></div><div id=\"timeslots_gridAdvNew_CRef\"><!--  --></div>" :
+	"<div id=\"timeslots_grid_ERef\"><!--  --></div><div id=\"timeslots_grid_CRef\"><!--  --></div>"
+%><%
 
 }	
 	 if(address != null) {

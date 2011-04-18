@@ -848,7 +848,7 @@ public class DomainManagerImpl
 		return getDomainManagerDao().getVIRRecords();
 	}
 	
-	public Collection getVIRRecords(String createDate, String truckNumber){
+	public Collection getVIRRecords(Date createDate, String truckNumber){
 		return getDomainManagerDao().getVIRRecords(createDate, truckNumber);
 	}
 	

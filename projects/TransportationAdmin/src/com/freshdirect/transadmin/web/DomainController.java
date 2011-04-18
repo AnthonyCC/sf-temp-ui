@@ -776,27 +776,33 @@ public class DomainController extends AbstractMultiActionController {
 		String currentDate = request.getParameter("currentDate");
 		String createDate = request.getParameter("createDate");		
 		String truckNumber = request.getParameter("truckNumber");
+		if(createDate==null)createDate = TransStringUtil.getCurrentDate();
+		if(TransStringUtil.isEmpty(currentDate) || currentDate == null)
+			currentDate = TransStringUtil.getCurrentDate();		
 		
 		Collection virRecords = null;
+		Date _createdDate = null;
 		try{
-			if(!TransStringUtil.isEmpty(createDate) || !TransStringUtil.isEmpty(truckNumber)){				
-				virRecords = getDomainManagerService().getVIRRecords(!TransStringUtil.isEmpty(createDate) ? TransStringUtil.getServerDate(createDate):"", truckNumber);
-			}else{
+			if(!TransStringUtil.isEmpty(createDate))
+				_createdDate = TransStringUtil.getDate(createDate);
+									
+			if(_createdDate != null || !TransStringUtil.isEmpty(truckNumber))				
+				virRecords = getDomainManagerService().getVIRRecords(_createdDate, truckNumber);
+			else
 				virRecords = getDomainManagerService().getVIRRecords();
-			}			
+			
+			if(virRecords != null && virRecords.size()==0)
+				saveMessage(request, getMessage("app.error.139", new String[]{}));
 		}catch(Exception e){
 			e.printStackTrace();
+			saveMessage(request, getMessage("app.error.138", new String[]{}));
 		}
-		Collections.sort((List)virRecords, new VIRRecordComparator());
+		if(virRecords != null && virRecords.size()>0)
+			Collections.sort((List)virRecords, new VIRRecordComparator());		
 		
-		if(TransStringUtil.isEmpty(currentDate))
-			currentDate = TransStringUtil.getCurrentDate();
-		
-		mav.getModel().put("createDate",createDate);
-		
+		mav.getModel().put("createDate",createDate);	
 		mav.getModel().put("truckNumber", truckNumber);
-		mav.getModel().put("currentDate",currentDate);
-		
+		mav.getModel().put("currentDate",currentDate);		
 		mav.getModel().put("issueTypes", getDomainManagerService().getIssueTypes());
 		mav.getModel().put("issueSubTypes", getDomainManagerService().getIssueSubTypes());
 		mav.getModel().put("virRecords", virRecords);
@@ -810,22 +816,28 @@ public class DomainController extends AbstractMultiActionController {
 	 * @return a ModelAndView to render the response
 	 */
 	public ModelAndView maintenanceLogHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		
 		ModelAndView mav = new ModelAndView("maintenanceLogView");
 		String serviceStatus = request.getParameter("serviceStatus");
 		String issueStatus = request.getParameter("issueStatus");
+		if(issueStatus == null)issueStatus = EnumIssueStatus.OPEN.getName();
 		
 		Collection maintenaceRecords = null;
 		try{
-			if((issueStatus !=null && !TransStringUtil.isEmpty(issueStatus)) || (serviceStatus != null && !TransStringUtil.isEmpty(serviceStatus))){
-				maintenaceRecords = getDomainManagerService().getMaintenanceIssues(issueStatus, serviceStatus);
-			}else{
+			if(!TransStringUtil.isEmpty(issueStatus) || !TransStringUtil.isEmpty(serviceStatus))
+				maintenaceRecords = getDomainManagerService().getMaintenanceIssues(issueStatus, serviceStatus);					
+			else
 				maintenaceRecords = getDomainManagerService().getMaintenanceIssues();
-			}		
-			
 		}catch(Exception e){
 			e.printStackTrace();
+			saveMessage(request, getMessage("app.error.138", new String[]{}));
 		}
-		Collections.sort((List)maintenaceRecords, new MaintenanceIssueComparator());
+		
+		if(maintenaceRecords != null && maintenaceRecords.size()==0)
+			saveMessage(request, getMessage("app.error.140", new String[]{}));
+		
+		if(maintenaceRecords != null && maintenaceRecords.size()>0)
+			Collections.sort((List)maintenaceRecords, new MaintenanceIssueComparator());
 		
 		mav.getModel().put("serviceStatus", serviceStatus);
 		mav.getModel().put("issueStatus", issueStatus);
@@ -845,7 +857,7 @@ public class DomainController extends AbstractMultiActionController {
 			{
 				MaintenanceIssue m1=(MaintenanceIssue)o1;
 				MaintenanceIssue m2=(MaintenanceIssue)o2;				
-				return m1.getCreateDate().compareTo(m2.getCreateDate());
+				return m2.getCreateDate().compareTo(m1.getCreateDate());
 			}
 			return 0;
 		}
@@ -858,7 +870,7 @@ public class DomainController extends AbstractMultiActionController {
 			{
 				VIRRecord v1=(VIRRecord)o1;
 				VIRRecord v2=(VIRRecord)o2;				
-				return v1.getCreateDate().compareTo(v2.getCreateDate());
+				return v2.getCreateDate().compareTo(v1.getCreateDate());
 			}
 			return 0;
 		}

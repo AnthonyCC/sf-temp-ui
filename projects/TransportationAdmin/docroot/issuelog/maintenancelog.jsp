@@ -71,9 +71,9 @@
 				<div class="scrTitle" style="float:left;padding:3px 0 0 6px;"><%=pageTitle%> </div>
 				
 			
-					<div style="float:left;text-align:center;font-weight:bold">Service Status<br>&nbsp;
+					<div style="float:left;text-align:center;font-weight:bold;font-size:10px;">Service Status<br>&nbsp;
 						<select id="serviceStatus" name="serviceStatus" >
-							<option value="" style="font-size:10px;">--Please Select</option>
+							<option value="">--Please Select</option>
 							  <c:forEach var="serviceName" items="${serviceStatuses}">
 								  <c:choose>
 									<c:when test="${serviceStatus == serviceName}" > 
@@ -86,9 +86,9 @@
 								</c:forEach>
 					    </select>
 					</div>
-					<div style="float:left;text-align:center;font-weight:bold">Issue Status<br>&nbsp;
+					<div style="float:left;text-align:center;font-weight:bold;font-size:10px;">Issue Status<br>&nbsp;
 						 <select id="issueStatus" name="issueStatus" >
-							<option value="" style="font-size:10px;">--Please Select</option>
+							<option value="">--Please Select</option>
 							  <c:forEach var="statusName" items="${issueStatuses}">
 								  <c:choose>
 									<c:when test="${issueStatus == statusName}" > 
@@ -107,12 +107,22 @@
 							<input id="view_button" type="image" alt="View" src="./images/icons/view.gif" onclick="javascript:doMaintenanceIssueLink('issueStatus','serviceStatus','maintenancelog.do');" onmousedown="this.src='./images/icons/view_ON.gif'" />
 						</span>
 					</div>
-				
+
+					&nbsp;&nbsp;&nbsp;
+					<div style="float:right;font-weight:bold;"><br/>
+						<span><input type="image" src="./images/icons/o-icon.gif" />&nbsp;Open</span>
+						<span><input type="image" src="./images/icons/v-icon.gif" />&nbsp;Verified</span>
+						<span><input type="image" src="./images/icons/rv-icon.gif" />&nbsp;Re-Verified</span>
+						<span><input type="image" src="./images/icons/r-icon.gif" />&nbsp;Resolved</span>
+						<span><input type="image" src="./images/icons/i-icon.gif" />&nbsp;Rejected</span>&nbsp;&nbsp;&nbsp;
+					</div>
+					
 	</div>
 	<BR/><BR/><BR/>&nbsp;
 	
 	<div class="cont_topright">
 			<div class="cont_row">
+			
 				<div class="cont_Ritem">
 	
 				<ec:table items="maintenanceRecords"   action="${pageContext.request.contextPath}/maintenancelog.do"

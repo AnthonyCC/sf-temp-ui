@@ -1,6 +1,7 @@
 package com.freshdirect.transadmin.dao;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -116,7 +117,7 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 	
 	Collection getVIRRecords() throws DataAccessException;
 	
-	Collection getVIRRecords(String createDate, String truckNumber) throws DataAccessException;
+	Collection getVIRRecords(Date createDate, String truckNumber) throws DataAccessException;
 	
 	VIRRecord getVIRRecord(String id) throws DataAccessException;
 	

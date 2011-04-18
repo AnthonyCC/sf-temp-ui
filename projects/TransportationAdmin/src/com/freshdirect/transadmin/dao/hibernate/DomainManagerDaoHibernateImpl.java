@@ -3,6 +3,7 @@ package com.freshdirect.transadmin.dao.hibernate;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -368,19 +369,19 @@ public class DomainManagerDaoHibernateImpl
 		return getDataList("VIRRecord Order By createDate desc");
 	}
 	
-	public Collection getVIRRecords(String createDate, String truckNumber) throws DataAccessException {
+	public Collection getVIRRecords(Date createDate, String truckNumber) throws DataAccessException {
 		
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from VIRRecord v where");
 				
-		if (createDate != null && !createDate.equals(""))
-			strBuf.append(" v.createDate='").append(createDate).append("'");		
-		if(!truckNumber.equals("") && !createDate.equals(""))
+		if(createDate != null && !"".equals(createDate)  )
+			strBuf.append(" trunc(v.createDate) = ? ");		
+		if(createDate != null && !"".equals(createDate) && truckNumber != null && !"".equals(truckNumber))
 			strBuf.append(" and");
 		if (truckNumber != null && !truckNumber.equals(""))
-			strBuf.append(" v.truckNumber='").append(truckNumber).append("'");		
+			strBuf.append(" v.truckNumber ='").append(truckNumber).append("'");		
 		
-		return (Collection) getHibernateTemplate().find(strBuf.toString());
+		return (Collection) getHibernateTemplate().find(strBuf.toString(),new Object[] { createDate });
 }
 
 	
@@ -427,9 +428,9 @@ public class DomainManagerDaoHibernateImpl
 		strBuf.append("MaintenanceIssue m where");
 		if(issueStatus != null && !"".equals(issueStatus))
 			strBuf.append(" m.issueStatus='"+issueStatus+"'");
-		if(!"".equals(issueStatus) && !"".equals(serviceStatus))
+		if( serviceStatus !=null && issueStatus !=null && !"".equals(issueStatus) && !"".equals(serviceStatus))
 			strBuf.append(" and");
-		if(issueStatus != null && !"".equals(serviceStatus))
+		if(serviceStatus != null && !"".equals(serviceStatus))
 			strBuf.append(" m.serviceStatus='"+serviceStatus+"'");		
 		
 		return (Collection) getDataList(strBuf.toString());		

@@ -95,7 +95,7 @@
 							 <tr>
 								  <td>Truck Number</td>
 								  <td>                  
-									<form:select path="truckNumber">
+									<form:select path="truckNumber" onChange="javascript:getVendorInfo();">
 							                <form:option value="" label="--Please Select Truck"/>
 										    <form:options items="${truckAssets}" itemLabel="assetNo" itemValue="assetNo" />
 					                </form:select>
@@ -107,10 +107,7 @@
 							 <tr>
 								  <td>Vendor</td>
 								  <td>                  
-									<form:select path="vendor" disabled="false">
-							                <form:option value="" label="--Please Select Vendor"/>
-										    <form:options items="${vendors}" />
-					                </form:select>
+										<form:input maxlength="50" size="28" path="vendor" disabled="true"></form:input>
 								  </td>
 								  <td>
 									  &nbsp;<form:errors path="vendor" />

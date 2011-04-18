@@ -55,7 +55,7 @@
 				<div class="minwidth"><!-- --></div>
 				<a href="virrecordlog.do?issueLog=S" class="<% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM001<% } %>">Issue SubType</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>		
+			<div class="sub_tabright sub_tabR_MNM001 <% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>
 		</div>
 	</div>
 	<div class="cont_row_bottomline"><!--  --></div>
@@ -108,7 +108,7 @@
 							 <tr>
 								  <td>Truck Number</td>
 								  <td>                  
-									<form:select path="truckNumber" disabled="${hasId}">
+									<form:select path="truckNumber" disabled="${hasId}" onChange="javascript:getVendorInfo();">
 											<form:option value="" label="--Please Select Truck"/>
 											<form:options items="${truckAssets}" itemLabel="assetNo" itemValue="assetNo" />
 									</form:select>
@@ -119,11 +119,8 @@
 							 </tr>
 							 <tr>
 								  <td>Vendor</td>
-								  <td>                  
-									<form:select path="vendor"  disabled="${hasId}">
-											<form:option value="" label="--Please Select Vendor"/>
-											<form:options items="${vendors}" />
-									</form:select>
+								  <td>
+									<form:input maxlength="50" size="28" path="vendor" disabled="true"></form:input>
 								  </td>
 								  <td>
 									  &nbsp;<form:errors path="vendor" />

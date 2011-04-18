@@ -153,7 +153,7 @@ public interface DomainManagerI extends BaseManagerI {
 	
 	Collection getVIRRecords();
 	
-	Collection getVIRRecords(String createDate, String truckNumber);
+	Collection getVIRRecords(Date createDate, String truckNumber);
 	
 	VIRRecord getVIRRecord(String id);
 	

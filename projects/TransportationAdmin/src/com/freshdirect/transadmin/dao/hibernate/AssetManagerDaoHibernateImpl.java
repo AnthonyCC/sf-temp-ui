@@ -41,6 +41,11 @@ public class AssetManagerDaoHibernateImpl
 		return (Asset)getEntityById("Asset", "assetId", assetId);
 	}
 	
+	public Asset getAssetByAssetNumber(String assetNumber) throws DataAccessException {
+		
+		return (Asset)getEntityById("Asset", "assetNo", assetNumber);
+	}
+	
 	public void saveAsset(Asset asset) throws DataAccessException {
 
 		if (asset.getAssetId() == null || "".equals(asset.getAssetId())) {

@@ -1,13 +1,17 @@
 .tsCol {
-	margin-top: 20px;
+	margin-top/**/: 20px;
 	border: 1px solid #ccc;
 }
-#tsRefcol_contracted {
-	width: 88px;
+#timeslots_grid_CRef, #timeslots_gridAdv_CRef, #timeslots_gridAdvNew_CRef {
+	display: none;
+	width: 87px;
 }
-#tsRefcol_expanded {
+#timeslots_grid_ERef, #timeslots_gridAdv_ERef, #timeslots_gridAdvNew_ERef {
+	display: none;
 	width: 203px;
 }
+
+
 table.tsContainer td {
 	border: 1px solid #ccc;
 }
@@ -27,26 +31,29 @@ table.tsContainer td {
 
 .tsHeaderC {
 	height: 56px;
-	width: 88px;
+	width: 87px;
 	background: transparent url('/media/editorial/timeslots/images/date_gradient.gif') repeat-x;
+	cursor: pointer;
 }
 .tsHeaderE {
-	height: 76px; /* +20 for margin-top */
-	overflow: hidden;
+	height: 76px;
+	overflow-x: hidden;
 }
 .tsHeadE {
 	width: 100%;
 }
-.tsHeadE div {
-	/*width: 89px;
-	margin-left: auto ;
-	margin-right: auto ;*/
+.tsHeaderE_top, .tsHeaderE_topC {
+	height: 6px;
+	line-height: 6px;
+}
+.tsHeaderE_top {
+	width: 6px;
 }
 
 table.tsHeaderC, .tsHeaderC {
 	border: 1px solid #ccc;
 	height: 56px;
-	width: 89px;
+	width: 87px;
 	background-color: #FBFBFB;
 	padding-top: 0px;
 }
@@ -54,7 +61,7 @@ table.tsHeaderC, .tsHeaderC {
 .tsHeaderC td {
 	border:0px solid #ccc;
 	height:56px;
-	width: 88px;
+	width: 87px;
 	background-color:#FBFBFB;
 	padding-top:0px;
 }
@@ -78,6 +85,8 @@ td.footer_container {
 .tsContainerC {
 	height: 31px;
 	width: 88px;
+	cursor: pointer;
+	padding: 0;
 }
 .tsContCon table, .tsContExp table {
 	border: 0px;
@@ -95,7 +104,7 @@ td.footer_container {
 	top: 5px;
 }
 .tsDayHeaderC, .tsDayHeaderE {
-	font-family: 'Eagle, Book';
+	font-family: Verdana, Arial, sans-serif;
 	font-size: 20px;
 	color: #333;
 	width: 100%;
@@ -141,7 +150,7 @@ div.tsDayNameE {
 
 .tsCol div.tsContent {
 	display: block;
-	height: 100%;
+	height: 31px;
 	text-decoration: none;
 	color: #333;
 	cursor: pointer;
@@ -162,7 +171,8 @@ div.tsDayNameE {
 	background-color: #fff;
 	font-weight: bold;
 	text-align: center;
-	height: 28px;
+	height: 27px;
+	display: block;
 }
 
 .cutoff div, .cutoffDisp div {
@@ -204,9 +214,14 @@ div.tsDayNameE {
 .fleft {
 	float: left;
 }
+
 .ts_rb {
 	padding-top:6px;
 	width: 21px;
+	display: none;
+}
+.ts_rb input {
+	cursor: pointer;
 }
 
 .tsFooterC {
@@ -290,13 +305,12 @@ a.tsDivHide {
 	float:right;
 	padding:0 20px 0 0;
 	font-size: 11px;
-    font-weight: normal;
+	font-weight: normal;
 }
 span.tsAdvanceHeader {
 	padding:0 0 0 20px;
 }
-
-.tsTable td div div, td.tsFooter, td.cutoff, .tsTable td div {
+.tsTable td div div, td.tsFooter, .tsTable td div {
 	border: 0 none;
 } 
 table.tsTable td table.tsTable td {
@@ -337,6 +351,7 @@ div.tsHeaderE {
 	font-size: 10px;
 	font-family: Vernada, Regular;
 	background-color: #FFFFFF;
+	vertical-align: top;
 }
 
 .tsContainerNoDelBGC {
@@ -344,6 +359,7 @@ div.tsHeaderE {
 	font-size: 10px;
 	font-family: Vernada, Regular;
 	background-color: #E2E2E2;
+	border-collapse: separate;
 }
 
 /*Steering Discount slot*/
@@ -389,10 +405,10 @@ div.tsHeaderE {
 	margin-bottom: -5px;
 }
 /*Reservation slot*/
-div.tsContentResC {
+.tsContentResC {
 	background: transparent url('/media/editorial/timeslots/images/reservedSlotBGC.gif') repeat-x left top;
 }
-div.tsContentResE {
+.tsContentResE {
 	background: transparent url('/media/editorial/timeslots/images/reservedSlotBGC.gif') repeat-x left top;
 }
 .tsReservationE {
@@ -606,6 +622,10 @@ td.noTopBorder {
 	text-align:right;
 	padding:10px 10px 0 0;
 }
+_tsContainer {
+	overflow-x: hidden;
+	width: 730px;
+}
 
 #tsContainer table, #timeslotloyalityHeader, #legendCheckout {
   text-align: left;
@@ -629,15 +649,26 @@ td.noTopBorder {
 	text-decoration:none;
 }
 
+#legendCheckout a:hover {
+	text-decoration: underline;
+}
+
 .ecofriendlyImage {
 	padding-top:4px;
 }
 .dayPart {
+	cursor: pointer;
+}
+.dayPart td {
+	font-size: 1px;
+	line-height: 1px;
 	background-color: #ccc;
+	padding: 0px;
 }
 .tsCont {
 	width: 60px;
 	white-space: nowrap;
+	overflow-x: hidden;
 }
 .emptyDayCont {
 	border: 0 none;
@@ -687,9 +718,68 @@ td.noTopBorder {
 	background: transparent url('/media/editorial/timeslots/images/selectedBGC.gif') repeat-x left top;
 }
 
-#legendCheckout a:hover {
-	text-decoration:underline;
+/* contracted */
+.tsContainerBGC .tsAlcoholResPropC,
+.tsContainerBGC .tsAlcoholResPropE, 
+.tsContainerBGE .tsChefstablePropC, 
+.tsContainerBGC .tsChefstablePropE, 
+.tsContainerBGE .tsDiscountPropC,
+.tsContainerBGC .tsDiscountPropE, 
+.tsContainerBGE .tsEcoFriendlyPropC, 
+.tsContainerBGC .tsEcoFriendlyPropE, 
+.tsContainerBGE .tsNeighbourhoodPropC, 
+.tsContainerBGC .tsNeighbourhoodPropE, 
+.tsContainerBGE .tsReservationPropC, 
+.tsContainerBGC .tsReservationPropE, 
+.tsContainerBGE .tsSelectedSlotPropC, 
+.tsContainerBGC .tsSelectedSlotPropE, 
+.tsContainerBGC .tsSoldoutE_cont, 
+.tsContainerBGC .ts_rb
+{
+	display: none;
 }
+
+/* expanded */
+.tsContainerBGE .tsAlcoholResPropE,
+.tsContainerBGC .tsChefstablePropC, 
+.tsContainerBGE .tsChefstablePropE, 
+.tsContainerBGE .tsCont, 
+.tsContainerBGC .tsDiscountPropC,
+.tsContainerBGE .tsDiscountPropE,
+.tsContainerBGC .tsEcoFriendlyPropC, 
+.tsContainerBGE .tsEcoFriendlyPropE, 
+.tsContainerBGC .tsNeighbourhoodPropC, 
+.tsContainerBGE .tsNeighbourhoodPropE, 
+.tsContainerBGC .tsReservationPropC, 
+.tsContainerBGE .tsReservationPropE, 
+.tsContainerBGC .tsSelectedSlotPropC, 
+.tsContainerBGE .tsSelectedSlotPropE, 
+.tsContainerBGE .tsSoldoutE_cont,
+.tsContainerBGE .ts_rb
+{
+	display: block;
+}
+
+.cutoffLR, .cutoffLR .cutoffDispChild {
+	background-color: #fff;
+	font-weight: bold;
+	text-align: center;
+	height: 27px;
+}
+.cutoffLR .cutoffDispChild div {
+	padding-top: 8px;
+}
+
+.cutoffLR {
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+}
+
+.tsTableC {
+	width: 87px;
+}
+
+
 /* modalbox rounded corner and drop shadow */
 #MB_frame {
 	/*padding-bottom: 4px;*/

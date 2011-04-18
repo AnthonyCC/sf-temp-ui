@@ -3,6 +3,7 @@
 		
 		var resultList;
 		var subTypeId;
+		var vendorResult;
 		function getIssueSubTypes() {  
 			var issueTypes = document.getElementById("issueType");
    
@@ -54,15 +55,14 @@
           var param1 = document.getElementById(compId1).value;
           var param2 = document.getElementById(compId2).value;
 
-          location.href = url+"?recordType=M&"+compId1+"="+ param1+"&"+compId2+"="+param2;
+          location.href = url+"?issueLog=M&"+compId1+"="+ param1+"&"+compId2+"="+param2;
         }
 
-		function doVIRRecordLink(compId1,compId2,compId3, url) {
+		function doVIRRecordLink(compId1,compId2, url) {
           var param1 = document.getElementById(compId1).value;
           var param2 = document.getElementById(compId2).value;
-		  var param3 = document.getElementById(compId3).value;
-
-          location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+"&"+compId3+"="+param3;
+		 
+          location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2;
         }
 
 		function addNewVIRRecord(){
@@ -75,7 +75,7 @@
 		function rejectIssue(){
 			var id = document.getElementById('issueId').value;
 			if(id !== ''){
-				var result = jsonrpcClient.AsyncDispatchProvider.getRejectMaintenanceIssue(sendRejectFormCallback, id);
+				var result = jsonrpcClient.AsyncDispatchProvider.doRejectMaintenanceIssue(sendRejectFormCallback, id);
 			}
 		}
 
@@ -104,6 +104,29 @@
 	      	}
 	      	errContObj.style.fontWeight="bold";
       		YAHOO.util.Dom.get("errContainer").innerHTML = msg;
-      }
+		}
+
+		function getVendorInfo() {  
+			var truckNumber = document.getElementById("truckNumber");
+			// get selected truckNumber from dropdown list  
+			var truckNumber = truckNumber.options[truckNumber.selectedIndex].value;
+			if(truckNumber.length != 0){
+				 vendorResult = jsonrpcClient.AsyncDispatchProvider.getTruckVendorInfo(sendVendorFormCallback, truckNumber);
+			}
+		}
+
+		function sendVendorFormCallback(vendorResult, exception) {
+      	  if(exception) {
+              alert('Unable to connect to host system. Please contact system administrator!');
+              return;
+          }
+          if(vendorResult === '') {
+			  addSysMessage("Vendor Information not mapped to TRUCK selected",true);
+		  }else if(vendorResult != null && vendorResult !== '') {
+			 document.getElementById("vendor").value = vendorResult; 
+		  }else {
+          	  addSysMessage("Populating vendor info failed for TRUCK selected",true);
+          }
+		}
 		
 		

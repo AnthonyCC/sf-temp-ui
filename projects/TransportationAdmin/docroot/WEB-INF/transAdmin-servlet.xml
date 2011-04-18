@@ -602,6 +602,7 @@
 		<property name="zoneManagerService" ref="zoneManager"/>
 		<property name="logManager" ref="logManagerBase"/>
 		<property name="employeeManagerService" ref="employeeManager"/>
+		<property name="assetManagerService" ref="assetManagerService"/>	
 		<property name="ajaxServices">
 			<map>
 				<entry key="AsyncDispatchProvider" value="com.freshdirect.transadmin.web.json.IDispatchProvider" />				

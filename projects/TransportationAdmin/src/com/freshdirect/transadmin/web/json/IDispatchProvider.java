@@ -50,5 +50,6 @@ public interface IDispatchProvider {
 	String saveVIRRecord(String createDate, String truckNumber, String vendor
 			, String driver, String createdBy
 			, String[][] recordIssues);
-	boolean getRejectMaintenanceIssue(String id);
+	boolean doRejectMaintenanceIssue(String id);
+	String getTruckVendorInfo(String truckNumber);
 }

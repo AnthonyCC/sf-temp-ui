@@ -38,6 +38,8 @@ import com.freshdirect.transadmin.constants.EnumIssueStatus;
 import com.freshdirect.transadmin.constants.EnumServiceStatus;
 import com.freshdirect.transadmin.datamanager.report.ICommunityReport;
 import com.freshdirect.transadmin.datamanager.report.XlsCommunityReport;
+import com.freshdirect.transadmin.model.Asset;
+import com.freshdirect.transadmin.model.AssetAttribute;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.DispatchReason;
 import com.freshdirect.transadmin.model.DlvScenarioDay;
@@ -60,6 +62,7 @@ import com.freshdirect.transadmin.model.VIRRecord;
 import com.freshdirect.transadmin.model.WaveInstancePublish;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.model.ZoneSupervisor;
+import com.freshdirect.transadmin.service.AssetManagerI;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
@@ -94,6 +97,16 @@ public class DispatchProviderController extends JsonRpcController implements
 	private ZoneManagerI zoneManagerService;
 	
 	private EmployeeManagerI employeeManagerService;
+	
+	private AssetManagerI assetManagerService;
+	
+	public AssetManagerI getAssetManagerService() {
+		return assetManagerService;
+	}
+
+	public void setAssetManagerService(AssetManagerI assetManagerService) {
+		this.assetManagerService = assetManagerService;
+	}
 		
 	public EmployeeManagerI getEmployeeManagerService() {
 		return employeeManagerService;
@@ -981,7 +994,7 @@ public class DispatchProviderController extends JsonRpcController implements
 		return domainManagerService.saveVIRRecord(createDate, truckNumber, vendor, driver, createdBy, recordIssues);
 	}
 	
-	public boolean getRejectMaintenanceIssue(String id){
+	public boolean doRejectMaintenanceIssue(String id){
 		MaintenanceIssue issue = null;
 		try{
 			issue = domainManagerService.getMaintenanceIssue(id);
@@ -996,6 +1009,29 @@ public class DispatchProviderController extends JsonRpcController implements
 			return false;
 		}
 		return false;
+	}
+	
+	public String getTruckVendorInfo(String truckNumber){
+		String vendorName = "";
+		try{
+			Asset asset = getAssetManagerService().getAssetByAssetNumber(truckNumber);
+			if(asset != null){
+				Set assetAttributes = asset.getAssetAttributes();
+				if(assetAttributes != null && assetAttributes.size() > 0){
+					Iterator<AssetAttribute> itr = assetAttributes.iterator();
+					while(itr.hasNext()){
+						AssetAttribute attribute = itr.next();
+						if("Vendor".equalsIgnoreCase(attribute.getId().getAttributeType())){
+							vendorName = attribute.getAttributeValue();
+							break;
+						}						
+					}
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return vendorName;
 	}
 	
 }
