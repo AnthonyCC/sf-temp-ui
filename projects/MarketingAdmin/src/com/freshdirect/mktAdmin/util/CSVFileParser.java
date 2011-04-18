@@ -96,11 +96,11 @@ public class CSVFileParser implements FileParser {
                        
                        model.setCustomerId(nextLine[0]);                                              
 	                                                                                                                           
-                       model.setCustEmailAddress(nextLine[1]);
+                       //model.setCustEmailAddress(nextLine[1]);
 	                                                                                                                           
-                       model.setFirstName(nextLine[2]);
+                       //model.setFirstName(nextLine[2]);
                                                                              
-                       model.setLastName(nextLine[3]);
+                       //model.setLastName(nextLine[3]);
                        
                        model.setPromotionId(promotionId);
 	                       
@@ -118,7 +118,7 @@ public class CSVFileParser implements FileParser {
 
     public void validateRestrictedCustomerCSVFileColumns(String  columnNames[]) throws MktAdminApplicationException{
    	 System.out.println("validateCSVFileColumns :"+columnNames);    	 
-   	 if(columnNames.length<4){
+   	 if(columnNames.length == 0){
    		throw new MktAdminApplicationException("118",new String[]{"4"});
    	 }
         
@@ -126,7 +126,8 @@ public class CSVFileParser implements FileParser {
         if(!FILE_COLUMN_HEADER[0].equalsIgnoreCase(columnNames[0])){
        	 throw new MktAdminApplicationException("119",new String[]{"First",FILE_COLUMN_HEADER[0]});
         }
-        
+       
+        /*
         System.out.println("nameCell.getStringCellValue()"+columnNames[1]);
         if(!FILE_COLUMN_HEADER[1].equalsIgnoreCase(columnNames[1])){
        	 throw new MktAdminApplicationException("119",new String[]{"Second",FILE_COLUMN_HEADER[1]});
@@ -139,6 +140,7 @@ public class CSVFileParser implements FileParser {
         if(!FILE_COLUMN_HEADER[3].equalsIgnoreCase(columnNames[3])){
        	 throw new MktAdminApplicationException("119",new String[]{"Fourth",FILE_COLUMN_HEADER[3]});
         }
+        */
    }
 
 	public static void main(String args[]){
