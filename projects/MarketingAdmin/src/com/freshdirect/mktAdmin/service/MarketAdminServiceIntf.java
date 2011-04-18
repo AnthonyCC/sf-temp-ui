@@ -18,6 +18,8 @@ public interface MarketAdminServiceIntf {
 	
 	public void addCompetitorInformation(Collection collection) throws MktAdminApplicationException;
 	
+	public void newAddPromoRestrictedCustomers(Collection collection) throws MktAdminApplicationException;
+	
 	public Collection getCompetitorInformation() throws MktAdminApplicationException;
 	
 	public CompetitorAddressModel getCompetitorInformation(String competitorId) throws MktAdminApplicationException;
@@ -39,4 +41,8 @@ public interface MarketAdminServiceIntf {
 	public String generateRestrictedCustomerFileContents(String promotionCode,EnumFileType fileType) throws MktAdminApplicationException;
 	
 	public void deleteRestrictionCustomer(String promotionCode) throws MktAdminApplicationException;
+	
+	public void  newDeletePromoRestrictedCustomers(Collection collection) throws MktAdminApplicationException;
+	
+	public void newReplacePromoRestrictedCustomers(Collection collection) throws MktAdminApplicationException;
 }

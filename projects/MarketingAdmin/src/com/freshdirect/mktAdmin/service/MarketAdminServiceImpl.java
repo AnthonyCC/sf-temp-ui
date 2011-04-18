@@ -150,7 +150,8 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 		
 		public void addPromoRestrictedCustomers(Collection collection)
 		throws MktAdminApplicationException {
-			// TODO Auto-generated method stub			
+			// TODO Auto-generated method stub
+			long t1 = System.currentTimeMillis();
 			List filteredList=new ArrayList();
 			List mergedList=new ArrayList();
 			List invalidMergeList=new ArrayList();
@@ -216,6 +217,8 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 					throw new MktAdminApplicationException(exceptionList);	
 				}
 				
+				long t2 = System.currentTimeMillis();
+				LOGGER.info("Time taken to complete addPromoRestrictedCustomers:" + (t2 - t1));
 				
 			} 
 			catch (SQLException e) {			
@@ -516,16 +519,16 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 					LOGGER.debug("rBean.getPromotionCode() :"+rBean.getPromotionCode());
 					if(EnumListUploadActionType.ADD==rBean.getActionType()){
 						LOGGER.debug("ADDING THE RESTRICTIONS" );
-						addPromoRestrictedCustomers(collection);
+						newAddPromoRestrictedCustomers(collection);
 					}else if(EnumListUploadActionType.DELETE==rBean.getActionType()){
 						LOGGER.debug("DELETING THE RESTRICTIONS" );
-						deletePromoRestrictedCustomers(collection);
+						newDeletePromoRestrictedCustomers(collection);
 					}else if(EnumListUploadActionType.REPLACE==rBean.getActionType()){
 						LOGGER.debug("REPLACING THE RESTRICTIONS" );
-						replacePromoRestrictedCustomers(collection);
+						newReplacePromoRestrictedCustomers(collection);
 					}else if(EnumListUploadActionType.CREATE==rBean.getActionType()){
 						LOGGER.debug("CREATINGATING THE RESTRICTIONS" );
-						createPromoRestrictedCustomers(collection);
+						newReplacePromoRestrictedCustomers(collection);
 					}
 				}
 			}
@@ -796,5 +799,66 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 				LOGGER.warn("catching the database error");
 				throw new MktAdminSystemException("1002",e);
 			}			
+		}
+		
+		public void newAddPromoRestrictedCustomers(Collection collection) throws MktAdminApplicationException {
+			long t1 = System.currentTimeMillis();
+			try {						
+				LOGGER.debug(" List size at the begining:"+collection.size());
+				
+				if(collection.size()>0)
+				     mktAdminDAOImpl.newInsertRestrictedCustomers(collection);
+				
+				long t2 = System.currentTimeMillis();
+				LOGGER.info("Time taken to complete newaddPromoRestrictedCustomers:" + (t2 - t1));
+				
+			} 
+			catch (Exception e) {			
+				LOGGER.error("Error adding new promo restriction list", e);
+			}
+		}
+		
+		public void newDeletePromoRestrictedCustomers(Collection collection) throws MktAdminApplicationException {
+			long t1 = System.currentTimeMillis();
+			try {						
+				LOGGER.debug(" List size at the begining:"+collection.size());
+				
+				if(collection.size()>0)
+				     mktAdminDAOImpl.deleteRestrictedCustomers(collection);
+				
+				long t2 = System.currentTimeMillis();
+				LOGGER.info("Time taken to complete newDeletePromoRestrictedCustomers:" + (t2 - t1));
+				
+			} 
+			catch (Exception e) {			
+				LOGGER.error("Error in newAddPromoRestrictedCustomers", e);
+			}
+		}
+		
+		public void newReplacePromoRestrictedCustomers(Collection collection) throws MktAdminApplicationException {
+			long t1 = System.currentTimeMillis();
+			String promotionId=null;
+			try {						
+				LOGGER.debug(" List size at the begining:"+collection.size());
+				// delete all the restriction for the promotion
+				
+				Iterator iterator=collection.iterator();
+				if(iterator.hasNext())
+				{
+					RestrictedPromoCustomerModel model=(RestrictedPromoCustomerModel)iterator.next();
+					promotionId=model.getPromotionId();
+					
+				}
+				//mktAdminDAOImpl.deleteRestrictedCustomerForPromotion(promotionId);
+				
+				mktAdminDAOImpl.newInsertRestrictedCustomers(collection);
+				
+				long t2 = System.currentTimeMillis();
+				LOGGER.info("Time taken to complete newReplacePromoRestrictedCustomers:" + (t2 - t1));
+				
+			} 
+			catch (Exception e) {			
+				LOGGER.error("Error in newReplacePromoRestrictedCustomers", e);
+			}
 		}
 }
