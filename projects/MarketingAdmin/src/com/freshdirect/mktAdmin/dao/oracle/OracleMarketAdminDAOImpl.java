@@ -433,6 +433,35 @@ public  class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 		batchUpdater.flush();			
 		LOGGER.debug("Data is inserted");		
 	}
+	
+	private static final String INSERT_RESTRICTED_CUSTOMER=
+			"insert into cust.promo_Customer(CUSTOMER_ID,PROMOTION_ID) " +
+				"select ID, ? " +
+				"from   cust.customer c " +
+				"where  c.ID = ? " +
+				"and    not exists (select 1 from cust.promo_customer " +
+									"where promotion_id = ? " +
+									"and customer_id = c.ID)";
+	
+	public void newInsertRestrictedCustomers(Collection restCustomerModel) throws SQLException {
+		BatchSqlUpdate batchUpdater=new BatchSqlUpdate(this.jdbcTemplate.getDataSource(),INSERT_RESTRICTED_CUSTOMER);		
+		batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+		batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+		batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+		
+		batchUpdater.compile(); 
+		
+		Iterator iterator=restCustomerModel.iterator();
+		while(iterator.hasNext()){			
+			RestrictedPromoCustomerModel model=(RestrictedPromoCustomerModel)iterator.next();
+			LOGGER.debug("customer Id :"+model.getCustomerId()+" promotionId :"+model.getPromotionId());
+			batchUpdater.update(
+			new Object[]{ model.getPromotionId(), model.getCustomerId(),  model.getPromotionId()}
+			);			
+		}
+		batchUpdater.flush();			
+		LOGGER.debug("Data is inserted");		
+	}
 
 	private static final String DELETE_RESTRICTION_BATCH_QRY="delete from cust.promo_customer where customer_id=? and promotion_id=?";
 	
