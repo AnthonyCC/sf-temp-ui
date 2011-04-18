@@ -720,6 +720,12 @@ public class FourMinuteMealsHelper {
 				newCache.filterInfos.put( prId, new FilterInfo( "Under $" + (int)priceLimits[i++], 1 ) );
 			}
 		}
+		// add one extra price filter which is over the max price (explicitly requested to work this way)
+		if ( i < defaultPriceFilterIds.size() ) {
+			String prId = defaultPriceFilterIds.get( i );
+			newCache.priceFilterIds.add( prId );
+			newCache.filterInfos.put( prId, new FilterInfo( "Under $" + (int)priceLimits[i], 1 ) );
+		}
 
 		// count items for nutrition
 		for ( EnumClaimValue claim : nutritionClaims ) {
