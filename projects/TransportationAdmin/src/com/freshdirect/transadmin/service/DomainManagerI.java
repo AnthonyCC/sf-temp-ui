@@ -10,6 +10,7 @@ import org.springframework.dao.DataAccessException;
 import com.freshdirect.customer.ErpTruckMasterInfo;
 import com.freshdirect.transadmin.model.DispositionType;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
+import com.freshdirect.transadmin.model.IssueLog;
 import com.freshdirect.transadmin.model.IssueSubType;
 import com.freshdirect.transadmin.model.IssueType;
 import com.freshdirect.transadmin.model.MaintenanceIssue;
@@ -146,15 +147,21 @@ public interface DomainManagerI extends BaseManagerI {
 	
 	IssueType getIssueTypeById(String id);
 	
+	IssueSubType getIssueSubType(String issueSubTypeName);
+	
 	Collection getIssueSubTypes();
 	
 	Collection getVIRRecords();
 	
-	Collection getVIRRecords(String createDate, String enteredBy,String truckNumber);
+	Collection getVIRRecords(String createDate, String truckNumber);
 	
 	VIRRecord getVIRRecord(String id);
 	
-	Collection getMaintenanceIssue(String truckNumber, IssueType issueType, IssueSubType issueSubType);
+	String saveVIRRecord(String createDate, String truckNumber, String vendor
+			, String driver, String createdBy
+			, String[][] recordIssues);
+	
+	Collection getMaintenanceIssue(String truckNumber, String issueType, String issueSubType);
 	
 	Collection getMaintenanceIssue(IssueType issueType, IssueSubType issueSubType);
 	

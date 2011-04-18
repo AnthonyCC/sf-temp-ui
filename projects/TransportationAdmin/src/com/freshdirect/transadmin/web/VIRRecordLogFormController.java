@@ -3,37 +3,23 @@ package com.freshdirect.transadmin.web;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.freshdirect.framework.util.StringUtil;
-import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
-import com.freshdirect.routing.util.RoutingServicesProperties;
-import com.freshdirect.transadmin.model.EmployeeInfo;
-import com.freshdirect.transadmin.model.MaintenanceIssue;
-import com.freshdirect.transadmin.model.Plan;
-import com.freshdirect.transadmin.model.Zone;
+
 import com.freshdirect.transadmin.service.AssetManagerI;
-import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
-import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
 import com.freshdirect.transadmin.util.EnumResourceType;
-import com.freshdirect.transadmin.util.MaintenanceLogUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
-import com.freshdirect.transadmin.util.WaveUtil;
 import com.freshdirect.transadmin.model.VIRRecord;
 
 public class VIRRecordLogFormController extends AbstractFormController {
@@ -135,11 +121,7 @@ public class VIRRecordLogFormController extends AbstractFormController {
 	}
 
 	public List saveDomainObject(HttpServletRequest request, Object command) {
-
-		VIRRecord model = (VIRRecord)command;
-		List errorList = new ArrayList();
-		errorList = MaintenanceLogUtil.processVIRRecord(errorList, model, domainManagerService);
-				
+		List errorList = new ArrayList();				
 		return errorList;
 	}		
 

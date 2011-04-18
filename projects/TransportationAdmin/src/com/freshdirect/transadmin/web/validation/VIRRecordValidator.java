@@ -17,7 +17,7 @@ public class VIRRecordValidator extends AbstractValidator {
 		ValidationUtils.rejectIfEmpty(errors, "truckNumber", "app.error.112", new Object[]{"Truck Number"},"required");
 		ValidationUtils.rejectIfEmpty(errors, "issueType", "app.error.112", new Object[]{"Issue Type"},"required");
 		ValidationUtils.rejectIfEmpty(errors, "issueSubType", "app.error.112", new Object[]{"Issue SubType"},"required");	
-		validateLength("comments", model.getComments(), 256, errors);
+		//validateLength("comments", model.getComments(), 256, errors);
 	}
 	
 }

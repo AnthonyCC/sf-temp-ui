@@ -1,5 +1,6 @@
 package com.freshdirect.transadmin.service.impl;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,17 +15,21 @@ import java.util.TreeSet;
 
 import org.apache.log4j.Category;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.customer.ErpTruckMasterInfo;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumBalanceBy;
+import com.freshdirect.transadmin.constants.EnumIssueStatus;
+import com.freshdirect.transadmin.constants.EnumServiceStatus;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.DomainManagerDaoI;
 import com.freshdirect.transadmin.dao.ZoneExpansionDaoI;
 import com.freshdirect.transadmin.datamanager.model.WorkTableModel;
 import com.freshdirect.transadmin.model.DispositionType;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
+import com.freshdirect.transadmin.model.IssueLog;
 import com.freshdirect.transadmin.model.IssueSubType;
 import com.freshdirect.transadmin.model.IssueType;
 import com.freshdirect.transadmin.model.MaintenanceIssue;
@@ -831,6 +836,10 @@ public class DomainManagerImpl
 		return getDomainManagerDao().getIssueTypeById(id);
 	}
 	
+	public IssueSubType getIssueSubType(String issueSubTypeName){
+		return getDomainManagerDao().getIssueSubType(issueSubTypeName);
+	}
+	
 	public Collection getIssueSubTypes(){
 		return getDomainManagerDao().getIssueSubTypes();
 	}
@@ -839,16 +848,15 @@ public class DomainManagerImpl
 		return getDomainManagerDao().getVIRRecords();
 	}
 	
-	public Collection getVIRRecords(String createDate, String enteredBy,
-			String truckNumber){
-		return getDomainManagerDao().getVIRRecords(createDate, enteredBy, truckNumber);
+	public Collection getVIRRecords(String createDate, String truckNumber){
+		return getDomainManagerDao().getVIRRecords(createDate, truckNumber);
 	}
 	
 	public VIRRecord getVIRRecord(String id){
 		return getDomainManagerDao().getVIRRecord(id);
 	}
 	
-	public Collection getMaintenanceIssue(String truckNumber, IssueType issueTypeId, IssueSubType issueSubTypeId){
+	public Collection getMaintenanceIssue(String truckNumber, String issueTypeId, String issueSubTypeId){
 		return getDomainManagerDao().getMaintenanceIssue(truckNumber, issueTypeId, issueSubTypeId);
 	}
 	
@@ -870,6 +878,83 @@ public class DomainManagerImpl
 	
 	public void saveMaintenanceIssue(MaintenanceIssue model){
 	    getDomainManagerDao().saveMaintenanceIssue(model);
+	}
+	
+	public String saveVIRRecord(String createDate, String truckNumber, String vendor
+			, String driver, String createdBy
+			, String[][] recordIssues){
+		String recordId = null;
+		try{
+			VIRRecord virRecord = new VIRRecord();
+			virRecord.setTruckNumber(truckNumber);
+			virRecord.setDriver(driver);
+			virRecord.setCreateDate(new Timestamp(System.currentTimeMillis()));
+			virRecord.setCreatedBy(createdBy);
+			virRecord.setVendor(vendor);
+			
+			Set<IssueLog> issueLogList = new HashSet<IssueLog>();
+			
+			if (recordIssues != null && recordIssues.length > 0) {
+				MaintenanceIssue _mIssue = null;
+				
+				for(int count = 0; count < recordIssues.length; count++){
+					IssueLog _issueLog = new IssueLog();
+					_issueLog.setIssueType(recordIssues[count][0]);
+					_issueLog.setIssueSubType(recordIssues[count][1]);
+					_issueLog.setDamageLocation(recordIssues[count][2]);
+					_issueLog.setIssueSide(recordIssues[count][3]);
+					_issueLog.setComments(TransStringUtil.isEmpty(recordIssues[count][4])? null : recordIssues[count][4]);
+					
+					if(_issueLog.getIssueType()!=null && _issueLog.getIssueSubType() != null){
+						if("No Issue".equalsIgnoreCase(_issueLog.getIssueType()) 
+								&& "No Issue".equalsIgnoreCase(_issueLog.getIssueSubType())){
+							//No maintenance Issue is logged
+						}else{
+							// Verify if any 'OPEN' Maintenance issue exists with the same
+							// truckNumber,IssueType and IssueSubType
+							Collection maintenanceIssues = domainManagerDao
+																.getMaintenanceIssue(truckNumber,_issueLog.getIssueType(),_issueLog.getIssueSubType());
+							
+							if (maintenanceIssues != null && maintenanceIssues.size() > 0) {
+								for (Iterator<MaintenanceIssue> it = maintenanceIssues.iterator(); it.hasNext();) {
+									 _mIssue = it.next();
+								}							
+							} else {
+								_mIssue = new MaintenanceIssue();
+	
+								_mIssue.setTruckNumber(truckNumber);
+								_mIssue.setIssueType(_issueLog.getIssueType());
+								_mIssue.setIssueSubType(_issueLog.getIssueSubType());
+								_mIssue.setCreateDate(new Timestamp(System.currentTimeMillis()));
+								_mIssue.setCreatedBy(virRecord.getCreatedBy());
+								_mIssue.setComments(TransStringUtil.isEmpty(_issueLog.getComments())? null : _issueLog.getComments());
+								_mIssue.setDamageLocation(_issueLog.getDamageLocation());
+								_mIssue.setIssueSide(_issueLog.getIssueSide());
+								_mIssue.setModifiedDate(new Timestamp(System.currentTimeMillis()));
+								_mIssue.setVendor(virRecord.getVendor());
+								_mIssue.setServiceStatus(EnumServiceStatus.INSERVICE.getDescription());
+								_mIssue.setIssueStatus(EnumIssueStatus.OPEN.getName());
+								//Create new maintenance log
+								domainManagerDao.saveMaintenanceIssue(_mIssue);								
+							}
+						}						
+						_issueLog.setMaintenanceIssue(_mIssue);					
+						_issueLog.setVirRecord(virRecord);
+					}
+					issueLogList.add(_issueLog);					
+				}
+			}
+			virRecord.setVirRecordIssues(issueLogList);
+			if(virRecord != null){
+				recordId = domainManagerDao.saveVIRRecord(virRecord);
+			}
+		}catch(DataIntegrityViolationException ex){
+			ex.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+		
+		return recordId;
 	}
 	
 }

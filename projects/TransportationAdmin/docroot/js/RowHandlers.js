@@ -119,7 +119,7 @@ function rowHandlers(tableId, rowClassName, url, paramName, columnIndex, checkCo
 
 function addRowHandlersFilterTest(tableId, rowClassName, url, paramName, columnIndex, checkCol) {
 	   addHandlersFilterTest(tableId, rowClassName, url, paramName, columnIndex, checkCol, false);
-	}
+}
 
 	function addHandlersFilterTest(tableId, rowClassName, url, paramName, columnIndex, checkCol, needKeyPress) {
 		
@@ -149,6 +149,44 @@ function addRowHandlersFilterTest(tableId, rowClassName, url, paramName, columnI
 					      		var selectBox = this.parentNode.getElementsByTagName("input")[0];
 					      							      		
 					      		location.href = url+"?"+ paramName + "=" + selectBox.name+"&filter="+getFilterTestValue();			      		
+					    	};
+					    }
+			    	}
+			    	
+			    		    	
+		        }
+		    }
+		}
+	}
+
+	function addMultiParamRowHandlersFilter(tableId, rowClassName, url, paramName, columnIndex, checkCol, needKeyPress, param2Name, param2Value) {
+		
+		var previousClass = null;
+	    var table = document.getElementById(tableId);
+	    
+	    if(table != null) {
+		    var rows = table.tBodies[0].getElementsByTagName("tr");	 	       
+		    for (i = 0; i < rows.length; i++) {	    	
+		        var cells = rows[i].getElementsByTagName("td");
+		        
+		        for (j = 1; j < cells.length; j++) {
+		        	
+		            cells[j].onmouseover = function () {
+		            	previousClass = this.parentNode.className;
+		            	this.parentNode.className = this.parentNode.className + " " + rowClassName ;
+		            };
+		        
+		            cells[j].onmouseout = function () {
+		              	this.parentNode.className = previousClass;
+		            };
+		        
+		            if(checkCol == -1 || checkCol != j ) {
+						if(!(needKeyPress && (j == (cells.length-1)))) {	            
+					    	cells[j].onclick = function () {			    		
+					      		var cell = this.parentNode.getElementsByTagName("td")[columnIndex];
+					      		var selectBox = this.parentNode.getElementsByTagName("input")[0];
+					      							      		
+					      		location.href = url+"?"+ paramName + "=" + selectBox.name+"&"+param2Name+"="+param2Value+"&filter="+getFilterTestValue();			      		
 					    	};
 					    }
 			    	}

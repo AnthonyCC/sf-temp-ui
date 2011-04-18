@@ -16,6 +16,8 @@ public class EnumIssueStatus  extends Enum {
     
     public static final EnumIssueStatus REVERIFIED = new EnumIssueStatus("Re-Verified","RE-VERIFIED");
     
+    public static final EnumIssueStatus REJECTED = new EnumIssueStatus("Rejected","REJECTED");
+    
     private final String description;
 
 	public EnumIssueStatus(String name, String description) {

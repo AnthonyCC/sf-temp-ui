@@ -2,6 +2,8 @@ package com.freshdirect.transadmin.model;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 
 import com.freshdirect.routing.service.exception.Issue;
@@ -11,70 +13,36 @@ import com.freshdirect.transadmin.web.model.BaseCommand;
 public class VIRRecord extends BaseCommand {
 	private String id;	
 	private String truckNumber;
-	private IssueType issueType;
-	private String issueTypeId;
-	private IssueSubType issueSubType;
-	private String issueSubTypeId;
 	private String vendor;
-	private Date createDate;
-	private String damageLocation;
-	private String issueSide;
-	private String comments;
+	private Date createDate;	
 	private String createdBy;
 	private EmployeeInfo reportingDriver;
 	private String driver;
-	private MaintenanceIssue maintenanceIssue;
-	private String subTypeId;
+		
+	private Set virRecordIssues = new HashSet(0);
 	
-	public String getSubTypeId() {
-		if(getIssueSubType() == null)
-			return null;
-		subTypeId = getIssueSubType().getIssueSubTypeId();	
-		return subTypeId;
-	}
+	public VIRRecord(){	}
 
-	public void setSubTypeId(String subTypeId) {
-		this.subTypeId = subTypeId;
-	}
-	
-	public String getIssueSide() {
-		return issueSide;
-	}
-
-	public void setIssueSide(String issueSide) {
-		this.issueSide = issueSide;
-	}
-	public MaintenanceIssue getMaintenanceIssue() {
-		return maintenanceIssue;
-	}
-
-	public void setMaintenanceIssue(MaintenanceIssue maintenanceIssue) {
-		this.maintenanceIssue = maintenanceIssue;
-	}
-
-	public VIRRecord(){
-
-	}
-
-	public VIRRecord(String id, String truckNumber,
-			IssueType issueType, IssueSubType issueSubType, String vendor,
-			Date createDate, String damageLocation, String issueSide,
-			String comments, String createdBy, EmployeeInfo reportingDriver,
-			String driver, MaintenanceIssue maintenanceIssue) {
+	public VIRRecord(String id, String truckNumber,IssueType issueType, IssueSubType issueSubType, String vendor,
+			Date createDate, String createdBy, EmployeeInfo reportingDriver,
+			String driver, MaintenanceIssue maintenanceIssue,Set virRecordIssues) {
 		super();
 		this.id = id;		
-		this.truckNumber = truckNumber;
-		this.issueType = issueType;
-		this.issueSubType = issueSubType;
+		this.truckNumber = truckNumber;		
 		this.vendor = vendor;
-		this.createDate = createDate;
-		this.damageLocation = damageLocation;
-		this.issueSide = issueSide;
-		this.comments = comments;
+		this.createDate = createDate;		
 		this.createdBy = createdBy;
 		this.reportingDriver = reportingDriver;
 		this.driver = driver;
-		this.maintenanceIssue = maintenanceIssue;
+		this.virRecordIssues = virRecordIssues;
+	}
+
+	public Set getVirRecordIssues() {
+		return virRecordIssues;
+	}
+
+	public void setVirRecordIssues(Set virRecordIssues) {
+		this.virRecordIssues = virRecordIssues;
 	}
 
 	public String getDriver() {
@@ -93,22 +61,6 @@ public class VIRRecord extends BaseCommand {
 		this.truckNumber = truckNumber;
 	}
 
-	public IssueType getIssueType() {
-		return issueType;
-	}
-
-	public void setIssueType(IssueType issueType) {
-		this.issueType = issueType;
-	}
-
-	public IssueSubType getIssueSubType() {
-		return issueSubType;
-	}
-
-	public void setIssueSubType(IssueSubType issueSubType) {
-		this.issueSubType = issueSubType;
-	}
-
 	public String getVendor() {
 		return vendor;
 	}
@@ -124,23 +76,7 @@ public class VIRRecord extends BaseCommand {
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
 	}
-
-	public String getDamageLocation() {
-		return damageLocation;
-	}
-
-	public void setDamageLocation(String damageLocation) {
-		this.damageLocation = damageLocation;
-	}
-
-	public String getComments() {
-		return comments;
-	}
-
-	public void setComments(String comments) {
-		this.comments = comments;
-	}
-
+	
 	public String getCreatedBy() {
 		return createdBy;
 	}
@@ -163,39 +99,7 @@ public class VIRRecord extends BaseCommand {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-	
-	public String getIssueTypeId() {
-		if(getIssueType() == null)
-			return null;
-		return getIssueType().getIssueTypeId();
-	}
-
-	public void setIssueTypeId(String issueTypeId) {
-		if("".equals(issueTypeId)){
-			setIssueType(null);
-		}else{
-			IssueType sType = new IssueType();
-			sType.setIssueTypeId(issueTypeId);
-			setIssueType(sType);
-		}
-	}
-
-	public String getIssueSubTypeId() {
-		if(getIssueSubType() == null)
-			return null;
-		return getIssueSubType().getIssueSubTypeId();
-	}
-
-	public void setIssueSubTypeId(String issueSubTypeId) {
-		if("".equals(issueSubTypeId)){
-			setIssueSubType(null);
-		}else{
-			IssueSubType subType = new IssueSubType();
-			subType.setIssueSubTypeId(issueSubTypeId);
-			setIssueSubType(subType);
-		}
-	}
+	}	
 	
 	public String getCreatedDate(){
 		String date = "";

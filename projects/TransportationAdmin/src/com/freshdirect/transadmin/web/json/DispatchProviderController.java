@@ -34,6 +34,8 @@ import com.freshdirect.routing.service.IDeliveryService;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
 import com.freshdirect.routing.util.RoutingServicesProperties;
+import com.freshdirect.transadmin.constants.EnumIssueStatus;
+import com.freshdirect.transadmin.constants.EnumServiceStatus;
 import com.freshdirect.transadmin.datamanager.report.ICommunityReport;
 import com.freshdirect.transadmin.datamanager.report.XlsCommunityReport;
 import com.freshdirect.transadmin.model.Dispatch;
@@ -41,8 +43,10 @@ import com.freshdirect.transadmin.model.DispatchReason;
 import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.DlvScenarioZones;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
+import com.freshdirect.transadmin.model.IssueLog;
 import com.freshdirect.transadmin.model.IssueSubType;
 import com.freshdirect.transadmin.model.IssueType;
+import com.freshdirect.transadmin.model.MaintenanceIssue;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.RouteMapping;
 import com.freshdirect.transadmin.model.ScenarioZonesId;
@@ -52,6 +56,7 @@ import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
 import com.freshdirect.transadmin.model.UserPref;
+import com.freshdirect.transadmin.model.VIRRecord;
 import com.freshdirect.transadmin.model.WaveInstancePublish;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.model.ZoneSupervisor;
@@ -941,14 +946,13 @@ public class DispatchProviderController extends JsonRpcController implements
 	}
 	
 
-	public List<IssueSubTypeCommand> getIssueSubTypes(String issueTypeId) {
+	public List<IssueSubTypeCommand> getIssueSubTypes(String issueTypeName) {
 		List<IssueSubType> issueSubTypes = null;
 		List<IssueSubTypeCommand> result = new ArrayList<IssueSubTypeCommand>();
 		try {
-			IssueType _issueType = new IssueType();
-			if (!TransStringUtil.isEmpty(issueTypeId)) {		
+			if (!TransStringUtil.isEmpty(issueTypeName)) {		
 
-				IssueType issueType = domainManagerService.getIssueTypeById(issueTypeId);
+				IssueType issueType = domainManagerService.getIssueType(issueTypeName.trim());
 
 				if (issueType != null)
 					issueSubTypes = new ArrayList<IssueSubType>(issueType.getIssueSubTypes());
@@ -970,5 +974,28 @@ public class DispatchProviderController extends JsonRpcController implements
 		return null;
 	}
 	
+	public String saveVIRRecord(String createDate, String truckNumber, String vendor
+			, String driver, String createdBy
+			, String[][] recordIssues) {
+		
+		return domainManagerService.saveVIRRecord(createDate, truckNumber, vendor, driver, createdBy, recordIssues);
+	}
+	
+	public boolean getRejectMaintenanceIssue(String id){
+		MaintenanceIssue issue = null;
+		try{
+			issue = domainManagerService.getMaintenanceIssue(id);
+			if(issue != null){
+				issue.setIssueStatus(EnumIssueStatus.REJECTED.getName());
+				issue.setServiceStatus(EnumServiceStatus.INSERVICE.getDescription());
+				domainManagerService.saveEntity(issue);
+				return true;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return false;
+	}
 	
 }

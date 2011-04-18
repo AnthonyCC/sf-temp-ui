@@ -72,7 +72,8 @@
 				<value>com/freshdirect/transadmin/model/DeliveryGroup.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/IssueType.hbm.xml</value>		
 				<value>com/freshdirect/transadmin/model/IssueSubType.hbm.xml</value>
-				<value>com/freshdirect/transadmin/model/VIRRecord.hbm.xml</value>		
+				<value>com/freshdirect/transadmin/model/VIRRecord.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/IssueLog.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/MaintenanceIssue.hbm.xml</value>													
             </list>
         </property>

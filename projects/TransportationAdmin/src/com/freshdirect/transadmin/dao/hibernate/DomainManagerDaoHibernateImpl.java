@@ -16,10 +16,12 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 
 import com.freshdirect.transadmin.dao.DomainManagerDaoI;
 import com.freshdirect.transadmin.model.Asset;
+import com.freshdirect.transadmin.model.AssetAttribute;
 import com.freshdirect.transadmin.model.DispositionType;
 import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
 import com.freshdirect.transadmin.model.EmployeeSubRoleType;
+import com.freshdirect.transadmin.model.IssueLog;
 import com.freshdirect.transadmin.model.IssueSubType;
 import com.freshdirect.transadmin.model.IssueType;
 import com.freshdirect.transadmin.model.MaintenanceIssue;
@@ -351,6 +353,11 @@ public class DomainManagerDaoHibernateImpl
 		return (IssueType)getEntityById("IssueType", "issueTypeId", issueTypeId);
 	}
 	
+	public IssueSubType getIssueSubType(String issueSubTypeName) throws DataAccessException {
+
+		return (IssueSubType)getEntityById("IssueSubType", "issueSubTypeName", issueSubTypeName);
+	}
+	
 	public Collection getIssueSubTypes() throws DataAccessException {
 
 		return getDataList("IssueSubType Order By issueSubTypeName");
@@ -361,19 +368,14 @@ public class DomainManagerDaoHibernateImpl
 		return getDataList("VIRRecord Order By createDate desc");
 	}
 	
-	public Collection getVIRRecords(String createDate, String enteredBy,
-			String truckNumber) throws DataAccessException {
+	public Collection getVIRRecords(String createDate, String truckNumber) throws DataAccessException {
 		
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from VIRRecord v where");
 				
 		if (createDate != null && !createDate.equals(""))
-			strBuf.append(" v.createDate='").append(createDate).append("'");
-		if(!createDate.equals("") && !enteredBy.equals(""))
-			strBuf.append(" and");
-		if (enteredBy != null && !enteredBy.equals(""))
-			strBuf.append(" v.createdBy='").append(enteredBy).append("'");
-		if(!truckNumber.equals("") && !enteredBy.equals(""))
+			strBuf.append(" v.createDate='").append(createDate).append("'");		
+		if(!truckNumber.equals("") && !createDate.equals(""))
 			strBuf.append(" and");
 		if (truckNumber != null && !truckNumber.equals(""))
 			strBuf.append(" v.truckNumber='").append(truckNumber).append("'");		
@@ -386,7 +388,7 @@ public class DomainManagerDaoHibernateImpl
 		return (VIRRecord)getEntityById("VIRRecord", "id", id);
 	}
 	
-	public Collection getMaintenanceIssue(String truckNumber, IssueType issueType, IssueSubType issueSubType) throws DataAccessException {
+	public Collection getMaintenanceIssue(String truckNumber, String issueType, String issueSubType) throws DataAccessException {
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from MaintenanceIssue m ");
 		if(truckNumber != null && issueType !=null && issueSubType != null){
@@ -439,6 +441,26 @@ public class DomainManagerDaoHibernateImpl
 		}else{
 			saveEntity(command);		
 		}		
+	}
+	
+	public String saveVIRRecord(VIRRecord virRecord){
+				
+		if (virRecord.getId() == null || "".equals(virRecord.getId())) {
+			Set attributes = virRecord.getVirRecordIssues();
+			virRecord.setVirRecordIssues(null);
+			getHibernateTemplate().save(virRecord);
+			if (attributes != null && attributes.size() > 0) {
+				Iterator it = attributes.iterator();
+				while (it.hasNext()) {
+					IssueLog log = (IssueLog) it.next();
+					log.setVirRecord(virRecord);
+				}
+			}
+			virRecord.setVirRecordIssues(attributes);
+			saveEntityList(virRecord.getVirRecordIssues());
+
+		} 
+		return virRecord.getId();
 	}
 
 }

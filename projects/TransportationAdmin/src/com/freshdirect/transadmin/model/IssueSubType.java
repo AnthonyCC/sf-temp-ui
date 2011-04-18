@@ -107,6 +107,13 @@ public class IssueSubType implements java.io.Serializable {
 		return "";
 	}
 	
+	public boolean isStatus() {
+		if(this.getIsActive() == 1)
+			return true;
+		else
+			return false;
+	}
+	
 	public String toString(){
 		return this.issueSubTypeId;
 	}

@@ -39,8 +39,10 @@ public class FDIssueStatusCell extends FDBaseCell  {
         		columnBuilder.getHtmlBuilder().img("images/icons/v-icon.gif");
         	}else if(cellValue != null && EnumIssueStatus.REVERIFIED.getName().equals(cellValue)) {
         		columnBuilder.getHtmlBuilder().img("images/icons/rv-icon.gif");
-        	} else {        	
+        	}else if(cellValue != null && EnumIssueStatus.RESOLVED.getName().equals(cellValue)) {
         		columnBuilder.getHtmlBuilder().img("images/icons/r-icon.gif");
+        	}else {        	
+        		columnBuilder.getHtmlBuilder().img("images/icons/i-icon.gif");
         	}       	
         	
         } catch (Exception e) {e.printStackTrace();}

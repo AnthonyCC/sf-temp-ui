@@ -1,0 +1,116 @@
+<%@ include file='/common/i_calendar.jspf'%> 
+<script>
+            
+      var editAssetAttributePanel;
+      var jsonrpcClient = new JSONRpcClient("asset.ax");
+	  var errColor = "#FF0000";
+	  var msgColor = "#00FF00";
+                                 
+      function init() {
+        editAssetAttributePanel = new YAHOO.widget.Panel("assetAttributePanel-1", {       
+                          width: "400px", 
+                          fixedcenter: true, 
+                          close: true, 
+                          draggable: false, 
+                          zindex:4,
+                          modal: true,
+                          visible: false,
+                          effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
+	}
+
+     function showAssetAttributeForm() {
+          addSysMessage("", false);
+          editAssetAttributePanel.render(document.body);
+          editAssetAttributePanel.show();
+     }
+             
+      function sendAssetAttributeForm() {
+      	  
+    	  var _assetType = YAHOO.util.Dom.get("assetType").value;
+	  var _attributeCode = YAHOO.util.Dom.get("attributeCode").value;
+	  var _attributeDescription = YAHOO.util.Dom.get("attributeDescription").value;
+	  var _attributeDataType = YAHOO.util.Dom.get("attributeDataType").value;
+	
+
+	  if(_assetType.trim().length == 0 || _attributeCode.trim().length == 0 || _attributeDescription.trim().length == 0 || _attributeDataType.trim().length == 0) {
+      	  	addSysMessage("Please enter/choose the required values", true);
+      	  } else {
+	    	var result = jsonrpcClient.AsyncAssetProvider.addAssetAttribute(assetAttributeFormCallback, _assetType ,_attributeCode,_attributeDescription,_attributeDataType);
+	  }
+      }
+      
+      function addSysMessage(msg, isError) {
+      		var errContObj = YAHOO.util.Dom.get("errContainer");
+		    if(isError) {
+		    	errContObj.style.color = errColor;
+	      	} else {
+	      		errContObj.style.color = msgColor;
+	      	}
+	      	errContObj.style.fontWeight="bold";
+      		YAHOO.util.Dom.get("errContainer").innerHTML = msg;
+      }
+      
+      function assetAttributeFormCallback(result, exception) {
+      	  
+          if(exception) {               
+              alert('Unable to connect to host system. Please contact system administrator!');               
+              return;
+          }
+          if(result) {
+          	addSysMessage("Asset Attribute added successfully", false);
+          	editAssetAttributePanel.hide();
+          	location.href = location.href;
+          }else {
+          	addSysMessage("Asset Attribute failed to add", true);
+          }                           
+      }
+      
+      function hideForm() { 
+      	  YAHOO.util.Dom.get("errContainer").value = "";
+      	  editAssetAttributePanel.hide();
+      }
+      
+      YAHOO.util.Event.addListener(window, "load", init);
+      YAHOO.util.Event.addListener(window, "unload", hideForm);
+    </script>
+   
+  <div style='display:none;height:0px;width:0px;'>
+      <div id="assetAttributePanel-1">
+      <div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />&nbsp;&nbsp;&nbsp;Add Asset Attribute</div>
+      <div class="bd">
+      	<div id="errContainer"></div>
+      	<div style="background-color:#D7C8FF">
+	      	<table class="forms1">
+		      	<tr>
+		                  <td>Asset Type</td>
+		                  <td>
+		                  	<select id="assetType" name="assetType" >
+		                  		<option value="<c:out value=""/>">--Please Select</option>
+						 <c:forEach var="aType" items="${assetTypes}">
+						 	<option value="<c:out value="${aType.code}"/>"><c:out value="${aType.code}"/></option>
+			        		</c:forEach>
+					</select>
+	                    	 </td>
+		        </tr>
+			<tr>
+		              <td>Code</td>
+		              <td>
+		                 <input type="text" size="30" id="attributeCode" value="" />
+			      </td>
+		         </tr>
+			 <tr>
+		                  <td>Description</td>
+		                  <td><input type="text" size="30" id="attributeDescription" value="" /></td> 
+		         </tr>
+			 <tr>
+		                  <td>Data Type</td>
+		                  <td><input type="text" size="30" id="attributeDataType" value=""/></td> 
+		         </tr>
+		         <tr>
+		                  <td colspan="2" align="center"><input type="button" value="Add/Update" onclick="javascript:sendAssetAttributeForm()" /> </td>
+		         </tr>
+		      </table>
+	      </div>      
+        </div>
+    </div>
+    </div>

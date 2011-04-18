@@ -25,12 +25,12 @@
         <property name="vendor" type="string">
             <column name="VENDORNAME" />
         </property>
-        <many-to-one name="issueType" class="com.freshdirect.transadmin.model.IssueType" fetch="select" lazy="false">
-            <column name="ISSUETYPE" length="10" not-null="true"/>
-        </many-to-one>       
-        <many-to-one name="issueSubType" class="com.freshdirect.transadmin.model.IssueSubType" fetch="select" lazy="false">
-            <column name="ISSUESUBTYPE" length="10" not-null="true"/>
-        </many-to-one>    
+       	<property name="issueType" type="string">
+            <column name="ISSUETYPE" length="45" />
+        </property> 
+        <property name="issueSubType" type="string">
+            <column name="ISSUESUBTYPE" length="45" />
+        </property>      
          <property name="comments" type="string">
             <column name="COMMENTS" />
         </property>        

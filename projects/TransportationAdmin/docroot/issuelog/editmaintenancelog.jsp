@@ -5,14 +5,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <% 
 	String pageTitle = "";
-	String recordType = request.getParameter("recordType");
-	String pageType = request.getParameter("pageType");
-	if((recordType == null) || ("V".equalsIgnoreCase(recordType))) {
+	String issueLog = request.getParameter("issueLog");
+	if((issueLog == null) || ("V".equalsIgnoreCase(issueLog))) {
 		pageTitle = "VIR Record";
-	}else if("M".equalsIgnoreCase(recordType)) {
+	}else if("M".equalsIgnoreCase(issueLog)) {
 		pageTitle = "Maintenance Record";
 	}
-	
 %>
 
 <tmpl:insert template='/common/sitelayout.jsp'>
@@ -27,45 +25,44 @@
 		<script src="js/jsonrpc.js" language="javascript" type="text/javascript"></script>
 		<script src="js/maintenancelog.js" language="javascript" type="text/javascript"></script>
 
-		<div class="MNM001 subsub or_999">
+<div class="MNM001 subsub or_999">
 		<div class="subs_left">	
-			<div class="sub_tableft sub_tabL_MNM001 <% if(pageType == null && !"M".equalsIgnoreCase(request.getParameter("recordType"))&&!"C".equalsIgnoreCase(request.getParameter("recordType"))) { %>activeL<% } %>">&nbsp;</div>
+			<div class="sub_tableft sub_tabL_MNM001 <% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog"))
+			&&!"S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
 			
-			<div class="subtab <% if(pageType == null && !"M".equalsIgnoreCase(request.getParameter("recordType"))&&!"C".equalsIgnoreCase(request.getParameter("recordType"))) { %>activeT<% } %>">
+			<div class="subtab <% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog")) &&!"S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeT<% } %>">
 				<div class="minwidth"><!-- --></div>
-				<a href="virrecordlog.do" class="<% if(pageType == null && !"M".equalsIgnoreCase(request.getParameter("recordType"))&&!"C".equalsIgnoreCase(request.getParameter("recordType"))) { %>MNM001<% } %>">VIR Record</a>
+				<a href="virrecordlog.do" class="<% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog")) &&!"S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM001<% } %>">VIR Record</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if(pageType == null && !"M".equalsIgnoreCase(request.getParameter("recordType"))&&!"C".equalsIgnoreCase(request.getParameter("recordType"))) { %>activeR<% } %>">&nbsp;</div>		
+			<div class="sub_tabright sub_tabR_MNM001 <% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog")) &&!"S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>		
 		
-			<div class="sub_tableft sub_tabL_MNM001 <% if(pageType == null && "M".equalsIgnoreCase(request.getParameter("recordType"))) { %>activeL<% } %>">&nbsp;</div>
-			<div class="subtab <% if(pageType == null && "M".equalsIgnoreCase(request.getParameter("recordType"))) { %>activeT<% } %>">
+			<div class="sub_tableft sub_tabL_MNM001 <% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
+			<div class="subtab <% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeT<% } %>">
 				<div class="minwidth"><!-- --></div>
-				<a href="maintenancelog.do?recordType=M" class="<% if(pageType == null && "M".equalsIgnoreCase(request.getParameter("recordType"))) { %>MNM001<% } %>">Maintenance Record</a>
+				<a href="maintenancelog.do?issueLog=M" class="<% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM001<% } %>">Maintenance Record</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if(pageType == null && "M".equalsIgnoreCase(request.getParameter("recordType"))) { %>activeR<% } %>">&nbsp;</div>
+			<div class="sub_tabright sub_tabR_MNM001 <% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>
 			
-		</div>
-		<div class="subs_right">
-			<div class="sub_tableft sub_tabL_MNM001 <% if("I".equalsIgnoreCase(request.getParameter("pageType"))) { %>activeL<% } %>">&nbsp;</div>
-			<div class="subtab <% if("I".equalsIgnoreCase(request.getParameter("pageType"))) { %>activeT<% } %>">
+			<div class="sub_tableft sub_tabL_MNM001 <% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
+			<div class="subtab <% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeT<% } %>">
 				<div class="minwidth"><!-- --></div>
-				<a href="virrecordlog.do?pageType=I" class="<% if("I".equalsIgnoreCase(request.getParameter("pageType"))) { %>MNM001<% } %>">Issue Type</a>
+				<a href="virrecordlog.do?issueLog=I" class="<% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM001<% } %>">Issue Type</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if("I".equalsIgnoreCase(request.getParameter("pageType"))) { %>activeR<% } %>">&nbsp;</div>
+			<div class="sub_tabright sub_tabR_MNM001 <% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>
 
-			<div class="sub_tableft sub_tabL_MNM001 <% if("S".equalsIgnoreCase(request.getParameter("pageType"))) { %>activeL<% } %>">&nbsp;</div>
-			<div class="subtab <% if("S".equalsIgnoreCase(request.getParameter("pageType"))) { %>activeT<% } %>">
+			<div class="sub_tableft sub_tabL_MNM001 <% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
+			<div class="subtab <% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeT<% } %>">
 				<div class="minwidth"><!-- --></div>
-				<a href="virrecordlog.do?pageType=S" class="<% if("S".equalsIgnoreCase(request.getParameter("pageType"))) { %>MNM001<% } %>">Issue SubType</a>
+				<a href="virrecordlog.do?issueLog=S" class="<% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM001<% } %>">Issue SubType</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if("S".equalsIgnoreCase(request.getParameter("pageType"))) { %>activeR<% } %>">&nbsp;</div>
+			<div class="sub_tabright sub_tabR_MNM001 <% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>		
 		</div>
 	</div>
 	<div class="cont_row_bottomline"><!--  --></div>
 		<br/> 
 		<div>
 		 <form:form commandName = "maintenanceRecordForm" method="post">
-		 <form:hidden path="issueId" /> <form:hidden path="subTypeId" />
+		 <form:hidden path="issueId" /> <form:hidden path="subTypeId" /> 
 		 <table width="100%" cellpadding="0" cellspacing="0" border="0">
 			  <tr>
 				<td class="screentitle">
@@ -75,6 +72,7 @@
 			  <tr>
 				<td class="screenmessages">
 					<jsp:include page='/common/messages.jsp'/>
+					<div id="errContainer"></div>
 				</td>
 			 </tr>
 			 <tr>
@@ -135,22 +133,22 @@
 							   <tr>
 								  <td>Issue Type</td>
 								  <td>                  
-									<form:select path="issueTypeId" onChange="javascript:getIssueSubTypes();" >
+									<form:select path="issueType" onChange="javascript:getIssueSubTypes();" >
 											<form:option value="" label="--Please Select IssueType"/>
-											<form:options items="${issueTypes}" itemLabel="issueTypeName" itemValue="issueTypeId" />
+											<form:options items="${issueTypes}" itemLabel="issueTypeName" itemValue="issueTypeName" />
 									</form:select>
 								  </td>
 								  <td>
-									  &nbsp;<form:errors path="issueTypeId" />
+									  &nbsp;<form:errors path="issueType" />
 								  </td>
 							 </tr>
 							  <tr>
 								  <td>Issue SubType</td>
 								  <td>
-										<form:select path="issueSubTypeId"></form:select>
+										<form:select path="issueSubType"></form:select>
 								  </td>
 								  <td>
-									  &nbsp;<form:errors path="issueSubTypeId" />
+									  &nbsp;<form:errors path="issueSubType" />
 								  </td>
 							 </tr>
 							  <tr>
@@ -226,6 +224,9 @@
 									<c:when test='${isVerified}'>
 										<input type = "submit" value="&nbsp;Re-Verify&nbsp;" />
 									</c:when>
+									<c:when test="${maintenanceRecordForm.issueStatus eq 'Rejected' }">
+										<input type = "submit" value="&nbsp;Verify&nbsp;" disabled="true"/>
+									</c:when>
 									<c:otherwise> 
 										<input type = "submit" value="&nbsp;Verify&nbsp;" disabled="true"/>
 									</c:otherwise>
@@ -242,6 +243,12 @@
 							<td>
 								<c:choose>
 									<c:when test='${isOpen}'>
+										<form:input maxlength="10" size="28" path="estimatedRepairDate" />
+										<a href="#" id="trigger_date" style="font-size: 9px;">
+                        					<img src="./images/icons/calendar.gif" width="16" height="16" border="0">
+				                    	</a>
+									</c:when>
+									<c:when test='${isVerified}'>
 										<form:input maxlength="10" size="28" path="estimatedRepairDate" />
 										<a href="#" id="trigger_date" style="font-size: 9px;">
                         					<img src="./images/icons/calendar.gif" width="16" height="16" border="0">
@@ -367,12 +374,16 @@
 									<c:when test='${hasId}'>
 										<input type = "submit" value="&nbsp;Save&nbsp;" disabled="true"/>
 									</c:when>
+									<c:when test="${maintenanceRecordForm.issueStatus eq 'Rejected' }">
+										<input type = "submit" value="&nbsp;Save&nbsp;" disabled="true"/>
+									</c:when>
 									<c:otherwise> 
 										<input type = "submit" value="&nbsp;Save&nbsp;"/>
 									</c:otherwise>
 								</c:choose>
 						
 						<input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:back();" />
+						<input type = "button" value="&nbsp;Reject&nbsp;" onclick="javascript:rejectIssue();" />
 					</td>
 				</tr>
 		

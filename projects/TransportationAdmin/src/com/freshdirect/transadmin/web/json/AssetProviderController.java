@@ -55,7 +55,7 @@ public class AssetProviderController extends BaseJsonRpcController  implements I
 			while (itr.hasNext()) {
 				AssetTemplateAttribute _attribute = itr.next();
 				if (_attribute != null) {
-					boolean isMatching = false;boolean isKeyValueMatching = false;
+					boolean isKeyMatching = false; boolean isKeyValueMatching = false;
 					String attributeType = null;
 					String attributeValue = null;
 					AssetTemplateAttributeId _attrId = _attribute.getId();
@@ -64,13 +64,10 @@ public class AssetProviderController extends BaseJsonRpcController  implements I
 						if (assetAttributes != null
 								&& assetAttributes.length > 0) {
 							for (int intCount = 0; intCount < assetAttributes.length; intCount++) {
-								if (assetAttributes[intCount][0].equals(_attrId
-										.getAttributeType()) && assetAttributes[intCount][1].equals(_attribute.getAttributeValue())) {
-									isKeyValueMatching = true;
-								}
+								
 								if (assetAttributes[intCount][0].equals(_attrId
 										.getAttributeType())) {
-									isMatching = true;
+									isKeyMatching = true;
 									attributeType = assetAttributes[intCount][0];
 									attributeValue = assetAttributes[intCount][1];
 									break;
@@ -78,24 +75,26 @@ public class AssetProviderController extends BaseJsonRpcController  implements I
 							}
 						}
 						AssetAttribute attribute = null;
-						if (isMatching){
+						if (isKeyMatching){
 							attribute = new AssetAttribute(
 															new AssetAttributeId(assetId, attributeType)
 																	, attributeValue);
-							attribute.setAttributeMatch(isKeyValueMatching ? "1" : "0");
+							if (attributeValue.equals(_attribute.getAttributeValue()))
+								attribute.setAttributeMatch("X");
+							else
+								attribute.setAttributeMatch("O");
 							attributes.add(attribute);
 						}else{
 							attribute = new AssetAttribute(
 															new AssetAttributeId(assetId, _attrId
 																	.getAttributeType()), _attribute.getAttributeValue());
-							attribute.setAttributeMatch("1");
 							attributes.add(attribute);
 					
 						}
 					}
 				}
 			}
-
+			
 			if (assetAttributes != null && assetAttributes.length > 0) {
 				for (int intCount = 0; intCount < assetAttributes.length; intCount++) {
 					AssetAttribute assetAttribute = new AssetAttribute(
@@ -103,7 +102,7 @@ public class AssetProviderController extends BaseJsonRpcController  implements I
 									assetAttributes[intCount][0]),
 							assetAttributes[intCount][1]);
 					if (!attributes.contains(assetAttribute)) {
-						assetAttribute.setAttributeMatch("X");
+						assetAttribute.setAttributeMatch("U");
 						attributes.add(assetAttribute);
 					}
 				}
@@ -113,10 +112,11 @@ public class AssetProviderController extends BaseJsonRpcController  implements I
 			if (assetAttributes != null && assetAttributes.length > 0) {
 
 				for (int intCount = 0; intCount < assetAttributes.length; intCount++) {
-
-					attributes.add(new AssetAttribute(new AssetAttributeId(
+					AssetAttribute assetAttribute = new AssetAttribute(new AssetAttributeId(
 							assetId, assetAttributes[intCount][0]),
-							assetAttributes[intCount][1]));
+							assetAttributes[intCount][1]);
+					assetAttribute.setAttributeMatch("U");
+					attributes.add(assetAttribute);
 				}
 				asset.setAssetAttributes(attributes);
 			}

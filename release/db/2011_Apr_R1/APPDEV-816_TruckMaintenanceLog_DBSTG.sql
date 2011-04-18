@@ -1,26 +1,41 @@
 --
+-- Definition for table "VIRRecord"
+--
+
+CREATE TABLE VIRRecord  
+(
+    id VARCHAR2(30),   
+    TruckNumber VARCHAR2 (10) NOT NULL , 
+    VendorName VARCHAR2 (40) ,
+    ReportingDriver VARCHAR2 (60) DEFAULT  '' NOT NULL , 
+    CreatedBy VARCHAR2 (10) NOT NULL , 
+    DateCreated  DATE NOT NULL , 
+    PRIMARY KEY (id)
+);
+
+CREATE  SEQUENCE  VIRRecord_id_SEQ START WITH 1 INCREMENT BY 1;
+
+CREATE INDEX FK_VIRRecord_AuthUser ON VIRRecord  ( CreatedBy );
+
+CREATE INDEX FK_VIRRecord_TruckNumber ON VIRRecord  ( TruckNumber );
+
+--
 -- Definition for table "IssueLog"
 --
 CREATE TABLE IssueLog  
 (
     id VARCHAR2(30), 
-    MaintenanceIssueID VARCHAR2(30) DEFAULT  '0' NOT NULL , 
-    TruckNumber VARCHAR2 (10) NOT NULL , 
-    VendorName VARCHAR2 (40) DEFAULT  '' NOT NULL ,   
-    IssueType NUMBER (10) NOT NULL , 
-    IssueSubType NUMBER (10) NOT NULL , 
-    Comments VARCHAR2 (200) DEFAULT  '', 
+    VIRRECORD_ID VARCHAR2(30),       
+    IssueType VARCHAR2(45) NOT NULL , 
+    IssueSubType VARCHAR2(45) NOT NULL , 
+    Comments VARCHAR2 (200) DEFAULT  '' , 
     IssueLocation VARCHAR2 (40) DEFAULT  '' NOT NULL , 
-    IssueSide VARCHAR2 (40) DEFAULT  '' NOT NULL , 
-    ReportingDriver VARCHAR2 (60) DEFAULT  '' NOT NULL , 
-    CreatedBy NUMBER (10) NOT NULL , 
-    DateCreated  DATE NOT NULL , 
+    IssueSide VARCHAR2 (40) DEFAULT  '' NOT NULL,
+    MaintenanceIssueID VARCHAR2(30) ,     
     PRIMARY KEY (id) 
 );
 
 CREATE  SEQUENCE  IssueLog_id_SEQ START WITH 1 INCREMENT BY 1;
-
-CREATE INDEX FK_IssueLog_AuthUser ON IssueLog  ( CreatedBy );
 
 CREATE INDEX FK_IssueLog_IssueSubType ON IssueLog  ( IssueSubType );
 
@@ -32,10 +47,10 @@ CREATE INDEX FK_IssueLog_IssueType ON IssueLog  ( IssueType );
 CREATE TABLE TRANSP.MAINTENANCEISSUE
 (
   ID                    VARCHAR2(30 BYTE),
-  TRUCKNUMBER           VARCHAR2(40 BYTE)       NOT NULL,
-  VENDORNAME            VARCHAR2(40 BYTE)       DEFAULT ''                    NOT NULL,
-  ISSUETYPE             NUMBER(10)              NOT NULL,
-  ISSUESUBTYPE          NUMBER(10)              NOT NULL,
+  TRUCKNUMBER           VARCHAR2(45 BYTE)       NOT NULL,
+  VENDORNAME            VARCHAR2(45 BYTE)       NOT NULL,
+  ISSUETYPE            VARCHAR2(45)              NOT NULL,
+  ISSUESUBTYPE        VARCHAR2(45)             NOT NULL,
   ISSUESTATUS           VARCHAR2(20 BYTE)       DEFAULT 'Open',
   COMMENTS              VARCHAR2(200 BYTE)      DEFAULT '',
   ISSUELOCATION         VARCHAR2(40 BYTE)       DEFAULT ''                    NOT NULL,
@@ -92,8 +107,8 @@ CREATE INDEX FK_IssueSubType_UserAuthID ON IssueSubType  ( CreatedBy );
 CREATE TABLE IssueType  
 (
     id NUMBER (10), 
-    IssueTypeName VARCHAR2 (40) DEFAULT  '' NOT NULL , 
-    IssueTypeDescription VARCHAR2 (40) DEFAULT  '' NOT NULL , 
+    IssueTypeName VARCHAR2 (45) DEFAULT  '' NOT NULL , 
+    IssueTypeDescription VARCHAR2 (45) DEFAULT  '' NOT NULL , 
     isActive NUMBER (10) DEFAULT  '0' NOT NULL , 
     CreatedBy VARCHAR2 (20) NOT NULL , 
     DateCreated DATE  NOT NULL , 
@@ -108,27 +123,17 @@ CREATE INDEX FK_EventType_UserAuth ON IssueType  ( CreatedBy );
 --
 -- Foreign keys for table "IssueLog"
 --
-ALTER TABLE IssueLog 
+ALTER TABLE IssueLog add constraint  FK_IssueLog_IssueSubType FOREIGN KEY (IssueSubType) REFERENCES IssueSubType (IssueSubTypeName);
 add
-(    
-    CONSTRAINT FK_IssueLog_IssueSubType FOREIGN KEY (IssueSubType) REFERENCES IssueSubType (id) ,
-    CONSTRAINT FK_IssueLog_IssueType FOREIGN KEY (IssueType) REFERENCES IssueType (id),
+(
+    CONSTRAINT FK_IssueLog_VIRRecord FOREIGN KEY (VIRRecord_id) REFERENCES VIRRecord (id) ,  
     CONSTRAINT FK_IssueLog_MaintenanceIssue FOREIGN KEY (MaintenanceIssueID) REFERENCES MAINTENANCEISSUE (id)
 );
 
 --
--- Foreign keys for table "IssueLog"
---
-ALTER TABLE MaintenanceIssue add
-(    
-    CONSTRAINT FK_MaintenanceLog_IssueSubType FOREIGN KEY (IssueSubType) REFERENCES IssueSubType (id) ,
-    CONSTRAINT FK_MaintenanceLog_IssueType FOREIGN KEY (IssueType) REFERENCES IssueType (id)  
-);
- 
---
 -- Foreign keys for table "IssueSubType"
 --
-ALTER TABLE IssueSubType ADD(CONSTRAINT FK_IssueSubType_IssueTypeID FOREIGN KEY (IssueTypeId) REFERENCES IssueType (id));
+ALTER TABLE IssueSubType ADD CONSTRAINT FK_IssueSubType_IssueTypeID FOREIGN KEY (IssueTypeId) REFERENCES IssueType (id);
 
 --
 -- Definition for table "ASSET_ATRTEMPLATE"
@@ -180,9 +185,14 @@ CREATE  SEQUENCE  ATTRIBUTE_TEMPLATE_SEQ   START WITH 1  INCREMENT BY 1;
 
 CREATE  SEQUENCE  ASSETTEMPLATE_ATTRIBUTE_SEQ   START WITH 1  INCREMENT BY 1;
 
+GRANT ALL ON TRANSP.VIRRecord_id_SEQ TO fdtrn_ststg01;
+GRANT READ ON TRANSP.VIRRecord_id_SEQ TO APPDEV;
 
-GRANT ALL ON TRANSP.IssueLog_id_SEQ TO fdtrn_ststg01;
+GRANT ALL ON TRANSP.IssueLog_id_SEQ TO fdtrn_prda;
 GRANT READ ON TRANSP.IssueLog_id_SEQ TO APPDEV;
+
+GRANT ALL ON TRANSP.VIRRECORD TO fdtrn_ststg01;
+GRANT READ ON TRANSP.VIRRECORD TO APPDEV;
 
 GRANT ALL ON TRANSP.IssueLog TO fdtrn_ststg01;
 GRANT READ ON TRANSP.IssueLog TO APPDEV;

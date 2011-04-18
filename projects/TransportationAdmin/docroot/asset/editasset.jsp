@@ -193,15 +193,15 @@
 		var attributeColumns =  [ 
 			    {key:"attributeType", label:"Attribute Type", sortable:true, sortOptions: { defaultDir: YAHOO.widget.DataTable.CLASS_ASC }, className:"forms1"}, 
 			    {key:"attributeValue", label:"Attribute Value", sortable:false, className:"forms1"},
-				{key:'attributeMatch',label:'Is Matched',formatter:function(elCell, oRecord, oColumn, oData) {
+				{key:'attributeMatch',label:'Is Overriden?',formatter:function(elCell, oRecord, oColumn, oData) {
 												console.log(oData);
-												if(oData === '1'){
-        											elCell.innerHTML = '<img src="images/icons/tick.gif" title="matched row" />';
-        										}else if(oData === '0'){
-													elCell.innerHTML = '<img src="images/icons/cross.gif" title="non-matched row" />';
+												if(oData === 'O'){
+        											elCell.innerHTML = '<img src="images/icons/tick.gif" title="Overriden" />';
+        										}else if(oData === 'U'){
+													elCell.innerHTML = '<img src="images/icons/unique.gif" title="Unique" />';
 												}
     			}},
-				{key:'deleteBtn',label:' ',formatter:function(elCell) {
+				{key:'deleteBtn',label:'Delete',formatter:function(elCell) {
         										elCell.innerHTML = '<img src="images/icons/delete.gif" title="delete row" />';
         										elCell.style.cursor = 'pointer';
     			}}
@@ -241,7 +241,7 @@
 		var attributeTemplateColumns =  [ 
 			    {key:"attributeType", label:"Attribute Type", sortable:true, sortOptions: { field: "attributeType" }, className:"forms1"}, 
 			    {key:"attributeValue", label:"Attribute Value", sortable:false, className:"forms1"},
-				{key:'deleteBtn',label:' ',formatter:function(elCell) {
+				{key:'deleteBtn',label:'Delete',formatter:function(elCell) {
         										elCell.innerHTML = '<img src="images/icons/delete.gif" title="delete row" />';
     			}}
 		 ];
@@ -334,12 +334,11 @@
  </script>
     <br/>
 	
-	<table width="100%">
+	<table width="80%" align="center">
 		<tr>
 			<td align="center" valign="top"><b>Asset Attributes</b></td>
-			<td align="center" valign="top"><b>Asset Template Attributes</b></td>
 		</tr>
-		<tr><td colspan="2">&nbsp;</tr>
+		<tr><td>&nbsp;</tr>
 		<tr>
 			<td align="center" valign="top">
 				 <div style='background-color:#F2F2F2;border:1px solid #000; margin-left:10px;'>  
@@ -351,14 +350,14 @@
 									<option value="">--Select a Type</option> 
 									<c:forEach var="aType" items="${assetAttributeTypes}">       
 										<option value="<c:out value="${aType.code}"/>"><c:out value="${aType.code}"/></option>
-									</c:forEach>                                      
+									</c:forEach>
 								  </select><br>
 								   <b>&nbsp;&nbsp;&nbsp;Attribute Value:</b>&nbsp;&nbsp;&nbsp;
 									<input size="30" id="dAttributeValue" value="" /> 
 							   </td>
 							   <td>                 
 								   &nbsp;&nbsp;&nbsp;<input type="button" id="add" value="&nbsp;ADD&nbsp;" onclick="javascript:doAdd();" /> 
-							   </td>	               
+							   </td>
 						   </tr>
 						</table>
 						<hr/>
@@ -369,7 +368,7 @@
 					</div>
 				 </div>
 			</td>
-			<td align="center" valign="top">
+			<td style="display:none;"align="center" valign="top">
 				 <div style='background-color:#F2F2F2;border:1px solid #000; margin-left:10px;'>  
 				 <div class="bd">
 					<table cellpadding="1" cellspacing="0">
@@ -394,8 +393,8 @@
 						<div id="conttemplateattributetable" align="center">
 					</div> 
 				 </div>
-        </div>
-   	 </div>
+				</div>
+			 </div>
 			</td>
 		</tr>
 	</table>

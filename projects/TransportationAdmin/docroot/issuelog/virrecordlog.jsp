@@ -10,15 +10,17 @@
 
 <% 
 	String pageTitle = "";
-	String recordType = request.getParameter("recordType");
-	String pageType = request.getParameter("pageType");
-	if((recordType == null) || ("V".equalsIgnoreCase(recordType))) {
+	String issueLog = request.getParameter("issueLog");
+	if((issueLog == null) || ("V".equalsIgnoreCase(issueLog))) {
 		pageTitle = "VIR Record";
-	}else if("M".equalsIgnoreCase(recordType)) {
-		pageTitle = "Maintenance Record";
+	}else if("I".equalsIgnoreCase(issueLog)) {
+		pageTitle = "Issue Types";
+	}else if("S".equalsIgnoreCase(issueLog)) {
+		pageTitle = "Issue Sub Types";
 	}
 	String truckNumberVal = request.getParameter("truckNumber") != null ? request.getParameter("truckNumber") : "";
 %>
+
 <tmpl:insert template='/common/sitelayout.jsp'>
 	<tmpl:put name='yui-lib'>
 		<%@ include file='/common/i_yui.jspf'%>	
@@ -34,43 +36,42 @@
 
 		<div class="MNM001 subsub or_999">
 		<div class="subs_left">	
-			<div class="sub_tableft sub_tabL_MNM001 <% if(pageType == null && !"M".equalsIgnoreCase(request.getParameter("recordType"))&&!"C".equalsIgnoreCase(request.getParameter("recordType"))) { %>activeL<% } %>">&nbsp;</div>
+			<div class="sub_tableft sub_tabL_MNM001 <% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog"))
+			&&!"S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
 			
-			<div class="subtab <% if(pageType == null && !"M".equalsIgnoreCase(request.getParameter("recordType"))&&!"C".equalsIgnoreCase(request.getParameter("recordType"))) { %>activeT<% } %>">
+			<div class="subtab <% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog")) &&!"S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeT<% } %>">
 				<div class="minwidth"><!-- --></div>
-				<a href="virrecordlog.do" class="<% if(pageType == null && !"M".equalsIgnoreCase(request.getParameter("recordType"))&&!"C".equalsIgnoreCase(request.getParameter("recordType"))) { %>MNM001<% } %>">VIR Record</a>
+				<a href="virrecordlog.do" class="<% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog")) &&!"S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM001<% } %>">VIR Record</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if(pageType == null && !"M".equalsIgnoreCase(request.getParameter("recordType"))&&!"C".equalsIgnoreCase(request.getParameter("recordType"))) { %>activeR<% } %>">&nbsp;</div>		
+			<div class="sub_tabright sub_tabR_MNM001 <% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog")) &&!"S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>		
 		
-			<div class="sub_tableft sub_tabL_MNM001 <% if(pageType == null && "M".equalsIgnoreCase(request.getParameter("recordType"))) { %>activeL<% } %>">&nbsp;</div>
-			<div class="subtab <% if(pageType == null && "M".equalsIgnoreCase(request.getParameter("recordType"))) { %>activeT<% } %>">
+			<div class="sub_tableft sub_tabL_MNM001 <% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
+			<div class="subtab <% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeT<% } %>">
 				<div class="minwidth"><!-- --></div>
-				<a href="maintenancelog.do?recordType=M" class="<% if(pageType == null && "M".equalsIgnoreCase(request.getParameter("recordType"))) { %>MNM001<% } %>">Maintenance Record</a>
+				<a href="maintenancelog.do?issueLog=M" class="<% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM001<% } %>">Maintenance Record</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if(pageType == null && "M".equalsIgnoreCase(request.getParameter("recordType"))) { %>activeR<% } %>">&nbsp;</div>
-					
-		</div>
-		<div class="subs_right">
-			<div class="sub_tableft sub_tabL_MNM001 <% if("I".equalsIgnoreCase(request.getParameter("pageType"))) { %>activeL<% } %>">&nbsp;</div>
-			<div class="subtab <% if("I".equalsIgnoreCase(request.getParameter("pageType"))) { %>activeT<% } %>">
+			<div class="sub_tabright sub_tabR_MNM001 <% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>
+			
+			<div class="sub_tableft sub_tabL_MNM001 <% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
+			<div class="subtab <% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeT<% } %>">
 				<div class="minwidth"><!-- --></div>
-				<a href="virrecordlog.do?pageType=I" class="<% if("I".equalsIgnoreCase(request.getParameter("pageType"))) { %>MNM001<% } %>">Issue Type</a>
+				<a href="virrecordlog.do?issueLog=I" class="<% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM001<% } %>">Issue Type</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if("I".equalsIgnoreCase(request.getParameter("pageType"))) { %>activeR<% } %>">&nbsp;</div>
+			<div class="sub_tabright sub_tabR_MNM001 <% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>
 
-			<div class="sub_tableft sub_tabL_MNM001 <% if("S".equalsIgnoreCase(request.getParameter("pageType"))) { %>activeL<% } %>">&nbsp;</div>
-			<div class="subtab <% if("S".equalsIgnoreCase(request.getParameter("pageType"))) { %>activeT<% } %>">
+			<div class="sub_tableft sub_tabL_MNM001 <% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
+			<div class="subtab <% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeT<% } %>">
 				<div class="minwidth"><!-- --></div>
-				<a href="virrecordlog.do?pageType=S" class="<% if("S".equalsIgnoreCase(request.getParameter("pageType"))) { %>MNM001<% } %>">Issue SubType</a>
+				<a href="virrecordlog.do?issueLog=S" class="<% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM001<% } %>">Issue SubType</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if("S".equalsIgnoreCase(request.getParameter("pageType"))) { %>activeR<% } %>">&nbsp;</div>
+			<div class="sub_tabright sub_tabR_MNM001 <% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>		
 		</div>
 	</div>
 	<div class="cont_row_bottomline"><!--  --></div>
 	
 	<div class="contentroot">
-				<div class="scrTitle" style="float:left;padding:3px 0 0 6px;"> <%= pageType == null ? pageTitle : "" %> &nbsp;&nbsp;</div>
-				<% if(pageType == null && !"M".equalsIgnoreCase(request.getParameter("recordType"))) { %>
+				<div class="scrTitle" style="float:left;padding:3px 0 0 6px;"> <%= pageTitle %> &nbsp;&nbsp;</div>
+				<% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog"))	&&!"S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>
 					
 					<div style="float:left;text-align:center;font-weight:bold">Create Date<br>
 						<input maxlength="10" size="10" name="createDate" id="createDate" style="width:75px" value='<c:out value="${createDate}"/>' />
@@ -84,27 +85,12 @@
 								electric : false,
 								inputField : "createDate",
 								ifFormat : "%m/%d/%Y",
-								singleClick: true,
+								singleIlick: true,
 								button : "trigger_createDate" 
 							   }
 							  );
 						  </script>
 					</div>
-					<!--<div style="float:left;text-align:center;font-weight:bold">Entered By<br>&nbsp;
-						 <select id="employee" name="employee" style="width:200px;">
-							  <option value=""></option> 
-							  <c:forEach var="e" items="${employees}">
-								  <c:choose>
-									<c:when test="${employee == e.employeeId}" > 
-									  <option selected value="<c:out value="${e.employeeId}"/>"><c:out value="${e.name}"/></option>
-									</c:when>
-									<c:otherwise> 
-									  <option value="<c:out value="${e.employeeId}"/>"><c:out value="${e.name}"/></option>
-									</c:otherwise> 
-								  </c:choose>      
-								</c:forEach>   
-					   </select>
-					</div>-->
 					<div style="float:left;text-align:center;font-weight:bold">Truck Number<br>&nbsp;
 						<input maxlength="40" size="20" name="truckNumber" id="truckNumber" value="<%= truckNumberVal %>" style="width:100px" />
 					</div>&nbsp;&nbsp;&nbsp;
@@ -119,8 +105,6 @@
 						String userRole = com.freshdirect.transadmin.security.SecurityManager.getUserRole(request);
 					%>
 				<% } %>
-				
-				
 	
 	<%@ include file='i_addissuetype.jspf'%>
 	<%@ include file='i_addissuesubtype.jspf'%>
@@ -131,9 +115,7 @@
 			<div class="cont_row">
 				<div class="cont_Ritem">
 	
-	<%if(recordType == null && pageType == null){%>
-		
-		
+	<%if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog"))	&&!"S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>
 				<ec:table items="virRecords"   action="${pageContext.request.contextPath}/virrecordlog.do"
 					imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title=""
 					width="98%" filterable="true" showPagination="true" rowsDisplayed="25" view="fd" >
@@ -141,44 +123,30 @@
 					<ec:exportPdf fileName="virrecords.pdf" tooltip="Export PDF" 
 							  headerTitle="Issue Type" />
 					<ec:exportXls fileName="virrecords.xls" tooltip="Export PDF" />
-					<ec:exportCsv fileName="virrecords.csv" tooltip="Export CSV" delimiter="|"/>
+					<ec:exportCsv fileName="virrecords.csv" tooltip="Export ISV" delimiter="|"/>
 
 					<ec:row interceptor="obsoletemarker">
 					  <ec:column title=" " width="5px" 
 									filterable="false" sortable="false" cell="selectcol"
 									property="id" />
-					  <ec:column property="id" alias="virId" title="VIR ID"/> 
-					  <ec:column property="truckNumber" title="Truck" />
-					  <ec:column property="vendor" title="Vendor" />
-					  <ec:column property="createdDate" title="Created Date" />
-					  <ec:column property="issueType.issueTypeName" title="Issue Type" />
-					  <ec:column property="issueSubType.issueSubTypeName" title="Issue SubType" />
-					  <ec:column property="damageLocation" title="Front/ Back" />
-					  <ec:column property="issueSide" title="Driver/ Passenger" />
-					  <ec:column property="comments" title="Comments" />
-  					  <ec:column property="maintenanceIssue.id" title="Maintenance IssueID" />
-    				  <ec:column cell="bool" property="maintenanceIssue.truckInService" title="In Service?" />
-  					  <!--<ec:column cell="issueStatusCell" property="maintenanceIssue.issueStatus" title="Issue Status" />-->
-  					  <ec:column property="driver" title="Reporting Driver" />
-  					  <ec:column property="createdBy" title="Entered By" />
+					  <ec:column width="10px" property="id" alias="virId" title="VIR ID"/> 
+					  <ec:column width="10px" property="truckNumber" title="Truck" />
+					  <ec:column width="15px" property="vendor" title="Vendor" />
+					  <ec:column width="6px" property="createdDate" title="Created Date" />					  
+					  <ec:column width="250px" filterable="true" property="virRecordIssues" cell="issueLogCell" title="Issues/MaintenanceIssue/DamageLocation/Issueside/Comments"/>
+  					  <ec:column width="10px" property="driver" title="Reporting Driver" />
+  					  <ec:column width="10px" property="createdBy" title="Entered By" />
 					</ec:row>
 				</ec:table>
 	<%}%>
 	
-	
-	
-	<%if("I".equalsIgnoreCase(request.getParameter("pageType"))){%>
+	<%if("I".equalsIgnoreCase(request.getParameter("issueLog"))){%>
 		
 		
-				<ec:table items="issueTypes"   action="${pageContext.request.contextPath}/maintenancelog.do?pageType=I"
-					imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="Issue Types"
-					width="98%" filterable="true" showPagination="true" rowsDisplayed="25" view="fd" >
-					
-					<ec:exportPdf fileName="issuetype.pdf" tooltip="Export PDF" 
-							  headerTitle="Issue Type" />
-					<ec:exportXls fileName="issuetype.xls" tooltip="Export PDF" />
-					<ec:exportCsv fileName="issuetype.csv" tooltip="Export CSV" delimiter="|"/>
-						
+				<ec:table items="issueTypes"   action="${pageContext.request.contextPath}/maintenancelog.do?issueLog=I"
+					imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title=""
+					width="98%" filterable="false" showPagination="false" rowsDisplayed="25" view="fd" >
+
 					<ec:row interceptor="obsoletemarker">                
 					  <ec:column title=" " width="4px" 
 		                    filterable="false" sortable="false" cell="selectcol"
@@ -187,20 +155,17 @@
 					  <ec:column property="issueTypeDescription" title="Issue Type Description" />
 					  <ec:column cell="bool" property="status" title="isActive" />
 					  <ec:column property="createdDateDisplay" title="Created Date" />
-					  <ec:column property="createdBy" title="Created By" />
+					  <ec:column property="createdBy" title="Ireated By" />
 					</ec:row>
 				</ec:table>
 	<%}%>
-	<%if("S".equalsIgnoreCase(request.getParameter("pageType"))){%>
+	<%if("S".equalsIgnoreCase(request.getParameter("issueLog"))){%>
 		
-				<ec:table items="issueSubTypes"   action="${pageContext.request.contextPath}/maintenancelog.do?pageType=S"
-					imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="Issue Sub Types"
-					width="98%" filterable="true" showPagination="true" rowsDisplayed="25" view="fd" >
+				<ec:table items="issueSubTypes"   action="${pageContext.request.contextPath}/maintenancelog.do?issueLog=S"
+					imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title=""
+					width="98%" filterable="false" showPagination="false" rowsDisplayed="25" view="fd" >
 					
-					<ec:exportPdf fileName="issuesubtype.pdf" tooltip="Export PDF" 
-							  headerTitle="Issue Type" />
-					<ec:exportXls fileName="issuesubtype.xls" tooltip="Export PDF" />
-					<ec:exportCsv fileName="issuesubtype.csv" tooltip="Export CSV" delimiter="|"/>
+					
 						
 					<ec:row interceptor="obsoletemarker">                
 					  <ec:column title=" " width="4px" 
@@ -211,14 +176,28 @@
 					  <ec:column property="issueType.issueTypeName" title="Issue Type" />
 					  <ec:column cell="bool" property="status" title="isActive" />
 					  <ec:column property="createdDateDisplay" title="Created Date" />
-					  <ec:column property="createdBy" title="Created By" />
+					  <ec:column property="createdBy" title="Ireated By" />
 					</ec:row>
 				</ec:table>
+			
 	<%}%>
 				</div>
 			</div>
 		</div>
-	
-	</tmpl:put> 
 
+<style>
+.eXtremeTable .tableHeader {
+	text-align:center;
+}
+
+#ec_table td table td, td.tableHeader table {
+    width:200px;
+}
+
+#ec_table td table td.employee_on, #ec_table td table td.employee_off, td.tableHeader table {
+    width:80px;
+}
+</style>
+
+	</tmpl:put> 
 </tmpl:insert>

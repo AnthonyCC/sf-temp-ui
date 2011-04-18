@@ -47,4 +47,8 @@ public interface IDispatchProvider {
 	boolean addIssueType(String date, String createdBy, String name,String desc, String isActive);
 	boolean addIssueSubType(String date, String createdBy, String name,String desc, String isActive, String issueType);
 	List<IssueSubTypeCommand> getIssueSubTypes(String issueTypeId);
+	String saveVIRRecord(String createDate, String truckNumber, String vendor
+			, String driver, String createdBy
+			, String[][] recordIssues);
+	boolean getRejectMaintenanceIssue(String id);
 }

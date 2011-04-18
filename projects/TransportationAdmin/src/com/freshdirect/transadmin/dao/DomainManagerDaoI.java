@@ -1,6 +1,7 @@
 package com.freshdirect.transadmin.dao;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.dao.DataAccessException;
@@ -109,16 +110,17 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 	
 	IssueType getIssueTypeById(String id) throws DataAccessException;
 	
+	IssueSubType getIssueSubType(String issueSubTypeName) throws DataAccessException;
+	
 	Collection getIssueSubTypes() throws DataAccessException;
 	
 	Collection getVIRRecords() throws DataAccessException;
 	
-	Collection getVIRRecords(String createDate, String enteredBy,
-			String truckNumber) throws DataAccessException;
+	Collection getVIRRecords(String createDate, String truckNumber) throws DataAccessException;
 	
 	VIRRecord getVIRRecord(String id) throws DataAccessException;
 	
-	Collection getMaintenanceIssue(String truckNumber, IssueType issueTypeId, IssueSubType issueSubTypeId) throws DataAccessException;
+	Collection getMaintenanceIssue(String truckNumber, String issueTypeId, String issueSubTypeId) throws DataAccessException;
 	
 	Collection getMaintenanceIssue(IssueType issueTypeId, IssueSubType issueSubTypeId) throws DataAccessException;
 	
@@ -130,5 +132,6 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 	
 	void saveMaintenanceIssue(MaintenanceIssue model) throws DataAccessException;
 	
+	String saveVIRRecord(VIRRecord virRecord) throws DataAccessException;
 	
 }

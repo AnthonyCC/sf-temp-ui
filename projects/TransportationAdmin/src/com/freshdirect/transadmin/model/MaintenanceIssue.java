@@ -14,10 +14,8 @@ public class MaintenanceIssue extends BaseCommand {
 	private String id;
 	private String issueId;
 	private String truckNumber;
-	private IssueType issueType;
-	private String issueTypeId;
-	private IssueSubType issueSubType;
-	private String issueSubTypeId;
+	private String issueType;
+	private String issueSubType;
 	private Date createDate;
 	private Date modifiedDate;
 	private String createdBy;
@@ -38,7 +36,7 @@ public class MaintenanceIssue extends BaseCommand {
 	public String getSubTypeId() {
 		if(getIssueSubType() == null)
 			return null;
-		subTypeId = getIssueSubType().getIssueSubTypeId();	
+		subTypeId = getIssueSubType();	
 		return subTypeId;
 	}
 
@@ -52,8 +50,8 @@ public class MaintenanceIssue extends BaseCommand {
 		
 	}
 	
-	public MaintenanceIssue(String id, String truckNumber, IssueType issueType,
-			IssueSubType issueSubType, Date createDate, Date modifiedDate,
+	public MaintenanceIssue(String id, String truckNumber, String issueType,
+			String issueSubType, Date createDate, Date modifiedDate,
 			String createdBy, String issueStatus, int daysOpen, String damageLocation,
 			String issueSide, String comments, Set<VIRRecord> virRecords) {
 		super();
@@ -82,16 +80,16 @@ public class MaintenanceIssue extends BaseCommand {
 	public void setTruckNumber(String truckNumber) {
 		this.truckNumber = truckNumber;
 	}
-	public IssueType getIssueType() {
+	public String getIssueType() {
 		return issueType;
 	}
-	public void setIssueType(IssueType issueType) {
+	public void setIssueType(String issueType) {
 		this.issueType = issueType;
 	}
-	public IssueSubType getIssueSubType() {
+	public String getIssueSubType() {
 		return issueSubType;
 	}
-	public void setIssueSubType(IssueSubType issueSubType) {
+	public void setIssueSubType(String issueSubType) {
 		this.issueSubType = issueSubType;
 	}
 	public Set<VIRRecord> getVirRecords() {
@@ -232,7 +230,7 @@ public class MaintenanceIssue extends BaseCommand {
 			return false;
 	}
 	
-	public String getIssueTypeId() {
+/*	public String getIssueTypeId() {
 		if(getIssueType() == null)
 			return null;
 		return getIssueType().getIssueTypeId();
@@ -262,7 +260,7 @@ public class MaintenanceIssue extends BaseCommand {
 			subType.setIssueSubTypeId(issueSubTypeId);
 			setIssueSubType(subType);
 		}
-	}
+	}*/
 	
 	public String getCreatedDate(){
 		String date = "";

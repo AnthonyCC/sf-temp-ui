@@ -774,14 +774,13 @@ public class DomainController extends AbstractMultiActionController {
 		ModelAndView mav = new ModelAndView("virRecordLogView");
 		
 		String currentDate = request.getParameter("currentDate");
-		String createDate = request.getParameter("createDate");
-		String enteredBy = request.getParameter("employee");
+		String createDate = request.getParameter("createDate");		
 		String truckNumber = request.getParameter("truckNumber");
 		
 		Collection virRecords = null;
 		try{
-			if(!TransStringUtil.isEmpty(createDate) || !TransStringUtil.isEmpty(enteredBy) || !TransStringUtil.isEmpty(truckNumber)){				
-				virRecords = getDomainManagerService().getVIRRecords(!TransStringUtil.isEmpty(createDate) ? TransStringUtil.getServerDate(createDate):"", enteredBy, truckNumber);
+			if(!TransStringUtil.isEmpty(createDate) || !TransStringUtil.isEmpty(truckNumber)){				
+				virRecords = getDomainManagerService().getVIRRecords(!TransStringUtil.isEmpty(createDate) ? TransStringUtil.getServerDate(createDate):"", truckNumber);
 			}else{
 				virRecords = getDomainManagerService().getVIRRecords();
 			}			
@@ -794,7 +793,7 @@ public class DomainController extends AbstractMultiActionController {
 			currentDate = TransStringUtil.getCurrentDate();
 		
 		mav.getModel().put("createDate",createDate);
-		mav.getModel().put("enteredBy", enteredBy);
+		
 		mav.getModel().put("truckNumber", truckNumber);
 		mav.getModel().put("currentDate",currentDate);
 		

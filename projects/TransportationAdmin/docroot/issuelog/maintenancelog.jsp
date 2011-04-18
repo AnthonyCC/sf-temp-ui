@@ -10,13 +10,12 @@
 
 <% 
 	String pageTitle = "";
-	String recordType = request.getParameter("recordType");
-	String pageType = request.getParameter("pageType");
-	if((recordType == null) || ("V".equalsIgnoreCase(recordType))) {
+	String issueLog = request.getParameter("issueLog");
+	if((issueLog == null) || ("V".equalsIgnoreCase(issueLog))) {
 		pageTitle = "VIR Record";
-	}else if("M".equalsIgnoreCase(recordType)) {
+	}else if("M".equalsIgnoreCase(issueLog)) {
 		pageTitle = "Maintenance Record";
-	}	
+	}
 %>
 
 <tmpl:insert template='/common/sitelayout.jsp'>
@@ -34,45 +33,44 @@
 		<script src="js/maintenancelog.js" language="javascript" type="text/javascript"></script>
 
 		<div class="MNM001 subsub or_999">
-		<div class="subs_left">	
-			<div class="sub_tableft sub_tabL_MNM001 <% if(pageType == null && !"M".equalsIgnoreCase(request.getParameter("recordType"))&&!"C".equalsIgnoreCase(request.getParameter("recordType"))) { %>activeL<% } %>">&nbsp;</div>
+			<div class="subs_left">
+				<div class="sub_tableft sub_tabL_MNM001 <% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog"))
+				&&!"S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
+				
+				<div class="subtab <% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog")) &&!"I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeT<% } %>">
+					<div class="minwidth"><!-- --></div>
+					<a href="virrecordlog.do" class="<% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog")) &&!"I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM001<% } %>">VIR Record</a>
+				</div>
+				<div class="sub_tabright sub_tabR_MNM001 <% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog")) &&!"I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>		
 			
-			<div class="subtab <% if(pageType == null && !"M".equalsIgnoreCase(request.getParameter("recordType"))&&!"C".equalsIgnoreCase(request.getParameter("recordType"))) { %>activeT<% } %>">
-				<div class="minwidth"><!-- --></div>
-				<a href="virrecordlog.do" class="<% if(pageType == null && !"M".equalsIgnoreCase(request.getParameter("recordType"))&&!"C".equalsIgnoreCase(request.getParameter("recordType"))) { %>MNM001<% } %>">VIR Record</a>
-			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if(pageType == null && !"M".equalsIgnoreCase(request.getParameter("recordType"))&&!"C".equalsIgnoreCase(request.getParameter("recordType"))) { %>activeR<% } %>">&nbsp;</div>		
-		
-			<div class="sub_tableft sub_tabL_MNM001 <% if(pageType == null && "M".equalsIgnoreCase(request.getParameter("recordType"))) { %>activeL<% } %>">&nbsp;</div>
-			<div class="subtab <% if(pageType == null && "M".equalsIgnoreCase(request.getParameter("recordType"))) { %>activeT<% } %>">
-				<div class="minwidth"><!-- --></div>
-				<a href="maintenancelog.do?recordType=M" class="<% if(pageType == null && "M".equalsIgnoreCase(request.getParameter("recordType"))) { %>MNM001<% } %>">Maintenance Record</a>
-			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if(pageType == null && "M".equalsIgnoreCase(request.getParameter("recordType"))) { %>activeR<% } %>">&nbsp;</div>
-		</div>
-		
-		<div class="subs_right">
-			<div class="sub_tableft sub_tabL_MNM001 <% if("I".equalsIgnoreCase(request.getParameter("pageType"))) { %>activeL<% } %>">&nbsp;</div>
-			<div class="subtab <% if("I".equalsIgnoreCase(request.getParameter("pageType"))) { %>activeT<% } %>">
-				<div class="minwidth"><!-- --></div>
-				<a href="virrecordlog.do?pageType=I" class="<% if("I".equalsIgnoreCase(request.getParameter("pageType"))) { %>MNM001<% } %>">Issue Type</a>
-			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if("I".equalsIgnoreCase(request.getParameter("pageType"))) { %>activeR<% } %>">&nbsp;</div>
+				<div class="sub_tableft sub_tabL_MNM001 <% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
+				<div class="subtab <% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeT<% } %>">
+					<div class="minwidth"><!-- --></div>
+					<a href="maintenancelog.do?issueLog=M" class="<% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM001<% } %>">Maintenance Record</a>
+				</div>
+				<div class="sub_tabright sub_tabR_MNM001 <% if("M".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>
+				
+				<div class="sub_tableft sub_tabL_MNM001 <% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
+				<div class="subtab <% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeT<% } %>">
+					<div class="minwidth"><!-- --></div>
+					<a href="virrecordlog.do?issueLog=I" class="<% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM001<% } %>">Issue Type</a>
+				</div>
+				<div class="sub_tabright sub_tabR_MNM001 <% if("I".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>
 
-			<div class="sub_tableft sub_tabL_MNM001 <% if("S".equalsIgnoreCase(request.getParameter("pageType"))) { %>activeL<% } %>">&nbsp;</div>
-			<div class="subtab <% if("S".equalsIgnoreCase(request.getParameter("pageType"))) { %>activeT<% } %>">
-				<div class="minwidth"><!-- --></div>
-				<a href="virrecordlog.do?pageType=S" class="<% if("S".equalsIgnoreCase(request.getParameter("pageType"))) { %>MNM001<% } %>">Issue SubType</a>
+				<div class="sub_tableft sub_tabL_MNM001 <% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
+				<div class="subtab <% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeT<% } %>">
+					<div class="minwidth"><!-- --></div>
+					<a href="virrecordlog.do?issueLog=S" class="<% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>MNM001<% } %>">Issue SubType</a>
+				</div>
+				<div class="sub_tabright sub_tabR_MNM001 <% if("S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeR<% } %>">&nbsp;</div>		
 			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if("S".equalsIgnoreCase(request.getParameter("pageType"))) { %>activeR<% } %>">&nbsp;</div>
 		</div>
-	</div>
 	<div class="cont_row_bottomline"><!--  --></div>
 	
 	<div class="contentroot">
-				<div class="scrTitle" style="float:left;padding:3px 0 0 6px;"> <%= pageType == null ? pageTitle : "" %> </div>
+				<div class="scrTitle" style="float:left;padding:3px 0 0 6px;"><%=pageTitle%> </div>
 				
-				<% if(pageType == null) { %>
+			
 					<div style="float:left;text-align:center;font-weight:bold">Service Status<br>&nbsp;
 						<select id="serviceStatus" name="serviceStatus" >
 							<option value="" style="font-size:10px;">--Please Select</option>
@@ -109,7 +107,7 @@
 							<input id="view_button" type="image" alt="View" src="./images/icons/view.gif" onclick="javascript:doMaintenanceIssueLink('issueStatus','serviceStatus','maintenancelog.do');" onmousedown="this.src='./images/icons/view_ON.gif'" />
 						</span>
 					</div>
-				<%}%>
+				
 	</div>
 	<BR/><BR/><BR/>&nbsp;
 	
@@ -140,8 +138,8 @@
 					  <ec:column property="repairedBy" title="Repaired By" />
 					  <ec:column property="truckNumber" title="Truck" />
  					  <ec:column property="vendor" title="Vendor" />
-  					  <ec:column property="issueType.issueTypeName" title="Issue Type" />
-   					  <ec:column property="issueSubType.issueSubTypeName" title="Issue SubType" />
+  					  <ec:column property="issueType" title="Issue Type" />
+   					  <ec:column property="issueSubType" title="Issue SubType" />
 					  <ec:column property="damageLocation" title="Front/ Back" />
 					  <ec:column property="issueSide" title="Driver/ Passenger" />
 					  <ec:column property="comments" title="Comments" />
@@ -158,8 +156,9 @@
 		<% if("TrnAdmin".equalsIgnoreCase(com.freshdirect.transadmin.security.SecurityManager.getUserRole(request))
 				||	"TrnPlanning".equalsIgnoreCase(com.freshdirect.transadmin.security.SecurityManager.getUserRole(request))
 				||  "TrnOperations".equalsIgnoreCase(com.freshdirect.transadmin.security.SecurityManager.getUserRole(request))){ 
+			
 		%> 
-			addRowHandlersFilterTest('ec_table', 'rowMouseOver', 'editmaintenancelog.do','id',0, 0);
+			addMultiParamRowHandlersFilter('ec_table', 'rowMouseOver', 'editmaintenancelog.do','id',0, 0, false, 'issueLog','<%=issueLog%>');
 		<%}%>
 	</script>
 	</tmpl:put> 
