@@ -36,6 +36,8 @@ public interface MarketAdminDAOIntf {
 	public Collection getInvalidCustomerIds(Collection restCustomerModel) throws SQLException;
 	
 	public void insertRestrictedCustomers(Collection restCustomerModel) throws SQLException;
+	
+	public void newInsertRestrictedCustomers(Collection restCustomerModel) throws SQLException;
 
 	public void deleteRestrictedCustomers(Collection collection) throws SQLException;
 
