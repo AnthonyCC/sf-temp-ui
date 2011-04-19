@@ -57,8 +57,11 @@ if (timeslots.size() > 0) {
 <div id="NDdayC" style="display: none;"> 
 	<fd:IncludeMedia name="/media/editorial/timeslots/msgC_nodelivery.html"/> 
 </div>
-<div id="CPday" style="display: none;"> 
-	<fd:IncludeMedia name="/media/editorial/timeslots/msg_cutoff_passed.html"/> 
+<div id="CPdayC" style="display: none;"> 
+	<fd:IncludeMedia name="/media/editorial/timeslots/msgC_cutoff_passed.html"/> 
+</div>
+<div id="CPdayE" style="display: none;"> 
+	<fd:IncludeMedia name="/media/editorial/timeslots/msgE_cutoff_passed.html"/> 
 </div>
 <div class="learnMoreTimeslot">
 	<fd:IncludeMedia name="/media/editorial/timeslots/holidays/msg_learnmore_nodelivery.html"/>

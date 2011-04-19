@@ -19,7 +19,7 @@
 	<img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0">
 	<img src="/media_stat/images/timeslots/truck_delivery_warning.jpg" width="211" height="34" border="0" style="margin:0 5px;">
     </td>
-    <td class="text11gbold" width="100%" bgcolor=" #FFF9D7">
+    <td class="text11gbold" width="100%" bgcolor="#FFF9D7">
 <%
 	List messagesToDisplay = new ArrayList();
 	String appName = (String) session.getAttribute(SessionName.APPLICATION);

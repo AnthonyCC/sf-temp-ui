@@ -118,10 +118,10 @@ double currentHour = h+m;
 			<%}else if(user.isChefsTable() && deliveryModel.getMaxDiscount()>0 && user.isDlvPassNone()){%>
 				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/promotion_discount.html"/>
 			<%}else if(!user.isDlvPassActive()||(user.getDlvPassInfo()!=null && EnumDlvPassStatus.EXPIRED.equals(user.getDlvPassInfo().getStatus()))){
-			
+				
 				if(user.getDlvPassInfo()!=null && (EnumDlvPassStatus.EXPIRED.equals(user.getDlvPassInfo().getStatus()) && user.getDlvPassInfo().getDaysSinceDPExpiry()>0)){
 			%>
-					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_acquisition_notrial.html"/>
+					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_acquisition_notrail.html"/>
 				<%}else if(deliveryModel.getShoppingCart() != null && deliveryModel.getShoppingCart().getDeliveryPassCount()>0){%>
 					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_usage_1.html"/>
 				<%}else{%>
