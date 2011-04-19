@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -16,19 +17,22 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.ReserveTimeslot;
+import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryAddresses;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots;
 import com.freshdirect.mobileapi.controller.data.response.OrderHistory;
+import com.freshdirect.mobileapi.controller.data.response.OrderHistory.Order;
 import com.freshdirect.mobileapi.controller.data.response.ReservationTimeslots;
 import com.freshdirect.mobileapi.exception.JsonException;
+import com.freshdirect.mobileapi.model.DeliveryAddress.DeliveryAddressType;
+import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResult;
 import com.freshdirect.mobileapi.model.OrderInfo;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.ShipToAddress;
 import com.freshdirect.mobileapi.model.Timeslot;
-import com.freshdirect.mobileapi.model.DeliveryAddress.DeliveryAddressType;
-import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResult;
 import com.freshdirect.mobileapi.service.ServiceException;
+import com.freshdirect.mobileapi.util.ListPaginator;
 
 public class AccountController extends BaseController {
 
@@ -70,16 +74,32 @@ public class AccountController extends BaseController {
             ReserveTimeslot requestMessage = parseRequestObject(request, response, ReserveTimeslot.class);
             model = makeReservation(model, user, addressId, defaultReservationType(requestMessage), request);
         } else if (ACTION_GET_ORDER_HISTORY.equals(action)) {
-            model = getOrderHistory(model, user, request);
+            model = getOrderHistory(model, user, request, response);
         }
         return model;
     }
 
-    private ModelAndView getOrderHistory(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
+    private ModelAndView getOrderHistory(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
         //ResultBundle resultBundle = Order.cancelModify(user);
         List<OrderInfo> orderInfos = user.getCompleteOrderHistory();
+        
         OrderHistory responseMessage = new OrderHistory();
-        ((OrderHistory) responseMessage).setOrders(OrderHistory.Order.createOrderList(orderInfos));
+        List<Order> orders = OrderHistory.Order.createOrderList(orderInfos);
+        
+        String postData = getPostData(request, response);
+        int page = 1;
+        int resultMax = orders != null ? orders.size() : 0;
+        responseMessage.setTotalResultCount(resultMax);
+        LOGGER.debug("getOrderHistory:: PostData received: [" + postData + "]");
+        if (StringUtils.isNotEmpty(postData)) {
+            SearchQuery requestMessage = parseRequestObject(request, response, SearchQuery.class);
+            page = requestMessage.getPage();
+            resultMax = requestMessage.getMax();
+        }
+        ListPaginator<Order> paginator = new ListPaginator<Order>(orders, resultMax);
+               
+        ((OrderHistory) responseMessage).setOrders(paginator.getPage(page));
+        
         setResponseMessage(model, responseMessage, user);
         return model;
     }
