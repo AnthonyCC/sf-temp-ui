@@ -440,6 +440,14 @@ public class Sku {
    public String getGroupShortOfferDescription() {
 	   return priceCalc.getGroupShortOfferDescription();
    }
+   
+   public String getGroupOfferDescriptionText() {
+	   return priceCalc.getGroupOfferDescriptionText();
+   }
+   
+   public String getGroupOfferPriceText() {
+	   return priceCalc.getGroupOfferPriceText();
+   }
 
    public String getSustainabilityRating() {
        return sustainabilityRating;

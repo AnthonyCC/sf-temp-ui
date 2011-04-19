@@ -18,7 +18,9 @@ import com.freshdirect.mobileapi.model.OrderInfo;
 public class OrderHistory extends Message {
 
     private List<Order> orders;
-
+    
+    private Integer totalResultCount = 0;    
+    
     public List<Order> getOrders() {
         return orders;
     }
@@ -27,7 +29,15 @@ public class OrderHistory extends Message {
         this.orders = orders;
     }
 
-    public static class Order {
+    public Integer getTotalResultCount() {
+		return totalResultCount;
+	}
+
+	public void setTotalResultCount(Integer totalResultCount) {
+		this.totalResultCount = totalResultCount;
+	}
+
+	public static class Order {
 
         private String id;
 

@@ -512,8 +512,12 @@ public class SessionUser {
     
     public double getMaxSignupPromotion() {
         return sessionUser.getMaxSignupPromotion();
+        
     }
-
+    
+    public int getPromoErrorCode(String promoCode) {
+    	return sessionUser.getPromoErrorCode(promoCode);
+    }
     
     
 }

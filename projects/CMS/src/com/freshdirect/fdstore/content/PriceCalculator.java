@@ -40,17 +40,20 @@ public class PriceCalculator {
     transient FDProductInfo productInfo;
     transient FDProduct fdProduct;
     transient ZonePriceInfoModel zonePriceInfoModel;
+    final GroupPricingInfo groupPricingInfo;
     
     public PriceCalculator(PricingContext ctx, ProductModel product, SkuModel sku) {
         this.ctx = ctx;
         this.product = product;
         this.skuModel = sku;
+        this.groupPricingInfo = this.initGroupPricingInfo();
     }
 
     public PriceCalculator(PricingContext ctx, ProductModel product) {
         this.ctx = ctx;
         this.product = product;
         this.skuModel = product.getDefaultSku(ctx);
+        this.groupPricingInfo = this.initGroupPricingInfo();
     }
     
     public ProductModel getProductModel() {
@@ -584,102 +587,194 @@ public class PriceCalculator {
 		} 
 	}
 	
-	public String getGroupLongOfferDescription() {
-		
-		StringBuffer buf1 = new StringBuffer();
-		try{
-			if(getProductInfo().getGroup() == null) {
-				return null;
-			}
-			GroupScalePricing grpPricing = GroupScaleUtil.lookupGroupPricing(getProductInfo().getGroup());
-			MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(getProductInfo().getGroup(), ctx.getZoneId());
-			if(grpPricing != null && matPrice != null) {
-				double displayPrice = 0.0;
-				boolean isSaleUnitDiff = false;
-				if(matPrice.getPricingUnit().equals(matPrice.getScaleUnit())){
-					if(matPrice.getPricingUnit().equals("EA"))
-						displayPrice = matPrice.getPrice() * matPrice.getScaleLowerBound();
-					else {
-						//other than eaches.
-						displayPrice = matPrice.getPrice();
-						isSaleUnitDiff = true;
-					}
-				} else {
-					displayPrice = matPrice.getPrice();
-					isSaleUnitDiff = true;
-				}
-				
-				buf1.append( "Any "+grpPricing.getLongDesc()+" ");				
-				buf1.append( FORMAT_QUANTITY.format( matPrice.getScaleLowerBound() ) );
-				if(matPrice.getScaleUnit().equals("LB")) {//Other than eaches append the /pricing unit for clarity.
-					buf1.append(matPrice.getScaleUnit().toLowerCase()).append("s");
-				}
-				buf1.append( " for " );
-				buf1.append( currencyFormatter.format(displayPrice ) );
-				if(isSaleUnitDiff) {
-					buf1.append("/").append(matPrice.getPricingUnit().toLowerCase());
-				}								
-			} else {
-				return null;
-			}
+	public GroupPricingInfo getGroupPricingInfo() {
+		return groupPricingInfo;
+	}
 
-		} catch (FDSkuNotFoundException e) {
-			throw new FDRuntimeException(e);
-		}  catch (FDResourceException e) {
-			throw new FDRuntimeException(e);
-		}  
+	public String getGroupLongOfferDescription() {
+				
+		if(getGroupPricingInfo() != null) {
+			StringBuffer buf1 = new StringBuffer();
+			buf1.append( "Any "+getGroupPricingInfo().getLongDescription() +" ");				
+			buf1.append( getGroupPricingInfo().getLowerBound() );
+			
+			if(getGroupPricingInfo().isLowerBoundUnitPlural()) {//Other than eaches append the /pricing unit for clarity.
+				buf1.append(getGroupPricingInfo().getLowerBoundUnit()).append("s");
+			}
+			buf1.append( " for " );
+			buf1.append( getGroupPricingInfo().getDisplayPrice());
+			if(getGroupPricingInfo().isSaleUnitDiff()) {
+				buf1.append("/").append(getGroupPricingInfo().getDisplayPriceUnit());
+			}	
+			return buf1.toString();
+		}
+		return null;
 		
-		return buf1.toString();
 	}
 	
 	public String getGroupShortOfferDescription() {
 		
-		StringBuffer buf1 = new StringBuffer();
-		try{
-			if(getProductInfo().getGroup() == null) {
-				return null;
+		if(getGroupPricingInfo() != null) {
+			StringBuffer buf1 = new StringBuffer();
+			buf1.append( "Any " );
+			buf1.append( getGroupPricingInfo().getLowerBound() );
+			if(getGroupPricingInfo().isLowerBoundUnitPlural()) {//Other than eaches append the /pricing unit for clarity.
+				buf1.append(getGroupPricingInfo().getLowerBoundUnit()).append("s");
 			}
-			GroupScalePricing grpPricing = GroupScaleUtil.lookupGroupPricing(getProductInfo().getGroup());
-			MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(getProductInfo().getGroup(), ctx.getZoneId());
-			if(grpPricing != null && matPrice != null) {
-				double displayPrice = 0.0;
-				boolean isSaleUnitDiff = false;
-				if(matPrice.getPricingUnit().equals(matPrice.getScaleUnit())){
-					if(matPrice.getPricingUnit().equals("EA"))
-						displayPrice = matPrice.getPrice() * matPrice.getScaleLowerBound();
-					else {
-						//other than eaches.
+			buf1.append( " " );
+			buf1.append( getGroupPricingInfo().getShortDescription() );
+			buf1.append( " for " );
+			buf1.append( getGroupPricingInfo().getDisplayPrice() );
+			if(getGroupPricingInfo().isSaleUnitDiff()) {
+				buf1.append("/").append(getGroupPricingInfo().getDisplayPriceUnit());
+			}	
+			return buf1.toString();	
+
+		}
+		return null;				
+	}
+	
+	public String getGroupOfferDescriptionText() {
+		if(getGroupPricingInfo() != null) {
+			return ( "Any "+getGroupPricingInfo().getLongDescription() +" ");
+		}
+		return null;
+	}
+	
+	public String getGroupOfferPriceText() {
+		if(getGroupPricingInfo() != null) {
+			StringBuffer buf1 = new StringBuffer();						
+			buf1.append( getGroupPricingInfo().getLowerBound() );
+			
+			if(getGroupPricingInfo().isLowerBoundUnitPlural()) {//Other than eaches append the /pricing unit for clarity.
+				buf1.append(getGroupPricingInfo().getLowerBoundUnit()).append("s");
+			}
+			buf1.append( " for " );
+			buf1.append( getGroupPricingInfo().getDisplayPrice());
+			if(getGroupPricingInfo().isSaleUnitDiff()) {
+				buf1.append("/").append(getGroupPricingInfo().getDisplayPriceUnit());
+			}	
+			return buf1.toString();
+		}
+		return null;
+	}
+	
+	public GroupPricingInfo initGroupPricingInfo() {
+		
+		try{
+			if(getProductInfo() != null && getProductInfo().getGroup() != null) {//Check if Group Discount is there
+				GroupScalePricing grpPricing = GroupScaleUtil.lookupGroupPricing(getProductInfo().getGroup());
+				MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(getProductInfo().getGroup(), ctx.getZoneId());
+				if(grpPricing != null && matPrice != null) {
+					double displayPrice = 0.0;
+					boolean isSaleUnitDiff = false;
+					if(matPrice.getPricingUnit().equals(matPrice.getScaleUnit())){
+						if(matPrice.getPricingUnit().equals("EA"))
+							displayPrice = matPrice.getPrice() * matPrice.getScaleLowerBound();
+						else {
+							//other than eaches.
+							displayPrice = matPrice.getPrice();
+							isSaleUnitDiff = true;
+						}
+					} else {
 						displayPrice = matPrice.getPrice();
 						isSaleUnitDiff = true;
 					}
-				} else {
-					displayPrice = matPrice.getPrice();
-					isSaleUnitDiff = true;
+					return new GroupPricingInfo(grpPricing.getLongDesc() 
+																	, grpPricing.getShortDesc()
+																	, FORMAT_QUANTITY.format( matPrice.getScaleLowerBound() )
+																	, matPrice.getScaleUnit().toLowerCase()
+																	, matPrice.getScaleUnit().equals("LB")
+																	, currencyFormatter.format(displayPrice )
+																	, matPrice.getPricingUnit().toLowerCase()
+																	, isSaleUnitDiff);											
 				}
-				
-				buf1.append( "Any " );
-				buf1.append( FORMAT_QUANTITY.format( matPrice.getScaleLowerBound() ) );
-				if(matPrice.getScaleUnit().equals("LB")) {//Other than eaches append the /pricing unit for clarity.
-					buf1.append(matPrice.getScaleUnit().toLowerCase()).append("s");
-				}
-				buf1.append( " " );
-				buf1.append( grpPricing.getShortDesc() );
-				buf1.append( " for " );
-				buf1.append( currencyFormatter.format(displayPrice) );
-				if(isSaleUnitDiff) {
-					buf1.append("/").append(matPrice.getPricingUnit().toLowerCase());
-				}							
-			} else {
-				return null;
-			}
-
+			}			
 		} catch (FDSkuNotFoundException e) {
 			throw new FDRuntimeException(e);
 		}  catch (FDResourceException e) {
 			throw new FDRuntimeException(e);
-		}  
+		}
+		return null;
+	}
+	
+	class GroupPricingInfo {
+		String longDescription;
+		String shortDescription;
+		String lowerBound;
+		String lowerBoundUnit;
+		boolean lowerBoundUnitPlural;
+		String displayPrice;
+		String displayPriceUnit;
+		boolean isSaleUnitDiff;
 		
-		return buf1.toString();
+		public GroupPricingInfo(String longDescription,
+				String shortDescription, String lowerBound,
+				String lowerBoundUnit, boolean lowerBoundUnitPlural,
+				String displayPrice, String displayPriceUnit,
+				boolean isSaleUnitDiff) {
+			super();
+			this.longDescription = longDescription;
+			this.shortDescription = shortDescription;
+			this.lowerBound = lowerBound;
+			this.lowerBoundUnit = lowerBoundUnit;
+			this.lowerBoundUnitPlural = lowerBoundUnitPlural;
+			this.displayPrice = displayPrice;
+			this.displayPriceUnit = displayPriceUnit;
+			this.isSaleUnitDiff = isSaleUnitDiff;
+		}
+		
+		public String getLongDescription() {
+			return longDescription;
+		}
+		public void setLongDescription(String longDescription) {
+			this.longDescription = longDescription;
+		}
+		public String getShortDescription() {
+			return shortDescription;
+		}
+		public void setShortDescription(String shortDescription) {
+			this.shortDescription = shortDescription;
+		}
+		public String getLowerBound() {
+			return lowerBound;
+		}
+		public void setLowerBound(String lowerBound) {
+			this.lowerBound = lowerBound;
+		}
+		public String getLowerBoundUnit() {
+			return lowerBoundUnit;
+		}
+		public void setLowerBoundUnit(String lowerBoundUnit) {
+			this.lowerBoundUnit = lowerBoundUnit;
+		}
+		
+		public boolean isLowerBoundUnitPlural() {
+			return lowerBoundUnitPlural;
+		}
+
+		public void setLowerBoundUnitPlural(boolean lowerBoundUnitPlural) {
+			this.lowerBoundUnitPlural = lowerBoundUnitPlural;
+		}
+
+		public String getDisplayPrice() {
+			return displayPrice;
+		}
+		public void setDisplayPrice(String displayPrice) {
+			this.displayPrice = displayPrice;
+		}
+		public String getDisplayPriceUnit() {
+			return displayPriceUnit;
+		}
+		public void setDisplayPriceUnit(String displayPriceUnit) {
+			this.displayPriceUnit = displayPriceUnit;
+		}
+		public boolean isSaleUnitDiff() {
+			return isSaleUnitDiff;
+		}
+		public void setSaleUnitDiff(boolean isSaleUnitDiff) {
+			this.isSaleUnitDiff = isSaleUnitDiff;
+		}						
 	}
 
 }

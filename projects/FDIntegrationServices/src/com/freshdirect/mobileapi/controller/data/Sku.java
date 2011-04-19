@@ -74,6 +74,10 @@ public class Sku {
     
     private String groupShortOfferDescription;
     
+    private String groupOfferDescriptionText;
+    
+    private String groupOfferPriceText;
+    
     private String sustainabilityRating;
     
     private String sustainabilityRatingDescription;
@@ -130,6 +134,12 @@ public class Sku {
         
         String shortOfferDesc = sku.getGroupShortOfferDescription();
         result.setGroupShortOfferDescription(shortOfferDesc != null ? shortOfferDesc : "");
+        
+        String groupOfferDescriptionText = sku.getGroupOfferDescriptionText();
+        result.setGroupOfferDescriptionText(groupOfferDescriptionText != null ? groupOfferDescriptionText : "");
+        
+        String groupOfferPriceText = sku.getGroupOfferPriceText();
+        result.setGroupOfferPriceText(groupOfferPriceText != null ? groupOfferPriceText : "");
       
         String _skuSustainabilityRating = sku.getSustainabilityRating();
         result.setSustainabilityRating(_skuSustainabilityRating != null ? _skuSustainabilityRating : "");
@@ -320,6 +330,22 @@ public class Sku {
 	}
 
 	
+	public String getGroupOfferDescriptionText() {
+		return groupOfferDescriptionText;
+	}
+
+	public void setGroupOfferDescriptionText(String groupOfferDescriptionText) {
+		this.groupOfferDescriptionText = groupOfferDescriptionText;
+	}
+
+	public String getGroupOfferPriceText() {
+		return groupOfferPriceText;
+	}
+
+	public void setGroupOfferPriceText(String groupOfferPriceText) {
+		this.groupOfferPriceText = groupOfferPriceText;
+	}
+
 	public String getSustainabilityRating() {
 		return sustainabilityRating;
 	}
