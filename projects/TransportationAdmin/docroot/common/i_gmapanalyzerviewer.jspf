@@ -130,21 +130,23 @@
 		if(result != null) {
 			var address = [];
 			address = result.split('_');
-
+			var count = 0;
 			for (j=0; j < address.length-1; j++) {
 		 	       // Retrieve location information
-				geocoder.getLocations(address[j], function(response) {
+				var callBack = function(response) {
+					count++;
 					var place = response.Placemark[0];
 					var addressPoint = new GLatLng(place.Point.coordinates[1],place.Point.coordinates[0]);
 				      // Center the map on this point
 				      map.setCenter(addressPoint, 12);
 
-				      var addressMarker = createLabelledMarker(addressPoint,"A"+j,place.address+"<br/>"
+				      var addressMarker = createLabelledMarker(addressPoint,"A"+count,place.address+"<br/>"
 	      					+("Latitude="+place.Point.coordinates[1]+"<br/>"+"Longitude="+place.Point.coordinates[0]));
 
 				      // Add the marker to map
 				      map.addOverlay(addressMarker);
-				});
+				}
+				geocoder.getLocations(address[j], callBack);
 			}
 		}
       	}
