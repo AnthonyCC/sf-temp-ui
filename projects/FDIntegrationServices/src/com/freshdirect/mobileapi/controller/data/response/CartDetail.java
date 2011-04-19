@@ -77,7 +77,7 @@ public class CartDetail {
     }
 
     private List<RedemptionPromotion> redemptionPromotions = new ArrayList<RedemptionPromotion>();
-
+    
     public List<RedemptionPromotion> getRedemptionPromotions() {
         return redemptionPromotions;
     }
@@ -89,7 +89,8 @@ public class CartDetail {
     public void addRedemptionPromotion(RedemptionPromotion redemptionPromotion) {
         this.redemptionPromotions.add(redemptionPromotion);
     }
-
+    
+    
     //    private double customerCreditsValue = 0.0;
     //
     //    public double getCustomerCreditsValue() {
@@ -100,7 +101,7 @@ public class CartDetail {
     //        this.customerCreditsValue = customerCreditsValue;
     //    }
 
-    private boolean isEstimatedPrice;
+	private boolean isEstimatedPrice;
 
     public boolean isEstimatedPrice() {
         return isEstimatedPrice;
@@ -195,7 +196,8 @@ public class CartDetail {
         }
 
         public enum RedemptionPromotionType {
-            SAMPLE, WAIVE_CHARGE
+            //SAMPLE, WAIVE_CHARGE, DOLLAR_VALUE_DISCOUNT
+        	SAMPLE, WAIVE_CHARGE
         }
 
         public boolean isAutomatic() {
@@ -618,7 +620,26 @@ public class CartDetail {
 
         private double groupScaleSavings;
         
-        public boolean isHasDepositValue() {
+        private String discountMsg;
+        private double discountSavings;
+    	
+        public String getDiscountMsg() {
+			return discountMsg;
+		}
+
+		public void setDiscountMsg(String discountMsg) {
+			this.discountMsg = discountMsg;
+		}
+
+		public double getDiscountSavings() {
+			return discountSavings;
+		}
+
+		public void setDiscountSavings(double discountSavings) {
+			this.discountSavings = discountSavings;
+		}
+
+		public boolean isHasDepositValue() {
             return hasDepositValue;
         }
 

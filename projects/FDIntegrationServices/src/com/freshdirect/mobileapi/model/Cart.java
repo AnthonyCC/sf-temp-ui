@@ -52,19 +52,19 @@ import com.freshdirect.mobileapi.controller.data.request.AddMultipleItemsToCart;
 import com.freshdirect.mobileapi.controller.data.request.MultipleRequest;
 import com.freshdirect.mobileapi.controller.data.request.UpdateItemInCart;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail;
+import com.freshdirect.mobileapi.controller.data.response.CartDetail.AffiliateCartDetail;
+import com.freshdirect.mobileapi.controller.data.response.CartDetail.CartLineItem.CartLineItemType;
+import com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount.DiscountType;
+import com.freshdirect.mobileapi.controller.data.response.CartDetail.Group;
+import com.freshdirect.mobileapi.controller.data.response.CartDetail.ProductLineItem;
+import com.freshdirect.mobileapi.controller.data.response.CartDetail.RedemptionPromotion;
+import com.freshdirect.mobileapi.controller.data.response.CartDetail.RedemptionPromotion.RedemptionPromotionType;
+import com.freshdirect.mobileapi.controller.data.response.CartDetail.SummaryLineCharge;
 import com.freshdirect.mobileapi.controller.data.response.CreditCard;
 import com.freshdirect.mobileapi.controller.data.response.DepotLocation;
 import com.freshdirect.mobileapi.controller.data.response.ElectronicCheck;
 import com.freshdirect.mobileapi.controller.data.response.ModifyCartDetail;
 import com.freshdirect.mobileapi.controller.data.response.Order;
-import com.freshdirect.mobileapi.controller.data.response.CartDetail.AffiliateCartDetail;
-import com.freshdirect.mobileapi.controller.data.response.CartDetail.Group;
-import com.freshdirect.mobileapi.controller.data.response.CartDetail.ProductLineItem;
-import com.freshdirect.mobileapi.controller.data.response.CartDetail.RedemptionPromotion;
-import com.freshdirect.mobileapi.controller.data.response.CartDetail.SummaryLineCharge;
-import com.freshdirect.mobileapi.controller.data.response.CartDetail.CartLineItem.CartLineItemType;
-import com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount.DiscountType;
-import com.freshdirect.mobileapi.controller.data.response.CartDetail.RedemptionPromotion.RedemptionPromotionType;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.tagwrapper.FDShoppingCartControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.RedemptionCodeControllerTagWrapper;
@@ -640,7 +640,13 @@ public class Cart {
                 } catch (ModelException e) {
                     throw new FDResourceException(e);
                 }
-
+                              
+            	if(cartLine.getDiscount() != null) {
+            		Discount discount = cartLine.getDiscount();
+            		PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
+            		productLineItem.setDiscountMsg(promotion.getDescription());
+            		productLineItem.setDiscountSavings(cartLine.getDiscountAmount());
+            	}
                 productLineItem.setProductConfiguration(productConfiguration);
                 productLineItem.setHasKosherRestriction(cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.KOSHER));
 
@@ -784,8 +790,9 @@ public class Cart {
                 //    <%          
             }
         }
-
+        
         if (isRedemptionApplied) {
+        	
             if (redemptionPromo.isSampleItem()) {
                 cartDetail.addRedemptionPromotion(new RedemptionPromotion(redemptionPromo.getPromotionCode(),
                         RedemptionPromotionType.SAMPLE, redemptionPromo.getDescription(), false));
@@ -808,8 +815,30 @@ public class Cart {
                 //                <td colspan="2">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
                 //            </tr>
                 //        <%
+            } /*else {
+            	cartDetail.addRedemptionPromotion(new RedemptionPromotion(redemptionPromo.getPromotionCode(),
+                        RedemptionPromotionType.DOLLAR_VALUE_DISCOUNT, redemptionPromo.getDescription(), false));
+            }  */          
+        } /*else if(redemptionPromo != null) {//Redemption code was entered by user but it is still not applied because of missing eligibility criteria.
+        	double redemptionAmt = 0;
+    		String warningMessage = "";
+    		if (cart.getSubTotal() < redemptionPromo.getMinSubtotal()) {
+                redemptionAmt = redemptionPromo.getHeaderDiscountTotal();
+    			warningMessage = MessageFormat.format(SystemMessageList.MSG_REDEMPTION_MIN_NOT_MET
+    														, new Object[] { new Double(redemptionPromo.getMinSubtotal()) } );
+    			
+    		} else if (redemptionPromo.isLineItemDiscount()) {
+                int errorCode = user.getPromoErrorCode(redemptionPromo.getPromotionCode());
+                if(errorCode == PromotionErrorType.NO_ELIGIBLE_CART_LINES.getErrorCode()) {
+    			    warningMessage = SystemMessageList.MSG_REDEMPTION_NO_ELIGIBLE_CARTLINES;
+                }
+    		} else if (redemptionPromo.isSampleItem()) {
+    			warningMessage = SystemMessageList.MSG_REDEMPTION_PRODUCT_UNAVAILABLE;
+    		} else if (redemptionPromo.getOfferType().equals(EnumOfferType.WINDOW_STEERING)) {               
+                warningMessage = SystemMessageList.MSG_REDEMPTION_NO_ELIGIBLE_TIMESLOT;
             }
-        }
+    		cartDetail.setRedemptionWarning(warningMessage);
+        }*/
 
         //Customer Credit
         if (cart.getCustomerCreditsValue() > 0) {
