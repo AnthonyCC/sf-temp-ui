@@ -105,7 +105,7 @@ public class StandingOrdersServiceCmd {
 				.append("<th nowrap=\"nowrap\" >").append("Customer").append("</th>")
 				.append("<th nowrap=\"nowrap\">").append("Customer Id").append("</th>")
 				.append("<th nowrap=\"nowrap\">").append("Company").append("</th>")
-				.append("<th nowrap=\"nowrap\">").append("Order Date").append("</th>")
+				.append("<th nowrap=\"nowrap\">").append("Next Order Delivery Date").append("</th>")
 				.append("<th nowrap=\"nowrap\">").append("Delivery Time").append("</th>")
 				.append("<th nowrap=\"nowrap\">").append("Order Frequency (In Weeks)").append("</th>")
 				.append("<th nowrap=\"nowrap\">").append("Error").append("</th>")			

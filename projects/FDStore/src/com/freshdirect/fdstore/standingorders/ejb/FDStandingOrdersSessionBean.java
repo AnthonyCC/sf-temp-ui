@@ -268,7 +268,7 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			
 			return ret;
 		} catch (SQLException e) {
-			LOGGER.error( "SQL ERROR in loadActiveStandingOrders() : " + e.getMessage(), e );
+			LOGGER.error( "SQL ERROR in getFailedStandingOrdersCustInfo() : " + e.getMessage(), e );
 			e.printStackTrace();
 			throw new FDResourceException(e);
 		} finally {
@@ -286,7 +286,7 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			
 			return ret;
 		} catch (SQLException e) {
-			LOGGER.error( "SQL ERROR in loadActiveStandingOrders() : " + e.getMessage(), e );
+			LOGGER.error( "SQL ERROR in getMechanicalFailedStandingOrdersCustInfo() : " + e.getMessage(), e );
 			e.printStackTrace();
 			throw new FDResourceException(e);
 		} finally {
