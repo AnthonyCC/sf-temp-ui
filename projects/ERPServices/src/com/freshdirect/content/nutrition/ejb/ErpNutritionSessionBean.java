@@ -377,7 +377,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
 	            	aLog.add(al);
 	            }
 	            
-	            String val_string = value>0?Double.toString(value):"0";
+	            String val_string = value>0?Math.round(value)+"":"0";
 	            oldValue = "";
 	            if(oldHash.containsKey(nutritionType)) {
 	            	oldValue = (String) oldHash.get(nutritionType);
@@ -403,7 +403,11 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
             pstmt.setString(1, skuCode);
             rset = pstmt.executeQuery();
             while (rset.next()) {
-            	oldHash.put(ErpNutritionInfoType.getInfoType(rset.getString(1)).getName() +"|" + rset.getString(1) + "|" + rset.getString(3), rset.getString(2));
+            	//LOGGER.debug("\ntype:" + rset.getString(1) + "|info:" + rset.getString(2) + "|priority:" + rset.getString(3));
+            	String info = rset.getString(2);
+            	if(info == null)
+            		info = "";
+            	oldHash.put(ErpNutritionInfoType.getInfoType(rset.getString(1)).getName() +"|" + rset.getString(1) + "|" + rset.getString(3), info);
             }
             
             ps = con.prepareStatement("delete from erps.nutrition_info where skucode=?");
@@ -437,14 +441,15 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
                     String key = attr.getNutritionInfoType().getName()+ "|"+attr.getNutritionInfoType().getCode() + "|" + attr.getPriority();
     	            if(oldHash.containsKey(key)) {
     	            	oldValue = (String) oldHash.get(key);
-                }
+    	            }
+    	            LOGGER.debug("OldValue: " + oldValue + "|newValue=" + info_value);
     	            if(!oldValue.equalsIgnoreCase(info_value)) {
     	            	ActivityLog al = new ActivityLog(null, skuCode, "INFO", oldValue, info_value, ts, user);
     	            	al.setNutInfoType(attr.getNutritionInfoType().getCode());
     	            	al.setNutritionPriority(attr.getPriority());
     	            	aLog.add(al);
     	            	LOGGER.debug(al.toString());
-            }
+    	            }
                 }
             }
             ps.close();
@@ -452,9 +457,8 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
             //call activity log method
 			com.freshdirect.erp.ejb.ErpActivityLogDAO.logActivity(con, aLog);
             
-        } catch (SQLException se) {
+        } catch (Exception se) {
             LOGGER.error("Following SQLException occurred " , se);
-            throw new EJBException(se.getMessage());
         } finally {
             close(con);
         }
