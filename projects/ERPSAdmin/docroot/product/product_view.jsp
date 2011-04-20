@@ -6,6 +6,7 @@
 <%@ page import='com.freshdirect.erp.security.SecurityManager' %>
 <%@ page import='java.util.*' %>
 <%@ page import='java.text.DecimalFormat' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -13,21 +14,121 @@
 	DecimalFormat formatter = new DecimalFormat();
 %>
 
-<script>
-function copyConfirm(value){
-	if(value == ""){
-		alert("Please enter a valid WebId");
-		return false;
-	} else {
-		return confirm('Copy attributes from ' + value + '?');
-	}
-}
-</script>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<title>Erpsy - ProductView</title>
+		<link rel="shortcut icon" href="/blackbirdjs/favicon.ico" type="image/x-icon" />		
+		<link rel="stylesheet" href="/ERPSAdmin/common/css/erpsadmin.css" type="text/css">	
+		<script type="text/javascript" src="/ERPSAdmin/batch/blackbirdjs/blackbird.js"></script>
+		<link type="text/css" rel="Stylesheet" href="/ERPSAdmin/batch/blackbirdjs/blackbird.css" />
+		<script type="text/javascript" src="/ERPSAdmin/product/erpsydaisysku2urladdon.js"></script>
+		<script type="text/javascript" src="http://www.freshdirect.com/assets/javascript/prototype.js"></script>
+		<script>
+		function copyConfirm(value){
+			if(value == ""){
+				alert("Please enter a valid WebId");
+				return false;
+			} else {
+				return confirm('Copy attributes from ' + value + '?');
+			}
+		}
+		</script>
+		<style>
+			table#_skuContTable, table#_skuContTable td, table#_keyTable, table#_keyTable td {
+				padding: 0;
+				border-collapse: collapse;
+			}
+			table#_skuContTable td#_skuCont_tdRelatedPrimary {
+				width: 50%;
+			}
+			table#_skuContTable div, td#_skuCont_tdRelatedSecondary div, table#_skuContTable td#_skuCont_tdRelatedSecondary  {
+				border: 1px solid #eee;
+				padding: 0;
+				margin: 0;
+				float: left;
+			}
+			table#_skuContTable td#_skuCont_tdRelatedSecondary div {
+				border: 0 none;
+			}
+			table#_skuContTable div {
+				width: 170px;
+			}
+			td#_skuCont_tdRelatedPrimary a {
+				color: #BF0B34;
+			}
+			span.defSKU {
+				color: #00f;
+				font-weight: bold;
+			}
+			.orphan {
+				text-decoration: line-through;
+			}
+			span.prefSKU {
+				color: #CF8C19;
+				font-weight: bold;
+			}
+			.defSKUBG {
+				background-color: #00f;
+			}
+			.prefSKUBG {
+				background-color: #CF8C19;
+			}
+			.localLinkBG {
+				background-color: #7F7F7F;
+			}
+			.www1LinkBG {
+				background-color: #BF0B34;
+			}
+			.www2LinkBG {
+				background-color: #279F54;
+			}
+			#_keyTableTD0 div div {
+				margin-right: 3px;
+				width: 16px;
+			}
+			#_keyTableTD0 div {
+				margin-right: 16px;
+			}
+			td#_skuCont_tdRelatedSecondary a, td#_skuCont_tdComponentsOpt a {
+				color: #279F54;
+			}
+			td#_skuCont_tdVirtual a, td#_skuCont_tdRelatedPrimary span.siblingSKU a, span.siblingSKU a {
+				color: #7F7F7F;
+			}
+			table td#_skuCont_tdRelatedPrimary, table td#_skuCont_tdRelatedSecondary, table td#_skuCont_tdComponentsOpt {
+				vertical-align: top;
+			}
+			table td#_skuCont_tdRelatedPrimary div, table td#_skuCont_tdRelatedSecondary div, #_skuCont_tdVirtual div, table td#_skuCont_tdComponentsOpt div, table td#_skuCont_tdComponents div {
+				width: 100%;
+			}
+			table td#_skuCont_tdComponents div a.skuToggle {
+				float: right;
+				margin-right: 5px;
+				font-size: 9px;
+				background-color: #666;
+				color: #fff;
+				padding: 0 2px 1px 2px;
+			}
+			#_skuContTable, table#_keyTable {
+				width: 100%;
+				margin-bottom: 5px;
+			}
+			#_keyTableTHKey {
+				font-weight: bold;
+			}
+			table#_keyTable div {
+				float: left;
+			}
+		</style>
+	</head>
+	<body>
+		<tmpl:insert template='/common/templates/main1.jsp'/>
+		<div id="main">		
+			<div id="content">			
 <%	String skuCode = request.getParameter("skuCode");%>
-<tmpl:insert template='/common/templates/main.jsp'>
-    <tmpl:put name='title' content='product view page' direct='true'/>
 
-    <tmpl:put name='content' direct='true'>
 
         <fd:ProductSearch results='searchResults' searchtype='<%= request.getParameter("searchtype") %>' searchterm='<%= request.getParameter("searchterm") %>'>
             <form action="product_search.jsp" method="post">
@@ -63,6 +164,8 @@ function copyConfirm(value){
                 <table width="600" cellspacing=2 cellpadding=0>
                     <tr><th align="left" class="section_title">PRODUCT:</th></tr>
                     <tr><td><%= (product.getSkuCode() != null) ? product.getSkuCode() : "" %></td></tr>
+					<tr><td><div id="addon">
+					<script language="javascript">sku_urls();</script> </div></td></tr>
                     <tr><td><%= product.getProxiedMaterial().getDescription() %></td></tr>
                     <% if (product.getSkuCode() == null) { %>
 						<tr><td><b>There is no such product in ERPServices with skucode : <%= skuCode %></b></td></tr>
@@ -272,5 +375,3 @@ function copyConfirm(value){
             <%  } %>
                                 
                                 
-     </tmpl:put>
-</tmpl:insert>
