@@ -66,7 +66,7 @@ if(user.isDepotUser()){
 		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675" >
 			<TR VALIGN="TOP">
 				<TD WIDTH="675">
-					<img src="/media_stat/images/template/youraccount/hdr_corp_delivery.gif" width="135" height="9" alt="CORPORATE DELIVERY">&nbsp;
+					<img src="/media_stat/images/template/youraccount/hdr_corp_delivery.gif" width="154" height="15" alt="CORPORATE DELIVERY">&nbsp;
 					<IMG src="/media_stat/images/layout/999966.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
 				</td>
@@ -86,7 +86,7 @@ if(user.isDepotUser()){
 		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675" >
 			<TR VALIGN="TOP">
 				<TD WIDTH="675">
-					<img src="/media_stat/images/template/youraccount/hdr_home_delivery.gif" width="98" height="9" alt="CORPORATE DELIVERY">&nbsp;
+					<img src="/media_stat/images/template/youraccount/hdr_home_delivery.gif" width="110" height="15" alt="CORPORATE DELIVERY">&nbsp;
 					<IMG src="/media_stat/images/layout/999966.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
 				</td>

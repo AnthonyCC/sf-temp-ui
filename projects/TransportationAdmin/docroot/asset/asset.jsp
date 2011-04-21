@@ -87,9 +87,9 @@
 							           
 							  <ec:column property="assetNo" title="Asset No"/>
 							  <ec:column property="assetDescription" title="Description"/>	
-							  <ec:column property="assetType.code" title="Type"/>
+							  <ec:column property="assetType.code" title="Asset Type"/>
 							  <ec:column property="assetStatus" title="Status" />
-							  <ec:column property="assetTemplate.assetTemplateName" title="Attribute Type" />
+							  <ec:column property="assetTemplate.assetTemplateName" title="Asset Template" />
 							</ec:row>
 						  </ec:table>
 					   </form> 

@@ -1,24 +1,21 @@
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
-    <td rowspan="5" width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
-    <td rowspan="2" colspan="2"><img src="/media_stat/images/layout/top_left_curve.gif" width="6" height="5" border="0"></td>
-    <td  bgcolor="#CCCCCC"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
-    <td  bgcolor="#CCCCCC" rowspan="5"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
-    <td  bgcolor="#CCCCCC"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
-    <td rowspan="2" colspan="2"><img src="/media_stat/images/layout/top_right_curve.gif" width="6" height="5" border="0"></td>
-    <td rowspan="5"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+    <td rowspan="5" width="20"  style="font-size:1px;"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+    <td rowspan="2" colspan="2" style="font-size:1px;"><img src="/media_stat/images/layout/top_left_curve.gif" width="6" height="5" border="0"></td>
+    <td bgcolor="#CCCCCC" style="font-size:1px;"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
+    <td bgcolor="#CCCCCC" rowspan="5" style="font-size:1px;"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
+    <td bgcolor="#CCCCCC" style="font-size:1px;"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
+    <td rowspan="2" colspan="2" style="font-size:1px;"><img src="/media_stat/images/layout/top_right_curve.gif" width="6" height="5" border="0"></td>
+    <td rowspan="5" style="font-size:1px;"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
 </tr>
 <tr>
-    <td colspan="1" bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
-    <td colspan="1" bgcolor="#FFF9D7"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
+    <td colspan="1" bgcolor="#FFFFFF" height="4" style="font-size:1px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
+    <td colspan="1" bgcolor="#FFF9D7" height="4" style="font-size:1px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
 </tr>
 <tr>
-    <td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
-    <td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
-    <td bgcolor="#FFFFFF" style="margin:0 5px;">
-	<img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0">
-	<img src="/media_stat/images/template/homepages/truck.gif" width="61" height="23" border="0" style="margin:0 5px;">
-    </td>
+    <td bgcolor="#CCCCCC" style="font-size:1px;"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
+    <td bgcolor="#FFFFFF" style="font-size:1px;"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
+    <td bgcolor="#FFFFFF" style="margin:0 5px;"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"><img src="/media_stat/images/template/homepages/truck.gif" width="61" height="23" border="0" style="margin:0 5px;"></td>
     <td class="text11" width="100%" bgcolor="#FFF9D7" style="padding: 3px 5px 3px 5px">
 
 	<b><span class="kosher">Kosher Delivery Note:</span></b>
@@ -37,18 +34,18 @@
 		<a href="javascript:popup('/shared/departments/kosher/delivery_info.jsp','small')">Learn More</a>
 
     </td>
-    <td bgcolor="#FFF9D7"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
-    <td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
+   <td bgcolor="#FFF9D7" style="font-size:1px;"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
+    <td bgcolor="#CCCCCC" width="20" style="font-size:1px;"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
 </tr>
 <tr>
-    <td rowspan="2" colspan="2"><img src="/media_stat/images/layout/bottom_left_curve.gif" width="6" height="5" border="0"></td>
-    <td bgcolor="#FFFFFF"  colspan="1"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
-    <td bgcolor="#FFF9D7"  colspan="1"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
-    <td rowspan="2" colspan="2"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="5" border="0"></td>
+    <td rowspan="2" colspan="2" style="font-size:1px;"><img src="/media_stat/images/layout/bottom_left_curve.gif" width="6" height="5" border="0"></td>
+    <td bgcolor="#FFFFFF"  colspan="1"  style="font-size:1px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
+    <td bgcolor="#FFF9D7"  colspan="1"  style="font-size:1px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
+    <td rowspan="2" colspan="2" style="font-size:1px;"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="5" border="0"></td>
 </tr>
 <tr>
-    <td  bgcolor="#CCCCCC"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
-    <td  bgcolor="#CCCCCC"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
+    <td  bgcolor="#CCCCCC" style="font-size:1px;"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
+    <td  bgcolor="#CCCCCC" style="font-size:1px;"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
 </tr>
 </table>
 <img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0">

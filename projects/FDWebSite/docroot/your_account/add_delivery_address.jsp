@@ -34,7 +34,7 @@
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675">
 <TR VALIGN="TOP">
 	<TD WIDTH="675">
-		<img src="/media_stat/images/navigation/delivery_address.gif" WIDTH="116" HEIGHT="9" border="0" alt="DELIVERY ADDRESS">
+		<img src="/media_stat/images/navigation/delivery_address.gif" WIDTH="133" HEIGHT="15" border="0" alt="DELIVERY ADDRESS">
 		&nbsp;&nbsp;&nbsp;<FONT CLASS="text9">* Required information</FONT><BR>
 		<IMG src="/media_stat/images/layout/999966.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 	</TD>

@@ -15,10 +15,7 @@
 <tr>
     <td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
     <td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
-    <td bgcolor="#FFFFFF" style="margin:0 5px;">
-	<img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0">
-	<img src="/media_stat/images/timeslots/warning.gif" width="92" height="34" border="0" style="margin:0 5px;">
-    </td>
+    <td bgcolor="#FFFFFF" style="margin:0 5px;"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"><img src="/media_stat/images/timeslots/warning.gif" width="92" height="34" border="0" style="margin:0 5px;"></td>
 <td style="font-size: 10px; font-weight: bold; color: #333333; font-family: Verdana, Arial, sans-serif;" width="100%" bgcolor="#FFDAD7"
 
 	<div style="padding: 3px 5px 3px 5px">

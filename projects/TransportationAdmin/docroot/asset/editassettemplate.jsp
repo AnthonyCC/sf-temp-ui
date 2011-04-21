@@ -44,7 +44,7 @@
             <td class="screentitle">Add/Edit Asset Template</td>
           </tr>
           <tr>
-            <td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>
+            <td class="screenmessages"><jsp:include page='/common/messages.jsp'/><div id="errContainer" style='margin:0 auto;'></div></td>
           </tr>
           
           <tr>

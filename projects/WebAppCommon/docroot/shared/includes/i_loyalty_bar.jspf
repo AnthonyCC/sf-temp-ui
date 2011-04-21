@@ -2,9 +2,7 @@
 <table cellspacing="0" cellpadding="0" border="0" width="695" id="timeslotloyalityHeader">
 	<tr>
 	<%if(user.isChefsTable()){%>
-		<td width="30">
-			<img src="/media/editorial/site_pages/ct/CT_header_left.gif" width="30" height="25" border="0">
-		</td>
+		<td width="30"><img src="/media/editorial/site_pages/ct/CT_header_left.gif" width="30" height="25" border="0"></td>
 		<td width="435" align="left" style="background:#333433; color: #fff">
 			<font style="font-weight:bold;font-size:11px;">		
 
@@ -24,13 +22,9 @@
 				<%}%>
 			</font>
 		</td>
-		<td width="10">
-			<img src="/media/editorial/site_pages/ct/CT_header_right.gif" width="10" height="25" border="0">
-		</td>
+		<td width="10"><img src="/media/editorial/site_pages/ct/CT_header_right.gif" width="10" height="25" border="0"></td>
 	<%}else{%>
-		<td width="10">
-			<img src="/media/editorial/site_pages/non_chefstable/NC_header_left.gif" width="10" height="25" border="0">
-		</td>
+		<td width="10"><img src="/media/editorial/site_pages/non_chefstable/NC_header_left.gif" width="10" height="25" border="0"></td>
 		<td width="455" align="left" style="background:#999966; color: #fff">
 			<font style="font-weight:bold;font-size:11px;">		
 				Welcome to FreshDirect&nbsp;
@@ -40,9 +34,7 @@
 		<td width="260" align="right" style="background:#999966; color: #fff">
 			<font style="font-weight:bold;">Your <%=(user !=null && user.getOrderHistory() != null && user.getOrderHistory().getTotalOrderCount()>0) ? "":"First "%>Order&nbsp; <a href="/help/index.jsp" class="tsNCBenefits">Need Help?</a></font>
 		</td>
-		<td width="10">
-			<img src="/media/editorial/site_pages/non_chefstable/NC_header_right.gif" width="10" height="25" border="0">
-		</td>
+		<td width="10"><img src="/media/editorial/site_pages/non_chefstable/NC_header_right.gif" width="10" height="25" border="0"></td>
 	<%}%>
 	</tr>
 </table>
