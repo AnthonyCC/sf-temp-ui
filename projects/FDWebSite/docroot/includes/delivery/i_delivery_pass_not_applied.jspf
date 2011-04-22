@@ -17,14 +17,12 @@
     <td bgcolor="#FFFFFF" style="font-size:1px;"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
     <td bgcolor="#FFFFFF" style="margin:0 5px;"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"><img src="/media_stat/images/timeslots/warning.gif" width="92" height="34" border="0" style="margin:0 5px;"></td>
     <td  width="100%" bgcolor="#FFF9D7">
-
 	<div style="padding: 3px 5px 3px 5px">
 		<fd:IncludeMedia name="/media/editorial/timeslots/delivery_pass_not_applied.html"/>
 	</div>
-
-	</td>
-   <td bgcolor="#FFF9D7" style="font-size:1px;"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
-    <td bgcolor="#CCCCCC" width="20" style="font-size:1px;"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
+    </td>
+    <td bgcolor="#FFF9D7" style="font-size:1px;"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
+    <td bgcolor="#CCCCCC" style="font-size:1px;"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
 </tr>
 <tr>
     <td rowspan="2" colspan="2" style="font-size:1px;"><img src="/media_stat/images/layout/bottom_left_curve.gif" width="6" height="5" border="0"></td>
