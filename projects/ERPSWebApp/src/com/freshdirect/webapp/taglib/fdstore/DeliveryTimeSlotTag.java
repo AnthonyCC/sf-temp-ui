@@ -129,18 +129,17 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		Result result = null;
 		HttpSession session = pageContext.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-		FDDeliveryTimeslotModel deliverymodel = user.getDeliveryTimeslotModel();
-		if(deliverymodel==null){
-			deliverymodel = new FDDeliveryTimeslotModel();
-			user.setDeliveryTimeslotModel(deliverymodel);
+		FDDeliveryTimeslotModel deliveryModel = null;
+		if(deliveryModel == null){
+			deliveryModel = new FDDeliveryTimeslotModel();
 		}
 		FDCartModel cart = user.getShoppingCart();
 
 		//check if preReservedSlotId exits
-		checkForPreReservedSlotId(deliverymodel, cart, user, result, timeSlotId);
+		checkForPreReservedSlotId(deliveryModel, cart, user, result, timeSlotId);
 		
 		//getRestriction reasons
-		getRestrictionReason(cart, deliverymodel);
+		getRestrictionReason(cart, deliveryModel);
 		
 		DateRange baseRange = getBaseRange();
 		DateRange geoRestrictionRange = getStandardRange();
@@ -166,7 +165,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 				specialHoliday, containsAdvanceOrderItem);
 		
 		/*Holiday & specialItems restrictions*/
-		getHolidayRestrctions(restrictions, baseRange, deliverymodel);
+		getHolidayRestrctions(restrictions, baseRange, deliveryModel);
 		//getSpecialItemDeliveryRestrctions(restrictions, baseRange, deliverymodel, user);
 
 		List timeslotList = new ArrayList();
@@ -212,24 +211,23 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		filterDeliveryTimeSlots(user, geoRestrictionRange, restrictions,
 				timeslotList, zonesMap, retainTimeslotIds,
 				geographicRestrictions, messages, comments,
-				isKosherSlotAvailable, hasCapacity, deliverymodel, alcoholRestrictions);
+				isKosherSlotAvailable, hasCapacity, deliveryModel, alcoholRestrictions);
 		
-		deliverymodel.setZoneId(cart.getDeliveryZone());		
+		deliveryModel.setZoneId(cart.getDeliveryZone());		
 		
 		//get zone Promotion amount
-		deliverymodel.setZonePromoAmount(PromotionHelper.getDiscount(user, deliverymodel.getZoneId()));
+		deliveryModel.setZonePromoAmount(PromotionHelper.getDiscount(user, deliveryModel.getZoneId()));
 		//set cart to model
-		deliverymodel.setShoppingCart(cart);
+		deliveryModel.setShoppingCart(cart);
 		
-		result = new Result(deliverymodel.getTimeslotList(),deliverymodel.getZones(),deliverymodel.isZoneCtActive(),
-									deliverymodel.getGeoRestrictionmessages(),deliverymodel.getComments());
+		result = new Result(deliveryModel);
 		if(dynaError != null) {
 			result.addError(new ActionError("deliveryTime", "We are sorry. Our system is temporarily experiencing a problem " +
 					"displaying the available timeslots. Please try to refresh this page in about three minutes. " +
 					"If you continue to experience difficulties loading this page, " +
 					"please call our customer service department"+
 					(user != null ? " at " + user.getCustomerServiceContact() : "")));
-			}
+		}
 			
 		return result;
 	}

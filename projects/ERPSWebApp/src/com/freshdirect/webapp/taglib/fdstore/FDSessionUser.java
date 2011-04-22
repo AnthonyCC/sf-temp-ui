@@ -114,16 +114,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
 	private EnumCheckoutMode checkoutMode = EnumCheckoutMode.NORMAL;
 	
-	
-	public FDDeliveryTimeslotModel getDeliveryTimeslotModel() {
-		return this.user.getDeliveryTimeslotModel();
-	}
-	
-	public void setDeliveryTimeslotModel(FDDeliveryTimeslotModel deliveryModel) {
-		this.user.setDeliveryTimeslotModel(deliveryModel);
-	}
-
-    public boolean getLastCOSSurveySuccess() {
+	public boolean getLastCOSSurveySuccess() {
     	return this.lastCOSSurveySuccess;
     }
 

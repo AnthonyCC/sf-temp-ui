@@ -204,7 +204,6 @@ public class FDUser extends ModelSupport implements FDUserI {
 	
 	private String masqueradeAgent;
 	
-	private FDDeliveryTimeslotModel deliveryTimeslotModel;
 	private int ctSlots;
 
 	private Date registrationDate;
@@ -1851,16 +1850,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		return masqueradeAgent;
 	}
 	
-	public FDDeliveryTimeslotModel getDeliveryTimeslotModel() {
-		return deliveryTimeslotModel;
-	}
-
-	public void setDeliveryTimeslotModel(
-			FDDeliveryTimeslotModel deliveryTimeslotModel) {
-		this.deliveryTimeslotModel = deliveryTimeslotModel;
-	}
-	
-	@Override
+		@Override
         public EnumWinePrice getPreferredWinePrice() {
 	    if (identity == null) {
 	        return EnumWinePrice.ONE;

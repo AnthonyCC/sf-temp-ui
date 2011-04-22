@@ -272,12 +272,6 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             WineFilter.clearAvailabilityCache(PricingContext.DEFAULT);
         }
 
-        if (user != null){
-        	user.setDeliveryTimeslotModel(new FDDeliveryTimeslotModel());
-        }else{
-        	LOGGER.warn("Cannot set FDDeliveryTimeslotModel");
-        } 
-
         // Set/clear masquerade agent for activity logging
         if (user != null) {
             FDActionInfo.setMasqueradeAgentTL(user.getMasqueradeAgent());

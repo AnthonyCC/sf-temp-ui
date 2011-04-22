@@ -53,7 +53,7 @@
 <fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%=address%>" timeSlotId="<%=timeSlotId%>">
 
 <%
-	FDDeliveryTimeslotModel deliveryModel = user.getDeliveryTimeslotModel();
+	FDDeliveryTimeslotModel deliveryModel = DeliveryTimeSlotResult.getDeliveryTimeslotModel();
 	FDCartModel cart = deliveryModel.getShoppingCart();
     
 	List<FDTimeslotUtil> timeslotList = deliveryModel.getTimeslotList();
