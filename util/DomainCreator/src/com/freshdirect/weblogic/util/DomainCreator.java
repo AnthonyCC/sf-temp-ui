@@ -57,7 +57,8 @@ public class DomainCreator {
 			creator = new DomainCreator();
 			creator.validateConfig();
 			creator.create();
-			// creator.runStageThree();
+//			 creator.runStageThree();
+			
 		} catch (IOException e) {
 			System.err.println("Error when loading properties: " + e.getMessage());
 		} catch (InvalidDomainConfigurationException e) {
@@ -129,7 +130,7 @@ public class DomainCreator {
 				ptchr.appendBefore(line, buf);
 				
 				if (!ptchr.skipLine(line)) {
-					buf.append(line);
+					buf.append(line + (line.equals("${DOMAIN_HOME}/bin/startWebLogic.sh $*") ? " | tee "+ domainFile.getAbsolutePath() + "/wl.log" : "") );
 					buf.append(LINE_SEP);
 				}
 				
@@ -530,6 +531,7 @@ public class DomainCreator {
 		try {
 			// run stage3 script
 			runScript(ClassLoader.getSystemResourceAsStream("com/freshdirect/resources/stage3.py"), false);
+	
 		} catch(Exception exc) {
 			System.err.println("!!! Stage 3 crashed !!!" + exc);
 		} 

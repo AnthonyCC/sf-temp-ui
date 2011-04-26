@@ -1,6 +1,7 @@
 weblogic.home=/home/tamas/local/bea/wlserver_10.3
 domain.home=/home/tamas/FreshDirect
 domain.name=domain
+# 7001 is the default in the code and configs
 server.port=7001
 domain.home.ignoreSourceRepositoryCheck
 
