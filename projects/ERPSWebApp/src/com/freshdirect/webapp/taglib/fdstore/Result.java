@@ -39,7 +39,7 @@ public class Result extends ActionResult {
 	}
 	public List getMessages() {
 		if(this.deliveryTimeslotModel != null)
-			messages = deliveryTimeslotModel.getMessages();
+			messages = deliveryTimeslotModel.getGeoRestrictionmessages();
 		return messages;
 	}
 	
