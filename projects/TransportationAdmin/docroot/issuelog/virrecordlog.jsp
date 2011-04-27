@@ -35,7 +35,7 @@
 		<script src="js/maintenancelog.js" language="javascript" type="text/javascript"></script>
 
 		<div class="MNM001 subsub or_999">
-		<div class="subs_left">	
+		<div class="subs_left">
 			<div class="sub_tableft sub_tabL_MNM001 <% if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog"))
 			&&!"S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>activeL<% } %>">&nbsp;</div>
 			
@@ -129,11 +129,11 @@
 					  <ec:column title=" " width="5px" 
 									filterable="false" sortable="false" cell="selectcol"
 									property="id" />
-					  <ec:column width="10px" property="id" alias="virId" title="VIR ID"/> 
+					  <ec:column width="15px" property="id" alias="virId" title="VIR ID"/> 
 					  <ec:column width="10px" property="truckNumber" title="Truck" />
 					  <ec:column width="15px" property="vendor" title="Vendor" />
-					  <ec:column width="6px" property="createdDate" title="Created Date" />					  
-					  <ec:column width="250px" filterable="true" property="virRecordIssues" cell="issueLogCell" title="Issues/MaintenanceIssue/DamageLocation/Issueside/Comments"/>
+					  <ec:column width="6px" property="createdDate" title="Created Date" />
+					  <ec:column width="250px" filterable="true" property="virRecordIssues" cell="issueLogCell" title="Issues&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Maintenance Issue&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DamageLocation&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IssueSide&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comments"/>
   					  <ec:column width="10px" property="driver" title="Reporting Driver" />
   					  <ec:column width="10px" property="createdBy" title="Entered By" />
 					</ec:row>
@@ -148,14 +148,11 @@
 					width="98%" filterable="false" showPagination="false" rowsDisplayed="25" view="fd" >
 
 					<ec:row interceptor="obsoletemarker">                
-					  <ec:column title=" " width="4px" 
-		                    filterable="false" sortable="false" cell="selectcol"
-				            property="issueTypeId" />
 					  <ec:column property="issueTypeName"  title="Issue Name"/> 
 					  <ec:column property="issueTypeDescription" title="Issue Type Description" />
 					  <ec:column cell="bool" property="status" title="isActive" />
 					  <ec:column property="createdDateDisplay" title="Created Date" />
-					  <ec:column property="createdBy" title="Ireated By" />
+					  <ec:column property="createdBy" title="Created By" />
 					</ec:row>
 				</ec:table>
 	<%}%>
@@ -168,15 +165,12 @@
 					
 						
 					<ec:row interceptor="obsoletemarker">                
-					  <ec:column title=" " width="4px" 
-		                    filterable="false" sortable="false" cell="selectcol"
-				            property="issueSubTypeId" />
 					  <ec:column property="issueSubTypeName"  title="Issue Subtype Name"/> 
 					  <ec:column property="issueSubTypeDescription" title="Issue SubType Description" />
 					  <ec:column property="issueType.issueTypeName" title="Issue Type" />
 					  <ec:column cell="bool" property="status" title="isActive" />
 					  <ec:column property="createdDateDisplay" title="Created Date" />
-					  <ec:column property="createdBy" title="Ireated By" />
+					  <ec:column property="createdBy" title="Created By" />
 					</ec:row>
 				</ec:table>
 			
@@ -194,8 +188,16 @@
     width:200px;
 }
 
-#ec_table td table td.employee_on, #ec_table td table td.employee_off, td.tableHeader table {
+#ec_table td table td.employee_on, #ec_table td table td.employee_off,#ec_table td table td.damageLocation,#ec_table td table td.issueSide, td.tableHeader table {
     width:80px;
+}
+
+#ec_table td table td.issues, td.tableHeader table {
+    width:200px;
+}
+
+#ec_table td table td.noMaintenanceIssue, td.tableHeader table {
+    width:100px;
 }
 </style>
 

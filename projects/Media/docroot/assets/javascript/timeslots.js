@@ -4,12 +4,15 @@ function fdTSDisplay(refIdArg) {
 	this.refId = refIdArg;	//STRING
 
 	this.opts = {
+		clickOnly: true, //sets click only functionality
 		dayVar: '%%D%%', //idTemplates var
 		timeVar: '%%T%%', //idTemplates var
 		indexVar: '%%I%%', //idTemplates var
 		timeSlotInfo: false, //global variable setting if on timeslot info page
 		topLevelElemId: 'tsContainer', //top-level HTML elem. effect children under this
 		debug: false, //global debug controller
+		cleaner: null, //cleanup function
+		cleanerWaitTime: 2000, //ms to wait after expand before attempting clean
 		timer_StartTime: -1, //timer function holder
 		timer_LastTime: -1, //timer function holder
 		timer_EndTime: -1, //timer function holder
@@ -25,10 +28,10 @@ function fdTSDisplay(refIdArg) {
 		cutoffHeight: 28, //height of cutoff (for calcdHeight)
 		emptyCellHtml: '<div class="tsContent"><div id="ts_d%%D%%_ts%%T%%_rbCont" class="fleft ts_rb">&nbsp;</div><div id="ts_d%%D%%_ts%%T%%_time" class="fleft tsCont ">&nbsp;</div></div>', //HTML for an empty cell
 		mouseOverSetTimeout: null, //timeout function holder
-		mouseOverTimeLimit: 1000, //ms for mmouse over before expand animation starts
-		expandDuration: 1000, //ms for expand animation
-		appearDuration: 1000, //ms for appear animation
-		contractDuration: 1000, //ms for contract animation
+		mouseOverTimeLimit: 800, //ms for mmouse over before expand animation starts
+		expandDuration: 200, //ms for expand animation
+		appearDuration: 200, //ms for appear animation
+		contractDuration: 200, //ms for contract animation
 		expandedDayId: null, //holds the currently expanded day's id
 		hC_beforeContractWidth: '201px', //an expanded ts is set tp this width before contract animation
 		beforeExpandWidth: '87px', //hidden content is set to this width before expand animation
@@ -37,7 +40,7 @@ function fdTSDisplay(refIdArg) {
 		radioCheckedCur: null, //currently checked radio  (not checked -> cur ?(OnlyRow) -> last)
 		radioCheckedLast: null, //last checked radio (for re check on ao hide)
 		radioCheckedLastUndo: null, //last checked radio to undo color for
-		radioCheckedLastOnlyRow: 'timeslots_grid' //only move to last if it was in this row
+		negSubt: (0-76-14-4-60-15) //assume a negative subtraction of hExt-fExt-daypart-two cutoffs-margin for row height
 	};
 
 	this.extendQueue = {};
@@ -104,6 +107,14 @@ function fdTSDisplay(refIdArg) {
 					this.rowObjs[rowId].cRefId = rowId+'_CRef';
 					this.setCssRefString(this.rowObjs[rowId].eRefId);
 					this.setCssRefString(this.rowObjs[rowId].cRefId);
+					
+					//check extend queue
+					this.checkQueue(rowId);
+
+					//set row calcd height
+					if (this.rowObjs[rowId].dayIds[0] && this.dayObjs[this.rowObjs[rowId].dayIds[0]]) {
+						this.rowObjs[rowId].ext.style.height = this.getCalcdRowHeight(this.dayObjs[this.rowObjs[rowId].dayIds[0]].TSs.length, null, false, this.opts.negSubt);
+					}
 				}
 			}
 			if (window.refAdvData) {
@@ -120,6 +131,14 @@ function fdTSDisplay(refIdArg) {
 					this.rowObjs[rowId].cRefId = rowId+'_CRef';
 					this.setCssRefString(this.rowObjs[rowId].eRefId);
 					this.setCssRefString(this.rowObjs[rowId].cRefId);
+
+					//check extend queue
+					this.checkQueue(rowId);
+
+					//set row calcd height
+					if (this.rowObjs[rowId].dayIds[0] && this.dayObjs[this.rowObjs[rowId].dayIds[0]]) {
+						this.rowObjs[rowId].ext.style.height = this.getCalcdRowHeight(this.dayObjs[this.rowObjs[rowId].dayIds[0]].TSs.length, null, false, this.opts.negSubt);
+					}
 				}
 				
 				rowId = this.getID('rowId', null, null, 'AdvNew');
@@ -135,6 +154,14 @@ function fdTSDisplay(refIdArg) {
 					this.rowObjs[rowId].cRefId = rowId+'_CRef';
 					this.setCssRefString(this.rowObjs[rowId].eRefId);
 					this.setCssRefString(this.rowObjs[rowId].cRefId);
+
+					//check extend queue
+					this.checkQueue(rowId);
+					
+					//set row calcd height
+					if (this.rowObjs[rowId].dayIds[0] && this.dayObjs[this.rowObjs[rowId].dayIds[0]]) {
+						this.rowObjs[rowId].ext.style.height = this.getCalcdRowHeight(this.dayObjs[this.rowObjs[rowId].dayIds[0]].TSs.length, null, false, this.opts.negSubt);
+					}
 				}
 			}
 		}
@@ -143,14 +170,34 @@ function fdTSDisplay(refIdArg) {
 		this.addEvents = function() {
 			for (slot in this.slotObjs) {
 				this.addEvent('mouseClicks', slot, 'tsId');
+				if (this.opts.clickOnly) {
+					this.addEvent('mouseOversClickOnly', slot, 'tsId');
+				}
 			}
 			for (day in this.dayObjs) {
 				//check extend queue
 				this.checkQueue(day);
 				this.checkQueue(this.dayObjs[day].hC);
-				//this.addEvent('mouseOvers', day, 'dayId');
-				//this.addEvent('mouseOvers', day, 'dayHeaderC');
+				if (!this.opts.clickOnly) { //allow mouseover events
+					this.addEvent('mouseOvers', day, 'dayId');
+				}
+				this.addEvent('mouseOvers', day, 'dayHeaderC');
 				this.addEvent('mouseClicks', day, 'dayHeaderC');
+			}
+		}
+	/* remove mouse over expands */
+		this.removeMouseOverExpands = function() {
+			for (day in this.dayObjs) {
+				Event.stopObserving(day, 'mouseover');
+				Event.stopObserving(day, 'mouseout');
+				//Event.stopObserving(this.dayObjs[day].hC, 'mouseover');
+				//Event.stopObserving(this.dayObjs[day].hC, 'mouseout');
+			}
+		}
+	/* remove mouse over colors */
+		this.removeMouseOverColors = function() {
+			for (slot in this.slotObjs) {
+				Event.stopObserving(slot, 'mouseover');
 			}
 		}
 	/* add specific events
@@ -188,6 +235,16 @@ function fdTSDisplay(refIdArg) {
 						default:
 					}
 					break;
+				case 'mouseOversClickOnly':
+					switch (objTypeAndRef.typeStr) {
+						case 'tsId':
+							//day needs expand
+							eventObject.observe('mouseover', this.tsMouseOverClickOnly.bindAsEventListener(this, eventObject.id));
+							eventObject.observe('mouseout', this.tsMouseOutClickOnly.bindAsEventListener(this, eventObject.id));
+							break;
+						default:
+					}
+					break;
 				case 'mouseClicks':
 					switch (objTypeAndRef.typeStr) {
 						case 'dayHeaderC':
@@ -206,11 +263,18 @@ function fdTSDisplay(refIdArg) {
 			this.dayMouseOver = function() {
 				var elemId = arguments[1];
 				var dayId = this.convertId(elemId, 'dayId');
+				var fdTSDisplay = this; //ref to fdTSDisplay
+				//fdTSDisplay.log('dayMouseOver ', elemId, dayId, this.opts.expandedDayId);
 
 				//once per day
 				if (dayId !== this.opts.expandedDayId) {
+					if (fdTSDisplay.opts.clickOnly) {
+						//add class for contracted gradient
+						if (fdTSDisplay.dayObjs[dayId].hCext.className.indexOf(' tsHeaderCMouseOver') === -1) {
+							fdTSDisplay.dayObjs[dayId].hCext.className += ' tsHeaderCMouseOver';
+						}
+					}
 
-					var fdTSDisplay = this; //ref to fdTSDisplay
 					var waitTime = this.opts.mouseOverTimeLimit;
 					var expandedDay = this.opts.expandedDayId;
 					//var isExpanded = this.dayObjs[dayId].isExpanded;
@@ -223,6 +287,10 @@ function fdTSDisplay(refIdArg) {
 					}
 					if (this.opts.mouseOverSetTimeout === null) {
 						this.opts.mouseOverSetTimeout = setTimeout(tsMouseOverFunc, waitTime);
+					}else{ //fix stuck mouseovers
+						clearTimeout(this.opts.mouseOverSetTimeout);
+						this.opts.mouseOverSetTimeout = null;
+						this.opts.mouseOverSetTimeout = setTimeout(tsMouseOverFunc, waitTime);
 					}
 				}
 			}
@@ -234,6 +302,13 @@ function fdTSDisplay(refIdArg) {
 				var srcElem = arguments[0].target || arguments[0].srcElement;
 				var dayId = this.convertId(elemId, 'dayId');
 				var srcDayId = this.convertId(srcElem.id, 'dayId');
+
+				//fdTSDisplay.log('dayMouseOut ', elemId, srcDayId);
+
+				if (fdTSDisplay.opts.clickOnly) {
+					//remove class for contracted gradient
+					fdTSDisplay.dayObjs[dayId].hCext.className = fdTSDisplay.dayObjs[dayId].hCext .className.replace(' tsHeaderCMouseOver', '');
+				}
 
 				//don't clear on child elems
 				if (dayId === srcDayId && srcDayId !== -1) { return }
@@ -262,22 +337,11 @@ function fdTSDisplay(refIdArg) {
 
 				var slotObj = fdTSDisplay.slotObjs[elemId];
 
+				fdTSDisplay.log('You clicked:', slotObj.id);
+				fdTSDisplay.log('Click Info Before:', fdTSDisplay.opts.radioCheckedCur, fdTSDisplay.opts.radioCheckedLast, fdTSDisplay.opts.radioCheckedLastUndo);
+
 				if (srcElem && srcElem.id === slotObj.radio) {
-
-					//clear pre-loaded selections
-					var preDef = $$('.tsSelectedSlotPropE');
-					for (var p = 0; p < preDef.length; p++) {
-						preDef[p].innerHTML = '&nbsp;';
-					}
-					preDef = $$('.tsContentSelE');
-					for (var p = 0; p < preDef.length; p++) {
-						preDef[p].className = preDef[p].className.replace('tsContentSelE', '');
-					}
-					preDef = $$('.tsContentSelC');
-					for (var p = 0; p < preDef.length; p++) {
-						preDef[p].className = preDef[p].className.replace('tsContentSelC', '');
-					}
-
+					//we already have the radio
 					if (!fdTSDisplay.opts.radioCheckedCur) {
 						//first time here?
 
@@ -292,23 +356,41 @@ function fdTSDisplay(refIdArg) {
 						slotObj.isChecked = true;
 
 						//first slot chosen on load, add it
-						if (rowObjFirst && rowObjFirst.id === fdTSDisplay.opts.radioCheckedLastOnlyRow) {
-							//all good, move cur to last
-							fdTSDisplay.opts.radioCheckedLast = srcElem.id;
-						}
+						//fdTSDisplay.opts.radioCheckedLast = srcElem.id;
 
 						//set as lastUndo
 						fdTSDisplay.opts.radioCheckedLastUndo = srcElem.id;
 
 						//and add classname (if it doesn't already have it)
-						if (slotObj.ext.className.indexOf(' tcSelectionBGC') === -1) {
-							slotObj.ext.className +=' tcSelectionBGC';
+						if (slotObj.ext.className.indexOf(' tsContentResE') === -1) {
+							if (slotObj.ext.className.indexOf(' tcSelectionBGC') === -1) {
+								slotObj.ext.className +=' tcSelectionBGC';
+							}
 						}
 					}else{
 						//good to see you again
 
 						//make sure this isn't the same as what was last clicked
-						if (srcElem.id != fdTSDisplay.opts.radioCheckedLast) {
+						if (srcElem.id != fdTSDisplay.opts.radioCheckedLastUndo) {
+
+							//clear pre-loaded selections
+							var preDef = $$('.tsSelectedSlotPropE');
+							for (var p = 0; p < preDef.length; p++) {
+								preDef[p].innerHTML = '&nbsp;';
+							}
+							var preDef = $$('.tsSelectedSlotPropC');
+							for (var p = 0; p < preDef.length; p++) {
+								preDef[p].innerHTML = '&nbsp;';
+							}
+							preDef = $$('.tsContentSelE');
+							for (var p = 0; p < preDef.length; p++) {
+								preDef[p].className = preDef[p].className.replace('tsContentSelE', '');
+							}
+							preDef = $$('.tsContentSelC');
+							for (var p = 0; p < preDef.length; p++) {
+								preDef[p].className = preDef[p].className.replace('tsContentSelC', '');
+							}
+
 							//set as clicked
 							slotObj.isChecked = true;
 							//set as currently checked
@@ -318,16 +400,11 @@ function fdTSDisplay(refIdArg) {
 								slotObj.ext.className +=' tcSelectionBGC';
 							}
 							//is selected not overriding resv? if so, comment this next line
-							slotObj.ext.className = slotObj.ext.className.replace(' tsContentResE', '');
+							//slotObj.ext.className = slotObj.ext.className.replace(' tsContentResE', '');
 
 							//turn cur radio into a day id
 							var tempDayId = fdTSDisplay.convertId(srcElem.id, 'dayId');
 							var rowObj = fdTSDisplay.getRowObjByDayId(tempDayId);
-							//the cur one is in set row
-							if (rowObj && rowObj.id === fdTSDisplay.opts.radioCheckedLastOnlyRow) {
-								//all good, move cur to last
-								fdTSDisplay.opts.radioCheckedLast = fdTSDisplay.opts.radioCheckedCur;
-							}
 
 							//check that clicked one isn't the same as lastUndo
 							if (srcElem.id !== fdTSDisplay.opts.radioCheckedLastUndo) {
@@ -344,20 +421,82 @@ function fdTSDisplay(refIdArg) {
 								fdTSDisplay.opts.radioCheckedLastUndo = fdTSDisplay.opts.radioCheckedCur;
 							}
 
+							//mark as the last one clicked
+							fdTSDisplay.opts.radioCheckedLastUndo = srcElem.id;
+
 						}
 
 					}
-
+					
+					fdTSDisplay.log('Click Info After:', fdTSDisplay.opts.radioCheckedCur, fdTSDisplay.opts.radioCheckedLast, fdTSDisplay.opts.radioCheckedLastUndo);
 				}else{
-					//non radio clicked
-					//fdTSDisplay.log('tsClick', arguments, elemId, srcElem.id);
+					//call click so the logic follows
+					if (fdTSDisplay.slotObjs[elemId].radioExt) {
+						fdTSDisplay.slotObjs[elemId].radioExt.click();
+						return;
+					}
 				}
 
-				while(!fdTSDisplay.setDayAsExpanded(dayId)){};
+				if (!fdTSDisplay.dayObjs[dayId].isExpanded) {
+					while(!fdTSDisplay.setDayAsExpanded(dayId)){};
+				}
+
+			}
+		/* slot-level mouse over, click only */
+			this.tsMouseOverClickOnly = function() {
+				var elemId = arguments[1];
+				var fdTSDisplay = this; //ref to fdTSDisplay
+				var slotObj = fdTSDisplay.slotObjs[elemId];
+				var dayId = fdTSDisplay.convertId(elemId, 'dayId');
+				
+				//check extend queue
+				this.checkQueue(elemId);
+				this.checkQueue(slotObj.radio);
+
+				//only show colors on non-expanded days, on slots that have radios
+				if (slotObj && slotObj.radioExt) {
+					slotObj.ext.className += ' clickOnlyMouseOver';
+				}
+
+			}
+		/* slot-level mouse out, click only */
+			this.tsMouseOutClickOnly = function() {
+				var elemId = arguments[1];
+				var fdTSDisplay = this; //ref to fdTSDisplay
+				var slotObj = fdTSDisplay.slotObjs[elemId];
+
+				if (slotObj) {
+					slotObj.ext.className = slotObj.ext.className.replace(' clickOnlyMouseOver', '');
+				}
 
 			}
 
 	/* --- UTIL FUNCTIONS --- */
+
+	/* toggle debug */
+		this.toggleDebug = function() {
+			this.opts.debug = !this.opts.debug;
+			this.log('debug now set to: '+this.opts.debug);
+		}
+
+	/* toggle clickOnly */
+		this.toggleClickOnly = function() {
+			this.startTimer();
+				this.log('Toggling clickOnly...');
+					if (this.opts.clickOnly) {
+						//clickOnly going from true to false, remove mouse over colors
+						this.removeMouseOverColors();
+					}else{
+						//clickOnly going from false to true, remove mouse over expands
+						this.removeMouseOverExpands();
+					}
+					this.opts.clickOnly = !this.opts.clickOnly;
+					
+					//now put back events
+					this.addEvents();
+				this.log('...clickOnly is now '+this.opts.clickOnly);
+			this.endTimer();
+		}
 
 	/* set if in timeslot info page */
 		this.setTimeSlotInfo = function() {
@@ -409,6 +548,41 @@ function fdTSDisplay(refIdArg) {
 			}
 
 			for (var t = 0; t < day.TSs.length; t++) {
+
+				if (t === 0) {
+					/* check slot 0 for contentId */
+					var curSlotId = this.dayObjs[dayIdArg].TSIds[t];
+
+					//check extend queue
+					this.checkQueue(curSlotId);
+
+					if (this.slotObjs[curSlotId]) {
+						var curSlotObj = this.slotObjs[curSlotId];
+						var curContentId = '';
+						var curContentExt = null;
+						if (
+								curSlotObj.ext.getAttribute('name') != null && 
+								(curSlotObj.ext.getAttribute('name').indexOf('holiday_') === 0 || curSlotObj.ext.getAttribute('name').indexOf('cutoffpassed_') === 0)
+							) {
+							curContentId = curSlotObj.ext.getAttribute('name').split('_');
+							var tempId = curContentId[1];
+							if (curContentId[0] === 'cutoffpassed') { //holiday doesn't have special C/E versions
+								tempId = tempId+'C';
+							}
+							curContentExt = $(tempId);
+							if (curContentExt) {
+								//we have a holiday or cutoffpassed
+								curSlotObj.ext.innerHTML = curContentExt.innerHTML;
+								//set in slot so we don't have to seek again
+								curSlotObj.contentId = tempId;
+								/* if we have a special contentId, it's a full day, so we can fill in reorgData and return */
+								day.reorgData = [[0, day.TSs.length-1]];
+								return;
+							}
+						}
+					}
+				}
+
 				/* break out if we haven't started a sequence yet
 				 * and don't have enough rows left to be able to span
 				 */
@@ -610,9 +784,11 @@ function fdTSDisplay(refIdArg) {
 			var logMsg = '';
 			for (var a = 0; a < arguments.length; a++) {
 				logMsg += arguments[a];
+				//add space between args
+				logMsg += ' ';
 			}
 			//add space between timestamp and msg
-			logMsg += ' ';
+			logMsg = ' '+logMsg;
 
 			if (this.opts.debug && window.console) {
 				console.log(new Date().toLocaleTimeString(), logMsg);
@@ -858,50 +1034,57 @@ function fdTSDisplay(refIdArg) {
 
 	/* CSS ref functions */
 		/* set CSS string by refElemId */
-		this.setCssRefString = function (refElemIdArg) {
-			var refElemId = refElemIdArg || '';
+			this.setCssRefString = function (refElemIdArg) {
+				var refElemId = refElemIdArg || '';
 
-			//see if it's already set
-			if (this.opts.cssRefString[refElemId]) { return; }
+				//see if it's already set
+				if (this.opts.cssRefString[refElemId]) { return; }
 
-			var cssString = '';
-			//it's not, set already, do so now
-			var refElemExt = $(refElemId);
-			if (refElemExt) {
-				for (var i=0; i < this.opts.cssRefStyleAttributes.length; i++)	{
-					if (refElemExt.getStyle) {
-						if (
-							refElemExt.getStyle(this.opts.cssRefStyleAttributes[i]) !== null && refElemExt.getStyle(this.opts.cssRefStyleAttributes[i]) !== ''
-						) {
-							cssString += this.opts.cssRefStyleAttributes[i];
-							cssString += ':';
-							cssString += refElemExt.getStyle(this.opts.cssRefStyleAttributes[i]);
-							cssString += ';';
+				var cssString = '';
+				//it's not, set already, do so now
+				var refElemExt = $(refElemId);
+				if (refElemExt) {
+					for (var i=0; i < this.opts.cssRefStyleAttributes.length; i++)	{
+						if (refElemExt.getStyle) {
+							if (
+								refElemExt.getStyle(this.opts.cssRefStyleAttributes[i]) !== null && refElemExt.getStyle(this.opts.cssRefStyleAttributes[i]) !== ''
+							) {
+								cssString += this.opts.cssRefStyleAttributes[i];
+								cssString += ':';
+								var tempCSS = refElemExt.getStyle(this.opts.cssRefStyleAttributes[i]);
+
+								/* Opera 10.x returns 0px width for display: none elements, fallback to getWidth */
+								if (this.opts.cssRefStyleAttributes[i] === 'width' && tempCSS === '0px') {
+									cssString += Element.getWidth(refElemId)+'px';
+								}else{
+									cssString += refElemExt.getStyle(this.opts.cssRefStyleAttributes[i]);
+								}
+								cssString += ';';
+							}
 						}
 					}
 				}
-			}
 
-			//set it, even if it's an empty string
-			this.opts.cssRefString[refElemId] = cssString;
-		}
+				//set it, even if it's an empty string
+				this.opts.cssRefString[refElemId] = cssString;
+			}
 		/* get CSS string by refElemId
 		 *	if it doesn't already exist, set it and then return it
 		 *	a bad refElemId will always return an empty string
 		 */
-		this.getCssRefString = function (refElemIdArg) {
-			var refElemId = refElemIdArg || '';
-			if (refElemId === '') { return ''; }
+			this.getCssRefString = function (refElemIdArg) {
+				var refElemId = refElemIdArg || '';
+				if (refElemId === '') { return ''; }
 
-			//see if it's already set, return it if so
-			if (this.opts.cssRefString[refElemId]) { return this.opts.cssRefString[refElemId]; }
+				//see if it's already set, return it if so
+				if (this.opts.cssRefString[refElemId]) { return this.opts.cssRefString[refElemId]; }
 
-			//it's not, set it
-			this.setCssRefString(refElemId);
+				//it's not, set it
+				this.setCssRefString(refElemId);
 
-			//and now return it
-			return this.opts.cssRefString[refElemId];
-		}
+				//and now return it
+				return this.opts.cssRefString[refElemId];
+			}
 
 	/* return a css style height size based on arguments
 	 *	numRowsArg = number of rows to calc for
@@ -1016,15 +1199,22 @@ function fdTSDisplay(refIdArg) {
 		this.reorganize = function () {
 
 			for (dayId in this.dayObjs) {
+				//check extend queue
+				this.checkQueue(dayId);
+
 				if (this.dayObjs[dayId].reorgData.length > 0) {
 					this.reorganizeDay(dayId);
 				}
 				
 				var dayObj = this.dayObjs[dayId];
+
+				//check extend queue
+				this.checkQueue(dayObj.ext.id);
+
 				//ref other days in row
 				var otherDayIds = this.rowObjs[dayObj.parentId].dayIds;
 
-				if (dayId === otherDayIds[0]) {
+				if (dayObj.ext && dayObj.ext.down('.cutoff') && dayId === otherDayIds[0]) {
 					//and add left line since it's the first one
 					dayObj.ext.down('.cutoff').style.borderLeft = '1px solid #ccc';
 				}
@@ -1038,9 +1228,14 @@ function fdTSDisplay(refIdArg) {
 		this.reorganizeDay = function (dayId) {
 			if (!this.dayObjs[dayId]) { return; }
 			var dayObj = this.dayObjs[dayId];
+			var sequenceCount;
+			
+			//check queue
+			this.checkQueue(dayId);
 
 			if (dayObj.isExpanded) {
 				//expanded day
+				dayObj.ext.className = dayObj.ext.className.replace('tsTableC', 'tsTableE');
 
 				//check extend queue
 				this.checkQueue(this.convertId(dayId, 'dayPartId'));
@@ -1071,6 +1266,9 @@ function fdTSDisplay(refIdArg) {
 						if (!curCORow.down('.cutoffDispChild')) {
 							curCORow.hide();
 						}
+						if (dayObj.COs[t] === '') {
+							curCORow.hide();
+						}
 
 
 						if (t === 0) {
@@ -1080,7 +1278,10 @@ function fdTSDisplay(refIdArg) {
 							if (curSlotObj.contentId === null) {
 								curContentId = this.opts.noDeliveryEId;
 							}else{
-								curContentId = curSlotObj.contentId.slice(0, -1)+'E';
+								curContentId = curSlotObj.contentId;
+								if (curSlotObj.contentId.slice(curSlotObj.contentId.length-1) === 'C') {
+									curContentId = curSlotObj.contentId.slice(0, -1)+'E';
+								}
 							}
 							var curContentExt = $(curContentId);
 							if (curContentExt) {
@@ -1090,12 +1291,19 @@ function fdTSDisplay(refIdArg) {
 							}
 							//replace out className
 							if (curSlotObj.contentId === this.opts.noDeliveryEId) {
-								curSlotObj.ext.className = curSlotObj.ext.className.replace('tsContainerC','tsContainerE');
 								curSlotObj.ext.className = curSlotObj.ext.className.replace('tsContainerBGC','tsContainerNoDelBGE');
+								curSlotObj.ext.className = curSlotObj.ext.className.replace('tsContainerBGE','tsContainerNoDelBGE');
 								curSlotObj.ext.className = curSlotObj.ext.className.replace('tsContainerNoDelBGC','tsContainerNoDelBGE');
 							}
+							curSlotObj.ext.className = curSlotObj.ext.className.replace('tsContainerBGC','tsContainerBGE');
+
+							if (curSlotObj.contentId && curSlotObj.contentId !== this.opts.noDeliveryEId) {
+								//non-noDelivery prob don't wan't vertical-align top
+								curSlotObj.ext.style.verticalAlign = 'middle';
+							}
+
 							//reset height, positive subtraction of cutoff height since there's no cutoff being used
-							curSlotObj.ext.style.height = this.getCalcdRowHeight(dayObj.TSIds.length, null, true, (0-this.opts.cutoffHeight));
+							curSlotObj.ext.style.height = this.getCalcdRowHeight(dayObj.TSIds.length, null, false, (-2-this.opts.cutoffHeight));
 							//and remove it's bottom line
 							curSlotObj.ext.style.borderBottom = '0 solid #ccc';
 						}else{
@@ -1151,13 +1359,14 @@ function fdTSDisplay(refIdArg) {
 					//adjust height of final VISIBLE row
 					if (hiddenRows > 0) { hiddenRows++; } //if we hid rows, include last ts in count
 					curSlotObj = this.slotObjs[dayObj.TSIds[lastVisRow]];
-					curSlotObj.ext.style.height = this.getCalcdRowHeight(hiddenRows, null, true, 0);
+					curSlotObj.ext.style.height = this.getCalcdRowHeight(hiddenRows, null, false, 0);
 					//and remove it's bottom line
-					curSlotObj.ext.style.borderBottom = '0 solid #ccc';
+					curSlotObj.ext.style.borderBottom = '1px solid #fff';
 				}
 			}else{
 				//day is contracted
-				var reorgData = this.dayObjs[dayId].reorgData;
+				var reorgData = dayObj.reorgData;
+				dayObj.ext.className = dayObj.ext.className.replace('tsTableE', 'tsTableC');
 
 				for (var r = 0; r < reorgData.length; r++) {
 					var reorgStart = reorgData[r][0];
@@ -1166,8 +1375,8 @@ function fdTSDisplay(refIdArg) {
 					
 					//loop through slots being used in reorg set
 					for (var t = reorgStart; t <= reorgEnd; t++) { //<= so we hide all
-						var curSlotId = this.dayObjs[dayId].TSIds[t];
-						var curCutoffId = this.dayObjs[dayId].COIds[t];
+						var curSlotId = dayObj.TSIds[t];
+						var curCutoffId = dayObj.COIds[t];
 
 						//check extend queue (shouldn't be in queue now, since it's unorg)
 						this.checkQueue(curSlotId);
@@ -1180,23 +1389,28 @@ function fdTSDisplay(refIdArg) {
 						
 						var curCORow = this.cutoffObjs[curCutoffId].ext.up('tr');
 
-						var curSlotObj = this.slotObjs[curSlotId];
 						if (t === reorgStart) {
 							//based on name, get contentId if needed
 							//check if we already seeked it
+							var curContentExt = null;
 							if (curSlotObj.contentId === null) {
 								//we haven't, do so now
 								var curContentId = this.opts.noDeliveryCId;
-								var curContentExt = null;
-
-								if (curSlotObj.ext.name != null && curSlotObj.ext.name.indexOf('holiday_') === 0) {
-									curContentId = curSlotObj.ext.name.split('_');
-									curContentExt = $(curContentId[1]);
+								if (
+									curSlotObj.ext.getAttribute('name') != null && 
+									(curSlotObj.ext.getAttribute('name').indexOf('holiday_') === 0 || curSlotObj.ext.getAttribute('name').indexOf('cutoffpassed_') === 0)
+								) {
+									curContentId = curSlotObj.ext.getAttribute('name').split('_');
+									var tempId = curContentId[1];
+									if (curContentId[0] === 'cutoffpassed') { //holiday doesn't have special C/E versions
+										tempId = tempId+'C';
+									}
+									curContentExt = $(tempId);
 									if (curContentExt) {
-										//we have a holiday
+										//we have a holiday or cutoffpassed
 										curSlotObj.ext.innerHTML = curContentExt.innerHTML;
 										//set in slot so we don't have to seek again
-										curSlotObj.contentId = curContentId;
+										curSlotObj.contentId = tempId;
 									}
 								}else{
 									//no holiday, try no delivery
@@ -1210,7 +1424,10 @@ function fdTSDisplay(refIdArg) {
 								}
 							}else{
 								//we have it, change to contracted and proceed like normal
-								var curContentId = curSlotObj.contentId.slice(0, -1)+'C';
+								var curContentId = curSlotObj.contentId;
+								if (curSlotObj.contentId.slice(curSlotObj.contentId.length-1) === 'E') {
+									curContentId = curSlotObj.contentId.slice(0, -1)+'C';
+								}
 								curContentExt = $(curContentId);
 								if (curContentExt) {
 									curSlotObj.ext.innerHTML = curContentExt.innerHTML;
@@ -1221,10 +1438,24 @@ function fdTSDisplay(refIdArg) {
 							//replace out className
 							if (curSlotObj.contentId === this.opts.noDeliveryCId) {
 								curSlotObj.ext.className = curSlotObj.ext.className.replace('tsContainerBGC','tsContainerNoDelBGC');
+								curSlotObj.ext.className = curSlotObj.ext.className.replace('tsContainerBGE','tsContainerNoDelBGC');
 								curSlotObj.ext.className = curSlotObj.ext.className.replace('tsContainerNoDelBGE','tsContainerNoDelBGC');
 							}
+							curSlotObj.ext.className = curSlotObj.ext.className.replace('tsContainerBGE','tsContainerBGC');
+							
+							//check extend queue
+							this.checkQueue(this.convertId(curSlotId, 'dayPartId'));
+
+							var tempNegSubt = 0;
+							//check if we're hiding the whole day, if so, hide day part, and mod negative subtraction to accommodate
+							if (reorgStart === 0 && reorgEnd === dayObj.TSs.length-1) {
+								dayObj.dayPartExt.up('tr').hide();
+								tempNegSubt = -2;
+							}
+							if (this.opts.IEver !== -1) { tempNegSubt++; }
+
 							//reset height
-							curSlotObj.ext.style.height = this.getCalcdRowHeight(sequenceCount, null, false, 0);
+							curSlotObj.ext.style.height = this.getCalcdRowHeight(sequenceCount, null, false, tempNegSubt);
 						}else{
 							//hide the rest of the trs (not the tds)
 							if (!curSlotObj.parentExt) {
@@ -1250,7 +1481,12 @@ function fdTSDisplay(refIdArg) {
 		}
 	/* unorganize a specific day by dayId (undoes reorganizeDay) */
 		this.unorganizeDay = function (dayId) {
+			var sequenceCount;
 			if (!this.dayObjs[dayId]) { return; }
+			
+			//check queue
+			this.checkQueue(dayId);
+			this.checkQueue(this.convertId(dayId, 'dayPartId'));
 			
 			//show dayPart
 			this.dayObjs[dayId].dayPartExt.up('tr').show();
@@ -1314,16 +1550,14 @@ function fdTSDisplay(refIdArg) {
 					}
 
 					if (t === reorgStart) {
-						if (curSlotObj.ext.down('table')) {
-							//put back innerHTML
+						//put back innerHTML, but only if not a normal slot
+						if (curSlotObj.contentId !== null) {
 							curSlotObj.ext.innerHTML = this.getID(null, this.parseDay(curSlotObj.ext.id), this.parseTime(curSlotObj.ext.id), null, this.opts.emptyCellHtml);
 						}
 						//and reset height
 						var sub;
 						//subtract 1 here, so first element is right height
-						//unless you're IE and then i hate you.
-						(this.opts.IEver !== -1) ? (r > 0) ? sub = 1 : sub = 0 : sub = 1; 
-						curSlotObj.ext.style.height = this.getCalcdRowHeight(1, null, false, sub);
+						curSlotObj.ext.style.height = this.getCalcdRowHeight(1, null, false, 1);
 						//reset classname
 						if (curSlotObj.contentId === this.opts.noDeliveryCId) {
 							curSlotObj.ext.className = curSlotObj.ext.className.replace('tsContainerBGE','tsContainerBGC');
@@ -1338,9 +1572,7 @@ function fdTSDisplay(refIdArg) {
 									//and reset height
 									var sub;
 									//subtract 1 here, so first element is right height
-									//unless you're IE and then i hate you.
-									(this.opts.IEver !== -1) ? (r > 0) ? sub = 1 : sub = 0 : sub = 1; 
-									curSlotObj.ext.style.height = this.getCalcdRowHeight(1, null, false, sub);
+									curSlotObj.ext.style.height = this.getCalcdRowHeight(1, null, false, 1);
 									curSlotObjParentExt.show();
 									//add to slot obj for later use
 									if (!curSlotObj.parentId) { curSlotObj.parentId = curSlotObjParentExt.id; }
@@ -1351,9 +1583,7 @@ function fdTSDisplay(refIdArg) {
 							//and reset height
 							var sub;
 							//subtract 1 here, so first element is right height
-							//unless you're IE and then i hate you.
-							(this.opts.IEver !== -1) ? (r > 0) ? sub = 1 : sub = 0 : sub = 1; 
-							curSlotObj.ext.style.height = this.getCalcdRowHeight(1, null, false, sub);
+							curSlotObj.ext.style.height = this.getCalcdRowHeight(1, null, false, 1);
 							curSlotObj.parentExt.show();
 						}
 					}
@@ -1419,6 +1649,16 @@ function fdTSDisplay(refIdArg) {
 				if (prevExpandedDayId !== null && prevExpandedDayId !== dayId) {
 					this.setDayAsContracted(prevExpandedDayId);
 				}
+
+				//call cleanup jik
+				if (this.opts.cleaner === null) {
+					this.cleanup();
+				}else{
+					clearInterval(this.opts.cleaner);
+					this.opts.cleaner = null;
+					this.cleanup();
+				}
+
 				return true;
 			}
 		/* set day as contracted */
@@ -1470,12 +1710,14 @@ function fdTSDisplay(refIdArg) {
 					});
 					
 				}
+
+				return true;
 			}
 
 	/* toggle className by changing final 'C' to 'E' or vice-versa */
 		this.toggleClassName = function (elemWithClassNameArg, origClassNameArg) {
-			origClassName = origClassNameArg || '';
-			elemWithClassName = elemWithClassNameArg || null;
+			var origClassName = origClassNameArg || '';
+			var elemWithClassName = elemWithClassNameArg || null;
 
 			if (
 				origClassName === '' || !elemWithClassName || 
@@ -1490,10 +1732,49 @@ function fdTSDisplay(refIdArg) {
 			}
 		}
 
+	/* cleanup function, in case any of the transitions get 'stuck' */
+		this.cleanup = function() {
+			var fdTSDisplay = this; //ref to fdTSDisplay
+
+			var cleaner = function() {
+				fdTSDisplay.log('Running cleaner...');
+				for (dayId in fdTSDisplay.dayObjs) {
+					
+					//check extend queue
+					fdTSDisplay.checkQueue(dayId);
+					fdTSDisplay.checkQueue(fdTSDisplay.dayObjs[dayId].hC);
+					fdTSDisplay.checkQueue(fdTSDisplay.dayObjs[dayId].hE);
+					fdTSDisplay.checkQueue(fdTSDisplay.dayObjs[dayId].fE);
+
+					var dayObj = fdTSDisplay.dayObjs[dayId];
+
+					if (dayObj.ext) {
+						if (!dayObj.isExpanded && (dayObj.ext.up('td').getWidth() !== 87 || dayObj.hEext.style.display != 'none' || dayObj.fEext.style.display != 'none')) {
+							fdTSDisplay.log(dayId, 'con cleaning...');
+							while (!fdTSDisplay.setDayAsContracted(dayId)){}
+						}
+						if (dayObj.isExpanded && (dayObj.ext.up('td').getWidth() !== 203 || dayObj.hCext.style.display != 'none' || dayObj.fEext.style.display === 'none')) {
+							fdTSDisplay.log(dayId, 'exp cleaning...');
+							while (!fdTSDisplay.setDayAsExpanded(dayId)){}
+						}
+					}
+				}
+				fdTSDisplay.log('...cleaner finished.');
+				clearInterval(fdTSDisplay.opts.cleaner);
+				fdTSDisplay.opts.cleaner = null;
+				
+			}
+			fdTSDisplay.log('Cleaner will run in '+(fdTSDisplay.opts.cleanerWaitTime/1000)+' secs..');
+			fdTSDisplay.opts.cleaner = setInterval(cleaner, fdTSDisplay.opts.cleanerWaitTime);
+		}
+
 	/* --- SETUP --- */
+	
+	this.log('Starting '+this.refId+'...');
 
 	/* detect IE version */
-	
+		this.detectIEVersion();
+
 	/* setup TSDisplay */
 		this.startTimer();
 			this.log('Starting constructor...');
@@ -1515,6 +1796,8 @@ function fdTSDisplay(refIdArg) {
 				this.addEvents();
 			this.log('...events added.');
 		this.endTimer();
+
+	this.log('...'+this.refId+' ready.');
 	
 	return this;
 }
@@ -1565,18 +1848,68 @@ function fdTSDisplay(refIdArg) {
 		this.ext = null;
 	}
 
-document.observe('dom:loaded', function() {
-	initializeTS();
-});
+/* initialize the TS display */
+	document.observe('dom:loaded', function() {
+		initializeTS();
 
-function initializeTS(refIdArg) {
-	var refId = refIdArg || 'fdTSDisplay';
+		if (!window.dayIndex) {
+			dayIndex = 0;
+		}
+		if (!window.slotIndex) {
+			slotIndex = 0;
+		}
+		defaultColumnExpandNew(dayIndex, slotIndex);
+	});
+
+	function initializeTS(refIdArg) {
+		var refId = refIdArg || 'fdTSDisplay';
+			
+		window[refId] = new fdTSDisplay(refId);
 		
-	window[refId] = new fdTSDisplay(refId);
+		return true;
+	}
+
+/* expand a day and check the radio */
+	function defaultColumnExpandNew(dayIndex, slotIndex) {
+		if (window.fdTSDisplay) {
+			var fdTSDisplay = window.fdTSDisplay;
+			
+			if (fdTSDisplay.opts && !fdTSDisplay.opts.timeSlotInfo) {
+				/* click radio */
+				if (fdTSDisplay.slotObjs[fdTSDisplay.getID('tsId', dayIndex, slotIndex)] && fdTSDisplay.slotObjs[fdTSDisplay.getID('tsId', dayIndex, slotIndex)].radioExt) {
+					fdTSDisplay.slotObjs[fdTSDisplay.getID('tsId', dayIndex, slotIndex)].radioExt.click();
+				}else{
+					//passed indexes have no radio, just expand
+					fdTSDisplay.setDayAsExpanded(fdTSDisplay.getID('dayId', dayIndex));
+				}
+			}else{
+				/* just expand day */
+				fdTSDisplay.setDayAsExpanded(fdTSDisplay.getID('dayId', dayIndex));
+			}
+		}
+		return;
+	}
 	
-	return true;
-}
 
-//so no error for now
-function defaultColumnExpand(dayIndex, slotIndex) { return; }
+	//ignore old function
+	function defaultColumnExpand() { return }
 
+/* hide ao */
+	function hideAdvanceOrder() { 
+		$('timeslots_gridAdv').toggle();
+
+		if($('timeslots_gridAdvNew')){
+			$('timeslots_gridAdvNew').toggle();
+
+
+			if ($('displayAdvanceOrderGrid').up('td').down('.tsAdvanceHeader')) {
+				$('displayAdvanceOrderGrid').up('td').down('.tsAdvanceHeader').toggle();
+			}
+		}
+
+		if($('timeslots_gridAdv').style.display !== 'none') {
+			$('displayAdvanceOrderGrid').innerHTML = "Hide Delivery Timeslots";
+		}else{
+			$('displayAdvanceOrderGrid').innerHTML = "Show Delivery Timeslots";
+		}
+	}

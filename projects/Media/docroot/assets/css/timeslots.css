@@ -18,10 +18,13 @@ table.tsContainer td {
 
 .tsTable {
 	border-collapse: collapse;
+	cursor: pointer;
 }
 
 .float_children {
 	border: 0px solid #ccc;
+	width: 730px;
+	overflow-x: hidden;
 }
 
 .float_children_noborder{
@@ -45,6 +48,9 @@ table.tsContainer td {
 .tsHeaderE_top, .tsHeaderE_topC {
 	height: 6px;
 	line-height: 6px;
+}
+.tsHeaderE_topC {
+	width: 100%;
 }
 .tsHeaderE_top {
 	width: 6px;
@@ -140,6 +146,10 @@ div.tsDayNameE {
 	overflow: hidden;
 }
 
+.tsContainerE {
+	padding: 0;
+}
+
 .tsContentC a, .tsContainerE a {
 	height: 100%;
 	width: 100%;
@@ -157,14 +167,23 @@ div.tsDayNameE {
 	overflow: hidden;
 }
 .tsCol div.tsContent div {
-	height: 12px;
+	/* height: 12px; */
 	margin-right: 1px;
 	text-align: left;
 }
 
-.tsCol div.tsContent div.tsCont, .tsCol div.tsContent div.msgCont {
+.tsCol .tsContent .tsCont, .tsCol div.tsContent div.msgCont {
 	padding-top: 10px;
+}
+td.tsContainerBGE div.tsContent div.tsCont {
 	margin-left: 4px;
+}
+td.tsContainerBGC div.tsContent div.tsCont {
+	margin-left: 1px;
+}
+
+div.tsContent {
+	overflow-y: hidden;
 }
 
 .cutoff {
@@ -268,10 +287,10 @@ div.learnMoreTimeslot {
 }
 
 div.holidayContent {
-	line-height:10px;
-	text-align:center;
-	padding-left:3px;
-	margin-top:5px;
+	line-height: 10px;
+	text-align: center;
+	padding-left: 3px;
+	margin-top: 5px;
 }
 
 a.holidayLearnMore {
@@ -325,13 +344,17 @@ table.tsTable td table.tsTable td {
 	border-top: 1px solid #ccc;
 	border-left: 1px solid #ccc;
 	border-right: 1px solid #ccc;
+	background-color: transparent;
 }
 .tsFooter div {
     margin: -1px 0 -1px -1px;
 }
 div.tsHeaderE {
-    margin-top: -10px;
+	/*margin-top: -10px;*/
 	min-width: 100px;
+}
+div.tsHeaderC {
+	margin-top: 10px;
 }
 .cutoffDisp {
 	border-left: 1px solid #ccc;
@@ -445,6 +468,7 @@ div.tsHeaderE {
 	overflow: hidden;
 	text-align:right;
 	padding-top:2px;
+	width: 92px;
 }
 
 .tsCol div.tsContent div.tsChefstablePropE {
@@ -483,7 +507,7 @@ div.tsHeaderE {
 	float: left; 
 	margin-top: 10px; 
 	margin-left: 3px; 
-	width: 70px;
+	width: 60px;
 }
 
 .tsSoldoutPropE div img { 
@@ -583,16 +607,21 @@ div.tsHeaderE {
 }
 
 .tsSelectedSlotE {
-	color:#666666;
-	font-weight:bold;
+	float: left;
+	color: #666666;
+	font-weight: bold;
 	font-size: 10px; 
-	font-family: Verdana, Arial, sans-serif;	
+	font-family: Verdana, Arial, sans-serif;
+	padding-top: 5px;
 }
 
 .tsSelectedSlotPropE {
 	overflow: hidden;
 	padding:5px 5px 0 0;
 	text-align:right;
+}
+.tsSelectedSlotPropE img {
+	float: left;
 }
 
 .tsCol div.tsContent div.tsSelectedSlotPropE {
@@ -602,7 +631,7 @@ div.tsHeaderE {
 .tsContentSelC {
 	color:#333333;
 	font-weight:bold;
-	font-size: 10px; 
+	font-size: 9px; 
 	font-family: Verdana, Arial, sans-serif;	
 }
 
@@ -622,7 +651,7 @@ td.noTopBorder {
 	text-align:right;
 	padding:10px 10px 0 0;
 }
-_tsContainer {
+#tsContainer {
 	overflow-x: hidden;
 	width: 730px;
 }
@@ -633,7 +662,7 @@ _tsContainer {
 
 #tsContainer td, #timeslotloyalityHeader td, #timeslotloyalityHeader font, #legendCheckout td {
   font-family: Verdana,Arial,sans-serif;
-  font-size: 10px;
+  font-size: 9px;
 }
 
 .tsFooter td {
@@ -668,7 +697,6 @@ _tsContainer {
 .tsCont {
 	width: 60px;
 	white-space: nowrap;
-	overflow-x: hidden;
 }
 .emptyDayCont {
 	border: 0 none;
@@ -683,7 +711,6 @@ _tsContainer {
 	padding-top: 8px;
 }
 .tsChefstablePropE div, .tsEcoFriendlyPropE div, .tsNeighbourhoodPropE div, .tsReservationPropE div, .tsSelectedSlotPropE div, .tsSoldoutPropE div{
-	width: 100px;
 	height: 30px;
 }
 
@@ -760,8 +787,12 @@ _tsContainer {
 	display: block;
 }
 
+.tsContainerBGC .tsChefstablePropC {
+	float: left;
+}
+
 .cutoffLR, .cutoffLR .cutoffDispChild {
-	background-color: #fff;
+	background-color: #f7f7f7;
 	font-weight: bold;
 	text-align: center;
 	height: 27px;
@@ -777,8 +808,20 @@ _tsContainer {
 
 .tsTableC {
 	width: 87px;
+	border-bottom: 1px solid #ccc;
 }
 
+.tsContainerBGC .ts_rb {
+	width: 0px;
+}
+
+.clickOnlyMouseOver {
+	background: transparent url('/media/editorial/timeslots/images/mouseOverBGC.gif') repeat-x left top;
+}
+
+.tsHeaderCMouseOver {
+	background: transparent url('/media/editorial/timeslots/images/date_gradient_mouseOver.gif') repeat-x left top;
+}
 
 /* modalbox rounded corner and drop shadow */
 #MB_frame {

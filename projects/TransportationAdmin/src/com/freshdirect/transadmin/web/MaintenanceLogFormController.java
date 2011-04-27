@@ -146,7 +146,7 @@ public class MaintenanceLogFormController extends AbstractFormController {
 				Collection maintenanceIssues = domainManagerService
 					.getMaintenanceIssue(_command.getTruckNumber(), _command.getIssueType(), _command.getIssueSubType());
 
-				if(_command.getRepairedBy() == null 
+				if(_command.getRepairedBy() == null && "".equals(request.getParameter("reverify"))
 						&& (EnumIssueStatus.VERIFIED.getName().equalsIgnoreCase(_command.getIssueStatus()) 
 								|| EnumIssueStatus.REVERIFIED.getName().equalsIgnoreCase(_command.getIssueStatus()))){
 					_command.setRepairedBy(getUserId(request));
@@ -158,6 +158,8 @@ public class MaintenanceLogFormController extends AbstractFormController {
 					_command.setVerifiedBy(getUserId(request));
 					_command.setIssueStatus(EnumIssueStatus.VERIFIED.getName());
 				}
+				if(!"".equals(request.getParameter("reverify")) && EnumIssueStatus.VERIFIED.getName().equalsIgnoreCase(_command.getIssueStatus()))
+					_command.setIssueStatus(EnumIssueStatus.REVERIFIED.getName());
 				
 				_command.setModifiedDate(new Timestamp(System.currentTimeMillis()));		
 				

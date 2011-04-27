@@ -129,4 +129,16 @@
           }
 		}
 		
-		
+		function back()
+	    {
+	      	var filters = unescape(getParameter("filter"));
+	      	var params = filters.split("&");
+	      	var maintenanceRecordForm = document.forms["maintenancelog"];
+	      	for(var i=0;i < params.length;i++)
+	      	{
+	      		var param = params[i].split("=");
+	      		add_input(maintenanceRecordForm,"hidden",param[0],param[1]);
+	      	}     	      	
+	      	maintenanceRecordForm.submit();
+	    }
+

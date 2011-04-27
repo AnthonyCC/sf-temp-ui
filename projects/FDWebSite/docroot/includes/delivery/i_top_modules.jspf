@@ -115,7 +115,7 @@ double currentHour = h+m;
 				<%}else{%>
 					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_no_reservation.html"/>
 				<%}%>
-			<%}else if(user.isChefsTable() && deliveryModel.getMaxDiscount()>0 && user.isDlvPassNone()){%>
+			<%}else if(user.isChefsTable() && deliveryModel.getMaxDiscount()>0 && !user.isDlvPassActive()){%>
 				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/promotion_discount.html"/>
 			<%}else if(!user.isDlvPassActive()||(user.getDlvPassInfo()!=null && EnumDlvPassStatus.EXPIRED.equals(user.getDlvPassInfo().getStatus()))){
 			

@@ -49,20 +49,32 @@ public class FDIssueLogCell extends FDBaseCell  {
         			issueLog = (IssueLog)iterator.next();
         			html.table(0).close();
         			
-        			
-	        		html.tr(0).close();
-	        		html.td(0).close().append(issueLog.getIssueType()+"/ "+issueLog.getIssueSubType()).tdEnd();
-	        		HtmlBuilder td = html.td(0);       			
+        			html.tr(0).close();
+	        		
+        			HtmlBuilder td1 = html.td(0);
+        			td1.styleClass("issues");
+        			td1.close();
+	        		td1.append(issueLog.getIssueType()+"/ "+issueLog.getIssueSubType()).tdEnd();
+	        		
+	        		HtmlBuilder td2 = html.td(0);       			
         			if(issueLog.getMaintenanceIssue() !=null && EnumIssueStatus.OPEN.getName().equals(issueLog.getMaintenanceIssue().getIssueStatus()))
-        				td.styleClass("employee_off");
-        			else 
-        				td.styleClass("employee_on");
-        			td.close();
-        			if(issueLog.getMaintenanceIssue() !=null && issueLog.getMaintenanceIssue().getId()!=null)
-        				td.append(" ["+issueLog.getMaintenanceIssue().getId()+"]");
+        				td2.styleClass("employee_off");
+        			else if(issueLog.getMaintenanceIssue() !=null)
+        				td2.styleClass("employee_on");
         			else
-        				td.append(" 		");
-        			html.td(0).close().append("["+issueLog.getDamageLocation()+"]  ["+issueLog.getIssueSide()+"]");
+        				td2.styleClass("noMaintenanceIssue");
+        			td2.close();
+        			if(issueLog.getMaintenanceIssue() !=null && issueLog.getMaintenanceIssue().getId()!=null)
+        				td2.append(" ["+issueLog.getMaintenanceIssue().getId()+"]");
+        			
+        			
+        			HtmlBuilder td3 = html.td(0);
+        			td3.styleClass("damageLocation");td3.close();
+        			td3.append(issueLog.getDamageLocation());
+        			HtmlBuilder td4 = html.td(0);
+        			td4.styleClass("issueSide");td4.close();
+        			td4.append(issueLog.getIssueSide());
+        			
         			if(issueLog.getComments()!= null)
 	        			html.td(0).close().append(issueLog.getComments());
         			else

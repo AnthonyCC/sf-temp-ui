@@ -69,10 +69,9 @@
 	
 	<div class="contentroot">
 				<div class="scrTitle" style="float:left;padding:3px 0 0 6px;"><%=pageTitle%> </div>
-				
 			
-					<div style="float:left;text-align:center;font-weight:bold;font-size:10px;">Service Status<br>&nbsp;
-						<select id="serviceStatus" name="serviceStatus" >
+					<div style="float:left;text-align:center;font-weight:bold;font-size:11px;">Service Status<br>&nbsp;
+						<select id="serviceStatus" name="serviceStatus" style="font-size:11px;">
 							<option value="">--Please Select</option>
 							  <c:forEach var="serviceName" items="${serviceStatuses}">
 								  <c:choose>
@@ -86,8 +85,8 @@
 								</c:forEach>
 					    </select>
 					</div>
-					<div style="float:left;text-align:center;font-weight:bold;font-size:10px;">Issue Status<br>&nbsp;
-						 <select id="issueStatus" name="issueStatus" >
+					<div style="float:left;text-align:center;font-weight:bold;font-size:11px;">Issue Status<br>&nbsp;
+						 <select id="issueStatus" name="issueStatus" style="font-size:11px;">
 							<option value="">--Please Select</option>
 							  <c:forEach var="statusName" items="${issueStatuses}">
 								  <c:choose>
@@ -124,7 +123,7 @@
 			<div class="cont_row">
 			
 				<div class="cont_Ritem">
-	
+	 			<form id="maintenanceRecordListForm" action="" method="post">  
 				<ec:table items="maintenanceRecords"   action="${pageContext.request.contextPath}/maintenancelog.do"
 					imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title=""
 					width="98%" filterable="true" showPagination="true" rowsDisplayed="25" view="fd" >
@@ -158,7 +157,7 @@
   					  <ec:column property="createdBy" title="Entered By" />
 					</ec:row>
 				</ec:table>
-					
+				</form>
 				</div>
 			</div>
 		</div>
@@ -169,6 +168,15 @@
 			
 		%> 
 			addMultiParamRowHandlersFilter('ec_table', 'rowMouseOver', 'editmaintenancelog.do','id',0, 0, false, 'issueLog','<%=issueLog%>');
+
+			function getFilterTestValue() {
+	             var filters = getFilterValue(document.getElementById("maintenanceRecordListForm"),false);
+	             var param1 = document.getElementById("serviceStatus").value;
+	     		 var param2 = document.getElementById("issueStatus").value;
+	             filters+="&issueStatus="+param2;
+	             filters+="&serviceStatus="+param1;
+	             return escape(filters);
+	       }
 		<%}%>
 	</script>
 	</tmpl:put> 

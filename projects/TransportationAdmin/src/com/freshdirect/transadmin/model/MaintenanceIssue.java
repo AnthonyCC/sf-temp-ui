@@ -32,7 +32,16 @@ public class MaintenanceIssue extends BaseCommand {
 	private String verifiedBy;
 	private String repairedBy;	
 	private String subTypeId;
+	private boolean isReVerified;
 	
+	public boolean isReVerified() {
+		return isReVerified;
+	}
+
+	public void setReVerified(boolean isReVerified) {
+		this.isReVerified = isReVerified;
+	}
+
 	public String getSubTypeId() {
 		if(getIssueSubType() == null)
 			return null;

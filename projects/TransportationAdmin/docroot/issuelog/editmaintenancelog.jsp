@@ -219,7 +219,7 @@
 										<input type = "submit" value="&nbsp;Verify&nbsp;" />
 									</c:when>
 									<c:when test='${isVerified}'>
-										<input type = "submit" value="&nbsp;Re-Verify&nbsp;" />
+										<input type = "submit" value="&nbsp;Re-Verify&nbsp;" name="reverify"/>
 									</c:when>
 									<c:when test="${maintenanceRecordForm.issueStatus eq 'Rejected' }">
 										<input type = "submit" value="&nbsp;Verify&nbsp;" disabled="true"/>
@@ -390,3 +390,4 @@
 
   </tmpl:put>
 </tmpl:insert>
+<form name="maintenancelog" action="maintenancelog.do?issueLog=M" method="post">  </form>

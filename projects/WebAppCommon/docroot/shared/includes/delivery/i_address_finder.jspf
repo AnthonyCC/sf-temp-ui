@@ -49,7 +49,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 							<tr>
 								<td class="title16">Available Delivery TimeSlots</td>
 								<td>
-									<fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots.html"/>
+									<fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots_learnmore.html"/>
 								</td>
 							</tr>
 						</table>

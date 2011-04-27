@@ -115,7 +115,12 @@
         </table>
       
       </form:form>
-     </div>
+     </div>     
+     &nbsp;&nbsp;&nbsp;
+	<div style="float:right;font-weight:bold;"><br/>
+			<span><input type="image" src="./images/icons/tick.gif" />&nbsp;Overriden from Template</span>
+			<span><input type="image" src="./images/icons/unique.gif" />&nbsp;Unique to Asset</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	</div>
     <style>
 		.yui-skin-sam .yui-dt-body { cursor:pointer; } 
 		#single { margin-top:2em; }
