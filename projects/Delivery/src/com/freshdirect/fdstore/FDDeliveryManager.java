@@ -73,7 +73,7 @@ public class FDDeliveryManager {
 		new TimedLruCache<String,DlvZoneCapacityInfo>(200, 5 * 60 * 1000);
 
 	private DlvRestrictionsList dlvRestrictions = null;
-	private long REFRESH_PERIOD = 1000 * 60 * 5; // 5 minutes
+	private long REFRESH_PERIOD = 0;//1000 * 60 * 5; // 5 minutes
 	private long lastRefresh = 0;
 
 	private List<SiteAnnouncement> announcementList = null;
@@ -875,11 +875,16 @@ public class FDDeliveryManager {
 	private long muni_lastRefresh = 0;
 
 	public MunicipalityInfoWrapper getMunicipalityInfos() throws FDResourceException {
-		this.refreshMunicipalityInfos();
+		return this.getMunicipalityInfos(false);
+	}
+	
+	public MunicipalityInfoWrapper getMunicipalityInfos(boolean forceReload) throws FDResourceException {
+		this.refreshMunicipalityInfos(forceReload);
 		return this.municipalityInfos;
 	}
-	private void refreshMunicipalityInfos() throws FDResourceException {
-		if (System.currentTimeMillis() - muni_lastRefresh > MUNI_REFRESH_PERIOD) {
+	
+	private void refreshMunicipalityInfos(boolean forceReload) throws FDResourceException {
+		if (forceReload || System.currentTimeMillis() - muni_lastRefresh > MUNI_REFRESH_PERIOD) {
 			try {
 				DlvManagerSB sb = getDlvManagerHome().create();
 				this.municipalityInfos = new MunicipalityInfoWrapper(sb.getMunicipalityInfos());

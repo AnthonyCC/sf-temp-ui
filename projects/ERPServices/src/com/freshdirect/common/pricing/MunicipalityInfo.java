@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class MunicipalityInfo implements Serializable {
 	
 	private static final long	serialVersionUID	= 1978073661180317774L;
-	
+	private String id;
 	private String state;
 	private String county;
 	private String city;
@@ -14,8 +14,9 @@ public class MunicipalityInfo implements Serializable {
 	private double bottleDeposit;
 	private boolean alcoholRestricted;
 	
-	public MunicipalityInfo(String state, String county, String city, String gl_code, 
+	public MunicipalityInfo(String id, String state, String county, String city, String gl_code, 
 		                     double tax_rate, double bottle_deposit, boolean alcohol_restricted) {
+		this.id = id;
 		this.state = state;
 		this.county = county;
 		this.city = city;
@@ -55,5 +56,9 @@ public class MunicipalityInfo implements Serializable {
 	
 	public boolean isAlcoholRestricted() {
 		return alcoholRestricted;
+	}
+
+	public String getId() {
+		return id;
 	}
 }

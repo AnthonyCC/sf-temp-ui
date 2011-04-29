@@ -1,5 +1,6 @@
 package com.freshdirect.delivery.restriction;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +68,36 @@ public class EnumDlvRestrictionReason extends Enum {
 	public static List getEnumList() {
 		return getEnumList(EnumDlvRestrictionReason.class);
 	}
-
+	public static List<EnumDlvRestrictionReason> getAlcoholEnumList() {
+		List<EnumDlvRestrictionReason> aList = new ArrayList<EnumDlvRestrictionReason>();
+		aList.add(EnumDlvRestrictionReason.ALCOHOL);
+		aList.add(EnumDlvRestrictionReason.BEER);
+		aList.add(EnumDlvRestrictionReason.WINE);
+		return aList;
+	}
+	
+	public static List<EnumDlvRestrictionReason> getNonAlcoholEnumList() {
+		List<EnumDlvRestrictionReason> aList = new ArrayList<EnumDlvRestrictionReason>();
+		aList.add(EnumDlvRestrictionReason.KOSHER);
+		aList.add(EnumDlvRestrictionReason.THANKSGIVING);
+		aList.add(EnumDlvRestrictionReason.VALENTINES);
+		aList.add(EnumDlvRestrictionReason.EASTER);
+		aList.add(EnumDlvRestrictionReason.PLATTER);
+		aList.add(EnumDlvRestrictionReason.CLOSED);
+		aList.add(EnumDlvRestrictionReason.TEMP_A);
+		aList.add(EnumDlvRestrictionReason.TEMP_B);
+		aList.add(EnumDlvRestrictionReason.TEMP_C);
+		aList.add(EnumDlvRestrictionReason.BLOCK_SUNDAY);
+		aList.add(EnumDlvRestrictionReason.BLOCK_MONDAY);
+		aList.add(EnumDlvRestrictionReason.BLOCK_TUESDAY);
+		aList.add(EnumDlvRestrictionReason.BLOCK_WEDNESDAY);
+		aList.add(EnumDlvRestrictionReason.BLOCK_THURSDAY);
+		aList.add(EnumDlvRestrictionReason.BLOCK_FRIDAY);
+		aList.add(EnumDlvRestrictionReason.BLOCK_SATURDAY);
+		aList.add(EnumDlvRestrictionReason.THANKSGIVING_MEALS);
+		aList.add(EnumDlvRestrictionReason.EASTER_MEALS);
+		return aList;
+	}
 	public static Iterator iterator() {
 		return iterator(EnumDlvRestrictionReason.class);
 	}

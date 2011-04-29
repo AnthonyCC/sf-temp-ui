@@ -1,6 +1,5 @@
 <table class="home_search_module_field" border="0" cellpadding="2" cellspacing="2" width="100%">
-
-    
+	<tr><td colspan="8" align="right"><a href="/admintools/alcohol_restrictions.jsp"><span><b>Manage Alcohol Restrictions<br><br></b></span></a></td></tr>
 	<tr>
 		<% 
 			String startDate = 
@@ -14,7 +13,7 @@
         <td><select name="reason" style="width: 120px;">
 				<option value="All">All</option>
             <%
-			List enumReasons=EnumDlvRestrictionReason.getEnumList();
+			List enumReasons=EnumDlvRestrictionReason.getNonAlcoholEnumList();
 			%>
 			<logic:iterate collection="<%= enumReasons %>" id="enumReason" type="com.freshdirect.delivery.restriction.EnumDlvRestrictionReason">
 			<%  

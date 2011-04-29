@@ -33,7 +33,7 @@ public class DlvRestrictionsList implements Serializable {
 		// need to make sure if this is called then if TKG restricetd day start date is less then adv order start date 
 		// then  we should consider adv order start date as TKG start date
 		// stupid requirement
-		System.out.println("range111 :"+range);
+		//System.out.println("range111 :"+range);
 		
 		// For advance orders on holidays we should check the holiday dates fall between the advance order dates
 		// The check is for displaying holiday bar on top of timeslot when they fall under horizon

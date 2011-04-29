@@ -1,0 +1,206 @@
+			
+<%	
+	String dlvTimesStrings[] = new String[8];
+	String[] strDays = new String[] {"Anyday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+
+	String selectedDays = "";
+	if(restriction != null) {
+		Map timeRangesMap = restriction.getTimeRangeMap();
+		/*
+			check if we have times to display on page load, and put them into a string to be used in the javascript call
+		*/
+
+		Set daySet = timeRangesMap.keySet();
+		if(daySet != null) {
+			Iterator it = daySet.iterator();
+			while(it.hasNext()) {
+				Integer day = (Integer)it.next();
+				List tsList = (List) timeRangesMap.get(day);
+				if (tsList != null) {
+					for (int i = 0; i < tsList.size(); i++) {
+						TimeOfDayRange tempTs = (TimeOfDayRange)tsList.get(i);
+						if (tempTs != null) {
+							if (dlvTimesStrings[day.intValue()] == null) { dlvTimesStrings[day.intValue()] = ""; }
+							if (!"".equals(dlvTimesStrings[day.intValue()])) { dlvTimesStrings[day.intValue()] += ", "; }
+							dlvTimesStrings[day.intValue()] += "'"+(day.intValue()) +"_"+tempTs.getStartTime().getAsString()+"', '"+(day.intValue())+"_"+tempTs.getEndTime().getAsString()+"'";
+						}
+					}
+				}
+				selectedDays=selectedDays+day.intValue();
+			}
+		}
+	}
+	
+	String dlvTimeslotsString = "";
+	boolean rowOpen = false;
+	int colCount=0;
+	List dlvTimeslotsList = null;
+		for (int i = 0; i < dlvTimesStrings.length; i++) {
+			if (dlvTimesStrings[i] != null && !"".equals(dlvTimesStrings[i])) {
+				dlvTimeslotsList = Arrays.asList(dlvTimesStrings[i].split(","));
+
+					for (int j = 0; j < dlvTimeslotsList.size(); j++) {
+						if (!rowOpen) {
+							dlvTimeslotsString += "<tr>";
+							dlvTimeslotsString += "<td class=\"w100px bordLgrayDash padL8R16\">"+strDays[Integer.parseInt(dlvTimeslotsList.get(j).toString().split("_")[0].split("'")[1].trim())]+"</td>";
+							rowOpen = !rowOpen;
+						}
+						if (colCount < 2) {
+							//add timeslot data
+							dlvTimeslotsString += "<td class=\"bold bordLgrayDash padL8R16\">"+dlvTimeslotsList.get(j).toString().split("_")[1].replace("\'","")+"</td>";
+							if (colCount==0) {
+								dlvTimeslotsString += "<td class=\"bordLgrayDash padL8R16 gray\"> to </td>";
+							}
+							colCount++;
+						}
+
+						if (colCount >= 2) {
+							dlvTimeslotsString += "</tr>";
+							colCount=0;
+							rowOpen = !rowOpen;
+						}
+					}
+			}
+		}
+		//close row if left open
+		if (rowOpen) {
+			dlvTimeslotsString += "<td colspan=\""+colCount*2+"\"><!-- blank --></td></tr>";
+		}
+		if (!"".equals(dlvTimeslotsString)) {
+			dlvTimeslotsString = "<table class=\"tableCollapse\">"+dlvTimeslotsString+"</table>";
+		}
+%>
+
+<%@page import="com.freshdirect.delivery.restriction.AlcoholRestriction"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.Iterator"%>
+<%@page import="java.util.Set"%>
+<%@page import="java.util.List"%>
+<%@page import="com.freshdirect.framework.util.TimeOfDayRange"%><script type="text/javascript" language="javascript" src="/assets/javascript/promo.js"></script>
+<table width="100%">
+	<tr>
+		<td class="vTop">
+				<div class="black" align="center"><br><b>ADD/EDIT COUNTY ACTIVE SCHEDULE BLOCKED TIMES</b></div>
+				<table class="tableCollapse" width="100%" id="edit_dlvreq_dayOfWeekParent" name="edit_dlvreq_dayOfWeekParent">
+					<tr>
+						<%-- sets the column widths --%>
+						<td width="50%"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+						<td width="50%"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					</tr>
+					<%
+						//create week
+						List dayOfWeek = new ArrayList();
+							dayOfWeek.add("ANYDAY");
+							dayOfWeek.add("SUNDAY");
+							dayOfWeek.add("MONDAY");
+							dayOfWeek.add("TUESDAY");
+							dayOfWeek.add("WEDNESDAY");
+							dayOfWeek.add("THURSDAY");
+							dayOfWeek.add("FRIDAY");
+							dayOfWeek.add("SATURDAY");
+
+							boolean bgGray = false;
+
+						for (int i = 0; i < dayOfWeek.size(); i++) {
+							String dowLong = dayOfWeek.get(i).toString();
+							String dowShort = dowLong.substring(0,3);//.toLowerCase();
+							boolean even = (i%2==0)?true:false;
+
+							if (i == 0) {
+								%><tr><%
+							}
+
+							if (i!=0 && even) { %><tr><% }
+							%>
+							
+								<td class="alignL vTop padL8R16 bord1px999<%=(bgGray)?" BG_exp":""%>" id="edit_dlvreq_chk<%=dowShort%>_parent" name="edit_dlvreq_chk<%=dowShort%>_parent" >
+									<input type="checkbox" id="edit_dlvreq_chk<%=dowShort%>" name="edit_dlvreq_chk<%=dowShort%>" onclick="javascript:disableCheckBoxes(this.id);" onchange="cbToggle(this.id);" <%= selectedDays.indexOf(""+(i))>-1?"checked":"" %> /> <%=dowLong%>
+									<div id="edit_dlvreq_chk<%=dowShort%>Cont" name="edit_dlvreq_chk<%=dowShort%>Cont" style="display: none;">
+										<%-- create index hidden element (make sure the var name and elem id/name are NOT the same) --%>
+										<input type="hidden" id="dlvDay<%=dowShort%>IndexValue" name="dlvDay<%=dowShort%>IndexValue" value="" />
+										<script type="text/javascript">
+										<!--
+											<%-- init the index --%>
+											var dlvDay<%=dowShort%>Index = new index(0, 'dlvDay<%=dowShort%>IndexValue');
+											<%-- setup further down, outside loop --%>
+										//-->
+										</script>
+										<img src="/media_stat/crm/images/clear.gif" width="8" height="15" alt="" /><input type="text" id="dlvTimeIn<%=dowShort%>StartTime" name="dlvTimeIn<%=dowShort%>StartTime" class="w75px" /> <a href="#" onclick="return false;" class="promo_ico_cont<%=(bgGray)?" BG_fff":""%>" id="dlvTimeIn<%=dowShort%>StartTime_trigger" name="dlvTimeIn<%=dowShort%>StartTime_trigger"><img src="/media_stat/crm/images/blue_clock.gif" width="16" height="16" alt="" /></a>
+										<span class="gray">&nbsp;&nbsp;to&nbsp;&nbsp;</span>
+										<input type="text" id="dlvTimeIn<%=dowShort%>EndTime" name="dlvTimeIn<%=dowShort%>EndTime" class="w75px" /> <a href="#" onclick="return false;" class="promo_ico_cont<%=(bgGray)?" BG_fff":""%>" id="dlvTimeIn<%=dowShort%>EndTime_trigger" name="dlvTimeIn<%=dowShort%>EndTime_trigger"><img src="/media_stat/crm/images/blue_clock.gif" width="16" height="16" alt="" /></a>
+										
+										<input type="button" value="ADD" onclick="if ($('dlvTimeIn<%=dowShort%>StartTime').value!=='' && $('dlvTimeIn<%=dowShort%>EndTime').value!=='') { addRow('dlvTimeTable<%=dowShort%>', 'dlvTimeIn<%=dowShort%>', 'dlvDay<%=dowShort%>', true, dlvDay<%=dowShort%>Index); }" class="promo_btn_grn padLR4" />
+										<br /><img width="1" height="10" src="/media_stat/crm/images/clear.gif" alt="" />
+										
+										<table id="dlvTimeTable<%=dowShort%>" name="dlvTimeTable<%=dowShort%>" class="tableCollapse" style="display: none; background-color: #fff;">
+											<thead>
+											<tr>
+												<th class="bordLgrayDash gray8pt padL8R16">Delivery Time(s)</th>
+												<th class="gray8pt padL8R16"><a href="#" onclick="clickAllHREF('dlvTimeTable<%=dowShort%>', 'SaveAllInclude'); return false;" class="greenLink clickAllExclude">(Save All)</a> / <a href="#" onclick="clickAllHREF('dlvTimeTable<%=dowShort%>', 'DelAllInclude', 'clickAllExclude', true); return false;" class="greenLink clickAllExclude">(Delete All)</a></th>
+											</tr>
+											</thead>
+											<tbody>
+											</tbody>
+										</table>
+									</div>
+								</td>
+							
+							<%
+							if (!even) { %></tr><% }
+							
+							if (even) { bgGray = !bgGray; }
+						}
+					%>
+						<td class="alignL vTop padL8R16 gray8pt">If no timeslot specified, any slot selected within day is eligible</td>
+					</tr>
+					<tr>
+						<td colspan="2" class="alignR">
+							<a href="#" onclick="selectNCB('edit_dlvreq_dayOfWeekParent', '', true, '', true); return false;" class="greenLink">(Select All)</a>&nbsp;
+							<a href="#" onclick="selectNCB('edit_dlvreq_dayOfWeekParent', '', false, '', true); return false;" class="greenLink">(Select None)</a>
+							<script type="text/javascript">
+							<!--
+								<%--
+									setup saved data to be added back to page (when page has loaded).
+									The final Array is the value pairs (start/end). Eveything else is the same as the 'Add' button.
+									Also make the values table visible by making the day of week checkbox checked.
+									
+									document.observe("dom:loaded", function() {
+										addRows('dlvTimeTableMON', 'dlvTimeInMON', 'dlvDayMON', true, dlvDayMONIndex, Array('1a','1b'));
+										selectNCB('edit_dlvreq_chkMON_parent', '', true, '', true);
+									});
+								--%>
+								<%
+									for (int i = 0; i < 8; i++) {
+										if ( (dlvTimesStrings[i] != null && !"".equals(dlvTimesStrings[i])) || (selectedDays.indexOf(""+(i))>-1) ) {
+											String dowLong = dayOfWeek.get(i).toString();
+											String dowShort = dowLong.substring(0,3);
+											%>
+												document.observe("dom:loaded", function() {
+													<% //only do this if we have times to be displayed
+													if (dlvTimesStrings[i] != null && !"".equals(dlvTimesStrings[i])) { %>
+														addRows('dlvTimeTable<%=dowShort%>', 'dlvTimeIn<%=dowShort%>', 'dlvDay<%=dowShort%>', true, dlvDay<%=dowShort%>Index, Array(<%=dlvTimesStrings[i]%>));
+													<% }
+														//expand day if needed (simply making it checked won't show the times content)
+													%>
+													selectNCB('edit_dlvreq_chk<%=dowShort%>_parent', '', true, '', true);
+												});
+											<%
+										}
+									}
+								%>
+							//-->
+							</script>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</td>
+		<%-- no contents, filler --%>
+		<td width="1%" class="vTop">
+			<%-- this page uses a different width here --%>
+			<img width="50" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
+		</td>
+		<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+	</tr>
+</table>
+

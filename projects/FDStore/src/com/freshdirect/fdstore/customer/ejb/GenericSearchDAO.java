@@ -20,6 +20,7 @@ import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.EnumRestrictedAddressReason;
 import com.freshdirect.delivery.model.RestrictedAddressModel;
+import com.freshdirect.delivery.restriction.AlcoholRestriction;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionType;
@@ -36,6 +37,7 @@ import com.freshdirect.framework.util.EnumSearchType;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.TimeOfDay;
+import com.freshdirect.framework.util.TimeOfDayRange;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.SettlementBatchInfo;
 
@@ -45,8 +47,8 @@ public class GenericSearchDAO {
 	//.put(EnumSearchType.COMPANY_SEARCH.getName(), CUSTOMER_QUERY);
 	private static Category LOGGER = LoggerFactory.getInstance(GenericSearchDAO.class);
 	
-	public static List<FDCustomerOrderInfo> genericSearch(Connection conn, GenericSearchCriteria criteria) throws SQLException {
-		List<FDCustomerOrderInfo> searchResults = null;
+	public static List genericSearch(Connection conn, GenericSearchCriteria criteria) throws SQLException {
+		List searchResults = null;
 		if(criteria == null || criteria.isBlank()){
 			return Collections.emptyList();
 		} else if(EnumSearchType.COMPANY_SEARCH.equals(criteria.getSearchType())){
@@ -78,6 +80,10 @@ public class GenericSearchDAO {
 			CriteriaBuilder builder = buildSQLFromCriteria(criteria);
 			searchResults = processDeliveryRestriction(conn, criteria, builder);
 		}
+		else if(EnumSearchType.ALCOHOL_RESTRICTION_SEARCH.equals(criteria.getSearchType())){
+			CriteriaBuilder builder = buildSQLFromCriteria(criteria);
+			searchResults = processAlcoholRestriction(conn, criteria, builder);
+		}		
 		else if(EnumSearchType.ADDR_RESTRICTION_SEARCH.equals(criteria.getSearchType())){
 			CriteriaBuilder builder = buildSQLFromCriteria(criteria);
 			searchResults = processAddressRestriction(conn, criteria, builder);
@@ -110,6 +116,9 @@ public class GenericSearchDAO {
 			}
 			else if(EnumSearchType.DEL_RESTRICTION_SEARCH.equals(criteria.getSearchType())){
 				buildDeliveryRestrictionDays(criteria, builder);
+			}
+			else if(EnumSearchType.ALCOHOL_RESTRICTION_SEARCH.equals(criteria.getSearchType())){
+				buildAlcoholRestrictionCriteria(criteria, builder);
 			}
 			else if(EnumSearchType.ADDR_RESTRICTION_SEARCH.equals(criteria.getSearchType())){
 				buildAddressRestrictionCriteria(criteria, builder);
@@ -725,6 +734,29 @@ public class GenericSearchDAO {
 		return builder;
 	}
 	
+	private static CriteriaBuilder buildAlcoholRestrictionCriteria(GenericSearchCriteria criteria, CriteriaBuilder builder) {
+		String state = (String)criteria.getCriteriaMap().get("state");
+		if(state != null  && state.trim().length()>0){
+			builder.addSql(" state = ? ", new Object[]{state});	
+		}
+		
+		String county = (String)criteria.getCriteriaMap().get("county");
+		if(county != null && county.trim().length()>0){
+			builder.addSql(" county = ? ", new Object[]{county});	
+		}
+
+		EnumDlvRestrictionReason reason = (EnumDlvRestrictionReason)criteria.getCriteriaMap().get("reason");
+		if(reason!=null && !"All".equalsIgnoreCase(reason.getName())){
+			builder.addSql(" reason = ? ", new String[]{reason.getName()});
+		}
+		EnumDlvRestrictionType type = (EnumDlvRestrictionType)criteria.getCriteriaMap().get("type");
+		if(type!=null){
+			builder.addSql(" type = ?", new String[]{type.getName()});
+		}
+		
+		return builder;
+	}
+	
 	private static String DELIVERY_RESTRICTIONS_RETURN = 
 		"select ID,TYPE,NAME,DAY_OF_WEEK,START_TIME,END_TIME,REASON,MESSAGE,CRITERION,MEDIA_PATH FROM dlv.restricted_days";
 
@@ -743,9 +775,9 @@ public class GenericSearchDAO {
 		}
 		
 		if(builder.getParams()!=null && builder.getParams().length>0){
-		    query = new StringBuffer(DELIVERY_RESTRICTIONS_RETURN).append(" where ").append(builder.getCriteria()).append(" order by ").append(sortColumn).append(" "+ascending).toString();
+		    query = new StringBuffer(DELIVERY_RESTRICTIONS_RETURN).append(" where ").append(builder.getCriteria()).append(" and reason not  in ('ACL','BER','WIN') ").append(" order by ").append(sortColumn).append(" "+ascending).toString();
 		}else{
-			query = new StringBuffer(DELIVERY_RESTRICTIONS_RETURN).append(builder.getCriteria()).append(" order by ").append(sortColumn).append(" "+ascending).toString();
+			query = new StringBuffer(DELIVERY_RESTRICTIONS_RETURN).append(builder.getCriteria()).append(" and reason not  in ('ACL','BER','WIN') ").append(" order by ").append(sortColumn).append(" "+ascending).toString();
 		}
 		
 		
@@ -824,6 +856,165 @@ public class GenericSearchDAO {
 		return restrictions;
 	}
 	
+	private static final String GET_ALCOHOL_RESTRICTION = "select  r.ID,r.TYPE,r.NAME,r.START_TIME,r.END_TIME,r.REASON,r.MESSAGE,r.CRITERION,r.MEDIA_PATH, "+
+											"D.DAY_OF_WEEK, D.RES_START_TIME,D.RES_END_TIME, M.ID MUNICIPALITY_ID,M.STATE,M.COUNTY,M.CITY,M.ALCOHOL_RESTRICTED "+ 
+											"from dlv.restricted_days r,DLV.RESTRICTION_DETAIL d, DLV.MUNICIPALITY_INFO m, DLV.MUNICIPALITY_RESTRICTION_DATA mr "+
+											"where R.ID = D.RESTRICTION_ID(+) "+
+											"and R.ID = MR.RESTRICTION_ID "+
+											"and M.ID = MR.MUNICIPALITY_ID ";
+	private static List<AlcoholRestriction> processAlcoholRestriction(Connection conn, GenericSearchCriteria criteria, CriteriaBuilder builder) throws SQLException {
+		List<AlcoholRestriction> restrictions=new ArrayList<AlcoholRestriction>();		
+		
+		String query ="";
+		String sortColumn = (String)criteria.getCriteriaMap().get("sortColumn");
+		String ascending = (String)criteria.getCriteriaMap().get("ascending");
+		
+		if(sortColumn == null  || sortColumn.trim().length()==0){
+			sortColumn="start_time";			
+		}
+		if(ascending == null  || ascending.trim().length()==0){
+			ascending="asc";			
+		}
+		
+		if(builder.getParams()!=null && builder.getParams().length>0){
+		    query = new StringBuffer(GET_ALCOHOL_RESTRICTION).append(" and ").append(builder.getCriteria()).append(" order by ").append(" R.ID ").toString();
+		}else{
+			query = new StringBuffer(GET_ALCOHOL_RESTRICTION).append(" order by ").append(" R.ID ").toString();
+		}
+
+		LOGGER.debug("query :"+query);
+		PreparedStatement ps = conn.prepareStatement(query);
+		
+		Object[] obj = builder.getParams();
+		for(int i = 0; i < obj.length; i++) {
+			LOGGER.debug("i:"+i+":"+obj[i]);
+			LOGGER.debug(obj[i].getClass().getName());
+			ps.setObject(i+1, obj[i]);
+		}
+		String restrictionId = "";
+		String name = null;
+		String msg = null;
+		String path =null;
+		EnumDlvRestrictionReason reason = null;
+		EnumDlvRestrictionCriterion criterion = null;
+		EnumDlvRestrictionType type = null;
+		java.util.Date startDate = null;
+		java.util.Date endDate = null;
+		String state = null;
+		String county = null;
+		String municipalityId = null;
+		boolean alcoholRestricted = false;
+		
+		ResultSet rs = ps.executeQuery();
+		int count = 0;
+		//Map<Integer, List<TimeOfDayRange>> timeRangeMap = new HashMap<Integer, List<TimeOfDayRange>>();
+		while (rs.next()) {
+			if(restrictionId.length() == 0 || restrictionId.equals(rs.getString("ID"))){
+				restrictionId = rs.getString("ID");
+				name = rs.getString("NAME");
+				msg = rs.getString("MESSAGE");
+				path = rs.getString("MEDIA_PATH");
+				criterion = EnumDlvRestrictionCriterion.getEnum(rs.getString("CRITERION"));
+				if (criterion == null) {
+					// skip unknown criteria
+					continue;
+				}
+	
+				reason = EnumDlvRestrictionReason.getEnum(rs.getString("REASON"));
+				if (reason == null) {
+					// skip unknown reasons
+					continue;
+				}
+	
+				startDate = new java.util.Date(rs.getTimestamp("START_TIME").getTime());
+				endDate = new java.util.Date(rs.getTimestamp("END_TIME").getTime());
+				/*
+				int dayOfWeek = rs.getInt("DAY_OF_WEEK");
+				TimeOfDay startTime = new TimeOfDay(rs.getString("RES_START_TIME"));
+				TimeOfDay endTime = new TimeOfDay(rs.getString("RES_END_TIME"));
+				Integer key = new Integer(dayOfWeek);
+				if(timeRangeMap.get(key) == null) {
+					List<TimeOfDayRange> timeRanges = new ArrayList<TimeOfDayRange>();
+					timeRanges.add(new TimeOfDayRange(startTime, endTime));
+					timeRangeMap.put(key, timeRanges);
+				} else {
+					List<TimeOfDayRange> timeRanges = timeRangeMap.get(key);
+					timeRanges.add(new TimeOfDayRange(startTime, endTime));
+					timeRangeMap.put(key, timeRanges);
+				}*/
+				String typeCode = rs.getString("TYPE");
+				type = EnumDlvRestrictionType.getEnum(typeCode);
+				if (type == null && "PTR".equals(typeCode)) {
+					type = EnumDlvRestrictionType.RECURRING_RESTRICTION;
+				}
+				state = rs.getString("state");
+				county = rs.getString("county");
+				municipalityId = rs.getString("MUNICIPALITY_ID");
+				alcoholRestricted = Boolean.getBoolean(rs.getString("ALCOHOL_RESTRICTED"));
+				count ++;
+			} else {
+				AlcoholRestriction restriction = new AlcoholRestriction(restrictionId, criterion, reason, name, msg, startDate, endDate,type,
+						path, state, county, null, municipalityId, alcoholRestricted);
+				//restriction.setTimeRangeMap(new HashMap<Integer, List<TimeOfDayRange>>(timeRangeMap));
+				restrictions.add(restriction);
+				//timeRangeMap.clear();
+				restrictionId = rs.getString("ID");
+				name = rs.getString("NAME");
+				msg = rs.getString("MESSAGE");
+				path = rs.getString("MEDIA_PATH");
+				criterion = EnumDlvRestrictionCriterion.getEnum(rs.getString("CRITERION"));
+				if (criterion == null) {
+					// skip unknown criteria
+					continue;
+				}
+	
+				reason = EnumDlvRestrictionReason.getEnum(rs.getString("REASON"));
+				if (reason == null) {
+					// skip unknown reasons
+					continue;
+				}
+	
+				startDate = new java.util.Date(rs.getTimestamp("START_TIME").getTime());
+				endDate = new java.util.Date(rs.getTimestamp("END_TIME").getTime());
+				/*
+				int dayOfWeek = rs.getInt("DAY_OF_WEEK");
+				TimeOfDay startTime = new TimeOfDay(rs.getString("RES_START_TIME"));
+				TimeOfDay endTime = new TimeOfDay(rs.getString("RES_END_TIME"));
+				Integer key = new Integer(dayOfWeek);
+				if(timeRangeMap.get(key) == null) {
+					List<TimeOfDayRange> timeRanges = new ArrayList<TimeOfDayRange>();
+					timeRanges.add(new TimeOfDayRange(startTime, endTime));
+					timeRangeMap.put(key, timeRanges);
+				} else {
+					List<TimeOfDayRange> timeRanges = timeRangeMap.get(key);
+					timeRanges.add(new TimeOfDayRange(startTime, endTime));
+					timeRangeMap.put(key, timeRanges);
+				}
+				*/
+				String typeCode = rs.getString("TYPE");
+				type = EnumDlvRestrictionType.getEnum(typeCode);
+				if (type == null && "PTR".equals(typeCode)) {
+					type = EnumDlvRestrictionType.RECURRING_RESTRICTION;
+				}
+				state = rs.getString("state");
+				county = rs.getString("county");
+				municipalityId = rs.getString("MUNICIPALITY_ID");
+				alcoholRestricted = Boolean.getBoolean(rs.getString("ALCOHOL_RESTRICTED"));
+				
+			}
+		}
+		if(count > 0) {
+			//Add the last element.
+			AlcoholRestriction restriction = new AlcoholRestriction(restrictionId, criterion, reason, name, msg, startDate, endDate,type,
+					path, state, county, null, municipalityId, alcoholRestricted);
+			restrictions.add(restriction);
+		}
+		LOGGER.debug("restrictions size :"+restrictions.size());
+		rs.close();
+		ps.close();
+
+		return restrictions;
+	}
 	
 	private static String ADDRESS_RESTRICTIONS_RETURN = 
 		"select scrubbed_address, apartment, zipcode, reason, date_modified, modified_by from dlv.restricted_address ";

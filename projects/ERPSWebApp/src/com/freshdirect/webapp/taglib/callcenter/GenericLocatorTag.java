@@ -69,6 +69,9 @@ public class GenericLocatorTag extends AbstractControllerTag {
 			else if(EnumSearchType.DEL_RESTRICTION_SEARCH.equals(searchType)){
 				searchResults = performDlvRestrictedSearch(request);
 			}
+			else if(EnumSearchType.ALCOHOL_RESTRICTION_SEARCH.equals(searchType)){
+				searchResults = performAlcoholRestrictedSearch(request);
+			}			
 			else if(EnumSearchType.ADDR_RESTRICTION_SEARCH.equals(searchType)){
 				searchResults = performAddrRestrictedSearch(request);
 			}
@@ -181,9 +184,22 @@ public class GenericLocatorTag extends AbstractControllerTag {
 		}
 		return searchResults;
 	}
+
+	private List performAlcoholRestrictedSearch(HttpServletRequest request) throws FDResourceException{
+		
+		List searchResults = null;
+		GenericSearchCriteria criteria = buildAlcoholRestrictionCriteria(request);
+		searchResults = CallCenterServices.doGenericSearch(criteria);
+		HttpSession session = pageContext.getSession();
+		if(EnumSearchType.ALCOHOL_RESTRICTION_SEARCH.equals(criteria.getSearchType())){
+			//Cache the search criteria in session.
+			session.setAttribute("ALCOHOL_RESTRICTION_CRITERIA", criteria);
+		}
+		return searchResults;
+	}
+
 	
-	
-private List performAddrRestrictedSearch(HttpServletRequest request) throws FDResourceException{
+	private List performAddrRestrictedSearch(HttpServletRequest request) throws FDResourceException{
 		
 		List searchResults = null;
 		GenericSearchCriteria criteria = buildRestrictedAddressCriteria(request);
@@ -197,32 +213,32 @@ private List performAddrRestrictedSearch(HttpServletRequest request) throws FDRe
 	}
 
 
-private GenericSearchCriteria buildRestrictedAddressCriteria(HttpServletRequest request) throws FDResourceException{
-	GenericSearchCriteria criteria = null;
-	try{
-		    			
-			String address1 = NVL.apply(request.getParameter("sAddress1"), "");
-			String apartment = NVL.apply(request.getParameter("sApartment"), "");
-			String zipCode = NVL.apply(request.getParameter("sZipCode"), "");
-			String sortColumn = NVL.apply(request.getParameter("sortColumn"), "");
-			String ascending = NVL.apply(request.getParameter("ascending"), "");
-			
-			LOGGER.debug("sortColumn :"+sortColumn);	
-			
-			criteria = new GenericSearchCriteria(EnumSearchType.getEnum(searchParam));
-			criteria.setCriteriaMap("address1", address1);
-			criteria.setCriteriaMap("apartment", apartment);
-			criteria.setCriteriaMap("zipCode", zipCode);
-			criteria.setCriteriaMap("sortColumn", sortColumn);			
-			criteria.setCriteriaMap("ascending", ascending);
-			String reasonCode = NVL.apply(request.getParameter("sReason"), "");
-			EnumRestrictedAddressReason reason=EnumRestrictedAddressReason.getRestrictionReason(reasonCode);
-			criteria.setCriteriaMap("reason",reason);
-						
-	}catch (Exception pe) {
-		throw new FDResourceException(pe);
-	}
-	return criteria;
+	private GenericSearchCriteria buildRestrictedAddressCriteria(HttpServletRequest request) throws FDResourceException{
+		GenericSearchCriteria criteria = null;
+		try{
+			    			
+				String address1 = NVL.apply(request.getParameter("sAddress1"), "");
+				String apartment = NVL.apply(request.getParameter("sApartment"), "");
+				String zipCode = NVL.apply(request.getParameter("sZipCode"), "");
+				String sortColumn = NVL.apply(request.getParameter("sortColumn"), "");
+				String ascending = NVL.apply(request.getParameter("ascending"), "");
+				
+				LOGGER.debug("sortColumn :"+sortColumn);	
+				
+				criteria = new GenericSearchCriteria(EnumSearchType.getEnum(searchParam));
+				criteria.setCriteriaMap("address1", address1);
+				criteria.setCriteriaMap("apartment", apartment);
+				criteria.setCriteriaMap("zipCode", zipCode);
+				criteria.setCriteriaMap("sortColumn", sortColumn);			
+				criteria.setCriteriaMap("ascending", ascending);
+				String reasonCode = NVL.apply(request.getParameter("sReason"), "");
+				EnumRestrictedAddressReason reason=EnumRestrictedAddressReason.getRestrictionReason(reasonCode);
+				criteria.setCriteriaMap("reason",reason);
+							
+		}catch (Exception pe) {
+			throw new FDResourceException(pe);
+		}
+		return criteria;
 }
 	
 	private GenericSearchCriteria buildRestrictedDeliveryCriteria(HttpServletRequest request) throws FDResourceException{
@@ -242,6 +258,35 @@ private GenericSearchCriteria buildRestrictedAddressCriteria(HttpServletRequest 
 					criteria.setCriteriaMap("message", message);	
 				}				
 				LOGGER.debug("message :"+message);								
+				EnumDlvRestrictionReason reason=EnumDlvRestrictionReason.getEnum(reasonCode);
+				criteria.setCriteriaMap("reason",reason);				
+				LOGGER.debug("reasonCode :"+reasonCode+"adasd");								
+				EnumDlvRestrictionType type=EnumDlvRestrictionType.getEnum(restrictedTypeCode);
+				criteria.setCriteriaMap("type",type);				
+				LOGGER.debug("type :"+type);							
+				criteria.setCriteriaMap("sortColumn", sortColumn);			
+				criteria.setCriteriaMap("ascending", ascending);				
+		}catch (Exception pe) {
+			throw new FDResourceException(pe);
+		}
+		return criteria;
+	}
+
+	private GenericSearchCriteria buildAlcoholRestrictionCriteria(HttpServletRequest request) throws FDResourceException{
+		GenericSearchCriteria criteria = null;
+		try{
+				String state = NVL.apply(request.getParameter("state"),"").trim();							    				
+				String county = NVL.apply(request.getParameter("county"), "");
+				String reasonCode = NVL.apply(request.getParameter("reason"), "");
+				String restrictedTypeCode = NVL.apply(request.getParameter("restrictedType"), "");
+				String sortColumn = NVL.apply(request.getParameter("sortColumn"), "");
+				String ascending = NVL.apply(request.getParameter("ascending"), "");
+				criteria = new GenericSearchCriteria(EnumSearchType.getEnum(searchParam));
+				
+				LOGGER.debug("state :"+state);								
+				criteria.setCriteriaMap("state", state);
+				LOGGER.debug("county :"+county);								
+				criteria.setCriteriaMap("county", county);
 				EnumDlvRestrictionReason reason=EnumDlvRestrictionReason.getEnum(reasonCode);
 				criteria.setCriteriaMap("reason",reason);				
 				LOGGER.debug("reasonCode :"+reasonCode+"adasd");								

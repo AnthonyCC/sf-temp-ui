@@ -222,7 +222,7 @@
 		<td>
         <select name="reason" style="width: 120px;">				
             <%
-			List enumReasons=EnumDlvRestrictionReason.getEnumList();
+			List enumReasons=EnumDlvRestrictionReason.getNonAlcoholEnumList();
 			%>
 			<logic:iterate collection="<%= enumReasons %>" id="enumReason" type="com.freshdirect.delivery.restriction.EnumDlvRestrictionReason">
 			<%  

@@ -4,11 +4,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,23 +19,19 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.VariableInfo;
-import javax.swing.text.html.Option;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.pricing.Discount;
-import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.common.pricing.MunicipalityInfo;
+import com.freshdirect.common.pricing.MunicipalityInfoWrapper;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
-import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpFraudException;
-import com.freshdirect.customer.ErpModifyOrderModel;
-import com.freshdirect.customer.ErpPaymentMethodI;
-import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.delivery.DlvAddressGeocodeResponse;
 import com.freshdirect.delivery.DlvAddressVerificationResponse;
@@ -48,6 +41,7 @@ import com.freshdirect.delivery.EnumAddressVerificationResult;
 import com.freshdirect.delivery.EnumRestrictedAddressReason;
 import com.freshdirect.delivery.EnumZipCheckResponses;
 import com.freshdirect.delivery.model.RestrictedAddressModel;
+import com.freshdirect.delivery.restriction.AlcoholRestriction;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionType;
@@ -56,17 +50,16 @@ import com.freshdirect.delivery.restriction.OneTimeReverseRestriction;
 import com.freshdirect.delivery.restriction.RecurringRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.deliverypass.DeliveryPassException;
+import com.freshdirect.enums.RestrictionWeekDay;
+import com.freshdirect.enums.WeekDay;
 import com.freshdirect.fdstore.CallCenterServices;
-import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
-import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
@@ -78,44 +71,32 @@ import com.freshdirect.fdstore.customer.ExtendDPDiscountModel;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
-import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerCreditUtil;
-import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDModifyCartLineI;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
-import com.freshdirect.fdstore.customer.FDOrderTranslator;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
-import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
-import com.freshdirect.fdstore.promotion.EnumOfferType;
 import com.freshdirect.fdstore.promotion.ExtendDeliveryPassApplicator;
 import com.freshdirect.fdstore.promotion.Promotion;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
-import com.freshdirect.fdstore.promotion.PromotionI;
-import com.freshdirect.fdstore.promotion.RedemptionCodeStrategy;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.TimeOfDay;
+import com.freshdirect.framework.util.TimeOfDayRange;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.ActionWarning;
-import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.giftcard.ErpGiftCardUtil;
 import com.freshdirect.giftcard.InvalidCardException;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
-import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
 import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
-import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
-import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
 public class AdminToolsControllerTag extends AbstractControllerTag {
@@ -222,8 +203,27 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				// if update is successful then show the success message
 				String restrictionId=request.getParameter("restrictionId");
 				request.setAttribute("successMsg"," Restriction: "+restrictionId+"is deleted successfully");
-			}
-			else if("addBlockedDays".equalsIgnoreCase(actionName)){
+			}else if("saveAlcoholRestriction".equalsIgnoreCase(actionName)){
+				String restrictionId = request.getParameter("restrictionId");
+				if(restrictionId == null || restrictionId.length() == 0) {
+					doAddAlcoholRestriction(request, actionResult);
+					if(!actionResult.isFailure()){
+						  request.setAttribute("successMsg","Restriction added successfully");
+					}				
+				} else {
+					doUpdateAlcoholRestriction(request, actionResult);
+					// if update is successful then show the success message
+					if(!actionResult.isFailure()){
+						  request.setAttribute("successMsg","Restriction updated successfully");
+					}				
+				}
+			}else if("deleteAlcoholRestriction".equalsIgnoreCase(actionName)){
+				//Submit n orders at a time. Default is 100.
+				doDeleteAlcoholRestriction(request);
+				// if update is successful then show the success message
+				String restrictionId=request.getParameter("restrictionId");
+				request.setAttribute("successMsg"," Restriction: "+restrictionId+" deleted successfully.");
+			}else if("addBlockedDays".equalsIgnoreCase(actionName)){
 				//Submit n orders at a time. Default is 100.
 				RestrictionI restriction=validateAndConstructARDRestriction(request,actionResult);
 				if(!actionResult.isFailure()){
@@ -239,32 +239,32 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				doUpdatePlatter(request);
 				// if update is successful then show the success message
 				request.setAttribute("successMsg","record is updated successfully");
-			}
-			else if("updateKosher".equalsIgnoreCase(actionName)){
+			}else if("updateKosher".equalsIgnoreCase(actionName)){
 				//Submit n orders at a time. Default is 100.
 				doUpdateKosher(request);
 				// if update is successful then show the success message
 				request.setAttribute("successMsg","record is updated successfully");
-			}
-			else if("updateAddrRestriction".equalsIgnoreCase(actionName)){
+			}else if("updateAddrRestriction".equalsIgnoreCase(actionName)){
 				//Submit n orders at a time. Default is 100.
 				doUpdateAddressRestriction(request,actionResult);
 				// if update is successful then show the success message
 				if(!actionResult.isFailure()){
 				  request.setAttribute("successMsg","record is updated successfully");
 				}
-			}
-			else if("deleteAddressRestrctions".equalsIgnoreCase(actionName)){
+			}else if("deleteAddressRestrctions".equalsIgnoreCase(actionName)){
 				//Submit n orders at a time. Default is 100.
 				doDeleteAddressRestriction(request);
 				// if update is successful then show the success message
 				String restrictionId=request.getParameter("restrictionId");
 				request.setAttribute("successMsg"," Restriction: "+restrictionId+"is deleted successfully");
-			}		
-			else if("addAddressRestriction".equalsIgnoreCase(actionName)){
+			} else if("updateAlcoholRestrictionFlag".equalsIgnoreCase(actionName)){
+				//Submit n orders at a time. Default is 100.
+				doUpdateAlcoholRestrictionFlag(request);
+				// if update is successful then show the success message
+				request.setAttribute("successMsg","Alcohol restriction flag updated successfully for this Municipality.");
+			} else if("addAddressRestriction".equalsIgnoreCase(actionName)){
 				//Submit n orders at a time. Default is 100.
 				RestrictedAddressModel restriction=validateAndConstructAddressRestriction(request,actionResult);
-
 				LOGGER.debug("actionResult.isFailure :"+actionResult.isFailure());
 				LOGGER.debug("actionResult :"+actionResult);
 				if(actionResult.isFailure()){
@@ -440,9 +440,6 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 			DlvRestrictionManager.storeDlvRestriction(rNew);
 		}						
 	}
-
-	
-	
 	
 	private void doUpdatePlatter(HttpServletRequest request) throws FDResourceException {
 		List restrictedList=DlvRestrictionManager.getDlvRestrictions(EnumDlvRestrictionReason.PLATTER.getName(),EnumDlvRestrictionType.RECURRING_RESTRICTION.getName(),EnumDlvRestrictionCriterion.PURCHASE.getName());
@@ -481,8 +478,6 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 		//HttpSession session = pageContext.getSession();				
 		DlvRestrictionManager.addAddressRestriction(restriction);				
 	}
-
-	
 	
 	private void doDeleteAddressRestriction(HttpServletRequest request) throws FDResourceException {
 		HttpSession session = pageContext.getSession();		
@@ -497,7 +492,20 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 		String restrictionId=request.getParameter("restrictionId");
 		DlvRestrictionManager.deleteDlvRestriction(restrictionId);				
 	}
+
+
+	private void doUpdateAlcoholRestrictionFlag(HttpServletRequest request) throws FDResourceException {
+		HttpSession session = pageContext.getSession();		
+		String municipalityId=request.getParameter("municipalityId");
+		boolean restricted = "on".equals(NVL.apply(request.getParameter("restricted"), "off"));
+		DlvRestrictionManager.setAlcoholRestrictedFlag(municipalityId, restricted);				
+	}
 	
+	private void doDeleteAlcoholRestriction(HttpServletRequest request) throws FDResourceException {
+		HttpSession session = pageContext.getSession();		
+		String restrictionId=request.getParameter("restrictionId");
+		DlvRestrictionManager.deleteAlcoholRestriction(restrictionId);				
+	}
 	
 	private void doUpdateRestriction(HttpServletRequest request,ActionResult result) throws FDResourceException {
 		HttpSession session = pageContext.getSession();		
@@ -506,12 +514,26 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 			DlvRestrictionManager.storeDlvRestriction(restriction);
 		}
 	}
-	
-	
 
+	private void doUpdateAlcoholRestriction(HttpServletRequest request,ActionResult result) throws FDResourceException {
+		HttpSession session = pageContext.getSession();		
+		AlcoholRestriction restriction=(AlcoholRestriction) validateAndConstructRestriction(request,result);				
+		if(!result.isFailure()){
+			DlvRestrictionManager.storeAlcoholRestriction(restriction);
+		}
+		request.setAttribute("restriction", restriction);
+	}
 	
-
-	
+	private void doAddAlcoholRestriction(HttpServletRequest request,ActionResult result) throws FDResourceException {
+		HttpSession session = pageContext.getSession();		
+		AlcoholRestriction restriction=(AlcoholRestriction) validateAndConstructRestriction(request,result);				
+		if(!result.isFailure()){
+			String restrictionId = DlvRestrictionManager.addAlcoholRestriction(restriction);
+			restriction.setId(restrictionId);
+		}
+		request.setAttribute("restriction", restriction);
+	}
+		
 	private RestrictedAddressModel validateAndConstructAddressRestriction(HttpServletRequest request,ActionResult result) throws FDResourceException{
 		RestrictedAddressModel restriction=null;
 		try{
@@ -688,8 +710,19 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 						"End Date cannot be less than the Start Date");
 				return null;
 			}
-			
-			if (EnumDlvRestrictionType.ONE_TIME_RESTRICTION.equals(restrictedType)) {
+			if (EnumDlvRestrictionReason.ALCOHOL.equals(reason) || EnumDlvRestrictionReason.WINE.equals(reason) || EnumDlvRestrictionReason.BEER.equals(reason)) {
+				String state=request.getParameter("state");
+				String county=request.getParameter("county");
+				MunicipalityInfoWrapper muni = FDDeliveryManager.getInstance().getMunicipalityInfos(true);
+				MunicipalityInfo muniInfo = muni.getMunicipalityInfo(state, county, null);
+				
+				String municipalityId=muniInfo.getId();
+				boolean alcoholRestricted = Boolean.getBoolean(request.getParameter("restricted"));
+				
+				//Create a Alcohol Restriction.
+				restriction=new AlcoholRestriction(id, criterion, reason, name, message, startDate, endDate,restrictedType, path, state, county, null, municipalityId, alcoholRestricted);
+				validateAndSetTimeRanges(request, (AlcoholRestriction)restriction, result);
+			} else if (EnumDlvRestrictionType.ONE_TIME_RESTRICTION.equals(restrictedType)) {
 				
 				// FIXME one-time reverse restrictions should have a different EnumDlvRestrictionType 
 				if (reason.isSpecialHoliday()) {
@@ -715,6 +748,54 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 		return restriction;
 	}
 	
+	private void validateAndSetTimeRanges(HttpServletRequest request, AlcoholRestriction restriction, ActionResult actionResult) {
+		RestrictionWeekDay weekNames[] = RestrictionWeekDay.values();
+
+		Map<Integer, List<TimeOfDayRange>> timeRangeMap = new HashMap<Integer, List<TimeOfDayRange>>();
+		for (int i = 0; i < weekNames.length; i++) {
+			String daySelected = request.getParameter("edit_dlvreq_chk"+weekNames[i].name());
+			if(null !=daySelected){{
+				
+			}
+				List<TimeOfDayRange> dlvTimeSlots = new ArrayList<TimeOfDayRange>();
+				String dlvTimeSlotsLength = NVL.apply(request.getParameter("dlvDay"+weekNames[i].name()+"IndexValue"),"");
+				if("".equalsIgnoreCase(dlvTimeSlotsLength)){
+					actionResult.addError(true,"timeslotError","Enter atleast one timeslot for selected day(s) of the week");
+				}
+				if(!"".equalsIgnoreCase(dlvTimeSlotsLength)){
+					for(int j=0;j<Integer.parseInt(dlvTimeSlotsLength);j++){
+						String startTime = NVL.apply(request.getParameter("dlvDay"+weekNames[i].name()+"StartTime_in["+j+"]"),"");
+						String endTime  = NVL.apply(request.getParameter("dlvDay"+weekNames[i].name()+"EndTime_in["+j+"]"),"");
+						if(!"".equals(startTime)&&!"".equals(endTime)&& !"null".equalsIgnoreCase(startTime)&&!"null".equalsIgnoreCase(endTime)){
+							DateFormat MIN_AMPM_FORMATTER = new SimpleDateFormat("h:mm a");
+							try {
+								Date startDate = MIN_AMPM_FORMATTER.parse(startTime);
+								Date endDate = MIN_AMPM_FORMATTER.parse(endTime);
+								if(startDate.after(endDate)){
+									actionResult.addError(true,"timeslotError","Start time should be lesser than end time for each timeslot range.");
+								}
+								TimeOfDay startTimeofDay = new TimeOfDay(startTime);
+								TimeOfDay endTimeofDay = new TimeOfDay(endTime);
+								dlvTimeSlots.add(new TimeOfDayRange(startTimeofDay, endTimeofDay));
+							} catch (ParseException e) {
+								actionResult.addError(true,"timeslotFormatError","One or more of the timeslots are in wrong format. It should be in 'hh:mm am/pm' format");
+							}
+
+						} else {
+							actionResult.addError(true,"timeslotError","Enter atleast one timeslot for selected day(s) of the week");
+						}
+					}
+				}
+				timeRangeMap.put(new Integer(i), dlvTimeSlots);
+			}				 
+		}
+		if(restriction.getType().getName().equals(EnumDlvRestrictionType.RECURRING_RESTRICTION.getName())){
+			if(timeRangeMap.isEmpty())
+				actionResult.addError(true,"timeslotError","For recurring restrictions select atleast one day of the week with one timeslot.");
+		}
+		restriction.setTimeRangeMap(timeRangeMap);
+
+	}
 	private int doDeleteReservations(HttpServletRequest request, GenericSearchCriteria criteria, List resvList) throws FDResourceException {
 		HttpSession session = pageContext.getSession();
 		CrmAgentModel agentModel = CrmSession.getCurrentAgent(session);
@@ -1098,6 +1179,28 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 			
 		}
 		return newOptions;
+	}
+	
+	protected boolean performGetAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
+		String actionName = request.getParameter("action");
+		try{
+	
+			if("getAlcoholRestriction".equals(actionName)){
+				String restrictionId = request.getParameter("restrictionId");
+				String municipalityId = request.getParameter("municipalityId");
+				if(restrictionId != null && restrictionId.length() > 0){
+					AlcoholRestriction restriction = DlvRestrictionManager.getAlcoholRestriction(restrictionId, municipalityId);
+					request.setAttribute("restriction", restriction);
+				}
+			}
+		}catch(FDResourceException e){
+			LOGGER.error("System Error occurred while performing the requested operation. Action name is "+actionName, e);
+			actionResult.addError(true, "actionfailure", SystemMessageList.MSG_TECHNICAL_ERROR);
+		}catch(Exception e){
+			LOGGER.error("Unknown Error occurred while performing the requested operation. Action name is "+actionName, e);
+			actionResult.addError(true, "actionfailure", SystemMessageList.MSG_TECHNICAL_ERROR);
+		}
+		return true;
 	}
 //	private void addToResultsList(HttpSession session, Map subResults){
 //		Map results = (Map)session.getAttribute("EXPORT_RESULTS");

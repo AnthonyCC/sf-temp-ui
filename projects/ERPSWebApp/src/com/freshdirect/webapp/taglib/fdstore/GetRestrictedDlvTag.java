@@ -38,10 +38,15 @@ public class GetRestrictedDlvTag extends AbstractGetterTag {
 
 	
 	private String restrictionId = null;
+	private String municipalityId = null;
 	private static Category LOGGER = LoggerFactory.getInstance(GetRestrictedDlvTag.class);
 
 	public void setRestrictionId(String restrictionId) {
 		this.restrictionId = restrictionId;
+	}
+
+	public void setMunicipalityId(String restrictionId) {
+		this.municipalityId = restrictionId;
 	}
 
 	protected Object getResult() throws FDResourceException {
@@ -55,6 +60,13 @@ public class GetRestrictedDlvTag extends AbstractGetterTag {
 		    LOGGER.debug("restrictionId :"+restrictionId);
 		    List restList=new ArrayList();
 		    restList.add(DlvRestrictionManager.getDlvRestriction(restrictionId));
+		    return restList; 	
+		}
+		else if("editAlcoholRestriction".equalsIgnoreCase(actionName))
+		{
+		    LOGGER.debug("restrictionId :"+restrictionId);
+		    List restList=new ArrayList();
+		    restList.add(DlvRestrictionManager.getAlcoholRestriction(restrictionId, municipalityId));
 		    return restList; 	
 		}
 		else if("getPlatterRestriction".equalsIgnoreCase(actionName))

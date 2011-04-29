@@ -2,6 +2,7 @@ package com.freshdirect.delivery;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.CreateException;
 import javax.naming.Context;
@@ -10,6 +11,7 @@ import javax.naming.NamingException;
 import com.freshdirect.delivery.ejb.DlvRestrictionManagerHome;
 import com.freshdirect.delivery.ejb.DlvRestrictionManagerSB;
 import com.freshdirect.delivery.model.RestrictedAddressModel;
+import com.freshdirect.delivery.restriction.AlcoholRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -50,6 +52,24 @@ public class DlvRestrictionManager {
 			dlvRestrictionHome = null;
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
+	}
+	
+	public static AlcoholRestriction getAlcoholRestriction(String restrictionId, String municipalityId) throws FDResourceException	{
+		if (dlvRestrictionHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			DlvRestrictionManagerSB sb = dlvRestrictionHome.create();
+			return sb.getAlcoholRestriction(restrictionId, municipalityId);
+	
+		} catch (CreateException ce) {
+			dlvRestrictionHome = null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			dlvRestrictionHome = null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+
 	}
 	
 	public static RestrictedAddressModel getAddressRestriction(String address1,String apartment,String zipCode) throws FDResourceException
@@ -125,6 +145,26 @@ public class DlvRestrictionManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
+	
+	public static String addAlcoholRestriction(AlcoholRestriction restriction) throws FDResourceException
+	{
+		if (dlvRestrictionHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			DlvRestrictionManagerSB sb = dlvRestrictionHome.create();
+			return sb.addAlcoholRestriction(restriction);
+	
+		} catch (CreateException ce) {
+			dlvRestrictionHome = null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			dlvRestrictionHome = null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+
+	
 	public static void addAddressRestriction(RestrictedAddressModel restriction) throws FDResourceException
 	{
 		if (dlvRestrictionHome == null) {
@@ -162,6 +202,25 @@ public class DlvRestrictionManager {
 		}
 	}
 	
+
+	public static void storeAlcoholRestriction(AlcoholRestriction restriction) throws FDResourceException
+	{
+		if (dlvRestrictionHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			DlvRestrictionManagerSB sb = dlvRestrictionHome.create();
+			sb.storeAlcoholRestriction(restriction);
+	
+		} catch (CreateException ce) {
+			dlvRestrictionHome = null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			dlvRestrictionHome = null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+
 	
 	public static void storeAddressRestriction(RestrictedAddressModel restriction,String address1, String apartment, String zipCode) throws FDResourceException
 	{
@@ -201,6 +260,23 @@ public class DlvRestrictionManager {
 		}
 	}
 
+	public static void deleteAlcoholRestriction(String restrictionId) throws FDResourceException
+	{
+		if (dlvRestrictionHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			DlvRestrictionManagerSB sb = dlvRestrictionHome.create();
+			sb.deleteAlcoholRestriction(restrictionId);
+	
+		} catch (CreateException ce) {
+			dlvRestrictionHome = null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			dlvRestrictionHome = null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
 	
 	public static void deleteAddressRestriction(String address1,String apartment,String zipCode) throws FDResourceException
 	{
@@ -220,4 +296,36 @@ public class DlvRestrictionManager {
 		}
 	}
 
+	public static void setAlcoholRestrictedFlag(String municipalityId, boolean restricted)  throws FDResourceException {
+		if (dlvRestrictionHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			DlvRestrictionManagerSB sb = dlvRestrictionHome.create();
+			sb.setAlcoholRestrictedFlag(municipalityId, restricted);
+	
+		} catch (CreateException ce) {
+			dlvRestrictionHome = null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			dlvRestrictionHome = null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}		
+	}
+	
+	public static Map<String, List<String>> getMunicipalityStateCounties()throws FDResourceException {
+		if (dlvRestrictionHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			DlvRestrictionManagerSB sb = dlvRestrictionHome.create();
+			return sb.getMunicipalityStateCounties();
+		} catch (CreateException ce) {
+			dlvRestrictionHome = null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			dlvRestrictionHome = null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
 }

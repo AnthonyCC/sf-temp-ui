@@ -1607,6 +1607,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 				if ( state==null) continue;
 				boolean alcoholRestricted = "X".equalsIgnoreCase(rs.getString("alcohol_restricted"))? true : false;
 				MunicipalityInfo mi = new MunicipalityInfo(
+					rs.getString("id"),
 					state,
 					rs.getString("county"),
 					rs.getString("city"),

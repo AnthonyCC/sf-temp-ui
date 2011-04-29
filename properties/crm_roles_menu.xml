@@ -19,7 +19,7 @@
 		</links>
 		<links name="admintools">
 			resubmit_orders.jsp,resubmit_customers.jsp,delete_reservations.jsp,mass_cancellation.jsp,mass_returns.jsp,delivery_restrictions.jsp,platterForm.jsp,restrictionForm.jsp,restrictionForm_save.jsp,address_restrictions.jsp,addrRestrictionForm.jsp,
-			settlement_batch.jsp,top_faqs.jsp,click_to_call.jsp,search_orders_by_sku.jsp,modify_orders_by_sku.jsp
+			settlement_batch.jsp,top_faqs.jsp,click_to_call.jsp,search_orders_by_sku.jsp,modify_orders_by_sku.jsp,alcohol_restrictions.jsp,manage_alcohol_restrictions.jsp
 		</links>
 		<links name="promotions">
 			promo_view.jsp,promo_home.jsp,promo_create.jsp,promo_details.jsp,promo_publish.jsp,promo_edit.jsp,promo_edit_basic.jsp,

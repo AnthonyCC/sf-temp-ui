@@ -1,8 +1,10 @@
 package com.freshdirect.fdstore.customer;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,6 +15,7 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.MunicipalityInfoWrapper;
 import com.freshdirect.customer.ErpCreateOrderModel;
+import com.freshdirect.delivery.restriction.AlcoholRestriction;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
@@ -25,6 +28,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.atp.FDMuniAvailability;
 import com.freshdirect.fdstore.atp.NullAvailability;
+import com.freshdirect.fdstore.util.RestrictionUtil;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -49,7 +53,9 @@ class FDAvailabilityMapper {
 
 		Date now = new Date();
 		DateRange nextDay = getNextDay(now);
-
+		AddressModel address = cart.getDeliveryAddress();
+		String county = FDDeliveryManager.getInstance().getCounty(address);
+		
 		boolean originalDayKept = false;
 		if (cart instanceof FDModifyCartModel) {
 			FDReservation originalReservation = ((FDModifyCartModel) cart).getOriginalOrder().getDeliveryReservation();
@@ -82,11 +88,13 @@ class FDAvailabilityMapper {
 
 				// apply delivery restrictions
 				List<RestrictionI> r = allRestrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY, applicableRestrictions);
-				
 				LOGGER.debug(" filtered applicable restrictions :"+applicableRestrictions);
-				
+
 				if (!r.isEmpty()) {
-					inv = new FDRestrictedAvailability(inv, new DlvRestrictionsList(r));
+					//Filter Alcohol restrictions by current State and county.
+					List<RestrictionI> filteredList = RestrictionUtil.filterAlcoholRestrictionsForStateCounty(address.getState(), county, r);
+					if(!filteredList.isEmpty())
+						inv = new FDRestrictedAvailability(inv, new DlvRestrictionsList(filteredList));
 				}
 
 				if (!originalDayKept || !(cartline instanceof FDModifyCartLineI)) {
@@ -108,10 +116,8 @@ class FDAvailabilityMapper {
 
 			}
 
-			AddressModel address = cart.getDeliveryAddress();
-			if (applicableRestrictions.contains(EnumDlvRestrictionReason.ALCOHOL)) {
 
-				String county = FDDeliveryManager.getInstance().getCounty(address);
+			if (applicableRestrictions.contains(EnumDlvRestrictionReason.ALCOHOL)) {
 
 				MunicipalityInfo muniInfo = muni.getMunicipalityInfo(address.getState(), county, address.getCity());
 

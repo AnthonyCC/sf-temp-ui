@@ -24,6 +24,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
@@ -33,6 +34,7 @@ import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
+import com.freshdirect.delivery.restriction.AlcoholRestriction;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
@@ -57,6 +59,7 @@ import com.freshdirect.fdstore.promotion.PromotionHelper;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.CTDeliveryCapacityLogic;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
+import com.freshdirect.fdstore.util.RestrictionUtil;
 import com.freshdirect.fdstore.util.TimeslotContext;
 import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.util.DateRange;
@@ -146,9 +149,6 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		
 		DlvRestrictionsList restrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
 
-		List<RestrictionI> alcoholRestrictions = restrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY,getAlcoholRestrictionReasons(),baseRange);
-		
-		LOGGER.debug("AlcoholRestrictions :"+alcoholRestrictions.size());
 		
 		EnumDlvRestrictionReason specialHoliday = getNextHoliday(restrictions, baseRange, FDStoreProperties
 			.getHolidayLookaheadDays());
@@ -206,7 +206,14 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		boolean hasCapacity = true;
 		boolean ctActive = false;
 		HashMap zonesMap = new HashMap();
-				
+
+		List<RestrictionI> r = restrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY,getAlcoholRestrictionReasons(),baseRange);
+		//Filter Alcohol restrictions by current State and county.
+		String county = FDDeliveryManager.getInstance().getCounty(address);
+		List<RestrictionI> alcoholRestrictions = RestrictionUtil.filterAlcoholRestrictionsForStateCounty(address.getState(), county, r);
+
+		LOGGER.debug("AlcoholRestrictions :"+alcoholRestrictions.size());
+
 		/*setDiscounts & apply Geo-restrictions to timeslots*/
 		filterDeliveryTimeSlots(user, geoRestrictionRange, restrictions,
 				timeslotList, zonesMap, retainTimeslotIds,
@@ -799,12 +806,18 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 			DateRange slotRange = new DateRange(slot.getBegDateTime(),slot.getEndDateTime());		
 			for (Iterator<RestrictionI> i = alcoholRestrictions.iterator(); i.hasNext();) {
 				RestrictionI r = i.next();
+				/*
 				if (r instanceof OneTimeReverseRestriction) {
 					OneTimeReverseRestriction or = (OneTimeReverseRestriction) r;
 					if (or.overlaps(slotRange)) return true;
 				}else if(r instanceof RecurringRestriction){
 					RecurringRestriction rr = (RecurringRestriction)r;
 					if(rr.overlaps(slotRange) && (rr.getDayOfWeek()==slot.getDayOfWeek()))return true;
+				}
+				*/
+				if (r instanceof AlcoholRestriction) {
+					AlcoholRestriction ar = (AlcoholRestriction) r;
+					if (ar.overlaps(slotRange)) return true;
 				}
 			}
 		}

@@ -18,7 +18,12 @@
     <td bgcolor="#FFFFFF" style="margin:0 5px;"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"><img src="/media_stat/images/timeslots/alcohol_warning.gif"  width="163" height="34" border="0" style="margin:0 5px;"></td>
     <td width="100%" bgcolor="#FFF9D7">
 	<div style="padding: 3px 5px 3px 5px">
-		<fd:IncludeMedia name="/media/editorial/site_pages/alcohol_restriction.html"/>
+		<%-- <fd:IncludeMedia name="/media/editorial/site_pages/alcohol_restriction.html"/> --%>
+		<%
+					String county = FDDeliveryManager.getInstance().getCounty(address);
+					String mediaPath = "/media/editorial/timeslots/alcohol/"+county+"_alcoholWarning.html";
+		%>
+		 <fd:IncludeMedia name="<%= mediaPath %>"/>
 	</div>
     </td>
     <td bgcolor="#FFF9D7" style="font-size:1px;"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
