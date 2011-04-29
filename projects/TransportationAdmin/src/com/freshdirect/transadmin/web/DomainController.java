@@ -814,7 +814,6 @@ public class DomainController extends AbstractMultiActionController {
 			}
 			Collections.sort((List)virRecords, new VIRRecordComparator());
 		}
-		
 		mav.getModel().put("createDate",createDate);	
 		mav.getModel().put("truckNumber", truckNumber);
 		mav.getModel().put("currentDate",currentDate);		
@@ -851,7 +850,7 @@ public class DomainController extends AbstractMultiActionController {
 		if(maintenaceRecords != null && maintenaceRecords.size()==0)
 			saveMessage(request, getMessage("app.error.140", new String[]{}));
 		
-		if(maintenaceRecords != null && maintenaceRecords.size()>0){
+		if(maintenaceRecords != null && maintenaceRecords.size()>0)
 			Collections.sort((List)maintenaceRecords, new MaintenanceIssueComparator());
 		
 		mav.getModel().put("serviceStatus", serviceStatus);
