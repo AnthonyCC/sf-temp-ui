@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
-
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.transadmin.constants.EnumIssueStatus;
 import com.freshdirect.transadmin.constants.EnumServiceStatus;
@@ -137,6 +136,14 @@ public class MaintenanceLogFormController extends AbstractFormController {
 		return "Maintenance Record";
 	}
 	
+	protected void onBind(HttpServletRequest request, Object command) {
+		MaintenanceIssue modelIn = (MaintenanceIssue)command;
+		if(request.getParameter("reverify") != null){
+			modelIn.setReVerified(true);
+		}			
+		
+	}
+
 	public List saveDomainObject(HttpServletRequest request, Object command) {
 
 		MaintenanceIssue _command = (MaintenanceIssue)command;
@@ -146,7 +153,7 @@ public class MaintenanceLogFormController extends AbstractFormController {
 				Collection maintenanceIssues = domainManagerService
 					.getMaintenanceIssue(_command.getTruckNumber(), _command.getIssueType(), _command.getIssueSubType());
 
-				if(_command.getRepairedBy() == null && "".equals(request.getParameter("reverify"))
+				if(_command.getRepairedBy() == null && request.getParameter("reverify") == null
 						&& (EnumIssueStatus.VERIFIED.getName().equalsIgnoreCase(_command.getIssueStatus()) 
 								|| EnumIssueStatus.REVERIFIED.getName().equalsIgnoreCase(_command.getIssueStatus()))){
 					_command.setRepairedBy(getUserId(request));

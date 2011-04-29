@@ -121,4 +121,9 @@ public class IssueLog extends BaseCommand {
 			return false;
 		return true;
 	}
+	
+	public int compareTo(Object o) {
+		IssueLog other=(IssueLog)o;
+		return this.toString().compareTo(other.toString());
+	} 
 }

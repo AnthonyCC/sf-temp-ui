@@ -4,7 +4,9 @@
 		var resultList;
 		var subTypeId;
 		var vendorResult;
-		function getIssueSubTypes() {  
+		
+		function getIssueSubTypes() {
+			addSysMessage("",false);
 			var issueTypes = document.getElementById("issueType");
    
 			// get selected issueType from dropdown list  
@@ -27,6 +29,9 @@
 			 for(var i=0;i < resultList.list.length;i++){
 				issueSubTypes.options.add(new Option(resultList.list[i].name, resultList.list[i].name));
 			 }
+			 if(resultList.list.length === 0){
+				  addSysMessage("No IssueSubTypes to IssueType selected",true);
+			 }
 			 document.getElementById("issueSubType").value = subTypeId; 
 		  }else {
           	 alert("Populating Issue SubTypes failed");
@@ -37,17 +42,6 @@
 			var confirmed = confirm ("You are about add new VIR Record");
 			if(confirmed){
 				location.href = "editvirrecordlog.do";
-			}
-		}
-
-		window.onload = function(){
-			var issueTypes = document.getElementById("issueType");
-			if(document.getElementById("subTypeId")){
-				subTypeId = document.getElementById("subTypeId").value;
-			}
-			
-			if(issueTypes){
-				getIssueSubTypes();
 			}
 		}
 
@@ -106,7 +100,9 @@
       		YAHOO.util.Dom.get("errContainer").innerHTML = msg;
 		}
 
-		function getVendorInfo() {  
+		function getVendorInfo() {
+			addSysMessage("", false);
+			document.getElementById("vendor").value = ''; 
 			var truckNumber = document.getElementById("truckNumber");
 			// get selected truckNumber from dropdown list  
 			var truckNumber = truckNumber.options[truckNumber.selectedIndex].value;
@@ -129,8 +125,7 @@
           }
 		}
 		
-		function back()
-	    {
+		function doBack() {
 	      	var filters = unescape(getParameter("filter"));
 	      	var params = filters.split("&");
 	      	var maintenanceRecordForm = document.forms["maintenancelog"];
@@ -138,7 +133,6 @@
 	      	{
 	      		var param = params[i].split("=");
 	      		add_input(maintenanceRecordForm,"hidden",param[0],param[1]);
-	      	}     	      	
+	      	}
 	      	maintenanceRecordForm.submit();
 	    }
-

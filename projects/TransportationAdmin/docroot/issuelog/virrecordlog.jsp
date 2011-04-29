@@ -134,7 +134,7 @@
 					  <ec:column width="15px" property="vendor" title="Vendor" />
 					  <ec:column width="6px" property="createdDate" title="Created Date" />
 					  <ec:column width="250px" filterable="true" property="virRecordIssues" cell="issueLogCell" title="Issues&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Maintenance Issue&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DamageLocation&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IssueSide&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comments"/>
-  					  <ec:column width="10px" property="driver" title="Reporting Driver" />
+  					  <ec:column width="10px" property="reportingDriver.name" title="Reporting Driver" />
   					  <ec:column width="10px" property="createdBy" title="Entered By" />
 					</ec:row>
 				</ec:table>
@@ -181,6 +181,10 @@
 
 <style>
 .eXtremeTable .tableHeader {
+	text-align:center;
+}
+
+.eXtremeTable .tableHeaderSort {
 	text-align:center;
 }
 

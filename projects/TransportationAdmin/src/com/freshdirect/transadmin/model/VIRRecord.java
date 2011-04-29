@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-
-import com.freshdirect.routing.service.exception.Issue;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.BaseCommand;
 
@@ -50,7 +48,10 @@ public class VIRRecord extends BaseCommand {
 	}
 
 	public void setDriver(String driver) {
-		this.driver = driver;
+		if(this.getReportingDriver() !=null)
+			this.driver = this.getReportingDriver().getEmployeeId();
+		else
+			this.driver = driver;
 	}
 	
 	public String getTruckNumber() {
@@ -89,8 +90,8 @@ public class VIRRecord extends BaseCommand {
 		return reportingDriver;
 	}
 
-	public void setReportingDriver(EmployeeInfo reportingDriver) {
-		this.reportingDriver = reportingDriver;
+	public void setReportingDriver(EmployeeInfo webEmpInfo) {
+		this.reportingDriver = webEmpInfo;
 	}
 
 	public String getId() {

@@ -97,7 +97,7 @@
 										<c:set var="isVerified" value="true"/>
 									</c:if>
 									<c:if test="${maintenanceRecordForm.issueStatus eq 'Re-Verified' }">
-										<c:set var="isReVerified" value="true"/>
+										<c:set var="ReVerified" value="true"/>
 									</c:if>
 									<form:input maxlength="10" size="28" path="createDate" disabled="true"/>&nbsp;
 								</td>
@@ -283,8 +283,11 @@
                         					<img src="./images/icons/calendar.gif" width="16" height="16" border="0">
 				                    	</a>
 									</c:when>
-									<c:when test='${isReVerified}'>
-										<input type = "submit" value="&nbsp;Re-Verify&nbsp;" />
+									<c:when test='${ReVerified}'>
+										<form:input maxlength="10" size="28" path="actualRepairDate" />
+										<a href="#" id="trigger_actualRepairDate" style="font-size: 9px;">
+                        					<img src="./images/icons/calendar.gif" width="16" height="16" border="0">
+				                    	</a>
 									</c:when>
 									<c:otherwise> 
 										<form:input maxlength="10" size="28" path="actualRepairDate" disabled="true"/>
@@ -353,7 +356,7 @@
 									<c:when test='${isVerified}'>
 										<input type = "submit" value="&nbsp;Repair&nbsp;" />
 									</c:when>
-									<c:when test='${isReVerified}'>
+									<c:when test='${ReVerified}'>
 										<input type = "submit" value="&nbsp;Repair&nbsp;" />
 									</c:when>
 									<c:otherwise> 
@@ -379,15 +382,28 @@
 									</c:otherwise>
 								</c:choose>
 						
-						<input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:back();" />
-						<input type = "button" value="&nbsp;Reject&nbsp;" onclick="javascript:rejectIssue();" />
+						<input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:doBack();" />
+						<input type = "button" value="&nbsp;Reject&nbsp;" disabled="${isNew}" onclick="javascript:rejectIssue();" />
 					</td>
 				</tr>
 		
 		</table>
 		  </form:form>
 		</div>	
+		<script>
+			window.onload = function(){
+				var issueTypes = document.getElementById("issueType");
+				// get selected issueType from dropdown list  
+				var issueTypeId = issueTypes.options[issueTypes.selectedIndex].value;
+				if(issueTypeId.length != 0){
+					getIssueSubTypes();
+				}
 
+				if(document.getElementById("subTypeId")){
+					subTypeId = document.getElementById("subTypeId").value;
+				}
+			}
+		</script>
   </tmpl:put>
 </tmpl:insert>
 <form name="maintenancelog" action="maintenancelog.do?issueLog=M" method="post">  </form>

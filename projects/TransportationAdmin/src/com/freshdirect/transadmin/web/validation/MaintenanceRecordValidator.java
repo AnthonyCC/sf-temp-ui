@@ -28,7 +28,7 @@ public class MaintenanceRecordValidator extends AbstractValidator {
 				checkDate("estimatedRepairDate",model.getCreateDate(),model.getEstimatedRepairDate(),"app.error.137", errors);
 		}
 		
-		if(model !=null && (EnumIssueStatus.VERIFIED.getName().equalsIgnoreCase(model.getIssueStatus()) 
+		if(model !=null && !model.isReVerified() &&(EnumIssueStatus.VERIFIED.getName().equalsIgnoreCase(model.getIssueStatus()) 
 				|| EnumIssueStatus.REVERIFIED.getName().equalsIgnoreCase(model.getIssueStatus()))){
 			ValidationUtils.rejectIfEmpty(errors, "actualRepairDate", "app.error.112", new Object[]{"Actual RepairDate"},"required");
 			if(model.getCreateDate()!= null && model.getActualRepairDate()!= null)

@@ -116,13 +116,13 @@
       					     <tr>
 								  <td>Reporting Driver</td>
 								  <td>                  
-										<form:select path="driver">
+										<form:select path="reportingDriver">
 							                <form:option value="N/A" label="--N/A--"/>
 										    <form:options items="${drivers}" itemLabel="name" itemValue="employeeId" />
 					                   </form:select>
 								  </td>
 								  <td>
-									  &nbsp;<form:errors path="driver" />
+									  &nbsp;<form:errors path="reportingDriver" />
 								  </td>
 							 </tr>
 							 <tr>
@@ -328,7 +328,7 @@
 	     	 	var result = jsonrpcClient.AsyncDispatchProvider.saveVIRRecord(document.getElementById('createDate').value
 	     													, document.getElementById('truckNumber').value
 	     													, document.getElementById('vendor').value
-	     													, document.getElementById('driver').value
+	     													, document.getElementById('reportingDriver').value
 	     													, document.getElementById('createdBy').value
 	     	     	 										, _data);
 	     	 	document.getElementById('id').value = result;

@@ -52,7 +52,9 @@ import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.service.ZoneManagerI;
+import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
+import com.freshdirect.transadmin.util.EnumResourceType;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
@@ -799,8 +801,19 @@ public class DomainController extends AbstractMultiActionController {
 			e.printStackTrace();
 			saveMessage(request, getMessage("app.error.138", new String[]{}));
 		}
-		if(virRecords != null && virRecords.size() > 0)
-			Collections.sort((List)virRecords, new VIRRecordComparator());		
+		if(virRecords != null && virRecords.size() > 0){
+			Iterator<VIRRecord> itr = virRecords.iterator();			
+			while(itr.hasNext()){
+				VIRRecord virRecord = itr.next();
+				WebEmployeeInfo webEmpInfo = null;
+				if(!"N/A".equalsIgnoreCase(virRecord.getDriver())){
+					webEmpInfo = employeeManagerService.getEmployee(virRecord.getDriver());
+					virRecord.setReportingDriver(webEmpInfo.getEmpInfo());
+				}
+				
+			}
+			Collections.sort((List)virRecords, new VIRRecordComparator());
+		}
 		
 		mav.getModel().put("createDate",createDate);	
 		mav.getModel().put("truckNumber", truckNumber);
@@ -838,7 +851,7 @@ public class DomainController extends AbstractMultiActionController {
 		if(maintenaceRecords != null && maintenaceRecords.size()==0)
 			saveMessage(request, getMessage("app.error.140", new String[]{}));
 		
-		if(maintenaceRecords != null && maintenaceRecords.size()>0)
+		if(maintenaceRecords != null && maintenaceRecords.size()>0){
 			Collections.sort((List)maintenaceRecords, new MaintenanceIssueComparator());
 		
 		mav.getModel().put("serviceStatus", serviceStatus);
