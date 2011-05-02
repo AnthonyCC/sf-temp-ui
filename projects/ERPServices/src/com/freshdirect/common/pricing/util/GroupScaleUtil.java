@@ -28,7 +28,7 @@ public class GroupScaleUtil {
 						//Current Implementation only supports single Group Scale Price.
 						//This has to change when multiple group scale prices are supported.
 						matPrice = matPrices[0];
-						if(!isGroupPriceValid(grpPricing, pricingZoneId, matPrice)){
+						if(!group.isSkipProductPriceValidation() && !isGroupPriceValid(grpPricing, pricingZoneId, matPrice)){
 							//validate the price of group to be less than all group products price.
 							return null;
 						}
@@ -53,7 +53,7 @@ public class GroupScaleUtil {
 				if(grpPriceModel != null){
 					matPrice = grpPriceModel.findMaterialPrice(grpQty);
 					if(matPrice != null) {
-						if(!isGroupPriceValid(grpPricing, pricingZoneId, matPrice)){
+						if(!group.isSkipProductPriceValidation() && !isGroupPriceValid(grpPricing, pricingZoneId, matPrice)){
 							//validate the price of group to be less than all group products price.
 							return null;
 						}
@@ -97,7 +97,7 @@ public class GroupScaleUtil {
 					matPrices =grpPriceModel.getMaterialPrices();
 					if(matPrices != null && matPrices.length > 0) {
 						MaterialPrice matPrice = matPrices[0];
-						if(!isGroupPriceValid(grpPricing, pricingZoneId, matPrice)){
+						if(!group.isSkipProductPriceValidation() && !isGroupPriceValid(grpPricing, pricingZoneId, matPrice)){
 							//validate the price of group to be less than all group products price.
 							return null;
 						}

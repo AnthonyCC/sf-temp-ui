@@ -24,6 +24,7 @@ public class FDGroup implements Serializable {
 	/** Business object version */
 	private final int version;
     
+	private boolean skipProductPriceValidation; 
     
     public FDGroup(FDGroup group) {
     	this(group.getGroupId(), group.getVersion()); 
@@ -35,7 +36,16 @@ public class FDGroup implements Serializable {
 		this.groupId = groupId;
 		this.version = version;
 	}
-	
+
+
+	public void setSkipProductPriceValidation(boolean skipValidation) {
+		this.skipProductPriceValidation = skipValidation;
+	}
+
+	public boolean isSkipProductPriceValidation() {
+		return skipProductPriceValidation;
+	}
+
 	/**
 	 * Get Group Id.
 	 *

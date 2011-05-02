@@ -1180,8 +1180,12 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		}
 		
 		FDGroup originalGrp = null;
-		if (originalLine != null)
+		if (originalLine != null) {
 			originalGrp = originalLine.getOriginalGroup();
+			//reset skipProductPriceValidation.
+			//This is temporary fix for Appbug-130 until we fix the behaviour of Modify Product Page.
+			originalGrp.setSkipProductPriceValidation(false);
+		}
 				
 		FDCartLineI theCartLine = processSimple(suffix, prodNode, product, quantity, salesUnit, origCartLineId, variantId, pricingZoneId ,originalGrp);
 

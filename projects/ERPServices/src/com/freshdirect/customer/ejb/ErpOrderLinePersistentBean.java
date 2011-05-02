@@ -264,8 +264,13 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
         
         String grpId = rs.getString("GROUP_ID");
         int version = rs.getInt("GROUP_VERSION");
-        if(grpId!=null)
-        	this.model.setFDGroup(new FDGroup(grpId, version));
+        if(grpId!=null) {
+			FDGroup group = new FDGroup(grpId, version);
+			//set skip validate to true; Once they are reloaded from an order they don;t undergo any product price validation
+			//for the group.
+			group.setSkipProductPriceValidation(true);
+        	this.model.setFDGroup(group);
+        }
         this.model.setGroupQuantity(rs.getDouble("GROUP_QTY"));
         this.model.setPricingContext(new PricingContext(pricingZoneId==null?ZonePriceListing.MASTER_DEFAULT_ZONE:pricingZoneId)); 
         this.model.setSustainabilityRating(EnumSustainabilityRating.getEnumByStatusCode(NVL.apply(rs.getString("SUSTAINABILITY_RATING"), "X")));
