@@ -165,7 +165,7 @@ public class MaintenanceLogFormController extends AbstractFormController {
 					_command.setVerifiedBy(getUserId(request));
 					_command.setIssueStatus(EnumIssueStatus.VERIFIED.getName());
 				}
-				if(!"".equals(request.getParameter("reverify")) && EnumIssueStatus.VERIFIED.getName().equalsIgnoreCase(_command.getIssueStatus()))
+				if(request.getParameter("reverify") != null && EnumIssueStatus.VERIFIED.getName().equalsIgnoreCase(_command.getIssueStatus()))
 					_command.setIssueStatus(EnumIssueStatus.REVERIFIED.getName());
 				
 				_command.setModifiedDate(new Timestamp(System.currentTimeMillis()));		
