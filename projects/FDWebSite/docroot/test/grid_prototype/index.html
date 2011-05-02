@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" href="css/reset.css">
+		<link rel="stylesheet" href="css/typography.css">
+		<link rel="stylesheet" href="css/grid.css">
+		<link rel="stylesheet" href="css/fdgrid.css">
+<!--[if IE]>
+		<link rel="stylesheet" href="css/ie.css">
+<![endif]-->
+		<style>
+			.box { background:none }
+			hr.green { border:0px; height:2px; background:url('img/green_hr.png') repeat-x; margin:0px;}
+			.center { text-align:center; }
+			.textright { text-align: right }
+			
+			#topbar {height:32px; line-height:32px; background:url('img/title_bg.png') bottom left; text-align:center}
+			#welcome { padding-right:10px;}
+			
+			#menu { padding-top:25px; line-height:45px;padding-bottom:10px; }
+			#menu img { vertical-align:bottom}
+			#menu .columns { height:45px;}
+			#menuitems {text-align:right}
+			
+			
+			#submenu { height:53px; background:url('img/menu_bg.png'); }
+			
+			#searchbar { height:37px; background:url('img/title_bg.png') bottom left; padding:7px 0px 8px 0px; }
+			
+			#content { padding:10px 0px; }
+			
+			#cart {}
+			#cart_header_wrapper { background:url('img/cart_header.png') top left repeat-x; height:39px; }
+			#cart_header { background:url('img/cart_header.png') top right repeat-x; height:39px; margin-left:6px; padding-right:6px; }
+			#cart_header h5 { margin-bottom: 0px; text-align:center; color:white; font-weight:bold }
+			
+			#cart_body { border-left: 1px solid #fe9b1d; border-right: 2px solid #ffc781; border-top:none; border-bottom: none; text-align:left; margin:0px 0px 0px 1px; padding: 7px 20px;}
+			#cart_body h5 { margin:10px 0px 0px 0px; }
+			#cart_body ul { list-style-type:none; padding:0px; margin:0px; }
+
+			#cart_footer_wrapper { background:url('img/cart_footer.png') top left repeat-x; height:27px; }
+			#cart_footer { background:url('img/cart_footer.png') top right repeat-x; height:27px; margin-left:6px; padding-right:6px; padding-top:4px; }
+			.cart_summary_wrapper { background:url('img/cart_summary.png') top left repeat-x; height:17px; }
+			.cart_summary { background:url('img/cart_summary.png') top right repeat-x; height:17px; margin-left:4px; padding-right:4px; }
+			
+			
+			#marquee ul { list-style-type:none;	padding:0px; margin:7px 0px; color:#759255 }
+			#marquee li { display:inline; }
+			
+			#footerlinks { padding:10px 0px; border-top:1px solid #E8E5E3; }
+			#footerlinks h4 { margin:0px; font-style: italic}
+			
+			#shopbylinks { background: #F9F9F9; padding: 10px 0px; border-top:2px solid #E8E5E3; }
+			#shopbylinks h4 { margin-bottom: 0.25em }
+			#shopbylinks ul { list-style-type:none;	padding:0px; }
+			
+			#tagline { border-top:1px solid #E8E5E3; }
+			
+			.footergreen { background-color: #ACD181;}
+			
+			#bottomlinks { padding:30px 0px 10px 0px; }
+			#bottomlinks h3 { line-height:1.5em }
+			#bottomlinks .right { font-size:0.75em;font-weight:bold;line-height:inherit }
+			
+			#quicklinks { font-weight:bold; color:white; padding:10px 0px 5px 0px; }
+			#copyright { font-weight:bold; color:white; padding:5px 0px 10px 0px; }
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div class="container clearfix">
+				 <div class="column span-3 border">contact us</div>
+				 <div class="column span-3 border">help/FAQs</div>
+				 <div class="column span-14 border textright"><div  id="welcome">Welcome Ruchi (not ruchi?)</div></div>
+				 <div class="column span-3 border">log out</div>
+				 <div class="column span-3 border">my account</div>
+				 <div class="column span-4 last">notifications</div>
+			</div>
+		</div>
+		<div id="menu">
+			<div class="container clearfix">
+				<div class="column span-10"><img src="img/logo.png"></div>
+				<div id="menuitems" class="column span-20 last">
+					<img src="img/delivery.png">
+					<img src="img/quicklist.png">
+					<img src="img/recipes.png">
+					<img src="img/whatsgood.png">
+					<img src="img/presidentspick.png">
+				</div>
+				
+
+			</div>
+		</div>
+		<div id="submenu">
+			<div class="container clearfix"><img src="img/menu.png"></div>
+		</div>
+		<div id="searchbar">
+			<div class="container clearfix">
+				<div class="column span-6 border center"><img src="img/department_selector.png"></div>
+				<div class="column span-16 border center"><img src="img/searchbox.png"></div>
+				<div class="column span-8 last"></div>
+			</div>
+		</div>
+		<div id="content">
+			<div class="container clearfix">
+				<div class="column span-22">
+					<div class="box">
+					<p>Ut ultricies, metus quis gravida iaculis, magna nunc lobortis magna, a vehicula ante dolor eget mauris. Nulla tempus eleifend dui, quis mollis magna tincidunt ut. Pellentesque tellus dolor, ornare a blandit quis, congue non mi. Nullam justo nisl, ultricies sit amet pharetra sed, commodo vel quam. Aenean at arcu lacus. Nulla facilisi. Fusce bibendum vehicula bibendum. Donec gravida magna vitae nulla fringilla eu auctor lorem euismod. Aenean nec nulla vitae nibh vehicula consequat id id diam. Ut hendrerit, orci non consectetur molestie, ipsum orci cursus purus, at sollicitudin mauris tortor quis felis. Nunc sed eros urna, sit amet luctus nisl. Vestibulum at augue nibh, in tristique urna. Mauris pellentesque porta leo imperdiet commodo. Etiam in est sit amet nibh volutpat iaculis ac iaculis turpis.</p>
+					<p>Mauris orci augue, dapibus vitae imperdiet vel, molestie nec ipsum. Aenean ut neque a felis eleifend tincidunt ut eu turpis. Mauris auctor dapibus ipsum non ultricies. Morbi ac enim vitae dui aliquam pellentesque. Fusce vulputate semper sagittis. Phasellus nec lacus eu lectus commodo mollis nec sed massa. Donec sagittis est quis mauris luctus quis tempus enim venenatis. Pellentesque ornare velit a ante sollicitudin sit amet consectetur sem ornare. Maecenas id enim tortor. Vivamus tempus, tortor vitae viverra molestie, quam ipsum rhoncus mauris, tincidunt commodo ante lorem et dolor. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
+					</div>
+				</div>
+				<div class="column span-8 last center">
+					<div id="cart">
+						<div id="cart_header_wrapper"><div id="cart_header"><h5>Your Cart</h5><div class="cart_summary_wrapper"><div class="cart_summary">Subtotal: 99999</div></div></div></div>
+						<div id="cart_body">
+							<h5>Bakery</h5>
+							<ul>
+								<li>Espresso Mousse</li>
+							</ul>
+							<h5>Deli</h5>
+							<ul>
+								<li>Macaroni Salad</li>
+							</ul>
+							<h5>Fruit</h5>
+							<ul>
+								<li>Bananas</li>
+							</ul>
+							<h5>Grocery</h5>
+							<ul>
+								<li>Oven White</li>
+								<li>Tea Biscuits</li>
+							</ul>
+							<h5>Heat & Eat</h5>
+							<ul>
+								<li>Mozzarella Pizza</li>
+								<li>Blue Cheese Salad</li>
+								<li>Spinach Salad</li>
+							</ul>
+							<h5>Vegetables & Herbs</h5>
+							<ul>
+								<li>Baby Spinach</li>
+							</ul>
+							<h5>Wine</h5>
+							<ul>
+								<li>Tintorera</li>
+								<li>Cabernet Sauvignon</li>
+								<li>Periquita</li>
+							</ul>
+						</div>
+						<div id="cart_footer_wrapper"><div id="cart_footer"><div class="cart_summary_wrapper"><div class="cart_summary">Subtotal: 99999</div></div></div></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="footerlinks">
+			<div class="container clearfix">
+				<div class="column span-5 border"><h4>let's be</h4><h3>friends!</h3></div>
+				<div class="column span-5 border"><h4>fresh</h4><h3>inspiration</h3></div>
+				<div class="column span-5 border"><h4>new to</h4><h3>freshdirect</h3></div>
+				<div class="column span-5 border"><h4>just added</h4><h3>new products</h3></div>
+				<div class="column span-10 last">gift cards<br>at the office</div>
+			</div>
+		</div>
+		<div id="shopbylinks">
+			<div class="container clearfix">
+				<div class="column span-5 border">
+					<h4>shop by department</h4>
+					<ul>
+						<li>fruits & vegetables</li>
+						<li>grocery</li>
+						<li>meat & seafood</li>
+						<li>dairy</li>
+						<li>frozen</li>
+						<li>organic</li>
+						<li>wine</li>
+						<li>local</li>
+					</ul>
+				</div>
+				<div class="column span-5 border">
+					<h4>shop by categories</h4>
+					<ul>
+						<li>milk</li>
+						<li>eggs</li>
+						<li>bread</li>
+						<li>cereal</li>
+						<li>toothpaste</li>
+						<li>water</li>
+						<li>toilet paper</li>
+						<li>orange juice</li>
+					</ul>
+				</div>
+				<div class="column span-5 border">
+					<h4>top searches</h4>
+					<ul>
+						<li>body wash</li>
+						<li>diapers</li>
+						<li>body lotion</li>
+						<li>butter</li>
+						<li>garlic</li>
+						<li>onions</li>
+						<li>chips</li>
+						<li>pasta</li>
+					</ul>
+				</div>
+				<div class="column span-5 border">
+					<h4>let us help you</h4>
+					<ul>
+						<li>delivery info</li>
+						<li>status of your order</li>
+						<li>modify order</li>
+						<li>change your password</li>
+						<li>cancel order</li>
+						<li>returns/exchanges</li>
+						<li>chef's table customer</li>
+						<li>FAQs</li>
+					</ul>
+				</div>
+				<div class="column span-10 last">
+					<h4>all you need to know</h4>
+					<ul>
+						<li>about us</li>
+						<li>careers</li>
+						<li>our community</li>
+						<li>your bill of rights</li>
+						<li>help/FAQs</li>
+					</ul>
+					<h4>contact us</h4>
+					<ul>
+						<li>call us</li>
+						<li>email us</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div id="tagline">
+			<div class="container clearfix">
+				<div class="column span-30 center"><img src="img/tagline.png"></div>
+			</div>
+		</div>
+		<div id="bottomlinks" class="footergreen">
+			<div class="container clearfix">
+				<div class="column span-10">
+					<h4 class="clearfix">FD Feed<span class="right">go to our blog »</span><hr class="green"></h4>
+					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eu augue turpis, vitae egestas risus. Vivamus adipiscing dui et urna elementum non interdum tortor pretium. Duis ultrices iaculis velit, in accumsan purus dignissim id. Vestibulum est massa, posuere id tristique at, fermentum ac quam. Duis tincidunt iaculis nisi, nec tempus leo pretium at. Nam justo nisi, consequat eu auctor eget, dapibus id justo. Aenean pulvinar tempus quam at gravida. Ut enim metus, pharetra sed volutpat eu, pretium consequat est. Nam ac dui molestie sem tristique pellentesque vehicula in nisi. Praesent nisi tellus, scelerisque ut cursus non, sodales non leo.</p>
+				</div>
+				<div class="column span-10">
+						<h4 class="clearfix">our customers love us!<span class="right">read more »</span><hr class="green"></h4>
+				</div>
+				<div class="column span-10 last">
+						<h4 class="clearfix">did you know?<hr class="green"></h4>
+				</div>
+				<div class="column span-10">
+						<hr class="green">
+						<h4 class="clearfix">mobile</h4>
+				</div>
+				<div class="column span-10 last">
+						<hr class="green">
+						<h4 class="clearfix">love freshdirect</h4>
+				</div>
+			</div>
+		</div>
+		<div id="marquee" class="footergreen">
+			<div class="container clearfix">
+				<hr class="green">
+				<ul class="column span-30 center">
+					<li>Cheesy Chicken Parm & Fusili</li>
+					<li>Kid Power Cheese-Stuffed Jumbo! Shells</li>
+					<li>Kid Power Megaroni & Beef</li>
+					<li>Kid Power Sunny Falafel & Hummus</li>
+					<li>Kid Power Turkey Sweet-ish Meat</li>
+				</ul>
+				<hr class="green">
+			</div>
+		</div>
+		<div id="quicklinks" class="footergreen">
+			<div class="container clearfix">
+				<div class="column span-30 center">Home | Site Map | Privacy Policy | Customer Agreement | A note on images for AOL users</div>
+			</div>
+		</div>
+		<div id="copyright" class="footergreen">
+			<div class="container clearfix">
+				<div class="column span-30 center">© 2002-2011 FreshDirect. All Rights Reserved</div>
+			</div>
+		</div>
+	</body>
+</html>
