@@ -66,10 +66,10 @@
 			}
 		}
 
-		function rejectIssue(){
+		function rejectIssue(userId){
 			var id = document.getElementById('issueId').value;
 			if(id !== ''){
-				var result = jsonrpcClient.AsyncDispatchProvider.doRejectMaintenanceIssue(sendRejectFormCallback, id);
+				var result = jsonrpcClient.AsyncDispatchProvider.doRejectMaintenanceIssue(sendRejectFormCallback, id, userId);
 			}
 		}
 

@@ -994,13 +994,14 @@ public class DispatchProviderController extends JsonRpcController implements
 		return domainManagerService.saveVIRRecord(createDate, truckNumber, vendor, driver, createdBy, recordIssues);
 	}
 	
-	public boolean doRejectMaintenanceIssue(String id){
+	public boolean doRejectMaintenanceIssue(String id, String userId){
 		MaintenanceIssue issue = null;
 		try{
 			issue = domainManagerService.getMaintenanceIssue(id);
 			if(issue != null){
 				issue.setIssueStatus(EnumIssueStatus.REJECTED.getName());
 				issue.setServiceStatus(EnumServiceStatus.INSERVICE.getDescription());
+				issue.setVerifiedBy(userId);
 				domainManagerService.saveEntity(issue);
 				return true;
 			}

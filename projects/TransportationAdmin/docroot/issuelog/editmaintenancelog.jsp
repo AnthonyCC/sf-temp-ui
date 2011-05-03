@@ -11,6 +11,7 @@
 	}else if("M".equalsIgnoreCase(issueLog)) {
 		pageTitle = "Maintenance Record";
 	}
+	String userId = com.freshdirect.transadmin.security.SecurityManager.getUserName(request); 
 %>
 
 <tmpl:insert template='/common/sitelayout.jsp'>
@@ -86,9 +87,6 @@
 								<td>
 									<c:if test="${!empty maintenanceRecordForm.id }">
 										<c:set var="hasId" value="true"/>
-									</c:if>
-									<c:if test="${!empty maintenanceRecordForm.id }">
-										<c:set var="isNew" value="false"/>
 									</c:if>
 									<c:if test="${maintenanceRecordForm.issueStatus eq 'Open' }">
 										<c:set var="isOpen" value="true"/>
@@ -385,10 +383,10 @@
 						<input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:doBack();" />
 						<c:choose>
 							<c:when test='${hasId}'>
-								<input type = "button" value="&nbsp;Reject&nbsp;" onclick="javascript:rejectIssue();" />
+								<input type = "button" value="&nbsp;Reject&nbsp;" onclick="javascript:rejectIssue('<%=userId%>');" />
 							</c:when>
 							<c:otherwise> 
-								<input type = "button" value="&nbsp;Reject&nbsp;" disabled="true" onclick="javascript:rejectIssue();" />
+								<input type = "button" value="&nbsp;Reject&nbsp;" disabled="true" onclick="javascript:rejectIssue('<%=userId%>');" />
 							</c:otherwise>
 						</c:choose>
 					</td>
