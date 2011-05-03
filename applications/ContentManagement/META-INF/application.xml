@@ -30,25 +30,9 @@
 
 	<module>
 		<web>
-			<web-uri>cms-tap.war</web-uri>
-			<context-root>/cms-tap</context-root>
-		</web>
-	</module>
-
-	<module>
-		<web>
 			<web-uri>cms-gwt.war</web-uri>
 			<context-root>/cms-gwt</context-root>
 		</web>
 	</module>
-
-    <!--
-	<module>
-		<web>
-			<web-uri>CRM.war</web-uri>
-			<context-root>/</context-root>
-		</web>
-    </module>
-    -->
 
 </application>
