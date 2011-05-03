@@ -1447,7 +1447,8 @@
 			<pathelement location="${thirdparty.home}/lucene-queries-${lucene.version}.jar"/>
 			<pathelement location="${thirdparty.home}/lucene-spellchecker-${lucene.version}.jar"/>
 
-            <pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
+			<pathelement location="${thirdparty.home}/slide/jakarta-slide-webdavlib-2.1.jar"/>
+			<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
 		</path>
 
 		<makeProject
