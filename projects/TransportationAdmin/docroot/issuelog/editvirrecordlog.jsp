@@ -301,6 +301,12 @@
       	  		}
 				if(!hasError){
      				issueLogDataTable.addRow({issueType:_issueType, issueSubType:_issueSubType,damageLocation:_damageLocation,issueSide:_issueSide,comments:_comments, deleteBtn:''});
+					
+					document.getElementById('issueType').value='';
+     				document.getElementById('issueSubType').length=0;
+     				document.getElementById('damageLocation').value='N/A';
+     				document.getElementById('issueSide').value='N/A';
+     				document.getElementById('comments').value='';
      			}
 			} else {
      			addSysMessage("Please enter the required values (Issue Type & IssueSub Value)",true);

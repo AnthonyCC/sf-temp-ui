@@ -124,9 +124,9 @@
 			
 				<div class="cont_Ritem">
 	 			<form id="maintenanceRecordListForm" action="" method="post">  
-				<ec:table items="maintenanceRecords"   action="${pageContext.request.contextPath}/maintenancelog.do"
+				<ec:table items="maintenanceRecords" action="${pageContext.request.contextPath}/maintenancelog.do?issueLog=M"
 					imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title=""
-					width="98%" filterable="true" showPagination="true" rowsDisplayed="25" view="fd" >
+					width="98%" filterable="true" showPagination="true" rowsDisplayed="25" view="fd" form="maintenanceRecordListForm" >
 					
 					<ec:exportPdf fileName="maintenancerecords.pdf" tooltip="Export PDF" 
 							  headerTitle="Issue Type" />

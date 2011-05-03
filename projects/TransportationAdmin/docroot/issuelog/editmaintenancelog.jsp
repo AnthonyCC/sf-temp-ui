@@ -383,7 +383,14 @@
 								</c:choose>
 						
 						<input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:doBack();" />
-						<input type = "button" value="&nbsp;Reject&nbsp;" disabled="${isNew}" onclick="javascript:rejectIssue();" />
+						<c:choose>
+							<c:when test='${hasId}'>
+								<input type = "button" value="&nbsp;Reject&nbsp;" onclick="javascript:rejectIssue();" />
+							</c:when>
+							<c:otherwise> 
+								<input type = "button" value="&nbsp;Reject&nbsp;" disabled="true" onclick="javascript:rejectIssue();" />
+							</c:otherwise>
+						</c:choose>
 					</td>
 				</tr>
 		
