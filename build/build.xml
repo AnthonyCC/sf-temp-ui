@@ -2356,7 +2356,7 @@
 				<include name="struts.jar"/>
 				<include name="lcc.jar"/>
 				<include name="sapjco.jar"/>
-                <include name="givexclient.jar"/>                
+				<include name="givexclient.jar"/>                
 				<include name="poi-3.5-FINAL-20090928.jar"/>
 
 				<include name="lucene-core-${lucene.version}.jar"/>
@@ -2371,6 +2371,9 @@
 				<include name="httpmime-4.0.1.jar"/>
 
 			</lib>
+			<extra>	 
+				<zipfileset dir="${thirdparty.home}/slide" prefix="APP-INF/lib" includes="*.jar"/>	 
+			</extra>
 		</makeEar>
 	</target>
 
