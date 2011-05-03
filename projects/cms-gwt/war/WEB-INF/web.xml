@@ -48,6 +48,11 @@
     <load-on-startup>5</load-on-startup>
   </servlet>
 
+  <servlet>
+    <servlet-name>notification</servlet-name>
+    <servlet-class>com.freshdirect.cms.listeners.NotificationReceiverServlet</servlet-class>
+    <load-on-startup>6</load-on-startup>
+  </servlet>
 
   <servlet-mapping>
     <servlet-name>contentService</servlet-name>
@@ -91,6 +96,10 @@
     <url-pattern>/com.freshdirect.cms.ui.cmsgwt/CsvExport</url-pattern>
   </servlet-mapping>
   
+  <servlet-mapping>
+    <servlet-name>notification</servlet-name>
+    <url-pattern>/notification</url-pattern>
+  </servlet-mapping>
   
   <filter>
 		<filter-name>registry</filter-name>

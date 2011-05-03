@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<tapestry-project-properties>
-    <project-type>0</project-type>
-    <validate-web-xml>true</validate-web-xml>
-    <context-root>/docroot</context-root>
-</tapestry-project-properties>

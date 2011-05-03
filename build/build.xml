@@ -227,7 +227,6 @@
 		<checkoutLabeled dir="projects/ERPSAdmin"/>
 		<checkoutLabeled dir="projects/FDWebSite"/>
 		<checkoutLabeled dir="projects/CRM/docroot"/>
-		<checkoutLabeled dir="projects/cms-tap"/>
 		<checkoutLabeled dir="projects/Tools/src"/>
 		<checkoutLabeled dir="projects/Tests"/>
 		<checkoutLabeled dir="projects/Resources/"/>
@@ -288,7 +287,6 @@
 		<checkoutLatest dir="projects/ERPSAdmin"/>
 		<checkoutLatest dir="projects/FDWebSite"/>
 		<checkoutLatest dir="projects/CRM/docroot"/>
-		<checkoutLatest dir="projects/cms-tap"/>
 		<checkoutLatest dir="projects/Tools/src"/>
 		<checkoutLatest dir="projects/Tests"/>
 		<checkoutLatest dir="projects/Resources/"/>
@@ -346,7 +344,7 @@
 		-->
 	</target>
 
-	<target name="webapps" depends="fdwebsite,crm,erpsadmin,dlvadmin,rulesadmin,dlvconfirm,cms-tap,cms-gwt,listadmin-lib,listadmin,ocf-adm,refAdmin,mrktAdmin,transportAdmin,fdintegrationservices" description="Build all WAR files">
+	<target name="webapps" depends="fdwebsite,crm,erpsadmin,dlvadmin,rulesadmin,dlvconfirm,cms-gwt,listadmin-lib,listadmin,ocf-adm,refAdmin,mrktAdmin,transportAdmin,fdintegrationservices" description="Build all WAR files">
 	</target>
 
 	<target name="all" depends="clean,prereq,build" description="Build everything, no checkout, no tests">
@@ -1449,8 +1447,7 @@
 			<pathelement location="${thirdparty.home}/lucene-queries-${lucene.version}.jar"/>
 			<pathelement location="${thirdparty.home}/lucene-spellchecker-${lucene.version}.jar"/>
 
-			<pathelement location="${thirdparty.home}/slide/jakarta-slide-webdavlib-2.1.jar"/>
-                        <pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
+            <pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
 		</path>
 
 		<makeProject
@@ -1709,85 +1706,6 @@
                 </fileset>
             </war>	
     </target>
-
-	<target name="cms-tap" description="Build cms-tap">
-		<!-- directory for compiled stuff -->
-		<mkdir dir="${work.dir}/cms-tap/WEB-INF/classes" />
-
-		<!-- compile tapestry components -->
-		<path id="cms-tap.classpath">
-			<path refid="j2ee.classpath"/>
-			<path refid="common.classpath"/>
-			<path refid="oracle.classpath"/>
-
-			<pathelement location="${thirdparty.home}/tapestry-4.0.2.jar"/>
-			<pathelement location="${thirdparty.home}/tapestry-contrib-4.0.2.jar"/>
-			<pathelement location="${thirdparty.home}/tacos-core-4.0.2-20070420.095420-14.jar"/>
-			<pathelement location="${thirdparty.home}/ognl-2.6.7.jar"/>
-			<pathelement location="${thirdparty.home}/bsf-2.3.0.jar"/>
-			<pathelement location="${thirdparty.home}/commons-codec-1.2.jar"/>
-
-			<pathelement location="${work.dir}/CMS.jar"/>
-			<pathelement location="${work.dir}/Framework.jar"/>
-			<pathelement location="${work.dir}/ERPServices.jar"/>
-			
-		</path>
-		<trycatch>
-			<try>
-				<record name="${work.dir}/logs/log.txt" action="start" append="yes" loglevel="info"/>
-				<tstamp>
-					<format property="compileStart" pattern="MM/dd/yyyy HH:mm" />
-				</tstamp>
-				<echo message="Started Compiling CMS-TAP at:${compileStart}"/>
-				<javac
-				srcdir="${projects.dir}/cms-tap/src"
-				destdir="${work.dir}/cms-tap/WEB-INF/classes"
-				deprecation="${javac.deprecation}"
-				optimize="${javac.optimize}"
-				debug="${javac.debug}"
-				source="${javac.source}">
-					<classpath>
-						<path refid="cms-tap.classpath"/>
-					</classpath>
-				</javac>
-				<record name="${work.dir}/logs/log.txt" action="stop"/>
-			</try>
-			<catch>
-				<record name="${work.dir}/logs/log.txt" action="stop"/>
-				<!-- send email...compilation failed -->
-				<emailCompilationError projectName="CMS-TAP"/>
-				<fail/>
-			</catch>
-		</trycatch>
-
-		<!-- copy JSPs, html, etc... -->
-		<copy todir="${work.dir}/cms-tap/">
-			<fileset dir="${projects.dir}/cms-tap/docroot">
-			</fileset>
-		</copy>
-
-		<!-- copy other resources in classpath -->
-		<copy todir="${work.dir}/cms-tap/WEB-INF/classes">
-			<fileset dir="${projects.dir}/cms-tap/src">
-				<exclude name="**/*.java"/>
-			</fileset>
-		</copy>
-
-		<!-- create .war file -->
-		<jar destfile="${work.dir}/cms-tap.war">
-            <manifest>
-                <attribute name="Specification-Version" value="${build.counter}"/>
-                <attribute name="Specification-Vendor" value="FreshDirect LLC"/>
-                <attribute name="Implementation-Title" value="cms-tap"/>
-                <attribute name="Implementation-Version" value="${build.counter}"/>
-                <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
-                <attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
-            </manifest>
-			<fileset dir="${work.dir}/cms-tap">
-			</fileset>
-		</jar>
-
-	</target>
 
 	<target name="rulesadmin" description="Build RulesAdmin .war file">
 		<path id="rulesadmin.classpath">
@@ -2422,7 +2340,6 @@
 				<include name="FDStoreEJB-WL.jar"/>
 				<include name="DataLoaderEJB-WL.jar"/>
 				<include name="FDWebSite.war"/>
-				<include name="cms-tap.war"/>
 				<include name="cms-gwt.war"/>
 				<include name="CRM.war"/>
 			</ejbs>
@@ -2442,25 +2359,18 @@
                 <include name="givexclient.jar"/>                
 				<include name="poi-3.5-FINAL-20090928.jar"/>
 
-				<include name="tapestry-4.0.2.jar"/>
-				<include name="tapestry-contrib-4.0.2.jar"/>
-				<include name="tacos-core-4.0.2-20070420.095420-14.jar"/>
-
 				<include name="lucene-core-${lucene.version}.jar"/>
 				<include name="lucene-queries-${lucene.version}.jar"/>
 				<include name="lucene-spellchecker-${lucene.version}.jar"/>
 				<include name="jgroups-2.2.7.jar"/>
 				<include name="jxl.jar"/>
 				<include name="${scarab.jar}"/>
-<!-- scarab runtime dependencies -->
+				<!-- scarab runtime dependencies -->
 				<include name="httpclient-4.0.1.jar"/>
 				<include name="httpcore-4.0.1.jar"/>
 				<include name="httpmime-4.0.1.jar"/>
 
 			</lib>
-			<extra>
-				<zipfileset dir="${thirdparty.home}/slide" prefix="APP-INF/lib" includes="*.jar"/>
-			</extra>
 		</makeEar>
 	</target>
 

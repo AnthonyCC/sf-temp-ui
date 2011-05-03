@@ -11,7 +11,7 @@ IMAGEMAGICK_IDENTIFY="identify"
 
 # Mandatory parameter
 # URL for the Notification Service
-SERVICE_URL="http://<host>/cms-tap/notification"
+SERVICE_URL="http://<host>/cms-gwt/notification"
 
 # Set PATH to be able to acces the following command line tools / SVN commands:
 # sed, logger, svnlook, file, curl
