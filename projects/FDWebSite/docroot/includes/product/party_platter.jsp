@@ -558,7 +558,7 @@ if (isAvailable ) { %>
 <fd:CCLCheck>
                     <td colspan="9" align="left"> 
 <font class="text11gbold"><a href="/unsupported.jsp" 
-	      onclick="return CCL.save_items('productForm',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection')">Save selected to shopping list</a></font> <fd:CCLNew/>
+	      onclick="return CCL.save_items('productForm',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection')">Save selected to shopping list</a></font>
     <br/>
     <br/>
     </td>

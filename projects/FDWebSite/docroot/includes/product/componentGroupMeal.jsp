@@ -656,11 +656,9 @@ if (isAvailable ) {
         <td colspan="9" align="right"> 
 	<br/>
 	<div>
-	    <fd:CCLNew/><a id="ccl-add-action" href="/unsupported.jsp" 
+	    <a id="ccl-add-action" href="/unsupported.jsp" 
 		      onclick="return CCL.save_items('productForm',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_dfgs.gif" width="133" height="13" style="border: 0; padding-left: 14px"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" style="margin: 0 0 1px 5px; border: 0"/></a>
-		<div style="text-align: right; margin-bottom: 1ex;">       
-		    <fd:CCLNew template="/common/template/includes/ccl_moreabout.jspf"/>
-		</div>
+		<div style="text-align: right; margin-bottom: 1ex;"></div>
     </div>
     <br/>
     <br/>

@@ -16,7 +16,7 @@
 				<div style="height: 20px"></div>
 			<% } %>
 			<div>
-				<font class="text14"><b>Your Shopping Lists</b></font><span style="text-align: right;">&nbsp;&nbsp;&nbsp;<fd:CCLNew/></span><font class="space2pix"><br><br></font>
+				<font class="text14"><b>Your Shopping Lists</b></font><span style="text-align: right;">&nbsp;&nbsp;&nbsp;</span><font class="space2pix"><br><br></font>
 				<font class="title11" color="#FF9933">CHANGE OR SHOP FROM YOUR LISTS:</font>
 				<%@ include file="/quickshop/includes/ccl_lists.jspf" %>
 			</div>

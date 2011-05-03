@@ -559,22 +559,23 @@ if(productCode!=null && prodCatId !=null ) {
         <td width="100"><INPUT class="text11bold" TYPE="text" NAME="PRICE" SIZE="7" onFocus="blur()" value=""></td>
         </tr>
         </table>
+
+<%@ include file="/shared/includes/product/i_minmax_note.jspf" %>
+
 <br>
 <input type="image" name="addSingleToCart_big" src="/media_stat/images/buttons/add_to_cart.gif"  ALT="ADD THIS ITEM TO YOUR CART" width="93" height="20" HSPACE="2" VSPACE="2" border="0"><br>
-<%@ include file="/shared/includes/product/i_minmax_note.jspf" %>
+
+	<fd:CCLCheck>
+		<div>       
+			<a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('grocery_form',this,'action=CCL:AddMultipleToList&source=ccl_sidebar_big')"><img src="/media_stat/ccl/save_to_list_btn.gif" width="93" height="20" vspace="5" hspace="2"></a>
+		</div>		             
+		<div style="margin: 0 0 0 5px;"></div>		             
+	</fd:CCLCheck>
+
 <%@ include file="/includes/product/i_delivery_note.jspf" %>
 <%@ include file="/includes/product/i_cancellation_note.jspf" %>
 
-
 <br><img src="/media_stat/images/layout/999999.gif" width="225" height="1" border="0" vspace"5"><br>
-	<fd:CCLCheck>
-		<div style="margin: 15px 5px 0 5px;">       
-			<a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('grocery_form',this,'action=CCL:AddMultipleToList&source=ccl_sidebar_big')"><img src="/media_stat/ccl/lists_link_with_icon_dfgs.gif" width="112" height="15"  style="padding: 0 14px 0 0; border: 0;"></a><fd:CCLNew/>
-		</div>		             
-		<div style="margin: 0 0 0 5px;">       
-             <fd:CCLNew template="/common/template/includes/ccl_moreabout.jspf"/>
-		</div>		             
-	</fd:CCLCheck>
 <%  if (productNode.getProductDescription()!=null && productNode.getProductDescription().getPath()!=null && productNode.getProductDescription().getPath().indexOf("blank_file.txt") < 0) { %>
           <br><fd:IncludeMedia name="<%= productNode.getProductDescription().getPath() %>" /><br>
 <%  } 
@@ -863,10 +864,8 @@ if(isAnyProdAvailable) {
         <input type="image" name="addMultipleToCart" src="/media_stat/images/buttons/add_selected_to_cart.gif" width="145" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART">
         <br>
         <fd:CCLCheck>
-            <div style="margin: 7px 4px 0 4px;"><a id="ccl-add-action" href="/unsupported.jsp" onclick="return CCL.save_items('grocery_form',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_with_icon_dfgs.gif" width="151" height="15" style="border: 0; padding-right: 14px"></a><fd:CCLNew/></div>
-			<div style="margin: 0 0 1ex 4px;">
-                <fd:CCLNew template="/common/template/includes/ccl_moreabout.jspf"/>
-            </div>
+            <div style="margin: 7px 4px 0 4px;"><a id="ccl-add-action" href="/unsupported.jsp" onclick="return CCL.save_items('grocery_form',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_with_icon_dfgs.gif" width="151" height="15" style="border: 0; padding-right: 14px"></a></div>
+			<div style="margin: 0 0 1ex 4px;"></div>
         </fd:CCLCheck>
         </td></tr></table>
 <%} %>

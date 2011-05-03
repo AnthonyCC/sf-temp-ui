@@ -33,8 +33,8 @@
 	<div class="qbParam" style="margin-bottom:1em">Est. Price: <span><%= JspMethods.formatPrice(orderLine.getPrice()) %></span></div>
     <fd:CCLCheck>
 		<!-- Add to Shopping List  -->
-		<a href="/unsupported.jsp" onclick="window.parent.CCL.add_recent_cart_items(); window.parent.document.quickbuyPanel.hide(); return false;"><img src="/media_stat/ccl/lists_link_with_icon_dfgs.gif" style="border: 0;"/></a><fd:CCLNew/></span>
-		<div><fd:CCLNew template="/common/template/includes/ccl_moreabout.jspf"/></div>
+		<a href="/unsupported.jsp" onclick="window.parent.CCL.add_recent_cart_items(); window.parent.document.quickbuyPanel.hide(); return false;"><img src="/media_stat/ccl/lists_link_with_icon_dfgs.gif" style="border: 0;"/></a></span>
+		<div></div>
 	</fd:CCLCheck>
    	<div class="prdsep">&nbsp;</div>
 </div>
