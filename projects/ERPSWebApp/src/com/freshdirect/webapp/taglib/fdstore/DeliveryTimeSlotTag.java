@@ -318,7 +318,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 
 		boolean ctActive = false;
 		double maxDiscount = 0.0;
-		int ctSlots = 0;int alcoholSlots =0;int ecoFriendlySlots = 0;int neighbourhoodSlots=0;int soldOut = 0;int totalSlots = 0;
+		int ctSlots = 0;int alcoholSlots =0;int ecoFriendlySlots = 0;int neighbourhoodSlots=0;double soldOut = 0.0;double totalSlots = 0.0;
 
 		boolean isAlcoholDelivery = FDDeliveryManager.getInstance().checkForAlcoholDelivery(address);
 		deliveryModel.setAlcoholDelivery(isAlcoholDelivery);

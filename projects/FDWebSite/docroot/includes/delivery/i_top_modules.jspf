@@ -88,13 +88,13 @@ double currentHour = h+m;
 				<%}%>
 			<%}else if(!user.isDlvPassActive() && clickToCall && !(user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName()))){%>
 				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/click-to-call_top_module.html"/>
-			<%}else if(!user.isChefsTable() && user.isDlvPassActive()){%>
+			<%}else if(!user.isChefsTable() && user.isDlvPassActive() && !(user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName()))){%>
 				<%if(user.getReservation()!=null){%>
 					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_has_reservation.html"/>
 				<%}else{%>
 					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_no_reservation.html"/>
 				<%}%>
-			<%}else if(!duplicateFaq && user.isChefsTable()){%>
+			<%}else if(!duplicateFaq && (user.isChefsTable()|| (user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName())))){%>
 				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/faq_top_module.html"/>
 			<%}%>
 		</td>
