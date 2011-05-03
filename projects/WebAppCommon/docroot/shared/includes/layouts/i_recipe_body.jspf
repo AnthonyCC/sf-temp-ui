@@ -582,10 +582,8 @@ int prodIdx = 0;
 		<tr>
 		  <td colspan="9" align="left">
 		      <div style="margin: 7px 4px 0 0;">
-		          <a id="ccl-add-action" class="text12bold" href="/unsupported.jsp" onclick="return CCL.save_items('recipe_form',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','action=CCL:AddMultipleToList&source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_with_icon_dfgs.gif" width="151" height="15" style="border: 0; padding-right: 14px"></a><fd:CCLNew/></div>
-			  <div style="margin: 0 0 1ex 0;">
-              	<fd:CCLNew template="/common/template/includes/ccl_moreabout.jspf"/>
-              </div>
+		          <a id="ccl-add-action" class="text12bold" href="/unsupported.jsp" onclick="return CCL.save_items('recipe_form',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','action=CCL:AddMultipleToList&source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_with_icon_dfgs.gif" width="151" height="15" style="border: 0; padding-right: 14px"></a></div>
+			  <div style="margin: 0 0 1ex 0;"></div>
 		   </td>
 		</tr>
 </fd:CCLCheck>

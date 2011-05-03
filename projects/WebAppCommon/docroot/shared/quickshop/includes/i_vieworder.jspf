@@ -743,10 +743,8 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
 	<fd:CCLCheck>
 		<tr>
 		    <td colspan="7" align="right" class="text11bold">
-		        <fd:CCLNew/>
 		        <a href="/unsupported.jsp" onclick="return CCL.save_items('qs_cart',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_dfgs.gif" width="133" height="13" style="border: 0; padding-left: 14px"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" style="margin: 0 0 1px 5px; border: 0"/></a>
 		   		<div style="text-align: right;  margin-bottom: 1ex;">       
-				  <fd:CCLNew template="/common/template/includes/ccl_moreabout.jspf"/>
 				</div>             
 		    </td>
 		</tr>
