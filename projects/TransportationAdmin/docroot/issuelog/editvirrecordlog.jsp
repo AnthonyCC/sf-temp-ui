@@ -334,7 +334,7 @@
 	     	 	document.getElementById('id').value = result;
 	     	 	if(result != null) {
 	     	 		addSysMessage("VIRRecord saved successfully", false);
-						window.location.href = 'editvirrecordlog.do?id='+document.getElementById('id').value;
+						window.location.href = 'editvirrecordlog.do';
 					
 	     	 	}
           	}
