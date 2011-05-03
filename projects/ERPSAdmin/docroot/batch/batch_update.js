@@ -224,6 +224,9 @@ var changeLog = ""+
 					 [12] pricing_unit_description
 		-- postData -- */
 			var postData = new Array(13);
+			
+			var browser = "IE";
+			
 		/* -- buttonArr --
 			buttonArr [i] [0] prefix
 			              [1] parent container id
@@ -417,20 +420,34 @@ var changeLog = ""+
 				:targetElement = document.getElementsByTagName("body")[0];
 			
 			if (targetElement) {
-				newElement = document.createElement(insert);
-				newElement.id = insId;
+				if(browser == "FF") {
+					newElement = document.createElement(insert);
+					newElement.id = insId;
+				}
 				switch(iType) {
 					case 'C':
-						newElement.setAttribute('type', 'checkbox');
+						if(browser == "IE")
+							newElement = document.createElement("<input type=checkbox id=" + insId + " name=" + target + ">");
+						else
+							newElement.setAttribute('type', 'checkbox');
 						break;
 					case 'R':
-						newElement.setAttribute('type', 'radio');
+						if(browser == "IE")
+							newElement = document.createElement("<input type=radio id=" + insId + " name=" + target + ">");
+						else
+							newElement.setAttribute('type', 'radio');
 						break;
 					case 'B':
-						newElement.setAttribute('type', 'button');
+						if(browser == "IE")
+							newElement = document.createElement("<input type=button id=" + insId + " name=" + target + ">");
+						else
+							newElement.setAttribute('type', 'button');
 						break;
 					default:
-						newElement.setAttribute('type', 'text');
+						if(browser == "IE")
+							newElement = document.createElement("<input type=text id=" + insId + " name=" + target + ">");
+						else
+							newElement.setAttribute('type', 'text');
 						break;
 				}
 
@@ -3169,6 +3186,14 @@ var changeLog = ""+
 
 	//setup all necessary container elements for user interface
 	function erpsy_addon() {
+	
+		var nAgent = navigator.userAgent;
+		fdLog.debug("Browser Agent: " + nAgent);
+		
+		if(nAgent.indexOf("MSIE")!=-1)
+			browser = "IE";
+		else
+			browser = "FF";
 
 		fdLog.debug('  Killing calendar...');
 		//wipes unused calendar script/div from page. 
