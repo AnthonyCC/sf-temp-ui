@@ -330,7 +330,7 @@
 			
 			fdLog.debug('[FETCH SKU INFO] Fetching SKU from...' + urllookup+'/test/freemarker_testing/all_info.jsp?sku2url=true&sku='+skuCode); 
 
-			new Ajax.Request(urllookup+'/test/freemarker_testing/all_info.jsp?sku2url=true&sku='+skuCode, {
+			new Ajax.Request('product_info.jsp?sku='+skuCode, {
 				method: 'GET',
 				onComplete: function(responseDetails) {
 						var skuInfo = responseDetails.responseText;
