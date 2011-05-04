@@ -74,29 +74,34 @@
 	 *	pass a url to the function (OPTIONAL)
 	 *	default is to use current location
 	 */
-		function getCluster(loca) {
-			var locaV = loca || window.location.hostname;
-			if (locaV.indexOf('dev') > -1) {
-				var regexS = "crm[0-9]*[\.]stdev[0-9]?([0-9]*)";
-				var regex = new RegExp( regexS );
-				var results = regex.exec( locaV );
-				if (results == null) {
-					urllookup = 'http://dev.freshdirect.com';
-					urlMain = 'http://devpreview.freshdirect.com';
-				} else {
-					if (results[1] == '1') {
-						results[1] = ''; //clear 1, we don't need it
-					}
-					urllookup = 'http://dev'+results[1]+'.freshdirect.com';
-					urlMain = 'http://dev'+results[1]+'preview.freshdirect.com';
-				}
-			}else if (locaV.indexOf('stg') > -1 || locaV.indexOf('stage') > -1) {
-				urllookup = 'http://stage.freshdirect.com';
-				urlMain = 'http://stagepreview.freshdirect.com';
-			}
+		 function getCluster(loca) {
+            var locaV = loca || window.location.hostname;
+            if (locaV.indexOf('dev') > -1) {
+				//var regexS = "crm[0-9]*[\.]stdev[0-9]?([0-9]*)";
+                var regexS = "dev[0-9]?([0-9]*)";
+                var regex = new RegExp( regexS );
+                var results = regex.exec( locaV );
+                if (results == null) {
+                    urllookup = 'http://dev.freshdirect.com';
+                    urlMain = 'http://devpreview.freshdirect.com';
+                } else {
+                    fdLog.debug('results is not null:' + results);
+                    //if (results[1] == '1') {
+                    //      results[1] = ''; //clear 1, we don't need it
+					//}
+                    fdLog.debug('****1*****' + results[1]);
+                    var result = results[0];
+                    urllookup = 'http://web01.st'+results[0]+'.nyc1.freshdirect.com:7001';
+                    urlMain = 'http://dev'+results[1]+'preview.freshdirect.com';
+                    fdLog.debug('new url:' + urllookup);
+                }
+            }else if (locaV.indexOf('stg') > -1 || locaV.indexOf('stage') > -1) {
+                urllookup = 'http://web01.ststg01.nyc2.freshdirect.com:7001';
+                urlMain = 'http://stagepreview.freshdirect.com';
+            }
+            return true;
+        }
 
-			return true;
-		}
 
 	/*
 	 *	get URL param
@@ -330,7 +335,7 @@
 			
 			fdLog.debug('[FETCH SKU INFO] Fetching SKU from...' + urllookup+'/test/freemarker_testing/all_info.jsp?sku2url=true&sku='+skuCode); 
 
-			new Ajax.Request('product_info.jsp?sku='+skuCode, {
+			new Ajax.Request('/ERPSAdmin/product/product_info.jsp?sku='+skuCode+'&uurl='+urllookup, {
 				method: 'GET',
 				onComplete: function(responseDetails) {
 						var skuInfo = responseDetails.responseText;
