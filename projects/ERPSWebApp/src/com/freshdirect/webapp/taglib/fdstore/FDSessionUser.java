@@ -39,7 +39,6 @@ import com.freshdirect.fdstore.customer.FDBulkRecipientList;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
-import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDPromotionEligibility;
@@ -1178,6 +1177,18 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	@Override
 	public Date getRegistrationDate() {
 		return user.getRegistrationDate();
+	}
+
+	@Override
+	public double getPercSlotsSold() {
+		// TODO Auto-generated method stub
+		return user.getPercSlotsSold();
+	}
+
+	@Override
+	public void setPercSlotsSold(double percSlotsSold) {
+		// TODO Auto-generated method stub
+		this.user.setPercSlotsSold(percSlotsSold);
 	}
 }
 

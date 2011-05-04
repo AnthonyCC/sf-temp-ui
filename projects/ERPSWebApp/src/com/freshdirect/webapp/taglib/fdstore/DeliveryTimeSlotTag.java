@@ -395,6 +395,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		deliveryModel.setNeighbourhoodCount(neighbourhoodSlots);
 		deliveryModel.setPercSlotsSold(totalSlots > 0 ? Math.round((soldOut/totalSlots)*100):0.0);
 		user.setTotalCTSlots(ctSlots);
+		user.setPercSlotsSold(totalSlots > 0 ? Math.round((soldOut/totalSlots)*100):0.0);
 	}
 		
 	private void checkTimeslotCapacity(FDUserI user, HashMap zonesMap, FDTimeslot timeslot) {

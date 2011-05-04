@@ -45,10 +45,10 @@ double currentHour = h+m;
 				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/corporate_top_module.html"/>
 
 			<%}else if(user.isChefsTable() && !(user.isCorporateUser() && "CORPORATE".equals(address.getServiceType().getName()))){
-				if(deliveryModel.getPercSlotsSold() < 80 || (deliveryModel.getPercSlotsSold() == 100 && (currentHour > 21 && currentHour < 1))){
+				if(deliveryModel.getPercSlotsSold() < 80 || (deliveryModel.getPercSlotsSold() == 100 && (currentHour >= 21 && currentHour < 0))){
 			%>
 					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/preferredctaccess_top_module.html"/>
-				<%}else{%>
+				<%}else if(deliveryModel.getPercSlotsSold() > 80 || (deliveryModel.getPercSlotsSold() == 100 && !(currentHour >= 21 && currentHour < 0))){%>
 					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/nextdayguarantee_short_topmodule.html"/>
 				<%}%>
 			<%}else if(!user.isChefsTable()&& user.isDlvPassActive()){

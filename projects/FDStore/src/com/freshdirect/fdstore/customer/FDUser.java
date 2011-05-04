@@ -205,7 +205,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 	private String masqueradeAgent;
 	
 	private int ctSlots;
-
+	private double percSlotsSold;
+	
 	private Date registrationDate;
 	private static final Date EPOCH = new Date(0);
 
@@ -1869,6 +1870,14 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}	
 	public void setTotalCTSlots(int slots){
 		this.ctSlots = slots;
+	}
+	
+	public double getPercSlotsSold() {
+		return percSlotsSold;
+	}
+
+	public void setPercSlotsSold(double percSlotsSold) {
+		this.percSlotsSold = percSlotsSold;
 	}
 
 	@Override

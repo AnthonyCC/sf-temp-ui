@@ -13,6 +13,12 @@ int day = DateUtil.getDayOfWeek(today);
 if(day==6)hourString="11 p.m.";
 else if(day==7)hourString="8 p.m.";
 else hourString="12 a.m.";
+
+Calendar cal1=Calendar.getInstance();
+cal1.setTime(new Date());
+int h1 = cal1.get(Calendar.HOUR);
+double m1 = cal1.get(Calendar.MINUTE)/60;
+double currentTime = h1+m1;
 %>
 <script>
 	var serviceHourString = "<%= hourString %>";
@@ -35,8 +41,15 @@ else hourString="12 a.m.";
 		<td width="15" rowspan="2"><img height="1" border="0" width="15" src="/media_stat/images/layout/clear.gif"></td>
 		
 		<td width='<%=user.isChefsTable()?"290":"200"%>' rowspan="2">
-			<%if(user.isChefsTable()){%>
-				<fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/nextdayguarantee_long_bottommodule.html"/>
+			<%if(user.isChefsTable()){
+				if(user.getPercSlotsSold() == 100 && (currentTime >= 21 && currentTime < 0)){
+			%>
+					<fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/generic_ct_bottom_module.html"/>
+				<%}else if(user.getPercSlotsSold() < 80 || (user.getPercSlotsSold() == 100 && !(currentTime >= 21 && currentTime < 0))){%>
+					<fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/nextdayguarantee_long_bottommodule.html"/>
+				<%}else if(user.getPercSlotsSold() > 80){%>
+					<fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/preferredctaccess_bottom_module.html"/>
+				<%}%>
 			<%}else{%>
 				<fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/callUs_bottom_module.html"/>
 			<%}%>
