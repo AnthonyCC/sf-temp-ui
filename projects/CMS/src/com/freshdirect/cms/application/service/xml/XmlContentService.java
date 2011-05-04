@@ -4,15 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.ZipInputStream;
 
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.log4j.Category;
-import org.xml.sax.InputSource;
+import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
 import com.freshdirect.cms.CmsRuntimeException;
@@ -35,7 +30,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  */
 public class XmlContentService extends SimpleContentService implements ContentServiceI {
 
-	private final Category LOGGER = LoggerFactory.getInstance(XmlContentService.class);	
+	private final Logger LOGGER = LoggerFactory.getInstance(XmlContentService.class);	
 	
 	
 	protected XmlContentService(ContentTypeServiceI typeService) {
@@ -87,26 +82,7 @@ public class XmlContentService extends SimpleContentService implements ContentSe
 
 			storeDataStream = ResourceUtil.openResource(location);
 
-			if (location.endsWith(".zip")) {
-				storeDataStream = new ZipInputStream(storeDataStream);
-				((ZipInputStream) storeDataStream).getNextEntry();
-			} else if (location.endsWith(".gz")) {
-				storeDataStream = new GZIPInputStream(storeDataStream);
-			}
-
-			SAXParserFactory factory = SAXParserFactory.newInstance();
-			factory.setNamespaceAware(true);
-			factory.setValidating(false);
-			SAXParser parser = factory.newSAXParser();
-
-			nodeHandler.setContentService(this);
-
-			InputSource dataInputSource = new InputSource(storeDataStream);
-			//dataInputSource.setEncoding("ISO-8859-1");
-			dataInputSource.setEncoding("UTF-8");
-			parser.parse(dataInputSource, nodeHandler);
-
-			return nodeHandler.getContentNodes();
+			return XmlReaderUtil.loadNodes(this, nodeHandler, XmlReaderUtil.decompressStream(location, storeDataStream));
 
 		} catch (IOException ioe) {
 			throw new CmsRuntimeException(ioe);
@@ -125,4 +101,6 @@ public class XmlContentService extends SimpleContentService implements ContentSe
 		}
 	}
 
+
+ 
 }

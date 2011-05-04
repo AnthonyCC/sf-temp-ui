@@ -107,7 +107,7 @@ public class CompositeContentService extends AbstractContentService implements C
 			Map serviceNodes = service.getContentNodes(keys);
 
 			t = System.currentTimeMillis() - t;
-			LOGGER.debug("getContentNodes() " + service.getName() + " " + keys.size() + " took " + t);
+			//LOGGER.debug("getContentNodes() " + service.getName() + " " + keys.size() + " took " + t);
 
 			for (Iterator k = keys.iterator(); k.hasNext();) {
 				ContentKey key = (ContentKey) k.next();

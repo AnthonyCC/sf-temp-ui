@@ -80,7 +80,10 @@ public class LruCache<K,V> {
 	}
 
 	public synchronized void remove(Object key) {
-		removeEntry(getEntry(key));
+	    Entry<K, V> entry = getEntry(key);
+	    if (entry != null) {
+		removeEntry(entry);
+	    }
 	}
 
 	public synchronized void clear() {
