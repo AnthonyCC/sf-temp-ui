@@ -56,12 +56,6 @@
             <context-root>crm</context-root>
         </web>
      </module>
-     <module>
-        <web>
-            <web-uri>../cms-tap/docroot</web-uri>
-            <context-root>cms-tap</context-root>
-        </web>
-     </module>
     <!--
      <module>
         <web>
@@ -82,13 +76,4 @@
             <context-root>cms-gwt</context-root>
         </web>
      </module>
-	<!--
-     <module>
-        <web>
-            <web-uri>../cms-slide/docroot</web-uri>
-            <context-root>cms-slide</context-root>
-        </web>
-     </module>
-	-->
 </application>
-
