@@ -229,7 +229,6 @@
 		<checkoutLabeled dir="projects/CRM/docroot"/>
 		<checkoutLabeled dir="projects/Tools/src"/>
 		<checkoutLabeled dir="projects/Tests"/>
-		<checkoutLabeled dir="projects/Resources/"/>
 		<checkoutLabeled dir="projects/OCF"/>
 		<checkoutLabeled dir="projects/listadmin"/>
 		<checkoutLabeled dir="projects/ocf-adm"/>
@@ -289,7 +288,6 @@
 		<checkoutLatest dir="projects/CRM/docroot"/>
 		<checkoutLatest dir="projects/Tools/src"/>
 		<checkoutLatest dir="projects/Tests"/>
-		<checkoutLatest dir="projects/Resources/"/>
 		<checkoutLatest dir="projects/OCF"/>
 		<checkoutLatest dir="projects/listadmin"/>
 		<checkoutLatest dir="projects/ocf-adm"/>
@@ -339,7 +337,7 @@
 			cmd="checkin" label="${build.label}"
 			folder='"${starteam.url}/lib"'
 			dest="." force="true" reason="Automated build ${build.label}"
-			filenames="Framework.jar;ERPServicesEJB-WL.jar;DeliveryEJB-WL.jar;CMSEJB-WL.jar;FDStoreEJB-WL.jar;DataLoaderEJB-WL.jar;ERPSWebApp.jar;FDTools.jar;DlvAdmin.war;FDWebSite.war;resources.jar;CRM.war"
+			filenames="Framework.jar;ERPServicesEJB-WL.jar;DeliveryEJB-WL.jar;CMSEJB-WL.jar;FDStoreEJB-WL.jar;DataLoaderEJB-WL.jar;ERPSWebApp.jar;FDTools.jar;DlvAdmin.war;FDWebSite.war;CRM.war"
 		/>
 		-->
 	</target>
@@ -381,7 +379,6 @@
 		<mkdir dir="${work.dir}/logs" />
 		<mkdir dir="${work.dir}/func-logs" />
 		<mkdir dir="${work.dir}/perf-logs" />
-		<mkdir dir="${work.dir}/Resources" />
 		<mkdir dir="${work.dir}/OCF" />
 		<mkdir dir="${work.dir}/listadmin" />
 		<mkdir dir="${work.dir}/ocf-adm" />
@@ -492,7 +489,7 @@
         </copy>
     </target>
 
-	<target name="build" depends="framework,erpservices,routing,delivery,cms,fdstore,listadmin-lib,ocf,dataloader,erpswebapp,tools,resources,StandingOrdersService" description="Build everything">
+	<target name="build" depends="framework,erpservices,routing,delivery,cms,fdstore,listadmin-lib,ocf,dataloader,erpswebapp,tools,StandingOrdersService" description="Build everything">
 	</target>
 
 	<target name="jsmin" description="Minimizing javascript files">
@@ -528,7 +525,6 @@
 					<fileset dir="${work.dir}" includes="FDStore.jar" />
 					<fileset dir="${work.dir}" includes="DataLoader.jar" />
 					<fileset dir="${dest.dir}" includes="ERPSWebApp.jar" />
-					<fileset dir="${work.dir}" includes="Resources.jar" />
 					<fileset dir="${work.dir}" includes="RoutingServices.jar" />
 					<fileset dir="${work.dir}" includes="StandingOrdersService.jar" />
 				</copy>
@@ -563,7 +559,6 @@
 		                <pathelement location="${work.dir}/DataLoader-emma.jar"/>
 		                <pathelement location="${work.dir}/ERPSWebApp-emma.jar"/>
 		                <pathelement location="${work.dir}/listadmin-emma.jar"/>
-		                <pathelement location="${work.dir}/Resources.jar"/>
 		                <pathelement location="${work.dir}/RoutingServices-emma.jar"/>
 				<pathelement location="${work.dir}/StandingOrdersService-emma.jar"/>
 		            </classpath>
@@ -606,7 +601,6 @@
 		   				<pathelement location="${work.dir}/DataLoader.jar"/>
 		   				<pathelement location="${work.dir}/ERPSWebApp.jar"/>
 		   				<pathelement location="${work.dir}/listadmin.jar"/>
-		   				<pathelement location="${work.dir}/Resources.jar"/>
 		   				<pathelement location="${work.dir}/RoutingServices.jar"/>
 						<pathelement location="${work.dir}/StandingOrdersService.jar"/>
 		   			</classpath>
@@ -2067,29 +2061,6 @@
 		</copy>
 	</target>
 
-	<target name="resources" description="Build Resources">
-		<copy todir="${work.dir}/Resources">
-			<fileset dir="${projects.dir}/Resources/" >
-				<exclude name=".classpath" />
-				<exclude name=".project" />
-			</fileset>
-		</copy>
-
-		<jar destfile="${work.dir}/Resources.jar">
-            <manifest>
-                <attribute name="Specification-Version" value="${build.counter}"/>
-                <attribute name="Specification-Vendor" value="FreshDirect LLC"/>
-                <attribute name="Implementation-Title" value="Resources"/>
-                <attribute name="Implementation-Version" value="${build.counter}"/>
-                <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
-                <attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
-            </manifest>
-			<fileset dir="${work.dir}/Resources" />
-		</jar>
-
-	</target>
-
-
 	<target name="backend-app" description="EAR that contains the all the code and resources for the Backend app servers">
 		<makeEar application="FDBackend">
 			<ejbs>
@@ -2102,7 +2073,6 @@
 			<libraries>
 				<include name="Framework.jar"/>
 				<include name="CMS.jar"/>
-				<include name="Resources.jar"/>
 				<include name="RoutingServices.jar"/>
 				<include name="ERPSWebApp.jar"/>
 			</libraries>
@@ -2134,7 +2104,6 @@
 			<libraries>
 				<include name="Framework.jar"/>
 				<include name="CMS.jar"/>
-				<include name="Resources.jar"/>
 				<include name="OCF.jar"/>
 				<include name="listadmin.jar"/>
 				<include name="RoutingServices.jar"/>
@@ -2163,7 +2132,6 @@
 			</ejbs>
 			<libraries>
 				<include name="Framework.jar"/>
-				<include name="Resources.jar"/>
 				<include name="ERPServicesEJB-WL.jar"/>
 				<include name="ERPSWebApp.jar"/>
 				<include name="DeliveryEJB-WL.jar"/>
@@ -2202,7 +2170,6 @@
 			</ejbs>
 			<libraries>
 				<include name="Framework.jar"/>
-				<include name="Resources.jar"/>
 				<include name="ERPSWebApp.jar"/>
 				<include name="CMS.jar"/>				
 				<include name="RoutingServices.jar"/>
@@ -2238,7 +2205,6 @@
 			</ejbs>
 			<libraries>
 				<include name="Framework.jar"/>
-				<include name="Resources.jar"/>
 				<include name="ERPSWebApp.jar"/>
 				<include name="ERPServicesEJB-WL.jar"/>
 				<include name="DeliveryEJB-WL.jar"/>
@@ -2282,7 +2248,6 @@
 			</ejbs>
 			<libraries>
 				<include name="Framework.jar"/>
-				<include name="Resources.jar"/>
 				<include name="ERPSWebApp.jar"/>
 				<include name="listadmin.jar"/>
 				<include name="ERPServicesEJB-WL.jar"/>
@@ -2314,7 +2279,6 @@
 			</ejbs>
 			<libraries>
 				<include name="Framework.jar"/>
-				<include name="Resources.jar"/>
 				<include name="ERPSWebApp.jar"/>
 				<include name="ERPServicesEJB-WL.jar"/>
 				<include name="FDStoreEJB-WL.jar"/>
@@ -2346,7 +2310,6 @@
 			</ejbs>
 			<libraries>
 				<include name="Framework.jar"/>
-				<include name="Resources.jar"/>
 				<include name="CMS.jar"/>
 				<include name="ERPSWebApp.jar"/>
 				<include name="DataLoaderEJB-WL.jar"/>
@@ -2787,7 +2750,6 @@
 			
 			<libraries>
 				<include name="Framework.jar"/>
-				<include name="Resources.jar"/>
 				<include name="ERPSWebApp.jar"/>
 				<include name="ERPServicesEJB-WL.jar"/>
 				<include name="DeliveryEJB-WL.jar"/>
