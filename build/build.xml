@@ -2306,7 +2306,6 @@
 				<include name="DataLoaderEJB-WL.jar"/>
 				<include name="FDWebSite.war"/>
 				<include name="cms-gwt.war"/>
-				<include name="CRM.war"/>
 			</ejbs>
 			<libraries>
 				<include name="Framework.jar"/>
