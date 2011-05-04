@@ -45,14 +45,14 @@ public class MediaService extends AbstractContentService implements MediaService
 		this.typeService = new XmlTypeService("classpath:/com/freshdirect/cms/resource/MediaDef.xml");
 	}
 
-	public Set getContentKeysByType(ContentType type) {
+	public Set<ContentKey> getContentKeysByType(ContentType type) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			PreparedStatement ps = conn.prepareStatement("select id from cms_media where type = ?");
 			ps.setString(1, type.getName());
 			ResultSet rs = ps.executeQuery();
-			Set keys = new HashSet();
+			Set<ContentKey> keys = new HashSet<ContentKey>();
 			while (rs.next()) {
 				ContentKey key = new ContentKey(type, rs.getString("ID"));
 				keys.add(key);
@@ -73,13 +73,13 @@ public class MediaService extends AbstractContentService implements MediaService
 		}
 	}
 
-	public Set getContentKeys() {
+	public Set<ContentKey> getContentKeys() {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			PreparedStatement ps = conn.prepareStatement("select id, type from cms_media");
 			ResultSet rs = ps.executeQuery();
-			Set keys = new HashSet();
+			Set<ContentKey> keys = new HashSet<ContentKey>();
 			while (rs.next()) {
 				ContentKey key = new ContentKey(ContentType.get(rs.getString("TYPE")), rs.getString("ID"));
 				keys.add(key);
@@ -139,12 +139,11 @@ public class MediaService extends AbstractContentService implements MediaService
 	private static String QUERY_MEDIA_MANY = "select /*+ FIRST_ROWS */ id, uri, type, width, height from cms_media where id in (?)";
 
 	/** @return Set of keys with known content types */
-	private Set filterKeys(Set keys) {
-		Set k = new HashSet(keys.size());
-		Set types = typeService.getContentTypes();
+	private Set<ContentKey> filterKeys(Set<ContentKey> keys) {
+		Set<ContentKey> k = new HashSet<ContentKey>(keys.size());
+		Set<ContentType> types = typeService.getContentTypes();
 
-		for (Iterator i = keys.iterator(); i.hasNext();) {
-			ContentKey key = (ContentKey) i.next();
+		for (ContentKey key : keys) {
 			if (types.contains(key.getType())) {
 				k.add(key);
 			}
@@ -152,7 +151,7 @@ public class MediaService extends AbstractContentService implements MediaService
 		return k;
 	}
 
-	public Map getContentNodes(Set keys) {
+	public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys) {
 		keys = filterKeys(keys);
 		if (keys.isEmpty()) {
 			return Collections.EMPTY_MAP;
@@ -164,7 +163,7 @@ public class MediaService extends AbstractContentService implements MediaService
 
 			String[] idChunks = DaoUtil.chunkContentKeys(keys, false);
 
-			Map nodeMap = new HashMap(keys.size());
+			Map<ContentKey, ContentNodeI> nodeMap = new HashMap<ContentKey, ContentNodeI>(keys.size());
 
 			for (int i = 0; i < idChunks.length; i++) {
 				String query = StringUtils.replace(QUERY_MEDIA_MANY, "?", idChunks[i]);
@@ -201,10 +200,10 @@ public class MediaService extends AbstractContentService implements MediaService
 		ContentNodeI node = new ContentNode(this, cKey);
 		ContentType type = cKey.getType();
 
-		node.getAttribute("path").setValue("");
+		node.setAttributeValue("path", "");
 		if (FDContentTypes.IMAGE.equals(type)) {
-			node.getAttribute("width").setValue(new Integer(0));
-			node.getAttribute("height").setValue(new Integer(0));
+			node.setAttributeValue("width", 0);
+			node.setAttributeValue("height", 0);
 		}
 		return node;
 	}
@@ -220,34 +219,34 @@ public class MediaService extends AbstractContentService implements MediaService
 		ContentNodeI node = new ContentNode(this, key);
 
 		String uri = rs.getString("URI");
-		node.getAttribute("path").setValue(uri);
+		node.setAttributeValue("path", uri);
 
 		if (FDContentTypes.IMAGE.equals(type)) {
-			node.getAttribute("width").setValue(new Integer(rs.getInt("WIDTH")));
-			node.getAttribute("height").setValue(new Integer(rs.getInt("HEIGHT")));
+			node.setAttributeValue("width", rs.getInt("WIDTH"));
+			node.setAttributeValue("height", rs.getInt("HEIGHT"));
 
 		} else if (FDContentTypes.MEDIAFOLDER.equals(type)) {
 
-			Set children = queryChildren(conn, uri);
+			Set<ContentKey> children = queryChildren(conn, uri);
 
-			List folders = new ArrayList();
-			List files = new ArrayList();
-			for (Iterator i = children.iterator(); i.hasNext();) {
-				ContentKey child = (ContentKey) i.next();
+			List<ContentKey> folders = new ArrayList<ContentKey>();
+			List<ContentKey> files = new ArrayList<ContentKey>();
+			for (Iterator<ContentKey> i = children.iterator(); i.hasNext();) {
+				ContentKey child = i.next();
 				if (FDContentTypes.MEDIAFOLDER.equals(child.getType())) {
 					folders.add(child);
 				} else {
 					files.add(child);
 				}
 			}
-			node.getAttribute("subFolders").setValue(folders);
-			node.getAttribute("files").setValue(files);
+			node.setAttributeValue("subFolders", folders);
+			node.setAttributeValue("files", files);
 		}
 		return node;
 	}
 
 	/** @return Set of ContentKey */
-	private Set queryChildren(Connection conn, String uri) throws SQLException {
+	private Set<ContentKey> queryChildren(Connection conn, String uri) throws SQLException {
 		// FIXME a parent column would be handy for querying immediate children
 		PreparedStatement ps = conn
 			.prepareStatement("select id, type from cms_media where uri like ? and instr(uri, '/', ?) = 0 and uri != '/'");
@@ -257,7 +256,7 @@ public class MediaService extends AbstractContentService implements MediaService
 
 		ResultSet rs = ps.executeQuery();
 
-		Set children = new HashSet();
+		Set<ContentKey> children = new HashSet<ContentKey>();
 		while (rs.next()) {
 			ContentKey key = new ContentKey(ContentType.get(rs.getString("TYPE")), rs.getString("ID"));
 			children.add(key);
