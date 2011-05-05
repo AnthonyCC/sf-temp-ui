@@ -3,6 +3,7 @@ package com.freshdirect.delivery.restriction.ejb;
 import java.util.List;
 
 import com.freshdirect.DbTestCaseSupport;
+import com.freshdirect.delivery.restriction.AlcoholRestriction;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionType;
 import com.freshdirect.delivery.restriction.OneTimeRestriction;
@@ -19,7 +20,7 @@ public class DlvRestrictionDAOTestCase extends DbTestCaseSupport {
 	}
 
 	protected String[] getAffectedTables() {
-		return new String[] {"DLV.RESTRICTED_DAYS"};
+		return new String[] {"DLV.RESTRICTED_DAYS", "DLV.MUNICIPALITY_INFO", "DLV.MUNICIPALITY_RESTRICTION_DATA"};
 	}
 
 	public void testDlvRestrictions() throws Exception {
@@ -33,7 +34,7 @@ public class DlvRestrictionDAOTestCase extends DbTestCaseSupport {
 		assertEquals(EnumDlvRestrictionReason.KOSHER, r1.getReason());
 		assertEquals(EnumDlvRestrictionType.ONE_TIME_RESTRICTION, r1.getType());
 
-		RecurringRestriction r2 = (RecurringRestriction) l.get(1);
+		AlcoholRestriction r2 = (AlcoholRestriction) l.get(1);
 		assertEquals("Recurring", r2.getName());
 		assertEquals("Msg Recurring", r2.getMessage());
 		assertEquals(EnumDlvRestrictionReason.ALCOHOL, r2.getReason());
