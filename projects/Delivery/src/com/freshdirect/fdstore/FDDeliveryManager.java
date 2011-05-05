@@ -73,7 +73,7 @@ public class FDDeliveryManager {
 		new TimedLruCache<String,DlvZoneCapacityInfo>(200, 5 * 60 * 1000);
 
 	private DlvRestrictionsList dlvRestrictions = null;
-	private long REFRESH_PERIOD = 0;//1000 * 60 * 5; // 5 minutes
+	private long REFRESH_PERIOD = 1000 * 60 * 5; // 5 minutes
 	private long lastRefresh = 0;
 
 	private List<SiteAnnouncement> announcementList = null;
