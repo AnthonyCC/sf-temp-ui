@@ -105,14 +105,13 @@ public class MaintenanceLogFormController extends AbstractFormController {
 	
 	public Object getBackingObject(String id) {
 		MaintenanceIssue model = getDomainManagerService().getMaintenanceIssue(id);		
-		if(model !=null && model.getVerificationDate()== null && EnumIssueStatus.OPEN.getName().equalsIgnoreCase(model.getIssueStatus())){
-			try {
-				model.setVerificationDate(TransStringUtil.getServerDateString(TransStringUtil.getCurrentServerDate()));
-			} catch (ParseException e) {				
-				e.printStackTrace();
-			}		
+		try {
+			if(model !=null && model.getVerificationDate()== null && EnumIssueStatus.OPEN.getName().equalsIgnoreCase(model.getIssueStatus())){
+				model.setVerificationDate(TransStringUtil.getServerDateString(TransStringUtil.getCurrentServerDate()));					
+			}
+		} catch (ParseException e) {				
+			e.printStackTrace();
 		}
-		
 		if(model.getId()!=null && !"".equals(model.getId())){
 			model.setIssueId(model.getId());
 		}
@@ -122,7 +121,7 @@ public class MaintenanceLogFormController extends AbstractFormController {
 	public Object getDefaultBackingObject() {		
 		MaintenanceIssue model = new MaintenanceIssue();
 		if(model !=null && model.getCreateDate()== null)
-			model.setCreateDate(new Timestamp(System.currentTimeMillis()));		
+			model.setCreateDate(new Timestamp(System.currentTimeMillis()));
 		
 		return model;
 	}
@@ -140,8 +139,13 @@ public class MaintenanceLogFormController extends AbstractFormController {
 		MaintenanceIssue modelIn = (MaintenanceIssue)command;
 		if(request.getParameter("reverify") != null){
 			modelIn.setReVerified(true);
-		}			
-		
+		}
+		if(request.getParameter("estimatedRepairDate")!=null && request.getParameter("actualRepairDate")==null)
+			modelIn.setEstimatedRepairDate(TransStringUtil.getCurrentTimeWithDate(request.getParameter("estimatedRepairDate")));
+			
+		if(request.getParameter("actualRepairDate")!=null)
+			modelIn.setActualRepairDate(TransStringUtil.getCurrentTimeWithDate(request.getParameter("actualRepairDate")));			
+				
 	}
 
 	public List saveDomainObject(HttpServletRequest request, Object command) {
@@ -158,16 +162,18 @@ public class MaintenanceLogFormController extends AbstractFormController {
 								|| EnumIssueStatus.REVERIFIED.getName().equalsIgnoreCase(_command.getIssueStatus()))){
 					_command.setRepairedBy(getUserId(request));
 					_command.setIssueStatus(EnumIssueStatus.RESOLVED.getName());
-					_command.setServiceStatus(EnumServiceStatus.INSERVICE.getDescription());
+					_command.setServiceStatus(EnumServiceStatus.INSERVICE.getDescription());	
 				}
+				//verify issue
 				if(_command.getVerifiedBy() == null 
 						&& EnumIssueStatus.OPEN.getName().equalsIgnoreCase(_command.getIssueStatus())){
 					_command.setVerifiedBy(getUserId(request));
 					_command.setIssueStatus(EnumIssueStatus.VERIFIED.getName());
 				}
-				if(request.getParameter("reverify") != null && EnumIssueStatus.VERIFIED.getName().equalsIgnoreCase(_command.getIssueStatus()))
+				//re-verify issue
+				if(request.getParameter("reverify") != null && EnumIssueStatus.VERIFIED.getName().equalsIgnoreCase(_command.getIssueStatus())){
 					_command.setIssueStatus(EnumIssueStatus.REVERIFIED.getName());
-				
+				}
 				_command.setModifiedDate(new Timestamp(System.currentTimeMillis()));		
 				
 				if(_command.getCreatedBy() == null)

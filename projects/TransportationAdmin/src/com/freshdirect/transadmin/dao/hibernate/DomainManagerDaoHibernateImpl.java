@@ -201,6 +201,7 @@ public class DomainManagerDaoHibernateImpl
 		return c;
 	}
 	
+
 	public Collection getTeamInfo()  throws DataAccessException {
 		
 		return getDataList("EmployeeTeam t ORDER BY t.leadKronosId");
@@ -432,6 +433,17 @@ public class DomainManagerDaoHibernateImpl
 			strBuf.append(" and");
 		if(serviceStatus != null && !"".equals(serviceStatus))
 			strBuf.append(" m.serviceStatus='"+serviceStatus+"'");		
+		
+		return (Collection) getDataList(strBuf.toString());		
+	}
+	
+	public Collection getMaintenanceIssues(String serviceStatus) throws DataAccessException {
+		
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("MaintenanceIssue m where m.issueStatus in ('Open','Verified','Re-Verified')");
+		
+		if(serviceStatus != null)
+			strBuf.append(" and m.serviceStatus='"+serviceStatus+"'");		
 		
 		return (Collection) getDataList(strBuf.toString());		
 	}

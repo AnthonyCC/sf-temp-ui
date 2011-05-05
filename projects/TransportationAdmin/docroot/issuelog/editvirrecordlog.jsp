@@ -390,7 +390,7 @@
 		 <tr>
 				<td colspan="3" align="center">
 					<input type = "button" value="&nbsp;Save&nbsp;" onclick="javascript:submitIssueLogTable();" />
-					&nbsp;&nbsp;&nbsp;<input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:back();" />
+					&nbsp;&nbsp;&nbsp;<input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:doVIRBack();" />
 					&nbsp;&nbsp;&nbsp;<input type = "button" value="&nbsp;Add New VIR&nbsp;" onclick="javascript:addNewVIR();" />
 				</td>
 		</tr>
@@ -403,6 +403,10 @@
 
 </div>
 
-
+	<script>
+		function doVIRBack() {
+			location.href = "virrecordlog.do";
+		}
+	</script>
   </tmpl:put>
 </tmpl:insert>

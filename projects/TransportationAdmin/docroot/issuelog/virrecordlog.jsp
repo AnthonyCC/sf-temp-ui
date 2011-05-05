@@ -116,9 +116,10 @@
 				<div class="cont_Ritem">
 	
 	<%if(!"M".equalsIgnoreCase(request.getParameter("issueLog"))&&!"I".equalsIgnoreCase(request.getParameter("issueLog"))	&&!"S".equalsIgnoreCase(request.getParameter("issueLog"))) { %>
+				<form id="virRecordListForm" action="" method="post">
 				<ec:table items="virRecords"   action="${pageContext.request.contextPath}/virrecordlog.do"
 					imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title=""
-					width="98%" filterable="true" showPagination="true" rowsDisplayed="25" view="fd" >
+					width="98%" filterable="true" showPagination="true" rowsDisplayed="25" view="fd" form="virRecordListForm">
 					
 					<ec:exportPdf fileName="virrecords.pdf" tooltip="Export PDF" 
 							  headerTitle="Issue Type" />
@@ -138,6 +139,7 @@
   					  <ec:column width="10px" property="createdBy" title="Entered By" />
 					</ec:row>
 				</ec:table>
+				</form>
 	<%}%>
 	
 	<%if("I".equalsIgnoreCase(request.getParameter("issueLog"))){%>
@@ -204,6 +206,5 @@
     width:100px;
 }
 </style>
-
 	</tmpl:put> 
 </tmpl:insert>

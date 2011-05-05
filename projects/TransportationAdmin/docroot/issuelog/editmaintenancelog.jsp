@@ -97,6 +97,7 @@
 									<c:if test="${maintenanceRecordForm.issueStatus eq 'Re-Verified' }">
 										<c:set var="ReVerified" value="true"/>
 									</c:if>
+
 									<form:input maxlength="10" size="28" path="createDate" disabled="true"/>&nbsp;
 								</td>
 								<td>
@@ -118,7 +119,7 @@
 							 <tr>
 								  <td>Vendor</td>
 								  <td>
-									<form:input maxlength="50" size="28" path="vendor" disabled="true"></form:input>
+									<form:input maxlength="50" size="28" path="vendor" readOnly="true"></form:input>
 								  </td>
 								  <td>
 									  &nbsp;<form:errors path="vendor" />
@@ -300,7 +301,7 @@
 										inputField : "actualRepairDate",
 										ifFormat : "%m/%d/%Y",
 										singleClick: true,
-										button : "trigger_actualRepairDate" 
+										button : "trigger_actualRepairDate"
 									   }
 									  );
 								  </script>

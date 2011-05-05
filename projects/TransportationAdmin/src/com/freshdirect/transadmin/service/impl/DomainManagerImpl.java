@@ -876,6 +876,10 @@ public class DomainManagerImpl
 		return getDomainManagerDao().getMaintenanceIssues(issueStatus, serviceStatus);
 	}
 	
+	public Collection getMaintenanceIssues(String serviceStatus) {
+		return getDomainManagerDao().getMaintenanceIssues(serviceStatus);
+	}
+	
 	public void saveMaintenanceIssue(MaintenanceIssue model){
 	    getDomainManagerDao().saveMaintenanceIssue(model);
 	}

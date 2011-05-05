@@ -16,6 +16,10 @@
 	}else if("M".equalsIgnoreCase(issueLog)) {
 		pageTitle = "Maintenance Record";
 	}
+
+	int trucksInService =(Integer)request.getAttribute("trucksInService");
+	int trucksOutOfService = (Integer)request.getAttribute("trucksOutOfService");
+
 %>
 
 <tmpl:insert template='/common/sitelayout.jsp'>
@@ -106,7 +110,6 @@
 							<input id="view_button" type="image" alt="View" src="./images/icons/view.gif" onclick="javascript:doMaintenanceIssueLink('issueStatus','serviceStatus','maintenancelog.do');" onmousedown="this.src='./images/icons/view_ON.gif'" />
 						</span>
 					</div>
-
 					&nbsp;&nbsp;&nbsp;
 					<div style="float:right;font-weight:bold;"><br/>
 						<span><input type="image" src="./images/icons/o-icon.gif" />&nbsp;Open</span>
@@ -117,12 +120,20 @@
 					</div>
 					
 	</div>
-	<BR/><BR/><BR/>&nbsp;
-	
+	<BR/><BR/><BR/>
+
 	<div class="cont_topright">
 			<div class="cont_row">
-			
+				
+				<div class="cont_Litem">
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<div style="align:right;font-weight:bold;padding-left:20px;" >
+						<span class="orphanScenario">Trucks In-Service: <%= trucksInService %></span><br/><br/>
+						<span class="defaultScenario">Trucks Out-Of-Service: <%= trucksOutOfService %></span>
+					</div>
+				</div>
 				<div class="cont_Ritem">
+			
 	 			<form id="maintenanceRecordListForm" action="" method="post">  
 				<ec:table items="maintenanceRecords" action="${pageContext.request.contextPath}/maintenancelog.do?issueLog=M"
 					imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title=""

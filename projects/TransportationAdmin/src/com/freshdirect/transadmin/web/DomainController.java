@@ -33,11 +33,8 @@ import com.freshdirect.transadmin.constants.EnumServiceStatus;
 import com.freshdirect.transadmin.datamanager.assembler.IDataAssembler;
 import com.freshdirect.transadmin.datamanager.parser.FileCreator;
 import com.freshdirect.transadmin.datamanager.parser.errors.FlatwormCreatorException;
-import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.MaintenanceIssue;
 import com.freshdirect.transadmin.model.Region;
-import com.freshdirect.transadmin.model.ResourceI;
-import com.freshdirect.transadmin.model.ResourceInfoI;
 import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.ScheduleEmployeeInfo;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
@@ -47,7 +44,6 @@ import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.VIRRecord;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.model.ZoneSupervisor;
-import com.freshdirect.transadmin.model.comparator.AlphaNumericComparator;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
@@ -853,9 +849,15 @@ public class DomainController extends AbstractMultiActionController {
 		if(maintenaceRecords != null && maintenaceRecords.size()>0)
 			Collections.sort((List)maintenaceRecords, new MaintenanceIssueComparator());
 		
+		Collection trucksInServiceList = getDomainManagerService().getMaintenanceIssues(EnumServiceStatus.INSERVICE.getDescription());
+		Collection trucksOutOfServiceList = getDomainManagerService().getMaintenanceIssues(EnumServiceStatus.OUTSERVICCE.getDescription());
+		
 		mav.getModel().put("serviceStatus", serviceStatus);
 		mav.getModel().put("issueStatus", issueStatus);
 		
+		request.setAttribute("trucksInService", trucksInServiceList != null ? trucksInServiceList.size() : 0);
+		request.setAttribute("trucksOutOfService", trucksOutOfServiceList != null ? trucksOutOfServiceList.size() : 0);
+
 		mav.getModel().put("issueStatuses", EnumIssueStatus.getEnumList());
 		mav.getModel().put("serviceStatuses", EnumServiceStatus.getEnumList());
 		mav.getModel().put("issueTypes", getDomainManagerService().getIssueTypes());

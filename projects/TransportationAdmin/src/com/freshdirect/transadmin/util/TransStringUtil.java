@@ -733,4 +733,20 @@ public class TransStringUtil {
 		return null;
 
 	}
+	
+	public static Date getCurrentTimeWithDate(String date){
+		Calendar currentTime = Calendar.getInstance();
+		
+		Calendar requestedDate = Calendar.getInstance();
+		try {
+			requestedDate.setTime(TransStringUtil.getDate(date));
+		
+			requestedDate.set(Calendar.HOUR_OF_DAY, currentTime.get(Calendar.HOUR_OF_DAY));
+			requestedDate.set(Calendar.MINUTE, currentTime.get(Calendar.MINUTE));
+			requestedDate.set(Calendar.SECOND, currentTime.get(Calendar.SECOND));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return requestedDate.getTime();
+	}
  }

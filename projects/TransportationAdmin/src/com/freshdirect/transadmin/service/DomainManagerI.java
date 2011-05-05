@@ -171,6 +171,8 @@ public interface DomainManagerI extends BaseManagerI {
 	
 	Collection getMaintenanceIssues(String issueStatus, String serviceStatus);
 	
+	Collection getMaintenanceIssues(String serviceStatus);
+	
 	void saveMaintenanceIssue(MaintenanceIssue model);
 	
 	void updateDisassociatedTimeslots();
