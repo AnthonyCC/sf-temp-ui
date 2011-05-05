@@ -1,5 +1,6 @@
 package com.freshdirect.mobileapi.model;
 
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,6 +41,8 @@ import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.WebOrderViewI;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
+import com.freshdirect.fdstore.promotion.EnumOfferType;
+import com.freshdirect.fdstore.promotion.PromotionErrorType;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.framework.util.TimeOfDay;
@@ -72,6 +75,7 @@ import com.freshdirect.mobileapi.model.tagwrapper.RequestParamName;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.util.RestrictionUtil;
 
 /**
@@ -791,11 +795,33 @@ public class Cart {
             }
         }
         
-        if (isRedemptionApplied) {
+      //Redemption code was entered by user but it is still not applied because of missing eligibility criteria.
+      // Below section is currently commented out because we dont have requirements yet on how to show it in mobile app.
+     String warningMessage = null;
+     if(redemptionPromo != null) {//Redemption code was entered by user but it is still not applied because of missing eligibility criteria.
+      	double redemptionAmt = 0;
+  		
+  		if (cart.getSubTotal() < redemptionPromo.getMinSubtotal()) {
+              redemptionAmt = redemptionPromo.getHeaderDiscountTotal();
+  			warningMessage = MessageFormat.format(SystemMessageList.MSG_REDEMPTION_MIN_NOT_MET
+  														, new Object[] { new Double(redemptionPromo.getMinSubtotal()) } );
+  			
+  		} else if (redemptionPromo.isLineItemDiscount()) {
+              int errorCode = user.getPromoErrorCode(redemptionPromo.getPromotionCode());
+              if(errorCode == PromotionErrorType.NO_ELIGIBLE_CART_LINES.getErrorCode()) {
+  			    warningMessage = SystemMessageList.MSG_REDEMPTION_NO_ELIGIBLE_CARTLINES;
+              }
+  		} else if (redemptionPromo.isSampleItem()) {
+  			warningMessage = SystemMessageList.MSG_REDEMPTION_PRODUCT_UNAVAILABLE;
+  		} else if (redemptionPromo.getOfferType().equals(EnumOfferType.WINDOW_STEERING)) {               
+              warningMessage = SystemMessageList.MSG_REDEMPTION_NO_ELIGIBLE_TIMESLOT;
+        }  		
+              
+        //if (isRedemptionApplied) { // Commented Out to show remove redemption promo feature in IPhone regardless of applied or not
         	
             if (redemptionPromo.isSampleItem()) {
                 cartDetail.addRedemptionPromotion(new RedemptionPromotion(redemptionPromo.getPromotionCode(),
-                        RedemptionPromotionType.SAMPLE, redemptionPromo.getDescription(), false));
+                        RedemptionPromotionType.SAMPLE, redemptionPromo.getDescription(), false, isRedemptionApplied, warningMessage));
                 //        %>
                 //        <tr valign="top" class="orderSummary">
                 //            <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= redemptionPromo.getPromotionCode()%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
@@ -806,7 +832,7 @@ public class Cart {
                 //        <%
             } else if (redemptionPromo.isWaiveCharge()) {
                 cartDetail.addRedemptionPromotion(new RedemptionPromotion(redemptionPromo.getPromotionCode(),
-                        RedemptionPromotionType.WAIVE_CHARGE, redemptionPromo.getDescription(), false));
+                        RedemptionPromotionType.WAIVE_CHARGE, redemptionPromo.getDescription(), false, isRedemptionApplied, warningMessage));
                 //        %>
                 //            <tr valign="top" class="orderSummary">
                 //                <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= redemptionPromo.getPromotionCode()%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
@@ -815,30 +841,11 @@ public class Cart {
                 //                <td colspan="2">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
                 //            </tr>
                 //        <%
-            } /*else {
+            } else {
             	cartDetail.addRedemptionPromotion(new RedemptionPromotion(redemptionPromo.getPromotionCode(),
-                        RedemptionPromotionType.DOLLAR_VALUE_DISCOUNT, redemptionPromo.getDescription(), false));
-            }  */          
-        } /*else if(redemptionPromo != null) {//Redemption code was entered by user but it is still not applied because of missing eligibility criteria.
-        	double redemptionAmt = 0;
-    		String warningMessage = "";
-    		if (cart.getSubTotal() < redemptionPromo.getMinSubtotal()) {
-                redemptionAmt = redemptionPromo.getHeaderDiscountTotal();
-    			warningMessage = MessageFormat.format(SystemMessageList.MSG_REDEMPTION_MIN_NOT_MET
-    														, new Object[] { new Double(redemptionPromo.getMinSubtotal()) } );
-    			
-    		} else if (redemptionPromo.isLineItemDiscount()) {
-                int errorCode = user.getPromoErrorCode(redemptionPromo.getPromotionCode());
-                if(errorCode == PromotionErrorType.NO_ELIGIBLE_CART_LINES.getErrorCode()) {
-    			    warningMessage = SystemMessageList.MSG_REDEMPTION_NO_ELIGIBLE_CARTLINES;
-                }
-    		} else if (redemptionPromo.isSampleItem()) {
-    			warningMessage = SystemMessageList.MSG_REDEMPTION_PRODUCT_UNAVAILABLE;
-    		} else if (redemptionPromo.getOfferType().equals(EnumOfferType.WINDOW_STEERING)) {               
-                warningMessage = SystemMessageList.MSG_REDEMPTION_NO_ELIGIBLE_TIMESLOT;
-            }
-    		cartDetail.setRedemptionWarning(warningMessage);
-        }*/
+                        RedemptionPromotionType.DOLLAR_VALUE_DISCOUNT, redemptionPromo.getDescription(), false, isRedemptionApplied, warningMessage));
+            }           
+        } 
 
         //Customer Credit
         if (cart.getCustomerCreditsValue() > 0) {

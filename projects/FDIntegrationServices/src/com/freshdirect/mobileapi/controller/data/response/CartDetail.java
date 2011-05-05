@@ -188,16 +188,19 @@ public class CartDetail {
      */
     public static class RedemptionPromotion {
 
-        public RedemptionPromotion(String code, RedemptionPromotionType type, String description, boolean automatic) {
+        public RedemptionPromotion(String code, RedemptionPromotionType type, String description
+        		, boolean automatic, boolean applied, String warningMessage) {
             this.code = code;
             this.type = type;
             this.description = description;
             this.automatic = automatic;
+            this.applied = applied;
+            this.warningMessage = warningMessage;
         }
 
         public enum RedemptionPromotionType {
-            //SAMPLE, WAIVE_CHARGE, DOLLAR_VALUE_DISCOUNT
-        	SAMPLE, WAIVE_CHARGE
+            SAMPLE, WAIVE_CHARGE, DOLLAR_VALUE_DISCOUNT
+        	//SAMPLE, WAIVE_CHARGE
         }
 
         public boolean isAutomatic() {
@@ -209,6 +212,10 @@ public class CartDetail {
         private RedemptionPromotionType type;
 
         private boolean automatic;
+        
+        private boolean applied;
+        
+        private String warningMessage;
 
         private String code;
 
@@ -245,7 +252,23 @@ public class CartDetail {
         public void setAmount(double amount) {
             this.amount = amount;
         }
+		
+		public boolean isApplied() {
+			return applied;
+		}
 
+		public void setApplied(boolean applied) {
+			this.applied = applied;
+		}
+
+		public String getWarningMessage() {
+			return warningMessage;
+		}
+
+		public void setWarningMessage(String warningMessage) {
+			this.warningMessage = warningMessage;
+		}
+        
     }
 
     /**
