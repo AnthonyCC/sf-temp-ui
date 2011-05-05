@@ -9,7 +9,7 @@
 <%
 Collection shipToAddresses = new ArrayList();
 ErpAddressModel address = null;
-
+int page_type = TimeslotLogic.PAGE_NORMAL;
 if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 	shipToAddresses = AddressFinder.getShipToAddresses(user);
 	address = AddressFinder.getShipToAddress(user, addressId, timeSlotCtx, request);
@@ -48,9 +48,11 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 						<table>
 							<tr>
 								<td class="title16">Available Delivery TimeSlots</td>
+								<%if(FDStoreProperties.isNewFDTimeslotGridEnabled()){%>
 								<td>
 									<fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots_learnmore.html"/>
 								</td>
+								<%}%>
 							</tr>
 						</table>
 						<img src="/media_stat/images/layout/clear.gif" width="1" height="3">
@@ -67,9 +69,11 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 								<td class="title16">
 									<%=(user != null && user.getReservation() != null) ? "Your Delivery Timeslot Is Reserved" : "Reserve a Delivery Time"%>
 								</td>
+								<%if(FDStoreProperties.isNewFDTimeslotGridEnabled()){%>
 								<td>
 									<fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots_learnmore.html"/>
 								</td>
+								<%}%>
 							</tr>
 						</table>
 					</td>

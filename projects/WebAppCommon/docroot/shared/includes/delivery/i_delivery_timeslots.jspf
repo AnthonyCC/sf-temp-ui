@@ -57,6 +57,7 @@
 <img src="/media_stat/images/layout/clear.gif" width="1" height="6">
 
 <!-- ~~~~~~~~~~~~~~~~~~~~~~ LEGEND DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ -->
+<%if(FDStoreProperties.isNewFDTimeslotGridEnabled()){%>
 	<table cellpadding="0" cellspacing="0" width="693" border="0" id="legendCheckout">
 		<tr>
 			<td>
@@ -114,6 +115,73 @@
 		</tr>
 	</logic:iterate>
 </table>
+	<%}else{%>
+		
+		<table CELLSPACING="0" CELLPADDING="0" width="735">
+			<logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.util.FDTimeslotUtil" indexId="idx">
+				<tr>
+					<td align="center">
+					<% // fix for advance orders showing on this page
+					if (idx.intValue() == timeslotList.size()-1 && timeslotList.size() > idx.intValue()) { %>
+						<%@ include file="/shared/includes/delivery/i_delivery_slots_old.jspf"%>
+					<% } %>
+					</td>
+				</tr>
+			</logic:iterate>
+		</table><br/>
+		<table CELLSPACING="0" CELLPADDING="0" width="693">
+			<tr>
+				<td align="right">
+				<%if(page_type == TimeslotLogic.PAGE_CHEFSTABLE){%>
+					<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/prp1x1.gif"> <b>Chef's Table only</b>
+				<%}if(hasPreReserved){%>
+					&nbsp;&nbsp;<img src="/media_stat/images/layout/ff9933.gif" width="12" height="12"> <b> Your Reserved Delivery Slot </b>
+				<%}%>
+				</td>
+				<%if(zonePromoAmount > 0 && "true".equals(request.getAttribute("SHOW_WINDOWS_STEERING"))){ %>
+					<td align="right">
+						<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/green1x1.gif"><b> Save $<%= zonePromoString %> when you choose a <a href="javascript:popup('/checkout/step_2_green_popup.jsp','small')">green timeslot</b></a>
+					</td>
+				<%}%>
+			</tr>
+		</table>
+		<%if(!timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)&&!timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM)){%>
+			<table cellpadding="0" cellspacing="0" width="693" border="0">
+				<tr>
+					<td align="left">
+					<br>
+						<img src="/media_stat/images/windowsteering/legend_view_avail.png" width="10" height="10" border="0" valign="bottom" alt="Green">
+						TimeSlot Available*
+						&nbsp;
+						<img src="/media_stat/images/windowsteering/legend_view_full.png" width="10" height="10" border="0" valign="bottom" alt="Orange">
+						TimeSlot Full
+					</td>
+					<td align="right" width="450"><br>You must complete checkout for next-day deliveries before "Order by" time.</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+					<br>
+					* <b>You will select a delivery timeslot at Checkout.</b> Delivery timeslots are not guaranteed until completion of Checkout.
+					</td>
+				</tr>
+			</table>
+			<br/>
+		<% } %>
+		<% if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)||timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM)){%>
+				<br/>
+				<table width="693" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td align="left">
+							<IMG src="/media_stat/images/template/checkout/x_trans.gif" WIDTH="9" HEIGHT="9" BORDER="0" hspace="5"> = Delivery slot full
+						</td>
+						<td align="right">
+							You must complete checkout for next-day deliveries before the "Order by" time.
+						</td>
+					</tr>
+				</table>
+				<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br/>
+		<% } %>
+	<%}%>
 <!-- ~~~~~~~~~~~~~~~~~~~~~~ END TIMESLOT GRID ~~~~~~~~~~~~~~~~~~~~~~ -->
 
 <script language="javascript">

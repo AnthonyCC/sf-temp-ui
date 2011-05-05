@@ -47,7 +47,7 @@
     boolean advOrdRangeOK = advOrdRange.overlaps(validRange);
 	boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
     String timeSlotId = request.getParameter("deliveryTimeslotId");
-
+	int page_type = TimeslotLogic.PAGE_NORMAL;
 %>
 
 <fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%=address%>" timeSlotId="<%=timeSlotId%>">
@@ -212,7 +212,7 @@
 <%}%>
 <!--END MESSAGING SECTION-->
 
-
+<%if(FDStoreProperties.isNewFDTimeslotGridEnabled()){%>
 <table cellpadding="0" cellspacing="0" width="675" id="legendCheckout">
 	<tr>
 		<td align="right">
@@ -305,11 +305,58 @@
 </TR>
 </logic:iterate>
 </table>
-
+	<%}else{%>
+	<table CELLSPACING="0" CELLPADDING="0">
+		<logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.util.FDTimeslotUtil" indexId="idx">
+		<tr>
+			<td align="center">
+				<%    if(idx.intValue() == 1){
+						showAdvanceOrderBand=false;
+				%>
+				<span class="text12"><b>Standard Delivery Slots</b></span>
+				<%    } else {
+					showAdvanceOrderBand = timeslotList.size()>1 ? true & advOrdRangeOK : false;
+				}%>
+			
+				<%@ include file="/shared/includes/delivery/i_restriction_band.jspf"%>
+				<%@ include file="/shared/includes/delivery/i_delivery_slots_old.jspf"%>
+			</td>
+		</tr>
+		</logic:iterate>
+	</table>
+	<br/>
+	<table CELLSPACING="0" CELLPADDING="0" width="735">
+			<tr>
+				<%if(page_type == TimeslotLogic.PAGE_CHEFSTABLE){%>
+					<td align="right">
+						<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/prp1x1.gif"> <b>Chef's Table only</b>
+					</td>
+				<%}if(hasPreReserved){%>
+					<td align="left">
+						&nbsp;&nbsp;<img src="/media_stat/images/layout/ff9933.gif" width="12" height="12"> <b> Your Reserved Delivery Slot </b>
+					</td>
+				<%}%>
+				<%if(zonePromoAmount > 0){ %>
+					<td align="right">
+						<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/green1x1.gif"><b> Save $<%= zonePromoString %> when you choose a <a href="javascript:popup('/checkout/step_2_green_popup.jsp','small')">green timeslot</b></a>
+					</td>
+				<%}%>
+			</tr>
+	</table>
+	<table cellpadding="0" cellspacing="0">
+		<tr>
+			<td align="left">
+				<img src="/media_stat/images/template/checkout/x_trans.gif" width="10" height="10" border="0" valign="bottom">
+				= Delivery slot full&nbsp;&nbsp;&nbsp;
+			</td>
+			<td align="right">You must complete checkout for next-day deliveries before the "Order by" time.</td>
+		</tr>
+	</table>
+	<%}%>
 	</TD>
 </TR>
 </TABLE>
-
+<!-- ~~~~~~~~~~~~~~~~~~~~~~ END TIME SLOT SELECTION SECTION ~~~~~~~~~~~~~~~~~~~~~~ -->
 <TABLE>
 <TR VALIGN="TOP">
     <TD WIDTH="70%" style="padding-left: 10px;">

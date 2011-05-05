@@ -432,6 +432,9 @@ public class FDStoreProperties {
 	private final static String PROP_STANDING_ORDER_REPORT_TO_EMAIL = "fdstore.standingorder.report.email.to";
 	private final static String PROP_STANDING_ORDER_REPORT_EMAIL_SUBJECT = "fdstore.standingorder.report.email.subject";
     
+	//Enable Timeslot GRID
+	private final static String PROP_TIMESLOT_GRID = "fdstore.isNewFDTimeslotGridEnabled";
+	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -865,6 +868,7 @@ public class FDStoreProperties {
 		
 		defaults.put(PROP_STANDING_ORDER_REPORT_TO_EMAIL, "applicationdevelopment@freshdirect.com");
 		defaults.put(PROP_STANDING_ORDER_REPORT_EMAIL_SUBJECT, "Standing Orders Cron Report: ");
+		defaults.put(PROP_TIMESLOT_GRID,"true");
 		
         refresh();
     }
@@ -2226,4 +2230,8 @@ public class FDStoreProperties {
 	public static String getStandingOrderReportEmailSubject() {
         return get(PROP_STANDING_ORDER_REPORT_EMAIL_SUBJECT);
     }
+	
+	public static boolean isNewFDTimeslotGridEnabled() {
+	    	 return (Boolean.valueOf(get(PROP_TIMESLOT_GRID))).booleanValue();
+	}
 }

@@ -49,7 +49,7 @@ tomorrow = DateUtil.truncate(tomorrow);
 DateRange validRange = new DateRange(tomorrow.getTime(),DateUtil.addDays(tomorrow.getTime(),FDStoreProperties.getHolidayLookaheadDays()));
 boolean advOrdRangeOK = advOrdRange.overlaps(validRange);
 boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
-
+int page_type = TimeslotLogic.PAGE_NORMAL;
 %>
 
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
@@ -186,9 +186,11 @@ zonePromoEnabled=true;
 					<td><FONT CLASS="title18">CHOOSE TIME</FONT>
 						<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1" BORDER="0">
 					</td>
+					<%if(FDStoreProperties.isNewFDTimeslotGridEnabled()){%>
 					<td>
 						<fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots_learnmore.html"/>
 					</td>
+					<%}%>
 				</tr>
 			</table>
 		</TD>
@@ -373,7 +375,7 @@ if (errorMsg!=null) {%>
 <%}%>
 <!--END MESSAGING SECTION-->
 <BR>
-
+<%if(FDStoreProperties.isNewFDTimeslotGridEnabled()){%>
 <!-- ~~~~~~~~~~~~~~~~~~~~~~ LEGEND DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ -->
 <table>
 <tr>
@@ -496,8 +498,85 @@ if (errorMsg!=null) {%>
 </TR>
 </logic:iterate>
 </table>
-	<%}%>
+	<%}else{%>
+		<table CELLSPACING="0" CELLPADDING="0" align="center" width="100%">
+			<logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.util.FDTimeslotUtil" indexId="idx">
+			<TR>
+				<td colspan="2" align="center">
+					<%	// If there are 2 advance order timeslots then show standard delivery header accordingly
+						if((timeslotList.size()>2 && isAdvOrderGap && idx.intValue()==2) ||
+							(timeslotList.size()==2 && isAdvOrderGap && idx.intValue()==1) ||
+							(!isAdvOrderGap && idx.intValue()==1)){
+						//if(idx.intValue() == 1){
+						
+						showAdvanceOrderBand=false;
+					%>
+						<span class="text12"><b>Standard Delivery Slots</b></span>
+					<%} else { 
+						showAdvanceOrderBand = timeslotList.size()>1 ? true && advOrdRangeOK: false;
+					  }
+					%>
 
+					<%
+						// calculate which timeslot to select when modifying standing orders
+						if ( currentStandingOrder != null ) {
+							//out.print( "SO=" + currentStandingOrder + "<br/>");
+							DeliveryInterval deliveryInterval;
+							try { 
+								deliveryInterval = new DeliveryInterval( currentStandingOrder );
+							} catch ( IllegalArgumentException e ) {
+								deliveryInterval = null;
+							}
+							if ( deliveryInterval != null && deliveryInterval.isWithinDeliveryWindow() ) {
+								for ( FDTimeslot tsl : timeslots.getTimeslotsFlat() ) {
+									if ( deliveryInterval.checkTimeslot( tsl ) ) {
+										timeSlotId = tsl.getTimeslotId();
+										//out.print("timeslot has been selected :" + tsl +"<br/>");
+										break;
+									}
+								}
+							}
+						}
+					%>
+					<%@ include file="/shared/includes/delivery/i_restriction_band.jspf"%>
+					<%@ include file="/shared/includes/delivery/i_delivery_slots_old.jspf"%>
+				</td>
+			</TR>
+			</logic:iterate>
+		</table><br/>
+		<table CELLSPACING="0" CELLPADDING="0" width="693">
+			<tr>
+				<td align="right">
+				<%if(user.getTotalCTSlots() > 0){%>
+					<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/prp1x1.gif"> <b>Chef's Table only</b>
+				<%}if(hasPreReserved){%>
+						&nbsp;&nbsp;<img src="/media_stat/images/layout/ff9933.gif" width="12" height="12"> <b> Your Reserved Delivery Slot </b>
+				<%}%>
+				</td>
+				<%if(zonePromoAmount > 0){ %>
+					<td align="right">
+						<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/green1x1.gif"><b> Save $<%= zonePromoString %> when you choose a <a href="javascript:popup('/checkout/step_2_green_popup.jsp','small')">green timeslot</b></a>
+					</td>
+				<%}%>
+			</tr>
+		</table>
+		<table>
+			<tr>
+				<td colspan="2">
+					<table cellpadding="0" cellspacing="0" width="675">
+						<tr>
+							<td align="left">
+								<img src="/media_stat/images/template/checkout/x_trans.gif" width="10" height="10" border="0" valign="bottom" alt="X">
+								= Delivery slot full
+							</td>
+							<td align="right">You must complete checkout for next-day deliveries before the "Order by" time.</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	<%}%>
+<%}%>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="693" HEIGHT="3" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>

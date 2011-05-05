@@ -151,6 +151,7 @@ public class FDTimeslotUtil implements Serializable {
 		}
 		
 		if ( slots != null ) {
+			Collections.sort(slots,TIMESLOT_COMPARATOR);
 			return slots;
 		} else {
 			return Collections.<FDTimeslot> emptyList();
