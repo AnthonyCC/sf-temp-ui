@@ -180,8 +180,8 @@ public class FourMinuteMealsHelper {
 	    
         public int compare(ProductModelPricingAdapter model1, ProductModelPricingAdapter model2) {
         	
-            double price1 = model1.getDefaultPriceValue();
-            double price2 = model2.getDefaultPriceValue();
+            double price1 = model1.getPriceCalculator().getDefaultPriceValue();
+            double price2 = model2.getPriceCalculator().getDefaultPriceValue();
 
             int result = Double.compare(price1, price2);
             if (result == 0)
@@ -708,7 +708,7 @@ public class FourMinuteMealsHelper {
 		for ( ProductModel p : newCache.allProducts ) {
 			pricedProducts.add( ProductPricingFactory.getInstance().getPricingAdapter( p, PricingContext.DEFAULT ) );
 		}		
-		double maxPrice = Collections.max( pricedProducts, PRICE_COMPARATOR_ASC ).getDefaultPriceValue();
+		double maxPrice = Collections.max( pricedProducts, PRICE_COMPARATOR_ASC ).getPriceCalculator().getDefaultPriceValue();
 
 		
 		// init price filter infos
@@ -839,7 +839,7 @@ public class FourMinuteMealsHelper {
 			// remove items from the end of list first
 			for ( int i = workSet.size() - 1; i >= 0; i-- ) {
 				ProductModelPricingAdapter prod = pricedWorkSet.get( i );
-				double price = prod.getDefaultPriceValue();
+				double price = prod.getPriceCalculator().getDefaultPriceValue();
 				if ( price >= priceLimit ) {
 					// price exceeds limit, remove it
 					pricedWorkSet.remove( i );
@@ -900,7 +900,7 @@ public class FourMinuteMealsHelper {
 				infos.put( pId, info );
 			}
 		} else {
-			double min = Collections.min( pricedWorkSet, PRICE_COMPARATOR_ASC ).getDefaultPriceValue();
+			double min = Collections.min( pricedWorkSet, PRICE_COMPARATOR_ASC ).getPriceCalculator().getDefaultPriceValue();
 			for ( String pId : cache.priceFilterIds ) {
 				FilterInfo info = new FilterInfo( cache.filterInfos.get( pId ) );
 				double limit = priceLimits[ cache.priceFilterIds.indexOf( pId ) ];

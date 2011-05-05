@@ -87,7 +87,7 @@ public class WineSorter implements Serializable {
 	    }
 	    
         public int compare(ProductModel p1, ProductModel p2) {
-            int result = Double.compare(p1.getPrice(0.), p2.getPrice(0.));
+            int result = Double.compare(p1.getPriceCalculator().getPrice(0.), p2.getPriceCalculator().getPrice(0.));
             if (result == 0) {
             	result = ratingComparator.compare(p1, p2);
             	if (result != 0)

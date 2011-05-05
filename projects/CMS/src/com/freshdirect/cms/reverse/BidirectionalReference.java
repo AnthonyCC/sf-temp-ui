@@ -29,6 +29,7 @@ public class BidirectionalReference implements RelationshipI {
      * @see com.freshdirect.cms.AttributeI#getContentNode()
      */
     @Override
+    @Deprecated
     public ContentNodeI getContentNode() {
         return node;
     }
@@ -53,6 +54,7 @@ public class BidirectionalReference implements RelationshipI {
      * @see com.freshdirect.cms.AttributeI#getValue()
      */
     @Override
+    @Deprecated
     public Object getValue() {
         return refs.getReference(node.getKey());
     }
@@ -61,6 +63,7 @@ public class BidirectionalReference implements RelationshipI {
      * @see com.freshdirect.cms.AttributeI#setValue(java.lang.Object)
      */
     @Override
+    @Deprecated
     public void setValue(Object o) {
         refs.addRelation(node.getKey(), (ContentKey) o);
     }
