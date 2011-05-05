@@ -251,6 +251,10 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 	}
 
 	public PricingContext getPricingContext() {
-		return new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE);
+		return PricingContext.DEFAULT;
+	}
+	
+	public PriceCalculator getSkuPriceCalculator() {
+	    return new PriceCalculator(getPricingContext(), getProductModel(), this);
 	}
 }

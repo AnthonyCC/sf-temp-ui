@@ -1,6 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
 
+<%@page import="com.freshdirect.fdstore.content.PriceCalculator"%>
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%@page import="java.util.ArrayList"%>
@@ -949,6 +950,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 							ContentNodeModel cnm = it_ra.next();
 							ProductModel pm = (ProductModel) cnm;
 							pm = ProductPricingFactory.getInstance().getPricingAdapter(pm, si.getPricingContext() != null ? si.getPricingContext() : PricingContext.DEFAULT);
+							PriceCalculator pmCalculator = pm.getPriceCalculator();
 							String actionURL = FDURLUtil.getProductURI(pm, "preview");
 							boolean found = recsB != null && recsB.indexOf(cnm) >= 0;
 							String notFound = "";
@@ -992,8 +994,8 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 											brands += ", " + b.getFullName();
 										}
 									%><%= brands %></span><br>
-									<span style="white-space: nowrap">Promo Deal: <%= pm.getDealPercentage() %>%</span>&nbsp;
-									<span style="white-space: nowrap">Tiered Deal: <%= pm.getTieredDealPercentage() %>%</span>&nbsp;
+									<span style="white-space: nowrap">Promo Deal: <%= pmCalculator.getDealPercentage() %>%</span>&nbsp;
+									<span style="white-space: nowrap">Tiered Deal: <%= pmCalculator.getTieredDealPercentage() %>%</span>&nbsp;
 									<span style="white-space: nowrap">Quality Rating: <%= qrLookup.getVariable(cnm, si.getPricingContext()) %></span>&nbsp;
 									<span style="white-space: nowrap">Product Age: <%= days %></span>
 								</div>
@@ -1025,6 +1027,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 							ContentNodeModel cnm = it_rb.next();
 							ProductModel pm = (ProductModel) cnm;
 							pm = ProductPricingFactory.getInstance().getPricingAdapter(pm, si2.getPricingContext() != null ? si2.getPricingContext() : PricingContext.DEFAULT);
+							PriceCalculator pmCalculator = pm.getPriceCalculator();
 							String actionURL = FDURLUtil.getProductURI(pm, "preview");
 							Integer change = recsA != null && recsA.indexOf(cnm) >= 0 ? new Integer(recsA.indexOf(cnm) - idx) : null;
 							String changeString = "N/A";
@@ -1077,8 +1080,8 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 											brands += ", " + b.getFullName();
 										}
 									%><%= brands %></span><br>
-									<span style="white-space: nowrap">Promo Deal: <%= pm.getDealPercentage() %>%</span>&nbsp;
-									<span style="white-space: nowrap">Tiered Deal: <%= pm.getTieredDealPercentage() %>%</span>&nbsp;
+									<span style="white-space: nowrap">Promo Deal: <%= pmCalculator.getDealPercentage() %>%</span>&nbsp;
+									<span style="white-space: nowrap">Tiered Deal: <%= pmCalculator.getTieredDealPercentage() %>%</span>&nbsp;
 									<span style="white-space: nowrap">Quality Rating: <%= qrLookup.getVariable(cnm, si2.getPricingContext()) %></span>&nbsp;
 									<span style="white-space: nowrap">Product Age: <%= days %></span>
 								</div>

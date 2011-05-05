@@ -242,66 +242,154 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		}
 	}
 
+    /**
+     * use priceCalculator which can be cached for a request. 
+     * @return
+     */
+    @Deprecated
+    @Override
     public int getDealPercentage() {
         return getDealPercentage(null);
     }
 
+    /**
+     * use priceCalculator which can be cached for a request. 
+     * @return
+     */
+    @Deprecated
+    @Override
     public int getTieredDealPercentage() {
         return getTieredDealPercentage(null);
     }
 
+    /**
+     * use priceCalculator which can be cached for a request. 
+     * @return
+     */
+    @Deprecated
+    @Override
     public int getHighestDealPercentage() {
         return getHighestDealPercentage(null);
     }
 
     /* price calculator calls */
 
+    /**
+     * use priceCalculator which can be cached for a request. 
+     * @return
+     */
+    @Deprecated
+    @Override
     public String getDefaultPrice() {
         return getPriceCalculator().getDefaultPrice();
     }
 
+    /**
+     * use priceCalculator which can be cached for a request. 
+     * @return
+     */
+    @Deprecated
     public String getDefaultPriceOnly() {
         return getPriceCalculator().getDefaultPriceOnly();
     }
 
+    /**
+     * use priceCalculator which can be cached for a request. 
+     * @return
+     */
+    @Deprecated
     public String getDefaultUnitOnly() {
         return getPriceCalculator().getDefaultUnitOnly();
     }
 
+    /**
+     * use priceCalculator which can be cached for a request. 
+     * @return
+     */
+    @Deprecated
+    @Override
 	public int getDealPercentage(String skuCode) {
 	    return getPriceCalculator(skuCode).getDealPercentage();
 	}
 
 
+    /**
+     * use priceCalculator which can be cached for a request. 
+     * @return
+     */
+    @Deprecated
+    @Override
 	public int getTieredDealPercentage(String skuCode) {
 	    return getPriceCalculator(skuCode).getTieredDealPercentage();
 	}
 
+    /**
+     * use priceCalculator which can be cached for a request. 
+     * @return
+     */
+    @Deprecated
+    @Override
 	public int getHighestDealPercentage(String skuCode) {
 	    return getPriceCalculator(skuCode).getHighestDealPercentage();
 	}
 
+    /**
+     * use priceCalculator which can be cached for a request. 
+     * @return
+     */
+    @Deprecated
+    @Override
     public String getTieredPrice(double savingsPercentage) {
         return getPriceCalculator().getTieredPrice(savingsPercentage);
     }
 
+    /**
+     * use priceCalculator which can be cached for a request. 
+     * @return
+     */
+    @Deprecated
+    @Override
 	public double getPrice(double savingsPercentage) {
 	    return getPriceCalculator().getPrice(savingsPercentage);
 	}
 
+    /**
+     * use priceCalculator which can be cached for a request. 
+     * @return
+     */
+    @Deprecated
+    @Override
     public String getPriceFormatted(double savingsPercentage) {
         return getPriceCalculator().getPriceFormatted(savingsPercentage);
     }
 
+    /**
+     * use priceCalculator which can be cached for a request. 
+     * @return
+     */
+    @Deprecated
+    @Override
     public String getPriceFormatted(double savingsPercentage, String skuCode) {
         return getPriceCalculator(skuCode).getPriceFormatted(savingsPercentage);
     }
 
 
+    /**
+     * use priceCalculator which can be cached for a request. 
+     * @return
+     */
+    @Deprecated
+    @Override
     public String getWasPriceFormatted(double savingsPercentage) {
         return getPriceCalculator().getWasPriceFormatted(savingsPercentage);
     }
 
+    /**
+     * use priceCalculator which can be cached for a request. 
+     * @return
+     */
+    @Deprecated
+    @Override
     public String getAboutPriceFormatted(double savingsPercentage) {
         return getPriceCalculator().getAboutPriceFormatted(savingsPercentage);
     }

@@ -103,66 +103,155 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 
 	/* price calculator calls */
 
+    /**
+     * use priceCalculator which can be cached for a request. 
+     * @return
+     */
+    @Deprecated
 	public double getDefaultPriceValue() {
 		return getPriceCalculator().getDefaultPriceValue();
 	}
 
+    /**
+     * use priceCalculator which can be cached for a request. 
+     * @return
+     */
+    @Deprecated
+    @Override
 	public String getDefaultPrice() {
 		return getPriceCalculator().getDefaultPrice();
 	}
 
+    /**
+     * use priceCalculator which can be cached for a request. 
+     * @return
+     */
+    @Deprecated
 	public String getDefaultPriceOnly() {
 		return getPriceCalculator().getDefaultPriceOnly();
 	}
 
+    /**
+     * use priceCalculator which can be cached for a request. 
+     * @return
+     */
+    @Deprecated
 	public String getDefaultUnitOnly() {
 		return getPriceCalculator().getDefaultUnitOnly();
 	}
 
+    /**
+     * use priceCalculator which can be cached for a request. 
+     * @return
+     */
+    @Deprecated
+    @Override
 	public int getDealPercentage(String skuCode) {
 		return getPriceCalculator(skuCode).getDealPercentage();
 	}
 
+    /**
+     * use priceCalculator which can be cached for a request. 
+     * @return
+     */
+    @Deprecated
+    @Override
 	public int getTieredDealPercentage(String skuCode) {
 		return getPriceCalculator(skuCode).getTieredDealPercentage();
 	}
 
+    /**
+     * use priceCalculator which can be cached for a request. 
+     * @return
+     */
+    @Deprecated
+    @Override
 	public int getHighestDealPercentage(String skuCode) {
 		return getPriceCalculator(skuCode).getHighestDealPercentage();
 	}
 
+    /**
+     * use priceCalculator which can be cached for a request. 
+     * @return
+     */
+    @Deprecated
+    @Override
 	public String getTieredPrice(double savingsPercentage) {
 		return getPriceCalculator().getTieredPrice(savingsPercentage);
 	}
 
+	    /**
+	     * use priceCalculator which can be cached for a request. 
+	     * @return
+	     */
+	    @Deprecated
+	    @Override
 	public double getPrice(double savingsPercentage) {
 		return getPriceCalculator().getPrice(savingsPercentage);
 	}
 
+        /**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+        @Deprecated
+        @Override
 	public String getPriceFormatted(double savingsPercentage) {
 		return getPriceCalculator().getPriceFormatted(savingsPercentage);
 	}
 
+        /**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+        @Deprecated
+        @Override
 	public String getWasPriceFormatted(double savingsPercentage) {
 		return getPriceCalculator().getWasPriceFormatted(savingsPercentage);
 	}
 
+        /**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+        @Deprecated
+        @Override
 	public String getAboutPriceFormatted(double savingsPercentage) {
 		return getPriceCalculator().getAboutPriceFormatted(savingsPercentage);
 	}
 
+        /**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+        @Deprecated
 	public String getKosherSymbol() throws FDResourceException {
 		return getPriceCalculator().getKosherSymbol();
 	}
 
+        /**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+        @Deprecated
 	public String getKosherType() throws FDResourceException {
 		return getPriceCalculator().getKosherType();
 	}
 
+        /**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+        @Deprecated
 	public boolean isKosherProductionItem() throws FDResourceException {
 		return getPriceCalculator().isKosherProductionItem();
 	}
 
+        /**
+         * use priceCalculator which can be cached for a request. 
+         * @return
+         */
+        @Deprecated
 	public int getKosherPriority() throws FDResourceException {
 		return getPriceCalculator().getKosherPriority();
 	}
@@ -292,6 +381,12 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 		return this.prodModel.getCountryOfOrigin();
 	}
 
+    /**
+     * use priceCalculator which can be cached for a request. 
+     * @return
+     */
+    @Deprecated
+    @Override
 	public int getDealPercentage() {
 		return getDealPercentage(null);
 	}
@@ -401,6 +496,8 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 		return this.prodModel.getHideUrl();
 	}
 
+	@Deprecated
+	@Override
 	public int getHighestDealPercentage() {
 		return getHighestDealPercentage(null);
 	}
@@ -693,6 +790,8 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 		return this.prodModel.getThumbnailImage();
 	}
 
+	@Override
+	@Deprecated
 	public int getTieredDealPercentage() {
 		return getTieredDealPercentage(null);
 	}
@@ -1179,6 +1278,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
 	@Override
+	@Deprecated
 	public String getPriceFormatted(double savingsPercentage, String skuCode) {
 		return prodModel.getPriceFormatted(savingsPercentage, skuCode);
 	}

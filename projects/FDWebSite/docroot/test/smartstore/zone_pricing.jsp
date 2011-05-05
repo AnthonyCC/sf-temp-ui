@@ -1,6 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
 
+<%@page import="com.freshdirect.fdstore.content.PriceCalculator"%>
 <%@page import="com.freshdirect.cms.ContentKey"%>
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>
@@ -36,11 +37,13 @@ List<ProductModel> sort(final String orderBy, final PricingContext orderZone, fi
 				return sign * p1.getContentKey().getId().compareTo(p2.getContentKey().getId());
 			} else {
 				int val = 0;
+				PriceCalculator pc1 = p1.getPriceCalculator();
+				PriceCalculator pc2 = p2.getPriceCalculator();
 				switch (byDeal) {
-					case 0: val = Double.compare(Math.max(0., p1.getPrice(0.)), Math.max(0., p2.getPrice(0.))); break;
-					case 1: val = Math.max(0, p1.getDealPercentage()) - Math.max(0, p2.getDealPercentage()); break;
-					case 2: val = Math.max(0, p1.getTieredDealPercentage()) - Math.max(0, p2.getTieredDealPercentage()); break;
-					case 3: val = Math.max(0, p1.getHighestDealPercentage()) - Math.max(0, p2.getHighestDealPercentage()); break;
+					case 0: val = Double.compare(Math.max(0., pc1.getPrice(0.)), Math.max(0., pc2.getPrice(0.))); break;
+					case 1: val = Math.max(0, pc1.getDealPercentage()) - Math.max(0, pc2.getDealPercentage()); break;
+					case 2: val = Math.max(0, pc1.getTieredDealPercentage()) - Math.max(0, pc2.getTieredDealPercentage()); break;
+					case 3: val = Math.max(0, pc1.getHighestDealPercentage()) - Math.max(0, pc2.getHighestDealPercentage()); break;
 				}
 				if (val == 0)
 					return - sign * p1.getContentKey().getId().compareTo(p2.getContentKey().getId());

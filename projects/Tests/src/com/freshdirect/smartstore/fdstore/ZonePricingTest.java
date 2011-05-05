@@ -26,9 +26,9 @@ import com.freshdirect.fdstore.ZonePriceModel;
 import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
 import com.freshdirect.fdstore.aspects.FDProductAspect;
 import com.freshdirect.fdstore.aspects.ZoneConfigurationAspect;
-import com.freshdirect.fdstore.content.AbstractProductModelImpl;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
@@ -105,14 +105,14 @@ public class ZonePricingTest extends TestCase {
             SkuModel defaultSkuInTheMain = product.getDefaultSku();
             assertNotNull("default sku", defaultSkuInTheMain);
             assertEquals("default sku is PAS0059136", "PAS0059136", defaultSkuInTheMain.getContentName());
+            PriceCalculator calculator = product.getPriceCalculator();
+            assertEquals("default price is in the main zone",40.0, calculator.getPrice(0));
             
-            assertEquals("default price is in the main zone",40.0, product.getPrice(0));
-            
-            assertEquals("price in the PricingContext.DEFAULT with 0.1 saving", 36.0, product.getPrice(0.1));
-            assertEquals("PriceFormatted", "$40.00/ea", product.getPriceFormatted(0.0));
-            assertEquals("PriceFormatted with 0.1 saving", "$36.00/ea", product.getPriceFormatted(0.1));
+            assertEquals("price in the PricingContext.DEFAULT with 0.1 saving", 36.0, calculator.getPrice(0.1));
+            assertEquals("PriceFormatted", "$40.00/ea", calculator.getPriceFormatted(0.0));
+            assertEquals("PriceFormatted with 0.1 saving", "$36.00/ea", calculator.getPriceFormatted(0.1));
 
-            assertEquals("getWasPriceFormatted", null, product.getWasPriceFormatted(0.0));
+            assertEquals("getWasPriceFormatted", null, calculator.getWasPriceFormatted(0.0));
         }
         
         {
@@ -123,11 +123,12 @@ public class ZonePricingTest extends TestCase {
             assertNotNull("default sku", defaultSkuInTheCheapZone);
             assertEquals("default sku is PAS0059136 in cheap-zone", "PAS0059136", defaultSkuInTheCheapZone.getContentName());
 
+            PriceCalculator calculator = adapter.getPriceCalculator();
             
-            assertEquals("price in the 'cheap-zone'", 30.0, adapter.getPrice(0));
-            assertEquals("price in the 'cheap-zone' with 0.1 saving", 27.0, adapter.getPrice(0.1));
-            assertEquals("PriceFormatted", "$30.00/ea", adapter.getPriceFormatted(0.0));
-            assertEquals("PriceFormatted with 0.1 saving", "$27.00/ea", adapter.getPriceFormatted(0.1));
+            assertEquals("price in the 'cheap-zone'", 30.0, calculator.getPrice(0));
+            assertEquals("price in the 'cheap-zone' with 0.1 saving", 27.0, calculator.getPrice(0.1));
+            assertEquals("PriceFormatted", "$30.00/ea", calculator.getPriceFormatted(0.0));
+            assertEquals("PriceFormatted with 0.1 saving", "$27.00/ea", calculator.getPriceFormatted(0.1));
             
         }
 
@@ -139,10 +140,11 @@ public class ZonePricingTest extends TestCase {
             assertNotNull("default sku", defaultSkuInTheExpensiveZone);
             assertEquals("default sku is PAS0040040 in expensive-zone", "PAS0040040", defaultSkuInTheExpensiveZone.getContentName());
 
-            assertEquals("price in the 'expensive-zone'", 50.0, adapter.getPrice(0));
-            assertEquals("price in the 'expensive-zone' with 0.1 saving", 45.0, adapter.getPrice(0.1));
-            assertEquals("PriceFormatted", "$50.00/ea", adapter.getPriceFormatted(0.0));
-            assertEquals("PriceFormatted with 0.1 saving", "$45.00/ea", adapter.getPriceFormatted(0.1));
+            PriceCalculator calculator = adapter.getPriceCalculator();
+            assertEquals("price in the 'expensive-zone'", 50.0, calculator.getPrice(0));
+            assertEquals("price in the 'expensive-zone' with 0.1 saving", 45.0, calculator.getPrice(0.1));
+            assertEquals("PriceFormatted", "$50.00/ea", calculator.getPriceFormatted(0.0));
+            assertEquals("PriceFormatted with 0.1 saving", "$45.00/ea", calculator.getPriceFormatted(0.1));
             
         }
     }
@@ -162,19 +164,20 @@ public class ZonePricingTest extends TestCase {
             assertNotNull("default sku", defaultSkuInTheMain);
             assertEquals("default sku is PAS0062425", "PAS0062425", defaultSkuInTheMain.getContentName());
             
-            assertEquals("default price is in the main zone",120.0, product.getPrice(0));
+            PriceCalculator calculator = product.getPriceCalculator();
+            assertEquals("default price is in the main zone",120.0, calculator.getPrice(0));
             
-            assertEquals("price in the PricingContext.DEFAULT with 0.1 saving", 108.0, product.getPrice(0.1));
-            assertEquals("PriceFormatted", "$120.00/ea", product.getPriceFormatted(0.0));
-            assertEquals("PriceFormatted with 0.1 saving", "$108.00/ea", product.getPriceFormatted(0.1));
+            assertEquals("price in the PricingContext.DEFAULT with 0.1 saving", 108.0, calculator.getPrice(0.1));
+            assertEquals("PriceFormatted", "$120.00/ea", calculator.getPriceFormatted(0.0));
+            assertEquals("PriceFormatted with 0.1 saving", "$108.00/ea", calculator.getPriceFormatted(0.1));
 
-            assertEquals("getWasPriceFormatted", "$120.00", product.getWasPriceFormatted(0.3));
+            assertEquals("getWasPriceFormatted", "$120.00", calculator.getWasPriceFormatted(0.3));
             
-            assertEquals("getAboutPriceFormatted", "about $80.00/salesunit", product.getAboutPriceFormatted(0.0));
+            assertEquals("getAboutPriceFormatted", "about $80.00/salesunit", calculator.getAboutPriceFormatted(0.0));
             
-            assertEquals("getAboutPriceFormatted", "about $72.00/salesunit", product.getAboutPriceFormatted(0.1));
+            assertEquals("getAboutPriceFormatted", "about $72.00/salesunit", calculator.getAboutPriceFormatted(0.1));
             
-            assertEquals("highest deal percentage in the main zone", 0, product.getHighestDealPercentage());
+            assertEquals("highest deal percentage in the main zone", 0, calculator.getHighestDealPercentage());
             
         }
 
@@ -186,22 +189,23 @@ public class ZonePricingTest extends TestCase {
             assertNotNull("default sku", defaultSkuInTheCheapZone);
             assertEquals("default sku is PAS0062425", "PAS0062425", defaultSkuInTheCheapZone.getContentName());
             
-            assertEquals("default price is in the main zone",120.0, product.getPrice(0));
+            PriceCalculator calculator = adapter.getPriceCalculator();
+            assertEquals("default price is in the main zone",120.0, product.getPriceCalculator().getPrice(0));
             
-            assertEquals("price in the cheap-zone", 60.0, adapter.getPrice(0));
-            assertEquals("price in the cheap-zone with 0.1 saving", 54.0, adapter.getPrice(0.1));
-            assertEquals("PriceFormatted", "$60.00/ea", adapter.getPriceFormatted(0.0));
-            assertEquals("PriceFormatted with 0.1 saving", "$54.00/ea", adapter.getPriceFormatted(0.1));
+            assertEquals("price in the cheap-zone", 60.0, calculator.getPrice(0));
+            assertEquals("price in the cheap-zone with 0.1 saving", 54.0, calculator.getPrice(0.1));
+            assertEquals("PriceFormatted", "$60.00/ea", calculator.getPriceFormatted(0.0));
+            assertEquals("PriceFormatted with 0.1 saving", "$54.00/ea", calculator.getPriceFormatted(0.1));
 
-            assertEquals("getWasPriceFormatted", "$60.00", adapter.getWasPriceFormatted(0.3));
+            assertEquals("getWasPriceFormatted", "$60.00", calculator.getWasPriceFormatted(0.3));
             
-            assertEquals("getAboutPriceFormatted", "about $40.00/salesunit", adapter.getAboutPriceFormatted(0.0));
+            assertEquals("getAboutPriceFormatted", "about $40.00/salesunit", calculator.getAboutPriceFormatted(0.0));
             
-            assertEquals("getAboutPriceFormatted", "about $36.00/salesunit", adapter.getAboutPriceFormatted(0.1));
+            assertEquals("getAboutPriceFormatted", "about $36.00/salesunit", calculator.getAboutPriceFormatted(0.1));
             
-            assertEquals("highest deal percentage in cheap-zone", 20, adapter.getHighestDealPercentage());
-            assertEquals("tiered deal percentage in cheap-zone", 20, adapter.getTieredDealPercentage());
-            assertEquals("deal percentage in cheap-zone", 10, adapter.getDealPercentage());
+            assertEquals("highest deal percentage in cheap-zone", 20, calculator.getHighestDealPercentage());
+            assertEquals("tiered deal percentage in cheap-zone", 20, calculator.getTieredDealPercentage());
+            assertEquals("deal percentage in cheap-zone", 10, calculator.getDealPercentage());
 
         }
     }
@@ -221,22 +225,23 @@ public class ZonePricingTest extends TestCase {
             assertNotNull("default sku", defaultSkuInTheMain);
             assertEquals("default sku is PAS0062425", "PAS0062425", defaultSkuInTheMain.getContentName());
             
-            assertEquals("default price is in the default zone",60.0, adapter.getPrice(0));
+            PriceCalculator calculator = adapter.getPriceCalculator();
+            assertEquals("default price is in the default zone",60.0, calculator.getPrice(0));
             
-            assertEquals("price in the default zone with 0.1 saving", 54.0, adapter.getPrice(0.1));
-            assertEquals("PriceFormatted", "$60.00/ea", adapter.getPriceFormatted(0.0));
-            assertEquals("PriceFormatted with 0.1 saving", "$54.00/ea", adapter.getPriceFormatted(0.1));
+            assertEquals("price in the default zone with 0.1 saving", 54.0, calculator.getPrice(0.1));
+            assertEquals("PriceFormatted", "$60.00/ea", calculator.getPriceFormatted(0.0));
+            assertEquals("PriceFormatted with 0.1 saving", "$54.00/ea", calculator.getPriceFormatted(0.1));
 
-            assertEquals("getWasPriceFormatted", "$60.00", adapter.getWasPriceFormatted(0.3));
+            assertEquals("getWasPriceFormatted", "$60.00", calculator.getWasPriceFormatted(0.3));
             
-            assertEquals("getAboutPriceFormatted", "about $40.00/salesunit", adapter.getAboutPriceFormatted(0.0));
+            assertEquals("getAboutPriceFormatted", "about $40.00/salesunit", calculator.getAboutPriceFormatted(0.0));
             
-            assertEquals("getAboutPriceFormatted", "about $36.00/salesunit", adapter.getAboutPriceFormatted(0.1));
+            assertEquals("getAboutPriceFormatted", "about $36.00/salesunit", calculator.getAboutPriceFormatted(0.1));
             
             
-            assertEquals("deal percentage in cheap zone", 10, adapter.getDealPercentage());
-            assertEquals("tiered deal percentage in cheap zone", 20, adapter.getTieredDealPercentage());
-            assertEquals("highest deal percentage in cheap zone", 20, adapter.getHighestDealPercentage());
+            assertEquals("deal percentage in cheap zone", 10, calculator.getDealPercentage());
+            assertEquals("tiered deal percentage in cheap zone", 20, calculator.getTieredDealPercentage());
+            assertEquals("highest deal percentage in cheap zone", 20, calculator.getHighestDealPercentage());
         }
         
         {
@@ -246,10 +251,11 @@ public class ZonePricingTest extends TestCase {
             SkuModel defaultSkuInTheMain = adapter.getDefaultSku();
             assertNotNull("default sku", defaultSkuInTheMain);
             assertEquals("default sku is PAS0062425", "PAS0062425", defaultSkuInTheMain.getContentName());
+            PriceCalculator calculator = adapter.getPriceCalculator();
 
-            assertEquals("deal percentage in expensive zone", 30, adapter.getDealPercentage());
-            assertEquals("tiered deal percentage in expensive zone", 15, adapter.getTieredDealPercentage());
-            assertEquals("highest deal percentage in expensive zone", 30, adapter.getHighestDealPercentage());
+            assertEquals("deal percentage in expensive zone", 30, calculator.getDealPercentage());
+            assertEquals("tiered deal percentage in expensive zone", 15, calculator.getTieredDealPercentage());
+            assertEquals("highest deal percentage in expensive zone", 30, calculator.getHighestDealPercentage());
             
         }
         

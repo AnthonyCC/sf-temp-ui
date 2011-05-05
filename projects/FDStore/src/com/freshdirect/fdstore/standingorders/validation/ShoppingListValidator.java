@@ -14,6 +14,7 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.ZonePriceListing;
+import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
@@ -77,7 +78,8 @@ public class ShoppingListValidator {
 					continue;
 				}
 
-				if (product.getHighestDealPercentage() > 0) {
+				PriceCalculator calculator = product.getPriceCalculator();
+				if (calculator.getHighestDealPercentage() > 0) {
 					result.addWarning(true, Validations.SHOPPING_LIST_ITEM, "product " + product.getFullName()
 							+ " has discounts which may make difficult to fulfill minimum order amount requirement");
 				}

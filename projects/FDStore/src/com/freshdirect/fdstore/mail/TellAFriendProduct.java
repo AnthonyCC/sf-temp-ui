@@ -103,7 +103,7 @@ public class TellAFriendProduct extends TellAFriend {
 		if (productNode == null) {
 			return "";
 		} else {
-			return productNode.getDefaultPrice();
+			return productNode.getPriceCalculator().getDefaultPrice();
 		}
 	}
 	
