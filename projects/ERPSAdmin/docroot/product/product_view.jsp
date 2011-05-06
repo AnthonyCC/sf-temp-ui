@@ -23,6 +23,7 @@
 		<link rel="stylesheet" href="/ERPSAdmin/common/css/erpsadmin.css" type="text/css">	
 		<script type="text/javascript" src="/ERPSAdmin/batch/blackbirdjs/blackbird.js"></script>
 		<link type="text/css" rel="Stylesheet" href="/ERPSAdmin/batch/blackbirdjs/blackbird.css" />
+		<script type="text/javascript" src="/ERPSAdmin/product/json2.js"></script>
 		<script type="text/javascript" src="/ERPSAdmin/product/erpsydaisysku2urladdon.js"></script>
 		<script type="text/javascript" src="http://www.freshdirect.com/assets/javascript/prototype.js"></script>
 		<script>
@@ -160,12 +161,12 @@
 
                 <fd:AttributeController erpObject="<%= product %>" userMessage="feedback" />
 				<div id="feeback" style="color:red; font-size:12px;font-weight:bold;"><%=feedback%></div>
-
+				
                 <table width="600" cellspacing=2 cellpadding=0>
                     <tr><th align="left" class="section_title">PRODUCT:</th></tr>
-                    <tr><td><%= (product.getSkuCode() != null) ? product.getSkuCode() : "" %></td></tr>
-					<tr><td><div id="addon">
-					<script language="javascript">sku_urls();</script> </div></td></tr>
+                    <tr><td><%= (product.getSkuCode() != null) ? product.getSkuCode() : "" %></td></tr>					
+					<tr><td id="add_on"><div id="addon">
+					</div></td></tr>
                     <tr><td><%= product.getProxiedMaterial().getDescription() %></td></tr>
                     <% if (product.getSkuCode() == null) { %>
 						<tr><td><b>There is no such product in ERPServices with skucode : <%= skuCode %></b></td></tr>
@@ -375,3 +376,6 @@
             <%  } %>
                                 
                                 
+</body>
+</html>
+<script language="javascript">sku_urls();</script>

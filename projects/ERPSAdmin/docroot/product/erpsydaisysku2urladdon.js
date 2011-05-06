@@ -64,6 +64,10 @@
 			var urlMain = '';
 			
 			var urllookup = '';
+			
+			var browser = "FF";
+			
+			var htmlString1 = "";
 
 /* -- GLOBAL variables -- */
 
@@ -75,8 +79,19 @@
 	 *	default is to use current location
 	 */
 		 function getCluster(loca) {
+		 
+			var nAgent = navigator.userAgent;
+			fdLog.debug("Browser Agent: " + nAgent);
+			
+			if(nAgent.indexOf("MSIE 7")!=-1)
+				browser = "IE";
+			else
+				browser = "FF";
+				
+			fdLog.debug("browser: " + browser);
+			
             var locaV = loca || window.location.hostname;
-            if (locaV.indexOf('dev') > -1) {
+            if (locaV.indexOf('dev') > -1 || locaV.indexOf('localhost') > -1) {
 				//var regexS = "crm[0-9]*[\.]stdev[0-9]?([0-9]*)";
                 var regexS = "dev[0-9]?([0-9]*)";
                 var regex = new RegExp( regexS );
@@ -332,15 +347,17 @@
 
 	/* fetch sku info */
 		function fetchSkuInfo(skuCode) {
+		
+			var skuInfo = "";
 			
-			fdLog.debug('[FETCH SKU INFO] Fetching SKU from...' + urllookup+'/test/freemarker_testing/all_info.jsp?sku2url=true&sku='+skuCode); 
+			fdLog.debug('[FETCH SKU INFO] Fetching SKU from...' + '/ERPSAdmin/product/product_info.jsp?sku='+skuCode+'&uurl='+urllookup); 
 
 			new Ajax.Request('/ERPSAdmin/product/product_info.jsp?sku='+skuCode+'&uurl='+urllookup, {
 				method: 'GET',
 				onComplete: function(responseDetails) {
-						var skuInfo = responseDetails.responseText;
+						skuInfo = responseDetails.responseText;
 
-						fdLog.debug('[FETCH SKU INFO] success, parsing...'); 
+						fdLog.debug('xx[FETCH SKU INFO] success, parsing...' ); 
 						parseSkuInfo(skuInfo);
 				},
 				onError: function() {
@@ -353,7 +370,7 @@
 		function parseSkuInfo(skuInfo) {
 			fdLog.debug('[PARSE SKU INFO] Parsing SKU info...'); 
 			
-			var skuInfoObj = JSON.parse(skuInfo);				
+			var skuInfoObj = JSON.parse(skuInfo);	
 
 			//run through skuInfo and get the objects as we need them
 			skuInfo = skuInfoObj.productModels;			
@@ -380,8 +397,8 @@
 				if (skuInfo[objName].isPrimary) {
 					//primary product model, add to table
 					//insert each virtual into our content table
+					fdLog.debug("Applying FF settings");
 					while(!insEle('_skuCont_tdRelatedPrimary', 'div', 'I', '_relatedPrimary'+objName));
-
 					$('_relatedPrimary'+objName).innerHTML += 'Primary Product: ('+linkHtml+')<br />';
 					$('_relatedPrimary'+objName).innerHTML += 'Sibling SKU(s):<br />';
 					for (var i =0; i < skuCodes.length; i++) {
@@ -400,7 +417,7 @@
 						$('_relatedPrimary'+objName).innerHTML += '<br />';
 						i++;
 					}
-				}else{
+				} else {
 					//secondary
 					while(!insEle('_skuCont_tdRelatedSecondary', 'div', 'I', '_relatedSecondary'+objName));
 					$('_relatedSecondary'+objName).innerHTML += 'Related Product: ('+linkHtml+')<br />';
@@ -449,10 +466,165 @@
 
 			fdLog.debug('[PARSE SKU INFO] ... done.'); 
 		}
+		
+		function parseSkuInfo_ie7(skuInfo) {
+			fdLog.debug('[PARSE SKU INFO] Parsing SKU info...'); 
+			
+			var skuInfoObj = JSON.parse(skuInfo);	
+
+			var htmlString = "";			
+
+			//run through skuInfo and get the objects as we need them
+			skuInfo = skuInfoObj.productModels;		
+
+			//start the td here
+			htmlString += "<td id=_skuCont_tdRelatedPrimary>";
+
+			for (var objName in skuInfo) {
+				var prefSku = skuInfo[objName].prefSku;
+				var defSku = skuInfo[objName].defSku;
+				var skuCodes = skuInfo[objName].skuCodes;
+				var curObj = skuInfo[objName];
+				var linkText = objName.split('@'); //0=prodId, 1=catId
+				var linkHtml = getLinkedWWW('@'+linkText[1], linkText[1], linkText[0], skuInfo[objName].isGrocery);
+				
+				fdLog.debug('AAAAAAAAAAAAAAAAAAprimary');
+				
+				fdLog.debug('prefSku:' + prefSku);
+				fdLog.debug('defSku:' + defSku);
+				fdLog.debug('skuCodes:' + skuCodes);
+				fdLog.debug('curObj:' + curObj);
+				fdLog.debug('linkText:' + linkText);
+				fdLog.debug('linkHtml:' + linkHtml);
+
+				if (skuInfo[objName].isOrphan) {
+					linkHtml = '<span class="orphan">'+linkHtml+'</span>';
+				}
+
+				if (skuInfo[objName].isPrimary) {
+					//primary product model, add to table
+					//insert each virtual into our content table
+					fdLog.debug("Applying IE settings");
+					htmlString += "<div id=_relatedPrimary" + objName +">";
+					//while(!insEle('_skuCont_tdRelatedPrimary', 'div', 'I', '_relatedPrimary'+objName));
+					htmlString += 'Primary Product: ('+linkHtml+')<br />Sibling SKU(s):<br />'
+					//$('_relatedPrimary'+objName).innerHTML += 'Primary Product: ('+linkHtml+')<br />';
+					//$('_relatedPrimary'+objName).innerHTML += 'Sibling SKU(s):<br />';
+					for (var i =0; i < skuCodes.length; i++) {
+						htmlString += '&nbsp;&nbsp;&nbsp;';
+						//$('_relatedPrimary'+objName).innerHTML += '&nbsp;&nbsp;&nbsp;';
+						if (skuCodes[i] != sku) {
+							//$('_relatedPrimary'+objName).innerHTML += '<span class="siblingSKU">'+getLinkedProductView(skuCodes[i])+'</span> ('+skuCodes[i+1]+')';
+							htmlString += '<span class="siblingSKU">'+getLinkedProductView(skuCodes[i])+'</span> ('+skuCodes[i+1]+')';
+						}else{
+							//$('_relatedPrimary'+objName).innerHTML += skuCodes[i]+ ' ('+skuCodes[i+1]+')';
+							htmlString += skuCodes[i]+ ' ('+skuCodes[i+1]+')';
+						}
+						if (skuCodes[i] == defSku) {
+							//$('_relatedPrimary'+objName).innerHTML += '<span class="defSKU">*</span>';
+							htmlString += '<span class="defSKU">*</span>';
+						}
+						if (skuCodes[i] == defSku) {
+							//$('_relatedPrimary'+objName).innerHTML += '<span class="prefSKU">*</span>';
+							htmlString += '<span class="prefSKU">*</span>';
+						}
+						//$('_relatedPrimary'+objName).innerHTML += '<br />';
+						htmlString += '<br />';
+						i++;
+					}
+					htmlString += "</div>";
+				} 
+			}
+			
+			//end td
+			htmlString += "</td>";
+			
+			//start a new td
+			htmlString += "<td id=_skuCont_tdRelatedSecondary>";
+			for (var objName in skuInfo) {
+				var prefSku = skuInfo[objName].prefSku;
+				var defSku = skuInfo[objName].defSku;
+				var skuCodes = skuInfo[objName].skuCodes;
+				var curObj = skuInfo[objName];
+				var linkText = objName.split('@'); //0=prodId, 1=catId
+				var linkHtml = getLinkedWWW('@'+linkText[1], linkText[1], linkText[0], skuInfo[objName].isGrocery);
+				
+				fdLog.debug('AAAAAAAAAAAAAAAAAAsecondary');
+
+				if (skuInfo[objName].isOrphan) {
+					linkHtml = '<span class="orphan">'+linkHtml+'</span>';
+				}
+
+				if (!skuInfo[objName].isPrimary) {			
+					//secondary
+					//while(!insEle('_skuCont_tdRelatedSecondary', 'div', 'I', '_relatedSecondary'+objName));
+					htmlString += "<div id=_relatedSecondary" + objName + ">";
+					//$('_relatedSecondary'+objName).innerHTML += 'Related Product: ('+linkHtml+')<br />';
+					htmlString += 'Related Product: ('+linkHtml+')<br /></div>';
+				}
+			}
+			
+			//end td
+			htmlString += "</td>";
+
+			//now do components if we have any
+			skuInfo = skuInfoObj.componentGroups;
+
+			
+			for (var objName in skuInfo) {
+				var curObj = skuInfo[objName];
+
+				var curObjPms = null;
+
+				curObjPms = curObj.productModels;
+
+				if (curObjPms != null) {
+					//optional products instead
+					for (var i =0; i < curObjPms.length; i++) {
+						var linkText = curObjPms[i].split('@'); //0=prodId, 1=catId
+						var linkHtml = getLinkedWWW('@'+linkText[1], linkText[1], linkText[0], curObjPms[i+1]); //this needs fixing, grocery
+						//while(!insEle('_skuCont_tdComponentsOpt', 'div', 'I', '_compProd'+curObjPms[i]));
+						//$('_compProd'+curObjPms[i]).innerHTML += 'Opt. Product: ('+linkHtml+')<br />';
+						htmlString += "<div id=_compProd"+curObjPms[i] + ">";
+						htmlString += 'Opt. Product: ('+linkHtml+')<br /></div>';
+						i++;
+					}
+				}else{
+					for (objVarName in curObj) {
+						var curVarObj = curObj[objVarName];
+						var skuCodes = curVarObj.skuCodes;
+						//while(!insEle('_skuCont_tdComponents', 'div', 'I', '_compVar'+objVarName));
+							//$('_compVar'+objVarName).innerHTML += objVarName + '<a href="#" class="skuToggle" onclick="$(\'_compVar'+objVarName+'_cont\').toggle(); (this.innerHTML==\'show SKUs\')?this.innerHTML=\'hide SKUs\': this.innerHTML=\'show SKUs\'; return false;">show SKUs</a>';
+						htmlString += "<div id=_compVar"+objVarName + ">";
+						htmlString += objVarName + '<a href="#" class="skuToggle" onclick="$(\'_compVar'+objVarName+'_cont\').toggle(); (this.innerHTML==\'show SKUs\')?this.innerHTML=\'hide SKUs\': this.innerHTML=\'show SKUs\'; return false;">show SKUs</a></div>';
+
+						//while(!insEle('_compVar'+objVarName, 'div', 'I', '_compVar'+objVarName+'_cont'));
+							//$('_compVar'+objVarName+'_cont').style.width = '99%';
+							//$('_compVar'+objVarName+'_cont').style.border = '0 none';
+							//$('_compVar'+objVarName+'_cont').style.display = 'none';
+						htmlString += "<div id=_compVar"+objVarName+"_cont style=width:99%;border=0 none;display:none>";
+						
+						for (var i =0; i < skuCodes.length; i++) { //sku, status, material
+							//$('_compVar'+objVarName+'_cont').innerHTML +='&nbsp;&nbsp;&nbsp;<span class="siblingSKU">'+getLinkedProductView(skuCodes[i])+'</span> ('+skuCodes[i+1]+') : <span class="siblingSKU">'+getLinkededSearch(skuCodes[i+2], 'SAPID')+'</span><br />';
+							htmlString += '&nbsp;&nbsp;&nbsp;<span class="siblingSKU">'+getLinkedProductView(skuCodes[i])+'</span> ('+skuCodes[i+1]+') : <span class="siblingSKU">'+getLinkededSearch(skuCodes[i+2], 'SAPID')+'</span><br /></div>';
+							i++;
+						}
+					}
+				}
+			}
+
+			fdLog.debug('[PARSE SKU INFO] ... done.'); 
+			return htmlString;
+			
+		}
 
 /* -- GENERIC functions -- */
 	
 	function sku_urls() {
+		window.onload=sku_urls_addon; 
+	}
+	
+	function sku_urls_addon() {
 
 		while(!getCluster());
 
@@ -464,31 +636,77 @@
 		}
 
 		if (sku != '') {
+		
+			if(browser == "FF") {
 
-			var tds = document.body.getElementsByTagName("td");
-			var tdFound = false;
-			var d = new Date();
-			for (var i=0; i<tds.length; i++) {
-				if (tds[i].innerHTML == sku) {
-					tdFound = true;
-					break;
+				var tds = document.body.getElementsByTagName("td");
+				var tdFound = false;
+				var d = new Date();
+				for (var i=0; i<tds.length; i++) {
+					if (tds[i].innerHTML == sku) {
+						tdFound = true;
+						break;
+					}
 				}
-			}
-			if (tdFound) {
-				//we have the td where the sku is, it's tds[i]
-				//add an id to it so we can refer to it easier
-				tds[i].id = '_skuCodeContainer';
-				while(!constructContainerTable('_skuCodeContainer'));
+				if (tdFound) {
+					//we have the td where the sku is, it's tds[i]
+					//add an id to it so we can refer to it easier
+					tds[i].id = '_skuCodeContainer';
+					while(!constructContainerTable('_skuCodeContainer'));
 
-				//now get and add virtuals
-				fdLog.debug('[ADD VIRT] Adding virtuals...'); 
+					//now get and add virtuals
+					fdLog.debug('[ADD VIRT] Adding virtuals...'); 
+					
+
+					//get sku info
+					fetchSkuInfo(sku);				
+
+				}else{
+					fdLog.debug('[ADD VIRT] Error... cannot find td containing SKU code.'); 
+				}
+			} else {
+				htmlString1 += "<table id=_skuContTable>";	
+				htmlString1 += "<tr id=_skuCont_trRelated>";
 				
+				
+				var skuInfo = "";
+			
+				fdLog.debug('[FETCH SKU INFO] Fetching SKU from...' + '/ERPSAdmin/product/product_info.jsp?sku='+sku+'&uurl='+urllookup); 
+				
+				var htest = "";
+				var t1;
 
-				//get sku info
-				fetchSkuInfo(sku);
+				new Ajax.Request('/ERPSAdmin/product/product_info.jsp?sku='+sku+'&uurl='+urllookup, {
+					method: 'GET',
+					onComplete: function(responseDetails) {
+							skuInfo = responseDetails.responseText;
 
-			}else{
-				fdLog.debug('[ADD VIRT] Error... cannot find td containing SKU code.'); 
+							fdLog.debug('xx[FETCH SKU INFO] success, parsing...' ); 
+							htest = parseSkuInfo_ie7(skuInfo);
+							fdLog.debug('xx[FETCH SKU INFO] success, parsing...' + htmlString1 ); 
+							//window.alert(htest);
+							t1 = htest;
+							
+					},
+					onError: function() {
+						fdLog.debug('[FETCH SKU INFO] Error... '+responseDetails.status+' '+responseDetails.responseText); 
+					}
+				});
+				
+				window.alert("Product links will take you to stage");
+				htmlString1 += t1;
+				htmlString1 += "</tr></table>";
+				fdLog.debug('Final html string.' + htmlString1); 
+				//window.alert('2' + htmlString1);
+				var tds = document.body.getElementsByTagName("td");
+				var tdFound = false;
+				var d = new Date();
+				for (var i=0; i<tds.length; i++) {
+					if (tds[i].id == "add_on") {
+						tds[i].innerHTML = htmlString1;
+						break;
+					}
+				}
 			}
 
 		}else{
