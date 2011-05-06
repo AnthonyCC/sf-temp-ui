@@ -236,7 +236,7 @@
 				font-size: 11px;
 				font-family: monospace;
 				padding-right: 3px;
-			};
+			}
 		</style>		
 	</head>
 	<body>

@@ -516,7 +516,7 @@ var changeLog = ""+
 			var curDate = null;
 
 			do { curDate = new Date(); }
-			while(curDate-date < millis);
+			while((curDate-date) < millis);
 		}
 
 	/* kills the calendar */
@@ -3015,9 +3015,10 @@ var changeLog = ""+
 				$('fetchitem'+item).innerHTML = curData[item][0]+' : '+curData[item][1];
 				
 				curData[item][1] = 'posting';
-					fdLog.debug("Ajax call for7:"+ urlPost+"postData:" + curData[item][4]);
+					fdLog.debug("Ajax call for7:"+ urlPost+"?" + curData[item][4]);
+					
 					new Ajax.Request(urlPost, {
-						method: "post",			
+						method: 'POST',			
 						parameters: encodeURI(curData[item][4]),
 						onComplete: function(retdata) {
 								curData[item][1] = postedStatus;
@@ -3029,12 +3030,9 @@ var changeLog = ""+
 
 								queue--;
 							},
-						onFailure: function(){ fdLog.debug('Something went wrong...') },
-						onSuccess: function(transport){
-							  var response = transport.responseText || "no response text";
-							  fdLog.debug("Success! \n\n" + response);
-							}
-					});					
+						onFailure: function(){ fdLog.debug('Something went wrong...') }
+					});
+					
 				//wait after to avoid a delay before first post
 				//also, check if we have more in the queue to delay FOR
 				var postDelay = $('postDelay').value;
@@ -3043,7 +3041,7 @@ var changeLog = ""+
 					fdLog.debug('item '+item); 
 					fdLog.debug('queue '+queue); 
 
-					pausecomp(postDelay);
+					//pausecomp(postDelay);
 				}else{
 					fdLog.debug('posting... skipping wait'); 
 					//pausecomp(postDelay);
