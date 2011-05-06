@@ -1,181 +1,181 @@
 <!-- /media_stat/images/navigation/global_nav/topnav_<%= navigation %>.gif -->
-<table border='0' cellpadding='0' cellspacing='0'>
-  <tr height='21px'>
+<table border='0' cellpadding='0' cellspacing='0' class="globalnav">
+  <tr height='21px' class="firstrow">
 <% if ("home".equals(navigation)) { %>
-    <td width='34px'><a href='/index.jsp'><img src='/media_stat/images/navigation/global_nav_parts/home_0.png' alt='Home'/></a></td>
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/home_1.png'/></td>
+    <td width='34px'><a href='/index.jsp'><img src='/media_stat/images/navigation/global_nav_parts/home_0.gif' alt='Home'/></a></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/home_1.gif'/></td>
 <% } else { %>
-    <td width='34px'><a href='/index.jsp'><img src='/media_stat/images/navigation/global_nav_parts/base_0.png' alt='Home'/></a></td>
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_1.png'/></td>
+    <td width='34px'><a href='/index.jsp'><img src='/media_stat/images/navigation/global_nav_parts/base_0.gif' alt='Home'/></a></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_1.gif'/></td>
 <% } %>
 <%if ("fru".equals(navigation)) { %>
-    <td width='39px'><a href='/department.jsp?deptId=fru&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/fru_selected.png' alt='Fruit'/></a></td>
+    <td width='39px'><a href='/department.jsp?deptId=fru&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/fru_selected.gif' alt='Fruit'/></a></td>
 <% } else { %>
-    <td width='39px'><a href='/department.jsp?deptId=fru&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/fru.png' alt='Fruit'/></a></td>
+    <td width='39px'><a href='/department.jsp?deptId=fru&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/fru.gif' alt='Fruit'/></a></td>
 <% } %>    
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_3.png'/></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_3.gif'/></td>
 <%if ("veg".equals(navigation)) { %>
-    <td width='68px'><a href='/department.jsp?deptId=veg&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/veg_selected.png' alt='Vegetables'/></a></td>
+    <td width='68px'><a href='/department.jsp?deptId=veg&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/veg_selected.gif' alt='Vegetables'/></a></td>
 <% } else { %>
-    <td width='68px'><a href='/department.jsp?deptId=veg&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/veg.png' alt='Vegetables'/></a></td>
+    <td width='68px'><a href='/department.jsp?deptId=veg&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/veg.gif' alt='Vegetables'/></a></td>
 <% } %>    
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_3.png'/></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_3.gif'/></td>
 <%if ("mea".equals(navigation)) { %>
-    <td width='36px'><a href='/department.jsp?deptId=mea&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/mea_selected.png' alt='Meat'/></a></td>
+    <td width='36px'><a href='/department.jsp?deptId=mea&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/mea_selected.gif' alt='Meat'/></a></td>
 <% } else { %>
-    <td width='36px'><a href='/department.jsp?deptId=mea&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/mea.png' alt='Meat'/></a></td>
+    <td width='36px'><a href='/department.jsp?deptId=mea&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/mea.gif' alt='Meat'/></a></td>
 <% } %>    
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_3.png'/></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_3.gif'/></td>
 <%if ("sea".equals(navigation)) { %>
-    <td width='56px'><a href='/department.jsp?deptId=sea&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/sea_selected.png' alt='Seafood'/></a></td>
+    <td width='56px'><a href='/department.jsp?deptId=sea&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/sea_selected.gif' alt='Seafood'/></a></td>
 <% } else { %>    
-    <td width='56px'><a href='/department.jsp?deptId=sea&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/sea.png' alt='Seafood'/></a></td>
+    <td width='56px'><a href='/department.jsp?deptId=sea&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/sea.gif' alt='Seafood'/></a></td>
 <% } %>    
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_3.png'/></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_3.gif'/></td>
 <%if ("del".equals(navigation)) { %>
-    <td width='32px'><a href='/department.jsp?deptId=del&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/del_selected.png' alt='Deli'/></a></td>
+    <td width='32px'><a href='/department.jsp?deptId=del&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/del_selected.gif' alt='Deli'/></a></td>
 <% } else { %>
-    <td width='32px'><a href='/department.jsp?deptId=del&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/del.png' alt='Deli'/></a></td>
+    <td width='32px'><a href='/department.jsp?deptId=del&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/del.gif' alt='Deli'/></a></td>
 <% } %>    
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_3.png'/></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_3.gif'/></td>
 <%if ("che".equals(navigation)) { %>
-    <td width='46px'><a href='/department.jsp?deptId=che&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/che_selected.png' alt='Cheese'/></a></td>
+    <td width='46px'><a href='/department.jsp?deptId=che&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/che_selected.gif' alt='Cheese'/></a></td>
 <% } else { %>
-    <td width='46px'><a href='/department.jsp?deptId=che&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/che.png' alt='Cheese'/></a></td>
+    <td width='46px'><a href='/department.jsp?deptId=che&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/che.gif' alt='Cheese'/></a></td>
 <% } %>    
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_3.png'/></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_3.gif'/></td>
 <%if ("dai".equals(navigation)) { %>
-    <td width='39px'><a href='/department.jsp?deptId=dai&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/dai_selected.png' alt='Dairy'/></a></td>
+    <td width='39px'><a href='/department.jsp?deptId=dai&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/dai_selected.gif' alt='Dairy'/></a></td>
 <% } else { %>
-    <td width='39px'><a href='/department.jsp?deptId=dai&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/dai.png' alt='Dairy'/></a></td>
+    <td width='39px'><a href='/department.jsp?deptId=dai&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/dai.gif' alt='Dairy'/></a></td>
 <% } %>    
-    <td width='27px'><img src='/media_stat/images/navigation/global_nav_parts/base_10.png'/></td>
+    <td width='27px'><img src='/media_stat/images/navigation/global_nav_parts/base_10.gif'/></td>
 <%if ("fdi".equals(navigation)) { %>
-    <td width='89px'><a href='/department.jsp?deptId=fdi&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/fdi_selected.png' alt='4-Minute Meals'/></a></td>
+    <td width='89px'><a href='/department.jsp?deptId=fdi&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/fdi_selected.gif' alt='4-Minute Meals'/></a></td>
 <% } else { %>
-    <td width='89px'><a href='/department.jsp?deptId=fdi&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/fdi.png' alt='4-Minute Meals'/></a></td>
+    <td width='89px'><a href='/department.jsp?deptId=fdi&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/fdi.gif' alt='4-Minute Meals'/></a></td>
 <% } %>    
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_3.png'/></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_3.gif'/></td>
 <%if ("rtc".equals(navigation)) { %>
-    <td width='88px'><a href='/department.jsp?deptId=rtc&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/rtc_selected.png' alt='Ready to Cook'/></a></td>
+    <td width='88px'><a href='/department.jsp?deptId=rtc&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/rtc_selected.gif' alt='Ready to Cook'/></a></td>
 <% } else { %>
-    <td width='88px'><a href='/department.jsp?deptId=rtc&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/rtc.png' alt='Ready to Cook'/></a></td>
+    <td width='88px'><a href='/department.jsp?deptId=rtc&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/rtc.gif' alt='Ready to Cook'/></a></td>
 <% } %>    
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_3.png'/></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_3.gif'/></td>
 <%if ("hmr".equals(navigation)) { %>
-    <td width='64px'><a href='/department.jsp?deptId=hmr&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/hmr_selected.png' alt='Heat & Eat'/></a></td>
+    <td width='64px'><a href='/department.jsp?deptId=hmr&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/hmr_selected.gif' alt='Heat & Eat'/></a></td>
 <% } else { %>    
-    <td width='64px'><a href='/department.jsp?deptId=hmr&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/hmr.png' alt='Heat & Eat'/></a></td>
+    <td width='64px'><a href='/department.jsp?deptId=hmr&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/hmr.gif' alt='Heat & Eat'/></a></td>
 <% } %>    
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_3.png'/></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_3.gif'/></td>
 <%if ("bak".equals(navigation)) { %>
-    <td width='47px'><a href='/department.jsp?deptId=bak&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/bak_selected.png' alt='Bakery'/></a></td>
+    <td width='47px'><a href='/department.jsp?deptId=bak&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/bak_selected.gif' alt='Bakery'/></a></td>
 <% } else { %>
-    <td width='47px'><a href='/department.jsp?deptId=bak&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/bak.png' alt='Bakery'/></a></td>
+    <td width='47px'><a href='/department.jsp?deptId=bak&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/bak.gif' alt='Bakery'/></a></td>
 <% } %>    
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_3.png'/></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_3.gif'/></td>
 <%if ("cat".equals(navigation)) { %>
-    <td width='58px'><a href='/department.jsp?deptId=cat&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/cat_selected.png' alt='Catering'/></a></td>
+    <td width='58px'><a href='/department.jsp?deptId=cat&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/cat_selected.gif' alt='Catering'/></a></td>
 <% } else { %>    
-    <td width='58px'><a href='/department.jsp?deptId=cat&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/cat.png' alt='Catering'/></a></td>
+    <td width='58px'><a href='/department.jsp?deptId=cat&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/cat.gif' alt='Catering'/></a></td>
 <% } %>    
-    <td width='11px'><img src='/media_stat/images/navigation/global_nav_parts/base_16.png'/></td>
+    <td width='11px'><img src='/media_stat/images/navigation/global_nav_parts/base_16.gif'/></td>
   </tr>
 </table>
 <table border='0' cellpadding='0' cellspacing='0'>
   <tr height='1px'>
 <% if ("home".equals(navigation)) { %>
-    <td width='34px'><a href='/index.jsp'><img src='/media_stat/images/navigation/global_nav_parts/home_17.png' alt='Home'/></a></td>
-    <td width='711px'><img src='/media_stat/images/navigation/global_nav_parts/home_18.png'/></td>
+    <td width='34px'><a href='/index.jsp'><img src='/media_stat/images/navigation/global_nav_parts/home_17.gif' alt='Home'/></a></td>
+    <td width='711px'><img src='/media_stat/images/navigation/global_nav_parts/home_18.gif'/></td>
 <% } else { %>
-    <td width='34px'><a href='/index.jsp'><img src='/media_stat/images/navigation/global_nav_parts/base_17.png' alt='Home'/></a></td>
-    <td width='711px'><img src='/media_stat/images/navigation/global_nav_parts/base_18.png'/></td>
+    <td width='34px'><a href='/index.jsp'><img src='/media_stat/images/navigation/global_nav_parts/base_17.gif' alt='Home'/></a></td>
+    <td width='711px'><img src='/media_stat/images/navigation/global_nav_parts/base_18.gif'/></td>
 <% } %>    
   </tr>
 </table>
-<table border='0' cellpadding='0' cellspacing='0'>
-  <tr height='22px'>
+<table border='0' cellpadding='0' cellspacing='0' class="globalnav">
+  <tr height='22px' class="secondrow">
 <% if ("home".equals(navigation)) { %>
-    <td width='34px'><a href='/index.jsp'><img src='/media_stat/images/navigation/global_nav_parts/home_19.png' alt='Home'/></a></td>
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/home_20.png'/></td>
+    <td width='34px'><a href='/index.jsp'><img src='/media_stat/images/navigation/global_nav_parts/home_19.gif' alt='Home'/></a></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/home_20.gif'/></td>
 <% } else { %>
-    <td width='34px'><a href='/index.jsp'><img src='/media_stat/images/navigation/global_nav_parts/base_40.png' alt='Home'/></a></td>
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_41.png'/></td>
+    <td width='34px'><a href='/index.jsp'><img src='/media_stat/images/navigation/global_nav_parts/base_40.gif' alt='Home'/></a></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_41.gif'/></td>
 <% } %>    
 <% if ("wgd".equals(navigation)) { %>
-    <td width='79px'><a href='/department.jsp?deptId=wgd&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/wgd_selected.png' alt="What's Good"/></a></td>
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/wgd_selected2.png'/></td>
+    <td width='79px'><a href='/department.jsp?deptId=wgd&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/wgd_selected.gif' alt="What's Good"/></a></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/wgd_selected2.gif'/></td>
 <% } else { %>
-    <td width='79px'><a href='/department.jsp?deptId=wgd&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/wgd.png' alt="What's Good"/></a></td>
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_22.png'/></td>
+    <td width='79px'><a href='/department.jsp?deptId=wgd&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/wgd.gif' alt="What's Good"/></a></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_22.gif'/></td>
 <% } %>    
 <% if ("orgnat".equals(navigation)) { %>
-    <td width='56px'><a href='/department.jsp?deptId=orgnat&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/orgnat_selected.png' alt='Organic'/></a></td>
+    <td width='56px'><a href='/department.jsp?deptId=orgnat&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/orgnat_selected.gif' alt='Organic'/></a></td>
 <% } else { %>
-    <td width='56px'><a href='/department.jsp?deptId=orgnat&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/orgnat.png' alt='Organic'/></a></td>
+    <td width='56px'><a href='/department.jsp?deptId=orgnat&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/orgnat.gif' alt='Organic'/></a></td>
 <% } %>    
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_22.png'/></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_22.gif'/></td>
 <% if ("local".equals(navigation)) { %>
-    <td width='39px'><a href='/department.jsp?deptId=local&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/local_selected.png' alt='Local'/></a></td>
+    <td width='39px'><a href='/department.jsp?deptId=local&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/local_selected.gif' alt='Local'/></a></td>
 <% } else { %>
-    <td width='39px'><a href='/department.jsp?deptId=local&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/local.png' alt='Local'/></a></td>
+    <td width='39px'><a href='/department.jsp?deptId=local&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/local.gif' alt='Local'/></a></td>
 <% } %>    
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_22.png'/></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_22.gif'/></td>
 <% if ("kos".equals(navigation)) { %>
-    <td width='50px'><a href='/department.jsp?deptId=kos&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/kos_selected.png' alt='Kosher'/></a></td>
+    <td width='50px'><a href='/department.jsp?deptId=kos&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/kos_selected.gif' alt='Kosher'/></a></td>
 <% } else { %>
-    <td width='50px'><a href='/department.jsp?deptId=kos&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/kos.png' alt='Kosher'/></a></td>
+    <td width='50px'><a href='/department.jsp?deptId=kos&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/kos.gif' alt='Kosher'/></a></td>
 <% } %>    
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_22.png'/></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_22.gif'/></td>
 <% if ("rec".equals(navigation)) { %>
-    <td width='50px'><a href='/department.jsp?deptId=rec&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/rec_selected.png' alt='Recipes'/></a></td>
+    <td width='50px'><a href='/department.jsp?deptId=rec&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/rec_selected.gif' alt='Recipes'/></a></td>
 <% } else { %>
-    <td width='50px'><a href='/department.jsp?deptId=rec&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/rec.png' alt='Recipes'/></a></td>
+    <td width='50px'><a href='/department.jsp?deptId=rec&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/rec.gif' alt='Recipes'/></a></td>
 <% } %>    
 <% if ("pas".equals(navigation)) { %>
-    <td width='40px'><img src='/media_stat/images/navigation/global_nav_parts/pas80.png'/></td>
-    <td width='40px'><a href='/department.jsp?deptId=pas&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/pas_selected.png' alt='Pasta'/></a></td>
+    <td width='40px'><img src='/media_stat/images/navigation/global_nav_parts/pas80.gif'/></td>
+    <td width='40px'><a href='/department.jsp?deptId=pas&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/pas_selected.gif' alt='Pasta'/></a></td>
 <% } else { %>
-    <td width='40px'><img src='/media_stat/images/navigation/global_nav_parts/base_27.png'/></td>
-    <td width='40px'><a href='/department.jsp?deptId=pas&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/pas.png' alt='Pasta'/></a></td>
+    <td width='40px'><img src='/media_stat/images/navigation/global_nav_parts/base_27.gif'/></td>
+    <td width='40px'><a href='/department.jsp?deptId=pas&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/pas.gif' alt='Pasta'/></a></td>
 <% } %>    
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_22.png'/></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_22.gif'/></td>
 <% if ("cof".equals(navigation)) { %>
-    <td width='47px'><a href='/department.jsp?deptId=cof&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/cof_selected.png' alt='Coffee'/></a></td>
+    <td width='47px'><a href='/department.jsp?deptId=cof&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/cof_selected.gif' alt='Coffee'/></a></td>
 <% } else { %>
-    <td width='47px'><a href='/department.jsp?deptId=cof&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/cof.png' alt='Coffee'/></a></td>
+    <td width='47px'><a href='/department.jsp?deptId=cof&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/cof.gif' alt='Coffee'/></a></td>
 <% } %>    
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_22.png'/></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_22.gif'/></td>
 <% if ("gro".equals(navigation)) { %>
-    <td width='54px'><a href='/department.jsp?deptId=gro&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/gro_selected.png' alt='Grocery'/></a></td>
+    <td width='54px'><a href='/department.jsp?deptId=gro&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/gro_selected.gif' alt='Grocery'/></a></td>
 <% } else { %>
-    <td width='54px'><a href='/department.jsp?deptId=gro&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/gro.png' alt='Grocery'/></a></td>
+    <td width='54px'><a href='/department.jsp?deptId=gro&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/gro.gif' alt='Grocery'/></a></td>
 <% } %>    
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_22.png'/></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_22.gif'/></td>
 <% if ("hba".equals(navigation)) { %>
-    <td width='99px'><a href='/department.jsp?deptId=hba&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/hba_selected.png' alt='Health & Beauty'/></a></td>
+    <td width='99px'><a href='/department.jsp?deptId=hba&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/hba_selected.gif' alt='Health & Beauty'/></a></td>
 <% } else { %>
-    <td width='99px'><a href='/department.jsp?deptId=hba&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/hba.png' alt='Health & Beauty'/></a></td>
+    <td width='99px'><a href='/department.jsp?deptId=hba&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/hba.gif' alt='Health & Beauty'/></a></td>
 <% } %>    
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_22.png'/></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_22.gif'/></td>
 <% if ("big".equals(navigation)) { %>
-    <td width='50px'><a href='/department.jsp?deptId=big&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/big_selected.png' alt='Buy Big'/></a></td>
+    <td width='50px'><a href='/department.jsp?deptId=big&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/big_selected.gif' alt='Buy Big'/></a></td>
 <% } else { %>
-    <td width='50px'><a href='/department.jsp?deptId=big&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/big.png' alt='Buy Big'/></a></td>
+    <td width='50px'><a href='/department.jsp?deptId=big&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/big.gif' alt='Buy Big'/></a></td>
 <% } %>    
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_22.png'/></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_22.gif'/></td>
 <% if ("fro".equals(navigation)) { %>
-    <td width='48px'><a href='/department.jsp?deptId=fro&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/fro_selected.png' alt='Frozen'/></a></td>
+    <td width='48px'><a href='/department.jsp?deptId=fro&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/fro_selected.gif' alt='Frozen'/></a></td>
 <% } else { %>
-    <td width='48px'><a href='/department.jsp?deptId=fro&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/fro.png' alt='Frozen'/></a></td>
+    <td width='48px'><a href='/department.jsp?deptId=fro&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/fro.gif' alt='Frozen'/></a></td>
 <% } %>    
-    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_22.png'/></td>
+    <td width='1px'><img src='/media_stat/images/navigation/global_nav_parts/base_22.gif'/></td>
 <% if ("usq".equals(navigation)) { %>
-    <td width='37px'><a href='/department.jsp?deptId=usq&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/usq_selected.png' alt='USQ'/></a></td>
+    <td width='37px'><a href='/department.jsp?deptId=usq&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/usq_selected.gif' alt='USQ'/></a></td>
 <% } else { %>
-    <td width='37px'><a href='/department.jsp?deptId=usq&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/usq.png' alt='USQ'/></a></td>
+    <td width='37px'><a href='/department.jsp?deptId=usq&trk=gnav'><img src='/media_stat/images/navigation/global_nav_parts/usq.gif' alt='USQ'/></a></td>
 <% } %>    
-    <td width='11px'><img src='/media_stat/images/navigation/global_nav_parts/base_35.png'/></td>
+    <td width='11px'><img src='/media_stat/images/navigation/global_nav_parts/base_35.gif'/></td>
   </tr>
 </table>
 
