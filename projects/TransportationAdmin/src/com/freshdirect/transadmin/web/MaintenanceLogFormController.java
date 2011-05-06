@@ -15,8 +15,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.transadmin.constants.EnumAssetStatus;
 import com.freshdirect.transadmin.constants.EnumIssueStatus;
 import com.freshdirect.transadmin.constants.EnumServiceStatus;
+import com.freshdirect.transadmin.model.Asset;
 import com.freshdirect.transadmin.model.MaintenanceIssue;
 import com.freshdirect.transadmin.service.AssetManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
@@ -140,10 +142,14 @@ public class MaintenanceLogFormController extends AbstractFormController {
 		if(request.getParameter("reverify") != null){
 			modelIn.setReVerified(true);
 		}
-		if(request.getParameter("estimatedRepairDate")!=null && request.getParameter("actualRepairDate")==null)
+		if(modelIn.getEstimatedRepairDate()!=null 
+				&& EnumIssueStatus.OPEN.getName().equalsIgnoreCase(modelIn.getIssueStatus())
+				&& modelIn.getActualRepairDate() == null)
 			modelIn.setEstimatedRepairDate(TransStringUtil.getCurrentTimeWithDate(request.getParameter("estimatedRepairDate")));
 			
-		if(request.getParameter("actualRepairDate")!=null)
+		if(modelIn.getActualRepairDate()!= null && request.getParameter("reverify") == null
+				&& (EnumIssueStatus.VERIFIED.getName().equalsIgnoreCase(modelIn.getIssueStatus()) 
+						|| EnumIssueStatus.REVERIFIED.getName().equalsIgnoreCase(modelIn.getIssueStatus())))
 			modelIn.setActualRepairDate(TransStringUtil.getCurrentTimeWithDate(request.getParameter("actualRepairDate")));			
 				
 	}
@@ -187,7 +193,17 @@ public class MaintenanceLogFormController extends AbstractFormController {
 				
 				getDomainManagerService().saveMaintenanceIssue(_command);
 				_command.setIssueId(_command.getId());
-				//request.setAttribute("id", _command.getId());
+
+				if(_command.getTruckNumber() != null){
+					Asset asset = getAssetManagerService().getAssetByAssetNumber(_command.getTruckNumber());
+					if(asset != null){
+						if(EnumServiceStatus.INSERVICE.getDescription().equalsIgnoreCase(_command.getIssueStatus()))
+							asset.setAssetStatus(EnumAssetStatus.ACTIVE);
+						else
+							asset.setAssetStatus(EnumAssetStatus.INACTIVE);
+						getAssetManagerService().saveEntity(asset);
+					}
+				}
 		}catch(Exception e){
 			e.printStackTrace();
 			errorList.add(this.getMessage("app.error.135", new Object[]{"Maintenance Issue"}));
