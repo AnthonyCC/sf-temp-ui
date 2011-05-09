@@ -108,6 +108,52 @@ public class Media extends ModelSupport implements Serializable {
 
 		return FDContentTypes.HTML;
 	}
+	
+	public static String getDefaultMimeType(ContentType type, String filename) {
+	    if (FDContentTypes.MEDIAFOLDER.equals(type)) {
+	        return null;
+	    }
+	    String lowercase = filename.toLowerCase();
+            if (lowercase.endsWith(".gif")) {
+                return "image/gif";
+            }
+            if (lowercase.endsWith(".jpg") || lowercase.endsWith(".jpeg")) {
+                return "image/jpeg";
+            }
+            if (lowercase.endsWith(".png")) {
+                return "image/png";
+            }
+            if (lowercase.endsWith(".tif")) {
+                return "image/tiff";
+            }
+            if (lowercase.endsWith(".ftl") || lowercase.endsWith(".txt") || lowercase.endsWith(".jsp")|| lowercase.endsWith(".log")) {
+                return "text/plain";
+            }
+            if (lowercase.endsWith(".html") || lowercase.endsWith(".htm")) {
+                return "text/html";
+            }
+            if (lowercase.endsWith(".mov")) {
+                return "video/quicktime";
+            }
+            if (lowercase.endsWith(".pdf")) {
+                return "application/pdf";
+            }
+            if (lowercase.endsWith(".xls")) {
+                return "application/vnd.ms-excel";
+            }
+            if (lowercase.endsWith(".db")) {
+                return "application/octet-stream";
+            }
+            
+	    if (FDContentTypes.IMAGE.equals(type)) {
+	        // failback
+	        return "image/jpeg";
+	    }
+            if (FDContentTypes.TEMPLATE.equals(type)) {
+                return "text/plain";
+            }
+            return "application/octet-stream";
+	}
 
 	public static Media convertEventToMedia(String uri, String mimeType,
 			byte[] content) throws IOException {

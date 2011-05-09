@@ -8,8 +8,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -26,12 +28,14 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsRequestI;
+import com.freshdirect.cms.application.CmsResponse;
 import com.freshdirect.cms.application.CmsResponseI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.application.MediaServiceI;
 import com.freshdirect.cms.application.service.AbstractContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.listeners.Media;
 import com.freshdirect.cms.node.ContentNode;
 import com.freshdirect.cms.util.DaoUtil;
 
@@ -63,13 +67,7 @@ public class MediaService extends AbstractContentService implements MediaService
 		} catch (SQLException e) {
 			throw new CmsRuntimeException(e);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e1) {
-				throw new CmsRuntimeException(e1);
-			}
+			close(conn);
 		}
 	}
 
@@ -90,13 +88,7 @@ public class MediaService extends AbstractContentService implements MediaService
 		} catch (SQLException e) {
 			throw new CmsRuntimeException(e);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e1) {
-				throw new CmsRuntimeException(e1);
-			}
+			close(conn);
 		}
 	}
 
@@ -113,7 +105,7 @@ public class MediaService extends AbstractContentService implements MediaService
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			PreparedStatement ps = conn.prepareStatement("select id, uri, type, width, height from cms_media where id = ?");
+			PreparedStatement ps = conn.prepareStatement("select id, uri, type, width, height, mime_type, last_modified from cms_media where id = ?");
 			ps.setString(1, cKey.getId());
 			ResultSet rs = ps.executeQuery();
 			ContentNodeI node = null;
@@ -126,17 +118,11 @@ public class MediaService extends AbstractContentService implements MediaService
 		} catch (SQLException e) {
 			throw new CmsRuntimeException(e);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e1) {
-				throw new CmsRuntimeException(e1);
-			}
+			close(conn);
 		}
 	}
 
-	private static String QUERY_MEDIA_MANY = "select /*+ FIRST_ROWS */ id, uri, type, width, height from cms_media where id in (?)";
+	private static String QUERY_MEDIA_MANY = "select /*+ FIRST_ROWS */ id, uri, type, width, height, mime_type, last_modified from cms_media where id in (?)";
 
 	/** @return Set of keys with known content types */
 	private Set<ContentKey> filterKeys(Set<ContentKey> keys) {
@@ -183,13 +169,7 @@ public class MediaService extends AbstractContentService implements MediaService
 		} catch (SQLException e) {
 			throw new CmsRuntimeException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					throw new CmsRuntimeException(e);
-				}
-			}
+		    close(conn);
 		}
 	}
 
@@ -220,6 +200,9 @@ public class MediaService extends AbstractContentService implements MediaService
 
 		String uri = rs.getString("URI");
 		node.setAttributeValue("path", uri);
+		
+		node.setAttributeValue("mimeType", rs.getString("MIME_TYPE"));
+                node.setAttributeValue("lastModified", rs.getDate("LAST_MODIFIED"));
 
 		if (FDContentTypes.IMAGE.equals(type)) {
 			node.setAttributeValue("width", rs.getInt("WIDTH"));
@@ -268,11 +251,94 @@ public class MediaService extends AbstractContentService implements MediaService
 	}
 
 	public CmsResponseI handle(CmsRequestI request) {
-		// TODO Auto-generated method stub
-		return null;
+	    Connection conn = null;
+	    try {
+	        conn = getConnection();
+	        for (Iterator i = request.getNodes().iterator(); i.hasNext();) {
+	            ContentNodeI node = (ContentNodeI) i.next();
+	            storeContentNode(conn, node);
+	        }
+	        return new CmsResponse();
+	        
+            } catch (SQLException e) {
+                try {
+                    conn.rollback();
+                } catch (SQLException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+                throw new CmsRuntimeException(e);
+            } finally {
+                close(conn);
+            }
+
 	}
 
-	public ContentTypeServiceI getTypeService() {
+	private void storeContentNode(Connection conn, ContentNodeI node) throws SQLException {
+	    persist(conn, node.getKey().getType(), node.getKey().getId(), (String) node.getAttributeValue("path"), (Integer) node.getAttributeValue("width"), (Integer) node.getAttributeValue("height"), (String) node.getAttributeValue("mimeType"), (Date) node.getAttributeValue("lastModified"));
+	}
+
+    private void persist(Connection conn, ContentType type, String id, String path, Integer width, Integer height, String mimeType, Date lastModified)
+            throws SQLException {
+        if (!FDContentTypes.IMAGE.equals(type)) {
+            width = null;
+            height = null;
+        }
+        if (FDContentTypes.MEDIAFOLDER.equals(type)) {
+            mimeType = null;
+        }
+        if (lastModified == null) {
+            lastModified = new Date();
+        }
+        if (mimeType == null) {
+            mimeType = Media.getDefaultMimeType(type, path);
+        }
+        
+        PreparedStatement ps = conn.prepareStatement("UPDATE CMS.Media SET uri=?,width=?,height=?,type=?,mime_type=?,last_modified=? WHERE id = ?");
+        
+        setupStatement(type, id, path, width, height, mimeType, lastModified, ps);
+        
+        int result = ps.executeUpdate();
+        ps.close();
+        if (result == 0) {
+            ps = conn.prepareStatement("INSERT INTO CMS.Media(uri,width,height,type,mime_type,last_modified,id) values(?,?,?,?,?,?,?)");
+            setupStatement(type, id, path, width, height, mimeType, lastModified, ps);
+            ps.executeUpdate();
+            ps.close();
+        }
+    }
+
+    /**
+     * @param type
+     * @param id
+     * @param path
+     * @param width
+     * @param height
+     * @param mimeType
+     * @param lastModified
+     * @param ps
+     * @throws SQLException
+     */
+    protected void setupStatement(ContentType type, String id, String path, Integer width, Integer height, String mimeType, Date lastModified,
+            PreparedStatement ps) throws SQLException {
+        ps.setString(1, path);
+        if (width != null) {
+            ps.setInt(2, width.intValue());
+        } else {
+            ps.setNull(2, Types.INTEGER);
+        }
+        if (height != null) {
+            ps.setInt(3, height.intValue());
+        } else {
+            ps.setNull(3, Types.INTEGER);
+        }
+        ps.setString(4, type.getName());
+        ps.setString(5, mimeType);
+        ps.setDate(6, new java.sql.Date(lastModified.getTime()));
+        ps.setString(7, id);
+    }
+
+    public ContentTypeServiceI getTypeService() {
 		return typeService;
 	}
 
@@ -285,7 +351,7 @@ public class MediaService extends AbstractContentService implements MediaService
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			PreparedStatement ps = conn.prepareStatement("select id, uri, type, width, height from cms_media where uri = ? order by uri");
+			PreparedStatement ps = conn.prepareStatement("select id, uri, type, width, height, mime_type, last_modified from cms_media where uri = ? order by uri");
 			ps.setString(1, uri);
 			ResultSet rs = ps.executeQuery();
 			ContentNodeI node = null;
@@ -298,13 +364,20 @@ public class MediaService extends AbstractContentService implements MediaService
 		} catch (SQLException e) {
 			throw new CmsRuntimeException(e);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e1) {
-				throw new CmsRuntimeException(e1);
-			}
+			close(conn);
 		}
 	}
+
+    /**
+     * @param conn
+     */
+    protected void close(Connection conn) {
+        try {
+        	if (conn != null) {
+        		conn.close();
+        	}
+        } catch (SQLException e1) {
+        	throw new CmsRuntimeException(e1);
+        }
+    }
 }

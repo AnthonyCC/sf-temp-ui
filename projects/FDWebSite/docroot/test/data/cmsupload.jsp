@@ -86,6 +86,21 @@
 </fieldset>
 </form>
 
+<legend>Full restore</legend>
+<div>
+	<li>
+		Create backup from the CMS schema : 
+	There is a <i><a href=" https://svn.freshdirect.com/appdev/FreshDirect/trunk/release/db/CMS_Backup/create_cms_backup_tables.sql">release/db/CMS_Backup/create_cms_backup_tables.sql</a></i> 
+	which creates the necessary <b>backup</b> tables, and <i><a href="https://svn.freshdirect.com/appdev/FreshDirect/trunk/release/db/CMS_Backup/store_backup.sql">release/db/CMS_Backup/store_backup.sql</a></i> script, 
+	which copies the relevant tables to the backup tables.
+	</li> 
+	<li>
+		Delete rows from the CMS.MEDIA table, before the <i>Media.xml.gz</i> is imported.
+	</li>	
+	<li>
+		Delete rows from the CMS.CONTENTNODE, CMS.ATTRIBUTE, CMS.RELATIONSHIP table, before the <i>Store.xml.gz</i> is imported.
+	</li>	
 
+</div>
 </body>
 </html>
