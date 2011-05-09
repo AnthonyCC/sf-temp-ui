@@ -125,7 +125,16 @@
 		</style>
 	</head>
 	<body>
-		<tmpl:insert template='/common/templates/main1.jsp'/>
+		<%
+		if(!request.isUserInRole("ErpsyAdminGrp")) {
+		%>
+			<%@ include file='/common/templates/main1_readonly.jsp' %>
+		<%	
+		} else {
+		%>
+			<%@ include file='/common/templates/main1.jsp' %>
+		<%}
+		%>
 		<div id="main">		
 			<div id="content">			
 <%	String skuCode = request.getParameter("skuCode");%>
