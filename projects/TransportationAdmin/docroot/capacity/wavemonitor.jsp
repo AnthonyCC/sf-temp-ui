@@ -142,6 +142,7 @@
                   	  <option value="">----All----</option>                     
                       <option <c:choose> <c:when test="${waveStatus == 'SYN'}" >selected </c:when> </c:choose> value="SYN">In Sync</option>  
                       <option <c:choose> <c:when test="${waveStatus == 'NYN'}" >selected </c:when> </c:choose> value="NYN">Not In Sync</option>
+                      <option <c:choose> <c:when test="${waveStatus == 'PEN'}" >selected </c:when> </c:choose> value="PEN">Pending</option>
                    </select>
                 
                 </td>

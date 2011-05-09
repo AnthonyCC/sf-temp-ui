@@ -899,7 +899,14 @@ public class CapacityController extends AbstractMultiActionController {
 
 		String rDate = request.getParameter("rDate");
 		String cutOff = request.getParameter("cutOff");
-		EnumWaveInstanceStatus waveStatus = EnumWaveInstanceStatus.getEnum(request.getParameter("waveStatus"));
+		EnumWaveInstanceStatus waveStatus = null;
+		boolean showOnlyInvalid = false;
+		if("PEN".equals(request.getParameter("waveStatus"))) {
+			waveStatus = null;
+			showOnlyInvalid = true;
+		} else {
+			waveStatus = EnumWaveInstanceStatus.getEnum(request.getParameter("waveStatus"));
+		}
 		
 		ModelAndView mav = new ModelAndView("waveMonitorView");
 		RoutingInfoServiceProxy proxy = new RoutingInfoServiceProxy();
@@ -943,7 +950,20 @@ public class CapacityController extends AbstractMultiActionController {
 						&& dynamicEnabledZoneMpp.get(_inst.getDeliveryDate()).contains(_inst.getArea().getAreaCode())) {
 					_tmpWaveCmd.setIsInValid(false);					
 				}
-				gridResult.add(_tmpWaveCmd);
+				if(EnumWaveInstanceStatus.NOTSYNCHRONIZED.equals(waveStatus)
+						|| EnumWaveInstanceStatus.SYNCHRONIZED.equals(waveStatus)) {
+					if(!_tmpWaveCmd.getIsInValid()) {
+						gridResult.add(_tmpWaveCmd);
+					}
+				} else {
+					if(showOnlyInvalid) {
+						if(_tmpWaveCmd.getIsInValid()) {
+							gridResult.add(_tmpWaveCmd);
+						}
+					} else {
+						gridResult.add(_tmpWaveCmd);
+					}
+				}
 			}
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
@@ -954,7 +974,7 @@ public class CapacityController extends AbstractMultiActionController {
 		mav.getModel().put("rDate", rDate);
 		mav.getModel().put("cutOff", cutOff);
 		mav.getModel().put("waveinstances", gridResult );
-		mav.getModel().put("waveStatus", waveStatus != null ? waveStatus.getName() : "" );		
+		mav.getModel().put("waveStatus", waveStatus != null ? waveStatus.getName() : (showOnlyInvalid ? "PEN" : "") );		
 		
 		//mav.getModel().put("erroronly", errorOnly);
 		mav.getModel().put("cutoffs", domainManagerService.getCutOffs());
