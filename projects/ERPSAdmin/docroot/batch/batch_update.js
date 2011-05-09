@@ -5,115 +5,119 @@
 
 var changeLog = ""+
 "/*\n"+
-" *\n"+
-" **	1.20.01 : 2011.01.01_12.51.57.PM\n"+
-" *			Added Trim to SAP IDs when adding leading zeroes\n"+
-" **	1.20.00 : 2010.12.01_12.37.28.AM\n"+
-" *			Added Default Pricing Unit Description functionality to NBIS\n"+
-" *			Added Change Log viewer\n"+
-" **	1.20.00 PRE : 2010.08.17_10.16.21.AM\n"+
-" *			Added Options (non-functional)\n"+
-" **	1.12.05 : \n"+
-" *			fixing verify error(s)\n"+
-" *			Fixed time error where time calc always returned 1:01 if took over a min\n"+
-" **	1.12.04 : 2010.08.05_01.45.48.PM\n"+
-" *			Fixed auto-format for SAP ids when not using web descriptions\n"+
-" *			Fixed a few calls to post data that if missing, would cause a hang\n"+
-" **	1.12.03 : 2010.08.05_01.04.29.PM\n"+
-" *			Added output for what the dupe was when dupe checking (to console)\n"+
-" **	1.12.02 : 2010.04.18_11:46:30.PM\n"+
-" *			Added New/Back In Stock functionality\n"+
-" *			Added regexp date verify\n"+
-" *			Added tab-insert functionality\n"+
-" **	1.12.01 : 2010.04.16_04.52.29.PM\n"+
-" *			fixed non-existant button calls\n"+
-" *			wrote regexp for date/time confirmation\n"+
-" **	1.12.00 : 2010.04.16_12:32:56.AM\n"+
-" *			Starting NBIS functionality\n"+
-" *			Changed button generation to be expandable\n"+
-" **	1.11.00 : 2010.03.21_07:54:05.PM\n"+
-" *			Added Auto Update functionality\n"+
-" *			Added Auto Update (force)\n"+
-" **	1.10.01 : 2010.03.20_10:23:33.PM\n"+
-" *			Fixed bug in CAO that made error SKUs cause an infinite loop\n"+
-" *			Fixed bug that caused status to display wrong (always showed last sku)\n"+
-" **	1.10.00 : 2010.03.08_01.25.05.PM\n"+
-" *			Fixed some status storage bugs (and color bugs)\n"+
-" *			Added after-POST status\n"+
-" **	1.09.00 : 2010.03.08_01:44:25.AM\n"+
-" *			Re-wrote structure to allow easier expansion of code\n"+
-" *			Fixed a few minor bugs and display issues\n"+
-" *			Added ability to edit CAO\n"+
-" **	1.08.00 : 2010.02.09_02.57.09.PM\n"+
-" *			Added deposit amount\n"+
-" *			Fixed curData define (to be easier)\n"+
-" *			Fixed a few minor mis-names in label\n"+
-" **	1.07.01 : 2010.02.03_06.06.16.PM\n"+
-" *			Fixed SAP->SKU output to allow copy/paste into excel correctly\n"+
-" **	1.07.00 : 2010.02.01_04.25.58.PM\n"+
-" *			Added SAP2SKU Lookup\n"+
-" *			Fixed verify bug that would cause single item to get stuck\n"+
-" **	1.06.00 : 2010.01.26_02.35.26.PM\n"+
-" *			Added Label Name\n"+
-" *			Fixed verfiy bug that saw {SKIP} as a mismatch\n"+
-" **	1.05.02 : 2010.01.25_05.55.24.PM\n"+
-" *			Turned on GET and POST by default\n"+
-" **	1.05.01 : 2010.01.22_12.24.16.PM\n"+
-" *			Fixed minor bug caused by newest firebug\n"+
-" **	1.05.00 : 2010.01.22_12.24.16.PM\n"+
-" *			Added verification scheme (for rest/web descrip)\n"+
-" *			Added display to show mismatches on verify (and which items mismatch)\n"+
-" *			Changed status updates to always show SOME status (and errors)\n"+
-" *			Cleaned up debug messages\n"+
-" *			Fixed curData structure to make it expandable\n"+
-" *			Fixed bugs in count/dupe check\n"+
-" *			Fixed bug when no ID was passed, all zeroes were used (now skips)\n"+
-" **	1.04.00 : 2010.01.20_10:56:11.PM\n"+
-" *			Added POST delay option to fix a (ERPSy-side) bug\n"+
-" *			Fixed web description to take data from lines/empty/skip\n"+
-" **	1.03.00 : 2010.01.20_02.39.00.PM\n"+
-" *			Changed the way Web Description works. Each line can now set it's own\n"+
-" *			value.\n"+
-" **	1.02.00 : 2010.01.20_12.19.20.PM\n"+
-" *			Web Copy done\n"+
-" **	1.01.06 : 2010.01.19_11:56:36.PM\n"+
-" *			Added Web Copy HTML / toggler\n"+
-" *			Added prototype.js script to page\n"+
-" *			Fixed console grab, if console wasn't available, addon didn't work\n"+
-" **	1.01.05 : 2010.01.18_06.09.17.PM\n"+
-" *			Fixed bug that caused checkLocation to fail\n"+
-" *			Added GUI for advance order flag\n"+
-" *			Added code for advance order flag\n"+
-" **	1.01.04 : 2008.11.18_07:38:44.PM\n"+
-" *			Tweaked urls to include (should now work on all erps urls)\n"+
-" *			Added code to get correct baseURLs with new unclude urls\n"+
-" *			Moved versioning to var\n"+
-" *			Added version to Batch Update title bar\n"+
-" *			Tweaked style (to var, easier to edit)\n"+
-" *			Fixed DupeCheck returning '1' on an empty check\n"+
-" **	1.01.03 : 2008.10.27_01:00:53.AM\n"+
-" *			Fixed timing\n"+
-" *			Fixed menu bugs\n"+
-" *			Fixed/Added unknown form data logging (DEBUG)\n"+
-" *			!BUG items left is incorrect (display)\n"+
-" **	1.01.02 : 2008.10.26_09:15:50.PM\n"+
-" *			Fixed dupe counter (again)\n"+
-" **	1.01.01 : 2008.10.26_06:16:38.PM\n"+
-" *			Added killing of calendar script/div\n"+
-" *			These aren't implemented, and tend to cause errors randomly.\n"+
-" *			It was easier to remove them than worry about them.\n"+
-" **	1.01.00 : 2008.10.26_04:06:42.AM\n"+
-" *			Added Dupe Check standalone function\n"+
-" *			Added shouldPost/ShouldGet options to menu for debugging\n"+
-" *			Fixed Dupe checking (wasn't finding dupes correctly)\n"+
-" *			Tweaked heights\n"+
-" *			Added Logging to firebug console if firebug is installed\n"+
-" **	1.00.01 : 2008.07.20_12.28.38.PM\n"+
-" *			Added timing\n"+
-" **	1.00.00 : 2008.07.20_03.21.41.AM\n"+
-" *			Working version\n"+
-" *\n"+
-" */\n"
+	" *\n"+
+	" **	1.30.01 : 2011.03.22_01.50.06.PM\n"+
+	" *			Fixed display issue in KOS when an item was already checked\n"+
+	" **	1.30.00 : 2011.03.22_01.15.17.AM\n"+
+	" *			Added KOSHER functionality\n"+
+	" **	1.20.01 : 2011.01.01_12.51.57.PM\n"+
+	" *			Added Trim to SAP IDs when adding leading zeroes\n"+
+	" **	1.20.00 : 2010.12.01_12.37.28.AM\n"+
+	" *			Added Default Pricing Unit Description functionality to NBIS\n"+
+	" *			Added Change Log viewer\n"+
+	" **	1.20.00 PRE : 2010.08.17_10.16.21.AM\n"+
+	" *			Added Options (non-functional)\n"+
+	" **	1.12.05 : \n"+
+	" *			fixing verify error(s)\n"+
+	" *			Fixed time error where time calc always returned 1:01 if took over a min\n"+
+	" **	1.12.04 : 2010.08.05_01.45.48.PM\n"+
+	" *			Fixed auto-format for SAP ids when not using web descriptions\n"+
+	" *			Fixed a few calls to post data that if missing, would cause a hang\n"+
+	" **	1.12.03 : 2010.08.05_01.04.29.PM\n"+
+	" *			Added output for what the dupe was when dupe checking (to console)\n"+
+	" **	1.12.02 : 2010.04.18_11:46:30.PM\n"+
+	" *			Added New/Back In Stock functionality\n"+
+	" *			Added regexp date verify\n"+
+	" *			Added tab-insert functionality\n"+
+	" **	1.12.01 : 2010.04.16_04.52.29.PM\n"+
+	" *			fixed non-existant button calls\n"+
+	" *			wrote regexp for date/time confirmation\n"+
+	" **	1.12.00 : 2010.04.16_12:32:56.AM\n"+
+	" *			Starting NBIS functionality\n"+
+	" *			Changed button generation to be expandable\n"+
+	" **	1.11.00 : 2010.03.21_07:54:05.PM\n"+
+	" *			Added Auto Update functionality\n"+
+	" *			Added Auto Update (force)\n"+
+	" **	1.10.01 : 2010.03.20_10:23:33.PM\n"+
+	" *			Fixed bug in CAO that made error SKUs cause an infinite loop\n"+
+	" *			Fixed bug that caused status to display wrong (always showed last sku)\n"+
+	" **	1.10.00 : 2010.03.08_01.25.05.PM\n"+
+	" *			Fixed some status storage bugs (and color bugs)\n"+
+	" *			Added after-POST status\n"+
+	" **	1.09.00 : 2010.03.08_01:44:25.AM\n"+
+	" *			Re-wrote structure to allow easier expansion of code\n"+
+	" *			Fixed a few minor bugs and display issues\n"+
+	" *			Added ability to edit CAO\n"+
+	" **	1.08.00 : 2010.02.09_02.57.09.PM\n"+
+	" *			Added deposit amount\n"+
+	" *			Fixed curData define (to be easier)\n"+
+	" *			Fixed a few minor mis-names in label\n"+
+	" **	1.07.01 : 2010.02.03_06.06.16.PM\n"+
+	" *			Fixed SAP->SKU output to allow copy/paste into excel correctly\n"+
+	" **	1.07.00 : 2010.02.01_04.25.58.PM\n"+
+	" *			Added SAP2SKU Lookup\n"+
+	" *			Fixed verify bug that would cause single item to get stuck\n"+
+	" **	1.06.00 : 2010.01.26_02.35.26.PM\n"+
+	" *			Added Label Name\n"+
+	" *			Fixed verfiy bug that saw {SKIP} as a mismatch\n"+
+	" **	1.05.02 : 2010.01.25_05.55.24.PM\n"+
+	" *			Turned on GET and POST by default\n"+
+	" **	1.05.01 : 2010.01.22_12.24.16.PM\n"+
+	" *			Fixed minor bug caused by newest firebug\n"+
+	" **	1.05.00 : 2010.01.22_12.24.16.PM\n"+
+	" *			Added verification scheme (for rest/web descrip)\n"+
+	" *			Added display to show mismatches on verify (and which items mismatch)\n"+
+	" *			Changed status updates to always show SOME status (and errors)\n"+
+	" *			Cleaned up debug messages\n"+
+	" *			Fixed curData structure to make it expandable\n"+
+	" *			Fixed bugs in count/dupe check\n"+
+	" *			Fixed bug when no ID was passed, all zeroes were used (now skips)\n"+
+	" **	1.04.00 : 2010.01.20_10:56:11.PM\n"+
+	" *			Added POST delay option to fix a (ERPSy-side) bug\n"+
+	" *			Fixed web description to take data from lines/empty/skip\n"+
+	" **	1.03.00 : 2010.01.20_02.39.00.PM\n"+
+	" *			Changed the way Web Description works. Each line can now set it's own\n"+
+	" *			value.\n"+
+	" **	1.02.00 : 2010.01.20_12.19.20.PM\n"+
+	" *			Web Copy done\n"+
+	" **	1.01.06 : 2010.01.19_11:56:36.PM\n"+
+	" *			Added Web Copy HTML / toggler\n"+
+	" *			Added prototype.js script to page\n"+
+	" *			Fixed console grab, if console wasn't available, addon didn't work\n"+
+	" **	1.01.05 : 2010.01.18_06.09.17.PM\n"+
+	" *			Fixed bug that caused checkLocation to fail\n"+
+	" *			Added GUI for advance order flag\n"+
+	" *			Added code for advance order flag\n"+
+	" **	1.01.04 : 2008.11.18_07:38:44.PM\n"+
+	" *			Tweaked urls to include (should now work on all erps urls)\n"+
+	" *			Added code to get correct baseURLs with new unclude urls\n"+
+	" *			Moved versioning to var\n"+
+	" *			Added version to Batch Update title bar\n"+
+	" *			Tweaked style (to var, easier to edit)\n"+
+	" *			Fixed DupeCheck returning '1' on an empty check\n"+
+	" **	1.01.03 : 2008.10.27_01:00:53.AM\n"+
+	" *			Fixed timing\n"+
+	" *			Fixed menu bugs\n"+
+	" *			Fixed/Added unknown form data logging (DEBUG)\n"+
+	" *			!BUG items left is incorrect (display)\n"+
+	" **	1.01.02 : 2008.10.26_09:15:50.PM\n"+
+	" *			Fixed dupe counter (again)\n"+
+	" **	1.01.01 : 2008.10.26_06:16:38.PM\n"+
+	" *			Added killing of calendar script/div\n"+
+	" *			These aren't implemented, and tend to cause errors randomly.\n"+
+	" *			It was easier to remove them than worry about them.\n"+
+	" **	1.01.00 : 2008.10.26_04:06:42.AM\n"+
+	" *			Added Dupe Check standalone function\n"+
+	" *			Added shouldPost/ShouldGet options to menu for debugging\n"+
+	" *			Fixed Dupe checking (wasn't finding dupes correctly)\n"+
+	" *			Tweaked heights\n"+
+	" *			Added Logging to firebug console if firebug is installed\n"+
+	" **	1.00.01 : 2008.07.20_12.28.38.PM\n"+
+	" *			Added timing\n"+
+	" **	1.00.00 : 2008.07.20_03.21.41.AM\n"+
+	" *			Working version\n"+
+	" *\n"+
+	" */\n"
 "";
 
 /*
@@ -142,6 +146,21 @@ var changeLog = ""+
 										[3] After POST status
 		-- CAOtemplate -- */
 			var CAOtemplate = new Array();
+			
+		/* -- KOS_content --
+			KOS_content [0]  Current Status WORD as string
+						[1]  Current Status TEXT as string
+		-- KOS_content -- */
+			var KOS_content = new Array("", "");
+
+		/* -- KOStemplate --
+			KOStemplate ['COLUMN|NAME'] [0] Displayed Text/Image
+										[1] Current Val
+										[2] Value to Use
+										[3] After POST status
+		-- KOStemplate -- */
+			var KOStemplate = new Array();
+			
 		/* -- curData --
 			CurData	[0]	[0]  id as string (base id for Web Copy)
 			int id		[1]  verb as string
@@ -171,6 +190,7 @@ var changeLog = ""+
 						[9]  verify done (removed from queue) true/false
 						[10] target id as string (Web Copy)
 						[11] CAO results (in the form of CAOtemplate)
+						[12] KOS results (in the form of KOStemplate)
 
 
 		-- curData -- */
@@ -239,6 +259,7 @@ var changeLog = ""+
 		buttonArr[buttonArr.length] = new Array('rest', 'rest', 'REST', true);
 		buttonArr[buttonArr.length] = new Array('CAO', 'CAO', 'CAO', false);
 		buttonArr[buttonArr.length] = new Array('NBIS', 'NBIS', 'NBIS', false);
+		buttonArr[buttonArr.length] = new Array('KOS', 'KOS', 'KOS', false);
 
 	/* Timing */
 		var timeStart;
@@ -253,6 +274,8 @@ var changeLog = ""+
 			var checkVerify;
 		//CAO fetch check [BOOL]
 			var checkCAO;
+		//KOS fetch check [BOOL]
+			var checkKOS;
 
 	/* Menu variables */
 		//holds DEBUG value from menu for logging [BOOL]
@@ -275,6 +298,10 @@ var changeLog = ""+
 			var urlCAOView = urlMain+'product/product_view.jsp?skuCode=';
 		//url to get CAO
 			var urlCAO = urlMain+'product/claims_edit.jsp';
+		//url to view KOS
+			var urlKOSView = urlMain+'product/product_view.jsp?skuCode=';
+		//url to get KOS
+			var urlKOS = urlMain+'product/kosher_edit.jsp';
 		//post url for sapid -> skus
 			var urlSAP2SKU = urlMain+'product/product_search.jsp';
 		//view (GET) url for NBIS
@@ -296,9 +323,20 @@ var changeLog = ""+
 			var queue = 0;
 		//CAO fetch killswitch [INT]
 			var checkCAOKS = 60; //(interval = 500ms, so 60/2 = 30 secs)
+		//KOS fetch killswitch [INT]
+			var checkKOSKS = 60; //(interval = 500ms, so 60/2 = 30 secs)
+		
+		//boolean to allow cao to finish before kicking off kos
+			var caoDone = false;
+			
 		//main and backup skus for viewing
 			var skuCAOmain = 'CAN0070215';
 			var skuCAObackup = 'SPE0068675';
+			
+		//main and backup skus for viewing (kosher)
+			var skuKOSmain = 'CAN0070215';
+			var skuKOSbackup = 'SPE0068675';
+			
 		//date regExp pattern
 			dateRegExp = /^(0[1-9]|1[012])\/([123]0|[012][1-9]|31)\/(2[0-9]{3}|[0-9]{2})([\s]?(0[1-9]|1[012])[:]([0-5][0-9]))?$/;
 
@@ -495,6 +533,16 @@ var changeLog = ""+
 				default: return '';
 			}
 		}
+		
+		function aniKOS(key, id) {
+			switch (key) {
+				case '+': $(id).className = 'm'; return '-';
+				case '-': $(id).className = 'p'; return '+';
+
+				default: return '';
+			}
+		}
+		
 	/* choice animations (code-side) */
 		function ani(key) {
 			switch (key) {
@@ -505,6 +553,15 @@ var changeLog = ""+
 				case '+': return '-';
 				case '-': return 'o';
 				case 'o': return '+';
+
+				default: return '';
+			}
+		}
+		
+		function aniKOS(key) {
+			switch (key) {
+				case '+': return '-';
+				case '-': return '+';
 
 				default: return '';
 			}
@@ -1216,7 +1273,8 @@ var changeLog = ""+
 						fdLog.debug('before curData[curLine][11]: ' + curData[curLine][11]); 
 
 						//loop through CAOtemplate and set user-vals
-						for (var index in CAOtemplate) {														
+						for (var index in CAOtemplate) {		
+							fdLog.debug('index '+ document.getElementById(index).value); 
 							if ($(index)) {								
 								curData[curLine][11][index] = $(index).value;
 								fdLog.debug("Printing" + curData[curLine][11][index] + " | curLine:" + curLine + " | index:" + index );
@@ -1286,6 +1344,9 @@ var changeLog = ""+
 					
 					//clear updater
 					checkCAO = window.clearInterval(checkCAO);
+					
+					//set as done so KOS can proceed
+					caoDone = true;
 					
 					fdLog.debug('Updated timer in here:' + checkCAO); 
 				}
@@ -1803,6 +1864,727 @@ var changeLog = ""+
 
 /* -- CAO functions -- */
 
+/* -- KOS functions -- */
+
+	/* clear KOS choices
+	 *	so if user chooses a symbol, the other items become false
+	 */
+		function clearOtherKOSChoices(refId) {
+			//refId is needed so we can skip it
+			if ($(refId).value == '-') {
+				return;
+			}
+			//an id is section|item, so we'll use that to make sure we're in the right section to clear
+			var section = refId.split('|')[0];
+			//get items
+			var items = $('KOS_data').getElementsByTagName('input');
+			for (var i = 0; i<items.length; i++) {
+				if ( (items[i].id).indexOf(section) == 0 ) {
+					//right section
+					if (items[i].id == refId) {
+						//skip
+					}else{
+						//set off
+						items[i].value = aniKOS('+', items[i].id);
+					}
+				}else{
+					continue;
+				}
+			}
+
+		}
+
+	/* run KOS */
+		function actionKOS() {
+			fdLog.debug('running KOS');
+
+			//set timer
+			timeStart = makeTime('start');
+
+
+			if ( $('KOS_ids').value == '' ) {
+					while(!updStatus('No action selected/No IDs to act on', 'error', '', ''));
+					fdLog.debug('REST: No action selected/No IDs to act on'); 
+				return true;
+			}
+
+			//clear old data
+			curData = [];
+
+			//update status
+			while(!updStatus('checking IDs...', 'checking', '0', '0'));
+
+			//clear output status
+			$('status_of').innerHTML = 'of';
+			$('status_cont').innerHTML = '<hr />';
+			
+			//temp arrays for dupecheck
+			var tempIdsArr = new Array();
+			var dupeArr = new Array();
+			//temp var for dupe count
+			var dupes = 0;
+			
+			//start processing id
+			while(!updStatus('checking for dupe IDs', 'checking', '', ''));
+
+			//get id list and split into an array for use
+			//remove extra newline
+			var cont = $('KOS_ids').value.replace(/\n*$/, '');
+			var tempIdsArr = cont.split('\n');
+
+			fdLog.debug('tempIdsArr '+tempIdsArr); 
+
+			//loop through temp array, and add to curData
+			if ( isArray(tempIdsArr) ) {
+				var curLine = 0;
+				for (var n=0; n < tempIdsArr.length; n++ ) {
+
+					//if item is not already defined
+					if (!dupeArr.inArray(tempIdsArr[n])) {
+						//add it
+						
+						dupeArr.push(tempIdsArr[n]);
+						curData.push(curLine);
+						curData[curLine] =  new Array(curDataLength);
+						curData[curLine][7] = new Array(curDataLengthSeven);
+						curData[curLine][8] = new Array(curDataLengthEight);
+						//add copy of KOStemplate
+						curData[curLine][12] = KOStemplate.clone();
+						curData[curLine][0] = tempIdsArr[n];
+						curData[curLine][1] = 'queued';
+						curData[curLine][7][0] = '{SKIP}'; //safety
+						curData[curLine][8][0] = '{SKIP}'; //safety
+
+						fdLog.debug('Added item '+curLine+' to CurData'); 
+						fdLog.debug('item curLine '+curData[curLine]); 
+						
+						//add item line div
+						while(!insEle('status_cont', 'div', 'I', 'fetchitem'+curLine)) {}
+						while(!updStatus('ID ok '+curData[curLine], 'checking', '', ''));
+						
+						fdLog.debug('curData[curLine][12] '+curData[curLine][12]); 
+
+						//loop through KOStemplate and set user-vals
+						for (var index in KOStemplate) {
+							if ($(index)) {
+								fdLog.debug('curLine:' + curLine + '|index '+ $(index).value); 
+								curData[curLine][12][index] = $(index).value;
+								fdLog.debug("Printing" + curData[curLine][12][index][2] + " | curLine:" + curLine + " | index:" + index );
+							}
+						}
+
+						fdLog.debug('curData[curLine][12] '+curData[curLine][12]); 
+
+						fdLog.debug('curData['+curLine+'] '+curData[curLine]); 
+							
+						curLine++;
+					}else{
+						//skip
+							fdLog.debug('Skipped item '+curLine+' : '+tempIdsArr[n]+' (dupe)'); 
+						while(!updStatus('skipping dupe '+curData[curLine], 'checking', '', ''));
+						dupes++;
+					}
+				}
+			}
+			while(!updStatus('dupe check done ('+dupes+' skipped)', 'checking', '', curData.length, ''));
+			
+				fdLog.debug('Dupe Count: '+dupes); 
+
+			//start processing id
+			//update status (called at start of run)
+			while(!updStatus('fetching', 'processing', '1', curData.length));
+			
+			//set queue total
+			queue = curData.length;
+
+			//start fetch status updater
+			checkKOS = setInterval(kosFetchProgress, 500);
+
+			return true;
+		}
+
+	/*	parses KOS page
+	 *		pass in KOS page source as string
+	 *			item as INT for curData[item][12]
+	 *	puts each value in curData[item][12][key][optStoreInVal]
+	 *		where optStoreInVal defaults to 1
+	 */
+		function parseKOS(item, KOSData, optStoreIn) {
+			fdLog.debug('Parsing KOS...'); 
+
+			var optStoreInVal = optStoreIn || 1;
+
+			//because these are radio buttons, we need to parse a checked elem differently
+
+			//using a regexp
+			var rePattern = /name=\"([^\"]*)\".*value=\"([^\"]*)\"[\sA-Z]?([^\s\>]*)>([\s]*.*)/gi;
+
+			var KOSDataTemp = KOSData.match(rePattern);
+
+			if (KOSDataTemp != null && KOSDataTemp.length > 0) {
+				//parse and add to template
+				for (var index = 0; index < KOSDataTemp.length; index++) {
+					var t = KOSDataTemp[index];
+
+					if (t.indexOf('action" value="kosher">') > -1) { continue; }
+					
+					var isChecked = false;
+					if (t.indexOf('CHECKED>') > -1) { isChecked = true; }
+
+					t = t.replace('name="', '');
+					t = t.replace('" type="radio" value="', '|');
+					t = t.replace('CHECKED', '');
+					t = t.replace('" onclick="selectNoImage(31)">', '|');
+					t = t.replace('" >', '');
+					t = t.replace(/[\r\n\t]*[\s]*</g, '|<');
+					t = t.replace('|<br>', '');
+					t = t.replace('img src="../', 'img src="./'); //fix image path
+
+					//remove this, way too verbose
+					//fdLog.debug(index, t); 
+
+					t = t.split('|');
+					
+					var key = t[0]+'|'+t[1];
+					//see if t[2] == 'CHECKED', if so match in stored values
+					curData[item][12][key][optStoreInVal] = isChecked;
+
+				}
+			
+			}else{
+				KOS_content[0] = "ERROR";
+				KOS_content[1] = "Error parsing KOS data!";
+			}
+
+			return true;
+		}
+
+	/* view a product, applies status to KOS_content[0] */
+		function viewProductTemplateKOS(skuCode) {
+			if (doGet) {
+				fdLog.debug('Viewing '+skuCode); 
+				doGet = false;
+					fdLog.debug("Ajax call for8:"+ urlKOSView+skuCode);
+					new Ajax.Request(urlKOSView+skuCode, {
+							method: 'GET',
+							onComplete: function(responseDetails) {
+									KOS_content[0] = "VIEWED";
+									doGet = true;
+									fdLog.debug('viewed '+skuCode); 
+								},
+							onError: function(responseDetails) {
+									fdLog.debug('Error viewing '+skuCode); 
+									if (skuCode == skuKOSmain) {
+										//try back up
+										while(!viewProductTemplateKOS(skuKOSbackup));
+									}else{
+										//epic fail
+										KOS_content[0] = "ERROR";
+										KOS_content[1] = "Error fetching KOS data!";
+									}
+								}
+							});
+					return true;
+			}
+		}
+
+	/* KOS setup progress */
+		function KOSSetupProgress() { //we HAVE to wait for cao to finish
+			if (checkKOS && caoDone) {
+
+				checkKOSKS--;
+				fdLog.debug('checkKOSKS '+checkKOSKS); 
+
+				$('KOS_fetching').innerHTML = ani($('KOS_fetching').innerHTML);
+
+				//you need to view a product first, any product (existing), cao takes care of this.
+				if (KOS_content[0] == "" && CAO_content[0] == 'ERROR') {
+					viewProductTemplate(skuKOSmain);
+				}
+				if (KOS_content[0] == "" && CAO_content[0] != 'ERROR') {
+					KOS_content[0] = "VIEWED";
+				}
+				if (KOS_content[0] == "VIEWED") {
+					fetchKOSTemplate();
+				}
+				if (KOS_content[0] == "PARSE") {
+					KOS_content[0] = "PARSING";
+					while(!parseKOSTemplate(KOS_content[1]));
+					KOS_content[0] = "ERROR";
+				}
+				if ( (KOS_content[0] == "HTML" && KOS_content[1] != "") || (KOS_content[0] == "ERROR") || checkKOSKS<0 ) {
+					if (checkKOSKS<0) {
+						//fail
+						KOS_content[0] = "ERROR";
+						KOS_content[1] = "Error fetching KOS data! (Timed Out)";	
+					}
+					//set visible html
+					$('KOS_data').innerHTML = KOS_content[1];
+
+					//reset checkCAOKS jik
+					checkKOSKS = 60;
+					
+					//clear updater
+					checkKOS = clearInterval(checkKOS);
+				}
+			}
+		}
+
+	/* fetch KOS page for template */
+		function fetchKOSTemplate() {
+			if (doGet) {
+				fdLog.debug('fetching KOS '); 
+				doGet = false;
+					fdLog.debug("Ajax call for9:"+ urlKOS);
+					new Ajax.Request(urlKOS, {
+							method: 'GET',
+							onComplete: function(responseDetails) {
+									KOS_content[0] = "PARSE";
+									KOS_content[1] = responseDetails.responseText;
+									doGet = true;
+									fdLog.debug('fetched KOS '); 
+								},
+							onError: function(responseDetails) {
+									fdLog.debug('Error fetching KOS'); 
+									//fail
+									KOS_content[0] = "ERROR";
+									KOS_content[1] = "Error fetching KOS data!";
+								}
+							});
+					return true;
+			}
+		}
+
+	/* fetch KOS page */
+		function fetchKOS(item, afterPost) {
+			fdLog.debug('fetching KOS '); 
+			doGet = false;
+				fdLog.debug("Ajax call for10:"+ urlKOS);
+					new Ajax.Request(urlKOS, {
+						method: 'GET',
+						onComplete: function(responseDetails) {
+								//call parser to parse and store info
+								if (afterPost) {
+									curData[item][1] = "fetched2";
+									//fetching after changes posted
+									while(!parseKOS(item, responseDetails.responseText, 3));
+								}else{
+									curData[item][1] = "fetched";
+									//fetching original
+									while(!parseKOS(item, responseDetails.responseText));
+								}
+								
+								doGet = true;
+								fdLog.debug('fetched KOS '); 
+							},
+						oneError: function(responseDetails) {
+								fdLog.debug('Error fetching KOS '+item); 
+								//fail
+								curData[item][1] = "error";
+								curData[item][2] = responseDetails.responseText;
+							}
+						});
+			return true;
+		}
+
+	/*	parses KOS page for template
+	 *		pass in KOS page source as string
+	 *		parsed data as array in the form [COLUMN][NAME][TEXT]
+	 */
+		function parseKOSTemplate(KOSData) {
+			fdLog.debug('Parsing KOS (template)...'); 
+
+			//using a regexp
+			var rePattern = /name=\"([^\"]*)\".*value=\"([^\"]*)\"[\s]?([^\s\>]*)>([\s]*.*)/gi;
+
+			var KOSDataTemp = KOSData.match(rePattern);
+			if (KOSDataTemp != null && KOSDataTemp.length > 0) {
+				//parse and add to template
+				for (var index = 0; index < KOSDataTemp.length; index++) {
+					var t = KOSDataTemp[index];
+
+					if (t.indexOf('action" value="kosher">') > -1) { continue; }
+
+					t = t.replace('name="', '');
+					t = t.replace('" type="radio" value="', '|');
+					t = t.replace('CHECKED', '');
+					t = t.replace('" onclick="selectNoImage(31)">', '|');
+					t = t.replace('" >', '');
+					t = t.replace(/[\r\n\t]*[\s]*</g, '|<');
+					t = t.replace('|<br>', '');
+					//t = t.replace('img src="../', 'img src="./'); //fix image path
+
+					t = t.split('|');
+
+					var disp_text = '';
+					var cur_val = false;
+					var use_val = '-';
+					var stat_val = '';
+					
+					//attempt to get disp_text, it should always be last
+					disp_text = t[t.length-1];
+					
+					fdLog.debug("&&&&KOSTemplate, key:"+ t[0]+'|'+t[1]);
+
+					KOStemplate[t[0]+'|'+t[1]] = new Array(disp_text, cur_val, use_val, stat_val);
+					
+				}
+				
+					fdLog.debug('KOStemplate '+ KOStemplate); 
+			
+			}else{
+				KOS_content[0] = "ERROR";
+				KOS_content[1] = "Error parsing KOS data!";
+			}
+
+			//send data over to generate HTML
+			genKOSHTML();
+
+
+			return true;
+		}
+
+	/*	generates html using KOStemplate
+	 *	puts html in KOS_content[1]
+	 */
+		function genKOSHTML() {
+			fdLog.debug('Generating KOS HTML...'); 
+
+			KOS_content[0] = "HTML";
+			KOS_content[1] = "<table>";
+			KOSsection = '';
+			for (var index in KOStemplate) {
+				
+				//skip over any functions we've added to array objectsc
+				if (typeof KOStemplate[index] == 'function') { continue; }
+				fdLog.debug('index '+index); 
+
+				var t = KOStemplate[index];
+
+				key = index.split('|');
+
+				if (key[0] != KOSsection) {
+					KOSsection = key[0];
+					KOS_content[1] += "<tr><th colspan=\"2\">"+KOSsection.replace('_', ' ')+"</th></tr>";
+				}
+
+				KOS_content[1] += "<tr>";
+
+				//set defaults
+				var buttonVal = '-';
+				var classNameVal = 'm';
+				if (KOSsection+"|"+key[1] == 'kosher_type|NONE' || KOSsection+"|"+key[1] == 'kosher_symbol|NONE') {
+					buttonVal = '+';
+					classNameVal = 'p';
+				}
+				
+				KOS_content[1] += "<td class=\"KOS_opt\"><input type=\"button\" onclick=\"this.value=aniKOS(this.value, this.id); clearOtherKOSChoices(this.id); return false;\" id=\""+KOSsection+"|"+key[1]+"\" class=\""+classNameVal+"\" value=\""+buttonVal+"\" /></td>";
+
+				KOS_content[1] += "<td>"+t[0]+"</td>";
+
+				KOS_content[1] += "</tr>";
+
+			}
+			KOS_content[1] += "</table>";
+
+			fdLog.debug('...done.'); 
+
+			return true;
+		}
+	
+	/* generates html using KOSdata in the form of KOStemplate */
+		function genResultsKOSHTML(KOSdata, debug) {
+			var debugV = debug || false;
+			var h = "<table><tr><td width=\"33%\">";
+			KOSsection = '';
+			var openTable = false;
+			var odd = true;
+			for (var index in KOSdata) {
+				
+				//skip over any functions we've added to array objects
+				if (typeof KOSdata[index] == 'function') { continue; }
+
+				var t = KOSdata[index];
+
+				key = index.split('|');
+
+				if (key[0] != KOSsection) {
+					KOSsection = key[0];
+					if (openTable) { h += '</table></td><td width=\"33%\">'; }
+					h += "<table><tr><th colspan=\"2\">"+KOSsection.replace('_', ' ')+"</th></tr>";
+					openTable = true;
+					odd = true;
+				}
+
+				var oVal = KOSdata[index][1];
+				var uVal = KOSdata[index][2];
+				var pVal = KOSdata[index][3];
+
+				var valBGColor = '#333';
+				var valFGColor = '#fff';
+
+				if (uVal == '+' || uVal == '-') {
+					if (oVal == true && uVal == '-') {
+						if (pVal == true) {
+							// err
+							valBGColor = '#f00';
+							alert('genResultsKOSHTML err '+oVal+uVal+pVal);
+						}else{
+							//matches
+							valBGColor = '#fcc';
+							valFGColor = '#333';
+						}
+					}
+					if (oVal == false && uVal == '+') {
+						if (pVal == false) {
+							// err
+							valBGColor = '#f00';
+							alert('genResultsKOSHTML err '+oVal+uVal+pVal);
+						}else{
+							//matches
+							valBGColor = '#cfc';
+							valFGColor = '#333';
+						}
+					}
+				}
+
+				h += "<tr>";
+				
+				//test randomize
+				(debugV)
+					? data = Math.round(Math.random())
+					: data = t[3];
+
+				if (data) { 
+					h += '<th style="background-color: '+valBGColor+'; color: '+valFGColor+';" >x</th>';
+				}else{
+					h += "<td style=\"background-color: ";
+					if ( valBGColor == '#fcc' ) {
+						 h += "#fcc;"
+					}else{
+						(odd)
+							? h += "#ddd;"
+							: h += "#fff;";
+					}
+					h += "\">&nbsp;</td>";
+				}
+
+				h += "<td style=\"background-color: ";
+
+				(odd)
+					? h += "#ddd;"
+					: h += "#fff;";
+
+				h += "\">"+t[0]+"</td>";
+
+				h += "</tr>";
+				odd = !odd;
+			}
+			h += "</table>";
+			h += "</td></tr></table>";
+
+			$('overlay').innerHTML = h;
+		}
+
+	/*	kosFetchProgress
+	 *
+	 *	this should go:
+	 *		queued	(lookup sku) => viewed
+	 *		viewed	(fetch KOS page) => fetched
+	 *		fetched	(parse out dif) => changed
+	 *		changed	(post back changes) => posted
+	 *		posted	(lookup sku again) => view2
+	 *		fetched	(fetch KOS page again) => (results stored), remove from queue
+	 *
+	 *	we can't move on until item is posted
+	 */
+		function kosFetchProgress() {
+			//only run if checkKOS is running
+			if (checkKOS) {
+
+				var workingItem = 0;
+
+				//update status (this probably won't show if quick)
+				while(!updStatus('fetching', 'processing', n, ''));
+
+				for (var n = 0; n < curData.length; n++ ) {
+					//workingItem keeps us on one item at a time
+					if (workingItem == n) {
+
+						// queued => viewed
+						if (curData[n][1] == 'queued') {
+							fdLog.debug('inside queued => viewed'); 
+							$('fetchitem'+n).innerHTML = curData[n][0]+' : '+curData[n][1];
+							if (!shouldGet) { 
+								fdLog.debug('Skipping GET of item: '+n); 
+								//set doPost to false
+								doGet = false;
+								//set fake 'get' data
+								curData[n][1] = 'changed';
+							}
+							if (doGet) {
+								//view
+								//is this call necessary?
+								//while(!viewProduct(n, curData[n][0]));
+								while(!viewProduct(n, urlKOSView));
+								
+								$('fetchitem'+n).innerHTML = curData[n][0]+' : '+curData[n][1];
+							}
+						}
+						// viewed => fetched
+						if (curData[n][1] == 'viewed' && (curData[n][2] == '200' || curData[n][2] == '500')) {
+							fdLog.debug('inside viewed => fetched'); 
+								
+							if (curData[n][2] == '500') {
+								//error
+								curData[n][2] = '200'; //reset status code
+								curData[n][5] = 'error'; //use POST status code to store the error
+								curData[n][1] = 'done'; //set done status
+								queue--;
+								doGet = true;
+								$('fetchitem'+n).innerHTML = curData[n][0]+' : '+curData[n][1];
+							}else{
+								//fetch KOS page
+								while(!fetchKOS(n));
+								
+								$('fetchitem'+n).innerHTML = curData[n][0]+' : '+curData[n][1];
+							}
+						}
+						//fetched => changed
+						if (curData[n][1] == 'fetched' && curData[n][2] == '200') {
+							fdLog.debug('inside fetched => changed'); 
+
+							//here we need to compare data and construct a post string
+							//if it has no changes we'll need to skip posting it
+							
+							$('fetchitem'+n).innerHTML = curData[n][0]+' : '+curData[n][1];
+							while(!updStatus('parsing', 'processing', n, ''));
+								fdLog.debug('Parsing '+curData[n][0]); 
+								$('fetchitem'+n).innerHTML = curData[n][0]+' : '+curData[n][1];
+							
+							curData[n][1] = 'comparing';
+							$('fetchitem'+n).innerHTML = curData[n][0]+' : '+curData[n][1];
+
+							//do compare
+							var tempPostData = new Array();
+								tempPostData[0] = 'action=kosher';
+							fdLog.debug('curLine:' + n + 'curData[n][12]: '+curData[n][12]);   
+							for (var index in curData[n][12]) {				
+								fdLog.debug("______________________________:" + index);
+								var oVal = curData[n][12][index];
+								var uVal = curData[n][12][index];
+								
+								fdLog.debug("reading data to post, oVal:" + oVal);
+								//see if we need to post the value back (if any of these are true)
+								if (uVal == 'o') {
+									//only look at oVal
+									if (oVal == true) {
+										tempPostData[tempPostData.length] = index.replace('|','=');
+									}
+								}
+								if (uVal == '+') {
+									//we don't care what the oVal was
+									tempPostData[tempPostData.length] = index.replace('|','=');
+								}
+								if (uVal == '-' && oVal == true) {
+									//do nothing, we want it off 
+								}
+							}
+							
+							if (tempPostData.length > 1) {
+								//we have changes, construct string
+								curData[n][4] = tempPostData.join('&');
+								//remove extra &s
+								while ( (curData[n][4]).indexOf('&&') >= 0 ) {
+									curData[n][4] = curData[n][4].replace('&&', '&');
+								}
+								
+								curData[n][1] = 'changed';
+							}else{
+								//skipper
+								
+								//set fake 'posted' data, and decrease status queue
+								curData[n][1] = '(SKIP) posted';
+								curData[n][5] = '200';
+								queue--;
+							}
+
+							$('fetchitem'+n).innerHTML = curData[n][0]+' : '+curData[n][1];
+							//fdLog.debug('curData'+n+':'+curData[n]); 
+						}else{
+							//doesn't call here often
+							while(!updStatus('fetching ('+queue+' left)', 'processing', '', ''));
+						}
+						//changed => posted
+						if (curData[n][1] == 'changed') {
+							fdLog.debug('inside changed => posted'); 
+
+							if (!shouldPost) { 
+								fdLog.debug('Skipping POST of item: '+n); 
+								//set doPost to false
+								doPost = false;
+								//set fake 'posted' data, and decrease status queue
+								curData[n][1] = '(SKIP) posted';
+								curData[n][5] = '200';
+								queue--;
+							}
+							if (doPost) {
+								urlPost = urlKOS;
+								//now post
+								while(!postBack(n));
+							}
+						}
+						//
+						if ((curData[n][1] == 'posted' || curData[n][1] == '(SKIP) posted') && curData[n][5] == '200') {
+							while(!updStatus('posted '+curData[n][0], 'processing', '', ''));
+							//this doesn't fire often
+							//set status for no posting
+							if (!shouldPost) { while(!updStatus('(NOT) posted '+curData[n][0], 'processing', '', '')); }
+
+							fdLog.debug('fetchKOS again: '+n); 
+							//fetch KOS page again
+							curData[n][1] = 'fetch2';
+							while(!fetchKOS(n, true));
+							curData[n][1] = 'done';
+						}
+
+						if ((curData[n][1] == 'fetched2' || curData[n][1] == 'done') && curData[n][2] == '200') {
+							curData[n][1] = 'done';
+
+							if (curData[n][5] == 'error') {
+								$('fetchitem'+n).innerHTML = curData[n][0]+' : error';
+							}else{
+								$('fetchitem'+n).innerHTML = '<a href="'+urlKOSView+curData[n][0]+'" target="_new">'+curData[n][0]+'</a> : '+curData[n][1]+' (<a href="#" onclick="genResultsKOSHTML(window[\'curData\']['+n+'][12], false); $(\'overlay\').toggle(); $(\'overlay\').focus(); return false;">status</a>)';
+							}
+							//move to next workingItem
+							workingItem++;
+						}else{
+							while(!updStatus('fetching ('+queue+' left)', 'processing', '', ''));
+							$('fetchitem'+n).innerHTML = curData[n][0]+' : '+curData[n][1];
+						}
+					}
+								
+				}
+				if (queue <= 0) {
+					//do status here
+
+					//set timer
+					timeEnd = makeTime('end');
+
+					//clear status updater
+					checkStat = clearInterval(checkKOS);
+						var time_run = makeTime('formatted', timeStart, timeEnd);
+						fdLog.debug('all changes posted ('+time_run+')'); 
+						while(!updStatus('processing done in '+time_run, 'done.', curData.length, ''));
+
+					//add copy of curData to page
+					curData = curData;
+				}
+			}
+		}
+
+/* -- KOS functions -- */
+
 /* -- NBIS functions -- */
 	
 	//this regexp matches: "MM/DD/YY", "MM/DD/YYYY", "MM/DD/YY HH:MM" or "MM/DD/YYYY HH:MM"
@@ -1874,7 +2656,7 @@ var changeLog = ""+
 			var cont = $('NBIS_ids').value.replace(/\n*$/, '');
 			var tempIdsArr = cont.split('\n');
 
-			fdLog.debug('tempIdsArr '+tempIdsArr); 
+				fdLog.debug('tempIdsArr '+tempIdsArr); 
 
 			//loop through temp array, and add to curData
 			if ( isArray(tempIdsArr) ) {
@@ -2963,6 +3745,9 @@ var changeLog = ""+
 				case 'NBIS_act_run':
 					while(!actionNBIS()) {}
 					break;
+				case 'KOS_act_run':
+					while(!actionKOS()) {}
+					break;
 			}
 		}
 		
@@ -2995,6 +3780,9 @@ var changeLog = ""+
 					break;
 				case 'NBIS_act_run':
 					while(!actionNBIS()) {}
+					break;
+				case 'KOS_act_run':
+					while(!actionKOS()) {}
 					break;
 			}
 		}
@@ -3238,6 +4026,8 @@ var changeLog = ""+
 		while(!setupRest()) {}
 		/* - webcopy container - */
 		while(!setupWebcopy()) {}
+		/* - kosher container - */
+		while(!setupKOS()) {}
 		/* - CAO container - */
 		while(!setupCAO()) {}
 		/* - NBIS container - */
@@ -3315,7 +4105,7 @@ var changeLog = ""+
 	}
 	//add toggler funcitonality to buttons
 	function toggleView(buttonInfo) {
-		fdLog.debug("Executing unsafe window");
+		fdLog.debug("Executing toggle window");
 		//receive buttonInfo in the form of 'FROM_PREFIX|TO_PREFIX'
 		var buttonInfo = buttonInfo.split('|');
 		//loop through button array, using it to know which view is active
@@ -3619,6 +4409,59 @@ var changeLog = ""+
 
 		return true;
 	}
+	
+	function setupKOS() {
+		/* - KOS container - */
+			while(!insEle('user', 'div', 'I', 'KOS')) {}
+				$('KOS').style.display = 'none';
+
+			/* title row */
+				while(!insEle('KOS', 'div', 'I', 'KOS_title')) {}
+					$('KOS_title').innerHTML = 'KOS';
+					$('KOS_title').className = 'sec_title';
+			/* title row */
+
+			/* - left data container - */
+				while(!insEle('KOS', 'div', 'I', 'KOS_data_cont')) {}
+					$('KOS_data_cont').className = 'data';
+
+					while(!insEle('KOS_data_cont', 'div', 'I', 'KOS_data')) {}
+						$('KOS_data').innerHTML = '';
+						if (KOS_content[1] == "") {
+							$('KOS_data').innerHTML += 'fetching current KOS<span id="KOS_fetching">...</span>';
+							checkKOS = setInterval(KOSSetupProgress, 500);
+						}else{
+							$('KOS_data').innerHTML = KOS_content[1];
+						}
+					/* button actions */
+						while(!insEle('KOS_data_cont', 'div', 'I', 'KOS_choices_acts')) {}
+							$('KOS_choices_acts').className = 'actions w100per';
+							$('KOS_choices_acts').innerHTML = '<hr />';
+							while(!insEle_f1('KOS_choices_acts', 'input', 'I', 'KOS_act_run', 'B')) {}
+								//$('KOS_act_run').type = 'button';
+								$('KOS_act_run').value = 'RUN';
+								$('KOS_act_run').className = 'toggler_choice toggler';
+					/* button actions */
+
+			/* - right choices container - */
+				while(!insEle('KOS', 'div', 'I', 'KOS_choices')) {}
+					$('KOS_choices').className = 'choices';
+
+				/* bottom ids */
+					while(!insEle('KOS_choices', 'div', 'I', 'KOS_data_ids')) {}
+						$('KOS_data_ids').innerHTML = '<div class="idTitle">WEB IDs:</div>';
+						$('KOS_data_ids').className = 'field';
+					
+					//textarea
+						$('KOS_choices').innerHTML += genTASource('KOS_ids');
+				/* bottom ids */
+
+			/* - right choices container - */
+
+		/* - KOS container - */
+
+		return true;
+	}
 
 	function setupNBIS() {
 	fdLog.debug("Setting NBIS");
@@ -3763,6 +4606,7 @@ var changeLog = ""+
 			$('wc_act_run').addEventListener('click', perform_action, true);
 			$('CAO_act_run').addEventListener('click', perform_action, true);
 			$('NBIS_act_run').addEventListener('click', perform_action, true);
+			$('KOS_act_run').addEventListener('click', perform_action, true);
 			
 			//date verify
 			$('NBIS_new_date').addEventListener('blur', function() { date_verify(this.id); }, true);
@@ -3788,6 +4632,7 @@ var changeLog = ""+
 			$('wc_act_run').attachEvent('onclick', perform_action_f1);
 			$('CAO_act_run').attachEvent('onclick', perform_action_f1);
 			$('NBIS_act_run').attachEvent('onclick', perform_action_f1);
+			$('KOS_act_run').attachEvent('onclick', perform_action_f1);
 			
 			//date verify
 			$('NBIS_new_date').attachEvent('onblur', date_verify_f1);

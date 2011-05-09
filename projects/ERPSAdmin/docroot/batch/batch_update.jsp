@@ -73,7 +73,7 @@
 			.actions input {
 				width: 90px;
 			}
-			#rest, #webcopy, #CAO, #NBIS {
+			#rest, #webcopy, #CAO, #NBIS #KOS {
 				overflow: hidden;
 				background-color: #fff;
 				color: #000;
@@ -165,20 +165,23 @@
 			.err {
 				color: #f00;
 			}
-			#CAO_data {
+			#CAO_data, #KOS_data {
 				height: 78%;
 				overflow-y: scroll;
 			}
-			#CAO_data table {
+			#CAO_data table, #KOS_data table  {
 				border-collapse: collapse;
 				padding: 0;
 				margin: 0;
 			}
-			td.CAO_opt {
+			#CAO_data table th, #KOS_data table th {
+					text-transform: capitalize;
+			}
+			td.CAO_opt, td.KOS_opt {
 				text-align: center;
 				width: 15px;
 			}
-			td.CAO_opt input {
+			td.CAO_opt input, td.KOS_opt input {
 				background-color: #fff;
 				color: #333;
 				padding: 0;
@@ -187,13 +190,13 @@
 				font-size: 11px;
 				font-family: monospace;
 			}
-			#CAO_data input.o {
+			#CAO_data input.o, #KOS_data input.o {
 				background-color: #ccc;
 			}
-			#CAO_data input.p {
+			#CAO_data input.p, #KOS_data input.p  {
 				background-color: #cfc;
 			}
-			#CAO_data input.m {
+			#CAO_data input.m, #KOS_data input.m {
 				background-color: #fcc;
 			}
 			#overlay {
