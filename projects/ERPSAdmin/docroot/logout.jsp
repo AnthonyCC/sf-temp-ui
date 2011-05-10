@@ -132,14 +132,14 @@ function createXMLObject() {
 }
 </script>
 </head>
-<body marginwidth="0" marginheight="0" border="0" onLoad="logOutApp()">
+<body onLoad="logOutApp()">
 	<% 
 	try {
         session.invalidate();
     } catch (IllegalStateException ex) {                
         ex.printStackTrace();
     }
-    response.sendRedirect(".");      
+    response.sendRedirect("/ERPSAdmin/login.jsp");      
  %>
 </body>
 </html>
