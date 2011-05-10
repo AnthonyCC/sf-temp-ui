@@ -24,6 +24,7 @@ import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
@@ -54,7 +55,8 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 		boolean isReverse = false;
 		boolean isSendEmail = false;
 		List<Date> jobDate = new ArrayList<Date>();
-
+		Date now = Calendar.getInstance().getTime();
+		
 		try {
 			ctx = cron.getInitialContext();
 			DlvManagerHome dlh =(DlvManagerHome) ctx.lookup("freshdirect.delivery.DeliveryManager");
@@ -101,7 +103,7 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 			
 			Iterator<Date> _dateItr = jobDate.iterator();
 			Date processDate = null;
-						
+					
 			while(_dateItr.hasNext()) {
 				processDate = _dateItr.next();
 				try {
@@ -151,7 +153,16 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 					}
 					recalculateCapacity(slots);
 					if(!isTrialRun) {
-						dsb.updateTimeslotsCapacity(slots);
+						List<DlvTimeslotModel> filteredTimeSlots = new ArrayList<DlvTimeslotModel>();
+						
+						for(DlvTimeslotModel _tmpSlot : slots) {
+							if(_tmpSlot.getCutoffTimeAsDate().after(now)) { // Check if the timeslot has not passed cutoff
+								filteredTimeSlots.add(_tmpSlot);
+							}
+						}
+						LOGGER.info(new StringBuilder("CapacityControllerCronRunner Slots Raw:").append(slots.size())
+													.append(" Filtered:").append(filteredTimeSlots.size()));
+						dsb.updateTimeslotsCapacity(filteredTimeSlots);
 					}
 					if(isSendEmail) { 
 						email(processDate, slots, null, isTrialRun);
