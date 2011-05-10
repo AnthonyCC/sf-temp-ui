@@ -1789,7 +1789,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 	
 	public void updateReservationStatus(DlvReservationModel reservation, ContactAddressModel address, String erpOrderId) {
 
-		if(reservation==null || !reservation.isInUPS() || reservation.getStatusCode() != 10/*|| reservation.getUnassignedActivityType().*/)
+		if(reservation==null || reservation.getStatusCode() != 10 /* || !reservation.isInUPS() || reservation.getUnassignedActivityType().*/)
 			return ;
 		IOrderModel order = RoutingUtil.getOrderModel(reservation, address, reservation.getOrderId(), reservation.getId());
 		try {
@@ -1800,7 +1800,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 				setReservationMetricsDetails(reservation.getId(), order.getDeliveryInfo().getPackagingDetail().getNoOfCartons()
 											, order.getDeliveryInfo().getPackagingDetail().getNoOfCases()
 											, order.getDeliveryInfo().getPackagingDetail().getNoOfFreezers()
-											, EnumRoutingUpdateStatus.PENDING
+											, reservation.isInUPS() ? EnumRoutingUpdateStatus.PENDING : null
 											, EnumOrderMetricsSource.ACTUAL);
 			}
 		} catch (Exception e) {

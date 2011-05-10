@@ -17,8 +17,8 @@ import com.freshdirect.routing.manager.EstimationManager;
 import com.freshdirect.routing.manager.GeographyManager;
 import com.freshdirect.routing.manager.HandOffProcessManager;
 import com.freshdirect.routing.manager.IProcessManager;
-import com.freshdirect.routing.manager.PlantPackagingManager;
 import com.freshdirect.routing.manager.ProcessContext;
+import com.freshdirect.routing.manager.StorefrontPackagingManager;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchStop;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
@@ -84,7 +84,7 @@ public class HandOffRoutingInAction extends AbstractHandOffAction {
 					
 					List outputDataList = new ArrayList();
 					
-					fillBatchInfo(context, inputDataList);
+					//fillBatchInfo(context, inputDataList);
 					context.setDeliveryTypeCache(new HashMap());
 					context.addProcessParam(paramMap);
 					
@@ -155,7 +155,7 @@ public class HandOffRoutingInAction extends AbstractHandOffAction {
 		
 		IProcessManager geoManager = new GeographyManager();
 		IProcessManager estimationManager = new EstimationManager();
-		IProcessManager packagingManager = new PlantPackagingManager();
+		IProcessManager packagingManager = new StorefrontPackagingManager(); // APR-22-2011 replaced old SAP Estimator with Storefront
 		IProcessManager deliveryManager = new DeliveryManager();
 	   
 		packagingManager.setSuccessor(geoManager);

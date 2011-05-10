@@ -33,6 +33,7 @@ public class SapProperties {
 	private final static String PROP_REFCUSTOMER = "sap.bapi.refCustomer";
 	private final static String PROP_REFCUSTOMER_COS = "sap.bapi.refCustomer.cos";
 	private final static String PROP_BLACKHOLE = "sap.blackhole";
+	private final static String PROP_FUNCTION_CARTONINFO = "sap.function.cartoninfo";
 	private static Properties config;
 
 	private static long lastRefresh = 0;
@@ -49,7 +50,8 @@ public class SapProperties {
 		defaults.put(PROP_REFCUSTOMER, "0001000000");
 		defaults.put(PROP_REFCUSTOMER_COS, "0001000001");
 		defaults.put(PROP_BLACKHOLE, "false");
-
+		defaults.put(PROP_FUNCTION_CARTONINFO, "ZWM_CARTONCOUNT_BYORDERS");
+		
 		refresh();
 	}
 
@@ -101,5 +103,8 @@ public class SapProperties {
 	public static String getRefCustomerCOS() {
 		return get(PROP_REFCUSTOMER_COS);
 	}
-
+	
+	public static String getCartonInfoFunctionName() {
+		return config.getProperty(PROP_FUNCTION_CARTONINFO);
+	}
 }

@@ -18,13 +18,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-
-import org.apache.commons.beanutils.BeanUtils;
 
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.routing.model.HandOffBatchSession;
@@ -36,7 +33,6 @@ import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 import com.freshdirect.routing.model.WaveInstance;
-import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder;
 import com.freshdirect.routing.service.IGeographyService;
 import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.IIssue;

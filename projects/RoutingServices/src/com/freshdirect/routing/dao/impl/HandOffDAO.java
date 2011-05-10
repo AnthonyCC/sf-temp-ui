@@ -55,8 +55,10 @@ import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IHandOffBatchSession;
 import com.freshdirect.routing.model.IHandOffBatchStop;
 import com.freshdirect.routing.model.ILocationModel;
+import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.model.LocationModel;
+import com.freshdirect.routing.model.PackagingModel;
 import com.freshdirect.routing.model.ZoneModel;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
@@ -89,7 +91,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	
 	private static String GET_ORDERSBY_DATE_CUTOFF = "SELECT /*+ USE_NL(s, sa) */ c.id customer_id, fdc.id fdc_id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, "
 		+ "ci.cell_phone, s.id weborder_id, s.sap_number erporder_id, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, "
-		+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, rs.type "
+		+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, rs.type, rs.NUM_CARTONS ,rs.NUM_FREEZERS, rs.NUM_CASES "
 		+ "from cust.customer c, cust.fdcustomer fdc " 
 		+ ", cust.customerinfo ci " 
 		+ ", cust.sale s, cust.salesaction sa " 
@@ -103,7 +105,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	
 	private static String GET_ORDERSBY_DATE_CUTOFFSTANDBY = "SELECT /*+ USE_NL(s, sa) */ c.id customer_id, fdc.id fdc_id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, "
 		+ "ci.cell_phone, s.id weborder_id, s.sap_number erporder_id, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, "
-		+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, rs.type "
+		+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, rs.type, rs.NUM_CARTONS , rs.NUM_FREEZERS , rs.NUM_CASES "
 		+ "from cust.customer@DBSTOSBY.NYC.FRESHDIRECT.COM c, cust.fdcustomer@DBSTOSBY.NYC.FRESHDIRECT.COM fdc " 
 		+ ", cust.customerinfo@DBSTOSBY.NYC.FRESHDIRECT.COM ci " 
 		+ ", cust.sale@DBSTOSBY.NYC.FRESHDIRECT.COM s, cust.salesaction@DBSTOSBY.NYC.FRESHDIRECT.COM sa " 
@@ -1162,7 +1164,13 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 						deliveryModel.setDeliveryEndTime(rs.getTimestamp("ENDTIME"));
 						deliveryModel.setServiceType(rs.getString("DELIVERY_TYPE"));
 						//deliveryModel.setDeliveryModel(tmpInputModel.getDeliveryModel());
-												
+						
+						IPackagingModel tmpPackageModel = new PackagingModel();
+						tmpPackageModel.setNoOfCartons(rs.getLong("NUM_CARTONS"));
+						tmpPackageModel.setNoOfCases(rs.getLong("NUM_CASES"));
+						tmpPackageModel.setNoOfFreezers(rs.getLong("NUM_FREEZERS"));
+						deliveryModel.setPackagingDetail(tmpPackageModel);
+						
 						IZoneModel zoneModel = new ZoneModel();
 						zoneModel.setZoneNumber(rs.getString("ZONE"));
 						deliveryModel.setDeliveryZone(zoneModel);

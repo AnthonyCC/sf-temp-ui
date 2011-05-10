@@ -13,7 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.sap.SapProperties;
 import com.freshdirect.sap.bapi.BapiCartonInfo;
 import com.sap.mw.jco.JCO;
 
@@ -30,7 +30,7 @@ class JcoBapiCartonInfo extends JcoBapiFunction implements BapiCartonInfo {
 	private JCO.Table lstCartonInfo;
 
 	public JcoBapiCartonInfo() {
-		super(ErpServicesProperties.getCartonInfoFunctionName());
+		super(SapProperties.getCartonInfoFunctionName());
 
 	}
 
