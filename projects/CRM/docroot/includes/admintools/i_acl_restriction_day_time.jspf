@@ -204,3 +204,35 @@
 	</tr>
 </table>
 
+<script type="text/javascript">
+	function setupCals() {
+		var dow = new Array("ANY","MON","TUE","WED","THU","FRI","SAT","SUN");
+		for (var i = 0; i < dow.length; i++) {
+			Calendar.setup(
+				{
+					showsTime : false,
+					electric : false,
+					inputField : 'dlvTimeIn'+dow[i]+'StartTime',
+					ifFormat : "%I:%M %p",
+					singleClick: true,
+					button : 'dlvTimeIn'+dow[i]+'StartTime_trigger',
+					showsTime: true,
+					timeFormat: "12"
+				}
+			);
+			Calendar.setup(
+				{
+					showsTime : false,
+					electric : false,
+					inputField : 'dlvTimeIn'+dow[i]+'EndTime',
+					ifFormat : "%I:%M %p",
+					singleClick: true,
+					button : 'dlvTimeIn'+dow[i]+'EndTime_trigger',
+					showsTime: true,
+					timeFormat: "12"
+				}
+			);
+		}
+	}
+	setupCals();
+</script>
