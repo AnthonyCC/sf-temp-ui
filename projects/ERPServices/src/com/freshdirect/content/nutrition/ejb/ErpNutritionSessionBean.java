@@ -333,7 +333,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
             	if(rset.getString(3) == null)
             		oldHash.put(rset.getString(1), "");
             	else
-            		oldHash.put(rset.getString(1), rset.getString(3));
+            		oldHash.put(rset.getString(1), Double.toString(rset.getDouble(3)));
             }
             if(pstmt != null)
             	pstmt.close();
@@ -377,9 +377,9 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
 	            	aLog.add(al);
 	            }
 	            
-	            String val_string = value>0?Math.round(value)+"":"0";
+	            String val_string = Double.toString(value);	            
 	            oldValue = "";
-	            if(oldHash.containsKey(nutritionType)) {
+	            if(oldHash.containsKey(nutritionType)) {	            	
 	            	oldValue = (String) oldHash.get(nutritionType);
 	            }
 	            if(!oldValue.equalsIgnoreCase(val_string)) {
