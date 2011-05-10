@@ -165,9 +165,13 @@
 			.err {
 				color: #f00;
 			}
-			#CAO_data, #KOS_data {
-				height: 78%;
-				overflow-y: scroll;
+			#CAO_data {
+				height:556px;
+				overflow: auto;				
+			}
+			#KOS_data {
+				overflow:auto; 
+				height:556px;
 			}
 			#CAO_data table, #KOS_data table  {
 				border-collapse: collapse;
