@@ -93,6 +93,7 @@
 }
 	.fd-carousel .yui-carousel-element {
 		border:none;
+		margin:0px 1px;
 		zoom:1;
 	}
 	
