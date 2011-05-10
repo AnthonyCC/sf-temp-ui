@@ -27,7 +27,7 @@ public class ErpActivityLogDAO {
 	
 	public static void logActivity(Connection conn, List<ActivityLog> activityList) {
 		String mat_id = "";
-		if(activityList.get(0) != null)
+		if(activityList.size() > 0 && activityList.get(0) != null)
 			mat_id = activityList.get(0).getMatId();
 		String sku_code = getSkuCode(conn, mat_id);		
 		PreparedStatement pstmt = null;
