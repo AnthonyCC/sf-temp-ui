@@ -342,14 +342,15 @@ public class AttributeFacadeSessionBean extends SessionBeanSupport {
 					throw new AttributeException("Update failed");
 				}
 				
-				LOGGER.debug("newvalue:" + value);
+				LOGGER.debug("newvalue:" + value + "|key:" + sb.toString());
 				if(sb != null && value != null) {					
 					String key = sb.toString();
 					String oldValue = "";
 					if(oldHash.containsKey(key)) {
 		            	oldValue = ((ActivityLog) oldHash.get(key)).getOldValue();
 		            	oldHash.remove(key);
-			}
+					}
+					LOGGER.debug("OldValue: " + oldValue + "|newValue:" + value);
 		            if(!oldValue.equalsIgnoreCase(value)) {
 		            	ActivityLog al = new ActivityLog(sapId, null, "ATTR_VALUE", oldValue, value, ts, user);
 		            	al.setRootId(ids[0]);
