@@ -20,7 +20,8 @@
 	 */
 	boolean onSkipPage = false;
 	if (
-		request.getRequestURI().indexOf("/checkout/step_2_select.jsp") > -1
+		request.getRequestURI().indexOf("/checkout/step_2_select.jsp") > -1 || 
+		request.getRequestURI().indexOf("/your_account/reserve_timeslot.jsp") > -1
 	) {
 		onSkipPage = true;
 	}

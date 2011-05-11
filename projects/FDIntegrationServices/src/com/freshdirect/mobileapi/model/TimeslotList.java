@@ -2,6 +2,8 @@ package com.freshdirect.mobileapi.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.fdstore.FDTimeslot;
@@ -47,8 +49,15 @@ public class TimeslotList {
                 }
             }
         }
+        Collections.sort(timeSlots,TIMESLOT_COMPARATOR);
         return timeSlots;
     }
+    
+    private final static Comparator<Timeslot> TIMESLOT_COMPARATOR = new Comparator<Timeslot>() {
+		public int compare( Timeslot t1, Timeslot t2 ) {
+			return t1.getBegDateTime().compareTo(t2.getBegDateTime());
+		}
+	};
 
     public boolean isKosherSlotAvailable(DlvRestrictionsList restrictions) {
         return target.isKosherSlotAvailable(restrictions);
