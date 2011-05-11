@@ -199,7 +199,10 @@ public class RoutingDataDecoder {
 						//_stop.setStopArrivalTime(Calendar.getInstance().getTime());
 						_stop.setOrderNumber((_refStop.getOrders() != null
 													&& _refStop.getOrders().length > 0 ? _refStop.getOrders()[0].getOrderNumber() 
-																							: IRoutingStopModel.DEPOT_STOPNO + _refStop.getArrival().getTimeInMillis()));
+																							: IRoutingStopModel.DEPOT_STOPNO 
+																							+ (_refStop.getArrival() != null 
+																									? _refStop.getArrival().getTimeInMillis() : 
+																										_refStop.getStopIdentity().getInternalStopID())));
 						_stop.setStopArrivalTime(_refStop.getArrival() != null ? _refStop.getArrival().getTime() : null);
 						_stop.setStopDepartureTime(_refStop.getArrival() != null ? RoutingDateUtil.addSeconds(_refStop.getArrival().getTime()
 														, _refStop.getServiceTime()) : null);
