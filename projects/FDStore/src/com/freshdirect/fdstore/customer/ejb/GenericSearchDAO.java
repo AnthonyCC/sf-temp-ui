@@ -743,6 +743,8 @@ public class GenericSearchDAO {
 		String county = (String)criteria.getCriteriaMap().get("county");
 		if(county != null && county.trim().length()>0){
 			builder.addSql(" county = ? ", new Object[]{county});	
+		} else {
+			builder.addSql(" county IS NULL ", new Object[]{});
 		}
 
 		EnumDlvRestrictionReason reason = (EnumDlvRestrictionReason)criteria.getCriteriaMap().get("reason");
