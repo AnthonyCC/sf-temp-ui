@@ -15,7 +15,6 @@ import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.util.ProductDisplayUtil;
 import com.freshdirect.fdstore.util.ProductLabeling;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 import com.freshdirect.webapp.taglib.fdstore.BrowserInfo;
@@ -51,6 +50,10 @@ public class ProductImageTag extends BodyTagSupport {
 	
 	double			opacity = 1; // 1-transparency
 	boolean			isNewProductPage = false;
+        /**
+         * [APPDEV-1283] Exclude 6 and 12 bootles deals
+         */
+        private boolean excludeCaseDeals = false;
 	int				height = -1; // negative height means height is calculated based on img height
 	
 	Set<EnumBurstType> hideBursts;
@@ -89,6 +92,10 @@ public class ProductImageTag extends BodyTagSupport {
 	public void setPrefix(String uriPrefix) {
 		this.prefix = uriPrefix;
 	}
+
+        public void setExcludeCaseDeals(boolean excludeCaseDeals) {
+                this.excludeCaseDeals = excludeCaseDeals;
+        }
 	
 
 	public void setBrowserInfo(BrowserInfo browserInfo) {
@@ -365,16 +372,17 @@ public class ProductImageTag extends BodyTagSupport {
 		if (this.opacity < 1) {
 			burstImageStyle += TransparentBoxTag.getOpacityStyle(browserInfo, this.opacity);
 		}
-		
+		System.out.println("pl : "+calculator.getProductModel()+", name:"+calculator.getProductModel().getFullName()+", savingsPercentage:"+savingsPercentage);
 		// get deal
 		int deal = 0;
 		if (savingsPercentage > 0) {
 			deal = (int)(savingsPercentage*100);
 		} else if (pl.isDisplayDeal()) {
 			//deal = product.getHighestDealPercentage();
-			deal = (int)ProductDisplayUtil.getDealsPercentage(calculator);
+			deal = (int)calculator.getBurstDealsPercentage(excludeCaseDeals ? ProductBurstTag.EXCLUDED_WINE_TIERS : null);
 		}
 
+		System.out.println("deal   : " +deal);
 		if (deal < FDStoreProperties.getBurstsLowerLimit() || deal > FDStoreProperties.getBurstUpperLimit())
 			deal = 0;
 		

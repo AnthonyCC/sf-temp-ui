@@ -37,6 +37,11 @@ public class ProductImpression {
 		this.calculator = productModel.getPriceCalculator();
 	}
 	
+	public ProductImpression(PriceCalculator calculator) {
+	    this.calculator = calculator;
+	    this.productModel = calculator.getProductModel();
+	}
+	
 	protected ProductImpression(ProductModel productModel, PriceCalculator calculator) {
             this.productModel = productModel;
             this.calculator = calculator;

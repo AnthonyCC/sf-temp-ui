@@ -13,7 +13,6 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
-import com.freshdirect.webapp.util.JspMethods;
 
 public class WineProductPriceTag extends BodyTagSupportEx {
 	private static final long serialVersionUID = 3647071760397727769L;
@@ -24,8 +23,6 @@ public class WineProductPriceTag extends BodyTagSupportEx {
 	 * [APPDEV-1283] Exclude 6 and 12 bootles deals
 	 */
 	private boolean excludeCaseDeals = true;
-
-	private static double excludedTiers[] = new double[] { 6, 12 };
 
 	public void setExcludeCaseDeals(boolean excludeCaseDeals) {
 		this.excludeCaseDeals = excludeCaseDeals;
@@ -39,7 +36,7 @@ public class WineProductPriceTag extends BodyTagSupportEx {
 
 			NumberFormat format = NumberFormat.getCurrencyInstance();
 
-			String scaleString = price.getTieredPrice(savingsPercentage, excludeCaseDeals ? excludedTiers : null);
+			String scaleString = price.getTieredPrice(savingsPercentage, excludeCaseDeals ? ProductBurstTag.EXCLUDED_WINE_TIERS : null);
 
 			FDProduct fdProduct = price.getProduct();
 			String priceUnit = null;

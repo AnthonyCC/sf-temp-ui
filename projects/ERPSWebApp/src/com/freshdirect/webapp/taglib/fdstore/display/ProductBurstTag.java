@@ -160,13 +160,13 @@ public class ProductBurstTag extends BodyTagSupportEx {
 	/**
 	 * [APPDEV-1283] Exclude case deals
 	 */
-	private static double excludedTiers[] = new double[]{6, 12 };
+	public static double[] EXCLUDED_WINE_TIERS = new double[]{6, 12 };
 
 	
 	private boolean renderPrecondition() {
 		if (!excludeCaseDeals || getCalculator().getHighestDealPercentage() > getCalculator().getTieredDealPercentage())
 			return true;
 		
-		return getCalculator().getTieredPrice(0, excludedTiers) != null;
+		return getCalculator().getTieredPrice(0, EXCLUDED_WINE_TIERS) != null;
 	}
 }

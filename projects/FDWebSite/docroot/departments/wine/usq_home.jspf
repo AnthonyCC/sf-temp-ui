@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.fdstore.content.PriceCalculator"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
 <%@page import='java.util.Collections' %>
@@ -113,16 +114,17 @@ FreshDirect.Wine.addTabItem("top-rated", "<%="tab_price_" + price.name().toLower
 					<display:Carousel id="carouselTag" carouselId="<%= carouselId %>" itemsToShow="<%= prods %>" maxItems="12" useAlternateImage="<%= useAlternateImage %>" 
 							width="460" trackingCode="<%= trk %>" numItems="4" hideContainer="<%= tabId %>" parentId="topRatedContainer" offset="45"><%
 						ProductModel product = (ProductModel) currentItem;
+						PriceCalculator calculator = product.getPriceCalculator();
 					%>
 						<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 							<div><display:WineRating product="<%= product %>" action="<%= actionUrl %>"/></div>
-							<div style="padding-bottom: 10px;"><display:WinePrice product="<%= product %>" action="<%= actionUrl %>"/></div>
-							<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>"
-									useAlternateImage="<%= useAlternateImage %>" className="productImage" height="<%= imgHeight %>" enableQuickBuy="true" webId="<%= webId %>"/>
+							<div style="padding-bottom: 10px;"><display:WinePrice priceCalculator="<%= calculator %>" action="<%= actionUrl %>"/></div>
+							<display:ProductImage priceCalculator="<%= calculator %>" showRolloverImage="true" action="<%= actionUrl %>"
+									useAlternateImage="<%= useAlternateImage %>" className="productImage" height="<%= imgHeight %>" enableQuickBuy="true" webId="<%= webId %>" excludeCaseDeals="true"/>
 							<div class="productname">
-								<display:ProductName product="<%= product %>" action="<%= actionUrl %>" showBrandName="true" />
+								<display:ProductName priceCalculator="<%= calculator %>" action="<%= actionUrl %>" showBrandName="true" />
 							</div>
-							<display:ProductPrice impression="<%= new ProductImpression(product) %>" showDescription="false" excludeCaseDeals="<%= true %>"/>
+							<display:ProductPrice impression="<%= new ProductImpression(calculator) %>" showDescription="false" excludeCaseDeals="<%= true %>"/>
 						</display:GetContentNodeWebId>
 					</display:Carousel>
 				</div>
@@ -175,16 +177,18 @@ $E.onDOMReady(function() {
 	<display:UniqueFilter in="<%= deptPopular.getProducts() %>" out="prods" groupId="usq_popular">
 		<display:Carousel id="carouselTag" carouselId="usq-popular" itemsToShow="<%= prods %>" maxItems="16" useAlternateImage="<%= useAlternateImage %>" 
 				width="460" trackingCode="<%= trk %>" numItems="4">
-			<% ProductModel product = (ProductModel) currentItem; %>
+			<% ProductModel product = (ProductModel) currentItem; 
+			PriceCalculator calculator = product.getPriceCalculator();
+			%>
 			<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
-				<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>"
-						useAlternateImage="<%= useAlternateImage %>" className="productImage" enableQuickBuy="true" webId="<%= webId %>"/>
-				<div><display:WinePrice product="<%= product %>" action="<%= actionUrl %>"/></div>
+				<display:ProductImage priceCalculator="<%= calculator %>" showRolloverImage="true" action="<%= actionUrl %>"
+						useAlternateImage="<%= useAlternateImage %>" className="productImage" enableQuickBuy="true" webId="<%= webId %>"  excludeCaseDeals="true"/>
+				<div><display:WinePrice priceCalculator="<%= calculator %>" action="<%= actionUrl %>"/></div>
 				<div class="rating-small"><display:WineRating product="<%= product %>" small="true" action="<%= actionUrl %>"/></div>
 				<div class="productname">
-					<display:ProductName product="<%= product %>" action="<%= actionUrl %>" showBrandName="true" />
+					<display:ProductName priceCalculator="<%= calculator %>" product="<%= product %>" action="<%= actionUrl %>" showBrandName="true" />
 				</div>
-				<display:ProductPrice impression="<%= new ProductImpression(product) %>" showDescription="false" excludeCaseDeals="<%= true %>"/>
+				<display:ProductPrice impression="<%= new ProductImpression(calculator) %>" showDescription="false" excludeCaseDeals="<%= true %>"/>
 			</display:GetContentNodeWebId>
 		</display:Carousel>
 	</display:UniqueFilter>

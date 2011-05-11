@@ -191,11 +191,61 @@ public class PriceCalculator {
         }
         return 0;
     }
+    
+    
+    
+
+    /**
+     * This method returns only regular deals percentage if product's default
+     * sku is part of a group scale else returns product's highest deals
+     * percentage.
+     * 
+     * @param calculator
+     * @return
+     */
+    public int getBurstDealsPercentage(double[] exception) {
+        int tieredPercentage = getTieredDealPercentage(exception);
+        FDGroup group = getFDGroup();
+        if (tieredPercentage > 0 && group != null) {
+            // Check to see current pricing zone has group price defined.
+            if (group != null) {
+                try {
+                    MaterialPrice gsPrice = GroupScaleUtil.getGroupScalePrice(group, ctx.getZoneId());
+                    if (gsPrice != null) {
+                        // return regular deal percentage
+                        return getDealPercentage();
+                    }
+                } catch (FDResourceException e) {
+                    // ignore ...
+                }
+            }
+        }
+        // At this point there is no gs price defined for default sku.
+        // ... so we can get the 'filtered tiered deal percentage' or the maximum of the deal percentage, 
+        // we don't need call 'getHighestDealPercentage()' because we already know, that we don't have group scale price, 
+        return Math.max(tieredPercentage, getDealPercentage());
+    }
+    
 
     public int getTieredDealPercentage() {
         if (skuModel != null) {
             try {
                 return getZonePriceInfoModel().getTieredDealPercentage();
+            } catch (FDSkuNotFoundException ex) {
+            } catch (FDResourceException e) {
+            }
+        }
+        return 0;
+    }
+    
+    public int getTieredDealPercentage(double[] exclusion) {
+        if (skuModel != null) {
+            try {
+                if (exclusion == null || exclusion.length == 0) {
+                    return getZonePriceInfoModel().getTieredDealPercentage();
+                } else {
+                    return (int) getZonePriceModel().getTieredDealPercentage(exclusion);
+                }
             } catch (FDSkuNotFoundException ex) {
             } catch (FDResourceException e) {
             }
@@ -493,6 +543,8 @@ public class PriceCalculator {
     public SkuModel getSkuModel() {
         return skuModel;
     }
+    
+
     
 	public boolean isOnSale() {
 		try {

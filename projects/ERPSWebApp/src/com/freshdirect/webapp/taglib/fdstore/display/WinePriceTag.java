@@ -6,6 +6,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import com.freshdirect.fdstore.content.EnumWinePrice;
+import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 
@@ -19,6 +20,7 @@ public class WinePriceTag extends BodyTagSupport {
 	private static final long serialVersionUID = 1346658288638801654L;
 
 	ProductModel product;
+	PriceCalculator priceCalculator;
 	String action;
 
 	public ProductModel getProduct() {
@@ -28,6 +30,10 @@ public class WinePriceTag extends BodyTagSupport {
 	public void setProduct(ProductModel prd) {
 		this.product = prd;
 	}
+	
+	public void setPriceCalculator(PriceCalculator priceCalculator) {
+            this.priceCalculator = priceCalculator;
+        }
 
 	public String getAction() {
 		return action;
@@ -39,7 +45,13 @@ public class WinePriceTag extends BodyTagSupport {
 
 	public int doStartTag() throws JspException {
 		try {
-			EnumWinePrice price = EnumWinePrice.getEnumByPrice(product.getPrice(0.));
+		        if (priceCalculator == null) {
+		            if (product == null) {
+		                throw new RuntimeException("'priceCalculator' or 'product' is mandatory!");
+		            }
+        		    priceCalculator = product.getPriceCalculator();
+        		}
+			EnumWinePrice price = EnumWinePrice.getEnumByPrice(priceCalculator.getPrice(0.));
 
 			JspWriter out = pageContext.getOut();
 

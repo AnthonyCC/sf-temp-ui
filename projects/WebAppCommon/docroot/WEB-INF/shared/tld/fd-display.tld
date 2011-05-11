@@ -86,6 +86,11 @@
    <name>height</name>
    <rtexprvalue>true</rtexprvalue>
   </attribute>
+	<attribute>
+ 		<name>excludeCaseDeals</name>
+ 		<required>false</required>
+ 		<rtexprvalue>true</rtexprvalue>
+ 	</attribute>
  </tag>
  <tag>
 	<name>ProductBurst</name>
@@ -155,7 +160,12 @@
   <bodycontent>empty</bodycontent>
   <attribute>
    <name>product</name>
-   <required>true</required>
+   <required>false</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>priceCalculator</name>
+   <required>false</required>
    <rtexprvalue>true</rtexprvalue>
   </attribute>
   <attribute>
@@ -355,7 +365,12 @@
   <bodycontent>empty</bodycontent>
   <attribute>
    <name>product</name>
-   <required>true</required>
+   <required>false</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>priceCalculator</name>
+   <required>false</required>
    <rtexprvalue>true</rtexprvalue>
   </attribute>
   <attribute>

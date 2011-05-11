@@ -117,4 +117,5 @@ public class ZonePriceInfoModel implements Serializable {
                  + " dealPercentage:" + dealPercentage + " tieredDealPercentage:" + tieredDealPercentage + " highestDealPercentage:" + highestDealPercentage
                  + " showBurstImage:" + showBurstImage + "]";
      }
+
 }

@@ -213,4 +213,30 @@ public class ZonePriceModel implements Serializable {
 		return p;
 	}
 
+	/**
+	 * return the maximum deal percentage, except some 
+	 * @param exclusion
+	 * @return
+	 */
+    public double getTieredDealPercentage(double[] exclusion) {
+        double deal = 0;
+        double basePrice = materialPrices[0].getPrice();
+        for (int i = 1; i < materialPrices.length; i++) {
+            final MaterialPrice materialPrice = this.materialPrices[i];
+
+            boolean skip = false;
+            for (double lowerBound : exclusion) {
+                if (lowerBound == materialPrice.getScaleLowerBound()) {
+                    // filter material price with matching lower bound
+                    skip = true;
+                    break;
+                }
+            }
+            if (!skip) {
+                deal = Math.max(deal, materialPrice.getScalePercentage(basePrice));
+            }
+        }
+        return deal;
+    }
+
 }

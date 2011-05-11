@@ -9,6 +9,7 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
 import com.freshdirect.fdstore.content.EnumBurstType;
+import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.ProductLabeling;
@@ -26,7 +27,8 @@ public class ProductNameTag extends BodyTagSupport {
 	
 	private static final long	serialVersionUID	= 2202799484204844350L;
 	
-	ProductModel	product; 								// product (mandatory)
+	ProductModel	product; 								// product or calculator is mandatory
+	PriceCalculator         calculator;
 	String			action;									// URL (optional)
 	String			style 			= "";					// CSS style modification (optional)
 	String			brandStyle 		= "font-weight:bold;";	// CSS style modification for brand name (optional)
@@ -45,6 +47,10 @@ public class ProductNameTag extends BodyTagSupport {
 	public void setProduct(ProductModel product) {
 		this.product = product;
 	}
+	
+	public void setPriceCalculator(PriceCalculator calculator) {
+            this.calculator = calculator;
+        }
 
 	public void setAction(String action) {
 		this.action = action;
@@ -85,6 +91,14 @@ public class ProductNameTag extends BodyTagSupport {
 	
 	public int doStartTag() {
 		JspWriter out = pageContext.getOut();
+		if (calculator == null) {
+                    if (product == null) {
+                        throw new RuntimeException("'priceCalculator' or 'product' is mandatory!");
+                    }
+		    calculator = product.getPriceCalculator();
+		} else {
+		    product = calculator.getProductModel();
+		}
 
 		String fullName = product.getFullName();
 		String brandName = product.getPrimaryBrandName();
@@ -100,7 +114,7 @@ public class ProductNameTag extends BodyTagSupport {
 		
 		StringBuffer buf = new StringBuffer();
 	
-		ProductLabeling pl = new ProductLabeling((FDUserI) pageContext.getSession().getAttribute(SessionName.USER), product, hideBursts);
+		ProductLabeling pl = new ProductLabeling((FDUserI) pageContext.getSession().getAttribute(SessionName.USER), calculator, hideBursts);
 		
 		String styleStr = "";
 		if ( style != null && !"".equals( style ) ) {

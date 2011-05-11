@@ -121,7 +121,6 @@ public class ProductPriceTag extends BodyTagSupport {
 	public void setGrpDisplayType(String grpDisplay){
 	  this.grpDisplayType=grpDisplay;	
 	}
-	private static double excludedTiers[] = new double[]{6, 12 };
 	
 	public void setExcludeCaseDeals(boolean excludeCaseDeals) {
 		this.excludeCaseDeals = excludeCaseDeals;
@@ -402,7 +401,7 @@ public class ProductPriceTag extends BodyTagSupport {
 			if(scaleString == null) {
 				//no group, do the normal scale string fetch
 				
-				scaleString = priceCalculator.getTieredPrice(savingsPercentage, excludeCaseDeals ? excludedTiers : null);
+				scaleString = priceCalculator.getTieredPrice(savingsPercentage, excludeCaseDeals ? ProductBurstTag.EXCLUDED_WINE_TIERS : null);
 				if(scaleString != null && showSaveText){
 					StringBuffer buffer  = new StringBuffer();
 					buffer.append("SAVE");
