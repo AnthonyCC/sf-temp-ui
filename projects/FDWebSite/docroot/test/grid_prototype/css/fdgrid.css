@@ -105,6 +105,12 @@ div.border {
   border-right:  1px solid #eee;
 }
 
+.dottedborder {
+  padding-right: 0px;
+  margin-right:  9px;
+  border-right:  1px dotted #eee;
+}
+
 /* Border with more whitespace, spans one column. */
 div.colborder {
   padding-right:21px;
