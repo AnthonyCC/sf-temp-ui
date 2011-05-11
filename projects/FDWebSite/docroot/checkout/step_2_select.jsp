@@ -183,8 +183,9 @@ zonePromoEnabled=true;
 		<TD CLASS="text11" WIDTH="395" VALIGN="bottom">
 			<table>
 				<tr>
-					<td><FONT CLASS="title18">CHOOSE TIME</FONT>
-						<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1" BORDER="0">
+					<td>
+						<FONT CLASS="title18">CHOOSE TIME</FONT>
+						<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1" BORDER="0">
 					</td>
 					<%if(FDStoreProperties.isNewFDTimeslotGridEnabled()){%>
 					<td>

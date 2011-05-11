@@ -1902,8 +1902,8 @@ function fdTSDisplay(refIdArg) {
 			$('timeslots_gridAdvNew').toggle();
 
 
-			if ($('displayAdvanceOrderGrid').up('td').down('.tsAdvanceHeader')) {
-				$('displayAdvanceOrderGrid').up('td').down('.tsAdvanceHeader').toggle();
+			if ($('displayAdvanceOrderHeader').up('td').down('.tsAdvanceHeader')) {
+				$('displayAdvanceOrderHeader').up('td').down('.tsAdvanceHeader').toggle();
 			}
 		}
 
