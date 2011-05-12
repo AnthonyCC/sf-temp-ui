@@ -110,18 +110,18 @@ FreshDirect.Wine.addTabItem("deals", "<%= "tab_" + subcategory.getContentKey().g
 				<display:Carousel id="carouselTag" carouselId="<%= cat.getContentKey().getId() %>" itemsToShow="<%= prods %>"
 						width="335" trackingCode="<%= trk %>"
 						hideContainer="<%= tabId %>" numItems="3" bottomHeader="<%= cat.getAltText() %>"
-						bottomHeaderClass="title14 usq-sienna" appendWineParams="<%= true %>" parentId="dealsTop" offset="80"><% ProductModel product = (ProductModel) currentItem; %>
+						bottomHeaderClass="title14 usq-sienna" appendWineParams="<%= true %>" parentId="dealsTop" offset="80"><% ProductModel product = (ProductModel) currentItem; PriceCalculator pc = product.getPriceCalculator(); %>
 					<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
-						<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>"
-								useAlternateImage="<%= useAlternateImage %>" className="productImage" height="<%= imgHeight %>" enableQuickBuy="true" webId="<%= webId %>"/>
+						<display:ProductImage priceCalculator="<%= pc %>" showRolloverImage="true" action="<%= actionUrl %>"
+								useAlternateImage="<%= useAlternateImage %>" className="productImage" height="<%= imgHeight %>" enableQuickBuy="true" webId="<%= webId %>" excludeCaseDeals="true"/>
 						<display:WineShowRatings product="<%= product %>" hideOnly="<%= hideOnly %>">
-						<div><display:WinePrice product="<%= product %>" action="<%= actionUrl %>"/></div>
+						<div><display:WinePrice priceCalculator="<%= pc %>" action="<%= actionUrl %>"/></div>
 						<div><display:WineRating product="<%= product %>" small="true" action="<%= actionUrl %>"/></div>
 						</display:WineShowRatings>
 						<div class="productname">
-							<display:ProductName product="<%= product %>" action="<%= actionUrl %>" showBrandName="true" />
+							<display:ProductName priceCalculator="<%= pc %>" action="<%= actionUrl %>" showBrandName="true" />
 						</div>
-						<display:ProductPrice impression="<%= new ProductImpression(product) %>" showDescription="false" excludeCaseDeals="<%= true %>"/>
+						<display:ProductPrice impression="<%= new ProductImpression(pc) %>" showDescription="false" excludeCaseDeals="<%= true %>"/>
 					</display:GetContentNodeWebId>
 				</display:Carousel>
 			</display:ItemGrabber>
@@ -185,6 +185,7 @@ if (bigs.size() > 0) {
 		<tr>
 		<%
 		for (ProductModel bigPrd : bigs) {
+		    PriceCalculator pc = bigPrd.getPriceCalculator();
 		%>
 			<td width="210" valign="top">
 				<div style="padding: 0px 10px;">
@@ -192,11 +193,11 @@ if (bigs.size() > 0) {
 					<div class="title16" style="padding-top: 10px;"><a href="<%= actionUrl %>"><%=bigPrd.getFullName()%></a></div>
 					</display:ProductUrl>
 					<div class="title16" style="padding-top: 2px;">
-						<display:ProductDefaultPrice product="<%= bigPrd %>"/>
+						<display:ProductDefaultPrice priceCalculator="<%= pc %>" />
 					</div>
-					<% if (bigPrd.getPriceCalculator().isOnSale()) { %>
+					<% if (pc.isOnSale()) { %>
 					<div class="title14 save-base-price" style="padding-top: 2px; font-weight: bold;">
-						was <display:ProductWasPrice product="<%= bigPrd %>"/>
+						was <display:ProductWasPrice priceCalculator="<%= pc %>"/>
 					</div>
 					<% } %>
 				</div>
@@ -222,7 +223,7 @@ if (rest != null) {
 					<div style="position: relative; width: 110px; height: <%= img.getHeight() %>px;">
 						<a href="<%= actionUrl %>"><fd:IncludeImage image="<%= img %>" className="no-outline"/></a>
 						<a href="<%= actionUrl %>" style="display: inline-block; position: absolute; right: 0px; top: 10px;">
-							<display:ProductBurst product="<%= product %>" className="no-outline"/>
+							<display:ProductBurst priceCalculator="<%= price %>" className="no-outline" excludeCaseDeals="true"/>
 						</a>
 						<%-- QUICK BUY SECTION START --%>
 						<img id="qbButton-<%= webId %>" class="qbButton" style="display: inline-block; position: absolute; left: <%= (img.getWidth() - 103) / 2 %>px; bottom: 10px;" src="/media_stat/images/quickbuy/quickbuy_button_hover.gif"
@@ -247,7 +248,7 @@ if (rest != null) {
 						<% if (EnumWineRating.getEnumByRating(product.getProductRatingEnum()) != EnumWineRating.NOT_RATED) { %>
 						<td style="padding-right: 5px; vertical-align: bottom;"><display:WineRating product="<%= product %>"/></td>
 						<% } %>
-						<td style="vertical-align: bottom;"><display:WinePrice product="<%= product %>"/></td>
+						<td style="vertical-align: bottom;"><display:WinePrice priceCalculator="<%= price %>" /></td>
 					</tr>
 				</table>
 				</div>
@@ -257,9 +258,9 @@ if (rest != null) {
 				</display:ProductUrl>
 				<div class="usq_region" style="padding-top: 4px;"><display:WineRegionLabel product="<%= product %>"/></div>
 				<div class="title16" style="padding-top: 4px;">
-					<display:ProductDefaultPrice product="<%= product %>"/>
+					<display:ProductDefaultPrice priceCalculator="<%= price %>"/>
 					<% if (price.isOnSale()) { %>
-						<span class="save-base-price" style="font-weight: bold;">- was <display:ProductWasPrice product="<%= product %>"/></span>
+						<span class="save-base-price" style="font-weight: bold;">- was <display:ProductWasPrice priceCalculator="<%= price %>" /></span>
 					<% } %>
 				</div>
 			</td>

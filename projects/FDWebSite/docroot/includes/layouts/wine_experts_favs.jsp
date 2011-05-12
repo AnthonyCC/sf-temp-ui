@@ -118,18 +118,20 @@ FreshDirect.Wine.addTabItem("favs", "<%= "tab_" + subcategory.getContentKey().ge
 		<div id="tab_<%= cat.getContentKey().getId() %>" class="fd-carousel-tab">
 			<display:ItemGrabber id="prods" category="<%= cat %>" depth="0" filterUnavailable="true">
 				<display:Carousel id="carouselTag" carouselId="<%= cat.getContentKey().getId() %>" itemsToShow="<%= prods %>"
-						hideContainer="<%= tabId %>" width="335" trackingCode="<%= trk %>" numItems="3" appendWineParams="<%= true %>" parentId="jesseRecommends" offset="45"><% ProductModel product = (ProductModel) currentItem; %>
+						hideContainer="<%= tabId %>" width="335" trackingCode="<%= trk %>" numItems="3" appendWineParams="<%= true %>" parentId="jesseRecommends" offset="45"><% 
+						ProductModel product = (ProductModel) currentItem; 
+						PriceCalculator pc = product.getPriceCalculator(); %>
 					<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 						<display:WineShowRatings product="<%= product %>" hideOnly="<%= hideOnly %>">
 						<div><display:WineRating product="<%= product %>" action="<%= actionUrl %>"/></div>
 						<div style="padding-bottom: 10px;"><display:WinePrice product="<%= product %>" action="<%= actionUrl %>"/></div>
 						</display:WineShowRatings>
-						<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>"
-								useAlternateImage="<%= useAlternateImage %>" className="productImage" height="<%= imgHeight %>" enableQuickBuy="true" webId="<%= webId %>"/>
+						<display:ProductImage priceCalculator="<%= pc %>" showRolloverImage="true" action="<%= actionUrl %>"
+								useAlternateImage="<%= useAlternateImage %>" className="productImage" height="<%= imgHeight %>" enableQuickBuy="true" webId="<%= webId %>" excludeCaseDeals="true"/>
 						<div class="productname">
-							<display:ProductName product="<%= product %>" action="<%= actionUrl %>" showBrandName="true" />
+							<display:ProductName priceCalculator="<%= pc %>" action="<%= actionUrl %>" showBrandName="true" />
 						</div>
-						<display:ProductPrice impression="<%= new ProductImpression(product) %>" showDescription="false" excludeCaseDeals="<%= true %>"/>
+						<display:ProductPrice impression="<%= new ProductImpression(pc) %>" showDescription="false" excludeCaseDeals="<%= true %>"/>
 					</display:GetContentNodeWebId>
 				</display:Carousel>
 			</display:ItemGrabber>

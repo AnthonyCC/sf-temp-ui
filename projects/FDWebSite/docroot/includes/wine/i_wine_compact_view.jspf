@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.fdstore.content.PriceCalculator"%>
 <%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
 <%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="com.freshdirect.fdstore.content.ProductRatingGroup"%>
@@ -22,18 +23,21 @@
 			width="424" height="16" border="0" alt="RATING &ndash; <%= prg.getRating().getStarCount() %> STAR">
 </div>
 <% } %>
-<% for (int i = 0; i < prg.getProducts().size(); i += 4) { int width = Math.min(4, prg.getProducts().size() - i); %>
+<% 
+	List<PriceCalculator> calcs = prg.getPriceCalculators();
+for (int i = 0; i < calcs.size(); i += 4) { int width = Math.min(4, calcs.size() - i); %>
 <div style="padding-top: 25px; text-align: center;">
 <table width="<%= 105 * width %>" cellpadding="3" cellspacing="0" border="0" align="center">
 	<tr>
 	<% for (int j = 0; j < width; j++) {
-		ProductModel p = prg.getProducts().get(i + j);
+	    PriceCalculator pc = calcs.get(i + j);
+		ProductModel p = pc.getProductModel();
 		CategoryModel __c = (CategoryModel) ( ((boolean) useProductCategory) ? p.getParentNode() : category );
 	%>
 		<td align="center" width="105" valign="bottom">
 			<display:ProductUrl id="actionUrl" product="<%= p %>" trackingCode="<%= trk %>" appendWineParams="<%= true %>">
 				<display:GetContentNodeWebId id="webId" product="<%= p %>" clientSafe="<%= true %>">
-					<display:ProductImage product="<%= p %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productImage" webId="<%= webId %>" enableQuickBuy="true"/>
+					<display:ProductImage priceCalculator="<%= pc %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productImage" webId="<%= webId %>" enableQuickBuy="true" excludeCaseDeals="true"/>
 				</display:GetContentNodeWebId>
 			</display:ProductUrl>
 		</td>
@@ -41,7 +45,8 @@
 	</tr>
 	<tr>
 	<% for (int j = 0; j < width; j++) {
-		ProductModel p = prg.getProducts().get(i + j);
+	    PriceCalculator pc = calcs.get(i + j);
+		ProductModel p = pc.getProductModel();
 		CategoryModel __c = (CategoryModel) ( ((boolean) useProductCategory) ? p.getParentNode() : category );
 	%>
 		<td align="center" width="105" valign="baseline" style="padding-bottom: 0px; padding-top: 0px;">
@@ -53,17 +58,18 @@
 	</tr>
 	<tr>
 	<% for (int j = 0; j < width; j++) {
-			ProductModel p = prg.getProducts().get(i + j);
+	    	PriceCalculator pc = calcs.get(i + j);
+			ProductModel p = pc.getProductModel();
 			CategoryModel __c = (CategoryModel) ( ((boolean) useProductCategory) ? p.getParentNode() : category );
 	%>
 		<td align="center" width="105" valign="top" style="padding-top: 0px;">
 			<display:ProductUrl id="actionUrl" product="<%= p %>" trackingCode="<%= trk %>" appendWineParams="<%= true %>">
 				<display:GetContentNodeWebId id="webId" product="<%= p %>" clientSafe="<%= true %>">
-					<display:WineShowRatings product="<%= p %>"><display:WinePrice product="<%= p %>" action="<%= actionUrl %>"/></display:WineShowRatings>
+					<display:WineShowRatings product="<%= p %>"><display:WinePrice priceCalculator="<%= pc %>" action="<%= actionUrl %>"/></display:WineShowRatings>
 					<div class="productname">
-						<display:ProductName product="<%= p %>" action="<%= actionUrl %>" showBrandName="true" />
+						<display:ProductName action="<%= actionUrl %>" showBrandName="true" priceCalculator="<%= pc %>" />
 					</div>
-					<display:ProductPrice impression="<%= new ProductImpression(p) %>" showDescription="false" excludeCaseDeals="<%= true %>"/>
+					<display:ProductPrice impression="<%= new ProductImpression(pc) %>" showDescription="false" excludeCaseDeals="true"/>
 				</display:GetContentNodeWebId>
 			</display:ProductUrl>
 		</td>
