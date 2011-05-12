@@ -75,6 +75,18 @@
 				<fd:ErrorHandler result="<%=result%>" name="timeslotError" id="errorMsg">
 					<%@ include file="/includes/i_error_messages.jspf" %>   
 				</fd:ErrorHandler>
+				<fd:ErrorHandler result="<%=result%>" name="statesOptionEmpty" id="errorMsg">
+					<%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>
+				<fd:ErrorHandler result="<%=result%>" name="countyOptionEmpty" id="errorMsg">
+					<%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>
+				<fd:ErrorHandler result="<%=result%>" name="statesEmpty" id="errorMsg">
+					<%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>
+				<fd:ErrorHandler result="<%=result%>" name="countyEmpty" id="errorMsg">
+					<%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>
 			</div>
 			<%@ include file="/includes/promotions/i_promo_edit_dlvreq.jspf" %>
 		</div>

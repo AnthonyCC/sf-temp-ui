@@ -62,6 +62,9 @@
 					<fd:ErrorHandler result="<%=result%>" name="invalidCats" id="errorMsg">
 						 <%@ include file="/includes/i_error_messages.jspf" %>   
 					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="invalidRCats" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
 					<fd:ErrorHandler result="<%=result%>" name="invalidRecipes" id="errorMsg">
 						 <%@ include file="/includes/i_error_messages.jspf" %>   
 					</fd:ErrorHandler>
