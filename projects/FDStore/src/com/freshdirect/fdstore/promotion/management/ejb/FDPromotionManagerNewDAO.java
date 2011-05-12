@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
@@ -43,6 +44,7 @@ import com.freshdirect.fdstore.promotion.management.FDPromoZipRestriction;
 import com.freshdirect.fdstore.promotion.management.FDPromotionAttributeParam;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
 import com.freshdirect.fdstore.promotion.management.WSPromotionInfo;
+import com.freshdirect.fdstore.promotion.management.FDPromoStateCountyRestriction;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
@@ -69,8 +71,10 @@ public class FDPromotionManagerNewDAO {
 
 		if (rs.next()) {
 			promotion = loadPromotionResult(rs);
+			/*
 			List<String> assignedCustomerUserIds = FDPromotionManagerDAO
 					.loadAssignedCustomerUserIds(conn, promotion.getId());
+			
 			if (assignedCustomerUserIds != null
 					&& assignedCustomerUserIds.size() > 0) {
 				promotion.setAssignedCustomerUserIds(StringUtil
@@ -78,6 +82,8 @@ public class FDPromotionManagerNewDAO {
 			} else {
 				promotion.setAssignedCustomerUserIds("");
 			}
+			*/
+			promotion.setAssignedCustomerSize(FDPromotionManagerDAO.loadAssignedCustomerUserIds1(conn, promotion.getId()));
 		}
 
 		rs.close();
@@ -93,8 +99,45 @@ public class FDPromotionManagerNewDAO {
 			promotion.setDlvZoneStrategies(loadPromoDlvZoneStrategies(conn, id));
 			promotion.setDlvDates(loadPromoDlvDates(conn, id));
 			promotion.setAttributeList(loadAttributeList(conn, id));
+			promotion.setStateCountyList(loadStateCountyRestrictions(conn, id));
 		}
 		return promotion;
+	}
+
+	private static FDPromoStateCountyRestriction loadStateCountyRestrictions(Connection conn, String id) {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		FDPromoStateCountyRestriction fdpsc = new FDPromoStateCountyRestriction();
+		
+		try {
+			ps = conn.prepareStatement("select date_added, states, state_option, county, county_option from CUST.PROMOTION_STATE_COUNTY where promotion_id = ?");
+			ps.setString(1, id);
+			rs = ps.executeQuery();
+			
+			while (rs.next()) {
+				fdpsc.setId("id");
+				fdpsc.setPromotionId(id);
+				fdpsc.setActionDate(rs.getDate("date_added"));
+				fdpsc.setState_option(rs.getString("state_option"));
+				fdpsc.setCounty_option(rs.getString("county_option"));
+				Array array = rs.getArray("states");
+				String[] states = (String[])array.getArray();
+				fdpsc.setStates(new java.util.HashSet(Arrays.asList(states)));
+				Array array2 = rs.getArray("county");
+				String[] county = (String[])array2.getArray();
+				fdpsc.setCounty(new java.util.HashSet(Arrays.asList(county)));
+			}
+		} catch(Exception e) {
+			LOGGER.error("Error in loadStateCountyRestrictions", e);
+		} finally {
+			try {
+				if(rs != null)
+					rs.close();
+				if(ps != null)
+					ps.close();
+			} catch (Exception e) {}
+		}
+		return fdpsc;		
 	}
 
 	public static FDPromotionNewModel getPromotionByPk(Connection conn,
@@ -608,8 +651,8 @@ public class FDPromotionManagerNewDAO {
 	
 
 	private static String INSERT_PROMO_DCPD_DATA = "INSERT INTO cust.promo_dcpd_data_new"
-			+ " (id, promotion_id, content_type, content_id, exclude)"
-			+ " VALUES(?,?,?,?, ?)";
+			+ " (id, promotion_id, content_type, content_id, exclude, child_loop)"
+			+ " VALUES(?,?,?,?,?,?)";
 
 	private static void storeAssignedGroups(Connection conn, String id,
 			FDPromotionNewModel promotion) throws SQLException {
@@ -637,6 +680,7 @@ public class FDPromotionManagerNewDAO {
 				ps.setString(index++, promoContentModel.getContentType().getName());
 				ps.setString(index++, promoContentModel.getContentId());
 				ps.setString(index++, promoContentModel.isExcluded()?"Y":"N");
+				ps.setString(index++, promoContentModel.isLoopEnabled()?"Y":"N");
 				ps.addBatch();
 				
 			}
@@ -818,6 +862,52 @@ public class FDPromotionManagerNewDAO {
 			}
 		}
 	}
+	
+	private final static String STATE_COUNTY_INSERT = "insert into CUST.PROMOTION_STATE_COUNTY( ID, PROMOTION_ID, DATE_ADDED, STATE_OPTION, STATES, COUNTY, COUNTY_OPTION) " + 
+													  "values(?,?,sysdate,?,?,?,?)";
+	
+	protected static void storeStateCountyInfo(Connection conn, String promotionId, FDPromoStateCountyRestriction scr) {
+		removeStateCountyData(conn, promotionId);
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement(STATE_COUNTY_INSERT);
+			ps.setString(1, SequenceGenerator.getNextId(conn, "CUST"));
+			ps.setString(2, promotionId);
+			ps.setString(3, scr.getState_option());
+			ArrayDescriptor states = ArrayDescriptor.createDescriptor("CUST.PROMO_STATE_COUNTY_LIST", conn);
+			ARRAY newArray = new ARRAY(states, conn, scr.getStateArray());
+			ps.setArray(4, newArray);			
+			ARRAY newArray2 = new ARRAY(states, conn, scr.getCountyArray());
+			ps.setArray(5, newArray2);
+			ps.setString(6, scr.getCounty_option());
+			ps.execute();
+		} catch(Exception e) {
+			LOGGER.error("Error from storeStateCountyInfo:", e);
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+			} catch(Exception e1) {}
+		}
+	}
+	
+	protected static void removeStateCountyData(Connection conn, String promotionId) {
+		PreparedStatement ps = null;		
+		try {
+			ps = conn.prepareStatement("DELETE FROM CUST.PROMOTION_STATE_COUNTY WHERE PROMOTION_ID=?");
+			ps.setString(1, promotionId);
+			ps.executeUpdate();
+		} catch (Exception e) {
+			LOGGER.error("Error from removeStateCountyData:", e);
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+			} catch(Exception e1) {}
+		}
+	}	
 
 	protected static void removeGeographyData(Connection conn,
 			String promotionId) throws SQLException {
@@ -1133,7 +1223,7 @@ public class FDPromotionManagerNewDAO {
 		return promotion;
 	}
 	
-	private final static String LOAD_PROMO_DCPD_DATA = "select id, promotion_id, content_type, content_id, exclude"
+	private final static String LOAD_PROMO_DCPD_DATA = "select id, promotion_id, content_type, content_id, exclude, child_loop"
 		+ " from cust.promo_dcpd_data_new pcpd "
 		+ "where pcpd.promotion_id = ?";
 
@@ -1151,6 +1241,7 @@ public class FDPromotionManagerNewDAO {
 			contentModel.setContentType(EnumDCPDContentType.getEnum(rs.getString("content_type")));
 			contentModel.setContentId(rs.getString("content_id"));
 			contentModel.setExcluded("Y".equalsIgnoreCase(rs.getString("exclude"))?true:false);
+			contentModel.setLoopEnabled("Y".equalsIgnoreCase(rs.getString("child_loop"))?true:false);
 			contentModel.setPromotionId(promotionId);
 			list.add(contentModel);
 		}
@@ -2349,7 +2440,10 @@ public class FDPromotionManagerNewDAO {
 		storePromoDlvDates(conn,promotion.getId(),promotion);
 		storePromoDlvZoneStrategy(conn, promotion.getId(), promotion);
 		storeGeography(conn, promotion.getId(), promotion.getZipRestrictions());
-		
+		if("STCO".equals(promotion.getGeoRestrictionType()))
+			storeStateCountyInfo(conn, promotion.getId(), promotion.getStateCountyList());
+		else
+			removeStateCountyData(conn, promotion.getId());
 		return promotion;
 	}
 	
@@ -2693,6 +2787,52 @@ public class FDPromotionManagerNewDAO {
 				return true;
 			else
 				return false;
+		} finally {
+			rs.close();
+			ps.close();
+		}
+	}
+	
+	public static boolean hasRecommenders(Connection conn, String parentNode) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement("select CHILD_CONTENTNODE_ID from cms.relationship where parent_contentnode_id = ? and def_contenttype = 'Recommender' ");
+		ps.setString(1, "Category:"+parentNode);
+		LOGGER.debug("Looking recommender for:" + "Category:"+parentNode);
+		ResultSet rs = ps.executeQuery();
+
+		try {
+			if (rs.next())
+				return true;
+			else
+				return false;
+		} finally {
+			rs.close();
+			ps.close();
+		}
+	}
+	
+	static String CUST_RESTRICTION = "select count(*) " + 
+            "from cust.promotion_new p, cust.promo_customer pc, cust.customer c " + 
+            "where p.id=pc.promotion_id and pc.customer_id=c.id " +
+            "and pc.promotion_id = ? " +
+            "and C.USER_ID = ?";
+	
+	public static boolean isCustomerInAssignedList(Connection conn, String userId, String promotionId) throws SQLException {
+		
+		PreparedStatement ps = conn.prepareStatement(CUST_RESTRICTION);
+		ps.setString(1, promotionId);
+		ps.setString(2, userId);		
+		ResultSet rs = ps.executeQuery();
+		int count = 0;
+
+		try {
+			if (rs.next())
+				count = rs.getInt(1);
+			
+			if(count == 0)
+				return false;
+			
+			return true;
+			
 		} finally {
 			rs.close();
 			ps.close();

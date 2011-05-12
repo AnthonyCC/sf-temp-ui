@@ -1235,6 +1235,28 @@ public class FDPromotionManagerDAO {
 		return list;
 	}
 	
+	private final static String assignedCustomerStrategyForPromoQuery1 =
+		"select count(*) "
+			+ "from cust.promotion_new p, cust.promo_customer pc, cust.customer c "
+			+ "where p.id=pc.promotion_id and pc.customer_id=c.id "
+			+ "and pc.promotion_id = ?";
+	
+	protected static int loadAssignedCustomerUserIds1(Connection conn, String promotionId) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement(assignedCustomerStrategyForPromoQuery1);
+		ps.setString(1, promotionId);
+		ResultSet rs = ps.executeQuery();
+		int size = 0;
+
+		if (rs.next()) {
+			size = rs.getInt(1);
+		}
+
+		rs.close();
+		ps.close();
+
+		return size;
+	}
+	
 	private final static String LOAD_PROMO_GROUP =
 		"select id, promotion_id, content_type, content_id "
 			+ "from cust.promo_dcpd_data pcpd "
