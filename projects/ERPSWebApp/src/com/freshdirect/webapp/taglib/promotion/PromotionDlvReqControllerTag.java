@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -35,6 +36,7 @@ import com.freshdirect.fdstore.promotion.management.FDPromoCustStrategyModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoDlvDateModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoDlvTimeSlotModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoDlvZoneStrategyModel;
+import com.freshdirect.fdstore.promotion.management.FDPromoStateCountyRestriction;
 import com.freshdirect.fdstore.promotion.management.FDPromoTypeNotFoundException;
 import com.freshdirect.fdstore.promotion.management.FDPromoZipRestriction;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewManager;
@@ -47,6 +49,7 @@ import com.freshdirect.webapp.taglib.crm.CrmSession;
 
 public class PromotionDlvReqControllerTag extends AbstractControllerTag {
 
+	private static final long serialVersionUID = 1L;
 	private FDPromotionNewModel promotion;
 	
 	public void setPromotion(FDPromotionNewModel promotion) {
@@ -187,6 +190,30 @@ public class PromotionDlvReqControllerTag extends AbstractControllerTag {
 			}else if("NONE".equalsIgnoreCase(geoRestrictionType)){
 				promotion.setZipRestrictions(null);
 				promotion.setDlvZoneStrategies(Collections.EMPTY_LIST);
+			} else if("STCO".equals(geoRestrictionType)) {
+				//State county addition 
+				FDPromoStateCountyRestriction scr = new FDPromoStateCountyRestriction();
+				String state_option = request.getParameter("edit_state_all_only");
+				if(state_option == null || state_option.length() == 0) {
+					actionResult.addError(true, "statesOptionEmpty", " Please select 'ALL EXCEPT' or 'ONLY' option for State.");
+				}
+				String county_option = request.getParameter("edit_county_all_only");
+				if(county_option == null || county_option.length() == 0) {
+					actionResult.addError(true, "countyOptionEmpty", " Please select 'ALL EXCEPT' or 'ONLY' option for County.");
+				}
+				String[] selectedStates = request.getParameterValues("edit_select_states");
+				if(selectedStates == null || selectedStates.length == 0)
+					actionResult.addError(true, "statesEmpty", " Select atleast one State.");
+				String[] selectedCounties = request.getParameterValues("edit_select_county");
+				if(selectedCounties == null || selectedCounties.length == 0)
+					actionResult.addError(true, "countyEmpty", " Select atleaset one County.");
+				
+				scr.setPromotionId(promotion.getId());
+				scr.setCountyArray(selectedCounties);
+				scr.setStateArray(selectedStates);
+				scr.setState_option(state_option);
+				scr.setCounty_option(county_option);
+				promotion.setStateCountyList(scr);
 			}
 			List<FDPromoCustStrategyModel> custStrategies = promotion.getCustStrategies();
 			FDPromoCustStrategyModel custModel = new FDPromoCustStrategyModel();

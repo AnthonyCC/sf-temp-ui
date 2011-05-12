@@ -344,6 +344,22 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 				dcpdData.add(contentModel);
 			}
 		}
+		String rec_categories = NVL.apply(request.getParameter("rec_categories"), "").trim();
+		if(!"".equals(rec_categories)){
+			String[] rec_categoriesArr = rec_categories.split(",");
+			for (int i = 0; i < rec_categoriesArr.length; i++) {
+				FDPromoContentModel contentModel = new FDPromoContentModel();
+				contentModel.setContentType(EnumDCPDContentType.RCATEGORY);
+				contentModel.setContentId(rec_categoriesArr[i].trim());
+				contentModel.setExcluded(false);	
+				if("on".equals(NVL.apply(request.getParameter("rec_categories_loop"), "off")))
+					contentModel.setLoopEnabled(true);		
+				else
+					contentModel.setLoopEnabled(false);
+				contentModel.setPromotionId(this.promotion.getId());
+				dcpdData.add(contentModel);
+			}
+		}
 		String recipes = NVL.apply(request.getParameter("recipes"), "").trim();
 		if(!"".equals(recipes)){
 			String[] recipesArr = recipes.split(",");
@@ -444,6 +460,20 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 			}
 			if(!invalidCats.isEmpty()){
 				result.addError(true, "invalidCats", invalidCats.toString()+" are invalid Categories." );
+			}
+		}
+		//check recommended categories
+		String rec_categories = NVL.apply(request.getParameter("rec_categories"), "").trim();
+		if(!"".equals(rec_categories)){
+			List<String> invalidCats = new ArrayList<String>();
+			String[] rec_categoriesArr = rec_categories.split(",");
+			for (int i = 0; i < rec_categoriesArr.length; i++) {
+				if(!FDPromotionNewManager.hasRecommenders(rec_categoriesArr[i].toLowerCase())) {
+					invalidCats.add(rec_categoriesArr[i]);
+				}
+			}
+			if(!invalidCats.isEmpty()){
+				result.addError(true, "invalidRCats", invalidCats.toString()+" are invalid Recommended Categories." );
 			}
 		}
 		String recipes = NVL.apply(request.getParameter("recipes"), "").trim();
