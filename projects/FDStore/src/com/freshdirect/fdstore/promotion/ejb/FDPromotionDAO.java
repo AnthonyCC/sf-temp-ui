@@ -1,11 +1,13 @@
 package com.freshdirect.fdstore.promotion.ejb;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,6 +20,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import com.freshdirect.customer.EnumChargeType;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.promotion.ActiveInactiveStrategy;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
@@ -51,6 +54,7 @@ import com.freshdirect.fdstore.promotion.RedemptionCodeStrategy;
 import com.freshdirect.fdstore.promotion.RuleBasedPromotionStrategy;
 import com.freshdirect.fdstore.promotion.SampleLineApplicator;
 import com.freshdirect.fdstore.promotion.SampleStrategy;
+import com.freshdirect.fdstore.promotion.StateCountyStrategy;
 import com.freshdirect.fdstore.promotion.UniqueUseStrategy;
 import com.freshdirect.fdstore.promotion.WaiveChargeApplicator;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
@@ -94,6 +98,7 @@ public class FDPromotionDAO {
 		Map uniqueUseParticipation = loadUniqueUseParticipation(conn, paramLastModified);
 		Map profileStrategies = loadAllProfiles(conn, paramLastModified);
 		Map dcpdDiscApplicators = loadDCPDiscountApplicators(conn, paramLastModified);
+		Map<String,StateCountyStrategy> stateCountyStrategies = loadStateCountyStrategies(conn,paramLastModified);
 		List promos = new ArrayList();
 		while (rs.next()) {
 			PrimaryKey pk = new PrimaryKey(rs.getString("ID"));
@@ -163,6 +168,14 @@ public class FDPromotionDAO {
 				}
 				//promo.addLineItemStrategy(new RecommendedItemStrategy());
 			}
+			
+			PromotionStrategyI stateCountyStrategyI = stateCountyStrategies.get(pk.getId());
+			//System.out.println("\n\n##############Trying to see if promotion has state and county restriction:" + pk.getId() + "\nstateCountyStrategies:" + stateCountyStrategies);
+			if(null != stateCountyStrategyI){
+				//System.out.println("Adding the StateCounty Strategy");
+				StateCountyStrategy scStrategy = (StateCountyStrategy)stateCountyStrategyI;
+				promo.addStrategy(scStrategy);				
+			}
 				
 			
 
@@ -189,6 +202,80 @@ public class FDPromotionDAO {
 			promos.add(promo);
 		}
 		return promos;
+	}
+	
+	private final static String getPromoStateCountyData = 
+		"select psc.id, psc.promotion_id, psc.states, psc.state_option, psc.county, psc.county_option " + 
+		"from   CUST.PROMOTION_STATE_COUNTY psc " +
+		"where  exists (SELECT 1 FROM CUST.PROMOTION_NEW " + 
+				  	    "where status STATUSES " +
+					      "and (expiration_date > (sysdate-7) or expiration_date is null) " + 
+						  "and redemption_code is null " +
+						  "and ID = psc.promotion_id " +
+					  ")";
+
+	private final static String getModifiedOnlyStateCountyData = 
+		"SELECT psc.id, psc.promotion_id, psc.states,  psc.state_option, psc.county, psc.county_option " +
+		  "FROM CUST.PROMOTION_STATE_COUNTY psc " +
+		 "WHERE EXISTS " +
+		          "(SELECT 1 " +
+		             "FROM CUST.PROMOTION_NEW " +
+		            "WHERE modify_date > ? AND ID = psc.promotion_id)";
+	
+	protected static Map<String,StateCountyStrategy> loadStateCountyStrategies(Connection conn, Date lastModified) throws SQLException {
+		PreparedStatement ps;
+		
+		if(lastModified != null){			
+			//System.out.println("\n\n\n\n\n\n\n\nLastmodified is: " + lastModified + "\nquery:" + getModifiedOnlyStateCountyData);
+			ps = conn.prepareStatement(getModifiedOnlyStateCountyData);	
+			ps.setTimestamp(1, new Timestamp(lastModified.getTime()));
+		}else {
+			String query = getPromoStateCountyData.replace("STATUSES", getStatusReplacementString());
+			//System.out.println("\n\n\n\n\n\n\n\nLastmodified is null: " + query);
+			ps = conn.prepareStatement(query);
+		}
+		
+		ResultSet rs = ps.executeQuery();
+		
+		Map<String,StateCountyStrategy> strategies = new HashMap<String,StateCountyStrategy>();
+		
+		while (rs.next()) {
+			String promoID = rs.getString("promotion_id");
+			//System.out.println("PromoID: " + promoID);
+			StateCountyStrategy scs = new StateCountyStrategy();
+			scs.setPromotionId(promoID);
+			scs.setState_option(rs.getString("state_option"));
+			scs.setCounty_option(rs.getString("county_option"));
+			Array array = rs.getArray("states");
+			String[] states = (String[])array.getArray();
+			scs.setStates(new java.util.HashSet(Arrays.asList(states)));
+			Array array2 = rs.getArray("county");
+			String[] county = (String[])array2.getArray();
+			scs.setCounty(new java.util.HashSet(Arrays.asList(county)));
+			strategies.put(promoID, scs);
+		}
+		rs.close();
+		ps.close();
+		
+		return strategies;
+	}
+	
+	private static String getStatusReplacementString() {
+		
+		String[] statuses = FDStoreProperties.getPromoValidRTStatuses().split(",");
+		StringBuffer buf = new StringBuffer();
+		if(statuses.length > 1) {
+			buf.append("in (");	
+			for (int i = 0; i < statuses.length; i++) {
+	 			buf.append("'").append(statuses[i].trim()).append("'");
+				if(i < statuses.length - 1) 
+					buf.append(",");
+			}
+			buf.append(")");	
+		}else {
+ 			buf.append("='").append(statuses[0].trim()).append("'");
+		}
+		return buf.toString();
 	}
 	
 	private final static String getAllActiveAutomaticPromotionCodes = "SELECT CODE, MODIFY_DATE FROM CUST.PROMOTION p where p.active='X' and " +
@@ -352,6 +439,15 @@ public class FDPromotionDAO {
 			}
 			//promo.addLineItemStrategy(new RecommendedItemStrategy());
 		}
+		
+		//System.out.println("Loading promotion:" + promoId);
+		if("STCO".equals(rs.getString("GEO_RESTRICTION_TYPE"))) {
+			//Add the StateCountyStrategy
+			//System.out.println("#########adding the statecounty strategy");
+			PromotionStrategyI scStrategy = loadStateCountyStrategy(conn, promoId);
+			if(scStrategy != null)
+				promo.addStrategy(scStrategy);
+		}
 				
 		
 		PromotionApplicatorI applicator = null;
@@ -368,6 +464,33 @@ public class FDPromotionDAO {
 			promo.setApplicator(applicator);
 		}
 		return promo;
+	}
+	
+	protected static PromotionStrategyI loadStateCountyStrategy(Connection conn, String promoId) throws SQLException {
+		PromotionStrategyI strategy = null;
+		PreparedStatement ps = conn.prepareStatement("SELECT psc.id, psc.promotion_id, psc.states,  psc.state_option, psc.county, psc.county_option " + 
+													 "FROM CUST.PROMOTION_STATE_COUNTY psc WHERE psc.promotion_id = ?");
+		ps.setString(1, promoId);
+		ResultSet rs = ps.executeQuery();
+		StateCountyStrategy scs = null;
+		while (rs.next()) {
+			String promoID = rs.getString("promotion_id");
+			//System.out.println("PromoID: " + promoID);
+			scs = new StateCountyStrategy();
+			scs.setPromotionId(promoID);
+			scs.setState_option(rs.getString("state_option"));
+			scs.setCounty_option(rs.getString("county_option"));
+			Array array = rs.getArray("states");
+			String[] states = (String[])array.getArray();
+			scs.setStates(new java.util.HashSet(Arrays.asList(states)));
+			Array array2 = rs.getArray("county");
+			String[] county = (String[])array2.getArray();
+			scs.setCounty(new java.util.HashSet(Arrays.asList(county)));
+		}
+		rs.close();
+		ps.close();
+
+		return scs;
 	}
 	
 	private static void decorateOrderTypestrategy(ResultSet rs, Promotion promo) throws SQLException {
@@ -531,7 +654,6 @@ public class FDPromotionDAO {
 			return new SampleLineApplicator(new ProductReference(categoryName, productName), minSubtotal);
 		}
 
-		int maxItemCount=rs.getInt("max_item_count");
 		return null;
 	}
 

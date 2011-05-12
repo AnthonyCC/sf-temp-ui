@@ -65,7 +65,9 @@ import com.freshdirect.fdstore.promotion.RedemptionCodeStrategy;
 import com.freshdirect.fdstore.promotion.RuleBasedPromotionStrategy;
 import com.freshdirect.fdstore.promotion.SampleLineApplicator;
 import com.freshdirect.fdstore.promotion.SampleStrategy;
+import com.freshdirect.fdstore.promotion.StateCountyStrategy;
 import com.freshdirect.fdstore.promotion.WaiveChargeApplicator;
+import com.freshdirect.fdstore.promotion.management.FDPromoStateCountyRestriction;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
@@ -132,6 +134,7 @@ public class FDPromotionNewDAO {
 		Map<PrimaryKey, DCPDLineItemStrategy> dcpdData = loadDCPDData(conn, paramLastModified);
 		Map<PrimaryKey, CartStrategy> cartStrategyData = loadCartStrategies(conn, paramLastModified);
 		Map<String,DlvZoneStrategy> dlvZoneStrategies = loadDlvZoneStrategies(conn,paramLastModified);
+		Map<String,StateCountyStrategy> stateCountyStrategies = loadStateCountyStrategies(conn,paramLastModified);
 		List<PromotionI> promos = new ArrayList<PromotionI>();
 		while (rs.next()) {
 			PrimaryKey pk = new PrimaryKey(rs.getString("ID"));
@@ -225,6 +228,14 @@ public class FDPromotionNewDAO {
 				cartStrategy.setNeedDryGoods("X".equalsIgnoreCase(rs.getString("NEEDDRYGOODS"))?true:false);
 				cartStrategy.setMinSkuQuantity(rs.getInt("HASSKUQUANTITY"));
 				promo.addStrategy(cartStrategy);				
+			}
+			
+			PromotionStrategyI stateCountyStrategyI = stateCountyStrategies.get(pk.getId());
+			//System.out.println("\n\n##############Trying to see if promotion has state and county restriction:" + pk.getId() + "\nstateCountyStrategies:" + stateCountyStrategies);
+			if(null != stateCountyStrategyI){
+				//System.out.println("Adding the StateCounty Strategy");
+				StateCountyStrategy scStrategy = (StateCountyStrategy)stateCountyStrategyI;
+				promo.addStrategy(scStrategy);				
 			}
 			
 			PromotionApplicatorI applicator = loadApplicator(rs);	
@@ -448,6 +459,15 @@ public class FDPromotionNewDAO {
 			promo.addStrategy(custStrategy);
 		}
 		
+		//System.out.println("Loading promotion:" + promoId);
+		if("STCO".equals(rs.getString("GEO_RESTRICTION_TYPE"))) {
+			//Add the StateCountyStrategy
+			//System.out.println("#########adding the statecounty strategy");
+			PromotionStrategyI scStrategy = loadStateCountyStrategy(conn, promoId);
+			if(scStrategy != null)
+				promo.addStrategy(scStrategy);
+		}
+		
 
 		
 		PromotionStrategyI cartStrategyI = loadCartStrategy(conn,promoId);
@@ -484,6 +504,33 @@ public class FDPromotionNewDAO {
 		
 
 		return promo;
+	}
+	
+	protected static PromotionStrategyI loadStateCountyStrategy(Connection conn, String promoId) throws SQLException {
+		PromotionStrategyI strategy = null;
+		PreparedStatement ps = conn.prepareStatement("SELECT psc.id, psc.promotion_id, psc.states,  psc.state_option, psc.county, psc.county_option " + 
+													 "FROM CUST.PROMOTION_STATE_COUNTY psc WHERE psc.promotion_id = ?");
+		ps.setString(1, promoId);
+		ResultSet rs = ps.executeQuery();
+		StateCountyStrategy scs = null;
+		while (rs.next()) {
+			String promoID = rs.getString("promotion_id");
+			//System.out.println("PromoID: " + promoID);
+			scs = new StateCountyStrategy();
+			scs.setPromotionId(promoID);
+			scs.setState_option(rs.getString("state_option"));
+			scs.setCounty_option(rs.getString("county_option"));
+			Array array = rs.getArray("states");
+			String[] states = (String[])array.getArray();
+			scs.setStates(new java.util.HashSet(Arrays.asList(states)));
+			Array array2 = rs.getArray("county");
+			String[] county = (String[])array2.getArray();
+			scs.setCounty(new java.util.HashSet(Arrays.asList(county)));
+		}
+		rs.close();
+		ps.close();
+
+		return scs;
 	}
 	
 	private static void decorateSampleStrategy(ResultSet rs, Promotion promo) throws SQLException {
@@ -681,6 +728,62 @@ public class FDPromotionNewDAO {
 		rs.close();
 		ps.close();
 
+		return strategies;
+	}
+	
+	private final static String getPromoStateCountyData = 
+			"select psc.id, psc.promotion_id, psc.states, psc.state_option, psc.county, psc.county_option " + 
+			"from   CUST.PROMOTION_STATE_COUNTY psc " +
+			"where  exists (SELECT 1 FROM CUST.PROMOTION_NEW " + 
+					  	    "where status STATUSES " +
+						      "and (expiration_date > (sysdate-7) or expiration_date is null) " + 
+							  "and redemption_code is null " +
+							  "and ID = psc.promotion_id " +
+						  ")";
+
+	private final static String getModifiedOnlyStateCountyData = 
+		"SELECT psc.id, psc.promotion_id, psc.states,  psc.state_option, psc.county, psc.county_option " +
+		  "FROM CUST.PROMOTION_STATE_COUNTY psc " +
+		 "WHERE EXISTS " +
+		          "(SELECT 1 " +
+		             "FROM CUST.PROMOTION_NEW " +
+		            "WHERE modify_date > ? AND ID = psc.promotion_id)";
+	
+	protected static Map<String,StateCountyStrategy> loadStateCountyStrategies(Connection conn, Date lastModified) throws SQLException {
+		PreparedStatement ps;
+		
+		if(lastModified != null){			
+			System.out.println("\n\n\n\n\n\n\n\nLastmodified is: " + lastModified + "\nquery:" + getModifiedOnlyStateCountyData);
+			ps = conn.prepareStatement(getModifiedOnlyStateCountyData);	
+			ps.setTimestamp(1, new Timestamp(lastModified.getTime()));
+		}else {
+			String query = getPromoStateCountyData.replace("STATUSES", getStatusReplacementString());
+			System.out.println("\n\n\n\n\n\n\n\nLastmodified is null: " + query);
+			ps = conn.prepareStatement(query);
+		}
+		
+		ResultSet rs = ps.executeQuery();
+		
+		Map<String,StateCountyStrategy> strategies = new HashMap<String,StateCountyStrategy>();
+		
+		while (rs.next()) {
+			String promoID = rs.getString("promotion_id");
+			//System.out.println("PromoID: " + promoID);
+			StateCountyStrategy scs = new StateCountyStrategy();
+			scs.setPromotionId(promoID);
+			scs.setState_option(rs.getString("state_option"));
+			scs.setCounty_option(rs.getString("county_option"));
+			Array array = rs.getArray("states");
+			String[] states = (String[])array.getArray();
+			scs.setStates(new java.util.HashSet(Arrays.asList(states)));
+			Array array2 = rs.getArray("county");
+			String[] county = (String[])array2.getArray();
+			scs.setCounty(new java.util.HashSet(Arrays.asList(county)));
+			strategies.put(promoID, scs);
+		}
+		rs.close();
+		ps.close();
+		
 		return strategies;
 	}
 	
