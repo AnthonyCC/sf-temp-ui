@@ -121,8 +121,19 @@ public abstract class BaseSideNav extends BodyTagSupport {
     	}
     	CategoryModel topCategory = (CategoryModel)topNode;
     	
+    	// FIXME: quick & dirty fix for Bakery.
+    	// This code is seriously broken, as it ignores all cms attributes which control side-nav behaviour.
+    	// This has to be fixed, but that could break other categories too, so we have to do this hack for the bakery for now.
+    	
+    	// If we happen to be in the Bakery department then use the current folder as the top folder. 
+    	// This cannot be achieved with cms attributes as they are ignored here. 
+    	// Currently there is no other way to ensure that other categories will not be affected.  
+    	if ( tempNode.getContentKey().getEncoded().equals( "Department:bak" ) ) {
+    		topCategory = folder;
+    	}
+    	
     	if (topCategory==null) {
-    		return folder ;
+    		return folder;
     	} else {
     		//only startRecursiveWalking if topCat is not null
     		startRecursiveWalking(folder, topCategory);
