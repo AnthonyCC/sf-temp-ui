@@ -710,7 +710,38 @@ public class FDPromotionNewManager {
 		
 	}
 	
+	public static boolean hasRecommenders(String parentNode) throws FDResourceException {
+		lookupManagerHome();
+
+		try {
+			FDPromotionManagerNewSB sb = managerHome.create();
+			return sb.hasRecommenders(parentNode);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+		
+	}
+	
 	private static void invalidateManagerHome() {
 		managerHome = null;
+	}
+	
+	public static boolean isCustomerInAssignedList(String userId, String promotionId) throws FDResourceException {
+		lookupManagerHome();
+
+		try {
+			FDPromotionManagerNewSB sb = managerHome.create();
+			return sb.isCustomerInAssignedList(userId, promotionId);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
 	}
 }

@@ -9,6 +9,7 @@ public class FDPromoContentModel extends ModelSupport {
 	private EnumDCPDContentType contentType;
 	private String contentId;
 	private boolean excluded;
+	private boolean loopThru;
 	
 	public String getPromotionId() {
 		return promotionId;
@@ -33,6 +34,12 @@ public class FDPromoContentModel extends ModelSupport {
 	}
 	public void setExcluded(boolean excluded) {
 		this.excluded = excluded;
+	}
+	public boolean isLoopEnabled() {
+		return loopThru;
+	}
+	public void setLoopEnabled(boolean loopThru) {
+		this.loopThru = loopThru;
 	}
 
 }

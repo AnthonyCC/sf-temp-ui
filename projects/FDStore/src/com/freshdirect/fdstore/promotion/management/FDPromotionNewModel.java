@@ -87,6 +87,7 @@ public class FDPromotionNewModel extends ModelSupport {
 
 	private String dcpdDepts = "";
 	private String dcpdCats = "";
+	private String dcpdRecCats = "";
 	private String dcpdRecps = "";
 	private String dcpdSkus = "";
 	private String dcpdBrands = "";
@@ -95,6 +96,8 @@ public class FDPromotionNewModel extends ModelSupport {
 	private String cartCats = "";
 	private String cartSkus = "";
 	private String cartBrands = "";
+	private FDPromoStateCountyRestriction scRestriction;
+	private int restrictedCustomerSize;
 	/*
 	 * Number of successful publishes
 	 */
@@ -333,12 +336,19 @@ public class FDPromotionNewModel extends ModelSupport {
 		return str; // (!"".equals(str)) ? str : null;
 	}
 
-	public int getAssignedCustomerSize() {
-		if (this.assignedCustomerUserIds != null
+	public int getAssignedCustomerSize() {		
+		/*if (this.assignedCustomerUserIds != null
 				&& !this.assignedCustomerUserIds.isEmpty()) {
 			return assignedCustomerUserIds.size();
 		}
+		
 		return 0;
+		*/
+		return restrictedCustomerSize;
+	}
+	
+	public void setAssignedCustomerSize(int restrictedCustomerSize) {
+		this.restrictedCustomerSize = restrictedCustomerSize;
 	}
 
 	public boolean isCustomerInAssignedList(String userId) {
@@ -405,6 +415,7 @@ public class FDPromotionNewModel extends ModelSupport {
 		if (null != dcpdData && !dcpdData.isEmpty()) {
 			StringBuffer deptBuffer = new StringBuffer();
 			StringBuffer catBuffer = new StringBuffer();
+			StringBuffer recCatBuffer = new StringBuffer();
 			StringBuffer recpBuffer = new StringBuffer();
 			StringBuffer skuBuffer = new StringBuffer();
 			StringBuffer brandBuffer = new StringBuffer();
@@ -439,9 +450,18 @@ public class FDPromotionNewModel extends ModelSupport {
 					}
 					brandBuffer.append(contentModel.getContentId() + ",");
 				}
+				if (EnumDCPDContentType.RCATEGORY.equals(contentModel
+						.getContentType())) {
+					if (brandBuffer.length() <= 0) {
+						if (contentModel.isExcluded())
+							brandBuffer.append("Excluded Brands: ");
+					}
+					brandBuffer.append(contentModel.getContentId() + ",");
+				}
 			}
 			dcpdDepts = deptBuffer.toString();
 			dcpdCats = catBuffer.toString();
+			dcpdRecCats = recCatBuffer.toString();
 			dcpdRecps = recpBuffer.toString();
 			dcpdSkus = skuBuffer.toString();
 			dcpdBrands = brandBuffer.toString();
@@ -945,6 +965,14 @@ public class FDPromotionNewModel extends ModelSupport {
 	public void setDcpdCats(String dcpdCats) {
 		this.dcpdCats = dcpdCats;
 	}
+	
+	public String getDcpdRecCats() {
+		return dcpdRecCats;
+	}
+
+	public void setDcpdRecCats(String dcpdRecCats) {
+		this.dcpdRecCats = dcpdRecCats;
+	}
 
 	public String getDcpdRecps() {
 		return dcpdRecps;
@@ -1002,6 +1030,14 @@ public class FDPromotionNewModel extends ModelSupport {
 		this.cartBrands = cartBrands;
 	}
 	
+	public FDPromoStateCountyRestriction getStateCountyList() {
+		return scRestriction;
+	}
+
+	public void setStateCountyList(FDPromoStateCountyRestriction scRestriction) {
+		this.scRestriction = scRestriction;
+	}
+
 	public String getWSSelectedZone() {
 		 String selectedZone = "";
 		 List<FDPromoDlvZoneStrategyModel> list = getDlvZoneStrategies(); 
