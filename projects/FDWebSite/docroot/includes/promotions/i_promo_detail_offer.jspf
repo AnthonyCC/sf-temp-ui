@@ -145,6 +145,25 @@
 									</td>
 								</tr>
 						<% } %>
+						<% if (dpcdRCats.size() > 0) { %>
+								<tr>
+									<td class="promo_detail_label">Recommended Categor<%=(dpcdRCats.size() > 1)?"ies":"y"%>:<%= loopEnabled?"<br/>(Loop through all children)":"" %></td>
+									<td class="alignL">
+										<table style="border-collapse: collapse;">
+										<% 
+											for (int n = 0; n < dpcdRCats.size(); n++) {
+												FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdRCats.get(n);
+												ContentNodeModel catRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
+										%>
+												<tr>
+													<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
+													<td class="bordLgrayDash padL8R16"><%= (catRef!=null)?catRef.getFullName():"" %></td>
+												</tr>
+										<% } %>
+										</table>
+									</td>
+								</tr>
+						<% } %>
 						<% if (dpcdRecipes.size() > 0) { %>
 								<tr>
 									<td class="promo_detail_label">Recipe<%=(dpcdRecipes.size() > 1)?"s":""%>:</td>

@@ -1,6 +1,7 @@
 <%@page import="com.freshdirect.fdstore.promotion.management.FDPromoDlvDateModel"%>
 <%@page import="com.freshdirect.fdstore.promotion.management.FDPromoDlvTimeSlotModel"%>
 <%@page import="com.freshdirect.fdstore.promotion.management.FDPromoZipRestriction"%>
+<%@page import="com.freshdirect.fdstore.promotion.management.FDPromoStateCountyRestriction"%>
 <%@page import="java.util.Set"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.Map"%>
@@ -158,6 +159,44 @@
 								</td>
 							</tr>
 						<% } %>
+				<% } %>
+				<% FDPromoStateCountyRestriction scr = promotion.getStateCountyList(); 
+					if(scr != null && scr.getPromotionId() != null) {
+				%>
+				<tr>
+					<td class="promo_detail_label">State(s), County:</td>
+					<td class="alignL">						
+						<table class="vTop tableCollapse">
+							<tr>
+								<td class="vTop">States:</td>
+								<td class="vTop" align"left"><%= "A".equals(scr.getState_option())?"ALL EXCEPT":"ONLY" %> - 
+									<%
+										Iterator siter = scr.getStates().iterator();
+										while(siter.hasNext()) {
+									%>
+										<%= siter.next() %><%= siter.hasNext()?", ":"" %>
+										<%
+										}
+										%>
+								</td>
+							</tr>
+							<tr>
+								<td class="vTop">County:</td>
+								<td class="vTop" align"left"><%= "A".equals(scr.getCounty_option())?"ALL EXCEPT":"ONLY" %> - 
+									<%
+										Iterator citer = scr.getCounty().iterator();
+										while(citer.hasNext()) {
+											String county = (String) citer.next();											
+									%>
+										<%= county.replaceAll("_",":") %><%= citer.hasNext()?", ":"" %>
+									<%
+										}
+									%>
+								</td>
+							</tr>
+						</table>						
+					</td>
+				</tr>
 				<% } %>
 			</table>
 		</td>

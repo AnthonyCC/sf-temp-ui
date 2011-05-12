@@ -247,15 +247,18 @@
 		List<FDPromoContentModel> dpcdSkus =  new ArrayList<FDPromoContentModel>();
 		List<FDPromoContentModel> dpcdSkusExcluded = new ArrayList<FDPromoContentModel>();
 		List<FDPromoContentModel> dpcdRecipes = new ArrayList<FDPromoContentModel>();
+		List<FDPromoContentModel> dpcdRCats = new ArrayList<FDPromoContentModel>();
 
 		StringBuffer depts = new StringBuffer();
 		StringBuffer cats = new StringBuffer();
 		StringBuffer elgBrnds = new StringBuffer();
 		StringBuffer inElgBrnds = new StringBuffer();
 		StringBuffer elgSkus = new StringBuffer();
+		StringBuffer rcats = new StringBuffer();
 		StringBuffer inElgSkus = new StringBuffer();
 		StringBuffer recps = new StringBuffer();
 		StringBuffer excFromSubtotal = new StringBuffer();
+		boolean loopEnabled = false;
 		if(null != promotion){
 			excFromSubtotal.append(promotion.getSubTotalExcludeSkus());
 		}
@@ -288,6 +291,11 @@
 						}else if( EnumDCPDContentType.SKU.equals(tempDpcd.getContentType()) ) {
 							dpcdSkus.add(tempDpcd);
 							elgSkus.append(tempDpcd.getContentId()).append(",");
+						}else if( EnumDCPDContentType.RCATEGORY.equals(tempDpcd.getContentType()) ) {
+							dpcdRCats.add(tempDpcd);
+							rcats.append(tempDpcd.getContentId()).append(",");
+							if(tempDpcd.isLoopEnabled())
+								loopEnabled = true;
 						}
 					}
 				}
