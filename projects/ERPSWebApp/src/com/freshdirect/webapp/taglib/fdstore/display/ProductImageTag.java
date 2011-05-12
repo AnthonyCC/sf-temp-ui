@@ -372,7 +372,6 @@ public class ProductImageTag extends BodyTagSupport {
 		if (this.opacity < 1) {
 			burstImageStyle += TransparentBoxTag.getOpacityStyle(browserInfo, this.opacity);
 		}
-		System.out.println("pl : "+calculator.getProductModel()+", name:"+calculator.getProductModel().getFullName()+", savingsPercentage:"+savingsPercentage);
 		// get deal
 		int deal = 0;
 		if (savingsPercentage > 0) {
@@ -382,7 +381,6 @@ public class ProductImageTag extends BodyTagSupport {
 			deal = (int)calculator.getBurstDealsPercentage(excludeCaseDeals ? ProductBurstTag.EXCLUDED_WINE_TIERS : null);
 		}
 
-		System.out.println("deal   : " +deal);
 		if (deal < FDStoreProperties.getBurstsLowerLimit() || deal > FDStoreProperties.getBurstUpperLimit())
 			deal = 0;
 		
