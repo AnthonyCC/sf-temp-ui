@@ -14,9 +14,16 @@ public class ProductWasPriceTag extends BodyTagSupportEx {
 	private static final long serialVersionUID = -6134261340099468094L;
 
 	private ProductModel product;
+	
+	private PriceCalculator price;
 
 	public int doStartTag() throws javax.servlet.jsp.JspException {
-		PriceCalculator price = product.getPriceCalculator();
+                if (price == null) {
+                    if (product == null) {
+                        throw new RuntimeException("'priceCalculator' or 'product' is mandatory!");
+                    }
+                    price = product.getPriceCalculator();
+                }
 
 		NumberFormat format = NumberFormat.getCurrencyInstance();
 
@@ -35,6 +42,10 @@ public class ProductWasPriceTag extends BodyTagSupportEx {
 		return SKIP_BODY;
 	};
 
+	public void setPriceCalculator(PriceCalculator priceCalculator) {
+            this.price = priceCalculator;
+        }
+	
 	public ProductModel getProduct() {
 		return product;
 	}

@@ -98,9 +98,14 @@
 	<bodycontent>empty</bodycontent>
 	<attribute>
 		<name>product</name>
-		<required>true</required>
+		<required>false</required>
 		<rtexprvalue>true</rtexprvalue>
 	</attribute>
+  	<attribute>
+   		<name>priceCalculator</name>
+   		<required>false</required>
+   		<rtexprvalue>true</rtexprvalue>
+  	</attribute>
 	<attribute>
 		<name>large</name>
 		<required>false</required>
@@ -305,7 +310,12 @@
  	<bodycontent>empty</bodycontent>
  	<attribute>
  		<name>product</name>
- 		<required>true</required>
+ 		<required>false</required>
+ 		<rtexprvalue>true</rtexprvalue>
+ 	</attribute>
+ 	<attribute>
+ 		<name>priceCalculator</name>
+ 		<required>false</required>
  		<rtexprvalue>true</rtexprvalue>
  	</attribute>
  </tag>
@@ -315,7 +325,12 @@
  	<bodycontent>empty</bodycontent>
  	<attribute>
  		<name>product</name>
- 		<required>true</required>
+ 		<required>false</required>
+ 		<rtexprvalue>true</rtexprvalue>
+ 	</attribute>
+ 	<attribute>
+ 		<name>priceCalculator</name>
+ 		<required>false</required>
  		<rtexprvalue>true</rtexprvalue>
  	</attribute>
  </tag>

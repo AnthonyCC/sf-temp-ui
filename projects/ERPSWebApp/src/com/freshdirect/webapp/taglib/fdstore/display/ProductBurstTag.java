@@ -37,6 +37,10 @@ public class ProductBurstTag extends BodyTagSupportEx {
 	public void setExcludeCaseDeals(boolean excludeCaseDeals) {
 		this.excludeCaseDeals = excludeCaseDeals;
 	}
+	
+	public void setPriceCalculator(PriceCalculator calculator) {
+            this.calculator = calculator;
+        }
 
         PriceCalculator getCalculator() {
             if (calculator == null) {
@@ -49,6 +53,12 @@ public class ProductBurstTag extends BodyTagSupportEx {
 	public int doStartTag() throws JspException {
 		if (!renderPrecondition()) {
 			return SKIP_BODY;
+		}
+		if (product == null) {
+		    if (calculator == null) {
+                        throw new RuntimeException("'priceCalculator' or 'product' is mandatory!");
+		    }
+		    product = calculator.getProductModel();
 		}
 		
 		FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);

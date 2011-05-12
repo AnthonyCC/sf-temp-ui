@@ -8,7 +8,7 @@ import com.freshdirect.fdstore.content.util.EnumWinePageSize;
 public class ProductRatingGroup implements Comparable<ProductRatingGroup> {
 	private EnumWineRating rating;
 
-	private List<ProductModel> products;
+	private final List<ProductModel> products;
 
 	public ProductRatingGroup(EnumWineRating rating, int capacity) {
 		super();
@@ -27,6 +27,14 @@ public class ProductRatingGroup implements Comparable<ProductRatingGroup> {
 
 	public List<ProductModel> getProducts() {
 		return products;
+	}
+	
+	public List<PriceCalculator> getPriceCalculators() {
+	    List<PriceCalculator> calcs = new ArrayList<PriceCalculator>(products.size());
+	    for (ProductModel p : products) {
+	        calcs.add(p.getPriceCalculator());
+	    }
+	    return calcs;
 	}
 	
 	public static int productCount(List<ProductRatingGroup> groups) {
