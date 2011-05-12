@@ -107,6 +107,19 @@
  		<p>
 		<span class="bull">&bull;</span> <a href="../search/category_scoring.jsp"><span>Search Category Scoring</span></a>
 		</p>
+		
+    	<p style="padding-top: 50px;">
+    	<span style="text-transform: uppercase;">Smart Store Reports:</span>
+    	</p>
+ 		<p>
+		<span class="bull">&bull;</span> <a href="query_scarabrules.jsp"><span>Scarab merchandising rules report</span></a>
+		</p>
+ 		<p>
+		<span class="bull">&bull;</span> <a href="query_smartcats.jsp"><span>Smart categories report</span></a>
+		</p>
+ 		<p>
+		<span class="bull">&bull;</span> <a href="query_ymalsets.jsp"><span>YMAL sets report</span></a>
+		</p>
     	
     </div>
 </body>

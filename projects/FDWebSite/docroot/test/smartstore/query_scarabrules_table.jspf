@@ -1,0 +1,43 @@
+<hr/>
+<div style="font-size: large; text-transform: uppercase; font-weight: bold; margin: 5px;" onclick="disp = document.getElementById('<%=id%>').style.display; document.getElementById('<%=id%>').style.display = (disp == 'none' ? 'table' : 'none' );"><a href="#"><%= title %></a></div>
+<table id="<%= id %>" style="border: 1px solid; border-collapse: collapse; margin-bottom: 50px;">
+	<tr style="border: 1px solid; border-collapse: collapse;">
+		<td style="border: 1px solid; border-collapse: collapse;"><%= columnDefs[0].getLabel() %></td>
+		<td style="border: 1px solid; border-collapse: collapse;"><%= columnDefs[2].getLabel() %></td>
+	</tr>
+	<% for ( int i = 0; i < parentList.size(); i++ ) {
+		ContentKey parentKey = parentList.get(i);
+		ContentKey childKey = childList.get(i);
+		ContentNodeModel parentNode = ContentFactory.getInstance().getContentNodeByKey( parentKey );
+		ContentNodeModel childNode = ContentFactory.getInstance().getContentNodeByKey( childKey );
+		%>
+		<tr style="border: 1px solid; border-collapse: collapse;">
+			<td style="border: 1px solid; border-collapse: collapse; padding: 5px; vertical-align: bottom;">						
+				<% if( parentNode instanceof CategoryModel ) { %>
+					<div class="imgdiv"><display:CategoryImage category="<%= (CategoryModel)parentNode %>" /></div>
+					<display:CategoryName category="<%= (CategoryModel)parentNode %>" action="<%= FDURLUtil.getCategoryURI((CategoryModel)parentNode,trkC) %>" />
+				<% } else if( parentNode instanceof ProductModel ) { %>
+					<div class="imgdiv"><display:ProductImage product="<%= (ProductModel)parentNode %>" /></div>
+					<display:ProductName product="<%= (ProductModel)parentNode %>" action="<%= FDURLUtil.getProductURI((ProductModel)parentNode,trkC) %>" />
+				<% } else if( parentNode instanceof DepartmentModel ) { %>	
+					<div class="imgdiv"><fd:IncludeImage image="<%= ((DepartmentModel)parentNode).getPhoto() %>"/></div>
+					<span><a href="<%= FDURLUtil.getDepartmentURI(parentNode.getContentName(),trkC) %>"><%= parentNode.getFullName() %></a></span>				
+				<% } %>
+				<br/><span style="color: gray;"><%= parentKey.getEncoded() %></span>
+			</td>
+			<td style="border: 1px solid; border-collapse: collapse; vertical-align: bottom; padding: 5px;">
+				<% if( childNode instanceof CategoryModel ) { %>
+					<div class="imgdiv"><display:CategoryImage category="<%= (CategoryModel)childNode %>" /></div>
+					<display:CategoryName category="<%= (CategoryModel)childNode %>" action="<%= FDURLUtil.getCategoryURI((CategoryModel)childNode,trkC) %>" />
+				<% } else if( childNode instanceof ProductModel ) { %>
+					<div class="imgdiv"><display:ProductImage product="<%= (ProductModel)childNode %>" /></div>
+					<display:ProductName product="<%= (ProductModel)childNode %>" action="<%= FDURLUtil.getProductURI((ProductModel)childNode,trkC) %>" />
+				<% } else if( childNode instanceof DepartmentModel ) { %>	
+					<div class="imgdiv"><fd:IncludeImage image="<%= ((DepartmentModel)childNode).getPhoto() %>"/></div>
+					<span><a href="<%= FDURLUtil.getDepartmentURI(childNode.getContentName(),trkC) %>"><%= childNode.getFullName() %></a></span>				
+				<% } %>
+				<br/><span style="color: gray;"><%= childKey.getEncoded() %></span>
+			</td>
+		</tr>
+	<% } %>
+</table>
