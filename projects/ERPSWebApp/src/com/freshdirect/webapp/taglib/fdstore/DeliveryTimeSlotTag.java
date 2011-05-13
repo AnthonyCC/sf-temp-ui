@@ -127,6 +127,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		return new DateRange(begCal.getTime(), endCal.getTime());
 	}
 
+	@SuppressWarnings("unchecked")
 	protected Object getResult() throws FDResourceException {
 		
 		Result result = null;
@@ -161,11 +162,10 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		LOGGER.debug("containsSpecialHoliday :"+containsSpecialHoliday+" :containsAdvanceOrderItem:"+containsAdvanceOrderItem);
 		
 		List dateRanges = getDateRanges(baseRange,
-				(containsSpecialHoliday && !deliveryInfo), restrictions,
-				specialHoliday, containsAdvanceOrderItem);
+								(containsSpecialHoliday && !deliveryInfo), restrictions,specialHoliday, containsAdvanceOrderItem);
 		
 		/*Holiday & specialItems restrictions*/
-		getHolidayRestrctions(restrictions, baseRange, deliveryModel);
+		getHolidayRestrctions(restrictions, dateRanges, deliveryModel);
 		//getSpecialItemDeliveryRestrctions(restrictions, baseRange, deliverymodel, user);
 
 		List timeslotList = new ArrayList();
@@ -398,6 +398,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		user.setPercSlotsSold(totalSlots > 0 ? Math.round((soldOut/totalSlots)*100):0.0);
 	}
 		
+	@SuppressWarnings("unchecked")
 	private void checkTimeslotCapacity(FDUserI user, HashMap zonesMap, FDTimeslot timeslot) {
 		DlvZoneModel tempZoneModel = null;
 		try{
@@ -426,6 +427,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private List getGeographicRestrictions() throws FDResourceException {
 		List geographicRestrictions = new ArrayList();
 		if(null != timeSlotContext){
@@ -496,6 +498,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 	    return getDateRanges(period,lookahead,restrictions, specialRestriction,false) ;
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected static List getDateRanges(
 		DateRange period,
 		boolean lookahead,
@@ -731,13 +734,17 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		}
 	}
 	
-	public List<RestrictionI> getHolidayRestrctions(DlvRestrictionsList restrictions, DateRange baseRange, FDDeliveryTimeslotModel deliveryModel){
+	public List<RestrictionI> getHolidayRestrctions(DlvRestrictionsList restrictions, List<DateRange> dateRanges, FDDeliveryTimeslotModel deliveryModel){
 		List<RestrictionI> holidayRes = new ArrayList<RestrictionI>();
-		DateRange validRange = new DateRange(baseRange.getStartDate(), baseRange.getEndDate());
+		for (Iterator<DateRange> i = dateRanges.iterator(); i.hasNext();) {
+			DateRange validRange = i.next();
 		
-		for (Iterator<RestrictionI> i = restrictions.getRestrictions(EnumDlvRestrictionReason.CLOSED, validRange).iterator(); i.hasNext();) {
-			RestrictionI r = i.next();
-			holidayRes.add(r);			
+		//DateRange validRange = new DateRange(baseRange.getStartDate(), baseRange.getEndDate());
+		
+			for (Iterator<RestrictionI> itr = restrictions.getRestrictions(EnumDlvRestrictionReason.CLOSED, validRange).iterator(); itr.hasNext();) {
+				RestrictionI r = itr.next();
+				holidayRes.add(r);			
+			}
 		}
 		deliveryModel.setHolidayRestrictions(holidayRes);
 		return holidayRes;

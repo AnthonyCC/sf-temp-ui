@@ -24,7 +24,7 @@ boolean duplicateFaq = false;
 
 Calendar cal=Calendar.getInstance();
 cal.setTime(new Date());
-int h = cal.get(Calendar.HOUR);
+int h = cal.get(Calendar.HOUR_OF_DAY);
 double m = cal.get(Calendar.MINUTE)/60;
 double currentHour = h+m;
 %>
@@ -45,10 +45,10 @@ double currentHour = h+m;
 				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/corporate_top_module.html"/>
 
 			<%}else if(user.isChefsTable() && !(user.isCorporateUser() && "CORPORATE".equals(address.getServiceType().getName()))){
-				if(deliveryModel.getPercSlotsSold() < 80 || (deliveryModel.getPercSlotsSold() == 100 && (currentHour >= 21 && currentHour < 0))){
+				if(deliveryModel.getPercSlotsSold() < 80 || (deliveryModel.getPercSlotsSold() == 100 && currentHour >= 21)){
 			%>
 					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/preferredctaccess_top_module.html"/>
-				<%}else if(deliveryModel.getPercSlotsSold() > 80 || (deliveryModel.getPercSlotsSold() == 100 && !(currentHour >= 21 && currentHour < 0))){%>
+				<%}else if(deliveryModel.getPercSlotsSold() > 80 || (deliveryModel.getPercSlotsSold() == 100 && currentHour < 21)){%>
 					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/nextdayguarantee_short_topmodule.html"/>
 				<%}%>
 			<%}else if(!user.isChefsTable()&& user.isDlvPassActive()){

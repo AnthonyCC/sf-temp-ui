@@ -32,7 +32,7 @@ if (timeslots.size() > 0) {
 	boolean cutOffpassed = false;
 
 	Collection<Date> days = timeslots.getDays();
-	int holidayIndex = 0;
+	int holidayIndex = (isForAdvOrdSlots ? 10 : isForNewAdvOrdSlots ? 20 : 0);
 	for (Date day: days) { 
 		if(timeslots.getHolidays().contains(day)){
 			RestrictionI closedResExp = timeslots.getHolidayRestrictionForDate(day); 

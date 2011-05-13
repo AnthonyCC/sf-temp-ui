@@ -293,9 +293,9 @@
       	  }
       	  try { 
           	if(document.getElementById('assetNo').value == null || document.getElementById('assetNo').value.length == 0) {
-              	addSysMessage("Asset no is a required field", truw);
+              	addSysMessage("Asset no is a required field", true);
           	} else if(document.getElementById('assetNo').value == null || document.getElementById('assetDescription').value.length == 0) {
-          		addSysMessage("Asset Description is a required field", truw);
+          		addSysMessage("Asset Description is a required field", true);
           	} else if(document.getElementById('assetStatus').value == null 
                   	|| document.getElementById('assetStatus').value.length == 0
                   		|| document.getElementById('assetStatus').value == 'null') {

@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -71,6 +72,9 @@ public class FDTimeslotUtil implements Serializable {
 				}		
 			}else{
 				timeslotMap.put( startCal.getTime(), new HashMap<String,List<FDTimeslot>>());
+				if (restrictions.isRestricted( EnumDlvRestrictionCriterion.DELIVERY, EnumDlvRestrictionReason.CLOSED, startCal.getTime() ) ) {
+					holidaySet.add(startCal.getTime());
+				}	
 			}			
 			startCal.add( Calendar.DATE, 1 );
 		}		
@@ -120,7 +124,7 @@ public class FDTimeslotUtil implements Serializable {
 	 * @return list of list of FDTimeslot
 	 */	
 	public Collection<List<FDTimeslot>> getTimeslots() {
-		List<List<FDTimeslot>> timeslots = new ArrayList<List<FDTimeslot>>(); 
+		List<List<FDTimeslot>> timeslots = new ArrayList<List<FDTimeslot>>();
 		for(Iterator<Map<String, List<FDTimeslot>>> itr = timeslotMap.values().iterator();itr.hasNext();){
 			Map<String, List<FDTimeslot>> tempMap = itr.next();
 			timeslots.addAll(tempMap.values());

@@ -16,7 +16,7 @@ else hourString="12 a.m.";
 
 Calendar cal1=Calendar.getInstance();
 cal1.setTime(new Date());
-int h1 = cal1.get(Calendar.HOUR);
+int h1 = cal1.get(Calendar.HOUR_OF_DAY);
 double m1 = cal1.get(Calendar.MINUTE)/60;
 double currentTime = h1+m1;
 %>
@@ -42,10 +42,10 @@ double currentTime = h1+m1;
 		
 		<td width='<%=user.isChefsTable()?"290":"200"%>' rowspan="2">
 			<%if(user.isChefsTable()){
-				if(user.getPercSlotsSold() == 100 && (currentTime >= 21 && currentTime < 0)){
+				if(user.getPercSlotsSold() == 100 && currentTime >= 21){
 			%>
 					<fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/generic_ct_bottom_module.html"/>
-				<%}else if(user.getPercSlotsSold() < 80 || (user.getPercSlotsSold() == 100 && !(currentTime >= 21 && currentTime < 0))){%>
+				<%}else if(user.getPercSlotsSold() < 80 || (user.getPercSlotsSold() == 100 && currentTime < 21)){%>
 					<fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/nextdayguarantee_long_bottommodule.html"/>
 				<%}else if(user.getPercSlotsSold() > 80){%>
 					<fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/preferredctaccess_bottom_module.html"/>
