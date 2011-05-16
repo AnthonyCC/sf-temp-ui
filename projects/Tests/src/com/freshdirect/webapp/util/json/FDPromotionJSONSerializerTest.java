@@ -239,7 +239,7 @@ public class FDPromotionJSONSerializerTest extends TestCase {
 	public void testNewPromoProperties() {
 		final Map<Class<?>, String[]> klassProps = new HashMap<Class<?>, String[]>();
 		klassProps.put(com.freshdirect.fdstore.promotion.management.FDPromotionNewModel.class,
-				new String[]{"applyFraud", "assignedCustomerParams", "assignedCustomerUserIds", "attributeList", "audienceDesc", "auditChanges", "cartBrands", "cartCats", "cartDepts", "cartSkus", "cartStrategies", "categoryName", "combineOffer", "createdBy", "createdDate", "custStrategies", "dcpdBrands", "dcpdCats", "dcpdData", "dcpdDepts", "dcpdRecps", "dcpdSkus", "description", "dlvDates", "dlvZoneStrategies", "expirationDate", "expirationDateStr", "expirationDay", "expirationMonth", "expirationTimeStr", "expirationYear", "extendDpDays", "favoritesOnly", "geoRestrictionType", "lastPublishedDate", "maxAmount", "maxItemCount", "maxUsage", "minSubtotal", "modifiedBy", "modifiedDate", "name", "needCustomerList", "needDryGoods", "offerDesc", "offerType", "onHold", "paymentStrategies", "percentOff", "perishable", "productName", "profileOperator", "promotionCode", "promotionType", "publishes", "redeemCount", "redemptionCode", "rollingExpirationDays", "ruleBased", "skuQuantity", "startDate", "startDateStr", "startDay", "startMonth", "startTimeStr", "startYear", "status", "subTotalExcludeSkus", "terms", "tmpAssignedCustomerUserIds", "waiveChargeType", "zipRestrictions"});
+				new String[]{"applyFraud", "assignedCustomerParams", "assignedCustomerSize", "assignedCustomerUserIds", "attributeList", "audienceDesc", "auditChanges", "cartBrands", "cartCats", "cartDepts", "cartSkus", "cartStrategies", "categoryName", "combineOffer", "createdBy", "createdDate", "custStrategies", "dcpdBrands", "dcpdCats", "dcpdData", "dcpdDepts", "dcpdRecCats", "dcpdRecps", "dcpdSkus", "description", "dlvDates", "dlvZoneStrategies", "expirationDate", "expirationDateStr", "expirationDay", "expirationMonth", "expirationTimeStr", "expirationYear", "extendDpDays", "favoritesOnly", "geoRestrictionType", "lastPublishedDate", "maxAmount", "maxItemCount", "maxUsage", "minSubtotal", "modifiedBy", "modifiedDate", "name", "needCustomerList", "needDryGoods", "offerDesc", "offerType", "onHold", "paymentStrategies", "percentOff", "perishable", "productName", "profileOperator", "promotionCode", "promotionType", "publishes", "redeemCount", "redemptionCode", "rollingExpirationDays", "ruleBased", "skuQuantity", "startDate", "startDateStr", "startDay", "startMonth", "startTimeStr", "startYear", "stateCountyList", "status", "subTotalExcludeSkus", "terms", "tmpAssignedCustomerUserIds", "waiveChargeType", "zipRestrictions"});
 		klassProps.put(com.freshdirect.fdstore.promotion.management.FDPromoChangeModel.class,
 				new String[]{"actionDate", "actionType", "changeDetails", "promotionId", "userId"});
 		klassProps.put(com.freshdirect.fdstore.promotion.management.FDPromoChangeDetailModel.class,
@@ -262,7 +262,7 @@ public class FDPromotionJSONSerializerTest extends TestCase {
 			});
 
 			List<String> expectedProps = new ArrayList<String>( Arrays.asList(klassProps.get(klass)) );
-			assertEquals(expectedProps, sortedPropKeys);
+                        assertEquals("class " + klass.getName() + " match", expectedProps, sortedPropKeys);
 		}
 	}
 
