@@ -2,13 +2,11 @@ package com.freshdirect.security.ticket;
 
 import java.rmi.RemoteException;
 
-import javax.ejb.CreateException;
-import javax.naming.Context;
-import javax.naming.NamingException;
+import javax.ejb.EJBException;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.common.ERPServiceLocator;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -21,7 +19,7 @@ public class TicketService {
 	
 	private static TicketService instance;
 
-	private static TicketServiceHome ticketServiceHome;
+	private static TicketServiceSB ticketServiceSB;
 
 	private static java.util.Random rand = new java.util.Random();
 
@@ -32,39 +30,26 @@ public class TicketService {
 		return buff.toString();
 	}
 
-	private synchronized static TicketServiceHome getTicketServiceHome() throws FDResourceException {
-		if (ticketServiceHome == null) {
-			Context ctx = null;
-			try {
-				ctx = ErpServicesProperties.getInitialContext();
-				ticketServiceHome = (TicketServiceHome) ctx.lookup(TicketServiceHome.JNDI_HOME);
-			} catch (NamingException e) {
-				throw new FDResourceException(e, "could not get initial context");
-			} finally {
-				try {
-					if (ctx != null) {
-						ctx.close();
-					}
-				} catch (NamingException e) {
-					LOGGER.warn("cannot close Context while trying to cleanup", e);
-				}
-			}
+	private synchronized static TicketServiceSB getTicketService() throws FDResourceException {
+		if (ticketServiceSB == null) {
+		    ticketServiceSB = ERPServiceLocator.getInstance().getTicketServiceSessionBean();
 		}
-		return ticketServiceHome;
+		return ticketServiceSB;
 	}
 
 	private synchronized static void invalidateTicketServiceHome() {
-		ticketServiceHome = null;
+	    ticketServiceSB = null;
 	}
 
 	/**
 	 * @return the one and only instance of the service
 	 */
 	public synchronized static TicketService getInstance() {
-		if (instance == null)
+		if (instance == null) {
 			return instance = new TicketService();
-		else
+		} else {
 			return instance;
+		}
 	}
 
 	private TicketService() {
@@ -78,7 +63,7 @@ public class TicketService {
 			throw new IllegalArgumentException("purpose cannot be null or empty");
 		TicketServiceSB sb;
 		try {
-			sb = getTicketServiceHome().create();
+			sb = getTicketService();
 			int remainingTries = 5;
 			while (remainingTries > 0) {
 				Ticket ticket = new Ticket(generateKey(), owner, purpose, expiration, false);
@@ -92,15 +77,15 @@ public class TicketService {
 		} catch (RemoteException e) {
 			invalidateTicketServiceHome();
 			throw new FDResourceException(e);
-		} catch (CreateException e) {
-			invalidateTicketServiceHome();
-			throw new FDResourceException(e);
+		} catch (EJBException e) {
+                    invalidateTicketServiceHome();
+                    throw e;
 		}
 	}
 
 	public Ticket reload(Ticket ticket) throws NoSuchTicketException, FDResourceException {
 		try {
-			TicketServiceSB sb = getTicketServiceHome().create();
+			TicketServiceSB sb = getTicketService();
 			ticket = sb.retrieveTicket(ticket.getKey());
 			if (ticket == null)
 				throw new NoSuchTicketException();
@@ -109,9 +94,9 @@ public class TicketService {
 		} catch (RemoteException e) {
 			invalidateTicketServiceHome();
 			throw new FDResourceException(e);
-		} catch (CreateException e) {
-			invalidateTicketServiceHome();
-			throw new FDResourceException(e);
+                } catch (EJBException e) {
+                    invalidateTicketServiceHome();
+                    throw e;
 		}
 	}
 
@@ -125,7 +110,7 @@ public class TicketService {
 			throw new IllegalArgumentException("purpose cannot be null or empty");
 		TicketServiceSB sb;
 		try {
-			sb = getTicketServiceHome().create();
+			sb = getTicketService();
 			Ticket ticket = sb.retrieveTicket(key);
 			if (ticket == null)
 				throw new NoSuchTicketException();
@@ -138,9 +123,9 @@ public class TicketService {
 		} catch (RemoteException e) {
 			invalidateTicketServiceHome();
 			throw new FDResourceException(e);
-		} catch (CreateException e) {
-			invalidateTicketServiceHome();
-			throw new FDResourceException(e);
+                } catch (EJBException e) {
+                    invalidateTicketServiceHome();
+                    throw e;
 		}
 	}
 }
