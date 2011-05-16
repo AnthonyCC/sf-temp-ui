@@ -1,0 +1,21 @@
+
+#marquee ul { list-style-type:none;	padding:0px; margin:7px 0px; color:#759255 }
+#marquee li { display:inline; }
+
+#footerlinks { padding:10px 0px; border-top:1px solid #E8E5E3; }
+#footerlinks h4 { margin:0px; font-style: italic}
+
+#shopbylinks { background: #F9F9F9; padding: 10px 0px; border-top:2px solid #E8E5E3; }
+#shopbylinks h4 { margin-bottom: 0.25em }
+#shopbylinks ul { list-style-type:none;	padding:0px; }
+
+#tagline { border-top:1px solid #E8E5E3; }
+
+.footergreen { background-color: #ACD181;}
+
+#bottomlinks { padding:30px 0px 10px 0px; }
+#bottomlinks h3 { line-height:1.5em }
+#bottomlinks .right { font-size:0.75em;font-weight:bold;line-height:inherit }
+
+#quicklinks { font-weight:bold; color:white; padding:10px 0px 5px 0px; }
+#copyright { font-weight:bold; color:white; padding:5px 0px 10px 0px; }

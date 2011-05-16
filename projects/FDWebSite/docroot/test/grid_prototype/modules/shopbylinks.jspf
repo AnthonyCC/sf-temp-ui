@@ -1,0 +1,72 @@
+<div id="shopbylinks">
+  <div class="container clearfix">
+    <div class="column span-4 border">
+      <h4>shop by department</h4>
+      <ul>
+        <li>fruits &amp; vegetables</li>
+        <li>grocery</li>
+        <li>meat &amp; seafood</li>
+        <li>dairy</li>
+        <li>frozen</li>
+        <li>organic</li>
+        <li>wine</li>
+        <li>local</li>
+      </ul>
+    </div>
+    <div class="column span-4 border">
+      <h4>shop by categories</h4>
+      <ul>
+        <li>milk</li>
+        <li>eggs</li>
+        <li>bread</li>
+        <li>cereal</li>
+        <li>toothpaste</li>
+        <li>water</li>
+        <li>toilet paper</li>
+        <li>orange juice</li>
+      </ul>
+    </div>
+    <div class="column span-4 border">
+      <h4>top searches</h4>
+      <ul>
+        <li>body wash</li>
+        <li>diapers</li>
+        <li>body lotion</li>
+        <li>butter</li>
+        <li>garlic</li>
+        <li>onions</li>
+        <li>chips</li>
+        <li>pasta</li>
+      </ul>
+    </div>
+    <div class="column span-4 border">
+      <h4>let us help you</h4>
+      <ul>
+        <li>delivery info</li>
+        <li>status of your order</li>
+        <li>modify order</li>
+        <li>change your password</li>
+        <li>cancel order</li>
+        <li>returns/exchanges</li>
+        <li>chef's table customer</li>
+        <li>FAQs</li>
+      </ul>
+    </div>
+    <div class="column span-8 last">
+      <h4>all you need to know</h4>
+      <ul>
+        <li>about us</li>
+        <li>careers</li>
+        <li>our community</li>
+        <li>your bill of rights</li>
+        <li>help/FAQs</li>
+      </ul>
+      <h4>contact us</h4>
+      <ul>
+        <li>call us</li>
+        <li>email us</li>
+      </ul>
+    </div>
+  </div>
+</div>
+

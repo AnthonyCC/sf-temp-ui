@@ -1,0 +1,7 @@
+<div id="searchbar">
+  <div class="container clearfix">
+    <div class="column span-5 border center"><img src="img/department_selector.png"></div>
+    <div class="column span-12 border center"><img src="img/searchbox.png"></div>
+    <div class="column span-7 last"></div>
+  </div>
+</div>
