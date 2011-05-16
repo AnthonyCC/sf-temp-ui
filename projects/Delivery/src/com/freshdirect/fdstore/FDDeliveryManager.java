@@ -808,11 +808,14 @@ public class FDDeliveryManager {
 		return county;
 	}
 
-
 	public List<String> getCountiesByState(EnumStateCodes ec) throws FDResourceException{
+	    return getCountiesByState(ec.getId());
+	}
+
+	public List<String> getCountiesByState(String state) throws FDResourceException{
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			return sb.getCountiesByState(ec.getId());
+			return sb.getCountiesByState(state);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {

@@ -230,7 +230,7 @@
 											var queues = new Array();
 										</script>
 										<%
-											for (EnumStateCodes ec : com.freshdirect.erp.EnumStateCodes.values()) {
+											for (com.freshdirect.erp.EnumStateCodes ec : com.freshdirect.erp.EnumStateCodes.values()) {
 												List clist = com.freshdirect.fdstore.FDDeliveryManager.getInstance().getCountiesByState(ec);
 												Iterator citer = clist.iterator();
 												StringBuffer sb = new StringBuffer();
@@ -329,11 +329,10 @@
 												<td class="pad8">
 													<select id="edit_select_states" name="edit_select_states" class="h120px w200px" size="2" multiple onchange="javascript:populatecounty(this.form.edit_select_states.options)">
 														<%
-															Iterator iter2 = com.freshdirect.transadmin.util.EnumStateCodes.iterator();
-															while(iter2.hasNext()) {
-																com.freshdirect.transadmin.util.EnumStateCodes ec = (com.freshdirect.transadmin.util.EnumStateCodes) iter2.next();	System.out.println("*********"+ec.getDesc());
+															for(com.freshdirect.erp.EnumStateCodes ec : com.freshdirect.erp.EnumStateCodes.values()) {
+																System.out.println("*********"+ec.getDesc());
 															%>
-															<option value="<%= ec.toString() %>" <%= scr.getStates().contains(ec.toString())?"selected":"" %>> <%= ec.getDesc() %> </option>
+															<option value="<%= ec.getId() %>" <%= scr.getStates().contains(ec.getId())?"selected":"" %>> <%= ec.getDesc() %> </option>
 														<% } %>
 													</select>
 												</td>
