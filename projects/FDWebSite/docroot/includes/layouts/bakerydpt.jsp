@@ -35,6 +35,12 @@
 		} 
 		
 	}
+	
+	// check consistency
+	if ( tlcat[0] == null || tlcat[1] == null || catList[0] == null || catList[1] == null ) {
+		out.print( "Categories missing in bakery department." );
+		return;
+	}
 %>
 
 <div id="bak_editorial_div" style="width: 550px; height: auto; display: block; overflow: hidden; position:relative; margin-bottom: 20px;">

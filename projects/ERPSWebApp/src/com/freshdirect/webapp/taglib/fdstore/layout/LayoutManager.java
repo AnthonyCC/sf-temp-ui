@@ -400,7 +400,7 @@ public class LayoutManager extends BodyTagSupport {
 	        s.setLayoutFileName("/includes/layouts/bakerydpt.jsp");
 	        s.addSortStrategyElement( new SortStrategyElement(SortStrategyElement.NO_SORT) );
 	        s.setIgnoreShowChildren( true );
-	        s.setReturnSecondaryFolders( true );
+	        s.setReturnSecondaryFolders( false );
 	        s.setGrabberDepth( 1 );	// depth of 1 means: two levels deep
 	        
 		} else {
