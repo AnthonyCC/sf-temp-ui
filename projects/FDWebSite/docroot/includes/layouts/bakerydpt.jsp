@@ -26,6 +26,10 @@
 			continue;
 		
 		if ( cn.getParentId().equals(departmentId) ) {
+			// skip if more than 2
+			if ( i >= 1 ) 
+				break;
+			
 			// top-level category
 			tlcat[++i] = (CategoryModel)cn;
 			catList[i] = new ArrayList<CategoryModel>();
