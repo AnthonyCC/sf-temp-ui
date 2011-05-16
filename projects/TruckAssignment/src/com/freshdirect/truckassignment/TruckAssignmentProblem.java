@@ -37,6 +37,7 @@ import com.freshdirect.analysis.db.util.QueryParam;
 
 public class TruckAssignmentProblem implements Comparable<TruckAssignmentProblem> {
 	static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+        static final DateFormat dateFormatwithTime = new SimpleDateFormat("dd/MM/yyyy HH:mm aa");
 
 	static final int PREF_LIST_SIZE = 3;
 
@@ -122,6 +123,9 @@ public class TruckAssignmentProblem implements Comparable<TruckAssignmentProblem
 	private List<Dispatch> dispatches;
 	private Set<String> dispatchIds;
 	private TAPStatistics statistics;
+	private String trucksFile = "trucks.txt";
+	private String assignmentStatsFile = "assignmentStats.txt";
+	private String dispatchFile = "dispatchsTest.txt";
 
 	public TruckAssignmentProblem(Date today) {
 		this.today = today;
@@ -134,6 +138,20 @@ public class TruckAssignmentProblem implements Comparable<TruckAssignmentProblem
 		dispatchIds = new HashSet<String>();
 		statistics = new TAPStatistics();
 	}
+	
+	
+	public void setTrucksFile(String trucksFile) {
+            this.trucksFile = trucksFile;
+        }
+	
+	
+	public void setAssignmentStatsFile(String assignmentStatsFile) {
+            this.assignmentStatsFile = assignmentStatsFile;
+        }
+	
+	public void setDispatchFile(String dispatchFile) {
+            this.dispatchFile = dispatchFile;
+        }
 
 	@Override
 	public int compareTo(TruckAssignmentProblem o) {
@@ -148,9 +166,24 @@ public class TruckAssignmentProblem implements Comparable<TruckAssignmentProblem
 		i = o.statistics.getNotAssigned() - statistics.getNotAssigned();
 		return i;
 	}
+	
+	public void fullCalculation() throws IOException, ParseException, SQLException, LpSolveException {
+            loadTrucks();
+            dumpTrucks();
+            loadDispatches();
+            dumpEmployees();
+            dumpDispatches();
+            loadAssignmentStats();
+            assignByPreference();
+            eval();
+            //assignAutomatically();
+            //saveAssignmentStats();
+            //eval();
+            //saveStats();
+	}
 
 	private void loadTrucks() throws IOException {
-		BufferedReader reader = new BufferedReader(new FileReader("trucks.txt"));
+		BufferedReader reader = new BufferedReader(new FileReader(trucksFile));
 		// skip header
 		if (reader.readLine() != null) {
 			String line;
@@ -166,6 +199,66 @@ public class TruckAssignmentProblem implements Comparable<TruckAssignmentProblem
 		}
 	}
 
+	public void loadDispatches() throws IOException, ParseException{
+	    System.out.println("load dispatches from : "+dispatchFile);
+            BufferedReader reader = new BufferedReader(new FileReader(dispatchFile));
+            // skip header
+            if (reader.readLine() != null) {
+                  String line;
+                  while ((line = reader.readLine()) != null) {
+                        String[] split = line.split(",");
+                        if (split.length > 1) {
+                       
+                              String id = split[0];
+                              Date date = new Date();
+                              String zone = split[1];
+                              String area;
+                              if (zone != null && zone.length() > 0)
+                                    area = zone.substring(0, 1);
+                              else
+                                    area = "_";
+                              String route = split[2];
+                              int start = toMinutes(dateFormatwithTime.parse(split[3]));
+                              int end = toMinutes(dateFormatwithTime.parse(split[4]));
+                              if (end < start)
+                                    end += 24 * 60;
+                              String employeeId = split[5];
+                              int plannedEnd = toMinutes(dateFormatwithTime.parse(split[6]));
+                              if (plannedEnd == 0)
+                                    plannedEnd = 24 * 60;
+                              else
+                                    plannedEnd += start + 59;
+                              String baseId = id;
+                              int idSequence = 2;
+                              while (dispatchIds.contains(id)) {
+                                    id = baseId + "-" + idSequence++;
+                              }
+                              Dispatch dispatch = new Dispatch(id);
+                              dispatch.setDate(date);
+                              dispatch.setRoute(route);
+                              dispatch.setZone(zone);
+                              dispatch.setArea(area);
+                              dispatch.setLeaves(start);
+                              dispatch.setNextAvailable(end);
+                              dispatch.setPlannedEnd(plannedEnd);
+                              dispatches.add(dispatch);
+                              dispatchIds.add(id);
+                              Employee employee;
+                              if (!employeeMap.containsKey(employeeId)) {
+                                    employee = new Employee(employeeId);
+                                    employeeMap.put(employeeId, employee);
+                                    employees.add(employee);
+                              } else {
+                                    employee = employeeMap.get(employeeId);
+                              }
+                              dispatch.setEmployee(employee);
+                        }
+                  }
+            }
+                       
+           
+      }
+	
 	private void retrieveDispatches() throws ParseException, SQLException {
 		DataRetrieval retrieval = new DataRetrieval(ConnectionInfo.STANDBY);
 		retrieval.setFetchSize(1000);
@@ -444,7 +537,7 @@ public class TruckAssignmentProblem implements Comparable<TruckAssignmentProblem
 			stats.add(new TruckAssignmentStat(nPlusOne, employeeId, truckId, today));
 		}
 
-		FileOutputStream fos = new FileOutputStream("assignmentStats.txt");
+		FileOutputStream fos = new FileOutputStream(assignmentStatsFile);
 		PrintWriter writer = new PrintWriter(fos);
 		writer.println("N,EMPLOYEE_ID,TRUCK_ID,DATE");
 		for (Collection<TruckAssignmentStat> stats : truckAssignmentStats.values()) {
@@ -458,7 +551,8 @@ public class TruckAssignmentProblem implements Comparable<TruckAssignmentProblem
 	}
 
 	private void loadAssignmentStats() throws IOException, ParseException {
-		BufferedReader reader = new BufferedReader(new FileReader("assignmentStats.txt"));
+	        System.out.println("loadAssignmentStats from : "+assignmentStatsFile);
+		BufferedReader reader = new BufferedReader(new FileReader(assignmentStatsFile));
 		Date latest = DATE_FORMAT.parse("1970-01-01");
 		int n = 0;
 		// skip header
