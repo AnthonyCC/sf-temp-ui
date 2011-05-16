@@ -243,6 +243,7 @@ public class TestUtils {
 
         // set the context factory to the mockejb context factory
         FDStoreProperties.set("fdstore.initialContextFactory", "org.mockejb.jndi.MockContextFactory");
+        ErpServicesProperties.set("erpservices.initialContextFactory", "org.mockejb.jndi.MockContextFactory");
 
         env.put(Context.PROVIDER_URL, FDStoreProperties.getProviderURL());
         env.put(Context.INITIAL_CONTEXT_FACTORY, FDStoreProperties.getInitialContextFactory());
