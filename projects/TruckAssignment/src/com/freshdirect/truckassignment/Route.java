@@ -30,7 +30,8 @@ public class Route {
 	}
 
 	public boolean interlap(Route other) {
-		return (other.start <= start && start <= other.end) || (other.start <= end && end <= other.end);
+	    // the 3 case is needed when start <= other.start <= other.end <= end ...
+		return (other.start <= start && start <= other.end) || (other.start <= end && end <= other.end) || (start <= other.start && other.start <= end);
 	}
 
 	public int getPreferredTruck(int pos) {
@@ -75,8 +76,8 @@ public class Route {
 
 	@Override
 	public String toString() {
-		return "Route [start=" + start + ", end=" + end + ", dispatchId=" + dispatch.getId() + ", truckPreferences="
-				+ truckPreferences + ", solution=" + solution + "]";
+		return "Route [start=" + start + ", end=" + end + ", dispatchId=" + dispatch.getId() + ", truckList="
+				+ trucks + ", solution=" + solution + "]";
 	}
 
 	public String getSolutionAsString() {
