@@ -493,6 +493,10 @@
 		<to last="true">/browse.do?action=getCategoryContent&amp;browseTerm=$2&amp;ver=$1</to>
 	</rule>
 	<rule>
+		<from>^/v/([0-9]+)/browse/categorycontentproductonly/(.*)</from>
+		<to last="true">/browse.do?action=getCategoryContentProductOnly&amp;browseTerm=$2&amp;ver=$1</to>
+	</rule>
+	<rule>
 		<from>^/v/([0-9]+)/browse/groupproducts/(.*)</from>
 		<to last="true">/browse.do?action=getGroupProducts&amp;ver=$1</to>
 	</rule>

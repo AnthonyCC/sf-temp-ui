@@ -52,6 +52,8 @@ public class BrowseController extends BaseController {
     private static final String ACTION_GET_CATEGORIES = "getCategories";
 
     private static final String ACTION_GET_CATEGORYCONTENT = "getCategoryContent";
+    
+    private static final String ACTION_GET_CATEGORYCONTENT_PRODUCTONLY = "getCategoryContentProductOnly";
 
     private static final String ACTION_GET_GROUP_PRODUCTS = "getGroupProducts";        
     
@@ -106,18 +108,14 @@ public class BrowseController extends BaseController {
 	        		result.setTotalResultCount(result.getCategories() != null ? result.getCategories().size() : 0);
 	        	}
 	        	
-	        } else if (ACTION_GET_CATEGORYCONTENT.equals(action)) {
+	        } else if (ACTION_GET_CATEGORYCONTENT.equals(action) 
+	        					|| ACTION_GET_CATEGORYCONTENT_PRODUCTONLY.equals(action)) {
 	        	ContentNodeModel categoryNode = ContentFactory.getInstance().getContentNode(requestMessage.getCategory());
-	        	if(categoryNode instanceof CategoryModel) {
+	        	if(categoryNode instanceof CategoryModel) {	        		
 	        		List<CategoryModel> storeCategories = ((CategoryModel)categoryNode).getSubcategories();
-	        		if(storeCategories.size() > 0) {
-	        			List<Category> categories = getCategories(storeCategories);
-		        		ListPaginator<com.freshdirect.mobileapi.model.Category> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Category>(
-		        				categories, requestMessage.getMax());
-			        	
-		        		result.setCategories(paginator.getPage(requestMessage.getPage()));
-		        		result.setTotalResultCount(result.getCategories() != null ? result.getCategories().size() : 0);
-	        		} else {
+	        		
+	        		if(storeCategories.size() == 0 || ACTION_GET_CATEGORYCONTENT_PRODUCTONLY.equals(action)) {
+	        			
 	        			List<Product> products = grabProductsForCategory(request, ((CategoryModel)categoryNode), user, requestMessage);
 	        			
 		        		ListPaginator<com.freshdirect.mobileapi.model.Product> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Product>(
@@ -125,6 +123,13 @@ public class BrowseController extends BaseController {
 			        	
 		        		result.setProductsFromModel(paginator.getPage(requestMessage.getPage()));
 		        		result.setTotalResultCount(result.getProducts() != null ? result.getProducts().size() : 0);
+	        		} else {
+	        			List<Category> categories = getCategories(storeCategories);
+		        		ListPaginator<com.freshdirect.mobileapi.model.Category> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Category>(
+		        				categories, requestMessage.getMax());
+			        	
+		        		result.setCategories(paginator.getPage(requestMessage.getPage()));
+		        		result.setTotalResultCount(result.getCategories() != null ? result.getCategories().size() : 0);	        			
 	        		}
 	        	}
 	        } else if (ACTION_GET_GROUP_PRODUCTS.equals(action)) {
@@ -141,7 +146,9 @@ public class BrowseController extends BaseController {
     	List<Category> categories = new ArrayList<Category>();
 		if(storeCategories != null) {
 			for(CategoryModel storeCategory : storeCategories) {
-				categories.add(Category.wrap(storeCategory));
+				if(storeCategory.isActive() && !storeCategory.isHideIphone()) {
+					categories.add(Category.wrap(storeCategory));
+				}
 			}
 		}
 		return categories;
@@ -179,7 +186,9 @@ public class BrowseController extends BaseController {
         for (Object content : contents) {
             if (content instanceof ProductModel) {
                 try {
-                	products.add(Product.wrap((ProductModel) content, user.getFDSessionUser().getUser()));
+                	if(!((ProductModel) content).isHideIphone()) {
+                		products.add(Product.wrap((ProductModel) content, user.getFDSessionUser().getUser()));
+                	}
                 } catch (Exception e) {
                     //Don't let one rotten egg ruin it for the bunch
                     LOG.error("ModelException encountered. Product ID=" + ((ProductModel) content).getFullName(), e);

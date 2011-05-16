@@ -450,8 +450,13 @@ function loadStuff() {
 	var postdata = '{"department": "cof", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
   	$("#result").val("");
-  }   else if (loaddata == "BrowseCategoryContent") {
+  } else if (loaddata == "BrowseCategoryContent") {
   	$("#url").val("/browse/categorycontent/");
+	var postdata = '{"category": "cof_espres", "page" : "1", "max" : "25"}';
+  	$("#payload").val(postdata);
+  	$("#result").val("");
+  } else if (loaddata == "BrowseCategoryContentProductOnly") {
+  	$("#url").val("/browse/categorycontentproductonly/");
 	var postdata = '{"category": "cof_espres", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
   	$("#result").val("");
@@ -529,6 +534,7 @@ function doStuff() {
   <option value="BrowseDepartment">BROWSE - DEPARTMENT</option>
   <option value="BrowseCategory">BROWSE - CATEGORY</option>
   <option value="BrowseCategoryContent">BROWSE - CATEGORYCONTENT</option>
+  <option value="BrowseCategoryContentProductOnly">BROWSE - CATEGORYCONTENT(Product Only)</option>
   <option value="BrowseGroupContents">BROWSE - GROUP CONTENTS</option>  
   <option value=""> ========== PRODUCT ========== </option>
   <option value="ProductDetail">PRODUCT - Product Detail</option>
