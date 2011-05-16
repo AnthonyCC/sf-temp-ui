@@ -46,6 +46,7 @@ import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
+import com.freshdirect.erp.EnumStateCodes;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.TimedLruCache;
 import com.freshdirect.routing.model.IDeliveryReservation;
@@ -808,10 +809,10 @@ public class FDDeliveryManager {
 	}
 
 
-	public List<String> getCountiesByState(String stateAbbrev) throws FDResourceException{
+	public List<String> getCountiesByState(EnumStateCodes ec) throws FDResourceException{
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			return sb.getCountiesByState(stateAbbrev);
+			return sb.getCountiesByState(ec.getId());
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {

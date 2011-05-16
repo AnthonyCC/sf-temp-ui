@@ -229,11 +229,9 @@
 											}
 											var queues = new Array();
 										</script>
-										<% Iterator iter = com.freshdirect.transadmin.util.EnumStateCodes.iterator();%>
 										<%
-											while(iter.hasNext()) {
-												com.freshdirect.transadmin.util.EnumStateCodes ec = (com.freshdirect.transadmin.util.EnumStateCodes) iter.next();
-												List clist = com.freshdirect.fdstore.FDDeliveryManager.getInstance().getCountiesByState(ec.toString());
+											for (EnumStateCodes ec : com.freshdirect.erp.EnumStateCodes.values()) {
+												List clist = com.freshdirect.fdstore.FDDeliveryManager.getInstance().getCountiesByState(ec);
 												Iterator citer = clist.iterator();
 												StringBuffer sb = new StringBuffer();
 												sb.append("[");
@@ -241,11 +239,11 @@
 													String county = (String) citer.next();
 													sb.append("new County(");
 													sb.append("\"");
-													sb.append(ec.toString() + "_" + county);
+													sb.append(ec.getId() + "_" + county);
 													sb.append("\",\"");
 													sb.append(county);
 													sb.append("\",");
-													if(scr.getCounty() != null && scr.getCounty().contains(ec.toString() + "_" + county))
+													if(scr.getCounty() != null && scr.getCounty().contains(ec.getId() + "_" + county))
 														sb.append("true");
 													else
 														sb.append("false");
@@ -254,7 +252,7 @@
 												sb.append("]");
 										%>
 										<script language="JavaScript">
-											queues["<%= ec.toString() %>"] = new stateQueue(<%= sb.toString() %>);
+											queues["<%= ec.getId() %>"] = new stateQueue(<%= sb.toString() %>);
 										</script>
 										<% } %>
 
