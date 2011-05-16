@@ -1,4 +1,4 @@
-package com.freshdirect.webapp.util.json;
+package com.freshdirect.fdstore.util.json;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;

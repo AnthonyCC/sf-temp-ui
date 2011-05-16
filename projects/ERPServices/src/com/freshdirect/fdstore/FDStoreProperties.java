@@ -435,6 +435,8 @@ public class FDStoreProperties {
 	//Enable Timeslot GRID
 	private final static String PROP_TIMESLOT_GRID = "fdstore.isNewFDTimeslotGridEnabled";
 	
+	private final static String WS_PROMOTION_PRODUCTION_MODE = "fdstore.ws.promotion.production.mode";
+	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -869,6 +871,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_STANDING_ORDER_REPORT_TO_EMAIL, "applicationdevelopment@freshdirect.com");
 		defaults.put(PROP_STANDING_ORDER_REPORT_EMAIL_SUBJECT, "Standing Orders Cron Report: ");
 		defaults.put(PROP_TIMESLOT_GRID,"true");
+		defaults.put(WS_PROMOTION_PRODUCTION_MODE,"true");
 		
         refresh();
     }
@@ -2234,4 +2237,8 @@ public class FDStoreProperties {
 	public static boolean isNewFDTimeslotGridEnabled() {
 	    	 return (Boolean.valueOf(get(PROP_TIMESLOT_GRID))).booleanValue();
 	}
+	
+	public static boolean isWSPromotionProductionMode() {
+   	 return (Boolean.valueOf(get(WS_PROMOTION_PRODUCTION_MODE))).booleanValue();
+}
 }

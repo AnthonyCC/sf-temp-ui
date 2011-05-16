@@ -252,4 +252,8 @@ public class FakePromotionContext implements PromotionContextI {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	public String getUsedWSPromotionCode(){
+		return null;
+	}
 }

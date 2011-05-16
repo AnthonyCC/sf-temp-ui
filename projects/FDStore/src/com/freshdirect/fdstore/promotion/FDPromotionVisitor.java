@@ -155,6 +155,13 @@ public class FDPromotionVisitor {
                eligibilities.setEligibility(promoCode, e);
                if(e && redeemedPromotion.isFavoritesOnly()) eligibilities.addRecommendedPromo(promoCode);
          }
+         String wsPromoCode =  context.getUsedWSPromotionCode();
+         if(wsPromoCode != null && !eligibilities.isEligible(wsPromoCode)) {
+        	 //Evaluate for an already redeemed WS promotion.
+        	 PromotionI promo = PromotionFactory.getInstance().getPromotion(wsPromoCode);
+        	 boolean e = promo.evaluate(context);
+        	 eligibilities.setEligibility(wsPromoCode, e);
+         }
          long endTime = System.currentTimeMillis();
          return eligibilities;
    }

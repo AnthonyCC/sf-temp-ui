@@ -116,5 +116,9 @@ public interface FDPromotionManagerNewSB extends EJBObject {
 	public boolean hasRecommenders(String parentNode) throws FDResourceException, RemoteException;
 	
 	public boolean isCustomerInAssignedList(String userId, String promotionId) throws FDResourceException, RemoteException;
+	
+	public void setDOWLimit(int dayofweek, double limit) throws FDResourceException, RemoteException;
+	
+	public Map<Integer, Double> getDOWLimits() throws FDResourceException, RemoteException;
 }
 

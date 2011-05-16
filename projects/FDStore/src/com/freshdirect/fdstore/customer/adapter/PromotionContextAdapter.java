@@ -526,4 +526,14 @@ public class PromotionContextAdapter implements PromotionContextI {
 		}
 		return result;
 	}
+	
+	public String getUsedWSPromotionCode(){
+		String promoCode = null;
+		FDCartModel cart = this.getShoppingCart();
+		if(cart instanceof FDModifyCartModel){
+			FDModifyCartModel modifyCart = (FDModifyCartModel) cart;
+			promoCode = modifyCart.getOriginalOrder().getWSPromotionCode();
+		}
+		return promoCode;
+	}
 }

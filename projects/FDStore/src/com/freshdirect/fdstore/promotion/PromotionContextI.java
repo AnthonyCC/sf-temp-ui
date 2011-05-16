@@ -117,4 +117,6 @@ public interface PromotionContextI {
 	public Set<String> getLineItemDiscountCodes();
 	
 	public boolean isAlreadyRedeemedPromotion(String promoCode);
+	
+	public String getUsedWSPromotionCode();
 }

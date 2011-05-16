@@ -5,6 +5,7 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.webapp.taglib.callcenter.GenericLocatorTag"%>
+<%@ page import="com.freshdirect.fdstore.promotion.PromotionFactory"%>
 
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri="crm" prefix="crm" %>
@@ -50,6 +51,10 @@ function openURL(inLocationURL) {
 	<td class="border_bold">&nbsp;</td>
 	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Discount</b></span></td>	
 	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Redemption Limit</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Actual Redemptions</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
 	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Status</b></span></td>
 	<% if(FDStoreProperties.isPromoPublishNodeMaster() && CrmSecurityManager.hasAccessToPage(agent.getRole().getLdapRoleName(),"promo_ws_create.jsp")) { %>
 	<td class="border_bold">&nbsp;</td>
@@ -91,6 +96,10 @@ function openURL(inLocationURL) {
 	<td class="border_bottom"><span class="detail_text"><%= promotion.getEndTime() %></span></td>
 	<td class="border_bottom">&nbsp;</td>
 	<td class="border_bottom"><span class="detail_text">$<%= df.format(promotion.getDiscount()) %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= promotion.getRedeemCount() %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= PromotionFactory.getInstance().getRedemptions(promotion.getPromotionCode()) %></span></td>
 	<td class="border_bottom">&nbsp;</td>
 	<td class="border_bottom"><span class="detail_text"><%= promotion.getStatus().getName() %></span></td>
 	<% if(FDStoreProperties.isPromoPublishNodeMaster() && CrmSecurityManager.hasAccessToPage(agent.getRole().getLdapRoleName(),"promo_ws_create.jsp")) { %>

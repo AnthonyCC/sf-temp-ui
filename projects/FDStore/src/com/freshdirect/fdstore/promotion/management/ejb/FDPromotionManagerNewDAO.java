@@ -182,7 +182,7 @@ public class FDPromotionManagerNewDAO {
 	}
 	private final static String GET_WS_PROMOTION_INFOS = 
 		"select P.ID, P.CODE, P.NAME, P.START_DATE,  P.EXPIRATION_DATE, (select COLUMN_VALUE from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE ) x " 
-		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, P.MAX_AMOUNT, P.STATUS from cust.promotion_new p, cust.promo_cust_strategy pc, "
+		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, P.MAX_AMOUNT,  P.REDEEM_CNT, P.STATUS from cust.promotion_new p, cust.promo_cust_strategy pc, "
 		+ "cust.promo_dlv_zone_strategy z, cust.promo_dlv_timeslot t, cust.promo_delivery_dates d "
 		+ "where p.id = PC.PROMOTION_ID "
 		+ "and P.ID = Z.PROMOTION_ID "
@@ -212,6 +212,7 @@ public class FDPromotionManagerNewDAO {
 			wsPromotionInfo.setStartTime(rs.getString("START_TIME"));
 			wsPromotionInfo.setEndTime(rs.getString("END_TIME"));
 			wsPromotionInfo.setDiscount(rs.getDouble("MAX_AMOUNT"));
+			wsPromotionInfo.setRedeemCount(rs.getInt("REDEEM_CNT"));
 			wsPromotionInfo.setStatus(EnumPromotionStatus.getEnum(rs.getString("STATUS"))); 
 			Timestamp expDate = rs.getTimestamp("EXPIRATION_DATE");
 			java.util.Date today = new java.util.Date();
@@ -228,7 +229,7 @@ public class FDPromotionManagerNewDAO {
 
 	private final static String GET_WS_PROMOTION_INFO = 
 		"select P.ID, P.CODE, P.NAME, P.START_DATE,  (select COLUMN_VALUE from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE ) x " 
-		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, P.MAX_AMOUNT, P.STATUS from cust.promotion_new p, cust.promo_cust_strategy pc, "
+		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, P.MAX_AMOUNT, P.REDEEM_CNT, P.STATUS from cust.promotion_new p, cust.promo_cust_strategy pc, "
 		+ "cust.promo_dlv_zone_strategy z, cust.promo_dlv_timeslot t, cust.promo_delivery_dates d "
 		+ "where p.id = PC.PROMOTION_ID "
 		+ "and P.ID = Z.PROMOTION_ID "
@@ -267,6 +268,7 @@ public class FDPromotionManagerNewDAO {
 			wsPromotionInfo.setStartTime(rs.getString("START_TIME"));
 			wsPromotionInfo.setEndTime(rs.getString("END_TIME"));
 			wsPromotionInfo.setDiscount(rs.getDouble("MAX_AMOUNT"));
+			wsPromotionInfo.setRedeemCount(rs.getInt("REDEEM_CNT"));
 			wsPromotionInfo.setStatus(EnumPromotionStatus.getEnum(rs.getString("STATUS")));
 		}
 
@@ -2838,4 +2840,42 @@ public class FDPromotionManagerNewDAO {
 			ps.close();
 		}
 	}
+	
+	public static void setDOWLimit(Connection conn, int dayofweek, double limit) throws SQLException {
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement("DELETE from CUST.DOW_LIMIT where DAY_ID = ?");
+			ps.setInt(1, dayofweek);
+			ps.executeUpdate();
+			ps.close();
+			ps = conn.prepareStatement("INSERT INTO CUST.DOW_LIMIT(DAY_ID, LIMIT) VALUES (?,?)");
+			ps.setInt(1, dayofweek);
+			ps.setDouble(2, limit);
+			ps.executeUpdate();
+		} finally {
+			if (ps != null)
+				ps.close();
+		}
+	}
+
+	public static Map<Integer, Double> getDOWLimits(Connection conn) throws SQLException {
+		
+		Map<Integer, Double> dowLimits = new HashMap<Integer, Double>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement("SELECT * FROM CUST.DOW_LIMIT");
+			rs = ps.executeQuery();
+			while (rs.next()){
+				Integer dayofweek = new Integer(rs.getInt("DAY_ID"));
+				Double limit = new Double(rs.getDouble("LIMIT")); 
+				dowLimits.put(dayofweek, limit);
+			}
+		} finally {
+			rs.close();
+			ps.close();
+		}
+		return dowLimits;
+	}
+
 }

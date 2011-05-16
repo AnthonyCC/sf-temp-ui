@@ -33,6 +33,38 @@
 
 	String promoId = request.getParameter("promoId");
 %>
+<SCRIPT TYPE="text/javascript">
+<!--
+// copyright 1999 Idocs, Inc. http://www.idocs.com
+// Distribute this script freely but keep this notice in place
+function numbersonly(myfield, e, dec)
+{
+	var key;
+	var keychar;
+
+	if (window.event)
+   		key = window.event.keyCode;
+	else if (e)
+   		key = e.which;
+	else
+   		return true;
+	keychar = String.fromCharCode(key);
+
+	// control keys
+	if ((key==null) || (key==0) || (key==8) || 
+    	(key==9) || (key==13) || (key==27) )
+   	return true;
+
+	// numbers
+	else if ((("0123456789").indexOf(keychar) > -1))
+   		return true;
+	else
+   		return false;
+}
+
+//-->
+</SCRIPT>
+
 <fd:GetPromotionNew id="promotion" promotionId="<%=promoId%>">
 <%
 	String f_effectiveDate = request.getParameter("effectiveDate");
@@ -41,6 +73,7 @@
 	String startTime = request.getParameter("startTime");
 	String endTime = request.getParameter("endTime");
 	String discount = request.getParameter("discount");
+	String redeemLimit = request.getParameter("redeemlimit");
 
 	if(promotion != null && promotion.getPromotionCode() != null) {
 		if(f_effectiveDate == null)
@@ -53,6 +86,9 @@
 			endTime = promotion.getWSSelectedEndTime();
 		if(discount == null)
 			discount = promotion.getMaxAmount();
+		if(redeemLimit == null)
+			redeemLimit = String.valueOf(promotion.getRedeemCount());
+
 	}
 	f_effectiveDate = (f_effectiveDate != null) ? f_effectiveDate : CCFormatter.formatDateYear(today);
 	selectedZoneId = (selectedZoneId != null) ? selectedZoneId : "";
@@ -292,6 +328,12 @@
 				</tr>	
 				<tr>
 					<td width="3%">&nbsp;</td>
+					<td>
+						<span><b>Redemption Limit: </b><INPUT type="text" name="redeemlimit" value="<%= redeemLimit %>" size="5" maxlength="5"  onKeyPress="return numbersonly(this, event)"/></span>
+					</td> 
+				</tr>										
+				<tr>
+					<td width="3%">&nbsp;</td>
 					<td> 
 						<select id="discount" name="discount" class="h10px w200px">
 							<option value="">Select Discount</option>
@@ -304,7 +346,7 @@
 							</logic:iterate>
 						</select>
 					</td>
-				</tr>												
+				</tr>		
 				<tr>
 					<td width="3%">&nbsp;</td>
 					<td width="35%">

@@ -726,6 +726,36 @@ public class FDPromotionNewManager {
 		
 	}
 	
+	public static void setDOWLimit(int dayofweek, double limit) throws FDResourceException {
+		lookupManagerHome();
+
+		try {
+			FDPromotionManagerNewSB sb = managerHome.create();
+			sb.setDOWLimit(dayofweek, limit);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+		
+	}
+	
+	public static Map<Integer, Double> getDOWLimits() throws FDResourceException {
+		lookupManagerHome();
+
+		try {
+			FDPromotionManagerNewSB sb = managerHome.create();
+			return sb.getDOWLimits();
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
 	private static void invalidateManagerHome() {
 		managerHome = null;
 	}

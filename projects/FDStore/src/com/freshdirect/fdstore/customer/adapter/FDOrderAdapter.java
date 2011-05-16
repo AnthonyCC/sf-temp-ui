@@ -68,6 +68,7 @@ import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDRecipientList;
 import com.freshdirect.fdstore.customer.WebOrderViewFactory;
 import com.freshdirect.fdstore.customer.WebOrderViewI;
+import com.freshdirect.fdstore.promotion.EnumOfferType;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
@@ -1307,5 +1308,20 @@ public class FDOrderAdapter implements FDOrderI {
 			if (!cl.getClientCodes().isEmpty())
 				return true;
 		return false;
+	}
+	
+	public String getWSPromotionCode() {
+		String promoCode = null;
+		//Show any redeemed extend DP promo if any.
+		Set<String> usedCodes = this.sale.getUsedPromotionCodes();
+		if ( usedCodes != null) {
+			for(Iterator<String> it = usedCodes.iterator(); it.hasNext();) {
+				PromotionI promo  = PromotionFactory.getInstance().getPromotion(it.next());
+				if (promo != null && promo.getOfferType().equals(EnumOfferType.WINDOW_STEERING))
+					promoCode = promo.getPromotionCode();
+			}
+		}
+		
+		return promoCode;
 	}
 }

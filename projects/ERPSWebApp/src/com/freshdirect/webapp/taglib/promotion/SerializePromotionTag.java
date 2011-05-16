@@ -6,8 +6,8 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
+import com.freshdirect.fdstore.util.json.FDPromotionJSONSerializer;
 import com.freshdirect.framework.webapp.BodyTagSupport;
-import com.freshdirect.webapp.util.json.FDPromotionJSONSerializer;
 import com.metaparadigm.jsonrpc.JSONSerializer;
 
 public class SerializePromotionTag extends BodyTagSupport {

@@ -29,6 +29,7 @@
 <%
 	String snav_pageURI = request.getRequestURI();
 	boolean promo_ws_create = snav_pageURI.indexOf("/promo_ws_create.jsp") > -1;
+	boolean ws_dow_admin = snav_pageURI.indexOf("dow_admin.jsp") > -1;
 	boolean promo_ws_view = snav_pageURI.indexOf("/promo_ws_view.jsp") > -1;
 	CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());
 	//boolean isTRNUser = agent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.TRN_CODE));
@@ -45,6 +46,15 @@
 				<a href="/promotion/promo_ws_create.jsp">Create</a>
 			</div>
 		<% } %>
+		<% if (ws_dow_admin) { %>
+			<div class="promo_sub_nav_on">
+				Admin
+			</div>
+		<% }else if(CrmSecurityManager.hasAccessToPage(agent.getRole().getLdapRoleName(),"dow_admin.jsp")){ %>
+			<div class="promo_sub_nav">
+				<a href="/promotion/dow_admin.jsp">Admin</a>
+			</div>
+		<% } %>		
 		<% if (promo_ws_view) { %>
 			<div class="promo_sub_nav_on">
 				View

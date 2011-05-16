@@ -23,7 +23,7 @@
 		</links>
 		<links name="promotions">
 			promo_view.jsp,promo_home.jsp,promo_create.jsp,promo_details.jsp,promo_publish.jsp,promo_edit.jsp,promo_edit_basic.jsp,
-			promo_edit_cart.jsp,promo_edit_customer.jsp,promo_edit_delivery.jsp,promo_edit_offer.jsp,promo_edit_payment.jsp,export_promo_list.jsp,promo_import_clone.jsp,promo_activity.jsp,promo.jsp,promo_ws_view.jsp,promo_ws_create.jsp
+			promo_edit_cart.jsp,promo_edit_customer.jsp,promo_edit_delivery.jsp,promo_edit_offer.jsp,promo_edit_payment.jsp,export_promo_list.jsp,promo_import_clone.jsp,promo_activity.jsp,promo.jsp,promo_ws_view.jsp,promo_ws_create.jsp,dow_admin.jsp
 		</links>		
 		<links name="cases">summary_case_actions.jsp,new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp,connect.jsp,connect.html</links>
 		<links name="reports">

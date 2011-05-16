@@ -172,6 +172,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 					String startTime = request.getParameter("startTime");
 					String endTime = request.getParameter("endTime");
 					String discount = request.getParameter("discount");
+					String redeemLimit = request.getParameter("redeemlimit");
 					String promoCode =  NVL.apply(request.getParameter("promoCode"), "").trim();
 					Date startDate = dateFormat.parse(effectiveDate);
 					if(promoCode.length() == 0 ){
@@ -192,7 +193,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 							return true;
 						}
 						//Create a new WS Promotion.
-						FDPromotionNewModel promotion = constructPromotion(effectiveDate, zone, startTime, endTime, discount);
+						FDPromotionNewModel promotion = constructPromotion(effectiveDate, zone, startTime, endTime, discount, redeemLimit);
 						postValidate(promotion, actionResult);
 						if(actionResult.isSuccess()){
 							promotion.setStatus(EnumPromotionStatus.APPROVE);
@@ -235,7 +236,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 						}
 						promotion.setModifiedBy(agent.getUserId());
 						promotion.setModifiedDate(new Date());
-						updatePromotion(promotion, effectiveDate, zone, startTime, endTime, discount);
+						updatePromotion(promotion, effectiveDate, zone, startTime, endTime, discount, redeemLimit);
 						postValidate(promotion, actionResult);
 						if(actionResult.isSuccess()){
 							promotion.setStatus(EnumPromotionStatus.APPROVE);
@@ -283,6 +284,19 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 					}
 
 				}
+			} else if(("setDOWLimit").equals(actionName)) {
+				String dayofweekstr = request.getParameter("dayofweek");
+				String limitstr = request.getParameter("limit");
+				if(limitstr == null || limitstr.length() == 0){
+					actionResult.addError(true, "actionfailure", "Max Spending Amount cannot be empty");
+				} 
+				if(actionResult.isSuccess()) {
+					Integer dayofweek = Integer.parseInt(dayofweekstr);
+					double limit = Double.parseDouble(limitstr);
+					FDPromotionNewManager.setDOWLimit(dayofweek, limit);
+					actionResult.addWarning(true, "actionsuccess", "Max Spending Amount updated successfully.");
+				}
+				
 			}
 		}  catch(FDDuplicatePromoFieldException e){
 			LOGGER.error("System Error occurred while performing the requested operation. Action name is "+actionName, e);
@@ -376,10 +390,14 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			}
 	}
 	private FDPromotionNewModel constructPromotion(String effectiveDate, String zone, String startTime, 
-			String endTime, String discount) throws FDResourceException {
+			String endTime, String discount, String redeemLimit) throws FDResourceException {
 		try {
 			Date startDate = dateFormat.parse(effectiveDate);
 			Date expDate = endDateFormat.parse(effectiveDate+" "+JUST_BEFORE_MIDNIGHT);
+			int redeemCnt = 0;
+			if(redeemLimit != null && redeemLimit.length() > 0){
+				redeemCnt = Integer.parseInt(redeemLimit);
+			}
 			FDPromotionNewModel promotion = new FDPromotionNewModel();
 			promotion.setPromotionCode("WS_"+new Date().getTime());
 			long E4 = Math.round(Math.random()*1000); //Unique counter
@@ -393,6 +411,8 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			promotion.setAudienceDesc(formatOfferDescription(AUDIENCE_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
 			promotion.setTerms(formatTerms(TERMS, discount, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
 			promotion.setMaxUsage("999");
+			if(redeemCnt > 0)
+				promotion.setRedeemCount(redeemCnt);
 			List<FDPromoCustStrategyModel> custStrategies = new ArrayList<FDPromoCustStrategyModel>();
 			FDPromoCustStrategyModel custModel = new FDPromoCustStrategyModel();
 			custModel.setOrderTypeHome(true);
@@ -441,10 +461,15 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 	}
 
 	private void updatePromotion(FDPromotionNewModel promotion, String effectiveDate, String zone, String startTime, 
-			String endTime, String discount) throws FDResourceException{
+			String endTime, String discount, String redeemLimit) throws FDResourceException{
 		try {
 			Date startDate = dateFormat.parse(effectiveDate);
 			Date expDate = endDateFormat.parse(effectiveDate+" "+JUST_BEFORE_MIDNIGHT);
+			int redeemCnt = 0;
+			if(redeemLimit != null && redeemLimit.length() > 0){
+				redeemCnt = Integer.parseInt(redeemLimit);
+			}
+			
 			long E4 = Math.round(Math.random()*1000); //Unique counter
 			promotion.setName("WS_"+effectiveDate+"_Zone"+zone+"_"+E4+"_$"+discount);
 			promotion.setDescription(formatPromoDescription(PROMO_DESCRIPTION, discount));
@@ -453,6 +478,8 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			promotion.setTerms(formatTerms(TERMS, discount, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
 			promotion.setStartDate(startDate);
 			promotion.setExpirationDate(expDate);
+			if(redeemCnt > 0)
+				promotion.setRedeemCount(redeemCnt);
 			//TODO For now set the promotion applicable only for next day delivery.
 			Date startDlvDate = DateUtil.addDays(startDate, 1);
 			Date endDlvDate = DateUtil.addDays(startDate, 1);

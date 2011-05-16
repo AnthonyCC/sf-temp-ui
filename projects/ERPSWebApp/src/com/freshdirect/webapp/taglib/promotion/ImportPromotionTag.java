@@ -19,10 +19,10 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewManager;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
+import com.freshdirect.fdstore.util.json.FDPromotionJSONSerializer;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.BodyTagSupport;
-import com.freshdirect.webapp.util.json.FDPromotionJSONSerializer;
 import com.metaparadigm.jsonrpc.JSONSerializer;
 
 public class ImportPromotionTag extends BodyTagSupport {

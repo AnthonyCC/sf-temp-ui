@@ -27,7 +27,30 @@ public class WSPromotionInfo extends ModelSupport {
 	private String startTime;
 	private String endTime;
 	private double discount;
+	private int redeemCount;
+	private int redemptions;
+	private int dayofweek;
+	
+	public int getRedemptions() {
+		return redemptions;
+	}
+	public void setRedemptions(int redemptions) {
+		this.redemptions = redemptions;
+	}
+	public int getDayofweek() {
+		return dayofweek;
+	}
+	public void setDayofweek(int dayofweek) {
+		this.dayofweek = dayofweek;
+	}
+	public int getRedeemCount() {
+		return redeemCount;
+	}
+	public void setRedeemCount(int redeemCount) {
+		this.redeemCount = redeemCount;
+	}
 	private EnumPromotionStatus status;
+	
 	public String getPromotionCode() {
 		return promotionCode;
 	}

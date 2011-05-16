@@ -921,4 +921,28 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
             close(conn);
 		}
 	}
+	
+	public void setDOWLimit(int dayofweek, double limit) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDPromotionManagerNewDAO.setDOWLimit(conn, dayofweek, limit);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+            close(conn);
+		}
+	}
+	
+	public Map<Integer, Double> getDOWLimits() throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return FDPromotionManagerNewDAO.getDOWLimits(conn);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+            close(conn);
+		}		
+	}
 }
