@@ -12,6 +12,8 @@ package com.freshdirect.webapp.taglib.erp;
  * @version
  */
 
+import java.io.UnsupportedEncodingException;
+
 import javax.servlet.http.*;
 import javax.servlet.jsp.*;
 
@@ -94,16 +96,21 @@ public class ErpProductTag extends com.freshdirect.framework.webapp.BodyTagSuppo
         //
         String pricing_unit_descr = request.getParameter(FormElementNameHelper.getFormElementName(prod, EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName()));
         if (pricing_unit_descr != null) {
+        	try {
+				pricing_unit_descr = java.net.URLDecoder.decode(pricing_unit_descr, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				//do nothing
+			}
             prod.getAttributes().setAttribute(EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName(), pricing_unit_descr);
         }
 
         String new_product_date = request.getParameter(FormElementNameHelper.getFormElementName(prod, EnumAttributeName.NEW_PRODUCT_DATE.getName()));
-        if (new_product_date != null) {
+        if (new_product_date != null && new_product_date.trim().length() != 0) {
             prod.getAttributes().setAttribute(EnumAttributeName.NEW_PRODUCT_DATE.getName(), new_product_date);
         }
 
         String back_in_stock_date = request.getParameter(FormElementNameHelper.getFormElementName(prod, EnumAttributeName.BACK_IN_STOCK_DATE.getName()));
-        if (back_in_stock_date != null) {
+        if (back_in_stock_date != null && back_in_stock_date.trim().length() != 0) {
             prod.getAttributes().setAttribute(EnumAttributeName.BACK_IN_STOCK_DATE.getName(), back_in_stock_date);
         }
         
