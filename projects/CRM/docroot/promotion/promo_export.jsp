@@ -12,7 +12,7 @@
 %><%@ page import="com.freshdirect.fdstore.promotion.FDPromotionNewModelFactory"
 %><%@ page import="com.freshdirect.fdstore.promotion.pxp.PromoPublisher"
 %><%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession"
-%><%@ page import="com.freshdirect.webapp.util.json.FDPromotionJSONSerializer"
+%><%@ page import="com.freshdirect.fdstore.util.json.FDPromotionJSONSerializer"
 %><%@ page import="com.metaparadigm.jsonrpc.JSONSerializer"
 %><%
 	response.setHeader("Cache-Control", "no-cache");

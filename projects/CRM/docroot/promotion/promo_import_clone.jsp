@@ -4,7 +4,7 @@
 <%@ page import="com.freshdirect.framework.webapp.ActionResult"%>
 <%@ page import="com.freshdirect.framework.webapp.ActionError"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo"%>
-<%@ page import="com.freshdirect.webapp.util.json.FDPromotionJSONSerializer"%>
+<%@ page import="com.freshdirect.fdstore.util.json.FDPromotionJSONSerializer"%>
 <%@ page import="com.metaparadigm.jsonrpc.JSONSerializer"%>
 <%@ page import="org.apache.commons.fileupload.servlet.ServletFileUpload"%>
 <%@ page import="org.apache.commons.fileupload.FileItemFactory"%>
