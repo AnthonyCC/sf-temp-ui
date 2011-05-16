@@ -207,7 +207,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		boolean ctActive = false;
 		HashMap zonesMap = new HashMap();
 
-		List<RestrictionI> r = restrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY,getAlcoholRestrictionReasons(),baseRange);
+		List<RestrictionI> r = restrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY,getAlcoholRestrictionReasons(cart),baseRange);
 		//Filter Alcohol restrictions by current State and county.
 		String county = FDDeliveryManager.getInstance().getCounty(address);
 		List<RestrictionI> alcoholRestrictions = RestrictionUtil.filterAlcoholRestrictionsForStateCounty(address.getState(), county, r);
@@ -797,12 +797,12 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		return reasons;
 	}
 	
-	protected Set<EnumDlvRestrictionReason> getAlcoholRestrictionReasons(){
+	protected Set<EnumDlvRestrictionReason> getAlcoholRestrictionReasons(FDCartModel cart){
 		Set<EnumDlvRestrictionReason> alcoholReasons = new HashSet<EnumDlvRestrictionReason>();
 		for (Iterator<EnumDlvRestrictionReason> i = EnumDlvRestrictionReason.iterator(); i.hasNext();) {
 			EnumDlvRestrictionReason reason = i.next();
-			if ("WIN".equals(reason.getName())||"BER".equals(reason.getName())
-										||"ACL".equals(reason.getName())) {
+			if (("WIN".equals(reason.getName())||"BER".equals(reason.getName())
+										||"ACL".equals(reason.getName())) && (cart !=null && cart.getApplicableRestrictions().contains(reason))) {
 				alcoholReasons.add(reason);
 			}
 		}

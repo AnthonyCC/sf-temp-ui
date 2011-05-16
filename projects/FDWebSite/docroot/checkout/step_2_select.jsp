@@ -270,7 +270,7 @@ zonePromoEnabled=true;
 		</td>
 	</TR>
 	<TR>
-		<td colspan="2">
+		<td colspan="2" align="center">
 			<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 			<%@ include file="/includes/delivery/i_top_modules.jspf" %>
@@ -312,7 +312,7 @@ if (errorMsg!=null) {%>
 
 <!-- Alcohol, SpecialItems, holiday, deliveryPass, noCapacity warning Messages -->
 
-<%if(cart.containsAlcohol() && deliveryModel.isAlcoholDelivery()){%>
+<%if(cart.containsAlcohol() && deliveryModel.isAlcoholDelivery() && deliveryModel.getAlcoholRestrictedCount() > 0){%>
 
 	<%@ include file="/includes/delivery/i_alcohol_warning.jspf"%>	
 		
