@@ -3,13 +3,18 @@ package com.freshdirect.fdstore.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import com.freshdirect.delivery.restriction.AlcoholRestriction;
+import com.freshdirect.delivery.restriction.DlvRestrictionsList;
+import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
+import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.RestrictionI;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.framework.util.NVL;
+import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDResourceException;
 
 public class RestrictionUtil {
 	private final static Comparator<AlcoholRestriction> ACL_RESTRICTION_DATE_COMPARATOR = new Comparator<AlcoholRestriction>() {
@@ -59,5 +64,46 @@ public class RestrictionUtil {
 		
 		return filteredList; 
 	}
-
+	
+	public static boolean isAlcoholRestrictionAvailableForCounty(String county) throws FDResourceException{
+		boolean isAvailable = false;
+		DlvRestrictionsList allRestrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
+		Set<EnumDlvRestrictionReason> alcoholReasons = 
+			new HashSet<EnumDlvRestrictionReason>(EnumDlvRestrictionReason.getAlcoholEnumList());
+		List<RestrictionI> restrictions = allRestrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY, alcoholReasons);
+		
+		Iterator<RestrictionI> it = restrictions.iterator();
+		while(it.hasNext()){
+			RestrictionI restriction = it.next();
+			if(restriction instanceof AlcoholRestriction){
+				AlcoholRestriction res = (AlcoholRestriction) restriction;
+				if(res.getCounty() != null && res.getCounty().equalsIgnoreCase(county)){
+					//Restriction defined at county level. 
+						isAvailable = true;
+				}
+			}
+		}
+		return isAvailable;
+	}
+	
+	public static boolean isAlcoholRestrictionAvailableForState(String state) throws FDResourceException{
+		boolean isAvailable = false;
+		DlvRestrictionsList allRestrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
+		Set<EnumDlvRestrictionReason> alcoholReasons = 
+			new HashSet<EnumDlvRestrictionReason>(EnumDlvRestrictionReason.getAlcoholEnumList());
+		List<RestrictionI> restrictions = allRestrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY, alcoholReasons);
+		
+		Iterator<RestrictionI> it = restrictions.iterator();
+		while(it.hasNext()){
+			RestrictionI restriction = it.next();
+			if(restriction instanceof AlcoholRestriction){
+				AlcoholRestriction res = (AlcoholRestriction) restriction;
+				if(res.getState() != null && res.getState().equalsIgnoreCase(state)){
+					//Restriction defined at state level. 
+						isAvailable = true;
+				}
+			}
+		}
+		return isAvailable;
+	}
 }

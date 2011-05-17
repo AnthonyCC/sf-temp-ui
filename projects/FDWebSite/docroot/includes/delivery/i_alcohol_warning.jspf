@@ -20,8 +20,14 @@
 	<div style="padding: 3px 5px 3px 5px">
 		<%-- <fd:IncludeMedia name="/media/editorial/site_pages/alcohol_restriction.html"/> --%>
 		<%
+					String mediaPath = "/media/editorial/site_pages/alcohol_restriction.html";
 					String county = FDDeliveryManager.getInstance().getCounty(address);
-					String mediaPath = "/media/editorial/timeslots/alcohol/"+county+"_alcoholWarning.html";
+					String state = address.getState();
+					if(RestrictionUtil.isAlcoholRestrictionAvailableForCounty(county)) {
+						mediaPath = "/media/editorial/timeslots/alcohol/"+county.toLowerCase()+"_alcoholWarning.html";
+					}else if(RestrictionUtil.isAlcoholRestrictionAvailableForState(state)) {
+						mediaPath = "/media/editorial/timeslots/alcohol/"+state.toLowerCase()+"_alcoholWarning.html";
+					}
 		%>
 		 <fd:IncludeMedia name="<%= mediaPath %>"/>
 	</div>
