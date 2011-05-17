@@ -275,7 +275,8 @@ public class FDStandingOrder extends ModelSupport {
 		MINORDER( "The order subtotal was below our $50 minimum.", "Please adjust the items or quantities by editing the shopping list for this standing order." ), 		
 		TIMESLOT( "Your selected timeslot was unavailable or sold out.", "Use the link below to modify this standing order and choose a different timeslot." ),
 		PAYMENT_ADDRESS( "The address you entered does not match the information on file with your card provider.", "Please contact a FreshDirect representative at 9999 for assistance." ),
-		NO_ADDRESS( "The address you set up for this standing order, no longer exists in the system.", "Use the link below to modify this standing order and choose a different address." ); 
+		NO_ADDRESS( "The address you set up for this standing order, no longer exists in the system.", "Use the link below to modify this standing order and choose a different address." ), 
+		CLOSED_DAY( "We donot delivery on closed day.", "We donot delivery on closed day." );
 		
 		private String errorHeader;
 		private String errorDetail;

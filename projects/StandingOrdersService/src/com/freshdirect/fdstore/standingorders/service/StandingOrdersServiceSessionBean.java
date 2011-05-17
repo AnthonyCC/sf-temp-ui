@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.standingorders.service;
 
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -35,7 +36,10 @@ import com.freshdirect.delivery.EnumDeliveryStatus;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.delivery.ReservationUnavailableException;
+import com.freshdirect.delivery.restriction.DlvRestrictionsList;
+import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.FDRestrictedAvailabilityInfo;
+import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDInvalidAddressException;
@@ -79,6 +83,7 @@ import com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceResul
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.mail.XMLEmailI;
+import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mail.ErpMailSender;
@@ -373,6 +378,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 	 * @throws FDResourceException
 	 * 
 	 */
+	@SuppressWarnings("unchecked")
 	private StandingOrdersServiceResult.Result process( FDStandingOrder so ) throws FDResourceException {
 		
 		LOGGER.info( "Processing Standing Order : " + so );		
@@ -546,6 +552,15 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		}		
 
 
+		// =================================================
+		//   Validate SO nextDelivery date is a holiday or closed
+		// =================================================
+		
+		DlvRestrictionsList restrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
+		if(isNextDeliveryDateHolidayRestricted(restrictions, deliveryTimes)){
+			LOGGER.info( "Skipping order because next delivery date is closed holiday." );
+			return new Result( ErrorCode.CLOSED_DAY, customerInfo, customerUser );
+		}
 		
 		// ==================================
 		//   Validate Timeslot reservation
@@ -567,6 +582,14 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		
 		FDReservation reservation = null;
 		FDTimeslot selectedTimeslot = null;
+		
+		if(EnumServiceType.HOME.equals(deliveryAddressModel.getServiceType()))
+			deliveryAddressModel.setServiceType(EnumServiceType.CORPORATE);	
+		
+		//Geo-Restrictions
+		List geographicRestrictions = new ArrayList();
+		geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictions(deliveryAddressModel);
+				
 		for ( FDTimeslot timeslot : timeslots ) {
 			
 			if ( !deliveryTimes.checkTimeslot( timeslot ) ) {
@@ -574,7 +597,12 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				LOGGER.info( "Skipping timeslot: " + timeslot.toString() );
 				continue;
 			}
-						
+			//check if timeslot is Geo-Restricted.
+			if(GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions,timeslot, new ArrayList(),new DateRange(deliveryTimes.getDayStart(),deliveryTimes.getDayEnd()),new ArrayList())){
+				// this timeslot is geo-restricted, skip it
+				LOGGER.info( "Skipping Geo-Restricted timeslot: " + timeslot.toString() );
+				continue;
+			}
 			try { 
 				LOGGER.info( "Trying to make reservation for timeslot: " + timeslot.toString() );
 				reservation = FDCustomerManager.makeReservation( customer, timeslot, EnumReservationType.STANDARD_RESERVATION, deliveryAddressId, reserveActionInfo, false );
@@ -598,9 +626,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		
 		LOGGER.info( "Selected timeslot = " + selectedTimeslot.toString() );
 		LOGGER.info( "Timesot reservation = " + reservation.toString() );
-		
-		if(EnumServiceType.HOME.equals(deliveryAddressModel.getServiceType()))
-			deliveryAddressModel.setServiceType(EnumServiceType.CORPORATE);	
+
 		// ==========================
 		//    Extra validations
 		// ==========================
@@ -727,7 +753,16 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	
+	public boolean isNextDeliveryDateHolidayRestricted(DlvRestrictionsList restrictions, DeliveryInterval deliveryTimes){
+		
+		DateRange validRange = new DateRange(deliveryTimes.getDayStart(), deliveryTimes.getDayEnd());
+		if(restrictions.getRestrictions(EnumDlvRestrictionReason.CLOSED, validRange) != null &&
+				restrictions.getRestrictions(EnumDlvRestrictionReason.CLOSED, validRange).size() > 0){
+			return true;
+		}
+		
+		return false;
+	}
 	
 	protected boolean isValidCustomerList(List<FDCustomerListItem> lineItems) throws FDResourceException {
 		return OrderLineUtil.isValidCustomerList( lineItems );
