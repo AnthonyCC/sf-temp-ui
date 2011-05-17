@@ -23,9 +23,9 @@
 					String mediaPath = "/media/editorial/site_pages/alcohol_restriction.html";
 					String county = FDDeliveryManager.getInstance().getCounty(address);
 					String state = address.getState();
-					if(RestrictionUtil.isAlcoholRestrictionAvailableForCounty(county)) {
+					if(com.freshdirect.fdstore.util.RestrictionUtil.isAlcoholRestrictionAvailableForCounty(county)) {
 						mediaPath = "/media/editorial/timeslots/alcohol/"+county.toLowerCase()+"_alcoholWarning.html";
-					}else if(RestrictionUtil.isAlcoholRestrictionAvailableForState(state)) {
+					}else if(com.freshdirect.fdstore.util.RestrictionUtil.isAlcoholRestrictionAvailableForState(state)) {
 						mediaPath = "/media/editorial/timeslots/alcohol/"+state.toLowerCase()+"_alcoholWarning.html";
 					}
 		%>
