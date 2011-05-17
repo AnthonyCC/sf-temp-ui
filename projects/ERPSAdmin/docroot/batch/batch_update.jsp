@@ -177,6 +177,7 @@
 				border-collapse: collapse;
 				padding: 0;
 				margin: 0;
+				width: 100%;
 			}
 			#CAO_data table th, #KOS_data table th {
 					text-transform: capitalize;
@@ -235,6 +236,9 @@
 			}
 			.marTop4 {
 				margin-top: 4px;
+			}
+			#changeLogLink {
+				color: #2f0;
 			}
 			.toggler_choice {
 				color: #fff;

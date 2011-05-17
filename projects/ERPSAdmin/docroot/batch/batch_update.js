@@ -1,11 +1,14 @@
 
 /*-----------------------------------------------------------------------------
-*/ var version='1.20.01' /*					Last Edit: 2011.01.01_12.51.57.PM
+*/ var version='1.30.01' /*					Last Edit: 2011.01.01_12.51.57.PM
 -----------------------------------------------------------------------------*/
 
 var changeLog = ""+
 "/*\n"+
 	" *\n"+
+	" **	2.00.00 : 2011.05.16_03.21.41.AM\n"+
+	" *			Converted Greese Monkey script to regular Javascript to enable in all browsers\n"+
+	" *         Support added for IE7, IE8, FF3.6, FF4, Chrome\n" + 
 	" **	1.30.01 : 2011.03.22_01.50.06.PM\n"+
 	" *			Fixed display issue in KOS when an item was already checked\n"+
 	" **	1.30.00 : 2011.03.22_01.15.17.AM\n"+
@@ -1274,7 +1277,7 @@ var changeLog = ""+
 
 						//loop through CAOtemplate and set user-vals
 						for (var index in CAOtemplate) {		
-							fdLog.debug('index '+ document.getElementById(index).value); 
+							//fdLog.debug('index '+ document.getElementById(index).value); 
 							if ($(index)) {								
 								curData[curLine][11][index] = $(index).value;
 								fdLog.debug("Printing" + curData[curLine][11][index] + " | curLine:" + curLine + " | index:" + index );
@@ -3429,7 +3432,7 @@ var changeLog = ""+
 
 				//update status (this probably won't show if quick)
 				while(!updStatus('fetching', 'processing', n, ''));
-
+				fdLog.debug("curData.length: " + curData.length);
 				for (var n = 0; n < curData.length; n++ ) {
 					fdLog.debug("Current status:" +  curData[n][1]);
 					if (curData[n][1] == 'queued') {
