@@ -176,9 +176,10 @@ public class TruckAssignmentProblem implements Comparable<TruckAssignmentProblem
             loadAssignmentStats();
             assignByPreference();
             eval();
-            //assignAutomatically();
+            assignAutomatically();
             //saveAssignmentStats();
-            //eval();
+            eval();
+            dumpDispatches();
             //saveStats();
 	}
 

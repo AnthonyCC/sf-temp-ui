@@ -178,15 +178,23 @@ public class Dispatch extends Id implements Cloneable, Comparable<Dispatch> {
 	}
 
 	public boolean collide(Dispatch route) {
-		return between(leaves, route.leaves, route.nextAvailable) || between(nextAvailable, route.leaves, route.nextAvailable);
+		return between(route.leaves, leaves, route.nextAvailable) || between(route.leaves, nextAvailable, route.nextAvailable) 
+		    || between(leaves, route.leaves, nextAvailable);
 	}
 	
 	public boolean collide(long tick) {
-		return between(tick, leaves, nextAvailable);
+		return between(leaves, tick, nextAvailable);
 	}
 
-	private boolean between(long x, long a, long b) {
-		return x >= a && x <= b;
+	/**
+	 * return true, if x is between a and b.
+	 * @param a
+	 * @param x
+	 * @param b
+	 * @return
+	 */
+	private boolean between(long a, long x, long b) {
+		return a <= x && x <= b;
 	}
 
 	public int compareTo(Dispatch o) {
