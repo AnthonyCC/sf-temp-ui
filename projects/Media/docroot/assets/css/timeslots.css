@@ -519,7 +519,6 @@ div.tsHeaderC {
 /*EcoFriendly slot*/
 .tsEcoFriendlyE {
 	color:#666666;
-	font-weight:bold;
 	font-size: 9px; 
 	font-family: Verdana, Arial, sans-serif;
 }
@@ -550,7 +549,6 @@ div.tsHeaderC {
 /*Neighbourhood slot*/
 .tsNeighbourhoodE {
 	color:#666666;
-	font-weight: bold;
 	font-size: 8px; 
 	font-family: Verdana, Arial, sans-serif;
 }
