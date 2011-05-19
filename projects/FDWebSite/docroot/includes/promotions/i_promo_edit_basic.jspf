@@ -56,7 +56,7 @@
 				</tr>
 				<tr>
 					<td class="promo_detail_label"><span <fd:ErrorHandler result="<%=result%>" name="audiDescEmpty" id="errorMsg">class="error"</fd:ErrorHandler>>* Terms &amp; Conditions:</span></td>
-					<td class="alignL"><textarea id="terms" name="terms" rows="3" cols="30" class="w600px" onkeyup="return maxLen(this, 255);" ><%= promotion.getTerms() %></textarea></td>
+					<td class="alignL"><textarea id="terms" name="terms" rows="3" cols="30" class="w600px" onkeyup="return maxLen(this, 1199);" ><%= promotion.getTerms() %></textarea></td>
 				</tr>
 				<tr class="flatRow">
 					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
