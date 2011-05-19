@@ -11,6 +11,7 @@ package com.freshdirect.giftcard.ejb;
  * @author  knadeem
  * @version 
  */
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -129,7 +130,7 @@ public class ErpBalanceTransferPersistentBean extends ErpGiftCardTranPersistentB
 		ps.setString(index++, gcModel.getAuthCode());
 		ps.setNull(index++, Types.VARCHAR);		
 		ps.setString(index++, gcModel.getErrorMsg());
-		ps.setDouble(index++, this.model.getAmount());
+		ps.setBigDecimal(index++, new BigDecimal(String.valueOf(this.model.getAmount())));
 		ps.setString(index++, gcModel.getCertificateNumber());
 		//ps.setTimestamp(index++, new java.sql.Timestamp(model.getActionTime().getTime()));					
 		try{

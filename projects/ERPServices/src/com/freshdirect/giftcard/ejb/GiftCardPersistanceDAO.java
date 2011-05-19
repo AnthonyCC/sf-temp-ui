@@ -11,6 +11,7 @@ package com.freshdirect.giftcard.ejb;
  * @author  skrishnasamy
  * @version 
  */
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -65,7 +66,7 @@ public class GiftCardPersistanceDAO {
 			ps.setString(6, nvl(model.getRecipientEmail()));
 			ps.setString(7, nvl(model.getTemplateId()));
 			ps.setString(8, nvl(model.getDeliveryMode().getName()));
-			ps.setDouble(9, model.getAmount());
+			ps.setBigDecimal(9, new BigDecimal(String.valueOf(model.getAmount())));			
 			ps.setString(10, nvl(model.getPersonalMessage()));
 			ps.setString(11, nvl(saleId));
 			ps.setString(12, nvl(model.getOrderLineId()));
@@ -242,8 +243,8 @@ public class GiftCardPersistanceDAO {
 			String id=SequenceGenerator.getNextId(conn, "CUST");						
 			ps.setString(1, id);
 			ps.setString(2, ErpGiftCardUtil.encryptGivexNum(nvl(gcModel.getAccountNumber())));
-			ps.setDouble(3, gcModel.getBalance());
-			ps.setDouble(4, gcModel.getBalance());
+			ps.setBigDecimal(3, new BigDecimal(String.valueOf(gcModel.getBalance())));
+			ps.setBigDecimal(4, new BigDecimal(String.valueOf(gcModel.getBalance())));
 			ps.setString(5, ErpGiftCardUtil.getCertificateNumber(gcModel.getAccountNumber()));
 			ps.setString(6, nvl(gcModel.getPurchaseSaleId()));
 			ps.setString(7, nvl(gcModel.getCardType().getName()));						 			
@@ -258,7 +259,7 @@ public class GiftCardPersistanceDAO {
 			ErpGiftCardModel gcModel, double newBalance) throws SQLException {
 
 		PreparedStatement ps = conn.prepareStatement(GC_UPDATE_BAL);
-		ps.setDouble(1, newBalance);
+		ps.setBigDecimal(1, new BigDecimal(String.valueOf(newBalance)));
 		ps.setString(2, ErpGiftCardUtil.encryptGivexNum(nvl(gcModel
 				.getAccountNumber())));
 		int num = ps.executeUpdate();
