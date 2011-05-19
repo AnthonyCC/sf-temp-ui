@@ -1,5 +1,6 @@
 package com.freshdirect.customer.ejb;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -35,8 +36,8 @@ public abstract class ErpGiftCardPersistentBean extends ErpTransactionPersistent
 		   ps.setString(5, model.getTransactionSource().getCode());
 		else
 			ps.setNull(5, Types.NULL);
-		ps.setDouble(6, model.getAmount());
-		ps.setDouble(7, model.getTax());
+		ps.setBigDecimal(6, new BigDecimal(String.valueOf(model.getAmount())));
+		ps.setBigDecimal(7, new BigDecimal(String.valueOf(model.getTax())));
 		ps.setString(8, model.getCustomerId());
 		if (ps.executeUpdate() != 1) {
 			throw new SQLException("Row not created");

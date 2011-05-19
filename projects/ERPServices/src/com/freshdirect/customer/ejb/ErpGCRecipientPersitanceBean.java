@@ -1,6 +1,7 @@
 package com.freshdirect.customer.ejb;
 
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -151,7 +152,7 @@ public class ErpGCRecipientPersitanceBean extends ErpReadOnlyPersistentBean {
 		}else{
 			  ps.setNull(8, Types.NULL); 	
 		}			
-		ps.setDouble(9, model.getAmount());			
+		ps.setBigDecimal(9, new BigDecimal(String.valueOf(model.getAmount())));					
 		ps.setString(10, model.getPersonalMessage());
 		ps.setString(11, this.getParentPK().getId());
 		ps.setString(12,model.getOrderLineId());

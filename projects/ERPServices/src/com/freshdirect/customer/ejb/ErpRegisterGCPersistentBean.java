@@ -1,5 +1,6 @@
 package com.freshdirect.customer.ejb;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -133,8 +134,8 @@ public class ErpRegisterGCPersistentBean extends ErpGiftCardPersistentBean{
 				if(regModel.getErrorMsg()!=null)
 				   ps.setString(index++, regModel.getErrorMsg());
 				else
-					ps.setNull(index++, Types.NULL);		
-				ps.setDouble(index++, regModel.getTransactionAmount());
+					ps.setNull(index++, Types.NULL);	
+				ps.setBigDecimal(index++, new BigDecimal(String.valueOf(regModel.getTransactionAmount())));
 				if(regModel.getGivexNum()!=null)
 				  ps.setString(index++, regModel.getCertificateNumber());		
 				else
