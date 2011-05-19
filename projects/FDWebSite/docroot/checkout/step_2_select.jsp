@@ -260,24 +260,18 @@ zonePromoEnabled=true;
 	
 
 
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="695">
-	<TR VALIGN="TOP">
-		<TD CLASS="text12" width="455" colspan="2"></TD>
-	</TR>
-
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="695" ALIGN="center">
 	<TR>
 		<td colspan="2">
 			<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
 		</td>
 	</TR>
 	<TR>
-		<td colspan="2" align="center">
-			<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-
+		<td colspan="2">
+			<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0">
 			<%@ include file="/includes/delivery/i_top_modules.jspf" %>
 		</td>
 	</TR>
-	
 </TABLE>
 
 <!--START MESSAGING SECTION-->
@@ -432,7 +426,7 @@ if (errorMsg!=null) {%>
 	if(timeslotList.size()>1 && idx.intValue()==0){
 %>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0">
-	<span class="title13 fleft tsAdvanceHeader">Advance Order Delivery Timeslots&nbsp;&nbsp;<a class="tsDivHide" id="displayAdvanceOrderGrid" href="javascript:hideAdvanceOrder();">Hide Delivery Timeslots</a></span>
+	<span class="title13 fleft tsAdvanceHeader">Advance Order Delivery Timeslots&nbsp;&nbsp;</span><a class="title13 tsDivHide" id="displayAdvanceOrderGrid" href="javascript:hideAdvanceOrder();">Hide Delivery Timeslots</a>
 	<BR>
 
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>

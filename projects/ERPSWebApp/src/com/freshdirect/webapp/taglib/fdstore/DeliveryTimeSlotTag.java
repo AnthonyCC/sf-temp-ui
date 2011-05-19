@@ -24,7 +24,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
@@ -41,7 +40,6 @@ import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.OneTimeRestriction;
 import com.freshdirect.delivery.restriction.OneTimeReverseRestriction;
-import com.freshdirect.delivery.restriction.RecurringRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -750,6 +748,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		return holidayRes;
 	}
 	
+	@SuppressWarnings("unused")
 	private void getSpecialItemDeliveryRestrctions(DlvRestrictionsList restrictions, DateRange baseRange, FDDeliveryTimeslotModel deliveryModel, FDUserI user){
 		
 		int daysInAdvance = FDStoreProperties.getHolidayLookaheadDays();
@@ -775,6 +774,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		deliveryModel.setSpecialItemDlvRestrctions(specialRestrictions);		
 	}
 
+	@SuppressWarnings("unchecked")
 	protected static Set<EnumDlvRestrictionReason> getSpecialHolidays(DlvRestrictionsList restrictions, DateRange baseRange, int lookahead) {
 		Set<EnumDlvRestrictionReason> holidays = new HashSet<EnumDlvRestrictionReason>();
 		for (Iterator<EnumDlvRestrictionReason> i = EnumDlvRestrictionReason.iterator(); i.hasNext();) {
@@ -797,6 +797,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		return reasons;
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected Set<EnumDlvRestrictionReason> getAlcoholRestrictionReasons(FDCartModel cart){
 		Set<EnumDlvRestrictionReason> alcoholReasons = new HashSet<EnumDlvRestrictionReason>();
 		for (Iterator<EnumDlvRestrictionReason> i = EnumDlvRestrictionReason.iterator(); i.hasNext();) {

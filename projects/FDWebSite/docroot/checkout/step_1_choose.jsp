@@ -158,7 +158,7 @@ while (e.hasMoreElements()) {
 		<table border="0" cellspacing="0" cellpadding="0" width="675">
 	    <tr valign="top"> 
 			<td CLASS="text11" WIDTH="385" VALIGN="bottom">
-				<FONT CLASS="title18">DELIVERY ADDRESS</FONT><BR>
+				<FONT CLASS="title18">DELIVERY ADDRESS</FONT>
 				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="375" HEIGHT="1" BORDER="0">
 			</td>
 			<TD WIDTH="275" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10">
@@ -209,7 +209,7 @@ while (e.hasMoreElements()) {
 	    </tr>
 	</table>
 	
-	<img src="/media_stat/images/layout/clear.gif" width="1" height="16" border="0"><br/>
+	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br/>
 	<!-- PROFILE HEADER -->
 	<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
