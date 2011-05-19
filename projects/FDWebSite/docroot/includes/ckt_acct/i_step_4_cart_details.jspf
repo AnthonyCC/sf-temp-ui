@@ -246,7 +246,7 @@ int idx = 0;
 	}
 	%>
 	
-	<%if (cart.getTotalDiscountValue() > 0) {
+	<%if (cart.getTotalDiscountValue() >= 0) {
 		List discounts = cart.getDiscounts();
 		for (Iterator iter = discounts.iterator(); iter.hasNext();) {
 			ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
