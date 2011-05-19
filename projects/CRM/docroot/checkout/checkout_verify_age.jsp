@@ -45,7 +45,7 @@ If your order contains alcoholic beverages, the person receiving your delivery m
 <tr valign="middle">
 	<td width="25" valign="top"><a href="<%=response.encodeURL("/order/build_order_browse.jsp")%>"><img src="/media_stat/images/buttons/x_green.gif" width="20" height="19" border="0" alt="CONTINUE SHOPPING"></a></td>
 	<td width="350"><a href="<%=response.encodeURL("/order/build_order_browse.jsp")%>"><img src="/media_stat/images/buttons/cancel_checkout.gif" width="92" height="7" border="0" alt="CANCEL CHECKOUT"></a><br>and return to your cart.</td>
-	<td width="265" align="right"><input type="image" name="age_verification"  src="/media_stat/images/buttons/continue_checkout.gif" width="117" height="9" border="0" alt="CONTINUE CHECKOUT" VSPACE="0"><br>Go to Step 2: Delivery Time<br></td>
+	<td width="265" align="right"><input type="image" name="age_verification"  src="/media_stat/images/buttons/continue_checkout.gif" width="91" height="11" border="0" alt="CONTINUE CHECKOUT" VSPACE="0"><br>Go to Step 2: Delivery Time<br></td>
 	<td width="35" align="right"  valign="top"><input type="image" name="age_verification" src="/media_stat/images/buttons/checkout_arrow.gif" width="29" height="29" border="0" alt="CONTINUE CHECKOUT"></td>
 </tr>
 </form>
