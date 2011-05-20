@@ -62,7 +62,7 @@ public class WSPromoCancellationCron {
 			"and SA.ACTION_TYPE IN ('CRO','MOD') "+
 			"and S.STATUS <> 'CAN' "+
 			"and S.ID = PA.SALE_ID "+
-			"and SA.REQUESTED_DATE >= P.START_DATE "+
+			"and SA.REQUESTED_DATE >= P.CREATE_DATE "+
 			"and PA.PROMOTION_ID = P.ID and to_char(SA.REQUESTED_DATE,'D') = T.DAY_ID) RCOUNT "+ 
 			"FROM cust.promotion_new p, cust.PROMO_DLV_ZONE_STRATEGY z, "+
 			"cust.PROMO_DLV_TIMESLOT t "+
@@ -136,8 +136,9 @@ public class WSPromoCancellationCron {
 						totalDiscount += (promo.getDiscount() * promo.getRedemptions());
 					}
 				}
-				double dowLimit = dowLimits.get(new Integer(dayofweek));
-				BigDecimal limit = new BigDecimal(dowLimit); 
+				Double dowLimit = dowLimits.get(new Integer(dayofweek));
+				if(dowLimit == null) continue;
+				BigDecimal limit = new BigDecimal(dowLimit.doubleValue()); 
 				BigDecimal total = new BigDecimal(totalDiscount);
 				if(total.compareTo(limit) >= 0){
 					//limit reached. add all temp codes to main set.
@@ -166,27 +167,29 @@ public class WSPromoCancellationCron {
 		
 		if(cancelPromoCodes.size() > 0 ){
 			Iterator<String> it = cancelPromoCodes.iterator();
-			String promoCode = it.next();
-			FDPromotionNewModel promotion = FDPromotionNewManager.loadPromotion(promoCode);
-			if(promotion == null){
-				throw new FDResourceException("Unable to locate Windows Steering Promotion. Please contact AppSupport.");
+			while(it.hasNext()) {
+				String promoCode = it.next();
+				FDPromotionNewModel promotion = FDPromotionNewManager.loadPromotion(promoCode);
+				if(promotion == null){
+					throw new FDResourceException("Unable to locate Windows Steering Promotion. Please contact AppSupport.");
+				}
+				promotion.setAuditChanges(FDPromotionNewManager.loadPromoAuditChanges(promotion.getId()));
+				promotion.setStatus(EnumPromotionStatus.CANCELLING);
+				promotion.setModifiedBy("System");
+				promotion.setModifiedDate(new Date());						
+				FDPromoChangeModel changeModel = new FDPromoChangeModel();
+				List<FDPromoChangeModel> promoChanges = new ArrayList<FDPromoChangeModel>();
+				changeModel.setPromotionId(promotion.getId());
+				changeModel.setActionDate(new Date());
+				changeModel.setActionType(EnumPromoChangeType.CANCEL);
+				changeModel.setUserId("System");
+				promoChanges.add(changeModel);
+				promotion.setAuditChanges(promoChanges);
+				
+				FDPromotionNewManager.storePromotionStatus(promotion,EnumPromotionStatus.CANCELLING);
+				FDPromotionNewModel promo = FDPromotionNewManager.loadPromotion(promoCode);
+				cancelledPromotions.add(promo);
 			}
-			promotion.setAuditChanges(FDPromotionNewManager.loadPromoAuditChanges(promotion.getId()));
-			promotion.setStatus(EnumPromotionStatus.CANCELLING);
-			promotion.setModifiedBy("System");
-			promotion.setModifiedDate(new Date());						
-			FDPromoChangeModel changeModel = new FDPromoChangeModel();
-			List<FDPromoChangeModel> promoChanges = new ArrayList<FDPromoChangeModel>();
-			changeModel.setPromotionId(promotion.getId());
-			changeModel.setActionDate(new Date());
-			changeModel.setActionType(EnumPromoChangeType.CANCEL);
-			changeModel.setUserId("System");
-			promoChanges.add(changeModel);
-			promotion.setAuditChanges(promoChanges);
-			
-			FDPromotionNewManager.storePromotionStatus(promotion,EnumPromotionStatus.CANCELLING);
-			FDPromotionNewModel promo = FDPromotionNewManager.loadPromotion(promoCode);
-			cancelledPromotions.add(promo);
 		}
 		return cancelledPromotions;
 	}

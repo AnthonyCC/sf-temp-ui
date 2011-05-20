@@ -25,6 +25,7 @@
 <%@ page import="com.freshdirect.fdstore.util.FDTimeslotUtil" %>
 <%@ page import="com.freshdirect.fdstore.util.AddressFinder" %>
 <%@ page import="com.freshdirect.fdstore.util.TimeslotLogic" %>
+<%@ page import="com.freshdirect.fdstore.util.RestrictionUtil" %>
 
 <%
     String successPage = "checkout_select_payment.jsp";
