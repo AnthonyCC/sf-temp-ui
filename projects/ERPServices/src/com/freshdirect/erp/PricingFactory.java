@@ -10,14 +10,11 @@ package com.freshdirect.erp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Category;
 
@@ -32,9 +29,8 @@ import com.freshdirect.erp.model.ErpCharacteristicValueModel;
 import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
 import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.erp.model.ErpMaterialPriceModel;
-import com.freshdirect.erp.model.ErpProductInfoModel;
-import com.freshdirect.erp.model.ErpSalesUnitModel;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
+import com.freshdirect.erp.model.ErpSalesUnitModel;
 import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.GrpZonePriceListing;
 import com.freshdirect.fdstore.GrpZonePriceModel;
@@ -53,26 +49,39 @@ public class PricingFactory {
 	private static Category LOGGER = LoggerFactory.getInstance( PricingFactory.class );
 	private final static boolean DEBUG = false;
 	
-	public static Comparator erpMatPriceModelComparator  = new Comparator() {
-		public int compare(Object obj1, Object obj2) {
-				ErpMaterialPriceModel mp1 = (ErpMaterialPriceModel) obj1;
-				ErpMaterialPriceModel mp2 = (ErpMaterialPriceModel) obj2;
-				return mp1.getSapZoneId().compareTo(mp2.getSapZoneId());
+	public static final Comparator<ErpMaterialPriceModel> ERP_MAT_PRICE_MODEL_COMPARATOR  = new Comparator<ErpMaterialPriceModel>() {
+		public int compare(ErpMaterialPriceModel mp1, ErpMaterialPriceModel mp2) {
+			return mp1.getSapZoneId().compareTo(mp2.getSapZoneId());
 		}
 	};
 
-	public static Comparator<ErpMaterialPrice> erpMatpriceComparator  = new Comparator<ErpMaterialPrice>() {
+	public static final Comparator<ErpMaterialPrice> ERP_MAT_PRICE_COMPARATOR  = new Comparator<ErpMaterialPrice>() {
 		public int compare(ErpMaterialPrice mp1, ErpMaterialPrice mp2) {
 				return mp1.getSapZoneId().compareTo(mp2.getSapZoneId());
 		}
 	};
 	
-    public static Comparator<ErpMaterialPrice> scaleQuantityComparator = new Comparator<ErpMaterialPrice>() {
+    public static final Comparator<ErpMaterialPrice> SCALE_QUANTITY_COMPARATOR = new Comparator<ErpMaterialPrice>() {
         public int compare(ErpMaterialPrice mp1, ErpMaterialPrice mp2) {
             return new Double(mp1.getScaleQuantity()).compareTo(new Double(mp2.getScaleQuantity()));
         }
     };
+
+    static final Comparator<ErpMaterialPriceModel> MODEL_SCALE_QUANTITY_COMPARATOR = new Comparator<ErpMaterialPriceModel>() {
+        public int compare(ErpMaterialPriceModel mp1, ErpMaterialPriceModel mp2) {
+            return new Double(mp1.getScaleQuantity()).compareTo(new Double(mp2.getScaleQuantity()));
+        }
+    };
     
+    static final Comparator<ErpGrpPriceZoneModel> GRP_PRICE_ZONE_MODEL_QTY_COMPARATOR = new Comparator<ErpGrpPriceZoneModel>() {
+        @Override
+        public int compare(ErpGrpPriceZoneModel z1, ErpGrpPriceZoneModel z2) {
+            Double d1 = new Double( z1.getQty() );
+            Double d2 = new Double( z2.getQty() );
+            return d1.compareTo(d2);
+        }
+    };
+
 	
 	/**
 	 * Build a Pricing object for a single material.
@@ -162,14 +171,8 @@ public class PricingFactory {
 			// with scales
 
 			// sort by scale quantity ascending
-			Arrays.sort(erpPrices, new Comparator() {
-				public int compare(Object o1, Object o2) {
-					Double d1 = new Double( ((ErpMaterialPriceModel)o1).getScaleQuantity() );
-					Double d2 = new Double( ((ErpMaterialPriceModel)o2).getScaleQuantity() );
-					return d1.compareTo(d2);
-				}
-			} );
-									
+			Arrays.sort(erpPrices, MODEL_SCALE_QUANTITY_COMPARATOR);
+
 			if(erpPrices.length>1)
 			{					
 				List newSubList=new ArrayList();												
@@ -298,13 +301,7 @@ public class PricingFactory {
 		   		 //Different Zone. Process the previous zone price list.
 		   		ErpGrpPriceZoneModel[] erpGrpPrices=(ErpGrpPriceZoneModel[])zonePriceList.toArray(new ErpGrpPriceZoneModel[0]);
 				// sort by scale quantity ascending
-				Arrays.sort(erpGrpPrices, new Comparator<ErpGrpPriceZoneModel>() {
-					public int compare(ErpGrpPriceZoneModel z1, ErpGrpPriceZoneModel z2) {
-						Double d1 = new Double( z1.getQty() );
-						Double d2 = new Double( z2.getQty() );
-						return d1.compareTo(d2);
-					}
-				} );
+				Arrays.sort(erpGrpPrices, GRP_PRICE_ZONE_MODEL_QTY_COMPARATOR );
 				//Current Implementation only supports single group scale price. so it always keep the first element
 				ErpGrpPriceZoneModel[] finalGrpPrices = new ErpGrpPriceZoneModel[] {erpGrpPrices[0]};
 		   		MaterialPrice[] prices = new MaterialPrice[ finalGrpPrices.length ];										
@@ -334,13 +331,7 @@ public class PricingFactory {
 		//Process the Group Scale Pricing for last zone.
    		ErpGrpPriceZoneModel[] erpGrpPrices=(ErpGrpPriceZoneModel[])zonePriceList.toArray(new ErpGrpPriceZoneModel[0]);
 		// sort by scale quantity ascending
-		Arrays.sort(erpGrpPrices, new Comparator<ErpGrpPriceZoneModel>() {
-			public int compare(ErpGrpPriceZoneModel z1, ErpGrpPriceZoneModel z2) {
-				Double d1 = new Double( z1.getQty() );
-				Double d2 = new Double( z2.getQty() );
-				return d1.compareTo(d2);
-			}
-		} );
+		Arrays.sort(erpGrpPrices, GRP_PRICE_ZONE_MODEL_QTY_COMPARATOR);
 		//Current Implementation only supports single group scale price. so it always keep the first element
 		ErpGrpPriceZoneModel[] finalGrpPrices = new ErpGrpPriceZoneModel[] {erpGrpPrices[0]};
 						   		

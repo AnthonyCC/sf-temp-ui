@@ -145,9 +145,9 @@ class FDProductHelper {
 		}
 		
 
-		List<ErpMaterialPrice> matPrices =Arrays.asList(erpProductInfo.getMaterialPrices());
-		Collections.sort(matPrices, PricingFactory.erpMatpriceComparator);
-		
+		List<ErpMaterialPrice> matPrices = Arrays.asList(erpProductInfo.getMaterialPrices());
+		Collections.sort(matPrices, PricingFactory.ERP_MAT_PRICE_COMPARATOR);
+
 		ZonePriceInfoListing zonePriceInfoList = new ZonePriceInfoListing();
 		if(erpProductInfo.getUnavailabilityStatus() == null || !erpProductInfo.getUnavailabilityStatus().equals(EnumAvailabilityStatus.DISCONTINUED)){
 			//Form zone price listing only if product is not discontinued.

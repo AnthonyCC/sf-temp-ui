@@ -243,7 +243,7 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 	 */
 	public void setPrices(List prices) {
 		//Sort by sap zone id before setting
-		Collections.sort(prices, PricingFactory.erpMatPriceModelComparator);
+		Collections.sort(prices, PricingFactory.ERP_MAT_PRICE_MODEL_COMPARATOR);
 		this.prices.set(prices);
 	}
 
