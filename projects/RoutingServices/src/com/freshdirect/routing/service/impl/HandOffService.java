@@ -250,6 +250,14 @@ public class HandOffService extends BaseService implements IHandOffService {
 		}
 	}
 	
+	public Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> getHandOffBatchDispatchStatus(final Date deliveryDate) throws RoutingServiceException {
+		try {
+			return getHandOffDAOImpl().getHandOffBatchDispatchStatus(deliveryDate);
+		} catch (SQLException e) {
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
+	
 	public Map<RoutingTimeOfDay, Integer> getHandOffBatchDispatchCnt(Date deliveryDate) throws RoutingServiceException {
 		try {
 			return getHandOffDAOImpl().getHandOffBatchDispatchCnt(deliveryDate);

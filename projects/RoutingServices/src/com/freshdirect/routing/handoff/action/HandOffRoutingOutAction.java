@@ -165,7 +165,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		//processResult(this.getBatch().getBatchId(), sessionMapping);
 		DispatchCorrelationResult correlationResult = null;
 		if(RoutingServicesProperties.getHandOffDispatchCorrelationEnabled()) {
-			correlationResult = checkRouteMismatch(s_routes, areaLookup);	
+			correlationResult = checkRouteMismatch(s_routes, areaLookup, proxy.getHandOffBatchDispatchStatus(this.getBatch().getDeliveryDate()));	
 			assignDispatchSequence(s_routes, zoneLookup, proxy.getHandOffBatchDispatchCnt(this.getBatch().getDeliveryDate()));		
 		} else {
 			// This is the rollback strategy for Dispatch Time Correlation.

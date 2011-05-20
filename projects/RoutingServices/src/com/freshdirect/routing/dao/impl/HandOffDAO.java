@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import oracle.sql.ARRAY;
@@ -1350,6 +1351,32 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		return result;
 	}
 	
+	public Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> getHandOffBatchDispatchStatus(final Date deliveryDate) throws SQLException {
+
+		final Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> result = new TreeMap<RoutingTimeOfDay, EnumHandOffDispatchStatus>();
+		PreparedStatementCreator creator = new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+				PreparedStatement ps = null;
+				ps = connection.prepareStatement(GET_HANDOFFBATCH_DISPATCHES);
+				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
+				
+				return ps;
+			}  
+		};
+
+		jdbcTemplate.query(creator, 
+				new RowCallbackHandler() { 
+				public void processRow(ResultSet rs) throws SQLException {				    	
+					do {						
+						result.put( new RoutingTimeOfDay(rs.getTimestamp("DISPATCHTIME"))
+										, EnumHandOffDispatchStatus.getEnum(rs.getString("STATUS")));						
+					} while(rs.next());		        		    	
+				}
+		}
+		);
+		
+		return result;
+	}
 	
 		
 }

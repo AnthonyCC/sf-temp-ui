@@ -66,6 +66,7 @@ public interface IHandOffService {
 	Set<IHandOffBatchDepotScheduleEx> getHandOffBatchDepotSchedulesEx(String dayOfWeek, Date cutOffTime) throws RoutingServiceException;
 	
 	List<HandOffDispatchIn> getHandOffBatchDispatches(Date deliveryDate) throws RoutingServiceException;
+	Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> getHandOffBatchDispatchStatus(final Date deliveryDate) throws RoutingServiceException;
 	Map<RoutingTimeOfDay, Integer> getHandOffBatchDispatchCnt(Date deliveryDate) throws RoutingServiceException;
 	
 }

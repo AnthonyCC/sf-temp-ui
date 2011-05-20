@@ -126,6 +126,10 @@ public class HandOffServiceProxy  extends BaseServiceProxy  {
 		return getService().getHandOffBatchDispatches(deliveryDate);
 	}
 	
+	public Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> getHandOffBatchDispatchStatus(final Date deliveryDate) throws RoutingServiceException {
+		return getService().getHandOffBatchDispatchStatus(deliveryDate);
+	}
+	
 	public Map<RoutingTimeOfDay, Integer> getHandOffBatchDispatchCnt(Date deliveryDate) throws RoutingServiceException {
 		return getService().getHandOffBatchDispatchCnt(deliveryDate);
 	}

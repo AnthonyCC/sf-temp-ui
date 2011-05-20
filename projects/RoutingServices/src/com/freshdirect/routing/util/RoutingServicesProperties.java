@@ -124,6 +124,8 @@ public class RoutingServicesProperties {
 	
 	private final static String PROP_ROUTING_BATCHSYNC_ENABLED		= "routingservices.handoff.batchsyncenabled";
 	
+	private final static String PROP_ROUTING_DISPATCHSTATUSVALIDATION_ENABLED		= "routingservices.handoff.dispstatusvalidationenabled";
+	
 	private static final Category LOGGER = LoggerFactory.getInstance( RoutingServicesProperties.class );
 	
 	static {
@@ -192,6 +194,8 @@ public class RoutingServicesProperties {
 		
 		defaults.put(PROP_ROUTING_DYNASYNC_ENABLED, "true");
 		defaults.put(PROP_ROUTING_BATCHSYNC_ENABLED, "true");
+		
+		defaults.put(PROP_ROUTING_DISPATCHSTATUSVALIDATION_ENABLED, "true");
 		
 		refresh();		
 	}
@@ -453,6 +457,10 @@ public class RoutingServicesProperties {
 	
 	public static int getDefaultServiceTime() {
 		return getIntVal(get(PROP_DEFAULT_SERVICETIME));
+	}
+	
+	public static boolean getRoutingBatchDispStatusValidationEnabled() {
+		return (new Boolean(get(PROP_ROUTING_DISPATCHSTATUSVALIDATION_ENABLED))).booleanValue();
 	}
 	
 }

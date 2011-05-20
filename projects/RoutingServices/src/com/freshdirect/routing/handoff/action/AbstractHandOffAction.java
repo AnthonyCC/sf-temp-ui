@@ -20,6 +20,7 @@ import com.freshdirect.routing.service.exception.RoutingProcessException;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
+import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 
 public abstract class AbstractHandOffAction {
@@ -187,7 +188,9 @@ public abstract class AbstractHandOffAction {
 		return result;
 	}
 	
-	protected DispatchCorrelationResult checkRouteMismatch(List<IHandOffBatchRoute> routes, Map<String, IAreaModel> areaLookup) throws RoutingServiceException {
+	protected DispatchCorrelationResult checkRouteMismatch(List<IHandOffBatchRoute> routes, Map<String
+																, IAreaModel> areaLookup
+																, Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> currDispStatus) throws RoutingServiceException {
 		
 		DispatchCorrelationResult correlationResult = this.correlateDispatch(routes, areaLookup);
 		if(correlationResult != null && correlationResult.getMismatchRoutes() != null 
@@ -202,7 +205,45 @@ public abstract class AbstractHandOffAction {
 			throw new RoutingServiceException("Plan Mismatch "+ errorBuf.toString() 
 					, null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 		}
+		//APPDEV-1801 HandOff Batch Dispatch Time Validations
+		if(RoutingServicesProperties.getRoutingBatchDispStatusValidationEnabled()) {
+			validateDispatchStatusChange(currDispStatus, correlationResult.getDispatchStatus());
+		}
 		return correlationResult;
+	}
+	
+	protected void validateDispatchStatusChange(Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> currDispStatus
+			, Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> newDispStatus) {
+
+		RoutingTimeOfDay currMostRecentComplete = null;
+
+		if(currDispStatus != null && newDispStatus != null) {
+			for(Map.Entry<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchEntry : currDispStatus.entrySet()) {
+				if(dispatchEntry.getValue().equals(EnumHandOffDispatchStatus.COMPLETE)) {
+					currMostRecentComplete = dispatchEntry.getKey();
+					break;
+				}
+			}
+
+			for(Map.Entry<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchEntry : newDispStatus.entrySet()) {
+				EnumHandOffDispatchStatus previousStatus = null;
+				if(currDispStatus.get(dispatchEntry.getKey()) != null) {
+					previousStatus = currDispStatus.get(dispatchEntry.getKey());
+				}
+				if(previousStatus != null) {
+					if(EnumHandOffDispatchStatus.COMPLETE.equals(previousStatus)
+							&& (dispatchEntry.getValue() == null 
+										|| !EnumHandOffDispatchStatus.COMPLETE.equals(dispatchEntry.getValue()))) {
+						throw new RoutingServiceException("Dispatches marked as COMPLETE in a previous cutoff cannot be changed to PENDING", null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+					} else {
+						// This is a new dispatch being added
+						if(currMostRecentComplete != null && currMostRecentComplete.after(dispatchEntry.getKey())) {
+							throw new RoutingServiceException("A new dispatch has been added that is earlier than previously completed dispatches", null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	public Object execute() {

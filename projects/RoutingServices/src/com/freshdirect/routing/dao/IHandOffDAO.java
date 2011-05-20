@@ -73,5 +73,6 @@ public interface IHandOffDAO {
 	void clearHandOffBatchDispatches(Date deliveryDate) throws SQLException;
 	void addNewHandOffBatchDispatches(Date deliveryDate, Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus) throws SQLException;
 	List<HandOffDispatchIn> getHandOffBatchDispatches(final Date deliveryDate) throws SQLException;
+	Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> getHandOffBatchDispatchStatus(final Date deliveryDate) throws SQLException;
 	Map<RoutingTimeOfDay, Integer> getHandOffBatchDispatchCnt(final Date deliveryDate) throws SQLException;
 }
