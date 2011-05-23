@@ -128,7 +128,6 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 	@SuppressWarnings("unchecked")
 	protected Object getResult() throws FDResourceException {
 		
-		Result result = null;
 		HttpSession session = pageContext.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 		FDDeliveryTimeslotModel deliveryModel = null;
@@ -136,7 +135,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 			deliveryModel = new FDDeliveryTimeslotModel();
 		}
 		FDCartModel cart = user.getShoppingCart();
-
+		Result result = new Result(deliveryModel);;
 		//check if preReservedSlotId exits
 		checkForPreReservedSlotId(deliveryModel, cart, user, result, timeSlotId);
 		
@@ -181,7 +180,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		ErpAddressModel timeslotAddress = performCosResidentialMerge();
 		
 		timeslotList = getFDTimeslotListForDateRange(restrictions, dateRanges,
-				timeslotList, dynaError, timeslotAddress, user);
+				timeslotList, result, timeslotAddress, user);
 			
 		// list of timeslots that must be shown regardless of capacity
 		Set retainTimeslotIds = new HashSet();
@@ -225,15 +224,6 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		//set cart to model
 		deliveryModel.setShoppingCart(cart);
 		
-		result = new Result(deliveryModel);
-		if(dynaError != null) {
-			result.addError(new ActionError("deliveryTime", "We are sorry. Our system is temporarily experiencing a problem " +
-					"displaying the available timeslots. Please try to refresh this page in about three minutes. " +
-					"If you continue to experience difficulties loading this page, " +
-					"please call our customer service department"+
-					(user != null ? " at " + user.getCustomerServiceContact() : "")));
-		}
-			
 		return result;
 	}
 
@@ -288,7 +278,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		}
 	}
 				
-	private List<FDTimeslotUtil> getFDTimeslotListForDateRange(DlvRestrictionsList restrictions, List<DateRange> dateRanges,List<FDTimeslotUtil> timeslotList, Exception dynaError,
+	private List<FDTimeslotUtil> getFDTimeslotListForDateRange(DlvRestrictionsList restrictions, List<DateRange> dateRanges,List<FDTimeslotUtil> timeslotList, Result result,
 			ErpAddressModel timeslotAddress,FDUserI user) throws FDResourceException {
 		
 		for (Iterator<DateRange> i = dateRanges.iterator(); i.hasNext();) {
@@ -300,7 +290,11 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 				range.getEndDate());
 			
 			if(dynamicTimeslots == null || dynamicTimeslots.getError() != null) {
-				dynaError = dynamicTimeslots.getError();				
+				result.addError(new ActionError("deliveryTime", "We are sorry. Our system is temporarily experiencing a problem " +
+						"displaying the available timeslots. Please try to refresh this page in about three minutes. " +
+						"If you continue to experience difficulties loading this page, " +
+						"please call our customer service department"+
+						(user != null ? " at " + user.getCustomerServiceContact() : "")));				
 			} 
 			List<FDTimeslot> timeslots = dynamicTimeslots.getTimeslots();
 			
