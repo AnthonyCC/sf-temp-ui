@@ -26,6 +26,8 @@ public class DCPDLineItemStrategy implements LineItemStrategyI {
 	private Set<String> brands = new HashSet<String>();
 	private Boolean excludeSkus = Boolean.FALSE;
 	private Boolean excludeBrands = Boolean.FALSE;
+	private Boolean loopEnabled = Boolean.FALSE;
+	private boolean recCategory = false;
 	
 	public int getPrecedence() {
 		return 200;
@@ -74,7 +76,10 @@ public class DCPDLineItemStrategy implements LineItemStrategyI {
 				eligible = dcpdCache.isEligible(productId, promotionCode);
 			}else{
 				//Check if the line item is eligible for a category or department discount.
-				eligible = OrderPromotionHelper.evaluateProductForDCPDPromo(model, contentKeys);
+				if(this.isRecCategory() && this.isLoopEnabled())
+					eligible = OrderPromotionHelper.evaluateProductForDCPDPromoWithRecCategory(model, contentKeys, true);				
+				else
+					eligible = OrderPromotionHelper.evaluateProductForDCPDPromo(model, contentKeys);
 				//Set Eligiblity info to user session.
 				dcpdCache.setPromoProductInfo(productId, promotionCode, eligible);
 			}
@@ -122,6 +127,30 @@ public class DCPDLineItemStrategy implements LineItemStrategyI {
 	public Set<String> getBrands() {
 		return brands;
 	}
+	
+	public void setLoopEnabled(boolean loopEnabled) {
+		this.loopEnabled = loopEnabled;
+	}
+	
+	public boolean isLoopEnabled() {
+		return loopEnabled;
+	}
+	
+	public boolean isRecCategory() {
+		return recCategory;
+	}
+	
+	public void setRecCategory(boolean recCategory) {
+		this.recCategory = recCategory;
+	}
+	@Override
+	public String toString() {
+		return "DCPDLineItemStrategy [brands=" + brands + ", contentKeys="
+				+ contentKeys + ", excludeBrands=" + excludeBrands
+				+ ", excludeSkus=" + excludeSkus + ", loopEnebled="
+				+ loopEnabled + ", skus=" + skus + "]";
+	}
+	
 }
 
 
