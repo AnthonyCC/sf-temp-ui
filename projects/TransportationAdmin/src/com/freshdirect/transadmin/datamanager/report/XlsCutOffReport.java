@@ -158,7 +158,8 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 					String routeId = (String) _routeItr.next();
 					Iterator _timeSlotItr = timeSlots.iterator();
 					
-					IHandOffBatchRoute routeModel = reportData.getRouteMapping().get(routeId);
+					IHandOffBatchRoute routeModel = reportData.getRouteMapping() != null ? reportData.getRouteMapping().get(routeId)
+																								: null;
 					       			        
 			        Date dispatchTime = null;
 			        String zone = null;
@@ -1166,7 +1167,7 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 							result.put(info.getDeliveryZone(), new DispatchSummaryInfo());
 						}
 						result.get(info.getDeliveryZone()).setStoreOrderCnt(result.get(info.getDeliveryZone()).getStoreOrderCnt()+1);
-						routeInfo = reportData.getRouteMapping().get(_routeId); 
+						routeInfo = reportData.getRouteMapping() != null ? reportData.getRouteMapping().get(_routeId) : null; 
 						if(routeInfo != null) {
 							if(!result.containsKey(routeInfo.getArea())) {
 								result.put(routeInfo.getArea(), new DispatchSummaryInfo());
