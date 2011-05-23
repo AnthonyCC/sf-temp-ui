@@ -280,8 +280,15 @@
 							dpcdDepts.add(tempDpcd);
 							depts.append(tempDpcd.getContentId()).append(",");
 						}else if( EnumDCPDContentType.CATEGORY.equals(tempDpcd.getContentType()) ) {
-							dpcdCats.add(tempDpcd);
-							cats.append(tempDpcd.getContentId()).append(",");
+							if(tempDpcd.isRecCategory()) {
+								dpcdRCats.add(tempDpcd);
+								rcats.append(tempDpcd.getContentId()).append(",");
+								if(tempDpcd.isLoopEnabled())
+									loopEnabled = true;
+							} else {
+								dpcdCats.add(tempDpcd);
+								cats.append(tempDpcd.getContentId()).append(",");
+							}
 						}else if( EnumDCPDContentType.BRAND.equals(tempDpcd.getContentType()) ) {
 							dpcdBrands.add(tempDpcd);
 							elgBrnds.append(tempDpcd.getContentId()).append(",");
@@ -291,11 +298,6 @@
 						}else if( EnumDCPDContentType.SKU.equals(tempDpcd.getContentType()) ) {
 							dpcdSkus.add(tempDpcd);
 							elgSkus.append(tempDpcd.getContentId()).append(",");
-						}else if( EnumDCPDContentType.RCATEGORY.equals(tempDpcd.getContentType()) ) {
-							dpcdRCats.add(tempDpcd);
-							rcats.append(tempDpcd.getContentId()).append(",");
-							if(tempDpcd.isLoopEnabled())
-								loopEnabled = true;
 						}
 					}
 				}
