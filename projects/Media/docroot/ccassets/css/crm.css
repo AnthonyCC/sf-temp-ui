@@ -207,6 +207,7 @@ background-color: #FFFFFF;
 border-top: 1px #999999 solid;
 border-bottom: 1px #999999 solid;
 margin-bottom: 2px;
+
 }
 
 .side_nav_module_supervisor {
@@ -227,7 +228,7 @@ color: #666666;
 
 .side_nav_module_content {
 background-color: #FFFFFF;
-height:100%;
+height:150px;
 overflow: auto;
 padding: 2px;
 font-size: 10pt;

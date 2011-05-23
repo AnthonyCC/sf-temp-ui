@@ -74,7 +74,8 @@
             		CrmAgentRole.getEnum(CrmAgentRole.MOP_CODE),
             		CrmAgentRole.getEnum(CrmAgentRole.TRNSP_CODE)};
 			%>
-			  <logic:iterate id='role' collection="<%= DISPLAY_ROLES %>" type="com.freshdirect.crm.CrmAgentRole"><div class="side_nav_module" style="position: relative; float: left; height:25%; width: <%= "ASV".equals(role.getCode())? "19" : "20"%>%;">
+			  <logic:iterate id='role' collection="<%= DISPLAY_ROLES %>" type="com.freshdirect.crm.CrmAgentRole">
+			  		<div class="side_nav_module" style="position: relative; float: left; height:25%; width: <%= "ASV".equals(role.getCode())? "19" : "20"%>%;">
 			        	<%
                             List agents = agentList.getAgents(role);
                             Collections.sort(agents, AGENT_STATUS_COMPARATOR);
