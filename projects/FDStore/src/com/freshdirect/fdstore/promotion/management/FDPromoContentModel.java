@@ -10,6 +10,7 @@ public class FDPromoContentModel extends ModelSupport {
 	private String contentId;
 	private boolean excluded;
 	private boolean loopThru;
+	private boolean recCategory = false;
 	
 	public String getPromotionId() {
 		return promotionId;
@@ -40,6 +41,12 @@ public class FDPromoContentModel extends ModelSupport {
 	}
 	public void setLoopEnabled(boolean loopThru) {
 		this.loopThru = loopThru;
+	}
+	public boolean isRecCategory() {
+		return recCategory;
+	}
+	public void setRecCategory(boolean recCategory) {
+		this.recCategory = recCategory;
 	}
 
 }

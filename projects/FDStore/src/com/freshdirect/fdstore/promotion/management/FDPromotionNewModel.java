@@ -428,7 +428,11 @@ public class FDPromotionNewModel extends ModelSupport {
 				}
 				if (EnumDCPDContentType.CATEGORY.equals(contentModel
 						.getContentType())) {
-					catBuffer.append(contentModel.getContentId() + ",");
+					if (contentModel.isRecCategory()) {						
+						recCatBuffer.append(contentModel.getContentId() + ",");
+					} else {
+						catBuffer.append(contentModel.getContentId() + ",");
+					}
 				}
 				if (EnumDCPDContentType.RECIPE.equals(contentModel
 						.getContentType())) {
@@ -449,15 +453,7 @@ public class FDPromotionNewModel extends ModelSupport {
 							brandBuffer.append("Excluded Brands: ");
 					}
 					brandBuffer.append(contentModel.getContentId() + ",");
-				}
-				if (EnumDCPDContentType.RCATEGORY.equals(contentModel
-						.getContentType())) {
-					if (brandBuffer.length() <= 0) {
-						if (contentModel.isExcluded())
-							brandBuffer.append("Excluded Brands: ");
-					}
-					brandBuffer.append(contentModel.getContentId() + ",");
-				}
+				}				
 			}
 			dcpdDepts = deptBuffer.toString();
 			dcpdCats = catBuffer.toString();
