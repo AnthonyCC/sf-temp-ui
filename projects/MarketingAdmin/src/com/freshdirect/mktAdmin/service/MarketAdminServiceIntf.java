@@ -1,11 +1,14 @@
 package com.freshdirect.mktAdmin.service;
 
+import java.io.File;
 import java.util.Collection;
+import java.util.List;
 
 import com.freshdirect.mktAdmin.constants.EnumFileType;
 import com.freshdirect.mktAdmin.exception.MktAdminApplicationException;
 import com.freshdirect.mktAdmin.model.CompetitorAddressModel;
 import com.freshdirect.mktAdmin.model.FileUploadBean;
+import com.freshdirect.mktAdmin.model.FileUploadedInfo;
 import com.freshdirect.mktAdmin.model.RestrictionSearchBean;
 
 public interface MarketAdminServiceIntf {
@@ -45,4 +48,6 @@ public interface MarketAdminServiceIntf {
 	public void  newDeletePromoRestrictedCustomers(Collection collection) throws MktAdminApplicationException;
 	
 	public void newReplacePromoRestrictedCustomers(Collection collection) throws MktAdminApplicationException;
+	
+	public FileUploadedInfo parseMktAdminAutoUploadFile(FileUploadBean bean) throws MktAdminApplicationException;
 }

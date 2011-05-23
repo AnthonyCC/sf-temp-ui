@@ -435,8 +435,8 @@ public  class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 	}
 	
 	private static final String INSERT_RESTRICTED_CUSTOMER=
-			"insert into cust.promo_Customer(CUSTOMER_ID,PROMOTION_ID) " +
-				"select ID, ? " +
+			"insert into cust.promo_Customer(CUSTOMER_ID,PROMOTION_ID,EXPIRATION_DATE) " +
+				"select ID, ?,? " +
 				"from   cust.customer c " +
 				"where  c.ID = ? " +
 				"and    not exists (select 1 from cust.promo_customer " +
@@ -446,21 +446,25 @@ public  class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 	public void newInsertRestrictedCustomers(Collection restCustomerModel) throws SQLException {
 		BatchSqlUpdate batchUpdater=new BatchSqlUpdate(this.jdbcTemplate.getDataSource(),INSERT_RESTRICTED_CUSTOMER);		
 		batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+		batchUpdater.declareParameter(new SqlParameter(Types.DATE));
 		batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 		batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+		
 		
 		batchUpdater.compile(); 
 		
 		Iterator iterator=restCustomerModel.iterator();
+		List totalList = new ArrayList();
 		while(iterator.hasNext()){			
 			RestrictedPromoCustomerModel model=(RestrictedPromoCustomerModel)iterator.next();
 			LOGGER.debug("customer Id :"+model.getCustomerId()+" promotionId :"+model.getPromotionId());
+			totalList.add(model);
 			batchUpdater.update(
-			new Object[]{ model.getPromotionId(), model.getCustomerId(),  model.getPromotionId()}
+			new Object[]{ model.getPromotionId(),model.getExpirationDate(), model.getCustomerId(),  model.getPromotionId()}
 			);			
 		}
-		batchUpdater.flush();			
-		LOGGER.debug("Data is inserted");		
+		batchUpdater.flush();
+		LOGGER.debug("Data is inserted");
 	}
 
 	private static final String DELETE_RESTRICTION_BATCH_QRY="delete from cust.promo_customer where customer_id=? and promotion_id=?";
@@ -614,12 +618,13 @@ public  class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
        		  new RowCallbackHandler() { 
        		      public void processRow(ResultSet rs) throws SQLException {       		    	
        		    	do {
-       		    		RestrictedPromoCustomerModel model=new RestrictedPromoCustomerModel();
+       		    		/*RestrictedPromoCustomerModel model=new RestrictedPromoCustomerModel();
        		    		model.setCustomerId(rs.getString("id"));
        		    		model.setPromotionId(rs.getString("promotion_id"));
        		    		//model.setUsageCount(rs.getInt("usage_cnt"));
        		    		model.setCustEmailAddress(rs.getString("user_id"));       		
-       		    		list.add(model);
+       		    		list.add(model);*/
+       		    		list.add(rs.getString("id"));
        		    	   }
        		    	   while(rs.next());	        		    	
        		      }
@@ -631,7 +636,8 @@ public  class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 		List invalidCustomerList=new ArrayList();
 		while(iterator1.hasNext()){
 			RestrictedPromoCustomerModel model=(RestrictedPromoCustomerModel)iterator1.next();
-			if(!list.contains(model)){
+//			if(!list.contains(model)){
+			if(!list.contains(model.getCustomerId())){
 				LOGGER.debug("invalid model :"+model.getCustomerId());						
 				invalidCustomerList.add(model);
 			}					
@@ -640,5 +646,77 @@ public  class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
         LOGGER.debug("OracleMarketAdminDAOImpl : getRestrictedCustomers end1  "+invalidCustomerList.size());
         return invalidCustomerList;        
 	}	
-			
+		
+	private static final String SELECT_INVALID_PROMO="select distinct id as promotion_id  from cust.promotion_new where id in('";
+	public Collection getInvalidPromotions(Collection collection) throws SQLException {
+		// TODO Auto-generated method stub
+		final StringBuffer promoIdStr=new StringBuffer();
+		final StringBuffer sql=new StringBuffer(SELECT_INVALID_PROMO);
+		
+		Iterator iterator=collection.iterator();
+		int i=0;
+        while(iterator.hasNext()){
+        	RestrictedPromoCustomerModel model=(RestrictedPromoCustomerModel)iterator.next();        	
+        	i=i+1;
+        	if(i==1){
+        		
+        		promoIdStr.append(model.getCustomerId());
+				if(i!=collection.size()) promoIdStr.append("',"); 
+			}
+			else{
+				if(i==collection.size())	
+				{
+					promoIdStr.append("'").append(model.getPromotionId());					
+				}
+				else{
+					promoIdStr.append("'").append(model.getPromotionId()).append("',");					
+				}				
+			}        	        	
+        	
+        }
+               
+        final List list = new ArrayList();
+       
+        sql.append(promoIdStr.toString()).append("')");
+        LOGGER.debug("promoIdStr :"+promoIdStr.toString());
+        
+        PreparedStatementCreator creator=new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+                PreparedStatement ps =
+                    connection.prepareStatement(sql.toString());
+//                ps.setString(1,promotionId); //                
+                return ps;
+            }  
+        };
+        
+        jdbcTemplate.query(creator, 
+       		  new RowCallbackHandler() { 
+       		      public void processRow(ResultSet rs) throws SQLException {       		    	
+       		    	do {
+       		    		/*RestrictedPromoCustomerModel model=new RestrictedPromoCustomerModel();
+       		    		model.setCustomerId(rs.getString("id"));
+       		    		model.setPromotionId(rs.getString("promotion_id"));
+       		    		//model.setUsageCount(rs.getInt("usage_cnt"));
+       		    		model.setCustEmailAddress(rs.getString("user_id")); */      		
+       		    		list.add(rs.getString("promotion_id"));
+       		    	   }
+       		    	   while(rs.next());	        		    	
+       		      }
+       		  }
+       	); 
+        
+//      remove the existing one from the pro customer model
+		Iterator iterator1=collection.iterator();
+		List invalidPromoList=new ArrayList();
+		while(iterator1.hasNext()){
+			RestrictedPromoCustomerModel model=(RestrictedPromoCustomerModel)iterator1.next();
+			if(!list.contains(model.getPromotionId())){
+				LOGGER.debug("Invalid promotion id: "+model.getPromotionId());						
+				invalidPromoList.add(model);
+			}					
+		}		
+		
+        LOGGER.debug("OracleMarketAdminDAOImpl : getInvalidPromotions end1  "+invalidPromoList.size());
+        return invalidPromoList;        
+	}	
 }

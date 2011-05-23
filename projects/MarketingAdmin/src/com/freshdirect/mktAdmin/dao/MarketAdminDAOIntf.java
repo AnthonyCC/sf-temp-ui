@@ -2,6 +2,7 @@ package com.freshdirect.mktAdmin.dao;
 
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.mktAdmin.model.CompetitorAddressModel;
@@ -40,6 +41,8 @@ public interface MarketAdminDAOIntf {
 	public void newInsertRestrictedCustomers(Collection restCustomerModel) throws SQLException;
 
 	public void deleteRestrictedCustomers(Collection collection) throws SQLException;
+	
+	public Collection getInvalidPromotions(Collection restCustomerModel) throws SQLException;
 
 	public void deleteRestrictedCustomerForPromotion(String promotionId) throws SQLException;
 	

@@ -13,6 +13,8 @@ public class FileUploadBean implements Serializable{
 	
 	private MultipartFile file;
     private EnumFileContentType fileContentType=null;
+    private File autoUploadFile;
+    private boolean isAutoUpload = false;
 
     public FileUploadBean(){    	
     }
@@ -72,6 +74,9 @@ public class FileUploadBean implements Serializable{
 
     public String getFileType() {
     	String fileName=this.getName();
+    	if(isAutoUpload()){
+    		fileName= autoUploadFile.getName();
+    	}
     	String fileType= fileName.substring(fileName.indexOf(".")+1,fileName.length());
     	return fileType;
     }
@@ -82,6 +87,22 @@ public class FileUploadBean implements Serializable{
 
 	public void setFileContentType(EnumFileContentType fileContentType) {
 		this.fileContentType = fileContentType;
+	}
+
+	public File getAutoUploadFile() {
+		return autoUploadFile;
+	}
+
+	public void setAutoUploadFile(File autoUploadFile) {
+		this.autoUploadFile = autoUploadFile;
+	}
+
+	public boolean isAutoUpload() {
+		return isAutoUpload;
+	}
+
+	public void setAutoUpload(boolean isAutoUpload) {
+		this.isAutoUpload = isAutoUpload;
 	}
 
 	        

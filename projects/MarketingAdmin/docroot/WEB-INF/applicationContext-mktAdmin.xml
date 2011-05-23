@@ -60,4 +60,6 @@
 		</property>
 	</bean>
     
+    <bean id="mktAdminSpringUtil" class="com.freshdirect.mktAdmin.util.MarketAdminSpringUtil" factory-method="getInstance">		
+	</bean>
 </beans>

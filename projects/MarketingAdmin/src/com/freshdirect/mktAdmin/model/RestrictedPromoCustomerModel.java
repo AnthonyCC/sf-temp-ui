@@ -1,15 +1,18 @@
 package com.freshdirect.mktAdmin.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class RestrictedPromoCustomerModel implements Serializable {
 
 	private String promotionId=null;
+	private String promotionCode=null;
 	private String customerId=null;
 	private int usageCount=0;
 	private String custEmailAddress=null;
 	private String firstName=null;
 	private String lastName=null;
+	private Date expirationDate;
 	
 	public RestrictedPromoCustomerModel(){		
 	}
@@ -74,5 +77,21 @@ public class RestrictedPromoCustomerModel implements Serializable {
 	{		
 		if(this.customerId!=null && this.promotionId!=null) return this.customerId.hashCode()*this.promotionId.hashCode();
 		else return super.hashCode();
+	}
+
+	public Date getExpirationDate() {
+		return expirationDate;
+	}
+
+	public void setExpirationDate(Date expirationDate) {
+		this.expirationDate = expirationDate;
+	}
+
+	public String getPromotionCode() {
+		return promotionCode;
+	}
+
+	public void setPromotionCode(String promotionCode) {
+		this.promotionCode = promotionCode;
 	}
 }

@@ -12,6 +12,7 @@ public class EnumListUploadActionType extends Enum {
 	public static final EnumListUploadActionType DELETE = new EnumListUploadActionType("DELETE", "Delete from List");	
 	public static final EnumListUploadActionType REPLACE = new EnumListUploadActionType("REPLACE", "Replace List");
 	public static final EnumListUploadActionType CREATE = new EnumListUploadActionType("CREATE", "Create List");
+	public static final EnumListUploadActionType ADD_MULTI_PROMO = new EnumListUploadActionType("ADD MULTI PROMO", "Add Multiple to List");
 
 	private final String description;
 	

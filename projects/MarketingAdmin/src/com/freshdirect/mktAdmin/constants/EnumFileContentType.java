@@ -12,6 +12,7 @@ public class EnumFileContentType  extends Enum{
 	public static final EnumFileContentType CUSTOMER_FILE_TYPE = new EnumFileContentType("CUSTOMER", "Customer File Type");
 	public static final EnumFileContentType COMPETITOR_FILE_TYPE = new EnumFileContentType("COMPETITOR", "Competitor File Type");
 	public static final EnumFileContentType RESTRICTION_LIST_FILE_TYPE = new EnumFileContentType("RESTRICTION_LIST", "Restricted Customer List");
+//	public static final EnumFileContentType MULTI_PROMO_RESTRICTION_LIST_FILE_TYPE = new EnumFileContentType("MULTI_PROMO_RESTRICTION_LIST", "Restricted Customer List For Multiple Promotions");
 
 	private final String description;
 

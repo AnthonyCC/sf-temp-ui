@@ -180,6 +180,15 @@ public class ErpServicesProperties {
 	private final static String PROP_CRON_FAILURE_MAIL_CC = "cron.mail.cc";
 	private final static String PROP_CRON_FAILURE_MAIL_FROM = "cron.mail.from";
 	    
+	public final static String PROP_MKTADMIN_AUTO_UPLOADER_FTP_WORKDIR	= "mktadmin.auto.uploader.ftp.workdir";
+	public final static String PROP_MKTADMIN_AUTO_UPLOADER_FTP_BACKUPDIR	= "mktadmin.auto.uploader.ftp.backupdir";
+	public final static String PROP_MKTADMIN_AUTO_UPLOADER_FTP_FAILEDDIR	= "mktadmin.auto.uploader.ftp.failedDir";
+	public final static String PROP_MKTADMIN_AUTO_UPLOADER_LOCAL_WORKDIR	= "mktadmin.auto.uploader.local.workdir";
+	public final static String PROP_MKTADMIN_AUTO_UPLOADER_LOCAL_BACKUPDIR	= "mktadmin.auto.uploader.local.backupdir";
+	public final static String PROP_MKTADMIN_AUTO_UPLOADER_LOCAL_FAILEDDIR	= "mktadmin.auto.uploader.local.failedDir";
+	public final static String PROP_MKTADMIN_AUTO_UPLOADER_FTP_HOST		= "mktadmin.auto.uploader.ftp.host";
+	public final static String PROP_MKTADMIN_AUTO_UPLOADER_FTP_USER		= "mktadmin.auto.uploader.ftp.user";
+	public final static String PROP_MKTADMIN_AUTO_UPLOADER_FTP_PASSWD	= "mktadmin.auto.uploader.ftp.passwd";
 	
 	static {
 		Properties defaults = new Properties();
@@ -319,6 +328,17 @@ public class ErpServicesProperties {
 		
 		defaults.put( MASQUERADE_STOREFRONT_BASEURL, "http://www.freshdirect.com/" );
 		defaults.put( MASQUERADE_SECURITYTICKET_EXPIRATION, "5" );
+		
+		defaults.put(PROP_MKTADMIN_AUTO_UPLOADER_FTP_WORKDIR, "");
+		defaults.put(PROP_MKTADMIN_AUTO_UPLOADER_FTP_BACKUPDIR, "");
+		defaults.put(PROP_MKTADMIN_AUTO_UPLOADER_FTP_FAILEDDIR, "");
+		defaults.put(PROP_MKTADMIN_AUTO_UPLOADER_LOCAL_WORKDIR, "");
+		defaults.put(PROP_MKTADMIN_AUTO_UPLOADER_LOCAL_BACKUPDIR, "");
+		defaults.put(PROP_MKTADMIN_AUTO_UPLOADER_LOCAL_FAILEDDIR, "");
+		defaults.put(PROP_MKTADMIN_AUTO_UPLOADER_FTP_HOST, "");
+		defaults.put(PROP_MKTADMIN_AUTO_UPLOADER_FTP_USER, "");
+		defaults.put(PROP_MKTADMIN_AUTO_UPLOADER_FTP_PASSWD, "");
+		
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);

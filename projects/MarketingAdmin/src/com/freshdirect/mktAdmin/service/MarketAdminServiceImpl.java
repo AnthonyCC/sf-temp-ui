@@ -1,5 +1,6 @@
 package com.freshdirect.mktAdmin.service;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,12 +10,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.mail.MessagingException;
+
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.promotion.FDPromotionNewModelFactory;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.mktAdmin.constants.EnumCompetitorStatusType;
 import com.freshdirect.mktAdmin.constants.EnumFileContentType;
 import com.freshdirect.mktAdmin.constants.EnumFileType;
@@ -26,6 +31,7 @@ import com.freshdirect.mktAdmin.model.CompetitorAddressModel;
 import com.freshdirect.mktAdmin.model.CustomerAddressModel;
 import com.freshdirect.mktAdmin.model.FileDownloadBean;
 import com.freshdirect.mktAdmin.model.FileUploadBean;
+import com.freshdirect.mktAdmin.model.FileUploadedInfo;
 import com.freshdirect.mktAdmin.model.RestrictedPromoCustomerModel;
 import com.freshdirect.mktAdmin.model.RestrictionListUploadBean;
 import com.freshdirect.mktAdmin.model.RestrictionSearchBean;
@@ -148,19 +154,19 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 		}
 		private static final int FILE_DEVIDER_SIZE=300;
 		
-		public void addPromoRestrictedCustomers(Collection collection)
+		public Collection addPromoRestrictedCustomers(Collection collection)
 		throws MktAdminApplicationException {
 			// TODO Auto-generated method stub
 			long t1 = System.currentTimeMillis();
 			List filteredList=new ArrayList();
 			List mergedList=new ArrayList();
-			List invalidMergeList=new ArrayList();
+			Collection invalidMergeList=new ArrayList();
 			List exceptionList=new ArrayList();
 			try {						
 				LOGGER.debug(" List size at the begining:"+collection.size());
 				// since oracle does not support in query with more than some number I am deviding this with 100 of collection
 				if(collection.size()<FILE_DEVIDER_SIZE){
-					mergedList.addAll(getMktAdminDAOImpl().getRestrictedCustomers(collection));
+//					mergedList.addAll(getMktAdminDAOImpl().getRestrictedCustomers(collection));
 					invalidMergeList.addAll(getMktAdminDAOImpl().getInvalidCustomerIds(collection));					
 				}
 				else{
@@ -171,7 +177,7 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 							RestrictedPromoCustomerModel model=(RestrictedPromoCustomerModel)iterator1.next();
 							filteredList.add(model);
 							if(counter>=collection.size()){
-								mergedList.addAll(getMktAdminDAOImpl().getRestrictedCustomers(filteredList));
+//								mergedList.addAll(getMktAdminDAOImpl().getRestrictedCustomers(filteredList));
 								invalidMergeList.addAll(getMktAdminDAOImpl().getInvalidCustomerIds(filteredList));
 								filteredList=new ArrayList();
 							}
@@ -180,15 +186,15 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 						else{
 							RestrictedPromoCustomerModel model=(RestrictedPromoCustomerModel)iterator1.next();
 							filteredList.add(model);
-							mergedList.addAll(getMktAdminDAOImpl().getRestrictedCustomers(filteredList));
+//							mergedList.addAll(getMktAdminDAOImpl().getRestrictedCustomers(filteredList));
 							invalidMergeList.addAll(getMktAdminDAOImpl().getInvalidCustomerIds(filteredList));
 							filteredList=new ArrayList();							
 						}
 						
 					}
 				}// end of else
-				System.out.println("merged element lenght :"+mergedList.size());
-				System.out.println("invalidMergeList element lenght :"+invalidMergeList.size());
+//				System.out.println("merged element lenght :"+mergedList.size());
+				
 				 // check the existing customer information
 				
 				// remove the existing one from the pro customer model				
@@ -204,18 +210,29 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 						collection.remove(model);
 						exceptionList.add(new MktAdminApplicationException("122",new String[]{model.getCustomerId()}));
 					}					
-				}		
-				
+				}
+				Iterator iterator2=collection.iterator();
+				while(iterator2.hasNext()){
+					RestrictedPromoCustomerModel model=(RestrictedPromoCustomerModel)iterator2.next();
+					if(null ==model.getPromotionId()){
+						LOGGER.debug("invalid add model :"+model);						
+						iterator2.remove();
+						invalidMergeList.add(model);
+						exceptionList.add(new MktAdminApplicationException("123",new String[]{model.getPromotionCode()}));
+					}					
+				}
+				System.out.println("invalidMergeList element lenght :"+invalidMergeList.size());
 				// isert to the db    
 				LOGGER.debug("filtered List size :"+collection.size());
 											
 				if(collection.size()>0)
-				     mktAdminDAOImpl.insertRestrictedCustomers(collection);
+//				     mktAdminDAOImpl.insertRestrictedCustomers(collection);
+					mktAdminDAOImpl.newInsertRestrictedCustomers(collection);
 				
 				// throw invalid userId exception if it exists
-				if(exceptionList.size()>0){					
+			/*	if(exceptionList.size()>0){					
 					throw new MktAdminApplicationException(exceptionList);	
-				}
+				}*/
 				
 				long t2 = System.currentTimeMillis();
 				LOGGER.info("Time taken to complete addPromoRestrictedCustomers:" + (t2 - t1));
@@ -224,15 +241,16 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 			catch (SQLException e) {			
 				throw new MktAdminSystemException("1002",e);
 			}
-			catch(MktAdminApplicationException e){			
+			/*catch(MktAdminApplicationException e){			
 				throw e;
-			}
+			}*/
 			catch(MktAdminSystemException e){			
 				throw e;
 			}			
 			catch(Throwable e){			
 				throw new MktAdminSystemException("1001",e);
-			}			
+			}		
+			return invalidMergeList;
 		}
 		
 		public void createPromoRestrictedCustomers(Collection collection)
@@ -520,6 +538,27 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 					if(EnumListUploadActionType.ADD==rBean.getActionType()){
 						LOGGER.debug("ADDING THE RESTRICTIONS" );
 						newAddPromoRestrictedCustomers(collection);
+					}else if(EnumListUploadActionType.ADD_MULTI_PROMO==rBean.getActionType()){
+						LOGGER.debug("ADDING THE RESTRICTIONS FOR MULTIPLE PROMOTIONS" );
+						Collection failedList = null;
+						if(bean.isAutoUpload()){
+						try {
+							failedList = addPromoRestrictedCustomers(collection);
+							return failedList;
+						} catch (MktAdminApplicationException e) {
+							LOGGER.debug("catching the MktAdminApplicationException:",e);
+						}finally{
+							if(true /*&& check property to send email or not*/ ){
+								ErpMailSender mailer = new ErpMailSender();
+								StringBuffer buff = new StringBuffer();
+								mailer.sendMail(FDStoreProperties.getCustomerServiceEmail(),
+											"ksriram@freshdirect.com",//FDStoreProperties.getStandingOrderReportToEmail(),
+											"ksriram@freshdirect.com",//FDStoreProperties.getStandingOrderReportToEmail(),
+											"Auto Upload", buff.toString(), true, "");
+							  }
+						}}else{
+							addPromoRestrictedCustomers(collection);
+						}
 					}else if(EnumListUploadActionType.DELETE==rBean.getActionType()){
 						LOGGER.debug("DELETING THE RESTRICTIONS" );
 						newDeletePromoRestrictedCustomers(collection);
@@ -725,7 +764,8 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 					throw new MktAdminApplicationException(exceptionList);
 				}
 				
-				addPromoRestrictedCustomers(filteredList);
+				//addPromoRestrictedCustomers(filteredList);
+				newAddPromoRestrictedCustomers(filteredList);
 				//mktAdminDAOImpl.insertRestrictedCustomers(filteredList);
 			} 
 			catch (SQLException e) {			
@@ -748,7 +788,7 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 			try
 			{
 				LOGGER.debug("getMktAdminDAOImpl().isRestrictedCustomersExist() :"+promotionCode);
-				FDPromotionNewModel model=FDPromotionNewModelFactory.getInstance().getPromotion(promotionCode);
+				FDPromotionNewModel model=FDPromotionNewModelFactory.getInstance().getPromotion(promotionCode);				
 				Collection collection=getMktAdminDAOImpl().getRestrictedCustomers(model.getId(),"",0,100);
 				if(collection.size()>0)
 					restrictedCustomerExist=true;
@@ -807,7 +847,7 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 				LOGGER.debug(" List size at the begining:"+collection.size());
 				
 				if(collection.size()>0)
-				     mktAdminDAOImpl.newInsertRestrictedCustomers(collection);
+					mktAdminDAOImpl.newInsertRestrictedCustomers(collection);
 				
 				long t2 = System.currentTimeMillis();
 				LOGGER.info("Time taken to complete newaddPromoRestrictedCustomers:" + (t2 - t1));
@@ -815,7 +855,7 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 			} 
 			catch (Exception e) {			
 				LOGGER.error("Error adding new promo restriction list", e);
-			}
+			}			
 		}
 		
 		public void newDeletePromoRestrictedCustomers(Collection collection) throws MktAdminApplicationException {
@@ -860,5 +900,43 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 			catch (Exception e) {			
 				LOGGER.error("Error in newReplacePromoRestrictedCustomers", e);
 			}
+		}
+	
+		public FileUploadedInfo parseMktAdminAutoUploadFile(FileUploadBean bean)
+		throws MktAdminApplicationException {
+			Collection collection=new ArrayList();
+			FileUploadedInfo info = new FileUploadedInfo();
+			
+				try {
+					LOGGER.debug("bean.getFileType() :"+bean.getFileType());
+					LOGGER.debug("bean.getFileContentType() :"+bean.getFileContentType());
+					FileParser parser=FileParserFactory.getFileParser(bean.getFileType());
+					LOGGER.debug("parser :"+parser);
+					info.setFileName(bean.getAutoUploadFile().getName());
+					collection = parser.parseFile(bean);
+					info.setTotalCustInfo(collection);
+					LOGGER.debug("collection :"+collection);
+					if(EnumFileContentType.RESTRICTION_LIST_FILE_TYPE==bean.getFileContentType()){
+						RestrictionListUploadBean rBean=(RestrictionListUploadBean)bean;					
+						if(EnumListUploadActionType.ADD_MULTI_PROMO==rBean.getActionType()){
+							LOGGER.debug("ADDING THE RESTRICTIONS FOR MULTIPLE PROMOTIONS BY AUTO UPLOAD" );
+							Collection failedList = null;
+							if(bean.isAutoUpload()){	
+								info.setFileName(bean.getAutoUploadFile().getName());
+								failedList = addPromoRestrictedCustomers(collection);
+								info.setFailedCustInfo(failedList);		
+								info.setSuccessful(true);
+							}
+						}
+					}
+				}catch(MktAdminApplicationException e){
+					LOGGER.debug("catching the MktAdminApplicationException:",e);
+					info.setSuccessful(false);
+				}catch(Exception e){
+					LOGGER.debug("catching the Exception:",e);
+					info.setSuccessful(false);
+				}
+				return info;
+			
 		}
 }

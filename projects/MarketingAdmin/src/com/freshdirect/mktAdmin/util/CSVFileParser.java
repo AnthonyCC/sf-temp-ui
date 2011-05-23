@@ -1,16 +1,21 @@
 package com.freshdirect.mktAdmin.util;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Category;
@@ -23,6 +28,7 @@ import com.freshdirect.fdstore.promotion.FDPromotionNewModelFactory;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mktAdmin.constants.EnumFileContentType;
+import com.freshdirect.mktAdmin.constants.EnumListUploadActionType;
 import com.freshdirect.mktAdmin.exception.MktAdminApplicationException;
 import com.freshdirect.mktAdmin.exception.MktAdminSystemException;
 import com.freshdirect.mktAdmin.model.FileDownloadBean;
@@ -66,46 +72,20 @@ public class CSVFileParser implements FileParser {
 		try
 		{
 						
-			input = new ByteArrayInputStream(fileUploadBean.getBytes());			
+//			input = new ByteArrayInputStream(fileUploadBean.getBytes());
+			if(!fileUploadBean.isAutoUpload()){
+				input = new ByteArrayInputStream(fileUploadBean.getBytes());				
+			}else{
+				input = new FileInputStream(fileUploadBean.getAutoUploadFile());
+			}
 			//FileReader reader=new FileReader(new InputStreamReader(input));
 			//APPDEV-1491 - changed escape char from double-quote to backslash
 			CSVReader reader=new CSVReader(new InputStreamReader(input), ',', '\\');
 			//fs = new POIFSFileSystem(input);
 			modelList=new HashSet();
 			String [] nextLine;
-			FDPromotionNewModel fdModel=FDPromotionNewModelFactory.getInstance().getPromotion(fileUploadBean.getPromotionCode());
-			String promotionId=fdModel.getId();
-			boolean isHearderRead=false;
-		        while ((nextLine = reader.readNext()) != null) {
-		        // nextLine[] is an array of values from the line
- 	        		   //LOGGER.debug(nextLine[0] + nextLine[1] + "etc...");		    					    	                       	                       	                       	                       
-                       if(!isHearderRead){
-                    	   isHearderRead=true;	                    	   
-                    	   validateRestrictedCustomerCSVFileColumns(nextLine);
-                    	   continue;
-                       }
-	                       
-                       if(nextLine==null) 
-                    	   continue; 
-	                       
-                       RestrictedPromoCustomerModel model=new RestrictedPromoCustomerModel();                       	                                                                     
-	                       
-                       if(nextLine[0]==null || nextLine[0].trim().length()<2){                    	  
-                    	   continue;
-                       }
-                       
-                       model.setCustomerId(nextLine[0]);                                              
-	                                                                                                                           
-                       //model.setCustEmailAddress(nextLine[1]);
-	                                                                                                                           
-                       //model.setFirstName(nextLine[2]);
-                                                                             
-                       //model.setLastName(nextLine[3]);
-                       
-                       model.setPromotionId(promotionId);
-	                       
-                       modelList.add(model);                    
-		          }
+			
+			modelList = populateModel(fileUploadBean, modelList, reader);
 		        
 				}finally
 				{
@@ -116,9 +96,136 @@ public class CSVFileParser implements FileParser {
                return modelList;
 	}
 
-    public void validateRestrictedCustomerCSVFileColumns(String  columnNames[]) throws MktAdminApplicationException{
-   	 System.out.println("validateCSVFileColumns :"+columnNames);    	 
-   	 if(columnNames.length == 0){
+	private Set populateModel(RestrictionListUploadBean fileUploadBean,
+			Set modelList, CSVReader reader)
+			throws IOException, MktAdminApplicationException {
+		String[] nextLine;
+		boolean isHearderRead=false;
+		Calendar calendar = Calendar.getInstance();
+		  Calendar calendar1 = Calendar.getInstance();
+		if(fileUploadBean.getActionType()==EnumListUploadActionType.ADD_MULTI_PROMO){
+			 Map<String,FDPromotionNewModel> promoCodesMap = new HashMap<String,FDPromotionNewModel>();
+			 while ((nextLine = reader.readNext()) != null) {
+		    // nextLine[] is an array of values from the line
+				   //LOGGER.debug(nextLine[0] + nextLine[1] + "etc...");		    					    	                       	                       	                       	                       
+		           if(!isHearderRead){
+		        	   isHearderRead=true;	                    	   
+		        	   validateRestrictedCustomerCSVFileColumns(nextLine,fileUploadBean.getActionType());
+		        	   continue;
+		           }
+		               
+		           if(nextLine==null) 
+		        	   continue; 
+		               
+		           RestrictedPromoCustomerModel model=new RestrictedPromoCustomerModel();                       	                                                                     
+		               
+		           if(nextLine[0]==null || nextLine[0].trim().length()<2){                    	  
+		        	   continue;
+		           }
+		           
+		           model.setCustomerId(nextLine[0]);                                              
+		                                                                                                                   
+		           //model.setCustEmailAddress(nextLine[1]);
+		                                                                                                                   
+		           //model.setFirstName(nextLine[2]);
+		                                                                 
+		           //model.setLastName(nextLine[3]);
+		           FDPromotionNewModel fdPromotionModel=FDPromotionNewModelFactory.getInstance().getPromotion(nextLine[1]);
+		           if(promoCodesMap.containsKey(nextLine[1])){
+            		   fdPromotionModel = promoCodesMap.get(nextLine[1]);
+            		   if(null != fdPromotionModel){
+            			   model.setPromotionId(fdPromotionModel.getId());
+            		   }
+            		   model.setPromotionCode(nextLine[1]);
+            	   }else{
+                	   fdPromotionModel=FDPromotionNewModelFactory.getInstance().getPromotion(nextLine[1]);
+                	   if(null != fdPromotionModel){
+                		   model.setPromotionId(fdPromotionModel.getId());
+                	   }
+                	   promoCodesMap.put(nextLine[1], fdPromotionModel);
+                	   model.setPromotionCode(nextLine[1]);
+            	   }
+		           
+		           if(null !=model.getPromotionId()){
+					   calendar.setTime(new java.util.Date());
+					   calendar1.setTime(fdPromotionModel.getExpirationDate());
+					   if (null != fdPromotionModel.getRollingExpirationDays()	&& fdPromotionModel.getRollingExpirationDays() > 0) {
+						   calendar.add(Calendar.DATE, fdPromotionModel.getRollingExpirationDays());
+					   } else {
+						   calendar.setTime(fdPromotionModel.getExpirationDate());
+					   }
+					   if(fdPromotionModel.getExpirationDate()!= null && null != fdPromotionModel.getRollingExpirationDays() && fdPromotionModel.getRollingExpirationDays() > 0){
+							if(calendar.before(calendar1) || (!calendar.before(calendar1) && !calendar1.before(calendar))){
+								model.setExpirationDate(new Date(calendar.getTimeInMillis()));
+							}else{
+								model.setExpirationDate(new Date(calendar1.getTimeInMillis()));
+							}
+					   }
+		           }
+		               
+		           modelList.add(model);                    
+		      }
+		 }else{
+			 	FDPromotionNewModel fdPromotionModel = FDPromotionNewModelFactory.getInstance().getPromotion(fileUploadBean.getPromotionCode());
+				//Setting expiration date based on the rolling expiration days of the promotion.
+	
+				calendar.setTime(new java.util.Date());
+				calendar1.setTime(fdPromotionModel.getExpirationDate());
+				if (null != fdPromotionModel.getRollingExpirationDays()	&& fdPromotionModel.getRollingExpirationDays() > 0) {
+					calendar.add(Calendar.DATE, fdPromotionModel.getRollingExpirationDays());
+				} else {
+					calendar.setTime(fdPromotionModel.getExpirationDate());
+				}
+				
+				while ((nextLine = reader.readNext()) != null) {
+					    // nextLine[] is an array of values from the line
+							   //LOGGER.debug(nextLine[0] + nextLine[1] + "etc...");		    					    	                       	                       	                       	                       
+					           if(!isHearderRead){
+					        	   isHearderRead=true;	                    	   
+					        	   validateRestrictedCustomerCSVFileColumns(nextLine,fileUploadBean.getActionType());
+					        	   continue;
+					           }
+					               
+					           if(nextLine==null) 
+					        	   continue; 
+					               
+					           RestrictedPromoCustomerModel model=new RestrictedPromoCustomerModel();                       	                                                                     
+					               
+					           if(nextLine[0]==null || nextLine[0].trim().length()<2){                    	  
+					        	   continue;
+					           }
+					           
+					           model.setCustomerId(nextLine[0]);                                              
+					                                                                                                                   
+					           //model.setCustEmailAddress(nextLine[1]);
+					                                                                                                                   
+					           //model.setFirstName(nextLine[2]);
+					                                                                 
+					           //model.setLastName(nextLine[3]);
+					           
+					           model.setPromotionCode(fileUploadBean.getPromotionCode());
+					           model.setPromotionId(fdPromotionModel.getId());					           
+					           if(fdPromotionModel.getExpirationDate()!= null && null != fdPromotionModel.getRollingExpirationDays() && fdPromotionModel.getRollingExpirationDays() > 0){
+									if(calendar.before(calendar1) || (!calendar.before(calendar1) && !calendar1.before(calendar))){
+										model.setExpirationDate(new Date(calendar.getTimeInMillis()));
+									}else{
+										model.setExpirationDate(new Date(calendar1.getTimeInMillis()));
+									}
+								}					           
+					               
+					           modelList.add(model); 
+			 }
+		 }
+		return modelList;
+	}
+
+    public void validateRestrictedCustomerCSVFileColumns(String  columnNames[],EnumListUploadActionType actionType) throws MktAdminApplicationException{
+   	 System.out.println("validateCSVFileColumns :"+columnNames);    
+   	 if(EnumListUploadActionType.ADD_MULTI_PROMO == actionType){
+   		if(columnNames.length < 2){
+   	   		throw new MktAdminApplicationException("118",new String[]{"2"});
+   	   	 }
+   	 }else if(columnNames.length == 0){
    		throw new MktAdminApplicationException("118",new String[]{"4"});
    	 }
         
@@ -182,5 +289,6 @@ public class CSVFileParser implements FileParser {
 		//
 		return sw.toString();
 	}
+
 	
 }
