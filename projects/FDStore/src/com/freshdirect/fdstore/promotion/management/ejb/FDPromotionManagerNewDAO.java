@@ -653,8 +653,8 @@ public class FDPromotionManagerNewDAO {
 	
 
 	private static String INSERT_PROMO_DCPD_DATA = "INSERT INTO cust.promo_dcpd_data_new"
-			+ " (id, promotion_id, content_type, content_id, exclude, child_loop)"
-			+ " VALUES(?,?,?,?,?,?)";
+			+ " (id, promotion_id, content_type, content_id, exclude, child_loop, recommended)"
+			+ " VALUES(?,?,?,?,?,?,?)";
 
 	private static void storeAssignedGroups(Connection conn, String id,
 			FDPromotionNewModel promotion) throws SQLException {
@@ -676,13 +676,13 @@ public class FDPromotionManagerNewDAO {
 
 		if (dataList != null && !dataList.isEmpty()) {
 			for (FDPromoContentModel promoContentModel : dataList) {
-				int index = 1;
-				ps.setString(index++, SequenceGenerator.getNextId(conn,"CUST"));
-				ps.setString(index++, promotionId);
-				ps.setString(index++, promoContentModel.getContentType().getName());
-				ps.setString(index++, promoContentModel.getContentId());
-				ps.setString(index++, promoContentModel.isExcluded()?"Y":"N");
-				ps.setString(index++, promoContentModel.isLoopEnabled()?"Y":"N");
+				ps.setString(1, SequenceGenerator.getNextId(conn,"CUST"));
+				ps.setString(2, promotionId);
+				ps.setString(3, promoContentModel.getContentType().getName());
+				ps.setString(4, promoContentModel.getContentId());
+				ps.setString(5, promoContentModel.isExcluded()?"Y":"N");
+				ps.setString(6, promoContentModel.isLoopEnabled()?"Y":"N");
+				ps.setString(7, promoContentModel.isRecCategory()?"Y":"N");
 				ps.addBatch();
 				
 			}
@@ -1225,7 +1225,7 @@ public class FDPromotionManagerNewDAO {
 		return promotion;
 	}
 	
-	private final static String LOAD_PROMO_DCPD_DATA = "select id, promotion_id, content_type, content_id, exclude, child_loop"
+	private final static String LOAD_PROMO_DCPD_DATA = "select id, promotion_id, content_type, content_id, exclude, child_loop, recommended"
 		+ " from cust.promo_dcpd_data_new pcpd "
 		+ "where pcpd.promotion_id = ?";
 
@@ -1245,6 +1245,7 @@ public class FDPromotionManagerNewDAO {
 			contentModel.setExcluded("Y".equalsIgnoreCase(rs.getString("exclude"))?true:false);
 			contentModel.setLoopEnabled("Y".equalsIgnoreCase(rs.getString("child_loop"))?true:false);
 			contentModel.setPromotionId(promotionId);
+			contentModel.setRecCategory("Y".equalsIgnoreCase(rs.getString("recommended")));
 			list.add(contentModel);
 		}
 	
@@ -2782,23 +2783,6 @@ public class FDPromotionManagerNewDAO {
 	public static boolean lookupPromotion(Connection conn, String promotionCode) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement("SELECT CODE FROM CUST.PROMOTION_NEW WHERE CODE = ?");
 		ps.setString(1, promotionCode);
-		ResultSet rs = ps.executeQuery();
-
-		try {
-			if (rs.next())
-				return true;
-			else
-				return false;
-		} finally {
-			rs.close();
-			ps.close();
-		}
-	}
-	
-	public static boolean hasRecommenders(Connection conn, String parentNode) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("select CHILD_CONTENTNODE_ID from cms.relationship where parent_contentnode_id = ? and def_contenttype = 'Recommender' ");
-		ps.setString(1, "Category:"+parentNode);
-		LOGGER.debug("Looking recommender for:" + "Category:"+parentNode);
 		ResultSet rs = ps.executeQuery();
 
 		try {

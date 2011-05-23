@@ -898,18 +898,6 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	public boolean hasRecommenders(String parentNode) throws FDResourceException {
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			return FDPromotionManagerNewDAO.hasRecommenders(conn, parentNode);
-		} catch (SQLException sqle) {
-			throw new FDResourceException(sqle);
-		} finally {
-            close(conn);
-		}
-	}
-	
 	public boolean isCustomerInAssignedList(String userId, String promotionId) throws FDResourceException {
 		Connection conn = null;
 		try {
