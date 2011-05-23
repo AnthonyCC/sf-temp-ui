@@ -433,15 +433,29 @@ public class ContentNodeModelUtil {
 	 * @param contentKeys Set of ContentKeys to check for virtual categories 
 	 * @return filtered Set of CategoryModels which have virtual categories
 	 */
-	public static Set<CategoryModel> findVirtualCategories(Set<ContentKey> contentKeys){
+	public static Set<CategoryModel> findVirtualCategories(Set<ContentKey> contentKeys, boolean loopEnabled){
 		Set<CategoryModel> s = new HashSet<CategoryModel>();
 		for ( ContentKey key : contentKeys ) {
-			ContentNodeModel cn = ContentFactory.getInstance().getContentNodeByKey(key);
+			ContentNodeModel cn = ContentFactory.getInstance().getContentNodeByKey(key);			
 			//Make sure the category is not hidden.
 			if(cn != null && cn instanceof CategoryModel && !cn.isHidden()){
 				CategoryModel cm = (CategoryModel)cn;
 				if(cm.getVirtualGroupRefs().size() > 0){
 				    s.add(cm);
+				}
+				//Check whether this category has recommender's then add to the list.
+				Recommender rec = cm.getRecommender();
+				if(rec != null) {
+					//This category has a recommender
+					LOGGER.debug("Found the recommender for contentkey:" + cn.getContentName() + "|recs:" + rec.getFullName());
+					s.add(cm);
+				}				
+				
+				//Based on the boolean flag to check children, get children of this category and check for each childrean whether they have recommenders and if so, add to the list.
+				if(loopEnabled) {
+					//getChildren
+					Set<ContentKey> childKeys = cm.getAllChildProductKeys();
+					findVirtualCategories(childKeys, true);
 				}
 			}
 		}
