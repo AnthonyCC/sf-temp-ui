@@ -893,11 +893,11 @@ public class FDPromotionNewDAO {
 	}
 
 	
-	private final static String GET_DCPD_DATA = "select pg.promotion_id, pg.content_type, pg.content_id, exclude from cust.PROMO_DCPD_DATA_NEW pg, " +
+	private final static String GET_DCPD_DATA = "select pg.promotion_id, pg.content_type, pg.content_id, exclude, pg.child_loop, pg.recommended from cust.PROMO_DCPD_DATA_NEW pg, " +
 	"(SELECT ID FROM CUST.PROMOTION_NEW where status STATUSES and (expiration_date > (sysdate-7) " +
 	"or expiration_date is null) and redemption_code is null) p where p.ID = pg.PROMOTION_ID";
 
-	private final static String GET_MODIFIED_ONLY_DCPD_DATA = "select pg.id, pg.promotion_id, pg.content_type, pg.content_id, exclude from cust.PROMO_DCPD_DATA_NEW pg, " +
+	private final static String GET_MODIFIED_ONLY_DCPD_DATA = "select pg.id, pg.promotion_id, pg.content_type, pg.content_id, exclude, pg.child_loop, pg.recommended from cust.PROMO_DCPD_DATA_NEW pg, " +
 	"(SELECT ID  FROM CUST.PROMOTION_NEW where modify_date > ? ) p where p.ID = pg.PROMOTION_ID";
 	
 	protected static Map<PrimaryKey, DCPDLineItemStrategy> loadDCPDData(Connection conn, Date lastModified) throws SQLException {
@@ -938,6 +938,8 @@ public class FDPromotionNewDAO {
 				//Content Type is department,category or recipe.
 				strategy.addContent(contentType, contentId);
 			}
+			strategy.setLoopEnabled("Y".equalsIgnoreCase(rs.getString("CHILD_LOOP")));
+			strategy.setRecCategory("Y".equalsIgnoreCase(rs.getString("RECOMMENDED")));
 			dcpdDataMap.put(promoPK, strategy);				
 		}
 		rs.close();
@@ -948,7 +950,7 @@ public class FDPromotionNewDAO {
 	
 	protected static DCPDLineItemStrategy loadDCPDData(Connection conn, String promoId) throws SQLException {
 		DCPDLineItemStrategy strategy = null;
-		PreparedStatement ps = conn.prepareStatement("select pg.content_type, pg.content_id, exclude from cust.PROMO_DCPD_DATA_NEW pg, " +
+		PreparedStatement ps = conn.prepareStatement("select pg.content_type, pg.content_id, exclude, pg.child_loop, pg.recommended from cust.PROMO_DCPD_DATA_NEW pg, " +
 								"cust.promotion_new p where p.ID = pg.PROMOTION_ID and pg.promotion_id = ?");
 		ps.setString(1, promoId);
 		ResultSet rs = ps.executeQuery();
@@ -976,6 +978,8 @@ public class FDPromotionNewDAO {
 				//Content Type is department,category or recipe.
 				strategy.addContent(contentType, contentId);
 			}
+			strategy.setLoopEnabled("Y".equalsIgnoreCase(rs.getString("CHILD_LOOP")));
+			strategy.setRecCategory("Y".equalsIgnoreCase(rs.getString("RECOMMENDED")));
 		}
 		rs.close();
 		ps.close();
@@ -1445,7 +1449,7 @@ public class FDPromotionNewDAO {
 			contentModel.setContentType(EnumDCPDContentType.getEnum(rs.getString("content_type")));			
 			contentModel.setContentId(rs.getString("content_id"));
 			contentModel.setPromotionId(promoPK);*/
-			if(EnumDCPDContentType.DEPARTMENT.equals(contentType) || EnumDCPDContentType.CATEGORY.equals(contentType)){
+			if(EnumDCPDContentType.DEPARTMENT.equals(contentType) || EnumDCPDContentType.CATEGORY.equals(contentType)) {
 				strategy.addContent(contentType.getName(), rs.getString("content_id"));
 			}
 			set.add(rs.getString("content_id"));
