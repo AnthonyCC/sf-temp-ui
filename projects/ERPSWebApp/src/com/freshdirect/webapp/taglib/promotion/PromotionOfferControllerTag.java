@@ -1,7 +1,6 @@
 package com.freshdirect.webapp.taglib.promotion;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -11,10 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.promotion.EnumDCPDContentType;
 import com.freshdirect.fdstore.promotion.EnumOfferType;
 import com.freshdirect.fdstore.promotion.EnumPromoChangeType;
@@ -25,7 +27,6 @@ import com.freshdirect.fdstore.promotion.management.FDPromoChangeDetailModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoContentModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoCustNotFoundException;
-import com.freshdirect.fdstore.promotion.management.FDPromoCustStrategyModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoTypeNotFoundException;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewManager;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
@@ -38,6 +39,7 @@ import com.freshdirect.webapp.taglib.crm.CrmSession;
 
 public class PromotionOfferControllerTag extends AbstractControllerTag {
 
+	private static final long serialVersionUID = 1L;
 	private FDPromotionNewModel promotion;
 	
 	public void setPromotion(FDPromotionNewModel promotion) {
@@ -349,7 +351,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 			String[] rec_categoriesArr = rec_categories.split(",");
 			for (int i = 0; i < rec_categoriesArr.length; i++) {
 				FDPromoContentModel contentModel = new FDPromoContentModel();
-				contentModel.setContentType(EnumDCPDContentType.RCATEGORY);
+				contentModel.setContentType(EnumDCPDContentType.CATEGORY);
 				contentModel.setContentId(rec_categoriesArr[i].trim());
 				contentModel.setExcluded(false);	
 				if("on".equals(NVL.apply(request.getParameter("rec_categories_loop"), "off")))
@@ -357,6 +359,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 				else
 					contentModel.setLoopEnabled(false);
 				contentModel.setPromotionId(this.promotion.getId());
+				contentModel.setRecCategory(true);
 				dcpdData.add(contentModel);
 			}
 		}
@@ -468,7 +471,17 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 			List<String> invalidCats = new ArrayList<String>();
 			String[] rec_categoriesArr = rec_categories.split(",");
 			for (int i = 0; i < rec_categoriesArr.length; i++) {
-				if(!FDPromotionNewManager.hasRecommenders(rec_categoriesArr[i].toLowerCase())) {
+				if(null!=contentFactory.getContentNode(FDContentTypes.CATEGORY, rec_categoriesArr[i].toLowerCase())) {
+					ContentNodeModel cn = contentFactory.getContentNodeByKey(new ContentKey(FDContentTypes.CATEGORY, rec_categoriesArr[i]));
+					if(cn != null && cn instanceof CategoryModel && !cn.isHidden()){
+						CategoryModel cm = (CategoryModel)cn;
+						if(cm.getRecommender() == null) {
+							invalidCats.add(rec_categoriesArr[i]);
+						}
+					} else {
+						invalidCats.add(rec_categoriesArr[i]);
+					}
+				} else {
 					invalidCats.add(rec_categoriesArr[i]);
 				}
 			}
