@@ -110,15 +110,46 @@ public class OrderPromotionHelper {
 		 * is when a product has its parent category set at runtime.
 		 */ 
 		//parentKeys.add(model.getParentNode().getContentKey());
-		
 		//Handling Products in Eligible Departments/Categories.
 		if(CollectionUtils.containsAny(contentKeys, parentKeys)){
 			return true;
-		}else{
+		}else{			
 			//Check for virtual category.
 			if(virtualCats == null){
 				//Load the first time only within this method.
-				virtualCats = ContentNodeModelUtil.findVirtualCategories(contentKeys);
+				virtualCats = ContentNodeModelUtil.findVirtualCategories(contentKeys, false);
+			}
+			//Handling Products in Eligible Virtual Categories.
+			if(virtualCats.size() > 0 && ContentNodeModelUtil.isProductInVirtualCategories(virtualCats, model)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static boolean evaluateProductForDCPDPromoWithRecCategory(ProductModel model, Set contentKeys, boolean loopEnabled) {
+		Set virtualCats = null;
+		//ProductModel model = cartLine.getProductRef().lookupProduct();
+		/*
+		 * Load all parents of this cartline product if either eligible
+		 * department set or category set is not empty.
+		 * 
+		 */
+		ContentKey cKey = model.getContentKey();
+		Set parentKeys = ContentNodeModelUtil.getAllParentKeys(cKey);
+		/*
+		 * The reason for adding the productModel's parent node to the parent set
+		 * is when a product has its parent category set at runtime.
+		 */ 
+		//parentKeys.add(model.getParentNode().getContentKey());
+		//Handling Products in Eligible Departments/Categories.
+		if(CollectionUtils.containsAny(contentKeys, parentKeys)){
+			return true;
+		}else{			
+			//Check for virtual category.
+			if(virtualCats == null){
+				//Load the first time only within this method.
+				virtualCats = ContentNodeModelUtil.findVirtualCategories(contentKeys, loopEnabled);
 			}
 			//Handling Products in Eligible Virtual Categories.
 			if(virtualCats.size() > 0 && ContentNodeModelUtil.isProductInVirtualCategories(virtualCats, model)){
