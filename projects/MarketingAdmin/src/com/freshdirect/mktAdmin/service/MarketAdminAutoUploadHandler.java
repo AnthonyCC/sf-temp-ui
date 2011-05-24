@@ -115,8 +115,8 @@ public class MarketAdminAutoUploadHandler {
 						String fileName = entry.getFilename();
 						System.out.println("Index: " + fileName);
 						FileOutputStream fos = new FileOutputStream(new File(workDir, fileName));
-						sftp.get("./PromoUpload/"+fileName, fos);
-						sftp.rm("./PromoUpload/"+fileName);
+						sftp.get(sftpDirectory+fileName, fos);
+						sftp.rm(sftpDirectory+fileName);
 					}
 				}
 				LOGGER.info("SFTP: Disconnecting..");
@@ -328,13 +328,13 @@ public class MarketAdminAutoUploadHandler {
 							buffer.append("Total "+info.getTotalCustInfo().size()+ " records are uploaded successfully. ");
 						}
 					}else{
-						buffer.append(" is failed to get uploaded.");
+						buffer.append(" is failed to get uploaded. Please check the file format. It should have exactly 2 columns.");
 					}
 					
 					mailer.sendMail(FDStoreProperties.getCustomerServiceEmail(),
-								"ksriram@freshdirect.com",//FDStoreProperties.getMktAdminAutouploadReportToEmail(),
-								"ksriram@freshdirect.com",//FDStoreProperties.getMktAdminAutouploadReportToEmail(),
-								"Auto Upload" /* FDStoreProperties.getMktAdminAutouploadReportEmailSubject()*/, buffer.toString(), true, "");
+								FDStoreProperties.getMktAdminAutouploadReportToEmail(),
+								FDStoreProperties.getMktAdminAutouploadReportCCEmail(),
+								FDStoreProperties.getMktAdminAutouploadReportEmailSubject()+"-"+new Date(), buffer.toString(), true, "");
 				} catch (MessagingException e) {						
 						LOGGER.warn("Error sending the marketing admin upload status of a file ", e);						
 				}
