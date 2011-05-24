@@ -170,8 +170,7 @@ your account information, this is the place to do it.<br></td>
 			*/
 			if(user.isGiftCardsEnabled()) {
 		%>
-				<font class="text13bold">
-				<a href="<%=response.encodeURL("/your_account/giftcards.jsp")%>">Gift Cards</a> </font>  <font class="text13bold" color="#990000">*NEW</font>
+				<a href="<%=response.encodeURL("/your_account/giftcards.jsp")%>" class="text13bold">Gift Cards</a>
 				<br>
 				Check your received and purchased Gift Cards
 				<br><br>

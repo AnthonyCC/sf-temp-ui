@@ -7,10 +7,10 @@
 	boolean hasMax = minMaxUser.getQuantityMaximum(productNode)<99;
 	if (hasMin || hasMax) {
 		%>
-<font class="text10"> 
-		<% if (hasMin) { %>Minimum: <%= quantityFormatter.format(productNode.getQuantityMinimum()) %> <% } if (hasMin && hasMax) { %>, <% } %>
-		<% if (hasMax) { %>Limit: <%= quantityFormatter.format(minMaxUser.getQuantityMaximum(productNode)) %><% } %>
-<br><br></font>
+<font class="text10">Note: 
+		<% if (hasMin) { %><%= quantityFormatter.format(productNode.getQuantityMinimum()) %> minimum<% } %><% if (hasMin && hasMax) { %>, <% } %>
+		<% if (hasMax) { %>limit <%= quantityFormatter.format(minMaxUser.getQuantityMaximum(productNode)) %><% } %>
+<br /></font>
 		<%	
 	}
 }

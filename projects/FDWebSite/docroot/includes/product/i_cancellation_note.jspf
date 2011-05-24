@@ -7,7 +7,7 @@
 <%
 if (productNode.isPlatter()) {
 	%>
-	<br><span class="text9">* Orders for this item cancelled later than 3PM on the day before delivery (or 12 Noon on Fri., Sat. and Sun. and certain holidays) will be subject to a 50% fee.</span><br>
+	<span class="text9">* Orders for this item cancelled later than 3PM on the day before delivery (or 12 Noon on Fri., Sat. and Sun. and certain holidays) will be subject to a 50% fee.</span><br>
 	<%
 }
 %>

@@ -561,8 +561,11 @@ if(showAltDelivery){
 	</tr>
 	</table>
 	<table border="0" cellspacing="1" cellpadding="0" width="675" <%= (udConfirm) ? "style=\"display: none;\"" : "" %>>
-	<tr valign="top">
-	<td width="675" colspan="2" class="bodyCopySmall">
+		<tr valign="top">
+			<td width="675" colspan="2" class="bodyCopySmall">
+				We will always attempt to deliver your order directly to you.<br>
+				<br>
+				You may authorize FreshDirect to deliver to someone else in your building in the event you are not home to receive your order. Should you choose to authorize an alternate for delivery, please make sure that he or she knows about your delivery in advance. Frozen items should be placed in a freezer immediately. Your other products will remain fresh in the delivery box at room temperature (78 degrees) for two hours from the time of delivery. To learn more about our Alternates Policy, <a href="javascript:popup('/help/faq_index.jsp?show=delivery#question7','large')">click here</a>.
 
 
 	We will always attempt to deliver your order directly to you.<br>

@@ -860,8 +860,7 @@ FDIdentity identity = user.getIdentity();
 			</tr>
      <% }else{ %>
 			<tr>
-			
-					<td colspan="7" align="right" class="text13bold"><% if (user.isGiftCardsEnabled()) { %><br /><span style="color: #900;">*NEW</span> <a href="/your_account/giftcards.jsp?trk=cart">Have a FreshDirect Gift Card? Enter it here.</a><br /><br /><% }else{ %> &nbsp; <% } %></td>
+				<td colspan="7" align="right" class="text13bold"><% if (user.isGiftCardsEnabled()) { %><br />Have a FreshDirect Gift Card? <a href="/your_account/giftcards.jsp?trk=cart">Enter it here.</a><br /><br /><% }else{ %> &nbsp; <% } %></td>
 			</tr>
 	 <% } %>
 	<% 

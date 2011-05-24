@@ -334,9 +334,11 @@ function findCharacteristicValuePrice(selectedSkuCode, chName, chValue) {
 }
 
 /* load pricing by qty on page load */
-document.observe("dom:loaded", function() {
-	var priceReset = document.getElementsByName('quantity');
-	for (var i = 0; i < priceReset.length; i++) {
-		pricing.setQuantity(priceReset[i].value);
-	}
-});
+if (document.observe) { //make sure prototype is on page
+	document.observe("dom:loaded", function() {
+		var priceReset = document.getElementsByName('quantity');
+		for (var i = 0; i < priceReset.length; i++) {
+			pricing.setQuantity(priceReset[i].value);
+		}
+	});
+}

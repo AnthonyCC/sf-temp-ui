@@ -252,7 +252,16 @@ function checkGroupScalePopup(JSONstring) {
 		transitions: false,
 		autoFocusing: false,
 		centered: true,
-		afterLoad: function() { $('MB_frame').style.border = 'none'; window.scrollTo(0,0); },
+		afterLoad: function() {
+			$('MB_frame').style.border = 'none';
+			$('MB_window').style.border = 'none';
+			$('MB_window').style.width = 'auto';
+			$('MB_window').style.height = 'auto';
+			$('MB_window').style['boxShadow'] = 'none';
+			$('MB_window').style['MozBoxShadow'] = 'none';
+			$('MB_window').style['WebkitBoxShadow'] = 'none';
+			window.scrollTo(0,0);
+		},
 		afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
 	})
 }

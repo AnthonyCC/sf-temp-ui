@@ -11,7 +11,7 @@
 	DayOfWeekSet blockedDays = productNode.getBlockedDays();
 	if (!blockedDays.isEmpty()) {
 		%>
-		<span class="text9">* Only available for delivery on <%= blockedDays.inverted().format(true) %>.</span><br>
+		<span class="text9">Only available for delivery on <%= blockedDays.inverted().format(true) %>.</span><br />
 		<%
 	}
 }

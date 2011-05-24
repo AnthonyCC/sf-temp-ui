@@ -281,6 +281,7 @@
 			reqSkuCode = sortedColl.get(0).toString();
 		}
 	}
+	boolean showCancellationNote = false; //show cancellation note at the end of the page
 	
 
 	/** List of all SKUs in the page, for the pricing structures */
@@ -473,7 +474,7 @@
 				%>
 				<% if (FDStoreProperties.isAdServerEnabled()) { %>
 					<tr>
-						<td colspan="3">
+						<td colspan="5">
 							<SCRIPT LANGUAGE=JavaScript>
 							<!--
 							OAS_AD('ProductNote');
@@ -584,6 +585,11 @@
 							} else {
 								// no annotation, just display title
 								%><%=productTitle%><%
+							}
+							//make sure there's no html breaks before this
+							if (productNode.isPlatter()) {
+								%><font class="text10"> *</font><%
+								showCancellationNote = true;
 							}
 						%></font><br />
 						<%
@@ -831,7 +837,7 @@
 											<img width="1" height="4" src="/media_stat/images/layout/clear.gif" alt="" /><br />
 											<fd:TxProductControl txNumber="<%= displayIdx %>" namespace="<%= TX_JS_NAMESPACE %>" impression="<%= (TransactionalProductImpression) impressions.get(bigProdIndex) %>"/>
 										<% } else { %>
-											<span class="text10"><A HREF="/product.jsp?productId=<%= productNode %>&catId=<%= productNode.getParentNode() %>&trk=pmod">(click here to buy)</A></span>
+											<span class="text10"><a href="/product.jsp?productId=<%= productNode %>&catId=<%= productNode.getParentNode() %>&trk=pmod">(click here to buy)</a></span>
 											<%-- product needs configuring --%>
 											<% itemShownIndex--; /* no qty box, decrease display count */ %>
 										<% } %>
@@ -860,13 +866,19 @@
 										<display:ProductImage product="<%= productNode %>" action="<%= imgLinkUrl %>" showRolloverImage="true" hideBursts="<%= hideBursts %>"/>
 									</td>
 									</tr>
+									<tr>
+										<td colspan="5"><img width="1" height="4" src="/media_stat/images/layout/clear.gif" alt="" /></td>
+									</tr>
+									<tr>
+										<td colspan="5">
+											<%=FDURLUtil.getHiddenCommonParameters(request.getParameterMap(), "_big")%>
+											<%@ include file="/shared/includes/product/i_minmax_note.jspf" %>
+											<%@ include file="/includes/product/i_delivery_note.jspf" %>
+										</td>
+									</tr>
 								<!-- </table> -->
 								<% } %>
 							
-							<%=FDURLUtil.getHiddenCommonParameters(request.getParameterMap(), "_big")%>
-							<%@ include file="/shared/includes/product/i_minmax_note.jspf" %>
-							<%@ include file="/includes/product/i_delivery_note.jspf" %>
-							<%@ include file="/includes/product/i_cancellation_note.jspf" %>
 						<%-- Product Qty Controls END --%>
 					<!-- </td>
 				</tr> -->
@@ -941,7 +953,7 @@
 			displaySet.add(matId);
 			
 			%><%@include file="/includes/layouts/i_groupScale_product_separator.jspf"%>
-			<%@include file="/includes/layouts/i_groupScale_product_line.jspf"%>
+			<fd:ProductGroup id='productNode' categoryId='<%= displayProduct.getParentNode().toString() %>' productId='<%= displayProduct.toString() %>'><%@include file="/includes/layouts/i_groupScale_product_line.jspf"%></fd:ProductGroup>
 			<%
 			if(impressions.get(txCount) instanceof TransactionalProductImpression)
 				tpCount++;
@@ -972,6 +984,16 @@
 				</tr>
 				</table>
 			</td>
+		</tr>
+		<tr>
+			<td colspan="5"><img width="1" height="8" src="/media_stat/images/layout/clear.gif" alt="" /></td>
+		</tr>
+		<tr>
+			<td align="left" colspan="5"><fd:ProductGroup id='productNode' categoryId='<%= prodCatId %>' productId='<%= productCode %>'><%
+				if (showCancellationNote) {
+					%><%@ include file="/includes/product/i_cancellation_note.jspf" %><%
+				}
+				%></fd:ProductGroup></td>
 		</tr>
 	<% } %>
 	</table>

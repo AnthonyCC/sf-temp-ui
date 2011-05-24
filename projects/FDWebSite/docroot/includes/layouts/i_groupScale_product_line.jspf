@@ -37,7 +37,7 @@
 			}
 		}
 	%>
-		<tr <%=skuAvailable && jj % 2 ==0 && "false".equalsIgnoreCase(request.getParameter("showThumbnails"))?"bgcolor='#eeeeee'":""%>>
+	<tr <%=skuAvailable && jj % 2 ==0 && "false".equalsIgnoreCase(request.getParameter("showThumbnails"))?"bgcolor='#eeeeee'":""%>>
 		<td width="40" align="center"><nobr>
 			<%
 				LOGGER.debug("jj: "+jj);
@@ -54,7 +54,7 @@
 				<img width="1" height="4" src="/media_stat/images/layout/clear.gif" alt="" /><br />
 				<fd:TxProductControl txNumber="<%= tpCount %>" namespace="<%= TX_JS_NAMESPACE %>" impression="<%= (TransactionalProductImpression) impressions.get(txCount) %>"/></nobr>
 			<%} else { %>
-				<span class="text10"><A HREF="/product.jsp?productId=<%= displayProduct %>&catId=<%= displayProduct.getParentNode() %>&trk=pmod">(click here to buy)</A></span>
+				<span class="text10"><a href="/product.jsp?productId=<%= displayProduct %>&catId=<%= displayProduct.getParentNode() %>&trk=pmod">(click here to buy)</a></span>
 				<% itemShownIndex--; /* no qty box, decrease display count */ %>
 			<% } %>
 		<% } %>
@@ -97,7 +97,13 @@
 			<a href="<%= productURLviaJavascript %>"<%=unAvailableStyle%>>
 				<font class="text10bold"><%= unAvailableFontStart %><%= thisProdBrandLabel %><%= unAvailableFontEnd %></font>
 				<font class="text10"><%= unAvailableFontStart %><%= displayProduct.getFullName().substring(thisProdBrandLabel.length()).trim()+prodMatrix %><%= unAvailableFontEnd %></font>
-			</a><br />
+			</a><%
+					//make sure there's no html breaks before this
+					if (productNode.isPlatter()) {
+						%> *<%
+						showCancellationNote = true;
+					}
+				%><br />
 			<%= unAvailableFontStart %> <nobr><%= unAvailableFontEnd %><%="nutrition".equalsIgnoreCase(sortBy)?"&nbsp;<b>" + currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) + "</b>":"" %></nobr>
 			<%
 				Date earliestDate = sku.getEarliestAvailability();
@@ -132,5 +138,14 @@
 			</table>
 		</td>
 	<% } %>
+</tr>
+<tr>
+	<td colspan="5"><img width="1" height="4" src="/media_stat/images/layout/clear.gif" alt="" /></td>
+</tr>
+<tr>
+	<td colspan="5">
+		<%@ include file="/shared/includes/product/i_minmax_note.jspf" %>
+		<%@ include file="/includes/product/i_delivery_note.jspf" %>
+	</td>
 </tr>
 </fd:FDProductInfo>

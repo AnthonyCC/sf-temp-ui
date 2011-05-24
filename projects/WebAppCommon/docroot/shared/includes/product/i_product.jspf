@@ -155,6 +155,8 @@ if ( skuSize == 0 ) {
 
 %>	<input type="hidden" name="productId" value='<%= __tempLine.getProductName() %>'>
 	<input type="hidden" name="catId" value='<%= __tempLine.getCategoryName() %>'>
+	
+	<input type="hidden" name="jsnamespace" value=''>
 		<table width="100%" cellpadding="0" cellspacing="0" border="0" <% if (alignRight) { %>align="right"<% } %>>
 			<tr><td style="<%= CSSTableStyle %>">
 			
@@ -229,6 +231,42 @@ if ( skuSize == 0 ) {
 				            pricing.setOption(variation,value);
 				        }
 				    }
+					<%
+						/* Alcohol Restriction info
+						 *	since we're not using the TxProductControlTag here, we need to add this manually
+						 */
+					%>
+					if (!window.alcohol) { window.alcohol = {}; }
+					<% for (SkuModel sku : skus) { 
+						FDProduct fdProd = null;
+						try {
+							fdProd = sku.getProduct();
+						} catch (FDResourceException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (FDSkuNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						boolean isAlc = false;
+						String alcRest = "";
+						if (fdProd != null) {
+							isAlc = fdProd.isAlcohol();
+							alcRest = fdProd.getMaterial().getAlcoholicContent().getCode();
+						}
+						%>
+						window.alcohol['<%=sku.getSkuCode()%>'] = { isAlc: <%=isAlc%>, alcRest: '<%=alcRest%>' }
+						console.log(this, window);
+						console.log(window.alcohol['<%=sku.getSkuCode()%>']);
+					<% } %>
+					addAlcoholHelpers();
+					<%
+						/* set if user has already agreed to alcohol disclaimer
+						 *	check new session value here to avoid template differences
+						 */
+						FDSessionUser alcUser = (FDSessionUser)session.getAttribute(SessionName.USER);
+					%>
+					hasAgreedToAlcoholDisclaimer = <%=alcUser.isHealthWarningAcknowledged()%>;
 			    </script>
 					
 

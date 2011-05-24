@@ -68,13 +68,15 @@
 			}       
 		}
 	}
-	boolean containsBeer = (categoryModel != null && categoryModel.isHavingBeer()); 
-	FDSessionUser yser = (FDSessionUser)session.getAttribute(SessionName.USER);
-	if(containsBeer && !yser.isHealthWarningAcknowledged()){
-		String redirectURL = "/health_warning.jsp?successPage=/category.jsp"+URLEncoder.encode("?"+request.getQueryString());
-		response.sendRedirect(response.encodeRedirectURL(redirectURL));
-		return;
-	}
+	/* REMOVE APPDEV-1539
+		boolean containsBeer = (categoryModel != null && categoryModel.isHavingBeer()); 
+		FDSessionUser yser = (FDSessionUser)session.getAttribute(SessionName.USER);
+		if(containsBeer && !yser.isHealthWarningAcknowledged()){
+			String redirectURL = "/health_warning.jsp?successPage=/category.jsp"+URLEncoder.encode("?"+request.getQueryString());
+			response.sendRedirect(response.encodeRedirectURL(redirectURL));
+			return;
+		}
+	*/
 	
 	if (productContainer!=null) {
 	    noLeftNav = !productContainer.isShowSideNav();

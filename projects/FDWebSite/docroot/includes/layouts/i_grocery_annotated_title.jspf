@@ -1,2 +1,2 @@
 <%@ include file="/shared/includes/i_annotate_script.jspf" %>
-<div class="title14" id="annotate" onmouseover="return overlib(annotation, WIDTH, 240);" onclick="return overlib(detailAnnotation, STICKY, CLOSECLICK, CAPTION, 'Product details', WIDTH, 240);" onmouseout="return nd();"><%= productTitle %></div>
+<span class="title14" id="annotate" onmouseover="return overlib(annotation, WIDTH, 240);" onclick="return overlib(detailAnnotation, STICKY, CLOSECLICK, CAPTION, 'Product details', WIDTH, 240);" onmouseout="return nd();"><%= productTitle %></span>
