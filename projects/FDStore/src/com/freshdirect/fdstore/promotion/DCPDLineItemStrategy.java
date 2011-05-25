@@ -95,10 +95,14 @@ public class DCPDLineItemStrategy implements LineItemStrategyI {
 		}
 		
 		//Additionally check for include SKUS and include Brands.
-		if(!eligible && !excludeSkus && !excludeBrands){
-			eligible = skus.contains(lineItem.getSkuCode()) || lineItem.hasBrandName(brands);
+		if(eligible && !excludeSkus ){
+			eligible = skus.contains(lineItem.getSkuCode());
 		}
 		
+		if(eligible && !excludeBrands){
+			eligible = lineItem.hasBrandName(brands);
+		}
+
 		if(eligible) return ALLOW;
 		context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_CART_LINES.getErrorCode());
 		return DENY;

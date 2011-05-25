@@ -111,7 +111,7 @@
 			</table>
 		</td>
 	<%-- LINE ITEM COL --%>
-		<td class="bordLgrayDash vTop">
+		<td class="bordLgrayDash vTop padL8R16">
 			<table width="100%">
 				<tr>
 					<%-- sets the column widths --%>
@@ -135,24 +135,68 @@
 					<td class="alignL vTop padL8R16"><textarea id="departments" name="departments" rows="" cols="" class="w100p h75px"><%= depts.toString() %></textarea><div class="grayIta8pt vTop">Enter comma-separated department ids</div></td>
 				</tr>
 				<tr>
+					<td>&nbsp;</td>
+					<td class="bordLgrayDash noBorderTRL">&nbsp;</td>
+
+				</tr>
+				<tr>
+					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+				</tr>
+				
+				<tr>
 					<td class="promo_edit_offer_label">Category:</td>
 					<td class="alignL vTop padL8R16"><textarea id="categories" name="categories" rows="" cols="" class="w100p h75px"><%= cats.toString() %></textarea><div class="grayIta8pt vTop">Enter comma-separated category ids</div></td>
 				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td class="bordLgrayDash noBorderTRL">&nbsp;</td>
+
+				</tr>
+				<tr>
+					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+				</tr>
+				
 				<tr>
 					<td class="promo_edit_offer_label">Recommended Category:</td>
 					<td class="alignL vTop padL8R16"><textarea id="rec_categories" name="rec_categories" rows="" cols="" class="w100p h75px"><%= rcats.toString() %></textarea><div class="grayIta8pt vTop">Enter comma-separated recommended category ids</div></td>
 				</tr>
 				<tr>
+					<td>&nbsp;</td>
+					<td class="bordLgrayDash noBorderTRL">&nbsp;</td>
+
+				</tr>
+				<tr>
+					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+				</tr>
+
+				<tr>
 					<td class="promo_edit_offer_label">Recipe:</td>
 					<td class="alignL vTop padL8R16"><input type="checkbox" id="rec_categories_loop" name="rec_categories_loop" <%=loopEnabled? "checked " : ""%>/>Loop through all the children of these categories<br /></div></td>
 				</tr>
 				<tr>
-					<td class="promo_edit_offer_label">SKU:<br /><input type="checkbox" id="isInelgSkus" name="isInelgSkus" <%=("".equals(elgSkus.toString()))? "checked " : ""%>/>Ineligible</td>
-					<td class="alignL vTop padL8R16"><textarea id="eligibleSku"  name ="eligibleSku" rows="" cols="" class="w100p h75px"><%= ("".equals(elgSkus.toString()))? inElgSkus.toString() : elgSkus.toString() %></textarea><div class="grayIta8pt vTop">Enter comma-separated SKUs</div></td>
+					<td>&nbsp;</td>
+					<td class="bordLgrayDash noBorderTRL">&nbsp;</td>
 				</tr>
 				<tr>
-					<td class="promo_edit_offer_label">Brand:<br /><input type="checkbox" id="isInelgBrands" name="isInelgBrands" <%=("".equals(elgBrnds.toString()))? "checked " : ""%>/>Ineligible</td>
-					<td class="alignL vTop padL8R16"><textarea id="eligibleBrand" name="eligibleBrand" rows="" cols="" class="w100p h75px"><%= ("".equals(elgBrnds.toString()))? inElgBrnds.toString() : elgBrnds.toString() %></textarea><div class="grayIta8pt vTop">Enter comma-separated brand ids</div></td>
+					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+				</tr>
+				
+				<tr>
+					<td class="promo_edit_offer_label">SKU:<br /><input type="checkbox" id="isInelgSkus" name="isInelgSkus" <%=("".equals(elgSkus.toString()) && !"".equals(inElgSkus.toString()))? "checked " : ""%>/>Ineligible</td>
+					<td class="alignL vTop padL8R16"><textarea id="eligibleSku"  name ="eligibleSku" rows="" cols="" class="w100p h75px"><%= ("".equals(elgSkus.toString()))? inElgSkus.toString() : elgSkus.toString() %></textarea><div class="grayIta8pt vTop">Enter comma-separated SKUs.<br/> SKU list is used in conjunction with Departments/Categories/Recipe values supplied above to determine which products a line item promotion is applied to. Uncheck the "Ineligible" flag to limit the promotion to the listed items; leave the flag checked to exclude those items.</div></td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td class="bordLgrayDash noBorderTRL">&nbsp;</td>
+
+				</tr>
+				<tr>
+					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+				</tr>
+				
+				<tr>
+					<td class="promo_edit_offer_label">Brand:<br /><input type="checkbox" id="isInelgBrands" name="isInelgBrands" <%=("".equals(elgBrnds.toString()) && !"".equals(inElgBrnds.toString()))? "checked " : ""%>/>Ineligible</td>
+					<td class="alignL vTop padL8R16"><textarea id="eligibleBrand" name="eligibleBrand" rows="" cols="" class="w100p h75px"><%= ("".equals(elgBrnds.toString()))? inElgBrnds.toString() : elgBrnds.toString() %></textarea><div class="grayIta8pt vTop">Enter comma-separated brand ids.<br/> Brand list is used in conjunction with Departments/Categories/Recipe values supplied above to determine which products a line item promotion is applied to. Uncheck the "Ineligible" flag to limit the promotion to the listed items; leave the flag checked to exclude those items. </div></td>
 				</tr>
 				<!-- <tr>
 					<td class="promo_edit_offer_label">Ineligible SKU:</td>
