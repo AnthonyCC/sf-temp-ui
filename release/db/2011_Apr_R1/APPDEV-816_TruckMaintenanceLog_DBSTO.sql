@@ -1,7 +1,9 @@
+--Please execute below scripts as TRANSP schema owner
+
 --
 -- Definition for table "VIRRecord"
 --
-CREATE TABLE VIRRecord  
+CREATE TABLE TRANSP.VIRRecord  
 (
     id VARCHAR2(30),   
     TruckNumber VARCHAR2 (10) NOT NULL , 
@@ -12,16 +14,16 @@ CREATE TABLE VIRRecord
     PRIMARY KEY (id)
 );
 
-CREATE  SEQUENCE  VIRRecord_id_SEQ START WITH 1 INCREMENT BY 1;
+CREATE  SEQUENCE  TRANSP.VIRRecord_id_SEQ START WITH 1 INCREMENT BY 1;
 
-CREATE INDEX FK_VIRRecord_AuthUser ON VIRRecord  ( CreatedBy );
+CREATE INDEX FK_VIRRecord_AuthUser ON TRANSP.VIRRecord  ( CreatedBy );
 
-CREATE INDEX FK_VIRRecord_TruckNumber ON VIRRecord  ( TruckNumber );
+CREATE INDEX FK_VIRRecord_TruckNumber ON TRANSP.VIRRecord  ( TruckNumber );
 
 --
 -- Definition for table "IssueLog"
 --
-CREATE TABLE IssueLog  
+CREATE TABLE TRANSP.IssueLog  
 (
     id VARCHAR2(30), 
     VIRRECORD_ID VARCHAR2(30),       
@@ -34,14 +36,14 @@ CREATE TABLE IssueLog
     PRIMARY KEY (id) 
 );
 
-CREATE  SEQUENCE  IssueLog_id_SEQ START WITH 1 INCREMENT BY 1;
+CREATE  SEQUENCE  TRANSP.IssueLog_id_SEQ START WITH 1 INCREMENT BY 1;
 
-CREATE INDEX FK_IssueLog_IssueSubType ON IssueLog  ( IssueSubType );
+CREATE INDEX FK_IssueLog_IssueSubType ON TRANSP.IssueLog  ( IssueSubType );
 
-CREATE INDEX FK_IssueLog_IssueType ON IssueLog  ( IssueType );
+CREATE INDEX FK_IssueLog_IssueType ON TRANSP.IssueLog  ( IssueType );
 
 --
--- Definition for table "MaintenanceIssueID"
+-- Definition for table "TRANSP.MaintenanceIssueID"
 --
 CREATE TABLE TRANSP.MAINTENANCEISSUE
 (
@@ -68,19 +70,19 @@ CREATE TABLE TRANSP.MAINTENANCEISSUE
 
 CREATE SEQUENCE  MaintenanceIssue_id_SEQ  START WITH 1  INCREMENT BY 1;
 
-CREATE INDEX FK_MaintenanceLog_IssueSubType ON MAINTENANCEISSUE  ( ISSUESUBTYPE );
+CREATE INDEX FK_MaintenanceLog_IssueSubType ON TRANSP.MAINTENANCEISSUE  ( ISSUESUBTYPE );
 
-CREATE INDEX FK_MaintenanceLog_IssueType ON MAINTENANCEISSUE  ( ISSUETYPE );
+CREATE INDEX FK_MaintenanceLog_IssueType ON TRANSP.MAINTENANCEISSUE  ( ISSUETYPE );
 
-CREATE INDEX FK_MaintenanceLog_VerifiedBy ON MAINTENANCEISSUE  ( VERIFIEDBY );
+CREATE INDEX FK_MaintenanceLog_VerifiedBy ON TRANSP.MAINTENANCEISSUE  ( VERIFIEDBY );
 
-CREATE INDEX FK_MaintenanceLog_SrcStatus ON MAINTENANCEISSUE  ( SERVICESTATUS );
+CREATE INDEX FK_MaintenanceLog_SrcStatus ON TRANSP.MAINTENANCEISSUE  ( SERVICESTATUS );
 
 --
--- Definition for table "IssueSubType"
+-- Definition for table "TRANSP.IssueSubType"
 --
 
-CREATE TABLE IssueSubType  
+CREATE TABLE TRANSP.IssueSubType  
 (
     id NUMBER (10), 
     IssueTypeId NUMBER (10) NOT NULL , 
@@ -93,17 +95,17 @@ CREATE TABLE IssueSubType
     UNIQUE (IssueSubTypeName, IssueTypeId)
 );
 
-CREATE  SEQUENCE  IssueSubType_id_SEQ   START WITH 1 INCREMENT BY 1;
+CREATE  SEQUENCE  TRANSP.IssueSubType_id_SEQ   START WITH 1 INCREMENT BY 1;
 
-CREATE INDEX FK_IssueSubType_IssueTypeID ON IssueSubType  ( IssueTypeId );
+CREATE INDEX FK_IssueSubType_IssueTypeID ON TRANSP.IssueSubType  ( IssueTypeId );
 
-CREATE INDEX FK_IssueSubType_UserAuthID ON IssueSubType  ( CreatedBy );
+CREATE INDEX FK_IssueSubType_UserAuthID ON TRANSP.IssueSubType  ( CreatedBy );
 
 --
--- Definition for table "IssueType"
+-- Definition for table "TRANSP.IssueType"
 --
 
-CREATE TABLE IssueType  
+CREATE TABLE TRANSP.IssueType  
 (
     id NUMBER (10), 
     IssueTypeName VARCHAR2 (45) DEFAULT  '' NOT NULL , 
@@ -115,27 +117,27 @@ CREATE TABLE IssueType
     UNIQUE (IssueTypeName) 
 );
 
-CREATE  SEQUENCE  IssueType_id_SEQ  START WITH 1 INCREMENT BY 1;
+CREATE  SEQUENCE  TRANSP.IssueType_id_SEQ  START WITH 1 INCREMENT BY 1;
 
-CREATE INDEX FK_EventType_UserAuth ON IssueType  ( CreatedBy );
+CREATE INDEX FK_EventType_UserAuth ON TRANSP.IssueType  ( CreatedBy );
 
 --
--- Foreign keys for table "IssueLog"
+-- Foreign keys for table "TRANSP.IssueLog"
 --
-ALTER TABLE IssueLog add constraint  FK_IssueLog_IssueSubType FOREIGN KEY (IssueSubType) REFERENCES IssueSubType (IssueSubTypeName);
+ALTER TABLE TRANSP.IssueLog add constraint  FK_IssueLog_IssueSubType FOREIGN KEY (IssueSubType) REFERENCES TRANSP.IssueSubType (IssueSubTypeName);
 add
 (
-    CONSTRAINT FK_IssueLog_VIRRecord FOREIGN KEY (VIRRecord_id) REFERENCES VIRRecord (id) ,  
-    CONSTRAINT FK_IssueLog_MaintenanceIssue FOREIGN KEY (MaintenanceIssueID) REFERENCES MAINTENANCEISSUE (id)
+    CONSTRAINT FK_IssueLog_VIRRecord FOREIGN KEY (VIRRecord_id) REFERENCES TRANSP.VIRRecord (id) ,  
+    CONSTRAINT FK_IssueLog_MaintenanceIssue FOREIGN KEY (MaintenanceIssueID) REFERENCES TRANSP.MAINTENANCEISSUE (id)
 );
 
 --
--- Foreign keys for table "IssueSubType"
+-- Foreign keys for table "TRANSP.IssueSubType"
 --
-ALTER TABLE IssueSubType ADD CONSTRAINT FK_IssueSubType_IssueTypeID FOREIGN KEY (IssueTypeId) REFERENCES IssueType (id);
+ALTER TABLE TRANSP.IssueSubType ADD CONSTRAINT FK_IssueSubType_IssueTypeID FOREIGN KEY (IssueTypeId) REFERENCES TRANSP.IssueType (id);
 
 --
--- Definition for table "ASSET_ATRTEMPLATE"
+-- Definition for table "TRANSP.ASSET_ATRTEMPLATE"
 --
 
 CREATE TABLE TRANSP.ASSETTEMPLATE
@@ -155,14 +157,14 @@ CREATE TABLE TRANSP.ASSETTEMPLATE_ATTRIBUTE
 );
 
 --
--- Foreign keys for table "ASSET_ATRTEMPLATE"
+-- Foreign keys for table "TRANSP.ASSET_ATRTEMPLATE"
 --
-ALTER TABLE ASSETTEMPLATE ADD(CONSTRAINT FK_ASSETTYPE_ID FOREIGN KEY (ASSET_TYPE) REFERENCES  TRANSP.ASSET_TYPE (CODE));
+ALTER TABLE TRANSP.ASSETTEMPLATE ADD(CONSTRAINT FK_ASSETTYPE_ID FOREIGN KEY (ASSET_TYPE) REFERENCES  TRANSP.ASSET_TYPE (CODE));
 
 --
 -- Foreign keys for table "ASSETTEMPLATE_ATTRIBUTE"
 --
-ALTER TABLE ASSETTEMPLATE_ATTRIBUTE ADD
+ALTER TABLE TRANSP.ASSETTEMPLATE_ATTRIBUTE ADD
 (
     CONSTRAINT FK_ASSETTEMPLATE_ID FOREIGN KEY (ATR_TEMPLATE_ID) REFERENCES  TRANSP.ASSETTEMPLATE (ATR_TEMPLATE_ID) ,
     CONSTRAINT FK_ATTRIBUTETYPE_ID FOREIGN KEY (ATTRIBUTE_TYPE) REFERENCES  TRANSP.ASSET_ATTRIBUTETYPE (CODE)
@@ -208,7 +210,7 @@ GRANT READ ON TRANSP.IssueType TO APPDEV;
 GRANT ALL ON TRANSP.IssueType_id_SEQ TO fdtrn_stprd01;
 GRANT READ ON TRANSP.IssueType_id_SEQ TO APPDEV;
 
-GRANT ALL ON TRANSP.MaintenanceIssue_id_SEQ TO fdtrn_prda;
+GRANT ALL ON TRANSP.MaintenanceIssue_id_SEQ TO fdtrn_stprd01;
 GRANT READ ON TRANSP.MaintenanceIssue_id_SEQ TO APPDEV;
 
 GRANT ALL ON TRANSP.MaintenanceIssue TO fdtrn_stprd01;
