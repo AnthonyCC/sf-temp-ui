@@ -19,6 +19,7 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.FDSessionUser"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
 <%@ page import="com.freshdirect.fdstore.customer.QuickCart"%>
 <%@ page import="com.freshdirect.fdstore.customer.OrderLineUtil"%>
