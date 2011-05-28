@@ -61,10 +61,10 @@ var isIE = !!(window.attachEvent && !window.opera);
 var newWin='';
 /* simple pop */
 function pop(URL, h, w, name) {
-    var name = name || 'popWin';
-    newWin = window.open(URL, name, "height=" + h + ", width=" + w + ", resizable, scrollbars");
-    newWin.focus();
-    if (window.resizeTo) { newWin.resizeTo(w, h); }
+	var name = name || 'popWin';
+	newWin = window.open(URL, name, "height=" + h + ", width=" + w + ", resizable, scrollbars");
+	newWin.focus();
+	if (window.resizeTo) { newWin.resizeTo(w, h); }
 } 
 
 /* currently being used for help section...*/
@@ -73,7 +73,7 @@ function popold(URL,h,w) {
 	if(isIE){
 		if (window.newWin) { window.newWin.close(); }
 	}else{
-        //for Netscape	
+		//for Netscape	
 		if(window.newWin){
 			if(window.newWin.closed!=true){
 			    window.newWin.close();
@@ -111,19 +111,38 @@ function popResizeHelp(URL,h,w,name) {
 	newWin.focus();
 }
 function backtoWin(url) {
-    parent.window.opener.location = url ;
-    parent.window.opener.focus();
+	parent.window.opener.location = url ;
+	parent.window.opener.focus();
 }
 
 function backtoWinPop(url, size) {
-    if (self.opener) {
-          self.opener.focus();
-          self.opener.popup(url, size, 'popInPop');
-    }else{
-          popup(url, size);
-    }
+	if (self.opener) {
+		self.opener.focus();
+		self.opener.popup(url, size, 'popInPop');
+	}else{
+		popup(url, size);
+	}
 }
 
+/* open a popup and call a function when it's closed */
+function popReturn(URL, h, w, name, retFunc) {
+	var name = name || 'popWin';
+	newWin = window.open(URL, name, "height=" + h + ", width=" + w + ", resizable, scrollbars");
+	newWin.focus();
+	if (window.resizeTo) { newWin.resizeTo(w, h); }
+	
+	/* only if a function was passed in */
+	if (typeof(retFunc) === 'function') {
+		var interval = setInterval(
+			function() {
+				if (newWin.closed) {
+					retFunc();
+					clearInterval(interval);
+				}
+			}, 
+		100);
+	}
+}
 
 //sets the value of hidden field named "actionName"
 function setActionName(frmObj,actionText) {
@@ -136,7 +155,7 @@ function setActionName(frmObj,actionText) {
 //sets the value of the hidden field named deletePaymentId
 function setDeletePaymentId(frmObj,payid) {
     if (frmObj["deletePaymentId"]!=null) {
-        frmObj.deletePaymentId.value=payid;			
+        frmObj.deletePaymentId.value=payid;
     }
     return true;
 }
@@ -786,6 +805,11 @@ function getFrameHeight(frameId) {
 	return innerDoc.body.parentNode.scrollHeight;
 }
 
+/* limit text in input fields */
+function limitText(elem, len) {
+	if (elem.value.length >= len) { elem.value = (elem.value).substring(0,len); }
+}
+
 var alcoholSubmitForm = null;
 /* alcohol warning interstitial overlay */
 function alcoholWarning(eventObj, form, hasAgreed) {
@@ -841,7 +865,13 @@ if (document.observe) { //make sure prototype is on page
 		if (!hasAgreedToAlcoholDisclaimer) {
 			$A(document.forms).each(function (f) {
 				//check for form id
-				var fId = f.identify();
+				var fId = '';
+				
+				try {
+					fId = f.identify();
+				} catch (e) {
+					/* keep IE7 from failing */
+				}
 
 				var jsNamespace = null;
 
