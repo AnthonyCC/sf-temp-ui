@@ -192,7 +192,7 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 			new Selection(CrmCaseSubject.CODE_ASQ_MISC , "Billing"),
 			new Selection(CrmCaseSubject.CODE_WEBSITE_PROBLEM, "Web Site/Technical"),
 			new Selection(CrmCaseSubject.CODE_COMPLAINT, "Delivery Feedback"),
-			new Selection(CrmCaseSubject.CODE_PRODUCT, "Product Feedback"),
+			new Selection(CrmCaseSubject.CODE_PRODUCT, "Product Request"),
 			new Selection(CrmCaseSubject.CODE_SERVICE_AVAILABILITY, "Delivery Areas"),
 			new Selection(CrmCaseSubject.CODE_GENERAL_INFO, "General Feedback"),
 			new Selection(CrmCaseSubject.CODE_CORPORATE_INFO , "Corporate/Commercial Services")	,
