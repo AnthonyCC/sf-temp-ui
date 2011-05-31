@@ -115,6 +115,9 @@
 					});
 				}
 
+				/* hold a boolean to only clear on prod req submit success */
+				var shouldClearProdReqSelection = false;
+
 				function prodReq() {
 					var textCheck = '';
 					if ($('contact_subject')) {
@@ -139,7 +142,9 @@
 				}
 
 				function clearProdReqSelection() {
-					$('contact_subject').selectedIndex = 0;
+					if (shouldClearProdReqSelection) { /* set on successful prod req submit */
+						$('contact_subject').selectedIndex = 0;
+					}
 				}
 			</script>
 
