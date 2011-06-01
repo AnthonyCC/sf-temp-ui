@@ -933,4 +933,17 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
             close(conn);
 		}		
 	}
+
+	public Map<Integer, Double> getActualAmountSpentByDays() throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return FDPromotionManagerNewDAO.getActualAmountSpentByDays(conn);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+            close(conn);
+		}		
+	}
+
 }

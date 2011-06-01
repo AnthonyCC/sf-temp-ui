@@ -118,5 +118,7 @@ public interface FDPromotionManagerNewSB extends EJBObject {
 	public void setDOWLimit(int dayofweek, double limit) throws FDResourceException, RemoteException;
 	
 	public Map<Integer, Double> getDOWLimits() throws FDResourceException, RemoteException;
+	
+	public Map<Integer, Double> getActualAmountSpentByDays() throws FDResourceException, RemoteException;
 }
 

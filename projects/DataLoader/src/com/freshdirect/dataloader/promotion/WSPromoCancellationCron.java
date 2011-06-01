@@ -68,7 +68,7 @@ public class WSPromoCancellationCron {
 			"cust.PROMO_DLV_TIMESLOT t "+
 			"where P.ID = Z.PROMOTION_ID "+
 			"and Z.ID = T.PROMO_DLV_ZONE_ID "+
-			"and P.STATUS = 'LIVE' "+
+			"and P.STATUS IN ('LIVE','CANCELLED') "+
 			"and  P.START_DATE <= ? "+
 			"and  P.EXPIRATION_DATE >= ?";
 	
@@ -132,7 +132,9 @@ public class WSPromoCancellationCron {
 				while(it.hasNext()){
 					WSPromotionInfo promo = it.next();
 					if(promo.getDayofweek() == dayofweek) {
-						temp.add(promo.getPromotionCode());
+						if(promo.getStatus().equals(EnumPromotionStatus.LIVE))
+							//add to the list only Promotion is still LIVE.
+							temp.add(promo.getPromotionCode());
 						totalDiscount += (promo.getDiscount() * promo.getRedemptions());
 					}
 				}

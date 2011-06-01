@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore.promotion.management.ejb;
 
+import java.math.BigDecimal;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.Date;
@@ -13,7 +14,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +30,7 @@ import oracle.sql.ArrayDescriptor;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.promotion.EnumDCPDContentType;
 import com.freshdirect.fdstore.promotion.EnumPromoChangeType;
 import com.freshdirect.fdstore.promotion.EnumPromotionSection;
@@ -42,6 +46,7 @@ import com.freshdirect.fdstore.promotion.management.FDPromoDlvZoneStrategyModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoPaymentStrategyModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoZipRestriction;
 import com.freshdirect.fdstore.promotion.management.FDPromotionAttributeParam;
+import com.freshdirect.fdstore.promotion.management.FDPromotionNewManager;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
 import com.freshdirect.fdstore.promotion.management.WSPromotionInfo;
 import com.freshdirect.fdstore.promotion.management.FDPromoStateCountyRestriction;
@@ -185,13 +190,13 @@ public class FDPromotionManagerNewDAO {
 		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, P.MAX_AMOUNT,  P.REDEEM_CNT, P.STATUS from cust.promotion_new p, cust.promo_cust_strategy pc, "
 		+ "cust.promo_dlv_zone_strategy z, cust.promo_dlv_timeslot t, cust.promo_delivery_dates d "
 		+ "where p.id = PC.PROMOTION_ID "
-		+ "and P.ID = Z.PROMOTION_ID "
-		+ "and Z.ID = T.PROMO_DLV_ZONE_ID "
+		+ "and P.ID = Z.PROMOTION_ID " 
+		+ "and Z.ID = T.PROMO_DLV_ZONE_ID(+) "
 		+ "and p.id = D.PROMOTION_ID "
 		+ "and  (select count(ID) from cust.promo_delivery_dates where PROMOTION_ID = p.id) = 1 "
 		+ "and trunc(D.START_DATE) =  trunc(D.END_DATE) "
 		+ "and (select count(*) from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE) x where id = z.id) = 1 "
-		+ "and (select count(ID) from cust.promo_dlv_timeslot where PROMO_DLV_ZONE_ID = z.id) = 1 "
+		+ "and (select count(ID) from cust.promo_dlv_timeslot where PROMO_DLV_ZONE_ID = z.id) <= 1 "
 		+ "and P.OFFER_TYPE = 'WINDOW_STEERING' "
 		+ "and P.CAMPAIGN_CODE = 'HEADER' ORDER BY P.START_DATE DESC";
 	public static List<WSPromotionInfo> getWSPromotionInfos(Connection conn) throws SQLException {
@@ -2860,6 +2865,90 @@ public class FDPromotionManagerNewDAO {
 			ps.close();
 		}
 		return dowLimits;
+	}
+
+	private static final String GET_ALL_ACTIVE_PROMOTIONS = "select P.ID, P.CODE, P.REDEEM_CNT, P.MAX_AMOUNT, T.DAY_ID, "+
+	"(SELECT count(s.id) from cust.sale s, cust.salesaction sa, cust.PROMOTION_PARTICIPATION pa "+
+	"where S.ID = SA.SALE_ID "+
+	"and S.CUSTOMER_ID = SA.CUSTOMER_ID "+
+	"and S.CROMOD_DATE = SA.ACTION_DATE "+
+	"and SA.ACTION_TYPE IN ('CRO','MOD') "+
+	"and S.STATUS <> 'CAN' "+
+	"and S.ID = PA.SALE_ID "+
+	"and SA.REQUESTED_DATE >= P.CREATE_DATE "+
+	"and PA.PROMOTION_ID = P.ID and to_char(SA.REQUESTED_DATE,'D') = T.DAY_ID) RCOUNT "+ 
+	"FROM cust.promotion_new p, cust.PROMO_DLV_ZONE_STRATEGY z, "+
+	"cust.PROMO_DLV_TIMESLOT t "+
+	"where P.ID = Z.PROMOTION_ID "+
+	"and Z.ID = T.PROMO_DLV_ZONE_ID "+
+	"and P.STATUS IN ('LIVE','CANCELLED') "+
+	"and  P.START_DATE <= ? "+
+	"and  P.EXPIRATION_DATE >= ?";
+
+	private static List<WSPromotionInfo> getAllActiveWSPromotions(java.util.Date effectiveDate, Connection conn) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<WSPromotionInfo> wspromotions = new ArrayList<WSPromotionInfo>();
+		try {
+			//Get All LIVE WS promotions for current day.
+			ps = conn.prepareStatement(GET_ALL_ACTIVE_PROMOTIONS);
+			ps.setTimestamp(1, new Timestamp(effectiveDate.getTime()));
+			ps.setTimestamp(2, new Timestamp(effectiveDate.getTime()));
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				WSPromotionInfo promo = new WSPromotionInfo();
+				promo.setPromotionCode(rs.getString("CODE"));
+				promo.setRedeemCount(rs.getInt("REDEEM_CNT"));
+				promo.setDiscount(rs.getDouble("MAX_AMOUNT"));
+				promo.setDayofweek(rs.getInt("DAY_ID"));
+				promo.setRedemptions(rs.getInt("RCOUNT"));
+				wspromotions.add(promo);
+			}
+		
+		}catch(SQLException se) {
+			
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (ps != null) {
+				ps.close();
+			}
+		}
+		return wspromotions;
+	}
+
+	public static Map<Integer, Double> getActualAmountSpentByDays(Connection conn) throws FDResourceException {
+		Map<Integer, Double> dowSpent = new HashMap<Integer, Double>();
+		try {
+			java.util.Date today = new java.util.Date();
+			List<WSPromotionInfo> wspromotions = getAllActiveWSPromotions(today, conn);
+			if(wspromotions == null || wspromotions.size() == 0){
+				return Collections.EMPTY_MAP;
+			}
+			//Load dayofweek limits from Database.
+			//Map<Integer,Double> dowLimits = getDOWLimits(conn);
+	
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(today);
+			for(int day = 1 ; day <= 7; day++) {
+				//check for next 7 days delivery horizon
+				cal.add(Calendar.DATE, 1);
+				double totalSpent = 0.0;
+				int dayofweek = cal.get(Calendar.DAY_OF_WEEK);
+				Iterator<WSPromotionInfo> it = wspromotions.iterator();
+				while(it.hasNext()){
+					WSPromotionInfo promo = it.next();
+					if(promo.getDayofweek() == dayofweek) {
+						totalSpent += (promo.getDiscount() * promo.getRedemptions());
+					}
+				}
+				dowSpent.put(new Integer(dayofweek), totalSpent);
+			}
+		} catch(SQLException se) {
+			throw new FDResourceException(se);
+		}
+		return dowSpent;
 	}
 
 }

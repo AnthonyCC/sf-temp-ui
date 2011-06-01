@@ -758,4 +758,19 @@ public class FDPromotionNewManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
+	
+	public static Map<Integer, Double> getActualAmountSpentByDays() throws FDResourceException {
+		lookupManagerHome(); 
+
+		try {
+			FDPromotionManagerNewSB sb = managerHome.create();
+			return sb.getActualAmountSpentByDays();
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}		
+	}
 }

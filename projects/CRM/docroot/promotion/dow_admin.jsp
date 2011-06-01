@@ -88,6 +88,7 @@
 %>
 <%
 	Map<Integer,Double> dowLimits = FDPromotionNewManager.getDOWLimits();
+	Map<Integer,Double> dowSpent = FDPromotionNewManager.getActualAmountSpentByDays();
 %>
 <form method='POST' name="frmDowAdmin" id="frmDowAdmin">
 <input type="hidden" name="dayofweek" value=""/>
@@ -98,6 +99,8 @@
 	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Day of Week</b></span></td>	
 	<td class="border_bold">&nbsp;</td>
 	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Max Spending Amount</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Actual Amount Spent</b></span></td>	
 	<td class="border_bold">&nbsp;</td>
 	<% if(FDStoreProperties.isPromoPublishNodeMaster() && CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"dow_admin.jsp")) { %>
 	<td class="border_bold">&nbsp;</td>
@@ -114,10 +117,13 @@
 		for(int dow = 1; dow <= 7 ; dow++) {
 			String maxLimit = "";
 			String limitstr = "";
+			String spentstr = "";
 			Double limit = dowLimits.get(new Integer(dow));
+			Double spent = dowSpent.get(new Integer(dow));
 			if(limit != null){
 				maxLimit = currencyFormatter.format(limit.doubleValue());
 				limitstr = decimalFormat.format(limit.doubleValue());
+				spentstr = decimalFormat.format(spent.doubleValue());
 			}
 	%>
 	<tr>
@@ -131,6 +137,8 @@
 		<input type="hidden" name="orglimit<%= dow %>" value="<%= maxLimit %>"/>
 		<input type="text" size="10" id="maxlimit<%= dow %>" name="maxlimit<%= dow %>" value="<%= maxLimit %>" disabled="true" onKeyPress="return numbersonly(this, event)"/>
 	</span></td>
+		<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text">$<%= spentstr %></span></td>
 	<td class="border_bottom">&nbsp;</td>
 	<% if(FDStoreProperties.isPromoPublishNodeMaster() && CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"dow_admin.jsp")) { %>
 		<td class="border_bottom">&nbsp;</td>
