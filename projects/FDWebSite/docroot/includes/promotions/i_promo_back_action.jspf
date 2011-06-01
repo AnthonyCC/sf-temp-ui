@@ -21,7 +21,7 @@
 			</form>
 			<% } %>
 			<% if(isPromoAllAccessUser){ %>
-			<div class="promo_nav_back_action-action promo_btn_dblue"><a href="#" onclick="window.open('promo_export.jsp?action=export&promoCode=<%= promotion.getPromotionCode() %>'); return false;">EXPORT PROMOTION <img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a></div>
+			<div class="promo_nav_back_action-action promo_btn_dblue"><a href="#" onclick="window.open('promo_export.jsp?action=export&promoCode=<%= promotion.getPromotionCode() %>'); return false;">Export Promotion QA Approved <img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a></div>
 			<% } %>
 		<% }else if (promo_create_edit) { %>
 			<span class="promo_nav_back_action-back"><a href="">&lt;&lt; Back to detail view</a></span>

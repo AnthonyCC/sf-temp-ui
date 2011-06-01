@@ -18,76 +18,86 @@
 private static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
 
 public class PromoRow {
-    private String code;
-    private String name;
-    private double amount;
-    private String orderNum;
-    private Date dateUsed;
-    private Date expires;
-    private EnumPromotionType type;
+	private String code;
+	private String redempCode;
+	private String name;
+	private double amount;
+	private String orderNum;
+	private Date dateUsed;
+	private Date expires;
+	private EnumPromotionType type;
 }
 
 private static Comparator COMP_NAME = new Comparator () {
-    public int compare(Object o1, Object o2) {
-        PromoRow p1 = (PromoRow)o1;
-        PromoRow p2 = (PromoRow)o2;
-        
-        return p1.name.compareTo(p2.name);
-    }
+	public int compare(Object o1, Object o2) {
+		PromoRow p1 = (PromoRow)o1;
+		PromoRow p2 = (PromoRow)o2;
+		
+		return p1.name.compareTo(p2.name);
+	}
 };
 private static Comparator COMP_CODE = new Comparator () {
-    public int compare(Object o1, Object o2) {
-        PromoRow p1 = (PromoRow)o1;
-        PromoRow p2 = (PromoRow)o2;
-        
-        return p1.code.compareTo(p2.code);
-    }
+	public int compare(Object o1, Object o2) {
+		PromoRow p1 = (PromoRow)o1;
+		PromoRow p2 = (PromoRow)o2;
+		
+		return p1.code.compareTo(p2.code);
+	}
+};
+private static Comparator COMP_REDEMPCODE = new Comparator () {
+	public int compare(Object o1, Object o2) {
+		PromoRow p1 = (PromoRow)o1;
+		PromoRow p2 = (PromoRow)o2;
+		
+		return p1.redempCode.compareTo(p2.redempCode);
+	}
 };
 private static Comparator COMP_AMOUNT = new Comparator () {
-    public int compare(Object o1, Object o2) {
-        PromoRow p1 = (PromoRow)o1;
-        PromoRow p2 = (PromoRow)o2;
-        
-        return new Double(p1.amount - p2.amount).intValue();
-    }
+	public int compare(Object o1, Object o2) {
+		PromoRow p1 = (PromoRow)o1;
+		PromoRow p2 = (PromoRow)o2;
+		
+		return new Double(p1.amount - p2.amount).intValue();
+	}
 };
 private static Comparator COMP_DATE_USED = new Comparator () {
-    public int compare(Object o1, Object o2) {
-        PromoRow p1 = (PromoRow)o1;
-        PromoRow p2 = (PromoRow)o2;
-        
-        return p1.dateUsed.compareTo(p2.dateUsed);
-    }
+	public int compare(Object o1, Object o2) {
+		PromoRow p1 = (PromoRow)o1;
+		PromoRow p2 = (PromoRow)o2;
+		
+		return p1.dateUsed.compareTo(p2.dateUsed);
+	}
 };
 
 private static Comparator COMP_ORDERNUM = new Comparator () {
-    public int compare(Object o1, Object o2) {
-        PromoRow p1 = (PromoRow)o1;
-        PromoRow p2 = (PromoRow)o2;
-        
-        return p1.orderNum.compareTo(p2.orderNum);
-    }
+	public int compare(Object o1, Object o2) {
+		PromoRow p1 = (PromoRow)o1;
+		PromoRow p2 = (PromoRow)o2;
+		
+		return p1.orderNum.compareTo(p2.orderNum);
+	}
 };
 private static Comparator COMP_EXPIRES = new Comparator () {
-    public int compare(Object o1, Object o2) {
-        PromoRow p1 = (PromoRow)o1;
-        PromoRow p2 = (PromoRow)o2;
-        
-        if(p1.expires == null) return 1;
-        if(p2.expires == null) return -1;
-        
-        return p1.expires.compareTo(p2.expires);
-    }
+	public int compare(Object o1, Object o2) {
+		PromoRow p1 = (PromoRow)o1;
+		PromoRow p2 = (PromoRow)o2;
+		
+		if(p1.expires == null) return 1;
+		if(p2.expires == null) return -1;
+		
+		return p1.expires.compareTo(p2.expires);
+	}
 };
 
 public final static Map PROMO_COMPARATORS = new HashMap();
 static {
 	PROMO_COMPARATORS.put("code", COMP_CODE);
+	PROMO_COMPARATORS.put("redempCode", COMP_REDEMPCODE);
 	PROMO_COMPARATORS.put("name", COMP_NAME);
 	PROMO_COMPARATORS.put("amt", COMP_AMOUNT);
 	PROMO_COMPARATORS.put("used", COMP_DATE_USED);
-        PROMO_COMPARATORS.put("ordernum", COMP_ORDERNUM);
-        PROMO_COMPARATORS.put("expires", COMP_EXPIRES);
+		PROMO_COMPARATORS.put("ordernum", COMP_ORDERNUM);
+		PROMO_COMPARATORS.put("expires", COMP_EXPIRES);
 }
 %>
 <%
@@ -103,6 +113,7 @@ for(Iterator i = erpSaleInfos.iterator(); i.hasNext();){
         if(promo != null){
             PromoRow p = new PromoRow();
             p.code = promo.getPromotionCode();
+            p.redempCode = promo.getRedemptionCode();
             p.name = promo.getDescription();
             p.amount = promo.getHeaderDiscountTotal();
             p.orderNum = saleInfo.getSaleId();
@@ -135,13 +146,14 @@ if (comp == null) {
     <table border="0" cellspacing="2" cellpadding="0 width="100%" class="list_header_text">
         <tr>
             <td width="2%"></td>
-            <td width="11%"><a href="?<%= sort.getFieldParams("code") %>" class="list_header_text">Code</a></td>
-            <td width="32%"><a href="?<%= sort.getFieldParams("name") %>" class="list_header_text">Name</a></td>
-            <td width="11%">&nbsp;</td>
-            <td width="11%"><a href="?<%= sort.getFieldParams("amt") %>" class="list_header_text">Amount</a></td>
-            <td width="11%"><a href="?<%= sort.getFieldParams("ordernum") %>" class="list_header_text">Order #</a></td>
-            <td width="11%"><a href="?<%= sort.getFieldParams("used") %>" class="list_header_text">Date Used</a></td>
-            <td width="11%"><a href="?<%= sort.getFieldParams("expires") %>" class="list_header_text">Promo Expires</a></td>
+            <td width="12%"><a href="?<%= sort.getFieldParams("code") %>" class="list_header_text">Code</a></td>
+            <td width="12%"><a href="?<%= sort.getFieldParams("redempCode") %>" class="list_header_text">Redemption Code</a></td>
+            <td width="37%"><a href="?<%= sort.getFieldParams("name") %>" class="list_header_text">Name</a></td>
+            <td width="6%">&nbsp;</td>
+            <td width="7%"><a href="?<%= sort.getFieldParams("amt") %>" class="list_header_text">Amount</a></td>
+            <td width="8%"><a href="?<%= sort.getFieldParams("ordernum") %>" class="list_header_text">Order #</a></td>
+            <td width="8%"><a href="?<%= sort.getFieldParams("used") %>" class="list_header_text">Date Used</a></td>
+            <td width="9%"><a href="?<%= sort.getFieldParams("expires") %>" class="list_header_text">Promo Expires</a></td>
             <td><img src="/media_stat/crm/images/clear.gif" width="12" height="1"></td>
         </tr>
     </table>
@@ -156,13 +168,14 @@ if (comp == null) {
 %>
             <tr valign="top" <%= counter % 2 == 0 ? "class='list_odd_row'" : "" %> style="padding-top: 3px; padding-bottom: 3px;">
                 <td width="2%"></td>
-                <td width="11%"><%=p.code%></td>
-                <td width="32%"><%=p.name%></td>
-                <td width="11%"><a href='javascript:popup("/shared/promotion_popup.jsp?promoCode=<%=p.code%>&cc=true", "<%=EnumPromotionType.SIGNUP.equals(p.type)?"large":"small"%>")'>Details</td>
-                <td width="11%"><%=JspMethods.formatPrice(p.amount)%></td>
-                <td width="11%"><a href="order_details.jsp?orderId=<%=p.orderNum%>" class="key"><%=p.orderNum%></td>
-                <td width="11%"><%=DATE_FORMATTER.format(p.dateUsed)%></td>
-                <td width="11%"><%=p.expires != null?DATE_FORMATTER.format(p.expires): ""%></td>
+                <td width="12%"><%=p.code%></td>
+                <td width="12%"><a href="/promotion/promo_details.jsp?promoId=<%=p.code%>"><%=("".equals(p.redempCode))?"N/A":p.redempCode%></a></td>
+                <td width="37%"><%=p.name%></td>
+                <td width="6%"><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=p.code%>&cc=true', '<%=EnumPromotionType.SIGNUP.equals(p.type)?"large":"small"%>')">Details</td>
+                <td width="7%"><%=JspMethods.formatPrice(p.amount)%></td>
+                <td width="8%"><a href="order_details.jsp?orderId=<%=p.orderNum%>" class="key"><%=p.orderNum%></td>
+                <td width="8%"><%=DATE_FORMATTER.format(p.dateUsed)%></td>
+                <td width="9%"><%=p.expires != null?DATE_FORMATTER.format(p.expires): ""%></td>
             </tr>
             <tr class="list_separator" style="padding: 0px;">
                 <td colspan="9"></td>

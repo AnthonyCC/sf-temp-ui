@@ -128,12 +128,12 @@
 						</logic:iterate>
 						</select>
 					</td>
-					<td><input type="text" id="keyword" name="keyword" class="promo_filter" value="<%= keyword %>"/></td>
-					<td><input type="submit" value="FILTER" onclick="" id="promo_filter_submit" name="promo_filter_submit" class="promo_btn_grn" /></td>
+					<td><input type="text" id="keyword" name="keyword" class="promo_filter" value="<%=(null !=request.getParameter("promo_filter_submit")) ? keyword : "" %>"/></td>
+					<td><input type="submit" value="FILTER" id="promo_filter_submit" name="promo_filter_submit" class="promo_btn_grn" /></td>
 					<td><input type="submit" value="REFRESH" onclick="" id="promo_refresh_submit" name="promo_refresh_submit" class="promo_btn_grn" /></td>
 				</tr>
 			</table>
-			</form>
+		</form>
 		</div>
 		<%-- content row --%>
 		<table width="100%" cellspacing="0" cellpadding="0" class="promo_table1" border="0">
