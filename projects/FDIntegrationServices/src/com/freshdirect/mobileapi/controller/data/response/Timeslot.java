@@ -26,6 +26,8 @@ public class Timeslot implements DateFormat {
 
     private Boolean ecoFriendly;
 
+    private Boolean isDepot;
+
     private final SimpleDateFormat formatter = new SimpleDateFormat(STANDARDIZED_DATE_FORMAT);
 
     public static List<Timeslot> initWithList(List<com.freshdirect.mobileapi.model.Timeslot> slots) {
@@ -45,6 +47,7 @@ public class Timeslot implements DateFormat {
         this.full = slot.isFull();
         this.steeringDiscount = slot.getSteeringDiscount();
         this.ecoFriendly = slot.isEcoFriendly();
+        this.isDepot = slot.isDepot();
     }
 
     public Timeslot(Date rangeStart, Date rangeEnd, Date cutoff) {
@@ -120,4 +123,13 @@ public class Timeslot implements DateFormat {
 	public void setEcoFriendly(Boolean ecoFriendly) {
 		this.ecoFriendly = ecoFriendly;
 	}
+
+	public Boolean getIsDepot() {
+		return isDepot;
+	}
+
+	public void setIsDepot(Boolean isDepot) {
+		this.isDepot = isDepot;
+	}	
+
 }
