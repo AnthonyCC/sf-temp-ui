@@ -207,7 +207,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         try {
             ContentNodeI node;
             node = ContentKey.decode(nodeKey).getContentNode();
-            GwtNodeData gwtNode = node != null ? TranslatorToGwt.gwtNodeData( node, !getUser().isAllowedToWrite() ) : null;
+            GwtNodeData gwtNode = TranslatorToGwt.gwtNodeData( node, !getUser().isAllowedToWrite() );
             return gwtNode;
             
         } catch (IllegalArgumentException e) {

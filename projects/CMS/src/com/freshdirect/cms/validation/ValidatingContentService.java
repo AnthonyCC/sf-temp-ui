@@ -39,8 +39,6 @@ public class ValidatingContentService extends ProxyContentService {
 	 */
 	public CmsResponseI handle(CmsRequestI request) {
 
-	    if (!request.isBulk()) {
-	        
 		MaskContentService masked = new MaskContentService(getProxiedService(),
 				new SimpleContentService(getTypeService()));
 		masked.handle(request);
@@ -65,8 +63,8 @@ public class ValidatingContentService extends ProxyContentService {
 		if (!delegate.isEmpty()) {
 			throw new ContentValidationException(delegate);
 		}
-            }
-	    return super.handle(request);
+
+		return super.handle(request);
 	}
 
 	private Set getKeys(Collection nodes) {

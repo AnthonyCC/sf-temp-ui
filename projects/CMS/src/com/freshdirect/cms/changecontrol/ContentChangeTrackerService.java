@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
-
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.BidirectionalRelationshipDefI;
@@ -20,7 +18,6 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.EnumCardinality;
-import com.freshdirect.cms.application.CmsRequest;
 import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.CmsResponseI;
 import com.freshdirect.cms.application.ContentServiceI;
@@ -28,7 +25,6 @@ import com.freshdirect.cms.application.service.ProxyContentService;
 import com.freshdirect.cms.reverse.BidirectionalReferenceHandler;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
-import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * Proxy content service that automatically logs changes 
@@ -38,8 +34,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class ContentChangeTrackerService extends ProxyContentService {
 
 	private final ChangeLogServiceI changeLogservice;
-	
-	private final static Logger LOG = LoggerFactory.getInstance(ContentChangeTrackerService.class);
 
 	/**
 	 * @param service the proxied content service
@@ -94,16 +88,8 @@ public class ContentChangeTrackerService extends ProxyContentService {
 		for (ContentNodeChange c : extraChanges) {
 		    changeSet.addChange(c);
 		}
-		CmsRequestI internal = new CmsRequest(request.getUser(), request.isBulk());
-		for (ContentNodeI node : request.getNodes()) {
-		    List<ContentNodeChange> nodeChangesById = changeSet.getNodeChangesById(node.getKey());
-		    if (nodeChangesById != null && !nodeChangesById.isEmpty()) {
-		        internal.addNode(node);
-		    }
-		}
-                LOG.info("node changes [" + internal.getNodeMap().size() + " from " + request.getNodeMap().size() + ']');
 
-		CmsResponseI response = getProxiedService().handle(internal);
+		CmsResponseI response = getProxiedService().handle(request);
 
 		if (changeSet.getNodeChanges().size() > 0) {
 			PrimaryKey changeSetId = changeLogservice.storeChangeSet(changeSet);

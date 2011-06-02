@@ -66,10 +66,5 @@ public class ContentNodeChange implements Serializable {
 	public ChangeSet getChangeSet() {
 		return this.changeSet;
 	}
-	
-	@Override
-	public String toString() {
-            return "ContentNodeChange[" + contentKey + ',' + changeType.getName() + ',' + changeDetails + ']';
-	}
 
 }

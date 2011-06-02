@@ -72,13 +72,13 @@ public class ChangeSet extends ModelSupport {
 	 * @return List of {@link ContentNodeChange} (never null)
 	 */
 	public List<ContentNodeChange> getNodeChangesById(ContentKey key) {
-		List<ContentNodeChange> ch = new ArrayList<ContentNodeChange>();
-		for (ContentNodeChange cnc : this.nodeChanges) {
+		List<ContentNodeChange> nodeChanges = new ArrayList<ContentNodeChange>();
+		for (ContentNodeChange cnc : nodeChanges) {
 			if (key.equals(cnc.getContentKey())) {
-				ch.add(cnc);
+				nodeChanges.add(cnc);
 			}
 		}
-		return ch;
+		return nodeChanges;
 	}
 
 }

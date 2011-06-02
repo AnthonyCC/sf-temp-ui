@@ -19,7 +19,7 @@ public abstract class CmsNodeHandler extends DefaultHandler {
 	private ContentServiceI contentService;
 	private ResourceInfoServiceI resourceInfoService;
 
-	protected ContentServiceI getContentService() {
+	private ContentServiceI getContentService() {
 		return contentService;
 	}
 

@@ -585,7 +585,7 @@ function select_distro(file,iid) {
 <% } else { %>
    <tr>
    <td colspan="2" bgcolor="#eeeeff" height="300" valign="center">
-   <center><img src="hal.gif"></center>
+   <center><img src="hal.gif"</center>
    </td>
    </tr>
 <% } %>

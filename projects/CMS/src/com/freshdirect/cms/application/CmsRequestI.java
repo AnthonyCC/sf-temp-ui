@@ -5,9 +5,7 @@
 package com.freshdirect.cms.application;
 
 import java.util.Collection;
-import java.util.Map;
 
-import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 
 
@@ -39,19 +37,5 @@ public interface CmsRequestI {
      * @return List of {@link ContentNodeI} instances (never null).
      */
     public Collection<ContentNodeI> getNodes();
-    
-    
-    /**
-     * Get a map of content nodes associated with this request.
-     * 
-     * @return
-     */
-    public Map<ContentKey, ContentNodeI> getNodeMap();
 
-    /**
-     * Generate changesets during handling the request.
-     * @return
-     */
-    public boolean isBulk();
-    
 }

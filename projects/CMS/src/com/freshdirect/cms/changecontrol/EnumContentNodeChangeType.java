@@ -5,6 +5,10 @@
 package com.freshdirect.cms.changecontrol;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -12,28 +16,45 @@ import java.io.Serializable;
  * 
  * @see com.freshdirect.cms.changecontrol.ContentNodeChange
  * 
+ * @FIXME should be an {@link org.apache.commons.lang.enums.Enum}.
  */
-public enum EnumContentNodeChangeType implements Serializable {
+public class EnumContentNodeChangeType implements Serializable {
 
 	/** The node was newly created */
-	ADD ("CRE", "Create"),
+	public static EnumContentNodeChangeType ADD = new EnumContentNodeChangeType("CRE", "Create");
 	
 	/** The node was removed */
-	DELETE ("DEL", "Delete"),
+	public static EnumContentNodeChangeType DELETE = new EnumContentNodeChangeType("DEL", "Delete");
 	
 	/** The node was updated */
-	MODIFY ("MOD", "Modify");
+	public static EnumContentNodeChangeType MODIFY = new EnumContentNodeChangeType("MOD", "Modify");
 
 	private String code;
 	private String name;
 
-	private EnumContentNodeChangeType(String code, String name) {
+	public EnumContentNodeChangeType(String code, String name) {
 		this.code = code;
 		this.name = name;
 	}
 
+	private static List types = null;
+
+	static {
+		List t = new ArrayList();
+		t.add(ADD);
+		t.add(DELETE);
+		t.add(MODIFY);
+
+		types = Collections.unmodifiableList(t);
+	}
+
+	public static List getTypes() {
+		return types;
+	}
+
 	public static EnumContentNodeChangeType getType(String code) {
-		for (EnumContentNodeChangeType ct : values()) {
+		for (Iterator i = types.iterator(); i.hasNext();) {
+			EnumContentNodeChangeType ct = (EnumContentNodeChangeType) i.next();
 			if (ct.getCode().equals(code)) {
 				return ct;
 			}

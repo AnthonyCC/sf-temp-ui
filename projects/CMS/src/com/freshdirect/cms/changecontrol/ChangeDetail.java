@@ -44,10 +44,5 @@ public class ChangeDetail implements Serializable {
 	public void setOldValue(String oldValue) {
 		this.oldValue = oldValue;
 	}
-	
-	@Override
-        public String toString() {
-	    return "[" + attributeName + ':' + oldValue + "->" + newValue + ']';
-        }
 
 }

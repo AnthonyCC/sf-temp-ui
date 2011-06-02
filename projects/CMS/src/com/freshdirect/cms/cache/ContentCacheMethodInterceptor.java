@@ -114,15 +114,14 @@ public class ContentCacheMethodInterceptor implements MethodInterceptor {
 	private Object handle(MethodInvocation invocation) throws Throwable {
 		CmsRequestI request = (CmsRequestI) invocation.getArguments()[0];
 		Object response = invocation.proceed();
-		final CacheI<ContentKey, Object> c = this.getCache();
 		for (Iterator i = request.getNodes().iterator(); i.hasNext();) {
 			ContentNodeI node = (ContentNodeI) i.next();
-			c.remove(node.getKey());
+			this.getCache().remove(node.getKey());
 			// invalidate dependents also
 			// FIXME this is suboptimal, but fixes implicit node-creation issues
 			for (Iterator j = ContentNodeUtil.getAllRelatedContentKeys(node).iterator(); j.hasNext();) {
 				ContentKey k = (ContentKey) j.next();
-				c.remove(k);
+				this.getCache().remove(k);
 			}
 		}
 		// TODO optimize dependency cache invalidation
