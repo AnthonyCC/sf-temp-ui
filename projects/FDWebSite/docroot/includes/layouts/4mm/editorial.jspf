@@ -32,7 +32,7 @@ if ( category != null ) {
 		<% ContentNodeModelUtil.setNearestParentForProducts( null, (List<ProductModel>)(List)products ); %>
 		<div class="carousel-box">
 			<div class="separator" style="margin-bottom:15px"><img src="<%= catTitlePath %>" alt="<%= category.getFullName() %>"  class="carousel-box-title"/></div>
-			<display:Carousel id="cat2_carousel" carouselId="cat2_carousel" width="510" height="142" numItems="4" showCategories="false" itemsToShow="<%= products %>" trackingCode="edt-4mm" maxItems="12">
+			<display:Carousel id="cat2_carousel" carouselId="cat2_carousel" width="510" numItems="4" showCategories="false" itemsToShow="<%= products %>" trackingCode="edt-4mm" maxItems="12">
 				<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 					<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true"
 							className="productImage" height="90" enableQuickBuy="true" webId="<%= webId %>"/>
