@@ -54,7 +54,7 @@ public class WSPromoCancellationCron {
 			DriverManager.getConnection(connectString, connectUser,connectPass);
 		return c;
 	}
-	private static final String GET_ALL_ACTIVE_PROMOTIONS = "select P.ID, P.CODE, P.REDEEM_CNT, P.MAX_AMOUNT, T.DAY_ID, "+
+	private static final String GET_ALL_ACTIVE_PROMOTIONS = "select P.ID, P.CODE, P.STATUS, P.REDEEM_CNT, P.MAX_AMOUNT, T.DAY_ID, "+
 			"(SELECT count(s.id) from cust.sale s, cust.salesaction sa, cust.PROMOTION_PARTICIPATION pa "+
 			"where S.ID = SA.SALE_ID "+
 			"and S.CUSTOMER_ID = SA.CUSTOMER_ID "+
@@ -91,6 +91,7 @@ public class WSPromoCancellationCron {
 				promo.setDiscount(rs.getDouble("MAX_AMOUNT"));
 				promo.setDayofweek(rs.getInt("DAY_ID"));
 				promo.setRedemptions(rs.getInt("RCOUNT"));
+				promo.setStatus(EnumPromotionStatus.getEnum(rs.getString("STATUS")));
 				wspromotions.add(promo);
 			}
 

@@ -408,7 +408,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 		</links>
 		<links name="admintools">delivery_restrictions.jsp,platterForm.jsp,restrictionForm.jsp,restrictionForm_save.jsp,address_restrictions.jsp,addrRestrictionForm.jsp</links>
 		<links name="supervisor">address_exception.jsp,geocode_exception.jsp</links>
-		<links name="promotions">promo_view.jsp,promo_create.jsp,promo_details.jsp,promo_ws_create.jsp,export_promo_list.jsp</links>
+		<links name="promotions">promo_view.jsp,promo_create.jsp,promo_details.jsp,promo_ws_create.jsp,export_promo_list.jsp,dow_admin.jsp</links>
 		<links name="reports">late_delivery_report.jsp,route_stop_report.jsp,order_status_report.jsp,
 		</links>		
 		<links name="transportation">crmLateIssues.jsp,crmTrqCases_step1.jsp,crmTrqCases.jsp</links>			
