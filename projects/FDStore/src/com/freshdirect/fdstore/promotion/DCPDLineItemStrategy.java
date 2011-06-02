@@ -83,7 +83,7 @@ public class DCPDLineItemStrategy implements LineItemStrategyI {
 				//Set Eligiblity info to user session.
 				dcpdCache.setPromoProductInfo(productId, promotionCode, eligible);
 			}
-		}
+		}		
 		
 		//Additionally check for exclude SKUS and exclude Brands.
 		if(eligible && excludeSkus){
@@ -95,13 +95,14 @@ public class DCPDLineItemStrategy implements LineItemStrategyI {
 		}
 		
 		//Additionally check for include SKUS and include Brands.
-		if(eligible && !excludeSkus ){
+		if(eligible && !excludeSkus && !isRecCategory()){
 			eligible = skus.contains(lineItem.getSkuCode());
 		}
 		
-		if(eligible && !excludeBrands){
+		if(eligible && !excludeBrands && !isRecCategory()){
 			eligible = lineItem.hasBrandName(brands);
 		}
+		
 
 		if(eligible) return ALLOW;
 		context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_CART_LINES.getErrorCode());
