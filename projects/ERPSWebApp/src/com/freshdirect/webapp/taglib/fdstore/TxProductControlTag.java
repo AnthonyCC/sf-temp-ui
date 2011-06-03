@@ -5,16 +5,12 @@ import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
 import com.freshdirect.fdstore.FDConfigurableI;
-import com.freshdirect.fdstore.FDProduct;
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
-import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 import com.freshdirect.webapp.util.TransactionalProductImpression;
@@ -67,21 +63,14 @@ public class TxProductControlTag extends BodyTagSupport {
 	@Override
 	public int doStartTag() {
 		try {
-			//add in user's acknowledgment of health warning
-			FDSessionUser alcUser = (FDSessionUser)pageContext.getSession().getAttribute(SessionName.USER);
-			boolean acknowledgedHealthWarning = alcUser.isHealthWarningAcknowledged();
 			// write out
-			pageContext.getOut().write( TxProductControlTag.getHTMLFragment(impression, inputNamePostfix, txNumber, namespace, disabled, false, acknowledgedHealthWarning) );
+			pageContext.getOut().write( TxProductControlTag.getHTMLFragment(impression, inputNamePostfix, txNumber, namespace, disabled, false) );
 		} catch (IOException e) {
 		}
 
 		return EVAL_BODY_INCLUDE;
 	}
-	
-	/* add in previous function, in case this is used somewhere else */
-	public static String getHTMLFragment(TransactionalProductImpression impression, String inputNamePostfix, int seqNum, String jsNamespace, boolean disabled, boolean setMinimumQt) {
-		return getHTMLFragment(impression, inputNamePostfix,  seqNum, jsNamespace, disabled, setMinimumQt, false);			
-	}
+
 
 	/**
 	 * @param impression Product impression
@@ -90,11 +79,10 @@ public class TxProductControlTag extends BodyTagSupport {
 	 * @param seqNum Sequence number of value
 	 * @param disabled is control disabled
 	 * @param setMinimumQt If enabled minimum value will be set
-	 * @param acknoledgedHealthWarning user has acknowledged health warning already
 	 * 
 	 * @return
 	 */
-	public static String getHTMLFragment(TransactionalProductImpression impression, String inputNamePostfix, int seqNum, String jsNamespace, boolean disabled, boolean setMinimumQt, boolean acknowledgedHealthWarning) {
+	public static String getHTMLFragment(TransactionalProductImpression impression, String inputNamePostfix, int seqNum, String jsNamespace, boolean disabled, boolean setMinimumQt) {
 		StringBuffer buf = new StringBuffer();
 
 		String txPostfix = (inputNamePostfix != null ? "_"+inputNamePostfix+"_" : "_")+seqNum;
@@ -103,47 +91,14 @@ public class TxProductControlTag extends BodyTagSupport {
 		// The 'real' one (product behind a proxy or itself if it's simple)
 		ProductModel realProduct = product.getSourceProduct();
 		FDConfigurableI configuration = impression.getConfiguration();
-		FDProduct fdProd = null;
-		try {
-			fdProd = impression.getSku().getProduct();
-		} catch (FDResourceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (FDSkuNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		boolean isAlc = false;
-		String alcRest = "";
-		if (fdProd != null) {
-			isAlc = fdProd.isAlcohol();
-			alcRest = fdProd.getMaterial().getAlcoholicContent().getCode();
-		}
-		
-		/* output js name space chunk to make alcohol restrictions easier to get */
-		buf.append("<script type=\"text/javascript\">\n");
-		//create name space if it doesn't already exist from pricing
-		buf.append("  if (!"+ jsNamespace +") { "+ jsNamespace +" = {}; }\n");
-		//create alcohol Array if it doesn't already exist
-		buf.append("  if (!"+ jsNamespace +".alcohol) { "+ jsNamespace +".alcohol = {}; }\n");
-		//add this item to the alcohol array, ref by sku, but Alcohol is at material level
-		buf.append("  "+ jsNamespace +".alcohol['"+ impression.getSku() + "'] = { isAlc: "+ isAlc +", alcRest: '"+ alcRest +"' };\n");
-		//add helpers
-		buf.append("  addAlcoholHelpers('"+jsNamespace+"');\n");
-		//set if user has already acknowledged health warning
-		buf.append("  hasAgreedToAlcoholDisclaimer = "+acknowledgedHealthWarning+";\n");
-		buf.append("</script>\n");
-		
+
 		if (disabled) {
 			// Hidden case: render empty container and
 			//   populate with the necessary input fields
 			buf.append("<div style=\"height: 28px; margin: 0px; padding: 0px; visibility: hidden;\">\n");
 
-			//output js name space into form so we don't have to hunt for it
-			buf.append("  <input type=\"hidden\" name=\"jsnamespace\" value=\""+ jsNamespace +"\">\n");
 			buf.append("  <input type=\"hidden\" name=\"productId"+txPostfix+"\" value=\""+realProduct.getContentName()+"\">\n");
 			buf.append("  <input type=\"hidden\" name=\"catId"+txPostfix+"\" value=\""+realProduct.getParentNode().getContentName()+"\">\n");
-			buf.append("  <input type=\"hidden\" name=\"isAlch"+txPostfix+"\" value=\""+isAlc+"\">\n");
 			buf.append("  <input type=\"hidden\" name=\"skuCode"+txPostfix+"\" value=\""+impression.getSku()+"\">\n");
 			buf.append("  <input type=\"hidden\" name=\"quantity"+txPostfix+"\" value=\"0\">\n");
 
@@ -152,11 +107,8 @@ public class TxProductControlTag extends BodyTagSupport {
 			buf.append("<table align=\"center\" style=\"border-collapse: collapse; border-spacing: 0px;\">\n");
 			buf.append("  <tr>\n");
 			buf.append("    <td style=\"height: 28px; margin: 0px; padding: 0px;\">\n");
-			//output js name space into form so we don't have to hunt for it
-			buf.append("      <input type=\"hidden\" name=\"jsnamespace\" value=\""+ jsNamespace +"\">\n");
 			buf.append("      <input type=\"hidden\" name=\"productId"+txPostfix+"\" value=\""+realProduct.getContentName()+"\">\n");
 			buf.append("      <input type=\"hidden\" name=\"catId"+txPostfix+"\" value=\""+realProduct.getParentNode().getContentName()+"\">\n");
-			buf.append("      <input type=\"hidden\" name=\"isAlch"+txPostfix+"\" value=\""+isAlc+"\">\n");
 			buf.append("      <input type=\"hidden\" name=\"skuCode"+txPostfix+"\" value=\""+impression.getSku()+"\">\n");
 	
 			if (product.isSoldBySalesUnits()) {

@@ -74,16 +74,14 @@ if (productNode.getLayout().isGroceryLayout()) {
     return;
 }
 
-/* removed for interstitial */
+
 // [redirection] Alcohol alert -> redirect health warning page
-/*
-	FDSessionUser yser = (FDSessionUser)session.getAttribute(SessionName.USER);
-	if( ((CategoryModel)productNode.getParentNode()).isHavingBeer() && !yser.isHealthWarningAcknowledged()){
-		String redirectURL = "/health_warning.jsp?successPage=/product.jsp"+URLEncoder.encode("?"+request.getQueryString());
-		response.sendRedirect(response.encodeRedirectURL(redirectURL));
-		return;
-	}
-*/
+FDSessionUser yser = (FDSessionUser)session.getAttribute(SessionName.USER);
+if( ((CategoryModel)productNode.getParentNode()).isHavingBeer() && !yser.isHealthWarningAcknowledged()){
+    String redirectURL = "/health_warning.jsp?successPage=/product.jsp"+URLEncoder.encode("?"+request.getQueryString());
+    response.sendRedirect(response.encodeRedirectURL(redirectURL));
+    return;
+}
 
 
 
@@ -115,6 +113,7 @@ if (EnumTemplateType.WINE.equals( productNode.getTemplateType() )) {
     <tmpl:put name='leftnav' direct='true'>
     </tmpl:put>
 <tmpl:put name='content' direct='true'>
+
 <%if (FDStoreProperties.isAdServerEnabled()) {%>
 
 	<script type="text/javascript">

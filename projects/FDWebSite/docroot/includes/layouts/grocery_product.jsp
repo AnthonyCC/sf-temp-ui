@@ -352,8 +352,8 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
         pageNumber = 1;
 }
 %>
-<form name="groceryForm" id='grocery_form' method="POST">
 <table border="0" cellspacing="0" cellpadding="0" width="425">
+<form name="groceryForm" id='grocery_form' method="POST">
 <%
 //If there is a specific product selected then show it above the listings here
 //lets get the product with the product cod in the section, display this product, then the rest of the products
@@ -465,8 +465,6 @@ if(productCode!=null && prodCatId !=null ) {
         priceUnit = JspMethods.formatPricingUnit(productInfo);
         String salesUnitDesc = "N/A";
         firstSalesUnit = "N/A";
-		boolean isAlc = false;
-		String alcRest = "";
         if (product!=null){
             FDSalesUnit[] salesUnits = product.getSalesUnits();
             if (salesUnits.length > 0 ) {
@@ -475,15 +473,12 @@ if(productCode!=null && prodCatId !=null ) {
             }
             hasNutrition = product.hasNutritionFacts();
             hasIngredients = product.hasIngredients();
-			isAlc = product.isAlcohol();
-			alcRest = product.getMaterial().getAlcoholicContent().getCode();
         }
 %>
 <input type="hidden" name="skuCode_big" value="<%=minSku.getSkuCode()%>">
 <input type="hidden" name="salesUnit_big" value="<%=firstSalesUnit%>">
 <input type="hidden" name="catId_big" value="<%=prodCatId%>">
 <input type="hidden" name="productId_big" value="<%=productCode%>">
-<input type="hidden" name="isAlch_big" value="<%=isAlc%>">
 <%
 	if (request.getParameter("fdsc.source") != null) {
 %><input type="hidden" name="fdsc.source" value="<%=request.getParameter("fdsc.source")%>"/> <%
@@ -1112,7 +1107,6 @@ if(isAnyProdAvailable) {
         </fd:CCLCheck>
         </td></tr></table>
 <% } %>
-</form>
 <br/>
 <table border="0" cellspacing="0" cellpadding="0" width="425">
 <tr>
@@ -1167,41 +1161,6 @@ if (itemsToDisplay == 30) {
         syncProdIdx = '<%=syncProdIdx%>';
 <% } %>
         syncQty('big',syncProdIdx);
-	<%
-		/* Alcohol Restriction info
-		 *	since we're not using the TxProductControlTag here, we need to add this manually
-		 */
-	%>
-	if (!window.alcohol) { window.alcohol = []; }
-	<% for (Object tempSku : skus) {
-		SkuModel sku = (SkuModel)tempSku;
-		FDProduct fdProd = null;
-		try {
-			fdProd = sku.getProduct();
-		} catch (FDResourceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (FDSkuNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		boolean isAlc = false;
-		String alcRest = "";
-		if (fdProd != null) {
-			isAlc = fdProd.isAlcohol();
-			alcRest = fdProd.getMaterial().getAlcoholicContent().getName();
-		}
-		%>
-		window.alcohol['<%=sku.getSkuCode()%>'] = { isAlc: <%=isAlc%>, alcRest: '<%=alcRest%>' }
-	<% } %>
-	addAlcoholHelpers();
-	<%
-		/* set if user has already agreed to alcohol disclaimer
-		 *	check new session value here to avoid template differences
-		 */
-		FDSessionUser alcUser = (FDSessionUser)session.getAttribute(SessionName.USER);
-	%>
-	hasAgreedToAlcoholDisclaimer = <%=alcUser.isHealthWarningAcknowledged()%>;
 </script>
 
 </fd:FDShoppingCart>
