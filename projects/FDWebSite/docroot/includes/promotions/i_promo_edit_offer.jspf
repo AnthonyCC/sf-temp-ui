@@ -159,7 +159,13 @@
 				<tr>
 					<td class="promo_edit_offer_label">Recommended Category:</td>
 					<td class="alignL vTop padL8R16"><textarea id="rec_categories" name="rec_categories" rows="" cols="" class="w100p h75px"><%= rcats.toString() %></textarea><div class="grayIta8pt vTop">Enter comma-separated recommended category ids</div></td>
-				</tr>
+				</tr>							
+
+				<tr>
+					<td class="promo_detail_label"><input type="checkbox" id="rec_categories_loop" name="rec_categories_loop" <%=loopEnabled? "checked " : ""%>/></td>
+					<td class="alignL"><span class="gray">Loop through all the children of these recommendeded categories</span></td>
+				</tr>	
+				
 				<tr>
 					<td>&nbsp;</td>
 					<td class="bordLgrayDash noBorderTRL">&nbsp;</td>
@@ -171,8 +177,9 @@
 
 				<tr>
 					<td class="promo_edit_offer_label">Recipe:</td>
-					<td class="alignL vTop padL8R16"><input type="checkbox" id="rec_categories_loop" name="rec_categories_loop" <%=loopEnabled? "checked " : ""%>/>Loop through all the children of these categories<br /></div></td>
-				</tr>
+					<td class="alignL vTop padL8R16"><textarea id="recipes" name="recipes" rows="" cols="" class="w100p h75px"><%= recps.toString() %></textarea><div class="grayIta8pt vTop">Enter comma-separated recipe ids<br />Individual recipes only, not categories</div></td>
+				</tr>				
+				
 				<tr>
 					<td>&nbsp;</td>
 					<td class="bordLgrayDash noBorderTRL">&nbsp;</td>
