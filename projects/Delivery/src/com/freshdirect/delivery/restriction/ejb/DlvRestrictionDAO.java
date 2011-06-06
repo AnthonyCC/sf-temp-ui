@@ -239,11 +239,13 @@ public class DlvRestrictionDAO {
 
 			}
 		}
-		//Add the last one.
-		AlcoholRestriction restriction = new AlcoholRestriction(restrictionId, criterion, reason, name, msg, startDate, endDate,type,
-				path, state, county, null, municipalityId, alcoholRestricted);
-		restriction.setTimeRangeMap(new HashMap<Integer, List<TimeOfDayRange>>(timeRangeMap));
-		restrictions.add(restriction);
+		if(restrictionId.length() > 0) {
+			//Add the last one.
+			AlcoholRestriction restriction = new AlcoholRestriction(restrictionId, criterion, reason, name, msg, startDate, endDate,type,
+					path, state, county, null, municipalityId, alcoholRestricted);
+			restriction.setTimeRangeMap(new HashMap<Integer, List<TimeOfDayRange>>(timeRangeMap));
+			restrictions.add(restriction);
+		}
 		
 		LOGGER.debug("restrictions size :"+restrictions.size());
 		rs.close();
