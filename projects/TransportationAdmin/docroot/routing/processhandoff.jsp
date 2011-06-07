@@ -166,11 +166,11 @@
 			    {key:"batchId", label:"Batch ID",sortable:false, width: 50, className:"forms1"}, 
 			    {key:"deliveryDate", label:"Delivery Date",sortable:false, width: 80,className:"forms1"},			    
 			    {key:"creationInfo", label:"Process Audit Details",sortable:false, width: 142,className:"forms1"},
-			    {key:"status", label:"Status",sortable:false, width: 40,className:"forms1"},
+			    {key:"status", label:"Status",sortable:false, width: 60,className:"forms1"},
 			    {key:"sessionInfo", label:"Session",sortable:false, width: 305,className:"forms1"},
 			    {key:"systemMessage", label:"System Message", width: 200,sortable:false,className:"forms1"},
-			    {key:"action", label:"Action", sortable:false, width: 100, className:"forms1",	
-			    				formatter:"dropdown", dropdownOptions:["","ROUTEIN","ROUTEOUT","COMMIT","CANCEL"] },
+			    {key:"action", label:"Action", sortable:false, width: 125, className:"forms1",	
+			    				formatter:"dropdown", dropdownOptions:["","ROUTEIN","ROUTEOUT","COMMIT","AUTODISPATCH","CANCEL"] },
 				{key:"report", label:"Download", sortable:false, width: 150, className:"forms1",	
 			    				formatter:"dropdown", dropdownOptions:["","CutOff Report","Community Report","SAP Upload Files"] }			    				
 			    
@@ -216,17 +216,19 @@
       }
       
       var actionMapping = {
-      	 NEW: {STOP:0},	     
-	     PRC: {STOP:0},
-	     RTC: {ROUTEIN:0,ROUTEOUT:0,CANCEL:0},
-	     RGC: {ROUTEIN:0,ROUTEOUT:0,COMMIT:0,CANCEL:0},
-	     STD: {ROUTEIN:0,CANCEL:0},
-	     NEF: {ROUTEIN:0,CANCEL:0},
-	     RTF: {ROUTEIN:0,CANCEL:0},	
-	     RGF: {ROUTEIN:0,ROUTEOUT:0,CANCEL:0},
-	     CPF: {ROUTEIN:0,ROUTEOUT:0,COMMIT:0,CANCEL:0},	     
-	     CAN: {},	     
-	     CPD: {}	           		      	 
+      	 'NEW':{STOP:0},
+	     'PRC':{STOP:0},
+	     'RTC': {ROUTEIN:0,ROUTEOUT:0,CANCEL:0},
+	     'RGC': {ROUTEIN:0,ROUTEOUT:0,COMMIT:0,CANCEL:0},
+	     'STD': {ROUTEIN:0,CANCEL:0},
+	     'NEF': {ROUTEIN:0,CANCEL:0},
+	     'RTF': {ROUTEIN:0,CANCEL:0},
+	     'RGF': {ROUTEIN:0,ROUTEOUT:0,CANCEL:0},
+	     'CPF': {ROUTEIN:0,ROUTEOUT:0,COMMIT:0,CANCEL:0}, 
+		 'CAN': {},
+	     'CPD/ADC': {AUTODISPATCH:0},
+		 'CPD/ADF': {AUTODISPATCH:0},
+		 'CPD': {AUTODISPATCH:0}
       }
       
       function updateRefreshTimestamp() {
@@ -259,7 +261,7 @@
       			} else if(actionType == 'SAP Upload Files') {
       				location.href = 'sapupload.do?handOffBatchId='+currentBatchId;
       			} else if(actionType == 'Community Report') {
-      				location.href = 'communityreport.do?handOffBatchId='+currentBatchId;      				
+      				location.href = 'communityreport.do?handOffBatchId='+currentBatchId;
       			} else {
       				alert("Feature not available");
       			}
@@ -299,6 +301,8 @@
       								}
       							}
       						}
+      					} else if(actionType == 'AUTODISPATCH') {
+      						jsonrpcClient.AsyncHandOffProvider.doHandOffAutoDispatch(currentBatchId, true);
       					} else {
       						alert("Processing "+actionType+" on BATCH ID:"+currentBatchId);
       					} 

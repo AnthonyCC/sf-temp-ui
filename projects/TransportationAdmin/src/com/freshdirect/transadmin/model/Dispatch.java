@@ -19,6 +19,7 @@ public class Dispatch implements java.io.Serializable{
 	private String supervisorId;
 	private String route;
 	private String truck;
+	private String physicalTruck;
 	private Date startTime;
 	private Date firstDlvTime;
 	private Boolean confirmed;
@@ -306,5 +307,13 @@ public class Dispatch implements java.io.Serializable{
 	public void setAdditionalNextels(String additionalNextels) {
 		this.additionalNextels = additionalNextels;
 	}
+	
+	public String getPhysicalTruck() {
+		return physicalTruck;
+	}
+
+	public void setPhysicalTruck(String physicalTruck) {
+		this.physicalTruck = physicalTruck;
+	}	
 	
 }

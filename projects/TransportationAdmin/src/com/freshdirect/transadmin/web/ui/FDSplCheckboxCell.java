@@ -35,14 +35,14 @@ public class FDSplCheckboxCell extends FDBaseCell
         		{
 	        		if("phoneAssigned".equalsIgnoreCase(column.getProperty()))
 	    			{
-	        			if(("false".equalsIgnoreCase(command.getIsBullpen()) || "N".equalsIgnoreCase(command.getIsBullpen()))&&(command.getDispatchStatus()==EnumStatus.Truck))
+	        			if(("false".equalsIgnoreCase(command.getIsBullpen()) || "N".equalsIgnoreCase(command.getIsBullpen()))&&(command.getDispatchStatus()==EnumStatus.ActualTruck))
 	        			{
 	        				enabled=true;
 	        			}
 	    			}
 	    			if("keysReady".equalsIgnoreCase(column.getProperty()))
 	    			{
-	    				if(("false".equalsIgnoreCase(command.getIsBullpen()) ||"N".equalsIgnoreCase(command.getIsBullpen()))&&(command.getDispatchStatus()==EnumStatus.Truck))
+	    				if(("false".equalsIgnoreCase(command.getIsBullpen()) ||"N".equalsIgnoreCase(command.getIsBullpen()))&&(command.getDispatchStatus()==EnumStatus.ActualTruck))
 	        			{
 	        				enabled=true;
 	        			}

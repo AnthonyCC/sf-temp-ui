@@ -33,6 +33,7 @@ import com.freshdirect.transadmin.model.DlvLocation;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeTeam;
+import com.freshdirect.transadmin.model.EmployeeTruckPreference;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PlanResource;
 import com.freshdirect.transadmin.model.ResourceId;
@@ -153,6 +154,50 @@ public class ModelUtil {
 		}
 
 		return finalList;
+	}
+	
+	public static List getTrnAdminEmployeeList(List empByRoleList, List roleList, List truckPrefList){
+
+		if (empByRoleList == null)
+			return new ArrayList();
+
+		List empTruckPrefInfoList = new ArrayList();
+
+		for (int i = 0; i < empByRoleList.size(); i++) {
+			EmployeeInfo info = (EmployeeInfo) empByRoleList.get(i);
+
+			List empRoleList = new ArrayList();
+			if (roleList != null && roleList.size() > 0) {
+				for (int j = 0; j < roleList.size(); j++) {
+					EmployeeRole tmpRole = (EmployeeRole) roleList.get(j);
+					if (tmpRole.getId().getKronosId().equals(
+							info.getEmployeeId())) {
+						tmpRole.migrate();
+						empRoleList.add(tmpRole);
+					}
+				}
+			}
+
+			Map empTruckPrefMap = new HashMap();
+			if (truckPrefList != null && truckPrefList.size() > 0) {
+				for (int j = 0; j < truckPrefList.size(); j++) {
+					EmployeeTruckPreference tmpPref = (EmployeeTruckPreference) truckPrefList
+							.get(j);
+					if (tmpPref.getId().getKronosId().equals(
+							info.getEmployeeId())) {
+
+						empTruckPrefMap.put(tmpPref.getId().getPrefKey(),
+								tmpPref.getTruckNumber());
+					}
+				}
+			}
+			WebEmployeeInfo webInfo = new WebEmployeeInfo(info, empRoleList,
+					empTruckPrefMap);
+
+			empTruckPrefInfoList.add(webInfo);
+		}
+
+		return empTruckPrefInfoList;
 	}
 
 	public static String getRegionCode(Collection zones,String zoneCode)

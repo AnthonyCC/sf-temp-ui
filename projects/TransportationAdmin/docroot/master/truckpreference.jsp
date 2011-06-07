@@ -8,13 +8,7 @@
 %>
 
 <% 
-	String pageTitle = "";
-	if("T".equalsIgnoreCase(request.getParameter("empstatus"))) 
-		{ 
-			pageTitle = "Terminated Employees"; 
-		}else{
-			pageTitle = "Active Employees"; 
-		}
+	String pageTitle = "Truck Preference";
 %>
 <tmpl:insert template='/common/sitelayout.jsp'>
 
@@ -26,12 +20,12 @@
   
 	<div class="MNM001 subsub or_999">
 		<div class="subs_left">	
-			<div class="sub_tableft sub_tabL_MNM001 <% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))&&!"S".equalsIgnoreCase(request.getParameter("empstatus"))) { %>activeL<% } %>">&nbsp;</div>
-			<div class="subtab <% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))&&!"S".equalsIgnoreCase(request.getParameter("empstatus"))) { %>activeT<% } %>">
+			<div class="sub_tableft sub_tabL_MNM001 <% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))&&!"S".equalsIgnoreCase(request.getParameter("empstatus")) && !"P".equalsIgnoreCase(request.getParameter("empstatus"))) { %>activeL<% } %>">&nbsp;</div>
+			<div class="subtab <% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))&&!"S".equalsIgnoreCase(request.getParameter("empstatus")) && !"P".equalsIgnoreCase(request.getParameter("empstatus"))) { %>activeT<% } %>">
 				<div class="minwidth"><!-- --></div>
-				<a href="employee.do" class="<% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))&&!"S".equalsIgnoreCase(request.getParameter("empstatus"))) { %>MNM001<% } %>">Active</a>
+				<a href="employee.do" class="<% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))&&!"S".equalsIgnoreCase(request.getParameter("empstatus")) && !"P".equalsIgnoreCase(request.getParameter("empstatus"))) { %>MNM001<% } %>">Active</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))&&!"S".equalsIgnoreCase(request.getParameter("empstatus"))) { %>activeR<% } %>">&nbsp;</div>		
+			<div class="sub_tabright sub_tabR_MNM001 <% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))&&!"S".equalsIgnoreCase(request.getParameter("empstatus")) && !"P".equalsIgnoreCase(request.getParameter("empstatus"))) { %>activeR<% } %>">&nbsp;</div>		
 		
 			<div class="sub_tableft sub_tabL_MNM001 <% if("T".equalsIgnoreCase(request.getParameter("empstatus"))) { %>activeL<% } %>">&nbsp;</div>
 			<div class="subtab <% if("T".equalsIgnoreCase(request.getParameter("empstatus"))) { %>activeT<% } %>">
@@ -72,9 +66,6 @@
 					<span class="scrTitle">
 						<%=pageTitle%>
 					</span>
-					<span >
-						<a href="employee.do?sync=true">Sync Employees</a>
-					</span>					
 				</div>
 			</div>
 		</div>
@@ -82,78 +73,48 @@
 		<div class="cont_topright">
 			<div class="cont_row">
 				<div class="cont_Ritem">
-					<form id="employeeListForm" action="" method="post">
-					
-					<% 
-						if("T".equalsIgnoreCase(request.getParameter("empstatus"))) { 
-					%>
-
-						<ec:table items="employees"   action="${pageContext.request.contextPath}/employee.do?empstatus=T"
+					<form id="employeeTruckPrefListForm" action="" method="post">
+					 	<ec:table items="empTruckPrefs" action="${pageContext.request.contextPath}/employee.do?empstatus=P"
 						imagePath="${pageContext.request.contextPath}/images/table/*.gif" title=""		
-						width="98%"  view="fd" form="employeeListForm" autoIncludeParameters="false" rowsDisplayed="25"  >
-							<ec:exportPdf fileName="transportationemployee.pdf" tooltip="Export PDF" headerTitle="" />
-							<ec:exportXls fileName="transportationemployee.xls" tooltip="Export PDF" />
-							<ec:exportCsv fileName="transportationemployee.csv" tooltip="Export CSV" delimiter="|"/>
-								
-							<ec:row interceptor="obsoletemarker">            
-								<% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))) { %>
-								<ec:column title=" " width="5px" 
-										filterable="false" sortable="false" cell="selectcol"
-										property="employeeId" />
-								<% } %>		
-								<ec:column property="firstName" title="First Name"/>
-								<ec:column property="lastName" title="Last Name"/>
-								<ec:column alias="kronosId" property="employeeId" title="KronosID"/>
-								<ec:column property="hireDate" title="Hire Date"/>
-								<ec:column property="jobType" title="JobType"/>
-								<ec:column property="supervisorFirstName" title="supervisor"/>
-								<ec:column property="employeeRoleType" title="roles"/>
-                                <ec:column property="terminationDate" title="Terminated"/>
-                                <ec:column property="leadInfoEx.name" title="Lead"/>
-							</ec:row>
-						</ec:table>
-                     <%
-						 }
-					     else
-						 { 
-					  %>
-                    
-					 	<ec:table items="employees"   action="${pageContext.request.contextPath}/employee.do"
-						imagePath="${pageContext.request.contextPath}/images/table/*.gif" title=""		
-						width="98%"  view="fd" form="employeeListForm" autoIncludeParameters="false" rowsDisplayed="25"  >
+						width="98%"  view="fd" form="employeeTruckPrefListForm" autoIncludeParameters="false" rowsDisplayed="25"  >
 							<ec:exportPdf fileName="transportationemployee.pdf" tooltip="Export PDF"	headerTitle="" />
 							<ec:exportXls fileName="transportationemployee.xls" tooltip="Export PDF" />
 							<ec:exportCsv fileName="transportationemployee.csv" tooltip="Export CSV" delimiter="|"/>
 								
-							<ec:row interceptor="obsoletemarker">            
-								<% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))) { %>
+							<ec:row interceptor="obsoletemarker">
+								
 								<ec:column title=" " width="5px" 
 										filterable="false" sortable="false" cell="selectcol"
 										property="employeeId" />  
-								<% } %>		
+								
 								<ec:column property="trnStatus1" title="Status" width="5px"/>	
 								<ec:column property="firstName" title="First Name"/>
 								<ec:column property="lastName" title="Last Name"/>
-								<ec:column alias="kronosId" property="employeeId" title="KronosID" width="5px"/>                                  
-								<ec:column property="hireDate" title="Hire Date"/>
-								<ec:column property="jobType" title="JobType"/>              
-								<ec:column property="supervisorFirstName" title="supervisor"/>
-								<ec:column property="employeeRoleType" title="roles"/>
-                           		<ec:column property="leadInfoEx.name" title="Lead"/>
+								<ec:column alias="kronosId" property="employeeId" title="KronosID" width="5px"/>
+								<ec:column property="jobType" title="JobType"/>
+								<ec:column property="employeeRoleType" title="Roles"/>
+								<ec:column property="leadInfoEx.name" title="Lead"/>
+								<ec:column property="truckPref01" title="TRUCK 1"/>
+								<ec:column property="truckPref02" title="TRUCK 2"/>
+								<ec:column property="truckPref03" title="TRUCK 3"/>
+								<ec:column property="truckPref04" title="TRUCK 4"/>
+								<ec:column property="truckPref05" title="TRUCK 5"/>
 							</ec:row>
 						</ec:table>
-                      <% } %>
-							
 					</form>
 				</div>
 			</div>
 		</div>
 	</div>
-	
-	<% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))) { %>
-		<script>
-			addRangeHandlers('ec_table', 'rowMouseOver', 'editemployee.do','id',0, 0, 8, false);			
-		</script>
-	<% } %>
+
+	<script>
+		addMultiParamRowHandlersFilter('ec_table', 'rowMouseOver', 'editemployeetruckpreference.do','id',0, 0, false, 'empstatus','<%=request.getParameter("empstatus")%>');
+
+		function getFilterTestValue() {
+	             var filters = getFilterValue(document.getElementById("employeeTruckPrefListForm"),false);
+	             return escape(filters);
+       }
+	</script>
+
   </tmpl:put>
 </tmpl:insert>

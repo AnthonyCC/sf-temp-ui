@@ -151,6 +151,8 @@ public class DispatchPlanUtil {
 		command.setRoute(dispatch.getRoute());
 		if(dispatch.getTruck() != null){
 			command.setTruck(dispatch.getTruck());
+		} else if(dispatch.getPhysicalTruck() != null){
+			command.setTruck(dispatch.getPhysicalTruck());
 		} else {
 			command.setTruck("");
 		}
@@ -264,6 +266,7 @@ public class DispatchPlanUtil {
 		dispatch.setSupervisorId(command.getSupervisorCode());
 		dispatch.setRoute(command.getRoute());
 		dispatch.setTruck(command.getTruck());
+		dispatch.setPhysicalTruck(command.getPhysicalTruck());
 		dispatch.setBullPen(Boolean.valueOf(command.getIsBullpen()));
 		try{
 			dispatch.setStartTime(TransStringUtil.getServerTime(command.getStartTime()));
@@ -949,14 +952,12 @@ public class DispatchPlanUtil {
 				}
 				
 				//truck status
-				if(!TransStringUtil.isEmpty(command.getTruck()))
-				{					
-					command.setDispatchStatus(EnumStatus.Truck);
-				}
+				if(!TransStringUtil.isEmpty(command.getTruck()))			
+					command.setDispatchStatus(EnumStatus.ActualTruck);
+				else if(!TransStringUtil.isEmpty(command.getPhysicalTruck()))
+					command.setDispatchStatus(EnumStatus.PlannedTruck);
 				else
-				{
 					return;
-				}
 				
 				//do not do any status if no employees assigned
 				if(!command.getIsOverride()&&"Y".equalsIgnoreCase(command.getOpen())) 

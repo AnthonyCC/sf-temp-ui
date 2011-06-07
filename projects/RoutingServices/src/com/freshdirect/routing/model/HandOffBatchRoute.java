@@ -10,7 +10,7 @@ public class HandOffBatchRoute extends RouteModel implements IHandOffBatchRoute 
 	private String batchId;
 	private String area;
 	private String sessionName;
-		
+	private String truckNumber;
 	
 	public HandOffBatchRoute(IRouteModel refModel) {
 		super();
@@ -52,7 +52,14 @@ public class HandOffBatchRoute extends RouteModel implements IHandOffBatchRoute 
 		this.sessionName = sessionName;
 	}
 	
+	public String getTruckNumber() {
+		return truckNumber;
+	}
 
+	public void setTruckNumber(String truckNumber) {
+		this.truckNumber = truckNumber;
+	}
+	
 	@Override
 	public Date getCheckInTime() {
 		// TODO Auto-generated method stub
@@ -124,6 +131,9 @@ public class HandOffBatchRoute extends RouteModel implements IHandOffBatchRoute 
 		return RoutingStringUtil.calcHMSFlat((int)getTravelTime());
 	}
 
-	
+	@Override
+	public String getPhysicalTruckNumber() {
+		return this.getTruckNumber();
+	}
 		
 }

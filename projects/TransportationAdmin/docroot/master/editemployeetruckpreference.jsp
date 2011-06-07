@@ -8,7 +8,7 @@
 <tmpl:insert template='/common/sitelayout.jsp'>
 
 <% 
-	String pageTitle = "Add/Edit Employee";
+	String pageTitle = "Add/Edit Employee Truck Preference";
 %>
     <tmpl:put name='title' direct='true'> Operations : Employee : <%=pageTitle%></tmpl:put>
 
@@ -16,12 +16,12 @@
 
 	<div class="MNM001 subsub or_999">
 		<div class="subs_left">	
-			<div class="sub_tableft sub_tabL_MNM001 <% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))) { %>activeL<% } %>">&nbsp;</div>
-			<div class="subtab <% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))) { %>activeT<% } %>">
+			<div class="sub_tableft sub_tabL_MNM001 <% if(!"T".equalsIgnoreCase(request.getParameter("empstatus")) && !"P".equalsIgnoreCase(request.getParameter("empstatus"))) { %>activeL<% } %>">&nbsp;</div>
+			<div class="subtab <% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))  && !"P".equalsIgnoreCase(request.getParameter("empstatus"))) { %>activeT<% } %>">
 				<div class="minwidth"><!-- --></div>
-				<a href="employee.do" class="<% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))) { %>MNM001<% } %>">Active</a>
+				<a href="employee.do" class="<% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))  && !"P".equalsIgnoreCase(request.getParameter("empstatus"))) { %>MNM001<% } %>">Active</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))) { %>activeR<% } %>">&nbsp;</div>		
+			<div class="sub_tabright sub_tabR_MNM001 <% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))  && !"P".equalsIgnoreCase(request.getParameter("empstatus"))) { %>activeR<% } %>">&nbsp;</div>		
 		
 			<div class="sub_tableft sub_tabL_MNM001 <% if("T".equalsIgnoreCase(request.getParameter("empstatus"))) { %>activeL<% } %>">&nbsp;</div>
 			<div class="subtab <% if("T".equalsIgnoreCase(request.getParameter("empstatus"))) { %>activeT<% } %>">
@@ -58,12 +58,12 @@
 
 		<br/>	
 		<div align="center">
-			<form:form commandName = "employeeForm" method="post">
+			<form:form commandName = "truckPreferenceForm" method="post">
 			<form:hidden path="employeeId"/>
 			
 			<table width="100%" cellpadding="0" cellspacing="0" border="0">
 					<tr>
-						<td class="screentitle">Add/Edit Employee</td>
+						<td class="screentitle">Add/Edit Employee Truck Preference</td>
 					</tr>
 					<tr>
 						<td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>
@@ -71,10 +71,10 @@
 					
 					<tr>
 						<td class="screencontent">
-							<table class="forms1">			  	
+							<table class="forms1">
 							  <tr>
 							    <td>Kronos ID</td>
-							    <td> 								  
+							    <td>
 							  	 	<form:input maxlength="50" size="30" path="employeeId" readOnly="true" />
 							 	</td>
 							 	<td>
@@ -98,88 +98,83 @@
 							 	<td>
 							 		&nbsp;<form:errors path="lastName" />
 							 	</td>
-							 </tr>				                                                            
-                             <tr>
-							    <td>Role</td>
-							    <td> 	
-                              <spring:bind path="employeeForm.employeeRoleTypes">
-                                   <SELECT name="employeeRoleTypes" >     
-                                      <OPTION value="">Please select roles</OPTION>          
-                                      <c:forEach  var="role" items="${roleTypes}"  >
-                                       <c:set var="avail" value="true"/>
-                                         <c:forEach var="irole" items="${employeeForm.employeeRoleTypes}">         
-                                        <c:if test="${irole.code == role.code}">
-                                          <OPTION selected="<c:out value="${role.code}"/>" value="<c:out value="${role.code}"/>"><c:out value="${role.name}"/></OPTION>
-                                          <c:remove var="avail"/>
-                                        </c:if>       
-                                        </c:forEach>
-                                        <c:if test="${avail}">
-                                          <OPTION value="<c:out value="${role.code}"/>"><c:out value="${role.name}"/></OPTION>          
-                                        </c:if>  
-                                      </c:forEach>
-                                    </SELECT>
-                                  </spring:bind>                
-                               </td>
-							 	<td>
-							 		&nbsp;<form:errors path="empRole" />
-							 	</td>
-							 </tr>							 
-							 <tr>
-							    <td>Team Lead</td>
-							    <td> 
-							    	 <form:select path="leadId">
-                        				<form:option value="null" label="--Please Select Team Lead"/>
-                    					<form:options items="${employees}" itemLabel="name" itemValue="employeeId" />
-                   					</form:select>	
-                                         
-                               </td>
-							 	<td>
-							 		&nbsp;<form:errors path="leadId" />
-							 	</td>
 							 </tr>
-							 
-							 <tr>
-							    <td>Status</td>
-							    <td> 
-								  	 <form:input maxlength="50" size="30" path="trnStatus1" readOnly="true" />
-							 	</td>
-							 	<td>
-							 		&nbsp;<form:errors path="lastName" />
-							 	</td>
-							 </tr>								 	  	
-							<tr><td colspan="3">&nbsp;</td></tr>
-							<tr>
-							<td colspan="3" align="center">
-								 <input type = "submit" value="&nbsp;Save Changes&nbsp;"  />
-							 <%if(com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request)){%>
-							
-                             <input type = "submit" value="&nbsp;Change Status&nbsp;"  onclick="javascript:setStatus()"/>         
-                             
-							  <%}%>  
-								
-								</td>			
+                            <tr>
+								<td>TRUCK 1</td>
+								<td>
+									<form:select path="truckPref01" onChange="checkDuplicateTruckPreference('', this);">
+											<form:option value="" label="Select Truck"/>
+											<form:options items="${trucks}" itemLabel="assetNo" itemValue="assetNo" />
+									</form:select>
+								</td>
+								<td>&nbsp;<form:errors path="truckPref01" />&nbsp;</td>
 							</tr>
-							</table>				
-							
+							    <tr>
+								<td>TRUCK 2</td>
+								<td>
+									<form:select path="truckPref02" onChange="checkDuplicateTruckPreference('', this);">
+											<form:option value="" label="Select Truck"/>
+											<form:options items="${trucks}" itemLabel="assetNo" itemValue="assetNo" />
+									</form:select>
+								</td>
+								<td>&nbsp;<form:errors path="truckPref02" />&nbsp;</td>
+							</tr>
+							    <tr>
+								<td>TRUCK 3</td>
+								<td>
+									<form:select path="truckPref03" onChange="checkDuplicateTruckPreference('', this);">
+											<form:option value="" label="Select Truck"/>
+											<form:options items="${trucks}" itemLabel="assetNo" itemValue="assetNo" />
+									</form:select>
+								</td>
+								<td>&nbsp;<form:errors path="truckPref03" />&nbsp;</td>
+							</tr>
+							    <tr>
+								<td>TRUCK 4</td>
+								<td>
+									<form:select path="truckPref04" onChange="checkDuplicateTruckPreference('', this);">
+											<form:option value="" label="Select Truck"/>
+											<form:options items="${trucks}" itemLabel="assetNo" itemValue="assetNo" />
+									</form:select>
+								</td>
+								<td>&nbsp;<form:errors path="truckPref04" />&nbsp;</td>
+							</tr>
+							    <tr>
+								<td>TRUCK 5</td>
+								<td>
+									<form:select path="truckPref05" onChange="checkDuplicateTruckPreference('', this);">
+											<form:option value="" label="Select Truck"/>
+											<form:options items="${trucks}" itemLabel="assetNo" itemValue="assetNo" />
+									</form:select>
+								</td>
+								<td>&nbsp;<form:errors path="truckPref05" />&nbsp;</td>
+							</tr>
+							<tr>
+								<td colspan="3" align="center">
+									 <input type = "submit" value="&nbsp;Save Changes&nbsp;"  />
+									 <input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:back();" />
+								</td>
+							</tr>
+							</table>
 						</td>
-					</tr>								
+					</tr>
 				</table>
 			</form:form>
 		</div>
 
-			
-		 </div>
-		 </div>
-		 
+		</div>
+	</div>
+	<script>
+		function checkDuplicateTruckPreference(target,src){
+			var tp1 = document.getElementById('truckPref01');
+			var tp2 = document.getElementById('truckPref02');
+			var tp3 = document.getElementById('truckPref03');
+			var tp4 = document.getElementById('truckPref04');
+			var tp5 = document.getElementById('truckPref05');
+
+
+		}
+	</script>
 	</tmpl:put>
 </tmpl:insert>
-<script>
-function setStatus()
-{	
-	new_element = document.createElement("input");
-	new_element.setAttribute("type", "hidden");
-	new_element.setAttribute("name", "toggle");	
-	new_element.setAttribute("value", "true");
-	document.forms['employeeForm'].appendChild(new_element);		
-}
-</script>
+<form name="truckpreference" action="employee.do?empstatus=P" method="post">  </form>

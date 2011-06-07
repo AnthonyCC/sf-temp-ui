@@ -25,6 +25,8 @@ import com.freshdirect.transadmin.model.EmployeeRoleType;
 import com.freshdirect.transadmin.model.EmployeeStatus;
 import com.freshdirect.transadmin.model.EmployeeSubRoleType;
 import com.freshdirect.transadmin.model.EmployeeTeam;
+import com.freshdirect.transadmin.model.EmployeeTruckPreference;
+import com.freshdirect.transadmin.model.EmployeeTruckPreferenceId;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PlanResource;
 import com.freshdirect.transadmin.model.PunchInfo;
@@ -34,6 +36,7 @@ import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
 import com.freshdirect.transadmin.util.EnumResourceSubType;
+import com.freshdirect.transadmin.util.EnumResourceType;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransAdminCacheManager;
 import com.freshdirect.transadmin.util.TransStringUtil;
@@ -62,6 +65,44 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		return getDomainManagerDao();
 	}
 
+	public Collection getEmployeesTruckPrefrence(){
+		
+		Collection employeeIDsByRole = domainManagerDao.getEmployeesByRoleType(EnumResourceType.DRIVER.getName());
+		employeeIDsByRole.addAll(domainManagerDao.getEmployeesByRoleType(EnumResourceType.MANAGER.getName()));
+		Collection employeeIDsByTruckPref = domainManagerDao.getEmployeesTruckPreference();
+		
+		Collection employees = new ArrayList(employeeIDsByRole.size());
+			
+		Collection activeInactiveEmpList = this.getActiveInactiveEmployees();
+		Iterator it = employeeIDsByRole.iterator();
+		while (it.hasNext()) {
+			EmployeeRole empRole = (EmployeeRole) it.next();
+			EmployeeInfo info = getTransAppActiveEmployees(activeInactiveEmpList, empRole.getId().getKronosId());
+			if (info != null)					
+				employees.add(info);			
+		}
+		
+		Collection finalEmployeeList = ModelUtil.getTrnAdminEmployeeList((List) employees, (List) employeeIDsByRole, (List)employeeIDsByTruckPref);
+		Map<String, String> employeeTeamMapping = ModelUtil.getIdMappedTeam(domainManagerDao.getTeamInfo());
+		
+		for (Iterator iterator = finalEmployeeList.iterator(); iterator.hasNext();) {
+			WebEmployeeInfo webInfo = (WebEmployeeInfo) iterator.next();
+			Collection empStatus = this.domainManagerDao.getEmployeeStatus(webInfo.getEmployeeId());
+			if (empStatus != null && empStatus.size() > 0) {
+				webInfo.setTrnStatus(""
+							+ ((EmployeeStatus) (empStatus.toArray()[0]))
+									.isStatus());
+			}
+			webInfo.setLeadInfo(TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo
+												(employeeTeamMapping.get(webInfo.getEmployeeId()), this));
+			if(employeeTeamMapping.containsValue(webInfo.getEmployeeId())) {
+				webInfo.setLead(true);
+			}
+		}
+
+		return finalEmployeeList;
+		
+	}
 	public Collection getEmployees() {
 		// first get the kornos data
 		// then get the role for the kornos data
@@ -178,14 +219,23 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 	public WebEmployeeInfo getEmployee(String id) {
 		// get the empInfo from the cache
 		// get the role from the db
+		// get the Truck Pref from the db
 		// wrap it and return the data simple
 
 		EmployeeInfo info = TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo(id, this);
 		Collection empRoles = this.domainManagerDao.getEmployeeRole(id);
 		Collection empStatus = this.domainManagerDao.getEmployeeStatus(id);
 		Collection empTeam = this.domainManagerDao.getTeamByEmployee(id);
+		Collection empTruckPrefs = this.domainManagerDao.getEmployeeTruckPreference(id);
 		
-		WebEmployeeInfo webInfo = new WebEmployeeInfo(info, empRoles);
+		Map<String, String> empTruckPrefMap = new HashMap<String, String>();
+		Iterator<EmployeeTruckPreference> itr = empTruckPrefs.iterator();itr.hasNext();
+		while(itr.hasNext()){
+			EmployeeTruckPreference empTruckPref = itr.next();
+			empTruckPrefMap.put(empTruckPref.getId().getPrefKey(),empTruckPref.getTruckNumber());
+		}
+		
+		WebEmployeeInfo webInfo = new WebEmployeeInfo(info, empRoles, empTruckPrefMap);
 		if (empStatus != null && empStatus.size() > 0) {
 			webInfo.setTrnStatus(""
 					+ ((EmployeeStatus) (empStatus.toArray()[0])).isStatus());
@@ -220,7 +270,33 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 	public Collection getEmployeeSubRoleTypes() {
 		return getDomainManagerDao().getEmployeeSubRoleTypes();
 	}
+	
+	public void storeEmployeeTruckPreference(WebEmployeeInfo empInfo){
+		// Store only the EmployeeTruckPreferences as of now Employee is readOnly
+		Map<String, String> truckPrefMap = empInfo.getEmpTruckPreferences();
+		
+		//Remove if any existing Truck Preferences
+		Collection oldTruckPrefList = getDomainManagerDao().getEmployeeTruckPreference(empInfo.getEmployeeId());
+		removeEntity(oldTruckPrefList);
+		
+		List<EmployeeTruckPreference> finalTruckPrefList = new ArrayList<EmployeeTruckPreference>();
+		Iterator itr = truckPrefMap.entrySet().iterator();
+		while (itr.hasNext()) {
+			Map.Entry<String, String> truckPrefs = (Map.Entry<String, String>) itr.next();
 
+			EmployeeTruckPreference empTruckPref = new EmployeeTruckPreference();
+			EmployeeTruckPreferenceId empTruckPrefId = new EmployeeTruckPreferenceId();
+			empTruckPrefId.setKronosId(empInfo.getEmployeeId());
+			empTruckPrefId.setPrefKey(truckPrefs.getKey());
+			empTruckPref.setId(empTruckPrefId);
+			empTruckPref.setTruckNumber(truckPrefs.getValue());
+			finalTruckPrefList.add(empTruckPref);
+		}
+		 
+		if(finalTruckPrefList.size() > 0)
+			saveEntityList(finalTruckPrefList);
+		
+	}
 	public void storeEmployees(WebEmployeeInfo employeeInfo) {
 		// store only the EmployeeRole because as of now Employee is readOnly
 		Collection roleList = employeeInfo.getEmpRole();

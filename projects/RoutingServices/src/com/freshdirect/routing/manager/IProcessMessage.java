@@ -33,4 +33,9 @@ public interface IProcessMessage {
 	String INFO_MESSAGE_HANDOFFBATCHTRIGERRED = "HandOff Batch created successfully";
 	
 	String ERROR_MESSAGE_INELIGIBLECOMMIT = "Batch Commit : InEligible";
+	
+	String INFO_MESSAGE_AUTODISPATCHCOMPLETED = "Batch Auto-Dispatch : Completed";
+	
+	String INFO_MESSAGE_AUTODISPATCHPROGRESS = "Auto-Dispatch in process";	
+	
 }

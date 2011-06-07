@@ -207,6 +207,11 @@ public class DomainController extends AbstractMultiActionController {
         	}
         	
         	return new ModelAndView("teamScheduleView","employees",result);
+		} else if ("P".equalsIgnoreCase(empStatus)) {
+
+			Collection empTruckPrefs = employeeManagerService
+											.getEmployeesTruckPrefrence();
+			return new ModelAndView("truckPreferenceView", "empTruckPrefs", empTruckPrefs);
 		} else {
 			if ("true".equalsIgnoreCase(request.getParameter("sync"))) {
 				employeeManagerService.syncEmployess();
@@ -385,7 +390,7 @@ public class DomainController extends AbstractMultiActionController {
         		Iterator _iterator = dataList.iterator();
         		Zone _tmpZone = null;
         		while(_iterator.hasNext()) {
-        			_tmpZone = (Zone)_iterator.next();        			
+        			_tmpZone = (Zone)_iterator.next();
         			setResourceInfo(_tmpZone);
         			if(!activeZoneCodes.contains(_tmpZone.getZoneCode())) {
         				_iterator.remove();

@@ -42,6 +42,7 @@ public class DispatchCommand extends WebPlanInfo {
 	private String dispatchDate;
 	private String route;
 	private String truck;
+	private String physicalTruck;
 	private boolean confirmed;
 	private String comments;
 	private String statusName;
@@ -544,6 +545,12 @@ public class DispatchCommand extends WebPlanInfo {
 		this.extras = extras;
 	}
 	
-	
+	public String getPhysicalTruck() {
+		return physicalTruck;
+	}
+
+	public void setPhysicalTruck(String physicalTruck) {
+		this.physicalTruck = physicalTruck;
+	}
 	
 }

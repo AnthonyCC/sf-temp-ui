@@ -31,6 +31,8 @@ public class RoutingDateUtil {
 	
 	public static DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	
+	public static DateFormat serverTimeFormat = new SimpleDateFormat("hh:mm aaa");
+	
 	/** @return the calendar passed in, for convenience */
 	public static Calendar truncate(Calendar cal) {
 		cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -153,5 +155,30 @@ public class RoutingDateUtil {
 			// TODO Auto-generated catch block
 			return null;
 		}
+	}
+	
+	public static Date getNormalDate(Date d1, Date d2){
+		Calendar requestedDate = Calendar.getInstance();
+		requestedDate.setTime(d1);
+		
+		Calendar normalDate = Calendar.getInstance();
+		normalDate.setTime(d2);
+		normalDate.set(Calendar.MONTH,requestedDate.get(Calendar.MONTH));
+		normalDate.set(Calendar.DATE, requestedDate.get(Calendar.DATE));
+		normalDate.set(Calendar.YEAR, requestedDate.get(Calendar.YEAR));
+		
+		return normalDate.getTime();
+	}
+	
+	public static String getServerTime(Date clientDate) throws ParseException {
+		if(clientDate != null) {
+			return serverTimeFormat.format(clientDate);
+		} else {
+			return null;
+		}
+	}
+	
+	public static Date getServerTime(String clientDate) throws ParseException {       
+        return (Date)serverTimeFormat.parse(clientDate);
 	}
 }

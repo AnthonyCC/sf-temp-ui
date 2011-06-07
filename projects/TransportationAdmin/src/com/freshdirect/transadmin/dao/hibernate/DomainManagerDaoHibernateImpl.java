@@ -15,6 +15,7 @@ import org.hibernate.Session;
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.HibernateCallback;
 
+import com.freshdirect.transadmin.constants.EnumIssueStatus;
 import com.freshdirect.transadmin.dao.DomainManagerDaoI;
 import com.freshdirect.transadmin.model.Asset;
 import com.freshdirect.transadmin.model.AssetAttribute;
@@ -427,12 +428,16 @@ public class DomainManagerDaoHibernateImpl
 		
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("MaintenanceIssue m where");
-		if(issueStatus != null && !"".equals(issueStatus))
+		if(issueStatus != null && !"".equals(issueStatus) && !EnumIssueStatus.UNRESOLVED.getName().equalsIgnoreCase(issueStatus)){
 			strBuf.append(" m.issueStatus='"+issueStatus+"'");
+		}else if(issueStatus != null && !"".equals(issueStatus) && EnumIssueStatus.UNRESOLVED.getName().equalsIgnoreCase(issueStatus)) {
+			strBuf.append(" m.issueStatus in ('Open','Verified','Re-Verified')");
+		}
 		if( serviceStatus !=null && issueStatus !=null && !"".equals(issueStatus) && !"".equals(serviceStatus))
 			strBuf.append(" and");
-		if(serviceStatus != null && !"".equals(serviceStatus))
-			strBuf.append(" m.serviceStatus='"+serviceStatus+"'");		
+		if(serviceStatus != null && !"".equals(serviceStatus)){
+			strBuf.append(" m.serviceStatus='"+serviceStatus+"'");
+		}
 		
 		return (Collection) getDataList(strBuf.toString());		
 	}
@@ -474,6 +479,16 @@ public class DomainManagerDaoHibernateImpl
 
 		} 
 		return virRecord.getId();
+	}
+	
+	public Collection getEmployeesTruckPreference() throws DataAccessException {
+		return getDataList("EmployeeTruckPreference tp ORDER BY tp.id.kronosId");
+	}
+	
+	public Collection getEmployeeTruckPreference(String empId) throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from EmployeeTruckPreference tp where tp.id.kronosId ='").append(empId).append("'");
+		return (Collection) getHibernateTemplate().find(strBuf.toString());		
 	}
 
 }

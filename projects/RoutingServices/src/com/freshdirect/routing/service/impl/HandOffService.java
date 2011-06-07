@@ -3,7 +3,9 @@ package com.freshdirect.routing.service.impl;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,9 +19,13 @@ import com.freshdirect.routing.manager.IProcessMessage;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchDepotSchedule;
 import com.freshdirect.routing.model.IHandOffBatchDepotScheduleEx;
+import com.freshdirect.routing.model.IHandOffBatchPlan;
+import com.freshdirect.routing.model.IHandOffBatchDispatchResource;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IHandOffBatchStop;
+import com.freshdirect.routing.model.IHandOffDispatch;
 import com.freshdirect.routing.model.TriggerHandOffResult;
+import com.freshdirect.routing.model.TruckPreferenceStat;
 import com.freshdirect.routing.service.IHandOffService;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
@@ -28,6 +34,7 @@ import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 import com.freshdirect.routing.util.RoutingUtil;
 import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffDispatchIn;
+import com.freshdirect.truckassignment.Truck;
 
 public class HandOffService extends BaseService implements IHandOffService {
 	
@@ -317,4 +324,116 @@ public class HandOffService extends BaseService implements IHandOffService {
 		}
 	}
 	
+	public List<IHandOffBatchPlan> getHandOffBatchPlansByDispatchStatus(Date deliveryDate, Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus) throws RoutingServiceException {
+		try {
+			List<IHandOffBatchPlan> plans = new ArrayList<IHandOffBatchPlan>();
+			if(dispatchStatus != null){
+				for(Map.Entry<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchEntry : dispatchStatus.entrySet()){
+					plans.addAll(getHandOffDAOImpl().getHandOffBatchPlansByDispatchTime(deliveryDate, dispatchEntry.getKey()));
+				}
+			}
+			return plans;
+		} catch (SQLException e) {
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
+	
+	public List<IHandOffBatchDispatchResource> getHandOffBatchPlanResourcesByDispatchStatus(Date deliveryDate, Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus) throws RoutingServiceException {
+		try {
+			List<IHandOffBatchDispatchResource> planResources = new ArrayList<IHandOffBatchDispatchResource>();
+			if(dispatchStatus != null){
+				for(Map.Entry<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchEntry : dispatchStatus.entrySet()){
+					planResources.addAll(getHandOffDAOImpl().getHandOffBatchPlanResourcesByDispatchTime(deliveryDate, dispatchEntry.getKey()));
+				}
+			}
+			return planResources;
+		} catch (SQLException e) {
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
+	
+	public List<IHandOffBatchRoute> getHandOffBatchDispatchRoutes(Date deliveryDate) throws RoutingServiceException {
+		try {
+			return getHandOffDAOImpl().getHandOffBatchDispatchRoutes(deliveryDate);
+		} catch (SQLException e) {
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
+	
+	public List<Truck> getAvailableTrucksInService(String assetType, Date deliveryDate, String assetStatus) throws RoutingServiceException {
+		try {
+			return getHandOffDAOImpl().getAvailableTrucksInService(assetType, deliveryDate, assetStatus);
+		} catch (SQLException e) {
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
+	
+	
+	public List<TruckPreferenceStat> getEmployeeTruckPreferences() throws RoutingServiceException {
+		try {
+			return getHandOffDAOImpl().getEmployeeTruckPreferences();
+		} catch (SQLException e) {
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
+	
+	public void clearHandOffBatchAutoDispatches(Date deliveryDate, Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus) throws RoutingServiceException {
+		try {
+			if(dispatchStatus != null){
+				for(Map.Entry<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchEntry : dispatchStatus.entrySet()){
+					getHandOffDAOImpl().clearHandOffBatchAutoDispatchResources(deliveryDate, dispatchEntry.getKey()); 
+					getHandOffDAOImpl().clearHandOffBatchAutoDispatches(deliveryDate, dispatchEntry.getKey());
+				}
+			}
+						
+		} catch (SQLException e) {
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
+	
+	public void addNewHandOffBatchAutoDispatches(Collection dataList) throws RoutingServiceException {
+		try {			
+			getHandOffDAOImpl().addNewHandOffBatchAutoDispatches(dataList);			
+		} catch (SQLException e) {
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
+	
+	public void addNewHandOffBatchAutoDispatchResources(Collection dataList) throws RoutingServiceException {
+		try {			
+			getHandOffDAOImpl().addNewHandOffBatchAutoDispatchResources(dataList);			
+		} catch (SQLException e) {
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
+	
+	public Set<IHandOffDispatch> getHandOffDispatch(Date deliveryDate, Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus) throws RoutingServiceException {
+		try{
+			Set<IHandOffDispatch> dispatchs = new HashSet<IHandOffDispatch>();
+			if(dispatchStatus != null){
+				for(Map.Entry<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchEntry : dispatchStatus.entrySet()){
+					dispatchs.addAll(getHandOffDAOImpl().getHandOffDispatch(deliveryDate, dispatchEntry.getKey()));
+				}
+			}
+			return dispatchs;
+		}catch(SQLException e){
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
+	
+	public Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> getHandOffBatchCompletedDispatchStatus(Date deliveryDate) throws RoutingServiceException{
+		try{
+			return getHandOffDAOImpl().getHandOffBatchCompletedDispatchStatus(deliveryDate);
+		}catch(SQLException e){
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
+	
+	public void addNewHandOffRouteAssignedTrucks(Date deliveryDate, List<IHandOffBatchRoute> rootRoutesIn) throws RoutingServiceException {
+		try{
+			getHandOffDAOImpl().addNewHandOffRouteAssignedTrucks(deliveryDate, rootRoutesIn);
+		}catch(SQLException e){
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
 }

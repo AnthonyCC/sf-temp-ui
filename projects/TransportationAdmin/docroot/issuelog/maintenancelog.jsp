@@ -91,7 +91,7 @@
 					</div>
 					<div style="float:left;text-align:center;font-weight:bold;font-size:11px;">Issue Status<br>&nbsp;
 						 <select id="issueStatus" name="issueStatus" style="font-size:11px;">
-							<option value="">--Please Select</option>
+							<option value="">--ALL--</option>
 							  <c:forEach var="statusName" items="${issueStatuses}">
 								  <c:choose>
 									<c:when test="${issueStatus == statusName}" > 
@@ -100,8 +100,8 @@
 									<c:otherwise> 
 									  <option value="<c:out value="${statusName}"/>"><c:out value="${statusName}"/></option>
 									</c:otherwise> 
-								  </c:choose>      
-								</c:forEach>   
+								  </c:choose>
+								</c:forEach>
 					    </select>
 					</div>
 					&nbsp;&nbsp;&nbsp;

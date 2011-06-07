@@ -18,6 +18,8 @@ public class EnumIssueStatus  extends Enum {
     
     public static final EnumIssueStatus REJECTED = new EnumIssueStatus("Rejected","REJECTED");
     
+    public static final EnumIssueStatus UNRESOLVED = new EnumIssueStatus("All-Unresolved","UNRESOLVED");
+    
     private final String description;
 
 	public EnumIssueStatus(String name, String description) {

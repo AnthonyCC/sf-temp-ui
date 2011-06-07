@@ -81,7 +81,10 @@
         </property>
         <property name="additionalNextels" type="string">
             <column name="ADDITIONAL_NEXTELS" length="50" />
-        </property> 
+        </property>
+         <property name="physicalTruck" type="string">
+            <column name="PHYSICAL_TRUCK" length="6" />
+        </property>
         <many-to-one name="region" class="com.freshdirect.transadmin.model.Region" fetch="select" lazy="false">
             <column name="REGION" length="16" not-null="true" />
         </many-to-one>      

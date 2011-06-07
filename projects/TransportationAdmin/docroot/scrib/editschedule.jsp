@@ -50,6 +50,13 @@
 				<a href="employee.do?empstatus=C" class="">Team</a>
 			</div>
 			<div class="sub_tabright sub_tabR_MNM001 ">&nbsp;</div>
+
+			<div class="sub_tableft sub_tabL_MNM001 ">&nbsp;</div>
+			<div class="subtab ">
+				<div class="minwidth"><!-- --></div>
+				<a href="employee.do?empstatus=P" class="">Preference</a>
+			</div>
+			<div class="sub_tabright sub_tabR_MNM001 ">&nbsp;</div>
 		</div>
 	</div>
 

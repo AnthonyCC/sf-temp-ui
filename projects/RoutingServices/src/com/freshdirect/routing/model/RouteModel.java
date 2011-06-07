@@ -13,6 +13,8 @@ public class RouteModel extends BaseModel implements IRouteModel {
 	
 	private TreeSet stops;
 	
+	private Date firstDeliveryTime;
+	
 	private Date startTime;
 	
 	private Date completionTime;
@@ -32,7 +34,7 @@ public class RouteModel extends BaseModel implements IRouteModel {
 		
 	private RoutingTimeOfDay dispatchTime;	
 	private int dispatchSequence;
-			
+	
 	public void copyWaveProperties(IWaveInstance waveInstance) {
 		this.setMaxRunTime(waveInstance.getMaxRunTime());
 		this.setPreferredRunTime(waveInstance.getPreferredRunTime());
@@ -159,6 +161,14 @@ public class RouteModel extends BaseModel implements IRouteModel {
 		this.originId = originId;
 	}
 
+	public Date getFirstDeliveryTime() {
+		return firstDeliveryTime;
+	}
+
+	public void setFirstDeliveryTime(Date firstDeliveryTime) {
+		this.firstDeliveryTime = firstDeliveryTime;
+	}
+	
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;

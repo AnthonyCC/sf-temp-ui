@@ -126,6 +126,10 @@ public class RoutingServicesProperties {
 	
 	private final static String PROP_ROUTING_DISPATCHSTATUSVALIDATION_ENABLED		= "routingservices.handoff.dispstatusvalidationenabled";
 	
+	private final static String PROP_TRUCK_PREFERENCESIZE = "routingservices.handoff.truckpref.size";
+	
+	private final static String PROP_TRUCKASSIGNMENT_SOLVERTIMEOUT = "routingservices.handoff.solvertimeout";
+	
 	private static final Category LOGGER = LoggerFactory.getInstance( RoutingServicesProperties.class );
 	
 	static {
@@ -197,6 +201,9 @@ public class RoutingServicesProperties {
 		
 		defaults.put(PROP_ROUTING_DISPATCHSTATUSVALIDATION_ENABLED, "true");
 		
+		defaults.put(PROP_TRUCKASSIGNMENT_SOLVERTIMEOUT,Long.toString(120000l));
+	    defaults.put(PROP_TRUCK_PREFERENCESIZE, "5");
+
 		refresh();		
 	}
 
@@ -463,4 +470,11 @@ public class RoutingServicesProperties {
 		return (new Boolean(get(PROP_ROUTING_DISPATCHSTATUSVALIDATION_ENABLED))).booleanValue();
 	}
 	
+	public static int getHandOffPrefListSize() {
+		return getIntVal(get(PROP_TRUCK_PREFERENCESIZE));
+	}
+	
+	public static long getTruckAssignmentSolverTimeOut() {
+	        return Long.parseLong(get(PROP_TRUCKASSIGNMENT_SOLVERTIMEOUT));
+	}	
 }

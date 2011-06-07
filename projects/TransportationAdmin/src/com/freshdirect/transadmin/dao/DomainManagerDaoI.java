@@ -136,5 +136,9 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 	void saveMaintenanceIssue(MaintenanceIssue model) throws DataAccessException;
 	
 	String saveVIRRecord(VIRRecord virRecord) throws DataAccessException;
+	
+	Collection getEmployeesTruckPreference() throws DataAccessException;
+	
+	Collection getEmployeeTruckPreference(String empId) throws DataAccessException;
 
 }

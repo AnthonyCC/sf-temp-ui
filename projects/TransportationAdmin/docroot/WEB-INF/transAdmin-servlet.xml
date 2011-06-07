@@ -35,6 +35,7 @@
  		 	    <prop key="/region.do">domainController</prop>					                
  		 	    <prop key="/truck.do">domainController</prop>		                
  		 	    <prop key="/editemployee.do">employeeFormController</prop>
+ 		 	    <prop key="/editemployeetruckpreference.do">truckPreferenceFormController</prop>
  		 	    <prop key="/deleteemployee.do">domainController</prop>
  		 	    <prop key="/editroute.do">routeFormController</prop>
  		 	    <prop key="/deleteroute.do">domainController</prop>
@@ -311,6 +312,17 @@
         <property name="validator" ref="employeeValidator"/>
         <property name="successView" value="employeeEdit" />
         <property name="formView" value="employeeEdit" />
+	</bean>
+	
+	<bean id="truckPreferenceFormController" class="com.freshdirect.transadmin.web.TruckPreferenceFormController">
+		<property name="employeeManagerService" ref="employeeManagerService"/>
+		<property name="assetManagerService" ref="assetManagerService"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="truckPreferenceForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.web.model.WebEmployeeInfo"/>
+        <property name="validator" ref="truckPreferenceValidator"/>
+        <property name="successView" value="truckPreferenceEdit" />
+        <property name="formView" value="truckPreferenceEdit" />
 	</bean>
 	
 	<bean id="zoneFormController" class="com.freshdirect.transadmin.web.ZoneFormController">
@@ -630,6 +642,7 @@
 	</bean>
 	
 	<bean name="asyncHandOffController" class="com.freshdirect.transadmin.web.json.HandOffProviderController">		
+		<property name="dispatchManagerService" ref="dispatchManager"/>
 		<property name="ajaxServices">
 			<map>
 				<entry key="AsyncHandOffProvider" value="com.freshdirect.transadmin.web.json.IHandOffProvider" />				
@@ -685,6 +698,7 @@
 	</bean>
 	    
 	<bean id="employeeValidator" class="com.freshdirect.transadmin.web.validation.EmployeeValidator"/>
+	<bean id="truckPreferenceValidator" class="com.freshdirect.transadmin.web.validation.TruckPreferenceValidator"/>
 	<bean id="zoneValidator" class="com.freshdirect.transadmin.web.validation.ZoneValidator"/>
 	<bean id="regionValidator" class="com.freshdirect.transadmin.web.validation.RegionValidator"/>	
 	<bean id="zoneTypeValidator" class="com.freshdirect.transadmin.web.validation.ZoneTypeValidator"/>	

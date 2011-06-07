@@ -32,7 +32,7 @@
 	     </menu>
 	     
 	     <menu id="OPR007" title="Employee" orientation="RIGHT" link="employee.do?empstatus=S">
-	     	<access-uris>employee.do,editemployee.do,deleteemployee.do,editschedule.do,uploadschedules.do</access-uris>
+	     	<access-uris>employee.do,editemployee.do,deleteemployee.do,editschedule.do,uploadschedules.do,editemployeetruckpreference.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnOperations</access-roles>
 	     </menu>
 	     

@@ -29,7 +29,8 @@
 				<value>com/freshdirect/transadmin/model/DispatchResource.hbm.xml</value>  				
 				<value>com/freshdirect/transadmin/model/Employeerole.hbm.xml</value>  				
 				<value>com/freshdirect/transadmin/model/EmployeeRoleType.hbm.xml</value> 
-				<value>com/freshdirect/transadmin/model/EmployeeSubRoleType.hbm.xml</value> 				
+				<value>com/freshdirect/transadmin/model/EmployeeSubRoleType.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/EmployeeTruckPreference.hbm.xml</value> 				
 				<value>com/freshdirect/transadmin/model/Plan.hbm.xml</value>  				
 				<value>com/freshdirect/transadmin/model/PlanResource.hbm.xml</value>  				
 				<value>com/freshdirect/transadmin/model/Region.hbm.xml</value>  				

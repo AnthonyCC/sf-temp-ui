@@ -52,4 +52,7 @@ public interface IRouteModel {
 	
 	void appendRoutingRoute(String routingRouteId);
 	void copyWaveProperties(IWaveInstance waveInstance);
+	
+	Date getFirstDeliveryTime();
+	void setFirstDeliveryTime(Date firstDeliveryTime);
 }

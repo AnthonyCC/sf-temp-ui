@@ -20,6 +20,8 @@ public interface EmployeeManagerI extends BaseManagerI {
 	
 	WebEmployeeInfo getEmployee(String id);
 	
+	void storeEmployeeTruckPreference(WebEmployeeInfo empInfo);
+	
 	WebEmployeeInfo getEmployeeEx(String id);
 	
 	Collection getEmployeeRoleTypes();
@@ -58,4 +60,5 @@ public interface EmployeeManagerI extends BaseManagerI {
 	Map<EmployeeInfo, Set<EmployeeInfo>> getTeams();
 	Map<String, String> getTeamMapping();
 	
+	Collection getEmployeesTruckPrefrence();
 }
