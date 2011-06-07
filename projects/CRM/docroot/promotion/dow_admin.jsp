@@ -123,7 +123,9 @@
 			if(limit != null){
 				maxLimit = currencyFormatter.format(limit.doubleValue());
 				limitstr = decimalFormat.format(limit.doubleValue());
-				spentstr = decimalFormat.format(spent.doubleValue());
+				if(null != spent){
+					spentstr = decimalFormat.format(spent.doubleValue());
+				}
 			}
 	%>
 	<tr>
