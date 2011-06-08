@@ -10,6 +10,8 @@ package com.freshdirect.dataloader.payment;
  * 
  * @author knadeem
  */
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -81,10 +83,11 @@ public class SaleCronRunner {
 			//sb.captureSales(captureTimeout); 
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			LOGGER.info(new StringBuilder("SaleCronRunner failed with Exception...").append(e.toString()).toString());
-			LOGGER.error(e);
-			email(Calendar.getInstance().getTime(), e.toString());		
+			StringWriter sw = new StringWriter();
+			e.printStackTrace(new PrintWriter(sw));			
+			LOGGER.info(new StringBuilder("SaleCronRunner failed with Exception...").append(sw.toString()).toString());
+			LOGGER.error(sw.toString());
+			email(Calendar.getInstance().getTime(), sw.getBuffer().toString());		
 		} finally {
 			try {
 				if (ctx != null) {
@@ -93,7 +96,9 @@ public class SaleCronRunner {
 				}
 			} catch (NamingException ne) {
 				//could not do the cleanup
-				email(Calendar.getInstance().getTime(), ne.toString());
+				StringWriter sw = new StringWriter();
+				ne.printStackTrace(new PrintWriter(sw));	
+				email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
 			}
 		}
 	}
@@ -116,7 +121,8 @@ public class SaleCronRunner {
 			buff.append("<html>").append("<body>");			
 			
 			if(exceptionMsg != null) {
-				buff.append("b").append(exceptionMsg).append("/b");
+				buff.append("Exception is :").append("\n");
+				buff.append(exceptionMsg);
 			}
 			buff.append("</body>").append("</html>");
 

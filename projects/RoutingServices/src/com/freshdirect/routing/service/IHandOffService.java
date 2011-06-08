@@ -1,6 +1,5 @@
 package com.freshdirect.routing.service;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +23,7 @@ import com.freshdirect.routing.model.TruckPreferenceStat;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffDispatchIn;
-import com.freshdirect.truckassignment.Truck;
+import com.freshdirect.routing.truckassignment.Truck;
 
 
 public interface IHandOffService {

@@ -22,7 +22,7 @@ import com.freshdirect.routing.model.IHandOffDispatch;
 import com.freshdirect.routing.model.TruckPreferenceStat;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffDispatchIn;
-import com.freshdirect.truckassignment.Truck;
+import com.freshdirect.routing.truckassignment.Truck;
 
 
 public interface IHandOffDAO {

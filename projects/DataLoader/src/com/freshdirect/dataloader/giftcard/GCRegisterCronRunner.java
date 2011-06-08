@@ -10,6 +10,8 @@ package com.freshdirect.dataloader.giftcard;
  * 
  * @author skrishnasamy
  */
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -62,7 +64,9 @@ public class GCRegisterCronRunner {
 		} catch (Exception e) {
 			LOGGER.error(e);
 			LOGGER.info(new StringBuilder("GCRegisterCron failed with Exception...").append(e.toString()).toString());
-			email(Calendar.getInstance().getTime(), e.toString());
+			StringWriter sw = new StringWriter();
+			e.printStackTrace(new PrintWriter(sw));
+			email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
 		} finally {
 			try {
 				if (ctx != null) {
@@ -93,7 +97,8 @@ public class GCRegisterCronRunner {
 			buff.append("<html>").append("<body>");			
 			
 			if(exceptionMsg != null) {
-				buff.append("b").append(exceptionMsg).append("/b");
+				buff.append("Exception is :").append("\n");
+				buff.append(exceptionMsg);
 			}
 			buff.append("</body>").append("</html>");
 

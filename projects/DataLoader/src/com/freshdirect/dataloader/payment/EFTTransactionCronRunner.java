@@ -3,6 +3,8 @@
  */
 package com.freshdirect.dataloader.payment;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -93,8 +95,9 @@ public class EFTTransactionCronRunner {
 		} catch (Exception e) {
 			LOGGER.error(e);
 			LOGGER.info(new StringBuilder("EFTTransactionCronRunner failed with Exception...").append(e.toString()).toString());
-			LOGGER.error(e);
-			email(Calendar.getInstance().getTime(), e.toString());
+			StringWriter sw = new StringWriter();
+			e.printStackTrace(new PrintWriter(sw));
+			email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
 		} finally {
 			try {
 				if (ctx != null) {
@@ -190,7 +193,8 @@ public class EFTTransactionCronRunner {
 			buff.append("<html>").append("<body>");			
 			
 			if(exceptionMsg != null) {
-				buff.append("b").append(exceptionMsg).append("/b");
+				buff.append("Exception is :").append("\n");
+				buff.append(exceptionMsg);
 			}
 			buff.append("</body>").append("</html>");
 

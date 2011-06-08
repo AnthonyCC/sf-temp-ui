@@ -17,7 +17,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.Map.Entry;
 
 import lpsolve.LpSolveException;
@@ -31,7 +30,6 @@ import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchPlan;
 import com.freshdirect.routing.model.IHandOffBatchDispatchResource;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
-import com.freshdirect.routing.model.IHandOffBatchStop;
 import com.freshdirect.routing.model.IHandOffDispatch;
 import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.TruckPreferenceStat;
@@ -47,13 +45,7 @@ import com.freshdirect.sap.bapi.BapiSendPhysicalTruckInfo.HandOffRouteTruckIn;
 import com.freshdirect.sap.command.SapSendPhysicalTruckInfo;
 import com.freshdirect.sap.ejb.SapException;
 
-import com.freshdirect.truckassignment.Dispatch;
-import com.freshdirect.truckassignment.Employee;
-import com.freshdirect.truckassignment.Route;
-import com.freshdirect.truckassignment.TAPStatistics;
-import com.freshdirect.truckassignment.Truck;
-import com.freshdirect.truckassignment.TruckAssignmentSolver;
-
+import com.freshdirect.routing.truckassignment.*;
 
 public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 	

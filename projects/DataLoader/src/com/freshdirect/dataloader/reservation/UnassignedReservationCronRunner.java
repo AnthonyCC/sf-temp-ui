@@ -1,5 +1,7 @@
 package com.freshdirect.dataloader.reservation;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -76,12 +78,12 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 					startDate.add(Calendar.DATE, 1);
 				}
 			} catch (Exception e) {
-			
-				e.printStackTrace();
-				LOGGER.info(new StringBuilder("UnassignedReservationCronRunner failed with exception : ").append(e.toString()).toString());
+				StringWriter sw = new StringWriter();
+				e.printStackTrace(new PrintWriter(sw));				
+				LOGGER.info(new StringBuilder("UnassignedReservationCronRunner failed with exception : ").append(sw.toString()).toString());
 				LOGGER.error("Invalid date argument. Accepted Format is [yyyy-MM-dd]");
-				LOGGER.error(e);
-				email(Calendar.getInstance().getTime(),e.toString());
+				LOGGER.error(sw.toString());
+				email(Calendar.getInstance().getTime(),sw.getBuffer().toString());
 				return ;
 			}
 			
@@ -152,17 +154,19 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 					}
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
-				LOGGER.info(new StringBuilder("UnassignedReservationCronRunner failed with exception : ").append(e.toString()).toString());
-				email(Calendar.getInstance().getTime(),e.toString());
+				StringWriter sw = new StringWriter();
+				e.printStackTrace(new PrintWriter(sw));
+				LOGGER.info(new StringBuilder("UnassignedReservationCronRunner failed with exception : ").append(sw.toString()).toString());
+				email(Calendar.getInstance().getTime(),sw.getBuffer().toString());
 			}
 			
 			LOGGER.info("UnassignedReservationCronRunner finished");
 		}catch (NamingException e) {
-				e.printStackTrace();
-				LOGGER.info(new StringBuilder("UnassignedReservationCronRunner failed with exception : ").append(e.toString()).toString());
-				email(Calendar.getInstance().getTime(),e.toString());
-				LOGGER.error(e);
+				StringWriter sw = new StringWriter();
+				e.printStackTrace(new PrintWriter(sw));
+				LOGGER.info(new StringBuilder("UnassignedReservationCronRunner failed with exception : ").append(sw.toString()).toString());
+				email(Calendar.getInstance().getTime(),sw.getBuffer().toString());
+				LOGGER.error(sw.toString());
 		} finally {
 			try {
 				if (ctx != null) {
@@ -248,9 +252,10 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 			 
 			 
 		} catch (Exception e) {
-			e.printStackTrace();
+			StringWriter sw = new StringWriter();
+			e.printStackTrace(new PrintWriter(sw));
 			LOGGER.info(new StringBuilder("UnassignedReservationCronRunner: ").append(" failed to reassign reservation for id ").append(reservation.getId()).toString(),e);
-			email(Calendar.getInstance().getTime(),e.toString());
+			email(Calendar.getInstance().getTime(),sw.getBuffer().toString());
 		}
     }
     
@@ -265,7 +270,8 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 			buff.append("<html>").append("<body>");			
 			
 			if(exceptionMsg != null) {
-				buff.append("b").append(exceptionMsg).append("/b");
+				buff.append("Exception is :").append("\n");
+				buff.append(exceptionMsg);
 			}
 			buff.append("</body>").append("</html>");
 

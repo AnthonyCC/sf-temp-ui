@@ -4,6 +4,8 @@ package com.freshdirect.dataloader.reservation;
  * 
  * @author knadeem
  */
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -66,19 +68,22 @@ public class ReservationCronRunner {
 					
 				} catch(Exception e) {
 					LOGGER.warn("Could not Reserve a Weekly recurring timeslot "+info.getCustomerId()+" "+identity, e);
-					LOGGER.info(new StringBuilder("Could not Reserve a Weekly recurring timeslot failed with Exception...").append(e.toString()).toString());
-					LOGGER.error(e);
-					email(Calendar.getInstance().getTime(), e.toString());
+					StringWriter sw = new StringWriter();
+					e.printStackTrace(new PrintWriter(sw));		
+					LOGGER.info(new StringBuilder("Could not Reserve a Weekly recurring timeslot failed with Exception...").append(sw.toString()).toString());
+					LOGGER.error(sw.toString());
+					email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
 				}
 				
 			}
 			
 			LOGGER.info("ReservationCron finished");
 		} catch (Exception e) {
-			LOGGER.error(e);
-			LOGGER.info(new StringBuilder("ReservationCronRunner failed with Exception...").append(e.toString()).toString());
-			LOGGER.error(e);
-			email(Calendar.getInstance().getTime(), e.toString());
+			StringWriter sw = new StringWriter();
+			e.printStackTrace(new PrintWriter(sw));		
+			LOGGER.info(new StringBuilder("ReservationCronRunner failed with Exception...").append(sw.toString()).toString());
+			LOGGER.error(sw.toString());
+			email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
 		} finally {
 			try {
 				if (ctx != null) {
@@ -111,7 +116,8 @@ public class ReservationCronRunner {
 			buff.append("<html>").append("<body>");			
 			
 			if(exceptionMsg != null) {
-				buff.append("b").append(exceptionMsg).append("/b");
+				buff.append("Exception is :").append("\n");
+				buff.append(exceptionMsg);
 			}
 			buff.append("</body>").append("</html>");
 

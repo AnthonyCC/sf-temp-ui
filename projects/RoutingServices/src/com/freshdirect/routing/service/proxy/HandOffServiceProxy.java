@@ -26,7 +26,7 @@ import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffDispatchIn;
-import com.freshdirect.truckassignment.Truck;
+import com.freshdirect.routing.truckassignment.Truck;
 
 public class HandOffServiceProxy  extends BaseServiceProxy  {	
 		

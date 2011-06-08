@@ -1,7 +1,5 @@
 package com.freshdirect.routing.model;
 
-import com.freshdirect.truckassignment.TruckAssignmentStat;
-
 public class TruckPreferenceStat {
 	private String truckId;
 	private String employeeId;

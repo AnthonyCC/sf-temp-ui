@@ -421,15 +421,9 @@ if (errorMsg!=null) {%>
 
 <logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.util.FDTimeslotUtil" indexId="idx">
 	<tr>
-		<td colspan="2">
-<%
+		<td colspan="2"><%
 	if(timeslotList.size()>1 && idx.intValue()==0){
-%>
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0">
-	<span class="title13 fleft tsAdvanceHeader">Advance Order Delivery Timeslots&nbsp;&nbsp;</span><a class="title13 tsDivHide" id="displayAdvanceOrderGrid" href="javascript:hideAdvanceOrder();">Hide Delivery Timeslots</a>
-	<BR>
-
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
+%><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><span class="title13 fleft tsAdvanceHeader">Advance Order Delivery Timeslots&nbsp;&nbsp;</span><a class="title13 fleft tsDivHide" id="displayAdvanceOrderGrid" href="javascript:hideAdvanceOrder();">Hide Delivery Timeslots</a><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
 <% } %>
 
 <%

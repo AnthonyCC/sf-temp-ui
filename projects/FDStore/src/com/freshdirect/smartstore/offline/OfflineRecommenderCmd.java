@@ -1,5 +1,7 @@
 package com.freshdirect.smartstore.offline;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -213,7 +215,9 @@ public class OfflineRecommenderCmd {
 					+ " recommendations for customer #" + customerId, e);
 			LOG.info(new StringBuilder("OfflineRecommenderCron failed with Exception...").append(arrayToString(siteFeatures)+" recommendations for customer #"+ customerId).append(e.toString()).toString());
 			LOG.error(e);
-			email(Calendar.getInstance().getTime(), e.toString());
+			StringWriter sw = new StringWriter();
+			e.printStackTrace(new PrintWriter(sw));
+			email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
 		}
 	}
 
@@ -278,7 +282,8 @@ public class OfflineRecommenderCmd {
 			buff.append("<html>").append("<body>");			
 			
 			if(exceptionMsg != null) {
-				buff.append("b").append(exceptionMsg).append("/b");
+				buff.append("Exception is :").append("\n");
+				buff.append(exceptionMsg);
 			}
 			buff.append("</body>").append("</html>");
 

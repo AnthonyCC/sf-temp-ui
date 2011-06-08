@@ -34,7 +34,7 @@ import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 import com.freshdirect.routing.util.RoutingUtil;
 import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffDispatchIn;
-import com.freshdirect.truckassignment.Truck;
+import com.freshdirect.routing.truckassignment.Truck;
 
 public class HandOffService extends BaseService implements IHandOffService {
 	

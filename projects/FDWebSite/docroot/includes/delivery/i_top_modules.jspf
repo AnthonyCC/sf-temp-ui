@@ -39,7 +39,7 @@ double currentHour = h+m;
 </script>
 <table width="695" cellpadding="0" cellpadding="0" border="0" align="center">
 	<tr valign="TOP">
-		<td width="215" rowspan="2">
+		<td width="215" rowspan="2" align="center">
 			<%if(user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName())){%>
 				
 				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/corporate_top_module.html"/>
@@ -72,7 +72,7 @@ double currentHour = h+m;
 		</td>
 		<td width="15" rowspan="2"><img height="1" border="0" width="15" src="/media_stat/images/layout/clear.gif"></td>
 		
-		<td width="215" rowspan="2">
+		<td width="215" rowspan="2" align="center">
 			<%if(deliveryModel.getMaxDiscount()>0 && user.isDlvPassActive()){%>
 				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/promotion_discount.html"/>
 			<%}else if(deliveryModel.getMaxDiscount()>0 && (user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName()))){%>
@@ -104,7 +104,7 @@ double currentHour = h+m;
 		</td>
 		<td width="15" rowspan="2"><img height="1" border="0" width="15" src="/media_stat/images/layout/clear.gif"></td>
 		
-		<td width="215" rowspan="2">
+		<td width="215" rowspan="2" align="center">
 			<%if(clickToCall && (user.isDlvPassActive() || (user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName())))){%>
 				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/click-to-call_top_module.html"/>
 			<%}else if(user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName())){%>

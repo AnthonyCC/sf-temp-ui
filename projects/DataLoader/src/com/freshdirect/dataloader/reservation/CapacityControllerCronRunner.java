@@ -1,5 +1,7 @@
 package com.freshdirect.dataloader.reservation;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -168,20 +170,22 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 						email(processDate, slots, null, isTrialRun);
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
-					LOGGER.info(new StringBuilder("CapacityControllerCronRunner failed with exception : ").append(e.toString()).toString());
+					StringWriter sw = new StringWriter();
+					e.printStackTrace(new PrintWriter(sw));
+					LOGGER.info(new StringBuilder("CapacityControllerCronRunner failed with exception : ").append(sw.toString()).toString());
 					if(isSendEmail) { 
-						email(processDate, null, e.toString(), isTrialRun);
+						email(processDate, null, sw.toString(), isTrialRun);
 					}
 				}
 			}
 			LOGGER.info("########################## CapacityControllerCronRunner Stop ##############################");
 		} catch (Exception e) {
-			e.printStackTrace();
-			LOGGER.info(new StringBuilder("CapacityControllerCronRunner failed with exception : ").append(e.toString()).toString());
-			LOGGER.error(e);
+			StringWriter sw = new StringWriter();
+			e.printStackTrace(new PrintWriter(sw));			
+			LOGGER.info(new StringBuilder("CapacityControllerCronRunner failed with exception : ").append(sw.toString()).toString());
+			LOGGER.error(sw);
 			if(isSendEmail) { 
-				email(Calendar.getInstance().getTime(), null, e.toString(), isTrialRun);
+				email(Calendar.getInstance().getTime(), null, sw.toString(), isTrialRun);
 			}
 		} finally {
 			try {
@@ -191,6 +195,9 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 				}
 			} catch (NamingException e) {
 				LOGGER.warn("Could not close CTX due to following NamingException",	e);
+				StringWriter sw = new StringWriter();
+				e.printStackTrace(new PrintWriter(sw));
+				email(Calendar.getInstance().getTime(), null, sw.toString(), isTrialRun);
 			}
 		}
 	}
@@ -335,7 +342,8 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 				buff.append("</table>");
 			}
 			if(exceptionMsg != null) {
-				buff.append("b").append(exceptionMsg).append("/b");
+				buff.append("Exception is :").append("\n");
+				buff.append(exceptionMsg);
 			}
 			buff.append("</body>").append("</html>");
 

@@ -1,5 +1,7 @@
 package com.freshdirect.dataloader;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -87,10 +89,11 @@ public class MissingInvoiceCron extends DBReportCreator {
 			
 		} catch (Exception e) {
 			LOGGER.warn("Exception during missing invoice report", e);
-			e.printStackTrace();
-			LOGGER.info(new StringBuilder("Exception during missing invoice report...").append(e.toString()).toString());
-			LOGGER.error(e);
-			email(Calendar.getInstance().getTime(), e.toString());			
+			StringWriter sw = new StringWriter();
+			e.printStackTrace(new PrintWriter(sw));		
+			LOGGER.info(new StringBuilder("Exception during missing invoice report...").append(sw.toString()).toString());
+			LOGGER.error(sw);
+			email(Calendar.getInstance().getTime(), sw.getBuffer().toString());			
 		} finally {
 			try {
 				if (ctx != null) {
@@ -99,6 +102,9 @@ public class MissingInvoiceCron extends DBReportCreator {
 				}
 			} catch (NamingException ne) {
 				//could not do the cleanup
+				StringWriter sw = new StringWriter();
+				ne.printStackTrace(new PrintWriter(sw));
+				email(Calendar.getInstance().getTime(), sw.getBuffer().toString());		
 			}
 		}
 		LOGGER.warn("Missing Invoice Report Complete");
@@ -126,7 +132,8 @@ public class MissingInvoiceCron extends DBReportCreator {
 			buff.append("<html>").append("<body>");			
 			
 			if(exceptionMsg != null) {
-				buff.append("b").append(exceptionMsg).append("/b");
+				buff.append("Exception is :").append("\n");
+				buff.append(exceptionMsg);
 			}
 			buff.append("</body>").append("</html>");
 
