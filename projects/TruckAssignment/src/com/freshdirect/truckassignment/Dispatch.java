@@ -122,7 +122,7 @@ public class Dispatch extends Id implements Cloneable, Comparable<Dispatch> {
 			return Double.NaN;
 		if (truck.isVirtual())
 			return Double.NEGATIVE_INFINITY;
-		int index = indexOf(employee.getPreferences(), truck);
+		int index = indexOf(employee != null ? employee.getPreferences() : new LinkedHashMap<Truck, Integer>(), truck);
 		if (index < 0)
 			return Double.POSITIVE_INFINITY;
 		return index;
