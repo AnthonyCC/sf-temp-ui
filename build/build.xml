@@ -236,6 +236,7 @@
     	<checkoutLabeled dir="projects/MarketingAdmin"/>
     	<checkoutLabeled dir="projects/TransportationAdmin"/>
     	<checkoutLabeled dir="projects/RoutingServices"/>
+		<checkoutLabeled dir="projects/TruckAssignment"/>
 		<checkoutLabeled dir="projects/FDIntegrationServices"/> <!-- Added: Schematic rsung -->
 		<checkoutLabeled dir="projects/StandingOrdersService"/> <!-- Standing Orders background service -->
 		<checkoutLabeled dir="applications"/>
@@ -295,6 +296,7 @@
         <checkoutLatest dir="projects/MarketingAdmin"/>
         <checkoutLatest dir="projects/TransportationAdmin"/>
         <checkoutLatest dir="projects/RoutingServices"/>
+		<checkoutLatest dir="projects/TruckAssignment"/>
 		<checkoutLatest dir="projects/FDIntegrationServices"/> <!-- Added: Schematic rsung -->        	
 		<checkoutLatest dir="projects/StandingOrdersService"/>
 		<checkoutLatest dir="applications"/>
@@ -387,6 +389,7 @@
 		<mkdir dir="${work.dir}/MrktAdmin"/>
 		<mkdir dir="${work.dir}/TransportationAdmin"/>
 		<mkdir dir="${work.dir}/RoutingServices"/>
+		<mkdir dir="${work.dir}/TruckAssignment"/>
 		<mkdir dir="${work.dir}/cms-gwt"/>
 		<mkdir dir="${work.dir}/StandingOrdersService"/>
 	</target>
@@ -489,7 +492,7 @@
         </copy>
     </target>
 
-	<target name="build" depends="framework,erpservices,routing,delivery,cms,fdstore,listadmin-lib,ocf,dataloader,erpswebapp,tools,StandingOrdersService" description="Build everything">
+	<target name="build" depends="framework,erpservices,truckassignment,routing,delivery,cms,fdstore,listadmin-lib,ocf,dataloader,erpswebapp,tools,StandingOrdersService" description="Build everything">
 	</target>
 
 	<target name="jsmin" description="Minimizing javascript files">
@@ -1397,11 +1400,21 @@
 			classpathref="delivery.classpath"/>
 	</target>
 	
+	<target name="truckassignment" description="Build Truck Assignment">
+			<path id="truckassignment.classpath">
+				<pathelement location="${thirdparty.home}/lpsolve55j.jar"/>
+			</path>
+	
+			<makeProject
+				project="TruckAssignment"
+	            	classpathref="truckassignment.classpath"/>
+	</target>
     
 	<target name="routing" description="Build Routing">
 			<path id="routing.classpath">
 				<pathelement location="${work.dir}/Framework.jar"/>							
 				<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
+				<pathelement location="${work.dir}/TruckAssignment.jar"/>
 				<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
 				<pathelement location="${thirdparty.home}/commons-discovery-0.2.jar"/>
 				<pathelement location="${thirdparty.home}/commons-logging-1.1.1.jar"/>
@@ -1423,6 +1436,7 @@
                 <pathelement location="${thirdparty.home}/wstx-asl-3.2.4.jar"/>
                 <pathelement location="${thirdparty.home}/wsdl4j-1.5.1.jar"/>
                 <pathelement location="${thirdparty.home}/xml-apis.jar"/>
+				<pathelement location="${thirdparty.home}/lpsolve55j.jar"/>
 			</path>     
 	
 			<makeProject
