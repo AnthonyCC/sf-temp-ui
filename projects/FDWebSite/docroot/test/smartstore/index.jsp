@@ -1,5 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
+<%@page import="com.freshdirect.cms.application.service.db.DbTypeService"%>
+<%@page import="com.freshdirect.cms.application.service.xml.XmlTypeService"%>
+<%@page import="com.freshdirect.cms.application.CmsManager"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.freshdirect.event.ImpressionLogger"%>
 <%@page import="com.freshdirect.smartstore.external.scarab.ScarabInfrastructure"%>
@@ -108,9 +111,7 @@
 		<span class="bull">&bull;</span> <a href="../search/category_scoring.jsp"><span>Search Category Scoring</span></a>
 		</p>
 		
-    	<p style="padding-top: 50px;">
-    	<span style="text-transform: uppercase;">Smart Store Reports:</span>
-    	</p>
+		<div style="padding-top: 50px; padding-bottom: 10px; text-transform: uppercase;">Smart Store Reports:</div>
  		<p>
 		<span class="bull">&bull;</span> <a href="query_scarabrules.jsp"><span>Scarab merchandising rules report</span></a>
 		</p>
@@ -122,5 +123,9 @@
 		</p>
     	
     </div>
+	<br>
+	<br>
+	<br>
+<!--[if lt IE 7]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://www.theie6countdown.com/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div> <![endif]-->
 </body>
 </html>

@@ -1,5 +1,6 @@
 <!doctype html>
 <?xml version="1.0" encoding="UTF-8" ?>
+<%@page import="com.freshdirect.cms.application.CmsManager"%>
 <%@page import="com.freshdirect.fdstore.content.Recommender"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@page import="com.freshdirect.fdstore.content.Recipe"%>
@@ -16,7 +17,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
 <%@ taglib uri="/WEB-INF/shared/tld/freshdirect.tld" prefix='fd'%>
+<%
+	final String nodeKey = "CmsReport:smartCatRecs";
 
+	if ( CmsManager.getInstance().getContentNode( ContentKey.decode( nodeKey ) ) == null ) {
+		response.sendRedirect("test_notavail.jsp");
+	}
+%>
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -27,7 +34,6 @@
 	</head>
 	<body>
 		<%
-			String nodeKey = "CmsReport:smartCatRecs";
 		
 			ITable attribute = (ITable)ContentKey.decode( nodeKey ).getContentNode().getAttributeValue( "results" );
 			
