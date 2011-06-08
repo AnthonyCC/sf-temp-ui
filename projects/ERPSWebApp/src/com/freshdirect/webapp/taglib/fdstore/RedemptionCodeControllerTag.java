@@ -171,10 +171,13 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 					} else if(errorCode == PromotionErrorType.ERROR_USAGE_LIMIT_ONE_EXCEEDED.getErrorCode()){
 						actionResult.addError(true, "redemption_error", MessageFormat.format(SystemMessageList.MSG_CART_USAGE_LIMIT_ONE_EXCEEDED,params));
 						user.setRedeemedPromotion(null);						
-					}else if(errorCode == PromotionErrorType.ERROR_USAGE_LIMIT_MORE_EXCEEDED.getErrorCode()){
+					} else if(errorCode == PromotionErrorType.ERROR_USAGE_LIMIT_MORE_EXCEEDED.getErrorCode()){
 						actionResult.addError(true, "redemption_error", MessageFormat.format(SystemMessageList.MSG_CART_USAGE_LIMIT_MORE_EXCEEDED,params));
 						user.setRedeemedPromotion(null);
-					}else {
+					} else if(errorCode == PromotionErrorType.NO_MATCHING_STATE_COUNTY.getErrorCode()) {
+						actionResult.addError(true, "redemption_error", MessageFormat.format(SystemMessageList.MSG_REDEMPTION_NOTE_DLV_ADDRESS,params));
+						user.setRedeemedPromotion(null);
+					} else {
 						if(errorCode == PromotionErrorType.NO_ELIGIBLE_ADDRESS_SELECTED.getErrorCode() 
 								|| errorCode == PromotionErrorType.NO_DELIVERY_ADDRESS_SELECTED.getErrorCode()){
 							actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_NOTE_DLV_ADDRESS);
