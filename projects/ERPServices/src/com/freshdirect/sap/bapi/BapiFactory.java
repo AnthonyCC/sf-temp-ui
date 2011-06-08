@@ -54,5 +54,7 @@ public abstract class BapiFactory {
 	public abstract BapiSendEmployeeInfo getSendEmployeeInfoSender();
 	
 	public abstract BapiSendHandOff getHandOffSender();
+	
+	public abstract BapiSendPhysicalTruckInfo getHandOffPhysicalTruckInfoSender();
 
 }

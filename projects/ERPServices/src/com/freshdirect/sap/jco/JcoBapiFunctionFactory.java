@@ -21,6 +21,7 @@ import com.freshdirect.sap.bapi.BapiSalesOrderCreate;
 import com.freshdirect.sap.bapi.BapiSalesOrderSimulate;
 import com.freshdirect.sap.bapi.BapiSendEmployeeInfo;
 import com.freshdirect.sap.bapi.BapiSendHandOff;
+import com.freshdirect.sap.bapi.BapiSendPhysicalTruckInfo;
 import com.freshdirect.sap.bapi.BapiSendSettlement;
 import com.freshdirect.sap.bapi.BapiTruckMasterInfo;
 
@@ -109,6 +110,10 @@ public class JcoBapiFunctionFactory extends BapiFactory {
 	}*/
 	public BapiSendHandOff getHandOffSender() {
 		return new JcoBapiSendHandOff();
+	}
+	
+	public BapiSendPhysicalTruckInfo getHandOffPhysicalTruckInfoSender() {
+		return new JcoBapiSendPhysicalTruckInfo();
 	}
 
 }
