@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.freshdirect.transadmin.constants.EnumTruckPreference;
+import com.freshdirect.routing.constants.EnumTruckPreference;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.EmployeeRole;
 
