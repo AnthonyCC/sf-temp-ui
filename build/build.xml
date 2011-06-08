@@ -1403,6 +1403,7 @@
 	<target name="truckassignment" description="Build Truck Assignment">
 			<path id="truckassignment.classpath">
 				<pathelement location="${thirdparty.home}/lpsolve55j.jar"/>
+				<pathelement location="${thirdparty.home}/spring.jar"/>
 			</path>
 	
 			<makeProject
