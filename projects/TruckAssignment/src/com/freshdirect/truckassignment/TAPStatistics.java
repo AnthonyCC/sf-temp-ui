@@ -8,7 +8,7 @@ public class TAPStatistics {
 	private int notAssigned;
 	private int total;
 
-	TAPStatistics() {
+	public TAPStatistics() {
 		super();
 		first = second = nonPreferred = missing = notAssigned = total = 0;
 	}
