@@ -80,10 +80,12 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		proxy.updateHandOffBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_ROUTINGOUTPROGRESS);
 		Map<String, IAreaModel> areaLookup = geoProxy.getAreaLookup();
 		Map<String, IZoneModel> zoneLookup = geoProxy.getZoneLookup();
+		Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> currDispStatus = null;
 		
 		if(this.getBatch() != null && this.getBatch().getBatchId() != null) {
 			
 			if(this.getBatch() != null) {
+				currDispStatus = proxy.getHandOffBatchDispatchStatus(this.getBatch().getDeliveryDate());
 				proxy.clearHandOffBatchStopRoute(this.getBatch().getDeliveryDate(), this.getBatch().getBatchId());
 				Map<String, Integer> routeCnts = proxy.getHandOffBatchRouteCnt(this.getBatch().getDeliveryDate());
 								
@@ -164,8 +166,8 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		
 		//processResult(this.getBatch().getBatchId(), sessionMapping);
 		DispatchCorrelationResult correlationResult = null;
-		if(RoutingServicesProperties.getHandOffDispatchCorrelationEnabled()) {
-			correlationResult = checkRouteMismatch(s_routes, areaLookup, proxy.getHandOffBatchDispatchStatus(this.getBatch().getDeliveryDate()));	
+		if(RoutingServicesProperties.getHandOffDispatchCorrelationEnabled()) {			
+			correlationResult = checkRouteMismatch(s_routes, areaLookup, currDispStatus);	
 			assignDispatchSequence(s_routes, zoneLookup, proxy.getHandOffBatchDispatchCnt(this.getBatch().getDeliveryDate()));		
 		} else {
 			// This is the rollback strategy for Dispatch Time Correlation.
