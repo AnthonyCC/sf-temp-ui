@@ -212,6 +212,8 @@
 												</td>
 											</tr>
 										</table>
+									</td></tr>
+									<tr><td>
 										<!-- -----------APPDEV-1786-------------- -->
 										<%
 											FDPromoStateCountyRestriction scr = promotion.getStateCountyList();
@@ -296,7 +298,7 @@
 											}
 										</script>
 										<div><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></div>
-										<input type="radio" id="edit_dlvreq_geoRest_zone" name="edit_dlvreq_geoRest" value="STCO" <%= "STCO".equals(promotion.getGeoRestrictionType())|| (!"".equals(selectedDays.trim()) ||(selected!=null && !selected.isEmpty()))?"checked":""  %> />STATE, COUNTY:<br />
+										<input type="radio" id="edit_dlvreq_geoRest_zone" name="edit_dlvreq_geoRest" value="STCO" <%= "STCO".equals(promotion.getGeoRestrictionType())?"checked":""  %> />STATE, COUNTY:<br />
 
 										<img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" />
 										<table class="tableCollapse">
