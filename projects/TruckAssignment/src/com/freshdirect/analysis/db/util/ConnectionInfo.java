@@ -37,6 +37,14 @@ public class ConnectionInfo {
 		dataSource.setPassword(JDBCPassword);
 		return dataSource.getConnection();
 	}
+	
+	public OracleConnectionPoolDataSource getDataSource() throws SQLException {
+		OracleConnectionPoolDataSource dataSource = new OracleConnectionPoolDataSource();
+		dataSource.setURL(JDBCUrl);
+		dataSource.setUser(JDBCUser);
+		dataSource.setPassword(JDBCPassword);
+		return dataSource;
+	}
 
 	public static final ConnectionInfo EUEDGE = new ConnectionInfo(
 			"jdbc:oracle:thin:@zetor:1521:DBEU01", "fdstore", "fdstore");
@@ -52,8 +60,8 @@ public class ConnectionInfo {
 			"jdbc:oracle:thin:@(DESCRIPTION=("
 					+ "ADDRESS=(PROTOCOL=TCP)(HOST=nyc1dbcl01-vip01.nyc1.freshdirect.com)(PORT=1521))"
 					+ "(ADDRESS=(PROTOCOL=TCP)(HOST=nyc1dbcl01-vip01.nyc1.freshdirect.com)(PORT = 1521))"
-					+ "(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=dwdev.freshdirect.com)(failover_mode=(type=session)(method=basic)(retries=20))))",
-			"APPDEV", "appdev");
+					+ "(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=devint)(failover_mode=(type=session)(method=basic)(retries=20))))",
+			"FDTRN_PRDA", "FDTRN_PRDA");
 
 	public static final ConnectionInfo MKTDW = new ConnectionInfo(
 			"jdbc:oracle:thin:@(DESCRIPTION=("
