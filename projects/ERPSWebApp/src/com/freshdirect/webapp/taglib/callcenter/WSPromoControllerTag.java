@@ -167,14 +167,16 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			CrmAgentModel agent = CrmSession.getCurrentAgent(session);
 			if(("publish").equals(actionName)) {
 				if(preValidate(request, actionResult)) {
-					String effectiveDate = request.getParameter("effectiveDate");
+					String effectiveDate = request.getParameter("effectiveDate"); //delivery date
+					String startDateStr = request.getParameter("startDate"); //start date of the promotion
+					String endDateStr = request.getParameter("endDate"); //expiration date of the promotion
 					String zone = request.getParameter("selectedZoneId");
 					String startTime = request.getParameter("startTime");
 					String endTime = request.getParameter("endTime");
 					String discount = request.getParameter("discount");
 					String redeemLimit = request.getParameter("redeemlimit");
 					String promoCode =  NVL.apply(request.getParameter("promoCode"), "").trim();
-					Date startDate = dateFormat.parse(effectiveDate);
+					Date startDate = dateFormat.parse(startDateStr);
 					if(promoCode.length() == 0 ){
 						//Validate if the given effecttive_date/zone/timeslot combination already exists.
 						WSPromotionInfo pInfo = FDPromotionNewManager.getWSPromotionInfo(zone, startTime, endTime, startDate);
@@ -186,14 +188,14 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 							buf.append(startTime);
 							buf.append(" to ");
 							buf.append(endTime);
-							buf.append(" and effective date ");
+							buf.append(" and delivery date ");
 							buf.append(effectiveDate);
 							buf.append(" already exists.");
 							actionResult.addError(true, "actionfailure", buf.toString());
 							return true;
 						}
 						//Create a new WS Promotion.
-						FDPromotionNewModel promotion = constructPromotion(effectiveDate, zone, startTime, endTime, discount, redeemLimit);
+						FDPromotionNewModel promotion = constructPromotion(effectiveDate, startDateStr, endDateStr, zone, startTime, endTime, discount, redeemLimit);
 						postValidate(promotion, actionResult);
 						if(actionResult.isSuccess()){
 							promotion.setStatus(EnumPromotionStatus.APPROVE);
@@ -228,7 +230,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 							buf.append(startTime);
 							buf.append(" to ");
 							buf.append(endTime);
-							buf.append(" and effective date ");
+							buf.append(" and delivery date ");
 							buf.append(effectiveDate);
 							buf.append(" already exists.");
 							actionResult.addError(true, "actionfailure", buf.toString());
@@ -236,7 +238,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 						}
 						promotion.setModifiedBy(agent.getUserId());
 						promotion.setModifiedDate(new Date());
-						updatePromotion(promotion, effectiveDate, zone, startTime, endTime, discount, redeemLimit);
+						updatePromotion(promotion, effectiveDate, startDateStr, endDateStr, zone, startTime, endTime, discount, redeemLimit);
 						postValidate(promotion, actionResult);
 						if(actionResult.isSuccess()){
 							promotion.setStatus(EnumPromotionStatus.APPROVE);
@@ -320,9 +322,40 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 
 	private boolean preValidate(HttpServletRequest request, ActionResult actionResult) throws ParseException {
 		boolean success = true;
+		String startDateStr = NVL.apply(request.getParameter("startDate"), "").trim();
+		if(startDateStr == null || startDateStr.length() == 0){
+			actionResult.addError(true, "startDate", "Please select a valid Start date.");
+			success = false; 
+		}
+
+		String endDateStr = NVL.apply(request.getParameter("endDate"), "").trim();
+		if(endDateStr == null || endDateStr.length() == 0){
+			actionResult.addError(true, "endDate", "Please select a valid End date.");
+			success = false; 
+		}
+		
+		Date startDate  = dateFormat.parse(startDateStr);
+		Date endDate  = endDateFormat.parse(endDateStr+" "+JUST_BEFORE_MIDNIGHT);
+
+		LOGGER.debug("startDate"+startDate);
+		LOGGER.debug("endDate"+endDate);
+
+		if(endDate.before(startDate)){
+			actionResult.addError(
+					true,
+					"newBlkEndDate",
+					"End Date cannot be less than the Start Date");
+			success = false;
+		}	
+
 		String effectiveDate = NVL.apply(request.getParameter("effectiveDate"), "").trim();
 		if(effectiveDate == null || effectiveDate.length() == 0){
-			actionResult.addError(true, "effectiveDate", "Please select a valid Effective date.");
+			actionResult.addError(true, "effectiveDate", "Please select a valid Delivery date.");
+			success = false; 
+		}
+		Date dlvDate  = dateFormat.parse(effectiveDate);
+		if(success && (dlvDate.before(startDate) || dlvDate.after(endDate))) {
+			actionResult.addError(true, "effectiveDate", "Delivery date should fall within Promotion start date and end date.");
 			success = false; 
 		}
 		String zone = NVL.apply(request.getParameter("selectedZoneId"), "").trim();
@@ -346,9 +379,9 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			success = false; 
 		}
 		try {
-			Date startDate = timeFormat.parse(startTime);
-			Date endDate = timeFormat.parse(endTime);
-			if(startDate.after(endDate)){
+			Date startDateTime = timeFormat.parse(startTime);
+			Date endDateTime = timeFormat.parse(endTime);
+			if(startDateTime.after(endDateTime)){
 				actionResult.addError(true,"timeslotError","Start time should be lesser than end time for each timeslot range.");
 			}
 		} catch (ParseException e) {
@@ -389,17 +422,18 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 				actionResult.addError(true, "promo.publish", "An error occured during publish");
 			}
 	}
-	private FDPromotionNewModel constructPromotion(String effectiveDate, String zone, String startTime, 
+	private FDPromotionNewModel constructPromotion(String effectiveDate, String startDateStr, String endDateStr, String zone, String startTime, 
 			String endTime, String discount, String redeemLimit) throws FDResourceException {
 		try {
-			Date startDate = dateFormat.parse(effectiveDate);
-			Date expDate = endDateFormat.parse(effectiveDate+" "+JUST_BEFORE_MIDNIGHT);
+			Date startDate = dateFormat.parse(startDateStr);
+			Date expDate = endDateFormat.parse(endDateStr+" "+JUST_BEFORE_MIDNIGHT);
 			int redeemCnt = 0;
 			if(redeemLimit != null && redeemLimit.length() > 0){
 				redeemCnt = Integer.parseInt(redeemLimit);
 			}
 			FDPromotionNewModel promotion = new FDPromotionNewModel();
-			promotion.setPromotionCode("WS_"+new Date().getTime());
+			Date today = new Date();
+			promotion.setPromotionCode("WS_"+today.getTime());
 			long E4 = Math.round(Math.random()*1000); //Unique counter
 			promotion.setName("WS_"+effectiveDate+"_Zone"+zone+"_"+E4+"_$"+discount);
 			promotion.setPromotionType(EnumPromotionType.HEADER.getName());
@@ -421,15 +455,19 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			custStrategies.add(custModel);
 			promotion.setCustStrategies(custStrategies);
 			promotion.setGeoRestrictionType("ZONE");
-
-			promotion.setStartDate(startDate);
+			if(DateUtil.isSameDay(startDate, today)) {
+				//If start date is today then Should default to today and the current time.
+				promotion.setStartDate(today);
+			} else {
+				//If another date is selected, 12:00am can be the default.
+				promotion.setStartDate(DateUtil.truncate(startDate));
+			}
 			promotion.setExpirationDate(expDate);
-			//TODO For now set the promotion applicable only for next day delivery.
-			Date startDlvDate = DateUtil.addDays(startDate, 1);
-			Date endDlvDate = DateUtil.addDays(startDate, 1);
+
+			Date dlvDate = dateFormat.parse(effectiveDate);
 			FDPromoDlvDateModel dateModel = new FDPromoDlvDateModel();
-			dateModel.setDlvDateStart(startDlvDate);
-			dateModel.setDlvDateEnd(endDlvDate);
+			dateModel.setDlvDateStart(dlvDate);
+			dateModel.setDlvDateEnd(dlvDate);
 			List<FDPromoDlvDateModel> dlvDates = new ArrayList<FDPromoDlvDateModel>();
 			dlvDates.add(dateModel);
 			promotion.setDlvDates(dlvDates);
@@ -438,7 +476,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			timeSlotModel.setDlvTimeEnd(endTime);
 			timeSlotModel.setPromoDlvZoneId(zone);
 			Calendar cal = Calendar.getInstance();
-			cal.setTime(startDlvDate);
+			cal.setTime(dlvDate);
 			int dayId = cal.get(Calendar.DAY_OF_WEEK);
 			timeSlotModel.setDayId(dayId);
 			List<FDPromoDlvTimeSlotModel> dlvTimeSlots = new ArrayList<FDPromoDlvTimeSlotModel>();
@@ -460,11 +498,11 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 		}
 	}
 
-	private void updatePromotion(FDPromotionNewModel promotion, String effectiveDate, String zone, String startTime, 
+	private void updatePromotion(FDPromotionNewModel promotion, String effectiveDate, String startDateStr, String endDateStr, String zone, String startTime, 
 			String endTime, String discount, String redeemLimit) throws FDResourceException{
 		try {
-			Date startDate = dateFormat.parse(effectiveDate);
-			Date expDate = endDateFormat.parse(effectiveDate+" "+JUST_BEFORE_MIDNIGHT);
+			Date startDate = dateFormat.parse(startDateStr);
+			Date expDate = endDateFormat.parse(endDateStr+" "+JUST_BEFORE_MIDNIGHT);
 			int redeemCnt = 0;
 			if(redeemLimit != null && redeemLimit.length() > 0){
 				redeemCnt = Integer.parseInt(redeemLimit);
@@ -476,16 +514,21 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			promotion.setOfferDesc(formatAudienceDescription(OFFER_DESCRIPTION, discount, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
 			promotion.setAudienceDesc(formatOfferDescription(AUDIENCE_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
 			promotion.setTerms(formatTerms(TERMS, discount, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
-			promotion.setStartDate(startDate);
+			Date today = new Date();
+			if(DateUtil.isSameDay(startDate, today)) {
+				//If start date is today then Should default to today and the current time.
+				promotion.setStartDate(today);
+			} else {
+				//If another date is selected, 12:00am can be the default.
+				promotion.setStartDate(DateUtil.truncate(startDate));
+			}
 			promotion.setExpirationDate(expDate);
 			if(redeemCnt > 0)
 				promotion.setRedeemCount(redeemCnt);
-			//TODO For now set the promotion applicable only for next day delivery.
-			Date startDlvDate = DateUtil.addDays(startDate, 1);
-			Date endDlvDate = DateUtil.addDays(startDate, 1);
+			Date dlvDate = dateFormat.parse(effectiveDate);
 			FDPromoDlvDateModel dateModel = new FDPromoDlvDateModel();
-			dateModel.setDlvDateStart(startDlvDate);
-			dateModel.setDlvDateEnd(endDlvDate);
+			dateModel.setDlvDateStart(dlvDate);
+			dateModel.setDlvDateEnd(dlvDate);
 			List<FDPromoDlvDateModel> dlvDates = new ArrayList<FDPromoDlvDateModel>();
 			dlvDates.add(dateModel);
 			promotion.setDlvDates(dlvDates);
@@ -494,7 +537,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			timeSlotModel.setDlvTimeEnd(endTime);
 			timeSlotModel.setPromoDlvZoneId(zone);
 			Calendar cal = Calendar.getInstance();
-			cal.setTime(startDlvDate);
+			cal.setTime(dlvDate);
 			int dayId = cal.get(Calendar.DAY_OF_WEEK);
 			timeSlotModel.setDayId(dayId);
 			List<FDPromoDlvTimeSlotModel> dlvTimeSlots = new ArrayList<FDPromoDlvTimeSlotModel>();

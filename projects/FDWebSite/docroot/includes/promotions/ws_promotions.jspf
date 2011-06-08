@@ -41,7 +41,11 @@ function openURL(inLocationURL) {
 	<td class="border_bold">&nbsp;</td>
 	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Name</b></span></td>	
 	<td class="border_bold">&nbsp;</td>
-	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Effective Date</b></span></td>	
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Delivery Date</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Start Date</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>End Date</b></span></td>	
 	<td class="border_bold">&nbsp;</td>
 	<td valign="bottom" align="center"  class="border_bold"><span class="detail_text"><b>Zone</b></span></td>	
 	<td class="border_bold">&nbsp;</td>
@@ -88,6 +92,10 @@ function openURL(inLocationURL) {
 	<td class="border_bottom"><span class="detail_text"><%= promotion.getName() %></span></td>
 	<td class="border_bottom">&nbsp;</td>
 	<td class="border_bottom"><span class="detail_text"><%= CCFormatter.formatDateMonth(promotion.getEffectiveDate()) %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= CCFormatter.formatCaseDate(promotion.getStartDate()) %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= CCFormatter.formatCaseDate(promotion.getEndDate()) %></span></td>
 	<td class="border_bottom">&nbsp;</td>
 	<td class="border_bottom"><span class="detail_text"><%= promotion.getZoneCode() %></span></td>
 	<td class="border_bottom">&nbsp;</td>

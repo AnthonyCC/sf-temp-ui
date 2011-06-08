@@ -186,7 +186,7 @@ public class FDPromotionManagerNewDAO {
 		return promotion;
 	}
 	private final static String GET_WS_PROMOTION_INFOS = 
-		"select P.ID, P.CODE, P.NAME, P.START_DATE,  P.EXPIRATION_DATE, (select COLUMN_VALUE from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE ) x " 
+		"select P.ID, P.CODE, P.NAME, D.START_DATE DLV_DATE, P.START_DATE,  P.EXPIRATION_DATE, (select COLUMN_VALUE from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE ) x " 
 		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, P.MAX_AMOUNT,  P.REDEEM_CNT, P.STATUS from cust.promotion_new p, cust.promo_cust_strategy pc, "
 		+ "cust.promo_dlv_zone_strategy z, cust.promo_dlv_timeslot t, cust.promo_delivery_dates d "
 		+ "where p.id = PC.PROMOTION_ID "
@@ -212,7 +212,9 @@ public class FDPromotionManagerNewDAO {
 			wsPromotionInfo.setPK(new PrimaryKey(rs.getString("ID")));
 			wsPromotionInfo.setPromotionCode(rs.getString("CODE"));
 			wsPromotionInfo.setName(rs.getString("NAME"));
-			wsPromotionInfo.setEffectiveDate(rs.getDate("START_DATE"));
+			wsPromotionInfo.setEffectiveDate(rs.getDate("DLV_DATE"));
+			wsPromotionInfo.setStartDate(rs.getTimestamp("START_DATE"));
+			wsPromotionInfo.setEndDate(rs.getTimestamp("EXPIRATION_DATE"));
 			wsPromotionInfo.setZoneCode(rs.getString("ZONE_CODE"));
 			wsPromotionInfo.setStartTime(rs.getString("START_TIME"));
 			wsPromotionInfo.setEndTime(rs.getString("END_TIME"));

@@ -68,7 +68,9 @@ function numbersonly(myfield, e, dec)
 <fd:GetPromotionNew id="promotion" promotionId="<%=promoId%>">
 <%
 	String f_effectiveDate = request.getParameter("effectiveDate");
-		//NVL.apply(request.getParameter("effectiveDate"), CCFormatter.formatDateYear(today));
+	//NVL.apply(request.getParameter("effectiveDate"), CCFormatter.formatDateYear(today));
+	String startDate = request.getParameter("startDate"); 		
+	String endDate = request.getParameter("endDate");
 	String selectedZoneId = request.getParameter("selectedZoneId");
 	String startTime = request.getParameter("startTime");
 	String endTime = request.getParameter("endTime");
@@ -77,7 +79,11 @@ function numbersonly(myfield, e, dec)
 
 	if(promotion != null && promotion.getPromotionCode() != null) {
 		if(f_effectiveDate == null)
-			f_effectiveDate =  CCFormatter.formatDateYear(promotion.getStartDate());
+			f_effectiveDate =  CCFormatter.formatDateYear(promotion.getWSSelectedDlvDate());
+		if(startDate == null)
+			startDate =  CCFormatter.formatDateYear(promotion.getStartDate());
+		if(endDate == null)
+			endDate =  CCFormatter.formatDateYear(promotion.getExpirationDate());
 		if(selectedZoneId == null)
 			selectedZoneId = promotion.getWSSelectedZone();
 		if(startTime == null)
@@ -90,7 +96,10 @@ function numbersonly(myfield, e, dec)
 			redeemLimit = String.valueOf(promotion.getRedeemCount());
 
 	}
-	f_effectiveDate = (f_effectiveDate != null) ? f_effectiveDate : CCFormatter.formatDateYear(today);
+	Date defaultDate = DateUtil.addDays(today, 1); //Today + 1
+	f_effectiveDate = (f_effectiveDate != null) ? f_effectiveDate : CCFormatter.formatDateYear(defaultDate);
+	startDate = (startDate != null) ? startDate : CCFormatter.formatDateYear(today);
+	endDate = (endDate != null) ? endDate : CCFormatter.formatDateYear(defaultDate);	
 	selectedZoneId = (selectedZoneId != null) ? selectedZoneId : "";
 	startTime = (startTime != null) ? startTime : "";
 	endTime = (endTime != null) ? endTime : "";
@@ -122,6 +131,9 @@ function numbersonly(myfield, e, dec)
 		<form method='POST' name="timePick" id="timePick">
 			<div class="errContainer">				
 				<fd:ErrorHandler result='<%= result %>' name='effectiveDate' id='errorMsg'>
+				   <%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>
+				<fd:ErrorHandler result='<%= result %>' name='newBlkEndDate' id='errorMsg'>
 				   <%@ include file="/includes/i_error_messages.jspf" %>   
 				</fd:ErrorHandler>
 				<fd:ErrorHandler result='<%= result %>' name='zone' id='errorMsg'>
@@ -241,7 +253,7 @@ function numbersonly(myfield, e, dec)
 				<% } %>
 				<tr>
 					<td width="3%">&nbsp;</td>
-					<td><b>Effective Date: 
+					<td><b>Delivery Date: 
 					<% if(isToday) { %>
 						today -<%= f_displayDate %> 
 					<% } else  {%>
@@ -249,6 +261,8 @@ function numbersonly(myfield, e, dec)
 					<% } %>
 					</b>&nbsp;&nbsp;
 					<input type="hidden" name="effectiveDate" id="effectiveDate" value="<%=f_effectiveDate%>">
+					<input type="hidden" name="startDate" id="startDate" value="<%=startDate%>">
+					<input type="hidden" name="endDate" id="endDate" value="<%=endDate%>">
 					<input type="hidden" name="selectedZoneId" id="selectedZoneId" value="<%=selectedZoneId%>">
 					<input type="hidden" name="startTime" id="startTime" value="<%= startTime %>">
 					<input type="hidden" name="endTime" id="endTime" value="<%= endTime %>">
@@ -280,6 +294,84 @@ function numbersonly(myfield, e, dec)
 							 		
 					</td>	
 				</tr>
+				<tr>
+					<td width="3%">&nbsp;</td>
+					<td><b>Start Date: </b>&nbsp;&nbsp;           
+						<input type="hidden" name="startDate" id="startDate" value="<%=startDate%>">                        
+			            <input type="text" name="newStartDate" id="newStartDate" size="10" value="<%=startDate%>" disabled="true" onchange="setDate1(this);">
+			            	&nbsp;<a href="#" id="trigger_startDate" ><img id="imgStartDate" src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" /></a>
+			            	<fd:ErrorHandler result='<%=result%>' name='startDate' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler> 
+			 		        <script language="javascript">
+						    function setDate1(field){
+						    	document.getElementById("startDate").value=field.value;
+			
+						    }
+						    Calendar.setup(
+						    {
+							    showsTime : false,
+							    electric : false,
+							    inputField : "newStartDate",
+							    ifFormat : "%Y-%m-%d",
+							    singleClick: true,
+							    button : "trigger_startDate" 
+						    }
+						    );
+						    
+						    function clearAll(){
+						    	 var d = new Date();
+							    var date = d.getDate();
+							    var month = d.getMonth()+1;
+							    var year = d.getFullYear();
+						    	var fd = year + "-" + month + "-" + date;                    
+						    	document.getElementById("startDate").value = fd;
+			                  document.getElementById("newStartDate").value = fd;
+						    	document.getElementById("reason").value = "";
+						    	document.getElementById("message").value = "all";
+						    	document.getElementById("restrictedType").value = "";
+						    }
+						    
+						    function openURL(inLocationURL) {
+						    	popResize(inLocationURL, 400,400,'');
+			
+						    }
+			
+						</script>
+					</td>		
+				</tr>
+				<tr>
+					<td width="3%">&nbsp;</td>
+					<td><b>End Date: </b>&nbsp;&nbsp;			
+						<input type="hidden" name="endDate" id="endDate" value="<%=endDate%>">                        
+			            <input type="text" name="newEndDate" id="newEndDate" size="10" value="<%=endDate%>" disabled="true" onchange="setDate2(this);">
+            			&nbsp;<a href="#" id="trigger_endDate"><img id="imgEndDate" src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" /></a>
+			            <fd:ErrorHandler result='<%=result%>' name='endDate' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler> 
+			 		        <script language="javascript">
+						    function setDate2(field){
+						    document.getElementById("endDate").value=field.value;
+			
+						    }
+						    Calendar.setup(
+						    {
+						    showsTime : false,
+						    electric : false,
+						    inputField : "newEndDate",
+						    ifFormat : "%Y-%m-%d",
+						    singleClick: true,
+						    button : "trigger_endDate" 
+						    }
+						    );			    									                
+						    
+						    function openURL(inLocationURL) {
+			
+						    	popResize(inLocationURL, 400,400,'');
+			
+						    }
+			
+						</script>
+						
+					</td>		
+				</tr>
+				
 				<tr>
 					<td width="3%">&nbsp;</td>
 					<td> 

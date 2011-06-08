@@ -275,6 +275,7 @@
 						
 					</td>		
 				</tr>
+				<tr>
 					<td class="case_content_field">CRITERION:</td>
 					<td><input type="text" name="criterion" value="DELIVERY" readonly="readonly"></td>
 				</tr>

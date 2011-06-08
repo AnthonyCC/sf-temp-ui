@@ -1089,4 +1089,18 @@ public class FDPromotionNewModel extends ModelSupport {
 		 } 
 		 return endTime;
 	}
+	
+	public Date getWSSelectedDlvDate() {
+		Date dlvDate = null;
+		 List<FDPromoDlvDateModel> list = getDlvDates(); 
+		 if(null != list && !list.isEmpty()){
+			 FDPromoDlvDateModel dlvDateModel =(FDPromoDlvDateModel)list.get(0);
+			 if(dlvDateModel != null) {
+				 dlvDate = dlvDateModel.getDlvDateStart();
+			 }
+		 } 
+		 return dlvDate;
+	}
+	
+	
 }
