@@ -203,12 +203,13 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 						}catch(RoutingServiceException re){						
 							re.printStackTrace();
 							isSuccess = false;
-							throw new RoutingServiceException("Batch completed. but Auto-Dispatch failed"
+							throw new RoutingServiceException("Batch completed, but Auto-Dispatch failed"
 									, null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 						}catch(Exception e){
 							e.printStackTrace();
 							isSuccess = false;
-							actionResponse.append(e.getMessage()).append("\n");
+							System.out.println("######################### Auto-DispatchTask FAILED ######################### "+ e.getMessage());
+							throw new RoutingServiceException(" Auto-DispatchTask FAILED ", e, IIssue.PROCESS_HANDOFFBATCH_ERROR);						
 						}
 						
 					}
