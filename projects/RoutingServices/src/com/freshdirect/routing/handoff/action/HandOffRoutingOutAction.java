@@ -81,11 +81,14 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		Map<String, IAreaModel> areaLookup = geoProxy.getAreaLookup();
 		Map<String, IZoneModel> zoneLookup = geoProxy.getZoneLookup();
 		Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> currDispStatus = null;
-		
+		String lastCommittedBatchId = null;
 		if(this.getBatch() != null && this.getBatch().getBatchId() != null) {
 			
 			if(this.getBatch() != null) {
-				currDispStatus = proxy.getHandOffBatchDispatchStatus(this.getBatch().getDeliveryDate());
+				lastCommittedBatchId = proxy.getLastCommittedHandOffBatch(this.getBatch().getDeliveryDate());
+				if(lastCommittedBatchId != null) {
+					currDispStatus = proxy.getHandOffBatchDispatchStatus(lastCommittedBatchId);
+				}
 				proxy.clearHandOffBatchStopRoute(this.getBatch().getDeliveryDate(), this.getBatch().getBatchId());
 				Map<String, Integer> routeCnts = proxy.getHandOffBatchRouteCnt(this.getBatch().getDeliveryDate());
 								
@@ -182,7 +185,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 				}
 			}
 		}
-		proxy.updateHandOffBatchDetails(this.getBatch().getDeliveryDate(), s_routes, s_stops, correlationResult.getDispatchStatus());
+		proxy.updateHandOffBatchDetails(this.getBatch().getBatchId(), s_routes, s_stops, correlationResult.getDispatchStatus());
 		
 		checkStopExceptions();
 				

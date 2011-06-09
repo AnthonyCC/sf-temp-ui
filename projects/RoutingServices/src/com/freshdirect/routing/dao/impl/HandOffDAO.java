@@ -69,11 +69,11 @@ import com.freshdirect.routing.model.LocationModel;
 import com.freshdirect.routing.model.PackagingModel;
 import com.freshdirect.routing.model.TruckPreferenceStat;
 import com.freshdirect.routing.model.ZoneModel;
+import com.freshdirect.routing.truckassignment.Truck;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 import com.freshdirect.routing.util.RoutingUtil;
 import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffDispatchIn;
-import com.freshdirect.routing.truckassignment.Truck;
 
 public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	
@@ -200,9 +200,9 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	
 	private static final String CLEAR_HANDOFFBATCH_ROUTES = "DELETE FROM TRANSP.HANDOFF_BATCHROUTE X WHERE X.BATCH_ID = ?";
 	
-	private static final String CLEAR_HANDOFFBATCH_DISPATCHES = "DELETE FROM TRANSP.HANDOFF_BATCHDISPATCH X WHERE X.DELIVERY_DATE = ?";
+	private static final String CLEAR_HANDOFFBATCH_DISPATCHES = "DELETE FROM TRANSP.HANDOFF_BATCHDISPATCHEX X WHERE X.BATCH_ID = ?";
 	
-	private static final String INSERT_HANDOFFBATCH_DISPATCH = "INSERT INTO TRANSP.HANDOFF_BATCHDISPATCH ( DELIVERY_DATE , DISPATCHTIME, PLANNED_RESOURCES ," +
+	private static final String INSERT_HANDOFFBATCH_DISPATCH = "INSERT INTO TRANSP.HANDOFF_BATCHDISPATCHEX ( BATCH_ID , DISPATCHTIME, PLANNED_RESOURCES ," +
 		"ACTUAL_RESOURCES ,STATUS) VALUES ( ?,?,?,?,?)";
 			
 	private static final String INSERT_HANDOFFBATCH_ROUTE = "INSERT INTO TRANSP.HANDOFF_BATCHROUTE ( BATCH_ID , SESSION_NAME, ROUTE_NO ," +
@@ -240,9 +240,9 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			", r.AREA  ,r.STARTTIME  , r.COMPLETETIME  ,r.DISTANCE  , r.TRAVELTIME , r.SERVICETIME, r.DISPATCHTIME  , r.DISPATCHSEQUENCE  " +
 			"from  transp.HANDOFF_BATCH b, TRANSP.HANDOFF_BATCHROUTE r  where B.BATCH_ID = ? and B.BATCH_ID = R.BATCH_ID";
 	
-	private static final String GET_HANDOFFBATCH_DISPATCHES = "select d.DELIVERY_DATE , d.DISPATCHTIME, d.PLANNED_RESOURCES ," +
+	private static final String GET_HANDOFFBATCH_DISPATCHES = "select d.DISPATCHTIME, d.PLANNED_RESOURCES ," +
 			" d.ACTUAL_RESOURCES , d.STATUS " +
-			" from  TRANSP.HANDOFF_BATCHDISPATCH d where d.DELIVERY_DATE = ? order by d.DISPATCHTIME";
+			" from  TRANSP.HANDOFF_BATCHDISPATCHEX d where d.BATCH_ID = ? order by d.DISPATCHTIME";
 	
 	private static final String GET_HANDOFFBATCH_STOPBYROUTE = "select hb.DELIVERY_DATE, s.BATCH_ID , s.WEBORDER_ID , s.ERPORDER_ID " +
 			", s.AREA, s.DELIVERY_TYPE, s.WINDOW_STARTTIME , s.WINDOW_ENDTIME  , s.LOCATION_ID , s.SESSION_NAME, s.ROUTE_NO " +
@@ -273,11 +273,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	private static final String CLEAR_HANDOFFBATCH_DEPOTSCHEDULE_EX = "DELETE FROM TRANSP.HANDOFF_BATCHDEPOTSCHEDULE_EX X WHERE X.DAY_OF_WEEK = ? and CUTOFF_DATETIME = ?";
 
 	private static final String GET_HANDOFFBATCH_DEPOTSCHEDULE_EX = "SELECT * FROM TRANSP.HANDOFF_BATCHDEPOTSCHEDULE_EX X WHERE X.DAY_OF_WEEK = ? and CUTOFF_DATETIME = ?";
-
-	private static final String GET_HANDOFFBATCH_PLANS = "SELECT * FROM TRANSP.PLAN P WHERE P.PLAN_DATE = ? and P.START_TIME = ?";
-
-	private static final String GET_HANDOFFBATCH_PLANRESOURCES = "SELECT PR.* FROM TRANSP.PLAN_RESOURCE PR, TRANSP.PLAN P WHERE PR.PLAN_ID = P.PLAN_ID and P.PLAN_DATE = ? and P.START_TIME = ?";
-	
+		
 	private static final String GET_HANDOFFBATCH_ASSETTRUCKS = "SELECT A.ASSET_NO, A.ASSET_STATUS "
 																	+" FROM TRANSP.ASSET A "
 																	+" WHERE A.ASSET_TYPE = ? and A.ASSET_STATUS = ? and A.ASSET_NO not in (SELECT D.PHYSICAL_TRUCK FROM TRANSP.DISPATCH D WHERE D.DISPATCH_DATE = ? AND D.PHYSICAL_TRUCK IS NOT NULL)"; 
@@ -293,46 +289,39 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 														+" Order by RESOURCE_ID ASC, COUNT DESC";
 	
 	private static final String GET_HANDOFFBATCHDISPATCHSEQ_QRY = "select TRANSP.DISPATCHSEQ.nextval FROM DUAL";
-	
-	private static final String GET_DISPATCHES_DELIVERYDATE = "select * FROM TRANSP.DISPATCH d WHERE d.DISPATCH_DATE=? and D.START_TIME = ? ";
-
-	@SuppressWarnings("unused")
-	private static final String GET_HANDOFFBATCH_DISPATCHROUTES_OLD = "SELECT R.AREA, R.ROUTE_NO, R.STARTTIME, R.DISPATCHTIME, "+
-															" (SELECT min(S.WINDOW_STARTTIME) from TRANSP.HANDOFF_BATCHSTOP s where S.BATCH_ID = ? and S.ROUTE_NO = R.ROUTE_NO) FIRSTDLVTIME, "+														
-															" decode(A.IS_DEPOT , 'X',(SELECT max(S.STOP_DEPARTUREDATETIME ) + 3/48  from TRANSP.HANDOFF_BATCHSTOP s where S.BATCH_ID = ? and S.ROUTE_NO = R.ROUTE_NO),R.COMPLETETIME) COMPLETETIME "+
-															" from TRANSP.HANDOFF_BATCHROUTE r, TRANSP.TRN_AREA A where R.BATCH_ID = ? and R.AREA = A.CODE order by R.AREA, R.ROUTE_NO";
-	
+				
 	private static final String GET_HANDOFFBATCH_DISPATCHROUTES = "SELECT R.AREA, R.ROUTE_NO, R.STARTTIME, R.DISPATCHTIME, "
 		+ " (SELECT min(S.WINDOW_STARTTIME) from TRANSP.HANDOFF_BATCHSTOP s where S.BATCH_ID = R.BATCH_ID and S.ROUTE_NO = R.ROUTE_NO ) FIRSTDLVTIME, "                                                        
 		+ " decode(A.IS_DEPOT , 'X', (SELECT max(S.STOP_DEPARTUREDATETIME ) + 3/48  from TRANSP.HANDOFF_BATCHSTOP s where S.BATCH_ID = R.BATCH_ID and S.ROUTE_NO = R.ROUTE_NO), R.COMPLETETIME) COMPLETETIME "
-		+ " from TRANSP.HANDOFF_BATCHROUTE R, TRANSP.TRN_AREA A, TRANSP.HANDOFF_BATCH b, TRANSP.HANDOFF_BATCHDISPATCH d "
+		+ " from TRANSP.HANDOFF_BATCHROUTE R, TRANSP.TRN_AREA A, TRANSP.HANDOFF_BATCH b "
 		+ " where R.AREA = A.CODE and B.BATCH_ID = R.BATCH_ID and D.DELIVERY_DATE = B.DELIVERY_DATE "
-		+ " and R.DISPATCHTIME = D.DISPATCHTIME and b.DELIVERY_DATE = ? and D.STATUS = ? "
-		+ " and R.DISPATCHTIME = ? " 
-		+ " order by R.AREA, R.ROUTE_NO";
+		+ " and b.DELIVERY_DATE = ? and R.DISPATCHTIME in (SELECT BD.DISPATCHTIME FROM TRANSP.HANDOFF_BATCHDISPATCHEX BD where BD.BATCH_ID = ? and BD.STATUS = ?) " 
+		+ " order by R.AREA, R.ROUTE_NO, R.DISPATCHTIME";
 
+	private static final String GET_HANDOFFBATCH_PLANS = "SELECT * FROM TRANSP.PLAN P WHERE P.PLAN_DATE = ? " +
+			"and P.START_TIME in (SELECT BD.DISPATCHTIME FROM TRANSP.HANDOFF_BATCHDISPATCHEX BD where BD.BATCH_ID = ? and BD.STATUS = ?)";
+	
+	private static final String GET_HANDOFFBATCH_PLANRESOURCES = "SELECT PR.* FROM TRANSP.PLAN_RESOURCE PR, TRANSP.PLAN P WHERE PR.PLAN_ID = P.PLAN_ID and P.PLAN_DATE = ? " +
+			"and P.START_TIME in (SELECT BD.DISPATCHTIME FROM TRANSP.HANDOFF_BATCHDISPATCHEX BD where BD.BATCH_ID = ? and BD.STATUS = ?)";
 	
 	private static final String INSERT_HANDOFFBATCH_AUTODISPATCHES = "INSERT INTO TRANSP.DISPATCH ( DISPATCH_ID, DISPATCH_DATE , ZONE, SUPERVISOR_ID, ROUTE, START_TIME, FIRST_DLV_TIME, PLAN_ID, ISBULLPEN, REGION, PHYSICAL_TRUCK )" +
 																" VALUES ( ?,?,?,?,?,?,?,?,?,?,? )";
 	
-	private static final String CLEAR_HANDOFFBATCH_AUTODISPATCHES = "DELETE FROM TRANSP.DISPATCH D WHERE D.DISPATCH_DATE = ? and D.START_TIME = ?";
+	private static final String CLEAR_HANDOFFBATCH_AUTODISPATCHES = "DELETE FROM TRANSP.DISPATCH D WHERE D.DISPATCH_DATE = ? " +
+			"and D.START_TIME in (SELECT BD.DISPATCHTIME FROM TRANSP.HANDOFF_BATCHDISPATCHEX BD where BD.BATCH_ID = ? and BD.STATUS = ?)";
+	
+	private static final String CLEAR_HANDOFFBATCH_AUTODISPATCHRESOURCES  = "DELETE FROM TRANSP.DISPATCH_RESOURCE DR WHERE DR.DISPATCH_ID IN (SELECT D.DISPATCH_ID FROM TRANSP.DISPATCH D WHERE D.DISPATCH_DATE = ? " +
+	"and D.START_TIME in (SELECT BD.DISPATCHTIME FROM TRANSP.HANDOFF_BATCHDISPATCHEX BD where BD.BATCH_ID = ? and BD.STATUS = ?) )";
+	
+	private static final String GET_DISPATCHES_DELIVERYDATE = "select * FROM TRANSP.DISPATCH d WHERE d.DISPATCH_DATE=? " +
+			"and D.START_TIME in (SELECT BD.DISPATCHTIME FROM TRANSP.HANDOFF_BATCHDISPATCHEX BD where BD.BATCH_ID = ? and BD.STATUS = ?) ";
 	
 	private static final String INSERT_HANDOFFBATCH_AUTODISPATCHRESOURCES = "INSERT INTO TRANSP.DISPATCH_RESOURCE ( DISPATCH_ID, RESOURCE_ID , ROLE )" +
 																			" VALUES ( ?,?,? )";
 	
-	private static final String CLEAR_HANDOFFBATCH_AUTODISPATCHRESOURCES  = "DELETE FROM TRANSP.DISPATCH_RESOURCE DR WHERE DR.DISPATCH_ID IN (SELECT D.DISPATCH_ID FROM TRANSP.DISPATCH D WHERE D.DISPATCH_DATE = ? and D.START_TIME = ? )";
-	
-	private static final String GET_HANDOFFBATCH_COMPLETEDDISPATCHES = "select d.DELIVERY_DATE , d.DISPATCHTIME, d.PLANNED_RESOURCES ," +
-													" d.ACTUAL_RESOURCES , d.STATUS " +
-													" from TRANSP.HANDOFF_BATCHDISPATCH d where d.DELIVERY_DATE = ? and D.STATUS = ? and " +
-													" d.DISPATCHTIME NOT IN (SELECT AD.DISPATCH_TIME from TRANSP.HANDOFFBATCH_AUTODISPATCH AD where AD.DELIVERY_DATE = ?) order by d.DISPATCHTIME";
-	
-	private static final String INSERT_HANDOFFBATCHCOMPLETED_DISPATCHES = "INSERT INTO TRANSP.HANDOFFBATCH_AUTODISPATCH ( BATCH_ID, DELIVERY_DATE, ROUTE_NO, PHYSICAL_TRUCK, DISPATCH_TIME, STATUS) " +
-																			" VALUES(?,?,?,?,?,?)";
-	
-	private static final String GET_HANDOFFBATCH_DISPATCHSTATUS = "SELECT DISPATCH_TIME, STATUS FROM TRANSP.HANDOFFBATCH_AUTODISPATCH WHERE BATCH_ID = ?";
-	
-	private static final String CLEAR_HANDOFFBATCH_COMPLETEDDISPATCHSTATUS  = "DELETE FROM TRANSP.HANDOFFBATCH_AUTODISPATCH D WHERE D.BATCH_ID = ? ";
+				
+	private static final String GET_HANDOFFBATCH_LASTCOMMITEDBATCH = "select b.BATCH_ID from TRANSP.HANDOFF_BATCH b " +
+			"where b.DELIVERY_DATE = ? and b.BATCH_STATUS IN ('CPD/ADC','CPD','CPD/ADF') order by CUTOFF_DATETIME desc";
 
 	public List<IHandOffBatchRoute> getHandOffBatchRoutes(final String batchId) throws SQLException {
 
@@ -726,11 +715,11 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		}
 	}
 	
-	public void addNewHandOffBatchDispatches(Date deliveryDate, Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus) throws SQLException {
+	public void addNewHandOffBatchDispatches(String handOffBatchId, Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus) throws SQLException {
 		Connection connection = null;
 		try{
 			BatchSqlUpdate batchUpdater=new BatchSqlUpdate(this.jdbcTemplate.getDataSource(),INSERT_HANDOFFBATCH_DISPATCH);
-			batchUpdater.declareParameter(new SqlParameter(Types.DATE));
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 			batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
 			batchUpdater.declareParameter(new SqlParameter(Types.NUMERIC));
 			batchUpdater.declareParameter(new SqlParameter(Types.NUMERIC));
@@ -742,7 +731,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			if(dispatchStatus != null) {			
 				for(Map.Entry<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispMpp : dispatchStatus.entrySet()) {
 				
-					batchUpdater.update(new Object[]{ deliveryDate
+					batchUpdater.update(new Object[]{ handOffBatchId
 												, new Timestamp(dispMpp.getKey().getAsDate().getTime())
 												, 0
 												, 0
@@ -798,12 +787,12 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		}
 	}
 	
-	public void clearHandOffBatchDispatches(Date deliveryDate) throws SQLException {
+	public void clearHandOffBatchDispatches(String handOffBatchId) throws SQLException {
 		
 		Connection connection = null;		
 		try {
 			
-			this.jdbcTemplate.update(CLEAR_HANDOFFBATCH_DISPATCHES, new Object[] {deliveryDate});
+			this.jdbcTemplate.update(CLEAR_HANDOFFBATCH_DISPATCHES, new Object[] {handOffBatchId});
 			
 			connection=this.jdbcTemplate.getDataSource().getConnection();	
 			
@@ -1395,14 +1384,14 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		return result;
 	}
 	
-	public List<HandOffDispatchIn> getHandOffBatchDispatches(final Date deliveryDate) throws SQLException {
+	public List<HandOffDispatchIn> getHandOffBatchDispatches(final String handOffBatchId) throws SQLException {
 
 		final List<HandOffDispatchIn> result = new ArrayList<HandOffDispatchIn>();
 		PreparedStatementCreator creator = new PreparedStatementCreator() {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
 				PreparedStatement ps = null;
 				ps = connection.prepareStatement(GET_HANDOFFBATCH_DISPATCHES);
-				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
+				ps.setString(1, handOffBatchId);
 				
 				return ps;
 			}  
@@ -1424,7 +1413,73 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		return result;
 	}
 	
-	public List<IHandOffBatchPlan> getHandOffBatchPlansByDispatchTime(final Date deliveryDate, final RoutingTimeOfDay dispatchTime) throws SQLException {
+	
+
+	public Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> getHandOffBatchDispatchStatus(final String handOffBatchId) throws SQLException {
+
+		final Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> result = new TreeMap<RoutingTimeOfDay, EnumHandOffDispatchStatus>();
+		PreparedStatementCreator creator = new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+				PreparedStatement ps = null;
+				ps = connection.prepareStatement(GET_HANDOFFBATCH_DISPATCHES);
+				ps.setString(1, handOffBatchId);
+				
+				return ps;
+			}  
+		};
+
+		jdbcTemplate.query(creator, 
+				new RowCallbackHandler() { 
+				public void processRow(ResultSet rs) throws SQLException {				    	
+					do {						
+						result.put( new RoutingTimeOfDay(rs.getTimestamp("DISPATCHTIME"))
+										, EnumHandOffDispatchStatus.getEnum(rs.getString("STATUS")));						
+					} while(rs.next());		        		    	
+				}
+		}
+		);
+		
+		return result;
+	}
+	
+	
+	public List<IHandOffBatchRoute> getHandOffBatchDispatchRoutes(final String handoffBatchId, final Date deliveryDate) throws SQLException {
+
+		final List<IHandOffBatchRoute> result = new ArrayList<IHandOffBatchRoute>();
+
+		PreparedStatementCreator creator = new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+				PreparedStatement ps =
+					connection.prepareStatement(GET_HANDOFFBATCH_DISPATCHROUTES);
+				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
+				ps.setString(2, handoffBatchId);
+				ps.setString(3, EnumHandOffDispatchStatus.COMPLETE.value());
+				
+				return ps;
+			}  
+		};
+
+		jdbcTemplate.query(creator, 
+				new RowCallbackHandler() { 
+				public void processRow(ResultSet rs) throws SQLException {				    	
+					do {							
+						IHandOffBatchRoute infoModel = new HandOffBatchRoute();
+						result.add(infoModel);
+						
+						infoModel.setRouteId(rs.getString("ROUTE_NO"));
+						infoModel.setArea(rs.getString("AREA"));
+						infoModel.setStartTime(rs.getTimestamp("STARTTIME"));
+						infoModel.setDispatchTime(new RoutingTimeOfDay(rs.getTimestamp("DISPATCHTIME")));
+						infoModel.setFirstDeliveryTime(rs.getTimestamp("FIRSTDLVTIME"));
+						infoModel.setCompletionTime(rs.getTimestamp("COMPLETETIME"));
+					} while(rs.next());		        		    	
+				}
+		}
+		);
+		return result;
+	}
+	
+	public List<IHandOffBatchPlan> getHandOffBatchPlansByDispatchTime(final String handoffBatchId, final Date deliveryDate) throws SQLException {
 		final List<IHandOffBatchPlan> result = new ArrayList<IHandOffBatchPlan>();
 		
 		PreparedStatementCreator creator = new PreparedStatementCreator() {
@@ -1434,7 +1489,8 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 				PreparedStatement ps =
 					connection.prepareStatement(query);
 				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
-				ps.setTimestamp(2, new java.sql.Timestamp(dispatchTime.getAsDate().getTime()));
+				ps.setString(2, handoffBatchId);
+				ps.setString(3, EnumHandOffDispatchStatus.COMPLETE.value());
 				
 				return ps;
 			}  
@@ -1470,63 +1526,9 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		);
 		return result;
 	}
-
-	public Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> getHandOffBatchDispatchStatus(final Date deliveryDate) throws SQLException {
-
-		final Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> result = new TreeMap<RoutingTimeOfDay, EnumHandOffDispatchStatus>();
-		PreparedStatementCreator creator = new PreparedStatementCreator() {
-			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
-				PreparedStatement ps = null;
-				ps = connection.prepareStatement(GET_HANDOFFBATCH_DISPATCHES);
-				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
-				
-				return ps;
-			}  
-		};
-
-		jdbcTemplate.query(creator, 
-				new RowCallbackHandler() { 
-				public void processRow(ResultSet rs) throws SQLException {				    	
-					do {						
-						result.put( new RoutingTimeOfDay(rs.getTimestamp("DISPATCHTIME"))
-										, EnumHandOffDispatchStatus.getEnum(rs.getString("STATUS")));						
-					} while(rs.next());		        		    	
-				}
-		}
-		);
-		
-		return result;
-	}
 	
-	public Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> getHandOffBatchCompletedDispatchStatus(final Date deliveryDate) throws SQLException {
 
-		final Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> result = new TreeMap<RoutingTimeOfDay, EnumHandOffDispatchStatus>();
-		PreparedStatementCreator creator = new PreparedStatementCreator() {
-			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
-				PreparedStatement ps = null;
-				ps = connection.prepareStatement(GET_HANDOFFBATCH_COMPLETEDDISPATCHES);
-				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
-				ps.setString(2, EnumHandOffDispatchStatus.COMPLETE.value());
-				ps.setDate(3, new java.sql.Date(deliveryDate.getTime()));
-				
-				return ps;
-			}  
-		};
-
-		jdbcTemplate.query(creator, 
-				new RowCallbackHandler() { 
-				public void processRow(ResultSet rs) throws SQLException {				    	
-					do {						
-						result.put( new RoutingTimeOfDay(rs.getTimestamp("DISPATCHTIME"))
-										, EnumHandOffDispatchStatus.getEnum(rs.getString("STATUS")));						
-					} while(rs.next());		        		    	
-				}
-		}
-		);
-		return result;
-	}
-
-	public List<IHandOffBatchDispatchResource> getHandOffBatchPlanResourcesByDispatchTime(final Date deliveryDate, final RoutingTimeOfDay dispatchTime) throws SQLException {
+	public List<IHandOffBatchDispatchResource> getHandOffBatchPlanResourcesByDispatchTime(final String handoffBatchId, final Date deliveryDate) throws SQLException {
 		final List<IHandOffBatchDispatchResource> result = new ArrayList<IHandOffBatchDispatchResource>();
 		
 		PreparedStatementCreator creator = new PreparedStatementCreator() {
@@ -1536,7 +1538,8 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 				PreparedStatement ps =
 					connection.prepareStatement(query);
 				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
-				ps.setTimestamp(2, new java.sql.Timestamp(dispatchTime.getAsDate().getTime()));
+				ps.setString(2, handoffBatchId);
+				ps.setString(3, EnumHandOffDispatchStatus.COMPLETE.value());
 				
 				return ps;
 			}  
@@ -1561,17 +1564,21 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		return result;
 	}
 	
-	public List<IHandOffBatchRoute> getHandOffBatchDispatchRoutes(final Date deliveryDate, final RoutingTimeOfDay dispatchTime) throws SQLException {
 
-		final List<IHandOffBatchRoute> result = new ArrayList<IHandOffBatchRoute>();
+	public Set<IHandOffDispatch> getHandOffDispatch(final String handoffBatchId, final Date deliveryDate) throws SQLException {
 
+		final Set<IHandOffDispatch> result = new HashSet<IHandOffDispatch>();
+			
 		PreparedStatementCreator creator = new PreparedStatementCreator() {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
-				PreparedStatement ps =
-					connection.prepareStatement(GET_HANDOFFBATCH_DISPATCHROUTES);
+				String query = GET_DISPATCHES_DELIVERYDATE;
+				
+				PreparedStatement ps = null;
+				ps = connection.prepareStatement(query);
 				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
-				ps.setString(2, EnumHandOffDispatchStatus.COMPLETE.value());
-				ps.setTimestamp(3, new java.sql.Timestamp(dispatchTime.getAsDate().getTime()));				
+				ps.setString(2, handoffBatchId);
+				ps.setString(3, EnumHandOffDispatchStatus.COMPLETE.value());
+							
 				return ps;
 			}  
 		};
@@ -1579,23 +1586,27 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		jdbcTemplate.query(creator, 
 				new RowCallbackHandler() { 
 				public void processRow(ResultSet rs) throws SQLException {				    	
-					do {							
-						IHandOffBatchRoute infoModel = new HandOffBatchRoute();
-						result.add(infoModel);
-						
-						infoModel.setRouteId(rs.getString("ROUTE_NO"));
-						infoModel.setArea(rs.getString("AREA"));
-						infoModel.setStartTime(rs.getTimestamp("STARTTIME"));
-						infoModel.setDispatchTime(new RoutingTimeOfDay(rs.getTimestamp("DISPATCHTIME")));
-						infoModel.setFirstDeliveryTime(rs.getTimestamp("FIRSTDLVTIME"));
-						infoModel.setCompletionTime(rs.getTimestamp("COMPLETETIME"));
+					do { 
+						IHandOffDispatch _dispatch = new HandOffDispatch();
+						_dispatch.setDispatchId(rs.getString("DISPATCH_ID"));
+						_dispatch.setDispatchDate(rs.getDate("DISPATCH_DATE"));
+						_dispatch.setIsBullpen(rs.getString("ISBULLPEN"));
+						_dispatch.setZone(rs.getString("ZONE"));
+						_dispatch.setRoute(rs.getString("ROUTE"));
+						_dispatch.setTruck(rs.getString("TRUCK"));
+						_dispatch.setSupervisorId(rs.getString("SUPERVISOR_ID"));
+						_dispatch.setPlanId(rs.getString("PLAN_ID"));
+						_dispatch.setStartTime(rs.getTimestamp("START_TIME"));
+						_dispatch.setStartTime(rs.getTimestamp("FIRST_DLV_TIME"));
+						_dispatch.setCutoffTime(rs.getTimestamp("CUTOFF_DATETIME"));
+						result.add(_dispatch);
 					} while(rs.next());		        		    	
 				}
 		}
 		);
+		
 		return result;
 	}
-	
 	
 	public List<Truck> getAvailableTrucksInService(final String assetType, final Date deliveryDate, final String assetStatus) throws SQLException {
 		final List<Truck> result = new ArrayList<Truck>();
@@ -1656,12 +1667,12 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		return result;
 	}
 	
-	public void clearHandOffBatchAutoDispatchResources(Date deliveryDate, RoutingTimeOfDay dispatchTime) throws SQLException {
+	public void clearHandOffBatchAutoDispatchResources(String handoffBatchId, Date deliveryDate) throws SQLException {
 		
 		Connection connection = null;		
 		try {
 			
-			this.jdbcTemplate.update(CLEAR_HANDOFFBATCH_AUTODISPATCHRESOURCES, new Object[] {deliveryDate, dispatchTime.getAsDate()});
+			this.jdbcTemplate.update(CLEAR_HANDOFFBATCH_AUTODISPATCHRESOURCES, new Object[] {deliveryDate, handoffBatchId, EnumHandOffDispatchStatus.COMPLETE.value()});
 			
 			connection = this.jdbcTemplate.getDataSource().getConnection();	
 			
@@ -1671,12 +1682,12 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	}
 		
 	
-	public void clearHandOffBatchAutoDispatches(Date deliveryDate, RoutingTimeOfDay dispatchTime) throws SQLException {
+	public void clearHandOffBatchAutoDispatches(String handoffBatchId, Date deliveryDate) throws SQLException {
 		
 		Connection connection = null;		
 		try {
 			
-			this.jdbcTemplate.update(CLEAR_HANDOFFBATCH_AUTODISPATCHES, new Object[] {deliveryDate, dispatchTime.getAsDate()});
+			this.jdbcTemplate.update(CLEAR_HANDOFFBATCH_AUTODISPATCHES, new Object[] {deliveryDate, handoffBatchId, EnumHandOffDispatchStatus.COMPLETE.value()});
 			
 			connection = this.jdbcTemplate.getDataSource().getConnection();	
 			
@@ -1767,20 +1778,16 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			}
 		}
 	}
-	
-	public Set<IHandOffDispatch> getHandOffDispatch(final Date deliveryDate, final RoutingTimeOfDay dispatchTime) throws SQLException {
-
-		final Set<IHandOffDispatch> result = new HashSet<IHandOffDispatch>();
-			
+		
+	public String getLastCommittedHandOffBatch(final Date deliveryDate) throws SQLException  {
+		final List<String> result = new ArrayList<String>();
+		
 		PreparedStatementCreator creator = new PreparedStatementCreator() {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
-				String query = GET_DISPATCHES_DELIVERYDATE;
-				
-				PreparedStatement ps = null;
-				ps = connection.prepareStatement(query);
+								
+				PreparedStatement ps = connection.prepareStatement(GET_HANDOFFBATCH_LASTCOMMITEDBATCH);
 				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
-				ps.setTimestamp(2, new java.sql.Timestamp(dispatchTime.getAsDate().getTime()));
-							
+											
 				return ps;
 			}  
 		};
@@ -1788,101 +1795,12 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		jdbcTemplate.query(creator, 
 				new RowCallbackHandler() { 
 				public void processRow(ResultSet rs) throws SQLException {				    	
-					do { 
-						IHandOffDispatch _dispatch = new HandOffDispatch();
-						_dispatch.setDispatchId(rs.getString("DISPATCH_ID"));
-						_dispatch.setDispatchDate(rs.getDate("DISPATCH_DATE"));
-						_dispatch.setIsBullpen(rs.getString("ISBULLPEN"));
-						_dispatch.setZone(rs.getString("ZONE"));
-						_dispatch.setRoute(rs.getString("ROUTE"));
-						_dispatch.setTruck(rs.getString("TRUCK"));
-						_dispatch.setSupervisorId(rs.getString("SUPERVISOR_ID"));
-						_dispatch.setPlanId(rs.getString("PLAN_ID"));
-						_dispatch.setStartTime(rs.getTimestamp("START_TIME"));
-						_dispatch.setStartTime(rs.getTimestamp("FIRST_DLV_TIME"));
-						_dispatch.setCutoffTime(rs.getTimestamp("CUTOFF_DATETIME"));
-						result.add(_dispatch);
-					} while(rs.next());		        		    	
+					result.add(rs.getString("BATCH_ID"));					        		    	
 				}
 		}
 		);
 		
-		return result;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void addNewHandOffCompletedDispatches(final String handOffBatchId, final Date deliveryDate, final List<IHandOffBatchRoute> rootRoutesIn) throws SQLException {
-		Connection connection = null;
-		
-		if(rootRoutesIn != null && rootRoutesIn.size() > 0) {
-			
-			try{
-				BatchSqlUpdate batchUpdater = new BatchSqlUpdate(this.jdbcTemplate.getDataSource(),INSERT_HANDOFFBATCHCOMPLETED_DISPATCHES);
-				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
-				batchUpdater.declareParameter(new SqlParameter(Types.DATE));
-				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
-				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
-				batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
-				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
-				batchUpdater.compile();
-	
-				connection = this.jdbcTemplate.getDataSource().getConnection();
-				
-				Iterator<IHandOffBatchRoute> itr = rootRoutesIn.iterator();				
-				while(itr.hasNext()){
-					IHandOffBatchRoute model = itr.next();					
-					batchUpdater.update(new Object[]{ 
-												  handOffBatchId
-												, deliveryDate
-												, model.getRouteId()
-												, model.getTruckNumber()
-												, model.getRouteDispatchTime()
-												, EnumHandOffDispatchStatus.COMPLETE.value()
-										});
-				}			
-				batchUpdater.flush();
-			}finally{
-				if(connection!=null) connection.close();
-			}
-		}
-	}
-	
-	public Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> getHandOffCompletedDispatches(final String  handoffBatchId) throws SQLException {
-
-		final Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> result = new TreeMap<RoutingTimeOfDay, EnumHandOffDispatchStatus>();
-		PreparedStatementCreator creator = new PreparedStatementCreator() {
-			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
-				PreparedStatement ps = null;
-				ps = connection.prepareStatement(GET_HANDOFFBATCH_DISPATCHSTATUS);
-				ps.setString(1, handoffBatchId);				
-				return ps;
-			}  
-		};
-
-		jdbcTemplate.query(creator, 
-				new RowCallbackHandler() { 
-				public void processRow(ResultSet rs) throws SQLException {				    	
-					do {						
-						result.put( new RoutingTimeOfDay(rs.getTimestamp("DISPATCHTIME"))
-										, EnumHandOffDispatchStatus.getEnum(rs.getString("STATUS")));						
-					} while(rs.next());		        		    	
-				}
-		}
-		);
-		return result;
-	}
-	
-	
-	public void clearHandOffBatchDispatchStatus(String handoffBatchId) throws SQLException {
-		
-		Connection connection = null;		
-		try {			
-			this.jdbcTemplate.update(CLEAR_HANDOFFBATCH_COMPLETEDDISPATCHSTATUS, new Object[] {handoffBatchId});			
-			connection=this.jdbcTemplate.getDataSource().getConnection();	
-			
-		} finally {
-			if(connection!=null) connection.close();
-		}
+		return result.size() > 0 ? result.get(0) : null;
 	}
 
 }

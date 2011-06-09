@@ -66,7 +66,7 @@ public class HandOffCommitAction extends AbstractHandOffAction {
 		}
 		List routes = proxy.getHandOffBatchRoutes(this.getBatch().getBatchId());
 		List stops = proxy.getHandOffBatchStops(this.getBatch().getBatchId(), false);
-		List<HandOffDispatchIn> dispatchStatus = proxy.getHandOffBatchDispatches(this.getBatch().getDeliveryDate());
+		List<HandOffDispatchIn> dispatchStatus = proxy.getHandOffBatchDispatches(this.getBatch().getBatchId());
 		
 		List<HandOffStopIn> stopsToCommit = new ArrayList<HandOffStopIn>();
 		List<HandOffRouteIn> routesToCommit = new ArrayList<HandOffRouteIn>(); 

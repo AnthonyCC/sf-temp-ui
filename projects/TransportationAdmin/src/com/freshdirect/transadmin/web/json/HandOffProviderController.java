@@ -273,26 +273,9 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 			List<IHandOffBatchPlan> batchPlans = new ArrayList<IHandOffBatchPlan>();			
 			List<IHandOffBatchDispatchResource> batchPlanResources = new ArrayList<IHandOffBatchDispatchResource>();			
 			
-			Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus = proxy.getHandOffCompletedDispatches(handOffBatchId);
 			
-			if(dispatchStatus !=null && dispatchStatus.size() == 0)
-				dispatchStatus = proxy.getHandOffBatchCompletedDispatchStatus(batch.getDeliveryDate());
-			else
-				proxy.clearHandOffBatchDispatchStatus(batch.getBatchId());
-			
-			String deliveryDate = TransStringUtil.getDate(batch.getDeliveryDate());
-		
-			if(dispatchStatus != null){
-				if(dispatchStatus.size()== 0){
-					proxy.updateHandOffBatchStatus(batch.getBatchId(), EnumHandOffBatchStatus.AUTODISPATCHCOMPLETED);
-					proxy.updateHandOffBatchMessage(batch.getBatchId(), "No HandOffBatch Dispatches marked as COMPLETE /"+"Dispatch Status size "+dispatchStatus.size());
-					return true;
-				}
-				batchPlans = proxy.getHandOffBatchPlansByDispatchStatus( TransStringUtil.getDate(deliveryDate)
-																						, dispatchStatus);
-				batchPlanResources =  proxy.getHandOffBatchPlanResourcesByDispatchStatus( TransStringUtil.getDate(deliveryDate)
-																						,  dispatchStatus);
-			}
+			batchPlans = proxy.getHandOffBatchPlansByDispatchStatus(batch.getBatchId(), batch.getDeliveryDate());
+			batchPlanResources =  proxy.getHandOffBatchPlanResourcesByDispatchStatus(batch.getBatchId(), batch.getDeliveryDate());
 			
 			Map<String, Set<IHandOffBatchDispatchResource>> resourceMapping = new HashMap<String, Set<IHandOffBatchDispatchResource>>();
 			Iterator<IHandOffBatchDispatchResource> itr = batchPlanResources.iterator();
@@ -310,11 +293,9 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 				batchPlan.setBatchPlanResources(resourceMapping.get(batchPlan.getPlanId()));
 			}			
 			
-			HandOffAutoDispatchAction process = new HandOffAutoDispatchAction(batch, userId, batchPlans, dispatchStatus);
+			HandOffAutoDispatchAction process = new HandOffAutoDispatchAction(batch, userId, batchPlans);
 			process.execute();
 		} catch (RoutingServiceException e) {			
-			e.printStackTrace();
-		} catch (ParseException e) {		
 			e.printStackTrace();
 		}
 		

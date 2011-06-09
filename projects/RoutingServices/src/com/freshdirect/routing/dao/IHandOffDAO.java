@@ -76,41 +76,35 @@ public interface IHandOffDAO {
 	void addNewHandOffBatchDepotSchedulesEx(Set<IHandOffBatchDepotScheduleEx> dataList) throws SQLException;
 	Set<IHandOffBatchDepotScheduleEx> getHandOffBatchDepotSchedulesEx(String dayOfWeek, Date cutOffTime) throws SQLException;
 	
-	void clearHandOffBatchDispatches(Date deliveryDate) throws SQLException;
+	void clearHandOffBatchDispatches(String handOffBatchId) throws SQLException;
 	
-	void addNewHandOffBatchDispatches(Date deliveryDate, Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus) throws SQLException;
+	void addNewHandOffBatchDispatches(String handOffBatchId, Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus) throws SQLException;
 	
-	List<HandOffDispatchIn> getHandOffBatchDispatches(final Date deliveryDate) throws SQLException;
+	List<HandOffDispatchIn> getHandOffBatchDispatches(final String handOffBatchId) throws SQLException;
 	
-	Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> getHandOffBatchDispatchStatus(final Date deliveryDate) throws SQLException;
+	Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> getHandOffBatchDispatchStatus(final String handOffBatchId) throws SQLException;
 	
 	Map<RoutingTimeOfDay, Integer> getHandOffBatchDispatchCnt(final Date deliveryDate) throws SQLException;
 	
-	List<IHandOffBatchPlan> getHandOffBatchPlansByDispatchTime(Date deliveryDate, RoutingTimeOfDay dispatchTime) throws SQLException;
+	List<IHandOffBatchPlan> getHandOffBatchPlansByDispatchTime(final String handoffBatchId, final Date deliveryDate) throws SQLException;
 	
-	List<IHandOffBatchDispatchResource> getHandOffBatchPlanResourcesByDispatchTime(Date deliveryDate, RoutingTimeOfDay dispatchTime) throws SQLException;
+	List<IHandOffBatchDispatchResource> getHandOffBatchPlanResourcesByDispatchTime(String handoffBatchId, Date deliveryDate) throws SQLException;
 	
-	List<IHandOffBatchRoute> getHandOffBatchDispatchRoutes(Date deliveryDate, RoutingTimeOfDay dispatchTime) throws SQLException;
+	List<IHandOffBatchRoute> getHandOffBatchDispatchRoutes(String handoffBatchId, Date deliveryDate) throws SQLException;
 	
 	List<Truck> getAvailableTrucksInService(String assetType, Date deliveryDate, String assetStatus) throws SQLException;
 	
 	List<TruckPreferenceStat> getEmployeeTruckPreferences() throws SQLException;
 	
-	void clearHandOffBatchAutoDispatchResources(Date deliveryDate, RoutingTimeOfDay dispatchTime) throws SQLException;
+	void clearHandOffBatchAutoDispatchResources(String handoffBatchId, Date deliveryDate) throws SQLException;
 	
-	void clearHandOffBatchAutoDispatches(Date deliveryDate, RoutingTimeOfDay dispatchTime) throws SQLException;	
+	void clearHandOffBatchAutoDispatches(String handoffBatchId, Date deliveryDate) throws SQLException;	
 	
 	void addNewHandOffBatchAutoDispatches(Collection dataList) throws SQLException;
 	
 	void addNewHandOffBatchAutoDispatchResources(Collection dataList) throws SQLException;	
 	
-	Set<IHandOffDispatch> getHandOffDispatch(Date deliveryDate, RoutingTimeOfDay dispatchTime) throws SQLException;
-	
-	Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> getHandOffBatchCompletedDispatchStatus(final Date deliveryDate) throws SQLException;
-	
-	void addNewHandOffCompletedDispatches( String handOffBatchId, Date deliveryDate, List<IHandOffBatchRoute> rootRoutesIn) throws SQLException;
-	
-	Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> getHandOffCompletedDispatches( String handOffBatchId) throws SQLException;
-	
-	void clearHandOffBatchDispatchStatus(String handOffBatchId) throws SQLException;
+	Set<IHandOffDispatch> getHandOffDispatch(String handoffBatchId, Date deliveryDate) throws SQLException;
+			
+	String getLastCommittedHandOffBatch(Date deliveryDate) throws SQLException;
 }

@@ -16,36 +16,37 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import lpsolve.LpSolveException;
 
 import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
-import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;
 import com.freshdirect.routing.constants.EnumTruckPreference;
 import com.freshdirect.routing.model.HandOffDispatch;
 import com.freshdirect.routing.model.IHandOffBatch;
-import com.freshdirect.routing.model.IHandOffBatchPlan;
 import com.freshdirect.routing.model.IHandOffBatchDispatchResource;
+import com.freshdirect.routing.model.IHandOffBatchPlan;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IHandOffDispatch;
 import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.TruckPreferenceStat;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
-
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
+import com.freshdirect.routing.truckassignment.Dispatch;
+import com.freshdirect.routing.truckassignment.Employee;
+import com.freshdirect.routing.truckassignment.Route;
+import com.freshdirect.routing.truckassignment.TAPStatistics;
+import com.freshdirect.routing.truckassignment.Truck;
+import com.freshdirect.routing.truckassignment.TruckAssignmentSolver;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingServicesProperties;
-import com.freshdirect.routing.util.RoutingTimeOfDay;
 import com.freshdirect.sap.bapi.BapiInfo;
 import com.freshdirect.sap.bapi.BapiSendPhysicalTruckInfo.HandOffRouteTruckIn;
 import com.freshdirect.sap.command.SapSendPhysicalTruckInfo;
 import com.freshdirect.sap.ejb.SapException;
-
-import com.freshdirect.routing.truckassignment.*;
 
 public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 	
@@ -60,11 +61,10 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 	private TAPStatistics statistics;
 	private Map<String, Collection<TruckPreferenceStat>> truckPreferenceStats;
 	private Map<String, IHandOffDispatch> routeDispatchMapping;
-	private Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus;
-	
+		
 	public HandOffAutoDispatchAction(IHandOffBatch batch
 										,String userId
-										,List<IHandOffBatchPlan> batchPlanList, Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus) {
+										,List<IHandOffBatchPlan> batchPlanList) {
 		super(batch, userId);
 		this.batchPlanList = batchPlanList;		
 		trucks = new ArrayList<Truck>();
@@ -76,8 +76,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 		dispatchMap = new HashMap<String, Dispatch>();
 		statistics = new TAPStatistics();
 		truckPreferenceStats = new HashMap<String, Collection<TruckPreferenceStat>>();
-		routeDispatchMapping = new HashMap<String, IHandOffDispatch>();
-		this.dispatchStatus = dispatchStatus;
+		routeDispatchMapping = new HashMap<String, IHandOffDispatch>();		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -107,7 +106,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 								
 					Map<String, IHandOffBatchRoute> routeMapping = new HashMap<String, IHandOffBatchRoute>();
 					
-					List<IHandOffBatchRoute> routes = proxy.getHandOffBatchDispatchRoutes(this.getBatch().getDeliveryDate(), this.dispatchStatus);
+					List<IHandOffBatchRoute> routes = proxy.getHandOffBatchDispatchRoutes(this.getBatch().getBatchId(), this.getBatch().getDeliveryDate());
 									
 					int noOfRoutes = routes != null ? routes.size() : 0;
 					
@@ -124,7 +123,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 							}						
 							
 							//clear if any dispatched exists
-							proxy.clearHandOffBatchAutoDispatches(this.getBatch().getDeliveryDate(), this.dispatchStatus);
+							proxy.clearHandOffBatchAutoDispatches(this.getBatch().getBatchId(), this.getBatch().getDeliveryDate());
 							
 							this.loadTrucks(proxy);
 							this.loadDispatches(dispatchMapping, routeMapping);
@@ -137,7 +136,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 				            // add new dispatches
 				            proxy.addNewHandOffBatchAutoDispatches(dispatchMapping.values());				            
 				            
-							Set<IHandOffDispatch> batchDispatches = proxy.getHandOffDispatch(this.getBatch().getDeliveryDate(), this.dispatchStatus);
+							Set<IHandOffDispatch> batchDispatches = proxy.getHandOffDispatch(this.getBatch().getBatchId(), this.getBatch().getDeliveryDate());
 							for(IHandOffDispatch dispatch : batchDispatches){
 								IHandOffDispatch d = dispatchMapping.get(dispatch.getPlanId());
 								if(d != null){
@@ -159,10 +158,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 									routesToTrucksCommit.add(route);									
 								}
 								
-								proxy.addNewHandOffCompletedDispatches(this.getBatch().getBatchId()
-																			, this.getBatch().getDeliveryDate()
-																			, rootRoutesIn);
-								
+																
 								SapSendPhysicalTruckInfo sapHandOffEngine 
 															= new SapSendPhysicalTruckInfo(routesToTrucksCommit
 																							, RoutingServicesProperties.getDefaultPlantCode()
