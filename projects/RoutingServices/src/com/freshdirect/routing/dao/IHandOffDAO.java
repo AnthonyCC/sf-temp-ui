@@ -90,7 +90,7 @@ public interface IHandOffDAO {
 	
 	List<IHandOffBatchDispatchResource> getHandOffBatchPlanResourcesByDispatchTime(Date deliveryDate, RoutingTimeOfDay dispatchTime) throws SQLException;
 	
-	List<IHandOffBatchRoute> getHandOffBatchDispatchRoutes(Date deliveryDate) throws SQLException;
+	List<IHandOffBatchRoute> getHandOffBatchDispatchRoutes(Date deliveryDate, RoutingTimeOfDay dispatchTime) throws SQLException;
 	
 	List<Truck> getAvailableTrucksInService(String assetType, Date deliveryDate, String assetStatus) throws SQLException;
 	
@@ -108,5 +108,8 @@ public interface IHandOffDAO {
 	
 	Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> getHandOffBatchCompletedDispatchStatus(final Date deliveryDate) throws SQLException;
 	
-	void addNewHandOffRouteAssignedTrucks(Date deliveryDate, List<IHandOffBatchRoute> rootRoutesIn) throws SQLException;
+	void addNewHandOffCompletedDispatches( String handOffBatchId, Date deliveryDate, List<IHandOffBatchRoute> rootRoutesIn) throws SQLException;
+	
+	Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> getHandOffCompletedDispatches( String handOffBatchId) throws SQLException;
+
 }

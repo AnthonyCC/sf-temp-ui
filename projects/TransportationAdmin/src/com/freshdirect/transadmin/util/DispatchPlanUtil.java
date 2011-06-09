@@ -151,8 +151,10 @@ public class DispatchPlanUtil {
 		command.setRoute(dispatch.getRoute());
 		if(dispatch.getTruck() != null){
 			command.setTruck(dispatch.getTruck());
+			command.setActualTruckAssigned(true);
 		} else if(dispatch.getPhysicalTruck() != null){
 			command.setTruck(dispatch.getPhysicalTruck());
+			command.setActualTruckAssigned(false);
 		} else {
 			command.setTruck("");
 		}
@@ -952,9 +954,9 @@ public class DispatchPlanUtil {
 				}
 				
 				//truck status
-				if(!TransStringUtil.isEmpty(command.getTruck()))			
+				if(!TransStringUtil.isEmpty(command.getTruck()) && command.isActualTruckAssigned())			
 					command.setDispatchStatus(EnumStatus.ActualTruck);
-				else if(!TransStringUtil.isEmpty(command.getPhysicalTruck()))
+				else if(!TransStringUtil.isEmpty(command.getPhysicalTruck()) && !command.isActualTruckAssigned())
 					command.setDispatchStatus(EnumStatus.PlannedTruck);
 				else
 					return;

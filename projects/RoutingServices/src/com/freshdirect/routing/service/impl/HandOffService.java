@@ -352,9 +352,15 @@ public class HandOffService extends BaseService implements IHandOffService {
 		}
 	}
 	
-	public List<IHandOffBatchRoute> getHandOffBatchDispatchRoutes(Date deliveryDate) throws RoutingServiceException {
+	public List<IHandOffBatchRoute> getHandOffBatchDispatchRoutes(Date deliveryDate, Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus) throws RoutingServiceException {
+		List<IHandOffBatchRoute> routes = new ArrayList<IHandOffBatchRoute>();
 		try {
-			return getHandOffDAOImpl().getHandOffBatchDispatchRoutes(deliveryDate);
+			if(dispatchStatus != null){
+				for(Map.Entry<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchEntry : dispatchStatus.entrySet()){
+					routes.addAll(getHandOffDAOImpl().getHandOffBatchDispatchRoutes(deliveryDate, dispatchEntry.getKey()));
+				}
+			}
+			return routes;
 		} catch (SQLException e) {
 			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 		}
@@ -429,9 +435,17 @@ public class HandOffService extends BaseService implements IHandOffService {
 		}
 	}
 	
-	public void addNewHandOffRouteAssignedTrucks(Date deliveryDate, List<IHandOffBatchRoute> rootRoutesIn) throws RoutingServiceException {
+	public void addNewHandOffCompletedDispatches( String handOffBatchId, Date deliveryDate, List<IHandOffBatchRoute> rootRoutesIn) throws RoutingServiceException {
 		try{
-			getHandOffDAOImpl().addNewHandOffRouteAssignedTrucks(deliveryDate, rootRoutesIn);
+			getHandOffDAOImpl().addNewHandOffCompletedDispatches(handOffBatchId, deliveryDate, rootRoutesIn);
+		}catch(SQLException e){
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
+	
+	public Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> getHandOffCompletedDispatches( String handOffBatchId) throws RoutingServiceException {
+		try{
+			return getHandOffDAOImpl().getHandOffCompletedDispatches(handOffBatchId);
 		}catch(SQLException e){
 			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 		}

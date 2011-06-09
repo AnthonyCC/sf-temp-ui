@@ -66,6 +66,7 @@ public class DispatchCommand extends WebPlanInfo {
 	private String additionalNextels;
 	
 	private String extras;
+	private boolean isActualTruckAssigned;
 	
     public int getResourceSize(List resources)
 	{
@@ -78,6 +79,15 @@ public class DispatchCommand extends WebPlanInfo {
 		}
 		return result;
 	}
+    
+	public boolean isActualTruckAssigned() {
+		return isActualTruckAssigned;
+	}
+
+	public void setActualTruckAssigned(boolean isActualTruckAssigned) {
+		this.isActualTruckAssigned = isActualTruckAssigned;
+	}
+
 	public String getStatusName() {
 		return statusName;
 	}

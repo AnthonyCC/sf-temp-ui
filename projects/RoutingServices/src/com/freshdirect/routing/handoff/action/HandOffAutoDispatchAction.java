@@ -95,20 +95,19 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 												, EnumHandOffBatchActionType.AUTODISPATCH, this.getUserId());
 		proxy.updateHandOffBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_AUTODISPATCHPROGRESS);
 		StringBuffer actionResponse = new StringBuffer();
+		
 		if(this.getBatch() != null && this.getBatch().getBatchId() != null) {
 			
 			if(this.getBatch() != null) {
 				
 				if(this.batchPlanList.size() == 0){
-					actionResponse.append("Plans matching Dispatchs COMPLETED /" +this.batchPlanList.size()+" Plans");
-					proxy.updateHandOffBatchMessage(this.getBatch().getBatchId(), actionResponse.toString());
-					//throw new RoutingServiceException("Plans with Dispatch status COMPLETED"
-							//+ " ,Batch Plan List size,"+this.batchPlanList.size(), null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+					actionResponse.append("No Plans matching Dispatchs COMPLETED /" +this.batchPlanList.size()+" Plans");
+					proxy.updateHandOffBatchMessage(this.getBatch().getBatchId(), actionResponse.toString());					
 				}else{
 								
 					Map<String, IHandOffBatchRoute> routeMapping = new HashMap<String, IHandOffBatchRoute>();
 					
-					List<IHandOffBatchRoute> routes = proxy.getHandOffBatchDispatchRoutes(this.getBatch().getDeliveryDate());
+					List<IHandOffBatchRoute> routes = proxy.getHandOffBatchDispatchRoutes(this.getBatch().getDeliveryDate(), this.dispatchStatus);
 									
 					int noOfRoutes = routes != null ? routes.size() : 0;
 					
@@ -148,7 +147,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 							// add dispatch resources
 							proxy.addNewHandOffBatchAutoDispatchResources(batchDispatches);
 							
-							if(true){
+							
 								StringBuffer sapResponse = new StringBuffer();
 								List<HandOffRouteTruckIn> routesToTrucksCommit = new ArrayList<HandOffRouteTruckIn>();
 								List<IHandOffBatchRoute> rootRoutesIn = (List<IHandOffBatchRoute>)routes; 
@@ -160,7 +159,9 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 									routesToTrucksCommit.add(route);									
 								}
 								
-								proxy.addNewHandOffRouteAssignedTrucks(this.getBatch().getDeliveryDate(), rootRoutesIn);
+								proxy.addNewHandOffCompletedDispatches(this.getBatch().getBatchId()
+																			, this.getBatch().getDeliveryDate()
+																			, rootRoutesIn);
 								
 								SapSendPhysicalTruckInfo sapHandOffEngine 
 															= new SapSendPhysicalTruckInfo(routesToTrucksCommit
@@ -192,8 +193,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 										}
 									}
 								}
-								actionResponse.append(sapResponse); 
-							}
+								actionResponse.append(sapResponse);						
 							
 						}catch(ParseException pe){
 							pe.printStackTrace();
@@ -311,22 +311,17 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			_dispatch.setMaxTime(_plan.getMaxTime());
 			_dispatch.setRegion(_plan.getRegion());
 			_dispatch.setZone(_plan.getZoneCode());
-			_dispatch.setCutoffTime(_plan.getCutOffTime());
 			_dispatch.setBatchDispatchResources(_plan.getBatchPlanResources());
 			
 			IHandOffBatchRoute route = matchRoute(_plan, zoneRouteList);
 							
 			if(route != null) {					
 				_dispatch.setRoute(route.getRouteId());				
-				/*_dispatch.setStartTime(RoutingDateUtil.getServerTime(route.getStartTime()) != null ?
-						RoutingDateUtil.getServerTime(RoutingDateUtil.getServerTime(route.getStartTime())): null);	
-				*/
 				_dispatch.setFirstDeliveryTime(RoutingDateUtil.getServerTime(route.getFirstDeliveryTime()) != null ?
 						RoutingDateUtil.getServerTime(RoutingDateUtil.getServerTime(route.getFirstDeliveryTime())): null);				
 				_dispatch.setCheckInTime(route.getCheckInTime()); 
 				_dispatch.setZone(route.getArea());
-				route = null;
-				
+				route = null;				
 			}
 			
 			if(!dispatchMapping.containsKey(_dispatch.getDispatchId()))

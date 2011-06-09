@@ -278,7 +278,10 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 			List<IHandOffBatchPlan> batchPlans = new ArrayList<IHandOffBatchPlan>();			
 			List<IHandOffBatchDispatchResource> batchPlanResources = new ArrayList<IHandOffBatchDispatchResource>();			
 			
-			Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus = proxy.getHandOffBatchCompletedDispatchStatus(batch.getDeliveryDate());
+			Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus = proxy.getHandOffCompletedDispatches(handOffBatchId);
+			
+			if(dispatchStatus !=null && dispatchStatus.size() == 0)
+				dispatchStatus = proxy.getHandOffBatchCompletedDispatchStatus(batch.getDeliveryDate());
 			
 			String deliveryDate = TransStringUtil.getDate(batch.getDeliveryDate());
 		
