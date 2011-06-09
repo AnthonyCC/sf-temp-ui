@@ -295,7 +295,8 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	private static final String GET_HANDOFFBATCHDISPATCHSEQ_QRY = "select TRANSP.DISPATCHSEQ.nextval FROM DUAL";
 	
 	private static final String GET_DISPATCHES_DELIVERYDATE = "select * FROM TRANSP.DISPATCH d WHERE d.DISPATCH_DATE=? and D.START_TIME = ? ";
-	
+
+	@SuppressWarnings("unused")
 	private static final String GET_HANDOFFBATCH_DISPATCHROUTES_OLD = "SELECT R.AREA, R.ROUTE_NO, R.STARTTIME, R.DISPATCHTIME, "+
 															" (SELECT min(S.WINDOW_STARTTIME) from TRANSP.HANDOFF_BATCHSTOP s where S.BATCH_ID = ? and S.ROUTE_NO = R.ROUTE_NO) FIRSTDLVTIME, "+														
 															" decode(A.IS_DEPOT , 'X',(SELECT max(S.STOP_DEPARTUREDATETIME ) + 3/48  from TRANSP.HANDOFF_BATCHSTOP s where S.BATCH_ID = ? and S.ROUTE_NO = R.ROUTE_NO),R.COMPLETETIME) COMPLETETIME "+
@@ -306,7 +307,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		+ " decode(A.IS_DEPOT , 'X', (SELECT max(S.STOP_DEPARTUREDATETIME ) + 3/48  from TRANSP.HANDOFF_BATCHSTOP s where S.BATCH_ID = R.BATCH_ID and S.ROUTE_NO = R.ROUTE_NO), R.COMPLETETIME) COMPLETETIME "
 		+ " from TRANSP.HANDOFF_BATCHROUTE R, TRANSP.TRN_AREA A, TRANSP.HANDOFF_BATCH b, TRANSP.HANDOFF_BATCHDISPATCH d "
 		+ " where R.AREA = A.CODE and B.BATCH_ID = R.BATCH_ID and D.DELIVERY_DATE = B.DELIVERY_DATE "
-		+ " and R.DISPATCHTIME = D.DISPATCHTIME and b.DELIVERY_DATE = ? and D.STATUS = ? and B.BATCH_STATUS IN ('CPD/ADC','CPD','CPD/ADF') "
+		+ " and R.DISPATCHTIME = D.DISPATCHTIME and b.DELIVERY_DATE = ? and D.STATUS = ? "
 		+ " and R.DISPATCHTIME = ? " 
 		+ " order by R.AREA, R.ROUTE_NO";
 
@@ -331,6 +332,8 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	
 	private static final String GET_HANDOFFBATCH_DISPATCHSTATUS = "SELECT DISPATCH_TIME, STATUS FROM TRANSP.HANDOFFBATCH_AUTODISPATCH WHERE BATCH_ID = ?";
 	
+	private static final String CLEAR_HANDOFFBATCH_COMPLETEDDISPATCHSTATUS  = "DELETE FROM TRANSP.HANDOFFBATCH_AUTODISPATCH D WHERE D.BATCH_ID = ? ";
+
 	public List<IHandOffBatchRoute> getHandOffBatchRoutes(final String batchId) throws SQLException {
 
 		final List<IHandOffBatchRoute> result = new ArrayList<IHandOffBatchRoute>();
@@ -1867,6 +1870,19 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		}
 		);
 		return result;
+	}
+	
+	
+	public void clearHandOffBatchDispatchStatus(String handoffBatchId) throws SQLException {
+		
+		Connection connection = null;		
+		try {			
+			this.jdbcTemplate.update(CLEAR_HANDOFFBATCH_COMPLETEDDISPATCHSTATUS, new Object[] {handoffBatchId});			
+			connection=this.jdbcTemplate.getDataSource().getConnection();	
+			
+		} finally {
+			if(connection!=null) connection.close();
+		}
 	}
 
 }

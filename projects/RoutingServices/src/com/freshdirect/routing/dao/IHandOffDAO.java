@@ -111,5 +111,6 @@ public interface IHandOffDAO {
 	void addNewHandOffCompletedDispatches( String handOffBatchId, Date deliveryDate, List<IHandOffBatchRoute> rootRoutesIn) throws SQLException;
 	
 	Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> getHandOffCompletedDispatches( String handOffBatchId) throws SQLException;
-
+	
+	void clearHandOffBatchDispatchStatus(String handOffBatchId) throws SQLException;
 }

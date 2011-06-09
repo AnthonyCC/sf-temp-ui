@@ -99,5 +99,5 @@ public interface IHandOffService {
 	
 	Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> getHandOffCompletedDispatches( String handOffBatchId) throws RoutingServiceException;
 	
-	
+	void clearHandOffBatchDispatchStatus(String handOffBatchId) throws RoutingServiceException;
 }

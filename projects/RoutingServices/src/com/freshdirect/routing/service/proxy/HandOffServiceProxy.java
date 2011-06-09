@@ -188,4 +188,8 @@ public class HandOffServiceProxy  extends BaseServiceProxy  {
 	public Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> getHandOffCompletedDispatches( String handOffBatchId) throws RoutingServiceException {
 		return getService().getHandOffCompletedDispatches(handOffBatchId);
 	}
+	
+	public void clearHandOffBatchDispatchStatus(String handOffBatchId) throws RoutingServiceException {
+		
+	}
 }

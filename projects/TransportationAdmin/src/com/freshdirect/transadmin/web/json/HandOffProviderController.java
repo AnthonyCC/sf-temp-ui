@@ -268,13 +268,8 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 		
 		try {
 			
-			batch = proxy.getHandOffBatchById(handOffBatchId);
-			
-			/*Set<IHandOffDispatch> bullpenDispatchs = proxy.getHandOffDispatch(batch.getDeliveryDate(), null, true);			
-			if(bullpenDispatchs != null && bullpenDispatchs.size() > 0){
-				isBullpen = false;
-			}*/
-			
+			batch = proxy.getHandOffBatchById(handOffBatchId);			
+				
 			List<IHandOffBatchPlan> batchPlans = new ArrayList<IHandOffBatchPlan>();			
 			List<IHandOffBatchDispatchResource> batchPlanResources = new ArrayList<IHandOffBatchDispatchResource>();			
 			
@@ -282,6 +277,8 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 			
 			if(dispatchStatus !=null && dispatchStatus.size() == 0)
 				dispatchStatus = proxy.getHandOffBatchCompletedDispatchStatus(batch.getDeliveryDate());
+			else
+				proxy.clearHandOffBatchDispatchStatus(batch.getBatchId());
 			
 			String deliveryDate = TransStringUtil.getDate(batch.getDeliveryDate());
 		

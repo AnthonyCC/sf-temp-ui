@@ -450,4 +450,12 @@ public class HandOffService extends BaseService implements IHandOffService {
 			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 		}
 	}
+	
+	public void clearHandOffBatchDispatchStatus(String handOffBatchId) throws RoutingServiceException {
+		try{
+			getHandOffDAOImpl().clearHandOffBatchDispatchStatus(handOffBatchId);
+		}catch(SQLException e){
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
 }
