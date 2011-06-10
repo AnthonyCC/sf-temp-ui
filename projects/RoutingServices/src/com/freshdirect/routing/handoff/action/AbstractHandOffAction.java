@@ -269,7 +269,7 @@ public abstract class AbstractHandOffAction {
 					proxy.updateHandOffBatchMessage(this.getBatch().getBatchId(), decodeErrorMessage(exp));
 				}
 			} catch (RoutingServiceException e) {
-				LOGGER.error("failuer to update handoff batch status", e);
+				LOGGER.error("Failure to update Handoff batch status", e);
 			}
 
 			throw new RoutingServiceException(exp, IIssue.PROCESS_HANDOFFBATCH_ERROR);
