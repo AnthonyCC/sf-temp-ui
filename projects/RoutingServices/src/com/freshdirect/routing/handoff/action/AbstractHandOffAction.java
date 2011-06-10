@@ -34,6 +34,9 @@ public abstract class AbstractHandOffAction {
 	
 	private NumberFormat formatter = new DecimalFormat("00");
 	
+	private static final String ERROR_MSG_DISPATCHSTATUSINVALIDCHG = "Dispatches marked as COMPLETE in a previous cutoff cannot be changed to PENDING";
+	private static final String ERROR_MSG_NEWINVALIDPDISPATCH = "A new dispatch has been added that is earlier than previously completed dispatches";
+	
 	public AbstractHandOffAction(IHandOffBatch batch, String userId) {
 		super();
 		this.batch = batch;
@@ -237,12 +240,12 @@ public abstract class AbstractHandOffAction {
 					if(EnumHandOffDispatchStatus.COMPLETE.equals(previousStatus)
 							&& (dispatchEntry.getValue() == null 
 										|| !EnumHandOffDispatchStatus.COMPLETE.equals(dispatchEntry.getValue()))) {
-						throw new RoutingServiceException("Dispatches marked as COMPLETE in a previous cutoff cannot be changed to PENDING", null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
-					} else {
-						// This is a new dispatch being added
-						if(currMostRecentComplete != null && currMostRecentComplete.after(dispatchEntry.getKey())) {
-							throw new RoutingServiceException("A new dispatch has been added that is earlier than previously completed dispatches", null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
-						}
+						throw new RoutingServiceException(ERROR_MSG_DISPATCHSTATUSINVALIDCHG, null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+					}
+				}  else {
+					// This is a new dispatch being added
+					if(currMostRecentComplete != null && currMostRecentComplete.after(dispatchEntry.getKey())) {
+						throw new RoutingServiceException(ERROR_MSG_NEWINVALIDPDISPATCH, null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 					}
 				}
 			}
