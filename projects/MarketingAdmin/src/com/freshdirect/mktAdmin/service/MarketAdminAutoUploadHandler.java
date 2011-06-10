@@ -69,7 +69,7 @@ public class MarketAdminAutoUploadHandler {
 	private static final String sftpFailedDirectory = ErpServicesProperties.getProperty(ErpServicesProperties.PROP_MKTADMIN_AUTO_UPLOADER_FTP_FAILEDDIR);
 
 	public static void main(String[] args){		
-		
+		LOGGER.info("Inside MarketAdminAutoUploadHandler-is previous upload completed:"+isPrevUploadCompleted);
 		if(isPrevUploadCompleted){
 			isPrevUploadCompleted = false;
 			uploadStatus = new HashMap<String, Boolean>();
@@ -175,14 +175,19 @@ public class MarketAdminAutoUploadHandler {
 				}
 	
 			} catch(InterruptedException ie){
+				LOGGER.error("InterruptedException :"+ie.getMessage());
 				ie.printStackTrace();
 			} catch(IOException ioe){
+				LOGGER.error("IOException :"+ioe.getMessage());
 				ioe.printStackTrace();
 			} catch(JSchException je){
+				LOGGER.error("JSchException :"+je.getMessage());
 				je.printStackTrace();
 			} catch(SftpException se){
+				LOGGER.error("SftpException :"+se.getMessage());
 				se.printStackTrace();
 			} catch(Exception e){
+				LOGGER.error("Exception :"+e.getMessage());
 				e.printStackTrace();
 			}finally {
 				isPrevUploadCompleted = true;
@@ -196,6 +201,7 @@ public class MarketAdminAutoUploadHandler {
 				}
 			}	
 		}
+		LOGGER.info("MarketAdminAutoUploadHandler job completed");
 
 	}
 
