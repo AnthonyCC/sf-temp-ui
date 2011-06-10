@@ -15,5 +15,6 @@
 	<classpathentry kind="con" path="com.bea.workshop.wls.syslib"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.core.AppLibrariesContainer/DevEAR"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/jsch-0.1.44.jar"/>
 	<classpathentry kind="output" path="docroot/WEB-INF/classes"/>
 </classpath>

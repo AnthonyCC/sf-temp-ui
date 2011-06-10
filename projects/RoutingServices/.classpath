@@ -24,5 +24,6 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/XmlSchema-1.4.3.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ERPServices"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/lpsolve55j.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
