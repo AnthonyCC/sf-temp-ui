@@ -19,7 +19,10 @@ import java.util.TreeSet;
 
 import javax.mail.MessagingException;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
 import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;
@@ -51,6 +54,7 @@ import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.HandOffBatchInfo;
 
 public class HandOffProviderController extends BaseJsonRpcController  implements IHandOffProvider {
+	private static Logger LOGGER = LoggerFactory.getInstance(HandOffProviderController.class);
 	
 	private DispatchManagerI dispatchManagerService;
 	
@@ -262,6 +266,7 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 	}
 	
 	public boolean doHandOffAutoDispatch(String handOffBatchId, boolean isBullpen) {
+		LOGGER.info("doHandOffAutoDispatch were called, id: " + handOffBatchId);
 		String userId = com.freshdirect.transadmin.security.SecurityManager.getUserName(getHttpServletRequest());
 		HandOffServiceProxy proxy = new HandOffServiceProxy();
 		IHandOffBatch batch;
@@ -296,7 +301,9 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 			HandOffAutoDispatchAction process = new HandOffAutoDispatchAction(batch, userId, batchPlans);
 			process.execute();
 		} catch (RoutingServiceException e) {			
-			e.printStackTrace();
+			LOGGER.warn("routing service exception", e);
+		} catch (Exception e) {
+			LOGGER.warn("generic exception", e);
 		}
 		
 		return true;
