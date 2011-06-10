@@ -8,7 +8,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
 import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;
 import com.freshdirect.routing.model.IAreaModel;
@@ -24,6 +26,7 @@ import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 
 public abstract class AbstractHandOffAction {
+	private final static Logger LOGGER = LoggerFactory.getInstance(AbstractHandOffAction.class);
 	
 	private IHandOffBatch batch;
 	
@@ -249,10 +252,12 @@ public abstract class AbstractHandOffAction {
 	public Object execute() {
 		long startTime = System.currentTimeMillis();
 		try {
-			return doExecute();
+			Object result = doExecute();
+			long endTime = System.currentTimeMillis();
+			System.out.println("HandOffAction "+this.getClass().getName()+" completed in"+ ((endTime - startTime)/60) +" secs");
+			return result;
 		} catch (Exception exp) {
 			HandOffServiceProxy proxy = new HandOffServiceProxy();
-			exp.printStackTrace();
 			
 			try {
 				if(getFailureStatus() != null) {
@@ -261,14 +266,11 @@ public abstract class AbstractHandOffAction {
 					proxy.updateHandOffBatchMessage(this.getBatch().getBatchId(), decodeErrorMessage(exp));
 				}
 			} catch (RoutingServiceException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.error("failuer to update handoff batch status", e);
 			}
-			
+
+			throw new RoutingServiceException(exp, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 		} 
-		long endTime = System.currentTimeMillis();
-		System.out.println("HandOffAction "+this.getClass().getName()+" completed in"+ ((endTime - startTime)/60) +" secs");
-		return null;
 	}
 	
 	protected static String decodeErrorMessage(Exception exp) {
