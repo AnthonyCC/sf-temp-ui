@@ -418,7 +418,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 	}
 	
 	private void assignByPreference(HandOffServiceProxy proxy, StringBuffer actionResponse) throws LpSolveException {
-		try{
+		
 			// load employee preferences based on Pref tab
 			List<TruckPreferenceStat> empTruckPrefs = proxy.getEmployeeTruckPreferences();
 			if(empTruckPrefs !=null && empTruckPrefs.size() > 0){
@@ -507,10 +507,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			}
 			System.out.println("Model has been updated.");
 			solver = null;	
-		}catch(Exception e){
-			e.printStackTrace();
-			actionResponse.append(e.getMessage()).append("\n");
-		}
+		
 	}
 	
 	private void assignAutomatically() {
