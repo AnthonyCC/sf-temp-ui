@@ -69,6 +69,11 @@ public class MarketAdminAutoUploadHandler {
 	private static final String sftpFailedDirectory = ErpServicesProperties.getProperty(ErpServicesProperties.PROP_MKTADMIN_AUTO_UPLOADER_FTP_FAILEDDIR);
 
 	public static void main(String[] args){		
+		doFetchAndUpload();
+
+	}
+
+	public static void doFetchAndUpload() {
 		LOGGER.info("Inside MarketAdminAutoUploadHandler-is previous upload completed:"+isPrevUploadCompleted);
 		if(isPrevUploadCompleted){
 			isPrevUploadCompleted = false;
@@ -202,7 +207,6 @@ public class MarketAdminAutoUploadHandler {
 			}	
 		}
 		LOGGER.info("MarketAdminAutoUploadHandler job completed");
-
 	}
 
 	//Creating local backup for all the files.
