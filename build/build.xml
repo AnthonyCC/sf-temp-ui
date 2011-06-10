@@ -1487,12 +1487,14 @@
 			<pathelement location="${work.dir}/CMS.jar"/>
 			<pathelement location="${work.dir}/FDStoreEJB-WL.jar"/>
 			<pathelement location="${work.dir}/RoutingServices.jar"/>
+			<pathelement location="${work.dir}/MarketingAdmin.war"/>			
             		<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
             		<pathelement location="${thirdparty.home}/opencsv-1.8.jar"/>
 			<pathelement location="${thirdparty.home}/sapjco.jar"/>
 			<pathelement location="${thirdparty.home}/microba-0.4.4.2.jar"/>
 			<pathelement location="${thirdparty.home}/roadnetservices.jar"/>
 			<pathelement location="${weblogic.home}/server/lib/webservices.jar"/>
+			<pathelement location="${thirdparty.home}/jsch-0.1.44.jar"/>
 		</path>
 
 		<makeEjbProject
