@@ -1479,6 +1479,87 @@
 			classpathref="ocf.classpath"/>
 	</target>
 
+	<target name="mrktAdmin" description="Build MarketingAdmin">
+		<!-- directory for compiled stuff -->
+		<mkdir dir="${work.dir}/MarketingAdmin/WEB-INF/classes" />
+
+		<!-- compile tapestry components -->
+		<path id="admin.classpath">
+			<path refid="j2ee.classpath"/>
+			<path refid="common.classpath"/>
+			<path refid="oracle.classpath"/>
+			<pathelement location="${work.dir}/Framework.jar"/>
+			<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
+			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
+			<pathelement location="${work.dir}/FDStore.jar"/>
+			<pathelement location="${thirdparty.home}/spring.jar"/>
+			<pathelement location="${thirdparty.home}/jstl.jar"/>
+			<pathelement location="${thirdparty.home}/standard.jar"/>
+            		<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/> 
+            		<pathelement location="${thirdparty.home}/opencsv-1.8.jar"/>
+            		<pathelement location="${thirdparty.home}/extremecomponents-1.0.1.jar"/>
+					<pathelement location="${thirdparty.home}/jsch-0.1.44.jar"/>
+		</path>
+		<trycatch>
+			<try>
+				<record name="${work.dir}/logs/log.txt" action="start" append="yes" loglevel="info"/>
+				<tstamp>
+					<format property="compileStart" pattern="MM/dd/yyyy HH:mm" />
+				</tstamp>
+				<echo message="Started Compiling Marketing Admin at:${compileStart}"/>
+				<javac
+			srcdir="${projects.dir}/MarketingAdmin/src"
+			destdir="${work.dir}/MarketingAdmin/WEB-INF/classes"
+  			deprecation="${javac.deprecation}"
+			optimize="${javac.optimize}"
+			debug="${javac.debug}"
+  			source="${javac.source}">
+					<classpath>
+						<path refid="admin.classpath"/>
+					</classpath>
+				</javac>
+				<record name="${work.dir}/logs/log.txt" action="stop"/>
+			</try>
+			<catch>
+				<record name="${work.dir}/logs/log.txt" action="stop"/>
+				<!-- send email...compilation failed -->
+				<emailCompilationError projectName="MarketingAdmin"/>
+				<fail/>
+			</catch>
+		</trycatch>
+		
+		<!-- copy non-java resources -->
+		<copy todir="${work.dir}/MarketingAdmin/WEB-INF/classes">
+			<fileset dir="${projects.dir}/MarketingAdmin/src" excludes="**/*.java"/>
+		</copy>
+		
+		<!-- copy JSPs, html, etc... -->
+		<copy todir="${work.dir}/MarketingAdmin/">
+			<fileset dir="${projects.dir}/MarketingAdmin/docroot">
+			</fileset>
+		</copy>
+
+		<!-- copy dependent jar files -->
+		<copy todir="${work.dir}/MarketingAdmin/WEB-INF/lib">
+			<fileset dir="${thirdparty.home}" includes="extremecomponents-1.0.1.jar" />
+		</copy>
+		
+		<!-- create .war file -->
+		<jar destfile="${work.dir}/MarketingAdmin.war">
+            <manifest>
+                <attribute name="Specification-Version" value="${build.counter}"/>
+                <attribute name="Specification-Vendor" value="FreshDirect LLC"/>
+                <attribute name="Implementation-Title" value="MarketingAdmin"/>
+                <attribute name="Implementation-Version" value="${build.counter}"/>
+                <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
+                <attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
+            </manifest>
+			<fileset dir="${work.dir}/MarketingAdmin">
+			</fileset>
+		</jar>
+
+	</target>
+
 	<target name="dataloader" description="Build DataLoader">
 		<path id="dataloader.classpath">
 			<pathelement location="${work.dir}/Framework.jar"/>
@@ -1810,86 +1891,7 @@
 	</target>
     
 
-	<target name="mrktAdmin" description="Build MarketingAdmin">
-		<!-- directory for compiled stuff -->
-		<mkdir dir="${work.dir}/MarketingAdmin/WEB-INF/classes" />
-
-		<!-- compile tapestry components -->
-		<path id="admin.classpath">
-			<path refid="j2ee.classpath"/>
-			<path refid="common.classpath"/>
-			<path refid="oracle.classpath"/>
-			<pathelement location="${work.dir}/Framework.jar"/>
-			<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
-			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
-			<pathelement location="${work.dir}/FDStore.jar"/>
-			<pathelement location="${thirdparty.home}/spring.jar"/>
-			<pathelement location="${thirdparty.home}/jstl.jar"/>
-			<pathelement location="${thirdparty.home}/standard.jar"/>
-            		<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/> 
-            		<pathelement location="${thirdparty.home}/opencsv-1.8.jar"/>
-            		<pathelement location="${thirdparty.home}/extremecomponents-1.0.1.jar"/>
-					<pathelement location="${thirdparty.home}/jsch-0.1.44.jar"/>
-		</path>
-		<trycatch>
-			<try>
-				<record name="${work.dir}/logs/log.txt" action="start" append="yes" loglevel="info"/>
-				<tstamp>
-					<format property="compileStart" pattern="MM/dd/yyyy HH:mm" />
-				</tstamp>
-				<echo message="Started Compiling Marketing Admin at:${compileStart}"/>
-				<javac
-			srcdir="${projects.dir}/MarketingAdmin/src"
-			destdir="${work.dir}/MarketingAdmin/WEB-INF/classes"
-  			deprecation="${javac.deprecation}"
-			optimize="${javac.optimize}"
-			debug="${javac.debug}"
-  			source="${javac.source}">
-					<classpath>
-						<path refid="admin.classpath"/>
-					</classpath>
-				</javac>
-				<record name="${work.dir}/logs/log.txt" action="stop"/>
-			</try>
-			<catch>
-				<record name="${work.dir}/logs/log.txt" action="stop"/>
-				<!-- send email...compilation failed -->
-				<emailCompilationError projectName="MarketingAdmin"/>
-				<fail/>
-			</catch>
-		</trycatch>
-		
-		<!-- copy non-java resources -->
-		<copy todir="${work.dir}/MarketingAdmin/WEB-INF/classes">
-			<fileset dir="${projects.dir}/MarketingAdmin/src" excludes="**/*.java"/>
-		</copy>
-		
-		<!-- copy JSPs, html, etc... -->
-		<copy todir="${work.dir}/MarketingAdmin/">
-			<fileset dir="${projects.dir}/MarketingAdmin/docroot">
-			</fileset>
-		</copy>
-
-		<!-- copy dependent jar files -->
-		<copy todir="${work.dir}/MarketingAdmin/WEB-INF/lib">
-			<fileset dir="${thirdparty.home}" includes="extremecomponents-1.0.1.jar" />
-		</copy>
-		
-		<!-- create .war file -->
-		<jar destfile="${work.dir}/MarketingAdmin.war">
-            <manifest>
-                <attribute name="Specification-Version" value="${build.counter}"/>
-                <attribute name="Specification-Vendor" value="FreshDirect LLC"/>
-                <attribute name="Implementation-Title" value="MarketingAdmin"/>
-                <attribute name="Implementation-Version" value="${build.counter}"/>
-                <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
-                <attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
-            </manifest>
-			<fileset dir="${work.dir}/MarketingAdmin">
-			</fileset>
-		</jar>
-
-	</target>
+	
 
 	<target name="transportAdmin" description="Build Transportation Admin">
 		<!-- directory for compiled stuff -->
