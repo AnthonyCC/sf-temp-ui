@@ -1,57 +1,9 @@
 package com.freshdirect.dataloader.marketing;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.channels.FileChannel;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Vector;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
-import javax.mail.MessagingException;
-
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.log4j.Category;
-
-import au.com.bytecode.opencsv.CSVWriter;
-
-import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.mail.ErpMailSender;
-import com.freshdirect.mktAdmin.constants.EnumFileContentType;
-import com.freshdirect.mktAdmin.constants.EnumListUploadActionType;
-import com.freshdirect.mktAdmin.exception.MktAdminApplicationException;
-import com.freshdirect.mktAdmin.model.FileUploadBean;
-import com.freshdirect.mktAdmin.model.FileUploadedInfo;
-import com.freshdirect.mktAdmin.model.RestrictedPromoCustomerModel;
-import com.freshdirect.mktAdmin.model.RestrictionListUploadBean;
-import com.freshdirect.mktAdmin.service.MarketAdminServiceIntf;
-import com.freshdirect.mktAdmin.util.MarketAdminSpringUtil;
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpException;
 
 public class MarketAdminAutoUploadCron {
 	
-	private static Category LOGGER = LoggerFactory.getInstance(MarketAdminAutoUploadCron.class);
+	/*private static Category LOGGER = LoggerFactory.getInstance(MarketAdminAutoUploadCron.class);
 	private final static JSch jsch=new JSch();
 	private static final BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(10);
 	private static final ThreadPoolExecutor  executor = new ThreadPoolExecutor(5,5,10,TimeUnit.MINUTES,queue);
@@ -348,5 +300,5 @@ public class MarketAdminAutoUploadCron {
 			}
 		}	
 
-	}
+	}*/
 }
