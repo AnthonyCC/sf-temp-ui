@@ -10,7 +10,6 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<script type="text/javascript" language="javascript" src="/assets/javascript/FD_PromoEligibility.js"></script>
 
 
 
@@ -55,6 +54,7 @@ if (user.isEligibleForClientCodes()) {
 <fd:SmartSavingsUpdate promoConflictMode="false"/>
 <tmpl:put name='title' direct='true'>FreshDirect - View Cart</tmpl:put>
 <tmpl:put name='content' direct='true'>
+<script type="text/javascript" language="javascript" src="/assets/javascript/FD_PromoEligibility.js"></script>
 <fd:ErrorHandler result="<%=redemptionResult%>" name="signup_warning" id="errorMsg">
     <%@ include file="/includes/i_error_messages.jspf" %>   
 </fd:ErrorHandler>
