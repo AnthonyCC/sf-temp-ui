@@ -440,6 +440,8 @@ public class FDStoreProperties {
 	private final static String PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_SUBJECT = "fdstore.mktadmin.auto.upload.report.email.subject";
 	private final static String PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_CC = "fdstore.mktadmin.auto.upload.report.email.cc";
 	private final static String PROP_MKTADMIN_AUTOUPLOAD_URL = "fdstore.mktadmin.auto.upload.url";
+	private final static String PROP_MKTADMIN_USER_NAME = "fdstore.mktadmin.username";
+	private final static String PROP_MKTADMIN_PASSWORD = "fdstore.mktadmin.password";
     
 	//Enable Timeslot GRID
 	private final static String PROP_TIMESLOT_GRID = "fdstore.isNewFDTimeslotGridEnabled";
@@ -889,7 +891,10 @@ public class FDStoreProperties {
 		defaults.put(PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_TO,"applicationdevelopment@freshdirect.com");
 		defaults.put(PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_CC,"applicationdevelopment@freshdirect.com");
 		defaults.put(PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_SUBJECT,"Auto Upload Customer Restriction List's Status");
-		defaults.put(PROP_MKTADMIN_AUTOUPLOAD_URL, "");
+		defaults.put(PROP_MKTADMIN_AUTOUPLOAD_URL, "/mktAdmin_autoUpload");
+		defaults.put(PROP_MKTADMIN_USER_NAME, "qaadmin");
+		defaults.put(PROP_MKTADMIN_PASSWORD, "password01");
+		
         refresh();
     }
 
@@ -2286,6 +2291,14 @@ public class FDStoreProperties {
         return get(PROP_MKTADMIN_AUTOUPLOAD_URL);
     }
 
+    public static String getMktAdminUserName() {
+        return get(PROP_MKTADMIN_USER_NAME);
+    }
+    
+    public static String getMktAdminPassword() {
+        return get(PROP_MKTADMIN_PASSWORD);
+    }
+    
     public static interface ConfigLoadedListener {
         void configLoaded();
     }
