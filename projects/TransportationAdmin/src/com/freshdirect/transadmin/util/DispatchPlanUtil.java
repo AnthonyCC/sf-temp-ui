@@ -956,7 +956,7 @@ public class DispatchPlanUtil {
 				//truck status
 				if(!TransStringUtil.isEmpty(command.getTruck()) && command.isActualTruckAssigned())			
 					command.setDispatchStatus(EnumStatus.ActualTruck);
-				else if(!TransStringUtil.isEmpty(command.getPhysicalTruck()) && !command.isActualTruckAssigned())
+				else if(!TransStringUtil.isEmpty(command.getTruck()) && !command.isActualTruckAssigned())
 					command.setDispatchStatus(EnumStatus.PlannedTruck);
 				else
 					return;
