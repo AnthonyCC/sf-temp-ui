@@ -83,7 +83,8 @@ public class BrowseController extends BaseController {
 		        	   for(DepartmentModel storeDepartment : storeDepartments) {
 		        		   if(storeDepartment.getContentKey() != null 
 		        				   && configuredDepartments.contains(storeDepartment.getContentKey().getId())
-		        				   && !storeDepartment.isHidden()) {
+		        				   && !storeDepartment.isHidden()
+		        				   && !storeDepartment.isHideIphone()) {
 		        			   departments.add(Department.wrap(storeDepartment));
 		        		   }
 		        	   }
