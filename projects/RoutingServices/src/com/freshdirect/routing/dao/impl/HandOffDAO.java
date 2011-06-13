@@ -295,8 +295,8 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
          "decode(A.IS_DEPOT , 'X', (SELECT max(S.STOP_DEPARTUREDATETIME ) + 3/48  from TRANSP.HANDOFF_BATCHSTOP s where S.BATCH_ID = R.BATCH_ID and S.ROUTE_NO = R.ROUTE_NO), R.COMPLETETIME) COMPLETETIME "+ 
          "from (select  BD.DISPATCHTIME as DT from TRANSP.HANDOFF_BATCHDISPATCHEX BD where BD.BATCH_ID = ? AND BD.STATUS = ? and exists(select 1 from TRANSP.HANDOFF_BATCHROUTE R "+
          "where  R.BATCH_ID=bd.batch_id  and bd.DISPATCHTIME=r.DISPATCHTIME)) T, transp.HANDOFF_BATCH b, TRANSP.HANDOFF_BATCHROUTE R, TRANSP.TRN_AREA A "+
-         "where B.DELIVERY_DATE = ? and B.BATCH_ID=R.BATCH_ID and R.AREA=A.CODE "+
-         "and R.DISPATCHTIME IN (select  R.DISPATCHTIME from TRANSP.HANDOFF_BATCHROUTE R where R.BATCH_ID = ? ) "+
+         "where B.DELIVERY_DATE = ? and B.BATCH_ID=R.BATCH_ID and R.AREA=A.CODE and B.BATCH_STATUS IN ('CPD/ADC','CPD','CPD/ADF') "+
+         "and R.DISPATCHTIME IN (select R.DISPATCHTIME from TRANSP.HANDOFF_BATCHROUTE R where R.BATCH_ID = ? ) "+
          "and R.DISPATCHTIME=T.DT";
 
 	private static final String GET_HANDOFFBATCH_PLANS = "SELECT * FROM TRANSP.PLAN P WHERE P.PLAN_DATE = ? " +

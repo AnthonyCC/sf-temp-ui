@@ -880,7 +880,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_PROMO_TIMESLOT_LABEL,"Discount Delivery Times");
 		defaults.put(PROP_ALCOHOL_TIMESLOT_LABEL, "Alcohol Delivery Restriction");
 		defaults.put(PROP_ECOFRIENDLY_TIMESLOT_LABEL, "Eco-Friendly");
-		defaults.put(PROP_BUILDINGFAVS_TIMESLOT_LABEL,"My Building Favourites");
+		defaults.put(PROP_BUILDINGFAVS_TIMESLOT_LABEL,"Delivery Helper");
 		
 		defaults.put(PROP_STANDING_ORDER_REPORT_TO_EMAIL, "applicationdevelopment@freshdirect.com");
 		defaults.put(PROP_STANDING_ORDER_REPORT_EMAIL_SUBJECT, "Standing Orders Cron Report: ");
