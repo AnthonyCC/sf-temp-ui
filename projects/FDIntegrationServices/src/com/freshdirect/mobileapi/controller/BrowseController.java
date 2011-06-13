@@ -168,7 +168,7 @@ public class BrowseController extends BaseController {
 	            														categories, requestMessage.getMax());
 	 	        	
 	            	result.setCategories(paginator.getPage(requestMessage.getPage()));
-	         		result.setTotalResultCount(result.getProducts() != null ? result.getProducts().size() : 0);
+	         		result.setTotalResultCount(result.getCategories() != null ? result.getCategories().size() : 0);
 	            }	           	            	           
 	        } else if (ACTION_GET_GROUP_PRODUCTS.equals(action)) {
 	        	List<Product> products = FDGroup.getGroupScaleProducts(requestMessage.getGroupId(), requestMessage.getGroupVersion(), user);
