@@ -10,9 +10,11 @@ import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.log4j.Category;
 
+import sun.misc.BASE64Encoder;
+
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.thoughtworks.xstream.core.util.Base64Encoder;
+
 
 
 public class MarketAdminAutoUploadCron {
@@ -31,7 +33,7 @@ public class MarketAdminAutoUploadCron {
 			Credentials credentials =	new UsernamePasswordCredentials( FDStoreProperties.getMktAdminUserName(), FDStoreProperties.getMktAdminPassword());
 			state.setCredentials( null, null, credentials );
 
-			Base64Encoder encoder = new Base64Encoder ();
+			BASE64Encoder encoder = new BASE64Encoder ();
 			String auth="";
 			encoder.encode(auth.getBytes());
 //			meth.addRequestHeader("Authorization", "Basic "+encoder.toString());
