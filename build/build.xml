@@ -90,6 +90,7 @@
 		<pathelement location="${thirdparty.home}/httpmime-4.0.1.jar"/>
 		<pathelement location="${thirdparty.home}/${scarab.jar}"/>
 		<pathelement location="${thirdparty.home}/jtidy-r938.jar"/>
+		<pathelement location="${thirdparty.home}/jsch-0.1.44.jar"/>
 	</path>
 
 	<path id="testing.classpath">
@@ -1250,6 +1251,7 @@
 					<include name="roadnetservices.jar"/>
 					<include name="httpcore-4.0.1.jar"/>
 					<include name="jtidy-r938.jar"/>
+					<include name="jsch-0.1.44.jar"/>
 					<lib/>
 				</zipfileset>
 				<extra/>
@@ -1352,6 +1354,7 @@
                     <include name="commons-discovery-0.2.jar"/>					
 					<include name="jaxrpc.jar"/>
 					<include name="httpcore-4.0.1.jar"/>					
+					<include name="jsch-0.1.44.jar"/>
 
 					<lib/>
 				</zipfileset>

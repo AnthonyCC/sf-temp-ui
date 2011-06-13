@@ -14,6 +14,7 @@ import com.freshdirect.mktAdmin.service.MarketAdminAutoUploadHandler;
 
 public class MarketAdminAutoUploadServlet extends HttpServlet {
 	
+	private static final long serialVersionUID = -5520924612941043566L;
 	private static Category LOGGER = LoggerFactory.getInstance(MarketAdminAutoUploadServlet.class);
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
@@ -22,7 +23,7 @@ public class MarketAdminAutoUploadServlet extends HttpServlet {
 		if (!"PromoCustAutoUpload/1.0".equalsIgnoreCase(userAgent)) {
 			LOGGER.error("Invalid user agent " + userAgent);
 			// Invalid user agent
-			sendError(response, ":(");
+			sendError(response, "Sorry..");
 			return;
 		}
 		MarketAdminAutoUploadHandler.doFetchAndUpload();
