@@ -18,14 +18,12 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.StoreModel;
-import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.BrowseResult;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
 import com.freshdirect.mobileapi.exception.JsonException;
-import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.Category;
 import com.freshdirect.mobileapi.model.Department;
 import com.freshdirect.mobileapi.model.FDGroup;
@@ -52,7 +50,7 @@ public class BrowseController extends BaseController {
     private static final String ACTION_GET_CATEGORIES = "getCategories";
 
     private static final String ACTION_GET_CATEGORYCONTENT = "getCategoryContent";
-    
+      
     private static final String ACTION_GET_CATEGORYCONTENT_PRODUCTONLY = "getCategoryContentProductOnly";
 
     private static final String ACTION_GET_GROUP_PRODUCTS = "getGroupProducts";        
@@ -110,28 +108,68 @@ public class BrowseController extends BaseController {
 	        	
 	        } else if (ACTION_GET_CATEGORYCONTENT.equals(action) 
 	        					|| ACTION_GET_CATEGORYCONTENT_PRODUCTONLY.equals(action)) {
-	        	ContentNodeModel categoryNode = ContentFactory.getInstance().getContentNode(requestMessage.getCategory());
-	        	if(categoryNode instanceof CategoryModel) {	        		
-	        		List<CategoryModel> storeCategories = ((CategoryModel)categoryNode).getSubcategories();
-	        		
-	        		if(storeCategories.size() == 0 || ACTION_GET_CATEGORYCONTENT_PRODUCTONLY.equals(action)) {
-	        			
-	        			List<Product> products = grabProductsForCategory(request, ((CategoryModel)categoryNode), user, requestMessage);
-	        			
-		        		ListPaginator<com.freshdirect.mobileapi.model.Product> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Product>(
-		        				products, requestMessage.getMax());
-			        	
-		        		result.setProductsFromModel(paginator.getPage(requestMessage.getPage()));
-		        		result.setTotalResultCount(result.getProducts() != null ? result.getProducts().size() : 0);
-	        		} else {
-	        			List<Category> categories = getCategories(storeCategories);
-		        		ListPaginator<com.freshdirect.mobileapi.model.Category> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Category>(
-		        				categories, requestMessage.getMax());
-			        	
-		        		result.setCategories(paginator.getPage(requestMessage.getPage()));
-		        		result.setTotalResultCount(result.getCategories() != null ? result.getCategories().size() : 0);	        			
-	        		}
-	        	}
+	        	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(requestMessage.getCategory());
+	        	List contents = new ArrayList();
+	            request.setAttribute("sortBy", requestMessage.getSortBy());
+	            request.setAttribute("nutritionName", requestMessage.getNutritionName());
+	            
+	            LayoutManagerWrapper layoutManagerTagWrapper = new LayoutManagerWrapper(user);   
+	            Settings layoutManagerSetting = layoutManagerTagWrapper.getLayoutManagerSettings(currentFolder);
+
+	            //We have layout manager
+	            if (layoutManagerSetting != null) {
+	            	if(layoutManagerSetting.getGrabberDepth() < 0) { // Overridding the hardcoded values done for new 4mm and wine layout
+	            		layoutManagerSetting.setGrabberDepth(0);
+	            	}
+	                ItemGrabberTagWrapper itemGrabberTagWrapper = new ItemGrabberTagWrapper(user.getFDSessionUser());
+	                contents = itemGrabberTagWrapper.getProducts(layoutManagerSetting, currentFolder);
+
+	                ItemSorterTagWrapper sortTagWrapper = new ItemSorterTagWrapper(user);
+	                sortTagWrapper.sort(contents, layoutManagerSetting.getSortStrategy());
+
+	            } else {
+	                //Error happened. It's a internal error so don't expose to user. just log and return empty list
+	                ActionResult layoutResult = (ActionResult) layoutManagerTagWrapper.getResult();
+	                if (layoutResult.isFailure()) {
+	                    Collection<ActionError> errors = layoutResult.getErrors();
+	                    for (ActionError error : errors) {
+	                        LOG.error("Error while trying to retrieve whats good product: ec=" + error.getType() + "::desc="
+	                                + error.getDescription());
+	                    }
+	                }
+	            }
+	            List<Product> products = new ArrayList<Product>();
+	            List<Category> categories = new ArrayList<Category>();
+	            
+	            for (Object content : contents) {
+	                if (content instanceof ProductModel) {
+	                    try {
+	                    	if(!((ProductModel) content).isHideIphone()) {
+	                    		products.add(Product.wrap((ProductModel) content, user.getFDSessionUser().getUser()));
+	                    	}
+	                    } catch (Exception e) {
+	                        //Don't let one rotten egg ruin it for the bunch
+	                        LOG.error("ModelException encountered. Product ID=" + ((ProductModel) content).getFullName(), e);
+	                    }
+	                } else if(content instanceof CategoryModel) {
+	                	if(((CategoryModel)content).isActive() && !((CategoryModel)content).isHideIphone()) {
+	                		categories.add(Category.wrap((CategoryModel)content));
+	                	}
+	                }
+	            }
+	            if(products.size() > 0 || ACTION_GET_CATEGORYCONTENT_PRODUCTONLY.equals(action)) {
+	            	 ListPaginator<com.freshdirect.mobileapi.model.Product> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Product>(
+	         															products, requestMessage.getMax());
+	 	        	
+	         		result.setProductsFromModel(paginator.getPage(requestMessage.getPage()));
+	         		result.setTotalResultCount(result.getProducts() != null ? result.getProducts().size() : 0);	
+	            } else {
+	            	ListPaginator<com.freshdirect.mobileapi.model.Category> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Category>(
+	            														categories, requestMessage.getMax());
+	 	        	
+	            	result.setCategories(paginator.getPage(requestMessage.getPage()));
+	         		result.setTotalResultCount(result.getProducts() != null ? result.getProducts().size() : 0);
+	            }	           	            	           
 	        } else if (ACTION_GET_GROUP_PRODUCTS.equals(action)) {
 	        	List<Product> products = FDGroup.getGroupScaleProducts(requestMessage.getGroupId(), requestMessage.getGroupVersion(), user);
 	        	result.setProductsFromModel(products);
@@ -153,49 +191,4 @@ public class BrowseController extends BaseController {
 		}
 		return categories;
     }
-    private List<Product> grabProductsForCategory(HttpServletRequest request, ContentNodeModel currentFolder
-    													, SessionUser user, BrowseQuery requestMessage) throws FDException {
-    	
-        List contents = new ArrayList();
-        request.setAttribute("sortBy", requestMessage.getSortBy());
-        request.setAttribute("nutritionName", requestMessage.getNutritionName());
-        
-        LayoutManagerWrapper layoutManagerTagWrapper = new LayoutManagerWrapper(user);        
-        Settings layoutManagerSetting = layoutManagerTagWrapper.getLayoutManagerSettings(currentFolder);
-
-        //We have layout manager
-        if (layoutManagerSetting != null) {
-            ItemGrabberTagWrapper itemGrabberTagWrapper = new ItemGrabberTagWrapper(user.getFDSessionUser());
-            contents = itemGrabberTagWrapper.getProducts(layoutManagerSetting, currentFolder);
-
-            ItemSorterTagWrapper sortTagWrapper = new ItemSorterTagWrapper(user);
-            sortTagWrapper.sort(contents, layoutManagerSetting.getSortStrategy());
-
-        } else {
-            //Error happened. It's a internal error so don't expose to user. just log and return empty list
-            ActionResult layoutResult = (ActionResult) layoutManagerTagWrapper.getResult();
-            if (layoutResult.isFailure()) {
-                Collection<ActionError> errors = layoutResult.getErrors();
-                for (ActionError error : errors) {
-                    LOG.error("Error while trying to retrieve whats good product: ec=" + error.getType() + "::desc="
-                            + error.getDescription());
-                }
-            }
-        }
-        List<Product> products = new ArrayList<Product>();
-        for (Object content : contents) {
-            if (content instanceof ProductModel) {
-                try {
-                	if(!((ProductModel) content).isHideIphone()) {
-                		products.add(Product.wrap((ProductModel) content, user.getFDSessionUser().getUser()));
-                	}
-                } catch (Exception e) {
-                    //Don't let one rotten egg ruin it for the bunch
-                    LOG.error("ModelException encountered. Product ID=" + ((ProductModel) content).getFullName(), e);
-                }
-            }
-        }
-        return products;
-    }
-
 }
