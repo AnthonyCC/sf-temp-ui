@@ -3,24 +3,20 @@ package com.freshdirect.mobileapi.controller.data;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.freshdirect.mobileapi.controller.data.response.FilterOption;
 import com.freshdirect.mobileapi.model.Category;
 import com.freshdirect.mobileapi.model.Department;
 
 public class BrowseResult extends Message {
     
     private Integer totalResultCount = 0;
-
+    
+    private Integer resultCount = 0;
+    
     private List<ProductSearchResult> products = new ArrayList<ProductSearchResult>();
     
     private List<Department> departments = new ArrayList<Department>();
 
     private List<Category> categories = new ArrayList<Category>();
-
-   
-    public Integer getResultCount() {
-        return products.size();
-    }
 
     public List<ProductSearchResult> getProducts() {
         return products;
@@ -61,5 +57,11 @@ public class BrowseResult extends Message {
         this.totalResultCount = totalResultCount;
     }
 
+	public Integer getResultCount() {
+		return resultCount;
+	}
 
+	public void setResultCount(Integer resultCount) {
+		this.resultCount = resultCount;
+	}        
 }

@@ -93,25 +93,24 @@ public class BrowseController extends BaseController {
 	        	   result.setDepartments(paginator.getPage(requestMessage.getPage()));
 	        	   result.setTotalResultCount(result.getDepartments() != null ? result.getDepartments().size() : 0);
 	           }
-	        } else if (ACTION_GET_CATEGORIES.equals(action)) {
-	        	ContentNodeModel departmentNode = ContentFactory.getInstance().getContentNode(requestMessage.getDepartment());
-	        	if(departmentNode instanceof DepartmentModel) {
-	        		List<CategoryModel> storeCategories = ((DepartmentModel)departmentNode).getCategories();
-	        		List<Category> categories = getCategories(storeCategories);
-	        		
-	        		ListPaginator<com.freshdirect.mobileapi.model.Category> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Category>(
-	        				categories, requestMessage.getMax());
-		        	
-	        		result.setCategories(paginator.getPage(requestMessage.getPage()));
-	        		result.setTotalResultCount(result.getCategories() != null ? result.getCategories().size() : 0);
+	        } else if (ACTION_GET_CATEGORIES.equals(action) 
+	        								|| ACTION_GET_CATEGORYCONTENT.equals(action) 
+	        								|| ACTION_GET_CATEGORYCONTENT_PRODUCTONLY.equals(action)) {
+	        	String contentId = null;
+	        	if(ACTION_GET_CATEGORIES.equals(action)) {
+	        		contentId = requestMessage.getDepartment();
+	        	} else {
+	        		contentId = requestMessage.getCategory();
 	        	}
 	        	
-	        } else if (ACTION_GET_CATEGORYCONTENT.equals(action) 
-	        					|| ACTION_GET_CATEGORYCONTENT_PRODUCTONLY.equals(action)) {
-	        	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(requestMessage.getCategory());
+	        	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(contentId);
 	        	List contents = new ArrayList();
+	        	/* if(requestMessage.getCategory() != null && requestMessage.getCategory().startsWith("gro_")) {
+	        		request.setAttribute("groceryVirtual", "All");
+	        	}
+	        	request.setAttribute("sortBy", "name");
 	            request.setAttribute("sortBy", requestMessage.getSortBy());
-	            request.setAttribute("nutritionName", requestMessage.getNutritionName());
+	            request.setAttribute("nutritionName", requestMessage.getNutritionName()); */
 	            
 	            LayoutManagerWrapper layoutManagerTagWrapper = new LayoutManagerWrapper(user);   
 	            Settings layoutManagerSetting = layoutManagerTagWrapper.getLayoutManagerSettings(currentFolder);
@@ -162,13 +161,15 @@ public class BrowseController extends BaseController {
 	         															products, requestMessage.getMax());
 	 	        	
 	         		result.setProductsFromModel(paginator.getPage(requestMessage.getPage()));
-	         		result.setTotalResultCount(result.getProducts() != null ? result.getProducts().size() : 0);	
+	         		result.setResultCount(result.getProducts() != null ? result.getProducts().size() : 0);
+	         		result.setTotalResultCount(products.size());	         		
 	            } else {
 	            	ListPaginator<com.freshdirect.mobileapi.model.Category> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Category>(
 	            														categories, requestMessage.getMax());
 	 	        	
 	            	result.setCategories(paginator.getPage(requestMessage.getPage()));
-	         		result.setTotalResultCount(result.getCategories() != null ? result.getCategories().size() : 0);
+	         		result.setResultCount(result.getCategories() != null ? result.getCategories().size() : 0);	         		
+	         		result.setTotalResultCount(categories.size());
 	            }	           	            	           
 	        } else if (ACTION_GET_GROUP_PRODUCTS.equals(action)) {
 	        	List<Product> products = FDGroup.getGroupScaleProducts(requestMessage.getGroupId(), requestMessage.getGroupVersion(), user);
