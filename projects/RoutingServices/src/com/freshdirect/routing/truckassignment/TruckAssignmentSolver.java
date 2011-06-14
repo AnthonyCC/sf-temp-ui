@@ -3,18 +3,20 @@ package com.freshdirect.routing.truckassignment;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import lpsolve.AbortListener;
 import lpsolve.LpSolve;
 import lpsolve.LpSolveException;
 import lpsolve.VersionInfo;
 
+import org.apache.log4j.Logger;
+
+import com.freshdirect.framework.util.log.LoggerFactory;
+
 public class TruckAssignmentSolver {
-    
+    private static final Logger LOGGER = LoggerFactory.getInstance(TruckAssignmentSolver.class);
     
     private final static Map<Integer, String> CODES = new HashMap<Integer, String>();
     static {
@@ -74,7 +76,7 @@ public class TruckAssignmentSolver {
 
 	public final void setupSolver() throws LpSolveException {
 		int variableNumber = routes.size() * (maxPreferredTrucks + 1);
-		System.out.println("routes :" + routes.size() + ", variables:" + variableNumber);
+		LOGGER.debug("routes :" + routes.size() + ", variables:" + variableNumber);
 		solver = LpSolve.makeLp(0, variableNumber);
 		int colNum = 1;
 		double a = (compressionRate - 1) / Math.log(normalizer);
@@ -129,7 +131,7 @@ public class TruckAssignmentSolver {
 
 	public void solve() throws LpSolveException {
 		VersionInfo lpSolveVersion = LpSolve.lpSolveVersion();
-		System.out.println("lp solve " + lpSolveVersion.getMajorversion() + '.' + lpSolveVersion.getMinorversion() + '.'
+		LOGGER.debug("lp solve " + lpSolveVersion.getMajorversion() + '.' + lpSolveVersion.getMinorversion() + '.'
 				+ lpSolveVersion.getRelease() + '.' + lpSolveVersion.getBuild());
 
 		if (solver == null) {
@@ -140,14 +142,12 @@ public class TruckAssignmentSolver {
 			int i = 0;
 
 			public boolean abortfunc(LpSolve problem, Object handle) {
-				if (++i % 100 == 0)
-					System.out.print(".");
-				if (i % 8000 == 0)
-					System.out.println();
+				if (i % 10000 == 0)
+					LOGGER.debug("tick()");
 				if ((System.currentTimeMillis() - startTime) > timeout) {
-					if (i % 8000 != 0)
-						System.out.println();
-					System.out.println("Timed out");
+					if (i % 10000 != 0)
+						LOGGER.debug("tick()");
+					LOGGER.debug("Timed out");
 					return true;
 				}
 				return false;
@@ -159,7 +159,7 @@ public class TruckAssignmentSolver {
 			startTime = System.currentTimeMillis();
 			int solution = solver.solve();
 			long elapsedTime = System.currentTimeMillis() - startTime;
-			System.out.println("solution found:" + CODES.get(solution)+'('+solution+')' + ", in " + elapsedTime + " ms");
+			LOGGER.debug("solution found:" + CODES.get(solution)+'('+solution+')' + ", in " + elapsedTime + " ms");
 			solver.printLp();
 		}
 		double[] var = solver.getPtrVariables();
@@ -172,11 +172,11 @@ public class TruckAssignmentSolver {
 			}
 		}
 		// for (int i = 0; i < var.length; i++) {
-		// System.out.println("x[" + i + "]=" + var[i]);
+		// LOGGER.debug("x[" + i + "]=" + var[i]);
 		// }
 
 		for (Route r : routes) {
-			System.out.println(r + " -> " + r.getSolutionAsString());
+			LOGGER.debug(r + " -> " + r.getSolutionAsString());
 		}
 
 	}
