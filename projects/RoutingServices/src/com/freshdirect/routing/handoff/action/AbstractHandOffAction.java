@@ -273,7 +273,10 @@ public abstract class AbstractHandOffAction {
 			}
 
 			throw new RoutingServiceException(exp, IIssue.PROCESS_HANDOFFBATCH_ERROR);
-		} 
+		} catch (Throwable e) {
+			LOGGER.error("something really weird occured", e);
+			throw new RoutingServiceException(new Exception(e), IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
 	}
 	
 	protected static String decodeErrorMessage(Exception exp) {
