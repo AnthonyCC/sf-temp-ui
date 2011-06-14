@@ -1,12 +1,7 @@
 package com.freshdirect.transadmin.web.json;
 
-import static com.freshdirect.routing.manager.IProcessMessage.INFO_MESSAGE_AUTODISPATCHCOMPLETED;
-
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -24,8 +19,6 @@ import org.apache.log4j.Logger;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
-import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
-import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;
 import com.freshdirect.routing.handoff.action.HandOffAutoDispatchAction;
 import com.freshdirect.routing.handoff.action.HandOffCancelAction;
 import com.freshdirect.routing.handoff.action.HandOffCommitAction;
@@ -34,21 +27,16 @@ import com.freshdirect.routing.handoff.action.HandOffRoutingOutAction;
 import com.freshdirect.routing.handoff.action.HandOffStopAction;
 import com.freshdirect.routing.model.HandOffBatchDepotSchedule;
 import com.freshdirect.routing.model.HandOffBatchDepotScheduleEx;
-import com.freshdirect.routing.model.HandOffBatchDispatch;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchDepotSchedule;
 import com.freshdirect.routing.model.IHandOffBatchDepotScheduleEx;
-import com.freshdirect.routing.model.IHandOffBatchPlan;
 import com.freshdirect.routing.model.IHandOffBatchDispatchResource;
-import com.freshdirect.routing.model.IHandOffDispatch;
-import com.freshdirect.routing.model.IRouteModel;
+import com.freshdirect.routing.model.IHandOffBatchPlan;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.util.RoutingServicesProperties;
-import com.freshdirect.routing.util.RoutingTimeOfDay;
-import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.HandOffBatchInfo;
@@ -93,11 +81,9 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 			return new HandOffBatchInfo(batch);
 			
 		} catch (RoutingServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("routing service exception", e);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("parse exception", e);
 		} 
 		return null;
 	}
@@ -123,11 +109,9 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 				}
 			}
 		} catch (RoutingServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("routing service exception", e);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("parse exception", e);
 		}
 		Collections.sort(result, new HandOffBatchInfoComparator());
 		return result;
@@ -163,11 +147,9 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 			HandOffRoutingOutAction process = new HandOffRoutingOutAction(batch, userId, dayOfWeek, depotSchInfoEx);
 			process.execute();
 		} catch (RoutingServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("routing service exception", e);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("parse exception", e);
 		}
 		
 		return true;
@@ -182,8 +164,7 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 			HandOffRoutingInAction process = new HandOffRoutingInAction(batch, userId);
 			process.execute();
 		} catch (RoutingServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("routing service exception", e);
 		}
 		
 		return true;
@@ -198,8 +179,7 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 			HandOffCancelAction process = new HandOffCancelAction(batch, userId);
 			process.execute();
 		} catch (RoutingServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("routing service exception", e);
 		}
 		
 		return true;
@@ -214,8 +194,7 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 			HandOffStopAction process = new HandOffStopAction(batch, userId);
 			process.execute();
 		} catch (RoutingServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("routing service exception", e);
 		}
 		
 		return true;
@@ -229,6 +208,7 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 		try {
 			batch = proxy.getHandOffBatchById(handOffBatchId);
 			HandOffCommitAction process = new HandOffCommitAction(batch, userId, force, isCommitCheck);
+			@SuppressWarnings("unchecked")
 			Map<String, EnumSaleStatus> exceptions = (Map<String, EnumSaleStatus>) process.execute();
 			
 			boolean hasError = (exceptions != null && exceptions.keySet().size() > 0);
@@ -255,11 +235,9 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 			}
 			
 		} catch (RoutingServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("routing service exception", e);
 		}  catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("messaging exception", e);
 		}
 		
 		return null;
@@ -299,6 +277,7 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 			}			
 			
 			HandOffAutoDispatchAction process = new HandOffAutoDispatchAction(batch, userId, batchPlans);
+			LOGGER.info("dispatch action process created and being executed: " + process.getBatch().getBatchId());
 			process.execute();
 		} catch (RoutingServiceException e) {			
 			LOGGER.warn("routing service exception", e);
@@ -318,11 +297,9 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 				return scenario.getCode();
 			}
 		} catch (RoutingServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("routing service exception", e);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("parse exception", e);
 		}		
 		return null;
 	}

@@ -19,8 +19,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import lpsolve.LpSolveException;
 
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
 import com.freshdirect.routing.constants.EnumTruckPreference;
@@ -49,6 +52,7 @@ import com.freshdirect.sap.command.SapSendPhysicalTruckInfo;
 import com.freshdirect.sap.ejb.SapException;
 
 public class HandOffAutoDispatchAction extends AbstractHandOffAction {
+	private static final Logger LOGGER = LoggerFactory.getInstance(HandOffAutoDispatchAction.class);
 	
 	private List<IHandOffBatchPlan> batchPlanList;
 	private List<Truck> trucks;
@@ -79,7 +83,6 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 		routeDispatchMapping = new HashMap<String, IHandOffDispatch>();		
 	}
 	
-	@SuppressWarnings("unchecked")
 	public Object doExecute() throws Exception {
 		
 		boolean isSuccess = true;
@@ -87,7 +90,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 		
 		Map<String, IHandOffDispatch> dispatchMapping = new HashMap<String, IHandOffDispatch>();
 		
-		System.out.println("######################### Auto-DispatchTask START #########################");
+		LOGGER.info("######################### Auto-DispatchTask START #########################");
 		
 		proxy.updateHandOffBatchStatus(this.getBatch().getBatchId(), EnumHandOffBatchStatus.PROCESSING);
 		proxy.addNewHandOffBatchAction(this.getBatch().getBatchId(), RoutingDateUtil.getCurrentDateTime()
@@ -204,7 +207,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 						}catch(Exception e){
 							e.printStackTrace();
 							isSuccess = false;
-							System.out.println("######################### Auto-DispatchTask FAILED ######################### "+ e.getMessage());
+							LOGGER.error("######################### Auto-DispatchTask FAILED ######################### ", e);
 							throw new RoutingServiceException(" Auto-DispatchTask FAILED ", e, IIssue.PROCESS_HANDOFFBATCH_ERROR);						
 						}
 						
@@ -226,7 +229,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 						, null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 			}
 		}
-		System.out.println("######################### Auto-DispatchTask STOP #########################");
+		LOGGER.info("######################### Auto-DispatchTask STOP #########################");
 		
 		return null;		
 	}
@@ -326,7 +329,6 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	private static IHandOffBatchRoute matchRoute(IHandOffBatchPlan p, List<IHandOffBatchRoute> routeList) throws ParseException {
 		IHandOffBatchRoute result = null;
 		if(routeList != null && p != null) {
@@ -433,7 +435,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 				}
 			}
 			// determine current preferences based on Pref tab
-			System.out.println("Determining truck preferences based on Pref Tab...");
+			LOGGER.info("Determining truck preferences based on Pref Tab...");
 			for (Employee employee : employees) {
 				Collection<TruckPreferenceStat> stats = truckPreferenceStats.get(employee.getId());
 				List<Truck> prefs = new ArrayList<Truck>();
@@ -468,7 +470,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			}
 			
 			// set up index <--> id transformation
-			System.out.println("Preparing truck ID index...");
+			LOGGER.info("Preparing truck ID index...");
 			Map<String, Integer> toIndex = new HashMap<String, Integer>();
 			Map<Integer, String> toId = new HashMap<Integer, String>();
 			int index = 1;
@@ -479,7 +481,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			}		
 	
 			// use the simplex algorithm to find assignments based on preferences
-			System.out.println("Setting up solver...");
+			LOGGER.info("Setting up solver...");
 			TruckAssignmentSolver solver = new TruckAssignmentSolver(RoutingServicesProperties.getHandOffPrefListSize()
 																			, RoutingServicesProperties.getTruckAssignmentSolverTimeOut());
 			for (Dispatch dispatch : dispatches) {
@@ -491,12 +493,12 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 					indexed.put(toIndex.get(entry.getKey().getId()), entry.getValue());
 				solver.addRoute(new Route(dispatch, start, end, indexed, RoutingServicesProperties.getHandOffPrefListSize()));
 			}
-			System.out.println("Starting solver...");
+			LOGGER.info("Starting solver...");
 			long start = System.currentTimeMillis();
 			solver.solve();
-			System.out.println("Solution completed (" + (System.currentTimeMillis() - start) + "ms).");
+			LOGGER.info("Solution completed (" + (System.currentTimeMillis() - start) + "ms).");
 	
-			System.out.println("Writing back solution into the model...");
+			LOGGER.info("Writing back solution into the model...");
 			for (Route route : solver.getRoutes()) {
 				if (route.getSolution() != Route.NOT_FOUND) {
 					int truckIndex = route.getPreferredTruck(route.getSolution());
@@ -505,13 +507,13 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 						route.getDispatch().setTruck(truckMap.get(truckId));
 				}
 			}
-			System.out.println("Model has been updated.");
+			LOGGER.info("Model has been updated.");
 			solver = null;	
 		
 	}
 	
 	private void assignAutomatically() {
-		System.out.println("Auto-assignment started...");
+		LOGGER.info("Auto-assignment started...");
 		long start = System.currentTimeMillis();
 
 		Set<Dispatch> engaged = new HashSet<Dispatch>();
@@ -596,12 +598,12 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 				}
 			}
 			dispatch.setTruck(truck);
-			System.out.println("Free Dispatch >>> Leaves>> "+dispatch.getLeaves()+" nextAvailable>> "+dispatch.getNextAvailable()+" Route>>> "+dispatch.getRoute()+" Truck>>> "+dispatch.getTruck().getId());
+			LOGGER.info("Free Dispatch >>> Leaves>> "+dispatch.getLeaves()+" nextAvailable>> "+dispatch.getNextAvailable()+" Route>>> "+dispatch.getRoute()+" Truck>>> "+dispatch.getTruck().getId());
 			engaged.add(dispatch);
 			free.remove(dispatch);
 		}
 
-		System.out.println("Auto-assignment took " + (System.currentTimeMillis() - start) + "ms");
+		LOGGER.info("Auto-assignment took " + (System.currentTimeMillis() - start) + "ms");
 	}
 	
 	public static <K extends Comparable<K>, V extends Comparable<V>> List<K> sortByValue(final Map<K, V> m) {

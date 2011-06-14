@@ -257,7 +257,7 @@ public abstract class AbstractHandOffAction {
 		try {
 			Object result = doExecute();
 			long endTime = System.currentTimeMillis();
-			System.out.println("HandOffAction "+this.getClass().getName()+" completed in"+ ((endTime - startTime)/60) +" secs");
+			LOGGER.info("HandOffAction "+this.getClass().getName()+" completed in"+ ((endTime - startTime)/60) +" secs");
 			return result;
 		} catch (Exception exp) {
 			HandOffServiceProxy proxy = new HandOffServiceProxy();
