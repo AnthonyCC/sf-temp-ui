@@ -1959,6 +1959,7 @@
   		<copy todir="${work.dir}/TransportationAdmin/WEB-INF/lib">
 			<fileset dir="${thirdparty.home}" includes="extremecomponents-1.0.1.jar" />			
 			<fileset dir="${work.dir}" includes="RoutingServices.jar" />			
+			<fileset dir="${thirdparty.home}" includes="lpsolve55j.jar" />			
 		</copy>
 
 		<!-- create .war file -->
@@ -2242,6 +2243,7 @@
 								
 				<include name="JFEP-0.1.0.jar"/>
 				<include name="antlr-2.7.5H3.jar"/>
+				<include name="lpsolve55j.jar"/>
 			</lib>
 		</makeFDAdminEar>
 	</target>
