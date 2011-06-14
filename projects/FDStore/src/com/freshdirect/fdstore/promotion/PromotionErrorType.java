@@ -20,7 +20,6 @@ public  class PromotionErrorType extends Enum{
 	public static final PromotionErrorType NO_ELIGIBLE_TIMESLOT_SELECTED = new PromotionErrorType("107", 107, "No Eligible Timeslot Selected");
 	public static final PromotionErrorType ERROR_USAGE_LIMIT_ONE_EXCEEDED = new PromotionErrorType("108", 108, "Usage Limit 1 Exceeded");
 	public static final PromotionErrorType ERROR_USAGE_LIMIT_MORE_EXCEEDED = new PromotionErrorType("109", 109, "Usage Limit More Exceeded");
-	public static final PromotionErrorType NO_MATCHING_STATE_COUNTY = new PromotionErrorType("110", 110, "State and County mismatch");
 	
 	private int code; 	
 	private String description;

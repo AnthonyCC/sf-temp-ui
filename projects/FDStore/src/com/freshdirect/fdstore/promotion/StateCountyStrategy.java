@@ -163,7 +163,7 @@ public class StateCountyStrategy implements PromotionStrategyI {
 		
 		System.out.println("\n\n\n\n\nApplying StateCountyStrategy end \n\n\n\n");
 		if(context.getUser().getRedeemedPromotion() != null && context.getUser().getRedeemedPromotion().getRedemptionCode() != null)
-			context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_MATCHING_STATE_COUNTY.getErrorCode());
+			context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_ADDRESS_SELECTED.getErrorCode());
 		return DENY;
 		
 	}
