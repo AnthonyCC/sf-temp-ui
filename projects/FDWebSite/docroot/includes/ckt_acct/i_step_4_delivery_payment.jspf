@@ -230,6 +230,15 @@ String lineWidth = isShowSmaller?"290":"310";
                 <%= paymentMethod.getBillingRef() %><br>
             <%
             }%>
+			<% if(cart.containsAlcohol()) { 
+				 if("true".equals(receipt)) {
+			%>
+				<span class="text12">I acknowledge that I have purchased alcohol from Union Square Wines & Spirits and that my credit card or checking account will be charged separately by UNION SQUARE WINE.</span>
+			<% } else { %>             
+				<span class="text12"><b>Please note:</b> By clicking "Submit Order" you acknowledge that you are purchasing alcohol from Union Square Wines & Spirits and that your credit card or checking account will be charged separately by UNION SQUARE WINE.</span>
+			<% } 
+			} %>             
+		<br><br>
             </FONT>
 			<% } %>             
             </TD>
