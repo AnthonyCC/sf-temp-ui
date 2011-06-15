@@ -128,6 +128,12 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 						actionResult.addError(true, "maxAmountNumber", " Discount $ value should be number.");
 					}
 				}else if("hd_free".equalsIgnoreCase(headerDiscountType)){
+					String fuelsurcharge = NVL.apply(request.getParameter("fuel_surcharge"), "").trim();
+					if(fuelsurcharge != null && fuelsurcharge.length() > 0) {
+						this.promotion.setIncludeFuelSurcharge(true);
+					} else {
+						this.promotion.setIncludeFuelSurcharge(false);
+					}
 					this.promotion.setWaiveChargeType("DLV");
 					this.promotion.setMaxAmount("");
 					this.promotion.setPercentOff("");
