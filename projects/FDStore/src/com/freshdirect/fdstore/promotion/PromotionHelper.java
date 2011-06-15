@@ -144,7 +144,7 @@ public class PromotionHelper {
 								if(dlvZoneStrategy.getDlvTimeSlots() != null && !dlvZoneStrategy.getDlvTimeSlots().isEmpty()){
 									isEligible = dlvZoneStrategy.isTimeSlotEligible(timeSlot);
 								} else if(dlvZoneStrategy.getDlvDates() != null && !dlvZoneStrategy.getDlvDates().isEmpty()) {
-									isEligible = dlvZoneStrategy.checkDlvDates(user.getShoppingCart().getDeliveryReservation());
+									isEligible = dlvZoneStrategy.checkDlvDates(timeSlot);
 								}
 							}
 						}

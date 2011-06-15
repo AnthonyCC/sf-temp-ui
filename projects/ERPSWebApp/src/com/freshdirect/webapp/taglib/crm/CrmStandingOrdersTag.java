@@ -1,11 +1,11 @@
 package com.freshdirect.webapp.taglib.crm;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagData;
@@ -19,7 +19,6 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
-import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 public class CrmStandingOrdersTag extends AbstractControllerTag{
 	
@@ -44,6 +43,7 @@ public class CrmStandingOrdersTag extends AbstractControllerTag{
 		HttpSession session = (HttpSession) request.getSession();
 		CrmAgentModel agent =CrmSession.getCurrentAgent(session);
 		String clearErrors =request.getParameter("clear_errors");
+		
 		try {
 			if(null != clearErrors){
 				//TODO: Get the selected order ids and clear the errors for them.
@@ -53,7 +53,7 @@ public class CrmStandingOrdersTag extends AbstractControllerTag{
 					FDStandingOrdersManager.getInstance().clearStandingOrderErrors(soIDs, agent.getUserId());
 					StringBuffer idBuffer = new StringBuffer();
 					for (int i = 0; i < soIDs.length-1; i++) {
-						idBuffer.append(soIDs[i].split(",")[0]).append(",");
+						idBuffer.append(soIDs[i].split(",")[0]).append(", ");
 					}
 					idBuffer.append(soIDs[soIDs.length-1].split(",")[0]);
 					pageContext.setAttribute("successMsg", "Successfully cleared the errors for order(s):"+idBuffer.toString());
@@ -67,9 +67,25 @@ public class CrmStandingOrdersTag extends AbstractControllerTag{
 	
 	protected boolean performGetAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		FDStandingOrderInfoList list = new FDStandingOrderInfoList(Collections.EMPTY_LIST);
+		String actionName = request.getParameter("actionName");
+		if("export".equalsIgnoreCase(actionName)){
+			HttpServletResponse response =(HttpServletResponse)pageContext.getResponse();
+			response.setContentType("application/vnd.ms-excel");
+		    response.setHeader("Content-Disposition", "attachment; filename=SO_Orders_Export.xls");
+		    response.setCharacterEncoding("utf-8");
+		}
 		try {
-			list =(FDStandingOrderInfoList)FDStandingOrdersManager.getInstance().getActiveStandingOrdersCustInfo(filter);
-			request.getSession().setAttribute("sofilter", filter);
+			if(null == filter || filter.isEmpty()){
+				if(null == request.getParameter("so_filter_submit"))
+					filter = (FDStandingOrderFilterCriteria)request.getSession().getAttribute("filter");
+			}
+			request.getSession().setAttribute("filter",filter);
+			if(null != filter &&(null != filter.getFromDate() && null != filter.getToDate() && filter.getToDate().before(filter.getFromDate()))){
+				pageContext.setAttribute("endDateBeforeErr", " 'To' date should not be before 'From' date for filtering.");
+			}else{
+				list =(FDStandingOrderInfoList)FDStandingOrdersManager.getInstance().getActiveStandingOrdersCustInfo(filter);
+			}
+//			request.getSession().setAttribute("sofilter", filter);
 		} catch (FDResourceException e) {
 			throw new JspException("Failed to get the standing orders: ",e);
 		}	

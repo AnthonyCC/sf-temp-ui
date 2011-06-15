@@ -129,6 +129,18 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		}
 		return isOK;
 	}
+	
+	public boolean checkDlvDates(FDTimeslot ts) {
+		boolean isOK = false;
+		if(null != ts){
+			
+			Date dlvSlotBaseDate = DateUtil.truncate(ts.getDlvTimeslot().getBaseDate());
+			//Calendar cal =Calendar.getInstance();
+			//cal.setTime(dlvSlotBaseDate);
+			isOK = checkBaseDateRange(dlvSlotBaseDate);
+		}
+		return isOK;
+	}
 
 	private boolean checkBaseDateRange(Date dlvSlotBaseDate) {
 		for (Iterator<PromotionDlvDate> iterator = dlvDates.iterator(); iterator.hasNext();) {
