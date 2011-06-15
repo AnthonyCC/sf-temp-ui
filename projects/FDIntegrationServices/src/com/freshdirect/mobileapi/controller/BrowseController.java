@@ -121,6 +121,7 @@ public class BrowseController extends BaseController {
 	            	if(layoutManagerSetting.getGrabberDepth() < 0) { // Overridding the hardcoded values done for new 4mm and wine layout
 	            		layoutManagerSetting.setGrabberDepth(0);
 	            	}
+	            	layoutManagerSetting.setReturnSecondaryFolders(true);//Hardcoded for mobile api
 	                ItemGrabberTagWrapper itemGrabberTagWrapper = new ItemGrabberTagWrapper(user.getFDSessionUser());
 	                contents = itemGrabberTagWrapper.getProducts(layoutManagerSetting, currentFolder);
 
@@ -139,13 +140,19 @@ public class BrowseController extends BaseController {
 	                }
 	            }
 	            List<Product> products = new ArrayList<Product>();
+	            List<Product> unavailableProducts = new ArrayList<Product>();
+	            
 	            List<Category> categories = new ArrayList<Category>();
 	            
 	            for (Object content : contents) {
 	                if (content instanceof ProductModel) {
 	                    try {
 	                    	if(!((ProductModel) content).isHideIphone()) {
-	                    		products.add(Product.wrap((ProductModel) content, user.getFDSessionUser().getUser()));
+	                    		if(((ProductModel) content).isUnavailable()) { // Segregate out unavailable to move them to the end
+	                    			unavailableProducts.add(Product.wrap((ProductModel) content, user.getFDSessionUser().getUser()));
+	                    		} else {
+	                    			products.add(Product.wrap((ProductModel) content, user.getFDSessionUser().getUser()));
+	                    		}
 	                    	}
 	                    } catch (Exception e) {
 	                        //Don't let one rotten egg ruin it for the bunch
@@ -157,20 +164,22 @@ public class BrowseController extends BaseController {
 	                	}
 	                }
 	            }
-	            if(products.size() > 0 || ACTION_GET_CATEGORYCONTENT_PRODUCTONLY.equals(action)) {
-	            	 ListPaginator<com.freshdirect.mobileapi.model.Product> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Product>(
+	            if(categories.size() > 0 && !ACTION_GET_CATEGORYCONTENT_PRODUCTONLY.equals(action)) {
+	            	ListPaginator<com.freshdirect.mobileapi.model.Category> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Category>(
+							categories, requestMessage.getMax());
+
+					result.setCategories(paginator.getPage(requestMessage.getPage()));
+					result.setResultCount(result.getCategories() != null ? result.getCategories().size() : 0);	         		
+					result.setTotalResultCount(categories.size());	            		         		
+	            } else {
+	            	products.addAll(unavailableProducts);//add all unavailable to the end of the list
+	            	
+	            	ListPaginator<com.freshdirect.mobileapi.model.Product> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Product>(
 	         															products, requestMessage.getMax());
 	 	        	
 	         		result.setProductsFromModel(paginator.getPage(requestMessage.getPage()));
 	         		result.setResultCount(result.getProducts() != null ? result.getProducts().size() : 0);
-	         		result.setTotalResultCount(products.size());	         		
-	            } else {
-	            	ListPaginator<com.freshdirect.mobileapi.model.Category> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Category>(
-	            														categories, requestMessage.getMax());
-	 	        	
-	            	result.setCategories(paginator.getPage(requestMessage.getPage()));
-	         		result.setResultCount(result.getCategories() != null ? result.getCategories().size() : 0);	         		
-	         		result.setTotalResultCount(categories.size());
+	         		result.setTotalResultCount(products.size());
 	            }	           	            	           
 	        } else if (ACTION_GET_GROUP_PRODUCTS.equals(action)) {
 	        	List<Product> products = FDGroup.getGroupScaleProducts(requestMessage.getGroupId(), requestMessage.getGroupVersion(), user);
