@@ -98,6 +98,7 @@ public class FDPromotionNewModel extends ModelSupport {
 	private String cartBrands = "";
 	private FDPromoStateCountyRestriction scRestriction;
 	private int restrictedCustomerSize;
+	private boolean fuelSurcharge = false;
 	/*
 	 * Number of successful publishes
 	 */
@@ -1032,6 +1033,14 @@ public class FDPromotionNewModel extends ModelSupport {
 
 	public void setStateCountyList(FDPromoStateCountyRestriction scRestriction) {
 		this.scRestriction = scRestriction;
+	}
+	
+	public void setIncludeFuelSurcharge(boolean fs) {
+		this.fuelSurcharge = fs;
+	}
+	
+	public boolean isFuelSurchargeIncluded() {
+		return this.fuelSurcharge;
 	}
 
 	public String getWSSelectedZone() {
