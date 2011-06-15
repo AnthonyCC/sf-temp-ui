@@ -652,7 +652,8 @@ public class FDPromotionNewDAO {
 		String waiveChargeType = rs.getString("waive_charge_type");
 		wasNull |= rs.wasNull();
 		if (!wasNull) {
-			return new WaiveChargeApplicator(minSubtotal, EnumChargeType.getEnum(waiveChargeType));
+			boolean fuelSurcharge = "Y".equals(rs.getString("INCL_FUEL_SURCHARGE"));
+			return new WaiveChargeApplicator(minSubtotal, EnumChargeType.getEnum(waiveChargeType), fuelSurcharge);
 		}
 
 		//	
