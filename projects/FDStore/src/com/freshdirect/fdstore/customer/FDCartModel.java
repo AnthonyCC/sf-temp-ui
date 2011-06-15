@@ -709,6 +709,22 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			setChargeWaived(EnumChargeType.MISCELLANEOUS, waived, promotionCode);
 		}
 	}
+	
+	public void setChargeWaived(EnumChargeType chargeType, boolean waived, String promotionCode, boolean fuelSurcharge) {
+		ErpChargeLineModel charge = this.getCharge(chargeType);
+		if (charge == null) {
+			// not found, create it
+			charge = new ErpChargeLineModel();
+			charge.setType(chargeType);
+			this.charges.add(charge);
+		}
+		charge.setDiscount(waived ? new Discount(promotionCode, EnumDiscountType.PERCENT_OFF, 1.0) : null);
+
+		// MISCELLANEOUS charge waiving is pegged to DELIVERY
+		if (EnumChargeType.DELIVERY.equals(chargeType)) {
+			setChargeWaived(EnumChargeType.MISCELLANEOUS, fuelSurcharge, promotionCode);
+		}
+	}
 
 	//
 	//
