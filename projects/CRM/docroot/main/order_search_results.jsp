@@ -158,7 +158,8 @@ String guestView = "&for=print";
         // if only one results returned, redirect to order details page
         if (searchResults.size() == 1) {
             FDCustomerOrderInfo info = (FDCustomerOrderInfo) searchResults.iterator().next();
-            response.sendRedirect( response.encodeRedirectURL("/main/summary.jsp?orderId="+ info.getSaleId() + (isGuest ? guestView : "")) );
+           // response.sendRedirect( response.encodeRedirectURL("/main/summary.jsp?orderId="+ info.getSaleId() + (isGuest ? guestView : "")) );//order_details.jsp?orderId=
+	   response.sendRedirect( response.encodeRedirectURL("/main/order_details.jsp?orderId="+ info.getSaleId() + (isGuest ? guestView : "")) );
         }
 %>      
 <%  Comparator comparator = null;
@@ -236,7 +237,7 @@ String guestView = "&for=print";
                 rowClass = "class='list_duplicate_row'";
         }
     %>
-        <tr valign="top" <%=rowClass%> style="cursor: pointer;" onClick="document.location='<%= response.encodeURL("/main/summary.jsp?orderId=" + info.getSaleId() + (isGuest ? guestView : "") ) %>'">
+        <tr valign="top" <%=rowClass%> style="cursor: pointer;" onClick="document.location='<%= response.encodeURL("/main/order_details.jsp?orderId=" + info.getSaleId() + (isGuest ? guestView : "") ) %>'">
 			<td width="7%" class="border_bottom"><a><b><%= info.getSaleId() %></b></a>&nbsp;</td>
             <td width="10%" class="border_bottom"><%= info.getDeliveryDate() %>&nbsp;</td>
 			<td width="10%" class="border_bottom"><%= EnumDeliveryType.getDeliveryType(info.getDeliveryType()).getName() %>&nbsp;</td>

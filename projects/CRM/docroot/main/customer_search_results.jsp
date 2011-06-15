@@ -57,7 +57,8 @@ boolean isGuest = false;
         // if only one results returned, redirect to customer details page
 		if (searchResults.size() == 1 && !isGuest) {
 			FDCustomerOrderInfo loneCustomer = (FDCustomerOrderInfo) searchResults.iterator().next();
-			response.sendRedirect( response.encodeRedirectURL("/main/summary.jsp?erpCustId=" + loneCustomer.getIdentity().getErpCustomerPK()));
+			//response.sendRedirect( response.encodeRedirectURL("/main/summary.jsp?erpCustId=" + loneCustomer.getIdentity().getErpCustomerPK()));
+			response.sendRedirect( response.encodeRedirectURL("/main/account_details.jsp?erpCustId=" + loneCustomer.getIdentity().getErpCustomerPK()));
 		}
 
 %>
@@ -151,7 +152,7 @@ boolean isGuest = false;
 		<tr valign="top" 
             <%= counter.intValue() % 2 == 0 ? "class='list_odd_row'" : "" %>  style="cursor: pointer;" 
             <% if (!isGuest) { %>
-                onClick="document.location='<%= response.encodeURL("/main/summary.jsp?erpCustId=" + info.getIdentity().getErpCustomerPK() + "&fdCustId=" + info.getIdentity().getFDCustomerPK() ) %>'"
+                onClick="document.location='<%= response.encodeURL("/main/account_details.jsp?erpCustId=" + info.getIdentity().getErpCustomerPK() + "&fdCustId=" + info.getIdentity().getFDCustomerPK() ) %>'"
             <% } %>>
 			<td width="15%" class="border_bottom" style="font-size: 5pt;">
                 <%=info.isVIP()?"<span class=\"iVip\">V I P</span> ":""%>
