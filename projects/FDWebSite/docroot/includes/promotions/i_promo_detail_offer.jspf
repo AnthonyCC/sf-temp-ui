@@ -76,7 +76,7 @@
 								<td class="alignL"><%= (!"".equals(promotion.getPercentOff()))?(NumberUtil.isDouble(promotion.getPercentOff())?Double.valueOf(promotion.getPercentOff()).intValue():promotion.getPercentOff())+" %":"$ "+promotion.getMaxAmount()%></td>
 							<% } %>
 							<% if ( promotion.getWaiveChargeType() != null && !"".equals(promotion.getWaiveChargeType()) ) { %>
-								<td class="alignL">Free Delivery <span class="grayIta8pt"> (incl. fuel surcharge)</span></td>
+								<td class="alignL">Free Delivery <span class="grayIta8pt"> <% if(promotion.isFuelSurchargeIncluded())  { %> (incl. fuel surcharge) <% } else { %> (excl. fuel surcharge) <% } %></span></td>
 							<% } %>
 							<% if ( promotion.getExtendDpDays() != null && !"".equals(promotion.getExtendDpDays()) && promotion.getExtendDpDays() > 0 ) { %>
 								<td class="alignL">Extend Delivery Pass <%= promotion.getExtendDpDays()%> days <span class="grayIta8pt"> (Customer must have active pass)</span></td>
