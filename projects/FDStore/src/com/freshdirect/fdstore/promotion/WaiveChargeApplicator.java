@@ -10,6 +10,7 @@ public class WaiveChargeApplicator implements PromotionApplicatorI {
 	private final EnumChargeType chargeType;
 	private final double minSubtotal;
 	private DlvZoneStrategy zoneStrategy;
+	private boolean fuelSurcharge;
 	
 	public double getMinSubtotal() {
 		return minSubtotal;
@@ -18,12 +19,13 @@ public class WaiveChargeApplicator implements PromotionApplicatorI {
 		return chargeType;
 	}
 
-	public WaiveChargeApplicator(double minSubtotal, EnumChargeType chargeType) {
+	public WaiveChargeApplicator(double minSubtotal, EnumChargeType chargeType, boolean fuelSurcharge) {
 		if (chargeType == null) {
 			throw new IllegalArgumentException("ChargeType cannot be null");
 		}
 		this.chargeType = chargeType;
 		this.minSubtotal = minSubtotal;
+		this.fuelSurcharge = fuelSurcharge;
 	}
 
 	public boolean apply(String promotionCode, PromotionContextI context) {
@@ -35,7 +37,11 @@ public class WaiveChargeApplicator implements PromotionApplicatorI {
 		if (context.getSubTotal(promo.getExcludeSkusFromSubTotal()) < this.getMinSubtotal()) {
 			return false;
 		}
-		context.getShoppingCart().setChargeWaived(chargeType, true, promotionCode);
+		if(fuelSurcharge) {
+			context.getShoppingCart().setChargeWaived(chargeType, true, promotionCode);
+		} else {
+			context.getShoppingCart().setChargeWaived(chargeType, true, promotionCode, fuelSurcharge);
+		}
 		if(chargeType == EnumChargeType.DELIVERY){
 			//If it is a Delivery Promotion
 			context.getShoppingCart().setDlvPromotionApplied(true);
