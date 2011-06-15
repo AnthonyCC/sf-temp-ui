@@ -86,7 +86,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		YAHOO.util.Dom.addClass("usq-er-panel_c", "usq-lightbrown-bg");
 		
 		// override .yui-panel hidden setting
-		$("usq-er-panel").style.overflow = "visible";
+		YAHOO.util.Dom.get("usq-er-panel").style.overflow = "visible";
 		
 		// show panel
 		erPanel.show();

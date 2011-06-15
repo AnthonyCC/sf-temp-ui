@@ -136,14 +136,6 @@
 
 %>
 <script type="text/javascript" src="/assets/yui/yahoo-dom-event/yahoo-dom-event.js"></script>
-<script type="text/javascript">
-var $E  = YAHOO.util.Event;  
-var $D  = YAHOO.util.Dom;  
-//var $DH = YAHOO.ext.DomHelper;  
-var $C  = YAHOO.util.Connect;  
-var $X  = YAHOO.ext;  
-var $  = $D.get;  
-</script>
 <!-- YUI includes END -->
 <%
 		request.setAttribute("__yui_included__", Boolean.TRUE);

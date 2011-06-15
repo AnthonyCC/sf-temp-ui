@@ -94,7 +94,7 @@ FD_QuickBuy.showPanel = function(deptId, catId, prdId) {
 		ctPanel.render(document.body);
 		
 		// override .yui-panel hidden setting
-		$(elementId).style.overflow = "visible";
+		YAHOO.util.Dom.get(elementId).style.overflow = "visible";
 
 
 		YAHOO.util.Dom.addClass(elementId+'_c','quickbuy-dialog');
@@ -108,7 +108,7 @@ FD_QuickBuy.showPanel = function(deptId, catId, prdId) {
 		}
 		
 		ctPanel.hideEvent.subscribe(function(e){
-			$(elementId+'_overbox').style.visibility = "hidden";
+			YAHOO.util.Dom.get(elementId+'_overbox').style.visibility = "hidden";
 		});
 		
 		document.quickbuyPanel = ctPanel;
@@ -128,7 +128,7 @@ FD_QuickBuy.loadNewFeatureInner = function(panelId) {
 	var cObj = YAHOO.util.Connect.asyncRequest('POST', '/ajax/nfeat_inner.jsp', {
 		success: function(resp) {
 			if (resp.status == 200) {
-				var obj = $(panelId+"_nfeat");
+				var obj = YAHOO.util.Dom.get(panelId+"_nfeat");
 				obj.innerHTML = resp.responseText;
 				
 				obj.style.display = "block";
@@ -142,7 +142,7 @@ FD_QuickBuy.loadNewFeatureInner = function(panelId) {
 FD_QuickBuy.closeNewFeatBox = function(nfeatId) {
 	var cObj = YAHOO.util.Connect.asyncRequest('POST', '/ajax/nfeat.jsp', {
 		success: function(resp) {
-			$(nfeatId).style.display = "none";
+			YAHOO.util.Dom.get(nfeatId).style.display = "none";
 			document.quickbuyPanel.center();
 		}
 	});
@@ -158,17 +158,17 @@ FD_QuickBuy._attachHotspot = function(hotspot, btn, multiple) {
 	if (FD_QuickBuy.DELAY == 0) {
 		// WITHOUT DELAY
 		//
-		$E.on(hotspot, "mouseenter", function(e) {
+		YAHOO.util.Event.on(hotspot, "mouseenter", function(e) {
 			btn.animFadeIn.animate();
 		});
 	
-		$E.on(hotspot, "mouseleave", function(e) {
+		YAHOO.util.Event.on(hotspot, "mouseleave", function(e) {
 			btn.animFadeOut.animate();
 		});
 	} else {
 		// WITH DELAY
 		//
-		$E.on(hotspot, "mouseenter", function(e) {
+		YAHOO.util.Event.on(hotspot, "mouseenter", function(e) {
 			if (hotspot.later != undefined && hotspot.later != null) {
 				hotspot.later.cancel();
 				hotspot.later = null;
@@ -181,7 +181,7 @@ FD_QuickBuy._attachHotspot = function(hotspot, btn, multiple) {
 			}, null, false );
 		});
 
-		$E.on(hotspot, "mouseleave", function(e) {
+		YAHOO.util.Event.on(hotspot, "mouseleave", function(e) {
 			if (hotspot.later != undefined && hotspot.later != null) {
 				hotspot.later.cancel();
 				hotspot.later = null;
@@ -203,7 +203,7 @@ FD_QuickBuy._attachHotspot = function(hotspot, btn, multiple) {
  */
 FD_QuickBuy.decorate = function(hotspot, btn, prd) {
 	var __btns = YAHOO.lang.isArray(btn) ? btn : [btn];
-	var __btn = $(__btns[0]); // default button
+	var __btn = YAHOO.util.Dom.get(__btns[0]); // default button
 
 
 	// HOTSPOT(s)
@@ -211,10 +211,10 @@ FD_QuickBuy.decorate = function(hotspot, btn, prd) {
 	if (hotspot) {
 		if (YAHOO.lang.isArray(hotspot)) {
 			for (k in hotspot) {
-				this._attachHotspot($(hotspot[k]), __btn, true);
+				this._attachHotspot(YAHOO.util.Dom.get(hotspot[k]), __btn, true);
 			}
 		} else {
-			this._attachHotspot($(hotspot), __btn, false);
+			this._attachHotspot(YAHOO.util.Dom.get(hotspot), __btn, false);
 		}
 	}
 
@@ -224,11 +224,11 @@ FD_QuickBuy.decorate = function(hotspot, btn, prd) {
 	var __panel = FD_QuickBuy.showPanel(prd.departmentId, prd.categoryId, prd.productId);
 
 	for (k in __btns) {
-		__btn = $(__btns[k]);
+		__btn = YAHOO.util.Dom.get(__btns[k]);
 		if (null != __btn) {
 			__btn.showPanel = __panel;
-			$E.on(__btn, "click", function(e) {
-				$E.stopEvent(e);
+			YAHOO.util.Event.on(__btn, "click", function(e) {
+				YAHOO.util.Event.stopEvent(e);
 				this.showPanel();
 			});
 		}

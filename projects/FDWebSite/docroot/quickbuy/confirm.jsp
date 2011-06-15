@@ -61,7 +61,7 @@ ERROR!
 	}
 %>
 <script>
-$E.onDOMReady(function(e) {
+YAHOO.util.Event.onDOMReady(function(e) {
 	window.parent.updateYourCartPanel();
 });
 </script>

@@ -26,11 +26,11 @@ fd_carousel.start=function(container,numItems,hideContainer,text,cName,parentId,
 		
 		fd_carousel.fixItemHeights(container, maxHeight);
 		if (parentId) {
-			pContainer = $(parentId);
-			reg2 = $D.getRegion(pContainer);
+			pContainer = YAHOO.util.Dom.get(parentId);
+			reg2 = YAHOO.util.Dom.getRegion(pContainer);
 			mh = maxHeight + offset;
 			if (reg2.height === undefined || reg2.height < mh)
-				$D.setStyle(pContainer, 'height', mh+'px');
+				YAHOO.util.Dom.setStyle(pContainer, 'height', mh+'px');
 		}
 
 

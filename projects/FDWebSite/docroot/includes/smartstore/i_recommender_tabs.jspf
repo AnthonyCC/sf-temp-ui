@@ -191,7 +191,7 @@
 				
 				
 					onFailure: function(tabId) {
-						$('content_'+tabId).innerHTML = errorMessage;
+						YAHOO.util.Dom.get('content_'+tabId).innerHTML = errorMessage;
 					},
 					
 				
@@ -204,9 +204,9 @@
 					},
 				
 					load: function(tab, tabPos) {
-						var ctnt = $('content_'+tab);
+						var ctnt = YAHOO.util.Dom.get('content_'+tab);
 						if (ctnt.childNodes.length == 0 || (ctnt.childNodes.length == 1 && ctnt.firstChild.nodeType != 1)) {
-							$('content_'+tab).innerHTML = loadingMessage;
+							YAHOO.util.Dom.get('content_'+tab).innerHTML = loadingMessage;
 							PIP.refresh(tab, tabPos, false);
 						} else {
 							PIP.norefresh(tab, tabPos);
@@ -215,10 +215,10 @@
 
 					_call: function(tabId, uri) {
 						var self = this;
-						if ( $('ra_'+tabId) != null ) {
-							$('ra_'+tabId).innerHTML = loadingLink;
+						if ( YAHOO.util.Dom.get('ra_'+tabId) != null ) {
+							YAHOO.util.Dom.get('ra_'+tabId).innerHTML = loadingLink;
 						}
-						$C.asyncRequest('GET', uri, {
+						YAHOO.util.Connect.asyncRequest('GET', uri, {
 							success: function(resp) {
 								if ( resp.status === 205 ) {
 									self.onTimeout();
@@ -267,7 +267,7 @@
 
 					norefresh: function(tabId, tabPos) {
 						var uri = '/ajax/norefresh.jsp?tab='+tabPos+'&variant='+tabId+'&siteFeature='+PIP.features[tabId];
-						$C.asyncRequest('HEAD', uri, {});
+						YAHOO.util.Connect.asyncRequest('HEAD', uri, {});
 					}
 				};
 		
@@ -282,42 +282,42 @@
 				
 				<%-- attach to tabs --%>
 				for (k=0; k<PIP.tabs.length; k++) {
-					$E.on($('td_'+PIP.tabs[k]), 'click', function(e) {
-						$E.preventDefault(e);
+					YAHOO.util.Event.on(YAHOO.util.Dom.get('td_'+PIP.tabs[k]), 'click', function(e) {
+						YAHOO.util.Event.preventDefault(e);
 		
 						var sel = this.getAttribute('vid');
 						
 						for ( ii=0; ii<PIP.tabs.length; ii++ ) {
 		
 							if ( ii === 0 ) { // first tab
-								$('img_'+PIP.tabs[ii]).src = '/media_stat/images/carttab_corners/carttab_first_left_'+(PIP.tabs[ii]===sel ? 'on' : 'off')+'.gif';
+								YAHOO.util.Dom.get('img_'+PIP.tabs[ii]).src = '/media_stat/images/carttab_corners/carttab_first_left_'+(PIP.tabs[ii]===sel ? 'on' : 'off')+'.gif';
 							} else {
-								$('img_'+PIP.tabs[ii]).src = '/media_stat/images/carttab_corners/carttab_btwn_'+(PIP.tabs[ii-1]===sel ? 'on' : 'off')+'_'+(PIP.tabs[ii]===sel ? 'on' : 'off')+'.gif';
+								YAHOO.util.Dom.get('img_'+PIP.tabs[ii]).src = '/media_stat/images/carttab_corners/carttab_btwn_'+(PIP.tabs[ii-1]===sel ? 'on' : 'off')+'_'+(PIP.tabs[ii]===sel ? 'on' : 'off')+'.gif';
 							}
 		
 							if ( ii === PIP.tabs.length-1 ) { // last tab
-								$('img_last').src = '/media_stat/images/carttab_corners/carttab_btwn_'+(PIP.tabs[ii]===sel ? 'on' : 'off')+'_nothing.gif';
+								YAHOO.util.Dom.get('img_last').src = '/media_stat/images/carttab_corners/carttab_btwn_'+(PIP.tabs[ii]===sel ? 'on' : 'off')+'_nothing.gif';
 							}					
 						}
 						
 						if (PIP.selected != this.getAttribute('vid')) {
 		
 							// previous selected tab					
-							$('content_'+PIP.selected).style.display = 'none';
-							$('header_'+PIP.selected).style.display = 'none';
-							$('footer_'+PIP.selected).style.display = 'none';
+							YAHOO.util.Dom.get('content_'+PIP.selected).style.display = 'none';
+							YAHOO.util.Dom.get('header_'+PIP.selected).style.display = 'none';
+							YAHOO.util.Dom.get('footer_'+PIP.selected).style.display = 'none';
 							
-							$('a_'+PIP.selected).className = 'tab_inactive';				
-							$('td_'+PIP.selected).className = 'tab_title_inactive';					
+							YAHOO.util.Dom.get('a_'+PIP.selected).className = 'tab_inactive';				
+							YAHOO.util.Dom.get('td_'+PIP.selected).className = 'tab_title_inactive';					
 							
 							// newly selected tab 
 							PIP.selected = this.getAttribute('vid');
-							$('content_'+PIP.selected).style.display = '';
-							$('header_'+PIP.selected).style.display = '';
-							$('footer_'+PIP.selected).style.display = '';
+							YAHOO.util.Dom.get('content_'+PIP.selected).style.display = '';
+							YAHOO.util.Dom.get('header_'+PIP.selected).style.display = '';
+							YAHOO.util.Dom.get('footer_'+PIP.selected).style.display = '';
 							
-							$('a_'+PIP.selected).className = 'tab_active';				
-							$('td_'+PIP.selected).className = 'tab_title_active';
+							YAHOO.util.Dom.get('a_'+PIP.selected).className = 'tab_active';				
+							YAHOO.util.Dom.get('td_'+PIP.selected).className = 'tab_title_active';
 				
 							// load content (if necessary)
 							PIP.load(PIP.selected, this.getAttribute("tpos"));

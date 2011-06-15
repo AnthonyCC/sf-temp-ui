@@ -125,7 +125,7 @@
 		this.populateDeptsList = function (deptsListId) {
 			var deptsList = this.getDepts();
 			//clean list
-			$(deptsListId).options.length = 0;
+			YAHOO.util.Dom.get(deptsListId).options.length = 0;
 
 			var optCount = 0;
 			var optTexts = new Array();
@@ -142,24 +142,24 @@
 			}
 
 			for (i=0; i < optTexts.length; i++) {
-				$(deptsListId).options[$(deptsListId).options.length] = new Option(optTexts[i], optValues[i]);
+				YAHOO.util.Dom.get(deptsListId).options[YAHOO.util.Dom.get(deptsListId).options.length] = new Option(optTexts[i], optValues[i]);
 			}
 
 		}
 
 		this.populateCatsList = function (catsListId, deptsListId) {
 			//enable cat now that we have selections
-			$(catsListId).disabled = false;
-			if ($(deptsListId).value == 'D_NULL') { $(catsListId).disabled = true; }
+			YAHOO.util.Dom.get(catsListId).disabled = false;
+			if (YAHOO.util.Dom.get(deptsListId).value == 'D_NULL') { YAHOO.util.Dom.get(catsListId).disabled = true; }
 
-			var deptId = $(deptsListId).value;
+			var deptId = YAHOO.util.Dom.get(deptsListId).value;
 
 			var catsList = this.getCatsFromDept(deptId);
 
 			this.log(catsList);
 
 			//clean list
-			$(catsListId).options.length = 0;
+			YAHOO.util.Dom.get(catsListId).options.length = 0;
 
 			var optCount = 0;
 			var optTexts = new Array();
@@ -176,7 +176,7 @@
 			}
 
 			for (i=0; i < optTexts.length; i++) {
-				$(catsListId).options[$(catsListId).options.length] = new Option(optTexts[i], optValues[i]);
+				YAHOO.util.Dom.get(catsListId).options[YAHOO.util.Dom.get(catsListId).options.length] = new Option(optTexts[i], optValues[i]);
 			}
 
 			//alphabetize
@@ -190,7 +190,7 @@
 			var selectArr = new Array();
 
 			if (specId!='') {
-				selectArr[0] = $(specId); 
+				selectArr[0] = YAHOO.util.Dom.get(specId); 
 			}else{
 				selectArr = document.getElementsByTagName('select'); 
 			}
@@ -218,10 +218,10 @@
 				this.log("selectArr[i].id", i, selectArr[i].id);
 				//add choose...
 				if ( (selectArr[i].id).indexOf('dept_prod') > -1 ) {
-					$(selectArr[i].id).options[$(selectArr[i].id).options.length] = new Option("Choose Department", "D_NULL");
+					YAHOO.util.Dom.get(selectArr[i].id).options[YAHOO.util.Dom.get(selectArr[i].id).options.length] = new Option("Choose Department", "D_NULL");
 				}
 				if ( (selectArr[i].id).indexOf('cat_prod') > -1 ) {
-					$(selectArr[i].id).options[$(selectArr[i].id).options.length] = new Option("Choose Category", "C_NULL");
+					YAHOO.util.Dom.get(selectArr[i].id).options[YAHOO.util.Dom.get(selectArr[i].id).options.length] = new Option("Choose Category", "C_NULL");
 				}
 				// Rebuild the select using our sorted array
 				for (var j = 0; j < oArr.length; j++) {
@@ -249,25 +249,25 @@
 	function fillVal(fromId, fillWith) {
 		var fillWith = fillWith || '';
 		if (fillWith == '') {
-			if ($(fromId).value == 'Brand' || $(fromId).value == 'Description') {
-				$(fromId).value = '';
+			if (YAHOO.util.Dom.get(fromId).value == 'Brand' || YAHOO.util.Dom.get(fromId).value == 'Description') {
+				YAHOO.util.Dom.get(fromId).value = '';
 			}
-		} else if (fillWith == 'D' && $(fromId).value == '') {
-			$(fromId).value = 'Description';
-		} else if (fillWith == 'B' && $(fromId).value == ''){
-			$(fromId).value = 'Brand';
+		} else if (fillWith == 'D' && YAHOO.util.Dom.get(fromId).value == '') {
+			YAHOO.util.Dom.get(fromId).value = 'Description';
+		} else if (fillWith == 'B' && YAHOO.util.Dom.get(fromId).value == ''){
+			YAHOO.util.Dom.get(fromId).value = 'Brand';
 		}
 	}
 
 	function fillBrandVal() {
 		for (var n=1; n<=<%=prodRequests%>; n++) {
-			$('brandParams_prod'+n).value = 'Brand';
+			YAHOO.util.Dom.get('brandParams_prod'+n).value = 'Brand';
 		}
 	}
 
 	function disCats() {
 		for (var n=1; n<=<%=prodRequests%>; n++) {
-			$('cat_prod'+n).disabled = true;
+			YAHOO.util.Dom.get('cat_prod'+n).disabled = true;
 		}
 	}
 

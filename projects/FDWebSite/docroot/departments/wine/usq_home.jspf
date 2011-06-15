@@ -133,7 +133,7 @@ FreshDirect.Wine.addTabItem("top-rated", "<%="tab_price_" + price.name().toLower
 			}
 		%>
 <script>
-$E.onDOMReady(function() {
+YAHOO.util.Event.onDOMReady(function() {
 	var tpIdList = <%= JSHelper.listToJSArray(ids) %>;
 	for (c in tpIdList) {
 		window.fd_carousel.postInit(c, mx);
@@ -147,9 +147,7 @@ $E.onDOMReady(function() {
 		for (c in tpIdList) {
 			window.fd_carousel.fixItemHeights(c, mx);
 		}
-	}catch(exc) {
-		alert(exc);
-	}
+	}catch(exc) {}
 });
 </script>
 	</div>

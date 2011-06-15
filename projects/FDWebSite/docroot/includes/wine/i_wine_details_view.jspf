@@ -95,7 +95,7 @@
 		<%-- QUICK BUY SECTION START --%>
 		<img id="qbButton-<%= webId %>" class="qbButton" style="display: inline-block; position: absolute; left: <%= qbw %>px; top: <%= qbh %>px;" src="/media_stat/images/quickbuy/quickbuy_button_hover.gif">
 		<script>
-			$E.onDOMReady(function() {
+			YAHOO.util.Event.onDOMReady(function() {
 				FD_QuickBuy.decorate('hotspot-<%= webId %>', ['qbButton-<%= webId %>', 'hotspot-<%= webId %>'], {
 						departmentId: '<%= product.getDepartment().getContentName() %>',
 						categoryId: '<%= __c.getContentName() %>',
