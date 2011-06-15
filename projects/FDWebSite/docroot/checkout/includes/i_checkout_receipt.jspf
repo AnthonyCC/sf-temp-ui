@@ -257,6 +257,7 @@ OAS_AD('ReceiptTop');
 <tr><td><br><br></td></tr>
 <tr>
 	<td align="left">
+	<% String receipt = "true"; %>
 	<%@ include file="/includes/ckt_acct/i_step_4_delivery_payment.jspf" %><br>
 	</td>
 </tr>
