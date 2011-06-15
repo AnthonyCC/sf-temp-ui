@@ -234,7 +234,7 @@ if (user.isPromoConflictResolutionApplied()) {
 	<%@ include file="/includes/i_error_messages.jspf"%> 	
 <%	}
 %>
-
+<% String receipt = ""; %>
 <%@ include file="/includes/ckt_acct/i_step_4_delivery_payment.jspf" %>
 
 <IMG src="/media_stat/images/layout/clear.gif" width="1" height="1"><br>
