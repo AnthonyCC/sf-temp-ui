@@ -377,6 +377,8 @@ public class FDPromotionManagerNewDAO {
 		} else {
 			promotion.setWaiveChargeType("");
 		}
+		
+		promotion.setIncludeFuelSurcharge("Y".equals(rs.getString("INCL_FUEL_SURCHARGE"))?true:false);
 
 		// Shift status PUBLISHED to EXPIRED automatically if promo is expired
 		EnumPromotionStatus status = EnumPromotionStatus.getEnum(rs.getString("status"));
@@ -612,8 +614,8 @@ public class FDPromotionManagerNewDAO {
 								"AUDIENCE_DESC, TERMS, REDEEM_CNT, HASSKUQUANTITY, " +
 								"PERISHABLEONLY, NEEDDRYGOODS, NEEDCUSTOMERLIST, " +
 								"RULE_BASED, FAVORITES_ONLY, COMBINE_OFFER, " +
-								"CREATED_BY, CREATE_DATE, MODIFIED_BY, MODIFY_DATE, DONOT_APPLY_FRAUD, PUBLISHES,OFFER_TYPE)"
-						+ " VALUES(?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?)");
+								"CREATED_BY, CREATE_DATE, MODIFIED_BY, MODIFY_DATE, DONOT_APPLY_FRAUD, PUBLISHES,OFFER_TYPE, INCL_FUEL_SURCHARGE)"
+						+ " VALUES(?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?)");
 
 		int i = 1;
 		ps.setString(i++, id); // 1
@@ -646,6 +648,7 @@ public class FDPromotionManagerNewDAO {
 		} else {
 			ps.setNull(i++, Types.VARCHAR);
 		}
+		ps.setString(i++, promotion.isFuelSurchargeIncluded()?"Y":"N");
 		// Execute update
 		if (ps.executeUpdate() != 1) {
 			ps.close();
@@ -1204,7 +1207,7 @@ public class FDPromotionManagerNewDAO {
 				+ " SET"
 				+ " CODE = ?, NAME = ?, DESCRIPTION = ?, MAX_USAGE = ?, START_DATE = ?, EXPIRATION_DATE = ?, REDEMPTION_CODE = ?,"
 				+ " CAMPAIGN_CODE = ?, MIN_SUBTOTAL = ?, MAX_AMOUNT = ?, PERCENT_OFF = ?, WAIVE_CHARGE_TYPE = ?, ROLLING_EXPIRATION_DAYS = ?, STATUS = ?, OFFER_DESC = ?, AUDIENCE_DESC = ?, TERMS = ?,REDEEM_CNT = ?,HASSKUQUANTITY = ?, PERISHABLEONLY = ? ,NEEDDRYGOODS =?,NEEDCUSTOMERLIST =?, "
-				+ " RULE_BASED = ?,FAVORITES_ONLY = ?, COMBINE_OFFER = ?, MODIFIED_BY =?, MODIFY_DATE =?, DONOT_APPLY_FRAUD=?"
+				+ " RULE_BASED = ?,FAVORITES_ONLY = ?, COMBINE_OFFER = ?, MODIFIED_BY =?, MODIFY_DATE =?, DONOT_APPLY_FRAUD=?, INCL_FUEL_SURCHARGE=?"
 				+ " WHERE ID = ?");
 		int i = 1;
 		i = setupPreparedStatement(ps, promotion, i);
@@ -1222,6 +1225,8 @@ public class FDPromotionManagerNewDAO {
 		} else {
 			ps.setNull(i++, Types.VARCHAR);
 		}
+		
+		ps.setString(i++, promotion.isFuelSurchargeIncluded()?"Y":"N");
 		
 		ps.setString(i++, promotion.getPK().getId());
 		if (ps.executeUpdate() != 1) {
@@ -2251,7 +2256,7 @@ public class FDPromotionManagerNewDAO {
 				+ " SET"
 				+ " CODE=?, CAMPAIGN_CODE = ?, COMBINE_OFFER = ?, PERISHABLEONLY = ? ,FAVORITES_ONLY = ?, PERCENT_OFF = ?, WAIVE_CHARGE_TYPE = ?," 
 				+ " CATEGORY_NAME=?, PRODUCT_NAME=?, EXTEND_DP_DAYS =?,"
-				+ " MAX_AMOUNT =?, OFFER_TYPE = ?, MAX_ITEM_COUNT =?, MODIFIED_BY =?, MODIFY_DATE =?"
+				+ " MAX_AMOUNT =?, OFFER_TYPE = ?, MAX_ITEM_COUNT =?, MODIFIED_BY =?, MODIFY_DATE =?, INCL_FUEL_SURCHARGE=?"
 				+ " WHERE ID = ?");
 		int i = 1;
 //		i = setupPreparedStatement(ps, promotion, i);
@@ -2299,7 +2304,9 @@ public class FDPromotionManagerNewDAO {
 					.getModifiedDate().getTime()));
 		} else {
 			ps.setNull(i++, Types.DATE);
-		}		
+		}
+		
+		ps.setString(i++, promotion.isFuelSurchargeIncluded()?"Y":"N");
 			
 		ps.setString(i++, promotion.getPK().getId());
 		if (ps.executeUpdate() != 1) {
@@ -2690,7 +2697,7 @@ public class FDPromotionManagerNewDAO {
 						+ " ROLLING_EXPIRATION_DAYS=?, STATUS=?, OFFER_DESC=?, AUDIENCE_DESC=?, TERMS=?, REDEEM_CNT=?,"
 						+ " HASSKUQUANTITY=?, PERISHABLEONLY=?, NEEDDRYGOODS=?, NEEDCUSTOMERLIST=?, RULE_BASED=?,"
 						+ " FAVORITES_ONLY=?, COMBINE_OFFER=?, MODIFIED_BY=?, MODIFY_DATE=?,"
-						+ " DONOT_APPLY_FRAUD=?, PUBLISHES=?"
+						+ " DONOT_APPLY_FRAUD=?, PUBLISHES=?, INCL_FUEL_SURCHARGE=?"
 						+ " WHERE ID = ?");
 
 		int i = 1;
@@ -2711,6 +2718,7 @@ public class FDPromotionManagerNewDAO {
 		}
 		
 		ps.setInt(i++, promotion.getPublishes());
+		ps.setString(i++, promotion.isFuelSurchargeIncluded()?"Y":"N");
 		
 		ps.setString(i++, promotion.getPK().getId());
 
