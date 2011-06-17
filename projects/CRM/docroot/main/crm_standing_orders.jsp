@@ -14,7 +14,7 @@
 <%@ page import="com.freshdirect.framework.util.DateUtil" %>
 <%@ page import="com.freshdirect.fdstore.FDTimeslot" %>
 <%@ page import='com.freshdirect.framework.util.*'%>
-<%@ page import="com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceCmd"%>
+
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
