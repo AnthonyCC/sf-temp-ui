@@ -1,4 +1,3 @@
-<fd:IncludeMedia name="/media/testing/master_test.ftl" parameters="<%=params%>" withErrorReport="false" />
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%
 	/***
