@@ -1,6 +1,7 @@
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties, java.util.*, com.freshdirect.framework.util.NVL, com.freshdirect.fdstore.sempixel.FDSemPixelCache,
 com.freshdirect.fdstore.sempixel.SemPixelModel, java.net.URL' %><%@ taglib uri='freshdirect' prefix='fd' %>
 <% String semPixelNames = NVL.apply(request.getParameter("pixelNames"), ""); %>
+<% String semPixelRemoves = NVL.apply(request.getParameter("removePixels"), ""); %>
 <fd:CheckLoginStatus pixelNames="<%= semPixelNames %>" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -107,7 +108,10 @@ com.freshdirect.fdstore.sempixel.SemPixelModel, java.net.URL' %><%@ taglib uri='
 				StringTokenizer sem_stQueryParams = new StringTokenizer(sem_zipParse[m], "=");
 				while(sem_stQueryParams.hasMoreTokens()) {
 					String key = sem_stQueryParams.nextToken();
-					String val = sem_stQueryParams.nextToken();
+					String val = "";
+					if (sem_stQueryParams.hasMoreTokens()) {
+						val = sem_stQueryParams.nextToken();
+					}
 					
 					//we only care about zip code here
 					if ("zipcode".equals(key)) {
