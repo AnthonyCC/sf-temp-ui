@@ -170,9 +170,9 @@
 			    {key:"sessionInfo", label:"Session",sortable:false, width: 305,className:"forms1"},
 			    {key:"systemMessage", label:"System Message", width: 200,sortable:false,className:"forms1"},
 			    {key:"action", label:"Action", sortable:false, width: 125, className:"forms1",	
-			    				formatter:"dropdown", dropdownOptions:["","ROUTEIN","ROUTEOUT","COMMIT","CANCEL"] },
+			    				formatter:"dropdown", dropdownOptions:["","ROUTEIN","ROUTEOUT","COMMIT","AUTODISPATCH","CANCEL"] },
 				{key:"report", label:"Download", sortable:false, width: 150, className:"forms1",
-			    				formatter:"dropdown", dropdownOptions:["","CutOff Report","Community Report","SAP Upload Files"] }			    				
+			    				formatter:"dropdown", dropdownOptions:["","CutOff Report","Community Report","SAP Upload Files"] }
 			    
 		 ];
 		    	

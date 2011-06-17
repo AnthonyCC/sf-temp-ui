@@ -253,14 +253,15 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 		
 		Map<String, List<IHandOffBatchPlan>> batchPlanMap = new HashMap<String, List<IHandOffBatchPlan>>();
 		Map<String, List<IHandOffBatchRoute>> batchRouteMap = new HashMap<String, List<IHandOffBatchRoute>>();
+		List<IHandOffBatchRoute> openRoutes = new ArrayList<IHandOffBatchRoute>();
 		
-		List<IHandOffBatchPlan> noZoneBatchPlanList = new ArrayList<IHandOffBatchPlan>();
+		List<IHandOffBatchPlan> bullpens = new ArrayList<IHandOffBatchPlan>();
 		
 		Iterator<IHandOffBatchPlan> planItr = this.batchPlanList.iterator();
 		while(planItr.hasNext()){
 			IHandOffBatchPlan _plan = planItr.next();
 			if(_plan.getZoneCode() == null){
-				noZoneBatchPlanList.add(_plan);
+				bullpens.add(_plan);
 				continue;
 			}
 			if(!batchPlanMap.containsKey(_plan.getZoneCode())){
@@ -284,11 +285,15 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 		while(finalBatchPlanItr.hasNext()){
 			String zone = finalBatchPlanItr.next();
 			List<IHandOffBatchRoute> zoneRouteList = batchRouteMap.get(zone);
-			if(zoneRouteList == null) zoneRouteList = Collections.EMPTY_LIST;
+			if(zoneRouteList == null) 
+				zoneRouteList = Collections.EMPTY_LIST;
 			constructDispatchModelList(dispatchMapping, (List<IHandOffBatchPlan>)batchPlanMap.get(zone), zoneRouteList);
+			if(zoneRouteList.size() > 0){
+				openRoutes.addAll(zoneRouteList);
+			}
 		}
 		//No zone Plan List
-		constructDispatchModelList(dispatchMapping, noZoneBatchPlanList, Collections.EMPTY_LIST);
+		constructDispatchModelList(dispatchMapping, bullpens, openRoutes);
 		
 	}
 	
@@ -334,13 +339,13 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 		if(routeList != null && p != null) {
 			Iterator<IHandOffBatchRoute> _routeItr = routeList.iterator();
 			while(_routeItr.hasNext()) {
-				IHandOffBatchRoute r = _routeItr.next();
+				IHandOffBatchRoute route = _routeItr.next();
 						
-				if(r.getRouteDispatchTime()!= null && p.getStartTime()!= null){
-					String firstDlvTimeFromRoute = RoutingDateUtil.getServerTime(r.getRouteDispatchTime()) != null ? RoutingDateUtil.getServerTime(r.getRouteDispatchTime()) : "";
+				if(route.getRouteDispatchTime()!= null && p.getStartTime()!= null){
+					String firstDlvTimeFromRoute = RoutingDateUtil.getServerTime(route.getRouteDispatchTime()) != null ? RoutingDateUtil.getServerTime(route.getRouteDispatchTime()) : "";
 					String firstDlvTime = RoutingDateUtil.getServerTime(p.getStartTime());					
 					if(firstDlvTime != null && firstDlvTime.length() > 0 && firstDlvTime.equals(firstDlvTimeFromRoute)) {
-						result = r;						
+						result = route;						
 						_routeItr.remove();
 						break;						
 					}					
