@@ -1,5 +1,7 @@
 <%@ page import="com.freshdirect.fdstore.FDDeliveryManager"%>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
+<%@ page import="com.freshdirect.delivery.DlvZipInfoModel" %>
+<%@ page import='java.util.*' %>
 
 <%@ taglib uri="template" prefix="tmpl" %>
 
@@ -41,7 +43,13 @@ function goToPage(pagePath) {
 	<tr valign="top">
 		<td width="341">
 		<%
-			List zipCodes = FDDeliveryManager.getInstance().getDeliverableZipCodes(EnumServiceType.HOME);
+			List<DlvZipInfoModel> zipCodesUnsorted = FDDeliveryManager.getInstance().getDeliverableZipCodes(EnumServiceType.HOME);
+			TreeMap<String, DlvZipInfoModel> zipCodesSorted = new TreeMap<String, DlvZipInfoModel>();
+			for (DlvZipInfoModel zipInfo : zipCodesUnsorted) {
+				zipCodesSorted.put(zipInfo.getZipCode(), zipInfo);
+			}
+			List<DlvZipInfoModel> zipCodes = new ArrayList<DlvZipInfoModel>(zipCodesSorted.values());
+			
 		%>
 			<%if (zipCodes.size() > 0) {%>
 				<table border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -57,7 +65,13 @@ function goToPage(pagePath) {
 				<%@ include file="/shared/includes/popups/i_deliverable_zips.jspf" %><br>
 			<%}%>
 		<%
-			zipCodes = FDDeliveryManager.getInstance().getDeliverableZipCodes(EnumServiceType.CORPORATE);
+
+			zipCodesUnsorted = FDDeliveryManager.getInstance().getDeliverableZipCodes(EnumServiceType.CORPORATE);
+			zipCodesSorted = new TreeMap<String, DlvZipInfoModel>();
+			for (DlvZipInfoModel zipInfo : zipCodesUnsorted) {
+				zipCodesSorted.put(zipInfo.getZipCode(), zipInfo);
+			}
+			zipCodes = new ArrayList<DlvZipInfoModel>(zipCodesSorted.values());
 		%>
 			<%if (zipCodes.size() > 0) {%>
 				<table border="0" cellpadding="0" cellspacing="0" width="100%">
