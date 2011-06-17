@@ -685,7 +685,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		+ " p.days_fresh, p.days_in_house,p.sustainability_rating  "
 		+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
 		+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id and m.upc = ?"
-		+ " and p.version = (select max(version) from erps.product where sku_code = p.sku_code)";
+		//+ " and p.version = (select max(version) from erps.product where sku_code = p.sku_code)";
+	    + " and m.version = (select max(version) from erps.material where upc = ?)";
 
 	public Collection<ErpProductInfoModel> findProductsByUPC(String upc) {
 		Connection conn = null;
@@ -694,6 +695,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 			PreparedStatement ps = conn.prepareStatement(QUERY_PRODUCTS_BY_UPC);
 			ps.setString(1, upc);
+			ps.setString(2, upc);
 			return queryProductInfoModel(ps);
 
 		} catch (SQLException sqle) {
