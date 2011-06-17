@@ -258,5 +258,8 @@ public interface RequestParamName {
     public static final String  REQ_PARAM_DELETE_PAYMENT_ID = "deletePaymentId";
     
     public static final String  REQ_PARAM_EDIT_PAYMENT_ID = "paymentId";
+    
+    //Alcohol interstitial 
+    public static final String  REQ_PARAM_IS_ALC = "isAlc";
 
 }

@@ -20,8 +20,10 @@ boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnore
 <html>
 <head>
 <title><%= isBestCellars ? "Best Cellars" : "FreshDirect"%></title>
-<script language="javascript" src="/assets/javascript/common_javascript.js"></script>
-<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+
+	<%@ include file="/common/template/includes/metatags.jspf" %>
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 </head>
 <body bgcolor="white" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
 <fd:SiteAccessController action='doPrereg' successPage='<%= successPage %>' result='result' serviceType='<%=serviceType%>'>

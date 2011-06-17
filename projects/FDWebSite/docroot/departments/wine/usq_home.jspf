@@ -26,11 +26,13 @@
 <%@taglib uri="freshdirect" prefix="fd"%>
 <%@taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
 <%
-	if (!user.isHealthWarningAcknowledged()) {
-		String redirectURL1 = "/health_warning.jsp?successPage=/department.jsp" + URLEncoder.encode("?" + request.getQueryString(), "utf-8");
-		response.sendRedirect(response.encodeRedirectURL(redirectURL1));
-		return;
-	}
+	/* REMOVE APPDEV-1539
+		if (!user.isHealthWarningAcknowledged()) {
+			String redirectURL1 = "/health_warning.jsp?successPage=/department.jsp" + URLEncoder.encode("?" + request.getQueryString(), "utf-8");
+			response.sendRedirect(response.encodeRedirectURL(redirectURL1));
+			return;
+		}
+	*/
 %>
 
 <div style="width: 572px; text-align: center; margin: 0px auto;">
@@ -40,12 +42,12 @@
 	EnumWinePrice dfltPrice = EnumWinePrice.TWO;
 	DepartmentModel dept = (DepartmentModel) ContentFactory.getInstance().getContentNode(FDContentTypes.DEPARTMENT, request.getParameter("deptId"));
 	if (dept.getEditorial() != null) {
-%>
-<script type="text/javascript">
-YAHOO.util.Event.onDOMReady(FreshDirect.WineNav.onLoad);
-</script>
-<fd:IncludeHtml html="<%= dept.getEditorial() %>"/>
-<%
+		%>
+		<script type="text/javascript">
+			YAHOO.util.Event.onDOMReady(FreshDirect.WineNav.onLoad);
+		</script>
+		<fd:IncludeHtml html="<%= dept.getEditorial() %>"/>
+		<%
 	}
 	{ // TOP rated multitab carousel
 %>

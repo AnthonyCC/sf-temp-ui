@@ -956,6 +956,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 				 * from Product detail page.
 				 */
 				FDEventUtil.logAddToCartEvent(cartLine, request);
+
 				return 1;
 			}
 			return 0;
@@ -1112,9 +1113,19 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		double origQuantity = originalLine == null ? 0 : originalLine.getQuantity();
 
 		FDUserI user = (FDUserI) pageContext.getSession().getAttribute(USER);
+		FDSessionUser sessionUser = (FDSessionUser)pageContext.getSession().getAttribute(SessionName.USER);
 		String errorMessage = this.validateQuantity(user, prodNode, quantity, origQuantity);
 		if (errorMessage != null) {
 			result.addError(new ActionError(paramQuantity, errorMessage));
+		}
+		
+		/*	APPDEV-1539
+		 * check here for alcohol item
+		 */
+		final String paramIsAlc = "isAlc" + suffix;
+		String isAlc = request.getParameter(paramIsAlc);
+		if ("true".equalsIgnoreCase(isAlc) && !sessionUser.isHealthWarningAcknowledged()) {
+			sessionUser.setHealthWarningAcknowledged(true);
 		}
 
 		FDProduct product;

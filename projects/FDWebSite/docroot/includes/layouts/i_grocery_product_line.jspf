@@ -1,220 +1,213 @@
 <%@page import="com.freshdirect.fdstore.FDProductInfo"%><%@page import="com.freshdirect.fdstore.content.PriceCalculator"%><%@ page import="java.text.NumberFormat" %><%
 {
-    	PriceCalculator priceCalculator = displayProduct.getPriceCalculator(sku);
-    	FDProductInfo productInfo = null;
-    	try {
-    	    productInfo = priceCalculator.getProductInfo();
-    	} catch (FDSkuNotFoundException fdsnf){
-            JspLogger.PRODUCT.warn("Grocery Page: catching FDSkuNotFoundException and Continuing:\n FDProductInfo:="+productInfo+"\nException message:= "+fdsnf.getMessage());
-            throw new JspException("FDProduct not found for available product",fdsnf);
-    	}
-
-    	
-        FDProduct product = null;
-        String salesUnitDescription = "NA";
-        String salesUnitName = "NA";
-        FDSalesUnit[] salesUnits;
-        boolean skuAvailable = !sku.isUnavailable();
-
-        if (skuAvailable) {
-            try {
-                product = priceCalculator.getProduct();
-                salesUnits = product.getSalesUnits();
-                if (salesUnits.length>0) {
-                        salesUnitDescription = salesUnits[0].getDescription();
-                        salesUnitName = salesUnits[0].getName();
-                }
-             } catch (FDSkuNotFoundException fdsnf){
-                JspLogger.PRODUCT.warn("Grocery Page: catching FDSkuNotFoundException and Continuing:\n FDProductInfo:="+productInfo+"\nException message:= "+fdsnf.getMessage());
-                throw new JspException("FDProduct not found for available product",fdsnf);
-            }
-        }
-    String qtyFldName = "quantity_"+itemShownIndex;
-%>
-<TR <%="nutrition".equalsIgnoreCase(sortBy) && skuAvailable && i % 2 ==0 && "false".equalsIgnoreCase(request.getParameter("showThumbnails"))?"bgcolor='#EEEEEE'":""%>>
-<TD WIDTH="40" ALIGN="CENTER"><NOBR>
-	<% if (!skuAvailable) { %><font color="#999999">NA</font><% } %>
-	<INPUT TYPE="<%= skuAvailable ? "text" : "hidden" %>" NAME="<%= qtyFldName %>" SIZE="2" MAXLENGTH="2"  CLASS="text11" value="<%= !skuAvailable ? "" : request.getParameter(qtyFldName) %>"
-    onChange="javascript:chgQty('<%= qtyFldName %>', 0, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>); syncQty('<%= itemShownIndex %>', 'big');">
-
-</NOBR></TD>
-<TD WIDTH="10">
-    <%  if (!skuAvailable) {  %>&nbsp;<%  } else {    %>
-        <A HREF="javascript:chgQty('<%= qtyFldName %>', <%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>); syncQty('<%= itemShownIndex %>', 'big');">
-        <img SRC="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="2" alt="Increase quantity"></A><BR>
-        <A HREF="javascript:chgQty('<%= qtyFldName %>', -<%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>); syncQty('<%= itemShownIndex %>', 'big');">
-        <img SRC="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="2" alt="Decrease quantity"></A>
-    <%  }   %>
-</TD>
-
-<TD WIDTH="10" ALIGN="CENTER" VALIGN="MIDDLE">
-    <img SRC="/media_stat/images/layout/clear.gif" name="bullet<%= itemShownIndex %>" width="6" height="6" border="0" alt="">
-</TD>
-<TD>
-<%
-    String unAvailableFontStart = "";
-    String unAvailableFontEnd = "";
-	//add correct unavailable color for links
-	String unAvailableStyle = "";
-    if (!skuAvailable) {  
-        unAvailableFontStart = "<font color=\"#999999\">";
-        unAvailableFontEnd = "</font>";
-		//set style color
-		unAvailableStyle = " style=\"color:#999;\"";
-    }
-
-    String thisProdBrandLabel = displayProduct.getPrimaryBrandName();
-	List domains = sku.getVariationMatrix();
-	StringBuffer key = new StringBuffer();
-	for(Iterator mi = domains.iterator(); mi.hasNext(); ){
-		DomainValue domainValue = ((DomainValue)mi.next());
-		key.append(domainValue.getLabel());
-		key.append("  ");
-		key.deleteCharAt(key.length()-1);
+	PriceCalculator priceCalculator = displayProduct.getPriceCalculator(sku);
+	FDProductInfo productInfo = null;
+	try {
+		productInfo = priceCalculator.getProductInfo();
+	} catch (FDSkuNotFoundException fdsnf) {
+		JspLogger.PRODUCT.warn("Grocery Page: catching FDSkuNotFoundException and Continuing:\n FDProductInfo:="+productInfo+"\nException message:= "+fdsnf.getMessage());
+		throw new JspException("FDProduct not found for available product",fdsnf);
 	}
-	String prodMatrix= (key.length()>0 ? ", " + key.toString() : "");
 
-    String productURL = response.encodeURL("/category.jsp?catId=" + currentFolder
-        + buildOtherParams(showThumbnails, itemsToDisplay, -1, brandValue, sortBy, nutriName, request, null)
-                + "&sortDescending=" + descending
-                + "&disp=" + display
-        + "&prodCatId=" + displayProduct.getParentNode()
-        + "&productId=" + displayProduct +"&skuCode="+sku.getSkuCode()+"&trk=trans");
+	FDProduct product = null;
+	String salesUnitDescription = "NA";
+	String salesUnitName = "NA";
+	FDSalesUnit[] salesUnits;
+	boolean skuAvailable = !sku.isUnavailable();
 
+	if (skuAvailable) {
+		try {
+			product = priceCalculator.getProduct();
+			salesUnits = product.getSalesUnits();
+			
+			if (salesUnits.length>0) {
+				salesUnitDescription = salesUnits[0].getDescription();
+				salesUnitName = salesUnits[0].getName();
+			}
+		} catch (FDSkuNotFoundException fdsnf){
+			JspLogger.PRODUCT.warn("Grocery Page: catching FDSkuNotFoundException and Continuing:\n FDProductInfo:="+productInfo+"\nException message:= "+fdsnf.getMessage());
+			throw new JspException("FDProduct not found for available product",fdsnf);
+		}
+	}
+	String qtyFldName = "quantity_"+itemShownIndex;
+	boolean isAlc = false;
+	String alcRest = "";
+	if (product != null) {
+		isAlc = product.isAlcohol();
+	}
 %>
-    <%= unAvailableFontStart %>
-		<A HREF="javascript:selectProduct('<%= productURL %>', '<%= qtyFldName %>')"<%=unAvailableStyle%>>
-    <FONT CLASS="text10bold"><%= unAvailableFontStart %><%= thisProdBrandLabel %><%= unAvailableFontEnd %></FONT>
-    <FONT CLASS="text10"><%= unAvailableFontStart %><%= displayProduct.getFullName().substring(thisProdBrandLabel.length()).trim()+prodMatrix %><%= unAvailableFontEnd %></FONT>
-    </A>
-    <%= unAvailableFontStart %> <NOBR><%= !"nm".equalsIgnoreCase(salesUnitDescription) ? "- " + salesUnitDescription  : "" %><%= unAvailableFontEnd %><%="nutrition".equalsIgnoreCase(sortBy)?"&nbsp;<b>" + JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) + "</b>":"" %></NOBR>
-<%
-    Date earliestDate = sku.getEarliestAvailability();
-    Calendar testDate = new GregorianCalendar();
-    testDate.add(Calendar.DATE, 1);
-    // cheat: if no availability indication, show the horizon as the
-    //        earliest availability
-    if (earliestDate == null) {
-        earliestDate = DateUtil.addDays(DateUtil.truncate(new Date()),
-                                        ErpServicesProperties.getHorizonDays());
-    }
-    if(skuAvailable && QuickDateFormat.SHORT_DATE_FORMATTER.format(testDate.getTime()).compareTo(QuickDateFormat.SHORT_DATE_FORMATTER.format(earliestDate)) < 0){
-        SimpleDateFormat sf = new SimpleDateFormat("MM/dd");
-        %><b><font color="#999999">Earliest Delivery - <%= sf.format(earliestDate) %></font></b><%
-    }
-%>
-<%  if (skuAvailable) {
-    ProductImpression p = new ProductImpression(displayProduct);
-    
-    %>&nbsp;&nbsp;<table>
-			<tr><td>
-			<display:ProductPrice impression="<%= p %>"  showScalePricing="false" showRegularPrice="false" showWasPrice="true" showDescription="false"/> 
-			</td>
-			<td><display:ProductPrice impression="<%= p %>"  showScalePricing="true" showRegularPrice="false" showWasPrice="false" showDescription="false"/>
-			</td></tr></table> 
-<% } %>
-</TD>
+<tr <%="nutrition".equalsIgnoreCase(sortBy) && skuAvailable && i % 2 ==0 && "false".equalsIgnoreCase(request.getParameter("showThumbnails"))?"bgcolor='#EEEEEE'":""%>>
+	<td width="40" align="center"><nobr>
+		<% if (!skuAvailable) { %><font color="#999999">NA</font><% } %>
+		<input type="<%= skuAvailable ? "text" : "hidden" %>" name="<%= qtyFldName %>" size="2" maxlength="2"  class="text11" value="<%= !skuAvailable ? "" : request.getParameter(qtyFldName) %>"
+		onChange="javascript:chgQty('<%= qtyFldName %>', 0, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>); syncQty('<%= itemShownIndex %>', 'big');">
+	</nobr></td>
+	<td width="10">
+		<%  if (!skuAvailable) { 
+			%>&nbsp;<% 
+		} else { %>
+			<a href="javascript:chgQty('<%= qtyFldName %>', <%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>); syncQty('<%= itemShownIndex %>', 'big');">
+			<img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="2" alt="Increase quantity" /></a><br />
+			<A HREF="javascript:chgQty('<%= qtyFldName %>', -<%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>); syncQty('<%= itemShownIndex %>', 'big');"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="2" alt="Decrease quantity" /></a>
+		<% } %>
+	</td>
+	<td width="10" align="center" valign="middle">
+		<img src="/media_stat/images/layout/clear.gif" name="bullet<%= itemShownIndex %>" width="6" height="6" border="0" alt="" />
+	</td>
+	<TD>
+	<%
+		String unAvailableFontStart = "";
+		String unAvailableFontEnd = "";
+		//add correct unavailable color for links
+		String unAvailableStyle = "";
+		if (!skuAvailable) {  
+			unAvailableFontStart = "<font color=\"#999999\">";
+			unAvailableFontEnd = "</font>";
+			//set style color
+			unAvailableStyle = " style=\"color:#999;\"";
+		}
+
+		String thisProdBrandLabel = displayProduct.getPrimaryBrandName();
+		List domains = sku.getVariationMatrix();
+		StringBuffer key = new StringBuffer();
+		for(Iterator mi = domains.iterator(); mi.hasNext(); ){
+			DomainValue domainValue = ((DomainValue)mi.next());
+			key.append(domainValue.getLabel());
+			key.append("  ");
+			key.deleteCharAt(key.length()-1);
+		}
+		String prodMatrix= (key.length()>0 ? ", " + key.toString() : "");
+
+		String productURL = response.encodeURL("/category.jsp?catId=" + currentFolder
+			+ buildOtherParams(showThumbnails, itemsToDisplay, -1, brandValue, sortBy, nutriName, request, null)
+			+ "&sortDescending=" + descending
+			+ "&disp=" + display
+			+ "&prodCatId=" + displayProduct.getParentNode()
+			+ "&productId=" + displayProduct +"&skuCode="+sku.getSkuCode()+"&trk=trans");
+
+	%>
+	<%= unAvailableFontStart %>
+	<a href="javascript:selectProduct('<%= productURL %>', '<%= qtyFldName %>')"<%=unAvailableStyle%>>
+	<font class="text10bold"><%= unAvailableFontStart %><%= thisProdBrandLabel %><%= unAvailableFontEnd %></font>
+	<font class="text10"><%= unAvailableFontStart %><%= displayProduct.getFullName().substring(thisProdBrandLabel.length()).trim()+prodMatrix %><%= unAvailableFontEnd %></font>
+	</a>
+	<%= unAvailableFontStart %> <nobr><%= !"nm".equalsIgnoreCase(salesUnitDescription) ? "- " + salesUnitDescription  : "" %><%= unAvailableFontEnd %><%="nutrition".equalsIgnoreCase(sortBy)?"&nbsp;<b>" + JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) + "</b>":"" %></nobr>
+
+	<%
+		Date earliestDate = sku.getEarliestAvailability();
+		Calendar testDate = new GregorianCalendar();
+		testDate.add(Calendar.DATE, 1);
+		// cheat: if no availability indication, show the horizon as the
+		//        earliest availability
+		if (earliestDate == null) {
+			earliestDate = DateUtil.addDays(DateUtil.truncate(new Date()),
+											ErpServicesProperties.getHorizonDays());
+		}
+		if(skuAvailable && QuickDateFormat.SHORT_DATE_FORMATTER.format(testDate.getTime()).compareTo(QuickDateFormat.SHORT_DATE_FORMATTER.format(earliestDate)) < 0){
+			SimpleDateFormat sf = new SimpleDateFormat("MM/dd");
+			%><b><font color="#999999">Earliest Delivery - <%= sf.format(earliestDate) %></font></b><%
+		}
+	%>
+	<%  if (skuAvailable) {
+			ProductImpression p = new ProductImpression(displayProduct);
+		
+			%>&nbsp;&nbsp;<table>
+				<tr><td><display:ProductPrice impression="<%= p %>"  showScalePricing="false" showRegularPrice="false" showWasPrice="true" showDescription="false"/></td>
+				<td><display:ProductPrice impression="<%= p %>"  showScalePricing="true" showRegularPrice="false" showWasPrice="false" showDescription="false"/></td></tr>
+			</table>
+	<% } %>
+</td>
 <% if ("kosher".equalsIgnoreCase(sortBy)) { %>
-    <td width="44" align="center">
-    <%
-
-   String kosherSymbol= "";
-   String kosherType = "";
-   if (product!=null) {
-       kosherSymbol = priceCalculator.getKosherSymbol();
-		/** get the kosher type **/
-		kosherType = priceCalculator.getKosherType();
-	}
+	<td width="44" align="center">
+	<%
+		String kosherSymbol= "";
+		String kosherType = "";
+		if (product!=null) {
+			kosherSymbol = priceCalculator.getKosherSymbol();
+			/** get the kosher type **/
+			kosherType = priceCalculator.getKosherType();
+		}
 	
-    if (!"".equalsIgnoreCase(kosherSymbol) && kosherSymbol != null) {
-        if (!"".equalsIgnoreCase(kosherType) && kosherType != null) {
-            kosherType = kosherType.charAt(0) + kosherType.substring(1,kosherType.length()).toLowerCase();
-        }
-    %>
-    <a href="javascript:popup('/shared/popup.jsp?attrib=KOSHER&spec=<%=kosherSymbol.toLowerCase()%>&tmpl=small','small')"><img src="/media/editorial/kosher/symbols/<%=kosherSymbol.toLowerCase()%>_s.gif" width="20" height="20" alt="<%= kosherType %>" border="0"></a>
-    <% } %></td>
+		if (!"".equalsIgnoreCase(kosherSymbol) && kosherSymbol != null) {
+			if (!"".equalsIgnoreCase(kosherType) && kosherType != null) {
+				kosherType = kosherType.charAt(0) + kosherType.substring(1,kosherType.length()).toLowerCase();
+			}
+		%>
+		<a href="javascript:popup('/shared/popup.jsp?attrib=KOSHER&spec=<%=kosherSymbol.toLowerCase()%>&tmpl=small','small')"><img src="/media/editorial/kosher/symbols/<%=kosherSymbol.toLowerCase()%>_s.gif" width="20" height="20" alt="<%= kosherType %>" border="0"></a>
+		<% } %>
+	</td>
 <% } %>
 <% if("nutrition".equalsIgnoreCase(sortBy)) { %>
-        
-        <%if(product != null){
-            
-            String meshColor      = "false".equalsIgnoreCase(request.getParameter("showThumbnails"))?"#E0E3D0":"#EBECE4";
-            String highLightColor = "#EBECE4";
-            if(i%2 == 0){ 
-                highLightColor = meshColor;
-            }
-            NumberFormat nf = NumberFormat.getNumberInstance();
-            String servingSizeDisplay = "no<br>data";
-            String totalCaloriesDisplay = "no<br>data";
-            String displayAttributeDisplay = "no<br>data";
-            for(Iterator x = product.getNutrition().iterator();x.hasNext();){
-                FDNutrition fdNut = (FDNutrition)x.next();
-                String nutName = fdNut.getName();
-                
-                if(nutName.equalsIgnoreCase(ErpNutritionType.getType(ErpNutritionType.SERVING_SIZE).getDisplayName())){
-                    if(fdNut.getValue() == 0)
-                        break;
-                    servingSizeDisplay = nf.format(fdNut.getValue()) + " " + fdNut.getUnitOfMeasure() + "<br>";
-                }else if(nutName.equalsIgnoreCase(ErpNutritionType.getType(ErpNutritionType.SERVING_WEIGHT).getDisplayName())){
-                    servingSizeDisplay = servingSizeDisplay + "(" + nf.format(fdNut.getValue()) + "g)";
-                }else if(nutName.equalsIgnoreCase(ErpNutritionType.getType(ErpNutritionType.TOTAL_CALORIES).getDisplayName())){
-                    totalCaloriesDisplay = nf.format(fdNut.getValue()) + " " + fdNut.getUnitOfMeasure();
-                }else if(nutName.equalsIgnoreCase(ErpNutritionType.getType(display).getDisplayName())){
-                    displayAttributeDisplay = (fdNut.getValue() < 0 ? "<1":nf.format(fdNut.getValue())) + ("%".equals(fdNut.getUnitOfMeasure())?"":" ") + fdNut.getUnitOfMeasure();
-                }
-            }
-            %>
-                    <td align="center" class="text9" height="40"<%=ErpNutritionType.getType(ErpNutritionType.SERVING_SIZE).getName().equals(nutriName)?"bgcolor='" + highLightColor + "'":""%>><%=servingSizeDisplay%></td>
-                    <td align="center" class="text9"<%=ErpNutritionType.getType(ErpNutritionType.TOTAL_CALORIES).getName().equals(nutriName)?"bgcolor='" + highLightColor + "'":""%>><%=totalCaloriesDisplay%></td>
-                    <%if(!ErpNutritionType.getType(ErpNutritionType.SERVING_SIZE).getName().equals(display) && 
-                         !ErpNutritionType.getType(ErpNutritionType.TOTAL_CALORIES).getName().equals(display)){%>
-                    <td align="center" class="text9"<%=display.equals(nutriName)?"bgcolor='" + highLightColor + "'":""%>><%=displayAttributeDisplay%></td>
-                    <%}%>
-        
-<%      }
-  } else{%>
-        
-    <%  if (!skuAvailable) {  %>
-    <td colspan="3" width="85" align="center"><font color="#999999"><%=(productInfo.isOutOfSeason()?"Out&nbsp;of&nbsp;Season": "Not&nbsp;Available")%></font>
-    <%  } else if(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale()) {    %>
-    <TD WIDTH="55" ALIGN="RIGHT">&nbsp;<font  class="groceryProductLinePrice" style="COLOR: #c00"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %>&nbsp;</font>
-    
-    </TD>
-<%
-    } else { %>
-    <TD WIDTH="55" ALIGN="RIGHT">&nbsp;<font class="groceryProductLinePrice"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %>&nbsp;</font>
-    <%}
-}
-%>
-<fd:CCLCheck>
-<TD ALIGN="CENTER">
-<%   if (skuAvailable) { 
-        String sideBarIndex = "ccl_sidebar_" + itemShownIndex;
-%>
-     <a href="/unsupported.jsp"
-            onclick="return CCL.save_items('grocery_form',this,'action=CCL:AddMultipleToList&source=<%=sideBarIndex%>')"><img src="/media_stat/images/buttons/icon_list_save.gif" alt="Add this item to a list" border="0"></a>
-<%   } %>
-</TD>
-</fd:CCLCheck>
-<TD ALIGN="CENTER">
-    <input type="hidden" name="salesUnit_<%= itemShownIndex %>" value="<%= salesUnitName %>">
-    <input type="hidden" name="skuCode_<%= itemShownIndex %>" value="<%= sku.getSkuCode() %>">
-    <input type="hidden" name="catId_<%= itemShownIndex %>" value="<%= displayProduct.getParentNode() %>">
-    <input type="hidden" name="productId_<%= itemShownIndex %>" value="<%= displayProduct %>">
-    <% if (sku.getSkuCode().equals(syncProdSkuCode)) { %>
-	<%= FDURLUtil.getHiddenCommonParameters(request.getParameterMap(), "_" + itemShownIndex) %>
-    <% } else { %>
-    <input type="hidden" name="trk_<%= itemShownIndex %>" value="<%= request.getParameter("trk") %>">
-    <% } %>
-<%  if(skuAvailable) {  %>
-    <input type="image" name="addSingleToCart_<%= itemShownIndex %>" src="/media_stat/images/buttons/grocery_addtocart.gif" border="0" alt="Add this item to your cart">
-<%  }   %>
+		<%
+			if(product != null){
+			
+				String meshColor      = "false".equalsIgnoreCase(request.getParameter("showThumbnails"))?"#E0E3D0":"#EBECE4";
+				String highLightColor = "#EBECE4";
+				if(i%2 == 0){ 
+					highLightColor = meshColor;
+				}
+				NumberFormat nf = NumberFormat.getNumberInstance();
+				String servingSizeDisplay = "no<br>data";
+				String totalCaloriesDisplay = "no<br>data";
+				String displayAttributeDisplay = "no<br>data";
+				for (Iterator x = product.getNutrition().iterator(); x.hasNext();) {
+					FDNutrition fdNut = (FDNutrition)x.next();
+					String nutName = fdNut.getName();
+					
+					if(nutName.equalsIgnoreCase(ErpNutritionType.getType(ErpNutritionType.SERVING_SIZE).getDisplayName())){
+						if(fdNut.getValue() == 0)
+							break;
+						servingSizeDisplay = nf.format(fdNut.getValue()) + " " + fdNut.getUnitOfMeasure() + "<br>";
+					}else if(nutName.equalsIgnoreCase(ErpNutritionType.getType(ErpNutritionType.SERVING_WEIGHT).getDisplayName())){
+						servingSizeDisplay = servingSizeDisplay + "(" + nf.format(fdNut.getValue()) + "g)";
+					}else if(nutName.equalsIgnoreCase(ErpNutritionType.getType(ErpNutritionType.TOTAL_CALORIES).getDisplayName())){
+						totalCaloriesDisplay = nf.format(fdNut.getValue()) + " " + fdNut.getUnitOfMeasure();
+					}else if(nutName.equalsIgnoreCase(ErpNutritionType.getType(display).getDisplayName())){
+						displayAttributeDisplay = (fdNut.getValue() < 0 ? "<1":nf.format(fdNut.getValue())) + ("%".equals(fdNut.getUnitOfMeasure())?"":" ") + fdNut.getUnitOfMeasure();
+					}
+				}
+				%>
+				<td align="center" class="text9" height="40"<%=ErpNutritionType.getType(ErpNutritionType.SERVING_SIZE).getName().equals(nutriName)?"bgcolor='" + highLightColor + "'":""%>><%=servingSizeDisplay%></td>
+				<td align="center" class="text9"<%=ErpNutritionType.getType(ErpNutritionType.TOTAL_CALORIES).getName().equals(nutriName)?"bgcolor='" + highLightColor + "'":""%>><%=totalCaloriesDisplay%></td>
+				<% if(!ErpNutritionType.getType(ErpNutritionType.SERVING_SIZE).getName().equals(display) && 
+						!ErpNutritionType.getType(ErpNutritionType.TOTAL_CALORIES).getName().equals(display)) { %>
+						<td align="center" class="text9"<%=display.equals(nutriName)?"bgcolor='" + highLightColor + "'":""%>><%=displayAttributeDisplay%></td>
+				<% } %>
+		
+			<% }
+} else { %>
 
-</TD>
-<%
-
-}
-
-%>
-</TR>
-
+	<% if (!skuAvailable) { %>
+		<td colspan="3" width="85" align="center"><font color="#999999"><%=(productInfo.isOutOfSeason()?"Out&nbsp;of&nbsp;Season": "Not&nbsp;Available")%></font>
+	<% } else if (productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale()) { %>
+		<td width="55" align="right">&nbsp;<font class="groceryProductLinePrice" style="color: #c00;"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %>&nbsp;</font></td>
+	<% } else { %>
+		<td width="55" align="right">&nbsp;<font class="groceryProductLinePrice"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %>&nbsp;</font>
+	<% }
+} %>
+	<fd:CCLCheck>
+		<td align="center">
+			<% if (skuAvailable) { 
+				String sideBarIndex = "ccl_sidebar_" + itemShownIndex;
+			%>
+				<a href="/unsupported.jsp" onclick="return CCL.save_items('grocery_form',this,'action=CCL:AddMultipleToList&source=<%=sideBarIndex%>')"><img src="/media_stat/images/buttons/icon_list_save.gif" alt="Add this item to a list" border="0" /></a>
+			<% } %>
+		</td>
+	</fd:CCLCheck>
+	<td align="center">
+		<input type="hidden" name="salesUnit_<%= itemShownIndex %>" value="<%= salesUnitName %>" />
+		<input type="hidden" name="skuCode_<%= itemShownIndex %>" value="<%= sku.getSkuCode() %>" />
+		<input type="hidden" name="catId_<%= itemShownIndex %>" value="<%= displayProduct.getParentNode() %>" />
+		<input type="hidden" name="productId_<%= itemShownIndex %>" value="<%= displayProduct %>" />
+		<input type="hidden" name="isAlc_<%= itemShownIndex %>" value="<%= isAlc %>" />
+		<% if (sku.getSkuCode().equals(syncProdSkuCode)) { %>
+			<%= FDURLUtil.getHiddenCommonParameters(request.getParameterMap(), "_" + itemShownIndex) %>
+		<% } else { %>
+			<input type="hidden" name="trk_<%= itemShownIndex %>" value="<%= request.getParameter("trk") %>" />
+		<% } %>
+		<% if (skuAvailable) { %>
+			<input type="image" name="addSingleToCart_<%= itemShownIndex %>" src="/media_stat/images/buttons/grocery_addtocart.gif" border="0" alt="Add this item to your cart">
+		<% } %>
+	</td>
+<% } %>
+</tr>

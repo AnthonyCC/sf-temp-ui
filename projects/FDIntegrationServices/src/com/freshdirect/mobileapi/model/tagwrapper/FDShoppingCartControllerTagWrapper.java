@@ -85,6 +85,7 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         addRequestValue(REQ_PARAM_WINE_CATEGORY_ID, productConfiguration.getCategoryId());
         addRequestValue(REQ_PARAM_QUANTITY, productConfiguration.getQuantity());
         addRequestValue(REQ_PARAM_SALES_UNIT, productConfiguration.getSalesUnit().getName());
+        addRequestValue(REQ_PARAM_IS_ALC, productConfiguration.getIsAlc());
         addRequestValue(REQ_PARAM_REQUEST_NOTIFICATION, cartLine.isRequestNotification());
 
         //Add all the configuration options
@@ -170,6 +171,7 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         addRequestValue(REQ_PARAM_SALES_UNIT, productConfiguration.getSalesUnit().getName());
         addRequestValue(REQ_PARAM_CONSENTED, null); //Looks like this isn't being "set" anywhere. 
         addRequestValue(REQ_PARAM_AGREE_TO_TERMS, addItemToCart.getAgreeToTerms()); //
+        addRequestValue(REQ_PARAM_IS_ALC, productConfiguration.getIsAlc());
         addRequestValue(REQ_PARAM_RECIPE_ID, addItemToCart.getRecipeId());
 
         //Pass all smart store configuration values:
@@ -244,6 +246,7 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
             addRequestValue(REQ_PARAM_WINE_CATEGORY_ID + "_" + idx, pc.getCategoryId());
             addRequestValue(REQ_PARAM_PRODUCT_ID + "_" + idx, pc.getProductId());
             addRequestValue(REQ_PARAM_QUANTITY + "_" + idx, pc.getQuantity());
+            addRequestValue(REQ_PARAM_IS_ALC + "_" + idx, pc.getIsAlc());
             if (pc.getSalesUnit() != null) {
                 addRequestValue(REQ_PARAM_SALES_UNIT + "_" + idx, pc.getSalesUnit().getName());
 

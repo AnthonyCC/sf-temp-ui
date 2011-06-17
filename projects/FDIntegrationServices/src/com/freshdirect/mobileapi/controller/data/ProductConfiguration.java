@@ -46,6 +46,19 @@ public class ProductConfiguration {
     private Sku sku;
 
     private float quantity;
+    
+    private String isAlc;
+
+    public void setIsAlc(String isAlc) {
+        this.isAlc = isAlc;
+    }
+    
+    public String getIsAlc() {
+    	if ("".equals(this.isAlc)) {
+    		return "false";
+    	}
+        return this.isAlc;
+    }
 
     public String getConfigurationDescription() {
         return configurationDescription;

@@ -804,3 +804,364 @@ function getFrameHeight(frameId) {
 
 	return innerDoc.body.parentNode.scrollHeight;
 }
+
+/* limit text in input fields */
+function limitText(elem, len) {
+	if (elem.value.length >= len) { elem.value = (elem.value).substring(0,len); }
+}
+
+var alcoholSubmitForm = null;
+/* alcohol warning interstitial overlay */
+function alcoholWarning(eventObj, form, hasAgreed) {
+	if (hasAgreed) {
+		return true; //already acknowledged
+	}
+	//check and see if add to cart needs to show dislaimer
+	var jsNamespace = null;
+	var jsNamespaceVal = '';
+	if (form['jsnamespace'] && form['jsnamespace'][0]) { //addToCartMulti
+		//everything in form should be in the same namespace
+		jsNamespaceVal = form['jsnamespace'][0].value;
+	}else if (form['jsnamespace']) { //addToCartSingle
+		jsNamespaceVal = form['jsnamespace'].value;
+	}
+	jsNamespace = getJSNamespace(jsNamespaceVal);
+	if (jsNamespace === null || jsNamespace === 'undefined') { return true; } //no name space found
+	
+	//only interrupt if we need to
+	if (jsNamespace.alcohol.addToCartContainsAlcohol()) {
+		eventObj.stop(); //stop form submission
+		alcoholSubmitForm = form.id; //set formId to submit on agree
+		
+		//display modalbox
+		var mediaURL = '/health_warning.jsp?alcRestTypes='+jsNamespace.alcohol.addToCartAlcoholRestrictionsUnique();
+
+		//make this quickbuy capable (of override)
+		var contextMB = Modalbox;
+		var contextMBoverlay = $('MB_overlay');
+		var contextMBwindow = $('MB_window');
+
+		if (window.parent.document.quickbuyPanel) {
+			contextMB = window.parent['Modalbox'];
+		}
+
+		contextMB.show(mediaURL, {
+			loadingString: 'Loading Preview...',
+			closeValue: ' ',
+			closeString: 'Close Preview',
+			title: '',
+			overlayOpacity: .85,
+			overlayClose: true,
+			//width: 320,
+			transitions: false,
+			autoFocusing: false,
+			centered: true,
+			afterLoad: function() {
+				if (window.parent.document.quickbuyPanel) {
+					contextMB = window.parent['Modalbox'];
+					contextMBoverlay = window.parent.Modalbox.MBoverlay;
+					contextMBwindow = window.parent.Modalbox.MBwindow;
+				}else{
+					contextMBoverlay = Modalbox.MBoverlay;
+					contextMBwindow = Modalbox.MBwindow;
+				}
+				contextMBoverlay.style.backgroundColor = '#000';
+				contextMBwindow.style.left = parseInt((contextMBoverlay.clientWidth-contextMBwindow.clientWidth)/2)+'px';
+			},
+			afterHide: function() {
+				window.scrollTo(contextMB.initScrollX, contextMB.initScrollY);
+			}
+		});
+
+		return false;
+	}
+	//all else fails, return normal
+	return true;
+}
+
+var hasAgreedToAlcoholDisclaimer = false; //default
+if (Event.observe) { //make sure prototype is on page
+	Event.observe(window, 'load', function() {
+		//we only need to do this if user has not agreed to disclaimer already
+		if (!hasAgreedToAlcoholDisclaimer) {
+			$A(document.forms).each(function (f) {
+				//check for form id
+				var fId = '';
+				
+				try {
+					fId = f.identify();
+				} catch (e) {
+					/* keep IE7 from failing */
+				}
+
+				var jsNamespace = null;
+
+				if (f.jsnamespace && f.jsnamespace[0]) {
+					jsNamespace = getJSNamespace(f.jsnamespace[0].value);
+				}else if (f.jsnamespace) {
+					jsNamespace = getJSNamespace(f.jsnamespace.value);
+				}else{
+					jsNamespace = getJSNamespace();
+				}
+				
+				if (jsNamespace !== null) {
+					if (jsNamespace.pricings) {
+						//for each pricing, reset the qty
+						for (var i = 0; i < jsNamespace.pricings.length; i++) {
+							//check qty input (if existing)
+							var qtyName = 'quantity_'+i;
+							if (f[qtyName] && f[qtyName].value !== '') {
+								jsNamespace.pricings[i].setQuantity(f[qtyName].value);
+							}else if (f[qtyName]) {
+								jsNamespace.pricings[i].setQuantity(0);
+							}
+						}
+					}else if (jsNamespace.pricing) {
+						var qtyNameBig = 'quantity_big';
+						if (f[qtyNameBig] && f[qtyNameBig].value !== '') {
+							jsNamespace.pricing.setQuantity(f[qtyNameBig].value);
+						}else{
+							var qtyName = 'quantity';
+							if (f[qtyName] && f[qtyName].value !== '') {
+								jsNamespace.pricing.setQuantity(f[qtyName].value);
+							}else{
+								jsNamespace.pricing.setQuantity(0);
+							}
+						}
+					}
+
+					$A(f.getInputs('image')).each(function (fb) {
+						//here, check if add to cart by button names
+						if (fb.name === 'add_to_cart' || fb.name === 'addMultipleToCart' || fb.name.indexOf('addSingleToCart') === 0) {
+							//attach event
+							f.observe('submit', alcoholWarning.bindAsEventListener(f, f, hasAgreedToAlcoholDisclaimer));
+							top.alcoholSubmitForm = f.id; //mark form as the form being observed
+							throw $break; //only add one observer
+						}
+					});
+				}
+			});
+			
+		}
+	});
+}
+
+/* Submit Alcohol form (find it's location, if necessary) */
+function submitAlcoholForm() {
+	var alcoholSubmitFormTemp = top.alcoholSubmitForm;
+	var frameLen = 0;
+	if (window.frames.length > 0) {
+		frameLen = window.frames.length-1;
+	}
+
+	if (alcoholSubmitFormTemp === null) {
+		//we have no form to try to submit
+		return;
+	}
+
+	if (document.forms[alcoholSubmitFormTemp]) {
+		document.forms[alcoholSubmitFormTemp].submit();
+	} else if (window.frames[frameLen].document.forms[alcoholSubmitFormTemp]) {
+		window.frames[frameLen].document.forms[alcoholSubmitFormTemp].submit();
+		//clear alcohol form (in case there's a different form on the page to be used)
+		top.alcoholSubmitForm = null;
+	}
+}
+
+function getJSNamespace(jsNamespaceStr) {
+	var jsNamespace = jsNamespaceStr;
+	var jsNdoc = false;
+
+	//if jsNamespace starts 'document', strip it off
+	if (typeof(jsNamespace) === 'string' && jsNamespace.toLowerCase().indexOf('document.') === 0) {
+		jsNamespace = jsNamespace.substr(9);
+		jsNdoc = true;
+	}
+	
+	if (jsNdoc) {
+		//document level
+		if (typeof(document[jsNamespace]) === 'object' && typeof(document[jsNamespace].pricings) === 'object') {
+			return jsNamespace = document[jsNamespace];
+		}else if (typeof(document.pricings) === 'object' || typeof(document.pricing) === 'object') { //no namespace? try window then...
+			return jsNamespace = document;
+		}else{ //no pricing?
+			return null;
+		}
+	}else{
+		//window level
+		if (typeof(window[jsNamespace]) === 'object' && typeof(window[jsNamespace].pricings) === 'object') {
+			return jsNamespace = window[jsNamespace];
+		}else if (typeof(window.pricings) === 'object' || typeof(window.pricing) === 'object') { //no namespace? try window then...
+			return jsNamespace = window;
+		}else{ //no pricing?
+			return null;
+		}
+	}
+}
+
+/* Add in alcohol helper methods to js name space
+ *	pass in a js name space (or empty string will use window)
+ *	check if it exists, if it has alcohol info, and needs to have helper methods added
+ */
+function addAlcoholHelpers(jsNamespace) {
+	jsNamespace = getJSNamespace(jsNamespace);
+	if (jsNamespace == null) { return; }
+
+	if (jsNamespace.alcohol) {
+		if (!jsNamespace.alcohol.nsContainsAlcohol) {
+			//helper for any item containing alcohol in namespace
+			jsNamespace.alcohol.nsContainsAlcohol = function() {
+				for (var obj in jsNamespace.alcohol) {
+					if (jsNamespace.alcohol.hasOwnProperty(obj)) {
+						if (jsNamespace.alcohol[obj].isAlc) { return true };
+					}
+				}
+				return false;
+			}
+		}
+		if (!jsNamespace.alcohol.nsAlcoholRestrictions) {
+			//helper to get alcohol restrictions in namespace
+			//returns all rest codes, incl empties, even if isAlc == false.
+			//returns as comma seperated string
+			jsNamespace.alcohol.nsAlcoholRestrictions = function() {
+				var alcRests = [];
+				for (var obj in jsNamespace.alcohol) {
+					if (jsNamespace.alcohol.hasOwnProperty(obj)) {
+						alcRests[alcRests.length] = jsNamespace.alcohol[obj].alcRest;
+					}
+				}
+				return alcRests.join(',');
+			}
+		}
+		if (!jsNamespace.alcohol.skuIsAlcohol) {
+			//helper for specific item containing alcohol
+			jsNamespace.alcohol.skuIsAlcohol = function(sku) {
+				if (jsNamespace.alcohol[sku] && jsNamespace.alcohol[sku].isAlc) {
+					return true;
+				}
+				return false;
+			}
+		}
+		if (!jsNamespace.alcohol.addToCartContainsAlcohol) {
+			//helper to check if current add to cart contains an alcohol item
+			jsNamespace.alcohol.addToCartContainsAlcohol = function() {
+				//loop through pricing object and check vs qty
+				if (jsNamespace.pricings) {
+					for (var i = 0; i<jsNamespace.pricings.length; i++) {
+						if (jsNamespace.pricings[i] == 'undefined') { continue; }
+						//check quantity
+						if (jsNamespace.pricings[i].quantity > 0) {
+							//found qty, check alc
+							var sku = jsNamespace.pricings[i].selectedSku;
+							if (jsNamespace.alcohol.skuIsAlcohol(sku)) {
+								return true;
+							}
+						}
+					}
+				}else if (jsNamespace.pricing) {
+					//single pricing object
+					if (jsNamespace.pricing.selectedSku === '') {
+						//not using the pricing object? This happens when total isn't used.
+						//ok, so do it the hard way and try the form itself...
+						if (jsNamespace.alcohol.addToCartContainsAlcoholCheckForm()) {
+							return true;
+						}
+					} else if (jsNamespace.pricing.quantity > 0) {
+						var sku = jsNamespace.pricing.selectedSku;
+						if (jsNamespace.alcohol.skuIsAlcohol(sku)) {
+							return true;
+						}
+					}
+				}
+				return false;
+			}
+		}
+		if (!jsNamespace.alcohol.addToCartContainsAlcoholCheckForm) {
+			//helper to check if current add to cart contains an alcohol item
+			//this checks the actual form instead of the pricing object
+			jsNamespace.alcohol.addToCartContainsAlcoholCheckForm = function() {
+				if (alcoholSubmitForm === null || !document.forms[alcoholSubmitForm]) {
+					return false;
+				}
+				var itemCount = 0;
+				var checkForm = document.forms[alcoholSubmitForm];
+				if (checkForm.itemCount) {
+					itemCount = parseInt(checkForm.itemCount.value);
+					if (isNaN(itemCount)) {
+						itemCount = 0;
+					}
+				}
+				var returnVal = false;
+				if (itemCount > 0) {
+					$R(0, itemCount, true).each(function (value) {
+						var qtyFieldName = 'quantity_'+value;
+						var skuCodeFieldName = 'skuCode_'+value;
+						if (checkForm[qtyFieldName] && checkForm[skuCodeFieldName]) {
+							var qtyInt = parseInt(checkForm[qtyFieldName].value);
+							var sku = checkForm[skuCodeFieldName].value;
+							if (!isNaN(qtyInt) && qtyInt > 0 && sku) {
+								if (jsNamespace.alcohol.skuIsAlcohol(sku)) {
+									returnVal = true;
+									throw $break; //found alcohol, break out
+								}
+							}
+						}
+					});
+				}
+				return returnVal;
+			}
+		}
+		if (!jsNamespace.alcohol.addToCartAlcoholRestrictions) {
+			//helper to get alcohol restrictions for add to cart items
+			//only returns actual rest codes, no empties, and only if isAlc == true.
+			//returns as comma seperated string
+			jsNamespace.alcohol.addToCartAlcoholRestrictions = function() {
+				var alcRests = [];
+				//loop through pricing object and check vs qty
+				if (jsNamespace.pricings) {
+					for (var i = 0; i<jsNamespace.pricings.length; i++) {
+						if (jsNamespace.pricings[i] == 'undefined') { continue; }
+						//check quantity
+						if (jsNamespace.pricings[i].quantity > 0) {
+							//found qty, check alc
+							var sku = jsNamespace.pricings[i].selectedSku;
+							if (jsNamespace.alcohol && jsNamespace.alcohol[sku] && jsNamespace.alcohol[sku].isAlc) {
+								if (jsNamespace.alcohol[sku].alcRest != '') {
+									alcRests[alcRests.length] = jsNamespace.alcohol[sku].alcRest;
+								}
+							}
+						}
+					}
+				}else if (jsNamespace.pricing) {
+					//single pricing object
+					if (jsNamespace.pricing.quantity > 0) {
+						//found qty, check alc
+						var sku = jsNamespace.pricing.selectedSku;
+						if (jsNamespace.alcohol && jsNamespace.alcohol[sku] && jsNamespace.alcohol[sku].isAlc) {
+							if (jsNamespace.alcohol[sku].alcRest != '') {
+								alcRests[alcRests.length] = jsNamespace.alcohol[sku].alcRest;
+							}
+						}
+					}
+				}
+				return alcRests.join(',');
+			}
+		}
+		if (!jsNamespace.alcohol.addToCartAlcoholRestrictionsUnique) {
+			//helper to get alcohol restrictions, but only gets unique values
+			//only returns actual rest codes, no empties, and only if isAlc == true.
+			//returns as comma seperated string
+			jsNamespace.alcohol.addToCartAlcoholRestrictionsUnique = function() {
+				var alcRests = [], uniquesTemp = {}, uniquesFinal = [], i;
+				alcRests = jsNamespace.alcohol.addToCartAlcoholRestrictions().split(',');
+				for (i = 0; i < alcRests.length; i++) {
+					uniquesTemp[alcRests[i]] = alcRests[i];
+				}
+				for (i in uniquesTemp) {
+					uniquesFinal.push(uniquesTemp[i]);
+				}
+				return uniquesFinal.join(',');
+			}
+		}
+	}
+}
