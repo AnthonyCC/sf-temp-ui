@@ -12,6 +12,7 @@ import java.util.*;
 import java.text.*;
 import javax.servlet.http.*;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.*;
@@ -25,6 +26,7 @@ import com.freshdirect.delivery.*;
 import com.freshdirect.fdstore.customer.*;
 import com.freshdirect.framework.webapp.*;
 
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import org.apache.commons.lang.StringUtils;
 
@@ -123,6 +125,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
         String bankName = RequestUtil.getRequestParameter(request,PaymentMethodName.BANK_NAME);
         String bankAccountType = RequestUtil.getRequestParameter(request,PaymentMethodName.BANK_ACCOUNT_TYPE);
         String bypassBadAccountCheck = RequestUtil.getRequestParameter(request,PaymentMethodName.BYPASS_BAD_ACCOUNT_CHECK);
+        String csv=RequestUtil.getRequestParameter(request,PaymentMethodName.CSV);
         boolean verifyBankAccountNumber = true;
         
         /* Check Account number is null or blank - This validation was moved up to the resolve the issue we had with Ingrian Encryption. Issue was Ingrian unable
@@ -156,6 +159,25 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	            Date date = sf.parse(month.trim()+year.trim(), new ParsePosition(0));
 	            expCal.setTime(date);
 	            expCal.set(Calendar.DATE, expCal.getActualMaximum(Calendar.DATE));
+	        }
+	        
+	        if(FDStoreProperties.isPaymentMethodVerificationEnabled()) {
+	        	result.addError(
+		    	        csv == null || csv.length() <= 0,
+		    	        PaymentMethodName.CSV,SystemMessageList.MSG_REQUIRED
+		    	        );
+	        	
+	        	if(EnumCardType.AMEX.equals(EnumCardType.getCardType(cardType))) {
+	        		result.addError(
+			    	        csv != null & csv.length() !=4,
+			    	        PaymentMethodName.CSV,SystemMessageList.MSG_CVV_INCORRECT
+			    	        );
+	        	} else {
+	        		result.addError(
+			    	        csv != null & csv.length() !=3,
+			    	        PaymentMethodName.CSV,SystemMessageList.MSG_CVV_INCORRECT
+			    	        );
+	        	}
 	        }
 	        
         } else if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
@@ -232,6 +254,10 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             paymentMethod.setState(RequestUtil.getRequestParameter(request,EnumUserInfoName.BIL_STATE.getCode(),true));
             paymentMethod.setZipCode(RequestUtil.getRequestParameter(request,EnumUserInfoName.BIL_ZIPCODE.getCode(),true));
             paymentMethod.setCountry("US");
+            paymentMethod.setCVV(csv);
+            if(StringUtil.isEmpty(paymentMethod.getCustomerId())) {
+            	paymentMethod.setCustomerId(identity.getErpCustomerPK());
+            }
            
             boolean isBadAccount = PaymentFraudManager.checkBadAccount(paymentMethod, false); 
 	        result.addError(
@@ -274,10 +300,12 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     
     public static void validatePaymentMethod(HttpServletRequest request, ErpPaymentMethodI paymentMethod, ActionResult result, FDUserI user) throws FDResourceException {
 		String bypassBadAccountCheck = RequestUtil.getRequestParameter(request,PaymentMethodName.BYPASS_BAD_ACCOUNT_CHECK);
-    	validatePaymentMethod( paymentMethod, result, user, request.getAttribute("gift_card") != null, request.getAttribute("donation") != null, bypassBadAccountCheck != null && !bypassBadAccountCheck.trim().equals("") );
+		FDActionInfo action= AccountActivityUtil.getActionInfo(request.getSession(), "");
+		
+    	validatePaymentMethod(action, paymentMethod, result, user, request.getAttribute("gift_card") != null, request.getAttribute("donation") != null, bypassBadAccountCheck != null && !bypassBadAccountCheck.trim().equals("") );
     }
     
-    public static void validatePaymentMethod ( ErpPaymentMethodI paymentMethod, ActionResult result, FDUserI user, boolean gift_card, boolean donation, boolean bypassBadAccountCheck ) throws FDResourceException {
+    public static void validatePaymentMethod ( FDActionInfo action, ErpPaymentMethodI paymentMethod, ActionResult result, FDUserI user, boolean gift_card, boolean donation, boolean bypassBadAccountCheck ) throws FDResourceException {
     	boolean isFiftyStateValidationReqd=true;
     	//check name on card
         result.addError(
@@ -322,6 +350,42 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        paymentMethod.getExpirationDate() == null || checkDate.after(paymentMethod.getExpirationDate()),
 	        "expiration", SystemMessageList.MSG_CARD_EXPIRATION_DATE
 	        );
+	        if(!result.isFailure() && FDStoreProperties.isPaymentMethodVerificationEnabled()&& !paymentMethod.isBypassAVSCheck()) {
+	        	
+	        	
+	        	try {
+	        		
+	        		ErpAuthorizationModel auth=FDCustomerManager.verify(action, paymentMethod);
+	        		if(auth==null) {
+	        			result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_TECHNICAL_ERROR));
+	        		} else {
+	        			if(auth.isApproved()) {
+		        			result.addError(
+		        					!auth.isCVVMatch(),
+					    	        PaymentMethodName.CSV,SystemMessageList.MSG_CVV_INCORRECT
+					    	        );
+		        			//result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_INVALID_ADDRESS));
+		        			result.addError(
+		        					!ErpServicesProperties.isAvsAddressMatchReqd() && !auth.hasAvsMatched(),
+		        					EnumUserInfoName.BIL_ZIPCODE.getCode(),SystemMessageList.MSG_ZIP_CODE
+					    	        );
+		        			result.addError(
+		        					ErpServicesProperties.isAvsAddressMatchReqd() & !auth.hasAvsMatched(),
+		        					EnumUserInfoName.BIL_ADDRESS_1.getCode(),SystemMessageList.MSG_INVALID_ADDRESS
+					    	        );
+		        			
+	        			} else {
+	        				result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_AUTH_FAILED));
+	        			}
+	        			if(result.isSuccess())
+	        				paymentMethod.setAvsCkeckFailed(false);
+	        		}
+	        	} catch(ErpAuthorizationException e) {
+	        		result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_TECHNICAL_ERROR+" "+e.toString()));
+	        	}catch (ErpTransactionException e) {
+	        		result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_TECHNICAL_ERROR+" "+e.toString()));
+				}
+	        }
         } else if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
         	        	
 	        if (paymentMethod.getAbaRouteNumber() != null && !"".equals(paymentMethod.getAbaRouteNumber())) {
@@ -377,7 +441,8 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
         //
         // standardize billing address on all credit cards
         //
-        if (result.isSuccess()) {        	
+        if (result.isSuccess()&& !EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {   
+        	
         	AddressModel cleanAddress = scrubAddress(paymentMethod.getAddress(), result,isFiftyStateValidationReqd);
     		paymentMethod.setAddress1(cleanAddress.getAddress1());
     		paymentMethod.setAddress2(cleanAddress.getAddress2());

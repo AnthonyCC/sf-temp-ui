@@ -75,5 +75,11 @@ public interface FDCustomerI {
     
     void setDefaultDepotLocationPK(String locationId) throws RemoteException;
     
+    public int incrementPymtVerifyAttempts() throws RemoteException;
+	public void setPymtVerifyAttempts(int pymtVerifyAttempts)  throws RemoteException;
+	public int getPymtVerifyAttempts()  throws RemoteException;
+	public void resetPymtVerifyAttempts() throws RemoteException;
+
+    
 }
 

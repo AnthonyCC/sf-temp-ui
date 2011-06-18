@@ -30,7 +30,7 @@ public class PaymentManager {
 	private static Category LOGGER = LoggerFactory.getInstance(PaymentManager.class);
 	private static ServiceLocator serviceLocator = null;
 	private static PaymentHome paymentHome = null;
-
+	private static final String ECHECK_VERIFY_UNAVAIL_MSG="This feature is not available for E-Checks";
 	static {
 		try {
 			serviceLocator = new ServiceLocator(ErpServicesProperties.getInitialContext());
@@ -39,6 +39,25 @@ public class PaymentManager {
 		}
 	}
 
+	public ErpAuthorizationModel verify(ErpPaymentMethodI paymentMethod) throws ErpTransactionException {
+		
+		try {
+			
+			if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
+				throw new ErpTransactionException(ECHECK_VERIFY_UNAVAIL_MSG);
+			} else { // default to credit card 
+				PaylinxResponseModel paylinxResponse = null;
+				
+				paylinxResponse = CPMServerGateway.verifyCreditCard(paymentMethod);
+				return paylinxResponse.getAuthorizationModel();
+			}
+		} catch (PaylinxResourceException pe) {
+			LOGGER.debug(pe);
+			throw new ErpTransactionException(pe);
+		}
+	}
+	
+	
 	public ErpAuthorizationModel authorize(
 		ErpPaymentMethodI paymentMethod,
 		String orderNumber,

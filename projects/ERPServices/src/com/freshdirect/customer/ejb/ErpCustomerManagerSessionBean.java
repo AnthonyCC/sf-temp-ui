@@ -620,8 +620,10 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				for ( ErpCustomerCreditModel customerCredit : customerCredits ) {
 					if (appliedCredit.getCustomerCreditPk().getId().equals(customerCredit.getPK().getId())) {
 						//customerCredit.setRemainingAmount( customerCredit.getRemainingAmount() - appliedCredit.getAmount() );
-						LOGGER.debug(
-							"setting remaining credit on CUSTCREDIT "
+						
+						LOGGER.debug("customerCredit.getRemainingAmount() is"+customerCredit.getRemainingAmount()+
+								"appliedCredit.getAmount() is "+appliedCredit.getAmount()+
+							" Setting remaining credit on CUSTCREDIT "
 								+ customerCredit.getPK().getId()
 								+ " to "
 								+ (customerCredit.getRemainingAmount() - appliedCredit.getAmount()));

@@ -202,6 +202,31 @@ public abstract class FDCustomerAspect extends BaseAspect {
             public ModelI getModel() throws RemoteException {
                 return getCustomerModel(pk);
             }
+
+			@Override
+			public int getPymtVerifyAttempts() throws RemoteException {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public int incrementPymtVerifyAttempts() throws RemoteException {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public void resetPymtVerifyAttempts() throws RemoteException {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void setPymtVerifyAttempts(int pymtVerifyAttempts)
+					throws RemoteException {
+				// TODO Auto-generated method stub
+				
+			}
         };
     }
 

@@ -130,5 +130,7 @@ public class ErpGiftCardModel extends ErpPaymentMethodModel {
 		// TODO Auto-generated method stub
 		
 	}
+
+	
 	
 }

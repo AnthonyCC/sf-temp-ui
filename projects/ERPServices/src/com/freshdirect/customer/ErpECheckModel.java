@@ -83,4 +83,5 @@ public class ErpECheckModel extends ErpPaymentMethodModel {
 	public void setBypassAVSCheck(boolean bypassAVSCheck) {
 		// TODO Auto-generated method stub		
 	}
+
 }

@@ -168,4 +168,6 @@ public interface SystemMessageList {
 	public final static String MSG_REDEMPTION_NOTE_DLV_ADDRESS	= "NOTICE: Your code will be accepted when you select a valid delivery address.";
 	public final static String MSG_REDEMPTION_NOTE_TIMESLOT	= "NOTICE: Your code will be accepted when you select a valid delivery date and time.";
 	public final static String MSG_REDEMPTION_NOTE_PAYMENT	= "NOTICE: Your code will be accepted when you select a valid payment method.";
+	
+	public final static String MSG_CVV_INCORRECT="CVV value is incorrect";
 }

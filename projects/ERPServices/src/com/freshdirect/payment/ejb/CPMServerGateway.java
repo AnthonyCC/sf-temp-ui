@@ -24,6 +24,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.customer.EnumCVVResponse;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAccountVerificationModel;
@@ -34,6 +36,7 @@ import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpReversalModel;
 import com.freshdirect.customer.ErpVoidCaptureModel;
 import com.freshdirect.framework.util.NVL;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.PaylinxException;
@@ -71,6 +74,53 @@ public class CPMServerGateway {
 		SERVER_PORT = port; 
 	}
 	
+	public static PaylinxResponseModel verifyCreditCard(ErpPaymentMethodI paymentMethod) throws PaylinxResourceException{
+		PaylinxResponseModel response = new PaylinxResponseModel();
+		
+		if (paymentMethod == null || !EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {
+			response.setResponseCode("FD101");
+			response.setResponseMessage("Payment method is not a credit card");
+		}
+		double amount=ErpServicesProperties.getCardVerificationAuthAmount();
+		double tax=0;
+		String cvv=paymentMethod.getCVV();
+		
+		LCCTransaction trans = createCCTransaction(paymentMethod, amount, tax);
+		String saleId=String.valueOf((int)(Math.random()*1000000000));
+		System.out.println("saleId: "+saleId);
+		
+		trans.SetValue(LCC.ID_ORDER_NUMBER, saleId);
+		trans.SetConnectionInformation(CPM_SERVER, SERVER_PORT, USE_SSL);
+		trans.SetValue(LCC.ID_MERCHANT_ID, MERCHANT_ID);
+		trans.SetValue(LCC.ID_CVV,cvv ); //set it from paymentMethod
+		trans.SetValue(LCC.ID_CVV_INDICATOR, "1");
+		
+		
+		
+		ErpAuthorizationModel model = runCCVerificationTransaction(trans);
+
+		// check to see if there's a response code we don't currently handle.
+		if (model.getResponseCode() == null && model.getProcResponseCode() != null) {
+			LOGGER.error("Paylinx.authorizeCreditCard: (NOT FATAL) - Process Response code not recognized " + model.getProcResponseCode() 
+					+ " for sale id = " + saleId);
+		}
+		model.setAmount(amount);
+		model.setTax(tax);
+		model.setPaymentMethodType(paymentMethod.getPaymentMethodType());
+		model.setCardType(paymentMethod.getCardType());
+		String accountNumber = paymentMethod.getAccountNumber();
+		model.setCcNumLast4(accountNumber.substring(accountNumber.length()-4));
+		
+		
+		if(!"true".equalsIgnoreCase(AVS_CHECK)){
+			model.setAvs("Y");
+		}
+		
+		response.setAuthorizationModel(model);
+		response.setResponseCode(String.valueOf(model.getReturnCode()));
+		
+		return response;		
+	}
 	public static PaylinxResponseModel authorizeCreditCard(ErpPaymentMethodI paymentMethod, double amount, double tax, String saleId, String merchantId) throws PaylinxResourceException{
 		PaylinxResponseModel response = new PaylinxResponseModel();
 		
@@ -128,8 +178,108 @@ public class CPMServerGateway {
 		trans.SetValue(LCC.ID_CUSTOMER_CITY, StringUtils.left(paymentMethod.getCity(), 20));
 		trans.SetValue(LCC.ID_CUSTOMER_STATE, StringUtils.left(paymentMethod.getState(), 2));
 		trans.SetValue(LCC.ID_CUSTOMER_ZIP, StringUtils.left(paymentMethod.getZipCode(), 5));
+		trans.SetValue(LCC.ID_CUSTOMER_COUNTRY, "US");
+		
 		
 		return trans;
+	}
+	
+	private static ErpAuthorizationModel runCCVerificationTransaction(LCCTransaction trans) throws PaylinxResourceException {
+		/*System.out.println("trans.PrintFields():INPUT");
+		trans.PrintFields();
+		ErpAuthorizationModel model = new ErpAuthorizationModel();
+		model.setTransactionSource(EnumTransactionSource.SYSTEM);
+		int rCode = trans.RunTransaction(LCC.ID_AUTHORIZATION);
+		
+		model.setReturnCode(rCode);
+		System.out.println("Transaction values "+trans.toString());
+		
+		System.out.println("trans.PrintFields():OUTPUT");
+		trans.PrintFields();
+		LOGGER.debug("Authorization returned with rCode: "+rCode);
+		
+		if ( rCode != 0 ) {
+			throw new PaylinxResourceException(getErrorMessage(rCode));
+		} else {
+			model.setAuthCode(trans.GetValue(LCC.ID_APPROVAL_CODE));
+			model.setProcResponseCode(trans.GetValue(LCC.ID_AUTH_RESPONSE_CODE));
+			
+			EnumPaymentResponse response = EnumPaymentResponse.getEnum(model.getProcResponseCode());
+			if (response == null) {
+				LOGGER.warn("Unknown proc response code " + model.getProcResponseCode() + ", setting to CALL");
+				response = EnumPaymentResponse.CALL;
+			}
+			model.setResponseCode(response);
+			
+			String _cvvResponse=trans.GetValue(LCC.ID_CVV_RESULT);
+			System.out.println("CVV Result: "+_cvvResponse);
+			LOGGER.debug("Authorization returned with CVV response: "+_cvvResponse);
+			
+			EnumCVVResponse cvvResponse=null;
+			if(StringUtil.isEmpty(_cvvResponse))
+			cvvResponse=EnumCVVResponse.getEnum(_cvvResponse!=null?_cvvResponse.trim():"");
+			if(cvvResponse==null) {
+				LOGGER.warn("Unknown CVV response code " + _cvvResponse);
+				//cvvResponse=EnumCVVResponse.;
+			}
+			model.setCvvResponse(cvvResponse);
+			
+			model.setDescription(trans.GetValue(LCC.ID_AUTH_RESPONSE_MESSAGE));
+			model.setSequenceNumber(trans.GetValue(LCC.ID_SEQUENCE_NUMBER));
+			model.setMerchantId(trans.GetValue(LCC.ID_MERCHANT_ID));
+			
+			String addrMatch,zipMatch="";
+			addrMatch=trans.GetValue(LCC.ID_ADDRESS_MATCH);
+			zipMatch=trans.GetValue(LCC.ID_ZIP_MATCH);
+			model.setAddressMatchResponse(addrMatch);
+			model.setZipMatchResponse(zipMatch);
+
+			if(ErpServicesProperties.isAvsAddressMatchReqd())
+			    model.setAvs(addrMatch);
+			else
+			    model.setAvs(zipMatch);
+			
+		}
+		
+		return model;*/
+		System.out.println("trans.PrintFields():INPUT");
+		trans.PrintFields();
+		ErpAuthorizationModel model=runCCAuthorizationTransaction(trans);
+		System.out.println("trans.PrintFields():OUTPUT");
+		trans.PrintFields();
+		EnumCVVResponse cvvResponse=null;
+		String _cvvResponse=trans.GetValue(LCC.ID_CVV_RESULT);
+		if(_cvvResponse!=null) {
+			_cvvResponse=_cvvResponse.trim();
+		}
+		
+		LOGGER.debug("Authorization returned with CVV response: "+_cvvResponse);
+		model.setCardType(EnumCardType.getByPaymentechCode(trans.GetValue(LCC.ID_CARD_TYPE)));
+		  
+		
+		if(StringUtil.isEmpty(_cvvResponse)) {
+			
+			if(model.isApproved() && EnumCardType.AMEX.equals(model.getCardType())) {
+				cvvResponse=EnumCVVResponse.MATCH;
+			} else /*if (EnumCardType.AMEX.equals(model.getCardType()))*/{
+				cvvResponse=EnumCVVResponse.NO_MATCH;
+			}
+			
+		}
+		if(!StringUtil.isEmpty(_cvvResponse))
+			cvvResponse=EnumCVVResponse.getEnum(_cvvResponse!=null?_cvvResponse.trim():"");
+		/*if(cvvResponse==null) {
+			LOGGER.warn("Unknown CVV response code " + _cvvResponse);
+			//cvvResponse=EnumCVVResponse.;
+		}*/
+		model.setCvvResponse(cvvResponse);
+		String addrMatch,zipMatch="";
+		addrMatch=trans.GetValue(LCC.ID_ADDRESS_MATCH);
+		zipMatch=trans.GetValue(LCC.ID_ZIP_MATCH);
+		model.setAddressMatchResponse(addrMatch);
+		model.setZipMatchResponse(zipMatch);
+		LOGGER.debug("Authorization returned with CVV response: "+_cvvResponse);
+		return model;
 	}
 	
 	private static ErpAuthorizationModel runCCAuthorizationTransaction(LCCTransaction trans) throws PaylinxResourceException {

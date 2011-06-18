@@ -10,6 +10,7 @@ import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpAuthorizationModel;
+import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpTransactionException;
 
 public interface PaymentManagerSB extends EJBObject {
@@ -23,5 +24,7 @@ public interface PaymentManagerSB extends EJBObject {
 	public void captureAuthorizations(String saleId, List<ErpAuthorizationModel> auths) throws ErpTransactionException, RemoteException;
 	
 	public List<ErpAuthorizationModel> authorizeSaleRealtime(String saleId,EnumSaleType saleType) throws ErpAuthorizationException, ErpAddressVerificationException, RemoteException;
+	
+	public ErpAuthorizationModel verify(ErpPaymentMethodI paymentMethod)throws RemoteException;
 
 }

@@ -62,5 +62,6 @@ public interface AddressName {
     public final static String BIL_STATE			= "bil_state";
     public final static String BIL_ZIPCODE			= "bil_zipcode";
     public final static String BIL_COUNTRY			= "bil_country";
+    
 }
 

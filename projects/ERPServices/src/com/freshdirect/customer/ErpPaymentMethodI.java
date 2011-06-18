@@ -112,5 +112,13 @@ public interface ErpPaymentMethodI extends AddressI {
 	public boolean isBypassAVSCheck();
 	
 	public void setBypassAVSCheck(boolean bypassAVSCheck);
+	
+	/*public boolean isCVVVerified();
+	
+	public void setCVVVerified(boolean cvvVerified);*/
+	
+	public void setCVV(String val);
+	
+	public String getCVV();
 }
 

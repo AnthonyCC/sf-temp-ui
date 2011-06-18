@@ -56,6 +56,7 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
 
         if (("POST".equalsIgnoreCase(request.getMethod()))) {
             user = (FDUserI) session.getAttribute(SessionName.USER);
+            
 
 			try {
 	            if(actionName.equalsIgnoreCase("addPaymentMethod")) {

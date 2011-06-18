@@ -192,6 +192,7 @@ import com.freshdirect.payment.ejb.PaymentManagerSB;
 import com.freshdirect.payment.fraud.PaymentFraudManager;
 import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
 
+
 /**
  * @version $Revision:78$
  * @author $Author:Kashif Nadeem$
@@ -2999,7 +3000,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			sb.setActive(new PrimaryKey(info.getIdentity().getErpCustomerPK()), active);
-
+			if(true==active) {
+				FDCustomerEB fdCustomerEB=getFdCustomerHome().findByErpCustomerId(info.getIdentity().getErpCustomerPK());
+				fdCustomerEB.resetPymtVerifyAttempts();
+			}
 			this.logActivity(info.createActivity(active ? EnumAccountActivityType.ACTIVATE_ACCOUNT : 
 														EnumAccountActivityType.DEACTIVATE_ACCOUNT));
 
@@ -3007,6 +3011,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
+		} catch (FinderException e) {
+			throw new FDResourceException(e);
 		}
 	}
 
@@ -6065,6 +6071,37 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (RemoteException ex) {
 			throw new FDResourceException(ex);
 		}
+	}
+	
+	public ErpAuthorizationModel verify(FDActionInfo action,ErpPaymentMethodI paymentMethod)throws FDResourceException,ErpAuthorizationException {
+		PaymentManagerSB sb=null;
+		ErpAuthorizationModel auth=null; 
+		try {
+			sb = this.getPaymentManagerHome().create();
+			auth= sb.verify(paymentMethod);
+			if(auth!=null) {
+				FDCustomerEB fdCustomerEB=getFdCustomerHome().findByErpCustomerId(paymentMethod.getCustomerId());
+				if(!auth.isApproved() || !auth.hasAvsMatched()|| !auth.isCVVMatch()) {
+					int count=fdCustomerEB.incrementPymtVerifyAttempts();
+					if(count>=5) {
+						action.setNote("Reached limit of 5 unsuccessful credit card verifications.");
+						this.setActive(action, false);
+						throw new ErpAuthorizationException("Your account has been locked.");
+					}
+				} else {
+					fdCustomerEB.resetPymtVerifyAttempts();
+				}
+			}
+			return auth;
+				
+		}catch (FinderException fe) {
+			throw new FDResourceException(fe);
+		}catch (RemoteException re) {
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		}
+		
 	}
 
 }

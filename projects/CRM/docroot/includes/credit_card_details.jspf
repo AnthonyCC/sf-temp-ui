@@ -194,6 +194,10 @@ Collection addresses = FDCustomerManager.getShipToAddresses(user.getIdentity());
 				<td align="right">* Zip:</td>
 				<td><input type="text" maxlength="5" class="input_text" style="width: 80px;" name="<%=AddressName.BIL_ZIPCODE%>" value="<%=address != null ? address.getZipCode() : ""%>"><fd:ErrorHandler result="<%=result%>" name="<%=AddressName.BIL_ZIPCODE%>" id='errorMsg'> <span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
 			</tr>
+				<tr>
+				<td align="right">* CVV:</td>
+				<td><input type="text" maxlength="4" class="input_text" style="width: 80px;" name="<%=PaymentMethodName.CSV%>" value="<%=paymentMethod != null ? paymentMethod.getCVV() : ""%>"><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>" id='errorMsg'> <span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+			</tr>
             <tr>
 				<td align="right">AVS Status:</td>
 				<td><font color="red"><%=avsStatusFailed?"AVS FAILED":""%></font></td>

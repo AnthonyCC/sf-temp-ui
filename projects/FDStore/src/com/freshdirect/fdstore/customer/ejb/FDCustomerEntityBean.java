@@ -9,6 +9,7 @@
 
 package com.freshdirect.fdstore.customer.ejb;
 
+import java.rmi.RemoteException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.sql.Connection;
@@ -59,7 +60,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 	private FDProfilePersistentBean profile;
 	private String passwordHint;
 	private String depotCode;
-
+	private int pymtVerifyAttempts;
 	/**
 	 * Copy into model.
 	 *
@@ -323,7 +324,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 	}
 
 	public void load(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("SELECT ERP_CUSTOMER_ID, LOGIN_COUNT, LAST_LOGIN, DEFAULT_SHIPTO, DEFAULT_PAYMENT, PASSREQ_EXPIRATION, PASSREQ_ID, PASSREQ_ATTEMPTS, PASSWORD_HINT, DEFAULT_DEPOT_LOCATION, DEPOT_CODE FROM CUST.FDCUSTOMER WHERE ID = ? ");
+		PreparedStatement ps = conn.prepareStatement("SELECT ERP_CUSTOMER_ID, LOGIN_COUNT, LAST_LOGIN, DEFAULT_SHIPTO, DEFAULT_PAYMENT, PASSREQ_EXPIRATION, PASSREQ_ID, PASSREQ_ATTEMPTS, PASSWORD_HINT, DEFAULT_DEPOT_LOCATION, DEPOT_CODE, PYMT_VERIFY_ATTEMPTS FROM CUST.FDCUSTOMER WHERE ID = ? ");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (!rs.next()) {
@@ -343,7 +344,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		this.passwordHint = rs.getString("PASSWORD_HINT");
 		this.defaultDepotLocationPK = rs.getString("DEFAULT_DEPOT_LOCATION");
 		this.depotCode = rs.getString("DEPOT_CODE");
-
+		this.setPymtVerifyAttempts(rs.getInt("PYMT_VERIFY_ATTEMPTS"));
 		rs.close();
 		ps.close();
 
@@ -354,7 +355,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 
 	public void store(Connection conn) throws SQLException {
 		if (super.isModified()) {
-			PreparedStatement ps = conn.prepareStatement("UPDATE CUST.FDCUSTOMER SET ERP_CUSTOMER_ID = ?, LOGIN_COUNT = ?, LAST_LOGIN =?, DEFAULT_SHIPTO = ?, DEFAULT_PAYMENT =?, PASSREQ_EXPIRATION =?, PASSREQ_ID =?, PASSREQ_ATTEMPTS =?, PASSWORD_HINT =?, DEFAULT_DEPOT_LOCATION = ?, DEPOT_CODE = ? WHERE ID = ?");
+			PreparedStatement ps = conn.prepareStatement("UPDATE CUST.FDCUSTOMER SET ERP_CUSTOMER_ID = ?, LOGIN_COUNT = ?, LAST_LOGIN =?, DEFAULT_SHIPTO = ?, DEFAULT_PAYMENT =?, PASSREQ_EXPIRATION =?, PASSREQ_ID =?, PASSREQ_ATTEMPTS =?, PASSWORD_HINT =?, DEFAULT_DEPOT_LOCATION = ?, DEPOT_CODE = ?, PYMT_VERIFY_ATTEMPTS=? WHERE ID = ?");
 			ps.setString(1, this.erpCustomerPK);
 			ps.setInt(2, this.loginCount);
 			ps.setDate(3, new java.sql.Date(this.lastLogin.getTime()));
@@ -370,7 +371,8 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 			ps.setString(9, this.passwordHint );
 			ps.setString(10, this.defaultDepotLocationPK);
 			ps.setString(11, this.depotCode);
-			ps.setString(12, this.getPK().getId() );
+			ps.setInt(12, this.pymtVerifyAttempts );
+			ps.setString(13, this.getPK().getId() );
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not updated");
 			}
@@ -421,6 +423,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		this.passwordRequestAttempts = 0;
 		this.passwordHint = null;
 		this.depotCode = null;
+		this.pymtVerifyAttempts=0;
 	}
 
 	public String getErpCustomerPK() {
@@ -565,4 +568,29 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		this.setModified();
 	}
 
+	public int incrementPymtVerifyAttempts() {
+		this.pymtVerifyAttempts++;
+		this.setModified();
+		return this.pymtVerifyAttempts;
+	}
+
+	/**
+	 * @param pymtVerifyAttempts the pymtVerifyAttempts to set
+	 */
+	public void setPymtVerifyAttempts(int pymtVerifyAttempts) {
+		this.pymtVerifyAttempts = pymtVerifyAttempts;
+	}
+
+	/**
+	 * @return the pymtVerifyAttempts
+	 */
+	public int getPymtVerifyAttempts() {
+		return pymtVerifyAttempts;
+	}
+	
+	public void resetPymtVerifyAttempts() {
+		 
+		this.pymtVerifyAttempts=0;
+		this.setModified();
+	}
 }

@@ -105,6 +105,8 @@ public class EnumAccountActivityType implements java.io.Serializable {
 	public final static EnumAccountActivityType		STANDINGORDER_SAVE_FAILED			= new EnumAccountActivityType( "SO-SaveFailed", "Standing Order update/save failed." );
 	public final static EnumAccountActivityType		STANDINGORDER_ERROR_CLEARED			= new EnumAccountActivityType( "SO-ErrorCleared", "Standing Order error cleared." );
 	
+	public final static EnumAccountActivityType		PAYMENT_METHOD_VERIFICATION			= new EnumAccountActivityType( "CC Verify", "Credit Card verification." );
+	
     private EnumAccountActivityType(String code, String name) {
         this.id = idCounter++;
         this.code = code;

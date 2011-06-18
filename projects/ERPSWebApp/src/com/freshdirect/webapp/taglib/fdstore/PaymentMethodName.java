@@ -31,5 +31,7 @@ public interface PaymentMethodName {
     public final static String TERMS  				= "terms";
     public final static String BYPASS_BAD_ACCOUNT_CHECK	= "bypassBadAccountCheck";
     
+    public final static String CSV="csv";
+    
 }
 

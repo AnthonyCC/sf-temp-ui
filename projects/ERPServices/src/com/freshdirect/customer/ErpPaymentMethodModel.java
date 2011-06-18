@@ -23,6 +23,8 @@ public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpP
 	private String billingRef;
 	private EnumPaymentType paymentType = EnumPaymentType.REGULAR;
 	private String referencedOrder;
+	
+	private String csv;
 
 	public ErpPaymentMethodModel() {
 		this.address = new ContactAddressModel();
@@ -280,5 +282,12 @@ public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpP
 	
 	public boolean isGiftCard() {
 		return this.getPaymentMethodType().equals(EnumPaymentMethodType.GIFTCARD);
+	}
+    public void setCVV(String val) {
+    	this.csv=val;
+    }
+	
+	public String getCVV() {
+		return csv;
 	}
 }

@@ -24,6 +24,7 @@ import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
 import com.freshdirect.webapp.taglib.fdstore.PaymentMethodName;
 import com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
+import com.freshdirect.webapp.util.RequestUtil;
 
 public class CrmPaymentMethodControllerTag extends AbstractControllerTag {
 
@@ -66,6 +67,9 @@ public class CrmPaymentMethodControllerTag extends AbstractControllerTag {
 	private void addPaymentMethod(HttpServletRequest request, ActionResult actionResult) throws FDResourceException {
 		FDUserI user = CrmSession.getUser(pageContext.getSession());
 		this.populatePaymentMethod(request, actionResult);
+		if(this.paymentMethod.getCustomerId()==null) {
+			this.paymentMethod.setCustomerId(user.getIdentity().getErpCustomerPK());
+		}
 
 		PaymentMethodUtil.validatePaymentMethod(request, this.paymentMethod, actionResult, user);
 		if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
@@ -110,7 +114,7 @@ public class CrmPaymentMethodControllerTag extends AbstractControllerTag {
 		String year = NVL.apply(request.getParameter(PaymentMethodName.CARD_EXP_YEAR), "");
 		String cardType = NVL.apply(request.getParameter(PaymentMethodName.CARD_BRAND), "");
 		String accountNumber = NVL.apply(request.getParameter(PaymentMethodName.ACCOUNT_NUMBER), "");
-		
+		String csv=NVL.apply(request.getParameter(PaymentMethodName.CSV),"");
 		if (!"".equals(year) && !"".equals(month)) {
 			SimpleDateFormat sf = new SimpleDateFormat("MMyyyy");
 			Date date = sf.parse(month.trim() + year.trim(), new ParsePosition(0));
@@ -167,6 +171,7 @@ public class CrmPaymentMethodControllerTag extends AbstractControllerTag {
 		this.paymentMethod.setCountry("US");		
 		this.paymentMethod.setBypassAVSCheck(request.getParameter("bypass_avs")!=null);
 		this.paymentMethod.setAvsCkeckFailed(false);
+		this.paymentMethod.setCVV(csv);
 	}
 
 	public static class TagEI extends AbstractControllerTag.TagEI {

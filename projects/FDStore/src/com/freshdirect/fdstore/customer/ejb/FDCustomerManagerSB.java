@@ -1,7 +1,6 @@
 package com.freshdirect.fdstore.customer.ejb;
 
 import java.rmi.RemoteException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
@@ -28,6 +27,7 @@ import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
+import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.customer.ErpClientCodeReport;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintModel;
@@ -72,7 +72,6 @@ import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDCustomerRequest;
 import com.freshdirect.fdstore.customer.FDCustomerSearchCriteria;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDOrderSearchCriteria;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
@@ -764,5 +763,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 			InvalidCardException,
 			FDPaymentInadequateException,
 			RemoteException;
+	
+	public ErpAuthorizationModel verify(FDActionInfo info,ErpPaymentMethodI paymentMethod) throws FDResourceException,ErpAuthorizationException, RemoteException;	
 }
 

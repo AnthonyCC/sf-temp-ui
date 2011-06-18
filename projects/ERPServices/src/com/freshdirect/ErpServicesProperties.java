@@ -52,6 +52,7 @@ public class ErpServicesProperties {
 	private final static String PROP_AUTH_HOURS			= "payment.paylinx.authHours";
 	private final static String PROP_CHASE_MERCHANT_ID  = "payment.paylinx.chase.merchantId";
 	private final static String PROP_AVS_ADDRESS_CHECK  = "payment.paylinx.avs.address_check";
+	private final static String PROP_CARD_VERIFICATION_AUTH_AMOUNT="payment.card.verification.amount";
 	
 	private final static String PROP_FRAUD_CHECK		= "fraud.check";
 	private final static String PROP_FRAUD_CHECK_PM		= "fraud.check.paymentMethod";
@@ -328,7 +329,7 @@ public class ErpServicesProperties {
 		
 		defaults.put( MASQUERADE_STOREFRONT_BASEURL, "http://www.freshdirect.com/" );
 		defaults.put( MASQUERADE_SECURITYTICKET_EXPIRATION, "5" );
-		
+		defaults.put(PROP_CARD_VERIFICATION_AUTH_AMOUNT,"1");
 		defaults.put(PROP_MKTADMIN_AUTO_UPLOADER_FTP_WORKDIR, "");
 		defaults.put(PROP_MKTADMIN_AUTO_UPLOADER_FTP_BACKUPDIR, "");
 		defaults.put(PROP_MKTADMIN_AUTO_UPLOADER_FTP_FAILEDDIR, "");
@@ -789,5 +790,9 @@ public class ErpServicesProperties {
 	
 	public static int getMasqueradeSecurityTicketExpiration() {
 		return Integer.parseInt( config.getProperty(MASQUERADE_SECURITYTICKET_EXPIRATION) );
+	}
+	
+	public static double getCardVerificationAuthAmount() {
+		return Double.parseDouble( config.getProperty(PROP_CARD_VERIFICATION_AUTH_AMOUNT) );
 	}
 }

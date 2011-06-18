@@ -12,6 +12,31 @@ public class ErpAuthorizationModel extends ErpPaymentModel {
 	private String description;
 	private String avs;
 	
+	private EnumCVVResponse cvvResponse;
+	private String addressMatchResponse;
+	private String zipMatchResponse;
+	
+	
+	public boolean isAddressMatch() {
+		return "Y".equalsIgnoreCase(addressMatchResponse);
+	}
+
+	public void setAddressMatchResponse(String  addressMatchResponse) {
+		this.addressMatchResponse = addressMatchResponse;
+	}
+	public String  getAddressMatchResponse() {
+		return zipMatchResponse;
+	}
+	public boolean isZipMatch() {
+		return "Y".equalsIgnoreCase(zipMatchResponse);
+	}
+
+	public void setZipMatchResponse(String zipMatchResponse) {
+		this.zipMatchResponse = zipMatchResponse;
+	}
+	public String  getZipMatchResponse() {
+		return zipMatchResponse;
+	}
 	/** 
 	 * Creates new ErpAuthorizeTransaction 
 	 */
@@ -83,5 +108,24 @@ public class ErpAuthorizationModel extends ErpPaymentModel {
 	public boolean hasAvsMatched(){
 		return "Y".equalsIgnoreCase(this.avs);
 	}
+
+	/**
+	 * @param cvvResponse the cvvResponse to set
+	 */
+	public void setCvvResponse(EnumCVVResponse cvvResponse) {
+		this.cvvResponse = cvvResponse;
+	}
+
+	/**
+	 * @return the cvvResponse
+	 */
+	public EnumCVVResponse getCvvResponse() {
+		return cvvResponse;
+	}
 	
+	public boolean isCVVMatch() {
+		return EnumCVVResponse.MATCH.equals(this.cvvResponse);
+	}
+	
+
 }

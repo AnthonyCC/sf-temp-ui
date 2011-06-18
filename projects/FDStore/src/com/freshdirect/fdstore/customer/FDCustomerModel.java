@@ -8,6 +8,7 @@
  */
 package com.freshdirect.fdstore.customer;
 
+import java.rmi.RemoteException;
 import java.util.Date;
 
 import com.freshdirect.framework.core.ModelSupport;
@@ -142,6 +143,31 @@ public class FDCustomerModel extends ModelSupport implements FDCustomerI {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public int getPymtVerifyAttempts() throws RemoteException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int incrementPymtVerifyAttempts() throws RemoteException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void resetPymtVerifyAttempts() throws RemoteException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setPymtVerifyAttempts(int pymtVerifyAttempts)
+			throws RemoteException {
+		// TODO Auto-generated method stub
+		
 	}
 
     

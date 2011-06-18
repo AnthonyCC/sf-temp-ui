@@ -448,6 +448,8 @@ public class FDStoreProperties {
 	
 	private final static String WS_PROMOTION_PRODUCTION_MODE = "fdstore.ws.promotion.production.mode";
 	
+	private static final String PROP_PAYMENT_METHOD_VERIFICATION_ENABLED="fdstore.paymentmethod.verify";
+	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -895,6 +897,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_MKTADMIN_USER_NAME, "qaadmin");
 		defaults.put(PROP_MKTADMIN_PASSWORD, "password01");
 		
+		defaults.put(PROP_PAYMENT_METHOD_VERIFICATION_ENABLED, "true");
         refresh();
     }
 
@@ -2302,4 +2305,7 @@ public class FDStoreProperties {
     public static interface ConfigLoadedListener {
         void configLoaded();
     }
+    public static boolean isPaymentMethodVerificationEnabled() {
+        return (new Boolean(get(PROP_PAYMENT_METHOD_VERIFICATION_ENABLED))).booleanValue();
+    } 
 }

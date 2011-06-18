@@ -41,6 +41,7 @@ import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
+import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpClientCodeReport;
 import com.freshdirect.customer.ErpComplaintException;
@@ -130,6 +131,7 @@ import com.freshdirect.giftcard.InvalidCardException;
 import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
+import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 
@@ -3716,4 +3718,25 @@ public class FDCustomerManager {
 				
 
 		}
+	
+	public static ErpAuthorizationModel verify(FDActionInfo info, ErpPaymentMethodI paymentMethod) throws ErpTransactionException, FDResourceException,ErpAuthorizationException {
+		
+		final String ECHECK_VERIFY_UNAVAIL_MSG="This feature is not available for E-Checks";
+		
+		if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
+			throw new ErpTransactionException(ECHECK_VERIFY_UNAVAIL_MSG);
+		}
+		try{
+			lookupManagerHome();
+			FDCustomerManagerSB sb = managerHome.create();
+			ErpAuthorizationModel auth=sb.verify(info, paymentMethod);
+			return auth;
+		}catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to bean");
+		}	
+	}
 }

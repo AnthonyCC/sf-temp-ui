@@ -42,6 +42,7 @@ import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.customer.ejb.ErpSaleInfoDAO;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -49,6 +50,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.AuthorizationCommand;
 import com.freshdirect.payment.AuthorizationStrategy;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.payment.PaymentManager;
 
 public class PaymentManagerSessionBean extends SessionBeanSupport {
 
@@ -126,7 +128,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			
 			  int orderCount=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId()); 
 			  
-			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck() && orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit()){
+			if( payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck() && orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit()){
 				 SessionContext ctx = getSessionContext();
 				    ctx.setRollbackOnly();
 				throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");				
@@ -159,8 +161,9 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 				    ctx.setRollbackOnly();
 				    throw new ErpAuthorizationException("There was a problem with the given payment method");
 				  
-			    }else{			    	
-					if(auth.isApproved() && !auth.hasAvsMatched()){						
+			    }else{	
+			    	
+					if(auth.isApproved() && !auth.hasAvsMatched() ){	//-Manoj, Add check payment.isAVSCheckFailed==false					
 						if(!payment.isBypassAVSCheck()){														
 							if(orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit()){	                           								  
 									payment.setAvsCkeckFailed(true);
@@ -536,7 +539,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
   
 			int orderCount=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId());  
 			
-			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck() && orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit()){
+			if(!FDStoreProperties.isPaymentMethodVerificationEnabled() && payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck() && orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit()){
 				 SessionContext ctx = getSessionContext();
 				    ctx.setRollbackOnly();
 				throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");
@@ -631,6 +634,81 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 		} catch ( FinderException e ) {
 			throw new EJBException( e );
 		}
+	}
+	
+	public ErpAuthorizationModel verify(ErpPaymentMethodI paymentMethod) {
+		PaymentManager pm= new PaymentManager();
+		ErpAuthorizationModel auth=null;
+		try {
+			auth=pm.verify(paymentMethod);
+			logCardVerificationActivity(paymentMethod,auth,"");
+		} catch (ErpTransactionException e) {
+			logCardVerificationActivity(paymentMethod,null, e.toString());
+		}
+		
+		
+		/*if(!auth.isApproved())
+			throw new ErpAuthorizationException("The authorization was not approved.");
+		if(!auth.hasAvsMatched())
+			throw new ErpAuthorizationException("The address provided didn't match.");
+		
+		if(!auth.isCVVMatch())
+			throw new ErpAuthorizationException("The CVV provided didn't match.");
+		*/	
+		return auth;
+	}
+	
+	/**
+	 * Adds auth failures to cusotmer activity log.
+	 */
+	private void logCardVerificationActivity(ErpPaymentMethodI paymentMethod, ErpAuthorizationModel auth, String desc ) {
+		
+		    String customerId=paymentMethod.getCustomerId();
+			ErpActivityRecord rec = new ErpActivityRecord();
+			rec.setActivityType(EnumAccountActivityType.PAYMENT_METHOD_VERIFICATION);
+			rec.setSource(EnumTransactionSource.SYSTEM);
+			rec.setInitiator("SYSTEM");
+			rec.setCustomerId(customerId);
+			
+			
+			StringBuilder msg=new StringBuilder(100);
+			if(auth==null) {
+				msg.append(desc);
+			}
+			else {
+				msg.append("Verified ")
+				.append(auth.getCardType().getDisplayName())
+				.append(" ending with ")
+				.append(auth.getCcNumLast4())
+				.append(" Address: ")
+				.append(paymentMethod.getAddress1())
+				.append(" ")
+				.append(paymentMethod.getZipCode())
+				.append(". ");
+				
+				msg.append("The auth was ")
+				   .append(auth.isApproved()?" approved ":" declined. ");
+				   
+				
+				if(auth.isApproved()) {
+					
+					msg.append(" with code =")
+					.append(auth.getAuthCode())
+					.append(" and CVV result = ")
+					.append(auth.getCvvResponse())
+					.append(". The AVS check ")
+					.append(auth.hasAvsMatched()?"succeeded":"failed")
+					.append(" with code = ")
+					.append(auth.getAvs())
+					.append(". Zip Match =").append(auth.getZipMatchResponse())
+					.append(" and Address Match = ").append(auth.getAddressMatchResponse()).append(".");
+				} else {
+					msg.append(" Additional description :").append(auth.getDescription()).append(".");
+				}
+			}
+			rec.setNote(msg.toString());
+			new ErpLogActivityCommand(LOCATOR, rec, true).execute();
+		
 	}
 
 }
