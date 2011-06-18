@@ -26,7 +26,7 @@ public class EnumClaimValue implements NutritionValueEnum {
 	public final static EnumClaimValue VEGGY = new EnumClaimValue("VEGGY", "Vegetarian", 2);
 
 	// 4mm nutrition claims
-	public final static EnumClaimValue NUTRITION_4MM_LOWCALORIE 	= new EnumClaimValue("4MM_LOWCALORIE", "Meals Under 500 Cal", 2);
+	public final static EnumClaimValue NUTRITION_4MM_LOWCALORIE 	= new EnumClaimValue("4MM_LOWCALORIE", "Nutritionist Recommended", 2);
 	public final static EnumClaimValue NUTRITION_4MM_VEGETARIAN 	= VEGGY;
 	public final static EnumClaimValue NUTRITION_4MM_2VEGETABLE 	= new EnumClaimValue("4MM_2VEGETABLE", "2+ Servings of Vegetables", 2);
 	public final static EnumClaimValue NUTRITION_4MM_WHOLEGRAINS 	= new EnumClaimValue("4MM_WHOLEGRAINS", "Whole Grains", 2);
