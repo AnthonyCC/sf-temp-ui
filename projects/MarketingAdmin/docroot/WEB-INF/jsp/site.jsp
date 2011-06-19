@@ -9,13 +9,15 @@
     <title>/ FreshDirect Marketing Admin : <tmpl:get name='title'/> /</title>
 	<link rel="stylesheet" href="css/transportation.css" type="text/css" />		
 	<link rel="stylesheet" href="css/extremecomponents.css" type="text/css" />
-	<link rel="stylesheet" href="css/jscalendar-1.0/calendar-system.css" type="text/css" />
 	<script src="js/RowHandlers.js" language="javascript" type="text/javascript"></script>
 	<script src="js/action.js" language="javascript" type="text/javascript"></script>
 		
-    <script type="text/javascript" language="javascript" src="js/jscalendar-1.0/calendar.js"></script>
-    <script type="text/javascript" language="javascript" src="js/jscalendar-1.0/lang/calendar-en.js"></script>
-    <script type="text/javascript" language="javascript" src="js/jscalendar-1.0/calendar-setup.js"></script>
+	<link rel="stylesheet" type="text/css" href="js/JSCal2-1.9/src/css/jscal2.css" />
+    <link rel="stylesheet" type="text/css" href="js/JSCal2-1.9/src/css/border-radius.css" />
+    <link rel="stylesheet" type="text/css" href="js/JSCal2-1.9/src/css/win2k/win2k.css" />
+    <script type="text/javascript" src="js/JSCal2-1.9/src/js/jscal2.js"></script>
+    <script type="text/javascript" src="js/JSCal2-1.9/src/js/lang/en.js"></script>
+
 
 		<title>Marketing Admin ::  Spring Framework </title>
 		<style type="text/css">
