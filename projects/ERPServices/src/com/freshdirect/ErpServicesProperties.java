@@ -190,6 +190,9 @@ public class ErpServicesProperties {
 	public final static String PROP_MKTADMIN_AUTO_UPLOADER_FTP_HOST		= "mktadmin.auto.uploader.ftp.host";
 	public final static String PROP_MKTADMIN_AUTO_UPLOADER_FTP_USER		= "mktadmin.auto.uploader.ftp.user";
 	public final static String PROP_MKTADMIN_AUTO_UPLOADER_FTP_PASSWD	= "mktadmin.auto.uploader.ftp.passwd";
+	public final static String PROP_MKTADMIN_UPSOUTAGE_FROM_ADDRESS		= "mktAdmin.upsoutage.mail.from";
+	public final static String PROP_MKTADMIN_UPSOUTAGE_SUBJECT		    = "mktAdmin.upsoutage.mail.subject";
+	public final static String PROP_MKTADMIN_UPSOUTAGE_MESSAGE	        = "mktAdmin.upsoutage.mail.message";
 	
 	static {
 		Properties defaults = new Properties();
@@ -330,6 +333,7 @@ public class ErpServicesProperties {
 		defaults.put( MASQUERADE_STOREFRONT_BASEURL, "http://www.freshdirect.com/" );
 		defaults.put( MASQUERADE_SECURITYTICKET_EXPIRATION, "5" );
 		defaults.put(PROP_CARD_VERIFICATION_AUTH_AMOUNT,"1");
+		
 		defaults.put(PROP_MKTADMIN_AUTO_UPLOADER_FTP_WORKDIR, "");
 		defaults.put(PROP_MKTADMIN_AUTO_UPLOADER_FTP_BACKUPDIR, "");
 		defaults.put(PROP_MKTADMIN_AUTO_UPLOADER_FTP_FAILEDDIR, "");
@@ -339,6 +343,9 @@ public class ErpServicesProperties {
 		defaults.put(PROP_MKTADMIN_AUTO_UPLOADER_FTP_HOST, "");
 		defaults.put(PROP_MKTADMIN_AUTO_UPLOADER_FTP_USER, "");
 		defaults.put(PROP_MKTADMIN_AUTO_UPLOADER_FTP_PASSWD, "");
+		defaults.put(PROP_MKTADMIN_UPSOUTAGE_FROM_ADDRESS, "");
+		defaults.put(PROP_MKTADMIN_UPSOUTAGE_SUBJECT, "");
+		defaults.put(PROP_MKTADMIN_UPSOUTAGE_MESSAGE, "");
 		
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
@@ -795,4 +802,18 @@ public class ErpServicesProperties {
 	public static double getCardVerificationAuthAmount() {
 		return Double.parseDouble( config.getProperty(PROP_CARD_VERIFICATION_AUTH_AMOUNT) );
 	}
+	
+	public static String getMktAdmUpsOutageFromAddress() {
+		return config.getProperty(PROP_MKTADMIN_UPSOUTAGE_FROM_ADDRESS);
+	}
+	
+	public static String getMktAdmUpsOutageSubject() {
+		return config.getProperty(PROP_MKTADMIN_UPSOUTAGE_SUBJECT);
+	}
+	
+	public static String getMktAdmUpsOutageMessage() {
+		return config.getProperty(PROP_MKTADMIN_UPSOUTAGE_MESSAGE);
+	}
+	
+	
 }
