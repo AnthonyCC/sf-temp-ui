@@ -515,12 +515,12 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		}
 
 		ActionResult paymentValidatorResult = new ActionResult();
-		try {
-			PaymentMethodUtil.validatePaymentMethod( paymentMethod, paymentValidatorResult, customerUser, false, false, false );
+		/*try {
+			PaymentMethodUtil.validatePaymentMethod(paymentMethod, paymentValidatorResult, customerUser, false, false, false );
 		} catch (FDResourceException e) {
 			LOGGER.warn( "FDResourceException while validating payment method", e );
 			return new Result( ErrorCode.TECHNICAL, ErrorCode.TECHNICAL.getErrorHeader(), "FDResourceException while validating payment method.", customerInfo );
-		}
+		}*/
 
 		if ( paymentValidatorResult.isFailure() ) {
 			LOGGER.warn( "Payment method not valid: " + paymentValidatorResult.getFirstError().getDescription() );
