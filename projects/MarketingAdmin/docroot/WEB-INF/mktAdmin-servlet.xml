@@ -53,29 +53,30 @@
 	 -->
 	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="mappings">
-			<props>   				
+			<props>
  		 	    <prop key="/welcome.do">mktAdminController</prop>
-				<prop key="/uploadView.do">mktAdminController</prop>				
-				<prop key="/competitorView.do">mktAdminController</prop>				
-				<prop key="/upload.do">fileUploadController</prop>			
-                <prop key="/editCompetitor.do">editCompetitorFormContoller</prop>			
+				<prop key="/uploadView.do">mktAdminController</prop>
+				<prop key="/competitorView.do">mktAdminController</prop>
+				<prop key="/upload.do">fileUploadController</prop>
+                <prop key="/editCompetitor.do">editCompetitorFormContoller</prop>
                 <prop key="/addCompetitor.do">addCompetitorFormContoller</prop>
-                <prop key="/deleteCompetitor.do">mktAdminController</prop>			                
-                <prop key="/promotions.do">mktAdminController</prop>			                
-                <prop key="/searchRestriction.do">searchRestrictionFormController</prop>			                
-                <prop key="/editRestrictionView.do">mktAdminController</prop>			                
-                <prop key="/editRestriction.do">restrictionListUploadController</prop>			                
-                <prop key="/appendRestriction.do">appendRestrictionFormController</prop>			                
-                <prop key="/downloadRestriction.do">mktAdminController</prop>			                
-                <prop key="/deleteRestriction.do">mktAdminController</prop>			                
+                <prop key="/deleteCompetitor.do">mktAdminController</prop>
+                <prop key="/promotions.do">mktAdminController</prop>
+                <prop key="/searchRestriction.do">searchRestrictionFormController</prop>
+                <prop key="/editRestrictionView.do">mktAdminController</prop>
+                <prop key="/editRestriction.do">restrictionListUploadController</prop>
+                <prop key="/appendRestriction.do">appendRestrictionFormController</prop>
+                <prop key="/downloadRestriction.do">mktAdminController</prop>
+                <prop key="/deleteRestriction.do">mktAdminController</prop>
+				<prop key="/upsOutage.do">mktAdminController</prop>
 			</props>
 		</property>
 	</bean>
 
 
 	<!-- ========================= CONTROLLER DEFINITIONS ========================= -->
-	
-	
+
+
 	<bean id="mktAdminController" class="com.freshdirect.mktAdmin.web.MarketAdminController">
 		<property name="methodNameResolver" ref="mktAdminControllerResolver"/>
 		<property name="marketAdminService" ref="marketAdminService"/>
@@ -90,15 +91,16 @@
 		<props>
 			<prop key="/uploadView.do">fileUploadHandler</prop>
 			<prop key="/welcome.do">welcomeHandler</prop>
-			<prop key="/competitorView.do">competitorViewHandler</prop>	
-            <prop key="/deleteCompetitor.do">removeCompetitorHandler</prop>	        
-            <prop key="/promotions.do">promotionViewHandler</prop>	        
-            <prop key="/editRestrictionView.do">restrictedListUploadHandler</prop>	                    
-            <prop key="/downloadRestriction.do">restrictedDownloadHandler</prop>	                                
-            <prop key="/deleteRestriction.do">removeRestrictedCustomerHandler</prop>	                                            
+			<prop key="/competitorView.do">competitorViewHandler</prop>
+            <prop key="/deleteCompetitor.do">removeCompetitorHandler</prop>
+            <prop key="/promotions.do">promotionViewHandler</prop>
+            <prop key="/editRestrictionView.do">restrictedListUploadHandler</prop>
+            <prop key="/downloadRestriction.do">restrictedDownloadHandler</prop>
+            <prop key="/deleteRestriction.do">removeRestrictedCustomerHandler</prop>
+			<prop key="/upsOutage.do">upsOutageHandler</prop>
 		</props>
 		</property>
-	</bean>	
+	</bean>
 <bean id="multipartResolver"
     class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 
@@ -124,7 +126,7 @@
         <property name="validator" ref="restrictionListUploadValidator"/>
         <property name="marketAdminService" ref="marketAdminService"/>
     </bean>
-    
+
     	<bean id="appendRestrictionFormController" class="com.freshdirect.mktAdmin.web.RestrictionAppendForm">
         <property name="commandClass" value="com.freshdirect.mktAdmin.model.RestrictionListAppendBean"/>
         <property name="formView" value="restAppendform"/>
@@ -132,12 +134,12 @@
         <property name="validator" ref="restrictionListAppenddValidator"/>
         <property name="marketAdminService" ref="marketAdminService"/>
     </bean>
-            
+
 	<bean id="fileUploadValidator" class="com.freshdirect.mktAdmin.validation.FileUploadValidator"/>
 	<bean id="restrictionListUploadValidator" class="com.freshdirect.mktAdmin.validation.RestrictionListUploadValidator"/>
 	<bean id="restrictionListAppenddValidator" class="com.freshdirect.mktAdmin.validation.RestrictionAppendValidator"/>
-    
-    
+
+
     <bean id="editCompetitorFormContoller" class="com.freshdirect.mktAdmin.web.EditCompInfoForm">
         <property name="commandClass" value="com.freshdirect.mktAdmin.model.CompetitorAddressModel"/>
         <property name="formView" value="editCompetitorForm"/>
@@ -145,14 +147,14 @@
         <property name="validator" ref="competitorFormValidator"/>
         <property name="marketAdminService" ref="marketAdminService"/>
     </bean>
-    
+
     <bean id="searchRestrictionFormController" class="com.freshdirect.mktAdmin.web.SearchRestrictionForm">
-        <property name="commandClass" value="com.freshdirect.mktAdmin.model.RestrictionSearchBean"/>      
+        <property name="commandClass" value="com.freshdirect.mktAdmin.model.RestrictionSearchBean"/>
         <property name="formView" value="searchRestrictionForm"/>
         <property name="successView" value="searchRestrictionForm"/>
         <property name="marketAdminService" ref="marketAdminService"/>
     </bean>
-      
+
 
     <bean id="addCompetitorFormContoller" class="com.freshdirect.mktAdmin.web.AddCompInfoForm">
         <property name="commandClass" value="com.freshdirect.mktAdmin.model.CompetitorAddressModel"/>
@@ -163,6 +165,6 @@
     </bean>
 
 	<bean id="competitorFormValidator" class="com.freshdirect.mktAdmin.validation.CompetitorFormValidator"/>
-    
+
 
 </beans>
