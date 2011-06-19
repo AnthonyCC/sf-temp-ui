@@ -2,7 +2,6 @@ package com.freshdirect.mktAdmin.dao;
 
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.mktAdmin.model.CompetitorAddressModel;
@@ -13,6 +12,8 @@ public interface MarketAdminDAOIntf {
 	public void insertCompetitorAddrModel(Collection collection) throws SQLException;
 
 	public Collection getCompetitorInfo() throws SQLException;
+	
+	public Collection getUpsOutageCustList(String fromDate, String endDate) throws SQLException;
 		
 	public CompetitorAddressModel getCompetitorInfo(String competitorId) throws SQLException;
 	
