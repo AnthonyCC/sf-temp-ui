@@ -4,10 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -438,6 +441,14 @@ public class FDStandingOrderDAO {
 				if(null !=filter.getDayOfWeek()){
 					builder.addObject(" to_char(SO.NEXT_DATE,'D')", filter.getDayOfWeek());
 				}
+				if(null != filter.getFromDate()){
+//					builder.addObject(" to_char(SO.NEXT_DATE,'MM/dd/yyyy')", filter.getFromDateStr());
+					builder.addSql("SO.NEXT_DATE >= ?", new Object[] { new Timestamp(filter.getFromDate().getTime())});
+				}
+				if(null != filter.getToDate()){
+//					builder.addObject(" to_char(SO.NEXT_DATE,'MM/dd/yyyy')", filter.getToDateStr());
+					builder.addSql("SO.NEXT_DATE <= ?", new Object[] { new Timestamp(filter.getToDate().getTime())});
+				}
 				if(true == filter.isActiveOnly()){
 					builder.addObject(" SO.DELETED", "0");
 				}else{
@@ -661,5 +672,33 @@ public class FDStandingOrderDAO {
 		
 		return infoList;
 	}
-	
+
+	private static final String GET_STANDING_ORDERS_ALTERNATE_DELIVERY_DATES =	"select  * from  CUST.SO_HOLIDAY_ALT_DATE";
+	public Map<Date,Date> getStandingOrdersAlternateDeliveryDates(Connection conn) throws SQLException{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Map<Date, Date> map = new HashMap<Date,Date>();
+		try {			
+			ps = conn.prepareStatement(GET_STANDING_ORDERS_ALTERNATE_DELIVERY_DATES);
+			rs = ps.executeQuery();			
+			while (rs.next()) {
+				Date actualDate = rs.getDate("current_delivery_date") ;
+				Date alternateDate = rs.getDate("alternate_delivery_date") ;
+				map.put(actualDate, alternateDate);
+			}	
+			rs.close();
+			ps.close();
+		} catch (SQLException exc) {
+			throw exc;
+		} finally {
+			if(rs != null){
+				rs.close();
+			}
+			if(ps != null) {
+				ps.close();
+			}
+		}		
+		
+		return map;
+	}
 }

@@ -179,13 +179,23 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		}
 		
 		StandingOrdersServiceResult.Counter resultCounter = new StandingOrdersServiceResult.Counter();
-		
+		Map<Date, Date> altDates = null;
+		try {
+			altDates = FDStandingOrdersManager.getInstance().getStandingOrdersAlternateDeliveryDates();
+		} catch (FDResourceException e) {
+			LOGGER.error( "Getting standing order alternate delivery dates failed with FDResourceException!", e );
+		}
 		LOGGER.info( "Processing " + soList.size() + " standing orders." );
 		for ( FDStandingOrder so : soList ) {
 			Result result;
 			try {
 				
-				result = process( so );
+				if(null !=altDates){
+					result = process( so,altDates.get(so.getNextDeliveryDate()) );
+				}else{
+					result = process( so,null);
+				}
+//				result = process( so );
 				
 			} catch (FDResourceException re) {
 				invalidateFCHome();
@@ -379,7 +389,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	private StandingOrdersServiceResult.Result process( FDStandingOrder so ) throws FDResourceException {
+	private StandingOrdersServiceResult.Result process( FDStandingOrder so, Date altDate ) throws FDResourceException {
 		
 		LOGGER.info( "Processing Standing Order : " + so );		
 		
@@ -539,7 +549,12 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		
 		DeliveryInterval deliveryTimes;		
 		try {
-			deliveryTimes = new DeliveryInterval( so );
+			if(null != altDate){
+				deliveryTimes = new DeliveryInterval( altDate,so.getStartTime(), so.getEndTime());
+			}else{
+				deliveryTimes = new DeliveryInterval( so );
+			}			
+			
 		} catch ( IllegalArgumentException ex ) {
 			LOGGER.warn( "No valid dates." );
 			return new Result( ErrorCode.TIMESLOT, customerInfo, customerUser );
@@ -1077,6 +1092,12 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		}
 		
 		StandingOrdersServiceResult.Counter resultCounter = new StandingOrdersServiceResult.Counter();
+		Map<Date, Date> altDates = null;
+		try {
+			altDates = FDStandingOrdersManager.getInstance().getStandingOrdersAlternateDeliveryDates();
+		} catch (FDResourceException e) {
+			LOGGER.error( "Getting standing order alternate delivery dates failed with FDResourceException!", e );
+		}
 		
 		LOGGER.info( "Processing " + soList.size() + " standing orders." );
 		for ( String _so : soList ) {
@@ -1084,7 +1105,12 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			FDStandingOrder so=null;
 			try {
 				so=soManager.load(new PrimaryKey(_so));
-				result = process( so );
+				if(null !=altDates){
+					result = process( so,altDates.get(so.getNextDeliveryDate()) );
+				}else{
+					result = process( so,null);
+				}
+//				result = process( so );
 				
 			} catch (FDResourceException re) {
 				invalidateFCHome();

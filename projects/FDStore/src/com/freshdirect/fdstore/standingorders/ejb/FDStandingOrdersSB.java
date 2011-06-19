@@ -2,7 +2,8 @@ package com.freshdirect.fdstore.standingorders.ejb;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
-import java.util.List;
+import java.util.Date;
+import java.util.Map;
 
 import javax.ejb.EJBObject;
 
@@ -28,4 +29,5 @@ public interface FDStandingOrdersSB extends EJBObject {
 	public void clearStandingOrderErrors(String[] soIDs,String agentId)throws RemoteException;
 	public FDStandingOrderInfoList getFailedStandingOrdersCustInfo()throws RemoteException;
 	public FDStandingOrderInfoList getMechanicalFailedStandingOrdersCustInfo()throws RemoteException;
+	public Map<Date,Date> getStandingOrdersAlternateDeliveryDates() throws RemoteException;
 }

@@ -3,7 +3,9 @@ package com.freshdirect.fdstore.standingorders;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.CreateException;
 import javax.naming.Context;
@@ -411,4 +413,23 @@ public class FDStandingOrdersManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
+	
+	public Map<Date,Date> getStandingOrdersAlternateDeliveryDates() throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();
+			
+			return sb.getStandingOrdersAlternateDeliveryDates();
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	
+	
+	
 }

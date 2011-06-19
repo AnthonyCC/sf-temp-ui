@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Category;
 
@@ -287,6 +288,24 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			return ret;
 		} catch (SQLException e) {
 			LOGGER.error( "SQL ERROR in getMechanicalFailedStandingOrdersCustInfo() : " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public Map<Date,Date> getStandingOrdersAlternateDeliveryDates() throws FDResourceException{
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();
+			
+			Map<Date,Date> map = dao.getStandingOrdersAlternateDeliveryDates(conn);
+			
+			return map;
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in getStandingOrdersAlternateDeliveryDates() : " + e.getMessage(), e );
 			e.printStackTrace();
 			throw new FDResourceException(e);
 		} finally {
