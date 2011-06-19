@@ -14,6 +14,8 @@ import com.freshdirect.mktAdmin.model.RestrictionSearchBean;
 public interface MarketAdminServiceIntf {
 
 	public Collection parseMktAdminFile(FileUploadBean bean) throws MktAdminApplicationException;
+	
+	public Collection getUpsOutageList(String fromDate, String endDate) throws MktAdminApplicationException;
 			
 	public void storeCompetitorInformation(Collection collection) throws MktAdminApplicationException;
 	

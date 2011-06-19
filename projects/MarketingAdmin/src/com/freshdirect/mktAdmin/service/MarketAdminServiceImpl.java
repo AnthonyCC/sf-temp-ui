@@ -939,4 +939,14 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 				return info;
 			
 		}
+		
+		public Collection getUpsOutageList(String fromDate, String endDate) throws MktAdminApplicationException {
+			try {
+				return getMktAdminDAOImpl().getUpsOutageCustList(fromDate, endDate);
+			} catch (SQLException e) {
+				LOGGER.error("Error while getting the UPS Outage customer list", e);
+			}
+			return null;
+		}
+			
 }
