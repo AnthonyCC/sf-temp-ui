@@ -1,19 +1,26 @@
 package com.freshdirect.mktAdmin.web;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
+import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Category;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 
+import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mktAdmin.constants.EnumFileContentType;
 import com.freshdirect.mktAdmin.constants.EnumFileType;
 import com.freshdirect.mktAdmin.constants.EnumListUploadActionType;
@@ -22,6 +29,7 @@ import com.freshdirect.mktAdmin.exception.MktAdminSystemException;
 import com.freshdirect.mktAdmin.model.FileUploadBean;
 import com.freshdirect.mktAdmin.model.RestrictionListUploadBean;
 import com.freshdirect.mktAdmin.service.MarketAdminServiceIntf;
+import com.freshdirect.mktAdmin.util.CustomerModel;
 
 /**
  * <code>MultiActionController</code> that handles all non-form URL's.
@@ -29,6 +37,8 @@ import com.freshdirect.mktAdmin.service.MarketAdminServiceIntf;
  * @author Gopal
  */
 public class MarketAdminController extends MultiActionController implements InitializingBean {
+	
+	private final static Category LOGGER = LoggerFactory.getInstance(MarketAdminController.class);
 	
 
 	private MarketAdminServiceIntf marketAdminService;
@@ -184,6 +194,69 @@ public class MarketAdminController extends MultiActionController implements Init
 			throw new MktAdminSystemException("1001",e);
 		}
 		return new ModelAndView("promotionView","promotions",collection);
+	}
+	
+	public ModelAndView upsOutageHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		Collection<CustomerModel> customerList = null;
+		String fromDate = request.getParameter("FromDate");
+		String endDate = request.getParameter("ToDate");
+		if("true".equals(request.getParameter("submission"))) {
+			//process the user request
+			SimpleDateFormat dateFormat = new SimpleDateFormat("mm/dd/yyyy hh:mm aaa");
+		    java.util.Date convertedFromDate = null;
+		    java.util.Date convertedToDate = null;
+		    try {
+				convertedFromDate = dateFormat.parse(fromDate);
+				convertedToDate = dateFormat.parse(endDate);
+			} catch (ParseException e) {
+				LOGGER.error("Date parse exception.", e);
+			}
+		    if(convertedToDate.before(convertedFromDate)) {
+		    	LOGGER.debug("Wrong dates");
+		    } else {
+		    	try {
+					customerList = getMarketAdminService().getUpsOutageList(fromDate, endDate);
+				} catch (MktAdminApplicationException e) {
+					LOGGER.error("Exception getting customer list", e);
+				}
+		    }		    
+		} else if("xls".equals(request.getParameter("action"))) {
+			System.out.println("FromDate: "+fromDate + "----toDate:" + endDate);
+			if(fromDate != null && endDate != null) {
+				try {
+					customerList = getMarketAdminService().getUpsOutageList(fromDate, endDate);
+				} catch (MktAdminApplicationException e) {
+					LOGGER.error("Exception getting customer list", e);
+				}
+			}
+			response.setContentType("application/vnd.ms-excel");
+		    response.setHeader("Content-Disposition", "attachment; filename=UpsOutageCustList_Export.xls");
+		    response.setCharacterEncoding("utf-8");
+		    request.getSession().setAttribute("customers", customerList);
+		} else if("smails".equals(request.getParameter("action"))) {
+			//Send emails to the list of people.
+			if(fromDate != null && endDate != null) {
+				try {
+					customerList = getMarketAdminService().getUpsOutageList(fromDate, endDate);
+				} catch (MktAdminApplicationException e) {
+					LOGGER.error("Exception getting customer list", e);
+				}
+				String message = ErpServicesProperties.getMktAdmUpsOutageMessage();
+				String subject = ErpServicesProperties.getMktAdmUpsOutageSubject();
+				String from = ErpServicesProperties.getMktAdmUpsOutageFromAddress();
+				Iterator<CustomerModel> iter = customerList.iterator();
+				while(iter.hasNext()) {
+					CustomerModel cm = (CustomerModel) iter.next();
+					com.freshdirect.mail.ErpMailSender sender = new com.freshdirect.mail.ErpMailSender();
+					try {
+						sender.sendMail(from, cm.getEmail(), "", subject, message);
+					} catch (MessagingException e) {
+						LOGGER.error("Exception sending email", e);
+					}
+				}
+			}
+		}
+		return new ModelAndView("upsView","customers",customerList);
 	}
 
 
