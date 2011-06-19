@@ -30,6 +30,7 @@ import com.freshdirect.mktAdmin.dao.MarketAdminDAOIntf;
 import com.freshdirect.mktAdmin.model.CompetitorAddressModel;
 import com.freshdirect.mktAdmin.model.CustomerAddressModel;
 import com.freshdirect.mktAdmin.model.RestrictedPromoCustomerModel;
+import com.freshdirect.mktAdmin.util.CustomerModel;
 
 public  class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 
@@ -718,5 +719,41 @@ public  class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 		
         LOGGER.debug("OracleMarketAdminDAOImpl : getInvalidPromotions end1  "+invalidPromoList.size());
         return invalidPromoList;        
-	}	
+	}
+	
+	public static String upsOutageList = "select distinct TL.CUSTOMER_ID,  C.USER_ID, CI.FIRST_NAME, CI.LAST_NAME " +  
+											"from DLV.TIMESLOT_LOG tl, " +
+											      "CUST.CUSTOMER c, " +
+											      "CUST.CUSTOMERINFO ci " +
+											"where TL.EVENTTYPE='GET_TIMESLOT' and TL.RESPONSE_TIME='0' " +
+											"and TL.EVENT_DTM between TO_DATE(?, 'MM/DD/YYYY HH12:MI AM') " + 
+											"and TO_DATE(?, 'MM/DD/YYYY HH12:MI AM') " +
+											"and    tl.customer_id = c.id " +
+											"and    c.id = ci.customer_id";
+
+	
+	public Collection<CustomerModel> getUpsOutageCustList(String fromDate, String endDate) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		List<CustomerModel> list = new ArrayList<CustomerModel>();
+		try {
+			conn = this.jdbcTemplate.getDataSource().getConnection();
+			pstmt = conn.prepareStatement(upsOutageList);
+			pstmt.setString(1, fromDate);
+			pstmt.setString(2, endDate);
+			rset = pstmt.executeQuery();
+			while(rset.next()) {
+				CustomerModel cm = new CustomerModel();
+				cm.setFirstName(rset.getString("FIRST_NAME"));
+				cm.setLastName(rset.getString("LAST_NAME"));
+				cm.setEmail(rset.getString("USER_ID"));
+				cm.setCustomerId(rset.getString("CUSTOMER_ID"));
+				list.add(cm);
+			}
+		} catch(Exception e) {
+			LOGGER.error("Error getting UPSCustomer list", e);
+		}
+		return list;
+	}
 }
