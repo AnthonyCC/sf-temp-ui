@@ -62,7 +62,7 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
 	            if(actionName.equalsIgnoreCase("addPaymentMethod")) {
 	                ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processForm(request, actionResult, user.getIdentity());
 	                if(actionResult.isSuccess()){
-	                    PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, actionResult, user);
+	                    PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, actionResult, user,true);
 	            		if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
 	            	        String terms = request.getParameter(PaymentMethodName.TERMS);
 	            	        actionResult.addError(
@@ -80,7 +80,7 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
 	            } else if(actionName.equalsIgnoreCase("editPaymentMethod")) {
 	            	ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processEditForm(request, actionResult, user.getIdentity());	            	
 	                if(actionResult.isSuccess()){
-	                    PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, actionResult, user);
+	                    PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, actionResult, user,true);
 	                    if(actionResult.isSuccess()){
 	                    	paymentMethod.setAvsCkeckFailed(false);
 	                        PaymentMethodUtil.editPaymentMethod(request, actionResult, paymentMethod);

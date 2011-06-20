@@ -211,7 +211,7 @@ public class RegistrationAction extends WebActionSupport {
 				if (!"".equals(request.getParameter(PaymentMethodName.ACCOUNT_NUMBER))) {
 					LOGGER.debug("CREATING PAYMENT METHOD");
 					ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processForm(request, actionResult, user.getIdentity());
-					PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, actionResult, user);
+					PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, actionResult, user,true);
 					if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
 				        String terms = request.getParameter(PaymentMethodName.TERMS);
 				        actionResult.addError(

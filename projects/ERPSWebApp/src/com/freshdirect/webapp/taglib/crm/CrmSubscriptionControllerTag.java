@@ -266,7 +266,7 @@ public class CrmSubscriptionControllerTag extends AbstractControllerTag {
 	private void editPaymentMethod(HttpServletRequest request, ActionResult actionResult) throws FDResourceException {
 		this.populatePaymentMethod(request, actionResult);
 		FDUserI user = CrmSession.getUser(pageContext.getSession());
-		PaymentMethodUtil.validatePaymentMethod(request, this.paymentMethod, actionResult, user);
+		PaymentMethodUtil.validatePaymentMethod(request, this.paymentMethod, actionResult, user,true);
 		if (actionResult.isSuccess()) {
 			if (CrmSession.verifyCaseAttachment(pageContext.getSession(), actionResult)) {
 				PaymentMethodUtil.editPaymentMethod(request, actionResult, this.paymentMethod);
@@ -278,7 +278,7 @@ public class CrmSubscriptionControllerTag extends AbstractControllerTag {
 		FDUserI user = CrmSession.getUser(pageContext.getSession());
 		this.populatePaymentMethod(request, actionResult);
 
-		PaymentMethodUtil.validatePaymentMethod(request, this.paymentMethod, actionResult, user);
+		PaymentMethodUtil.validatePaymentMethod(request, this.paymentMethod, actionResult, user,true);
 		if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
 	        String terms = request.getParameter(PaymentMethodName.TERMS);
 	        actionResult.addError(

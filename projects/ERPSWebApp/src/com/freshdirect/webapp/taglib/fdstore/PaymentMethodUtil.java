@@ -298,14 +298,14 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     	return ((ErpPaymentMethodModel)paymentMethod).getMaskedAccountNumber();
     }
     
-    public static void validatePaymentMethod(HttpServletRequest request, ErpPaymentMethodI paymentMethod, ActionResult result, FDUserI user) throws FDResourceException {
+    public static void validatePaymentMethod(HttpServletRequest request, ErpPaymentMethodI paymentMethod, ActionResult result, FDUserI user,boolean verifyCC) throws FDResourceException {
 		String bypassBadAccountCheck = RequestUtil.getRequestParameter(request,PaymentMethodName.BYPASS_BAD_ACCOUNT_CHECK);
 		FDActionInfo action= AccountActivityUtil.getActionInfo(request.getSession(), "");
 		
-    	validatePaymentMethod(action, paymentMethod, result, user, request.getAttribute("gift_card") != null, request.getAttribute("donation") != null, bypassBadAccountCheck != null && !bypassBadAccountCheck.trim().equals("") );
+    	validatePaymentMethod(action, paymentMethod, result, user, request.getAttribute("gift_card") != null, request.getAttribute("donation") != null, bypassBadAccountCheck != null && !bypassBadAccountCheck.trim().equals(""),verifyCC );
     }
     
-    public static void validatePaymentMethod ( FDActionInfo action, ErpPaymentMethodI paymentMethod, ActionResult result, FDUserI user, boolean gift_card, boolean donation, boolean bypassBadAccountCheck ) throws FDResourceException {
+    public static void validatePaymentMethod ( FDActionInfo action, ErpPaymentMethodI paymentMethod, ActionResult result, FDUserI user, boolean gift_card, boolean donation, boolean bypassBadAccountCheck, boolean verifyCC ) throws FDResourceException {
     	boolean isFiftyStateValidationReqd=true;
     	//check name on card
         result.addError(
@@ -350,7 +350,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        paymentMethod.getExpirationDate() == null || checkDate.after(paymentMethod.getExpirationDate()),
 	        "expiration", SystemMessageList.MSG_CARD_EXPIRATION_DATE
 	        );
-	        if(!result.isFailure() && FDStoreProperties.isPaymentMethodVerificationEnabled()&& !paymentMethod.isBypassAVSCheck()) {
+	        if(!result.isFailure() && FDStoreProperties.isPaymentMethodVerificationEnabled()&& !paymentMethod.isBypassAVSCheck()&& verifyCC) {
 	        	
 	        	
 	        	try {

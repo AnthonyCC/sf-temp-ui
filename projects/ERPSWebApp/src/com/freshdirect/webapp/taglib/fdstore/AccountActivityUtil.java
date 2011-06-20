@@ -17,7 +17,7 @@ public class AccountActivityUtil implements SessionName {
 		EnumTransactionSource src;
 		String initiator="SYSTEM";//default
 		CrmAgentModel agent;
-System.out.println("");
+
 		String app = (String) session.getAttribute(SessionName.APPLICATION);
 		if (app != null && app.equalsIgnoreCase("CALLCENTER")) {
 			src = EnumTransactionSource.CUSTOMER_REP;
