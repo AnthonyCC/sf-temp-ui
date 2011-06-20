@@ -72,18 +72,18 @@ if (FDStoreProperties.isAnnotationMode()) {
 	if (__isWineLayout) {
 		if (productNode.getAlternateImage() != null) { 
 	%>		<div>
-				<img src="<%= productNode.getAlternateImage().getPath() %>" style="width: <%= productNode.getAlternateImage().getWidth() %>px; height <%= productNode.getAlternateImage().getHeight() %>px; vertical-align: top;">
-				<img src="<%= productNode.getDescriptiveImage().getPath() %>" style="width: <%= productNode.getDescriptiveImage().getWidth() %>px; height <%= productNode.getDescriptiveImage().getHeight() %>px; vertical-align: top;">
+				<img src="<%= productNode.getAlternateImage().getPath() %>" width="<%= productNode.getAlternateImage().getWidth() %>" height="<%= productNode.getAlternateImage().getHeight() %>" style="vertical-align: top;">
+				<img src="<%= productNode.getDescriptiveImage().getPath() %>" width="<%= productNode.getDescriptiveImage().getWidth() %>" height="<%= productNode.getDescriptiveImage().getHeight() %>" style="vertical-align: top;">
 			</div>
 	<%
 		} else {
 %>		<div>
-			<img src="<%= productNode.getProdImage().getPath() %>" style="width: <%= productNode.getProdImage().getWidth() %>px; height <%= productNode.getProdImage().getHeight() %>px; vertical-align: top;">
+			<img src="<%= productNode.getProdImage().getPath() %>" width="<%= productNode.getProdImage().getWidth() %>" height="<%= productNode.getProdImage().getHeight() %>" style="vertical-align: top;">
 		</div>
 <%
 		}
 	} else {
-	%>		<img src="<%= productNode.getDetailImage().getPath() %>" style="width: <%= productNode.getDetailImage().getWidth() %>px; height <%= productNode.getDetailImage().getHeight() %>px; ">
+	%>		<img src="<%= productNode.getDetailImage().getPath() %>" width="<%= productNode.getDetailImage().getWidth() %>" height="<%= productNode.getDetailImage().getHeight() %>">
 	<%
 	}
 	%>
