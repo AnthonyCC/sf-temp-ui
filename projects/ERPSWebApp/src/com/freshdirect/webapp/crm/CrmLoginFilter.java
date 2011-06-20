@@ -26,6 +26,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.crm.security.CrmSecurityManager;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.crm.CrmSessionStatus;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class CrmLoginFilter implements Filter {
 
@@ -68,6 +69,7 @@ public class CrmLoginFilter implements Filter {
 			CrmSessionStatus sessStatus = new CrmSessionStatus(status, request.getSession());
 			CrmSession.setSessionStatus(request.getSession(), sessStatus);
 			String redirectUrl = sessStatus.getRedirectUrl();
+			request.getSession().setAttribute(SessionName.APPLICATION, "CALLCENTER");
 			if(null ==redirectUrl){
 				redirectUrl="/main/main_index.jsp";
 				if(CrmAgentRole.OPS_CODE.equals(agentRole.getCode())||CrmAgentRole.SOP_CODE.equals(agentRole.getCode())){
