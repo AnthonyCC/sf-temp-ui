@@ -19,6 +19,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.log4j.Category;
 
@@ -42,6 +43,7 @@ import com.freshdirect.fdstore.promotion.management.FDPromoZipRestriction;
 import com.freshdirect.fdstore.promotion.management.FDPromotionAttributeParam;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewManager;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
+import com.freshdirect.fdstore.promotion.management.WSPromotionInfo;
 import com.freshdirect.fdstore.util.json.FDPromotionJSONSerializer;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -263,6 +265,63 @@ public class PromoPublisher {
 		return true;
 	}
 	
+	public List getAllActiveWSPromotions() {
+				
+		// prepare serializer
+		JSONSerializer ser = new JSONSerializer();
+		try {
+			ser.registerDefaultSerializers();
+			ser.registerSerializer(FDPromotionJSONSerializer.getInstance());
+		} catch (Exception e) {
+			LOGGER.error("getAllActiveWSPromotions Failed to register serializer modules", e);
+			return null;
+		}
+
+		final String promoPublishURL = FDStoreProperties.getPromoPublishURL();
+		if (promoPublishURL == null) {
+			LOGGER.error("Promotion getAllActiveWSPromotions URL is not set in fdstore.properties!");
+			return null;
+		}
+		
+		// setup http client
+		HttpClient client = new HttpClient();
+
+		GetMethod meth = new GetMethod(promoPublishURL+"?action=getWSPromosForAutoCancel");
+		
+		try {
+
+			int status = client.executeMethod(meth);
+			LOGGER.debug("getAllActiveWSPromotions operation finished with status " + status);
+			
+			if (status != HttpStatus.SC_OK) {
+				LOGGER.error("Publish failed with status code " + status);
+				return null;
+			}						
+
+			String respBody = new String(meth.getResponseBody());
+			Object resp = ser.fromJSON(respBody);
+			LOGGER.debug("getAllActiveWSPromotions: " + respBody);
+			if (resp instanceof List) {
+				return (List) resp;
+			}
+		} catch (HttpException e) {
+			LOGGER.error("Failed to getAllActiveWSPromotions content", e);
+			return null;
+		} catch (IOException e) {
+			LOGGER.error("Failed to getAllActiveWSPromotions content", e);
+			return null;
+		} catch (UnmarshallException e) {
+			LOGGER.error("Failed to getAllActiveWSPromotions content", e);
+			return null;
+		}
+
+		return null;
+	}
+	
+	public static void main(String[] args) throws ParseException {
+		PromoPublisher p = new PromoPublisher();
+		System.out.println("Result >>>>"+p.getAllActiveWSPromotions());
+	}
 	
 	/**
 	 * For test purposes!
@@ -270,7 +329,7 @@ public class PromoPublisher {
 	 * @param args
 	 * @throws ParseException
 	 */
-	public static void main(String[] args) throws ParseException {
+	public static void mainEx(String[] args) throws ParseException {
 		FDPromoContentModel ctnt;
 		FDPromoPaymentStrategyModel paymentStrategy;
 		FDPromotionNewModel promoNew;

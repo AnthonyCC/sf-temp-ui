@@ -945,5 +945,17 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
             close(conn);
 		}		
 	}
+	
+	public List<WSPromotionInfo> getAllActiveWSPromotions(java.util.Date effectiveDate) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return FDPromotionManagerNewDAO.getAllActiveWSPromotions(effectiveDate, conn);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+            close(conn);
+		}		
+	}
 
 }

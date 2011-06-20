@@ -1,23 +1,9 @@
 package com.freshdirect.fdstore.promotion.management;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 
-import org.apache.commons.lang.StringUtils;
-
-import com.freshdirect.deliverypass.EnumDlvPassStatus;
-import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
-import com.freshdirect.fdstore.promotion.EnumDCPDContentType;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
 import com.freshdirect.framework.core.ModelSupport;
-import com.freshdirect.framework.core.PrimaryKey;
 
 public class WSPromotionInfo extends ModelSupport {
 	private String promotionCode; 
@@ -31,6 +17,7 @@ public class WSPromotionInfo extends ModelSupport {
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
+	
 	public Date getEndDate() {
 		return endDate;
 	}

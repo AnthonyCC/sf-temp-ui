@@ -2877,7 +2877,7 @@ public class FDPromotionManagerNewDAO {
 		return dowLimits;
 	}
 
-	private static final String GET_ALL_ACTIVE_PROMOTIONS = "select P.ID, P.CODE, P.REDEEM_CNT, P.MAX_AMOUNT, T.DAY_ID, "+
+	private static final String GET_ALL_ACTIVE_PROMOTIONS = "select P.ID, P.CODE, P.REDEEM_CNT, P.MAX_AMOUNT, T.DAY_ID, P.STATUS, "+
 	"(SELECT count(s.id) from cust.sale s, cust.salesaction sa, cust.PROMOTION_PARTICIPATION pa "+
 	"where S.ID = SA.SALE_ID "+
 	"and S.CUSTOMER_ID = SA.CUSTOMER_ID "+
@@ -2891,11 +2891,12 @@ public class FDPromotionManagerNewDAO {
 	"cust.PROMO_DLV_TIMESLOT t "+
 	"where P.ID = Z.PROMOTION_ID "+
 	"and Z.ID = T.PROMO_DLV_ZONE_ID "+
+	"and P.CAMPAIGN_CODE='HEADER' and P.OFFER_TYPE= 'WINDOW_STEERING' "+
 	"and P.STATUS IN ('LIVE','CANCELLED') "+
 	"and  P.START_DATE <= ? "+
 	"and  P.EXPIRATION_DATE >= ?";
 
-	private static List<WSPromotionInfo> getAllActiveWSPromotions(java.util.Date effectiveDate, Connection conn) throws SQLException {
+	public static List<WSPromotionInfo> getAllActiveWSPromotions(java.util.Date effectiveDate, Connection conn) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		List<WSPromotionInfo> wspromotions = new ArrayList<WSPromotionInfo>();
@@ -2912,6 +2913,7 @@ public class FDPromotionManagerNewDAO {
 				promo.setDiscount(rs.getDouble("MAX_AMOUNT"));
 				promo.setDayofweek(rs.getInt("DAY_ID"));
 				promo.setRedemptions(rs.getInt("RCOUNT"));
+				promo.setStatus(EnumPromotionStatus.getEnum(rs.getString("STATUS")));
 				wspromotions.add(promo);
 			}
 		

@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.promotion.pxp;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewManager;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
+import com.freshdirect.fdstore.promotion.management.WSPromotionInfo;
 import com.freshdirect.fdstore.util.json.FDPromotionJSONSerializer;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.metaparadigm.jsonrpc.JSONSerializer;
@@ -34,9 +36,12 @@ import com.metaparadigm.jsonrpc.UnmarshallException;
  *
  */
 public class PromoPublishServlet extends HttpServlet {
+	
 	private static final long serialVersionUID = 4693560915139423591L;
 
 	private static Category		LOGGER				= LoggerFactory.getInstance( PromoPublishServlet.class );
+	
+	private static final String ACTION_GET_WSPROMOSFORAUTOCANCEL = "getWSPromosForAutoCancel";
 
 	
 	private static JSONSerializer ser = new JSONSerializer();
@@ -46,6 +51,34 @@ public class PromoPublishServlet extends HttpServlet {
 			ser.registerSerializer(FDPromotionJSONSerializer.getInstance());
 		} catch (Exception e) {
 			LOGGER.error("Failed to setup serializer", e);
+		}
+	}
+	
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		
+		String action = request.getParameter("action");
+		Object result = null;
+		if(ACTION_GET_WSPROMOSFORAUTOCANCEL.equalsIgnoreCase(action)) {
+			Date today = new Date();
+			try {
+				result = FDPromotionNewManager.getAllActiveWSPromotions(today);
+			} catch (FDResourceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+						
+		PrintWriter writer = response.getWriter();
+		try {
+			if(result != null) {
+				writer.append(ser.toJSON(result));
+			}
+		} catch (MarshallException e) {
+			e.printStackTrace();
+			LOGGER.error(action + " in PromoPublishServlet Failed to generate response" + e);
+			writer.append("OK");
 		}
 	}
 	
