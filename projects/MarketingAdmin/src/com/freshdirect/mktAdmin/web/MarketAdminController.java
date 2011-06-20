@@ -231,31 +231,10 @@ public class MarketAdminController extends MultiActionController implements Init
 			}
 			response.setContentType("application/vnd.ms-excel");
 		    response.setHeader("Content-Disposition", "attachment; filename=UpsOutageCustList_Export.xls");
-		    response.setCharacterEncoding("utf-8");
-		    request.getSession().setAttribute("customers", customerList);
-		} else if("smails".equals(request.getParameter("action"))) {
-			//Send emails to the list of people.
-			if(fromDate != null && endDate != null) {
-				try {
-					customerList = getMarketAdminService().getUpsOutageList(fromDate, endDate);
-				} catch (MktAdminApplicationException e) {
-					LOGGER.error("Exception getting customer list", e);
-				}
-				String message = ErpServicesProperties.getMktAdmUpsOutageMessage();
-				String subject = ErpServicesProperties.getMktAdmUpsOutageSubject();
-				String from = ErpServicesProperties.getMktAdmUpsOutageFromAddress();
-				Iterator<CustomerModel> iter = customerList.iterator();
-				while(iter.hasNext()) {
-					CustomerModel cm = (CustomerModel) iter.next();
-					com.freshdirect.mail.ErpMailSender sender = new com.freshdirect.mail.ErpMailSender();
-					try {
-						sender.sendMail(from, cm.getEmail(), "", subject, message);
-					} catch (MessagingException e) {
-						LOGGER.error("Exception sending email", e);
-					}
-				}
-			}
-		}
+		    response.setCharacterEncoding("utf-8");		    
+		} 
+		if(customerList != null)
+			request.getSession().setAttribute("customers", customerList);
 		return new ModelAndView("upsView","customers",customerList);
 	}
 
