@@ -256,4 +256,11 @@ public class FakePromotionContext implements PromotionContextI {
 	public String getUsedWSPromotionCode(){
 		return null;
 	}
+
+	@Override
+	public boolean applyLineItemDollarOffDiscount(PromotionI promo,
+			FDCartLineI lineItem, double promotionAmt) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
