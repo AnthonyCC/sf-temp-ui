@@ -94,12 +94,15 @@
 						//LINE_ITEM TYPE display
 						}else if ( EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotion.getPromotionType()) ) {
 					%>
-						<% if (promotion.getPercentOff() != null && !"".equals(promotion.getPercentOff())) { %>
-								<tr>
-									<td class="promo_detail_label">Discount:</td>
-									<td class="alignL"><%= promotion.getPercentOff()%> %</td>
-								</tr>
-						<% } %>
+						<tr>
+								<td class="promo_detail_label">Discount:</td>
+							<% if (
+									( promotion.getPercentOff() != null && !"".equals(promotion.getPercentOff()) ) ||
+									( promotion.getMaxAmount() != null && !"".equals(promotion.getMaxAmount()) )
+								) { %>
+								<td class="alignL"><%= (!"".equals(promotion.getPercentOff()))?(NumberUtil.isDouble(promotion.getPercentOff())?Double.valueOf(promotion.getPercentOff()).intValue():promotion.getPercentOff())+" %":"$ "+promotion.getMaxAmount()%></td>
+							<% } %>
+							</tr>
 						<%-- max items call --%>
 						<% if ( promotion.getMaxItemCount() > 0 ) { %>
 								<tr>

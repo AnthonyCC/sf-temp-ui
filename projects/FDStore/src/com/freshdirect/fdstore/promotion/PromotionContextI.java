@@ -119,4 +119,6 @@ public interface PromotionContextI {
 	public boolean isAlreadyRedeemedPromotion(String promoCode);
 	
 	public String getUsedWSPromotionCode();
+	
+	public boolean applyLineItemDollarOffDiscount(PromotionI promo, FDCartLineI lineItem, double promotionAmt) ;
 }

@@ -162,13 +162,33 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 			}else if(EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotionType)){
 				this.promotion.setMaxAmount("");
 				this.promotion.setOfferType(EnumOfferType.LINE_ITEM.getName());
-				String percentOff = NVL.apply(request.getParameter("li_discount"), "").trim();
-				this.promotion.setPercentOff(percentOff);
+//				String percentOff = NVL.apply(request.getParameter("li_discount"), "").trim();
+				String liDiscountType = NVL.apply(request.getParameter("li_discount_type"), "").trim();
+				if("".equals(liDiscountType)){
+					actionResult.addError(true, "discountEmpty", " Please select one discount type under LINE ITEM.");
+				}else if("perc".equalsIgnoreCase(liDiscountType)){				
+					String percentOff = NVL.apply(request.getParameter("li_discount"), "").trim();
+					this.promotion.setPercentOff(percentOff);
+					this.promotion.setMaxAmount("");									
+					if(!NumberUtil.isDouble(percentOff)){
+						actionResult.addError(true, "liPercentOffNumber", " Discount % value for LINE ITEM should be a number.");
+					}else if(Double.parseDouble(percentOff)>100){
+						actionResult.addError(true, "liPercentOffNumber", " Discount % value for LINE ITEM should not be > 100.");
+					}
+				}else if("amount".equalsIgnoreCase(liDiscountType)){
+					String maxAmount = NVL.apply(request.getParameter("li_amt"), "").trim();
+					this.promotion.setMaxAmount(maxAmount);
+					this.promotion.setPercentOff("");
+					if(!NumberUtil.isDouble(maxAmount)){
+						actionResult.addError(true, "maxAmountNumber", " Discount $ value should be number.");
+					}
+				}
+				/*this.promotion.setPercentOff(percentOff);
 				if(!NumberUtil.isDouble(percentOff)){
 					actionResult.addError(true, "liPercentOffNumber", " Discount % value for LINE ITEM should be a number.");
 				}else if(Double.parseDouble(percentOff)>100){
 					actionResult.addError(true, "liPercentOffNumber", " Discount % value for LINE ITEM should not be > 100.");
-				}
+				}*/
 				String maxItems = NVL.apply(request.getParameter("li_maxItems"), "").trim();
 				if(!"".equals(maxItems)){
 					if(NumberUtil.isInteger(maxItems)){
@@ -301,7 +321,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 	private void clearHeaderTypeInfo() {		
 		this.promotion.setExtendDpDays(null);
 		this.promotion.setWaiveChargeType("");
-		this.promotion.setMaxAmount("");
+//		this.promotion.setMaxAmount("");
 	}
 
 

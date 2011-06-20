@@ -28,6 +28,7 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 	private double percentOff=0.0;
 	private boolean favoritesOnly;
 	private DlvZoneStrategy zoneStrategy;
+	private HeaderDiscountRule discountRule=null;
 	
 	/*
 	 * List of line item strategies to determine the eligibility of a line item before
@@ -38,6 +39,10 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 	public LineItemDiscountApplicator(double minAmount,double percentoff) { //, int maxItemCount,boolean applyHeaderDiscount){
 		this.minSubTotal=minAmount;
 		this.percentOff=percentoff;
+	}
+	
+	public LineItemDiscountApplicator(double minAmount) { //, int maxItemCount,boolean applyHeaderDiscount){
+		this.minSubTotal=minAmount;
 	}
 	
 	public double getMinSubtotal() {
@@ -76,42 +81,80 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 		List orderLines=cart.getOrderLines();
         Map recommendedItemMap=new HashMap();
         int appliedCnt = 0;
-		if(orderLines!=null){	
-			for(int i=0;i<orderLines.size();i++) {
-				  FDCartLineI cartLine=(FDCartLineI)orderLines.get(i);
-				  if(cartLine.isDiscountFlag()){
-						boolean e = evaluate(cartLine, promotionCode, context);
-						if(e) {
-							context.applyLineItemDiscount(promo, cartLine, percentOff);
-							if(favoritesOnly){
-								String savingsId = cartLine.getSavingsId();
-								String productId = cartLine.getProductRef().getContentKey().getId();							
-								recommendedItemMap.put(productId, savingsId);
-							}
-							appliedCnt++;
-						}		
-				  }
-			}
-			//Now run through all recently added items.
-			for(int i=0;i<orderLines.size();i++) {		
-				FDCartLineI cartLine=(FDCartLineI)orderLines.get(i);
-				if(!cartLine.isDiscountFlag()) {
-					  	boolean e = evaluate(cartLine, promotionCode, context);
-						if(e) {
-							context.applyLineItemDiscount(promo, cartLine, percentOff);
-							if(favoritesOnly){
-								String savingsId = cartLine.getSavingsId();
-								String productId = cartLine.getProductRef().getContentKey().getId();							
-								recommendedItemMap.put(productId, savingsId);
-							}
-							cartLine.setDiscountFlag(true);
-							appliedCnt++;
-						}		
-						
-				  }
-			}
-		    // now apply discount to any duplicate sku from the recommended List for favorites only
-						   
+		if(orderLines!=null){
+			if(null != discountRule){		       
+				double amount = Math.min(context.getShoppingCart().getPreDeductionTotal(), this.discountRule.getMaxAmount());
+				
+				for(int i=0;i<orderLines.size();i++) {
+					  FDCartLineI cartLine=(FDCartLineI)orderLines.get(i);
+					  if(cartLine.isDiscountFlag()){
+							boolean e = evaluate(cartLine, promotionCode, context);
+							if(e) {
+								context.applyLineItemDiscount(promo, cartLine, discountRule.getMaxAmount());
+								if(favoritesOnly){
+									String savingsId = cartLine.getSavingsId();
+									String productId = cartLine.getProductRef().getContentKey().getId();							
+									recommendedItemMap.put(productId, savingsId);
+								}
+								appliedCnt++;
+							}		
+					  }
+				}
+				//Now run through all recently added items.
+				for(int i=0;i<orderLines.size();i++) {		
+					FDCartLineI cartLine=(FDCartLineI)orderLines.get(i);
+					if(!cartLine.isDiscountFlag()) {
+						  	boolean e = evaluate(cartLine, promotionCode, context);
+							if(e) {
+								context.applyLineItemDiscount(promo, cartLine, discountRule.getMaxAmount());
+								if(favoritesOnly){
+									String savingsId = cartLine.getSavingsId();
+									String productId = cartLine.getProductRef().getContentKey().getId();							
+									recommendedItemMap.put(productId, savingsId);
+								}
+								cartLine.setDiscountFlag(true);
+								appliedCnt++;
+							}		
+							
+					  }
+				}
+//				return context.applyHeaderDiscount(promo, amount);
+			}else{			
+				for(int i=0;i<orderLines.size();i++) {
+					  FDCartLineI cartLine=(FDCartLineI)orderLines.get(i);
+					  if(cartLine.isDiscountFlag()){
+							boolean e = evaluate(cartLine, promotionCode, context);
+							if(e) {
+								context.applyLineItemDiscount(promo, cartLine, percentOff);
+								if(favoritesOnly){
+									String savingsId = cartLine.getSavingsId();
+									String productId = cartLine.getProductRef().getContentKey().getId();							
+									recommendedItemMap.put(productId, savingsId);
+								}
+								appliedCnt++;
+							}		
+					  }
+				}
+				//Now run through all recently added items.
+				for(int i=0;i<orderLines.size();i++) {		
+					FDCartLineI cartLine=(FDCartLineI)orderLines.get(i);
+					if(!cartLine.isDiscountFlag()) {
+						  	boolean e = evaluate(cartLine, promotionCode, context);
+							if(e) {
+								context.applyLineItemDiscount(promo, cartLine, percentOff);
+								if(favoritesOnly){
+									String savingsId = cartLine.getSavingsId();
+									String productId = cartLine.getProductRef().getContentKey().getId();							
+									recommendedItemMap.put(productId, savingsId);
+								}
+								cartLine.setDiscountFlag(true);
+								appliedCnt++;
+							}		
+							
+					  }
+				}
+			    // now apply discount to any duplicate sku from the recommended List for favorites only
+			}				   
 			if(favoritesOnly && orderLines.size()>0){
 				for(int i=0;i<orderLines.size();i++){
 					FDCartLineI cartLine=(FDCartLineModel)orderLines.get(i);	 
@@ -125,6 +168,7 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 					
 				}	
 			}
+
 			if(appliedCnt <= 0) return false;
 			//Update Pricing after discount application.
 			try {
@@ -199,5 +243,13 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 
 	public DlvZoneStrategy getDlvZoneStrategy() {
 		return this.zoneStrategy;
+	}
+
+	public HeaderDiscountRule getDiscountRule() {
+		return discountRule;
+	}
+	
+	public void setDiscountRule(HeaderDiscountRule discountRule){
+		this.discountRule = discountRule;
 	}
 }

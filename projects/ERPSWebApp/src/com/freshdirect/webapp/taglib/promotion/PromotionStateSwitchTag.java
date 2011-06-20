@@ -138,7 +138,7 @@ public class PromotionStateSwitchTag extends AbstractControllerTag {
 					result.addError(true, "offerTypeEmpty", "Promotion Offer Type can't be empty.");
 				}
 				else if(EnumPromotionType.LINE_ITEM.getName().equals(promotion.getPromotionType())){
-					if("".equals(NVL.apply(promotion.getPercentOff(),"").trim())){
+					if("".equals(NVL.apply(promotion.getPercentOff(),"").trim()) && "".equals(NVL.apply(promotion.getMaxAmount(),"").trim())){
 						result.addError(true, "discountEmpty", "Promotion Discount value is required for LINE ITEM offer.");
 					}
 					List<FDPromoContentModel> dcpdData = promotion.getDcpdData();

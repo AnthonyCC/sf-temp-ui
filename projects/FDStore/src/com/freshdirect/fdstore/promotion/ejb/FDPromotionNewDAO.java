@@ -610,7 +610,7 @@ public class FDPromotionNewDAO {
 
 
 		
-		if (!wasNull) {
+		if (!wasNull && "HEADER".equals(rs.getString("CAMPAIGN_CODE"))) {
 			return new HeaderDiscountApplicator(new HeaderDiscountRule(minSubtotal, maxAmount));
 		}
 
@@ -628,7 +628,15 @@ public class FDPromotionNewDAO {
 		}
 		
 		if("LINE_ITEM".equals(rs.getString("CAMPAIGN_CODE"))){
-			LineItemDiscountApplicator applicator = new LineItemDiscountApplicator(minSubtotal, percentOff);
+			LineItemDiscountApplicator applicator = null;
+			maxAmount = rs.getDouble("max_amount");
+			wasNull = rs.wasNull();
+			if (!wasNull) {
+				applicator = new LineItemDiscountApplicator(minSubtotal);
+				applicator.setDiscountRule(new HeaderDiscountRule(minSubtotal, maxAmount));
+			}else{
+				applicator = new LineItemDiscountApplicator(minSubtotal, percentOff);
+			}
 			boolean recItemsOnly = "Y".equalsIgnoreCase(rs.getString("FAVORITES_ONLY"));
 			applicator.setFavoritesOnly(recItemsOnly);
 			if(recItemsOnly){
