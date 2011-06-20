@@ -10,8 +10,11 @@
 <%@ page import="com.freshdirect.customer.ErpClientCode"%>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<% boolean isSmaller = request.getRequestURI().indexOf("step_4_receipt") > -1; 
-String detailWidth="693";
+<%
+	boolean isSmaller = request.getRequestURI().indexOf("step_4_receipt") > -1; 
+	String detailWidth="693";
+	Integer totalItemsInCart = 0; //keep running count of the number of items for SEM
+
 if (isSmaller) detailWidth="630";
 %>
 
@@ -95,6 +98,9 @@ int idx = 0;
 		<tr valign="middle">
 			<td align="right" width="40">
 				<%=cartLine.getDisplayQuantity()%>
+				<%
+					totalItemsInCart += Integer.parseInt(cartLine.getDisplayQuantity());
+				%>
 			</td>
 			<td width="16"></td>
 			<td width="22">&nbsp;<%=cartLine.getLabel()%></td>
@@ -264,6 +270,7 @@ int idx = 0;
 	}
 
 	request.setAttribute("totalDiscountAmount", JspMethods.formatPrice(cart.getTotalDiscountValue())); //for sem use
+	request.setAttribute("totalCartItems", totalItemsInCart); //for sem use
 	%>
 	
 	<%
