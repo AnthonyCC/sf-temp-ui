@@ -93,19 +93,22 @@
 		String sem_validOrderCount = "0";
 			sem_validOrderCount = Integer.toString(sem_user.getAdjustedValidOrderCount());
 		double sem_checkCartSubtotal = 0;
-			sem_cartSubtotal = NVL.apply((String)request.getAttribute("cartSubtotal"), "0").replace("$", "");
-			sem_cartSubtotal = sem_df.format(Double.parseDouble(sem_cartSubtotal));
 		String sem_cartSubtotal = "0";
-			sem_orderNumber = NVL.apply((String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER), "0");
 		String sem_orderNumber = "0";
 		DecimalFormat sem_df = new DecimalFormat("0.00");
+			sem_cartSubtotal = NVL.apply((String)request.getAttribute("cartSubtotal"), "0").replace("$", "");
+			sem_cartSubtotal = sem_df.format(Double.parseDouble(sem_cartSubtotal));
+		
+			sem_orderNumber = NVL.apply((String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER), "0");
+		
+		
 		String sem_totalDiscountAmount = "0";
 			sem_totalDiscountAmount = NVL.apply((String)request.getAttribute("totalDiscountAmount"), "0").replace("$", "");
 			sem_totalDiscountAmount = sem_df.format(Double.parseDouble(sem_totalDiscountAmount));
 		boolean isOrderModify = Boolean.parseBoolean(NVL.apply((String)request.getAttribute("modifyOrderMode"), "false"));
 		String sem_defaultCounty = sem_user.getDefaultCounty();
-		double sem_totalCartItems = 0;
-			sem_totalCartItems = NVL.apply((String)request.getAttribute("totalCartItems"), "0");
+		String sem_totalCartItems = "0";
+			sem_totalCartItems = NVL.apply((Integer)request.getAttribute("totalCartItems"), 0).toString();
 
 
 		/* CheetahMail Pixel */
@@ -114,7 +117,7 @@
 		//add a param to the params sent to the FTL
 		semPixel_CM.setParam("subtotal", sem_cartSubtotal);
 		semPixel_CM.setParam("orderId", sem_orderNumber);
-		semPixel_CM.setParam("isOrderModify", isOrderModify);
+		semPixel_CM.setParam("isOrderModify",String.valueOf(isOrderModify));
 		semPixel_CM.setParam("userCounty", sem_defaultCounty);
 		semPixel_CM.setParam("totalCartItems", sem_totalCartItems);
 		%><fd:SemPixelIncludeMedia pixelNames="CheetahMail" /><%
