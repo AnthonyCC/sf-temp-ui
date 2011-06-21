@@ -204,7 +204,7 @@ public class ProductImageTag extends BodyTagSupport {
 		final boolean shouldGenerateAction = !this.disabled && this.action != null && !this.isInCart;
 		final boolean displayBurst = savingsPercentage > 0 || pl.isDisplayAny();
 
-		String imageStyle = "border: 0; vertical-align: bottom; ";
+		String imageStyle = "border: 0; vertical-align: bottom; -moz-force-broken-image-icon: 1; ";
 
 		if (opacity < 1) {
 			imageStyle += TransparentBoxTag.getOpacityStyle(browserInfo, opacity);
