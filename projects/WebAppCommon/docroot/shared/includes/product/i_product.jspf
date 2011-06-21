@@ -737,6 +737,14 @@ if ( skuSize == 0 ) {
 						<% } %>
 
 					<%-- ===== END render quantity ===== --%>
+					
+						
+						<tr>
+							<td class="text11" style="<%= CSSTableStyle %>padding-top:5px;">
+								<%-- START INCLUDES AT BOTTOM OF i_product --%>
+								<%@ include file="/shared/includes/product/i_minmax_note.jspf" %>
+							</td>
+						</tr>
 
 						<tr>
 							<td class="text11" style="<%= CSSTableStyle %>padding-top:5px;">
@@ -829,7 +837,7 @@ if ( skuSize == 0 ) {
 									%>
 									<fd:QuickShopController id="quickCart">
 										<fd:GetBackToListLink id='backToList' quickCart='<%= quickCart %>' deptId='<%=request.getParameter("qsDeptId")%>'>
-											<a href="<%=backToList.toString()%>"><img src="/media_stat/images/buttons/back_to_list.gif" width="99" height="21" border="0" alt="Back to List" vspace="2" /></a><br />
+											<br /><a href="<%=backToList.toString()%>"><img src="/media_stat/images/buttons/back_to_list.gif" width="99" height="21" border="0" alt="Back to List" vspace="2" /></a><br />
 										</fd:GetBackToListLink>
 									</fd:QuickShopController>
 									<%
@@ -872,23 +880,19 @@ if ( skuSize == 0 ) {
 								if (!isQuickBuy) {
 									if ( isWineLayout) {
 										%><fd:CCLCheck>
-												<br /><a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('product_form',this,'action=CCL:AddToList')"><img src="/media_stat/ccl/lists_link_with_icon_dfgs.gif" width="112" height="15" vspace="5" style="border: 0;"></a>     
+											<a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('product_form',this,'action=CCL:AddToList')"><img src="/media_stat/ccl/save_to_list_btn.gif" width="93" height="20" vspace="5" style="border: 0;" alt="" /></a>
 										</fd:CCLCheck><%
-									} else {
-										// bottom black line after add to cart
-										%><img src="/media_stat/images/layout/333333.gif" width="180" height="1" border="0" vspace="10" alt="" /><%
 									}
 								}
 
-								%><%-- START INCLUDES AT BOTTOM OF i_product --%><br />
-								<%@ include file="/shared/includes/product/i_minmax_note.jspf" %>
-
-								<% if (CartName.MODIFY_LIST.equals(__cartMode)) { %>
-									To copy to another list, <a href="/unsupported.jsp" onclick="return CCL.copy_items('product_form',this,'action=CCL:copyToList','action=CCL:copyToList')">click here</a>
+								if (CartName.MODIFY_LIST.equals(__cartMode)) { %>
+									<br />To copy to another list, <a href="/unsupported.jsp" onclick="return CCL.copy_items('product_form',this,'action=CCL:copyToList','action=CCL:copyToList')">click here</a>
 								<% } else if (CartName.ADD_TO_CART.equals(__cartMode) && !isQuickBuy) { %>
 									<fd:CCLCheck>
 										<% if ( !isWineLayout ) { %>
-											<a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('product_form',this,'action=CCL:AddToList')"><img src="/media_stat/ccl/lists_link_with_icon.gif" width="112" height="16" style="border: 0; padding-left: 14px" alt="" /></a>
+											<br /><a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('product_form',this,'action=CCL:AddToList')"><img src="/media_stat/ccl/save_to_list_btn.gif" width="93" height="20" vspace="5" style="border: 0; padding-left: 14px" alt="" /></a>
+											<%-- bottom black line after add to cart --%>
+											<img src="/media_stat/images/layout/333333.gif" width="180" height="1" border="0" vspace="10" alt="" />
 										<% } %>
 									</fd:CCLCheck>
 								<% } %>
