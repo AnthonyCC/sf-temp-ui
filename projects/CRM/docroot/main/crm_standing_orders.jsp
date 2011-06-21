@@ -22,7 +22,7 @@
 <%@ taglib uri='crm' prefix='crm' %>
 
 <% boolean isGuest = false;
-//StandingOrdersServiceCmd.main(new String[]{"orders=2201247313","sendEmail=false"});
+//com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceCmd.main(new String[]{"orders=2201247313","sendEmail=false"});
 //com.freshdirect.dataloader.giftcard.GCRegisterCronRunner.main(new String[]{});
 %>
 <style type="text/css">
@@ -76,7 +76,7 @@ function setAllCheckBoxes(FormName, FieldName, CheckValue)
 	<tmpl:put name='title' direct='true'>Standing Orders</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 	<crm:GetCurrentAgent id="currentAgent">
-	<%	FDStandingOrderFilterCriteria  soFilter =  (FDStandingOrderFilterCriteria)request.getSession().getAttribute("filter"); 
+	<%	FDStandingOrderFilterCriteria  soFilter =  (FDStandingOrderFilterCriteria)request.getSession().getAttribute("sofilter"); 
 		Integer frequency = null;
 		Integer dayOfWeek =null;
 		Date date = null;

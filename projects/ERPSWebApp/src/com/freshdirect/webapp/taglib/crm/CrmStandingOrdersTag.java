@@ -77,15 +77,15 @@ public class CrmStandingOrdersTag extends AbstractControllerTag{
 		try {
 			if(null == filter || filter.isEmpty()){
 				if(null == request.getParameter("so_filter_submit"))
-					filter = (FDStandingOrderFilterCriteria)request.getSession().getAttribute("filter");
+					filter = (FDStandingOrderFilterCriteria)request.getSession().getAttribute("sofilter");
 			}
-			request.getSession().setAttribute("filter",filter);
+//			request.getSession().setAttribute("filter",filter);
 			if(null != filter &&(null != filter.getFromDate() && null != filter.getToDate() && filter.getToDate().before(filter.getFromDate()))){
 				pageContext.setAttribute("endDateBeforeErr", " 'To' date should not be before 'From' date for filtering.");
 			}else{
 				list =(FDStandingOrderInfoList)FDStandingOrdersManager.getInstance().getActiveStandingOrdersCustInfo(filter);
 			}
-//			request.getSession().setAttribute("sofilter", filter);
+			request.getSession().setAttribute("sofilter", filter);
 		} catch (FDResourceException e) {
 			throw new JspException("Failed to get the standing orders: ",e);
 		}	

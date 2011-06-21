@@ -64,7 +64,8 @@ public class FDStandingOrderFilterCriteria {
 		boolean isEmtpy = true;
 		if((null != frequency) 
 				|| (null != errorType && !errorType.trim().equalsIgnoreCase(""))
-				|| (null != dayOfWeek )||!activeOnly)
+				|| (null != dayOfWeek )||!activeOnly
+				|| null != fromDateStr || null !=toDateStr)
 				{
 			isEmtpy = false;
 		}
