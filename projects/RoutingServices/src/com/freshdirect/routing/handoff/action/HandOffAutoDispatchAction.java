@@ -252,8 +252,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 		
 		Map<String, List<IHandOffBatchPlan>> batchPlanMap = new HashMap<String, List<IHandOffBatchPlan>>();
 		Map<String, List<IHandOffBatchRoute>> batchRouteMap = new HashMap<String, List<IHandOffBatchRoute>>();
-		List<IHandOffBatchRoute> openRoutes = new ArrayList<IHandOffBatchRoute>();
-		
+				
 		List<IHandOffBatchPlan> bullpens = new ArrayList<IHandOffBatchPlan>();
 		
 		Iterator<IHandOffBatchPlan> planItr = this.batchPlanList.iterator();
@@ -287,12 +286,9 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			if(zoneRouteList == null) 
 				zoneRouteList = Collections.EMPTY_LIST;
 			constructDispatchModelList(dispatchMapping, (List<IHandOffBatchPlan>)batchPlanMap.get(zone), zoneRouteList);
-			if(zoneRouteList.size() > 0){
-				openRoutes.addAll(zoneRouteList);
-			}
 		}
 		//No zone Plan List
-		constructDispatchModelList(dispatchMapping, bullpens, openRoutes);
+		constructDispatchModelList(dispatchMapping, bullpens, Collections.EMPTY_LIST);
 		
 	}
 	
