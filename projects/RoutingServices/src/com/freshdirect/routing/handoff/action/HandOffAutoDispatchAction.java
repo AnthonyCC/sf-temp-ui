@@ -92,7 +92,6 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 		
 		LOGGER.info("######################### Auto-DispatchTask START #########################");
 		
-		proxy.updateHandOffBatchStatus(this.getBatch().getBatchId(), EnumHandOffBatchStatus.PROCESSING);
 		proxy.addNewHandOffBatchAction(this.getBatch().getBatchId(), RoutingDateUtil.getCurrentDateTime()
 												, EnumHandOffBatchActionType.AUTODISPATCH, this.getUserId());
 		proxy.updateHandOffBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_AUTODISPATCHPROGRESS);
@@ -321,10 +320,13 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			IHandOffBatchRoute route = matchRoute(_plan, zoneRouteList);
 							
 			if(route != null) {					
-				_dispatch.setRoute(route.getRouteId());				
-				_dispatch.setFirstDeliveryTime(RoutingDateUtil.getServerTime(route.getFirstDeliveryTime()) != null ?
-						RoutingDateUtil.getServerTime(RoutingDateUtil.getServerTime(route.getFirstDeliveryTime())): null);				
-				_dispatch.setCheckInTime(route.getCheckInTime()); 
+				_dispatch.setRoute(route.getRouteId());
+				if(route.getFirstDeliveryTime() != null){
+					_dispatch.setFirstDeliveryTime(RoutingDateUtil.getServerTime(route.getFirstDeliveryTime()) != null ?
+						RoutingDateUtil.getServerTime(RoutingDateUtil.getServerTime(route.getFirstDeliveryTime())): null);
+				}
+				
+				_dispatch.setCheckInTime(route.getCheckInTime());				
 				_dispatch.setZone(route.getArea());
 				route = null;				
 			}
