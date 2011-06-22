@@ -949,10 +949,9 @@ if (Event.observe) { //make sure prototype is on page
 /* Submit Alcohol form (find it's location, if necessary) */
 function submitAlcoholForm() {
 	var alcoholSubmitFormTemp = top.alcoholSubmitForm;
-	var frameLen = 0;
-	if (window.frames.length > 0) {
-		frameLen = window.frames.length-1;
-	}
+
+	//don't depend on this value, or value-1 being correct
+	var frameLen = window.frames.length;
 
 	if (alcoholSubmitFormTemp === null) {
 		//we have no form to try to submit
@@ -961,10 +960,15 @@ function submitAlcoholForm() {
 
 	if (document.forms[alcoholSubmitFormTemp]) {
 		document.forms[alcoholSubmitFormTemp].submit();
-	} else if (window.frames[frameLen].document.forms[alcoholSubmitFormTemp]) {
-		window.frames[frameLen].document.forms[alcoholSubmitFormTemp].submit();
-		//clear alcohol form (in case there's a different form on the page to be used)
-		top.alcoholSubmitForm = null;
+	} else {
+		//find the correct form manually
+		for (var i = frameLen; i >= 0; i--) {
+			if (window.frames[i] && window.frames[i].document.forms[alcoholSubmitFormTemp]) {
+				window.frames[i].document.forms[alcoholSubmitFormTemp].submit();
+				//clear alcohol form (in case there's a different form on the page to be used)
+				top.alcoholSubmitForm = null;
+			}
+		}
 	}
 }
 
