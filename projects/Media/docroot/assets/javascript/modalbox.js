@@ -461,7 +461,6 @@ Modalbox.Methods = {
 		var node = event.element();
 		switch(event.keyCode) {
 			case Event.KEY_TAB:
-				event.stop();
 
 				// Switching currFocused to the element which was focused by mouse instead of TAB-key. Fix for #134
 				if (node != this.focusableElements[this.currFocused])
@@ -480,7 +479,11 @@ Modalbox.Methods = {
 						this.currFocused--;
 					}
 				}
-				this.focusableElements[this.currFocused].focus();
+				if (this.focusableElements[this.currFocused]) {
+					event.stop();
+					this.focusableElements[this.currFocused].focus();
+				}
+				
 				break;
 			case Event.KEY_ESC:
 				if (this.active) this._hide(event);
