@@ -840,6 +840,7 @@ function alcoholWarning(eventObj, form, hasAgreed) {
 		var contextMB = Modalbox;
 		var contextMBoverlay = $('MB_overlay');
 		var contextMBwindow = $('MB_window');
+		var contextMBwindowwrapper = $('MB_windowwrapper');
 
 		if (window.parent.document.quickbuyPanel) {
 			contextMB = window.parent['Modalbox'];
@@ -854,19 +855,23 @@ function alcoholWarning(eventObj, form, hasAgreed) {
 			overlayClose: true,
 			//width: 320,
 			transitions: false,
-			autoFocusing: false,
+			autoFocusing: true, /* keep IE7 from failing */
 			centered: true,
 			afterLoad: function() {
 				if (window.parent.document.quickbuyPanel) {
 					contextMB = window.parent['Modalbox'];
 					contextMBoverlay = window.parent.Modalbox.MBoverlay;
 					contextMBwindow = window.parent.Modalbox.MBwindow;
+					contextMBwindowwrapper = window.parent.Modalbox.MBwindowwrapper;
 				}else{
 					contextMBoverlay = Modalbox.MBoverlay;
 					contextMBwindow = Modalbox.MBwindow;
+					contextMBwindowwrapper = Modalbox.MBwindowwrapper;
 				}
 				contextMBoverlay.style.backgroundColor = '#000';
 				contextMBwindow.style.left = parseInt((contextMBoverlay.clientWidth-contextMBwindow.clientWidth)/2)+'px';
+				contextMBwindowwrapper.style.zIndex = 10000; // necessary for IE7
+				
 			},
 			afterHide: function() {
 				window.scrollTo(contextMB.initScrollX, contextMB.initScrollY);
@@ -880,7 +885,7 @@ function alcoholWarning(eventObj, form, hasAgreed) {
 }
 
 var hasAgreedToAlcoholDisclaimer = false; //default
-if (Event.observe) { //make sure prototype is on page
+if (window.Prototype) { //make sure prototype is on page
 	Event.observe(window, 'load', function() {
 		//we only need to do this if user has not agreed to disclaimer already
 		if (!hasAgreedToAlcoholDisclaimer) {
@@ -892,6 +897,9 @@ if (Event.observe) { //make sure prototype is on page
 					fId = f.identify();
 				} catch (e) {
 					/* keep IE7 from failing */
+					f.setAttribute('id', f.name);
+					fId = f.id;
+					f = $(f.id);
 				}
 
 				var jsNamespace = null;
