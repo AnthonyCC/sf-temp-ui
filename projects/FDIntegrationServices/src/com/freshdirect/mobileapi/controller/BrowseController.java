@@ -2,6 +2,7 @@ package com.freshdirect.mobileapi.controller;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -143,6 +144,7 @@ public class BrowseController extends BaseController {
 	            List<Product> unavailableProducts = new ArrayList<Product>();
 	            
 	            List<Category> categories = new ArrayList<Category>();
+	            Set<String> hasChildrens = new HashSet<String>();
 	            
 	            for (Object content : contents) {
 	                if (content instanceof ProductModel) {
@@ -153,24 +155,31 @@ public class BrowseController extends BaseController {
 	                    		} else {
 	                    			products.add(Product.wrap((ProductModel) content, user.getFDSessionUser().getUser()));
 	                    		}
+	                    		hasChildrens.add(((ContentNodeModel)content).getParentId());
 	                    	}
 	                    } catch (Exception e) {
 	                        //Don't let one rotten egg ruin it for the bunch
 	                        LOG.error("ModelException encountered. Product ID=" + ((ProductModel) content).getFullName(), e);
 	                    }
 	                } else if(content instanceof CategoryModel) {
-	                	if(((CategoryModel)content).isActive() && !((CategoryModel)content).isHideIphone()) {
+	                	if(((CategoryModel)content).isActive() && !((CategoryModel)content).isHideIphone()) {	
 	                		categories.add(Category.wrap((CategoryModel)content));
 	                	}
 	                }
 	            }
 	            if(categories.size() > 0 && !ACTION_GET_CATEGORYCONTENT_PRODUCTONLY.equals(action)) {
+	            	List<Category> filteredCategories = new  ArrayList<Category>();
+	            	for(Category cat : categories) {
+	            		if(hasChildrens.contains(cat.getId())) {
+	            			filteredCategories.add(cat);
+	            		}
+	            	}
 	            	ListPaginator<com.freshdirect.mobileapi.model.Category> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Category>(
-							categories, requestMessage.getMax());
+	            			filteredCategories, requestMessage.getMax());
 
 					result.setCategories(paginator.getPage(requestMessage.getPage()));
 					result.setResultCount(result.getCategories() != null ? result.getCategories().size() : 0);	         		
-					result.setTotalResultCount(categories.size());	            		         		
+					result.setTotalResultCount(filteredCategories.size());	            		         		
 	            } else {
 	            	products.addAll(unavailableProducts);//add all unavailable to the end of the list
 	            	
