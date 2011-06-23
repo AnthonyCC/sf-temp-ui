@@ -99,13 +99,7 @@ int idx = 0;
 			<td align="right" width="40">
 				<%=cartLine.getDisplayQuantity()%>
 				<%
-					Integer val = 0;
-					try {
-						val = Integer.parseInt(cartLine.getDisplayQuantity());
-					}catch (NumberFormatException nx) {
-						val = 1; //count weighted items as one
-					}
-					totalItemsInCart += val;
+					totalItemsInCart ++; //for sem use
 				%>
 			</td>
 			<td width="16"></td>
