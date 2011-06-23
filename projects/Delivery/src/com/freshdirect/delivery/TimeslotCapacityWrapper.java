@@ -128,7 +128,7 @@ public class TimeslotCapacityWrapper implements Serializable {
 											* timeslot.getRoutingSlot().getSchedulerId().getArea().getDeliveryRate())))
 											+ timeslot.getTotalAllocation();
 			if(timeslot.getCapacity() != 0) {
-				return (int)(((double)timeslot.getChefsTableCapacity()/timeslot.getCapacity() )* (double)newCapacity);				
+				return (int)(Math.round((((double)timeslot.getChefsTableCapacity()/(double)timeslot.getCapacity() )* (double)newCapacity)));				
 			} 
 
 		}
