@@ -7,9 +7,9 @@
 
 /* Test : Debug Functions ----------------------------------------------------*/
 
-var global_gcDebug = false;
-var global_gcLog = false;
-var lastEdit = '2009.10.14_12.30.37.AM';
+var global_gcDebug = true;
+var global_gcLog = true;
+var lastEdit = '2009.10.14_12.30.37.AM'; //debug on -ba 2011.06.23_09.02.33.AM
 var lastLog;
 
 gcLog('Last Edit: '+lastEdit);
@@ -188,7 +188,7 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 
 
 		// pre load images
-			this.preLoadArr= new Array(); // uninitialized
+			this.preLoadArr= []; // uninitialized
 
 		// keeps us from re-requesting images on every change
 			this.loaded = 0;
@@ -199,466 +199,476 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 		// this is the form this object belongs in (for display usage)
 			this.partOfForm = 'giftcard_form';
 
-		/*
-		 *	addCardsArray as ARRAY
-		 */
-		this.addCardsArray = function (cardsArray) {
-			this.log('addCardsArray called');
-			
-			
-			for (var n = 0; n < cardsArray.length; n++) {
-				this.cards[this.cards.length] = new fdCard(cardsArray[n]);
-				if (!this.preLoadArr.length) { this.preLoadArr[0] = 'PRELOADER'; }
+		/* addCardsArray as ARRAY */
+			this.addCardsArray = function (cardsArray) {
+				this.log('addCardsArray called');
+				
+				
+				for (var n = 0; n < cardsArray.length; n++) {
+					this.cards[this.cards.length] = new fdCard(cardsArray[n]);
+					if (!this.preLoadArr.length) { this.preLoadArr[0] = 'PRELOADER'; }
 
-				var PL = this.preLoadArr.length-1;
-					this.log('\tpreLoadArr.length INIT: '+PL);
+					var PL = this.preLoadArr.length-1;
+						this.log('\tpreLoadArr.length INIT: '+PL);
 
-				if (this.cards[this.cards.length-1].preLoad) {
-					
-					this.log('\t\tpreLoading card images: '+(n));
+					if (this.cards[this.cards.length-1].preLoad) {
+						
+						this.log('\t\tpreLoading card images: '+(n));
 
-					PL++;
-					this.preLoadArr[PL] = new Image();
-					this.preLoadArr[PL].src = this.mediaRoot+this.cards[this.cards.length-1].id+this.left_img_suffix;
-						this.log('\t\tpreLoadArr.length: '+PL);
-						this.log('\t\tthis.preLoadArr['+PL+']: '+this.preLoadArr[PL]);
-						this.log('\t\tthis.preLoadArr['+PL+'].src: '+this.preLoadArr[PL].src);
-					PL++;
-					this.preLoadArr[PL] = new Image();
-					this.preLoadArr[PL].src = this.mediaRoot+this.cards[this.cards.length-1].id+this.center_img_suffix;
-						this.log('\t\tpreLoadArr.length: '+PL);
-						this.log('\t\tthis.preLoadArr['+PL+']: '+this.preLoadArr[PL]);
-						this.log('\t\tthis.preLoadArr['+PL+'].src: '+this.preLoadArr[PL].src);
-					PL++;
-					this.preLoadArr[PL] = new Image();
-					this.preLoadArr[PL].src = this.mediaRoot+this.cards[this.cards.length-1].id+this.right_img_suffix;
-						this.log('\t\tpreLoadArr.length: '+PL);
-						this.log('\t\tthis.preLoadArr['+PL+']: '+this.preLoadArr[PL]);
-						this.log('\t\tthis.preLoadArr['+PL+'].src: '+this.preLoadArr[PL].src);
+						PL++;
+						this.preLoadArr[PL] = new Image();
+						this.preLoadArr[PL].src = this.mediaRoot+this.cards[this.cards.length-1].id+this.left_img_suffix;
+							this.log('\t\tpreLoadArr.length: '+PL);
+							this.log('\t\tthis.preLoadArr['+PL+']: '+this.preLoadArr[PL]);
+							this.log('\t\tthis.preLoadArr['+PL+'].src: '+this.preLoadArr[PL].src);
+						PL++;
+						this.preLoadArr[PL] = new Image();
+						this.preLoadArr[PL].src = this.mediaRoot+this.cards[this.cards.length-1].id+this.center_img_suffix;
+							this.log('\t\tpreLoadArr.length: '+PL);
+							this.log('\t\tthis.preLoadArr['+PL+']: '+this.preLoadArr[PL]);
+							this.log('\t\tthis.preLoadArr['+PL+'].src: '+this.preLoadArr[PL].src);
+						PL++;
+						this.preLoadArr[PL] = new Image();
+						this.preLoadArr[PL].src = this.mediaRoot+this.cards[this.cards.length-1].id+this.right_img_suffix;
+							this.log('\t\tpreLoadArr.length: '+PL);
+							this.log('\t\tthis.preLoadArr['+PL+']: '+this.preLoadArr[PL]);
+							this.log('\t\tthis.preLoadArr['+PL+'].src: '+this.preLoadArr[PL].src);
 
-					PL--;
+						PL--;
 
+					}
 				}
+
+				this.log('addCardsArray pre-loads: '+(this.preLoadArr.length-1));
+
+				this.checkDisplay();
+
+				this.log('current cards: '+this.cards);
 			}
 
-			this.log('addCardsArray pre-loads: '+(this.preLoadArr.length-1));
+		/* verify display and update it */
+			this.checkDisplay = function (initialCardIndex) {
+				this.log('checkDisplay called');
 
-			this.checkDisplay();
+				var initCardIndex=0;
 
-			this.log('current cards: '+this.cards);
-		}
-
-		this.checkDisplay = function (initialCardIndex) {
-			this.log('checkDisplay called');
-
-			var initCardIndex=0;
-
-			if (typeof(initialcardIndex) != 'undefined') {
-				//initialCardIndex++;
-				this.display[1] = -1;
-				this.log('checkDisplay called with initialCardIndex '+initialCardIndex);
-				this.log('checkDisplay called this.cards.length '+this.cards.length);
-				if (initialCardIndex <= this.cards.length) {
-					this.log('checkDisplay initialCardIndex <= this.cards.length true');
-					initCardIndex = initialCardIndex
-				}else{
-					this.log('checkDisplay initialCardIndex <= this.cards.length false');
-					initCardIndex = 0;
-				}
-				this.log('checkDisplay final initCardIndex '+initCardIndex);
-			}else{
-				initialcardIndex = 0;
-			}
-			
-
-			if (this.display[1] == -1) {
-				//uninitialized view
-				if (this.cards.length >= 1)	{
-					//we have at least one card to show
-					this.display[1] = initCardIndex;
-
-					this.log('initCardIndex: '+initCardIndex);
-					if (this.cards.length > 1) {
-						//we have two or more cards
-						if (initCardIndex == this.cards.length-1) {
-							this.log('\tinitCardIndex == this.cards.length');
-							// init card == last card in array
-							this.display[0] = initCardIndex-1;
-							this.display[2] = 0;
-						}else{
-							this.log('\tinitCardIndex != this.cards.length');
-							// check if init is 0
-							if (initCardIndex == 0) {
-								this.log('\t\tinitCardIndex: == 0 ('+initCardIndex+')');
-								//first card
-								this.display[0] = this.cards.length-1;
-								this.display[2] = initCardIndex+1;
-							}else{
-								this.log('\t\tinitCardIndex: != 0 ('+initCardIndex+')');
-								//somewhere in-between
-								this.display[0] = initCardIndex-1;
-								this.display[2] = initCardIndex+1;
-							}
-						}
+				if (typeof(initialcardIndex) != 'undefined') {
+					//initialCardIndex++;
+					this.display[1] = -1;
+					this.log('checkDisplay called with initialCardIndex '+initialCardIndex);
+					this.log('checkDisplay called this.cards.length '+this.cards.length);
+					if (initialCardIndex <= this.cards.length) {
+						this.log('checkDisplay initialCardIndex <= this.cards.length true');
+						initCardIndex = initialCardIndex
 					}else{
-						//we have one card
-						this.display[0] = 0;
-						this.display[2] = 0;
+						this.log('checkDisplay initialCardIndex <= this.cards.length false');
+						initCardIndex = 0;
 					}
-				}
-			}
-
-			this.updateDisplay();
-		};
-
-		this.chooseInitialCard = function(cardIndex) {
-			this.selectCard(cardIndex);
-			this.checkDisplay(cardIndex);
-		}
-
-		
-		/* */
-		this.rotate = function (direction) {
-			this.log('rotate called');
-
-			if (this.display[1] != -1 && this.cards.length > 1) {
-				//this means we have items displayed
-				//we only need to rotate is we have > 1 cards to show
-				this.log('direction: '+direction);
-
-				switch (direction)
-				{
-					case 'LEFT':
-						this.display[0] = this.display[1];
-						this.display[1] = this.display[2];
-						if (this.display[2] == this.cards.length-1) {
-							this.log('left display[2]: equals cards length');
-							this.display[2] = 0;
-						}else{
-							this.log('left display[2]: does not equal cards length');
-							this.display[2] = this.display[2]+1;
-						}
-
-						break;
-					case 'RIGHT':
-						this.display[2] = this.display[1];
-						this.display[1] = this.display[0];
-						if (this.display[0] == 0) {
-							this.log('right display[0]: equals cards length');
-							this.display[0] = this.cards.length-1;
-						}else{
-							this.log('right display[0]: does not equal cards length');
-							this.display[0] = this.display[0]-1;
-						}
-
-						break;
-				}
-
-				this.log('checking effects');
-				if (this.useEffects) {
-					// effects in effect
-					new Effect.Opacity(this.center_img_containerId, { 
-						from: this.eff_OpacityStart,
-						to: this.eff_OpacityMid,
-						duration: this.eff_OpacityDuration_FadeOut,
-						delay: this.eff_OpacityDelay_FadeOut
-					});
-					new Effect.Opacity(this.center_img_containerId, { 
-						from: this.eff_OpacityMid,
-						to: this.eff_OpacityFinish,
-						duration: this.eff_OpacityDuration_FadeIn,
-						delay: this.eff_OpacityDelay_FadeIn,
-						refId: this.refId, //pass a ref to object
-						afterSetup: 
-							function (effect) { 
-								window[effect.options.refId].updateDisplay();
-							}
-					});
+					this.log('checkDisplay final initCardIndex '+initCardIndex);
 				}else{
-					// effects are not being used, call update
-					this.updateDisplay();
-				}
-			}else{
-				this.err('Cannot rotate ('+direction+'), no display item');
-			}
-		}
-
-		/*
-		 *	This function does the actual display update
-		 */
-
-		this.updateDisplay = function () {
-			this.log('updateDisplay called');
-
-			
-			this.log('this.display[0] '+this.display[0]);
-			this.log('this.display[1] '+this.display[1]);
-			this.log('this.display[2] '+this.display[2]);
-
-			if ($(this.left_img_containerId) && this.display[0] && this.cards[this.display[0]]) {
-				$(this.left_img_containerId).src = this.mediaRoot+this.cards[this.display[0]].id+this.left_img_suffix;
-				$(this.left_img_containerId).alt = this.cards[this.display[0]].displayName;
-				this.log('updateDisplay: '+this.display[0]+' '+this.mediaRoot+this.cards[this.display[0]].id+this.left_img_suffix);
-			}else{
-				this.err('Cannot get left_img_containerId ('+this.left_img_containerId+')');
-			}
-
-			if ($(this.center_img_containerId) && this.display[1] && this.cards[this.display[1]]) {
-				$(this.center_img_containerId).src = this.mediaRoot+this.cards[this.display[1]].id+this.center_img_suffix;
-				$(this.center_img_containerId).alt = this.cards[this.display[1]].displayName;
-				if ($(this.curCard_containerId)) {
-					$(this.curCard_containerId).innerHTML = this.cards[this.display[1]].displayName; 
-					this.log('updateDisplay innerHTML check ok: '+this.display[1]+' '+$(this.curCard_containerId).innerHTML);
-				}else{
-					this.err('updateDisplay innerHTML check ERR: '+this.curCard_containerId);
-				}
-				this.log('updateDisplay: '+this.display[1]+' '+this.mediaRoot+this.cards[this.display[1]].id+this.center_img_suffix);
-			}else{
-				this.err('Cannot get center_img_containerId ('+this.center_img_containerId+')');
-			}
-
-			if ($(this.right_img_containerId) && this.display[2] && this.cards[this.display[2]]) {
-				$(this.right_img_containerId).src = this.mediaRoot+this.cards[this.display[2]].id+this.right_img_suffix;
-				$(this.right_img_containerId).alt = this.cards[this.display[2]].displayName;
-				this.log('updateDisplay: '+this.display[2]+' '+this.mediaRoot+this.cards[this.display[2]].id+this.right_img_suffix);
-			}else{
-				this.err('Cannot get right_img_containerId ('+this.right_img_containerId+')');
-			}
-
-			this.selectCard(); // call update for select box
-
-		}
-
-		this.selectCard = function (selIndex) {
-			
-			//make sure we skip out if not using a select box
-			if (!$(this.selectBoxId)) { 
-
-				//update gcId_containerId now if not a select box (otherwise wait till end of function)
-				if (typeof(this.gcId_containerId) != 'undefined' && this.gcId_containerId != '' && $(this.gcId_containerId)) {
-					if ( this.display[1] && this.cards[this.display[1]]) {
-						$(this.gcId_containerId).value = this.cards[this.display[1]].id;
-						this.log('gcId_containerId ('+this.gcId_containerId+') = ('+this.cards[this.display[1]].id+')');
-					}
-				}else{
-					try{
-						this.err('Cannot set gcId_containerId ('+this.gcId_containerId+')');
-						this.err('Cannot set gcId_containerId to value ('+this.cards[this.display[1]].id+')');
-					}catch(e) {
-						this.err('err in selectCard err');
-					}
+					initialcardIndex = 0;
 				}
 				
-				return false;
-			}
 
-			this.log('selectCard '+this.curSelectedIndex);
-			var imgContainerId = this.refId+this.center_img_containerId;
-			this.log('loaded? '+this.loaded);
+				if (this.display[1] == -1) {
+					//uninitialized view
+					if (this.cards.length >= 1)	{
+						//we have at least one card to show
+						this.display[1] = initCardIndex;
 
-			// see if we have a value passed (and it's a valid value)
-			if (typeof(selIndex) != 'undefined' && selIndex <= this.cards.length) { $(this.selectBoxId).selectedIndex = selIndex; }
-
-			
-
-			// this fixes the loaded choice not matching the intended src
-			if (($(this.selectBoxId).selectedIndex != this.curSelectedIndex) || this.loaded <= 1) {
-				this.curSelectedIndex = $(this.selectBoxId).selectedIndex;
-					this.log('selectCard inside IF '+this.curSelectedIndex);
-				// change src to match selection
-				if ($(imgContainerId) && $(this.selectBoxId)[this.curSelectedIndex]) {
-					$(imgContainerId).src = this.mediaRoot+$(this.selectBoxId)[this.curSelectedIndex].value+this.center_img_suffix;
-					$(imgContainerId).alt = $(this.selectBoxId)[this.curSelectedIndex].innerHTML;
+						this.log('initCardIndex: '+initCardIndex);
+						if (this.cards.length > 1) {
+							//we have two or more cards
+							if (initCardIndex == this.cards.length-1) {
+								this.log('\tinitCardIndex == this.cards.length');
+								// init card == last card in array
+								this.display[0] = initCardIndex-1;
+								this.display[2] = 0;
+							}else{
+								this.log('\tinitCardIndex != this.cards.length');
+								// check if init is 0
+								if (initCardIndex == 0) {
+									this.log('\t\tinitCardIndex: == 0 ('+initCardIndex+')');
+									//first card
+									this.display[0] = this.cards.length-1;
+									this.display[2] = initCardIndex+1;
+								}else{
+									this.log('\t\tinitCardIndex: != 0 ('+initCardIndex+')');
+									//somewhere in-between
+									this.display[0] = initCardIndex-1;
+									this.display[2] = initCardIndex+1;
+								}
+							}
+						}else{
+							//we have one card
+							this.display[0] = 0;
+							this.display[2] = 0;
+						}
+					}
 				}
 
-				if ( this.loaded <= 1 ) { this.loaded++; } // keeps us from re-requesting images on every change
+				this.updateDisplay();
+			};
+
+		/* choose the initial card shown */
+			this.chooseInitialCard = function(cardIndex) {
+				this.selectCard(cardIndex);
+				this.checkDisplay(cardIndex);
 			}
 
-			//update gcId_containerId now if a select box
-			if (typeof(this.gcId_containerId) != 'undefined' && this.gcId_containerId != '' && $(this.gcId_containerId)) {
-				if ($(this.selectBoxId)[this.curSelectedIndex]) {
-					$(this.gcId_containerId).value = $(this.selectBoxId)[this.curSelectedIndex].value;
-				}
-				if (this.curSelectedIndex && $(this.selectBoxId)[this.curSelectedIndex]) {
-					this.log('2 gcId_containerId ('+this.gcId_containerId+') = ('+$(this.selectBoxId)[this.curSelectedIndex].value+')');
-				}
-			}else{
-				this.err('2 Cannot set gcId_containerId ('+this.gcId_containerId+')');
-				if (this.curSelectedIndex && $(this.selectBoxId)[this.curSelectedIndex]) {
-					this.err('2 Cannot set gcId_containerId to value ('+$(this.selectBoxId)[this.curSelectedIndex].value+')');
-				}
-			}
-			return true;
-		}
+		/* rotate card display */
+			this.rotate = function (direction) {
+				this.log('rotate called');
 
-		this.setDisplayObjType = function(type) {
-			if (typeof(type) != 'undefined' && !isNaN(type)) {
-				this.displayObjType = type; // if type = 0 (or not passed), this.displayObjType overrides
-			}
+				if (this.display[1] != -1 && this.cards.length > 1) {
+					//this means we have items displayed
+					//we only need to rotate is we have > 1 cards to show
+					this.log('direction: '+direction);
 
-			this.log('setDisplayObjType: Type = '+this.displayObjType);
+					switch (direction)
+					{
+						case 'LEFT':
+							this.display[0] = this.display[1];
+							this.display[1] = this.display[2];
+							if (this.display[2] == this.cards.length-1) {
+								this.log('left display[2]: equals cards length');
+								this.display[2] = 0;
+							}else{
+								this.log('left display[2]: does not equal cards length');
+								this.display[2] = this.display[2]+1;
+							}
 
+							break;
+						case 'RIGHT':
+							this.display[2] = this.display[1];
+							this.display[1] = this.display[0];
+							if (this.display[0] == 0) {
+								this.log('right display[0]: equals cards length');
+								this.display[0] = this.cards.length-1;
+							}else{
+								this.log('right display[0]: does not equal cards length');
+								this.display[0] = this.display[0]-1;
+							}
 
-			/* 
-			 *	to allow direct appending, make sure this.displayObjType is always an object to be returned (it is by default)
-			 */
-			switch (this.displayObjType) {
-				case 1: // Card Example with dropdown
-
-					var optionArray = new Array;
-					for (var i=this.cards.length-1; i>=0; i--) {
-						optionArray[i] = Builder.node( 'option', { value: this.cards[i].id }, [ this.cards[i].displayName ]);
+							break;
 					}
 
-					this.displayObj = Builder.node( 'div', { className: 'card_display' }, [
-						Builder.node( 'div', { className: 'card_center' }, [
-							Builder.node( 'img', { src: '', alt: 'c', id: this.refId+this.center_img_containerId } )
-						]),
-						Builder.node( 'div', { className: 'card_controls' }, [
-							Builder.node( 'div', { className: 'card_controls_header' }, [
-								Builder.node( 'img', { src: this.mediaStaticRoot+'purchase/choose_design.gif', alt: 'Choose Design', id: 'gcChooseDesign_img' } )
-						
-							]),
-							Builder.node( 'div', { className: 'card_controls_select' }, [
-								Builder.node( 'select', { id: this.selectBoxId, onChange: 'window[\''+this.refId+'\'].selectCard();', onKeyUp: 'window[\''+this.refId+'\'].selectCard();' }, [
-									optionArray
-								])
-							])
-						]),
-						Builder.node( 'p', [ ] )
-					]);
+					this.log('checking effects');
+					if (this.useEffects) {
+						// effects in effect
+						new Effect.Opacity(this.center_img_containerId, { 
+							from: this.eff_OpacityStart,
+							to: this.eff_OpacityMid,
+							duration: this.eff_OpacityDuration_FadeOut,
+							delay: this.eff_OpacityDelay_FadeOut
+						});
+						new Effect.Opacity(this.center_img_containerId, { 
+							from: this.eff_OpacityMid,
+							to: this.eff_OpacityFinish,
+							duration: this.eff_OpacityDuration_FadeIn,
+							delay: this.eff_OpacityDelay_FadeIn,
+							refId: this.refId, //pass a ref to object
+							afterSetup: 
+								function (effect) { 
+									window[effect.options.refId].updateDisplay();
+								}
+						});
+					}else{
+						// effects are not being used, call update
+						this.updateDisplay();
+					}
+				}else{
+					this.err('Cannot rotate ('+direction+'), no display item');
+				}
+			}
 
-					break;
-				case 2: // Card Example with Carousel
-					this.displayObj = Builder.node( 'div', { className: 'card_display' }, [
-						Builder.node( 'div', { className: 'card_left' }, [
-							Builder.node( 'img', { src: '', alt: 'l', id: this.left_img_containerId } )
-						]), 
-						Builder.node( 'div', { className: 'card_center' }, [
-							Builder.node( 'a', { href: '#', onClick: '$(\''+this.partOfForm+'\').submit();return false;' }, [
+		/* This function does the actual display update */
+			this.updateDisplay = function () {
+				this.log('updateDisplay called');
+
+				this.log('this.display[0] '+this.display[0]);
+				this.log('this.display[1] '+this.display[1]);
+				this.log('this.display[2] '+this.display[2]);
+
+				if ($(this.left_img_containerId)) {
+					if (typeof(this.display[0]) === 'number' && this.cards[this.display[0]]) {
+						$(this.left_img_containerId).src = this.mediaRoot+this.cards[this.display[0]].id+this.left_img_suffix;
+						$(this.left_img_containerId).alt = this.cards[this.display[0]].displayName;
+					}else{
+						this.err('Cannot get display left: '+this.display[0]+', '+this.cards[this.display[0]]);
+					}
+					this.log('updateDisplay: '+this.display[0]+' '+this.mediaRoot+this.cards[this.display[0]].id+this.left_img_suffix);
+				}else{
+					this.err('Cannot get left_img_containerId ('+this.left_img_containerId+'), '+$(this.left_img_containerId)+', '+this.display[0]+', '+this.cards[this.display[0]]);
+				}
+
+				if ($(this.center_img_containerId)) {
+					if (typeof(this.display[1]) === 'number' && this.cards[this.display[1]]) {
+						$(this.center_img_containerId).src = this.mediaRoot+this.cards[this.display[1]].id+this.center_img_suffix;
+						$(this.center_img_containerId).alt = this.cards[this.display[1]].displayName;
+					}else{
+						this.err('Cannot get display center: '+this.display[1]+', '+this.cards[this.display[1]]);
+					}
+
+					if ($(this.curCard_containerId)) {
+						$(this.curCard_containerId).innerHTML = this.cards[this.display[1]].displayName; 
+						this.log('updateDisplay innerHTML check ok: '+this.display[1]+' '+$(this.curCard_containerId).innerHTML);
+					}else{
+						this.err('updateDisplay innerHTML check ERR: '+this.curCard_containerId);
+					}
+					this.log('updateDisplay: '+this.display[1]+' '+this.mediaRoot+this.cards[this.display[1]].id+this.center_img_suffix);
+				}else{
+					this.err('Cannot get center_img_containerId ('+this.center_img_containerId+'), '+$(this.center_img_containerId)+', '+this.display[1]+', '+this.cards[this.display[1]]);
+				}
+
+				if ($(this.right_img_containerId)) {
+					if (typeof(this.display[2]) === 'number' && this.cards[this.display[2]]) {
+						$(this.right_img_containerId).src = this.mediaRoot+this.cards[this.display[2]].id+this.right_img_suffix;
+						$(this.right_img_containerId).alt = this.cards[this.display[2]].displayName;
+					}else{
+						this.err('Cannot get display right: '+this.display[2]+', '+this.cards[this.display[2]]);
+					}
+					this.log('updateDisplay: '+this.display[2]+' '+this.mediaRoot+this.cards[this.display[2]].id+this.right_img_suffix);
+				}else{
+					this.err('Cannot get right_img_containerId ('+this.right_img_containerId+'), '+$(this.right_img_containerId)+', '+this.display[2]+', '+this.cards[this.display[2]]);
+				}
+
+				this.selectCard(); // call update for select box
+
+			}
+
+		/* selct a card action */
+			this.selectCard = function (selIndex) {
+				this.log('Called selectCard '+selIndex);
+
+				
+				//make sure we skip out if not using a select box
+				if (!$(this.selectBoxId)) { 
+
+					//update gcId_containerId now if not a select box (otherwise wait till end of function)
+					if (typeof(this.gcId_containerId) != 'undefined' && this.gcId_containerId != '' && $(this.gcId_containerId)) {
+						if ( typeof(this.display[1] === 'number') && this.cards[this.display[1]]) {
+							$(this.gcId_containerId).value = this.cards[this.display[1]].id;
+							this.log('gcId_containerId ('+this.gcId_containerId+') = ('+this.cards[this.display[1]].id+')');
+						}
+					}else{
+						try{
+							this.err('Cannot set gcId_containerId ('+this.gcId_containerId+')');
+							this.err('Cannot set gcId_containerId to value ('+this.cards[this.display[1]].id+')');
+						}catch(e) {
+							this.err('err in selectCard: '+e.description);
+						}
+					}
+					
+					return false;
+				}
+
+				this.log('selectCard '+this.curSelectedIndex);
+				var imgContainerId = this.refId+this.center_img_containerId;
+				this.log('loaded? '+this.loaded);
+
+				// see if we have a value passed (and it's a valid value)
+				if (typeof(selIndex) != 'undefined' && selIndex <= this.cards.length) { $(this.selectBoxId).selectedIndex = selIndex; }
+
+				// this fixes the loaded choice not matching the intended src
+				if (($(this.selectBoxId).selectedIndex != this.curSelectedIndex) || this.loaded <= 1) {
+					this.curSelectedIndex = $(this.selectBoxId).selectedIndex;
+						this.log('selectCard inside IF '+this.curSelectedIndex);
+					// change src to match selection
+					if ($(imgContainerId) && $(this.selectBoxId)[this.curSelectedIndex]) {
+						$(imgContainerId).src = this.mediaRoot+$(this.selectBoxId)[this.curSelectedIndex].value+this.center_img_suffix;
+						$(imgContainerId).alt = $(this.selectBoxId)[this.curSelectedIndex].innerHTML;
+					}
+
+					if ( this.loaded <= 1 ) { this.loaded++; } // keeps us from re-requesting images on every change
+				}
+
+				//update gcId_containerId now if a select box
+				if (typeof(this.gcId_containerId) != 'undefined' && this.gcId_containerId != '' && $(this.gcId_containerId)) {
+					if ($(this.selectBoxId)[this.curSelectedIndex]) {
+						$(this.gcId_containerId).value = $(this.selectBoxId)[this.curSelectedIndex].value;
+					}
+					if (this.curSelectedIndex && $(this.selectBoxId)[this.curSelectedIndex]) {
+						this.log('2 gcId_containerId ('+this.gcId_containerId+') = ('+$(this.selectBoxId)[this.curSelectedIndex].value+')');
+					}
+				}else{
+					this.err('2 Cannot set gcId_containerId ('+this.gcId_containerId+')');
+					if (this.curSelectedIndex && $(this.selectBoxId)[this.curSelectedIndex]) {
+						this.err('2 Cannot set gcId_containerId to value ('+$(this.selectBoxId)[this.curSelectedIndex].value+')');
+					}
+				}
+				return true;
+			}
+
+		/* set display type and build HTML */
+			this.setDisplayObjType = function(type) {
+				if (typeof(type) != 'undefined' && !isNaN(type)) {
+					this.displayObjType = type; // if type = 0 (or not passed), this.displayObjType overrides
+				}
+
+				this.log('setDisplayObjType: Type = '+this.displayObjType);
+
+
+				/* 
+				 *	to allow direct appending, make sure this.displayObjType is always an object to be returned (it is by default)
+				 */
+				switch (this.displayObjType) {
+					case 1: // Card Example with dropdown
+
+						var optionArray = new Array;
+						for (var i=this.cards.length-1; i>=0; i--) {
+							optionArray[i] = Builder.node( 'option', { value: this.cards[i].id }, [ this.cards[i].displayName ]);
+						}
+
+						this.displayObj = Builder.node( 'div', { className: 'card_display' }, [
+							Builder.node( 'div', { className: 'card_center' }, [
+								Builder.node( 'img', { src: '', alt: 'c', id: this.refId+this.center_img_containerId } )
+							]),
+							Builder.node( 'div', { className: 'card_controls' }, [
+								Builder.node( 'div', { className: 'card_controls_header' }, [
+									Builder.node( 'img', { src: this.mediaStaticRoot+'purchase/choose_design.gif', alt: 'Choose Design', id: 'gcChooseDesign_img' } )
+							
+								]),
+								Builder.node( 'div', { className: 'card_controls_select' }, [
+									Builder.node( 'select', { id: this.selectBoxId, onChange: 'window[\''+this.refId+'\'].selectCard();', onKeyUp: 'window[\''+this.refId+'\'].selectCard();' }, [
+										optionArray
+									])
+								])
+							]),
+							Builder.node( 'p', [ ] )
+						]);
+
+						break;
+					case 2: // Card Example with Carousel
+						this.displayObj = Builder.node( 'div', { className: 'card_display' }, [
+							Builder.node( 'div', { className: 'card_left' }, [
+								Builder.node( 'img', { src: '', alt: 'l', id: this.left_img_containerId } )
+							]), 
+							Builder.node( 'div', { className: 'card_center' }, [
+								Builder.node( 'a', { href: '#', onClick: '$(\''+this.partOfForm+'\').submit();return false;' }, [
+									Builder.node( 'img', { src: '', alt: 'c', id: this.center_img_containerId } )
+								])
+							]), 
+							Builder.node( 'div', { className: 'card_right' }, [
+								Builder.node( 'img', { src: '', alt: 'r', id: this.right_img_containerId } )
+							]),
+
+							Builder.node( 'div', { className: 'card_controls' }, [
+
+								Builder.node('div', { className: 'card_controls_msg_type' }, [
+									'Gift Card design: ', Builder.node( 'span', { id: this.curCard_containerId } )
+								]),
+
+								Builder.node( 'a', { href: '#', onClick: 'window[\''+this.refId+'\'].rotate(\'LEFT\'); return false;', id: this.refId+'card_control_left' }, [
+									Builder.node('img', { src: this.mediaStaticRoot+'landing/control_arrow_l.gif', alt: 'scroll left' } )
+								]),
+
+								Builder.node( 'a', { href: '#', onClick: 'window[\''+this.refId+'\'].rotate(\'RIGHT\'); return false;', id: this.refId+'card_control_right' }, [
+									Builder.node('img', { src: this.mediaStaticRoot+'landing/control_arrow_r.gif', alt: 'scroll right' } )
+								]),
+
+								Builder.node( 'div', { className: 'card_controls_msg' }, [
+									'Click arrows to scroll & preview card designs.'
+								]),
+							]),
+							Builder.node( 'p', [ ] )
+						]);
+
+						break;
+					default:
+						this.displayObj = Builder.node( 'div', { className: 'card_display' }, [
+							Builder.node( 'div', { className: 'card_center' }, [
 								Builder.node( 'img', { src: '', alt: 'c', id: this.center_img_containerId } )
 							])
-						]), 
-						Builder.node( 'div', { className: 'card_right' }, [
-							Builder.node( 'img', { src: '', alt: 'r', id: this.right_img_containerId } )
-						]),
+						]);
+				}
 
-						Builder.node( 'div', { className: 'card_controls' }, [
-							Builder.node('div', { className: 'card_controls_msg_type' }, [
-								'Gift Card design: ', Builder.node( 'span', { id: this.curCard_containerId } )
-							]),
 
-							Builder.node( 'a', { href: '#', onClick: 'window[\''+this.refId+'\'].rotate(\'LEFT\'); return false;', id: this.refId+'card_control_left' }, [
-								Builder.node('img', { src: this.mediaStaticRoot+'landing/control_arrow_l.gif', alt: 'scroll left' } )
-							]),
+				return this.displayObj;
 
-							Builder.node( 'a', { href: '#', onClick: 'window[\''+this.refId+'\'].rotate(\'RIGHT\'); return false;', id: this.refId+'card_control_right' }, [
-								Builder.node('img', { src: this.mediaStaticRoot+'landing/control_arrow_r.gif', alt: 'scroll right' } )
-							]),
-
-							Builder.node( 'div', { className: 'card_controls_msg' }, [
-								'Click arrows to scroll & preview card designs.'
-							]),
-						]),
-						Builder.node( 'p', [ ] )
-					]);
-
-					break;
-				default:
-					this.displayObj = Builder.node( 'div', { className: 'card_display' }, [
-						Builder.node( 'div', { className: 'card_center' }, [
-							Builder.node( 'img', { src: '', alt: 'c', id: this.center_img_containerId } )
-						])
-					]);
 			}
-
-
-			return this.displayObj;
-
-		}
 		
-
-		this.log = function (logMsg) {
-			this.lastLog = logMsg;
-			var time = new Date();
-			var timeNow = time.getHours()+":"+time.getMinutes()+":"+time.getSeconds()+"."+time.getMilliseconds();
-			if (this.debug) {
-				if (window.console) {
-					console.log(timeNow+' Log: '+this.lastLog);
-				}
-			}
-		}
-
-		this.err = function (errMsg) {
-			this.lastErr = errMsg;
-			if (this.debug) {
-				if ( this.debug_PreloadErrLog && !this.loaded ) {
+		/* log a non-error msg */
+			this.log = function (logMsg) {
+				this.lastLog = logMsg;
+				if ((global_gcDebug || global_gcLog) || this.debug) {
 					if (window.console) {
-						console.log('Err: '+this.lastErr);
+						console.log(new Date().toLocaleTimeString()+' Log: '+this.lastLog);
 					}
-					if (this.debug_alert) { alert('Err: '+this.lastErr); }
 				}
 			}
-		}
+
+		/* log an error msg */
+			this.err = function (errMsg) {
+				this.lastErr = errMsg;
+				if ((global_gcDebug || global_gcLog) || this.debug) {
+					if ( (global_gcDebug || global_gcLog) || ( this.debug_PreloadErrLog) ) {
+						if (window.console) {
+							console.log(new Date().toLocaleTimeString()+' Err: '+this.lastErr);
+						}
+						if (this.debug_alert) { alert(new Date().toLocaleTimeString()+' Err: '+this.lastErr); }
+					}
+				}
+			}
 
 		this.log(this.refId + ' is using effects?: '+this.useEffects);
 
 		/* controls values sent to trigger an email preview */
-		this.emailPreview = function() {
-			var titleString = ' ';
+			this.emailPreview = function() {
+				var titleString = ' ';
 
-			if (this.debug) { titleString = 'debug: '+$('gcTemplateId').value; }
-			var tempAmount = formatCurrency($('fldAltAmount').value);
-			tempAmount=(tempAmount).replace(/\$/g, '');
+				if (this.debug) { titleString = 'debug: '+$('gcTemplateId').value; }
+				var tempAmount = formatCurrency($('fldAltAmount').value);
+				tempAmount=(tempAmount).replace(/\$/g, '');
 
-			var tempHeight = getHeight()*.90; //also change in previewShow
+				var tempHeight = getHeight()*.90; //also change in previewShow
 
-			/* only trigger if we have a choice of preview type */
-			if ( $('deliveryMethodEmail').checked || $('deliveryMethodPdf').checked) {
-				Modalbox.show('/gift_card/postbacks/preview.jsp', {
-					params: {
-						isEmailPreview: $('deliveryMethodEmail').checked,
-						isPdfPreview: $('deliveryMethodPdf').checked,
-						gcId: $('gcTemplateId').value,
-						gcAmount: tempAmount,
-						gcRedempCode: 'xxxxx',
-						gcFor: $('gcRecipientName').value,
-						gcFrom: $('gcBuyerName').value,
-						gcMessage: ($('fldMessage').value).slice(0, this.personalMsgLen)
-					},
-					method: 'post',
-					title: titleString,
-					loadingString: 'Loading Preview...',
-					closeValue: '<img src="'+this.mediaRoot+$('gcTemplateId').value+'/close_preview.gif" />',
-					closeString: 'Close Preview',
-					overlayOpacity: .85,
-					overlayClose: false,
-					width: 700,
-					height: tempHeight,
-					transitions: false,
-					autoFocusing: false,
-					centered: true,
-					afterLoad: function() { window.scrollTo(0,0); },
-					afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
-				});
-			}else{
-				Modalbox.show('<div class="error" style="height: auto; width: auto; margin: 3px 10px;">Please choose a Delivery Method before attempting to preview.</div>', {
-					title: ' ',
-					loadingString: 'Loading Preview...',
-					closeValue: '<img src="'+this.mediaStaticRoot+'/your_account/close.gif" height="11" width="50" alt="" border="0" />',
-					closeString: 'Close Preview',
-					overlayOpacity: .85,
-					overlayClose: false,
-					transitions: false,
-					autoFocusing: false,
-					height: 75,
-					width: 250,
-					centered: true,
-					afterLoad: function() { window.scrollTo(0,0); },
-					afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
-				});
+				/* only trigger if we have a choice of preview type */
+				if ( $('deliveryMethodEmail').checked || $('deliveryMethodPdf').checked) {
+					Modalbox.show('/gift_card/postbacks/preview.jsp', {
+						params: {
+							isEmailPreview: $('deliveryMethodEmail').checked,
+							isPdfPreview: $('deliveryMethodPdf').checked,
+							gcId: $('gcTemplateId').value,
+							gcAmount: tempAmount,
+							gcRedempCode: 'xxxxx',
+							gcFor: $('gcRecipientName').value,
+							gcFrom: $('gcBuyerName').value,
+							gcMessage: ($('fldMessage').value).slice(0, this.personalMsgLen)
+						},
+						method: 'post',
+						title: titleString,
+						loadingString: 'Loading Preview...',
+						closeValue: '<img src="'+this.mediaRoot+$('gcTemplateId').value+'/close_preview.gif" />',
+						closeString: 'Close Preview',
+						overlayOpacity: .85,
+						overlayClose: false,
+						width: 700,
+						height: tempHeight,
+						transitions: false,
+						autoFocusing: false,
+						centered: true,
+						afterLoad: function() { window.scrollTo(0,0); },
+						afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
+					});
+				}else{
+					Modalbox.show('<div class="error" style="height: auto; width: auto; margin: 3px 10px;">Please choose a Delivery Method before attempting to preview.</div>', {
+						title: ' ',
+						loadingString: 'Loading Preview...',
+						closeValue: '<img src="'+this.mediaStaticRoot+'/your_account/close.gif" height="11" width="50" alt="" border="0" />',
+						closeString: 'Close Preview',
+						overlayOpacity: .85,
+						overlayClose: false,
+						transitions: false,
+						autoFocusing: false,
+						height: 75,
+						width: 250,
+						centered: true,
+						afterLoad: function() { window.scrollTo(0,0); },
+						afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
+					});
+				}
 			}
-		}
 	}
 
 

@@ -68,6 +68,10 @@
 	
 <script type="text/javascript">
 	function TEST() {
+		//turn on debug logging
+		global_gcDebug = true;
+		global_gcLog = true;
+
 		TEST1();
 		TEST2();
 	}
@@ -206,11 +210,23 @@
 	
 </script>
 <div style="font-family: monospace;">
+<b>Department Id:</b> <%= deptId %><br />
 <b>Department:</b> <%= department.getFullName() %><br />
+<b>Category Id:</b> <%= catId %><br />
 <b>Category:</b> <%= (errorFound)?"":categoryRef.getFullName() %><br />
+<b>GiftCard Product Id:</b> <%= prodId %><br />
+<b>GiftCard SKU code:</b> <%= prodId %><br />
+<b>getGiftcardSkucode</b> <%= FDStoreProperties.getGiftcardSkucode() %><br />
+<br />
 <b>Gift Card Types:</b> <%= (errorFound)?"":prodRef.getGiftcardType() %><br />
 <b>Media Root:</b> <%= mediaRoot %><br />
 <b>Media Static Root:</b> <%= mediaStaticRoot %><br />
+<br />
+<b>isGiftCardEnabled:</b> <%= FDStoreProperties.isGiftCardEnabled() %><br />
+<b>getGiftCardLandingUrl</b> <%= FDStoreProperties.getGiftCardLandingUrl() %><br />
+<b>getGiftCardRecipientLimit</b> <%= FDStoreProperties.getGiftCardRecipientLimit() %><br />
+<b>getGiftCardMinAmount</b> <%= FDStoreProperties.getGiftCardMinAmount() %><br />
+<b>getGiftCardMaxAmount</b> <%= FDStoreProperties.getGiftCardMaxAmount() %><br />
 </div>
 
 <br /><br />

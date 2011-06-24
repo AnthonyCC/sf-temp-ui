@@ -99,7 +99,7 @@ int idx = 0;
 			<td align="right" width="40">
 				<%=cartLine.getDisplayQuantity()%>
 				<%
-					totalItemsInCart ++; //for sem use
+					totalItemsInCart++; //for sem use
 				%>
 			</td>
 			<td width="16"></td>
