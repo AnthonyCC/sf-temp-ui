@@ -170,7 +170,7 @@ public class BrowseController extends BaseController {
 	            if(categories.size() > 0 && !ACTION_GET_CATEGORYCONTENT_PRODUCTONLY.equals(action)) {
 	            	List<Category> filteredCategories = new  ArrayList<Category>();
 	            	for(Category cat : categories) {
-	            		if(hasChildrens.contains(cat.getId())) {
+	            		if(hasChildrens.contains(cat.getId()) || ACTION_GET_CATEGORIES.equals(action)) { // Don't check if system has children if it's root category 
 	            			filteredCategories.add(cat);
 	            		}
 	            	}
