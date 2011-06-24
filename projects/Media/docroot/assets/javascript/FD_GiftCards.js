@@ -7,9 +7,9 @@
 
 /* Test : Debug Functions ----------------------------------------------------*/
 
-var global_gcDebug = true;
-var global_gcLog = true;
-var lastEdit = '2009.10.14_12.30.37.AM'; //debug on -ba 2011.06.23_09.02.33.AM
+var global_gcDebug = false;
+var global_gcLog = false;
+var lastEdit = '2011.06.24_04.15.58.PM';
 var lastLog;
 
 gcLog('Last Edit: '+lastEdit);
@@ -201,8 +201,7 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 
 		/* addCardsArray as ARRAY */
 			this.addCardsArray = function (cardsArray) {
-				this.log('addCardsArray called');
-				
+				this.log('addCardsArray called.');
 				
 				for (var n = 0; n < cardsArray.length; n++) {
 					this.cards[this.cards.length] = new fdCard(cardsArray[n]);
@@ -239,61 +238,63 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 					}
 				}
 
-				this.log('addCardsArray pre-loads: '+(this.preLoadArr.length-1));
+				this.log(' ');
+				this.log('\taddCardsArray pre-loads: '+(this.preLoadArr.length-1));
 
 				this.checkDisplay();
 
-				this.log('current cards: '+this.cards);
+				this.log('\tcurrent cards: '+this.cards);
 			}
 
 		/* verify display and update it */
 			this.checkDisplay = function (initialCardIndex) {
-				this.log('checkDisplay called');
+				this.log('checkDisplay called.');
 
 				var initCardIndex=0;
 
 				if (typeof(initialcardIndex) != 'undefined') {
 					//initialCardIndex++;
 					this.display[1] = -1;
-					this.log('checkDisplay called with initialCardIndex '+initialCardIndex);
-					this.log('checkDisplay called this.cards.length '+this.cards.length);
+					this.log('\twith initialCardIndex '+initialCardIndex);
+					this.log('\tthis.cards.length '+this.cards.length);
 					if (initialCardIndex <= this.cards.length) {
-						this.log('checkDisplay initialCardIndex <= this.cards.length true');
+						this.log('\t\tcheckDisplay initialCardIndex <= this.cards.length == '+(initialCardIndex <= this.cards.length));
 						initCardIndex = initialCardIndex
 					}else{
-						this.log('checkDisplay initialCardIndex <= this.cards.length false');
+						this.log('\t\tcheckDisplay initialCardIndex <= this.cards.length == '+(initialCardIndex <= this.cards.length));
 						initCardIndex = 0;
 					}
-					this.log('checkDisplay final initCardIndex '+initCardIndex);
+					this.log('\tcheckDisplay final initCardIndex '+initCardIndex);
 				}else{
+					this.log('\tcheckDisplay called with no initialCardIndex. (Setting to 0)');
 					initialcardIndex = 0;
 				}
 				
 
 				if (this.display[1] == -1) {
 					//uninitialized view
-					if (this.cards.length >= 1)	{
+					if (this.cards.length >= 1) {
 						//we have at least one card to show
 						this.display[1] = initCardIndex;
 
-						this.log('initCardIndex: '+initCardIndex);
+						this.log('\tinitCardIndex: '+initCardIndex);
 						if (this.cards.length > 1) {
 							//we have two or more cards
 							if (initCardIndex == this.cards.length-1) {
-								this.log('\tinitCardIndex == this.cards.length');
+								this.log('\t\tinitCardIndex == this.cards.length');
 								// init card == last card in array
 								this.display[0] = initCardIndex-1;
 								this.display[2] = 0;
 							}else{
-								this.log('\tinitCardIndex != this.cards.length');
+								this.log('\t\tinitCardIndex != this.cards.length');
 								// check if init is 0
 								if (initCardIndex == 0) {
-									this.log('\t\tinitCardIndex: == 0 ('+initCardIndex+')');
+									this.log('\t\t\tinitCardIndex: == 0 ('+initCardIndex+')');
 									//first card
 									this.display[0] = this.cards.length-1;
 									this.display[2] = initCardIndex+1;
 								}else{
-									this.log('\t\tinitCardIndex: != 0 ('+initCardIndex+')');
+									this.log('\t\t\tinitCardIndex: != 0 ('+initCardIndex+')');
 									//somewhere in-between
 									this.display[0] = initCardIndex-1;
 									this.display[2] = initCardIndex+1;
@@ -307,11 +308,17 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 					}
 				}
 
+				if (this.gcId_containerId === '' || $(this.gcId_containerId)) {
+					this.log('\tgcId_containerId ('+this.gcId_containerId+') empty or not in DOM yet, skipping updateDisplay.');
+					return;
+				}
+
 				this.updateDisplay();
 			};
 
 		/* choose the initial card shown */
 			this.chooseInitialCard = function(cardIndex) {
+				this.log('chooseInitialCard called. cardIndex: '+cardIndex);
 				this.selectCard(cardIndex);
 				this.checkDisplay(cardIndex);
 			}
@@ -323,7 +330,7 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 				if (this.display[1] != -1 && this.cards.length > 1) {
 					//this means we have items displayed
 					//we only need to rotate is we have > 1 cards to show
-					this.log('direction: '+direction);
+					this.log('\tdirection: '+direction);
 
 					switch (direction)
 					{
@@ -331,10 +338,10 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 							this.display[0] = this.display[1];
 							this.display[1] = this.display[2];
 							if (this.display[2] == this.cards.length-1) {
-								this.log('left display[2]: equals cards length');
+								this.log('\t\tleft display[2]: equals cards length');
 								this.display[2] = 0;
 							}else{
-								this.log('left display[2]: does not equal cards length');
+								this.log('\t\tleft display[2]: does not equal cards length');
 								this.display[2] = this.display[2]+1;
 							}
 
@@ -343,18 +350,19 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 							this.display[2] = this.display[1];
 							this.display[1] = this.display[0];
 							if (this.display[0] == 0) {
-								this.log('right display[0]: equals cards length');
+								this.log('\t\tright display[0]: equals cards length');
 								this.display[0] = this.cards.length-1;
 							}else{
-								this.log('right display[0]: does not equal cards length');
+								this.log('\t\tright display[0]: does not equal cards length');
 								this.display[0] = this.display[0]-1;
 							}
 
 							break;
 					}
 
-					this.log('checking effects');
+					this.log('\tchecking effects');
 					if (this.useEffects) {
+						this.log('\t\Effects in effect!');
 						// effects in effect
 						new Effect.Opacity(this.center_img_containerId, { 
 							from: this.eff_OpacityStart,
@@ -374,32 +382,33 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 								}
 						});
 					}else{
+						this.log('\t\Effects NOT in effect!');
 						// effects are not being used, call update
 						this.updateDisplay();
 					}
 				}else{
-					this.err('Cannot rotate ('+direction+'), no display item');
+					this.err('\tCannot rotate ('+direction+'), no display item');
 				}
 			}
 
 		/* This function does the actual display update */
 			this.updateDisplay = function () {
-				this.log('updateDisplay called');
+				this.log('updateDisplay called.');
 
-				this.log('this.display[0] '+this.display[0]);
-				this.log('this.display[1] '+this.display[1]);
-				this.log('this.display[2] '+this.display[2]);
+				this.log('\tthis.display[0] '+this.display[0]);
+				this.log('\tthis.display[1] '+this.display[1]);
+				this.log('\tthis.display[2] '+this.display[2]);
 
 				if ($(this.left_img_containerId)) {
 					if (typeof(this.display[0]) === 'number' && this.cards[this.display[0]]) {
 						$(this.left_img_containerId).src = this.mediaRoot+this.cards[this.display[0]].id+this.left_img_suffix;
 						$(this.left_img_containerId).alt = this.cards[this.display[0]].displayName;
 					}else{
-						this.err('Cannot get display left: '+this.display[0]+', '+this.cards[this.display[0]]);
+						this.err('\tCannot get display, left: '+this.display[0]+', '+this.cards[this.display[0]]);
 					}
-					this.log('updateDisplay: '+this.display[0]+' '+this.mediaRoot+this.cards[this.display[0]].id+this.left_img_suffix);
+					this.log('\tupdateDisplay: '+this.display[0]+' '+this.mediaRoot+this.cards[this.display[0]].id+this.left_img_suffix);
 				}else{
-					this.err('Cannot get left_img_containerId ('+this.left_img_containerId+'), '+$(this.left_img_containerId)+', '+this.display[0]+', '+this.cards[this.display[0]]);
+					this.err('\tCannot get left_img_containerId ('+this.left_img_containerId+'), '+$(this.left_img_containerId)+', '+this.display[0]+', '+this.cards[this.display[0]]);
 				}
 
 				if ($(this.center_img_containerId)) {
@@ -407,18 +416,18 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 						$(this.center_img_containerId).src = this.mediaRoot+this.cards[this.display[1]].id+this.center_img_suffix;
 						$(this.center_img_containerId).alt = this.cards[this.display[1]].displayName;
 					}else{
-						this.err('Cannot get display center: '+this.display[1]+', '+this.cards[this.display[1]]);
+						this.err('\tCannot get display, center: '+this.display[1]+', '+this.cards[this.display[1]]);
 					}
 
 					if ($(this.curCard_containerId)) {
 						$(this.curCard_containerId).innerHTML = this.cards[this.display[1]].displayName; 
-						this.log('updateDisplay innerHTML check ok: '+this.display[1]+' '+$(this.curCard_containerId).innerHTML);
+						this.log('\t\tupdateDisplay innerHTML check OK! index: '+this.display[1]+' type: '+$(this.curCard_containerId).innerHTML);
 					}else{
-						this.err('updateDisplay innerHTML check ERR: '+this.curCard_containerId);
+						this.err('\t\tupdateDisplay innerHTML check ERR! '+this.curCard_containerId);
 					}
-					this.log('updateDisplay: '+this.display[1]+' '+this.mediaRoot+this.cards[this.display[1]].id+this.center_img_suffix);
+					this.log('\tupdateDisplay: '+this.display[1]+' '+this.mediaRoot+this.cards[this.display[1]].id+this.center_img_suffix);
 				}else{
-					this.err('Cannot get center_img_containerId ('+this.center_img_containerId+'), '+$(this.center_img_containerId)+', '+this.display[1]+', '+this.cards[this.display[1]]);
+					this.err('\tCannot get center_img_containerId ('+this.center_img_containerId+'), '+$(this.center_img_containerId)+', '+this.display[1]+', '+this.cards[this.display[1]]);
 				}
 
 				if ($(this.right_img_containerId)) {
@@ -426,11 +435,11 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 						$(this.right_img_containerId).src = this.mediaRoot+this.cards[this.display[2]].id+this.right_img_suffix;
 						$(this.right_img_containerId).alt = this.cards[this.display[2]].displayName;
 					}else{
-						this.err('Cannot get display right: '+this.display[2]+', '+this.cards[this.display[2]]);
+						this.err('\tCannot get display, right: '+this.display[2]+', '+this.cards[this.display[2]]);
 					}
-					this.log('updateDisplay: '+this.display[2]+' '+this.mediaRoot+this.cards[this.display[2]].id+this.right_img_suffix);
+					this.log('\tupdateDisplay: '+this.display[2]+' '+this.mediaRoot+this.cards[this.display[2]].id+this.right_img_suffix);
 				}else{
-					this.err('Cannot get right_img_containerId ('+this.right_img_containerId+'), '+$(this.right_img_containerId)+', '+this.display[2]+', '+this.cards[this.display[2]]);
+					this.err('\tCannot get right_img_containerId ('+this.right_img_containerId+'), '+$(this.right_img_containerId)+', '+this.display[2]+', '+this.cards[this.display[2]]);
 				}
 
 				this.selectCard(); // call update for select box
@@ -439,9 +448,8 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 
 		/* selct a card action */
 			this.selectCard = function (selIndex) {
-				this.log('Called selectCard '+selIndex);
+				this.log('selectCard called. selIndex: '+selIndex);
 
-				
 				//make sure we skip out if not using a select box
 				if (!$(this.selectBoxId)) { 
 
@@ -449,23 +457,18 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 					if (typeof(this.gcId_containerId) != 'undefined' && this.gcId_containerId != '' && $(this.gcId_containerId)) {
 						if ( typeof(this.display[1] === 'number') && this.cards[this.display[1]]) {
 							$(this.gcId_containerId).value = this.cards[this.display[1]].id;
-							this.log('gcId_containerId ('+this.gcId_containerId+') = ('+this.cards[this.display[1]].id+')');
+							this.log('\tgcId_containerId ('+this.gcId_containerId+') = ('+this.cards[this.display[1]].id+')');
 						}
 					}else{
-						try{
-							this.err('Cannot set gcId_containerId ('+this.gcId_containerId+')');
-							this.err('Cannot set gcId_containerId to value ('+this.cards[this.display[1]].id+')');
-						}catch(e) {
-							this.err('err in selectCard: '+e.description);
-						}
+						this.log('\tgcId_containerId ('+this.gcId_containerId+') empty or not in DOM yet, skipping selectCard.');
 					}
 					
 					return false;
 				}
 
-				this.log('selectCard '+this.curSelectedIndex);
+				this.log('\tselectCard curSelectedIndex: '+this.curSelectedIndex);
 				var imgContainerId = this.refId+this.center_img_containerId;
-				this.log('loaded? '+this.loaded);
+				this.log((this.loaded>1)?'\tis loaded: true':'\tis loaded: false');
 
 				// see if we have a value passed (and it's a valid value)
 				if (typeof(selIndex) != 'undefined' && selIndex <= this.cards.length) { $(this.selectBoxId).selectedIndex = selIndex; }
@@ -473,7 +476,7 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 				// this fixes the loaded choice not matching the intended src
 				if (($(this.selectBoxId).selectedIndex != this.curSelectedIndex) || this.loaded <= 1) {
 					this.curSelectedIndex = $(this.selectBoxId).selectedIndex;
-						this.log('selectCard inside IF '+this.curSelectedIndex);
+						this.log('\tselected card changed, or not loaded yet. changing to index: '+this.curSelectedIndex);
 					// change src to match selection
 					if ($(imgContainerId) && $(this.selectBoxId)[this.curSelectedIndex]) {
 						$(imgContainerId).src = this.mediaRoot+$(this.selectBoxId)[this.curSelectedIndex].value+this.center_img_suffix;
@@ -489,12 +492,12 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 						$(this.gcId_containerId).value = $(this.selectBoxId)[this.curSelectedIndex].value;
 					}
 					if (this.curSelectedIndex && $(this.selectBoxId)[this.curSelectedIndex]) {
-						this.log('2 gcId_containerId ('+this.gcId_containerId+') = ('+$(this.selectBoxId)[this.curSelectedIndex].value+')');
+						this.log('\t[Select] gcId_containerId ('+this.gcId_containerId+') = ('+$(this.selectBoxId)[this.curSelectedIndex].value+')');
 					}
 				}else{
-					this.err('2 Cannot set gcId_containerId ('+this.gcId_containerId+')');
+					this.err('\t2 Cannot set gcId_containerId ('+this.gcId_containerId+')');
 					if (this.curSelectedIndex && $(this.selectBoxId)[this.curSelectedIndex]) {
-						this.err('2 Cannot set gcId_containerId to value ('+$(this.selectBoxId)[this.curSelectedIndex].value+')');
+						this.err('\t[Select] Cannot set gcId_containerId to value ('+$(this.selectBoxId)[this.curSelectedIndex].value+')');
 					}
 				}
 				return true;
@@ -502,12 +505,13 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 
 		/* set display type and build HTML */
 			this.setDisplayObjType = function(type) {
+				this.log('setDisplayObjType called. type: '+type);
+
 				if (typeof(type) != 'undefined' && !isNaN(type)) {
 					this.displayObjType = type; // if type = 0 (or not passed), this.displayObjType overrides
 				}
 
-				this.log('setDisplayObjType: Type = '+this.displayObjType);
-
+				this.log('\tsetDisplayObjType: Type = '+this.displayObjType);
 
 				/* 
 				 *	to allow direct appending, make sure this.displayObjType is always an object to be returned (it is by default)
