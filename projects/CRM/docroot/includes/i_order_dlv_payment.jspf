@@ -252,6 +252,32 @@
 					<td>Billing Reference&nbsp;&nbsp;</td>
 					<td><%= paymentMethod.getBillingRef() != null && !"".equals(paymentMethod.getBillingRef()) ? paymentMethod.getBillingRef() : "<i>---</i>" %></td>
 				</tr>
+				
+				<%
+					boolean containsAlcohol = false;
+					for (Iterator<FDCartLineI> i = order.getOrderLines().iterator(); i.hasNext();) {
+						FDCartLineI line = i.next();
+						if (line.isAlcohol()) {
+							containsAlcohol = true;
+						}
+					}
+				%>
+				
+				<% if(containsAlcohol) { 
+				%>
+					<tr><td colspan="2">&nbsp;</td></tr>
+					<tr>
+					<td colspan="2">
+				<%	if("true".equals(receipt)) {
+				%>					
+					I acknowledge that I have purchased alcohol from Union Square Wines & Spirits and that my credit card or checking account will be charged separately by UNION SQUARE WINE.
+				<% } else { %>             
+					<b>Please note:</b> By clicking "Submit Order" you acknowledge that you are purchasing alcohol from Union Square Wines & Spirits and that your credit card or checking account will be charged separately by UNION SQUARE WINE.
+				<% } %>
+				</td></tr>
+				<% } %>             
+				
+				
 <%	if (showPaymentButtons) { %>
 				<tr>
 					<td>&nbsp;&nbsp;</td>
