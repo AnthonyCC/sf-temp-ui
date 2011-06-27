@@ -72,6 +72,9 @@
 				</table>
 			</form>
 			
+			<font color="red"> <%=session.getAttribute("error")%> </font>
+			<p />
+			
 			<p />
 			<% if(request.getParameter("ToDate") != null) { %>
 			<ec:table id="upsListForm" items="customers" var="customers" action="upsOutage.do" filterable="false"
@@ -89,17 +92,20 @@
 			</ec:table>
 			
 			<p />
+			
 			<table>
 				<tbody><tr>
 					<td><a href="upsOutage.do?action=xls&FromDate=<%=request.getParameter("FromDate")%>&ToDate=<%=request.getParameter("ToDate")%>" style="background:#FFE900;color:#000;padding:3px 5px 3px 5px;border:1px solid #000;">Download Customer List To Excel</a></td>
-					<% 	List cList = (List) session.getAttribute("customers");
-						java.util.Iterator iter = cList.iterator();
-						StringBuffer sb = new StringBuffer();
-						while(iter.hasNext()) {
-							CustomerModel cm = (CustomerModel) iter.next();
-							sb.append(cm.getEmail());
-							if(iter.hasNext())
-								sb.append(",");
+					<% 	StringBuffer sb = new StringBuffer();
+						if(session.getAttribute("customers") != null) {
+							List cList = (List) session.getAttribute("customers");
+							java.util.Iterator iter = cList.iterator();							
+							while(iter.hasNext()) {
+								CustomerModel cm = (CustomerModel) iter.next();
+								sb.append(cm.getEmail());
+								if(iter.hasNext())
+									sb.append(",");
+							}
 						}
 					%> 
 					<td><a href="mailto:<%=sb.toString()%>" style="background:#FFE900;color:#000;padding:3px 5px 3px 5px;border:1px solid #000;">Send Outage Email to the Customer List</a></td>
