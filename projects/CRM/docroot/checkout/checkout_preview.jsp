@@ -119,7 +119,7 @@
 	boolean showDeleteButtons = false; 
     boolean displayDeliveryInfo = true;
 %>
-	
+<% String receipt = ""; %>
 <%@ include file="/includes/i_order_dlv_payment.jspf"%>
 <hr class="black1px">
 <%	Collection lineComplaints = Collections.EMPTY_LIST;
