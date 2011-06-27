@@ -450,6 +450,10 @@ public class FDStoreProperties {
 	
 	private static final String PROP_PAYMENT_METHOD_VERIFICATION_ENABLED="fdstore.paymentmethod.verify";
 	
+	//[APPDEV-1846] Pop up for DP copy update
+	private static final String PROP_TWO_MONTH_TRIAL_PASS_SKU = "fdstore.twomonth.trialdp.sku";
+	private static final String PROP_TWO_MONTH_TRIAL_PASS_PRICE = "fdstore.twomonth.trialdp.price";
+	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -898,6 +902,10 @@ public class FDStoreProperties {
 		defaults.put(PROP_MKTADMIN_PASSWORD, "password01");
 		
 		defaults.put(PROP_PAYMENT_METHOD_VERIFICATION_ENABLED, "true");
+		
+		defaults.put(PROP_TWO_MONTH_TRIAL_PASS_SKU, "MKT0072335");		
+		defaults.put(PROP_TWO_MONTH_TRIAL_PASS_PRICE, "$59");
+		
         refresh();
     }
 
@@ -2300,6 +2308,14 @@ public class FDStoreProperties {
     
     public static String getMktAdminPassword() {
         return get(PROP_MKTADMIN_PASSWORD);
+    }
+    
+    public static String getTwoMonthTrailDPSku() {
+        return get(PROP_TWO_MONTH_TRIAL_PASS_SKU);
+    }
+    
+    public static String getTwoMonthTrailDPrice() {
+        return get(PROP_TWO_MONTH_TRIAL_PASS_PRICE);
     }
     
     public static interface ConfigLoadedListener {
