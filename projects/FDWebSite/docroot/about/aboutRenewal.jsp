@@ -77,6 +77,12 @@ if(windowSize.equalsIgnoreCase("large")){
 <%
 FDProductInfo prodInfo=FDCachedFactory.getProductInfo(request.getParameter("sku"));
 FDUserI sessionuser = (FDUserI) request.getSession().getAttribute(SessionName.USER);
+String term = request.getParameter("term");
+String price = JspMethods.formatPrice(prodInfo.getZonePriceInfo(sessionuser.getPricingContext().getZoneId()).getDefaultPrice());
+if(request.getParameter("sku").equals(FDStoreProperties.getTwoMonthTrailDPSku())) {
+	term = "Six-Month";
+	price = FDStoreProperties.getTwoMonthTrailDPrice();
+}
 %>
 <A NAME="top"></A>
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="520">
@@ -90,7 +96,7 @@ FDUserI sessionuser = (FDUserI) request.getSession().getAttribute(SessionName.US
 We've made it easy to renew your pass and never pay a delivery fee again. Your pass will be renewed when your current pass (or last refill) expires.<br><br>
 
 
-On the day your pass expires, a new <%=request.getParameter("term")%> DeliveryPass will automatically be added to your account. We'll bill your last used payment option for the normal price of the <%=request.getParameter("term")%> DeliveryPass pass and you'll be set for <%=request.getParameter("term")%> of hassle-free deliveries for just <%=JspMethods.formatPrice(prodInfo.getZonePriceInfo(sessionuser.getPricingContext().getZoneId()).getDefaultPrice())%>! You may opt out of automatic renewal at any time.<br><br>
+On the day your pass expires, a new <%=term%> DeliveryPass will automatically be added to your account. We'll bill your last used payment option for the normal price of the <%=term%> DeliveryPass pass and you'll be set for <%=term%> of hassle-free deliveries for just <%=price%>! You may opt out of automatic renewal at any time.<br><br>
 <SPAN CLASS="c"><b>DELIVERYPASS TERMS & CONDITIONS</b></SPAN><br>
 <SPAN CLASS="D">
 
