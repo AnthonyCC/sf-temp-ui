@@ -122,6 +122,9 @@ public class BrowseController extends BaseController {
 	            	if(layoutManagerSetting.getGrabberDepth() < 0) { // Overridding the hardcoded values done for new 4mm and wine layout
 	            		layoutManagerSetting.setGrabberDepth(0);
 	            	}
+	            	/*if(contentId.equals("fro_fd")) { // Hardcoded in website this code was just a test for it
+	            		layoutManagerSetting.setIgnoreShowChildren(true);
+	            	}*/
 	            	layoutManagerSetting.setReturnSecondaryFolders(true);//Hardcoded for mobile api
 	                ItemGrabberTagWrapper itemGrabberTagWrapper = new ItemGrabberTagWrapper(user.getFDSessionUser());
 	                contents = itemGrabberTagWrapper.getProducts(layoutManagerSetting, currentFolder);
@@ -144,7 +147,7 @@ public class BrowseController extends BaseController {
 	            List<Product> unavailableProducts = new ArrayList<Product>();
 	            
 	            List<Category> categories = new ArrayList<Category>();
-	            Set<String> hasChildrens = new HashSet<String>();
+	            Set<String> categoryIDs = new HashSet<String>();
 	            
 	            for (Object content : contents) {
 	                if (content instanceof ProductModel) {
@@ -154,32 +157,27 @@ public class BrowseController extends BaseController {
 	                    			unavailableProducts.add(Product.wrap((ProductModel) content, user.getFDSessionUser().getUser()));
 	                    		} else {
 	                    			products.add(Product.wrap((ProductModel) content, user.getFDSessionUser().getUser()));
-	                    		}
-	                    		hasChildrens.add(((ContentNodeModel)content).getParentId());
+	                    		}	                    		
 	                    	}
 	                    } catch (Exception e) {
 	                        //Don't let one rotten egg ruin it for the bunch
 	                        LOG.error("ModelException encountered. Product ID=" + ((ProductModel) content).getFullName(), e);
 	                    }
 	                } else if(content instanceof CategoryModel) {
-	                	if(((CategoryModel)content).isActive() && !((CategoryModel)content).isHideIphone()) {	
+	                	if(((CategoryModel)content).isActive() && !((CategoryModel)content).isHideIphone()
+	                				&& !categoryIDs.contains(((CategoryModel)content).getParentId())) {	// Show only one level of category
 	                		categories.add(Category.wrap((CategoryModel)content));
+	                		categoryIDs.add(((CategoryModel)content).getContentKey().getId());
 	                	}
 	                }
 	            }
-	            if(categories.size() > 0 && !ACTION_GET_CATEGORYCONTENT_PRODUCTONLY.equals(action)) {
-	            	List<Category> filteredCategories = new  ArrayList<Category>();
-	            	for(Category cat : categories) {
-	            		if(hasChildrens.contains(cat.getId()) || ACTION_GET_CATEGORIES.equals(action)) { // Don't check if system has children if it's root category 
-	            			filteredCategories.add(cat);
-	            		}
-	            	}
+	            if(categories.size() > 0 && !ACTION_GET_CATEGORYCONTENT_PRODUCTONLY.equals(action)) {	            	
 	            	ListPaginator<com.freshdirect.mobileapi.model.Category> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Category>(
-	            			filteredCategories, requestMessage.getMax());
+	            			categories, requestMessage.getMax());
 
 					result.setCategories(paginator.getPage(requestMessage.getPage()));
 					result.setResultCount(result.getCategories() != null ? result.getCategories().size() : 0);	         		
-					result.setTotalResultCount(filteredCategories.size());	            		         		
+					result.setTotalResultCount(categories.size());	            		         		
 	            } else {
 	            	products.addAll(unavailableProducts);//add all unavailable to the end of the list
 	            	
