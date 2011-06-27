@@ -67,6 +67,7 @@
 %>
 
 <div class="content_scroll" style="height: 15%; border-bottom: 1px solid;">
+<% String receipt = "true"; %>
 <%@ include file="/includes/i_order_dlv_payment.jspf"%>
 </div>
 <div class="sub_nav">
