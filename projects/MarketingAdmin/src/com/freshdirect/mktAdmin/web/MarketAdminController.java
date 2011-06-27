@@ -202,6 +202,7 @@ public class MarketAdminController extends MultiActionController implements Init
 		String endDate = request.getParameter("ToDate");
 		if("true".equals(request.getParameter("submission"))) {
 			//process the user request
+			request.getSession().removeAttribute("error");
 			SimpleDateFormat dateFormat = new SimpleDateFormat("mm/dd/yyyy hh:mm aaa");
 		    java.util.Date convertedFromDate = null;
 		    java.util.Date convertedToDate = null;
@@ -209,23 +210,29 @@ public class MarketAdminController extends MultiActionController implements Init
 				convertedFromDate = dateFormat.parse(fromDate);
 				convertedToDate = dateFormat.parse(endDate);
 			} catch (ParseException e) {
+				request.getSession().setAttribute("error", "Enter Date in MM/DD/YYYY HH12:MM AM/PM format. Ex: 06/15/2011 05:30 PM");
 				LOGGER.error("Date parse exception.", e);
 			}
-		    if(convertedToDate.before(convertedFromDate)) {
-		    	LOGGER.debug("Wrong dates");
-		    } else {
-		    	try {
-					customerList = getMarketAdminService().getUpsOutageList(fromDate, endDate);
-				} catch (MktAdminApplicationException e) {
-					LOGGER.error("Exception getting customer list", e);
-				}
-		    }		    
+			if(convertedToDate != null && convertedFromDate != null) {
+			    if(convertedToDate.before(convertedFromDate)) {
+			    	LOGGER.debug("Wrong dates");
+			    	request.getSession().setAttribute("error", "Start Date should be before End Date.");
+			    } else {
+			    	try {
+						customerList = getMarketAdminService().getUpsOutageList(fromDate, endDate);
+					} catch (MktAdminApplicationException e) {
+						request.getSession().setAttribute("error", "Problem getting customer List. Check your dates and try again. If problem persists contact Appsupport.");
+						LOGGER.error("Exception getting customer list", e);
+					}
+			    }	
+			}
 		} else if("xls".equals(request.getParameter("action"))) {
 			System.out.println("FromDate: "+fromDate + "----toDate:" + endDate);
 			if(fromDate != null && endDate != null) {
 				try {
 					customerList = getMarketAdminService().getUpsOutageList(fromDate, endDate);
 				} catch (MktAdminApplicationException e) {
+					request.getSession().setAttribute("error", "Problem getting customer List. Check your dates and try again. If problem persists contact Appsupport.");
 					LOGGER.error("Exception getting customer list", e);
 				}
 			}
