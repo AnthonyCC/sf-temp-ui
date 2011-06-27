@@ -1,5 +1,8 @@
 package com.freshdirect.routing.util;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,6 +14,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 import java.util.List;
 import java.util.Map;
@@ -21,6 +25,7 @@ import org.springframework.jdbc.object.BatchSqlUpdate;
 import com.freshdirect.routing.model.EmployeeInfo;
 import com.freshdirect.routing.model.EmployeeRole;
 import com.freshdirect.routing.model.EmployeeTruckPreference;
+import com.freshdirect.routing.truckassignment.Truck;
 import com.freshdirect.routing.truckassignment.analysis.AbstractQueryCallback;
 import com.freshdirect.routing.truckassignment.analysis.ConnectionInfo;
 import com.freshdirect.routing.truckassignment.analysis.DataRetrieval;
@@ -32,6 +37,10 @@ public class EmployeeTruckPreferenceUtil {
 	private List<EmployeeInfo> employees;
 	private Map<String, EmployeeInfo> employeeMap;
 	private List<EmployeeRole> employeeRoles;
+	
+	private List<Truck> trucks;
+	private Map<String, Truck> truckMap;
+	private String trucksFile = "trucks.txt";
 	
 	private static final int PREF_LIST_SIZE = 5;
 	
@@ -52,20 +61,81 @@ public class EmployeeTruckPreferenceUtil {
 										" AND ( a.EMPLOYMENTSTATUS='Active' or a.EMPLOYMENTSTATUS='Inactive')";
 	private static final String GET_EMPLOYEE_ROLES ="SELECT er.KRONOS_ID, er.ROLE, er.SUB_ROLE "
 													 +" FROM TRANSP.EMPLOYEEROLE er where er.role in ('001','004')";
+	
+	
+	private static final String INSERT_MASTER_TRUCKS = "INSERT INTO TRANSP.ASSET (ASSET_ID, ASSET_NO, ASSET_TYPE, ASSET_STATUS) VALUES (TRANSP.ASSETSEQ.nextval,?,?,?)";
+	
 	public EmployeeTruckPreferenceUtil() {
 		employees = new ArrayList<EmployeeInfo>();
 		employeeMap = new HashMap<String, EmployeeInfo>();
 		employeeRoles = new ArrayList<EmployeeRole>();
-		
+		trucks = new ArrayList<Truck>();
+		truckMap = new LinkedHashMap<String, Truck>();
 	}
 	
-	public static void main(String[] args) throws ParseException, SQLException {
+	public void setTrucksFile(String trucksFile) {
+        this.trucksFile = trucksFile;
+    }
+	
+	public static void main(String[] args) throws ParseException, SQLException, IOException {
 		EmployeeTruckPreferenceUtil truckPref = new EmployeeTruckPreferenceUtil();
-		
-		//System.setProperty(LogFactory.FACTORY_PROPERTY, "org.apache.commons.logging.impl.Log4jFactory");
+		/* Save Employee Truck Preference*/
 		truckPref.loadActiveInactiveEmployees();
 		truckPref.loadEmployeeRoles();
 		truckPref.getFinalEmployees();
+		
+		/* Save Master TruckList*/
+		//truckPref.loadTrucks();
+		//truckPref.saveMasterTruckList();
+		
+	}
+	
+	private void loadTrucks() throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(trucksFile));
+		// skip header
+		if (reader.readLine() != null) {
+			String line;
+			while ((line = reader.readLine()) != null) {
+				String[] split = line.split(",");
+				if (split.length > 1) {
+					Truck truck = Truck.newUnknownTruck(split[0]);
+					//truck.setInService(Boolean.parseBoolean(split[1]));
+					truck.setVendor(split[1]);
+					if(truckMap.get(truck.getId()) == null){
+						trucks.add(truck);
+						truckMap.put(truck.getId(), truck);
+					}				
+					
+				}
+			}
+		}
+	}
+	
+	private void saveMasterTruckList() throws SQLException{
+		Connection connection = null;
+		ConnectionInfo conInfo = ConnectionInfo.DWDEV;
+		if(trucks != null && trucks.size() > 0) {
+			try{
+				BatchSqlUpdate batchUpdater = new BatchSqlUpdate(conInfo.getDataSource(),INSERT_MASTER_TRUCKS);
+				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+				
+				batchUpdater.compile();
+				
+				connection = conInfo.getNewConnection();
+				
+				for(Truck model : trucks) {
+					batchUpdater.update(new Object[]{ model.getId()
+												, "TRUCK"
+												, "ACT"
+											});
+				}			
+				batchUpdater.flush();
+			}finally{
+				if(connection!=null) connection.close();
+			}
+		}
 	}
 	
 	@SuppressWarnings("unchecked")

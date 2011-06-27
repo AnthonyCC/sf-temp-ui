@@ -598,12 +598,12 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		FDReservation reservation = null;
 		FDTimeslot selectedTimeslot = null;
 		
-		if(EnumServiceType.HOME.equals(deliveryAddressModel.getServiceType()))
-			deliveryAddressModel.setServiceType(EnumServiceType.CORPORATE);	
-		
 		//Geo-Restrictions
 		List geographicRestrictions = new ArrayList();
 		geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictions(deliveryAddressModel);
+		
+		if(EnumServiceType.HOME.equals(deliveryAddressModel.getServiceType()))
+			deliveryAddressModel.setServiceType(EnumServiceType.CORPORATE);		
 				
 		for ( FDTimeslot timeslot : timeslots ) {
 			

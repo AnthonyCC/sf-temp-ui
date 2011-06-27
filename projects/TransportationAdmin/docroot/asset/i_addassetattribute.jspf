@@ -29,13 +29,13 @@
     	  var _assetType = YAHOO.util.Dom.get("assetType").value;
 	  var _attributeCode = YAHOO.util.Dom.get("attributeCode").value;
 	  var _attributeDescription = YAHOO.util.Dom.get("attributeDescription").value;
-	  var _attributeDataType = YAHOO.util.Dom.get("attributeDataType").value;
+	  //var _attributeDataType = YAHOO.util.Dom.get("attributeDataType").value;
 	
 
-	  if(_assetType.trim().length == 0 || _attributeCode.trim().length == 0 || _attributeDescription.trim().length == 0 || _attributeDataType.trim().length == 0) {
+	  if(_assetType.trim().length == 0 || _attributeCode.trim().length == 0 || _attributeDescription.trim().length == 0) {
       	  	addSysMessage("Please enter/choose the required values", true);
       	  } else {
-	    	var result = jsonrpcClient.AsyncAssetProvider.addAssetAttribute(assetAttributeFormCallback, _assetType ,_attributeCode,_attributeDescription,_attributeDataType);
+	    	var result = jsonrpcClient.AsyncAssetProvider.addAssetAttribute(assetAttributeFormCallback, _assetType ,_attributeCode,_attributeDescription, null);
 	  }
       }
       
@@ -93,7 +93,7 @@
 	                    	 </td>
 		        </tr>
 			<tr>
-		              <td>Code</td>
+		              <td>Attribute Name</td>
 		              <td>
 		                 <input type="text" size="30" id="attributeCode" value="" />
 			      </td>
@@ -101,10 +101,6 @@
 			 <tr>
 		                  <td>Description</td>
 		                  <td><input type="text" size="30" id="attributeDescription" value="" /></td> 
-		         </tr>
-			 <tr>
-		                  <td>Data Type</td>
-		                  <td><input type="text" size="30" id="attributeDataType" value=""/></td> 
 		         </tr>
 		         <tr>
 		                  <td colspan="2" align="center"><input type="button" value="Add/Update" onclick="javascript:sendAssetAttributeForm()" /> </td>

@@ -212,19 +212,20 @@
    <br/><br/>
    <div style='background-color:#F2F2F2;border:1px solid #000;width: 60%; margin:0 auto;'>  
        <div class="bd">
-      	 	<table cellpadding="1" cellspacing="0">
+      	 	<table cellpadding="1" cellspacing="0" align="center">
 		    	<tr>
-                   <td><b>&nbsp;&nbsp;&nbsp;&nbsp;Attribute Type: </b> &nbsp;&nbsp;&nbsp;                 
+                   <td align="center"><b>Attribute Type: </b><br/>
                       <select id="dAttributeType" style="width: 40;" name="dAttributeType"> 
                       	<option value="">--Select a Type</option> 
                     	<c:forEach var="aType" items="${assetAttributeTypes}">       
 		              		<option value="<c:out value="${aType.code}"/>"><c:out value="${aType.code}"/></option>
 			        	</c:forEach>                                      
 			          </select>
-                   </td>                               
-                   <td>                 
-	                   <b>&nbsp;&nbsp;&nbsp;&nbsp;Attribute Value:</b>&nbsp;&nbsp;&nbsp;
-	                   			<input size="40" id="dAttributeValue" value="" /> 
+                   </td>
+				   <td>&nbsp;&nbsp;</td>
+                   <td align="center">                 
+	                   <b>Attribute Value:</b><br/>
+                   			<input size="40" id="dAttributeValue" value="" /> 
 	               </td>                                      
                   
 	               <td>                 
