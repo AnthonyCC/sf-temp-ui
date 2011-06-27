@@ -92,6 +92,7 @@
             displayDeliveryInfo = false;
 %>
 <div class="content_<%=forPrint?"fixed":"scroll"%>" style="height:72%;">
+<% String receipt = "true"; %>
 	<%@ include file="/includes/i_order_dlv_payment.jspf"%>
 	
 	<%	boolean showEditOrderButtons = false;
