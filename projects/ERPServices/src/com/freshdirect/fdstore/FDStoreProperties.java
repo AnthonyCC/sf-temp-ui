@@ -904,7 +904,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_PAYMENT_METHOD_VERIFICATION_ENABLED, "true");
 		
 		defaults.put(PROP_TWO_MONTH_TRIAL_PASS_SKU, "MKT0072335");		
-		defaults.put(PROP_TWO_MONTH_TRIAL_PASS_PRICE, "$59");
+		defaults.put(PROP_TWO_MONTH_TRIAL_PASS_PRICE, "$59.00");
 		
         refresh();
     }
