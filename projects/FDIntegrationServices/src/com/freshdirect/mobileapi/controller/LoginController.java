@@ -35,6 +35,7 @@ import com.freshdirect.mobileapi.model.OrderInfo;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.User;
 import com.freshdirect.mobileapi.service.ServiceException;
+import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
 
 public class LoginController extends BaseController {
@@ -205,6 +206,7 @@ public class LoginController extends BaseController {
         if ((user.getPaymentMethods() == null) || (user.getPaymentMethods().size() == 0)) {
             responseMessage.addWarningMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);
         }
+        ((LoggedIn) responseMessage).setBrowseEnabled(MobileApiProperties.isBrowseEnabled());
         return responseMessage;
     }
 }

@@ -25,6 +25,8 @@ public class LoggedIn extends Message {
     private String firstName;
     
     private String customerServicePhoneNumber;
+    
+    private boolean isBrowseEnabled;
 
     public String getCustomerServicePhoneNumber() {
         return customerServicePhoneNumber;
@@ -94,9 +96,11 @@ public class LoggedIn extends Message {
 
     private List<OrderHistory.Order> orders;
 
-    /**
-     * @author Rob
-     *
-     */
+	public boolean isBrowseEnabled() {
+		return isBrowseEnabled;
+	}
 
+	public void setBrowseEnabled(boolean isBrowseEnabled) {
+		this.isBrowseEnabled = isBrowseEnabled;
+	}   
 }

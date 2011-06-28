@@ -77,13 +77,11 @@ public class BrowseController extends BaseController {
 	           StoreModel store = ContentFactory.getInstance().getStore();
 	           if(store != null) {
 	        	   List<DepartmentModel> storeDepartments = store.getDepartments();
-	        	   Set<String> configuredDepartments =  MobileApiProperties.getConfiguredDepartments();
-	        	   
+	        	           	   
 	        	   List<Department> departments = new ArrayList<Department>();
 	        	   if(storeDepartments != null) {
 		        	   for(DepartmentModel storeDepartment : storeDepartments) {
-		        		   if(storeDepartment.getContentKey() != null 
-		        				   && configuredDepartments.contains(storeDepartment.getContentKey().getId())
+		        		   if(storeDepartment.getContentKey() != null		        				   
 		        				   && !storeDepartment.isHidden()
 		        				   && !storeDepartment.isHideIphone()) {
 		        			   departments.add(Department.wrap(storeDepartment));

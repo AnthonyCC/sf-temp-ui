@@ -45,7 +45,7 @@ public class MobileApiProperties {
 
     private final static String PROP_OAS_CACHE_TIMEOUT = "mobileapi.oas.timeout";
     
-    private final static String PROP_BROWSE_CONFIGURED_DEPARTMENTS = "mobileapi.browse.configured.departments";
+    private final static String PROP_BROWSE_ENABLED = "mobileapi.browse.enabled";
 
     public final static String UPGRADE = "UPGRADE";
 
@@ -65,7 +65,7 @@ public class MobileApiProperties {
         defaults.put(PROP_QUICKSHOP_LIST_MAX, "100");
         defaults.put(PROP_OAS_PROTOCOL, "http");
         defaults.put(PROP_OAS_CACHE_TIMEOUT, "60");
-        defaults.put(PROP_BROWSE_CONFIGURED_DEPARTMENTS, "fru,veg,mea,sea,del,che,dai,fdi,rtc,hmr,bak,cat,wgd,orgnat,local,kos,rec,pas,cof,gro,hba,big,fro,usq");
+        defaults.put(PROP_BROWSE_ENABLED, "true");
         refresh();
     }
 
@@ -149,19 +149,8 @@ public class MobileApiProperties {
         return get(PROP_ALCOHOL_HEALTH_WARNING);
     }
     
-    public static Set<String> getConfiguredDepartments() {
-		String dptsprop = get(PROP_BROWSE_CONFIGURED_DEPARTMENTS);
-		if (dptsprop == null)
-			return Collections.<String>emptySet();
-
-		String[] departments = dptsprop.split(",");
-		Set<String> depts = new HashSet<String>(departments.length);
-		for (int i = 0; i < departments.length; i++) {
-			String f = departments[i].trim();
-			if (f.length() != 0)
-				depts.add(f);
-		}
-		return depts;
-	}
+    public static boolean isBrowseEnabled() {
+        return (Boolean.valueOf(get(PROP_BROWSE_ENABLED)).booleanValue());
+    }
 
 }
