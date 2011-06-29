@@ -249,6 +249,10 @@ public class ProductPriceTag extends BodyTagSupport {
 								LOGGER.debug("prodCatId "+catId);
 							}
 						}
+						
+						if(catId == null || catId.length() == 0)
+							catId = prodModel.getParentNode().toString();						
+
 						StringBuffer buffer = new StringBuffer();
 						if(catId!=null && catId.length() > 0 && productId != null && productId.length() > 0 && skuCode != null
 								&& skuCode.length() > 0){
