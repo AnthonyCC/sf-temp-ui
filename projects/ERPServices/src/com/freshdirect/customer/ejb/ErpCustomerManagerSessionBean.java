@@ -95,6 +95,7 @@ import com.freshdirect.deliverypass.DlvPassUsageLine;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.fdstore.FDConfiguredProduct;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
@@ -697,9 +698,10 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	 */
 	public ErpOrderHistory getOrderHistoryInfo(PrimaryKey erpCustomerPk) {
 		Connection conn = null;
+		int query=FDStoreProperties.getOrderHistoryQueryId();
 		try {
 			conn = this.getConnection();
-			Collection<ErpSaleInfo> history = ErpSaleInfoDAO.getOrderHistoryInfo(conn, erpCustomerPk.getId());
+			Collection<ErpSaleInfo> history = ErpSaleInfoDAO.getOrderHistoryInfo(conn, erpCustomerPk.getId(), query);
 
 			return new ErpOrderHistory(history);
 

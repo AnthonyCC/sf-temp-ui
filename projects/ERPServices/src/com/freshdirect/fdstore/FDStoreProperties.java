@@ -449,6 +449,9 @@ public class FDStoreProperties {
 	private final static String WS_PROMOTION_PRODUCTION_MODE = "fdstore.ws.promotion.production.mode";
 	
 	private static final String PROP_PAYMENT_METHOD_VERIFICATION_ENABLED="fdstore.paymentmethod.verify";
+	private static final String PROP_PAYMENT_METHOD_VERIFICATION_LIMIT="fdstore.paymentmethod.verify.limit";
+	
+	private static final String PROP_ORDER_HISTORY_QUERY_ID="fdstore.orderhistory.query.id";
 	
 	//[APPDEV-1846] Pop up for DP copy update
 	private static final String PROP_TWO_MONTH_TRIAL_PASS_SKU = "fdstore.twomonth.trialdp.sku";
@@ -902,6 +905,10 @@ public class FDStoreProperties {
 		defaults.put(PROP_MKTADMIN_PASSWORD, "password01");
 		
 		defaults.put(PROP_PAYMENT_METHOD_VERIFICATION_ENABLED, "true");
+		defaults.put(PROP_PAYMENT_METHOD_VERIFICATION_LIMIT, "3");
+		
+		
+		defaults.put(PROP_ORDER_HISTORY_QUERY_ID,"3");
 		
 		defaults.put(PROP_TWO_MONTH_TRIAL_PASS_SKU, "MKT0072335");		
 		defaults.put(PROP_TWO_MONTH_TRIAL_PASS_PRICE, "$59.00");
@@ -2324,4 +2331,14 @@ public class FDStoreProperties {
     public static boolean isPaymentMethodVerificationEnabled() {
         return (new Boolean(get(PROP_PAYMENT_METHOD_VERIFICATION_ENABLED))).booleanValue();
     } 
+    
+    public static int getPaymentMethodVerificationLimit() {
+        return Integer.parseInt(config.getProperty(
+                PROP_PAYMENT_METHOD_VERIFICATION_LIMIT));
+    }
+    
+    public static int getOrderHistoryQueryId() {
+        return Integer.parseInt(config.getProperty(
+                PROP_ORDER_HISTORY_QUERY_ID));
+    }
 }
