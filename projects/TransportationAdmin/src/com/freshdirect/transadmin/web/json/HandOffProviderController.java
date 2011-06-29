@@ -255,11 +255,10 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 				
 			List<IHandOffBatchPlan> batchPlans = new ArrayList<IHandOffBatchPlan>();			
 			List<IHandOffBatchDispatchResource> batchPlanResources = new ArrayList<IHandOffBatchDispatchResource>();			
-			
-			
+
 			batchPlans = proxy.getHandOffBatchPlansByDispatchStatus(batch.getBatchId(), batch.getDeliveryDate());
 			batchPlanResources =  proxy.getHandOffBatchPlanResourcesByDispatchStatus(batch.getBatchId(), batch.getDeliveryDate());
-			
+
 			Map<String, Set<IHandOffBatchDispatchResource>> resourceMapping = new HashMap<String, Set<IHandOffBatchDispatchResource>>();
 			Iterator<IHandOffBatchDispatchResource> itr = batchPlanResources.iterator();
 			while(itr.hasNext()){
@@ -282,6 +281,7 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 		} catch (RoutingServiceException e) {			
 			LOGGER.warn("routing service exception", e);
 		} catch (Exception e) {
+			e.printStackTrace();
 			LOGGER.warn("generic exception", e);
 		}
 		

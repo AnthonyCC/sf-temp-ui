@@ -10,7 +10,10 @@
         </id>
         <property name="description" type="string">
             <column name="DESCRIPTION" length="40" />
-        </property>      
+        </property>
+        <property name="dataType" type="string">
+            <column name="DATA_TYPE" length="16" />
+        </property>
         <many-to-one name="assetType" class="com.freshdirect.transadmin.model.AssetType" fetch="select" lazy="false">
             <column name="ASSET_TYPE" length="40" />
         </many-to-one>

@@ -3,6 +3,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ page import='com.freshdirect.transadmin.util.TransportationAdminProperties' %>
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 
@@ -161,21 +162,39 @@
          };
           
           sDataSource = new YAHOO.util.DataSource(dataIncrementer);
-                   		  
-		  var sColumns =  [ 
-			    {key:"batchId", label:"Batch ID",sortable:false, width: 50, className:"forms1"}, 
-			    {key:"deliveryDate", label:"Delivery Date",sortable:false, width: 80,className:"forms1"},			    
-			    {key:"creationInfo", label:"Process Audit Details",sortable:false, width: 142,className:"forms1"},
-			    {key:"status", label:"Status",sortable:false, width: 60,className:"forms1"},
-			    {key:"sessionInfo", label:"Session",sortable:false, width: 305,className:"forms1"},
-			    {key:"systemMessage", label:"System Message", width: 200,sortable:false,className:"forms1"},
-			    {key:"action", label:"Action", sortable:false, width: 125, className:"forms1",	
-			    				formatter:"dropdown", dropdownOptions:["","ROUTEIN","ROUTEOUT","COMMIT","AUTODISPATCH","CANCEL"] },
-				{key:"report", label:"Download", sortable:false, width: 150, className:"forms1",
-			    				formatter:"dropdown", dropdownOptions:["","CutOff Report","Community Report","SAP Upload Files"] }
-			    
-		 ];
-		    	
+         <% if(TransportationAdminProperties.isAutoDispatchEnabled()) {%>
+			  var sColumns =  [ 
+					{key:"batchId", label:"Batch ID",sortable:false, width: 50, className:"forms1"}, 
+					{key:"deliveryDate", label:"Delivery Date",sortable:false, width: 80,className:"forms1"},			    
+					{key:"creationInfo", label:"Process Audit Details",sortable:false, width: 142,className:"forms1"},
+					{key:"status", label:"Status",sortable:false, width: 60,className:"forms1"},
+					{key:"sessionInfo", label:"Session",sortable:false, width: 305,className:"forms1"},
+					{key:"systemMessage", label:"System Message", width: 200,sortable:false,className:"forms1"},
+					
+					{key:"action", label:"Action", sortable:false, width: 125, className:"forms1",
+									formatter:"dropdown", dropdownOptions:["","ROUTEIN","ROUTEOUT","COMMIT","AUTODISPATCH","CANCEL"] },
+
+					{key:"report", label:"Download", sortable:false, width: 150, className:"forms1",
+									formatter:"dropdown", dropdownOptions:["","CutOff Report","Community Report","SAP Upload Files"] }
+					
+			 ];
+		<%}else{%>
+				var sColumns =  [ 
+					{key:"batchId", label:"Batch ID",sortable:false, width: 50, className:"forms1"}, 
+					{key:"deliveryDate", label:"Delivery Date",sortable:false, width: 80,className:"forms1"},			    
+					{key:"creationInfo", label:"Process Audit Details",sortable:false, width: 142,className:"forms1"},
+					{key:"status", label:"Status",sortable:false, width: 60,className:"forms1"},
+					{key:"sessionInfo", label:"Session",sortable:false, width: 305,className:"forms1"},
+					{key:"systemMessage", label:"System Message", width: 200,sortable:false,className:"forms1"},
+					
+					{key:"action", label:"Action", sortable:false, width: 125, className:"forms1",
+									formatter:"dropdown", dropdownOptions:["","ROUTEIN","ROUTEOUT","COMMIT","CANCEL"] },
+
+					{key:"report", label:"Download", sortable:false, width: 150, className:"forms1",
+									formatter:"dropdown", dropdownOptions:["","CutOff Report","Community Report","SAP Upload Files"] }
+					
+			 ];
+		<%}%>
 		  var sMyConfigs = { 
 			    paginator : new YAHOO.widget.Paginator({ 
 			        rowsPerPage    : 5

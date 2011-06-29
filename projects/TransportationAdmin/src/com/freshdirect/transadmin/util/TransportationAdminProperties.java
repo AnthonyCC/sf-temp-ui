@@ -191,6 +191,7 @@ public class TransportationAdminProperties {
 	//Maintenance Log
 	private final static String PROP_VENDOR_DETAILS		= "transportation.issuelog.vendors";
 	private final static String PROP_TRUCK_DAMAGE_LOCATIONS = "transportation.issuelog.truckdamagelocations";
+	private final static String PROP_AUTODISPATCH_ENABLED = "transportation.autodispatch.enabled";
 
 	
 	static {
@@ -341,7 +342,9 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_FORMAT_SCRIB_UPLOAD, 	"com/freshdirect/transadmin/datamanager/scrib_in.xml");
 		defaults.put(PROP_VENDOR_DETAILS,"HUB,MILEA,PUBLIC SERVICE,RYDER,UTF");
 		defaults.put(PROP_TRUCK_DAMAGE_LOCATIONS,"Front,Back");	
-
+		
+		defaults.put(PROP_AUTODISPATCH_ENABLED,"true");
+		
 		refresh();
 	}
 
@@ -717,6 +720,10 @@ public class TransportationAdminProperties {
 	
 	public static String getTruckDamageLocations() {
 		return get(PROP_TRUCK_DAMAGE_LOCATIONS);
+    }
+	
+	public static boolean isAutoDispatchEnabled() {
+        return (new Boolean(get(PROP_AUTODISPATCH_ENABLED))).booleanValue();
     }
 
 }

@@ -299,28 +299,43 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
          "and R.DISPATCHTIME IN (select R.DISPATCHTIME from TRANSP.HANDOFF_BATCHROUTE R where R.BATCH_ID = ? ) "+
          "and R.DISPATCHTIME = T.DT";
 
-	private static final String GET_HANDOFFBATCH_PLANS = "SELECT * FROM TRANSP.PLAN P WHERE P.PLAN_DATE = ? " +
-			"and P.START_TIME in (SELECT DISTINCT BD.DISPATCHTIME FROM TRANSP.HANDOFF_BATCHROUTE R, TRANSP.HANDOFF_BATCHDISPATCHEX BD " +
-			"where BD.BATCH_ID = ? and R.DISPATCHTIME = BD.DISPATCHTIME and R.BATCH_ID = BD.BATCH_ID and BD.STATUS = ?)";
+	private static final String GET_HANDOFFBATCH_PLANS = "SELECT * FROM TRANSP.PLAN P WHERE P.PLAN_DATE = ? "+
+            "and P.START_TIME in (select B.DISPATCHTIME from TRANSP.HANDOFF_BATCHDISPATCHEX B where B.BATCH_ID = ? and B.STATUS = 'CPD' "+ 
+            "and B.DISPATCHTIME not in (select distinct DX.DISPATCHTIME from TRANSP.HANDOFF_BATCH bx , TRANSP.HANDOFF_BATCHDISPATCHEX dx "+
+            "where BX.BATCH_ID = DX.BATCH_ID and BX.DELIVERY_DATE = ? "+
+            "and BX.CUTOFF_DATETIME < (select BZ.CUTOFF_DATETIME from TRANSP.HANDOFF_BATCH bz where BZ.BATCH_ID = ? ) "+
+            "and DX.STATUS = 'CPD' ))";
 	
 	private static final String GET_HANDOFFBATCH_PLANRESOURCES = "SELECT PR.* FROM TRANSP.PLAN_RESOURCE PR, TRANSP.PLAN P WHERE PR.PLAN_ID = P.PLAN_ID and P.PLAN_DATE = ? " +
-			"and P.START_TIME in (SELECT DISTINCT BD.DISPATCHTIME FROM TRANSP.HANDOFF_BATCHROUTE R, TRANSP.HANDOFF_BATCHDISPATCHEX BD "+
-			"where BD.BATCH_ID = ? and R.DISPATCHTIME = BD.DISPATCHTIME and R.BATCH_ID = BD.BATCH_ID and BD.STATUS = ?)";
+			"and P.START_TIME in (select B.DISPATCHTIME from TRANSP.HANDOFF_BATCHDISPATCHEX B where B.BATCH_ID = ? and B.STATUS = 'CPD' "+ 
+            "and B.DISPATCHTIME not in (select distinct DX.DISPATCHTIME from TRANSP.HANDOFF_BATCH bx , TRANSP.HANDOFF_BATCHDISPATCHEX dx "+
+            "where BX.BATCH_ID = DX.BATCH_ID and BX.DELIVERY_DATE = ? "+
+            "and BX.CUTOFF_DATETIME < (select BZ.CUTOFF_DATETIME from TRANSP.HANDOFF_BATCH bz where BZ.BATCH_ID = ? ) "+
+            "and DX.STATUS = 'CPD'))";
 	
 	private static final String INSERT_HANDOFFBATCH_AUTODISPATCHES = "INSERT INTO TRANSP.DISPATCH ( DISPATCH_ID, DISPATCH_DATE , ZONE, SUPERVISOR_ID, ROUTE, START_TIME, FIRST_DLV_TIME, PLAN_ID, ISBULLPEN, REGION, PHYSICAL_TRUCK )" +
 																" VALUES ( ?,?,?,?,?,?,?,?,?,?,? )";
 	
 	private static final String CLEAR_HANDOFFBATCH_AUTODISPATCHES = "DELETE FROM TRANSP.DISPATCH D WHERE D.DISPATCH_DATE = ? " +
-			"and D.START_TIME in (SELECT DISTINCT BD.DISPATCHTIME FROM TRANSP.HANDOFF_BATCHROUTE R,TRANSP.HANDOFF_BATCHDISPATCHEX BD "+
-			"where BD.BATCH_ID = ? and R.DISPATCHTIME = BD.DISPATCHTIME and R.BATCH_ID = BD.BATCH_ID and BD.STATUS = ?)";
+			"and D.START_TIME in (select B.DISPATCHTIME from TRANSP.HANDOFF_BATCHDISPATCHEX B where B.BATCH_ID = ? and B.STATUS = 'CPD' "+ 
+            "and B.DISPATCHTIME not in (select distinct DX.DISPATCHTIME from TRANSP.HANDOFF_BATCH bx , TRANSP.HANDOFF_BATCHDISPATCHEX dx "+
+            "where BX.BATCH_ID = DX.BATCH_ID and BX.DELIVERY_DATE = ? "+
+            "and BX.CUTOFF_DATETIME < (select BZ.CUTOFF_DATETIME from TRANSP.HANDOFF_BATCH bz where BZ.BATCH_ID = ? ) "+
+            "and DX.STATUS = 'CPD'))";
 	
 	private static final String CLEAR_HANDOFFBATCH_AUTODISPATCHRESOURCES  = "DELETE FROM TRANSP.DISPATCH_RESOURCE DR WHERE DR.DISPATCH_ID IN (SELECT D.DISPATCH_ID FROM TRANSP.DISPATCH D WHERE D.DISPATCH_DATE = ? " +
-			"and D.START_TIME in (SELECT DISTINCT BD.DISPATCHTIME FROM TRANSP.HANDOFF_BATCHROUTE R,TRANSP.HANDOFF_BATCHDISPATCHEX BD "+
-			"where BD.BATCH_ID = ? and R.DISPATCHTIME = BD.DISPATCHTIME and R.BATCH_ID = BD.BATCH_ID and BD.STATUS = ?) )";
+			"and D.START_TIME in (select B.DISPATCHTIME from TRANSP.HANDOFF_BATCHDISPATCHEX B where B.BATCH_ID = ? and B.STATUS = 'CPD' "+ 
+            "and B.DISPATCHTIME not in (select distinct DX.DISPATCHTIME from TRANSP.HANDOFF_BATCH bx , TRANSP.HANDOFF_BATCHDISPATCHEX dx "+
+            "where BX.BATCH_ID = DX.BATCH_ID and BX.DELIVERY_DATE = ? "+
+            "and BX.CUTOFF_DATETIME < (select BZ.CUTOFF_DATETIME from TRANSP.HANDOFF_BATCH bz where BZ.BATCH_ID = ? ) "+
+            "and DX.STATUS = 'CPD')))";
 	
-	private static final String GET_DISPATCHES_DELIVERYDATE = "select * FROM TRANSP.DISPATCH d WHERE d.DISPATCH_DATE=? " +
-			"and D.START_TIME in (SELECT DISTINCT BD.DISPATCHTIME FROM TRANSP.HANDOFF_BATCHROUTE R,TRANSP.HANDOFF_BATCHDISPATCHEX BD "+
-			"where BD.BATCH_ID = ? and R.DISPATCHTIME = BD.DISPATCHTIME and R.BATCH_ID = BD.BATCH_ID and BD.STATUS = ?) ";
+	private static final String GET_DISPATCHES_DELIVERYDATE = "select * FROM TRANSP.DISPATCH d WHERE d.DISPATCH_DATE = ? " +
+			"and D.START_TIME in (select B.DISPATCHTIME from TRANSP.HANDOFF_BATCHDISPATCHEX B where B.BATCH_ID = ? and B.STATUS = 'CPD' "+ 
+            "and B.DISPATCHTIME not in (select distinct DX.DISPATCHTIME from TRANSP.HANDOFF_BATCH bx , TRANSP.HANDOFF_BATCHDISPATCHEX dx "+
+            "where BX.BATCH_ID = DX.BATCH_ID and BX.DELIVERY_DATE = ? "+
+            "and BX.CUTOFF_DATETIME < (select BZ.CUTOFF_DATETIME from TRANSP.HANDOFF_BATCH bz where BZ.BATCH_ID = ? ) "+
+            "and DX.STATUS = 'CPD'))";
 	
 	private static final String INSERT_HANDOFFBATCH_AUTODISPATCHRESOURCES = "INSERT INTO TRANSP.DISPATCH_RESOURCE ( DISPATCH_ID, RESOURCE_ID , ROLE )" +
 																			" VALUES ( ?,?,? )";	
@@ -1496,8 +1511,8 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 					connection.prepareStatement(query);
 				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
 				ps.setString(2, handoffBatchId);
-				ps.setString(3, EnumHandOffDispatchStatus.COMPLETE.value());
-				
+				ps.setDate(3, new java.sql.Date(deliveryDate.getTime()));
+				ps.setString(4, handoffBatchId);
 				return ps;
 			}  
 		};
@@ -1545,8 +1560,8 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 					connection.prepareStatement(query);
 				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
 				ps.setString(2, handoffBatchId);
-				ps.setString(3, EnumHandOffDispatchStatus.COMPLETE.value());
-				
+				ps.setDate(3, new java.sql.Date(deliveryDate.getTime()));
+				ps.setString(4, handoffBatchId);
 				return ps;
 			}  
 		};
@@ -1583,7 +1598,8 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 				ps = connection.prepareStatement(query);
 				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
 				ps.setString(2, handoffBatchId);
-				ps.setString(3, EnumHandOffDispatchStatus.COMPLETE.value());
+				ps.setDate(3, new java.sql.Date(deliveryDate.getTime()));
+				ps.setString(4, handoffBatchId);
 							
 				return ps;
 			}  
@@ -1678,7 +1694,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		Connection connection = null;		
 		try {
 			
-			this.jdbcTemplate.update(CLEAR_HANDOFFBATCH_AUTODISPATCHRESOURCES, new Object[] {deliveryDate, handoffBatchId, EnumHandOffDispatchStatus.COMPLETE.value()});
+			this.jdbcTemplate.update(CLEAR_HANDOFFBATCH_AUTODISPATCHRESOURCES, new Object[] {deliveryDate, handoffBatchId, deliveryDate, handoffBatchId});
 			
 			connection = this.jdbcTemplate.getDataSource().getConnection();	
 			
@@ -1693,7 +1709,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		Connection connection = null;		
 		try {
 			
-			this.jdbcTemplate.update(CLEAR_HANDOFFBATCH_AUTODISPATCHES, new Object[] {deliveryDate, handoffBatchId, EnumHandOffDispatchStatus.COMPLETE.value()});
+			this.jdbcTemplate.update(CLEAR_HANDOFFBATCH_AUTODISPATCHES, new Object[] {deliveryDate, handoffBatchId, deliveryDate, handoffBatchId});
 			
 			connection = this.jdbcTemplate.getDataSource().getConnection();	
 			
