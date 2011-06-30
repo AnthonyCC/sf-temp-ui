@@ -877,9 +877,9 @@
 
 function doPublish(promocode) {
 	document.getElementById("publish").disabled=true;
-
+	alert('Hi');
 	var uri = '/api/promo.jsp?action=publish&promoCode='+promocode;
-	$C.asyncRequest('GET', uri, {
+	YAHOO.util.Connect.asyncRequest('GET', uri, {
 		success: function(resp) {
 			if ('true' == resp.responseText) {
 				alert('Promotion successfully published.');
