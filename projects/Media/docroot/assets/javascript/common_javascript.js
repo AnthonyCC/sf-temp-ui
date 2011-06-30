@@ -834,7 +834,7 @@ function alcoholWarning(eventObj, form, hasAgreed) {
 		alcoholSubmitForm = form.id; //set formId to submit on agree
 		
 		//display modalbox
-		var mediaURL = '/health_warning.jsp?alcRestTypes='+jsNamespace.alcohol.addToCartAlcoholRestrictionsUnique();
+		var mediaURL = '/media/editorial/site_pages/health_warning.html';
 
 		//make this quickbuy capable (of override)
 		var contextMB = Modalbox;
@@ -940,10 +940,11 @@ if (window.Prototype) { //make sure prototype is on page
 
 					$A(f.getInputs('image')).each(function (fb) {
 						//here, check if add to cart by button names
-						if (fb.name === 'add_to_cart' || fb.name === 'addMultipleToCart' || fb.name.indexOf('addSingleToCart') === 0) {
+						if (fb.name === 'add_to_cart' || fb.name.indexOf('addMultipleToCart') === 0 || fb.name.indexOf('addSingleToCart') === 0) {
 							//attach event
 							f.observe('submit', alcoholWarning.bindAsEventListener(f, f, hasAgreedToAlcoholDisclaimer));
 							top.alcoholSubmitForm = f.id; //mark form as the form being observed
+							
 							throw $break; //only add one observer
 						}
 					});
@@ -975,6 +976,7 @@ function submitAlcoholForm() {
 				window.frames[i].document.forms[alcoholSubmitFormTemp].submit();
 				//clear alcohol form (in case there's a different form on the page to be used)
 				top.alcoholSubmitForm = null;
+				return;
 			}
 		}
 	}
