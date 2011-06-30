@@ -4,7 +4,7 @@ public final class EnumStatus implements Comparable
 {
 	public static final  EnumStatus NoStatus=new EnumStatus(0,"");
 	public static final  EnumStatus Route=new EnumStatus(1,"Route");
-	public static final  EnumStatus ActualTruck=new EnumStatus(2,"Truck");
+	public static final  EnumStatus ActualTruck=new EnumStatus(2,"Truck-A");
 	public static final  EnumStatus PlannedTruck=new EnumStatus(2,"Truck-Pl");
 	public static final  EnumStatus Packet=new EnumStatus(3,"Packet");
 	public static final  EnumStatus EmpReady=new EnumStatus(4,"EmpReady");
