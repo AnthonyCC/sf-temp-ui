@@ -104,11 +104,12 @@
 								CustomerModel cm = (CustomerModel) iter.next();
 								sb.append(cm.getEmail());
 								if(iter.hasNext())
-									sb.append(",");
+									sb.append(";");
 							}
 						}
 					%> 
-					<td><a href="mailto:<%=sb.toString()%>" style="background:#FFE900;color:#000;padding:3px 5px 3px 5px;border:1px solid #000;">Send Outage Email to the Customer List</a></td>
+					<td><a href="mailto:<%= sb.toString() %>" style="background:#FFE900;color:#000;padding:3px 5px 3px 5px;border:1px solid #000;">Send Outage Email to the Customer List</a></td>
+					
 				</tr>
 				</tbody>
 			</table>
