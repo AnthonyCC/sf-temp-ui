@@ -5,10 +5,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
-import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,8 +18,8 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 
-import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.mktAdmin.constants.EnumFileContentType;
 import com.freshdirect.mktAdmin.constants.EnumFileType;
 import com.freshdirect.mktAdmin.constants.EnumListUploadActionType;
@@ -226,7 +225,42 @@ public class MarketAdminController extends MultiActionController implements Init
 					}
 			    }	
 			}
-		} else if("xls".equals(request.getParameter("action"))) {
+		} else if("sendmails".equals(request.getParameter("action"))) {
+			// send emails to users
+			String toEmails = request.getParameter("toemails");
+			String fromEmail = request.getParameter("femail");
+			String subject = request.getParameter("subject");
+			String message = request.getParameter("message");
+			boolean valid = true;
+			if(fromEmail == null || fromEmail.trim().length() == 0) {
+				valid = false;
+				request.getSession().setAttribute("error", "From email is required.");
+			} else if(toEmails == null || toEmails.trim().length() == 0) {
+				valid = false;
+				request.getSession().setAttribute("error", "Recipient Emails cannot be empty.");
+			} else if(subject == null || subject.trim().length() == 0) {
+				valid = false;
+				request.getSession().setAttribute("error", "Subject is required.");
+			} else if(message == null || message.trim().length() == 0) {
+				valid = false;
+				request.getSession().setAttribute("error", "Message is required.");
+			} 
+			
+			if(valid) {
+				//send emails
+				StringTokenizer stokens = new StringTokenizer(toEmails, ";");
+				ErpMailSender mSender = new ErpMailSender();
+				while(stokens.hasMoreTokens()) {
+					String email = stokens.nextToken();
+					try {
+						mSender.sendMail(fromEmail, email, "", subject, message);
+					} catch (Exception e) {
+						request.getSession().setAttribute("error", "Problem sending emails out. If problem persists contact Appsupport.");
+						LOGGER.error("Exception sending email", e);
+					}
+				}
+			}
+		} else {
 			System.out.println("FromDate: "+fromDate + "----toDate:" + endDate);
 			if(fromDate != null && endDate != null) {
 				try {
@@ -236,6 +270,9 @@ public class MarketAdminController extends MultiActionController implements Init
 					LOGGER.error("Exception getting customer list", e);
 				}
 			}
+		}
+		
+		if("xls".equals(request.getParameter("action"))) {
 			response.setContentType("application/vnd.ms-excel");
 		    response.setHeader("Content-Disposition", "attachment; filename=UpsOutageCustList_Export.xls");
 		    response.setCharacterEncoding("utf-8");		    
