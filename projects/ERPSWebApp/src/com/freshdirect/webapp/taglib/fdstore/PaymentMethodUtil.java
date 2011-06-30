@@ -301,10 +301,10 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 		String bypassBadAccountCheck = RequestUtil.getRequestParameter(request,PaymentMethodName.BYPASS_BAD_ACCOUNT_CHECK);
 		FDActionInfo action= AccountActivityUtil.getActionInfo(request.getSession(), "");
 		
-    	validatePaymentMethod(action, paymentMethod, result, user, request.getAttribute("gift_card") != null, request.getAttribute("donation") != null, bypassBadAccountCheck != null && !bypassBadAccountCheck.trim().equals(""),verifyCC );
+    	validatePaymentMethod(action, paymentMethod, result, user, request.getAttribute("gift_card") != null, request.getAttribute("donation") != null, bypassBadAccountCheck != null && !bypassBadAccountCheck.trim().equals(""),verifyCC,request );
     }
     
-    public static void validatePaymentMethod ( FDActionInfo action, ErpPaymentMethodI paymentMethod, ActionResult result, FDUserI user, boolean gift_card, boolean donation, boolean bypassBadAccountCheck, boolean verifyCC ) throws FDResourceException {
+    public static void validatePaymentMethod ( FDActionInfo action, ErpPaymentMethodI paymentMethod, ActionResult result, FDUserI user, boolean gift_card, boolean donation, boolean bypassBadAccountCheck, boolean verifyCC,HttpServletRequest request ) throws FDResourceException {
     	boolean isFiftyStateValidationReqd=true;
     	//check name on card
         result.addError(
@@ -358,7 +358,19 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        		if(auth==null) {
 	        			result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_TECHNICAL_ERROR));
 	        		} else {
-	        			if(auth.isApproved()) {
+	        			if(1==auth.getVerifyFailCount()) {
+	        				//result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_AUTH_FAILED));
+	        				result.addError(new ActionError("payment_method_fraud", 
+	        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_1, 
+	        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
+	        			} else if(2==auth.getVerifyFailCount()) {
+	        				result.addError(new ActionError("payment_method_fraud", 
+	        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_2, 
+	        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
+	        			} else if(3==auth.getVerifyFailCount()) {
+	        				
+	        			}
+	        			/*if(auth.isApproved()) {
 		        			result.addError(
 		        					!auth.isCVVMatch(),
 					    	        PaymentMethodName.CSV,SystemMessageList.MSG_CVV_INCORRECT
@@ -375,7 +387,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 		        			
 	        			} else {
 	        				result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_AUTH_FAILED));
-	        			}
+	        			}*/
 	        			if(result.isSuccess())
 	        				paymentMethod.setAvsCkeckFailed(false);
 	        		}
