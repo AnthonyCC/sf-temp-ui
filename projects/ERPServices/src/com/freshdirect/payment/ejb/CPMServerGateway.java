@@ -14,6 +14,7 @@ package com.freshdirect.payment.ejb;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 import javax.ejb.EJBException;
 
@@ -84,11 +85,10 @@ public class CPMServerGateway {
 		double amount=ErpServicesProperties.getCardVerificationAuthAmount();
 		double tax=0;
 		String cvv=paymentMethod.getCVV();
-		
+		Random randomGenerator = new Random();
+
 		LCCTransaction trans = createCCTransaction(paymentMethod, amount, tax);
-		String saleId=String.valueOf((int)(Math.random()*1000000000));
-		System.out.println("saleId: "+saleId);
-		
+		String saleId=new StringBuilder(paymentMethod.getCustomerId()).append("X").append(randomGenerator.nextInt(10000)).toString();
 		trans.SetValue(LCC.ID_ORDER_NUMBER, saleId);
 		trans.SetConnectionInformation(CPM_SERVER, SERVER_PORT, USE_SSL);
 		trans.SetValue(LCC.ID_MERCHANT_ID, MERCHANT_ID);
@@ -185,63 +185,6 @@ public class CPMServerGateway {
 	}
 	
 	private static ErpAuthorizationModel runCCVerificationTransaction(LCCTransaction trans) throws PaylinxResourceException {
-		/*System.out.println("trans.PrintFields():INPUT");
-		trans.PrintFields();
-		ErpAuthorizationModel model = new ErpAuthorizationModel();
-		model.setTransactionSource(EnumTransactionSource.SYSTEM);
-		int rCode = trans.RunTransaction(LCC.ID_AUTHORIZATION);
-		
-		model.setReturnCode(rCode);
-		System.out.println("Transaction values "+trans.toString());
-		
-		System.out.println("trans.PrintFields():OUTPUT");
-		trans.PrintFields();
-		LOGGER.debug("Authorization returned with rCode: "+rCode);
-		
-		if ( rCode != 0 ) {
-			throw new PaylinxResourceException(getErrorMessage(rCode));
-		} else {
-			model.setAuthCode(trans.GetValue(LCC.ID_APPROVAL_CODE));
-			model.setProcResponseCode(trans.GetValue(LCC.ID_AUTH_RESPONSE_CODE));
-			
-			EnumPaymentResponse response = EnumPaymentResponse.getEnum(model.getProcResponseCode());
-			if (response == null) {
-				LOGGER.warn("Unknown proc response code " + model.getProcResponseCode() + ", setting to CALL");
-				response = EnumPaymentResponse.CALL;
-			}
-			model.setResponseCode(response);
-			
-			String _cvvResponse=trans.GetValue(LCC.ID_CVV_RESULT);
-			System.out.println("CVV Result: "+_cvvResponse);
-			LOGGER.debug("Authorization returned with CVV response: "+_cvvResponse);
-			
-			EnumCVVResponse cvvResponse=null;
-			if(StringUtil.isEmpty(_cvvResponse))
-			cvvResponse=EnumCVVResponse.getEnum(_cvvResponse!=null?_cvvResponse.trim():"");
-			if(cvvResponse==null) {
-				LOGGER.warn("Unknown CVV response code " + _cvvResponse);
-				//cvvResponse=EnumCVVResponse.;
-			}
-			model.setCvvResponse(cvvResponse);
-			
-			model.setDescription(trans.GetValue(LCC.ID_AUTH_RESPONSE_MESSAGE));
-			model.setSequenceNumber(trans.GetValue(LCC.ID_SEQUENCE_NUMBER));
-			model.setMerchantId(trans.GetValue(LCC.ID_MERCHANT_ID));
-			
-			String addrMatch,zipMatch="";
-			addrMatch=trans.GetValue(LCC.ID_ADDRESS_MATCH);
-			zipMatch=trans.GetValue(LCC.ID_ZIP_MATCH);
-			model.setAddressMatchResponse(addrMatch);
-			model.setZipMatchResponse(zipMatch);
-
-			if(ErpServicesProperties.isAvsAddressMatchReqd())
-			    model.setAvs(addrMatch);
-			else
-			    model.setAvs(zipMatch);
-			
-		}
-		
-		return model;*/
 		System.out.println("trans.PrintFields():INPUT");
 		trans.PrintFields();
 		ErpAuthorizationModel model=runCCAuthorizationTransaction(trans);
@@ -254,7 +197,18 @@ public class CPMServerGateway {
 		}
 		
 		LOGGER.debug("Authorization returned with CVV response: "+_cvvResponse);
-		model.setCardType(EnumCardType.getByPaymentechCode(trans.GetValue(LCC.ID_CARD_TYPE)));
+		
+		String cardType=trans.GetValue(LCC.ID_CARD_TYPE);
+		if(EnumCardType.AMEX.getPaylinxId().equals(cardType)) {
+			model.setCardType(EnumCardType.AMEX);
+		}else if(EnumCardType.DISC.getPaylinxId().equals(cardType)) {
+			model.setCardType(EnumCardType.DISC);
+		}else if(EnumCardType.MC.getPaylinxId().equals(cardType)) {
+			model.setCardType(EnumCardType.MC);
+		}else if(EnumCardType.VISA.getPaylinxId().equals(cardType)) {
+			model.setCardType(EnumCardType.VISA);
+		}
+		
 		  
 		
 		if(StringUtil.isEmpty(_cvvResponse)) {

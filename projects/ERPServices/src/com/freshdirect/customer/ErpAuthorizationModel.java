@@ -16,6 +16,7 @@ public class ErpAuthorizationModel extends ErpPaymentModel {
 	private String addressMatchResponse;
 	private String zipMatchResponse;
 	
+	private int verifyFailCount=0;
 	
 	public boolean isAddressMatch() {
 		return "Y".equalsIgnoreCase(addressMatchResponse);
@@ -125,6 +126,20 @@ public class ErpAuthorizationModel extends ErpPaymentModel {
 	
 	public boolean isCVVMatch() {
 		return EnumCVVResponse.MATCH.equals(this.cvvResponse);
+	}
+
+	/**
+	 * @param verifyFailCount the verifyFailCount to set
+	 */
+	public void setVerifyFailCount(int verifyFailCount) {
+		this.verifyFailCount = verifyFailCount;
+	}
+
+	/**
+	 * @return the verifyFailCount
+	 */
+	public int getVerifyFailCount() {
+		return verifyFailCount;
 	}
 	
 

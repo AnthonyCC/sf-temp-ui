@@ -636,79 +636,10 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	public ErpAuthorizationModel verify(ErpPaymentMethodI paymentMethod) {
+	public ErpAuthorizationModel verify(ErpPaymentMethodI paymentMethod) throws ErpTransactionException {
 		PaymentManager pm= new PaymentManager();
 		ErpAuthorizationModel auth=null;
-		try {
-			auth=pm.verify(paymentMethod);
-			logCardVerificationActivity(paymentMethod,auth,"");
-		} catch (ErpTransactionException e) {
-			logCardVerificationActivity(paymentMethod,null, e.toString());
-		}
-		
-		
-		/*if(!auth.isApproved())
-			throw new ErpAuthorizationException("The authorization was not approved.");
-		if(!auth.hasAvsMatched())
-			throw new ErpAuthorizationException("The address provided didn't match.");
-		
-		if(!auth.isCVVMatch())
-			throw new ErpAuthorizationException("The CVV provided didn't match.");
-		*/	
+		auth=pm.verify(paymentMethod);
 		return auth;
 	}
-	
-	/**
-	 * Adds auth failures to cusotmer activity log.
-	 */
-	private void logCardVerificationActivity(ErpPaymentMethodI paymentMethod, ErpAuthorizationModel auth, String desc ) {
-		
-		    String customerId=paymentMethod.getCustomerId();
-			ErpActivityRecord rec = new ErpActivityRecord();
-			rec.setActivityType(EnumAccountActivityType.PAYMENT_METHOD_VERIFICATION);
-			rec.setSource(EnumTransactionSource.SYSTEM);
-			rec.setInitiator("SYSTEM");
-			rec.setCustomerId(customerId);
-			
-			
-			StringBuilder msg=new StringBuilder(100);
-			if(auth==null) {
-				msg.append(desc);
-			}
-			else {
-				msg.append("Verified ")
-				.append(auth.getCardType().getDisplayName())
-				.append(" ending with ")
-				.append(auth.getCcNumLast4())
-				.append(" Address: ")
-				.append(paymentMethod.getAddress1())
-				.append(" ")
-				.append(paymentMethod.getZipCode())
-				.append(". ");
-				
-				msg.append("The auth was ")
-				   .append(auth.isApproved()?" approved ":" declined. ");
-				   
-				
-				if(auth.isApproved()) {
-					
-					msg.append(" with code =")
-					.append(auth.getAuthCode())
-					.append(" and CVV result = ")
-					.append(auth.getCvvResponse())
-					.append(". The AVS check ")
-					.append(auth.hasAvsMatched()?"succeeded":"failed")
-					.append(" with code = ")
-					.append(auth.getAvs())
-					.append(". Zip Match =").append(auth.getZipMatchResponse())
-					.append(" and Address Match = ").append(auth.getAddressMatchResponse()).append(".");
-				} else {
-					msg.append(" Additional description :").append(auth.getDescription()).append(".");
-				}
-			}
-			rec.setNote(msg.toString());
-			new ErpLogActivityCommand(LOCATOR, rec, true).execute();
-		
-	}
-
 }

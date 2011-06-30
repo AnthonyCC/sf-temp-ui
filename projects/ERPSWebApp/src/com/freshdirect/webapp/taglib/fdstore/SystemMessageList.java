@@ -170,4 +170,8 @@ public interface SystemMessageList {
 	public final static String MSG_REDEMPTION_NOTE_PAYMENT	= "NOTICE: Your code will be accepted when you select a valid payment method.";
 	
 	public final static String MSG_CVV_INCORRECT="CVV value is incorrect";
+	public final static String MSG_PYMT_VERIFY_FAIL_1="Sorry, the requested authorization has failed. Please check your payment method information and ensure sufficient funds are available. Your account will be locked after 3 unsuccessful tries, you have 2 tries remaining. If you think there is an error and require additional assistance, please contact customer service at {0}";
+	public final static String MSG_PYMT_VERIFY_FAIL_2="Sorry, the requested authorization has failed. Please check your payment method information and ensure sufficient funds are available. Your account will be locked after 3 unsuccessful tries, you have 1 try remaining. If you think there is an error and require additional assistance, please contact customer service at {0}";
+	public final static String MSG_PYMT_VERIFY_FAIL_3="Sorry, the requested authorization has failed. Your account has been locked due to unsuccessful authorization attempts, please contact Customer Service at {0} to resolve this issue.";
+	
 }

@@ -6078,13 +6078,22 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		ErpAuthorizationModel auth=null; 
 		try {
 			sb = this.getPaymentManagerHome().create();
-			auth= sb.verify(paymentMethod);
+			try {
+				auth= sb.verify(paymentMethod);
+				logCardVerificationActivity(action,paymentMethod,auth,"");
+			} catch( ErpTransactionException te) {
+				logCardVerificationActivity(action,paymentMethod,null, te.toString());
+			}
 			if(auth!=null) {
 				FDCustomerEB fdCustomerEB=getFdCustomerHome().findByErpCustomerId(paymentMethod.getCustomerId());
 				if(!auth.isApproved() || !auth.hasAvsMatched()|| !auth.isCVVMatch()) {
 					int count=fdCustomerEB.incrementPymtVerifyAttempts();
-					if(count>=5) {
-						action.setNote("Reached limit of 5 unsuccessful credit card verifications.");
+					auth.setVerifyFailCount(count);
+					if(count>=FDStoreProperties.getPaymentMethodVerificationLimit()) {
+						action.setNote(new StringBuilder("Reached limit of ")
+						                         .append(FDStoreProperties.getPaymentMethodVerificationLimit())
+						                         .append(" unsuccessful credit card verifications.")
+						                         .toString());
 						this.setActive(action, false);
 						throw new ErpAuthorizationException("Your account has been locked.");
 					}
@@ -6103,6 +6112,60 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 		
 	}
+	
+	/**
+	 * Adds auth failures to cusotmer activity log.
+	 */
+	private void logCardVerificationActivity(FDActionInfo action, ErpPaymentMethodI paymentMethod, ErpAuthorizationModel auth, String desc ) {
+		
+		    String customerId=paymentMethod.getCustomerId();
+			ErpActivityRecord rec = new ErpActivityRecord();
+			rec.setActivityType(EnumAccountActivityType.PAYMENT_METHOD_VERIFICATION);
+			rec.setSource(EnumTransactionSource.SYSTEM);
+			rec.setInitiator(action.getInitiator());
+			rec.setCustomerId(customerId);
+			
+			
+			StringBuilder msg=new StringBuilder(100);
+			if(auth==null) {
+				msg.append(desc);
+			}
+			else {
+				msg.append("Verified ")
+				.append(auth.getCardType().getDisplayName())
+				.append(" ending with ")
+				.append(auth.getCcNumLast4())
+				.append(" Address: ")
+				.append(paymentMethod.getAddress1())
+				.append(" ")
+				.append(paymentMethod.getZipCode())
+				.append(". ");
+				
+				msg.append("The auth was ")
+				   .append(auth.isApproved()?" approved ":" declined. ");
+				   
+				
+				if(auth.isApproved()) {
+					
+					msg.append(" with code =")
+					.append(auth.getAuthCode())
+					.append(" and CVV result = ")
+					.append(auth.getCvvResponse())
+					.append(". The AVS check ")
+					.append(auth.hasAvsMatched()?"succeeded":"failed")
+					.append(" with code = ")
+					.append(auth.getAvs())
+					.append(". Zip Match =").append(auth.getZipMatchResponse())
+					.append(" and Address Match = ").append(auth.getAddressMatchResponse()).append(".");
+				} else {
+					msg.append(" Additional description :").append(auth.getDescription()).append(".");
+				}
+			}
+			rec.setNote(msg.toString());
+			new ErpLogActivityCommand(LOCATOR, rec, true).execute();
+		
+	}
+
 
 }
 

@@ -58,7 +58,6 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             LOGGER.debug(ex);
             result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER));
             FDSessionUser sessionuser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
-            System.out.println("Account number "+paymentMethod.getAccountNumber());
             sessionuser.setInvalidPaymentMethod(paymentMethod);
         } catch (ErpPaymentMethodException ex) {
             LOGGER.debug(ex);
