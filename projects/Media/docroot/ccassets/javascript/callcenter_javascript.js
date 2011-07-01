@@ -2,6 +2,7 @@
 var lastZipEntry = "";  //used to track the zipcode entry.
 var isIE;
 if(document.all){isIE=true}
+var ignAlc = true; /* turn off alc overlay */
 
 
 function zipCodeEntry(fieldObj,eventOBJ) {

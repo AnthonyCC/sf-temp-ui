@@ -124,6 +124,22 @@ if (EnumTemplateType.WINE.equals( productNode.getTemplateType() )) {
 <%} else {%>
     <%@ include file="/shared/includes/product/i_product_quality_note.jspf" %>
 <%}%>
+<%
+	/* Alcohol Restriction info
+	 *	adding this here as well, so anything using the product.jsp will have it (it won't duplicate)
+	 */
+%>
+<script type="text/javascript">
+	if (!window.alcohol) { window.alcohol = {}; }
+	addAlcoholHelpers();
+	<%
+		/* set if user has already agreed to alcohol disclaimer
+		 *	check new session value here to avoid template differences
+		 */
+		FDSessionUser alcUser = (FDSessionUser)session.getAttribute(SessionName.USER);
+	%>
+	hasAgreedToAlcoholDisclaimer = <%=alcUser.isHealthWarningAcknowledged()%>;
+</script>
 <fd:FDShoppingCart id='cart' result='actionResult' action='<%= tgAction %>' successPage='<%= sPage %>' source='<%= request.getParameter("fdsc.source")%>' >
 <%  //hand the action results off to the dynamic include
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);

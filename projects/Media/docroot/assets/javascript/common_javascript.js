@@ -813,7 +813,7 @@ function limitText(elem, len) {
 var alcoholSubmitForm = null;
 /* alcohol warning interstitial overlay */
 function alcoholWarning(eventObj, form, hasAgreed) {
-	if (hasAgreed) {
+	if (hasAgreed || ignAlc) {
 		return true; //already acknowledged
 	}
 	//check and see if add to cart needs to show dislaimer
@@ -887,6 +887,11 @@ function alcoholWarning(eventObj, form, hasAgreed) {
 var hasAgreedToAlcoholDisclaimer = false; //default
 if (window.Prototype) { //make sure prototype is on page
 	Event.observe(window, 'load', function() {
+		if (ignAlc) { return true; }
+
+		/* make sure these get added */
+		addAlcoholHelpers();
+
 		//we only need to do this if user has not agreed to disclaimer already
 		if (!hasAgreedToAlcoholDisclaimer) {
 			$A(document.forms).each(function (f) {
