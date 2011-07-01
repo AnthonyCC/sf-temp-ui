@@ -811,6 +811,7 @@ function limitText(elem, len) {
 }
 
 var alcoholSubmitForm = null;
+var ignAlc;
 /* alcohol warning interstitial overlay */
 function alcoholWarning(eventObj, form, hasAgreed) {
 	if (hasAgreed || ignAlc) {
