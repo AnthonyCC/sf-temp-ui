@@ -75,6 +75,15 @@
 				<a href="/promotion/promo_ws_view.jsp">View</a>
 			</div>
 		<% } %>
+		<% if (ws_dow_admin) { %>
+			<div class="promo_sub_nav_on">
+				Admin
+			</div>
+		<% }else if(CrmSecurityManager.hasAccessToPage(agent.getRole().getLdapRoleName(),"dow_admin.jsp")){ %>
+			<div class="promo_sub_nav">
+				<a href="/promotion/dow_admin.jsp">Admin</a>
+			</div>
+		<% } %>		
 <% } %>	
 </div>
 </script>

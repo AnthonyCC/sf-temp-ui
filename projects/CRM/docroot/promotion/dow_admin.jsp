@@ -102,7 +102,7 @@
 	<td class="border_bold">&nbsp;</td>
 	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Actual Amount Spent</b></span></td>	
 	<td class="border_bold">&nbsp;</td>
-	<% if(FDStoreProperties.isPromoPublishNodeMaster() && CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"dow_admin.jsp")) { %>
+	<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"dow_admin.jsp")) { %>
 	<td class="border_bold">&nbsp;</td>
 	<td valign="bottom" class="border_bold">&nbsp;</td>
 	<td class="border_bold">&nbsp;</td>
@@ -142,7 +142,7 @@
 		<td class="border_bottom">&nbsp;</td>
 	<td class="border_bottom"><span class="detail_text">$<%= spentstr %></span></td>
 	<td class="border_bottom">&nbsp;</td>
-	<% if(FDStoreProperties.isPromoPublishNodeMaster() && CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"dow_admin.jsp")) { %>
+	<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"dow_admin.jsp")) { %>
 		<td class="border_bottom">&nbsp;</td>
 		<td class="border_bottom"><span class="detail_text"><b><a onClick="javascript:doEdit('<%= dow %>');" href="#" style="color: #008800;font-size: 8pt;">EDIT</a></b></span></td>
 		<td class="border_bottom">&nbsp;</td>
