@@ -877,7 +877,6 @@
 
 function doPublish(promocode) {
 	document.getElementById("publish").disabled=true;
-	alert('Hi');
 	var uri = '/api/promo.jsp?action=publish&promoCode='+promocode;
 	YAHOO.util.Connect.asyncRequest('GET', uri, {
 		success: function(resp) {
@@ -903,7 +902,7 @@ function doCheckCode(promocode) {
 	feedback_err.style.display = "none";
 	
 	var uri = '/api/promo.jsp?action=checkPromoCode&promoCode='+promocode;
-	$C.asyncRequest('GET', uri, {
+	YAHOO.util.Connect.asyncRequest('GET', uri, {
 		success: function(resp) {
 			var feedback_ok = $('code-check-ok-div');
 			var feedback_err = $('code-check-err-div');
@@ -927,7 +926,7 @@ function doCheckName(promoname) {
 	feedback_err.style.display = "none";
 	
 	var uri = '/api/promo.jsp?action=checkPromoName&promoName='+promoname;
-	$C.asyncRequest('GET', uri, {
+	YAHOO.util.Connect.asyncRequest('GET', uri, {
 		success: function(resp) {
 			var feedback_ok = $('name-check-ok-div');
 			var feedback_err = $('name-check-err-div');
@@ -951,7 +950,7 @@ function doCheckRedemptionCode(rcode) {
 	feedback_err.style.display = "none";
 	
 	var uri = '/api/promo.jsp?action=checkRedemptionCode&redemptionCode='+rcode;
-	$C.asyncRequest('GET', uri, {
+	YAHOO.util.Connect.asyncRequest('GET', uri, {
 		success: function(resp) {
 			var feedback_ok = $('rcode-check-ok-div');
 			var feedback_err = $('rcode-check-err-div');
