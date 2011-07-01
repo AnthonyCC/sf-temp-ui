@@ -96,8 +96,12 @@
 				
 			</xsl:if>
 			
-			<xsl:if test="count(order/orderViews/orderViews/orderViews/orderLines/orderLines/alcohol='true') > 0">			
-			I acknowledge that I have purchased alcohol from Union Square Wines & Spirits and that my credit card or checking account will be charged separately by UNION SQUARE WINE.<br/>
+			<xsl:variable name="counted">
+				<xsl:value-of select="count(order/orderViews/orderViews/orderLines/orderLines[alcohol = 'true'])" />
+			</xsl:variable>
+			
+			<xsl:if test="$counted > 0">			
+			I acknowledge that I have purchased alcohol from Union Square Wines &amp; Spirits and that my credit card or checking account will be charged separately by UNION SQUARE WINE.<br/>
 			<br/>
 			</xsl:if>
 			</font>
