@@ -1035,7 +1035,7 @@ public class FDPromotionNewModel extends ModelSupport {
 		this.scRestriction = scRestriction;
 	}
 	
-	public void setIncludeFuelSurcharge(boolean fs) {
+	public void setFuelSurchargeIncluded(boolean fs) {
 		this.fuelSurcharge = fs;
 	}
 	
