@@ -3,6 +3,10 @@
 	width: 410px;
 }
 
+.qbContainer {
+  overflow: hidden;
+}
+
 .qbLaunchButton {
 	border: 0;
 	width: 103px;
@@ -150,7 +154,7 @@
 
 .qbBody .left {
 	float:left;
-	margin:10px;
+	margin: 10px 10px 0;
 	_margin:5px;
 	width:180px;
 	text-align: right;
