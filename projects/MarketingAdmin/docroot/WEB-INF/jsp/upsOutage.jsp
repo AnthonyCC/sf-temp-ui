@@ -80,7 +80,7 @@
 		</tr>
 		<tr><td valign="top"><b>To:</b></td>
 			<td><input name="toemails" value="<%=sb.toString() %>" /><br/>
-			Emails shoudl be separated with semi-colon(;)</td>
+			Emails should be separated with semi-colon(;)</td>
 		</tr>
 		<tr><td valign="top"><b>Subject:</b></td>
 			<td><input name="subject" value="<%= request.getParameter("subject") %>" /></td>
