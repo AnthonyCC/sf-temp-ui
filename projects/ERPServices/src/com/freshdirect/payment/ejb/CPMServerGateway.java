@@ -185,11 +185,7 @@ public class CPMServerGateway {
 	}
 	
 	private static ErpAuthorizationModel runCCVerificationTransaction(LCCTransaction trans) throws PaylinxResourceException {
-		System.out.println("trans.PrintFields():INPUT");
-		trans.PrintFields();
 		ErpAuthorizationModel model=runCCAuthorizationTransaction(trans);
-		System.out.println("trans.PrintFields():OUTPUT");
-		trans.PrintFields();
 		EnumCVVResponse cvvResponse=null;
 		String _cvvResponse=trans.GetValue(LCC.ID_CVV_RESULT);
 		if(_cvvResponse!=null) {

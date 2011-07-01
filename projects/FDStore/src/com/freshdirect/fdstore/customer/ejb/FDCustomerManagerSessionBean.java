@@ -6095,7 +6095,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 						                         .append(" unsuccessful credit card verifications.")
 						                         .toString());
 						this.setActive(action, false);
-						throw new ErpAuthorizationException("Your account has been locked.");
+						//throw new ErpAuthorizationException("Your account has been locked.");
 					}
 				} else {
 					fdCustomerEB.resetPymtVerifyAttempts();

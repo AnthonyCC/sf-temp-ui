@@ -154,7 +154,7 @@ if (isValidPaymentId) {
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
 	<tr>	
 		<td width="693" CLASS="text12">
-			To learn more about our <font class="text11bold">Security Policies</font>, 
+			In order to better protect our customer's personal information, we require a $1 authorization to validate credit cards on add and edit. This charge will not be collected and will be returned as soon as permitted by your issuing bank. To learn more about our <font class="text11bold">Security Policies</font>, 
 			<a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here</a>.
 		</td>
 	</tr>
@@ -257,8 +257,9 @@ if (isValidPaymentId) {
 <TR>
 	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>"><span class="text11rbold"></fd:ErrorHandler>*&nbsp;CVV&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>"></span></fd:ErrorHandler></TD>
 	<TD WIDTH="565" CLASS="text12">
-		<input class="text11" maxlength="4" SIZE="4" type="text" name="<%=PaymentMethodName.CSV%>" required="true" > 
+		<input class="text11" maxlength="4" SIZE="4" type="text" name="<%=PaymentMethodName.CSV%>" required="true" > &nbsp;&nbsp;CVV code will not be stored and only used for validation purposes, <a href="javascript:popup('/about/cvv.jsp','large')">locate this code</b></a>
 	</TD>
+	
 </TR>
 
 <TR VALIGN="TOP">

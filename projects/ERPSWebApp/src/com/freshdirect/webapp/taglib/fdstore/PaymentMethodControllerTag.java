@@ -117,6 +117,18 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
                     throw new JspException("Error redirecting "+ioe.getMessage());
                 }
             }
+            else if(request.getSession().getAttribute("verifyFail")!=null) {
+            	HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+                try {
+                    response.sendRedirect(response.encodeRedirectURL("/login/logout.jsp"));
+                    JspWriter writer = pageContext.getOut();
+                    writer.close();
+                    return SKIP_BODY;
+                } catch (IOException ioe) {
+                    // if there was a problem redirecting, well.. it can't get any worse :)
+                    throw new JspException("Error redirecting "+ioe.getMessage());
+                }
+            }
         }
         // place the result as a scripting variable in the page
         //

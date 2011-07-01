@@ -13,6 +13,11 @@ if (user!=null) {
     user.touch();
 }
 
+String lockout="";
+if (session.getAttribute("verifyFail")!=null) {
+	lockout=(String)session.getAttribute("verifyFail");
+}	
+
 // clear session
 Enumeration<String> e = session.getAttributeNames();
 while (e.hasMoreElements()) {
@@ -31,6 +36,7 @@ if(request.getParameter("logoutPage")!= null){
 	logoutPage = request.getParameter("logoutPage");
 	toSiteAccess = true;
 }
+
 
 if (toSiteAccess) {
 	//response.sendRedirect(response.encodeRedirectURL("/site_access/site_access.jsp?successPage=/index.jsp"));
@@ -53,8 +59,16 @@ if (toSiteAccess) {
 				</TD>
 			</TR>
 	        <TR VALIGN="TOP">
-	            <TD WIDTH="400" COLSPAN="3" class="text13">
+	            
+		    <% if (!"".equals(lockout)) {   %>
+		    <td class="text11rbold" width="100%" bgcolor="#FFFFFF">
+			<div style="padding: 3px 1px 3px 1px"><%= lockout %></div>
+			
+		    
+		    <% } else { %>
+		    <TD WIDTH="400" COLSPAN="3" class="text13">
 					You are now logged out.  You will need to log in again to access Your Account or to Checkout.
+		    <%}%>			
 				</TD>
 			</TR>	
 	        <TR VALIGN="TOP">

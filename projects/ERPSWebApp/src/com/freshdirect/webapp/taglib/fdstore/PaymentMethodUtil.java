@@ -359,7 +359,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        			result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_TECHNICAL_ERROR));
 	        		} else {
 	        			if(1==auth.getVerifyFailCount()) {
-	        				//result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_AUTH_FAILED));
+	        				
 	        				result.addError(new ActionError("payment_method_fraud", 
 	        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_1, 
 	        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
@@ -367,10 +367,15 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        				result.addError(new ActionError("payment_method_fraud", 
 	        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_2, 
 	        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
-	        			} else if(3==auth.getVerifyFailCount()) {
-	        				
+	        			} else if(3<=auth.getVerifyFailCount()) {
+	        				request.getSession().setAttribute("verifyFail", MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_3, 
+	        	            		new Object[] { UserUtil.getCustomerServiceContact(request)}));
+
+	        				result.addError(new ActionError("payment_method_fraud", 
+	        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_3, 
+	        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
 	        			}
-	        			/*if(auth.isApproved()) {
+	        			if(auth.isApproved()) {
 		        			result.addError(
 		        					!auth.isCVVMatch(),
 					    	        PaymentMethodName.CSV,SystemMessageList.MSG_CVV_INCORRECT
@@ -385,7 +390,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 		        					EnumUserInfoName.BIL_ADDRESS_1.getCode(),SystemMessageList.MSG_INVALID_ADDRESS
 					    	        );
 		        			
-	        			} else {
+	        			} /*else {
 	        				result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_AUTH_FAILED));
 	        			}*/
 	        			if(result.isSuccess())
