@@ -378,7 +378,7 @@ public class FDPromotionManagerNewDAO {
 			promotion.setWaiveChargeType("");
 		}
 		
-		promotion.setIncludeFuelSurcharge("Y".equals(rs.getString("INCL_FUEL_SURCHARGE"))?true:false);
+		promotion.setFuelSurchargeIncluded("Y".equals(rs.getString("INCL_FUEL_SURCHARGE"))?true:false);
 
 		// Shift status PUBLISHED to EXPIRED automatically if promo is expired
 		EnumPromotionStatus status = EnumPromotionStatus.getEnum(rs.getString("status"));
