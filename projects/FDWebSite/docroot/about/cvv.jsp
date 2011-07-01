@@ -74,10 +74,7 @@ if(windowSize.equalsIgnoreCase("large")){
 .D {font-family: Verdana, Arial, sans-serif; font-size: 9px; line-height:13px; color:#003300;}
 </style>
 
-<%
-FDProductInfo prodInfo=FDCachedFactory.getProductInfo(request.getParameter("sku"));
-FDUserI sessionuser = (FDUserI) request.getSession().getAttribute(SessionName.USER);
-%>
+
 <A NAME="top"></A>
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="520">
 
