@@ -76,7 +76,7 @@ public class WSPromoCancellationCron {
 			WSPromotionInfo promo = it.next();
 			if(!cancelPromoCodes.contains(promo.getPromotionCode())){
 				//Check for redemption limit.
-				if(promo.getRedemptions() >= promo.getRedeemCount()) {
+				if(promo.getStatus().equals(EnumPromotionStatus.LIVE) && promo.getRedemptions() >= promo.getRedeemCount()) {
 					//Limit reached.
 					cancelPromoCodes.add(promo.getPromotionCode());
 				}
