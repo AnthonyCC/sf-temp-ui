@@ -903,7 +903,8 @@ if (window.Prototype) { //make sure prototype is on page
 					fId = f.identify();
 				} catch (e) {
 					/* keep IE7 from failing */
-					f.setAttribute('id', f.name);
+					var d = new Date();
+					f.setAttribute('id', f.name+d.getTime());
 					fId = f.id;
 					f = $(f.id);
 				}
