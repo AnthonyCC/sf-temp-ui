@@ -90,7 +90,11 @@
 				var pagesNeedDescCount = 0;
 				$('testPageCount').innerHTML = pages.length + ' test pages';
 				$A(pages).each(function (p) {
-					if (p.innerHTML === 'Needs Description.') {
+					if ((p.innerHTML).toUpperCase() === 'NEEDS DESCRIPTION.') {
+						if (p.up('div')) {
+							//add a needs descrip tag
+							p.up('div').className += ' ALLNeedsDescrip';
+						}
 						pagesNeedDescCount++;
 					}
 				});
@@ -341,7 +345,7 @@
 		<div class="pageDesc">CMS Test Data Generator</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag session">
 		<div class="pageName"><span>Debugger</span></div>
 		<div class="link"><a href="/test/debug/debugger.jsp">/test/debug/debugger.jsp</a></div>
 		<div class="pageDesc">Debug session objects</div>
@@ -405,7 +409,7 @@
 	<div class="tag giftcard">
 		<div class="pageName"><span>GC INDEX</span></div>
 		<div class="link"><a href="/test/giftcards/index.jsp">/test/giftcards/index.jsp</a></div>
-		<div class="pageDesc">Gift Card test page. Displays all info related to Gift Cards: all available cards, CMS info, Media info, various display types, unit tests (including failure fallbacks), and previews (email and PDF). Only thing missing here is the SKU set in the properties.</div>
+		<div class="pageDesc">Gift Card test page. Displays all info related to Gift Cards: all available cards, CMS info, Media info, various display types, unit tests (including failure fallbacks), previews (email and PDF), and data set in properties.</div>
 	</div>
 
 	<div class="tag giftcard">
@@ -438,255 +442,250 @@
 		<div class="pageDesc">Generates images used in dynamic graphics pages (see index file for info).</div>
 	</div>
 
-
-
-	<hr />
-	<hr />
-
-	<div class="tag">
+	<div class="tag grid">
 		<div class="pageName"><span>Grid Prototype - JSP</span></div>
 		<div class="link"><a href="/test/grid_prototype/index.jsp">/test/grid_prototype/index.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Grid Prototype display (JSP version)</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag grid">
 		<div class="pageName"><span>Grid Prototype -HTML</span></div>
 		<div class="link"><a href="/test/grid_prototype/index.html">/test/grid_prototype/index.html</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Grid Prototype display (HTML version)</div>
 	</div>
 
-	<div class="tag">
-		<div class="pageName"><span>Local Dept - Index</span></div>
+	<div class="tag localDept">
+		<div class="pageName"><span>Local Dept Revamp - Index</span></div>
 		<div class="link"><a href="/test/localdept/index.jsp">/test/localdept/index.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Local Dept Revamp top-level test page.</div>
 	</div>
 
-	<div class="tag">
-		<div class="pageName"><span>Local Dept - Local Org</span></div>
+	<div class="tag localDept">
+		<div class="pageName"><span>Local Dept - Local and Organic Labels</span></div>
 		<div class="link"><a href="/test/localdept/local_org.jsp">/test/localdept/local_org.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display all SKUs and Product links with Local or Organic labels.</div>
 	</div>
 
-	<div class="tag">
-		<div class="pageName"><span>Local Dept - map</span></div>
+	<div class="tag localDept googleMap">
+		<div class="pageName"><span>Local Dept - Local Producers Map</span></div>
 		<div class="link"><a href="/test/localdept/map.jsp">/test/localdept/map.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display Local Producers Google Map</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag logs">
 		<div class="pageName"><span>/test/logging.jsp</span></div>
 		<div class="link"><a href="/test/logging.jsp">/test/logging.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Tests generating various log entries.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag mobile">
 		<div class="pageName"><span>/test/mobile_testing/index.jsp</span></div>
 		<div class="link"><a href="/test/mobile_testing/index.jsp">/test/mobile_testing/index.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display various info used for detecting mobile devices. This includes the current User-String, if iPhone/iPod, redirector page, go to store flag, and property.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag mobile">
 		<div class="pageName"><span>/test/mobile_testing/non-supported.jsp</span></div>
 		<div class="link"><a href="/test/mobile_testing/non-supported.jsp">/test/mobile_testing/non-supported.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">No logic. Failed mobile detects end up here.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag mobile">
 		<div class="pageName"><span>/test/mobile_testing/redirector.jsp</span></div>
 		<div class="link"><a href="/test/mobile_testing/redirector.jsp">/test/mobile_testing/redirector.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">
+			Redirects to specific page based on mobile detection. Redirects either to:<br />
+			/test/mobile_testing/supported.jsp<br />
+			or<br />
+			/test/mobile_testing/non-supported.jsp
+		</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag mobile">
 		<div class="pageName"><span>/test/mobile_testing/supported.jsp</span></div>
 		<div class="link"><a href="/test/mobile_testing/supported.jsp">/test/mobile_testing/supported.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">
+			On successful redirect to this page, includes media file: <a href="/media/mobile/supported.ftl">/media/mobile/supported.ftl</a><br />
+			<br />
+			This FTL displays the media for the supported device.
+		</div>
 	</div>
 
-	<div class="tag">
-		<div class="pageName"><span>/test/monitor/healthcheck.jsp</span></div>
+	<div class="tag serverHealth">
+		<div class="pageName serverHealth"><span>/test/monitor/healthcheck.jsp</span></div>
 		<div class="link"><a href="/test/monitor/healthcheck.jsp">/test/monitor/healthcheck.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display how long the Health Check takes.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag blog">
 		<div class="pageName"><span>/test/myfd/index.jsp</span></div>
 		<div class="link"><a href="/test/myfd/index.jsp">/test/myfd/index.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display the myfd Blog</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag order">
 		<div class="pageName"><span>/test/order/order_maker.jsp</span></div>
 		<div class="link"><a href="/test/order/order_maker.jsp">/test/order/order_maker.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Add items to the cart from a list of SKUs.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag quickBuy">
 		<div class="pageName"><span>/test/quickbuy/simple.jsp</span></div>
 		<div class="link"><a href="/test/quickbuy/simple.jsp">/test/quickbuy/simple.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display a single (hard-coded product), that uses the Quickbuy feature.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag report">
 		<div class="pageName"><span>/test/reports/clig_unavailability.jsp</span></div>
 		<div class="link"><a href="/test/reports/clig_unavailability.jsp">/test/reports/clig_unavailability.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display CLIG availability. Includes name, id, recipe, availability status, product links (for each environment), and timestamp.</div>
 	</div>
 
-	<div class="tag">
-		<div class="pageName"><span>/test/reports/dcpd.css</span></div>
-		<div class="link"><a href="/test/reports/dcpd.css">/test/reports/dcpd.css</a></div>
-		<div class="pageDesc">Needs Description.</div>
-	</div>
-
-	<div class="tag">
+	<div class="tag report">
 		<div class="pageName"><span>/test/reports/dcpd.jsp</span></div>
 		<div class="link"><a href="/test/reports/dcpd.jsp">/test/reports/dcpd.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">DCPD Products Report</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag report">
 		<div class="pageName"><span>/test/reports/featured_report.jsp</span></div>
 		<div class="link"><a href="/test/reports/featured_report.jsp">/test/reports/featured_report.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display featured products setup in each Department and it's subcategories.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag report">
 		<div class="pageName"><span>/test/reports/full_names.jsp</span></div>
 		<div class="link"><a href="/test/reports/full_names.jsp">/test/reports/full_names.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display product Full Name, category, and Category Full Name based on a list of Product IDs.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag report">
 		<div class="pageName"><span>/test/reports/hidden_categories.jsp</span></div>
 		<div class="link"><a href="/test/reports/hidden_categories.jsp">/test/reports/hidden_categories.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display a list of "Broken Products". (List of products having hidden or not searchable category in their primary home.)</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag report">
 		<div class="pageName"><span>/test/reports/product_unavailability.jsp</span></div>
 		<div class="link"><a href="/test/reports/product_unavailability.jsp">/test/reports/product_unavailability.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display all Unavailable Products, broken down into Dept, and Unavail vs. Total Products.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag report">
 		<div class="pageName"><span>/test/reports/promotions.jsp</span></div>
 		<div class="link"><a href="/test/reports/promotions.jsp">/test/reports/promotions.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display Promotions info.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag report">
 		<div class="pageName"><span>/test/reports/recipe_unavailability.jsp</span></div>
 		<div class="link"><a href="/test/reports/recipe_unavailability.jsp">/test/reports/recipe_unavailability.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display all Unavailable Products within Recipes.</div>
 	</div>
 
-	<div class="tag">
-		<div class="pageName"><span>/test/search/brandautocomplete.jsp</span></div>
-		<div class="link"><a href="/test/search/brandautocomplete.jsp">/test/search/brandautocomplete.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
-	</div>
-
-	<div class="tag">
-		<div class="pageName"><span>/test/search/category_scoring.jsp</span></div>
-		<div class="link"><a href="/test/search/category_scoring.jsp">/test/search/category_scoring.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
-	</div>
-
-	<div class="tag">
-		<div class="pageName"><span>/test/search/compare.jsp</span></div>
-		<div class="link"><a href="/test/search/compare.jsp">/test/search/compare.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
-	</div>
-
-	<div class="tag">
-		<div class="pageName"><span>/test/search/config.css</span></div>
-		<div class="link"><a href="/test/search/config.css">/test/search/config.css</a></div>
-		<div class="pageDesc">Needs Description.</div>
-	</div>
-
-	<div class="tag">
+	<div class="tag search">
 		<div class="pageName"><span>/test/search/index.jsp</span></div>
 		<div class="link"><a href="/test/search/index.jsp">/test/search/index.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Search top-level page with links to sub test pages.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag search brand">
+		<div class="pageName"><span>/test/search/brandautocomplete.jsp</span></div>
+		<div class="link"><a href="/test/search/brandautocomplete.jsp">/test/search/brandautocomplete.jsp</a></div>
+		<div class="pageDesc">Display AutoComplete functionality for search and Brand.</div>
+	</div>
+
+	<div class="tag search">
+		<div class="pageName"><span>/test/search/category_scoring.jsp</span></div>
+		<div class="link"><a href="/test/search/category_scoring.jsp">/test/search/category_scoring.jsp</a></div>
+		<div class="pageDesc">Display search scoring info.</div>
+	</div>
+
+	<div class="tag search">
+		<div class="pageName"><span>/test/search/compare.jsp</span></div>
+		<div class="link"><a href="/test/search/compare.jsp">/test/search/compare.jsp</a></div>
+		<div class="pageDesc">Compare results of two search terms.</div>
+	</div>
+
+
+	<div class="tag search">
 		<div class="pageName"><span>/test/search/relevancy_config.jsp</span></div>
 		<div class="link"><a href="/test/search/relevancy_config.jsp">/test/search/relevancy_config.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Test search relavancy factors.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag search">
 		<div class="pageName"><span>/test/search/report.jsp</span></div>
 		<div class="link"><a href="/test/search/report.jsp">/test/search/report.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Show search statistics.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag search">
 		<div class="pageName"><span>/test/search/search_results.jsp</span></div>
 		<div class="link"><a href="/test/search/search_results.jsp">/test/search/search_results.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Show spelling test search results.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag search">
 		<div class="pageName"><span>/test/search/search_results_report.jsp</span></div>
 		<div class="link"><a href="/test/search/search_results_report.jsp">/test/search/search_results_report.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Show test search results.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag search">
 		<div class="pageName"><span>/test/search/search_terms.jsp</span></div>
 		<div class="link"><a href="/test/search/search_terms.jsp">/test/search/search_terms.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Show all search terms.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag search">
 		<div class="pageName"><span>/test/search/smart_search.jsp</span></div>
 		<div class="link"><a href="/test/search/smart_search.jsp">/test/search/smart_search.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Test Smart Search.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag search">
 		<div class="pageName"><span>/test/search/smart_search_log.jsp</span></div>
 		<div class="link"><a href="/test/search/smart_search_log.jsp">/test/search/smart_search_log.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Test Smart Search (with log).</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag search">
 		<div class="pageName"><span>/test/search/spell.jsp</span></div>
 		<div class="link"><a href="/test/search/spell.jsp">/test/search/spell.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Test search spelling results.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag session">
 		<div class="pageName"><span>/test/session/index.jsp</span></div>
 		<div class="link"><a href="/test/session/index.jsp">/test/session/index.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display a Session info dump.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag session">
 		<div class="pageName"><span>/test/session/serialize.jsp</span></div>
 		<div class="link"><a href="/test/session/serialize.jsp">/test/session/serialize.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display a serialized Session info dump.</div>
+	</div>
+	<div class="tag smartStore">
+		<div class="pageName"><span>/test/smartstore/index.jsp</span></div>
+		<div class="link"><a href="/test/smartstore/index.jsp">/test/smartstore/index.jsp</a></div>
+		<div class="pageDesc">Top-level SmartStore page, with links to SmartStore sub-pages.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag smartStore">
 		<div class="pageName"><span>/test/smartstore/all_ymal_perf_test.jsp</span></div>
 		<div class="link"><a href="/test/smartstore/all_ymal_perf_test.jsp">/test/smartstore/all_ymal_perf_test.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">YMAL Performance test page.</div>
 	</div>
 
-	<div class="tag">
-		<div class="pageName"><span>/test/smartstore/all_ymal_perf_test.jsp</span></div>
-		<div class="link"><a href="/test/smartstore/all_ymal_perf_test.jsp">/test/smartstore/all_ymal_perf_test.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
-	</div>
-
-	<div class="tag">
+	<div class="tag smartStore">
 		<div class="pageName"><span>/test/smartstore/backdoor_1.jsp</span></div>
-		<div class="link"><a href="/test/smartstore/backdoor_1.jsp">/test/smartstore/backdoor_1.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="link"><a href="/test/smartstore/backdoor_1.jsp">/test/smartstore/backdoor_1.jsp?erpId=<span class="reqVar">&lt;erpId&gt;</span>&userId=<span class="reqVar">&lt;userId&gt;</span></a></div>
+		<div class="pageDesc">
+			Display user info, and log them in via erpId/custId.<br />
+			<br />
+			Pass in userId at a minimum (erpId will then be determined from it).</div>
 	</div>
 
 	<div class="tag">
@@ -695,22 +694,16 @@
 		<div class="pageDesc">Needs Description.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag smartStore">
 		<div class="pageName"><span>/test/smartstore/cohorts.jsp</span></div>
 		<div class="link"><a href="/test/smartstore/cohorts.jsp">/test/smartstore/cohorts.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Lookup Cohort info by user id.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag smartStore">
 		<div class="pageName"><span>/test/smartstore/compare_variants.jsp</span></div>
 		<div class="link"><a href="/test/smartstore/compare_variants.jsp">/test/smartstore/compare_variants.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
-	</div>
-
-	<div class="tag">
-		<div class="pageName"><span>/test/smartstore/compare_variants.jsp</span></div>
-		<div class="link"><a href="/test/smartstore/compare_variants.jsp">/test/smartstore/compare_variants.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Compare the results of two Variants on the same user.</div>
 	</div>
 
 	<div class="tag">
@@ -743,40 +736,34 @@
 		<div class="pageDesc">Needs Description.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag smartStore">
 		<div class="pageName"><span>/test/smartstore/fi_debugger.jsp</span></div>
 		<div class="link"><a href="/test/smartstore/fi_debugger.jsp">/test/smartstore/fi_debugger.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display Featured Items that will be displayed based on customer's SmartStore settings.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag smartStore">
 		<div class="pageName"><span>/test/smartstore/impression_log.jsp</span></div>
 		<div class="link"><a href="/test/smartstore/impression_log.jsp">/test/smartstore/impression_log.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Generates impression events. (Requires CSV file.)</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag smartStore">
 		<div class="pageName"><span>/test/smartstore/impression_start_stop.jsp</span></div>
 		<div class="link"><a href="/test/smartstore/impression_start_stop.jsp">/test/smartstore/impression_start_stop.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Manage timed flushes for the Impression Log page.</div>
 	</div>
 
-	<div class="tag">
-		<div class="pageName"><span>/test/smartstore/index.jsp</span></div>
-		<div class="link"><a href="/test/smartstore/index.jsp">/test/smartstore/index.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
-	</div>
-
-	<div class="tag">
+	<div class="tag smartStore">
 		<div class="pageName"><span>/test/smartstore/my_variant.jsp</span></div>
 		<div class="link"><a href="/test/smartstore/my_variant.jsp">/test/smartstore/my_variant.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Diosplay Variant info for user.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag smartStore">
 		<div class="pageName"><span>/test/smartstore/new_and_back.jsp</span></div>
 		<div class="link"><a href="/test/smartstore/new_and_back.jsp">/test/smartstore/new_and_back.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Displays all New and Back In Stock info for products.</div>
 	</div>
 
 	<div class="tag">
@@ -785,10 +772,10 @@
 		<div class="pageDesc">Needs Description.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag smartStore">
 		<div class="pageName"><span>/test/smartstore/product_meta.jsp</span></div>
 		<div class="link"><a href="/test/smartstore/product_meta.jsp">/test/smartstore/product_meta.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display Scoring info for product (Customer score and Global Score).</div>
 	</div>
 
 	<div class="tag">
@@ -809,46 +796,46 @@
 		<div class="pageDesc">Needs Description.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag smartStore">
 		<div class="pageName"><span>/test/smartstore/request_simulator.jsp</span></div>
 		<div class="link"><a href="/test/smartstore/request_simulator.jsp">/test/smartstore/request_simulator.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Diaply results of various SmartStore features based on Customer and a trigger Product.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag smartStore">
 		<div class="pageName"><span>/test/smartstore/scarab_perf.jsp</span></div>
 		<div class="link"><a href="/test/smartstore/scarab_perf.jsp">/test/smartstore/scarab_perf.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display Scarab related search results.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag smartStore">
 		<div class="pageName"><span>/test/smartstore/smart_categories.jsp</span></div>
 		<div class="link"><a href="/test/smartstore/smart_categories.jsp">/test/smartstore/smart_categories.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display returned products from a Smart Category.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag smartStore">
 		<div class="pageName"><span>/test/smartstore/tabs_perf_test.jsp</span></div>
 		<div class="link"><a href="/test/smartstore/tabs_perf_test.jsp">/test/smartstore/tabs_perf_test.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display performance info related to generating a User's SmartStore Tab (Site Features).</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag smartStore">
 		<div class="pageName"><span>/test/smartstore/tabs_test.jsp</span></div>
 		<div class="link"><a href="/test/smartstore/tabs_test.jsp">/test/smartstore/tabs_test.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display Tab related priorities (by Site Feature).</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag smartStore">
 		<div class="pageName"><span>/test/smartstore/view_cohorts.jsp</span></div>
 		<div class="link"><a href="/test/smartstore/view_cohorts.jsp">/test/smartstore/view_cohorts.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display Cohort info and dsitribution percentages.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag smartStore">
 		<div class="pageName"><span>/test/smartstore/view_config.jsp</span></div>
 		<div class="link"><a href="/test/smartstore/view_config.jsp">/test/smartstore/view_config.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display info for Variant configurations.</div>
 	</div>
 
 	<div class="tag">
@@ -857,40 +844,42 @@
 		<div class="pageDesc">Needs Description.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag smartStore">
 		<div class="pageName"><span>/test/smartstore/view_tabs.jsp</span></div>
 		<div class="link"><a href="/test/smartstore/view_tabs.jsp">/test/smartstore/view_tabs.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display results of Tab Strategies.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag smartStore">
 		<div class="pageName"><span>/test/smartstore/view_ymals.jsp</span></div>
 		<div class="link"><a href="/test/smartstore/view_ymals.jsp">/test/smartstore/view_ymals.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display a list of Smart YMALs.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag smartStore">
 		<div class="pageName"><span>/test/smartstore/ymal_display.jsp</span></div>
 		<div class="link"><a href="/test/smartstore/ymal_display.jsp">/test/smartstore/ymal_display.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display YMAL results (in web style).</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag smartStore">
 		<div class="pageName"><span>/test/smartstore/ymal_perf_test.jsp</span></div>
 		<div class="link"><a href="/test/smartstore/ymal_perf_test.jsp">/test/smartstore/ymal_perf_test.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display performance info related to generating a User's Smart YMALs.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag smartStore zonePricing">
 		<div class="pageName"><span>/test/smartstore/zone_pricing.jsp</span></div>
 		<div class="link"><a href="/test/smartstore/zone_pricing.jsp">/test/smartstore/zone_pricing.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Display Zone Pricing related info for a Customer.</div>
 	</div>
 
 	<div class="tag">
 		<div class="pageName"><span>/test/spammer/index.jsp</span></div>
 		<div class="link"><a href="/test/spammer/index.jsp">/test/spammer/index.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Sends an email to recipients (specified) from service@freshdirect.com.<br />
+		<br />
+		More details on functionality needed.</div>
 	</div>
 
 	<div class="tag">
@@ -935,26 +924,30 @@
 		<div class="pageDesc">Needs Description.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag warmup">
 		<div class="pageName"><span>/test/warmup/index.jsp</span></div>
 		<div class="link"><a href="/test/warmup/index.jsp">/test/warmup/index.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">Warmup top-level control page with links to sub-pages. Allows actions like running warmup, reloading store, and loading inventory.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag warmup inventory">
 		<div class="pageName"><span>/test/warmup/inventory.jsp</span></div>
-		<div class="link"><a href="/test/warmup/inventory.jsp">/test/warmup/inventory.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="link"><a href="/test/warmup/inventory.jsp">/test/warmup/inventory.jsp?deptId=<span class="reqVar">&lt;deptId&gt;</span></a></div>
+		<div class="pageDesc">Load inventory for deptId.</div>
 	</div>
 
-	<div class="tag">
+	<div class="tag warmup">
 		<div class="pageName"><span>/test/warmup/warmup.jsp</span></div>
 		<div class="link"><a href="/test/warmup/warmup.jsp">/test/warmup/warmup.jsp</a></div>
-		<div class="pageDesc">Needs Description.</div>
+		<div class="pageDesc">
+			Run Store warmup.<br />
+			<br />
+			Passing the param newStore=yes will re-load the store as well.
+		</div>
 	</div>
 
 	<div class="tag">
-		<div class="pageName"><span>/test/warmup/wlswarmup.jsp</span></div>
+		<div class="pageName warmup"><span>/test/warmup/wlswarmup.jsp</span></div>
 		<div class="link"><a href="/test/warmup/wlswarmup.jsp">/test/warmup/wlswarmup.jsp</a></div>
 		<div class="pageDesc">Needs Description.</div>
 	</div>
