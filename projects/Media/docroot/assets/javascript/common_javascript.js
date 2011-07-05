@@ -897,20 +897,31 @@ if (window.Prototype) { //make sure prototype is on page
 		if (!hasAgreedToAlcoholDisclaimer) {
 			$A(document.forms).each(function (f) {
 				//check for form id
-				var fId = '';
+				var fId = f.getAttribute('id');
+				var fIdTemp = fId;
+				var fName = f.getAttribute('name');
+				var d = new Date();
+
 				
 				try {
 					fId = f.identify();
-				} catch (e) {
-					/* keep IE7 from failing */
-					fId = f.getAttribute('id');
-					if (!fId) {
-						var d = new Date();
-						f.setAttribute('id', f.name+d.getTime());
+					
+					if (fId == fName && fIdTemp === null) {
+						f.setAttribute('id', fId+d.getTime());
 						fId = f.id;
 					}
-					f = $(f.id);
+				} catch (e) {
+					/* keep IE7 from failing */
+					f.setAttribute('id', fId+d.getTime());
+					fId = f.id;
 				}
+
+				if (fId) {
+					f = $(fId);
+				}else{
+					return;
+				}
+
 
 				var jsNamespace = null;
 
@@ -966,27 +977,29 @@ if (window.Prototype) { //make sure prototype is on page
 }
 
 /* Submit Alcohol form (find it's location, if necessary) */
-function submitAlcoholForm() {
-	var alcoholSubmitFormTemp = top.alcoholSubmitForm;
+if (!submitAlcoholForm) {
+	var submitAlcoholForm = function () {
+		var alcoholSubmitFormTemp = top.alcoholSubmitForm;
 
-	//don't depend on this value, or value-1 being correct
-	var frameLen = window.frames.length;
+		//don't depend on this value, or value-1 being correct
+		var frameLen = window.frames.length;
 
-	if (alcoholSubmitFormTemp === null) {
-		//we have no form to try to submit
-		return;
-	}
+		if (alcoholSubmitFormTemp === null) {
+			//we have no form to try to submit
+			return;
+		}
 
-	if (document.forms[alcoholSubmitFormTemp]) {
-		document.forms[alcoholSubmitFormTemp].submit();
-	} else {
-		//find the correct form manually
-		for (var i = frameLen; i >= 0; i--) {
-			if (window.frames[i] && window.frames[i].document.forms[alcoholSubmitFormTemp]) {
-				window.frames[i].document.forms[alcoholSubmitFormTemp].submit();
-				//clear alcohol form (in case there's a different form on the page to be used)
-				top.alcoholSubmitForm = null;
-				return;
+		if (document.forms[alcoholSubmitFormTemp]) {
+			document.forms[alcoholSubmitFormTemp].submit();
+		} else {
+			//find the correct form manually
+			for (var i = frameLen; i >= 0; i--) {
+				if (window.parent.frames[i] && window.parent.frames[i].document.forms[alcoholSubmitFormTemp]) {
+					window.parent.frames[i].document.forms[alcoholSubmitFormTemp].submit();
+					//clear alcohol form (in case there's a different form on the page to be used)
+					top.alcoholSubmitForm = null;
+					return;
+				}
 			}
 		}
 	}
