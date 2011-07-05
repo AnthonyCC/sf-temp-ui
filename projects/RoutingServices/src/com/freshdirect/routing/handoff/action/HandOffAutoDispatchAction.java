@@ -112,18 +112,19 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 									
 					int noOfRoutes = routes != null ? routes.size() : 0;
 					
-					if(noOfRoutes == 0) {
+					/*if(noOfRoutes == 0) {
 						actionResponse.append("Routes matching Dispatchs COMPLETED /" +noOfRoutes+" Routes");
 						proxy.updateHandOffBatchMessage(this.getBatch().getBatchId(), actionResponse.toString());						
-					}else{
+					}else{*/
 					
 						try{
-							Iterator<IHandOffBatchRoute> itr = routes.iterator();
-							while(itr.hasNext()) {
-								IHandOffBatchRoute route = itr.next();								
-								routeMapping.put(route.getRouteId(), route);
-							}						
-							
+							if(noOfRoutes > 0){
+								Iterator<IHandOffBatchRoute> itr = routes.iterator();
+								while(itr.hasNext()) {
+									IHandOffBatchRoute route = itr.next();								
+									routeMapping.put(route.getRouteId(), route);
+								}						
+							}
 							//clear if any dispatched exists
 							proxy.clearHandOffBatchAutoDispatches(this.getBatch().getBatchId(), this.getBatch().getDeliveryDate());
 							
@@ -210,7 +211,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 							throw new RoutingServiceException(" Auto-DispatchTask FAILED ", e, IIssue.PROCESS_HANDOFFBATCH_ERROR);						
 						}
 						
-					}
+					//}
 				}
 			}
 		}
