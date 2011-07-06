@@ -74,16 +74,14 @@ if (productNode.getLayout().isGroceryLayout()) {
     return;
 }
 
-/* removed for interstitial */
+
 // [redirection] Alcohol alert -> redirect health warning page
-/*
-	FDSessionUser yser = (FDSessionUser)session.getAttribute(SessionName.USER);
-	if( ((CategoryModel)productNode.getParentNode()).isHavingBeer() && !yser.isHealthWarningAcknowledged()){
-		String redirectURL = "/health_warning.jsp?successPage=/product.jsp"+URLEncoder.encode("?"+request.getQueryString());
-		response.sendRedirect(response.encodeRedirectURL(redirectURL));
-		return;
-	}
-*/
+FDSessionUser yser = (FDSessionUser)session.getAttribute(SessionName.USER);
+if( ((CategoryModel)productNode.getParentNode()).isHavingBeer() && !yser.isHealthWarningAcknowledged()){
+    String redirectURL = "/health_warning.jsp?successPage=/product.jsp"+URLEncoder.encode("?"+request.getQueryString());
+    response.sendRedirect(response.encodeRedirectURL(redirectURL));
+    return;
+}
 
 
 
@@ -115,6 +113,7 @@ if (EnumTemplateType.WINE.equals( productNode.getTemplateType() )) {
     <tmpl:put name='leftnav' direct='true'>
     </tmpl:put>
 <tmpl:put name='content' direct='true'>
+
 <%if (FDStoreProperties.isAdServerEnabled()) {%>
 
 	<script type="text/javascript">
@@ -124,22 +123,6 @@ if (EnumTemplateType.WINE.equals( productNode.getTemplateType() )) {
 <%} else {%>
     <%@ include file="/shared/includes/product/i_product_quality_note.jspf" %>
 <%}%>
-<%
-	/* Alcohol Restriction info
-	 *	adding this here as well, so anything using the product.jsp will have it (it won't duplicate)
-	 */
-%>
-<script type="text/javascript">
-	if (!window.alcohol) { window.alcohol = {}; }
-	addAlcoholHelpers();
-	<%
-		/* set if user has already agreed to alcohol disclaimer
-		 *	check new session value here to avoid template differences
-		 */
-		FDSessionUser alcUser = (FDSessionUser)session.getAttribute(SessionName.USER);
-	%>
-	hasAgreedToAlcoholDisclaimer = <%=alcUser.isHealthWarningAcknowledged()%>;
-</script>
 <fd:FDShoppingCart id='cart' result='actionResult' action='<%= tgAction %>' successPage='<%= sPage %>' source='<%= request.getParameter("fdsc.source")%>' >
 <%  //hand the action results off to the dynamic include
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);

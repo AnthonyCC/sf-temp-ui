@@ -44,24 +44,22 @@
 <html>
 <head>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
-	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+	<script language="javascript" src="/assets/javascript/common_javascript.js"></script>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<%@ include file="/shared/template/includes/ccl.jspf" %>
 	<%
 	if (FDStoreProperties.isAnnotationMode()) {
-	%>
-	<script language="JavaScript" src="/assets/javascript/overlib_mini.js"></script>
-	<%	
+		%>
+		<script language="JavaScript" src="/assets/javascript/overlib_mini.js"></script>
+		<%
 	}
 	%>
 </head>
 <body class="qbBody">
-  <div id="qbContainer">
-<%
-if (FDStoreProperties.isAnnotationMode()) {
-%>		<div id="overDiv" style="position: absolute; visibility: hidden; z-index: 10000;"></div><%
-}
-%>
+<div id="qbContainer">
+	<% if (FDStoreProperties.isAnnotationMode()) { %>
+		<div id="overDiv" style="position: absolute; visibility: hidden; z-index: 10000;"></div>
+	<% } %>
 	<div class="left">
 		<%@ include file="/shared/includes/product/i_product.jspf" %>
 	</div>
@@ -76,7 +74,7 @@ if (FDStoreProperties.isAnnotationMode()) {
 				<img src="<%= productNode.getAlternateImage().getPath() %>" width="<%= productNode.getAlternateImage().getWidth() %>" height="<%= productNode.getAlternateImage().getHeight() %>" style="vertical-align: top;">
 				<img src="<%= productNode.getDescriptiveImage().getPath() %>" width="<%= productNode.getDescriptiveImage().getWidth() %>" height="<%= productNode.getDescriptiveImage().getHeight() %>" style="vertical-align: top;">
 			</div>
-	<%
+		<%
 		} else {
 %>		<div>
 			<img src="<%= productNode.getProdImage().getPath() %>" width="<%= productNode.getProdImage().getWidth() %>" height="<%= productNode.getProdImage().getHeight() %>" style="vertical-align: top;">
@@ -89,28 +87,21 @@ if (FDStoreProperties.isAnnotationMode()) {
 	}
 	%>
 	</div>
-	<%
-	if (__isWineLayout) {
-	%>
-	<div class="text9" style="color: gray; width: 180px; text-align: right;">Wine sold by Union Square Wines &amp; Spirits.</div>
-	<%
-	}
-	%>
-	<% if (uid != null && !"".equals(uid)) { %>
-	<script>
-
-
-
-	YAHOO.util.Event.onDOMReady(function() {
-		var frameId = '<%= uid %>_frame';
-
-		setFrameHeight(frameId, 20);
-		// re-center panel
-		window.parent.document.quickbuyPanel.center();
-	});
-	</script>
+	<% if (__isWineLayout) { %>
+		<div class="text9" style="position: absolute; bottom: 1em; left: 10px; color: gray; width: 180px; text-align: right;">Wine sold by Union Square Wines &amp; Spirits.</div>
 	<% } %>
-  </div>
+	<% if (uid != null && !"".equals(uid)) { %>
+		<script>
+			YAHOO.util.Event.onDOMReady(function() {
+				var frameId = '<%= uid %>_frame';
+
+				setFrameHeight(frameId, 20);
+				// re-center panel
+				window.parent.document.quickbuyPanel.center();
+			});
+		</script>
+	<% } %>
+</div>
 </body>
 </html>
 </fd:FDShoppingCart>

@@ -326,9 +326,6 @@ Modalbox.Methods = {
 					new Ajax.Request(this.content, {
 						method: this.options.method.toLowerCase(),
 						parameters: this.options.params,
-						on0: (function(response) {
-								console.log('SOP error');
-						}).bind(this),
 						onComplete: (function(response) {
 							this._processContent(response.responseText);
 						}).bind(this),

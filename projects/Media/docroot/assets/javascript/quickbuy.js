@@ -1,5 +1,5 @@
 if (typeof window.FD_QuickBuy == "undefined") {
-	var FD_QuickBuy = {};
+	FD_QuickBuy = {};
 }
 
 

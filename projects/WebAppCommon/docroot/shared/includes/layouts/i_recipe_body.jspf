@@ -69,29 +69,29 @@
 		return r;
 	}
 
-	java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
+    java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 
 %><%
-	MediaI recipeDesc = recipe.getDescription();
-	Image  recipeLogo = recipe.getLogo();
-	Image recipePhoto = recipe.getPhoto();
-	MediaI recipeIngrdMedia = recipe.getIngredientsMedia();
-	MediaI recipePrepdMedia = recipe.getPreparationMedia();
-	MediaI recipeCpyrghtMedia = recipe.getCopyrightMedia();
+    MediaI recipeDesc = recipe.getDescription();
+    Image  recipeLogo = recipe.getLogo();
+    Image recipePhoto = recipe.getPhoto();
+    MediaI recipeIngrdMedia = recipe.getIngredientsMedia();
+    MediaI recipePrepdMedia = recipe.getPreparationMedia();
+    MediaI recipeCpyrghtMedia = recipe.getCopyrightMedia();
 
-	String subCatIdParam = "";
-	if ( request.getParameter("subCatId")!=null && !"".equals(request.getParameter("subCatId").trim()) ) {
-		subCatIdParam = "&subCatId="+request.getParameter("subCatId").trim();
-	}
+    String subCatIdParam = "";
+    if ( request.getParameter("subCatId")!=null && !"".equals(request.getParameter("subCatId").trim()) ) {
+   		subCatIdParam = "&subCatId="+request.getParameter("subCatId").trim();
+    }
 
-	String actionString = request.getParameter("actionString");
-	if (!"addMultipleToCart".equals(actionString)) {
-		actionString="";
-	}
+    String actionString = request.getParameter("actionString");
+    if (!"addMultipleToCart".equals(actionString)) {
+        actionString="";
+    }
 
-	
-	RecipeSource source = recipe.getSource();
-	String sourceName=source !=null ? "From \"" + source.getName()+"\"" : "";
+    
+    RecipeSource source = recipe.getSource();
+    String sourceName=source !=null ? "From \"" + source.getName()+"\"" : "";
 	
 	/*
 	THEME, attribute should return color code, all uppercase. 
@@ -101,9 +101,9 @@
 	String themeColor = recipe.getThemeColor();
 	String theme = themeColor==null || "".equals(themeColor) ? theme="" : "_"+themeColor;
 	
-	StringBuffer authorNames = new StringBuffer("");
-	List authors = recipe.getAuthors();
-	for (int i = 0; i<authors.size();i++) {
+    StringBuffer authorNames = new StringBuffer("");
+    List authors = recipe.getAuthors();
+    for (int i = 0; i<authors.size();i++) {
 		if (i==0) authorNames.append("by ");
 		if (i > 0) authorNames.append(", ");
 		if (i == authors.size()-1 && authors.size() > 1) authorNames.append(" and ");
@@ -115,529 +115,495 @@
 	<tr valign="top">
 	 	<td colspan="3">
 			<table width="100%">
-				<tr valign="top">
-					<td width="90%" style="padding-right: 10px;">
-						<% if(recipeLogo != null) {
-							if (source != null) { %>
-								<a href="javascript:popup('/recipe_source.jsp?recipeId=<%=recipe%>&trk=rec','large_long')"><img src=<%=recipeLogo.getPath()%> width="<%=recipeLogo.getWidth()%>" height="<%=recipeLogo.getHeight()%>" border="0"></a><br />
-							<% } else { %>
-								<img src=<%=recipeLogo.getPath()%> width="<%=recipeLogo.getWidth()%>" height="<%=recipeLogo.getHeight()%>" border="0" alt="" /><br />
-							<% } %>
-						<% } %>
-						<span class="recipe_title"><%=recipe.getName().toUpperCase()%></span><br />
-						<span class="recipe_author"><%=recipe.getDisplayableSource(true)%></span>
-						<% if(recipeDesc!=null) { %>
-							<br /><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" /><br /><fd:IncludeMedia name='<%= recipeDesc.getPath() %>' />
-						<% } %>
-					</td>
-					<td width="10%" align="right"><% if (source != null) { %><a href="javascript:popup('/recipe_source.jsp?recipeId=<%=recipe%>&trk=rec','large_long')"><% } %><% if(recipePhoto!=null){ %><img src=<%=recipePhoto.getPath()%> width="<%=recipePhoto.getWidth()%>" height="<%=recipePhoto.getHeight()%>" border="0" alt="" /><% } %><% if (source != null) { %></a><% } %></td>
-				</tr>
+				<tr valign="top"><td width="90%" style="padding-right: 10px;">
+                <% if(recipeLogo != null) {
+                       if (source != null) { %>
+                        <a href="javascript:popup('/recipe_source.jsp?recipeId=<%=recipe%>&trk=rec','large_long')"><img src=<%=recipeLogo.getPath()%> width="<%=recipeLogo.getWidth()%>" height="<%=recipeLogo.getHeight()%>" border="0"></a><br/>
+                    <% } else { %>
+                        <img src=<%=recipeLogo.getPath()%> width="<%=recipeLogo.getWidth()%>" height="<%=recipeLogo.getHeight()%>" border="0"><br/>
+                    <% } %>
+                <% } %>
+				<span class="recipe_title"><%=recipe.getName().toUpperCase()%></span><br>
+	 			<span class="recipe_author"><%=recipe.getDisplayableSource(true)%></span>
+	 			<% if(recipeDesc!=null){ %><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br><fd:IncludeMedia name='<%= recipeDesc.getPath() %>' /><% } %>
+				</td>
+				<td width="10%" align="right"><% if (source != null) { %><a href="javascript:popup('/recipe_source.jsp?recipeId=<%=recipe%>&trk=rec','large_long')"><% } %><% if(recipePhoto!=null){ %><img src=<%=recipePhoto.getPath()%> width="<%=recipePhoto.getWidth()%>" height="<%=recipePhoto.getHeight()%>" border="0"><% } %><% if (source != null) { %></a><% } %></td></tr>
 			</table>
-		</td>
+	 	</td>
 	</tr>
-	<tr>
-		<td colspan="3"><img src="/media_stat/recipe/recipe_line<%=theme%>.gif" width="550" height="1" vspace="10"></td>
-	</tr>
+	<tr><td colspan="3"><img src="/media_stat/recipe/recipe_line<%=theme%>.gif" width="550" height="1" vspace="10"></td></tr>
 	<tr valign="top">
-		<td style="padding-right:15px;">
-			<% if (recipeIngrdMedia!=null) { %>
-				<a href="#ingredients"><img src="/media_stat/recipe/rec_hdr_ingredients<%=theme%>.gif" width="92" height="10" border="0" alt="INGREDIENTS"></a> (<a href="#ingredients"><b>CLICK TO BUY</b></a>)<br /><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br /><fd:IncludeMedia name='<%= recipeIngrdMedia.getPath() %>' /><br />
-			<% } %>
-			<table>
-				<tr>
-					<td align="right"><a href="javascript:popup('/shared/recipe_print.jsp?recipeId=<%=recipe%>','print')"><img src="/media_stat/recipe/print.gif" width="16" height="16" border="0"></a></td>
-					<td><a href="javascript:popup('/shared/recipe_print.jsp?recipeId=<%=recipe%>','print')"><strong>Print recipe</strong></a></td>
-				</tr>
-				<tr>
-					<td><a href="javascript:popup('/tell_a_friend/step_1_compose.jsp?recipeId=<%=recipe%>','large')"><img src="/media_stat/recipe/email.gif" width="25" height="10" border="0"></a></td>
-					<td><a href="javascript:popup('/tell_a_friend/step_1_compose_recipe.jsp?recipeId=<%=recipe%>','minimal')"><strong>Email to a friend</strong></a></td>
-				</tr>
-			</table>
+		<td style="padding-right:15px;"><% if(recipeIngrdMedia!=null){ %><a href="#ingredients"><img src="/media_stat/recipe/rec_hdr_ingredients<%=theme%>.gif" width="92" height="10" border="0" alt="INGREDIENTS"></a> (<a href="#ingredients"><b>CLICK TO BUY</b></a>)<br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br><fd:IncludeMedia name='<%= recipeIngrdMedia.getPath() %>' /><br><% } %>
+		<table>
+			<tr>
+				<td align="right"><a href="javascript:popup('/shared/recipe_print.jsp?recipeId=<%=recipe%>','print')"><img src="/media_stat/recipe/print.gif" width="16" height="16" border="0"></a></td>
+				<td><a href="javascript:popup('/shared/recipe_print.jsp?recipeId=<%=recipe%>','print')"><strong>Print recipe</strong></a></td>
+			</tr>
+			<tr>
+				<td><a href="javascript:popup('/tell_a_friend/step_1_compose.jsp?recipeId=<%=recipe%>','large')"><img src="/media_stat/recipe/email.gif" width="25" height="10" border="0"></a></td>
+				<td><a href="javascript:popup('/tell_a_friend/step_1_compose_recipe.jsp?recipeId=<%=recipe%>','minimal')"><strong>Email to a friend</strong></a></td>
+			</tr>
+		</table>
 		</td>
-		<td colspan="2"><% if(recipePrepdMedia!=null){ %><img src="/media_stat/recipe/rec_hdr_preparation<%=theme%>.gif" width="93" height="10" hspace="4" alt="PREPARATION"><br /><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br /><fd:IncludeMedia name='<%= recipePrepdMedia.getPath() %>' /><% } %></td>
+		<td colspan="2"><% if(recipePrepdMedia!=null){ %><img src="/media_stat/recipe/rec_hdr_preparation<%=theme%>.gif" width="93" height="10" hspace="4" alt="PREPARATION"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br><fd:IncludeMedia name='<%= recipePrepdMedia.getPath() %>' /><% } %></td>
 	</tr>
 	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" width="225" height="1" alt="" /></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="175" height="1" alt="" /></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="150" height="1" alt="" /></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="225" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="175" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="150" height="1"></td>
 	</tr>
 </table>
 
 <a name="ingredients"></a>
-<br /><br />
-
+<br><br>
 <script type="text/javascript" src="/assets/javascript/quickshop.js"></script>
 <script type="text/javascript">var numberOfOrderLines=<%= quickCartSize %>;</script> 
 
 <style type="text/css">
-	.ingredientsHeader {
-		 font-size: 8pt;
-		 font-weight: bold;
-	}
+.ingredientsHeader {
+ font-size: 8pt;
+ font-weight: bold;
+}
 
-	.sectionHeader {
-		font-size: 8pt;
-		font-weight: bold;
-		padding-top: 8px; 
-	}
+.sectionHeader {
+ font-size: 8pt;
+ font-weight: bold;
+ padding-top: 8px; 
+}
 
-	.sectionHeader td {
-		padding-top: 1em;
-	}
+.sectionHeader td {
+ padding-top: 1em;
+}
 
-	.totalAmount {
-		font-weight: bold;
-	}
+.totalAmount {
+ font-weight: bold;
+}
 
-	.totalAmount td {
-		border-top: 1px solid #FF9933;
-		padding-top: 1em;
-		padding-right: 1em;
-	}
+.totalAmount td {
+ border-top: 1px solid #FF9933;
+ padding-top: 1em;
+ padding-right: 1em;
+}
 
-	.totalAmount input {
-		width: 60px;
-		font-family: Verdana, sans-serif;
-		font-size: 10px;
-		font-weight: bold;
-	}
+.totalAmount input {
+ width: 60px;
+ font-family: Verdana, sans-serif;
+ font-size: 10px;
+ font-weight: bold;
+}
 
-	.recipe {
-		width: 550px;
-		border: 1px solid #f90;
-		-moz-border-radius: 0 8px 8px 8px;
-		padding-top: 8px;
-	}
+.recipe {
+ width: 550px;
+ border: 1px solid #f90;
+ -moz-border-radius: 0 8px 8px 8px;
+ padding-top: 8px;
+}
 
-	.recipeVariants {
-		width: 550px;
-		text-align: left;
-	}
+.recipeVariants {
+ width: 550px;
+ text-align: left;
+}
 
-	.recipeVariants a {
-		text-decoration: none;
-		color: #f90;
-	}
+.recipeVariants a {
+ text-decoration: none;
+ color: #f90;
+}
+/*
+span.recipeVariant, span.selectedRecipeVariant {
+ font-weight: bold;
+ font-size: 8pt;
+ color: #f90;
+ text-transform: uppercase;
 
-	/*
-		span.recipeVariant, span.selectedRecipeVariant {
-			font-weight: bold;
-			font-size: 8pt;
-			color: #f90;
-			text-transform: uppercase;
-			border-left: 1px solid #f90;
-			border-right: 1px solid #f90;
-			border-top: 1px solid #f90;
-			padding: 8px 8px 0 8px;
-			-moz-border-radius: 8px 8px 0 0;
-		}
+ border-left: 1px solid #f90;
+ border-right: 1px solid #f90;
+ border-top: 1px solid #f90;
+ padding: 8px 8px 0 8px;
+ 
+ -moz-border-radius: 8px 8px 0 0;
+}
 
-		span.recipeVariant {
-			background-color: #e0e3d0;
-		}
+span.recipeVariant {
+ background-color: #e0e3d0;
+}
 
-		span.selectedRecipeVariant {
-			border-bottom: 1px solid white;
-			background-color: white;
-		}
-	*/
+span.selectedRecipeVariant {
+ border-bottom: 1px solid white;
+ background-color: white;
+} 
+*/
+
 </style>
 
 <table width="550" border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td colspan="2" height="25" style="background-image:url(/media_stat/recipe/rectabs_line_bg<%=theme%>.gif)">
+      <tr>
+        <td colspan="2" height="25" style="background-image:url(/media_stat/recipe/rectabs_line_bg<%=theme%>.gif)">
 			<table border="0" cellspacing="0" cellpadding="0">
-				<tr valign="bottom">
-				<% 
-					int numTabs = 0; 
-					boolean lastTabOn = false;
-				%>
-				<logic:iterate id="currVariant" collection="<%= recipe.getAvailableVariants() %>" type="com.freshdirect.fdstore.content.RecipeVariant">
+			  <tr valign="bottom">
+			  <% 
+			  	int numTabs = 0; 
+			  	boolean lastTabOn = false;
+			  %>
+			  	<logic:iterate id="currVariant" collection="<%= recipe.getAvailableVariants() %>" type="com.freshdirect.fdstore.content.RecipeVariant">
 					<%
-						if (variant.equals(currVariant)) { //this tab is on
-							if (numTabs == 0 || (numTabs == 0 && ("default").equalsIgnoreCase(currVariant.getName()))) { %>
-								<td><img src="/media_stat/recipe/rectabs_tab1_on<%=theme%>.gif" width="174" height="25"></td>
-							<%
-							} else if (numTabs > 0) { //has between tab
-								if (lastTabOn) { //previous tab is on  
-										%>
-										<td><img src="/media_stat/recipe/rectabs_btwn_on_off<%=theme%>.gif" width="16" height="25"></td>
-										<%
-									} else { //previous tab off 
-										%>
-										<td><img src="/media_stat/recipe/rectabs_btwn_off_on<%=theme%>.gif" width="16" height="25"></td>
-										<%
-									} %>
-									<td style="background-image:url(/media_stat/recipe/rectabs_bg_on<%=theme%>.gif); padding-bottom:3px;"><span class="recipe_tab"><%= currVariant.getName() %></span></td>
-								<% 
-							}
-
-							lastTabOn = true;
-						} else { // this tab is off
-							if (numTabs == 0 || (numTabs == 0 && ("default").equalsIgnoreCase(currVariant.getName()))) { %>
-									<td><a href="<%=response.encodeURL("recipe.jsp?catId="+catIdParam+"&recipeId="+recipe.getContentName()+subCatIdParam+"&variantId="+currVariant.getContentName())%>&trk=var#ingredients"><img src="/media_stat/recipe/rectabs_tab1_off<%=theme%>.gif" width="174" height="25" border="0"></a></td>
-								<% 
-							} else if (numTabs > 0) { //has between tab
-									if (lastTabOn) { //previous tab is on  
-										%>
-										<td><img src="/media_stat/recipe/rectabs_btwn_on_off<%=theme%>.gif" width="16" height="25"></td>
-										<% 
-									} else { //previous tab off 
-										%>
-										<td><img src="/media_stat/recipe/rectabs_btwn_off_off<%=theme%>.gif" width="16" height="25"></td>
-										<% 
-									} %>
-								<td style="background-image:url(/media_stat/recipe/rectabs_bg_off<%=theme%>.gif); padding-bottom:3px;"><a href="<%=response.encodeURL("recipe.jsp?catId="+catIdParam+"&recipeId="+recipe.getContentName()+subCatIdParam+"&variantId="+currVariant.getContentName())%>&trk=var#ingredients" class="recipe_tab"><%= currVariant.getName() %></a></td>
-								<%
-							}
-
-							lastTabOn = false;
+					if (variant.equals(currVariant)) { //this tab is on
+						if (numTabs == 0 || (numTabs == 0 && ("default").equalsIgnoreCase(currVariant.getName()))) { %>
+							<td><img src="/media_stat/recipe/rectabs_tab1_on<%=theme%>.gif" width="174" height="25"></td>
+					<%
+						} else if (numTabs > 0) { //has between tab
+							if (lastTabOn) { //previous tab is on  
+					%>
+								<td><img src="/media_stat/recipe/rectabs_btwn_on_off<%=theme%>.gif" width="16" height="25"></td>
+					<% 
+							} else { //previous tab off 
+					%>
+								<td><img src="/media_stat/recipe/rectabs_btwn_off_on<%=theme%>.gif" width="16" height="25"></td>
+					<% 
+							} %>
+						<td style="background-image:url(/media_stat/recipe/rectabs_bg_on<%=theme%>.gif); padding-bottom:3px;"><span class="recipe_tab"><%= currVariant.getName() %></span></td>
+					<% 
 						}
-
-						numTabs++;
+						lastTabOn = true;
+					} else { // this tab is off
+						if (numTabs == 0 || (numTabs == 0 && ("default").equalsIgnoreCase(currVariant.getName()))) { %>
+							<td><a href="<%=response.encodeURL("recipe.jsp?catId="+catIdParam+"&recipeId="+recipe.getContentName()+subCatIdParam+"&variantId="+currVariant.getContentName())%>&trk=var#ingredients"><img src="/media_stat/recipe/rectabs_tab1_off<%=theme%>.gif" width="174" height="25" border="0"></a></td>
+					<% 
+						} else if (numTabs > 0) { //has between tab
+							if (lastTabOn) { //previous tab is on  
+					%>
+								<td><img src="/media_stat/recipe/rectabs_btwn_on_off<%=theme%>.gif" width="16" height="25"></td>
+					<% 
+							} else { //previous tab off 
+					%>
+								<td><img src="/media_stat/recipe/rectabs_btwn_off_off<%=theme%>.gif" width="16" height="25"></td>
+					<% 
+							} %>
+						<td style="background-image:url(/media_stat/recipe/rectabs_bg_off<%=theme%>.gif); padding-bottom:3px;"><a href="<%=response.encodeURL("recipe.jsp?catId="+catIdParam+"&recipeId="+recipe.getContentName()+subCatIdParam+"&variantId="+currVariant.getContentName())%>&trk=var#ingredients" class="recipe_tab"><%= currVariant.getName() %></a></td>
+					<%
+						}
+						lastTabOn = false;
+					}
+					numTabs++;
 					%>
 				</logic:iterate>
-				<% //close out tab end
-					if (lastTabOn) { //previous tab is on
-						%>
+					<% //close out tab end
+					if (lastTabOn) { //previous tab is on  
+					%>
 						<td><img src="/media_stat/recipe/rectabs_btwn_on_nothing<%=theme%>.gif" width="16" height="25"></td>
-						<% 
-					} else { //previous tab off 
-						%>
+					<% 
+						} else { //previous tab off 
+					%>
 						<td><img src="/media_stat/recipe/rectabs_btwn_off_nothing<%=theme%>.gif" width="16" height="25"></td>
-						<% 
-					} %>
-				</tr>
+					<% 
+						} %>
+			  </tr>
 			</table>
 		</td>
-		<td rowspan="2" valign="bottom" align="right"><img src="/media_stat/recipe/rechm_corn_tr<%=theme%>.gif" width="8" height="8"></td>
-	</tr>
-	<tr>
-		<td colspan="2"  class="recipe_leftBorder<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td>
-	</tr>
-	<tr>
-		<td class="recipe_leftBorder<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-		<td align="center" style="padding: 0px 0px 10px 0px;">
+        <td rowspan="2" valign="bottom" align="right"><img src="/media_stat/recipe/rechm_corn_tr<%=theme%>.gif" width="8" height="8"></td>
+      </tr>
+      <tr>
+        <td colspan="2"  class="recipe_leftBorder<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td>
+      </tr>
+      <tr>
+        <td class="recipe_leftBorder<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+        <td align="center" style="padding: 0px 0px 10px 0px;">
+<%
+// render pricing script
+Set<SkuModel> skus = variant.getDistinctSkus();
+%>
+<%@ include file="/shared/includes/product/i_pricing_script.jspf" %>
+
+<fd:FDShoppingCart id='cart' action='<%= actionString %>' source='Recipe' result='result' multiSuccessPage='<%=multiSuccessPage%>' successPage='<%=successPage%>'>
+<%
+
+List flagList = new ArrayList();
+
+// collect items in cart in flagList
+for (Iterator it = variant.getAllIngredients().iterator(); it.hasNext(); ) {
+    ConfiguredProduct prod = (ConfiguredProduct) it.next();
+
+    if (prod.isUnavailable()) {
+        continue;
+    }
+
+    for (Iterator i=cart.getOrderLines().iterator(); i.hasNext(); ) {
+        FDCartLineI cartLine = (FDCartLineI) i.next();
+        if (com.freshdirect.fdstore.customer.OrderLineUtil.isSameConfiguration( prod, cartLine )){
+            flagList.add(prod);
+            break;
+        }
+    }
+}
+
+if (!result.getErrors().isEmpty()) {
+	%>
+	<%
+	for (Iterator errItr = result.getErrors().iterator(); errItr.hasNext(); ) {
+		String errDesc = ((ActionError)errItr.next()).getDescription();
+		%>
+		<div class="text12bold" style="color: #c30; text-align: center;">
+			<%=errDesc%>
+		</div>
+		<%
+		}
+	%>
+	<br>
+	<%
+}
+%>
+
+<table width="500" cellpadding="0" cellspacing="0" border="0"><%
+	boolean isCRM = request.getRequestURI().startsWith("/order/");
+	String formAction = FDURLUtil.getRecipePageURI(request, recipe, variant, catIdParam, isCRM);
+%>
+<form action="<%= formAction %>" method="post" name="qs_cart" id="recipe_form">
+<input type="hidden" name="actionString" value="addMultipleToCart">
+<%
+    if (request.getAttribute("source") != null) {
+		%><input type="hidden" name="source" value="<%= request.getAttribute("source")%>"> 
+<%
+    } 
+%>
+<tr>
+    <td colspan="9" align="right" valign="top" style="padding-bottom:13px;"><a href="javascript:popup('/cg_meal_item_detail.jsp?recipeId=<%=recipe%>&variantId=<%=variant%>','large_long')"><b>Product nutrition and information</b></a></td>
+</tr>
+<tr class="ingredientsHeader" height="18">
+	<td colspan="4">&nbsp;Quantity</td>
+	<td>Ingredients</td>
+	<td colspan="4">Est.Price</td>
+</tr>
+<tr>
+	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="4" height="4"></td>
+	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="36" height="4"></td>
+	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="10" height="4"></td>
+	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="20" height="4"></td>
+	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="330" height="4"></td>
+	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="66" height="4"></td>
+	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="18" height="4"></td>
+	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="12" height="4"></td>
+	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="4" height="4"></td>
+</tr>
+
+<%
+    if (!flagList.isEmpty()) {
+%>
+		<tr>
+            <td colspan="9" align="right" style="padding-right: 3px;">
+				Item already in cart = <img src="/media_stat/images/template/quickshop/qs_check_gray.gif" name="checkImg" width="9" height="9" border="0" alt="Item is currently in your cart" align="absbottom">
+            </td>
+        </tr>
+<%
+    }
+
+
+int idx     = 0;
+int prodIdx = 0;
+%>
+<logic:iterate id="currSection" collection="<%= variant.getSections() %>" type="com.freshdirect.fdstore.content.RecipeSection">
+	<%
+	if (! "main".equals(currSection.getName())) { 
+		%>
+		<tr class="sectionHeader">
+			<td colspan="9" class="recipe_section<%=theme%>"><%= currSection.getName() %></td>
+		</tr>
+		<%
+	}
+	%>
+	
+	<logic:iterate id="configuredProduct" collection="<%= currSection.getIngredients() %>" type="com.freshdirect.fdstore.content.ConfiguredProduct">
+		<%
+		
+		FDProductSelectionI orderLine    = null;
+		ProductModel        _productNode = null;
+        SkuModel            sku          = null;
+
+        if (!configuredProduct.isUnavailable()) {
+            orderLine    = convertToSelection(configuredProduct, currSection, user.getPricingContext().getZoneId());
+            _productNode = orderLine.lookupProduct();
+            sku          = _productNode.getSku(orderLine.getSkuCode());
+        }
+
+		String rowColor = (idx % 2 == 0) ? "#eeeeee" : "#ffffff";
+		String boxStyle = (idx % 2 == 0) ? "greybox" : "text10";
+		
+		%>
+
+
+		<%--top buffer --%>
+		<tr bgcolor="<%=rowColor%>">
+			<td colspan="9"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
+		</tr>
+		
+		<tr valign="top" bgcolor="<%=rowColor%>">
+
+            <%
+            if (!configuredProduct.isUnavailable()) {
+            %>
+                <script type="text/javascript">
+                    var pricing<%=prodIdx%> = new Pricing();
+                    pricing<%=prodIdx%>.setSKU("<%= orderLine.getSkuCode() %>");
+                    pricing<%=prodIdx%>.setQuantity(<%= orderLine.getQuantity() %>);
+                    pricing<%=prodIdx%>.setSalesUnit("<%= orderLine.getSalesUnit() %>");
+                    
+                    <logic:iterate id="entry" collection="<%= orderLine.getConfiguration().getOptions().entrySet() %>" type="java.util.Map.Entry">
+                    pricing<%=prodIdx%>.setOption("<%= entry.getKey() %>", "<%= entry.getValue() %>");
+                    </logic:iterate>
+                    
+                    function chgQty<%=prodIdx%>(delta) { chgQuickShopQty(<%=prodIdx%>, delta, <%= _productNode.getQuantityMinimum() %>, <%= user.getQuantityMaximum(_productNode) %>, <%=_productNode.getQuantityIncrement()%>); }
+                </script>
+
 			<%
-				// render pricing script
-				Set<SkuModel> skus = variant.getDistinctSkus();
+                if (orderLine.isSoldBySalesUnits()) {
 			%>
-			<%@ include file="/shared/includes/product/i_pricing_script.jspf" %>
+                    <input type="hidden" name="quantity_<%=prodIdx%>" value="1">
+                    <td colspan="4">
+                        <select name="salesUnit_<%=prodIdx%>" STYLE="width: 60px" class="text10" onChange="pricing<%=prodIdx%>.setSalesUnit(this.value);">
+                            <option value=""></option>
+                            <logic:iterate id="salesUnit" collection="<%= orderLine.lookupFDProduct().getSalesUnits() %>" type="com.freshdirect.fdstore.FDSalesUnit">
+                                <%
+                                String salesUnitDescr = salesUnit.getDescription();
+                                // clean parenthesis
+                                int ppos = salesUnitDescr.indexOf("(");
+                                if (ppos>-1) salesUnitDescr = salesUnitDescr.substring(0, ppos).trim();
+                                %>
+                                <option value="<%= salesUnit.getName() %>"<%= salesUnit.getName().equals(orderLine.getSalesUnit()) ? " SELECTED" : ""%>><%= salesUnitDescr %></option>
+                            </logic:iterate>
+                        </select>
+                    </td>
+                    <%
+                } else {
+                    %>
+                    <input type="hidden" name="salesUnit_<%=prodIdx%>" value="<%= orderLine.getSalesUnit() %>">
+                    <td colspan="2">
+                        <% String quant = quantityFormatter.format(orderLine.getQuantity()); %>	
+                        <input type="text" name="quantity_<%=prodIdx%>" value="<%= !"0".equals(quant)?quant:"" %>" style="width: 36px" size="3" maxlength="4" class="text10" onChange="chgQty<%=prodIdx%>(0);" onBlur="pricing<%=prodIdx%>.setQuantity(this.value);">
+                    </td>
+                    <td><a href="javascript:chgQty<%=prodIdx%>(<%= _productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/template/quickshop/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br><a href="javascript:chgQty<%=prodIdx%>(<%= -_productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/template/quickshop/grn_arrow.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
 
-			<fd:FDShoppingCart id='cart' action='<%= actionString %>' source='Recipe' result='result' multiSuccessPage='<%=multiSuccessPage%>' successPage='<%=successPage%>'>
-			<%
-				List flagList = new ArrayList();
+                    <td><%if (!"".equals(orderLine.getLabel())){%><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br><img src="/media_stat/images/layout/clear.gif" width="2" height="1"><%=orderLine.getLabel()%><% } else { %>&nbsp;<% } %></td>
+                    <%
+                }
+                String earliestAvailability = sku.getEarliestAvailabilityMessage();
+                
+                FDProductInfo productInfo = orderLine.lookupFDProductInfo();
+                FDProduct product = orderLine.lookupFDProduct();   
+				
+				
+                %>
+                <td><font class="text10bold"><%= orderLine.getDescription() %> - <%= JspMethods.formatPrice(productInfo, user.getPricingContext()) %></font>
+                    <%@include file="/includes/product/i_price_taxdeposit.jspf"%>
+                    <%@include file="/includes/product/i_scaled_prices_nobr.jspf"%>
+                    <br><font class="text9nb">&nbsp;<%= orderLine.getConfigurationDesc()%></font>
+                    <% if (earliestAvailability != null) { %>
+                        <br><font class="text10rbold">Earliest Delivery <%= earliestAvailability %></font>
+                    <% } 
+					if(orderLine.getFDGroup() != null) { %>
+						&nbsp; <display:ProductPrice impression="<%= new ProductImpression(_productNode) %>" showScalePricing="true" showRegularPrice="false" showWasPrice="false" showDescription="false"/>
+					<%} %>
+                </td>
+			
+                <td><input type="text" style="width: 60px" name="estPrice_<%=prodIdx%>" value="" size="6" class="<%=boxStyle%>" onChange="" onFocus="blur()"></td>
+                
+                <script type="text/javascript">
+                    function updatePriceField<%=prodIdx%>() {
+                        document.qs_cart.estPrice_<%=prodIdx%>.value = pricing<%=prodIdx%>.getPrice();
+                        updateTotal();
+                    }
+                    pricing<%=prodIdx%>.setCallbackFunction( updatePriceField<%=prodIdx%> );
+                    document.qs_cart.estPrice_<%=prodIdx%>.value = pricing<%=prodIdx%>.getPrice();
+                </script>
+                
+                <input type="hidden" name="skuCode_<%=prodIdx%>" value="<%= orderLine.getSkuCode() %>">
+                <input type="hidden" name="recipeId_<%=prodIdx%>" value="<%= recipe.getContentName() %>">
 
-				// collect items in cart in flagList
-				for (Iterator it = variant.getAllIngredients().iterator(); it.hasNext(); ) {
-					ConfiguredProduct prod = (ConfiguredProduct) it.next();
+                <logic:iterate id="entry" collection="<%= orderLine.getConfiguration().getOptions().entrySet() %>" type="java.util.Map.Entry">
+                    <input type="hidden" name='<%= entry.getKey() + "_" + prodIdx %>' value="<%= entry.getValue() %>">
+                </logic:iterate>
+                
+                <td colspan="4" align="right" style="padding-right: 3px;"><% if (flagList.contains(configuredProduct) || flagList.contains(orderLine)) { %><img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br><img src="/media_stat/images/template/quickshop/qs_check_gray.gif" width="9" height="9" border="0" alt="Item already in your cart"><% } else { %>&nbsp;<% } %></td>
 
-					if (prod.isUnavailable()) {
-						continue;
-					}
+            <%
+            } else {
+                // if it's unavailable
+                String unavailabilityMessage = configuredProduct.getUnavailabilityMessage();
+		if (unavailabilityMessage==null  || "".equals(unavailabilityMessage)) { 
+		   unavailabilityMessage ="This product is currently unavailable.";
+		}
 
-					for (Iterator i=cart.getOrderLines().iterator(); i.hasNext(); ) {
-						FDCartLineI cartLine = (FDCartLineI) i.next();
-						if (com.freshdirect.fdstore.customer.OrderLineUtil.isSameConfiguration( prod, cartLine )){
-							flagList.add(prod);
-							break;
-						}
-					}
-				}
 
-				if (!result.getErrors().isEmpty()) {
-					for (Iterator errItr = result.getErrors().iterator(); errItr.hasNext(); ) {
-						String errDesc = ((ActionError)errItr.next()).getDescription();
-						%>
-						<div class="text12bold" style="color: #c30; text-align: center;">
-							<%=errDesc%>
-						</div>
-						<%
-					} %>
-					<br />
-					<%
-				}
+            %>
+                <td colspan="4">&nbsp;</td>
+                <td><span class="text10bold" xstyle=" color:#999999; "><%= configuredProduct.getFullName() %><span>
+                <br><span class="text10rbold"><%= unavailabilityMessage %></span>
+                </td>
+                <td colspan="4">&nbsp;</td>
+            <%
+            }
+            %>
+			
+		</tr>
 
-				boolean isCRM = request.getRequestURI().startsWith("/order/");
-				String formAction = FDURLUtil.getRecipePageURI(request, recipe, variant, catIdParam, isCRM);
-			%>
-			<form action="<%= formAction %>" method="post" name="qs_cart" id="recipe_form">
-				<input type="hidden" name="actionString" value="addMultipleToCart">
+		<%-- bottom buffer --%>
+		<tr bgcolor="<%=rowColor%>">
+			<td colspan="9"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
+		</tr>
 
-				<table width="500" cellpadding="0" cellspacing="0" border="0">
-				<%
+		<%
+        ++idx;
+        if (!configuredProduct.isUnavailable()) {
+		    prodIdx++;
+        }
+		%>
+		</logic:iterate>
 
-					if (request.getAttribute("source") != null) {
-						%>
-						<input type="hidden" name="source" value="<%= request.getAttribute("source")%>"><%
-					}
-				%>
-					<tr>
-						<td colspan="9" align="right" valign="top" style="padding-bottom:13px;"><a href="javascript:popup('/cg_meal_item_detail.jsp?recipeId=<%=recipe%>&variantId=<%=variant%>','large_long')"><b>Product nutrition and information</b></a></td>
-					</tr>
-					<tr class="ingredientsHeader" height="18">
-						<td colspan="4">&nbsp;Quantity</td>
-						<td>Ingredients</td>
-						<td colspan="4">Est.Price</td>
-					</tr>
-					<tr>
-						<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="4" height="4"></td>
-						<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="36" height="4"></td>
-						<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="10" height="4"></td>
-						<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="20" height="4"></td>
-						<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="330" height="4"></td>
-						<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="66" height="4"></td>
-						<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="18" height="4"></td>
-						<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="12" height="4"></td>
-						<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="4" height="4"></td>
-					</tr>
-					<%
-						if (!flagList.isEmpty()) {
-					%>
-							<tr>
-								<td colspan="9" align="right" style="padding-right: 3px;">
-									Item already in cart = <img src="/media_stat/images/template/quickshop/qs_check_gray.gif" name="checkImg" width="9" height="9" border="0" alt="Item is currently in your cart" align="absbottom">
-								</td>
-							</tr>
-					<%
-						}
-
-						int idx     = 0;
-						int prodIdx = 0;
-					%>
-					<logic:iterate id="currSection" collection="<%= variant.getSections() %>" type="com.freshdirect.fdstore.content.RecipeSection">
-						<%
-							if (! "main".equals(currSection.getName())) { 
-								%>
-								<tr class="sectionHeader">
-									<td colspan="9" class="recipe_section<%=theme%>"><%= currSection.getName() %></td>
-								</tr>
-								<%
-							}
-						%>
-						<logic:iterate id="configuredProduct" collection="<%= currSection.getIngredients() %>" type="com.freshdirect.fdstore.content.ConfiguredProduct">
-							<%
-								FDProductSelectionI orderLine    = null;
-								ProductModel        _productNode = null;
-								SkuModel            sku          = null;
-
-								if (!configuredProduct.isUnavailable()) {
-									orderLine    = convertToSelection(configuredProduct, currSection, user.getPricingContext().getZoneId());
-									_productNode = orderLine.lookupProduct();
-									sku          = _productNode.getSku(orderLine.getSkuCode());
-								}
-
-								String rowColor = (idx % 2 == 0) ? "#eeeeee" : "#ffffff";
-								String boxStyle = (idx % 2 == 0) ? "greybox" : "text10";
-							
-								/***** top buffer *****/
-							%>
-							<tr bgcolor="<%=rowColor%>">
-								<td colspan="9"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
-							</tr>
-							<tr valign="top" bgcolor="<%=rowColor%>">
-							<%
-								if (!configuredProduct.isUnavailable()) {
-							%>
-									<script type="text/javascript">
-										var pricing<%=prodIdx%> = new Pricing();
-										pricing<%=prodIdx%>.setSKU("<%= orderLine.getSkuCode() %>");
-										pricing<%=prodIdx%>.setQuantity(<%= orderLine.getQuantity() %>);
-										pricing<%=prodIdx%>.setSalesUnit("<%= orderLine.getSalesUnit() %>");
-										
-										<logic:iterate id="entry" collection="<%= orderLine.getConfiguration().getOptions().entrySet() %>" type="java.util.Map.Entry">
-											pricing<%=prodIdx%>.setOption("<%= entry.getKey() %>", "<%= entry.getValue() %>");
-										</logic:iterate>
-										
-										function chgQty<%=prodIdx%>(delta) {
-											chgQuickShopQty(<%=prodIdx%>, delta, <%= _productNode.getQuantityMinimum() %>, <%= user.getQuantityMaximum(_productNode) %>, <%=_productNode.getQuantityIncrement()%>);
-										}
-										<%
-											/* Alcohol Restriction info
-											 *	since we're not using the TxProductControlTag here, we need to add this manually
-											 */
-										%>
-										if (!window.alcohol) { window.alcohol = {}; }
-										<%
-											FDProduct fdProd = null;
-											try {
-												fdProd = sku.getProduct();
-											} catch (FDResourceException e) {
-												// TODO Auto-generated catch block
-												e.printStackTrace();
-											} catch (FDSkuNotFoundException e) {
-												// TODO Auto-generated catch block
-												e.printStackTrace();
-											}
-											boolean isAlc = false;
-											String alcRest = "";
-											if (fdProd != null) {
-												isAlc = fdProd.isAlcohol();
-												alcRest = fdProd.getMaterial().getAlcoholicContent().getCode();
-											}
-										%>
-										window.alcohol['<%=sku.getSkuCode()%>'] = { isAlc: <%=isAlc%>, alcRest: '<%=alcRest%>' }
-
-										addAlcoholHelpers();
-										<%
-											/* set if user has already agreed to alcohol disclaimer
-											 *	check new session value here to avoid template differences
-											 */
-											FDSessionUser alcUser = (FDSessionUser)session.getAttribute(SessionName.USER);
-										%>
-										hasAgreedToAlcoholDisclaimer = <%=alcUser.isHealthWarningAcknowledged()%>;
-									</script>
-									<%
-										if (orderLine.isSoldBySalesUnits()) {
-											%>
-											<input type="hidden" name="quantity_<%=prodIdx%>" value="1">
-											<td colspan="4">
-												<select name="salesUnit_<%=prodIdx%>" STYLE="width: 60px" class="text10" onChange="pricing<%=prodIdx%>.setSalesUnit(this.value);">
-													<option value=""></option>
-													<logic:iterate id="salesUnit" collection="<%= orderLine.lookupFDProduct().getSalesUnits() %>" type="com.freshdirect.fdstore.FDSalesUnit">
-														<%
-														String salesUnitDescr = salesUnit.getDescription();
-														// clean parenthesis
-														int ppos = salesUnitDescr.indexOf("(");
-														if (ppos>-1) salesUnitDescr = salesUnitDescr.substring(0, ppos).trim();
-														%>
-														<option value="<%= salesUnit.getName() %>"<%= salesUnit.getName().equals(orderLine.getSalesUnit()) ? " SELECTED" : ""%>><%= salesUnitDescr %></option>
-													</logic:iterate>
-												</select>
-											</td>
-											<%
-										} else {
-											%>
-											<input type="hidden" name="salesUnit_<%=prodIdx%>" value="<%= orderLine.getSalesUnit() %>" />
-											<td colspan="2">
-												<%
-													String quant = quantityFormatter.format(orderLine.getQuantity());
-												%>
-												<input type="text" name="quantity_<%=prodIdx%>" value="<%= !"0".equals(quant)?quant:"" %>" style="width: 36px" size="3" maxlength="4" class="text10" onChange="chgQty<%=prodIdx%>(0);" onBlur="pricing<%=prodIdx%>.setQuantity(this.value);">
-											</td>
-											<td><a href="javascript:chgQty<%=prodIdx%>(<%= _productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/template/quickshop/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br /><a href="javascript:chgQty<%=prodIdx%>(<%= -_productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/template/quickshop/grn_arrow.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
-											<td><% if (!"".equals(orderLine.getLabel())) {%><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br /><img src="/media_stat/images/layout/clear.gif" width="2" height="1"><%=orderLine.getLabel()%><% } else { %>&nbsp;<% } %></td>
-											<%
-										}
-										
-										String earliestAvailability = sku.getEarliestAvailabilityMessage();
-
-										FDProductInfo productInfo = orderLine.lookupFDProductInfo();
-										FDProduct product = orderLine.lookupFDProduct();
-									%>
-									<td>
-										<font class="text10bold"><%= orderLine.getDescription() %> - <%= JspMethods.formatPrice(productInfo, user.getPricingContext()) %></font>
-										<%@include file="/includes/product/i_price_taxdeposit.jspf"%>
-										<%@include file="/includes/product/i_scaled_prices_nobr.jspf"%>
-										<br /><font class="text9nb">&nbsp;<%= orderLine.getConfigurationDesc()%></font>
-										<% if (earliestAvailability != null) { %>
-											<br /><font class="text10rbold">Earliest Delivery <%= earliestAvailability %></font>
-										<% }
-
-										if (orderLine.getFDGroup() != null) { %>
-											&nbsp; <display:ProductPrice impression="<%= new ProductImpression(_productNode) %>" showScalePricing="true" showRegularPrice="false" showWasPrice="false" showDescription="false"/>
-										<% } %>
-										<script type="text/javascript">
-											function updatePriceField<%=prodIdx%>() {
-												document.qs_cart.estPrice_<%=prodIdx%>.value = pricing<%=prodIdx%>.getPrice();
-												updateTotal();
-											}
-
-											pricing<%=prodIdx%>.setCallbackFunction( updatePriceField<%=prodIdx%> );
-											document.observe("dom:loaded", function() { document.qs_cart.estPrice_<%=prodIdx%>.value = pricing<%=prodIdx%>.getPrice(); });
-										</script>
-
-										<input type="hidden" name="skuCode_<%=prodIdx%>" value="<%= orderLine.getSkuCode() %>" />
-										<input type="hidden" name="recipeId_<%=prodIdx%>" value="<%= recipe.getContentName() %>" />
-										<logic:iterate id="entry" collection="<%= orderLine.getConfiguration().getOptions().entrySet() %>" type="java.util.Map.Entry">
-											<input type="hidden" name='<%= entry.getKey() + "_" + prodIdx %>' value="<%= entry.getValue() %>">
-										</logic:iterate>
-										<input type="hidden" name="isAlc_<%= prodIdx %>" value="<%= isAlc %>" />
-									</td>
-									<td><input type="text" style="width: 60px" name="estPrice_<%=prodIdx%>" value="" size="6" class="<%=boxStyle%>" onChange="" onFocus="blur()"></td>
-									<td colspan="4" align="right" style="padding-right: 3px;"><% if (flagList.contains(configuredProduct) || flagList.contains(orderLine)) { %><img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br /><img src="/media_stat/images/template/quickshop/qs_check_gray.gif" width="9" height="9" border="0" alt="Item already in your cart"><% } else { %>&nbsp;<% } %></td>
-									<%
-								} else {
-									// if it's unavailable
-									String unavailabilityMessage = configuredProduct.getUnavailabilityMessage();
-
-									if (unavailabilityMessage==null  || "".equals(unavailabilityMessage)) { 
-										unavailabilityMessage ="This product is currently unavailable.";
-									}
-									%>
-									<td colspan="4">&nbsp;</td>
-									<td><span class="text10bold" xstyle=" color:#999999; "><%= configuredProduct.getFullName() %><span>
-										<br /><span class="text10rbold"><%= unavailabilityMessage %></span>
-									</td>
-									<td colspan="4">&nbsp;</td>
-									<%
-								}
-								%>
-							</tr>
-							<% /***** bottom buffer *****/ %>
-							<tr bgcolor="<%=rowColor%>">
-								<td colspan="9"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
-							</tr>
-							<%
-								++idx;
-
-								if (!configuredProduct.isUnavailable()) {
-									prodIdx++;
-								}
-							%>
-						</logic:iterate>
-					</logic:iterate>
-					<tr>
-						<td colspan="9"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" /></td>
-					</tr>
-					<tr>
-						<td class="recipe_topLine<%=theme%>" colspan="9"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-					</tr>
-					<tr>
-						<td colspan="5" style="padding-top: 1em;">
-						<table width="400" cellspacing="0" cellpadding="0">
-							<tr><td width="25"><input name="requestNotification" type="checkbox" checked value="true" style="padding:0px;" class="text10"></td>
-							<td width="255" class="text10bold"><b>Email a copy of this recipe on the day of delivery!</b></td>
-							<td width="120" align="right"><b><a href="javascript:popup('/help/estimated_price.jsp','small')">Estimated</a> Total:&nbsp;&nbsp;</b></td></tr>
-						</table>
-						</td>
-						<td colspan="4" style="padding-top: 1em;"><input type="text" name="total" value="" size="6" onChange="" onFocus="blur()" style="width:60px;" class="text11"></td>
-					</tr>
-					<tr>
-						<td colspan="9" align="left" style="padding-top:13px;padding-bottom:4px;"><input type="image" name="addMultipleToCart" src="/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif" width="145" height="17" border="0" alt="ADD SELECTED TO CART"></td>
-					</tr>
-					<fd:CCLCheck>
-						<tr>
-							<td colspan="9" align="left">
-								<div style="margin: 7px 4px 0 0;">
-									<a id="ccl-add-action" class="text12bold" href="/unsupported.jsp" onclick="return CCL.save_items('recipe_form',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','action=CCL:AddMultipleToList&source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_with_icon_dfgs.gif" width="151" height="15" style="border: 0; padding-right: 14px"></a><fd:CCLNew/>
-								</div>
-								<div style="margin: 0 0 1ex 0;">
-									<fd:CCLNew template="/common/template/includes/ccl_moreabout.jspf"/>
-								</div>
-							</td>
-						</tr>
-					</fd:CCLCheck>
-				</table>
-
-				<input type="hidden" name="itemCount" value="<%= quickCartSize %>">
-			</td>
-			<td  class="recipe_rightBorder<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+		</logic:iterate>
+		
+		<tr><td colspan="9">
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="4">
+		</td></tr>
+		<tr>
+			<td class="recipe_topLine<%=theme%>" colspan="9"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 		</tr>
 		<tr>
-			<td><img src="/media_stat/recipe/rechm_corn_bl<%=theme%>.gif" width="8" height="8"></td>
-			<td  class="recipe_bottomBorder<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="534" height="1"></td>
-			<td align="right"><img src="/media_stat/recipe/rechm_corn_br<%=theme%>.gif" width="8" height="8"></td>
+			<td colspan="5" style="padding-top: 1em;">
+			<table width="400" cellspacing="0" cellpadding="0">
+				<tr><td width="25"><input name="requestNotification" type="checkbox" checked value="true" style="padding:0px;" class="text10"></td>
+				<td width="255" class="text10bold"><b>Email a copy of this recipe on the day of delivery!</b></td>
+				<td width="120" align="right"><b><a href="javascript:popup('/help/estimated_price.jsp','small')">Estimated</a> Total:&nbsp;&nbsp;</b></td></tr>
+			</table>
+			</td>
+			<td colspan="4" style="padding-top: 1em;"><input type="text" name="total" value="" size="6" onChange="" onFocus="blur()" style="width:60px;" class="text11"></td>
 		</tr>
-	</table>
-</form>
-
-		
-<script type="text/javascript">
-	document.observe("dom:loaded", function() { updateTotal(); });
-</script>
-
-<% if (recipeCpyrghtMedia!=null) { %>
-	<div align="center" class="recipe_copyright" style="width: 550px; padding-top: 10px;"><fd:IncludeMedia name='<%= recipeCpyrghtMedia.getPath() %>' /></div>
-<% } %>
+		<tr>
+			<td colspan="9" align="left" style="padding-top:13px;padding-bottom:4px;"><input type="image" name="addMultipleToCart" src="/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif" width="145" height="17" border="0" alt="ADD SELECTED TO CART"></td>
+		</tr>
+<%-- --%>
+<fd:CCLCheck>
+		<tr>
+		  <td colspan="9" align="left">
+		      <div style="margin: 7px 4px 0 0;">
+		          <a id="ccl-add-action" class="text12bold" href="/unsupported.jsp" onclick="return CCL.save_items('recipe_form',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','action=CCL:AddMultipleToList&source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_with_icon_dfgs.gif" width="151" height="15" style="border: 0; padding-right: 14px"></a></div>
+			  <div style="margin: 0 0 1ex 0;"></div>
+		   </td>
+		</tr>
+</fd:CCLCheck>
+<%-- --%>
+		</table>
+		<script type="text/javascript">
+			updateTotal();
+		</script>
+		<input type="hidden" name="itemCount" value="<%= quickCartSize %>">
+		</td>
+        <td  class="recipe_rightBorder<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+      </tr>
+      <tr>
+        <td><img src="/media_stat/recipe/rechm_corn_bl<%=theme%>.gif" width="8" height="8"></td>
+        <td  class="recipe_bottomBorder<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="534" height="1"></td>
+        <td align="right"><img src="/media_stat/recipe/rechm_corn_br<%=theme%>.gif" width="8" height="8"></td>
+      </tr>
+	 </form>
+    </table>
+	<% if (recipeCpyrghtMedia!=null) {  %>
+			<div align="center" class="recipe_copyright" style="width: 550px; padding-top: 10px;"><fd:IncludeMedia name='<%= recipeCpyrghtMedia.getPath() %>' /></div>
+	<% } %>
 </fd:FDShoppingCart>

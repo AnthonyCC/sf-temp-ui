@@ -18,6 +18,37 @@ RequestUtil.appendToAttribute(request,"bodyOnLoad","FormChangeUtil.recordSignatu
 RequestUtil.appendToAttribute(request,"windowOnBeforeUnload","FormChangeUtil.warnOnSignatureChange('qs_cart')",";");
 %>
 
+
+<script language="javascript" src="/assets/javascript/grocery_product.js"></script>
+<script language="javascript">
+function doSort(sortBy){
+document.qs_cart.sortBy.value=sortBy;
+document.qs_cart.fdAction.value='sort';
+document.qs_cart.submit();
+}
+
+function getWinYOffset(){
+	if (window.scrollY) return window.scrollY; // Mozilla
+ 	if (window.pageYOffset) return window.pageYOffset; // Opera, NN4
+ 	if (document.documentElement && document.documentElement.scrollTop) return document.documentElement.scrollTop; // IE
+ 	if (document.body && document.body.scrollTop) return document.body.scrollTop;
+	return 0;
+}
+
+function scrollPosition() {
+	var hash = window.location.hash;
+	var pos = hash.substring(5, hash.length);
+	if (pos != "") {
+		scrollTo(0, pos);
+	}
+}
+
+window.onload = function() {
+	scrollPosition();
+}
+
+</script>
+
 <% 	
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	//--------OAS Page Variables-----------------------
@@ -50,37 +81,6 @@ RequestUtil.appendToAttribute(request,"windowOnBeforeUnload","FormChangeUtil.war
 		<tmpl:put name='side_nav' direct='true'><font class="space4pix"><br></font><a href="/quickshop/every_item.jsp"><img src="/media_stat/images/template/quickshop/qs_every_item_catnav.gif" width="80" height="38" border="0"></a><br><font class="space4pix"><br></font><%= departmentNav.toString() %><br><br></tmpl:put>
 		
 		<tmpl:put name='content' direct='true'>
-		
-
-<script language="javascript" src="/assets/javascript/grocery_product.js"></script>
-<script language="javascript">
-function doSort(sortBy){
-document.qs_cart.sortBy.value=sortBy;
-document.qs_cart.fdAction.value='sort';
-document.qs_cart.submit();
-}
-
-function getWinYOffset(){
-	if (window.scrollY) return window.scrollY; // Mozilla
- 	if (window.pageYOffset) return window.pageYOffset; // Opera, NN4
- 	if (document.documentElement && document.documentElement.scrollTop) return document.documentElement.scrollTop; // IE
- 	if (document.body && document.body.scrollTop) return document.body.scrollTop;
-	return 0;
-}
-
-function scrollPosition() {
-	var hash = window.location.hash;
-	var pos = hash.substring(5, hash.length);
-	if (pos != "") {
-		scrollTo(0, pos);
-	}
-}
-
-window.onload = function() {
-	scrollPosition();
-}
-
-</script>
 
 <%
 	DateFormat dateFormatter = new SimpleDateFormat("EEE. MMM d, yyyy");

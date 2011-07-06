@@ -56,7 +56,6 @@ A.list		    { line-height: 12px; }
 .text8 	         { font-size: 8px; font-family: Verdana, Arial, sans-serif; }
 .text8w	         { font-size: 8px; color: #FFFFFF; font-family: Verdana, Arial, sans-serif; }
 .text9 	         { font-size: 9px; font-family: Verdana, Arial, sans-serif; }
-.text9italics    { font-size: 9px; font-weight: italic; font-family: Verdana, Arial, sans-serif; }
 .text9w	         { font-size: 9px; color: #FFFFFF; font-family: Verdana, Arial, sans-serif; }
 .text9nb 	     { font-size: 9px; color: #777777; font-family: Verdana, Arial, sans-serif; }
 .text9bold       { font-size: 9px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
@@ -743,15 +742,6 @@ img.COSSurvey_spacer04 { width: 140px; height: 8px; }
 .ssRatingLearnMore { font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif; text-align: left; }
 .ssRatingPop, .ssRatingPop td { font-size: 13px; font-family: Verdana, Arial, sans-serif; }
 .ssRatingPop th, .ssRatingPop a { font-size: 14px; }
-
-
-ul.orangeDot {
-	padding-left: 16px;
-}
-ul.orangeDot li {
-	list-style-image: url('/media_stat/images/layout/orangedot.gif');
-	margin-bottom: 4px;
-}
 
 
 ul.orangeDot {
