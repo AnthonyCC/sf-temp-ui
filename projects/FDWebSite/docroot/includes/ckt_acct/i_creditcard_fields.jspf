@@ -151,6 +151,7 @@ if (isValidPaymentId) {
     <fd:ErrorHandler result='<%=result%>' name='matching_addresses' id='errorMsg'>
 		<br><span class="text11rbold"><%= errorMsg %></span><br><br>
     </fd:ErrorHandler>
+    <% if(FDStoreProperties.isPaymentMethodVerificationEnabled()) {%>
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
 	<tr>	
 		<td width="693" CLASS="text12">
@@ -159,6 +160,17 @@ if (isValidPaymentId) {
 		</td>
 	</tr>
 	</TABLE>
+<%} else %>	
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
+		<tr>	
+			<td width="693" CLASS="text12">
+				To learn more about our <font class="text11bold">Security Policies</font>, 
+				<a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here</a>.
+			</td>
+		</tr>
+	</TABLE>
+
+<%}%>
 	<br><br>
 	<%-- IF NO PAYMENT METHOD YET, FIRST TIME, DEFAULTED TO STEP # CARD ADD, SHOW CHECK PROMO
 	// may want to change nesting order..
@@ -254,6 +266,7 @@ if (isValidPaymentId) {
 	</SELECT> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 	</TD>
 </tr>
+<% if(FDStoreProperties.isPaymentMethodVerificationEnabled()) {%>
 <TR>
 	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>"><span class="text11rbold"></fd:ErrorHandler>*&nbsp;CVV&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>"></span></fd:ErrorHandler></TD>
 	<TD WIDTH="565" CLASS="text12">
@@ -262,6 +275,7 @@ if (isValidPaymentId) {
 	
 </TR>
 
+
 <TR VALIGN="TOP">
 	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"></TD>
 	<TD WIDTH="565" CLASS="text12">
@@ -269,7 +283,7 @@ if (isValidPaymentId) {
 		<BR><FONT CLASS="space4pix"><BR></FONT>
 	</TD>
 </TR>
-
+<%}%>
 
 </TABLE>
 

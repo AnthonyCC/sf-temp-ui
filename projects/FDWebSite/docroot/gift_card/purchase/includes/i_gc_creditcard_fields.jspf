@@ -10,9 +10,8 @@
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 
 <%!
-String[] checkPaymentMethodForm = {PaymentMethodName.ACCOUNT_HOLDER, PaymentMethodName.CARD_BRAND, PaymentMethodName.ACCOUNT_NUMBER, "expiration",PaymentMethodName.CSV, EnumUserInfoName.BIL_ADDRESS_1.getCode(), EnumUserInfoName.BIL_CITY.getCode(), EnumUserInfoName.BIL_STATE.getCode(), EnumUserInfoName.BIL_ZIPCODE.getCode()};
-String[] checkErrorType = {"technical_difficulty", "payment_method_fraud","auth_failure"};
-
+String[] checkPaymentMethodForm = {PaymentMethodName.ACCOUNT_HOLDER, PaymentMethodName.CARD_BRAND, PaymentMethodName.ACCOUNT_NUMBER, "expiration", EnumUserInfoName.BIL_ADDRESS_1.getCode(), EnumUserInfoName.BIL_CITY.getCode(), EnumUserInfoName.BIL_STATE.getCode(), EnumUserInfoName.BIL_ZIPCODE.getCode()};
+String[] checkErrorType = {"technical_difficulty", "payment_method_fraud"};
 %>
 
 
@@ -111,7 +110,27 @@ WIDTH="132" HEIGHT="9" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<F
 <IMG src="/media_stat/images/layout/999966.gif" WIDTH="693" HEIGHT="1" BORDER="0" VSPACE="3"><BR></TD>
 </TR></TABLE>
 <br>
+<% if(FDStoreProperties.isPaymentMethodVerificationEnabled()) {%>
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
+	<tr>	
+		<td width="693" CLASS="text12">
+			In order to better protect our customer's personal information, we require a $1 authorization to validate credit cards on add and edit. This charge will not be collected and will be returned as soon as permitted by your issuing bank. To learn more about our <font class="text11bold">Customer Agreement</font>, 
+			<a href="javascript:popup('/help/terms_of_service.jsp','large')">click here</a>.
+		</td>
+	</tr>
+	</TABLE>
+<%} else %>	
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
+		<tr>	
+			<td width="693" CLASS="text12">
+				To learn more about our <font class="text11bold">Security Policies</font>, 
+				<a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here</a>.
+			</td>
+		</tr>
+	</TABLE>
 
+<%}%>
+	<br><br>
 <TABLE BORDER="0" CELLSPACING="1" CELLPADDING="0" WIDTH="675">
 <TR VALIGN="MIDDLE">
 	<TD WIDTH="15" ROWSPAN="10"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="13" HEIGHT="1" BORDER="0"></TD>
@@ -181,6 +200,7 @@ WIDTH="132" HEIGHT="9" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<F
 	</SELECT> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 	</TD>
 </tr>
+<% if(FDStoreProperties.isPaymentMethodVerificationEnabled()) {%>
 <TR>
 	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>"><span class="text11rbold"></fd:ErrorHandler>*&nbsp;CVV&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>"></span></fd:ErrorHandler></TD>
 	<TD WIDTH="565" CLASS="text12">
@@ -196,7 +216,7 @@ WIDTH="132" HEIGHT="9" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<F
 		<BR><FONT CLASS="space4pix"><BR></FONT>
 	</TD>
 </TR>
-
+<%}%>
 
 </TABLE>
 </TABLE>

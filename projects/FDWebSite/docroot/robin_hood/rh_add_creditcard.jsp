@@ -59,12 +59,18 @@ FDSessionUser sessionuser = (FDSessionUser)session.getAttribute(SessionName.USER
 sessionuser.setGCSignupError(false);
 } %>	
 <fd:ErrorHandler result='<%=result%>' field='<%=checkPaymentMethodForm%>'>
-<% String errorMsg= SystemMessageList.MSG_MISSING_INFO; %>	
+<% String errorMsg= SystemMessageList.MSG_MISSING_INFO; 
+      if( result.hasError("auth_failure") ) {
+		errorMsg=result.getError("auth_failure").getDescription();
+      } else if( result.hasError("payment_method_fraud") ) {
+		errorMsg=result.getError("payment_method_fraud").getDescription();
+      }  else  if( result.hasError("technical_difficulty") ) {
+		errorMsg=result.getError("technical_difficulty").getDescription();
+      }
+
+%>	
 	<%@ include file="/includes/i_error_messages.jspf" %>
-</fd:ErrorHandler> 
-<fd:ErrorHandler result='<%=result%>' name='payment_method_fraud' id='errorMsg'>
-    <%@ include file="/includes/i_error_messages.jspf" %>	
-</fd:ErrorHandler>   
+</fd:ErrorHandler>      
 
 <form method="post" style="padding: 0px; margin: 0px;">
 <table width="690" cellspacing="0" cellpadding="0" border="0">
@@ -80,7 +86,16 @@ sessionuser.setGCSignupError(false);
 			</td>
 		</tr>
 </table>
-
+<% if(FDStoreProperties.isPaymentMethodVerificationEnabled()) {%>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
+	<tr>	
+		<td width="693" CLASS="text12">
+			In order to better protect our customer's personal information, we require a $1 authorization to validate credit cards on add and edit. This charge will not be collected and will be returned as soon as permitted by your issuing bank. To learn more about our <font class="text11bold">Customer Agreement</font>, 
+			<a href="javascript:popup('/help/terms_of_service.jsp','large')">click here</a>.
+		</td>
+	</tr>
+	</TABLE>
+<%} else {	%>
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
 	<tr>	
 		<td width="693" CLASS="text12">
@@ -89,6 +104,7 @@ sessionuser.setGCSignupError(false);
 		</td>
 	</tr>
 </TABLE>
+<%}%>
 <br><br>
 <%@ include file="/robin_hood/includes/i_rh_creditcard_fields.jspf" %>
 
