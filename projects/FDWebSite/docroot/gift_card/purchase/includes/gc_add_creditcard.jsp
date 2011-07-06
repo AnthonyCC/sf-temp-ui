@@ -108,12 +108,17 @@ sessionuser.setAddressVerificationError(false);
 }
 %>	
 <fd:ErrorHandler result='<%=result%>' field='<%=checkPaymentMethodForm%>'>
-<% String errorMsg= SystemMessageList.MSG_MISSING_INFO; %>	
-	<%@ include file="/includes/i_error_messages.jspf" %>
-</fd:ErrorHandler>
+<% String errorMsg= SystemMessageList.MSG_MISSING_INFO; 
+      if( result.hasError("auth_failure") ) {
+		errorMsg=result.getError("auth_failure").getDescription();
+      } else if( result.hasError("payment_method_fraud") ) {
+		errorMsg=result.getError("payment_method_fraud").getDescription();
+      }  else  if( result.hasError("technical_difficulty") ) {
+		errorMsg=result.getError("technical_difficulty").getDescription();
+      }
 
-<fd:ErrorHandler result='<%=result%>' name='payment_method_fraud' id='errorMsg'>
-    <%@ include file="/includes/i_error_messages.jspf" %>	
+%>	
+	<%@ include file="/includes/i_error_messages.jspf" %>
 </fd:ErrorHandler>      
 
 

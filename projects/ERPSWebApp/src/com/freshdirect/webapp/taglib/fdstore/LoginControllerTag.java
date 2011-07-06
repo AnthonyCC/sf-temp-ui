@@ -159,9 +159,15 @@ public class LoginControllerTag extends AbstractControllerTag {
             actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
             
         } catch (FDAuthenticationException fdae) {
-        	actionResult.addError(new ActionError("authentication", 
-            		MessageFormat.format(SystemMessageList.MSG_AUTHENTICATION, 
-            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
+        	if("Account disabled".equals(fdae.getMessage())) {
+        		actionResult.addError(new ActionError("authentication", 
+	            		MessageFormat.format(SystemMessageList.MSG_DEACTIVATED, 
+	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
+        	} else {
+        		actionResult.addError(new ActionError("authentication", 
+	            		MessageFormat.format(SystemMessageList.MSG_AUTHENTICATION, 
+	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
+        	}
         }
         
         return true;

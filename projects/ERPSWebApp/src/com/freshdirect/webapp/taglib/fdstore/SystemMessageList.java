@@ -17,6 +17,7 @@ public interface SystemMessageList {
 			"Sorry, we''re unable to find an account that matches this information. Please double-check your user name and password. If you forgot your password <a href=\"/login/forget_password_main.jsp\">click here</a> for help." +
 			"<br><br>NOTE: If you are certain that you''ve entered your password correctly, it may need to be reset. To reset it, <a href=\"/login/forget_password_main.jsp\">click here</a> and follow the instructions. "+
 			"If you have any questions, please contact us toll-free at {0}.";
+    public final static String MSG_DEACTIVATED     	="This account has been deactivated, please contact Customer Service at {0} to reactivate.";
 	public final static String MSG_PASSWORD_TOO_SHORT	= "Please enter a password that is at least four characters long.";
     public final static String MSG_NUMBER_OF_ATTEMPTS 	= "We are not able to recognize that security word. Please contact Customer Service for help at {0}. <a href=\"/index.jsp\">Click here</a> to browse the site. Just remember that you''ll need to sign in to view account information or to checkout.";
     public final static String MSG_AGREEMENT_CHECK 		= "You must agree to the Customer Agreement to create an account with FreshDirect. Please check the box \"I have read and agree to the Customer Agreement\" to continue.";
