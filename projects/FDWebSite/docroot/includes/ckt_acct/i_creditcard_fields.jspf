@@ -160,7 +160,7 @@ if (isValidPaymentId) {
 		</td>
 	</tr>
 	</TABLE>
-<%} else %>	
+<%} else { %>	
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
 		<tr>	
 			<td width="693" CLASS="text12">
