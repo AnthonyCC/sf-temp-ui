@@ -13,7 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LibUtil {
-	public static final String PSEP = System.getProperty("file.separator");
+	static final String PSEP = System.getProperty("file.separator");
 
 	static final String projects = "CMS,CRM,DataLoader,Delivery,DlvAdmin,DlvConfirm,ERPSAdmin,ERPSWebApp,ERPServices,FDIntegrationServices,FDStore,FDWebSite,Framework,Media,OCF,RefAdmin,Resources,RoutingServices,RulesAdmin,StandingOrdersService,Tests,Tools,TransportationAdmin,WebAppCommon,cms-gwt,listadmin,ocf-adm";
 

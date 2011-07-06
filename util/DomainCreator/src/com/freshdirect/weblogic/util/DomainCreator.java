@@ -316,9 +316,7 @@ public class DomainCreator {
 
 	
 	private Process startWebLogic() {
-		final String PSEP = System.getProperty("file.separator");
-
-		String cmd = domainFile.getAbsolutePath()+ PSEP + "startWebLogic.sh" ;
+		String cmd = domainFile.getAbsolutePath()+"/startWebLogic.sh" ;
 		final Runtime run = Runtime.getRuntime();
 		Process pr = null;
 		try {
@@ -346,11 +344,9 @@ public class DomainCreator {
 
 
 	private void stopWebLogic(Process pr) {
-		final String PSEP = System.getProperty("file.separator");
-
 		StringBuilder buf = new StringBuilder();
 		
-		bindScriptParameters(buf);
+		bindParameters(buf);
 
 		buf.append("connect(wl_user,wl_pwd,wl_url)").append(LINE_SEP);
 		buf.append("shutdown()").append(LINE_SEP);
@@ -359,12 +355,8 @@ public class DomainCreator {
 		cmd.unsafeExec(buf.toString());
 		
 		if (pr != null) {
+			// Wait for coming up
 			try {
-				pr.waitFor();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			/** try {
 				BufferedReader reader = new BufferedReader( new InputStreamReader( pr.getInputStream() ) ) ;
 				String line;
 				while ( ( line = reader.readLine() ) != null ) {
@@ -372,11 +364,8 @@ public class DomainCreator {
 				}
 			} catch(IOException exc) {
 				exc.printStackTrace();
-			} **/
+			}
 		}
-		
-		FileDeleter.deleteDir( new File(domainFile.getAbsolutePath() + PSEP + "edit.lok" ) );
-		FileDeleter.deleteDir( new File(domainFile.getAbsolutePath() + PSEP + "pending" ) );
 	}
 
 
@@ -555,7 +544,7 @@ public class DomainCreator {
 		StringBuilder sb = new StringBuilder();
 
 		// bind parameters
-		bindScriptParameters(sb);
+		bindParameters(sb);
 
 		if (loadScript(sb, new InputStreamReader(is))) {
 			if (debug) {
@@ -570,7 +559,7 @@ public class DomainCreator {
 	}
 
 	
-	private void bindScriptParameters(Appendable sb) {
+	private void bindParameters(Appendable sb) {
 		// bind parameters
 		try {
 			sb.append("wl_user='weblogic'").append(LINE_SEP);
@@ -722,21 +711,4 @@ abstract class WLPatcher {
 	abstract public void appendBefore(String line, Appendable out);
 	abstract public void appendAfter(String line, Appendable out);
 	abstract public boolean skipLine(String line);
-}
-
-
-class FileDeleter {
-	public static boolean deleteDir(File dir) {
-        if (dir.isDirectory()) {
-            String[] children = dir.list();
-            for (int i=0; i<children.length; i++) {
-                boolean success = deleteDir(new File(dir, children[i]));
-                if (!success) {
-                    return false;
-                }
-            }
-        }
-        // The directory is now empty so delete it
-        return dir.delete();
-    }
 }
