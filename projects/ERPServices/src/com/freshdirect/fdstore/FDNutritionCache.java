@@ -2,6 +2,7 @@ package com.freshdirect.fdstore;
 
 import java.rmi.RemoteException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.ejb.CreateException;
@@ -36,7 +37,8 @@ public class FDNutritionCache extends FDAbstractCache {
 		try{
 			LOGGER.info("REFRESHING");
 			ErpNutritionSB sb = this.lookupNutritionHome().create();
-			Map data = sb.loadNutrition(since);
+			//sb.loadNutrition(since);
+			Map data = new HashMap();
 			LOGGER.info("REFRESHED: " + data.size());
 			return data;
 		} catch (RemoteException e) {

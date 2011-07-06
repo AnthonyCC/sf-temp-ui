@@ -160,24 +160,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	            expCal.set(Calendar.DATE, expCal.getActualMaximum(Calendar.DATE));
 	        }
 	        
-	        if(FDStoreProperties.isPaymentMethodVerificationEnabled()) {
-	        	result.addError(
-		    	        csv == null || csv.length() <= 0,
-		    	        PaymentMethodName.CSV,SystemMessageList.MSG_REQUIRED
-		    	        );
-	        	
-	        	if(EnumCardType.AMEX.equals(EnumCardType.getCardType(cardType))) {
-	        		result.addError(
-			    	        csv != null & csv.length() !=4,
-			    	        PaymentMethodName.CSV,SystemMessageList.MSG_CVV_INCORRECT
-			    	        );
-	        	} else {
-	        		result.addError(
-			    	        csv != null & csv.length() !=3,
-			    	        PaymentMethodName.CSV,SystemMessageList.MSG_CVV_INCORRECT
-			    	        );
-	        	}
-	        }
+	        
 	        
         } else if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
 	        if (abaRouteNumber != null && !"".equals(abaRouteNumber)) {
@@ -290,6 +273,26 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             paymentMethod.getZipCode() == null || "".equals(paymentMethod.getZipCode()) || paymentMethod.getZipCode().trim().length() <= 0,
             EnumUserInfoName.BIL_ZIPCODE.getCode(), SystemMessageList.MSG_REQUIRED
             );
+            
+            if(FDStoreProperties.isPaymentMethodVerificationEnabled()) {
+	        	result.addError(
+		    	        csv == null || csv.length() <= 0,
+		    	        PaymentMethodName.CSV,SystemMessageList.MSG_REQUIRED
+		    	        );
+	        	
+		        	if(EnumCardType.AMEX.equals(EnumCardType.getCardType(cardType))) {
+		        		result.addError(
+				    	        csv != null & csv.length() != 0 & csv.length() !=4,
+				    	        PaymentMethodName.CSV,SystemMessageList.MSG_CVV_INCORRECT
+				    	        );
+		        	} else {
+		        		result.addError(
+				    	        csv != null & csv.length() != 0 & csv.length() !=3,
+				    	        PaymentMethodName.CSV,SystemMessageList.MSG_CVV_INCORRECT
+				    	        );
+		        	}
+	        	
+	        }
         }
     }
     
@@ -358,20 +361,21 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        		if(auth==null) {
 	        			result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_TECHNICAL_ERROR));
 	        		} else {
+	        			
 	        			if(1==auth.getVerifyFailCount()) {
 	        				
-	        				result.addError(new ActionError("payment_method_fraud", 
+	        				result.addError(new ActionError("auth_failure", 
 	        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_1, 
 	        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
 	        			} else if(2==auth.getVerifyFailCount()) {
-	        				result.addError(new ActionError("payment_method_fraud", 
+	        				result.addError(new ActionError("auth_failure", 
 	        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_2, 
 	        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
 	        			} else if(3<=auth.getVerifyFailCount()) {
 	        				request.getSession().setAttribute("verifyFail", MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_3, 
 	        	            		new Object[] { UserUtil.getCustomerServiceContact(request)}));
 
-	        				result.addError(new ActionError("payment_method_fraud", 
+	        				result.addError(new ActionError("auth_failure", 
 	        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_3, 
 	        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
 	        			}

@@ -57,6 +57,7 @@ public class EnumUserInfoName implements Serializable {
 	public final static EnumUserInfoName					CARD_BRAND								= new EnumUserInfoName( "cardBrand", "Card Type" );
 	public final static EnumUserInfoName					CARD_NUMBER								= new EnumUserInfoName( "cardNum", "Account Number" );
 	public final static EnumUserInfoName					CARD_EXPIRATION							= new EnumUserInfoName( "expiration", "Expires" );
+	public final static EnumUserInfoName					CARD_CSV							    = new EnumUserInfoName( "csv", "CVV" );
 
 	// BILLING ADDRESS
 	public final static EnumUserInfoName					BIL_ADDRESS_1							= new EnumUserInfoName( "bil_address1", "Street Address" );

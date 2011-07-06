@@ -9,7 +9,7 @@
 
 <%!
 String[] checkPaymentMethodForm = {PaymentMethodName.ACCOUNT_HOLDER, PaymentMethodName.CARD_BRAND, PaymentMethodName.ACCOUNT_NUMBER, "expiration",PaymentMethodName.CSV, EnumUserInfoName.BIL_ADDRESS_1.getCode(), EnumUserInfoName.BIL_CITY.getCode(), EnumUserInfoName.BIL_STATE.getCode(), EnumUserInfoName.BIL_ZIPCODE.getCode()};
-String[] checkErrorType = {"technical_difficulty", "payment_method_fraud"};
+String[] checkErrorType = {"technical_difficulty", "payment_method_fraud","auth_failure"};
 %>
 
 <%
@@ -154,8 +154,8 @@ if (isValidPaymentId) {
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
 	<tr>	
 		<td width="693" CLASS="text12">
-			In order to better protect our customer's personal information, we require a $1 authorization to validate credit cards on add and edit. This charge will not be collected and will be returned as soon as permitted by your issuing bank. To learn more about our <font class="text11bold">Security Policies</font>, 
-			<a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here</a>.
+			In order to better protect our customer's personal information, we require a $1 authorization to validate credit cards on add and edit. This charge will not be collected and will be returned as soon as permitted by your issuing bank. To learn more about our <font class="text11bold">Customer Agreement</font>, 
+			<a href="javascript:popup('/help/terms_of_service.jsp','large')">click here</a>.
 		</td>
 	</tr>
 	</TABLE>

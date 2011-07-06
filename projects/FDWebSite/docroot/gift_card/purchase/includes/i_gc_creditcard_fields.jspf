@@ -10,8 +10,9 @@
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 
 <%!
-String[] checkPaymentMethodForm = {PaymentMethodName.ACCOUNT_HOLDER, PaymentMethodName.CARD_BRAND, PaymentMethodName.ACCOUNT_NUMBER, "expiration", EnumUserInfoName.BIL_ADDRESS_1.getCode(), EnumUserInfoName.BIL_CITY.getCode(), EnumUserInfoName.BIL_STATE.getCode(), EnumUserInfoName.BIL_ZIPCODE.getCode()};
-String[] checkErrorType = {"technical_difficulty", "payment_method_fraud"};
+String[] checkPaymentMethodForm = {PaymentMethodName.ACCOUNT_HOLDER, PaymentMethodName.CARD_BRAND, PaymentMethodName.ACCOUNT_NUMBER, "expiration",PaymentMethodName.CSV, EnumUserInfoName.BIL_ADDRESS_1.getCode(), EnumUserInfoName.BIL_CITY.getCode(), EnumUserInfoName.BIL_STATE.getCode(), EnumUserInfoName.BIL_ZIPCODE.getCode()};
+String[] checkErrorType = {"technical_difficulty", "payment_method_fraud","auth_failure"};
+
 %>
 
 
@@ -180,7 +181,24 @@ WIDTH="132" HEIGHT="9" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<F
 	</SELECT> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 	</TD>
 </tr>
+<TR>
+	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>"><span class="text11rbold"></fd:ErrorHandler>*&nbsp;CVV&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>"></span></fd:ErrorHandler></TD>
+	<TD WIDTH="565" CLASS="text12">
+		<input class="text11" maxlength="4" SIZE="4" type="text" name="<%=PaymentMethodName.CSV%>" required="true" > &nbsp;&nbsp;CVV code will not be stored and only used for validation purposes, <a href="javascript:popup('/about/cvv.jsp','large')">locate this code</b></a>
+	</TD>
+	
+</TR>
 
+<TR VALIGN="TOP">
+	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"></TD>
+	<TD WIDTH="565" CLASS="text12">
+		 <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.CSV%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		<BR><FONT CLASS="space4pix"><BR></FONT>
+	</TD>
+</TR>
+
+
+</TABLE>
 </TABLE>
 <br><br>
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="693">

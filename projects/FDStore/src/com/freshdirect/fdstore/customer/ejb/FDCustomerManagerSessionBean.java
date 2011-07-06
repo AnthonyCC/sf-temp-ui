@@ -842,8 +842,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				throw new FDAuthenticationException(
 						"Invalid username or password");
 			}
+			
 			// check the active flag
 			if (!erpCustomerEB.isActive()) {
+				
+				/*FDCustomerEB fdCustomerEB=getFdCustomerHome().findByErpCustomerId(erpCustomerEB.getPK().getId());
+				if(fdCustomerEB!=null && fdCustomerEB.getPymtVerifyAttempts()>=FDStoreProperties.getPaymentMethodVerificationLimit()) {
+					
+				}
+				else {
+					throw new FDAuthenticationException("Account disabled");
+				}*/
 				throw new FDAuthenticationException("Account disabled");
 			}
 			// find respective FDCustomerEB
