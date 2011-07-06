@@ -1,0 +1,4 @@
+# Edit JDBC parameters
+jdbc.url=jdbc:oracle:thin:@zetor:1521/DBEU02
+jdbc.user=<CMS USER NAME>
+jdbc.password=<CMS USER PASSWORD>
