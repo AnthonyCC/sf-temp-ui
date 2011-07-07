@@ -4,6 +4,8 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.PaymentMethodName" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.AddressName"%>
 <%@ page import="com.freshdirect.common.customer.EnumCardType"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SystemMessageList"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName"%>
 
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -27,6 +29,19 @@
 	                }
 	            %>
 				<crm:CrmPaymentMethodController paymentMethod="<%=paymentMethod%>" result="result" actionName="<%=actionName%>" successPage="<%=retPage%>">
+				<fd:ErrorHandler result='<%=result%>' field='<%=checkPaymentMethodForm%>'>
+<% String errorMsg= SystemMessageList.MSG_MISSING_INFO; 
+      if( result.hasError("auth_failure") ) {
+		errorMsg=result.getError("auth_failure").getDescription();
+      } else if( result.hasError("payment_method_fraud") ) {
+		errorMsg=result.getError("payment_method_fraud").getDescription();
+      }  else  if( result.hasError("technical_difficulty") ) {
+		errorMsg=result.getError("technical_difficulty").getDescription();
+      }
+
+%>	
+	<%@ include file="/includes/i_error_messages.jspf" %>
+</fd:ErrorHandler>
 	            	<%@ include file="/includes/credit_card_details.jspf" %>
 				</crm:CrmPaymentMethodController>
 			</crm:GetFDUser>

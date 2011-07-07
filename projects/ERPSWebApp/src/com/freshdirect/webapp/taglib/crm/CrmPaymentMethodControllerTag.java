@@ -56,6 +56,7 @@ public class CrmPaymentMethodControllerTag extends AbstractControllerTag {
 	private void editPaymentMethod(HttpServletRequest request, ActionResult actionResult) throws FDResourceException {
 		this.populatePaymentMethod(request, actionResult);
 		FDUserI user = CrmSession.getUser(pageContext.getSession());
+		System.out.println("user.isActive():"+user.isActive());
 		PaymentMethodUtil.validatePaymentMethod(request, this.paymentMethod, actionResult, user,true);
 		if (actionResult.isSuccess()) {
 			if (CrmSession.verifyCaseAttachment(pageContext.getSession(), actionResult)) {

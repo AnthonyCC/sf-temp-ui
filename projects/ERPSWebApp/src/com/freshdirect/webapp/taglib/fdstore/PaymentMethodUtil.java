@@ -327,6 +327,27 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        paymentMethod.getCardType() == null || (paymentMethod.getAccountNumber() == null || "".equals(paymentMethod.getAccountNumber()) || !validateCreditCardNumber(paymentMethod.getAccountNumber(), paymentMethod.getCardType().getFdName())),
 	        PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER
 	        );
+	        String csv=paymentMethod.getCVV();
+            if(FDStoreProperties.isPaymentMethodVerificationEnabled()) {
+	        	result.addError(
+		    	        csv == null || csv.length() <= 0,
+		    	        PaymentMethodName.CSV,SystemMessageList.MSG_REQUIRED
+		    	        );
+	        	
+		        	if(EnumCardType.AMEX.equals(paymentMethod.getCardType())) {
+		        		result.addError(
+				    	        csv != null & csv.length() != 0 & csv.length() !=4,
+				    	        PaymentMethodName.CSV,SystemMessageList.MSG_CVV_INCORRECT
+				    	        );
+		        	} else {
+		        		result.addError(
+				    	        csv != null & csv.length() != 0 & csv.length() !=3,
+				    	        PaymentMethodName.CSV,SystemMessageList.MSG_CVV_INCORRECT
+				    	        );
+		        	}
+	        	
+	        }
+
 	        FDReservation reservation = null;
 	        if ( gift_card ) {
 		        //check expiration date
@@ -360,24 +381,33 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        		ErpAuthorizationModel auth=FDCustomerManager.verify(action, paymentMethod);
 	        		if(auth==null) {
 	        			result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_TECHNICAL_ERROR));
-	        		} else {
-	        			
-	        			if(1==auth.getVerifyFailCount()) {
-	        				
+	        		}
+	        		
+	        		else {
+	        			EnumTransactionSource source=action.getSource();
+	        			if(EnumTransactionSource.CUSTOMER_REP.equals(source)) {
 	        				result.addError(new ActionError("auth_failure", 
-	        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_1, 
+	        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_CRM, 
 	        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
-	        			} else if(2==auth.getVerifyFailCount()) {
-	        				result.addError(new ActionError("auth_failure", 
-	        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_2, 
-	        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
-	        			} else if(3<=auth.getVerifyFailCount()) {
-	        				request.getSession().setAttribute("verifyFail", MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_3, 
-	        	            		new Object[] { UserUtil.getCustomerServiceContact(request)}));
-
-	        				result.addError(new ActionError("auth_failure", 
-	        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_3, 
-	        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
+	        			}
+	        			else {
+		        			if(1==auth.getVerifyFailCount()) {
+		        				result.addError(new ActionError("auth_failure", 
+			        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_1, 
+			        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
+		        				
+		        			} else if(2==auth.getVerifyFailCount()) {
+		        				result.addError(new ActionError("auth_failure", 
+		        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_2, 
+		        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
+		        			} else if(3<=auth.getVerifyFailCount()) {
+		        				request.getSession().setAttribute("verifyFail", MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_3, 
+		        	            		new Object[] { UserUtil.getCustomerServiceContact(request)}));
+	
+		        				result.addError(new ActionError("auth_failure", 
+		        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_3, 
+		        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
+		        			}
 	        			}
 	        			if(auth.isApproved()) {
 		        			result.addError(
