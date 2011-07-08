@@ -6093,7 +6093,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			} catch( ErpTransactionException te) {
 				logCardVerificationActivity(action,paymentMethod,null, te.toString());
 			}
-			if(auth!=null) {
+			if(auth!=null && !EnumTransactionSource.CUSTOMER_REP.equals(action.getSource())) {
 				FDCustomerEB fdCustomerEB=getFdCustomerHome().findByErpCustomerId(paymentMethod.getCustomerId());
 				if(!auth.isApproved() || !auth.hasAvsMatched()|| !auth.isCVVMatch()) {
 					int count=fdCustomerEB.incrementPymtVerifyAttempts();
@@ -6130,7 +6130,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		    String customerId=paymentMethod.getCustomerId();
 			ErpActivityRecord rec = new ErpActivityRecord();
 			rec.setActivityType(EnumAccountActivityType.PAYMENT_METHOD_VERIFICATION);
-			rec.setSource(EnumTransactionSource.SYSTEM);
+			rec.setSource(action.getSource()!=null?action.getSource(): EnumTransactionSource.SYSTEM);
 			rec.setInitiator(action.getInitiator());
 			rec.setCustomerId(customerId);
 			

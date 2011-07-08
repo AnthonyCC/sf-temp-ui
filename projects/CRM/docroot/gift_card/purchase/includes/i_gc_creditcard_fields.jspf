@@ -1,3 +1,4 @@
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.PaymentMethodName"%>
 <%@ page import='com.freshdirect.common.customer.*,com.freshdirect.fdstore.*' %>
 <%@ page import ='com.freshdirect.fdstore.customer.*'%>
 <%@ page import ='com.freshdirect.fdstore.promotion.*'%>
@@ -8,7 +9,7 @@
 <%@ page import='com.freshdirect.framework.webapp.*' %>
 
 <%!
-String[] checkPaymentMethodForm = {PaymentMethodName.ACCOUNT_HOLDER, PaymentMethodName.CARD_BRAND, PaymentMethodName.ACCOUNT_NUMBER, "expiration", EnumUserInfoName.BIL_ADDRESS_1.getCode(), EnumUserInfoName.BIL_CITY.getCode(), EnumUserInfoName.BIL_STATE.getCode(), EnumUserInfoName.BIL_ZIPCODE.getCode()};
+String[] listOfFields = {PaymentMethodName.ACCOUNT_HOLDER, PaymentMethodName.CARD_BRAND, PaymentMethodName.ACCOUNT_NUMBER, "expiration",PaymentMethodName.CSV, EnumUserInfoName.BIL_ADDRESS_1.getCode(), EnumUserInfoName.BIL_CITY.getCode(), EnumUserInfoName.BIL_STATE.getCode(), EnumUserInfoName.BIL_ZIPCODE.getCode()};
 String[] checkErrorType = {"technical_difficulty", "payment_method_fraud"};
 %>
 
@@ -93,6 +94,15 @@ String custLname = null;
         ccZipCode = request.getParameter(EnumUserInfoName.BIL_ZIPCODE.getCode());
     }
 %>
+    <% if(FDStoreProperties.isPaymentMethodVerificationEnabled()) {%>
+	<table width="100%" cellpadding="0" cellspacing="0" >
+	<tr>	 <td>&nbsp;</td>
+		<td>
+			Credit cards will be validated via authorization on save.  Both AVS and CVV checks must pass<br> before card added/changes saved.  Authorized funds will not be collected and will be returned<br> between 2 days to 2 weeks depending on issuing bank.
+		</td>
+	</tr>
+	</TABLE>
+<%}%>	
 
     <%-- error system messages happen here --%>
     <fd:ErrorHandler result='<%=result%>' name='matching_addresses' id='errorMsg'>
@@ -175,7 +185,17 @@ WIDTH="132" HEIGHT="9" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<F
 	</SELECT> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 	</TD>
 </tr>
-
+<% if(FDStoreProperties.isPaymentMethodVerificationEnabled()) {%>			
+			<tr>
+				<td align="right">* CVV:</td>
+				<td><input type="text" maxlength="4" class="input_text" style="width: 80px;" name="<%=PaymentMethodName.CSV%>" value="">
+				
+				<fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>" id='errorMsg'> <span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+			</tr>
+			<TR><TD>&nbsp;</TD><TD>&nbsp;&nbsp;CVV code will not be stored and only used for validation purposes, <a href="javascript:popup('/about/cvv.jsp','large')">locate this code</b></a></TD>
+			</TR>
+			<tr>
+<%}%>
 </TABLE>
 <br><br>
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="693">

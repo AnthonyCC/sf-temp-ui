@@ -274,7 +274,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             EnumUserInfoName.BIL_ZIPCODE.getCode(), SystemMessageList.MSG_REQUIRED
             );
             
-            if(FDStoreProperties.isPaymentMethodVerificationEnabled()) {
+            if(FDStoreProperties.isPaymentMethodVerificationEnabled()&& EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {
 	        	result.addError(
 		    	        csv == null || csv.length() <= 0,
 		    	        PaymentMethodName.CSV,SystemMessageList.MSG_REQUIRED
@@ -308,6 +308,8 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     }
     
     public static void validatePaymentMethod ( FDActionInfo action, ErpPaymentMethodI paymentMethod, ActionResult result, FDUserI user, boolean gift_card, boolean donation, boolean bypassBadAccountCheck, boolean verifyCC,HttpServletRequest request ) throws FDResourceException {
+    	
+    	
     	boolean isFiftyStateValidationReqd=true;
     	//check name on card
         result.addError(
@@ -328,9 +330,9 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER
 	        );
 	        String csv=paymentMethod.getCVV();
-            if(FDStoreProperties.isPaymentMethodVerificationEnabled()) {
+            if(FDStoreProperties.isPaymentMethodVerificationEnabled()&& !paymentMethod.isBypassAVSCheck()&& verifyCC) {
 	        	result.addError(
-		    	        csv == null || csv.length() <= 0,
+		    	        csv == null || (csv!=null & csv.length() <= 0),
 		    	        PaymentMethodName.CSV,SystemMessageList.MSG_REQUIRED
 		    	        );
 	        	
@@ -386,6 +388,10 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        		else {
 	        			EnumTransactionSource source=action.getSource();
 	        			if(EnumTransactionSource.CUSTOMER_REP.equals(source)) {
+	        				
+	        				if(!auth.isApproved()||
+	        					(auth.isApproved() && (!auth.isCVVMatch()||!auth.hasAvsMatched()))
+	        				   )
 	        				result.addError(new ActionError("auth_failure", 
 	        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_CRM, 
 	        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
@@ -424,9 +430,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 		        					EnumUserInfoName.BIL_ADDRESS_1.getCode(),SystemMessageList.MSG_INVALID_ADDRESS
 					    	        );
 		        			
-	        			} /*else {
-	        				result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_AUTH_FAILED));
-	        			}*/
+	        			} 
 	        			if(result.isSuccess())
 	        				paymentMethod.setAvsCkeckFailed(false);
 	        		}

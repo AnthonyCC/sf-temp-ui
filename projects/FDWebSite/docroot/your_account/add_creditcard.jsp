@@ -13,20 +13,21 @@
 <fd:PaymentMethodController actionName='addPaymentMethod' result='result' successPage='/your_account/payment_information.jsp'>
 <%
 boolean proceedThruCheckout = false;
-%>
+if (!result.hasError("payment_method_fraud") && !result.hasError("technical_difficulty")) {%>
 <fd:ErrorHandler result='<%=result%>' field='<%=checkPaymentMethodForm%>'>
 <% String errorMsg= SystemMessageList.MSG_MISSING_INFO; 
-      if( result.hasError("auth_failure") ) {
+	if( result.hasError("auth_failure") ) {
 		errorMsg=result.getError("auth_failure").getDescription();
-      } else if( result.hasError("payment_method_fraud") ) {
-		errorMsg=result.getError("payment_method_fraud").getDescription();
-      }  else  if( result.hasError("technical_difficulty") ) {
-		errorMsg=result.getError("technical_difficulty").getDescription();
-      }
-
-%>	
+	} %>	
 	<%@ include file="/includes/i_error_messages.jspf" %>
 </fd:ErrorHandler>
+<%} else {%>
+	<fd:ErrorHandler result='<%=result%>' field='<%=checkErrorType%>' id='errorMsg'>
+	
+		<%@ include file="/includes/i_error_messages.jspf" %>
+	</fd:ErrorHandler>
+
+<%} %>
 
 <table WIDTH="690" cellspacing="0" cellpadding="0" border="0">
 <form method="post">

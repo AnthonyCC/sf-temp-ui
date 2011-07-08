@@ -303,9 +303,7 @@ if (isValidPaymentId) {
 <font class="space4pix"><br></font>
 
 <TABLE BORDER="0" CELLSPACING="1" CELLPADDING="0" WIDTH="675">
-	<TR VALIGN="MIDDLE">
-	    <TD WIDTH="660" ALIGN="RIGHT" colspan="2" CLASS="text12"> <fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></TD>
-	</TR>
+	
 
 	<TR VALIGN="MIDDLE">
 	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*Street Address&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>"></span></fd:ErrorHandler></TD>

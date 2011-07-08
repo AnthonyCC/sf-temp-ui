@@ -57,20 +57,22 @@ FDSessionUser sessionuser = (FDSessionUser)session.getAttribute(SessionName.USER
 <% 
 //clear info from session.
 sessionuser.setGCSignupError(false);
-} %>	
+} 
+if (!result.hasError("payment_method_fraud") && !result.hasError("technical_difficulty")) {%>
 <fd:ErrorHandler result='<%=result%>' field='<%=checkPaymentMethodForm%>'>
 <% String errorMsg= SystemMessageList.MSG_MISSING_INFO; 
-      if( result.hasError("auth_failure") ) {
+	if( result.hasError("auth_failure") ) {
 		errorMsg=result.getError("auth_failure").getDescription();
-      } else if( result.hasError("payment_method_fraud") ) {
-		errorMsg=result.getError("payment_method_fraud").getDescription();
-      }  else  if( result.hasError("technical_difficulty") ) {
-		errorMsg=result.getError("technical_difficulty").getDescription();
-      }
-
-%>	
+	} %>	
 	<%@ include file="/includes/i_error_messages.jspf" %>
-</fd:ErrorHandler>      
+</fd:ErrorHandler>
+<%} else {%>
+	<fd:ErrorHandler result='<%=result%>' field='<%=checkErrorType%>' id='errorMsg'>
+	
+		<%@ include file="/includes/i_error_messages.jspf" %>
+	</fd:ErrorHandler>
+
+<%} %>       
 
 <form method="post" style="padding: 0px; margin: 0px;">
 <table width="690" cellspacing="0" cellpadding="0" border="0">
