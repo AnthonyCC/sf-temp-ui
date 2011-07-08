@@ -606,7 +606,7 @@ if ( skuSize == 0 ) {
 
     
    				<%-- Nested Table 3 for Quantity box (description) with increment/decrement arrows & price & add to cart display --%>
-				<table cellpadding="0" cellspacing="0" border="0" style="<%= alignRight ? "float: right; margin-right: 0px; margin-left: auto;" : "" %>"> 
+				<table cellpadding="0" cellspacing="0" border="1" style="<%= alignRight ? "float: right; margin-right: 0px; margin-left: auto;" : "" %>"> 
     
         			<% if ( displaySalesUnitsOnly ) { // SOLD BY EACHES %>
         			
@@ -745,9 +745,6 @@ if ( skuSize == 0 ) {
 					<% } %>
 
 				    <%-- end render quantity --%>
-
-					<tr><td class="text11" style="<%= CSSTableStyle %>padding-top:5px;">
-					
 						
 						<tr>
 							<td class="text11" style="<%= CSSTableStyle %>padding-top:5px;">
