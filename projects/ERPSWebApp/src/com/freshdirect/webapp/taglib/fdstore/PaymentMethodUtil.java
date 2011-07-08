@@ -397,7 +397,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
 	        			}
 	        			else {
-		        			if(1==auth.getVerifyFailCount()) {
+		        			/*if(1==auth.getVerifyFailCount()) {
 		        				result.addError(new ActionError("auth_failure", 
 			        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_1, 
 			        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
@@ -407,6 +407,24 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 		        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_2, 
 		        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
 		        			} else if(3<=auth.getVerifyFailCount()) {
+		        				request.getSession().setAttribute("verifyFail", MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_3, 
+		        	            		new Object[] { UserUtil.getCustomerServiceContact(request)}));
+	
+		        				result.addError(new ActionError("auth_failure", 
+		        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_3, 
+		        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
+		        			}*/
+	        				int verifyFailCnt=auth.getVerifyFailCount();
+	        				if(verifyFailCnt<0)
+	        					verifyFailCnt=0;
+	        				if(verifyFailCnt>0 && verifyFailCnt< FDStoreProperties.getPaymentMethodVerificationLimit() ) {
+	        					result.addError(new ActionError("auth_failure", 
+		        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL, 
+		        	            		new Object[] { String.valueOf(FDStoreProperties.getPaymentMethodVerificationLimit()),
+		        	            				       String.valueOf(FDStoreProperties.getPaymentMethodVerificationLimit()- verifyFailCnt),
+		        	            				       UserUtil.getCustomerServiceContact(request)
+		        	            				      })));
+	        				} else if(FDStoreProperties.getPaymentMethodVerificationLimit()<=verifyFailCnt) {
 		        				request.getSession().setAttribute("verifyFail", MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_3, 
 		        	            		new Object[] { UserUtil.getCustomerServiceContact(request)}));
 	

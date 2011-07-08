@@ -85,7 +85,7 @@ public class RequestUtil {
 	 */
 
 	public static String removeShiftedPlusChars(String inpString) {
-System.out.println(" in String = "+inpString);
+		//System.out.println(" in String = "+inspString);
 		Pattern pattern = Pattern.compile("[<>?_`~!@#$%^&*()+=;\\{\\[\\]}|]");
 		String  outString= pattern.matcher(inpString).replaceAll("");
 		return outString;
