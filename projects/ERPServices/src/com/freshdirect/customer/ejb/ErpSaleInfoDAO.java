@@ -234,7 +234,8 @@ public class ErpSaleInfoDAO {
 	public static Collection<ErpSaleInfo> getOrderHistoryInfo(Connection conn, String erpCustomerId, int queryId) throws SQLException {
 		
 		PreparedStatement ps =null;
-		if (queryId!=1||queryId!=2||queryId!=3) {
+		
+		if (queryId<1 || queryId>3) {
 			queryId=1;
 			
 		}
