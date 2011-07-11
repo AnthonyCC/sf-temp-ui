@@ -2650,4 +2650,26 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
+	
+	public void fixDisassociatedTimeslots()throws DlvResourceException{
+	{
+			Connection conn = null;
+			try {
+				conn = getConnection();
+				DlvManagerDAO.fixDisassociatedTimeslots(conn);
+
+			} catch (SQLException e) {
+				//this.getSessionContext().setRollbackOnly();
+				throw new DlvResourceException(e);
+			} finally {
+				try {
+					if (conn != null) {
+						conn.close();
+					}
+				} catch (SQLException se) {
+					LOGGER.warn("DlvManagerSB fixDisassociatedTimeslots: Exception while cleaning: " + se);
+				}
+			}
+		}
+	}
 }

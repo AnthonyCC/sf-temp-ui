@@ -1067,5 +1067,16 @@ public class FDDeliveryManager {
 			throw new FDResourceException(re);
 		}
 	}
+	
+	public void fixDisassociatedTimeslots() throws FDResourceException{
+		try {
+			DlvManagerSB sb = getDlvManagerHome().create();
+			sb.fixDisassociatedTimeslots();
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
 
 }

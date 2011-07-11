@@ -178,6 +178,11 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 					}
 				}
 			}
+			if(isPurgeEnabled){
+				LOGGER.debug("Fixing disassociated timeslots: START");
+				dsb.fixDisassociatedTimeslots();
+				LOGGER.debug("Fixing disassociated timeslots: STOP");
+			}
 			LOGGER.info("########################## CapacityControllerCronRunner Stop ##############################");
 		} catch (Exception e) {
 			StringWriter sw = new StringWriter();

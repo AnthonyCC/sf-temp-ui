@@ -198,4 +198,6 @@ public interface DlvManagerSB extends EJBObject {
 	void purgeSchedulerByIdentity(IRoutingSchedulerIdentity schedulerId) throws DlvResourceException, RemoteException;
 	
 	Set<String> getInSyncWaveInstanceZones(Date deliveryDate) throws DlvResourceException, RemoteException;
+	
+	void fixDisassociatedTimeslots()throws RemoteException;
 }   
