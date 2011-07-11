@@ -171,8 +171,11 @@ EnumServiceType fldServiceType = address.getServiceType() == null ? EnumServiceT
 							<tr>
 								<td></td>
 								<td colspan="2">
-								Special Delivery instructions (optional)<br>
-								<textarea rows="3" class="input_text" style="width: 250px;" name="<%=AddressName.DLV_DELIVERY_INSTRUCTIONS%>"><%=request.getParameter(AddressName.DLV_DELIVERY_INSTRUCTIONS) != null ? request.getParameter(AddressName.DLV_DELIVERY_INSTRUCTIONS):address.getInstructions()%></textarea>
+								Special Delivery instructions (optional)<br/>
+								<input type="text" size="50" maxlength="80" class="text11" name="<%=AddressName.DLV_DELIVERY_INSTRUCTIONS%>" 
+									id="<%=AddressName.DLV_DELIVERY_INSTRUCTIONS%>" 
+									value="<%= request.getParameter(AddressName.DLV_DELIVERY_INSTRUCTIONS) != null 
+									? request.getParameter(AddressName.DLV_DELIVERY_INSTRUCTIONS) : address.getInstructions() %>" />
 								</td>
 							</tr>
 							<tr>
