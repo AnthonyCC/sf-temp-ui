@@ -396,7 +396,7 @@ public class RoutingUtil {
 		Map<java.util.Date, RoutingAnalyzerCommand> analyzerCommands = getAnalyzerCommand(_timeSlots, address, context, locModel);
 		order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(_timeSlots.get(0).getZoneCode()));
 		
-		schedulerSaveLocation(order);				
+		//schedulerSaveLocation(order);				
 		
 		RoutingAnalyzerCommand tmpCommand = null;
 		Iterator<java.util.Date> itr = analyzerCommands.keySet().iterator();
@@ -734,8 +734,10 @@ public class RoutingUtil {
 	}
 	
 	private static IDeliveryReservation schedulerReserveOrder(IOrderModel orderModel, IDeliverySlot slot) throws RoutingServiceException {
-
-		IDeliveryReservation reservation=new RoutingEngineServiceProxy().schedulerReserveOrder(orderModel, slot, RoutingServicesProperties.getDefaultLocationType(), RoutingServicesProperties.getDefaultOrderType());
+		
+		schedulerSaveLocation(orderModel);
+		IDeliveryReservation reservation=new RoutingEngineServiceProxy().schedulerReserveOrder(orderModel, slot
+											, RoutingServicesProperties.getDefaultLocationType(), RoutingServicesProperties.getDefaultOrderType());
 		LOGGER.info("schedulerReserveOrder():: DeliveryReservation:"+reservation.isReserved());
 		return reservation;
 	}
