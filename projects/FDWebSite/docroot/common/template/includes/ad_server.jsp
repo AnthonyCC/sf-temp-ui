@@ -355,6 +355,9 @@
 			}
 			}
 		}
+		if (request.getParameter("TSAPROMO") != null) {
+			queryString.addParam("TSAPROMO",request.getParameter("TSAPROMO"));		
+		}
 		String sitePage = request.getAttribute("sitePage") == null ? "www.freshdirect.com"
 				: (String) request.getAttribute("sitePage");
 		String listPos = request.getAttribute("listPos") == null ? "SystemMessage"
