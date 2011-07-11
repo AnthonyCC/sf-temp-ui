@@ -392,33 +392,17 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        				if(!auth.isApproved()||
 	        					(auth.isApproved() && (!auth.isCVVMatch()||!auth.hasAvsMatched()))
 	        				   )
-	        				result.addError(new ActionError("auth_failure", 
+	        				result.addError(new ActionError(auth.isApproved()?"auth_failure":"payment_method_fraud", 
 	        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_CRM, 
 	        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
 	        			}
 	        			else {
-		        			/*if(1==auth.getVerifyFailCount()) {
-		        				result.addError(new ActionError("auth_failure", 
-			        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_1, 
-			        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
-		        				
-		        			} else if(2==auth.getVerifyFailCount()) {
-		        				result.addError(new ActionError("auth_failure", 
-		        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_2, 
-		        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
-		        			} else if(3<=auth.getVerifyFailCount()) {
-		        				request.getSession().setAttribute("verifyFail", MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_3, 
-		        	            		new Object[] { UserUtil.getCustomerServiceContact(request)}));
-	
-		        				result.addError(new ActionError("auth_failure", 
-		        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_3, 
-		        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
-		        			}*/
+		        		
 	        				int verifyFailCnt=auth.getVerifyFailCount();
 	        				if(verifyFailCnt<0)
 	        					verifyFailCnt=0;
 	        				if(verifyFailCnt>0 && verifyFailCnt< FDStoreProperties.getPaymentMethodVerificationLimit() ) {
-	        					result.addError(new ActionError("auth_failure", 
+	        					result.addError(new ActionError(auth.isApproved()?"auth_failure":"payment_method_fraud", 
 		        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL, 
 		        	            		new Object[] { String.valueOf(FDStoreProperties.getPaymentMethodVerificationLimit()),
 		        	            				       String.valueOf(FDStoreProperties.getPaymentMethodVerificationLimit()- verifyFailCnt),
