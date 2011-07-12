@@ -22,8 +22,12 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.analytics.TimeslotEventModel;
+import com.freshdirect.analytics.TimeslotEventModel;
+import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
+import com.freshdirect.fdstore.Util;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
@@ -62,9 +66,12 @@ public class ReservationCronRunner {
 				FDIdentity identity = new FDIdentity(info.getCustomerId(), info.getFdCustomerId());
 				//Fix to debug Unrecognized user error failure
 				try { 
+					TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.SYSTEM.getCode(), 
+							false, 0.00, false, false);
+
 					FDUserI user=sb.recognize(identity);
 					dsb.makeRecurringReservation(info.getCustomerId(), info.getDayOfWeek(), info.getStartTime()
-															, info.getEndTime(), info.getAddress(), user.isChefsTable());
+															, info.getEndTime(), info.getAddress(), user.isChefsTable(), event);
 					
 				} catch(Exception e) {
 					LOGGER.warn("Could not Reserve a Weekly recurring timeslot "+info.getCustomerId()+" "+identity, e);

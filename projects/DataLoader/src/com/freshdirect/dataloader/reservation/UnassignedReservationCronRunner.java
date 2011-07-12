@@ -16,7 +16,10 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.analytics.TimeslotEventModel;
+import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.ContactAddressModel;
+import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.depot.DlvDepotModel;
@@ -135,6 +138,9 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 					}
 				}
 				System.out.println("Final List of Unassigned Being Processed :"+ unassignedReservations.size());
+				TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.SYSTEM.getCode(), 
+						false, 0.00, false, false);
+				
 				if(unassignedReservations != null && unassignedReservations.size() > 0) {			
 					int unassignedProcessedCnt = 0;
 					int unassignedBatchCnt = 0;
@@ -150,7 +156,7 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 								break;
 							}														
 						}						
-						cron.processReservation(dlvManager,custManager,reservation);
+						cron.processReservation(dlvManager,custManager,reservation,event);
 					}
 				}
 			} catch (Exception e) {
@@ -184,12 +190,15 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 		System.out.println("Total no of reroute reservations processed :"+ (reRouteReservations != null ? reRouteReservations.size() : 0));
 		if(reRouteReservations != null && reRouteReservations.size() > 0) {			
 			
+			TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.SYSTEM.getCode(), 
+					false, 0.00, false, false);
 			for (DlvReservationModel reservation : reRouteReservations) {
 				FDIdentity identity = getIdentity(reservation.getCustomerId());
 				ContactAddressModel address;
 				try {
+					
 					address = sb.getAddress(identity, reservation.getAddressId());
-					dlvManager.cancelRoutingReservation(reservation, address);
+					dlvManager.cancelRoutingReservation(reservation, address, event);
 				} catch (FDResourceException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -211,7 +220,7 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 	}
 	
     @Override
-    public void processReservation(DlvManagerSB dlvManager,FDCustomerManagerSB sb,DlvReservationModel reservation) {
+    public void processReservation(DlvManagerSB dlvManager,FDCustomerManagerSB sb,DlvReservationModel reservation, TimeslotEventModel event) {
     	try {
     		//System.out.println("Processing >>"+reservation.getId()+"->"+reservation.getUnassignedActivityType());
     		FDIdentity identity = getIdentity(reservation.getCustomerId());
@@ -233,11 +242,11 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 	    		if(unassignedAction != null) {
 		    		if(RoutingActivityType.RESERVE_TIMESLOT.equals(unassignedAction)) {
 		    			if(_timeslot != null) {
-		    				dlvManager.reserveTimeslotEx(reservation, address, _timeslot);
+		    				dlvManager.reserveTimeslotEx(reservation, address, _timeslot, event);
 		    			}
 		    		} else {
 		
-		    			dlvManager.commitReservationEx(reservation, address);  
+		    			dlvManager.commitReservationEx(reservation, address, event);  
 		    			if(reservation.getUpdateStatus() != null) {
 		    				dlvManager.updateReservationEx(reservation, address, _timeslot);
 		    			}
