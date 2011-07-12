@@ -97,7 +97,7 @@
 			</xsl:if>
 			
 			<xsl:variable name="counted">
-				<xsl:value-of select="count(order/orderViews/orderViews/orderLines/orderLines[alcohol = 'true'])" />
+				<xsl:value-of select="count(order/orderViews/orderViews/orderLines/orderLines[affiliate = 'USQ'])" />
 			</xsl:variable>
 			
 			<xsl:if test="$counted > 0">			
