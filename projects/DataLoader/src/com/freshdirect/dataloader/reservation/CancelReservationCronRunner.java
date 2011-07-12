@@ -7,7 +7,10 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.analytics.TimeslotEventModel;
+import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.ContactAddressModel;
+import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
 import com.freshdirect.delivery.model.DlvReservationModel;
@@ -48,9 +51,12 @@ public class CancelReservationCronRunner extends BaseReservationCronRunner {
 			if(expiredReservations==null || expiredReservations.isEmpty() || !FDStoreProperties.isDynamicRoutingEnabled())
 				return;
 			
-			
+				
 			for (DlvReservationModel reservation : expiredReservations) {
-				cron.processReservation(dlvManager,custManager,reservation);
+				TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.SYSTEM.getCode(), 
+						false, 0.00, false, false);
+
+				cron.processReservation(dlvManager,custManager,reservation, event);
 			 }
 			LOGGER.info("CancelReservationCronRunner finished");
 		}catch (NamingException e) {
@@ -74,13 +80,13 @@ public class CancelReservationCronRunner extends BaseReservationCronRunner {
 	
 	@Override
     protected void processReservation(DlvManagerSB dlvManager,
-			FDCustomerManagerSB sb, DlvReservationModel reservation) {
+			FDCustomerManagerSB sb, DlvReservationModel reservation, TimeslotEventModel event) {
 		try {
     		
 			 FDIdentity identity=getIdentity(reservation.getCustomerId());
 			 ContactAddressModel address= sb.getAddress(identity, reservation.getAddressId());
 			 if(reservation.isInUPS()) {
-				 dlvManager.releaseReservationEx(reservation, address);
+				 dlvManager.releaseReservationEx(reservation, address, event);
 			 }
 			 
 			} catch (Exception e) {
