@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.customer.ErpAddressModel;
@@ -28,6 +29,8 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDDepotManager;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.Util;
+import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -77,6 +80,14 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) {
 		String actionName = this.getActionName();
 		try {
+			HttpSession session = (HttpSession) pageContext.getSession();
+			FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
+			FDCartModel cart = user.getShoppingCart();
+			TimeslotEventModel event = new TimeslotEventModel(user.getApplication().getCode(),
+					(cart!=null)?cart.isDlvPassApplied():false, (cart!=null)?cart.getDeliverySurcharge():0.00,
+							(cart!=null)?cart.isDeliveryChargeWaived():false, (cart!=null)?Util.isZoneCtActive(cart.getZoneInfo().getZoneId()):false);
+			
+			
 			if ("register".equalsIgnoreCase(actionName)) {
 				RegistrationAction ra = new RegistrationAction(this.registrationType);
 
@@ -100,10 +111,10 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				this.performAddDeliveryAddress(request, actionResult);
 
 			} else if ("editDeliveryAddress".equalsIgnoreCase(actionName)) {
-				this.performEditDeliveryAddress(request, actionResult);
+				this.performEditDeliveryAddress(request, actionResult, event);
 
 			} else if ("deleteDeliveryAddress".equalsIgnoreCase(actionName)) {
-				this.performDeleteDeliveryAddress(request, actionResult);
+				this.performDeleteDeliveryAddress(request, actionResult, event);
 
 			} else if ("changeUserID".equalsIgnoreCase(actionName)) {
 				this.performChangeUserID(request, actionResult);
@@ -132,7 +143,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		return true;
 	}
 
-	protected void performDeleteDeliveryAddress(HttpServletRequest request, ActionResult actionResult) throws FDResourceException {
+	protected void performDeleteDeliveryAddress(HttpServletRequest request, ActionResult actionResult, TimeslotEventModel event) throws FDResourceException {
 		String shipToAddressId = request.getParameter("deleteShipToAddressId");
 		AddressUtil.deleteShipToAddress(getIdentity(), shipToAddressId, actionResult, request);
 		//check that if this address had any outstanding reservations.
@@ -140,7 +151,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
 		FDReservation reservation = user.getReservation();
 		if (reservation != null) {
-			reservation = FDCustomerManager.validateReservation(user, reservation);
+			reservation = FDCustomerManager.validateReservation(user, reservation, event);
 			user.setReservation(reservation);
 			session.setAttribute(USER, user);
 			if(reservation == null){
@@ -216,7 +227,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 	}
 
 
-	protected void performEditDeliveryAddress(HttpServletRequest request, ActionResult actionResult) throws FDResourceException {
+	protected void performEditDeliveryAddress(HttpServletRequest request, ActionResult actionResult, TimeslotEventModel event) throws FDResourceException {
 		HttpSession session = (HttpSession) pageContext.getSession();
 		FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
 
@@ -245,7 +256,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		*/
 		FDReservation reservation = user.getReservation();
 		if(reservation != null){
-			reservation = FDCustomerManager.validateReservation(user, reservation);
+			reservation = FDCustomerManager.validateReservation(user, reservation, event);
 			user.setReservation(reservation);
 			session.setAttribute(USER, user);
 			if(reservation == null){
