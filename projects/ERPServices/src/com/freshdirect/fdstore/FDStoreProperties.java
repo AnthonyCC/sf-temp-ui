@@ -457,6 +457,9 @@ public class FDStoreProperties {
 	private static final String PROP_TWO_MONTH_TRIAL_PASS_SKU = "fdstore.twomonth.trialdp.sku";
 	private static final String PROP_TWO_MONTH_TRIAL_PASS_PRICE = "fdstore.twomonth.trialdp.price";
 	
+	private static final String EVENTLOGGING_ENABLED = "fdstore.eventlogging.enabled";
+	
+	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -912,6 +915,8 @@ public class FDStoreProperties {
 		
 		defaults.put(PROP_TWO_MONTH_TRIAL_PASS_SKU, "MKT0072335");		
 		defaults.put(PROP_TWO_MONTH_TRIAL_PASS_PRICE, "$59.00");
+		
+		defaults.put(EVENTLOGGING_ENABLED, "true");
 		
         refresh();
     }
@@ -1801,6 +1806,10 @@ public class FDStoreProperties {
 
     public static boolean isDynamicRoutingEnabled() {
         return (Boolean.valueOf(get(DYNAMIC_ROUTING_ENABLED))).booleanValue();
+    }
+
+    public static boolean isEventLoggingEnabled() {
+        return (Boolean.valueOf(get(EVENTLOGGING_ENABLED))).booleanValue();
     }
 
     public static boolean isGivexBlackHoleEnabled() {
