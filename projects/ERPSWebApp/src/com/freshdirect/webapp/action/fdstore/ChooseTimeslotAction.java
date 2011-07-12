@@ -5,6 +5,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.delivery.DlvZoneInfoModel;
@@ -16,6 +17,7 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdstore.Util;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
@@ -79,6 +81,9 @@ public class ChooseTimeslotAction extends WebActionSupport {
 			addressId = ((ErpDepotAddressModel) erpAddress).getLocationId();
 		}
 
+		TimeslotEventModel event = new TimeslotEventModel(user.getApplication().getCode(),cart.isDlvPassApplied(),
+				cart.getDeliverySurcharge(), cart.isDeliveryChargeWaived(), Util.isZoneCtActive(cart.getZoneInfo().getZoneId()));
+		
 		try {
 			FDReservation dlvRsv = cart.getDeliveryReservation();
 
@@ -86,7 +91,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 			if (advRsv != null && deliveryTimeSlotId.equals(advRsv.getTimeslotId()) && advRsv.getAddressId().equals(addressId)) {
 				if (dlvRsv != null && !dlvRsv.getPK().equals(advRsv.getPK())) {
 					try {
-						FDDeliveryManager.getInstance().releaseReservation(dlvRsv.getPK().getId(),erpAddress);
+						FDDeliveryManager.getInstance().releaseReservation(dlvRsv.getPK().getId(),erpAddress, event);
 					} catch (FDResourceException fdre) {
 						LOGGER.warn("Error releasing reservation", fdre);
 					}
@@ -113,7 +118,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 
 					try {
 						LOGGER.debug("releasing previous reservation of id=" + prevResrvId);
-						FDDeliveryManager.getInstance().releaseReservation(prevResrvId,erpAddress);
+						FDDeliveryManager.getInstance().releaseReservation(prevResrvId,erpAddress, event);
 					} catch (FDResourceException fdre) {
 						LOGGER.warn("Error releasing reservation", fdre);
 					}
@@ -130,7 +135,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 						EnumReservationType.STANDARD_RESERVATION,
 						erpAddress,
 						chefsTable,
-						ctDeliveryProfile, isForced);
+						ctDeliveryProfile, isForced,event);
 
 				if (EnumCheckoutMode.NORMAL == user.getCheckoutMode()) {
 					setDeliveryTimeslot(session, timeSlotResrv);
