@@ -13,6 +13,8 @@ public class FDDynamicTimeslotList implements Serializable {
 	private List<FDTimeslot> timeslots;
 	
 	private Exception error;
+	
+	private int responseTime;
 
 	public List<FDTimeslot> getTimeslots() {
 		return timeslots;
@@ -28,6 +30,14 @@ public class FDDynamicTimeslotList implements Serializable {
 
 	public void setError(Exception error) {
 		this.error = error;
+	}
+
+	public int getResponseTime() {
+		return responseTime;
+	}
+
+	public void setResponseTime(int responseTime) {
+		this.responseTime = responseTime;
 	}
 	
 	

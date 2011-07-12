@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 import com.freshdirect.delivery.EnumDayShift;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.framework.util.DateUtil;
-import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -28,7 +27,10 @@ public class FDTimeslot implements Serializable, Comparable {
 	private boolean isAlcoholRestricted;
 	private boolean normalAvailCapacity;
 	private boolean availCTCapacity;
-
+	private boolean isHolidayRestricted;
+	private boolean timeslotRemoved;
+	private boolean geoRestricted;
+	
 	/** Creates new FDTimeslot */
 	public FDTimeslot(DlvTimeslotModel dlvTimeslot) {
 		this.dlvTimeslot = dlvTimeslot;
@@ -214,5 +216,29 @@ public class FDTimeslot implements Serializable, Comparable {
 	
 	public static String getDisplayString(boolean forceAmPm, Date startTime, Date endTime) {
 		return format(forceAmPm, DateUtil.toCalendar(startTime), DateUtil.toCalendar(endTime));
+	}
+
+	public boolean isTimeslotRemoved() {
+		return timeslotRemoved;
+	}
+
+	public void setTimeslotRemoved(boolean timeslotRemoved) {
+		this.timeslotRemoved = timeslotRemoved;
+	}
+
+	public boolean isHolidayRestricted() {
+		return isHolidayRestricted;
+	}
+
+	public void setHolidayRestricted(boolean isHolidayRestricted) {
+		this.isHolidayRestricted = isHolidayRestricted;
+	}
+
+	public boolean isGeoRestricted() {
+		return geoRestricted;
+	}
+
+	public void setGeoRestricted(boolean geoRestricted) {
+		this.geoRestricted = geoRestricted;
 	}
 }
