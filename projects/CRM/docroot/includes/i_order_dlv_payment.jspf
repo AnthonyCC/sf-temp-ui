@@ -254,16 +254,20 @@
 				</tr>
 				
 				<%
-					boolean containsAlcohol = false;
-					for (Iterator<FDCartLineI> i = order.getOrderLines().iterator(); i.hasNext();) {
-						FDCartLineI line = i.next();
-						if (line.isAlcohol()) {
-							containsAlcohol = true;
+					List<com.freshdirect.fdstore.customer.WebOrderViewI> views = order.getOrderViews();
+					boolean usq_message = false;
+					if(views != null) {
+						for (Iterator i = views.iterator(); i.hasNext();) {
+							com.freshdirect.fdstore.customer.WebOrderViewI temp = (com.freshdirect.fdstore.customer.WebOrderViewI) i.next();
+							if(temp.getAffiliate().getCode().equals("USQ")) {
+								usq_message = true;
+								break;
+							}
 						}
 					}
 				%>
 				
-				<% if(containsAlcohol) { 
+				<% if(usq_message) { 
 				%>
 					<tr><td colspan="2">&nbsp;</td></tr>
 					<tr>
