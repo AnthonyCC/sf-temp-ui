@@ -12,6 +12,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.freshdirect.analytics.TimeslotEventModel;
+import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
@@ -42,6 +44,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
+import com.freshdirect.fdstore.Util;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -167,7 +170,7 @@ public class OrderConsumer implements IConsumer {
 			//System.out.println("-------> find timeslots from " + begCal.getTime() + " to " + endCal.getTime());
 
 			List timeSlots =
-				FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(begCal.getTime(), endCal.getTime(), address).getTimeslots();
+				FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(begCal.getTime(), endCal.getTime(), null, address).getTimeslots();
 
 			FDTimeslot slot = null;
 
@@ -191,9 +194,13 @@ public class OrderConsumer implements IConsumer {
 			DlvZoneInfoModel zInfo = FDDeliveryManager.getInstance().getZoneInfo(address, new java.util.Date());
 			System.out.println("zone id is : " + zInfo.getZoneId());
 
+			TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.SYSTEM.getCode(), 
+					false, 0.00, false, Util.isZoneCtActive(zInfo.getZoneId()));
+
+			
 			FDReservation reservation = FDDeliveryManager.getInstance()
 											.reserveTimeslot(slot, identity.getErpCustomerPK(), 1000
-														, EnumReservationType.STANDARD_RESERVATION, address, false,null, false);
+														, EnumReservationType.STANDARD_RESERVATION, address, false,null, false, event);
 			cart.setDeliveryReservation(reservation);
 
 			//cart.setDeliveryChargeWaived(true);
