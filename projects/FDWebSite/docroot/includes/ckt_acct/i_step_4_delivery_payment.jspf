@@ -230,7 +230,20 @@ String lineWidth = isShowSmaller?"290":"310";
                 <%= paymentMethod.getBillingRef() %><br>
             <%
             }%>
-			<% if(cart.containsAlcohol()) { 
+			<%
+				List<com.freshdirect.fdstore.customer.WebOrderViewI> views = cart.getOrderViews();
+				boolean usq_message = false;
+				if(views != null) {
+					for (Iterator i = views.iterator(); i.hasNext();) {
+						com.freshdirect.fdstore.customer.WebOrderViewI temp = (com.freshdirect.fdstore.customer.WebOrderViewI) i.next();
+						if(temp.getAffiliate().getCode().equals("USQ")) {
+							usq_message = true;
+							break;
+						}
+					}
+				}
+			%>
+			<% if(usq_message) { 
 				 if("true".equals(receipt)) {
 			%>
 				<span class="text12">I acknowledge that I have purchased alcohol from Union Square Wines & Spirits and that my credit card or checking account will be charged separately by UNION SQUARE WINE.</span>
