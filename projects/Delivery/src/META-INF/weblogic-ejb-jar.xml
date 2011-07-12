@@ -25,11 +25,20 @@
 	        <pool><max-beans-in-free-pool>50</max-beans-in-free-pool>
 	        </pool></stateless-session-descriptor>
         
-		<reference-descriptor>
-            <resource-description>
+	  <reference-descriptor>
+        <resource-description>
                 <res-ref-name>jdbc/dbpool</res-ref-name>
                 <jndi-name>fddatasource</jndi-name>
-            </resource-description>
+        </resource-description>
+        
+        <resource-description>
+                <res-ref-name>jms/QueueFactory</res-ref-name>
+                <jndi-name>queueFactory</jndi-name>
+        </resource-description>
+        <resource-env-description>
+                <res-env-ref-name>jms/Queue</res-env-ref-name>
+                <jndi-name>./logMetricQueue</jndi-name>
+        </resource-env-description>
         </reference-descriptor>
         <jndi-name>freshdirect.delivery.DeliveryManager</jndi-name>
     </weblogic-enterprise-bean>
@@ -148,6 +157,7 @@
         <jndi-name>freshdirect.routing.Gateway</jndi-name>
     </weblogic-enterprise-bean>
     
+   
     <weblogic-enterprise-bean>
         <ejb-name>RoutingLoadListener</ejb-name>
 

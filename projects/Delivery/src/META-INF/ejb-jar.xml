@@ -37,7 +37,8 @@
         </session>
 
 		<session>
-            <ejb-name>DlvManager</ejb-name>
+             
+            <ejb-name>DlvManager</ejb-name>            
             <home>com.freshdirect.delivery.ejb.DlvManagerHome</home>
             <remote>com.freshdirect.delivery.ejb.DlvManagerSB</remote>
             <ejb-class>com.freshdirect.delivery.ejb.DlvManagerSessionBean</ejb-class>
@@ -47,7 +48,16 @@
                 <res-ref-name>jdbc/dbpool</res-ref-name>
                 <res-type>javax.sql.DataSource</res-type>
                 <res-auth>Container</res-auth>
+            </resource-ref>	   
+		    <resource-ref>
+                <res-ref-name>jms/QueueFactory</res-ref-name>
+                <res-type>javax.jms.QueueConnectionFactory</res-type>
+                <res-auth>Container</res-auth>
             </resource-ref>
+            <resource-env-ref>
+                <resource-env-ref-name>jms/Queue</resource-env-ref-name>
+                <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+            </resource-env-ref>
         </session>
         
         <session>
@@ -138,6 +148,7 @@
                 <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
             </resource-env-ref>
         </session>
+       
          <message-driven>
             <ejb-name>RoutingLoadListener</ejb-name>
             <ejb-class>com.freshdirect.delivery.routing.ejb.RoutingLoadListener</ejb-class>
