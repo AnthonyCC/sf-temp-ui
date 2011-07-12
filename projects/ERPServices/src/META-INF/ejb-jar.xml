@@ -577,6 +577,21 @@
             </message-driven-destination>
         </message-driven>
 
+ 
+         <message-driven>
+            <ejb-name>TimeslotEventListener</ejb-name>
+            <ejb-class>com.freshdirect.analytics.TimeslotEventListener</ejb-class>
+            <transaction-type>Container</transaction-type>
+            <message-driven-destination>
+                <destination-type>javax.jms.Queue</destination-type>
+            </message-driven-destination>
+             <resource-ref>
+                <res-ref-name>jdbc/dbpool</res-ref-name>
+                <res-type>javax.sql.DataSource</res-type>
+                <res-auth>Container</res-auth>
+            </resource-ref>	   
+        </message-driven>
+        
         <session>
             <ejb-name>Reconciliation</ejb-name>
             <home>com.freshdirect.payment.ejb.ReconciliationHome</home>
@@ -875,6 +890,13 @@
           <trans-attribute>Required</trans-attribute>
         </container-transaction>
 
+ 		<container-transaction>
+          <method>
+          	 <ejb-name>TimeslotEventListener</ejb-name>
+            <method-name>*</method-name>
+          </method>
+         <trans-attribute>NotSupported</trans-attribute>
+        </container-transaction>
         <!--
         *****************************
         *** Manager Session Beans ***

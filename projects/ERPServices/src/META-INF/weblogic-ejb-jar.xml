@@ -1152,6 +1152,22 @@
         </reference-descriptor>
         <jndi-name>freshdirect.ticketservice</jndi-name>
     </weblogic-enterprise-bean>
+    
+    <weblogic-enterprise-bean>
+        <ejb-name>TimeslotEventListener</ejb-name>
+        <message-driven-descriptor>
+                <pool><max-beans-in-free-pool>50</max-beans-in-free-pool>
+                </pool>
+            <destination-jndi-name>logMetricQueue</destination-jndi-name>
+        </message-driven-descriptor>
+		 <reference-descriptor>
+        <resource-description>
+                <res-ref-name>jdbc/dbpool</res-ref-name>
+                <jndi-name>fddatasource</jndi-name>
+        </resource-description>
+        </reference-descriptor>
+        <jndi-name>freshdirect.analytics.TimeslotEventListener</jndi-name>
+    </weblogic-enterprise-bean>
           
            
     <transaction-isolation>
