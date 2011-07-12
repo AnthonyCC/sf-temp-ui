@@ -11,6 +11,7 @@ import javax.jms.ObjectMessage;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.AddressI;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
@@ -185,20 +186,21 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
 	
 	private void process(TimeslotCommand command) throws FDResourceException {
 		
-		FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZoneEx(command.getTimeSlots(), command.getAddress());
+		TimeslotEventModel event = null;
+		FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZoneEx(command.getTimeSlots(),event, command.getAddress());
 	}
 	
     private void process(ReserveTimeslotCommand command) throws FDResourceException {
 		
-		FDDeliveryManager.getInstance().reserveTimeslotEx(command.getReservation(), command.getAddress(), command.getTimeslot());
+		FDDeliveryManager.getInstance().reserveTimeslotEx(command.getReservation(), command.getAddress(), command.getTimeslot(), command.getEvent());
 	}
 	
     private void process(ConfirmTimeslotCommand command) throws FDResourceException {
 		
     	if(command != null && command.isUpdateOnly()) {
-    		FDDeliveryManager.getInstance().commitReservationEx(command.getReservation(), command.getAddress());
+    		FDDeliveryManager.getInstance().commitReservationEx(command.getReservation(), command.getAddress(), command.getEvent());
     	} else {
-    		FDDeliveryManager.getInstance().commitReservationEx(command.getReservation(), command.getAddress());
+    		FDDeliveryManager.getInstance().commitReservationEx(command.getReservation(), command.getAddress(), command.getEvent());
 		
     	}
     
@@ -211,7 +213,7 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
 
     private void process(CancelTimeslotCommand command) throws FDResourceException {
 		
-		FDDeliveryManager.getInstance().releaseReservationEx(command.getReservation(), command.getAddress());
+		FDDeliveryManager.getInstance().releaseReservationEx(command.getReservation(), command.getAddress(), command.getEvent());
 	}
 				
 }

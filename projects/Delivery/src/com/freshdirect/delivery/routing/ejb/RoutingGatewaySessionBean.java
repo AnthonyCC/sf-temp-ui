@@ -10,6 +10,7 @@ import javax.jms.ObjectMessage;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.AddressI;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.ContactAddressModel;
@@ -42,27 +43,29 @@ public class RoutingGatewaySessionBean extends GatewaySessionBeanSupport {
 		this.enqueue(command);
 	}
 
-	public void sendReserveTimeslotRequest(DlvReservationModel reservation, ContactAddressModel address, FDTimeslot timeslot) {
+	public void sendReserveTimeslotRequest(DlvReservationModel reservation, ContactAddressModel address, FDTimeslot timeslot, TimeslotEventModel event) {
 		ReserveTimeslotCommand command=new ReserveTimeslotCommand();
 		command.setAddress(address);
 		command.setReservation(reservation);
 		command.setTimeslot(timeslot);
-		
+		command.setEvent(event);
 		this.enqueue(command);
 	}
 	
-	public void sendCommitReservationRequest(DlvReservationModel reservation, ContactAddressModel address) {
+	public void sendCommitReservationRequest(DlvReservationModel reservation, ContactAddressModel address, TimeslotEventModel event) {
 		ConfirmTimeslotCommand command=new ConfirmTimeslotCommand();
 		command.setReservation(reservation);
 		command.setAddress(address);
+		command.setEvent(event);
 		//command.setPreviousOrderId(previousOrderId);
 		this.enqueue(command);
 	}
 	
-	public void sendReleaseReservationRequest(DlvReservationModel reservation, ContactAddressModel address) {
+	public void sendReleaseReservationRequest(DlvReservationModel reservation, ContactAddressModel address, TimeslotEventModel event) {
 		CancelTimeslotCommand command=new CancelTimeslotCommand();
 		command.setReservation(reservation);
 		command.setAddress(address);
+		command.setEvent(event);
 		this.enqueue(command);
 	}
 		

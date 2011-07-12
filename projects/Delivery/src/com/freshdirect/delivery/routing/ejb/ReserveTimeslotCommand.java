@@ -1,5 +1,6 @@
 package com.freshdirect.delivery.routing.ejb;
 
+import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.fdstore.FDTimeslot;
@@ -8,7 +9,7 @@ public class ReserveTimeslotCommand implements java.io.Serializable {
 	private DlvReservationModel reservation;
 	private ContactAddressModel address;
 	private FDTimeslot timeslot;
-	
+	private TimeslotEventModel event;
 	public FDTimeslot getTimeslot() {
 		return timeslot;
 	}
@@ -27,5 +28,11 @@ public class ReserveTimeslotCommand implements java.io.Serializable {
 	}
 	public void setAddress(ContactAddressModel address) {
 		this.address = address;
+	}
+	public TimeslotEventModel getEvent() {
+		return event;
+	}
+	public void setEvent(TimeslotEventModel event) {
+		this.event = event;
 	}
 }
