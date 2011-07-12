@@ -80,7 +80,7 @@ public class DepotCapacityCache implements Runnable {
 								begCal.getTime(),
 								endCal.getTime(),
 								depot.getRegionId(),
-								location.getZoneCode(), getContactAddress(location)).getTimeslots();
+								location.getZoneCode(), null, getContactAddress(location)).getTimeslots();
 						for (int idx = 0, size = timeslots.size(); idx < size; idx++) {
 							FDTimeslot timeslot = (FDTimeslot) timeslots.get(idx);
 							if (timeslot.getTotalAvailable() > 0) {
