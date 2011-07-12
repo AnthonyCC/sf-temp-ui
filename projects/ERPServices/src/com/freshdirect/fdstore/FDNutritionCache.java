@@ -36,7 +36,7 @@ public class FDNutritionCache extends FDAbstractCache {
 		try{
 			LOGGER.info("REFRESHING");
 			ErpNutritionSB sb = this.lookupNutritionHome().create();
-			sb.loadNutrition(since);
+			Map data = sb.loadNutrition(since);
 			
 			LOGGER.info("REFRESHED: " + data.size());
 			return data;
