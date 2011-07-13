@@ -39,6 +39,7 @@ import oracle.sql.ArrayDescriptor;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.crm.CrmCaseOrigin;
@@ -1893,6 +1894,8 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 	}
 	
 	private void postMassCancellation(List reservations) {
+		TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.CUSTOMER_REP.getCode(), 
+				false,0.00, false, false);
 		for (Iterator i = reservations.iterator(); i.hasNext();) {
 			FDCustomerReservationInfo info = (FDCustomerReservationInfo)i.next();
 			try {
@@ -1900,7 +1903,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				for (ErpAddressModel address : addressList) {
 					if(address.getId().equals(info.getAddress().getId())) {
 						info.getAddress().setFrom(address, info.getFirstName(), info.getLastName(), info.getIdentity().getErpCustomerPK());
-						FDDeliveryManager.getInstance().removeReservationEx(info.getId(), info.getAddress());
+						FDDeliveryManager.getInstance().removeReservationEx(info.getId(), info.getAddress(), event);
 					}						
 				}
 			} catch(Exception e) {
