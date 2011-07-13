@@ -36,7 +36,8 @@ public class FDTimeslotUtil implements Serializable {
 	private final SortedMap<Date, Map<String, List<FDTimeslot>>> timeslotMap = new TreeMap<Date, Map<String, List<FDTimeslot>>>();
 	private final Set<Date> holidaySet = new HashSet<Date>();
 	
-	public FDTimeslotUtil( List<FDTimeslot> timeslots, Calendar startCal, Calendar endCal, DlvRestrictionsList restrictions ) {
+	private int responseTime; 
+	public FDTimeslotUtil( List<FDTimeslot> timeslots, Calendar startCal, Calendar endCal, DlvRestrictionsList restrictions, int responseTime ) {
 		Collections.sort( timeslots, TIMESLOT_COMPARATOR );
 		
 		for ( FDTimeslot timeslot : timeslots ) {
@@ -77,7 +78,9 @@ public class FDTimeslotUtil implements Serializable {
 				}	
 			}			
 			startCal.add( Calendar.DATE, 1 );
-		}		
+		}	
+		
+		this.setResponseTime(responseTime);
 	}
 	
 	public boolean hasCapacity() {
@@ -301,5 +304,14 @@ public class FDTimeslotUtil implements Serializable {
 			return t1.getBegDateTime().compareTo(t2.getBegDateTime());
 		}
 	};
+	public int getResponseTime() {
+		return responseTime;
+	}
+
+	public void setResponseTime(int responseTime) {
+		this.responseTime = responseTime;
+	}
+	
+
 	
 }
