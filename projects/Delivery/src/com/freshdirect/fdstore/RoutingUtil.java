@@ -20,6 +20,7 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
@@ -478,11 +479,11 @@ public class RoutingUtil {
 		return data;
 	}
 	
-	public FDDynamicTimeslotList getTimeslotsForDateRangeAndZoneEx(List<FDTimeslot> timeSlots, ContactAddressModel address) {
+	public FDDynamicTimeslotList getTimeslotsForDateRangeAndZoneEx(List<FDTimeslot> timeSlots, TimeslotEventModel event, ContactAddressModel address) {
 		
 		try {
 				DlvManagerSB sb = getDlvManagerHome().create();
-				return sb.getTimeslotForDateRangeAndZoneEx(timeSlots, address);
+				return sb.getTimeslotForDateRangeAndZoneEx(timeSlots, event,address);
 
 			} catch (Exception ce) {
 				dlvHome = null;
@@ -513,11 +514,11 @@ public class RoutingUtil {
 			}
 	}
 
-	public   boolean sendTimeslotReservationRequest(DlvReservationModel reservation, ContactAddressModel address, FDTimeslot timeslot)  {
+	public   boolean sendTimeslotReservationRequest(DlvReservationModel reservation, ContactAddressModel address, FDTimeslot timeslot, TimeslotEventModel event)  {
 
 		try {
 				RoutingGatewaySB routingSB = getRoutingGatewayHome().create();
-				routingSB.sendReserveTimeslotRequest(reservation,address, timeslot);
+				routingSB.sendReserveTimeslotRequest(reservation,address, timeslot, event);
 				return true;
 
 			} catch (Exception ce) {
@@ -531,11 +532,11 @@ public class RoutingUtil {
 			}
 	}
 
-	public boolean sendCommitReservationRequest(DlvReservationModel reservation,ContactAddressModel address) {
+	public boolean sendCommitReservationRequest(DlvReservationModel reservation,ContactAddressModel address, TimeslotEventModel event) {
 
 		try {
 			RoutingGatewaySB routingSB = getRoutingGatewayHome().create();
-			routingSB.sendCommitReservationRequest(reservation, address);
+			routingSB.sendCommitReservationRequest(reservation, address,event);
 			return true;
 
 		} catch (Exception ce) {
@@ -550,11 +551,11 @@ public class RoutingUtil {
 
 	}
 
-	public boolean sendReleaseReservationRequest(DlvReservationModel reservation,ContactAddressModel address) {
+	public boolean sendReleaseReservationRequest(DlvReservationModel reservation,ContactAddressModel address, TimeslotEventModel event) {
 
 		try {
 			RoutingGatewaySB routingSB = getRoutingGatewayHome().create();
-			routingSB.sendReleaseReservationRequest(reservation,address);
+			routingSB.sendReleaseReservationRequest(reservation,address,event);
 			return true;
 
 		} catch (Exception ce) {
