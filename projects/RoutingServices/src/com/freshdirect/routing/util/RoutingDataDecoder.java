@@ -1,6 +1,7 @@
 package com.freshdirect.routing.util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -314,6 +315,16 @@ public class RoutingDataDecoder {
 		deliverySlot.setTotalServiceTime(deliveryCost.getTotalServiceTime());
 		deliverySlot.setTotalTravelTime(deliveryCost.getTotalTravelTime());
 		deliverySlot.setTotalWaitTime(deliveryCost.getTotalWaitTime());
+		deliverySlot.setUnavailabilityReason(deliveryCost.getUnavailabilityReason());
+		deliverySlot.setWaveVehicles(deliveryCost.getWaveVehicles());
+		deliverySlot.setWaveVehiclesInUse(deliveryCost.getWaveVehiclesInUse());
+		if(deliveryCost.getWaveStartTime()!=null)
+			deliverySlot.setWaveStartTime(deliveryCost.getWaveStartTime().getAsCalendar().getTime());
+		deliverySlot.setWaveOrdersTaken(deliveryCost.getWaveOrdersTaken());
+		deliverySlot.setTotalQuantities(deliveryCost.getTotalQuantities().getSize1());
+		deliverySlot.setNewRoute(deliveryCost.getNewRoute());
+		
+		deliverySlot.setCapacities(deliveryCost.getCapacities().getSize1());
 		
 		return deliverySlot;
 	}
