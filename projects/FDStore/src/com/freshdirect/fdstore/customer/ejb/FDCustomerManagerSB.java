@@ -12,6 +12,7 @@ import java.util.SortedSet;
 
 import javax.ejb.EJBObject;
 
+import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.crm.CrmAgentModel;
@@ -524,13 +525,13 @@ public interface FDCustomerManagerSB extends EJBObject {
 
 	public FDCustomerCreditHistoryModel getCreditHistory(FDIdentity identity) throws FDResourceException, RemoteException;
 	
-	public FDReservation makeReservation(FDIdentity identity, FDTimeslot timeslot, EnumReservationType rsvType, String addressId, FDActionInfo aInfo, boolean chefsTable) throws FDResourceException, ReservationException, RemoteException;
+	public FDReservation makeReservation(FDIdentity identity, FDTimeslot timeslot, EnumReservationType rsvType, String addressId, FDActionInfo aInfo, boolean chefsTable, TimeslotEventModel event) throws FDResourceException, ReservationException, RemoteException;
 	
 	public void updateWeeklyReservation(FDIdentity identity, FDTimeslot timeslot, String addressId, FDActionInfo aInfo) throws FDResourceException, RemoteException;
 	
-	public FDReservation changeReservation(FDIdentity identity, FDReservation oldReservation, FDTimeslot timeslot, EnumReservationType rsvType, String addressId, FDActionInfo aInfo, boolean chefstable) throws FDResourceException, ReservationException, RemoteException;
+	public FDReservation changeReservation(FDIdentity identity, FDReservation oldReservation, FDTimeslot timeslot, EnumReservationType rsvType, String addressId, FDActionInfo aInfo, boolean chefstable, TimeslotEventModel event) throws FDResourceException, ReservationException, RemoteException;
 	
-	public void cancelReservation (FDIdentity identity, FDReservation reservation, EnumReservationType type, FDActionInfo actionInfo) throws FDResourceException, RemoteException;
+	public void cancelReservation (FDIdentity identity, FDReservation reservation, EnumReservationType type, FDActionInfo actionInfo, TimeslotEventModel event) throws FDResourceException, RemoteException;
 	
 	public List<ReservationInfo> getRecurringReservationList() throws FDResourceException, RemoteException;
 	
