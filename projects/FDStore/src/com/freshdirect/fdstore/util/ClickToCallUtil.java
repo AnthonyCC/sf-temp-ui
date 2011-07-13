@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.crm.CrmClick2CallModel;
@@ -195,8 +196,9 @@ public class ClickToCallUtil {
 				Calendar endCal = Calendar.getInstance();
 				endCal.add(Calendar.DATE, 2);
 				endCal = DateUtil.truncate(endCal);
+				TimeslotEventModel event = null; 
 				List<FDTimeslot> timeSlots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(begCal.getTime()
-							, endCal.getTime(), (ContactAddressModel)address).getTimeslots();
+							, endCal.getTime(), event, (ContactAddressModel)address).getTimeslots();
 				if(null == timeSlots || timeSlots.size()==0){
 					displayClick2CallInfo = true;
 				}else{
