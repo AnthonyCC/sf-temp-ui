@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.ReservationException;
@@ -29,9 +30,10 @@ public class DeliveryTimeValidator {
 		Date endTime = standingOrder.getEndTime();
 
 		boolean chefsTable = user.isChefsTable();
-
+		/** passing null context object as this class is not called from anywhere */
+		TimeslotEventModel event = null;
 		List<FDTimeslot> deliverySlots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(
-				DateUtil.truncate(nextDate), DateUtil.addDays(DateUtil.truncate(nextDate), 1), deliveryAddress).getTimeslots();
+				DateUtil.truncate(nextDate), DateUtil.addDays(DateUtil.truncate(nextDate), 1), event, deliveryAddress).getTimeslots();
 
 		FDTimeslot deliverySlot = null;
 		for (FDTimeslot candidateSlot : deliverySlots) {
@@ -59,7 +61,7 @@ public class DeliveryTimeValidator {
 			String custId = user.getIdentity().getErpCustomerPK();
 			FDReservation reservation = FDDeliveryManager.getInstance().reserveTimeslot(deliverySlot, custId,
 					RESERVATION_MILLISECONDS, EnumReservationType.STANDARD_RESERVATION, deliveryAddress, chefsTable,
-					ctDeliveryProfile, false);
+					ctDeliveryProfile, false, event);
 
 			return reservation;
 
