@@ -25,6 +25,7 @@ import org.apache.log4j.Category;
 
 import weblogic.auddi.util.Logger;
 
+import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.AddressI;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -76,6 +77,7 @@ import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.delivery.depot.DlvDepotModel;
 import com.freshdirect.delivery.depot.DlvLocationModel;
+import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.delivery.routing.ejb.RoutingGatewayHome;
 import com.freshdirect.delivery.routing.ejb.RoutingGatewaySB;
 import com.freshdirect.deliverypass.DeliveryPassException;
@@ -93,6 +95,7 @@ import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdstore.FDZoneNotFoundException;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDCompositeAvailability;
@@ -745,13 +748,13 @@ public class FDCustomerManager {
 		FDIdentity identity,
 		FDReservation reservation,
 		EnumReservationType rsvType,
-		FDActionInfo aInfo)
+		FDActionInfo aInfo, TimeslotEventModel event)
 		throws FDResourceException {
 		lookupManagerHome();
 
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			sb.cancelReservation(identity, reservation, rsvType, aInfo);
+			sb.cancelReservation(identity, reservation, rsvType, aInfo, event);
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error talking to session bean");
@@ -766,13 +769,13 @@ public class FDCustomerManager {
 		FDTimeslot timeslot,
 		EnumReservationType rsvType,
 		String addressId,
-		FDActionInfo aInfo, boolean chefsTable)
+		FDActionInfo aInfo, boolean chefsTable, TimeslotEventModel event)
 		throws FDResourceException, ReservationException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 
-			return sb.makeReservation(identity, timeslot, rsvType, addressId, aInfo, chefsTable);
+			return sb.makeReservation(identity, timeslot, rsvType, addressId, aInfo, chefsTable,event);
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error talking to session bean");
@@ -803,14 +806,14 @@ public class FDCustomerManager {
 		EnumReservationType rsvType,
 		String addressId,
 		FDActionInfo aInfo,
-		boolean chefstable)
+		boolean chefstable,TimeslotEventModel event)
 		throws FDResourceException, ReservationException {
 		lookupManagerHome();
 
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 
-			return sb.changeReservation(identity, oldReservation, timeslot, rsvType, addressId, aInfo, chefstable);
+			return sb.changeReservation(identity, oldReservation, timeslot, rsvType, addressId, aInfo, chefstable,event);
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error talking to session bean");
@@ -842,11 +845,11 @@ public class FDCustomerManager {
 
 	}
 
-	public static FDReservation validateReservation(FDUserI user, FDReservation reservation) throws FDResourceException {
+	public static FDReservation validateReservation(FDUserI user, FDReservation reservation, TimeslotEventModel event) throws FDResourceException {
 		//TODO have to implement this method correctly with Depot and COS handling
 		ErpAddressModel address = getAddress(user.getIdentity(), reservation.getAddressId());
 		if (address == null) {
-			FDDeliveryManager.getInstance().removeReservation(reservation.getPK().getId(),address);
+			FDDeliveryManager.getInstance().removeReservation(reservation.getPK().getId(),address, event);
 			if (EnumReservationType.RECURRING_RESERVATION.equals(reservation.getReservationType())) {
 				updateRecurringReservation(user.getIdentity(), null, null, null, "CUSTOMER");
 			}
@@ -862,10 +865,24 @@ public class FDCustomerManager {
 			Calendar endCal = Calendar.getInstance();
 			endCal.setTime(reservation.getStartTime());
 			endCal.add(Calendar.DATE, 1);
+			
+			DlvZoneModel dlvZoneModel = null;
+			try 
+			{
+				dlvZoneModel = FDDeliveryManager.getInstance().findZoneById(zoneInfo.getZoneId());
+			} 
+			catch (FDResourceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (FDZoneNotFoundException e) {
+				e.printStackTrace();
+			}
+			
 			List<FDTimeslot> timeslots =
 				FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(
 					reservation.getStartTime(),
-					endCal.getTime(),
+					endCal.getTime(),event,
 					address).getTimeslots();
 			FDTimeslot matchingTimeslot = null;
 			for ( FDTimeslot t : timeslots ) {
@@ -877,7 +894,7 @@ public class FDCustomerManager {
 					break;
 				}
 			}
-			FDDeliveryManager.getInstance().removeReservation(reservation.getPK().getId(),address);
+			FDDeliveryManager.getInstance().removeReservation(reservation.getPK().getId(),address, event);
 			if (EnumReservationType.RECURRING_RESERVATION.equals(reservation.getReservationType())) {
 				updateRecurringReservation(user.getIdentity(), null, null, null, "CUSTOMER");
 			}
@@ -890,7 +907,7 @@ public class FDCustomerManager {
 					reservation.getReservationType(),
 					address,
 					reservation.isChefsTable(),
-					null, false);
+					null, false, event);
 			}
 			
 			return null;
