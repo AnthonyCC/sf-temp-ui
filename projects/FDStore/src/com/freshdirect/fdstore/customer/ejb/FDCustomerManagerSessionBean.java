@@ -29,12 +29,14 @@ import javax.ejb.ObjectNotFoundException;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmCaseSubject;
@@ -45,6 +47,7 @@ import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.DlvSaleInfo;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumAlertType;
+import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumComplaintLineMethod;
 import com.freshdirect.customer.EnumComplaintStatus;
 import com.freshdirect.customer.EnumDeliverySetting;
@@ -117,6 +120,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.URLRewriteRule;
+import com.freshdirect.fdstore.Util;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDCompositeAvailability;
@@ -1455,6 +1459,19 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 		PrimaryKey pk = null;
 		FDIdentity identity = info.getIdentity();
+		String zoneId = null;
+		try
+		{
+			zoneId = createOrder.getDeliveryInfo().getDeliveryAddress().getAddressInfo().getZoneId();
+		}
+		catch(Exception e)
+		{
+			
+			// do nothing
+		}
+		TimeslotEventModel event = new TimeslotEventModel(info.getSource().getCode(), 
+				createOrder.isDlvPassApplied(),createOrder.getDeliverySurcharge(), Util.isDlvChargeWaived(createOrder), Util.isZoneCtActive(zoneId));
+		
 		try {
 
 			DlvManagerSB dlvSB = this.getDlvManagerHome().create();
@@ -1604,7 +1621,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			FDDeliveryManager.getInstance().commitReservation(reservationId,
 					identity.getErpCustomerPK(), pk.getId(),
-					createOrder.getDeliveryInfo().getDeliveryAddress(), info.isPR1());
+					createOrder.getDeliveryInfo().getDeliveryAddress(), info.isPR1(), event);
 
 			if (null != createOrder.getSelectedGiftCards()
 					&& createOrder.getSelectedGiftCards().size() > 0) {
@@ -1812,6 +1829,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			boolean sendEmail, int currentDPExtendDays) throws FDResourceException,
 			ErpTransactionException, DeliveryPassException {
 		try {
+			TimeslotEventModel event = new TimeslotEventModel(info.getSource().getCode(), 
+					false,0.00, false, false);
+			
 			// !!! verify that the sale belongs to the customer
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			String initiator = info.getAgent() == null ? null : info.getAgent()
@@ -1876,7 +1896,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 				isRestored = FDDeliveryManager.getInstance()
 						.releaseReservation(reservationId,
-								order.getDeliveryAddress());
+								order.getDeliveryAddress(), event);
 			}
 			if (null != order.getAppliedGiftCards()
 					&& order.getAppliedGiftCards().size() > 0) {
@@ -1986,6 +2006,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			DeliveryPassException, FDPaymentInadequateException,
 			InvalidCardException, ErpAddressVerificationException {
 
+		TimeslotEventModel event = new TimeslotEventModel(info.getSource().getCode(), 
+				order.isDlvPassApplied(),order.getDeliverySurcharge(), Util.isDlvChargeWaived(order), Util.isZoneCtActive(order.getDeliveryInfo().getDeliveryZone()) );
+		
+		
 		FDIdentity identity = info.getIdentity();
 		try {
 			// !!! verify that the sale belongs to the customer
@@ -2195,13 +2219,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 				// reservation has changed so release old reservation
 				FDDeliveryManager.getInstance().releaseReservation(
-						oldReservationId, fdOrder.getDeliveryAddress());
+						oldReservationId, fdOrder.getDeliveryAddress(), event);
 				// now commit the new Reservation
 				// dlvSB.commitReservation(newReservationId,
 				// identity.getErpCustomerPK(), saleId);
 				FDDeliveryManager.getInstance().commitReservation(
 						newReservationId, identity.getErpCustomerPK(), saleId,
-						order.getDeliveryInfo().getDeliveryAddress(), info.isPR1());
+						order.getDeliveryInfo().getDeliveryAddress(), info.isPR1(), event);
 			}
 			if (order.getSelectedGiftCards() != null
 					&& order.getSelectedGiftCards().size() > 0) {
@@ -3491,17 +3515,18 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public FDReservation changeReservation(FDIdentity identity,
 			FDReservation oldReservation, FDTimeslot timeslot,
-			EnumReservationType rsvType, String addressId, FDActionInfo aInfo, boolean chefstable)
+			EnumReservationType rsvType, String addressId, FDActionInfo aInfo, boolean chefstable, TimeslotEventModel event)
 			throws FDResourceException, ReservationException {
-		this.cancelReservation(identity, oldReservation, rsvType, aInfo);
+		this.cancelReservation(identity, oldReservation, rsvType, aInfo, event);
 		aInfo.setNote("Make Pre-Reservation");
+		
 		return this.makeReservation(identity, timeslot, rsvType, addressId,
-				aInfo, chefstable);
+				aInfo, chefstable, event);
 	}
 
 	public FDReservation makeReservation(FDIdentity identity,
 			FDTimeslot timeslot, EnumReservationType rsvType, String addressId,
-			FDActionInfo aInfo, boolean chefsTable) throws FDResourceException,
+			FDActionInfo aInfo, boolean chefsTable, TimeslotEventModel event) throws FDResourceException,
 			ReservationException {
 
 		long duration = timeslot.getCutoffDateTime().getTime()
@@ -3513,7 +3538,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 
 		ErpAddressModel address=getAddress(identity,addressId);
-		FDReservation rsv=FDDeliveryManager.getInstance().reserveTimeslot(timeslot, identity.getErpCustomerPK(), duration, rsvType, address, chefsTable,null,false);			
+		FDReservation rsv=FDDeliveryManager.getInstance().reserveTimeslot(timeslot, identity.getErpCustomerPK(), duration, rsvType, address, chefsTable,null,false, event);			
 
 		if (EnumReservationType.RECURRING_RESERVATION.equals(rsvType)) {
 			this.updateRecurringReservation(identity,
@@ -3582,7 +3607,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public void cancelReservation(FDIdentity identity,
 			FDReservation reservation, EnumReservationType rsvType,
-			FDActionInfo actionInfo) throws FDResourceException {
+			FDActionInfo actionInfo, TimeslotEventModel event) throws FDResourceException {
 
 		if (reservation != null) {
 			/*
@@ -3592,7 +3617,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			ErpAddressModel address = getAddress(identity, reservation
 					.getAddressId());
 			FDDeliveryManager.getInstance().removeReservation(
-					reservation.getPK().getId(), address);
+					reservation.getPK().getId(), address, event);
 		}
 		if (EnumReservationType.RECURRING_RESERVATION.equals(rsvType)) {
 			this.updateRecurringReservation(identity, null, null, null);
