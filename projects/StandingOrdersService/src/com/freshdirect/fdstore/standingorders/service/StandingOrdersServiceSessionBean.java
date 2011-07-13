@@ -17,6 +17,7 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.CustomerRatingI;
@@ -47,6 +48,7 @@ import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdstore.Util;
 import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDCompositeAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDMuniAvailabilityInfo;
@@ -190,10 +192,13 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			Result result;
 			try {
 				
+				TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.STANDING_ORDER.getCode(), 
+						false, 0.00, false, false);
+
 				if(null !=altDates){
-					result = process( so,altDates.get(so.getNextDeliveryDate()) );
+					result = process( so,altDates.get(so.getNextDeliveryDate()), event );
 				}else{
-					result = process( so,null);
+					result = process( so,null, event);
 				}
 //				result = process( so );
 				
@@ -389,7 +394,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	private StandingOrdersServiceResult.Result process( FDStandingOrder so, Date altDate ) throws FDResourceException {
+	private StandingOrdersServiceResult.Result process( FDStandingOrder so, Date altDate, TimeslotEventModel event) throws FDResourceException {
 		
 		LOGGER.info( "Processing Standing Order : " + so );		
 		
@@ -620,7 +625,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			}
 			try { 
 				LOGGER.info( "Trying to make reservation for timeslot: " + timeslot.toString() );
-				reservation = FDCustomerManager.makeReservation( customer, timeslot, EnumReservationType.STANDARD_RESERVATION, deliveryAddressId, reserveActionInfo, false );
+				reservation = FDCustomerManager.makeReservation( customer, timeslot, EnumReservationType.STANDARD_RESERVATION, deliveryAddressId, reserveActionInfo, false, event );
 				selectedTimeslot = timeslot;
 				LOGGER.info( "Timeslot reserved successfully: " + timeslot.toString() );
 			} catch ( ReservationUnavailableException e ) {
@@ -1099,6 +1104,9 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			LOGGER.error( "Getting standing order alternate delivery dates failed with FDResourceException!", e );
 		}
 		
+		TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.STANDING_ORDER.getCode(), 
+				false, 0.00, false, false);
+		
 		LOGGER.info( "Processing " + soList.size() + " standing orders." );
 		for ( String _so : soList ) {
 			Result result;
@@ -1106,9 +1114,9 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			try {
 				so=soManager.load(new PrimaryKey(_so));
 				if(null !=altDates){
-					result = process( so,altDates.get(so.getNextDeliveryDate()) );
+					result = process( so,altDates.get(so.getNextDeliveryDate()), event );
 				}else{
-					result = process( so,null);
+					result = process( so,null, event);
 				}
 //				result = process( so );
 				
