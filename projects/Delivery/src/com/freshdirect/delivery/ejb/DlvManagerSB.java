@@ -211,4 +211,5 @@ public interface DlvManagerSB extends EJBObject {
 			List<FDTimeslot> timeSlots,TimeslotEventModel event, 
 			ContactAddressModel address, int responseTime) throws RemoteException;
 	
+	void fixDisassociatedTimeslots()throws RemoteException;
 }   
