@@ -42,6 +42,9 @@ import com.freshdirect.delivery.ejb.DlvManagerSB;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneModel;
+import com.freshdirect.analytics.TimeslotEventModel;
+import com.freshdirect.analytics.EventType;
+import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
@@ -50,6 +53,8 @@ import com.freshdirect.erp.EnumStateCodes;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.TimedLruCache;
 import com.freshdirect.routing.model.IDeliveryReservation;
+import com.freshdirect.routing.model.IDeliverySlot;
+import com.freshdirect.routing.model.IOrderModel;
 
 /**
  * @version $Revision:23$
@@ -392,7 +397,7 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public FDDynamicTimeslotList getTimeslotsForDateRangeAndZone(Date begDate, Date endDate, ContactAddressModel address) throws FDResourceException {
+	public FDDynamicTimeslotList getTimeslotsForDateRangeAndZone(Date begDate, Date endDate,  TimeslotEventModel event,ContactAddressModel address) throws FDResourceException {
 		try {			
 			List<FDTimeslot> retLst = new ArrayList<FDTimeslot>();
 			DlvManagerSB sb = getDlvManagerHome().create();
@@ -403,7 +408,7 @@ public class FDDeliveryManager {
 			FDDynamicTimeslotList dynamicTimeslots = new FDDynamicTimeslotList();
 			dynamicTimeslots.setTimeslots(retLst);
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
-				dynamicTimeslots = this.getTimeslotsForDateRangeAndZoneEx(retLst, address);				
+				dynamicTimeslots = this.getTimeslotsForDateRangeAndZoneEx(retLst, event, address);		
 			}
 			return dynamicTimeslots;
 			
@@ -463,7 +468,7 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public FDDynamicTimeslotList getTimeslotsForDepot(Date begDate, Date endDate, String regionId, String zoneCode, ContactAddressModel address) throws FDResourceException {
+	public FDDynamicTimeslotList getTimeslotsForDepot(Date begDate, Date endDate, String regionId,   String zoneCode,TimeslotEventModel event, ContactAddressModel address) throws FDResourceException {
 
 		try {
 			List<FDTimeslot> retLst = new ArrayList<FDTimeslot>();
@@ -475,7 +480,8 @@ public class FDDeliveryManager {
 			FDDynamicTimeslotList dynamicTimeslots = new FDDynamicTimeslotList();
 			dynamicTimeslots.setTimeslots(retLst);
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
-				dynamicTimeslots = this.getTimeslotsForDateRangeAndZoneEx(retLst, address);				
+				dynamicTimeslots = this.getTimeslotsForDateRangeAndZoneEx(retLst, event, address);
+
 			}
 			return dynamicTimeslots;
 		} catch (RemoteException re) {
@@ -495,7 +501,7 @@ public class FDDeliveryManager {
 		ContactAddressModel address,
 		boolean chefsTable,
 		String ctDeliveryProfile,
-		boolean isForced) throws FDResourceException, ReservationException {
+		boolean isForced, TimeslotEventModel event) throws FDResourceException, ReservationException {
 
 		try {
 
@@ -503,7 +509,7 @@ public class FDDeliveryManager {
 
 			DlvManagerSB sb = getDlvManagerHome().create();
 			DlvReservationModel dlvReservation = sb
-				.reserveTimeslot(timeslot.getDlvTimeslot(), customerId, holdTime, type, address, chefsTable,ctDeliveryProfile,isForced);
+				.reserveTimeslot(timeslot.getDlvTimeslot(), customerId, holdTime, type, address, chefsTable,ctDeliveryProfile,isForced, event);
 
 			FDReservation reservation = new FDReservation(
 				dlvReservation.getPK(),
@@ -516,7 +522,7 @@ public class FDDeliveryManager {
 				dlvReservation.getUnassignedActivityType(),
 				dlvReservation.getStatusCode());
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
-				boolean isSent=RoutingUtil.getInstance().sendTimeslotReservationRequest(dlvReservation, address, timeslot);
+				boolean isSent=RoutingUtil.getInstance().sendTimeslotReservationRequest(dlvReservation, address, timeslot, event);
 				if(!isSent) {
 					sb.setUnassignedInfo(dlvReservation.getId(), RoutingActivityType.RESERVE_TIMESLOT);
 				}
@@ -560,11 +566,11 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public void removeReservation(String reservationId,ContactAddressModel address) throws FDResourceException {
+	public void removeReservation(String reservationId,ContactAddressModel address, TimeslotEventModel event) throws FDResourceException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			sb.removeReservation(reservationId);
-			removeReservationEx(reservationId, address);
+			removeReservationEx(reservationId, address,event);
 
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -573,13 +579,13 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public void removeReservationEx(String reservationId,ContactAddressModel address) throws FDResourceException {
+	public void removeReservationEx(String reservationId,ContactAddressModel address, TimeslotEventModel event) throws FDResourceException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
 				DlvReservationModel reservation=sb.getReservation(reservationId);
-				boolean isSent=	RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address);
+				boolean isSent=	RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address, event);
 				if(!isSent && !reservation.isUnassigned()) {
 						sb.setUnassignedInfo(reservationId, RoutingActivityType.CANCEL_TIMESLOT);
 				}
@@ -627,14 +633,14 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public void commitReservation(String rsvId, String customerId, String orderId, ContactAddressModel address,boolean pr1) throws ReservationException, FDResourceException {
+	public void commitReservation(String rsvId, String customerId, String orderId, ContactAddressModel address,boolean pr1, TimeslotEventModel event) throws ReservationException, FDResourceException {
 		try {
 
 			DlvManagerSB sb = getDlvManagerHome().create();
 			sb.commitReservation(rsvId, customerId, orderId,pr1);
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
 				DlvReservationModel reservation=sb.getReservation(rsvId);
-				boolean isSent=RoutingUtil.getInstance().sendCommitReservationRequest(reservation, address);
+				boolean isSent=RoutingUtil.getInstance().sendCommitReservationRequest(reservation, address, event);
 				if(!isSent && !reservation.isUnassigned()) {
 					sb.setUnassignedInfo(rsvId, RoutingActivityType.CONFIRM_TIMESLOT);
 				}
@@ -649,7 +655,7 @@ public class FDDeliveryManager {
 
 	}
 
-	public boolean releaseReservation(String rsvId, ContactAddressModel address) throws FDResourceException {
+	public boolean releaseReservation(String rsvId, ContactAddressModel address, TimeslotEventModel event) throws FDResourceException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			 boolean isRestored=sb.releaseReservation(rsvId);
@@ -659,7 +665,7 @@ public class FDDeliveryManager {
 				 if(isRestored) {
 					 //RoutingUtil.getInstance().sendUpdateReservationRequest(reservation,address);
 				 } else {
-						 boolean isSent=RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address);
+						 boolean isSent=RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address,event);
 						 if(!isSent &&!reservation.isUnassigned()) {
 								sb.setUnassignedInfo(rsvId, RoutingActivityType.CANCEL_TIMESLOT);
 						 }
@@ -950,15 +956,15 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public FDDynamicTimeslotList getTimeslotsForDateRangeAndZoneEx(List<FDTimeslot> timeSlots, ContactAddressModel address) throws FDResourceException {
-		return RoutingUtil.getInstance().getTimeslotsForDateRangeAndZoneEx(timeSlots, address);		
+	public FDDynamicTimeslotList getTimeslotsForDateRangeAndZoneEx(List<FDTimeslot> timeSlots, TimeslotEventModel event, ContactAddressModel address) throws FDResourceException {
+		return RoutingUtil.getInstance().getTimeslotsForDateRangeAndZoneEx(timeSlots, event, address);		
 	}
 
-	public IDeliveryReservation reserveTimeslotEx(DlvReservationModel reservation, ContactAddressModel address, FDTimeslot timeslot) throws FDResourceException {
+	public IDeliveryReservation reserveTimeslotEx(DlvReservationModel reservation, ContactAddressModel address, FDTimeslot timeslot, TimeslotEventModel event) throws FDResourceException {
 
 			try {				
 				DlvManagerSB sb = getDlvManagerHome().create();
-				return sb.reserveTimeslotEx(reservation, address, timeslot);
+				return sb.reserveTimeslotEx(reservation, address, timeslot, event);
 
 			} catch (RemoteException re) {
 				throw new FDResourceException(re);
@@ -967,10 +973,10 @@ public class FDDeliveryManager {
 			}
 		}
 
-	public void commitReservationEx(DlvReservationModel reservation,ContactAddressModel address) throws FDResourceException{
+	public void commitReservationEx(DlvReservationModel reservation,ContactAddressModel address, TimeslotEventModel event) throws FDResourceException{
 		try {			
 			DlvManagerSB sb = getDlvManagerHome().create();
-			sb.commitReservationEx(reservation, address);
+			sb.commitReservationEx(reservation, address, event);
 
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -979,12 +985,12 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public void releaseReservationEx(DlvReservationModel reservation,ContactAddressModel address) throws FDResourceException{
+	public void releaseReservationEx(DlvReservationModel reservation,ContactAddressModel address, TimeslotEventModel event) throws FDResourceException{
 		try {
 
 
 			DlvManagerSB sb = getDlvManagerHome().create();
-			sb.releaseReservationEx(reservation,address);
+			sb.releaseReservationEx(reservation,address, event);
 
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -1068,6 +1074,35 @@ public class FDDeliveryManager {
 		}
 	}
 	
+	public void logTimeslots(DlvReservationModel reservation,IOrderModel order,
+			EventType eventType,TimeslotEventModel event, 
+			int responseTime, ContactAddressModel address) throws FDResourceException{
+		
+		try {
+			DlvManagerSB sb = getDlvManagerHome().create();
+			sb.logTimeslots(reservation, order, eventType, event, responseTime, address);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+		
+	}
+	
+	public void logTimeslots(DlvReservationModel reservation, IOrderModel order, List<FDTimeslot> timeSlots, 
+			TimeslotEventModel event, ContactAddressModel address, int responseTime) throws FDResourceException{
+		
+		try {
+			DlvManagerSB sb = getDlvManagerHome().create();
+			sb.logTimeslots(reservation, order, timeSlots, event, address, responseTime);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+		
+	}
+
 	public void fixDisassociatedTimeslots() throws FDResourceException{
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
@@ -1078,5 +1113,6 @@ public class FDDeliveryManager {
 			throw new FDResourceException(re);
 		}
 	}
+	
 
 }
