@@ -1,5 +1,7 @@
 package com.freshdirect.routing.model;
 
+import java.util.Date;
+
 public class DeliverySlotCost extends BaseModel implements IDeliverySlotCost  {
 	
 	private int additionalDistance;
@@ -26,6 +28,16 @@ public class DeliverySlotCost extends BaseModel implements IDeliverySlotCost  {
 	private int totalServiceTime;
 	private int totalTravelTime;
 	private int totalWaitTime;
+	private String unavailabilityReason;
+	private int waveVehicles;
+	private int waveVehiclesInUse;
+	private Date waveStartTime;
+	private int waveOrdersTaken;
+	private double totalQuantities;
+	private boolean newRoute;
+	private double capacities;
+	
+	
 	public int getAdditionalDistance() {
 		return additionalDistance;
 	}
@@ -182,5 +194,53 @@ public class DeliverySlotCost extends BaseModel implements IDeliverySlotCost  {
 		}
 		
 		return result;
+	}
+	public String getUnavailabilityReason() {
+		return unavailabilityReason;
+	}
+	public void setUnavailabilityReason(String unavailabilityReason) {
+		this.unavailabilityReason = unavailabilityReason;
+	}
+	public int getWaveVehicles() {
+		return waveVehicles;
+	}
+	public void setWaveVehicles(int waveVehicles) {
+		this.waveVehicles = waveVehicles;
+	}
+	public int getWaveVehiclesInUse() {
+		return waveVehiclesInUse;
+	}
+	public void setWaveVehiclesInUse(int waveVehiclesInUse) {
+		this.waveVehiclesInUse = waveVehiclesInUse;
+	}
+	public Date getWaveStartTime() {
+		return waveStartTime;
+	}
+	public void setWaveStartTime(Date waveStartTime) {
+		this.waveStartTime = waveStartTime;
+	}
+	public int getWaveOrdersTaken() {
+		return waveOrdersTaken;
+	}
+	public void setWaveOrdersTaken(int waveOrdersTaken) {
+		this.waveOrdersTaken = waveOrdersTaken;
+	}
+	public double getTotalQuantities() {
+		return totalQuantities;
+	}
+	public void setTotalQuantities(double totalQuantities) {
+		this.totalQuantities = totalQuantities;
+	}
+	public boolean isNewRoute() {
+		return newRoute;
+	}
+	public void setNewRoute(boolean newRoute) {
+		this.newRoute = newRoute;
+	}
+	public double getCapacities() {
+		return capacities;
+	}
+	public void setCapacities(double capacities) {
+		this.capacities = capacities;
 	}
 }

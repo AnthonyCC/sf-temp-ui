@@ -1,5 +1,7 @@
 package com.freshdirect.routing.model;
 
+import java.util.Date;
+
 public interface IDeliverySlotCost {
 	
 	int getAdditionalDistance();
@@ -50,6 +52,23 @@ public interface IDeliverySlotCost {
 	void setTotalTravelTime(int totalTravelTime);
 	int getTotalWaitTime();
 	void setTotalWaitTime(int totalWaitTime);
+	String getUnavailabilityReason(); 
+	void setUnavailabilityReason(String unavailabilityReason);
+	int getWaveVehicles(); 
+	void setWaveVehicles(int waveVehicles);
+	int getWaveVehiclesInUse(); 
+	void setWaveVehiclesInUse(int waveVehiclesInUse);
+	Date getWaveStartTime(); 
+	void setWaveStartTime(Date waveStartTime);
+	
+	public int getWaveOrdersTaken();
+	public void setWaveOrdersTaken(int waveOrdersTaken);
+	public double getTotalQuantities(); 
+	public void setTotalQuantities(double totalQuantities); 
+	public boolean isNewRoute();
+	public void setNewRoute(boolean newRoute); 
+	public double getCapacities(); 
+	public void setCapacities(double d);
 	
 	double getPercentageAvailable();
 }
