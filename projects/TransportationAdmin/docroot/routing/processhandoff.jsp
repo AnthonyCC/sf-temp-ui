@@ -149,7 +149,8 @@
       var sDataTable;
      					  
       function refreshTable() {
-      		sDataTable.getDataSource().sendRequest('', myCallback);      		
+      		sDataTable.getDataSource().sendRequest('', myCallback);  
+      		showTable();    		
       }   
       
       function showTable() {
@@ -235,8 +236,8 @@
       }
       
       var actionMapping = {
-      	 'NEW':{STOP:0},
-	     'PRC':{STOP:0},
+      	 'NEW': {STOP:0},
+	     'PRC': {STOP:0},
 	     'RTC': {ROUTEIN:0,ROUTEOUT:0,CANCEL:0},
 	     'RGC': {ROUTEIN:0,ROUTEOUT:0,COMMIT:0,CANCEL:0},
 	     'STD': {ROUTEIN:0,CANCEL:0},
@@ -340,8 +341,8 @@
       	} else {
       		sDataSource. clearAllIntervals();
       	}
-      }
-      showTable();
+      }      
+      showTable();      
       </script>
       <%@ include file='i_handoffdepotinfo.jspf'%>  
   </tmpl:put>
