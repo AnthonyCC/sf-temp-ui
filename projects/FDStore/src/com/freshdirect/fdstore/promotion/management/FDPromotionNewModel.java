@@ -99,6 +99,7 @@ public class FDPromotionNewModel extends ModelSupport {
 	private FDPromoStateCountyRestriction scRestriction;
 	private int restrictedCustomerSize;
 	private boolean fuelSurcharge = false;
+	private List<FDPromoDollarDiscount> dollarOffList = new ArrayList<FDPromoDollarDiscount>();
 	/*
 	 * Number of successful publishes
 	 */
@@ -1035,7 +1036,7 @@ public class FDPromotionNewModel extends ModelSupport {
 		this.scRestriction = scRestriction;
 	}
 	
-	public void setFuelSurchargeIncluded(boolean fs) {
+	public void setFuelSurchargeIncluded(boolean fs) {		        
 		this.fuelSurcharge = fs;
 	}
 	
@@ -1110,6 +1111,15 @@ public class FDPromotionNewModel extends ModelSupport {
 		 } 
 		 return dlvDate;
 	}
+	
+	public List<FDPromoDollarDiscount> getDollarOffList() {
+		return dollarOffList;
+	}
+
+	public void setDollarOffList(List<FDPromoDollarDiscount> dollarOffList) {
+		this.dollarOffList = dollarOffList;
+	}
+
 	
 	
 }
