@@ -75,9 +75,14 @@ public class AllDealsCache {
 
 						// check if size increased
 						if (value[0].length < zoneIndexes.size()) {
+							LOGGER_LOADER.debug("Array before copy ");
+							print(value);
 							double newValue[][] = new double[2][zoneIndexes.size()];
 							System.arraycopy(value[0], 0, newValue[0], 0, value[0].length);
 							System.arraycopy(value[1], 0, newValue[1], 0, value[1].length);
+							value=newValue;
+							LOGGER_LOADER.debug("Array after copy ");
+							print(value);
 						}
 
 						for (Map.Entry<String, Integer> zoneEntry : zoneIndexes.entrySet()) {
@@ -107,6 +112,17 @@ public class AllDealsCache {
 	long lastRefresh;
 	boolean initialized;
 
+	public static void print(double[][] data) {
+		LOGGER_LOADER.debug("[ ");
+		for(int i=0;i<data.length;i++) {
+			for(int j=0;j<data[i].length;j++) {
+				if(j==0)LOGGER_LOADER.debug("[");
+				
+				LOGGER_LOADER.debug(data[i][j]+", ");
+			};
+			LOGGER_LOADER.debug("] ");
+		}LOGGER_LOADER.debug(" ]");
+	}
 	private AllDealsCache() {
 		zoneIndexes = new ConcurrentHashMap<String, Integer>(20); // 32 entries should be enough
 		deals = new ConcurrentHashMap<ContentKey, double[][]>(50000); // 65536 entries should be enough
