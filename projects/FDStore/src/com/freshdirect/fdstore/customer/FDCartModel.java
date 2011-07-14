@@ -740,6 +740,10 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		return this.isChargeWaived(EnumChargeType.DELIVERY);
 	}
 	
+	public boolean isDeliverySurChargeWaived() {
+		return this.isChargeWaived(EnumChargeType.MISCELLANEOUS);
+	}
+	
 	public boolean isDeliveryChargeTaxable() {
 		return this.isChargeTaxable(EnumChargeType.DELIVERY);
 	}

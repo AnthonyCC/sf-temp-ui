@@ -30,6 +30,7 @@ public interface FDCartI extends java.io.Serializable {
 	public ErpPaymentMethodI getPaymentMethod();
 
 	public double getDeliverySurcharge();
+	public boolean isDeliverySurChargeWaived();
 	public boolean isDeliveryChargeWaived();
 	public boolean isDeliveryChargeTaxable();
 	
