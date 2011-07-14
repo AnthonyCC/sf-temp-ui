@@ -88,7 +88,7 @@
     
     //--------OAS Page Variables-----------------------
 request.setAttribute("sitePage", "site_access");
-request.setAttribute("listPos", "CategoryNote");
+request.setAttribute("listPos", "CategoryNote,SiteAccess");
     
 	//String actionURI = "/site_access/site_access.jsp";
 	String actionURI = request.getRequestURI()+"?siteAccessPage="+siteAccessPage+"&successPage="+successPage;
