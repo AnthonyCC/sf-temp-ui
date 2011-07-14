@@ -67,7 +67,9 @@ import com.freshdirect.fdstore.promotion.SampleLineApplicator;
 import com.freshdirect.fdstore.promotion.SampleStrategy;
 import com.freshdirect.fdstore.promotion.StateCountyStrategy;
 import com.freshdirect.fdstore.promotion.WaiveChargeApplicator;
+import com.freshdirect.fdstore.promotion.management.FDPromoDollarDiscount;
 import com.freshdirect.fdstore.promotion.management.FDPromoStateCountyRestriction;
+import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerNewDAO;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
@@ -238,7 +240,7 @@ public class FDPromotionNewDAO {
 				promo.addStrategy(scStrategy);				
 			}
 			
-			PromotionApplicatorI applicator = loadApplicator(rs);	
+			PromotionApplicatorI applicator = loadApplicator(rs, conn);	
 			PromotionStrategyI dlvZoneStrategyI = dlvZoneStrategies.get(pk.getId());
 			//Set the zone strategy if applicable.
 			if(null != applicator && null != dlvZoneStrategyI){
@@ -478,7 +480,7 @@ public class FDPromotionNewDAO {
 			promo.addStrategy(cartStrategy);				
 		}
 		
-		PromotionApplicatorI applicator = loadApplicator(rs);	
+		PromotionApplicatorI applicator = loadApplicator(rs, conn);	
 		//Set the zone strategy if applicable.
 		PromotionStrategyI dlvZoneStrategyI = loadDlvZoneStrategy(conn, promoId);
 		if(applicator != null && null != dlvZoneStrategyI){
@@ -594,18 +596,25 @@ public class FDPromotionNewDAO {
 		return strings;
 	}
 
-	private static PromotionApplicatorI loadApplicator(ResultSet rs) throws SQLException {
+	private static PromotionApplicatorI loadApplicator(ResultSet rs, Connection conn) throws SQLException {
 
 		//
 		// header discount applicator
 		//
+		
+		/*APPDEV-1792 - Changes to support Streatchable dollar discount*/
+		List<FDPromoDollarDiscount> dollarList = FDPromotionManagerNewDAO.loadDollarOffers(conn, rs.getString("ID"));
+		if(dollarList != null && dollarList.size() > 0) {
+			return new HeaderDiscountApplicator(new HeaderDiscountRule(dollarList));
+		}
+		
 		boolean wasNull = false;
 
 		double minSubtotal = rs.getDouble("min_subtotal");
 		wasNull |= rs.wasNull();
 
 		double maxAmount = rs.getDouble("max_amount");
-		wasNull |= rs.wasNull();
+		wasNull |= rs.wasNull();		
 
 
 
