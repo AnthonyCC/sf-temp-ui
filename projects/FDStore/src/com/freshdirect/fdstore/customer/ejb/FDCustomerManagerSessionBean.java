@@ -2006,8 +2006,18 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			DeliveryPassException, FDPaymentInadequateException,
 			InvalidCardException, ErpAddressVerificationException {
 
+		String zoneId = null;
+		try
+		{
+			zoneId = order.getDeliveryInfo().getDeliveryAddress().getAddressInfo().getZoneId();
+		}
+		catch(Exception e)
+		{
+			
+			// do nothing
+		}
 		TimeslotEventModel event = new TimeslotEventModel((info.getSource()!=null)?info.getSource().getCode():"", 
-				order.isDlvPassApplied(),order.getDeliverySurcharge(), Util.isDlvChargeWaived(order), Util.isZoneCtActive((order.getDeliveryInfo()!=null)?order.getDeliveryInfo().getDeliveryZone():null));
+				order.isDlvPassApplied(),order.getDeliverySurcharge(), Util.isDlvChargeWaived(order), Util.isZoneCtActive(zoneId));
 		
 		
 		FDIdentity identity = info.getIdentity();
