@@ -42,6 +42,12 @@
 %>
     <script language="javascript">
        window.onbeforeunload = <%= onbeforeunload %>;
+		/* temp fix for CRM errors */
+		var $E  = YAHOO.util.Event; 	 
+		var $D  = YAHOO.util.Dom; 	 
+		//var $DH = YAHOO.ext.DomHelper; 	 
+		var $C  = YAHOO.util.Connect; 	 
+		var $X  = YAHOO.ext;
     </script>
 <%
        } // if

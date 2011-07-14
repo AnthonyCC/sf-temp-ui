@@ -3,13 +3,6 @@ var lastZipEntry = "";  //used to track the zipcode entry.
 var isIE;
 if(document.all){isIE=true}
 
-/* temp fix for CRM errors */
-var $E  = YAHOO.util.Event; 	 
-var $D  = YAHOO.util.Dom; 	 
-//var $DH = YAHOO.ext.DomHelper; 	 
-var $C  = YAHOO.util.Connect; 	 
-var $X  = YAHOO.ext;
-
 
 function zipCodeEntry(fieldObj,eventOBJ) {
 	return true; //bypass check for now.
