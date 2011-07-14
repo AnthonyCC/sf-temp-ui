@@ -731,7 +731,12 @@ public class Cart {
         //        } else {
         //If not waived, show only if the value is greater than zero
         if (cart.getMiscellaneousCharge() > 0) {
-            cartDetail.addSummaryLineCharge(new SummaryLineCharge(cart.getMiscellaneousCharge(), cart.isMiscellaneousChargeTaxable(),
+        	double deliveySurCharge = cart.getMiscellaneousCharge();
+            if (cart.isDeliverySurChargeWaived()) {
+            	deliveySurCharge = 0;
+            }
+            
+            cartDetail.addSummaryLineCharge(new SummaryLineCharge(deliveySurCharge, cart.isMiscellaneousChargeTaxable(),
                     false, false, MobileApiProperties.getMiscChargeLabel()));
         }
         //        }
