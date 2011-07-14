@@ -43,6 +43,7 @@ import com.freshdirect.fdstore.promotion.management.FDPromoCustStrategyModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoDlvDateModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoDlvTimeSlotModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoDlvZoneStrategyModel;
+import com.freshdirect.fdstore.promotion.management.FDPromoDollarDiscount;
 import com.freshdirect.fdstore.promotion.management.FDPromoPaymentStrategyModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoZipRestriction;
 import com.freshdirect.fdstore.promotion.management.FDPromotionAttributeParam;
@@ -105,6 +106,7 @@ public class FDPromotionManagerNewDAO {
 			promotion.setDlvDates(loadPromoDlvDates(conn, id));
 			promotion.setAttributeList(loadAttributeList(conn, id));
 			promotion.setStateCountyList(loadStateCountyRestrictions(conn, id));
+			promotion.setDollarOffList(loadDollarOffers(conn, id));
 		}
 		return promotion;
 	}
@@ -143,6 +145,37 @@ public class FDPromotionManagerNewDAO {
 			} catch (Exception e) {}
 		}
 		return fdpsc;		
+	}
+	
+	public static List<FDPromoDollarDiscount> loadDollarOffers(Connection conn, String id) {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<FDPromoDollarDiscount> dList = new ArrayList<FDPromoDollarDiscount>();
+		
+		try {
+			ps = conn.prepareStatement("select dollar_off, order_total, id from CUST.PROMO_DOLLAR_DISCOUNT where promotion_id = ?");
+			ps.setString(1, id);
+			rs = ps.executeQuery();
+			
+			while (rs.next()) {
+				FDPromoDollarDiscount fdpdd = new FDPromoDollarDiscount();
+				fdpdd.setId(rs.getString("id"));
+				fdpdd.setPromoId(id);
+				fdpdd.setDollarOff(rs.getDouble("dollar_off"));
+				fdpdd.setOrderSubtotal(rs.getDouble("order_total"));
+				dList.add(fdpdd);
+			}
+		} catch(Exception e) {
+			LOGGER.error("Error in loadStateCountyRestrictions", e);
+		} finally {
+			try {
+				if(rs != null)
+					rs.close();
+				if(ps != null)
+					ps.close();
+			} catch (Exception e) {}
+		}
+		return dList;		
 	}
 
 	public static FDPromotionNewModel getPromotionByPk(Connection conn,
@@ -379,6 +412,8 @@ public class FDPromotionManagerNewDAO {
 		}
 		
 		promotion.setFuelSurchargeIncluded("Y".equals(rs.getString("INCL_FUEL_SURCHARGE"))?true:false);
+		
+		//System.out.println("----------setting fuel surcharge------for code:" + promotion.getPromotionCode() + "-"  + promotion.isFuelSurchargeIncluded());
 
 		// Shift status PUBLISHED to EXPIRED automatically if promo is expired
 		EnumPromotionStatus status = EnumPromotionStatus.getEnum(rs.getString("status"));
@@ -697,6 +732,45 @@ public class FDPromotionManagerNewDAO {
 				
 			}
 		}
+	}
+	
+	private static String INSERT_PROMO_DISCOUNT_DATA = "INSERT INTO CUST.PROMO_DOLLAR_DISCOUNT"
+		+ " (ID, PROMOTION_ID, DATE_ADDED, DOLLAR_OFF, ORDER_TOTAL)"
+		+ " VALUES(?,?,sysdate,?,?)";
+
+	
+	private static void storeDiscountOffers(Connection conn, String id, FDPromotionNewModel promotion) throws SQLException {
+		PreparedStatement ps = null;
+		removeDiscountOffers(conn, id);
+		try {
+			ps = conn.prepareStatement(INSERT_PROMO_DISCOUNT_DATA);
+			prepareDiscountOffersSave(conn, ps, promotion.getDollarOffList(), id);
+			ps.executeBatch();
+		} finally {
+			if (ps != null)
+				ps.close();
+		}
+	}
+
+	private static void prepareDiscountOffersSave(Connection conn,
+			PreparedStatement ps, List<FDPromoDollarDiscount> dataList, String promotionId) throws SQLException {
+
+		if (dataList != null && !dataList.isEmpty()) {
+			for (FDPromoDollarDiscount promoDFModel : dataList) {
+				ps.setString(1, SequenceGenerator.getNextId(conn,"CUST"));
+				ps.setString(2, promotionId);
+				ps.setDouble(3, promoDFModel.getDollarOff());
+				ps.setDouble(4, promoDFModel.getOrderSubtotal());
+				ps.addBatch();				
+			}
+		}
+	}
+	
+	protected static void removeDiscountOffers(Connection conn, String promotionId) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement("DELETE CUST.PROMO_DOLLAR_DISCOUNT WHERE PROMOTION_ID = ?");
+		ps.setString(1, promotionId);
+		ps.executeUpdate();
+		ps.close();
 	}
 
 	protected static void removeAssignedGroups(Connection conn,
@@ -2316,6 +2390,7 @@ public class FDPromotionManagerNewDAO {
 		ps.close();
 		
 		storeAssignedGroups(conn, promotion.getId(), promotion);
+		storeDiscountOffers(conn, promotion.getId(), promotion);
 		return promotion;
 	}
 	
