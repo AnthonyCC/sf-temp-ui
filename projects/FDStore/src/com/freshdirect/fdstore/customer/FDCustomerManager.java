@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import javax.ejb.CreateException;
+import javax.ejb.EJBException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.xml.transform.TransformerException;
@@ -70,6 +71,8 @@ import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpWebOrderHistory;
 import com.freshdirect.customer.OrderHistoryI;
+import com.freshdirect.customer.ejb.ActivityLogHome;
+import com.freshdirect.customer.ejb.ActivityLogSB;
 import com.freshdirect.delivery.DlvServiceSelectionResult;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumDeliveryStatus;
@@ -3755,5 +3758,25 @@ public class FDCustomerManager {
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to bean");
 		}	
+	}
+	
+	public static void logDupeCCActivity(FDActionInfo info, ErpPaymentMethodI paymentMethod) {
+		ActivityLogHome home = getActivityLogHome();
+		try {
+			ActivityLogSB logSB = home.create();
+			logSB.logDupeCCActivity(info.getIdentity().getErpCustomerPK(), paymentMethod, info.getSource().getCode(), info.getInitiator());
+		} catch (RemoteException e) {
+			throw new EJBException(e);
+		} catch (CreateException e) {
+			throw new EJBException(e);
+		}
+	}
+	
+	private static ActivityLogHome getActivityLogHome() {
+		try {
+			return (ActivityLogHome) LOCATOR.getRemoteHome("freshdirect.customer.ActivityLog");
+		} catch (NamingException e) {
+			throw new EJBException(e);
+		}
 	}
 }
