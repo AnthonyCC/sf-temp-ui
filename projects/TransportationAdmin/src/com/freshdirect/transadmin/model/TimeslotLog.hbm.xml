@@ -3,7 +3,7 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated Nov 18, 2008 3:11:24 PM by Hibernate Tools 3.2.2.GA -->
 <hibernate-mapping schema="dlv">
-    <class name="com.freshdirect.transadmin.model.TimeslotLog" table="TIMESLOT_LOG">
+    <class name="com.freshdirect.transadmin.model.TimeslotLog" table="TIMESLOT_EVENT_HDR">
         <id name="id" type="string">
             <column name="ID" length="16" />
             <generator class="assigned" />
@@ -29,7 +29,7 @@
         <property name="comments" type="string">
             <column name="COMMENTS" />
         </property>
-        <set name="timeslotLogDtls" inverse="false" lazy="false" table="TIMESLOT_LOG_DTL" fetch="join">
+        <set name="timeslotLogDtls" inverse="false" lazy="false" table="TIMESLOT_EVENT_DTL" fetch="join">
             <key>
                 <column name="TIMESLOT_LOG_ID" length="16" />
             </key>
