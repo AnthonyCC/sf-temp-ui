@@ -119,7 +119,103 @@
 								<td class="vTop"><input type="checkbox" id="hd_allow_offer" name="hd_allow_offer" <%= hd_allow_offer_checked %> <%= hd_allow_offer_disabled %> /></td>
 								<td ><span class="gray">Combine offer</span></td>
 							</tr>
-							
+							<!--- APPDEV-1792 ---------->
+							<script language="javascript"> 
+							function toggleDollarOptions() {
+								var butt = document.getElementById("toggleButton");
+								var opts = document.getElementById("toggleDollar");
+								if(butt.innerHTML == "ADD") {
+									butt.innerHTML = "HIDE";
+									opts.style.display = "";
+								}
+								else {
+									butt.innerHTML="ADD";
+									opts.style.display = "none";
+								}
+							}
+							function clearFieldAmts(var1,var2) {
+								document.getElementById(var1).value = "0.0";
+								document.getElementById(var2).value = "0.0";
+							}
+							</script>
+
+							<tr>
+								<td colspan="2" class="bordLgrayDash noBorderTRL">&nbsp;</td>
+							</tr>
+							<tr>
+								<td colspan="2">&nbsp;</td>
+							</tr>
+							<%
+								double offer1 = 0;
+								double stot1 = 0;
+								double offer2 = 0;
+								double stot2 = 0;
+								double offer3 = 0;
+								double stot3 = 0;
+								String bText = "ADD";
+								String hStyle = "display:none"; 
+								List dlist = promotion.getDollarOffList();
+								if(dlist.size() > 0) {
+									FDPromoDollarDiscount dd = (FDPromoDollarDiscount) dlist.get(0);
+									offer1 = dd.getDollarOff();
+									stot1 = dd.getOrderSubtotal();
+									if(dlist.size() > 1) {
+										hStyle = "";
+										bText = "HIDE";
+										dd = (FDPromoDollarDiscount) dlist.get(1);
+										offer2 = dd.getDollarOff();
+										stot2 = dd.getOrderSubtotal();
+									}
+									if(dlist.size() > 2) {
+										hStyle = "";
+										dd = (FDPromoDollarDiscount) dlist.get(2);
+										offer3 = dd.getDollarOff();
+										stot3 = dd.getOrderSubtotal();
+									}
+								}
+							%>
+							<tr>
+								<td class="vTop"><input type="radio" id="header_discount_type_hd_extend_dp" name="header_discount_type" value="hd_dollar_discount" <%= (promotion.getDollarOffList().size() > 0)?"checked":"" %> onclick="checkOffer();" /></td>
+								<td>
+									$ <input type="text" id="offdollar" name="offdollar1" class="w50px" value="<%= offer1 %>"/> OFF Order Subtotal of $<input type="text" id="subtotal" name="subtotal1" class="w50px" value="<%= stot1 %>"/>
+									<a class="edit" id="toggleButton" href="javascript:toggleDollarOptions();"><%= bText %></a>
+								</td>
+							</tr>
+							<input type="hidden" name="maxoffers" value="3" />
+							<tr id="toggleDollar" style="<%= hStyle %>">
+								<td colspan="2">
+									<table>
+										<tr>
+											<td colspan="2" class="bordLgrayDash noBorderTRL">&nbsp;</td>
+										</tr>
+										<tr>
+											<td>
+											$ <input type="text" id="offdollar2" name="offdollar2" class="w50px" value="<%= offer2%>"/> OFF Order Subtotal of $<input type="text" id="subtotal2" name="subtotal2" class="w50px" value="<%= stot2 %>"/>
+											</td>
+											<td><a href="javascript:clearFieldAmts('offdollar2','subtotal2');">DELETE</a></td>
+										</tr>
+										<tr>
+											<td colspan="2" class="bordLgrayDash noBorderTRL">&nbsp;</td>
+										</tr>
+										<tr>
+											<td>
+											$ <input type="text" id="offdollar3" name="offdollar3" class="w50px" value="<%= offer3%>"/> OFF Order Subtotal of $<input type="text" id="subtotal3" name="subtotal3" class="w50px" value="<%= stot3 %>"/>
+											</td>
+											<td><a href="javascript:clearFieldAmts('offdollar3','subtotal3');">DELETE</a></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">&nbsp;</td>
+							</tr>
+							<tr>
+								<td colspan="2" align="left">
+								<select id="header_discount_type_all" name="dollar_discount_type_all" class="promo_filter w150px">
+									<option value="<%= EnumPromotionType.GENERIC.getName() %>" ><%= EnumPromotionType.GENERIC.getDescription() %></option>
+									<option value="<%= EnumPromotionType.GIFT_CARD.getName() %>" <%= EnumPromotionType.GIFT_CARD.getName().equalsIgnoreCase(promotion.getOfferType())?"selected":""%>><%= EnumPromotionType.GIFT_CARD.getDescription() %></option>
+								</select></td>
+							</tr>
 						</table>
 					</td>
 				</tr>

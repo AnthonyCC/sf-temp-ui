@@ -60,6 +60,7 @@
 						//HEADER TYPE display
 						if ( EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotion.getPromotionType()) ) {
 					%>
+					
 					<tr><td class="promo_detail_label">Offer Type:</td> <td class="alignL"> <%=null !=promotion.getOfferType()&& !"".equals(promotion.getOfferType())? (null !=EnumOfferType.getEnum(promotion.getOfferType())?EnumOfferType.getEnum(promotion.getOfferType()).getDescription():" "):"Generic" %></td></tr>
 						<% if (
 								( promotion.getPercentOff() != null && !"".equals(promotion.getPercentOff()) ) ||
@@ -88,6 +89,19 @@
 							<tr>
 								<td class="promo_detail_label"><input type="checkbox" id="hd_allow_offer" name="hd_allow_offer" <%= EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotion.getPromotionType()) && promotion.isCombineOffer()?"checked":"" %> disabled /></td>
 								<td class="alignL"><span class="gray">Allow offer combination</span></td>
+							</tr>
+						<% } %>
+						<% if(promotion.getDollarOffList().size() > 0) { %>
+							<tr>
+								<td class="promo_detail_label">Dollar Discount(s):</td>
+								<td class="alignL">
+								<% Iterator iter = promotion.getDollarOffList().iterator();
+								   while(iter.hasNext()) {
+									  FDPromoDollarDiscount dd = (FDPromoDollarDiscount) iter.next();
+								%>
+								$<%= dd.getDollarOff() %> Off of Order Subtotal $<%= dd.getOrderSubtotal() %> <br/>
+								<% } %>
+								</td>
 							</tr>
 						<% } %>
 					<%
