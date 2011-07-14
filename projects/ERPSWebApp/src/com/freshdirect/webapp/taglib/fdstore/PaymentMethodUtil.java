@@ -52,13 +52,15 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     }
     
     public static void addPaymentMethod(HttpServletRequest request, ActionResult result, ErpPaymentMethodI paymentMethod) throws FDResourceException {
+    	FDActionInfo info = AccountActivityUtil.getActionInfo(request.getSession());
         try {
-            FDCustomerManager.addPaymentMethod(AccountActivityUtil.getActionInfo(request.getSession()), paymentMethod);
+            FDCustomerManager.addPaymentMethod(info, paymentMethod);
         } catch (ErpDuplicatePaymentMethodException ex) {
             LOGGER.debug(ex);
             result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER));
             FDSessionUser sessionuser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
             sessionuser.setInvalidPaymentMethod(paymentMethod);
+            FDCustomerManager.logDupeCCActivity(info, paymentMethod);
         } catch (ErpPaymentMethodException ex) {
             LOGGER.debug(ex);
             result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER));
@@ -69,11 +71,13 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     }
     
     public static void editPaymentMethod(HttpServletRequest request, ActionResult result, ErpPaymentMethodI paymentMethod) throws FDResourceException {
+    	FDActionInfo info = AccountActivityUtil.getActionInfo(request.getSession());
         try {
-            FDCustomerManager.updatePaymentMethod(AccountActivityUtil.getActionInfo(request.getSession()), paymentMethod);
+            FDCustomerManager.updatePaymentMethod(info, paymentMethod);
         } catch (ErpDuplicatePaymentMethodException ex) {
             LOGGER.info(ex);
             result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER));
+            FDCustomerManager.logDupeCCActivity(info, paymentMethod);
         } catch (ErpPaymentMethodException ex) {
             LOGGER.debug(ex);
             result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER));
