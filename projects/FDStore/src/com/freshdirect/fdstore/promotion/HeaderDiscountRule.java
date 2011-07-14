@@ -1,15 +1,25 @@
 package com.freshdirect.fdstore.promotion;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.freshdirect.fdstore.promotion.management.FDPromoDollarDiscount;
 
 public class HeaderDiscountRule implements Serializable {
-
-	private final double minSubtotal;
-	private final double maxAmount;
+	
+	private static final long serialVersionUID = 1L;
+	private double minSubtotal;
+	private double maxAmount;
+	private List<FDPromoDollarDiscount> dollarList = new ArrayList<FDPromoDollarDiscount>();
 
 	public HeaderDiscountRule(double minSubtotal, double maxAmount) {
 		this.minSubtotal = minSubtotal;
 		this.maxAmount = maxAmount;
+	}
+	
+	public HeaderDiscountRule(List<FDPromoDollarDiscount> dollarList) {
+		this.dollarList = dollarList;
 	}
 
 	public double getMinSubtotal() {
@@ -18,6 +28,10 @@ public class HeaderDiscountRule implements Serializable {
 
 	public double getMaxAmount() {
 		return maxAmount;
+	}
+	
+	public List<FDPromoDollarDiscount> getDollarList() {
+		return dollarList;
 	}
 
 	public String toString() {

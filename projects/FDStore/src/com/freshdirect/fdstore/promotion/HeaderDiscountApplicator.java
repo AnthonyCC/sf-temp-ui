@@ -1,5 +1,9 @@
 package com.freshdirect.fdstore.promotion;
 
+import java.util.Iterator;
+
+import com.freshdirect.fdstore.promotion.management.FDPromoDollarDiscount;
+
 
 
 
@@ -23,6 +27,29 @@ public class HeaderDiscountApplicator implements PromotionApplicatorI {
 		
 		PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
 		double subTotal = context.getSubTotal(promo.getExcludeSkusFromSubTotal());
+		
+		/*APPDEV-1792 - apply the streatchable dollar discount*/
+		if(this.discountRule.getDollarList().size() > 0) {
+			//check which discount is applicable		
+			System.out.println("============Subtotal:" + subTotal);
+			double tempTotal = 0;
+			double tempDiscount = 0;
+			for (Iterator<FDPromoDollarDiscount> i = this.discountRule.getDollarList().iterator(); i.hasNext();) {
+				FDPromoDollarDiscount fdpdd = (FDPromoDollarDiscount) i.next();
+				if(fdpdd.getOrderSubtotal() < subTotal) {
+					if(tempTotal < fdpdd.getOrderSubtotal()) {
+						tempTotal = fdpdd.getOrderSubtotal();
+						tempDiscount = fdpdd.getDollarOff();
+						System.out.println("=========tempTotal:" + tempTotal + "=====tempDiscount:" + tempDiscount);
+					}
+				}
+			}
+			if(tempDiscount != 0) {
+				System.out.println("=========applying a tempDiscount:" + tempDiscount);
+				return context.applyHeaderDiscount(promo, tempDiscount);
+			}
+		} 		
+				
 		if (subTotal < this.discountRule.getMinSubtotal()) {
 			return false;
 		}

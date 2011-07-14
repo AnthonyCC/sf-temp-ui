@@ -119,6 +119,8 @@ public class FDPromotionNewModelFactory {
 	}
 	
 	public FDPromotionNewModel getPromotion(String promotionCode) {
+		FDPromotionNewModel fp = (FDPromotionNewModel) this.getPromotionMap().get(promotionCode);
+		//System.out.println("----------------"+fp.isFuelSurchargeIncluded());
 		return (FDPromotionNewModel) this.getPromotionMap().get(promotionCode);
 	}
 

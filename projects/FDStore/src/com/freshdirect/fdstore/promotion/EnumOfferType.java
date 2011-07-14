@@ -15,6 +15,7 @@ public class EnumOfferType extends Enum {
 	public static final EnumOfferType WAIVE_DLV_CHARGE = new EnumOfferType("WAIVECHARGE", "Waive Delivery Charge");
 	public static final EnumOfferType DP_EXTN = new EnumOfferType("DPETXN", "Delivery Pass Extension");
 	public static final EnumOfferType GENERIC = new EnumOfferType("GENERIC", "All other header promotions");
+	public static final EnumOfferType DOLLAR_OPTIONS = new EnumOfferType("DOLLAR_OPTIONS", "Dollar Off Options");
 	
 	private final String description;
 
