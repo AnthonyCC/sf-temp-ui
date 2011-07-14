@@ -7,8 +7,8 @@ import java.util.Map;
 
 import javax.ejb.EJBObject;
 
-import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ErpPaymentMethodI;
 
 public interface ActivityLogSB extends EJBObject {
 	
@@ -21,6 +21,8 @@ public interface ActivityLogSB extends EJBObject {
     public Map<String, List> getFilterLists(ErpActivityRecord template)throws RemoteException;
     
     public Collection<ErpActivityRecord> getCCActivitiesByTemplate(ErpActivityRecord template) throws RemoteException;
+    
+    public void logDupeCCActivity(String erpCustomerId, ErpPaymentMethodI card, String source, String initiator) throws RemoteException;
     
     
 }

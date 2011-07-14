@@ -11,6 +11,7 @@ import javax.ejb.EJBException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -99,6 +100,28 @@ public class ActivityLogSessionBean extends SessionBeanSupport {
 			conn = getConnection();
 			
 			return new ActivityDAO().getFilterLists(conn,template);
+			
+		} catch (SQLException ex) {
+			LOGGER.error("SQLException occured", ex);
+			throw new EJBException(ex.getMessage());
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException ex) {
+				LOGGER.warn("Unable to close Connection", ex);
+				throw new EJBException(ex.getMessage());
+			}
+		}
+	}
+	
+	public void logDupeCCActivity(String erpCustomerId, ErpPaymentMethodI card, String source, String initiator) {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			
+			new ActivityDAO().logDupeCCActivity(conn, card.getAccountNumber(), erpCustomerId, source, card.getMaskedAccountNumber(), initiator);
 			
 		} catch (SQLException ex) {
 			LOGGER.error("SQLException occured", ex);

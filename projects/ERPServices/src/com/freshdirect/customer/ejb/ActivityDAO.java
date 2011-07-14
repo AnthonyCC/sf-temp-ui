@@ -12,12 +12,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.crm.ejb.CriteriaBuilder;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class ActivityDAO implements java.io.Serializable {
+	
+	private static Category LOGGER = LoggerFactory.getInstance(ActivityDAO.class);
 	
 	private static final long serialVersionUID = 2593574875770125711L;
 
@@ -26,6 +31,7 @@ public class ActivityDAO implements java.io.Serializable {
 	public void logActivity( Connection conn, ErpActivityRecord rec ) throws SQLException {
 
 		PreparedStatement ps = conn.prepareStatement( INSERT );
+		
 		ps.setString( 1, rec.getActivityType().getCode() );
 		ps.setString( 2, rec.getCustomerId() );
 		ps.setString( 3, rec.getNote() );
@@ -232,5 +238,46 @@ public class ActivityDAO implements java.io.Serializable {
 		ps.close();
 		return list;
 	}
+	
+	private final static String QUERY_DUPLICATE_ACCOUNT =
+		"SELECT PM.CUSTOMER_ID, CI.email FROM CUST.PAYMENTMETHOD pm, CUST.CUSTOMERINFO CI"
+			+ " WHERE PM.ACCOUNT_NUMBER = ?"
+			+ " AND PM.CUSTOMER_ID <> ?"
+			+ " AND CI.CUSTOMER_ID=PM.CUSTOMER_ID"
+			+ " AND 'X'<>CI.CORP_CUSTOMER";
+	
+	public void logDupeCCActivity(Connection conn, String accountNumber, String erpCustomerId, String source, String maskedAccountNumber, String initiator) throws SQLException {
+		
+		PreparedStatement ps = conn.prepareStatement(QUERY_DUPLICATE_ACCOUNT);
+
+		ps.setString(1, accountNumber);
+		ps.setString(2, erpCustomerId);
+
+		ResultSet rs = ps.executeQuery();
+		String customer_id = null;
+		String email = null;
+
+		if (rs.next()) {
+			customer_id = rs.getString("customer_id");
+			email = rs.getString("email");
+			recordDupeActivity(customer_id, "Duplicate creadit card entered - " + maskedAccountNumber + ", entered by " + email, conn, source, initiator);
+			recordDupeActivity(erpCustomerId, "Duplicate creadit card entered - " + maskedAccountNumber + ", credit card currently exists under " + email, conn, source, initiator);
+		}		
+		
+		rs.close();
+		ps.close();
+	} 
+	
+	public void recordDupeActivity(String customerId, String note, Connection conn, String source, String initiator) throws SQLException {
+		LOGGER.debug("\n\n*************Recording dupe cc adding event source*********:" + source);
+		ErpActivityRecord rec = new ErpActivityRecord();
+		rec.setActivityType(EnumAccountActivityType.DUPLICATE_PAYMENT_METHOD);
+		rec.setSource(EnumTransactionSource.getTransactionSource(source));
+		rec.setInitiator(initiator);
+		rec.setCustomerId(customerId);
+		rec.setNote(note);
+		logActivity(conn, rec);
+	}
+
 
 }
