@@ -30,6 +30,7 @@ import com.freshdirect.fdstore.promotion.management.FDPromoCustNotFoundException
 import com.freshdirect.fdstore.promotion.management.FDPromoTypeNotFoundException;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewManager;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
+import com.freshdirect.fdstore.promotion.management.FDPromoDollarDiscount;
 import com.freshdirect.framework.util.FormatterUtil;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.NumberUtil;
@@ -102,6 +103,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 				String headerDiscountType = NVL.apply(request.getParameter("header_discount_type"), "").trim();
 				String offerType = NVL.apply(request.getParameter("header_discount_type_all"), "").trim();
 				this.promotion.setCombineOffer(!"".equalsIgnoreCase(NVL.apply(request.getParameter("hd_allow_offer"), "").trim()));
+				List<FDPromoDollarDiscount> dList = new ArrayList<FDPromoDollarDiscount>();
 				if("".equals(headerDiscountType)){
 					actionResult.addError(true, "discountEmpty", " Please select one discount type under HEADER.");
 				}
@@ -152,7 +154,42 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 					}
 					this.promotion.setOfferType(EnumOfferType.DP_EXTN.getName());
 					this.promotion.setCombineOffer(true);
+				} else if("hd_dollar_discount".equalsIgnoreCase(headerDiscountType)) {
+					//APPDEV-1792: handle stretchable dollar discounts
+					String offdollar1 = NVL.apply(request.getParameter("offdollar1"), "").trim();
+					String subtotal1 = NVL.apply(request.getParameter("subtotal1"), "").trim();
+					if(offdollar1.length() > 0 && subtotal1.length() > 0 && NumberUtil.isDouble(offdollar1) && NumberUtil.isDouble(subtotal1)) {						
+						FDPromoDollarDiscount pdd = new FDPromoDollarDiscount();
+						pdd.setDollarOff(Double.parseDouble(offdollar1));
+						pdd.setOrderSubtotal(Double.parseDouble(subtotal1));
+						dList.add(pdd);
+						String maxoffers = NVL.apply(request.getParameter("maxoffers"), "").trim();
+						if(NumberUtil.isInteger(maxoffers)) {
+							int offers = Integer.parseInt(maxoffers);
+							for(int i=2; i<=offers; i++) {
+								String offdollar = NVL.apply(request.getParameter("offdollar" + i), "").trim();
+								String subtotal = NVL.apply(request.getParameter("subtotal" + i), "").trim();
+								if(offdollar.length() > 0 && subtotal.length() > 0) {
+									if(NumberUtil.isDouble(offdollar) && NumberUtil.isDouble(subtotal) && Double.parseDouble(offdollar) > 0 && Double.parseDouble(subtotal) > 0) {
+										FDPromoDollarDiscount fdpdd = new FDPromoDollarDiscount();
+										fdpdd.setDollarOff(Double.parseDouble(offdollar));
+										fdpdd.setOrderSubtotal(Double.parseDouble(subtotal));
+										dList.add(fdpdd);
+									}
+								}
+							}
+						}						
+					} else {
+						actionResult.addError(true, "offDollarAmount", " Dollar off and subtotal cannot be empty and should be an integer.");
+					}
+					String dOfferType = NVL.apply(request.getParameter("dollar_discount_type_all"), "").trim();
+					this.promotion.setOfferType(dOfferType);
+					this.promotion.setMaxAmount("");
+					this.promotion.setWaiveChargeType("");
+					this.promotion.setPercentOff("");
+					this.promotion.setFuelSurchargeIncluded(false);
 				}
+				promotion.setDollarOffList(dList);
 				
 	//			this.promotion.setCombineOffer(!"".equalsIgnoreCase(NVL.apply(request.getParameter("hd_allow_offer"), "").trim()));
 				this.promotion.setPromotionType(promotionType);
