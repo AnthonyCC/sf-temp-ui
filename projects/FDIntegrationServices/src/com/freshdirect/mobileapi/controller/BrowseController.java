@@ -1,9 +1,13 @@
 package com.freshdirect.mobileapi.controller;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +39,6 @@ import com.freshdirect.mobileapi.model.tagwrapper.ItemSorterTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.LayoutManagerWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ListPaginator;
-import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings;
 
 /**
@@ -100,10 +103,22 @@ public class BrowseController extends BaseController {
 	        	if(ACTION_GET_CATEGORIES.equals(action)) {
 	        		contentId = requestMessage.getDepartment();
 	        	} else {
-	        		contentId = requestMessage.getCategory();
+	        		contentId = requestMessage.getCategory();	        		
 	        	}
 	        	
 	        	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(contentId);
+	        	//Below is the workaround for handling url based category based redirect url which are setup in CMS (e.g Organic Fruit in Fruit Dept)
+	        	if(currentFolder instanceof CategoryModel) {
+	        		String redirectURL = ((CategoryModel)currentFolder).getRedirectUrl();
+	        		if(redirectURL != null && redirectURL.trim().length() > 0) {
+	        			Map<String, String> redirectParams = getQueryMap(redirectURL);
+	        			String redirectContentId = (String)redirectParams.get("catId");
+	        			if(redirectContentId != null && redirectContentId.trim().length() > 0) {
+	        				contentId = redirectContentId;
+	        				currentFolder = ContentFactory.getInstance().getContentNode(redirectContentId); 
+	        			}
+	        		}
+	        	}
 	        	List contents = new ArrayList();
 	        	/* if(requestMessage.getCategory() != null && requestMessage.getCategory().startsWith("gro_")) {
 	        		request.setAttribute("groceryVirtual", "All");
@@ -161,8 +176,11 @@ public class BrowseController extends BaseController {
 	                        //Don't let one rotten egg ruin it for the bunch
 	                        LOG.error("ModelException encountered. Product ID=" + ((ProductModel) content).getFullName(), e);
 	                    }
-	                } else if(content instanceof CategoryModel) {
-	                	if(((CategoryModel)content).isActive() && !((CategoryModel)content).isHideIphone()
+	                } else if(content instanceof CategoryModel) {	                	
+	                	if((((CategoryModel)content).isActive() 
+	                					|| (((CategoryModel)content).getRedirectUrl() != null 
+	                								&& ((CategoryModel)content).getRedirectUrl().trim().length() > 0))	                			
+	                				&& !((CategoryModel)content).isHideIphone()
 	                				&& !categoryIDs.contains(((CategoryModel)content).getParentId())) {	// Show only one level of category
 	                		categories.add(Category.wrap((CategoryModel)content));
 	                		categoryIDs.add(((CategoryModel)content).getContentKey().getId());
@@ -207,4 +225,28 @@ public class BrowseController extends BaseController {
 		}
 		return categories;
     }
+    
+	private Map<String, String> getQueryMap(String url) {
+		Map<String, String> map = new HashMap<String, String>();
+		if (url != null) {
+			try {
+				URI uri = new URI(url);
+				String query = uri.getQuery();
+				if(query != null) {
+					String[] params = query.split("&");
+					if(params != null) {
+						for (String param : params) {
+							map.put(param.split("=")[0], param.split("=")[1]);
+						}
+					}
+				}
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return map;
+		}
+		return map;
+	}
+
 }
