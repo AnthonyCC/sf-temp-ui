@@ -666,6 +666,10 @@ public class FDOrderAdapter implements FDOrderI {
 		return isChargeWaived(EnumChargeType.DELIVERY);
 	}
 	
+	public boolean isDeliverySurChargeWaived() {
+		return isChargeWaived(EnumChargeType.MISCELLANEOUS);
+	}
+	
 	public boolean isDeliveryChargeTaxable() {
 		return isChargeTaxable(EnumChargeType.DELIVERY);
 	}
@@ -1324,4 +1328,5 @@ public class FDOrderAdapter implements FDOrderI {
 		
 		return promoCode;
 	}
+
 }
