@@ -39,9 +39,12 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 		
 		FDReservation reservation = user.getReservation();
 		FDCartModel cart = user.getShoppingCart();
-		TimeslotEventModel event = new TimeslotEventModel(user.getApplication().getCode(),
+		String zoneId = null;
+		if(cart!=null && cart.getZoneInfo()!=null)
+			zoneId = cart.getZoneInfo().getZoneId();
+		TimeslotEventModel event = new TimeslotEventModel((user.getApplication()!=null)?user.getApplication().getCode():"",
 				(cart!=null)?cart.isDlvPassApplied():false, (cart!=null)?cart.getDeliverySurcharge():0.00,
-						(cart!=null)?cart.isDeliveryChargeWaived():false, (cart!=null)?Util.isZoneCtActive(cart.getZoneInfo().getZoneId()):false);
+						(cart!=null)?cart.isDeliveryChargeWaived():false, Util.isZoneCtActive(zoneId));
 	
 
 		try {

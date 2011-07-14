@@ -468,6 +468,11 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				
 				
 				detailModel.setRoutingModel(routingModel);
+				detailModel.setStartTime(routingSlot.getStartTime());
+				detailModel.setStopTime(routingSlot.getStopTime());
+				detailModel.setDeliveryDate(routingSlot.getSchedulerId().getDeliveryDate());
+				detailModel.setManuallyClosed(routingSlot.isManuallyClosed());
+				}
 				detailModel.setWs_amount(dlvSlot.getSteeringDiscount());
 				detailModel.setAlcohol_restriction(slot.isAlcoholRestricted());
 				detailModel.setHoliday_restriction(slot.isHolidayRestricted());
@@ -480,13 +485,8 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				detailModel.setCtAllocated(dlvSlot.getChefsTableAllocation());
 				detailModel.setTotalAllocated(dlvSlot.getTotalAllocation());
 				detailModel.setZoneCode(dlvSlot.getZoneCode());
-				detailModel.setStartTime(routingSlot.getStartTime());
-				detailModel.setStopTime(routingSlot.getStopTime());
-				detailModel.setDeliveryDate(routingSlot.getSchedulerId().getDeliveryDate());
-				detailModel.setManuallyClosed(routingSlot.isManuallyClosed());
 				detailModel.setCutOff(dlvSlot.getCutoffTimeAsDate());
 				slotGrp.add(detailModel);	
-				}
 				
 			}
 			event.setDetail(slots);
@@ -496,7 +496,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		}
 		catch(Exception e)
 		{
-			LOGGER.info("Exception while logging the timeslot");
+			LOGGER.info("Exception while logging the timeslot: "+e.getMessage());
 		}
 		
 	}
@@ -2342,7 +2342,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		}
 		catch(Exception e)
 		{
-	//do nothing		
+			LOGGER.debug("Error building the event "+ e.getMessage());
 		}
 		return event;
 	}

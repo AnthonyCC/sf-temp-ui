@@ -80,9 +80,13 @@ public class ChooseTimeslotAction extends WebActionSupport {
 		} else {
 			addressId = ((ErpDepotAddressModel) erpAddress).getLocationId();
 		}
-
-		TimeslotEventModel event = new TimeslotEventModel(user.getApplication().getCode(),cart.isDlvPassApplied(),
-				cart.getDeliverySurcharge(), cart.isDeliveryChargeWaived(), Util.isZoneCtActive(cart.getZoneInfo().getZoneId()));
+		String zoneId = null;
+		if(cart!=null && cart.getZoneInfo()!=null)
+			zoneId = cart.getZoneInfo().getZoneId();
+		
+		TimeslotEventModel event = new TimeslotEventModel((user.getApplication()!=null)?user.getApplication().getCode():"",
+				cart.isDlvPassApplied(),cart.getDeliverySurcharge(), cart.isDeliveryChargeWaived(), 
+				Util.isZoneCtActive(zoneId));
 		
 		try {
 			FDReservation dlvRsv = cart.getDeliveryReservation();

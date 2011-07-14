@@ -53,6 +53,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.FDZoneNotFoundException;
+import com.freshdirect.fdstore.Util;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
@@ -183,23 +184,13 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		//Allowing COS customers to use HOME capacity for the configured set of HOME zones
 		ErpAddressModel timeslotAddress = performCosResidentialMerge();
 		
-		DlvZoneModel dlvZoneModel = null;
-		try 
-		{
-			if(cart!=null)
-			{
-				DlvZoneInfoModel dlvModel = cart.getZoneInfo();
-				dlvZoneModel = FDDeliveryManager.getInstance().findZoneById(dlvModel.getZoneId());
-			}
-		} 
-		catch (FDResourceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (FDZoneNotFoundException e) {
-			e.printStackTrace();
-		}
-		TimeslotEventModel event = new TimeslotEventModel(user.getApplication().getCode(),cart.isDlvPassApplied(),cart.getDeliverySurcharge(), cart.isDeliveryChargeWaived(), (dlvZoneModel == null)?false:dlvZoneModel.isCtActive());
+		String zoneId = null;
+		if(cart!=null && cart.getZoneInfo()!=null)
+			zoneId = cart.getZoneInfo().getZoneId();
+		
+		TimeslotEventModel event = new TimeslotEventModel((user.getApplication()!=null)?user.getApplication().getCode():"",
+				cart.isDlvPassApplied(),cart.getDeliverySurcharge(), cart.isDeliveryChargeWaived(),
+				Util.isZoneCtActive(zoneId));
 		
 		timeslotList = getFDTimeslotListForDateRange(restrictions, dateRanges,
 				timeslotList, result, timeslotAddress, user,event);
