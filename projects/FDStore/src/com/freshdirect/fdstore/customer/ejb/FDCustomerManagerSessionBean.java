@@ -1469,7 +1469,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			
 			// do nothing
 		}
-		TimeslotEventModel event = new TimeslotEventModel(info.getSource().getCode(), 
+		TimeslotEventModel event = new TimeslotEventModel((info.getSource()!=null)?info.getSource().getCode():"", 
 				createOrder.isDlvPassApplied(),createOrder.getDeliverySurcharge(), Util.isDlvChargeWaived(createOrder), Util.isZoneCtActive(zoneId));
 		
 		try {
@@ -1829,7 +1829,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			boolean sendEmail, int currentDPExtendDays) throws FDResourceException,
 			ErpTransactionException, DeliveryPassException {
 		try {
-			TimeslotEventModel event = new TimeslotEventModel(info.getSource().getCode(), 
+			TimeslotEventModel event = new TimeslotEventModel((info.getSource()!=null)?info.getSource().getCode():"", 
 					false,0.00, false, false);
 			
 			// !!! verify that the sale belongs to the customer
@@ -2006,8 +2006,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			DeliveryPassException, FDPaymentInadequateException,
 			InvalidCardException, ErpAddressVerificationException {
 
-		TimeslotEventModel event = new TimeslotEventModel(info.getSource().getCode(), 
-				order.isDlvPassApplied(),order.getDeliverySurcharge(), Util.isDlvChargeWaived(order), Util.isZoneCtActive(order.getDeliveryInfo().getDeliveryZone()) );
+		TimeslotEventModel event = new TimeslotEventModel((info.getSource()!=null)?info.getSource().getCode():"", 
+				order.isDlvPassApplied(),order.getDeliverySurcharge(), Util.isDlvChargeWaived(order), Util.isZoneCtActive((order.getDeliveryInfo()!=null)?order.getDeliveryInfo().getDeliveryZone():null));
 		
 		
 		FDIdentity identity = info.getIdentity();
