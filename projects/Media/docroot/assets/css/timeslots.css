@@ -379,6 +379,7 @@ div.tsHeaderC {
 	font-family: Vernada, Regular;
 	background-color: #E2E2E2;
 	border-collapse: separate;
+	cursor: pointer;
 }
 
 /*Steering Discount slot*/
@@ -809,7 +810,7 @@ td.noTopBorder {
 	width: 0px;
 }
 
-.clickOnlyMouseOver div {
+.clickOnlyMouseOver {
 	background: transparent url('/media/editorial/timeslots/images/mouseOverBGC.gif') repeat-x left top;
 	cursor: pointer;
 }
