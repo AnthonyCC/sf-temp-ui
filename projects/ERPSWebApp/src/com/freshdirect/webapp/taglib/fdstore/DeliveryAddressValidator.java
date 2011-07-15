@@ -118,7 +118,15 @@ public class DeliveryAddressValidator {
 			 * otherwise, we end up with the MSG_TECHNICAL_ERROR msg, which is less than helpful
 			 */
 			if (this.strictCheck) {
-				actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
+				//check for just a missing Address1
+				if ((this.scrubbedAddress.getAddress1()).trim().equals("")) {
+					//return just that error
+					actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
+				}else{
+					//otherwise, possible bad geocode. return new geocode msg
+					actionResult.addError(true, EnumUserInfoName.DLV_CANT_GEOCODE.getCode(), 
+						MessageFormat.format(SystemMessageList.MSG_CANT_GEOCODE_EXTRA, new Object[] {SystemMessageList.CUSTOMER_SERVICE_CONTACT}));
+				}
 				return false;
 			}else if (!"GEOCODE_OK".equalsIgnoreCase( geocodeResult ) && serviceResult == null) {
 				actionResult.addError(true, EnumUserInfoName.DLV_CANT_GEOCODE.getCode(), 
