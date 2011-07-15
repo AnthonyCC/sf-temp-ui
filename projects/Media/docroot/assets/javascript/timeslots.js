@@ -337,6 +337,13 @@ function fdTSDisplay(refIdArg) {
 
 				var slotObj = fdTSDisplay.slotObjs[elemId];
 
+				//only allow clicking inside actual ts's vertical space. bypass check if day isn't expanded yet since this is the only time we need it
+				if (fdTSDisplay.dayObjs[dayId].isExpanded) {
+					if (arguments[0].pointer().y - slotObj.ext.positionedOffset().top > fdTSDisplay.opts.rowHeight) {
+						return;
+					}
+				}
+
 				fdTSDisplay.log('You clicked:', slotObj.id);
 				fdTSDisplay.log('Click Info Before:', fdTSDisplay.opts.radioCheckedCur, fdTSDisplay.opts.radioCheckedLast, fdTSDisplay.opts.radioCheckedLastUndo);
 
@@ -455,9 +462,31 @@ function fdTSDisplay(refIdArg) {
 
 				//only show colors on non-expanded days, on slots that have radios
 				if (slotObj && slotObj.radioExt) {
-					slotObj.ext.className += ' clickOnlyMouseOver';
+					if (arguments[0].pointer().y - slotObj.ext.positionedOffset().top <= fdTSDisplay.opts.rowHeight) {
+						slotObj.ext.observe('mousemove', this.tsMouseMove.bindAsEventListener(this, fdTSDisplay, slotObj.id));
+					}else{
+						//remove observer
+						slotObj.ext.stopObserving('mousemove');
+					}
 				}
 
+			}
+		/* slot-level mouse movement */
+			this.tsMouseMove = function() {
+				var fdTSDisplay = arguments[1]
+				var slotObj = fdTSDisplay.slotObjs[arguments[2]];
+				//only show color when within the slot's vertical space
+				if (slotObj.ext.className.indexOf(' clickOnlyMouseOver') === -1) {
+					if (arguments[0].pointer().y - slotObj.ext.positionedOffset().top <= fdTSDisplay.opts.rowHeight) {
+						slotObj.ext.className += ' clickOnlyMouseOver';
+					}
+				}else{
+					if (arguments[0].pointer().y - slotObj.ext.positionedOffset().top > fdTSDisplay.opts.rowHeight) {
+						slotObj.ext.className = slotObj.ext.className.replace(' clickOnlyMouseOver', '');
+						//remove observer
+						slotObj.ext.stopObserving('mousemove');
+					}
+				}
 			}
 		/* slot-level mouse out, click only */
 			this.tsMouseOutClickOnly = function() {
@@ -468,7 +497,6 @@ function fdTSDisplay(refIdArg) {
 				if (slotObj) {
 					slotObj.ext.className = slotObj.ext.className.replace(' clickOnlyMouseOver', '');
 				}
-
 			}
 
 	/* --- UTIL FUNCTIONS --- */

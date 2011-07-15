@@ -18,7 +18,6 @@ table.tsContainer td {
 
 .tsTable {
 	border-collapse: collapse;
-	cursor: pointer;
 }
 
 .float_children {
@@ -36,7 +35,6 @@ table.tsContainer td {
 	height: 56px;
 	width: 87px;
 	background: transparent url('/media/editorial/timeslots/images/date_gradient.gif') repeat-x;
-	cursor: pointer;
 }
 .tsHeaderE {
 	height: 76px;
@@ -91,7 +89,6 @@ td.footer_container {
 .tsContainerC {
 	height: 31px;
 	width: 88px;
-	cursor: pointer;
 	padding: 0;
 }
 .tsContCon table, .tsContExp table {
@@ -163,8 +160,8 @@ div.tsDayNameE {
 	height: 31px;
 	text-decoration: none;
 	color: #333;
-	cursor: pointer;
 	overflow: hidden;
+	cursor: pointer;
 }
 .tsCol div.tsContent div {
 	/* height: 12px; */
@@ -812,12 +809,14 @@ td.noTopBorder {
 	width: 0px;
 }
 
-.clickOnlyMouseOver {
+.clickOnlyMouseOver div {
 	background: transparent url('/media/editorial/timeslots/images/mouseOverBGC.gif') repeat-x left top;
+	cursor: pointer;
 }
 
 .tsHeaderCMouseOver {
 	background: transparent url('/media/editorial/timeslots/images/date_gradient_mouseOver.gif') repeat-x left top;
+	cursor: pointer;
 }
 
 /* modalbox rounded corner and drop shadow */

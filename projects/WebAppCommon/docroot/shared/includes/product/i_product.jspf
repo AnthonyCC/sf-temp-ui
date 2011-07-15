@@ -745,13 +745,8 @@ if ( skuSize == 0 ) {
 					<% } %>
 
 				    <%-- end render quantity --%>
-						
-						<tr>
-							<td class="text11" style="<%= CSSTableStyle %>padding-top:5px;">
-								<%-- START INCLUDES AT BOTTOM OF i_product --%>
-								<%@ include file="/shared/includes/product/i_minmax_note.jspf" %>
-							</td>
-						</tr>
+
+					<tr><td class="text11" style="<%= CSSTableStyle %>padding-top:5px;">
 
 					    <%-- Set up the pricing callback, now that the field exists on the page --%>
 					    <script type="text/javascript">

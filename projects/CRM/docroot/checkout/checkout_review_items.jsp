@@ -21,16 +21,15 @@
 <%@ page import="com.freshdirect.webapp.util.RestrictionUtil" %>
 <%@ page import='com.freshdirect.fdstore.promotion.EnumOfferType' %>
 <%@ page import='java.text.*, java.util.*' %>
-
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<script type="text/javascript" language="javascript" src="/assets/javascript/FD_PromoEligibility.js"></script>
-    
 <tmpl:insert template='/template/top_nav.jsp'>
 
 <tmpl:put name='title' direct='true'>Checkout > Review Items</tmpl:put>
 <tmpl:put name='content' direct='true'>
+
+<script type="text/javascript" language="javascript" src="/assets/javascript/FD_PromoEligibility.js"></script>
 
 	<%
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
@@ -81,37 +80,39 @@
 		<%@ include file="/includes/i_error_messages.jspf" %>   
 	</fd:ErrorHandler>
 	
-	<div class="groupScaleBox" style="display:none"><!--  -->
+	<div class="groupScaleBox" style="display: none; overflow: hidden;">
 		<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="groupScaleBoxContent" id="groupScaleBox" >
 			<tr>
-				<td colspan="2"><img src="/media_stat/images/layout/top_left_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
-				<td rowspan="2" style="background-color: #8A6637; color: #fff; font-size: 14px; line-height: 14px; font-weight: bold; padding: 3px;">GROUP DISCOUNT &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="Modalbox.hide(); return false;" style="text-decoration: none;border: 1px solid #5A3815; background-color: #BE973A; font-size: 10px;	"><img src="/media_stat/images/layout/clear.gif" width="10" height="10" border="0" alt="" /></a></td>
-				<td colspan="2"><img src="/media_stat/images/layout/top_right_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
+				<td colspan="2" style="line-height: 6px;"><img src="/media_stat/images/layout/top_left_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
+				<td rowspan="2" style="background-color: #8A6637; color: #fff; font-size: 14px; line-height: 13px; font-weight: bold; padding: 0 3px;">
+					GROUP DISCOUNT
+					<a href="#" onclick="Modalbox.hide(); return false;" style="float: right; text-decoration: none; border: 1px solid #5A3815; background-color: #BE973A; font-size: 10px; line-height: 10px;"><img src="/media_stat/images/buttons/exit_trans.gif" width="10" height="10" alt="close" border="0" /></a></td>
+				<td colspan="2" style="line-height: 6px;"><img src="/media_stat/images/layout/top_right_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
 			</tr>
 			<tr>
-				<td colspan="2" style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" /></td>
-				<td colspan="2" style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" /></td>
+				<td colspan="2" style="background-color: #8A6637; line-height: 16px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="16" alt="" /></td>
+				<td colspan="2" style="background-color: #8A6637; line-height: 16px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="16" alt="" /></td>
 			</tr>
 			<tr>
-				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
-				<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
-				<td>
+				<td style="background-color: #8A6637; line-height: 1px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+				<td style="line-height: 1px;"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
+				<td style="line-height: 19px;">
 					<%-- all your content goes in this div, it controls the height/width --%>
 					<div id="group_info" style="display:none">This is the more info hidden div.<br /><br /></div>
 					<div style="height: auto; width: 200px; text-align: center; font-weight: bold;">
-					<br /><img onclick="Modalbox.hide(); return false;" src="/media_stat/images/buttons/close_window.gif" width="141" height="19" alt="" /><br />
+						<br /><img onclick="Modalbox.hide(); return false;" src="/media_stat/images/buttons/close_window.gif" width="141" height="19" alt="" /><br />
 					</div>
 				</td>
-				<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
-				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+				<td style="line-height: 1px;"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
+				<td style="background-color: #8A6637; line-height: 1px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
 			</tr>
 			<tr>
-				<td rowspan="2" colspan="2" style="background-color: #8A6637"><img src="/media_stat/images/layout/bottom_left_curve_8A6637.gif" width="6" height="6" alt="" /></td>
-				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /></td>
-				<td rowspan="2" colspan="2" style="background-color: #8A6637"><img src="/media_stat/images/layout/bottom_right_curve_8A6637.gif" width="6" height="6" alt="" /></td>
+				<td rowspan="2" colspan="2" style="line-height: 6px;"><img src="/media_stat/images/layout/bottom_left_curve_8A6637.gif" width="6" height="6" alt="" /></td>
+				<td style="line-height: 5px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /></td>
+				<td rowspan="2" colspan="2" style="line-height: 6px;"><img src="/media_stat/images/layout/bottom_right_curve_8A6637.gif" width="6" height="6" alt="" /></td>
 			</tr>
 			<tr>
-				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+				<td style="background-color: #8A6637; line-height: 1px; height: 1px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
 			</tr>
 		</table>
 	</div>

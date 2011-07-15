@@ -14,9 +14,6 @@
 
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 
-<%-- bring in the common javascript functions  --%>
-<script language="javascript" src="/assets/javascript/common_javascript.js"></script>
-
 
 <tmpl:insert template='/common/template/giftcard.jsp'>
    <tmpl:put name='title' direct='true'>FreshDirect - Purchase Gift Card</tmpl:put>

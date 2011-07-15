@@ -1713,3 +1713,6 @@ div.content_scroll { clear: left; }
 	-moz-border-radius-bottomright: 5px;
 	-webkit-border-bottom-right-radius: 5px;
 }
+.groupScaleBoxContent {
+	overflow: hidden;
+}

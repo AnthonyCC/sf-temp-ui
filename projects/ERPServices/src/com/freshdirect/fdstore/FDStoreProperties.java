@@ -459,6 +459,8 @@ public class FDStoreProperties {
 	
 	private static final String EVENTLOGGING_ENABLED = "fdstore.eventlogging.enabled";
 	
+	//APPDEV-1920 Remove the "new feature" alert on quickbuy
+	private static final String SMARTSTORE_QUICKBUY_NEWALERT_ENABLED = "fdstore.smartstore.quickbuy.newalert.enabled";
 	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -917,7 +919,9 @@ public class FDStoreProperties {
 		defaults.put(PROP_TWO_MONTH_TRIAL_PASS_PRICE, "$59.00");
 		
 		defaults.put(EVENTLOGGING_ENABLED, "true");
-		
+
+		defaults.put(SMARTSTORE_QUICKBUY_NEWALERT_ENABLED, "false");
+
         refresh();
     }
 
@@ -1223,7 +1227,7 @@ public class FDStoreProperties {
     }
 
     public static String getCheckExternalForPaymentMethodFraud() {
-        return config.getProperty(PROP_EXTERNAL_FRAUD_CHECK_PM);
+        return get(PROP_EXTERNAL_FRAUD_CHECK_PM);
     }
 
     public static Context getInitialContext() throws NamingException {
@@ -1247,11 +1251,11 @@ public class FDStoreProperties {
     }
 
     public static String getMaxReferrals() {
-        return config.getProperty(PROP_MAX_REFERRALS);
+        return get(PROP_MAX_REFERRALS);
     }
 
     public static String getNumDaysMaxReferrals() {
-        return config.getProperty(PROP_NUM_DAYS_MAX_REFERRALS);
+        return get(PROP_NUM_DAYS_MAX_REFERRALS);
     }
 
     public static String getFDReferralManagerHome() {
@@ -1409,7 +1413,7 @@ public class FDStoreProperties {
     }
 
     public static int getPromotionRTRefreshPeriod() {
-        return Integer.parseInt(config.getProperty(
+        return Integer.parseInt(get(
                 PROP_PROMOTION_RT_REFRESH_PERIOD));
     }
 
@@ -1556,15 +1560,15 @@ public class FDStoreProperties {
     }
 
     public static int getGiftCardRecipientLimit() {
-        return Integer.parseInt(config.getProperty(PROP_GIFT_CARD_RECIPIENT_MAX));
+        return Integer.parseInt(get(PROP_GIFT_CARD_RECIPIENT_MAX));
     }
 
     public static double getGiftCardMinAmount() {
-        return Double.parseDouble(config.getProperty(PROP_GC_MIN_AMOUNT));
+        return Double.parseDouble(get(PROP_GC_MIN_AMOUNT));
     }
 
     public static double getGiftCardMaxAmount() {
-        return Double.parseDouble(config.getProperty(PROP_GC_MAX_AMOUNT));
+        return Double.parseDouble(get(PROP_GC_MAX_AMOUNT));
     }
 
     // Robin Hood
@@ -1817,7 +1821,7 @@ public class FDStoreProperties {
     }
 
     public static String getRoutingProviderURL() {
-        return config.getProperty(PROP_ROUTING_PROVIDER_URL);
+        return get(PROP_ROUTING_PROVIDER_URL);
     }
 
     public static String getCTCapacityFileName() {
@@ -1925,12 +1929,12 @@ public class FDStoreProperties {
     }
 
     public static boolean isZonePricingEnabled() {
-        return Boolean.valueOf(config.getProperty(PROP_ZONE_PRICING_ENABLED))
+        return Boolean.valueOf(get(PROP_ZONE_PRICING_ENABLED))
                       .booleanValue();
     }
 
     public static boolean isZonePricingAdEnabled() {
-        return Boolean.valueOf(config.getProperty(PROP_ZONE_PRICING_AD_ENABLED))
+        return Boolean.valueOf(get(PROP_ZONE_PRICING_AD_ENABLED))
                       .booleanValue();
     }
 
@@ -1949,12 +1953,12 @@ public class FDStoreProperties {
     }
 
     public static boolean isStandingOrdersEnabled() {
-        return Boolean.valueOf(config.getProperty(SO_GLOBAL_ENABLER))
+        return Boolean.valueOf(get(SO_GLOBAL_ENABLER))
                       .booleanValue();
     }
 
     public static boolean isClientCodesEnabled() {
-        return Boolean.valueOf(config.getProperty(CLIENT_CODES_GLOBAL_ENABLER))
+        return Boolean.valueOf(get(CLIENT_CODES_GLOBAL_ENABLER))
                       .booleanValue();
     }
 
@@ -2029,7 +2033,7 @@ public class FDStoreProperties {
 
     //Email Opt-Down (APPDEV-662)
     public static boolean isEmailOptdownEnabled() {
-        return Boolean.valueOf(config.getProperty(PROP_EMAIL_OPTDOWN_ENABLED))
+        return Boolean.valueOf(get(PROP_EMAIL_OPTDOWN_ENABLED))
                       .booleanValue();
     }
 
@@ -2069,17 +2073,17 @@ public class FDStoreProperties {
     }
 
     public static int getRedeemCntRefreshPeriod() {
-        return Integer.parseInt(config.getProperty(
+        return Integer.parseInt(get(
                 PROP_REDEMPTION_CNT_REFRESH_PERIOD));
     }
 
     public static int getRedemptionServerCount() {
-        return Integer.parseInt(config.getProperty(PROP_REDEMPTION_SERVER_COUNT));
+        return Integer.parseInt(get(PROP_REDEMPTION_SERVER_COUNT));
     }
 
     //Delivery Pass at Checkout (APPDEV-664)
     public static boolean isDPCartEnabled() {
-        return Boolean.valueOf(config.getProperty(PROP_DP_CART_ENABLED))
+        return Boolean.valueOf(get(PROP_DP_CART_ENABLED))
                       .booleanValue();
     }
 
@@ -2093,7 +2097,7 @@ public class FDStoreProperties {
     }
 
     public static int get4mmRefreshInterval() {
-        return Integer.parseInt(config.getProperty(PROP_4MM_REFRESH_INTERVAL));
+        return Integer.parseInt(get(PROP_4MM_REFRESH_INTERVAL));
     }
 
     public static int getUnassignedProcessingLimit() {
@@ -2161,26 +2165,26 @@ public class FDStoreProperties {
     }
 
     public static int getCrmMenuRolesRefreshPeriod() {
-        return Integer.parseInt(config.getProperty(
+        return Integer.parseInt(get(
                 PROP_CRM_MENU_ROLES_REFRESH_PERIOD));
     }
 
     public static int getCrmLDAPUsersRefreshPeriod() {
-        return Integer.parseInt(config.getProperty(
+        return Integer.parseInt(get(
                 PROP_CRM_LDAP_USERS_REFRESH_PERIOD));
     }
 
     public static int getCrmAgentsCacheRefreshPeriod() {
-        return Integer.parseInt(config.getProperty(
+        return Integer.parseInt(get(
                 PROP_CRM_AGENTS_CACHE_REFRESH_PERIOD));
     }
 
     public static String getCrmLDAPPrimaryHostName() {
-        return config.getProperty(PROP_CRM_LDAP_ACCESS_HOST_NAME_PRIMARY);
+        return get(PROP_CRM_LDAP_ACCESS_HOST_NAME_PRIMARY);
     }
 
     public static int getCrmCCDetailsLookupLimit() {
-        return Integer.parseInt(config.getProperty(
+        return Integer.parseInt(get(
                 PROP_CRM_CC_DETAILS_LOOKUP_LIMIT));
     }
 
@@ -2189,31 +2193,31 @@ public class FDStoreProperties {
     }
 
     public static String getCrmCCSecurityEmail() {
-        return config.getProperty(PROP_CRM_CC_SECURITY_EMAIL);
+        return get(PROP_CRM_CC_SECURITY_EMAIL);
     }
 
     public static String getCrmCCSecurityEmailSubject() {
-        return config.getProperty(PROP_CRM_CC_SECURITY_EMAIL_SUBJECT);
+        return get(PROP_CRM_CC_SECURITY_EMAIL_SUBJECT);
     }
 
     public static String getCrmCCDetailsAccessKey() {
-        return config.getProperty(PROP_CRM_CC_DETAILS_ACCESS_KEY);
+        return get(PROP_CRM_CC_DETAILS_ACCESS_KEY);
     }
 
     public static String getCrmForgotPasswordUrl() {
-        return config.getProperty(PROP_CRM_FORGOT_LDAP_PASSWORD_URL);
+        return get(PROP_CRM_FORGOT_LDAP_PASSWORD_URL);
     }
 
     public static String getCrmSecuritySkippedFileTypes() {
-        return config.getProperty(PROP_CRM_SECURITY_SKIP_FILE_TYPES);
+        return get(PROP_CRM_SECURITY_SKIP_FILE_TYPES);
     }
 
     public static String getCrmSecuritySkippedFolders() {
-        return config.getProperty(PROP_CRM_SECURITY_SKIP_FOLDERS);
+        return get(PROP_CRM_SECURITY_SKIP_FOLDERS);
     }
 
     public static boolean isMyfdEnabled() {
-        return Boolean.parseBoolean(config.getProperty(MYFD_ENABLED));
+        return Boolean.parseBoolean(get(MYFD_ENABLED));
     }
 
     public static String getMyFdPollDaddyApiKey() {
@@ -2221,20 +2225,20 @@ public class FDStoreProperties {
     }
 
     public static String getC2CCallBackUrl() {
-        return config.getProperty(PROP_CLICK2CALL_CALL_BACL_URL);
+        return get(PROP_CLICK2CALL_CALL_BACL_URL);
     }
 
     //SEM Project (APPDEV-1598
     public static String getSemPixels() {
-        return config.getProperty(PROP_SEM_PIXELS);
+        return get(PROP_SEM_PIXELS);
     }
 
     public static String getSemConfigs() {
-        return config.getProperty(PROP_SEM_CONFIGS);
+        return get(PROP_SEM_CONFIGS);
     }
 
     public static int getSemPixelRefreshPeriod() {
-        return Integer.parseInt(config.getProperty(PROP_SEM_REFRESH_PERIOD));
+        return Integer.parseInt(get(PROP_SEM_REFRESH_PERIOD));
     }
 
     //APPDEV-1215 Sustainable Seafood
@@ -2263,23 +2267,23 @@ public class FDStoreProperties {
     }
 
     public static String getChefstableLabel() {
-        return config.getProperty(PROP_CT_TIMESLOT_LABEL);
+        return get(PROP_CT_TIMESLOT_LABEL);
     }
 
     public static String getPromotionLabel() {
-        return config.getProperty(PROP_PROMO_TIMESLOT_LABEL);
+        return get(PROP_PROMO_TIMESLOT_LABEL);
     }
 
     public static String getEcoFriendlyLabel() {
-        return config.getProperty(PROP_ECOFRIENDLY_TIMESLOT_LABEL);
+        return get(PROP_ECOFRIENDLY_TIMESLOT_LABEL);
     }
 
     public static String getMyBuildingFavsLabel() {
-        return config.getProperty(PROP_BUILDINGFAVS_TIMESLOT_LABEL);
+        return get(PROP_BUILDINGFAVS_TIMESLOT_LABEL);
     }
 
     public static String getAlcoholRestrictedLabel() {
-        return config.getProperty(PROP_ALCOHOL_TIMESLOT_LABEL);
+        return get(PROP_ALCOHOL_TIMESLOT_LABEL);
     }
 
     public static String getStandingOrderReportToEmail() {
@@ -2342,12 +2346,16 @@ public class FDStoreProperties {
     } 
     
     public static int getPaymentMethodVerificationLimit() {
-        return Integer.parseInt(config.getProperty(
+        return Integer.parseInt(get(
                 PROP_PAYMENT_METHOD_VERIFICATION_LIMIT));
     }
     
     public static int getOrderHistoryQueryId() {
-        return Integer.parseInt(config.getProperty(
+        return Integer.parseInt(get(
                 PROP_ORDER_HISTORY_QUERY_ID));
     }
+
+    public static boolean isQBNewAlertEnabled() {
+        return (new Boolean(get(SMARTSTORE_QUICKBUY_NEWALERT_ENABLED))).booleanValue();
+    } 
 }

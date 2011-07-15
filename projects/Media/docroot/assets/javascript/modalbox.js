@@ -444,7 +444,10 @@ Modalbox.Methods = {
 			this.currFocused = this.focusableElements.toArray().indexOf(firstEl);
 			firstEl.focus(); // Focus on first focusable element except close button
 		} else if (this.MBclose.visible()) {
-			this.MBclose.focus(); // If no focusable elements exist focus on close button
+			try { //catch IE errors
+				this.MBclose.focus(); // If no focusable elements exist focus on close button
+			} catch(e) {
+			}
 		}
 	},
 

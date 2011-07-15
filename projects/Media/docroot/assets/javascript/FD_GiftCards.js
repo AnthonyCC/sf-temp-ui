@@ -738,6 +738,7 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 				width: 700,
 				height: tempHeight,
 				transitions: false,
+				centered: true,
 				autoFocusing: false,
 				afterLoad: function() { window.scrollTo(0,0); },
 				afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }

@@ -12,6 +12,7 @@
 %><%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature"
 %><%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"
 %><%@ page import="com.freshdirect.webapp.util.JspMethods"
+%><%@ page import="com.freshdirect.fdstore.FDStoreProperties"
 %><%@ taglib uri="freshdirect" prefix="fd"
 %><%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'
 %><fd:CheckLoginStatus noRedirect="true"/><%--
@@ -41,13 +42,16 @@
 		
 		
 		boolean showNewFeatPanel = false;
-		if (FDUserI.SIGNED_IN == u.getLevel()) {
-			showNewFeatPanel = testOnly ?
-					FDCustomerManager.testCounter(u.getIdentity().getErpCustomerPK(), "4mm-landing-page-views", 5)
-					:
-					(FDCustomerManager.decrementCounter(u.getIdentity().getErpCustomerPK(), "4mm-landing-page-views", 5) > 0);
-		} else {
-			showNewFeatPanel = pageContext.getSession().getAttribute("NewFeatureAlert-closed") == null;			
+		//check for property before using existing logic
+		if (FDStoreProperties.isQBNewAlertEnabled()) {
+			if (FDUserI.SIGNED_IN == u.getLevel()) {
+				showNewFeatPanel = testOnly ?
+						FDCustomerManager.testCounter(u.getIdentity().getErpCustomerPK(), "4mm-landing-page-views", 5)
+						:
+						(FDCustomerManager.decrementCounter(u.getIdentity().getErpCustomerPK(), "4mm-landing-page-views", 5) > 0);
+			} else {
+				showNewFeatPanel = pageContext.getSession().getAttribute("NewFeatureAlert-closed") == null;			
+			}
 		}
 		
 		if (showNewFeatPanel) {
