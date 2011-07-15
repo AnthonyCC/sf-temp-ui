@@ -53,12 +53,6 @@
 %>
     <script language="javascript">
        window.onbeforeunload = <%= onbeforeunload %>;
-		/* temp fix for CRM errors */
-		var $E  = YAHOO.util.Event; 	 
-		var $D  = YAHOO.util.Dom; 	 
-		//var $DH = YAHOO.ext.DomHelper; 	 
-		var $C  = YAHOO.util.Connect; 	 
-		var $X  = YAHOO.ext;
     </script>
 <%
        } // if
@@ -69,6 +63,15 @@
 
 
 	<script type="text/javascript" language="javascript" src="/assets/javascript/phone_number.js"></script>
+
+	<script language="javascript">
+		/* temp fix for CRM errors */
+		var $E  = YAHOO.util.Event; 	 
+		var $D  = YAHOO.util.Dom; 	 
+		//var $DH = YAHOO.ext.DomHelper; 	 
+		var $C  = YAHOO.util.Connect; 	 
+		var $X  = YAHOO.ext;
+	</script>
 
 	<tmpl:get name='styles'/>
 </head>
