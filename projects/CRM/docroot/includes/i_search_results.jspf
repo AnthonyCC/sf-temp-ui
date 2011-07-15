@@ -19,6 +19,7 @@
 <%@ page import="com.freshdirect.webapp.util.JspLogger" %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
 <%-- ===========================================================
 		This file expects the following objects:
@@ -258,10 +259,18 @@ ADD</a><% } else { %>&nbsp;<% } %></TD>
 			imgSrc = productImage.getPath();
 			imgHeight = productImage.getHeight();
 			imgWidth = productImage.getWidth();
-		} %>
+		} 
+		ProductSkuImpression impression = new ProductSkuImpression(productNode, configuredProd.getSkuCode());
+		%>
 				<TD WIDTH="69%" <%= (isAvailable) ? "" : "class='text7silver'" %>>
-					&nbsp;&nbsp;<a href="<%= prodPageLink %>"><img border="0" src="<%= imgSrc %>" width="<%= imgWidth %>" height="<%= imgHeight %>"></a>&nbsp;<a href="<%=prodPageLink%>" class="product<%= (isAvailable) ? "" : "unavailable" %>"><%= productNode.getFullName() %></a> <%= configuredProd.getConfigurationDesc() != null ? "("+ configuredProd.getConfigurationDesc() +")":"" %></TD>
-<fd:FDProductInfo id="productInfo" skuCode="<%= configSku %>">
+				<table><tr><td>
+					&nbsp;&nbsp;<a href="<%= prodPageLink %>"><img border="0" src="<%= imgSrc %>" width="<%= imgWidth %>" height="<%= imgHeight %>"></a>
+					</td>
+					<td>&nbsp;<a href="<%=prodPageLink%>" class="product<%= (isAvailable) ? "" : "unavailable" %>"><%= productNode.getFullName() %></a> <%= configuredProd.getConfigurationDesc() != null ? "("+ configuredProd.getConfigurationDesc() +")":"" %>					
+					<display:ProductPrice impression="<%= impression %>" showRegularPrice="false" showScalePricing="true" showWasPrice="false" showDescription="false" />
+					</td></tr></table>
+					</TD>
+<fd:FDProductInfo id="productInfo" skuCode="<%= configSku %>"> 
 				<TD WIDTH="8%" class="product<%= (isAvailable) ? "" : "_unavailable" %>"><% if (isAvailable) { %><%= JspMethods.formatPrice(productInfo, searchUser.getPricingContext()) %><% } else { %>Not Available<% } %></td>
 </fd:FDProductInfo>
 				<TD WIDTH="5%" ALIGN="CENTER"><a href="javascript:popResize('/shared/product_summary.jsp?productId=<%=productNode%>&catId=<%=cat%>','740','555','summ')" class="help" title="Product description & Information" style="font-size: 6pt;">?</a><B><% if (showCrossSells) { %><a href="place_order_related_items.jsp?searchIndex=<%= searchIndex %>&productId=<%= productNode %>&catId=<%= cat%>" title="Related Products">&reg;</a><% } else { %><% } %></B>
