@@ -27,7 +27,7 @@
 %>
 <div class="left">
 	<div class="title14 info" style="color: #ff9933">You have just<br>added to your cart</div>
-	<div class="title16"><%= productNode.getFullName() %>&nbsp;<a href="/product_modify.jsp?cartLine=<%= orderLine.getRandomId() %>&amp;trk=conf&amp;referer=<%= URLEncoder.encode(request.getParameter("referer"), "UTF8") %>" target="_top"><img src="/media_stat/images/buttons/edit_product.gif" width="32" height="14" alt="Edit" border="0"></a></div>
+	<div class="title14"><%= productNode.getFullName() %>&nbsp;<a href="/product_modify.jsp?cartLine=<%= orderLine.getRandomId() %>&amp;trk=conf&amp;referer=<%= URLEncoder.encode(request.getParameter("referer"), "UTF8") %>" target="_top"><img src="/media_stat/images/buttons/edit_product.gif" width="32" height="14" alt="Edit" border="0"></a></div>
 	<div class="qbParam" style="margin-top:1em">Quantity: <span><display:OrderLineQuantity orderline="<%= orderLine %>" product="<%= productNode %>" customer="<%= user %>"/></span></div>
 	<div class="qbParam">Options: <span><%= orderLine.getConfigurationDesc() %></span></div>
 	<div class="qbParam" style="margin-bottom:1em">Est. Price: <span><%= JspMethods.formatPrice(orderLine.getPrice()) %></span></div>
