@@ -232,7 +232,7 @@ public class ErpSaleInfoDAO {
 		+ "and s.id=del.id order by to_number(s.id) desc";
 */	
 	public static Collection<ErpSaleInfo> getOrderHistoryInfo(Connection conn, String erpCustomerId, int queryId) throws SQLException {
-		
+		long startTime=System.currentTimeMillis();
 		PreparedStatement ps =null;
 		
 		if (queryId<1 || queryId>3) {
@@ -261,7 +261,7 @@ public class ErpSaleInfoDAO {
 		}
 		ResultSet rs = ps.executeQuery();
 		List<ErpSaleInfo> extendedInfos = new ArrayList<ErpSaleInfo>();
-		long startTime=System.currentTimeMillis();
+		
 		while (rs.next()) {
 			
 			String referencedOrder=rs.getString("REFERENCED_ORDER");
@@ -296,7 +296,7 @@ public class ErpSaleInfoDAO {
 		}
 		rs.close();
 		ps.close();
-		LOGGER.info(new StringBuilder("*****run get order history info query ").append(" for customer ").append(erpCustomerId).append(" completed in ").append(((int)(System.currentTimeMillis()-startTime))/1000).append(" seconds, using queryId of ").append(queryId).toString());
+		LOGGER.info(new StringBuilder("*****run get order history info query ").append(" for customer ").append(erpCustomerId).append(" completed in ").append(System.currentTimeMillis()-startTime).append(" milliseconds, using queryId of ").append(queryId).toString());
 		return extendedInfos;
 	}
 	

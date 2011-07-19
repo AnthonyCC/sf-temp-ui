@@ -1090,13 +1090,13 @@ public class FDPromotionNewDAO {
 	}
 	
 	/** @return Map of promotionPK -> CustomerStrategy */
-	private final static String GET_CUST_PROMO_STRATEGY = "select cs.promotion_id, cs.cohort, cs.dp_exp_end,cs.dp_exp_start, cs.dp_status, cs.order_range_end, " +
+	private final static String GET_CUST_PROMO_STRATEGY = "select cs.promotion_id, cs.cohort,cs.dp_types, cs.dp_exp_end,cs.dp_exp_start, cs.dp_status, cs.order_range_end, " +
 														   "cs.order_range_start,cs.payment_type,cs.prior_echeck_use, ordertype_home, ordertype_pickup, ordertype_corporate " +
 														   "from cust.promo_cust_strategy cs, " +
 														   "(SELECT ID FROM CUST.PROMOTION_NEW where status STATUSES and (expiration_date > (sysdate-7) " +
 														   "or expiration_date is null) and redemption_code is null) p where p.ID = cs.PROMOTION_ID";
 
-	private final static String GET_MODIFIED_CUST_PROMO_STRATEGY  =  "select cs.promotion_id, cs.cohort, cs.dp_exp_end,cs.dp_exp_start, cs.dp_status, cs.order_range_end, " +
+	private final static String GET_MODIFIED_CUST_PROMO_STRATEGY  =  "select cs.promotion_id, cs.cohort,cs.dp_types, cs.dp_exp_end,cs.dp_exp_start, cs.dp_status, cs.order_range_end, " +
 																	 "cs.order_range_start,cs.payment_type,cs.prior_echeck_use, ordertype_home, ordertype_pickup, ordertype_corporate " +
 																	 "from cust.promo_cust_strategy cs, " +
 																	 "(SELECT ID FROM CUST.PROMOTION_NEW where modify_date > ? ) p where p.ID = cs.PROMOTION_ID";
@@ -1120,6 +1120,10 @@ public class FDPromotionNewDAO {
 			String cohorts = rs.getString("COHORT");
 			if(cohorts != null && cohorts.length() > 0){
 				strategy.setCohorts(cohorts);
+			}
+			String dpTypes = rs.getString("DP_TYPES");
+			if(dpTypes != null && dpTypes.length() > 0){
+				strategy.setDpTypes(dpTypes);
 			}
 			String status = rs.getString("dp_status");
 			if(status != null){
@@ -1168,7 +1172,7 @@ public class FDPromotionNewDAO {
 	
 	protected static PromotionStrategyI loadCustomerStrategy(Connection conn, String promoId) throws SQLException {
 		CustomerStrategy strategy = null;
-		PreparedStatement ps = conn.prepareStatement("select cs.promotion_id, cs.cohort, cs.dp_exp_end,cs.dp_exp_start, cs.dp_status, cs.order_range_end, " +
+		PreparedStatement ps = conn.prepareStatement("select cs.promotion_id, cs.cohort,cs.dp_types, cs.dp_exp_end,cs.dp_exp_start, cs.dp_status, cs.order_range_end, " +
 													 "cs.order_range_start,cs.payment_type,cs.prior_echeck_use, ordertype_home, ordertype_pickup, ordertype_corporate " +
 													 "from cust.promo_cust_strategy cs, cust.promotion_new p " +
 													 "where p.ID = cs.PROMOTION_ID and cs.promotion_id = ?");
@@ -1179,6 +1183,10 @@ public class FDPromotionNewDAO {
 			String cohorts = rs.getString("COHORT");
 			if(cohorts != null && cohorts.length() > 0){
 				strategy.setCohorts(cohorts);
+			}
+			String dpTypes = rs.getString("DP_TYPES");
+			if(dpTypes != null && dpTypes.length() > 0){
+				strategy.setDpTypes(dpTypes);
 			}
 			String status = rs.getString("dp_status");
 			if(status != null){

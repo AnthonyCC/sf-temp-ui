@@ -60,6 +60,7 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 				String orderRangeStart = NVL.apply(request.getParameter("orderRangeStart"),"").trim();
 				String orderRangeEnd = NVL.apply(request.getParameter("orderRangeEnd"),"").trim();
 				String[] cohorts = request.getParameterValues("cohorts");
+				String[] dpTypes = request.getParameterValues("dpTypes");
 				String dpStatus = NVL.apply(request.getParameter("dpStatus"),"").trim();
 				String dpExpStartDate = NVL.apply(request.getParameter("edit_custreq_cal_dlvPassStart_in"),"").trim();
 				String dpExpEndDate = NVL.apply(request.getParameter("edit_custreq_cal_dlvPassEnd_in"),"").trim();
@@ -77,6 +78,7 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 					promotion.setCustStrategies(custStrategies);
 				}
 				model.setCohorts(cohorts);
+				model.setDpTypes(dpTypes);
 				model.setDpStatus(dpStatus);
 				validateCustReq(actionResult, orderRangeStart, orderRangeEnd,
 						dpExpStartDate, dpExpEndDate, model);
@@ -270,6 +272,20 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 						changeDetailModel.setChangeFieldName("Cohorts");
 						changeDetailModel.setChangeFieldOldValue(oldCohorts.toString());
 						changeDetailModel.setChangeFieldNewValue(cohorts.toString());
+						changeDetailModel.setChangeSectionId(EnumPromotionSection.CUST_REQ_INFO);
+						promoChangeDetails.add(changeDetailModel);
+					}
+				}
+				if(oldCustModel.getDpTypes()!= null && model.getDpTypes()!=null){
+					Arrays.sort(oldCustModel.getDpTypes());
+					List oldDpTypes = Arrays.asList(oldCustModel.getDpTypes());
+					Arrays.sort(model.getDpTypes());
+					List dpTypes = Arrays.asList(model.getDpTypes());
+					if(dpTypes.size() != oldDpTypes.size() || !dpTypes.containsAll(dpTypes) || oldDpTypes.containsAll(dpTypes)){
+						FDPromoChangeDetailModel changeDetailModel = new FDPromoChangeDetailModel();
+						changeDetailModel.setChangeFieldName("Dp Types");
+						changeDetailModel.setChangeFieldOldValue(oldDpTypes.toString());
+						changeDetailModel.setChangeFieldNewValue(dpTypes.toString());
 						changeDetailModel.setChangeSectionId(EnumPromotionSection.CUST_REQ_INFO);
 						promoChangeDetails.add(changeDetailModel);
 					}

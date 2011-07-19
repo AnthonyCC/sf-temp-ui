@@ -12,6 +12,7 @@ public class FDPromoCustStrategyModel extends ModelSupport {
 	private Integer orderRangeStart;
 	private Integer orderRangeEnd;
 	private String[] cohorts;
+	private String[] dpTypes;
 	private String dpStatus;
 	private Date dpExpStart;
 	private Date dpExpEnd;
@@ -28,7 +29,7 @@ public class FDPromoCustStrategyModel extends ModelSupport {
 	}
 	public FDPromoCustStrategyModel(String promotionId,
 			Integer orderRangeStart, Integer orderRangeEnd, String[] cohorts,
-			String dpStatus, Date dpExpStart, Date dpExpEnd,
+			String[] dpTypes,String dpStatus, Date dpExpStart, Date dpExpEnd,
 			boolean orderTypeHome, boolean orderTypePickup,
 			boolean orderTypeCorporate, EnumCardType[] paymentType,
 			String priorEcheckUse) {
@@ -45,6 +46,7 @@ public class FDPromoCustStrategyModel extends ModelSupport {
 		this.orderTypeCorporate = orderTypeCorporate;
 		this.paymentType = paymentType;
 		this.priorEcheckUse = priorEcheckUse;
+		this.dpTypes=dpTypes;
 	}
 	/*public FDPromoCustStrategyModel(String promotionId,
 			Integer orderRangeStart, Integer orderRangeEnd, String[] cohorts,
@@ -138,6 +140,12 @@ public class FDPromoCustStrategyModel extends ModelSupport {
 		this.excludeSameDayDlv = excludeSameDayDlv;
 	}
 	
+	public String[] getDpTypes() {
+		return dpTypes;
+	}
+	public void setDpTypes(String[] dpTypes) {
+		this.dpTypes = dpTypes;
+	}
 	
 	
 }

@@ -12,6 +12,7 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 
 public class CustomerStrategy implements PromotionStrategyI {
 	private Set<String> cohorts;
+	private Set<String> dpTypes;
 	private int orderRangeStart;
 	private int orderRangeEnd;
 	private EnumDlvPassStatus dpStatus;
@@ -29,6 +30,14 @@ public class CustomerStrategy implements PromotionStrategyI {
 		
 		//Evaluate Cohorts
 		if(cohorts != null && cohorts.size() > 0 && !cohorts.contains(context.getUser().getCohortName())) return DENY;
+		
+		if(  dpTypes != null && dpTypes.size() > 0) {
+			
+			if( context.getUser().getDlvPassInfo()==null ) return DENY;
+			
+			else if( !dpTypes.contains(context.getUser().getDlvPassInfo().getTypePurchased().getCode()))
+				return DENY;
+		}
 		
 		//Evaluate Order Range. range is not defined properly. DENY
 		if((orderRangeStart > 0 && orderRangeEnd <= 0) || (orderRangeStart <= 0 && orderRangeEnd > 0)) return DENY;
@@ -256,4 +265,19 @@ public class CustomerStrategy implements PromotionStrategyI {
 		}
 		return isEligible;
 	}
+	
+	
+	public void setDpTypes(String dpTypes) {
+		this.dpTypes = convertToCohorts(dpTypes);
+
+	}
+	
+	public String getDpTypesNames() {
+		return convertToCohortNames(this.dpTypes);
+	}
+
+	public Set<String> getDpTypes() {
+		return this.dpTypes;
+	}
+
 }

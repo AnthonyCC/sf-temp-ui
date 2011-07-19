@@ -11,7 +11,11 @@
 					List cohortList = new ArrayList();
 					if(csm!=null && null !=csm.getCohorts()){
 						cohortList = Arrays.asList(csm.getCohorts());
-					} %>
+					} 
+					
+					List dpList = new ArrayList();
+					
+					%>
 				<tr class="flatRow">
 					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 				</tr>
@@ -31,6 +35,7 @@
 					<td class="promo_detail_label"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 					<td class="alignL vTop padL8R16"><span class="grayIta8pt">AND</span></td>
 				</tr>
+				
 				<tr>
 					<td class="promo_detail_label"><div style="text-align: left;" class="fright">Smart Store cohort:<br />(match any)</div></td>
 					<td class="alignL vTop padL8R16">
@@ -49,13 +54,55 @@
 								<td><input type="checkbox" id="cohorts" name="cohorts" value="<%= cohorts.get(i)%>" <%= cohortList.contains(cohorts.get(i))?"checked":"" %>/> <%= cohorts.get(i)%></td>
 													
 							<%} else { %>
-							<td><input type="checkbox" id="cohorts" name="cohorts" value="<%= cohorts.get(i)%>" <%= cohortList.contains(cohorts.get(i))?"checked":"" %>/> <%= cohorts.get(i)%></td>
+								<td><input type="checkbox" id="cohorts" name="cohorts" value="<%= cohorts.get(i)%>" <%= cohortList.contains(cohorts.get(i))?"checked":"" %>/> <%= cohorts.get(i)%></td>
 							<%} %>
 							<%} %>
 							<tr>
 								<td colspan="4" class="alignR">
 									<a href="#" onclick="selectAllCB('edit_custreq_ssParent'); return false;" class="greenLink">(Select All)</a>&nbsp;
 									<a href="#" onclick="selectNoneCB('edit_custreq_ssParent'); return false;" class="greenLink">(Select None)</a>
+								</td>
+							</tr>
+							<tr>
+								<%-- sets the column widths --%>
+								<td class="w75px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+								<td class="w75px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+								<td class="w75px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+								<td class="w75px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+							</tr>
+						</table>
+						<%} %>
+					</td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td class="alignL vTop padL8R16"><span class="grayIta8pt">AND</span></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"><div style="text-align: left;" class="fright">Smart Store cohort:<br />(match any)</div></td>
+					<td class="alignL vTop padL8R16">
+					<%
+					
+					List<DeliveryPassType> dT = DeliveryPassType.getUnlimitedTypes();
+					 
+					if(null != dT && !dT.isEmpty()){
+					%>
+						<table class="tableCollapse" id="edit_custreq_dpParent">
+						 <% for(int i=0;i<dT.size();i++){
+						  %>
+						  <%if(i%2 ==0){ %>
+						     <% if(i!=0){ %></tr>	<%} %>
+						  	<tr>
+								<td colspan="6"><input type="checkbox" id="dpTypes" name="dpTypes" value="<%= dT.get(i)%>" <%= dpList.contains(dT.get(i))?"checked":"" %>/> <%= "( "+dT.get(i)+" ) "+dT.get(i).getName()%></td>
+													
+							<%} else { %>
+								<td colspan="6"><input type="checkbox" id="dpTypes" name="dpTypes" value="<%= dT.get(i)%>" <%= dpList.contains(dT.get(i))?"checked":"" %>/> <%= "( "+dT.get(i)+" ) "+dT.get(i).getName()%></td>
+							<%} %>
+							<%} %>
+							<tr>
+								<td colspan="4" class="alignR">
+									<a href="#" onclick="selectAllCB('edit_custreq_dpParent'); return false;" class="greenLink">(Select All)</a>&nbsp;
+									<a href="#" onclick="selectNoneCB('edit_custreq_dpParent'); return false;" class="greenLink">(Select None)</a>
 								</td>
 							</tr>
 							<tr>

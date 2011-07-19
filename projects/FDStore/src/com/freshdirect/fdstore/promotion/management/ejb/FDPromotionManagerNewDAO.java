@@ -1099,12 +1099,12 @@ public class FDPromotionManagerNewDAO {
 	}
 
 	private static String INSERT_PROMO_CUST_STRATEGY = "INSERT INTO cust.promo_cust_strategy"
-			+ " (id, promotion_id, order_range_start, order_range_end, cohort, dp_status, dp_exp_start, dp_exp_end," +
+			+ " (id, promotion_id, order_range_start, order_range_end, cohort,dp_types, dp_status, dp_exp_start, dp_exp_end," +
 					"ordertype_home, ordertype_pickup, ordertype_corporate, payment_type, prior_echeck_use)"
-			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static String UPDATE_PROMO_CUST_STRATEGY = "UPDATE cust.promo_cust_strategy"
-			+ " SET order_range_start=?,order_range_end=?, cohort=?, dp_status=?,dp_exp_start=?,dp_exp_end=?,ordertype_home=?,ordertype_pickup=?,ordertype_corporate=?,payment_type=?,prior_echeck_use=? where promotion_id = ?";
+			+ " SET order_range_start=?,order_range_end=?, cohort=?,dp_types=?, dp_status=?,dp_exp_start=?,dp_exp_end=?,ordertype_home=?,ordertype_pickup=?,ordertype_corporate=?,payment_type=?,prior_echeck_use=? where promotion_id = ?";
 	
 	private static void storeCustomerStrategy(Connection conn, String promotionId,
 			FDPromotionNewModel promotion) throws SQLException {
@@ -1158,6 +1158,17 @@ public class FDPromotionManagerNewDAO {
 					cohortsString.append(cohorts[cohorts.length-1]);
 				}
 				ps.setString(index++, cohortsString.toString());
+				
+				String[] dpTypes = model.getDpTypes();
+				StringBuffer dpTypesString = new StringBuffer();
+				if (null != dpTypes && dpTypes.length > 0){
+					for (int i = 0; i < dpTypes.length-1; i++) {
+						dpTypesString.append(dpTypes[i]);
+						dpTypesString.append(",");
+					}
+					dpTypesString.append(dpTypes[dpTypes.length-1]);
+				}
+				ps.setString(index++, dpTypesString.toString());
 	
 				ps.setString(index++, model.getDpStatus());
 				if (model.getDpExpStart() != null)
@@ -1399,6 +1410,10 @@ public class FDPromotionManagerNewDAO {
 			String cohorts =rs.getString("COHORT");
 			if(null != cohorts && !"".equals(cohorts.trim())){
 				promoCustStrategyModel.setCohorts(cohorts.split(","));
+			}
+			String dpTypes =rs.getString("DP_TYPES");
+			if(null != dpTypes && !"".equals(dpTypes.trim())){
+				promoCustStrategyModel.setDpTypes(dpTypes.split(","));
 			}
 			promoCustStrategyModel.setDpStatus(rs.getString("DP_STATUS"));
 			promoCustStrategyModel.setDpExpStart(rs.getTimestamp("DP_EXP_START"));

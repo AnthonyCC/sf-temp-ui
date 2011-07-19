@@ -6,6 +6,7 @@
 <%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionProfileAttribute"%>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
+<%@ page import="com.freshdirect.deliverypass.DeliveryPassType"%>
 <%
 	//fetch profiles
 	Map profileAttributeNames = FDCustomerManager.loadProfileAttributeNames();
