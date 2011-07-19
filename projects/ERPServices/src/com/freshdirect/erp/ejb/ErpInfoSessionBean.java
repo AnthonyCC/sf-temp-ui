@@ -684,9 +684,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	        + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id, "
 		+ " p.days_fresh, p.days_in_house,p.sustainability_rating  "
 		+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
-		+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id and m.upc = ?"
-		//+ " and p.version = (select max(version) from erps.product where sku_code = p.sku_code)";
-	    + " and m.version = (select max(version) from erps.material where upc = ?)";
+		+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id " +
+				" and (m.upc = ? or '0' || M.UPC = ?)"
+	    + " and m.version = (select max(version) from erps.material where upc = ? or '0' || upc = ?)";
 
 	public Collection<ErpProductInfoModel> findProductsByUPC(String upc) {
 		Connection conn = null;
@@ -696,6 +696,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			PreparedStatement ps = conn.prepareStatement(QUERY_PRODUCTS_BY_UPC);
 			ps.setString(1, upc);
 			ps.setString(2, upc);
+			ps.setString(3, upc);
+			ps.setString(4, upc);
+			
 			return queryProductInfoModel(ps);
 
 		} catch (SQLException sqle) {
@@ -711,7 +714,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				"from cust.orderline ol, cust.salesaction sa, cust.sale s where  s.type='REG' and sa.id=OL.SALESACTION_ID " +
 				"and s.customer_id=? and s.customer_id=sa.customer_id and  s.id=sa.sale_id  and S.CROMOD_DATE=SA.ACTION_DATE " +
 				"and SA.ACTION_TYPE in ('CRO','MOD')  and sa.requested_Date>(sysdate-60)) T " +
-				"where CD.ORDERLINE_NUMBER=T.\"ol\" and cd.sale_id=T.\"s\" and CD.BARCODE=? ";
+				"where CD.ORDERLINE_NUMBER=T.\"ol\" and cd.sale_id=T.\"s\" and (CD.BARCODE=? or '0' || CD.BARCODE = ?) ";
 
 	public Collection<String> findProductsByCustomerUPC(String erpCustomerPK, String upc) {
 		Connection conn = null;
@@ -723,6 +726,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			ps = conn.prepareStatement(QUERY_PRODUCTS_BY_CUSTOMERUPC);
 			ps.setString(1, erpCustomerPK);
 			ps.setString(2, upc);
+			ps.setString(3, upc);
 			
 			rs = ps.executeQuery();
 
