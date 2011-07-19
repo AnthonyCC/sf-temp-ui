@@ -1539,6 +1539,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			// so we need to iterate through them and add them to the customer bean
 			//
 			Collection<DeptCredit> deptCredits = this.getDeptCredits(complaint, saleModel.getRecentOrderTransaction());
+			java.util.Date now=new java.util.Date();
 			for (Iterator<DeptCredit> it = deptCredits.iterator(); it.hasNext();) {
 				DeptCredit dc = it.next();
 				ErpCustomerCreditModel custCreditModel =
@@ -1548,8 +1549,8 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 						dc.getAmount(),
 						dc.getAffiliate());
 				//Bug fix MNT-172. BEGIN
-				custCreditModel.setCreateDate(new Date());
-				//END.				
+				custCreditModel.setCreateDate(now);
+						
 				customerEB.addCustomerCredit(custCreditModel);
 			}
 		} catch (RemoteException ex) {
