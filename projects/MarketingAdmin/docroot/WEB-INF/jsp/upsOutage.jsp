@@ -111,7 +111,8 @@
 									showTime   : "12",
 									fixed      : true,
 									dateFormat : "%m/%d/%Y %I:%M %p",
-									onSelect   : function() { this.hide() }
+									onSelect   : function() { this.hide() },
+									align      : "Bc/Bc/Bc/Bc/Bc"
 								});
 							</script>
 						</td>
@@ -124,7 +125,8 @@
 									showTime   : "12",
 									fixed      : true,
 									dateFormat : "%m/%d/%Y %I:%M %p",
-									onSelect   : function() { this.hide() }
+									onSelect   : function() { this.hide() },
+									align      : "Bc/Bc/Bc/Bc/Bc"
 								});
 							</script>
 						</td>
