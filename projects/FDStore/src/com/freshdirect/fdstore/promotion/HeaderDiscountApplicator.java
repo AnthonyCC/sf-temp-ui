@@ -47,6 +47,8 @@ public class HeaderDiscountApplicator implements PromotionApplicatorI {
 			if(tempDiscount != 0) {
 				System.out.println("=========applying a tempDiscount:" + tempDiscount);
 				return context.applyHeaderDiscount(promo, tempDiscount);
+			} else {
+				return false;
 			}
 		} 		
 				

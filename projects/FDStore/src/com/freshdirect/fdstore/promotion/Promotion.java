@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import com.freshdirect.fdstore.promotion.management.FDPromoDollarDiscount;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 
@@ -309,6 +310,21 @@ public class Promotion extends ModelSupport implements PromotionI {
 		List discountRules = this.getHeaderDiscountRules();
 		if (discountRules == null) {
 			return 0;
+		}
+		
+		/*APPDEV-1792 - apply the streatchable dollar discount*/
+		if(((HeaderDiscountRule) discountRules.get(0)).getDollarList().size() > 0) {
+			//get the minimum amount from the dollar list
+			HeaderDiscountRule discountRule = (HeaderDiscountRule) discountRules.get(0);
+			List<FDPromoDollarDiscount> dollarList = discountRule.getDollarList();
+			double minTotal = ((FDPromoDollarDiscount)dollarList.get(0)).getOrderSubtotal();
+			for (int i=1; i< dollarList.size(); i++) {
+				FDPromoDollarDiscount fdpdd = (FDPromoDollarDiscount) dollarList.get(i);
+				if(fdpdd.getOrderSubtotal() < minTotal) {
+					minTotal = fdpdd.getOrderSubtotal();
+				}
+			}
+			return minTotal;
 		}
 		return ((HeaderDiscountRule) discountRules.get(0)).getMinSubtotal();
 	}
