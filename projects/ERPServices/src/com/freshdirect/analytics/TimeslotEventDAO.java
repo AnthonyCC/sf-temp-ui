@@ -90,11 +90,15 @@ public class TimeslotEventDAO {
 		    		{
 			    	ps.setString(1,id);
 			    	
-			    	ps.setTimestamp(2, new java.sql.Timestamp(DateUtil.truncate(eventD.getDeliveryDate()).getTime()));
-			    	ps.setTimestamp(3, new java.sql.Timestamp(eventD.getStartTime().getTime()));
-			    	ps.setTimestamp(4, new java.sql.Timestamp(eventD.getStopTime().getTime()));
+			    	if(eventD.getDeliveryDate()!=null)
+			    		ps.setTimestamp(2, new java.sql.Timestamp(DateUtil.truncate(eventD.getDeliveryDate()).getTime()));
+			    	if(eventD.getStartTime()!=null)
+			    		ps.setTimestamp(3, new java.sql.Timestamp(eventD.getStartTime().getTime()));
+			    	if(eventD.getStopTime()!=null)
+			    		ps.setTimestamp(4, new java.sql.Timestamp(eventD.getStopTime().getTime()));
 			    	
 			    	if(isAnalyseCall ) {
+			    		
 			    		RoutingModel cost=eventD.getRoutingModel();
 			    		
 			    		if(cost!=null) {
@@ -184,7 +188,8 @@ public class TimeslotEventDAO {
 			    		ps.setInt(36,eventD.getTotalCapacity());
 			    		ps.setInt(37,eventD.getCtCapacity());
 			    		ps.setString(38,get(eventD.isManuallyClosed()));
-			    		ps.setTimestamp(39,new java.sql.Timestamp(eventD.getCutOff().getTime()));
+			    		if(eventD.getCutOff()!=null)
+			    			ps.setTimestamp(39,new java.sql.Timestamp(eventD.getCutOff().getTime()));
 			    		ps.setString(40,get(eventD.isStorefront_avl()));
 			    		ps.setInt(41,eventD.getCtAllocated());
 			    		ps.setInt(42,eventD.getTotalAllocated());

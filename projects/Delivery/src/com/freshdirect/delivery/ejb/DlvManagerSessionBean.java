@@ -450,43 +450,49 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			slots.add(slotGrp);
 			for (FDTimeslot slot : timeSlots) {
 				DlvTimeslotModel dlvSlot = slot.getDlvTimeslot();
-				IDeliverySlot routingSlot = dlvSlot.getRoutingSlot();
-				TimeslotEventDetailModel detailModel = new TimeslotEventDetailModel();
-				RoutingModel routingModel = null;
-				if(slot.getDlvTimeslot().getRoutingSlot()!=null)
+				if(dlvSlot!=null)
 				{
-				IDeliverySlotCost cost = slot.getDlvTimeslot().getRoutingSlot().getDeliveryCost();
-				routingModel = new RoutingModel(cost.getAdditionalDistance(),cost.getAdditionalRunTime(), cost.getAdditionalStopCost(),
-															cost.getCapacity(), cost.getCostPerMile(), cost.getFixedRouteSetupCost(),
-															cost.getMaxRunTime(), cost.getOvertimeHourlyWage(), cost.getPrefRunTime(),
-															cost.getRegularHourlyWage(), cost.getRegularWageDurationSeconds(),cost.getRouteId(),
-															cost.getStopSequence(), cost.getTotalDistance(), cost.getTotalPUQuantity(),
-															cost.getTotalQuantity(), cost.getTotalRouteCost(), cost.getTotalRunTime(), cost.getTotalServiceTime(),
-															cost.getTotalTravelTime(), cost.getTotalWaitTime(), cost.isAvailable(), cost.isFiltered(), cost.isMissedTW(),
-															cost.getWaveVehicles(), cost.getWaveVehiclesInUse(), cost.getWaveStartTime(), cost.getUnavailabilityReason(),
-															cost.getWaveOrdersTaken(), cost.getTotalQuantities(), cost.isNewRoute(), cost.getCapacities());
-				
-				
-				detailModel.setRoutingModel(routingModel);
-				detailModel.setStartTime(routingSlot.getStartTime());
-				detailModel.setStopTime(routingSlot.getStopTime());
-				detailModel.setDeliveryDate(routingSlot.getSchedulerId().getDeliveryDate());
-				detailModel.setManuallyClosed(routingSlot.isManuallyClosed());
+					IDeliverySlot routingSlot = dlvSlot.getRoutingSlot();
+					TimeslotEventDetailModel detailModel = new TimeslotEventDetailModel();
+					RoutingModel routingModel = null;
+						if(routingSlot != null)
+						{
+							IDeliverySlotCost cost = slot.getDlvTimeslot().getRoutingSlot().getDeliveryCost();
+							if(cost!=null)
+							{
+								routingModel = new RoutingModel(cost.getAdditionalDistance(),cost.getAdditionalRunTime(), cost.getAdditionalStopCost(),
+																		cost.getCapacity(), cost.getCostPerMile(), cost.getFixedRouteSetupCost(),
+																		cost.getMaxRunTime(), cost.getOvertimeHourlyWage(), cost.getPrefRunTime(),
+																		cost.getRegularHourlyWage(), cost.getRegularWageDurationSeconds(),cost.getRouteId(),
+																		cost.getStopSequence(), cost.getTotalDistance(), cost.getTotalPUQuantity(),
+																		cost.getTotalQuantity(), cost.getTotalRouteCost(), cost.getTotalRunTime(), cost.getTotalServiceTime(),
+																		cost.getTotalTravelTime(), cost.getTotalWaitTime(), cost.isAvailable(), cost.isFiltered(), cost.isMissedTW(),
+																		cost.getWaveVehicles(), cost.getWaveVehiclesInUse(), cost.getWaveStartTime(), cost.getUnavailabilityReason(),
+																		cost.getWaveOrdersTaken(), cost.getTotalQuantities(), cost.isNewRoute(), cost.getCapacities());
+							
+							}
+							detailModel.setRoutingModel(routingModel);
+							detailModel.setStartTime(routingSlot.getStartTime());
+							detailModel.setStopTime(routingSlot.getStopTime());
+							if(routingSlot.getSchedulerId()!=null)
+								detailModel.setDeliveryDate(routingSlot.getSchedulerId().getDeliveryDate());
+							detailModel.setManuallyClosed(routingSlot.isManuallyClosed());
+						}
+					detailModel.setWs_amount(dlvSlot.getSteeringDiscount());
+					detailModel.setAlcohol_restriction(slot.isAlcoholRestricted());
+					detailModel.setHoliday_restriction(slot.isHolidayRestricted());
+					detailModel.setGeoRestricted(slot.isGeoRestricted());
+					detailModel.setEcofriendlyslot(slot.isEcoFriendly());
+					detailModel.setNeighbourhoodslot(slot.isEcoFriendly());
+					detailModel.setTotalCapacity(dlvSlot.getCapacity());
+					detailModel.setCtCapacity(dlvSlot.getChefsTableCapacity());
+					detailModel.setStorefront_avl(slot.hasAvailCTCapacity());
+					detailModel.setCtAllocated(dlvSlot.getChefsTableAllocation());
+					detailModel.setTotalAllocated(dlvSlot.getTotalAllocation());
+					detailModel.setZoneCode(dlvSlot.getZoneCode());
+					detailModel.setCutOff(dlvSlot.getCutoffTimeAsDate());
+					slotGrp.add(detailModel);	
 				}
-				detailModel.setWs_amount(dlvSlot.getSteeringDiscount());
-				detailModel.setAlcohol_restriction(slot.isAlcoholRestricted());
-				detailModel.setHoliday_restriction(slot.isHolidayRestricted());
-				detailModel.setGeoRestricted(slot.isGeoRestricted());
-				detailModel.setEcofriendlyslot(slot.isEcoFriendly());
-				detailModel.setNeighbourhoodslot(slot.isEcoFriendly());
-				detailModel.setTotalCapacity(dlvSlot.getCapacity());
-				detailModel.setCtCapacity(dlvSlot.getChefsTableCapacity());
-				detailModel.setStorefront_avl(slot.hasAvailCTCapacity());
-				detailModel.setCtAllocated(dlvSlot.getChefsTableAllocation());
-				detailModel.setTotalAllocated(dlvSlot.getTotalAllocation());
-				detailModel.setZoneCode(dlvSlot.getZoneCode());
-				detailModel.setCutOff(dlvSlot.getCutoffTimeAsDate());
-				slotGrp.add(detailModel);	
 				
 			}
 			event.setDetail(slots);
