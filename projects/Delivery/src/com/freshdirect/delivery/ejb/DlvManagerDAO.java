@@ -1374,7 +1374,7 @@ public class DlvManagerDAO {
 		+" and zone_code=(select zone_code from dlv.zone where ts.zone_id=id)"
 		+" and start_date=(select max(start_date) from dlv.region_data"
 		+" where region_id=rd.region_id and start_date<=ts.base_date)"
-		+" );";
+		+" )";
 	
 	public static void fixDisassociatedTimeslots(Connection conn) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(FIX_DISASSOCIATED_TIMESLOTS);	
