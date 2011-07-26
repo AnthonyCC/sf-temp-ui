@@ -1620,7 +1620,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 						_dispatch.setPlanId(rs.getString("PLAN_ID"));
 						_dispatch.setStartTime(rs.getTimestamp("START_TIME"));
 						_dispatch.setStartTime(rs.getTimestamp("FIRST_DLV_TIME"));
-						_dispatch.setCutoffTime(rs.getTimestamp("CUTOFF_DATETIME"));
+						//_dispatch.setCutoffTime(rs.getTimestamp("CUTOFF_DATETIME"));
 						result.add(_dispatch);
 					} while(rs.next());		        		    	
 				}
