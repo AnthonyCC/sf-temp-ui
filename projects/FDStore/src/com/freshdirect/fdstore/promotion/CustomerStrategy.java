@@ -32,9 +32,8 @@ public class CustomerStrategy implements PromotionStrategyI {
 		if(cohorts != null && cohorts.size() > 0 && !cohorts.contains(context.getUser().getCohortName())) return DENY;
 		
 		if(  dpTypes != null && dpTypes.size() > 0) {
-			
-			if( context.getUser().getDlvPassInfo()==null ) return DENY;
-			
+			if(context.getUser()==null || context.getUser().getDlvPassInfo()==null)return DENY;
+			else if( context.getUser().getDlvPassInfo().getTypePurchased()==null)return DENY;
 			else if( !dpTypes.contains(context.getUser().getDlvPassInfo().getTypePurchased().getCode()))
 				return DENY;
 		}
