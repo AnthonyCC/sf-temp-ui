@@ -71,7 +71,7 @@ public class FDTimeslotLogDtlCell extends FDBaseCell  {
 					Iterator<TimeslotLogDtl> _dtlItr = _tmpLst.iterator();
 					while(_dtlItr.hasNext()) {
 						_dtl = _dtlItr.next();
-						if("1".equalsIgnoreCase(_dtl.getId().getIsEmpty())) {
+						if(!"Y".equalsIgnoreCase(_dtl.getId().getIsEmpty())) {
 							if(isHtml) {
 								strBuf.append("<img src='./images/reddot.gif' border='0' alt='").append(FULL_INDICATOR).append("' title=''>");
 							} else {
