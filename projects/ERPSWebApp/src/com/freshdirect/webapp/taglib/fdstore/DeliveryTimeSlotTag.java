@@ -231,7 +231,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 				isKosherSlotAvailable, hasCapacity, deliveryModel, alcoholRestrictions);
 		
 
-		if("GET".equalsIgnoreCase(request.getMethod()))
+		if("GET".equalsIgnoreCase(request.getMethod()) || "Y".equals(request.getParameter("addressChange")))
 		{
 			for (FDTimeslotUtil timeslots : timeslotList) {
 				if(timeslots != null) {

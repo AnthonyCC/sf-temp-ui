@@ -321,9 +321,10 @@ public class RoutingDataDecoder {
 		if(deliveryCost.getWaveStartTime()!=null)
 			deliverySlot.setWaveStartTime(deliveryCost.getWaveStartTime().getAsCalendar().getTime());
 		deliverySlot.setWaveOrdersTaken(deliveryCost.getWaveOrdersTaken());
+		if(deliveryCost.getTotalQuantities()!=null)
 		deliverySlot.setTotalQuantities(deliveryCost.getTotalQuantities().getSize1());
 		deliverySlot.setNewRoute(deliveryCost.getNewRoute());
-		
+		if(deliveryCost.getCapacities()!=null)
 		deliverySlot.setCapacities(deliveryCost.getCapacities().getSize1());
 		
 		return deliverySlot;
