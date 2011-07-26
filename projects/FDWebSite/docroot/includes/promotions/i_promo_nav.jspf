@@ -211,6 +211,18 @@
 		}
 		excludeSameDayDlv = csm.isExcludeSameDayDlv();
 	}
+	String dpTypesString = "";
+	if (csm != null) {
+		String[] dpTypes = csm.getDpTypes();
+		if (dpTypes != null) {
+			for (int i = 0; i < dpTypes.length; i++) {
+				dpTypesString += dpTypes[i];
+				if (i != dpTypes.length-1) {
+					dpTypesString += ", ";
+				}
+			}
+		}
+	}
 	String dpStatus = ""; //ACT
 	String dpStatusString = ""; //Active
 	if (csm != null) {

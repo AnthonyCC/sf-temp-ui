@@ -38,7 +38,7 @@ String userId = request.getParameter("userId");
 			(EnumPromotionStatus.DRAFT.equals(promotion.getStatus())) || (
 				(promotion.getAssignedCustomerSize() <= 0) &&
 				(attrList == null || attrList.size() <= 0) &&
-				(csm == null || (promotion.getCustStrategies().get(0).getOrderRangeStart() <= 0 && promotion.getCustStrategies().get(0).getOrderRangeEnd() <= 0 && "None".equals(dpStatusString) && "".equals(cohortsString)))
+				(csm == null || (promotion.getCustStrategies().get(0).getOrderRangeStart() <= 0 && promotion.getCustStrategies().get(0).getOrderRangeEnd() <= 0 && "None".equals(dpStatusString) && "".equals(cohortsString)&& "".equals(dpTypesString)))
 			)
 		) {
 		isEmptyPromoCustreq = true;
@@ -144,6 +144,12 @@ String userId = request.getParameter("userId");
 						<tr>
 							<td class="promo_detail_label">Smart Store cohort(s):</td>
 							<td class="alignL"><%= cohortsString %></td>
+						</tr>
+					<% } %>
+					<% if ( !"".equals(dpTypesString) ) { %>
+						<tr>
+							<td class="promo_detail_label">Delivery Pass Type(s):</td>
+							<td class="alignL"><%= dpTypesString %></td>
 						</tr>
 					<% } %>
 					<% if ( !"None".equals(dpStatusString) ) { %>
