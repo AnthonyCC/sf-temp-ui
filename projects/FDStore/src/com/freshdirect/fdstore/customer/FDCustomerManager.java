@@ -3760,11 +3760,11 @@ public class FDCustomerManager {
 		}	
 	}
 	
-	public static void logDupeCCActivity(FDActionInfo info, ErpPaymentMethodI paymentMethod) {
+	public static void logDupeCCActivity(FDActionInfo info, ErpPaymentMethodI paymentMethod, String currentUserId) {
 		ActivityLogHome home = getActivityLogHome();
 		try {
 			ActivityLogSB logSB = home.create();
-			logSB.logDupeCCActivity(info.getIdentity().getErpCustomerPK(), paymentMethod, info.getSource().getCode(), info.getInitiator());
+			logSB.logDupeCCActivity(info.getIdentity().getErpCustomerPK(), paymentMethod, info.getSource().getCode(), info.getInitiator(), currentUserId);
 		} catch (RemoteException e) {
 			throw new EJBException(e);
 		} catch (CreateException e) {
