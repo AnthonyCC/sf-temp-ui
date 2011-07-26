@@ -79,7 +79,7 @@
 					<td class="alignL vTop padL8R16"><span class="grayIta8pt">AND</span></td>
 				</tr>
 				<tr>
-					<td class="promo_detail_label"><div style="text-align: left;" class="fright">Smart Store cohort:<br />(match any)</div></td>
+					<td class="promo_detail_label"><div style="text-align: left;" class="fright">Delivery Pass Type:<br />(match any)</div></td>
 					<td class="alignL vTop padL8R16">
 					<%
 					
