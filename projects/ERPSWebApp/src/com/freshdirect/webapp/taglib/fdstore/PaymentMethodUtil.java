@@ -60,7 +60,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER));
             FDSessionUser sessionuser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
             sessionuser.setInvalidPaymentMethod(paymentMethod);
-            FDCustomerManager.logDupeCCActivity(info, paymentMethod);
+            FDCustomerManager.logDupeCCActivity(info, paymentMethod, sessionuser.getUserId());
         } catch (ErpPaymentMethodException ex) {
             LOGGER.debug(ex);
             result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER));
@@ -77,7 +77,8 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
         } catch (ErpDuplicatePaymentMethodException ex) {
             LOGGER.info(ex);
             result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER));
-            FDCustomerManager.logDupeCCActivity(info, paymentMethod);
+            FDSessionUser sessionuser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);            
+            FDCustomerManager.logDupeCCActivity(info, paymentMethod, sessionuser.getUserId());
         } catch (ErpPaymentMethodException ex) {
             LOGGER.debug(ex);
             result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER));
