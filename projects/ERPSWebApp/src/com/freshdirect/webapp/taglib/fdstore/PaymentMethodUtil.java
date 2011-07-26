@@ -241,7 +241,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             paymentMethod.setZipCode(RequestUtil.getRequestParameter(request,EnumUserInfoName.BIL_ZIPCODE.getCode(),true));
             paymentMethod.setCountry("US");
             paymentMethod.setCVV(csv);
-            if(StringUtil.isEmpty(paymentMethod.getCustomerId())) {
+            if(StringUtil.isEmpty(paymentMethod.getCustomerId()) && identity!=null) {
             	paymentMethod.setCustomerId(identity.getErpCustomerPK());
             }
            

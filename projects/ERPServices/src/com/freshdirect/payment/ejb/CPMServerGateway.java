@@ -81,6 +81,7 @@ public class CPMServerGateway {
 		if (paymentMethod == null || !EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {
 			response.setResponseCode("FD101");
 			response.setResponseMessage("Payment method is not a credit card");
+			return response;
 		}
 		double amount=ErpServicesProperties.getCardVerificationAuthAmount();
 		double tax=0;
@@ -88,7 +89,12 @@ public class CPMServerGateway {
 		Random randomGenerator = new Random();
 
 		LCCTransaction trans = createCCTransaction(paymentMethod, amount, tax);
-		String saleId=new StringBuilder(paymentMethod.getCustomerId()).append("X").append(randomGenerator.nextInt(10000)).toString();
+		String saleId="";
+		if(null==paymentMethod.getCustomerId()) {
+			saleId=new StringBuilder("0000").append(randomGenerator.nextInt(10000)).append("X").append(randomGenerator.nextInt(10000)).toString();	
+		} else {
+			saleId=new StringBuilder(paymentMethod.getCustomerId()).append("X").append(randomGenerator.nextInt(10000)).toString();
+		}
 		trans.SetValue(LCC.ID_ORDER_NUMBER, saleId);
 		trans.SetConnectionInformation(CPM_SERVER, SERVER_PORT, USE_SSL);
 		trans.SetValue(LCC.ID_MERCHANT_ID, MERCHANT_ID);

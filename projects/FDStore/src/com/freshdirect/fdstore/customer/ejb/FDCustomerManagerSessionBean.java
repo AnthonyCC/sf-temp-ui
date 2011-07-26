@@ -6161,7 +6161,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * Adds auth failures to cusotmer activity log.
 	 */
 	private void logCardVerificationActivity(FDActionInfo action, ErpPaymentMethodI paymentMethod, ErpAuthorizationModel auth, String desc ) {
-		
+		    
+			if(null==paymentMethod.getCustomerId())
+				return;
+			
 		    String customerId=paymentMethod.getCustomerId();
 			ErpActivityRecord rec = new ErpActivityRecord();
 			rec.setActivityType(EnumAccountActivityType.PAYMENT_METHOD_VERIFICATION);
