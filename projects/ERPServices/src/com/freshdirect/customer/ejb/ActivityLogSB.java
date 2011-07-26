@@ -22,7 +22,7 @@ public interface ActivityLogSB extends EJBObject {
     
     public Collection<ErpActivityRecord> getCCActivitiesByTemplate(ErpActivityRecord template) throws RemoteException;
     
-    public void logDupeCCActivity(String erpCustomerId, ErpPaymentMethodI card, String source, String initiator) throws RemoteException;
+    public void logDupeCCActivity(String erpCustomerId, ErpPaymentMethodI card, String source, String initiator, String currentUserId) throws RemoteException;
     
     
 }

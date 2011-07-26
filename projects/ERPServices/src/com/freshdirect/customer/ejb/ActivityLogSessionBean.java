@@ -116,12 +116,12 @@ public class ActivityLogSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	public void logDupeCCActivity(String erpCustomerId, ErpPaymentMethodI card, String source, String initiator) {
+	public void logDupeCCActivity(String erpCustomerId, ErpPaymentMethodI card, String source, String initiator, String currentUserId) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			
-			new ActivityDAO().logDupeCCActivity(conn, card.getAccountNumber(), erpCustomerId, source, card.getMaskedAccountNumber(), initiator);
+			new ActivityDAO().logDupeCCActivity(conn, card.getAccountNumber(), erpCustomerId, source, card.getMaskedAccountNumber(), initiator, currentUserId);
 			
 		} catch (SQLException ex) {
 			LOGGER.error("SQLException occured", ex);

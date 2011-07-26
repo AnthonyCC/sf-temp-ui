@@ -246,7 +246,7 @@ public class ActivityDAO implements java.io.Serializable {
 			+ " AND CI.CUSTOMER_ID=PM.CUSTOMER_ID"
 			+ " AND 'X'<>CI.CORP_CUSTOMER";
 	
-	public void logDupeCCActivity(Connection conn, String accountNumber, String erpCustomerId, String source, String maskedAccountNumber, String initiator) throws SQLException {
+	public void logDupeCCActivity(Connection conn, String accountNumber, String erpCustomerId, String source, String maskedAccountNumber, String initiator, String currentUserId) throws SQLException {
 		
 		PreparedStatement ps = conn.prepareStatement(QUERY_DUPLICATE_ACCOUNT);
 
@@ -260,7 +260,7 @@ public class ActivityDAO implements java.io.Serializable {
 		if (rs.next()) {
 			customer_id = rs.getString("customer_id");
 			email = rs.getString("email");
-			recordDupeActivity(customer_id, "Duplicate creadit card entered - " + maskedAccountNumber + ", entered by " + email, conn, source, initiator);
+			recordDupeActivity(customer_id, "Duplicate creadit card entered - " + maskedAccountNumber + ", entered by " + currentUserId, conn, source, initiator);
 			recordDupeActivity(erpCustomerId, "Duplicate creadit card entered - " + maskedAccountNumber + ", credit card currently exists under " + email, conn, source, initiator);
 		}		
 		
