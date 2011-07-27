@@ -199,7 +199,7 @@ public class CartDetail {
         }
 
         public enum RedemptionPromotionType {
-            SAMPLE, WAIVE_CHARGE, DOLLAR_VALUE_DISCOUNT
+            SAMPLE, WAIVE_CHARGE, DOLLAR_VALUE_DISCOUNT, EXTEND_DELIVERY_PASS
         	//SAMPLE, WAIVE_CHARGE
         }
 

@@ -846,7 +846,11 @@ public class Cart {
                 //                <td colspan="2">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
                 //            </tr>
                 //        <%
-            } else {
+            } else if(redemptionPromo.isExtendDeliveryPass()) {
+            	cartDetail.addRedemptionPromotion(new RedemptionPromotion(redemptionPromo.getPromotionCode(),
+                        RedemptionPromotionType.EXTEND_DELIVERY_PASS, redemptionPromo.getDescription(), false, isRedemptionApplied, warningMessage));
+            }
+            else {
             	cartDetail.addRedemptionPromotion(new RedemptionPromotion(redemptionPromo.getPromotionCode(),
                         RedemptionPromotionType.DOLLAR_VALUE_DISCOUNT, redemptionPromo.getDescription(), false, isRedemptionApplied, warningMessage));
             }           
