@@ -1819,7 +1819,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 					logTimeslots(null, null, timeSlots, event, address, (int)(endTime-startTime));
 				
 			} catch (Exception e) {
-					logTimeslots(null,null,EventType.GET_TIMESLOT,null,0, address);
+					logTimeslots(null,null,EventType.GET_TIMESLOT,event,0, address);
 					e.printStackTrace();
 					LOGGER.debug("Exception in getTimeslotForDateRangeAndZoneEx():"+e.toString());
 					result.setError(e);
@@ -2384,7 +2384,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			}
 
 		} catch (Exception e) {
-			logTimeslots(reservation, order, EventType.RESERVE_TIMESLOT, null, 0, address);
+			logTimeslots(reservation, order, EventType.RESERVE_TIMESLOT, event, 0, address);
 			e.printStackTrace();
 			LOGGER.debug("Exception in reserveTimeslotEx():"+e.toString());
 			LOGGER.debug(reservation);
@@ -2409,7 +2409,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			}
 
 		} catch (Exception e) {
-			logTimeslots(reservation,order,EventType.CONFIRM_TIMESLOT,null,0, address);
+			logTimeslots(reservation,order,EventType.CONFIRM_TIMESLOT,event,0, address);
 			e.printStackTrace();
 			LOGGER.debug("Exception in commitReservationEx():"+order.getOrderNumber()+"-->"+e.toString());
 			LOGGER.debug(reservation);
@@ -2439,7 +2439,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			}
 
 		} catch (Exception e) {
-			logTimeslots(reservation,order,EventType.CANCEL_TIMESLOT,null,0,address);
+			logTimeslots(reservation,order,EventType.CANCEL_TIMESLOT,event,0,address);
 			e.printStackTrace();
 			LOGGER.debug("Exception in releaseReservationEx():"+e.toString());
 			LOGGER.debug(reservation);
@@ -2685,7 +2685,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 									,event,(int)(endTime-startTime), address);			
 
 		} catch (Exception e) {
-			logTimeslots(reservation,order,EventType.CANCEL_TIMESLOT,null,0,address);
+			logTimeslots(reservation,order,EventType.CANCEL_TIMESLOT,event,0,address);
 			e.printStackTrace();
 			LOGGER.debug("Exception in cancelRoutingReservation():"+ e.toString());
 			LOGGER.debug(reservation);
