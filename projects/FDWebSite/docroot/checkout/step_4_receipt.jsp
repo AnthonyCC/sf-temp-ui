@@ -110,6 +110,8 @@
 		String sem_totalCartItems = "0";
 			sem_totalCartItems = NVL.apply((Integer)request.getAttribute("totalCartItems"), 0).toString();
 
+		/* Google AdWords Pixel */
+		%><fd:SemPixelIncludeMedia pixelNames="GoogleAdWords" /><%
 
 		/* CheetahMail Pixel */
 		SemPixelModel semPixel_CM = FDSemPixelCache.getInstance().getSemPixel("CheetahMail");
