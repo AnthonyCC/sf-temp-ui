@@ -31,6 +31,67 @@
 	<table cellpadding="0" cellspacing="0" width="90%">
 				<tr>
 					<td>
+					
+						<xsl:choose>
+						<xsl:when test="count(order/shortedItems/shortedItems) > 0">
+							<p><b>Hello <xsl:value-of select="customer/firstName"/>,</b> and thank you for shopping with FreshDirect!</p>
+							
+							<p>Unfortunately (an item) that you ordered was not available. You will not be charged for this item. We apologize for any inconvenience this may cause you.<br/><br/>
+							
+							<table width = "100%" cellspacing="0" cellpadding="0" align="center">
+							<tr><td width="50">&#160;</td>
+							<td>&#160;</td>
+							<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<b>ITEM(S) NOT IN YOUR ORDER:<br/><br/></b></td>
+							</tr>
+							<xsl:for-each select="order/shortedItems/shortedItems">
+									<tr>
+										<td width="50">&#160;</td>
+										<td><xsl:value-of select="orderedQuantity - deliveredQuantity" />&#160;<xsl:value-of select="unitsOfMeasure" /></td>
+										<td><b><xsl:value-of select="description" /></b><xsl:if test="configurationDesc != '' "><xsl:text> - </xsl:text>(<xsl:value-of select="configurationDesc"/>)</xsl:if></td>
+									</tr>		
+							</xsl:for-each>
+							</table>
+							</p>
+							
+							<xsl:choose>
+							<xsl:when test="order/deliveryType = 'P'">
+								<p>The rest of your order <b>(#<xsl:value-of select="order/erpSalesId"/>)</b>
+								<xsl:choose>
+									<xsl:when test="order/depotFacility = 'FreshDirect Pickup'">
+								is ready for pickup. Stop by our facility anytime between
+									</xsl:when>
+									<xsl:otherwise>
+								is ready for pickup. Stop by the designated pickup location anytime between
+									</xsl:otherwise>
+								</xsl:choose>
+								<b><xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template> 
+								and <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/endTime"/></xsl:call-template></b> 
+								on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template></b>
+								to pick up your order. You'll need to bring photo ID to pick up your food. Just present it to the attendant when you arrive. We hope you find everything absolutely fresh and delicious.</p>
+							</xsl:when>
+							<xsl:otherwise>
+							<br/><p>The rest of the order <b>(#<xsl:value-of select="order/erpSalesId"/>)</b> is on its way to you. It will be delivered between <b><xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template> 
+									and <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/endTime"/></xsl:call-template></b> 
+									on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template></b>. 
+							</p>
+							</xsl:otherwise>
+							</xsl:choose>
+							
+							<p>Your final total is <b>$<xsl:value-of select='format-number(order/invoicedTotal, "###,##0.00", "USD")'/></b>. We'll include a printed, itemized receipt with your goods. <xsl:element name = "a"><xsl:attribute name = "href">http://www.freshdirect.com/your_account/order_details.jsp?orderId=<xsl:value-of select="order/erpSalesId"/></xsl:attribute>Click here</xsl:element> to view order details online.</p>
+							
+							<p>We hope you find everything absolutely fresh and delicious. Please keep in mind that we have a 100% <u>Satisfaction Guarantee</u>. If you're not happy, please contact us right away so we can make it right.</p>
+							
+							<p>Shop again soon, and don't forget - you can use our <u>Quickshop</u> feature to shop from all or part of your last order in minutes. Or create a <u>Shopping List</u> to keep track of all the food you love. </p>
+							
+							<p><b>Thank you for your order and happy eating!</b><br/>
+							<br/>
+							FreshDirect<br/>
+							<xsl:choose><xsl:when test="order/deliveryType != 'C'">Customer Service Group</xsl:when><xsl:otherwise>Corporate Services Group</xsl:otherwise></xsl:choose></p>
+							
+						</xsl:when>
+						
+						<xsl:otherwise>
+					
 						<p><b>Dear <xsl:value-of select="customer/firstName"/></b>,</p>
 						
 						<xsl:choose>
@@ -87,6 +148,9 @@
 				<br/>
 				FreshDirect<br/>
 				<xsl:choose><xsl:when test="order/deliveryType != 'C'">Customer Service Group</xsl:when><xsl:otherwise>Corporate Services Group</xsl:otherwise></xsl:choose></p>
+				
+				</xsl:otherwise>
+				</xsl:choose>
 				
 				<p><xsl:call-template name="h_invoice_info_v1"/></p>
 				
