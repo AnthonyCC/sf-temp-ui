@@ -105,7 +105,7 @@ public class DlvBuildingFormController extends AbstractFormController {
 		List errorList = new ArrayList();
 		DlvBuilding modelIn = (DlvBuilding)domainObject;
 
-		if(modelIn.getBuildingGroups().size() > 0){
+		if(modelIn.getBuildingGroups() != null && modelIn.getBuildingGroups().size() > 0){
 			for(Iterator<DeliveryGroup> itr = modelIn.getBuildingGroups().iterator();itr.hasNext();){
 				DeliveryGroup group = itr.next();
 				if(group == null)itr.remove();
