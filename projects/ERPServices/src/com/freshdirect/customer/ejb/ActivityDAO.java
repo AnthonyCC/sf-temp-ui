@@ -260,8 +260,8 @@ public class ActivityDAO implements java.io.Serializable {
 		if (rs.next()) {
 			customer_id = rs.getString("customer_id");
 			email = rs.getString("email");
-			recordDupeActivity(customer_id, "Duplicate creadit card entered - " + maskedAccountNumber + ", entered by " + currentUserId, conn, source, initiator);
-			recordDupeActivity(erpCustomerId, "Duplicate creadit card entered - " + maskedAccountNumber + ", credit card currently exists under " + email, conn, source, initiator);
+			recordDupeActivity(customer_id, "Duplicate credit card entered - " + maskedAccountNumber + ", entered by <a href=\"/main/summary.jsp?erpCustId=" + erpCustomerId + "\">" + currentUserId + "</a>", conn, source, initiator);
+			recordDupeActivity(erpCustomerId, "Duplicate credit card entered - " + maskedAccountNumber + ", credit card currently exists under <a href=\"/main/summary.jsp?erpCustId=" + customer_id + "\">" + email + "</a>", conn, source, initiator);
 		}		
 		
 		rs.close();
