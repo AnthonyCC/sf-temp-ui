@@ -69,8 +69,10 @@ public class FDEmailFactory {
 		email.setXslPath("h_final_amount_confirm_v2.xsl", "x_final_amount_confirm_v2.xsl");
 
 		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
-
-		if (EnumDeliveryType.PICKUP.equals(order.getDeliveryType())) {
+		
+		if(order.getShortedItems().size() > 0) {
+			email.setSubject("Service Alert: Your Order is Missing (" + order.getShortedItems().size() +") Item");
+		} else if (EnumDeliveryType.PICKUP.equals(order.getDeliveryType())) {
 			email.setSubject("Your order for " + df.format(order.getRequestedDate()) + " is ready to be picked up.");
 		} else {
 			email.setSubject("Your order for " + df.format(order.getRequestedDate()) + " is on its way");
