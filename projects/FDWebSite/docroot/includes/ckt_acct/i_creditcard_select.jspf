@@ -52,7 +52,7 @@
         int itemNum = 0;
         boolean isNewOrder = !(_cart instanceof FDModifyCartModel);
         if (selectedPaymPKId==null) selectedPaymPKId="";
-        String methodChecked = "";
+        boolean methodChecked = false;
 		ArrayList payMethodsList = new ArrayList(paymentMethods);
 
         for(ListIterator saItr=payMethodsList.listIterator();saItr.hasNext();) {
@@ -65,8 +65,8 @@
         }
 
 		for(ListIterator saItr=payMethodsList.listIterator();saItr.hasNext();) {
-            boolean showDeleteButtons = numCreditCards > 1?true:false;
-            methodChecked = "";
+			String checked = "";
+            boolean showDeleteButtons = numCreditCards > 1?true:false;            
             ErpPaymentMethodI paymentM = (ErpPaymentMethodI)saItr.next();
             if (!EnumPaymentMethodType.CREDITCARD.equals(paymentM.getPaymentMethodType())) {
             	continue;
@@ -78,14 +78,20 @@
             // rule is to select an ECheck account if possible.  Only select a credit card if eCheck is not available or 
             // if it's a modified order where a credit card account was already selected
             boolean isECheckOptionNotAvailable =  numEChecks == 0 || isECheckRestricted || !isCheckEligible;
-            if (paymentPKId.equals(selectedPaymPKId) && (!isNewOrder || isECheckOptionNotAvailable)){
-                methodChecked = "checked";
-            }
-			else if(selectedPaymPKId.equalsIgnoreCase("new") && itemNum == numCreditCards-1 && isECheckOptionNotAvailable){
-			    methodChecked = "checked";
+			if(!methodChecked) {
+				if (paymentPKId.equals(selectedPaymPKId) && (!isNewOrder || isECheckOptionNotAvailable)){
+					methodChecked = true;
+					checked = "checked"; 
+				}
+				else if(selectedPaymPKId.equalsIgnoreCase("new") && itemNum == numCreditCards-1 && isECheckOptionNotAvailable){
+					methodChecked = true;
+					checked = "checked";
+				}
 			}
-			if ( methodChecked.equals("") && itemNum == numCreditCards-1 && isECheckOptionNotAvailable)
-				methodChecked = "checked";
+			if ( !methodChecked && itemNum == numCreditCards-1 && isECheckOptionNotAvailable) {
+				methodChecked = true;
+				checked = "checked";
+			}
             if((itemCounter % 3)==0)  {
                 if(itemCounter!=0) {
 %>
@@ -97,7 +103,7 @@
 <%
             itemCounter=0;
           } %>
-	<TD width="20"><input type="<%=showRadioButtons?"radio":"hidden"%>" name="paymentMethodList" <%=methodChecked%> value="<%=paymentPKId%>" ></TD>
+	<TD width="20"><input type="<%=showRadioButtons?"radio":"hidden"%>" name="paymentMethodList" <%=checked%> value="<%=paymentPKId%>" ></TD>
 	<TD width="185"> <%--<font class="text10bold">Credit Card</font><br>  --%>
 		<%-- <font class="text10bold"><%=paymentM.getCardType().getFdName()%></font><BR> --%>
 		<FONT CLASS="text12"><%=paymentM.getName()%><BR>
