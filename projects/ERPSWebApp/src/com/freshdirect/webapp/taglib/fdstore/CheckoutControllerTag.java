@@ -463,11 +463,11 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		final NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance( Locale.US );
 
 		LOGGER.debug( "Creating credits for the following departments:" );
-		LOGGER.debug( "  Method\t\tDepartment\t\t\tAmount\t\t\tReason" );
-		LOGGER.debug( "  ------\t\t----------\t\t\t------\t\t\t------" );
+		LOGGER.debug( "  Method\t\tDepartment\t\t\tAmount\t\t\tReason\t\t\tCarton Number" );
+		LOGGER.debug( "  ------\t\t----------\t\t\t------\t\t\t------\t\t\t------" );
 		
 		for ( ErpComplaintLineModel line : complaintModel.getComplaintLines() ) {
-			LOGGER.debug( line.getMethod().getStatusCode() + "\t\t" + line.getDepartmentCode() + "\t\t\t" + currencyFormatter.format( line.getAmount() ) + "\t\t\t" + line.getReason().getReason() );			
+			LOGGER.debug( line.getMethod().getStatusCode() + "\t\t" + line.getDepartmentCode() + "\t\t\t" + currencyFormatter.format( line.getAmount() ) + "\t\t\t" + line.getReason().getReason() + "\t\t\t" + line.getCartonNumber() );			
 		}
 		
 		LOGGER.debug( "  Credit Notes: " + complaintModel.getDescription() );
