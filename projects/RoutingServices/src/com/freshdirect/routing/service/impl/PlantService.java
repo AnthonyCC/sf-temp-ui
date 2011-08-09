@@ -51,6 +51,11 @@ public class PlantService extends BaseService implements IPlantService {
 		}
 		OrderEstimationResult result = getPackageModel(new HashMap(), scenario.getOrderSizeFormula(),
 															cartonCount, freezerCount, caseCount);
+		
+		if(model!=null && model.getDeliveryInfo()!=null && model.getDeliveryInfo().getDeliveryZone()!=null
+					&& model.getDeliveryInfo().getDeliveryZone().getArea()!=null && model.getDeliveryInfo().getDeliveryZone().getArea().isDepot())
+		result.setCalculatedOrderSize(Math.min(RoutingServicesProperties.getMaxOrderSize(), result.getCalculatedOrderSize()));
+		
 		if(isHistoryInfo) {
 			result.getPackagingModel().setSource(EnumOrderMetricsSource.HISTORY);
 		}

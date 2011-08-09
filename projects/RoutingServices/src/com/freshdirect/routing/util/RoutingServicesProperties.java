@@ -130,6 +130,8 @@ public class RoutingServicesProperties {
 	
 	private final static String PROP_TRUCKASSIGNMENT_SOLVERTIMEOUT = "routingservices.handoff.solvertimeout";
 	
+	private final static String MAX_ORDERSIZE_FOR_DEPOTZONE = "ordersize.depotzone.max";
+	
 	private static final Category LOGGER = LoggerFactory.getInstance( RoutingServicesProperties.class );
 	
 	static {
@@ -203,6 +205,7 @@ public class RoutingServicesProperties {
 		
 		defaults.put(PROP_TRUCKASSIGNMENT_SOLVERTIMEOUT,Long.toString(120000l));
 	    defaults.put(PROP_TRUCK_PREFERENCESIZE, "5");
+	    defaults.put(MAX_ORDERSIZE_FOR_DEPOTZONE, "16");
 
 		refresh();		
 	}
@@ -402,6 +405,15 @@ public class RoutingServicesProperties {
 		return intVal;
 	}
 	
+	private static double getDoubleVal(String strVal) {
+		double doubleVal = 0.0;
+		try {
+			doubleVal = Double.parseDouble(strVal.trim());
+		} catch(NumberFormatException exp) {
+			// DO nothing
+		}
+		return doubleVal;
+	}
 	public static int getServiceTimeout() {
 		return getIntVal(get(PROP_SERVICE_TIMEOUT));
 	}
@@ -477,4 +489,10 @@ public class RoutingServicesProperties {
 	public static long getTruckAssignmentSolverTimeOut() {
 	        return Long.parseLong(get(PROP_TRUCKASSIGNMENT_SOLVERTIMEOUT));
 	}	
+	
+	public static double getMaxOrderSize() {
+		return getDoubleVal(get(MAX_ORDERSIZE_FOR_DEPOTZONE));
+	}
+	
+	
 }
