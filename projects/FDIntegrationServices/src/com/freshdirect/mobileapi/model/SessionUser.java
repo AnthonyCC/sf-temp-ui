@@ -385,7 +385,7 @@ public class SessionUser {
 
         //Set timeslot for checkout         
         FDReservation deliveryReservation = this.sessionUser.getShoppingCart().getDeliveryReservation();
-        if (deliveryReservation != null && matchReservationToAddress(reservation, address)) {
+        if (deliveryReservation != null && matchReservationToAddress(deliveryReservation, address)) {
             timeSlotCalculationResult.setPreselectedTimeslotId(deliveryReservation.getTimeslotId());
         }
     }
