@@ -322,13 +322,9 @@ public class RoutingUtil {
 		return slots;
 	}
 	
-	public static List<java.util.List<IDeliverySlot>> getDeliverySlots(FDReservation reservation,DlvTimeslotModel timeslotModel) {
-		List<IDeliverySlot> _slots=new ArrayList<IDeliverySlot>();
+	public static IDeliverySlot getDeliverySlots(FDReservation reservation,DlvTimeslotModel timeslotModel) {
 		IDeliverySlot slot=getDeliverySlot(timeslotModel);
-		_slots.add(slot);
-		List<java.util.List<IDeliverySlot>> slots =new ArrayList<java.util.List<IDeliverySlot>>();
-		slots.add(_slots);
-		return slots;
+		return slot;
 	}
 
 	public static String getOrderNo(ContactAddressModel address) {
@@ -773,7 +769,7 @@ public class RoutingUtil {
 		return loc;
 	}
 
-	private static IDeliverySlot getDeliverySlot(DlvTimeslotModel timeSlot) {
+	public static IDeliverySlot getDeliverySlot(DlvTimeslotModel timeSlot) {
 
 		IDeliverySlot deliverySlot=new DeliverySlot();
 		

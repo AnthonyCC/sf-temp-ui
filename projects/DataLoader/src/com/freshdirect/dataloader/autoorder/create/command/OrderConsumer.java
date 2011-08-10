@@ -13,7 +13,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import com.freshdirect.analytics.TimeslotEventModel;
-import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;

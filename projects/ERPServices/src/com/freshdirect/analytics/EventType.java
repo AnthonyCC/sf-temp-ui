@@ -11,7 +11,7 @@ public enum EventType {
 	 * All the event types will be defined in this Enum
 	 */
 	
-	GET_TIMESLOT,RESERVE_TIMESLOT,CONFIRM_TIMESLOT,CANCEL_TIMESLOT,PROCESS_ADDRESS,UPDATE_TIMESLOT;
+	GET_TIMESLOT,RESERVE_TIMESLOT,CONFIRM_TIMESLOT,CANCEL_TIMESLOT,PROCESS_ADDRESS,UPDATE_TIMESLOT, CHECK_TIMESLOT;
 	
 	public String value(){
 	    switch(this) {
@@ -20,7 +20,7 @@ public enum EventType {
 	     case UPDATE_TIMESLOT: return "UPDATE_TIMESLOT";
 	     case CONFIRM_TIMESLOT: return "CONFIRM_TIMESLOT";
 	     case CANCEL_TIMESLOT: return "CANCEL_TIMESLOT";
-	     case PROCESS_ADDRESS: return "ROUTINGADDRESS/process";
+	     case CHECK_TIMESLOT: return "CHECK_TIMESLOT";
 	     default: return "";
 	   }
 	}
@@ -39,9 +39,10 @@ public enum EventType {
 			return CANCEL_TIMESLOT;
 		} else if(value.equals(UPDATE_TIMESLOT.value())) {
 			return UPDATE_TIMESLOT;
-		} else if(value.equals(PROCESS_ADDRESS.value())) {
-			return PROCESS_ADDRESS;
-		} else throw new RuntimeException("IRoutingActivityType: undefined enum :"+value);
+		} else if(value.equals(CHECK_TIMESLOT.value())){
+			return CHECK_TIMESLOT;
+		}
+		return null;
 	}
 }
 

@@ -1,10 +1,13 @@
 package com.freshdirect.analytics;
 import java.sql.Connection;
 import java.sql.SQLException;
+
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
+
 import org.apache.log4j.Category;
+
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -29,13 +32,13 @@ public class TimeslotEventListener extends EventListener {
 			ObjectMessage objMsg = (ObjectMessage) msg;
 			Object obj = objMsg.getObject();
 			
-			if(!(obj instanceof TimeslotEventWrapper))
+			if(!(obj instanceof TimeslotEventModel))
 			{
 				return;
 			}
 			else
 			{
-				logTimeSlots((TimeslotEventWrapper)obj);
+				logTimeSlots((TimeslotEventModel)obj);
 			}
 			
 		} catch (JMSException ex) {
@@ -47,13 +50,12 @@ public class TimeslotEventListener extends EventListener {
 		}
 	}
 	
-	private void logTimeSlots(TimeslotEventWrapper command) throws Exception {
+	private void logTimeSlots(TimeslotEventModel event) throws Exception {
 		
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			TimeslotEventDAO.addEntry(conn, command.getReservationId(),command.getOrderId(), command.getCustomerId(), command.getEventType(),
-					 command.getEvent(), command.getResponseTime(), command.getAddress());
+			TimeslotEventDAO.addEntry(conn, event);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			LOGGER.warn("SQLException in TimeslotEventDAO.addEntry() call ", e);

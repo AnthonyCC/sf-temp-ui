@@ -15,6 +15,8 @@ import javax.ejb.FinderException;
 import javax.ejb.ObjectNotFoundException;
 import javax.naming.NamingException;
 
+import com.freshdirect.analytics.EventType;
+import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.ContactAddressModel;
@@ -42,9 +44,6 @@ import com.freshdirect.delivery.ejb.DlvManagerSB;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneModel;
-import com.freshdirect.analytics.TimeslotEventModel;
-import com.freshdirect.analytics.EventType;
-import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
@@ -53,7 +52,6 @@ import com.freshdirect.erp.EnumStateCodes;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.TimedLruCache;
 import com.freshdirect.routing.model.IDeliveryReservation;
-import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IOrderModel;
 
 /**
@@ -1074,32 +1072,20 @@ public class FDDeliveryManager {
 		}
 	}
 	
-	public void logTimeslots(DlvReservationModel reservation,IOrderModel order,
-			EventType eventType,TimeslotEventModel event, 
-			int responseTime, ContactAddressModel address) throws FDResourceException{
-		
-		try {
-			DlvManagerSB sb = getDlvManagerHome().create();
-			sb.logTimeslots(reservation, order, eventType, event, responseTime, address);
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-		
-	}
-	
-	public void logTimeslots(DlvReservationModel reservation, IOrderModel order, List<FDTimeslot> timeSlots, 
+	public TimeslotEventModel logTimeslots(DlvReservationModel reservation, IOrderModel order, List<FDTimeslot> timeSlots, 
 			TimeslotEventModel event, ContactAddressModel address, int responseTime) throws FDResourceException{
 		
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			sb.logTimeslots(reservation, order, timeSlots, event, address, responseTime);
+			event = sb.buildEvent(timeSlots, event, reservation, order, address, EventType.GET_TIMESLOT, responseTime);
+			sb.logTimeslots(event);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
+		
+		return event;
 		
 	}
 

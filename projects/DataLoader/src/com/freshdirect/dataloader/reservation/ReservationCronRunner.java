@@ -23,11 +23,9 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.analytics.TimeslotEventModel;
-import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
-import com.freshdirect.fdstore.Util;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
@@ -35,7 +33,6 @@ import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSessionBean.ReservationInfo;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
-import com.freshdirect.routing.util.RoutingServicesProperties;
 
 public class ReservationCronRunner {
 
