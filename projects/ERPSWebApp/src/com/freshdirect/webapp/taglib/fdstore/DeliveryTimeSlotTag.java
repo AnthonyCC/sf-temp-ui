@@ -25,12 +25,12 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.analytics.EventType;
 import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.delivery.DlvServiceSelectionResult;
-import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumDeliveryStatus;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
@@ -43,7 +43,6 @@ import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.OneTimeRestriction;
 import com.freshdirect.delivery.restriction.OneTimeReverseRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
-import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDDynamicTimeslotList;
@@ -236,7 +235,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 			for (FDTimeslotUtil timeslots : timeslotList) {
 				if(timeslots != null) {
 					
-					FDDeliveryManager.getInstance().logTimeslots(null, null, timeslots.getTimeslotsFlat(), event, address, timeslots.getResponseTime());
+					event = FDDeliveryManager.getInstance().logTimeslots(null, null, timeslots.getTimeslotsFlat(), event, address, timeslots.getResponseTime());
 				}
 			}
 		}
@@ -524,6 +523,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 
 	private FDDynamicTimeslotList getTimeslots(ErpAddressModel address, Date startDate, Date endDate, TimeslotEventModel event) throws FDResourceException {
 
+		event.setEventType(EventType.GET_TIMESLOT);
 		if (address instanceof ErpDepotAddressModel) {
 			ErpDepotAddressModel depotAddress = (ErpDepotAddressModel) address;
 			return FDDeliveryManager.getInstance().getTimeslotsForDepot(

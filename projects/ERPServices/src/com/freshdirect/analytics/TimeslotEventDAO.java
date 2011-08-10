@@ -8,13 +8,15 @@ package com.freshdirect.analytics;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-
 import org.apache.log4j.Category;
-
-import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -24,7 +26,7 @@ public class TimeslotEventDAO {
 	private static final Category LOGGER = LoggerFactory.getInstance(TimeslotEventDAO.class);
 	private static final String TIMESLOT_LOG_INSERT="INSERT INTO DLV.TIMESLOT_EVENT_HDR (ID, EVENT_DTM,RESERVATION_ID, " +
 			"ORDER_ID, CUSTOMER_ID, EVENTTYPE,RESPONSE_TIME,COMMENTS,TransactionSource,DlvPassApplied,DeliveryCharge,isDeliveryChargeWaived,zonectactive) " +
-			"VALUES (?,SYSDATE,?,?,?,?,?,?,?,?,?,?,?)";
+			"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	
 	private static final String TIMESLOT_LOG_DTL_INSERT="INSERT INTO DLV.TIMESLOT_EVENT_DTL (TIMESLOT_LOG_ID, BASE_DATE, START_TIME" +
 			", END_TIME, ZONE_CODE) VALUES (?,?,?,?,?)";
@@ -38,57 +40,106 @@ public class TimeslotEventDAO {
 	"WAVE_STARTTIME,UNAVAILABILITY_REASON,WAVE_ORDERS_TAKEN,TOTAL_QUANTITIES, NEWROUTE, CAPACITIES, GEORESTRICTED)" +
 	" VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	
+	private static final String TIMESLOT_EVENTS_QRY = "select id, order_Id, customer_Id, eventtype, event_dtm from " +
+			"dlv.timeslot_event_hdr where id >= ( select max(TO_NUMBER(ID)) A from dlv.timeslot_event_hdr H1 where event_dtm>  TO_DATE (?,  'MM-DD-YYYY HH24:MI:SS') " +
+			"and  eventtype = 'GET_TIMESLOT' AND transactionsource = 'WEB' and customer_id = ? ANd  TO_NUMBER(ID)  " +
+			"< NVL((SELECT MAX(TO_NUMBER(ID)) FROM dlv.TIMESLOT_EVENT_HDR WHERE event_dtm >  TO_DATE (?,  'MM-DD-YYYY HH24:MI:SS') and  " +
+			"eventtype = 'RESERVE_TIMESLOT' AND transactionsource = 'WEB' and customer_id = ?),99999999999) ) and " +
+			"id <= (select max(to_number(id)) from dlv.timeslot_event_hdr where customer_id = ? AND " +
+			"transactionsource = 'WEB' and event_dtm >  TO_DATE (?,  'MM-DD-YYYY HH24:MI:SS'))";
+		
+	private static final String TIMESLOT_EVENT_DETAIL_QRY = "SELECT * FROM DLV.TIMESLOT_EVENT_DTL WHERE TIMESLOT_LOG_ID = ?";
 	
-	public static void addEntry(Connection conn,String reservationId,String orderId,String customerId
-				,EventType eventType,TimeslotEventModel event, int responseTime, String comments ) 
+	
+	public static List<TimeslotEventModel> getEvents(Connection conn, String customerId, long time) throws SQLException
+	{
+		PreparedStatement ps = conn.prepareStatement(TIMESLOT_EVENTS_QRY);
+		DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss"); //E, dd MMM yyyy HH:mm:ss Z
+		Date date = new Date(time);
+		String dataStr = formatter.format(date);
+		ps.setString(1, dataStr);
+		ps.setString(2, customerId);
+		ps.setString(3, dataStr);
+		ps.setString(4, customerId);
+		ps.setString(5, customerId);
+		ps.setString(6, dataStr);
+		
+		ResultSet rs = ps.executeQuery();
+		List<TimeslotEventModel> events = new ArrayList<TimeslotEventModel>();
+		while(rs.next()){
+			TimeslotEventModel event = new TimeslotEventModel();
+			event.setOrderId(rs.getString("order_id"));
+			event.setCustomerId(rs.getString("customer_Id"));
+			event.setEventType(EventType.getEnum(rs.getString("eventtype")));
+			event.setEventDate(rs.getDate("event_dtm"));	
+			event.setDetail(getEventDetails(conn, rs.getString("id")));
+			events.add(event);
+		}
+		rs.close();
+		ps.close();
+		return events;
+	}
+	
+	private static List<TimeslotEventDetailModel> getEventDetails(Connection conn, String id) throws SQLException
+	{
+		PreparedStatement ps = conn.prepareStatement(TIMESLOT_EVENT_DETAIL_QRY);
+		ps.setString(1, id);
+		ResultSet rs = ps.executeQuery();
+		List<TimeslotEventDetailModel> details = new ArrayList<TimeslotEventDetailModel>();
+		while(rs.next())
+		{
+			TimeslotEventDetailModel detail = new TimeslotEventDetailModel();
+			detail.setStorefront_avl(getBoolean(rs.getString("storefront_avl")));
+			detail.setDeliveryDate(rs.getDate("base_date"));
+			details.add(detail);
+		}
+		rs.close();
+		ps.close();
+		return details;
+	}
+	public static void addEntry(Connection conn,TimeslotEventModel event) 
 										throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(TIMESLOT_LOG_INSERT);
-		String id = SequenceGenerator.getNextId(conn, "DLV", "TIMESLOT_LOG_SEQUENCE");
-		ps.setString(1, id);
-		if(reservationId==null || "".equals(reservationId)) {
-			ps.setNull(2,java.sql.Types.VARCHAR);
-		}
-		else {
-			ps.setString(2,reservationId);
-		}
-		ps.setString(3, orderId);
-	    ps.setString(4, customerId);
-	    ps.setString(5, eventType.value());
-	    ps.setInt(6, responseTime);
-	    ps.setString(7, comments);
-	    if(event != null)
-	    {
-	    	ps.setString(8, event.getTransactionSource());
-	    	ps.setString(9,(event.isDlvPassApplied())?"Y":"N");
-	    	ps.setDouble(10, event.getDeliveryCharge());
-	    	ps.setString(11, (event.isDeliveryChargeWaived())?"Y":"N");
-	    	ps.setString(12, (event.isZoneCtActive())?"Y":"N");
-	    	
+		
+		if(event != null)
+		{
+			ps.setString(1, event.getId());
+			ps.setTimestamp(2, new java.sql.Timestamp(event.getEventDate().getTime()));
+			if(event.getReservationId()!=null || "".equals(event.getReservationId())) {
+				ps.setNull(3,java.sql.Types.VARCHAR);
+			}
+			else {
+				ps.setString(3,event.getReservationId());
+			}
+			ps.setString(4, event.getOrderId());
+		    ps.setString(5, event.getCustomerId());
+		    ps.setString(6, event.getEventType().value());
+		    ps.setInt(7, event.getResponseTime());
+		    ps.setString(8, event.getAddress());
+	   
+	    	ps.setString(9, event.getTransactionSource());
+	    	ps.setString(10,(event.isDlvPassApplied())?"Y":"N");
+	    	ps.setDouble(11, event.getDeliveryCharge());
+	    	ps.setString(12, (event.isDeliveryChargeWaived())?"Y":"N");
+	    	ps.setString(13, (event.isZoneCtActive())?"Y":"N");
+	    	ps.execute();
+	 	    ps.close();
 	    }
-	    else
+		else return;
+	   
+	    boolean isAnalyseCall=isAnalyzeCall(event.getEventType());
+	    if(isAnalyseCall) 
 	    {
-	    	ps.setString(8, "");
-	    	ps.setString(9,"");
-	    	ps.setDouble(10, 0);
-	    	ps.setString(11, "");
-	    	ps.setString(12, "");
-	    }
-	    ps.execute();
-	    ps.close();
-	    if (event==null) return;
-	    boolean isAnalyseCall=isAnalyzeCall(eventType);
-	    if(isAnalyseCall) {
 	    	ps=conn.prepareStatement(TIMESLOT_LOG_DTL_WITH_COST_INSERT);
-	    } else {
-	    
-	    	ps=conn.prepareStatement(TIMESLOT_LOG_DTL_INSERT);
+	    } else 
+	    {
+	      	ps=conn.prepareStatement(TIMESLOT_LOG_DTL_INSERT);
 	    }
-	    for (List<TimeslotEventDetailModel> list : event.getDetail()) {
-	    	
-		    for (TimeslotEventDetailModel eventD : list) {
+	      for (TimeslotEventDetailModel eventD : event.getDetail()) 
+	      {
 		    	if(eventD!=null)
 		    		{
-			    	ps.setString(1,id);
+			    	ps.setString(1,event.getId());
 			    	
 			    	if(eventD.getDeliveryDate()!=null)
 			    		ps.setTimestamp(2, new java.sql.Timestamp(DateUtil.truncate(eventD.getDeliveryDate()).getTime()));
@@ -201,18 +252,27 @@ public class TimeslotEventDAO {
 			    	
 			    	ps.addBatch();
 		    	}
-		    }
 		}
 		ps.executeBatch();
 		ps.close();
 	}
 	
+	
+	
 	private static String get(boolean value) {
 		return value?"Y":"N";
 	}
 	
+	private static Boolean getBoolean(String s)
+	{
+		if("Y".equals(s))
+			return true;
+		else
+			return false;
+	}
+
 	private static boolean isAnalyzeCall(EventType eventType) {
-		return EventType.GET_TIMESLOT.equals(eventType);
+		return EventType.GET_TIMESLOT.equals(eventType) || EventType.CHECK_TIMESLOT.equals(eventType);
 	}
 }
 
