@@ -30,7 +30,7 @@ public class FDTimeslot implements Serializable, Comparable {
 	private boolean isHolidayRestricted;
 	private boolean timeslotRemoved;
 	private boolean geoRestricted;
-	
+	private String storeFrontAvailable;
 	/** Creates new FDTimeslot */
 	public FDTimeslot(DlvTimeslotModel dlvTimeslot) {
 		this.dlvTimeslot = dlvTimeslot;
@@ -240,5 +240,13 @@ public class FDTimeslot implements Serializable, Comparable {
 
 	public void setGeoRestricted(boolean geoRestricted) {
 		this.geoRestricted = geoRestricted;
+	}
+
+	public String getStoreFrontAvailable() {
+		return storeFrontAvailable;
+	}
+
+	public void setStoreFrontAvailable(String storeFrontAvailable) {
+		this.storeFrontAvailable = storeFrontAvailable;
 	}
 }

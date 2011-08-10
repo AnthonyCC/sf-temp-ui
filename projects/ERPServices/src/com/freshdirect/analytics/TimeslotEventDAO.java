@@ -89,7 +89,7 @@ public class TimeslotEventDAO {
 		while(rs.next())
 		{
 			TimeslotEventDetailModel detail = new TimeslotEventDetailModel();
-			detail.setStorefront_avl(getBoolean(rs.getString("storefront_avl")));
+			detail.setStoreFrontAvailable(rs.getString("storefront_avl"));
 			detail.setDeliveryDate(rs.getDate("base_date"));
 			details.add(detail);
 		}
@@ -241,7 +241,7 @@ public class TimeslotEventDAO {
 			    		ps.setString(38,get(eventD.isManuallyClosed()));
 			    		if(eventD.getCutOff()!=null)
 			    			ps.setTimestamp(39,new java.sql.Timestamp(eventD.getCutOff().getTime()));
-			    		ps.setString(40,get(eventD.isStorefront_avl()));
+			    		ps.setString(40,eventD.getStoreFrontAvailable());
 			    		ps.setInt(41,eventD.getCtAllocated());
 			    		ps.setInt(42,eventD.getTotalAllocated());
 			    		ps.setString(51, get(eventD.isGeoRestricted()));

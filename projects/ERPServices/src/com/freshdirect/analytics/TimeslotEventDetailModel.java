@@ -18,7 +18,7 @@ public class TimeslotEventDetailModel implements Serializable {
 	private boolean neighbourhoodslot;
 	private int totalCapacity;
 	private int ctCapacity;
-	private boolean storefront_avl;
+	private String storeFrontAvailable;
 	private int ctAllocated;
 	private int totalAllocated;
 	private RoutingModel routingModel;
@@ -84,14 +84,6 @@ public class TimeslotEventDetailModel implements Serializable {
 
 	public void setCtCapacity(int ctCapacity) {
 		this.ctCapacity = ctCapacity;
-	}
-
-	public boolean isStorefront_avl() {
-		return storefront_avl;
-	}
-
-	public void setStorefront_avl(boolean storefront_avl) {
-		this.storefront_avl = storefront_avl;
 	}
 
 	public int getCtAllocated() {
@@ -172,6 +164,14 @@ public class TimeslotEventDetailModel implements Serializable {
 
 	public void setGeoRestricted(boolean geoRestricted) {
 		this.geoRestricted = geoRestricted;
+	}
+
+	public String getStoreFrontAvailable() {
+		return storeFrontAvailable;
+	}
+
+	public void setStoreFrontAvailable(String storeFrontAvailable) {
+		this.storeFrontAvailable = storeFrontAvailable;
 	}
 
 }

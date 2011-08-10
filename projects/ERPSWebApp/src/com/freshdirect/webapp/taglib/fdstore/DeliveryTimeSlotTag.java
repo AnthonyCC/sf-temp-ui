@@ -229,7 +229,11 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 				geographicRestrictions, messages, comments,
 				isKosherSlotAvailable, hasCapacity, deliveryModel, alcoholRestrictions);
 		
-
+		if(deliveryModel.getPreReserveSlotId()!=null)
+			event.setReservationId(deliveryModel.getPreReserveSlotId());
+		else if(deliveryModel.getTimeSlotId()!=null)
+			event.setReservationId(deliveryModel.getTimeSlotId());
+		
 		if("GET".equalsIgnoreCase(request.getMethod()) || "Y".equals(request.getParameter("addressChange")))
 		{
 			for (FDTimeslotUtil timeslots : timeslotList) {
@@ -367,6 +371,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 				Collection<FDTimeslot> col = j.next();
 				for (Iterator<FDTimeslot> k = col.iterator(); k.hasNext();) {
 					FDTimeslot timeslot = k.next();
+					timeslot.setStoreFrontAvailable("A");
 					DlvTimeslotModel ts = timeslot.getDlvTimeslot();
 					ts.setSteeringDiscount(PromotionHelper.getDiscount(user, timeslot));
 					boolean geoRestricted = GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions,
@@ -375,6 +380,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 					timeslot.setGeoRestricted(geoRestricted);
 					if ((ts.getCapacity() <= 0 || geoRestricted)&& !retainTimeslotIds.contains(ts.getId())) {
 						LOGGER.debug("Timeslot Removed By Tag :"+ts);
+						timeslot.setStoreFrontAvailable("H");
 						timeslot.setTimeslotRemoved(true);
 						isTimeslotRemoved = true;
 					}
@@ -415,6 +421,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 						&& (timeslot.getDlvTimeslot() != null && timeslot.getDlvTimeslot().getRoutingSlot() != null
 							&& (timeslot.getDlvTimeslot().getRoutingSlot().isManuallyClosed()
 								|| !timeslot.getDlvTimeslot().getRoutingSlot().isDynamicActive()))) {
+							timeslot.setStoreFrontAvailable("S");
 							soldOut = soldOut + 1;;
 			}
 					if(!isTimeslotRemoved)
