@@ -203,13 +203,12 @@ public interface DlvManagerSB extends EJBObject {
 	
 	Set<String> getInSyncWaveInstanceZones(Date deliveryDate) throws DlvResourceException, RemoteException;
 	
-	public void logTimeslots(DlvReservationModel reservation,IOrderModel order,
-			EventType eventType,TimeslotEventModel event, 
-			int responseTime, ContactAddressModel address) throws RemoteException;
-	
-	public void logTimeslots(DlvReservationModel reservation, IOrderModel order, 
-			List<FDTimeslot> timeSlots,TimeslotEventModel event, 
-			ContactAddressModel address, int responseTime) throws RemoteException;
+	public void logTimeslots(TimeslotEventModel event) throws RemoteException;
 	
 	void fixDisassociatedTimeslots()throws RemoteException;
+	
+	public TimeslotEventModel buildEvent(List<FDTimeslot> timeSlots, TimeslotEventModel event, 
+			DlvReservationModel reservation, IOrderModel order, 
+			ContactAddressModel address, EventType eventType, int responseTime) throws RemoteException;
+	
 }   
