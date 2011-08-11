@@ -54,7 +54,7 @@ public class EmployeeTruckPreferenceUtil {
 										+" Order by RESOURCE_ID ASC, COUNT DESC";
 	
 	private static final String GET_KRONOS_AVTIVEINACTIVE_EMPLOYEES = "SELECT a.PERSONNUM KRONOS_ID, a.FIRSTNM FIRST_NAME, a.MIDDLEINITIALNM MIDDLE_INITIAL, a.LASTNM LAST_NAME, a.SHORTNM SHORT_NAME, "+
-										" a.HOMELABORLEVELNM7 JOB_TYPE, a.COMPANYHIREDTM HIRE_DATE, a.EMPLOYMENTSTATUS STATUS, b.PERSONNUM SUP_KRONOS_ID, b.FIRSTNM SUP_FIRST_NAME, "+
+										" a.HOMELABORLEVELNM7 JOB_TYPE, a.SENIORITYRANKDATE HIRE_DATE, a.EMPLOYMENTSTATUS STATUS, b.PERSONNUM SUP_KRONOS_ID, b.FIRSTNM SUP_FIRST_NAME, "+
 										" b.MIDDLEINITIALNM SUP_MIDDLE_INITIAL, b.LASTNM SUP_LAST_NAME, b.SHORTNM SUP_SHORT_NAME "+
 										" FROM transp.KRONOS_EMPLOYEE a, transp.KRONOS_EMPLOYEE b "+
 										" WHERE a.SUPERVISORNUM = b.PERSONNUM(+) "+
@@ -63,7 +63,7 @@ public class EmployeeTruckPreferenceUtil {
 													 +" FROM TRANSP.EMPLOYEEROLE er where er.role in ('001','004')";
 	
 	
-	private static final String INSERT_MASTER_TRUCKS = "INSERT INTO TRANSP.ASSET (ASSET_ID, ASSET_NO, ASSET_TYPE, ASSET_STATUS) VALUES (TRANSP.ASSETSEQ.nextval,?,?,?)";
+	private static final String INSERT_MASTER_TRUCKS = "INSERT INTO TRANSP.ASSET (ASSET_ID, ASSET_NO, ASSET_DESCRIPTION, ASSET_TYPE, ASSET_STATUS) VALUES (TRANSP.ASSETSEQ.nextval,?,?,?,?)";
 	
 	public EmployeeTruckPreferenceUtil() {
 		employees = new ArrayList<EmployeeInfo>();
@@ -98,8 +98,9 @@ public class EmployeeTruckPreferenceUtil {
 			while ((line = reader.readLine()) != null) {
 				String[] split = line.split(",");
 				if (split.length > 1) {
-					Truck truck = Truck.newUnknownTruck(split[0]);
+					Truck truck = Truck.newUnknownTruck(split[2]);
 					//truck.setInService(Boolean.parseBoolean(split[1]));
+					truck.setRental("YES".equalsIgnoreCase(split[0])? "ACT" : "IAC");
 					truck.setVendor(split[1]);
 					if(truckMap.get(truck.getId()) == null){
 						trucks.add(truck);
@@ -120,15 +121,16 @@ public class EmployeeTruckPreferenceUtil {
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
-				
+				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.compile();
 				
 				connection = conInfo.getNewConnection();
 				
 				for(Truck model : trucks) {
 					batchUpdater.update(new Object[]{ model.getId()
+												, model.getVendor()
 												, "TRUCK"
-												, "ACT"
+												, model.getRental()
 											});
 				}			
 				batchUpdater.flush();

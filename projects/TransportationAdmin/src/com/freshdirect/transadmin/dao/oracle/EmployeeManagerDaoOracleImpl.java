@@ -35,17 +35,17 @@ public class EmployeeManagerDaoOracleImpl implements EmployeeManagerDaoI {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-	private static final String GET_ALL_ACTIVE_EMPLOYEE_QRY=
+	private static final String GET_ALL_ACTIVE_EMPLOYEE_QRY =
 		"SELECT a.PERSONNUM KRONOS_ID, a.FIRSTNM FIRST_NAME, a.MIDDLEINITIALNM MIDDLE_INITIAL, a.LASTNM LAST_NAME, a.SHORTNM SHORT_NAME, "+
-		"a.HOMELABORLEVELNM7 JOB_TYPE, a.COMPANYHIREDTM HIRE_DATE, a.EMPLOYMENTSTATUS STATUS, b.PERSONNUM SUP_KRONOS_ID, b.FIRSTNM SUP_FIRST_NAME, "+
+		"a.HOMELABORLEVELNM7 JOB_TYPE, a.SENIORITYRANKDATE SENIORITYRANK_DATE, a.EMPLOYMENTSTATUS STATUS, b.PERSONNUM SUP_KRONOS_ID, b.FIRSTNM SUP_FIRST_NAME, "+
 		"b.MIDDLEINITIALNM SUP_MIDDLE_INITIAL, b.LASTNM SUP_LAST_NAME, b.SHORTNM SUP_SHORT_NAME "+
 		" FROM transp.KRONOS_EMPLOYEE a, transp.KRONOS_EMPLOYEE b "+
 		"WHERE a.SUPERVISORNUM = b.PERSONNUM(+) "+
 		"AND a.EMPLOYMENTSTATUS='Active'";
 
-	private static final String GET_ALL_SUPERVISOR_EMPLOYEE_QRY=
+	private static final String GET_ALL_SUPERVISOR_EMPLOYEE_QRY =
 		"SELECT a.PERSONNUM KRONOS_ID, a.FIRSTNM FIRST_NAME, a.MIDDLEINITIALNM MIDDLE_INITIAL, a.LASTNM LAST_NAME, a.SHORTNM SHORT_NAME, "+
-		"a.HOMELABORLEVELNM7 JOB_TYPE, a.COMPANYHIREDTM HIRE_DATE, a.EMPLOYMENTSTATUS STATUS, b.PERSONNUM SUP_KRONOS_ID, b.FIRSTNM SUP_FIRST_NAME, "+
+		"a.HOMELABORLEVELNM7 JOB_TYPE, a.SENIORITYRANKDATE SENIORITYRANK_DATE, a.EMPLOYMENTSTATUS STATUS, b.PERSONNUM SUP_KRONOS_ID, b.FIRSTNM SUP_FIRST_NAME, "+
 		"b.MIDDLEINITIALNM SUP_MIDDLE_INITIAL, b.LASTNM SUP_LAST_NAME, b.SHORTNM SUP_SHORT_NAME "+
 		" FROM transp.KRONOS_EMPLOYEE a, transp.KRONOS_EMPLOYEE b "+
 		"WHERE a.SUPERVISORNUM = b.PERSONNUM(+) "+
@@ -53,18 +53,18 @@ public class EmployeeManagerDaoOracleImpl implements EmployeeManagerDaoI {
 		"AND a.EMPLOYMENTSTATUS='Active'";
 
 
-	private static final String GET_ALL_TERMINATED_EMPLOYEE_QRY=
+	private static final String GET_ALL_TERMINATED_EMPLOYEE_QRY =
 		"SELECT a.PERSONNUM KRONOS_ID, a.FIRSTNM FIRST_NAME, a.MIDDLEINITIALNM MIDDLE_INITIAL, a.LASTNM LAST_NAME, a.SHORTNM SHORT_NAME, "+
-		"a.HOMELABORLEVELNM7 JOB_TYPE, a.COMPANYHIREDTM HIRE_DATE, a.EMPLOYMENTSTATUS STATUS, b.PERSONNUM SUP_KRONOS_ID, b.FIRSTNM SUP_FIRST_NAME, "+
+		"a.HOMELABORLEVELNM7 JOB_TYPE, a.SENIORITYRANKDATE SENIORITYRANK_DATE, a.EMPLOYMENTSTATUS STATUS, b.PERSONNUM SUP_KRONOS_ID, b.FIRSTNM SUP_FIRST_NAME, "+
 		"b.MIDDLEINITIALNM SUP_MIDDLE_INITIAL, b.LASTNM SUP_LAST_NAME, b.SHORTNM SUP_SHORT_NAME, a.EMPLOYMENTSTATUSDT TERMINATION_DATE "+
 		" FROM transp.KRONOS_EMPLOYEE a, transp.KRONOS_EMPLOYEE b "+
 		"WHERE a.SUPERVISORNUM = b.PERSONNUM(+) "+
 		"AND a.EMPLOYMENTSTATUS='Terminated'";
 
 
-	private static final String GET_ALL_ACTIVE_INACTIVE_EMPLOYEE_QRY=
+	private static final String GET_ALL_ACTIVE_INACTIVE_EMPLOYEE_QRY =
 		"SELECT a.PERSONNUM KRONOS_ID, a.FIRSTNM FIRST_NAME, a.MIDDLEINITIALNM MIDDLE_INITIAL, a.LASTNM LAST_NAME, a.SHORTNM SHORT_NAME, "+
-		"a.HOMELABORLEVELNM7 JOB_TYPE, a.COMPANYHIREDTM HIRE_DATE, a.EMPLOYMENTSTATUS STATUS, b.PERSONNUM SUP_KRONOS_ID, b.FIRSTNM SUP_FIRST_NAME, "+
+		"a.HOMELABORLEVELNM7 JOB_TYPE, a.SENIORITYRANKDATE SENIORITYRANK_DATE, a.EMPLOYMENTSTATUS STATUS, b.PERSONNUM SUP_KRONOS_ID, b.FIRSTNM SUP_FIRST_NAME, "+
 		"b.MIDDLEINITIALNM SUP_MIDDLE_INITIAL, b.LASTNM SUP_LAST_NAME, b.SHORTNM SUP_SHORT_NAME "+
 		" FROM transp.KRONOS_EMPLOYEE a, transp.KRONOS_EMPLOYEE b "+
 		"WHERE a.SUPERVISORNUM = b.PERSONNUM(+) "+
@@ -88,24 +88,25 @@ public class EmployeeManagerDaoOracleImpl implements EmployeeManagerDaoI {
        		      public void processRow(ResultSet rs) throws SQLException {
 
        		    	do {
-       		    		String employeeId=rs.getString("KRONOS_ID");
-       		    		String firstName=rs.getString("FIRST_NAME");
-       		    		String lastName=rs.getString("LAST_NAME");
-       		    		String middleInitial=rs.getString("MIDDLE_INITIAL");
-       		    		String shortName=rs.getString("SHORT_NAME");
-       		    		String jobType=rs.getString("JOB_TYPE");
-       		    		Date hireDate=rs.getDate("HIRE_DATE");
-       		    		String status=rs.getString("STATUS");
-       		    		String supervisorId=rs.getString("SUP_KRONOS_ID");
-       		    		String supervisorFirstName=rs.getString("SUP_FIRST_NAME");
-       		    		String supervisorMiddleInitial=rs.getString("SUP_MIDDLE_INITIAL");
-       		    		String supervisorLastName=rs.getString("SUP_LAST_NAME");
-       		    		String supervisorShortName=rs.getString("SUP_SHORT_NAME");
+       		    		String employeeId = rs.getString("KRONOS_ID");
+						String firstName = rs.getString("FIRST_NAME");
+						String lastName = rs.getString("LAST_NAME");
+						String middleInitial = rs.getString("MIDDLE_INITIAL");
+						String shortName = rs.getString("SHORT_NAME");
+						String jobType = rs.getString("JOB_TYPE");
+						Date hireDate = rs.getDate("SENIORITYRANK_DATE");
+						String status = rs.getString("STATUS");
+						String supervisorId = rs.getString("SUP_KRONOS_ID");
+						String supervisorFirstName = rs.getString("SUP_FIRST_NAME");
+						String supervisorMiddleInitial = rs.getString("SUP_MIDDLE_INITIAL");
+						String supervisorLastName = rs.getString("SUP_LAST_NAME");
+						String supervisorShortName = rs.getString("SUP_SHORT_NAME");
 
-       		    		EmployeeInfo model=new EmployeeInfo(
-       		    		employeeId,firstName,lastName,middleInitial,shortName,jobType,hireDate,
-       		    		status,supervisorId,supervisorFirstName,supervisorMiddleInitial,supervisorLastName,supervisorShortName,null
-       		    		);
+       		    		EmployeeInfo model = new EmployeeInfo(employeeId,
+																	firstName, lastName, middleInitial, shortName,
+																	jobType, hireDate, status, supervisorId,
+																	supervisorFirstName, supervisorMiddleInitial,
+																	supervisorLastName, supervisorShortName, null);
 
        		    		list.add(model);
        		    	   }
@@ -135,24 +136,25 @@ public class EmployeeManagerDaoOracleImpl implements EmployeeManagerDaoI {
        		      public void processRow(ResultSet rs) throws SQLException {
 
        		    	do {
-       		    		String employeeId=rs.getString("KRONOS_ID");
-       		    		String firstName=rs.getString("FIRST_NAME");
-       		    		String lastName=rs.getString("LAST_NAME");
-       		    		String middleInitial=rs.getString("MIDDLE_INITIAL");
-       		    		String shortName=rs.getString("SHORT_NAME");
-       		    		String jobType=rs.getString("JOB_TYPE");
-       		    		Date hireDate=rs.getDate("HIRE_DATE");
-       		    		String status=rs.getString("STATUS");
-       		    		String supervisorId=rs.getString("SUP_KRONOS_ID");
-       		    		String supervisorFirstName=rs.getString("SUP_FIRST_NAME");
-       		    		String supervisorMiddleInitial=rs.getString("SUP_MIDDLE_INITIAL");
-       		    		String supervisorLastName=rs.getString("SUP_LAST_NAME");
-       		    		String supervisorShortName=rs.getString("SUP_SHORT_NAME");
+       		    		String employeeId = rs.getString("KRONOS_ID");
+						String firstName = rs.getString("FIRST_NAME");
+						String lastName = rs.getString("LAST_NAME");
+						String middleInitial = rs.getString("MIDDLE_INITIAL");
+						String shortName = rs.getString("SHORT_NAME");
+						String jobType = rs.getString("JOB_TYPE");
+						Date hireDate = rs.getDate("SENIORITYRANK_DATE");
+						String status = rs.getString("STATUS");
+						String supervisorId = rs.getString("SUP_KRONOS_ID");
+						String supervisorFirstName = rs.getString("SUP_FIRST_NAME");
+						String supervisorMiddleInitial = rs.getString("SUP_MIDDLE_INITIAL");
+						String supervisorLastName = rs.getString("SUP_LAST_NAME");
+						String supervisorShortName = rs.getString("SUP_SHORT_NAME");
 
-       		    		EmployeeInfo model=new EmployeeInfo(
-       		    		employeeId,firstName,lastName,middleInitial,shortName,jobType,hireDate,
-       		    		status,supervisorId,supervisorFirstName,supervisorMiddleInitial,supervisorLastName,supervisorShortName,null
-       		    		);
+       		    		EmployeeInfo model = new EmployeeInfo(employeeId,
+																firstName, lastName, middleInitial, shortName,
+																jobType, hireDate, status, supervisorId,
+																supervisorFirstName, supervisorMiddleInitial,
+																supervisorLastName, supervisorShortName, null);
 
        		    		list.add(model);
        		    	   }
@@ -183,24 +185,27 @@ public class EmployeeManagerDaoOracleImpl implements EmployeeManagerDaoI {
        		      public void processRow(ResultSet rs) throws SQLException {
 
        		    	do {
-       		    		String employeeId=rs.getString("KRONOS_ID");
-       		    		String firstName=rs.getString("FIRST_NAME");
-       		    		String lastName=rs.getString("LAST_NAME");
-       		    		String middleInitial=rs.getString("MIDDLE_INITIAL");
-       		    		String shortName=rs.getString("SHORT_NAME");
-       		    		String jobType=rs.getString("JOB_TYPE");
-       		    		Date hireDate=rs.getDate("HIRE_DATE");
-       		    		String status=rs.getString("STATUS");
-       		    		String supervisorId=rs.getString("SUP_KRONOS_ID");
-       		    		String supervisorFirstName=rs.getString("SUP_FIRST_NAME");
-       		    		String supervisorMiddleInitial=rs.getString("SUP_MIDDLE_INITIAL");
-       		    		String supervisorLastName=rs.getString("SUP_LAST_NAME");
-       		    		String supervisorShortName=rs.getString("SUP_SHORT_NAME");
-       		    		Date terminationDate=rs.getDate("TERMINATION_DATE");
-       		    		EmployeeInfo model=new EmployeeInfo(
-       		    		employeeId,firstName,lastName,middleInitial,shortName,jobType,hireDate,
-       		    		status,supervisorId,supervisorFirstName,supervisorMiddleInitial,supervisorLastName,supervisorShortName,terminationDate
-       		    		);
+       		    		String employeeId = rs.getString("KRONOS_ID");
+						String firstName = rs.getString("FIRST_NAME");
+						String lastName = rs.getString("LAST_NAME");
+						String middleInitial = rs.getString("MIDDLE_INITIAL");
+						String shortName = rs.getString("SHORT_NAME");
+						String jobType = rs.getString("JOB_TYPE");
+						Date hireDate = rs.getDate("SENIORITYRANK_DATE");
+						String status = rs.getString("STATUS");
+						String supervisorId = rs.getString("SUP_KRONOS_ID");
+						String supervisorFirstName = rs.getString("SUP_FIRST_NAME");
+						String supervisorMiddleInitial = rs.getString("SUP_MIDDLE_INITIAL");
+						String supervisorLastName = rs.getString("SUP_LAST_NAME");
+						String supervisorShortName = rs.getString("SUP_SHORT_NAME");
+						Date terminationDate = rs.getDate("TERMINATION_DATE");
+						
+						EmployeeInfo model = new EmployeeInfo(employeeId,
+																firstName, lastName, middleInitial, shortName,
+																jobType, hireDate, status, supervisorId,
+																supervisorFirstName, supervisorMiddleInitial,
+																supervisorLastName, supervisorShortName,
+																terminationDate);
 
        		    		list.add(model);
        		    	   }
@@ -230,24 +235,25 @@ public class EmployeeManagerDaoOracleImpl implements EmployeeManagerDaoI {
        		      public void processRow(ResultSet rs) throws SQLException {
 
        		    	do {
-       		    		String employeeId=rs.getString("KRONOS_ID");
-       		    		String firstName=rs.getString("FIRST_NAME");
-       		    		String lastName=rs.getString("LAST_NAME");
-       		    		String middleInitial=rs.getString("MIDDLE_INITIAL");
-       		    		String shortName=rs.getString("SHORT_NAME");
-       		    		String jobType=rs.getString("JOB_TYPE");
-       		    		Date hireDate=rs.getDate("HIRE_DATE");
-       		    		String status=rs.getString("STATUS");
-       		    		String supervisorId=rs.getString("SUP_KRONOS_ID");
-       		    		String supervisorFirstName=rs.getString("SUP_FIRST_NAME");
-       		    		String supervisorMiddleInitial=rs.getString("SUP_MIDDLE_INITIAL");
-       		    		String supervisorLastName=rs.getString("SUP_LAST_NAME");
-       		    		String supervisorShortName=rs.getString("SUP_SHORT_NAME");
+       		    		String employeeId = rs.getString("KRONOS_ID");
+						String firstName = rs.getString("FIRST_NAME");
+						String lastName = rs.getString("LAST_NAME");
+						String middleInitial = rs.getString("MIDDLE_INITIAL");
+						String shortName = rs.getString("SHORT_NAME");
+						String jobType = rs.getString("JOB_TYPE");
+						Date hireDate = rs.getDate("SENIORITYRANK_DATE");
+						String status = rs.getString("STATUS");
+						String supervisorId = rs.getString("SUP_KRONOS_ID");
+						String supervisorFirstName = rs.getString("SUP_FIRST_NAME");
+						String supervisorMiddleInitial = rs.getString("SUP_MIDDLE_INITIAL");
+						String supervisorLastName = rs.getString("SUP_LAST_NAME");
+						String supervisorShortName = rs.getString("SUP_SHORT_NAME");
 
-       		    		EmployeeInfo model=new EmployeeInfo(
-       		    		employeeId,firstName,lastName,middleInitial,shortName,jobType,hireDate,
-       		    		status,supervisorId,supervisorFirstName,supervisorMiddleInitial,supervisorLastName,supervisorShortName,null
-       		    		);
+       		    		EmployeeInfo model = new EmployeeInfo(employeeId,
+																firstName, lastName, middleInitial, shortName,
+																jobType, hireDate, status, supervisorId,
+																supervisorFirstName, supervisorMiddleInitial,
+																supervisorLastName, supervisorShortName, null);
 
        		    		list.add(model);
        		    	   }
