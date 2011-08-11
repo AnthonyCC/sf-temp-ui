@@ -37,6 +37,7 @@ import com.freshdirect.fdstore.promotion.management.FDPromoDlvTimeSlotModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoDlvZoneStrategyModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoPaymentStrategyModel;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
+import com.freshdirect.fdstore.promotion.management.WSAdminInfo;
 import com.freshdirect.fdstore.promotion.management.WSPromotionInfo;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -56,7 +57,7 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 		FDPromoContentModel.class, FDPromoCustStrategyModel.class,
 		FDPromoPaymentStrategyModel.class, FDPromotionNewModel.class,
 		FDPromoChangeModel.class, FDPromoChangeDetailModel.class,
-		FDPromoDlvZoneStrategyModel.class, FDPromoDlvTimeSlotModel.class, WSPromotionInfo.class, EnumPromotionStatus.class
+		FDPromoDlvZoneStrategyModel.class, FDPromoDlvTimeSlotModel.class, WSPromotionInfo.class,WSAdminInfo.class, EnumPromotionStatus.class
 	};
 
 	private static Class<?>[] _JSONClasses = new Class[] { JSONObject.class };

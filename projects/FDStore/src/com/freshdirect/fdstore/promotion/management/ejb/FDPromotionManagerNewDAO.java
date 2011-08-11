@@ -49,6 +49,7 @@ import com.freshdirect.fdstore.promotion.management.FDPromoZipRestriction;
 import com.freshdirect.fdstore.promotion.management.FDPromotionAttributeParam;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewManager;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
+import com.freshdirect.fdstore.promotion.management.WSAdminInfo;
 import com.freshdirect.fdstore.promotion.management.WSPromotionInfo;
 import com.freshdirect.fdstore.promotion.management.FDPromoStateCountyRestriction;
 import com.freshdirect.framework.core.ModelI;
@@ -3020,13 +3021,13 @@ public class FDPromotionManagerNewDAO {
 		return wspromotions;
 	}
 
-	public static Map<Integer, Double> getActualAmountSpentByDays(Connection conn) throws FDResourceException {
-		Map<Integer, Double> dowSpent = new HashMap<Integer, Double>();
+	public static List<WSAdminInfo> getActualAmountSpentByDays(Connection conn) throws FDResourceException {
+		List<WSAdminInfo> dowSpent = new ArrayList<WSAdminInfo>();
 		try {
 			java.util.Date today = new java.util.Date();
 			List<WSPromotionInfo> wspromotions = getAllActiveWSPromotions(today, conn);
 			if(wspromotions == null || wspromotions.size() == 0){
-				return Collections.EMPTY_MAP;
+				return Collections.EMPTY_LIST;
 			}
 			//Load dayofweek limits from Database.
 			//Map<Integer,Double> dowLimits = getDOWLimits(conn);
@@ -3045,7 +3046,10 @@ public class FDPromotionManagerNewDAO {
 						totalSpent += (promo.getDiscount() * promo.getRedemptions());
 					}
 				}
-				dowSpent.put(new Integer(dayofweek), totalSpent);
+				WSAdminInfo adminInfo = new WSAdminInfo();
+				adminInfo.setDay(dayofweek);
+				adminInfo.setAmountSpent(totalSpent);
+				dowSpent.add(adminInfo);
 			}
 		} catch(SQLException se) {
 			throw new FDResourceException(se);

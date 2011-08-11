@@ -28,6 +28,7 @@ import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoCustNotFoundException;
 import com.freshdirect.fdstore.promotion.management.FDPromoTypeNotFoundException;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
+import com.freshdirect.fdstore.promotion.management.WSAdminInfo;
 import com.freshdirect.fdstore.promotion.management.WSPromotionInfo;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -934,7 +935,7 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		}		
 	}
 
-	public Map<Integer, Double> getActualAmountSpentByDays() throws FDResourceException {
+	public List<WSAdminInfo> getActualAmountSpentByDays() throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();

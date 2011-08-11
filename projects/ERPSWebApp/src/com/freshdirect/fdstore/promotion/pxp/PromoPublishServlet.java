@@ -42,7 +42,7 @@ public class PromoPublishServlet extends HttpServlet {
 	private static Category		LOGGER				= LoggerFactory.getInstance( PromoPublishServlet.class );
 	
 	private static final String ACTION_GET_WSPROMOSFORAUTOCANCEL = "getWSPromosForAutoCancel";
-
+	private static final String ACTION_GET_WSADMININFO = "getWSAdminInfo";
 	
 	private static JSONSerializer ser = new JSONSerializer();
 	static {
@@ -64,6 +64,14 @@ public class PromoPublishServlet extends HttpServlet {
 			Date today = new Date();
 			try {
 				result = FDPromotionNewManager.getAllActiveWSPromotions(today);
+			} catch (FDResourceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else if(ACTION_GET_WSADMININFO.equalsIgnoreCase(action)) {
+			Date today = new Date();
+			try {
+				result = FDPromotionNewManager.getActualAmountSpentByDays();
 			} catch (FDResourceException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -759,7 +759,7 @@ public class FDPromotionNewManager {
 		}
 	}
 	
-	public static Map<Integer, Double> getActualAmountSpentByDays() throws FDResourceException {
+	public static List<WSAdminInfo> getActualAmountSpentByDays() throws FDResourceException {
 		lookupManagerHome(); 
 
 		try {

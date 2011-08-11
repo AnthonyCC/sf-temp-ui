@@ -10,6 +10,8 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.webapp.taglib.callcenter.GenericLocatorTag"%>
 <%@ page import="com.freshdirect.fdstore.promotion.management.FDPromotionNewManager"%>
+<%@ page import="com.freshdirect.fdstore.promotion.management.WSAdminInfo"%>
+<%@ page import="com.freshdirect.fdstore.promotion.management.FDPromotionUtils"%>
 <%@ page import="com.freshdirect.webapp.crm.security.CrmSecurityManager" %>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
 <%@ page import="com.freshdirect.crm.CrmAgentModel" %>
@@ -88,7 +90,7 @@
 %>
 <%
 	Map<Integer,Double> dowLimits = FDPromotionNewManager.getDOWLimits();
-	Map<Integer,Double> dowSpent = FDPromotionNewManager.getActualAmountSpentByDays();
+	List<WSAdminInfo> dowSpent = FDPromotionUtils.getWSAdminInfo();
 %>
 <form method='POST' name="frmDowAdmin" id="frmDowAdmin">
 <input type="hidden" name="dayofweek" value=""/>
@@ -119,13 +121,11 @@
 			String limitstr = "";
 			String spentstr = "";
 			Double limit = dowLimits.get(new Integer(dow));
-			Double spent = dowSpent.get(new Integer(dow));
+			double spent = FDPromotionUtils.getAmountSpent(dow, dowSpent);
 			if(limit != null){
 				maxLimit = currencyFormatter.format(limit.doubleValue());
 				limitstr = decimalFormat.format(limit.doubleValue());
-				if(null != spent){
-					spentstr = decimalFormat.format(spent.doubleValue());
-				}
+				spentstr = decimalFormat.format(spent);
 			}
 	%>
 	<tr>

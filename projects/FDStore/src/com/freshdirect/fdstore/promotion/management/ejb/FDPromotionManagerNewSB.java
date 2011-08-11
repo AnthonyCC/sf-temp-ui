@@ -20,6 +20,7 @@ import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoCustNotFoundException;
 import com.freshdirect.fdstore.promotion.management.FDPromoTypeNotFoundException;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
+import com.freshdirect.fdstore.promotion.management.WSAdminInfo;
 import com.freshdirect.fdstore.promotion.management.WSPromotionInfo;
 import com.freshdirect.framework.core.PrimaryKey;
 
@@ -119,7 +120,7 @@ public interface FDPromotionManagerNewSB extends EJBObject {
 	
 	public Map<Integer, Double> getDOWLimits() throws FDResourceException, RemoteException;
 	
-	public Map<Integer, Double> getActualAmountSpentByDays() throws FDResourceException, RemoteException;
+	public List<WSAdminInfo> getActualAmountSpentByDays() throws FDResourceException, RemoteException;
 	
 	public List<WSPromotionInfo> getAllActiveWSPromotions(java.util.Date effectiveDate) throws FDResourceException, RemoteException;
 }
