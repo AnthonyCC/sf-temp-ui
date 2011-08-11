@@ -434,8 +434,8 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			conn = getConnection();
 			String id = SequenceGenerator.getNextId(conn, "DLV", "TIMESLOT_LOG_SEQUENCE");
 			event.setId(id);
-			
-			event.setReservationId((null==reservation)?null:reservation.getId());
+			if(reservation!=null)
+				event.setReservationId(reservation.getId());
 			event.setOrderId((null==order)?RoutingUtil.getOrderNo(address):order.getOrderNumber());
 			event.setCustomerId((null==reservation)?address.getCustomerId():reservation.getCustomerId());
 			event.setEventType(eventType);

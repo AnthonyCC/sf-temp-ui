@@ -40,29 +40,24 @@ public class TimeslotEventDAO {
 	"WAVE_STARTTIME,UNAVAILABILITY_REASON,WAVE_ORDERS_TAKEN,TOTAL_QUANTITIES, NEWROUTE, CAPACITIES, GEORESTRICTED)" +
 	" VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	
-	private static final String TIMESLOT_EVENTS_QRY = "select id, order_Id, customer_Id, eventtype, event_dtm from " +
-			"dlv.timeslot_event_hdr where id >= ( select max(TO_NUMBER(ID)) A from dlv.timeslot_event_hdr H1 where event_dtm>  TO_DATE (?,  'MM-DD-YYYY HH24:MI:SS') " +
-			"and  eventtype = 'GET_TIMESLOT' AND transactionsource = 'WEB' and customer_id = ? ANd  TO_NUMBER(ID)  " +
-			"< NVL((SELECT MAX(TO_NUMBER(ID)) FROM dlv.TIMESLOT_EVENT_HDR WHERE event_dtm >  TO_DATE (?,  'MM-DD-YYYY HH24:MI:SS') and  " +
-			"eventtype = 'RESERVE_TIMESLOT' AND transactionsource = 'WEB' and customer_id = ?),99999999999) ) and " +
-			"id <= (select max(to_number(id)) from dlv.timeslot_event_hdr where customer_id = ? AND " +
-			"transactionsource = 'WEB' and event_dtm >  TO_DATE (?,  'MM-DD-YYYY HH24:MI:SS'))";
+	private static final String TIMESLOT_EVENTS_QRY = "select max(to_number(id)), eventtype from dlv.timeslot_event_hdr where event_dtm" +
+			"between to_date(?,  'MM-DD-YYYY HH24:MI:SS') and to_date(?,  'MM-DD-YYYY HH24:MI:SS') and customer_id = ? and " +
+			"transactionsource = 'WEB' group by eventtype";
 		
 	private static final String TIMESLOT_EVENT_DETAIL_QRY = "SELECT * FROM DLV.TIMESLOT_EVENT_DTL WHERE TIMESLOT_LOG_ID = ?";
 	
 	
-	public static List<TimeslotEventModel> getEvents(Connection conn, String customerId, long time) throws SQLException
+	public static List<TimeslotEventModel> getEvents(Connection conn, String customerId, long sessionCreationTime) throws SQLException
 	{
 		PreparedStatement ps = conn.prepareStatement(TIMESLOT_EVENTS_QRY);
 		DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss"); //E, dd MMM yyyy HH:mm:ss Z
-		Date date = new Date(time);
-		String dataStr = formatter.format(date);
-		ps.setString(1, dataStr);
-		ps.setString(2, customerId);
-		ps.setString(3, dataStr);
-		ps.setString(4, customerId);
-		ps.setString(5, customerId);
-		ps.setString(6, dataStr);
+		Date currentTime = new Date();
+		Date date = new Date(sessionCreationTime);
+		String currentTimeStr = formatter.format(currentTime);
+		String sessionCreationStr = formatter.format(date);
+		ps.setString(1, sessionCreationStr);
+		ps.setString(2, currentTimeStr);
+		ps.setString(3, customerId);
 		
 		ResultSet rs = ps.executeQuery();
 		List<TimeslotEventModel> events = new ArrayList<TimeslotEventModel>();
@@ -105,7 +100,7 @@ public class TimeslotEventDAO {
 		{
 			ps.setString(1, event.getId());
 			ps.setTimestamp(2, new java.sql.Timestamp(event.getEventDate().getTime()));
-			if(event.getReservationId()!=null || "".equals(event.getReservationId())) {
+			if(event.getReservationId()==null || "".equals(event.getReservationId())) {
 				ps.setNull(3,java.sql.Types.VARCHAR);
 			}
 			else {
