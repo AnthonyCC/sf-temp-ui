@@ -40,9 +40,9 @@ public class TimeslotEventDAO {
 	"WAVE_STARTTIME,UNAVAILABILITY_REASON,WAVE_ORDERS_TAKEN,TOTAL_QUANTITIES, NEWROUTE, CAPACITIES, GEORESTRICTED)" +
 	" VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	
-	private static final String TIMESLOT_EVENTS_QRY = "select max(to_number(id)), eventtype from dlv.timeslot_event_hdr where event_dtm" +
-			"between to_date(?,  'MM-DD-YYYY HH24:MI:SS') and to_date(?,  'MM-DD-YYYY HH24:MI:SS') and customer_id = ? and " +
-			"transactionsource = 'WEB' group by eventtype";
+	private static final String TIMESLOT_EVENTS_QRY = " select * from dlv.timeslot_event_hdr where id in  (select max(to_number(id)) from dlv.timeslot_event_hdr where event_dtm" +
+			" between to_date(?,  'MM-DD-YYYY HH12:MI:SS AM') and to_date(?,  'MM-DD-YYYY HH12:MI:SS AM') and customer_id = ? and " +
+			"transactionsource = 'WEB' group by eventtype)";
 		
 	private static final String TIMESLOT_EVENT_DETAIL_QRY = "SELECT * FROM DLV.TIMESLOT_EVENT_DTL WHERE TIMESLOT_LOG_ID = ?";
 	
@@ -50,7 +50,7 @@ public class TimeslotEventDAO {
 	public static List<TimeslotEventModel> getEvents(Connection conn, String customerId, long sessionCreationTime) throws SQLException
 	{
 		PreparedStatement ps = conn.prepareStatement(TIMESLOT_EVENTS_QRY);
-		DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss"); //E, dd MMM yyyy HH:mm:ss Z
+		DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss a"); //E, dd MMM yyyy HH:mm:ss Z
 		Date currentTime = new Date();
 		Date date = new Date(sessionCreationTime);
 		String currentTimeStr = formatter.format(currentTime);
@@ -66,6 +66,9 @@ public class TimeslotEventDAO {
 			event.setOrderId(rs.getString("order_id"));
 			event.setCustomerId(rs.getString("customer_Id"));
 			event.setEventType(EventType.getEnum(rs.getString("eventtype")));
+			event.setId(rs.getString("id"));
+			event.setResponseTime(rs.getInt("response_time"));
+			event.setReservationId(rs.getString("reservation_id"));
 			event.setEventDate(rs.getDate("event_dtm"));	
 			event.setDetail(getEventDetails(conn, rs.getString("id")));
 			events.add(event);

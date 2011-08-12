@@ -88,7 +88,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 	private boolean containsAdvanceOrderItem = false;
 	private TimeslotContext timeSlotContext = null;
 	private String timeSlotId = "";
-	
+	boolean forceorder = false;
 	public void setAddress(ErpAddressModel address) {
 		this.address = address;
 	}
@@ -132,6 +132,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 	@SuppressWarnings("unchecked")
 	protected Object getResult() throws FDResourceException {
 		
+		boolean forceorder =  "true".equalsIgnoreCase(request.getParameter("forceorder")) ;
 		HttpSession session = pageContext.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 		FDDeliveryTimeslotModel deliveryModel = null;
@@ -399,6 +400,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 					if(isTimeslotHolidayRestricted(deliveryModel.getHolidayRestrictions(), timeslot))
 					{
 						timeslot.setHolidayRestricted(true);
+						timeslot.setStoreFrontAvailable("R");
 					}
 					if(isAlcoholDelivery && isTimeslotAlcoholRestricted(alcoholRestrictions, timeslot)&& !isTimeslotRemoved){
 						timeslot.setAlcoholRestricted(true);
@@ -416,9 +418,12 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 					
 					if (!isTimeslotRemoved && !timeslot.hasAvailCTCapacity() && !(timeslot.getTimeslotId().equals(deliveryModel.getTimeSlotId()) || 
 							(timeslot.getTimeslotId().equals(deliveryModel.getPreReserveSlotId()) && deliveryModel.isPreReserved())) 
-						&& (timeslot.getDlvTimeslot() != null && timeslot.getDlvTimeslot().getRoutingSlot() != null
+						&& ( !forceorder || (timeslot.getDlvTimeslot() != null && timeslot.getDlvTimeslot().getRoutingSlot() != null
 							&& (timeslot.getDlvTimeslot().getRoutingSlot().isManuallyClosed()
-								|| !timeslot.getDlvTimeslot().getRoutingSlot().isDynamicActive()))) {
+								|| !timeslot.getDlvTimeslot().getRoutingSlot().isDynamicActive())))) {
+					
+							
+							
 							timeslot.setStoreFrontAvailable("S");
 							soldOut = soldOut + 1;;
 			}
