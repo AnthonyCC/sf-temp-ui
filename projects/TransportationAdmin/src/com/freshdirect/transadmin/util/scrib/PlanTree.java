@@ -26,6 +26,7 @@ import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.model.ZonetypeResource;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.util.TransportationAdminProperties;
 
 public class PlanTree {
 	
