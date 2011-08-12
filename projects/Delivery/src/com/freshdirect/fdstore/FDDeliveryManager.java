@@ -1079,11 +1079,9 @@ public class FDDeliveryManager {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			event = sb.buildEvent(timeSlots, event, reservation, order, address, EventType.GET_TIMESLOT, responseTime);
 			sb.logTimeslots(event);
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
+		} catch (Exception e) {
+		//ignore	
+		} 
 		
 		return event;
 		

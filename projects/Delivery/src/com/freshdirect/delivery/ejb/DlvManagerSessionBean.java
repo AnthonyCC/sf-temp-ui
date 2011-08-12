@@ -1853,7 +1853,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				
 				
 			} catch (Exception e) {
-					event = buildEvent(timeSlots, event, null, null,address,event.getEventType(), 0);
+					event = buildEvent(timeSlots, event, null, null,address,(event!=null)?event.getEventType():EventType.GET_TIMESLOT, 0);
 					logTimeslots(event);
 					e.printStackTrace();
 					LOGGER.debug("Exception in getTimeslotForDateRangeAndZoneEx():"+e.toString());
@@ -2338,9 +2338,8 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			logMsg.setStringProperty("MessageType","LOG_TIMESLOT" );
 			logMsg.setObject(event);
 			this.qsender.send(logMsg);
-		} catch (JMSException ex) {
+		} catch (Exception ex) {
 			LOGGER.warn("Error enqueueing command", ex);
-			throw new EJBException(ex);
 		}
 	}
 	
