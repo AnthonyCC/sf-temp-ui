@@ -230,7 +230,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 				geographicRestrictions, messages, comments,
 				isKosherSlotAvailable, hasCapacity, deliveryModel, alcoholRestrictions);
 		
-		if(deliveryModel.getRsv()!=null)
+		if(deliveryModel.getRsv()!=null && deliveryModel.isPreReserved())
 			event.setReservationId(deliveryModel.getRsv().getId());
 		
 		if("GET".equalsIgnoreCase(request.getMethod()) || "Y".equals(request.getParameter("addressChange")))
