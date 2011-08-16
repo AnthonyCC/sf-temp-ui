@@ -104,7 +104,7 @@
 								<ec:column property="firstName" title="First Name"/>
 								<ec:column property="lastName" title="Last Name"/>
 								<ec:column alias="kronosId" property="employeeId" title="KronosID"/>
-								<ec:column property="hireDate" title="Hire Date"/>
+								<ec:column property="hireDate" title="Seniourity RankDate"/>
 								<ec:column property="jobType" title="JobType"/>
 								<ec:column property="supervisorFirstName" title="supervisor"/>
 								<ec:column property="employeeRoleType" title="roles"/>
@@ -135,7 +135,7 @@
 								<ec:column property="firstName" title="First Name"/>
 								<ec:column property="lastName" title="Last Name"/>
 								<ec:column alias="kronosId" property="employeeId" title="KronosID" width="5px"/>                                  
-								<ec:column property="hireDate" title="Hire Date"/>
+								<ec:column property="hireDate" title="Seniourity RankDate"/>
 								<ec:column property="jobType" title="JobType"/>              
 								<ec:column property="supervisorFirstName" title="supervisor"/>
 								<ec:column property="employeeRoleType" title="roles"/>
