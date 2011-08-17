@@ -70,26 +70,3 @@ INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('
 INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('C18', 'tabs_var1f_scrb3', sysdate);
 INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('C19', 'tabs_var1f_scrb3', sysdate);
 INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (COHORT_ID, VARIANT_ID, "DATE") VALUES ('C20', 'tabs_var1f_scrb3', SYSDATE);
-
--- SCARAB_CART distribution
---   100% sc_cart_recommender
-INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('C1', 'sc_cart_recommender', sysdate);
-INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('C2', 'sc_cart_recommender', sysdate);
-INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('C3', 'sc_cart_recommender', sysdate);
-INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('C4', 'sc_cart_recommender', sysdate);
-INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('C5', 'sc_cart_recommender', sysdate);
-INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('C6', 'sc_cart_recommender', sysdate);
-INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('C7', 'sc_cart_recommender', sysdate);
-INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('C8', 'sc_cart_recommender', sysdate);
-INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('C9', 'sc_cart_recommender', sysdate);
-INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('C10', 'sc_cart_recommender', sysdate);
-INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('C11', 'sc_cart_recommender', sysdate);
-INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('C12', 'sc_cart_recommender', sysdate);
-INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('C13', 'sc_cart_recommender', sysdate);
-INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('C14', 'sc_cart_recommender', sysdate);
-INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('C15', 'sc_cart_recommender', sysdate);
-INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('C16', 'sc_cart_recommender', sysdate);
-INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('C17', 'sc_cart_recommender', sysdate);
-INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('C18', 'sc_cart_recommender', sysdate);
-INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('C19', 'sc_cart_recommender', sysdate);
-INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (COHORT_ID, VARIANT_ID, "DATE") VALUES ('C20', 'sc_cart_recommender', SYSDATE);
