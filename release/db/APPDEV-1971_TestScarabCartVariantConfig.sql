@@ -70,3 +70,10 @@ INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('
 INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('C18', 'tabs_var1f_scrb3', sysdate);
 INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (cohort_id, variant_id, "DATE") values ('C19', 'tabs_var1f_scrb3', sysdate);
 INSERT INTO CUST.SS_VARIANT_ASSIGNMENT (COHORT_ID, VARIANT_ID, "DATE") VALUES ('C20', 'tabs_var1f_scrb3', SYSDATE);
+
+
+INSERT INTO CUST.SS_VARIANT_PARAMS(ID, KEY, VALUE) VALUES
+('sc_cart_recommender', 'prez_title', 'You Might Also Like');
+INSERT INTO CUST.SS_VARIANT_PARAMS(ID, KEY, VALUE) VALUES
+('sc_cart_recommender', 'prez_desc', 'Based on the items in your cart, we recommend:');
+
