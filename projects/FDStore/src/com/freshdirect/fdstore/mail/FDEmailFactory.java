@@ -71,7 +71,7 @@ public class FDEmailFactory {
 		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
 		
 		if(order.getShortedItems().size() > 0) {
-			email.setSubject("Service Alert: Your Order is Missing (" + order.getShortedItems().size() +") Item");
+			email.setSubject("Service Alert: Your Order is Missing (" + order.getShortedItems().size() +") Item(s)");
 		} else if (EnumDeliveryType.PICKUP.equals(order.getDeliveryType())) {
 			email.setSubject("Your order for " + df.format(order.getRequestedDate()) + " is ready to be picked up.");
 		} else {
