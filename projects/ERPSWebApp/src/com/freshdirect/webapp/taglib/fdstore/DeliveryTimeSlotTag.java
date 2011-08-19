@@ -88,7 +88,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 	private boolean containsAdvanceOrderItem = false;
 	private TimeslotContext timeSlotContext = null;
 	private String timeSlotId = "";
-	boolean forceorder = false;
+	private boolean forceorder = false;
 	public void setAddress(ErpAddressModel address) {
 		this.address = address;
 	}
@@ -132,7 +132,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 	@SuppressWarnings("unchecked")
 	protected Object getResult() throws FDResourceException {
 		
-		boolean forceorder =  "true".equalsIgnoreCase(request.getParameter("forceorder")) ;
+		forceorder =  "true".equalsIgnoreCase(request.getParameter("forceorder")) ;
 		HttpSession session = pageContext.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 		FDDeliveryTimeslotModel deliveryModel = null;
