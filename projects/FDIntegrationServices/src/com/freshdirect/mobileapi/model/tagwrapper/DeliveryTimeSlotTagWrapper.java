@@ -1,9 +1,8 @@
 package com.freshdirect.mobileapi.model.tagwrapper;
 
-import java.util.List;
+import javax.servlet.jsp.JspException;
 
 import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.util.TimeslotContext;
 import com.freshdirect.mobileapi.model.SessionUser;
@@ -11,6 +10,9 @@ import com.freshdirect.webapp.taglib.fdstore.DeliveryTimeSlotTag;
 import com.freshdirect.webapp.taglib.fdstore.Result;
 
 public class DeliveryTimeSlotTagWrapper extends GetterTagWrapper {
+
+	public static final String FORCE_ORDER = "forceorder";
+    public static final String ADDRESS_CHANGE = "addressChange";
 
     public DeliveryTimeSlotTagWrapper(SessionUser user) {
         super(new DeliveryTimeSlotTag(), user);
@@ -41,5 +43,21 @@ public class DeliveryTimeSlotTagWrapper extends GetterTagWrapper {
         }        
         return (Result) getResult();
     }
+    
+
+    @Override
+    protected Object getResult() throws FDException {
+        try {
+        	addExpectedRequestValues(new String[] { FORCE_ORDER, ADDRESS_CHANGE }, new String[] { FORCE_ORDER,
+        			ADDRESS_CHANGE });//gets,sets
+            
+        	   
+            wrapTarget.doStartTag();
+        } catch (JspException e) {
+            throw new FDException(e);
+        }
+        return pageContext.getAttribute(GET_RESULT);
+    }
+    
 
 }
