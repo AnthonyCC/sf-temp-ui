@@ -16,6 +16,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
+import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressRequest;
 import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressSelection;
 import com.freshdirect.mobileapi.controller.data.request.DeliverySlotReservation;
 import com.freshdirect.mobileapi.controller.data.request.Login;
@@ -72,6 +73,12 @@ public class CheckoutController extends BaseController {
     private final static String ACTION_EDIT_PAYMENT_METHOD = "editpaymentmethod";
     
     private final static String ACTION_DELETE_PAYMENT_METHOD = "deletepaymentmethod";
+    
+    private final static String ACTION_ADD_DELIVERY_ADDRESS = "adddeliveryaddress";
+
+    private final static String ACTION_EDIT_DELIVERY_ADDRESS = "editdeliveryaddress";
+    
+    private final static String ACTION_DELETE_DELIVERY_ADDRESS = "deletedeliveryaddress";
 
     private final static String ACTION_SUBMIT_ORDER = "submitorder";
 
@@ -135,6 +142,15 @@ public class CheckoutController extends BaseController {
         }else if (ACTION_DELETE_PAYMENT_METHOD.equals(action)) {
         	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
             model = deletePaymentMethod(model, user, requestMessage, request);
+        }else if (ACTION_ADD_DELIVERY_ADDRESS.equals(action)) {
+        	DeliveryAddressRequest requestMessage = parseRequestObject(request, response, DeliveryAddressRequest.class);
+            model = addDeliveryAddress(model, user, requestMessage, request);
+        }else if (ACTION_EDIT_DELIVERY_ADDRESS.equals(action)) {
+        	DeliveryAddressRequest requestMessage = parseRequestObject(request, response, DeliveryAddressRequest.class);
+            model = editDeliveryAddress(model, user, requestMessage, request);
+        }else if (ACTION_DELETE_DELIVERY_ADDRESS.equals(action)) {
+        	DeliveryAddressRequest requestMessage = parseRequestObject(request, response, DeliveryAddressRequest.class);
+            model = deleteDeliveryAddress(model, user, requestMessage, request);
         }
         return model;
     }
@@ -519,7 +535,7 @@ public class CheckoutController extends BaseController {
     private ModelAndView deletePaymentMethod(ModelAndView model, SessionUser user, PaymentMethodRequest reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
-        ResultBundle resultBundle = checkout.deletePaymentMethod(reqestMessage);
+        ResultBundle resultBundle = checkout.deletePaymentMethod(reqestMessage.getPaymentMethodId());
         ActionResult result = resultBundle.getActionResult();
 
         propogateSetSessionValues(request.getSession(), resultBundle);
@@ -527,6 +543,63 @@ public class CheckoutController extends BaseController {
         Message responseMessage = null;
         if (result.isSuccess()) {
             responseMessage = Message.createSuccessMessage("Payment method deleted successfully.");
+        } else {
+            responseMessage = getErrorMessage(result, request);
+        }
+        responseMessage.addWarningMessages(result.getWarnings());
+        setResponseMessage(model, responseMessage, user);
+        return model;
+    }
+    
+    private ModelAndView addDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressRequest reqestMessage,
+            HttpServletRequest request) throws FDException, JsonException {
+        Checkout checkout = new Checkout(user);
+        ResultBundle resultBundle = checkout.addDeliveryAddress(reqestMessage);
+        ActionResult result = resultBundle.getActionResult();
+
+        propogateSetSessionValues(request.getSession(), resultBundle);
+
+        Message responseMessage = null;
+        if (result.isSuccess()) {
+            responseMessage = Message.createSuccessMessage("Delivery Address added successfully.");
+        } else {
+            responseMessage = getErrorMessage(result, request);
+        }
+        responseMessage.addWarningMessages(result.getWarnings());
+        setResponseMessage(model, responseMessage, user);
+        return model;
+    }
+
+    private ModelAndView editDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressRequest reqestMessage,
+            HttpServletRequest request) throws FDException, JsonException {
+        Checkout checkout = new Checkout(user);
+        ResultBundle resultBundle = checkout.editDeliveryAddress(reqestMessage);
+        ActionResult result = resultBundle.getActionResult();
+
+        propogateSetSessionValues(request.getSession(), resultBundle);
+
+        Message responseMessage = null;
+        if (result.isSuccess()) {
+            responseMessage = Message.createSuccessMessage("Delivery Address updated successfully.");
+        } else {
+            responseMessage = getErrorMessage(result, request);
+        }
+        responseMessage.addWarningMessages(result.getWarnings());
+        setResponseMessage(model, responseMessage, user);
+        return model;
+    }
+    
+    private ModelAndView deleteDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressRequest reqestMessage,
+            HttpServletRequest request) throws FDException, JsonException {
+        Checkout checkout = new Checkout(user);
+        ResultBundle resultBundle = checkout.deleteDeliveryAddress(reqestMessage.getShipToAddressId());
+        ActionResult result = resultBundle.getActionResult();
+
+        propogateSetSessionValues(request.getSession(), resultBundle);
+
+        Message responseMessage = null;
+        if (result.isSuccess()) {
+            responseMessage = Message.createSuccessMessage("Delivery Address deleted successfully.");
         } else {
             responseMessage = getErrorMessage(result, request);
         }

@@ -41,6 +41,12 @@ public interface SessionParamName {
 
     public static final String SESSION_PARAM_FD_QUICKCART = "fd.quickcart";
     
+    public static final String SESSION_PARAM_SS_PREV_RECOMMENDATIONS = SessionName.SMART_STORE_PREV_RECOMMENDATIONS;
+    
+    public static final String SESSION_PARAM_SAVINGS_FEATURE_LOOK_UP_TABLE = SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE;
+    
+    public static final String SESSION_PARAM_PREV_SAVINGS_VARIANT = SessionName.PREV_SAVINGS_VARIANT;
+    
     
 
     /*

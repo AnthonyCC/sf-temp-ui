@@ -5,11 +5,13 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
@@ -20,6 +22,7 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
+import com.freshdirect.customer.ErpDuplicateAddressException;
 import com.freshdirect.delivery.DlvAddressGeocodeResponse;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumRestrictedAddressReason;
@@ -29,6 +32,7 @@ import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDDepotManager;
 import com.freshdirect.fdstore.FDInvalidAddressException;
+import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -94,7 +98,144 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		session.setAttribute( SessionName.USER, user );
 	}
 
+	public void performAddDeliveryAddress() throws FDResourceException {
+		FDSessionUser user = (FDSessionUser) session.getAttribute( SessionName.USER);
+
+		// call common delivery address check
+		ErpAddressModel erpAddress = checkDeliveryAddressInForm(request, result, session);
+		if (erpAddress == null) {
+			return;
+		}
+
+
+		try {
+			boolean foundFraud =
+				FDCustomerManager.addShipToAddress(AccountActivityUtil.getActionInfo(session), !user.isDepotUser(), erpAddress);			
+			if (foundFraud) {
+//				session.setAttribute(SessionName.SIGNUP_WARNING, MessageFormat.format(
+//					SystemMessageList.MSG_NOT_UNIQUE_INFO,
+//					new Object[] {user.getCustomerServiceContact()}));
+				this.applyFraudChange(user);
+			}
+			/*
+			if(user.getOrderHistory().getValidOrderCount()==0)
+			{
+				user.setZipCode(erpAddress.getZipCode());
+				user.setSelectedServiceType(erpAddress.getServiceType());
+			}	
+			*/
+
+		} catch (ErpDuplicateAddressException ex) {
+			LOGGER.warn(
+				"AddressUtil:addShipToAddress(): ErpDuplicateAddressException caught while trying to add a shipping address to the customer info:",
+				ex);
+			result.addError(
+				new ActionError(
+				"duplicate_user_address",
+					"The information entered for this address matches an existing address in your account."));
+		}
+	}
 	
+	public void performEditDeliveryAddress(TimeslotEventModel event) throws FDResourceException {
+		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+
+		// call common delivery address check
+		ErpAddressModel erpAddress = checkDeliveryAddressInForm(request, result, session);
+		if (erpAddress == null) {
+			return;
+		}
+		
+		
+		String shipToAddressId = request.getParameter("updateShipToAddressId");
+		boolean foundFraud = AddressUtil.updateShipToAddress(request, result, user, shipToAddressId, erpAddress);
+		if(foundFraud){
+			/*session.setAttribute(SessionName.SIGNUP_WARNING, MessageFormat.format(
+				SystemMessageList.MSG_NOT_UNIQUE_INFO,
+				new Object[] {user.getCustomerServiceContact()}));*/
+			this.applyFraudChange(user);
+		}
+		/*
+		if(user.getOrderHistory().getValidOrderCount()==0)
+		{
+		  user.setZipCode(erpAddress.getZipCode());
+		  user.setSelectedServiceType(erpAddress.getServiceType());
+  		  //user.resetPricingContext();
+		}
+		*/
+		FDReservation reservation = user.getReservation();
+		if(reservation != null){
+			reservation = FDCustomerManager.validateReservation(user, reservation, event);
+			user.setReservation(reservation);
+			session.setAttribute(SessionName.USER, user);
+			if(reservation == null){
+				session.setAttribute(SessionName.REMOVED_RESERVATION, Boolean.TRUE);
+			}
+		}
+
+	}
+	public static ErpAddressModel checkDeliveryAddressInForm(HttpServletRequest request, ActionResult actionResult, HttpSession session) throws FDResourceException {
+
+		AddressForm addressForm = new AddressForm();
+		addressForm.populateForm(request);
+		addressForm.validateForm(actionResult);
+		if (!actionResult.isSuccess())
+			return null;
+
+		AddressModel deliveryAddress = addressForm.getDeliveryAddress();
+		deliveryAddress.setServiceType(addressForm.getDeliveryAddress().getServiceType());
+		DeliveryAddressValidator validator = new DeliveryAddressValidator(deliveryAddress);
+		
+		if (!validator.validateAddress(actionResult)) {
+			return  null;
+		}
+	
+		AddressModel scrubbedAddress = validator.getScrubbedAddress(); // get 'normalized' address
+
+		if (validator.isAddressDeliverable()) {
+			FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+			if (user.isPickupOnly() && user.getOrderHistory().getValidOrderCount()==0) {
+				//
+				// now eligible for home/corporate delivery and still not placed an order.
+				//
+				user.setSelectedServiceType(scrubbedAddress.getServiceType());
+				//Added the following line for zone pricing to keep user service type up-to-date.
+				user.setZPServiceType(scrubbedAddress.getServiceType());
+				user.setZipCode(scrubbedAddress.getZipCode());
+				FDCustomerManager.storeUser(user.getUser());
+				session.setAttribute(SessionName.USER, user);
+			}else {
+				//Already is a home or a corporate customer.
+				if(user.getOrderHistory().getValidOrderCount()==0) {
+					//check if customer has no order history.					
+					user.setSelectedServiceType(scrubbedAddress.getServiceType());
+					//Added the following line for zone pricing to keep user service type up-to-date.
+					user.setZPServiceType(scrubbedAddress.getServiceType());
+					user.setZipCode(scrubbedAddress.getZipCode());
+					FDCustomerManager.storeUser(user.getUser());
+					session.setAttribute(SessionName.USER, user);
+				}
+			}
+		}
+		
+		ErpAddressModel erpAddress = addressForm.getErpAddress();
+		erpAddress.setFrom(scrubbedAddress);
+		erpAddress.setCity(scrubbedAddress.getCity());
+		erpAddress.setAddressInfo(scrubbedAddress.getAddressInfo());				
+
+		LOGGER.debug("ErpAddressModel:"+scrubbedAddress);
+
+		/*
+		 * Remove Alt Contact as required for Hamptons as well as COS (for Unattended Delivery process)
+		 * batchley 20110208
+		if("SUFFOLK".equals(FDDeliveryManager.getInstance().getCounty(scrubbedAddress)) && erpAddress.getAltContactPhone() == null){
+			actionResult.addError(true, EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(), SystemMessageList.MSG_REQUIRED);
+			return null;
+		}
+		*/
+
+		return erpAddress;
+	}
+
 	/**
 	 * Only regular addresses
 	 * 
@@ -126,7 +267,6 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		ErpAddressModel erpAddress = addressForm.getErpAddress();
 		erpAddress.setFrom( dlvAddress );
 		erpAddress.setAddressInfo( dlvAddress.getAddressInfo() );
-
 		/*
 		 * Remove Alt Contact as required for Hamptons as well as COS (for Unattended Delivery process)
 		 * batchley 20110209
@@ -410,13 +550,23 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 	}
 
-	public void performDeleteDeliveryAddress() throws FDResourceException {
+	public void performDeleteDeliveryAddress(TimeslotEventModel event) throws FDResourceException {
 		String shipToAddressId = request.getParameter( "deleteShipToAddressId" );
 		if ( shipToAddressId == null ) {
 			shipToAddressId = (String)request.getAttribute( "deleteShipToAddressId" );
 		}
-
 		AddressUtil.deleteShipToAddress( getIdentity(), shipToAddressId, result, request );
+		//check that if this address had any outstanding reservations.
+		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+		FDReservation reservation = user.getReservation();
+		if (reservation != null) {
+			reservation = FDCustomerManager.validateReservation(user, reservation, event);
+			user.setReservation(reservation);
+			session.setAttribute(SessionName.USER, user);
+			if(reservation == null){
+				session.setAttribute(SessionName.REMOVED_RESERVATION, Boolean.TRUE);
+			}
+		}
 	}
 
 
@@ -472,4 +622,16 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		LOGGER.debug("SO["+so.getId()+"] ADDRESS := " + pk);
 		so.setAddressId(pk);
 	}
+	
+	private void applyFraudChange(FDUserI user) throws FDResourceException{
+		user.invalidateCache();
+		if(user.isFraudulent()){
+			user.updateUserState();
+			PromotionI promo = user.getRedeemedPromotion();
+			if(promo != null && !user.getPromotionEligibility().isEligible(promo.getPromotionCode())) {
+				user.setRedeemedPromotion(null);
+			}
+		}
+		session.setAttribute(SessionName.USER, user);
+	}	
 }

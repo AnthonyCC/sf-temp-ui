@@ -32,7 +32,14 @@ public class PaymentMethodRequest extends Message {
 	private String paymentMethodType;
 	private String paymentMethodId;
 	private String billingRef;
+	private String csv;
 	
+	public String getCsv() {
+		return csv;
+	}
+	public void setCsv(String csv) {
+		this.csv = csv;
+	}
 	public String getCardExpMonth() {
 		return cardExpMonth;
 	}

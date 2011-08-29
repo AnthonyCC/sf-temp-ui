@@ -12,12 +12,14 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintLineModel;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.Util;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -111,7 +113,14 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		final String app = (String)pageContext.getSession().getAttribute( SessionName.APPLICATION );
 		final boolean isNotCallCenter = !"CALLCENTER".equals( app );
 		final FDSessionUser currentUser = (FDSessionUser) getUser();
+		FDCartModel cart = currentUser.getShoppingCart();
+		String zoneId = null;
+		if(cart!=null && cart.getZoneInfo()!=null)
+			zoneId = cart.getZoneInfo().getZoneId();
 		
+		TimeslotEventModel event = new TimeslotEventModel((currentUser.getApplication()!=null)?currentUser.getApplication().getCode():"",
+				(cart!=null)?cart.isDlvPassApplied():false, (cart!=null)?cart.getDeliverySurcharge():0.00,
+						(cart!=null)?cart.isDeliveryChargeWaived():false, Util.isZoneCtActive(zoneId));
 		try {
 			if ( "setDeliveryAddress".equalsIgnoreCase( action ) ) {
 				try {
@@ -129,12 +138,18 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 						currentUser.getShoppingCart().setSelectedGiftCards( currentUser.getGiftCardList().getSelectedGiftcards() );
 					}
 				}
+			} else if ( "addDeliveryAddress".equalsIgnoreCase( action ) ) { //Added IPhone functionality APPDEV-1565
+				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, getActionName());
+				m.performAddDeliveryAddress();
+			} else if ( "editDeliveryAddress".equalsIgnoreCase( action ) ) { //Added IPhone functionality APPDEV-1565
+				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, getActionName());
+				m.performEditDeliveryAddress(event);
 			} else if ( "editAndSetDeliveryAddress".equalsIgnoreCase( action ) ) {
 				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, getActionName());
 				m.performEditAndSetDeliveryAddress();
 			} else if ( "deleteDeliveryAddress".equalsIgnoreCase( action ) ) {
 				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, getActionName());
-				m.performDeleteDeliveryAddress();
+				m.performDeleteDeliveryAddress(event); //m.performDeleteDeliveryAddress() method was refactored to check for any existing reservations.
 
 			} else if ( "reserveDeliveryTimeSlot".equalsIgnoreCase( action ) ) {
 				TimeslotManipulator m = new TimeslotManipulator(this.pageContext, result, action);
@@ -226,7 +241,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, action);
 				m.performAddPaymentMethod();
 
-			}else if ( "editPaymentMethod".equalsIgnoreCase( action )) {
+			}else if ( "editPaymentMethod".equalsIgnoreCase( action )) {//Added IPhone functionality APPDEV-1565
 				PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, action);
 				m.performEditPaymentMethod();
 

@@ -199,6 +199,9 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				} else {
 					if(null !=erpCustomer.getPaymentMethods() && !erpCustomer.getPaymentMethods().isEmpty()){
 						customer = new CustomerAdapter(false, erpCustomer, null, ((ErpPaymentMethodI)erpCustomer.getPaymentMethods().get(0)).getAddress());
+					} else {
+						//In case of IPhone both delivery and billing addresses are empty. 
+						customer = new CustomerAdapter(false, erpCustomer, null, erpCustomer.getSapBillToAddress());
 					}
 				}
 			}

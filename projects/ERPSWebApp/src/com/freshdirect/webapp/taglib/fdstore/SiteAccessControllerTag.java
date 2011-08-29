@@ -32,7 +32,7 @@ import com.freshdirect.framework.webapp.ActionError;
 public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.BodyTagSupport {
 
 	private static Category LOGGER = LoggerFactory.getInstance(SiteAccessControllerTag.class);
-
+	
 	private String action = null;
 	private String successPage = null;
 	private String moreInfoPage = null;
@@ -51,7 +51,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 
 
 	private AddressModel address = null;
-
+	private EnumDeliveryStatus requestedServiceTypeDlvStatus;
+	
 	public void setAction(String action) {
 		this.action = action;
 	}
@@ -98,6 +99,16 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		}
 	}
 	
+
+	public EnumDeliveryStatus getRequestedServiceTypeDlvStatus() {
+		return requestedServiceTypeDlvStatus;
+	}
+
+	public void setRequestedServiceTypeDlvStatus(
+			EnumDeliveryStatus requestedServiceTypeDlvStatus) {
+		this.requestedServiceTypeDlvStatus = requestedServiceTypeDlvStatus;
+	}
+	
 	
 	private void newSession() {
 		HttpSession session = pageContext.getSession();
@@ -121,8 +132,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					}
 				} else if ("checkByZipCode".equalsIgnoreCase(action)) {
 					DlvServiceSelectionResult serviceResult = checkByZipCode(request, result);
-
-					//System.out.println(" WEB result :"+result);
+					setRequestedServiceTypeDlvStatus(serviceResult.getServiceStatus(this.serviceType));
 					if (result.isSuccess()) {
 						newSession();
 						
@@ -151,7 +161,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 								this.createUser(EnumServiceType.PICKUP, serviceResult.getAvailableServices());
 							}
 						
-							if (this.moreInfoPage.indexOf('?') < 0) {
+							if (this.moreInfoPage != null && this.moreInfoPage.indexOf('?') < 0) {
 								this.moreInfoPage += "?serviceType=" + this.serviceType.getName();
 								
 							} else {
@@ -248,13 +258,12 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		String homeZipcode = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode()),"").trim();
 		String corpZipcode = NVL.apply(request.getParameter(EnumUserInfoName.DLV_CORP_ZIPCODE.getCode()),"").trim();
 		
-		System.out.println("successPage in populate: " + successPage);
 		String gcLanding = FDStoreProperties.getGiftCardLandingUrl();
 		String rhLanding = FDStoreProperties.getRobinHoodLandingUrl();
 		boolean isGiftCardEnabled = FDStoreProperties.isGiftCardEnabled();
 		boolean isRobinHoodEnabled = FDStoreProperties.isRobinHoodEnabled();
 		
-		if((successPage.indexOf(gcLanding)>-1 && isGiftCardEnabled)||(successPage.indexOf(rhLanding)>-1 && isRobinHoodEnabled)){
+		if(successPage != null && ((successPage.indexOf(gcLanding)>-1 && isGiftCardEnabled)||(successPage.indexOf(rhLanding)>-1 && isRobinHoodEnabled))){
 			if(!"".equals(homeZipcode) && "".equals(corpZipcode)){
 				this.address.setZipCode(homeZipcode);
 			}else{
@@ -325,6 +334,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			EnumServiceType altServiceType = EnumServiceType.HOME.equals(this.serviceType) ? EnumServiceType.CORPORATE : EnumServiceType.HOME;
 			
 			DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkAddress(this.address);
+			//request.setAttribute(REQUESTED_SERVICE_TYPE_DLV_STATUS, serviceResult.getServiceStatus(this.serviceType));
+			setRequestedServiceTypeDlvStatus(serviceResult.getServiceStatus(this.serviceType));
 			EnumDeliveryStatus reqStatus = serviceResult.getServiceStatus(this.serviceType);
 			EnumDeliveryStatus altStatus = serviceResult.getServiceStatus(altServiceType);
 			
@@ -497,5 +508,6 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
         session.removeAttribute(SessionName.PREV_SAVINGS_VARIANT);
 		
 	}
+
 
 }

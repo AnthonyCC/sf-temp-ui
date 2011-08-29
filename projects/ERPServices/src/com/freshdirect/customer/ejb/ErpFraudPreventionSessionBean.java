@@ -69,7 +69,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		}
 
 		LOGGER.info("Fraud check, registration. userId=" + erpCustomer.getUserId());
-
+		Set<EnumFraudReason> fraudReasons = new HashSet<EnumFraudReason>();
 		//
 		// Find customer delivery address
 		//
@@ -86,9 +86,10 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 			break;
 		}
 		LOGGER.debug("address is " + dlvAddress);
-
+		if(dlvAddress == null) return fraudReasons; //This comes to true when registeration happens through IPhone.
+		
 		Connection conn = null;
-		Set<EnumFraudReason> fraudReasons = new HashSet<EnumFraudReason>();
+
 		try {
 			conn = getConnection();
 			if (dao.isDuplicateShipToAddress(conn, dlvAddress, null)) {

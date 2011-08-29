@@ -39,6 +39,7 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
+import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressRequest;
 import com.freshdirect.mobileapi.controller.data.request.PaymentMethodRequest;
 import com.freshdirect.mobileapi.controller.data.response.AtpError;
 import com.freshdirect.mobileapi.controller.data.response.Order;
@@ -114,12 +115,29 @@ public class Checkout {
         return result;
     }
     
-    public ResultBundle deletePaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
+    public ResultBundle deletePaymentMethod(String paymentMethodId) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
-        ResultBundle result = tagWrapper.deletePaymentMethod(paymentMethod);
+        ResultBundle result = tagWrapper.deletePaymentMethod(paymentMethodId);
         return result;
     }
 
+    public ResultBundle addDeliveryAddress(DeliveryAddressRequest deliveryAddress) throws FDException {
+        CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
+        ResultBundle result = tagWrapper.addDeliveryAddress(deliveryAddress);
+        return result;
+    }
+    
+    public ResultBundle editDeliveryAddress(DeliveryAddressRequest deliveryAddress) throws FDException {
+        CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
+        ResultBundle result = tagWrapper.editDeliveryAddress(deliveryAddress);
+        return result;
+    }
+    
+    public ResultBundle deleteDeliveryAddress(String deleteShipToAddressId) throws FDException {
+        CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
+        ResultBundle result = tagWrapper.deleteDeliveryAddress(deleteShipToAddressId);
+        return result;
+    }
     
     public String getPreselectedPaymethodMethodId() {
         String preselectedPaymethodMethodId = null;

@@ -12,6 +12,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressRequest;
 import com.freshdirect.mobileapi.controller.data.request.PaymentMethodRequest;
 import com.freshdirect.mobileapi.model.MessageCodes;
 import com.freshdirect.mobileapi.model.ResultBundle;
@@ -27,6 +28,10 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
     private static Category LOGGER = LoggerFactory.getInstance(CheckoutControllerTagWrapper.class);
 
     public static final String ACTION_SET_DELIVERY_ADDRESS = "setDeliveryAddress";
+    
+    public static final String ACTION_ADD_DELIVERY_ADDRESS = "addDeliveryAddress";
+    
+    public static final String ACTION_EDIT_DELIVERY_ADDRESS = "editDeliveryAddress";
 
     public static final String ACTION_EDIT_SET_DELIVERY_ADDRESS = "editAndSetDeliveryAddress"; //Not supported
 
@@ -129,7 +134,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         		REQ_PARAM_ACCOUNT_NUMBER, REQ_PARAM_ABA_ROUTE_NUMBER, REQ_PARAM_BANK_NAME, REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, REQ_PARAM_TERMS,
         		REQ_PARAM_ACCOUNT_NUMBER_VERIFY,REQ_PARAM_BANK_ACCOUNT_TYPE,REQ_PARAM_ACCOUNT_HOLDER,REQ_PARAM_BIL_ADDRESS_1,
         		REQ_PARAM_BIL_ADDRESS_2,REQ_PARAM_BIL_APARTMENT,REQ_PARAM_BIL_CITY,REQ_PARAM_BIL_STATE,REQ_PARAM_BIL_ZIPCODE, REQ_PARAM_PAYMENT_METHOD_TYPE,
-        		REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, REQ_PARAM_IS_PAYMENT_METHOD_DONATION}, new String[] {});//gets,sets
+        		REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, REQ_PARAM_IS_PAYMENT_METHOD_DONATION, REQ_PARAM_CSV}, new String[] {});//gets,sets
         addRequestValue(REQ_PARAM_CARD_EXP_MONTH, paymentMethod.getCardExpMonth());
         addRequestValue(REQ_PARAM_CARD_EXP_YEAR, paymentMethod.getCardExpYear());
         addRequestValue(REQ_PARAM_CARD_BRAND, paymentMethod.getCardBrand());
@@ -148,6 +153,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         addRequestValue(REQ_PARAM_BIL_STATE, paymentMethod.getBillState());
         addRequestValue(REQ_PARAM_BIL_ZIPCODE, paymentMethod.getBillZipCode());        
         addRequestValue(REQ_PARAM_PAYMENT_METHOD_TYPE, paymentMethod.getPaymentMethodType());
+        addRequestValue(REQ_PARAM_CSV, paymentMethod.getCsv());
         addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, "false");
         addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_DONATION, "false");
         
@@ -164,7 +170,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         		REQ_PARAM_ACCOUNT_NUMBER, REQ_PARAM_ABA_ROUTE_NUMBER, REQ_PARAM_BANK_NAME, REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, REQ_PARAM_TERMS,
         		REQ_PARAM_ACCOUNT_NUMBER_VERIFY,REQ_PARAM_BANK_ACCOUNT_TYPE,REQ_PARAM_ACCOUNT_HOLDER,REQ_PARAM_BIL_ADDRESS_1,
         		REQ_PARAM_BIL_ADDRESS_2,REQ_PARAM_BIL_APARTMENT,REQ_PARAM_BIL_CITY,REQ_PARAM_BIL_STATE,REQ_PARAM_BIL_ZIPCODE, REQ_PARAM_PAYMENT_METHOD_TYPE,
-        		REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, REQ_PARAM_IS_PAYMENT_METHOD_DONATION}, new String[] {});//gets,sets
+        		REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, REQ_PARAM_IS_PAYMENT_METHOD_DONATION, REQ_PARAM_CSV}, new String[] {});//gets,sets
         addRequestValue(REQ_PARAM_CARD_EXP_MONTH, paymentMethod.getCardExpMonth());
         addRequestValue(REQ_PARAM_CARD_EXP_YEAR, paymentMethod.getCardExpYear());
         addRequestValue(REQ_PARAM_CARD_BRAND, paymentMethod.getCardBrand());
@@ -183,6 +189,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         addRequestValue(REQ_PARAM_BIL_STATE, paymentMethod.getBillState());
         addRequestValue(REQ_PARAM_BIL_ZIPCODE, paymentMethod.getBillZipCode());        
         addRequestValue(REQ_PARAM_PAYMENT_METHOD_TYPE, paymentMethod.getPaymentMethodType());
+        addRequestValue(REQ_PARAM_CSV, paymentMethod.getCsv());
         addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, "false");
         addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_DONATION, "false");
         addRequestValue(REQ_PARAM_BILLING_REF, paymentMethod.getBillingRef());
@@ -199,7 +206,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         		REQ_PARAM_ACCOUNT_NUMBER, REQ_PARAM_ABA_ROUTE_NUMBER, REQ_PARAM_BANK_NAME, REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, REQ_PARAM_TERMS,
         		REQ_PARAM_ACCOUNT_NUMBER_VERIFY,REQ_PARAM_BANK_ACCOUNT_TYPE,REQ_PARAM_ACCOUNT_HOLDER,REQ_PARAM_BIL_ADDRESS_1,
         		REQ_PARAM_BIL_ADDRESS_2,REQ_PARAM_BIL_APARTMENT,REQ_PARAM_BIL_CITY,REQ_PARAM_BIL_STATE,REQ_PARAM_BIL_ZIPCODE, REQ_PARAM_PAYMENT_METHOD_TYPE,
-        		REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, REQ_PARAM_IS_PAYMENT_METHOD_DONATION}, new String[] {});//gets,sets
+        		REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, REQ_PARAM_IS_PAYMENT_METHOD_DONATION, REQ_PARAM_CSV}, new String[] {});//gets,sets
         addRequestValue(REQ_PARAM_CARD_EXP_MONTH, paymentMethod.getCardExpMonth());
         addRequestValue(REQ_PARAM_CARD_EXP_YEAR, paymentMethod.getCardExpYear());
         addRequestValue(REQ_PARAM_CARD_BRAND, paymentMethod.getCardBrand());
@@ -218,6 +225,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         addRequestValue(REQ_PARAM_BIL_STATE, paymentMethod.getBillState());
         addRequestValue(REQ_PARAM_BIL_ZIPCODE, paymentMethod.getBillZipCode());        
         addRequestValue(REQ_PARAM_PAYMENT_METHOD_TYPE, paymentMethod.getPaymentMethodType());
+        addRequestValue(REQ_PARAM_CSV, paymentMethod.getCsv());
         addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, "false");
         addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_DONATION, "false");
         addRequestValue(REQ_PARAM_EDIT_PAYMENT_ID, paymentMethod.getPaymentMethodId());
@@ -227,11 +235,11 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         return new ResultBundle(executeTagLogic(), this);
     }
 
-    public ResultBundle deletePaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
+    public ResultBundle deletePaymentMethod(String paymentMethodId) throws FDException {
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT },
                 new String[] { SESSION_PARAM_USER }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_DELETE_PAYMENT_ID}, new String[] {});//gets,sets
-        addRequestValue(REQ_PARAM_DELETE_PAYMENT_ID, paymentMethod.getPaymentMethodId());
+        addRequestValue(REQ_PARAM_DELETE_PAYMENT_ID, paymentMethodId);
         getWrapTarget().setActionName(ACTION_DELETE_PAYMENT_METHOD);
         setMethodMode(true);
         return new ResultBundle(executeTagLogic(), this);
@@ -294,6 +302,100 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         return new ResultBundle(actionResult, this);
     }
 
+    public ResultBundle addDeliveryAddress(DeliveryAddressRequest deliveryAddress) throws FDException {
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT },
+                new String[] { SESSION_PARAM_USER, SessionName.SIGNUP_WARNING }); //gets,sets
+        addExpectedRequestValues(new String[] {EnumUserInfoName.DLV_FIRST_NAME.getCode(),EnumUserInfoName.DLV_LAST_NAME.getCode(),EnumUserInfoName.DLV_HOME_PHONE.getCode(),EnumUserInfoName.DLV_HOME_PHONE_EXT.getCode(),
+        		EnumUserInfoName.DLV_ADDRESS_1.getCode(),EnumUserInfoName.DLV_ADDRESS_2.getCode(),EnumUserInfoName.DLV_APARTMENT.getCode(),EnumUserInfoName.DLV_CITY.getCode(),EnumUserInfoName.DLV_STATE.getCode(),EnumUserInfoName.DLV_ZIPCODE.getCode(),
+        		EnumUserInfoName.DLV_COUNTRY.getCode(),EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode(),EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(),EnumUserInfoName.DLV_ALT_FIRSTNAME.getCode(),
+        		EnumUserInfoName.DLV_ALT_LASTNAME.getCode(),EnumUserInfoName.DLV_ALT_APARTMENT.getCode(),EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(),
+        		EnumUserInfoName.DLV_ALT_CONTACT_EXT.getCode(),EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode(),EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode(),
+        		EnumUserInfoName.DLV_UNATTENDED_CONSENT_SEEN.getCode(), EnumUserInfoName.DLV_ALT_PHONE.getCode(), EnumUserInfoName.DLV_ALT_EXT.getCode(),
+        		EnumUserInfoName.DLV_COMPANY_NAME.getCode(), EnumUserInfoName.DLV_SERVICE_TYPE.getCode()}, new String[] {});//gets,sets
+        addRequestValue(EnumUserInfoName.DLV_FIRST_NAME.getCode(), deliveryAddress.getDlvfirstname());
+        addRequestValue(EnumUserInfoName.DLV_LAST_NAME.getCode(), deliveryAddress.getDlvlastname());
+        addRequestValue(EnumUserInfoName.DLV_COMPANY_NAME.getCode(), deliveryAddress.getDlvcompanyname());
+        addRequestValue(EnumUserInfoName.DLV_HOME_PHONE.getCode(), deliveryAddress.getDlvhomephone());
+        addRequestValue(EnumUserInfoName.DLV_HOME_PHONE_EXT.getCode(), deliveryAddress.getDlvhomephoneext());
+        addRequestValue(EnumUserInfoName.DLV_ADDRESS_1.getCode(), deliveryAddress.getAddress1());
+        addRequestValue(EnumUserInfoName.DLV_ADDRESS_2.getCode(), deliveryAddress.getAddress2());
+        addRequestValue(EnumUserInfoName.DLV_APARTMENT.getCode(), deliveryAddress.getApartment());
+        addRequestValue(EnumUserInfoName.DLV_CITY.getCode(), deliveryAddress.getCity());
+        addRequestValue(EnumUserInfoName.DLV_STATE.getCode(), deliveryAddress.getState());
+        addRequestValue(EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), deliveryAddress.getDlvServiceType());
+        addRequestValue(EnumUserInfoName.DLV_ZIPCODE.getCode(), deliveryAddress.getZipcode());
+        addRequestValue(EnumUserInfoName.DLV_COUNTRY.getCode(), deliveryAddress.getCountry());
+        addRequestValue(EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode(), deliveryAddress.getDeliveryInstructions());
+        addRequestValue(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(), deliveryAddress.getAlternateDelivery());
+        addRequestValue(EnumUserInfoName.DLV_ALT_FIRSTNAME.getCode(), deliveryAddress.getAlternateFirstName());
+        addRequestValue(EnumUserInfoName.DLV_ALT_LASTNAME.getCode(), deliveryAddress.getAlternateLastName());
+        addRequestValue(EnumUserInfoName.DLV_ALT_APARTMENT.getCode(), deliveryAddress.getAlternateApartment());
+        addRequestValue(EnumUserInfoName.DLV_ALT_PHONE.getCode(), deliveryAddress.getAlternatePhone());
+        addRequestValue(EnumUserInfoName.DLV_ALT_EXT.getCode(), deliveryAddress.getAlternatePhoneExt());
+        addRequestValue(EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(), deliveryAddress.getAltContactPhone());
+        addRequestValue(EnumUserInfoName.DLV_ALT_CONTACT_EXT.getCode(), deliveryAddress.getAltContactPhoneExt());
+        addRequestValue(EnumUserInfoName.DLV_UNATTENDED_CONSENT_SEEN.getCode(),deliveryAddress.getUnattendedDeliveryNoticeSeen());
+        addRequestValue(EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode(), deliveryAddress.getUnattendedDeliveryInstr());
+        addRequestValue(EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode(), deliveryAddress.getUnattendedDeliveryOpt());
+        
+
+        getWrapTarget().setActionName(ACTION_ADD_DELIVERY_ADDRESS);
+        setMethodMode(true);
+        return new ResultBundle(executeTagLogic(), this);
+    }
+
+    public ResultBundle editDeliveryAddress(DeliveryAddressRequest deliveryAddress) throws FDException {
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT },
+                new String[] { SESSION_PARAM_USER, SessionName.SIGNUP_WARNING }); //gets,sets
+        addExpectedRequestValues(new String[] {EnumUserInfoName.DLV_FIRST_NAME.getCode(),EnumUserInfoName.DLV_LAST_NAME.getCode(),EnumUserInfoName.DLV_HOME_PHONE.getCode(),EnumUserInfoName.DLV_HOME_PHONE_EXT.getCode(),
+        		EnumUserInfoName.DLV_ADDRESS_1.getCode(),EnumUserInfoName.DLV_ADDRESS_2.getCode(),EnumUserInfoName.DLV_APARTMENT.getCode(),EnumUserInfoName.DLV_CITY.getCode(),EnumUserInfoName.DLV_STATE.getCode(),EnumUserInfoName.DLV_ZIPCODE.getCode(),
+        		EnumUserInfoName.DLV_COUNTRY.getCode(),EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode(),EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(),EnumUserInfoName.DLV_ALT_FIRSTNAME.getCode(),
+        		EnumUserInfoName.DLV_ALT_LASTNAME.getCode(),EnumUserInfoName.DLV_ALT_APARTMENT.getCode(),EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(),
+        		EnumUserInfoName.DLV_ALT_CONTACT_EXT.getCode(),EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode(),EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode(),
+        		EnumUserInfoName.DLV_UNATTENDED_CONSENT_SEEN.getCode(), EnumUserInfoName.DLV_ALT_PHONE.getCode(), EnumUserInfoName.DLV_ALT_EXT.getCode(),
+        		EnumUserInfoName.DLV_COMPANY_NAME.getCode(), EnumUserInfoName.DLV_SERVICE_TYPE.getCode()}, new String[] {});//gets,sets
+        addRequestValue(EnumUserInfoName.DLV_FIRST_NAME.getCode(), deliveryAddress.getDlvfirstname());
+        addRequestValue(EnumUserInfoName.DLV_LAST_NAME.getCode(), deliveryAddress.getDlvlastname());
+        addRequestValue(EnumUserInfoName.DLV_COMPANY_NAME.getCode(), deliveryAddress.getDlvcompanyname());
+        addRequestValue(EnumUserInfoName.DLV_HOME_PHONE.getCode(), deliveryAddress.getDlvhomephone());
+        addRequestValue(EnumUserInfoName.DLV_HOME_PHONE_EXT.getCode(), deliveryAddress.getDlvhomephoneext());
+        addRequestValue(EnumUserInfoName.DLV_ADDRESS_1.getCode(), deliveryAddress.getAddress1());
+        addRequestValue(EnumUserInfoName.DLV_ADDRESS_2.getCode(), deliveryAddress.getAddress2());
+        addRequestValue(EnumUserInfoName.DLV_APARTMENT.getCode(), deliveryAddress.getApartment());
+        addRequestValue(EnumUserInfoName.DLV_CITY.getCode(), deliveryAddress.getCity());
+        addRequestValue(EnumUserInfoName.DLV_STATE.getCode(), deliveryAddress.getState());
+        addRequestValue(EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), deliveryAddress.getDlvServiceType());
+        addRequestValue(EnumUserInfoName.DLV_ZIPCODE.getCode(), deliveryAddress.getZipcode());
+        addRequestValue(EnumUserInfoName.DLV_COUNTRY.getCode(), deliveryAddress.getCountry());
+        addRequestValue(EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode(), deliveryAddress.getDeliveryInstructions());
+        addRequestValue(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(), deliveryAddress.getAlternateDelivery());
+        addRequestValue(EnumUserInfoName.DLV_ALT_FIRSTNAME.getCode(), deliveryAddress.getAlternateFirstName());
+        addRequestValue(EnumUserInfoName.DLV_ALT_LASTNAME.getCode(), deliveryAddress.getAlternateLastName());
+        addRequestValue(EnumUserInfoName.DLV_ALT_APARTMENT.getCode(), deliveryAddress.getAlternateApartment());
+        addRequestValue(EnumUserInfoName.DLV_ALT_PHONE.getCode(), deliveryAddress.getAlternatePhone());
+        addRequestValue(EnumUserInfoName.DLV_ALT_EXT.getCode(), deliveryAddress.getAlternatePhoneExt());
+        addRequestValue(EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(), deliveryAddress.getAltContactPhone());
+        addRequestValue(EnumUserInfoName.DLV_ALT_CONTACT_EXT.getCode(), deliveryAddress.getAltContactPhoneExt());
+        addRequestValue(EnumUserInfoName.DLV_UNATTENDED_CONSENT_SEEN.getCode(),deliveryAddress.getUnattendedDeliveryNoticeSeen());
+        addRequestValue(EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode(), deliveryAddress.getUnattendedDeliveryInstr());
+        addRequestValue(EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode(), deliveryAddress.getUnattendedDeliveryOpt());
+        addRequestValue(REQ_PARAM_UPDATE_SHIP_ADDRESS_ID, deliveryAddress.getShipToAddressId());
+
+        getWrapTarget().setActionName(ACTION_EDIT_DELIVERY_ADDRESS);
+        setMethodMode(true);
+        return new ResultBundle(executeTagLogic(), this);
+    }
+
+    public ResultBundle deleteDeliveryAddress(String deleteShipToAddressId) throws FDException {
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT },
+                new String[] { SESSION_PARAM_USER }); //gets,sets
+        addExpectedRequestValues(new String[] { REQ_PARAM_DELETE_SHIP_ADDRESS_ID}, new String[] {});//gets,sets
+        addRequestValue(REQ_PARAM_DELETE_SHIP_ADDRESS_ID, deleteShipToAddressId);
+        getWrapTarget().setActionName(ACTION_DELETE_DELIVERY_ADDRESS);
+        setMethodMode(true);
+        return new ResultBundle(executeTagLogic(), this);
+    }
+    
     /*
      * DUP: com.freshdirect.webapp.taglib.fdstore.AgeVerificationControllerTag
      * LAST UPDATED ON: 10/12/2009

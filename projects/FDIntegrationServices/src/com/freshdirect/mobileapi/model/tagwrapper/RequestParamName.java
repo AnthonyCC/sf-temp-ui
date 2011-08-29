@@ -214,7 +214,7 @@ public interface RequestParamName {
     public static final String  REQ_PARAM_GRP_LONG_DESC = "grpLongDesc";
     
     public static final String  REQ_PARAM_GRP_QTY = "grpQty";
-    
+    //Added to APPDEV-1565
     public static final String  REQ_PARAM_CARD_EXP_MONTH = "cardMonth";
     
     public static final String  REQ_PARAM_CARD_EXP_YEAR = "cardYear";
@@ -222,6 +222,8 @@ public interface RequestParamName {
     public static final String  REQ_PARAM_CARD_BRAND = "cardBrand";
     
     public static final String  REQ_PARAM_ACCOUNT_NUMBER = "cardNum";
+    
+    public static final String  REQ_PARAM_CSV = "csv";
     
     public static final String  REQ_PARAM_ABA_ROUTE_NUMBER = "abaRouteNumber";
     
@@ -259,4 +261,15 @@ public interface RequestParamName {
     
     public static final String  REQ_PARAM_EDIT_PAYMENT_ID = "paymentId";
 
+    
+    public static final String  REQ_PARAM_DELETE_SHIP_ADDRESS_ID ="deleteShipToAddressId";
+    
+    public static final String  REQ_PARAM_UPDATE_SHIP_ADDRESS_ID ="updateShipToAddressId";
+    
+    public static final String  REQ_PARAM_SERVICE_TYPE = "serviceType";
+    
+    public static final String  REQ_PARAM_CORP_SERVICE_TYPE = "corpServiceType";
+    
+    public static final String  REQ_PARAM_DELIVERY_STATUS = "requestedServiceTypeDlvStatus";
+    
 }

@@ -43,6 +43,7 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.fdstore.RegistrationAction;
+import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.util.AccountUtil;
 
@@ -111,14 +112,32 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				ra.execute();
 				this.setSuccessPage(ra.getSuccessPage()); //reset if changed.
 
-			} else if ("addDeliveryAddress".equalsIgnoreCase(actionName)) {
-				this.performAddDeliveryAddress(request, actionResult);
+			} else if ("registerFromIphone".equalsIgnoreCase(actionName)) {
+				RegistrationAction ra = new RegistrationAction(this.registrationType);
+
+				HttpContext ctx =
+					new HttpContext(
+						this.pageContext.getSession(),
+						(HttpServletRequest) this.pageContext.getRequest(),
+						(HttpServletResponse) this.pageContext.getResponse());
+
+				ra.setHttpContext(ctx);
+				ra.setResult(actionResult);
+				ra.executeEx();
+
+			}else if ("addDeliveryAddress".equalsIgnoreCase(actionName)) {
+				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, actionResult, actionName);
+				m.performAddDeliveryAddress();
 
 			} else if ("editDeliveryAddress".equalsIgnoreCase(actionName)) {
-				this.performEditDeliveryAddress(request, actionResult, event);
+				//this.performEditDeliveryAddress(request, actionResult, event);
+				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, actionResult, actionName);
+				m.performEditDeliveryAddress(event);
 
 			} else if ("deleteDeliveryAddress".equalsIgnoreCase(actionName)) {
-				this.performDeleteDeliveryAddress(request, actionResult, event);
+				//this.performDeleteDeliveryAddress(request, actionResult, event);
+				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, actionResult, actionName);
+				m.performDeleteDeliveryAddress(event);
 
 			} else if ("changeUserID".equalsIgnoreCase(actionName)) {
 				this.performChangeUserID(request, actionResult);
@@ -143,7 +162,6 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 			LOGGER.error("Error performing action " + actionName, ex);
 			actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
 		}
-
 		return true;
 	}
 

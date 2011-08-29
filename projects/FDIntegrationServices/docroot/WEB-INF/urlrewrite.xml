@@ -62,6 +62,21 @@
 		<to last="true">/login.do?action=login&amp;ver=$1</to>
 	</rule>
 
+	<!--  Zip Check  -->
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/zipcheck/checkbyzip/</from>
+		<to last="true">/zipcheck.do?action=checkbyzipcode&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/zipcheck/checkbyaddress/</from>
+		<to last="true">/zipcheck.do?action=checkbyaddress&amp;ver=$1</to>
+	</rule>
+	<!--  Sign Up -->
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/register/</from>
+		<to last="true">/register.do?action=registerFromIphone&amp;ver=$1</to>
+	</rule>
+		
 	<!-- Cart : Apply Promo -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/cart/promo/apply/(.*)$</from>
@@ -152,7 +167,18 @@
 		<from>^/v/([0-9]+)/(.*)/checkout/deliveryaddresses/set/$</from>
 		<to last="true">/checkout.do?action=setdeliveryaddress&amp;ver=$1</to>
 	</rule>
-
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/deliveryaddress/add/</from>
+		<to last="true">/checkout.do?action=adddeliveryaddress&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/deliveryaddress/edit/</from>
+		<to last="true">/checkout.do?action=editdeliveryaddress&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/deliveryaddress/delete/</from>
+		<to last="true">/checkout.do?action=deletedeliveryaddress&amp;ver=$1</to>
+	</rule>		
 
 	<!-- xxxxxxxxxxxxxxxxxxx -->
 	<!-- Set Delivery Slot -->

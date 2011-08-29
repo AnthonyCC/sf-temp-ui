@@ -26,12 +26,15 @@ public class HttpResponseWrapper implements HttpServletResponse {
         //TODO: Validate this logic.  Also need to account for query string parameter.
         return StringUtils.equals(this.successUrl, this.sendRedirectUrl);
     }
-
+    private Cookie cookie;
     @Override
     public void addCookie(Cookie arg0) {
-        throw new IllegalAccessError("this method has not been implemented in this wrapper");
+        this.cookie = arg0;
     }
 
+    public Cookie getCookie() {
+        return this.cookie;
+    }
     @Override
     public void addDateHeader(String arg0, long arg1) {
         throw new IllegalAccessError("this method has not been implemented in this wrapper");

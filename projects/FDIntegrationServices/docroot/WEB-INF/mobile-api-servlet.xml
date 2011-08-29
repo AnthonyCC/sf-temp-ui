@@ -54,6 +54,12 @@
 	<bean id="browseController" class="com.freshdirect.mobileapi.controller.BrowseController"
 		parent="baseController" />
 
+	<bean id="siteAccessController" class="com.freshdirect.mobileapi.controller.SiteAccessController"
+		parent="baseController" />
+
+	<bean id="registerController" class="com.freshdirect.mobileapi.controller.RegistrationController"
+		parent="baseController" />
+				
 	<bean id="urlMapping"
 		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="mappings">
@@ -73,6 +79,8 @@
 				<prop key="**/test.do">testController</prop>
 				<prop key="**/help.do">helpController</prop>
 				<prop key="**/browse.do">browseController</prop>
+				<prop key="**/zipcheck.do">siteAccessController</prop>
+				<prop key="**/register.do">registerController</prop>
 			</props>
 		</property>
 	</bean>

@@ -1,10 +1,19 @@
 package com.freshdirect.mobileapi.model;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.web.servlet.ModelAndView;
+
+import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUser;
+import com.freshdirect.mobileapi.controller.data.Message;
+import com.freshdirect.mobileapi.controller.data.request.ZipCheck;
+import com.freshdirect.mobileapi.exception.JsonException;
+import com.freshdirect.mobileapi.model.tagwrapper.SiteAccessControllerTagWrapper;
 
 /**
  * This is a wrapper on FDUser. FDUser and FDSessionUser are pretty much identical.

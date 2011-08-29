@@ -42,9 +42,8 @@ public abstract class TagWrapper extends HttpContextWrapper {
 
         if (null != user) {
             this.pageContext.getSession().setAttribute(SessionName.USER, user);
+            ((HttpSessionWrapper) this.pageContext.getSession()).addValue(SessionName.APPLICATION, user.getApplication().getCode());
         }
-
-        ((HttpSessionWrapper) this.pageContext.getSession()).addValue(SessionName.APPLICATION, user.getApplication().getCode());
         this.wrapTarget.setPageContext(pageContext);
 
     }

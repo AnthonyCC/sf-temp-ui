@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpAddressModel;
@@ -512,10 +513,22 @@ public class SessionUser {
         return sessionUser.getMaxSignupPromotion();
         
     }
+    public String getZipCode() {
+    	return sessionUser.getZipCode();
+    }
     
     public int getPromoErrorCode(String promoCode) {
     	return sessionUser.getPromoErrorCode(promoCode);
     }
+    public EnumServiceType getServiceType() {
+    	return sessionUser.getUserServiceType();
+    }
     
+    public boolean isLoggedIn() {
+    	return (sessionUser.getIdentity() != null) ;
+    }
     
+    public AddressModel getAddress() {
+    	return sessionUser.getAddress();
+    }
 }
