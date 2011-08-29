@@ -174,7 +174,7 @@ function loadStuff() {
   	$("#result").val("");
   } else if (loaddata == "AddAndSetPaymentMethod") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/addandset/");
-  	$("#payload").val('{ "billingRef": "", "cardExpMonth" : "06", "cardExpYear" : "2012", "cardBrand" : "VISA",  "accountNumber" : "4184798082857938", "abaRouteNumber" : "", "bankName" : "AMC Bank", "terms" : "", "accountNumberVerify" : "", "bankAccountType" : "", "accountHolder" : "Sairam","billAddress1" : "2100 Rachel Terrace", "billAddress2" : "", "billApt" : "14", "billCity" : "Pinebrook", "billState" : "NJ", "billZipCode" : "07058", "paymentMethodType" : "CC"}');
+  	$("#payload").val('{ "billingRef": "", "cardExpMonth" : "06", "cardExpYear" : "2012", "cardBrand" : "VISA",  "accountNumber" : "4184798082857938", "abaRouteNumber" : "", "bankName" : "AMC Bank", "terms" : "", "accountNumberVerify" : "", "bankAccountType" : "", "accountHolder" : "Sairam","billAddress1" : "2100 Rachel Terrace", "billAddress2" : "", "billApt" : "14", "billCity" : "Pinebrook", "billState" : "NJ", "billZipCode" : "07058", "paymentMethodType" : "CC", "csv":"", "terms":"Y"}');
   	$("#result").val("");
   } else if (loaddata == "EditPaymentMethod") {
   	$("#url").val("/saptest12@freshdirect.com/paymentmethod/edit/");
