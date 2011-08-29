@@ -195,7 +195,12 @@
          <menu id="ADO009" title="Asset" orientation="RIGHT" link="asset.do?pAssetType=GPS">
 	     	<access-uris>asset.do,editasset.do,assettemplate.do,editassettemplate.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
-	     </menu> 
+	     </menu>
+		 
+		 <menu id="ADO010" title="Zip Code" orientation="RIGHT" link="zipcode.do">
+	     	<access-uris>zipcode.do</access-uris>
+	     	<access-roles>TrnAdmin</access-roles>
+	     </menu>
 
 </menu>
 </menus>

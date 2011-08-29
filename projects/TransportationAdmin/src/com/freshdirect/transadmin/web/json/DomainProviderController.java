@@ -1,17 +1,23 @@
 package com.freshdirect.transadmin.web.json;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.dao.DataIntegrityViolationException;
+
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.transadmin.model.EmployeeInfo;
+import com.freshdirect.transadmin.model.ZipCodeModel;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
+import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.util.TransAdminCacheManager;
 import com.freshdirect.transadmin.web.model.ScheduleCheckResult;
 
@@ -21,6 +27,7 @@ public class DomainProviderController extends BaseJsonRpcController  implements 
 	
 	private EmployeeManagerI employeeManagerService;
 	
+	private ZoneManagerI zoneManagerService;
 			
 	public EmployeeManagerI getEmployeeManagerService() {
 		return employeeManagerService;
@@ -37,7 +44,14 @@ public class DomainProviderController extends BaseJsonRpcController  implements 
 	public void setDomainManagerService(DomainManagerI domainManagerService) {
 		this.domainManagerService = domainManagerService;
 	}
-	
+		
+	public ZoneManagerI getZoneManagerService() {
+		return zoneManagerService;
+	}
+
+	public void setZoneManagerService(ZoneManagerI zoneManagerService) {
+		this.zoneManagerService = zoneManagerService;
+	}
 	public boolean copySchedule(String ids, String sourceWeekOf, String destinationWeekOf, String day) {
 		String[] employeeIds = StringUtil.decodeStrings(ids);
 		Date sSourceWeekOf = getWeekOf(getFromClientDate(sourceWeekOf));
@@ -129,6 +143,53 @@ public class DomainProviderController extends BaseJsonRpcController  implements 
 			}
 		}		
 		return result;
+	}
+	
+	public boolean updateZipCodeCoverage(String zipCode, String homeCoverage, String cosCoverage) {
+		
+		try {
+			
+			ZipCodeModel modelIn = new ZipCodeModel(zipCode
+				                                           , Double.parseDouble(homeCoverage)
+				                                           , Double.parseDouble(cosCoverage));
+			
+			getZoneManagerService().updateDeliveryZipCodeCoverage(modelIn);		
+		} catch (SQLException e) {			
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public int addNewZipCodeCoverage(String zipCode, String homeCoverage, String cosCoverage, String envName) {
+		
+		try {			
+				ZipCodeModel modelIn = new ZipCodeModel(zipCode
+				                                           , Double.parseDouble(homeCoverage)
+				                                           , Double.parseDouble(cosCoverage));
+				
+				boolean hasStreetData = getZoneManagerService().checkNavTechZipCodeInfo(modelIn.getZipCode());
+				if(hasStreetData){
+					boolean hasWorkTableData = getZoneManagerService().checkWorkTabZipCodeInfo(modelIn.getZipCode());
+					if(!hasWorkTableData && !"DEV".equalsIgnoreCase(envName))		
+						getZoneManagerService().addNewDeliveryZipCode(modelIn);
+					boolean needsUpdate = getZoneManagerService().checkZipCodeInfo(modelIn.getZipCode());
+					if(!needsUpdate) 
+						getZoneManagerService().addNewDeliveryZipCodeCoverage(modelIn);
+				} else
+					return 2;
+		} catch (DataIntegrityViolationException e) {			
+			e.printStackTrace();
+			return 1;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return 1;
+		}
+		
+		return 0;
 	}
 	
 }

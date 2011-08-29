@@ -17,6 +17,7 @@ import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.service.LogManagerI;
+import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class AdminController extends AbstractMultiActionController {
@@ -27,6 +28,15 @@ public class AdminController extends AbstractMultiActionController {
 	
 	private LocationManagerI locationManagerService;
 	
+	private ZoneManagerI zoneManagerService;
+	
+	public ZoneManagerI getZoneManagerService() {
+		return zoneManagerService;
+	}
+
+	public void setZoneManagerService(ZoneManagerI zoneManagerService) {
+		this.zoneManagerService = zoneManagerService;
+	}	
 	
 	public LocationManagerI getLocationManagerService() {
 		return locationManagerService;
@@ -158,6 +168,12 @@ public class AdminController extends AbstractMultiActionController {
 		}
 		return mav;
 	}
+	
+	public ModelAndView zipcodeHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		
-
+		ModelAndView mav = new ModelAndView("zipCodeView");
+		
+		mav.getModel().put("zipcodes", zoneManagerService.getDeliverableZipCodes());
+		return mav;
+	}
 }

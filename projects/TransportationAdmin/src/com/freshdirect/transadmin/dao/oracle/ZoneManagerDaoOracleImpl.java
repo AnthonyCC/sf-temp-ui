@@ -5,12 +5,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -19,10 +22,14 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
+import org.springframework.jdbc.core.SqlParameter;
+import org.springframework.jdbc.object.BatchSqlUpdate;
 
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.routing.model.IHandOffBatchStop;
 import com.freshdirect.transadmin.dao.ZoneManagerDaoI;
+import com.freshdirect.transadmin.model.ZipCodeModel;
 import com.freshdirect.transadmin.model.ZoneSupervisor;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.CustomTimeOfDay;
@@ -204,5 +211,200 @@ public class ZoneManagerDaoOracleImpl implements ZoneManagerDaoI {
        		   });
         return result;
 	}
+	
+	private static final String DELIVERABLE_ZIPS = 
+		"select zipcode, home_coverage, cos_coverage from dlv.zipcode order by zipcode asc";
+	
+	private static final String GET_ZIPCODEINFO_NAVTECH = "select l_postcode ZIP_CODE, sdo_aggr_convexhull(MDSYS.SDOAGGRTYPE(geoloc, 0.5)) "+ 
+		" FROM dlv.navtech_geocode n where l_postcode = ? or n.r_postcode = ? group by n.l_postcode ";
+
+	//insert zip code boundary from navtech
+	private static final String INSERT_ZIPCODEINFO_ZIPWORKTAB = "insert into dlv.zipcode_worktab(zipcode, geoloc) "+
+    	" select bx.x, bx.y from ( select n.l_postcode x, sdo_aggr_convexhull(MDSYS.SDOAGGRTYPE(geoloc, 0.5)) y "+ 
+            " FROM dlv.navtech_geocode n where l_postcode  = ? or n.r_postcode = ? group by n.l_postcode) bx where x = ?";
+	
+	//insert zip code boundary from zipcode_worktab
+	private static final String INSERT_ZIPCODE_COVERAGE = "insert into dlv.zipcode(zipcode, geoloc) VALUES "+  
+		" (?, (select geoloc FROM dlv.zipcode_worktab where zipcode = ?))";
+	
+	//insert zip code coverage
+	private static final String UPDATE_ZIPCODE_COVERAGE = "update dlv.zipcode z set z.geoloc = (select geoloc FROM dlv.zipcode_worktab where zipcode = ?), z.home_coverage = ?, z.cos_coverage = ? "+ 
+			" where zipcode = ? ";
+	
+	private static final String GET_ZIPCODEINFO = "select * FROM dlv.zipcode where zipcode = ? ";
+	private static final String GET_ZIPCODEINFO_WORKTAB = "select * FROM dlv.zipcode_worktab where zipcode = ? ";
+	
+	public Set getDeliverableZipCodes() throws DataAccessException {
+		final Set<ZipCodeModel> result = new HashSet<ZipCodeModel>();		
+		 PreparedStatementCreator creator=new PreparedStatementCreator() {
+	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+	                PreparedStatement ps =
+	                    connection.prepareStatement(DELIVERABLE_ZIPS);	               
+	                return ps;
+	            }  
+	     };
+	     
+	     jdbcTemplate.query(creator, 
+	       		  new RowCallbackHandler() { 
+	       		      public void processRow(ResultSet rs) throws SQLException {
+	       		    	ZipCodeModel model;
+	       		    	do {       		 
+	       		    		model = new ZipCodeModel(rs.getString("zipcode"),rs.getDouble("home_coverage"),rs.getDouble("cos_coverage"));
+	       		    		result.add(model);
+	       		    	}  while(rs.next());
+	       		      }
+	       		   });
+		
+		return result;
+	}
+	
+
+	public boolean checkNavTechZipCodeInfo(final String zipCode) throws DataAccessException {
+		final Set<String> result = new HashSet<String>();		
+		 PreparedStatementCreator creator=new PreparedStatementCreator() {
+	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+	                PreparedStatement ps =
+	                    connection.prepareStatement(GET_ZIPCODEINFO_NAVTECH);	               
+	                ps.setString(1, zipCode);
+	                ps.setString(2, zipCode);	             
+	                return ps;
+	            }  
+	     };
+	     
+	     jdbcTemplate.query(creator, 
+	       		  new RowCallbackHandler() { 
+	       		      public void processRow(ResultSet rs) throws SQLException {
+	       		    	do {       		 
+	       		    		result.add(rs.getString("ZIP_CODE"));
+	       		    	}  while(rs.next());
+	       		      }
+	       		   });
+		
+		return result.size() > 0 ? true : false;
+	}
+	
+	public boolean checkZipCodeInfo(final String zipCode) throws DataAccessException {
+		final Set<String> result = new HashSet<String>();		
+		 PreparedStatementCreator creator=new PreparedStatementCreator() {
+	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+	                PreparedStatement ps =
+	                    connection.prepareStatement(GET_ZIPCODEINFO);	               
+	                ps.setString(1, zipCode);	               
+	                return ps;
+	            }  
+	     };
+	     
+	     jdbcTemplate.query(creator, 
+	       		  new RowCallbackHandler() { 
+	       		      public void processRow(ResultSet rs) throws SQLException {
+	       		    	do {       		 
+	       		    		result.add(rs.getString("ZIPCODE"));
+	       		    	}  while(rs.next());
+	       		      }
+	       		   });
+		
+		return result.size() > 0 ? true : false;
+	}
+	
+	public boolean checkWorkTabZipCodeInfo(final String zipCode) throws DataAccessException {
+		final Set<String> result = new HashSet<String>();		
+		 PreparedStatementCreator creator=new PreparedStatementCreator() {
+	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+	                PreparedStatement ps =
+	                    connection.prepareStatement(GET_ZIPCODEINFO_WORKTAB);	               
+	                ps.setString(1, zipCode);	               
+	                return ps;
+	            }  
+	     };
+	     
+	     jdbcTemplate.query(creator, 
+	       		  new RowCallbackHandler() { 
+	       		      public void processRow(ResultSet rs) throws SQLException {
+	       		    	do {       		 
+	       		    		result.add(rs.getString("ZIPCODE"));
+	       		    	}  while(rs.next());
+	       		      }
+	       		   });
+		
+		return result.size() > 0 ? true : false;
+	}
+	
+
+	public void addNewDeliveryZipCode(ZipCodeModel model) throws SQLException {
+		Connection connection = null;
+		try {
+			BatchSqlUpdate batchUpdater = new BatchSqlUpdate(this.jdbcTemplate.getDataSource(), INSERT_ZIPCODEINFO_ZIPWORKTAB);
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			
+			batchUpdater.compile();			
+			connection = this.jdbcTemplate.getDataSource().getConnection();
+			
+			if(model != null) {
+				
+				batchUpdater.update(new Object[]{ model.getZipCode()
+								, model.getZipCode()
+								, model.getZipCode()
+						
+				});
+			}			
+			batchUpdater.flush();
+		} finally {
+			if(connection!=null) connection.close();
+		}
+	}
+	
+	public void addNewDeliveryZipCodeCoverage(ZipCodeModel model) throws SQLException {
+		Connection connection = null;
+		try {
+			BatchSqlUpdate batchUpdater = new BatchSqlUpdate(this.jdbcTemplate.getDataSource(), INSERT_ZIPCODE_COVERAGE);
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			
+			batchUpdater.compile();			
+			connection = this.jdbcTemplate.getDataSource().getConnection();
+			
+			if(model != null) {
+				
+				batchUpdater.update(new Object[]{ model.getZipCode()
+									, model.getZipCode()
+						
+				});
+			}			
+			batchUpdater.flush();
+		} finally {
+			if(connection != null) connection.close();
+		}
+	}
+	
+	public void updateDeliveryZipCodeCoverage(ZipCodeModel model) throws SQLException {
+		Connection connection = null;
+		try {
+			BatchSqlUpdate batchUpdater = new BatchSqlUpdate(this.jdbcTemplate.getDataSource(),UPDATE_ZIPCODE_COVERAGE);
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			batchUpdater.declareParameter(new SqlParameter(Types.DOUBLE));
+			batchUpdater.declareParameter(new SqlParameter(Types.DOUBLE));
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			
+			batchUpdater.compile();			
+			connection = this.jdbcTemplate.getDataSource().getConnection();
+			
+			if(model != null) {
+				
+				batchUpdater.update(new Object[]{ model.getZipCode()
+								, model.getHomeCoverage()
+								, model.getCosCoverage()
+								, model.getZipCode()
+				});
+			}			
+			batchUpdater.flush();
+		}finally{
+			if(connection!=null) connection.close();
+		}
+	}
+	
+	
+	
 
 }

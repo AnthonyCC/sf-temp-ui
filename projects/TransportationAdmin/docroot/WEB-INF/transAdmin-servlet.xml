@@ -146,6 +146,8 @@
                	<prop key="/maintenancelog.do">domainController</prop>
                	<prop key="/editvirrecordlog.do">vitRecordLogFormController</prop>
                	<prop key="/editmaintenancelog.do">maintenanceLogFormController</prop>
+
+				<prop key="/zipcode.do">adminController</prop>
     
 			</props>
 		</property>
@@ -186,6 +188,7 @@
 		<property name="domainManagerService" ref="domainManager"/>
 		<property name="logManager" ref="logManagerBase"/>
 		<property name="locationManagerService" ref="locationManager"/>
+		<property name="zoneManagerService" ref="zoneManager"/>
 		<property name="methodNameResolver" ref="transAdminControllerResolver"/>        
 	</bean>
 	
@@ -299,7 +302,9 @@
             <prop key="/assettemplate.do">assetTemplateHandler</prop>
             <prop key="/gpsadminex.do">gpsDrivingDirectionsHandlerEx</prop>
             <prop key="/virrecordlog.do">virRecordLogHandler</prop>
-            <prop key="/maintenancelog.do">maintenanceLogHandler</prop>	         
+            <prop key="/maintenancelog.do">maintenanceLogHandler</prop>
+
+			 <prop key="/zipcode.do">zipcodeHandler</prop>
         </props>
 		</property>
 	</bean>
@@ -634,6 +639,7 @@
 	<bean name="asyncDomainController" class="com.freshdirect.transadmin.web.json.DomainProviderController">
 		<property name="domainManagerService" ref="domainManager"/>
 		<property name="employeeManagerService" ref="employeeManager"/>
+		<property name="zoneManagerService" ref="zoneManager"/>
 		<property name="ajaxServices">
 			<map>
 				<entry key="AsyncDomainProvider" value="com.freshdirect.transadmin.web.json.IDomainProvider" />				
