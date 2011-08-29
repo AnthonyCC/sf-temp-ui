@@ -20,9 +20,19 @@
     <td  width="100%" bgcolor="#FFF9D7">
 	<div style="padding: 3px 5px 3px 5px">
 		<ul>
+			<%
+				if(deliveryModel.getHolidayRestrictions().size() > 1) {
+			%>
+			
 			<logic:iterate indexId='i' collection="<%= deliveryModel.getHolidayRestrictions() %>" id="restriction" type="com.freshdirect.delivery.restriction.RestrictionI">
 				<li class="text12"><%=restriction.getMessage()%></li>
 			</logic:iterate>
+
+			<%} else {%>
+				<logic:iterate indexId='i' collection="<%= deliveryModel.getHolidayRestrictions() %>" id="restriction" type="com.freshdirect.delivery.restriction.RestrictionI">
+					<font class="text12"><%=restriction.getMessage()%></font>
+				</logic:iterate>
+			<%}%>
 		</ul>
 	</div>
     </td>

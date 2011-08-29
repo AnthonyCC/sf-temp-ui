@@ -52,20 +52,24 @@ public class TransWebUtil
 	
 	public static String getUserPref(HttpServletRequest request,String key)
 	{
-		Collection c=(Collection)request.getSession().getAttribute(USER_PREF);
+		Collection c =(Collection)request.getSession().getAttribute(USER_PREF);
+
 		return getUserPref(c,key);
 	}
 	
 	public static String getUserPref(Collection c,String key)
 	{		
-		if(c==null) return null;
-		Iterator i=c.iterator();
-		while(i.hasNext())
-		{
-			UserPref p=(UserPref)i.next();
-			if(key.equalsIgnoreCase(p.getKey())) return p.getValue();
+		if (c == null)
+			return "true";
+		
+		Iterator<UserPref> i = c.iterator();
+		while (i.hasNext()) {
+			UserPref p = i.next();
+			if (key.equalsIgnoreCase(p.getKey()))
+				return p.getValue();
 		}
-		return null;
+		
+		return "true";
 	}
 	
 	public static void savePref(HttpServletRequest request,Collection c)
@@ -92,8 +96,9 @@ public class TransWebUtil
 	}
 	public static boolean isUserPref(HttpServletRequest request)
 	{
-		Collection c=(Collection)request.getSession().getAttribute(USER_PREF);
-		if(c==null) return false;
+		Collection c = (Collection) request.getSession().getAttribute(USER_PREF);
+		if (c == null)
+			return true;
 		return true;
 	}
 }

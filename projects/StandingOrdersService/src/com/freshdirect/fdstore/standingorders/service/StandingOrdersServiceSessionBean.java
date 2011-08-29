@@ -587,9 +587,9 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		// ==================================
 		
 		//Allowing COS customers to use HOME zone capacity for the configured set of HOME zones
-		 deliveryAddressModel = performCosResidentialMerge(deliveryAddressModel);
+		AddressModel clonedDeliveryAddressModel = performCosResidentialMerge(deliveryAddressModel);
 		// WARNING: getAllTimeslotsForDateRange-s select will ignore houre:minute in start/end dates!
-		List<FDTimeslot> timeslots = FDDeliveryManager.getInstance().getAllTimeslotsForDateRange( deliveryTimes.getDayStart(), deliveryTimes.getDayEnd(), deliveryAddressModel );
+		List<FDTimeslot> timeslots = FDDeliveryManager.getInstance().getAllTimeslotsForDateRange( deliveryTimes.getDayStart(), deliveryTimes.getDayEnd(), clonedDeliveryAddressModel );
 				
 		if ( timeslots == null || timeslots.size() == 0 ) {
 			LOGGER.info( "No timeslots for this day: " + FDStandingOrder.DATE_FORMATTER.format( deliveryTimes.getDayStart() ) );
@@ -605,11 +605,8 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		
 		//Geo-Restrictions
 		List geographicRestrictions = new ArrayList();
-		geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictions(deliveryAddressModel);
+		geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictions(clonedDeliveryAddressModel);
 		
-		if(EnumServiceType.HOME.equals(deliveryAddressModel.getServiceType()))
-			deliveryAddressModel.setServiceType(EnumServiceType.CORPORATE);		
-				
 		for ( FDTimeslot timeslot : timeslots ) {
 			
 			if ( !deliveryTimes.checkTimeslot( timeslot ) ) {
@@ -1056,7 +1053,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		}
 	}
 	private AddressModel performCosResidentialMerge(AddressModel address)	throws FDResourceException {
-		AddressModel timeslotAddress=address;
+		AddressModel timeslotAddress = address;
 		if(address!=null){
 			if(EnumServiceType.CORPORATE.equals(address.getServiceType())){
 				try{
@@ -1064,7 +1061,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			 		EnumDeliveryStatus status = serviceResult.getServiceStatus(address.getServiceType());
 			 		if(EnumDeliveryStatus.COS_ENABLED.equals(status)){	
 			 			//Clone the address model object
-			 			timeslotAddress=cloneAddress(address);
+			 			timeslotAddress = cloneAddress(address);
 			 			timeslotAddress.setServiceType(EnumServiceType.HOME);
 			 			LOGGER.info("Address "+address+" is COS Enabled. ServiceType set to HOME.");
 			 		}
@@ -1080,7 +1077,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 	}
 	
 	private AddressModel cloneAddress(AddressModel address) {
-		ErpAddressModel model=new ErpAddressModel(address);
+		ErpAddressModel model = new ErpAddressModel(address);		
 		return model;
 	}
 	
