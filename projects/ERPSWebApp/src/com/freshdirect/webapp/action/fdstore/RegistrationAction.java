@@ -279,7 +279,8 @@ public class RegistrationAction extends WebActionSupport {
 		// we'll bail out here if the
 		//
 		 //Address1 will not be null when user signs up for a Partial Delivery address
-		boolean isPartialDelivery = request.getParameter("address1") != null;
+		String address1 = request.getParameter("address1");
+		boolean isPartialDelivery =  address1 != null && address1.length() > 0;
 	
 		AddressModel address = null;
 		if(isPartialDelivery) {
