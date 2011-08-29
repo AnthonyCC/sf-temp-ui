@@ -45,7 +45,7 @@ function loadStuff() {
   var loaddata = $("#loaddata").val();
   if(loaddata == "Signup") {  	
   	$("#url").val("/saptest12@freshdirect.com/register/");
-  	$("#payload").val('{ "firstName": "Sairam", "lastName":"Krishnasamy", "email":"iphonetest@freshdirect.com", "confirmEmail":"iphonetest@freshdirect.com", "password":"test", "confirmPassword":"test","securityQuestion":"newyork","partialDelivery":"false", "zipCode" : "11101", "serviceType" : "HOME"}');
+  	$("#payload").val('{ "firstName": "Sairam", "lastName":"Krishnasamy", "email":"iphonetest@freshdirect.com", "confirmEmail":"iphonetest@freshdirect.com", "password":"test", "confirmPassword":"test","securityQuestion":"newyork", "address1":"", "apartment":"", "city":"", "state":"", "zipCode" : "11101", "serviceType" : "HOME"}');
   	$("#result").val("");
   } if(loaddata == "CheckByZip") {  	
   	$("#url").val("/saptest12@freshdirect.com/zipcheck/checkbyzip/");
