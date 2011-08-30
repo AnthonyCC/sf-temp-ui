@@ -36,7 +36,7 @@
 		</div>
 	<div class="contentroot">
 		<br/>
-		<% if(!request.getRequestURL().toString().indexOf("dev") > -1) { %>
+		<% if(!"DEV".equalsIgnoreCase(envName)) { %>
 			<span>&nbsp;&nbsp;&nbsp;<input type = "button" value="&nbsp;Add Zip Code &nbsp;" onclick="javascript:showZipCodePanel()" /></span> 
 		<%}%>
 		<table width="100%">
