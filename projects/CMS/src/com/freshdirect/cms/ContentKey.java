@@ -151,8 +151,8 @@ public class ContentKey implements Serializable {
 	}
 
 	public static class InvalidContentKeyException extends FDException {
+		private static final long serialVersionUID = -4393163976420522249L;
 	}
-
 	public final static ContentKey NULL_KEY = new ContentKey(ContentType.NULL_TYPE, "null");
 
 }

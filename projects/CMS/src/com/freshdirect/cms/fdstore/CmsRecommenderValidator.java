@@ -41,7 +41,7 @@ public class CmsRecommenderValidator implements ContentValidatorI, Serializable 
      * com.freshdirect.cms.application.CmsRequestI)
      */
     @Override
-    public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request) {
+    public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
         // Category
         if (FDContentTypes.CATEGORY.equals(node.getKey().getType())) {
             Object recommenderKey = node.getAttributeValue("recommender");

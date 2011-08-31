@@ -2,7 +2,6 @@ package com.freshdirect.cms.fdstore;
 
 import java.util.Date;
 
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsRequestI;
@@ -12,12 +11,12 @@ import com.freshdirect.cms.validation.ContentValidatorI;
 
 public class DateIntervalValidator implements ContentValidatorI {
 
-	public void validate( ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request ) {
+	public void validate( ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode ) {
 		ContentType t = node.getKey().getType();
 
 		if ( FDContentTypes.YMAL_SET.equals( t ) || FDContentTypes.STARTER_LIST.equals( t )
 				|| FDContentTypes.RECIPE.equals( t )
-				|| ( node.getAttribute( "startDate" ) != null && node.getAttribute( "endDate" ) != null ) ) {
+				|| ( node.getAttributeValue( "startDate" ) != null && node.getAttributeValue( "endDate" ) != null ) ) {
 			
 			Date sd = tryToGetDateAttribute( node, "startDate" );
 			Date ed = tryToGetDateAttribute( node, "endDate" );
@@ -31,16 +30,11 @@ public class DateIntervalValidator implements ContentValidatorI {
 	}
 
 	private Date tryToGetDateAttribute( ContentNodeI node, String keyName ) {
-		Date aDate = null;
-		try {
-			AttributeI attr = node.getAttribute( keyName );
-			if ( attr != null ) {
-				aDate = (Date)attr.getValue();
-			}
-		} catch ( Exception exc ) {
-			System.out.println( "DateIntervalValidator.tryToGetDateAttribute(): failed to get attribute for key '" + keyName + "'; exc=" + exc );
-		}
-		return aDate;
+            Object obj = node.getAttributeValue(keyName);
+            if (obj instanceof Date) {
+                return (Date) obj;
+            }
+            return null;
 	}	
 
 	

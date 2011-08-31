@@ -1887,6 +1887,21 @@ public class MockProductModel extends MockContentNodeModel implements
 	}
 
 	@Override
+	public PriceCalculator getPriceCalculator(PricingContext pricingContext) {
+	    return new PriceCalculator(pricingContext, this, this.getDefaultSku(pricingContext));
+	}
+
+	@Override
+	public PriceCalculator getPriceCalculator(String skuCode, PricingContext pricingContext) {
+        return new PriceCalculator(pricingContext, this, this.getValidSkuCode(pricingContext, skuCode));
+	}
+
+	@Override
+	public PriceCalculator getPriceCalculator(SkuModel sku, PricingContext pricingContext) {
+        return new PriceCalculator(pricingContext, this, sku);
+	}
+	
+	@Override
 	public boolean isFullyAvailable() {
 		return isDisplayable();
 	}

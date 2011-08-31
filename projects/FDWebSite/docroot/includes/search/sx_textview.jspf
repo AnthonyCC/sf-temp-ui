@@ -47,45 +47,33 @@ int catCount = 0;
 int rank=0;
 
 ContentNodeModel lastSubCategory = null;
+CategoryModel previousCategory = null;
 %>
-<fd:ContentTreeTag tree="filteredCategoryTree" contentNodeName="contentNode" expandToDepth="99" depthName="depth" nextDepthName="nextDepth" selectedName="selected" childCountName="childCount" includeProducts="true">
+<fd:ContentTreeTag contentNodeName="contentNode" useFiltered="true" expandToDepth="99" depthName="depth" nextDepthName="nextDepth"
+		selectedName="selected" childCountName="childCount" includeProducts="true">
 <%
 	int d=depth.intValue();	
-	if (d==0) {
+	if (contentNode instanceof DepartmentModel) {
 		catCount = 0;
 		// department node
 %>		<div class="text13bold" style="color:#ff9f41;margin-top: 10px">  <%= contentNode.getFullName().toUpperCase() %> </div><%
+		previousCategory = null;
+	} else if (contentNode instanceof CategoryModel) {
+		previousCategory = (CategoryModel) contentNode;
 	} else if (contentNode instanceof ProductModel) {
 		ProductModel productNode = (ProductModel) contentNode;
 		String curPath = "";
 		ProductImpression pi = new ProductImpression(productNode);
 
-		boolean hasWas = false;
-		Double defaultPrice = null;
-		String priceUnit = null;
-		int wasDeal = -1;
-		double basePrice = 0.0;
-		double realBase = 0.0;
-		if (pi.getProductInfo() != null) {
-			defaultPrice = new Double(pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).getDefaultPrice());
-			priceUnit = JspMethods.formatPricingUnit(pi.getProductInfo());
-			hasWas = pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).isItemOnSale();
-			wasDeal = -1;
-			basePrice = 0.0;
-			if (hasWas) {
-				wasDeal = pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).getDealPercentage();
-				basePrice = pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).getSellingPrice();
-			}
-			realBase = DealsHelper.determineBasePrice(basePrice, defaultPrice.doubleValue());
-		}
-
-		boolean isYourFave = DYFUtil.isFavorite(productNode, u);
+		%><%@ include file="/includes/search/price_info.jspf" %><%	
 
 		// get parent categories
-		ContentNodeModel parent = productNode.getParentNode();
-		List catList = new ArrayList();
+		ContentNodeModel parent = previousCategory;
+		if (parent == null)
+			parent = productNode.getParentNode();
+		List<CategoryModel> catList = new ArrayList<CategoryModel>();
 		while (parent instanceof CategoryModel) {
-			catList.add(parent);
+			catList.add((CategoryModel) parent);
 			parent = parent.getParentNode();
 		}
 		
@@ -114,7 +102,7 @@ ContentNodeModel lastSubCategory = null;
 %>		<div style="margin-left: 10px;">
 			<%
 				String aka = pi.getProductModel().getAka() != null && !pi.getProductModel().getAka().equals("") ? "(" + pi.getProductModel().getAka() + ")" : "";
-				String actionURI = FDURLUtil.getProductURI(pi.getProductModel(), trk, (isYourFave ? "fave" : nav.getSortByName()), rank);
+				String actionURI = FDURLUtil.getProductURI((ProductContainer) parent, pi.getProductModel(), trk, (isYourFave ? "fave" : nav.getSortByName()), rank);
 				if (pi.getProductModel().isFullyAvailable()) {
 			%>
 					<display:ProductName product="<%= productNode %>" action="<%= actionURI %>" showNew="true" />
@@ -191,4 +179,3 @@ ContentNodeModel lastSubCategory = null;
 	}	
 %>
 </fd:ContentTreeTag>
-<div style="width: 1em">&nbsp;</div>

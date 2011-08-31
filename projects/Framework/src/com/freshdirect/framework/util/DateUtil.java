@@ -72,6 +72,10 @@ public class DateUtil {
 		return Math.abs((int) Math.round(((d1.getTime() - d2.getTime()) / (double) MINUTE)));
 	}
 
+	public static float diffInDays(Date d1, Date d2) {
+		return Math.abs((float) (d1.getTime() - d2.getTime()) / (float) DAY);
+	}
+	
 	/**
 	 *  Add a number of days to a Date object.
 	 *  

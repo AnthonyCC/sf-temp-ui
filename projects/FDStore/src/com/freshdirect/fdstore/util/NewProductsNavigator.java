@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import com.freshdirect.fdstore.content.SearchSortType;
-import com.freshdirect.fdstore.util.AbstractNavigator.SortDisplay;
 
 /**
  * @author skrishnasamy
@@ -21,7 +20,6 @@ public class NewProductsNavigator extends AbstractNavigator {
 	 */
 	public NewProductsNavigator(HttpServletRequest request) {
 		super(request);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -39,9 +37,8 @@ public class NewProductsNavigator extends AbstractNavigator {
 	 */
 	public NewProductsNavigator(String searchAction, int view,
 			String dept, String cat, String brand, String rcp, int psize,
-			int page, SearchSortType sort, boolean ascend) {
-		super(searchAction, view, dept, cat, brand, rcp, psize, page, sort, ascend);
-		// TODO Auto-generated constructor stub
+			int page, SearchSortType sort, boolean ascend, boolean refined) {
+		super(searchAction, view, dept, cat, brand, rcp, psize, page, sort, ascend, refined);
 	}
 
 	/* (non-Javadoc)
@@ -49,7 +46,7 @@ public class NewProductsNavigator extends AbstractNavigator {
 	 */
 	@Override
 	public Object clone() {
-		return new NewProductsNavigator(searchAction, view, deptFilter, categoryFilter, brandFilter, recipeFilter, pageSize, pageNumber, sortBy, isOrderAscending);
+		return new NewProductsNavigator(searchAction, view, deptFilter, categoryFilter, brandFilter, recipeFilter, pageSize, pageNumber, sortBy, isOrderAscending, refined);
 	}
 
 	/* (non-Javadoc)
@@ -57,7 +54,7 @@ public class NewProductsNavigator extends AbstractNavigator {
 	 */
 	@Override
 	public AbstractNavigator dup() {
-		return new NewProductsNavigator(searchAction, view, deptFilter, categoryFilter, brandFilter, recipeFilter, pageSize, pageNumber, sortBy, isOrderAscending);
+		return new NewProductsNavigator(searchAction, view, deptFilter, categoryFilter, brandFilter, recipeFilter, pageSize, pageNumber, sortBy, isOrderAscending, refined);
 	}
 
 	/* (non-Javadoc)
@@ -76,7 +73,7 @@ public class NewProductsNavigator extends AbstractNavigator {
 	 * @see com.freshdirect.fdstore.util.AbstractNavigator#init(java.util.Map)
 	 */
 	@Override
-	protected void init(Map params) {
+	protected void init(Map<String, String> params) {
 		super.init(params);
 	}
 

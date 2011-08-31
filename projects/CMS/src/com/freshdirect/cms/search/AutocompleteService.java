@@ -1,211 +1,205 @@
 package com.freshdirect.cms.search;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.Map.Entry;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
+import com.freshdirect.cms.search.term.AutocompleteTermNormalizer;
+import com.freshdirect.cms.search.term.DiacriticsRemoval;
+import com.freshdirect.cms.search.term.Term;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class AutocompleteService {
+	private final static Logger LOGGER = LoggerFactory.getInstance(AutocompleteService.class);
 
-    public interface Predicate {
-        boolean allow(String s);
-    }
-    
-    private final static Logger   LOGGER                    = LoggerFactory.getInstance(AutocompleteService.class);
+	private final static String punctuation = ",;:";
+	private static final String other_punctiation = "&'+-/";
+	private final static String[] articles = new String[] { "a", "an", "the" };
+	private final static String[] conjunctions = new String[] { "and", "or" };
+	private final static String[] prepositions = new String[] { "with", "without" };
+	private final static String[] conjunctions_prefix = new String[] { "and ", "or " };
+	private final static String[] conjunctions_suffix = new String[] { " and", " or" };
 
-    private final static int MAX_AUTOCOMPLETE_HITS     = 20;
+	private boolean permute;
+	private SortedMap<String, AutocompleteHit> prefixes;
 
-    final static Set<String> skipWordsInAutoCompletion = new HashSet<String>();
-    static {
-        skipWordsInAutoCompletion.addAll(LuceneSearchService.stopWords);
-        skipWordsInAutoCompletion.add("all");
-        skipWordsInAutoCompletion.add("non");
-        skipWordsInAutoCompletion.add("without");
-    }
+	public AutocompleteService(List<AutocompleteTerm> acTerms, boolean permute) {
+		this.permute = permute;
+		setTerms(acTerms);
+	}
 
-    SortedSet<HitCounter>         prefixSet;
+	public List<String> getAutocompletions(String prefix, int maxResults) {
+		Set<AutocompleteHit> result = new LinkedHashSet<AutocompleteHit>(getAutocompletionHits(prefix));
 
-    SortedSet<String>             wordSet;
+		List<String> terms = new ArrayList<String>();
+		int barrier = 0;
+		OUTER: while (!result.isEmpty()) {
+			Iterator<AutocompleteHit> it = result.iterator();
+			Map<String, AutocompleteHit> removes = new HashMap<String, AutocompleteHit>();
+			MIDDLE: while (it.hasNext()) {
+				AutocompleteHit hit = it.next();
+				Iterator<String> ix = terms.iterator();
+				for (int i = 0; i < barrier && ix.hasNext(); i++)
+					ix.next();
+				INNER: while (ix.hasNext()) {
+					String p = ix.next();
+					for (String t : hit.getTerms()) {
+						if (t.startsWith(p))
+							continue MIDDLE;
+						if (p.startsWith(t)) {
+							ix.remove();
+							removes.remove(p);
+							continue INNER;
+						}
+					}
+				}
+				terms.addAll(hit.getTerms());
+				for (String term : hit.getTerms())
+					removes.put(term, hit);
+				if (terms.size() > maxResults)
+					break OUTER;
+			}
+			for (AutocompleteHit remove : new HashSet<AutocompleteHit>(removes.values()))
+				result.remove(remove);
+			barrier = terms.size();
+		}
+		if (terms.size() > maxResults)
+			terms = new ArrayList<String>(terms.subList(0, maxResults));
+		// Collections.sort(terms);
+		return terms;
+	}
 
-    final SortedSet<String>             badSingularForms = new TreeSet<String>();
-    
-    private CounterCreatorI counterCreator = new CounterCreatorImpl();
-    
-    
-    public AutocompleteService() {}
+	List<AutocompleteHit> getAutocompletionHits(String prefix) {
+		int pos = prefix.length() - 1;
+		int wsCount = 0;
+		while (pos >= 0 && prefix.charAt(pos) <= ' ') {
+		    pos--;
+		    wsCount++;
+		}
+		char[] spaces = new char[wsCount];
+		for (int i = 0; i < spaces.length; i++)
+			spaces[i] = ' ';
+		String suffix = new String(spaces);
 
-    public AutocompleteService(Collection<String> words) {
-        prefixSet = initWords(words);
-    }
+		AutocompleteTermNormalizer termConv = new AutocompleteTermNormalizer(new Term(prefix), true);
+		prefix = termConv.getTerms().get(0).toString();
+		if (prefix.isEmpty())
+			return Collections.emptyList();
+		prefix = prefix.concat(suffix);
+		String start = prefix;
+		String end = prefix + '\uffff';
 
-    public List<String> getAutocompletions(String prefix) {
-        List<HitCounter> result = getAutocompletionHits(prefix);
+		Set<Map.Entry<String, AutocompleteHit>> items = prefixes.subMap(start, end).entrySet();
+		// sort according to the number of occurrences
+		List<Map.Entry<String, AutocompleteHit>> sorted = new ArrayList<Map.Entry<String, AutocompleteHit>>(items);
+		Collections.sort(sorted, new Comparator<Map.Entry<String, AutocompleteHit>>() {
+			@Override
+			public int compare(Entry<String, AutocompleteHit> e1, Entry<String, AutocompleteHit> e2) {
+				int d = e2.getValue().getNumber() - e1.getValue().getNumber();
+				if (d != 0)
+					return d;
+				else
+					return e1.getKey().compareTo(e2.getKey());
+			}
+		});
+		List<AutocompleteHit> results = new ArrayList<AutocompleteHit>();
+		for (Map.Entry<String, AutocompleteHit> entry : sorted)
+			results.add(entry.getValue());
+		return results;
+	}
 
-        List<String> words = new ArrayList<String>(Math.min(result.size(), MAX_AUTOCOMPLETE_HITS));
-        for (int i = 0; i < result.size() && i < MAX_AUTOCOMPLETE_HITS; i++) {
-            words.add(result.get(i).prefix);
-        }
-        return words;
-    }
+	private void setTerms(List<AutocompleteTerm> acTerms) {
+		LOGGER.info("term list size: " + acTerms.size());
+		SortedMap<String, AutocompleteHit> prefixes = new TreeMap<String, AutocompleteHit>();
 
-    public List<String> getAutocompletions(String prefix, Predicate predicate) {
-        List<HitCounter> result = getAutocompletionHits(prefix);
-        List<String> words = new ArrayList<String>(result.size());
-        for (int i = 0; i < result.size() && words.size() < MAX_AUTOCOMPLETE_HITS; i++) {
-            String s = result.get(i).prefix;
-            if (predicate.allow(s)) {
-                words.add(s);
-            }
-        }
-        return words;
-        
-    }
-    
-    List<HitCounter> getAutocompletionHits(String prefix) {
-        HitCounter start = new HitCounter(prefix.toLowerCase(), 0, null);
-        HitCounter end = new HitCounter(start.prefix + '\uffff', 0, null);
+		// build
+		for (AutocompleteTerm acTerm : acTerms) {
+			List<Term> terms;
+			if (permute)
+				terms = acTerm.permute();
+			else
+				terms = Collections.singletonList(acTerm.getTerm());
+			for (Term term : terms) {
+				String prefix = DiacriticsRemoval.removeDiactrics(term.toString());
+				if (punctuation.indexOf(prefix.charAt(prefix.length() - 1)) >= 0)
+					continue;
+				if (punctuation.indexOf(prefix.charAt(0)) >= 0)
+					continue;
+				if (other_punctiation.indexOf(prefix.charAt(0)) >= 0)
+					continue;
+				if (other_punctiation.indexOf(prefix.charAt(prefix.length() - 1)) >= 0)
+					continue;
+				AutocompleteHit hit;
+				hit = prefixes.get(prefix);
+				if (hit == null) {
+					hit = new AutocompleteHit(term.toString(), acTerm.getContentKey());
+					prefixes.put(prefix, hit);
+				} else {
+					hit.addTerm(term.toString(), acTerm.getContentKey());
+				}
+			}
+		}
+		LOGGER.info("prefixes size before compact: " + prefixes.size());
 
-        SortedSet<HitCounter> subSet = prefixSet.subSet(start, end);
-        // sort according to the number of occurances
-        List<HitCounter> result = new ArrayList<HitCounter>(subSet);
-        Collections.sort(result, new Comparator() {
-            public int compare(Object o1, Object o2) {
-                HitCounter h1 = (HitCounter) o1;
-                HitCounter h2 = (HitCounter) o2;
-                return h2.number - h1.number;
-            }
-        });
-        return result;
-    }
+		// compact
+		for (String article : articles)
+			prefixes.remove(article);
+		for (String conjunction : conjunctions)
+			prefixes.remove(conjunction);
+		for (String preposition: prepositions)
+			prefixes.remove(preposition);
 
+		List<String> removed = new ArrayList<String>();
+		Iterator<String> it = prefixes.keySet().iterator();
+		if (it.hasNext()) {
+			String prev = it.next();
+			while (it.hasNext()) {
+				String prefix = it.next();
+				boolean isRemoved = false;
+				if (prefix.startsWith(prev) && prefixes.get(prev).isSameContentKeys(prefixes.get(prefix))) {
+					removed.add(prev);
+					isRemoved = true;
+				}
+				prev = prefix;
+				if (isRemoved)
+					continue;
+				for (String co_prefix : conjunctions_prefix)
+					if (prefix.startsWith(co_prefix)) {
+						removed.add(prefix);
+						continue;
+					}
+				for (String co_suffix : conjunctions_suffix)
+					if (prefix.endsWith(co_suffix)) {
+						removed.add(prefix);
+						continue;
+					}
+			}
+		}
+		for (String prefix : removed)
+			prefixes.remove(prefix);
 
-    public void setWordList(Collection<String> words) {
-        prefixSet = initWords(words);
-    }
-    
+		LOGGER.info("prefixes size after compact: " + prefixes.size());
+		// purge
+		for (AutocompleteHit hit : prefixes.values())
+			hit.purge();
 
-    private SortedSet<HitCounter> initWords(Collection<String> words) {
-        LOGGER.info("word list size:" + words.size());
-        
-        
-        
-        TreeSet<HitCounter> set = counterCreator.initWords( words );
-        
-        wordSet = new TreeSet<String>();
-        for (HitCounter hc : set) {
-            if (hc.wordCount==1) {
-                wordSet.add(hc.prefix);
-            }
-        }
-        if (LOGGER.isDebugEnabled()) {
-            for (HitCounter hc : set){
-                if (hc.wordCount==1) {
-                    if (hc.prefix.endsWith("s")) {
-                        String wordWithoutS = hc.prefix.substring(0, hc.prefix.length()-1);
-                        LOGGER.debug("word : "+hc.prefix + " -> "+wordWithoutS + " valid:"+wordSet.contains(wordWithoutS));
-                    }
-                }
-            }
-        }
-        return set;
-    }
-
-    /**
-     * Check that the given, lower case word is in the word list, anywhere.
-     * @param word
-     * @return
-     */
-    public boolean isValidWord(String word) {
-        return wordSet.contains(word) && !badSingularForms.contains(word);
-    }
-
-    
-    
-    
-    public boolean addBadSingular(String e) {
-        return badSingularForms.add(e);
-    }
-
-    public boolean addAllBadSingular(Collection<? extends String> c) {
-        return badSingularForms.addAll(c);
-    }
-
-    public void clearBadSingular() {
-        badSingularForms.clear();
-    }
-
-    public String removePlural(String word) {
-        if (word.length()>2 && word.endsWith("s")) {
-            if (word.endsWith("ies")) {
-                // handle strawberries -> strawberry
-                String singular = word.substring(0, word.length()-3)+'y';
-                if (isValidWord(singular)) {
-                    return singular;
-                }
-            }
-            if (word.endsWith("es")) {
-                String singular = word.substring(0, word.length()-2);
-                if (isValidWord(singular)) {
-                    return singular;
-                }
-            }
-            String wordWithoutS = word.substring(0, word.length()-1);
-            if (isValidWord(wordWithoutS)) {
-                return wordWithoutS;
-            }
-        }
-        return word;
-    }
-    
-    public void setCounterCreator(CounterCreatorI cc) {
-    	this.counterCreator = cc;
-    }
-
-    static class HitCounter implements Comparable<HitCounter> {
-        String     prefix;
-
-        // the number of occurences of the prefix word in the whole database.
-        int        number = 1;
-        // number of words in the prefix
-        byte       wordCount;
-
-        // the number of distinct word which follows this prefix
-        int        followCount;
-
-        HitCounter beforePrefix;
-
-        public HitCounter(String prefix, int wordCount, HitCounter beforePrefix) {
-            this.prefix = prefix;
-            this.wordCount = (byte) wordCount;
-            this.beforePrefix = beforePrefix;
-            if (beforePrefix != null) {
-                beforePrefix.followCount++;
-            }
-        }
-
-        void inc() {
-            number++;
-        }
-
-        public int compareTo(HitCounter o) {
-            return prefix.compareTo(o.prefix);
-        }
-        
-        public String toString() {
-            return prefix +'('+number+')';
-        }
-    }
-
+		this.prefixes = prefixes;
+		LOGGER.info("completed processing terms");
+	}
+	
+	public Set<String> getPrefixes() {
+		return prefixes.keySet();
+	}
 }

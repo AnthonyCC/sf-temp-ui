@@ -6,12 +6,17 @@
 	com.freshdirect.smartstore.service.SearchScoringRegistry"%>
 <%@page import="com.freshdirect.smartstore.scoring.Score"%>
 <%@page import="com.freshdirect.smartstore.scoring.ScoringAlgorithm"%>
-<html>
+
+<%@page import="com.freshdirect.fdstore.util.SearchNavigator"%>
+<%@page import="com.freshdirect.fdstore.content.SearchResultItem"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.EnumSortingValue"%>
+<%@page import="com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator"%><html>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <head>
-	<link rel="stylesheet" type="text/css" href="config.css" />
+	<link rel="stylesheet" type="text/css" href="/assets/css/test/search/config.css" />
 	<title>Category Scoring</title>
 </head>
 
@@ -33,8 +38,9 @@
 </div>
 
 <div id="searchResult">
-	<fd:SmartSearch searchResults="results" productList="productList" categorySet="categorySet" brandSet="brandSet" categoryTree="categoryTree" filteredCategoryTreeName="filteredCategoryTree">
-	 <% if (productList!=null && productList.size() > 0) {  %>
+	<% SearchNavigator nav = new SearchNavigator(request); %>
+	<fd:SmartSearch id="search" nav="<%= nav %>">
+	 <% if (search.getNoOfProducts() > 0) {  %>
 	  <table id="searchResultTable">
 	  <tr>
 	  	<td>Image</td><td>Name</td><td>Product Key</td><td>Category Key</td><td>Term Score</td><td>Category Score</td><td>Displayable</td>
@@ -50,48 +56,51 @@
 	  	for (int i=0;i<user.getReturnSize();i++) {
 	  	    %><td>Personal Factor[ <i><%= userExpr[i] %></i> ]</td><%	  	    
 	  	}
+
+		ScriptedContentNodeComparator personal = ScriptedContentNodeComparator.createUserComparator(search.getUserId(), search.getPricingContext());
+		ScriptedContentNodeComparator global2 = ScriptedContentNodeComparator.createGlobalComparator(search.getUserId(), search.getPricingContext());
 	  	%>
 	  </tr>
-		<logic:iterate id="productNode" collection="<%= results.getFilteredProducts() %>" type="com.freshdirect.fdstore.content.ProductModel">
+		<% for (SearchResultItem<ProductModel> item : search.getProcessedResults().getProducts()) { %>
 			<tr>
 				<td class="productImage">
-					<display:ProductImage product="<%= productNode %>" prefix="http://www.freshdirect.com"/>
+					<display:ProductImage product="<%= item.getModel() %>" prefix="http://www.freshdirect.com"/>
 				</td>
 				<td class="productName">
-					<display:ProductName product="<%= productNode %>"/>
+					<display:ProductName product="<%= item.getModel() %>"/>
 				</td>
 				<td class="productKey">
 					<%=
-						productNode.getContentKey().getId()
+						item.getModel().getContentKey().getId()
 					%>
 				</td>
 				<td class="categoryKey">
 					<%=
-						productNode.getParentNode().getContentKey().getId()
+						item.getModel().getParentNode().getContentKey().getId()
 					%>
 				</td>
 				<td class="termScore">
 					<%=
-						results.getTermScore(productNode)
+						item.getSortingValue(EnumSortingValue.TERM_SCORE)
 					%>
 				</td>
 				
 				<td class="categoryScore">
 					<%=
-						results.getCategoryScore(productNode)
+						item.getSortingValue(EnumSortingValue.CATEGORY_RELEVANCY)
 					%>
 				</td>
 				<td class="displayable">
-				<%= results.isDisplayable(productNode) %>
+				<%= item.getSortingValue(EnumSortingValue.AVAILABILITY).intValue() > 0 ? "X" : "" %>
 				</td>
 				<% 
-				Score score = results.getGlobalScore(productNode); 
+				Score score = global2.getScore(item.getModel()); 
 				if (score !=null) {
 				    for (int i = 0;i<score.size();i++) {
 				        %><td class="score"><%= score.get(i) %></td><%
 				    }
 				}
-				score = results.getPersonalScore(productNode); 
+				score = personal.getScore(item.getModel()); 
 				if (score !=null) {
 				    for (int i = 0;i<score.size();i++) {
 				        %><td class="score"><%= score.get(i) %></td><%
@@ -103,7 +112,7 @@
 				}
 				%>
 			</tr>
-		</logic:iterate>
+		<% } %>
 	   </table>
 	<% } %>
 	</fd:SmartSearch>	

@@ -4,7 +4,8 @@
 %><%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature"
 %><%@ page import="com.freshdirect.fdstore.util.SiteFeatureHelper" 
 %><%@page import="com.freshdirect.fdstore.util.URLGenerator"%>
-<html>  
+
+<%@page import="org.apache.commons.lang.StringEscapeUtils"%><html>  
 <head>
     <title><tmpl:get name='title'/></title>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
@@ -14,7 +15,11 @@
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<link rel="stylesheet" href="/assets/yui/container/assets/container.css" type="text/css">
 	<link rel="stylesheet" href="/assets/css/ccl.css" type="text/css">
-
+	<style type="text/css">
+	#OAS_CategoryNote {
+	text-align: center;
+	}
+	</style>
 <%
 final String trk = "srch"; // tracking code
 String criteria = request.getParameter("searchParams");
@@ -32,11 +37,11 @@ if (FDStoreProperties.isCclAjaxDebugClient()) {
 <%
 }
 %>
-<%@ include file="/includes/search/autocomplete.jspf" %>
 </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333" CLASS="text10">
 <CENTER>
 <%@ include file="/common/template/includes/globalnav.jspf" %> 
+<%@ include file="/includes/search/autocomplete.jspf" %>
 <TABLE WIDTH="745" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 <TR>
 	<TD VALIGN="BOTTOM" WIDTH="1"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1" alt=""></TD>
@@ -57,14 +62,14 @@ if (FDStoreProperties.isCclAjaxDebugClient()) {
 <TR>
 	<TD WIDTH="1" BGCOLOR="#999966"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="34" alt=""></TD>
 	<TD WIDTH="743" COLSPAN="4">
-		<form name="adv_search" id="adv_search" method="GET">
+		<form name="adv_search" id="adv_search" method="GET" accept-charset="iso-8859-1">
 		<table width="743" cellpadding="0" cellspacing="0">
 			<tr>
 				<td>
 				<div style="margin:15px;margin-bottom:0px;padding-bottom:15px;border-bottom: 4px solid #FF9933">
 					<table><tr><td style="padding-right:35px;"><img src="/media_stat/images/template/search/search_deptnav_2.gif" style="border: none;" alt=""></td>
-					<td style="vertical-align:bottom;"><div id="searchContainer" style="position: relative"><INPUT TYPE="text" style="width:140px;" id="searchxParams" name="searchParams" value="<%= criteria %>" size="16" maxlength="50" class="text11">
-						<div id="terms" style="position: absolute;background-color: white"></div>
+					<td style="vertical-align:bottom;"><div id="searchContainer" style="position: relative"><INPUT TYPE="text" style="width:140px;" id="searchxParams" name="searchParams" value="<%= StringEscapeUtils.escapeHtml(criteria) %>" size="16" maxlength="80" class="text11">
+						<div id="terms" style="position:absolute;background-color: white" class="termsStyle"></div>
 					</div></td>			
 					<td style="vertical-align:bottom"><input name="submit" type="image" src="/media_stat/images/template/search/search_find_button.gif" style="border:none;margin-bottom:2px;"></td>
 					<td><div id="searchDebug"></div></td>

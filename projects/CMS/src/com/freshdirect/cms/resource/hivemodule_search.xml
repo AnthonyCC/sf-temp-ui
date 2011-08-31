@@ -12,6 +12,10 @@ Symbols:
 		<element name="AttributeIndex">
 			<attribute name="contentType" required="true"/>
 			<attribute name="attributeName" required="true" />
+			<attribute name="relationshipAttributeName" required="false"/><!-- if the attribute is a relationship then the corresponding attribute name in that relationship node -->
+			<attribute name="recurseParent" required="false"/><!-- indicates whether the parents of the given node or relationship node should be taken into account -->
+			<attribute name="text" required="false"/><!-- if set to true then the field will be treated as regular English text and not as special product names -->
+			<attribute name="spelled" required="false"/><!-- if setting it true indicates the field should be indexed into the spell checker dictionary -->
 			<conversion class="com.freshdirect.cms.search.AttributeIndex"/>
 		</element>
 		<element name="ContentIndex">
@@ -28,20 +32,25 @@ Symbols:
 			</construct>
 		</invoke-factory>
 	</service-point>
+	
+	
 
 	<configuration-point id="SearchIndex" schema-id="IndexConfiguration"/>
 
 	<!-- describe which attributes are supposed to be indexed/searched on which content types -->
 	<contribution configuration-id="SearchIndex">
-		<AttributeIndex contentType="Category" attributeName="FULL_NAME"/>
-		<AttributeIndex contentType="Category" attributeName="KEYWORDS"/>
-		<AttributeIndex contentType="Product"  attributeName="FULL_NAME"/>
-		<AttributeIndex contentType="Product"  attributeName="AKA"/>
-		<AttributeIndex contentType="Product"  attributeName="KEYWORDS"/>
-		<AttributeIndex contentType="Product"  attributeName="GLANCE_NAME"/>
+		<AttributeIndex contentType="Category" attributeName="FULL_NAME" spelled="true"/>
+		<AttributeIndex contentType="Category" attributeName="KEYWORDS" recurseParent="true" spelled="true"/>
+		<AttributeIndex contentType="Product"  attributeName="FULL_NAME" spelled="true"/>
+		<AttributeIndex contentType="Product"  attributeName="AKA" spelled="true"/>
+		<AttributeIndex contentType="Product"  attributeName="KEYWORDS" spelled="true"/>
+		<!-- AttributeIndex contentType="Product"  attributeName="GLANCE_NAME" spelled="true"/-->
+		<!-- AttributeIndex contentType="Product"  attributeName="NAV_NAME" spelled="true"/-->
+		<AttributeIndex contentType="Product"  attributeName="brands" relationshipAttributeName="FULL_NAME" spelled="true"/>
+		<AttributeIndex contentType="Product"  attributeName="PRIMARY_HOME" relationshipAttributeName="KEYWORDS" recurseParent="true" spelled="true"/>
 		<AttributeIndex contentType="Brand"    attributeName="FULL_NAME"/>
-		<AttributeIndex contentType="Recipe"   attributeName="name"/>
-		<AttributeIndex contentType="Recipe"   attributeName="keywords"/>
+		<AttributeIndex contentType="Recipe"   attributeName="name" spelled="true"/>
+		<AttributeIndex contentType="Recipe"   attributeName="keywords" spelled="true"/>
 		<AttributeIndex contentType="YmalSet"  attributeName="title"/>
 		<AttributeIndex contentType="ConfiguredProductGroup" attributeName="name"/>
 		<AttributeIndex contentType="FavoriteList"  attributeName="full_name"/>
@@ -49,10 +58,10 @@ Symbols:
 		<AttributeIndex contentType="RecommenderStrategy"  attributeName="FULL_NAME"/>
 		<ContentIndex contentType="Sku"/>
 		<ContentIndex contentType="ConfiguredProduct"/>
-		<AttributeIndex contentType="FAQ" attributeName="QUESTION"/>
-		<AttributeIndex contentType="FAQ" attributeName="ANSWER"/>
+		<AttributeIndex contentType="FAQ" attributeName="QUESTION" text="true"/>
+		<AttributeIndex contentType="FAQ" attributeName="ANSWER" text="true"/>
 		<AttributeIndex contentType="FAQ" attributeName="FULL_NAME"/>
-		<AttributeIndex contentType="FAQ" attributeName="KEYWORDS"/>
+		<AttributeIndex contentType="FAQ" attributeName="KEYWORDS" text="true"/>
 		<!--
 		<AttributeIndex contentType="Html" attributeName="path"/>
 		<AttributeIndex contentType="Image" attributeName="path"/>

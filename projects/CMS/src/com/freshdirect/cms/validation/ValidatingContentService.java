@@ -2,10 +2,11 @@ package com.freshdirect.cms.validation;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.CmsResponseI;
@@ -27,9 +28,9 @@ import com.freshdirect.cms.node.ContentNodeUtil;
  */
 public class ValidatingContentService extends ProxyContentService {
 
-	private final List validators;
+	private final List<ContentValidatorI> validators;
 
-	public ValidatingContentService(ContentServiceI service, List validators) {
+	public ValidatingContentService(ContentServiceI service, List<ContentValidatorI> validators) {
 		super(service);
 		this.validators = validators;
 	}
@@ -43,21 +44,19 @@ public class ValidatingContentService extends ProxyContentService {
 				new SimpleContentService(getTypeService()));
 		masked.handle(request);
 
-		Set keys = getKeys(request.getNodes());
-		Collection originalNodes = getProxiedService().getContentNodes(keys)
-				.values();
-		keys.addAll(getChildKeys(request.getNodes()));
-		keys.addAll(getChildKeys(originalNodes));
+		Set<ContentKey> keys = getKeys(request.getNodes());
+		final Map<ContentKey, ContentNodeI> originalNodes = getProxiedService().getContentNodes(keys);
+                keys.addAll(getChildKeys(request.getNodes()));
+		keys.addAll(getChildKeys(originalNodes.values()));
 
-		Collection nodes = masked.getContentNodes(keys).values();
+		Collection<ContentNodeI> nodes = masked.getContentNodes(keys).values();
 
 		ContentValidationDelegate delegate = new ContentValidationDelegate();
-		for (Iterator i = nodes.iterator(); i.hasNext();) {
-			ContentNodeI node = (ContentNodeI) i.next();
-			for (Iterator v = validators.iterator(); v.hasNext();) {
-				ContentValidatorI validator = (ContentValidatorI) v.next();
-				validator.validate(delegate, masked, node, request);
-			}
+                for (ContentNodeI node : nodes) {
+                    ContentNodeI oldNode = originalNodes.get(node.getKey());
+                    for (ContentValidatorI validator : validators) {
+                        validator.validate(delegate, masked, node, request, null);
+                    }
 		}
 
 		if (!delegate.isEmpty()) {
@@ -67,20 +66,18 @@ public class ValidatingContentService extends ProxyContentService {
 		return super.handle(request);
 	}
 
-	private Set getKeys(Collection nodes) {
-		Set s = new HashSet(nodes.size());
-		for (Iterator i = nodes.iterator(); i.hasNext();) {
-			ContentNodeI node = (ContentNodeI) i.next();
+	private Set<ContentKey> getKeys(Collection<ContentNodeI> nodes) {
+		Set<ContentKey> s = new HashSet<ContentKey>(nodes.size());
+		for (ContentNodeI node : nodes) {
 			s.add(node.getKey());
 		}
 		return s;
 	}
 
-	private Set getChildKeys(Collection nodes) {
-		Set s = new HashSet();
-		for (Iterator i = nodes.iterator(); i.hasNext();) {
-			ContentNodeI node = (ContentNodeI) i.next();
-			Set childKeys = ContentNodeUtil.getChildKeys(node);
+	private Set<ContentKey> getChildKeys(Collection<ContentNodeI> nodes) {
+		Set<ContentKey>  s = new HashSet<ContentKey>();
+                for (ContentNodeI node : nodes) {
+			Set<ContentKey> childKeys = ContentNodeUtil.getChildKeys(node);
 			s.addAll(childKeys);
 		}
 		return s;

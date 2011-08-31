@@ -120,7 +120,7 @@ public class CategoryModel extends ProductContainer {
 	
 	private final List<BrandModel> featuredBrandModels = new ArrayList<BrandModel>();
 	
-	private List featuredNewProdBrands = new ArrayList();
+	private List<ContentNodeModel> featuredNewProdBrands = new ArrayList<ContentNodeModel>();
 
 	/**
 	 * List of ProductModels and CategoryModels.
@@ -490,31 +490,25 @@ public class CategoryModel extends ProductContainer {
 
 		return new ArrayList<BrandModel>(featuredBrandModels);
 	}
-	
+
 	/* get Featured New Items (Products/Brands) */
-	public List<BrandModel> getFeaturedNewProdBrands() {
-		boolean bRefreshed = ContentNodeModelUtil.refreshModels(
-				this,
-				"FEATURED_NEW_PRODBRANDS",
-				featuredNewProdBrands,
-				false);
+	public List<ContentNodeModel> getFeaturedNewProdBrands() {
+		boolean bRefreshed = ContentNodeModelUtil.refreshModels(this, "FEATURED_NEW_PRODBRANDS", featuredNewProdBrands, false);
 
 		if (bRefreshed) {
-			List tempList = new ArrayList();
+			List<ProductModel> tempList = new ArrayList<ProductModel>();
 	
 			//loop through and get only products
-			for (ListIterator li = featuredNewProdBrands.listIterator(); li.hasNext(); ) {
-				Object nextItem = li.next();
-				if (nextItem instanceof ProductModel) {
-					ProductModel p = (ProductModel) nextItem;
-					tempList.add(p);
+			for (ContentNodeModel item : featuredNewProdBrands) {
+				if (item instanceof ProductModel) {
+					tempList.add((ProductModel) item);
 				}
 			}
 			//send over to have parents adjusted
 			ContentNodeModelUtil.setNearestParentForProducts(this, tempList);
 		}
 		
-		return new ArrayList<BrandModel>(featuredNewProdBrands);
+		return new ArrayList<ContentNodeModel>(featuredNewProdBrands);
 	}
 
 	/**

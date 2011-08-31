@@ -589,73 +589,6 @@
 		<div class="pageDesc">Search top-level page with links to sub test pages.</div>
 	</div>
 
-	<div class="tag search brand">
-		<div class="pageName"><span>/test/search/brandautocomplete.jsp</span></div>
-		<div class="link"><a href="/test/search/brandautocomplete.jsp">/test/search/brandautocomplete.jsp</a></div>
-		<div class="pageDesc">Display AutoComplete functionality for search and Brand.</div>
-	</div>
-
-	<div class="tag search">
-		<div class="pageName"><span>/test/search/category_scoring.jsp</span></div>
-		<div class="link"><a href="/test/search/category_scoring.jsp">/test/search/category_scoring.jsp</a></div>
-		<div class="pageDesc">Display search scoring info.</div>
-	</div>
-
-	<div class="tag search">
-		<div class="pageName"><span>/test/search/compare.jsp</span></div>
-		<div class="link"><a href="/test/search/compare.jsp">/test/search/compare.jsp</a></div>
-		<div class="pageDesc">Compare results of two search terms.</div>
-	</div>
-
-
-	<div class="tag search">
-		<div class="pageName"><span>/test/search/relevancy_config.jsp</span></div>
-		<div class="link"><a href="/test/search/relevancy_config.jsp">/test/search/relevancy_config.jsp</a></div>
-		<div class="pageDesc">Test search relavancy factors.</div>
-	</div>
-
-	<div class="tag search">
-		<div class="pageName"><span>/test/search/report.jsp</span></div>
-		<div class="link"><a href="/test/search/report.jsp">/test/search/report.jsp</a></div>
-		<div class="pageDesc">Show search statistics.</div>
-	</div>
-
-	<div class="tag search">
-		<div class="pageName"><span>/test/search/search_results.jsp</span></div>
-		<div class="link"><a href="/test/search/search_results.jsp">/test/search/search_results.jsp</a></div>
-		<div class="pageDesc">Show spelling test search results.</div>
-	</div>
-
-	<div class="tag search">
-		<div class="pageName"><span>/test/search/search_results_report.jsp</span></div>
-		<div class="link"><a href="/test/search/search_results_report.jsp">/test/search/search_results_report.jsp</a></div>
-		<div class="pageDesc">Show test search results.</div>
-	</div>
-
-	<div class="tag search">
-		<div class="pageName"><span>/test/search/search_terms.jsp</span></div>
-		<div class="link"><a href="/test/search/search_terms.jsp">/test/search/search_terms.jsp</a></div>
-		<div class="pageDesc">Show all search terms.</div>
-	</div>
-
-	<div class="tag search">
-		<div class="pageName"><span>/test/search/smart_search.jsp</span></div>
-		<div class="link"><a href="/test/search/smart_search.jsp">/test/search/smart_search.jsp</a></div>
-		<div class="pageDesc">Test Smart Search.</div>
-	</div>
-
-	<div class="tag search">
-		<div class="pageName"><span>/test/search/smart_search_log.jsp</span></div>
-		<div class="link"><a href="/test/search/smart_search_log.jsp">/test/search/smart_search_log.jsp</a></div>
-		<div class="pageDesc">Test Smart Search (with log).</div>
-	</div>
-
-	<div class="tag search">
-		<div class="pageName"><span>/test/search/spell.jsp</span></div>
-		<div class="link"><a href="/test/search/spell.jsp">/test/search/spell.jsp</a></div>
-		<div class="pageDesc">Test search spelling results.</div>
-	</div>
-
 	<div class="tag session">
 		<div class="pageName"><span>/test/session/index.jsp</span></div>
 		<div class="link"><a href="/test/session/index.jsp">/test/session/index.jsp</a></div>
@@ -940,9 +873,7 @@
 		<div class="pageName"><span>/test/warmup/warmup.jsp</span></div>
 		<div class="link"><a href="/test/warmup/warmup.jsp">/test/warmup/warmup.jsp</a></div>
 		<div class="pageDesc">
-			Run Store warmup.<br />
-			<br />
-			Passing the param newStore=yes will re-load the store as well.
+			Run Store warmup.
 		</div>
 	</div>
 

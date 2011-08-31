@@ -101,6 +101,21 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	    return new PriceCalculator(pricingCtx, prodModel, sku);
 	}
 
+	public PriceCalculator getPriceCalculator(PricingContext pricingContext) {
+		return new PriceCalculator(pricingContext, prodModel, prodModel
+				.getDefaultSku(pricingContext));
+	}
+
+	public PriceCalculator getPriceCalculator(String skuCode, PricingContext pricingContext) {
+		return new PriceCalculator(pricingContext, prodModel, prodModel
+				.getValidSkuCode(pricingContext, skuCode));
+	}
+	
+	@Override
+	public PriceCalculator getPriceCalculator(SkuModel sku, PricingContext pricingContext) {
+	    return new PriceCalculator(pricingContext, prodModel, sku);
+	}
+	
 	/* price calculator calls */
 
     /**

@@ -427,7 +427,7 @@ class FDFactory {
 			EnumATPRule.JIT,
 			EnumAvailabilityStatus.TEMP_UNAV,
 			new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),
-			null,"",null,ZonePriceInfoListing.getDummy(), null,"");
+			null,null,null,ZonePriceInfoListing.getDummy(), null,null);
 	}
 
 

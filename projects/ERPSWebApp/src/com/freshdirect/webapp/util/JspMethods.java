@@ -28,6 +28,7 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -39,6 +40,7 @@ import com.freshdirect.fdstore.content.MediaI;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.HowToCookItUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -951,5 +953,9 @@ public class JspMethods {
 		return currencyFormatter.get().format(
 				productInfo.getZonePriceInfo(pricingContext.getZoneId())
 						.getSellingPrice());
+	}
+	
+	public static ZonePriceInfoModel getZonePriceInfo(FDProductInfo productInfo, FDUserI user) {
+	    return productInfo.getZonePriceInfo(user != null ? user.getPricingContext().getZoneId() : PricingContext.DEFAULT.getZoneId());
 	}
 }

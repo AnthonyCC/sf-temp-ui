@@ -32,7 +32,7 @@ public class PrimaryHomeValidator implements ContentValidatorI {
 	}
 
 
-	public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request) {
+	public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
 		ContentType t = node.getKey().getType();
 		if (FDContentTypes.PRODUCT.equals(t)) {
 			ContentKey priHome = (ContentKey) node.getAttributeValue("PRIMARY_HOME");

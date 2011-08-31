@@ -6,7 +6,7 @@
      List row = (List)i.next();
      for(Iterator j=row.iterator(); j.hasNext();) {
 	%><%=j.next()%><%
-        if (j.hasNext()) %>,<%
+        if (j.hasNext()) { %>,<% }
      } 
 %>
 <%

@@ -43,7 +43,7 @@ public class StructureValidator implements ContentValidatorI {
 		TYPES.add(FDContentTypes.STARTER_LIST);
 	}
 
-	public void validate( ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request ) {
+	public void validate( ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode ) {
 		ContentType t = node.getKey().getType();
 		if ( TYPES.contains( t ) ) {
 			Set<ContentKey> parentKeys = service.getParentKeys( node.getKey() );

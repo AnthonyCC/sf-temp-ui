@@ -1,353 +1,243 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.TagData;
+import javax.servlet.jsp.tagext.TagExtraInfo;
+import javax.servlet.jsp.tagext.VariableInfo;
 
-import org.apache.log4j.Category;
-
-import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.content.AbstractProductFilter;
-import com.freshdirect.fdstore.content.BrandFilter;
-import com.freshdirect.fdstore.content.BrandModel;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.CategoryNodeTree;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ContentNodeTree;
-import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
+import com.freshdirect.fdstore.content.ComparatorChain;
 import com.freshdirect.fdstore.content.ContentSearch;
-import com.freshdirect.fdstore.content.FilteredSearchResults;
+import com.freshdirect.fdstore.content.Domain;
+import com.freshdirect.fdstore.content.DomainValue;
+import com.freshdirect.fdstore.content.EnumSortingValue;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.Recipe;
+import com.freshdirect.fdstore.content.RecipeSearchPage;
+import com.freshdirect.fdstore.content.SearchResultItem;
 import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.content.SearchSortType;
-import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.content.SortIntValueComparator;
+import com.freshdirect.fdstore.content.SortLongValueComparator;
+import com.freshdirect.fdstore.content.SortValueComparator;
+import com.freshdirect.fdstore.content.util.SmartSearchUtils;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.util.SearchNavigator;
-import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.framework.webapp.BodyTagSupport;
+import com.freshdirect.fdstore.util.ProductPagerNavigator;
+import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
 
 /**
- * @author zsombor
+ * @author zsombor, csongor
  * 
  */
-public class SmartSearchTag extends BodyTagSupport {
+public class SmartSearchTag extends AbstractProductPagerTag {
+	private static final long serialVersionUID = 3093054384959548572L;
 
-	private static final long	serialVersionUID	= 3093054384959548572L;
+	public static class TagEI extends TagExtraInfo {
+		public VariableInfo[] getVariableInfo(TagData data) {
+			return new VariableInfo[] { new VariableInfo(data.getAttributeString("id"), SmartSearchTag.class.getName(), true,
+					VariableInfo.NESTED) };
+		}
+	}
 
-	public static class FilterChain extends AbstractProductFilter {
+	private List<Recipe> recipes = Collections.emptyList();
+	private int noOfRecipes;
+	private SortedMap<DomainValue, Set<Recipe>> classificationsMap;
+	private Collection<String> spellingSuggestions;
+	private String searchTerm;
 
-        List<AbstractProductFilter> filters;
+	public SmartSearchTag() {
+		super();
+	}
 
-        public FilterChain() {
-            filters = new ArrayList<AbstractProductFilter>();
-        }
+	/**
+	 * This is the mock constructor
+	 * 
+	 * @param nav
+	 * @param customerId
+	 */
+	public SmartSearchTag(ProductPagerNavigator nav, String customerId) {
+		super(nav, customerId);
+	}
 
-        public FilterChain(List<AbstractProductFilter> filters) {
-            this.filters = filters;
-        }
+	@Override
+	protected SearchResults getResults() {
+		FDUserI user = getFDUser();
+		String userId = user != null && user.getIdentity() != null ? user.getIdentity().getErpCustomerPK() : null;
 
-        /**
-         * Convenience method
-         */
-        public FilterChain(AbstractProductFilter f1, AbstractProductFilter f2) {
-            this.filters = new ArrayList<AbstractProductFilter>();
-            if (f1 != null) {
-                this.filters.add(f1);
-            }
-            if (f2 != null) {
-                this.filters.add(f2);
-            }
-        }
+		if (nav.getUpc() != null) {
+			searchTerm = nav.getUpc();
+			return ContentSearch.getInstance().searchUpc(userId, nav.getUpc());
+		} else {
+			searchTerm = nav.getSearchTerm();
+			return ContentSearch.getInstance().searchProducts(nav.getSearchTerm());
+		}
+	}
 
-        public void add(AbstractProductFilter a) {
-            this.filters.add(a);
-        }
+	@Override
+	protected Comparator<SearchResultItem<ProductModel>> getProductSorter(List<SearchResultItem<ProductModel>> products, SearchSortType sortBy, boolean ascending) {
+		ComparatorChain<SearchResultItem<ProductModel>> comparator;
+		switch (sortBy) {
+			case DEFAULT:
+				return null;
+			case BY_NAME:
+				comparator = ComparatorChain.create(SearchResultItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+				if (!ascending)
+					comparator = ComparatorChain.reverseOrder(comparator);
+				break;
+			case BY_PRICE:
+				comparator = ComparatorChain.create(SearchResultItem.wrap(ProductModel.GENERIC_PRICE_COMPARATOR));
+				comparator.chain(SearchResultItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+				if (!ascending)
+					comparator = ComparatorChain.reverseOrder(comparator);
+				break;
+			case BY_POPULARITY:
+				comparator = ComparatorChain.create(SearchResultItem.wrap(ScriptedContentNodeComparator.createGlobalComparator(getUserId(), getPricingContext())));
+				comparator.chain(SearchResultItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+				if (!ascending)
+					comparator = ComparatorChain.reverseOrder(comparator);
+				break;
+			case BY_SALE:
+				SmartSearchUtils.collectSaleInfo(products, getPricingContext());
+				comparator = ComparatorChain.create(new SortValueComparator<ProductModel>(EnumSortingValue.DEAL))
+						.chain(SearchResultItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+				if (!ascending)
+					comparator = ComparatorChain.reverseOrder(comparator);
+				break;
+			case BY_RELEVANCY:
+				// if there's only one DYM then we display products for that DYM
+				// but for those products we have to use the suggested term to produce the following scores
+				String suggestedTerm = getProcessedResults().getSuggestedTerm();
+				if (suggestedTerm == null)
+					suggestedTerm = searchTerm;
+				SmartSearchUtils.collectOriginalTermInfo(products, suggestedTerm);
+				SmartSearchUtils.collectRelevancyCategoryScores(products, suggestedTerm);
+				SmartSearchUtils.collectTermScores(products, suggestedTerm);
+				comparator = ComparatorChain.create(new SortValueComparator<ProductModel>(EnumSortingValue.PHRASE));
+				comparator.chain(SearchResultItem.wrap(ScriptedContentNodeComparator.createUserComparator(getUserId(), getPricingContext())));
+				comparator.chain(new SortIntValueComparator<ProductModel>(EnumSortingValue.ORIGINAL_TERM));
+				comparator.chain(new SortValueComparator<ProductModel>(EnumSortingValue.CATEGORY_RELEVANCY));
+				comparator.chain(new SortLongValueComparator<ProductModel>(EnumSortingValue.TERM_SCORE));
+				comparator.chain(SearchResultItem.wrap(ScriptedContentNodeComparator.createGlobalComparator(getUserId(), getPricingContext())));
+				comparator.chain(SearchResultItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+				if (!ascending)
+					comparator = ComparatorChain.reverseOrder(comparator);
+				break;
+			default:
+				return null;
+		}
+		SmartSearchUtils.collectAvailabilityInfo(products, getPricingContext());
+		comparator.prepend(new SortValueComparator<ProductModel>(EnumSortingValue.AVAILABILITY));
+		return comparator;
+	}
+	
+	@Override
+	protected void postProcess(SearchResults results) {
+		if (nav.isFromDym())
+			results.setSpellingSuggestions(Collections.<String>emptyList());
 
-        public boolean applyTest(ProductModel prod) throws FDResourceException {
-            for (Iterator<AbstractProductFilter> it = filters.iterator(); it.hasNext();) {
-                AbstractProductFilter filter = it.next();
-                if (!filter.applyTest(prod)) {
-                    return false;
-                }
-            }
+		noOfRecipes = results.getRecipes().size();
+		
+		// build classifications tree (map)
+		buildRecipeClassificationsTree(results);
 
-            return true;
-        }
+		// filter recipes by classification
+		filterRecipesByClassification(results);
 
-        public boolean isEmpty() {
-            return filters.isEmpty();
-        }
+		// prepare recipes list
+		createRecipeList(results);
 
-    }
-        
+		// sort recipes
+		sortRecipes();
+		
+		spellingSuggestions = results.getSpellingSuggestions();
+	}
 
-    private static Category  LOGGER = LoggerFactory.getInstance(SmartSearchTag.class);
+	private void buildRecipeClassificationsTree(SearchResults results) {
+		classificationsMap = new TreeMap<DomainValue, Set<Recipe>>(DomainValue.SORT_BY_LABEL);
+		RecipeSearchPage recipeSearchPage = RecipeSearchPage.getDefault();
+		List<Domain> classificationDomains = recipeSearchPage.getFilterByDomains();
+		for (SearchResultItem<Recipe> item : results.getRecipes()) {
+			List<DomainValue> classifications = item.getModel().getClassifications();
+			for (DomainValue classification : classifications)
+				if (classificationDomains.contains(classification.getDomain())) {
+					Set<Recipe> recipes = classificationsMap.get(classification);
+					if (recipes == null)
+						classificationsMap.put(classification, recipes = new TreeSet<Recipe>(Recipe.SORT_BY_NAME));
+					recipes.add(item.getModel());
+				}
+		}
+	}
 
-    private String           searchResults;                                           // search
-    // results
-    // key
-    private String           productList;
-    private String           categorySetName;
-    private String           brandSetName;
+	private void filterRecipesByClassification(SearchResults results) {
+		if (results.getRecipes().isEmpty())
+			return;
+		
+		if (nav.isProductsFiltered()) {
+			results.emptyRecipes();
+			return;
+		}
 
-    private String           categoryTreeName;
+		String classificationId = nav.getRecipeFilter();
+		if (classificationId != null) {
+			Iterator<SearchResultItem<Recipe>> it = results.getRecipes().iterator();
+			OUTER: while (it.hasNext()) {
+				SearchResultItem<Recipe> item = it.next();
+				List<DomainValue> classifications = item.getModel().getClassifications();
+				for (DomainValue classification : classifications)
+					if (classification.getContentKey().getId().equals(classificationId))
+						continue OUTER;
+				it.remove();
+			}
+		}
+	}
 
-    private String           selectedCategoriesName;
+	public void createRecipeList(SearchResults results) {
+		List<SearchResultItem<Recipe>> items = results.getRecipes();
+		recipes = new ArrayList<Recipe>(items.size());
+		for (SearchResultItem<Recipe> item : items)
+			recipes.add(item.getModel());
+	}
 
-    private String filteredCategoryTreeName;
+	public void sortRecipes() {
+		Collections.sort(recipes, Recipe.SORT_BY_NAME);
+		if (!nav.isSortOrderingAscending())
+			Collections.reverse(recipes);
+	}
 
-    public void setSearchResults(String s) {
-        this.searchResults = s;
-    }
+	public List<Recipe> getRecipes() {
+		return recipes;
+	}
 
-    public void setProductList(String s) {
-        this.productList = s;
-    }
+	public int getNoOfRecipes() {
+		return noOfRecipes;
+	}
 
-    public void setCategorySet(String categorySet) {
-        this.categorySetName = categorySet;
-    }
+	public boolean hasRecipes() {
+		return !recipes.isEmpty();
+	}
 
-    public void setBrandSet(String brandSetName) {
-        this.brandSetName = brandSetName;
-    }
+	public boolean isShowOnlyRecipes() {
+		return !hasProducts() && hasRecipes();
+	}
 
-    public void setCategoryTree(String categoryTreeName) {
-        this.categoryTreeName = categoryTreeName;
-    }
+	public SortedMap<DomainValue, Set<Recipe>> getRecipeClassificationsMap() {
+		return classificationsMap;
+	}
 
-    public void setFilteredCategoryTreeName(String filteredCategoryTreeName) {
-        this.filteredCategoryTreeName = filteredCategoryTreeName;
-    }
+	public boolean hasNoResults() {
+		return !hasProducts() && !hasRecipes();
+	}
 
-    public void setSelectedCategories(String selectedCategories) {
-        this.selectedCategoriesName = selectedCategories;
-    }
-    
-    public int doStartTag() throws JspException {
-
-        ServletRequest request = pageContext.getRequest();
-        String searchTerm = request.getParameter("searchParams");
-        if (searchTerm != null) {
-        	searchTerm = searchTerm.trim();
-        	if (searchTerm.length() == 0)
-        		searchTerm = null;
-        }
-        String upc = request.getParameter("upc");
-        if (upc != null) {
-        	upc = upc.trim();
-        	if (upc.length() == 0)
-        		upc = null;
-        }
-
-        //
-        // Sanity check the search criteria before performing search
-        //
-        if (searchTerm == null && upc == null) {
-            LOGGER.debug("search criteria was null or empty");
-            return EVAL_BODY_BUFFERED;
-        }
-        
-        String userId = getUserId(); // ErpCustomerPK
-        
-        SearchResults res;
-        if (upc != null) {
-            res = ContentSearch.getInstance().searchUpc(userId, upc);        	
-        } else {
-            res = ContentSearch.getInstance().search(searchTerm);        	
-        }
-
-        
-        String departmentId = request.getParameter("deptId");
-        if (departmentId != null && departmentId.length() == 0) {
-            departmentId = null;
-        }
-
-
-        boolean reverseOrder = "desc".equalsIgnoreCase(request.getParameter("order"));
-        FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
-        FilteredSearchResults fres = new FilteredSearchResults(res.getSearchTerm(), res, userId, upc != null ? upc : searchTerm.toLowerCase(),user != null ? user.getPricingContext() : PricingContext.DEFAULT);
-        CategoryNodeTree contentTree = putTree(categoryTreeName, fres.getProducts(), true);
-        fres.setNodeTree(contentTree);
-        fres.setScoreOracle(new FilteredSearchResults.HierarchicalScoreOracle(contentTree));
-
-        fres.sortProductsBy(SearchSortType.findByLabel(request.getParameter("sort")), reverseOrder);
-
-        fres.setStart(Math.max(getIntParameter("start", 0), 0));
-        {
-            // calculate page size.
-            String view = pageContext.getRequest().getParameter("view");
-            if (view == null) {
-                view = SearchNavigator.getDefaultViewName();  // "list"; // default view
-            }
-            int defaultPageSize = 0;
-            SearchNavigator.SearchDefaults defs = SearchNavigator.DEFAULTS.get(view);
-            if (defs != null) {
-            	defaultPageSize = defs.normalPageSize;
-            }
-            
-            fres.setPageSize(Math.max(Math.min(getIntParameter("pageSize", defaultPageSize), 100), 0));
-        }
-
-        String categoryId = pageContext.getRequest().getParameter("catId");
-
-        List<ProductModel> filtered;
-        List<ProductModel> convFiltered;
-        {
-            
-            if (categoryId != null) {
-                filtered = contentTree.collectChildNodes(categoryId, new ContentNodeTree.UniqueProductFilter());
-                Collections.sort(filtered, fres.getCurrentComparator());
-            } else if (departmentId != null) {
-                filtered = contentTree.collectChildNodes(departmentId, new ContentNodeTree.UniqueProductFilter());
-                Collections.sort(filtered, fres.getCurrentComparator());
-            } else {
-                filtered = fres.getProducts();
-            }
-            convFiltered = new ArrayList<ProductModel>(filtered.size());
-            // get brand names - all or just for the selected category
-            if (brandSetName != null) {
-                TreeSet<BrandModel> brandSet = new TreeSet<BrandModel>(ContentNodeModel.FULL_NAME_COMPARATOR);
-                for (int i = 0; i < filtered.size(); i++) {
-                    ProductModel prod = filtered.get(i);
-                    //Convert them to ProductModelPricingAdapter for zone pricing.
-                    convFiltered.add(prod);
-                	brandSet.addAll(prod.getBrands());
-                }
-                pageContext.setAttribute(brandSetName, brandSet);
-
-            }
-
-            // STEP 2 - Then (re)filter to brands too - if it was given
-            String brand = request.getParameter("brandValue");
-
-            if (brand != null && brand.length() > 0) {
-                BrandFilter bf = new BrandFilter(brand);
-                try {
-                	convFiltered = bf.apply(convFiltered);
-                } catch (FDResourceException e) {
-                    e.printStackTrace();
-                }
-            }
-            fres.setFilteredProducts(convFiltered);
-        }
-
-        
-        // recipe filter
-        // set recipe filter and sort ordering when full recipes are displayed
-        if ("rec".equalsIgnoreCase(departmentId)) {
-            fres.setRecipeFilter(request.getParameter("classification"), reverseOrder);
-        }
-        
-        
-        
-
-        // set search results in PageContext
-        pageContext.setAttribute(searchResults, fres);
-
-        if (productList != null) {
-            pageContext.setAttribute(productList, fres.getFilteredProductsListPage());
-        }
-
-        if (categorySetName != null) {
-            List<ProductModel> products = fres.getProducts();
-            TreeSet<CategoryModel> categorySet = new TreeSet<CategoryModel>(ContentNodeModel.FULL_NAME_COMPARATOR);
-            for (int i = 0; i < products.size(); i++) {
-                ProductModel prod = products.get(i);
-                categorySet.add(prod.getPrimaryHome());
-            }
-            pageContext.setAttribute(categorySetName, categorySet);
-        }
-
-        if (filteredCategoryTreeName != null) {
-            putTree(filteredCategoryTreeName, convFiltered, false);
-        }
-        
-        if (selectedCategoriesName != null) {
-            // calculate the set of the selected categories, to the root
-            Set<String> selectedCategories = new HashSet<String>();
-            if (categoryId != null) {
-                TreeElement treeElement = contentTree.getTreeElement(categoryId);
-                while (treeElement != null) {
-                    selectedCategories.add(categoryId);
-                    ContentNodeModel contentNodeModel = contentTree.getParent(treeElement.getModel());
-                    if (contentNodeModel != null) {
-                        categoryId = contentNodeModel.getContentKey().getId();
-                        treeElement = contentTree.getTreeElement(categoryId);
-                    } else {
-                        treeElement = null;
-                    }
-                }
-            }
-            pageContext.setAttribute(selectedCategoriesName, selectedCategories);
-        }
-
-        return EVAL_BODY_BUFFERED;
-    }
-
-
-    /**
-     * Generates a content tree for the given products and assigns to attribute
-     * 
-     * @param attrName
-     *            (String) Attribute name
-     * @param products
-     *            (List<ProductModel>) List of products
-     * @param multipleHome
-     *            (boolean) add products to their multiple home or not.
-     */
-    protected CategoryNodeTree putTree(String attrName, List<ProductModel> products, boolean multipleHome) {
-        CategoryNodeTree tree = CategoryNodeTree.createTree(products, multipleHome);
-        putTree(attrName, tree);
-        return tree;
-    }
-
-    protected void putTree(String attrName, CategoryNodeTree tree) {
-        if (attrName != null) {
-            pageContext.setAttribute(attrName, tree);
-        }
-    }
-
-
-    int getIntParameter(String param, int def) {
-        try {
-            String value = pageContext.getRequest().getParameter(param);
-            if (value != null) {
-                return Integer.parseInt(value.trim());
-            }
-            return def;
-        } catch (Exception e) {
-            return def;
-        }
-    }
-
-    protected String getUserId() {
-        FDUserI user = FDSessionUser.getFDSessionUser(pageContext.getSession());
-        if (user == null) {
-            return null;
-        }
-        FDIdentity identity = user.getIdentity();
-        if (identity == null) {
-            return null;
-        }
-        return identity.getErpCustomerPK();
-    }
-    
-    @SuppressWarnings( "unused" )
-	private PricingContext getPricingContext() {
-        FDUserI user = FDSessionUser.getFDSessionUser(pageContext.getSession());
-        if (user == null) {
-            throw new FDRuntimeException("User object is Null");
-        }
-        return user.getPricingContext();
-    }
+	public Collection<String> getSpellingSuggestions() {
+		return spellingSuggestions;
+	}
 }

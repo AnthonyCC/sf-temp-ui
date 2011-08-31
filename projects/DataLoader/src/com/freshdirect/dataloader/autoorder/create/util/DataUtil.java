@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import com.freshdirect.dataloader.autoorder.create.command.IAccept;
 import com.freshdirect.dataloader.autoorder.create.command.OrderBean;
@@ -14,22 +13,12 @@ import com.freshdirect.dataloader.autoorder.create.command.OrderBean;
 
 public class DataUtil {
 	
-	private static final String ORDER_LIST = "select s.id ORDERID, s.customer_id CUSTOMER_ID, " +
-			"di.ADDRESS1 ADDRESS1, di.ADDRESS2 ADDRESS2, di.ADDRESS2 APARTMENT, di.CITY CITY, di.COUNTRY COUNTRY, di.STARTTIME STARTTIME, di.ENDTIME ENDTIME, di.STATE STATE, di.ZIP ZIP,"+
-			"(select sum(ACTUAL_QUANTITY) from cust.CARTON_DETAIL cd where cd.SALE_ID = s.id group by sale_id) CARTONCOUNT "+
-			"from cust.sale s, cust.salesaction sa, cust.deliveryinfo di "+
-			"where s.id = sa.sale_id and s.customer_id = sa.customer_id and requested_date = trunc(?) and sa.id = di.salesaction_id "+ 
-			"and sa.action_type in ('CRO','MOD') and sa.action_date=s.CROMOD_DATE and s.type='REG'";
-	
-	
 	private static final String CUSTOMER_CHECK = "select * from cust.customer where user_id like ?";
 	
 	private static final String CUSTOMER_GET = "select * from cust.address order by TO_NUMBER(ID) desc";
 	
 		
 	private static final String CUSTOMER_FULLGET = "select  c.ID ERPID, fd.ID FDID, c.user_id USID from cust.customer c, cust.fdcustomer fd where c.ID = fd.ERP_CUSTOMER_ID and user_id like ?";
-	
-	private static Random r = new Random();
 	
 	public static void getOrders(Connection conn, String prefix,int totalCount, IAccept accept ) throws Exception {
 				
@@ -90,8 +79,6 @@ public class DataUtil {
 	}
 	
 	private static boolean hasCustomer(Connection conn, String prefix) throws SQLException {
-		boolean tmpBoolean = false;
-		
 		PreparedStatement ps = conn.prepareStatement(CUSTOMER_CHECK);
 
 		ps.setString(1, (prefix+"%"));

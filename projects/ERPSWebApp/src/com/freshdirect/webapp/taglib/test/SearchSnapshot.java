@@ -382,8 +382,8 @@ public class SearchSnapshot {
     }
     
     public void calculateCorrelation() {
-        for (Iterator iter = searchResults.values().iterator();iter.hasNext();) {
-            AggregateSearchResult a = (AggregateSearchResult) iter.next();
+        for (Iterator<AggregateSearchResult> iter = searchResults.values().iterator();iter.hasNext();) {
+            AggregateSearchResult a = iter.next();
             a.calculateCorrelation();
         }
     }

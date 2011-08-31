@@ -13,22 +13,22 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import javax.servlet.jsp.JspException;
+
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.CategoryNodeTree;
 import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ContentSearch;
-import com.freshdirect.fdstore.content.FilteredSearchResults;
-import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.content.SearchSortType;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.util.SearchNavigator;
 import com.freshdirect.framework.util.CSVUtils;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.smartstore.scoring.ScoringAlgorithm;
 import com.freshdirect.smartstore.service.SearchScoringRegistry;
+import com.freshdirect.webapp.taglib.fdstore.SmartSearchTag;
 
 public class SnapshotGenerator {
 
@@ -123,8 +123,6 @@ public class SnapshotGenerator {
             p.println("<report name=\"" + label + "\" " + 
                     (customerId != null ? "userId=\"" + customerId + "\" " : "") +
                     "factors=\"" + factors + "\">");
-            ContentSearch s = ContentSearch.getInstance();
-            
             
             int termNum = 0;
             status.setLength(0);
@@ -137,35 +135,28 @@ public class SnapshotGenerator {
                 for (Iterator<String> riter = row.iterator(); riter.hasNext();) {
                     String term = riter.next().trim();
                     if (term.length()>0) {
-                        try {
-                            Integer.parseInt(term);
-                            continue;
-                        } catch (Exception e) {
-                            
-                        }
                         LOG.info("search for "+term);
                         termNum++;
                         
-                        p.println("<term name=\""+term+"\">");
+                        p.println("<term name=\""+StringEscapeUtils.escapeXml(term)+"\">");
                         
-                        status.append(term);
-                        
-                        SearchResults res = s.search(term);
+                        status.append(StringEscapeUtils.escapeHtml(term));
 
-                        FilteredSearchResults fres = new FilteredSearchResults(term, res, customerId, pricingContext);
-                        //fres.setScoreOracle(new FilteredSearchResults.HierarchicalGrouppingScoreOracle(CategoryNodeTree.createTree(fres.getProducts())));
-                        CategoryNodeTree nodeTree = CategoryNodeTree.createTree(fres.getProducts(), true);
-                        fres.setNodeTree(nodeTree);
-                        fres.setScoreOracle(new FilteredSearchResults.HierarchicalScoreOracle(nodeTree));
-                        fres.sortProductsBy(SearchSortType.BY_RELEVANCY, false);
+                        SearchNavigator nav = SearchNavigator.mock(term, null, SearchNavigator.VIEW_DEFAULT, null, null, null, null, 0, 0, SearchSortType.BY_RELEVANCY, true, false, false);
+                        SmartSearchTag search = new SmartSearchTag(nav, customerId);
+              			try {
+							search.doStartTag();
+						} catch (JspException e) {
+							throw new RuntimeException("cannot happen exception", e);
+						}
+                        
 
-
-                        status.append(" ("+fres.getProducts().size()+")\n");
+                        status.append(" ("+search.getPageProducts().size()+")\n");
                         
                         
-                        for (int i=0;i<fres.getProducts().size();i++) {
-                            ContentNodeModel model = (ContentNodeModel) fres.getProducts().get(i);
-                            String fullname = StringUtils.replace(model.getFullName(), "&", "&amp;");
+                        for (int i=0;i<search.getPageProducts().size();i++) {
+                            ContentNodeModel model = search.getPageProducts().get(i);
+                            String fullname = StringEscapeUtils.escapeXml(model.getFullName());
                             double[] scores = scoring.getScoreOf(customerId, pricingContext, provider, model);
                             StringBuilder sb = new StringBuilder();
                             for (double x : scores) {

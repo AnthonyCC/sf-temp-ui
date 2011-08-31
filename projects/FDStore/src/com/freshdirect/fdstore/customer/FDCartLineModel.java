@@ -18,8 +18,6 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.GroupScalePricing;
-import com.freshdirect.fdstore.GrpZonePriceModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -77,8 +75,10 @@ public class FDCartLineModel extends AbstractCartLine {
 			if(ol.getSku()!=null){
 
 				FDProductInfo productInfo = FDCachedFactory.getProductInfo(ol.getSku().getSkuCode());
-				EnumOrderLineRating rating=EnumOrderLineRating.getEnumByStatusCode(productInfo.getRating());
-				EnumSustainabilityRating sustainabilityRating=EnumSustainabilityRating.getEnumByStatusCode(productInfo.getSustainabilityRating());
+
+				EnumOrderLineRating rating=productInfo.getRating();
+				EnumSustainabilityRating sustainabilityRating=productInfo.getSustainabilityRating();
+
 				ol.setProduceRating(rating);
 				ol.setSustainabilityRating(sustainabilityRating);
 				ol.setBasePrice(productInfo.getZonePriceInfo(getPricingContext().getZoneId()).getSellingPrice());

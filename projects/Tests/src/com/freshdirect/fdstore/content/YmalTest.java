@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
-
 import javax.naming.Context;
 
 import org.mockejb.interceptor.Aspect;
@@ -22,10 +21,8 @@ import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.content.attributes.AttributeCollection;
-import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
-import com.freshdirect.fdstore.EnumAvailabilityStatus;
 import com.freshdirect.fdstore.FDMaterial;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -34,9 +31,7 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
-import com.freshdirect.fdstore.ZonePriceInfoListing;
-import com.freshdirect.fdstore.ZonePriceInfoModel;
-import com.freshdirect.fdstore.ZonePriceListing;
+import com.freshdirect.fdstore.aspects.BaseProductInfoAspect;
 import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
 import com.freshdirect.fdstore.customer.FDCustomerManagerTestSupport;
 
@@ -600,17 +595,8 @@ public class YmalTest extends FDCustomerManagerTestSupport {
 		return ContentFactory.getInstance().getContentNode(id);
 	}
 
-	public static class FDFactoryProductInfoAspect implements Aspect {
+	public static class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
 
-		public Pointcut getPointcut() {
-			return new DebugMethodPatternPointCut("FDFactorySessionBean\\.getProductInfo\\(java.lang.String\\)");
-		}
-
-		public void intercept(InvocationContext ctx) throws Exception {
-			String sku = (String) ctx.getParamVals()[0];
-			ctx.setReturnObject(getProductInfo(sku));
-		}
-	    
 		/**
 		 * Get current product information object for sku.
 		 *
@@ -634,25 +620,18 @@ public class YmalTest extends FDCustomerManagerTestSupport {
 				// a 0 units available starting now
 				erpEntries.add(new ErpInventoryEntryModel(now, 0));
 				inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, erpEntries));
-				ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
-				ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
-				dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-				productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList, null,"");
-				
+				productInfo = createProductInfo(sku, now, materials, inventoryCache);
 			} else {
 				// fallback: return all other items as available
 				// a 1000 units available starting now
 				erpEntries.add(new ErpInventoryEntryModel(now, 1000));
 				inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, erpEntries));
-				ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
-				ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
-				dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-				productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList, null,"");
-				
+				productInfo = createProductInfo(sku, now, materials, inventoryCache);
 			}
 
 			return productInfo;
 		}
+
 	}
 
 	public static class FDFactoryProductAspect implements Aspect {

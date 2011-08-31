@@ -89,7 +89,7 @@ public class ValidationTaskTest extends TestCase {
 		List keys = Collections.synchronizedList(new ArrayList());
 
 		public void validate(ContentValidationDelegate delegate,
-				ContentServiceI service, ContentNodeI node, CmsRequestI request) {
+				ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
 			try {
 				Thread.sleep(VALIDATION_DELAY);
 				this.keys.add(node.getKey());
@@ -102,8 +102,8 @@ public class ValidationTaskTest extends TestCase {
 	private class FailingValidator extends MockValidator {
 
 		public void validate(ContentValidationDelegate delegate,
-				ContentServiceI service, ContentNodeI node, CmsRequestI request) {
-			super.validate(delegate, service, node, request);
+				ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
+			super.validate(delegate, service, node, request, oldNode);
 			throw new RuntimeException("oops");
 		}
 	}

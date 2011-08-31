@@ -39,6 +39,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.ZonePriceInfoListing;
+import com.freshdirect.fdstore.aspects.BaseProductInfoAspect;
 import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
 import com.freshdirect.fdstore.customer.FDCustomerManagerTestSupport;
 
@@ -192,16 +193,7 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 	}
 
 	
-	public static class FDFactoryProductInfoAspect implements Aspect {
-
-		public Pointcut getPointcut() {
-			return new DebugMethodPatternPointCut("FDFactorySessionBean\\.getProductInfo\\(java.lang.String\\)");
-		}
-
-		public void intercept(InvocationContext ctx) throws Exception {
-			String sku = (String) ctx.getParamVals()[0];
-			ctx.setReturnObject(getProductInfo(sku));
-		}
+	public static class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
 	    
 		/**
 		 * Get current product information object for sku.
@@ -233,7 +225,7 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 					                           EnumATPRule.MATERIAL,
 					                           EnumAvailabilityStatus.AVAILABLE,
 					                           now,
-					                           inventoryCache,"",null,ZonePriceInfoListing.getDummy(), null,"");
+					                           inventoryCache,null,null,ZonePriceInfoListing.getDummy(), null,null);
 
 			return productInfo;
 		}

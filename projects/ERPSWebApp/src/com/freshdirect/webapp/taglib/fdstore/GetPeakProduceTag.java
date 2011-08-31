@@ -292,7 +292,7 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 		while(it.hasNext()) {
 			ProductModel prod=(ProductModel)it.next();
 			List skus=prod.getSkus();
-			String rating=null;
+			EnumOrderLineRating rating=null;
 			for(int i=0;i<skus.size();i++) {
 				sku=(SkuModel)skus.get(i);
 				if(sku.isDiscontinued() || sku.isOutOfSeason() || sku.isTempUnavailable() ||(!sku.isAvailableWithin(2))) {//sku is available tomorrow.
@@ -351,11 +351,11 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 		return matchFound;
 	}
 
-	private boolean isPeakProduce(String rating) {
+	private boolean isPeakProduce(EnumOrderLineRating rating) {
 		
-		if ( EnumOrderLineRating.PEAK_PRODUCE_10.getStatusCode().equals(rating)||
-			 EnumOrderLineRating.PEAK_PRODUCE_9.getStatusCode().equals(rating)||
-			 EnumOrderLineRating.PEAK_PRODUCE_8.getStatusCode().equals(rating) ) {
+		if ( EnumOrderLineRating.PEAK_PRODUCE_10.equals(rating)||
+			 EnumOrderLineRating.PEAK_PRODUCE_9.equals(rating)||
+			 EnumOrderLineRating.PEAK_PRODUCE_8.equals(rating) ) {
 			return true;
 		}
 		return false;

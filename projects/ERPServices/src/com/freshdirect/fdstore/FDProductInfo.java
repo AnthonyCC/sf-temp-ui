@@ -7,7 +7,7 @@ import java.util.StringTokenizer;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryModel;
-import com.freshdirect.framework.util.StringUtil;;
+import com.freshdirect.framework.util.StringUtil;
 
 /**
  * Lightweight information about a product, that is necessary for display on a category page.
@@ -32,7 +32,7 @@ public class FDProductInfo extends FDSku  {
     /** inventory info for the product but this should only be set in a TEST CASE */
     private final FDInventoryCacheI inventory;
 	
-    private final String rating;
+    private final EnumOrderLineRating rating;
     
     /*  days guaranteed fresh upon delivery */
     private final String freshness;
@@ -45,12 +45,12 @@ public class FDProductInfo extends FDSku  {
     //FDGroup contains Group identity if applicable.
     private final FDGroup group;
     
-    private String sustainabilityRating="";
+    private EnumSustainabilityRating sustainabilityRating;
     
     public FDProductInfo(String skuCode, int version, 
     		String[] materialNumbers, EnumATPRule atpRule, EnumAvailabilityStatus availStatus, Date availDate, 
-    		 FDInventoryCacheI inventory, String rating, String freshness,
-    		 ZonePriceInfoListing zonePriceInfoList, FDGroup group, String sustainabilityRating) {
+    		FDInventoryCacheI inventory, EnumOrderLineRating rating, String freshness,
+    		ZonePriceInfoListing zonePriceInfoList, FDGroup group, EnumSustainabilityRating sustainabilityRating) {
 
 		super(skuCode, version);
 
@@ -65,9 +65,10 @@ public class FDProductInfo extends FDSku  {
 
         this.freshness=freshness;
         this.group = group;
-        if(sustainabilityRating!=null)
+        if(sustainabilityRating!=null) {
         	this.sustainabilityRating=sustainabilityRating;
 	}
+    }
 
 	/**
 	 * Get inventory (short term availability) information.
@@ -121,7 +122,7 @@ public class FDProductInfo extends FDSku  {
         return EnumAvailabilityStatus.TEMP_UNAV.equals(this.availStatus);
     }
 
-    public String getRating() {
+    public EnumOrderLineRating getRating() {
     	return this.rating;
     }
     
@@ -175,7 +176,7 @@ public class FDProductInfo extends FDSku  {
     
     public String toString() {
         return "FDProductInfo[" + this.getSkuCode() + " v" + this.getVersion() + "\n\tmaterialNumbers:" 
-                + (this.materialNumbers != null ? StringUtil.encodeString(this.materialNumbers) : null) + "\n\t" + this.availStatus.getShortDescription() 
+                + (this.materialNumbers != null ? StringUtil.encodeString(this.materialNumbers) : null) + "\n\tavailStatus" + this.availStatus.getShortDescription() 
                 + "\n\tavailDate:" + this.availDate + "\n\trating:" + this.rating +"\n\tsustainabilityRating:" + this.sustainabilityRating + "\n\tatpRule:" + this.atpRule 
                 + "\n\tfreshness:" + this.freshness + "\n\tdefaultPriceUnit:" + this.getDefaultPriceUnit() + "\n\tavailDate:"+this.availDate 
                 + "\n\t" + this.zonePriceInfoList +"\n\t"+this.group + "\n]";
@@ -200,23 +201,26 @@ public class FDProductInfo extends FDSku  {
 			throw new FDRuntimeException(fe, "Unexcepted error happened while fetching the Zone Price Info for SKU : "+this.getSkuCode());
 		}
 	}
-	
 
 	public ZonePriceInfoListing getZonePriceInfoList() {
 		return this.zonePriceInfoList;
 	}
 
+	public FDProductInfo copy(int version, EnumAvailabilityStatus availability, EnumOrderLineRating newRating, String newFreshness) {
+	    return new FDProductInfo (getSkuCode(), version, materialNumbers, atpRule, availability, new Date(), inventory, newRating, newFreshness, zonePriceInfoList.clone(), group, sustainabilityRating);
+	}
+
 	public FDGroup getGroup() {
 		return group;
 	}
-	
+
 	public boolean isGroupExists(){
 		return group != null;
 	}
 	/** Getter for property sustainabilityRating.
      * @return Value of property sustainabilityRating.
      */
-    public String getSustainabilityRating() {
+    public EnumSustainabilityRating getSustainabilityRating() {
         return sustainabilityRating;
-    }	
+    }
 }

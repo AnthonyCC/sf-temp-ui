@@ -1,7 +1,6 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -20,7 +19,6 @@ import org.apache.commons.collections.functors.TransformedPredicate;
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
-import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.RelationshipDefI;
 import com.freshdirect.cms.application.CmsManager;
@@ -31,15 +29,13 @@ import com.freshdirect.cms.query.ContentKeysPredicate;
 import com.freshdirect.cms.query.RelationshipContainsAllPredicate;
 import com.freshdirect.cms.query.RelationshipContainsAnyPredicate;
 import com.freshdirect.cms.query.RelationshipLookupTransformer;
-import com.freshdirect.cms.search.SearchHit;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentSearchUtil;
+import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.fdstore.content.Domain;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeSearchCriteria;
 import com.freshdirect.fdstore.content.RecipeSearchPage;
-import com.freshdirect.fdstore.content.SearchQueryStemmer;
 import com.freshdirect.fdstore.util.RecipesUtil;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
@@ -169,9 +165,8 @@ public class FindRecipesTag extends AbstractGetterTag<List<Recipe>> {
 		//
 		
 		String keyword = NVL.apply(request.getParameter("keyword"), "");
-		keyword = ContentSearchUtil.normalizeTerm(keyword);
+		keyword = keyword.trim();
 		if (!"".equals(keyword)) {
-			// TODO refactor lucene-based predicate search
 			Set<ContentKey> keys = searchRecipes(keyword);
 			Predicate p = new ContentKeysPredicate(keys);
 			predicates.add(p);
@@ -233,21 +228,7 @@ public class FindRecipesTag extends AbstractGetterTag<List<Recipe>> {
 	 * @return Set<ContentKey>
 	 */
 	private Set<ContentKey> searchRecipes(String keyword) {
-		Collection<SearchHit> hits = CmsManager.getInstance().search(keyword, 2000);
-
-		Map<ContentType,List<SearchHit>> hitsByType = ContentSearchUtil.mapHitsByType(hits);
-
-		String[] tokens = ContentSearchUtil.tokenizeTerm(keyword);
-
-		// TODO : refactor, this way, we load ContentNodes twice, here, and in the upper method.
-		List<SearchHit> recipes = ContentSearchUtil.filterRelevantNodes(ContentSearchUtil.resolveHits(hitsByType.get(FDContentTypes.RECIPE)), tokens, SearchQueryStemmer.LowerCase);
-		
-		Set<ContentKey> keys = new HashSet<ContentKey>(recipes.size());
-		for ( SearchHit r : recipes ) {
-			keys.add(r.getContentKey());
-		}
-		
-		return keys;
+		return new HashSet<ContentKey>(ContentSearch.getInstance().searchRecipes(keyword));
 	}
 
 

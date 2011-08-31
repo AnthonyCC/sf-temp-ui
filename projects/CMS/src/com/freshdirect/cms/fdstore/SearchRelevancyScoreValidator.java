@@ -15,7 +15,7 @@ public class SearchRelevancyScoreValidator implements ContentValidatorI {
     public SearchRelevancyScoreValidator() {
     }
 
-    public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request) {
+    public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
         ContentType t = node.getKey().getType();
         if (FDContentTypes.SEARCH_RELEVANCY_LIST.equals(t) || FDContentTypes.SEARCH_RELEVANCY_HINT.equals(t) || FDContentTypes.WORD_STEMMING_EXCEPTION.equals(t)) {
             ContentSearch.getInstance().invalidateRelevancyScores();

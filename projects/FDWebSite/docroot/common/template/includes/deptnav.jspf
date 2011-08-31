@@ -5,6 +5,8 @@
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.Iterator"%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri='oscache' prefix='oscache' %>
 <%
 //doing a check for your account pages, making static department nav, otherwise, build one for departments below
 if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
@@ -13,7 +15,7 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 		<tr valign="middle">
 			<%
 				int tableList = 0;
-				Map folderMap=new LinkedHashMap();
+				Map<String, String> folderMap=new LinkedHashMap<String, String>();
 				folderMap.put("Your Orders","/your_account/order_history.jsp");
 				if(user.isEligibleForPreReservation()){
 					tableList=8;
@@ -48,7 +50,7 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 				
 				int maxRows = 3;
 				int maxCols = folderMap.size() / maxRows+(folderMap.size()%maxRows!=0?1:0);
-				Iterator itr=folderMap.keySet().iterator();
+				Iterator<String> itr=folderMap.keySet().iterator();
 			%>
 			<td>
 				<a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>">
@@ -64,9 +66,9 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 								
 								        <%
 										if(itr.hasNext()){
-										String str=(String)itr.next();
+										String str=itr.next();
 									%>
-										<td><a href="<%= (String)folderMap.get(str)%>"><%= str %></a><br/></td>
+										<td><a href="<%= folderMap.get(str)%>"><%= str %></a><br/></td>
 									<%}%>
 										
 									<%

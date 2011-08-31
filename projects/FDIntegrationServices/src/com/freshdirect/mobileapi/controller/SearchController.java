@@ -28,8 +28,7 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.comparator.FilterOptionLabelComparator;
 import com.freshdirect.mobileapi.service.ProductServiceImpl;
 import com.freshdirect.mobileapi.service.ServiceException;
-import com.freshdirect.mobileapi.util.ProductModelSortUtil;
-import com.freshdirect.mobileapi.util.ProductModelSortUtil.SortType;
+import com.freshdirect.mobileapi.util.SortType;
 
 public class SearchController extends BaseController {
     private static org.apache.log4j.Category LOG = LoggerFactory.getInstance(SearchController.class);
@@ -66,7 +65,7 @@ public class SearchController extends BaseController {
         String upc = request.getParameter("upc");
         int page = (StringUtils.isNumeric(request.getParameter("page")) ? Integer.parseInt(request.getParameter("page")) : 1);
         int resultMax = (StringUtils.isNumeric(request.getParameter("max")) ? Integer.parseInt(request.getParameter("max")) : 25);
-        ProductModelSortUtil.SortType sortType = SortType.RELEVANCY; //Default sort type
+        SortType sortType = SortType.RELEVANCY; //Default sort type
         String brandToFilter = null;
         String categoryToFilter = null;
         String departmentToFilter = null;
@@ -81,7 +80,7 @@ public class SearchController extends BaseController {
             upc = requestMessage.getUpc();
             page = requestMessage.getPage();
             resultMax = requestMessage.getMax();
-            sortType = ProductModelSortUtil.SortType.valueFromString(requestMessage.getSortBy());
+            sortType = SortType.valueFromString(requestMessage.getSortBy());
             brandToFilter = requestMessage.getBrand();
             categoryToFilter = requestMessage.getCategory();
             departmentToFilter = requestMessage.getDepartment();

@@ -107,6 +107,8 @@ public class ContentNodeUtil {
 	}
 
 	private static void collectReachableKeys(Set<ContentKey> collectedKeys, ContentType targetType, ContentNodeI root) {
+		if (root == null)
+			return;
 		Set<ContentKey> children = root.getChildKeys();
 		ContentTypeServiceI ts = CmsManager.getInstance().getTypeService();		
 		for ( ContentKey k : children ) {

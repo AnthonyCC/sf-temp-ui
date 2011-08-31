@@ -1,42 +1,41 @@
 package com.freshdirect.cms.search;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.apache.lucene.analysis.LowerCaseTokenizer;
-import org.apache.lucene.analysis.PorterStemFilter;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.Token;
-import org.apache.lucene.analysis.tokenattributes.TermAttribute;
+import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 
-public class StemmerTest extends TestCase {
-	
-	public void testPorterStemmer() throws IOException {
-		
-		// fails on [bus,buses] !
-		String words = "cat cats X apples apple X cherry cherries X news new X fish fishes";
-		
-		TokenStream stream = new PorterStemFilter(new LowerCaseTokenizer(new StringReader(words)));
-		
-		
-		
-		Token t;
-		
-		Set S = new HashSet();
-		
-		while(stream.incrementToken()) {
-			String term = stream.getAttribute(TermAttribute.class).term();
-			if ("x".equals(term)) {
-				S.clear();
-				continue;
-			}
-			S.add(term);
-			assertTrue(S.size() == 1);
-		}
-	}
+import org.apache.lucene.analysis.TokenFilter;
+import org.apache.lucene.analysis.WhitespaceTokenizer;
+import org.apache.lucene.analysis.snowball.SnowballFilter;
+import org.apache.lucene.analysis.tokenattributes.TermAttribute;
 
+public class StemmerTest extends TestCase {
+	public void testStemmer() throws IOException {
+		Reader reader = new StringReader("stirfry stir fry stir fried stir fries stirfries stirfried skies skis sky skied"); 
+		WhitespaceTokenizer tokenizer = new WhitespaceTokenizer(reader);
+		TokenFilter stemmer = new SnowballFilter(tokenizer, "English");
+		TermAttribute termAttr = stemmer.getAttribute(TermAttribute.class);
+		List<String> tokens = new ArrayList<String>();
+		while(stemmer.incrementToken())
+			tokens.add(termAttr.term());
+		List<String> expected = new ArrayList<String>();
+		expected.add("stirfri");
+		expected.add("stir");
+		expected.add("fri");
+		expected.add("stir");
+		expected.add("fri");
+		expected.add("stir");
+		expected.add("fri");
+		expected.add("stirfri");
+		expected.add("stirfri");
+		expected.add("sky");
+		expected.add("ski");
+		expected.add("sky");
+		expected.add("ski");
+		assertEquals(expected, tokens);
+	}
 }

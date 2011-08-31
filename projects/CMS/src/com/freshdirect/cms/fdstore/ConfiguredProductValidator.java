@@ -49,7 +49,7 @@ import com.freshdirect.customer.ejb.ErpOrderLineUtil;
  */
 public class ConfiguredProductValidator implements ContentValidatorI {
 
-	public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request) {
+	public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
 		if (!FDContentTypes.CONFIGURED_PRODUCT.equals(node.getKey().getType())) {
 			return;
 		}

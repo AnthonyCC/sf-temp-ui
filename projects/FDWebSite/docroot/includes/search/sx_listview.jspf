@@ -45,31 +45,13 @@ int row_cnt = 0;
 
 int rank = nav.getPageOffset()+1;
 
-%><logic:iterate id="productNode" collection="<%= productList %>" type="com.freshdirect.fdstore.content.ProductModel">
+%><logic:iterate id="productNode" collection="<%= search.getPageProducts() %>" type="com.freshdirect.fdstore.content.ProductModel">
 <%
 	ProductImpression pi = new ProductImpression(productNode);
 	Image prodImage = pi.getProductModel().getSourceProduct().getCategoryImage();
+%><%@ include file="/includes/search/price_info.jspf" %><%	
 	
-	boolean hasWas = false;
-	Double defaultPrice = null;
-	String priceUnit = null;
-	int wasDeal = -1;
-	double basePrice = Double.NaN;
-	if (pi.getProductInfo() != null) {
-		defaultPrice = new Double(pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).getDefaultPrice());
-		priceUnit = JspMethods.formatPricingUnit(pi.getProductInfo());
-		hasWas = pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).isItemOnSale();
-		wasDeal = -1;
-		basePrice = Double.NaN;
-		if (hasWas) {
-			wasDeal = pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).getDealPercentage();
-			basePrice = pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).getSellingPrice();
-		}
-	}
-	
-	boolean isYourFave = DYFUtil.isFavorite(productNode, u);
-	
-	String actionURL = FDURLUtil.getProductURI(pi.getProductModel(), trk, (isYourFave ? "fave" : nav.getSortByName()), rank);
+	String actionURL = FDURLUtil.getProductURI(search.getParentContainer(), pi.getProductModel(), trk, (isYourFave ? "fave" : nav.getSortByName()), rank);
 %>
 <tr>
 	<td style="width: <%=prodImage.getWidth() %>px;text-align: center">
@@ -162,7 +144,7 @@ int rank = nav.getPageOffset()+1;
 
 <%
 // don't display the bar below the last product
-if (row_cnt < productList.size()-1) {
+if (row_cnt < search.getPageProducts().size() - 1) {
 	%><tr><td colspan="3"><div style="border-top: 1px solid #b7b793;margin-top: 5px;margin-bottom:5px;">&nbsp;</div></td></tr><%
 }
 row_cnt++;

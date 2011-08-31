@@ -8,26 +8,31 @@ import com.freshdirect.cms.node.ContentNodeUtil;
 
 public class SearchRelevancyLabelProvider implements ILabelProvider {
 
-    public String getLabel(ContentNodeI node) {
-        ContentType type = node.getKey().getType();
-        
-        if (FDContentTypes.SEARCH_RELEVANCY_LIST.equals(type)) {
-            return "Search for:"+node.getAttribute("Keywords").getValue();
-        }
-        if (FDContentTypes.SEARCH_RELEVANCY_HINT.equals(type)) {
-            ContentKey key = (ContentKey) node.getAttribute("category").getValue();
-            return "Category "+(key !=null ? key.getId() : "<not specified>")+" score : "+node.getAttribute("score").getValue();
-        }
-        if (FDContentTypes.SYNONYM.equals(type)) {
-            String word = ContentNodeUtil.getStringAttribute(node, "word");
-            String synonymValue = ContentNodeUtil.getStringAttribute(node, "synonymValue");
-            return "Add keyword '" + synonymValue + "' where full name contains '" + word+"'"; 
-        }
-        if (FDContentTypes.WORD_STEMMING_EXCEPTION.equals(type)) {
-            String word = ContentNodeUtil.getStringAttribute(node, "word");
-            return "Bad singular form : "+word;
-        }
-        return null;
-    }
+	public String getLabel(ContentNodeI node) {
+		ContentType type = node.getKey().getType();
+
+		if (FDContentTypes.SEARCH_RELEVANCY_LIST.equals(type)) {
+			return "Search for:" + node.getAttributeValue("Keywords");
+		}
+		if (FDContentTypes.SEARCH_RELEVANCY_HINT.equals(type)) {
+			ContentKey key = (ContentKey) node.getAttributeValue("category");
+			return "Category " + (key != null ? key.getId() : "<not specified>") + " score : " + node.getAttributeValue("score");
+		}
+		if (FDContentTypes.SYNONYM.equals(type)) {
+			String word = ContentNodeUtil.getStringAttribute(node, "word");
+			String synonymValue = ContentNodeUtil.getStringAttribute(node, "synonymValue");
+			return "Synonyms of '" + word + "': '" + synonymValue + "'";
+		}
+		if (FDContentTypes.SPELLING_SYNONYM.equals(type)) {
+			String word = ContentNodeUtil.getStringAttribute(node, "word");
+			String synonymValue = ContentNodeUtil.getStringAttribute(node, "synonymValue");
+			return "Spelling synonyms of '" + word + "': '" + synonymValue + "'";
+		}
+		if (FDContentTypes.WORD_STEMMING_EXCEPTION.equals(type)) {
+			String word = ContentNodeUtil.getStringAttribute(node, "word");
+			return "DEPRECATED Bad singular form : " + word;
+		}
+		return null;
+	}
 
 }
