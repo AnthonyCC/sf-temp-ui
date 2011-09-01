@@ -92,16 +92,16 @@ public class CsongorDistanceTest extends TestCase {
 	public void test4() {
 		assertDistance("bear", "beer", 1);
 		assertCommutativity("bear", "beer");
-		assertDistance("bear", "beef", 2);
+		assertDistance("bear", "beef", 4);
 		assertCommutativity("bear", "beef");
 		assertDistance("bear", "bean", 1);
 		assertCommutativity("bear", "bean");
 	}
 
 	public void test5() {
-		assertDistance("lemon", "lenom", 2);
+		assertDistance("lemon", "lenom", 1);
 		assertCommutativity("lemon", "lenom");
-		assertDistance("lemon juice", "lenom juice", 2);
+		assertDistance("lemon juice", "lenom juice", 1);
 		assertCommutativity("lemon juice", "lenom juice");
 
 		assertDistance("melon", "nelom", 2);
@@ -115,5 +115,12 @@ public class CsongorDistanceTest extends TestCase {
 	public void test6() {
 		assertDistance("pregnan", "german", 3);
 		assertCommutativity("pregnan", "german");
+		assertDistance("salmon", "slamon", 1);
+		assertCommutativity("salmon", "slamon");
+		assertDistance("salomon", "slamon", 2);
+		assertCommutativity("salomon", "slamon");
+		assertDistance("salad", "salmo", 4);
+		assertCommutativity("salad", "salmo");
+		assertDistance("strawberry", "stwbrry", 3);
 	}
 }

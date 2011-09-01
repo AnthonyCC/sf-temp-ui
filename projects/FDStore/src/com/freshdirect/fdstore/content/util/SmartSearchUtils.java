@@ -104,8 +104,12 @@ public class SmartSearchUtils {
 		boolean exact = ContentSearchUtil.isQuoted(searchTerm);
 		if (exact)
 			searchTerm = ContentSearchUtil.removeQuotes(searchTerm);
-		Registry registry = FDRegistry.getInstance();
-		ContentSearchServiceI search = (ContentSearchServiceI) registry.getService(ContentSearchServiceI.class);
+		ContentSearchServiceI search = null;
+		try {
+			Registry registry = FDRegistry.getInstance();
+			search = (ContentSearchServiceI) registry.getService(ContentSearchServiceI.class);
+		} catch (Exception e) {
+		}
 		StringDistance sd;
 		if (search != null)
 			sd = search.getSpellService().getStringDistance();

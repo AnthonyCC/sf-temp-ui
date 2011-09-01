@@ -179,12 +179,10 @@ public class ContentSearchTest extends FDCustomerManagerTestSupport {
 
 		sr = ContentSearch.getInstance().searchProducts("organicvalley");
 		assertNotNull("searchResults", sr);
-		assertEquals("relevant products length", 0, sr.getProducts().size());
-		assertEquals("has spelling suggestion", 3, sr.getSpellingSuggestions().size());
+		assertEquals("relevant products length", 3, sr.getProducts().size());
+		assertEquals("has spelling suggestion", 1, sr.getSpellingSuggestions().size());
 		List<String> suggestions = new ArrayList<String>(sr.getSpellingSuggestions());
 		assertEquals("spelling suggestion", "organic valley", suggestions.get(0));
-		assertEquals("spelling suggestion", "organic valley 1%", suggestions.get(1));
-		assertEquals("spelling suggestion", "organic valley 2%", suggestions.get(2));
 	}
 
 	protected String[] getAffectedTables() {
