@@ -69,5 +69,7 @@ public class TimeslotEventListener extends EventListener {
 			}
 		}}
 	
-	
+	   protected String getResourceCacheKey() {
+	    	return "com.freshdirect.analytics.TimeslotEventListener";
+	    }
 }

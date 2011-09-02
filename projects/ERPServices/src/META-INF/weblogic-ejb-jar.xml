@@ -1156,7 +1156,7 @@
     <weblogic-enterprise-bean>
         <ejb-name>TimeslotEventListener</ejb-name>
         <message-driven-descriptor>
-                <pool><max-beans-in-free-pool>50</max-beans-in-free-pool>
+                <pool><max-beans-in-free-pool>8</max-beans-in-free-pool>
                 </pool>
             <destination-jndi-name>logMetricQueue</destination-jndi-name>
         </message-driven-descriptor>
