@@ -453,7 +453,7 @@ public class SpellChecker implements java.io.Closeable {
 		if (l == 5) {
 			return 3;
 		}
-		return 2;
+		return Math.min(2, l);
 	}
 
 	private static Document createDocument(String searchTerm, String spellingTerm, boolean synonym, int ng1, int ng2) {
