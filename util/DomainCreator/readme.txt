@@ -1,14 +1,30 @@
-see following pages for more details
--http://home.freshdirect.com/confluence/display/web/Create+WebLogic+domain+with+DomainCreator
--http://jira.freshdirect.com:8080/jira/browse/APPDEV-1266 Create WebLogic domain programatically
+See this page for usage information
+
+http://home.freshdirect.com/confluence/display/web/Create+WebLogic+domain+with+DomainCreator
 
 
+
+This document contains information for the developers of this tool.
 
 Weblogic times out during app deployment (phase #3) work log
 ============================================================
 
-Current deployment steps:
--------------------------
+This work was aimed to solve this issue:
+----------------------------------------
+
+WebLogic domain locks up in the background while finishing up deploying the apps. Also DomainCreator
+throws a timeout message. Solution: kill frozen domain and restart it from its own folder by running
+startWebLogic.sh script. Then enter to configuration console UI, click 'activate' button.
+
+
+Current issue:
+-------------
+
+deadlock appears if timeout is disabled
+
+
+Current work around steps for deployment:
+-----------------------------------------
 
 -comment out cms-gwt in .../projects/DevServer/META-INF/application.xml
 -run domain creator, deployment should be successful
