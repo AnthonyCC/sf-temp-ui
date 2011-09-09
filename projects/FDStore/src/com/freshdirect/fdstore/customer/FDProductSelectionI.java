@@ -259,4 +259,6 @@ public interface FDProductSelectionI extends FDConfigurableI {
 	// sustainability rating changes
 	public EnumSustainabilityRating getSustainabilityRating();
 	
+	public double getBasePrice();
+	
 }
