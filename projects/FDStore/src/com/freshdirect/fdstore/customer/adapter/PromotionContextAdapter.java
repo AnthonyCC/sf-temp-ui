@@ -391,7 +391,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 		return false;
 	}
 	
-	public boolean applyLineItemDiscount(PromotionI promo, FDCartLineI lineItem, double percentOff) {
+	public boolean applyLineItemDiscount(PromotionI promo, FDCartLineI lineItem, double percentOff, int skuLimit) {
 		
 		//Poll the promotion context to know if this is the max discount amount.
 		Discount applied = lineItem.getDiscount();
@@ -400,7 +400,8 @@ public class PromotionContextAdapter implements PromotionContextI {
 			lineItem.removeLineItemDiscount();
 			//Add this discount.
 			Discount discount = new Discount(promo.getPromotionCode(), EnumDiscountType.PERCENT_OFF, percentOff);
-			lineItem.setDiscount(discount);
+			discount.setSkuLimit(skuLimit);
+			lineItem.setDiscount(discount);			
 			return true;
 		}
 		return false;
