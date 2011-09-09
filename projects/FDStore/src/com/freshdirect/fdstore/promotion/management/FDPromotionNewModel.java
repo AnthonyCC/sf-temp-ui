@@ -100,6 +100,8 @@ public class FDPromotionNewModel extends ModelSupport {
 	private int restrictedCustomerSize;
 	private boolean fuelSurcharge = false;
 	private List<FDPromoDollarDiscount> dollarOffList = new ArrayList<FDPromoDollarDiscount>();
+	private boolean isReferralPromo = false;
+	private Integer skuLimit;
 	/*
 	 * Number of successful publishes
 	 */
@@ -1118,6 +1120,22 @@ public class FDPromotionNewModel extends ModelSupport {
 
 	public void setDollarOffList(List<FDPromoDollarDiscount> dollarOffList) {
 		this.dollarOffList = dollarOffList;
+	}
+
+	public void setReferralPromo(boolean isReferralPromo) {
+		this.isReferralPromo = isReferralPromo;
+	}
+
+	public boolean isReferralPromo() {
+		return isReferralPromo;
+	}
+
+	public void setSkuLimit(Integer skuLimit) {
+		this.skuLimit = skuLimit;
+	}
+
+	public Integer getSkuLimit() {
+		return skuLimit;
 	}
 
 	
