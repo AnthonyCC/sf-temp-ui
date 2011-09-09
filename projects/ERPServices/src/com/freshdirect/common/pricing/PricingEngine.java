@@ -45,7 +45,7 @@ public class PricingEngine {
 	 *
 	 * @return price with discount applied
 	 */
-	public static Price applyDiscount(Price price, double quantity, Discount discount) throws PricingException {
+	public static Price applyDiscount(Price price, double quantity, Discount discount, String pricingUnit) throws PricingException {
 		if (discount==null) {
 			// no promotion
 			return price;
@@ -56,17 +56,47 @@ public class PricingEngine {
 			return new Price(0.0);
 
 		} else if ( EnumDiscountType.PERCENT_OFF.equals(pt) ) {
-			// percent off from base price
-			double basePrice = price.getBasePrice() * (1.0 - discount.getAmount());
+			/*
+			 * APPDEV-1784: Updating the pricing to implement sku limit into pricing
+			 */
+			double basePrice = 0.0;
+			if(!"lb".equalsIgnoreCase(pricingUnit) && discount.getSkuLimit() > 0) {
+				int skuLimit = discount.getSkuLimit();
+				if(quantity > skuLimit) {
+					//more items ordered than allowed.
+					double unit_price = price.getBasePrice() / quantity;  //15/3=5
+					double discount_allowed_amount = unit_price * skuLimit;  //5*2=10
+					double remaining_amount = price.getBasePrice() - discount_allowed_amount; //15-10=5
+					//apply discount on the discount_allowed_amount
+					double discount_amount = discount_allowed_amount * (1.0 - discount.getAmount()); //10 * (1 - 0.50)=10*0.50=5.0
+					basePrice = remaining_amount + discount_amount;  //5+5=10
+				} else {
+					basePrice = price.getBasePrice() * (1.0 - discount.getAmount());
+				}
+			} else {
+				// percent off from base price
+				basePrice = price.getBasePrice() * (1.0 - discount.getAmount());
+			}
             // round to nearest cent
             basePrice = MathUtil.roundDecimal(basePrice);
+            
+            //System.out.println("1111111$$$$$$$$$$$$$$$$$$:initial baseprice:" + price.getBasePrice() +" -final baseprice:" + basePrice);
 			return new Price(basePrice, price.getSurcharge());
 
 		} else if ( EnumDiscountType.DOLLAR_OFF.equals(pt) ) {
 			// $$$ off
-			double basePrice = price.getBasePrice() - (discount.getAmount() * quantity);
+			double basePrice = 0.0;
+			
+			if(!"lb".equalsIgnoreCase(pricingUnit) && discount.getSkuLimit() > 0) {
+				basePrice = price.getBasePrice() - (discount.getAmount() * discount.getSkuLimit());
+			} else {
+				basePrice = price.getBasePrice() - (discount.getAmount() * quantity);
+			}
             // round to nearest cent
             basePrice = MathUtil.roundDecimal(basePrice);
+            
+            //System.out.println("1111111$$$$$$$$$$$$$$$$$$:initial baseprice:" + price.getBasePrice() +" -final baseprice:" + basePrice);
+            
 			return new Price(basePrice, price.getSurcharge());
 		}
 
