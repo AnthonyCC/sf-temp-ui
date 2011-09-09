@@ -621,5 +621,9 @@ public class SimpleCartLine implements FDCartLineI {
 	public FDGroup getOriginalGroup() {
 		return null;
 	}
+	
+	public double getBasePrice() {
+		return 0.0;
+	}
 
 }
