@@ -19,7 +19,7 @@ public interface AssetManagerI extends BaseManagerI {
 	void saveAssetTemplate(AssetTemplate assetTemplate);
 	Collection getAssetTemplates(String assetType);
 	AssetType getAssetType(String assetType);
-	Collection getAssetAttributeTypes(String attributeCode, AssetType assetType);
+	Collection getAssetAttributeTypes(String attributeCode, String assetType);
 	Asset getAssetByAssetNumber(String assetNo);
 
 }

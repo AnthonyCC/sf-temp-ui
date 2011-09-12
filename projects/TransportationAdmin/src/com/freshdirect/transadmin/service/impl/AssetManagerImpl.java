@@ -77,7 +77,7 @@ public class AssetManagerImpl
 		return getAssetManagerDao().getAssetType(assetType);
 	}
 
-	public Collection getAssetAttributeTypes(String attributeCode, AssetType assetType){
+	public Collection getAssetAttributeTypes(String attributeCode, String assetType){
 		return getAssetManagerDao().getAssetAttributeTypes(attributeCode,assetType);
 	}	
 	

@@ -100,16 +100,16 @@ public class AssetManagerDaoHibernateImpl
 		return (AssetType)getEntityById("AssetType", "code", assetType);
 	}
 	
-	public Collection getAssetAttributeTypes(String attributeCode, AssetType assetType) throws DataAccessException{
+	public Collection getAssetAttributeTypes(String attributeCode, String assetType) throws DataAccessException{
 		
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("AssetAttributeType a where");
 		if(attributeCode != null && !"".equals(attributeCode))
-			strBuf.append(" a.code='"+attributeCode+"'");
+			strBuf.append(" a.id.code='"+attributeCode+"'");
 		if(attributeCode != null && assetType != null)
 			strBuf.append(" and");
 		if(assetType != null)
-			strBuf.append(" a.assetType='"+assetType+"'");		
+			strBuf.append(" a.id.assetType='"+assetType+"'");
 		
 		return (Collection) getDataList(strBuf.toString());		
 	}
