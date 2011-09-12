@@ -274,8 +274,10 @@ public class DlvRestrictionDAO {
 		}
 		PreparedStatement ps = conn.prepareStatement(query);
 		ps.setString(1, address.getServiceType().getName());
-		ps.setDouble(2, address.getLongitude());
-		ps.setDouble(3, address.getLatitude());
+		//ps.setDouble(2, address.getLongitude());
+		ps.setBigDecimal(2, new java.math.BigDecimal(address.getLongitude()));
+		//ps.setDouble(3, address.getLatitude());
+		ps.setBigDecimal(3, new java.math.BigDecimal(address.getLatitude()));
 		
 		ResultSet rs = ps.executeQuery();
 		List<GeographyRestriction> restrictions = new ArrayList<GeographyRestriction>();
