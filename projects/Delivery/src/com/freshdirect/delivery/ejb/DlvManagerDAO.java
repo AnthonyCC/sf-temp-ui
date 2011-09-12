@@ -148,10 +148,8 @@ public class DlvManagerDAO {
 		ps.setInt(3, EnumReservationStatus.CANCELED.getCode());
 		ps.setInt(4, EnumReservationStatus.EXPIRED.getCode());
 		ps.setString(5, address.getServiceType().getName());
-		//ps.setDouble(6, address.getLongitude());
-		ps.setBigDecimal(6, new java.math.BigDecimal(address.getLongitude()));
-		//ps.setDouble(7, address.getLatitude());
-		ps.setBigDecimal(7, new java.math.BigDecimal(address.getLatitude()));
+		ps.setDouble(6, address.getLongitude());
+		ps.setDouble(7, address.getLatitude());
 		ps.setDate(8, new java.sql.Date(startDate.getTime()));
 		ps.setDate(9, new java.sql.Date(endDate.getTime()));
 		ps.setDate(10, new java.sql.Date(startDate.getTime()));
@@ -201,10 +199,8 @@ public class DlvManagerDAO {
 		ps.setDate(5, new java.sql.Date(startDate.getTime()));
 		ps.setDate(6, new java.sql.Date(endDate.getTime()));
 		ps.setString(7, address.getServiceType().getName());
-		//ps.setDouble(8, address.getLongitude());
-		ps.setBigDecimal(8, new java.math.BigDecimal(address.getLongitude()));
-		//ps.setDouble(9, address.getLatitude());
-		ps.setBigDecimal(9, new java.math.BigDecimal(address.getLatitude()));
+		ps.setDouble(8, address.getLongitude());
+		ps.setDouble(9, address.getLatitude());
 
 		ResultSet rs = ps.executeQuery();
 		List<DlvTimeslotModel> timeslots = processTimeslotResultSet(rs);
@@ -515,10 +511,8 @@ public class DlvManagerDAO {
 		PreparedStatement ps = conn.prepareStatement(ZONE_CODE);
 		ps.setString(1, address.getServiceType().getName());
 		ps.setDate(2, new java.sql.Date(date.getTime()));
-		//ps.setDouble(3, address.getLongitude());
-		ps.setBigDecimal(3, new java.math.BigDecimal(address.getLongitude()));
-		//ps.setDouble(4, address.getLatitude());
-		ps.setBigDecimal(4, new java.math.BigDecimal(address.getLatitude()));
+		ps.setDouble(3, address.getLongitude());
+		ps.setDouble(4, address.getLatitude());
 
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
@@ -560,10 +554,8 @@ public class DlvManagerDAO {
 						
 		PreparedStatement ps = conn.prepareStatement(ZONE_CODE_FOR_COS_ENABLED);
 		ps.setDate(1, new java.sql.Date(date.getTime()));
-		//ps.setDouble(2, address.getLongitude());
-		ps.setBigDecimal(2, new java.math.BigDecimal(address.getLongitude()));
-		//ps.setDouble(3, address.getLatitude());
-		ps.setBigDecimal(3, new java.math.BigDecimal(address.getLatitude()));
+		ps.setDouble(2, address.getLongitude());
+		ps.setDouble(3, address.getLatitude());
 
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
@@ -734,10 +726,8 @@ public class DlvManagerDAO {
 		}
 
 		PreparedStatement ps = conn.prepareStatement(ADDRESS_CHECK);
-		//ps.setDouble(1, address.getLongitude());
-		ps.setBigDecimal(1, new java.math.BigDecimal(address.getLongitude()));
-		//ps.setDouble(2, address.getLatitude());
-		ps.setBigDecimal(2, new java.math.BigDecimal(address.getLatitude()));
+		ps.setDouble(1, address.getLongitude());
+		ps.setDouble(2, address.getLatitude());
 		ps.setString(3, serviceType.getName());
 
 		ResultSet rs = ps.executeQuery();
@@ -773,10 +763,8 @@ public class DlvManagerDAO {
 		}
 
 		PreparedStatement ps = conn.prepareStatement(ADDRESS_CHECK_FOR_COS_ENABLED);
-		//ps.setDouble(1, address.getLongitude());
-		ps.setBigDecimal(1, new java.math.BigDecimal(address.getLongitude()));
-		//ps.setDouble(2, address.getLatitude());
-		ps.setBigDecimal(2, new java.math.BigDecimal(address.getLatitude()));
+		ps.setDouble(1, address.getLongitude());
+		ps.setDouble(2, address.getLatitude());
 		
 		ResultSet rs = ps.executeQuery();
 		/* List of DlvZipInfoModel */
@@ -1033,12 +1021,9 @@ public class DlvManagerDAO {
 														, String status, EnumOrderMetricsSource source)  throws SQLException {
 
 		PreparedStatement ps = conn.prepareStatement(UPDATE_RESERVATIONSTATUSSOURCE_QUERY);
-		//ps.setDouble(1, noOfCartons);
-		ps.setBigDecimal(1, new java.math.BigDecimal(noOfCartons));
-		//ps.setDouble(2, noOfFreezers);
-		ps.setBigDecimal(2, new java.math.BigDecimal(noOfFreezers));
-		//ps.setDouble(3, noOfCases);
-		ps.setBigDecimal(3, new java.math.BigDecimal(noOfCases));
+		ps.setDouble(1, noOfCartons);
+		ps.setDouble(2, noOfFreezers);
+		ps.setDouble(3, noOfCases);
 		
 
 		ps.setString(4, status);
@@ -1058,12 +1043,9 @@ public class DlvManagerDAO {
 													, String status)  throws SQLException {
 		
 		PreparedStatement ps = conn.prepareStatement(UPDATE_RESERVATIONSTATUS_QUERY);
-		//ps.setDouble(1, noOfCartons);
-		ps.setBigDecimal(1, new java.math.BigDecimal(noOfCartons));
-		//ps.setDouble(2, noOfFreezers);
-		ps.setBigDecimal(2, new java.math.BigDecimal(noOfFreezers));
-		//ps.setDouble(3, noOfCases);
-		ps.setBigDecimal(3, new java.math.BigDecimal(noOfCases));
+		ps.setDouble(1, noOfCartons);
+		ps.setDouble(2, noOfFreezers);
+		ps.setDouble(3, noOfCases);		
 		
 	    ps.setString(4, status);
 	    ps.setString(5, reservationId);
@@ -1082,12 +1064,9 @@ public class DlvManagerDAO {
 													, EnumOrderMetricsSource source)  throws SQLException {
 
 		PreparedStatement ps = conn.prepareStatement(UPDATE_RESERVATIONSOURCE_QUERY);
-		//ps.setDouble(1, noOfCartons);
-		ps.setBigDecimal(1, new java.math.BigDecimal(noOfCartons));
-		//ps.setDouble(2, noOfFreezers);
-		ps.setBigDecimal(2, new java.math.BigDecimal(noOfFreezers));
-		//ps.setDouble(3, noOfCases);
-		ps.setBigDecimal(3, new java.math.BigDecimal(noOfCases));
+		ps.setDouble(1, noOfCartons);
+		ps.setDouble(2, noOfFreezers);
+		ps.setDouble(3, noOfCases);
 		
 
 		ps.setString(4, (source != null ? source.value() : null));
@@ -1105,10 +1084,8 @@ public class DlvManagerDAO {
 															, double reservedServiceTime, String status)  throws SQLException {
 		
 		PreparedStatement ps = conn.prepareStatement(UPDATE_RESERVATIONMETRICSSTATUS_QUERY);
-		//ps.setDouble(1, reservedOrderSize);
-		ps.setBigDecimal(1, new java.math.BigDecimal(reservedOrderSize));
-		//ps.setDouble(2, reservedServiceTime);
-		ps.setBigDecimal(2, new java.math.BigDecimal(reservedServiceTime));
+		ps.setDouble(1, reservedOrderSize);
+		ps.setDouble(2, reservedServiceTime);
 	    ps.setString(3, status);
 	    ps.setString(4, reservationId);
 	    if(ps.executeUpdate() != 1){
@@ -1124,10 +1101,8 @@ public class DlvManagerDAO {
 														, double reservedOrderSize, double reservedServiceTime)  throws SQLException {
 		
 		PreparedStatement ps = conn.prepareStatement(UPDATE_RESERVATIONMETRICS_QUERY);
-		//ps.setDouble(1, reservedOrderSize);
-		ps.setBigDecimal(1, new java.math.BigDecimal(reservedOrderSize));
-		//ps.setDouble(2, reservedServiceTime);
-		ps.setBigDecimal(2, new java.math.BigDecimal(reservedServiceTime));
+		ps.setDouble(1, reservedOrderSize);
+		ps.setDouble(2, reservedServiceTime);	    
 	    ps.setString(3, reservationId);
 	    if(ps.executeUpdate() != 1){
 	        ps.close();
