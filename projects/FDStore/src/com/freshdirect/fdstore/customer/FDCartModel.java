@@ -13,12 +13,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.JspException;
-
-import oracle.net.aso.q;
-
-import weblogic.management.deploy.internal.MasterDeployerLogger;
+import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.affiliate.ErpAffiliate;
@@ -36,8 +31,6 @@ import com.freshdirect.customer.ErpAppliedCreditModel;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
-import com.freshdirect.customer.ErpGrpPriceModel;
-import com.freshdirect.customer.ErpGrpPriceZoneModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
@@ -45,18 +38,12 @@ import com.freshdirect.delivery.restriction.FDRestrictedAvailabilityInfo;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.deliverypass.DlvPassAvailabilityInfo;
 import com.freshdirect.deliverypass.DlvPassConstants;
-import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDGroup;
-import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.GroupScalePricing;
-import com.freshdirect.fdstore.GrpZonePriceModel;
-import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.atp.FDAvailabilityHelper;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
@@ -65,7 +52,6 @@ import com.freshdirect.fdstore.atp.FDCompositeAvailabilityInfo;
 import com.freshdirect.fdstore.atp.NullAvailability;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeSource;
@@ -77,6 +63,7 @@ import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.FormatterUtil;
 import com.freshdirect.framework.util.MathUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ErpGiftCardModel;
 
 /**
@@ -89,6 +76,7 @@ import com.freshdirect.giftcard.ErpGiftCardModel;
 public class FDCartModel extends ModelSupport implements FDCartI {
 	
 	private static final long serialVersionUID = -7672203060098085507L;
+	 private static Category LOGGER = LoggerFactory.getInstance( FDCartModel.class );
 
 	private void checkLimitPlus(int delta) {
 		if (numberOfOrderLines() + delta >= ErpServicesProperties.getCartOrderLineLimit()) {
@@ -1525,9 +1513,9 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			try {
 				OrderLineUtil.cleanup(cartLine);
 			} catch (FDInvalidConfigurationException e) {
-				e.printStackTrace();
+				LOGGER.debug(e.getMessage());
 			} catch(FDResourceException e1){
-				e1.printStackTrace();
+				LOGGER.debug(e1.getMessage());
 			}
 			
 		}
