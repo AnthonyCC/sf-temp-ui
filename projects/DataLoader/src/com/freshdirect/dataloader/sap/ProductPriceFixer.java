@@ -118,7 +118,8 @@ public class ProductPriceFixer {
                     // update the product table 
                     //
                     ps.clearParameters();
-                    ps.setDouble(1, defaultPrice);
+                    //ps.setDouble(1, defaultPrice);
+                    ps.setBigDecimal(1, new java.math.BigDecimal(defaultPrice));
                     ps.setString(2, defaultPriceUnit);
                     ps.setString(3, matlId);
                     ps.executeUpdate();
