@@ -8,36 +8,28 @@ package com.freshdirect.transadmin.model;
  */
 public class AssetAttributeType implements java.io.Serializable {
 
-	private String code;
+	private AssetAttributeTypeId id;
 	
 	private String description;
 	
 	private String dataType;
-	
-	private AssetType assetType;
 		
-	public AssetAttributeType() {
-	}
-
-	public AssetAttributeType(String code, String description, String dataType, AssetType assetType) {
-		this.code = code;
+	public AssetAttributeType(AssetAttributeTypeId id, String description,
+			String dataType) {
+		super();
+		this.id = id;
 		this.description = description;
 		this.dataType = dataType;
-		this.assetType = assetType;
 	}
-
-	public String getCode() {
-		return code;
-	}
+	
+	public AssetAttributeType() {
+	}	
 
 	public String getDescription() {
 		return description;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
-	}
-
+	
 	public void setDescription(String description) {
 		this.description = description;
 	}
@@ -50,19 +42,19 @@ public class AssetAttributeType implements java.io.Serializable {
 		this.dataType = dataType;
 	}
 	
-	public AssetType getAssetType() {
-		return assetType;
+	public AssetAttributeTypeId getId() {
+		return id;
 	}
 
-	public void setAssetType(AssetType assetType) {
-		this.assetType = assetType;
+	public void setId(AssetAttributeTypeId id) {
+		this.id = id;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((code == null) ? 0 : code.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
 
@@ -75,10 +67,10 @@ public class AssetAttributeType implements java.io.Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		AssetAttributeType other = (AssetAttributeType) obj;
-		if (code == null) {
-			if (other.code != null)
+		if (id == null) {
+			if (other.id != null)
 				return false;
-		} else if (!code.equals(other.code))
+		} else if (!id.equals(other.id))
 			return false;
 		return true;
 	}

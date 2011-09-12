@@ -1,21 +1,22 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated Dec 4, 2008 3:51:59 PM by Hibernate Tools 3.2.2.GA -->
 <hibernate-mapping  schema="transp">
     <class name="com.freshdirect.transadmin.model.AssetAttributeType" table="ASSET_ATTRIBUTETYPE">
-        <id name="code" type="string">
-            <column name="CODE" length="40" />
-            <generator class="assigned" />
-        </id>
+        <composite-id name="id" class="com.freshdirect.transadmin.model.AssetAttributeTypeId">
+            <key-property name="code" type="string">
+                <column name="CODE" length="40" />
+            </key-property>
+            <key-property name="assetType" type="string">
+                <column name="ASSET_TYPE" length="40" />
+            </key-property>
+        </composite-id>       
+       
         <property name="description" type="string">
             <column name="DESCRIPTION" length="40" />
         </property>
         <property name="dataType" type="string">
             <column name="DATA_TYPE" length="16" />
         </property>
-        <many-to-one name="assetType" class="com.freshdirect.transadmin.model.AssetType" fetch="select" lazy="false">
-            <column name="ASSET_TYPE" length="40" />
-        </many-to-one>
-    </class>
+     </class>
 </hibernate-mapping>

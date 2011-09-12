@@ -18,21 +18,21 @@
 	<tmpl:put name='yui-skin'>yui-skin-sam</tmpl:put>
 	
   <tmpl:put name='content' direct='true'>
-		<div class="subs MNM004">
+		<div class="subs MNM001">
 		<div class="subs_left">	
-			<div class="sub_tableft sub_tabL_MNM004 <% if(request.getParameter("pAssetType")!= null) { %>activeL<% } %>">&nbsp;</div>
+			<div class="sub_tableft sub_tabL_MNM001 <% if(request.getParameter("pAssetType")!= null) { %>activeL<% } %>">&nbsp;</div>
 			<div class="subtab <%if(request.getParameter("pAssetType")!= null) { %>activeT<% } %>">
 				<div class="minwidth"><!-- --></div>
-				<a href="asset.do?pAssetType=GPS" class="<% if(request.getParameter("pAssetType")!= null) { %>MNM004<% } %>">Asset</a>
+				<a href="asset.do?pAssetType=TRUCK" class="<% if(request.getParameter("pAssetType")!= null) { %>MNM001<% } %>">Asset</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM004 <% if(request.getParameter("pAssetType")!= null) { %>activeR<% } %>">&nbsp;</div>
+			<div class="sub_tabright sub_tabR_MNM001 <% if(request.getParameter("pAssetType")!= null) { %>activeR<% } %>">&nbsp;</div>
 		
-			<div class="sub_tableft sub_tabL_MNM004 <% if(request.getParameter("tAssetType")!= null) { %>activeL<% } %>">&nbsp;</div>
+			<div class="sub_tableft sub_tabL_MNM001 <% if(request.getParameter("tAssetType")!= null) { %>activeL<% } %>">&nbsp;</div>
 			<div class="subtab <%if(request.getParameter("tAssetType")!= null) { %>activeT<% } %>">
 				<div class="minwidth"><!-- --></div>
-				<a href="assettemplate.do?tAssetType=GPS" class="<% if(request.getParameter("tAssetType")!= null) { %>MNM004<% } %>">Asset Template</a>
+				<a href="assettemplate.do?tAssetType=TRUCK" class="<% if(request.getParameter("tAssetType")!= null) { %>MNM001<% } %>">Asset Template</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM004 <% if(request.getParameter("tAssetType")!= null) { %>activeR<% } %>">&nbsp;</div>
+			<div class="sub_tabright sub_tabR_MNM001 <% if(request.getParameter("tAssetType")!= null) { %>activeR<% } %>">&nbsp;</div>
 		</div>
 	  </div>
 

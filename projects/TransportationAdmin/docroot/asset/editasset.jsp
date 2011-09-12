@@ -18,21 +18,21 @@
     <tmpl:put name='title' direct='true'> Admin : Asset : Add/Edit Asset (<%= request.getParameter("pAssetType") %>)</tmpl:put>
   
   <tmpl:put name='content' direct='true'>
-		<div class="subs MNM004">
+		<div class="subs MNM001">
 			<div class="subs_left">	
-				<div class="sub_tableft sub_tabL_MNM004 <% if(request.getParameter("tAssetType")== null) { %>activeL<% } %>">&nbsp;</div>
+				<div class="sub_tableft sub_tabL_MNM001 <% if(request.getParameter("tAssetType")== null) { %>activeL<% } %>">&nbsp;</div>
 				<div class="subtab <%if(request.getParameter("tAssetType")== null) { %>activeT<% } %>">
 					<div class="minwidth"><!-- --></div>
-					<a href="asset.do?pAssetType=GPS" class="<% if(request.getParameter("tAssetType")== null) { %>MNM004<% } %>">Asset</a>
+					<a href="asset.do?pAssetType=TRUCK" class="<% if(request.getParameter("tAssetType")== null) { %>MNM001<% } %>">Asset</a>
 				</div>
-				<div class="sub_tabright sub_tabR_MNM004 <% if(request.getParameter("tAssetType")== null) { %>activeR<% } %>">&nbsp;</div>
+				<div class="sub_tabright sub_tabR_MNM001 <% if(request.getParameter("tAssetType")== null) { %>activeR<% } %>">&nbsp;</div>
 		
-				<div class="sub_tableft sub_tabL_MNM004 <% if(request.getParameter("tAssetType")!= null) { %>activeL<% } %>">&nbsp;</div>
+				<div class="sub_tableft sub_tabL_MNM001 <% if(request.getParameter("tAssetType")!= null) { %>activeL<% } %>">&nbsp;</div>
 				<div class="subtab <%if(request.getParameter("tAssetType")!= null) { %>activeT<% } %>">
 					<div class="minwidth"><!-- --></div>
-					<a href="assettemplate.do?tAssetType=GPS" class="<% if(request.getParameter("tAssetType")!= null) { %>MNM004<% } %>">Asset Template</a>
+					<a href="assettemplate.do?tAssetType=TRUCK" class="<% if(request.getParameter("tAssetType")!= null) { %>MNM001<% } %>">Asset Template</a>
 				</div>
-				<div class="sub_tabright sub_tabR_MNM004 <% if(request.getParameter("tAssetType")!= null) { %>activeR<% } %>">&nbsp;</div>
+				<div class="sub_tabright sub_tabR_MNM001 <% if(request.getParameter("tAssetType")!= null) { %>activeR<% } %>">&nbsp;</div>
 			</div>
 		</div>
     <br/><br/><br/><br/>
@@ -190,11 +190,11 @@
             ]}; 
            
       YAHOO.util.Event.addListener(window, "load", function() {
-                 
+               
         attributeDataSource = new YAHOO.util.DataSource(assetData.attributeData);        
         attributeDataSource.responseType = YAHOO.util.DataSource.TYPE_JSARRAY; 
         attributeDataSource.responseSchema = {fields: ["attributeType","attributeValue","attributeMatch","deleteBtn"] }; 
-                            		  
+		
 		var attributeColumns =  [ 
 			    {key:"attributeType", label:"Attribute Type", sortable:true, sortOptions: { defaultDir: YAHOO.widget.DataTable.CLASS_ASC }, className:"forms1"}, 
 			    {key:"attributeValue", label:"Attribute Value", sortable:false, className:"forms1"},
@@ -214,15 +214,15 @@
 				 	 
 		 var sMyConfigs = { 
 			    paginator : new YAHOO.widget.Paginator({ 
-			        rowsPerPage    : 10
+			        rowsPerPage    : 15
 			    }) 
 		  }; 
 		 	 
 		attributeDataTable = new YAHOO.widget.DataTable("contattributetable"
 															, attributeColumns
 																	, attributeDataSource
-																				, sMyConfigs
-																					, { selectionMode:"single" });
+																		, sMyConfigs
+																			, { selectionMode:"single" });
   		
   		attributeDataTable.subscribe('cellClickEvent', function(ev) {
 	    	var target = YAHOO.util.Event.getTarget(ev);
@@ -253,7 +253,7 @@
 				 	 
 		 var sTemplateConfigs = { 
 			    paginator : new YAHOO.widget.Paginator({ 
-			        rowsPerPage    : 10
+			        rowsPerPage    : 15
 			    }) 
 		 };
 
@@ -354,7 +354,7 @@
 								  <select id="dAttributeType" style="width: 40;" name="dAttributeType"> 
 									<option value="">--Select a Type</option> 
 									<c:forEach var="aType" items="${assetAttributeTypes}">       
-										<option value="<c:out value="${aType.code}"/>"><c:out value="${aType.code}"/></option>
+										<option value="<c:out value="${aType.id.code}"/>"><c:out value="${aType.id.code}"/></option>
 									</c:forEach>
 								  </select><br>
 								   <b>&nbsp;&nbsp;&nbsp;Attribute Value:</b>&nbsp;&nbsp;&nbsp;
@@ -382,7 +382,7 @@
 							  <select id="dAttributeType" style="width: 40;" name="dAttributeType" disabled="true"> 
 								<option value="">--Select a Type</option> 
 								<c:forEach var="aType" items="${assetAttributeTypes}">       
-									<option value="<c:out value="${aType.code}"/>"><c:out value="${aType.code}"/></option>
+									<option value="<c:out value="${aType.id.code}"/>"><c:out value="${aType.id.code}"/></option>
 								</c:forEach>                                      
 							  </select><br>
 							   <b>&nbsp;&nbsp;&nbsp;Attribute Value:</b>&nbsp;&nbsp;&nbsp;
