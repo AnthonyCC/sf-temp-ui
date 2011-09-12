@@ -33,7 +33,16 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI, IWaveInstance
 	
 	private Date lastDeliveryTime;
 	private Date cutOffTime;
+	private Set waveResources = new HashSet(0);
 	
+	public Set getWaveResources() {
+		return waveResources;
+	}
+
+	public void setWaveResources(Set waveResources) {
+		this.waveResources = waveResources;
+	}
+
 	public String getSupervisorId() {
 		return supervisorId;
 	}
@@ -240,7 +249,15 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI, IWaveInstance
 	
 	private int getNoOfRunners() {
 		int runnerCount = 0;
-		if(this.getPlanResources() != null && this.getPlanResources().size() > 0){
+		if(this.getWaveResources() != null && this.getWaveResources().size() > 0){
+			Iterator iterator = this.getWaveResources().iterator();
+			while(iterator.hasNext()){
+			   PlanResource resource = (PlanResource)iterator.next();
+			   if(EnumResourceType.RUNNER.getName().equals(resource.getEmployeeRoleType().getCode())) {
+				   runnerCount++;
+			   }
+			}
+		} else if(this.getPlanResources() != null && this.getPlanResources().size() > 0){
 
 			Iterator iterator = this.getPlanResources().iterator();
 			while(iterator.hasNext()){
@@ -275,10 +292,10 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI, IWaveInstance
 	public void setNoOfResources(int value) {
 		// TODO Auto-generated method stub
 		if(getNoOfRunners() != value) {
-			planResources = new HashSet(0);
-			EmployeeRoleType roleType = new EmployeeRoleType(EnumResourceType.RUNNER.getName(), EnumResourceType.RUNNER.getName());			
+			waveResources = new HashSet(0);
+			EmployeeRoleType roleType = new EmployeeRoleType(EnumResourceType.RUNNER.getName(), EnumResourceType.RUNNER.getName());
 			for(int intCount = 0; intCount < value; intCount++) {
-				planResources.add(new PlanResource(null, roleType));
+				waveResources.add(new PlanResource(null, roleType));
 			}
 		}
 	}
