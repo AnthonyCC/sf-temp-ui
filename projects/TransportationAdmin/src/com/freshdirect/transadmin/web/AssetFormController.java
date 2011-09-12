@@ -34,7 +34,7 @@ public class AssetFormController extends AbstractFormController {
 		
 		refData.put("assetstatuses", EnumAssetStatus.getEnumList());
 		refData.put("assetAttributeTypes"
-				, getAssetManagerService().getAssetAttributeTypes(null, new AssetType(request.getParameter("pAssetType")==null ? request.getParameter("assetType"): request.getParameter("pAssetType"), null)));
+				, getAssetManagerService().getAssetAttributeTypes(null, request.getParameter("pAssetType")==null ? request.getParameter("assetType"): request.getParameter("pAssetType")));
 		refData.put("assetTemplates"
 				, getAssetManagerService().getAssetTemplates(request.getParameter("pAssetType")==null ? request.getParameter("assetType"): request.getParameter("pAssetType")));
 		return refData;

@@ -10,6 +10,7 @@ import com.freshdirect.transadmin.model.Asset;
 import com.freshdirect.transadmin.model.AssetAttribute;
 import com.freshdirect.transadmin.model.AssetAttributeId;
 import com.freshdirect.transadmin.model.AssetAttributeType;
+import com.freshdirect.transadmin.model.AssetAttributeTypeId;
 import com.freshdirect.transadmin.model.AssetTemplate;
 import com.freshdirect.transadmin.model.AssetTemplateAttribute;
 import com.freshdirect.transadmin.model.AssetTemplateAttributeId;
@@ -149,15 +150,16 @@ public class AssetProviderController extends BaseJsonRpcController  implements I
 	public boolean addAssetAttribute(String assetTypeCode, String attributeCode, String attributeDesc, String attribueDataType){
 		
 		try{
-			AssetType assetType  = getAssetManagerService().getAssetType(assetTypeCode);
+			//AssetType assetType  = getAssetManagerService().getAssetType(assetTypeCode);
 			AssetAttributeType attributeType = new AssetAttributeType();
-			
-			attributeType.setCode(attributeCode);
+			AssetAttributeTypeId id = new AssetAttributeTypeId();		
+			id.setCode(attributeCode);
+			id.setAssetType(assetTypeCode);
 			attributeType.setDescription(attributeDesc);
 			attributeType.setDataType(attribueDataType);
-			attributeType.setAssetType(assetType);
+			attributeType.setId(id);
 			
-			Collection assetAttributesTypes = getAssetManagerService().getAssetAttributeTypes(attributeCode, assetType);
+			Collection assetAttributesTypes = getAssetManagerService().getAssetAttributeTypes(attributeCode, assetTypeCode);
 			
 			if(assetAttributesTypes !=null && assetAttributesTypes.size()>0)
 				getAssetManagerService().removeEntity(assetAttributesTypes);

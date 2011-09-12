@@ -34,7 +34,7 @@ public class AssetTemplateFormController extends AbstractFormController {
 		
 		refData.put("assetAttributeTypes"
 					, getAssetManagerService().getAssetAttributeTypes(null
-							, new AssetType(request.getParameter("tAssetType")==null ? request.getParameter("assetType"): request.getParameter("tAssetType"), null)));
+							, request.getParameter("tAssetType")==null ? request.getParameter("assetType"): request.getParameter("tAssetType")));
 		return refData;
 	}
 	
