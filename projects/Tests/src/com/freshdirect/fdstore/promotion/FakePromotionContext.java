@@ -211,7 +211,7 @@ public class FakePromotionContext implements PromotionContextI {
 	}
 	
 	@Override
-	public boolean applyLineItemDiscount(PromotionI promo, FDCartLineI lineItem, double percentOff, int skuLimit){
+	public boolean applyLineItemDiscount(PromotionI promo, FDCartLineI lineItem, double percentOff){
 		return false;
 	}
 	
