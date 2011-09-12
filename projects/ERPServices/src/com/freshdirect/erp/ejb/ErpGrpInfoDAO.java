@@ -303,8 +303,10 @@ public class ErpGrpInfoDAO {
 	public static final String GRP_PRICING_SKU_SELECT_SQL=
 	 "select  p.sku_code "+
 	 "from erps.product p, erps.materialproxy mpx, erps.material m "+
-	 "where p.id = mpx.product_id and mpx.mat_id = m.id "+
-	 "and p.version = (select max(version) from erps.product p2 where p2.sku_code = p.sku_code) ";
+	 "where p.id = mpx.product_id and  m.id= mpx.mat_id"+
+	 //"and p.version = (select max(version) from erps.product p2 where p2.sku_code = p.sku_code) ";
+	 " and m.version = (select max(version) from erps.material where sap_id=m.sap_id) ";
+	
 	 //"and m.sap_id in ('000000000200200366', '000000000200200367', '000000000200200373') "+  
 	 //"order by M.SAP_ID,P.ID";
 															
@@ -326,7 +328,7 @@ public class ErpGrpInfoDAO {
 	    		   if(it.hasNext()) 
 	    			   buf.append(", '");
 	    		   else
-	    			   buf.append(") order by m.sap_id,p.id");
+	    			   buf.append(") ");
 	    	   }
 	    	   ps = conn.prepareStatement(buf.toString());
 	    	   rs = ps.executeQuery();
