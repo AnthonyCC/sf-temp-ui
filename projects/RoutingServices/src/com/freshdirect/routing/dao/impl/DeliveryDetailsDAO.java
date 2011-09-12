@@ -785,10 +785,8 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
         		ps.setInt(3, EnumReservationStatus.CANCELED.getCode());
         		ps.setInt(4, EnumReservationStatus.EXPIRED.getCode());
         		ps.setString(5, serviceType);
-        		//ps.setDouble(6, longitude);
-        		ps.setBigDecimal(6, new java.math.BigDecimal(longitude));
-        		//ps.setDouble(7, latitude);
-        		ps.setBigDecimal(7, new java.math.BigDecimal(latitude));
+        		ps.setDouble(6, longitude);
+        		ps.setDouble(7, latitude);
                 
         		ps.setDate(8, new java.sql.Date(deliveryDate.getTime()));
         		ps.setDate(9, new java.sql.Date(endDate.getTime().getTime()));
