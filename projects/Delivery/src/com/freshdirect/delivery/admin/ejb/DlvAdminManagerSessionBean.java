@@ -364,8 +364,7 @@ public class DlvAdminManagerSessionBean extends SessionBeanSupport {
 			cs.registerOutParameter(1, Types.INTEGER);
 			cs.setString(2, regionDataId);
 			cs.setDate(3, new java.sql.Date(startDate.getTime()));
-			//cs.setDouble(4, dlvCharge);
-			cs.setBigDecimal(4, new java.math.BigDecimal(dlvCharge));
+			cs.setDouble(4, dlvCharge);
 
 			cs.execute();
 			int ret = cs.getInt(1);

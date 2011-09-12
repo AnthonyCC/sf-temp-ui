@@ -14,7 +14,7 @@ public class FDPricingEngine {
 	private FDPricingEngine() {
 	}
 
-	public static FDConfiguredPrice doPricing(FDProduct fdProduct, FDConfigurableI prConf, Discount discount, PricingContext pCtx, FDGroup group, double grpQty, String pricingUnit)
+	public static FDConfiguredPrice doPricing(FDProduct fdProduct, FDConfigurableI prConf, Discount discount, PricingContext pCtx, FDGroup group, double grpQty)
 		throws PricingException {
 
 		ConfiguredPrice configuredPrice = PricingEngine.getConfiguredPrice(fdProduct.getPricing(), prConf, pCtx, group, grpQty);
@@ -33,13 +33,11 @@ public class FDPricingEngine {
 				discountValue = 0;
 
 			} else {
-				Price discountedPrice = PricingEngine.applyDiscount(configuredPrice.getPrice(), prConf.getQuantity(), discount, pricingUnit);
+				Price discountedPrice = PricingEngine.applyDiscount(configuredPrice.getPrice(), prConf.getQuantity(), discount);
 				price = configuredPrice.getPrice().getPrice();
 				discountValue = price - discountedPrice.getPrice();
 			}
 		}
-		
-		//System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$Pricing for :" + fdProduct.getSkuCode() + " -discountValue: " + discountValue + " -price:" + price + " -condn:" + configuredPrice.getPricingCondition());
 
 		return new FDConfiguredPrice(price, discountValue, configuredPrice.getPricingCondition());
 	}

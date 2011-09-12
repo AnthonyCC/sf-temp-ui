@@ -1381,16 +1381,14 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 
 	public int getLineItemDiscountCount(String promoCode){
-		//Set<String> uniqueDiscountedProducts =new HashSet<String>();
-		int count = 0;
+		Set<String> uniqueDiscountedProducts =new HashSet<String>(); 
 		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
 			FDCartLineI cartLine = i.next();
 			if(cartLine.hasDiscount(promoCode)) {
-				count++;
+				uniqueDiscountedProducts.add(cartLine.getProductRef().getContentKey().getId());
 			}
 		}
-		//return uniqueDiscountedProducts.size();
-		return count;
+		return uniqueDiscountedProducts.size();
 	}
 	
 	public void clearLineItemDiscounts(){

@@ -20,7 +20,6 @@ public class Discount implements java.io.Serializable {
 	private final EnumDiscountType discountType;
 	private final double amount;
 	private String promotionDescription=" ";
-	private int skuLimit=0;
 
 	public Discount(String promotionCode, EnumDiscountType promotionType, double amount) {
 		this.promotionCode = promotionCode;
@@ -55,14 +54,6 @@ public class Discount implements java.io.Serializable {
 
 	public void setPromotionDescription(String promotionDescription) {
 		this.promotionDescription = promotionDescription;
-	}
-
-	public void setSkuLimit(int skuLimit) {
-		this.skuLimit = skuLimit;
-	}
-
-	public int getSkuLimit() {
-		return skuLimit;
 	}
 
 }

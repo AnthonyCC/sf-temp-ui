@@ -85,9 +85,7 @@ public class FDPromotionNewDAO {
 	 * @return List of Promotion
 	 */
 	private final static String getAllAutomaticPromotions = "SELECT * FROM CUST.PROMOTION_NEW p where p.status STATUSES and " +
-	 							"(p.expiration_date > (sysdate-7) or p.expiration_date is null) and p.redemption_code is null " +
-	 							"order by p.modify_date desc";
-	 							//"and (p.REFERRAL_PROMO = 'N' or p.REFERRAL_PROMO is null) order by p.modify_date desc";
+	 							"(p.expiration_date > (sysdate-7) or p.expiration_date is null) and p.redemption_code is null order by p.modify_date desc";
 	public static List<PromotionI> loadAllAutomaticPromotions(Connection conn) throws SQLException {
 		final String query = getAllAutomaticPromotions.replace("STATUSES", getStatusReplacementString());
 		LOGGER.debug("Query is "+query);
@@ -118,9 +116,7 @@ public class FDPromotionNewDAO {
 		return buf.toString();
 	}
 	
-	private final static String getModifiedOnlyPromotions = "SELECT * FROM CUST.PROMOTION_NEW where modify_date > ? " +
-						//"and (REFERRAL_PROMO = 'N' or REFERRAL_PROMO is null) " +
-						"order by modify_date asc";
+	private final static String getModifiedOnlyPromotions = "SELECT * FROM CUST.PROMOTION_NEW where modify_date > ? order by modify_date asc";
 	
 	public static List<PromotionI> loadModifiedOnlyPromotions(Connection conn, Date lastModified) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(getModifiedOnlyPromotions);
@@ -274,8 +270,7 @@ public class FDPromotionNewDAO {
 	}
 	
 	private final static String getAllActiveAutomaticPromotionCodes = "SELECT CODE, MODIFY_DATE FROM CUST.PROMOTION_NEW p where p.status STATUSES and " +
-		"(p.expiration_date > (sysdate-7) or p.expiration_date is null) and p.redemption_code is null ";
-		//"and (p.REFERRAL_PROMO = 'N' or p.REFERRAL_PROMO is null)";
+		"(p.expiration_date > (sysdate-7) or p.expiration_date is null) and p.redemption_code is null";
 	
 	/**
 	 * This method returns all active automatic promotion codes along
@@ -643,7 +638,6 @@ public class FDPromotionNewDAO {
 		
 		if("LINE_ITEM".equals(rs.getString("CAMPAIGN_CODE"))){
 			LineItemDiscountApplicator applicator = null;
-			int skulimit = rs.getInt("SKU_LIMIT");
 			maxAmount = rs.getDouble("max_amount");
 			wasNull = rs.wasNull();
 			if (!wasNull) {
@@ -651,9 +645,6 @@ public class FDPromotionNewDAO {
 				applicator.setDiscountRule(new HeaderDiscountRule(minSubtotal, maxAmount));
 			}else{
 				applicator = new LineItemDiscountApplicator(minSubtotal, percentOff);
-			}
-			if(skulimit > 0) {
-				applicator.setSkuLimit(skulimit);
 			}
 			boolean recItemsOnly = "Y".equalsIgnoreCase(rs.getString("FAVORITES_ONLY"));
 			applicator.setFavoritesOnly(recItemsOnly);
@@ -710,9 +701,7 @@ public class FDPromotionNewDAO {
 	/** @return Map of promotionPK -> GeographyStrategy */
 	private final static String getPromoGeographyData = "select pg.id, pg.promotion_id, pg.start_date from cust.promo_geography_new pg, " +
 									"(SELECT ID FROM CUST.PROMOTION_NEW where status STATUSES and (expiration_date > (sysdate-7) " +
-									"or expiration_date is null) and redemption_code is null " +
-									//"and (REFERRAL_PROMO = 'N' or REFERRAL_PROMO is null) "
-									") p where p.ID = pg.PROMOTION_ID";
+									"or expiration_date is null) and redemption_code is null) p where p.ID = pg.PROMOTION_ID";
 
 	private final static String getModifiedOnlyPromoGeographyData = "select pg.id, pg.promotion_id, pg.start_date from cust.promo_geography_new pg, " +
 	"(SELECT ID FROM CUST.PROMOTION_NEW where modify_date > ? ) p where p.ID = pg.PROMOTION_ID";
@@ -924,14 +913,10 @@ public class FDPromotionNewDAO {
 	
 	private final static String GET_DCPD_DATA = "select pg.promotion_id, pg.content_type, pg.content_id, exclude, pg.child_loop, pg.recommended from cust.PROMO_DCPD_DATA_NEW pg, " +
 	"(SELECT ID FROM CUST.PROMOTION_NEW where status STATUSES and (expiration_date > (sysdate-7) " +
-	"or expiration_date is null) and redemption_code is null " +
-	//"and (REFERRAL_PROMO = 'N' or REFERRAL_PROMO is null)" +
-	") p where p.ID = pg.PROMOTION_ID";
+	"or expiration_date is null) and redemption_code is null) p where p.ID = pg.PROMOTION_ID";
 
 	private final static String GET_MODIFIED_ONLY_DCPD_DATA = "select pg.id, pg.promotion_id, pg.content_type, pg.content_id, exclude, pg.child_loop, pg.recommended from cust.PROMO_DCPD_DATA_NEW pg, " +
-	"(SELECT ID  FROM CUST.PROMOTION_NEW where modify_date > ? " +
-	//"and (REFERRAL_PROMO = 'N' or REFERRAL_PROMO is null)" +
-	") p where p.ID = pg.PROMOTION_ID";
+	"(SELECT ID  FROM CUST.PROMOTION_NEW where modify_date > ? ) p where p.ID = pg.PROMOTION_ID";
 	
 	protected static Map<PrimaryKey, DCPDLineItemStrategy> loadDCPDData(Connection conn, Date lastModified) throws SQLException {
 		PreparedStatement ps;
@@ -1328,9 +1313,8 @@ public class FDPromotionNewDAO {
 	}
 	
 	private final static String GET_ALL_PROMOTION_IDS = "SELECT ID FROM CUST.PROMOTION_NEW where status STATUSES and (expiration_date > (sysdate-7) " +
-	"or expiration_date is null) and redemption_code is null "; 
-	//"and (REFERRAL_PROMO = 'N' or REFERRAL_PROMO is null) ";
-    private final static String GET_ALL_PROMOTION_IDS_BY_MODIFY_DATE = "SELECT ID FROM CUST.PROMOTION_NEW where modify_date > ? "; //and (REFERRAL_PROMO = 'N' or REFERRAL_PROMO is null)";
+	"or expiration_date is null) and redemption_code is null ";
+    private final static String GET_ALL_PROMOTION_IDS_BY_MODIFY_DATE = "SELECT ID FROM CUST.PROMOTION_NEW where modify_date > ? ";
     
 	protected static Map<String, DlvZoneStrategy> loadDlvZoneStrategies(Connection conn, Date lastModified) throws SQLException {
 		Map<String, DlvZoneStrategy> dlvZoneStrategies = new HashMap<String, DlvZoneStrategy>();
@@ -1501,37 +1485,5 @@ public class FDPromotionNewDAO {
 		
 		return cartStrategyDataMap;
 	}
-
-	/*
-	public static final String GET_REF_PROMO =  "SELECT p.* " +  
-				"FROM CUST.PROMOTION_NEW p, " +
-				    "CUST.FDCUSTOMER fc, " +
-				    "CUST.REFERRAL_PRGM rp, " + 
-				    "CUST.REFERRAL_CUSTOMER_LIST rcl " + 
-				"where FC.ERP_CUSTOMER_ID = ? " +
-				"and     FC.REFERER_CUSTOMER_ID = RCL.ERP_CUSTOMER_ID " +
-				"and     RCL.REFERAL_PRGM_ID = RP.ID " +
-				"and     RP.EXPIRATION_DATE > trunc(sysdate) " + 
-				"and     RP.PROMOTION_ID = P.ID " +
-				"and     p.status = 'LIVE' " +
-				"and    (p.expiration_date > (sysdate-7) or p.expiration_date is null) " +  
-				"and     p.redemption_code is null " +
-				"order by p.modify_date desc";
-
-	public static List<PromotionI> getReferralPromotions(String customerId, Connection conn) throws SQLException {
-		final String query = GET_REF_PROMO.replace("STATUSES", getStatusReplacementString());
-		LOGGER.debug("Query is "+query);
-
-		PreparedStatement ps = conn.prepareStatement(query);
-		ps.setString(1, customerId);
-		ResultSet rs = ps.executeQuery();
-		List<PromotionI> promotions =  loadPromotions(conn, rs, null);
-		rs.close();
-		ps.close();
-		return promotions;
-	}
-	*/
-	
-	
 	
 }

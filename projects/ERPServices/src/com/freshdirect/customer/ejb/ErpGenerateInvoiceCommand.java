@@ -145,7 +145,7 @@ public class ErpGenerateInvoiceCommand {
 		Pricing pricing = fdProduct.getPricing();
 		FDConfiguration prConf = new FDConfiguration(quantity, orderLine.getSalesUnit(), orderLine.getOptions());
 		try {
-			FDConfiguredPrice price = FDPricingEngine.doPricing(fdProduct, prConf, orderLine.getDiscount(), orderLine.getPricingContext(), orderLine.getFDGroup(), orderLine.getGroupQuantity(), orderLine.getBasePriceUnit());
+			FDConfiguredPrice price = FDPricingEngine.doPricing(fdProduct, prConf, orderLine.getDiscount(), orderLine.getPricingContext(), orderLine.getFDGroup(), orderLine.getGroupQuantity());
 			orderLine.setPrice(price.getConfiguredPrice() - price.getPromotionValue());
 			orderLine.setDiscountAmount(price.getPromotionValue());			
 			Price oldPrice=PricingEngine.getConfiguredPrice(pricing, prConf, orderLine.getPricingContext(),orderLine.getFDGroup(), orderLine.getGroupQuantity()).getPrice();
@@ -184,7 +184,7 @@ public class ErpGenerateInvoiceCommand {
 		double depositValue = calculateDepositValue(fdProduct.getDepositsPerEach(), orderLine.getDepositValue(), orderLine.getQuantity(), invoiceLine.getQuantity());
 		double discountAmount=0;
 		try {
-			Price afterDiscountPrice=PricingEngine.applyDiscount(configuredPrice,invoiceLine.getQuantity(),orderLine.getDiscount(),orderLine.getBasePriceUnit());
+			Price afterDiscountPrice=PricingEngine.applyDiscount(configuredPrice,invoiceLine.getQuantity(),orderLine.getDiscount());
 			if(afterDiscountPrice!=null){
 				double afterDiscountAmount=afterDiscountPrice.getBasePrice();
 				discountAmount=invoiceLine.getPrice()-afterDiscountAmount;

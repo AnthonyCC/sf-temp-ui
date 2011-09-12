@@ -112,10 +112,8 @@ public class GeoCodeLoaderSessionBean extends SessionBeanSupport {
 			for(int i=0;i<addressList.size();i++){
 			 
 			    AddressModel model=addressList.get(i);
-			    //ps.setDouble(1, model.getAddressInfo().getLongitude());
-			    ps.setBigDecimal(1, new java.math.BigDecimal(model.getAddressInfo().getLongitude()));
-				//ps.setDouble(2, model.getAddressInfo().getLatitude());
-			    ps.setBigDecimal(2, new java.math.BigDecimal(model.getAddressInfo().getLatitude()));
+			    ps.setDouble(1, model.getAddressInfo().getLongitude());
+				ps.setDouble(2, model.getAddressInfo().getLatitude());
 //				ps.setString(3,model.getScrubbedStreet());
 //				ps.setString(4,model.getZipCode());
 				ps.setString(3,model.getId());

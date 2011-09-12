@@ -1287,10 +1287,8 @@ public class GeographyDAO {
 		PreparedStatement ps = conn.prepareStatement(ADD_GEOCODE_EXCEPTION);
 		ps.setString(1, ex.getScrubbedAddress().toUpperCase());
 		ps.setString(2, ex.getZip());
-		//ps.setDouble(3, ex.getLatitude());
-		ps.setBigDecimal(3, new java.math.BigDecimal(ex.getLatitude()));
-		//ps.setDouble(4, ex.getLongitude());
-		ps.setBigDecimal(4, new java.math.BigDecimal(ex.getLongitude()));
+		ps.setDouble(3, ex.getLatitude());
+		ps.setDouble(4, ex.getLongitude());
 		ps.setString(5, userId);
 
 		if (ps.executeUpdate() != 1) {
