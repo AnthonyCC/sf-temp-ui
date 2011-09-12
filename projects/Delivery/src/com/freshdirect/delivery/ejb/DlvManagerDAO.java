@@ -531,6 +531,7 @@ public class DlvManagerDAO {
 				"X".equals(rs.getString("cos_enabled"))
 			);
 		} else {
+			LOGGER.debug("DlvManagerDAo.getZoneInfo(DONOT_DELIVER): " + address);
 			response = new DlvZoneInfoModel(null, null, null, EnumZipCheckResponses.DONOT_DELIVER,false,false);
 		}
 

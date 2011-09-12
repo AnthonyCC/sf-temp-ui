@@ -2064,7 +2064,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		try {
 			conn = getConnection();
 			DlvManagerDAO.setReservationMetricsDetails(conn, reservationId, noOfCartons, noOfCases
-					, noOfFreezers, status.value(), source);
+					, noOfFreezers, status !=null ? status.value() : null, source);
 
 		} catch (SQLException e) {
 			LOGGER.warn("SQLException in DlvManagerDAO.setReservationMetricsDetails() call ", e);

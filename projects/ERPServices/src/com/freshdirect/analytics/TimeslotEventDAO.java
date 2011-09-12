@@ -84,8 +84,7 @@ public class TimeslotEventDAO {
 		ps.setString(1, id);
 		ResultSet rs = ps.executeQuery();
 		List<TimeslotEventDetailModel> details = new ArrayList<TimeslotEventDetailModel>();
-		while(rs.next())
-		{
+		while(rs.next()) {
 			TimeslotEventDetailModel detail = new TimeslotEventDetailModel();
 			detail.setStoreFrontAvailable(rs.getString("storefront_avl"));
 			detail.setDeliveryDate(rs.getDate("base_date"));
@@ -95,15 +94,15 @@ public class TimeslotEventDAO {
 		ps.close();
 		return details;
 	}
+	
 	public static void addEntry(Connection conn,TimeslotEventModel event) 
 										throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(TIMESLOT_LOG_INSERT);
 		
-		if(event != null)
-		{
+		if(event != null)	{
 			ps.setString(1, event.getId());
 			ps.setTimestamp(2, new java.sql.Timestamp(event.getEventDate().getTime()));
-			if(event.getReservationId()==null || "".equals(event.getReservationId())) {
+			if(event.getReservationId()== null || "".equals(event.getReservationId())) {
 				ps.setNull(3,java.sql.Types.VARCHAR);
 			}
 			else {
@@ -122,134 +121,133 @@ public class TimeslotEventDAO {
 	    	ps.setString(13, (event.isZoneCtActive())?"Y":"N");
 	    	ps.execute();
 	 	    ps.close();
+	    } else {
+	    	return;
 	    }
-		else return;
-	   
-	    boolean isAnalyseCall=isAnalyzeCall(event.getEventType());
-	    if(isAnalyseCall) 
-	    {
-	    	ps=conn.prepareStatement(TIMESLOT_LOG_DTL_WITH_COST_INSERT);
-	    } else 
-	    {
-	      	ps=conn.prepareStatement(TIMESLOT_LOG_DTL_INSERT);
-	    }
-	      for (TimeslotEventDetailModel eventD : event.getDetail()) 
-	      {
-		    	if(eventD!=null)
-		    		{
-			    	ps.setString(1,event.getId());
-			    	
-			    	if(eventD.getDeliveryDate()!=null)
-			    		ps.setTimestamp(2, new java.sql.Timestamp(DateUtil.truncate(eventD.getDeliveryDate()).getTime()));
-			    	if(eventD.getStartTime()!=null)
-			    		ps.setTimestamp(3, new java.sql.Timestamp(eventD.getStartTime().getTime()));
-			    	if(eventD.getStopTime()!=null)
-			    		ps.setTimestamp(4, new java.sql.Timestamp(eventD.getStopTime().getTime()));
-			    	
-			    	if(isAnalyseCall ) {
-			    		
-			    		RoutingModel cost=eventD.getRoutingModel();
-			    		
-			    		if(cost!=null) {
-				    		ps.setInt(5, cost.getAdditionalDistance());
-				    		ps.setInt(6, cost.getAdditionalRunTime());
-				    		ps.setInt(7, cost.getAdditionalStopCost());
-				    		ps.setInt(8, cost.getCapacity());
-				    		ps.setInt(9, cost.getCostPerMile());
-				    		ps.setInt(10, cost.getFixedRouteSetupCost());
-				    		ps.setInt(11, cost.getMaxRunTime());
-				    		ps.setInt(12, cost.getOvertimeHourlyWage());
-				    		ps.setDouble(13, cost.getPercentageAvailable());
-				    		ps.setInt(14, cost.getPrefRunTime());
-				    		ps.setInt(15, cost.getRegularHourlyWage());
-				    		ps.setInt(16, cost.getRegularWageDurationSeconds());
-				    		ps.setInt(17, cost.getRouteId());
-				    		ps.setInt(18, cost.getStopSequence());
-				    		ps.setInt(19, cost.getTotalDistance());
-				    		ps.setInt(20, cost.getTotalPUQuantity());
-				    		ps.setInt(21, cost.getTotalQuantity());
-				    		ps.setInt(22, cost.getTotalRouteCost());
-				    		ps.setInt(23, cost.getTotalRunTime());
-				    		ps.setInt(24, cost.getTotalServiceTime());
-				    		ps.setInt(25, cost.getTotalTravelTime());
-				    		ps.setInt(26, cost.getTotalWaitTime());
-				    		ps.setString(27, get(cost.isAvailable()));
-				    		ps.setString(28, get(cost.isFiltered()));
-				    		ps.setString(29, get(cost.isMissedTW()));	
-				    		ps.setInt(43, cost.getWaveVehicles());
-				    		ps.setInt(44, cost.getWaveVehiclesInUse());
-				    		if(cost.getWaveStartTime() != null)
-				    			ps.setTimestamp(45, new Timestamp(cost.getWaveStartTime().getTime()));
-				    		else
-				    			ps.setNull(45, java.sql.Types.TIMESTAMP );
-				    		
-				    		ps.setString(46, cost.getUnavailabilityReason());
-				    		ps.setInt(47, cost.getWaveOrdersTaken());
-				    		ps.setDouble(48,cost.getTotalQuantities());
-				    		ps.setString(49,get(cost.isNewRoute()));
-				    		ps.setDouble(50,cost.getCapacities());
-				    		
-			    		} else {
-			    			ps.setInt(5, 0);
-			    			ps.setInt(6, 0);
-				    		ps.setInt(7, 0);
-				    		ps.setInt(8, 0);
-				    		ps.setInt(9, 0);
-				    		ps.setInt(10, 0);
-				    		ps.setInt(11, 0);
-				    		ps.setInt(12,0);
-				    		ps.setInt(13, 0);
-				    		ps.setDouble(14, 0);
-				    		ps.setInt(15, 0);
-				    		ps.setInt(16, 0);
-				    		ps.setInt(17, 0);
-				    		ps.setInt(18, 0);
-				    		ps.setInt(19, 0);
-				    		ps.setInt(20,0);
-				    		ps.setInt(21, 0);
-				    		ps.setInt(22, 0);
-				    		ps.setInt(23, 0);
-				    		ps.setInt(24, 0);
-				    		ps.setInt(25, 0);
-				    		ps.setInt(26, 0);
-				    		
-	  		    		    ps.setNull(27, java.sql.Types.VARCHAR);
-				    		ps.setNull(28, java.sql.Types.VARCHAR);
-				    		ps.setNull(29, java.sql.Types.VARCHAR);	
-				    		
-				    		ps.setInt(43, 0);
-				    		ps.setInt(44, 0);
-				    		ps.setNull(45,java.sql.Types.TIMESTAMP);
-				    		ps.setNull(46,  java.sql.Types.VARCHAR);
-				    		ps.setInt(47, 0);
-				    		ps.setDouble(48, 0);
-				    		ps.setNull(49, java.sql.Types.VARCHAR);
-				    		ps.setDouble(50, 0);
-				    		
-				    		
-			    		}
-			    		ps.setString(30, eventD.getZoneCode());
-			    		ps.setDouble(31, eventD.getWs_amount());
-			    		ps.setString(32, get(eventD.isAlcohol_restriction()));
-			    		ps.setString(33,get(eventD.isHoliday_restriction()));
-			    		ps.setString(34,get(eventD.isEcofriendlyslot()));
-			    		ps.setString(35,get(eventD.isNeighbourhoodslot()));
-			    		ps.setInt(36,eventD.getTotalCapacity());
-			    		ps.setInt(37,eventD.getCtCapacity());
-			    		ps.setString(38,get(eventD.isManuallyClosed()));
-			    		if(eventD.getCutOff()!=null)
-			    			ps.setTimestamp(39,new java.sql.Timestamp(eventD.getCutOff().getTime()));
-			    		ps.setString(40,eventD.getStoreFrontAvailable());
-			    		ps.setInt(41,eventD.getCtAllocated());
-			    		ps.setInt(42,eventD.getTotalAllocated());
-			    		ps.setString(51, get(eventD.isGeoRestricted()));
-			    		
-			    	} else {
-			    		ps.setString(5, eventD.getZoneCode());
-			    	}
-			    	
-			    	ps.addBatch();
+		
+		if(event.getDetail() != null) {
+		    boolean isAnalyseCall=isAnalyzeCall(event.getEventType());
+		    if(isAnalyseCall) {
+		    	ps=conn.prepareStatement(TIMESLOT_LOG_DTL_WITH_COST_INSERT);
+		    } else {
+		      	ps=conn.prepareStatement(TIMESLOT_LOG_DTL_INSERT);
+		    }
+		    for (TimeslotEventDetailModel eventD : event.getDetail())  {
+		    	if(eventD!=null) {
+		    		ps.setString(1,event.getId());
+
+		    		if(eventD.getDeliveryDate()!=null)
+		    			ps.setTimestamp(2, new java.sql.Timestamp(DateUtil.truncate(eventD.getDeliveryDate()).getTime()));
+		    		if(eventD.getStartTime()!=null)
+		    			ps.setTimestamp(3, new java.sql.Timestamp(eventD.getStartTime().getTime()));
+		    		if(eventD.getStopTime()!=null)
+		    			ps.setTimestamp(4, new java.sql.Timestamp(eventD.getStopTime().getTime()));
+
+		    		if(isAnalyseCall ) {
+
+		    			RoutingModel cost=eventD.getRoutingModel();
+
+		    			if(cost!=null) {
+		    				ps.setInt(5, cost.getAdditionalDistance());
+		    				ps.setInt(6, cost.getAdditionalRunTime());
+		    				ps.setInt(7, cost.getAdditionalStopCost());
+		    				ps.setInt(8, cost.getCapacity());
+		    				ps.setInt(9, cost.getCostPerMile());
+		    				ps.setInt(10, cost.getFixedRouteSetupCost());
+		    				ps.setInt(11, cost.getMaxRunTime());
+		    				ps.setInt(12, cost.getOvertimeHourlyWage());
+		    				ps.setDouble(13, cost.getPercentageAvailable());
+		    				ps.setInt(14, cost.getPrefRunTime());
+		    				ps.setInt(15, cost.getRegularHourlyWage());
+		    				ps.setInt(16, cost.getRegularWageDurationSeconds());
+		    				ps.setInt(17, cost.getRouteId());
+		    				ps.setInt(18, cost.getStopSequence());
+		    				ps.setInt(19, cost.getTotalDistance());
+		    				ps.setInt(20, cost.getTotalPUQuantity());
+		    				ps.setInt(21, cost.getTotalQuantity());
+		    				ps.setInt(22, cost.getTotalRouteCost());
+		    				ps.setInt(23, cost.getTotalRunTime());
+		    				ps.setInt(24, cost.getTotalServiceTime());
+		    				ps.setInt(25, cost.getTotalTravelTime());
+		    				ps.setInt(26, cost.getTotalWaitTime());
+		    				ps.setString(27, get(cost.isAvailable()));
+		    				ps.setString(28, get(cost.isFiltered()));
+		    				ps.setString(29, get(cost.isMissedTW()));	
+		    				ps.setInt(43, cost.getWaveVehicles());
+		    				ps.setInt(44, cost.getWaveVehiclesInUse());
+		    				if(cost.getWaveStartTime() != null)
+		    					ps.setTimestamp(45, new Timestamp(cost.getWaveStartTime().getTime()));
+		    				else
+		    					ps.setNull(45, java.sql.Types.TIMESTAMP );
+
+		    				ps.setString(46, cost.getUnavailabilityReason());
+		    				ps.setInt(47, cost.getWaveOrdersTaken());
+		    				ps.setDouble(48,cost.getTotalQuantities());
+		    				ps.setString(49,get(cost.isNewRoute()));
+		    				ps.setDouble(50,cost.getCapacities());
+
+		    			} else {
+		    				ps.setInt(5, 0);
+		    				ps.setInt(6, 0);
+		    				ps.setInt(7, 0);
+		    				ps.setInt(8, 0);
+		    				ps.setInt(9, 0);
+		    				ps.setInt(10, 0);
+		    				ps.setInt(11, 0);
+		    				ps.setInt(12,0);
+		    				ps.setInt(13, 0);
+		    				ps.setDouble(14, 0);
+		    				ps.setInt(15, 0);
+		    				ps.setInt(16, 0);
+		    				ps.setInt(17, 0);
+		    				ps.setInt(18, 0);
+		    				ps.setInt(19, 0);
+		    				ps.setInt(20,0);
+		    				ps.setInt(21, 0);
+		    				ps.setInt(22, 0);
+		    				ps.setInt(23, 0);
+		    				ps.setInt(24, 0);
+		    				ps.setInt(25, 0);
+		    				ps.setInt(26, 0);
+
+		    				ps.setNull(27, java.sql.Types.VARCHAR);
+		    				ps.setNull(28, java.sql.Types.VARCHAR);
+		    				ps.setNull(29, java.sql.Types.VARCHAR);	
+
+		    				ps.setInt(43, 0);
+		    				ps.setInt(44, 0);
+		    				ps.setNull(45,java.sql.Types.TIMESTAMP);
+		    				ps.setNull(46,  java.sql.Types.VARCHAR);
+		    				ps.setInt(47, 0);
+		    				ps.setDouble(48, 0);
+		    				ps.setNull(49, java.sql.Types.VARCHAR);
+		    				ps.setDouble(50, 0);
+
+
+		    			}
+		    			ps.setString(30, eventD.getZoneCode());
+		    			ps.setDouble(31, eventD.getWs_amount());
+		    			ps.setString(32, get(eventD.isAlcohol_restriction()));
+		    			ps.setString(33,get(eventD.isHoliday_restriction()));
+		    			ps.setString(34,get(eventD.isEcofriendlyslot()));
+		    			ps.setString(35,get(eventD.isNeighbourhoodslot()));
+		    			ps.setInt(36,eventD.getTotalCapacity());
+		    			ps.setInt(37,eventD.getCtCapacity());
+		    			ps.setString(38,get(eventD.isManuallyClosed()));
+		    			if(eventD.getCutOff()!=null)
+		    				ps.setTimestamp(39,new java.sql.Timestamp(eventD.getCutOff().getTime()));
+		    			ps.setString(40,eventD.getStoreFrontAvailable());
+		    			ps.setInt(41,eventD.getCtAllocated());
+		    			ps.setInt(42,eventD.getTotalAllocated());
+		    			ps.setString(51, get(eventD.isGeoRestricted()));
+
+		    		} else {
+		    			ps.setString(5, eventD.getZoneCode());
+		    		}
+
+		    		ps.addBatch();
 		    	}
+		    }
 		}
 		ps.executeBatch();
 		ps.close();

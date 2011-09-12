@@ -580,9 +580,11 @@ public class FDProductSelection implements FDProductSelectionI {
 	
 	public boolean hasBrandName(Set<String> brandNames) {
 			ProductModel pm = ContentFactory.getInstance().getProductByName(this.getCategoryName(), this.getProductName());
-			for ( BrandModel brand : pm.getBrands() ) {
-				if (brandNames.contains(brand.getContentName())) {
-					return true;
+			if(pm != null && pm.getBrands() != null) {
+				for ( BrandModel brand : pm.getBrands() ) {
+					if (brandNames.contains(brand.getContentName())) {
+						return true;
+					}
 				}
 			}
 		return false;
