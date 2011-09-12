@@ -332,6 +332,7 @@ public class DomainCreator {
 			String line;
 			while ( ( line = buf.readLine() ) != null ) {
 				// wait for STARTED message
+				System.out.println("WL:\t"+line);
 				if (line.contains("<BEA-000360>")) {
 					break;
 				}
