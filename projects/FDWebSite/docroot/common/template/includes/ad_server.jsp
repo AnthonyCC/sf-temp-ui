@@ -2,6 +2,7 @@
 %><%@ page import='org.apache.commons.lang.StringUtils'
 %><%@ page import='java.util.*'
 %><%@ page import='java.net.*'
+%><%@ page import='java.io.UnsupportedEncodingException'
 %><%@ page import='com.freshdirect.customer.ErpSaleInfo'
 %><%@ page import='com.freshdirect.customer.EnumDeliveryType'
 %><%@ page import='com.freshdirect.fdstore.FDStoreProperties'
@@ -356,7 +357,37 @@
 			}
 		}
 		if (request.getParameter("TSAPROMO") != null) {
-			queryString.addParam("TSAPROMO",request.getParameter("TSAPROMO"));		
+			queryString.addParam("TSAPROMO",request.getParameter("TSAPROMO"));
+		}else if (
+				("/about/index.jsp".equalsIgnoreCase(request.getRequestURI()) || "/site_access/site_access.jsp".equalsIgnoreCase(request.getRequestURI())) &&
+				request.getParameter("successPage") != null
+			) {
+			//check if TSAPROMO is coming from a targeted page that is NOT siteaccess, and we're on siteaccess
+			String sp = URLDecoder.decode(request.getParameter("successPage").toString(), "UTF-8");
+			if (sp.indexOf("TSAPROMO") != -1) {
+				String pairs[] = sp.replace("?", "&").split("&");
+				
+			    for (String pair : pairs) {
+					 String name = null;
+					 String value = null;
+					 int pos = pair.indexOf("=");
+					 if (pos == -1) {
+						continue; //not a valid key=val pair, ignore
+					 } else {
+						try {
+							name = URLDecoder.decode(pair.substring(0, pos), "UTF-8");
+							value = URLDecoder.decode(pair.substring(pos+1, pair.length()), "UTF-8");            
+						} catch (UnsupportedEncodingException e) {
+							// Not really possible, throw unchecked
+						    throw new IllegalStateException("ad_server.jsp: No UTF-8");
+						}
+					}
+					if ("TSAPROMO".equalsIgnoreCase(name) && value != null) {
+						queryString.addParam("TSAPROMO", value);
+						break; //found, we're done
+					}
+			    }
+			}
 		}
 		String sitePage = request.getAttribute("sitePage") == null ? "www.freshdirect.com"
 				: (String) request.getAttribute("sitePage");

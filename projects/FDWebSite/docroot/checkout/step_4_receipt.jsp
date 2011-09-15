@@ -124,6 +124,20 @@
 		semPixel_CM.setParam("totalCartItems", sem_totalCartItems);
 		%><fd:SemPixelIncludeMedia pixelNames="CheetahMail" /><%
 
+		/* Publicis Pixel */
+		SemPixelModel semPixel_PUB = FDSemPixelCache.getInstance().getSemPixel("Publicis");
+
+		//add a param to the params sent to the FTL
+		semPixel_PUB.setParam("orderId", sem_orderNumber);
+		semPixel_PUB.setParam("validOrders", sem_validOrderCount);
+		semPixel_PUB.setParam("isNew", ("0".equals(sem_validOrderCount))?"true":"false");
+		semPixel_PUB.setParam("subtotal", sem_cartSubtotal);
+		semPixel_PUB.setParam("isOrderModify",String.valueOf(isOrderModify));
+		semPixel_PUB.setParam("userCounty", sem_defaultCounty);
+		semPixel_PUB.setParam("totalCartItems", sem_totalCartItems);
+		semPixel_PUB.setParam("curPage", request.getRequestURI());
+		%><fd:SemPixelIncludeMedia pixelNames="Publicis" /><%
+
 
 		/* TheSearchAgency Pixel */
 		if ( !isOrderModify ) { //do not send on order modify

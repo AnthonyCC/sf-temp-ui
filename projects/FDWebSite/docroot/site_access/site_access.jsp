@@ -6,10 +6,10 @@
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
-
+<%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
+<%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
-
 <%
 	response.addHeader("Pragma", "no-cache"); 
 	boolean isBestCellars = request.getServerName().toLowerCase().indexOf("bestcellars") > -1;
@@ -199,6 +199,13 @@ request.setAttribute("listPos", "CategoryNote,SiteAccess");
 
 		
 			<%@ include file="/includes/net_insight/i_tag_footer.jspf" %>
+			<%
+				/* Publicis Pixel */
+				SemPixelModel semPixel_PUB = FDSemPixelCache.getInstance().getSemPixel("Publicis");
+
+				//add a param to the params sent to the FTL
+				semPixel_PUB.setParam("curPage", request.getRequestURI());
+			%><fd:SemPixelIncludeMedia pixelNames="Publicis" />
 		</fd:SiteAccessController>
 	</body>
 </html>

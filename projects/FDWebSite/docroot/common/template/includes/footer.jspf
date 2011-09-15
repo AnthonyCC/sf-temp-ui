@@ -2,6 +2,8 @@
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
 <%@page import="com.freshdirect.fdstore.content.MyFD"%>
+<%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
+<%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
 <table width="745" cellpadding="0" cellspacing="0" border="0">
 	<tr>
 		<td>
@@ -80,3 +82,10 @@
 
 <br /><img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" />
 <%@ include file="/includes/net_insight/i_tag_footer.jspf" %>
+<%
+	/* Publicis Pixel */
+	SemPixelModel semPixel_PUB = FDSemPixelCache.getInstance().getSemPixel("Publicis");
+
+	//add a param to the params sent to the FTL
+	semPixel_PUB.setParam("curPage", request.getRequestURI());
+%><fd:SemPixelIncludeMedia pixelNames="Publicis" />
