@@ -124,9 +124,11 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		try {
 			if ( "setDeliveryAddress".equalsIgnoreCase( action ) ) {
 				try {
+					LOGGER.debug("setDeliveryAddress[START] :");
 					DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, action);
 					m.performSetDeliveryAddress(noContactPhonePage);
 				} catch (RedirectToPage e) {
+					LOGGER.debug("setDeliveryAddress[RedirectToPage] :"+ e);
 					this.redirectTo(e.getPage());
 				}
 				if ( result.isSuccess() ) {
@@ -138,6 +140,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 						currentUser.getShoppingCart().setSelectedGiftCards( currentUser.getGiftCardList().getSelectedGiftcards() );
 					}
 				}
+				LOGGER.debug("setDeliveryAddress[END] :");
 			} else if ( "addDeliveryAddress".equalsIgnoreCase( action ) ) { //Added IPhone functionality APPDEV-1565
 				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, getActionName());
 				m.performAddDeliveryAddress();

@@ -502,12 +502,13 @@ public class DlvManagerDAO {
 		throws SQLException, InvalidAddressException {
 
 		if ((address.getLatitude() == 0.0) || (address.getLongitude() == 0.0)) {
+			LOGGER.debug("getZoneInfo[geocodeAddress] :"+address);
 			geocodeAddress(conn, address, useApartment);
 		}
 
 		DlvZoneInfoModel response;
 		
-		
+		LOGGER.debug("getZoneInfo[QUERY] :"+address+"->"+date);
 		PreparedStatement ps = conn.prepareStatement(ZONE_CODE);
 		ps.setString(1, address.getServiceType().getName());
 		ps.setDate(2, new java.sql.Date(date.getTime()));
@@ -525,7 +526,7 @@ public class DlvManagerDAO {
 				"X".equals(rs.getString("cos_enabled"))
 			);
 		} else {
-			LOGGER.debug("DlvManagerDAo.getZoneInfo(DONOT_DELIVER): " + address);
+			LOGGER.debug("DlvManagerDAO.getZoneInfo(DONOT_DELIVER): " + address);
 			response = new DlvZoneInfoModel(null, null, null, EnumZipCheckResponses.DONOT_DELIVER,false,false);
 		}
 

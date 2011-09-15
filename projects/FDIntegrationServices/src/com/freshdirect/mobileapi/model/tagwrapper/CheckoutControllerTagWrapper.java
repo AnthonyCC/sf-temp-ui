@@ -266,6 +266,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
     public ResultBundle setCheckoutDeliveryAddress(SessionUser user, String selectAddressId, DeliveryAddressType type) throws FDException {
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT },
                 new String[] { SESSION_PARAM_USER, SessionName.SIGNUP_WARNING }); //gets,sets
+        LOGGER.debug("setCheckoutDeliveryAddress[START] :"+ selectAddressId + ","+type);
         addExpectedRequestValues(new String[] { REQ_PARAM_CHEF_TABLE, REQ_PARAM_PAYMENT_METHOD_ID, REQ_PARAM_BILLING_REF }, new String[] {
                 REQ_PARAM_PAYMENT_METHOD_ID, REQ_PARAM_BILLING_REF });//gets,sets
 
@@ -288,6 +289,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         setMethodMode(true);
 
         ActionResult actionResult = executeTagLogic();
+        LOGGER.debug("setCheckoutDeliveryAddress[executeTagLogic] :"+ actionResult);
         String successPage = ((CheckoutControllerTag) wrapTarget).getSuccessPage();
 
         if (actionResult == null) {
@@ -296,9 +298,11 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
 
         CheckoutControllerTag wrappedTag = (CheckoutControllerTag) this.getWrapTarget();
         if (wrappedTag.getAgeVerificationPage().equals(successPage)) {
+        	LOGGER.debug("setCheckoutDeliveryAddress[ERR_AGE_VERIFICATION] :"+ successPage);
             actionResult.addError(new ActionError(ERR_AGE_VERIFICATION, MobileApiProperties.getMediaPath()
                     + MobileApiProperties.getAlcoholAgeWarningMediaPath()));
         }
+        LOGGER.debug("setCheckoutDeliveryAddress[END] :"+ selectAddressId + ","+type);
         return new ResultBundle(actionResult, this);
     }
 

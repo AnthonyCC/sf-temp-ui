@@ -333,4 +333,11 @@ public abstract class BaseController extends AbstractController implements Messa
         getMapper().writeValue(writer, obj);
         return writer.toString();
     }
+    
+    protected String getSessionUserId(SessionUser user) {
+    	if(user != null && user.getFDSessionUser() != null && user.getFDSessionUser().getIdentity() != null) {
+    		return user.getFDSessionUser().getIdentity().getErpCustomerPK();
+    	}
+    	return null;
+    }
 }

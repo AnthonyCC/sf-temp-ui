@@ -85,8 +85,10 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		if ( addressOrLocation.startsWith( "DEPOT_" ) ) {
 			String locationId = addressOrLocation.substring( "DEPOT_".length() );
 			this.setDepotDeliveryLocation( locationId, request, result );
+			LOGGER.debug("performSetDeliveryAddress[DEPOT_] :"+locationId);
 		} else {
 			this.setRegularDeliveryAddress( user, result, addressOrLocation, noContactPhonePage, request );
+			LOGGER.debug("setRegularDeliveryAddress[] :"+addressOrLocation);
 		}
 
 		FDCartModel cart = user.getShoppingCart();
@@ -358,8 +360,10 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		if ( !EnumRestrictedAddressReason.NONE.equals( reason ) ) {
 			result.addError( true, "undeliverableAddress", SystemMessageList.MSG_RESTRICTED_ADDRESS );
 		}
-		if ( !result.isSuccess() )
+		if ( !result.isSuccess() ) {
+			LOGGER.debug("setRegularDeliveryAddress[checkAddressForRestrictions:FAILED] :"+result);
 			return;
+		}
 
 		// since address looks alright need geocode
 		try {
@@ -395,10 +399,13 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 
 		Calendar date = new GregorianCalendar();
 		date.add( Calendar.DATE, 7 );
-
+		
+		LOGGER.debug("setRegularDeliveryAddress[getZoneInfo:START] :"+date.getTime());
 		DlvZoneInfoModel dlvResponse = AddressUtil.getZoneInfo( request, address, result, date.getTime() );
-		if ( !result.isSuccess() )
+		if ( !result.isSuccess() ) {
+			LOGGER.debug("setRegularDeliveryAddress[getZoneInfo:FAILED] :"+result);
 			return;
+		}
 		AddressInfo info = address.getAddressInfo();
 		if ( info == null ) {
 			info = new AddressInfo();

@@ -303,15 +303,18 @@ public class CheckoutController extends BaseController {
      */
     private ModelAndView setDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressSelection reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
-        Checkout checkout = new Checkout(user);
+    	LOGGER.debug("setDeliveryAddress[START] :"+ getSessionUserId(user));
+    	Checkout checkout = new Checkout(user);
+    	LOGGER.debug("setDeliveryAddress[START1] :"+ getSessionUserId(user));
         ResultBundle resultBundle = checkout.setCheckoutDeliveryAddress(reqestMessage.getId(), DeliveryAddressType.valueOf(reqestMessage
                 .getType()));
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);
-
+        LOGGER.debug("setDeliveryAddress[END1] :"+ getSessionUserId(user));
         Message responseMessage = null;
         if (result.isSuccess()) {
-            DeliveryAddress deliveryAddress = DeliveryAddress.wrap(user.getShoppingCart().getDeliveryAddress());
+        	LOGGER.debug("setDeliveryAddress[START2] :"+ getSessionUserId(user));
+        	DeliveryAddress deliveryAddress = DeliveryAddress.wrap(user.getShoppingCart().getDeliveryAddress());
             TimeSlotCalculationResult timeSlotResult = deliveryAddress.getDeliveryTimeslot(user, false,isCheckoutAuthenticated(request));
 
             com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots slotResponse = new com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots(
@@ -319,10 +322,13 @@ public class CheckoutController extends BaseController {
             slotResponse.getCheckoutHeader().setHeader(user.getShoppingCart());
             responseMessage = slotResponse;
             responseMessage.setSuccessMessage("Order delivery Address have been set successfully.");
+            LOGGER.debug("setDeliveryAddress[END2] :"+ getSessionUserId(user));
         } else {
+        	LOGGER.debug("setDeliveryAddress[ERROR] :"+ getSessionUserId(user));
             responseMessage = getErrorMessage(result, request);
         }
         setResponseMessage(model, responseMessage, user);
+        LOGGER.debug("setDeliveryAddress[END] :"+ getSessionUserId(user));
         return model;
     }
 

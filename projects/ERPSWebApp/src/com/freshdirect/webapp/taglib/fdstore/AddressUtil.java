@@ -153,11 +153,12 @@ public class AddressUtil {
             //today.add(Calendar.DATE, 7);
             //Date todayPlusSeven = today.getTime();
         	DlvZoneInfoModel zoneInfo =  FDDeliveryManager.getInstance().getZoneInfo(address, date);
+        	LOGGER.debug("getZoneInfo[EnumZipCheckResponses] :"+EnumZipCheckResponses.DELIVER.equals(zoneInfo.getResponse()));
             result.addError((!EnumZipCheckResponses.DELIVER.equals(zoneInfo.getResponse())),
                     EnumUserInfoName.DLV_NOT_IN_ZONE.getCode(), SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS);
             return zoneInfo;
         } catch (FDInvalidAddressException  fdia) {
-            LOGGER.info("Invalid address", fdia);
+            LOGGER.info("getZoneInfo Invalid address", fdia);
             result.addError(new ActionError(EnumUserInfoName.DLV_CANT_GEOCODE.getCode(), 
             		MessageFormat.format(SystemMessageList.MSG_CANT_GEOCODE, 
             		new Object[] { UserUtil.getCustomerServiceContact(request)})));
@@ -168,7 +169,7 @@ public class AddressUtil {
     
 	public static EnumServiceType getDeliveryServiceType(AddressModel addressModel) throws FDResourceException {
 		try {
-			DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkAddress(addressModel);
+			DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkAddress(addressModel);
 			
 			EnumDeliveryStatus dlvStatus = serviceResult.getServiceStatus(addressModel.getServiceType());
 			
