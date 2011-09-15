@@ -268,13 +268,15 @@ public class ContentSearch {
 		set.addAll(CmsManager.getInstance().reconstructSpelling(searchTerm, getDidYouMeanThreshold(), getDidYouMeanMaxHits()));
 		List<SpellingHit> hits = new ArrayList<SpellingHit>(set.size());
 		for (SpellingHit hit : set) {
+			String phrase = hit.getPhrase();
 			Iterator<SpellingHit> it = hits.iterator();
 			boolean add = true;
 			while (it.hasNext()) {
 				SpellingHit hit1 = it.next();
-				if (hit1.getPhrase().contains(hit.getPhrase()))
+				String phrase1 = hit1.getPhrase();
+				if (phrase1.contains(phrase) && phrase1.replace(phrase, "").indexOf(' ') != -1)
 					it.remove();
-				else if (hit.getPhrase().contains(hit1.getPhrase()))
+				else if (phrase.contains(phrase1) && phrase.replace(phrase1, "").indexOf(' ') != -1)
 					add = false;
 			}
 			if (add)

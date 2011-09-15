@@ -56,8 +56,8 @@ public class CsongorDistance implements StringDistance {
 				d += t1.length();
 			else
 				d += t1.length() * t2.length();
-			ch1 = t1.isEmpty() ? EMPTY : t1.charAt(t1.length() - 1);
-			ch2 = t2.isEmpty() ? EMPTY : t2.charAt(t2.length() - 1);
+			ch1 = t1.isEmpty() || t1.length() == t2.length() ? EMPTY : t1.charAt(t1.length() - 1);
+			ch2 = t2.isEmpty() || t1.length() == t2.length() ? EMPTY : t2.charAt(t2.length() - 1);
 			this.pos.i1 += pos.i1 + 1;
 			this.pos.i2 += pos.i2 + 1;
 		}
