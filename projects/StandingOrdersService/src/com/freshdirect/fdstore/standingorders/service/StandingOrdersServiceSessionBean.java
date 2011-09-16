@@ -605,7 +605,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		
 		//Geo-Restrictions
 		List geographicRestrictions = new ArrayList();
-		geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictions(clonedDeliveryAddressModel);
+		geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictions(deliveryAddressModel);
 		
 		for ( FDTimeslot timeslot : timeslots ) {
 			
