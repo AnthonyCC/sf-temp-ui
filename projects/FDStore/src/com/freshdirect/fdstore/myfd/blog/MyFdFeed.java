@@ -1,6 +1,16 @@
 package com.freshdirect.fdstore.myfd.blog;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -13,6 +23,7 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.MyFD;
 import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.framework.util.BalkingExpiringReference;
+import com.freshdirect.framework.util.RuntimeServiceUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class MyFdFeed implements Serializable, Iterable<MyFdPost> {
@@ -26,6 +37,8 @@ public class MyFdFeed implements Serializable, Iterable<MyFdPost> {
 
 	public static final String FEED_URL = "/feed/";
 	public static final String MYFD_FEED_URL = "/feed/fd/";
+	public static final String MYFD_FEED_SAVE_FILE = "fdfeed.rss";
+	public static final String MYFD_FEED_SAVE_FILE_TEMP = "fdfeed_temp.rss";
 
 	private static class MyFdFeedReference extends BalkingExpiringReference<MyFdFeed> {
 		private static final Logger LOG = LoggerFactory.getInstance(MyFdFeedReference.class);
@@ -72,25 +85,86 @@ public class MyFdFeed implements Serializable, Iterable<MyFdPost> {
 		this.blogEntryCount = blogEntryCount;
 		this.feedUrl = blogUrl + MYFD_FEED_URL;
 		this.posts = new ArrayList<MyFdPost>();
-		processFeedUrl();
+
+		processFeed();
 	}
 
-	protected void processFeedUrl() {
-		try {
-			Document document = DOMUtils.urlToNode(feedUrl);
-			NodeList postNodes = document.getElementsByTagName("item");
-			for (int i = 0; i < Math.min(postNodes.getLength(), blogEntryCount); ++i) {
-				try {
-					posts.add(new MyFdPost((Element) postNodes.item(i)));
-				} catch (RuntimeException e) {
-					LOGGER.error("exception while parsing blog entry #" + i, e);
-				}
+	private void processFeed() {
+
+		String rootDirectory =  RuntimeServiceUtil.getInstance().getRootDirectory();
+
+		if (rootDirectory == null){
+			processFeedUrl(feedUrl);
+			
+		} else {
+		
+			String feedFilePath = rootDirectory + File.separator + MYFD_FEED_SAVE_FILE;
+			String feedFileTempPath = rootDirectory + File.separator + MYFD_FEED_SAVE_FILE_TEMP;
+			
+			try {
+				saveFeedToFile(feedFileTempPath);
+				processFeedUrl(feedFileTempPath);
+
+				//deleting old file and renaming temp file
+				new File(feedFilePath).delete();
+				new File(feedFileTempPath).renameTo(new File(feedFilePath));
+				
+			} catch (Exception e) {
+				LOGGER.warn("Error in processing feed from blog URL, opening last saved version...", e);
+				processFeedUrl(feedFilePath);
 			}
-		} catch (RuntimeException e) {
-			LOGGER.error("exception while processing feed URL", e);
 		}
 	}
 
+	
+	private void processFeedUrl(String url) {
+		posts.clear();
+		Document document = DOMUtils.urlToNode(url);
+		NodeList postNodes = document.getElementsByTagName("item");
+		for (int i = 0; i < Math.min(postNodes.getLength(), blogEntryCount); ++i) {
+			posts.add(new MyFdPost((Element) postNodes.item(i)));
+		}
+	}
+
+	private void saveFeedToFile(String filePath) {
+		
+		BufferedInputStream in = null;
+		FileOutputStream out = null;
+		try {
+			in = new BufferedInputStream(new URL(feedUrl).openStream());
+			out = new FileOutputStream(filePath);
+			byte[] buffer = new byte[1024];
+			int len = in.read(buffer);
+			while (len != -1) {
+			    out.write(buffer, 0, len);
+			    len = in.read(buffer);
+			}
+		} catch (MalformedURLException e) {
+			LOGGER.error("Error in opening feed URL", e);
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			LOGGER.error("Error in saving feed to file", e);
+			throw new RuntimeException(e);
+		} finally {
+			if (in != null) {
+	            try {
+					in.close();
+				} catch (IOException e) {
+					LOGGER.error("IO error closing feed URL stream", e);
+				}
+			}
+			if (out != null) {
+	            try {
+	            	out.close();
+				} catch (IOException e) {
+					LOGGER.error("IO error closing feed file stream", e);
+				}
+			}
+		}
+	
+	}
+	
+	
 	public ArrayList<MyFdPost> getPosts() {
 		return posts;
 	}
