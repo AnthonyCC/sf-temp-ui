@@ -986,6 +986,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>allowExternalSuccessPage</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>moreInfoPage</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>

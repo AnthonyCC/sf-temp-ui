@@ -34,11 +34,15 @@ public abstract class AbstractControllerTag extends com.freshdirect.framework.we
 		return successPage;
 	}
 
-	public void setSuccessPage(String sp) {
-		if (sp != null && sp.indexOf("://") != -1) {
-			throw new IllegalArgumentException("Invalid successPage specified");
+	public void setSuccessPage(String successPage) {		
+		int schemeDelimiterPos = successPage.indexOf("://");
+		int parameterDelimiterPos = successPage.indexOf("?");
+		if (successPage != null && schemeDelimiterPos !=-1 && schemeDelimiterPos < parameterDelimiterPos ) {
+				LOGGER.debug("successPage before throwing IllegalArgument Exception :"+successPage);
+				throw new IllegalArgumentException("Invalid successPage specified");
 		}
-		this.successPage = sp;
+		
+		this.successPage = successPage;
 	}
 
 	public String getActionName() {

@@ -1,6 +1,9 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import="java.util.Enumeration"%>
+<%@ page import="com.freshdirect.fdstore.myfd.blog.MyFdFeed"%>
+<%@ page import="java.net.URLEncoder"%>
+<%@ page import="com.freshdirect.webapp.oauth.provider.OAuthProvider"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
@@ -40,7 +43,10 @@ if(request.getParameter("logoutPage")!= null){
 
 if (toSiteAccess) {
 	//response.sendRedirect(response.encodeRedirectURL("/site_access/site_access.jsp?successPage=/index.jsp"));
-	response.sendRedirect(response.encodeRedirectURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp"));
+	//response.sendRedirect(response.encodeRedirectURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp"));
+	String redirectUrl = OAuthProvider.getProviderUrl() + "/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp";
+	redirectUrl = URLEncoder.encode(redirectUrl,"UTF-8");
+	response.sendRedirect(response.encodeRedirectURL(MyFdFeed.getInstance().getBlogUrl()+"/wp-login.php?action=autologout&redirect_to="+redirectUrl));
 }
 
 %>
@@ -91,3 +97,6 @@ if (toSiteAccess) {
 </TABLE><BR><BR><BR>
 </tmpl:put>
 </tmpl:insert>
+
+
+<iframe src="<%=MyFdFeed.getInstance().getBlogUrl()%>/wp-login.php?action=autologout" width="0" height="0" frameBorder="0"/>
