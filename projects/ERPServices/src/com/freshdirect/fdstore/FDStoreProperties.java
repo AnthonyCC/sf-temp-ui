@@ -469,6 +469,8 @@ public class FDStoreProperties {
 	//APPDEV-1920 Remove the "new feature" alert on quickbuy
 	private static final String SMARTSTORE_QUICKBUY_NEWALERT_ENABLED = "fdstore.smartstore.quickbuy.newalert.enabled";
 	
+	private static final String IPHONE_SEARCH_FILTER_DISCONTINUED_ONLY = "fdstore.iphone.search.filterDiscontinuedOnly";
+	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -932,6 +934,8 @@ public class FDStoreProperties {
 		defaults.put(EVENTLOGGING_ENABLED, "true");
 
 		defaults.put(SMARTSTORE_QUICKBUY_NEWALERT_ENABLED, "false");
+		
+		defaults.put(IPHONE_SEARCH_FILTER_DISCONTINUED_ONLY, "false");
 
         refresh();
     }
@@ -2408,5 +2412,9 @@ public class FDStoreProperties {
 
     public static boolean isQBNewAlertEnabled() {
         return (new Boolean(get(SMARTSTORE_QUICKBUY_NEWALERT_ENABLED))).booleanValue();
-    } 
+    }
+    
+    public static boolean isIPhoneSearchFilterDiscontinuedOnly() {
+    	return Boolean.parseBoolean(get(IPHONE_SEARCH_FILTER_DISCONTINUED_ONLY));
+    }
 }

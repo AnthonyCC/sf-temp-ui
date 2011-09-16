@@ -274,9 +274,9 @@ public class ContentSearch {
 			while (it.hasNext()) {
 				SpellingHit hit1 = it.next();
 				String phrase1 = hit1.getPhrase();
-				if (phrase1.contains(phrase) && phrase1.replace(phrase, "").indexOf(' ') != -1)
+				if (phrase1.contains(phrase) && hit1.getScore() < hit.getScore())
 					it.remove();
-				else if (phrase.contains(phrase1) && phrase.replace(phrase1, "").indexOf(' ') != -1)
+				else if (phrase.contains(phrase1) && hit.getScore() < hit1.getScore())
 					add = false;
 			}
 			if (add)
