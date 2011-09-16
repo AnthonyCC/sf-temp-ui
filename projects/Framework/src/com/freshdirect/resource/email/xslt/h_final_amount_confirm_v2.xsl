@@ -36,7 +36,7 @@
 						<xsl:when test="count(order/shortedItems/shortedItems) > 0">
 							<p><b>Hello <xsl:value-of select="customer/firstName"/>,</b> and thank you for shopping with FreshDirect!</p>
 							
-							<p>Unfortunately (an item) that you ordered was not available. You will not be charged for this item. We apologize for any inconvenience this may cause you.<br/><br/>
+							<p>Unfortunately one or more items that you ordered were not available. You will not be charged for these items. We apologize for any inconvenience this may cause you.<br/><br/>
 							
 							<table width = "100%" cellspacing="0" cellpadding="0" align="center">
 							<tr><td width="50">&#160;</td>
