@@ -30,6 +30,7 @@ import com.freshdirect.cms.search.term.Term;
 import com.freshdirect.erp.ErpFactory;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -377,10 +378,17 @@ public class ContentSearch {
 		Set<String> skuCodes = new HashSet<String>();
 
 		try {
-			Collection<ErpProductInfoModel> productInfos = erpFactory.findProductsByUPC(upc);
-			for (ErpProductInfoModel productInfo : productInfos) {
-				if (productInfo.getSkuCode() != null) {
-					skuCodes.add(productInfo.getSkuCode());
+			FDProductInfo cachedProductInfo = FDCachedFactory.getProductInfoByUpc(upc);
+			if(cachedProductInfo != null && cachedProductInfo.getSkuCode() != null && cachedProductInfo.getSkuCode().length() > 0) {
+				LOGGER.info("Product Found in UPCCache:"+upc+"->"+cachedProductInfo.getSkuCode());
+				skuCodes.add(cachedProductInfo.getSkuCode());
+			} else {
+				LOGGER.info("Product Not Found in UPCCache Searching DB:"+upc);
+				Collection<ErpProductInfoModel> productInfos = erpFactory.findProductsByUPC(upc);
+				for (ErpProductInfoModel productInfo : productInfos) {
+					if (productInfo.getSkuCode() != null) {
+						skuCodes.add(productInfo.getSkuCode());
+					}
 				}
 			}
 			// If system is not able to find the skus by the material upccodes in erpsy then go search in the customer order

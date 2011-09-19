@@ -82,7 +82,7 @@ public abstract class FDCustomerManagerTestSupport extends DbTestCaseSupport {
         ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
         ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
         dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-        return new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, status, now,inventoryCache,null,null,dummyList, null, null);
+        return new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, status, now,inventoryCache,null,null,dummyList, null, null, null);
     }
     
     

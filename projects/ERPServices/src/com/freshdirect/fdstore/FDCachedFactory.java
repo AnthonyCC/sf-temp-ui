@@ -65,6 +65,13 @@ public class FDCachedFactory {
 	 * FDProduct instances hashed by FDSku instances.
 	 */
 	private final static LazyTimedCache<FDGroup, GroupScalePricing> grpCache = new LazyTimedCache<FDGroup, GroupScalePricing>("FDGroupInfo",FDStoreProperties.getGrpCacheSize(), FDStoreProperties.getRefreshSecsProduct() * 1000);
+	
+	/** 
+	 * FDProductInfo instances hashed by BARCODE strings.
+	 */
+	private final static LazyTimedCache productUpcCache =
+		new LazyTimedCache("FDProductInfo_UPC", FDStoreProperties.getProductCacheSize(), FDStoreProperties.getRefreshSecsProductInfo() * 1000);
+
 
 	
 	/**
@@ -210,9 +217,10 @@ public class FDCachedFactory {
 		return pi;
 	}
 	
+	public static FDProductInfo getProductInfoByUpc(String upc) {
+		return (FDProductInfo)productUpcCache.get(upc);
+	}
 	
-	
-
 	/**
 	 * Get zone information.
 	 * 
@@ -307,6 +315,10 @@ public class FDCachedFactory {
 		for (Iterator i=pis.iterator(); i.hasNext(); ) {
 			tempi = (FDProductInfo)i.next();
 			productInfoCache.put(tempi.getSkuCode(), tempi);
+			// New Cache to Speed up barcode scanning
+			if(tempi.getUpc() != null && tempi.getUpc().trim().length() > 0) {
+				productUpcCache.put(tempi.getUpc(), tempi);
+			}
 		}
 		
 		foundProductInfos.addAll(pis);

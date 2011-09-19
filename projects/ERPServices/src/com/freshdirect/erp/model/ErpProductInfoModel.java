@@ -105,6 +105,8 @@ public class ErpProductInfoModel extends ModelSupport {
 	
 	private String sustainabilityRating;
 	
+	private String upc;
+	
 
 	/**
 	 * Constructor with all properties.
@@ -133,7 +135,8 @@ public class ErpProductInfoModel extends ModelSupport {
 		String description,
 		String rating,
 		String freshness,
-		String sustainabilityRating) {
+		String sustainabilityRating,
+		String upc) {
 
 		super();
 		this.skuCode = skuCode;
@@ -148,6 +151,7 @@ public class ErpProductInfoModel extends ModelSupport {
 		this.rating=rating;
 		this.freshness=freshness;
 		this.sustainabilityRating=sustainabilityRating;
+		this.upc = upc;
 	}
 
 	/**
@@ -254,4 +258,7 @@ public class ErpProductInfoModel extends ModelSupport {
 		return sustainabilityRating;
 	}
 
+	public String getUpc() {
+		return upc;
+	}
 }

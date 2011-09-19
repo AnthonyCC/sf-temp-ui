@@ -47,10 +47,13 @@ public class FDProductInfo extends FDSku  {
     
     private EnumSustainabilityRating sustainabilityRating;
     
+    private String upc;
+    
     public FDProductInfo(String skuCode, int version, 
     		String[] materialNumbers, EnumATPRule atpRule, EnumAvailabilityStatus availStatus, Date availDate, 
     		FDInventoryCacheI inventory, EnumOrderLineRating rating, String freshness,
-    		ZonePriceInfoListing zonePriceInfoList, FDGroup group, EnumSustainabilityRating sustainabilityRating) {
+    		ZonePriceInfoListing zonePriceInfoList, FDGroup group, EnumSustainabilityRating sustainabilityRating,
+    		String upc) {
 
 		super(skuCode, version);
 
@@ -67,7 +70,8 @@ public class FDProductInfo extends FDSku  {
         this.group = group;
         if(sustainabilityRating!=null) {
         	this.sustainabilityRating=sustainabilityRating;
-	}
+        }
+        this.upc = upc;
     }
 
 	/**
@@ -177,7 +181,7 @@ public class FDProductInfo extends FDSku  {
     public String toString() {
         return "FDProductInfo[" + this.getSkuCode() + " v" + this.getVersion() + "\n\tmaterialNumbers:" 
                 + (this.materialNumbers != null ? StringUtil.encodeString(this.materialNumbers) : null) + "\n\tavailStatus" + this.availStatus.getShortDescription() 
-                + "\n\tavailDate:" + this.availDate + "\n\trating:" + this.rating +"\n\tsustainabilityRating:" + this.sustainabilityRating + "\n\tatpRule:" + this.atpRule 
+                + "\n\tavailDate:" + this.availDate + "\n\trating:" + this.rating +"\n\tsustainabilityRating:" + this.sustainabilityRating+"\n\tUPC:" + this.upc + "\n\tatpRule:" + this.atpRule 
                 + "\n\tfreshness:" + this.freshness + "\n\tdefaultPriceUnit:" + this.getDefaultPriceUnit() + "\n\tavailDate:"+this.availDate 
                 + "\n\t" + this.zonePriceInfoList +"\n\t"+this.group + "\n]";
     }
@@ -207,7 +211,7 @@ public class FDProductInfo extends FDSku  {
 	}
 
 	public FDProductInfo copy(int version, EnumAvailabilityStatus availability, EnumOrderLineRating newRating, String newFreshness) {
-	    return new FDProductInfo (getSkuCode(), version, materialNumbers, atpRule, availability, new Date(), inventory, newRating, newFreshness, zonePriceInfoList.clone(), group, sustainabilityRating);
+	    return new FDProductInfo (getSkuCode(), version, materialNumbers, atpRule, availability, new Date(), inventory, newRating, newFreshness, zonePriceInfoList.clone(), group, sustainabilityRating, upc);
 	}
 
 	public FDGroup getGroup() {
@@ -223,4 +227,8 @@ public class FDProductInfo extends FDSku  {
     public EnumSustainabilityRating getSustainabilityRating() {
         return sustainabilityRating;
     }
+    
+    public String getUpc() {
+		return upc;
+	}
 }

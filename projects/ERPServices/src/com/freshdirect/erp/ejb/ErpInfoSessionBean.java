@@ -222,7 +222,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		   "SELECT p.version, m.sap_id, unavailability_status, unavailability_date, "+
 		   "unavailability_reason, description, atp_rule, rating, price, "+
 		   "pricing_unit, promo_price, scale_unit, scale_quantity, sap_zone_id, "+
-		   "days_fresh, days_in_house, sustainability_rating "+
+		   "days_fresh, days_in_house, sustainability_rating, upc "+
 		   "FROM erps.materialprice mp, erps. material m,erps.materialproxy mpx, erps.product p, "+
 		   "(SELECT MAX(p1.version) AS V FROM erps.product p1 WHERE p1.sku_code =?) t "+
 		   "WHERE  m.id=mpx.mat_id AND m.id= mp.mat_id  AND p.id=mpx.product_id AND  p.version=t.V AND p.sku_code =?";
@@ -261,7 +261,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		        "select m.sap_id, p.unavailability_status, p.unavailability_date,"
 			+ " p.unavailability_reason, m.description, m.atp_rule, p.rating, mp.price,"
 		        + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id,"         
-   			+ " p.days_fresh, p.days_in_house, p.sustainability_rating "
+   			+ " p.days_fresh, p.days_in_house, p.sustainability_rating, m.upc "
 			+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
 			+ " where p.id=mpx.product_id and mpx.mat_id=m.id and mp.mat_id = m.id and p.sku_code = ? and p.version = ?"; 
 	
@@ -298,6 +298,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				String days_fresh = rs.getString(14);
 				String days_in_house = rs.getString(15);
 				String sustainabilityRating=rs.getString(16);
+				String upc=rs.getString(17);
 				String freshness = getFreshnessValue(days_fresh, days_in_house);
 
 				matNos.add(rs.getString(1));
@@ -320,7 +321,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 						descr,
 						rating,
 						freshness,
-						sustainabilityRating);
+						sustainabilityRating,
+						upc);
 			}
 			throw new ObjectNotFoundException("SKU " + skuCode + ", version " + version + " not found");
 
@@ -394,6 +396,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         String days_in_house = rs.getString("days_in_house");
         String freshness = getFreshnessValue(days_fresh, days_in_house);
         String sustainabilityRating=rs.getString("sustainability_rating");
+        String upc=rs.getString("upc");
+        
         matNos.add(rs.getString("sap_id"));
         matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble("price"), rs.getString("pricing_unit"), rs.getDouble("promo_price"), rs.getString("scale_unit"), rs.getDouble("scale_quantity"), rs.getString("sap_zone_id")));
 
@@ -414,7 +418,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         	descr,
         	rating,
         	freshness,
-        	sustainabilityRating);
+        	sustainabilityRating,
+        	upc);
     }
 
 	public Collection<ErpMaterialInfoModel> findMaterialsByCharacteristic(String classAndCharName) {
@@ -539,7 +544,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		"select p.sku_code, p.version, m.sap_id, p.unavailability_status,"
 		+ " p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule, p.rating, mp.price,"
         	+ " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id,"
-		+ " p.days_fresh, p.days_in_house, p.sustainability_rating  "
+		+ " p.days_fresh, p.days_in_house, p.sustainability_rating, m.upc  "
 		+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
 		+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id"
 		+ " and p.version = (select max(version) from erps.product p2 where p2.sku_code = p.sku_code)"
@@ -569,7 +574,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		"select p.sku_code, p.version, m.sap_id, p.unavailability_status,"
 		+ " p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule, p.rating, mp.price,"
 	        + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id, " 
-		+ " p.days_fresh, p.days_in_house, p.sustainability_rating "
+		+ " p.days_fresh, p.days_in_house, p.sustainability_rating, m.upc "
 		+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
 		+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id"
 		+ " and p.version = (select max(version) from erps.product p2 where p2.sku_code = p.sku_code)"
@@ -629,6 +634,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         	String days_in_house = rs.getString("days_in_house");
         	String freshness = getFreshnessValue(days_fresh, days_in_house);
         	String sustainabilityRating=rs.getString("sustainability_rating");
+        	String upc=rs.getString("upc");
 
         	matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble("price"), rs.getString("pricing_unit"), rs.getDouble("promo_price"), rs.getString("scale_unit"), 
         	        rs.getDouble("scale_quantity"), rs.getString("sap_zone_id")));
@@ -645,7 +651,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			descr,
 			rating,
 			freshness,
-			sustainabilityRating));
+			sustainabilityRating,
+			upc));
         }
 
         close(rs);
@@ -656,7 +663,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		"select p.sku_code, p.version, m.sap_id, p.unavailability_status, p.unavailability_date,"
 		+ " p.unavailability_reason, m.description, m.atp_rule, p.rating, mp.price,"
 	        + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id,"
-		+ " p.days_fresh, p.days_in_house, p.sustainability_rating "
+		+ " p.days_fresh, p.days_in_house, p.sustainability_rating, m.upc "
 		+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
 		+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id and p.sku_code like ?"
 		+ " and p.version = (select max(version) from erps.product where sku_code = p.sku_code)";
@@ -682,7 +689,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		"select p.sku_code, p.version, m.sap_id, p.unavailability_status, p.unavailability_date, "
 		+ " p.unavailability_reason,m.description, m.atp_rule,p.rating, mp.price,"
 	        + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id, "
-		+ " p.days_fresh, p.days_in_house,p.sustainability_rating  "
+		+ " p.days_fresh, p.days_in_house,p.sustainability_rating, m.upc  "
 		+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
 		+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id " +
 				" and (m.upc = ? or '0' || M.UPC = ?)"
@@ -750,7 +757,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
       		"select p.sku_code, p.version, m.sap_id, p.unavailability_status, p.unavailability_date,"
 		+ " p.unavailability_reason, m.description, m.atp_rule,p.rating, mp.price,"
 	        + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id,"
-		+ " p.days_fresh, p.days_in_house,p.sustainability_rating  "
+		+ " p.days_fresh, p.days_in_house,p.sustainability_rating, m.upc  "
 		+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
 		+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id and m.upc like ?"
 		+ " and p.version = (select max(version) from erps.product where sku_code = p.sku_code)";
@@ -804,6 +811,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         	String days_in_house = rs.getString(17);
         	String freshness = getFreshnessValue(days_fresh, days_in_house);
         	String sustainabilityRating= rs.getString(18);
+        	String upc=rs.getString(19);
 
         	matNos.add(rs.getString(3));
         	matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(10), rs.getString(11), rs.getDouble(12), rs.getString(13), rs.getDouble(14), rs.getString(15)));
@@ -821,7 +829,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         					descr,
         					rating,
         					freshness,
-        					sustainabilityRating));
+        					sustainabilityRating,
+        					upc));
         }
 
         close(rs);

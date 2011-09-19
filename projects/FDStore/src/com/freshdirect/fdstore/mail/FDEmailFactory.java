@@ -129,6 +129,15 @@ public class FDEmailFactory {
 		email.setSubject("Cancellation receipt");
 		return email;
 	}
+	
+	public XMLEmailI createOrderIvrContactEmail(FDCustomerInfo customer, String orderNumber) {
+		FDOrderDeliveryIVRContactEmail email = new FDOrderDeliveryIVRContactEmail(customer, orderNumber);
+
+		email.setXslPath("h_delivery_ivrcontact_v1.xsl", "x_delivery_ivrcontact_v1.xsl");
+		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
+		email.setSubject("FreshDirect is trying to reach you");
+		return email;
+	}
 
 	public XMLEmailI createConfirmCreditEmail(FDCustomerInfo customer, String saleId, ErpComplaintModel complaint) {
 		FDConfirmCreditEmail email = new FDConfirmCreditEmail(customer, saleId, complaint);
@@ -578,6 +587,24 @@ public class FDEmailFactory {
 			map.put("orderNumber", this.orderNumber);
 			map.put("deliveryStartTime", DT_FORMATTER.format(this.deliveryStartTime));
 			map.put("deliveryEndTime", DT_FORMATTER.format(this.deliveryEndTime));
+		}
+	}
+	
+	private static class FDOrderDeliveryIVRContactEmail extends FDInfoEmail {
+
+		private String orderNumber;
+		
+		public FDOrderDeliveryIVRContactEmail(FDCustomerInfo customer, String orderNumber) {
+			super(customer);
+			this.orderNumber = orderNumber;
+		}
+
+		/**
+		 * @see com.freshdirect.fdstore.mail.FDInfoEmail#decorateMap(java.util.Map)
+		 */
+		protected void decorateMap(Map map) {
+			super.decorateMap(map);
+			map.put("orderNumber", this.orderNumber);
 		}
 
 	}

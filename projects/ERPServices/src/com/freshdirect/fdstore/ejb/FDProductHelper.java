@@ -204,8 +204,8 @@ class FDProductHelper {
 			erpProductInfo.getFreshness(),
 			zonePriceInfoList,
 			group,
-			EnumSustainabilityRating.getEnumByStatusCode(erpProductInfo.getSustainabilityRating())
-		);
+			EnumSustainabilityRating.getEnumByStatusCode(erpProductInfo.getSustainabilityRating()),
+			erpProductInfo.getUpc());
 	
 	}
 	

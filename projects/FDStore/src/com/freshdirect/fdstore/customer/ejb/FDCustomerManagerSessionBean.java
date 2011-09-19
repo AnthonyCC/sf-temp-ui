@@ -889,8 +889,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			fdInfo.setHtmlEmail(!erpCustomerInfo.isEmailPlaintext());
 			fdInfo.setEmailAddress(erpCustomerInfo.getEmail());
 
-			String depotCode = this.getDepotCode(identity);
-			fdInfo.setDepotCode(depotCode);
+			if(identity.getFDCustomerPK() != null) {
+				String depotCode = this.getDepotCode(identity);
+				fdInfo.setDepotCode(depotCode);
+			}
 			fdInfo.setChefsTable(fduser.isChefsTable());
 			return fdInfo;
 
