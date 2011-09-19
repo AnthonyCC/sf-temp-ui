@@ -489,7 +489,11 @@ function loadStuff() {
 	var postdata = '{"groupId": "FD_PIZZA-1", "groupVersion" : "10460"}';
   	$("#payload").val(postdata);
   	$("#result").val("");
-  } 
+  }  else if (loaddata == "IvrEmail") {
+  	$("#url").val("/ext/t001");
+  	$("#payload").val("2202928245");
+  	$("#result").val("");
+  }  
 }
 
 function doStuff() {
@@ -616,6 +620,8 @@ function doStuff() {
   <option value="Help">Help</option>
   <option value="HelpContactUs">Help - Contact Us</option>
   <option value="HelpLearnMorePromo">Help - Learn More Promo</option>
+  <option value=""> ========== External Interface ========== </option>
+  <option value="IvrEmail">Send - IVR Delivery Email</option>
   </select>
   
   <input value="Go" type="button" onclick='JavaScript:doStuff()'></p>

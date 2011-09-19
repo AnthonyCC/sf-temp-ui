@@ -527,6 +527,12 @@
 		<to last="true">/browse.do?action=getGroupProducts&amp;ver=$1</to>
 	</rule>
 	
+	<!-- External Interface -->
+	<rule>
+		<from>^/v/([0-9]+)/ext/t001(.*)</from>
+		<to last="true">/fdinterface.do?ver=$1</to>
+	</rule>
+	
 	<!-- Test -->
 	<rule>
 		<from>^/v/([0-9]+)/test/$</from>
@@ -537,7 +543,7 @@
 		<from>^/test/$</from>
 		<to last="true">/test.do</to>
 	</rule>
-
+	
 	<!--	 Discovery Service -->
 	<!--	<rule>-->
 	<!--		<from>^/discovery(.*)$</from>-->
