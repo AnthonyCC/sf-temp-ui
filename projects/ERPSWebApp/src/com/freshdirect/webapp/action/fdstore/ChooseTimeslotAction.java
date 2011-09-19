@@ -86,7 +86,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 		
 		TimeslotEventModel event = new TimeslotEventModel((user.getApplication()!=null)?user.getApplication().getCode():"",
 				cart.isDlvPassApplied(),cart.getDeliverySurcharge(), cart.isDeliveryChargeWaived(), 
-				Util.isZoneCtActive(zoneId));
+				Util.isZoneCtActive(zoneId), (EnumCheckoutMode.NORMAL.equals(user.getCheckoutMode()))?"CHECKOUT":"");
 		
 		try {
 			FDReservation dlvRsv = cart.getDeliveryReservation();
