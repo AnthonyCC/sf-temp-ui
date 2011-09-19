@@ -68,8 +68,8 @@
 		<pathelement location="${thirdparty.home}/ognl-2.6.7.jar"/>
 		<pathelement location="${thirdparty.home}/javassist-3.4.jar"/>
 		<pathelement location="${thirdparty.home}/bsf-2.3.0.jar"/>
-		<pathelement location="${thirdparty.home}/xstream-1.1.1.jar"/>
-		<pathelement location="${thirdparty.home}/xpp3-1.1.3.4d_b4_min.jar"/>
+		<pathelement location="${thirdparty.home}/xstream.jar"/>
+		<pathelement location="${thirdparty.home}/xpp3_min.jar"/>
 		<pathelement location="${thirdparty.home}/hivemind-1.1.1.jar"/>
 		<pathelement location="${thirdparty.home}/hivemind-lib-1.1.1.jar"/>
 		<pathelement location="${thirdparty.home}/aopalliance-1.0.jar"/>
@@ -92,6 +92,16 @@
 		<pathelement location="${thirdparty.home}/${scarab.jar}"/>
 		<pathelement location="${thirdparty.home}/jtidy-r938.jar"/>
 		<pathelement location="${thirdparty.home}/jsch-0.1.44.jar"/>
+		<pathelement location="${thirdparty.home}/antlr.jar"/>
+		<pathelement location="${thirdparty.home}/antlr-runtime.jar"/>
+		<pathelement location="${thirdparty.home}/drools-api.jar"/>
+		<pathelement location="${thirdparty.home}/drools-compiler.jar"/>
+		<pathelement location="${thirdparty.home}/drools-core.jar"/>
+		<pathelement location="${thirdparty.home}/drools-jsr94.jar"/>
+		<pathelement location="${thirdparty.home}/jsr94.jar"/>
+		<pathelement location="${thirdparty.home}/mvel2.jar"/>
+		<pathelement location="${thirdparty.home}/org.eclipse.jdt.core_3.6.1.v_A68_R36x.jar"/>
+		<pathelement location="${thirdparty.home}/stringtemplate.jar"/>
 	</path>
 
 	<path id="testing.classpath">
