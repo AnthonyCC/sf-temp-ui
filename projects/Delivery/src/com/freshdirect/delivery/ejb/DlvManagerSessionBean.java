@@ -447,7 +447,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			List<TimeslotEventDetailModel> slots = new ArrayList<TimeslotEventDetailModel>();
 			
 		
-			if(!(eventType==EventType.GET_TIMESLOT || eventType==EventType.CHECK_TIMESLOT ))
+			if(!(eventType==EventType.GET_TIMESLOT || eventType==EventType.CHECK_TIMESLOT ) && responseTime>0)
 			{
 				IDeliverySlot slot =  RoutingUtil.getDeliverySlot(getTimeslotById(reservation.getTimeslotId()));
 				TimeslotEventDetailModel eventD = new TimeslotEventDetailModel();
@@ -1854,7 +1854,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				
 				
 			} catch (Exception e) {
-					event = buildEvent(timeSlots, event, null, null,address,(event!=null)?event.getEventType():EventType.GET_TIMESLOT, 0);
+					event = buildEvent(null, event, null, null,address,(event!=null)?event.getEventType():EventType.GET_TIMESLOT, 0);
 					if(event!=null && event.getId()!=null)
 						logTimeslots(event);
 					e.printStackTrace();

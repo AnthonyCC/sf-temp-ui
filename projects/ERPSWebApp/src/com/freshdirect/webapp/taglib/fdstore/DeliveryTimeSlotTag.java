@@ -52,6 +52,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.FDZoneNotFoundException;
+import com.freshdirect.fdstore.RoutingUtil;
 import com.freshdirect.fdstore.Util;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
@@ -89,6 +90,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 	private TimeslotContext timeSlotContext = null;
 	private String timeSlotId = "";
 	private boolean forceorder = false;
+	private boolean checkout = false;
 	public void setAddress(ErpAddressModel address) {
 		this.address = address;
 	}
@@ -188,9 +190,10 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		if(cart!=null && cart.getZoneInfo()!=null)
 			zoneId = cart.getZoneInfo().getZoneId();
 		
+			
 		TimeslotEventModel event = new TimeslotEventModel((user.getApplication()!=null)?user.getApplication().getCode():"",
 				cart.isDlvPassApplied(),cart.getDeliverySurcharge(), cart.isDeliveryChargeWaived(),
-				Util.isZoneCtActive(zoneId));
+				Util.isZoneCtActive(zoneId), (deliveryInfo)?"DELIVERYINFO":"CHECKOUT");
 		
 		timeslotList = getFDTimeslotListForDateRange(restrictions, dateRanges,
 				timeslotList, result, timeslotAddress, user,event);
@@ -232,13 +235,17 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		
 		if(deliveryModel.getRsv()!=null && deliveryModel.isPreReserved())
 			event.setReservationId(deliveryModel.getRsv().getId());
+		if(cart instanceof FDModifyCartModel && deliveryModel.getRsv()!=null && 
+				(address.getPK()!=null && address.getPK().getId()!=null && address.getPK().getId().equals(deliveryModel.getRsv().getAddressId())) )
+			event.setReservationId(deliveryModel.getRsv().getId());
 		
-		if("GET".equalsIgnoreCase(request.getMethod()) || "Y".equals(request.getParameter("addressChange")))
+		if(("GET".equalsIgnoreCase(request.getMethod()) || "Y".equals(request.getParameter("addressChange"))) && result.isSuccess())
 		{
 			for (FDTimeslotUtil timeslots : timeslotList) {
-				if(timeslots != null) {
-					
-					event = FDDeliveryManager.getInstance().logTimeslots(null, null, timeslots.getTimeslotsFlat(), event, address, timeslots.getResponseTime());
+				if(timeslots != null) 
+				{
+					FDDeliveryManager.getInstance().logTimeslots(null, null, timeslots.getTimeslotsFlat(), event, 
+							address, timeslots.getResponseTime());
 				}
 			}
 		}
@@ -890,20 +897,12 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 	}
 
 	
-	protected static boolean isTimeslotHolidayRestricted(List<RestrictionI> alcoholRestrictions, FDTimeslot slot) {
-		if(alcoholRestrictions.size()>0 && slot != null){
+	protected static boolean isTimeslotHolidayRestricted(List<RestrictionI> restrictions, FDTimeslot slot) {
+		if(restrictions.size()>0 && slot != null){
 			DateRange slotRange = new DateRange(slot.getBegDateTime(),slot.getEndDateTime());		
-			for (Iterator<RestrictionI> i = alcoholRestrictions.iterator(); i.hasNext();) {
+			for (Iterator<RestrictionI> i = restrictions.iterator(); i.hasNext();) {
 				RestrictionI r = i.next();
-				/*
-				if (r instanceof OneTimeReverseRestriction) {
-					OneTimeReverseRestriction or = (OneTimeReverseRestriction) r;
-					if (or.overlaps(slotRange)) return true;
-				}else if(r instanceof RecurringRestriction){
-					RecurringRestriction rr = (RecurringRestriction)r;
-					if(rr.overlaps(slotRange) && (rr.getDayOfWeek()==slot.getDayOfWeek()))return true;
-				}
-				*/
+				
 				if (r instanceof AlcoholRestriction) {
 					AlcoholRestriction ar = (AlcoholRestriction) r;
 					if (ar.overlaps(slotRange)) return true;

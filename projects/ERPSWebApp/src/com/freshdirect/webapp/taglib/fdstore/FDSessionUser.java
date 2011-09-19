@@ -9,13 +9,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
-
 import org.apache.log4j.Logger;
-
+import com.freshdirect.analytics.EventLog;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
@@ -31,6 +29,7 @@ import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.EnumWinePrice;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.DCPDPromoProductCache;
@@ -57,6 +56,8 @@ import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionImpressionLogEntry;
 import com.freshdirect.smartstore.fdstore.SessionImpressionLog;
+import com.freshdirect.webapp.listeners.FDEventProcessor;
+import com.freshdirect.webapp.listeners.FDEventProcessorI;
 
 
 public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
@@ -195,7 +196,21 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         LOGGER.debug("FDUser unbound from session " + event.getSession().getId());
         this.saveCart(true);
         this.saveImpressions();
-        
+        if(FDStoreProperties.isSessionLoggingEnabled())
+		{
+        	if(user!=null && user.getIdentity()!=null && user.getIdentity().getErpCustomerPK()!=null)
+			{
+        		Date loginTime = null;
+        		if(event.getSession() != null)
+        			loginTime = new Date(event.getSession().getCreationTime());
+        		EventLog.getInstance().logEvent(user.getIdentity().getErpCustomerPK(), loginTime);
+			}
+		}
+        if(FDStoreProperties.isRealTimeAnalysisEnabled())
+		{
+        	FDEventProcessorI processor = new FDEventProcessor();
+        	processor.process(this.user, event.getSession());
+		}
         // clear masquerade agent, and log this event
         String masqueradeAgent = getMasqueradeAgent();
         
