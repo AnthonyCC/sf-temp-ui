@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore;
 
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -14,6 +15,8 @@ import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.ejb.ObjectNotFoundException;
 import javax.naming.NamingException;
+
+import org.apache.log4j.Category;
 
 import com.freshdirect.analytics.EventType;
 import com.freshdirect.analytics.TimeslotEventModel;
@@ -41,6 +44,7 @@ import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.delivery.announcement.SiteAnnouncement;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
+import com.freshdirect.delivery.ejb.DlvManagerSessionBean;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneModel;
@@ -51,6 +55,7 @@ import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
 import com.freshdirect.erp.EnumStateCodes;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.TimedLruCache;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IOrderModel;
 
@@ -84,6 +89,8 @@ public class FDDeliveryManager {
 	private long ANN_REFRESH_PERIOD = 1000 * 60 * 10; //10 minutes
 	private long lastAnnRefresh = 0;
 	//private boolean isAlt
+
+	private static final Category LOGGER = LoggerFactory.getInstance(FDDeliveryManager.class);
 
 	/**
 	 * private constructor to ensure single instance of FDDeliveryManager
@@ -1072,18 +1079,17 @@ public class FDDeliveryManager {
 		}
 	}
 	
-	public TimeslotEventModel logTimeslots(DlvReservationModel reservation, IOrderModel order, List<FDTimeslot> timeSlots, 
+	public void logTimeslots(DlvReservationModel reservation, IOrderModel order, List<FDTimeslot> timeSlots, 
 			TimeslotEventModel event, ContactAddressModel address, int responseTime) throws FDResourceException{
 		
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			event = sb.buildEvent(timeSlots, event, reservation, order, address, EventType.GET_TIMESLOT, responseTime);
 			sb.logTimeslots(event);
-		} catch (Exception e) {
-		//ignore	
 		} 
-		
-		return event;
+		catch (Exception e) {
+			LOGGER.info("failure in logTimeslots: "+e.getMessage());
+		} 
 		
 	}
 
