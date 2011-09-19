@@ -142,8 +142,12 @@ class FDProductHelper {
 		EnumAvailabilityStatus status = null;
 		if ("TEST".equals(s)){
 			status = EnumAvailabilityStatus.DISCONTINUED;
-		} else {
+		} 
+		else {
 			status = NVL.apply(EnumAvailabilityStatus.getEnumByStatusCode(erpProductInfo.getUnavailabilityStatus()), EnumAvailabilityStatus.AVAILABLE);
+			if(EnumAvailabilityStatus.OUT_OF_SEASON.equals(status)) {
+				status = EnumAvailabilityStatus.DISCONTINUED;
+			}
 		}
 		
 
