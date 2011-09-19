@@ -124,6 +124,12 @@
 									<td class="alignL"><%= promotion.getMaxItemCount() %></td>
 								</tr>
 						<% } %>
+						<% if ( promotion.getSkuLimit() > 0 ) { %>
+								<tr>
+									<td class="promo_detail_label">Sku Limit:</td>
+									<td class="alignL"><%= promotion.getSkuLimit() %></td>
+								</tr>
+						<% } %>
 						<% if (dpcdDepts.size() > 0) { %>
 								<tr>
 									<td class="promo_detail_label">Department<%=(dpcdDepts.size() > 1)?"s":""%>:</td>

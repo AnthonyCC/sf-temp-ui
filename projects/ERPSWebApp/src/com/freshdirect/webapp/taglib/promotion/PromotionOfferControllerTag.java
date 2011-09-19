@@ -236,6 +236,17 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 				}else{
 					this.promotion.setMaxItemCount(null);
 				}
+				/*APPDEV-1784*/
+				String skuLimit = NVL.apply(request.getParameter("skulimit"), "").trim();
+				if(!"".equals(skuLimit)){
+					if(NumberUtil.isInteger(skuLimit)){
+						this.promotion.setSkuLimit(Integer.parseInt(skuLimit));
+					}else{
+						actionResult.addError(true, "skuLimit", " Sku limit value should be integer.");
+					}
+				}else{
+					this.promotion.setSkuLimit(null);
+				}
 				populateDcpdData(request);
 	
 				validateDcpdData(request, actionResult);
@@ -349,6 +360,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 
 	private void clearLineItemTypeInfo() {
 		this.promotion.setMaxItemCount(null);
+		this.promotion.setSkuLimit(null);
 		this.promotion.setDcpdData(Collections.EMPTY_LIST);
 		this.promotion.setPerishable(false);
 		this.promotion.setFavoritesOnly(false);

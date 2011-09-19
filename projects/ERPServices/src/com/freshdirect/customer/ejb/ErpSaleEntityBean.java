@@ -362,7 +362,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 				Price p = new Price(item.getBasePrice());
 				if (item.getDiscount() != null) {
 					try {
-						Price discountP = PricingEngine.applyDiscount(p, 1, item.getDiscount());
+						Price discountP = PricingEngine.applyDiscount(p, 1, item.getDiscount(), item.getBasePriceUnit());
 						disAmount = discountP.getBasePrice();
 					} catch (PricingException e) {
 						disAmount = 0.0;

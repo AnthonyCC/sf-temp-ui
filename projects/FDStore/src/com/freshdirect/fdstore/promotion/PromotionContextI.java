@@ -104,7 +104,7 @@ public interface PromotionContextI {
 	
 	public FDReservation getDeliveryReservation() ;
 	
-	public boolean applyLineItemDiscount(PromotionI promo, FDCartLineI lineItem, double percentOff);
+	public boolean applyLineItemDiscount(PromotionI promo, FDCartLineI lineItem, double percentOff, int skuLimit);
 	
 	public PromotionI getNonCombinableHeaderPromotion();
 	

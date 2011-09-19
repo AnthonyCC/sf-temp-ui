@@ -413,6 +413,8 @@ public class FDPromotionManagerNewDAO {
 		}
 		
 		promotion.setFuelSurchargeIncluded("Y".equals(rs.getString("INCL_FUEL_SURCHARGE"))?true:false);
+		/*APPDEV-1888*/
+		//promotion.setReferralPromo("Y".equals(rs.getString("REFERRAL_PROMO"))?true:false);
 		
 		//System.out.println("----------setting fuel surcharge------for code:" + promotion.getPromotionCode() + "-"  + promotion.isFuelSurchargeIncluded());
 
@@ -451,6 +453,7 @@ public class FDPromotionManagerNewDAO {
 		promotion.setOnHold("Y".equalsIgnoreCase(rs.getString("ON_HOLD"))?true:false);
 		promotion.setGeoRestrictionType(rs.getString("GEO_RESTRICTION_TYPE"));
 		promotion.setPublishes(rs.getInt("PUBLISHES"));
+		promotion.setSkuLimit(rs.getInt("SKU_LIMIT"));
 
 		return promotion;
 	}
@@ -650,8 +653,8 @@ public class FDPromotionManagerNewDAO {
 								"AUDIENCE_DESC, TERMS, REDEEM_CNT, HASSKUQUANTITY, " +
 								"PERISHABLEONLY, NEEDDRYGOODS, NEEDCUSTOMERLIST, " +
 								"RULE_BASED, FAVORITES_ONLY, COMBINE_OFFER, " +
-								"CREATED_BY, CREATE_DATE, MODIFIED_BY, MODIFY_DATE, DONOT_APPLY_FRAUD, PUBLISHES,OFFER_TYPE, INCL_FUEL_SURCHARGE)"
-						+ " VALUES(?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?)");
+								"CREATED_BY, CREATE_DATE, MODIFIED_BY, MODIFY_DATE, DONOT_APPLY_FRAUD, PUBLISHES,OFFER_TYPE, INCL_FUEL_SURCHARGE)"//, referral_promo)"
+						+ " VALUES(?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?)"); //,?)");
 
 		int i = 1;
 		ps.setString(i++, id); // 1
@@ -685,6 +688,7 @@ public class FDPromotionManagerNewDAO {
 			ps.setNull(i++, Types.VARCHAR);
 		}
 		ps.setString(i++, promotion.isFuelSurchargeIncluded()?"Y":"N");
+		//ps.setString(i++, promotion.isReferralPromo()?"Y":"N");
 		// Execute update
 		if (ps.executeUpdate() != 1) {
 			ps.close();
@@ -1293,7 +1297,7 @@ public class FDPromotionManagerNewDAO {
 				+ " SET"
 				+ " CODE = ?, NAME = ?, DESCRIPTION = ?, MAX_USAGE = ?, START_DATE = ?, EXPIRATION_DATE = ?, REDEMPTION_CODE = ?,"
 				+ " CAMPAIGN_CODE = ?, MIN_SUBTOTAL = ?, MAX_AMOUNT = ?, PERCENT_OFF = ?, WAIVE_CHARGE_TYPE = ?, ROLLING_EXPIRATION_DAYS = ?, STATUS = ?, OFFER_DESC = ?, AUDIENCE_DESC = ?, TERMS = ?,REDEEM_CNT = ?,HASSKUQUANTITY = ?, PERISHABLEONLY = ? ,NEEDDRYGOODS =?,NEEDCUSTOMERLIST =?, "
-				+ " RULE_BASED = ?,FAVORITES_ONLY = ?, COMBINE_OFFER = ?, MODIFIED_BY =?, MODIFY_DATE =?, DONOT_APPLY_FRAUD=?, INCL_FUEL_SURCHARGE=?"
+				+ " RULE_BASED = ?,FAVORITES_ONLY = ?, COMBINE_OFFER = ?, MODIFIED_BY =?, MODIFY_DATE =?, DONOT_APPLY_FRAUD=?, INCL_FUEL_SURCHARGE=?" //, referral_promo =?"
 				+ " WHERE ID = ?");
 		int i = 1;
 		i = setupPreparedStatement(ps, promotion, i);
@@ -1313,6 +1317,7 @@ public class FDPromotionManagerNewDAO {
 		}
 		
 		ps.setString(i++, promotion.isFuelSurchargeIncluded()?"Y":"N");
+		//ps.setString(i++, promotion.isReferralPromo()?"Y":"N");
 		
 		ps.setString(i++, promotion.getPK().getId());
 		if (ps.executeUpdate() != 1) {
@@ -2346,7 +2351,7 @@ public class FDPromotionManagerNewDAO {
 				+ " SET"
 				+ " CODE=?, CAMPAIGN_CODE = ?, COMBINE_OFFER = ?, PERISHABLEONLY = ? ,FAVORITES_ONLY = ?, PERCENT_OFF = ?, WAIVE_CHARGE_TYPE = ?," 
 				+ " CATEGORY_NAME=?, PRODUCT_NAME=?, EXTEND_DP_DAYS =?,"
-				+ " MAX_AMOUNT =?, OFFER_TYPE = ?, MAX_ITEM_COUNT =?, MODIFIED_BY =?, MODIFY_DATE =?, INCL_FUEL_SURCHARGE=?"
+				+ " MAX_AMOUNT =?, OFFER_TYPE = ?, MAX_ITEM_COUNT =?, MODIFIED_BY =?, MODIFY_DATE =?, INCL_FUEL_SURCHARGE=?, sku_limit=? "
 				+ " WHERE ID = ?");
 		int i = 1;
 //		i = setupPreparedStatement(ps, promotion, i);
@@ -2397,6 +2402,12 @@ public class FDPromotionManagerNewDAO {
 		}
 		
 		ps.setString(i++, promotion.isFuelSurchargeIncluded()?"Y":"N");
+		
+		if (promotion != null && promotion.getSkuLimit() != null) {
+			ps.setInt(i++, promotion.getSkuLimit().intValue());					
+		} else {
+			ps.setNull(i++, Types.INTEGER);										
+		}
 			
 		ps.setString(i++, promotion.getPK().getId());
 		if (ps.executeUpdate() != 1) {
@@ -2788,7 +2799,7 @@ public class FDPromotionManagerNewDAO {
 						+ " ROLLING_EXPIRATION_DAYS=?, STATUS=?, OFFER_DESC=?, AUDIENCE_DESC=?, TERMS=?, REDEEM_CNT=?,"
 						+ " HASSKUQUANTITY=?, PERISHABLEONLY=?, NEEDDRYGOODS=?, NEEDCUSTOMERLIST=?, RULE_BASED=?,"
 						+ " FAVORITES_ONLY=?, COMBINE_OFFER=?, MODIFIED_BY=?, MODIFY_DATE=?,"
-						+ " DONOT_APPLY_FRAUD=?, PUBLISHES=?, INCL_FUEL_SURCHARGE=?"
+						+ " DONOT_APPLY_FRAUD=?, PUBLISHES=?, INCL_FUEL_SURCHARGE=?" //, referral_promo=?"
 						+ " WHERE ID = ?");
 
 		int i = 1;
@@ -2810,6 +2821,7 @@ public class FDPromotionManagerNewDAO {
 		
 		ps.setInt(i++, promotion.getPublishes());
 		ps.setString(i++, promotion.isFuelSurchargeIncluded()?"Y":"N");
+		//ps.setString(i++, promotion.isReferralPromo()?"Y":"N");
 		
 		ps.setString(i++, promotion.getPK().getId());
 

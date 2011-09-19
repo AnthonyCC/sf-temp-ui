@@ -300,7 +300,7 @@ public class FDProductSelection implements FDProductSelectionI {
 		Price p=new Price(this.price.getBasePrice());
 		if(this.getDiscount()!=null){
 			try {
-				Price discountP=PricingEngine.applyDiscount(p,1,this.getDiscount());
+				Price discountP=PricingEngine.applyDiscount(p,1,this.getDiscount(),this.price.getBasePriceUnit());
 				disAmount=discountP.getBasePrice();
 			} catch (PricingException e) {
 				e.printStackTrace();
@@ -429,19 +429,25 @@ public class FDProductSelection implements FDProductSelectionI {
 	}
 
 	protected void performPricing() {
+		String pricingUnit = "";
+		if(this.lookupFDProduct().isPricedByLb()) {
+			pricingUnit = "lb";
+		}
 		try {
 			if(FDStoreProperties.getGiftcardSkucode().equalsIgnoreCase(this.getSkuCode()) || FDStoreProperties.getRobinHoodSkucode().equalsIgnoreCase(this.getSkuCode())){
-				this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getPricingContext(), null, 0.0);
+				this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getPricingContext(), null, 0.0, pricingUnit);
 				this.orderLine.setPrice(this.getFixedPrice());
 				this.orderLine.setDiscountAmount(0);
 			}else
 			{
 				FDGroup group = this.getFDGroup();
 
-				this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getPricingContext(), group, this.getGroupQuantity());
+				this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getPricingContext(), group, this.getGroupQuantity(), pricingUnit);
 				this.orderLine.setPrice(price.getConfiguredPrice() - price.getPromotionValue());
 				this.orderLine.setDiscountAmount(price.getPromotionValue());
 			}	
+			
+			System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$Price is set here?" + this.getDescription() + " -price:" + this.orderLine.getPrice() + " -discount:" + this.orderLine.getDiscountAmount());
 
 		} catch (PricingException e) {
 			throw new FDRuntimeException(e, "PricingException occured on "+getSkuCode() + " - " + getConfiguration());
@@ -598,7 +604,7 @@ public class FDProductSelection implements FDProductSelectionI {
 		try {
 				FDGroup group = this.getFDGroup();
 				if(group != null) {
-					FDConfiguredPrice regPrice = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getPricingContext(), group, 0.0);
+					FDConfiguredPrice regPrice = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getPricingContext(), group, 0.0, this.price.getBasePriceUnit());
 					savings = regPrice.getConfiguredPrice() - (regPrice.getPromotionValue() + this.orderLine.getPrice());
 				}
 		} catch (PricingException e) {
@@ -609,5 +615,9 @@ public class FDProductSelection implements FDProductSelectionI {
 	@Override
 	public EnumSustainabilityRating getSustainabilityRating() {
 		return orderLine.getSustainabilityRating();
+	}
+	
+	public double getBasePrice() {
+		return this.price.getBasePrice();
 	}
 }

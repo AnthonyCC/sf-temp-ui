@@ -1,26 +1,20 @@
 package com.freshdirect.fdstore.promotion;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import com.freshdirect.common.pricing.Discount;
-import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
-import com.freshdirect.fdstore.customer.FDSearchCriteria;
-import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
 
 public class LineItemDiscountApplicator implements PromotionApplicatorI {
    
@@ -29,6 +23,7 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 	private boolean favoritesOnly;
 	private DlvZoneStrategy zoneStrategy;
 	private HeaderDiscountRule discountRule=null;
+	private int skuLimit = 0;
 	
 	/*
 	 * List of line item strategies to determine the eligibility of a line item before
@@ -62,6 +57,15 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 		}
 	};
 	
+	private final static Comparator PRICE_COMPARATOR = new Comparator() {
+		public int compare(Object o1, Object o2) {
+			
+			double p1 = ((FDCartLineI) o1).getPrice();
+			double p2 = ((FDCartLineI) o2).getPrice();
+			return Double.compare(p1, p2);
+		}
+	};
+	
 	public boolean apply(String promotionCode, PromotionContextI context) {
 		//If delivery zone strategy is applicable please evaluate before applying the promotion.
 		int ev = zoneStrategy != null ? zoneStrategy.evaluate(promotionCode, context) : PromotionStrategyI.ALLOW;
@@ -82,8 +86,19 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
         Map recommendedItemMap=new HashMap();
         int appliedCnt = 0;
 		if(orderLines!=null){
-			if(null != discountRule){		       
+			/*
+			 * APPDEV-1784: Sorting the list by price, so that the line item discounts 
+			 * with sku limits can be applied to higher priced items first 
+			 */
+			List newOrderLines = Arrays.asList(new Object[orderLines.size()]);
+			Collections.copy(newOrderLines, orderLines);
+			Collections.sort(newOrderLines, PRICE_COMPARATOR);
+			
+			if(null != discountRule){
+				/*
+				System.out.println("Processing order lines with a discountRule:" + discountRule.toString());
 				double amount = Math.min(context.getShoppingCart().getPreDeductionTotal(), this.discountRule.getMaxAmount());
+				
 				
 				for(int i=0;i<orderLines.size();i++) {
 					  FDCartLineI cartLine=(FDCartLineI)orderLines.get(i);
@@ -118,6 +133,25 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 							
 					  }
 				}
+				*/
+				
+				
+				for(int i=0;i<orderLines.size();i++) {
+					  FDCartLineI cartLine=(FDCartLineI)orderLines.get(i);
+					  boolean e = evaluate(cartLine, promotionCode, context);
+					  if(e) {
+						context.applyLineItemDollarOffDiscount(promo, cartLine, discountRule.getMaxAmount());
+						if(favoritesOnly){
+							String savingsId = cartLine.getSavingsId();
+							String productId = cartLine.getProductRef().getContentKey().getId();							
+							recommendedItemMap.put(productId, savingsId);
+						}
+						if(!cartLine.isDiscountFlag()){
+							cartLine.setDiscountFlag(true);
+						}
+						appliedCnt++;
+					  }
+				}
 				
 				if(favoritesOnly && orderLines.size()>0){
 					for(int i=0;i<orderLines.size();i++){
@@ -133,7 +167,8 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 					}	
 				}
 //				return context.applyHeaderDiscount(promo, amount);
-			}else{			
+			}else{		
+				/*
 				for(int i=0;i<orderLines.size();i++) {
 					  FDCartLineI cartLine=(FDCartLineI)orderLines.get(i);
 					  if(cartLine.isDiscountFlag()){
@@ -181,7 +216,55 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 							}
 						
 					}	
+				}*/				
+				
+				
+				for(int i=newOrderLines.size() - 1;i>=0;i--) {
+					FDCartLineI cartLine=(FDCartLineI)newOrderLines.get(i);
+					boolean e = evaluate(cartLine, promotionCode, context);
+					if(e) {
+						context.applyLineItemDiscount(promo, cartLine, percentOff, skuLimit);
+						if(favoritesOnly){
+							String savingsId = cartLine.getSavingsId();
+							String productId = cartLine.getProductRef().getContentKey().getId();							
+							recommendedItemMap.put(productId, savingsId);
+						}
+						if(!cartLine.isDiscountFlag()) {
+							cartLine.setDiscountFlag(true);
+						}
+						appliedCnt++;
+					}
 				}
+				
+			    // now apply discount to any duplicate sku from the recommended List for favorites only
+							   
+				if(favoritesOnly && newOrderLines.size()>0){
+					for(int i=0;i<newOrderLines.size();i++){
+						FDCartLineI cartLine=(FDCartLineModel)newOrderLines.get(i);	 
+							String productId = cartLine.getProductRef().getContentKey().getId();
+							if(!cartLine.hasDiscount(promotionCode) && recommendedItemMap.containsKey(productId)){								
+								context.applyLineItemDiscount(promo, cartLine, percentOff, 0);
+								cartLine.setSavingsId((String)recommendedItemMap.get(productId));
+								cartLine.setDiscountFlag(true);
+								appliedCnt++;
+							}
+						
+					}	
+				}
+
+				/*
+				for(int i=0;i<orderLines.size();i++) {
+					  FDCartLineI cartLine=(FDCartLineI)orderLines.get(i);
+					  System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" + cartLine.getLabel() + " - " + cartLine.getQuantity() + " - " + cartLine.getPrice() + " - " + cartLine.getBasePrice() + " - " + cartLine.isDiscountFlag() );
+				}
+				//Test display of sorted lines
+				for(int i=newOrderLines.size() - 1;i>=0;i--)  {
+					  FDCartLineI cartLine=(FDCartLineI)newOrderLines.get(i);
+					  System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" + cartLine.getLabel() + " - " + cartLine.getQuantity() + " - " + cartLine.getPrice() + " - " + cartLine.getBasePrice() + " - " + cartLine.isDiscountFlag());
+				}
+				*/
+				
+				
 			}
 			if(appliedCnt <= 0) return false;
 			//Update Pricing after discount application.
@@ -212,6 +295,7 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 		for (Iterator i = this.lineItemStrategies.iterator(); i.hasNext();) {
 			LineItemStrategyI strategy = (LineItemStrategyI) i.next();
 			int response = strategy.evaluate(lineItem, promoCode, context);
+			//System.out.println("Calling LineItemStrategy:" + strategy + "------for product:"+ lineItem.getDescription()  + "--------response:" + response );
 
 			 //System.out.println("Evaluated " + promoCode + " / " +
 			 //strategy.getClass().getName() + " -> " + response);
@@ -265,5 +349,13 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 	
 	public void setDiscountRule(HeaderDiscountRule discountRule){
 		this.discountRule = discountRule;
+	}
+
+	public void setSkuLimit(int skuLimit) {
+		this.skuLimit = skuLimit;
+	}
+
+	public int getSkuLimit() {
+		return skuLimit;
 	}
 }
