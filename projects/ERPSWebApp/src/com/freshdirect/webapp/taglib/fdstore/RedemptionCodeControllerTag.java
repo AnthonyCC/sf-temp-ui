@@ -185,6 +185,7 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 							request.setAttribute("promoError", "true");
 						}else if (!isApplied) {
 							actionResult.addError(true, "redemption_error", MessageFormat.format(SystemMessageList.MSG_INVALID_CODE, params));
+							user.setRedeemedPromotion(null);
 						} else { 
 							actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_ALREADY_USED);
 						}
