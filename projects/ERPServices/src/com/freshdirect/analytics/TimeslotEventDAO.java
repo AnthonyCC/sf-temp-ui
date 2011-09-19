@@ -49,6 +49,10 @@ public class TimeslotEventDAO {
 			" WHERE H2.ID = H1.ID AND S1.CUSTOMER_ID = H1.CUSTOMER_ID AND H1.EVENT_DTM BETWEEN S1.LOGIN_TIME AND S1.LOGOUT_TIME AND S1.LOGOUT_TIME" +
 			" BETWEEN SYSDATE-1/48 AND SYSDATE AND H1.TRANSACTIONSOURCE in ('WEB','IPW','ANW','CSR')";
 	
+	private static final String TIMESLOT_EVENTS_CUSTOMER_QRY = " select * from dlv.timeslot_event_hdr where id in  (select max(to_number(id)) from dlv.timeslot_event_hdr where event_dtm" +
+	" between to_date(?,  'MM-DD-YYYY HH12:MI:SS AM') and to_date(?,  'MM-DD-YYYY HH12:MI:SS AM') and customer_id = ? and " +
+	"transactionsource = 'WEB' group by eventtype)";
+	
 	private static final String ORDER_EVENTS_QRY = "SELECT S.CUSTOMER_ID, S.CROMOD_DATE, SA.REQUESTED_DATE FROM cust.sale s, cust.salesaction sa, DLV.SESSION_EVENT se" +
 			" WHERE s.ID=sa.SALE_ID AND se.CUSTOMER_ID = s.CUSTOMER_ID AND se.LOGOUT_TIME BETWEEN SYSDATE-1/48 AND SYSDATE " +
 			" AND s.CUSTOMER_ID=sa.CUSTOMER_ID AND s.CROMOD_DATE=sa.ACTION_DATE AND s.CROMOD_DATE BETWEEN se.LOGIN_TIME AND se.LOGOUT_TIME " +
@@ -187,12 +191,70 @@ public class TimeslotEventDAO {
 			}
 		return events;
 	}
+	
+	public static List getEvents(Connection conn, String customerId, long sessionCreationTime) throws SQLException
+	{
+		PreparedStatement ps = null; ResultSet rs = null;
+		List events = new ArrayList();
+		try
+		{
+		ps = conn.prepareStatement(TIMESLOT_EVENTS_CUSTOMER_QRY);
+		DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss a"); //E, dd MMM yyyy HH:mm:ss Z
+		Date currentTime = new Date();
+		Timestamp date = new Timestamp(sessionCreationTime);
+		String currentTimeStr = formatter.format(currentTime);
+		String sessionCreationStr = formatter.format(date);
+		ps.setString(1, sessionCreationStr);
+		ps.setString(2, currentTimeStr);
+		ps.setString(3, customerId);
+		
+		rs = ps.executeQuery();
+		
+		while(rs.next()){
+			TimeslotEventModel event = new TimeslotEventModel();
+			event.setOrderId(rs.getString("order_id"));
+			event.setCustomerId(rs.getString("customer_Id"));
+			event.setEventType(EventType.getEnum(rs.getString("eventtype")));
+			event.setId(rs.getString("id"));
+			event.setResponseTime(rs.getInt("response_time"));
+			event.setReservationId(rs.getString("reservation_id"));
+			event.setEventDate(rs.getTimestamp("event_dtm"));	
+			event.setEnumCheckoutMode(rs.getString("checkoutmode"));
+			event.setLogoutTime(date.getTime());
+			event.setDetail(getEventDetails(conn, rs.getString("id")));
+			events.add(event);
+		}
+		}
+		catch(SQLException e)
+		{
+			LOGGER.warn("Exception while getEvents  ", e);
+		}
+		finally
+		{
+			try
+			{
+				if(ps!=null) ps.close();
+				if(rs!=null) rs.close();
+			}
+			catch(SQLException e)
+			{
+				LOGGER.warn("Exception while cleaning up   ", e);
+			}
+		}
+		return events;
+	}
+	
+	
 	private static List<TimeslotEventDetailModel> getEventDetails(Connection conn, String id) throws SQLException
 	{
-		PreparedStatement ps = conn.prepareStatement(TIMESLOT_EVENT_DETAIL_QRY);
-		ps.setString(1, id);
-		ResultSet rs = ps.executeQuery();
+		PreparedStatement ps = null; ResultSet rs = null;
 		List<TimeslotEventDetailModel> details = new ArrayList<TimeslotEventDetailModel>();
+		try
+		{
+		ps = conn.prepareStatement(TIMESLOT_EVENT_DETAIL_QRY);
+		ps.setString(1, id);
+		rs = ps.executeQuery();
+		
 		while(rs.next())
 		{
 			TimeslotEventDetailModel detail = new TimeslotEventDetailModel();
@@ -203,6 +265,23 @@ public class TimeslotEventDAO {
 			detail.setId(rs.getString("timeslot_log_id"));
 			
 			details.add(detail);
+		}
+		}
+		catch(SQLException e)
+		{
+			LOGGER.warn("Exception while getEvents  ", e);
+		}
+		finally
+		{
+			try
+			{
+				if(ps!=null) ps.close();
+				if(rs!=null) rs.close();
+			}
+			catch(SQLException e)
+			{
+				LOGGER.warn("Exception while cleaning up   ", e);
+			}
 		}
 		rs.close();
 		ps.close();

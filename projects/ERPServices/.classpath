@@ -10,5 +10,18 @@
 	<classpathentry kind="var" path="WL_HOME/lib/weblogic.jar"/>
 	<classpathentry kind="var" path="WL_HOME/lib/webserviceclient.jar"/>
 	<classpathentry kind="var" path="WL_HOME/lib/webservices.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/antlr.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/antlr-runtime.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/drools-api.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/drools-compiler.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/drools-core.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/drools-jsr94.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/jsr94.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/jxl.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/mvel2.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/org.eclipse.jdt.core_3.6.1.v_A68_R36x.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/stringtemplate.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/xpp3_min.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/xstream.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
