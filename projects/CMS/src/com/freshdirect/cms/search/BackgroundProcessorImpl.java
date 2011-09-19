@@ -80,11 +80,13 @@ public class BackgroundProcessorImpl implements IBackgroundProcessor {
     public ContentSearchServiceI getSearchService() {
         return searchService;
     }
-    
+
+    @Override
     public void setPublishTasks(List<PublishTask> publishTasks) {
         this.publishTasks = publishTasks;
     }
-    
+
+    @Override
     public List<PublishTask> getPublishTasks() {
             return publishTasks;
     }
