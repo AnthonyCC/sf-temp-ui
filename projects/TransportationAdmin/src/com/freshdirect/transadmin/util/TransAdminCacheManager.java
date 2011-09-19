@@ -14,6 +14,7 @@ import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.customer.ErpTruckMasterInfo;
 import com.freshdirect.framework.util.ExpiringReference;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.sap.SapProperties;
 import com.freshdirect.sap.command.SapRouteMasterInfo;
 import com.freshdirect.sap.command.SapTruckMasterInfo;
 import com.freshdirect.sap.ejb.SapException;
@@ -32,7 +33,9 @@ public class TransAdminCacheManager {
 	private ExpiringReference truckDataHolder  = new ExpiringReference(TransportationAdminProperties.getTruckCacheExpiryTime()*  60 * 1000) {
 		protected Object load() {
 			try {
-				return loadAllTruckData();
+				if(!SapProperties.isBlackhole()) {
+					return loadAllTruckData();
+				}
 			} catch (SapException e) {
 				LOGGER.error("Could not load load Referral program due to: ", e);
 			}
@@ -44,12 +47,11 @@ public class TransAdminCacheManager {
 	// make the time constant in property
 	private TrnAdmExpiringReference routeDataHolder = new TrnAdmExpiringReference(TransportationAdminProperties.getRouteCacheExpiryTime() * 60 * 1000) {
 
-
-
 		protected Object load(Object requestParam) {
 			try {
-
-				return loadAllRouteData(requestParam);
+				if(!SapProperties.isBlackhole()) {
+					return loadAllRouteData(requestParam);
+				}
 			} catch (SapException e) {
 				LOGGER.error("Could not load load Referral program due to: ", e);
 			}
@@ -189,7 +191,7 @@ public class TransAdminCacheManager {
 	public List loadAllTruckData() throws SapException{
 		SapTruckMasterInfo truckInfos = new SapTruckMasterInfo();
 
-			truckInfos.execute();
+		truckInfos.execute();
 
 		return truckInfos.getTruckMasterInfos();
 	}

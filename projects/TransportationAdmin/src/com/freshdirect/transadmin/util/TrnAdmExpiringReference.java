@@ -24,10 +24,7 @@ public abstract class TrnAdmExpiringReference {
 	}
 
 	public synchronized Object get(Object key) {
-		
-		
-		//System.out.println("getting the key in expiring reference : "+key);						
-		
+						
 		Set keySet=referentMap.keySet();
 		Iterator iterator=keySet.iterator();
 		while(iterator.hasNext()){
