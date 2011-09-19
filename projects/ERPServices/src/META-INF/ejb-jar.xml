@@ -204,6 +204,20 @@
         </session>
         
         <session>
+            <ejb-name>EventProcessor</ejb-name>
+            <home>com.freshdirect.analytics.ejb.EventProcessorHome</home>
+            <remote>com.freshdirect.analytics.ejb.EventProcessorSB</remote>
+            <ejb-class>com.freshdirect.analytics.ejb.EventProcessorSessionBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+            <resource-ref>
+                <res-ref-name>jdbc/dbpool</res-ref-name>
+                <res-type>javax.sql.DataSource</res-type>
+                <res-auth>Container</res-auth>
+            </resource-ref>
+        </session>
+        
+        <session>
             <ejb-name>SapGateway</ejb-name>
             <home>com.freshdirect.sap.ejb.SapGatewayHome</home>
             <remote>com.freshdirect.sap.ejb.SapGatewaySB</remote>
@@ -582,6 +596,7 @@
             <ejb-name>TimeslotEventListener</ejb-name>
             <ejb-class>com.freshdirect.analytics.TimeslotEventListener</ejb-class>
             <transaction-type>Container</transaction-type>
+            <message-selector>(MessageType='LOG_TIMESLOT')</message-selector>
             <message-driven-destination>
                 <destination-type>javax.jms.Queue</destination-type>
             </message-driven-destination>
@@ -857,6 +872,22 @@
                 <res-auth>Container</res-auth>
             </resource-ref>
         </session>
+        
+        		
+  	<session>
+			<ejb-name>OrderRate</ejb-name>
+			<home>com.freshdirect.analytics.ejb.OrderRateHome</home>
+			<remote>com.freshdirect.analytics.ejb.OrderRateSB</remote>
+			<ejb-class>com.freshdirect.analytics.ejb.OrderRateSessionBean</ejb-class>
+			<session-type>Stateless</session-type>
+			<transaction-type>Container</transaction-type>
+			<resource-ref>
+				<res-ref-name>jdbc/dbpool</res-ref-name>
+				<res-type>javax.sql.DataSource</res-type>
+				<res-auth>Container</res-auth>
+			</resource-ref>
+	</session>        
+    
         
     </enterprise-beans>
     <assembly-descriptor>
