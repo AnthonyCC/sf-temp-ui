@@ -471,6 +471,14 @@ public class FDStoreProperties {
 	
 	private static final String IPHONE_SEARCH_FILTER_DISCONTINUED_ONLY = "fdstore.iphone.search.filterDiscontinuedOnly";
 	
+	//Event Management (Roll and Bounce) Capacity Management Phase 2
+	private static final String SESSION_LOGGING_ENABLED = "session.logging.enabled";
+	private static final String REAL_TIME_EVENT_ANALYSIS = "realtime.event.analysis";
+	private static final String EVENT_KB_SOURCE = "event.kb.source";
+	private static final String RULES_REPOSITORY = "rules.repository";
+	
+	
+	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -937,6 +945,11 @@ public class FDStoreProperties {
 		
 		defaults.put(IPHONE_SEARCH_FILTER_DISCONTINUED_ONLY, "false");
 
+		defaults.put(SESSION_LOGGING_ENABLED, "true");
+		defaults.put(REAL_TIME_EVENT_ANALYSIS, "false");
+		defaults.put(EVENT_KB_SOURCE, "local");
+		defaults.put(RULES_REPOSITORY, "Events.drl");
+	
         refresh();
     }
 
@@ -2417,4 +2430,20 @@ public class FDStoreProperties {
     public static boolean isIPhoneSearchFilterDiscontinuedOnly() {
     	return Boolean.parseBoolean(get(IPHONE_SEARCH_FILTER_DISCONTINUED_ONLY));
     }
+    		
+	public static boolean isSessionLoggingEnabled() {
+        return (Boolean.valueOf(get(SESSION_LOGGING_ENABLED))).booleanValue();
+    }
+    
+    public static boolean isRealTimeAnalysisEnabled() {
+        return (new Boolean(get(REAL_TIME_EVENT_ANALYSIS))).booleanValue();
+    }
+    public static String getKbSource() {
+        return get(EVENT_KB_SOURCE);
+    }
+    public static String getRuleRepository() {
+        return get(RULES_REPOSITORY);
+    }
+
+    
 }
