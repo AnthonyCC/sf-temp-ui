@@ -29,6 +29,7 @@ public class TimeslotEventDetailModel implements Serializable {
 	private Date cutOff;
 	private boolean manuallyClosed;
 	private boolean geoRestricted;
+	private String id;
 	
 	public double getWs_amount() {
 		return ws_amount;
@@ -172,6 +173,14 @@ public class TimeslotEventDetailModel implements Serializable {
 
 	public void setStoreFrontAvailable(String storeFrontAvailable) {
 		this.storeFrontAvailable = storeFrontAvailable;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

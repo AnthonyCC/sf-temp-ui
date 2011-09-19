@@ -139,7 +139,7 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 				}
 				System.out.println("Final List of Unassigned Being Processed :"+ unassignedReservations.size());
 				TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.SYSTEM.getCode(), 
-						false, 0.00, false, false);
+						false, 0.00, false, false,null);
 				
 				if(unassignedReservations != null && unassignedReservations.size() > 0) {			
 					int unassignedProcessedCnt = 0;
@@ -191,7 +191,7 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 		if(reRouteReservations != null && reRouteReservations.size() > 0) {			
 			
 			TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.SYSTEM.getCode(), 
-					false, 0.00, false, false);
+					false, 0.00, false, false, null);
 			for (DlvReservationModel reservation : reRouteReservations) {
 				FDIdentity identity = getIdentity(reservation.getCustomerId());
 				ContactAddressModel address;

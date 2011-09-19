@@ -194,7 +194,7 @@ public class OrderConsumer implements IConsumer {
 			System.out.println("zone id is : " + zInfo.getZoneId());
 
 			TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.SYSTEM.getCode(), 
-					false, 0.00, false, Util.isZoneCtActive(zInfo.getZoneId()));
+					false, 0.00, false, Util.isZoneCtActive(zInfo.getZoneId()), null);
 
 			
 			FDReservation reservation = FDDeliveryManager.getInstance()

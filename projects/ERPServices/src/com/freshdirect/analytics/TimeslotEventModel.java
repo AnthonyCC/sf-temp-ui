@@ -1,6 +1,5 @@
 package com.freshdirect.analytics;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -28,9 +27,10 @@ public class TimeslotEventModel extends EventModel {
 	private boolean zoneCtActive;
 	private String id;
 	private boolean filter;
+	private long logoutTime;
 	private List<TimeslotEventDetailModel> detail;
-	
-	public TimeslotEventModel(String transactionSource, boolean dlvPassApplied, double deliveryCharge, boolean deliveryChargeWaived, boolean zoneCtActive)
+	private String enumCheckoutMode;
+	public TimeslotEventModel(String transactionSource, boolean dlvPassApplied, double deliveryCharge, boolean deliveryChargeWaived, boolean zoneCtActive, String enumCheckoutMode)
 	{
 		super();
 		this.transactionSource = transactionSource;
@@ -39,8 +39,9 @@ public class TimeslotEventModel extends EventModel {
 		this.deliveryChargeWaived = deliveryChargeWaived;
 		this.zoneCtActive = zoneCtActive;
 		this.filter = false;
+		this.enumCheckoutMode = enumCheckoutMode;
 	}
-	
+
 	public TimeslotEventModel() {
 		// TODO Auto-generated constructor stub
 	}
@@ -152,5 +153,20 @@ public class TimeslotEventModel extends EventModel {
 		this.id = id;
 	}
 
+	public String getEnumCheckoutMode() {
+		return enumCheckoutMode;
+	}
+
+	public void setEnumCheckoutMode(String enumCheckoutMode) {
+		this.enumCheckoutMode = enumCheckoutMode;
+	}
+
+	public long getLogoutTime() {
+		return logoutTime;
+	}
+
+	public void setLogoutTime(long logoutTime) {
+		this.logoutTime = logoutTime;
+	}
 	
 }

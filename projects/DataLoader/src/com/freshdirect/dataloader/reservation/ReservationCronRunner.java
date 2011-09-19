@@ -64,7 +64,7 @@ public class ReservationCronRunner {
 				//Fix to debug Unrecognized user error failure
 				try { 
 					TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.SYSTEM.getCode(), 
-							false, 0.00, false, false);
+							false, 0.00, false, false, null);
 
 					FDUserI user=sb.recognize(identity);
 					dsb.makeRecurringReservation(info.getCustomerId(), info.getDayOfWeek(), info.getStartTime()
