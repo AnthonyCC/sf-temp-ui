@@ -18,7 +18,7 @@
 	<tmpl:put name='yui-skin'>yui-skin-sam</tmpl:put>
 	
   <tmpl:put name='content' direct='true'>
-		<div class="subs MNM001">
+		<div class="MNM001 subsub or_999">
 		<div class="subs_left">	
 			<div class="sub_tableft sub_tabL_MNM001 <% if(request.getParameter("pAssetType")!= null) { %>activeL<% } %>">&nbsp;</div>
 			<div class="subtab <%if(request.getParameter("pAssetType")!= null) { %>activeT<% } %>">
