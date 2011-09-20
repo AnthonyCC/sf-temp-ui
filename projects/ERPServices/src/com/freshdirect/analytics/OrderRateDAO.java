@@ -126,7 +126,6 @@ public class OrderRateDAO {
 				Integer capacity = rs.getInt("capacity");
 				Integer orders = rs.getInt("order_count");
 				Integer[] metrics = new Integer[]{capacity,orders};
-				System.out.println("cp "+rs.getTimestamp("timeslot_start") + " "+ rs.getTimestamp("timeslot_end")+ " "+rs.getString("zone")+ rs.getTimestamp("snapshot_time")+" " +rs.getInt("capacity"));
 				if(capacityMap.get(range)!=null)
 				{
 					if(capacityMap.get(range).get(zone)!=null)
@@ -226,8 +225,6 @@ public class OrderRateDAO {
 		
 		while(rs.next())
 		{
-			System.out.println(rs.getTimestamp("snapshot_time")+" "+rs.getFloat("order_count"));
-			
 			map.put(rs.getTimestamp("snapshot_time"), rs.getFloat("order_count"));
 		}
 		}
@@ -267,7 +264,6 @@ public class OrderRateDAO {
 				DateRangeVO range = new DateRangeVO(rs.getTimestamp("timeslot_start"), rs.getTimestamp("timeslot_end"));
 				Map<String, Integer> zoneMap = new HashMap<String, Integer>();
 				zoneMap.put(rs.getString("zone"), rs.getInt("oCount"));
-				System.out.println("oc "+rs.getTimestamp("timeslot_start")+ " "+ rs.getTimestamp("timeslot_end") + " "+rs.getString("zone")+ " "+rs.getInt("oCount"));
 				orderCountMap.put(range, zoneMap);
 			}
 		}catch (Exception e) {

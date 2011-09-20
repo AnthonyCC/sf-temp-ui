@@ -37,8 +37,8 @@ public class EventCronRunner {
 			ctx = getInitialContext();
 			EventProcessorHome  home = (EventProcessorHome) ctx.lookup("freshdirect.analytics.EventProcessor");
 			EventProcessorSB sb = home.create();
-			List events = sb.getEvents();
-			CEPService.insert(events);
+			sb.getEvents();
+			
 			
 		}
 	catch (Exception e) {

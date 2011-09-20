@@ -49,9 +49,12 @@ public class CEPService{
 					 kbase = getGuvnorKnowledgeBase();
 				
 			ksession = kbase.newStatelessKnowledgeSession();
+			if(FDStoreProperties.isDebugEventAnalysis())
+			{
 			ksession.addEventListener( new CustomAgendaEventListener() );
 			ksession.addEventListener(new CustomWorkingMemoryEventListener());
 			KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "auditlogfile");
+			}
 	
 			if(e!=null && e.size()>0)
 			{

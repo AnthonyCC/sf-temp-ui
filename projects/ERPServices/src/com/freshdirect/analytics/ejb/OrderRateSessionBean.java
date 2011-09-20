@@ -57,7 +57,9 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 	@SuppressWarnings("unchecked")
 	public void getOrderRate(Timestamp timeStamp) throws RemoteException{
 		
-
+		final String METHODNAME = "getOrderRate()";
+		LOGGER.info("start: "+METHODNAME );
+		
 		Calendar cal = Calendar.getInstance();
 		long starttime = System.currentTimeMillis();
 		Connection conn = null;
@@ -215,6 +217,7 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 			}
 		}
 		
+		LOGGER.info("end: "+METHODNAME);
 		
 		
 	}
