@@ -476,6 +476,7 @@ public class FDStoreProperties {
 	private static final String REAL_TIME_EVENT_ANALYSIS = "realtime.event.analysis";
 	private static final String EVENT_KB_SOURCE = "event.kb.source";
 	private static final String RULES_REPOSITORY = "rules.repository";
+	private static final String DEBUG_EVENT_ANALYSIS = "debug.event.analysis";
 	
 	
 	
@@ -949,7 +950,9 @@ public class FDStoreProperties {
 		defaults.put(REAL_TIME_EVENT_ANALYSIS, "false");
 		defaults.put(EVENT_KB_SOURCE, "local");
 		defaults.put(RULES_REPOSITORY, "Events.drl");
-	
+		defaults.put(DEBUG_EVENT_ANALYSIS, "false");
+		
+		
         refresh();
     }
 
@@ -2444,6 +2447,8 @@ public class FDStoreProperties {
     public static String getRuleRepository() {
         return get(RULES_REPOSITORY);
     }
-
+    public static boolean isDebugEventAnalysis() {
+    	return (new Boolean(get(DEBUG_EVENT_ANALYSIS))).booleanValue();
+    }
     
 }

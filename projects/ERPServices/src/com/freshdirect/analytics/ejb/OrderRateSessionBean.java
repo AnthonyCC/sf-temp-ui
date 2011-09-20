@@ -81,16 +81,19 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 				cal.setTime(baseDate);
 				cal = DateUtil.truncate(cal);
 				Date[] samples = new Date[2];
-				
+				System.out.println(baseDate);
 				samples[0] = getSample(cal, holidayMap);
+				System.out.println(samples[0]);
 				dates.add(samples[0]);
 				samples[1] = getSample(cal, holidayMap);
+				System.out.println(samples[1]);
 				dates.add(samples[1]);
 				sampleMap.put(baseDate, samples);
 				
 			}
-			Collections.sort(dates);
-			Date minDate = dates.get(0);
+			System.out.println(dates.size());
+			
+			Date minDate = Collections.min(dates);
 				
 			Map<DateRangeVO,  Map<String, Map<Timestamp, Integer[]>>> capacityMap = OrderRateDAO.getCapacityMap(conn,minDate);
 			Map<DateRangeVO, Map<String, Integer>> orderCountMap = OrderRateDAO.getOrderCount(conn,minDate);
