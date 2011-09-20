@@ -1416,6 +1416,16 @@
 			<pathelement location="${thirdparty.home}/sapjco.jar"/>
 			<pathelement location="${thirdparty.home}/lcc.jar"/>
             <pathelement location="${thirdparty.home}/givexclient.jar"/>
+			<pathelement location="${thirdparty.home}/antlr.jar"/>
+			<pathelement location="${thirdparty.home}/antlr-runtime.jar"/>
+			<pathelement location="${thirdparty.home}/drools-api.jar"/>
+			<pathelement location="${thirdparty.home}/drools-compiler.jar"/>
+			<pathelement location="${thirdparty.home}/drools-core.jar"/>
+			<pathelement location="${thirdparty.home}/drools-jsr94.jar"/>
+			<pathelement location="${thirdparty.home}/jsr94.jar"/>
+			<pathelement location="${thirdparty.home}/mvel2.jar"/>
+			<pathelement location="${thirdparty.home}/org.eclipse.jdt.core_3.6.1.v_A68_R36x.jar"/>
+			<pathelement location="${thirdparty.home}/stringtemplate.jar"/>
 		</path>
 
 		<makeEjbProject
@@ -2847,17 +2857,6 @@
 				<include name="antlr-2.7.5H3.jar"/>
 
 				<include name="urlrewrite-2.6.0.jar"/>
-				<include name="antlr.jar"/>
-				<include name="antlr-runtime.jar"/>
-				<include name="drools-api.jar"/>
-				<include name="drools-compiler.jar"/>
-				<include name="drools-core.jar"/>
-				<include name="drools-jsr94.jar"/>
-				<include name="jsr94.jar"/>
-				<include name="mvel2.jar"/>
-				<include name="org.eclipse.jdt.core_3.6.1.v_A68_R36x.jar"/>
-				<include name="stringtemplate.jar"/>					
-
 			</lib>
 		
 		</makeFDAdminEar>
