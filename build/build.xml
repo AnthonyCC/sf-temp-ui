@@ -2481,18 +2481,6 @@
 			<zipfileset src="${thirdparty.home}/javassist-3.4.jar" excludes="META-INF/*"/>
             <zipfileset src="${thirdparty.home}/jsonrpc-1.0.jar" excludes="META-INF/*"/>
 
-			<zipfileset src="${thirdparty.home}/antlr.jar"/>
-			<zipfileset src="${thirdparty.home}/antlr-runtime.jar"/>
-			<zipfileset src="${thirdparty.home}/drools-api.jar"/>
-			<zipfileset src="${thirdparty.home}/drools-compiler.jar"/>
-			<zipfileset src="${thirdparty.home}/drools-core.jar"/>
-			<zipfileset src="${thirdparty.home}/drools-jsr94.jar"/>
-			<zipfileset src="${thirdparty.home}/jsr94.jar"/>
-			<zipfileset src="${thirdparty.home}/mvel2.jar"/>
-			<zipfileset src="${thirdparty.home}/org.eclipse.jdt.core_3.6.1.v_A68_R36x.jar"/>
-			<zipfileset src="${thirdparty.home}/stringtemplate.jar"/>					
-
-            	
 			<!-- FD classes -->
 			<zipfileset src="${work.dir}/Framework.jar"/>
 			<zipfileset src="${work.dir}/ERPServicesEJB-WL.jar" excludes="META-INF/*"/>
