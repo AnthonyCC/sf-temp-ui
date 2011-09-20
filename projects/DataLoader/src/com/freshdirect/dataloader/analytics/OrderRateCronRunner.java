@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -37,10 +38,15 @@ public class OrderRateCronRunner {
 		Context ctx = null;
 		try 
 		{
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			
+			
 			ctx = getInitialContext();
 			OrderRateHome home = (OrderRateHome) ctx.lookup("freshdirect.analytics.OrderRate");
 			OrderRateSB sb = home.create();
-			sb.getOrderRate();
+			sb.getOrderRate(new Timestamp(cal.getTimeInMillis()));
 		}
 	catch (Exception e) {
 		StringWriter sw = new StringWriter();

@@ -29,9 +29,7 @@ public class OrderRateDAO {
 			" AND sa.REQUESTED_DATE > TRUNC(SYSDATE) AND s.type='REG' AND S.CROMOD_DATE BETWEEN (SYSDATE-1/48) " +
 			" AND SYSDATE) a on to_char(a.STARTTIME, 'MM/DD/YYYY HH:MI:SS AM') = to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.START_TIME, 'HH:MI:SS AM') " +
 			" and  to_char(a.ENDTIME, 'MM/DD/YYYY HH:MI:SS AM') = to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.END_TIME, 'HH:MI:SS AM') " +
-			" and a.zone = t.zone_code where to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.START_TIME, 'HH:MI AM') = '09/20/2011 08:00 AM'" +
-			" and to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.END_TIME, 'HH:MI AM') = '09/20/2011 10:00 AM' and t.zone_code = '505'" +
-			" group by t.base_date,  to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.START_TIME, 'HH:MI:SS AM') ," +
+			" and a.zone = t.zone_code group by t.base_date,  to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.START_TIME, 'HH:MI:SS AM') ," +
 			" to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.END_TIME, 'HH:MI:SS AM') , " +
 			"to_char(t.base_date-1, 'MM/DD/YYYY')||' '|| to_char(t.cutoff_time, 'HH:MI:SS AM') ,  t.zone_code, t.capacity";
 

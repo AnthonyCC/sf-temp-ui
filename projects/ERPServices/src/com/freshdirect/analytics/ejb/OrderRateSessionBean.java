@@ -4,8 +4,13 @@ import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.*;
 import org.apache.log4j.Category;
+
+import weblogic.auddi.util.Logger;
+
 import com.freshdirect.analytics.DateRangeVO;
 import com.freshdirect.analytics.OrderRateDAO;
 import com.freshdirect.analytics.OrderRateVO;
@@ -24,14 +29,19 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 		cal.add(Calendar.DATE, lookback);
 		return new java.sql.Timestamp(cal.getTimeInMillis());
 	}
-	
-	/** @return the calendar passed in, for convenience */
-	public Calendar truncate(Calendar cal) {
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-		return cal;
+	private Float roundValue(double value)
+	{
+		float val = 0;
+		try
+		{
+		DecimalFormat df = new DecimalFormat("#.##");
+		val =  Float.valueOf(df.format(value)).floatValue();
+		}
+		catch(NumberFormatException nfe)
+		{
+			Logger.info("Exception while rounding the value: "+value);
+		}
+		return val;
 	}
 	
 	public Date getSample(Calendar cal, Map holidayMap)
@@ -45,14 +55,11 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 		
 	}
 	@SuppressWarnings("unchecked")
-	public void getOrderRate() throws RemoteException{
+	public void getOrderRate(Timestamp timeStamp) throws RemoteException{
 		
 
 		Calendar cal = Calendar.getInstance();
 		long starttime = System.currentTimeMillis();
-		cal = truncate(cal);	//should be removed
-		long time = cal.getTimeInMillis();
-		Timestamp timeStamp = addTime(new java.sql.Timestamp(time));
 		Connection conn = null;
 		try 
 		{
@@ -66,7 +73,6 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 			Map<Date, Integer> holidayMap = OrderRateDAO.getHolidayMap(conn);
 			List<Date> dates = new ArrayList<Date>();
 			Map<Date, Date[]> sampleMap = new HashMap<Date, Date[]>();
-			
 			while(dateIterator.hasNext())
 			{
 				Date baseDate = dateIterator.next();
@@ -111,20 +117,15 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 				DateRangeVO range7 = new DateRangeVO(startTime7, endTime7);
 				DateRangeVO range14 = new DateRangeVO(startTime14, endTime14);
 				
-
-				System.out.println("range"+range);
-				System.out.println("range7"+range7);
-				System.out.println("range14"+range14);
-				System.out.println("snapshot7"+snapshot7);
-				System.out.println("snapshot14"+snapshot14);
-				
+	
 				if(capacityMap.get(range7)!=null && capacityMap.get(range14)!=null
 						 && capacityMap.get(range7).get(vo.getZone())!=null 
 						&& capacityMap.get(range14).get(vo.getZone())!=null
 						 && capacityMap.get(range7).get(vo.getZone()).get(snapshot7)!=null
 						 && capacityMap.get(range14).get(vo.getZone()).get(snapshot14)!=null)
 			
-					vo.setProjectedRate( (capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[1] + capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[1]) / 2);
+					
+					vo.setProjectedRate(roundValue( (capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[1] + capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[1]) / 2));
 				else
 					vo.setProjectedRate(0);
 				
@@ -138,60 +139,67 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 						 && capacityMap.get(range14).get(vo.getZone()).get(snapshot14)!=null
 						 && (capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[0] + capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[0] > 0) )
 				
-						weightedProjection = vo.getProjectedRate() * vo.getCapacity() / ((capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[0]+ capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[0])/2);
+						weightedProjection = roundValue( vo.getProjectedRate() * vo.getCapacity() / ((capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[0]+ capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[0])/2));
 				
 				else
 						weightedProjection = 0;
 				
 				vo.setWeightedProjectRate(weightedProjection);
 				float orderCount = (orderCountMap.get(range)!=null && orderCountMap.get(range).get(vo.getZone())!=null)?orderCountMap.get(range).get(vo.getZone()):0;
-				System.out.println("ocount"+orderCount);
 				float capacity = vo.getCapacity();
-				System.out.println("capacity"+capacity);
+				
 				if(orderCount - capacity >=0)
 					vo.setSoldOutTime(vo.getSnapshotTime());
 				
 				Timestamp expectedSoldTime = addTime(vo.getSnapshotTime());
 				
-				System.out.println(snapshot7);
-				System.out.println(snapshot14);
 				float rate = 0;
 				boolean done = false;
 				while(!done)
 				{
 				
-				if(capacityMap.get(range7)!=null && capacityMap.get(range14)!=null
-						 && capacityMap.get(range7).get(vo.getZone())!=null 
-							&& capacityMap.get(range14).get(vo.getZone())!=null
-							 && capacityMap.get(range7).get(vo.getZone()).get(snapshot7)!=null
-							 && capacityMap.get(range14).get(vo.getZone()).get(snapshot14)!=null)
-				{
-					System.out.println(capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[1]);
-					System.out.println(capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[1] );
-					
-					
-						rate +=  (capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[1]+ capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[1]) /2;
-
-
-					if((orderCount + rate) - capacity >=0)
+					if(capacityMap.get(range7)!=null && capacityMap.get(range14)!=null
+							 && capacityMap.get(range7).get(vo.getZone())!=null 
+								&& capacityMap.get(range14).get(vo.getZone())!=null )
 					{
-						vo.setExpectedSoldOutTime(expectedSoldTime);
-						done = true;
-						break;
+						
+						if(capacityMap.get(range7).get(vo.getZone()).get(snapshot7)!=null
+								 && capacityMap.get(range14).get(vo.getZone()).get(snapshot14)!=null)
+						{
+							System.out.println(capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[1]);
+							System.out.println(capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[1] );
+							
+							
+								rate += roundValue( (capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[1]+ capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[1]) /2);
+		
+		
+							if((orderCount + rate) - capacity >=0)
+							{
+								vo.setExpectedSoldOutTime(expectedSoldTime);
+								done = true;
+								break;
+							}
+						}
+						if(expectedSoldTime.getTime()>vo.getCutoffTime().getTime())
+							done = true;
+					
+						snapshot7 = addTime(snapshot7);
+						snapshot14 = addTime(snapshot14);
+						expectedSoldTime = addTime(expectedSoldTime);	
+						
+				
 					}
-					if(expectedSoldTime.getTime()>vo.getCutoffTime().getTime())
+					else
+					{
 						done = true;
 					}
-				snapshot7 = addTime(snapshot7);
-				snapshot14 = addTime(snapshot14);
-				expectedSoldTime = addTime(expectedSoldTime);		
-			
 				}
+				
 			}
 			
 			save(list);
 			long endtime= System.currentTimeMillis();
-			System.err.println(endtime-starttime);
+			System.err.println("Total time for execution of order rate job for snapshot: "+new Date(timeStamp.getTime()).toString()+" "+new Double(endtime-starttime));
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
