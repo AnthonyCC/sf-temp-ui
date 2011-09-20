@@ -159,6 +159,24 @@
 			semPixel_TSA.setParam("discountAmount", sem_totalDiscountAmount);
 			%><fd:SemPixelIncludeMedia pixelNames="TheSearchAgency" /><%
 		}
+
+			/* LinkShare Pixel */
+		    //get ref to Pixel
+			SemPixelModel semPixel_LS = FDSemPixelCache.getInstance().getSemPixel("LinkShare");
+			
+			sem_totalDiscountAmount = sem_totalDiscountAmount.replace(".", "");
+
+			//change triple zero ($0.00 -> 000) to single zero
+			if ("000".equals(sem_totalDiscountAmount)) { sem_totalDiscountAmount = "0"; }
+
+			//add a param to the params sent to the FTL
+			semPixel_LS.setParam("orderId", sem_orderNumber);
+			semPixel_LS.setParam("subtotal", sem_cartSubtotal);
+			semPixel_LS.setParam("discountAmount", sem_totalDiscountAmount);
+			semPixel_LS.setParam("isNew", ("0".equals(sem_validOrderCount))?"true":"false");
+			semPixel_LS.setParam("isOrderModify",String.valueOf(isOrderModify));
+			%><fd:SemPixelIncludeMedia pixelNames="LinkShare" />
+<%
 	}
 %>
 
