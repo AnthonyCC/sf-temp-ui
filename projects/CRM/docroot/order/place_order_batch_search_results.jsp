@@ -81,12 +81,12 @@ String transform(HttpSession s, String suggestion, int at) {
 <div class="order_content">
 <% 
 List products = new ArrayList();
-List recipes =  searchResults.getRecipes();
+List recipes =  SearchResultItem.unwrap(searchResults.getRecipes());
 if (searchResults != null && (recipes.size() > 0 || searchResults.getProducts().size() > 0) ) { 
         String offSet = "" + (pageCount * 75);
         
         // remove items that do not have a default sku
-        for (Iterator pi = searchResults.getProducts().iterator();pi.hasNext();) {
+        for (Iterator pi = SearchResultItem.unwrap(searchResults.getProducts()).iterator();pi.hasNext();) {
             ProductModel pm = (ProductModel)pi.next();
             if (pm.getDefaultSku()!=null) products.add(pm);
         }
