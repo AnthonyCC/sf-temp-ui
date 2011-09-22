@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.analytics.SessionEvent;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
@@ -119,6 +120,8 @@ public class FDUser extends ModelSupport implements FDUserI {
     private EnumServiceType zpServiceType = null;
     
     private FDIdentity identity;
+    private SessionEvent event;
+    
     private AddressModel address;
     private FDReservation reservation;
     private FDCartModel shoppingCart = new FDCartModel();
@@ -2013,6 +2016,17 @@ public class FDUser extends ModelSupport implements FDUserI {
 			return null;
 		}
         }
+	@Override
+	public SessionEvent getSessionEvent() {
+		// TODO Auto-generated method stub
+		return event;
+	}
+
+	@Override
+	public void setSessionEvent(SessionEvent event) {
+		// TODO Auto-generated method stub
+		this.event = event;
+	}
 
 	/*
 	public void setReferralLink(String referralLink) {
