@@ -299,11 +299,15 @@ public class FDProductSelection implements FDProductSelectionI {
 		double disAmount=0;
 		Price p=new Price(this.price.getBasePrice());
 		if(this.getDiscount()!=null){
-			try {
-				Price discountP=PricingEngine.applyDiscount(p,1,this.getDiscount(),this.price.getBasePriceUnit());
-				disAmount=discountP.getBasePrice();
-			} catch (PricingException e) {
-				e.printStackTrace();
+			if(this.getDiscount().getSkuLimit() > 0 && !this.price.getBasePriceUnit().equalsIgnoreCase("lb") && this.getDiscount().getSkuLimit() != this.getQuantity()) {
+				disAmount=this.price.getBasePrice();
+			} else {
+				try {
+					Price discountP=PricingEngine.applyDiscount(p,1,this.getDiscount(),this.price.getBasePriceUnit());
+					disAmount=discountP.getBasePrice();
+				} catch (PricingException e) {
+					e.printStackTrace();
+				}
 			}
 		}else{
 			disAmount=this.price.getBasePrice();
