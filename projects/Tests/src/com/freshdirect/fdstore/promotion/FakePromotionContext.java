@@ -259,7 +259,7 @@ public class FakePromotionContext implements PromotionContextI {
 
 	@Override
 	public boolean applyLineItemDollarOffDiscount(PromotionI promo,
-			FDCartLineI lineItem, double promotionAmt) {
+			FDCartLineI lineItem, double promotionAmt, int skuLimit) {
 		// TODO Auto-generated method stub
 		return false;
 	}
