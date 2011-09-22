@@ -90,7 +90,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 			
 			TimeslotEventModel event = new TimeslotEventModel((user.getApplication()!=null)?user.getApplication().getCode():"",
 					(cart!=null)?cart.isDlvPassApplied():false, (cart!=null)?cart.getDeliverySurcharge():0.00,
-							(cart!=null)?cart.isDeliveryChargeWaived():false, Util.isZoneCtActive(zoneId), null);
+							(cart!=null)?cart.isDeliveryChargeWaived():false, Util.isZoneCtActive(zoneId));
 			
 			
 			if ("register".equalsIgnoreCase(actionName)) {
