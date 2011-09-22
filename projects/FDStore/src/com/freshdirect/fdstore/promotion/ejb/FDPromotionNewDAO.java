@@ -65,6 +65,7 @@ import com.freshdirect.fdstore.promotion.RedemptionCodeStrategy;
 import com.freshdirect.fdstore.promotion.RuleBasedPromotionStrategy;
 import com.freshdirect.fdstore.promotion.SampleLineApplicator;
 import com.freshdirect.fdstore.promotion.SampleStrategy;
+import com.freshdirect.fdstore.promotion.SkuLimitStrategy;
 import com.freshdirect.fdstore.promotion.StateCountyStrategy;
 import com.freshdirect.fdstore.promotion.WaiveChargeApplicator;
 import com.freshdirect.fdstore.promotion.management.FDPromoDollarDiscount;
@@ -654,6 +655,7 @@ public class FDPromotionNewDAO {
 			}
 			if(skulimit > 0) {
 				applicator.setSkuLimit(skulimit);
+				applicator.addLineItemStrategy(new SkuLimitStrategy(skulimit));
 			}
 			boolean recItemsOnly = "Y".equalsIgnoreCase(rs.getString("FAVORITES_ONLY"));
 			applicator.setFavoritesOnly(recItemsOnly);

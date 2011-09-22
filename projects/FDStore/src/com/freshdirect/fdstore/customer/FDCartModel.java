@@ -176,6 +176,20 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	
 	private ExtendDPDiscountModel dlvPassExtn;
 	
+	private int skuCount = 0;
+	
+	public void incrementSkuCount(int quantity) {
+		skuCount += quantity;
+	}
+	
+	public int getSkuCount() {
+		return skuCount;		
+	}
+	
+	public void setSkuCount(int skuCount) {
+		this.skuCount = skuCount;
+	}
+	
 	public boolean isDlvPassApplied() {
 		return dlvPassApplied;
 	}

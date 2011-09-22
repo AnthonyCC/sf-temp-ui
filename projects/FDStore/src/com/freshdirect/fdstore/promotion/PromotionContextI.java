@@ -120,5 +120,5 @@ public interface PromotionContextI {
 	
 	public String getUsedWSPromotionCode();
 	
-	public boolean applyLineItemDollarOffDiscount(PromotionI promo, FDCartLineI lineItem, double promotionAmt) ;
+	public boolean applyLineItemDollarOffDiscount(PromotionI promo, FDCartLineI lineItem, double promotionAmt, int skuLimit) ;
 }

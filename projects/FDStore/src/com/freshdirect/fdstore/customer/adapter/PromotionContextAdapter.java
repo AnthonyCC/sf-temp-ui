@@ -407,7 +407,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 		return false;
 	}
 
-	public boolean applyLineItemDollarOffDiscount(PromotionI promo, FDCartLineI lineItem, double promotionAmt) {
+	public boolean applyLineItemDollarOffDiscount(PromotionI promo, FDCartLineI lineItem, double promotionAmt, int skuLimit) {
 		
 		//Poll the promotion context to know if this is the max discount amount.
 		Discount applied = lineItem.getDiscount();
@@ -417,6 +417,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 			//Add this discount.
 			Discount discount = new Discount(promo.getPromotionCode(), EnumDiscountType.DOLLAR_OFF, (lineItem.getPrice()/lineItem.getQuantity())-promotionAmt>=0.0?promotionAmt
 					:lineItem.getPrice()/lineItem.getQuantity());
+			discount.setSkuLimit(skuLimit);
 			lineItem.setDiscount(discount);
 			return true;
 		}

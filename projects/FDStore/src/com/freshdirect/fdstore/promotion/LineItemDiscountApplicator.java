@@ -60,8 +60,8 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 	private final static Comparator PRICE_COMPARATOR = new Comparator() {
 		public int compare(Object o1, Object o2) {
 			
-			double p1 = ((FDCartLineI) o1).getPrice();
-			double p2 = ((FDCartLineI) o2).getPrice();
+			double p1 = ((FDCartLineI) o1).getBasePrice();
+			double p2 = ((FDCartLineI) o2).getBasePrice();
 			return Double.compare(p1, p2);
 		}
 	};
@@ -136,11 +136,19 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 				*/
 				
 				
-				for(int i=0;i<orderLines.size();i++) {
-					  FDCartLineI cartLine=(FDCartLineI)orderLines.get(i);
+				for(int i=newOrderLines.size() - 1;i>=0;i--) {
+					  FDCartLineI cartLine=(FDCartLineI)newOrderLines.get(i);
 					  boolean e = evaluate(cartLine, promotionCode, context);
 					  if(e) {
-						context.applyLineItemDollarOffDiscount(promo, cartLine, discountRule.getMaxAmount());
+						int availableSkuLimit = skuLimit - cart.getSkuCount();
+						boolean applied = context.applyLineItemDollarOffDiscount(promo, cartLine, discountRule.getMaxAmount(), availableSkuLimit);
+						if(applied && skuLimit > 0) {
+							if(cartLine.getUnitPrice().indexOf("/lb") != -1) {
+								cart.incrementSkuCount(1);
+							} else {
+								cart.incrementSkuCount((int)cartLine.getQuantity());
+							}
+						}
 						if(favoritesOnly){
 							String savingsId = cartLine.getSavingsId();
 							String productId = cartLine.getProductRef().getContentKey().getId();							
@@ -153,19 +161,7 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 					  }
 				}
 				
-				if(favoritesOnly && orderLines.size()>0){
-					for(int i=0;i<orderLines.size();i++){
-						FDCartLineI cartLine=(FDCartLineModel)orderLines.get(i);	 
-							String productId = cartLine.getProductRef().getContentKey().getId();
-							if(!cartLine.hasDiscount(promotionCode) && recommendedItemMap.containsKey(productId)){								
-								context.applyLineItemDollarOffDiscount(promo, cartLine, discountRule.getMaxAmount());
-								cartLine.setSavingsId((String)recommendedItemMap.get(productId));
-								cartLine.setDiscountFlag(true);
-								appliedCnt++;
-							}
-						
-					}	
-				}
+				
 //				return context.applyHeaderDiscount(promo, amount);
 			}else{		
 				/*
@@ -223,7 +219,15 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 					FDCartLineI cartLine=(FDCartLineI)newOrderLines.get(i);
 					boolean e = evaluate(cartLine, promotionCode, context);
 					if(e) {
-						context.applyLineItemDiscount(promo, cartLine, percentOff, skuLimit);
+						int availableSkuLimit = skuLimit - cart.getSkuCount();
+						boolean applied = context.applyLineItemDiscount(promo, cartLine, percentOff, availableSkuLimit);
+						if(applied && skuLimit > 0) {
+							if(cartLine.getUnitPrice().indexOf("/lb") != -1) {
+								cart.incrementSkuCount(1);
+							} else {
+								cart.incrementSkuCount((int)cartLine.getQuantity());
+							}
+						}
 						if(favoritesOnly){
 							String savingsId = cartLine.getSavingsId();
 							String productId = cartLine.getProductRef().getContentKey().getId();							
@@ -236,31 +240,15 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 					}
 				}
 				
-			    // now apply discount to any duplicate sku from the recommended List for favorites only
-							   
-				if(favoritesOnly && newOrderLines.size()>0){
-					for(int i=0;i<newOrderLines.size();i++){
-						FDCartLineI cartLine=(FDCartLineModel)newOrderLines.get(i);	 
-							String productId = cartLine.getProductRef().getContentKey().getId();
-							if(!cartLine.hasDiscount(promotionCode) && recommendedItemMap.containsKey(productId)){								
-								context.applyLineItemDiscount(promo, cartLine, percentOff, 0);
-								cartLine.setSavingsId((String)recommendedItemMap.get(productId));
-								cartLine.setDiscountFlag(true);
-								appliedCnt++;
-							}
-						
-					}	
-				}
-
 				/*
 				for(int i=0;i<orderLines.size();i++) {
 					  FDCartLineI cartLine=(FDCartLineI)orderLines.get(i);
-					  System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" + cartLine.getLabel() + " - " + cartLine.getQuantity() + " - " + cartLine.getPrice() + " - " + cartLine.getBasePrice() + " - " + cartLine.isDiscountFlag() );
+					  System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" + cartLine.getLabel() + " - " + cartLine.getQuantity() + " - " + cartLine.getPrice() + " - " + cartLine.getBasePrice() + " - " + cartLine.isDiscountFlag() + " - " + cartLine.getSalesUnitDescription() + " - " + cartLine.getUnitPrice()) ;
 				}
 				//Test display of sorted lines
 				for(int i=newOrderLines.size() - 1;i>=0;i--)  {
 					  FDCartLineI cartLine=(FDCartLineI)newOrderLines.get(i);
-					  System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" + cartLine.getLabel() + " - " + cartLine.getQuantity() + " - " + cartLine.getPrice() + " - " + cartLine.getBasePrice() + " - " + cartLine.isDiscountFlag());
+					  System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" + cartLine.getLabel() + " - " + cartLine.getQuantity() + " - " + cartLine.getPrice() + " - " + cartLine.getBasePrice() + " - " + cartLine.isDiscountFlag()+ " - " + cartLine.getSalesUnitDescription() + " - " + cartLine.getUnitPrice()) ;
 				}
 				*/
 				
