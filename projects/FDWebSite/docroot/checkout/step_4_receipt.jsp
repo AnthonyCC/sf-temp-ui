@@ -160,7 +160,8 @@
 			%><fd:SemPixelIncludeMedia pixelNames="TheSearchAgency" /><%
 		}
 
-			/* LinkShare Pixel */
+		/* LinkShare Pixel */
+		if ( !isOrderModify ) { //do not send on order modify
 		    //get ref to Pixel
 			SemPixelModel semPixel_LS = FDSemPixelCache.getInstance().getSemPixel("LinkShare");
 			
@@ -176,7 +177,9 @@
 			semPixel_LS.setParam("isNew", ("0".equals(sem_validOrderCount))?"true":"false");
 			semPixel_LS.setParam("isOrderModify",String.valueOf(isOrderModify));
 			%><fd:SemPixelIncludeMedia pixelNames="LinkShare" />
+			
 <%
+		}
 	}
 %>
 
