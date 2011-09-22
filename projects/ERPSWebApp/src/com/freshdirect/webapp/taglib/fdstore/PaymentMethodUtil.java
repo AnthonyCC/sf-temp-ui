@@ -8,29 +8,53 @@
  */
 package com.freshdirect.webapp.taglib.fdstore;
 
-import java.util.*;
-import java.text.*;
-import javax.servlet.http.*;
+import java.text.MessageFormat;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumCardType;
-import com.freshdirect.customer.*;
+import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpAuthorizationException;
+import com.freshdirect.customer.ErpAuthorizationModel;
+import com.freshdirect.customer.ErpDuplicatePaymentMethodException;
+import com.freshdirect.customer.ErpPaymentMethodException;
+import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.customer.ErpPaymentMethodModel;
+import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.delivery.DlvAddressVerificationResponse;
+import com.freshdirect.delivery.EnumAddressVerificationResult;
+import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDReservation;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.framework.webapp.ActionError;
+import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.payment.EnumBankAccountType;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.PaymentManager;
+import com.freshdirect.payment.BillingCountryInfo;
+import com.freshdirect.payment.BillingRegionInfo;
 import com.freshdirect.payment.fraud.PaymentFraudManager;
 import com.freshdirect.webapp.util.RequestUtil;
-import com.freshdirect.fdstore.*;
-import com.freshdirect.delivery.*;
-import com.freshdirect.fdstore.customer.*;
-import com.freshdirect.framework.webapp.*;
-
-import com.freshdirect.framework.util.StringUtil;
-import com.freshdirect.framework.util.log.LoggerFactory;
-import org.apache.commons.lang.StringUtils;
-
-import org.apache.log4j.*;
 
 /**
  * One of the ugliest things in ERPSWebApp.
@@ -164,7 +188,25 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	            expCal.setTime(date);
 	            expCal.set(Calendar.DATE, expCal.getActualMaximum(Calendar.DATE));
 	        }
-	        
+	        if(FDStoreProperties.isPaymentMethodVerificationEnabled()&& EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {
+	        	result.addError(
+		    	        csv == null || csv.length() <= 0,
+		    	        PaymentMethodName.CSV,SystemMessageList.MSG_REQUIRED
+		    	        );
+	        	
+		        	if(EnumCardType.AMEX.equals(EnumCardType.getCardType(cardType))) {
+		        		result.addError(
+				    	        csv != null & csv.length() != 0 & csv.length() !=4,
+				    	        PaymentMethodName.CSV,SystemMessageList.MSG_CVV_INCORRECT
+				    	        );
+		        	} else {
+		        		result.addError(
+				    	        csv != null & csv.length() != 0 & csv.length() !=3,
+				    	        PaymentMethodName.CSV,SystemMessageList.MSG_CVV_INCORRECT
+				    	        );
+		        	}
+	        	
+	        }
 	        
 	        
         } else if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
@@ -240,7 +282,12 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             paymentMethod.setCity(RequestUtil.getRequestParameter(request,EnumUserInfoName.BIL_CITY.getCode(),true));
             paymentMethod.setState(RequestUtil.getRequestParameter(request,EnumUserInfoName.BIL_STATE.getCode(),true));
             paymentMethod.setZipCode(RequestUtil.getRequestParameter(request,EnumUserInfoName.BIL_ZIPCODE.getCode(),true));
-            paymentMethod.setCountry("US");
+            paymentMethod.setCountry(RequestUtil.getRequestParameter(request,EnumUserInfoName.BIL_COUNTRY.getCode(),true));
+           /* if(paymentMethod.getCountry()==null ||  
+               ( paymentMethod.getCountry()!=null && "".equals(paymentMethod.getCountry()))
+              ) {
+            	paymentMethod.setCountry("US");
+            }*/
             paymentMethod.setCVV(csv);
             if(StringUtil.isEmpty(paymentMethod.getCustomerId()) && identity!=null) {
             	paymentMethod.setCustomerId(identity.getErpCustomerPK());
@@ -278,26 +325,12 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             paymentMethod.getZipCode() == null || "".equals(paymentMethod.getZipCode()) || paymentMethod.getZipCode().trim().length() <= 0,
             EnumUserInfoName.BIL_ZIPCODE.getCode(), SystemMessageList.MSG_REQUIRED
             );
+            result.addError(
+                    paymentMethod.getCountry() == null || "".equals(paymentMethod.getCountry()) || paymentMethod.getCountry().trim().length() <= 0,
+                    EnumUserInfoName.BIL_COUNTRY.getCode(), SystemMessageList.MSG_REQUIRED
+                    );
             
-            if(FDStoreProperties.isPaymentMethodVerificationEnabled()&& EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {
-	        	result.addError(
-		    	        csv == null || csv.length() <= 0,
-		    	        PaymentMethodName.CSV,SystemMessageList.MSG_REQUIRED
-		    	        );
-	        	
-		        	if(EnumCardType.AMEX.equals(EnumCardType.getCardType(cardType))) {
-		        		result.addError(
-				    	        csv != null & csv.length() != 0 & csv.length() !=4,
-				    	        PaymentMethodName.CSV,SystemMessageList.MSG_CVV_INCORRECT
-				    	        );
-		        	} else {
-		        		result.addError(
-				    	        csv != null & csv.length() != 0 & csv.length() !=3,
-				    	        PaymentMethodName.CSV,SystemMessageList.MSG_CVV_INCORRECT
-				    	        );
-		        	}
-	        	
-	        }
+            
         }
     }
     
@@ -380,6 +413,41 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        paymentMethod.getExpirationDate() == null || checkDate.after(paymentMethod.getExpirationDate()),
 	        "expiration", SystemMessageList.MSG_CARD_EXPIRATION_DATE
 	        );
+	        
+	        result.addError(
+	        		paymentMethod.getAddress1()==null || paymentMethod.getAddress1().trim().length() < 1,
+					EnumUserInfoName.BIL_ADDRESS_1.getCode(),SystemMessageList.MSG_REQUIRED
+	    	        );
+	        result.addError(
+	        		paymentMethod.getZipCode()==null || paymentMethod.getZipCode().trim().length() < 1,
+					EnumUserInfoName.BIL_ZIPCODE.getCode(),SystemMessageList.MSG_REQUIRED
+	    	        );
+	        result.addError(
+	        		paymentMethod.getState()==null || paymentMethod.getState().trim().length() < 1,
+					EnumUserInfoName.BIL_STATE.getCode(),SystemMessageList.MSG_REQUIRED
+	    	        );
+	        result.addError(
+	        		paymentMethod.getCity()==null || paymentMethod.getCity().trim().length() < 1,
+					EnumUserInfoName.BIL_CITY.getCode(),SystemMessageList.MSG_REQUIRED
+	    	        );
+	        result.addError(
+	        		paymentMethod.getCountry()==null || paymentMethod.getCountry().trim().length() < 1,
+					EnumUserInfoName.BIL_COUNTRY.getCode(),SystemMessageList.MSG_REQUIRED
+	    	        );
+	        if(paymentMethod.getCountry()!=null) {
+	        	BillingCountryInfo bc=BillingCountryInfo.getEnum(paymentMethod.getCountry());
+	        	Pattern zChk=null;
+	        	if(bc!=null)
+	        		zChk=bc.getZipCheckPattern();
+	        	if(zChk!=null) {
+	        		 result.addError(
+	        				 !zChk.matcher(paymentMethod.getZipCode()).matches(),
+	     					EnumUserInfoName.BIL_ZIPCODE.getCode(),SystemMessageList.MSG_ZIP_CODE
+	     	    	        );
+	        	}
+	        	
+	        }
+	        
 	        if(!result.isFailure() && FDStoreProperties.isPaymentMethodVerificationEnabled()&& !paymentMethod.isBypassAVSCheck()&& verifyCC) {
 	        	
 	        	

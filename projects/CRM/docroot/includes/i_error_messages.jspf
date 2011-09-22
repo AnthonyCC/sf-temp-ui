@@ -2,7 +2,8 @@
 <%@ page import="java.util.Iterator"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName" %>
 <%
-    List<String> FIELD_NAMES = (List<String>) pageContext.getAttribute("listOfFields");
+    List<String> FIELD_NAMES = (List<String>) pageContext.getAttribute("errorList");
+    System.out.println("FIELD_NAMES "+FIELD_NAMES+" isNull()"+FIELD_NAMES);
     if( (FIELD_NAMES != null) || (errorMsg!=null && !"".equals(errorMsg.trim())) ) {
 %>
 <table cellspacing="0" cellpadding="0" border="0" width="100%">
@@ -34,9 +35,11 @@
 			<%
 				for (Iterator<String> i= FIELD_NAMES.iterator(); i.hasNext();) {
 					String fieldType = i.next();
+					System.out.println("fieldType :"+fieldType);
 					if(result.getError(fieldType)!=null){
 						fieldDescription = (EnumUserInfoName.getUserInfoName(fieldType)).getDescription();
 						fieldCode = (EnumUserInfoName.getUserInfoName(fieldType)).getCode();
+						System.out.println("fieldDescription :"+fieldDescription+" fieldCode :"+fieldCode);
 					%>
 					<tr><td width=15>
 						</td><td>

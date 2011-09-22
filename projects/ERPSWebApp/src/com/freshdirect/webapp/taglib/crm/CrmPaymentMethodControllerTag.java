@@ -169,7 +169,7 @@ public class CrmPaymentMethodControllerTag extends AbstractControllerTag {
 		this.paymentMethod.setCity(NVL.apply(request.getParameter(EnumUserInfoName.BIL_CITY.getCode()), "").trim());
 		this.paymentMethod.setState(NVL.apply(request.getParameter(EnumUserInfoName.BIL_STATE.getCode()), "").trim());
 		this.paymentMethod.setZipCode(NVL.apply(request.getParameter(EnumUserInfoName.BIL_ZIPCODE.getCode()), "").trim());
-		this.paymentMethod.setCountry("US");		
+		this.paymentMethod.setCountry(NVL.apply(request.getParameter(EnumUserInfoName.BIL_COUNTRY.getCode()), "").trim());		
 		this.paymentMethod.setBypassAVSCheck(request.getParameter("bypass_avs")!=null);
 		this.paymentMethod.setAvsCkeckFailed(false);
 		this.paymentMethod.setCVV(csv);
