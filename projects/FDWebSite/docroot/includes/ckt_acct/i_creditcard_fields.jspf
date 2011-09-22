@@ -37,7 +37,7 @@
 	      var regions=o.split(",");
 			
 			ClearOptions("<%=AddressName.BIL_STATE%>");
-			addOpt("<%="AddressName.BIL_STATE%>","State","");
+			addOpt("<%=AddressName.BIL_STATE%>","State","");
 			for (var i = 0; i < regions.length; i++) { 
 			     var j=regions[i].split("|");
 			     addOpt("<%=AddressName.BIL_STATE%>",j[1],j[0]);
