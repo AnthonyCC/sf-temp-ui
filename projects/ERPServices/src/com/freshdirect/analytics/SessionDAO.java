@@ -45,8 +45,14 @@ public class SessionDAO {
 			    	ps.setTimestamp(4, new Timestamp(sessionEvent.getCutOff().getTime()));
 			    else
 			    	ps.setNull(4, java.sql.Types.TIMESTAMP);
-			    ps.setInt(5, sessionEvent.getAvailCount());
-			    ps.setInt(6, sessionEvent.getSoldCount());
+			    if(sessionEvent.getAvailCount()!=null)
+			    	ps.setInt(5, sessionEvent.getAvailCount());
+			    else
+			    	ps.setNull(5, java.sql.Types.INTEGER);
+			    if(sessionEvent.getSoldCount()!=null)
+			    	ps.setInt(6, sessionEvent.getSoldCount());
+			    else
+			    	ps.setNull(6, java.sql.Types.INTEGER);
 			    ps.setString(7, sessionEvent.getZone());
 			    ps.setString(8, sessionEvent.getLastTimeslot());
 			    ps.setString(9, sessionEvent.getIsTimeout());

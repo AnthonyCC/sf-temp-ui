@@ -180,6 +180,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         this.lastRequestDate = startDate.getTime();
         sessionId = event.getSession().getId();
 
+        user.setSessionEvent(new SessionEvent());
+        
         // store cohort ID
         if (user.getCohortName() == null) {
             try {
@@ -204,16 +206,16 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         		Date loginTime = null;
         		if(event.getSession() != null)
         			loginTime = new Date(event.getSession().getCreationTime());
-        		SessionEvent sessionEvent = null;
+        		 
         		if(user.getSessionEvent()!=null)
-        			sessionEvent = user.getSessionEvent();
-        		else
-        			sessionEvent = new SessionEvent();
-        		sessionEvent.setCustomerId(user.getIdentity().getErpCustomerPK());
-        		sessionEvent.setLoginTime(loginTime);
-        		sessionEvent.setLogoutTime(new Date());
-        		EventLog.getInstance().logEvent(sessionEvent);
-			}
+        		{
+        			SessionEvent sessionEvent = user.getSessionEvent();
+	        		sessionEvent.setCustomerId(user.getIdentity().getErpCustomerPK());
+	        		sessionEvent.setLoginTime(loginTime);
+	        		sessionEvent.setLogoutTime(new Date());
+	        		EventLog.getInstance().logEvent(sessionEvent);
+        		}
+        	}
 		}
         if(FDStoreProperties.isRealTimeAnalysisEnabled())
 		{

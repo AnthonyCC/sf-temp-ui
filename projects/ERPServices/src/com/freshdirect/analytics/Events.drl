@@ -6,9 +6,10 @@ import com.freshdirect.framework.util.DateUtil;
 rule "bounce1"
 no-loop
 when
-	event : SessionEvent(eval( (availCount + soldCount) > 0 && (availCount * 100/(soldCount + availCount)) < 30  && lastTimeslot!="" ) )
+	event : SessionEvent(eval( (availCount + soldCount) > 0 && (availCount * 100/(soldCount + availCount)) < 30  && lastTimeslot!="" && !"Y".equals(orderPlaced)) )
     not OrderEvent(customerId == event.customerId)
 then
+	retract(event);
 	BounceDAO.insert(event.getCustomerId(),"NEW", DateUtil.getNextDate(), event.getCutOff(),event.getZone(), 
 	event.getLastTimeslot(), event.getPageType());
 end

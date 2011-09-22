@@ -8,8 +8,8 @@ public class SessionEvent {
 	private Date loginTime;
 	private Date logoutTime;
 	private Date cutOff;
-	private int availCount;
-	private int soldCount;
+	private Integer availCount;
+	private Integer soldCount;
 	private String zone;
 	private String lastTimeslot;
 	private String isTimeout = "Y";
@@ -58,16 +58,16 @@ public class SessionEvent {
 	public void setIsTimeout(String isTimeout) {
 		this.isTimeout = isTimeout;
 	}
-	public int getAvailCount() {
+	public Integer getAvailCount() {
 		return availCount;
 	}
-	public void setAvailCount(int availCount) {
+	public void setAvailCount(Integer availCount) {
 		this.availCount = availCount;
 	}
-	public int getSoldCount() {
+	public Integer getSoldCount() {
 		return soldCount;
 	}
-	public void setSoldCount(int soldCount) {
+	public void setSoldCount(Integer soldCount) {
 		this.soldCount = soldCount;
 	}
 	public String getOrderPlaced() {
