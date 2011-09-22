@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 import org.apache.log4j.Logger;
 import com.freshdirect.analytics.EventLog;
+import com.freshdirect.analytics.SessionEvent;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
@@ -203,7 +204,15 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         		Date loginTime = null;
         		if(event.getSession() != null)
         			loginTime = new Date(event.getSession().getCreationTime());
-        		EventLog.getInstance().logEvent(user.getIdentity().getErpCustomerPK(), loginTime);
+        		SessionEvent sessionEvent = null;
+        		if(user.getSessionEvent()!=null)
+        			sessionEvent = user.getSessionEvent();
+        		else
+        			sessionEvent = new SessionEvent();
+        		sessionEvent.setCustomerId(user.getIdentity().getErpCustomerPK());
+        		sessionEvent.setLoginTime(loginTime);
+        		sessionEvent.setLogoutTime(new Date());
+        		EventLog.getInstance().logEvent(sessionEvent);
 			}
 		}
         if(FDStoreProperties.isRealTimeAnalysisEnabled())
@@ -1204,6 +1213,18 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setPercSlotsSold(double percSlotsSold) {
 		// TODO Auto-generated method stub
 		this.user.setPercSlotsSold(percSlotsSold);
+	}
+
+	@Override
+	public SessionEvent getSessionEvent() {
+		// TODO Auto-generated method stub
+		return user.getSessionEvent();
+	}
+
+	@Override
+	public void setSessionEvent(SessionEvent event) {
+		// TODO Auto-generated method stub
+		this.user.setSessionEvent(event);
 	}
 }
 

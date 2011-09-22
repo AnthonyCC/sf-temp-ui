@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.analytics.EventType;
+import com.freshdirect.analytics.SessionEvent;
 import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
@@ -193,7 +194,8 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 			
 		TimeslotEventModel event = new TimeslotEventModel((user.getApplication()!=null)?user.getApplication().getCode():"",
 				cart.isDlvPassApplied(),cart.getDeliverySurcharge(), cart.isDeliveryChargeWaived(),
-				Util.isZoneCtActive(zoneId), (deliveryInfo)?"DELIVERYINFO":"CHECKOUT");
+				Util.isZoneCtActive(zoneId));
+		
 		
 		timeslotList = getFDTimeslotListForDateRange(restrictions, dateRanges,
 				timeslotList, result, timeslotAddress, user,event);
@@ -235,17 +237,54 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		
 		if(deliveryModel.getRsv()!=null && deliveryModel.isPreReserved())
 			event.setReservationId(deliveryModel.getRsv().getId());
+		
 		if(cart instanceof FDModifyCartModel && deliveryModel.getRsv()!=null && 
 				(address.getPK()!=null && address.getPK().getId()!=null && address.getPK().getId().equals(deliveryModel.getRsv().getAddressId())) )
 			event.setReservationId(deliveryModel.getRsv().getId());
+		
+		SessionEvent sessionEvent = null;
+		if(user.getSessionEvent()!=null)
+			sessionEvent = user.getSessionEvent();
+		else
+			sessionEvent = new SessionEvent();
 		
 		if(("GET".equalsIgnoreCase(request.getMethod()) || "Y".equals(request.getParameter("addressChange"))) && result.isSuccess())
 		{
 			for (FDTimeslotUtil timeslots : timeslotList) {
 				if(timeslots != null) 
 				{
-					FDDeliveryManager.getInstance().logTimeslots(null, null, timeslots.getTimeslotsFlat(), event, 
-							address, timeslots.getResponseTime());
+					String id = FDDeliveryManager.getInstance().logTimeslots(null, null, timeslots.getTimeslotsFlat(), event, 
+									address, timeslots.getResponseTime());
+					int availCount = 0 , soldCount = 0; String zone ="";
+					if(DateUtil.diffInDays(timeslots.getStartDate(), DateUtil.getCurrentTime()) < 7)
+					{
+						sessionEvent.setLastTimeslot(id);
+						List<FDTimeslot> tempSlots = timeslots.getTimeslotsForDate(DateUtil.getNextDate());
+						Iterator<FDTimeslot> slotIterator = tempSlots.iterator();
+						while(slotIterator.hasNext())
+						{
+							FDTimeslot slot = slotIterator.next();
+							if("A".equals(slot.getStoreFrontAvailable()))
+								availCount++;
+							else if ("S".equals(slot.getStoreFrontAvailable()))
+								soldCount++;
+							zone = slot.getZoneCode();
+							if(DateUtil.getCurrentTime().before(slot.getCutoffDateTime()))
+							{
+								if(sessionEvent.getCutOff()!=null && sessionEvent.getCutOff().after(slot.getCutoffDateTime()))
+									sessionEvent.setCutOff(slot.getCutoffDateTime());
+								else if (sessionEvent.getCutOff()==null)
+									sessionEvent.setCutOff(slot.getCutoffDateTime());
+							}
+									
+						}
+						sessionEvent.setPageType((deliveryInfo)?"DELIVERYINFO":"CHECKOUT");
+						sessionEvent.setZone(zone);
+						sessionEvent.setAvailCount(availCount);
+						sessionEvent.setSoldCount(soldCount);
+						user.setSessionEvent(sessionEvent);
+					}
+					
 				}
 			}
 		}

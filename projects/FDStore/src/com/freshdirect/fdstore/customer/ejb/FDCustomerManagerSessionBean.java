@@ -1472,7 +1472,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			// do nothing
 		}
 		TimeslotEventModel event = new TimeslotEventModel((info.getSource()!=null)?info.getSource().getCode():"", 
-				createOrder.isDlvPassApplied(),createOrder.getDeliverySurcharge(), Util.isDlvChargeWaived(createOrder), Util.isZoneCtActive(zoneId), null);
+				createOrder.isDlvPassApplied(),createOrder.getDeliverySurcharge(), Util.isDlvChargeWaived(createOrder), Util.isZoneCtActive(zoneId));
 		
 		try {
 
@@ -1832,7 +1832,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			ErpTransactionException, DeliveryPassException {
 		try {
 			TimeslotEventModel event = new TimeslotEventModel((info.getSource()!=null)?info.getSource().getCode():"", 
-					false,0.00, false, false, null);
+					false,0.00, false, false);
 			
 			// !!! verify that the sale belongs to the customer
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
@@ -2019,7 +2019,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			// do nothing
 		}
 		TimeslotEventModel event = new TimeslotEventModel((info.getSource()!=null)?info.getSource().getCode():"", 
-				order.isDlvPassApplied(),order.getDeliverySurcharge(), Util.isDlvChargeWaived(order), Util.isZoneCtActive(zoneId), null);
+				order.isDlvPassApplied(),order.getDeliverySurcharge(), Util.isDlvChargeWaived(order), Util.isZoneCtActive(zoneId));
 		
 		
 		FDIdentity identity = info.getIdentity();
