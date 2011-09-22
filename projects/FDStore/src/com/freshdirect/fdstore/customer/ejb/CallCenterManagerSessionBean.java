@@ -1895,7 +1895,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 	
 	private void postMassCancellation(List reservations) {
 		TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.CUSTOMER_REP.getCode(), 
-				false,0.00, false, false, null);
+				false,0.00, false, false);
 		for (Iterator i = reservations.iterator(); i.hasNext();) {
 			FDCustomerReservationInfo info = (FDCustomerReservationInfo)i.next();
 			try {

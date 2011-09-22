@@ -10,6 +10,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.analytics.CEPService;
 import com.freshdirect.analytics.SessionDAO;
+import com.freshdirect.analytics.SessionEvent;
 import com.freshdirect.analytics.TimeslotEventDAO;
 import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -18,7 +19,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class EventProcessorSessionBean extends SessionBeanSupport{
 	
 	private static final Category LOGGER = LoggerFactory.getInstance(EventProcessorSessionBean.class);
-	public List getEvents() throws RemoteException
+	public void getEvents(Date startTime, Date endTime) throws RemoteException
 	{
 		final String METHODNAME = "getEvents()";
 		Connection conn = null;
@@ -26,10 +27,10 @@ public class EventProcessorSessionBean extends SessionBeanSupport{
 		LOGGER.info("start: "+METHODNAME );
 		try 
 		{
-			conn  = this.getConnection();
-			events =  TimeslotEventDAO.getTimeslotEvents(conn);
+			conn  = getConnection();
+			events =  TimeslotEventDAO.getEvents(conn, startTime, endTime);
 			//events.addAll(TimeslotEventDAO.getCancelledReservationEvents(conn));
-			events.addAll(TimeslotEventDAO.getOrders(conn));
+			events.addAll(TimeslotEventDAO.getOrders(conn, startTime, endTime));
 			CEPService.insert(events);
 		} 
 		catch (Exception e) {
@@ -45,17 +46,15 @@ public class EventProcessorSessionBean extends SessionBeanSupport{
 			}
 		}
 		LOGGER.info("end: "+METHODNAME);
-		
-		return events;
 	}	
 	
-	public void logEvent(String customerId, Date loginTime)
+	public void logEvent(SessionEvent event)
 	{
 		Connection conn = null;
 		try 
 		{
 			conn  = this.getConnection();
-			SessionDAO.insert(customerId, loginTime, new Date());
+			SessionDAO.insert(event, conn);
 		} 
 		catch (Exception e) {
 			e.printStackTrace();

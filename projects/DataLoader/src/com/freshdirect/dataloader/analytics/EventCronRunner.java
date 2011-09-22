@@ -2,6 +2,8 @@ package com.freshdirect.dataloader.analytics;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -34,10 +36,15 @@ public class EventCronRunner {
 		Context ctx = null;
 		try 
 		{
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.SECOND, 0);
+			Date endTime = cal.getTime();
+			cal.add(Calendar.MINUTE, -30);
+			Date startTime = cal.getTime();
 			ctx = getInitialContext();
 			EventProcessorHome  home = (EventProcessorHome) ctx.lookup("freshdirect.analytics.EventProcessor");
 			EventProcessorSB sb = home.create();
-			sb.getEvents();
+			sb.getEvents(startTime, endTime);
 			
 			
 		}

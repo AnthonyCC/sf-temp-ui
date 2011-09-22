@@ -25,8 +25,8 @@ public class TimeslotEventDAO {
 
 	private static final Category LOGGER = LoggerFactory.getInstance(TimeslotEventDAO.class);
 	private static final String TIMESLOT_LOG_INSERT="INSERT INTO DLV.TIMESLOT_EVENT_HDR (ID, EVENT_DTM,RESERVATION_ID, " +
-			"ORDER_ID, CUSTOMER_ID, EVENTTYPE,RESPONSE_TIME,COMMENTS,TransactionSource,DlvPassApplied,DeliveryCharge,isDeliveryChargeWaived,zonectactive, checkoutmode) " +
-			"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			"ORDER_ID, CUSTOMER_ID, EVENTTYPE,RESPONSE_TIME,COMMENTS,TransactionSource,DlvPassApplied,DeliveryCharge,isDeliveryChargeWaived,zonectactive) " +
+			"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	
 	private static final String TIMESLOT_LOG_DTL_INSERT="INSERT INTO DLV.TIMESLOT_EVENT_DTL (TIMESLOT_LOG_ID, BASE_DATE, START_TIME" +
 			", END_TIME, ZONE_CODE) VALUES (?,?,?,?,?)";
@@ -42,19 +42,14 @@ public class TimeslotEventDAO {
 		
 	private static final String TIMESLOT_EVENT_DETAIL_QRY = "SELECT * FROM DLV.TIMESLOT_EVENT_DTL WHERE TIMESLOT_LOG_ID = ?";
 	
-	private static final String TIMESLOT_EVENTS_QRY = "SELECT H1.*, S1.LOGOUT_TIME FROM DLV.TIMESLOT_EVENT_HDR H1, DLV.SESSION_EVENT S1, " +
-			" (SELECT MAX(TO_NUMBER(H2.ID)) AS ID FROM DLV.TIMESLOT_EVENT_HDR H2 ,DLV.SESSION_EVENT S2 WHERE S2.CUSTOMER_ID = H2.CUSTOMER_ID" +
-			" AND H2.EVENT_DTM BETWEEN S2.LOGIN_TIME AND S2.LOGOUT_TIME AND S2.LOGOUT_TIME BETWEEN SYSDATE-1/48 AND SYSDATE AND" +
-			" H2.TRANSACTIONSOURCE in ('WEB','IPW','ANW','CSR') GROUP BY S2.LOGOUT_TIME, H2.EVENTTYPE, H2.CUSTOMER_ID, H2.TRANSACTIONSOURCE) H2" +
-			" WHERE H2.ID = H1.ID AND S1.CUSTOMER_ID = H1.CUSTOMER_ID AND H1.EVENT_DTM BETWEEN S1.LOGIN_TIME AND S1.LOGOUT_TIME AND S1.LOGOUT_TIME" +
-			" BETWEEN SYSDATE-1/48 AND SYSDATE AND H1.TRANSACTIONSOURCE in ('WEB','IPW','ANW','CSR')";
+	private static final String EVENTS_QRY = "select * from dlv.session_event s where s.logout_time between ? and ?";
 	
 	private static final String TIMESLOT_EVENTS_CUSTOMER_QRY = " select * from dlv.timeslot_event_hdr where id in  (select max(to_number(id)) from dlv.timeslot_event_hdr where event_dtm" +
 	" between to_date(?,  'MM-DD-YYYY HH12:MI:SS AM') and to_date(?,  'MM-DD-YYYY HH12:MI:SS AM') and customer_id = ? and " +
 	"transactionsource = 'WEB' group by eventtype)";
 	
 	private static final String ORDER_EVENTS_QRY = "SELECT S.CUSTOMER_ID, S.CROMOD_DATE, SA.REQUESTED_DATE FROM cust.sale s, cust.salesaction sa, DLV.SESSION_EVENT se" +
-			" WHERE s.ID=sa.SALE_ID AND se.CUSTOMER_ID = s.CUSTOMER_ID AND se.LOGOUT_TIME BETWEEN SYSDATE-1/48 AND SYSDATE " +
+			" WHERE s.ID=sa.SALE_ID AND se.CUSTOMER_ID = s.CUSTOMER_ID AND se.LOGOUT_TIME BETWEEN ? AND ? " +
 			" AND s.CUSTOMER_ID=sa.CUSTOMER_ID AND s.CROMOD_DATE=sa.ACTION_DATE AND s.CROMOD_DATE BETWEEN se.LOGIN_TIME AND se.LOGOUT_TIME " +
 			"AND sa.ACTION_TYPE IN ('CRO','MOD') AND sa.REQUESTED_DATE > TRUNC(SYSDATE)" +
 			" AND s.type='REG'";
@@ -63,30 +58,33 @@ public class TimeslotEventDAO {
 			" D1.TIMESLOT_LOG_ID = H1.ID AND H1.EVENT_DTM BETWEEN SYSDATE-1/48 AND SYSDATE AND H1.TRANSACTIONSOURCE = 'SYS' AND " +
 			"H1.EVENTTYPE = 'CANCEL_TIMESLOT'";
 	
-	public static List getTimeslotEvents(Connection conn) throws SQLException
+	public static List getEvents(Connection conn, Date startTime, Date endTime) throws SQLException
 	{
 		PreparedStatement ps = null; ResultSet rs = null;
 		List events = new ArrayList();
 		
 		try
 		{
-		ps = conn.prepareStatement(TIMESLOT_EVENTS_QRY);
+		ps = conn.prepareStatement(EVENTS_QRY);
+		ps.setTimestamp(1, new java.sql.Timestamp(startTime.getTime()));
+		ps.setTimestamp(2, new java.sql.Timestamp(endTime.getTime()));
+		
 		rs = ps.executeQuery();
 		while(rs.next()){
-			TimeslotEventModel event = new TimeslotEventModel();
-			event.setOrderId(rs.getString("order_id"));
-			event.setCustomerId(rs.getString("customer_Id"));
-			event.setEventType(EventType.getEnum(rs.getString("eventtype")));
-			event.setId(rs.getString("id"));
-			event.setResponseTime(rs.getInt("response_time"));
-			event.setReservationId(rs.getString("reservation_id"));
-			event.setEventDate(rs.getTimestamp("event_dtm"));	
-			event.setEnumCheckoutMode(rs.getString("checkoutmode"));
-			event.setLogoutTime(rs.getTimestamp("logout_time").getTime());
-			event.setTransactionSource(rs.getString("transactionsource"));
-			event.setDetail(getEventDetails(conn, rs.getString("id")));
-			events.add(event);
 			
+			SessionEvent event = new SessionEvent();
+			event.setCustomerId(rs.getString("customer_id"));
+			event.setLoginTime(rs.getTimestamp("login_time"));
+			event.setLogoutTime(rs.getTimestamp("logout_time"));
+			event.setCutOff(rs.getTimestamp("cutoff"));
+			event.setZone(rs.getString("zone"));
+			event.setLastTimeslot(rs.getString("last_get_timeslot"));
+			event.setIsTimeout(rs.getString("is_timeout"));
+			event.setAvailCount(rs.getInt("avail_count"));
+			event.setSoldCount(rs.getInt("sold_count"));
+			event.setOrderPlaced(rs.getString("order_placed"));
+			event.setPageType(rs.getString("last_gettype"));
+			events.add(event);
 		}
 		
 		}
@@ -98,8 +96,8 @@ public class TimeslotEventDAO {
 		{
 			try
 			{
-				if(ps!=null) ps.close();
 				if(rs!=null) rs.close();
+				if(ps!=null) ps.close();
 			}
 			catch(SQLException e)
 			{
@@ -126,7 +124,6 @@ public class TimeslotEventDAO {
 			event.setResponseTime(rs.getInt("response_time"));
 			event.setReservationId(rs.getString("reservation_id"));
 			event.setEventDate(rs.getTimestamp("event_dtm"));	
-			event.setEnumCheckoutMode(rs.getString("checkoutmode"));
 			event.setTransactionSource(rs.getString("transactionsource"));
 			TimeslotEventDetailModel eventD = new TimeslotEventDetailModel();
 			eventD.setDeliveryDate(rs.getDate("base_date"));
@@ -147,8 +144,9 @@ public class TimeslotEventDAO {
 		{
 			try
 			{
-				if(ps!=null) ps.close();
 				if(rs!=null) rs.close();
+				if(ps!=null) ps.close();
+				
 			}
 			catch(SQLException e)
 			{
@@ -157,13 +155,16 @@ public class TimeslotEventDAO {
 		}
 		return events;
 	}
-	public static List getOrders(Connection conn)
+	public static List getOrders(Connection conn, Date startTime, Date endTime)
 	{
 		PreparedStatement ps = null; ResultSet rs = null;
 		List events = new ArrayList();
 		try
 		{
 			ps = conn.prepareStatement(ORDER_EVENTS_QRY);
+			ps.setTimestamp(1, new java.sql.Timestamp(startTime.getTime()));
+			ps.setTimestamp(2, new java.sql.Timestamp(endTime.getTime()));
+			
 			rs = ps.executeQuery();
 			while(rs.next()){
 			OrderEvent event = new OrderEvent();
@@ -181,8 +182,9 @@ public class TimeslotEventDAO {
 			{
 				try
 				{
-					if(ps!=null) ps.close();
 					if(rs!=null) rs.close();
+					if(ps!=null) ps.close();
+					
 				}
 				catch(SQLException e)
 				{
@@ -219,7 +221,6 @@ public class TimeslotEventDAO {
 			event.setResponseTime(rs.getInt("response_time"));
 			event.setReservationId(rs.getString("reservation_id"));
 			event.setEventDate(rs.getTimestamp("event_dtm"));	
-			event.setEnumCheckoutMode(rs.getString("checkoutmode"));
 			event.setLogoutTime(date.getTime());
 			event.setDetail(getEventDetails(conn, rs.getString("id")));
 			events.add(event);
@@ -233,8 +234,9 @@ public class TimeslotEventDAO {
 		{
 			try
 			{
-				if(ps!=null) ps.close();
 				if(rs!=null) rs.close();
+				if(ps!=null) ps.close();
+				
 			}
 			catch(SQLException e)
 			{
@@ -275,16 +277,15 @@ public class TimeslotEventDAO {
 		{
 			try
 			{
-				if(ps!=null) ps.close();
 				if(rs!=null) rs.close();
+				if(ps!=null) ps.close();
+				
 			}
 			catch(SQLException e)
 			{
 				LOGGER.warn("Exception while cleaning up   ", e);
 			}
 		}
-		rs.close();
-		ps.close();
 		return details;
 	}
 	public static void addEntry(Connection conn,TimeslotEventModel event) 
@@ -312,7 +313,6 @@ public class TimeslotEventDAO {
 	    	ps.setDouble(11, event.getDeliveryCharge());
 	    	ps.setString(12, (event.isDeliveryChargeWaived())?"Y":"N");
 	    	ps.setString(13, (event.isZoneCtActive())?"Y":"N");
-	    	ps.setString(14, event.getEnumCheckoutMode());
 	    	
 	    	ps.execute();
 	 	    ps.close();

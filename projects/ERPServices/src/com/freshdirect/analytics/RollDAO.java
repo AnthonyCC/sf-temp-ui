@@ -25,8 +25,8 @@ public class RollDAO {
 
 	private static final Category LOGGER = LoggerFactory.getInstance(RollDAO.class);
 	
-	private static final String ROLL_INSERT="INSERT INTO dlv.roll_event (ID, CUSTOMER_ID, ORDER_ID, CREATEDATE, UNAVAILABLE_PCT, ZONE, CUTOFF, LOG_ID, DELIVERY_DATE) " +
-			"VALUES (?,?,?,?,?,?,?,?,?)";
+	private static final String ROLL_INSERT="INSERT INTO dlv.roll_event (ID, CUSTOMER_ID, CREATEDATE, UNAVAILABLE_PCT, ZONE, CUTOFF, LOG_ID, DELIVERY_DATE) " +
+			"VALUES (?,?,?,?,?,?,,?,?)";
 	
 
 	private static Connection getConnection() throws Exception
@@ -47,7 +47,7 @@ public class RollDAO {
 	
 	}
 	
-	public static void insert(String customerId, String orderId, float unavailable_pct,Date deliveryDate, Date cutoff, String zone,String log_id) 
+	public static void insert(String customerId, float unavailable_pct,Date deliveryDate, Date cutoff, String zone,String log_id) 
 		{
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -58,20 +58,19 @@ public class RollDAO {
 				String id = SequenceGenerator.getNextId(conn, "DLV", "event_detection_SEQUENCE");
 				ps.setString(1, id);
 				ps.setString(2, customerId);
-				ps.setString(3, orderId);
 				Calendar cal = Calendar.getInstance();
-			    ps.setTimestamp(4,new java.sql.Timestamp(cal.getTimeInMillis()));
-			    ps.setFloat(5, unavailable_pct);
-			    ps.setString(6, zone);
-			    ps.setTimestamp(7,  new java.sql.Timestamp(cutoff.getTime()));
-			    ps.setString(8, log_id);
-			    ps.setDate(9, new java.sql.Date(deliveryDate.getTime()));
+			    ps.setTimestamp(3,new java.sql.Timestamp(cal.getTimeInMillis()));
+			    ps.setFloat(4, unavailable_pct);
+			    ps.setString(5, zone);
+			    ps.setTimestamp(6,  new java.sql.Timestamp(cutoff.getTime()));
+			    ps.setString(7, log_id);
+			    ps.setDate(8, new java.sql.Date(deliveryDate.getTime()));
 			    ps.execute();
 			   
 		}
 		catch(Exception e)
 		{
-			LOGGER.info("There was an exception while inserting the roll record for orderId "+orderId+" Message:"+e.getMessage());
+			LOGGER.info("There was an exception while inserting the roll record for customerId "+customerId+" Message:"+e.getMessage());
 		}
 		finally
 		{

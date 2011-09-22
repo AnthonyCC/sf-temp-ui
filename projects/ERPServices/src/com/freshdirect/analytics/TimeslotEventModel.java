@@ -29,8 +29,7 @@ public class TimeslotEventModel extends EventModel {
 	private boolean filter;
 	private long logoutTime;
 	private List<TimeslotEventDetailModel> detail;
-	private String enumCheckoutMode;
-	public TimeslotEventModel(String transactionSource, boolean dlvPassApplied, double deliveryCharge, boolean deliveryChargeWaived, boolean zoneCtActive, String enumCheckoutMode)
+	public TimeslotEventModel(String transactionSource, boolean dlvPassApplied, double deliveryCharge, boolean deliveryChargeWaived, boolean zoneCtActive)
 	{
 		super();
 		this.transactionSource = transactionSource;
@@ -39,7 +38,6 @@ public class TimeslotEventModel extends EventModel {
 		this.deliveryChargeWaived = deliveryChargeWaived;
 		this.zoneCtActive = zoneCtActive;
 		this.filter = false;
-		this.enumCheckoutMode = enumCheckoutMode;
 	}
 
 	public TimeslotEventModel() {
@@ -151,14 +149,6 @@ public class TimeslotEventModel extends EventModel {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getEnumCheckoutMode() {
-		return enumCheckoutMode;
-	}
-
-	public void setEnumCheckoutMode(String enumCheckoutMode) {
-		this.enumCheckoutMode = enumCheckoutMode;
 	}
 
 	public long getLogoutTime() {

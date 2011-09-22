@@ -193,7 +193,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			try {
 				
 				TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.STANDING_ORDER.getCode(), 
-						false, 0.00, false, false, null);
+						false, 0.00, false, false);
 
 				if(null !=altDates){
 					result = process( so,altDates.get(so.getNextDeliveryDate()), event );
@@ -1102,7 +1102,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		}
 		
 		TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.STANDING_ORDER.getCode(), 
-				false, 0.00, false, false, null);
+				false, 0.00, false, false);
 		
 		LOGGER.info( "Processing " + soList.size() + " standing orders." );
 		for ( String _so : soList ) {

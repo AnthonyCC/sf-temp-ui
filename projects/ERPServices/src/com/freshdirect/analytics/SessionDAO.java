@@ -27,40 +27,42 @@ public class SessionDAO {
 
 	private static final Category LOGGER = LoggerFactory.getInstance(SessionDAO.class);
 	
-	private static final String SESSION_INSERT="INSERT INTO dlv.session_event (customer_id, login_time, logout_time) " +
-			"VALUES (?,?,?)";
+	private static final String SESSION_INSERT="INSERT INTO dlv.session_event (customer_id, login_time, logout_time, cutoff,avail_count, sold_count," +
+			"zone, last_get_timeslot, is_timeout, order_placed, last_gettype) " +
+			"VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 	
 	
-	public static void insert(String customerId, Date login_time, Date logout_time) 
+	public static void insert(SessionEvent sessionEvent, Connection conn) 
 		{
-		Connection conn = null;
 		PreparedStatement ps = null;
 		try
 		{
-			
-				Context ctx = ErpServicesProperties.getInitialContext();
-				DataSource ds = (DataSource) ctx.lookup("fddatasource");
-				conn = ds.getConnection();
 				ps = conn.prepareStatement(SESSION_INSERT);
-				ps.setString(1, customerId);
-				ps.setTimestamp(2, new Timestamp(login_time.getTime()));
-			    ps.setTimestamp(3, new Timestamp(logout_time.getTime()));
-			    
+				ps.setString(1, sessionEvent.getCustomerId());
+				ps.setTimestamp(2, new Timestamp(sessionEvent.getLoginTime().getTime()));
+			    ps.setTimestamp(3, new Timestamp(sessionEvent.getLogoutTime().getTime()));
+			    if(sessionEvent.getCutOff()!=null)
+			    	ps.setTimestamp(4, new Timestamp(sessionEvent.getCutOff().getTime()));
+			    else
+			    	ps.setNull(4, java.sql.Types.TIMESTAMP);
+			    ps.setInt(5, sessionEvent.getAvailCount());
+			    ps.setInt(6, sessionEvent.getSoldCount());
+			    ps.setString(7, sessionEvent.getZone());
+			    ps.setString(8, sessionEvent.getLastTimeslot());
+			    ps.setString(9, sessionEvent.getIsTimeout());
+			    ps.setString(10, sessionEvent.getOrderPlaced());
+			    ps.setString(11, sessionEvent.getPageType());
 			    ps.execute();
-			    ps.close();
-			    conn.close();
-			
 		}
 		catch(Exception e)
 		{
-			LOGGER.info("There was an exception while inserting the session record for customer "+customerId);
+			LOGGER.info("There was an exception while inserting the session record for customer "+sessionEvent.getCustomerId());
 			e.printStackTrace();
 		}
 		finally{
 			
 			try{
-				ps.close();
-				conn.close();
+				if(ps!=null) ps.close();
 			}
 			catch(SQLException sqle)
 			{
@@ -69,9 +71,5 @@ public class SessionDAO {
 		}
 
 	}
-	
-	
-	
-	
 }
 

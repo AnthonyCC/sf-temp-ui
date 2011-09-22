@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.Set;
 
+import com.freshdirect.analytics.SessionEvent;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
@@ -23,6 +24,7 @@ import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.EnumWinePrice;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.ejb.FDSessionBeanSupport;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
 import com.freshdirect.fdstore.lists.FDCustomerListInfo;
@@ -455,4 +457,8 @@ public interface FDUserI extends java.io.Serializable {
 	public void setTotalCTSlots(int slots);
 	public double getPercSlotsSold();
 	public void setPercSlotsSold(double percSlotsSold);
+	
+	public SessionEvent getSessionEvent();
+
+	public void setSessionEvent(SessionEvent event);
 }

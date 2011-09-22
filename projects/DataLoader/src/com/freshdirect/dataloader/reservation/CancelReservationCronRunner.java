@@ -54,7 +54,7 @@ public class CancelReservationCronRunner extends BaseReservationCronRunner {
 				
 			for (DlvReservationModel reservation : expiredReservations) {
 				TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.SYSTEM.getCode(), 
-						false, 0.00, false, false,null);
+						false, 0.00, false, false);
 
 				cron.processReservation(dlvManager,custManager,reservation, event);
 			 }

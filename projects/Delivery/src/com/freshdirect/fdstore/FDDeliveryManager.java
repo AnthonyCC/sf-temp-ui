@@ -1079,7 +1079,7 @@ public class FDDeliveryManager {
 		}
 	}
 	
-	public void logTimeslots(DlvReservationModel reservation, IOrderModel order, List<FDTimeslot> timeSlots, 
+	public String logTimeslots(DlvReservationModel reservation, IOrderModel order, List<FDTimeslot> timeSlots, 
 			TimeslotEventModel event, ContactAddressModel address, int responseTime) throws FDResourceException{
 		
 		try {
@@ -1090,7 +1090,7 @@ public class FDDeliveryManager {
 		catch (Exception e) {
 			LOGGER.info("failure in logTimeslots: "+e.getMessage());
 		} 
-		
+		return (event!=null)?event.getId():"";
 	}
 
 	public void fixDisassociatedTimeslots() throws FDResourceException{

@@ -12,7 +12,7 @@ import org.drools.lang.DRLParser.synchronized_key_return;
 public class EventHelper {
 
 	private List<Date> cutoffs = new ArrayList();
-	public boolean isFutureDay(Date date, int range)
+	public static boolean isFutureDay(Date date, int range)
 	{
 		Calendar nextDay = Calendar.getInstance();
 		Calendar deliveryDay = Calendar.getInstance();

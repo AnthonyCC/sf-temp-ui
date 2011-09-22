@@ -1,112 +1,25 @@
 import java.util.ArrayList;
 import java.util.Date;
 import com.freshdirect.analytics.*;
-
-
-declare TimeslotEventModel
-    @role( event )
-    @timestamp( eventDate )
-end
-
-declare OrderEvent
-    @role( event )
-end
+import com.freshdirect.framework.util.DateUtil;
 
 rule "bounce1"
 no-loop
 when
-	helper : EventHelper()
-    event : TimeslotEventModel(eventType == EventType.GET_TIMESLOT  &&  eval(helper.beforeMaxCutoff(event)) && (reservationId==null || reservationId=="") , $ts : transactionSource, $login : logoutTime, $custId : customerId, $id : id)
-    availCnt : ArrayList() from collect( eventDetail : TimeslotEventDetailModel( eval(helper.isFutureDay(eventDetail.getDeliveryDate(), 1)) && storeFrontAvailable == 'A' ,id == $id) from event.detail )
-   	soldCnt : ArrayList() from collect( eventDetail : TimeslotEventDetailModel( eval(helper.isFutureDay(eventDetail.getDeliveryDate(), 1)) && (storeFrontAvailable == 'S'||storeFrontAvailable == 'H') ,id == $id) from event.detail )
-    eval((soldCnt.size()+availCnt.size())>0)
-    eval(availCnt.size()*100/(soldCnt.size()+availCnt.size()) < 25)
-    #not ( TimeslotEventModel(eventType == EventType.RESERVE_TIMESLOT , logoutTime == $login , transactionSource == $ts, customerId == $custId ) )
-    not OrderEvent(customerId == $custId)
+	event : SessionEvent(eval( (availCount + soldCount) > 0 && (availCount * 100/(soldCount + availCount)) < 30  && lastTimeslot!="" ) )
+    not OrderEvent(customerId == event.customerId)
 then
-	BounceDAO.insert(event.getCustomerId(), event.getOrderId(),"NEW", 
-   	(availCnt.size()>0)?((TimeslotEventDetailModel)availCnt.get(0)).getDeliveryDate():((TimeslotEventDetailModel)soldCnt.get(0)).getDeliveryDate(), 
-   	event.getEventDate().compareTo(helper.getMinCutoff())<0?helper.getMinCutoff():helper.getMaxCutoff(),
-   	(availCnt.size()>0)?((TimeslotEventDetailModel)availCnt.get(0)).getZoneCode():((TimeslotEventDetailModel)soldCnt.get(0)).getZoneCode(), event.getId(), event.getEnumCheckoutMode());
+	BounceDAO.insert(event.getCustomerId(),"NEW", DateUtil.getNextDate(), event.getCutOff(),event.getZone(), 
+	event.getLastTimeslot(), event.getPageType());
 end
- 
-rule "bounce2"
-#salience 10
-no-loop
-when
-	helper : EventHelper()
-    event : TimeslotEventModel(eventType == EventType.GET_TIMESLOT  && eval(!helper.beforeMaxCutoff(event)) && (reservationId==null || reservationId=="") ,$ts : transactionSource, $login : logoutTime, $custId : customerId, $id : id)
-    availCnt : ArrayList() from collect( eventDetail : TimeslotEventDetailModel( eval(helper.isFutureDay(eventDetail.getDeliveryDate(), 2)) && storeFrontAvailable == 'A' ,id == $id) from event.detail )
-   	soldCnt : ArrayList() from collect( eventDetail : TimeslotEventDetailModel( eval(helper.isFutureDay(eventDetail.getDeliveryDate(), 2)) && (storeFrontAvailable == 'S'||storeFrontAvailable == 'H') ,id == $id ) from event.detail )
-    eval((soldCnt.size()+availCnt.size())>0)
-    eval(availCnt.size()*100/(soldCnt.size()+availCnt.size()) < 25)
-    #not ( TimeslotEventModel(eventType == EventType.RESERVE_TIMESLOT ,logoutTime == $login ,transactionSource == $ts, customerId == $custId  ) )
-    not OrderEvent(customerId == $custId)
-then
-   	BounceDAO.insert(event.getCustomerId(), event.getOrderId(),"NEW", 
-   	(availCnt.size()>0)?((TimeslotEventDetailModel)availCnt.get(0)).getDeliveryDate():((TimeslotEventDetailModel)soldCnt.get(0)).getDeliveryDate(), 
-   	event.getEventDate().compareTo(helper.getMinCutoff())<0?helper.getMinCutoff():helper.getMaxCutoff(),
-   	(availCnt.size()>0)?((TimeslotEventDetailModel)availCnt.get(0)).getZoneCode():((TimeslotEventDetailModel)soldCnt.get(0)).getZoneCode(), event.getId(), event.getEnumCheckoutMode());
-end
-
-#rule "bounce3"
-#salience 10
-#no-loop
-#when
-#	helper : EventHelper()
-#   event : TimeslotEventModel(eventType == EventType.CANCEL_TIMESLOT  && transactionSource == 'SYS', $id : id)
-#	eventD : ArrayList() from collect(  TimeslotEventDetailModel(id == $id) from event.detail )
-#then
-#	BounceDAO.insert(event.getCustomerId(), event.getOrderId(),"NEW", 
-#   	(eventD.size()>0)?((TimeslotEventDetailModel)eventD.get(0)).getDeliveryDate():null, 
-#   	(eventD.size()>0)?((TimeslotEventDetailModel)eventD.get(0)).getCutOff():null,
-#   	(eventD.size()>0)?((TimeslotEventDetailModel)eventD.get(0)).getZoneCode():null, event.getId(), "SYSTEM");
-
-#end
 
 rule "roll1"
-#salience 40
 no-loop
 when
-	helper : EventHelper()
-    event : TimeslotEventModel(eventType == EventType.GET_TIMESLOT  &&  eval(helper.beforeMaxCutoff(event)) , $ts : transactionSource, $login : logoutTime, $custId : customerId, $id : id )
-    availCnt : ArrayList() from collect( eventDetail : TimeslotEventDetailModel( eval(helper.isFutureDay(eventDetail.getDeliveryDate(), 1)) && storeFrontAvailable == 'A' && id == $id ) from event.detail )
-    soldCnt : ArrayList() from collect( eventDetail : TimeslotEventDetailModel( eval(helper.isFutureDay(eventDetail.getDeliveryDate(), 1)) && (storeFrontAvailable == 'S'||storeFrontAvailable == 'H') && id == $id) from event.detail )
-    eval((soldCnt.size()+availCnt.size())>0)
-    eval(availCnt.size()*100/(soldCnt.size()+availCnt.size()) < 25)
-    #event2 : TimeslotEventModel(eventType == EventType.RESERVE_TIMESLOT, transactionSource == $ts, logoutTime == $login , customerId == $custId, $id1 : id)
-    #event3 : TimeslotEventModel(eventType == EventType.CONFIRM_TIMESLOT, transactionSource == $ts, logoutTime == $login , customerId == $custId)
-    #eventDetail2 : TimeslotEventDetailModel(eval(helper.isFutureDay(eventDetail2.getDeliveryDate(), 2)) && id == $id1) from event2.detail
-    order : OrderEvent(customerId == $custId && eval(helper.isFutureDay(order.getDeliveryDate(), 2)))
+	event : SessionEvent(eval( (availCount + soldCount) > 0 && (availCount * 100/(soldCount + availCount)) < 30 && lastTimeslot!="" && "Y".equals(orderPlaced) ))
+    order : OrderEvent(customerId == event.customerId && eval(EventHelper.isFutureDay(order.getDeliveryDate(), 2)))
 then
-
-	RollDAO.insert(event.getCustomerId(), event.getOrderId(), soldCnt.size()*100/(soldCnt.size()+availCnt.size()), 
-	(availCnt.size()>0)?((TimeslotEventDetailModel)availCnt.get(0)).getDeliveryDate():((TimeslotEventDetailModel)soldCnt.get(0)).getDeliveryDate(), 
-   	 event.getEventDate().compareTo(helper.getMinCutoff())<0?helper.getMinCutoff():helper.getMaxCutoff(),
-   	(availCnt.size()>0)?((TimeslotEventDetailModel)availCnt.get(0)).getZoneCode():((TimeslotEventDetailModel)soldCnt.get(0)).getZoneCode(), event.getId());
-end
-
-
-rule "roll2"
-#salience 50
-no-loop
-when
-	helper : EventHelper()
-    event : TimeslotEventModel(eventType == EventType.GET_TIMESLOT && eval(!helper.beforeMaxCutoff(event)) , $ts : transactionSource, $login : logoutTime,  $custId : customerId, $id : id )
-    availCnt : ArrayList() from collect( eventDetail : TimeslotEventDetailModel( eval(helper.isFutureDay(eventDetail.getDeliveryDate(), 2)) && storeFrontAvailable == 'A',id == $id ) from event.detail )
-    soldCnt : ArrayList() from collect( eventDetail : TimeslotEventDetailModel( eval(helper.isFutureDay(eventDetail.getDeliveryDate(), 2)) && (storeFrontAvailable == 'S'||storeFrontAvailable == 'H') ,id == $id) from event.detail )
-    eval((soldCnt.size()+availCnt.size())>0)
-    eval(availCnt.size()*100/(soldCnt.size()+availCnt.size()) < 25)
-    #event2 : TimeslotEventModel(eventType == EventType.RESERVE_TIMESLOT,  transactionSource == $ts, logoutTime == $login ,customerId == $custId , $id2 : id)
-    #TimeslotEventModel(eventType == EventType.CONFIRM_TIMESLOT ,  transactionSource == $ts, logoutTime == $login ,customerId == $custId)
-    #eventDetail2 : TimeslotEventDetailModel(eval(helper.isFutureDay(event2.getDetail().get(0).getDeliveryDate(), 3)), id == $id2 ) 
-	order : OrderEvent(customerId == $custId && eval(helper.isFutureDay(order.getDeliveryDate(), 3)))
-    
-then
-  	RollDAO.insert(event.getCustomerId(), event.getOrderId(), soldCnt.size()*100/(soldCnt.size()+availCnt.size()), 
-	(availCnt.size()>0)?((TimeslotEventDetailModel)availCnt.get(0)).getDeliveryDate():((TimeslotEventDetailModel)soldCnt.get(0)).getDeliveryDate(), 
-   	 event.getEventDate().compareTo(helper.getMinCutoff())<0?helper.getMinCutoff():helper.getMaxCutoff(),
-   	(availCnt.size()>0)?((TimeslotEventDetailModel)availCnt.get(0)).getZoneCode():((TimeslotEventDetailModel)soldCnt.get(0)).getZoneCode(), event.getId());
-
+	RollDAO.insert(event.getCustomerId(), event.getSoldCount()*100/(event.getSoldCount()+event.getAvailCount()), 
+	DateUtil.getNextDate(),  event.getCutOff(),event.getZone(), event.getLastTimeslot());
 end
 

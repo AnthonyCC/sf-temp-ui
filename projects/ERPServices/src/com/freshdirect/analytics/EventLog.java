@@ -31,13 +31,13 @@ public class EventLog {
 		return _instance;
 	}
 
-	public void logEvent(String custId , Date loginTime)
+	public void logEvent(SessionEvent event)
 	{
 		lookupManagerHome();
 
 		try {
 			EventProcessorSB sb = managerHome.create();
-			sb.logEvent(custId, loginTime);
+			sb.logEvent(event);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 		} catch (RemoteException re) {

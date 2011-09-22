@@ -29,8 +29,8 @@ public class BounceDAO {
 
 	private static final Category LOGGER = LoggerFactory.getInstance(BounceDAO.class);
 	
-	private static final String BOUNCE_INSERT="INSERT INTO dlv.bounce_event (id, customer_id, order_id, status, createdate, delivery_date, cutoff, zone, log_id, type) " +
-			"VALUES (?,?,?,?,?,?,?,?,?,?)";
+	private static final String BOUNCE_INSERT="INSERT INTO dlv.bounce_event (id, customer_id, status, createdate, delivery_date, cutoff, zone, log_id, type) " +
+			"VALUES (?,?,?,?,?,?,?,?,?)";
 	private static final String BOUNCE_UPDATE = "UPDATE dlv.bounce_event SET STATUS ='CANCELLED', LASTUPDATE=? where id = ?";
 	private static final String BOUNCE_SELECT = "SELECT id FROM dlv.bounce_event WHERE CUSTOMER_ID =? AND " +
 									"STATUS = ? AND createdate between to_date(?, 'MM-DD-YYYY HH24:MI:SS')-1 and to_date(?,'MM-DD-YYYY HH24:MI:SS')";
@@ -58,7 +58,7 @@ public class BounceDAO {
 		return conn;
 	
 	}
-	public static void insert(String customerId, String orderId,String status, Date deliveryDate, Date cutoff, String zone, String log_id, String type) throws SQLException
+	public static void insert(String customerId,String status, Date deliveryDate, Date cutoff, String zone, String log_id, String type) throws SQLException
 		{
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -69,25 +69,24 @@ public class BounceDAO {
 				String id = SequenceGenerator.getNextId(conn, "DLV", "event_detection_SEQUENCE");
 				ps.setString(1, id);
 				ps.setString(2, customerId);
-				ps.setString(3, orderId);
-			    ps.setString(4, status);
+			    ps.setString(3, status);
 			    Calendar cal = Calendar.getInstance();
-			    ps.setTimestamp(5,new java.sql.Timestamp(cal.getTimeInMillis()));
-			    ps.setDate(6, new java.sql.Date(deliveryDate.getTime()));
+			    ps.setTimestamp(4,new java.sql.Timestamp(cal.getTimeInMillis()));
+			    ps.setDate(5, new java.sql.Date(deliveryDate.getTime()));
 			    if(cutoff!=null)
-			    ps.setTimestamp(7,  new java.sql.Timestamp(cutoff.getTime()));
+			    ps.setTimestamp(6,  new java.sql.Timestamp(cutoff.getTime()));
 			    else
-			    ps.setNull(7, java.sql.Types.TIMESTAMP);
-			    ps.setString(8, zone);
-			    ps.setString(9, log_id);
-			    ps.setString(10, type);
+			    ps.setNull(6, java.sql.Types.TIMESTAMP);
+			    ps.setString(7, zone);
+			    ps.setString(8, log_id);
+			    ps.setString(9, type);
 			    ps.execute();
 			  
 		//	}
 		}
 		catch(Exception e)
 		{
-			LOGGER.info("There was an exception while inserting the bounce record for orderId "+orderId+" Message:"+e.getMessage());
+			LOGGER.info("There was an exception while inserting the bounce record for customer: "+customerId+" Message:"+e.getMessage());
 		}
 		finally
 		{

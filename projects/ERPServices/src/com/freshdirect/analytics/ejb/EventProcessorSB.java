@@ -6,12 +6,13 @@ import java.util.List;
 
 import javax.ejb.EJBObject;
 
+import com.freshdirect.analytics.SessionEvent;
 import com.freshdirect.analytics.TimeslotEventModel;
 
 public interface EventProcessorSB extends EJBObject{ 
 
-	public List getEvents() throws RemoteException;
+	public void getEvents(Date startTime, Date endTime) throws RemoteException;
 	
-	public void logEvent(String custId , Date loginTime) throws RemoteException;
+	public void logEvent(SessionEvent event) throws RemoteException;
 
 }

@@ -706,6 +706,8 @@ public class SubmitOrderAction extends WebActionSupport {
 			session.removeAttribute(SessionName.AUTHORIZED_PEOPLE);
 			session.removeAttribute(SessionName.PICKUP_AGREEMENT);
 			
+			if(orderNumber!=null && user.getSessionEvent()!=null)
+				user.getSessionEvent().setOrderPlaced("Y");
 			// Set the order on the session
 			session.setAttribute(SessionName.RECENT_ORDER_NUMBER, orderNumber);
 			/*
