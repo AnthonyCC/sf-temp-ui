@@ -26,7 +26,7 @@ public class RollDAO {
 	private static final Category LOGGER = LoggerFactory.getInstance(RollDAO.class);
 	
 	private static final String ROLL_INSERT="INSERT INTO dlv.roll_event (ID, CUSTOMER_ID, CREATEDATE, UNAVAILABLE_PCT, ZONE, CUTOFF, LOG_ID, DELIVERY_DATE) " +
-			"VALUES (?,?,?,?,?,?,,?,?)";
+			"VALUES (?,?,?,?,?,?,?,?)";
 	
 
 	private static Connection getConnection() throws Exception

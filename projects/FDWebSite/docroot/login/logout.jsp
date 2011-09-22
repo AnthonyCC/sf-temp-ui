@@ -16,13 +16,6 @@ if (user!=null) {
     user.touch();
     if(user.getSessionEvent()!=null)
     	user.getSessionEvent().setIsTimeout("N");
-    else
-    {
-    SessionEvent sessionEvent = new SessionEvent();
-    sessionEvent.setIsTimeout("N");
-    user.setSessionEvent(sessionEvent);
-    }
-    
 }
 
 String lockout="";

@@ -19,6 +19,7 @@ when
 	event : SessionEvent(eval( (availCount + soldCount) > 0 && (availCount * 100/(soldCount + availCount)) < 30 && lastTimeslot!="" && "Y".equals(orderPlaced) ))
     order : OrderEvent(customerId == event.customerId && eval(EventHelper.isFutureDay(order.getDeliveryDate(), 2)))
 then
+	retract(event); retract(order);
 	RollDAO.insert(event.getCustomerId(), event.getSoldCount()*100/(event.getSoldCount()+event.getAvailCount()), 
 	DateUtil.getNextDate(),  event.getCutOff(),event.getZone(), event.getLastTimeslot());
 end
