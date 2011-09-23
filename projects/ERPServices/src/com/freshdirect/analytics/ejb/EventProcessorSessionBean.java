@@ -21,6 +21,8 @@ public class EventProcessorSessionBean extends SessionBeanSupport{
 	private static final Category LOGGER = LoggerFactory.getInstance(EventProcessorSessionBean.class);
 	public void getEvents(Date startTime, Date endTime) throws RemoteException
 	{
+		long starttime = System.currentTimeMillis();
+		
 		final String METHODNAME = "getEvents()";
 		Connection conn = null;
 		List events = null;
@@ -46,6 +48,9 @@ public class EventProcessorSessionBean extends SessionBeanSupport{
 			}
 		}
 		LOGGER.info("end: "+METHODNAME);
+		long endtime= System.currentTimeMillis();
+		System.err.println("Total time for execution of order rate job for snapshot: "+new Double(endtime-starttime));
+
 	}	
 	
 	public void logEvent(SessionEvent event)

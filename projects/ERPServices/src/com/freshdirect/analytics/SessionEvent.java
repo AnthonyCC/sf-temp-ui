@@ -2,7 +2,7 @@ package com.freshdirect.analytics;
 
 import java.util.Date;
 
-public class SessionEvent {
+public class SessionEvent extends EventModel{
 
 	private String customerId;
 	private Date loginTime;

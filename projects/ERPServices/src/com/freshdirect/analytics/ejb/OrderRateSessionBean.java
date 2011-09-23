@@ -81,17 +81,13 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 				cal.setTime(baseDate);
 				cal = DateUtil.truncate(cal);
 				Date[] samples = new Date[2];
-				System.out.println(baseDate);
 				samples[0] = getSample(cal, holidayMap);
-				System.out.println(samples[0]);
 				dates.add(samples[0]);
 				samples[1] = getSample(cal, holidayMap);
-				System.out.println(samples[1]);
 				dates.add(samples[1]);
 				sampleMap.put(baseDate, samples);
 				
 			}
-			System.out.println(dates.size());
 			
 			Date minDate = Collections.min(dates);
 				
@@ -171,11 +167,7 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 						if(capacityMap.get(range7).get(vo.getZone()).get(snapshot7)!=null
 								 && capacityMap.get(range14).get(vo.getZone()).get(snapshot14)!=null)
 						{
-							System.out.println(capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[1]);
-							System.out.println(capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[1] );
-							
-							
-								rate += roundValue( (capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[1]+ capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[1]) /2);
+							rate += roundValue( (capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[1]+ capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[1]) /2);
 		
 		
 							if((orderCount + rate) - capacity >=0)
