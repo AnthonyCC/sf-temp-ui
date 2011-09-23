@@ -34,7 +34,7 @@
 			alert("Browser does not support XMLHTTP Request")
 			return;
 	      } 
-		var url="/shared/billing_state.jsp";
+		var url="/api/billing_state.jsp";
 		url +="?country=" +str;
 		xmlHttp.onreadystatechange = stateChange;
 		xmlHttp.open("GET", url, true);

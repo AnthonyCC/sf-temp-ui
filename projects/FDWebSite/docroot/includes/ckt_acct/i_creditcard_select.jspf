@@ -118,7 +118,7 @@
 <%        if(paymentM.getAddress2()!=null && paymentM.getAddress2().trim().length()>0) { %>
 		<%=paymentM.getAddress2()%><BR>
 <%        }%>
-		<%=paymentM.getCity()%>, <%=paymentM.getState()%> <%=paymentM.getZipCode()%><BR>
+		<%=paymentM.getCity()%>, <%=paymentM.getState()%> <BR><%=paymentM.getCountry()%> <%=paymentM.getZipCode()%><BR>
 		<BR>
 		</font> 
 		<% if(editPage.indexOf("?")>-1) { %>
