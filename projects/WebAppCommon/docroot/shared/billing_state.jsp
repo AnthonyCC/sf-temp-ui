@@ -12,7 +12,8 @@ StringBuffer buffer=new StringBuffer(200);
    for(BillingRegionInfo regionInfo : _list) {
 	buffer.append(regionInfo.getCode()).append("|").append( regionInfo.getName()).append(",");
    }  
-   
+ response.setContentType("text/xml");
+
  response.getWriter().println(buffer.substring(0,buffer.length()-1)); 
  }
  catch(Exception e){
