@@ -49,7 +49,7 @@ public class EventProcessorSessionBean extends SessionBeanSupport{
 		}
 		LOGGER.info("end: "+METHODNAME);
 		long endtime= System.currentTimeMillis();
-		System.err.println("Total time for execution of order rate job for snapshot: "+new Double(endtime-starttime));
+		System.err.println("Total time for execution of event processor job: "+new Double(endtime-starttime));
 
 	}	
 	
