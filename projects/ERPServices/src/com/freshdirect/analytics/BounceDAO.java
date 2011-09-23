@@ -36,9 +36,9 @@ public class BounceDAO {
 									"STATUS = ? AND createdate between to_date(?, 'MM-DD-YYYY HH24:MI:SS')-1 and to_date(?,'MM-DD-YYYY HH24:MI:SS')";
 	
 	
-	private static final String CANCEL_BOUNCE = "update dlv.bounce_event set status = 'CANCELLED' where id in (SELECT be.id FROM cust.sale s, " +
+	private static final String CANCEL_BOUNCE = "update dlv.bounce_event set status = 'CANCELLED', lastupdate=sysdate where id in (SELECT be.id FROM cust.sale s, " +
 			"cust.salesaction sa, dlv.bounce_event be WHERE s.ID=sa.SALE_ID AND s.CUSTOMER_ID=sa.CUSTOMER_ID  and be.customer_id = s.customer_id" +
-			" and s.CROMOD_DATE=sa.ACTION_DATE AND sa.ACTION_TYPE IN ('CRO','MOD') AND sa.REQUESTED_DATE > TRUNC(SYSDATE)  and be.status = 'NEW' " +
+			" and s.CROMOD_DATE=sa.ACTION_DATE AND sa.ACTION_TYPE IN ('CRO') AND sa.REQUESTED_DATE > TRUNC(SYSDATE)  and be.status = 'NEW' " +
 			"and trunc(S.CROMOD_DATE) = trunc(be.createdate) AND s.type='REG' AND s.status <> 'CAN')";
 	
 	private static Connection getConnection() throws Exception
