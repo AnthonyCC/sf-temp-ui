@@ -4,24 +4,28 @@ import com.freshdirect.analytics.*;
 import com.freshdirect.framework.util.DateUtil;
 
 rule "bounce1"
+salience 1
 no-loop
 when
 	event : SessionEvent(eval( (availCount + soldCount) > 0 && (availCount * 100/(soldCount + availCount)) < 25 && !"Y".equals(orderPlaced)) )
     not OrderEvent(customerId == event.customerId)
 then
-	retract(event);
+	
 	BounceDAO.insert(event.getCustomerId(),"NEW", DateUtil.getNextDate(), event.getCutOff(),event.getZone(), 
 	event.getLastTimeslot(), event.getPageType());
+	retract(event);
 end
 
 rule "roll1"
+salience 2
 no-loop
 when
 	event : SessionEvent(eval( (availCount + soldCount) > 0 && (availCount * 100/(soldCount + availCount)) < 25 && "Y".equals(orderPlaced) ))
     order : OrderEvent(customerId == event.customerId && eval(EventHelper.isFutureDay(order.getDeliveryDate(), 2)))
 then
-	retract(event); retract(order);
+	
 	RollDAO.insert(event.getCustomerId(), event.getSoldCount()*100/(event.getSoldCount()+event.getAvailCount()), 
 	DateUtil.getNextDate(),  event.getCutOff(),event.getZone(), event.getLastTimeslot());
+	retract(event); retract(order);
 end
 

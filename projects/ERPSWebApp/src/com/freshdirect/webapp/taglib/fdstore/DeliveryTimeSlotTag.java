@@ -279,6 +279,10 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 									
 						}
 						sessionEvent.setPageType((deliveryInfo)?"DELIVERYINFO":"CHECKOUT");
+						if(cart instanceof FDModifyCartModel)
+							sessionEvent.setPageType("MODIFYORDER");
+						else if(event.getReservationId()!=null)
+							sessionEvent.setPageType("RESERVED_SLOT");
 						sessionEvent.setZone(zone);
 						sessionEvent.setAvailCount(availCount);
 						sessionEvent.setSoldCount(soldCount);
