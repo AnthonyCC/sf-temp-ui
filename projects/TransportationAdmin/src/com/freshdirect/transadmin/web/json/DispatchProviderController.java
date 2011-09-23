@@ -1015,7 +1015,7 @@ public class DispatchProviderController extends JsonRpcController implements
 	public String getTruckVendorInfo(String truckNumber){
 		String vendorName = "";
 		try{
-			Collection asset = getAssetManagerService().getAssetByAssetNumber(truckNumber);
+			Collection asset = getAssetManagerService().getAsset(truckNumber, "TRUCK");
 			if(asset != null){
 				Set assetAttributes = ((Asset)asset.iterator().next()).getAssetAttributes();
 				if(assetAttributes != null && assetAttributes.size() > 0){
