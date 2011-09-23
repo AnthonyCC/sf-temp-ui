@@ -42,7 +42,7 @@ public class TimeslotEventDAO {
 		
 	private static final String TIMESLOT_EVENT_DETAIL_QRY = "SELECT * FROM DLV.TIMESLOT_EVENT_DTL WHERE TIMESLOT_LOG_ID = ?";
 	
-	private static final String EVENTS_QRY = "select * from dlv.session_event s where s.logout_time between ? and ?";
+	private static final String EVENTS_QRY = "select * from dlv.session_event s where s.logout_time between ? and ?  and last_get_timeslot is not null";
 	
 	private static final String TIMESLOT_EVENTS_CUSTOMER_QRY = " select * from dlv.timeslot_event_hdr where id in  (select max(to_number(id)) from dlv.timeslot_event_hdr where event_dtm" +
 	" between to_date(?,  'MM-DD-YYYY HH12:MI:SS AM') and to_date(?,  'MM-DD-YYYY HH12:MI:SS AM') and customer_id = ? and " +

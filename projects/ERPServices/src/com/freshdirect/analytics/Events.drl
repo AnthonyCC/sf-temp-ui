@@ -6,7 +6,7 @@ import com.freshdirect.framework.util.DateUtil;
 rule "bounce1"
 no-loop
 when
-	event : SessionEvent(eval( (availCount + soldCount) > 0 && (availCount * 100/(soldCount + availCount)) < 25  && lastTimeslot != "" && !"Y".equals(orderPlaced)) )
+	event : SessionEvent(eval( (availCount + soldCount) > 0 && (availCount * 100/(soldCount + availCount)) < 25 && !"Y".equals(orderPlaced)) )
     not OrderEvent(customerId == event.customerId)
 then
 	retract(event);
@@ -17,7 +17,7 @@ end
 rule "roll1"
 no-loop
 when
-	event : SessionEvent(eval( (availCount + soldCount) > 0 && (availCount * 100/(soldCount + availCount)) < 25 && lastTimeslot != "" && "Y".equals(orderPlaced) ))
+	event : SessionEvent(eval( (availCount + soldCount) > 0 && (availCount * 100/(soldCount + availCount)) < 25 && "Y".equals(orderPlaced) ))
     order : OrderEvent(customerId == event.customerId && eval(EventHelper.isFutureDay(order.getDeliveryDate(), 2)))
 then
 	retract(event); retract(order);
