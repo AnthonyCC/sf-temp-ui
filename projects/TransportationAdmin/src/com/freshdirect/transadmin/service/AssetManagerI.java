@@ -2,6 +2,8 @@ package com.freshdirect.transadmin.service;
 
 import java.util.Collection;
 
+import org.springframework.dao.DataAccessException;
+
 import com.freshdirect.transadmin.model.Asset;
 import com.freshdirect.transadmin.model.AssetTemplate;
 import com.freshdirect.transadmin.model.AssetType;
@@ -21,5 +23,6 @@ public interface AssetManagerI extends BaseManagerI {
 	AssetType getAssetType(String assetType);
 	Collection getAssetAttributeTypes(String attributeCode, String assetType);
 	Asset getAssetByAssetNumber(String assetNo);
+	Collection getAsset(String assetNumber, String assetType);
 
 }

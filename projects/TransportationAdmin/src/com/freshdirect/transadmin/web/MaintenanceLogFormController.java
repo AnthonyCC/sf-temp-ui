@@ -195,13 +195,13 @@ public class MaintenanceLogFormController extends AbstractFormController {
 				_command.setIssueId(_command.getId());
 
 				if(_command.getTruckNumber() != null){
-					Asset asset = getAssetManagerService().getAssetByAssetNumber(_command.getTruckNumber());
+					Collection asset = getAssetManagerService().getAsset(_command.getTruckNumber(), "TRUCK");
 					if(asset != null){
 						if(EnumServiceStatus.INSERVICE.getDescription().equalsIgnoreCase(_command.getIssueStatus()))
-							asset.setAssetStatus(EnumAssetStatus.ACTIVE);
+							((Asset)asset.iterator().next()).setAssetStatus(EnumAssetStatus.ACTIVE);
 						else
-							asset.setAssetStatus(EnumAssetStatus.INACTIVE);
-						getAssetManagerService().saveEntity(asset);
+							((Asset)asset.iterator().next()).setAssetStatus(EnumAssetStatus.INACTIVE);
+						getAssetManagerService().saveEntity(((Asset)asset.iterator().next()));
 					}
 				}
 		}catch(Exception e){

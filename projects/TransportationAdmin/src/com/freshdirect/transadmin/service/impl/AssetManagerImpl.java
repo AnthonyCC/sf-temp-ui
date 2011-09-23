@@ -83,6 +83,10 @@ public class AssetManagerImpl
 	
 	public Asset getAssetByAssetNumber(String assetNo){
 		return getAssetManagerDao().getAssetByAssetNumber(assetNo);
-	}	
+	}
+	
+	public Collection getAsset(String assetNo, String assetType) {
+		return getAssetManagerDao().getAsset(assetNo, assetType);
+	}
 
 }

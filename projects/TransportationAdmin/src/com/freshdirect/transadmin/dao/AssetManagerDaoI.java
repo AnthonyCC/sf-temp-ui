@@ -35,4 +35,6 @@ public interface AssetManagerDaoI extends BaseManagerDaoI {
 	
 	Asset getAssetByAssetNumber(String assetNumber) throws DataAccessException;
 	
+	Collection getAsset(String assetNumber, String assetType) throws DataAccessException;
+	
 }

@@ -46,6 +46,17 @@ public class AssetManagerDaoHibernateImpl
 		return (Asset)getEntityById("Asset", "assetNo", assetNumber);
 	}
 	
+	public Collection getAsset(String assetNumber, String assetType) throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("Asset a where ");
+		if(assetNumber != null && !"".equals(assetNumber))
+			strBuf.append(" a.assetNo ='"+assetNumber+"'");
+		if(assetType != null && !"".equals(assetType))
+			strBuf.append(" and a.assetType.code ='"+assetType+"'");
+		
+		return (Collection) getDataList(strBuf.toString());
+	}
+
 	public void saveAsset(Asset asset) throws DataAccessException {
 
 		if (asset.getAssetId() == null || "".equals(asset.getAssetId())) {
