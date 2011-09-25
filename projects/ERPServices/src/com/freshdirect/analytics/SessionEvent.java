@@ -14,7 +14,6 @@ public class SessionEvent extends EventModel{
 	private String zone;
 	private String lastTimeslot;
 	private String isTimeout = "Y";
-	private String orderPlaced;
 	private String pageType;
 	
 	public String getCustomerId() {
@@ -70,12 +69,6 @@ public class SessionEvent extends EventModel{
 	}
 	public void setSoldCount(Integer soldCount) {
 		this.soldCount = soldCount;
-	}
-	public String getOrderPlaced() {
-		return orderPlaced;
-	}
-	public void setOrderPlaced(String orderPlaced) {
-		this.orderPlaced = orderPlaced;
 	}
 	public String getPageType() {
 		return pageType;
