@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class SessionEvent extends EventModel{
 
+	private String orderId;
 	private String customerId;
 	private Date loginTime;
 	private Date logoutTime;
@@ -81,5 +82,11 @@ public class SessionEvent extends EventModel{
 	}
 	public void setPageType(String pageType) {
 		this.pageType = pageType;
+	}
+	public String getOrderId() {
+		return orderId;
+	}
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
 	}
 }

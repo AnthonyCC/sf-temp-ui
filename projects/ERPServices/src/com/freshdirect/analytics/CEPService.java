@@ -1,10 +1,14 @@
 package com.freshdirect.analytics;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Category;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.QueryResults;
 import org.drools.agent.KnowledgeAgent;
 import org.drools.agent.KnowledgeAgentConfiguration;
 import org.drools.agent.KnowledgeAgentFactory;
@@ -18,6 +22,7 @@ import org.drools.io.ResourceFactory;
 import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatelessKnowledgeSession;
+import org.drools.runtime.rule.QueryResultsRow;
 
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -38,8 +43,10 @@ public class CEPService{
 		}*/
 		
 		@SuppressWarnings("unchecked")
-		public static void insert(List e)
+		public static Map insert(List e)
 		{
+			Map map = new HashMap();
+			
 			try
 			{
 				KnowledgeBase kbase = null;
@@ -58,14 +65,24 @@ public class CEPService{
 	
 			if(e!=null && e.size()>0)
 			{
-				e.add(new EventHelper());
+				ArrayList RollEventList = new ArrayList();
+				ArrayList BounceEventList = new ArrayList();
+				ksession.setGlobal("RollEventList", RollEventList);
+				ksession.setGlobal("BounceEventList", BounceEventList);
+				
 				ksession.execute(CommandFactory.newInsertElements(e));
+				
+				RollEventList = (ArrayList) ksession.getGlobals().get("RollEventList");
+				BounceEventList = (ArrayList) ksession.getGlobals().get("BounceEventList");
+				map.put("roll", RollEventList);
+				map.put("bounce", BounceEventList);
 			}
 			}
 			catch(Exception ex)
 			{
 				LOGGER.info("Exception during event processing: ", (Throwable) ex);
 			}
+			return map;
 		}
 		private static KnowledgeBase getKnowledgeBase()
 		{

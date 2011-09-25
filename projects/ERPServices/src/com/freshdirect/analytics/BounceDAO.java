@@ -14,6 +14,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.naming.Context;
 import javax.sql.DataSource;
@@ -58,6 +59,47 @@ public class BounceDAO {
 		return conn;
 	
 	}
+	
+	
+	public static void insert(Connection conn, List<BounceEvent> bounce) 
+	{
+		PreparedStatement ps = null;
+		
+	
+		    try {
+		    	ps = conn.prepareStatement(BOUNCE_INSERT);
+		    	for (BounceEvent bounceEvent : bounce)  {
+					String id = SequenceGenerator.getNextId(conn, "DLV", "event_detection_SEQUENCE");
+					ps.setString(1, id);
+					ps.setString(2, bounceEvent.getCustomerId());
+				    ps.setString(3, bounceEvent.getStatus());
+				    ps.setTimestamp(4,new java.sql.Timestamp(bounceEvent.getCreateDate().getTime()));
+				    ps.setDate(5, new java.sql.Date(bounceEvent.getDeliveryDate().getTime()));
+				    if(bounceEvent.getCutOff()!=null)
+				    ps.setTimestamp(6,  new java.sql.Timestamp(bounceEvent.getCutOff().getTime()));
+				    else
+				    ps.setNull(6, java.sql.Types.TIMESTAMP);
+				    ps.setString(7, bounceEvent.getZone());
+				    ps.setString(8, bounceEvent.getLogId());
+				    ps.setString(9, bounceEvent.getPageType());
+				    ps.addBatch();
+		    	}
+		    	ps.executeBatch();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			finally{
+				
+					try {
+						if(ps!=null) ps.close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}	
+			}
+	}
+	
 	public static void insert(String customerId,String status, Date deliveryDate, Date cutoff, String zone, String log_id, String type) throws SQLException
 		{
 		Connection conn = null;

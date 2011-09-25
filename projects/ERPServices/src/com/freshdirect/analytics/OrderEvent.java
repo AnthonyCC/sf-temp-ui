@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class OrderEvent extends EventModel{
 	
+	private String orderId;
 	private String customerId;
 	private Date createDate;
 	private Date deliveryDate;
@@ -24,5 +25,11 @@ public class OrderEvent extends EventModel{
 	}
 	public void setDeliveryDate(Date deliveryDate) {
 		this.deliveryDate = deliveryDate;
+	}
+	public String getOrderId() {
+		return orderId;
+	}
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
 	}
 }

@@ -48,7 +48,7 @@ public class TimeslotEventDAO {
 	" between to_date(?,  'MM-DD-YYYY HH12:MI:SS AM') and to_date(?,  'MM-DD-YYYY HH12:MI:SS AM') and customer_id = ? and " +
 	"transactionsource = 'WEB' group by eventtype)";
 	
-	private static final String ORDER_EVENTS_QRY = "SELECT S.CUSTOMER_ID, S.CROMOD_DATE, SA.REQUESTED_DATE FROM cust.sale s, cust.salesaction sa, DLV.SESSION_EVENT se" +
+	private static final String ORDER_EVENTS_QRY = "SELECT S.ID, S.CUSTOMER_ID, S.CROMOD_DATE, SA.REQUESTED_DATE FROM cust.sale s, cust.salesaction sa, DLV.SESSION_EVENT se" +
 			" WHERE s.ID=sa.SALE_ID AND se.CUSTOMER_ID = s.CUSTOMER_ID AND se.LOGOUT_TIME BETWEEN ? AND ? " +
 			" AND s.CUSTOMER_ID=sa.CUSTOMER_ID AND s.CROMOD_DATE=sa.ACTION_DATE AND s.CROMOD_DATE BETWEEN se.LOGIN_TIME AND se.LOGOUT_TIME " +
 			"AND sa.ACTION_TYPE IN ('CRO','MOD') AND sa.REQUESTED_DATE > TRUNC(SYSDATE)" +
@@ -82,7 +82,7 @@ public class TimeslotEventDAO {
 			event.setIsTimeout(rs.getString("is_timeout"));
 			event.setAvailCount(rs.getInt("avail_count"));
 			event.setSoldCount(rs.getInt("sold_count"));
-			event.setOrderPlaced(rs.getString("order_placed"));
+			event.setOrderId(rs.getString("order_id"));
 			event.setPageType(rs.getString("last_gettype"));
 			events.add(event);
 		}
@@ -168,6 +168,7 @@ public class TimeslotEventDAO {
 			rs = ps.executeQuery();
 			while(rs.next()){
 			OrderEvent event = new OrderEvent();
+			event.setOrderId(rs.getString("id"));
 			event.setCustomerId(rs.getString("customer_id"));
 			event.setCreateDate(rs.getTimestamp("cromod_date"));
 			event.setDeliveryDate(rs.getTimestamp("requested_date"));
