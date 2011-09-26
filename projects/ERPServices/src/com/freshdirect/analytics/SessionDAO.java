@@ -28,8 +28,8 @@ public class SessionDAO {
 	private static final Category LOGGER = LoggerFactory.getInstance(SessionDAO.class);
 	
 	private static final String SESSION_INSERT="INSERT INTO dlv.session_event (customer_id, login_time, logout_time, cutoff,avail_count, sold_count," +
-			"zone, last_get_timeslot, is_timeout, order_placed, last_gettype, order_id) " +
-			"VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+			"zone, last_get_timeslot, is_timeout, last_gettype, order_id) " +
+			"VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 	
 	
 	public static void insert(SessionEvent sessionEvent, Connection conn) 
@@ -56,9 +56,8 @@ public class SessionDAO {
 			    ps.setString(7, sessionEvent.getZone());
 			    ps.setString(8, sessionEvent.getLastTimeslot());
 			    ps.setString(9, sessionEvent.getIsTimeout());
-			    ps.setString(10, sessionEvent.getOrderPlaced());
-			    ps.setString(11, sessionEvent.getPageType());
-			    ps.setString(12, sessionEvent.getOrderId());
+			    ps.setString(10, sessionEvent.getPageType());
+			    ps.setString(11, sessionEvent.getOrderId());
 			    ps.execute();
 		}
 		catch(Exception e)
