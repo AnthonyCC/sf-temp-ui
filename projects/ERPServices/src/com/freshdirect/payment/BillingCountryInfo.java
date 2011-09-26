@@ -16,6 +16,7 @@ public class BillingCountryInfo extends EnumModel {
 	
 	private static Map<String, BillingCountryInfo> enums = null;	    
 	private List<BillingRegionInfo> regions =null;
+	private List<String> regionCodes =null;
 	private Pattern zipCheckPattern=null;
 	private static List<BillingCountryInfo> countries=null;
 	
@@ -24,6 +25,12 @@ public class BillingCountryInfo extends EnumModel {
 	public BillingCountryInfo(String code, String name,List<BillingRegionInfo> regions, String zipCheckRegex ) {
 		super(code, name, null);
 		this.regions=regions;
+		if(regions!=null) {
+			regionCodes=new ArrayList<String>(regions.size());
+			for ( BillingRegionInfo ri : regions ) {
+				regionCodes.add(ri.getCode());
+			}
+		}
 		if(zipCheckRegex!=null && !"".equals(zipCheckRegex.trim()))
 			this.zipCheckPattern=Pattern.compile(zipCheckRegex);
 	}
@@ -64,8 +71,19 @@ public class BillingCountryInfo extends EnumModel {
 		return regions ;
 	}
 	
+	public boolean hasRegion(String region) {
+		if(regionCodes==null) 
+			return false;
+		return regionCodes.contains(region);
+	}
+	
 	public static void main(String[] a) {
 		BillingCountryInfo us=BillingCountryInfo.getEnum("US");
+		System.out.println(us);
+		
+		 us=BillingCountryInfo.getEnum("FX");
+		System.out.println(us);
+		us=BillingCountryInfo.getEnum(null);
 		System.out.println(us);
 	}
 

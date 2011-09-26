@@ -21,8 +21,7 @@
 <%@ taglib uri="freshdirect" prefix="fd" %>
  <script language="javascript" type="text/javascript">  
       var xmlHttp  
-      var xmlHttp
-      function showState(str){
+       function showState(str){
       
 	      if (typeof XMLHttpRequest != "undefined"){
 			xmlHttp= new XMLHttpRequest();
@@ -75,7 +74,7 @@ function addOpt(addToId, addText, addVal) {
                                 }
 
                                 return true;
-                }
+ }
 
 </script>
 <%!
@@ -271,7 +270,7 @@ Collection addresses = FDCustomerManager.getShipToAddresses(user.getIdentity());
 			<tr>
 				<td align="right">* State:</td>
 				<td>
-				 <div id="<%=AddressName.BIL_STATE%>"> 
+				 
 					<select class="pulldown" name="<%=AddressName.BIL_STATE%>" id="<%=AddressName.BIL_STATE%>">
 						<option value="">State</option>
 					<%	
@@ -287,7 +286,7 @@ Collection addresses = FDCustomerManager.getShipToAddresses(user.getIdentity());
 							                                                                     
 					       <%}%>
 					</select><fd:ErrorHandler result="<%=result%>" name="<%=AddressName.BIL_STATE%>" id='errorMsg'> <span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler>
-					</div>
+					
 				</td>
 			</tr>
 			<tr>

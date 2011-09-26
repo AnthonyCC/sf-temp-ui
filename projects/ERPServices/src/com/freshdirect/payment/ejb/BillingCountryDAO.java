@@ -57,14 +57,8 @@ public class BillingCountryDAO implements EnumDAOI{
 				regions.add(new BillingRegionInfo(countryCode,regionCode,regionName));
 			} else {
 				Collections.sort(regions,BillingRegionInfo.COMPARE_BY_NAME);
-				if(countryCode.equals("US")) {
-					System.out.println("zipCheck:"+zipCheck);
-				}
 				l.add(new BillingCountryInfo(activeCountry, _countryName,Collections.unmodifiableList(regions),_zipCheck));
 				regions=new ArrayList<BillingRegionInfo>();
-				if(countryCode.equals("US")) {
-					System.out.println("zipCheck:"+zipCheck);
-				}
 				regions.add(new BillingRegionInfo(countryCode,regionCode,regionName));
 				activeCountry=countryCode;
 				_countryName=countryName;

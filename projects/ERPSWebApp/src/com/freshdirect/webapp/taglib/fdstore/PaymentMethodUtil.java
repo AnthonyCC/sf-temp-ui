@@ -317,22 +317,29 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             paymentMethod.getCity() == null || paymentMethod.getCity().trim().length() <= 0,
             EnumUserInfoName.BIL_CITY.getCode(), SystemMessageList.MSG_REQUIRED
             );
-            result.addError(
-            paymentMethod.getState() == null || paymentMethod.getState().trim().length() <= 0,
+            
+            String _country=paymentMethod.getCountry();
+            String _state=paymentMethod.getState();
+            result.addError(_state == null || _state.trim().length() <= 0
+            		||(BillingCountryInfo.getEnum(_country)!=null && (false==BillingCountryInfo.getEnum(_country).hasRegion(_state) )),
             EnumUserInfoName.BIL_STATE.getCode(), SystemMessageList.MSG_REQUIRED
             );
             result.addError(
             paymentMethod.getZipCode() == null || "".equals(paymentMethod.getZipCode()) || paymentMethod.getZipCode().trim().length() <= 0,
             EnumUserInfoName.BIL_ZIPCODE.getCode(), SystemMessageList.MSG_REQUIRED
             );
+            
             result.addError(
-                    paymentMethod.getCountry() == null || "".equals(paymentMethod.getCountry()) || paymentMethod.getCountry().trim().length() <= 0,
+            		_country == null || "".equals(_country)|| _country.trim().length() <= 0||
+            		null==BillingCountryInfo.getEnum(_country),
                     EnumUserInfoName.BIL_COUNTRY.getCode(), SystemMessageList.MSG_REQUIRED
                     );
             
             
         }
     }
+    
+    
     
     public static String getDisplayableAccountNumber(ErpPaymentMethodI paymentMethod) {
     	return ((ErpPaymentMethodModel)paymentMethod).getMaskedAccountNumber();
@@ -422,18 +429,23 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        		paymentMethod.getZipCode()==null || paymentMethod.getZipCode().trim().length() < 1,
 					EnumUserInfoName.BIL_ZIPCODE.getCode(),SystemMessageList.MSG_REQUIRED
 	    	        );
-	        result.addError(
-	        		paymentMethod.getState()==null || paymentMethod.getState().trim().length() < 1,
-					EnumUserInfoName.BIL_STATE.getCode(),SystemMessageList.MSG_REQUIRED
-	    	        );
+	        
 	        result.addError(
 	        		paymentMethod.getCity()==null || paymentMethod.getCity().trim().length() < 1,
 					EnumUserInfoName.BIL_CITY.getCode(),SystemMessageList.MSG_REQUIRED
 	    	        );
-	        result.addError(
-	        		paymentMethod.getCountry()==null || paymentMethod.getCountry().trim().length() < 1,
-					EnumUserInfoName.BIL_COUNTRY.getCode(),SystemMessageList.MSG_REQUIRED
-	    	        );
+	        String _country=paymentMethod.getCountry();
+            String _state=paymentMethod.getState();
+            //System.out.println("BillingCountryInfo.getEnum(_country).hasRegion(_state)"+BillingCountryInfo.getEnum(_country).hasRegion(_state));
+            result.addError(_state == null || _state.trim().length() <= 0
+            		||(BillingCountryInfo.getEnum(_country)!=null && (false==BillingCountryInfo.getEnum(_country).hasRegion(_state) )),
+            EnumUserInfoName.BIL_STATE.getCode(), SystemMessageList.MSG_REQUIRED
+            );
+            result.addError(
+            		_country == null || "".equals(_country)|| _country.trim().length() <= 0||
+            		null==BillingCountryInfo.getEnum(_country),
+                    EnumUserInfoName.BIL_COUNTRY.getCode(), SystemMessageList.MSG_REQUIRED
+                    );
 	        if(paymentMethod.getCountry()!=null) {
 	        	BillingCountryInfo bc=BillingCountryInfo.getEnum(paymentMethod.getCountry());
 	        	Pattern zChk=null;

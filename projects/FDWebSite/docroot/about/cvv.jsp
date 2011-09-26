@@ -84,7 +84,8 @@ if(windowSize.equalsIgnoreCase("large")){
 
 <br><br>
 
-<fd:IncludeMedia name="/media/editorial/faq/cvv.html">
+<fd:IncludeMedia name="/media/editorial/site_pages/checkout_cvv/cvv_info.html">
+
 </fd:IncludeMedia>
 </SPAN><br><br>
 </TD>

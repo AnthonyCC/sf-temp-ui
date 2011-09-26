@@ -296,7 +296,7 @@ public class ErpSaleInfoDAO {
 		}
 		rs.close();
 		ps.close();
-		LOGGER.info(new StringBuilder("*****run get order history info query ").append(" for customer ").append(erpCustomerId).append(" completed in ").append(System.currentTimeMillis()-startTime).append(" milliseconds, using queryId of ").append(queryId).toString());
+		LOGGER.info(new StringBuilder("*****run get order history info query ").append(" for customer ").append(erpCustomerId).append(" completed in ").append(System.currentTimeMillis()-startTime).append(" milliseconds, and returned ").append(extendedInfos.size()).append(" records using queryId of ").append(queryId).toString());
 		return extendedInfos;
 	}
 	
