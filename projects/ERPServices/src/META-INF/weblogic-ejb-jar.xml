@@ -180,7 +180,7 @@
         <ejb-name>EventProcessor</ejb-name>
         <stateless-session-descriptor>
             <pool>
-                <max-beans-in-free-pool>5</max-beans-in-free-pool>
+                <max-beans-in-free-pool>10</max-beans-in-free-pool>
             </pool>
             <stateless-clustering></stateless-clustering>
         </stateless-session-descriptor>
