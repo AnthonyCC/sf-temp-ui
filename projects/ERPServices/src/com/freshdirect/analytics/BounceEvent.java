@@ -2,7 +2,7 @@ package com.freshdirect.analytics;
 
 import java.util.Date;
 
-public class BounceEvent {
+public class BounceEvent extends EventModel {
 
 	public BounceEvent(String customerId, String status, Date createDate,
 			Date cutOff, String zone, String logId, String pageType,

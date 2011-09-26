@@ -2,7 +2,7 @@ package com.freshdirect.analytics;
 
 import java.util.Date;
 
-public class RollEvent {
+public class RollEvent extends EventModel {
 
 	public RollEvent(String customerId, Date createDate, float unavailablePct,
 			String zone, Date cutOff, String logId, Date deliveryDate) {
