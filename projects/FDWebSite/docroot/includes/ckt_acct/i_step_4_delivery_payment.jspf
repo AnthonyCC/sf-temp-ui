@@ -221,7 +221,7 @@ String lineWidth = isShowSmaller?"290":"310";
             <% if(paymentMethod.getAddress2()!=null && paymentMethod.getAddress2().trim().length()>0) { %>
             <%=paymentMethod.getAddress2()%><BR>
             <%}%>
-            <%= paymentMethod.getCity() %>, <%= paymentMethod.getState() %> <%= paymentMethod.getZipCode() %><BR><BR>
+            <%= paymentMethod.getCity() %>, <%= paymentMethod.getState() %><BR><%= paymentMethod.getCountry() %> <%= paymentMethod.getZipCode() %><BR><BR>
             <%}%>
             <%
             if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){%>
