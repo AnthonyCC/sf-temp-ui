@@ -151,19 +151,11 @@ if (searchTerms.size() > 0) { %>
 <%  } else { %>
 		<div style="width: 100%; padding: 2px; margin-left: 30%" class="order">
 <%
-	if (searchResults.getSpellingSuggestions() != null) { 
-		java.util.Collection<String> suggestions = searchResults.getSpellingSuggestions();
+	if (searchResults.getSpellingSuggestion() != null) { 
+		String suggestion = searchResults.getSpellingSuggestion();
 %>
 			<div class="text15" style="line-height: 4em">
-			Did you mean <%
-				java.util.Iterator<String> sugIt = suggestions.iterator(); int sugI = 0;
-				while (sugIt.hasNext()) {
-					String suggestion = sugIt.next();
-					String sep = sugI == 0 ? "" : (sugI + 1 == suggestions.size() ? " or " : ", ");
-			%><%= sep %><a style="font-weight: bold;" href="?searchIndex=<%= searchIndex %>&search_pad=<%= transform(session, suggestion, searchIndex) %>"><%=suggestion%></a><%
-					sugI++;
-				}
-			%>?
+			Did you mean <a style="font-weight: bold;" href="?searchIndex=<%= searchIndex %>&search_pad=<%= transform(session, suggestion, searchIndex) %>"><%=suggestion%></a>?
 			</div>
 <%
 	} else {

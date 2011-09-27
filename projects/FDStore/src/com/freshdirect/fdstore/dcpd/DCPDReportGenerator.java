@@ -9,8 +9,6 @@ import java.util.List;
 import javax.servlet.jsp.JspWriter;
 
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.fdstore.EnumOrderLineRating;
-import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.ZonePriceListing;
@@ -307,11 +305,11 @@ public class DCPDReportGenerator {
 				result = OrderPromotionHelper.isRecipeEligible(recipeSourceId , new HashSet(ctx.getGoodKeys()));
 			}
 			String eligible = result ? "Yes" : "No";
-		EnumOrderLineRating rating;
+	        String rating;
 	        String price="N/A";
 	        String basePrice="N/A";
 	        String isDeal="false";
-	        EnumSustainabilityRating sustainabilityRating = null;
+	        String sustainabilityRating="";
 	        try {
 	        	
 	            if (skuNode.getProductInfo() != null) {
@@ -333,12 +331,12 @@ public class DCPDReportGenerator {
 			if (ctx.isRenderCSV()) {
 			    if (ctx.isProductsOnlyView()) {
 					printToCSV(new Object[]{
-						(isUna ? "N" : ""), quoted(parentCName), quoted(skuNode.getFullName()), quoted(skuNode.getContentName()), (rating != null ? rating.getStatusCode() : ""),(sustainabilityRating != null ? sustainabilityRating.getStatusCode(): ""), quoted(sku_val!=null ? sku_val : "N/A"), eligible,price,basePrice,isDeal
+						(isUna ? "N" : ""), quoted(parentCName), quoted(skuNode.getFullName()), quoted(skuNode.getContentName()), (rating != null && rating.trim().length() > 0 ? rating: ""),(sustainabilityRating != null && sustainabilityRating.trim().length() > 0 ? sustainabilityRating: ""), quoted(sku_val!=null ? sku_val : "N/A"), eligible,price,basePrice,isDeal
 					});
 	                /// out.println((isUna ? "N" : "") + ";\"" + parentCName + "\";\"" + skuNode.getFullName() + "\";\"" + skuNode.getContentName() + "\";\"" + (sku_val!=null ? sku_val : "N/A") + "\"");
 			    } else {
 					printToCSV(new Object[]{
-						Integer.toString(level), "P", "", (isUna ? "N" : ""), quoted(parentCName), quoted(skuNode.getFullName()), quoted(skuNode.getContentName()), (rating != null ? rating.getStatusCode() : ""),(sustainabilityRating != null ? sustainabilityRating.getStatusCode(): ""), quoted(sku_val!=null ? sku_val : "N/A"), eligible,price,basePrice,isDeal
+						Integer.toString(level), "P", "", (isUna ? "N" : ""), quoted(parentCName), quoted(skuNode.getFullName()), quoted(skuNode.getContentName()), (rating != null && rating.trim().length() > 0 ? rating: ""),(sustainabilityRating != null && sustainabilityRating.trim().length() > 0 ? sustainabilityRating: ""), quoted(sku_val!=null ? sku_val : "N/A"), eligible,price,basePrice,isDeal
 					});
 			    	/// out.println(level + ";P;;" + (isUna ? "N" : "") + ";\"" + parentCName + "\";\"" + skuNode.getFullName() + "\";\"" + skuNode.getContentName() + "\";\"" + (sku_val!=null ? sku_val : "N/A") + "\"");
 			    }
@@ -349,9 +347,10 @@ public class DCPDReportGenerator {
 	            }
 		        out.println("<td style='"+cs+"'>" + skuNode.getFullName() + "</td>");
 		        out.println("<td style='"+cs+"'>" + skuNode.getContentName() + "</td>");
+		        
 
-		        out.println("<td style='"+cs+"'>" + (rating != null ? rating.getStatusCode() : "&nbsp;") + "</td>");
-		        out.println("<td style='"+cs+"'>" + (sustainabilityRating != null ? sustainabilityRating.getStatusCode(): "&nbsp;") + "</td>");
+		        out.println("<td style='"+cs+"'>" + (rating != null && rating.trim().length() > 0 ? rating: "&nbsp;") + "</td>");
+		        out.println("<td style='"+cs+"'>" + (sustainabilityRating != null && sustainabilityRating.trim().length() > 0 ? sustainabilityRating: "&nbsp;") + "</td>");
 		        out.println("<td style='"+cs+"'>" + (sku_val!=null ? sku_val : "N/A") + "</td>");
 	            out.println("<td style='"+cs+"'>" + (eligible!=null ? eligible : "N/A") + "</td>");
 	            out.println("<td style='"+cs+"'>" + (price!=null ? price : "N/A") + "</td>");

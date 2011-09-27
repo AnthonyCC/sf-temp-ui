@@ -3,7 +3,7 @@
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.Collection"%>
 <%@page import="java.util.Collections"%>
-<%@page import="com.freshdirect.fdstore.content.util.SmartSearchUtils"%>
+<%@page import="com.freshdirect.smartstore.sorting.SaleComparator"%>
 <%@page import="com.freshdirect.fdstore.content.PriceCalculator"%>
 <%@page import="com.freshdirect.fdstore.content.EnumWineRating"%>
 <%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
@@ -22,7 +22,6 @@
 <div style="text-align: left;"> 
 <%
 CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode("Category", request.getParameter("catId"));
-FDUserI user = (FDUserI) session.getAttribute("fd.user");
 List<ProductModel> products;
 List<CategoryModel> subcategories;
 {
@@ -135,7 +134,8 @@ FreshDirect.Wine.addTabItem("deals", "<%= "tab_" + subcategory.getContentKey().g
 
 <%
 // sort by sale
-products = SmartSearchUtils.sortBySale(products, user.getPricingContext(), true);
+Collections.sort( products, new SaleComparator(false, products, ((FDUserI) session.getAttribute(SessionName.USER)).getPricingContext() ));
+
 
 ProductModel product1 = products.size() > 0 ? products.get(0) : null;
 ProductModel product2 = products.size() > 1 ? products.get(1) : null;

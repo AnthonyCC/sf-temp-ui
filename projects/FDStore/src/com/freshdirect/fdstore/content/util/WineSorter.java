@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,12 +12,12 @@ import java.util.Map;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.content.ComparatorChain;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.EnumWineRating;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductRatingGroup;
 import com.freshdirect.fdstore.content.WineFilter;
-import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
+import com.freshdirect.smartstore.sorting.PopularityComparator;
 
 public class WineSorter implements Serializable {
 	private static final long serialVersionUID = 2075923425552479422L;
@@ -48,6 +49,57 @@ public class WineSorter implements Serializable {
 			return criterium;
 		}
 	}
+	
+	private static class RatingComparator implements Comparator<ProductModel> {
+	    final boolean reverse;
+	    final Comparator<? super ProductModel> chainComparator;
+	    
+	    public RatingComparator(boolean reverse) {
+	        this.reverse = reverse;
+	        chainComparator = null;
+	    }
+
+	    public RatingComparator(Comparator<? super ProductModel> chainComparator) {
+	    	this.reverse = false;
+	    	this.chainComparator = chainComparator;
+		}
+
+		@Override
+		public int compare(ProductModel p1, ProductModel p2) {
+			try {
+				int result = p1.getProductRatingEnum().getValue() - p2.getProductRatingEnum().getValue();
+				if (result == 0 && chainComparator != null)
+					result = -chainComparator.compare(p1, p2);
+				return reverse ? result : -result;
+			} catch (FDResourceException e) {
+				throw new FDRuntimeException(e);
+			}
+		}
+	}
+	
+	private static class PriceComparator implements Comparator<ProductModel> {
+	    final boolean reverse;
+	    final RatingComparator ratingComparator;
+	    
+	    public PriceComparator(boolean reverse) {
+	        this.reverse = reverse;
+	        ratingComparator = new RatingComparator(reverse);
+	    }
+	    
+        public int compare(ProductModel p1, ProductModel p2) {
+            int result = Double.compare(p1.getPriceCalculator().getPrice(0.), p2.getPriceCalculator().getPrice(0.));
+            if (result == 0) {
+            	result = ratingComparator.compare(p1, p2);
+            	if (result != 0)
+            		return result;
+            } else
+            	return reverse ? result : -result;
+            
+            if (result == 0)
+            	result = p1.getFullName().compareTo(p2.getFullName());
+            return reverse ? -result : result;
+        }
+    }
 	
 	private PricingContext pricingContext;
 	private Type type;
@@ -102,10 +154,10 @@ public class WineSorter implements Serializable {
 
 		Collection<ProductModel> products = filter != null ? filter.getProducts() : this.products;
 		List<ProductRatingGroup> groups = new ArrayList<ProductRatingGroup>(6);
-		boolean reverse = false;
+		boolean reverse;
 		boolean grouping;
 		boolean forceNoGrouping = products.size() <= 6 ? true : this.forceNoGrouping;
-		ComparatorChain<ProductModel> comparator;
+		Comparator<? super ProductModel> comparator;
 		if (type != null) {
 			switch (type) {
 				case PRICE_REVERSE:
@@ -117,31 +169,25 @@ public class WineSorter implements Serializable {
 			switch (type.criterium) {
 				case BY_RATING:
 					grouping = !forceNoGrouping;
-					comparator = ComparatorChain.create(ProductModel.GENERIC_RATING_COMPARATOR);
-					comparator.chain(ProductModel.GENERIC_PRICE_COMPARATOR);
-					comparator.chain(ProductModel.FULL_NAME_PRODUCT_COMPARATOR);
+					comparator = new RatingComparator(new PriceComparator(false));
 					break;
 				case ALPHABETICAL:
-					comparator = ComparatorChain.create(ProductModel.FULL_NAME_PRODUCT_COMPARATOR);
+					comparator = ContentNodeModel.FULL_NAME_WITH_ID_COMPARATOR;
 					grouping = false;
 					break;
 				case BY_PRICE:
-					comparator = ComparatorChain.create(ProductModel.GENERIC_PRICE_COMPARATOR);
-					comparator.chain(ProductModel.FULL_NAME_PRODUCT_COMPARATOR);
+					comparator = new PriceComparator(reverse);
 					grouping = false;
 					break;
 				case BY_POPULARITY:
-					comparator = ComparatorChain.create(ScriptedContentNodeComparator.createGlobalComparator(null, pricingContext));
-					comparator.chain(ProductModel.FULL_NAME_PRODUCT_COMPARATOR);
+					comparator = new PopularityComparator(false, products, pricingContext);
 					grouping = false;
 					break;
 				default:
 					throw new IllegalStateException("Unknown sorting criterium");
 			}
 		} else {
-			comparator = ComparatorChain.create(ProductModel.GENERIC_RATING_COMPARATOR);
-			comparator = comparator.chain(ScriptedContentNodeComparator.createGlobalComparator(null, pricingContext));
-			comparator.chain(ProductModel.FULL_NAME_PRODUCT_COMPARATOR);
+			comparator = new RatingComparator(new PopularityComparator(false, products, pricingContext));
 			grouping = false;
 		}
 		if (grouping) {
@@ -169,8 +215,6 @@ public class WineSorter implements Serializable {
 		}
 		
 		for (ProductRatingGroup group : groups) {
-			if (reverse)
-				comparator = ComparatorChain.reverseOrder(comparator);
 			Collections.sort(group.getProducts(), comparator);
 		}
 		

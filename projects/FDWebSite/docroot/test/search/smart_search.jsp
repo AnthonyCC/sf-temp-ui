@@ -408,7 +408,7 @@
 	<tr <%=style %>>
 		<td style="text-align: right; font-weight: bold"><%=(pos == -1 ? "" : Integer.toString(pos + 1)) %>.</td>
 		<td style="text-align: right; font-weight: bold;<%=diffStyle %>"><%=(diff > 0 ? "+" : "") + Integer.toString(diff) %></td>
-		<td><display:ProductImage product="<%=product %>" /></td>
+		<td><display:ProductImage product="<%=product %>" prefix="http://www.freshdirect.com"/></td>
 		<td>
 			<div><span style="font-weight: bold"><%=product.getFullName() %></span></div>
 			<div style="margin-bottom: 5px;"><span style="font-style: italic;font-size: smaller"><%=taxonomy %></span></div>

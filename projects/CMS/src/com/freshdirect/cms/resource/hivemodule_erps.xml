@@ -111,10 +111,9 @@ FROM erps.product p) WHERE RANK=1"/>
 		-->
         <!-- Query updated for zone pricing -->
 		<Table contentType="Sku"
-			query="SELECT id,price,UNAVAILABILITY_STATUS,VERSION FROM (SELECT p.sku_code AS ID,
+			query="SELECT id,price,UNAVAILABILITY_STATUS FROM (SELECT p.sku_code                                              AS ID                   ,
       				DECODE(MP.PROMO_PRICE,0,MP.PRICE,MP.PROMO_PRICE) AS price,
 					P.UNAVAILABILITY_STATUS AS UNAVAILABILITY_STATUS,
-					P.VERSION AS VERSION,
       				RANK() OVER (PARTITION BY p.sku_code ORDER BY p.VERSION DESC) AS RANK                 
 		       	FROM erps.materialprice mp
 				INNER JOIN erps.materialproxy mpx

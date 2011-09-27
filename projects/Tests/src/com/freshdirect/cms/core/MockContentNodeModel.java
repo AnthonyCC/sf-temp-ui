@@ -14,6 +14,8 @@ import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.framework.core.PrimaryKey;
 
 public class MockContentNodeModel implements ContentNodeModel {
+
+    
     private String fullName;
     private String keywords;
     private Collection parentKeys;
@@ -24,7 +26,6 @@ public class MockContentNodeModel implements ContentNodeModel {
     private boolean searchable = true;
     private ContentKey key;
     private ContentNodeModel parentNode;
-    private int priority = 1;
 
     public MockContentNodeModel() {
     }
@@ -240,12 +241,4 @@ public class MockContentNodeModel implements ContentNodeModel {
         return null;
     }
 
-    @Override
-    public int getPriority() {
-    	return priority;
-    }
-
-    public void setPriority(int priority) {
-		this.priority = priority;
-	}
 }

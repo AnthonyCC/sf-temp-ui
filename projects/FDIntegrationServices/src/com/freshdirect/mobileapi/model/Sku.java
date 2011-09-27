@@ -110,15 +110,15 @@ public class Sku {
         }
 
         if (matchFound) {
-            if (this.productInfo.getRating() != null) {
-                EnumOrderLineRating enumRating = this.productInfo.getRating();
+            if (this.productInfo.getRating() != null && this.productInfo.getRating().trim().length() > 0) {
+                EnumOrderLineRating enumRating = EnumOrderLineRating.getEnumByStatusCode(this.productInfo.getRating());
                 if (enumRating != null && enumRating.isEligibleToDisplay()) {
                     this.rating = enumRating.getStatusCodeInDisplayFormat();
                     this.ratingDescription = enumRating.getShortDescription();
                 }
             }
-            if (this.productInfo.getSustainabilityRating() != null) {
-                EnumSustainabilityRating enumRating = this.productInfo.getSustainabilityRating();
+            if (this.productInfo.getSustainabilityRating() != null && this.productInfo.getSustainabilityRating().trim().length() > 0) {
+                EnumSustainabilityRating enumRating = EnumSustainabilityRating.getEnumByStatusCode(this.productInfo.getSustainabilityRating());
                 if (enumRating != null && enumRating.isEligibleToDisplay()) {
                     this.sustainabilityRating = enumRating.getStatusCodeInDisplayFormat();
                     this.sustainabilityRatingDescription = enumRating.getShortDescription();

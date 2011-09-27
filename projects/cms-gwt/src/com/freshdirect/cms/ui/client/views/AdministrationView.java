@@ -27,9 +27,6 @@ public class AdministrationView extends LayoutContainer {
             
             if (stat.isRunning()) {
                 status.setValue(current + " (" + (stat.getElapsedTime() / 1000) + " second elapsed)");
-                if (!checking) {
-                    
-                }
             } else {
                 status.setValue(current);
             }
@@ -43,8 +40,7 @@ public class AdministrationView extends LayoutContainer {
 
     TextField<String> lastIndexResult;
 
-    Timer refresh;
-    boolean checking = false;
+    Timer refresh;    
 
     private static AdministrationView instance = new AdministrationView();
     private LayoutContainer detailPanel;
@@ -77,6 +73,7 @@ public class AdministrationView extends LayoutContainer {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 admin.rebuildIndexes(new AdminProcStatusCallback());
+                refresh.scheduleRepeating(5000);
             }
         }), new Margins(0, 10, 0, 10));
 
@@ -84,13 +81,7 @@ public class AdministrationView extends LayoutContainer {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 admin.rebuildWineIndexes(new AdminProcStatusCallback());
-            }
-        }), new Margins(0, 10, 0, 10));
-
-        actionBar.addButton(new Button("Rebuild Autocomplete", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                admin.rebuildAutocomplete(new AdminProcStatusCallback());
+                refresh.scheduleRepeating(5000);
             }
         }), new Margins(0, 10, 0, 10));
         
@@ -104,8 +95,7 @@ public class AdministrationView extends LayoutContainer {
 
         FormPanel form = new FormPanel();
         form.setHeaderVisible(false);
-        form.setAutoHeight(true);
-        form.setFieldWidth(410);
+        form.setAutoHeight(true);        
         t.add(form, new MarginData(10));
 
         status = new TextField<String>();
@@ -124,10 +114,9 @@ public class AdministrationView extends LayoutContainer {
                 admin.getBuildIndexStatus(new AdminProcStatusCallback());
             }
         };       
-        refresh.scheduleRepeating(5000);
 
         admin.getBuildIndexStatus(new AdminProcStatusCallback());
-        form.setWidth(550);
+        form.setWidth(450);
         return t;
     }
 
@@ -136,11 +125,4 @@ public class AdministrationView extends LayoutContainer {
         refresh.cancel();
         super.onHide();
     }
-    
-    @Override
-    protected void onShow() {
-        super.onShow();
-        refresh.scheduleRepeating(5000);
-    }
-    
 }

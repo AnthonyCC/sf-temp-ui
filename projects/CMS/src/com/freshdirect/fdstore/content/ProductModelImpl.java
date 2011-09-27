@@ -1472,10 +1472,13 @@ inner:
                         if (skuCode.startsWith(curPrefix)) {
                             productInfo = FDCachedFactory.getProductInfo(skuCode);
                             // LOG.debug(" Rating productInfo :"+productInfo);
-                            EnumOrderLineRating enumRating = productInfo.getRating();
+                            String tmpRating = productInfo.getRating();
 
-                            if (enumRating != null) {
-                                if (enumRating.isEligibleToDisplay()) {
+                            if (tmpRating != null && tmpRating.trim().length() > 0) {
+                                EnumOrderLineRating enumRating = EnumOrderLineRating.getEnumByStatusCode(tmpRating);
+                                // LOG.debug(" enumRating :"+enumRating);
+
+                                if (enumRating != null && enumRating.isEligibleToDisplay()) {
                                     rating = enumRating;
                                     // LOG.debug(" rating in display format  :"+rating);
                                 }
@@ -1713,10 +1716,13 @@ inner:
                         if (skuCode.startsWith(curPrefix)) {
                             productInfo = FDCachedFactory.getProductInfo(skuCode);
                             // LOG.debug(" Rating productInfo :"+productInfo);
-                            EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating();
+                            String tmpRating = productInfo.getSustainabilityRating();
 
-                            if (enumRating != null) {
-                                if (enumRating.isEligibleToDisplay()) {
+                            if (tmpRating != null && tmpRating.trim().length() > 0) {
+                            	EnumSustainabilityRating enumRating = EnumSustainabilityRating.getEnumByStatusCode(tmpRating);
+                                // LOG.debug(" enumRating :"+enumRating);
+
+                                if (enumRating != null && enumRating.isEligibleToDisplay()) {
                                     rating = enumRating;
                                     // LOG.debug(" rating in display format  :"+rating);
                                 }

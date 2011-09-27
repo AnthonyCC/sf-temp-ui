@@ -12,7 +12,6 @@ public class OptimizeTask implements PublishTask {
 
 	public void execute(Publish publish) {
 		searchService.optimize();
-	        publish.getMessages().add(new PublishMessage(PublishMessage.INFO, "Search index optimized."));
 	}
 
 	public String getComment() {

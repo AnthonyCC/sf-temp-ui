@@ -9,12 +9,15 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.fdstore.EnumAvailabilityStatus;
 import com.freshdirect.fdstore.FDProductInfo;
+import com.freshdirect.fdstore.ZonePriceInfoListing;
+import com.freshdirect.fdstore.ZonePriceInfoModel;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.atp.FDStockAvailability;
-import com.freshdirect.fdstore.customer.FDCustomerManagerTestSupport;
 import com.freshdirect.framework.util.DateUtil;
 
 public class SkuModelAvailabilityTest extends TestCase {
@@ -42,7 +45,10 @@ public class SkuModelAvailabilityTest extends TestCase {
 		inventoryCache.addInventory(materials[0], inventoryModel);
 		availability   = new FDStockAvailability(inventoryModel, 1, 1, 1);
 
-		productInfo = FDCustomerManagerTestSupport.createProductInfo("SKU123456", now, materials, inventoryCache);
+		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
+		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
+        productInfo = new FDProductInfo("SKU123456",1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList, null,"", null);
 
 		adapter = new SkuModel.AvailabilityAdapter(productInfo, availability);
 
@@ -77,7 +83,10 @@ public class SkuModelAvailabilityTest extends TestCase {
 		inventoryCache.addInventory(materials[0], inventoryModel);
 		availability     = new FDStockAvailability(inventoryModel, 1, 1, 1);
 
-                productInfo = FDCustomerManagerTestSupport.createProductInfo("SKU123456", today, materials, inventoryCache);
+		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
+		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
+		productInfo = new FDProductInfo("SKU123456",1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, today,inventoryCache,"",null,dummyList,null,"", null);
 
 		adapter = new SkuModel.AvailabilityAdapter(productInfo, availability);
 
@@ -117,7 +126,10 @@ public class SkuModelAvailabilityTest extends TestCase {
 		inventoryCache.addInventory(materials[0], inventoryModel);
 		availability     = new FDStockAvailability(inventoryModel, 1, 1, 1);
 		
-                productInfo = FDCustomerManagerTestSupport.createProductInfo("SKU123456", today, materials, inventoryCache, EnumAvailabilityStatus.DISCONTINUED);
+		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
+		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
+		productInfo = new FDProductInfo("SKU123456",1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.DISCONTINUED, today,inventoryCache,"",null,dummyList, null,"", null);
 		
 		adapter = new SkuModel.AvailabilityAdapter(productInfo, availability);
 

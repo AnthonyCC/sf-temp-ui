@@ -15,6 +15,7 @@
 %><%@ page import="java.text.DecimalFormat"
 %><%@ page import="com.freshdirect.framework.util.NVL"%>
 <%@page import="com.freshdirect.cms.ContentKey"%>
+<%@page import="com.freshdirect.webapp.taglib.test.SnapshotGenerator"%>
 <%@page import="com.freshdirect.smartstore.fdstore.ProductStatisticsProvider"%>
 <%@page import="com.freshdirect.cms.ContentKey.InvalidContentKeyException"%>
 <%@page import="java.io.ByteArrayInputStream"%>
@@ -29,30 +30,25 @@
 <html>  
 <head>
 	<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
-	<link rel="stylesheet" href="/assets/css/autocomplete.css" type="text/css">
-	<%@ include file="/includes/search/brandautocomplete.jspf" %>
 	<%@ include file="/includes/search/autocomplete.jspf" %>
+	<%@ include file="/includes/search/brandautocomplete.jspf" %>
 </head>
 <body>
-	<div>
-		<div style="float: right;"><a href="ac_dictionary.jsp">Dictionary</a></div>
 	<h1>Standard product autocomplete</h1>
-		<div style="clear: both; font-size: 0px;"></div>
-	</div>
 	<div id="searchContainer" style="position: relative">
 		<INPUT TYPE="text" style="width:140px;" id="searchxParams" name="searchParams" value="" size="16" maxlength="50" class="text11">
-		<div id="terms" style="position: absolute;background-color: white" class="termsStyle"></div>
+		<div id="terms" style="position: absolute;background-color: white"></div>
 	</div>
 	<h1>Brand name autocomplete</h1>
 	<p>to use it: include <span style="text-decoration:italic">/includes/search/brandautocomplete.jspf</span> in the page and create this html fragment:<code><br>
 	&lt;div id="brandSearchContainer" style="position: relative"&gt;<br>
 		&lt;INPUT TYPE="text" style="width:140px;" id="brandParams" name="brandParams" value="" size="16" maxlength="50" class="text11"&gt;<br>
-		&lt;div id="brands" style="position: absolute;background-color: white" class="termsStyle"&gt;&lt;/div&gt;<br>
+		&lt;div id="brands" style="position: absolute;background-color: white"&gt;&lt;/div&gt;<br>
 	&lt;/div&gt;<br>
 	</code> </p>
 	<div id="brandSearchContainer" style="position: relative">
 		<INPUT TYPE="text" style="width:140px;" id="brandParams" name="brandParams" value="" size="16" maxlength="50" class="text11">
-		<div id="brands" style="position: absolute;background-color: white" class="termsStyle"></div>
+		<div id="brands" style="position: absolute;background-color: white"></div>
 	</div>
 	<br />
 	<select id="">

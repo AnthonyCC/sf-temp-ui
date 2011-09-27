@@ -7,22 +7,36 @@ package com.freshdirect.webapp.taglib.fdstore;
 //import java.util.Map;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
+import org.apache.commons.collections.Predicate;
+import org.apache.commons.collections.functors.AllPredicate;
 import org.apache.log4j.Category;
 
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.query.ContentKeysPredicate;
+import com.freshdirect.cms.search.SearchHit;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentSearchUtil;
+import com.freshdirect.fdstore.content.SearchQueryStemmer;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -55,9 +69,11 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 				}
 	
 			}else{
+//				return false;
 				String faqKeyword = request.getParameter("searchFAQ");
 				faqKeyword = NVL.apply(faqKeyword, "");
-				this.redirectTo("/help/faq_search.jsp?searchFAQ=" + faqKeyword);				
+				faqKeyword = ContentSearchUtil.normalizeTerm(faqKeyword);
+				this.redirectTo("/help/faq_search.jsp?searchFAQ="+faqKeyword);				
 			}
 		} catch (FDResourceException e) {
 			LOGGER.warn("FDResourceException occured", e);

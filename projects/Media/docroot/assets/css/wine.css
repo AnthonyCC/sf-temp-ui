@@ -598,14 +598,6 @@ div.nav_sub {
 	white-space: nowrap;
 }
 
-.yui-ac-bd {
-	border: 1px solid #000;
-}
-
-#topSearchTerms {
-	width: 120px;
-}
-
 /* YUI calendar changes */
 .yui-calendar td.calcell a {
 	color: #336600 !important;

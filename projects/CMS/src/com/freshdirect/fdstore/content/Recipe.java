@@ -3,7 +3,6 @@ package com.freshdirect.fdstore.content;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,7 +19,9 @@ import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.framework.util.DateRange;
 
 public class Recipe extends ContentNodeModelImpl implements ContentStatusI, YmalSource, YmalSetSource {
+	
 	private static final long serialVersionUID = 1726859705342564086L;
+
 	
 	private static ThreadLocal<HashMap<String,YmalSet>> activeYmalSets = new ThreadLocal<HashMap<String,YmalSet>>() {
 		protected HashMap<String,YmalSet> initialValue() {
@@ -39,13 +40,6 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	private static void resetActiveYmalSets() {
 		activeYmalSets.get().clear();
 	}
-	
-	public static Comparator<Recipe> SORT_BY_NAME = new Comparator<Recipe>() {
-		@Override
-		public int compare(Recipe o1, Recipe o2) {
-			return o1.getName().compareTo(o2.getName());
-		}
-	};
 
 	private final List<RecipeAuthor> authors = new ArrayList<RecipeAuthor>();
 
@@ -182,7 +176,7 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	 *  @return a list of content nodes that are YMALs to this product.
 	 *  @deprecated
 	 */
-	@SuppressWarnings( { "unchecked" } )
+	@SuppressWarnings( { "unchecked", "rawtypes" } )
 	public List<ProductModel> getYouMightAlsoLike() {
 		return (List)getYmals();
 	}

@@ -6,7 +6,7 @@ import java.util.Comparator;
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.ContentKey;
 
-public interface ContentNodeModel extends PrioritizedI {
+public interface ContentNodeModel {
 
 	public final static Comparator<ContentNodeModel> FULL_NAME_COMPARATOR = new Comparator<ContentNodeModel>() {
 		public int compare(ContentNodeModel cn1, ContentNodeModel cn2) {
@@ -44,14 +44,6 @@ public interface ContentNodeModel extends PrioritizedI {
         }
     };
 
-	public static Comparator<ContentNodeModel> PRIORITY_COMPARATOR = new Comparator<ContentNodeModel>() {
-		public int compare(ContentNodeModel o1, ContentNodeModel o2) {
-			int p1 = o1.getPriority();
-			int p2 = o2.getPriority();
-			return p1 == p2 ? 0 : (p1 < p2 ? -1 : 1);
-		}
-	};
-    
     // from the old ContentNodeI
     
     String TYPE_STORE = "X";

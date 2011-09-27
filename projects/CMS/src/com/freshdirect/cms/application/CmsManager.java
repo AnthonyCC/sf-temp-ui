@@ -3,7 +3,6 @@
  */
 package com.freshdirect.cms.application;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,12 +17,13 @@ import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.context.ContextService;
 import com.freshdirect.cms.search.ContentSearchServiceI;
 import com.freshdirect.cms.search.SearchHit;
-import com.freshdirect.cms.search.spell.SpellingHit;
+import com.freshdirect.cms.search.SpellingHit;
 import com.freshdirect.framework.conf.FDRegistry;
 
 /**
- * Singleton entry point for global CMS content service. Obtains primary content-service instance using
- * {@link com.freshdirect.framework.conf.FDRegistry} via service name <code>com.freshdirect.cms.CmsManager</code>.
+ * Singleton entry point for global CMS content service. Obtains primary
+ * content-service instance using {@link com.freshdirect.framework.conf.FDRegistry}
+ * via service name <code>com.freshdirect.cms.CmsManager</code>.
  */
 public class CmsManager implements ContentServiceI {
 
@@ -58,13 +58,14 @@ public class CmsManager implements ContentServiceI {
 
 		return instance;
 	}
-
+	
 	/**
 	 * Method to set the singleton instance, useful in test-cases.
 	 */
 	public static void setInstance(CmsManager manager) {
 		instance = manager;
 	}
+
 
 	/**
 	 * Default initialization based on {@link FDRegistry}.
@@ -75,66 +76,27 @@ public class CmsManager implements ContentServiceI {
 		ContentSearchServiceI search = (ContentSearchServiceI) registry.getService(ContentSearchServiceI.class);
 		this.initialize(mgr, search);
 	}
-
+	
 	private void initialize(ContentServiceI pipeline, ContentSearchServiceI searchService) {
 		this.pipeline = pipeline;
 		this.searchService = searchService;
 		ContextService.setInstance(new ContextService(this));
 	}
 
-	/**
-	 * Perform a search for content objects.
-	 * 
-	 * @param query
-	 *            search term (never null)
-	 * @param maxHits
-	 *            maximum number of search results
-	 * 
-	 * @return List of {@link SearchHit}
-	 */
-	public Collection<SearchHit> search(String term, boolean phrase, int maxHits) {
-		return searchService.search(term, phrase, maxHits);
+    /**
+     * Perform a search for content objects.
+     * 
+     * @param query search term (never null)
+     * @param maxHits maximum number of search results
+     * 
+     * @return List of {@link SearchHit}
+     */
+	public List<SearchHit> search(String term, int maxHits) {
+		return searchService.search(term, maxHits);
 	}
-
-	/**
-	 * Search for products and recipes
-	 * 
-	 * @param term
-	 * @param maxHits
-	 * @return
-	 */
-	public Collection<SearchHit> searchProducts(String term, boolean phrase, boolean approximate, int maxHits) {
-		return searchService.searchProducts(term, phrase, approximate, maxHits);
-	}
-
-	/**
-	 * Search for FAQs
-	 * 
-	 * @param term
-	 * @param maxHits
-	 * @return
-	 */
-	public Collection<SearchHit> searchFaqs(String term, boolean phrase, int maxHits) {
-		return searchService.searchFaqs(term, phrase, maxHits);
-	}
-
-	/**
-	 * Search only for recipes
-	 * 
-	 * @param term
-	 * @param maxHits
-	 * @return
-	 */
-	public Collection<SearchHit> searchRecipes(String term, boolean phrase, int maxHits) {
-		return searchService.searchRecipes(term, phrase, maxHits);
-	}
-
-	public Collection<SpellingHit> suggestSpelling(String term, double threshold, int maxHits) {
-		return searchService.suggestSpelling(term, threshold, maxHits);
-	}
-
-	public Collection<SpellingHit> reconstructSpelling(String term, double threshold, int maxHits) {
-		return searchService.reconstructSpelling(term, threshold, maxHits);
+	
+	public List<SpellingHit> suggestSpelling(String term, int maxHits) {
+		return searchService.suggestSpelling(term, maxHits);
 	}
 	
 	public ContentNodeI createPrototypeContentNode(ContentKey cKey) {
@@ -152,7 +114,7 @@ public class CmsManager implements ContentServiceI {
 	public Map<ContentKey, ContentNodeI> queryContentNodes(ContentType type, Predicate criteria) {
 		return pipeline.queryContentNodes(type, criteria);
 	}
-
+	
 	public Set<ContentKey> getContentKeys() {
 		return pipeline.getContentKeys();
 	}
@@ -173,14 +135,14 @@ public class CmsManager implements ContentServiceI {
 		if (request.getUser().isAllowedToWrite()) {
 			return pipeline.handle(request);
 		} else {
-			throw new SecurityException("Modification is not allowed to:" + request.getUser().getName());
+			throw new SecurityException("Modification is not allowed to:"+request.getUser().getName());
 		}
 	}
 
 	public String getName() {
 		return "CmsManager";
 	}
-
+	
 	public ContentServiceI getSelf() {
 		return this;
 	}

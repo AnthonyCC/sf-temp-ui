@@ -1,6 +1,5 @@
 package com.freshdirect.cms.search;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,8 +16,6 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.node.ContentNodeUtil;
-import com.freshdirect.cms.search.term.LowercaseCoder;
-import com.freshdirect.cms.search.term.Term;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class SearchRelevancyList {
@@ -26,7 +23,6 @@ public class SearchRelevancyList {
     final static Logger LOGGER = LoggerFactory.getInstance(SearchRelevancyList.class);
 
     public static final String SEARCH_RELEVANCY_KEY = "FDFolder:searchRelevancyList";
-    @Deprecated
     public static final String WORD_STEMMING_EXCEPTION = "FDFolder:wordStemmingException";
 
     public static final String KEYWORDS = "Keywords";
@@ -86,7 +82,6 @@ public class SearchRelevancyList {
                 String keywords = ContentNodeUtil.getStringAttribute(node, KEYWORDS).toLowerCase();
                 String[] kw = StringUtils.split(keywords, ",");
                 if (kw.length>0) {
-                	@SuppressWarnings("unchecked")
                     List<ContentKey> hints = (List<ContentKey>) node.getAttributeValue(HINTS);
                     if (hints != null) {
                         Map<ContentKey, Integer> scores = new HashMap<ContentKey, Integer>();
@@ -101,20 +96,10 @@ public class SearchRelevancyList {
                             }
                         }
                         if (!scores.isEmpty()) {
-                        	List<String> kwds = new ArrayList<String>();
-                        	for (String k : kw) {
-                        		List<Term> terms = new LowercaseCoder(new Term(k)).getTerms();
-                        		if (terms.isEmpty())
-                        			continue;
-                        		kwds.add(terms.get(0).toString());
-                        	}
-                        	if (!kwds.isEmpty()) {
-                        		kw = kwds.toArray(new String[kwds.size()]);
-	                            SearchRelevancyList srl = new SearchRelevancyList(kw, scores);
-	                            for (int i=0;i<kw.length;i++) {
-	                                result.put(kw[i], srl);
-	                            }
-                        	}
+                            SearchRelevancyList srl = new SearchRelevancyList(kw, scores);
+                            for (int i=0;i<kw.length;i++) {
+                                result.put(kw[i].trim(), srl);
+                            }
                         }
                     }
                 }
@@ -130,7 +115,6 @@ public class SearchRelevancyList {
      *    
      * @return
      */
-    @Deprecated
     public static Collection<String> getBadPluralFormsFromCms() {
         Set<String> result = new HashSet<String>();
         CmsManager instance = CmsManager.getInstance();

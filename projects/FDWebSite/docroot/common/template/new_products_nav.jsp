@@ -29,11 +29,11 @@ if (FDStoreProperties.isCclAjaxDebugClient()) {
 %>
 	<script type="text/javascript" src="/assets/javascript/rounded_corners-min.js"></script>
 <% } %>
+<%@ include file="/includes/search/autocomplete.jspf" %>
 </head>
 <body bgcolor="#ffffff" link="#336600" vlink="#336600" alink="#ff9900" text="#333333" class="text10">
 <center>
 <%@ include file="/common/template/includes/globalnav.jspf" %>
-<%@ include file="/includes/search/autocomplete.jspf" %>
 <table width="745" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td valign="bottom" width="1"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt=""></td>

@@ -823,7 +823,7 @@ public class ContentFactory {
 		LOGGER.info("WINE INDEX: resolving TLC - domain value pairs (By Region)...");
 		if (byRegion != null) {
 			Set<WineFilterValue> domainValues = new HashSet<WineFilterValue>();
-			Domain domain = (Domain) getContentNode(FDContentTypes.DOMAIN, "wine_country_usq");
+			Domain domain = (Domain) ContentFactory.getInstance().getContentNode(FDContentTypes.DOMAIN, "wine_country_usq");
 			if (domain != null)
 				domainValues.addAll(domain.getDomainValues());
 			else

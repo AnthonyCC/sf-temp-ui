@@ -8,19 +8,14 @@
  */
 package com.freshdirect.fdstore;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Category;
+import java.util.*;
 
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.SkuAvailabilityHistory;
-import com.freshdirect.framework.util.LazyTimedCache;
+import com.freshdirect.framework.util.*;
+
 import com.freshdirect.framework.util.log.LoggerFactory;
+import org.apache.log4j.*;
 
 /**
  * Caching proxy for FDFactory.
@@ -40,8 +35,6 @@ public class FDCachedFactory {
 	
 	private final static Object GROUP_NOT_FOUND = new Object();
 
-	private static int maxKnownVersion = 0;
-	
 	/** 
 	 * FDProductInfo instances hashed by SKU strings.
 	 */
@@ -59,7 +52,6 @@ public class FDCachedFactory {
 	 */
 	private final static LazyTimedCache zoneCache = new LazyTimedCache("FDZoneInfo", FDStoreProperties.getZoneCacheSize(), FDStoreProperties.getRefreshSecsProduct() * 1000);
 
-	private final static List<AvailabilityChangeListener> listeners = new ArrayList<AvailabilityChangeListener>(2);
 	
 	/**
 	 * FDProduct instances hashed by FDSku instances.
@@ -133,22 +125,9 @@ public class FDCachedFactory {
 
 				// cache these
 				FDProductInfo tempi;
-				int version = 0;
 				for (Iterator i=pis.iterator(); i.hasNext(); ) {
 					tempi = (FDProductInfo)i.next();
-					if (tempi.getVersion() > version) {
-					    version = tempi.getVersion();
-					}
 					this.cache.put(tempi.getSkuCode(), tempi);
-				}
-				if (version > maxKnownVersion) {
-				    LOGGER.debug("maxKnownVersion was : " + maxKnownVersion + ", new :" + version);
-				    maxKnownVersion = version;
-				    for (AvailabilityChangeListener l : listeners) {
-				        l.availabilityInfoReceived(maxKnownVersion);
-				    }
-				} else {
-                                    LOGGER.debug("maxKnownVersion stayed the same: " + maxKnownVersion);
 				}
 
 			} catch (Exception ex) {
@@ -555,40 +534,5 @@ public class FDCachedFactory {
 	
 	public static void refreshNewAndBackViews() throws FDResourceException {
 		FDFactory.refreshNewAndBackViews();
-	}
-	
-	public static void setMaxKnownVersion(int maxKnownVersion) {
-            FDCachedFactory.maxKnownVersion = maxKnownVersion;
-        }
-	
-	public static int getMaxKnownVersion() {
-            return maxKnownVersion;
-        }
-	
-	public static void addListener(AvailabilityChangeListener l) {
-	    listeners.add(l);
-	}
-	
-	public static FDProductInfo addNewAvailabilityInformation(String skuCode, EnumAvailabilityStatus status, EnumOrderLineRating rating, String freshness) throws FDResourceException, FDSkuNotFoundException { 
-	    FDProductInfo prodInfo = getProductInfo(skuCode);
-	    if (status == null) {
-	        status = prodInfo.getAvailabilityStatus();
-	    }
-	    if (rating == null) {
-	        rating = prodInfo.getRating();
-	    }
-	    if (freshness == null) {
-	        freshness = prodInfo.getFreshness();
-	    }
-	    FDProductInfo copyInfo = prodInfo.copy(prodInfo.getVersion() + 1, status, rating, freshness);
-	    FDProduct prod = getProduct(skuCode, prodInfo.getVersion());
-	    FDProduct copyProd = prod.copy(copyInfo.getVersion());
-	    productInfoCache.put(skuCode, copyInfo);
-	    productCache.put(new FDSku(skuCode, copyInfo.getVersion()), copyProd);
-	    
-            for (AvailabilityChangeListener l : listeners) {
-                l.cacheReloaded();
-            }
-            return copyInfo;
 	}
 }

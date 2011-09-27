@@ -16,7 +16,6 @@ import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
 import com.freshdirect.content.nutrition.EnumKosherTypeValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.erp.EnumAlcoholicContent;
-import com.freshdirect.erp.SkuAvailabilityHistory;
 
 /**
  * Product class - provides all details about a SKU that is necessary for displaying it on a product page.
@@ -487,15 +486,15 @@ public class FDProduct extends FDSku implements AttributesI {
 		StringBuilder buf = new StringBuilder("FDProduct[");
 		buf.append(this.getSkuCode()).append(" v").append(this.getVersion()).append(" pd ").append(this.getPricingDate()).append("\n\tsalesUnits:");
 		for (int i = 0; i < this.salesUnits.length; i++) {
-			buf.append("\n\t\t").append(this.salesUnits[i].toString());
+			buf.append("\n\t").append(this.salesUnits[i].toString());
 		}
 		buf.append("\n\tvariations:");
 		for (int i = 0; i < this.variations.length; i++) {
-			buf.append("\n\t\t").append(this.variations[i].toString());
+			buf.append("\n\t").append(this.variations[i].toString());
 		}
                 buf.append("\n\tdisplaySalesUnits:");
                 for (int i = 0; i < this.displaySalesUnits.length; i++) {
-                    buf.append("\n\t\t").append(this.displaySalesUnits[i].toString());
+                    buf.append("\n\t").append(this.displaySalesUnits[i].toString());
                 }
                 
 		buf.append("\n\t").append(this.material).append("\n]");
@@ -510,13 +509,6 @@ public class FDProduct extends FDSku implements AttributesI {
 		this.displaySalesUnits = displaySalesUnits;
 	}
 
-	/**
-	 * return a copy of FDProduct with a new version.
-	 * @param version
-	 * @return
-	 */
-	public FDProduct copy(int version) {
-	    return new FDProduct(getSkuCode(), version, new Date(), material, variations, salesUnits, pricing, nutrition, displaySalesUnits);
-	}
+
 
 }

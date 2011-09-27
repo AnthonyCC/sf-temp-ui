@@ -106,11 +106,6 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-		<attribute>
-			<name>alt</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
 	</tag>
 
 	<tag>
@@ -1628,24 +1623,59 @@
 	<tag>
 		<name>GetNewProducts</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.GetNewProductsTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.fdstore.GetNewProductsTag$TagEI</teiclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.GetNewProductsTagEI</teiclass>
 		<bodycontent>JSP</bodycontent>
 		<info></info>
 		<attribute>
-			<name>id</name>
+			<name>searchResults</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>nav</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
+			<name>productList</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>simpleView</name>
+			<name>categorySet</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>categoryTree</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>filteredCategoryTreeName</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>brandSet</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>selectedCategories</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>department</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>navigator</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>		
+		<attribute>
+			<name>showGroup</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>			
 	</tag>	
 	<tag>
 		<name>GetGSProducts</name>
@@ -1677,23 +1707,43 @@
 	<tag>
 		<name>SmartSearch</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.SmartSearchTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.fdstore.SmartSearchTag$TagEI</teiclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.SmartSearchTagEI</teiclass>
 		<bodycontent>JSP</bodycontent>
 		<info></info>
 		<attribute>
-			<name>id</name>
+			<name>searchResults</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>nav</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
+			<name>productList</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>productFilters</name>
+			<name>categorySet</name>
 			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>categoryTree</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>filteredCategoryTreeName</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>brandSet</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>selectedCategories</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
@@ -1702,18 +1752,13 @@
 		<teiclass>com.freshdirect.webapp.taglib.fdstore.ContentTreeTagEI</teiclass>
 		<bodycontent>JSP</bodycontent>
 		<attribute>
-			<name>contentNodeName</name>
+			<name>tree</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>useFiltered</name>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>sortDeptsByProductCount</name>
-			<required>false</required>
+			<name>contentNodeName</name>
+			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>

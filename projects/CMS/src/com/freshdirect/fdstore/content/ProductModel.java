@@ -17,7 +17,6 @@ import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.framework.util.DayOfWeekSet;
@@ -46,19 +45,6 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 		}
 	};
 
-	public final static Comparator<ProductModel> FULL_NAME_PRODUCT_COMPARATOR = new Comparator<ProductModel>() {
-		public int compare(ProductModel p1, ProductModel p2) {
-			String name1 = NVL.apply(p1.getFullName().toLowerCase(), "");
-			String name2 = NVL.apply(p2.getFullName().toLowerCase(), "");
-
-			int d = name1.compareTo(name2);
-			if (d != 0)
-				return d;
-			else
-				return p1.getContentKey().getId().compareTo(p2.getContentKey().getId());
-		}
-	};
-	
 	public static class PriceComparator implements Comparator<SkuModel> {
 
 		private int flips;
@@ -209,8 +195,8 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 				FDProductInfo pi1 = FDCachedFactory.getProductInfo(obj1.getSkuCode());
 				FDProductInfo pi2 = FDCachedFactory.getProductInfo(obj2.getSkuCode());
 				
-				EnumOrderLineRating oli1=pi1.getRating();
-				EnumOrderLineRating oli2=pi2.getRating();
+				EnumOrderLineRating oli1=EnumOrderLineRating.getEnumByStatusCode(pi1.getRating());
+				EnumOrderLineRating oli2=EnumOrderLineRating.getEnumByStatusCode(pi2.getRating());
 				
 				
 				if(oli1==null && oli2==null) return 0;
@@ -256,8 +242,8 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 				FDProductInfo pi1 = FDCachedFactory.getProductInfo(obj1.getSkuCode());
 				FDProductInfo pi2 = FDCachedFactory.getProductInfo(obj2.getSkuCode());
 				
-				EnumSustainabilityRating oli1=pi1.getSustainabilityRating();
-				EnumSustainabilityRating oli2=pi2.getSustainabilityRating();
+				EnumSustainabilityRating oli1=EnumSustainabilityRating.getEnumByStatusCode(pi1.getSustainabilityRating());
+				EnumSustainabilityRating oli2=EnumSustainabilityRating.getEnumByStatusCode(pi2.getSustainabilityRating());
 				
 				
 				if(oli1==null && oli2==null) return 0;
@@ -305,26 +291,6 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	
 	/** Don't use allTheSame/reset, that's not thread-safe */
 	public final static Comparator<SkuModel> SUSTAINABILITY_COMPARATOR = new ProductModel.SustainabilityComparator();
-
-	public static final Comparator<ProductModel> GENERIC_PRICE_COMPARATOR = new Comparator<ProductModel>() {
-		@Override
-		public int compare(ProductModel p1, ProductModel p2) {
-			double pv1 = p1.getPriceCalculator().getDefaultPriceValue();
-			double pv2 = p2.getPriceCalculator().getDefaultPriceValue();
-			return Double.compare(pv1, pv2);
-		}
-	};
-	
-	public static final Comparator<ProductModel> GENERIC_RATING_COMPARATOR = new Comparator<ProductModel>() {
-		@Override
-		public int compare(ProductModel p1, ProductModel p2) {
-			try {
-				return p2.getProductRatingEnum().getValue() - p1.getProductRatingEnum().getValue();
-			} catch (FDResourceException e) {
-				throw new FDRuntimeException(e);
-			}
-		}
-	};
 
 	public static NumberFormat CURRENCY_FORMAT = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 
@@ -934,19 +900,13 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	public PriceCalculator getPriceCalculator( String skuCode );
 
 	
-    /**
-     * 
-     * @return a price calculator which encapsulates the specified sku.
-     */
-    public PriceCalculator getPriceCalculator(SkuModel sku);
-
-	public PriceCalculator getPriceCalculator(PricingContext pricingContext);
-
-	public PriceCalculator getPriceCalculator(String skuCode, PricingContext pricingContext);
-
-    public PriceCalculator getPriceCalculator(SkuModel sku, PricingContext pricingContext);
-	
-    /**
+        /**
+         * 
+         * @return a price calculator which encapsulates the specified sku.
+         */
+        public PriceCalculator getPriceCalculator(SkuModel sku);
+        
+	/**
 	 * This is used for getting a media attribute, if the usage of the normal getters are not feasible. For example,
 	 * when the name of the attribute comes from the client side. It's not a very fortunate situation.
 	 * 

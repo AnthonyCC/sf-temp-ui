@@ -44,8 +44,6 @@ import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
 import com.freshdirect.erp.model.ErpProductModel;
 import com.freshdirect.erp.model.ErpSalesUnitModel;
 import com.freshdirect.fdstore.EnumAvailabilityStatus;
-import com.freshdirect.fdstore.EnumOrderLineRating;
-import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDAttributeCache;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDMaterial;
@@ -204,12 +202,13 @@ class FDProductHelper {
 			status,
 			erpProductInfo.getUnavailabilityDate(),
 			null,
-			EnumOrderLineRating.getEnumByStatusCode(erpProductInfo.getRating()),
+			erpProductInfo.getRating(),
 			erpProductInfo.getFreshness(),
 			zonePriceInfoList,
 			group,
-			EnumSustainabilityRating.getEnumByStatusCode(erpProductInfo.getSustainabilityRating()),
-			erpProductInfo.getUpc());
+			erpProductInfo.getSustainabilityRating(),
+			erpProductInfo.getUpc()
+		);
 	
 	}
 	

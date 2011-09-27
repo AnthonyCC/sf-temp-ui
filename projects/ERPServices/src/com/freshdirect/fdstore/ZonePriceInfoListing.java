@@ -5,12 +5,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ZonePriceInfoListing implements Serializable, Cloneable {
-	/**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
-    //zoneId -> ZonePriceModel
+public class ZonePriceInfoListing implements Serializable {
+	//zoneId -> ZonePriceModel
 	Map<String, ZonePriceInfoModel> zonePriceInfoMap = new HashMap<String, ZonePriceInfoModel>();
 	 
 	public ZonePriceInfoListing() {
@@ -45,15 +41,6 @@ public class ZonePriceInfoListing implements Serializable, Cloneable {
 		return dummyList;
 	}
 	
-	@Override
-	public ZonePriceInfoListing clone() {
-	    ZonePriceInfoListing z = new ZonePriceInfoListing ();
-	    for (Map.Entry<String, ZonePriceInfoModel> e : zonePriceInfoMap.entrySet()) {
-	        z.addZonePriceInfo(e.getKey(), e.getValue().clone());
-	    }
-	    return z;
-	}
-
 	@Override
     public String toString() {
         return "ZonePriceInfoListing[" + zonePriceInfoMap + ']';

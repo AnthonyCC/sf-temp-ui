@@ -61,11 +61,11 @@
 %><script type="text/javascript" src="/assets/yui/calendar/calendar.js"></script>
 <%
 			}
-			//if (request.getAttribute("__yui_load_autocomplete__") != null) {
+			if (request.getAttribute("__yui_load_autocomplete__") != null) {
 				/* Include YUI Autocomplete API */
 %><script type="text/javascript" src="/assets/yui/autocomplete/autocomplete.js"></script>
 <%
-			//}
+			}
 			if (request.getAttribute("__yui_load_carousel__") != null) {
 				/* Include YUI Autocomplete API */
 %><script type="text/javascript" src="/assets/yui/carousel/carousel.js"></script>
@@ -114,11 +114,11 @@
 %><script type="text/javascript" src="/assets/yui/calendar/calendar-min.js"></script>
 <%
 			}
-			/*if (request.getAttribute("__yui_load_autocomplete__") != null) {*/
+			if (request.getAttribute("__yui_load_autocomplete__") != null) {
 				/* Include YUI Autocomplete API */
 %><script type="text/javascript" src="/assets/yui/autocomplete/autocomplete-min.js"></script>
 <%
-			//}
+			}
 			if (request.getAttribute("__yui_load_carousel__") != null) {
 				/* Include YUI Autocomplete API */
 %><script type="text/javascript" src="/assets/yui/carousel/carousel-min.js"></script>
@@ -135,7 +135,6 @@
 		// ------------------------ //
 
 %>
-<script type="text/javascript" src="/assets/javascript/smsearch_autocomplete.js"></script>
 <script type="text/javascript" src="/assets/yui/yahoo-dom-event/yahoo-dom-event.js"></script>
 <!-- YUI includes END -->
 <%

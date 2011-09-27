@@ -6,77 +6,55 @@ package com.freshdirect.cms.search;
 import java.io.Serializable;
 
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 
 /**
- * A scored search hit for a {@link com.freshdirect.cms.ContentKey}. Higher score indicates better match.
+ * A scored search hit for a {@link com.freshdirect.cms.ContentKey}. Higher
+ * score indicates better match.
  */
 public class SearchHit implements Serializable {
-	private static final long serialVersionUID = 2702004718163852501L;
 
-	private final ContentKey contentKey;
-	private final double score;
-	private ContentNodeModel node;
-	private final int approximationLevel;
+    private final ContentKey contentKey;
+    private final double     score;
+    private String           keywords;
+    private ContentNodeModel node;
 
-	public SearchHit(ContentKey contentKey, double score) {
-		this.contentKey = contentKey;
-		this.score = score;
-		this.approximationLevel = 0;
-	}
+    public SearchHit(ContentKey contentKey, double score) {
+        this.contentKey = contentKey;
+        this.score = score;
+    }
 
-	public SearchHit(ContentKey contentKey, double score, int approximationLevel) {
-		this.contentKey = contentKey;
-		this.score = score;
-		this.approximationLevel = approximationLevel;
-	}
+    public SearchHit(ContentKey contentKey, double score, String keywords) {
+        this.contentKey = contentKey;
+        this.score = score;
+        this.keywords = keywords;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((contentKey == null) ? 0 : contentKey.hashCode());
-		return result;
-	}
+    public ContentKey getContentKey() {
+        return contentKey;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		SearchHit other = (SearchHit) obj;
-		if (contentKey == null) {
-			if (other.contentKey != null)
-				return false;
-		} else if (!contentKey.equals(other.contentKey))
-			return false;
-		return true;
-	}
+    public double getScore() {
+        return score;
+    }
 
-	public ContentKey getContentKey() {
-		return contentKey;
-	}
+    public String toString() {
+        return "SearchHit[" + score + ", " + contentKey + ',' + keywords + "]";
+    }
 
-	public double getScore() {
-		return score;
-	}
+    public void setKeywords(String keywords) {
+        this.keywords = keywords;
+    }
 
-	@Override
-	public String toString() {
-		return "SearchHit [contentKey=" + contentKey + ", score=" + score + ", approximationLevel=" + approximationLevel + "]";
-	}
+    public String getKeywords() {
+        return keywords;
+    }
+    
+    public void setNode(ContentNodeModel node) {
+        this.node = node;
+    }
 
-	public ContentNodeModel getNode() {
-		if (node == null)
-			node = ContentFactory.getInstance().getContentNodeByKey(contentKey);
-		return node;
-	}
-
-	public int getApproximationLevel() {
-		return approximationLevel;
-	}
+    public ContentNodeModel getNode() {
+        return node;
+    }
 }

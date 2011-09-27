@@ -160,7 +160,6 @@
 		<Object value="instance:com.freshdirect.cms.fdstore.StructureValidator"/>
 		<Object value="instance:com.freshdirect.cms.fdstore.UniqueContentKeyValidator"/>
 		<Object value="instance:com.freshdirect.cms.fdstore.RecipeChildNodeValidator"/>
-		<Object value="instance:com.freshdirect.cms.fdstore.SynonymValidator"/>
 	</contribution>
 
 	<service-point id="CmsManager" interface="com.freshdirect.cms.application.ContentServiceI">

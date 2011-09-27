@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Set;
 
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.CategoryNodeTree;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.FilteredSearchResults;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -24,9 +24,11 @@ import com.freshdirect.mobileapi.model.Department;
 import com.freshdirect.mobileapi.model.Product;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
+import com.freshdirect.mobileapi.model.filter.AvailableFilter;
+import com.freshdirect.mobileapi.model.filter.IphoneFilter;
 import com.freshdirect.mobileapi.model.tagwrapper.SmartSearchTagWrapper;
-import com.freshdirect.mobileapi.util.SortType;
-import com.freshdirect.webapp.taglib.fdstore.SmartSearchTag;
+import com.freshdirect.mobileapi.util.ProductModelSortUtil;
+import com.freshdirect.mobileapi.util.ProductModelSortUtil.SortType;
 import com.freshdirect.webapp.util.AutoCompleteFacade;
 
 public class ProductServiceImpl implements ProductService {
@@ -67,12 +69,15 @@ public class ProductServiceImpl implements ProductService {
         return search(searchTerm, null, page, max, null, null, null, null, user);
     }
 
-    public List<Product> search(String searchTerm, String upc, Integer page, Integer max, SortType sortType, String brandId,
-            String categoryId, String deparmentId, SessionUser user) throws ServiceException {
-        List<Product> result = new ArrayList<Product>();
+    private static final AvailableFilter availableFilter = new AvailableFilter();
 
+    private static final IphoneFilter iphoneFilter = new IphoneFilter();
+
+    public List<Product> search(String searchTerm, String upc, Integer page, Integer max, ProductModelSortUtil.SortType sortType, String brandId,
+            String categoryId, String deparmentId, SessionUser user) throws ServiceException {
+        FilteredSearchResults fres = null;
+        List<Product> result = new ArrayList<Product>();
         List<ProductModel> productModels = null;
-        SmartSearchTag search = null;
 
         SmartSearchTagWrapper wrapper = new SmartSearchTagWrapper(user);
         ResultBundle resultBundle;
@@ -81,33 +86,43 @@ public class ProductServiceImpl implements ProductService {
             if (sortType == null) {
                 sortType = SortType.RELEVANCY;
             }
-            resultBundle = wrapper.getSearchResult(searchTerm, upc, deparmentId, categoryId, brandId, (page - 1), max, "", sortType.getSortValue());
-            search = (SmartSearchTag) resultBundle.getExtraData(SmartSearchTagWrapper.ID);
+            resultBundle = wrapper.getSearchResult(searchTerm, upc, deparmentId, categoryId, brandId, 0, max, "", sortType.getSortValue());
+            fres = (FilteredSearchResults) resultBundle.getExtraData(SmartSearchTagWrapper.SEARCH_RESULTS);
 
             //Set two more mobile specific filters
-            LOG.debug("Total Products before iphone filter: " + search.getNoOfProductsBeforeProductFilters());
-            LOG.debug("Total Products after iphone filter: " + search.getNoOfProducts());
+            LOG.debug("Total Products before iphone filter: " + fres.getProductsSize());
+            fres.setFilteredProducts(availableFilter.apply(fres.getFilteredProducts()));
+            fres.setFilteredProducts(iphoneFilter.apply(fres.getFilteredProducts()));
+            LOG.debug("Total Products after iphone filter: " + fres.getProductsSize());
 
-            productModels = search.getPageProducts();
-            recentSearchTotalCount = search.getNoOfBrandFilteredProducts();
-            Collection<String>spellingSuggestions = search.getSpellingSuggestions();
-            if (!spellingSuggestions.isEmpty())
-            	spellingSuggestion = spellingSuggestions.iterator().next();
-            LOG.debug("SPELLING SUGGESTION - Did you mean? " + spellingSuggestion);
+            int start = (page - 1) * max;
+
+            fres.setStart(start);
+            fres.setPageSize(max);
+
+            productModels = fres.getFilteredProductsListPage();
+            recentSearchTotalCount = fres.getProductsSize();
+            if (fres.isSuggestionMoreRelevant()) {
+                spellingSuggestion = fres.getSpellingSuggestion();
+                LOG.debug("SPELLING SUGGESTION - Did you mean? " + spellingSuggestion);
+            } else {
+                spellingSuggestion = fres.getSpellingSuggestion();
+                LOG.debug("SPELLING SUGGESTION - Did you mean? " + spellingSuggestion);
+            }
         } catch (FDException e) {
             throw new ServiceException(e);
         }
 
-        LOG.debug("Total Products retrieved: " + search.getNoOfProductsBeforeProductFilters());
-        LOG.debug("Total Products filtered retrieved: " + search.getNoOfProducts());
+        LOG.debug("Total Products retrieved: " + recentSearchTotalCount);
+        LOG.debug("Total Products filtered retrieved: " + fres.getFilteredProducts().size());
 
-        CategoryNodeTree tree = search.getFilteredCategoryTree();
+        CategoryNodeTree tree = CategoryNodeTree.createTree(fres.getFilteredProducts(), false);
         departments = new HashSet<Department>();
         categories = new HashSet<Category>();
 
-        Iterator<TreeElement> categoryIterator = tree.getRoots().iterator();
+        Iterator categoryIterator = tree.getRoots().iterator();
         while (categoryIterator.hasNext()) {
-            TreeElement treeElement = categoryIterator.next();
+            TreeElement treeElement = (TreeElement) categoryIterator.next();
             ContentNodeModel model = treeElement.getModel();
 
             if (model instanceof DepartmentModel) {
@@ -127,17 +142,16 @@ public class ProductServiceImpl implements ProductService {
         }
 
         brands = new HashSet<Brand>();
-        brands = new HashSet<Brand>();
-        for (BrandModel brand : search.getBrands()) {
-        	brands.add(Brand.wrap(brand));
-		}
-        
-        for (ProductModel product : productModels)
+        for (ProductModel pm : productModels) {
+            Product product;
             try {
-                result.add(Product.wrap(product, user.getFDSessionUser().getUser()));
+                product = Product.wrap(pm, user.getFDSessionUser().getUser());
+                result.add(product);
+                brands.addAll(product.getBrands());
             } catch (ModelException e) {
                 LOG.warn("ModelException encountered while preparing search result.", e);
             }
+        }
 
         return result;
     }
@@ -183,7 +197,7 @@ public class ProductServiceImpl implements ProductService {
         this.spellingSuggestion = spellingSuggestion;
     }
 
-	@Override
+    @Override
     public List<String> getAutoSuggestions(String searchTerm) {
         AutoCompleteFacade facade = new AutoCompleteFacade();
         return facade.getTerms(searchTerm);

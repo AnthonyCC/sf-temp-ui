@@ -18,7 +18,7 @@ import com.freshdirect.cms.validation.ContentValidatorI;
  */
 public class RecipeChildNodeValidator implements ContentValidatorI {
 
-	public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
+	public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request) {
 
 		ContentType type = node.getKey().getType();
 		if (FDContentTypes.RECIPE.equals(type)) {

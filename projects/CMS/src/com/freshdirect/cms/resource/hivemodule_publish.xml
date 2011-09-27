@@ -102,15 +102,6 @@ and def_name='source'
 			</construct>
 		</invoke-factory>
 	</service-point>
-
-	<service-point id="LuceneIndex" interface="com.freshdirect.cms.publish.PublishTask">
-		<invoke-factory>
-			<construct class="com.freshdirect.cms.publish.LuceneIndexerTask">
-				<service>com.freshdirect.cms.StoreContent</service>
-				<service>com.freshdirect.cms.search.SearchService</service>
-			</construct>
-		</invoke-factory>
-	</service-point>
 	
 	<service-point id="Optimize" interface="com.freshdirect.cms.publish.PublishTask">
 		<invoke-factory>
@@ -127,7 +118,6 @@ and def_name='source'
 		<service name="PublishSlide"/>
 		<service name="PublishMedia"/>
 		<service name="OASExport"/>
-		<service name="LuceneIndex"/>
 		<service name="Optimize"/>
 		<service name="RunScript"/>
 	</contribution>
@@ -136,6 +126,7 @@ and def_name='source'
 		<invoke-factory>
 			<construct class="com.freshdirect.cms.publish.DbPublishService">
 				<set-service property="dataSource" service-id="com.freshdirect.cms.cmsdatasource" />
+				<set-object property="publishTasks" value="configuration:publishTasks"/>
 				<set property="basePath" value="${cms.publish.basePath}"/>
 			</construct>
 		</invoke-factory>

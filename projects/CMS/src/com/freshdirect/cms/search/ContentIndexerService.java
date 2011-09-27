@@ -32,8 +32,7 @@ public class ContentIndexerService extends ProxyContentService {
 	public CmsResponseI handle(CmsRequestI request) {
 		CmsResponseI response = super.handle(request);
 
-		searchService.index(request.getNodes(), false);
-		searchService.indexSpelling(request.getNodes());
+		searchService.index(request.getNodes());
 
 		return response;
 	}

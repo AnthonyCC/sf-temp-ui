@@ -1,149 +1,88 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.Map.Entry;
 
-import javax.servlet.jsp.tagext.TagData;
-import javax.servlet.jsp.tagext.TagExtraInfo;
-import javax.servlet.jsp.tagext.VariableInfo;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Category;
+import org.hibernate.Criteria;
 
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ComparatorChain;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.EnumSortingValue;
+import com.freshdirect.fdstore.content.ContentSearch;
+import com.freshdirect.fdstore.content.FilteredSearchResults;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.Recipe;
-import com.freshdirect.fdstore.content.SearchResultItem;
 import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.content.SearchSortType;
-import com.freshdirect.fdstore.content.SortValueComparator;
+import com.freshdirect.fdstore.util.AbstractNavigator;
+import com.freshdirect.fdstore.util.NewProductsDFGSNavigator;
 import com.freshdirect.fdstore.util.NewProductsGrouping;
-import com.freshdirect.fdstore.util.TimeRange;
-import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.fdstore.util.NewProductsNavigator;
+import com.freshdirect.framework.util.NVL;
+import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.framework.webapp.BodyTagSupport;
+import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
-public class GetNewProductsTag extends AbstractProductPagerTag {
-	private static final long serialVersionUID = 4285691979496555198L;
+public class GetNewProductsTag extends AbstractNavigationTag {
 
-	public static class TagEI extends TagExtraInfo {
-		public VariableInfo[] getVariableInfo(TagData data) {
-			return new VariableInfo[] { new VariableInfo(data.getAttributeString("id"), GetNewProductsTag.class.getName(), true,
-					VariableInfo.NESTED) };
-		}
+	private static Category LOGGER = LoggerFactory.getInstance( GetNewProductsTag.class );
+
+	private String department = null;
+	
+
+	public void setDepartment(String department) {
+		this.department = department;
 	}
 
-	private boolean simpleView = false;
-	private SortedMap<TimeRange, List<ProductModel>> groupings;
-	private NewProductsGrouping groupingTool;
-	private CategoryModel featuredCategory;
-	private boolean showFeatured;
-
-	@Override
-	protected SearchResults getResults() {
-		Date now = new Date();
-		List<SearchResultItem<ProductModel>> items = new ArrayList<SearchResultItem<ProductModel>>(1000);
-		Map<ProductModel, Date> newProducts = ContentFactory.getInstance().getNewProducts();
-		for (Entry<ProductModel, Date> entry : newProducts.entrySet())
-			items.add(new SearchResultItem<ProductModel>(entry.getKey()).putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue())));
-		newProducts = ContentFactory.getInstance().getBackInStockProducts();
-		for (Entry<ProductModel, Date> entry : newProducts.entrySet())
-			items.add(new SearchResultItem<ProductModel>(entry.getKey()).putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue())));
-		SearchResults results = new SearchResults(items, SearchResultItem.<Recipe> emptyList(),
-				SearchResultItem.<CategoryModel> emptyList(), null, false);
+    public SearchResults getResults(Map<String, String> criteria) {
+    	String department =  criteria.get("deptId");
+		List<ProductModel> prods = new ArrayList<ProductModel>(ContentFactory.getInstance().getNewProducts().keySet());
+		prods.addAll(ContentFactory.getInstance().getBackInStockProducts().keySet()); 
+		prods = ContentFactory.filterProductsByDeptartment(prods, department);
+		String searchTerm = "";
+		SearchResults results = new SearchResults(prods, Collections.EMPTY_LIST,false,searchTerm);
 		return results;
-	}
+    }
+    
+    public Map getCriteria(ServletRequest request){
+    	Map criteria = new HashMap<String, String>();
+    	criteria.put("deptId", this.department);
+    	return criteria;
+    }
+    
+    public AbstractNavigator getNavigator(){
+    	if(this.department != null){
+    		//Request from DFGS page.
+    		return new NewProductsDFGSNavigator((HttpServletRequest)pageContext.getRequest()); 
+    	} else {
+    		return new NewProductsNavigator((HttpServletRequest)pageContext.getRequest());
+    	}
+    }
+    
+    public Boolean getShowGroup(){
+        ServletRequest request = pageContext.getRequest();
+    	String deptId = NVL.apply(request.getParameter("deptId"), "");
+    	String catId = NVL.apply(request.getParameter("catId"), "");
+    	String brandValue = NVL.apply(request.getParameter("brandValue"), "");
+    	boolean sort = request.getParameter("sort") != null;
+    	if (this.department != null || sort || !"".equals(brandValue) || !"".equals(deptId) || 
+    			(!"".equals(catId) && !(FDStoreProperties.getNewProductsCatId()).equals(catId))) {
+            return false;
+        }    	
+    	
+    	return true;
+    }
+    public void performGrouping(FilteredSearchResults fres,  boolean reverseOrder){
+		//Request from non DFGS page. Groups has to be sorted by department names.
+        NewProductsGrouping grouping = new NewProductsGrouping(reverseOrder);
+        grouping.sortByDepartmentNamesWithinGroup(fres.getProducts());
 
-	@Override
-	protected Comparator<SearchResultItem<ProductModel>> getProductSorter(List<SearchResultItem<ProductModel>> products,
-			SearchSortType sortBy, boolean ascending) {
-		Comparator<SearchResultItem<ProductModel>> comparator;
-		switch (sortBy) {
-			case BY_NAME:
-				comparator = SearchResultItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR);
-				if (!ascending)
-					comparator = Collections.reverseOrder(comparator);
-				break;
-			case BY_PRICE:
-				Comparator<ProductModel> priceComparator = ProductModel.GENERIC_PRICE_COMPARATOR;
-				if (!ascending)
-					priceComparator = Collections.reverseOrder(priceComparator);
-				comparator = SearchResultItem.wrap(ComparatorChain.create(priceComparator).chain(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
-				break;
-			case BY_RECENCY:
-			default:
-				if (isShowGrouped())
-					comparator = ComparatorChain.create(getGroupingTool().getTimeRangeComparator()).chain(SearchResultItem.wrap(ProductModel.DEPTFULL_COMPARATOR))
-							.chain(SearchResultItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
-				else
-					comparator = new SortValueComparator<ProductModel>(EnumSortingValue.NEWNESS);
-				if (!ascending)
-					comparator = Collections.reverseOrder(comparator);
-		}
-		
-		return comparator;
-	}
-
-	@Override
-	protected void postProcess(SearchResults results) {
-		// create groups if needed
-		if (isShowGrouped())
-			groupings = getGroupingTool().groupBy(getPageProductsInternal());
-		else {
-			groupings = new TreeMap<TimeRange, List<ProductModel>>();
-			groupings.put(new TimeRange(1, 0, 6, TimeRange.MONTH, TimeRange.NULL), getPageProducts());
-		}
-		
-		if (nav.isRefined())
-			showFeatured = false;
-		else
-			showFeatured = true;
-		
-		featuredCategory = (CategoryModel) ContentFactory.getInstance().getContentNode("Category", FDStoreProperties.getNewProductsCatId());
-		if (nav.getCategory() != null) {
-			CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode("Category", nav.getCategory());
-			if (category.getCategoryLabel() != null)
-				featuredCategory = category;
-		}
-		if (featuredCategory.getCategoryLabel() == null)
-			featuredCategory = null;
-	}
-
-	public boolean isShowGrouped() {
-		return !simpleView && nav.getSortBy().equals(SearchSortType.BY_RECENCY)
-				&& nav.getBrand() == null && nav.getDepartment() == null
-				&& (nav.getCategory() == null || nav.getCategory().equals(FDStoreProperties.getNewProductsCatId()));
-	}
-
-	public void setSimpleView(boolean simpleView) {
-		this.simpleView = simpleView;
-	}
-
-	public boolean isSimpleView() {
-		return simpleView;
-	}
-
-	public CategoryModel getFeaturedCategory() {
-		return featuredCategory;
-	}
-
-	public SortedMap<TimeRange, List<ProductModel>> getGroupings() {
-		return groupings;
-	}
-	
-	public boolean isShowFeatured() {
-		return showFeatured;
-	}
-	
-	public NewProductsGrouping getGroupingTool() {
-		if (groupingTool == null)
-			groupingTool = new NewProductsGrouping(!nav.isSortOrderingAscending());
-		return groupingTool;
-	}
+    }
 }

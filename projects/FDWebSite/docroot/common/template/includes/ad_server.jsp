@@ -556,12 +556,5 @@ function OAS_AD(pos) {
 %>
 <!-- OAS SETUP end -->
 <%
-	} else {
-%>
-<script type="text/javascript">
-function OAS_AD(pos) {
-}
-</script>
-<%
 	}
 %>

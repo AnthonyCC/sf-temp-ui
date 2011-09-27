@@ -1,17 +1,9 @@
 package com.freshdirect.fdstore.content;
 
-import java.util.Comparator;
-
 import com.freshdirect.cms.ContentKey;
 
 
 public class DomainValue extends ContentNodeModelImpl implements WineFilterValue {
-	public static Comparator<DomainValue> SORT_BY_LABEL = new Comparator<DomainValue>() {
-		@Override
-		public int compare(DomainValue o1, DomainValue o2) {
-			return o1.getLabel().compareTo(o2.getLabel());
-		}
-	};
 
 	public DomainValue(ContentKey cKey) {
 		super(cKey);

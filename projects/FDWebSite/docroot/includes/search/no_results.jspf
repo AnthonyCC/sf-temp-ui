@@ -5,14 +5,25 @@ Partial that display various answers depending the result
 @input criteria @{ling java.lang.String} Search criteria
 @input results @{link com.freshdirect.fdstore.content.SearchResults} The results object
 
---%><%@ page import="org.apache.commons.lang.StringEscapeUtils"
+--%><%@ page import="com.freshdirect.cms.search.SpellingHit"
 %><%@ page import="com.freshdirect.framework.util.StringUtil"
-%><%@ taglib uri='freshdirect' prefix='fd' 
-%><div class="text15" style="line-height: 1em;">
-<font class="title16">No matches were found for <i>"<%= StringEscapeUtils.escapeHtml(displayCriteria) %>"</i></font>
-</div>
+%><%@ taglib uri='freshdirect' prefix='fd' %>
 
-<%@ include file="/includes/search/didyoumean.jspf" %>
+<div class="text15" style="line-height: 1em;">
+<font class="title16">No matches were found for <i>"<%= displayCriteria %>"</i></font>
+</div>
+<%
+// RESULTS == 0
+
+if (results.getSpellingSuggestion() != null) { 
+	String suggestion = results.getSpellingSuggestion();
+
+// DID YOU MEAN
+%>
+<div class="text15" style="line-height: 4em">
+Did you mean <a href="?searchParams=<%= StringUtil.escapeUri(suggestion)%>&trk=dym"><b><%=suggestion%></b></a>?
+</div>
+<% } %>
 
 <div class="text13">
 Please check the spelling of the words you entered or try a more general term.

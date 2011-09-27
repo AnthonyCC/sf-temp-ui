@@ -65,7 +65,7 @@ public class UniqueContentKeyValidator implements ContentValidatorI {
 		
 	}
 
-	public void validate( ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode ) {
+	public void validate( ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request ) {
 		ContentType type = node.getKey().getType();
 		if ( UNIQUE_TYPES.contains( type ) ) {
 

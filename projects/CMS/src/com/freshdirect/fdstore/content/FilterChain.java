@@ -9,9 +9,10 @@ import com.freshdirect.fdstore.FDResourceException;
  * Filter chain
  * 
  * @author segabor
- * 
+ *
  */
 public class FilterChain extends AbstractProductFilter {
+	
 	List<AbstractProductFilter> filters;
 
 	public FilterChain(List<AbstractProductFilter> filters) {
@@ -29,19 +30,11 @@ public class FilterChain extends AbstractProductFilter {
 			this.filters.add(f2);
 	}
 
-	public void add(AbstractProductFilter a) {
-		this.filters.add(a);
-	}
-
 	public boolean applyTest(ProductModel prod) throws FDResourceException {
-		for (AbstractProductFilter filter : filters) {
+		for ( AbstractProductFilter filter : filters ) {
 			if (!filter.applyTest(prod))
 				return false;
 		}
 		return true;
-	}
-
-	public boolean isEmpty() {
-		return filters.isEmpty();
 	}
 }

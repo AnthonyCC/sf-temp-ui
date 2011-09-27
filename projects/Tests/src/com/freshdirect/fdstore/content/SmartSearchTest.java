@@ -18,20 +18,16 @@ import org.mockejb.interceptor.AspectSystem;
 
 import com.freshdirect.TestUtils;
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.ContentServiceI;
-import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.search.AttributeIndex;
 import com.freshdirect.cms.search.AutoComplete;
-import com.freshdirect.cms.search.ContentIndex;
 import com.freshdirect.cms.search.LuceneSearchService;
 import com.freshdirect.cms.search.LuceneSearchServiceTest;
-import com.freshdirect.cms.search.SynonymDictionary;
 import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
 import com.freshdirect.fdstore.aspects.FDFactoryZoneInfoAspect;
 import com.freshdirect.fdstore.aspects.ProductStatisticUserProviderAspect;
@@ -77,25 +73,23 @@ public class SmartSearchTest extends TestCase {
         
 
         LOGGER.info("CMS init");
-        List<ContentTypeServiceI> list = new ArrayList<ContentTypeServiceI>();
+        List list = new ArrayList();
         list.add(new XmlTypeService("classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml"));
 
         CompositeTypeService typeService = new CompositeTypeService(list);
 
         service = new XmlContentService(typeService, new FlexContentHandler(), "classpath:/com/freshdirect/cms/fdstore/content/FilteredStore2.xml");
 
-        List<ContentIndex> indexes = new ArrayList<ContentIndex>();
+        List indexes = new ArrayList();
         AttributeIndex index = new AttributeIndex();
         index.setContentType("Product");
         index.setAttributeName("FULL_NAME");
         indexes.add(index);
 
         searchService = LuceneSearchServiceTest.createSearchService(indexes, LuceneSearchServiceTest.createTempDir(SmartSearchTest.class.getName(), "tmp"));
-		searchService.setSynonyms(Collections.<SynonymDictionary>emptyList());
-		searchService.setSpellingSynonyms(Collections.<SynonymDictionary>emptyList());
 
-        Map<ContentKey, ContentNodeI> contentNodes = service.getContentNodes(service.getContentKeys());
-        searchService.index(contentNodes.values(), true);
+        Map contentNodes = service.getContentNodes(service.getContentKeys());
+        searchService.index(contentNodes.values());
 
         CmsManager.setInstance(new CmsManager(service, searchService));
 
@@ -162,8 +156,16 @@ public class SmartSearchTest extends TestCase {
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "my-test-user-id", "fdId"));
         request = (MockHttpServletRequest) ctx.getRequest();
         
-        sst = new MockedSmartSearchTag();
+        sst = new SmartSearchTag();
         sst.setPageContext(ctx);
+
+        sst.setCategoryTree("categoryTree");
+        sst.setFilteredCategoryTreeName("filteredCategoryTree");
+        sst.setSearchResults("searchResults");
+        sst.setBrandSet("brandSet");
+        sst.setCategorySet("categorySet");
+        sst.setProductList("productList");
+        sst.setSelectedCategories("selectedCategories");
     }
 
     public void testBasicSearch() {
@@ -173,25 +175,28 @@ public class SmartSearchTest extends TestCase {
 
             request.setupAddParameter("searchParams", "milk");
             request.setupAddParameter("sort", SearchSortType.BY_NAME.getLabel());
-            sst.setNav(new SearchNavigator(ctx.getRequest()));
             sst.doStartTag();
 
-            assertEquals("currentPage-0", 0, sst.getPageNo());
-            assertEquals("pageSize", SearchNavigator.getDefaultForView(SearchNavigator.VIEW_DEFAULT).normalPageSize, sst.getPageSize());
-            assertEquals("start", 0, sst.getPageOffset());
-            assertEquals("pageCount", 1, sst.getPageCount());
+            assertSmartSearchTagResult();
+            assertSelectedCategories(null);
 
-            assertNotNull("has products", sst.getPageProducts());
+            FilteredSearchResults fres = (FilteredSearchResults) ctx.getAttribute("searchResults");
+            assertEquals("currentPage-0", 0, fres.getCurrentPage());
+            assertEquals("pageSize", SearchNavigator.getDefaultForView(SearchNavigator.VIEW_DEFAULT).normalPageSize, fres.getPageSize());
+            assertEquals("start", 0, fres.getStart());
+            assertEquals("pageCount", 1, fres.getPageCount());
 
-            assertEquals("product list size", 4, sst.getNoOfProducts());
+            assertNotNull("has products", fres.getProducts());
+
+            assertEquals("product list size", 4, fres.getProducts().size());
             assertCategoryTree();
             assertBrandSet();
 
-            assertEquals("filtered product list size", 4, sst.getNoOfBrandFilteredProducts());
-            assertContentNodeModel("filtered product 0", "Asher's Milk Chocolate Pecan Caramel Pattie", sst.getPageProducts().get(0));
-            assertContentNodeModel("filtered product 1", "Organic Valley 1% Milk", sst.getPageProducts().get(1));
-            assertContentNodeModel("filtered product 2", "Organic Valley 2% Milk", sst.getPageProducts().get(2));
-            assertContentNodeModel("filtered product 3", "Organic Valley Ultra Pasteurized Whole Milk", sst.getPageProducts().get(3));
+            assertEquals("filtered product list size", 4, fres.getFilteredProducts().size());
+            assertContentNodeModel("filtered product 0", "Asher's Milk Chocolate Pecan Caramel Pattie", fres.getFilteredProducts().get(0));
+            assertContentNodeModel("filtered product 1", "Organic Valley 1% Milk", fres.getFilteredProducts().get(1));
+            assertContentNodeModel("filtered product 2", "Organic Valley 2% Milk", fres.getFilteredProducts().get(2));
+            assertContentNodeModel("filtered product 3", "Organic Valley Ultra Pasteurized Whole Milk", fres.getFilteredProducts().get(3));
 
             LOGGER.info("test basic search: OK.");
         } catch (JspException e) {
@@ -209,43 +214,46 @@ public class SmartSearchTest extends TestCase {
             request.setupAddParameter("sort", SearchSortType.BY_NAME.getLabel());
             request.setupAddParameter("pageSize", "2");
             request.setupAddParameter("start", "0");
-            sst.setNav(new SearchNavigator(ctx.getRequest()));
             sst.doStartTag();
 
-            assertEquals("currentPage-0", 0, sst.getPageNo());
-            assertEquals("pageSize", 2, sst.getPageSize());
-            assertEquals("start", 0, sst.getPageOffset());
-            assertNotNull("has products", sst.getPageProducts());
+            assertSmartSearchTagResult();
+            assertSelectedCategories(null);
 
-            assertEquals("product list size", 4, sst.getNoOfProducts());
+            FilteredSearchResults fres = (FilteredSearchResults) ctx.getAttribute("searchResults");
+            assertEquals("currentPage-0", 0, fres.getCurrentPage());
+            assertEquals("pageSize", 2, fres.getPageSize());
+            assertEquals("start", 0, fres.getStart());
+            assertNotNull("has products", fres.getProducts());
 
-            assertEquals("pageCount", 2, sst.getPageCount());
+            assertEquals("product list size", 4, fres.getProducts().size());
+
+            assertEquals("pageCount", 2, fres.getPageCount());
 
             assertCategoryTree();
             assertBrandSet();
 
-            assertEquals("filtered product list size", 4, sst.getNoOfBrandFilteredProducts());
-            assertContentNodeModel("filtered product 0", "Asher's Milk Chocolate Pecan Caramel Pattie", sst.getProducts().get(0));
-            assertContentNodeModel("filtered product 1", "Organic Valley 1% Milk", sst.getProducts().get(1));
-            assertContentNodeModel("filtered product 2", "Organic Valley 2% Milk", sst.getProducts().get(2));
-            assertContentNodeModel("filtered product 3", "Organic Valley Ultra Pasteurized Whole Milk", sst.getProducts().get(3));
+            assertEquals("filtered product list size", 4, fres.getFilteredProducts().size());
+            assertContentNodeModel("filtered product 0", "Asher's Milk Chocolate Pecan Caramel Pattie", fres.getFilteredProducts().get(0));
+            assertContentNodeModel("filtered product 1", "Organic Valley 1% Milk", fres.getFilteredProducts().get(1));
+            assertContentNodeModel("filtered product 2", "Organic Valley 2% Milk", fres.getFilteredProducts().get(2));
+            assertContentNodeModel("filtered product 3", "Organic Valley Ultra Pasteurized Whole Milk", fres.getFilteredProducts().get(3));
 
-            assertEquals("first page", 2, sst.getPageProducts().size());
-            assertContentNodeModel("filtered product 0", "Asher's Milk Chocolate Pecan Caramel Pattie", sst.getPageProducts().get(0));
-            assertContentNodeModel("filtered product 1", "Organic Valley 1% Milk", sst.getPageProducts().get(1));
+            assertEquals("first page", 2, fres.getFilteredProductsListPage().size());
+            assertContentNodeModel("filtered product 0", "Asher's Milk Chocolate Pecan Caramel Pattie", fres.getFilteredProductsListPage().get(0));
+            assertContentNodeModel("filtered product 1", "Organic Valley 1% Milk", fres.getFilteredProductsListPage().get(1));
 
             request.setupAddParameter("start", "2");
-            sst.setNav(new SearchNavigator(ctx.getRequest()));
             sst.doStartTag();
 
-            assertEquals("currentPage-0", 1, sst.getPageNo());
-            assertEquals("pageSize", 2, sst.getPageSize());
-            assertEquals("start", 2, sst.getPageOffset());
-            assertEquals("pageCount", 2, sst.getPageCount());
+            fres = (FilteredSearchResults) ctx.getAttribute("searchResults");
+            assertEquals("currentPage-0", 1, fres.getCurrentPage());
+            assertEquals("pageSize", 2, fres.getPageSize());
+            assertEquals("start", 2, fres.getStart());
+            assertEquals("pageCount", 2, fres.getPageCount());
 
-            assertEquals("second page", 2, sst.getPageProducts().size());
-            assertContentNodeModel("filtered product 2", "Organic Valley 2% Milk", sst.getPageProducts().get(0));
-            assertContentNodeModel("filtered product 3", "Organic Valley Ultra Pasteurized Whole Milk", sst.getPageProducts().get(1));
+            assertEquals("second page", 2, fres.getFilteredProductsListPage().size());
+            assertContentNodeModel("filtered product 2", "Organic Valley 2% Milk", fres.getFilteredProductsListPage().get(0));
+            assertContentNodeModel("filtered product 3", "Organic Valley Ultra Pasteurized Whole Milk", fres.getFilteredProductsListPage().get(1));
 
             LOGGER.info("test paging: OK.");
         } catch (JspException e) {
@@ -261,18 +269,21 @@ public class SmartSearchTest extends TestCase {
 
             request.setupAddParameter("searchParams", "milk");
             request.setupAddParameter("sort", SearchSortType.BY_NAME.getLabel());
-            sst.setNav(new SearchNavigator(ctx.getRequest()));
             sst.doStartTag();
 
-            assertNotNull("has products", sst.getPageProducts());
+            assertSmartSearchTagResult();
+            assertSelectedCategories(null);
 
-            assertEquals("product list size", 4, sst.getNoOfProducts());
+            FilteredSearchResults fres = (FilteredSearchResults) ctx.getAttribute("searchResults");
+            assertNotNull("has products", fres.getProducts());
+
+            assertEquals("product list size", 4, fres.getProducts().size());
             assertCategoryTree();
             assertBrandSet();
-            assertContentNodeModel("filtered product 0", "Asher's Milk Chocolate Pecan Caramel Pattie", sst.getPageProducts().get(0));
-            assertContentNodeModel("filtered product 1", "Organic Valley 1% Milk", sst.getPageProducts().get(1));
-            assertContentNodeModel("filtered product 2", "Organic Valley 2% Milk", sst.getPageProducts().get(2));
-            assertContentNodeModel("filtered product 3", "Organic Valley Ultra Pasteurized Whole Milk", sst.getPageProducts().get(3));
+            assertContentNodeModel("filtered product 0", "Asher's Milk Chocolate Pecan Caramel Pattie", fres.getFilteredProducts().get(0));
+            assertContentNodeModel("filtered product 1", "Organic Valley 1% Milk", fres.getFilteredProducts().get(1));
+            assertContentNodeModel("filtered product 2", "Organic Valley 2% Milk", fres.getFilteredProducts().get(2));
+            assertContentNodeModel("filtered product 3", "Organic Valley Ultra Pasteurized Whole Milk", fres.getFilteredProducts().get(3));
             LOGGER.info("testSearchByQ: OK.");
 
         } catch (JspException e) {
@@ -290,19 +301,22 @@ public class SmartSearchTest extends TestCase {
             request.setupAddParameter("sort", SearchSortType.BY_NAME.getLabel());
             request.setupAddParameter("brandValue", "bd_organic_valley");
 
-            sst.setNav(new SearchNavigator(ctx.getRequest()));
             sst.doStartTag();
 
-            assertNotNull("has products", sst.getPageProducts());
+            assertSmartSearchTagResult();
+            assertSelectedCategories(null);
 
-            assertEquals("product list size", 4, sst.getNoOfProducts());
+            FilteredSearchResults fres = (FilteredSearchResults) ctx.getAttribute("searchResults");
+            assertNotNull("has products", fres.getProducts());
+
+            assertEquals("product list size", 4, fres.getProducts().size());
             assertCategoryTree();
             assertBrandSet();
 
-            assertEquals("filtered product list size", 3, sst.getNoOfBrandFilteredProducts());
-            assertContentNodeModel("filtered product 0", "Organic Valley 1% Milk", sst.getPageProducts().get(0));
-            assertContentNodeModel("filtered product 1", "Organic Valley 2% Milk", sst.getPageProducts().get(1));
-            assertContentNodeModel("filtered product 2", "Organic Valley Ultra Pasteurized Whole Milk", sst.getPageProducts().get(2));
+            assertEquals("filtered product list size", 3, fres.getFilteredProducts().size());
+            assertContentNodeModel("filtered product 0", "Organic Valley 1% Milk", fres.getFilteredProducts().get(0));
+            assertContentNodeModel("filtered product 1", "Organic Valley 2% Milk", fres.getFilteredProducts().get(1));
+            assertContentNodeModel("filtered product 2", "Organic Valley Ultra Pasteurized Whole Milk", fres.getFilteredProducts().get(2));
 
             LOGGER.info("testSearchByBrand: OK.");
         } catch (JspException e) {
@@ -320,17 +334,19 @@ public class SmartSearchTest extends TestCase {
             request.setupAddParameter("sort", SearchSortType.BY_NAME.getLabel());
             request.setupAddParameter("catId", "gro_choc_fine");
 
-            sst.setNav(new SearchNavigator(ctx.getRequest()));
             sst.doStartTag();
+            assertSmartSearchTagResult();
+            assertSelectedCategories(new String[] { "gro_choc_fine", "gro_candy", "gro" });
 
-            assertNotNull("has products", sst.getPageProducts());
+            FilteredSearchResults fres = (FilteredSearchResults) ctx.getAttribute("searchResults");
+            assertNotNull("has products", fres.getProducts());
 
-            assertEquals("product list size", 4, sst.getNoOfProducts());
+            assertEquals("product list size", 4, fres.getProducts().size());
             assertCategoryTree();
             assertOneBrandInTheBrandSet("Asher's");
 
-            assertEquals("filtered product list size", 1, sst.getNoOfBrandFilteredProducts());
-            assertContentNodeModel("filtered product 0", "Asher's Milk Chocolate Pecan Caramel Pattie", sst.getPageProducts().get(0));
+            assertEquals("filtered product list size", 1, fres.getFilteredProducts().size());
+            assertContentNodeModel("filtered product 0", "Asher's Milk Chocolate Pecan Caramel Pattie", fres.getFilteredProducts().get(0));
 
             initTag();
 
@@ -338,8 +354,9 @@ public class SmartSearchTest extends TestCase {
             request.setupAddParameter("sort", SearchSortType.BY_NAME.getLabel());
             request.setupAddParameter("catId", "gro_candy_blkch");
 
-            sst.setNav(new SearchNavigator(ctx.getRequest()));
             sst.doStartTag();
+            assertSmartSearchTagResult();
+            assertSelectedCategories(new String[] { "gro_candy_blkch", "gro_choc_fine", "gro_candy", "gro" });
 
             LOGGER.info("testSearchByCategories: OK.");
         } catch (JspException e) {
@@ -358,17 +375,19 @@ public class SmartSearchTest extends TestCase {
             request.setupAddParameter("catId", "orgnat_dai_milk");
             request.setupAddParameter("start", "0");
 
-            sst.setNav(new SearchNavigator(ctx.getRequest()));
             sst.doStartTag();
 
-            assertNotNull("has products", sst.getPageProducts());
+            assertSmartSearchTagResult();
 
-            assertEquals("product list size", 4, sst.getNoOfProducts());
+            FilteredSearchResults fres = (FilteredSearchResults) ctx.getAttribute("searchResults");
+            assertNotNull("has products", fres.getProducts());
+
+            assertEquals("product list size", 4, fres.getProducts().size());
             assertCategoryTree();
             assertOneBrandInTheBrandSet("Organic Valley");
 
-            assertEquals("filtered product list size", 1, sst.getNoOfBrandFilteredProducts());
-            assertContentNodeModel("filtered product 0", "Organic Valley Ultra Pasteurized Whole Milk", sst.getPageProducts().get(0));
+            assertEquals("filtered product list size", 1, fres.getFilteredProducts().size());
+            assertContentNodeModel("filtered product 0", "Organic Valley Ultra Pasteurized Whole Milk", fres.getFilteredProducts().get(0));
 
             LOGGER.info("testSearchByCategoriesAndBrands: OK.");
         } catch (JspException e) {
@@ -385,20 +404,23 @@ public class SmartSearchTest extends TestCase {
             request.setupAddParameter("searchParams", "milk");
             request.setupAddParameter("sort", SearchSortType.BY_PRICE.getLabel());
             request.setupAddParameter("start", "0");
-            sst.setNav(new SearchNavigator(ctx.getRequest()));
             sst.doStartTag();
 
-            assertNotNull("has products", sst.getPageProducts());
+            assertSmartSearchTagResult();
+            assertSelectedCategories(null);
 
-            assertEquals("product list size", 4, sst.getNoOfProducts());
+            FilteredSearchResults fres = (FilteredSearchResults) ctx.getAttribute("searchResults");
+            assertNotNull("has products", fres.getProducts());
+
+            assertEquals("product list size", 4, fres.getProducts().size());
             assertCategoryTree();
             assertBrandSet();
 
-            assertEquals("filtered product list size", 4, sst.getNoOfBrandFilteredProducts());
-            assertContentNodeModel("filtered product 0", "Organic Valley 2% Milk", sst.getPageProducts().get(0));
-            assertContentNodeModel("filtered product 1", "Organic Valley 1% Milk", sst.getPageProducts().get(1));
-            assertContentNodeModel("filtered product 2", "Asher's Milk Chocolate Pecan Caramel Pattie", sst.getPageProducts().get(2));
-            assertContentNodeModel("filtered product 3", "Organic Valley Ultra Pasteurized Whole Milk", sst.getPageProducts().get(3));
+            assertEquals("filtered product list size", 4, fres.getFilteredProducts().size());
+            assertContentNodeModel("filtered product 0", "Organic Valley 2% Milk", fres.getFilteredProducts().get(0));
+            assertContentNodeModel("filtered product 1", "Organic Valley 1% Milk", fres.getFilteredProducts().get(1));
+            assertContentNodeModel("filtered product 2", "Asher's Milk Chocolate Pecan Caramel Pattie", fres.getFilteredProducts().get(2));
+            assertContentNodeModel("filtered product 3", "Organic Valley Ultra Pasteurized Whole Milk", fres.getFilteredProducts().get(3));
 
             LOGGER.info("testSearchWithPriceOrdering: OK.");
 
@@ -416,20 +438,23 @@ public class SmartSearchTest extends TestCase {
             request.setupAddParameter("searchParams", "milk");
             request.setupAddParameter("sort", SearchSortType.BY_POPULARITY.getLabel());
             request.setupAddParameter("start", "0");
-            sst.setNav(new SearchNavigator(ctx.getRequest()));
             sst.doStartTag();
 
-            assertNotNull("has products", sst.getPageProducts());
+            assertSmartSearchTagResult();
+            assertSelectedCategories(null);
 
-            assertEquals("product list size", 4, sst.getNoOfProducts());
+            FilteredSearchResults fres = (FilteredSearchResults) ctx.getAttribute("searchResults");
+            assertNotNull("has products", fres.getProducts());
+
+            assertEquals("product list size", 4, fres.getProducts().size());
             assertCategoryTree();
             assertBrandSet();
 
-            assertEquals("filtered product list size", 4, sst.getNoOfBrandFilteredProducts());
-            assertContentNodeModel("filtered product: pop score 100", "Asher's Milk Chocolate Pecan Caramel Pattie", sst.getPageProducts().get(0));
-            assertContentNodeModel("filtered product: pop score  90", "Organic Valley Ultra Pasteurized Whole Milk", sst.getPageProducts().get(1));
-            assertContentNodeModel("filtered product: pop score  80", "Organic Valley 2% Milk", sst.getPageProducts().get(2));
-            assertContentNodeModel("filtered product: pop score   0", "Organic Valley 1% Milk", sst.getPageProducts().get(3));
+            assertEquals("filtered product list size", 4, fres.getFilteredProducts().size());
+            assertContentNodeModel("filtered product: pop score 100", "Asher's Milk Chocolate Pecan Caramel Pattie", fres.getFilteredProducts().get(0));
+            assertContentNodeModel("filtered product: pop score  90", "Organic Valley Ultra Pasteurized Whole Milk", fres.getFilteredProducts().get(1));
+            assertContentNodeModel("filtered product: pop score  80", "Organic Valley 2% Milk", fres.getFilteredProducts().get(2));
+            assertContentNodeModel("filtered product: pop score   0", "Organic Valley 1% Milk", fres.getFilteredProducts().get(3));
 
             LOGGER.info("testSearchWithRelevancySort: OK.");
 
@@ -447,25 +472,29 @@ public class SmartSearchTest extends TestCase {
             request.setupAddParameter("searchParams", "milk");
             request.setupAddParameter("sort", SearchSortType.BY_RELEVANCY.getLabel());
             request.setupAddParameter("start", "0");
-            sst.setNav(new SearchNavigator(ctx.getRequest()));
             sst.doStartTag();
 
-            assertNotNull("has products", sst.getPageProducts());
+            assertSmartSearchTagResult();
+            assertSelectedCategories(null);
 
-            assertEquals("product list size", 4, sst.getNoOfProducts());
+            FilteredSearchResults fres = (FilteredSearchResults) ctx.getAttribute("searchResults");
+            assertNotNull("has products", fres.getProducts());
+
+            assertEquals("product list size", 4, fres.getProducts().size());
             assertCategoryTree();
             assertBrandSet();
 
-            assertEquals("filtered product list size", 4, sst.getNoOfBrandFilteredProducts());
-            assertContentNodeModelKey("filtered product: pop score  80, user score 3:", "dai_orgval_whlmilk_01", sst.getPageProducts().get(0));
-            assertContentNodeModelKey("filtered product: pop score   0, user score 2:", "dai_organi_1_milk_01", sst.getPageProducts().get(1));
-            assertContentNodeModelKey("filtered product: pop score 100", "cfncndy_ash_mcrrd", sst.getPageProducts().get(2));
-            assertContentNodeModelKey("filtered product: pop score  90", "dai_organi_2_milk_02", sst.getPageProducts().get(3));
+            assertEquals("filtered product list size", 4, fres.getFilteredProducts().size());
+            assertContentNodeModelKey("filtered product: pop score   0, user score 2:", "dai_organi_1_milk_01", fres.getFilteredProducts().get(0));
+            assertContentNodeModelKey("filtered product: pop score  90", "dai_organi_2_milk_02", fres.getFilteredProducts().get(1));
+            assertContentNodeModelKey("filtered product: pop score  80, user score 3:", "dai_orgval_whlmilk_01", fres.getFilteredProducts().get(2));
+            assertContentNodeModelKey("filtered product: pop score 100", "cfncndy_ash_mcrrd", fres.getFilteredProducts().get(3));
 
-            assertContentNodeModel("filtered product: pop score  80, user score 3:", "Organic Valley Ultra Pasteurized Whole Milk", sst.getPageProducts().get(0));
-            assertContentNodeModel("filtered product: pop score   0, user score 2:", "Organic Valley 1% Milk", sst.getPageProducts().get(1));
-            assertContentNodeModel("filtered product: pop score 100", "Asher's Milk Chocolate Pecan Caramel Pattie", sst.getPageProducts().get(2));
-            assertContentNodeModel("filtered product: pop score  90", "Organic Valley 2% Milk", sst.getPageProducts().get(3));
+            assertContentNodeModel("filtered product: pop score   0, user score 2:", "Organic Valley 1% Milk", fres.getFilteredProducts().get(0));
+            assertContentNodeModel("filtered product: pop score  90", "Organic Valley 2% Milk", fres.getFilteredProducts().get(1));
+            assertContentNodeModel("filtered product: pop score  80, user score 3:", "Organic Valley Ultra Pasteurized Whole Milk", fres.getFilteredProducts()
+                    .get(2));
+            assertContentNodeModel("filtered product: pop score 100", "Asher's Milk Chocolate Pecan Caramel Pattie", fres.getFilteredProducts().get(3));
 
             LOGGER.info("testSearchWithRelevancySort: OK.");
 
@@ -480,32 +509,32 @@ public class SmartSearchTest extends TestCase {
         // MockServletContext
         try {
 
-            request.setupAddParameter("searchParams", "organic milk");
+            request.setupAddParameter("searchParams", "chocolate milk dairy organic");
             request.setupAddParameter("sort", SearchSortType.BY_RELEVANCY.getLabel());
             request.setupAddParameter("start", "0");
-            sst.setNav(new SearchNavigator(ctx.getRequest()));
             sst.doStartTag();
 
-            CategoryNodeTree tree = sst.getCategoryTree();
-            assertNotNull("tree roots", tree.getRoots());
-            assertEquals("root nodes", 2, tree.getRoots().size());
-            Iterator<TreeElement> iter = tree.getRoots().iterator();
+            assertSmartSearchTagResult();
+            assertSelectedCategories(null);
 
-            assertTreeElement("root element 1", "Dairy", 2, 1, (TreeElement) iter.next());
-            assertTreeElement("root element 2", "Organic & All-Natural", 1, 1, (TreeElement) iter.next());
-            
-            assertNotNull("has products", sst.getPageProducts());
+            FilteredSearchResults fres = (FilteredSearchResults) ctx.getAttribute("searchResults");
+            assertNotNull("has products", fres.getProducts());
 
-            assertEquals("product list size", 3, sst.getNoOfProducts());
+            assertEquals("product list size", 4, fres.getProducts().size());
+            assertCategoryTree();
+            assertBrandSet();
 
-            Set<BrandModel> brandSet = sst.getBrands();
-            assertEquals("brand set size", 1, brandSet.size());
-            assertContentNodeWithNameInTheCollection("brandset", brandSet, "Organic Valley");
-            
-            assertEquals("filtered product list size", 3, sst.getNoOfBrandFilteredProducts());
-            assertContentNodeModelKey("filtered product: pop score", "dai_orgval_whlmilk_01", sst.getPageProducts().get(0));
-            assertContentNodeModelKey("filtered product: pop score", "dai_organi_1_milk_01", sst.getPageProducts().get(1));
-            assertContentNodeModelKey("filtered product: pop score", "dai_organi_2_milk_02", sst.getPageProducts().get(2));
+            assertEquals("filtered product list size", 4, fres.getFilteredProducts().size());
+            assertContentNodeModelKey("filtered product: pop score   0, user score 2:", "dai_organi_1_milk_01", fres.getFilteredProducts().get(0));
+            assertContentNodeModelKey("filtered product: pop score  90", "dai_organi_2_milk_02", fres.getFilteredProducts().get(1));
+            assertContentNodeModelKey("filtered product: pop score  80, user score 3:", "dai_orgval_whlmilk_01", fres.getFilteredProducts().get(2));
+            assertContentNodeModelKey("filtered product: pop score 100", "cfncndy_ash_mcrrd", fres.getFilteredProducts().get(3));
+
+            assertContentNodeModel("filtered product: pop score   0, user score 2:", "Organic Valley 1% Milk", fres.getFilteredProducts().get(0));
+            assertContentNodeModel("filtered product: pop score  90", "Organic Valley 2% Milk", fres.getFilteredProducts().get(1));
+            assertContentNodeModel("filtered product: pop score  80, user score 3:", "Organic Valley Ultra Pasteurized Whole Milk", fres.getFilteredProducts()
+                    .get(2));
+            assertContentNodeModel("filtered product: pop score 100", "Asher's Milk Chocolate Pecan Caramel Pattie", fres.getFilteredProducts().get(3));
 
             LOGGER.info("testSearchWithRelevancySort: OK.");
 
@@ -520,27 +549,39 @@ public class SmartSearchTest extends TestCase {
     }
 
     private void assertCategoryTree() {
-        CategoryNodeTree tree = sst.getCategoryTree();
+        CategoryNodeTree tree = (CategoryNodeTree) ctx.getAttribute("categoryTree");
         assertNotNull("tree roots", tree.getRoots());
         assertEquals("root nodes", 3, tree.getRoots().size());
-        Iterator<TreeElement> iter = tree.getRoots().iterator();
+        Iterator iter = tree.getRoots().iterator();
 
-        assertTreeElement("root element 1", "Dairy", 2, 1, iter.next());
-        assertTreeElement("root element 2", "Organic & All-Natural", 1, 1, iter.next());
-        assertTreeElement("root element 3", "Grocery", 1, 1, iter.next());
+        assertTreeElement("root element 1", "Dairy", 2, 1, (TreeElement) iter.next());
+        assertTreeElement("root element 2", "Organic & All-Natural", 1, 1, (TreeElement) iter.next());
+        assertTreeElement("root element 3", "Grocery", 1, 1, (TreeElement) iter.next());
     }
 
     private void assertBrandSet() {
-        Set<BrandModel> brandSet = sst.getBrands();
+        Set brandSet = (Set) ctx.getAttribute("brandSet");
         assertEquals("brand set size", 2, brandSet.size());
         assertContentNodeWithNameInTheCollection("brandset", brandSet, "Asher's");
         assertContentNodeWithNameInTheCollection("brandset", brandSet, "Organic Valley");
     }
 
     private void assertOneBrandInTheBrandSet(String name) {
-        Set<BrandModel> brandSet = sst.getBrands();
+        Set brandSet = (Set) ctx.getAttribute("brandSet");
         assertEquals("brand set size", 1, brandSet.size());
         assertContentNodeWithNameInTheCollection("brandset", brandSet, name);
+    }
+
+    private void assertSelectedCategories(String[] categories) {
+        Set selcat = (Set) ctx.getAttribute("selectedCategories");
+        if (categories != null) {
+            assertEquals("selected categories size", categories.length, selcat.size());
+            for (int i = 0; i < categories.length; i++) {
+                assertTrue("selected categories contains:" + categories[i], selcat.contains(categories[i]));
+            }
+        } else {
+            assertEquals("selected categories is zerro", 0, selcat.size());
+        }
     }
 
     private void assertContentNodeWithNameInTheCollection(String errorMsg, Collection collection, String fullName) {
@@ -555,6 +596,25 @@ public class SmartSearchTest extends TestCase {
 
     static void assertContentNodeModel(String desc, String fullName, Object object) {
         assertEquals(desc, fullName, ((ContentNodeModel) object).getFullName());
+    }
+
+    private void assertSmartSearchTagResult() {
+        assertNotNull("categoryTree", ctx.getAttribute("categoryTree"));
+        assertNotNull("filteredCategoryTree", ctx.getAttribute("filteredCategoryTree"));
+        assertNotNull("searchResults", ctx.getAttribute("searchResults"));
+        assertNotNull("brandSet", ctx.getAttribute("brandSet"));
+        assertNotNull("categorySet", ctx.getAttribute("categorySet"));
+        assertNotNull("selectedCategories", ctx.getAttribute("selectedCategories"));
+        assertNotNull("productList", ctx.getAttribute("productList"));
+
+        assertTrue("searchResults is FilteredSearchResults", ctx.getAttribute("searchResults") instanceof FilteredSearchResults);
+        assertTrue("categoryTree is CategoryNodeTree", ctx.getAttribute("categoryTree") instanceof CategoryNodeTree);
+        assertTrue("filteredCategoryTree is CategoryNodeTree", ctx.getAttribute("filteredCategoryTree") instanceof CategoryNodeTree);
+
+        assertTrue("brandSet is Set", ctx.getAttribute("brandSet") instanceof Set);
+        assertTrue("categorySet is Set", ctx.getAttribute("categorySet") instanceof Set);
+        assertTrue("selectedCategories is Set", ctx.getAttribute("selectedCategories") instanceof Set);
+        assertTrue("productList is List", ctx.getAttribute("productList") instanceof List);
     }
 
     private void assertTreeElement(String name, String modelName, int depthChildCount, int childCount, TreeElement element) {

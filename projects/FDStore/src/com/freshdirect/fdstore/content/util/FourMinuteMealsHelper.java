@@ -39,7 +39,7 @@ import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.util.DYFUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
+import com.freshdirect.smartstore.sorting.ShortTermPopularityComparator;
 
 
 public class FourMinuteMealsHelper {
@@ -1021,7 +1021,7 @@ public class FourMinuteMealsHelper {
 			
 			
 		} else if ( sortPopularity.equals( sortMode ) ) {
-			Comparator<ProductModel> popComp = ScriptedContentNodeComparator.createShortTermPopuplairtyComparator(null, pricingContext);
+			Comparator<ContentNodeModel> popComp = new ShortTermPopularityComparator( false, pricingContext );
 			Collections.sort( pricedWorkSet, popComp );
 			
 			result.setSingleList( pricedWorkSet );

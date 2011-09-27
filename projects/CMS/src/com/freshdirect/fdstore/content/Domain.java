@@ -17,11 +17,11 @@ public final class Domain extends ContentNodeModelImpl {
 	}
     
     public String getName(){
-        return getAttribute("NAME", this.getContentKey().getId());
+        return getAttribute("NAME", this.getCMSNode().getKey().getId());
     }
 
     public String getLabel(){
-        return getAttribute("Label", this.getContentKey().getId());
+        return getAttribute("Label", this.getCMSNode().getKey().getId());
     }
     
     public List<DomainValue> getDomainValues() {

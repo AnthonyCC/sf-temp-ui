@@ -1,4 +1,3 @@
-<%@page import="com.freshdirect.fdstore.FDProductInfo"%>
 <%@ page 
 		contentType="image/jpg" 
 		import='java.net.URL, java.awt.*, java.awt.event.*, java.awt.image.*, java.io.*, javax.imageio.*, com.sun.image.codec.jpeg.*, com.freshdirect.fdstore.content.ProductModel, com.freshdirect.fdstore.content.*, com.freshdirect.webapp.util.*, com.freshdirect.framework.util.log.LoggerFactory, org.apache.log4j.Category, com.freshdirect.fdstore.content.ContentFactory, com.freshdirect.cms.ContentKey, com.freshdirect.framework.util.NVL, com.freshdirect.fdstore.FDStoreProperties, com.freshdirect.webapp.util.JspMethods';
@@ -213,8 +212,7 @@ if ( !"".equals(id)) {
 			//found a valid SKU
 			log(myDebug, "Using sku : "+sku);
 			if ("-1".equals(rVal)) {
-			    FDProductInfo f = sku.getProductInfo();
-				rVal = f.getRating() != null ? f.getRating().getStatusCode() : null;
+				rVal = sku.getProductInfo().getRating();
 				//no need to add leading zero to rating here, we'll do it further down
 			}
 			product = sku.getProductModel();

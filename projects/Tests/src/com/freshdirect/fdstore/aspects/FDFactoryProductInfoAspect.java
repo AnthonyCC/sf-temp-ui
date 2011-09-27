@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.mockejb.interceptor.InvocationContext;
 
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
@@ -25,9 +26,12 @@ import com.freshdirect.fdstore.ZonePriceInfoListing;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.TestFDInventoryCache;
+import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
 import com.freshdirect.framework.util.DateUtil;
 
-public class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
+public class FDFactoryProductInfoAspect extends BaseAspect {
+
+    final static Logger LOG = Logger.getLogger(FDFactoryProductInfoAspect.class);
     
     Set<String> avialableSkus     = new HashSet<String>();
     Set<String> tomorrowAvailable = new HashSet<String>();
@@ -36,7 +40,7 @@ public class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
     Map<String, List<ZonePriceInfoModel>> zonePrices = new HashMap<String, List<ZonePriceInfoModel>> ();
 
     public FDFactoryProductInfoAspect() {
-        super();
+        super(new DebugMethodPatternPointCut("FDFactorySessionBean\\.getProductInfo\\(java.lang.String\\)"));
     }
     
     public FDFactoryProductInfoAspect addAvailableSku(String sku) {
@@ -79,6 +83,12 @@ public class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
         return this;
     }
 
+    public void intercept(InvocationContext ctx) throws Exception {
+        String sku = (String) ctx.getParamVals()[0];
+        LOG.info("getProductInfo for "+sku);
+        ctx.setReturnObject(getProductInfo(sku));
+    }
+
     /**
      * Get current product information object for sku.
      * 
@@ -117,7 +127,7 @@ public class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
     		
     		fillZonePriceList(sku, dummyList);
 
-            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,null, null, dummyList, null, null, null);
+            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"", null, dummyList, null, "", null);
         } else if (tomorrowAvailable.contains(sku)) {
             // return this item as available by tomorrow, but not today
             Date tomorrow = DateUtil.addDays(now, 1);
@@ -129,7 +139,7 @@ public class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
     		ZonePriceInfoModel dummy = new ZonePriceInfoModel(price, promoPrice, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
                 fillZonePriceList(sku, dummyList);
     		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,null,null, dummyList, null, null, null);
+            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null, dummyList, null, "", null);
         } else {
             // fallback: return any unknown item as unavailable
             // a 0 units available starting now
@@ -138,7 +148,7 @@ public class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
        		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
     		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 0.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
     		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);            
-            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.DISCONTINUED, now,inventoryCache,null, null, dummyList, null, null, null);
+            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.DISCONTINUED, now,inventoryCache,"", null, dummyList, null, "", null);
         }
 
         return productInfo;

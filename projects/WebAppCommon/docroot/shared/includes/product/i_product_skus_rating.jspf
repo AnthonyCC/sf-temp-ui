@@ -36,12 +36,12 @@
 	}
 
 	if ( matchFound ) {
-		if ( productInfo.getRating() != null ) { 
+		if ( productInfo.getRating() != null && productInfo.getRating().trim().length() > 0 ) { 
 				
 			String rating="";
-			EnumOrderLineRating enumRating = productInfo.getRating();
+			EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(productInfo.getRating());
 				
-			if ( enumRating.isEligibleToDisplay() ) {
+			if ( enumRating != null && enumRating.isEligibleToDisplay() ) {
 				rating = enumRating.getStatusCodeInDisplayFormat();
 				%>
 				<table cellpadding="0" cellspacing="0" border="0" <% if (alignRight) { %>align="right"<% } %>>
@@ -97,11 +97,11 @@
 	}
 
 	if ( matchFound ) {
-		if ( productInfo.getSustainabilityRating() != null ) { 
+		if ( productInfo.getSustainabilityRating() != null && productInfo.getSustainabilityRating().trim().length() > 0 ) { 
 				
 			String rating="";
-			EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating();
-				if ( enumRating.isEligibleToDisplay() ) {
+			EnumSustainabilityRating enumRating=EnumSustainabilityRating.getEnumByStatusCode(productInfo.getSustainabilityRating());
+				if ( enumRating != null && enumRating.isEligibleToDisplay() ) {
 					rating = enumRating.getStatusCodeInDisplayFormat();
 					%>
 					<table cellpadding="0" cellspacing="0" border="0" <% if (alignRight) { %>align="right"<% } %>>

@@ -109,7 +109,6 @@ for(Iterator kItr = DAYS.keySet().iterator(); kItr.hasNext() && daysIndx==null; 
 
 boolean hasAlcohol=categoryModel != null && categoryModel.isHavingBeer();
 FDSessionUser yser = (FDSessionUser)session.getAttribute(SessionName.USER);
-yser.setHealthWarningAcknowledged(true);
 if(hasAlcohol && !yser.isHealthWarningAcknowledged()){
 	String redirectURL = "/health_warning.jsp?successPage=/newwines.jsp"+URLEncoder.encode("?"+request.getQueryString());
 	response.sendRedirect(response.encodeRedirectURL(redirectURL));
@@ -157,12 +156,11 @@ String pagingLinks = "";
    <oscache:cache time="3600" key='<%= "newwines/" + days %>'>
 <%
 try {
-	NewProductsNavigator nav = new NewProductsNavigator(request);
 %>
-<fd:GetNewProducts id="newProducts" nav="<%= nav %>">
+<fd:GetNewProducts searchResults="results" productList="products" categorySet="categorySet" brandSet="brandSet" categoryTree="categoryTree" filteredCategoryTreeName="filteredCategoryTree" navigator="nav">
 <%
 //List products = new ArrayList();
-for(Iterator availItr = newProducts.getPageProducts().iterator();availItr.hasNext();) {
+for(Iterator availItr = products.iterator();availItr.hasNext();) {
     Object availObject = availItr.next();
     if (availObject instanceof ProductModel && ((ProductModel)availObject).isUnavailable()) {
        continue;

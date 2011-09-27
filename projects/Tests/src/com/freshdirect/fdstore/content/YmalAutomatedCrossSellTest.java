@@ -52,7 +52,6 @@ import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.ZonePriceInfoListing;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.ZonePriceListing;
-import com.freshdirect.fdstore.aspects.BaseProductInfoAspect;
 import com.freshdirect.fdstore.content.ProductAutoconfigureTest.FDFactoryProductAspect;
 import com.freshdirect.fdstore.content.ProductAutoconfigureTest.FDFactoryProductInfoAspect;
 import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
@@ -532,8 +531,16 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 		return ContentFactory.getInstance().getContentNode(id);
 	}
 
-	public static class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
+	public static class FDFactoryProductInfoAspect implements Aspect {
 
+		public Pointcut getPointcut() {
+			return new DebugMethodPatternPointCut("FDFactorySessionBean\\.getProductInfo\\(java.lang.String\\)");
+		}
+
+		public void intercept(InvocationContext ctx) throws Exception {
+			String sku = (String) ctx.getParamVals()[0];
+			ctx.setReturnObject(getProductInfo(sku));
+		}
 	    
 		/**
 		 * Get current product information object for sku.
@@ -557,8 +564,14 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 			erpEntries.add(new ErpInventoryEntryModel(now, 10000));
 			inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, erpEntries));
 
-			return createProductInfo(sku, now, materials, inventoryCache);
+			ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
+			ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+			dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
+			productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList, null,"", null);
+			
+			return productInfo;
 		}
+	    
 	}
 
 	public static class FDFactoryProductAspect implements Aspect {

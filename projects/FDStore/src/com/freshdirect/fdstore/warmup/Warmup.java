@@ -46,8 +46,8 @@ import com.freshdirect.smartstore.service.SearchScoringRegistry;
 import com.freshdirect.smartstore.service.VariantRegistry;
 
 /**
- * 
- * 
+ *
+ *
  * @version $Revision$
  * @author $Author$
  */
@@ -55,7 +55,7 @@ public class Warmup {
 
 	private static Category LOGGER = LoggerFactory.getInstance(Warmup.class);
 
-	protected Set<String> skuCodes;
+	protected Set skuCodes;
 	protected ContentFactory contentFactory;
 
 	public Warmup() {
@@ -64,7 +64,7 @@ public class Warmup {
 
 	public Warmup(ContentFactory contentFactory) {
 		this.contentFactory = contentFactory;
-		this.skuCodes = new HashSet<String>(8000);
+		this.skuCodes = new HashSet(8000);
 	}
 
 	public void warmup() {
@@ -72,43 +72,41 @@ public class Warmup {
 		LOGGER.info("Warmup started");
 		long time = System.currentTimeMillis();
 		contentFactory.getStore();
-		LOGGER.info("Store warmup in " + (System.currentTimeMillis() - time) + " ms");
+		LOGGER.info("Store warmup in "+ (System.currentTimeMillis() - time) + " ms");
 
-		Set<ContentKey> skuContentKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.SKU);
-		for (Iterator<ContentKey> i = skuContentKeys.iterator(); i.hasNext();) {
+		Set skuContentKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.SKU);
+		for (Iterator i=skuContentKeys.iterator(); i.hasNext(); ) {
 			ContentKey key = (ContentKey) i.next();
 			skuCodes.add(key.getId());
 		}
 
 		LOGGER.info(skuCodes.size() + " SKUs found");
-
+		
 		// Get instance loads up the inventory
 		FDInventoryCache.getInstance();
-		// Get instance loads up the Attributes
+		//Get instance loads up the Attributes
 		FDAttributeCache.getInstance();
-		// Get instance loads up the Nutrition
+		//Get instance loads up the Nutrition
 		FDNutritionCache.getInstance();
-
+		
+		if (FDStoreProperties.isPreloadAutocompletions()) {
+			ContentSearch.getInstance().getAutocompletions("qwertyuqwerty");
+		}
 		LOGGER.info("main warmup in " + (System.currentTimeMillis() - time) + " ms");
-
+		
 		new Thread("warmup-step-2") {
 			public void run() {
 				try {
-					// Warmup
+					// Warmup					
 					warmupZones();
 					warmupProducts();
-					if (FDStoreProperties.isPreloadAutocompletions()) {
-						ContentSearch.getInstance().getProductAutocompletions("qwertyuqwerty", 10);
-						ContentSearch.getInstance().getBrandAutocompletions("qwertyuqwerty", 10);
-					}
-
 					warmupProductNewness();
-
 					warmupGroupes();
+					
 					contentFactory.refreshWineIndex(true);
 					WineFilterPriceIndex.getInstance();
 					WineFilterRatingIndex.getInstance();
-
+					
 					if (FDStoreProperties.isPreloadSmartStore()) {
 						LOGGER.info("preloading Smart Store");
 						VariantRegistry.getInstance().reload();
@@ -125,25 +123,24 @@ public class Warmup {
 					LOGGER.error("Warmup failed", e);
 				}
 			}
-		}.start();
+		}
+		.start();
 	}
-
+	
 	private final static int MAX_THREADS = 2;
 	private final static int GRAB_SIZE = 100;
-
+	
 	private void warmupSmartCategories() {
 		Set<ContentKey> categories = CmsManager.getInstance().getContentKeysByType(ContentType.get("Category"));
 		LOGGER.info("found " + categories.size() + " categories");
 		try {
-			@SuppressWarnings("unchecked")
 			Collection<String> zones = FDZoneInfoManager.loadAllZoneInfoMaster();
 			for (ContentKey catKey : categories) {
 				ContentNodeModel node = contentFactory.getContentNodeByKey(catKey);
 				if (node instanceof CategoryModel) {
 					CategoryModel category = (CategoryModel) node;
 					if (category.getRecommender() != null) {
-						LOGGER.info("category " + category.getContentName() + " is smart, pre-loading child products for "
-								+ zones.size() + " zones");
+						LOGGER.info("category " + category.getContentName() + " is smart, pre-loading child products for " + zones.size() + " zones");
 						for (String zone : zones) {
 							contentFactory.setCurrentPricingContext(new PricingContext(zone));
 							category.getProducts();
@@ -159,12 +156,10 @@ public class Warmup {
 	private void warmupProducts() throws FDResourceException {
 		LOGGER.info("Loading lightweight product data");
 
-		@SuppressWarnings("unchecked")
-		final List<FDProductInfo> prodInfos = new ArrayList(FDCachedFactory.getProductInfos((String[]) this.skuCodes.toArray(new String[0])));
-		// Filter discontinued Products
+		final List prodInfos = new ArrayList(FDCachedFactory.getProductInfos((String[]) this.skuCodes.toArray(new String[0])));
+		//Filter discontinued Products
 		filterDiscontinuedProducts(prodInfos);
-		calculateMaximumVersion(prodInfos);
-		LOGGER.info("Lightweight product data loaded (max version:" + FDCachedFactory.getMaxKnownVersion() + ")");
+		LOGGER.info("Lightweight product data loaded");
 
 		LOGGER.info("Loading heavyweight product data in " + MAX_THREADS + " threads");
 
@@ -182,7 +177,7 @@ public class Warmup {
 								break;
 							}
 							// grab some items, and remove from prodInfos list
-							List<FDProductInfo> subList = prodInfos.subList(0, Math.min(pSize, GRAB_SIZE));
+							List subList = prodInfos.subList(0, Math.min(pSize, GRAB_SIZE));
 							skus = (FDSku[]) subList.toArray(DUMMY_ARRAY);
 							subList.clear();
 							LOGGER.debug(pSize + " items left to load");
@@ -200,44 +195,34 @@ public class Warmup {
 			t.start();
 		}
 	}
-
-	/**
-	 * @param prodInfos
-	 */
-	private void calculateMaximumVersion(final List<FDProductInfo> prodInfos) {
-		int version = 0;
-		for (Iterator<FDProductInfo> it = prodInfos.iterator(); it.hasNext();) {
-			FDProductInfo prodInfo = it.next();
-			version = Math.max(version, prodInfo.getVersion());
-		}
-		FDCachedFactory.setMaxKnownVersion(Math.max(FDCachedFactory.getMaxKnownVersion(), version));
-	}
-
-	private void filterDiscontinuedProducts(List<FDProductInfo> prodInfos) {
-		for (Iterator<FDProductInfo> it = prodInfos.iterator(); it.hasNext();) {
-			FDProductInfo prodInfo = it.next();
-			if (prodInfo.isDiscontinued()) {
+	
+	private void filterDiscontinuedProducts(List prodInfos) {
+		for(Iterator it=prodInfos.iterator(); it.hasNext();){
+			FDProductInfo prodInfo = (FDProductInfo) it.next();
+			if(prodInfo.isDiscontinued()){
 				it.remove();
 			}
 		}
 	}
-
+	
 	private void warmupZones() throws FDResourceException {
 		LOGGER.info("Loading zone data");
-		@SuppressWarnings("unchecked")
-		Collection zoneInfoList = FDZoneInfoManager.loadAllZoneInfoMaster();
-		@SuppressWarnings("unchecked")
+		Collection zoneInfoList=FDZoneInfoManager.loadAllZoneInfoMaster();	
 		final List zoneInfos = new ArrayList(FDCachedFactory.getZoneInfos((String[]) zoneInfoList.toArray(new String[0])));
-		LOGGER.info("Lightweight zone data loaded size is :" + zoneInfos.size());
-	}
+		
+		LOGGER.info("Lightweight zone data loaded size is :"+zoneInfos.size());
 
+	}
+	
+	
+	
 	private void warmupGroupes() throws FDResourceException {
 		LOGGER.info("Loading grp data");
-		Collection<FDGroup> grpInfoList=FDGrpInfoManager.loadAllGrpInfoMaster();
+		Collection<FDGroup> grpInfoList=FDGrpInfoManager.loadAllGrpInfoMaster();	
 		final List<GroupScalePricing> grpInfos = new ArrayList<GroupScalePricing>(FDCachedFactory.getGrpInfos((FDGroup[]) grpInfoList.toArray(new FDGroup[0])));
+		
 		LOGGER.info("Lightweight grp data loaded size is :"+grpInfos.size());
 	}
-
 	private void warmupProductNewness() throws FDResourceException {
 		// initiating the asynchronous load of new and reintroduced products cache
 		if (FDStoreProperties.isPreloadNewness()) {
@@ -245,7 +230,7 @@ public class Warmup {
 			contentFactory.getNewProducts();
 			LOGGER.info("finished preloading product newness");
 		} else {
-			LOGGER.info("skipped preloading product newness");
+			LOGGER.info("skipped preloading product newness");			
 		}
 
 		if (FDStoreProperties.isPreloadReintroduced()) {
@@ -253,7 +238,7 @@ public class Warmup {
 			contentFactory.getBackInStockProducts();
 			LOGGER.info("finished preloading reintroduced products");
 		} else {
-			LOGGER.info("skipped preloading reintroduced products");
+			LOGGER.info("skipped preloading reintroduced products");			
 		}
 	}
 

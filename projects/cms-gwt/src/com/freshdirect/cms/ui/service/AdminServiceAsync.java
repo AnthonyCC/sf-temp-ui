@@ -8,8 +8,6 @@ public interface AdminServiceAsync {
     public void rebuildIndexes(AsyncCallback<AdminProcStatus> callback);
     
     public void rebuildWineIndexes(AsyncCallback<AdminProcStatus> callback);
-
-    public void rebuildAutocomplete(AsyncCallback<AdminProcStatus> callback);
     
     public void validateEditors(AsyncCallback<AdminProcStatus> callback);
     

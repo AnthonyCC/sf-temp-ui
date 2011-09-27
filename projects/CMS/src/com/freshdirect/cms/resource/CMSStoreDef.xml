@@ -27,7 +27,6 @@
 				<DestinationDef contentType="YmalSet" />
 				<DestinationDef contentType="StarterList" />
 				<DestinationDef contentType="Synonym"/>
-				<DestinationDef contentType="SpellingSynonym"/>
 				<DestinationDef contentType="SearchRelevancyList"/>
 				<DestinationDef contentType="FavoriteList"/>
 				<DestinationDef contentType="Recommender"/>
@@ -1469,18 +1468,11 @@
 	
 	<ContentTypeDef name="Synonym"  generateId="true">
 		<AttributeDefs>
-			<AttributeDef name="word" label="Word(s)" type="S" required="true"/>
-			<AttributeDef name="synonymValue" label="Equivalent Substitute(s)" type="S" required="true"/>
-			<AttributeDef name="bidirectional" label="Bidirectional?" type="B" required="false"/>
+			<AttributeDef name="word" type="S" required="true"/>
+			<AttributeDef name="synonymValue" label="Synonym To" type="S" required="true"/>
 		</AttributeDefs>
 	</ContentTypeDef>
 	
-	<ContentTypeDef name="SpellingSynonym"  generateId="true">
-		<AttributeDefs>
-			<AttributeDef name="word" type="S" label="Word(s)" required="true"/>
-			<AttributeDef name="synonymValue" label="Misspelled Subistitute(s)" type="S" required="true"/>
-		</AttributeDefs>
-	</ContentTypeDef>
 	
 	<ContentTypeDef name="SearchRelevancyList" generateId="true">
 		<AttributeDefs>

@@ -22,8 +22,7 @@
 			<CmsEditor ref="recipeVariant" />
 			<CmsEditor ref="configuredProductGroup" />
 			<CmsEditor ref="ymalSet" />
-			<CmsEditor ref="synonym" />
-			<CmsEditor ref="spellingSynonym" />
+			<CmsEditor ref="starterList" />
 			<CmsEditor ref="recommender" />
 			<CmsEditor ref="recommenderStrategy" />
 			<CmsEditor ref="faq" />
@@ -1322,43 +1321,6 @@
 							<CmsField><attribute>BLOG_ENTRY_COUNT</attribute></CmsField>
 							<CmsField><attribute>EDITORIAL_MAIN</attribute></CmsField>
 							<CmsField><attribute>EDITORIAL_SIDE</attribute></CmsField>
-						</fields>
-					</CmsSection>
-				</sections>
-			</CmsPage>
-		</pages>
-	</CmsEditor>
-
-	<CmsEditor id="synonym">
-		<contentType>Synonym</contentType>
-		<pages>
-			<CmsPage>
-				<title>Core Attributes</title>
-				<sections>
-					<CmsSection>
-						<title>Synonym Attributes</title>
-						<fields>
-							<CmsField><attribute>word</attribute></CmsField>
-							<CmsField><attribute>synonymValue</attribute></CmsField>
-							<CmsField><attribute>bidirectional</attribute></CmsField>
-						</fields>
-					</CmsSection>
-				</sections>
-			</CmsPage>
-		</pages>
-	</CmsEditor>
-
-	<CmsEditor id="spellingSynonym">
-		<contentType>SpellingSynonym</contentType>
-		<pages>
-			<CmsPage>
-				<title>Core Attributes</title>
-				<sections>
-					<CmsSection>
-						<title>Spelling Synonym Attributes</title>
-						<fields>
-							<CmsField><attribute>word</attribute></CmsField>
-							<CmsField><attribute>synonymValue</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>

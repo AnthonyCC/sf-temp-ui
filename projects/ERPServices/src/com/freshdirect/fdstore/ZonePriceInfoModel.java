@@ -2,10 +2,8 @@ package com.freshdirect.fdstore;
 
 import java.io.Serializable;
 
-public class ZonePriceInfoModel implements Serializable, Cloneable {
-    private static final long serialVersionUID = -652975300786917834L;
-
-    /** Default price in USD */
+public class ZonePriceInfoModel implements Serializable {
+	/** Default price in USD */
 	private final double sellingPrice;
 
 	private final double promoPrice;
@@ -120,12 +118,4 @@ public class ZonePriceInfoModel implements Serializable, Cloneable {
                  + " showBurstImage:" + showBurstImage + "]";
      }
 
-    @Override
-    public ZonePriceInfoModel clone() {
-        try {
-            return (ZonePriceInfoModel) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
