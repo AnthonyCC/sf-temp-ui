@@ -141,6 +141,9 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 					  boolean e = evaluate(cartLine, promotionCode, context);
 					  if(e) {
 						int availableSkuLimit = skuLimit - cart.getSkuCount();
+						if(availableSkuLimit > (int)cartLine.getQuantity()) {
+							availableSkuLimit = (int)cartLine.getQuantity();
+						}
 						boolean applied = context.applyLineItemDollarOffDiscount(promo, cartLine, discountRule.getMaxAmount(), availableSkuLimit);
 						if(applied && skuLimit > 0) {
 							if(cartLine.getUnitPrice().indexOf("/lb") != -1) {
@@ -220,6 +223,9 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 					boolean e = evaluate(cartLine, promotionCode, context);
 					if(e) {
 						int availableSkuLimit = skuLimit - cart.getSkuCount();
+						if(availableSkuLimit > (int)cartLine.getQuantity()) {
+							availableSkuLimit = (int)cartLine.getQuantity();
+						}
 						boolean applied = context.applyLineItemDiscount(promo, cartLine, percentOff, availableSkuLimit);
 						if(applied && skuLimit > 0) {
 							if(cartLine.getUnitPrice().indexOf("/lb") != -1) {
