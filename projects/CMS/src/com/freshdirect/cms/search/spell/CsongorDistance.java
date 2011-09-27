@@ -8,7 +8,7 @@ import com.freshdirect.cms.search.term.DiacriticsRemoval;
 import com.freshdirect.framework.util.IndexArray;
 
 public class CsongorDistance implements StringDistance {
-	private final static char EMPTY = '\0';
+	private final static String EMPTY = "";
 
 	private static class Position {
 		int i1;
@@ -33,8 +33,8 @@ public class CsongorDistance implements StringDistance {
 	private static class Alternative implements Cloneable {
 		int d = 0;
 		Position pos = new Position();
-		char ch1 = EMPTY;
-		char ch2 = EMPTY;
+		String ch1 = EMPTY;
+		String ch2 = EMPTY;
 		boolean finished = false;
 
 		@Override
@@ -50,40 +50,29 @@ public class CsongorDistance implements StringDistance {
 		private void updateAltForPos(Position pos, String s1, String s2) {
 			String t1 = s1.substring(this.pos.i1, this.pos.i1 + pos.i1);
 			String t2 = s2.substring(this.pos.i2, this.pos.i2 + pos.i2);
-			if (t1.length() == 0)
-				d += t2.length();
-			else if (t2.length() == 0)
-				d += t1.length();
-			else
-				d += t1.length() * t2.length();
-			ch1 = t1.isEmpty() || t1.length() == t2.length() ? EMPTY : t1.charAt(t1.length() - 1);
-			ch2 = t2.isEmpty() || t1.length() == t2.length() ? EMPTY : t2.charAt(t2.length() - 1);
+			d += Math.max(t1.length(), t2.length());
+			int c1 = 0;
+			int c2 = 0;
+			for (int i = 0; i < Math.min(t1.length(), ch2.length()); i++)
+				if (t1.charAt(i) == ch2.charAt(i))
+					c1++;
+				else
+					break;
+			for (int i = 0; i < Math.min(t2.length(), ch1.length()); i++)
+				if (t2.charAt(i) == ch1.charAt(i))
+					c2++;
+				else
+					break;
+			d -= Math.max(c1, c2);
+			if (pos.i1 != pos.i2) {
+				ch1 = new StringBuilder(t1).toString();
+				ch2 = new StringBuilder(t2).toString();
+			} else {
+				ch1 = EMPTY;
+				ch2 = EMPTY;
+			}
 			this.pos.i1 += pos.i1 + 1;
 			this.pos.i2 += pos.i2 + 1;
-		}
-
-		private Alternative compensateSwaps(String s1, String s2) {
-			boolean cs1 = false;
-			boolean cs2 = false;
-			if (ch1 != EMPTY && ch1 == charAt(s2, pos.i2))
-				cs1 = true;
-			if (ch2 != EMPTY && ch2 == charAt(s1, pos.i1))
-				cs2 = true;
-			if (cs1 && cs2) {
-				Alternative newAlt = this.clone();
-				ch1 = EMPTY;
-				pos.i2++;
-				newAlt.ch2 = EMPTY;
-				newAlt.pos.i1++;
-				return newAlt;
-			} else if (cs1 && !cs2) {
-				ch1 = EMPTY;
-				pos.i2++;
-			} else if (!cs1 && cs2) {
-				ch2 = EMPTY;
-				pos.i1++;
-			}
-			return null;
 		}
 
 		static boolean step(List<Alternative> alts, String s1, String s2) {
@@ -94,14 +83,24 @@ public class CsongorDistance implements StringDistance {
 					continue;
 				if (alt.pos.i1 < s1.length() || alt.pos.i2 < s2.length()) {
 					if (alt.pos.i1 >= s1.length()) {
-						alt.compensateSwaps(s1, s2);
+						String t2 = s2.substring(alt.pos.i2);
+						for (int i = 0; i < Math.min(t2.length(), alt.ch1.length()); i++)
+							if (t2.charAt(i) == alt.ch1.charAt(i)) {
+								alt.d--;
+							} else
+								break;
 						while (alt.pos.i2 < s2.length()) {
 							alt.d++;
 							alt.pos.i2++;
 						}
 						alt.finished = true;
 					} else if (alt.pos.i2 >= s2.length()) {
-						alt.compensateSwaps(s1, s2);
+						String t1 = s1.substring(alt.pos.i1);
+						for (int i = 0; i < Math.min(t1.length(), alt.ch2.length()); i++)
+							if (t1.charAt(i) == alt.ch2.charAt(i)) {
+								alt.d--;
+							} else
+								break;
 						while (alt.pos.i1 < s1.length()) {
 							alt.d++;
 							alt.pos.i1++;
@@ -113,48 +112,36 @@ public class CsongorDistance implements StringDistance {
 						alt.ch1 = EMPTY;
 						alt.ch2 = EMPTY;
 					} else {
-						Alternative newAlt = alt.compensateSwaps(s1, s2);
-						if (newAlt != null) {
-							newAlts.add(newAlt);
-						} else {
-							List<Position> qs = new ArrayList<Position>();
-							IndexArray idx = new IndexArray(new int[] { s1.length() - alt.pos.i1, s2.length() - alt.pos.i2 });
-							for (; idx.hasMoreStep(); idx.step()) {
-								if (charAt(s1, alt.pos.i1 + idx.get(0)) == charAt(s2, alt.pos.i2 + idx.get(1))) {
-									if (qs.isEmpty()) {
+						List<Position> qs = new ArrayList<Position>();
+						IndexArray idx = new IndexArray(new int[] { s1.length() - alt.pos.i1, s2.length() - alt.pos.i2 });
+						for (; idx.hasMoreStep(); idx.step()) {
+							if (charAt(s1, alt.pos.i1 + idx.get(0)) == charAt(s2, alt.pos.i2 + idx.get(1))) {
+								if (qs.isEmpty()) {
+									qs.add(new Position(idx.get(0), idx.get(1)));
+								} else {
+									if (idx.get(0) + idx.get(1) > qs.get(0).sum())
+										break;
+									else {
+										// must be equal
 										qs.add(new Position(idx.get(0), idx.get(1)));
-									} else {
-										if (idx.get(0) + idx.get(1) > qs.get(0).sum())
-											break;
-										else {
-											// must be equal
-											qs.add(new Position(idx.get(0), idx.get(1)));
-										}
 									}
 								}
 							}
-							if (qs.isEmpty()) {
-								// the end of the string is a total mess
-								int d1 = s1.length() - alt.pos.i1;
-								int d2 = s2.length() - alt.pos.i2;
-								if (d1 == 0)
-									alt.d += d2;
-								else if (d2 == 0)
-									alt.d += d1;
-								else
-									alt.d += d1 * d2;
-								alt.finished = true;
-							} else {
-								Iterator<Position> it = qs.iterator();
-								Position pos = it.next();
-								Alternative checkpoint = alt.clone();
-								alt.updateAltForPos(pos, s1, s2);
-								while (it.hasNext()) {
-									Alternative newAlt2 = checkpoint.clone();
-									Position pos1 = it.next();
-									newAlt2.updateAltForPos(pos1, s1, s2);
-									newAlts.add(newAlt2);
-								}
+						}
+						if (qs.isEmpty()) {
+							// the end of the string is a total mess
+							alt.d += Math.max(s1.length() - alt.pos.i1, s2.length() - alt.pos.i2);
+							alt.finished = true;
+						} else {
+							Iterator<Position> it = qs.iterator();
+							Position pos = it.next();
+							Alternative checkpoint = alt.clone();
+							alt.updateAltForPos(pos, s1, s2);
+							while (it.hasNext()) {
+								Alternative newAlt = checkpoint.clone();
+								Position pos1 = it.next();
+								newAlt.updateAltForPos(pos1, s1, s2);
+								newAlts.add(newAlt);
 							}
 						}
 					}

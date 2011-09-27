@@ -469,8 +469,6 @@ public class FDStoreProperties {
 	//APPDEV-1920 Remove the "new feature" alert on quickbuy
 	private static final String SMARTSTORE_QUICKBUY_NEWALERT_ENABLED = "fdstore.smartstore.quickbuy.newalert.enabled";
 	
-	private static final String IPHONE_SEARCH_FILTER_DISCONTINUED_ONLY = "fdstore.iphone.search.filterDiscontinuedOnly";
-	
 	//Event Management (Roll and Bounce) Capacity Management Phase 2
 	private static final String SESSION_LOGGING_ENABLED = "session.logging.enabled";
 	private static final String REAL_TIME_EVENT_ANALYSIS = "realtime.event.analysis";
@@ -943,8 +941,6 @@ public class FDStoreProperties {
 		defaults.put(EVENTLOGGING_ENABLED, "true");
 
 		defaults.put(SMARTSTORE_QUICKBUY_NEWALERT_ENABLED, "false");
-		
-		defaults.put(IPHONE_SEARCH_FILTER_DISCONTINUED_ONLY, "false");
 
 		defaults.put(SESSION_LOGGING_ENABLED, "true");
 		defaults.put(REAL_TIME_EVENT_ANALYSIS, "false");
@@ -2428,11 +2424,7 @@ public class FDStoreProperties {
 
     public static boolean isQBNewAlertEnabled() {
         return (new Boolean(get(SMARTSTORE_QUICKBUY_NEWALERT_ENABLED))).booleanValue();
-    }
-    
-    public static boolean isIPhoneSearchFilterDiscontinuedOnly() {
-    	return Boolean.parseBoolean(get(IPHONE_SEARCH_FILTER_DISCONTINUED_ONLY));
-    }
+    } 
     		
 	public static boolean isSessionLoggingEnabled() {
         return (Boolean.valueOf(get(SESSION_LOGGING_ENABLED))).booleanValue();

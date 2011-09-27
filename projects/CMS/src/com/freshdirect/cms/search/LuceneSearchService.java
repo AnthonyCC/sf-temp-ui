@@ -674,6 +674,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 
 	@Override
 	public Collection<SpellingHit> suggestSpelling(String searchTerm, double threshold, int maxHits) {
+		long start = System.currentTimeMillis();
 		List<SpellingHit> hits = Collections.emptyList();
 		TermCoder filter = new SpellingTermNormalizer(new Term(searchTerm), true);
 		if (!filter.getTerms().isEmpty()) {
@@ -692,11 +693,13 @@ public class LuceneSearchService implements ContentSearchServiceI {
 					it.remove();
 			}
 		}
+		System.err.println("suggestSpelling(): " + (System.currentTimeMillis() - start));
 		return hits;
 	}
 
 	@Override
 	public Collection<SpellingHit> reconstructSpelling(String searchTerm, double threshold, int maxHits) {
+		long start = System.currentTimeMillis();
 		List<SpellingHit> candidates = new ArrayList<SpellingHit>();
 		TermCoder filter = new SpellingTermNormalizer(new Term(searchTerm), true);
 		if (!filter.getTerms().isEmpty()) {
@@ -724,6 +727,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 			while (candidates.size() > maxHits)
 				candidates.remove(candidates.size() - 1);
 		}
+		System.err.println("reconstructSpelling(): " + (System.currentTimeMillis() - start));
 		return candidates;
 	}
 

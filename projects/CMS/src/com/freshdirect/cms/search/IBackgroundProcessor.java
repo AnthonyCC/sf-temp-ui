@@ -1,11 +1,9 @@
 package com.freshdirect.cms.search;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Future;
 
 import com.freshdirect.cms.publish.Publish;
-import com.freshdirect.cms.publish.PublishTask;
 
 public interface IBackgroundProcessor {
 
@@ -33,8 +31,5 @@ public interface IBackgroundProcessor {
     Future<Object> rebuildAutocomplete();
 
     void executePublish(Publish publish);
-
-    void setPublishTasks(List<PublishTask> publishTasks);
-
-    List<PublishTask> getPublishTasks();
+    
 }

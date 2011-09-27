@@ -233,8 +233,6 @@ public class TermCoderTests extends TestCase {
 	public void testSearchTermNormalizer() {
 		TermCoder filter = new SearchTermNormalizer(new Term("\""));
 		assertEquals("", filter.toString());
-		filter = new SearchTermNormalizer(new Term("''''"));
-		assertEquals("", filter.toString());
 	}
 
 	public void testInitialisms() {
@@ -354,8 +352,6 @@ public class TermCoderTests extends TestCase {
 	public void testSpellingTermNormalizer() {
 		TermCoder filter = new SpellingTermNormalizer(new Term("t-bone"));
 		assertEquals(Arrays.asList(new Term[] { new Term("t-bone") }), filter.getTerms());
-		filter = new SpellingTermNormalizer(new Term("''''"));
-		assertEquals(Arrays.asList(new Term[] { new Term("'''") }), filter.getTerms());
 	}
 
 	public void testSpellingTermNormalizer2() {

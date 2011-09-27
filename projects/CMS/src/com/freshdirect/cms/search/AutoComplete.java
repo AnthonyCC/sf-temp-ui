@@ -46,6 +46,12 @@ public class AutoComplete implements AvailabilityChangeListener {
 		synchronized (buildLock) {
 			terms.invalidate();
 			AutocompleteService service = new AutocompleteService(terms.getTerms(), permute);
+			LOGGER.info("AUTOCOMPLETE RELOADED");
+			try {
+				Thread.sleep(60000);
+			} catch (InterruptedException e) {
+				LOGGER.info("interrupted", e);
+			}
 			return service;
 		}
 	}

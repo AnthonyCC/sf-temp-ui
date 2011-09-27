@@ -256,7 +256,7 @@ public class ContentSearch {
 		for (SpellingCandidate candidate : candidates)
 			suggestions.add(ContentSearchUtil.quote(quoted, candidate.getPhrase()));
 
-		if (originalResults.isEmpty() && !candidates.isEmpty()) {
+		if (originalResults.isEmpty() && candidates.size() == 1) {
 			SearchResults.replaceResults(originalResults, candidates.iterator().next().getSearchResults());
 		} else if (replaceOriginal && !candidates.isEmpty()) {
 			SearchResults.replaceResults(originalResults, SpellingCandidate.extractSearchResults(candidates));
@@ -267,22 +267,7 @@ public class ContentSearch {
 	public List<SpellingHit> combineSpellingHitResults(String searchTerm) {
 		Set<SpellingHit> set = new HashSet<SpellingHit>(CmsManager.getInstance().suggestSpelling(searchTerm, getDidYouMeanThreshold(), getDidYouMeanMaxHits()));
 		set.addAll(CmsManager.getInstance().reconstructSpelling(searchTerm, getDidYouMeanThreshold(), getDidYouMeanMaxHits()));
-		List<SpellingHit> hits = new ArrayList<SpellingHit>(set.size());
-		for (SpellingHit hit : set) {
-			String phrase = hit.getPhrase();
-			Iterator<SpellingHit> it = hits.iterator();
-			boolean add = true;
-			while (it.hasNext()) {
-				SpellingHit hit1 = it.next();
-				String phrase1 = hit1.getPhrase();
-				if (phrase1.contains(phrase) && hit1.getScore() < hit.getScore())
-					it.remove();
-				else if (phrase.contains(phrase1) && hit.getScore() < hit1.getScore())
-					add = false;
-			}
-			if (add)
-				hits.add(hit);
-		}
+		List<SpellingHit> hits = new ArrayList<SpellingHit>(set);
 		Collections.sort(hits, SpellingHit.SORT_BY_DISTANCE);
 		hits = SpellingUtils.filterBestSpellingHits(hits, getDidYouMeanThreshold());
 		Collections.sort(hits);

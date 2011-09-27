@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ProductFilterI;
 import com.freshdirect.fdstore.content.SearchSortType;
 import com.freshdirect.fdstore.util.SearchNavigator;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.filter.AvailableFilter;
-import com.freshdirect.mobileapi.model.filter.DiscontinuityFilter;
 import com.freshdirect.mobileapi.model.filter.IphoneFilter;
 import com.freshdirect.webapp.taglib.fdstore.SmartSearchTag;
 
@@ -24,8 +22,6 @@ public class SmartSearchTagWrapper extends NonStandardControllerTagWrapper imple
     public static final String ORDER_DESCENDANT = "desc";
 
     private static final AvailableFilter availableFilter = new AvailableFilter();
-    
-    private static final DiscontinuityFilter discontinuityFilter = new DiscontinuityFilter();
 
     private static final IphoneFilter iphoneFilter = new IphoneFilter();
     
@@ -45,10 +41,7 @@ public class SmartSearchTagWrapper extends NonStandardControllerTagWrapper imple
 				deptId, catId, brandValue, null, pageSize != null ? pageSize : -1, start != null ? start : 0, 
 				searchSortType, true, false, true));
 		Collection<ProductFilterI> filters = new ArrayList<ProductFilterI>();
-		if (FDStoreProperties.isIPhoneSearchFilterDiscontinuedOnly())
-			filters.add(discontinuityFilter);
-		else
-			filters.add(availableFilter);
+		filters.add(availableFilter);
 		filters.add(iphoneFilter);
 		((SmartSearchTag) this.wrapTarget).setProductFilters(filters);
 
