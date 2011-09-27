@@ -505,6 +505,94 @@
                                }
                             
 
+                        /**
+                        * field for RegularCostInfo
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.DriverCostInfo localRegularCostInfo ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localRegularCostInfoTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.DriverCostInfo
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.DriverCostInfo getRegularCostInfo(){
+                               return localRegularCostInfo;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param RegularCostInfo
+                               */
+                               public void setRegularCostInfo(com.freshdirect.routing.proxy.stub.transportation.DriverCostInfo param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localRegularCostInfoTracker = true;
+                                       } else {
+                                          localRegularCostInfoTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localRegularCostInfo=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for HelperCostInfo
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.DriverCostInfo localHelperCostInfo ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localHelperCostInfoTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.DriverCostInfo
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.DriverCostInfo getHelperCostInfo(){
+                               return localHelperCostInfo;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param HelperCostInfo
+                               */
+                               public void setHelperCostInfo(com.freshdirect.routing.proxy.stub.transportation.DriverCostInfo param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localHelperCostInfoTracker = true;
+                                       } else {
+                                          localHelperCostInfoTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localHelperCostInfo=param;
+                                    
+
+                               }
+                            
+
      /**
      * isReaderMTOMAware
      * @return true if the reader supports MTOM
@@ -1506,7 +1594,69 @@
                                                }
                                     
                                    xmlWriter.writeEndElement();
-                             
+                              if (localRegularCostInfoTracker){
+                                    if (localRegularCostInfo==null){
+
+                                            java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"regularCostInfo", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"regularCostInfo");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("regularCostInfo");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localRegularCostInfo.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","regularCostInfo"),
+                                        factory,xmlWriter);
+                                    }
+                                } if (localHelperCostInfoTracker){
+                                    if (localHelperCostInfo==null){
+
+                                            java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"helperCostInfo", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"helperCostInfo");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("helperCostInfo");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localHelperCostInfo.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","helperCostInfo"),
+                                        factory,xmlWriter);
+                                    }
+                                }
                     xmlWriter.writeEndElement();
                
 
@@ -1896,7 +2046,21 @@
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localAutoArriveDepart));
+                             if (localRegularCostInfoTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "regularCostInfo"));
                             
+                            
+                                    elementList.add(localRegularCostInfo==null?null:
+                                    localRegularCostInfo);
+                                } if (localHelperCostInfoTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "helperCostInfo"));
+                            
+                            
+                                    elementList.add(localHelperCostInfo==null?null:
+                                    localHelperCostInfo);
+                                }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -2517,7 +2681,55 @@
                                     // A start element we are not expecting indicates an invalid parameter was passed
                                     throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
                                 }
-                              
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","regularCostInfo").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setRegularCostInfo(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setRegularCostInfo(com.freshdirect.routing.proxy.stub.transportation.DriverCostInfo.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","helperCostInfo").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setHelperCostInfo(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setHelperCostInfo(com.freshdirect.routing.proxy.stub.transportation.DriverCostInfo.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                  
                             while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
                             

@@ -215,6 +215,24 @@
                                     public static final java.lang.String _tmzCaracas =
                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString("tmzCaracas");
                                 
+                                    public static final java.lang.String _tmzAsuncion =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("tmzAsuncion");
+                                
+                                    public static final java.lang.String _tmzSamaraIzhevsk =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("tmzSamaraIzhevsk");
+                                
+                                    public static final java.lang.String _tmzNovosibirskOmsk =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("tmzNovosibirskOmsk");
+                                
+                                    public static final java.lang.String _tmzKrasnoyarskNovokuznetsk =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("tmzKrasnoyarskNovokuznetsk");
+                                
+                                    public static final java.lang.String _tmzIrkutsk =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("tmzIrkutsk");
+                                
+                                    public static final java.lang.String _tmzYakutskChita =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("tmzYakutskChita");
+                                
                                 public static final TimeZoneValue tmzNone =
                                     new TimeZoneValue(_tmzNone,true);
                             
@@ -376,6 +394,24 @@
                             
                                 public static final TimeZoneValue tmzCaracas =
                                     new TimeZoneValue(_tmzCaracas,true);
+                            
+                                public static final TimeZoneValue tmzAsuncion =
+                                    new TimeZoneValue(_tmzAsuncion,true);
+                            
+                                public static final TimeZoneValue tmzSamaraIzhevsk =
+                                    new TimeZoneValue(_tmzSamaraIzhevsk,true);
+                            
+                                public static final TimeZoneValue tmzNovosibirskOmsk =
+                                    new TimeZoneValue(_tmzNovosibirskOmsk,true);
+                            
+                                public static final TimeZoneValue tmzKrasnoyarskNovokuznetsk =
+                                    new TimeZoneValue(_tmzKrasnoyarskNovokuznetsk,true);
+                            
+                                public static final TimeZoneValue tmzIrkutsk =
+                                    new TimeZoneValue(_tmzIrkutsk,true);
+                            
+                                public static final TimeZoneValue tmzYakutskChita =
+                                    new TimeZoneValue(_tmzYakutskChita,true);
                             
 
                                 public java.lang.String getValue() { return localTimeZoneValue;}

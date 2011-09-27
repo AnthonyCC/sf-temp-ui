@@ -631,7 +631,7 @@
             * override this method for handling normal response from retrieveRouteSurveyQuestions operation
             */
            public void receiveResultretrieveRouteSurveyQuestions(
-                    com.freshdirect.routing.proxy.stub.transportation.RetrieveRouteSurveyQuestionsResponse result
+                    com.freshdirect.routing.proxy.stub.transportation.SurveyQuestionsResult result
                         ) {
            }
 
@@ -1190,7 +1190,7 @@
             * override this method for handling normal response from retrieveStopSurveyQuestions operation
             */
            public void receiveResultretrieveStopSurveyQuestions(
-                    com.freshdirect.routing.proxy.stub.transportation.RetrieveStopSurveyQuestionsResponse result
+                    com.freshdirect.routing.proxy.stub.transportation.SurveyQuestionsResult result
                         ) {
            }
 
@@ -2215,6 +2215,21 @@
            * override this method for handling error response from saveRegionConfig operation
            */
             public void receiveErrorsaveRegionConfig(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for updateRouteETAs method
+            * override this method for handling normal response from updateRouteETAs operation
+            */
+           public void receiveResultupdateRouteETAs(
+                    ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from updateRouteETAs operation
+           */
+            public void receiveErrorupdateRouteETAs(java.lang.Exception e) {
             }
                 
            /**

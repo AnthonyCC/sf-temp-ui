@@ -1171,7 +1171,7 @@
          */
 
          
-                     public com.freshdirect.routing.proxy.stub.transportation.RetrieveRouteSurveyQuestionsResponse retrieveRouteSurveyQuestions(
+                     public com.freshdirect.routing.proxy.stub.transportation.SurveyQuestionsResult retrieveRouteSurveyQuestions(
 
                         com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity422,com.freshdirect.routing.proxy.stub.transportation.SurveyPerformedAt performedAt423)
                         throws java.rmi.RemoteException
@@ -1197,14 +1197,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveEquipmentByCriteria
-                    * @param retrieveEquipmentByCriteria427
+                    * @param retrieveEquipmentByCriteria426
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.Equipment[] retrieveEquipmentByCriteria(
 
-                        com.freshdirect.routing.proxy.stub.transportation.EquipmentCriteria criteria428,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options429)
+                        com.freshdirect.routing.proxy.stub.transportation.EquipmentCriteria criteria427,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options428)
                         throws java.rmi.RemoteException
              ;
 
@@ -1212,12 +1212,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveEquipmentByCriteria
-                * @param retrieveEquipmentByCriteria427
+                * @param retrieveEquipmentByCriteria426
             
           */
         public void startretrieveEquipmentByCriteria(
 
-            com.freshdirect.routing.proxy.stub.transportation.EquipmentCriteria criteria428,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options429,
+            com.freshdirect.routing.proxy.stub.transportation.EquipmentCriteria criteria427,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options428,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -1228,14 +1228,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SchedulerBalanceRoutes
-                    * @param schedulerBalanceRoutes432
+                    * @param schedulerBalanceRoutes431
                 
          */
 
          
                      public void schedulerBalanceRoutes(
 
-                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity433,com.freshdirect.routing.proxy.stub.transportation.SchedulerBalanceRoutesOptions options434)
+                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity432,com.freshdirect.routing.proxy.stub.transportation.SchedulerBalanceRoutesOptions options433)
                         throws java.rmi.RemoteException
              ;
 
@@ -1243,12 +1243,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SchedulerBalanceRoutes
-                * @param schedulerBalanceRoutes432
+                * @param schedulerBalanceRoutes431
             
           */
         public void startschedulerBalanceRoutes(
 
-            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity433,com.freshdirect.routing.proxy.stub.transportation.SchedulerBalanceRoutesOptions options434,
+            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity432,com.freshdirect.routing.proxy.stub.transportation.SchedulerBalanceRoutesOptions options433,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -1259,14 +1259,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SaveUnassigned
-                    * @param saveUnassigned436
+                    * @param saveUnassigned435
                 
          */
 
          
                      public void saveUnassigned(
 
-                        com.freshdirect.routing.proxy.stub.transportation.Stop stop437,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options438)
+                        com.freshdirect.routing.proxy.stub.transportation.Stop stop436,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options437)
                         throws java.rmi.RemoteException
              ;
 
@@ -1274,12 +1274,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SaveUnassigned
-                * @param saveUnassigned436
+                * @param saveUnassigned435
             
           */
         public void startsaveUnassigned(
 
-            com.freshdirect.routing.proxy.stub.transportation.Stop stop437,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options438,
+            com.freshdirect.routing.proxy.stub.transportation.Stop stop436,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options437,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -1290,14 +1290,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RemoveRoute
-                    * @param removeRoute440
+                    * @param removeRoute439
                 
          */
 
          
                      public void removeRoute(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity441)
+                        com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity440)
                         throws java.rmi.RemoteException
              ;
 
@@ -1305,12 +1305,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RemoveRoute
-                * @param removeRoute440
+                * @param removeRoute439
             
           */
         public void startremoveRoute(
 
-            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity441,
+            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity440,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -1321,14 +1321,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SaveRegion
-                    * @param saveRegion443
+                    * @param saveRegion442
                 
          */
 
          
                      public void saveRegion(
 
-                        com.freshdirect.routing.proxy.stub.transportation.Region region444)
+                        com.freshdirect.routing.proxy.stub.transportation.Region region443)
                         throws java.rmi.RemoteException
              ;
 
@@ -1336,12 +1336,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SaveRegion
-                * @param saveRegion443
+                * @param saveRegion442
             
           */
         public void startsaveRegion(
 
-            com.freshdirect.routing.proxy.stub.transportation.Region region444,
+            com.freshdirect.routing.proxy.stub.transportation.Region region443,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -1352,14 +1352,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveRegionByIdentity
-                    * @param retrieveRegionByIdentity446
+                    * @param retrieveRegionByIdentity445
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.Region retrieveRegionByIdentity(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RegionIdentity identity447)
+                        com.freshdirect.routing.proxy.stub.transportation.RegionIdentity identity446)
                         throws java.rmi.RemoteException
              ;
 
@@ -1367,12 +1367,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveRegionByIdentity
-                * @param retrieveRegionByIdentity446
+                * @param retrieveRegionByIdentity445
             
           */
         public void startretrieveRegionByIdentity(
 
-            com.freshdirect.routing.proxy.stub.transportation.RegionIdentity identity447,
+            com.freshdirect.routing.proxy.stub.transportation.RegionIdentity identity446,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -1383,14 +1383,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveNotificationsByRecipientIdentity
-                    * @param retrieveNotificationsByRecipientIdentity450
+                    * @param retrieveNotificationsByRecipientIdentity449
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.Notification[] retrieveNotificationsByRecipientIdentity(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RecipientIdentity identity451,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions452,com.freshdirect.routing.proxy.stub.transportation.NotificationRetrieveOptions options453)
+                        com.freshdirect.routing.proxy.stub.transportation.RecipientIdentity identity450,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions451,com.freshdirect.routing.proxy.stub.transportation.NotificationRetrieveOptions options452)
                         throws java.rmi.RemoteException
              ;
 
@@ -1398,12 +1398,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveNotificationsByRecipientIdentity
-                * @param retrieveNotificationsByRecipientIdentity450
+                * @param retrieveNotificationsByRecipientIdentity449
             
           */
         public void startretrieveNotificationsByRecipientIdentity(
 
-            com.freshdirect.routing.proxy.stub.transportation.RecipientIdentity identity451,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions452,com.freshdirect.routing.proxy.stub.transportation.NotificationRetrieveOptions options453,
+            com.freshdirect.routing.proxy.stub.transportation.RecipientIdentity identity450,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions451,com.freshdirect.routing.proxy.stub.transportation.NotificationRetrieveOptions options452,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -1414,14 +1414,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveReportsByCriteria
-                    * @param retrieveReportsByCriteria456
+                    * @param retrieveReportsByCriteria455
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.Report[] retrieveReportsByCriteria(
 
-                        com.freshdirect.routing.proxy.stub.transportation.ReportCriteria criteria457)
+                        com.freshdirect.routing.proxy.stub.transportation.ReportCriteria criteria456)
                         throws java.rmi.RemoteException
              ;
 
@@ -1429,12 +1429,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveReportsByCriteria
-                * @param retrieveReportsByCriteria456
+                * @param retrieveReportsByCriteria455
             
           */
         public void startretrieveReportsByCriteria(
 
-            com.freshdirect.routing.proxy.stub.transportation.ReportCriteria criteria457,
+            com.freshdirect.routing.proxy.stub.transportation.ReportCriteria criteria456,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -1445,14 +1445,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveRoutingLocationsWithOrders
-                    * @param retrieveRoutingLocationsWithOrders460
+                    * @param retrieveRoutingLocationsWithOrders459
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.Location[] retrieveRoutingLocationsWithOrders(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity461)
+                        com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity460)
                         throws java.rmi.RemoteException
              ;
 
@@ -1460,12 +1460,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveRoutingLocationsWithOrders
-                * @param retrieveRoutingLocationsWithOrders460
+                * @param retrieveRoutingLocationsWithOrders459
             
           */
         public void startretrieveRoutingLocationsWithOrders(
 
-            com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity461,
+            com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity460,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -1476,14 +1476,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveRoutesByCriteria
-                    * @param retrieveRoutesByCriteria464
+                    * @param retrieveRoutesByCriteria463
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.Route[] retrieveRoutesByCriteria(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RouteCriteria criteria465,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options466)
+                        com.freshdirect.routing.proxy.stub.transportation.RouteCriteria criteria464,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options465)
                         throws java.rmi.RemoteException
              ;
 
@@ -1491,12 +1491,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveRoutesByCriteria
-                * @param retrieveRoutesByCriteria464
+                * @param retrieveRoutesByCriteria463
             
           */
         public void startretrieveRoutesByCriteria(
 
-            com.freshdirect.routing.proxy.stub.transportation.RouteCriteria criteria465,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options466,
+            com.freshdirect.routing.proxy.stub.transportation.RouteCriteria criteria464,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options465,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -1507,14 +1507,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveUserByUserID
-                    * @param retrieveUserByUserID469
+                    * @param retrieveUserByUserID468
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.User retrieveUserByUserID(
 
-                        java.lang.String userID470)
+                        java.lang.String userID469)
                         throws java.rmi.RemoteException
              ;
 
@@ -1522,12 +1522,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveUserByUserID
-                * @param retrieveUserByUserID469
+                * @param retrieveUserByUserID468
             
           */
         public void startretrieveUserByUserID(
 
-            java.lang.String userID470,
+            java.lang.String userID469,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -1538,14 +1538,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveEmployeeByIdentity
-                    * @param retrieveEmployeeByIdentity473
+                    * @param retrieveEmployeeByIdentity472
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.Employee retrieveEmployeeByIdentity(
 
-                        com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity identity474)
+                        com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity identity473)
                         throws java.rmi.RemoteException
              ;
 
@@ -1553,12 +1553,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveEmployeeByIdentity
-                * @param retrieveEmployeeByIdentity473
+                * @param retrieveEmployeeByIdentity472
             
           */
         public void startretrieveEmployeeByIdentity(
 
-            com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity identity474,
+            com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity identity473,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -1569,14 +1569,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__DeleteUnassigned
-                    * @param deleteUnassigned477
+                    * @param deleteUnassigned476
                 
          */
 
          
                      public void deleteUnassigned(
 
-                        com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop478)
+                        com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop477)
                         throws java.rmi.RemoteException
              ;
 
@@ -1584,12 +1584,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__DeleteUnassigned
-                * @param deleteUnassigned477
+                * @param deleteUnassigned476
             
           */
         public void startdeleteUnassigned(
 
-            com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop478,
+            com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop477,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -1600,14 +1600,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__CreateRoutingSession
-                    * @param createRoutingSession480
+                    * @param createRoutingSession479
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity createRoutingSession(
 
-                        java.lang.String regionId481,com.freshdirect.routing.proxy.stub.transportation.RoutingSessionProperties sessionProperties482)
+                        java.lang.String regionId480,com.freshdirect.routing.proxy.stub.transportation.RoutingSessionProperties sessionProperties481)
                         throws java.rmi.RemoteException
              ;
 
@@ -1615,12 +1615,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__CreateRoutingSession
-                * @param createRoutingSession480
+                * @param createRoutingSession479
             
           */
         public void startcreateRoutingSession(
 
-            java.lang.String regionId481,com.freshdirect.routing.proxy.stub.transportation.RoutingSessionProperties sessionProperties482,
+            java.lang.String regionId480,com.freshdirect.routing.proxy.stub.transportation.RoutingSessionProperties sessionProperties481,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -1631,14 +1631,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveUndeliverableStopCodesByCriteria
-                    * @param retrieveUndeliverableStopCodesByCriteria485
+                    * @param retrieveUndeliverableStopCodesByCriteria484
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.UndeliverableStopCode[] retrieveUndeliverableStopCodesByCriteria(
 
-                        com.freshdirect.routing.proxy.stub.transportation.UndeliverableStopCodeCriteria criteria486)
+                        com.freshdirect.routing.proxy.stub.transportation.UndeliverableStopCodeCriteria criteria485)
                         throws java.rmi.RemoteException
              ;
 
@@ -1646,12 +1646,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveUndeliverableStopCodesByCriteria
-                * @param retrieveUndeliverableStopCodesByCriteria485
+                * @param retrieveUndeliverableStopCodesByCriteria484
             
           */
         public void startretrieveUndeliverableStopCodesByCriteria(
 
-            com.freshdirect.routing.proxy.stub.transportation.UndeliverableStopCodeCriteria criteria486,
+            com.freshdirect.routing.proxy.stub.transportation.UndeliverableStopCodeCriteria criteria485,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -1662,14 +1662,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__AuthenticateUser
-                    * @param authenticateUser489
+                    * @param authenticateUser488
                 
          */
 
          
                      public void authenticateUser(
 
-                        java.lang.String userID490,java.lang.String password491)
+                        java.lang.String userID489,java.lang.String password490)
                         throws java.rmi.RemoteException
              ;
 
@@ -1677,12 +1677,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__AuthenticateUser
-                * @param authenticateUser489
+                * @param authenticateUser488
             
           */
         public void startauthenticateUser(
 
-            java.lang.String userID490,java.lang.String password491,
+            java.lang.String userID489,java.lang.String password490,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -1693,14 +1693,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__UnlockNotifications
-                    * @param unlockNotifications493
+                    * @param unlockNotifications492
                 
          */
 
          
                      public void unlockNotifications(
 
-                        com.freshdirect.routing.proxy.stub.transportation.UnlockNotificationsCriteria criteria494)
+                        com.freshdirect.routing.proxy.stub.transportation.UnlockNotificationsCriteria criteria493)
                         throws java.rmi.RemoteException
              ;
 
@@ -1708,12 +1708,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__UnlockNotifications
-                * @param unlockNotifications493
+                * @param unlockNotifications492
             
           */
         public void startunlockNotifications(
 
-            com.freshdirect.routing.proxy.stub.transportation.UnlockNotificationsCriteria criteria494,
+            com.freshdirect.routing.proxy.stub.transportation.UnlockNotificationsCriteria criteria493,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -1724,14 +1724,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__DeleteRoutingSession
-                    * @param deleteRoutingSession496
+                    * @param deleteRoutingSession495
                 
          */
 
          
                      public void deleteRoutingSession(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity497)
+                        com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity496)
                         throws java.rmi.RemoteException
              ;
 
@@ -1739,12 +1739,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__DeleteRoutingSession
-                * @param deleteRoutingSession496
+                * @param deleteRoutingSession495
             
           */
         public void startdeleteRoutingSession(
 
-            com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity497,
+            com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity496,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -1755,14 +1755,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SaveUserConfig
-                    * @param saveUserConfig499
+                    * @param saveUserConfig498
                 
          */
 
          
                      public void saveUserConfig(
 
-                        java.lang.String applicationID500,com.freshdirect.routing.proxy.stub.transportation.UserIdentity userIdentity501,java.lang.String configGroupID502,com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] items503)
+                        java.lang.String applicationID499,com.freshdirect.routing.proxy.stub.transportation.UserIdentity userIdentity500,java.lang.String configGroupID501,com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] items502)
                         throws java.rmi.RemoteException
              ;
 
@@ -1770,12 +1770,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SaveUserConfig
-                * @param saveUserConfig499
+                * @param saveUserConfig498
             
           */
         public void startsaveUserConfig(
 
-            java.lang.String applicationID500,com.freshdirect.routing.proxy.stub.transportation.UserIdentity userIdentity501,java.lang.String configGroupID502,com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] items503,
+            java.lang.String applicationID499,com.freshdirect.routing.proxy.stub.transportation.UserIdentity userIdentity500,java.lang.String configGroupID501,com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] items502,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -1786,14 +1786,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SchedulerRetrieveOrdersByCriteria
-                    * @param schedulerRetrieveOrdersByCriteria505
+                    * @param schedulerRetrieveOrdersByCriteria504
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder[] schedulerRetrieveOrdersByCriteria(
 
-                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity506,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderCriteria criteria507,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrieveOptions options508)
+                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity505,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderCriteria criteria506,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrieveOptions options507)
                         throws java.rmi.RemoteException
              ;
 
@@ -1801,12 +1801,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SchedulerRetrieveOrdersByCriteria
-                * @param schedulerRetrieveOrdersByCriteria505
+                * @param schedulerRetrieveOrdersByCriteria504
             
           */
         public void startschedulerRetrieveOrdersByCriteria(
 
-            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity506,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderCriteria criteria507,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrieveOptions options508,
+            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity505,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderCriteria criteria506,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrieveOptions options507,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -1817,7 +1817,7 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__VersionInformation
-                    * @param versionInformation511
+                    * @param versionInformation510
                 
          */
 
@@ -1832,7 +1832,7 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__VersionInformation
-                * @param versionInformation511
+                * @param versionInformation510
             
           */
         public void startversionInformation(
@@ -1848,14 +1848,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SchedulerRebuildRoutesEx
-                    * @param schedulerRebuildRoutesEx514
+                    * @param schedulerRebuildRoutesEx513
                 
          */
 
          
                      public java.lang.String[] schedulerRebuildRoutesEx(
 
-                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity515,com.freshdirect.routing.proxy.stub.transportation.SchedulerRebuildRoutesExOptions options516)
+                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity514,com.freshdirect.routing.proxy.stub.transportation.SchedulerRebuildRoutesExOptions options515)
                         throws java.rmi.RemoteException
              ;
 
@@ -1863,12 +1863,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SchedulerRebuildRoutesEx
-                * @param schedulerRebuildRoutesEx514
+                * @param schedulerRebuildRoutesEx513
             
           */
         public void startschedulerRebuildRoutesEx(
 
-            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity515,com.freshdirect.routing.proxy.stub.transportation.SchedulerRebuildRoutesExOptions options516,
+            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity514,com.freshdirect.routing.proxy.stub.transportation.SchedulerRebuildRoutesExOptions options515,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -1879,14 +1879,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveUserConfig
-                    * @param retrieveUserConfig519
+                    * @param retrieveUserConfig518
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] retrieveUserConfig(
 
-                        java.lang.String applicationID520,com.freshdirect.routing.proxy.stub.transportation.UserIdentity userIdentity521,java.lang.String configGroupID522)
+                        java.lang.String applicationID519,com.freshdirect.routing.proxy.stub.transportation.UserIdentity userIdentity520,java.lang.String configGroupID521)
                         throws java.rmi.RemoteException
              ;
 
@@ -1894,12 +1894,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveUserConfig
-                * @param retrieveUserConfig519
+                * @param retrieveUserConfig518
             
           */
         public void startretrieveUserConfig(
 
-            java.lang.String applicationID520,com.freshdirect.routing.proxy.stub.transportation.UserIdentity userIdentity521,java.lang.String configGroupID522,
+            java.lang.String applicationID519,com.freshdirect.routing.proxy.stub.transportation.UserIdentity userIdentity520,java.lang.String configGroupID521,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -1910,14 +1910,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveEmployeesByCriteria
-                    * @param retrieveEmployeesByCriteria525
+                    * @param retrieveEmployeesByCriteria524
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.Employee[] retrieveEmployeesByCriteria(
 
-                        com.freshdirect.routing.proxy.stub.transportation.EmployeeCriteria criteria526)
+                        com.freshdirect.routing.proxy.stub.transportation.EmployeeCriteria criteria525)
                         throws java.rmi.RemoteException
              ;
 
@@ -1925,12 +1925,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveEmployeesByCriteria
-                * @param retrieveEmployeesByCriteria525
+                * @param retrieveEmployeesByCriteria524
             
           */
         public void startretrieveEmployeesByCriteria(
 
-            com.freshdirect.routing.proxy.stub.transportation.EmployeeCriteria criteria526,
+            com.freshdirect.routing.proxy.stub.transportation.EmployeeCriteria criteria525,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -1941,14 +1941,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__DepartOrigin
-                    * @param departOrigin529
+                    * @param departOrigin528
                 
          */
 
          
                      public void departOrigin(
 
-                        com.freshdirect.routing.proxy.stub.transportation.OriginDepartInfo info530)
+                        com.freshdirect.routing.proxy.stub.transportation.OriginDepartInfo info529)
                         throws java.rmi.RemoteException
              ;
 
@@ -1956,12 +1956,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__DepartOrigin
-                * @param departOrigin529
+                * @param departOrigin528
             
           */
         public void startdepartOrigin(
 
-            com.freshdirect.routing.proxy.stub.transportation.OriginDepartInfo info530,
+            com.freshdirect.routing.proxy.stub.transportation.OriginDepartInfo info529,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -1972,14 +1972,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SaveStop
-                    * @param saveStop532
+                    * @param saveStop531
                 
          */
 
          
                      public void saveStop(
 
-                        com.freshdirect.routing.proxy.stub.transportation.Stop stop533,com.freshdirect.routing.proxy.stub.transportation.StopPlacementOptions placementOptions534,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options535)
+                        com.freshdirect.routing.proxy.stub.transportation.Stop stop532,com.freshdirect.routing.proxy.stub.transportation.StopPlacementOptions placementOptions533,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options534)
                         throws java.rmi.RemoteException
              ;
 
@@ -1987,12 +1987,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SaveStop
-                * @param saveStop532
+                * @param saveStop531
             
           */
         public void startsaveStop(
 
-            com.freshdirect.routing.proxy.stub.transportation.Stop stop533,com.freshdirect.routing.proxy.stub.transportation.StopPlacementOptions placementOptions534,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options535,
+            com.freshdirect.routing.proxy.stub.transportation.Stop stop532,com.freshdirect.routing.proxy.stub.transportation.StopPlacementOptions placementOptions533,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options534,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2003,14 +2003,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SchedulerRemoveFromServer
-                    * @param schedulerRemoveFromServer537
+                    * @param schedulerRemoveFromServer536
                 
          */
 
          
                      public void schedulerRemoveFromServer(
 
-                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity538)
+                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity537)
                         throws java.rmi.RemoteException
              ;
 
@@ -2018,12 +2018,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SchedulerRemoveFromServer
-                * @param schedulerRemoveFromServer537
+                * @param schedulerRemoveFromServer536
             
           */
         public void startschedulerRemoveFromServer(
 
-            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity538,
+            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity537,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2034,14 +2034,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__UnassignStop
-                    * @param unassignStop540
+                    * @param unassignStop539
                 
          */
 
          
                      public void unassignStop(
 
-                        com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop541)
+                        com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop540)
                         throws java.rmi.RemoteException
              ;
 
@@ -2049,12 +2049,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__UnassignStop
-                * @param unassignStop540
+                * @param unassignStop539
             
           */
         public void startunassignStop(
 
-            com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop541,
+            com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop540,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2065,14 +2065,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SchedulerCancelOrder
-                    * @param schedulerCancelOrder543
+                    * @param schedulerCancelOrder542
                 
          */
 
          
                      public void schedulerCancelOrder(
 
-                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity544,java.lang.String orderNumberXML545)
+                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity543,java.lang.String orderNumberXML544)
                         throws java.rmi.RemoteException
              ;
 
@@ -2080,12 +2080,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SchedulerCancelOrder
-                * @param schedulerCancelOrder543
+                * @param schedulerCancelOrder542
             
           */
         public void startschedulerCancelOrder(
 
-            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity544,java.lang.String orderNumberXML545,
+            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity543,java.lang.String orderNumberXML544,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2096,14 +2096,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__DeleteNotifications
-                    * @param deleteNotifications547
+                    * @param deleteNotifications546
                 
          */
 
          
                      public void deleteNotifications(
 
-                        com.freshdirect.routing.proxy.stub.transportation.NotificationIdentity[] identities548)
+                        com.freshdirect.routing.proxy.stub.transportation.NotificationIdentity[] identities547)
                         throws java.rmi.RemoteException
              ;
 
@@ -2111,12 +2111,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__DeleteNotifications
-                * @param deleteNotifications547
+                * @param deleteNotifications546
             
           */
         public void startdeleteNotifications(
 
-            com.freshdirect.routing.proxy.stub.transportation.NotificationIdentity[] identities548,
+            com.freshdirect.routing.proxy.stub.transportation.NotificationIdentity[] identities547,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2127,14 +2127,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveRoutingRouteByIdentity
-                    * @param retrieveRoutingRouteByIdentity550
+                    * @param retrieveRoutingRouteByIdentity549
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.RoutingRoute retrieveRoutingRouteByIdentity(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RoutingRouteIdentity identity551,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options552)
+                        com.freshdirect.routing.proxy.stub.transportation.RoutingRouteIdentity identity550,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options551)
                         throws java.rmi.RemoteException
              ;
 
@@ -2142,12 +2142,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveRoutingRouteByIdentity
-                * @param retrieveRoutingRouteByIdentity550
+                * @param retrieveRoutingRouteByIdentity549
             
           */
         public void startretrieveRoutingRouteByIdentity(
 
-            com.freshdirect.routing.proxy.stub.transportation.RoutingRouteIdentity identity551,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options552,
+            com.freshdirect.routing.proxy.stub.transportation.RoutingRouteIdentity identity550,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options551,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2158,14 +2158,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SaveEmployee
-                    * @param saveEmployee555
+                    * @param saveEmployee554
                 
          */
 
          
                      public void saveEmployee(
 
-                        com.freshdirect.routing.proxy.stub.transportation.Employee employee556)
+                        com.freshdirect.routing.proxy.stub.transportation.Employee employee555)
                         throws java.rmi.RemoteException
              ;
 
@@ -2173,12 +2173,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SaveEmployee
-                * @param saveEmployee555
+                * @param saveEmployee554
             
           */
         public void startsaveEmployee(
 
-            com.freshdirect.routing.proxy.stub.transportation.Employee employee556,
+            com.freshdirect.routing.proxy.stub.transportation.Employee employee555,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2189,14 +2189,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveEquipmentTypeByIdentity
-                    * @param retrieveEquipmentTypeByIdentity558
+                    * @param retrieveEquipmentTypeByIdentity557
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.EquipmentType retrieveEquipmentTypeByIdentity(
 
-                        com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeIdentity identity559,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options560)
+                        com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeIdentity identity558,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options559)
                         throws java.rmi.RemoteException
              ;
 
@@ -2204,12 +2204,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveEquipmentTypeByIdentity
-                * @param retrieveEquipmentTypeByIdentity558
+                * @param retrieveEquipmentTypeByIdentity557
             
           */
         public void startretrieveEquipmentTypeByIdentity(
 
-            com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeIdentity identity559,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options560,
+            com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeIdentity identity558,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options559,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2220,14 +2220,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SchedulerRetrieveDeliveryWaveInstancesByCriteria
-                    * @param schedulerRetrieveDeliveryWaveInstancesByCriteria563
+                    * @param schedulerRetrieveDeliveryWaveInstancesByCriteria562
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstance[] schedulerRetrieveDeliveryWaveInstancesByCriteria(
 
-                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity564,com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWaveInstanceCriteria criteria565,com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveDeliveryWaveInstanceOptions options566)
+                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity563,com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWaveInstanceCriteria criteria564,com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveDeliveryWaveInstanceOptions options565)
                         throws java.rmi.RemoteException
              ;
 
@@ -2235,12 +2235,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SchedulerRetrieveDeliveryWaveInstancesByCriteria
-                * @param schedulerRetrieveDeliveryWaveInstancesByCriteria563
+                * @param schedulerRetrieveDeliveryWaveInstancesByCriteria562
             
           */
         public void startschedulerRetrieveDeliveryWaveInstancesByCriteria(
 
-            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity564,com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWaveInstanceCriteria criteria565,com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveDeliveryWaveInstanceOptions options566,
+            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity563,com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWaveInstanceCriteria criteria564,com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveDeliveryWaveInstanceOptions options565,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2251,14 +2251,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SurveyResponse
-                    * @param surveyResponse569
+                    * @param surveyResponse568
                 
          */
 
          
                      public void surveyResponse(
 
-                        com.freshdirect.routing.proxy.stub.transportation.SurveyResponseInfo info570)
+                        com.freshdirect.routing.proxy.stub.transportation.SurveyResponseInfo info569)
                         throws java.rmi.RemoteException
              ;
 
@@ -2266,12 +2266,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SurveyResponse
-                * @param surveyResponse569
+                * @param surveyResponse568
             
           */
         public void startsurveyResponse(
 
-            com.freshdirect.routing.proxy.stub.transportation.SurveyResponseInfo info570,
+            com.freshdirect.routing.proxy.stub.transportation.SurveyResponseInfo info569,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2282,14 +2282,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveStopSurveyQuestions
-                    * @param retrieveStopSurveyQuestions572
+                    * @param retrieveStopSurveyQuestions571
                 
          */
 
          
-                     public com.freshdirect.routing.proxy.stub.transportation.RetrieveStopSurveyQuestionsResponse retrieveStopSurveyQuestions(
+                     public com.freshdirect.routing.proxy.stub.transportation.SurveyQuestionsResult retrieveStopSurveyQuestions(
 
-                        com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity573)
+                        com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity572)
                         throws java.rmi.RemoteException
              ;
 
@@ -2297,12 +2297,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveStopSurveyQuestions
-                * @param retrieveStopSurveyQuestions572
+                * @param retrieveStopSurveyQuestions571
             
           */
         public void startretrieveStopSurveyQuestions(
 
-            com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity573,
+            com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity572,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2313,14 +2313,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveDutyPeriodsByCriteria
-                    * @param retrieveDutyPeriodsByCriteria577
+                    * @param retrieveDutyPeriodsByCriteria575
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.DutyPeriod[] retrieveDutyPeriodsByCriteria(
 
-                        com.freshdirect.routing.proxy.stub.transportation.DutyPeriodCriteria criteria578,com.freshdirect.routing.proxy.stub.transportation.DutyPeriodRetrieveOptions options579)
+                        com.freshdirect.routing.proxy.stub.transportation.DutyPeriodCriteria criteria576,com.freshdirect.routing.proxy.stub.transportation.DutyPeriodRetrieveOptions options577)
                         throws java.rmi.RemoteException
              ;
 
@@ -2328,12 +2328,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveDutyPeriodsByCriteria
-                * @param retrieveDutyPeriodsByCriteria577
+                * @param retrieveDutyPeriodsByCriteria575
             
           */
         public void startretrieveDutyPeriodsByCriteria(
 
-            com.freshdirect.routing.proxy.stub.transportation.DutyPeriodCriteria criteria578,com.freshdirect.routing.proxy.stub.transportation.DutyPeriodRetrieveOptions options579,
+            com.freshdirect.routing.proxy.stub.transportation.DutyPeriodCriteria criteria576,com.freshdirect.routing.proxy.stub.transportation.DutyPeriodRetrieveOptions options577,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2344,14 +2344,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SchedulerSaveDeliveryWindow
-                    * @param schedulerSaveDeliveryWindow582
+                    * @param schedulerSaveDeliveryWindow580
                 
          */
 
          
                      public boolean schedulerSaveDeliveryWindow(
 
-                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity583,com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWindowOptions options584)
+                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity581,com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWindowOptions options582)
                         throws java.rmi.RemoteException
              ;
 
@@ -2359,12 +2359,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SchedulerSaveDeliveryWindow
-                * @param schedulerSaveDeliveryWindow582
+                * @param schedulerSaveDeliveryWindow580
             
           */
         public void startschedulerSaveDeliveryWindow(
 
-            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity583,com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWindowOptions options584,
+            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity581,com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWindowOptions options582,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2375,14 +2375,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveEquipmentByIdentity
-                    * @param retrieveEquipmentByIdentity587
+                    * @param retrieveEquipmentByIdentity585
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.Equipment retrieveEquipmentByIdentity(
 
-                        com.freshdirect.routing.proxy.stub.transportation.EquipmentIdentity identity588,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options589)
+                        com.freshdirect.routing.proxy.stub.transportation.EquipmentIdentity identity586,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options587)
                         throws java.rmi.RemoteException
              ;
 
@@ -2390,12 +2390,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveEquipmentByIdentity
-                * @param retrieveEquipmentByIdentity587
+                * @param retrieveEquipmentByIdentity585
             
           */
         public void startretrieveEquipmentByIdentity(
 
-            com.freshdirect.routing.proxy.stub.transportation.EquipmentIdentity identity588,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options589,
+            com.freshdirect.routing.proxy.stub.transportation.EquipmentIdentity identity586,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options587,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2406,14 +2406,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SendTextMessageToDriver
-                    * @param sendTextMessageToDriver592
+                    * @param sendTextMessageToDriver590
                 
          */
 
          
                      public void sendTextMessageToDriver(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity593,java.lang.String message594,java.lang.String fromUserID595)
+                        com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity591,java.lang.String message592,java.lang.String fromUserID593)
                         throws java.rmi.RemoteException
              ;
 
@@ -2421,12 +2421,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SendTextMessageToDriver
-                * @param sendTextMessageToDriver592
+                * @param sendTextMessageToDriver590
             
           */
         public void startsendTextMessageToDriver(
 
-            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity593,java.lang.String message594,java.lang.String fromUserID595,
+            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity591,java.lang.String message592,java.lang.String fromUserID593,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2437,14 +2437,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SchedulerRetrieveOrderByIdentity
-                    * @param schedulerRetrieveOrderByIdentity597
+                    * @param schedulerRetrieveOrderByIdentity595
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder schedulerRetrieveOrderByIdentity(
 
-                        com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderIdentity identity598,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrieveOptions options599)
+                        com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderIdentity identity596,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrieveOptions options597)
                         throws java.rmi.RemoteException
              ;
 
@@ -2452,12 +2452,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SchedulerRetrieveOrderByIdentity
-                * @param schedulerRetrieveOrderByIdentity597
+                * @param schedulerRetrieveOrderByIdentity595
             
           */
         public void startschedulerRetrieveOrderByIdentity(
 
-            com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderIdentity identity598,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrieveOptions options599,
+            com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderIdentity identity596,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrieveOptions options597,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2468,14 +2468,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveAssignedEquipment
-                    * @param retrieveAssignedEquipment602
+                    * @param retrieveAssignedEquipment600
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.EquipmentIdentity[] retrieveAssignedEquipment(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity603)
+                        com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity601)
                         throws java.rmi.RemoteException
              ;
 
@@ -2483,12 +2483,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveAssignedEquipment
-                * @param retrieveAssignedEquipment602
+                * @param retrieveAssignedEquipment600
             
           */
         public void startretrieveAssignedEquipment(
 
-            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity603,
+            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity601,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2499,14 +2499,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveStopSurveyResults
-                    * @param retrieveStopSurveyResults606
+                    * @param retrieveStopSurveyResults604
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.SurveyResult[] retrieveStopSurveyResults(
 
-                        com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity607)
+                        com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity605)
                         throws java.rmi.RemoteException
              ;
 
@@ -2514,12 +2514,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveStopSurveyResults
-                * @param retrieveStopSurveyResults606
+                * @param retrieveStopSurveyResults604
             
           */
         public void startretrieveStopSurveyResults(
 
-            com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity607,
+            com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity605,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2530,14 +2530,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveLocationByIdentity
-                    * @param retrieveLocationByIdentity610
+                    * @param retrieveLocationByIdentity608
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.Location retrieveLocationByIdentity(
 
-                        com.freshdirect.routing.proxy.stub.transportation.LocationIdentity identity611)
+                        com.freshdirect.routing.proxy.stub.transportation.LocationIdentity identity609)
                         throws java.rmi.RemoteException
              ;
 
@@ -2545,12 +2545,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveLocationByIdentity
-                * @param retrieveLocationByIdentity610
+                * @param retrieveLocationByIdentity608
             
           */
         public void startretrieveLocationByIdentity(
 
-            com.freshdirect.routing.proxy.stub.transportation.LocationIdentity identity611,
+            com.freshdirect.routing.proxy.stub.transportation.LocationIdentity identity609,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2561,14 +2561,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SaveRoutingImportOrdersEx
-                    * @param saveRoutingImportOrdersEx614
+                    * @param saveRoutingImportOrdersEx612
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder[] saveRoutingImportOrdersEx(
 
-                        java.lang.String regionId615,com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder[] orders616,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions617,com.freshdirect.routing.proxy.stub.transportation.SaveRoutingImportOrdersExOptions importOptions618)
+                        java.lang.String regionId613,com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder[] orders614,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions615,com.freshdirect.routing.proxy.stub.transportation.SaveRoutingImportOrdersExOptions importOptions616)
                         throws java.rmi.RemoteException
              ;
 
@@ -2576,12 +2576,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SaveRoutingImportOrdersEx
-                * @param saveRoutingImportOrdersEx614
+                * @param saveRoutingImportOrdersEx612
             
           */
         public void startsaveRoutingImportOrdersEx(
 
-            java.lang.String regionId615,com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder[] orders616,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions617,com.freshdirect.routing.proxy.stub.transportation.SaveRoutingImportOrdersExOptions importOptions618,
+            java.lang.String regionId613,com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder[] orders614,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions615,com.freshdirect.routing.proxy.stub.transportation.SaveRoutingImportOrdersExOptions importOptions616,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2592,14 +2592,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SchedulerExtendOrderReservation
-                    * @param schedulerExtendOrderReservation621
+                    * @param schedulerExtendOrderReservation619
                 
          */
 
          
                      public void schedulerExtendOrderReservation(
 
-                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity622,java.lang.String orderNumberXML623,int extendMinutes624)
+                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity620,java.lang.String orderNumberXML621,int extendMinutes622)
                         throws java.rmi.RemoteException
              ;
 
@@ -2607,12 +2607,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SchedulerExtendOrderReservation
-                * @param schedulerExtendOrderReservation621
+                * @param schedulerExtendOrderReservation619
             
           */
         public void startschedulerExtendOrderReservation(
 
-            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity622,java.lang.String orderNumberXML623,int extendMinutes624,
+            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity620,java.lang.String orderNumberXML621,int extendMinutes622,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2623,14 +2623,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveRegionConfig
-                    * @param retrieveRegionConfig626
+                    * @param retrieveRegionConfig624
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] retrieveRegionConfig(
 
-                        java.lang.String applicationID627,com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity628,java.lang.String configGroupID629)
+                        java.lang.String applicationID625,com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity626,java.lang.String configGroupID627)
                         throws java.rmi.RemoteException
              ;
 
@@ -2638,12 +2638,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveRegionConfig
-                * @param retrieveRegionConfig626
+                * @param retrieveRegionConfig624
             
           */
         public void startretrieveRegionConfig(
 
-            java.lang.String applicationID627,com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity628,java.lang.String configGroupID629,
+            java.lang.String applicationID625,com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity626,java.lang.String configGroupID627,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2654,14 +2654,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SchedulerSendRoutesToRoadnetEx
-                    * @param schedulerSendRoutesToRoadnetEx632
+                    * @param schedulerSendRoutesToRoadnetEx630
                 
          */
 
          
                      public void schedulerSendRoutesToRoadnetEx(
 
-                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity633,java.lang.String sessionDescription634)
+                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity631,java.lang.String sessionDescription632)
                         throws java.rmi.RemoteException
              ;
 
@@ -2669,12 +2669,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SchedulerSendRoutesToRoadnetEx
-                * @param schedulerSendRoutesToRoadnetEx632
+                * @param schedulerSendRoutesToRoadnetEx630
             
           */
         public void startschedulerSendRoutesToRoadnetEx(
 
-            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity633,java.lang.String sessionDescription634,
+            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity631,java.lang.String sessionDescription632,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2685,14 +2685,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SchedulerOptimizeOrders
-                    * @param schedulerOptimizeOrders636
+                    * @param schedulerOptimizeOrders634
                 
          */
 
          
                      public void schedulerOptimizeOrders(
 
-                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity637)
+                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity635)
                         throws java.rmi.RemoteException
              ;
 
@@ -2700,12 +2700,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SchedulerOptimizeOrders
-                * @param schedulerOptimizeOrders636
+                * @param schedulerOptimizeOrders634
             
           */
         public void startschedulerOptimizeOrders(
 
-            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity637,
+            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity635,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2716,14 +2716,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SchedulerSendRoutesToRoadnet
-                    * @param schedulerSendRoutesToRoadnet639
+                    * @param schedulerSendRoutesToRoadnet637
                 
          */
 
          
                      public void schedulerSendRoutesToRoadnet(
 
-                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity640)
+                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity638)
                         throws java.rmi.RemoteException
              ;
 
@@ -2731,12 +2731,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SchedulerSendRoutesToRoadnet
-                * @param schedulerSendRoutesToRoadnet639
+                * @param schedulerSendRoutesToRoadnet637
             
           */
         public void startschedulerSendRoutesToRoadnet(
 
-            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity640,
+            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity638,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2747,14 +2747,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__AssignDrivers
-                    * @param assignDrivers642
+                    * @param assignDrivers640
                 
          */
 
          
                      public void assignDrivers(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity643,com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity[] drivers644)
+                        com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity641,com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity[] drivers642)
                         throws java.rmi.RemoteException
              ;
 
@@ -2762,12 +2762,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__AssignDrivers
-                * @param assignDrivers642
+                * @param assignDrivers640
             
           */
         public void startassignDrivers(
 
-            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity643,com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity[] drivers644,
+            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity641,com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity[] drivers642,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2778,14 +2778,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveRoutingLocationsWithOrdersEx
-                    * @param retrieveRoutingLocationsWithOrdersEx646
+                    * @param retrieveRoutingLocationsWithOrdersEx644
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.Location[] retrieveRoutingLocationsWithOrdersEx(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity647,com.freshdirect.routing.proxy.stub.transportation.LocationRetrieveOptions options648)
+                        com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity645,com.freshdirect.routing.proxy.stub.transportation.LocationRetrieveOptions options646)
                         throws java.rmi.RemoteException
              ;
 
@@ -2793,12 +2793,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveRoutingLocationsWithOrdersEx
-                * @param retrieveRoutingLocationsWithOrdersEx646
+                * @param retrieveRoutingLocationsWithOrdersEx644
             
           */
         public void startretrieveRoutingLocationsWithOrdersEx(
 
-            com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity647,com.freshdirect.routing.proxy.stub.transportation.LocationRetrieveOptions options648,
+            com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity645,com.freshdirect.routing.proxy.stub.transportation.LocationRetrieveOptions options646,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2809,14 +2809,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SaveRoute
-                    * @param saveRoute651
+                    * @param saveRoute649
                 
          */
 
          
                      public void saveRoute(
 
-                        com.freshdirect.routing.proxy.stub.transportation.Route route652,com.freshdirect.routing.proxy.stub.transportation.StopPlacementOptions placementOptions653,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions timeZoneOptions654)
+                        com.freshdirect.routing.proxy.stub.transportation.Route route650,com.freshdirect.routing.proxy.stub.transportation.StopPlacementOptions placementOptions651,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions timeZoneOptions652)
                         throws java.rmi.RemoteException
              ;
 
@@ -2824,12 +2824,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SaveRoute
-                * @param saveRoute651
+                * @param saveRoute649
             
           */
         public void startsaveRoute(
 
-            com.freshdirect.routing.proxy.stub.transportation.Route route652,com.freshdirect.routing.proxy.stub.transportation.StopPlacementOptions placementOptions653,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions timeZoneOptions654,
+            com.freshdirect.routing.proxy.stub.transportation.Route route650,com.freshdirect.routing.proxy.stub.transportation.StopPlacementOptions placementOptions651,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions timeZoneOptions652,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2840,14 +2840,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SaveEquipment
-                    * @param saveEquipment656
+                    * @param saveEquipment654
                 
          */
 
          
                      public void saveEquipment(
 
-                        com.freshdirect.routing.proxy.stub.transportation.Equipment equipment657,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options658)
+                        com.freshdirect.routing.proxy.stub.transportation.Equipment equipment655,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options656)
                         throws java.rmi.RemoteException
              ;
 
@@ -2855,12 +2855,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SaveEquipment
-                * @param saveEquipment656
+                * @param saveEquipment654
             
           */
         public void startsaveEquipment(
 
-            com.freshdirect.routing.proxy.stub.transportation.Equipment equipment657,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options658,
+            com.freshdirect.routing.proxy.stub.transportation.Equipment equipment655,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options656,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2871,14 +2871,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveStopByIdentity
-                    * @param retrieveStopByIdentity660
+                    * @param retrieveStopByIdentity658
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.Stop retrieveStopByIdentity(
 
-                        com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity661,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options662)
+                        com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity659,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options660)
                         throws java.rmi.RemoteException
              ;
 
@@ -2886,12 +2886,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveStopByIdentity
-                * @param retrieveStopByIdentity660
+                * @param retrieveStopByIdentity658
             
           */
         public void startretrieveStopByIdentity(
 
-            com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity661,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options662,
+            com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity659,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options660,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2902,14 +2902,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__BulkArriveDepartStop
-                    * @param bulkArriveDepartStop665
+                    * @param bulkArriveDepartStop663
                 
          */
 
          
                      public void bulkArriveDepartStop(
 
-                        com.freshdirect.routing.proxy.stub.transportation.BulkArriveDepartInfo[] arriveDepartInfos666)
+                        com.freshdirect.routing.proxy.stub.transportation.BulkArriveDepartInfo[] arriveDepartInfos664)
                         throws java.rmi.RemoteException
              ;
 
@@ -2917,12 +2917,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__BulkArriveDepartStop
-                * @param bulkArriveDepartStop665
+                * @param bulkArriveDepartStop663
             
           */
         public void startbulkArriveDepartStop(
 
-            com.freshdirect.routing.proxy.stub.transportation.BulkArriveDepartInfo[] arriveDepartInfos666,
+            com.freshdirect.routing.proxy.stub.transportation.BulkArriveDepartInfo[] arriveDepartInfos664,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2933,14 +2933,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveRoutingSessionsByCriteria
-                    * @param retrieveRoutingSessionsByCriteria668
+                    * @param retrieveRoutingSessionsByCriteria666
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.RoutingSession[] retrieveRoutingSessionsByCriteria(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RoutingSessionCriteria criteria669,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options670)
+                        com.freshdirect.routing.proxy.stub.transportation.RoutingSessionCriteria criteria667,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options668)
                         throws java.rmi.RemoteException
              ;
 
@@ -2948,12 +2948,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveRoutingSessionsByCriteria
-                * @param retrieveRoutingSessionsByCriteria668
+                * @param retrieveRoutingSessionsByCriteria666
             
           */
         public void startretrieveRoutingSessionsByCriteria(
 
-            com.freshdirect.routing.proxy.stub.transportation.RoutingSessionCriteria criteria669,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options670,
+            com.freshdirect.routing.proxy.stub.transportation.RoutingSessionCriteria criteria667,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options668,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2964,14 +2964,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveRoutingUnassignsByCriteria
-                    * @param retrieveRoutingUnassignsByCriteria673
+                    * @param retrieveRoutingUnassignsByCriteria671
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.RoutingStop[] retrieveRoutingUnassignsByCriteria(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RoutingStopCriteria criteria674,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options675)
+                        com.freshdirect.routing.proxy.stub.transportation.RoutingStopCriteria criteria672,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options673)
                         throws java.rmi.RemoteException
              ;
 
@@ -2979,12 +2979,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveRoutingUnassignsByCriteria
-                * @param retrieveRoutingUnassignsByCriteria673
+                * @param retrieveRoutingUnassignsByCriteria671
             
           */
         public void startretrieveRoutingUnassignsByCriteria(
 
-            com.freshdirect.routing.proxy.stub.transportation.RoutingStopCriteria criteria674,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options675,
+            com.freshdirect.routing.proxy.stub.transportation.RoutingStopCriteria criteria672,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options673,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -2995,14 +2995,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveRoutingImportOrdersByCriteria
-                    * @param retrieveRoutingImportOrdersByCriteria678
+                    * @param retrieveRoutingImportOrdersByCriteria676
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder[] retrieveRoutingImportOrdersByCriteria(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderCriteria criteria679,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions680)
+                        com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderCriteria criteria677,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions678)
                         throws java.rmi.RemoteException
              ;
 
@@ -3010,12 +3010,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveRoutingImportOrdersByCriteria
-                * @param retrieveRoutingImportOrdersByCriteria678
+                * @param retrieveRoutingImportOrdersByCriteria676
             
           */
         public void startretrieveRoutingImportOrdersByCriteria(
 
-            com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderCriteria criteria679,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions680,
+            com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderCriteria criteria677,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions678,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3026,7 +3026,7 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__Nop
-                    * @param nop683
+                    * @param nop681
                 
          */
 
@@ -3041,7 +3041,7 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__Nop
-                * @param nop683
+                * @param nop681
             
           */
         public void startnop(
@@ -3057,14 +3057,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__ChangeUserPassword
-                    * @param changeUserPassword686
+                    * @param changeUserPassword684
                 
          */
 
          
                      public void changeUserPassword(
 
-                        java.lang.String userID687,java.lang.String oldPassword688,java.lang.String newPassword689)
+                        java.lang.String userID685,java.lang.String oldPassword686,java.lang.String newPassword687)
                         throws java.rmi.RemoteException
              ;
 
@@ -3072,12 +3072,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__ChangeUserPassword
-                * @param changeUserPassword686
+                * @param changeUserPassword684
             
           */
         public void startchangeUserPassword(
 
-            java.lang.String userID687,java.lang.String oldPassword688,java.lang.String newPassword689,
+            java.lang.String userID685,java.lang.String oldPassword686,java.lang.String newPassword687,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3088,14 +3088,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__CompleteRoute
-                    * @param completeRoute691
+                    * @param completeRoute689
                 
          */
 
          
                      public void completeRoute(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RouteCompleteInfo info692)
+                        com.freshdirect.routing.proxy.stub.transportation.RouteCompleteInfo info690)
                         throws java.rmi.RemoteException
              ;
 
@@ -3103,12 +3103,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__CompleteRoute
-                * @param completeRoute691
+                * @param completeRoute689
             
           */
         public void startcompleteRoute(
 
-            com.freshdirect.routing.proxy.stub.transportation.RouteCompleteInfo info692,
+            com.freshdirect.routing.proxy.stub.transportation.RouteCompleteInfo info690,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3119,14 +3119,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SchedulerExcludeCutoffRoutes
-                    * @param schedulerExcludeCutoffRoutes694
+                    * @param schedulerExcludeCutoffRoutes692
                 
          */
 
          
                      public void schedulerExcludeCutoffRoutes(
 
-                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity695,boolean excludeXML696)
+                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity693,boolean excludeXML694)
                         throws java.rmi.RemoteException
              ;
 
@@ -3134,12 +3134,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SchedulerExcludeCutoffRoutes
-                * @param schedulerExcludeCutoffRoutes694
+                * @param schedulerExcludeCutoffRoutes692
             
           */
         public void startschedulerExcludeCutoffRoutes(
 
-            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity695,boolean excludeXML696,
+            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity693,boolean excludeXML694,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3150,14 +3150,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveRoutingOrderByIdentity
-                    * @param retrieveRoutingOrderByIdentity698
+                    * @param retrieveRoutingOrderByIdentity696
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.RoutingOrder retrieveRoutingOrderByIdentity(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RoutingOrderIdentity identity699,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options700)
+                        com.freshdirect.routing.proxy.stub.transportation.RoutingOrderIdentity identity697,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options698)
                         throws java.rmi.RemoteException
              ;
 
@@ -3165,12 +3165,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveRoutingOrderByIdentity
-                * @param retrieveRoutingOrderByIdentity698
+                * @param retrieveRoutingOrderByIdentity696
             
           */
         public void startretrieveRoutingOrderByIdentity(
 
-            com.freshdirect.routing.proxy.stub.transportation.RoutingOrderIdentity identity699,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options700,
+            com.freshdirect.routing.proxy.stub.transportation.RoutingOrderIdentity identity697,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options698,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3181,14 +3181,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__TextMessage
-                    * @param textMessage703
+                    * @param textMessage701
                 
          */
 
          
                      public void textMessage(
 
-                        com.freshdirect.routing.proxy.stub.transportation.TextMessageInfo info704)
+                        com.freshdirect.routing.proxy.stub.transportation.TextMessageInfo info702)
                         throws java.rmi.RemoteException
              ;
 
@@ -3196,12 +3196,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__TextMessage
-                * @param textMessage703
+                * @param textMessage701
             
           */
         public void starttextMessage(
 
-            com.freshdirect.routing.proxy.stub.transportation.TextMessageInfo info704,
+            com.freshdirect.routing.proxy.stub.transportation.TextMessageInfo info702,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3212,14 +3212,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveRoutingStopsByCriteria
-                    * @param retrieveRoutingStopsByCriteria706
+                    * @param retrieveRoutingStopsByCriteria704
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.RoutingStop[] retrieveRoutingStopsByCriteria(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RoutingStopCriteria criteria707,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options708)
+                        com.freshdirect.routing.proxy.stub.transportation.RoutingStopCriteria criteria705,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options706)
                         throws java.rmi.RemoteException
              ;
 
@@ -3227,12 +3227,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveRoutingStopsByCriteria
-                * @param retrieveRoutingStopsByCriteria706
+                * @param retrieveRoutingStopsByCriteria704
             
           */
         public void startretrieveRoutingStopsByCriteria(
 
-            com.freshdirect.routing.proxy.stub.transportation.RoutingStopCriteria criteria707,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options708,
+            com.freshdirect.routing.proxy.stub.transportation.RoutingStopCriteria criteria705,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options706,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3243,14 +3243,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SchedulerRebuildRoutes
-                    * @param schedulerRebuildRoutes711
+                    * @param schedulerRebuildRoutes709
                 
          */
 
          
                      public java.lang.String[] schedulerRebuildRoutes(
 
-                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity712)
+                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity710)
                         throws java.rmi.RemoteException
              ;
 
@@ -3258,12 +3258,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SchedulerRebuildRoutes
-                * @param schedulerRebuildRoutes711
+                * @param schedulerRebuildRoutes709
             
           */
         public void startschedulerRebuildRoutes(
 
-            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity712,
+            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity710,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3274,14 +3274,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SchedulerCalculateDeliveryWindowMetrics
-                    * @param schedulerCalculateDeliveryWindowMetrics715
+                    * @param schedulerCalculateDeliveryWindowMetrics713
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetrics[] schedulerCalculateDeliveryWindowMetrics(
 
-                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity716,com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsOptions options717)
+                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity714,com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsOptions options715)
                         throws java.rmi.RemoteException
              ;
 
@@ -3289,12 +3289,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SchedulerCalculateDeliveryWindowMetrics
-                * @param schedulerCalculateDeliveryWindowMetrics715
+                * @param schedulerCalculateDeliveryWindowMetrics713
             
           */
         public void startschedulerCalculateDeliveryWindowMetrics(
 
-            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity716,com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsOptions options717,
+            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity714,com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsOptions options715,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3305,14 +3305,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__DeleteLocations
-                    * @param deleteLocations720
+                    * @param deleteLocations718
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.Location[] deleteLocations(
 
-                        com.freshdirect.routing.proxy.stub.transportation.Location[] locations721)
+                        com.freshdirect.routing.proxy.stub.transportation.Location[] locations719)
                         throws java.rmi.RemoteException
              ;
 
@@ -3320,12 +3320,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__DeleteLocations
-                * @param deleteLocations720
+                * @param deleteLocations718
             
           */
         public void startdeleteLocations(
 
-            com.freshdirect.routing.proxy.stub.transportation.Location[] locations721,
+            com.freshdirect.routing.proxy.stub.transportation.Location[] locations719,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3336,14 +3336,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveProductsPurchased
-                    * @param retrieveProductsPurchased724
+                    * @param retrieveProductsPurchased722
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.ProductsPurchased retrieveProductsPurchased(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RegionIdentity identity725)
+                        com.freshdirect.routing.proxy.stub.transportation.RegionIdentity identity723)
                         throws java.rmi.RemoteException
              ;
 
@@ -3351,12 +3351,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveProductsPurchased
-                * @param retrieveProductsPurchased724
+                * @param retrieveProductsPurchased722
             
           */
         public void startretrieveProductsPurchased(
 
-            com.freshdirect.routing.proxy.stub.transportation.RegionIdentity identity725,
+            com.freshdirect.routing.proxy.stub.transportation.RegionIdentity identity723,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3367,14 +3367,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveRoutingSourcedOrdersByCriteria
-                    * @param retrieveRoutingSourcedOrdersByCriteria728
+                    * @param retrieveRoutingSourcedOrdersByCriteria726
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.RoutingOrder[] retrieveRoutingSourcedOrdersByCriteria(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RoutingSourcedOrderCriteria criteria729,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options730)
+                        com.freshdirect.routing.proxy.stub.transportation.RoutingSourcedOrderCriteria criteria727,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options728)
                         throws java.rmi.RemoteException
              ;
 
@@ -3382,12 +3382,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveRoutingSourcedOrdersByCriteria
-                * @param retrieveRoutingSourcedOrdersByCriteria728
+                * @param retrieveRoutingSourcedOrdersByCriteria726
             
           */
         public void startretrieveRoutingSourcedOrdersByCriteria(
 
-            com.freshdirect.routing.proxy.stub.transportation.RoutingSourcedOrderCriteria criteria729,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options730,
+            com.freshdirect.routing.proxy.stub.transportation.RoutingSourcedOrderCriteria criteria727,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options728,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3398,14 +3398,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SaveStopSurveyResults
-                    * @param saveStopSurveyResults733
+                    * @param saveStopSurveyResults731
                 
          */
 
          
                      public void saveStopSurveyResults(
 
-                        com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity734,com.freshdirect.routing.proxy.stub.transportation.SurveyResult[] surveyResults735)
+                        com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity732,com.freshdirect.routing.proxy.stub.transportation.SurveyResult[] surveyResults733)
                         throws java.rmi.RemoteException
              ;
 
@@ -3413,12 +3413,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SaveStopSurveyResults
-                * @param saveStopSurveyResults733
+                * @param saveStopSurveyResults731
             
           */
         public void startsaveStopSurveyResults(
 
-            com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity734,com.freshdirect.routing.proxy.stub.transportation.SurveyResult[] surveyResults735,
+            com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity732,com.freshdirect.routing.proxy.stub.transportation.SurveyResult[] surveyResults733,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3429,14 +3429,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveRoutingRouteDailyStatsByCriteria
-                    * @param retrieveRoutingRouteDailyStatsByCriteria737
+                    * @param retrieveRoutingRouteDailyStatsByCriteria735
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.RouteDailyStats[] retrieveRoutingRouteDailyStatsByCriteria(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RoutingRouteDailyStatsCriteria criteria738,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteDailyStatsRetrieveOptions options739)
+                        com.freshdirect.routing.proxy.stub.transportation.RoutingRouteDailyStatsCriteria criteria736,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteDailyStatsRetrieveOptions options737)
                         throws java.rmi.RemoteException
              ;
 
@@ -3444,12 +3444,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveRoutingRouteDailyStatsByCriteria
-                * @param retrieveRoutingRouteDailyStatsByCriteria737
+                * @param retrieveRoutingRouteDailyStatsByCriteria735
             
           */
         public void startretrieveRoutingRouteDailyStatsByCriteria(
 
-            com.freshdirect.routing.proxy.stub.transportation.RoutingRouteDailyStatsCriteria criteria738,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteDailyStatsRetrieveOptions options739,
+            com.freshdirect.routing.proxy.stub.transportation.RoutingRouteDailyStatsCriteria criteria736,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteDailyStatsRetrieveOptions options737,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3460,14 +3460,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__UpdateStopSignature
-                    * @param updateStopSignature742
+                    * @param updateStopSignature740
                 
          */
 
          
                      public void updateStopSignature(
 
-                        com.freshdirect.routing.proxy.stub.transportation.StopSignatureInfo info743)
+                        com.freshdirect.routing.proxy.stub.transportation.StopSignatureInfo info741)
                         throws java.rmi.RemoteException
              ;
 
@@ -3475,12 +3475,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__UpdateStopSignature
-                * @param updateStopSignature742
+                * @param updateStopSignature740
             
           */
         public void startupdateStopSignature(
 
-            com.freshdirect.routing.proxy.stub.transportation.StopSignatureInfo info743,
+            com.freshdirect.routing.proxy.stub.transportation.StopSignatureInfo info741,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3491,14 +3491,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SaveGlobalConfig
-                    * @param saveGlobalConfig745
+                    * @param saveGlobalConfig743
                 
          */
 
          
                      public void saveGlobalConfig(
 
-                        java.lang.String applicationID746,java.lang.String configGroupID747,com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] items748)
+                        java.lang.String applicationID744,java.lang.String configGroupID745,com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] items746)
                         throws java.rmi.RemoteException
              ;
 
@@ -3506,12 +3506,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SaveGlobalConfig
-                * @param saveGlobalConfig745
+                * @param saveGlobalConfig743
             
           */
         public void startsaveGlobalConfig(
 
-            java.lang.String applicationID746,java.lang.String configGroupID747,com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] items748,
+            java.lang.String applicationID744,java.lang.String configGroupID745,com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] items746,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3522,14 +3522,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SchedulerIsExcludingCutoffRoutes
-                    * @param schedulerIsExcludingCutoffRoutes750
+                    * @param schedulerIsExcludingCutoffRoutes748
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.IsExcludingCutoffRoutesResult schedulerIsExcludingCutoffRoutes(
 
-                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity751)
+                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity749)
                         throws java.rmi.RemoteException
              ;
 
@@ -3537,12 +3537,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SchedulerIsExcludingCutoffRoutes
-                * @param schedulerIsExcludingCutoffRoutes750
+                * @param schedulerIsExcludingCutoffRoutes748
             
           */
         public void startschedulerIsExcludingCutoffRoutes(
 
-            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity751,
+            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity749,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3553,14 +3553,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveCannedTextMessagesByCriteria
-                    * @param retrieveCannedTextMessagesByCriteria754
+                    * @param retrieveCannedTextMessagesByCriteria752
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.CannedTextMessage[] retrieveCannedTextMessagesByCriteria(
 
-                        com.freshdirect.routing.proxy.stub.transportation.CannedTextMessageCriteria criteria755)
+                        com.freshdirect.routing.proxy.stub.transportation.CannedTextMessageCriteria criteria753)
                         throws java.rmi.RemoteException
              ;
 
@@ -3568,12 +3568,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveCannedTextMessagesByCriteria
-                * @param retrieveCannedTextMessagesByCriteria754
+                * @param retrieveCannedTextMessagesByCriteria752
             
           */
         public void startretrieveCannedTextMessagesByCriteria(
 
-            com.freshdirect.routing.proxy.stub.transportation.CannedTextMessageCriteria criteria755,
+            com.freshdirect.routing.proxy.stub.transportation.CannedTextMessageCriteria criteria753,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3584,14 +3584,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SchedulerReserveOrder
-                    * @param schedulerReserveOrder758
+                    * @param schedulerReserveOrder756
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.ReserveResult schedulerReserveOrder(
 
-                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity759,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder deliveryAreaOrder760,com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow deliveryWindow761,com.freshdirect.routing.proxy.stub.transportation.SchedulerReserveOrderOptions options762)
+                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity757,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder deliveryAreaOrder758,com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow deliveryWindow759,com.freshdirect.routing.proxy.stub.transportation.SchedulerReserveOrderOptions options760)
                         throws java.rmi.RemoteException
              ;
 
@@ -3599,12 +3599,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SchedulerReserveOrder
-                * @param schedulerReserveOrder758
+                * @param schedulerReserveOrder756
             
           */
         public void startschedulerReserveOrder(
 
-            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity759,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder deliveryAreaOrder760,com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow deliveryWindow761,com.freshdirect.routing.proxy.stub.transportation.SchedulerReserveOrderOptions options762,
+            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity757,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder deliveryAreaOrder758,com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow deliveryWindow759,com.freshdirect.routing.proxy.stub.transportation.SchedulerReserveOrderOptions options760,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3615,14 +3615,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveLocationsByCriteria
-                    * @param retrieveLocationsByCriteria765
+                    * @param retrieveLocationsByCriteria763
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.Location[] retrieveLocationsByCriteria(
 
-                        com.freshdirect.routing.proxy.stub.transportation.LocationCriteria criteria766)
+                        com.freshdirect.routing.proxy.stub.transportation.LocationCriteria criteria764)
                         throws java.rmi.RemoteException
              ;
 
@@ -3630,12 +3630,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveLocationsByCriteria
-                * @param retrieveLocationsByCriteria765
+                * @param retrieveLocationsByCriteria763
             
           */
         public void startretrieveLocationsByCriteria(
 
-            com.freshdirect.routing.proxy.stub.transportation.LocationCriteria criteria766,
+            com.freshdirect.routing.proxy.stub.transportation.LocationCriteria criteria764,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3646,14 +3646,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveStopsByCriteria
-                    * @param retrieveStopsByCriteria769
+                    * @param retrieveStopsByCriteria767
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.Stop[] retrieveStopsByCriteria(
 
-                        com.freshdirect.routing.proxy.stub.transportation.StopCriteria criteria770,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options771)
+                        com.freshdirect.routing.proxy.stub.transportation.StopCriteria criteria768,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options769)
                         throws java.rmi.RemoteException
              ;
 
@@ -3661,12 +3661,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveStopsByCriteria
-                * @param retrieveStopsByCriteria769
+                * @param retrieveStopsByCriteria767
             
           */
         public void startretrieveStopsByCriteria(
 
-            com.freshdirect.routing.proxy.stub.transportation.StopCriteria criteria770,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options771,
+            com.freshdirect.routing.proxy.stub.transportation.StopCriteria criteria768,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options769,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3677,14 +3677,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveRegionOptions
-                    * @param retrieveRegionOptions774
+                    * @param retrieveRegionOptions772
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.RegionOptions retrieveRegionOptions(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RegionIdentity identity775)
+                        com.freshdirect.routing.proxy.stub.transportation.RegionIdentity identity773)
                         throws java.rmi.RemoteException
              ;
 
@@ -3692,12 +3692,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveRegionOptions
-                * @param retrieveRegionOptions774
+                * @param retrieveRegionOptions772
             
           */
         public void startretrieveRegionOptions(
 
-            com.freshdirect.routing.proxy.stub.transportation.RegionIdentity identity775,
+            com.freshdirect.routing.proxy.stub.transportation.RegionIdentity identity773,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3708,14 +3708,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SequenceStop
-                    * @param sequenceStop778
+                    * @param sequenceStop776
                 
          */
 
          
                      public void sequenceStop(
 
-                        com.freshdirect.routing.proxy.stub.transportation.StopSequenceInfo info779)
+                        com.freshdirect.routing.proxy.stub.transportation.StopSequenceInfo info777)
                         throws java.rmi.RemoteException
              ;
 
@@ -3723,12 +3723,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SequenceStop
-                * @param sequenceStop778
+                * @param sequenceStop776
             
           */
         public void startsequenceStop(
 
-            com.freshdirect.routing.proxy.stub.transportation.StopSequenceInfo info779,
+            com.freshdirect.routing.proxy.stub.transportation.StopSequenceInfo info777,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3739,14 +3739,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveRouteSurveyResults
-                    * @param retrieveRouteSurveyResults781
+                    * @param retrieveRouteSurveyResults779
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.SurveyResult[] retrieveRouteSurveyResults(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity782,com.freshdirect.routing.proxy.stub.transportation.SurveyPerformedAt performedAt783)
+                        com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity780,com.freshdirect.routing.proxy.stub.transportation.SurveyPerformedAt performedAt781)
                         throws java.rmi.RemoteException
              ;
 
@@ -3754,12 +3754,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveRouteSurveyResults
-                * @param retrieveRouteSurveyResults781
+                * @param retrieveRouteSurveyResults779
             
           */
         public void startretrieveRouteSurveyResults(
 
-            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity782,com.freshdirect.routing.proxy.stub.transportation.SurveyPerformedAt performedAt783,
+            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity780,com.freshdirect.routing.proxy.stub.transportation.SurveyPerformedAt performedAt781,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3770,14 +3770,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__UpdateRoutePosition
-                    * @param updateRoutePosition786
+                    * @param updateRoutePosition784
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.UpdatePositionReturnCode updateRoutePosition(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RoutePositionInfo info787)
+                        com.freshdirect.routing.proxy.stub.transportation.RoutePositionInfo info785)
                         throws java.rmi.RemoteException
              ;
 
@@ -3785,12 +3785,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__UpdateRoutePosition
-                * @param updateRoutePosition786
+                * @param updateRoutePosition784
             
           */
         public void startupdateRoutePosition(
 
-            com.freshdirect.routing.proxy.stub.transportation.RoutePositionInfo info787,
+            com.freshdirect.routing.proxy.stub.transportation.RoutePositionInfo info785,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3801,14 +3801,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__MassStopSequence
-                    * @param massStopSequence790
+                    * @param massStopSequence788
                 
          */
 
          
                      public void massStopSequence(
 
-                        com.freshdirect.routing.proxy.stub.transportation.MassStopSequenceInfo info791)
+                        com.freshdirect.routing.proxy.stub.transportation.MassStopSequenceInfo info789)
                         throws java.rmi.RemoteException
              ;
 
@@ -3816,12 +3816,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__MassStopSequence
-                * @param massStopSequence790
+                * @param massStopSequence788
             
           */
         public void startmassStopSequence(
 
-            com.freshdirect.routing.proxy.stub.transportation.MassStopSequenceInfo info791,
+            com.freshdirect.routing.proxy.stub.transportation.MassStopSequenceInfo info789,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3832,14 +3832,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__AddRICUser
-                    * @param addRICUser793
+                    * @param addRICUser791
                 
          */
 
          
                      public void addRICUser(
 
-                        com.freshdirect.routing.proxy.stub.transportation.User user794)
+                        com.freshdirect.routing.proxy.stub.transportation.User user792)
                         throws java.rmi.RemoteException
              ;
 
@@ -3847,12 +3847,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__AddRICUser
-                * @param addRICUser793
+                * @param addRICUser791
             
           */
         public void startaddRICUser(
 
-            com.freshdirect.routing.proxy.stub.transportation.User user794,
+            com.freshdirect.routing.proxy.stub.transportation.User user792,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3863,14 +3863,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveRoutingSessionByIdentity
-                    * @param retrieveRoutingSessionByIdentity796
+                    * @param retrieveRoutingSessionByIdentity794
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.RoutingSession retrieveRoutingSessionByIdentity(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity identity797,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options798)
+                        com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity identity795,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options796)
                         throws java.rmi.RemoteException
              ;
 
@@ -3878,12 +3878,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveRoutingSessionByIdentity
-                * @param retrieveRoutingSessionByIdentity796
+                * @param retrieveRoutingSessionByIdentity794
             
           */
         public void startretrieveRoutingSessionByIdentity(
 
-            com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity identity797,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options798,
+            com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity identity795,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options796,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3894,14 +3894,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__DepartStop
-                    * @param departStop801
+                    * @param departStop799
                 
          */
 
          
                      public void departStop(
 
-                        com.freshdirect.routing.proxy.stub.transportation.StopDepartInfo info802)
+                        com.freshdirect.routing.proxy.stub.transportation.StopDepartInfo info800)
                         throws java.rmi.RemoteException
              ;
 
@@ -3909,12 +3909,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__DepartStop
-                * @param departStop801
+                * @param departStop799
             
           */
         public void startdepartStop(
 
-            com.freshdirect.routing.proxy.stub.transportation.StopDepartInfo info802,
+            com.freshdirect.routing.proxy.stub.transportation.StopDepartInfo info800,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3925,14 +3925,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SchedulerConfirmOrder
-                    * @param schedulerConfirmOrder804
+                    * @param schedulerConfirmOrder802
                 
          */
 
          
                      public void schedulerConfirmOrder(
 
-                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity805,java.lang.String orderNumberXML806)
+                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity803,java.lang.String orderNumberXML804)
                         throws java.rmi.RemoteException
              ;
 
@@ -3940,12 +3940,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SchedulerConfirmOrder
-                * @param schedulerConfirmOrder804
+                * @param schedulerConfirmOrder802
             
           */
         public void startschedulerConfirmOrder(
 
-            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity805,java.lang.String orderNumberXML806,
+            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity803,java.lang.String orderNumberXML804,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -3956,7 +3956,7 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__AllowAdditionOfRICUsers
-                    * @param allowAdditionOfRICUsers808
+                    * @param allowAdditionOfRICUsers806
                 
          */
 
@@ -3971,7 +3971,7 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__AllowAdditionOfRICUsers
-                * @param allowAdditionOfRICUsers808
+                * @param allowAdditionOfRICUsers806
             
           */
         public void startallowAdditionOfRICUsers(
@@ -3987,14 +3987,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveGlobalConfig
-                    * @param retrieveGlobalConfig811
+                    * @param retrieveGlobalConfig809
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] retrieveGlobalConfig(
 
-                        java.lang.String applicationID812,java.lang.String configGroupID813)
+                        java.lang.String applicationID810,java.lang.String configGroupID811)
                         throws java.rmi.RemoteException
              ;
 
@@ -4002,12 +4002,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveGlobalConfig
-                * @param retrieveGlobalConfig811
+                * @param retrieveGlobalConfig809
             
           */
         public void startretrieveGlobalConfig(
 
-            java.lang.String applicationID812,java.lang.String configGroupID813,
+            java.lang.String applicationID810,java.lang.String configGroupID811,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -4018,14 +4018,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveEquipmentTypeByCriteria
-                    * @param retrieveEquipmentTypeByCriteria816
+                    * @param retrieveEquipmentTypeByCriteria814
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.EquipmentType[] retrieveEquipmentTypeByCriteria(
 
-                        com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeCriteria criteria817,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options818)
+                        com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeCriteria criteria815,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options816)
                         throws java.rmi.RemoteException
              ;
 
@@ -4033,12 +4033,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveEquipmentTypeByCriteria
-                * @param retrieveEquipmentTypeByCriteria816
+                * @param retrieveEquipmentTypeByCriteria814
             
           */
         public void startretrieveEquipmentTypeByCriteria(
 
-            com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeCriteria criteria817,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options818,
+            com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeCriteria criteria815,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options816,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -4049,14 +4049,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrievePositionHistoryBlocksByCriteria
-                    * @param retrievePositionHistoryBlocksByCriteria821
+                    * @param retrievePositionHistoryBlocksByCriteria819
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.PositionHistory[] retrievePositionHistoryBlocksByCriteria(
 
-                        com.freshdirect.routing.proxy.stub.transportation.PositionHistoryCriteria criteria822)
+                        com.freshdirect.routing.proxy.stub.transportation.PositionHistoryCriteria criteria820)
                         throws java.rmi.RemoteException
              ;
 
@@ -4064,12 +4064,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrievePositionHistoryBlocksByCriteria
-                * @param retrievePositionHistoryBlocksByCriteria821
+                * @param retrievePositionHistoryBlocksByCriteria819
             
           */
         public void startretrievePositionHistoryBlocksByCriteria(
 
-            com.freshdirect.routing.proxy.stub.transportation.PositionHistoryCriteria criteria822,
+            com.freshdirect.routing.proxy.stub.transportation.PositionHistoryCriteria criteria820,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -4080,14 +4080,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SchedulerReloadWaveInstances
-                    * @param schedulerReloadWaveInstances825
+                    * @param schedulerReloadWaveInstances823
                 
          */
 
          
                      public boolean schedulerReloadWaveInstances(
 
-                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity826,com.freshdirect.routing.proxy.stub.transportation.SchedulerReloadWaveInstancesOptions options827)
+                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity824,com.freshdirect.routing.proxy.stub.transportation.SchedulerReloadWaveInstancesOptions options825)
                         throws java.rmi.RemoteException
              ;
 
@@ -4095,12 +4095,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SchedulerReloadWaveInstances
-                * @param schedulerReloadWaveInstances825
+                * @param schedulerReloadWaveInstances823
             
           */
         public void startschedulerReloadWaveInstances(
 
-            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity826,com.freshdirect.routing.proxy.stub.transportation.SchedulerReloadWaveInstancesOptions options827,
+            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity824,com.freshdirect.routing.proxy.stub.transportation.SchedulerReloadWaveInstancesOptions options825,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -4111,14 +4111,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveSurveyDetails
-                    * @param retrieveSurveyDetails830
+                    * @param retrieveSurveyDetails828
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.SurveyDetails[] retrieveSurveyDetails(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity831)
+                        com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity829)
                         throws java.rmi.RemoteException
              ;
 
@@ -4126,12 +4126,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveSurveyDetails
-                * @param retrieveSurveyDetails830
+                * @param retrieveSurveyDetails828
             
           */
         public void startretrieveSurveyDetails(
 
-            com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity831,
+            com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity829,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -4142,14 +4142,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SaveLocationsEx
-                    * @param saveLocationsEx834
+                    * @param saveLocationsEx832
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.Location[] saveLocationsEx(
 
-                        com.freshdirect.routing.proxy.stub.transportation.Location[] locations835,com.freshdirect.routing.proxy.stub.transportation.SaveLocationsExOptions options836)
+                        com.freshdirect.routing.proxy.stub.transportation.Location[] locations833,com.freshdirect.routing.proxy.stub.transportation.SaveLocationsExOptions options834)
                         throws java.rmi.RemoteException
              ;
 
@@ -4157,12 +4157,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SaveLocationsEx
-                * @param saveLocationsEx834
+                * @param saveLocationsEx832
             
           */
         public void startsaveLocationsEx(
 
-            com.freshdirect.routing.proxy.stub.transportation.Location[] locations835,com.freshdirect.routing.proxy.stub.transportation.SaveLocationsExOptions options836,
+            com.freshdirect.routing.proxy.stub.transportation.Location[] locations833,com.freshdirect.routing.proxy.stub.transportation.SaveLocationsExOptions options834,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -4173,14 +4173,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__ArriveStop
-                    * @param arriveStop839
+                    * @param arriveStop837
                 
          */
 
          
                      public void arriveStop(
 
-                        com.freshdirect.routing.proxy.stub.transportation.StopArriveInfo info840)
+                        com.freshdirect.routing.proxy.stub.transportation.StopArriveInfo info838)
                         throws java.rmi.RemoteException
              ;
 
@@ -4188,12 +4188,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__ArriveStop
-                * @param arriveStop839
+                * @param arriveStop837
             
           */
         public void startarriveStop(
 
-            com.freshdirect.routing.proxy.stub.transportation.StopArriveInfo info840,
+            com.freshdirect.routing.proxy.stub.transportation.StopArriveInfo info838,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -4204,14 +4204,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SchedulerSaveDeliveryWaveInstance
-                    * @param schedulerSaveDeliveryWaveInstance842
+                    * @param schedulerSaveDeliveryWaveInstance840
                 
          */
 
          
                      public java.lang.String[] schedulerSaveDeliveryWaveInstance(
 
-                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity843,com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstanceIdentity waveIdentity844,com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveAttributes attributes845,com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWaveInstanceOptions options846)
+                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity841,com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstanceIdentity waveIdentity842,com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveAttributes attributes843,com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWaveInstanceOptions options844)
                         throws java.rmi.RemoteException
              ;
 
@@ -4219,12 +4219,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SchedulerSaveDeliveryWaveInstance
-                * @param schedulerSaveDeliveryWaveInstance842
+                * @param schedulerSaveDeliveryWaveInstance840
             
           */
         public void startschedulerSaveDeliveryWaveInstance(
 
-            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity843,com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstanceIdentity waveIdentity844,com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveAttributes attributes845,com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWaveInstanceOptions options846,
+            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity841,com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstanceIdentity waveIdentity842,com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveAttributes attributes843,com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWaveInstanceOptions options844,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -4235,14 +4235,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveRoutingStopByIdentity
-                    * @param retrieveRoutingStopByIdentity849
+                    * @param retrieveRoutingStopByIdentity847
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.RoutingStop retrieveRoutingStopByIdentity(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RoutingStopIdentity identity850,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options851)
+                        com.freshdirect.routing.proxy.stub.transportation.RoutingStopIdentity identity848,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options849)
                         throws java.rmi.RemoteException
              ;
 
@@ -4250,12 +4250,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveRoutingStopByIdentity
-                * @param retrieveRoutingStopByIdentity849
+                * @param retrieveRoutingStopByIdentity847
             
           */
         public void startretrieveRoutingStopByIdentity(
 
-            com.freshdirect.routing.proxy.stub.transportation.RoutingStopIdentity identity850,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options851,
+            com.freshdirect.routing.proxy.stub.transportation.RoutingStopIdentity identity848,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options849,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -4266,14 +4266,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__DeleteReport
-                    * @param deleteReport854
+                    * @param deleteReport852
                 
          */
 
          
                      public void deleteReport(
 
-                        com.freshdirect.routing.proxy.stub.transportation.ReportIdentity identity855)
+                        com.freshdirect.routing.proxy.stub.transportation.ReportIdentity identity853)
                         throws java.rmi.RemoteException
              ;
 
@@ -4281,12 +4281,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__DeleteReport
-                * @param deleteReport854
+                * @param deleteReport852
             
           */
         public void startdeleteReport(
 
-            com.freshdirect.routing.proxy.stub.transportation.ReportIdentity identity855,
+            com.freshdirect.routing.proxy.stub.transportation.ReportIdentity identity853,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -4297,14 +4297,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SaveRegionConfig
-                    * @param saveRegionConfig857
+                    * @param saveRegionConfig855
                 
          */
 
          
                      public void saveRegionConfig(
 
-                        java.lang.String applicationID858,com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity859,java.lang.String configGroupID860,com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] items861)
+                        java.lang.String applicationID856,com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity857,java.lang.String configGroupID858,com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] items859)
                         throws java.rmi.RemoteException
              ;
 
@@ -4312,12 +4312,43 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SaveRegionConfig
-                * @param saveRegionConfig857
+                * @param saveRegionConfig855
             
           */
         public void startsaveRegionConfig(
 
-            java.lang.String applicationID858,com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity859,java.lang.String configGroupID860,com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] items861,
+            java.lang.String applicationID856,com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity857,java.lang.String configGroupID858,com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] items859,
+
+            final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
+
+            throws java.rmi.RemoteException;
+
+     
+
+        /**
+          * Auto generated method signature
+          * Service definition of function ns1__UpdateRouteETAs
+                    * @param updateRouteETAs861
+                
+         */
+
+         
+                     public void updateRouteETAs(
+
+                        com.freshdirect.routing.proxy.stub.transportation.UpdateRouteETAsInfo info862)
+                        throws java.rmi.RemoteException
+             ;
+
+        
+         /**
+            * Auto generated method signature for Asynchronous Invocations
+            * Service definition of function ns1__UpdateRouteETAs
+                * @param updateRouteETAs861
+            
+          */
+        public void startupdateRouteETAs(
+
+            com.freshdirect.routing.proxy.stub.transportation.UpdateRouteETAsInfo info862,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -4328,14 +4359,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SchedulerBulkReserveOrders
-                    * @param schedulerBulkReserveOrders863
+                    * @param schedulerBulkReserveOrders864
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder[] schedulerBulkReserveOrders(
 
-                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity864,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder[] orders865,com.freshdirect.routing.proxy.stub.transportation.SchedulerBulkReserveOrdersOptions options866)
+                        com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity865,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder[] orders866,com.freshdirect.routing.proxy.stub.transportation.SchedulerBulkReserveOrdersOptions options867)
                         throws java.rmi.RemoteException
              ;
 
@@ -4343,12 +4374,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SchedulerBulkReserveOrders
-                * @param schedulerBulkReserveOrders863
+                * @param schedulerBulkReserveOrders864
             
           */
         public void startschedulerBulkReserveOrders(
 
-            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity864,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder[] orders865,com.freshdirect.routing.proxy.stub.transportation.SchedulerBulkReserveOrdersOptions options866,
+            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity865,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder[] orders866,com.freshdirect.routing.proxy.stub.transportation.SchedulerBulkReserveOrdersOptions options867,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -4359,14 +4390,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__ConvertTimestamps
-                    * @param convertTimestamps869
+                    * @param convertTimestamps870
                 
          */
 
          
                      public java.util.Calendar[] convertTimestamps(
 
-                        java.util.Calendar[] sourceTimestamps870,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions sourceOptions871,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions destinationOptions872)
+                        java.util.Calendar[] sourceTimestamps871,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions sourceOptions872,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions destinationOptions873)
                         throws java.rmi.RemoteException
              ;
 
@@ -4374,12 +4405,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__ConvertTimestamps
-                * @param convertTimestamps869
+                * @param convertTimestamps870
             
           */
         public void startconvertTimestamps(
 
-            java.util.Calendar[] sourceTimestamps870,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions sourceOptions871,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions destinationOptions872,
+            java.util.Calendar[] sourceTimestamps871,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions sourceOptions872,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions destinationOptions873,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -4390,14 +4421,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveRouteForDevice
-                    * @param retrieveRouteForDevice875
+                    * @param retrieveRouteForDevice876
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.Route retrieveRouteForDevice(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity876,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options877,com.freshdirect.routing.proxy.stub.transportation.WirelessDeviceIdentity wirelessDeviceIdentity878)
+                        com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity877,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options878,com.freshdirect.routing.proxy.stub.transportation.WirelessDeviceIdentity wirelessDeviceIdentity879)
                         throws java.rmi.RemoteException
              ;
 
@@ -4405,12 +4436,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveRouteForDevice
-                * @param retrieveRouteForDevice875
+                * @param retrieveRouteForDevice876
             
           */
         public void startretrieveRouteForDevice(
 
-            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity876,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options877,com.freshdirect.routing.proxy.stub.transportation.WirelessDeviceIdentity wirelessDeviceIdentity878,
+            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity877,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options878,com.freshdirect.routing.proxy.stub.transportation.WirelessDeviceIdentity wirelessDeviceIdentity879,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -4421,14 +4452,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__AssignEquipment
-                    * @param assignEquipment881
+                    * @param assignEquipment882
                 
          */
 
          
                      public void assignEquipment(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity882,com.freshdirect.routing.proxy.stub.transportation.EquipmentIdentity[] equipment883)
+                        com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity883,com.freshdirect.routing.proxy.stub.transportation.EquipmentIdentity[] equipment884)
                         throws java.rmi.RemoteException
              ;
 
@@ -4436,12 +4467,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__AssignEquipment
-                * @param assignEquipment881
+                * @param assignEquipment882
             
           */
         public void startassignEquipment(
 
-            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity882,com.freshdirect.routing.proxy.stub.transportation.EquipmentIdentity[] equipment883,
+            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity883,com.freshdirect.routing.proxy.stub.transportation.EquipmentIdentity[] equipment884,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -4452,14 +4483,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__ConvertTimestamp
-                    * @param convertTimestamp885
+                    * @param convertTimestamp886
                 
          */
 
          
                      public java.util.Calendar convertTimestamp(
 
-                        java.util.Calendar sourceTimestamp886,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions sourceOptions887,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions destinationOptions888)
+                        java.util.Calendar sourceTimestamp887,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions sourceOptions888,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions destinationOptions889)
                         throws java.rmi.RemoteException
              ;
 
@@ -4467,12 +4498,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__ConvertTimestamp
-                * @param convertTimestamp885
+                * @param convertTimestamp886
             
           */
         public void startconvertTimestamp(
 
-            java.util.Calendar sourceTimestamp886,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions sourceOptions887,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions destinationOptions888,
+            java.util.Calendar sourceTimestamp887,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions sourceOptions888,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions destinationOptions889,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -4483,14 +4514,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveSurveys
-                    * @param retrieveSurveys891
+                    * @param retrieveSurveys892
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.Survey[] retrieveSurveys(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity892)
+                        com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity893)
                         throws java.rmi.RemoteException
              ;
 
@@ -4498,12 +4529,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveSurveys
-                * @param retrieveSurveys891
+                * @param retrieveSurveys892
             
           */
         public void startretrieveSurveys(
 
-            com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity892,
+            com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity893,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -4514,14 +4545,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__RetrieveDutyPeriodByIdentity
-                    * @param retrieveDutyPeriodByIdentity895
+                    * @param retrieveDutyPeriodByIdentity896
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.transportation.DutyPeriod retrieveDutyPeriodByIdentity(
 
-                        com.freshdirect.routing.proxy.stub.transportation.DutyPeriodIdentity identity896,com.freshdirect.routing.proxy.stub.transportation.DutyPeriodRetrieveOptions options897)
+                        com.freshdirect.routing.proxy.stub.transportation.DutyPeriodIdentity identity897,com.freshdirect.routing.proxy.stub.transportation.DutyPeriodRetrieveOptions options898)
                         throws java.rmi.RemoteException
              ;
 
@@ -4529,12 +4560,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__RetrieveDutyPeriodByIdentity
-                * @param retrieveDutyPeriodByIdentity895
+                * @param retrieveDutyPeriodByIdentity896
             
           */
         public void startretrieveDutyPeriodByIdentity(
 
-            com.freshdirect.routing.proxy.stub.transportation.DutyPeriodIdentity identity896,com.freshdirect.routing.proxy.stub.transportation.DutyPeriodRetrieveOptions options897,
+            com.freshdirect.routing.proxy.stub.transportation.DutyPeriodIdentity identity897,com.freshdirect.routing.proxy.stub.transportation.DutyPeriodRetrieveOptions options898,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -4545,14 +4576,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__PlaceUnassigned
-                    * @param placeUnassigned900
+                    * @param placeUnassigned901
                 
          */
 
          
                      public void placeUnassigned(
 
-                        com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop901,com.freshdirect.routing.proxy.stub.transportation.RouteIdentity routeIdentity902,com.freshdirect.routing.proxy.stub.transportation.StopPlacementOptions placementPosition903,com.freshdirect.routing.proxy.stub.transportation.OptionalDateTime adjustedRouteStartTime904,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions timeZoneOptions905)
+                        com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop902,com.freshdirect.routing.proxy.stub.transportation.RouteIdentity routeIdentity903,com.freshdirect.routing.proxy.stub.transportation.StopPlacementOptions placementPosition904,com.freshdirect.routing.proxy.stub.transportation.OptionalDateTime adjustedRouteStartTime905,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions timeZoneOptions906)
                         throws java.rmi.RemoteException
              ;
 
@@ -4560,12 +4591,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__PlaceUnassigned
-                * @param placeUnassigned900
+                * @param placeUnassigned901
             
           */
         public void startplaceUnassigned(
 
-            com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop901,com.freshdirect.routing.proxy.stub.transportation.RouteIdentity routeIdentity902,com.freshdirect.routing.proxy.stub.transportation.StopPlacementOptions placementPosition903,com.freshdirect.routing.proxy.stub.transportation.OptionalDateTime adjustedRouteStartTime904,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions timeZoneOptions905,
+            com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop902,com.freshdirect.routing.proxy.stub.transportation.RouteIdentity routeIdentity903,com.freshdirect.routing.proxy.stub.transportation.StopPlacementOptions placementPosition904,com.freshdirect.routing.proxy.stub.transportation.OptionalDateTime adjustedRouteStartTime905,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions timeZoneOptions906,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
@@ -4576,14 +4607,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__StartRoute
-                    * @param startRoute907
+                    * @param startRoute908
                 
          */
 
          
                      public void startRoute(
 
-                        com.freshdirect.routing.proxy.stub.transportation.RouteStartInfo info908)
+                        com.freshdirect.routing.proxy.stub.transportation.RouteStartInfo info909)
                         throws java.rmi.RemoteException
              ;
 
@@ -4591,12 +4622,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__StartRoute
-                * @param startRoute907
+                * @param startRoute908
             
           */
         public void startstartRoute(
 
-            com.freshdirect.routing.proxy.stub.transportation.RouteStartInfo info908,
+            com.freshdirect.routing.proxy.stub.transportation.RouteStartInfo info909,
 
             final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 

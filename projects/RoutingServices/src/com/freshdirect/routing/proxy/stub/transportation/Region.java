@@ -251,6 +251,50 @@
                                }
                             
 
+                        /**
+                        * field for McImplementationDate
+                        */
+
+                        
+                                    protected java.util.Calendar localMcImplementationDate ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localMcImplementationDateTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.util.Calendar
+                           */
+                           public  java.util.Calendar getMcImplementationDate(){
+                               return localMcImplementationDate;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param McImplementationDate
+                               */
+                               public void setMcImplementationDate(java.util.Calendar param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localMcImplementationDateTracker = true;
+                                       } else {
+                                          localMcImplementationDateTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localMcImplementationDate=param;
+                                    
+
+                               }
+                            
+
      /**
      * isReaderMTOMAware
      * @return true if the reader supports MTOM
@@ -511,6 +555,40 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
+                             } if (localMcImplementationDateTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"mcImplementationDate", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"mcImplementationDate");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("mcImplementationDate");
+                                    }
+                                
+
+                                          if (localMcImplementationDate==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("mcImplementationDate cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMcImplementationDate));
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
                              }
                     xmlWriter.writeEndElement();
                
@@ -714,6 +792,15 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("faxNumber cannot be null!!");
                                         }
+                                    } if (localMcImplementationDateTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "mcImplementationDate"));
+                                 
+                                        if (localMcImplementationDate != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMcImplementationDate));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("mcImplementationDate cannot be null!!");
+                                        }
                                     }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
@@ -883,6 +970,24 @@
                                     
                                               object.setFaxNumber(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","mcImplementationDate").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setMcImplementationDate(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDateTime(content));
                                               
                                         reader.next();
                                     

@@ -961,6 +961,50 @@
                                }
                             
 
+                        /**
+                        * field for ResultType
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.ReserveResultType localResultType ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localResultTypeTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.ReserveResultType
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.ReserveResultType getResultType(){
+                               return localResultType;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param ResultType
+                               */
+                               public void setResultType(com.freshdirect.routing.proxy.stub.transportation.ReserveResultType param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localResultTypeTracker = true;
+                                       } else {
+                                          localResultTypeTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localResultType=param;
+                                    
+
+                               }
+                            
+
      /**
      * isReaderMTOMAware
      * @return true if the reader supports MTOM
@@ -1831,7 +1875,38 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
-                             }
+                             } if (localResultTypeTracker){
+                                    if (localResultType==null){
+
+                                            java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"resultType", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"resultType");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("resultType");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localResultType.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","resultType"),
+                                        factory,xmlWriter);
+                                    }
+                                }
                     xmlWriter.writeEndElement();
                
 
@@ -2193,7 +2268,14 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("referenceNumber cannot be null!!");
                                         }
-                                    }
+                                    } if (localResultTypeTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "resultType"));
+                            
+                            
+                                    elementList.add(localResultType==null?null:
+                                    localResultType);
+                                }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -2806,6 +2888,30 @@
                                               
                                         reader.next();
                                     
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","resultType").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setResultType(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setResultType(com.freshdirect.routing.proxy.stub.transportation.ReserveResultType.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
                               }  // End of if for expected property start element
                                 
                                     else {

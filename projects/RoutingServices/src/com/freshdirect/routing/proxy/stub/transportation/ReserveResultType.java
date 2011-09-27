@@ -62,6 +62,12 @@
                                     public static final java.lang.String _rrtNewCost =
                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString("rrtNewCost");
                                 
+                                    public static final java.lang.String _rrtFailedDuplicate =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("rrtFailedDuplicate");
+                                
+                                    public static final java.lang.String _rrtFailedNoResources =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("rrtFailedNoResources");
+                                
                                 public static final ReserveResultType rrtFailed =
                                     new ReserveResultType(_rrtFailed,true);
                             
@@ -70,6 +76,12 @@
                             
                                 public static final ReserveResultType rrtNewCost =
                                     new ReserveResultType(_rrtNewCost,true);
+                            
+                                public static final ReserveResultType rrtFailedDuplicate =
+                                    new ReserveResultType(_rrtFailedDuplicate,true);
+                            
+                                public static final ReserveResultType rrtFailedNoResources =
+                                    new ReserveResultType(_rrtFailedNoResources,true);
                             
 
                                 public java.lang.String getValue() { return localReserveResultType;}

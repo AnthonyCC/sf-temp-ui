@@ -18,6 +18,7 @@ import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.ServiceException;
+import com.freshdirect.mobileapi.util.MobileApiProperties;
 
 /**
  * @author Rob
@@ -38,33 +39,37 @@ public class ExternalInterfaceController extends BaseController {
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
             SessionUser user) throws JsonException, FDException, ServiceException, NoSessionException {
-        String saleId = request.getParameter(PARAM_ORDER_ID);
-        String securityId = request.getParameter(PARAM_SECURITY_ID);
-        
-        LOGGER.info("T001: Send Contact Notification " + saleId);
-        
-        Message responseMessage = null;
-        if(saleId != null && saleId.trim().length() > 0) { 
-        	FDOrderI order = FDCustomerManager.getOrder(saleId);
-        	
-        	try {
-	        	if(order != null) {
-	        		LOGGER.info("T001: Customer Notification " + order.getCustomerId());
-	        		FDCustomerInfo fdInfo = FDCustomerManager.getCustomerInfo(new FDIdentity( order.getCustomerId(), null));
-	        		FDCustomerManager.doEmail(FDEmailFactory.getInstance().createOrderIvrContactEmail(fdInfo, saleId));
-	        		responseMessage = Message.createSuccessMessage("T001 Successfully.");
-	        	} else {
-	        		LOGGER.info("T001: Unable to find Order " + saleId);
+    	if(MobileApiProperties.isExternalInterfaceEnabled()) {
+	        String saleId = request.getParameter(PARAM_ORDER_ID);
+	        String securityId = request.getParameter(PARAM_SECURITY_ID);
+	        
+	        LOGGER.info("T001: Send Contact Notification " + saleId);
+	        
+	        Message responseMessage = null;
+	        if(saleId != null && saleId.trim().length() > 0) {        	
+	        	
+	        	try {
+	        		FDOrderI order = FDCustomerManager.getOrder(saleId);
+		        	if(order != null) {
+		        		LOGGER.info("T001: Customer Notification " + order.getCustomerId());
+		        		FDCustomerInfo fdInfo = FDCustomerManager.getCustomerInfo(new FDIdentity( order.getCustomerId(), null));
+		        		FDCustomerManager.doEmail(FDEmailFactory.getInstance().createOrderIvrContactEmail(fdInfo, saleId));
+		        		responseMessage = Message.createSuccessMessage("T001 Successfully.");
+		        	} else {
+		        		LOGGER.info("T001: Unable to find Order " + saleId);
+		        	}
+	        	} catch(Exception e) {
+	        		e.printStackTrace();
+	        		LOGGER.info("T001_EXP: Unable to find Order " + saleId);
 	        	}
-        	} catch(Exception e) {
-        		e.printStackTrace();
-        	}
-        }
-        if(responseMessage == null) {
-        	LOGGER.info("T001: Failed Contact Notification " + saleId);
-        	responseMessage = Message.createSuccessMessage("T001 Failed.");
-        }
-        setResponseMessage(model, responseMessage, user);
+	        }
+	        if(responseMessage == null) {
+	        	LOGGER.info("T001: Failed Contact Notification " + saleId);
+	        	responseMessage = new Message();
+	        	responseMessage.addErrorMessage("T001 Failed.");
+	        }
+	        setResponseMessage(model, responseMessage, user);
+    	}
         return model;
     }
 

@@ -941,6 +941,36 @@
                                }
                             
 
+                        /**
+                        * field for DoNotExceedUserRoadClassSpeeds
+                        */
+
+                        
+                                    protected boolean localDoNotExceedUserRoadClassSpeeds ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getDoNotExceedUserRoadClassSpeeds(){
+                               return localDoNotExceedUserRoadClassSpeeds;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param DoNotExceedUserRoadClassSpeeds
+                               */
+                               public void setDoNotExceedUserRoadClassSpeeds(boolean param){
+                            
+                                            this.localDoNotExceedUserRoadClassSpeeds=param;
+                                    
+
+                               }
+                            
+
      /**
      * isReaderMTOMAware
      * @return true if the reader supports MTOM
@@ -1838,6 +1868,35 @@
                                     
                                    xmlWriter.writeEndElement();
                              }
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/RouteNetWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"doNotExceedUserRoadClassSpeeds", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"doNotExceedUserRoadClassSpeeds");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("doNotExceedUserRoadClassSpeeds");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("doNotExceedUserRoadClassSpeeds cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDoNotExceedUserRoadClassSpeeds));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
                     xmlWriter.writeEndElement();
                
 
@@ -2183,6 +2242,12 @@
                                            throw new org.apache.axis2.databinding.ADBException("arcOverrideKey cannot be null!!");
                                         }
                                     }
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                                                                      "doNotExceedUserRoadClassSpeeds"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDoNotExceedUserRoadClassSpeeds));
+                            
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -2801,7 +2866,26 @@
                                     else {
                                         
                                     }
-                                  
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","doNotExceedUserRoadClassSpeeds").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setDoNotExceedUserRoadClassSpeeds(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                              
                             while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
                             

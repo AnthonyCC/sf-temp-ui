@@ -1,6 +1,6 @@
 
 /**
- * RouteCompleteInfo.java
+ * DriverCostInfo.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
@@ -10,13 +10,13 @@
             
 
             /**
-            *  RouteCompleteInfo bean class
+            *  DriverCostInfo bean class
             */
         
-        public  class RouteCompleteInfo extends com.freshdirect.routing.proxy.stub.transportation.RouteEventInfo
+        public  class DriverCostInfo
         implements org.apache.axis2.databinding.ADBBean{
         /* This type was generated from the piece of schema that had
-                name = RouteCompleteInfo
+                name = DriverCostInfo
                 Namespace URI = http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService
                 Namespace Prefix = ns1
                 */
@@ -32,160 +32,11 @@
         
 
                         /**
-                        * field for RouteIdentity
+                        * field for RegularRate
                         */
 
                         
-                                    protected com.freshdirect.routing.proxy.stub.transportation.RouteIdentity localRouteIdentity ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localRouteIdentityTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.transportation.RouteIdentity
-                           */
-                           public  com.freshdirect.routing.proxy.stub.transportation.RouteIdentity getRouteIdentity(){
-                               return localRouteIdentity;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param RouteIdentity
-                               */
-                               public void setRouteIdentity(com.freshdirect.routing.proxy.stub.transportation.RouteIdentity param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localRouteIdentityTracker = true;
-                                       } else {
-                                          localRouteIdentityTracker = true;
-                                              
-                                       }
-                                   
-                                            this.localRouteIdentity=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for ActualComplete
-                        */
-
-                        
-                                    protected java.util.Calendar localActualComplete ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return java.util.Calendar
-                           */
-                           public  java.util.Calendar getActualComplete(){
-                               return localActualComplete;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param ActualComplete
-                               */
-                               public void setActualComplete(java.util.Calendar param){
-                            
-                                            this.localActualComplete=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for TimeDataQuality
-                        */
-
-                        
-                                    protected com.freshdirect.routing.proxy.stub.transportation.DataQualityType localTimeDataQuality ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.transportation.DataQualityType
-                           */
-                           public  com.freshdirect.routing.proxy.stub.transportation.DataQualityType getTimeDataQuality(){
-                               return localTimeDataQuality;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param TimeDataQuality
-                               */
-                               public void setTimeDataQuality(com.freshdirect.routing.proxy.stub.transportation.DataQualityType param){
-                            
-                                            this.localTimeDataQuality=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for IsPartialDistance
-                        */
-
-                        
-                                    protected boolean localIsPartialDistance ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localIsPartialDistanceTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getIsPartialDistance(){
-                               return localIsPartialDistance;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param IsPartialDistance
-                               */
-                               public void setIsPartialDistance(boolean param){
-                            
-                                       // setting primitive attribute tracker to true
-                                       
-                                               if (false) {
-                                           localIsPartialDistanceTracker = true;
-                                              
-                                       } else {
-                                          localIsPartialDistanceTracker = true;
-                                       }
-                                   
-                                            this.localIsPartialDistance=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for ActualDistance
-                        */
-
-                        
-                                    protected double localActualDistance =
+                                    protected double localRegularRate =
                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble("0.000000");
                                 
 
@@ -193,104 +44,90 @@
                            * Auto generated getter method
                            * @return double
                            */
-                           public  double getActualDistance(){
-                               return localActualDistance;
+                           public  double getRegularRate(){
+                               return localRegularRate;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param ActualDistance
+                               * @param param RegularRate
                                */
-                               public void setActualDistance(double param){
+                               public void setRegularRate(double param){
                             
-                                            this.localActualDistance=param;
+                                            this.localRegularRate=param;
                                     
 
                                }
                             
 
                         /**
-                        * field for DistanceDataQuality
+                        * field for OvertimeRate
                         */
 
                         
-                                    protected com.freshdirect.routing.proxy.stub.transportation.DataQualityType localDistanceDataQuality ;
+                                    protected double localOvertimeRate ;
                                 
 
                            /**
                            * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.transportation.DataQualityType
+                           * @return double
                            */
-                           public  com.freshdirect.routing.proxy.stub.transportation.DataQualityType getDistanceDataQuality(){
-                               return localDistanceDataQuality;
+                           public  double getOvertimeRate(){
+                               return localOvertimeRate;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param DistanceDataQuality
+                               * @param param OvertimeRate
                                */
-                               public void setDistanceDataQuality(com.freshdirect.routing.proxy.stub.transportation.DataQualityType param){
+                               public void setOvertimeRate(double param){
                             
-                                            this.localDistanceDataQuality=param;
+                                            this.localOvertimeRate=param;
                                     
 
                                }
                             
 
                         /**
-                        * field for PostDelayType
+                        * field for MinimumTime
                         */
 
                         
-                                    protected java.lang.String localPostDelayType ;
+                                    protected int localMinimumTime ;
                                 
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localPostDelayTypeTracker = false ;
-                           
 
                            /**
                            * Auto generated getter method
-                           * @return java.lang.String
+                           * @return int
                            */
-                           public  java.lang.String getPostDelayType(){
-                               return localPostDelayType;
+                           public  int getMinimumTime(){
+                               return localMinimumTime;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param PostDelayType
+                               * @param param MinimumTime
                                */
-                               public void setPostDelayType(java.lang.String param){
+                               public void setMinimumTime(int param){
                             
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localPostDelayTypeTracker = true;
-                                       } else {
-                                          localPostDelayTypeTracker = false;
-                                              
-                                       }
-                                   
-                                            this.localPostDelayType=param;
+                                            this.localMinimumTime=param;
                                     
 
                                }
                             
 
                         /**
-                        * field for PostDelayMinutes
+                        * field for OvertimeHoursBegin
                         */
 
                         
-                                    protected int localPostDelayMinutes =
+                                    protected int localOvertimeHoursBegin =
                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToInt("0");
                                 
 
@@ -298,63 +135,236 @@
                            * Auto generated getter method
                            * @return int
                            */
-                           public  int getPostDelayMinutes(){
-                               return localPostDelayMinutes;
+                           public  int getOvertimeHoursBegin(){
+                               return localOvertimeHoursBegin;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param PostDelayMinutes
+                               * @param param OvertimeHoursBegin
                                */
-                               public void setPostDelayMinutes(int param){
+                               public void setOvertimeHoursBegin(int param){
                             
-                                            this.localPostDelayMinutes=param;
+                                            this.localOvertimeHoursBegin=param;
                                     
 
                                }
                             
 
                         /**
-                        * field for TimeZoneOptions
+                        * field for StopRate
                         */
 
                         
-                                    protected com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions localTimeZoneOptions ;
+                                    protected double localStopRate =
+                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble("0.000000");
                                 
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localTimeZoneOptionsTracker = false ;
-                           
 
                            /**
                            * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions
+                           * @return double
                            */
-                           public  com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions getTimeZoneOptions(){
-                               return localTimeZoneOptions;
+                           public  double getStopRate(){
+                               return localStopRate;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param TimeZoneOptions
+                               * @param param StopRate
                                */
-                               public void setTimeZoneOptions(com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions param){
+                               public void setStopRate(double param){
                             
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localTimeZoneOptionsTracker = true;
-                                       } else {
-                                          localTimeZoneOptionsTracker = true;
-                                              
-                                       }
-                                   
-                                            this.localTimeZoneOptions=param;
+                                            this.localStopRate=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for MinimumStops
+                        */
+
+                        
+                                    protected double localMinimumStops =
+                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble("0.000000");
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return double
+                           */
+                           public  double getMinimumStops(){
+                               return localMinimumStops;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param MinimumStops
+                               */
+                               public void setMinimumStops(double param){
+                            
+                                            this.localMinimumStops=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for DistanceRate
+                        */
+
+                        
+                                    protected double localDistanceRate =
+                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble("0.000000");
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return double
+                           */
+                           public  double getDistanceRate(){
+                               return localDistanceRate;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param DistanceRate
+                               */
+                               public void setDistanceRate(double param){
+                            
+                                            this.localDistanceRate=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for MinimumDistance
+                        */
+
+                        
+                                    protected double localMinimumDistance =
+                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble("0.000000");
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return double
+                           */
+                           public  double getMinimumDistance(){
+                               return localMinimumDistance;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param MinimumDistance
+                               */
+                               public void setMinimumDistance(double param){
+                            
+                                            this.localMinimumDistance=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for PieceRate
+                        */
+
+                        
+                                    protected double localPieceRate =
+                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble("0.000000");
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return double
+                           */
+                           public  double getPieceRate(){
+                               return localPieceRate;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param PieceRate
+                               */
+                               public void setPieceRate(double param){
+                            
+                                            this.localPieceRate=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for MinimumPieces
+                        */
+
+                        
+                                    protected double localMinimumPieces =
+                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble("0.000000");
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return double
+                           */
+                           public  double getMinimumPieces(){
+                               return localMinimumPieces;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param MinimumPieces
+                               */
+                               public void setMinimumPieces(double param){
+                            
+                                            this.localMinimumPieces=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for FixedCost
+                        */
+
+                        
+                                    protected double localFixedCost =
+                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble("0.000000");
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return double
+                           */
+                           public  double getFixedCost(){
+                               return localFixedCost;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param FixedCost
+                               */
+                               public void setFixedCost(double param){
+                            
+                                            this.localFixedCost=param;
                                     
 
                                }
@@ -392,7 +402,7 @@
                        new org.apache.axis2.databinding.ADBDataSource(this,parentQName){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       RouteCompleteInfo.this.serialize(parentQName,factory,xmlWriter);
+                       DriverCostInfo.this.serialize(parentQName,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
@@ -440,25 +450,23 @@
                         xmlWriter.writeStartElement(parentQName.getLocalPart());
                     }
                 
+                  if (serializeType){
+               
 
                    java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           namespacePrefix+":RouteCompleteInfo",
+                           namespacePrefix+":DriverCostInfo",
                            xmlWriter);
                    } else {
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           "RouteCompleteInfo",
+                           "DriverCostInfo",
                            xmlWriter);
                    }
 
                
-                                            if (localSource==null){
-                                                 throw new org.apache.axis2.databinding.ADBException("source cannot be null!!");
-                                            }
-                                           localSource.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","source"),
-                                               factory,xmlWriter);
-                                        
+                   }
+               
                                     namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -466,163 +474,28 @@
                                         if (prefix == null) {
                                             prefix = generatePrefix(namespace);
 
-                                            xmlWriter.writeStartElement(prefix,"messageId", namespace);
+                                            xmlWriter.writeStartElement(prefix,"regularRate", namespace);
                                             xmlWriter.writeNamespace(prefix, namespace);
                                             xmlWriter.setPrefix(prefix, namespace);
 
                                         } else {
-                                            xmlWriter.writeStartElement(namespace,"messageId");
+                                            xmlWriter.writeStartElement(namespace,"regularRate");
                                         }
 
                                     } else {
-                                        xmlWriter.writeStartElement("messageId");
+                                        xmlWriter.writeStartElement("regularRate");
                                     }
                                 
-                                               if (localMessageId==java.lang.Integer.MIN_VALUE) {
+                                               if (java.lang.Double.isNaN(localRegularRate)) {
                                            
-                                                         throw new org.apache.axis2.databinding.ADBException("messageId cannot be null!!");
+                                                         throw new org.apache.axis2.databinding.ADBException("regularRate cannot be null!!");
                                                       
                                                } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMessageId));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                              if (localRouteIdentityTracker){
-                                    if (localRouteIdentity==null){
-
-                                            java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
-
-                                        if (! namespace2.equals("")) {
-                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
-
-                                            if (prefix2 == null) {
-                                                prefix2 = generatePrefix(namespace2);
-
-                                                xmlWriter.writeStartElement(prefix2,"routeIdentity", namespace2);
-                                                xmlWriter.writeNamespace(prefix2, namespace2);
-                                                xmlWriter.setPrefix(prefix2, namespace2);
-
-                                            } else {
-                                                xmlWriter.writeStartElement(namespace2,"routeIdentity");
-                                            }
-
-                                        } else {
-                                            xmlWriter.writeStartElement("routeIdentity");
-                                        }
-
-
-                                       // write the nil attribute
-                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
-                                      xmlWriter.writeEndElement();
-                                    }else{
-                                     localRouteIdentity.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","routeIdentity"),
-                                        factory,xmlWriter);
-                                    }
-                                }
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"actualComplete", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"actualComplete");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("actualComplete");
-                                    }
-                                
-
-                                          if (localActualComplete==null){
-                                              // write the nil attribute
-                                              
-                                                     throw new org.apache.axis2.databinding.ADBException("actualComplete cannot be null!!");
-                                                  
-                                          }else{
-
-                                        
-                                                   xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localActualComplete));
-                                            
-                                          }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                            if (localTimeDataQuality==null){
-                                                 throw new org.apache.axis2.databinding.ADBException("timeDataQuality cannot be null!!");
-                                            }
-                                           localTimeDataQuality.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","timeDataQuality"),
-                                               factory,xmlWriter);
-                                         if (localIsPartialDistanceTracker){
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"isPartialDistance", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"isPartialDistance");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("isPartialDistance");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localIsPartialDistance));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             }
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"actualDistance", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"actualDistance");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("actualDistance");
-                                    }
-                                
-                                               if (java.lang.Double.isNaN(localActualDistance)) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("actualDistance cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localActualDistance));
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRegularRate));
                                                }
                                     
                                    xmlWriter.writeEndElement();
                              
-                                            if (localDistanceDataQuality==null){
-                                                 throw new org.apache.axis2.databinding.ADBException("distanceDataQuality cannot be null!!");
-                                            }
-                                           localDistanceDataQuality.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","distanceDataQuality"),
-                                               factory,xmlWriter);
-                                         if (localPostDelayTypeTracker){
                                     namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -630,93 +503,289 @@
                                         if (prefix == null) {
                                             prefix = generatePrefix(namespace);
 
-                                            xmlWriter.writeStartElement(prefix,"postDelayType", namespace);
+                                            xmlWriter.writeStartElement(prefix,"overtimeRate", namespace);
                                             xmlWriter.writeNamespace(prefix, namespace);
                                             xmlWriter.setPrefix(prefix, namespace);
 
                                         } else {
-                                            xmlWriter.writeStartElement(namespace,"postDelayType");
+                                            xmlWriter.writeStartElement(namespace,"overtimeRate");
                                         }
 
                                     } else {
-                                        xmlWriter.writeStartElement("postDelayType");
+                                        xmlWriter.writeStartElement("overtimeRate");
                                     }
                                 
-
-                                          if (localPostDelayType==null){
-                                              // write the nil attribute
-                                              
-                                                     throw new org.apache.axis2.databinding.ADBException("postDelayType cannot be null!!");
-                                                  
-                                          }else{
-
-                                        
-                                                   xmlWriter.writeCharacters(localPostDelayType);
-                                            
-                                          }
-                                    
-                                   xmlWriter.writeEndElement();
-                             }
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"postDelayMinutes", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"postDelayMinutes");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("postDelayMinutes");
-                                    }
-                                
-                                               if (localPostDelayMinutes==java.lang.Integer.MIN_VALUE) {
+                                               if (java.lang.Double.isNaN(localOvertimeRate)) {
                                            
-                                                         throw new org.apache.axis2.databinding.ADBException("postDelayMinutes cannot be null!!");
+                                                         throw new org.apache.axis2.databinding.ADBException("overtimeRate cannot be null!!");
                                                       
                                                } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPostDelayMinutes));
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localOvertimeRate));
                                                }
                                     
                                    xmlWriter.writeEndElement();
-                              if (localTimeZoneOptionsTracker){
-                                    if (localTimeZoneOptions==null){
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
 
-                                            java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
 
-                                        if (! namespace2.equals("")) {
-                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
-
-                                            if (prefix2 == null) {
-                                                prefix2 = generatePrefix(namespace2);
-
-                                                xmlWriter.writeStartElement(prefix2,"timeZoneOptions", namespace2);
-                                                xmlWriter.writeNamespace(prefix2, namespace2);
-                                                xmlWriter.setPrefix(prefix2, namespace2);
-
-                                            } else {
-                                                xmlWriter.writeStartElement(namespace2,"timeZoneOptions");
-                                            }
+                                            xmlWriter.writeStartElement(prefix,"minimumTime", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
 
                                         } else {
-                                            xmlWriter.writeStartElement("timeZoneOptions");
+                                            xmlWriter.writeStartElement(namespace,"minimumTime");
                                         }
 
-
-                                       // write the nil attribute
-                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
-                                      xmlWriter.writeEndElement();
-                                    }else{
-                                     localTimeZoneOptions.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","timeZoneOptions"),
-                                        factory,xmlWriter);
+                                    } else {
+                                        xmlWriter.writeStartElement("minimumTime");
                                     }
-                                }
+                                
+                                               if (localMinimumTime==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("minimumTime cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMinimumTime));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"overtimeHoursBegin", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"overtimeHoursBegin");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("overtimeHoursBegin");
+                                    }
+                                
+                                               if (localOvertimeHoursBegin==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("overtimeHoursBegin cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localOvertimeHoursBegin));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"stopRate", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"stopRate");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("stopRate");
+                                    }
+                                
+                                               if (java.lang.Double.isNaN(localStopRate)) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("stopRate cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localStopRate));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"minimumStops", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"minimumStops");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("minimumStops");
+                                    }
+                                
+                                               if (java.lang.Double.isNaN(localMinimumStops)) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("minimumStops cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMinimumStops));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"distanceRate", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"distanceRate");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("distanceRate");
+                                    }
+                                
+                                               if (java.lang.Double.isNaN(localDistanceRate)) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("distanceRate cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDistanceRate));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"minimumDistance", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"minimumDistance");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("minimumDistance");
+                                    }
+                                
+                                               if (java.lang.Double.isNaN(localMinimumDistance)) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("minimumDistance cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMinimumDistance));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"pieceRate", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"pieceRate");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("pieceRate");
+                                    }
+                                
+                                               if (java.lang.Double.isNaN(localPieceRate)) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("pieceRate cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPieceRate));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"minimumPieces", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"minimumPieces");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("minimumPieces");
+                                    }
+                                
+                                               if (java.lang.Double.isNaN(localMinimumPieces)) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("minimumPieces cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMinimumPieces));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"fixedCost", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"fixedCost");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("fixedCost");
+                                    }
+                                
+                                               if (java.lang.Double.isNaN(localFixedCost)) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("fixedCost cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localFixedCost));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
                     xmlWriter.writeEndElement();
                
 
@@ -879,92 +948,72 @@
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
                 
-                    attribList.add(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema-instance","type"));
-                    attribList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","RouteCompleteInfo"));
-                
-                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                                                                      "source"));
-                            
-                            
-                                    if (localSource==null){
-                                         throw new org.apache.axis2.databinding.ADBException("source cannot be null!!");
-                                    }
-                                    elementList.add(localSource);
-                                
                                       elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                                                                      "messageId"));
+                                                                      "regularRate"));
                                  
                                 elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMessageId));
-                             if (localRouteIdentityTracker){
-                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                                                                      "routeIdentity"));
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRegularRate));
                             
-                            
-                                    elementList.add(localRouteIdentity==null?null:
-                                    localRouteIdentity);
-                                }
                                       elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                                                                      "actualComplete"));
-                                 
-                                        if (localActualComplete != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localActualComplete));
-                                        } else {
-                                           throw new org.apache.axis2.databinding.ADBException("actualComplete cannot be null!!");
-                                        }
-                                    
-                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                                                                      "timeDataQuality"));
-                            
-                            
-                                    if (localTimeDataQuality==null){
-                                         throw new org.apache.axis2.databinding.ADBException("timeDataQuality cannot be null!!");
-                                    }
-                                    elementList.add(localTimeDataQuality);
-                                 if (localIsPartialDistanceTracker){
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                                                                      "isPartialDistance"));
+                                                                      "overtimeRate"));
                                  
                                 elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localIsPartialDistance));
-                            }
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localOvertimeRate));
+                            
                                       elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                                                                      "actualDistance"));
+                                                                      "minimumTime"));
                                  
                                 elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localActualDistance));
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMinimumTime));
                             
-                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                                                                      "distanceDataQuality"));
-                            
-                            
-                                    if (localDistanceDataQuality==null){
-                                         throw new org.apache.axis2.databinding.ADBException("distanceDataQuality cannot be null!!");
-                                    }
-                                    elementList.add(localDistanceDataQuality);
-                                 if (localPostDelayTypeTracker){
                                       elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                                                                      "postDelayType"));
-                                 
-                                        if (localPostDelayType != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPostDelayType));
-                                        } else {
-                                           throw new org.apache.axis2.databinding.ADBException("postDelayType cannot be null!!");
-                                        }
-                                    }
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                                                                      "postDelayMinutes"));
+                                                                      "overtimeHoursBegin"));
                                  
                                 elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPostDelayMinutes));
-                             if (localTimeZoneOptionsTracker){
-                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                                                                      "timeZoneOptions"));
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localOvertimeHoursBegin));
                             
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "stopRate"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localStopRate));
                             
-                                    elementList.add(localTimeZoneOptions==null?null:
-                                    localTimeZoneOptions);
-                                }
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "minimumStops"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMinimumStops));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "distanceRate"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDistanceRate));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "minimumDistance"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMinimumDistance));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "pieceRate"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPieceRate));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "minimumPieces"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMinimumPieces));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "fixedCost"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localFixedCost));
+                            
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -989,9 +1038,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static RouteCompleteInfo parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            RouteCompleteInfo object =
-                new RouteCompleteInfo();
+        public static DriverCostInfo parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            DriverCostInfo object =
+                new DriverCostInfo();
 
             int event;
             java.lang.String nillableValue = null;
@@ -1015,10 +1064,10 @@
 
                     java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
                     
-                            if (!"RouteCompleteInfo".equals(type)){
+                            if (!"DriverCostInfo".equals(type)){
                                 //find namespace for the prefix
                                 java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
-                                return (RouteCompleteInfo)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
+                                return (DriverCostInfo)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
                                      nsUri,type,reader);
                               }
                         
@@ -1043,132 +1092,11 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","source").equals(reader.getName())){
-                                
-                                                object.setSource(com.freshdirect.routing.proxy.stub.transportation.RouteEventSource.Factory.parse(reader));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","messageId").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","regularRate").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
-                                              object.setMessageId(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","routeIdentity").equals(reader.getName())){
-                                
-                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
-                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
-                                          object.setRouteIdentity(null);
-                                          reader.next();
-                                            
-                                            reader.next();
-                                          
-                                      }else{
-                                    
-                                                object.setRouteIdentity(com.freshdirect.routing.proxy.stub.transportation.RouteIdentity.Factory.parse(reader));
-                                              
-                                        reader.next();
-                                    }
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","actualComplete").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setActualComplete(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDateTime(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","timeDataQuality").equals(reader.getName())){
-                                
-                                                object.setTimeDataQuality(com.freshdirect.routing.proxy.stub.transportation.DataQualityType.Factory.parse(reader));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","isPartialDistance").equals(reader.getName())){
-                                
-                                       nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
-                                       if (!"true".equals(nillableValue) && !"1".equals(nillableValue)){
-                                    
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setIsPartialDistance(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                            
-                                       } else {
-                                           
-                                           
-                                           reader.getElementText(); // throw away text nodes if any.
-                                       }
-                                      
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","actualDistance").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setActualDistance(
+                                              object.setRegularRate(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble(content));
                                               
                                         reader.next();
@@ -1183,9 +1111,12 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","distanceDataQuality").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","overtimeRate").equals(reader.getName())){
                                 
-                                                object.setDistanceDataQuality(com.freshdirect.routing.proxy.stub.transportation.DataQualityType.Factory.parse(reader));
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setOvertimeRate(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble(content));
                                               
                                         reader.next();
                                     
@@ -1199,29 +1130,11 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","postDelayType").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","minimumTime").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
-                                              object.setPostDelayType(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","postDelayMinutes").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setPostDelayMinutes(
+                                              object.setMinimumTime(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
                                               
                                         reader.next();
@@ -1236,27 +1149,155 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","timeZoneOptions").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","overtimeHoursBegin").equals(reader.getName())){
                                 
-                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
-                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
-                                          object.setTimeZoneOptions(null);
-                                          reader.next();
-                                            
-                                            reader.next();
-                                          
-                                      }else{
+                                    java.lang.String content = reader.getElementText();
                                     
-                                                object.setTimeZoneOptions(com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions.Factory.parse(reader));
+                                              object.setOvertimeHoursBegin(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
                                               
                                         reader.next();
-                                    }
+                                    
                               }  // End of if for expected property start element
                                 
-                                    else {
-                                        
-                                    }
-                                  
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","stopRate").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setStopRate(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","minimumStops").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setMinimumStops(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","distanceRate").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setDistanceRate(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","minimumDistance").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setMinimumDistance(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","pieceRate").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setPieceRate(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","minimumPieces").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setMinimumPieces(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","fixedCost").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setFixedCost(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDouble(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                              
                             while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
                             

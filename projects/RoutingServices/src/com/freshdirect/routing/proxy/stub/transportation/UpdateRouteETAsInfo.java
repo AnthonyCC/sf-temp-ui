@@ -1,6 +1,6 @@
 
 /**
- * RetrieveRouteSurveyQuestionsResponse.java
+ * UpdateRouteETAsInfo.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
@@ -10,17 +10,16 @@
             
 
             /**
-            *  RetrieveRouteSurveyQuestionsResponse bean class
+            *  UpdateRouteETAsInfo bean class
             */
         
-        public  class RetrieveRouteSurveyQuestionsResponse
+        public  class UpdateRouteETAsInfo extends com.freshdirect.routing.proxy.stub.transportation.RouteNonEventInfo
         implements org.apache.axis2.databinding.ADBBean{
-        
-                public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
-                "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                "RetrieveRouteSurveyQuestionsResponse",
-                "ns1");
-
+        /* This type was generated from the piece of schema that had
+                name = UpdateRouteETAsInfo
+                Namespace URI = http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService
+                Namespace Prefix = ns1
+                */
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
@@ -33,44 +32,44 @@
         
 
                         /**
-                        * field for SurveyQuestionsResult
+                        * field for RouteIdentity
                         */
 
                         
-                                    protected com.freshdirect.routing.proxy.stub.transportation.SurveyQuestionsResult localSurveyQuestionsResult ;
+                                    protected com.freshdirect.routing.proxy.stub.transportation.RouteIdentity localRouteIdentity ;
                                 
                            /*  This tracker boolean wil be used to detect whether the user called the set method
                           *   for this attribute. It will be used to determine whether to include this field
                            *   in the serialized XML
                            */
-                           protected boolean localSurveyQuestionsResultTracker = false ;
+                           protected boolean localRouteIdentityTracker = false ;
                            
 
                            /**
                            * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.transportation.SurveyQuestionsResult
+                           * @return com.freshdirect.routing.proxy.stub.transportation.RouteIdentity
                            */
-                           public  com.freshdirect.routing.proxy.stub.transportation.SurveyQuestionsResult getSurveyQuestionsResult(){
-                               return localSurveyQuestionsResult;
+                           public  com.freshdirect.routing.proxy.stub.transportation.RouteIdentity getRouteIdentity(){
+                               return localRouteIdentity;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param SurveyQuestionsResult
+                               * @param param RouteIdentity
                                */
-                               public void setSurveyQuestionsResult(com.freshdirect.routing.proxy.stub.transportation.SurveyQuestionsResult param){
+                               public void setRouteIdentity(com.freshdirect.routing.proxy.stub.transportation.RouteIdentity param){
                             
                                        if (param != null){
                                           //update the setting tracker
-                                          localSurveyQuestionsResultTracker = true;
+                                          localRouteIdentityTracker = true;
                                        } else {
-                                          localSurveyQuestionsResultTracker = true;
+                                          localRouteIdentityTracker = true;
                                               
                                        }
                                    
-                                            this.localSurveyQuestionsResult=param;
+                                            this.localRouteIdentity=param;
                                     
 
                                }
@@ -104,15 +103,15 @@
 
 
         
-                org.apache.axiom.om.OMDataSource dataSource =
-                       new org.apache.axis2.databinding.ADBDataSource(this,MY_QNAME){
+               org.apache.axiom.om.OMDataSource dataSource =
+                       new org.apache.axis2.databinding.ADBDataSource(this,parentQName){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       RetrieveRouteSurveyQuestionsResponse.this.serialize(MY_QNAME,factory,xmlWriter);
+                       UpdateRouteETAsInfo.this.serialize(parentQName,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
-               MY_QNAME,factory,dataSource);
+               parentQName,factory,dataSource);
             
        }
 
@@ -156,24 +155,20 @@
                         xmlWriter.writeStartElement(parentQName.getLocalPart());
                     }
                 
-                  if (serializeType){
-               
 
                    java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           namespacePrefix+":RetrieveRouteSurveyQuestionsResponse",
+                           namespacePrefix+":UpdateRouteETAsInfo",
                            xmlWriter);
                    } else {
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           "RetrieveRouteSurveyQuestionsResponse",
+                           "UpdateRouteETAsInfo",
                            xmlWriter);
                    }
 
-               
-                   }
-                if (localSurveyQuestionsResultTracker){
-                                    if (localSurveyQuestionsResult==null){
+                if (localRouteIdentityTracker){
+                                    if (localRouteIdentity==null){
 
                                             java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
 
@@ -183,16 +178,16 @@
                                             if (prefix2 == null) {
                                                 prefix2 = generatePrefix(namespace2);
 
-                                                xmlWriter.writeStartElement(prefix2,"surveyQuestionsResult", namespace2);
+                                                xmlWriter.writeStartElement(prefix2,"routeIdentity", namespace2);
                                                 xmlWriter.writeNamespace(prefix2, namespace2);
                                                 xmlWriter.setPrefix(prefix2, namespace2);
 
                                             } else {
-                                                xmlWriter.writeStartElement(namespace2,"surveyQuestionsResult");
+                                                xmlWriter.writeStartElement(namespace2,"routeIdentity");
                                             }
 
                                         } else {
-                                            xmlWriter.writeStartElement("surveyQuestionsResult");
+                                            xmlWriter.writeStartElement("routeIdentity");
                                         }
 
 
@@ -200,7 +195,7 @@
                                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
                                       xmlWriter.writeEndElement();
                                     }else{
-                                     localSurveyQuestionsResult.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","surveyQuestionsResult"),
+                                     localRouteIdentity.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","routeIdentity"),
                                         factory,xmlWriter);
                                     }
                                 }
@@ -365,13 +360,16 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                 if (localSurveyQuestionsResultTracker){
+                
+                    attribList.add(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema-instance","type"));
+                    attribList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","UpdateRouteETAsInfo"));
+                 if (localRouteIdentityTracker){
                             elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                                                                      "surveyQuestionsResult"));
+                                                                      "routeIdentity"));
                             
                             
-                                    elementList.add(localSurveyQuestionsResult==null?null:
-                                    localSurveyQuestionsResult);
+                                    elementList.add(localRouteIdentity==null?null:
+                                    localRouteIdentity);
                                 }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
@@ -397,9 +395,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static RetrieveRouteSurveyQuestionsResponse parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            RetrieveRouteSurveyQuestionsResponse object =
-                new RetrieveRouteSurveyQuestionsResponse();
+        public static UpdateRouteETAsInfo parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            UpdateRouteETAsInfo object =
+                new UpdateRouteETAsInfo();
 
             int event;
             java.lang.String nillableValue = null;
@@ -423,10 +421,10 @@
 
                     java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
                     
-                            if (!"RetrieveRouteSurveyQuestionsResponse".equals(type)){
+                            if (!"UpdateRouteETAsInfo".equals(type)){
                                 //find namespace for the prefix
                                 java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
-                                return (RetrieveRouteSurveyQuestionsResponse)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
+                                return (UpdateRouteETAsInfo)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
                                      nsUri,type,reader);
                               }
                         
@@ -451,18 +449,18 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","surveyQuestionsResult").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","routeIdentity").equals(reader.getName())){
                                 
                                       nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
                                       if ("true".equals(nillableValue) || "1".equals(nillableValue)){
-                                          object.setSurveyQuestionsResult(null);
+                                          object.setRouteIdentity(null);
                                           reader.next();
                                             
                                             reader.next();
                                           
                                       }else{
                                     
-                                                object.setSurveyQuestionsResult(com.freshdirect.routing.proxy.stub.transportation.SurveyQuestionsResult.Factory.parse(reader));
+                                                object.setRouteIdentity(com.freshdirect.routing.proxy.stub.transportation.RouteIdentity.Factory.parse(reader));
                                               
                                         reader.next();
                                     }

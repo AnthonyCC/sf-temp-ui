@@ -130,9 +130,9 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SchedulerDeliveryWindowMetricsOptions".equals(typeName)){
+                  "SchedulerDeliveryWaveInstanceCriteria".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsOptions.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWaveInstanceCriteria.Factory.parse(reader);
                         
 
                   }
@@ -140,9 +140,9 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SchedulerDeliveryWaveInstanceCriteria".equals(typeName)){
+                  "SchedulerDeliveryWindowMetricsOptions".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWaveInstanceCriteria.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsOptions.Factory.parse(reader);
                         
 
                   }
@@ -810,6 +810,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RouteNonEventInfo".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RouteNonEventInfo.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "ImageType".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.ImageType.Factory.parse(reader);
@@ -1450,6 +1460,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SurveyQuestionsResult".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SurveyQuestionsResult.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "DeliveryCost".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.DeliveryCost.Factory.parse(reader);
@@ -1543,6 +1563,26 @@
                   "RoutingSourcedOrderCriteria".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.RoutingSourcedOrderCriteria.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "UpdateRouteETAsInfo".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.UpdateRouteETAsInfo.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DriverCostInfo".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DriverCostInfo.Factory.parse(reader);
                         
 
                   }

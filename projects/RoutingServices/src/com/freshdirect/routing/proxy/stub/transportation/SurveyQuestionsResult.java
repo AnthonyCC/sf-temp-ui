@@ -1,29 +1,29 @@
 
 /**
- * PathOptions.java
+ * SurveyQuestionsResult.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
  */
             
-                package com.freshdirect.routing.proxy.stub.roadnet;
+                package com.freshdirect.routing.proxy.stub.transportation;
             
 
             /**
-            *  PathOptions bean class
+            *  SurveyQuestionsResult bean class
             */
         
-        public  class PathOptions
+        public  class SurveyQuestionsResult
         implements org.apache.axis2.databinding.ADBBean{
         /* This type was generated from the piece of schema that had
-                name = PathOptions
-                Namespace URI = http://www.upslogisticstech.com/UPSLT/RouteNetWebService
+                name = SurveyQuestionsResult
+                Namespace URI = http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService
                 Namespace Prefix = ns1
                 */
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
-            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/RouteNetWebService")){
+            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService")){
                 return "ns1";
             }
             return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
@@ -32,70 +32,70 @@
         
 
                         /**
-                        * field for VendorRushHourModelName
+                        * field for SurveyCode
                         */
 
                         
-                                    protected java.lang.String localVendorRushHourModelName ;
+                                    protected java.lang.String localSurveyCode ;
                                 
                            /*  This tracker boolean wil be used to detect whether the user called the set method
                           *   for this attribute. It will be used to determine whether to include this field
                            *   in the serialized XML
                            */
-                           protected boolean localVendorRushHourModelNameTracker = false ;
+                           protected boolean localSurveyCodeTracker = false ;
                            
 
                            /**
                            * Auto generated getter method
                            * @return java.lang.String
                            */
-                           public  java.lang.String getVendorRushHourModelName(){
-                               return localVendorRushHourModelName;
+                           public  java.lang.String getSurveyCode(){
+                               return localSurveyCode;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param VendorRushHourModelName
+                               * @param param SurveyCode
                                */
-                               public void setVendorRushHourModelName(java.lang.String param){
+                               public void setSurveyCode(java.lang.String param){
                             
                                        if (param != null){
                                           //update the setting tracker
-                                          localVendorRushHourModelNameTracker = true;
+                                          localSurveyCodeTracker = true;
                                        } else {
-                                          localVendorRushHourModelNameTracker = false;
+                                          localSurveyCodeTracker = false;
                                               
                                        }
                                    
-                                            this.localVendorRushHourModelName=param;
+                                            this.localSurveyCode=param;
                                     
 
                                }
                             
 
                         /**
-                        * field for DepartureArrivalTimes
+                        * field for Defs
                         * This was an Array!
                         */
 
                         
-                                    protected com.freshdirect.routing.proxy.stub.roadnet.MapPointDepArrTimes[] localDepartureArrivalTimes ;
+                                    protected com.freshdirect.routing.proxy.stub.transportation.QuestionDefinition[] localDefs ;
                                 
                            /*  This tracker boolean wil be used to detect whether the user called the set method
                           *   for this attribute. It will be used to determine whether to include this field
                            *   in the serialized XML
                            */
-                           protected boolean localDepartureArrivalTimesTracker = false ;
+                           protected boolean localDefsTracker = false ;
                            
 
                            /**
                            * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.roadnet.MapPointDepArrTimes[]
+                           * @return com.freshdirect.routing.proxy.stub.transportation.QuestionDefinition[]
                            */
-                           public  com.freshdirect.routing.proxy.stub.roadnet.MapPointDepArrTimes[] getDepartureArrivalTimes(){
-                               return localDepartureArrivalTimes;
+                           public  com.freshdirect.routing.proxy.stub.transportation.QuestionDefinition[] getDefs(){
+                               return localDefs;
                            }
 
                            
@@ -104,119 +104,58 @@
 
                                
                               /**
-                               * validate the array for DepartureArrivalTimes
+                               * validate the array for Defs
                                */
-                              protected void validateDepartureArrivalTimes(com.freshdirect.routing.proxy.stub.roadnet.MapPointDepArrTimes[] param){
+                              protected void validateDefs(com.freshdirect.routing.proxy.stub.transportation.QuestionDefinition[] param){
                              
                               }
 
 
                              /**
                               * Auto generated setter method
-                              * @param param DepartureArrivalTimes
+                              * @param param Defs
                               */
-                              public void setDepartureArrivalTimes(com.freshdirect.routing.proxy.stub.roadnet.MapPointDepArrTimes[] param){
+                              public void setDefs(com.freshdirect.routing.proxy.stub.transportation.QuestionDefinition[] param){
                               
-                                   validateDepartureArrivalTimes(param);
+                                   validateDefs(param);
 
                                
                                           if (param != null){
                                              //update the setting tracker
-                                             localDepartureArrivalTimesTracker = true;
+                                             localDefsTracker = true;
                                           } else {
-                                             localDepartureArrivalTimesTracker = false;
+                                             localDefsTracker = false;
                                                  
                                           }
                                       
-                                      this.localDepartureArrivalTimes=param;
+                                      this.localDefs=param;
                               }
 
                                
                              
                              /**
                              * Auto generated add method for the array for convenience
-                             * @param param com.freshdirect.routing.proxy.stub.roadnet.MapPointDepArrTimes
+                             * @param param com.freshdirect.routing.proxy.stub.transportation.QuestionDefinition
                              */
-                             public void addDepartureArrivalTimes(com.freshdirect.routing.proxy.stub.roadnet.MapPointDepArrTimes param){
-                                   if (localDepartureArrivalTimes == null){
-                                   localDepartureArrivalTimes = new com.freshdirect.routing.proxy.stub.roadnet.MapPointDepArrTimes[]{};
+                             public void addDefs(com.freshdirect.routing.proxy.stub.transportation.QuestionDefinition param){
+                                   if (localDefs == null){
+                                   localDefs = new com.freshdirect.routing.proxy.stub.transportation.QuestionDefinition[]{};
                                    }
 
                             
                                  //update the setting tracker
-                                localDepartureArrivalTimesTracker = true;
+                                localDefsTracker = true;
                             
 
                                java.util.List list =
-                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localDepartureArrivalTimes);
+                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localDefs);
                                list.add(param);
-                               this.localDepartureArrivalTimes =
-                             (com.freshdirect.routing.proxy.stub.roadnet.MapPointDepArrTimes[])list.toArray(
-                            new com.freshdirect.routing.proxy.stub.roadnet.MapPointDepArrTimes[list.size()]);
+                               this.localDefs =
+                             (com.freshdirect.routing.proxy.stub.transportation.QuestionDefinition[])list.toArray(
+                            new com.freshdirect.routing.proxy.stub.transportation.QuestionDefinition[list.size()]);
 
                              }
                              
-
-                        /**
-                        * field for ArcOverrideKey
-                        */
-
-                        
-                                    protected java.lang.String localArcOverrideKey ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return java.lang.String
-                           */
-                           public  java.lang.String getArcOverrideKey(){
-                               return localArcOverrideKey;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param ArcOverrideKey
-                               */
-                               public void setArcOverrideKey(java.lang.String param){
-                            
-                                            this.localArcOverrideKey=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for DoNotExceedUserRoadClassSpeeds
-                        */
-
-                        
-                                    protected int localDoNotExceedUserRoadClassSpeeds =
-                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt("-1");
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return int
-                           */
-                           public  int getDoNotExceedUserRoadClassSpeeds(){
-                               return localDoNotExceedUserRoadClassSpeeds;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param DoNotExceedUserRoadClassSpeeds
-                               */
-                               public void setDoNotExceedUserRoadClassSpeeds(int param){
-                            
-                                            this.localDoNotExceedUserRoadClassSpeeds=param;
-                                    
-
-                               }
-                            
 
      /**
      * isReaderMTOMAware
@@ -250,7 +189,7 @@
                        new org.apache.axis2.databinding.ADBDataSource(this,parentQName){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       PathOptions.this.serialize(parentQName,factory,xmlWriter);
+                       SurveyQuestionsResult.this.serialize(parentQName,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
@@ -301,58 +240,58 @@
                   if (serializeType){
                
 
-                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/RouteNetWebService");
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           namespacePrefix+":PathOptions",
+                           namespacePrefix+":SurveyQuestionsResult",
                            xmlWriter);
                    } else {
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           "PathOptions",
+                           "SurveyQuestionsResult",
                            xmlWriter);
                    }
 
                
                    }
-                if (localVendorRushHourModelNameTracker){
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/RouteNetWebService";
+                if (localSurveyCodeTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
 
                                         if (prefix == null) {
                                             prefix = generatePrefix(namespace);
 
-                                            xmlWriter.writeStartElement(prefix,"vendorRushHourModelName", namespace);
+                                            xmlWriter.writeStartElement(prefix,"surveyCode", namespace);
                                             xmlWriter.writeNamespace(prefix, namespace);
                                             xmlWriter.setPrefix(prefix, namespace);
 
                                         } else {
-                                            xmlWriter.writeStartElement(namespace,"vendorRushHourModelName");
+                                            xmlWriter.writeStartElement(namespace,"surveyCode");
                                         }
 
                                     } else {
-                                        xmlWriter.writeStartElement("vendorRushHourModelName");
+                                        xmlWriter.writeStartElement("surveyCode");
                                     }
                                 
 
-                                          if (localVendorRushHourModelName==null){
+                                          if (localSurveyCode==null){
                                               // write the nil attribute
                                               
-                                                     throw new org.apache.axis2.databinding.ADBException("vendorRushHourModelName cannot be null!!");
+                                                     throw new org.apache.axis2.databinding.ADBException("surveyCode cannot be null!!");
                                                   
                                           }else{
 
                                         
-                                                   xmlWriter.writeCharacters(localVendorRushHourModelName);
+                                                   xmlWriter.writeCharacters(localSurveyCode);
                                             
                                           }
                                     
                                    xmlWriter.writeEndElement();
-                             } if (localDepartureArrivalTimesTracker){
-                                       if (localDepartureArrivalTimes!=null){
-                                            for (int i = 0;i < localDepartureArrivalTimes.length;i++){
-                                                if (localDepartureArrivalTimes[i] != null){
-                                                 localDepartureArrivalTimes[i].serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","departureArrivalTimes"),
+                             } if (localDefsTracker){
+                                       if (localDefs!=null){
+                                            for (int i = 0;i < localDefs.length;i++){
+                                                if (localDefs[i] != null){
+                                                 localDefs[i].serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","defs"),
                                                            factory,xmlWriter);
                                                 } else {
                                                    
@@ -363,73 +302,10 @@
                                             }
                                      } else {
                                         
-                                               throw new org.apache.axis2.databinding.ADBException("departureArrivalTimes cannot be null!!");
+                                               throw new org.apache.axis2.databinding.ADBException("defs cannot be null!!");
                                         
                                     }
                                  }
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/RouteNetWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"arcOverrideKey", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"arcOverrideKey");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("arcOverrideKey");
-                                    }
-                                
-
-                                          if (localArcOverrideKey==null){
-                                              // write the nil attribute
-                                              
-                                                     throw new org.apache.axis2.databinding.ADBException("arcOverrideKey cannot be null!!");
-                                                  
-                                          }else{
-
-                                        
-                                                   xmlWriter.writeCharacters(localArcOverrideKey);
-                                            
-                                          }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/RouteNetWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"doNotExceedUserRoadClassSpeeds", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"doNotExceedUserRoadClassSpeeds");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("doNotExceedUserRoadClassSpeeds");
-                                    }
-                                
-                                               if (localDoNotExceedUserRoadClassSpeeds==java.lang.Integer.MIN_VALUE) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("doNotExceedUserRoadClassSpeeds cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDoNotExceedUserRoadClassSpeeds));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
                     xmlWriter.writeEndElement();
                
 
@@ -591,23 +467,23 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                 if (localVendorRushHourModelNameTracker){
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
-                                                                      "vendorRushHourModelName"));
+                 if (localSurveyCodeTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "surveyCode"));
                                  
-                                        if (localVendorRushHourModelName != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localVendorRushHourModelName));
+                                        if (localSurveyCode != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localSurveyCode));
                                         } else {
-                                           throw new org.apache.axis2.databinding.ADBException("vendorRushHourModelName cannot be null!!");
+                                           throw new org.apache.axis2.databinding.ADBException("surveyCode cannot be null!!");
                                         }
-                                    } if (localDepartureArrivalTimesTracker){
-                             if (localDepartureArrivalTimes!=null) {
-                                 for (int i = 0;i < localDepartureArrivalTimes.length;i++){
+                                    } if (localDefsTracker){
+                             if (localDefs!=null) {
+                                 for (int i = 0;i < localDefs.length;i++){
 
-                                    if (localDepartureArrivalTimes[i] != null){
-                                         elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
-                                                                          "departureArrivalTimes"));
-                                         elementList.add(localDepartureArrivalTimes[i]);
+                                    if (localDefs[i] != null){
+                                         elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                          "defs"));
+                                         elementList.add(localDefs[i]);
                                     } else {
                                         
                                                 // nothing to do
@@ -617,26 +493,11 @@
                                  }
                              } else {
                                  
-                                        throw new org.apache.axis2.databinding.ADBException("departureArrivalTimes cannot be null!!");
+                                        throw new org.apache.axis2.databinding.ADBException("defs cannot be null!!");
                                     
                              }
 
                         }
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
-                                                                      "arcOverrideKey"));
-                                 
-                                        if (localArcOverrideKey != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localArcOverrideKey));
-                                        } else {
-                                           throw new org.apache.axis2.databinding.ADBException("arcOverrideKey cannot be null!!");
-                                        }
-                                    
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
-                                                                      "doNotExceedUserRoadClassSpeeds"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDoNotExceedUserRoadClassSpeeds));
-                            
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -661,9 +522,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static PathOptions parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            PathOptions object =
-                new PathOptions();
+        public static SurveyQuestionsResult parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            SurveyQuestionsResult object =
+                new SurveyQuestionsResult();
 
             int event;
             java.lang.String nillableValue = null;
@@ -687,10 +548,10 @@
 
                     java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
                     
-                            if (!"PathOptions".equals(type)){
+                            if (!"SurveyQuestionsResult".equals(type)){
                                 //find namespace for the prefix
                                 java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
-                                return (PathOptions)com.freshdirect.routing.proxy.stub.roadnet.ExtensionMapper.getTypeObject(
+                                return (SurveyQuestionsResult)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
                                      nsUri,type,reader);
                               }
                         
@@ -717,11 +578,11 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","vendorRushHourModelName").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","surveyCode").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
-                                              object.setVendorRushHourModelName(
+                                              object.setSurveyCode(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
                                               
                                         reader.next();
@@ -735,12 +596,12 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","departureArrivalTimes").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","defs").equals(reader.getName())){
                                 
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list2.add(com.freshdirect.routing.proxy.stub.roadnet.MapPointDepArrTimes.Factory.parse(reader));
+                                    list2.add(com.freshdirect.routing.proxy.stub.transportation.QuestionDefinition.Factory.parse(reader));
                                                                 
                                                         //loop until we find a start element that is not part of this array
                                                         boolean loopDone2 = false;
@@ -757,8 +618,8 @@
                                                                 //two continuous end elements means we are exiting the xml structure
                                                                 loopDone2 = true;
                                                             } else {
-                                                                if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","departureArrivalTimes").equals(reader.getName())){
-                                                                    list2.add(com.freshdirect.routing.proxy.stub.roadnet.MapPointDepArrTimes.Factory.parse(reader));
+                                                                if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","defs").equals(reader.getName())){
+                                                                    list2.add(com.freshdirect.routing.proxy.stub.transportation.QuestionDefinition.Factory.parse(reader));
                                                                         
                                                                 }else{
                                                                     loopDone2 = true;
@@ -767,9 +628,9 @@
                                                         }
                                                         // call the converter utility  to convert and set the array
                                                         
-                                                        object.setDepartureArrivalTimes((com.freshdirect.routing.proxy.stub.roadnet.MapPointDepArrTimes[])
+                                                        object.setDefs((com.freshdirect.routing.proxy.stub.transportation.QuestionDefinition[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
-                                                                com.freshdirect.routing.proxy.stub.roadnet.MapPointDepArrTimes.class,
+                                                                com.freshdirect.routing.proxy.stub.transportation.QuestionDefinition.class,
                                                                 list2));
                                                             
                               }  // End of if for expected property start element
@@ -777,45 +638,7 @@
                                     else {
                                         
                                     }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","arcOverrideKey").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setArcOverrideKey(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","doNotExceedUserRoadClassSpeeds").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setDoNotExceedUserRoadClassSpeeds(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                              
+                                  
                             while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
                             
