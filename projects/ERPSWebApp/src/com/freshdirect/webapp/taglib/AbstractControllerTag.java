@@ -34,7 +34,8 @@ public abstract class AbstractControllerTag extends com.freshdirect.framework.we
 		return successPage;
 	}
 
-	public void setSuccessPage(String successPage) {		
+	public void setSuccessPage(String successPage) {
+		if (successPage==null) return;
 		int schemeDelimiterPos = successPage.indexOf("://");
 		int parameterDelimiterPos = successPage.indexOf("?");
 		if (successPage != null && schemeDelimiterPos !=-1 && schemeDelimiterPos < parameterDelimiterPos ) {
