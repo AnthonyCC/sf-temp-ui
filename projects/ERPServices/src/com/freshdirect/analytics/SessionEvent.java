@@ -11,6 +11,8 @@ public class SessionEvent extends EventModel{
 	private Date cutOff;
 	private Integer availCount;
 	private Integer soldCount;
+	private Integer hiddenCount;
+	
 	private String zone;
 	private String lastTimeslot;
 	private String isTimeout = "Y";
@@ -81,5 +83,11 @@ public class SessionEvent extends EventModel{
 	}
 	public void setOrderId(String orderId) {
 		this.orderId = orderId;
+	}
+	public Integer getHiddenCount() {
+		return hiddenCount;
+	}
+	public void setHiddenCount(Integer hiddenCount) {
+		this.hiddenCount = hiddenCount;
 	}
 }

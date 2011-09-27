@@ -27,9 +27,9 @@ public class SessionDAO {
 
 	private static final Category LOGGER = LoggerFactory.getInstance(SessionDAO.class);
 	
-	private static final String SESSION_INSERT="INSERT INTO dlv.session_event (customer_id, login_time, logout_time, cutoff,avail_count, sold_count," +
+	private static final String SESSION_INSERT="INSERT INTO dlv.session_event (customer_id, login_time, logout_time, cutoff,avail_count, sold_count,hidden_count" +
 			"zone, last_get_timeslot, is_timeout, last_gettype, order_id) " +
-			"VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+			"VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
 	
 	
 	public static void insert(SessionEvent sessionEvent, Connection conn) 
@@ -53,11 +53,16 @@ public class SessionDAO {
 			    	ps.setInt(6, sessionEvent.getSoldCount());
 			    else
 			    	ps.setNull(6, java.sql.Types.INTEGER);
-			    ps.setString(7, sessionEvent.getZone());
-			    ps.setString(8, sessionEvent.getLastTimeslot());
-			    ps.setString(9, sessionEvent.getIsTimeout());
-			    ps.setString(10, sessionEvent.getPageType());
-			    ps.setString(11, sessionEvent.getOrderId());
+			    if(sessionEvent.getHiddenCount()!=null)
+			    	ps.setInt(7, sessionEvent.getHiddenCount());
+			    else
+			    	ps.setNull(7, java.sql.Types.INTEGER);
+			  
+			    ps.setString(8, sessionEvent.getZone());
+			    ps.setString(9, sessionEvent.getLastTimeslot());
+			    ps.setString(10, sessionEvent.getIsTimeout());
+			    ps.setString(11, sessionEvent.getPageType());
+			    ps.setString(12, sessionEvent.getOrderId());
 			    ps.execute();
 		}
 		catch(Exception e)

@@ -255,7 +255,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 				{
 					String id = FDDeliveryManager.getInstance().logTimeslots(null, null, timeslots.getTimeslotsFlat(), event, 
 									address, timeslots.getResponseTime());
-					int availCount = 0 , soldCount = 0; String zone ="";
+					int availCount = 0 , soldCount = 0, hiddenCount = 0; String zone ="";
 					if(DateUtil.diffInDays(timeslots.getStartDate(), DateUtil.getCurrentTime()) < 7)
 					{
 						sessionEvent.setLastTimeslot(id);
@@ -268,6 +268,8 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 								availCount++;
 							else if ("S".equals(slot.getStoreFrontAvailable()))
 								soldCount++;
+							else if ("H".equals(slot.getStoreFrontAvailable()))
+								hiddenCount++;
 							zone = slot.getZoneCode();
 							if(DateUtil.getCurrentTime().before(slot.getCutoffDateTime()))
 							{
@@ -286,6 +288,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 						sessionEvent.setZone(zone);
 						sessionEvent.setAvailCount(availCount);
 						sessionEvent.setSoldCount(soldCount);
+						sessionEvent.setHiddenCount(hiddenCount);
 						user.setSessionEvent(sessionEvent);
 					}
 					
