@@ -234,6 +234,8 @@ public class ZoneManagerDaoOracleImpl implements ZoneManagerDaoI {
 	private static final String GET_ZIPCODEINFO = "select * FROM dlv.zipcode where zipcode = ? ";
 	private static final String GET_ZIPCODEINFO_WORKTAB = "select * FROM dlv.zipcode_worktab where zipcode = ? ";
 	
+	private static final String GET_ZIPCODE = "select * FROM dlv.zipcode where zipcode = ? ";
+	
 	public Set getDeliverableZipCodes() throws DataAccessException {
 		final Set<ZipCodeModel> result = new HashSet<ZipCodeModel>();		
 		 PreparedStatementCreator creator=new PreparedStatementCreator() {
@@ -404,6 +406,30 @@ public class ZoneManagerDaoOracleImpl implements ZoneManagerDaoI {
 		}
 	}
 	
+	public Set<ZipCodeModel> getZipCodeInfo(final String zipCode) throws DataAccessException {
+		final Set<ZipCodeModel> result = new HashSet<ZipCodeModel>();		
+		 PreparedStatementCreator creator=new PreparedStatementCreator() {
+	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+	                PreparedStatement ps =
+	                    connection.prepareStatement(GET_ZIPCODE);
+	                ps.setString(1, zipCode);
+	                return ps;
+	            }  
+	     };
+	     
+	     jdbcTemplate.query(creator, 
+	       		  new RowCallbackHandler() { 
+	       		      public void processRow(ResultSet rs) throws SQLException {
+	       		    	ZipCodeModel model;
+	       		    	do {       		 
+	       		    		model = new ZipCodeModel(rs.getString("zipcode"),rs.getDouble("home_coverage"),rs.getDouble("cos_coverage"));
+	       		    		result.add(model);
+	       		    	}  while(rs.next());
+	       		      }
+	       		   });
+		
+		return result;
+	}
 	
 	
 

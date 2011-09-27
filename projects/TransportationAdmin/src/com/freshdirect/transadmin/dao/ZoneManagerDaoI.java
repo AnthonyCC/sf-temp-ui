@@ -25,4 +25,5 @@ public interface ZoneManagerDaoI {
 	void addNewDeliveryZipCode(ZipCodeModel model) throws SQLException;
 	void addNewDeliveryZipCodeCoverage(ZipCodeModel model) throws SQLException;
 	void updateDeliveryZipCodeCoverage(ZipCodeModel model) throws SQLException;
+	Set<ZipCodeModel> getZipCodeInfo(String zipCode) throws DataAccessException;
 }

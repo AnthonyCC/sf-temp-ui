@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.springframework.dao.DataAccessException;
-
 import com.freshdirect.transadmin.model.ZipCodeModel;
 import com.freshdirect.transadmin.web.model.TimeRange;
 
@@ -25,4 +23,5 @@ public interface ZoneManagerI extends BaseManagerI {
 	void addNewDeliveryZipCode(ZipCodeModel model) throws SQLException;
 	void addNewDeliveryZipCodeCoverage(ZipCodeModel model) throws SQLException;
 	void updateDeliveryZipCodeCoverage(ZipCodeModel model) throws SQLException;
+	Set<ZipCodeModel> getZipCodeInfo(final String zipCode);
 }

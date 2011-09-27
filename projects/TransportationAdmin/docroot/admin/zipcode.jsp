@@ -19,11 +19,7 @@
 	<tmpl:put name='title' direct='true'> Operations : Zip Codes</tmpl:put>
 
 	<tmpl:put name='content' direct='true'>
-	<c:if test="${not empty messages}">
-		<div class="err_messages">
-			<jsp:include page='/common/messages.jsp'/>
-		</div>
-	</c:if> 
+	
 		<div align="center">
 			<table width="100%" cellpadding="0" cellspacing="0" border="0">
 					<br><br>
@@ -37,74 +33,74 @@
 	<div class="contentroot">
 		<br/>
 		<% if(!"DEV".equalsIgnoreCase(envName)) { %>
-			<span>&nbsp;&nbsp;&nbsp;<input type = "button" value="&nbsp;Add Zip Code &nbsp;" onclick="javascript:showZipCodePanel()" /></span> 
+			<span>&nbsp;&nbsp;&nbsp;<input type = "button" style="font-size:11px;" value="&nbsp;New Zip Code&nbsp;" onclick="javascript:showZipCodePanel()" /></span> 
 		<%}%>
 		<table width="100%">
 			<tr>
 			  <td style="vertical-align: top;">
-					<form id="zipCodeListForm" action="" method="post">	
-						<ec:table items="zipcodes"   action="${pageContext.request.contextPath}/zipcode.do"
+					
+						<ec:table items="zipcodes" action="${pageContext.request.contextPath}/zipcode.do"
 							imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title=""
-							width="98%"  view="fd" form="zipCodeListForm"  filterable="true" autoIncludeParameters="false" rowsDisplayed="50"  >
+							width="98%"  view="fd" filterable="true" autoIncludeParameters="false" rowsDisplayed="50"  >
 
 							<ec:row interceptor="obsoletemarker">
-							    <ec:column title=" " width="5px" 
-				                    filterable="false" sortable="false" cell="selectcol"
-				                    property="zipCode" />  
+							      
 							  <ec:column alias="zipcode" property="zipCode" title="Zip Code"/>
 							  <ec:column property="homeCoverage" title="Home Coverage"/>
 							  <ec:column property="cosCoverage" title="COS Coverage"/>
-							  
+
 							</ec:row>
+							 <div id="zipcode_container" style="display:none;">
+							  <%
+								Set gridData = (Set)request.getAttribute("zipcodes");
+								int _rowIndex = 3;
+								if(gridData != null) {
+								
+									Iterator<ZipCodeModel> _itr = gridData.iterator();
+									ZipCodeModel _command = null;
+									while(_itr.hasNext()) {
+										_command = _itr.next();
+								%>
+									<div id="panel-<%=_rowIndex %>">
+									<div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />&nbsp;&nbsp;&nbsp;<%="Breakdown-"+_command.getZipCode() %></div>
+									<div class="bd" style='background-color:#F2F2F2;align:center;'>
+										<div id="errContainer"></div>
+										<table id="zipcode_table-<%=_rowIndex %>" border="0"  cellspacing="0"  cellpadding="0"  class="forms1" >
+											<tbody class="tableBody" >
+															<tr>
+																   <td align="right">Zip Code</td>
+																   <td><input size="30" id="dZipCode" readonly="readonly" value='<%=_command.getZipCode() %>' /></td>
+															</tr>
+															<tr>
+																   <td align="right">Home Coverage</td>
+																   <td><input size="30" id="dHomeCoverage" value='<%=_command.getHomeCoverage() %>' /></td>
+															</tr>
+															<tr>
+																   <td align="right">COS Coverage</td>
+																   <td><input size="30" id="dCosCoverage" value='<%=_command.getCosCoverage() %>' /></td>
+															</tr>
+															<tr>
+																<td align="center" colspan="2">
+																	<input type="button" id="add" value="&nbsp;Save&nbsp;" onclick="javascript:updateZipCodeCoverage('dZipCode','dHomeCoverage','dCosCoverage');" /> &nbsp;&nbsp;
+																</td>
+															</tr>
+											</tbody>
+										</table>
+									</div>
+									</div>
+							<%	 _rowIndex++;}
+								}
+							%>
+						 </div>
+					
 						  </ec:table>
-					 </form>
+						  
+						
 				</td>
 				
 			</tr>
 		</table>
 		
-		 <div id="zipcode_container" style="display:none;">
-			  <%
-				Set gridData = (Set)request.getAttribute("zipcodes");
-				int _rowIndex = 3;	    	
-				if(gridData != null) {
-	    		
-					Iterator<ZipCodeModel> _itr = gridData.iterator();
-					ZipCodeModel _command = null;
-					while(_itr.hasNext()) {
-						_command = _itr.next();
-	    		%>
-			    	<div id="panel-<%=_rowIndex %>">
-			    	<div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />&nbsp;&nbsp;&nbsp;<%="Breakdown-"+_command.getZipCode() %></div>
-			    	<div class="bd" style='background-color:#F2F2F2;align:center;'>
-						<div id="errContainer"></div>
-						<table id="zipcode_table-<%=_rowIndex %>" border="0"  cellspacing="0"  cellpadding="0"  class="forms1" >
-							<tbody class="tableBody" >
-											<tr>
-												   <td align="right">Zip Code</td>
-   												   <td><input size="30" id="dZipCode" readonly="readonly" value='<%=_command.getZipCode() %>' /></td>
-											</tr>
-											<tr>
-												   <td align="right">Home Coverage</td>
-   												   <td><input size="30" id="dHomeCoverage" value='<%=_command.getHomeCoverage() %>' /></td>
-											</tr>
-											<tr>
-												   <td align="right">COS Coverage</td>
-   												   <td><input size="30" id="dCosCoverage" value='<%=_command.getCosCoverage() %>' /></td>
-											</tr>
-											<tr>
-												<td align="center" colspan="2">
-													<input type="button" id="add" value="&nbsp;Save&nbsp;" onclick="javascript:updateZipCodeCoverage('dZipCode','dHomeCoverage','dCosCoverage');" /> &nbsp;&nbsp;
-												</td>
-											</tr>
-							</tbody>
-						</table>
-					</div>
-					</div>
-			<%	 _rowIndex++;}
-				}
-			%>
-		 </div>
 
 	<div style='display:none;height:0px;width:0px;'>
       <div id="zipCodePanel-1">
@@ -157,11 +153,11 @@
 					    var table = document.getElementById(tableId);
 					    
 					    if(table != null) {
-						    var rows = table.tBodies[0].getElementsByTagName("tr");	 	       
+						    var rows = table.tBodies[0].getElementsByTagName("tr");
 						    for (i = 0; i < rows.length; i++) {	    	
 						        var cells = rows[i].getElementsByTagName("td");
 						        
-						        for (j = 0; j < cells.length-2; j++) {
+						        for (j = 0; j < cells.length; j++) {
 						        	
 						            cells[j].onmouseover = function () {
 						            	previousClass = this.parentNode.className;
@@ -223,12 +219,10 @@
 
 		function zipCodeUpdateCallBack(result, rpcException) {
       	       
-          if(result === 1) {
-			 addSysMessage("ZipCode alreadyUnable to update ZipCode coverage!", true);
-		  } else {
-          	  addSysMessage("ZipCode coverage updated successfully", false); 
+          if(result){
+          	  addSysMessage("ZipCode coverage updated successfully", false);
+  			  addZipCodePanel.destroy();
           }
-
 		  if(rpcException){
 			   alert('Unable to add/Update Zip code coverage. Please try to refresh the browser window!\n'+rpcException);
 		  }
@@ -242,7 +236,7 @@
 			 addSysMessage("Unable to add zipcode, Please check STREET DATA for zipcode!", true);
 		  }else {
           	  addSysMessage("ZipCode added successfully", false);
-			  addZipCodePanel.hide();
+			  addZipCodePanel.destroy();
           }
 
 		  if(rpcException){

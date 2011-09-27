@@ -71,4 +71,7 @@ public class ZoneManagerImpl extends BaseManagerImpl implements ZoneManagerI {
 	public void updateDeliveryZipCodeCoverage(ZipCodeModel model) throws DataAccessException, SQLException {
 		getZoneManagerDAO().updateDeliveryZipCodeCoverage(model);
 	}
+	public 	Set<ZipCodeModel> getZipCodeInfo(final String zipCode){
+		return getZoneManagerDAO().getZipCodeInfo(zipCode);
+	}
 }

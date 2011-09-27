@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -172,8 +173,14 @@ public class AdminController extends AbstractMultiActionController {
 	public ModelAndView zipcodeHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		
 		ModelAndView mav = new ModelAndView("zipCodeView");
-		
-		mav.getModel().put("zipcodes", zoneManagerService.getDeliverableZipCodes());
+		Set zipCodes = null;
+		String zipCode = request.getParameter("ec_f_zipcode");
+		if(zipCode != null && !"".equalsIgnoreCase(zipCode)){
+			zipCodes = zoneManagerService.getZipCodeInfo(zipCode);
+		}else{
+			zipCodes = zoneManagerService.getDeliverableZipCodes();
+		}
+		mav.getModel().put("zipcodes", zipCodes );
 		return mav;
 	}
 }
