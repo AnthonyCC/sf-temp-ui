@@ -132,7 +132,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					}
 				} else if ("checkByZipCode".equalsIgnoreCase(action)) {
 					DlvServiceSelectionResult serviceResult = checkByZipCode(request, result);
-					setRequestedServiceTypeDlvStatus(serviceResult.getServiceStatus(this.serviceType));
+					if(serviceResult!=null)
+						setRequestedServiceTypeDlvStatus(serviceResult.getServiceStatus(this.serviceType));
 					if (result.isSuccess()) {
 						newSession();
 						
