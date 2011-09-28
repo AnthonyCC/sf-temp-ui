@@ -7,9 +7,70 @@
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.framework.webapp.*' %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
+<%@ page import="com.freshdirect.payment.BillingCountryInfo"%>
+<%@ page import="com.freshdirect.payment.BillingRegionInfo"%>
+<script language="javascript" type="text/javascript">  
+      var xmlHttp  
+      
+      function showState(str){
+      
+	      if (typeof XMLHttpRequest != "undefined"){
+			xmlHttp= new XMLHttpRequest();
+	      }
+	      else if (window.ActiveXObject){
+			xmlHttp= new ActiveXObject("Microsoft.XMLHTTP");
+	      }
+	      if (xmlHttp==null){
+			alert("Browser does not support XMLHTTP Request")
+			return;
+	      } 
+		var url="/api/billing_state.jsp";
+		url +="?country=" +str;
+		xmlHttp.onreadystatechange = stateChange;
+		xmlHttp.open("GET", url, true);
+		xmlHttp.send(null);
+      }
+
+      function stateChange(){   
+	      if (xmlHttp.readyState==4 || xmlHttp.readyState=="complete"){   
+	      
+	      var o=xmlHttp.responseText;
+	      var regions=o.split(",");
+			
+			ClearOptions("<%=AddressName.BIL_STATE%>");
+			addOpt("<%=AddressName.BIL_STATE%>","State","");
+			for (var i = 0; i < regions.length; i++) { 
+			     var j=regions[i].split("|");
+			     addOpt("<%=AddressName.BIL_STATE%>",j[1],j[0]);
+			}
+		
+	      }   
+      }
+      function ClearOptions(id)
+{
+	document.getElementById(id).options.length = 0;
+}
+function addOpt(addToId, addText, addVal) {
+                                var addToId = addToId || null;
+                                var addTo = document.getElementById(addToId);
+                                var addText = addText || '';
+                                var addVal = addVal || '';
+
+                                if ((addToId == null || '') || (addTo == null)) { return false; }
+
+                                try {
+                                                addTo.add(new Option(addText, addVal), null); //doesn't work in IE
+                                }catch(ex) {
+                                                addTo.add(new Option(addText, addVal)); //IE only
+                                }
+
+                                return true;
+                }
+
+</script>
 
 <%!
-String[] checkPaymentMethodForm = {PaymentMethodName.ACCOUNT_HOLDER, PaymentMethodName.CARD_BRAND, PaymentMethodName.ACCOUNT_NUMBER, "expiration",PaymentMethodName.CSV, EnumUserInfoName.BIL_ADDRESS_1.getCode(), EnumUserInfoName.BIL_CITY.getCode(), EnumUserInfoName.BIL_STATE.getCode(), EnumUserInfoName.BIL_ZIPCODE.getCode()};
+String[] checkPaymentMethodForm = {PaymentMethodName.ACCOUNT_HOLDER, PaymentMethodName.CARD_BRAND, PaymentMethodName.ACCOUNT_NUMBER, "expiration",PaymentMethodName.CSV, EnumUserInfoName.BIL_ADDRESS_1.getCode(), EnumUserInfoName.BIL_CITY.getCode(), EnumUserInfoName.BIL_STATE.getCode(), EnumUserInfoName.BIL_ZIPCODE.getCode(),EnumUserInfoName.BIL_COUNTRY.getCode()};
 String[] checkErrorType = {"technical_difficulty", "payment_method_fraud","auth_failure"};
 %>
 
@@ -26,8 +87,8 @@ String ccAddress1 = "";
 String ccAddress2 = "";
 String ccApartment = "";
 String ccCity = "";
-String ccState = "";
-String ccCountry = "";
+String ccState = "NY";
+String ccCountry = "US";
 String ccCardType = "";
 String ccZipCode = "";
 String ccAccountNumber = "";
@@ -273,36 +334,51 @@ EnumServiceType serviceTypeRH = (EnumServiceType)NVL.apply(EnumServiceType.getEn
 					<span class="text11rbold"><%=errorMsg%></span>
 				</fd:ErrorHandler></TD>
 			</TR>
-			<TR VALIGN="MIDDLE">
-				<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler
-					result="<%=result%>"
-					name="<%=EnumUserInfoName.BIL_STATE.getCode()%>">
-					<span class="text11rbold">
-				</fd:ErrorHandler>*State&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>"
-					name="<%=EnumUserInfoName.BIL_STATE.getCode()%>">
-					</span>
-				</fd:ErrorHandler></TD>
-				<TD WIDTH="565"><input size="3" class="text11"
-					name="<%=EnumUserInfoName.BIL_STATE.getCode()%>" required="true"
-					value="<%=ccState%>"> <fd:ErrorHandler result='<%=result%>'
-					name='<%=EnumUserInfoName.BIL_STATE.getCode()%>' id='errorMsg'>
-					<span class="text11rbold"><%=errorMsg%></span>
-				</fd:ErrorHandler> <%-- sometimes an input field???
-				  input class="text11" name="stateName" required="true" size="3" value="NY"--%>
-				&nbsp;&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>"
-					name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>">
-					<span class="text11rbold">
-				</fd:ErrorHandler>*Zip/Postal Code<fd:ErrorHandler result="<%=result%>"
-					name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>">
-					</span>
-				</fd:ErrorHandler>&nbsp;&nbsp;<input type="text" maxlength="5" class="text11"
-					name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>" required="true"
-					size="6" value="<%=ccZipCode%>"> <fd:ErrorHandler
-					result='<%=result%>'
-					name='<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>' id='errorMsg'>
-					<span class="text11rbold"><%=errorMsg%></span>
-				</fd:ErrorHandler></TD>
-			</TR>
+	<TR VALIGN="MIDDLE">
+	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_STATE.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*State&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_STATE.getCode()%>"></span></fd:ErrorHandler></TD>
+		<TD WIDTH="565">
+ 	    		  
+					<select class="pulldown" name="<%=AddressName.BIL_STATE%>"  id="<%=AddressName.BIL_STATE%>"  required="true">
+						<option value="">State</option>
+					<%	
+					String countryCode="".equals(ccCountry)? "US":ccCountry;
+					
+					BillingCountryInfo bc=BillingCountryInfo.getEnum(countryCode);
+					List<BillingRegionInfo> _list=new ArrayList<BillingRegionInfo>();
+					if(bc!=null)
+						_list=bc.getRegions();
+					         
+						for(BillingRegionInfo regionInfo : _list) {
+						        
+							%>
+							<option value="<%=regionInfo.getCode()%>" <%=regionInfo.getCode().equalsIgnoreCase(ccState)? "selected" : ""%>><%=regionInfo.getName()%></option>
+							                                                                     
+					       <%}%>
+					</select>
+					
+ 		 &nbsp;&nbsp;&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_STATE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></TD>
+	</TR>
+	<TR VALIGN="MIDDLE">
+	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*Zip/Postal Code&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>"></span></fd:ErrorHandler></TD>
+	    <TD WIDTH="565"><input type="text" class="text11"  maxlength="10" SIZE="10" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>" required="true" value = "<%=ccZipCode%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></TD>
+	</TR>
+	<TR VALIGN="MIDDLE">
+	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_COUNTRY.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*Country&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_COUNTRY.getCode()%>"></span></fd:ErrorHandler></TD>
+	<TD WIDTH="565">
+ 	    		 
+					<select class="pulldown" name="<%=AddressName.BIL_COUNTRY%>" onchange="javascript:showState(this.value)">
+						<option value="">Country</option>
+					<%	List<BillingCountryInfo> list=BillingCountryInfo.getEnumList();
+					         
+						for(BillingCountryInfo countryInfo : list) {%>
+							<option value="<%=countryInfo.getCode()%>" <%=countryInfo.getCode().equalsIgnoreCase(ccCountry)? "selected" : ""%>><%=countryInfo.getName()%></option>
+					       <%}%>
+					       
+			</select>
+			<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_COUNTRY.getCode()%>" id='errorMsg'> <span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler>
+ 		 &nbsp;&nbsp;&nbsp;
+		 </TD>
+	</TR>
 			<TR VALIGN="MIDDLE">
 				<TD WIDTH="660" ALIGN="RIGHT" colspan="2" CLASS="text12"><fd:ErrorHandler
 					result='<%=result%>' name='address' id='errorMsg'>
