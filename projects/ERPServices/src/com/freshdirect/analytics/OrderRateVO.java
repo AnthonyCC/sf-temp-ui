@@ -17,7 +17,7 @@ public class OrderRateVO {
 	private Timestamp soldOutTime;
 	private float weightedProjectRate;
 	private Date expectedSoldOutTime;
-	
+	private float OrdersExpected;
 	
 	public String getZone() {
 		return zone;
@@ -90,6 +90,12 @@ public class OrderRateVO {
 	}
 	public void setCapacity(int capacity) {
 		this.capacity = capacity;
+	}
+	public float getOrdersExpected() {
+		return OrdersExpected;
+	}
+	public void setOrdersExpected(float ordersExpected) {
+		OrdersExpected = ordersExpected;
 	}
 	
 	

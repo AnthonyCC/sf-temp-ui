@@ -149,13 +149,13 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 				float orderCount = (orderCountMap.get(range)!=null && orderCountMap.get(range).get(vo.getZone())!=null)?orderCountMap.get(range).get(vo.getZone()):0;
 				float capacity = vo.getCapacity();
 				
-				if(orderCount - capacity >=0)
+				if(orderCount - capacity <0 && (orderCount+vo.getOrderCount() - capacity) >=0)
 					vo.setSoldOutTime(vo.getSnapshotTime());
 				
 				Timestamp expectedSoldTime = addTime(vo.getSnapshotTime());
 				
 				float rate = 0;
-				boolean done = false;
+				boolean done = false, evaluate = true;
 				while(!done)
 				{
 				
@@ -169,12 +169,11 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 						{
 							rate += roundValue( (capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[1]+ capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[1]) /2);
 		
-		
-							if((orderCount + rate) - capacity >=0)
+							vo.setOrdersExpected(orderCount + vo.getOrderCount() + rate);
+							if((orderCount + vo.getOrderCount() + rate) - capacity >=0 && evaluate)
 							{
 								vo.setExpectedSoldOutTime(expectedSoldTime);
-								done = true;
-								break;
+								evaluate = false;
 							}
 						}
 						if(expectedSoldTime.getTime()>vo.getCutoffTime().getTime())

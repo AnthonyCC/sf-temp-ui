@@ -34,7 +34,7 @@ public class OrderRateDAO {
 			"to_char(t.base_date-1, 'MM/DD/YYYY')||' '|| to_char(t.cutoff_time, 'HH:MI:SS AM') ,  t.zone_code, t.capacity";
 
 	private static final String ORDER_RATE_SNAPSHOT_INSERT = "INSERT INTO DLV.ORDER_RATE(CAPACITY, ZONE, CUTOFF, " +
-			"TIMESLOT_START, TIMESLOT_END, ORDER_COUNT,PROJECTED_COUNT, DELIVERY_DATE, SNAPSHOT_TIME, ACTUAL_SO, PROJECT_SO, WEIGHTED_PROJECTED_COUNT) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+			"TIMESLOT_START, TIMESLOT_END, ORDER_COUNT,PROJECTED_COUNT, DELIVERY_DATE, SNAPSHOT_TIME, ACTUAL_SO, PROJECT_SO, WEIGHTED_PROJECTED_COUNT, ORDERS_EXPECTED) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	
 	private static final String AVG_ORDER_RATE_QUERY = "select order_count, snapshot_time from ((select order_count, snapshot_time from dlv.order_rate where to_char(snapshot_time,'MM/DD/YYYY HH:MI:SS AM') " +
 			">=  ? and to_char(timeslot_start,'MM/DD/YYYY HH:MI:SS AM') = ? and to_char(timeslot_end,'MM/DD/YYYY HH:MI:SS AM')  = ? and zone = ?) union (select order_count,snapshot_time from dlv.order_rate where to_char(snapshot_time,'MM/DD/YYYY HH:MI:SS AM') " +
@@ -318,6 +318,7 @@ public class OrderRateDAO {
 				ps.setNull(11, java.sql.Types.TIMESTAMP);
 			
 			ps.setFloat(12, vo.getWeightedProjectRate());
+			ps.setFloat(13, vo.getOrdersExpected());
 			ps.addBatch();
 		}
 		ps.executeBatch();
