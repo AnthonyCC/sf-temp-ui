@@ -111,4 +111,10 @@ public class OrderPermissionsImpl implements OrderPermissionsI {
 		
 		return false;
 	}
-}
+	
+	public boolean allowAuthorizeOrder() {
+		return EnumSaleStatus.INPROCESS_NO_AUTHORIZATION.equals(status)?true:false;
+	
+	}
+
+	}

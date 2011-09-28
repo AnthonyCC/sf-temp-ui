@@ -119,7 +119,7 @@ public class FDCustomerManagerTestCase extends TestCase{
         FDCustomerModel fdCustomer = new FDCustomerModel();
         fdCustomer.setPasswordHint("viktorz a weenie");
 
-		RegistrationResult regResult = FDCustomerManager.register(customerModel, fdCustomer, "", false);
+		RegistrationResult regResult = FDCustomerManager.register(null, customerModel, fdCustomer, "", false, false, null, null, false);
 
 		FDIdentity identity = regResult.getIdentity();
 		try{
@@ -147,14 +147,14 @@ public class FDCustomerManagerTestCase extends TestCase{
 		address.setZipCode("10038");
 		address.setCountry("US");
 
-		try {
+		/*try {
 			// !!! FIXME: no FDUserI passed
 			FDCustomerManager.addShipToAddress((FDUserI)null, address);
 		} catch(FDResourceException e) {
 			e.printStackTrace();
 		}catch(ErpDuplicateAddressException e){
 			e.printStackTrace();
-		}
+		}*/
 		Collection c = FDCustomerManager.getShipToAddresses(identity);
 
 		ErpAddressModel storedResult = (ErpAddressModel)c.iterator().next();

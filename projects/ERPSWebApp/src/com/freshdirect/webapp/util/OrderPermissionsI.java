@@ -20,5 +20,6 @@ public interface OrderPermissionsI {
 	public boolean hasPaymentException();
 	public boolean allowResubmitOrder();
 	public boolean isRefusedOrder();
+	public boolean allowAuthorizeOrder();
 
 }

@@ -583,7 +583,8 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
                                 <td align="right">Billing Address:&nbsp;&nbsp;</td>
                                 <td><%=payment.getAddress1()%>&nbsp;Apt. <%=payment.getApartment()%>
                                     <%if(payment.getAddress2() != null && !"".equalsIgnoreCase(payment.getAddress2())){%>
-                                        <br><%=payment.getAddress2()%><%}%><br><%=payment.getCity()%>,&nbsp;<%=payment.getState()%>&nbsp;<%=payment.getZipCode()%>
+                                        <br><%=payment.getAddress2()%><%}%><br><%=payment.getCity()%>,&nbsp;<%=payment.getState()%>
+				<br><%=payment.getCountry()%>	&nbsp;<%=payment.getZipCode()%>
                                 </td>
                             </tr>
                             
