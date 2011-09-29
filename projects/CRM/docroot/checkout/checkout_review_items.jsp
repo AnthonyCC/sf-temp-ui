@@ -400,7 +400,14 @@
 							if(cartLine.getDiscount() != null) {
 								Discount discount = cartLine.getDiscount();
 								PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
-								discountMsg = promotion.getDescription()+" <span style=\"color: #ff0000;\">(You Saved "+JspMethods.formatPrice(cartLine.getDiscountAmount())+")</span> <a href=\"javascript:popup('/shared/promotion_popup.jsp?promoCode="+promotion.getPromotionCode()+"','small')\" style=\"font-weight: normal;\">See details</a>";
+								String skuMsg = "";
+								if(discount.getSkuLimit() > 0 && cartLine.getUnitPrice().indexOf("lb") == -1) {
+									if(discount.getSkuLimit() == 1)
+										skuMsg = " on " + discount.getSkuLimit() + " item";
+									else
+										skuMsg = " on " + discount.getSkuLimit() + " items";
+								}
+								discountMsg = promotion.getDescription()+" <span style=\"color: #ff0000;\">(You Saved "+JspMethods.formatPrice(cartLine.getDiscountAmount())+skuMsg+")</span> <a href=\"javascript:popup('/shared/promotion_popup.jsp?promoCode="+promotion.getPromotionCode()+"','small')\" style=\"font-weight: normal;\">See details</a>";
 							} else {
 								if(cartLine.getGroupQuantity() > 0) {
 									double savings = cartLine.getGroupScaleSavings();
