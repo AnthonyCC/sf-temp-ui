@@ -183,8 +183,8 @@ public class CPMServerGateway {
 		trans.SetValue(LCC.ID_CUSTOMER_STREET, StringUtils.left(paymentMethod.getAddress1(), 20));//take first 20 characters of address as chase only accepts that
 		trans.SetValue(LCC.ID_CUSTOMER_CITY, StringUtils.left(paymentMethod.getCity(), 20));
 		trans.SetValue(LCC.ID_CUSTOMER_STATE, StringUtils.left(paymentMethod.getState(), 2));
-		trans.SetValue(LCC.ID_CUSTOMER_ZIP, StringUtils.left(paymentMethod.getZipCode(), 5));
-		trans.SetValue(LCC.ID_CUSTOMER_COUNTRY, "US");
+		trans.SetValue(LCC.ID_CUSTOMER_ZIP, StringUtils.left(paymentMethod.getZipCode(), 9));
+		trans.SetValue(LCC.ID_CUSTOMER_COUNTRY, StringUtils.left(paymentMethod.getCountry(), 2));
 		
 		
 		return trans;
