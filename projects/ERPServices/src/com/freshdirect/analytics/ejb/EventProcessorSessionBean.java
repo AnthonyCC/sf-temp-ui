@@ -66,6 +66,10 @@ public class EventProcessorSessionBean extends SessionBeanSupport{
 
 	}	
 	
+	protected String getResourceCacheKey() {
+		return "com.freshdirect.analytics.ejb.EventProcessorHome";
+	}
+	
 	public void logEvent(SessionEvent event)
 	{
 		Connection conn = null;
