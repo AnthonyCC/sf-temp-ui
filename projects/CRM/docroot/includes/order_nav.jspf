@@ -42,7 +42,6 @@ FDOrderI nav_order = CrmSession.getOrder(session, nav_orderId);
 Date now = new Date();  
 boolean  isPastDelivery= now.after(nav_order.getDeliveryReservation().getStartTime());
 
-System.out.println("isPastDelivery :"+isPastDelivery);
 EnumSaleType orderType = nav_order.getOrderType();
 boolean isRegularOrder = EnumSaleType.REGULAR.equals(orderType);
 boolean isDonationOrder = EnumSaleType.DONATION.equals(orderType);
@@ -181,7 +180,7 @@ boolean hasCase = false;
 				<% if ( o_details && orderPermissions.allowResubmitOrder() /*&& currentAgent.isSupervisor()*/ ) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><% if (!resubmitted) {%><a href="javascript:setAction(document.order_details, 'resubmit')" class="cust_sub_nav_text"><%}%>Resubmit Order<% if (!resubmitted) {%></a><%}%></div>
 				<% } %>
-				<% if ( o_details && orderPermissions.allowAuthorizeOrder() && isPastDelivery && ("CRM_Administrator".equals(agentRole1)|| "CRM_Developer".equals(agentRole1))) { %>
+				<% if ( o_details &&( (orderPermissions.isPNAOrder() && isPastDelivery)|| orderPermissions.isAuthFailedOrder()) && ("CRM_Administrator".equals(agentRole1)|| "CRM_Developer".equals(agentRole1))) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><% if (!authorized) {%><a href="javascript:setAction(document.order_details, 'authorize')" class="cust_sub_nav_text"><%}%>Authorize Order<% if (!authorized) {%></a><%}%></div>
 				<% } %>
 				<% if (!o_modify && orderPermissions.allowModifyOrder() && CrmSecurityManager.hasAccessToPage(agentRole1,"order_modify.jsp")) { %>
@@ -248,7 +247,7 @@ boolean hasCase = false;
 				<% if ( o_details && orderPermissions.allowResubmitOrder()) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><% if (!resubmitted) {%><a href="javascript:setAction(document.order_details, 'resubmit')" class="cust_sub_nav_text"><%}%>Resubmit Order<% if (!resubmitted) {%></a><%}%></div>
 				<% } %>
-				<% if ( o_details && orderPermissions.allowAuthorizeOrder() /*&& currentAgent.isSupervisor()*/ ) { %>
+				<% if ( o_details &&( (orderPermissions.isPNAOrder() && isPastDelivery)|| orderPermissions.isAuthFailedOrder()) && ("CRM_Administrator".equals(agentRole1)|| "CRM_Developer".equals(agentRole1))) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><% if (!authorized) {%><a href="javascript:setAction(document.order_details, 'authorize')" class="cust_sub_nav_text"><%}%>Authorize Order<% if (!authorized) {%></a><%}%></div>
 				<% } %>
                 <% } %>

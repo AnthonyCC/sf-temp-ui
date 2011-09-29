@@ -5,6 +5,8 @@
  */
 package com.freshdirect.webapp.util;
 
+import com.freshdirect.customer.EnumSaleStatus;
+
 /**
  *
  *  @author knadeem
@@ -20,6 +22,7 @@ public interface OrderPermissionsI {
 	public boolean hasPaymentException();
 	public boolean allowResubmitOrder();
 	public boolean isRefusedOrder();
-	public boolean allowAuthorizeOrder();
+	public boolean isPNAOrder();
+	public boolean isAuthFailedOrder();
 
 }

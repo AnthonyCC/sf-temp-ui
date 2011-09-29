@@ -30,7 +30,7 @@
     session.removeAttribute(SessionName.LIST_SEARCH_RAW);
     CrmSession.getSessionStatus(session).setSaleId(orderId);
     
-    FDOrderI order = CrmSession.getOrder(session, orderId);
+    FDOrderI order = CrmSession.getOrder(session, orderId,true);
     // Remove and replace any existing RECENT_ , RECENT_ORDER_NUMBER in session
     session.removeAttribute(SessionName.RECENT_ORDER);
     session.removeAttribute(SessionName.RECENT_ORDER_NUMBER);
@@ -70,7 +70,7 @@
 <fd:ComplaintGrabber order="<%= order %>" complaints="complaints" lineComplaints="lineComplaints" deptComplaints="deptComplaints" miscComplaints="miscComplaints" fullComplaints="fullComplaints" restockComplaints="restockComplaints" retrieveApproved="true" retrievePending="false" retrieveRejected="false">
 
 
-<%	boolean isNotSubmitted = EnumSaleStatus.NOT_SUBMITTED.equals( order.getOrderStatus() ); %>
+<% boolean isNotSubmitted = EnumSaleStatus.NOT_SUBMITTED.equals( order.getOrderStatus() ); %>
 <% boolean resubmitted = "resubmitted".equalsIgnoreCase(request.getParameter("status")); %>
 <% if (isNotSubmitted) { %>
 	<div class="content_fixed">

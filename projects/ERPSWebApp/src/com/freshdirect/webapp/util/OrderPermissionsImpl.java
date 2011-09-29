@@ -112,9 +112,14 @@ public class OrderPermissionsImpl implements OrderPermissionsI {
 		return false;
 	}
 	
-	public boolean allowAuthorizeOrder() {
+	public boolean isPNAOrder() {
 		return EnumSaleStatus.INPROCESS_NO_AUTHORIZATION.equals(status)?true:false;
 	
 	}
-
+	
+	public boolean isAuthFailedOrder() {
+		return EnumSaleStatus.AUTHORIZATION_FAILED.equals(status)?true:false;
 	}
+	
+}	
+

@@ -246,7 +246,7 @@
 					<td>Billing address</td>
 					<td><%=paymentMethod.getAddress1()%>&nbsp;Apt. <%=paymentMethod.getApartment()%>
                                     <%if(paymentMethod.getAddress2() != null && !"".equalsIgnoreCase(paymentMethod.getAddress2())){%>
-                                        <br><%=paymentMethod.getAddress2()%><%}%><br><%=paymentMethod.getCity()%>,&nbsp;<%=paymentMethod.getState()%>&nbsp;<%=paymentMethod.getZipCode()%></td>
+                                        <br><%=paymentMethod.getAddress2()%><%}%><br><%=paymentMethod.getCity()%>,&nbsp;<%=paymentMethod.getState()%><br><%=paymentMethod.getCountry()%>&nbsp;<%=paymentMethod.getZipCode()%></td>
 				</tr>
 				<tr>
 					<td>Billing Reference&nbsp;&nbsp;</td>

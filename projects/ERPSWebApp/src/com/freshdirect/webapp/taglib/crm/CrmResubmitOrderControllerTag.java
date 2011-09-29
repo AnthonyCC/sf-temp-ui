@@ -110,8 +110,9 @@ public class CrmResubmitOrderControllerTag extends AbstractControllerTag {
 		
 			FDOrderI order = FDCustomerManager.getOrder(this.orderId);
 			Date now=DateUtil.getCurrentTime();
-			if( EnumSaleStatus.INPROCESS_NO_AUTHORIZATION.equals(order.getOrderStatus()) &&
-				now.after(order.getDeliveryReservation().getStartTime())
+			if( ( EnumSaleStatus.INPROCESS_NO_AUTHORIZATION.equals(order.getOrderStatus()) &&
+				  now.after(order.getDeliveryReservation().getStartTime())
+				 ) || EnumSaleStatus.AUTHORIZATION_FAILED.equals(order.getOrderStatus())
 			   ){
 				FDCustomerManager.authorizeSale(this.orderId);
 			}
