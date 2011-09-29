@@ -290,11 +290,12 @@
       	  			for(i=0; i<records.length; i++) {
       	  				_data[i] = new Array();
       	  				_data[i][0] = records[i].getData('issueType');
+						_data[i][1] = records[i].getData('issueSubType');
       	  			}
 
-      	  			for(k=0; k<_data.length; k++){
-						if(_issueType ==_data[k][0]){
-							alert('IssueType selected already added to VIR.');
+      	  			for(k=0; k < _data.length; k++){
+						if(_issueType ==_data[k][0] && _issueSubType == _data[k][1] ){
+							alert('Issue Type with Sub Type selected already added to VIR.');
 							hasError = true;
 						}
           	  		}
