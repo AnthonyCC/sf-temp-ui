@@ -603,8 +603,9 @@ class TimeNode extends PlanTreeNode  {
 						p.getPlanResources().add(planResource);
 						k.remove();
 					}
-					
-				}				
+				}else{
+					k.remove();
+				}
 			}				
 		}
 		/*if (resources != null && resources.size() > 0) {
@@ -861,9 +862,10 @@ class DepotTimeNode extends PlanTreeNode  {
 						p.getPlanResources().add(planResource);
 						k.remove();
 					}
-					
-				}				
-			}				
+				}else{
+					k.remove();
+				}
+			}
 		}
 		
 		/*if (resources != null && resources.size() > 0) {
