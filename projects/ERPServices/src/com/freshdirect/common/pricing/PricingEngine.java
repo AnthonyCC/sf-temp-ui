@@ -86,8 +86,13 @@ public class PricingEngine {
 			// $$$ off
 			double basePrice = 0.0;
 			
-			if(!"lb".equalsIgnoreCase(pricingUnit) && discount.getSkuLimit() > 0) {
-				basePrice = price.getBasePrice() - (discount.getAmount() * discount.getSkuLimit());
+			if(discount.getSkuLimit() > 0) {
+				if(!"lb".equalsIgnoreCase(pricingUnit)) {
+					basePrice = price.getBasePrice() - (discount.getAmount() * discount.getSkuLimit());
+				}
+				else {
+					basePrice = price.getPrice() - discount.getAmount();
+				}
 			} else {
 				basePrice = price.getBasePrice() - (discount.getAmount() * quantity);
 			}

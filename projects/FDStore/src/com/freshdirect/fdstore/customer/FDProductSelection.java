@@ -9,6 +9,7 @@ import java.util.Set;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.Price;
 import com.freshdirect.common.pricing.Pricing;
@@ -300,6 +301,8 @@ public class FDProductSelection implements FDProductSelectionI {
 		Price p=new Price(this.price.getBasePrice());
 		if(this.getDiscount()!=null){
 			if(this.getDiscount().getSkuLimit() > 0 && !this.price.getBasePriceUnit().equalsIgnoreCase("lb") && this.getDiscount().getSkuLimit() != this.getQuantity()) {
+				disAmount=this.price.getBasePrice();
+			} else if(this.getDiscount().getSkuLimit() > 0 && this.price.getBasePriceUnit().equalsIgnoreCase("lb") && this.getDiscount().getDiscountType().equals(EnumDiscountType.DOLLAR_OFF)) {
 				disAmount=this.price.getBasePrice();
 			} else {
 				try {
