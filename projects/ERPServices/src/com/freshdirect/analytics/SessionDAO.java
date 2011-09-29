@@ -27,8 +27,8 @@ public class SessionDAO {
 
 	private static final Category LOGGER = LoggerFactory.getInstance(SessionDAO.class);
 	
-	private static final String SESSION_INSERT="INSERT INTO dlv.session_event (customer_id, login_time, logout_time, cutoff,avail_count, sold_count,hidden_count" +
-			"zone, last_get_timeslot, is_timeout, last_gettype, order_id) " +
+	private static final String SESSION_INSERT="INSERT INTO dlv.session_event (customer_id, login_time, logout_time, cutoff, avail_count, " +
+			"sold_count, hidden_count, zone, last_get_timeslot, is_timeout, last_gettype, order_id) " +
 			"VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
 	
 	
