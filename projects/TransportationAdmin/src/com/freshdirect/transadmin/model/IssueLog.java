@@ -95,13 +95,16 @@ public class IssueLog extends BaseCommand {
 	}
 	
 	public String toString(){
-		return this.issueType;
+		StringBuffer buf = new StringBuffer();
+		buf.append("SubType: ").append(this.getIssueType()).append(" Issue SubType : ").append(this.getIssueSubType());
+		return buf.toString();
 	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((issueType == null) ? 0 : issueType.hashCode());
+		result = prime * result + ((issueSubType == null) ? 0 : issueSubType.hashCode());
 		return result;
 	}
 
@@ -118,6 +121,11 @@ public class IssueLog extends BaseCommand {
 			if (other.issueType != null)
 				return false;
 		} else if (!issueType.equals(other.issueType))
+			return false;
+		if (issueSubType == null) {
+			if (other.issueSubType != null)
+				return false;
+		} else if (!issueSubType.equals(other.issueSubType))
 			return false;
 		return true;
 	}

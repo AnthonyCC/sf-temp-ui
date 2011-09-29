@@ -900,9 +900,9 @@ public class DomainManagerImpl
 			
 			if (recordIssues != null && recordIssues.length > 0) {
 				MaintenanceIssue _mIssue = null;
-				
+				IssueLog _issueLog = null;
 				for(int count = 0; count < recordIssues.length; count++){
-					IssueLog _issueLog = new IssueLog();
+					_issueLog = new IssueLog();
 					_issueLog.setIssueType(recordIssues[count][0]);
 					_issueLog.setIssueSubType(recordIssues[count][1]);
 					_issueLog.setDamageLocation(recordIssues[count][2]);
