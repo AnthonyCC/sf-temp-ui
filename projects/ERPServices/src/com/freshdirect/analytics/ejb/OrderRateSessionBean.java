@@ -125,8 +125,9 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 						 && capacityMap.get(range7).get(vo.getZone()).get(snapshot7)!=null
 						 && capacityMap.get(range14).get(vo.getZone()).get(snapshot14)!=null)
 			
-					
-					vo.setProjectedRate(roundValue( (capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[1] + capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[1]) / 2));
+	
+					vo.setProjectedRate(roundValue( new Float(capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[1] + capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[1]) / 2));
+				
 				else
 					vo.setProjectedRate(0);
 				
@@ -140,7 +141,7 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 						 && capacityMap.get(range14).get(vo.getZone()).get(snapshot14)!=null
 						 && (capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[0] + capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[0] > 0) )
 				
-						weightedProjection = roundValue( vo.getProjectedRate() * vo.getCapacity() / ((capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[0]+ capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[0])/2));
+						weightedProjection = roundValue(new Float( vo.getProjectedRate() * vo.getCapacity() / ((capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[0]+ capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[0])/2)));
 				
 				else
 						weightedProjection = 0;
