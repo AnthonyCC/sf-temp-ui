@@ -16,6 +16,7 @@
 			formObj.<%= AddressName.BIL_CITY %>.value = formObj.<%= AddressName.DLV_CITY %>.value;
 			formObj.<%= AddressName.BIL_STATE %>.value = formObj.<%= AddressName.DLV_STATE %>.value;
 			formObj.<%= AddressName.BIL_ZIPCODE %>.value = formObj.<%= AddressName.DLV_ZIPCODE %>.value;
+			formObj.<%= AddressName.BIL_COUNTRY %>.value = "US";
 			
 			// make the billing address fields read-only
 			formObj.<%= AddressName.BIL_ADDRESS_1 %>.readOnly = true;
@@ -23,6 +24,7 @@
 			formObj.<%= AddressName.BIL_APARTMENT %>.readOnly = true;
 			formObj.<%= AddressName.BIL_CITY %>.readOnly = true;
 			formObj.<%= AddressName.BIL_STATE %>.readOnly = true;
+			formObj.<%= AddressName.BIL_COUNTRY %>.readOnly = true;
 			formObj.<%= AddressName.BIL_ZIPCODE %>.readOnly = true;
 		} else {
 			// make the billing address fields writeable
@@ -32,6 +34,7 @@
 			formObj.<%= AddressName.BIL_CITY %>.readOnly = false;
 			formObj.<%= AddressName.BIL_STATE %>.readOnly = false;
 			formObj.<%= AddressName.BIL_ZIPCODE %>.readOnly = false;
+			formObj.<%= AddressName.BIL_COUNTRY %>.readOnly = false;
 			
 			// make the billing address fields what's in the params if any
 			formObj.<%= AddressName.BIL_ADDRESS_1 %>.value = "<%= request.getParameter(AddressName.BIL_ADDRESS_1) %>";
@@ -40,6 +43,7 @@
 			formObj.<%= AddressName.BIL_CITY %>.value = "<%= request.getParameter(AddressName.BIL_CITY) %>";
 			formObj.<%= AddressName.BIL_STATE %>.value = "<%= request.getParameter(AddressName.BIL_STATE) %>";
 			formObj.<%= AddressName.BIL_ZIPCODE %>.value = "<%= request.getParameter(AddressName.BIL_ZIPCODE) %>";
+			formObj.<%= AddressName.BIL_COUNTRY %>.value = "<%= request.getParameter(AddressName.BIL_COUNTRY) %>";
 		}
 	}
 	function enablePaymentFeilds(formObj){
@@ -50,6 +54,7 @@
 		formObj.<%= AddressName.BIL_CITY %>.readOnly = false;
 		formObj.<%= AddressName.BIL_STATE %>.readOnly = false;
 		formObj.<%= AddressName.BIL_ZIPCODE %>.readOnly = false;
+		formObj.<%= AddressName.BIL_COUNTRY %>.readOnly = false;
 	
 	}
 	

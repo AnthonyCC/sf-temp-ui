@@ -125,9 +125,10 @@ Collection addresses = FDCustomerManager.getShipToAddresses(user.getIdentity());
 						formObj.<%=AddressName.BIL_ADDRESS_2%>.value = "<%= defaultAddress.getAddress2() %>";
 						formObj.<%=AddressName.BIL_APARTMENT%>.value = "<%= defaultAddress.getApartment() %>";
 						formObj.<%=AddressName.BIL_CITY%>.value = "<%= defaultAddress.getCity() %>";
-						formObj.<%=AddressName.BIL_STATE%>.value = "<%= defaultAddress.getState() %>";
 						formObj.<%=AddressName.BIL_ZIPCODE%>.value = "<%= defaultAddress.getZipCode() %>";
 						formObj.<%=AddressName.BIL_COUNTRY%>.value = "<%= defaultAddress.getCountry() %>";
+						showState(formObj.<%=AddressName.BIL_COUNTRY%>.value);
+						formObj.<%=AddressName.BIL_STATE%>.value = "<%= defaultAddress.getState() %>";
 						<% } %>
 				} else {
 					formObj.<%=AddressName.BIL_ADDRESS_1%>.value = "";

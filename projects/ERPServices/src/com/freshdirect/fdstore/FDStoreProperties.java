@@ -469,7 +469,7 @@ public class FDStoreProperties {
 	private static final String RULES_REPOSITORY = "rules.repository";
 	private static final String DEBUG_EVENT_ANALYSIS = "debug.event.analysis";
 	
-	
+	private static final String PROP_COUNTRY_INFO_REFRESH_INTERVAL="fdstore.countryInfo.refresh.minutes";
 	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -936,7 +936,7 @@ public class FDStoreProperties {
 		defaults.put(EVENT_KB_SOURCE, "local");
 		defaults.put(RULES_REPOSITORY, "Events.drl");
 		defaults.put(DEBUG_EVENT_ANALYSIS, "false");
-		
+		defaults.put(PROP_COUNTRY_INFO_REFRESH_INTERVAL,"5");
 		
         refresh();
     }
@@ -2390,6 +2390,9 @@ public class FDStoreProperties {
     }
     public static boolean isDebugEventAnalysis() {
     	return (new Boolean(get(DEBUG_EVENT_ANALYSIS))).booleanValue();
+    }
+    public static int getCountryInfoRefreshInterval() {
+        return Integer.parseInt(get(PROP_COUNTRY_INFO_REFRESH_INTERVAL));
     }
     
 }

@@ -7,11 +7,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.enums.EnumModel;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.framework.util.ConfigHelper;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.ejb.BillingCountryDAO;
 public class BillingCountryInfo extends EnumModel {
 
-
+	private static final Category LOGGER = LoggerFactory.getInstance(BillingCountryInfo.class);
 	private static final long	serialVersionUID	= -3499001811399219072L;
 	
 	private static Map<String, BillingCountryInfo> enums = null;	    
@@ -19,8 +24,22 @@ public class BillingCountryInfo extends EnumModel {
 	private List<String> regionCodes =null;
 	private Pattern zipCheckPattern=null;
 	private static List<BillingCountryInfo> countries=null;
-	
-	
+    private static long lastRefresh = 0;
+    
+
+	 private static void refresh() {
+	        refresh(false);
+	}
+	 private synchronized static void refresh(boolean force) {
+	        long t = System.currentTimeMillis();
+
+	        if (force || ((t - lastRefresh) > (FDStoreProperties.getCountryInfoRefreshInterval()*1000*60))) {
+	            loadEnums();
+	            lastRefresh = t;
+	            LOGGER.info("Reloaded BillingCountryInfo..");
+	            
+	        }
+	    }
 
 	public BillingCountryInfo(String code, String name,List<BillingRegionInfo> regions, String zipCheckRegex ) {
 		super(code, name, null);
@@ -36,35 +55,33 @@ public class BillingCountryInfo extends EnumModel {
 	}
     
 	public static BillingCountryInfo getEnum(String code) {
-		loadEnums();
+		refresh();
 		return enums.get(code);
 	}
 
 	public static Map<String, BillingCountryInfo> getEnumMap() {
-		loadEnums();
-		return Collections.unmodifiableMap(enums);
+		refresh();
+		return enums;
 	}
 
 	public static List<BillingCountryInfo> getEnumList() {
-		loadEnums();
+		refresh();
 		return countries;
 	}
 
 	
 	private static void loadEnums() {
-		if (enums == null) {
-			
-			enums = new HashMap<String, BillingCountryInfo>();
-			List<BillingCountryInfo> lst = loadEnums(BillingCountryDAO.class);
-			for ( BillingCountryInfo e : lst ) {
-				enums.put(e.getCode(), e);
-			}
-			List<BillingCountryInfo> values=new ArrayList<BillingCountryInfo>(enums.values());
-			Collections.sort(values,COMPARE_BY_NAME);
-			countries=values;
-			
-			
+		
+		HashMap<String, BillingCountryInfo> _enums = new HashMap<String, BillingCountryInfo>();
+		List<BillingCountryInfo> lst = loadEnums(BillingCountryDAO.class);
+		for ( BillingCountryInfo e : lst ) {
+					_enums.put(e.getCode(), e);
 		}
+		enums=Collections.unmodifiableMap(_enums);
+		List<BillingCountryInfo> values=new ArrayList<BillingCountryInfo>(enums.values());
+		Collections.sort(values,COMPARE_BY_NAME);
+		countries=Collections.unmodifiableList(values);
+	
 	}
 
 	public List<BillingRegionInfo> getRegions() {

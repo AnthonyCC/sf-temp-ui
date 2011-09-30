@@ -19,7 +19,7 @@ import com.freshdirect.payment.BillingRegionInfo;
 public class BillingCountryDAO implements EnumDAOI{
 
 	private static final String QUERY="SELECT bc.code, bc.name, br.code rc , br.name rn,bc.zip_check_regex FROM "+
-	                                  " cust.billing_country bc, cust.billing_region br "+
+	                                  " cust.country bc, cust.region br "+
 	                                  "	WHERE bc.code=br.country_code ORDER BY bc.name, br.name";
 	
 	private static Category		LOGGER	= LoggerFactory.getInstance( BillingCountryDAO.class );
@@ -73,7 +73,7 @@ public class BillingCountryDAO implements EnumDAOI{
 
 		rs.close();
 		ps.close();
-		Collections.sort(l,BillingCountryInfo.COMPARE_BY_NAME);
+		//Collections.sort(l,BillingCountryInfo.COMPARE_BY_NAME);
 		LOGGER.debug("loadAll()--end");
 		return l;
 	}
