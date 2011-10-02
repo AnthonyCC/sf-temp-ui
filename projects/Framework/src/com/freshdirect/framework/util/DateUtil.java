@@ -39,6 +39,14 @@ public class DateUtil {
 	public static int getDayOfWeek(Date date) {		
 		return toCalendar(date).get(Calendar.DAY_OF_WEEK);
 	}
+	public static Date getEOD() {		
+		Calendar cal = Calendar.getInstance();
+		cal = truncate(cal);
+		cal.set(Calendar.HOUR_OF_DAY, 23);
+		cal.set(Calendar.MINUTE, 59);
+		cal.set(Calendar.SECOND, 59);
+		return cal.getTime();
+	}
 
 	public static Date truncate(Date date) {
 		Calendar cal = toCalendar(date);

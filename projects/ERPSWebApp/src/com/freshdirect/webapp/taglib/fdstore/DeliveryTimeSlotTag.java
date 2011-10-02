@@ -259,7 +259,21 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 					if(DateUtil.diffInDays(timeslots.getStartDate(), DateUtil.getCurrentTime()) < 7)
 					{
 						sessionEvent.setLastTimeslot(id);
-						List<FDTimeslot> tempSlots = timeslots.getTimeslotsForDate(DateUtil.getNextDate());
+						Date nextDay = DateUtil.getNextDate();
+						List<FDTimeslot> tempSlots = timeslots.getTimeslotsForDate(DateUtil.getNextDate()), tempSlots1 = null;
+						if(tempSlots!=null && tempSlots.size()==0)
+						{
+							nextDay  = DateUtil.addDays(nextDay, 1);
+							tempSlots1 = timeslots.getTimeslotsForDate(nextDay);
+						}
+						if(tempSlots1!=null && tempSlots1.size()>0 && 
+								DateUtil.addDays(timeslots.getMaxCutoffForDate(tempSlots1.get(0).getZoneCode(), nextDay),-1).before(DateUtil.getCurrentTime()) 
+							&& DateUtil.getCurrentTime().before(DateUtil.getEOD()))
+						{
+						tempSlots = tempSlots1;
+						
+						}
+						
 						Iterator<FDTimeslot> slotIterator = tempSlots.iterator();
 						while(slotIterator.hasNext())
 						{
