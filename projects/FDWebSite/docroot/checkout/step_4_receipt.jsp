@@ -174,7 +174,7 @@
 			semPixel_LS.setParam("orderId", sem_orderNumber);
 			semPixel_LS.setParam("subtotal", sem_cartSubtotal);
 			semPixel_LS.setParam("discountAmount", sem_totalDiscountAmount);
-			semPixel_LS.setParam("isNew", ("0".equals(sem_validOrderCount))?"true":"false");
+			semPixel_LS.setParam("isNew", ("1".equals(sem_validOrderCount))?"true":"false");
 			semPixel_LS.setParam("isOrderModify",String.valueOf(isOrderModify));
 			%><fd:SemPixelIncludeMedia pixelNames="LinkShare" />
 			
