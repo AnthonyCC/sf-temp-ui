@@ -283,11 +283,10 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             paymentMethod.setState(RequestUtil.getRequestParameter(request,EnumUserInfoName.BIL_STATE.getCode(),true));
             paymentMethod.setZipCode(RequestUtil.getRequestParameter(request,EnumUserInfoName.BIL_ZIPCODE.getCode(),true));
             paymentMethod.setCountry(RequestUtil.getRequestParameter(request,EnumUserInfoName.BIL_COUNTRY.getCode(),true));
-           /* if(paymentMethod.getCountry()==null ||  
-               ( paymentMethod.getCountry()!=null && "".equals(paymentMethod.getCountry()))
-              ) {
+            if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
             	paymentMethod.setCountry("US");
-            }*/
+            }
+           
             paymentMethod.setCVV(csv);
             if(StringUtil.isEmpty(paymentMethod.getCustomerId()) && identity!=null) {
             	paymentMethod.setCustomerId(identity.getErpCustomerPK());
