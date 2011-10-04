@@ -627,7 +627,7 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
 					+" and zone_code=(select zone_code from dlv.zone where ts.zone_id=id)"
 					+" and start_date=(select max(start_date) from dlv.region_data"
 					+" where region_id=rd.region_id and start_date<=ts.base_date)"
-					+" );", new Object[] {});
+					+" )", new Object[] {});
 	}
 
 }
