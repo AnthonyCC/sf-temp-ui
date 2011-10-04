@@ -532,6 +532,8 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        	paymentMethod.setAbaRouteNumber(StringUtils.leftPad(paymentMethod.getAbaRouteNumber(), 9, "0"));
 	        }
 	        
+            paymentMethod.setCountry("US");
+            
 	        // Check account number	        
             String accountNumber = paymentMethod.getAccountNumber();
             
