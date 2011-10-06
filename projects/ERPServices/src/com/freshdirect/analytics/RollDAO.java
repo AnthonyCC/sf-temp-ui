@@ -57,7 +57,7 @@ public class RollDAO {
 		    try {
 		    	ps = conn.prepareStatement(ROLL_INSERT);
 		    	for (RollEvent rollEvent : roll)  {
-					String id = SequenceGenerator.getNextId(conn, "DLV", "event_detection_SEQUENCE");
+					String id = SequenceGenerator.getNextId(conn, "mis", "event_detection_SEQUENCE");
 					ps.setString(1, id);
 					ps.setString(2, rollEvent.getCustomerId());
 				    ps.setTimestamp(3, new java.sql.Timestamp(rollEvent.getCreateDate().getTime()));
@@ -91,7 +91,7 @@ public class RollDAO {
 		{
 				conn = getConnection();
 				ps = conn.prepareStatement(ROLL_INSERT);
-				String id = SequenceGenerator.getNextId(conn, "DLV", "event_detection_SEQUENCE");
+				String id = SequenceGenerator.getNextId(conn, "mis", "event_detection_SEQUENCE");
 				ps.setString(1, id);
 				ps.setString(2, customerId);
 				Calendar cal = Calendar.getInstance();

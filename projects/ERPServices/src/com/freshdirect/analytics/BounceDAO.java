@@ -69,7 +69,7 @@ public class BounceDAO {
 		    try {
 		    	ps = conn.prepareStatement(BOUNCE_INSERT);
 		    	for (BounceEvent bounceEvent : bounce)  {
-					String id = SequenceGenerator.getNextId(conn, "DLV", "event_detection_SEQUENCE");
+					String id = SequenceGenerator.getNextId(conn, "mis", "event_detection_SEQUENCE");
 					ps.setString(1, id);
 					ps.setString(2, bounceEvent.getCustomerId());
 				    ps.setString(3, bounceEvent.getStatus());
@@ -108,7 +108,7 @@ public class BounceDAO {
 		{
 				conn =getConnection();
 				ps = conn.prepareStatement(BOUNCE_INSERT);
-				String id = SequenceGenerator.getNextId(conn, "DLV", "event_detection_SEQUENCE");
+				String id = SequenceGenerator.getNextId(conn, "mis", "event_detection_SEQUENCE");
 				ps.setString(1, id);
 				ps.setString(2, customerId);
 			    ps.setString(3, status);
