@@ -53,7 +53,6 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.FDZoneNotFoundException;
-import com.freshdirect.fdstore.RoutingUtil;
 import com.freshdirect.fdstore.Util;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
@@ -143,7 +142,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 			deliveryModel = new FDDeliveryTimeslotModel();
 		}
 		FDCartModel cart = user.getShoppingCart();
-		Result result = new Result(deliveryModel);;
+		Result result = new Result(deliveryModel);
 		//check if preReservedSlotId exits
 		checkForPreReservedSlotId(deliveryModel, cart, user, result, timeSlotId);
 		
@@ -242,11 +241,46 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 				(address.getPK()!=null && address.getPK().getId()!=null && address.getPK().getId().equals(deliveryModel.getRsv().getAddressId())) )
 			event.setReservationId(deliveryModel.getRsv().getId());
 		
+		if(FDStoreProperties.isSessionLoggingEnabled())	{
+			logTimeslotSessionInfo(user, timeslotList, result, event);
+		}
+		
+		for (Iterator<FDTimeslotUtil> i = timeslotList.iterator(); i.hasNext();) {
+			
+			FDTimeslotUtil list = i.next();
+			for (Iterator<List<FDTimeslot>> j = list.getTimeslots().iterator(); j.hasNext();) {
+				Collection<FDTimeslot> col = j.next();
+				for (Iterator<FDTimeslot> k = col.iterator(); k.hasNext();) {
+					FDTimeslot timeslot = k.next();
+					if(timeslot.isTimeslotRemoved())
+					{
+						k.remove();
+					}
+				}
+			}
+		}
+		
+		
+		
+		deliveryModel.setZoneId(cart.getDeliveryZone());		
+		
+		//get zone Promotion amount
+		deliveryModel.setZonePromoAmount(PromotionHelper.getDiscount(user, deliveryModel.getZoneId()));
+		//set cart to model
+		deliveryModel.setShoppingCart(cart);
+		
+		return result;
+	}
+	
+	private void logTimeslotSessionInfo(FDUserI user, List<FDTimeslotUtil> timeslotList
+										, Result result, TimeslotEventModel event ) throws FDResourceException {
+		
 		SessionEvent sessionEvent = null;
-		if(user.getSessionEvent()!=null)
+		if(user.getSessionEvent() != null) {
 			sessionEvent = user.getSessionEvent();
-		else
+		} else {
 			sessionEvent = new SessionEvent();
+		}
 		
 		if(("GET".equalsIgnoreCase(request.getMethod()) || "Y".equals(request.getParameter("addressChange"))) && result.isSuccess())
 		{
@@ -295,10 +329,11 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 									
 						}
 						sessionEvent.setPageType((deliveryInfo)?"DELIVERYINFO":"CHECKOUT");
-						if(cart instanceof FDModifyCartModel)
+						if(user.getShoppingCart() != null && user.getShoppingCart() instanceof FDModifyCartModel) {
 							sessionEvent.setPageType("MODIFYORDER");
-						else if(event.getReservationId()!=null)
+						} else if(event.getReservationId()!=null) {
 							sessionEvent.setPageType("RESERVED_SLOT");
+						}
 						sessionEvent.setZone(zone);
 						sessionEvent.setAvailCount(availCount);
 						sessionEvent.setSoldCount(soldCount);
@@ -309,33 +344,6 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 				}
 			}
 		}
-		
-		
-		for (Iterator<FDTimeslotUtil> i = timeslotList.iterator(); i.hasNext();) {
-			
-			FDTimeslotUtil list = i.next();
-			for (Iterator<List<FDTimeslot>> j = list.getTimeslots().iterator(); j.hasNext();) {
-				Collection<FDTimeslot> col = j.next();
-				for (Iterator<FDTimeslot> k = col.iterator(); k.hasNext();) {
-					FDTimeslot timeslot = k.next();
-					if(timeslot.isTimeslotRemoved())
-					{
-						k.remove();
-					}
-				}
-			}
-		}
-		
-		
-		
-		deliveryModel.setZoneId(cart.getDeliveryZone());		
-		
-		//get zone Promotion amount
-		deliveryModel.setZonePromoAmount(PromotionHelper.getDiscount(user, deliveryModel.getZoneId()));
-		//set cart to model
-		deliveryModel.setShoppingCart(cart);
-		
-		return result;
 	}
 
 	private void checkForPreReservedSlotId(FDDeliveryTimeslotModel deliverymodel,FDCartModel cart, FDUserI user, Result result, String timeSlotId) throws FDResourceException{

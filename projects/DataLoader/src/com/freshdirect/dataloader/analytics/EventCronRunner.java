@@ -5,7 +5,6 @@ import java.io.StringWriter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.List;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -14,12 +13,8 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.analytics.CEPService;
-import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.analytics.ejb.EventProcessorHome;
 import com.freshdirect.analytics.ejb.EventProcessorSB;
-import com.freshdirect.dataloader.analytics.ejb.BounceCancelHome;
-import com.freshdirect.dataloader.analytics.ejb.BounceCancelSB;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 

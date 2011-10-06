@@ -22,7 +22,7 @@ public class BounceCancelCronRunner {
 	 * @param args
 	 */
 
-	private final static Category LOGGER = LoggerFactory.getInstance(OrderRateCronRunner.class);
+	private final static Category LOGGER = LoggerFactory.getInstance(BounceCancelCronRunner.class);
 
 	public static void main(String[] args) {
 		

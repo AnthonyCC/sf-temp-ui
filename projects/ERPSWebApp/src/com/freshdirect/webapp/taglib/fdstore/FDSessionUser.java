@@ -180,7 +180,9 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         this.lastRequestDate = startDate.getTime();
         sessionId = event.getSession().getId();
 
-        user.setSessionEvent(new SessionEvent());
+        if(FDStoreProperties.isSessionLoggingEnabled())	{
+        	user.setSessionEvent(new SessionEvent());
+        }
         
         // store cohort ID
         if (user.getCohortName() == null) {
