@@ -722,11 +722,11 @@ public  class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 	}
 	
 	public static String upsOutageList = "select distinct TL.CUSTOMER_ID,  C.USER_ID, CI.FIRST_NAME, CI.LAST_NAME " +  
-											" from DLV.TIMESLOT_event_hdr tl,  " +
+											" from MIS.TIMESLOT_event_hdr tl,  " +
 											      "CUST.CUSTOMER c, " +
 											      "CUST.CUSTOMERINFO ci " +
 											"where TL.EVENTTYPE='GET_TIMESLOT' and TL.RESPONSE_TIME='0' " +
-											"and  (select count(*) from dlv.timeslot_event_dtl te where te.timeslot_log_id=tl.id)=0 "+
+											"and  (select count(*) from mis.timeslot_event_dtl te where te.timeslot_log_id=tl.id)=0 "+
 											"and TL.EVENT_DTM between TO_DATE(?, 'MM/DD/YYYY HH12:MI AM') " + 
 											"and TO_DATE(?, 'MM/DD/YYYY HH12:MI AM') " +
 											"and    tl.customer_id = c.id " +
