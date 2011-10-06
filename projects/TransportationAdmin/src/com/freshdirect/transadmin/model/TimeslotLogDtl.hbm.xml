@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated Nov 18, 2008 3:11:24 PM by Hibernate Tools 3.2.2.GA -->
-<hibernate-mapping schema="dlv">
+<hibernate-mapping schema="mis">
     <class name="com.freshdirect.transadmin.model.TimeslotLogDtl" table="TIMESLOT_EVENT_DTL">
         <composite-id name="id" class="com.freshdirect.transadmin.model.TimeslotLogDtlId">
             <key-property name="timeslotLogId" type="string">

@@ -33,20 +33,20 @@ public class OrderRateDAO {
 			" to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.END_TIME, 'HH:MI:SS AM') , " +
 			"to_char(t.base_date-1, 'MM/DD/YYYY')||' '|| to_char(t.cutoff_time, 'HH:MI:SS AM') ,  t.zone_code, t.capacity";
 
-	private static final String ORDER_RATE_SNAPSHOT_INSERT = "INSERT INTO DLV.ORDER_RATE(CAPACITY, ZONE, CUTOFF, " +
+	private static final String ORDER_RATE_SNAPSHOT_INSERT = "INSERT INTO MIS.ORDER_RATE(CAPACITY, ZONE, CUTOFF, " +
 			"TIMESLOT_START, TIMESLOT_END, ORDER_COUNT,PROJECTED_COUNT, DELIVERY_DATE, SNAPSHOT_TIME, ACTUAL_SO, PROJECT_SO, WEIGHTED_PROJECTED_COUNT, ORDERS_EXPECTED) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	
-	private static final String AVG_ORDER_RATE_QUERY = "select order_count, snapshot_time from ((select order_count, snapshot_time from dlv.order_rate where to_char(snapshot_time,'MM/DD/YYYY HH:MI:SS AM') " +
-			">=  ? and to_char(timeslot_start,'MM/DD/YYYY HH:MI:SS AM') = ? and to_char(timeslot_end,'MM/DD/YYYY HH:MI:SS AM')  = ? and zone = ?) union (select order_count,snapshot_time from dlv.order_rate where to_char(snapshot_time,'MM/DD/YYYY HH:MI:SS AM') " +
+	private static final String AVG_ORDER_RATE_QUERY = "select order_count, snapshot_time from ((select order_count, snapshot_time from MIS.order_rate where to_char(snapshot_time,'MM/DD/YYYY HH:MI:SS AM') " +
+			">=  ? and to_char(timeslot_start,'MM/DD/YYYY HH:MI:SS AM') = ? and to_char(timeslot_end,'MM/DD/YYYY HH:MI:SS AM')  = ? and zone = ?) union (select order_count,snapshot_time from MIS.order_rate where to_char(snapshot_time,'MM/DD/YYYY HH:MI:SS AM') " +
 			">=  ? and to_char(timeslot_start,'MM/DD/YYYY HH:MI:SS AM')  = ? and to_char(timeslot_end,'MM/DD/YYYY HH:MI:SS AM')  = ? and zone = ?))";
 	
 	private static final String CURRENT_ORDER_COUNT = "select sum(o.order_count) oCount, o.timeslot_start, o.timeslot_end, o.zone  " +
-		"from dlv.order_rate o where delivery_date >= ? group by o.timeslot_start, o.timeslot_end, o.zone";
+		"from MIS.order_rate o where delivery_date >= ? group by o.timeslot_start, o.timeslot_end, o.zone";
     
-	private static final String HOLIDAY_QUERY = "select sum(order_count) as oCount, delivery_date from dlv.order_rate group by delivery_date having sum(order_count) = 0";
+	private static final String HOLIDAY_QUERY = "select sum(order_count) as oCount, delivery_date from MIS.order_rate group by delivery_date having sum(order_count) = 0";
 
 	private static final String CAPACITY_QUERY = "select capacity,order_count, " +
-			"delivery_date, timeslot_start, timeslot_end, zone, snapshot_time from dlv.order_rate where delivery_date >= ?";
+			"delivery_date, timeslot_start, timeslot_end, zone, snapshot_time from MIS.order_rate where delivery_date >= ?";
 	
 
 

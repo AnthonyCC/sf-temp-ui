@@ -24,14 +24,14 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class TimeslotEventDAO {
 
 	private static final Category LOGGER = LoggerFactory.getInstance(TimeslotEventDAO.class);
-	private static final String TIMESLOT_LOG_INSERT="INSERT INTO DLV.TIMESLOT_EVENT_HDR (ID, EVENT_DTM,RESERVATION_ID, " +
+	private static final String TIMESLOT_LOG_INSERT="INSERT INTO MIS.TIMESLOT_EVENT_HDR (ID, EVENT_DTM,RESERVATION_ID, " +
 			"ORDER_ID, CUSTOMER_ID, EVENTTYPE,RESPONSE_TIME,COMMENTS,TransactionSource,DlvPassApplied,DeliveryCharge,isDeliveryChargeWaived,zonectactive) " +
 			"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	
-	private static final String TIMESLOT_LOG_DTL_INSERT="INSERT INTO DLV.TIMESLOT_EVENT_DTL (TIMESLOT_LOG_ID, BASE_DATE, START_TIME" +
+	private static final String TIMESLOT_LOG_DTL_INSERT="INSERT INTO MIS.TIMESLOT_EVENT_DTL (TIMESLOT_LOG_ID, BASE_DATE, START_TIME" +
 			", END_TIME, ZONE_CODE) VALUES (?,?,?,?,?)";
 	
-	private static final String TIMESLOT_LOG_DTL_WITH_COST_INSERT="INSERT INTO DLV.TIMESLOT_EVENT_DTL (TIMESLOT_LOG_ID, BASE_DATE, START_TIME, " +
+	private static final String TIMESLOT_LOG_DTL_WITH_COST_INSERT="INSERT INTO MIS.TIMESLOT_EVENT_DTL (TIMESLOT_LOG_ID, BASE_DATE, START_TIME, " +
 			"END_TIME, ADD_DISTANCE, ADD_RUNTIME, ADD_STOPCOST, CAPACITY, COSTPERMILE, FIXED_RT_COST, MAXRUNTIME,"+
 	"OT_HOURLY_WAGE,PERCENT_AVAIL,PREF_RUNTIME , REG_HOURLY_WAGE, REG_WAGE_SECS, ROUTE_ID ,STOP_SEQ ,TOTAL_DISTANCE, TOTAL_PU_QTY" +
 	", TOTAL_QTY, TOTAL_ROUTE_COST , TOTAL_RUNTIME ,  TOTAL_SVC_TIME,TOTAL_TRAVEL_TIME,  TOTAL_WAIT_TIME,  IS_AVAIL " +
@@ -40,21 +40,21 @@ public class TimeslotEventDAO {
 	"WAVE_STARTTIME,UNAVAILABILITY_REASON,WAVE_ORDERS_TAKEN,TOTAL_QUANTITIES, NEWROUTE, CAPACITIES, GEORESTRICTED)" +
 	" VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		
-	private static final String TIMESLOT_EVENT_DETAIL_QRY = "SELECT * FROM DLV.TIMESLOT_EVENT_DTL WHERE TIMESLOT_LOG_ID = ?";
+	private static final String TIMESLOT_EVENT_DETAIL_QRY = "SELECT * FROM MIS.TIMESLOT_EVENT_DTL WHERE TIMESLOT_LOG_ID = ?";
 	
-	private static final String EVENTS_QRY = "select * from dlv.session_event s where s.logout_time between ? and ?  and last_get_timeslot is not null";
+	private static final String EVENTS_QRY = "select * from MIS.session_event s where s.logout_time between ? and ?  and last_get_timeslot is not null";
 	
-	private static final String TIMESLOT_EVENTS_CUSTOMER_QRY = " select * from dlv.timeslot_event_hdr where id in  (select max(to_number(id)) from dlv.timeslot_event_hdr where event_dtm" +
+	private static final String TIMESLOT_EVENTS_CUSTOMER_QRY = " select * from MIS.timeslot_event_hdr where id in  (select max(to_number(id)) from MIS.timeslot_event_hdr where event_dtm" +
 	" between to_date(?,  'MM-DD-YYYY HH12:MI:SS AM') and to_date(?,  'MM-DD-YYYY HH12:MI:SS AM') and customer_id = ? and " +
 	"transactionsource = 'WEB' group by eventtype)";
 	
-	private static final String ORDER_EVENTS_QRY = "SELECT S.ID, S.CUSTOMER_ID, S.CROMOD_DATE, SA.REQUESTED_DATE FROM cust.sale s, cust.salesaction sa, DLV.SESSION_EVENT se" +
+	private static final String ORDER_EVENTS_QRY = "SELECT S.ID, S.CUSTOMER_ID, S.CROMOD_DATE, SA.REQUESTED_DATE FROM cust.sale s, cust.salesaction sa, MIS.SESSION_EVENT se" +
 			" WHERE s.ID=sa.SALE_ID AND se.CUSTOMER_ID = s.CUSTOMER_ID AND se.LOGOUT_TIME BETWEEN ? AND ? " +
 			" AND s.CUSTOMER_ID=sa.CUSTOMER_ID AND s.CROMOD_DATE=sa.ACTION_DATE AND s.CROMOD_DATE BETWEEN se.LOGIN_TIME AND se.LOGOUT_TIME " +
 			"AND sa.ACTION_TYPE IN ('CRO','MOD') AND sa.REQUESTED_DATE > TRUNC(SYSDATE)" +
 			" AND s.type='REG'";
 	
-	private static final String CANCEL_RESERVATION_EVENTS_QRY = "SELECT H1.*, D1.ZONE_CODE, D1.CUTOFF, D1.BASE_DATE, D1.TIMESLOT_LOG_ID FROM DLV.TIMESLOT_EVENT_HDR H1, DLV.TIMESLOT_EVENT_DTL D1 WHERE" +
+	private static final String CANCEL_RESERVATION_EVENTS_QRY = "SELECT H1.*, D1.ZONE_CODE, D1.CUTOFF, D1.BASE_DATE, D1.TIMESLOT_LOG_ID FROM MIS.TIMESLOT_EVENT_HDR H1, MIS.TIMESLOT_EVENT_DTL D1 WHERE" +
 			" D1.TIMESLOT_LOG_ID = H1.ID AND H1.EVENT_DTM BETWEEN SYSDATE-1/48 AND SYSDATE AND H1.TRANSACTIONSOURCE = 'SYS' AND " +
 			"H1.EVENTTYPE = 'CANCEL_TIMESLOT'";
 	
