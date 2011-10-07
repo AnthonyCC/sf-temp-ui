@@ -274,7 +274,8 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 	
 	private void logTimeslotSessionInfo(FDUserI user, List<FDTimeslotUtil> timeslotList
 										, Result result, TimeslotEventModel event ) throws FDResourceException {
-		
+		try
+		{
 		SessionEvent sessionEvent = null;
 		if(user.getSessionEvent() != null) {
 			sessionEvent = user.getSessionEvent();
@@ -343,6 +344,12 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 					
 				}
 			}
+		}
+		}
+		catch(Exception e)
+		{
+			LOGGER.info("Exception while logging the timeslots session info");
+			e.printStackTrace();
 		}
 	}
 

@@ -203,6 +203,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         this.saveImpressions();
         if(FDStoreProperties.isSessionLoggingEnabled())
 		{
+        	try
+        	{
         	if(user!=null && user.getIdentity()!=null && user.getIdentity().getErpCustomerPK()!=null)
 			{
         		Date loginTime = null;
@@ -217,6 +219,12 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	        		sessionEvent.setLogoutTime(new Date());
 	        		EventLog.getInstance().logEvent(sessionEvent);
         		}
+        	}
+        	}
+        	catch(Exception e)
+        	{
+        		  LOGGER.info("Exception while logging the session event");
+        		  e.printStackTrace();
         	}
 		}
         if(FDStoreProperties.isRealTimeAnalysisEnabled())
