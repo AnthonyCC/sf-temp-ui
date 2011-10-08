@@ -125,10 +125,13 @@ public class TimeslotPageUtil {
 		StringBuffer sb = new StringBuffer();
 
 		sb.append(com.freshdirect.webapp.util.TimeslotPageUtil.formatCutoffTime(cutoffTime));
-		if(cutoffTimeMinute != 0){
+		if(cutoffTimeMinute != 0) {
 			String minute = Integer.toString(cutoffTimeMinute);
-			if(minute.length()== 1)
-				sb.append(":0").append(minute);
+			sb.append(":");
+			if(cutoffTimeMinute <  10) {
+				sb.append("0");
+			}
+			sb.append(minute);
 		}
 		sb.append((cutoffTimeHour >= DateUtil.MORNING_END ? "pm" : "am"));
 		
