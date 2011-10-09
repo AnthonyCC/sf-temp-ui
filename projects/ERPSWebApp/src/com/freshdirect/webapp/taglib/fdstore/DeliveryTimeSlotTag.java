@@ -300,48 +300,58 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 						{
 							nextDay  = DateUtil.addDays(nextDay, 1);
 							tempSlots1 = timeslots.getTimeslotsForDate(nextDay);
-						}
-						if(tempSlots1!=null && tempSlots1.size()>0 && 
-								DateUtil.addDays(timeslots.getMaxCutoffForDate(tempSlots1.get(0).getZoneCode(), nextDay),-1).before(DateUtil.getCurrentTime()) 
-							&& DateUtil.getCurrentTime().before(DateUtil.getEOD()))
-						{
-						tempSlots = tempSlots1;
-						
-						}
-						
-						Iterator<FDTimeslot> slotIterator = tempSlots.iterator();
-						while(slotIterator.hasNext())
-						{
-							FDTimeslot slot = slotIterator.next();
-							if("A".equals(slot.getStoreFrontAvailable()))
-								availCount++;
-							else if ("S".equals(slot.getStoreFrontAvailable()))
-								soldCount++;
-							else if ("H".equals(slot.getStoreFrontAvailable()))
-								hiddenCount++;
-							zone = slot.getZoneCode();
-							if(DateUtil.getCurrentTime().before(slot.getCutoffDateTime()))
+							if(tempSlots1!=null && tempSlots1.size()>0 )
 							{
-								if(sessionEvent.getCutOff()!=null && sessionEvent.getCutOff().after(slot.getCutoffDateTime()))
-									sessionEvent.setCutOff(slot.getCutoffDateTime());
-								else if (sessionEvent.getCutOff()==null)
-									sessionEvent.setCutOff(slot.getCutoffDateTime());
+								Date maxCutoff = null;
+								for ( FDTimeslot slot1 : tempSlots1 ) {
+									if(maxCutoff==null)
+										maxCutoff = slot1.getCutoffDateTime();
+									else if(slot1.getCutoffDateTime().compareTo(maxCutoff)>0)
+										maxCutoff = slot1.getCutoffDateTime();
+								}
+								if(maxCutoff!=null && DateUtil.addDays(maxCutoff,-1).before(DateUtil.getCurrentTime()) 
+										&& DateUtil.getCurrentTime().before(DateUtil.getEOD()))
+								{
+								tempSlots = tempSlots1;
+								}
 							}
-									
 						}
-						sessionEvent.setPageType((deliveryInfo)?"DELIVERYINFO":"CHECKOUT");
-						if(user.getShoppingCart() != null && user.getShoppingCart() instanceof FDModifyCartModel) {
-							sessionEvent.setPageType("MODIFYORDER");
-						} else if(event.getReservationId()!=null) {
-							sessionEvent.setPageType("RESERVED_SLOT");
+						if(tempSlots!=null && tempSlots.size()>0)
+						{
+							Iterator<FDTimeslot> slotIterator = tempSlots.iterator();
+							while(slotIterator.hasNext())
+							{
+								FDTimeslot slot = slotIterator.next();
+								if("A".equals(slot.getStoreFrontAvailable()))
+									availCount++;
+								else if ("S".equals(slot.getStoreFrontAvailable()))
+									soldCount++;
+								else if ("H".equals(slot.getStoreFrontAvailable()))
+									hiddenCount++;
+								zone = slot.getZoneCode();
+								if(DateUtil.getCurrentTime().before(slot.getCutoffDateTime()))
+								{
+									if(sessionEvent.getCutOff()!=null && sessionEvent.getCutOff().after(slot.getCutoffDateTime()))
+										sessionEvent.setCutOff(slot.getCutoffDateTime());
+									else if (sessionEvent.getCutOff()==null)
+										sessionEvent.setCutOff(slot.getCutoffDateTime());
+								}
+										
+							}
+						
+							sessionEvent.setPageType((deliveryInfo)?"DELIVERYINFO":"CHECKOUT");
+							if(user.getShoppingCart() != null && user.getShoppingCart() instanceof FDModifyCartModel) {
+								sessionEvent.setPageType("MODIFYORDER");
+							} else if(event.getReservationId()!=null) {
+								sessionEvent.setPageType("RESERVED_SLOT");
+							}
+							sessionEvent.setZone(zone);
+							sessionEvent.setAvailCount(availCount);
+							sessionEvent.setSoldCount(soldCount);
+							sessionEvent.setHiddenCount(hiddenCount);
+							user.setSessionEvent(sessionEvent);
 						}
-						sessionEvent.setZone(zone);
-						sessionEvent.setAvailCount(availCount);
-						sessionEvent.setSoldCount(soldCount);
-						sessionEvent.setHiddenCount(hiddenCount);
-						user.setSessionEvent(sessionEvent);
-					}
-					
+				}
 				}
 			}
 		}
