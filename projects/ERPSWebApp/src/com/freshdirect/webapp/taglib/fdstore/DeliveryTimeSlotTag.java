@@ -276,15 +276,17 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 										, Result result, TimeslotEventModel event ) throws FDResourceException {
 		try
 		{
-		SessionEvent sessionEvent = null;
-		if(user.getSessionEvent() != null) {
-			sessionEvent = user.getSessionEvent();
-		} else {
-			sessionEvent = new SessionEvent();
-		}
+		
 		
 		if(("GET".equalsIgnoreCase(request.getMethod()) || "Y".equals(request.getParameter("addressChange"))) && result.isSuccess())
 		{
+			SessionEvent sessionEvent = null;
+			if(user.getSessionEvent() != null) {
+				sessionEvent = user.getSessionEvent();
+			} else {
+				sessionEvent = new SessionEvent();
+			}
+			
 			for (FDTimeslotUtil timeslots : timeslotList) {
 				if(timeslots != null) 
 				{
