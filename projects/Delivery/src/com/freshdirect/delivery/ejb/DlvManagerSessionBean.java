@@ -432,7 +432,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		try
 		{
 			conn = getConnection();
-			String id = SequenceGenerator.getNextId(conn, "DLV", "TIMESLOT_LOG_SEQUENCE");
+			String id = SequenceGenerator.getNextId(conn, "MIS", "TIMESLOT_LOG_SEQUENCE");
 			event.setId(id);
 			if(reservation!=null)
 				event.setReservationId(reservation.getId());
