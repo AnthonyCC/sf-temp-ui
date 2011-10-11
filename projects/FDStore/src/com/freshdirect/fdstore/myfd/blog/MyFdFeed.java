@@ -1,13 +1,9 @@
 package com.freshdirect.fdstore.myfd.blog;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -19,6 +15,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.MyFD;
 import com.freshdirect.fdstore.content.StoreModel;
@@ -62,6 +59,9 @@ public class MyFdFeed implements Serializable, Iterable<MyFdPost> {
 				blogURL = null;
 				blogEntryCount = 3;
 			}
+			String propUrl = FDStoreProperties.getMyfdBlogUrl();
+			if (propUrl != null && !propUrl.trim().isEmpty())
+				blogURL = propUrl;
 			MyFdFeed feed = new MyFdFeed(blogURL, blogEntryCount);
 			LOG.info("(re)loading feed completed");
 			return feed;

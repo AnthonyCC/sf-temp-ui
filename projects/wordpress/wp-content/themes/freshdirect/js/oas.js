@@ -4,8 +4,8 @@ if (document.location.href.substring(0, 5) == 'https') {
 }
 
 // OAS_url = OAS_protocol + 'nyc1stam01.nyc1.freshdirect.com/RealMedia/ads/';
-OAS_url = OAS_protocol + OasConfig.serverDomain +'/RealMedia/ads/'; // promo.freshdirect.com 
-OAS_sitepage = OasConfig.sitePage; //'blog.freshdirect.com';
+OAS_url = OAS_protocol + 'promo.freshdirect.com/RealMedia/ads/';
+OAS_sitepage = 'blog.freshdirect.com';
 // OAS_sitepage = 'www.freshdirect.com';
 OAS_listpos = 'BlogSideNav';
 // OAS_listpos = 'HPLeftTop';

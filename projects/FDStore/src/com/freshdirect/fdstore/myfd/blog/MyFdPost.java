@@ -8,19 +8,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.freshdirect.framework.util.log.LoggerFactory;
-
 public class MyFdPost implements Serializable {
 	private static final long serialVersionUID = -3164510601369737759L;
 	
-	private static final Logger LOGGER = LoggerFactory.getInstance(MyFdPost.class);
 	private static final String WP_PRINT = "?print=true";
 
 	private static final int MAX_CHAR = 0xff;
@@ -67,9 +63,7 @@ public class MyFdPost implements Serializable {
 	private String postLink;
 	private String printLink;
 	private String emailLink;
-	private String commentsLink;
-	private int commentNum;
-	
+
 	private String categoryLink;
 	private ArrayList<String> tagLinks;
 
@@ -101,14 +95,7 @@ public class MyFdPost implements Serializable {
 		this.postDayLink = postElement.getElementsByTagName("fd_post_day_link").item(0).getTextContent();
 		this.categoryLink = postElement.getElementsByTagName("fd_category_link").item(0).getTextContent();
 		this.postLink = postElement.getElementsByTagName("link").item(0).getTextContent();
-		this.commentsLink = postElement.getElementsByTagName("comments").item(0).getTextContent(); 
-
-		try {
-			this.commentNum = Integer.parseInt(postElement.getElementsByTagName("slash:comments").item(0).getTextContent());
-		} catch (NumberFormatException e){
-			LOGGER.error("Comment number parse failed",e);
-		}
-
+		
 		this.printLink = postLink + WP_PRINT;
 		
 		NodeList tagLinkNodes = postElement.getElementsByTagName("fd_tag_link");
@@ -267,14 +254,6 @@ public class MyFdPost implements Serializable {
 		return emailLink;
 	}
 
-	public String getCommentsLink() {
-		return commentsLink;
-	}
-	
-	public int getCommentNum() {
-		return commentNum;
-	}
-	
 	public String getMedia() {
 		return media;
 	}

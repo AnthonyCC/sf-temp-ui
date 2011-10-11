@@ -410,6 +410,7 @@ public class FDStoreProperties {
     private final static String PROP_CRM_SECURITY_SKIP_FOLDERS = "crm.security.skip.folders";
     private final static String PROP_CRM_AGENTS_CACHE_REFRESH_PERIOD = "crm.agents.cache.refresh.period";
     private final static String MYFD_ENABLED = "myfd.enabled";
+    private final static String MYFD_BLOG_URL = "myfd.blogUrl";
     private static final String MYFD_POLLDADDY_API_KEY = "myfd.pollDaddy.apiKey";
     private static final String PROP_CLICK2CALL_CALL_BACL_URL = "fdstore.c2c.callback.url";
 
@@ -885,7 +886,7 @@ public class FDStoreProperties {
         defaults.put(PROP_CLICK2CALL_CALL_BACL_URL,
             "https://cim1.custserv.ca/system/web/view/live/templates/freshdirect/callbackICMFrame.html");
 
-        defaults.put(MYFD_ENABLED, "false");
+        defaults.put(MYFD_ENABLED, "true");
         //APPDEV-1215 Sustainable Seafood
         defaults.put(PROP_SEAFOODSUSTAIN_ENABLED, "false");
 
@@ -2234,6 +2235,10 @@ public class FDStoreProperties {
 
     public static boolean isMyfdEnabled() {
         return Boolean.parseBoolean(get(MYFD_ENABLED));
+    }
+    
+    public static String getMyfdBlogUrl() {
+    	return get(MYFD_BLOG_URL);
     }
 
     public static String getMyFdPollDaddyApiKey() {

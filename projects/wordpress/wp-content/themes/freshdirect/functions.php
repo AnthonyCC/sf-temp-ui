@@ -38,16 +38,6 @@
  * @since Twenty Ten 1.0
  */
 
-add_action( 'admin_head', 'fd_admin_head' ); 
-show_admin_bar( false ); 
-
-function fd_admin_head() {
-	if ( ! current_user_can('manage_options') ) {	
-		wp_redirect(get_option('siteurl'),302);
-	}
-}
-
-
 /**
  * Set the content width based on the theme's design and stylesheet.
  *
@@ -311,9 +301,10 @@ function twentyten_comment( $comment, $args, $depth ) {
 	switch ( $comment->comment_type ) :
 		case '' :
 	?>
-	<li <?php comment_class(); ?> id="li-comment-<?php comment_ID(); ?>" style="zoom:1;">
-		<?php echo get_avatar( $comment, 40 ); ?><div id="comment-<?php comment_ID(); ?>">
+	<li <?php comment_class(); ?> id="li-comment-<?php comment_ID(); ?>">
+		<div id="comment-<?php comment_ID(); ?>">
 		<div class="comment-author vcard">
+			<?php echo get_avatar( $comment, 40 ); ?>
 			<?php printf( __( '%s <span class="says">says:</span>', 'twentyten' ), sprintf( '<cite class="fn">%s</cite>', get_comment_author_link() ) ); ?>
 		</div><!-- .comment-author .vcard -->
 		<?php if ( $comment->comment_approved == '0' ) : ?>
@@ -489,61 +480,4 @@ function twentyten_posted_in() {
 		the_title_attribute( 'echo=0' )
 	);
 }
-endif;
-
-if ( ! function_exists( 'fd_comments_popup_link' ) ) :
-
-/**
- * Based on comments_popup_script, but doesn't check pings_open()
- */
-function fd_comments_popup_link( $zero = false, $one = false, $more = false, $css_class = '', $none = false ) {
-	global $wpcommentspopupfile, $wpcommentsjavascript;
-
-	$id = get_the_ID();
-
-	if ( false === $zero ) $zero = __( 'No Comments' );
-	if ( false === $one ) $one = __( '1 Comment' );
-	if ( false === $more ) $more = __( '% Comments' );
-	if ( false === $none ) $none = __( 'Comments are closed' );
-
-	$number = get_comments_number( $id );
-
-	if ( 0 == $number && !comments_open()  ) {
-		echo '<span' . ((!empty($css_class)) ? ' class="' . esc_attr( $css_class ) . '"' : '') . '>' . $none . '</span>';
-		return;
-	}
-
-	if ( post_password_required() ) {
-		echo __('Enter your password to view comments.');
-		return;
-	}
-
-	echo '<a href="';
-	if ( $wpcommentsjavascript ) {
-		if ( empty( $wpcommentspopupfile ) )
-			$home = home_url();
-		else
-			$home = get_option('siteurl');
-		echo $home . '/' . $wpcommentspopupfile . '?comments_popup=' . $id;
-		echo '" onclick="wpopen(this.href); return false"';
-	} else { // if comments_popup_script() is not in the template, display simple comment link
-		if ( 0 == $number )
-			echo get_permalink() . '#respond';
-		else
-			comments_link();
-		echo '"';
-	}
-
-	if ( !empty( $css_class ) ) {
-		echo ' class="'.$css_class.'" ';
-	}
-	$title = the_title_attribute( array('echo' => 0 ) );
-
-	echo apply_filters( 'comments_popup_link_attributes', '' );
-
-	echo ' title="' . esc_attr( sprintf( __('Comment on %s'), $title ) ) . '">';
-	comments_number( $zero, $one, $more );
-	echo '</a>';
-}
-
 endif;

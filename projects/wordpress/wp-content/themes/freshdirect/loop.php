@@ -64,7 +64,6 @@
 					?>
 						in <a href="<?php echo get_category_link($categories[0]->cat_ID)?>"><?php echo $cat_name;?></a>
 					<?php endif; ?>
-					- <span class="comments-link"><?php fd_comments_popup_link( __( 'Leave a comment', 'twentyten' ), __( '1 Comment', 'twentyten' ), __( '% Comments', 'twentyten' ) ); ?></span>
 				</div>
 				
 				<div class="myfd-linkbar">
@@ -104,7 +103,6 @@
 				<?php if ( count( $categories )  && $categories[0]->slug != "uncategorized" ) : $cat_name = $categories[0]->description or $categories[0]->name; $cat_id = $categories[0]->ID; ?>
 					in <a href="<?php echo get_category_link($categories[0]->cat_ID)?>"><?php echo $cat_name;?></a>
 				<?php endif; ?>
-				- <span class="comments-link"><?php fd_comments_popup_link( __( 'Leave a comment', 'twentyten' ), __( '1 Comment', 'twentyten' ), __( '% Comments', 'twentyten' ) ); ?></span>
 			</div>
 		</div>
 	<?php endif; // This was the if statement that broke the loop into three parts based on categories. ?>

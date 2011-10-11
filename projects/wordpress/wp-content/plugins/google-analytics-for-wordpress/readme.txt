@@ -3,8 +3,8 @@ Contributors: joostdevalk
 Donate link: http://yoast.com/donate/
 Tags: analytics, google analytics, statistics, tracking, stats, google
 Requires at least: 2.8
-Tested up to: 3.2
-Stable tag: 4.1.3
+Tested up to: 3.1
+Stable tag: 4.0.10
 
 Track your WordPress site easily and with lots of metadata: views per author & category, automatic tracking of outbound clicks and pageviews.
 
@@ -19,13 +19,12 @@ http://www.youtube.com/watch?v=tnUXzbvXxSQ&hd=1
 Full list of features:
 
 * Simple installation through integration with Google Analytics API: authenticate, select the site you want to track and you're done.
-* This plugin uses the asynchronous Google Analytics tracking code, the fastest and most reliable tracking code Google Analytics offers.
+* This plugin uses the asynchronous tracking code, the fastest and most reliable tracking code Google Analytics offers.
 * Option to manually place the tracking code in another location.
-* Automatic Google Analytics site speed tracking.
 * Outbound link & downloads tracking.
 	* Configurable options to track outbound links either as pageviews.
-	* Option to track just downloads as pageviews in Google Analytics.
-* Allows usage of custom variables in Google Analytics to track meta data on pages. Support for the following custom variables:
+	* Option to track just downloads as pageviews.
+* Allows usage of custom variables to track meta data on pages. Support for the following custom variables:
 	* Author
 	* Single category and / or multiple categories
 	* Post type (especially useful if you use custom post types)
@@ -33,12 +32,12 @@ Full list of features:
 	* Publication Year
 	* Tags
 * Possibility to ignore any user level and up, so all editors and higher for instance.
-* Easily connect your Google AdSense and Google Analytics accounts.
-* Option to tag links with Google Analytics campaign tracking, with the option to use hashes (#).
+* Easily connect your AdSense and Analytics accounts.
+* Option to tag links with campaign tracking, with the option to use hashes (#).
 * Option anonymize IP's, for use in countries like Germany.
-* Full [debug mode](http://yoast.com/google-analytics-debug-mode/), including Firebug lite and ga_debug.js for debugging Google Analytics issues.
+* Full [debug mode](http://yoast.com/google-analytics-debug-mode/), including Firebug lite and ga_debug.js for debugging Analytics issues.
 * Allow local hosting of ga.js file.
-* Tracking of search engines not included in Google Analytics default tracking.
+* Tracking non default search engines
 * Tracking of login and registration forms.
 
 Other interesting stuff:
@@ -47,6 +46,8 @@ Other interesting stuff:
 * Want to increase traffic to your WordPress blog? Check out the [WordPress SEO](http://yoast.com/articles/wordpress-seo/) Guide!
 * Check out the authors [WordPress Hosting](http://yoast.com/articles/wordpress-hosting/) experience. Good hosting is hard to come by, but it doesn't have to be expensive, Joost tells you why!
 * If you've still not seen enough, or you'd rather listen than read, check out the [WordPress Podcast](http://wp-community.org/), hosted by the author of this plugin and Frederick Townes, the creator of [W3 Total Cache](http://wordpress.org/extend/plugins/w3-total-cache/).
+
+<meta name="google-site-verification" content="JfWAcXeAyBe5IPMBFjYLi8OX5K_XFwz3sjSasjsoULs" />
 
 == Installation ==
 
@@ -59,46 +60,6 @@ This section describes how to install the plugin and get it working.
 
 == Changelog ==
 
-= 4.1.3 =
-
-* Security fix: badly crafted comments could lead to insertion of "weird" links into comments. They'd have to pass your moderation, but still... Immediate update advised. Props to [David Whitehouse](http://www.david-whitehouse.org/) and [James Slater](http://james.slaterspage.com/) for finding it.
-
-= 4.1.2 =
-
-* Fixed bug with custom SE tracking introduced in 4.1.1.
-
-= 4.1.1 =
-
-* Made plugin admin work with jQuery 1.6 and jQuery 1.4.
-* Added contextual help.
-* Improved cache flushing when using W3TC.
-* Fixed various minor other notices.
-* First stab at getting ready for full i18n compatibility.
-
-= 4.1 =
-
-* Added:
-	* Google Site Speed tracking, turned it on by default.
-	
-* Fixed:
-	* Custom code now properly removes slashes.
-	
-= 4.0.12 =
-
-* Fixed:
-	* Tons of notices in backend and front end when no settings were saved yet.
-	* Set proper defaults for all variables.
-	* Notice for unset categories array on custom post types.
-	* Notice for unset variable.
-	* Error when user is not logged in in certain corner cases.
-	* Bug where $options was used but never loaded for blogroll links.
-	
-= 4.0.11 =
-
-* Bugs fixed:
-	* You can now disable comment form tracking properly.
-	* Removed charset property from script tags to allow validation with HTML5 doctype.
-	
 = 4.0.10 =
 
 * Known issues:
@@ -321,9 +282,3 @@ Because that's where it belongs. It makes the page load faster (yes, faster, due
 3. Screenshot of the link tracking panel.
 4. Screenshot of the advanced settings panel.
 5. Screenshot of the debugging mode in action.
-
-== Upgrade Notice ==
-
-= 4.1.3 =
-
-Security fix, please update ASAP. Old version is susceptible to link insertion.

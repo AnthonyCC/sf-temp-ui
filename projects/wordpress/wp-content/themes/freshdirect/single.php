@@ -63,12 +63,12 @@ get_header(); ?>
 						$tags_list = get_the_tag_list( 'Tags: <span class="link">', '</span> <span class="link">', '</span>' );
 						if ( $tags_list ): ?>
 							<?php echo $tags_list?>
-						<?php endif?>
-										
+						<?php endif?>					
 				</div>
+						
 			</div>
 		</div>
-<?php comments_template( '', true ); ?>		
+		
 <?php endwhile; // end of the loop. ?>
 		<div class="navigation">
 			<?php if ( count( $categories ) ) : $cat_name = $categories[0]->description or $categories[0]->name; $cat_id = $categories[0]->ID; ?>
