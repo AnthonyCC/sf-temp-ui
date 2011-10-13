@@ -241,7 +241,7 @@ Collection addresses = FDCustomerManager.getShipToAddresses(user.getIdentity());
 				
 				<fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>" id='errorMsg'> <span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
 			</tr>
-			<TR><TD>&nbsp;</TD><TD>&nbsp;&nbsp;CVV code will not be stored and only used for validation purposes, <a href="javascript:popup('/about/cvv.jsp','large')">locate this code</b></a></TD>
+			<TR><TD>&nbsp;</TD><TD>&nbsp;&nbsp;CVV code will not be stored and only used for validation purposes, <a href="javascript:popup('/shared/cvv.jsp','large')">locate this code</b></a></TD>
 			</TR>
 			<tr>
 <%}%>			
