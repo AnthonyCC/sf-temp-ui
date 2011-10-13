@@ -195,6 +195,12 @@ public class RoutingDataDecoder {
 						building.setGeographicLocation(_geoLocModel);
 						deliveryInfo = new DeliveryModel();
 						deliveryInfo.setDeliveryLocation(_locModel);
+						
+						if(_refStop.getTw1OpenTime() != null)
+							deliveryInfo.setDeliveryStartTime(_refStop.getTw1OpenTime().getAsCalendar().getTime());
+						if(_refStop.getTw1CloseTime() != null)
+							deliveryInfo.setDeliveryEndTime(_refStop.getTw1CloseTime().getAsCalendar().getTime());
+						
 						_stop.setDeliveryInfo(deliveryInfo);
 						
 						//_stop.setStopArrivalTime(Calendar.getInstance().getTime());
