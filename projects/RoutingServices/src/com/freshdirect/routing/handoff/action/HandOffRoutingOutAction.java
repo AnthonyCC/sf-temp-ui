@@ -305,20 +305,6 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		}		
 	}
 	
-	protected class StopComparator implements Comparator<IRoutingStopModel> {		
-		
-		public int compare(IRoutingStopModel obj1, IRoutingStopModel obj2){
-			if(obj1!=null && obj2!=null 
-					&& obj1.getDeliveryInfo()!=null && obj2.getDeliveryInfo()!=null
-					&& obj1.getDeliveryInfo().getDeliveryStartTime()!=null && obj2.getDeliveryInfo().getDeliveryStartTime()!=null  )
-			{
-				return obj1.getDeliveryInfo().getDeliveryStartTime().compareTo(obj2.getDeliveryInfo().getDeliveryStartTime());
-			}
-			return 0;
-		}	
-		
-	}
-
 	@Override
 	public EnumHandOffBatchStatus getFailureStatus() {
 		// TODO Auto-generated method stub
@@ -421,13 +407,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 				
 				result.get(areaEntry.getKey()).add(newRoute);
 				
-				List orders = route.getOrders();
-				
-				//sort by delivery window only if the property is set
-				if(RoutingServicesProperties.sortStopbyWindow())
-					Collections.sort(orders, new StopComparator());
-				
-				Iterator itr = orders.iterator();
+				Iterator itr = route.getOrders().iterator();
 				IRoutingStopModel _order = null;
 				
 				int intStopCount = 0;

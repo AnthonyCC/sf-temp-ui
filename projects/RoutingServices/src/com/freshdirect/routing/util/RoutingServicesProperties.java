@@ -132,8 +132,6 @@ public class RoutingServicesProperties {
 	
 	private final static String MAX_ORDERSIZE_FOR_DEPOTZONE = "ordersize.depotzone.max";
 	
-	private final static String PROP_HANDOFF_SORTSTOPBYWINDOW		= "routingservices.handoff.sortstopbywindow";
-	
 	private static final Category LOGGER = LoggerFactory.getInstance( RoutingServicesProperties.class );
 	
 	static {
@@ -208,7 +206,6 @@ public class RoutingServicesProperties {
 		defaults.put(PROP_TRUCKASSIGNMENT_SOLVERTIMEOUT,Long.toString(120000l));
 	    defaults.put(PROP_TRUCK_PREFERENCESIZE, "5");
 	    defaults.put(MAX_ORDERSIZE_FOR_DEPOTZONE, "16");
-	    defaults.put(PROP_HANDOFF_SORTSTOPBYWINDOW, "true");
 
 		refresh();		
 	}
@@ -497,7 +494,5 @@ public class RoutingServicesProperties {
 		return getDoubleVal(get(MAX_ORDERSIZE_FOR_DEPOTZONE));
 	}
 	
-	 public static boolean sortStopbyWindow() {
-	        return Boolean.valueOf(get(PROP_HANDOFF_SORTSTOPBYWINDOW));
-	    }
+	
 }

@@ -11,8 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Category;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.SqlParameter;
@@ -20,7 +18,6 @@ import org.springframework.jdbc.object.BatchSqlUpdate;
 
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumArithmeticOperator;
 import com.freshdirect.routing.constants.EnumGeocodeConfidenceType;
 import com.freshdirect.routing.constants.EnumGeocodeQualityType;
@@ -120,8 +117,6 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 																		", GEO_QUALITY, CITY, STATE ) VALUES ( "+
 																		 "DLV.DELIVERY_BUILDING_SEQ.nextval,?,?,?,?,?,?,?,?,?)";
 	
-	private static final Category LOGGER = LoggerFactory.getInstance(GeographyDAO.class);
-	
 	public void insertLocation(ILocationModel model) throws SQLException {
 		
 		Connection connection=null;
@@ -131,12 +126,7 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 			
 			connection=this.jdbcTemplate.getDataSource().getConnection();	
 			
-		}
-		catch(DataIntegrityViolationException e)
-		{
-			LOGGER.info("The location already exists in the database");
-		}
-		finally{
+		}finally{
 			if(connection!=null) connection.close();
 		}
 	}
@@ -168,12 +158,7 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 											, model.getCity(), model.getState()});
 			connection=this.jdbcTemplate.getDataSource().getConnection();
 			
-		}
-		catch(DataIntegrityViolationException e)
-		{
-			LOGGER.info("The building already exists in the database");
-		}
-		finally{
+		}finally{
 			if(connection!=null) connection.close();
 		}
 	}
