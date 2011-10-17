@@ -64,7 +64,7 @@ public class CPMServerGateway {
 	
 	private static final int ERR_COULDNOT_CONNECT_PROCESSOR 	= 135;
 	private static final int ERR_TIMEOUT						= 136;
-	
+	private static final String INVALID_ZIP_PATTERN = "[^A-Za-z0-9]";
 	static{
 		int port = 0;
 		try{
@@ -183,7 +183,7 @@ public class CPMServerGateway {
 		trans.SetValue(LCC.ID_CUSTOMER_STREET, StringUtils.left(paymentMethod.getAddress1(), 20));//take first 20 characters of address as chase only accepts that
 		trans.SetValue(LCC.ID_CUSTOMER_CITY, StringUtils.left(paymentMethod.getCity(), 20));
 		trans.SetValue(LCC.ID_CUSTOMER_STATE, StringUtils.left(paymentMethod.getState(), 2));
-		trans.SetValue(LCC.ID_CUSTOMER_ZIP, StringUtils.left(paymentMethod.getZipCode(), 9));
+		trans.SetValue(LCC.ID_CUSTOMER_ZIP, StringUtils.left(paymentMethod.getZipCode().replaceAll(INVALID_ZIP_PATTERN, ""), 9));
 		trans.SetValue(LCC.ID_CUSTOMER_COUNTRY, StringUtils.left(paymentMethod.getCountry(), 2));
 		
 		
