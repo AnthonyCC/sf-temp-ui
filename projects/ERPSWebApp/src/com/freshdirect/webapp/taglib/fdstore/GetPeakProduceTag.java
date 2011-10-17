@@ -33,6 +33,7 @@ import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -45,8 +46,9 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class GetPeakProduceTag extends AbstractGetterTag {
 	
-	private static final int MAX_PEAK_PRODUCE_COUNT=5;
+	private static final int MAX_PEAK_PRODUCE_COUNT=6;
 	private static final int MIN_PEAK_PRODUCE_COUNT=3;
+	private static final int SPARE_WIDTH=50;
 	
 	String deptId = null;
 	String getGlobalPeakProduceSku="false";
@@ -78,7 +80,8 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 				peakProduce=getPeakProduce((DepartmentModel)node);
 			}
 		}
-		
+
+		pageContext.setAttribute("tableWidth", countTableWidth(peakProduce));
 		return peakProduce;
 	}
 	
@@ -167,6 +170,31 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 		}
 		
 
+	}
+	
+	private int countTableWidth(Collection products)  throws FDResourceException {
+		
+		Iterator it = products.iterator();
+		
+		int tableWidth=0;
+
+		while (it.hasNext()) {
+			Object o=it.next();
+			
+			if(o instanceof SkuModel){
+				SkuModel model=(SkuModel) o;
+				ProductModel pm=model.getProductModel();
+				Image itemImage = pm.getAlternateImage();
+				
+				if (itemImage == null) {
+					itemImage = pm.getCategoryImage();
+				}
+				
+				tableWidth+=itemImage.getWidth()+SPARE_WIDTH;
+				
+			}
+		}
+		return tableWidth;
 	}
 	
 	private List removeDuplicates(List products) throws FDResourceException {

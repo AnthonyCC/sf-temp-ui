@@ -11,6 +11,10 @@
 <%@ page import='com.freshdirect.fdstore.survey.*' %>
 <%@ taglib uri='logic' prefix='logic' %>
 
+<% //expanded page dimensions
+final int W_CHECKOUT_SURVEY_TOTAL = 970;
+%>
+
 <fd:CheckLoginStatus id="yuzer" guestAllowed="false" recognizedAllowed="false"  /> 
 <%!
 	private static Calendar startPromo = Calendar.getInstance();
@@ -44,7 +48,7 @@
 <form method="post" name="survey" action="survey.jsp">
 <FONT CLASS="space4pix"><BR></FONT>
 
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="700">
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="<%=W_CHECKOUT_SURVEY_TOTAL%>">
 <tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>
 <input type="hidden" name="skipSurvey" value="false">
 <tr>
@@ -62,9 +66,9 @@
 	</tr>
 </TABLE>
 
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="677">
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="<%=W_CHECKOUT_SURVEY_TOTAL%>">
 <tr><td>
-<TABLE WIDTH="675" CELLSPACING="0" CELLPADDING="0" BORDER="0">
+<TABLE WIDTH="<%=W_CHECKOUT_SURVEY_TOTAL%>" CELLSPACING="0" CELLPADDING="0" BORDER="0">
 <%
 request.setAttribute("Survey",EnumSurveyType.SECOND_ORDER_SURVEY.getLabel());
 FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
@@ -76,7 +80,7 @@ FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 </tr>
 </table>
 <br>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="700">
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="<%=W_CHECKOUT_SURVEY_TOTAL%>">
 <tr>
  <td bgcolor="#999999" colspan=3><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" border="0"></td>
 </tr>

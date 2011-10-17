@@ -5,21 +5,30 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@ page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+<% //expanded page dimensions
+final int W_CART_TOTAL = 191;
+final int W_CART_SIDE = 10;
+final int W_CART_TEXT_PADDING = 10;
+final int W_CART_LOWER_LINE_PADDING= 10;
+%>
+
+
 <%
 	final FDUserI __yc_user = (FDUserI)session.getAttribute(SessionName.USER);
 %>
 <fd:GetCart id='cart'>
-    <table border="0" cellspacing="0" cellpadding="0" width="140">
+    <table border="0" cellspacing="0" cellpadding="0" width="<%=W_CART_TOTAL%>">
         <tr>
-            <td colspan="3" width="140"><a href="/view_cart.jsp?trk=sidcrt" id="your_cart"><img src="/media_stat/images/template/lists/cart_hdr.gif" width="140" height="18" border="0" alt="Your Cart"></a><br>
-            <table border="0" cellspacing="0" cellpadding="0" width="140">
-                <tr valign="top">
-                    <td width="11"><img src="/media_stat/images/template/lists/cart_lft.gif" width="11" height="16" border="0"></td>
-                    <td width="118" valign="middle">Subtotal: <span class="text11bold"><%= JspMethods.formatPrice(cart.getSubTotal()) %></span></td>
-                    <td width="11"><img src="/media_stat/images/template/lists/cart_rt.gif" width="11" height="16" border="0"></td>
+            <td colspan="3" width="<%=W_CART_TOTAL%>"><a href="/view_cart.jsp?trk=sidcrt" id="your_cart"><img src="/media_stat/images/template/lists/cart_hdr.gif" width="<%=W_CART_TOTAL%>" height="18" border="0" alt="Your Cart"></a><br>
+            <table border="0" cellspacing="0" cellpadding="0" width="<%=W_CART_TOTAL%>">
+                <tr valign="top" style="background-color: #FF9933;">
+                    <td width="<%=W_CART_SIDE%>"><img src="/media_stat/images/template/lists/cart_lft.gif" width="<%=W_CART_SIDE%>" height="16" border="0"></td>
+                    <td width="<%=W_CART_TOTAL - 2 * W_CART_SIDE%>" valign="middle" style="background-color: #fff;" align="center">Subtotal: <span class="text11bold"><%= JspMethods.formatPrice(cart.getSubTotal()) %></span></td>
+                    <td width="<%=W_CART_SIDE%>"><img src="/media_stat/images/template/lists/cart_rt.gif" width="<%=W_CART_SIDE%>" height="16" border="0"></td>
                 </tr>
                 <tr valign="top">
-                    <td width="140" colspan="3" bgcolor="#FF9933"><img src="/media_stat/images/layout/ff9933.gif" width="1" height="4"></td>
+                    <td width="<%=W_CART_TOTAL%>" colspan="3" bgcolor="#FF9933"><img src="/media_stat/images/layout/ff9933.gif" width="1" height="4"></td>
                 </tr>
             </table>
             </td>
@@ -27,13 +36,13 @@
         <tr>
             <td bgcolor="#FF9933" valign="bottom" width="1"><img src="/media_stat/images/layout/ff9933.gif" 
                 width="1" height="1"><br></td>
-            <td align="center" width="138"><img src="/media_stat/images/layout/clear.gif"  
-                width="138" height="7"><br>
+            <td align="center" width="<%=W_CART_TOTAL - 2%>"><img src="/media_stat/images/layout/clear.gif"  
+                width="<%=W_CART_TOTAL - 2%>" height="7"><br>
                 <!-- nested table with content -->
-                <table width="138" cellpadding="0" cellspacing="0" border="0">
+                <table width="<%=W_CART_TOTAL - 2%>" cellpadding="0" cellspacing="0" border="0">
                     <tr>
-                        <td width="12">&nbsp;</td>
-                        <td width="118" class="text9_lh12">
+                        <td width="<%=W_CART_TEXT_PADDING%>">&nbsp;</td>
+                        <td width="<%=W_CART_TOTAL - 2 - W_CART_TEXT_PADDING%>" class="text9_lh12">
 	                        <%	if (cart instanceof FDModifyCartModel){ %>
 		                        <div>You are changing a placed order.  <a href="/view_cart.jsp?trk=sidcrt">Click for details</a>.</div>
 	                        <%
@@ -60,7 +69,7 @@
                 </table>
                 <br>
                 <a style="display: block" href="/view_cart.jsp?trk=sidcrt"><img src="/media_stat/images/template/lists/cart_lg.gif" width="67" height="56" border="0" alt="Shopping Cart"></a>
-				<img src="/media_stat/images/layout/cccccc.gif" width="125" height="1" VSPACE="10"><font class="space4pix"><br></font>
+				<img src="/media_stat/images/layout/cccccc.gif" width="<%=W_CART_TOTAL - 2 * W_CART_LOWER_LINE_PADDING%>" height="1" VSPACE="10"><font class="space4pix"><br></font>
 <% 
 	if (__yc_user != null && __yc_user.getIdentity() !=null) { %>
 	        <fd:CustomerCreditHistoryGetterTag id='customerCreditHistory'>
@@ -77,25 +86,25 @@
         </tr>
         <% if (lastDept != null) { %>
         <tr valign="top">
-            <td width="140" colspan="3">
-                <table border="0" cellspacing="0" cellpadding="0" width="140">
+            <td width="<%=W_CART_TOTAL%>" colspan="3">
+                <table border="0" cellspacing="0" cellpadding="0" width="<%=W_CART_TOTAL%>">
                     <tr valign="top">
-                    	<td width="140" colspan="3" bgcolor="#FF9933"><img src="/media_stat/images/layout/ff9933.gif" width="1" height="4"></td>
+                    	<td width="<%=W_CART_TOTAL%>" colspan="3" bgcolor="#FF9933"><img src="/media_stat/images/layout/ff9933.gif" width="1" height="4"></td>
+                    </tr>
+                    <tr valign="top" style="background-color: #FF9933;">
+                        <td width="<%=W_CART_SIDE%>"><img src="/media_stat/images/template/lists/cart_lft.gif" width="<%=W_CART_SIDE%>" height="17" border="0"></td>
+                        <td width="<%=W_CART_TOTAL - 2 * W_CART_SIDE%>" valign="middle" style="background-color: #fff;" align="center">Subtotal: <span class="text11bold"><%= JspMethods.formatPrice(cart.getSubTotal()) %></span></td>
+                        <td width="<%=W_CART_SIDE%>"><img src="/media_stat/images/template/lists/cart_rt.gif" width="<%=W_CART_SIDE%>" height="17" border="0"></td>
                     </tr>
                     <tr valign="top">
-                        <td width="11"><img src="/media_stat/images/template/lists/cart_lft.gif" width="11" height="17" border="0"></td>
-                        <td width="118" valign="middle">Subtotal: <span class="text11bold"><%= JspMethods.formatPrice(cart.getSubTotal()) %></span></td>
-                        <td width="11"><img src="/media_stat/images/template/lists/cart_rt.gif" width="11" height="17" border="0"></td>
-                    </tr>
-                    <tr valign="top">
-                        <td width="140" colspan="3" bgcolor="#FF9933"><img src="/media_stat/images/template/lists/cart_btm_crnrs.gif" width="140" height="5" border="0"></td>
+                        <td width="<%=W_CART_TOTAL%>" colspan="3" bgcolor="#FF9933"><img src="/media_stat/images/template/lists/cart_btm_crnrs.gif" width="<%=W_CART_TOTAL%>" height="5" border="0"></td>
                     </tr>
                 </table>
             </td>
         </tr>
 		<% } else { %>
 		<tr valign="top">
-			<td width="140" colspan="3"><img src="/media_stat/images/template/lists/cart_btm_crnrs2.gif" width="140" height="5" border="0"></td>
+			<td width="<%=W_CART_TOTAL%>" colspan="3"><img src="/media_stat/images/template/lists/cart_btm_crnrs2.gif" width="<%=W_CART_TOTAL%>" height="5" border="0"></td>
 		</tr>
 <% } %>
 	</table>

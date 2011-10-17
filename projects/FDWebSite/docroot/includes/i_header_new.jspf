@@ -12,17 +12,14 @@
 	headerBurst = (useSmallBurst) ? new Image("/media_stat/images/bursts/hdr_new_burst_sm.gif", 52, 52) : new Image("/media_stat/images/bursts/hdr_new_burst_lg.gif", 63, 61);
 
 %>
-<table style="margin: 0px 5px 0px 15px; padding-bottom: 3px;">
+<table cellpadding="0" cellspacing="0" border="0" style="margin: 0; padding-bottom: 3px;">
 	<tr>
-		<td rowspan="2" width="1%"><img src="<%=headerBurst.getPath()%>" height="<%=headerBurst.getHeight()%>" width="<%=headerBurst.getWidth()%>" border="0" alt="New" /></td>
+		<td width="1%"><img src="<%=headerBurst.getPath()%>" height="<%=headerBurst.getHeight()%>" width="<%=headerBurst.getWidth()%>" border="0" alt="New" /></td>
 		<td>
-			<div style="padding-bottom: 3px; border-bottom: 4px solid #360;">
-				<table width="100%">
-					<tr>
-						<td width="1%" valign="bottom"><img src="<%=catLabel.getPath()%>" height="<%=catLabel.getHeight()%>" width="<%=catLabel.getWidth()%>" border="0" alt="<%=(currentCAT != null) ? currentCAT.getFullName() : "" %>" /></td>
-						<td align="right" valign="bottom" style="font-size: 18px; font-weight: normal;"><%=countText%></td>
-					</tr>
-				</table>
+			<div style="padding-bottom: 2px; margin: 12px 14px; border-bottom: 4px solid #360;">
+				<div style="float: left;"><img src="<%=catLabel.getPath()%>" height="<%=catLabel.getHeight()%>" width="<%=catLabel.getWidth()%>" border="0" alt="<%=(currentCAT != null) ? currentCAT.getFullName() : "" %>" /></div>
+        <div style="font-size: 18px; font-weight: normal;float: right; line-height: 21px;"><%=countText%></div>
+        <div class="clear" style="line-height: 1px; height: 1px; overflow: hidden;"></div>
 			</div>
 		</td>
 	</tr>

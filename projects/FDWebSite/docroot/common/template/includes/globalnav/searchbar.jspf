@@ -1,0 +1,16 @@
+<div id="searchbar">
+  <div class="container clearfix">
+    <div class="column span-5">
+      <%@ include file="/common/template/includes/globalnav/alldepartment.jspf" %>
+    </div>
+    <div class="column span-14">
+      <form id="searchform" action="<c:url value="/search.jsp"/>">
+        <input class="placeholder search" type="text" name="searchParams" placeholder="Looking for something?" />
+        <button type="submit" name="search"><span>search</span></button>
+      </form>
+    </div>
+    <div class="column span-5 last">
+      <%@ include file="/common/template/includes/globalnav/cart.jspf" %>
+    </div>
+  </div>
+</div>

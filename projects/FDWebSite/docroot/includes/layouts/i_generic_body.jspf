@@ -1,3 +1,9 @@
+<% //expanded page dimensions
+final int W_GENERIC_BODY_IS_DEPARTMENT = 765;
+final int W_GENERIC_BODY_NOT_DEPARTMENT = 601; 
+%>
+
+
 <% 
 	/**********************************************************
 	    Host file Dependencies:  
@@ -22,13 +28,13 @@
 	String trkCode = "";
 	
 	if (isDepartment) {
-	    maxCols=5;
-	    maxWidth = 550;
+	    maxCols=7;
+	    maxWidth = W_GENERIC_BODY_IS_DEPARTMENT;
 	    tdwidth=110;
 		trkCode = "dpage";
 	} else {
-	     maxCols=4;
-	     maxWidth = 440;
+	     maxCols=6;
+	     maxWidth = W_GENERIC_BODY_NOT_DEPARTMENT;
 	     tdwidth=100;
 		 trkCode = "cpage";
 	}

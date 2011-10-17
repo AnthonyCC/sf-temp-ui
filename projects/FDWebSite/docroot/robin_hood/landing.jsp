@@ -11,6 +11,10 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<% //expanded page dimensions
+final int W_ROBINHOOD_LANDING_TOTAL = 970;
+%>
+
 
 <%@page import="com.freshdirect.framework.util.DateUtil"%><fd:CheckLoginStatus />
 <tmpl:insert template='/common/template/robinhood.jsp'>
@@ -40,7 +44,7 @@
 			}
 		%>
 
-		<table border="0" cellspacing="0" cellpadding="2" width="675">
+		<table border="0" cellspacing="0" cellpadding="0" width="<%=W_ROBINHOOD_LANDING_TOTAL%>">
 			<tr>
 				<td align="center">
 					<img src="/media_stat/images/donation/robinhood/landing/robin_hood_logo_lg.gif" height="59" width="339" alt="Robin Hood" />
@@ -85,7 +89,7 @@
 									document.rh_form.total_price.value = formatCurrency(qty * <%=productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()%>);
 								}
 							</script>
-						<table border="0" cellspacing="0" cellpadding="2" width="450">
+						<table border="0" cellspacing="0" cellpadding="2" width="<%=W_ROBINHOOD_LANDING_TOTAL-190%>">
 							<tr><td colspan="2" class="text11bold">How many meals will you donate?</td></tr>
 							<tr><td colspan="2"><img src="/media_stat/images/layout/333333.gif" width="100%" height="1" border="0" vspace="10"></td></tr>
 							<tr>

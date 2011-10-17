@@ -10,6 +10,11 @@
 <%@ page import='java.text.*' %>
 <%@ page import="java.util.*" %>
 <%@ page import="com.freshdirect.cms.ContentNodeI" %>
+
+<% //expanded page dimensions
+final int W_FAQ_SEARCH_TOTAL = 806;
+%>
+
 <fd:CheckLoginStatus />
 
 <tmpl:insert template='/common/template/faq_help.jsp'>
@@ -18,7 +23,7 @@
 	<tmpl:put name='content' direct='true'>
 		
 	<form method="post" name="contact_fd">
-	<table border="0" cellpadding="0" cellspacing="0" width="570">
+	<table border="0" cellpadding="0" cellspacing="0" width="<%=W_FAQ_SEARCH_TOTAL%>">
 	
 		<tr>
 		<td valign="top">
@@ -27,11 +32,11 @@
 		<td valign="top">
 		<img src="/media_stat/images/template/help/hdr_faq_search.gif"  height="16" width="318" alt="" border="0"><br>
 		</td>
-		<td>
-		<input type="text" class="search" value="" maxlength="100" style="width: 100px;" name="searchFAQ2" />
+		<td align="right">
+		<input type="text" class="search" value="" maxlength="100" style="width: 200px;" name="searchFAQ2" />
 		</td>
-		<td>
-		<input type="image" name="searchFAQButton" style="border: 0pt none ; padding: 3px; width: 35px; height: 14px;" src="/media_stat/images/template/search/search_find_button.gif"/>
+		<td width="200">
+		<input type="image" name="searchFAQButton" style="border: 0pt none ; padding: 3px 0px 0px 30px; width: 35px; height: 14px;" src="/media_stat/images/template/search/search_find_button.gif"/>
 		</td>
 		</tr>
 		<tr><td colspan="4">&nbsp;</td></tr>

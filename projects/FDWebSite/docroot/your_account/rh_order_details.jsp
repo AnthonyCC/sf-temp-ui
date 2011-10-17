@@ -21,6 +21,10 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<% //expanded page dimensions
+final int W_YA_RH_ORDER_DETAILS = 970;
+final int W_YA_RH_ORDER_DETAILS_HALF = 460;
+%>
 <%!
 java.text.SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:mm a 'on' EEEE, MM/d/yy");
 java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
@@ -50,25 +54,22 @@ Integer totalQuantity = user.getDonationTotalQuantity();
 
 <%ErpPaymentMethodI paymentMethod = (ErpPaymentMethodI) cart.getPaymentMethod();
 
-String pymtDetailWidth="630";
-
-String lineWidth = "290";
 FDCartLineI cartLine = cart.getOrderLine(0);
 
 int idx = 0;
 %>
 
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=pymtDetailWidth%>">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_RH_ORDER_DETAILS %>">
 <tr>
 	<td colspan="6"class="text11">
 		<span class="title18">Order # <%= orderNumber%></span><br />
-		<img src="/media_stat/images/layout/ff9933.gif" width="675" height="1" border="0" vspace="8"><br /><br />
+		<img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_RH_ORDER_DETAILS %>" height="1" border="0" vspace="8"><br /><br />
 	</td>
 </tr>
 
 <TR VALIGN="TOP">
-    <TD WIDTH="320">
-		<table cellpadding="0" cellspacing="0" border="0" width="320">
+    <TD WIDTH="<%= W_YA_RH_ORDER_DETAILS_HALF %>">
+		<table cellpadding="0" cellspacing="0" border="0" width="<%= W_YA_RH_ORDER_DETAILS_HALF %>">
 			<tr>
 				<td colspan="3" style="padding: 2px;" align="left">
 					<img src="/media_stat/images/donation/robinhood/robin_hood_logo_sm.gif" height="23" width="130" alt="Robin Hood" /><br />
@@ -101,13 +102,13 @@ int idx = 0;
     <TD valign="top" align="CENTER" width="40">
     	 	<img src="/media_stat/images/layout/cccccc.gif" width="1" height="280"><br />
 	    </td>
-    <TD WIDTH="300">
-        <img src="/media_stat/images/navigation/payment_info.gif" WIDTH="91" HEIGHT="9" border="0" alt="PAYMENT INFO"><br />
-        <IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=lineWidth%>" HEIGHT="1" BORDER="0" VSPACE="3"><br />
-        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="300">
+    <TD WIDTH="<%= W_YA_RH_ORDER_DETAILS_HALF %>">
+        <img src="/media_stat/images/navigation/payment_info.gif" WIDTH="100" HEIGHT="15" border="0" alt="PAYMENT INFO"><br />
+        <IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_RH_ORDER_DETAILS_HALF %>" HEIGHT="1" BORDER="0" VSPACE="3"><br />
+        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%= W_YA_RH_ORDER_DETAILS_HALF %>">
         <TR VALIGN="TOP">
             <TD WIDTH="10"><br /></TD>
-            <TD WIDTH="300">
+            <TD WIDTH="<%= W_YA_RH_ORDER_DETAILS_HALF - 10 %>">
             <font class="space4pix"><br /></font>
             <FONT CLASS="text12">
             <%if(cart.getCustomerCreditsValue() > 0) { %>
@@ -161,11 +162,11 @@ int idx = 0;
  </TABLE>  
  <br />
  <IMG src="/media_stat/images/layout/clear.gif" width="1" height="1"><br />
-<IMG src="/media_stat/images/layout/cccccc.gif" width="693" height="1"><br />
+<IMG src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_RH_ORDER_DETAILS %>" height="1"><br />
 <br /><br />
 
 
-<table width="680" cellspacing="0" cellpadding="0" border="0">
+<table width="<%= W_YA_RH_ORDER_DETAILS %>" cellspacing="0" cellpadding="0" border="0">
 
 	<tr>
 			<td class="text11bold" align="center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Quantity<br/></td>
@@ -205,7 +206,7 @@ int idx = 0;
 	</tr>
 </table> 
 
-<table width="680" cellspacing="0" cellpadding="0" border="0" valign="middle" >
+<table width="<%= W_YA_RH_ORDER_DETAILS %>" cellspacing="0" cellpadding="0" border="0" valign="middle" >
 		<tr>
 			<td ><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 			<td></td>			<td></td>			<td></td>			<td></td>			<td></td>
@@ -213,7 +214,7 @@ int idx = 0;
 		</tr>
 		 <tr>
 			<td colspan="4"><img src="/media_stat/images/layout/clear.gif" width="170" height="1" /></td>
-			<td class="orderTotal" colspan="2" width="" align="right">
+			<td class="orderTotal" colspan="2" width="30%" align="right">
 			<b>ORDER TOTAL:  <%= JspMethods.formatPrice(cart.hasInvoice() ? cart.getInvoicedSubTotal() : cart.getSubTotal()) %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </b></td>
         </tr>
         

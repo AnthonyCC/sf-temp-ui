@@ -10,6 +10,9 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<% //expanded page dimensions
+final int W_PRODUCT_MODIFY_TOTAL = 600;
+%>
 <fd:CheckLoginStatus />
 <%
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
@@ -69,10 +72,10 @@
     </tmpl:put>
 
 <tmpl:put name='content' direct='true'>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="407">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_PRODUCT_MODIFY_TOTAL %>">
 <TR VALIGN="TOP">
-<TD WIDTH="400">
-<img src="/media_stat/images/navigation/modify_item_in_cart.gif" width="367" height="25" border="0" alt="MODIFY ITEM IN CART"><BR>
+  <TD WIDTH="<%= W_PRODUCT_MODIFY_TOTAL %>">
+<img src="/media_stat/images/navigation/modify_item_in_cart.gif" width="367" height="25" border="0" alt="MODIFY ITEM IN CART" style="margin: 0 auto; display: block;"><BR>
 <FONT CLASS="space4pix"><BR></FONT>
 This item is now in your cart. After making changes to it, click "save changes" below. To remove it from your cart, click "remove item." To return to the page where you bought it, <A HREF="/product.jsp?productId=<%= productNode %>&catId=<%= productNode.getParentNode() %>&trk=pmod">click here</A>.<br><br>
 <%@ include file="/includes/product/cutoff_notice.jspf" %>

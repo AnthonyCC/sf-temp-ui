@@ -8,6 +8,9 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<% //expanded page dimensions
+final int W_YA_MODIFY_ORDER = 970;
+%>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <%	String orderId = request.getParameter("orderId"); %>
 <fd:ModifyOrderController orderId="<%= orderId %>" result="result" successPage='/view_cart.jsp'>
@@ -62,10 +65,10 @@
 		//
 %>
 <!-- error message handling here -->
-<table width="675" border="0" cellpadding="0" cellspacing="0">
+<table width="<%= W_YA_MODIFY_ORDER %>" border="0" cellpadding="0" cellspacing="0">
 	<tr><td class="title18" colspan="3">Change Order # <%= orderId %> ?</td>
 	</tr>
-	<tr><td><img src="/media_stat/images/layout/clear.gif" width="10" height="6"></td><td><img src="/media_stat/images/layout/clear.gif" width="465" height="6"></td><td><img src="/media_stat/images/layout/clear.gif" width="200" height="6"></td></tr>
+  <tr><td><img src="/media_stat/images/layout/clear.gif" width="10" height="6"></td><td><img src="/media_stat/images/layout/clear.gif" width="<%= W_YA_MODIFY_ORDER - 210 %>" height="6"></td><td><img src="/media_stat/images/layout/clear.gif" width="200" height="6"></td></tr>
 	<tr bgcolor="#FF9933">
 		<td class="text10w" colspan="2" height="16">&nbsp;&nbsp;<img src="/media_stat/images/template/youraccount/currently_scheduled.gif" width="124" height="8" border="0" alt="CURRENTLY SCHEDULED" vspace="2" align="bottom">&nbsp;&nbsp;<%=fmtDlvDateTime%>@<%=sStartHour%>-<%=sEndHour%></td>
 		<td align="right" class="text11wbold">Estimated Total: <%= currencyFormatter.format(cartOrOrder.getTotal()) %>&nbsp;&nbsp;</td>
@@ -89,7 +92,7 @@
 			<input type="hidden" name="action" value="modify">
 			<input type="image" src="/media_stat/images/buttons/change_this_order_now.gif" width="145" height="16" border="0" alt="MAKE CHANGES TO ORDER">
 		</form></div><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td></tr>
-<tr><td bgcolor="#CCCCCC" colspan="3"><img src="/media_stat/images/layout/clear.gif" width="675" height="1" border="0"></td></tr>
+<tr><td bgcolor="#CCCCCC" colspan="3"><img src="/media_stat/images/layout/clear.gif" width="<%= W_YA_MODIFY_ORDER %>" height="1" border="0"></td></tr>
 <tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br><table cellspacing="0" cellpadding="0" border="0">
 			<tr><td rowspan="2"><a href="/your_account/order_details.jsp?orderId=<%= request.getParameter("orderId") %>"><img src="/media_stat/images/template/youraccount/cross.gif" border="0"></a></td>
 			    <td><a href="/your_account/order_details.jsp?orderId=<%= request.getParameter("orderId") %>"><img src="/media_stat/images/template/youraccount/do_not_change_order.gif" width="122" height="8" border="0"></a></td>

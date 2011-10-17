@@ -83,7 +83,7 @@
 			
 		</div>
 		<% } %>
-<div class="sortselector" style="margin-top: 15px;">
+<div class="sortselector" style="margin-top: 15px; padding-right: 14px;">
 		<a href="<%= FourMinuteMealsHelper.allPageBaseUrl %>" style="float:left"><img src="/media/4mm/filter_clearall.gif" border="0" /></a>
 		<%-- SORT SELECTOR --%>	
 		<%
@@ -127,7 +127,7 @@
 				sectionCounter++;
 				if ( sectionList != null && !sectionList.isEmpty() ) {
 					%>
-					<div class="separator" style="padding-top: 15px;">
+					<div class="separator" style="padding-top: 5px;">
 						<fd:IncludeMedia media="<%= sectionMedia %>" name="HEADER"/>
 					</div>
 					<div class="meals" style="text-align:left">

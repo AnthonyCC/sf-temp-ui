@@ -9,20 +9,24 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<% //expanded page dimensions
+final int W_CHECKOUT_STEP_2_VERIFY_AGE_TOTAL = 970;
+%>
+
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Age Verification for orders containing alcohol</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <% FDUserI user = (FDUserI)session.getAttribute(SessionName.USER); %>
 <fd:AgeVerificationController result="result" successPage="/checkout/step_2_select.jsp" blockedAddressPage="/checkout/no_alcohol_address.jsp">
-<table width="675" cellpadding="0" cellspacing="0" border="0">
+<table width="<%=W_CHECKOUT_STEP_2_VERIFY_AGE_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 <tr><td class="title18" colspan="4"><img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br><b>Age Verification for orders containing alcohol</b><br><img src="/media_stat/images/layout/dotted_line.gif" width="100%" height="1" vspace="6"></td></tr>
 <tr><td colspan="4" align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br>
 <% String[] checkErrorType = {"didnot_agree", "technical_difficulty"}; %>
 <fd:ErrorHandler result='<%=result%>' field='<%=checkErrorType%>' id='errorMsg'>
 	<%@ include file="/includes/i_error_messages.jspf" %>
 </fd:ErrorHandler>
-<table width="575" cellpadding="0" cellspacing="0" border="0">
+<table width="<%=W_CHECKOUT_STEP_2_VERIFY_AGE_TOTAL-100%>" cellpadding="0" cellspacing="0" border="0">
 	<tr>
 		<td colspan="4" class="text12">
 By law, purchasers of alcoholic beverages must be at least 21 years of age. You may not legally order any alcoholic beverages unless you are at least 21 years of age. Furthermore, you may not purchase alcoholic beverages for anyone who is under the age of 21. FreshDirect reserves the right to refuse service, terminate accounts, remove alcoholic beverages, or cancel orders at its sole discretion.<br><br> 
@@ -44,7 +48,7 @@ If your order contains alcoholic beverages, the person receiving your delivery m
 <%
 	}
 %>		</td>
-		<td width="475" class="text12">
+		<td width="<%=W_CHECKOUT_STEP_2_VERIFY_AGE_TOTAL-200%>" class="text12">
 			<label for="age_verified"><b>I certify that I am over 21 years of age.<br>I will present identification at the time of delivery.</b></label>
 		</td>
 		<td>
@@ -75,7 +79,7 @@ If your order contains alcoholic beverages, the person receiving your delivery m
 				Delivery Address<br/>
 				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
 		</TD>
-		<TD WIDTH="265" ALIGN="RIGHT" VALIGN="MIDDLE">
+		<TD WIDTH="<%=W_CHECKOUT_STEP_2_VERIFY_AGE_TOTAL-410%>" ALIGN="RIGHT" VALIGN="MIDDLE">
 				<input type="image" name="checkout_delivery_timeslot_select"  src="/media_stat/images/buttons/continue_checkout.gif" WIDTH="91" HEIGHT="11" border="0" alt="CONTINUE CHECKOUT" VSPACE="0"><BR>
 				Delivery Time<BR>
 		</TD>

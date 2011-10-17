@@ -10,6 +10,10 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<% //expanded page dimensions
+final int W_RH_SUBMIT_ORDER_TOTAL = 970;
+%>
+
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <style>
 
@@ -111,16 +115,16 @@ String optInInd = request.getParameter("optinInd");
 <br/>
 </div>
 <form method="post" id="form1" name="order_form">
-<table width="690" cellspacing="0" cellpadding="0" border="0">
+<table width="<%=W_RH_SUBMIT_ORDER_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 
 
 
 	<tr>
-		<td class="text11" width="675">
+		<td class="text11" width="<%=W_RH_SUBMIT_ORDER_TOTAL-99%>">
 			<span class="title18">Choose Payment Information</span><br />
 			Please select a payment option.
 		</td>
-		<td width="675" align="right" colspan="2">
+		<td width="99" align="right" colspan="2">
 			<input type="image" name="submit_bot1" id="submit_bot1" onclick="displayStatus();" src="/media_stat/images/giftcards/purchase/gc_submit_order.gif" width="90" height="25"  hspace="4" vspace="4" alt="submit order" border="0">
 		</td>
 		
@@ -132,22 +136,22 @@ String optInInd = request.getParameter("optinInd");
 		</td>-->
 	  </tr>
 	<tr>
-		<td colspan="3" style="padding: 2px;">
-			<img style="margin: 2px 0;" width="690" height="1" border="0" src="/media_stat/images/layout/ff9933.gif" /><br />
+		<td colspan="3" style="padding: 2px 0px;">
+			<img style="margin: 2px 0;" width="<%=W_RH_SUBMIT_ORDER_TOTAL%>" height="1" border="0" src="/media_stat/images/layout/ff9933.gif" /><br />
 		</td>
 	</tr>
 	<tr>
-		<td colspan="3" style="padding: 2px;">
+		<td colspan="3" style="padding: 2px 0px;">
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
 		</td>
 	</tr>
 	<tr>
-		<td colspan="3" style="padding: 2px;">
+		<td colspan="3" style="padding: 0px;">
 			<img src="/media_stat/images/donation/robinhood/robin_hood_logo_sm.gif" height="23" width="130" alt="Robin Hood" /><br />
 		</td>
 	</tr>
 	<tr>
-		<td colspan="3" style="padding: 8px 2px;">
+		<td colspan="3" style="padding: 8px 0px;">
 			<%@ include file="/robin_hood/includes/i_rh_order_info.jspf" %>
 		</td>
 	</tr>
@@ -174,9 +178,9 @@ boolean isECheckRestricted = false;
 boolean isCheckEligible = false;
 %>
 <!-- error message handling here -->
-<table width="675" border="0" cellpadding="0" cellspacing="0">
+<table width="<%=W_RH_SUBMIT_ORDER_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
     <tr>
-        <td width="675" class="text11">
+        <td width="<%=W_RH_SUBMIT_ORDER_TOTAL%>" class="text11">
 			<% StringBuffer sbErrorMsg= new StringBuffer(); %>
        </td>
     </tr>
@@ -188,10 +192,10 @@ boolean isCheckEligible = false;
 
 
 
-	<table width="675" border="0" cellspacing="0" cellpadding="2">
+	<table width="<%=W_RH_SUBMIT_ORDER_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
 		<tr valign="top">
-			<td width="693"><img src="/media_stat/images/navigation/choose_credit_card.gif" width="135" height="9" border="0" alt="CHOOSE CREDIT CARD">&nbsp;&nbsp;&nbsp;<br />
-					<img src="/media_stat/images/layout/999966.gif" width="675" height="1" border="0" vspace="3"><br />
+			<td width="<%=W_RH_SUBMIT_ORDER_TOTAL%>"><img src="/media_stat/images/navigation/choose_credit_card.gif" width="135" height="9" border="0" alt="CHOOSE CREDIT CARD">&nbsp;&nbsp;&nbsp;<br />
+					<img src="/media_stat/images/layout/999966.gif" width="<%=W_RH_SUBMIT_ORDER_TOTAL%>" height="1" border="0" vspace="3"><br />
 				<font class="space2pix"><br /></font>  
 			</td>   
 		</tr>
@@ -202,7 +206,7 @@ boolean isCheckEligible = false;
 			</td>
 		</tr>
 		<tr>
-			<td>
+			<td align="center">
 				<%-- <form id="form2" name="creditcard_form" method="post">  --%>
 				<input type="hidden" name="actionName" value="">
 				<input type="hidden" name="deletePaymentId" value="">
@@ -212,9 +216,9 @@ boolean isCheckEligible = false;
 		</tr>
 	</table>
 		<br />
-		<img src="/media_stat/images/layout/ff9933.gif" width="675" height="1" border="0"><br />
+		<img src="/media_stat/images/layout/ff9933.gif" width="<%=W_RH_SUBMIT_ORDER_TOTAL%>" height="1" border="0"><br />
 		<font class="space4pix"><br /><br /></font>	
-		<table border="0" cellspacing="0" cellpadding="2" width="675">
+		<table border="0" cellspacing="0" cellpadding="2" width="<%=W_RH_SUBMIT_ORDER_TOTAL%>">
 		<% String optinout=null;%>
 		<fd:ErrorHandler result='<%=resultCheckOut%>' name='Opt_in_required' id='errorMsg'>
 		<% errorMsg = SystemMessageList.MSG_RH_OPTIN_BELOW_REQUIRED;
@@ -257,7 +261,7 @@ boolean isCheckEligible = false;
 	    	<td><IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">
     	</td>
 		<tr valign="top">
-			<td width="675" align="right" colspan="2">
+			<td width="<%=W_RH_SUBMIT_ORDER_TOTAL%>" align="right" colspan="2">
 			<input type="image" name="submit_bot" id="submit_bot" onclick="displayStatus();" src="/media_stat/images/giftcards/purchase/gc_submit_order.gif" width="90" height="25"  hspace="4" vspace="4" alt="submit order" border="0">
 			</td>
 		</tr>

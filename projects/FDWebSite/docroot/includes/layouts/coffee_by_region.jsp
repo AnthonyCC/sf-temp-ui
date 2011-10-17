@@ -10,6 +10,15 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+<% //expanded page dimensions
+final int W_COFFEE_BY_REGION_TOTAL = 765;
+final int W_COFFEE_BY_REGION_IMG = 123;
+final int W_COFFEE_BY_REGION_COLS = 642;
+final int W_COFFEE_BY_REGION_COL = 150-1;
+final int W_COFFEE_BY_REGION_COL_PAD_HALF = 7;
+%>
+
 <%
 //********** Start of Stuff to let JSPF's become JSP's **************
 
@@ -40,11 +49,13 @@ public class ByRegionObject {
     private StringBuffer col_one = new StringBuffer();
     private StringBuffer col_two = new StringBuffer();
     private StringBuffer col_three = new StringBuffer();
+    private StringBuffer col_four = new StringBuffer();
 
     public void clearCols() {
         this.col_one.setLength(0);
         this.col_two.setLength(0);
         this.col_three.setLength(0);
+        this.col_four.setLength(0);
     }
 
     public long getColLength(int colnumber) {
@@ -58,6 +69,9 @@ public class ByRegionObject {
                 break;
             case 3: 
                 colLength=(long)this.col_three.length();
+                break;
+            case 4: 
+                colLength=(long)this.col_four.length();
                 break;
         }
         return colLength;
@@ -75,6 +89,9 @@ public class ByRegionObject {
             case 3:
                 colStuff=this.col_three.toString();
                 break;
+            case 4:
+                colStuff=this.col_four.toString();
+                break;
         }
         return colStuff;
     }
@@ -91,6 +108,9 @@ public class ByRegionObject {
             case 3:
                 this.col_three.append(appendString);
                 break;
+            case 4:
+                this.col_four.append(appendString);
+                break;
         }
     }
 }
@@ -104,10 +124,11 @@ public ByRegionObject bldByRegionCols(Collection prodCollection,HttpServletRespo
         int colNum = 1;
         //boolean processDecaf = false;
         int pSize = prodCollection.size();
-        int col1 = pSize/3;
+        int col1 = pSize/4;
         int col2 = col1;
         int col3 = col1;
-        int tmp = pSize%3;
+        int col4 = col1;
+        int tmp = pSize%4;
 
         //if not evenly divisible by 3, then distribute the remaining to col-1 or col1 & col 2
         if(tmp > 0 && tmp == 1){
@@ -117,6 +138,11 @@ public ByRegionObject bldByRegionCols(Collection prodCollection,HttpServletRespo
                 col1++;
                 col2++;
         }
+        if(tmp > 0 && tmp ==3){
+            col1++;
+            col2++;
+            col3++;
+    	}
         int counter = 0;
         for(Iterator prodItr = prodCollection.iterator();prodItr.hasNext();counter++) {
             availFontStart = "";
@@ -138,6 +164,8 @@ public ByRegionObject bldByRegionCols(Collection prodCollection,HttpServletRespo
                     colNum = 2;
             if(counter >= col1+col2 && counter<col1+col2+col3)
                     colNum = 3;
+            if(counter >= col1+col2+col3 && counter<col1+col2+col3+col4)
+                colNum = 4;
 
             byRegionObject.append(colNum,"<a href=\"");
             byRegionObject.append(colNum,url);
@@ -204,13 +232,13 @@ if(folderShownCount>0){
 %>
 </TD></TR>
 <TR VALIGN="TOP">
-<TD WIDTH="120">&nbsp;</TD>
-<TD WIDTH="430"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="12" BORDER="0"><BR><IMG src="/media_stat/images/layout/999966.gif" WIDTH="430" HEIGHT="1" BORDER="0"><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="12" BORDER="0"></TD>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_IMG%>">&nbsp;</TD>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COLS%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="12" BORDER="0"><BR><IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=W_COFFEE_BY_REGION_COLS%>" HEIGHT="1" BORDER="0"><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="12" BORDER="0"></TD>
 </TR></table>
 <%}%>
-<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="550">
-<TR VALIGN="TOP"><TD WIDTH="120"><A HREF="<%=folderURL%>"><img src="<%=catImage.getPath()%>" <%=JspMethods.getImageDimensions(catImage)%> border="0" alt="<%=subFolder.getFullName()%>"></A></TD>
-<TD WIDTH="430"><A HREF="<%=folderURL%>"><img src="<%=lblImage.getPath()%>" <%=JspMethods.getImageDimensions(lblImage)%> border="0" alt="<%=subFolder.getFullName()%>"></A><BR>
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%=W_COFFEE_BY_REGION_TOTAL%>">
+<TR VALIGN="TOP"><TD WIDTH="<%=W_COFFEE_BY_REGION_IMG%>"><A HREF="<%=folderURL%>"><img src="<%=catImage.getPath()%>" <%=JspMethods.getImageDimensions(catImage)%> border="0" alt="<%=subFolder.getFullName()%>"></A></TD>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COLS%>"><A HREF="<%=folderURL%>"><img src="<%=lblImage.getPath()%>" <%=JspMethods.getImageDimensions(lblImage)%> border="0" alt="<%=subFolder.getFullName()%>"></A><BR>
 <%
 if (fldrDescription!=null && fldrDescription.trim().length() >=1) { %> 
 <font class="text13">
@@ -241,40 +269,50 @@ if (fldrDescription!=null && fldrDescription.trim().length() >=1) { %>
         ByRegionObject regionProdCols = bldByRegionCols(availableStuff,response,trkCode);
         i+=prodCount;
 %>
-<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" width="429">
-<TR VALIGN="TOP"><TD width="129"><%=regionProdCols.getColValue(1)%></TD>
-<TD WIDTH="10"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="1" BORDER="0"></TD>
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" width="<%=W_COFFEE_BY_REGION_COLS-1%>">
+<TR VALIGN="TOP"><TD width="<%=W_COFFEE_BY_REGION_COL%>"><%=regionProdCols.getColValue(1)%></TD>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD>
 <%if(regionProdCols.getColLength(2) > 0){%>
 <TD WIDTH="1" BGCOLOR="#CCCCCC"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
 <%}%>
-<TD WIDTH="10"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="1" BORDER="0"></TD><TD width="129"><%=regionProdCols.getColValue(2)%></TD>
-<TD WIDTH="10"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="1" BORDER="0"></TD>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD><TD width="<%=W_COFFEE_BY_REGION_COL%>"><%=regionProdCols.getColValue(2)%></TD>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD>
 <%if(regionProdCols.getColLength(3) > 0){%>
 <TD WIDTH="1" BGCOLOR="#CCCCCC"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
 <%}%>
-<TD WIDTH="10"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="1" BORDER="0"></TD><TD width="129">
-<%=regionProdCols.getColValue(3)%></TD></TR></TABLE><BR><FONT CLASS="space4pix"><BR></FONT>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD><TD width="<%=W_COFFEE_BY_REGION_COL%>"><%=regionProdCols.getColValue(3)%></TD>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD>
+<%if(regionProdCols.getColLength(4) > 0){%>
+<TD WIDTH="1" BGCOLOR="#CCCCCC"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
+<%}%>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD><TD width="<%=W_COFFEE_BY_REGION_COL%>">
+<%=regionProdCols.getColValue(4)%></TD></TR></TABLE><BR><FONT CLASS="space4pix"><BR></FONT>
 <%
     // if the next folder is a not A child of the outerFolder..then display the unavailable stuff
     if (unAvailableList.size()>0 && (!folderFound || (!outerFolderName.equals( ((CategoryModel)foldersAndProds[i+1]).getParentNode().getContentName() )) )  ) {
         regionProdCols = bldByRegionCols(unAvailableList,response,trkCode);
         unAvailableList.clear();
 %>
-<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" width="429">
-<TR VALIGN="TOP"><TD colspan="9" width="429"><br><font color="#999999"><b>Currently Unavailable</b></font><br></TD></tr>
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" width="<%=W_COFFEE_BY_REGION_COLS-1%>">
+<TR VALIGN="TOP"><TD colspan="13" width="<%=W_COFFEE_BY_REGION_COLS-1%>"><br><font color="#999999"><b>Currently Unavailable</b></font><br></TD></tr>
 
-<TR VALIGN="TOP"><TD width="129"><%=regionProdCols.getColValue(1)%></TD>
-<TD WIDTH="10"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="1" BORDER="0"></TD>
+<TR VALIGN="TOP"><TD width="<%=W_COFFEE_BY_REGION_COL%>"><%=regionProdCols.getColValue(1)%></TD>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD>
 <%if(regionProdCols.getColLength(2) > 0){%>
 <TD WIDTH="1" BGCOLOR="#CCCCCC"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
 <%}%>
-<TD WIDTH="10"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="1" BORDER="0"></TD><TD width="129"><%=regionProdCols.getColValue(2)%></TD>
-<TD WIDTH="10"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="1" BORDER="0"></TD>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD><TD width="<%=W_COFFEE_BY_REGION_COL%>"><%=regionProdCols.getColValue(2)%></TD>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD>
 <%if(regionProdCols.getColLength(3) > 0){%>
 <TD WIDTH="1" BGCOLOR="#CCCCCC"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
 <%}%>
-<TD WIDTH="10"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="1" BORDER="0"></TD><TD width="129">
-<%=regionProdCols.getColValue(3)%></TD></TR></TABLE><BR><FONT CLASS="space4pix"><BR></FONT>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD><TD width="<%=W_COFFEE_BY_REGION_COL%>"><%=regionProdCols.getColValue(3)%></TD>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD>
+<%if(regionProdCols.getColLength(4) > 0){%>
+<TD WIDTH="1" BGCOLOR="#CCCCCC"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
+<%}%>
+<TD WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_COFFEE_BY_REGION_COL_PAD_HALF%>" HEIGHT="1" BORDER="0"></TD><TD width="<%=W_COFFEE_BY_REGION_COL%>">
+<%=regionProdCols.getColValue(4)%></TD></TR></TABLE><BR><FONT CLASS="space4pix"><BR></FONT>
 
 <%
     }

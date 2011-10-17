@@ -7,6 +7,11 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import="com.freshdirect.dataloader.autoorder.create.util.DateUtil" %>
+
+<% //expanded page dimensions
+final int W_CHECKOUT_STEP_3_CHECKACCT_EDIT_TOTAL = 970;
+%>
+
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
@@ -30,9 +35,9 @@ boolean proceedThruCheckout = false;
 %>
 <form method="post">
 
-<TABLE WIDTH="690" cellspacing="0" cellpadding="0" border="0">	
+<TABLE WIDTH="<%=W_CHECKOUT_STEP_3_CHECKACCT_EDIT_TOTAL%>" cellspacing="0" cellpadding="0" border="0">	
 	<TR>
-		<TD CLASS="text11" WIDTH="690" VALIGN="bottom">
+		<TD CLASS="text11" WIDTH="<%=W_CHECKOUT_STEP_3_CHECKACCT_EDIT_TOTAL%>" VALIGN="bottom">
 			<FONT CLASS="title18">PAYMENT INFO</FONT><BR>
 		    <IMG src="/media_stat/images/layout/clear.gif" WIDTH="395" HEIGHT="1" BORDER="0">
 		</TD>
@@ -43,14 +48,14 @@ boolean proceedThruCheckout = false;
 <!-- PROFILE HEADER -->
 <%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
-<TABLE WIDTH="690" cellspacing="0" cellpadding="0" border="0">	
+<TABLE WIDTH="<%=W_CHECKOUT_STEP_3_CHECKACCT_EDIT_TOTAL%>" cellspacing="0" cellpadding="0" border="0">	
 	<TR>
 		<TD class="text11" WIDTH="395">
 <font class="title18">Edit Checking Account</font><br>
 Learn more about how this service works.
 			To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here</a><BR>
 		</TD>
-		<TD WIDTH="265" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10bold"><FONT CLASS="space2pix"><BR></FONT>
+		<TD WIDTH="<%=W_CHECKOUT_STEP_3_CHECKACCT_EDIT_TOTAL-430%>" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10bold"><FONT CLASS="space2pix"><BR></FONT>
 			<IMG src="/media_stat/images/layout/clear.gif" WIDTH="265" HEIGHT="1" BORDER="0"><BR>
 		</TD>
 		<TD WIDTH="35" ALIGN="RIGHT" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT>
@@ -64,9 +69,9 @@ Learn more about how this service works.
 
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
-	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="693">
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_3_CHECKACCT_EDIT_TOTAL%>">
 	<TR VALIGN="TOP">
-			<TD WIDTH="693" ALIGN="RIGHT">
+			<TD WIDTH="<%=W_CHECKOUT_STEP_3_CHECKACCT_EDIT_TOTAL%>" ALIGN="RIGHT">
 				<a href="<%=cancelPage%>"><img src="/media_stat/images/buttons/cancel.gif" WIDTH="72" HEIGHT="19"  HSPACE="4" VSPACE="4" alt="CANCEL" border="0"></a>
 				<input type="image" name="checkout_credit_card_edit" src="/media_stat/images/buttons/save_changes.gif" WIDTH="91" HEIGHT="18" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0">
 			</TD>
@@ -74,16 +79,16 @@ Learn more about how this service works.
 </TABLE>
 
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="693" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="<%=W_CHECKOUT_STEP_3_CHECKACCT_EDIT_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
-	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675">
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_3_CHECKACCT_EDIT_TOTAL%>">
 		<TR VALIGN="TOP">
 				<td width="35">
 					<a href="<%=response.encodeURL("/checkout/step_2_select.jsp ")%>" id="previousX">
 						<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
 				</td>
-				<td width="640">
+				<td width="<%=W_CHECKOUT_STEP_3_CHECKACCT_EDIT_TOTAL-35%>">
 					<a href="<%=response.encodeURL("/checkout/step_2_select.jsp  ")%>" id="previousX">
 					<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
 					Delivery Time<br/>
@@ -95,7 +100,7 @@ Learn more about how this service works.
 <%@ include file="/checkout/includes/i_footer_text.jspf" %>
 
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
-	<img src="/media_stat/images/layout/dotted_line.gif" width="693" height="1" border="0"><br/>
+	<img src="/media_stat/images/layout/dotted_line.gif" width="<%=W_CHECKOUT_STEP_3_CHECKACCT_EDIT_TOTAL%>" height="1" border="0"><br/>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>

@@ -21,6 +21,11 @@
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
 
+<% //expanded page dimensions
+final int W_GROCERY_PRODUCT = 601;
+%>
+
+
 <%
 //********** Start of Stuff to let JSPF's become JSP's **************
 FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
@@ -246,7 +251,7 @@ request.removeAttribute("successPage");
         // there are errors..Display them
         Collection myErrs=((ActionResult)result).getErrors();
 %>
-        <table border="0" cellspacing="0" cellpadding="0" width="425">
+        <table border="0" cellspacing="0" cellpadding="0" width="<%=W_GROCERY_PRODUCT%>">
 	  
 <%
         for (Iterator errItr = myErrs.iterator();errItr.hasNext(); ) {
@@ -352,7 +357,7 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
         pageNumber = 1;
 }
 %>
-<table border="0" cellspacing="0" cellpadding="0" width="425">
+<table border="0" cellspacing="0" cellpadding="0" width="<%=W_GROCERY_PRODUCT%>">
 <form name="groceryForm" id='grocery_form' method="POST">
 <%
 //If there is a specific product selected then show it above the listings here
@@ -484,7 +489,7 @@ if(productCode!=null && prodCatId !=null ) {
 %><input type="hidden" name="fdsc.source" value="<%=request.getParameter("fdsc.source")%>"/> <%
  	}
  %>
-<tr valign="top"><td width="275">
+<tr valign="top"><td width="220">
 <table cellpadding="0" cellspacing="0" border="0"><tr>
 <%
 	if (titleBrandLogo!=null) {
@@ -493,7 +498,7 @@ if(productCode!=null && prodCatId !=null ) {
 <%
 	if (brandPopupLink!=null) {
 %>
-<table cellpadding="0" cellspacing="0" border="0"><tr><td><a href="<%=brandPopupLink%>"><img src="<%=titleBrandLogo.getPath()%>" width="<%=titleBrandLogo.getWidth()%>" height="<%=titleBrandLogo.getHeight()%>" border="0"></a></td><td>&nbsp; <a href="<%=brandPopupLink%>">Learn more about <%=thisProdBrandLabel%></a></td></tr></table>
+<table cellpadding="0" cellspacing="0" border="0"><tr><td><a href="<%=brandPopupLink%>"><img src="<%=titleBrandLogo.getPath()%>" width="<%=titleBrandLogo.getWidth()%>" height="<%=titleBrandLogo.getHeight()%>" border="0"></a></td><td style="padding-left: 5px;"><a href="<%=brandPopupLink%>">Learn more about <%=thisProdBrandLabel%></a></td></tr></table>
         <%
         	} else {
         %>
@@ -560,7 +565,7 @@ if(productCode!=null && prodCatId !=null ) {
         %>
         <br>
         <b><font class="text12rbold">This item is temporarily unavailable.</font></b><br><br>
-        <img src="/media_stat/images/layout/999999.gif" width="225" height="1" border="0" vspace"5"><br>
+        <img src="/media_stat/images/layout/999999.gif" width="220" height="1" border="0" vspace"5"><br>
         <%
         	}
         %>
@@ -624,12 +629,12 @@ if(productCode!=null && prodCatId !=null ) {
 <%@ include file="/shared/includes/product/i_minmax_note.jspf" %>
 
 <br>
-<input type="image" name="addSingleToCart_big" src="/media_stat/images/buttons/add_to_cart.gif"  ALT="ADD THIS ITEM TO YOUR CART" width="93" height="20" HSPACE="2" VSPACE="2" border="0"><br>
+<input type="image" name="addSingleToCart_big" src="/media_stat/images/buttons/add_to_cart.gif"  ALT="ADD THIS ITEM TO YOUR CART" width="93" height="20" style="margin: 2px 2px;" border="0"><br>
 <%=FDURLUtil.getHiddenCommonParameters(request.getParameterMap(), "_big")%>
 
 	<fd:CCLCheck>
 		<div>       
-			<a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('grocery_form',this,'action=CCL:AddMultipleToList&source=ccl_sidebar_big')"><img src="/media_stat/ccl/save_to_list_btn.gif" width="93" height="20" vspace="5" hspace="2"></a>
+			<a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('grocery_form',this,'action=CCL:AddMultipleToList&source=ccl_sidebar_big')"><img src="/media_stat/ccl/save_to_list_btn.gif" width="93" height="20" style="margin: 5px 2px;"></a>
 		</div>		             
 		<div style="margin: 0 0 0 5px;"></div>		             
 	</fd:CCLCheck>
@@ -637,7 +642,7 @@ if(productCode!=null && prodCatId !=null ) {
 <%@ include file="/includes/product/i_delivery_note.jspf" %>
 <%@ include file="/includes/product/i_cancellation_note.jspf" %>
 
-<br><img src="/media_stat/images/layout/999999.gif" width="225" height="1" border="0" vspace="5"><br>
+<br><img src="/media_stat/images/layout/999999.gif" width="220" height="1" border="0" vspace="5"><br>
 <%
 	if (productNode.getProductDescription()!=null && productNode.getProductDescription().getPath()!=null && productNode.getProductDescription().getPath().indexOf("blank_file.txt") < 0) {
 %>
@@ -721,11 +726,11 @@ if(shelfLife != null && shelfLife.trim().length() > 0) { %>
 
 	<table border="0" cellspacing="0" cellpadding="0" style="clear: both;">
 		<tr>
-		    <td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="140" height="9"></td>
+		    <td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="240" height="9"></td>
 		</tr>
 		<tr>
 		    <td height="5"><img src="/media_stat/images/layout/top_left_curve.gif" width="6" height="6"></td>
-		    <td height="5" style="border-top: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="160" height="1"></td>
+		    <td height="5" style="border-top: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="228" height="1"></td>
 		    <td height="5"><img src="/media_stat/images/layout/top_right_curve.gif" width="6" height="6"></td>
 		</tr>
 
@@ -735,7 +740,7 @@ if(shelfLife != null && shelfLife.trim().length() > 0) { %>
 
 			<table width="0" border="0" cellspacing="0" cellpadding="0">
 				<tr><td colspan="3" align="center" style="border-left: solid 1px #999966; border-right: solid 1px #999966;">
-					<table border="0" cellspacing="0" cellpadding="0" width="0">
+					<table border="0" cellspacing="0" cellpadding="0" width="238">
 
 
 						<tr valign="top">
@@ -760,11 +765,11 @@ if(shelfLife != null && shelfLife.trim().length() > 0) { %>
 		</tr>
 		
 	</table>
-	<table width="188">
+	<table width="238">
 		<tr>
-			<td align="right">
+			<td align="center">
 			<img src="/media_stat/images/layout/clear.gif" width="100%" height="6">
-			<a href="javascript:pop('/shared/brandpop.jsp?brandId=bd_fd_fresh_guarantee',400,585)">Learn more about our Freshness Guarantee - CLICK HERE</a>
+			<a href="javascript:pop('/shared/brandpop.jsp?brandId=bd_fd_fresh_guarantee',400,585)">Learn more about our Freshness Guarantee - CLICK&nbsp;HERE</a>
 			</td>
 		</tr>
 	</table>
@@ -782,14 +787,13 @@ if(shelfLife != null && shelfLife.trim().length() > 0) { %>
 	if (thisBrandModel !=null) { 
 String  viewBrandURL = response.encodeURL("/category.jsp?catId="+groceryCategory+buildOtherParams(showThumbnails,itemsToDisplay,-1,thisProdBrand,sortBy,nutriName,request,groceryCategory.getContentName())+"&sortDescending=" + descending + "&disp=" + display + "&trk=pkprod");
 %>
-<table width="425" cellpadding="1" cellspacing="0" border="0" bgcolor="#FF9933" align="center">
-        <tr><td><table width="100%" cellpadding="3" bgcolor="#FFFFFF"><tr><td align="center" class="text11bold"><a href="<%=viewBrandURL%>">View All
-<%=thisProdBrandLabel%> Products in <%=groceryCategory.getFullName()%></a></td></tr></table></td></tr>
-</table>
+<div style="text-align: center; border: 1px solid #ff9933; padding: 5px;" class="text11bold">
+  <a href="<%=viewBrandURL%>">View All <%=thisProdBrandLabel%> Products in <%=groceryCategory.getFullName()%></a>
+</div>
 <%
 	} else {
 %>
-<img src="/media_stat/images/layout/999999.gif" width="425" height="1" border="0" vspace"5"><br>
+<img src="/media_stat/images/layout/999999.gif" width="<%=W_GROCERY_PRODUCT%>" height="1" border="0" vspace"5"><br>
 <%
 	}
 %>
@@ -836,7 +840,7 @@ if (brandLogo !=null) {
         if (brandPopupLink!=null) { brandOrFolderName += "</a>"; }
 }
 %>
-<table border="0" cellspacing="0" cellpadding="0" width="425">
+<table border="0" cellspacing="0" cellpadding="0" width="<%=W_GROCERY_PRODUCT%>">
 <tr valign="BOTTOM">
     <td><%
     	if (brandPopupLink!=null) {
@@ -938,7 +942,7 @@ if (doRenderEditorialPartial && editorialMedia != null && !editorialMedia.isBlan
 %>
 </table>
 
-<table border="0" cellspacing="0" cellpadding="0" width="425">
+<table border="0" cellspacing="0" cellpadding="0" width="<%=W_GROCERY_PRODUCT%>">
 <tr valign="top">
     <td CLASS="text10bold" width="215">Page: <%=pageNumberLinks%></td>
     <td ALIGN="RIGHT"><b>Sort by:</b>
@@ -995,7 +999,7 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
 }
  // if we are not displaying the amplified product (bigProduct area) then show the add selected to cart button at the top
 %>
-<table border="0" cellspacing="0" cellpadding="0" width="425"><tr>
+<table border="0" cellspacing="0" cellpadding="0" width="<%=W_GROCERY_PRODUCT%>"><tr>
 <%
 	if(!bigProdShown && isAnyProdAvailable) {
 %><td><input type="image" name="addMultipleToCart" src="/media_stat/images/buttons/add_selected_to_cart.gif" width="145" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART"></td><%
@@ -1008,11 +1012,11 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
 
 <%
 	if(showThumbnails) {
-        for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd; i += 5) {
+        for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd; i += 6) {
                 //now in the main loop, we need two inner loops, the first loop prints 5 images horizontally, the second print the products vertically
-                int innerLoopEnd = Math.min(i + 5, loopEnd);
+                int innerLoopEnd = Math.min(i + 6, loopEnd);
 %>
-<table border="0" cellspacing="0" cellpadding="0" width="425">
+<table border="0" cellspacing="0" cellpadding="0" align="left">
         <tr valign="top">
 <%
 	String otherParams = buildOtherParams(showThumbnails, itemsToDisplay, -1, brandValue, sortBy, nutriName,request, null);
@@ -1031,7 +1035,7 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
                                 + "&prodCatId="+displayProduct.getParentNode()
                                 + "&productId="+displayProduct.getContentName())+"&trk=trans";
 %>
-                <td width="85">
+                <td width="85" style="padding-left: 10px;">
                 <div id="prod_container" style="height: 90px; width: 90px; text-align: left;" onMouseOver="changeImg(document.bullet<%=imgShownIndex%>,'in',0)" onMouseOut="changeImg(document.bullet<%=imgShownIndex%>,'out',0)">
 					<div>
 
@@ -1046,7 +1050,7 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
         </tr>
 </table>
 <br>
-<table width="425" border="0" cellspacing="0" cellpadding="0">
+<table width="<%=W_GROCERY_PRODUCT%>" border="0" cellspacing="0" cellpadding="0">
 <%@include file="/includes/layouts/i_grocery_product_separator.jspf"%>
 <%
 	//now the second loop - displays product descriptions vertically
@@ -1068,7 +1072,7 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
 } else {
 
         // we are not displaying thumbnails
-%><table width="425" border="0" cellspacing="0" cellpadding="0">
+%><table width="<%=W_GROCERY_PRODUCT%>" border="0" cellspacing="0" cellpadding="0">
 <%@include file="/includes/layouts/i_grocery_product_separator.jspf"%>
 <%
 	for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd; i++) {
@@ -1098,7 +1102,7 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
 <%
 if(isAnyProdAvailable) {
 %>
-        <table border="0" cellspacing="0" cellpadding="0" width="425"><tr valign="BOTTOM"><td width="425">
+        <table border="0" cellspacing="0" cellpadding="0" width="<%=W_GROCERY_PRODUCT%>"><tr valign="BOTTOM"><td width="<%=W_GROCERY_PRODUCT%>">
         <input type="image" name="addMultipleToCart" src="/media_stat/images/buttons/add_selected_to_cart.gif" width="145" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART">
         <br>
         <fd:CCLCheck>
@@ -1108,7 +1112,7 @@ if(isAnyProdAvailable) {
         </td></tr></table>
 <% } %>
 <br/>
-<table border="0" cellspacing="0" cellpadding="0" width="425">
+<table border="0" cellspacing="0" cellpadding="0" width="<%=W_GROCERY_PRODUCT%>">
 <tr>
 <td><FONT CLASS="title11"><%=brandOrFolderName%></FONT> <FONT CLASS="text9">(<%= skuCount %> items)</FONT><br></td>
 <td ALIGN="RIGHT"><%
@@ -1126,7 +1130,7 @@ Thumbnails <A HREF="<%=thumbNailURL%>">ON</A> | <B>OFF</B><%
 <tr><td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
 <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
 </table>
-<table border="0" cellspacing="0" cellpadding="0" width="425">
+<table border="0" cellspacing="0" cellpadding="0" width="<%=W_GROCERY_PRODUCT%>">
 <tr valign="top"><td CLASS="text10bold" width="240">Page: <%= pageNumberLinks %><br></td>
 <td ALIGN="RIGHT" width="185">Display <%
 if (itemsToDisplay == 30) {

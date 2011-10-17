@@ -12,12 +12,20 @@
 <%@ page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
 <%@ page import='java.net.URLEncoder' %>
 <%@ page import='java.util.*' %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
+
+<% //expanded page dimensions
+final int W_NEW_WINE_PRODUCT_TOTAL = 601;
+final int W_NEW_WINE_PRODUCT_LEFT = 428;
+final int W_NEW_WINE_PRODUCT_CENTER_PADDING = 14;
+final int W_NEW_WINE_PRODUCT_RIGHT = 165;
+%>
 
 <%@ include file="/shared/includes/product/i_product_methods.jspf" %>
 
@@ -49,14 +57,14 @@
     String alignment="align=\"left\"";
     String prodPageRatingStuff = getProdPageRatings(productNode,response); // get and format the product page ratings
 %>
-<table id="new_wine_prod_table" border="0" cellspacing="0" cellpadding="0" align="center" style="width: 430px;">
+<table id="new_wine_prod_table" border="0" cellspacing="0" cellpadding="0" align="center" style="width: <%=W_NEW_WINE_PRODUCT_TOTAL%>px;">
 	<tr>
-		<td style="width: 265px;">&nbsp;</td>
-		<td style="width: 165px;">&nbsp;</td>
+		<td style="width: <%=W_NEW_WINE_PRODUCT_LEFT%>px;">&nbsp;</td>
+		<td style="width: <%=W_NEW_WINE_PRODUCT_RIGHT%>px;">&nbsp;</td>
 	</tr>
 	<tr valign="top">
-		<td class="text12" style="padding-left: 10px; width: 265px;">
-		<% if (!_isModifyCart) { %><div style="padding-bottom: 20px; width: 265px;">
+		<td class="text12" style="width: <%=W_NEW_WINE_PRODUCT_LEFT%>px;">
+		<% if (!_isModifyCart) { %><div style="padding-bottom: 20px; width: <%=W_NEW_WINE_PRODUCT_LEFT%>px;">
 			<display:WineProductBackToLink/>
 		</div><% } %>
 		
@@ -72,8 +80,9 @@
 			<br>
 		<%}%>
 		</td>
-		<td align="center" class="text11" style="padding-top:3px; width: 165px;">
+		<td align="center" class="text11" style="padding-top:3px; width: <%=W_NEW_WINE_PRODUCT_RIGHT%>px;">
 				<!-- Product transactional area include start -->
+        <c:set var="useProdImage" value="${true}"/>
 				<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
 				<%@ include file="/shared/includes/product/i_product_image.jspf" %>
 		</td>
@@ -96,7 +105,7 @@
 	if (__rating != EnumWineRating.NOT_RATED) {
 	%>
 	<tr>
-		<td colspan="2" style="padding-left:3px;padding-right:2px;">
+		<td colspan="2">
 			<%@ include file="/shared/includes/wine/i_wine_expert_ratings_key.jspf" %>
 		</td>
 	</tr>
@@ -107,10 +116,9 @@
 <%
 	if (productNode.hasWineOtherRatings()) {
 %>	<tr>
-		<td colspan="2" style="padding-left:3px;padding-right:2px;">
+		<td colspan="2">
 			<fd:IncludeMedia name="/media/editorial/win_usq/other_ratings_key.html"/>
 		</td>
-		<td>&nbsp;</td>
 	</tr>
 <%		
 	}

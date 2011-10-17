@@ -1,5 +1,8 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<% //expanded page dimensions
+final int W_YA_EDIT_CHECKACCT = 970;
+%>
 
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <tmpl:insert template='/common/template/dnav.jsp'>
@@ -16,10 +19,10 @@
 	<%@ include file="/includes/i_error_messages.jspf" %>
 </fd:ErrorHandler>
 <%boolean proceedThruCheckout=false;%>
-<table WIDTH="690" cellspacing="0" cellpadding="0" border="0">
+<table WIDTH="<%= W_YA_EDIT_CHECKACCT %>" cellspacing="0" cellpadding="0" border="0">
 <form method="post">
 <tr>
-<td class="text11" WIDTH="690">
+<td class="text11" WIDTH="<%= W_YA_EDIT_CHECKACCT %>">
 <font class="title18">Edit Checking Account</font><br>
 Learn more about how this service works.
 To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here</a>
@@ -30,11 +33,11 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 <%@ include file="/includes/ckt_acct/checkacct_fields.jspf"%>
 <br><br>
 
-<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="675" HEIGHT="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="<%= W_YA_EDIT_CHECKACCT %>" HEIGHT="1" BORDER="0"><BR>
 <FONT CLASS="space4pix"><BR><BR></FONT>
-	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675">
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_EDIT_CHECKACCT %>">
 	<TR VALIGN="TOP">
-		<TD WIDTH="675" ALIGN="RIGHT">
+		<TD WIDTH="<%= W_YA_EDIT_CHECKACCT %>" ALIGN="RIGHT">
 			<a href="<%=cancelPage%>"><img src="/media_stat/images/buttons/cancel.gif" WIDTH="72" HEIGHT="19"  HSPACE="19" VSPACE="4" alt="CANCEL" border="0"></a>
 			<input type="image" name="checkout_credit_card_edit" src="/media_stat/images/buttons/save_changes.gif" WIDTH="91" HEIGHT="18" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0">
 		</TD>

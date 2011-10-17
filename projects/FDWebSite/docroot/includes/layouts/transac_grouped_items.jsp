@@ -14,6 +14,11 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
 
+<% //expanded page dimensions
+final int W_TRANSAC_GROUPED_ITEMS_CAT = 601;
+final int W_TRANSAC_GROUPED_ITEMS_DEP = 765;
+%>
+
 <%!
     java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 %>
@@ -79,9 +84,9 @@ if (sortedColl==null) sortedColl = new ArrayList();
 int itemTotal = sortedColl.size();
 
 if (request.getRequestURI().toLowerCase().indexOf("department.jsp")!=-1) {
-    maxWidth = 550;
+    maxWidth = W_TRANSAC_GROUPED_ITEMS_DEP;
 } else {
-    maxWidth = 425;
+    maxWidth = W_TRANSAC_GROUPED_ITEMS_CAT;
 }
 
 String itemNameFont = null;
@@ -224,11 +229,11 @@ if (prodsAvailable>0) {
     </NOBR></td>
     <td width="10">
         <%  if (prodUnAvailable) {  %>&nbsp;<%  } else {    %>
-            <A HREF="javascript:chgQty(<%=itemShownIndex%>,'<%= qtyFldName %>', <%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);"><img SRC="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></A><BR>
-            <A HREF="javascript:chgQty(<%=itemShownIndex%>,'<%= qtyFldName %>', -<%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);"><img SRC="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></A>
+            <A HREF="javascript:chgQty(<%=itemShownIndex%>,'<%= qtyFldName %>', <%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);"><img SRC="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" style="margin: 1px 0;" alt="Increase quantity"></A><BR>
+            <A HREF="javascript:chgQty(<%=itemShownIndex%>,'<%= qtyFldName %>', -<%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);"><img SRC="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" style="margin: 1px 0;" alt="Decrease quantity"></A>
         <%  }   %>
     </td>
-    <td width="<%= prodUnAvailable ? "275" : "305" %>" style="padding-left:8px; padding-right:3px;">
+    <td <%--width="<%= prodUnAvailable ? "275" : "305" %>"--%> style="padding-left:8px; padding-right:3px;">
     <%
         String unAvailableFontStart = "";
         String unAvailableFontEnd = "";

@@ -10,6 +10,10 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<% //expanded page dimensions
+final int W_PURCHASE_GIFTCARD_TOTAL = 970;
+%>
+
 <%request.setAttribute("listPos", "CategoryNote");%>
 
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
@@ -184,9 +188,9 @@ UserUtil.initializeGiftCart(user);
 %>
 	<BR>	
 <form method="post" id="form1" name="order_form">
-<table width="690" cellspacing="0" cellpadding="0" border="0">
+<table width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 	<tr>
-		<td class="text11" width="675">
+		<td class="text11" width="<%=W_PURCHASE_GIFTCARD_TOTAL-99%>">
 			<span class="title18"><img src="/media_stat/images/giftcards/purchase/purchase_gift_cards.gif" /></span><br />
 			Please enter your credit card information below.
 		</td>
@@ -195,8 +199,8 @@ UserUtil.initializeGiftCart(user);
 		</td>
 	</tr>
 	<tr>
-		<td colspan="2" style="padding: 2px;">
-			<img style="margin: 2px 0;" width="675" height="1" border="0" src="/media_stat/images/layout/999966.gif" /><br />
+		<td colspan="2" style="padding: 2px 0px;">
+			<img style="margin: 2px 0;" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" height="1" border="0" src="/media_stat/images/layout/999966.gif" /><br />
 		</td>
 	</tr>
 </table>
@@ -224,7 +228,7 @@ boolean isCheckEligible = false;
   <% StringBuffer sbErrorMsg= new StringBuffer(); %>
 
 
-<table width="675" border="0" cellpadding="0" cellspacing="0" class="text11">
+<table width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" border="0" cellpadding="0" cellspacing="0" class="text11">
     <%
     	String serviceType = request.getParameter("serviceType");
     	String value1 = "personal"; 
@@ -267,10 +271,10 @@ boolean isCheckEligible = false;
 </script>
 
 
-	<table width="675" border="0" cellspacing="0" cellpadding="2">
+	<table width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
 		<tr valign="top">
-			<td width="693"><img src="/media_stat/images/navigation/choose_credit_card.gif" width="135" height="9" border="0" alt="CHOOSE CREDIT CARD">&nbsp;&nbsp;&nbsp;<br />
-					<img src="/media_stat/images/layout/999966.gif" width="675" height="1" border="0" vspace="3"><br />
+			<td width="<%=W_PURCHASE_GIFTCARD_TOTAL%>"><img src="/media_stat/images/navigation/choose_credit_card.gif" width="135" height="9" border="0" alt="CHOOSE CREDIT CARD">&nbsp;&nbsp;&nbsp;<br />
+					<img src="/media_stat/images/layout/999966.gif" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" height="1" border="0" vspace="3"><br />
 				<font class="space2pix"><br /></font>  
 			</td>   
 		</tr>
@@ -281,7 +285,7 @@ boolean isCheckEligible = false;
 			</td>
 		</tr>
 		<tr>
-			<td>
+			<td align="center">
 				<%-- <form id="form2" name="creditcard_form" method="post">  --%>
 				<input type="hidden" name="actionName" value="">
 				<input type="hidden" name="deletePaymentId" value="">
@@ -291,11 +295,11 @@ boolean isCheckEligible = false;
 		</tr>
 	</table>
 		<br />
-		<img src="/media_stat/images/layout/ff9933.gif" width="675" height="1" border="0"><br />
+		<img src="/media_stat/images/layout/ff9933.gif" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" height="1" border="0"><br />
 		<font class="space4pix"><br /><br /></font>
-		<table border="0" cellspacing="0" cellpadding="2" width="675">
+		<table border="0" cellspacing="0" cellpadding="2" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>">
 		<tr valign="top">
-			<td width="675" align="right">
+			<td width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" align="right">
 			<input type="image" name="submit_bot" id="submit_bot" src="/media_stat/images/giftcards/purchase/gc_submit_order.gif" width="90" height="25"  hspace="4" vspace="4" alt="submit order" border="0">
 			</td>
 		</tr>

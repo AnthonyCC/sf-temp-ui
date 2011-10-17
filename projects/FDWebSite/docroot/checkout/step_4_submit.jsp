@@ -14,6 +14,11 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<% //expanded page dimensions
+final int W_CHECKOUT_STEP_4_SUBMIT_TOTAL = 970;
+%>
+
+
 <%!
 java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 %>
@@ -130,13 +135,13 @@ java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 		</table>
 	</div>
 
-<table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="693">
+<table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>">
 	<tr VALIGN="TOP">
 			<td CLASS="text11" WIDTH="395" VALIGN="bottom">
 				<FONT CLASS="title18">REVIEW & SUBMIT</FONT><BR>
 			    <IMG src="/media_stat/images/layout/clear.gif" WIDTH="395" HEIGHT="1" BORDER="0">
 </td>
-			<td width="265" align="right" valign="middle">
+			<td width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL-430%>" align="right" valign="middle">
 				<font class="space2pix"><br/></font><% if (!orderAmountFraud && !doubleSubmit) { %>
 				<input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/submit_order.gif" width="84" height="12" border="0" alt="CONTINUE CHECKOUT" vspace="0" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomText"><br/>
 				<input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/click_to_place_order.gif" width="85" height="10" border="0" alt="CONTINUE CHECKOUT" vspace="0" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomText"><% } %><br/>
@@ -238,16 +243,16 @@ if (user.isPromoConflictResolutionApplied()) {
 <%@ include file="/includes/ckt_acct/i_step_4_delivery_payment.jspf" %>
 
 <IMG src="/media_stat/images/layout/clear.gif" width="1" height="1"><br>
-<IMG src="/media_stat/images/layout/dotted_line.gif" width="693" height="1"><br>
+<IMG src="/media_stat/images/layout/dotted_line.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1"><br>
 <IMG src="/media_stat/images/layout/clear.gif" width="1" height="20"><br>
 
-<table width="693" cellpadding="0" cellspacing="0" border="0">
+<table width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 	<tr VALIGN="TOP">
-		<td width="693"><img src="/media_stat/images/navigation/cart_details.gif" width="96" height="15" border="0" alt="CART DETAILS">&nbsp;&nbsp;&nbsp;
+		<td width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>"><img src="/media_stat/images/navigation/cart_details.gif" width="96" height="15" border="0" alt="CART DETAILS">&nbsp;&nbsp;&nbsp;
 <% if (request.getRequestURI().toLowerCase().indexOf("your_account/") != 1){ %>
 <FONT CLASS="text9">If you would like to make any changes to your order, <A HREF="/view_cart.jsp?trk=chkplc">click here</A> to go back to your cart.</FONT><BR>
 <% } %>
-			<IMG src="/media_stat/images/layout/999966.gif" width="693" height="1" BORDER="0" VSPACE="3"><br>
+			<IMG src="/media_stat/images/layout/999966.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1" BORDER="0" VSPACE="3"><br>
 			<IMG src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
 			<font class="title11"><b>Note:</b></font> <font class="text11orbold">Our goal is to fill your order with food of the highest quality. Occasionally, we'll get a shipment that doesn't meet our standards and we cannot accept it. Of course, if this happens, FreshDirect will not charge you for the missing item.</font>
 		</td>
@@ -261,10 +266,10 @@ if (user.isPromoConflictResolutionApplied()) {
 
 <BR>
 <IMG src="/media_stat/images/layout/clear.gif" width="1" height="8" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/dotted_line.gif" width="693" height="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/dotted_line.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/clear.gif" width="1" height="8" BORDER="0"><BR>
 
-<table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="693">
+<table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>">
 	<tr VALIGN="TOP">
 		
 			<td width="35">
@@ -277,7 +282,7 @@ if (user.isPromoConflictResolutionApplied()) {
 				Payment Method<br/>
 				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
 		</td>
-			<td width="265" align="right" valign="middle">
+			<td width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL-410%>" align="right" valign="middle">
 				<font class="space2pix"><br/></font><% if (!orderAmountFraud && !doubleSubmit) { %>
 				<input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/submit_order.gif" width="84" height="12" border="0" alt="CONTINUE CHECKOUT" vspace="0" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomText"><br/>
 				<input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/click_to_place_order.gif" width="85" height="10" border="0" alt="CONTINUE CHECKOUT" vspace="0" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomText"><% } %><br/>
@@ -295,7 +300,7 @@ if (user.isPromoConflictResolutionApplied()) {
 </FORM>
 
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
-<img src="/media_stat/images/layout/dotted_line.gif" width="675" height="1" border="0"><br/>
+<img src="/media_stat/images/layout/dotted_line.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1" border="0"><br/>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>

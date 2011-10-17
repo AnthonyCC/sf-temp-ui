@@ -5,10 +5,10 @@
 	/* control page and row-wide debug messages */
 		myDebug = FDStoreProperties.isWhatsGoodDebugOn();
 
-	//set media path base
+	// set media path base
 	mediaPathTempBase="/media/editorial/whats_good/";
 
-	//set deptId default
+	// set deptId default
 	deptId = request.getParameter("deptid");
 
 	//set deptId default
@@ -69,11 +69,9 @@
 	
 	<% //START top section %>
 
-		<%
-			log(myDebug, "PAGE IncludeMedia: /media/editorial/whats_good/whats_good_line.html");
-			mediaPathTemp=mediaPathTempBase+"whats_good_line.html";
-		%>
-		<fd:IncludeMedia name="<%= mediaPathTemp %>" />
+		<div class="WG_line" style="background-color: #f8993b; text-align: left; margin-bottom: 12px; font-size: 0px; heigth: 15px;">
+			<img src="/media/editorial/whats_good/img/bar_stripes.gif" border="0" alt="" />
+		</div>
 
 		<%
 			log(myDebug, "PAGE IncludeMedia: /media/editorial/whats_good/whats_good_top_msg.html");

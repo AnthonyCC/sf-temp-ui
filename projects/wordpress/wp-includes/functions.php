@@ -4302,7 +4302,7 @@ function get_file_data( $file, $default_headers, $context = '' ) {
 	}
 
 	foreach ( $all_headers as $field => $regex ) {
-		preg_match( '/^[ \t\/*#]*' . preg_quote( $regex, '/' ) . ':(.*)$/mi', $file_data, ${$field});
+		preg_match( '/^[ \t\/*#@]*' . preg_quote( $regex, '/' ) . ':(.*)$/mi', $file_data, ${$field});
 		if ( !empty( ${$field} ) )
 			${$field} = _cleanup_header_comment( ${$field}[1] );
 		else
@@ -4480,6 +4480,18 @@ function wp_find_hierarchy_loop_tortoise_hare( $callback, $start, $override = ar
 	}
 
 	return false;
+}
+
+/**
+ * Send a HTTP header to limit rendering of pages to same origin iframes.
+ *
+ * @link https://developer.mozilla.org/en/the_x-frame-options_response_header
+ *
+ * @since 3.1.3
+ * @return none
+ */
+function send_frame_options_header() {
+	@header( 'X-Frame-Options: SAMEORIGIN' );
 }
 
 ?>

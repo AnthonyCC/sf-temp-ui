@@ -10,6 +10,11 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
+
+<% //expanded page dimensions
+final int W_CAREERS_TOTAL = 970;
+%>
+
 <fd:CheckLoginStatus />
 
 <%
@@ -29,13 +34,13 @@ MediaModel catImage = ((ProductContainer) currentFolder).getCategoryPhoto();
 
 <tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName() %></tmpl:put>
 <tmpl:put name='content' direct='true'>
-<table width="720" cellpadding="0" cellspacing="0" border="0">
+<table width="<%=W_CAREERS_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 	<tr valign="top">
-		<td width="600"><% if (introCopy !=null && introCopy.trim().length()>0 && introCopy.indexOf("blank_file.txt") == -1) { %><fd:IncludeMedia name='<%= introCopy %>'/><% } %></td>
+		<td width="<%=W_CAREERS_TOTAL-120%>"><% if (introCopy !=null && introCopy.trim().length()>0 && introCopy.indexOf("blank_file.txt") == -1) { %><fd:IncludeMedia name='<%= introCopy %>'/><% } %></td>
 		<td width="120" rowspan="2" align="right"><% if (catImage != null) { %><img src="<%=catImage.getPath()%>" width="<%=catImage.getWidth()%>" height="<%=catImage.getHeight()%>" border="0"><% } %></td>
 	</tr>
 	<tr>
-		<td class="text12">
+		<td class="text12"><center>
 <fd:ItemGrabber category='<%=currentFolder %>' id='rtnColl' depth='99' ignoreShowChildren='false' filterDiscontinued='false' returnHiddenFolders='true' ignoreDuplicateProducts='true' returnSecondaryFolders='true' returnSkus='false'>
 <% 
 Collection itemsColl = rtnColl;  
@@ -53,7 +58,7 @@ if (mainHeader) {
 </fd:ItemGrabber> 
 		
 		
-		</td>
+		</center></td>
 	</tr>
 </table>
 </tmpl:put>

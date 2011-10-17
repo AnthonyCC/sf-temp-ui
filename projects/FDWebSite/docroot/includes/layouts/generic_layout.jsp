@@ -14,6 +14,11 @@
 <%@ taglib uri='oscache' prefix='oscache' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
+<% //expanded page dimensions
+final int W_GENERIC_LAYOUT_IS_DEPARTMENT = 765;
+final int W_GENERIC_LAYOUT_NOT_DEPARTMENT = 601; 
+%>
+
 <script type="text/javascript">
 	OAS_AD('CategoryNote');
 </script>
@@ -65,6 +70,7 @@
    	<br/><img src="/media_stat/images/layout/ourfreshfruit.gif" name="Our Fresh Fruit" width="535" height="15" border="0">
 <% } %>
 
+<%--EXPANDED_PAGE_VERIFY should the first maxColumns be 6?--%>
 <display:HorizontalPattern 
 	id="horizontalPattern" 
 	itemsToShow="<%=sortedCollection%>" 
@@ -75,12 +81,12 @@
 	currentFolder="<%= currentFolder %>" 
 	useLayoutPattern="false" 
 	dynamicSize="true" 
-	maxColumns="<%= isDepartment.booleanValue() ? 5 : 4 %>" 
-	tableWidth="<%= isDepartment.booleanValue() ? 550 : 410 %>"
+	maxColumns="<%= isDepartment.booleanValue() ? 6 : 5 %>" 
+	tableWidth="<%= isDepartment.booleanValue() ? W_GENERIC_LAYOUT_IS_DEPARTMENT : W_GENERIC_LAYOUT_NOT_DEPARTMENT %>"
 	useAlternateImage="<%= useAlternateImages.booleanValue() %>"
 	>		
 		
-	<table cellspacing="0" cellpadding="0" width="<%=tableWidth%>">
+	<table cellspacing="0" cellpadding="0" width="100%">
 		<tr align="center" valign="bottom">		
 			<display:PatternRow id="patternRow" itemsToShow="<%= rowList %>">
 			

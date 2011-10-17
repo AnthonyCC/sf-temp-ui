@@ -1,6 +1,11 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+
+<% //expanded page dimensions
+final int W_LOGIN_TOTAL = 970;
+%>
+
 <% 
 String template = "/common/template/no_nav.jsp";
 	//diff nav for popup login
@@ -22,10 +27,10 @@ String sPage = (request.getParameter("successPage")!=null)?request.getParameter(
 <tmpl:insert template='<%=template%>'>
 <tmpl:put name='title' direct='true'>FreshDirect - Log In</tmpl:put>
 <tmpl:put name='content' direct='true'>
-<table border="0" cellspacing="0" cellpadding="0" width="500" align="center">
+<table border="0" cellspacing="0" cellpadding="0" width="<%=W_LOGIN_TOTAL%>" align="center">
 		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="20"></td></tr>
         <tr>
-            <td width="300">
+            <td width="<%=W_LOGIN_TOTAL-200%>">
 				<img src="/media_stat/images/navigation/current_cust_log_in_now.gif" width="222" height="13" border="0" alt="CURRENT CUSTOMERS LOG IN NOW"></td>
         	<td width="200" align="right"><font class="text9">* Required Information</font></td>
 		</tr>

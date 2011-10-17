@@ -13,6 +13,14 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<% //expanded page dimensions
+final int W_DELIVERY_INFO_TOTAL = 970;
+final int W_DELIVERY_INFO_LEFT = 724;
+final int W_DELIVERY_INFO_CENTER = 55;
+final int W_DELIVERY_INFO_RIGHT = 191;
+%>
+
+
 <fd:CheckLoginStatus id="user" />
 
 <% String siteAccessPage = request.getParameter("siteAccessPage"); 
@@ -35,13 +43,13 @@ request.setAttribute("listPos", "SystemMessage,ZDeliveryRight");
     <tmpl:put name='title' direct='true'>Delivery Information</tmpl:put>
     <tmpl:put name='content' direct='true'>
 		<%if(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("delivery")){%>
-			<table border="0" cellpadding="0" cellspacing="0" width="693">
+			<table border="0" cellpadding="0" cellspacing="0" width="<%=W_DELIVERY_INFO_TOTAL%>">
 			    <tr>
-					<td><img src="/media_stat/images/layout/clear.gif" width="512" height="18"></td>
-					<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
+					<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DELIVERY_INFO_LEFT%>" height="18"></td>
+					<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="<%=(W_DELIVERY_INFO_CENTER-1)/2%>" height="1"></td>
 					<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-					<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
-					<td><img src="/media_stat/images/layout/clear.gif" width="160" height="1"></td>
+					<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="<%=(W_DELIVERY_INFO_CENTER-1)/2%>" height="1"></td>
+					<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DELIVERY_INFO_RIGHT%>" height="1"></td>
 			    </tr>
 			    <tr valign="top">
 			        <td class="text12"><img src="/media_stat/images/template/help/about_home.gif" width="306" height="13">

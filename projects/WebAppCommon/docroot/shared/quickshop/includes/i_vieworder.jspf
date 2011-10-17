@@ -240,7 +240,7 @@ String source = ccListIdStr != null && ccListIdStr.length() > 0
           <% } %>   
             <td width="50%" align="right">
             <%if(!flagList.isEmpty()){%>
-                Item already in cart = <img src="/media_stat/images/template/quickshop/qs_check_gray.gif" name="checkImg" width="9" height="9" border="0" alt="Item is currently in your cart" align="absbottom">
+                Item already in cart = <img src="/media_stat/images/template/quickshop/qs_check_gray.gif" name="checkImg" width="9" height="9" border="0" alt="Item is currently in your cart">
             <%}%></td>
         </tr>
         <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
@@ -402,7 +402,7 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
 
 %>
 <%--top buffer --%>
-<tr bgcolor="<%=rowColor%>">
+<tr>
     <td colspan=""><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
 </tr>
 <tr valign="top" bgcolor="<%=rowColor%>">

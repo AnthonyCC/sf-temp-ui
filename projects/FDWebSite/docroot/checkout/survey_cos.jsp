@@ -9,6 +9,11 @@
 <%@ page import='com.freshdirect.fdstore.survey.*' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
+
+<% //expanded page dimensions
+final int W_CHECKOUT_SURVEY_COS_TOTAL = 970;
+%>
+
 <%
 response.setHeader("Cache-Control", "no-cache");
 response.setHeader("Pragma", "no-cache");
@@ -37,7 +42,7 @@ String[] checkSurveyForm = new String[questions.size()];
 
 <fd:IntermediateSurvey actionName="submitSurvey" result="result" successPage="<%=successPage%>" survey="<%=cosFeedback%>">
 
-<table width="700" cellpadding="0" cellspacing="0" border="0">
+<table width="<%=W_CHECKOUT_SURVEY_COS_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 <form method="post" name="cosFeedbackSurvey" action="survey_cos.jsp">
 <input type="hidden" name="skipSurvey" value="false">
 	<tr>
@@ -61,16 +66,16 @@ Now that you have had several orders from FreshDirect At The Office, we'd like t
 		</fd:ErrorHandler>
 <tr>
 <td colspan="7" class="text12">
-<br><img src="/media_stat/images/layout/999966.gif" width="700" height="1" vspace="2"></td>
+<br><img src="/media_stat/images/layout/999966.gif" width="<%=W_CHECKOUT_SURVEY_COS_TOTAL%>" height="1" vspace="2"></td>
 	</tr>
 	<tr align="center">
 		<td><img src="/media_stat/images/layout/clear.gif" width="20" height="8" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="155" height="8" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="105" height="8" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="105" height="8" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="105" height="8" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="105" height="8" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="105" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_CHECKOUT_SURVEY_COS_TOTAL-70)/6+50%>" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_CHECKOUT_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_CHECKOUT_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_CHECKOUT_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_CHECKOUT_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_CHECKOUT_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
 	</tr>
 
 	<%  int quesNum = 0; 
@@ -217,13 +222,13 @@ Now that you have had several orders from FreshDirect At The Office, we'd like t
 				</tr>
 				<tr>
 					<td></td>
-					<td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"><br><textarea wrap="virtual" cols="60" rows="<%= question.getName().indexOf("recommend") > -1?"4":"3"%>" class="text12" name="<%=question.getName()%>"><%=request.getParameter(question.getName())%></textarea></td>
+					<td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"><br><textarea wrap="virtual" cols="70" rows="<%= question.getName().indexOf("recommend") > -1?"4":"3"%>" class="text12" name="<%=question.getName()%>"><%=request.getParameter(question.getName())%></textarea></td>
 				</tr>
 				<tr><td colspan="7"><br><br></td></tr>
 			<% } %>
         </logic:iterate>
 		<tr>
-		<td colspan="7" align="center" class="text12"><img src="/media_stat/images/layout/999966.gif" width="700" height="1" vspace="10"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" name="submit_survey" alt="SUBMIT"><br><br>
+		<td colspan="7" align="center" class="text12"><img src="/media_stat/images/layout/999966.gif" width="<%=W_CHECKOUT_SURVEY_COS_TOTAL%>" height="1" vspace="10"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" name="submit_survey" alt="SUBMIT"><br><br>
 		
 		</td>
 	</tr>

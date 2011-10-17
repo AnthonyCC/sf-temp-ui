@@ -54,7 +54,7 @@
 	.q08_text { float: left; padding: 1px 0; padding-left:10px; line-height: 22px; width: 200px; }
 	.q08_cb { float: right; padding: 1px 0; line-height: 22px; width: 70px; text-align: center; font-weight: bold;}
 	
-	.q09_container { float: left; width: 30%; padding:10px; }
+	.q09_container { float: left; width: 31%; padding:10px; }
 	.q09_container .box { width: 100%; }
 	.leftB { border-left:solid 1px #CCCCCC; border-top:solid 1px #CCCCCC;}
 	.middleB { border:solid 1px #CCCCCC; border-bottom:none; }
@@ -85,7 +85,7 @@
 	.rb_image { text-align: center; width: 110px; }
 
 	.q13_container {width:100%; align:center;}
-	.q14_container {width:700px; align:center;}
+	.q14_container {width:970px; align:center;}
 	.q15_container { margin: 0 10px 0 0; width: 100%; line-height: 22px; }
 
 	/* below is the table styles */

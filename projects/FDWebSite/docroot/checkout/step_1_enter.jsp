@@ -7,6 +7,11 @@
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.fdstore.util.ClickToCallUtil'%>
 <%@ page import="com.freshdirect.dataloader.autoorder.create.util.DateUtil" %>
+
+<% //expanded page dimensions
+final int W_CHECKOUT_STEP_1_ENTER_TOTAL = 970;
+%>
+
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(); %>
 <%
 
@@ -42,12 +47,12 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 	<%@ include file="/includes/i_error_messages.jspf" %>	
 </fd:ErrorHandler>
 
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="675">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>">
 
 	  <tr valign="top"> 
-			<td CLASS="text11" WIDTH="675" VALIGN="bottom">
+			<td CLASS="text11" WIDTH="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>" VALIGN="bottom">
 				 <FONT CLASS="title18">DELIVERY ADDRESS</FONT><BR>
-		         <IMG src="/media_stat/images/layout/clear.gif" WIDTH="675" HEIGHT="1" BORDER="0">
+		         <IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>" HEIGHT="1" BORDER="0">
 			</td>
 	    </tr>
 	</TABLE>
@@ -57,7 +62,7 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 	<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
 
-	<TABLE border="0" cellspacing="0" cellpadding="0" width="675">
+	<TABLE border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>">
 		 <tr valign="top"> 
 			 <td class="text12" width="375" valign="bottom"> 
 					<font class="title18">Enter Delivery Address (Step 1 of 4)</font><br/>
@@ -75,9 +80,9 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
 
 <FORM name="address" method="post">
-	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675">
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>">
 	<TR VALIGN="MIDDLE">
-		<TD WIDTH="475">
+		<TD WIDTH="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL-200%>">
 <%if(user.isDepotUser()){%>
 						<img src="/media_stat/images/template/depot/home_address.gif" width="96" height="9" alt="" border="0">&nbsp;&nbsp;&nbsp;<FONT CLASS="text9">* Required information</FONT>
 <%}else{%>
@@ -93,16 +98,16 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 	</TR>
 	</TABLE>
 	
-	<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+	<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 	
 	<%@ include file="/includes/ckt_acct/i_delivery_address_field.jspf" %><br><br>
 	
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 	
 	
-	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675">
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>">
 	<TR VALIGN="TOP">
-			<TD WIDTH="675" ALIGN="RIGHT">
+			<TD WIDTH="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>" ALIGN="RIGHT">
 				<a href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>">
 				<image name="checkout_delivery_address_cancel" src="/media_stat/images/buttons/cancel.gif" WIDTH="72" HEIGHT="19"  HSPACE="4" VSPACE="4" alt="CANCEL" border="0"></a>
 				<input type="image" name="checkout_delivery_address_add" src="/media_stat/images/buttons/save_changes.gif" WIDTH="91" HEIGHT="18" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0">
@@ -110,16 +115,16 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 </TR>
 </TABLE>
 
-	<img src="/media_stat/images/layout/dotted_line.gif" width="675" height="1" border="0"><br/>
+	<img src="/media_stat/images/layout/dotted_line.gif" width="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>" height="1" border="0"><br/>
 	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br/>
 	
-	<table border="0" cellspacing="0" cellpadding="0" width="675">
+	<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>">
 	    <tr valign="top">
 			<td width="35">
 					<a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc ")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="previousX">
 					<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
 			</td>
-		    <td width="640">
+		    <td width="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL-35%>">
 				<a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc ")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="cancelText">
 				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
 				Your Cart<br/>
@@ -132,7 +137,7 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 
 
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
-	<img src="/media_stat/images/layout/dotted_line.gif" width="675" height="1" border="0"><br/>
+	<img src="/media_stat/images/layout/dotted_line.gif" width="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>" height="1" border="0"><br/>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>

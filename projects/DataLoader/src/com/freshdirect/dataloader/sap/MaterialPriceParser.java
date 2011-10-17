@@ -8,12 +8,15 @@
  */
 package com.freshdirect.dataloader.sap;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.FlatFileParser.Field;
 import com.freshdirect.dataloader.sap.helper.BasePriceInfo;
 import com.freshdirect.erp.model.ErpMaterialPriceModel;
 
@@ -169,7 +172,6 @@ public class MaterialPriceParser extends SAPParser {
             throw new BadDataException(e, "An exception was thrown while trying to parse a MaterialPrice");
         }
 
-    }
-    
+    }   
     
 }

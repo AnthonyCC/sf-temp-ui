@@ -21,6 +21,12 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+<% //expanded page dimensions
+final int W_RH_RECEIPT_TOTAL = 970;
+%>
+
+
 <%!
 java.text.SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:mm a 'on' EEEE, MM/d/yy");
 %>
@@ -51,7 +57,6 @@ String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBE
 
 <%ErpPaymentMethodI paymentMethod = (ErpPaymentMethodI) cart.getPaymentMethod();
 double totalPrice = cart.getSubTotal();
-String pymtDetailWidth="630";
 
 String lineWidth = "290";
 FDCartLineI cartLine = cart.getOrderLine(0);
@@ -95,12 +100,12 @@ int idx = 0;
 		</div>
 	</div>
 
-<table border="0" cellspacing="0" cellpadding="0" width="<%=pymtDetailWidth%>">
+<table border="0" cellspacing="0" cellpadding="0" width="<%=W_RH_RECEIPT_TOTAL%>">
 	<tr>
 		<td colspan="6"class="text11">
 			<span class="title18">Thank you for your donation.</span><br>
 			<br>
-			<img src="/media_stat/images/layout/ff9933.gif" width="675" height="1" border="0" vspace="8"><br><br>
+			<img src="/media_stat/images/layout/ff9933.gif" width="<%=W_RH_RECEIPT_TOTAL%>" height="1" border="0" vspace="8"><br><br>
 		</td>
 	</tr>
 	<tr>
@@ -111,8 +116,8 @@ int idx = 0;
 		</td>
 	</tr>
 	<tr valign="top">
-    <td width="320">
-        <table cellpadding="0" cellspacing="0" border="0" width="320">
+    <td width="<%=W_RH_RECEIPT_TOTAL-340%>">
+        <table cellpadding="0" cellspacing="0" border="0" width="<%=W_RH_RECEIPT_TOTAL-340%>">
 			<tr>
 				<td colspan="3" style="padding: 2px;" align="left">
 					<img src="/media_stat/images/donation/robinhood/robin_hood_logo_sm.gif" height="23" width="130" alt="Robin Hood" /><br />
@@ -140,9 +145,9 @@ int idx = 0;
 				</td>
 			</tr>
 		</table>
-        <table cellpadding="0" cellspacing="0" border="0" width="320">
+        <table cellpadding="0" cellspacing="0" border="0" width="<%=W_RH_RECEIPT_TOTAL-340%>">
 			<TR VALIGN="TOP">
-				<TD WIDTH="320" COLSPAN="2">
+				<TD WIDTH="<%=W_RH_RECEIPT_TOTAL-340%>" COLSPAN="2">
 			   Thank you for your donation to Robin Hood. Your gift will help feed New York City's hungry families during the holiday season.<br><br>
 				You may view this donation in <a href="<%=response.encodeURL("/your_account/order_history.jsp")%>">
 			  Your Orders.</a><br/><br/>
@@ -155,7 +160,7 @@ int idx = 0;
     	 	<img src="/media_stat/images/layout/cccccc.gif" width="1" height="280"><br>
 	    </td>
     <TD WIDTH="300">
-        <img src="/media_stat/images/navigation/payment_info.gif" WIDTH="91" HEIGHT="9" border="0" alt="PAYMENT INFO"><BR>
+        <img src="/media_stat/images/navigation/payment_info.gif" WIDTH="100" HEIGHT="15" border="0" alt="PAYMENT INFO"><BR>
         <IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=lineWidth%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
         <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="300">
         <TR VALIGN="TOP">
@@ -214,11 +219,11 @@ int idx = 0;
  </TABLE>  
  <br />
  <IMG src="/media_stat/images/layout/clear.gif" width="1" height="1"><br>
-<IMG src="/media_stat/images/layout/cccccc.gif" width="693" height="1"><br>
+<IMG src="/media_stat/images/layout/cccccc.gif" width="<%=W_RH_RECEIPT_TOTAL%>" height="1"><br>
 <br /><br />
 
 
-<table width="680" cellspacing="0" cellpadding="0" border="0">
+<table width="<%=W_RH_RECEIPT_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 
 	<tr align="center">
 			<td class="text11bold" align="center">&nbsp;&nbsp;&nbsp;&nbsp;Quantity<br/></td>
@@ -260,19 +265,20 @@ int idx = 0;
 
 </table> 
 
-<table width="680" cellspacing="0" cellpadding="0" border="0">
+<table width="<%=W_RH_RECEIPT_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 	<tr>
-			<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+			<td colspan="4"><img src="/media_stat/images/layout/clear.gif" width="<%=W_RH_RECEIPT_TOTAL-320%>" height="8" border="0" /></td>
+			<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="320" height="8" border="0" /></td>
 		</tr>
 	<tr>
-		    <td colspan="4"><img height="1" width="170" src="/media_stat/images/layout/clear.gif"/></td>
+		    <td colspan="4"></td>
 			<td align="right" class="orderTotal" colspan="2">
 			<b>ORDER TOTAL:&nbsp;<%= JspMethods.formatPrice( cart.getSubTotal() ) %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>
     </tr>
 
 </table>
 
-<table width="680" cellspacing="0" cellpadding="0" border="0">
+<table width="<%=W_RH_RECEIPT_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 		
 		
         <% if (FDStoreProperties.isAdServerEnabled()) { %>
@@ -280,7 +286,7 @@ int idx = 0;
 			<tr><td bgcolor="#ccc"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
 			<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
 			<tr><td>
-			<table width="630" cellpadding="0" cellspacing="0">
+			<table width="<%=W_RH_RECEIPT_TOTAL%>" cellpadding="0" cellspacing="0">
 			<tr><td width="50%" style="border-right: solid 1px #CCCCCC; padding-right: 10px;" align="center">
 			<SCRIPT LANGUAGE=JavaScript>
 					<!--

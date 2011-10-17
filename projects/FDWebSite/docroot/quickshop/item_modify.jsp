@@ -9,8 +9,10 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<% //expanded page dimensions
+final int W_QUICKSHOP_ITEM_MODIFY_TOTAL = 765;
+%>
 <%
-
  String orderIdParam = request.getParameter("orderId");
 %>
 <fd:CheckLoginStatus guestAllowed='false' recognizedAllowed='false' />
@@ -48,9 +50,9 @@
 
 <tmpl:put name='content' direct='true'>
 
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="407">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_QUICKSHOP_ITEM_MODIFY_TOTAL %>">
 <TR VALIGN="TOP">
-<TD WIDTH="400">
+<TD WIDTH="<%= W_QUICKSHOP_ITEM_MODIFY_TOTAL %>">
 <FONT CLASS="space4pix"><BR><BR></FONT>
 <% boolean altDisplay = "true".equals(request.getParameter("alt"));
    String headerIm = altDisplay ?
@@ -69,9 +71,10 @@ Make changes to this item, then click "add to cart" below. To find out more info
 <br><br></TD>
 </TR>
 </TABLE>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="407">
+<h1>cica</h1>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_QUICKSHOP_ITEM_MODIFY_TOTAL %>">
 <TR VALIGN="TOP">
-    <TD WIDTH="187" ALIGN="RIGHT" CLASS="text11">
+    <TD ALIGN="RIGHT" CLASS="text11">
         <!-- Product include start -->
 		
 <%

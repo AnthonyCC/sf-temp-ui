@@ -10,6 +10,7 @@ package com.freshdirect.webapp.taglib.fdstore;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.EnumLayoutType;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
@@ -37,6 +38,7 @@ public class ProductGroupTag extends AbstractGetterTag<ProductModel> {
 	
 	protected ProductModel getResult() throws FDResourceException {
 		ProductModel pm = ContentFactory.getInstance().getProductByName( this.categoryId, this.productId );
+		EnumLayoutType e=pm.getLayout();
 		//Convert to Product Pricing Adapter for Zone Pricing.
 		FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
 		if(pm != null)

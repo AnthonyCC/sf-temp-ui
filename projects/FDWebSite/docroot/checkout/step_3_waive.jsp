@@ -9,12 +9,16 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<% //expanded page dimensions
+final int W_CHECKOUT_STEP_3_WAIVE_TOTAL = 970;
+%>
+
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Pass on the offer & Continue checkout</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <% FDUserI user = (FDUserI)session.getAttribute(SessionName.USER); %>
-<table width="675" cellpadding="0" cellspacing="0" border="0">
+<table width="<%=W_CHECKOUT_STEP_3_WAIVE_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 	<tr>
 		<td class="title18"><img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br><b>Please note: Your billing and delivery addresses do not match!</b><br><img src="/media_stat/images/layout/ff9933.gif" width="100%" height="1" vspace="6"></td>
 	</tr>
@@ -32,7 +36,7 @@
 	</tr>
 	<tr><td>
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br>
-		<img src="/media_stat/images/layout/ff9933.gif" width="675" height="1" border="0"><br>
+		<img src="/media_stat/images/layout/ff9933.gif" width="<%=W_CHECKOUT_STEP_3_WAIVE_TOTAL%>" height="1" border="0"><br>
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br>
 		<table border="0" cellspacing="0" cellpadding="0">
 		    <tr valign="top">

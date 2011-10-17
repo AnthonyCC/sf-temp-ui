@@ -13,6 +13,14 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+<% //expanded page dimensions
+final int W_DELIVERY_LIC_PICKUP_TOTAL = 970;
+final int W_DELIVERY_LIC_PICKUP_LEFT = 724;
+final int W_DELIVERY_LIC_PICKUP_CENTER = 36;
+final int W_DELIVERY_LIC_PICKUP_RIGHT = 210;
+%>
+
 <fd:CheckLoginStatus id="user" />
 <%
 // setting up template parameters
@@ -35,13 +43,13 @@ request.setAttribute("survey_source","deliveryInfo Page");
 <tmpl:insert template='/common/template/delivery_info_nav.jsp'>
 	<tmpl:put name='title' direct='true'>Delivery Information</tmpl:put>
 	<tmpl:put name='content' direct='true'>
-		<table width="693" border="0" cellpadding="0" cellspacing="0">
+		<table width="<%=W_DELIVERY_LIC_PICKUP_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 		     <tr>
-		          <td><img src="/media_stat/images/layout/clear.gif" width="467" height="18"></td>
-		          <td rowspan="3"><img src="/media_stat/images/layout/clear.gif" width="16" height="1"></td>
+		          <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DELIVERY_LIC_PICKUP_LEFT%>" height="18"></td>
+		          <td rowspan="3"><img src="/media_stat/images/layout/clear.gif" width="<%=(W_DELIVERY_LIC_PICKUP_CENTER-1)/2%>" height="1"></td>
 		          <td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-		          <td rowspan="3"><img src="/media_stat/images/layout/clear.gif" width="16" height="1"></td>
-		          <td><img src="/media_stat/images/layout/clear.gif" width="193" height="1"></td>
+		          <td rowspan="3"><img src="/media_stat/images/layout/clear.gif" width="<%=(W_DELIVERY_LIC_PICKUP_CENTER-1)/2%>" height="1"></td>
+		          <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DELIVERY_LIC_PICKUP_RIGHT%>" height="1"></td>
 		    </tr>
 		
 		    <tr valign="top">

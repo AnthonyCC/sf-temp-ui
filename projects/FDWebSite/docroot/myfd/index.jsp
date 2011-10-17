@@ -6,6 +6,11 @@
 <%@taglib uri='template' prefix='tmpl'%>
 <%@taglib uri='logic' prefix='logic'%>
 <%@taglib uri='freshdirect' prefix='fd'%>
+<% //expanded page dimensions
+final int W_MYFD_TOTAL = 970;
+final int W_MYFD_MAIN = 724;
+final int W_MYFD_LEFT = 232; /* 6 columns */
+%>
 <fd:CheckLoginStatus id="user" guestAllowed="false" />
 <%
 	//--------OAS Page Variables-----------------------
@@ -40,11 +45,11 @@
 		<fd:FDShoppingCart id='cart' action='<%= actionName %>'
 			result='result' successPage="<%= successPage %>"
 			source="<%= cartSource %>">
-		<div style="padding: 30px 25px;">
-			<table cellpadding="0" cellspacing="0" style="width: 693px; text-align: center; margin: 0px auto;">
+		<div style="padding: 30px 0;">
+      <table cellpadding="0" cellspacing="0" style="width: <%= W_MYFD_TOTAL %>px; text-align: center; margin: 0px auto;">
 				<tr>
-					<td style="width: 481px; text-align: left; vertical-align: top;">
-						<div style="width: 456px; overflow: hidden;">
+          <td style="width: <%= W_MYFD_MAIN + 14 %>px; text-align: left; vertical-align: top;">
+            <div style="width: <%= W_MYFD_MAIN %>px; margin-right: 14px; overflow: hidden;">
 							<div>
 							<%@ include file="/includes/myfd/i_myfd_greetings.jspf" %>
 							</div>
@@ -56,8 +61,8 @@
 							</div>
 						</div>
 					</td>
-					<td style="width: 212px; text-align: left; vertical-align: top;">
-						<div style="width: 212px; overflow: hidden;">
+          <td style="width: <%= W_MYFD_LEFT %>px; text-align: left; vertical-align: top;">
+            <div style="width: <%= W_MYFD_LEFT %>px; overflow: hidden; margin: 0 auto;">
 							<% if (PollDaddyService.getFirstOpenPoll() != null) { %>
 							<div style="padding-bottom: 15px;">
 							<%@ include file="/includes/myfd/i_myfd_poll.jspf" %>

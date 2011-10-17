@@ -4,7 +4,9 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<% //expanded page dimensions
+final int W_YA_CANCEL_ORDER_CONFIRM = 970;
+%>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <fd:CancelOrderFeedbackController successPage="/your_account/feedback_thank_you.jsp" result="result">
 <tmpl:insert template='/common/template/no_nav.jsp'>
@@ -17,14 +19,14 @@
 %>
 
 <%-- error message handling here --%>
-<TABLE WIDTH="675" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TABLE WIDTH="<%= W_YA_CANCEL_ORDER_CONFIRM %>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 <TR><TD class="text11">
 <font class="title18">Order # <%= orderId %> Cancelled</font><br>
 <FONT CLASS="space4pix"><BR></FONT></td>
 </tr></table>
-<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="675" HEIGHT="1" BORDER="0" HSPACE="0" VSPACE="0"><BR>
+<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%= W_YA_CANCEL_ORDER_CONFIRM %>" HEIGHT="1" BORDER="0" HSPACE="0" VSPACE="0"><BR>
 <BR>
-<TABLE WIDTH="675" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TABLE WIDTH="<%= W_YA_CANCEL_ORDER_CONFIRM %>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 <TR><TD class="text11">
 <b>Your order has been cancelled. You will not receive a delivery and your account will not be charged.</b>
 <BR>
@@ -76,19 +78,18 @@ Your feedback will help us serve you better. Please let us know how you'd like t
 </TABLE>
 -->
 <BR>
-<IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="675" HEIGHT="1" BORDER="0" HSPACE="0" VSPACE="8"><BR>
-<TABLE CELLPADDING="0" CELLSPACING="0" border="0" WIDTH="675">
+<IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%= W_YA_CANCEL_ORDER_CONFIRM %>" HEIGHT="1" BORDER="0" HSPACE="0" VSPACE="8"><BR>
+<TABLE CELLPADDING="0" CELLSPACING="0" border="0" WIDTH="<%= W_YA_CANCEL_ORDER_CONFIRM %>">
 	<TR VALIGN="MIDDLE">
 		<TD WIDTH="35"><A HREF="/index.jsp"><img src="/media_stat/images/template/confirmation/arrow_green_left.gif"
 			width="28" height="28" border="0" alt="CONTINUE SHOPPING" ALIGN="LEFT"></A></TD>
-		<TD WIDTH="640"><A HREF="/index.jsp"><img src="/media_stat/images/template/confirmation/continue_shopping_text.gif"
+		<TD WIDTH="<%= W_YA_CANCEL_ORDER_CONFIRM - 35 %>"><A HREF="/index.jsp"><img src="/media_stat/images/template/confirmation/continue_shopping_text.gif"
 			width="117" height="13" border="0" alt="CONTINUE SHOPPING"></A><BR>from <FONT CLASS="text11bold"><A HREF="/index.jsp">Home Page</A></FONT></TD>
 	</TR>
 </TABLE><BR>
 <br>
 <table>
 	<tr>
-		<td ><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
 		<td><b>Having Problems?</b><br>
 			<%@ include file="/includes/i_footer_account.jspf" %>
 		</td>

@@ -23,6 +23,13 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
+
+
+<% //expanded page dimensions
+final int W_WINE_CAT_DETAILS_TOTAL = 601;
+%>
+
+
 <%
 String trk = "cpage";
 CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode("Category", request.getParameter("catId"));
@@ -41,9 +48,9 @@ if (isFilter) {
 <jsp:include page="wine_filter.jsp"/><%
 } else {
 	%>
-	<div style="width: 425px; text-align: center; margin: 0px auto;">
+	<div style="width: <%=W_WINE_CAT_DETAILS_TOTAL%>px; text-align: center; margin: 0px auto;">
 	<!-- header -->
-	<table width="425" cellpadding="0" cellspacing="0" border="0">
+	<table width="<%=W_WINE_CAT_DETAILS_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 		<tr>
 			<td>
 				<div class="title18" style="text-align: left; padding: 8px 0px;"><%= category.getFullName() %></div>
@@ -64,9 +71,9 @@ if (isFilter) {
 	
 	<!-- sort by panel -->
 	<hr>
-	<table width="425" cellpadding="0" cellspacing="0" border="0">
+	<table width="<%=W_WINE_CAT_DETAILS_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 	<tr>
-	<td valign="middle">
+	<td valign="middle" align="right">
 	Sort by:<%
 	   for (WineSorter.Type sortBy : WineSorter.Type.values()) { 
 	      %><fd:WineSortByLink sortBy="<%= sortBy %>" className="wine-sortby"><span class="wine-sortby-<%= sortBy.name().toLowerCase() %><%= selected ? "-selected" : "" %>"></span></fd:WineSortByLink><%

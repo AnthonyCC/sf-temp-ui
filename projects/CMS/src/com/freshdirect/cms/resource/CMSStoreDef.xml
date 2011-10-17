@@ -37,6 +37,7 @@
 				<DestinationDef contentType="ProducerType"/>
 				<DestinationDef contentType="Tile" />
 				<DestinationDef contentType="TileList" />
+				<DestinationDef contentType="GlobalMenuItem" />
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
@@ -130,6 +131,8 @@
 			<AttributeDef type="B" name="USE_ALTERNATE_IMAGES" label="Use Alternate Images" inheritable="true"/>
 			<AttributeDef type="B" name="HIDE_IN_QUICKSHOP" label="Hide in Quickshop"/>
             <AttributeDef type="S" name="DEPARTMENT_TEMPLATE_PATH" label="Department Template Path"/>
+            <AttributeDef type="S" name="GLOBAL_MENU_TITLE_LABEL" label="Global Menu Title Label"/>
+            <AttributeDef type="S" name="GLOBAL_MENU_LINK_LABEL" label="Global Menu Link Label"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="categories" navigable="true" cardinality="Many">
@@ -273,6 +276,8 @@
 			
 			<AttributeDef type="B" name="SHOW_EMPTY_CATEGORY" label="Show Empty Category" inheritable="true"/>
 			<AttributeDef type="B" name="HIDE_WINE_RATING" label="Hide Wine Rating &amp; Pricing (Use Regular Display Instead)" inheritable="true"/>
+            <AttributeDef type="S" name="GLOBAL_MENU_TITLE_LABEL" label="Global Menu Title Label"/>
+            <AttributeDef type="S" name="GLOBAL_MENU_LINK_LABEL" label="Global Menu Link Label"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="ALTERNATE_CONTENT" label="Alternate Content">
@@ -446,9 +451,9 @@
 			<AttributeDef type="S" name="HIDE_URL"  label="Hide URL" inheritable="true"/>
 			<EnumDef type="I" name="PRODUCT_LAYOUT" label="Prod Layout" inheritable="true">
 				<EnumValue value="1" label="Perishable Product"/>
-				<EnumValue value="2" label="Composite Product"/>
+				<!-- EnumValue value="2" label="Composite Product"/ DEPRECATED -->
 				<EnumValue value="3" label="Wine Product"/>
-				<EnumValue value="4" label="Valentine Composite"/>
+				<!-- EnumValue value="4" label="Valentine Composite"/ DEPRECATED -->
 				<EnumValue value="5" label="Party Platter"/>
 				<EnumValue value="6" label="Multi Menu Layout"/>
 				<EnumValue value="7" label="Component Group Meal"/>
@@ -470,26 +475,26 @@
 				<EnumValue value="11" label="Grocery _Style_Product"/>
 				<EnumValue value="12" label="Bulk_Meat"/>
 				<EnumValue value="13" label="How_To_Cook_It"/>
-				<EnumValue value="14" label="Meals_Style"/>
+				<!-- EnumValue value="14" label="Meals_Style"/ DEPRECATED -->
 				<EnumValue value="15" label="Multi_Category_Layout"/>
 				<EnumValue value="16" label="Transactional Multi Category"/>
-				<EnumValue value="17" label="Multi_Cat_prod_Redirect"/>
+				<!-- EnumValue value="17" label="Multi_Cat_prod_Redirect"/ DEPRECATED -->
 				<EnumValue value="18" label="Transactional_Paired_Items"/>
 				<EnumValue value="19" label="Holiday Menu"/>
 				<EnumValue value="20" label="Composite Category 1"/>
 				<EnumValue value="21" label="ThanksGiving Category"/>
-				<EnumValue value="22" label="Generic with Paging"/>
-				<EnumValue value="23" label="Valentines Category"/>
+				<!-- EnumValue value="22" label="Generic with Paging"/ DEPRECATED -->
+				<!-- EnumValue value="23" label="Valentines Category"/ DEPRECATED -->
 				<EnumValue value="24" label="Package Layout 1"/>
 				<EnumValue value="25" label="All Static Media"/>
-				<EnumValue value="26" label="Vertical Labeled Category"/>
-				<EnumValue value="27" label="Featured Menu"/>				
+				<!-- EnumValue value="26" label="Vertical Labeled Category"/ DEPRECATED -->
+				<!-- EnumValue value="27" label="Featured Menu"/ DEPRECATED -->				
 				<EnumValue value="40" label="4minute-meals landing page"/><!-- 4minute-meals department page -->
 				<EnumValue value="41" label="4minute-meals restaurant page"/><!-- 4minute-meals category page -->
 				<EnumValue value="42" label="Bakery department"/>
                 <EnumValue value="97" label="Media No Nav"/><!-- [APPREQ-77] new layout -->
-				<EnumValue value="98" label="Multi Item Layout - Horizontal"/>
-				<EnumValue value="99" label="Multi Item Layout - Vertical"/>
+				<!-- EnumValue value="98" label="Multi Item Layout - Horizontal"/ DEPRECATED -->
+				<!-- EnumValue value="99" label="Multi Item Layout - Vertical"/ DEPRECATED -->
                 <EnumValue value="100" label="Wine_Category"/><!-- [USQ] new layout -->
                 <EnumValue value="101" label="Transactional_multi_Paired_Items"/><!-- [USQ] new layout -->
                 <EnumValue value="102" label="Template_Layout"/><!-- [USQ] new layout -->
@@ -1683,5 +1688,44 @@
 				<DestinationDef contentType="Image" />
 			</RelationshipDef>
 		</RelationshipDefs>
-	</ContentTypeDef>	
+	</ContentTypeDef>
+	
+	<ContentTypeDef name="GlobalMenuItem">
+		<AttributeDefs>
+			<AttributeDef type="S" name="TITLE_LABEL" label="Global Menu Title Label"/>
+			<EnumDef type="I" name="LAYOUT"  label="Layout" inheritable="true">
+				<EnumValue value="0" label="Editorial"/>
+				<EnumValue value="1" label="Single Section Layout"/>
+				<EnumValue value="2" label="Two Section Layout"/>
+				<EnumValue value="3" label="Four Section Layout"/>
+			</EnumDef>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="subSections" navigable="false" cardinality="Many" label="Sub Menu Sections">
+				<DestinationDef contentType="GlobalMenuSection"/>
+			</RelationshipDef>
+			<RelationshipDef name="editorial" cardinality="One" navigable="false" label="Editorial" >
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+	<ContentTypeDef name="GlobalMenuSection">
+		<AttributeDefs>
+			<AttributeDef type="B" name="SHOW_ALL_SUB_CATEGORIES" label="Show All Sub Categories" required="false" />
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="linkedProductContainer" navigable="false" cardinality="One" label="Linked Product Container">
+				<DestinationDef contentType="Department"/>
+				<DestinationDef contentType="Category"/>
+			</RelationshipDef>
+			<RelationshipDef name="subCategoryItems" navigable="false" cardinality="Many" label="Sub Category Items">
+				<DestinationDef contentType="Category"/>
+			</RelationshipDef>
+			<RelationshipDef name="editorial" cardinality="One" navigable="false" label="Editorial" >
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
 </CMSDef>

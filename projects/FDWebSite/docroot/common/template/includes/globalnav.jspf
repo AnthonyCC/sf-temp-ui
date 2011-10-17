@@ -6,6 +6,17 @@
 %><%@ page import='com.freshdirect.fdstore.*'
 %><%@ page import='java.net.*'
 %><%@ taglib uri='oscache' prefix='oscache' %>
+
+<% FDUserI user = (FDUserI)session.getAttribute(SessionName.USER); %>
+
+<% if(FDStoreProperties.isNewGlobalNav()) { %>
+	<%@ include file="/common/template/includes/globalnav_grid24.jspf" %>
+<% } else { %>
+
+<% //expanded page dimensions
+final int W_GLOBAL_NAV_TOTAL = 970;
+%>
+<center>
 <%@ include file="/common/template/includes/globalnav_top.jspf" %><%!
 public ContentNodeModel findDepartment (String deptId) throws FDResourceException {
 		return ContentFactory.getInstance().getContentNode(deptId);
@@ -69,7 +80,7 @@ if (catId != null){
 %>
 
 
-<table width="745" border="0" cellpadding="0" cellspacing="0">
+<table width="<%=W_GLOBAL_NAV_TOTAL %>" border="0" cellpadding="0" cellspacing="0">
 <tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" /></td></tr>
 <%
 	boolean isAtHome = true;
@@ -105,3 +116,5 @@ if(!thisDept.equals("") && !thisDept.equalsIgnoreCase("about") && !thisDept.equa
 		ex.printStackTrace();
 %><oscache:usecached />
 <% } %></oscache:cache>
+</center>
+<% } %>

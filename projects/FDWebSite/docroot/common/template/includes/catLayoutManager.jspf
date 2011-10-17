@@ -49,7 +49,6 @@
 	        request.setAttribute("itemGrabberResult",sortedColl); //** expose result of item grabber to the layout **
 		%>
     </display:ItemGrabber>
-     
 	<%
 	if ( layoutSettings != null && layoutSettings.getLayoutFileName() != null ) {
 		JspLogger.NAV.debug( " calling layout: " + layoutSettings.getLayoutFileName() ); %>          

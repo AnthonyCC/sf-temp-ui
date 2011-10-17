@@ -1,3 +1,11 @@
+<% //expanded page dimensions
+final int W_RECIPE_CAT_BODY_TOTAL = 765;
+final int W_RECIPE_CAT_BODY_TOP_LEFT = 110;
+final int W_RECIPE_CAT_BODY_TOP_RIGHT = 555;
+final int W_RECIPE_CAT_BODY_BOTTOM_LEFT = 565;
+final int W_RECIPE_CAT_BODY_BOTTOM_RIGHT = 200;
+%>
+
 <%
 /*
 -- This includes paints the recipe category body and bottom (no side navs)
@@ -25,7 +33,7 @@ List featuredRecipes = ((RecipeCategory)recipeCategory).getFeaturedRecipes();
 RecipeSource featuredSource = ((RecipeCategory)recipeCategory).getFeaturedSource();
 %>   
 	
-   <table width="550" border="0" cellpadding="0" cellspacing="0">
+   <table width="<%=W_RECIPE_CAT_BODY_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 	<tr><td colspan="2">
 
 <%		 List subCats = ((RecipeCategory)recipeCategory).getSubcategories(); 
@@ -37,8 +45,8 @@ RecipeSource featuredSource = ((RecipeCategory)recipeCategory).getFeaturedSource
 %>
 		<table width="100%" border="0" cellpadding="0" cellspacing="0">
 		<tr valign="top">
-		<td width="110" rowspan="2"><%if (catPhotoPath!=null){%><img src="<%= catPhotoPath %>" width="<%=catPhotoWidth%>" height="<%=catPhotoHeight%>"><%}%></td>
-		<td width="440"><%if (editorialPath!=null){%><fd:IncludeMedia name='<%= editorialPath %>' /><%}%></td>
+		<td width="<%=W_RECIPE_CAT_BODY_TOP_LEFT%>" rowspan="2"><%if (catPhotoPath!=null){%><img src="<%= catPhotoPath %>" width="<%=catPhotoWidth%>" height="<%=catPhotoHeight%>"><%}%></td>
+		<td width="<%=W_RECIPE_CAT_BODY_TOP_RIGHT%>"><%if (editorialPath!=null){%><fd:IncludeMedia name='<%= editorialPath %>' /><%}%></td>
 		</tr>
 		<tr><td>
 		<table width="80%" border="0" cellpadding="0" cellspacing="0">
@@ -66,9 +74,9 @@ RecipeSource featuredSource = ((RecipeCategory)recipeCategory).getFeaturedSource
 	</table>
 	</td>
 	</tr>
-	<tr><td colspan="2"><img src="/media_stat/images/layout/cccccc.gif" width="550" height="1" vspace="15"></td></tr>
+	<tr><td colspan="2"><img src="/media_stat/images/layout/cccccc.gif" width="<%=W_RECIPE_CAT_BODY_TOTAL%>" height="1" vspace="15"></td></tr>
 	<tr valign="top">
-	  <td width="400" style="padding-right: 10px; border-right: solid 1px #CCCCCC;">
+	  <td width="<%=W_RECIPE_CAT_BODY_BOTTOM_LEFT%>" style="padding-right: 10px; border-right: solid 1px #CCCCCC;">
 	  <img src="/media_stat/recipe/hdr_our_faves.gif" width="127" height="11"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"><br>
 	  <% if (featuredRecipes!=null && featuredRecipes.size() > 0) { %>
           	  <logic:iterate id="aFeatRecipe" collection="<%=featuredRecipes%>" type="com.freshdirect.fdstore.content.Recipe">
@@ -78,7 +86,7 @@ RecipeSource featuredSource = ((RecipeCategory)recipeCategory).getFeaturedSource
                  </logic:iterate>
 	 		<% } %> 
 		</td>  
-	       <td width="150" style="padding-left: 10px;" align="center">
+	       <td width="<%=W_RECIPE_CAT_BODY_BOTTOM_RIGHT%>" style="padding-left: 10px;" align="center">
 <%		if (featuredSource!=null) {
 		    String ckbkURL = response.encodeURL("/recipe_search.jsp?recipeSource="+featuredSource+"&trk=cfeat");
 			MediaI srcImg = featuredSource.getImage();

@@ -3,6 +3,10 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 
+<% //expanded page dimensions
+final int W_DELIVERY_INFO_NAV_TOTAL = 970;
+%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -11,26 +15,22 @@
     <%@ include file="/common/template/includes/metatags.jspf" %>
 	<meta http-equiv="X-UA-Compatible" content="IE=8" />
     <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+    <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+	<%@ include file="/shared/template/includes/ccl.jspf" %>
 	<script src="/assets/javascript/timeslots.js" type="text/javascript" language="javascript"></script>
 	<link href="/assets/css/timeslots.css" rel="stylesheet" type="text/css" />
 </head>
-<BODY bgcolor="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333" CLASS="text10">
-<CENTER>
+<BODY bgcolor="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
 <%@ include file="/common/template/includes/globalnav.jspf" %>
+<CENTER CLASS="text10">
 <% boolean isCorporate = user.getSelectedServiceType().equals(EnumServiceType.CORPORATE); %>
-<table width="745" border="0" CELLPADDING="0" CELLSPACING="0">
+<table width="<%=W_DELIVERY_INFO_NAV_TOTAL%>" border="0" CELLPADDING="0" CELLSPACING="0">
 <tr>
-	<td width="6" COLSPAN="2" ROWSPAN="2"><img src="/media_stat/images/layout/top_left_curve.gif" width="6" height="6" border="0"></td>
-	<td width="733" valign="top" bgcolor="#999966"><img src="/media_stat/images/layout/999966.gif" width="733" height="1" border="0"></td>
-	<td width="6" COLSPAN="2" ROWSPAN="2"><img src="/media_stat/images/layout/top_right_curve.gif" width="6" height="6" border="0"></td>
-</tr>
-<tr>
-	<td width="733" valign="top"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+	<td width="<%=W_DELIVERY_INFO_NAV_TOTAL%>" valign="top"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
 </tr>
 <tr valign="top">
-	<td bgcolor="#999966" valign="bottom" width="1"><img src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
-	<td width="743" colspan="3">
+	<td width="<%=W_DELIVERY_INFO_NAV_TOTAL%>">
 	<table border="0" CELLPADDING="0" CELLSPACING="0">
 			    <tr valign="top">
 				    <td><img src="/media_stat/images/layout/clear.gif" width="1" height="5"><br>&nbsp;&nbsp;&nbsp;<a href="/help/delivery_info.jsp"><img src="/media_stat/images/template/help/delivery/delivery_pickup_deptnav.gif" width="219" height="26" border="0" alt="DELIVERY & PICK UP INFO"></a>&nbsp;&nbsp;&nbsp;</td>
@@ -68,35 +68,24 @@
 											</td>
 											<% } %>
 				</tr>
-				<tr><td colspan="12"><img src="/media_stat/images/layout/clear.gif" width="1" height="6" border="0"></td></tr>
+        <tr><td colspan="12"><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td></tr>
 			</table></td>
-	<td bgcolor="#999966" valign="bottom" width="1"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 </tr>
-<tr bgcolor="#999966"><td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+<tr bgcolor="#999966"><td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
 <tr valign="top">
-	<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-	<td align="center" colspan="3"><%-- content lands here --%><tmpl:get name='content'/><%-- content ends above here--%></td>
-	<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+	<td align="center"><%-- content lands here --%><tmpl:get name='content'/><%-- content ends above here--%></td>
 </tr>
 <%-- This row is to hold the table --%>
 <tr valign="top">
-	<td bgcolor="#999966" valign="bottom" width="1"><img src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
-	<td width="5"><img src="/media_stat/images/layout/clear.gif" height="1" width="5"></td>
-	<td width="733" align="center" ><img src="/media_stat/images/layout/clear.gif" height="1" width="733"></td>
-	<td width="5"><img src="/media_stat/images/layout/clear.gif" height="1" width="5"></td>
-	<td bgcolor="#999966" valign="bottom" width="1"><img src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
+	<td width="<%=W_DELIVERY_INFO_NAV_TOTAL%>" align="center" ><img src="/media_stat/images/layout/clear.gif" height="1" width="<%=W_DELIVERY_INFO_NAV_TOTAL%>"></td>
 </tr>
 
 <tr valign="bottom">
-	<td width="6" COLSPAN="2" ROWSPAN="2"><img src="/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6" border="0"></td>
-	<td width="733"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
-	<td width="6" COLSPAN="2" ROWSPAN="2"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6" border="0"></td>
-</tr>
-<tr>
-	<td width="733" bgcolor="#999966" valign="bottom"><img src="/media_stat/images/layout/999966.gif" width="733" height="1" border="0"></td>
+	<td width="<%=W_DELIVERY_INFO_NAV_TOTAL%>"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
 </tr>
 </table>
-<%@ include file="/common/template/includes/footer.jspf" %>
 </CENTER>
+<%@ include file="/common/template/includes/footer.jspf" %>
+<%@ include file="/common/template/includes/i_jsmodules.jspf" %>
 </BODY>
 </HTML>

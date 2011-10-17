@@ -18,6 +18,9 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<% //expanded page dimensions
+final int W_YA_DELIVERY_INFO_CHKSLOTS = 970;
+%>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <%
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
@@ -46,7 +49,7 @@
 <tmpl:insert template='/common/template/delivery_info_nav.jsp'>
 	<tmpl:put name='title' direct='true'>Delivery Information</tmpl:put>
 		<tmpl:put name='content' direct='true'>
-<table width="693" cellpadding="0" cellspacing="0" border="0">
+<table width="<%= W_YA_DELIVERY_INFO_CHKSLOTS %>" cellpadding="0" cellspacing="0" border="0">
 <tr><td colspan="2" class="title16"><img src="/media_stat/images/layout/clear.gif" width="1" height="18"><br>Check Available Delivery TimeSlots<br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td></tr>
 <tr><td colspan="2" class="text12">Enter your address to see available timeslots for your neighborhood.</td></tr>
 <tr><td colspan="2" class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="24"><br><b>Enter Delivery Address</b><img src="/media_stat/images/layout/clear.gif" width="80" height="1"><span class="text11">* Required Information</span><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td></tr>

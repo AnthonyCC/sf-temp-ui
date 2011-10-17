@@ -8,6 +8,10 @@
 <%@ page import='com.freshdirect.framework.webapp.*' %>
 <%@ page import="com.freshdirect.payment.BillingCountryInfo"%>
 <%@ page import="com.freshdirect.payment.BillingRegionInfo"%>
+<% //expanded page dimensions
+final int W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL = 970;
+%>
+
 <script language="javascript" type="text/javascript">  
       var xmlHttp  
       var xmlHttp
@@ -209,25 +213,25 @@ if (isValidPaymentId) {
 
 %>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="693" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
     <%-- error system messages happen here --%>
     <fd:ErrorHandler result='<%=result%>' name='matching_addresses' id='errorMsg'>
 		<br><span class="text11rbold"><%= errorMsg %></span><br><br>
     </fd:ErrorHandler>
     <% if(FDStoreProperties.isPaymentMethodVerificationEnabled()) {%>
-	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>">
 	<tr>	
-		<td width="693" CLASS="text12">
+		<td width="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" CLASS="text12">
 			In order to better protect our customer's personal information, we require a $1 authorization to validate credit cards on add and edit. This charge will not be collected and will be returned as soon as permitted by your issuing bank. To learn more about our <font class="text11bold">Customer Agreement</font>, 
 			<a href="javascript:popup('/help/terms_of_service.jsp','large')">click here</a>.
 		</td>
 	</tr>
 	</TABLE>
 <%} else { %>	
-	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>">
 		<tr>	
-			<td width="693" CLASS="text12">
+			<td width="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" CLASS="text12">
 				To learn more about our <font class="text11bold">Security Policies</font>, 
 				<a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here</a>.
 			</td>
@@ -243,9 +247,9 @@ if (isValidPaymentId) {
 			<%@ include file="/includes/your_account/checkacct_promo.jspf"%><br><br>
 <% } %>
 <%-- IF NO PAYMENT METHOD YET, FIRST TIME, DEFAULTED HERE, SHOW CHECK PROMO--%>
-	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="693">
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>">
 	<TR VALIGN="bottom">
-		<TD WIDTH="<%=proceedThruCheckout?"693":"493" %>">
+		<TD WIDTH="<%=proceedThruCheckout? W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL: W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL-200 %>">
 			<img src="/media_stat/images/navigation/credit_card_details.gif" WIDTH="152" HEIGHT="15" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;
 			<FONT CLASS="text12">* Required information</FONT>
 		</TD>
@@ -259,7 +263,7 @@ if (isValidPaymentId) {
 	</TR>
 
 </TABLE>
-<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="693" HEIGHT="1" BORDER="0" VSPACE="3"><BR><BR>
+<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR><BR>
 
 <TABLE BORDER="0" CELLSPACING="1" CELLPADDING="0" WIDTH="675">
 <TR VALIGN="MIDDLE">
@@ -352,11 +356,11 @@ if (isValidPaymentId) {
 </TABLE>
 
 <br><br>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="693">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>">
 <TR VALIGN="TOP">
-	<TD WIDTH="693">
+	<TD WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>">
 		<img src="/media_stat/images/navigation/billing_address_for_card.gif" WIDTH="229" HEIGHT="15" border="0" alt="BILLING ADDRESS">&nbsp;&nbsp;&nbsp;<FONT CLASS="text12">* Required information</FONT><BR>
-		<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="693" HEIGHT="1" BORDER="0" vspace="3"><BR>
+		<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0" vspace="3"><BR>
 <%
 		if (yuzer.isEligibleForSignupPromotion()) {
 			%><img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br><b>NOTE</b>: <font class="text11orbold">On your first home delivery order, to receive the free food promotion, your billing and delivery address must match.</font><% } else { %><font class="text12">Please enter billing address as it appears on your credit card statement.</font><%

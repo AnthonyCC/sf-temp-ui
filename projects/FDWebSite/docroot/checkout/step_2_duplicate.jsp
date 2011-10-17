@@ -13,6 +13,10 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<% //expanded page dimensions
+final int W_CHECKOUT_STEP_2_DUPLICATE_TOTAL = 970;
+%>
+
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - An order is already placed</tmpl:put>
@@ -51,7 +55,7 @@ if (sameDayPendingOrderCount == 1) {
 	
 %>
 
-<table width="675" cellpadding="0" cellspacing="0" border="0">
+<table width="<%=W_CHECKOUT_STEP_2_DUPLICATE_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 	<tr>
 		<td class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br><span class="text13" style="color: #CC0000;"><b>Important note!</b></span><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
 	An order for <b><%=duplicateDate.format(currentDlvStart)%></b> has already been placed from this account. Are you sure that you want to place another one for the same day?<br><br>Please select one of these options:<br><br>
@@ -74,7 +78,7 @@ if (sameDayPendingOrderCount == 1) {
 	</tr>
 	<tr><td>
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br>
-		<img src="/media_stat/images/layout/dotted_line.gif" width="675" height="1" border="0"><br>
+		<img src="/media_stat/images/layout/dotted_line.gif" width="<%=W_CHECKOUT_STEP_2_DUPLICATE_TOTAL%>" height="1" border="0"><br>
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br>
 		<table border="0" cellspacing="0" cellpadding="0">
 		    <tr valign="top">
@@ -88,7 +92,7 @@ if (sameDayPendingOrderCount == 1) {
 					Delivery Address<br/>
 					<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
 				</TD>
-				<TD align="right" valign="middle" WIDTH="265">
+				<TD align="right" valign="middle" WIDTH="<%=W_CHECKOUT_STEP_2_DUPLICATE_TOTAL-420%>">
 					<a href="/checkout/step_3_choose.jsp?duplicateCheck=skip">
 					<img src="/media_stat/images/buttons/continue_checkout.gif" width="91" height="11" border="0" alt="CONTINUE CHECKOUT"></a><BR>Payment Method<BR>
 				</TD>
@@ -104,7 +108,7 @@ if (sameDayPendingOrderCount == 1) {
 	<%@ include file="/checkout/includes/i_footer_text.jspf" %></td></tr>
 </table>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
-	<img src="/media_stat/images/layout/dotted_line.gif" width="675" height="1" border="0"><br/>
+	<img src="/media_stat/images/layout/dotted_line.gif" width="<%=W_CHECKOUT_STEP_2_DUPLICATE_TOTAL%>" height="1" border="0"><br/>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>

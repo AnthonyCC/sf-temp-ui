@@ -19,6 +19,10 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<% //expanded page dimensions
+final int W_CHECKOUT_STEP_1_CHOOSE_TOTAL = 970;
+%>
+
 <fd:CheckLoginStatus id="user" guestAllowed="false" redirectPage="/checkout/signup_ckt.jsp" />
 <%
 
@@ -155,9 +159,9 @@ while (e.hasMoreElements()) {
 		</table>
 	</div>
 
-		<table border="0" cellspacing="0" cellpadding="0" width="675">
+		<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_1_CHOOSE_TOTAL%>">
 	    <tr valign="top"> 
-			<td CLASS="text11" WIDTH="385" VALIGN="bottom">
+			<td CLASS="text11" WIDTH="<%=W_CHECKOUT_STEP_1_CHOOSE_TOTAL-310%>" VALIGN="bottom">
 				<FONT CLASS="title18">DELIVERY ADDRESS</FONT>
 				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="375" HEIGHT="1" BORDER="0">
 			</td>
@@ -214,7 +218,7 @@ while (e.hasMoreElements()) {
 	<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
 
-	<TABLE border="0" cellspacing="0" cellpadding="0" width="675">
+	<TABLE border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_1_CHOOSE_TOTAL%>">
 		 <tr valign="top"> 
 	    <td class="text12" width="375" valign="bottom"> 
 	            <font class="title18">Choose Delivery Address (Step 1 of 4)</font><br/>
@@ -253,10 +257,10 @@ while (e.hasMoreElements()) {
 	    <br/><br/>
 	
 	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br/>
-	<img src="/media_stat/images/layout/dotted_line.gif" width="675" height="1" border="0"><br/>
+	<img src="/media_stat/images/layout/dotted_line.gif" width="<%=W_CHECKOUT_STEP_1_CHOOSE_TOTAL%>" height="1" border="0"><br/>
 	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br/>
 	
-	<table border="0" cellspacing="0" cellpadding="0" width="675">
+	<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_1_CHOOSE_TOTAL%>">
 	    <tr valign="top">
 			<td width="35">
 					<a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc ")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="previousX">
@@ -268,7 +272,7 @@ while (e.hasMoreElements()) {
 				Your Cart<br/>
 				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
 			</td>
-			<td width="265" align="right" valign="middle">
+			<td width="<%=W_CHECKOUT_STEP_1_CHOOSE_TOTAL-400%>" align="right" valign="middle">
 				<font class="space2pix"><br/></font>
 				<input type="image" name="checkout_delivery_address_select" src="/media_stat/images/buttons/continue_checkout.gif" width="91" height="11" border="0" alt="CONTINUE CHECKOUT" vspace="0"><br/>Delivery Time<br/>
 			</td>
@@ -289,7 +293,7 @@ while (e.hasMoreElements()) {
 	</form>
 
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
-	<img src="/media_stat/images/layout/dotted_line.gif" width="675" height="1" border="0"><br/>
+	<img src="/media_stat/images/layout/dotted_line.gif" width="<%=W_CHECKOUT_STEP_1_CHOOSE_TOTAL%>" height="1" border="0"><br/>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>

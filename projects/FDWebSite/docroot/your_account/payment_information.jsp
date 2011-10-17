@@ -9,6 +9,9 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<% //expanded page dimensions
+final int W_YA_PAYMENT_INFO_TOTAL = 970;
+%>
 
 <%request.setAttribute("listPos", "CategoryNote");%>
 
@@ -48,9 +51,9 @@ boolean isCheckEligible	= user.isCheckEligible();
 %>
 
 <!-- error message handling here -->
-<TABLE WIDTH="675" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TABLE WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
     <TR>
-        <TD width="675" class="text11"><font class="title18">Payment Options</font><br><span class="space2pix"><br></span>
+        <TD width="<%= W_YA_PAYMENT_INFO_TOTAL %>" class="text11"><font class="title18">Payment Options</font><br><span class="space2pix"><br></span>
 Update your payment information.<br>
 To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here</a>
 <br><fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
@@ -59,7 +62,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 </table>
 
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="675" HEIGHT="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><br><br>
 
 <SCRIPT LANGUAGE=JavaScript>
@@ -71,10 +74,10 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 <% if (isCheckEligible && !isECheckRestricted) { %>
 
 	<% if (hasCheck) { %>
-<table width="675" border="0" cellspacing="0" cellpadding="2">
+<table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
 <tr valign="top">
     <td><img src="/media_stat/images/headers/check_acct_details.gif" width="181" height="9" alt="CHECKING ACCOUNT DETAILS">&nbsp;&nbsp;&nbsp;<a href="javascript:popup('/registration/checkacct_terms.jsp','large')">Terms of Use</a><br>
-    <IMG src="/media_stat/images/layout/999966.gif" width="675" height="1" border="0" VSPACE="3"><br>
+    <IMG src="/media_stat/images/layout/999966.gif" width="<%= W_YA_PAYMENT_INFO_TOTAL %>" height="1" border="0" VSPACE="3"><br>
     </td>
 </tr>
 <tr valign="middle">
@@ -94,11 +97,11 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 	<% } %>
 	<br><br>
 <% } %>
-<table width="675" border="0" cellspacing="0" cellpadding="2">
+<table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
 <tr valign="top">
     <td><img src="/media_stat/images/navigation/credit_card_details.gif"
 WIDTH="152" HEIGHT="15" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<BR>
-    <IMG src="/media_stat/images/layout/999966.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+    <IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
     </td>
 </tr>
 <tr valign="middle">
@@ -114,12 +117,12 @@ WIDTH="152" HEIGHT="15" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<
 	</td></tr>
 </table>
 <br>
-<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="675" HEIGHT="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
 <FONT CLASS="space4pix"><BR><BR></FONT>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="675">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>">
 <TR VALIGN="TOP">
 <TD WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="CONTINUE SHOPPING" ALIGN="LEFT"></a></TD>
-<TD WIDTH="640"><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a>
+<TD WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL - 35 %>"><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a>
 <BR>from <FONT CLASS="text11bold"><A HREF="/index.jsp">Home Page</A></FONT><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="340" HEIGHT="1" BORDER="0"></TD>
 </TR>
 </TABLE>

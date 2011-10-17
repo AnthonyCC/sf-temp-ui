@@ -1,4 +1,8 @@
-<table width="500" border="0" cellspacing="0" cellpadding="0">
+<% //expanded page dimensions
+final int W_USER_AGREEMENT_TOTAL = 970;
+%>
+
+<table width="<%=W_USER_AGREEMENT_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
 <tr>
 	<td><img src="/media_stat/images/template/help/customer_agreement_hdr.gif" alt="" border="0"><br /></td>
 	<td align="right">

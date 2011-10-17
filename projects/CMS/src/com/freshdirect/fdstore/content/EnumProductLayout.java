@@ -5,13 +5,16 @@ import java.io.Serializable;
 
 public enum EnumProductLayout implements Serializable {
 	PERISHABLE("Perishable Product Layout", 1, "/includes/product/perishable_product.jsp", false),
+	@Deprecated
 	COMPOSITE("Composite Product Layout", 2, "/includes/product/transac_composite.jsp", false),
 	WINE("Wine Product Layout", 3, "/includes/product/wine_product.jsp", false),
+	@Deprecated
 	COMPOSITE_PLUS("Compoiste-Plus Product Layout", 4, "/includes/product/transac_composite_plus.jsp", true),
 	PARTY_PLATTER("Party Platter Product Layout", 5, "/includes/product/party_platter.jsp", true),
 	MULTI_ITEM_MEAL("Multi Item Meal Option Layout", 6, "/includes/product/party_platter.jsp", true),
 	COMPONENTGROUP_MEAL("Meal Layout using Component groups", 7, "/includes/product/componentGroupMeal.jsp", true),
 	NEW_WINE_PRODUCT("New Wine Product", 8, "/includes/product/new_wine_product.jsp", false),
+	@Deprecated
 	CONFIGURED_PRODUCT("Configured Product Layout", 9, "/includes/product/configProduct.jsp", false);
 
 

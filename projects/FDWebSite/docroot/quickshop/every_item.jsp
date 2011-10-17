@@ -12,7 +12,9 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus guestAllowed='false' recognizedAllowed='false'/>
-
+<% //expanded page dimensions
+final int W_QUICKSHOP_EVERY_ITEM_TOTAL = 765;
+%>
 <%
 RequestUtil.appendToAttribute(request,"bodyOnLoad","FormChangeUtil.recordSignature('qs_cart',false)",";");
 RequestUtil.appendToAttribute(request,"windowOnBeforeUnload","FormChangeUtil.warnOnSignatureChange('qs_cart')",";");
@@ -137,7 +139,7 @@ window.onload = function() {
 	<font class="title18"><b>Shop from everything you've ever ordered!</b><br><font class="space4pix"><br></font>
 	<font class="text12bold" color="#FF9933">CHOOSE DEPARTMENT:</font><br><font class="space8pix"><br></font>
 	<font class="text13"><b><%= departmentNav.toString() %></b></font>
-	<br><img src="/media_stat/images/layout/cccccc.gif" width="550" height="1" vspace="4">
+  <br><img src="/media_stat/images/layout/cccccc.gif" width="<%= W_QUICKSHOP_EVERY_ITEM_TOTAL %>" height="1" vspace="4">
 	<br>
         <%if(FDStoreProperties.isAdServerEnabled()) {%>
             <SCRIPT LANGUAGE=JavaScript>
@@ -148,7 +150,7 @@ window.onload = function() {
         <%}else{%>
             <%@ include file="/includes/home/i_banners.jspf" %>
         <%}%>
-	<img src="/media_stat/images/layout/cccccc.gif" width="550" height="1" vspace="4"><br><br>
+	<img src="/media_stat/images/layout/cccccc.gif" width="<%= W_QUICKSHOP_EVERY_ITEM_TOTAL %>" height="1" vspace="4"><br><br>
 	<a href="/index.jsp" class="bodyCopy"><b>Click here to continue shopping from our homepage!</b></a><br><br><br>
 <% } %>
 		</tmpl:put>

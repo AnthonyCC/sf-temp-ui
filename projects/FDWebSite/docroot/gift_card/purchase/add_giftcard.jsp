@@ -4,6 +4,10 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<% //expanded page dimensions
+final int W_ADD_GIFTCARD_TOTAL = 970;
+%>
+
 <fd:CheckLoginStatus />
 
 <tmpl:insert template='/common/template/giftcard.jsp'>
@@ -135,9 +139,9 @@
 				}
 			%>
 
-			<table width="690" cellspacing="0" cellpadding="0" border="0">
+			<table width="<%=W_ADD_GIFTCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 				<tr>
-					<td class="text11" width="675">
+					<td class="text11" width="<%=W_ADD_GIFTCARD_TOTAL-99%>">
 						<span class="title18">Enter Gift Card Info</span><br />
 						Provide your recipients' personal info and details of your gift.
 					</td>
@@ -153,8 +157,8 @@
 					</td>
 				</tr>
 				<tr>
-					<td colspan="2" style="padding: 2px;">
-						<img style="margin: 2px 0;" width="675" height="1" border="0" src="/media_stat/images/layout/999966.gif" /><br />
+					<td colspan="2" style="padding: 2px 0px;">
+						<img style="margin: 2px 0;" width="<%=W_ADD_GIFTCARD_TOTAL%>" height="1" border="0" src="/media_stat/images/layout/999966.gif" /><br />
 					</td>
 				</tr>
 			</table>
@@ -168,7 +172,7 @@
 			
 
 			<%--
-				<table border="0" cellspacing="0" cellpadding="0" width="675">
+				<table border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_TOTAL%>">
 					<tr valign="top">
 						<td width="640">
 							<%@ include file="/includes/i_footer_account.jspf"%>
@@ -178,9 +182,9 @@
 			--%>
 
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
-		<img src="/media_stat/images/layout/ff9900.gif" width="675" height="1" border="0" /><br />
+		<img src="/media_stat/images/layout/ff9900.gif" width="<%=W_ADD_GIFTCARD_TOTAL%>" height="1" border="0" /><br />
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
-		<table width="675" cellspacing="0" cellpadding="0" border="0" valign="middle">
+		<table width="<%=W_ADD_GIFTCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0" valign="middle">
 			<tr>
 				<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 			</tr>

@@ -9,6 +9,11 @@
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import="com.freshdirect.payment.BillingCountryInfo"%>
 <%@ page import="com.freshdirect.payment.BillingRegionInfo"%>
+
+<% //expanded page dimensions
+final int W_RH_ADD_CREDITCARD_FIELDS_TOTAL = 970;
+%>
+
 <script language="javascript" type="text/javascript">  
       var xmlHttp  
       
@@ -161,11 +166,11 @@ EnumServiceType serviceTypeRH = (EnumServiceType)NVL.apply(EnumServiceType.getEn
 		<br><span class="text11rbold"><%= errorMsg %></span><br><br>
     </fd:ErrorHandler>
 
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="693">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_RH_ADD_CREDITCARD_FIELDS_TOTAL%>">
 	<TR VALIGN="TOP">
-	<TD WIDTH="693"><img src="/media_stat/images/navigation/credit_card_details.gif"
+	<TD WIDTH="<%=W_RH_ADD_CREDITCARD_FIELDS_TOTAL%>"><img src="/media_stat/images/navigation/credit_card_details.gif"
 		WIDTH="132" HEIGHT="9" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<FONT CLASS="text12">* Required information</FONT><BR>
-		<IMG src="/media_stat/images/layout/999966.gif" WIDTH="693" HEIGHT="1" BORDER="0" VSPACE="3"><BR></TD>
+		<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=W_RH_ADD_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR></TD>
 	</TR></TABLE>
 <br>
 
@@ -259,11 +264,11 @@ EnumServiceType serviceTypeRH = (EnumServiceType)NVL.apply(EnumServiceType.getEn
 <%}%>
 </TABLE>
 <br><br>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="695">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_RH_ADD_CREDITCARD_FIELDS_TOTAL%>">
 <TR VALIGN="TOP">
-	<TD WIDTH="693">
+	<TD WIDTH="<%=W_RH_ADD_CREDITCARD_FIELDS_TOTAL%>">
 		<img src="/media_stat/images/navigation/billing_address_for_card.gif" WIDTH="206" HEIGHT="9" border="0" alt="BILLING ADDRESS">&nbsp;&nbsp;&nbsp;<FONT CLASS="text12">* Required information</FONT><BR>
-		<IMG src="/media_stat/images/layout/999966.gif" WIDTH="693" HEIGHT="1" BORDER="0" vspace="3">
+		<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=W_RH_ADD_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0" vspace="3">
 		<font class="text12">Please enter billing address as it appears on your credit card statement.</font><br>
 		<img src="/media_stat/images/layout/clear.gif" alt="" border="0" width="1" height="4"><br>
 	</TD>

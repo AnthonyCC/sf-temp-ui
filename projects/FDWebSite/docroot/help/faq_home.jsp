@@ -2,6 +2,11 @@
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
 <%@ page import="com.freshdirect.webapp.util.FDFaqUtil" %>
+
+<% //expanded page dimensions
+final int W_HELP_FAQ_HOME_TOTAL = 806;
+%>
+
 <%
 	String faqPage = "faqHome";
 	Map params = new HashMap();
@@ -95,7 +100,7 @@
 	<tmpl:put name='leftnav' direct='true'>
 	</tmpl:put>
     <tmpl:put name='content' direct='true'>
-		<table border="0" cellpadding="0" cellspacing="0" width=570>
+		<table border="0" cellpadding="0" cellspacing="0" width="<%=W_HELP_FAQ_HOME_TOTAL%>">
 		<tr>
 			<td valign="top">
 				<img src="/media/images/layout/clear.gif" width="10" height="1" alt="" border="0">

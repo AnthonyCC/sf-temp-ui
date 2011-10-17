@@ -1,5 +1,5 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<fd:IncludeMedia name="/media/editorial/win_usq/expert_ratings_key.html"/>
-<div style="padding-top: 20px;text-align: right;" class="text12">
+<div align="center"><fd:IncludeMedia name="/media/editorial/win_usq/expert_ratings_key.html"/></div>
+<div style="padding-top: 20px;text-align: center;" class="text12">
 <a href="#" onclick="return FreshDirect.Wine.showExpertRatingPopup();">More about our expert ratings</a>
 </div>

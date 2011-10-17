@@ -12,6 +12,12 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
+
+<% //expanded page dimensions
+final int W_NEWWINES_TOTAL = 601;
+%>
+
+
 <fd:CheckLoginStatus />
 
 <%!
@@ -179,9 +185,9 @@ pagingLinks = getPageNumbers(request,response,pageNumber,itemsToDisplay,currentF
 Integer offset = new Integer((pageNumber-1)*itemsToDisplay);
 Integer len = new Integer(itemsToDisplay);
 %>
-<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<table border="0" cellspacing="0" cellpadding="0" width="<%=W_NEWWINES_TOTAL%>">
 <tr>
-  <td valign="top" align="left" CLASS="text10"><img src="/media_stat/images/layout/clear.gif" width="12"><b>Page: </b><%=pagingLinks%>&nbsp;(<%=displayList.size()%> items)</td>
+  <td valign="top" align="left" CLASS="text10"><b>Page: </b><%=pagingLinks%>&nbsp;(<%=displayList.size()%> items)</td>
   <td align="right" CLASS="text10" valign="top">&nbsp;See last: 
 <%if (DAYS_1==days){%><b><%= DAYS_1 %> days</b><%}else{%><a href="/newwines.jsp?deptId=win&catId=win_new&days=1"><%= DAYS_1 %> days</a><%}%> | 
 <%if (DAYS_2==days){%><b><%= DAYS_2 %> days</b><%}else{%><a href="/newwines.jsp?deptId=win&catId=win_new&days=2"><%= DAYS_2 %> days</a><%}%> | 
@@ -196,17 +202,17 @@ if (displayList.size()!=0) {
   <%@ include file="/includes/layouts/i_generic_body.jspf"%>
 <%
 } else {   %>
-    <table cellspacing="0" cellpadding="0"  border="0" width="100%"><tr><td>
+    <table cellspacing="0" cellpadding="0"  border="0" width="<%=W_NEWWINES_TOTAL%>"><tr><td>
       <img src="/media_stat/images/layout/clear.gif" height="54"><br>&nbsp;&nbsp;<b>No new wines within the last <%=days%> days.<b><br>
       <img src="/media_stat/images/layout/clear.gif" height="24">
     </td></tr></table>
 <%
 } %>
      </fd:GetNewProducts>
-<table border="0" cellspacing="0" cellpadding="0" width="100%">
-<tr><td COLSPAN="2" BGCOLOR="#CCCCCC" width="100%"></td></tr>
+<table border="0" cellspacing="0" cellpadding="0" width="<%=W_NEWWINES_TOTAL%>">
+<tr><td COLSPAN="2" BGCOLOR="#CCCCCC" width="<%=W_NEWWINES_TOTAL%>"></td></tr>
 <tr valign="top"><td CLASS="text10" align="left" width="50%">
-<img src="/media_stat/images/layout/clear.gif" width="12"><b><%=currentFolder.getFullName()%></b>&nbsp;(<%=displayList.size()%> items)</td>
+<b><%=currentFolder.getFullName()%></b>&nbsp;(<%=displayList.size()%> items)</td>
 <td CLASS="text10" ALIGN="RIGHT" width="50%">Display <%
 if (itemsToDisplay == 12) {
 %>
@@ -226,9 +232,9 @@ if (itemsToDisplay == 12) {
 <A HREF="<%= response.encodeURL("/newwines.jsp?deptId=win&catId=win_new&days="+daysIndx + buildOtherParams(20,-1)+"&trk=numb") %>">20</A> |
 <B>28</B><%
 }
-%> per page<img src="/media_stat/images/layout/clear.gif" width="12"></td>
+%> per page</td>
 </tr>
-<tr><td CLASS="text10" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="12"><b>Page: </b><%=pagingLinks%></td></tr>
+<tr><td CLASS="text10" colspan="2"><b>Page: </b><%=pagingLinks%></td></tr>
 </table>
 <% } catch (Exception ex) {
 		ex.printStackTrace();

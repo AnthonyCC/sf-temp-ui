@@ -19,9 +19,9 @@ This file is included by /search.jsp
 final int N_PRDS	= results.getProducts().size(); // number of all products
 List clss			= results.getRecipeClassifications(); // got from SmartSearchTag
 
-%><div id="categoryPanel" style="border: 1px solid #737644;width:155px;margin-left: 15px;margin-top: 15px">
-	<div id="catSum" class="text15" style="background-color: #999967; color: white; padding: 5px;width:145px;text-align: center">
-		<div style="width:145px;text-align: left;margin-left:auto;margin-right: auto; padding-bottom: 5px;">
+%><div id="categoryPanel" style="width:150px;">
+	<div id="catSum" class="text15" style="background-color: #999967; color: white; padding: 5px 5px 5px 10px;width:135px;text-align: center">
+		<div style="width:135px;text-align: left;margin-left:auto;margin-right: auto; padding-bottom: 5px;">
 <%
 	Iterator depIter = categoryTree.getRoots().iterator();
 	int topLevelCount = 0;
@@ -38,7 +38,7 @@ List clss			= results.getRecipeClassifications(); // got from SmartSearchTag
 	// 'show all products' action
 	if (N_PRDS > 0 && (nav.getDepartment() != null || nav.getCategory() != null)) {
 %>
- 	<div class="text11bold" style="margin: 0px; padding: 1em 5px 0 5px; background-color: #E0E3D0;width: 145px ! important"><a href="<%= nav.getUnfilteredPageAction() %>">Show all products</a> <span style="color:grey">(<%= N_PRDS %>)</span></div>
+ 	<div class="text11bold" style="margin: 0px; padding: 1em 5px 0 10px; background-color: #E0E3D0;width: 135px ! important"><a href="<%= nav.getUnfilteredPageAction() %>">Show all products</a> <span style="color:grey">(<%= N_PRDS %>)</span></div>
 <%
 	}
 %>
@@ -56,7 +56,7 @@ List clss			= results.getRecipeClassifications(); // got from SmartSearchTag
  <fd:ContentTreeTag tree="categoryTree" contentNodeName="te" expandToDepth="1" depthName="depth" nextDepthName="nextDepth" selectedName="selected" childCountName="childCount">
 <% int d=depth.intValue(); if (d==0) {
 		// department node
-%>		<div class="text12bold" style="margin: 0px; padding: 1em 5px 2px 5px; background-color: #E0E3D0;width: 145px ! important">
+%>		<div class="text12bold" style="margin: 0px; padding: 1em 5px 2px 10px; background-color: #E0E3D0;width: 135px ! important">
 			<a href="<%= nav.getDepartmentAction(te.getContentKey().getId()) %>"><%= te.getFullName().toUpperCase() %></a>&nbsp;<span style="color:grey">(<%= childCount %>)</span>
 		</div>
 <%
@@ -67,7 +67,7 @@ List clss			= results.getRecipeClassifications(); // got from SmartSearchTag
             parentDeptId = cm.getDepartment().getContentName();
         }
         if(navDeptId != null && navDeptId.equals(parentDeptId)) {
-%>		<div style="font-weight: <%= selected.booleanValue() ? "bold": "normal"%>; margin: 0px;background-color: #E0E3D0;padding-left:20px;text-indent:-10px;width: 135px ! important">
+%>		<div style="font-weight: <%= selected.booleanValue() ? "bold": "normal"%>; margin: 0px;background-color: #E0E3D0;padding-left:20px;text-indent:-10px;width: 130px ! important">
 			<a style="margin-left: <%= d-1 %>em;" href="<%= nav.getCategoryAction(te.getContentKey().getId()) %>"><%= te.getFullName() %></a>&nbsp;<span style="color:grey">(<%= childCount %>)</span>
 		</div>
 <% 
@@ -82,10 +82,15 @@ List clss			= results.getRecipeClassifications(); // got from SmartSearchTag
 
 <%
 	if (FDStoreProperties.isAdServerEnabled()) { %>
-<div style="width:155px; margin-top: 15px">
+<%--
+<div style="width:150px; margin-top: 15px; overflow: hidden;">
 <script type="text/javascript">
 	OAS_AD('LittleRandy');
 </script>
+</div>
+--%>
+<div style="width:150px; margin-top: 15px; overflow: hidden;">
+	<a href="javascript:pop('/request_product.jsp',400,585)"><img src="/media_stat/images/template/search/ken_request_a_product.jpg" border="0" hspace="0" vspace="3" width="150" height="100"></a>
 </div>
 <%
 	}

@@ -1,13 +1,21 @@
 <!-- Left side nav -->
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+
+<%! //expanded page dimensions
+private static final int W_LEFT_NAV_TOTAL = 150;
+private static final int W_LEFT_NAV_CENTER = 135;
+private static final int W_LEFT_NAV_LEFT_PADDING = 10;
+private static final int W_LEFT_NAV_RIGHT_PADDING = 5;
+%>
+
 <%!
 
 	/** @return number of displayed rows */
 	private static int appendElement(StringBuffer buf, List breakDepths, NavigationElement nl, boolean isUnavailable) {
 
 		int displayedRows = 0;
-
+		//buf.append("<tr><td>"+breakDepths+"</td></tr>");
 		boolean paintBreak = nl.breakBefore();
 
 		// !!! VS: the breakdepths implementation seems pretty inefficient
@@ -22,6 +30,7 @@
 
 		if (nl.breakAfter()) {
 			breakDepths.add(new Integer( nl.getDepth() ));
+			paintBreak=true;
 		}
 
 		if (paintBreak) {
@@ -30,7 +39,7 @@
 		}
 
 		displayedRows++;
-		buf.append("<tr><td width=\"120\"><div style=\"margin-left:");
+		buf.append("<tr><td width=\"" + (W_LEFT_NAV_CENTER) + "\"><div style=\"margin-left:");
 		buf.append((nl.getDepth() * 4) + 8);
 		buf.append("px; text-indent: -8px;\">");
 
@@ -103,7 +112,7 @@ if (catImage!=null) {
 // !!! implement grocery
 boolean showAnAllFldrLink = topCategory.getFakeAllFolders();
 if (showAnAllFldrLink) {
-    buf.append("<tr><td width=\"120\"><div style=\"margin-left:");
+    buf.append("<tr><td width=\"" + W_LEFT_NAV_CENTER + "\"><div style=\"margin-left:");
     buf.append(8);
     buf.append("px; text-indent: -8px;\">");
 
@@ -128,7 +137,7 @@ for (Iterator i = leftNavItemsList.iterator(); i.hasNext(); ) {
 
 if (unavailableNavItems.size()>0) {
 	displayedRows++;
-	buf.append("<tr><td width=\"120\">");
+	buf.append("<tr><td width=\"" + W_LEFT_NAV_CENTER + "\">");
 	buf.append("<br><b>Currently Not Available</b>");
 	buf.append("</td></tr>\n");
 	breakDepths = new LinkedList();
@@ -139,10 +148,10 @@ if (unavailableNavItems.size()>0) {
 
 if (displayedRows > 0) {
 %>
-<table border="0" cellspacing="0" cellpadding="0" align="center" width="125">
-<tr><td width="1" rowspan="<%= displayedRows %>"><%-- spacer 1x1 --%>
-</td><td width="120"><%-- spacer 120x1 --%></td>
-<td width="4" rowspan="<%= displayedRows %>"><%-- spacer 4x1 --%></td></tr>
+<table border="0" cellspacing="0" cellpadding="0" align="center" width="<%=W_LEFT_NAV_TOTAL%>">
+<tr><td width="<%=W_LEFT_NAV_LEFT_PADDING%>" rowspan="<%= displayedRows %>"><%-- spacer 1x1 --%>
+</td><td width="<%=W_LEFT_NAV_CENTER%>"><%-- spacer 120x1 --%></td>
+<td width="<%=W_LEFT_NAV_RIGHT_PADDING%>" rowspan="<%= displayedRows %>"><%-- spacer 4x1 --%></td></tr>
 <%= buf.toString() %>
 </table><br>
 <%-- spacer 130x20 --%>

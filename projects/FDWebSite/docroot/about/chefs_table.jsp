@@ -2,13 +2,17 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<% //expanded page dimensions
+final int W_CHEFS_TABLE_TOTAL = 970;
+%>
+
 <fd:CheckLoginStatus id="user" guestAllowed="false" />
 
 <tmpl:insert template='/common/template/no_space_border.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Chef's Table</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <% if (user.isChefsTable()) { %>
-<table cellpadding="0" cellspacing="0" border="0" width="695">
+<table cellpadding="0" cellspacing="0" border="0" width="<%=W_CHEFS_TABLE_TOTAL%>">
 <tr><td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td></tr>
 <%-- main content row --%>
 <tr>

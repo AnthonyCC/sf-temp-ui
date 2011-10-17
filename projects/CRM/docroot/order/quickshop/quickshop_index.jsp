@@ -30,7 +30,7 @@
 	}  
 %>
 
-<div class="order_content">
+<div class="order_content" style="position: absolute;">
 <TABLE WIDTH="100%" CELLPADDING="2" CELLSPACING="0" BORDER="0" ALIGN="CENTER" class="order">
 	<TR VALIGN="TOP">
 		<TD WIDTH="60%">
@@ -72,7 +72,7 @@
 </TABLE>
 </div>
 
-<div class="order_list" style="width: 40%; height: 72%;">
+<div class="order_list" style="height: 72%; float: right;">
 	<%@ include file="/includes/cart_header.jspf"%>
 </div>
 

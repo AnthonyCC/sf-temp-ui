@@ -12,6 +12,7 @@ import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.Image;
 
 
 /**
@@ -21,6 +22,12 @@ import com.freshdirect.fdstore.content.DepartmentModel;
  */
 public class InitLayoutTag extends com.freshdirect.framework.webapp.BodyTagSupport {
 	
+	private static final int IMAGE_MAX_HEIGHT = 130;
+
+	private static final int IMAGE_MAX_WIDTH = 160;
+
+	private static final int IMAGE_MIN_WIDTH = 140;
+
 	private static final long	serialVersionUID	= 336241157986179162L;
 	
 	// === JSP VARIABLES created ===
@@ -30,7 +37,10 @@ public class InitLayoutTag extends com.freshdirect.framework.webapp.BodyTagSuppo
 	public static final String trackingCodeVariableName 	= "trackingCode";
 	public static final String currentFolderVariableName 	= "currentFolder";
 	public static final String sortedCollectionVariableName = "sortedCollection";	
-	public static final String useAlternateVariableName 	= "useAlternateImages";	
+	public static final String useAlternateVariableName 	= "useAlternateImages";
+	public static final String useWidenedWidth 				= "useWidenedWidth";
+	
+	private boolean useAlternateWidth=false;
 	
 		
 	public int doStartTag() throws JspException {
@@ -87,6 +97,31 @@ public class InitLayoutTag extends com.freshdirect.framework.webapp.BodyTagSuppo
 		
 		pageContext.setAttribute( sortedCollectionVariableName, sortedColl );
 		
+		boolean widenedWidth=false;
+		
+		//should be deleted after all department navigation images are widened
+		if(useAlternateWidth){
+			
+			for(ContentNodeModel model: sortedColl){
+			
+				if(model instanceof CategoryModel){
+				
+					CategoryModel cat=(CategoryModel) model;
+					if(cat.getCategoryPhoto()!=null && 
+					   cat.getCategoryPhoto().getWidth()>IMAGE_MIN_WIDTH && 
+					   cat.getCategoryPhoto().getWidth()<IMAGE_MAX_WIDTH && 
+					   cat.getCategoryPhoto().getHeight()<IMAGE_MAX_HEIGHT){
+						
+						widenedWidth=true;
+						break;
+					}
+				}
+			}
+		}
+		
+		pageContext.setAttribute(useWidenedWidth, widenedWidth);
+		
+		
 	}	
 	
 	// ========= TAG Extra Info class =========
@@ -134,4 +169,9 @@ public class InitLayoutTag extends com.freshdirect.framework.webapp.BodyTagSuppo
 	        };
 	    }
 	}
+
+	public void setUseAlternateWidth(boolean useAlternateWidth) {
+		this.useAlternateWidth = useAlternateWidth;
+	}
+	
 }

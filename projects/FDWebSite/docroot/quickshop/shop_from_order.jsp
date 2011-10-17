@@ -58,11 +58,11 @@ RequestUtil.appendToAttribute(request,"windowOnBeforeUnload","FormChangeUtil.war
 	<tr><td bgcolor="#996699" height="1" colspan="2"><img src="/media_stat/images/layout/996699.gif" width="1" height="1" border="0"></td></tr>
 	<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td></tr>
 	<tr>
-	    <td valign="top"><li></li></td>
+	    <td valign="top"><ul><li></li></ul></td>
 	    <td class="text11"><b>Enter quantities in boxes on the left</b> (if you don't want an item, enter "0" quantity, or click the green button to zero all quantities).</td>
 	</tr>
 	<tr>
-	    <td valign="top"><li></li></td>
+	    <td valign="top"><ul><li></li></ul></td>
 	    <td class="text11"><b>Add the selected items to your cart</b> by clicking the orange button.</td>
 	</tr>
 </table>

@@ -36,12 +36,6 @@
 
 		</div>
 
-		<table class="main-frame"><tr>
-			<td class="frame-corner"><img src="<?php bloginfo('template_url'); ?>/images/corner_bottom_left.png" width="5" height="5" border="0"></td>
-			<td class="frame-bottom"></td>
-			<td class="frame-corner"><img src="<?php bloginfo('template_url'); ?>/images/corner_bottom_right.png" width="5" height="5" border="0"></td>
-		</tr></table>
-
 	</div>
 
 	<div id="footer" role="contentinfo">

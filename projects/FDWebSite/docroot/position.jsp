@@ -9,6 +9,12 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
+
+<% //expanded page dimensions
+final int W_POSITION_TOTAL = 806;
+%>
+
+
 <fd:CheckLoginStatus />
 
 <%
@@ -28,7 +34,7 @@ MediaModel catImage = ((ProductContainer) currentFolder).getCategoryPhoto();
 
 <tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName() %></tmpl:put>
 <tmpl:put name='content' direct='true'>
-	<table cellpadding="0" cellspacing="0" border="0" width="580">
+	<table cellpadding="0" cellspacing="0" border="0" width="<%=W_POSITION_TOTAL%>">
 	<tr>
 	<td class="title14"><span class="text15"><b><span style="color:#FF9933;">POSITION</span> <%=currentFolder.getFullName().toUpperCase()%></b></span>
 		<br><br>

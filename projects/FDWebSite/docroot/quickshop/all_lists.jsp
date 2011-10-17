@@ -57,7 +57,7 @@
 	</tmpl:put>
         <tmpl:put name='content' direct='true'>
 							
-<TABLE WIDTH="470" CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TABLE WIDTH="100%" CELLPADDING="0" CELLSPACING="0" BORDER="0">
 <TBODY>
 <%--
 <TR>

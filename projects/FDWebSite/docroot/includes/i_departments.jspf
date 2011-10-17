@@ -1,4 +1,14 @@
-<%@page import="com.freshdirect.fdstore.content.MyFD"%><%
+<%@page import="com.freshdirect.fdstore.content.MyFD"%>
+
+<% //expanded page dimensions
+final int W_DEPARTMENTS_PAD_1 = 1;
+final int W_DEPARTMENTS_PAD_2 = 41;
+final int W_DEPARTMENTS_PAD_3 = 25;
+final int W_DEPARTMENTS_PAD_4 = 60;
+final int W_DEPARTMENTS_PAD_5 = 55;
+%>
+
+<%
 String meat		= "/department.jsp?deptId=mea&trk=home";
 String seafood	= "/department.jsp?deptId=sea&trk=home";
 String fruit		= "/department.jsp?deptId=fru&trk=home";
@@ -26,30 +36,36 @@ String pasta = "/department.jsp?deptId=pas&trk=home";
 String whatsGood = "/department.jsp?deptId=wgd&trk=home";
 String myfd = "/myfd/index.jsp?trk=home";
 String newprods = "/newproducts.jsp?trk=home";
+String presPicks = "/newsletter.jsp?catId=picks_love&trk=wgd";
 %>
 	<%-- start i_departments --%>  
 
-<%@page import="com.freshdirect.fdstore.FDStoreProperties"%><table width="500" border="0" cellspacing="0" cellpadding="0">
+<%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
+<table border="0" cellspacing="0" cellpadding="0" style="margin-top: 20px">
+      <tr>
+				    <td><img src="/media_stat/images/layout/clear.gif" width="1" height="5"/></td>
+      </tr>
 		  <tr>
 			<td align="center">
-			<img src="/media_stat/images/navigation/department/home/fdhome_row1_header.gif" width="457" height="16" border="0" alt="DELICIOUS FOOD TREATED WITH LOVE & RESPECT"><br>
+			<img src="/media_stat/images/navigation/department/home/fdhome_row1_header.gif" width="734" height="16" border="0" alt="DELICIOUS FOOD TREATED WITH LOVE & RESPECT"><br>
 			<!-- <img src="/media_stat/images/navigation/department/home/fdhome_row1.jpg" width="491" height="52" usemap="#Row1" border="0" vspace="3"> -->
 				<!-- /media_stat/images/navigation/department/home/fdhome_row1.jpg -->
 				<table border='0' cellpadding='0' cellspacing='0' class="departmentPicRow1">
-				  <tr height='52px'>
-				    <td width='63px'><a href='<%=fruit%>'><img src='/media_stat/images/navigation/department_selection/row1_0.jpg' alt='Fruit'/></a></td>
-				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row1_1.jpg'/></td>
-				    <td width='78px'><a href='<%=vegetables%>'><img src='/media_stat/images/navigation/department_selection/row1_2.jpg' alt='Vegetables'/></a></td>
-				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row1_1.jpg'/></td>
-				    <td width='68px'><a href='<%=meat%>'><img src='/media_stat/images/navigation/department_selection/row1_3.jpg' alt='Meat'/></a></td>
-				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row1_1.jpg'/></td>
-				    <td width='69px'><a href='<%=seafood%>'><img src='/media_stat/images/navigation/department_selection/row1_4.jpg' alt='Seafood'/></a></td>
-				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row1_1.jpg'/></td>
-				    <td width='68px'><a href='<%=deli%>'><img src='/media_stat/images/navigation/department_selection/row1_5.jpg' alt='Deli'/></a></td>
-				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row1_1.jpg'/></td>
-				    <td width='69px'><a href='<%=cheese%>'><img src='/media_stat/images/navigation/department_selection/row1_6.jpg' alt='Cheese'/></a></td>
-				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row1_1.jpg'/></td>
-				    <td width='70px'><a href='<%=dairy%>'><img src='/media_stat/images/navigation/department_selection/row1_7.jpg' alt='Dairy'/></a></td>
+          <tr>
+            <td><img src="/media_stat/images/layout/clear.gif" width="1" height="10"/></td>
+          </tr>
+				  <tr height='108'>
+				    <td width='130'><a href='<%=fruit%>'><img src='/media_stat/images/navigation/department_selection/fruit.jpg' alt='Fruit'/></a></td>
+				    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENTS_PAD_1%>" height="1"/></td>
+				    <td width='110'><a href='<%=vegetables%>'><img src='/media_stat/images/navigation/department_selection/veg.jpg' alt='Vegetables'/></a></td>
+				    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENTS_PAD_1%>" height="1"/></td>
+				    <td width='112'><a href='<%=meat%>'><img src='/media_stat/images/navigation/department_selection/meat.jpg' alt='Meat'/></a></td>
+				    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENTS_PAD_1%>" height="1"/></td>
+				    <td width='151'><a href='<%=seafood%>'><img src='/media_stat/images/navigation/department_selection/seafood.jpg' alt='Seafood'/></a></td>
+				    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENTS_PAD_1%>" height="1"/></td>
+				    <td width='125'><a href='<%=deli%>'><img src='/media_stat/images/navigation/department_selection/deli.jpg' alt='Deli'/></a></td>
+				    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENTS_PAD_1%>" height="1"/></td>
+				    <td width='108'><a href='<%=dairy%>'><img src='/media_stat/images/navigation/department_selection/dairy.jpg' alt='Dairy'/></a></td>
 				  </tr>
 				</table>
 			
@@ -58,167 +74,182 @@ String newprods = "/newproducts.jsp?trk=home";
 		  </tr>
 		  <tr>
 			<td align="center">
-				<table width="491" border="0" cellspacing="0" cellpadding="0">
+				<table border="0" cellspacing="0" cellpadding="0">
 				  <tr align="center" valign="top" class="text11">
-					<td width="63"><a href="<%=fruit%>">Fruit</a></td>
-					<td width="1"></td>
-					<td width="78"><a href="<%=vegetables%>">Vegetables</a></td>
-					<td width="1"></td>
-					<td width="68"><a href="<%=meat%>">Meat</a></td>
-					<td width="1"></td>
-					<td width="69"><a href="<%=seafood%>">Seafood</a></td>
-					<td width="1"></td>
-					<td width="68"><a href="<%=deli%>">Deli</a></td>
-					<td width="1"></td>
-					<td width="69"><a href="<%=cheese%>">Cheese</a></td>
-					<td width="1"></td>
-					<td width="70"><a href="<%=dairy%>">Dairy</a></td>
+					<td width="130"><a href="<%=fruit%>">Fruit</a></td>
+					<td width="<%=W_DEPARTMENTS_PAD_1%>"></td>
+					<td width="110"><a href="<%=vegetables%>">Vegetables</a></td>
+					<td width="<%=W_DEPARTMENTS_PAD_1%>"></td>
+					<td width="112"><a href="<%=meat%>">Meat</a></td>
+					<td width="<%=W_DEPARTMENTS_PAD_1%>"></td>
+					<td width="151"><a href="<%=seafood%>">Seafood</a></td>
+					<td width="<%=W_DEPARTMENTS_PAD_1%>"></td>
+					<td width="125"><a href="<%=deli%>">Deli</a></td>
+					<td width="<%=W_DEPARTMENTS_PAD_1%>"></td>
+					<td width="108"><a href="<%=dairy%>">Dairy</a></td>
 				  </tr>
 				</table>
 			</td>
 		  </tr>
+		  
 		  <tr>
-			<td align="center" style="padding-top:11px;">
-				<!-- /media_stat/images/navigation/department/home/fdhome_row2.jpg -->
-				<table border='0' cellpadding='0' cellspacing='0' class="departmentPicRow2">
-				  <tr height='53px'>
-				    <td width='110px'><a href='<%=organic%>'><img src='/media_stat/images/navigation/department_selection/row2_0.jpg' alt='Organic & All-Natural'/></a></td>
-				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row2_1.jpg'/></td>
-				    <td width='123px'><a href='<%=localFoods%>'><img src='/media_stat/images/navigation/department_selection/row2_2.jpg' alt='Local Foods'/></a></td>
-				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row2_1.jpg'/></td>
-				    <td width='110px'><a href='<%=kosher%>'><img src='/media_stat/images/navigation/department_selection/row2_3.jpg' alt='Kosher'/></a></td>
-				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row2_1.jpg'/></td>
-				    <td width='119px'><a href='<%=pasta%>'><img src='/media_stat/images/navigation/department_selection/row2_4.jpg' alt='Pasta'/></a></td>
+		  	<td align="center" style="padding-top:16px;">
+		  		<table border='0' cellpadding='0' cellspacing='0' class="departmentPicRow2">
+				  <tr height='108'>
+				    <td width='145'><a href='<%=cheese%>'><img src='/media_stat/images/navigation/department_selection/finecheese.jpg' alt='Cheese'/></a></td>
+				    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENTS_PAD_1%>" height="1"/></td>
+				    <td width='93'><a href='<%=coffee%>'><img src='/media_stat/images/navigation/department_selection/coffee.jpg' alt='Coffee'/></a></td>
+				    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENTS_PAD_1%>" height="1"/></td>
+				    <td width='140'><a href='<%=wine%>'><img src='/media_stat/images/navigation/department_selection/wine.jpg' alt='Wine'/></a></td>
+				    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENTS_PAD_1%>" height="1"/></td>
+				    <td width='139'><a href='<%=pasta%>'><img src='/media_stat/images/navigation/department_selection/pasta.jpg' alt='Pasta'/></a></td>
+				    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENTS_PAD_1%>" height="1"/></td>
+				    <td width='72'><a href='<%=kosher%>'><img src='/media_stat/images/navigation/department_selection/kosher.jpg' alt='Kosher'/></a></td>
+				    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENTS_PAD_1%>" height="1"/></td>
+				    <td width='72'><a href='<%=organic%>'><img src='/media_stat/images/navigation/department_selection/organic.jpg' alt='Organic & All-Natural'/></a></td>
+				    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENTS_PAD_1%>" height="1"/></td>
+				    <td width='72'><a href='<%=localFoods%>'><img src='/media_stat/images/navigation/department_selection/local.jpg' alt='Local Foods'/></a></td>
+				    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENTS_PAD_1%>" height="1"/></td>
 				  </tr>
-				</table>
-			</td>
+				</table>	  	
+		  	</td>	  
 		  </tr>
+		  
 		  <tr>
 			<td align="center" style="padding-top:3px;">
-				<table width="500" border="0" cellspacing="0" cellpadding="0">
+				<table border="0" cellspacing="0" cellpadding="0">
 				  <tr align="center" valign="top" class="text11">
-				  	<td width="7"><img src="/media_stat/images/layout/clear.gif" width="7" height="1"></td>
-					<td width="123"><a href="<%=organic%>">Organic & All-Natural</a></td>
-					<td width="122"><a href="<%=localFoods%>">Local Foods</a></td>
-					<td width="1"></td>
-					<td width="109"><a href="<%=kosher%>">Kosher</a></td>
-					<td width="1"></td>
-					<td width="123"><a href="<%=pasta%>">Pasta</a></td>
-					<td width="14"><img src="/media_stat/images/layout/clear.gif" width="14" height="1"></td>
+				  	<td width="145"><a href="<%=cheese%>">Cheese</a></td>
+					<td width="<%=W_DEPARTMENTS_PAD_1%>"></td>
+					<td width="93"><a href="<%=coffee%>">Coffee</a></td>
+					<td width="<%=W_DEPARTMENTS_PAD_1%>"></td>
+					<td width="140"><a href="<%=wine%>">Wine</a></td>
+					<td width="<%=W_DEPARTMENTS_PAD_1%>"></td>
+					<td width="139"><a href="<%=pasta%>">Pasta</a></td>
+					<td width="<%=W_DEPARTMENTS_PAD_1%>"></td>
+					<td width="72"><a href="<%=kosher%>">Kosher</a></td>
+					<td width="<%=W_DEPARTMENTS_PAD_1%>"></td>
+					<td width="72"><a href="<%=organic%>">Organic & All-Natural</a></td>
+					<td width="<%=W_DEPARTMENTS_PAD_1%>"></td>
+					<td width="72"><a href="<%=localFoods%>">Local Foods</a></td>
 				  </tr>
 				</table>
 			</td>
 		  </tr>
 		  <tr>
-			<td align="center" class="text11" style="padding-top:10px;">
-				<div>
-					<table cellspacing="0" cellpadding="0" style="width: auto; text-align: center; margin: 0px auto;">
-						<tr>
-							<td class="text11" valign="top" style="width: 176px;">
-								<a href="<%=whatsGood%>"><img src="/media_stat/images/navigation/department/home/fdhome_row3.gif" width="176" height="24" border="0" hspace="3"></a>
-							</td>
-							<% if (FDStoreProperties.isMyfdEnabled() && MyFD.getMyFDInstance() != null) { %>
-							<td class="text11" valign="top" style="width: 99px;">
-								<a href="<%=myfd%>"><img src="/media_stat/images/navigation/department/home/myfd.gif" width="99" height="24" border="0" alt="MyFD Home" hspace="3"></a>
-							</td>
-							<% } %>
-							<% if (FDStoreProperties.isMyfdEnabled()) { %>
-							<td class="text11" valign="top" style="width: 164px;">
-								<a href="<%=newprods%>"><img src="/media_stat/images/navigation/department/home/newprods.gif" width="164" height="24" border="0" hspace="3"></a>
-							</td>
-							<% } %>
-						</tr>
-						<tr>
-							<td class="text11" valign="top" style="width: 176px; padding-top: 2px;">
-								<a href="<%=whatsGood%>">Savings & Seasonal Selections</a>
-							</td>
-							<% if (FDStoreProperties.isMyfdEnabled() && MyFD.getMyFDInstance() != null) { %>
-							<td class="text11" valign="top" style="width: 99px; padding-top: 2px;">
-								<a href="<%=myfd%>">Fresh Inspiration</a>
-							</td>
-							<% } %>
-							<% if (FDStoreProperties.isMyfdEnabled()) { %>
-							<td class="text11" valign="top" style="width: 164px; padding-top: 2px;">
-								<a href="<%=newprods%>">Find New Products</a>
-							</td>
-							<% } %>
-						</tr>
-					</table>
-					<br>
-				</div>
-			<img src="/media_stat/images/navigation/department/home/fdhome_row4_header.gif" width="457" height="16" border="0" alt="EASY MEALS PREPARED BY EXPERT CHEFS" vspace="3"><br>
+			<td align="center" class="text11" style="padding-top:20px;">
+			<img src="/media_stat/images/navigation/department/home/fdhome_row4_header.gif" width="734" height="16" border="0" alt="EASY MEALS PREPARED BY EXPERT CHEFS" vspace="3"><br>
 				<!-- /media_stat/images/navigation/department/home/fdhome_row4.jpg -->
 				<table border='0' cellpadding='0' cellspacing='0'  class="departmentPicRow3">
-				  <tr height='62px'>
-				    <td width='90px'><a href='<%=bakery%>'><img src='/media_stat/images/navigation/department_selection/row4_0.jpg' alt='Bakery'/></a></td>
-				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row4_1.jpg'/></td>
-				    <td width='104px'><a href='<%=readyToCook%>'><img src='/media_stat/images/navigation/department_selection/row4_2.jpg' alt='Ready to Cook'/></a></td>
-				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row4_3.jpg'/></td>
-				    <td width='96px'><a href='<%=heatAndEat%>'><img src='/media_stat/images/navigation/department_selection/row4_4.jpg' alt='Heat and Eat'/></a></td>
-				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row4_3.jpg'/></td>
-				    <td width='102px'><a href='<%=catering%>'><img src='/media_stat/images/navigation/department_selection/row4_5.jpg' alt='Catering'/></a></td>
-				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row4_3.jpg'/></td>
-				    <td width='92px'><a href='<%=fourMinMeals%>'><img src='/media_stat/images/navigation/department_selection/row4_6.jpg' alt='4-Minute Meals'/></a></td>
+          <tr>
+            <td><img src="/media_stat/images/layout/clear.gif" width="1" height="10"/></td>
+          </tr>
+				  <tr height='108'>
+				    <td width='141'><a href='<%=bakery%>'><img src='/media_stat/images/navigation/department_selection/bakery.jpg' alt='Bakery'/></a></td>
+				    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENTS_PAD_1%>" height="1"/></td>
+				    <td width='119'><a href='<%=readyToCook%>'><img src='/media_stat/images/navigation/department_selection/chef_prepped.jpg' alt='Ready to Cook'/></a></td>
+				    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENTS_PAD_1%>" height="1"/></td>
+				    <td width='147'><a href='<%=heatAndEat%>'><img src='/media_stat/images/navigation/department_selection/heat_n_eat.jpg' alt='Heat and Eat'/></a></td>
+				    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENTS_PAD_1%>" height="1"/></td>
+				    <td width='174'><a href='<%=catering%>'><img src='/media_stat/images/navigation/department_selection/catering.jpg' alt='Catering'/></a></td>
+				    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENTS_PAD_1%>" height="1"/></td>
+				    <td width='157'><a href='<%=fourMinMeals%>'><img src='/media_stat/images/navigation/department_selection/4_mm.jpg' alt='4-Minute Meals'/></a></td>
 				  </tr>
 				</table>
 			</td>
 		  </tr>
 		  <tr>
 			<td align="center" style="padding-top:3px;">
-				<table width="488" border="0" cellspacing="0" cellpadding="0">
+				<table border="0" cellspacing="0" cellpadding="0">
 				  <tr align="center" valign="top" class="text11">
-					<td width="90"><a href="<%=bakery%>">Bakery</a></td>
-					<td width="1"></td>
-					<td width="104"><a href="<%=readyToCook%>">Ready to Cook</a></td>
-					<td width="1"></td>
-					<td width="96"><a href="<%=heatAndEat%>">Heat & Eat</a></td>
-					<td width="1"></td>
-					<td width="102"><a href="<%=catering%>">Catering</a></td>
-					<td width="1"></td>
-					<td width="92"><a href="<%=fourMinMeals%>">4-Minute Meals</a></td>
+					<td width="141"><a href="<%=bakery%>">Bakery</a></td>
+					<td width="<%=W_DEPARTMENTS_PAD_1%>"></td>
+					<td width="119"><a href="<%=readyToCook%>">Ready to Cook</a></td>
+					<td width="<%=W_DEPARTMENTS_PAD_1%>"></td>
+					<td width="147"><a href="<%=heatAndEat%>">Heat & Eat</a></td>
+					<td width="<%=W_DEPARTMENTS_PAD_1%>"></td>
+					<td width="174"><a href="<%=catering%>">Catering</a></td>
+					<td width="<%=W_DEPARTMENTS_PAD_1%>"></td>
+					<td width="157"><a href="<%=fourMinMeals%>">4-Minute Meals</a></td>
 				  </tr>
 				</table>
 			</td>
 		  </tr>
 		  <tr>
-			<td align="center" style="padding-top:16px;">
-				<img src="/media_stat/images/navigation/department/home/fdhome_row5_header.gif" width="457" height="16" border="0" alt="POPULAR BRANDS & EVERYDAY PANTRY NEEDS"><br>
+			<td align="center" style="padding-top:20px;">
+        <%-- example header: <h2 class="centerline"><span>POPULAR BRANDS &amp; EVERYDAY PANTRY NEEDS</span></h2> --%>
+				<img src="/media_stat/images/navigation/department/home/fdhome_row5_header.gif" width="734" height="16" border="0" alt="POPULAR BRANDS & EVERYDAY PANTRY NEEDS"><br>
 				<!-- /media_stat/images/navigation/department/home/fdhome_row5.jpg -->
 				<table border='0' cellpadding='0' cellspacing='0'>
-				  <tr height='50px'>
-				    <td width='56px'><a href='<%=coffee%>'><img src='/media_stat/images/navigation/department_selection/row5_0.jpg' alt='Coffee'/></a></td>
-				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row5_1.jpg'/></td>
-				    <td width='83px'><a href='<%=grocery%>'><img src='/media_stat/images/navigation/department_selection/row5_2.jpg' alt='Grocery'/></a></td>
-				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row5_1.jpg'/></td>
-				    <td width='62px'><a href='<%=frozen%>'><img src='/media_stat/images/navigation/department_selection/row5_3.jpg' alt='Frozen'/></a></td>
-				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row5_1.jpg'/></td>
-				    <td width='60px'><a href='<%=healthAndBeauty%>'><img src='/media_stat/images/navigation/department_selection/row5_4.jpg' alt='Health & Beauty'/></a></td>
-				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row5_1.jpg'/></td>
-				    <td width='103px'><a href='<%=buyBig%>'><img src='/media_stat/images/navigation/department_selection/row5_5.jpg' alt='Buy Big'/></a></td>
-				    <td width='1px'><img src='/media_stat/images/navigation/department_selection/row5_1.jpg'/></td>
-				    <td width='67px'><a href='<%=wine%>'><img src='/media_stat/images/navigation/department_selection/row5_6.jpg' alt='Wine'/></a></td>
+          <tr>
+            <td><img src="/media_stat/images/layout/clear.gif" width="1" height="10"/></td>
+          </tr>
+				  <tr height='109'>
+				    <td width='182'><a href='<%=grocery%>'><img src='/media_stat/images/navigation/department_selection/grocery.jpg' alt='Grocery'/></a></td>
+				    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENTS_PAD_1%>" height="1"/></td>
+				    <td width='182'><a href='<%=frozen%>'><img src='/media_stat/images/navigation/department_selection/frozen.jpg' alt='Frozen'/></a></td>
+				    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENTS_PAD_1%>" height="1"/></td>
+				    <td width='182'><a href='<%=healthAndBeauty%>'><img src='/media_stat/images/navigation/department_selection/HBA.jpg' alt='Health & Beauty'/></a></td>
+				    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENTS_PAD_1%>" height="1"/></td>
+				    <td width='182'><a href='<%=buyBig%>'><img src='/media_stat/images/navigation/department_selection/buybig.jpg' alt='Buy Big'/></a></td>
 				  </tr>
 				</table>
 			</td>
 		  </tr>
 		  <tr>
 			<td align="center" class="text11">
-				<table width="436" border="0" cellspacing="0" cellpadding="0">
+				<table border="0" cellspacing="0" cellpadding="0">
 				  <tr align="center" valign="top">
-					<td width="56"><a href="<%=coffee%>">Coffee</a></td>
-					<td width="1"></td>
-					<td width="83"><a href="<%=grocery%>">Grocery</a></td>
-					<td width="1"></td>
-					<td width="62"><a href="<%=frozen%>">Frozen</a></td>
-					<td width="1"></td>
-					<td width="60"><a href="<%=healthAndBeauty%>">Health & Beauty</a></td>
-					<td width="1"></td>
-					<td width="103"><a href="<%=buyBig%>">Buy Big</a></td>
-					<td width="1"></td>
-					<td width="67"><a href="<%=wine%>">Wine</a></td>
+					<td width="182"><a href="<%=grocery%>">Grocery</a></td>
+					<td width="<%=W_DEPARTMENTS_PAD_1%>"></td>
+					<td width="182"><a href="<%=frozen%>">Frozen</a></td>
+					<td width="<%=W_DEPARTMENTS_PAD_1%>"></td>
+					<td width="182"><a href="<%=healthAndBeauty%>">Health & Beauty</a></td>
+					<td width="<%=W_DEPARTMENTS_PAD_1%>"></td>
+					<td width="182"><a href="<%=buyBig%>">Buy Big</a></td>
 				  </tr>
 				</table>
 			</td>
 		  </tr>
 	</table>
+				<div style="border-top: 1px solid #cccccc; margin-top: 16px; padding-top: 16px;">
+				
+					<table cellspacing="0" cellpadding="0" style="width: 744px; text-align: center; margin: 0px auto;">
+						<tr>
+							<% if (FDStoreProperties.isMyfdEnabled()) { %>
+							<td class="text11" style="width: 308px;">
+								<a href="<%=presPicks%>"><img src="/media_stat/images/navigation/department/home/HomePage_PP.jpg" width="232" height="35" border="0" hspace="3"></a>
+							</td>
+							<% } %>
+              <td width="<%=2*W_DEPARTMENTS_PAD_3%>" rowspan="2"><div style="width: <%=W_DEPARTMENTS_PAD_3%>px; height: 45px; margin-left: <%=W_DEPARTMENTS_PAD_3%>px; border-left: 1px dotted #cccccc;"></div></td>
+							<td class="text11" style="width: 228px;">
+								<a href="<%=whatsGood%>"><img src="/media_stat/images/navigation/department/home/HomePage_WG.jpg" width="160" height="35" border="0" hspace="3"></a>
+							</td>
+							<% if (FDStoreProperties.isMyfdEnabled() && MyFD.getMyFDInstance() != null) { %>
+              <td width="<%=2*W_DEPARTMENTS_PAD_3%>" rowspan="2"><div style="width: <%=W_DEPARTMENTS_PAD_3%>px; height: 45px; margin-left: <%=W_DEPARTMENTS_PAD_3%>px; border-left: 1px dotted #cccccc;"></div></td>
+							<td class="text11" style="width: 218px;">
+								<a href="<%=myfd%>"><img src="/media_stat/images/navigation/department/home/HomePage_MyFD.jpg" width="91" height="35" border="0" alt="MyFD Home" hspace="3"></a>
+							</td>
+							<% } %>
+						</tr>
+						<tr>
+							<% if (FDStoreProperties.isMyfdEnabled()) { %>
+							<td class="text11" style="width: 308px; padding-top: 3px;">
+								<a href="<%=presPicks%>"><strong>Savings & Seasonal Selections</strong></a>
+							</td>
+							<% } %>
+							<td class="text11" style="width: 228px; padding-top: 2px;">
+								<a href="<%=whatsGood%>"><strong>Savings & Seasonal Selections</strong></a>
+							</td>
+							<% if (FDStoreProperties.isMyfdEnabled() && MyFD.getMyFDInstance() != null) { %>
+							<td class="text11" style="width: 218px; padding-top: 2px;">
+								<a href="<%=myfd%>"><strong>Fresh Inspiration</strong></a>
+							</td>
+							<% } %>
+						</tr>
+					</table>
+					<br>
+				</div>
       <%-- end i_departments --%>
+
+      

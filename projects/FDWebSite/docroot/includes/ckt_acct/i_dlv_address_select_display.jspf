@@ -81,12 +81,12 @@ if (__shipToAddresses.size() > 0) {
 		
 		
 		// render table
-		if((itemCounter % 3)==0) {
+		if((itemCounter % 4)==0) {
 			if(itemCounter!=0) {%>
 			</TR></TABLE><br>
 				<%
 			} %>
-			<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" width="475">
+			<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" width="<%=W_DELIVERY_ADDRESS_SELECT_TOTAL%>">
 				<TR>
 					<%itemCounter=0;
 				}%>
@@ -99,7 +99,7 @@ if (__shipToAddresses.size() > 0) {
 				<TD width="20" valign="top">&nbsp;</TD>
 				<%
 			} %>
-            <TD valign="top" width="195">
+            <TD valign="top" width="200">
 				<font class="text12bold"><%=shipAddress.getFirstName()%> <%=shipAddress.getLastName()%></FONT><BR>
 				<font class="text13">
 				<%if(__showingCorporateAddress){%>
@@ -147,7 +147,7 @@ if (__shipToAddresses.size() > 0) {
 				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="185" HEIGHT="1">
 			</TD>
 			<%itemCounter++;
-			if (saItr.hasNext() && (itemCounter % 3 != 0 )) {  
+			if (saItr.hasNext() && (itemCounter % 4 != 0 )) {  
 				%>
 				<TD width="15"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="15" HEIGHT="1"></TD>
 				<TD width="1" bgcolor="#CCCCCC"><IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="1" HEIGHT="1"></TD>
@@ -157,11 +157,15 @@ if (__shipToAddresses.size() > 0) {
         }//End of the loop
         if (itemCounter==1) {
 			%>
-			<TD WIDTH="470"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="470" HEIGHT="1" BORDER="0"><BR></TD>
+			<TD WIDTH="660"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="470" HEIGHT="1" BORDER="0"><BR></TD>
 			<%
         } else if (itemCounter==2) {
 			%>
-			<TD WIDTH="235"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="235" HEIGHT="1" BORDER="0"><BR></TD>
+			<TD WIDTH="440"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="235" HEIGHT="1" BORDER="0"><BR></TD>
+			<%
+        } else if (itemCounter==3) {
+			%>
+			<TD WIDTH="220"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="235" HEIGHT="1" BORDER="0"><BR></TD>
 			<%
         }
 		%>
@@ -172,7 +176,7 @@ if (__user.getAdjustedValidOrderCount()==2 && !__showingCorporateAddress) {
 	// placing the third order, show alternate delivery info
 	%>
     <br>
-    <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" width="640">
+    <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" width="<%=W_DELIVERY_ADDRESS_SELECT_TOTAL%>">
 		<tr>
 			<td valign="top"><img src="/media_stat/images/template/homepages/truck.gif"  alt="" border="0"></td>
 			<td width=15>&nbsp;</td>

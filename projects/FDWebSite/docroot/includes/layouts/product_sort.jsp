@@ -19,6 +19,14 @@
 <%@ taglib uri='oscache' prefix='oscache' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
+
+<% //expanded page dimensions
+final int W_PRODUCT_SORT_TOTAL = 601;
+final int W_PRODUCT_SORT_IMG = 30;
+final int W_PRODUCT_SORT_NAME = 191;
+final int W_PRODUCT_SORT_PRICE = 90;
+%>
+
 <%
 
 //********** Start of Stuff to let JSPF's become JSP's **************
@@ -79,20 +87,13 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 %>
 <font class="space4pix"><BR></font>
 <%
-    int tablewidth=400;
-    int tdwidth=92;
-    int  nameColWidth=0;
-    int priceColWidth = 0;
-    int remainColWidth = 0;
+    int tdwidth=96;
+    int nameColWidth=0;
+//     int remainColWidth = 0;
     boolean showRelatedRatingImage = false;
     Comparator priceComp = new ProductModel.PriceComparator();
     showRelatedRatingImage = productContainer.isShowRatingRelatedImage();
-    if (showRelatedRatingImage) {
-		tablewidth=425;
-	  	tdwidth=96; 
-		showRelatedRatingImage = true; 
-    } 
-%><fd:ProductGroupRecommender siteFeature="FEATURED_ITEMS" id="recommendations" facility="cat_feat_items"  currentNode="<%= currentFolder %>" itemCount="4"><%
+%><fd:ProductGroupRecommender siteFeature="FEATURED_ITEMS" id="recommendations" facility="cat_feat_items"  currentNode="<%= currentFolder %>" itemCount="5"><%
 		if (recommendations != null && recommendations.getProducts().size() > 0) {
 				
 				request.setAttribute("recommendationsRendered","true");
@@ -100,16 +101,16 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 				int ord = 1;
 		%>
 
-		<table cellspacing="0" cellpadding="1" border="0" width="<%= tablewidth %>">
+		<table cellspacing="0" cellpadding="1" border="0" width="<%= W_PRODUCT_SORT_TOTAL %>">
 		
 			<tr valign="top">
-	    		<td CLASS="text12bold" width="<%= tablewidth %>" colspan="<%= tablewidth %>">
+	    		<td CLASS="text12bold" width="<%= W_PRODUCT_SORT_TOTAL %>" colspan="<%= W_PRODUCT_SORT_TOTAL %>">
 	    			<%= recommendations.getVariant().getServiceConfig().getFILabel() %> <BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="3"></TD>
 	    		</td>
 			</tr>
 		</table>
 		<font class="space4pix"><BR></font>
-		<TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" WIDTH="<%= tablewidth %>">
+		<TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" WIDTH="<%= W_PRODUCT_SORT_TOTAL %>">
 			<TR VALIGN="TOP" ALIGN="CENTER">
 				<logic:iterate id='contentNode' collection="<%= recommendations.getProducts() %>" type="com.freshdirect.fdstore.content.ProductModel"><%
 						
@@ -131,9 +132,12 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 			<%		} %>
 						<div class="favoritePrice">	<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" showDescription="false"/></div>
 					</td>
+					
+			<%if (ord < recommendations.getProducts().size()) {%>		
 				<td width="10">
 					<img src="/media_stat/images/layout/clear.gif" width="8" height="1">
 			   </td>
+			<%} %>
 			<%++ord;%>
 			</logic:iterate>
 	</tr>
@@ -144,30 +148,29 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 %></fd:ProductGroupRecommender><%
 // idealy the following td cells should be created afer we know the location of the full_name column, but..
 %>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=tablewidth%>">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_PRODUCT_SORT_TOTAL%>">
 	<TR VALIGN="TOP">
-		<TD WIDTH="400"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="400" HEIGHT="5"></TD></TR>
-		<TR VALIGN="TOP"><TD WIDTH="400" CLASS="text9"><FONT CLASS="text10bold">Compare <%= currentFolder.getFullName() %> by: Taste &amp; Price</FONT></TD></TR>
-		<TR VALIGN="TOP"><TD WIDTH="400"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="3"></TD></TR> <TR VALIGN="TOP">
-		<TD WIDTH="400" BGCOLOR="#CCCCCC"><IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="10" HEIGHT="1"></TD>
+		<TD WIDTH="<%= W_PRODUCT_SORT_TOTAL %>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%= W_PRODUCT_SORT_TOTAL %>" HEIGHT="5"></TD></TR>
+		<TR VALIGN="TOP"><TD WIDTH="<%= W_PRODUCT_SORT_TOTAL %>" CLASS="text9"><FONT CLASS="text10bold">Compare <%= currentFolder.getFullName() %> by: Taste &amp; Price</FONT></TD></TR>
+		<TR VALIGN="TOP"><TD WIDTH="<%= W_PRODUCT_SORT_TOTAL %>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="3"></TD></TR> <TR VALIGN="TOP">
+		<TD WIDTH="<%= W_PRODUCT_SORT_TOTAL %>" BGCOLOR="#CCCCCC"><IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="10" HEIGHT="1"></TD>
 	</TR>
 </TABLE>
 
-<TABLE BORDER="0" CELLSPACING="1" CELLPADDING="2" WIDTH="<%= tablewidth %>">
+<TABLE BORDER="0" CELLSPACING="1" CELLPADDING="2" WIDTH="<%= W_PRODUCT_SORT_TOTAL %>" style="border-spacing: 1px;">
 	<TR VALIGN="BOTTOM">
 <%
 // get the display labels from the category's "rating" attribute, price is the only hard coded column.  Also we assume that the name is there
 // and that it will be the first column (or the longest)
-                priceColWidth=90;
-                remainColWidth=0;
+//                 remainColWidth=0;
                 if(atrDisplayCount == 2 ) {
-                        nameColWidth = 280;
+                        nameColWidth = W_PRODUCT_SORT_TOTAL-W_PRODUCT_SORT_IMG-W_PRODUCT_SORT_PRICE;
                 }
                 else {
-                        nameColWidth = 105;
-                        remainColWidth = (tablewidth-(nameColWidth+priceColWidth))/(atrDisplayCount-2);
+                        nameColWidth = W_PRODUCT_SORT_NAME;
+//                         remainColWidth = (W_PRODUCT_SORT_TOTAL-(nameColWidth+W_PRODUCT_SORT_PRICE))/(atrDisplayCount-2);
                 }
-%>		<TD colspan="2" bgcolor="#eeeeee" WIDTH="<%= nameColWidth+30 %>" CLASS="text10bold"><img border="0" src="/media_stat/images/layout/clear.gif" width="3">
+%>		<TD colspan="2" bgcolor="#eeeeee" <%--WIDTH="<%= nameColWidth+W_PRODUCT_SORT_IMG %>" --%> CLASS="text10bold"><img border="0" src="/media_stat/images/layout/clear.gif" width="3">
 <%
         if(orderBy.equalsIgnoreCase("variety")){
 %>
@@ -214,7 +217,7 @@ for (Iterator aItr=ratingAttribs.iterator();aItr.hasNext();) {
         attribCount++;
 
  %>
-		<TD bgcolor="#eeeeee" WIDTH="<%=remainColWidth%>" CLASS="text10bold" ALIGN="CENTER">
+		<TD bgcolor="#eeeeee" <%-- WIDTH="<%=remainColWidth%>" --%> CLASS="text10bold" ALIGN="CENTER">
 <%
 	//should this column label be linked?.  if currently ordered by it, then No.
         if(orderBy.equalsIgnoreCase(colRatingName)){
@@ -227,7 +230,7 @@ for (Iterator aItr=ratingAttribs.iterator();aItr.hasNext();) {
 <%      }%></TD>
 <%} // close loop
 //Now add the price column
-%>		<TD bgcolor="#eeeeee" WIDTH="<%=priceColWidth%>" CLASS="text10bold" ALIGN="CENTER">
+%>		<TD bgcolor="#eeeeee" WIDTH="<%=W_PRODUCT_SORT_PRICE%>" CLASS="text10bold" ALIGN="CENTER">
 <%
 if(orderBy.equalsIgnoreCase("Price")){%>Price&nbsp;
 <%
@@ -271,7 +274,7 @@ for(Iterator itmItr = sortedStuff.iterator();itmItr.hasNext();) {
          shownFolderLabel=true;
          lastFolder = workFolder;
 %>
-	<TR VALIGN="MIDDLE"><TD colspan="5" WIDTH="400" CLASS="text10bold" ALIGN="LEFT"><img src="/media_stat/images/layout/clear.gif" width="3" border="0"><%=workFolder.getFullName()%>:</td>
+	<TR VALIGN="MIDDLE"><TD colspan="5" WIDTH="<%= W_PRODUCT_SORT_TOTAL %>" CLASS="text10bold" ALIGN="LEFT"><img src="/media_stat/images/layout/clear.gif" width="3" border="0"><%=workFolder.getFullName()%>:</td>
 	</tr>
 <%
     }
@@ -310,18 +313,27 @@ for(Iterator itmItr = sortedStuff.iterator();itmItr.hasNext();) {
                 StringBuffer flagTag = new StringBuffer();
                 flagTag.append("<img src=\"");
                 flagTag.append(ratingImage.getPath());
-                flagTag.append("\" width=\"30\" height=\"20\" border=\"0\" alt=\"");
+                flagTag.append("\" width=\""+W_PRODUCT_SORT_IMG+"\" height=\"20\" border=\"0\" alt=\"");
                 flagTag.append(prod.getFullName());
                 flagTag.append("\" ALIGN=\"left\" HSPACE=\"5\">");
                 itmImage = flagTag.toString();
         }
 
         url = response.encodeURL("product.jsp?productId=" + prod + "&catId=" + workFolder+"&trk=rate");
-%><td align="left"><%=itmImage%></td><%
-        if (prod.isUnavailable()) {
+
+        String nameColSpan="";        
+        if(itmImage.length()>0){
+
+%><td align="left" width="<%=W_PRODUCT_SORT_IMG%>"><%=itmImage%></td><%
+
+        } else {
+	        	nameColSpan="colspan=\"2\"";
+        }
+
+if (prod.isUnavailable()) {
             prodPrice = "Not Available";
-%><TD WIDTH="<%= nameColWidth %>"><font color="#999999"><display:ProductName product="<%= prod %>" action="<%= url %>" showNew="true" showFavourite="true"/></font></TD>
-<%      } else { %><TD WIDTH="<%= nameColWidth %>"><display:ProductName product="<%= prod %>" action="<%= url %>" showNew="true" showFavourite="true"/></TD>
+%><TD <%=nameColSpan%> WIDTH="<%=nameColWidth %>"><font color="#999999"><display:ProductName product="<%= prod %>" action="<%= url %>" showNew="true" showFavourite="true"/></font></TD>
+<%      } else { %><TD <%=nameColSpan%> WIDTH="<%= nameColWidth %>"><display:ProductName product="<%= prod %>" action="<%= url %>" showNew="true" showFavourite="true"/></TD>
 <%      }
     //We've got a products. Now locate each display attribute on the product
         int colCounter = 2;
@@ -361,7 +373,7 @@ for(Iterator itmItr = sortedStuff.iterator();itmItr.hasNext();) {
             if (orderBy.equalsIgnoreCase(colAttrName)) {
                 cellColor = "#dddddd";
             }
-%><TD WIDTH="<%=remainColWidth%>" ALIGN="CENTER" bgcolor="<%=cellColor%>"><%
+%><TD <%--WIDTH="<%=remainColWidth%>"--%> ALIGN="CENTER" bgcolor="<%=cellColor%>"><%
             if (!foundDomain) { //show a hyphen in the cell, since this attribute Value is not on this product%>
 &nbsp;&#8212;&nbsp</td>
 <%
@@ -385,9 +397,9 @@ for(Iterator itmItr = sortedStuff.iterator();itmItr.hasNext();) {
           colCounter++;
 	}// end of for loop on attrb-display list
 	if(orderBy.equalsIgnoreCase("Price")){%>
-<TD WIDTH="<%=priceColWidth%>" ALIGN="CENTER" bgcolor="#dddddd">
+<TD WIDTH="<%=W_PRODUCT_SORT_PRICE%>" ALIGN="CENTER" bgcolor="#dddddd">
 <%      }else{%>
-<TD WIDTH="<%=priceColWidth%>" ALIGN="CENTER" bgcolor="<%=bgcolor%>">
+<TD WIDTH="<%=W_PRODUCT_SORT_PRICE%>" ALIGN="CENTER" bgcolor="<%=bgcolor%>">
 <%      }%>
 	<div><display:ProductPrice impression="<%= new ProductImpression(prod) %>" showDescription="false"/></div>&nbsp;</TD></TR>
 <%

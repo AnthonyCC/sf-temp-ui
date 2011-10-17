@@ -10,7 +10,7 @@ function fdTSDisplay(refIdArg) {
 		indexVar: '%%I%%', //idTemplates var
 		timeSlotInfo: false, //global variable setting if on timeslot info page
 		topLevelElemId: 'tsContainer', //top-level HTML elem. effect children under this
-		debug: false, //global debug controller
+		debug: true, //global debug controller
 		cleaner: null, //cleanup function
 		cleanerWaitTime: 2000, //ms to wait after expand before attempting clean
 		timer_StartTime: -1, //timer function holder
@@ -33,8 +33,8 @@ function fdTSDisplay(refIdArg) {
 		appearDuration: 200, //ms for appear animation
 		contractDuration: 200, //ms for contract animation
 		expandedDayId: null, //holds the currently expanded day's id
-		hC_beforeContractWidth: '201px', //an expanded ts is set tp this width before contract animation
-		beforeExpandWidth: '87px', //hidden content is set to this width before expand animation
+		hC_beforeContractWidth: '221px', //an expanded ts is set tp this width before contract animation
+		beforeExpandWidth: '107px', //hidden content is set to this width before expand animation
 		cssRefStyleAttributes: ['width', 'border-right'], //array holding attributes to use in cssRefString
 		cssRefString: {}, //object that holds cssString refs (refId.cssString)
 		radioCheckedCur: null, //currently checked radio  (not checked -> cur ?(OnlyRow) -> last)
@@ -337,13 +337,6 @@ function fdTSDisplay(refIdArg) {
 
 				var slotObj = fdTSDisplay.slotObjs[elemId];
 
-				//only allow clicking inside actual ts's vertical space. bypass check if day isn't expanded yet since this is the only time we need it
-				if (fdTSDisplay.dayObjs[dayId].isExpanded) {
-					if (arguments[0].pointer().y - slotObj.ext.positionedOffset().top > fdTSDisplay.opts.rowHeight) {
-						return;
-					}
-				}
-
 				fdTSDisplay.log('You clicked:', slotObj.id);
 				fdTSDisplay.log('Click Info Before:', fdTSDisplay.opts.radioCheckedCur, fdTSDisplay.opts.radioCheckedLast, fdTSDisplay.opts.radioCheckedLastUndo);
 
@@ -462,31 +455,9 @@ function fdTSDisplay(refIdArg) {
 
 				//only show colors on non-expanded days, on slots that have radios
 				if (slotObj && slotObj.radioExt) {
-					if (arguments[0].pointer().y - slotObj.ext.positionedOffset().top <= fdTSDisplay.opts.rowHeight) {
-						slotObj.ext.observe('mousemove', this.tsMouseMove.bindAsEventListener(this, fdTSDisplay, slotObj.id));
-					}else{
-						//remove observer
-						slotObj.ext.stopObserving('mousemove');
-					}
+					slotObj.ext.className += ' clickOnlyMouseOver';
 				}
 
-			}
-		/* slot-level mouse movement */
-			this.tsMouseMove = function() {
-				var fdTSDisplay = arguments[1]
-				var slotObj = fdTSDisplay.slotObjs[arguments[2]];
-				//only show color when within the slot's vertical space
-				if (slotObj.ext.className.indexOf(' clickOnlyMouseOver') === -1) {
-					if (arguments[0].pointer().y - slotObj.ext.positionedOffset().top <= fdTSDisplay.opts.rowHeight) {
-						slotObj.ext.className += ' clickOnlyMouseOver';
-					}
-				}else{
-					if (arguments[0].pointer().y - slotObj.ext.positionedOffset().top > fdTSDisplay.opts.rowHeight) {
-						slotObj.ext.className = slotObj.ext.className.replace(' clickOnlyMouseOver', '');
-						//remove observer
-						slotObj.ext.stopObserving('mousemove');
-					}
-				}
 			}
 		/* slot-level mouse out, click only */
 			this.tsMouseOutClickOnly = function() {
@@ -497,6 +468,7 @@ function fdTSDisplay(refIdArg) {
 				if (slotObj) {
 					slotObj.ext.className = slotObj.ext.className.replace(' clickOnlyMouseOver', '');
 				}
+
 			}
 
 	/* --- UTIL FUNCTIONS --- */
@@ -1648,16 +1620,16 @@ function fdTSDisplay(refIdArg) {
 						fdTSDisplay.dayObjs[dayId].ext.morph(cssString, { duration: expandDuration });
 						fdTSDisplay.dayObjs[dayId].ext.hide();
 						fdTSDisplay.reorganizeDay(dayId);
-						fdTSDisplay.dayObjs[dayId].ext.style.width = '87px';
+						fdTSDisplay.dayObjs[dayId].ext.style.width = fdTSDisplay.opts.beforeExpandWidth;
 						
 						fdTSDisplay.dayObjs[dayId].hCext.fade({duration: appearDuration/10});
 						fdTSDisplay.dayObjs[dayId].hCext.hide();
 
-						fdTSDisplay.dayObjs[dayId].hEext.style.width = '87px';
+						fdTSDisplay.dayObjs[dayId].hEext.style.width = fdTSDisplay.opts.beforeExpandWidth;
 						fdTSDisplay.dayObjs[dayId].hEext.appear({duration: appearDuration});
 						fdTSDisplay.dayObjs[dayId].hEext.morph(cssString, { duration: (expandDuration) });
 						
-						fdTSDisplay.dayObjs[dayId].fEext.style.width = '87px';
+						fdTSDisplay.dayObjs[dayId].fEext.style.width = fdTSDisplay.opts.beforeExpandWidth;
 						fdTSDisplay.dayObjs[dayId].fEext.morph(cssString, { duration: (expandDuration) });
 						fdTSDisplay.dayObjs[dayId].fEext.appear({duration: appearDuration});
 					}
@@ -1777,11 +1749,11 @@ function fdTSDisplay(refIdArg) {
 					var dayObj = fdTSDisplay.dayObjs[dayId];
 
 					if (dayObj.ext) {
-						if (!dayObj.isExpanded && (dayObj.ext.up('td').getWidth() !== 87 || dayObj.hEext.style.display != 'none' || dayObj.fEext.style.display != 'none')) {
+						if (!dayObj.isExpanded && (dayObj.ext.up('td').getWidth() !== parseInt(fdTSDisplay.opts.beforeExpandWidth.replace('px', '')) || dayObj.hEext.style.display != 'none' || dayObj.fEext.style.display != 'none')) {
 							fdTSDisplay.log(dayId, 'con cleaning...');
 							while (!fdTSDisplay.setDayAsContracted(dayId)){}
 						}
-						if (dayObj.isExpanded && (dayObj.ext.up('td').getWidth() !== 203 || dayObj.hCext.style.display != 'none' || dayObj.fEext.style.display === 'none')) {
+						if (dayObj.isExpanded && (dayObj.ext.up('td').getWidth() !== parseInt(fdTSDisplay.opts.hC_beforeContractWidth.replace('px', '')) || dayObj.hCext.style.display != 'none' || dayObj.fEext.style.display === 'none')) {
 							fdTSDisplay.log(dayId, 'exp cleaning...');
 							while (!fdTSDisplay.setDayAsExpanded(dayId)){}
 						}

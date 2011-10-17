@@ -4,15 +4,19 @@
 <%@ page import='java.util.ListIterator'%>
 <%@ page import='com.freshdirect.webapp.util.*'%>
 
+<% //expanded page dimensions
+final int W_RH_DONATION_TOTAL_TOTAL = 970;
+%>
+
 <%
 	FDProductInfo productInfo = FDCachedFactory
 			.getProductInfo(FDStoreProperties.getRobinHoodSkucode());
 	Integer totalQuantity = user.getDonationTotalQuantity();
 	double totalPrice = totalQuantity * productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice();
 %>
-<table width="690" cellspacing="0" cellpadding="0" border="0">
+<table width="<%=W_RH_DONATION_TOTAL_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 	<tr>
-		<td class="text11" width="675">
+		<td class="text11" width="<%=W_RH_DONATION_TOTAL_TOTAL-95%>">
 			<span class="title18">Create an Account</span><br />
 			To complete your donation, please enter the necessary personal and payment info below.
 		</td>
@@ -24,19 +28,19 @@
 		</td>
 	</tr>
 	<tr>
-		<td colspan="3" style="padding: 2px;">
-			<img style="margin: 2px 0;" width="690" height="1" border="0" src="/media_stat/images/layout/ff9933.gif" /><br />
+		<td colspan="3" style="padding: 2px 0px;">
+			<img style="margin: 2px 0;" width="<%=W_RH_DONATION_TOTAL_TOTAL%>" height="1" border="0" src="/media_stat/images/layout/ff9933.gif" /><br />
 		</td>
 	</tr>
 	<tr>
-		<td colspan="3" style="padding: 2px;">
+		<td colspan="3" style="padding: 2px 0px;">
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
 		</td>
 	</tr>
 </table>
-<table width="690" cellspacing="0" cellpadding="0" border="0">
+<table width="<%=W_RH_DONATION_TOTAL_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 	<tr>
-		<td style="padding: 2px;" align="right">
+		<td style="padding: 2px 0px;" align="right">
 			<img src="/media_stat/images/donation/robinhood/robin_hood_logo_sm.gif" height="23" width="130" alt="Robin Hood" /><br />
 		</td>
 	</tr>

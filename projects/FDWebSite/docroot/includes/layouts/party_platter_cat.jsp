@@ -11,6 +11,12 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
+
+<% //expanded page dimensions
+final int W_PARTY_PLATTER_TOTAL = 765;
+%>
+
+
 <fd:CheckLoginStatus guestAllowed="true" />
 <%
 FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
@@ -39,13 +45,13 @@ for(Iterator itr=sortedColl.iterator(); itr.hasNext() && allSoldOut;) {
 	String introTitle = currentFolder.getEditorialTitle();
 
         if (allSoldOut && previewMediaPath!=null && !"".equals(previewMediaPath)) { %>
-		<TABLE border="0" cellPadding="0" cellSpacing="0" width="540">
+		<TABLE border="0" cellPadding="0" cellSpacing="0" width="<%=W_PARTY_PLATTER_TOTAL%>">
 			   <tr>
 			     <td align="center"><fd:IncludeMedia name='<%= previewMediaPath %>'/></td>
 		          </tr>
 		</table>
 <% } else {  %>
-<TABLE border="0" cellPadding="0" cellSpacing="0" width="540">
+<TABLE border="0" cellPadding="0" cellSpacing="0" width="<%=W_PARTY_PLATTER_TOTAL%>">
 	 <tr><td>
 	 <SCRIPT LANGUAGE=JavaScript>
 		<!--
@@ -67,18 +73,18 @@ for(Iterator itr=sortedColl.iterator(); itr.hasNext() && allSoldOut;) {
 	</td></tr>
 <%  }  %>
 </table>
-<TABLE border="0" cellPadding="0" cellSpacing="0" width="540">
+<TABLE border="0" cellPadding="0" cellSpacing="0" width="<%=W_PARTY_PLATTER_TOTAL%>">
 	<tr>
     <td align="center" valign="top">
 <%
   if (!allSoldOut ) {  %>
-          <TABLE border="0" cellPadding="0" cellSpacing="0">
+  <TABLE border="0" cellPadding="0" cellSpacing="0" width="<%=W_PARTY_PLATTER_TOTAL%>">
 <%          List middleMediaList = currentFolder.getMiddleMedia();
 		if (middleMediaList != null && middleMediaList.size() > 0) {  %>
               <tr><td colspan="3">		
 <%			for (Iterator middleMedia = middleMediaList.iterator(); middleMedia.hasNext();) {
 				Html middleMediaPath = (Html)middleMedia.next();
-	%>			<div style="width: 550px;" align="left"><fd:IncludeMedia name="<%=middleMediaPath.getPath()%>" /></div>
+	%>			<div style="width: <%=W_PARTY_PLATTER_TOTAL%>px;" align="left"><fd:IncludeMedia name="<%=middleMediaPath.getPath()%>" /></div>
 <%			}
 		}  %>
  			
@@ -95,9 +101,9 @@ for(Iterator itr=sortedColl.iterator(); itr.hasNext() && allSoldOut;) {
           <fd:FDProductInfo id="productInfo" skuCode="<%= defaultSku.getSkuCode() %>"> 
             <tr><td><font class="space4pix"><br><br></font>
 <%            if (pm.isUnavailable()) {     %>
-                 <td align="left"><font color="#cccccc"><b><%=pm.getFullName()%></b></a></td><td>&nbsp;-&nbsp;<font color="#ff0000"><b>SOLD OUT</b></font></td>
+                 <td style="text-align: left; padding-left: 50px;"><font color="#cccccc"><b><%=pm.getFullName()%></b></a></td><td style="padding-right: 50px;">&nbsp;-&nbsp;<font color="#ff0000"><b>SOLD OUT</b></font></td>
 <%            } else {   %>
-                <td><a href="/product.jsp?catId=<%=pm.getParentNode()%>&productId=<%=pm%>&trk=cpage"><b><%=pm.getFullName()%></b></a></td><td>&nbsp;-&nbsp;<b><%=JspMethods.formatDefaultPrice(productInfo, user.getPricingContext())%></td></b></td>
+                <td style="text-align: left; padding-left: 50px;"><a href="/product.jsp?catId=<%=pm.getParentNode()%>&productId=<%=pm%>&trk=cpage"><b><%=pm.getFullName()%></b></a></td><td style="padding-right: 50px;">&nbsp;-&nbsp;<b><%=JspMethods.formatDefaultPrice(productInfo, user.getPricingContext())%></td></b></td>
 <%            }  %> </tr>
           </fd:FDProductInfo>
 <%      }  %></table>

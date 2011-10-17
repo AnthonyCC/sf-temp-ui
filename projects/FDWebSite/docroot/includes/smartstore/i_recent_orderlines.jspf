@@ -59,11 +59,11 @@
 </style>
 <![endif]-->
 <%
-int imageWidth = 693;
-int cartLineWidth = 400;
+int imageWidth = 970;
+int cartLineWidth = 906;
 if(request.getRequestURI().indexOf("quickshop") > -1) {
-	imageWidth = 535;
-	cartLineWidth = 450;
+	imageWidth = 740;
+	cartLineWidth = 676;
 }
 %>
 <div style="text-align: left; width: <%=imageWidth%>px; border: 1px solid #996699; position: relative; background-image: url('/media_stat/images/layout/dyf_purple_span.gif'); background-position: left; background-repeat: repeat-y;">
@@ -81,7 +81,7 @@ if(request.getRequestURI().indexOf("quickshop") > -1) {
 		<tr>
 			<td><%= orderLine.getDisplayQuantity() %></td>
 			<td><%= orderLine.getDescription() %></td>
-			<td><%= JspMethods.formatPrice(orderLine.getPrice()) %></td>
+			<td style="text-align: right; padding-right: 80px;"><%= JspMethods.formatPrice(orderLine.getPrice()) %></td>
 		</tr>
 <%
 		}

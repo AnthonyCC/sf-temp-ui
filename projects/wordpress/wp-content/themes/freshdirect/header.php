@@ -66,11 +66,6 @@
 	</div><!-- #header -->
 
 	<div id="main">
-	<table class="main-frame"><tr>
-		<td class="frame-corner"><img src="<?php bloginfo('template_url'); ?>/images/corner_top_left.png" width="5" height="5" border="0"></td>
-		<td class="frame-top"></td>
-		<td class="frame-corner"><img src="<?php bloginfo('template_url'); ?>/images/corner_top_right.png" width="5" height="5" border="0"></td>
-	</tr></table>
 
 	<div class="main-frame-side text12">
 	<img src="<?php bloginfo('template_url'); ?>/media_stat/images/layout/clear.gif" height="15" width="733">

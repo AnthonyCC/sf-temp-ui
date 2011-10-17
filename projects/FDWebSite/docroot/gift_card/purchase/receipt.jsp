@@ -23,6 +23,11 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+<% //expanded page dimensions
+final int W_GIFTCARD_RECEIPT_TOTAL = 970;
+%>
+
 <%!
 java.text.SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:mm a 'on' EEEE, MM/d/yy");
 java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
@@ -47,27 +52,25 @@ String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBE
 
 <%ErpPaymentMethodI paymentMethod = (ErpPaymentMethodI) cart.getPaymentMethod();
 
-String pymtDetailWidth="630";
-
 String lineWidth = "290";
 
 int idx = 0;
 %>
 
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=pymtDetailWidth%>">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_GIFTCARD_RECEIPT_TOTAL%>">
 <tr>
 	<td colspan="6"class="text11">
 		<span class="title18">Thank you for buying Gift Cards.</span><br>
 		<br>
-		<img src="/media_stat/images/layout/ff9933.gif" width="675" height="1" border="0" vspace="8"><br><br>
+		<img src="/media_stat/images/layout/ff9933.gif" width="<%=W_GIFTCARD_RECEIPT_TOTAL%>" height="1" border="0" vspace="8"><br><br>
 	</td>
 </tr>
 
 <TR VALIGN="TOP">
-    <TD WIDTH="290">
-        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="290">
+    <TD WIDTH="<%=W_GIFTCARD_RECEIPT_TOTAL-340%>">
+        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%=W_GIFTCARD_RECEIPT_TOTAL-340%>">
         <TR VALIGN="TOP">
-            <TD WIDTH="290" COLSPAN="2"><span class="title18"><b>PLEASE NOTE:</b></span><BR>
+            <TD WIDTH="<%=W_GIFTCARD_RECEIPT_TOTAL-340%>" COLSPAN="2"><span class="title18"><b>PLEASE NOTE:</b></span><BR>
             It may take up to <b>TWO HOURS OR MORE</b> to activate your Gift Cards.  Thank you for your patience.<BR><BR>
             We will send <b>confirmation to you via email</b> once your newly purchased Gift Cards are active.<br><br>
             <a href="<%=response.encodeURL("/your_account/gc_order_details.jsp?orderId="+orderNumber)%>">
@@ -75,7 +78,7 @@ int idx = 0;
         </TR>
         <TR VALIGN="TOP">
             <TD WIDTH="10"><BR></TD>
-            <TD WIDTH="280">
+            <TD WIDTH="<%=W_GIFTCARD_RECEIPT_TOTAL-350%>">
             <font class="space4pix"><br></font>
      </TD>
         </TR>
@@ -85,7 +88,7 @@ int idx = 0;
     	 	<img src="/media_stat/images/layout/cccccc.gif" width="1" height="280"><br>
 	    </td>
     <TD WIDTH="300">
-        <img src="/media_stat/images/navigation/payment_info.gif" WIDTH="91" HEIGHT="9" border="0" alt="PAYMENT INFO"><BR>
+        <img src="/media_stat/images/navigation/payment_info.gif" WIDTH="100" HEIGHT="15" border="0" alt="PAYMENT INFO"><BR>
         <IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=lineWidth%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
         <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="300">
         <TR VALIGN="TOP">
@@ -144,7 +147,7 @@ int idx = 0;
  </TABLE>  
  <br />
  <IMG src="/media_stat/images/layout/clear.gif" width="1" height="1"><br>
-<IMG src="/media_stat/images/layout/cccccc.gif" width="693" height="1"><br>
+<IMG src="/media_stat/images/layout/cccccc.gif" width="<%=W_GIFTCARD_RECEIPT_TOTAL%>" height="1"><br>
 <br /><br />
 <% 
 //for display of recipient number
@@ -153,7 +156,7 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
 %>
 
  
-<table width="675" cellspacing="0" cellpadding="0" border="0" valign="middle">
+<table width="<%=W_GIFTCARD_RECEIPT_TOTAL%>" cellspacing="0" cellpadding="0" border="0" valign="middle">
 		<tr>
 			<td><span class="title18"><b>RECIPIENT LIST FOR ORDER <font color="#FF9933">#<%=orderNumber%></font></b></span><br /><br />
 				<a href="<%=response.encodeURL("/your_account/gc_order_details.jsp?orderId="+orderNumber)%>">
@@ -189,7 +192,7 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
 			%>
 
 </table>
-<table width="675" cellspacing="0" cellpadding="0" border="0" valign="middle" >
+<table width="<%=W_GIFTCARD_RECEIPT_TOTAL%>" cellspacing="0" cellpadding="0" border="0" valign="middle" >
 		<tr>
 			<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 		</tr>
@@ -202,7 +205,7 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
 <tr><td bgcolor="#ccc"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
 <tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
 <tr><td>
-<table width="630" cellpadding="0" cellspacing="0">
+<table width="<%=W_GIFTCARD_RECEIPT_TOTAL%>" cellpadding="0" cellspacing="0">
 <tr><td width="50%" style="border-right: solid 1px #CCCCCC; padding-right: 10px;" align="center">
 <SCRIPT LANGUAGE=JavaScript>
 		<!--

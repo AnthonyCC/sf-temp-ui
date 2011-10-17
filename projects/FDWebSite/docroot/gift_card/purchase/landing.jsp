@@ -4,6 +4,10 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<% //expanded page dimensions
+final int W_GIFTCARD_LANDING_TOTAL = 970;
+%>
+
 <fd:CheckLoginStatus />
 
 <tmpl:insert template='/common/template/giftcard.jsp'>
@@ -36,7 +40,7 @@
 		<%@ include file="/gift_card/purchase/includes/i_fetch_giftcard_info_from_cms.jspf" %>
 
 		
-		<table border="0" cellspacing="0" cellpadding="2" width="675">
+		<table border="0" cellspacing="0" cellpadding="2" width="<%=W_GIFTCARD_LANDING_TOTAL%>">
 			<tr>
 				<td align="left">
 					<fd:IncludeMedia name="/media/editorial/giftcards/media_includes/landing_header.html" />

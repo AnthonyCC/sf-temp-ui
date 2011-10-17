@@ -245,7 +245,7 @@ if (typeof(OST_<%= tx_pricing_FormName %>) == "undefined") {
 																																
 									<% if ( ! blankCell_var.booleanValue() ) { %>
 										<!-- CELL CONTAINER -->
-										<table align="center" >
+										<table align="center" style="width:100%">
 											<tr>
 												<td style="padding: 0; height: <%= maxPrdHeight %>px; vertical-align: bottom; text-align: center">
 													<% if (isVariantSavings) { %>
@@ -306,7 +306,7 @@ if (typeof(OST_<%= tx_pricing_FormName %>) == "undefined") {
 						<table style="width: 100%;">
 							<tr>
 								<td id="ra_<%= genericRecommendationsVariant.getId() %>" colspan="<%= recommendations_layout.size() %>" style="text-align: center;">
-									<table border="0" style="margin-left: auto; margin-right: auto;">
+									<table border="0" style="margin: 8px auto 0;">
 										<tr>
 											<% boolean multiplePages = recommendations.getNumberOfPages() > 1; 
 											   if ( multiplePages && !recommendations.isFirstPage() ) { %>

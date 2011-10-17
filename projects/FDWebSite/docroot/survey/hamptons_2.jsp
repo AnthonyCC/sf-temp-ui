@@ -9,6 +9,10 @@
 <%@ page import='com.freshdirect.fdstore.survey.*' %>
 <%@ taglib uri='logic' prefix='logic' %>
 
+<% //expanded page dimensions
+final int W_SURVEY_HAMPTONS_2_TOTAL = 970;
+%>
+
 <%
 response.setHeader("Cache-Control", "no-cache");
 response.setHeader("Pragma", "no-cache");
@@ -74,7 +78,7 @@ response.setDateHeader ("Expires", 0);
 <tmpl:insert template='/common/template/no_space_border.jsp'>
     <tmpl:put name='title' direct='true'>Hamptons Delivery Survey part 2 of 2</tmpl:put>
     <tmpl:put name='content' direct='true'>
-<table width="700" cellpadding="0" cellspacing="0" border="0" class="text12">
+<table width="<%=W_SURVEY_HAMPTONS_2_TOTAL%>" cellpadding="0" cellspacing="0" border="0" class="text12">
 <% if (submitted) {%>
 <tr>
 	<td colspan="11" class="text12" align="center"><br>
@@ -86,7 +90,7 @@ response.setDateHeader ("Expires", 0);
 	<tr>
 		<td colspan="11" class="text12"><br><span class="title18">Summertime Hamptons Delivery Survey, part 2 of 2</span><br><span class="space4pix"><br></span>
 		Please answer these additional questions regarding Hamptons delivery.
-<br><img src="/media_stat/images/layout/999966.gif" width="700" height="1" vspace="8"><br>
+<br><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_HAMPTONS_2_TOTAL%>" height="1" vspace="8"><br>
 		<%  if (shownQuestions.size() > 0) { %>
 			<fd:ErrorHandler result='<%=result%>' field='<%=checkSurveyForm%>'>
 				<% String errorMsg = SystemMessageList.MSG_MISSING_SURVEY_INFO; %>
@@ -98,7 +102,7 @@ response.setDateHeader ("Expires", 0);
 	<tr>
 		<td><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
 	    <td><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="110" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="210" height="1"></td>
 	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
 	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
 	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
@@ -106,7 +110,7 @@ response.setDateHeader ("Expires", 0);
 	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
 	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
 	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="150" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_HAMPTONS_2_TOTAL-610%>" height="1"></td>
 	</tr>
 	<% int quesCount = 4; %>
 	    <logic:iterate id="question" collection="<%= shownQuestions %>" type="com.freshdirect.fdstore.survey.FDSurveyQuestion" indexId='index'>
@@ -134,7 +138,7 @@ response.setDateHeader ("Expires", 0);
 				<% if ("VacationSuggestion".equalsIgnoreCase(question.getName())) { //textarea %>
 					<tr>
 						<td></td>
-						<td colspan="10" class="text13"><textarea wrap="virtual" cols="80" rows="4" class="text13" name="<%=question.getName()%>"><%=request.getParameter(question.getName())%></textarea>
+						<td colspan="10" class="text13"><textarea wrap="virtual" cols="100" rows="4" class="text13" name="<%=question.getName()%>"><%=request.getParameter(question.getName())%></textarea>
 					<br><span class="space8pix"><br><br></span></td>
 					</tr>
 				<% } %>
@@ -159,7 +163,7 @@ response.setDateHeader ("Expires", 0);
 						    <td align="center" bgcolor="#EEEEEE" class="text13" ><span class="space4pix"><br></span><b>SUN</b><br><span class="space4pix"><br></span></td>
 						    <td>&nbsp;</td>
 						  </tr>
-						  <tr><td></td><td colspan="9"><img src="/media_stat/images/layout/cccccc.gif" width="525" height="1"></td><td></td></tr>
+						  <tr><td></td><td colspan="9"><img src="/media_stat/images/layout/cccccc.gif" width="585" height="1"></td><td></td></tr>
 					<% numRow++;
 					} %>
 						<% if (numCol == 0) { %>
@@ -182,7 +186,7 @@ response.setDateHeader ("Expires", 0);
 						<% 
 						if (numCol ==10) { numCol = 0;  %>
 							<td></td></tr>
-							<tr><td></td><td colspan="9"><img src="/media_stat/images/layout/cccccc.gif" width="525" height="1"><%= numRow == 5 ? "<br><span class=\"space4pix\"><br></span>" : "" %></td><td></td></tr>
+							<tr><td></td><td colspan="9"><img src="/media_stat/images/layout/cccccc.gif" width="585" height="1"><%= numRow == 5 ? "<br><span class=\"space4pix\"><br></span>" : "" %></td><td></td></tr>
 						<% } %>
 					
 				<% } else if (question.getDescription().indexOf(" ...") > -1 || "VacationPickup".equalsIgnoreCase(question.getName())) { //rating style %>
@@ -216,7 +220,7 @@ response.setDateHeader ("Expires", 0);
 				<% } %>
         		</logic:iterate>
 		</logic:iterate>
-	<tr><td colspan="11" align="center"><img src="/media_stat/images/layout/999966.gif" width="700" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" onClick="hamptonsSurvey.submit()" alt="SUBMIT"><br><br><br></td></tr>
+	<tr><td colspan="11" align="center"><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_HAMPTONS_2_TOTAL%>" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" onClick="hamptonsSurvey.submit()" alt="SUBMIT"><br><br><br></td></tr>
 </form>
 
 <script language="javascript">

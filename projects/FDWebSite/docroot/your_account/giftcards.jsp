@@ -11,7 +11,9 @@
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
-
+<% //expanded page dimensions
+final int W_YA_GIFTCARDS = 970;
+%>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 
 <tmpl:insert template='/common/template/dnav.jsp'>
@@ -58,7 +60,7 @@
     boolean showAllReceived = (request.getParameter("showAllReceived") != null && request.getParameter("showAllReceived").equals("true")) ? true :false;
     boolean showAllPurchased = (request.getParameter("showAllPurchased") != null && request.getParameter("showAllPurchased").equals("true")) ? true :false;
 %>
-		<table border="0" cellspacing="0" cellpadding="0" width="675">
+		<table border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
 			<tr valign="top">
 				<td>
                     <span class="topHeader">Gift Cards</span>
@@ -68,7 +70,7 @@
 				</td>
 			</tr>
 		</table>
-		<br /><img src="/media_stat/images/layout/cccccc.gif" width="675" height="1" border="0"><br /><br />
+		<br /><img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_GIFTCARDS %>" height="1" border="0"><br /><br />
 		<%
 			String sPage = "/your_account/giftcards.jsp";
 			if (request.getParameter("trk") != null) {
@@ -103,7 +105,7 @@
 			</fd:ErrorHandler>            
             
         <form method="post">
-		<table border="0" cellspacing="0" cellpadding="0" width="675">
+		<table border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
 			<tr valign="middle">
 				<td style="height: 25px;" align="center">
 					<img src="/media_stat/images/giftcards/your_account/card_enter.gif" width="400" height="21" alt="Enter code" /> <input type="text"name="givexNum" /> <input type="image" name="gcApplyCode" src="/media_stat/images/giftcards/your_account/apply_btn.gif" width="57" height="21" alt="APPLY" border="0" />
@@ -117,11 +119,11 @@
 			</tr>
 		</table>
         </form>
-		<br /><img src="/media_stat/images/layout/cccccc.gif" width="675" height="1" border="0"><br /><br />
+		<br /><img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_GIFTCARDS %>" height="1" border="0"><br /><br />
 		</fd:GiftCardController>
 		<fd:GetGiftCardReceived id='giftcards'>
 
-		<table border="0" cellspacing="0" cellpadding="0" width="675">
+		<table border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
 			<tr>
 				<td>
 					<span class="sideHeader">Gift Cards You Have Received</span><!-- <img src="/media_stat/images/giftcards/your_account/" width="" height="" alt="Gift Cards" /> --><br />
@@ -180,7 +182,7 @@
     </fd:GetGiftCardReceived>
 		<br /><br />
     <fd:GetGiftCardPurchased id="recipients">
-		<table border="0" cellspacing="0" cellpadding="0" width="675">
+		<table border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
 			<tr>
 				<td>
 					<span class="sideHeader">Purchased Gift Cards</span><!-- <img src="/media_stat/images/giftcards/your_account/" width="" height="" alt="Gift Cards" /> --><br />
@@ -257,14 +259,14 @@
 		<br /><br /><div style="font-size: 16px; font-weight: bold;"><a href="<%= FDStoreProperties.getGiftCardLandingUrl() %>">Click here to purchase Gift Cards today.</a></div><br /><br />
 
 
-		<br /><img src="/media_stat/images/layout/cccccc.gif" width="675" height="1" border="0"><br /><br />
+		<br /><img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_GIFTCARDS %>" height="1" border="0"><br /><br />
 
 		
-		<img src="/media_stat/images/layout/ff9933.gif" width="675" height="1" border="0"><br /><br />
-		<table border="0" cellspacing="0" cellpadding="0" width="675">
+		<img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_GIFTCARDS %>" height="1" border="0"><br /><br />
+		<table border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
 			<tr valign="top">
 				<td width="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="continue shopping" align="left"></a></td>
-				<td width="640"  class="text11" ><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="continue shopping"></a><br />from <a href="/index.jsp"><b>Home Page</b></a><br />
+				<td width="<%= W_YA_GIFTCARDS - 35 %>"  class="text11" ><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="continue shopping"></a><br />from <a href="/index.jsp"><b>Home Page</b></a><br />
 				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0" /></td>
 			</tr>
 		</table>

@@ -77,7 +77,7 @@
 						if (showLink) { 
 							departmentNav.append("</a>");
 						}
-						departmentNav.append("<font class=\"space2pix\"><br><br></font>");
+						departmentNav.append("<font class=\"space2pix\"><br></font>");
 					}
 				}
 				%></fd:QuickShopController><%

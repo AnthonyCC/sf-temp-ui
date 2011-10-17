@@ -2,6 +2,11 @@
 <%@ page import='com.freshdirect.payment.EnumPaymentMethodType'%>
 <%@ page import='com.freshdirect.customer.EnumUnattendedDeliveryFlag'%>
 <%@ page import='com.freshdirect.framework.util.NVL'%>
+
+<% //expanded page dimensions
+final int W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL = 970;
+%>
+
 <%!
 java.text.SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:mm a 'on' EEEE, MM/d/yy");
 %>
@@ -65,23 +70,19 @@ java.text.SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:
     if (request.getRequestURI().toLowerCase().indexOf("step_4_receipt")>-1 || request.getRequestURI().toLowerCase().indexOf("order_detail")>-1 ){
         showModify = false;
     }
-boolean isShowSmaller = request.getRequestURI().indexOf("step_4_receipt") > -1; 
-String pymtDetailWidth="693";
-if (isShowSmaller) pymtDetailWidth="630";
-String lineWidth = isShowSmaller?"290":"310";
 %>
 
 <%@page import="com.freshdirect.fdstore.customer.FDCartModel"%>
-<%@page import="com.freshdirect.webapp.util.JspMethods"%><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=pymtDetailWidth%>">
+<%@page import="com.freshdirect.webapp.util.JspMethods"%><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL%>">
 <TR VALIGN="TOP">
     <TD WIDTH="290">
-        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="290">
+        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%=(W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL-40)/2%>">
         <TR VALIGN="TOP">
-            <TD WIDTH="290" COLSPAN="2"><img src="/media_stat/images/navigation/delivery_info.gif" WIDTH="102" HEIGHT="15" border="0" alt="DELIVERY INFO"><BR><IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=lineWidth%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR></TD>
+            <TD WIDTH="<%=(W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL-40)/2%>" COLSPAN="2"><img src="/media_stat/images/navigation/delivery_info.gif" WIDTH="102" HEIGHT="15" border="0" alt="DELIVERY INFO"><BR><IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=(W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL-40)/2%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR></TD>
         </TR>
         <TR VALIGN="TOP">
             <TD WIDTH="10"><BR></TD>
-            <TD WIDTH="280">
+            <TD WIDTH="<%=(W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL-40)/2-10%>">
             <font class="space4pix"><br></font>
             <FONT CLASS="text12">
 <b>Time:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_2_select.jsp">Modify</A><%}%><BR>
@@ -144,19 +145,19 @@ String lineWidth = isShowSmaller?"290":"310";
             <%}%>
         <%}%></FONT>
 		
-		<span class="text12"><b>Please note:</b> any modifications to<br>this order must be completed by<br><%= cutoffDateFormat.format(cart.getDeliveryReservation().getCutoffTime()) %>.</span>
+		<span class="text12"><b>Please note:</b> any modifications to this order must be completed by <%=cutoffDateFormat.format(cart.getDeliveryReservation().getCutoffTime()) %>.</span>
 		<br><br></TD>
         </TR>
         </TABLE>
     </TD>
     <TD WIDTH="40"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="30" HEIGHT="1" BORDER="0"></TD>
-    <TD WIDTH="300">
+    <TD WIDTH="<%=(W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL-40)/2%>">
         <img src="/media_stat/images/navigation/payment_info.gif" WIDTH="100" HEIGHT="15" border="0" alt="PAYMENT INFO"><BR>
-        <IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=lineWidth%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
-        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="300">
+        <IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=(W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL-40)/2%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%=(W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL-40)/2%>">
         <TR VALIGN="TOP">
             <TD WIDTH="10"><BR></TD>
-            <TD WIDTH="300">
+            <TD WIDTH="<%=(W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL-40)/2-10%>">
             <font class="space4pix"><br></font>
             <FONT CLASS="text12">
             <b>Order Total:</b><BR>

@@ -56,6 +56,8 @@
                             <CmsField><attribute>MEDIA_CONTENT</attribute></CmsField><!-- [APPREQ-77] -->
 							<CmsField><attribute>USE_ALTERNATE_IMAGES</attribute></CmsField>
 							<CmsField><attribute>HIDE_IN_QUICKSHOP</attribute></CmsField>
+							<CmsField><attribute>DEPT_MENU_LABEL</attribute></CmsField>
+							<CmsField><attribute>DEPT_MENU_MORE_LABEL</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -189,6 +191,8 @@
 							<CmsField><attribute>MATERIAL_CHARACTERISTIC</attribute></CmsField>
 							<CmsField><attribute>SEPARATOR_MEDIA</attribute></CmsField>
                             <CmsField><attribute>TEMPLATE_PATH</attribute></CmsField>                            
+							<CmsField><attribute>DEPT_MENU_LABEL</attribute></CmsField>
+							<CmsField><attribute>DEPT_MENU_MORE_LABEL</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -1327,4 +1331,25 @@
 			</CmsPage>
 		</pages>
 	</CmsEditor>
+	
+	<CmsEditor id="menu">
+		<contentType>MenuItem</contentType>
+		<pages>
+			<CmsPage>
+				<title>Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>Menu Attributes</title>
+						<fields>
+							<CmsField><attribute>linked</attribute></CmsField>
+							<CmsField><attribute>categoryItems</attribute></CmsField>
+							<CmsField><attribute>subSections</attribute></CmsField>
+							<CmsField><attribute>editorial</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+	
 </Content>

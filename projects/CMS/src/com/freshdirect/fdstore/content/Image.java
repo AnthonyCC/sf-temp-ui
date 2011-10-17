@@ -36,6 +36,21 @@ public class Image extends MediaModel {
     	return "Image["+ getPK() +", "+ getPath() +", "+ getWidth() +"x"+ getHeight() +"]";
     }
     
+    public String toHtml(String alternateName, String className) {
+        return "<img src=\"" + getPath() + "\" width=\"" + getWidth() + "\" height=\"" + getHeight() +'"' +  
+            (alternateName != null && alternateName.trim().length()>0 ? " alt=\"" + alternateName + '"' : "") + 
+            (className != null && className.trim().length()>0 ? " class=\"" + className + '"' : "") + 
+            '>';
+    }
+    public String toHtml(String alternateName) {
+        return toHtml(alternateName, null);
+    }
+    
+    public String toHtml() {
+        return toHtml(null);
+    }
+    
+    
     private int width;
     private int height;
 }

@@ -12,21 +12,14 @@
 <%@ page import="java.util.Calendar"%>
 <jsp:useBean id="JSONRPCBridge" scope="session" class="com.freshdirect.webapp.util.json.FDJSONRPCBridge">
 </jsp:useBean>
+<%@ include file="/shared/template/includes/yui.jspf" %>
 <% 
 	FDUserI fdUser = (FDUserI) session.getAttribute(SessionName.USER);
 
 	/*	add skip pages option
 	 * these libs cause problems in ie7, so if we don't need them on the page, just skip out
 	 */
-	boolean onSkipPage = false;
-	if (
-		request.getRequestURI().indexOf("/checkout/step_2_select.jsp") > -1 || 
-		request.getRequestURI().indexOf("/your_account/reserve_timeslot.jsp") > -1
-	) {
-		onSkipPage = true;
-	}
-
-	if (fdUser != null && fdUser.isCCLEnabled() && !onSkipPage) {
+	if (fdUser != null && fdUser.isCCLEnabled()) {
 		boolean sessionStateChanged = false;
 		if (JSONRPCBridge.lookupObject("MediaFacade") == null) {
 			JSONRPCBridge.registerObject("MediaFacade", MediaAjaxFacade.create());					
@@ -48,7 +41,7 @@
 
 		// Load YUI dependencies
 		request.setAttribute("__yui_animation__", Boolean.TRUE);
-%><%@ include file="/shared/template/includes/yui.jspf" %>
+%>
 <%
 if (fdUser.isEligibleForClientCodes() && request.getAttribute("__fd_load_cc_report__") != null) {
 	DateFormat usDateFormat = new SimpleDateFormat("MM/dd/yyyy");

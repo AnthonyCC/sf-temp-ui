@@ -18,7 +18,15 @@
 <%@page import="com.freshdirect.fdstore.content.Image"%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
-<div style="width: 425px; text-align: center; margin: 0px auto;">
+
+<% //expanded page dimensions
+final int W_WINE_DEALS_TOTAL = 601;
+final int W_WINE_DEALS_SALE_LEFT = 150;
+final int W_WINE_DEALS_SALE_RIGHT = 451;
+final int W_WINE_DEALS_BIG = 250;
+%>
+
+<div style="width: <%=W_WINE_DEALS_TOTAL%>px; text-align: center; margin: 0px auto;">
 <div style="text-align: left;"> 
 <%
 CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode("Category", request.getParameter("catId"));
@@ -68,7 +76,7 @@ FreshDirect.Wine.addTabItem("deals", "<%= "tab_" + subcategory.getContentKey().g
 <div>
 <div style="float: left;">
 <div class="usq-brown-border" style="border-width: 0px 0px 1px; font-size: 0px;"></div>
-<table class="usq-deals" width="<%= subcategories.size() < 3 ? "auto" : "425" %>" height="27" cellspacing="0" cellpadding="0" border="0" style="text-align: center; line-height: 19px;">
+<table class="usq-deals" width="<%= subcategories.size() < 3 ? "auto" : W_WINE_DEALS_TOTAL %>" height="27" cellspacing="0" cellpadding="0" border="0" style="text-align: center; line-height: 19px;">
 	<tr>
 	<% for (int i = 0; i < subcategories.size(); i++) {
 		CategoryModel subcategory = subcategories.get(i);
@@ -92,7 +100,7 @@ FreshDirect.Wine.addTabItem("deals", "<%= "tab_" + subcategory.getContentKey().g
 </div>
 <div style="clear: both; font-size: 0px;"></div>
 </div>
-<div style="width: 425px;" class="usq">
+<div style="width: <%=W_WINE_DEALS_TOTAL%>px;" class="usq">
 	<div id="dealsTop" class="usq-brown-border usq-deals">
 		<% for (CategoryModel cat : subcategories) { boolean hideOnly = !cat.isHideWineRatingPricing(); %>
 			<% int imgHeight = 0; String tabId = cat != dftSubcat ? "tab_" + cat.getContentKey().getId() : null; %>
@@ -108,8 +116,8 @@ FreshDirect.Wine.addTabItem("deals", "<%= "tab_" + subcategory.getContentKey().g
 		<div id="tab_<%= cat.getContentKey().getId() %>" class="fd-carousel-tab">
 			<display:ItemGrabber id="prods" category="<%= cat %>" depth="0" filterUnavailable="true">
 				<display:Carousel id="carouselTag" carouselId="<%= cat.getContentKey().getId() %>" itemsToShow="<%= prods %>"
-						width="335" trackingCode="<%= trk %>"
-						hideContainer="<%= tabId %>" numItems="3" bottomHeader="<%= cat.getAltText() %>"
+						width="<%=W_WINE_DEALS_TOTAL-90%>" trackingCode="<%= trk %>"
+						hideContainer="<%= tabId %>" numItems="4" bottomHeader="<%= cat.getAltText() %>"
 						bottomHeaderClass="title14 usq-sienna" appendWineParams="<%= true %>" parentId="dealsTop" offset="80"><% ProductModel product = (ProductModel) currentItem; PriceCalculator pc = product.getPriceCalculator(); %>
 					<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 						<display:ProductImage priceCalculator="<%= pc %>" showRolloverImage="true" action="<%= actionUrl %>"
@@ -148,7 +156,7 @@ if (product2 != null)
 	bigs.add(product2);
 
 if (bigs.size() > 0) {
-	final int bigsW = 210 * bigs.size();
+	final int bigsW = W_WINE_DEALS_BIG * bigs.size();
 
 %>
 	<div style="padding-top: 10px;"><img src="/media/editorial/win_usq/deals/hdr_biggest_deal.gif" alt="MISSING HEADER IMAGE"></div>
@@ -159,12 +167,12 @@ if (bigs.size() > 0) {
 		for (ProductModel bigPrd : bigs) {
 			Image prdImg = bigPrd.getDetailImage();
 		%><display:GetContentNodeWebId id="webId" product="<%= bigPrd %>" clientSafe="<%= true %>">
-			<td width="210">
+			<td width="<%=W_WINE_DEALS_BIG%>">
 				<display:ProductUrl id="actionUrl" product="<%= bigPrd %>" trackingCode="<%= trk %>" appendWineParams="<%= true %>">
-				<div id="hotspot-<%= webId %>" style="position: relative; text-align: left; width: 210px; height: <%= prdImg.getHeight() %>px;">
+				<div id="hotspot-<%= webId %>" style="position: relative; text-align: left; width: <%=W_WINE_DEALS_BIG%>px; height: <%= prdImg.getHeight() %>px;">
 					<a href="<%= actionUrl %>"
-							style="display: inline-block; position: absolute; left: <%= 105 - prdImg.getWidth() / 2 %>px; top: 0px;"><fd:IncludeImage image="<%= prdImg %>" className="no-outline"/></a>
-					<a href="<%= actionUrl %>" style="display: inline-block; position: absolute; left: 105px; top: 30px;"><display:ProductBurst product="<%= bigPrd %>" large="true" className="no-outline"/> </a>
+							style="display: inline-block; position: absolute; left: <%= 125 - prdImg.getWidth() / 2 %>px; top: 0px;"><fd:IncludeImage image="<%= prdImg %>" className="no-outline"/></a>
+					<a href="<%= actionUrl %>" style="display: inline-block; position: absolute; left: 125px; top: 30px;"><display:ProductBurst product="<%= bigPrd %>" large="true" className="no-outline"/> </a>
 					<%-- QUICK BUY SECTION START --%>
 					<img id="qbButton-<%= webId %>" class="qbButtonLarge" style="display: inline-block; position: absolute; left: 36px; bottom: 183px;" src="/media_stat/images/quickbuy/quickbuy_big.gif">
 					<script>
@@ -187,7 +195,7 @@ if (bigs.size() > 0) {
 		for (ProductModel bigPrd : bigs) {
 		    PriceCalculator pc = bigPrd.getPriceCalculator();
 		%>
-			<td width="210" valign="top">
+			<td width="<%=W_WINE_DEALS_BIG%>" valign="top">
 				<div style="padding: 0px 10px;">
 					<display:ProductUrl id="actionUrl" product="<%= bigPrd %>" trackingCode="<%= trk %>" appendWineParams="<%= true %>">
 					<div class="title16" style="padding-top: 10px;"><a href="<%= actionUrl %>"><%=bigPrd.getFullName()%></a></div>
@@ -212,12 +220,12 @@ if (bigs.size() > 0) {
 if (rest != null) {
 %>
 	<div style="padding-top: 10px;"><img src="/media/editorial/win_usq/deals/hdr_allsale.gif" alt="MISSING HEADER IMAGE"></div>
-	<table width="425" cellspacing="0" cellpadding="0" border="0">
+	<table width="<%=W_WINE_DEALS_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 	<% for (ProductModel product : rest) { PriceCalculator price = product.getPriceCalculator(); 
 		   Image img = product.getDescriptiveImage(); %>
 		<display:GetContentNodeWebId id="webId" product="<%= product %>" clientSafe="<%= true %>">
 		<tr>
-			<td width="120">
+			<td align="center" width="<%=W_WINE_DEALS_SALE_LEFT%>">
 				<div id="hotspot-<%= webId %>" style="padding: 7px 5px 8px;">
 					<display:ProductUrl id="actionUrl" product="<%= product %>" trackingCode="<%= trk %>" appendWineParams="<%= true %>">
 					<div style="position: relative; width: 110px; height: <%= img.getHeight() %>px;">
@@ -240,7 +248,7 @@ if (rest != null) {
 					</display:ProductUrl>
 				</div>
 			</td>
-			<td width="305" style="vertical-align: top; padding-left: 10px;">
+			<td width="<%=W_WINE_DEALS_SALE_RIGHT%>" style="vertical-align: top; padding-left: 10px;">
 				<display:WineShowRatings product="<%= product %>">
 				<div style="padding-top: 7px;">
 				<table cellspacing="0" cellpadding="0" border="0">

@@ -1,0 +1,85 @@
+html,body {
+	height: 100%;
+}
+
+.holder {
+	width: 970px;
+	position: relative;
+	zoom: 1;
+}
+
+.content {
+	margin-left: 226px;
+	min-height: 700px;
+	_height: 700px;
+	position: relative;
+	padding-bottom: 120px;
+}
+
+.ad {
+	height: 33%;
+	_height: expression(( this.parentNode.clientHeight * 0.33) + 'px' );
+	width: 216px;
+	position: absolute;
+	left: 0px;
+}
+
+.adbox {
+	background: white url('/media_stat/images/background/adbox.png')
+		no-repeat top left;
+	position: absolute;
+	top: 0px;
+	bottom: 5px;
+	left: 0px;
+	width: 216px;
+	_height: expression(( this.parentNode.clientHeight-10) + 'px' );
+}
+
+.adbox_bottom {
+	height: 5px;
+	width: 216px;
+	background: white url('/media_stat/images/background/adbox.png')
+		no-repeat bottom left;
+	bottom: 0px;
+	left: 0px;
+	position: absolute;
+}
+
+.ad1 {
+	top: 0px;
+}
+
+.ad2 {
+	top: 33%;
+	height: 34%;
+	_height: expression(( this.parentNode.clientHeight * 0.34) + 'px' );
+}
+
+.ad3 {
+	bottom: 0px;
+}
+
+.ad4 {
+	height: 90px;
+	_height: 100px;
+	position: absolute;
+	bottom: 0px;
+	width: 100%;
+	left: 0px;
+}
+
+.ad4 .adbox {
+	background: white url('/media_stat/images/background/adbox_wide.png')
+		no-repeat top left;
+	left: 0px;
+	width: 744px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.ad4 .adbox_bottom {
+	background: white url('/media_stat/images/background/adbox_wide.png')
+		no-repeat bottom left;
+	left: 0px;
+	width: 744px;
+}

@@ -11,6 +11,10 @@
 
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<% //expanded page dimensions
+final int W_REGISTER_AND_PURCHASE_TOTAL = 970;
+%>
+
 <%
 FDSessionUser sessionuser1 = (FDSessionUser) session.getAttribute( SessionName.USER );
 
@@ -54,9 +58,9 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 %>
 
 
-<table width="690" cellspacing="0" cellpadding="0" border="0">
+<table width="<%=W_REGISTER_AND_PURCHASE_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 	<tr>
-		<td class="text11" width="690">
+		<td class="text11" width="<%=W_REGISTER_AND_PURCHASE_TOTAL-99%>">
 			<span class="title18"><img src="/media_stat/images/giftcards/purchase/purchase_gift_cards.gif" /></span><br />
 			<b>(Already a FreshDirect customer? <a href="/login/login.jsp?successPage=/gift_card/purchase/purchase_giftcard.jsp">Click here log in.)</b>
 		</td>
@@ -65,8 +69,8 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 		</td>
 	</tr>
 	<tr>
-		<td colspan="2" style="padding: 4px;">
-            <img style="margin: 2px 0;" src="/media_stat/images/layout/ff9900.gif" width="690" height="2" border="0" /><br /><br/>
+		<td colspan="2" style="padding: 4px 0px;">
+            <img style="margin: 2px 0;" src="/media_stat/images/layout/ff9900.gif" width="<%=W_REGISTER_AND_PURCHASE_TOTAL%>" height="2" border="0" /><br /><br/>
 		</td>
 	</tr>
 </table>
@@ -85,10 +89,10 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 
 
     <%@ include file="/gift_card/purchase/includes/recipient_list.jspf" %>
-    <table width="690" cellspacing="0" cellpadding="0" border="0">
+    <table width="<%=W_REGISTER_AND_PURCHASE_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 	<tr>
-		<td colspan="2" style="padding: 2px;">
-			<img style="margin: 2px 0;" width="690" height="1" border="0" src="/media_stat/images/layout/999966.gif" /><br /><br/>
+		<td colspan="2" style="padding: 2px 0px;">
+			<img style="margin: 2px 0;" width="<%=W_REGISTER_AND_PURCHASE_TOTAL%>" height="1" border="0" src="/media_stat/images/layout/999966.gif" /><br /><br/>
 		</td>
 	</tr>
     </table>

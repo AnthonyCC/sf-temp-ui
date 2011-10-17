@@ -1,6 +1,12 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
-<%@ taglib uri='freshdirect' prefix='fd' %><%
+<%@ taglib uri='freshdirect' prefix='fd' %>
+
+<% //expanded page dimensions
+final int W_GIFTCARD_TOTAL = 970;
+%>
+
+<%
 	/*
 	 *
 	 *	Template based off of no_nav.jsp for giftcard use
@@ -78,42 +84,34 @@
 	%>
 	<%@ include file="/common/template/includes/i_giftcard_nav.jspf" %> 
 
-	<table width="745" border="0" cellpadding="0" cellspacing="0">
+	<table width="<%=W_GIFTCARD_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 		<tr>
-			<td width="6" colspan="2" rowspan="2"><img src="/media_stat/images/layout/top_left_curve<%=suffix%>.gif" width="6" height="6" border="0"></td>
-			<td width="733" valign="top" bgcolor="#<%=color%>"><img src="/media_stat/images/layout/clear.gif" width="733" height="1" border="0"></td>
-			<td width="6" colspan="2" rowspan="2"><img src="/media_stat/images/layout/top_right_curve<%=suffix%>.gif" width="6" height="6" border="0"></td>
+			<td width="<%=W_GIFTCARD_TOTAL%>" valign="top" bgcolor="#<%=color%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_GIFTCARD_TOTAL%>" height="1" border="0"></td>
 		</tr>
 		<tr>
-			<td width="733" valign="top"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+			<td width="<%=W_GIFTCARD_TOTAL%>" valign="top"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
 		</tr>
 		<tr valign="top">
-			<td bgcolor="#<%=color%>" valign="bottom" width="1" rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-			<td colspan="3" align="center">
-				<img src="/media_stat/images/layout/clear.gif" height="15" width="733"><br />
+			<td align="center">
+				<img src="/media_stat/images/layout/clear.gif" height="15" width="<%=W_GIFTCARD_TOTAL%>"><br />
 				<!-- content lands here -->
 				<tmpl:get name='content'/>
 				<!-- content ends above here-->
 				<br /><br />
 			</td>
-			<td bgcolor="#<%=color%>" valign="bottom" width="1" rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 		</tr>
 		<tr>
-			<td width="5"><img src="/media_stat/images/layout/clear.gif" height="1" width="5"></td>
-			<td width="733" align="center"><img src="/media_stat/images/layout/clear.gif" height="1" width="733"><br></td>
-			<td width="5"><img src="/media_stat/images/layout/clear.gif" height="1" width="5"></td>
+			<td width="<%=W_GIFTCARD_TOTAL%>" align="center"><img src="/media_stat/images/layout/clear.gif" height="1" width="<%=W_GIFTCARD_TOTAL%>"><br></td>
 		</tr>
 		<tr valign="bottom">
-			<td width="6" colspan="2" rowspan="2"><img src="/media_stat/images/layout/bottom_left_curve<%=suffix%>.gif" width="6" height="6" border="0"></td>
-			<td width="733"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
-			<td width="6" colspan="2" rowspan="2"><img src="/media_stat/images/layout/bottom_right_curve<%=suffix%>.gif" width="6" height="6" border="0"></td>
+			<td width="<%=W_GIFTCARD_TOTAL%>"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
 		</tr>
 		<tr>
-			<td width="733" bgcolor="#<%=color%>" valign="bottom"><img src="/media_stat/images/layout/clear.gif" width="733" height="1" border="0"></td>
+			<td width="<%=W_GIFTCARD_TOTAL%>" bgcolor="#<%=color%>" valign="bottom"><img src="/media_stat/images/layout/clear.gif" width="<%=W_GIFTCARD_TOTAL%>" height="1" border="0"></td>
 		</tr>
 	</table>
 
-	<table width="745" cellpadding="0" cellspacing="0" border="0">
+	<table width="<%=W_GIFTCARD_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 		<tr>
 			<td align="center" class="text11bold">
 				<img src="/media_stat/images/layout/clear.gif" width="1" height="14" alt="" />

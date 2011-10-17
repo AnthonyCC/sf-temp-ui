@@ -70,6 +70,10 @@ function addOpt(addToId, addText, addVal) {
 
 </script>
 
+<% //expanded page dimensions
+final int W_GC_CREDITCARD_FIELDS_TOTAL = 970;
+%>
+
 <%!
 String[] checkPaymentMethodForm = {PaymentMethodName.ACCOUNT_HOLDER, PaymentMethodName.CARD_BRAND, PaymentMethodName.ACCOUNT_NUMBER, "expiration",PaymentMethodName.CSV, EnumUserInfoName.BIL_ADDRESS_1.getCode(), EnumUserInfoName.BIL_CITY.getCode(), EnumUserInfoName.BIL_STATE.getCode(), EnumUserInfoName.BIL_COUNTRY.getCode(),EnumUserInfoName.BIL_ZIPCODE.getCode()};
 String[] checkErrorType = {"technical_difficulty", "payment_method_fraud","auth_failure"};
@@ -168,11 +172,11 @@ EnumServiceType serviceTypeGC = (EnumServiceType)NVL.apply(EnumServiceType.getEn
 		<br><span class="text11rbold"><%= errorMsg %></span><br><br>
     </fd:ErrorHandler>
     
-	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="693">
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_GC_CREDITCARD_FIELDS_TOTAL%>">
 	<TR VALIGN="TOP">
-	<TD WIDTH="693"><img src="/media_stat/images/navigation/credit_card_details.gif"
+	<TD WIDTH="<%=W_GC_CREDITCARD_FIELDS_TOTAL%>"><img src="/media_stat/images/navigation/credit_card_details.gif"
 WIDTH="132" HEIGHT="9" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<FONT CLASS="text12">* Required information</FONT><BR>
-<IMG src="/media_stat/images/layout/999966.gif" WIDTH="693" HEIGHT="1" BORDER="0" VSPACE="3"><BR></TD>
+<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=W_GC_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR></TD>
 </TR></TABLE>
 <br>
 <% if(FDStoreProperties.isPaymentMethodVerificationEnabled()) {%>
@@ -286,11 +290,11 @@ WIDTH="132" HEIGHT="9" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<F
 </TABLE>
 </TABLE>
 <br><br>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="693">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_GC_CREDITCARD_FIELDS_TOTAL%>">
 <TR VALIGN="TOP">
-	<TD WIDTH="693">
+	<TD WIDTH="<%=W_GC_CREDITCARD_FIELDS_TOTAL%>">
 		<img src="/media_stat/images/navigation/billing_address_for_card.gif" WIDTH="206" HEIGHT="9" border="0" alt="BILLING ADDRESS">&nbsp;&nbsp;&nbsp;<FONT CLASS="text12">* Required information</FONT><BR>
-		<IMG src="/media_stat/images/layout/999966.gif" WIDTH="693" HEIGHT="1" BORDER="0" vspace="3"><BR>
+		<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=W_GC_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0" vspace="3"><BR>
 		<font class="text12">Please enter billing address as it appears on your credit card statement.</font>
 		<br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br></TD></TR>
 </TABLE>

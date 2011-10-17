@@ -4,10 +4,14 @@
 <%@ page import='java.util.*'%>
 <%@ page import='java.net.*'%>
 
-		<table width="600" border="0" cellspacing="0" cellpadding="0">
+<% //expanded page dimensions
+final int W_ABOUT_SELECTION_TOTAL = 806;
+%>
+
+
+		<table width="<%=W_ABOUT_SELECTION_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
 		<TR>
-			<td width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
-			<TD WIDTH="400" valign="top">
+			<TD WIDTH="<%=W_ABOUT_SELECTION_TOTAL-170%>" valign="top">
 				<font class="text13">
 				<img src="/media_stat/images/template/about/abo_selection_hdr.gif"  alt="" border="0">	
 				<font class="space8pix"><BR><br></font>

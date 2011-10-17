@@ -17,6 +17,12 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
+<% //expanded page dimensions
+final int W_FEATURED_ALL = 601;
+final int W_FEATURED_LEFT = 109; 
+final int W_FEATURED_PADDING = 14;
+%>
+
 <%!
 	JspMethods.ContentNodeComparator contentNodeComparator = new JspMethods.ContentNodeComparator();
 %>
@@ -49,13 +55,11 @@
 
     String deptName = parentNode.getFullName(); //getDepartmentPath(webconnect.getFolder().getString("path") );
     String prodNameAttribute = JspMethods.getProductNameToUse(currentFolder);
-    String tablewidth="400";
     String tdwidth="92";
 
     if ( deptName.indexOf("coffee") != -1 ) {
 		String thisLocation = currentFolder.getFullName();
         if ( thisLocation.endsWith("Roast") || thisLocation.endsWith("Region") ) {
-        tablewidth="425";
         tdwidth="96";
         }
     }
@@ -82,7 +86,7 @@
 
 <%-- FEATURED ITEMS DISPLAY START --%>
 
-<fd:ProductGroupRecommender siteFeature="FEATURED_ITEMS" facility="cat_feat_items" id="recommendations"  currentNode="<%= currentFolder %>" itemCount="4"><%
+<fd:ProductGroupRecommender siteFeature="FEATURED_ITEMS" facility="cat_feat_items" id="recommendations"  currentNode="<%= currentFolder %>" itemCount="5"><%
 
 	if (recommendations != null && recommendations.getProducts().size() > 0) {
 		
@@ -92,10 +96,10 @@
 		int ord = 1;
 		%>
 		
-		<table cellspacing="0" cellpadding="1" border="0" width="<%= tablewidth %>">
+		<table cellspacing="0" cellpadding="1" border="0" width="<%= W_FEATURED_ALL %>">
 		
 			<tr valign="top" align="center">
-	    		<td CLASS="text12bold" width="<%= tablewidth %>" colspan="<%= tablewidth %>">
+	    		<td CLASS="text12bold" width="<%= W_FEATURED_ALL %>" colspan="<%= W_FEATURED_ALL %>">
 	    			<%= recommendations.getVariant().getServiceConfig().getFILabel() %>
 	    		</td>
 			</tr>
@@ -180,29 +184,29 @@
             
             if (productLinks.size() > 0 ) { //display the stuff we %>
             
-				<table cellspacing="0" cellpadding="0" border="0" width="400">
+				<table cellspacing="0" cellpadding="0" border="0" width="<%=W_FEATURED_ALL%>">
 					<tr valign="middle">
-					    <td width="400" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0"></td>
+					    <td width="<%=W_FEATURED_ALL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0"></td>
 					</tr>
 					<tr valign="middle">
-					    <td width="400" COLSPAN="4" CLASS="title10"><font color="#515151"><%=displayCategory.getFullName().toUpperCase()%></font></td>
+					    <td width="<%=W_FEATURED_ALL%>" COLSPAN="4" CLASS="title10"><font color="#515151"><%=displayCategory.getFullName().toUpperCase()%></font></td>
 					</tr>
 					<tr valign="middle">
-						<td width="400" COLSPAN="4"><img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"></td>
+						<td width="<%=W_FEATURED_ALL%>" COLSPAN="4"><img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"></td>
 					</tr>
 					<tr valign="middle">
-						<td width="400" COLSPAN="4" BGCOLOR="#DDDDDD"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" border="0"></td>
+						<td width="<%=W_FEATURED_ALL%>" COLSPAN="4" BGCOLOR="#DDDDDD"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" border="0"></td>
 					</tr>
 					<tr valign="middle">
-					    <td width="400" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+					    <td width="<%=W_FEATURED_ALL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
 					</tr>
 				</table>
 				
 				<% String outputProducts= JspMethods.displayFAProducts( productLinks, productPrices, showPrices, false ); %>
 				
-				<table cellspacing="0" cellpadding="1" border="0" width="400">
+				<table cellspacing="0" cellpadding="1" border="0" width="<%=W_FEATURED_ALL%>">
 					<tr valign="top">
-					    <td width="90"><%=col1.toString()%></td><%=outputProducts%>
+					    <td width="<%=W_FEATURED_LEFT%>"><%=col1.toString()%></td><td width="<%=W_FEATURED_PADDING%>"></td><%=outputProducts%>
 					</tr>
 				</table>
 				
@@ -231,7 +235,7 @@
             burstDivName = "BurstDiv" + displayCategory;
             notAvailImgName = imgName + "_unavailable";
             
-        	int imgWidth = 70, imgHeight = 70;
+        	int imgWidth = 80, imgHeight = 80;
 
         	
             if ( folderAsProduct ) {
@@ -269,21 +273,21 @@
                 
                 // burst related stuff ->
                 
-                col1.append("<div style=\"padding: 0px; border: 0px; margin: 0px auto; "
-    					+ "width: " + imgWidth + "px; "
-    					+ "height: " + imgHeight + "px; "
+                col1.append("<div class=\"imgcontainer\" style=\"overflow: hidden; padding: 0px; border: 0px; margin: 0px auto; "
+    					+ "width: 80px; "
+    					+ "height: 80px; "
     					+ "position: relative;\">\n");
                 
                 // <- burst related stuff
                 
                 
-                col1.append("<img name=\"");
+                col1.append("<img style=\"margin: 0 auto;\" name=\"");
                 col1.append(imgName);
                 col1.append("\" src=\"");
                 col1.append(imagePath);
                 
                 if ( "".equals(imageDim) ) {
-                	col1.append("\" width=\"70\" height=\"70\" border=\"0\">");
+                	col1.append("\" width=\"80\" height=\"80\" border=\"0\">");
                 } else {
                     col1.append("\"");
 					
@@ -295,9 +299,9 @@
 					imgS = imgS.replaceAll("[ =\"a-z]", "");
 					//split, 0=width;1=height
 					String imgSarr[] = imgS.split(",");
-					//check if original width is over 90, and if so change to 90
+					//check if original width is over W_FEATURED_LEFT, and if so change to W_FEATURED_LEFT //EXPANDED_PAGE_VERIFY should this be W_FEATURED_LEFT?
 					//this is the same value that we're using in common_javascript.js [swapImage2sup]
-					if ( Integer.valueOf( imgSarr[0] ).intValue() > 90 ){ imgSarr[0] = "90"; }
+					if ( Integer.valueOf( imgSarr[0] ).intValue() > W_FEATURED_LEFT ){ imgSarr[0] = Integer.toString(W_FEATURED_LEFT); }
 					//output width
                     col1.append(" width=\""+imgSarr[0]+"\">");
                 }
@@ -435,7 +439,7 @@
 				String burstUrl = deal > 0 ? "/media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif") : prdLbl.isDisplayFave()? "/media_stat/images/bursts/brst_sm_fave"+(supportsPNG ? ".png" : ".gif"):prdLbl.isDisplayNew() ? "/media_stat/images/bursts/brst_sm_new"+(supportsPNG ? ".png" : ".gif"): clearImage;
 
 				appendColumn.append( "swapImageAndBurst(\"" + imgName + "\",\"" + ((Image)product.getCategoryImage()).getPath() + "\"," + imgS + ",\"" + 
-						(deal > 0) + "\",\"" + burstImgName  + "\",\"" + burstUrl + "\"" + ")" );
+						(deal > 0) + "\",\"" + burstImgName  + "\",\"" + burstUrl + "\"" + ", 80, 80)" );
 				}
                 // <- burst related stuff				
 				
@@ -479,18 +483,18 @@
 
 
 <% if (productLinks.size() > 0) { %>
-	<table cellspacing="0" cellpadding="0" border="0" width="400">
+	<table cellspacing="0" cellpadding="0" border="0" width="<%=W_FEATURED_ALL%>">
 		<tr valign="middle">
-			<td width="400" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0"></td>
+			<td width="<%=W_FEATURED_ALL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0"></td>
 		</tr>
 		<tr valign="middle">
-		    <td width="400" COLSPAN="4" CLASS="title10"><font color="#515151"><%=displayCategory.getFullName().toUpperCase()%></font></td>
+		    <td width="<%=W_FEATURED_ALL%>" COLSPAN="4" CLASS="title10"><font color="#515151"><%=displayCategory.getFullName().toUpperCase()%></font></td>
 		</tr>
 		<tr valign="middle">
-			<td width="400" COLSPAN="4" BGCOLOR="#DDDDDD" ><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" border="0"></td>
+			<td width="<%=W_FEATURED_ALL%>" COLSPAN="4" BGCOLOR="#DDDDDD" ><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" border="0"></td>
 		</tr>
 		<tr valign="middle">
-			<td width="400" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+			<td width="<%=W_FEATURED_ALL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
 		</tr>
 	</table>
 	
@@ -501,9 +505,9 @@
 		%>
 
 
-		<table cellspacing="0" cellpadding="1" border="0" width="400">
+		<table cellspacing="0" cellpadding="1" border="0" width="<%=W_FEATURED_ALL%>">
 			<tr valign="top">
-				<td width="90"><%=col1.toString()%></td><%=outputProducts%>
+				<td width="<%=W_FEATURED_LEFT%>"><%=col1.toString()%></td><td width="<%=W_FEATURED_PADDING%>"></td><%=outputProducts%>
 			</tr>
 		</table>
 	<% }

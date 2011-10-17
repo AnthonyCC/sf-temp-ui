@@ -118,7 +118,7 @@ RequestUtil.appendToAttribute(request,"windowOnBeforeUnload","FormChangeUtil.war
 </TABLE>
 </div>
 
-<div class="order_list" style="width: 40%; height: 72%;">
+<div class="order_list" style="height: 72%;">
 	<%@ include file="/includes/cart_header.jspf"%>
 </div>
 

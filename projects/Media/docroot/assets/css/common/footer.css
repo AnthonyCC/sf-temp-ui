@@ -1,0 +1,221 @@
+#footerlinks { 
+  margin-top: 15px;
+  padding: 10px 0px; 
+  border-top: 1px solid #E8E5E3; 
+}
+
+#footerlinks h3 {
+  font-style: italic;
+  font-size: 1.4em;
+}
+
+#footerlinks h3 span {
+  font-style: normal;
+  font-weight: bold;
+  padding-top: .3em;
+  text-transform: uppercase;
+  display: block;
+  clear: both;
+}
+
+#footerlinks a {
+  display: block;
+  clear: both;
+  text-decoration: none;
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+#shopbylinks { 
+  background: #F9F9F9; 
+  padding: 10px 0px; 
+  border-top: 2px solid #E8E5E3; 
+  text-shadow: 0 1px 1px white;
+}
+
+#shopbylinks {
+  color: #888;
+}
+
+#shopbylinks a {
+  color: #888;
+  text-decoration: none;
+}
+
+#shopbylinks a.clicktocall {
+  display: block;
+  float: left;
+  clear: both;
+  background: white url(/media_stat/images/common/footer/clicktocall.png) top left no-repeat;
+  height: 27px;
+  width: 106px;
+  margin-bottom: 4px;
+}
+
+#shopbylinks a.clicktocall span {
+  display: none;
+}
+
+#shopbylinks a.clicktocall:hover {
+  background-position: 0 -28px;
+}
+
+#shopbylinks .last a {
+  color: #53a7d8;
+}
+
+#shopbylinks h3 {
+  font-size: 1.2em;
+  margin-bottom: 1em;
+}
+
+#shopbylinks ul { 
+  list-style-type: none;	
+  padding: 0px; 
+}
+
+#shopbylinks li {
+  clear: both;
+}
+
+#tagline { 
+  border-top: 1px solid #E8E5E3; 
+}
+
+div.footergreen { 
+  background-color: #A3CB75; 
+}
+
+div.footergreen hr {
+  border-top: 1px solid #b9d892;
+  border-bottom: none;
+  background-color: #9bca6c;
+  height: 1px;
+  margin: .6em 0;
+}
+
+div.footergreen a.backtotop {
+  float: right;
+  width: 22px;
+  height: 26px;
+  margin-top: 1em;
+  text-decoration: none;
+  background: url(/media_stat/images/common/footer/backtotop.png) 0 0 no-repeat;
+}
+
+div.footergreen a.backtotop:hover {
+  background: url(/media_stat/images/common/footer/backtotop.png) 0 -27px no-repeat;
+}
+
+div.footergreen a.backtotop span {
+  visibility: hidden;
+}
+
+#bottomlinks { 
+  padding: 30px 0px 10px 0px; 
+  border-top: 1px solid #888;
+}
+
+#bottomlinks h3 {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 1.4em;
+  line-height: 1.5em; 
+  text-shadow: 0 1px 1px #b9d892;
+}
+
+#bottomlinks a {
+  color: #3377bb;
+  text-decoration: none;
+}
+
+#bottomlinks h3 span {
+  float: left;
+  margin-bottom: .5em;
+}
+
+#bottomlinks h3 i {
+  display: block;
+  font-style: italic;
+  font-weight: normal;
+  line-height: 1.2em;
+}
+
+#bottomlinks h3 a {
+  font-size: 0.75em;
+  font-weight: bold;
+  line-height: inherit;
+  float: right;
+}
+
+#bottomlinks p {
+  color: white;
+}
+
+#bottomlinks h4 {
+  color: white;
+  font-weight: bold;
+  margin: .5em 0 .25em;
+}
+
+#bottomlinks div.article {
+  margin-bottom: 1.2em;
+}
+
+#bottomlinks div.author {
+  color: #555;
+  margin: .25em 0 .75em;
+}
+
+#bottomlinks div.testimonials p {
+  font-size: 1.2em;
+  font-style: italic;
+  margin: 0;
+}
+
+#bottomlinks div.testimonials div.testimonial {
+  padding: 12px 16px;
+  background-color: #b4df86;
+  margin: 0 12px 12px 0;
+  -webkit-border-bottom-right-radius: 0;
+  -moz-border-radius: 8px;
+  -moz-border-radius-bottomright: 0;
+  border-radius: 8px;
+  border-bottom-right-radius: 0;
+  position: relative;
+  zoom: 1;
+}
+
+#bottomlinks div.testimonials div.testimonial span.say {
+  display: block;
+  position: absolute;
+  bottom: -12px;
+  right: 0;
+  border-left: 6px solid #A3CB75;
+  border-bottom: 6px solid #A3CB75;
+  border-top: 6px solid #b4df86;
+  border-right: 6px solid #b4df86;
+}
+
+#bottomlinks div.testimonials div.author {
+  font-size: 1.2em;
+  float: right;
+}
+
+#quicklinks,
+#copyright {
+  color: white;
+  padding: 5px 0px 10px;
+}
+
+#quicklinks a,
+#copyright a {
+  text-decoration: none;
+  color: white;
+}
+
+
+#marquee ul { list-style-type:none;	padding:0px; margin:7px 0px; color:#759255 }
+#marquee li { display:inline; }
+

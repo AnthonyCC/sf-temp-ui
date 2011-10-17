@@ -4532,4 +4532,16 @@
 		<bodycontent>JSP</bodycontent>
 		<info></info>
 	</tag>
+	<tag>
+		<name>CategoryLayoutCollector</name>
+		<tagclass>com.freshdirect.webapp.taglib.test.CategoryLayoutCollectorTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+	</tag>
+	<tag>
+		<name>ProductLayoutCollector</name>
+		<tagclass>com.freshdirect.webapp.taglib.test.ProductLayoutCollectorTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+	</tag>
 </taglib>

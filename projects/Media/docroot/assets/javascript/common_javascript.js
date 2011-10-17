@@ -34,13 +34,23 @@ function swapImage2sup( imgName, w, noW ){
 }
 
 //roll-over swap with width check + burst swap
-function swapImageAndBurst( imgName, imgURL, w, h, hasBurst, burstName, burstURL ) {
+function swapImageAndBurst( imgName, imgURL, w, h, hasBurst, burstName, burstURL, bWidth, bHeight ) {
 	
 	var noW;
 	(w) ? noW = true : noW = false;
-	
+
 	var w = w || document.images[imgName].width;
 	var h = h || document.images[imgName].height;
+
+  // check bounding box
+  if (bWidth && w > bWidth) {
+    h = bWidth / w * h;
+    w = bWidth;
+  }
+  if (bHeight && h > bHeight) {
+    w = bHeight / h * w;
+    h = bHeight;
+  }
 
 	if ( imgURL.length ) {
 		swapImage2sup( imgName, w, noW );

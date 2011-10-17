@@ -5,7 +5,7 @@ List recipients = cart.getGiftCardRecipients();
 %>
 
  
-<table width="675" cellspacing="0" cellpadding="0" border="0" valign="middle">
+<table width="100%" cellspacing="0" cellpadding="0" border="0" valign="middle">
 		<tr>
 			<td><span class="title18"><b>RECIPIENT LIST FOR ORDER <font color="#FF9933">#<%=orderNumber%></font></b></span><br /><br />
 				<a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>">

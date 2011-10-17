@@ -10,15 +10,17 @@
 <%@ page import="com.freshdirect.customer.ErpClientCode"%>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%
-	boolean isSmaller = request.getRequestURI().indexOf("step_4_receipt") > -1; 
-	String detailWidth="693";
-	Integer totalItemsInCart = 0; //keep running count of the number of items for SEM
 
-if (isSmaller) detailWidth="630";
+<% //expanded page dimensions
+final int W_CHECKOUT_STEP_4_CART_DETAILS_TOTAL = 970;
 %>
 
-<div style="width: <%=detailWidth%>px;">
+<%
+Integer totalItemsInCart = 0; //keep running count of the number of items for SEM
+%>
+
+
+<div style="width: <%=W_CHECKOUT_STEP_4_CART_DETAILS_TOTAL%>px;">
 <%
 int idx = 0;
 %>

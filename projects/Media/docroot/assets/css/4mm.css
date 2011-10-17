@@ -1,5 +1,5 @@
 .fourmm {
-	padding: 0px 17px 0px 16px;
+	padding: 0;
 	position: relative;
 	zoom:1;
 }
@@ -72,6 +72,7 @@
 	height: 140px;
 	width: 182px;
 	padding: 0px;
+  margin: 5px 30px;
 	vertical-align: top;
 	zoom: 1;
 }
@@ -86,6 +87,7 @@
 	background: url('/media/4mm/dotted_bg.gif') repeat-x center
 		left;
 	min-height: 2px;
+	overflow: hidden;
 }
 
 .fourmm.filterpage .separator {
@@ -118,7 +120,7 @@
 }
 
 .fourmm .carousel-box {
-	width: 540px;
+	width: 765px;
 	margin-top: 40px;
 	margin-bottom: 30px;
 }
@@ -157,12 +159,17 @@
 	
 }
 
+.fourmm #aboutcarousel {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .fourmm .meal {
 	display: inline-block;
 	width: 117px;
 	_width: 127px;
-	padding: 10px;
-	_padding: 5px;
+	padding: 10px 15px;
+	_padding: 5px 10px;
 	text-align: center;
 	vertical-align: top;
 }
@@ -172,12 +179,12 @@
 	margin-bottom: 10px;
 }
 
-.fourmm .chef {
+.fourmm .chef-row .chef {
 	overflow: hidden;
 	float: left;
-	width: 350px;
+	width: 445px;
 	text-align: left;
-	margin-right: 5px;
+	margin-right: 15px;
 }
 
 .fourmm .chef .chef-image {
@@ -185,10 +192,10 @@
 	max-width: 90px;
 }
 
-.fourmm .chef-info {
+.fourmm .chef-row .chef .chef-info {
 	float: left;
-	max-width: 255px;
-	margin-left: 5px;
+	max-width: 320px;
+	margin-left: 15px;
 }
 
 .fourmm .chef h3 {
@@ -327,16 +334,16 @@
 }
 
 .fourmm .filterwidget.col3 ul {
-	width: 171px;
+	width: 232px;
 	margin: 0px 6px;
 }
 
 .fourmm .filterwidget.col4 ul {
-	width: 125px;
+	width: 172px;
 }
 
 .fourmm.aboutpage .filterwidget.col4 ul {
-	width: 155px;
+	width: 224px;
 }
 
 .fourmm-breadcrumb {

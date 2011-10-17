@@ -22,6 +22,14 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+<% //expanded page dimensions
+final int W_NEWPRODUCTS_TOTAL = 970;
+final int W_NEWPRODUCTS_LEFT = 150;
+final int W_NEWPRODUCTS_CENTER_PADDING = 14;
+final int W_NEWPRODUCTS_RIGHT = 806;
+%>
+
 <fd:CheckLoginStatus />
 <%
 	FDUserI user = (FDUserI) session.getAttribute( SessionName.USER );
@@ -166,21 +174,19 @@
 <tmpl:put name='title' direct='true'>FreshDirect - New Products</tmpl:put>
 <tmpl:put name='banner2' direct='true'>
 	<tr>
-		<td bgcolor="#999966" width="1"><img src="/media_stat/images/layout/999966.gif" width="1" height="1" /></td>
-		<td colspan="4" align="center"><br /><br /><a href="/newproducts.jsp"><img src="/media_stat/images/template/newproduct/newprod_findhere.gif" width="660" height="41" border="0" /></a></td>
-		<td bgcolor="#999966" width="1"><img src="/media_stat/images/layout/999966.gif" width="1" height="1" /></td>
+		<td colspan="2" align="right"><br /><br /><a href="/newproducts.jsp"><img src="/media_stat/images/template/newproduct/newprod_findhere.gif" width="660" height="41" border="0" /></a><img src="/media_stat/images/layout/clear.gif" height="1" width="40" alt=""></td>
 	</tr>
 </tmpl:put>
-<tmpl:put name="colLeftWidth" direct="true">165</tmpl:put>
-<tmpl:put name="colRightWidth" direct="true">568</tmpl:put>
+<tmpl:put name="colLeftWidth" direct="true"><%=W_NEWPRODUCTS_LEFT%></tmpl:put>
+<tmpl:put name="colRightWidth" direct="true"><%=W_NEWPRODUCTS_RIGHT%></tmpl:put>
 <tmpl:put name="categoryPanel" direct="true">
-	<td width="170" colspan="2">
+	<td width="<%=W_NEWPRODUCTS_LEFT%>">
 		<% if (results != null && results.numberOfResults() > 0) { %>
 			<!-- categoryPanel lands here -->
 			<% if ( categoryTree != null ) { %>
 				<%@ include file="/includes/search/generic_treenav.jspf" %>
 				<br />
-				<img src="/media_stat/images/layout/clear.gif" height="1" width="170" alt="">
+				<img src="/media_stat/images/layout/clear.gif" height="1" width="150" alt="">
 			<% }else{ %>
 				&nbsp;
 			<% } %>
@@ -190,7 +196,7 @@
 </tmpl:put>
 
 <tmpl:put name='rightNav' direct='true'> </tmpl:put><% //Make sure to leave a space inside empty tmpl:put tags %>
-<tmpl:put name='header_1' direct='true'><td width="743" colspan="4"><%@ include file="/includes/i_header_new.jspf" %></td></tmpl:put>
+<tmpl:put name='header_1' direct='true'><td width="<%=W_NEWPRODUCTS_TOTAL%>" colspan="2"><%@ include file="/includes/i_header_new.jspf" %></td></tmpl:put>
 <tmpl:put name='header_seperator' direct='true'> </tmpl:put><% //Make sure to leave a space inside empty tmpl:put tags %>
 <tmpl:put name='header_2' direct='true'> </tmpl:put><% //Make sure to leave a space inside empty tmpl:put tags %>
 
@@ -198,7 +204,7 @@
 	<tmpl:put name='featured' direct='true'><%@ include file="/includes/i_featured_new.jspf" %></tmpl:put>
 <% } %>
 <tmpl:put name='content' direct='true'>
-	<table width="550" cellpadding="0" cellspacing="0" border="0" style="margin-left: 15px; margin-top: 10px;">
+	<table width="<%=W_NEWPRODUCTS_RIGHT%>" cellpadding="0" cellspacing="0" border="0" style="margin-left: <%=W_NEWPRODUCTS_CENTER_PADDING%>px; margin-top: 10px;">
 		<% if (!"".equals(filteredHeader) && !isBrand) { %>
 			<tr><td style="font-size: 18px; font-weight: normal; padding-bottom: 10px;"><%=filteredHeader%></td></tr>
 		<% } %>
@@ -260,7 +266,7 @@
 					String deptImageSuffix="_np";
 				%>
 				<%@ include file="/includes/layouts/basic_layout_new.jspf" %>
-				<div style="width: 529px; margin-left: 15px; border-top: 4px solid #ff9933"></div>
+				<div style="width: <%=W_NEWPRODUCTS_RIGHT-15%>px; margin-left: 15px; border-top: 4px solid #ff9933; margin-top: 8px;"></div>
 				<%
 					// Don't show pager for text view!
 					if (!nav.isTextView()) {

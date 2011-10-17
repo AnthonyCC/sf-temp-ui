@@ -10,6 +10,11 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<% //expanded page dimensions
+final int W_CONTACT_FD_TOTAL = 970;
+final int W_CONTACT_FD_LEFT_PAD = 300;
+%>
+
 <fd:CheckLoginStatus />
 <script language='javascript'>
 <!--
@@ -116,11 +121,11 @@ if(request.getParameter("message")!=null){
 	<%@ include file="/includes/i_error_messages.jspf" %>	
 </fd:ErrorHandler>
 
-<table width="670" cellpadding="0" cellspacing="0" border="0">
+<table width="<%=W_CONTACT_FD_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 <form method="post" name="contact_fd">
 <input type="hidden" name="customerPK" value="<%= user.getIdentity() != null ? user.getIdentity().getErpCustomerPK():"" %>">		
 <tr valign="TOP">
-	<td width="670" class="text12">
+	<td width="<%=W_CONTACT_FD_TOTAL%>" class="text12">
 		<font class="title18">Contact FreshDirect</font><br>
 		FreshDirect Customer Service is standing by to answer your questions, seven days a week.  <b>We generally respond within 1 to 3 hours, during our business day.</b> Please select an order number and include as much specific information as possible to ensure a prompt
         response to your inquiry.
@@ -138,17 +143,17 @@ if(request.getParameter("message")!=null){
 		<font class="space8pix"><br></font>
 		<font class="space4pix"><br></font>
 <%-- message --%>
-		<table border="0" cellspacing="0" cellpadding="2" width="675">
+		<table border="0" cellspacing="0" cellpadding="2" width="<%=W_CONTACT_FD_TOTAL%>">
 		    <tr valign="TOP">
-			    <td width="675"><img src="/media_stat/images/template/help/enter_message.gif" width="152" height="9" border="0" alt="ENTER YOUR MESSAGE">&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font><br>
-				<img src="/media_stat/images/layout/999966.gif" width="675" height="1" border="0" VSPACE="3"><br>
+			    <td width="<%=W_CONTACT_FD_TOTAL%>"><img src="/media_stat/images/template/help/enter_message.gif" width="152" height="9" border="0" alt="ENTER YOUR MESSAGE">&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font><br>
+				<img src="/media_stat/images/layout/999966.gif" width="<%=W_CONTACT_FD_TOTAL%>" height="1" border="0" VSPACE="3"><br>
 				<font class="space4pix"><br></font></td>
 			</tr>
 		</table>
 
-		<table border="0" cellspacing="0" cellpadding="0" width="675">
+		<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CONTACT_FD_TOTAL%>">
 		    <tr valign="middle">
-			    <td width="200" align="right" class="lineItems">* Subject:&nbsp;</td>
+			    <td width="<%=W_CONTACT_FD_LEFT_PAD%>" align="right" class="lineItems">* Subject:&nbsp;</td>
 				<td>
 				<select class="text12" name="subject">
 				<option value="">Select Subject:</option>
@@ -167,7 +172,7 @@ if(request.getParameter("message")!=null){
 	<%if(orderHistoryInfo.size() > 0){%>
 			<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" border="0"></td></tr>		
 		    <tr>
-			    <td width="200" align="right" class="lineItems">Order #:&nbsp;</td>
+			    <td width="<%=W_CONTACT_FD_LEFT_PAD%>" align="right" class="lineItems">Order #:&nbsp;</td>
 				<td>
 				<select class="text12" name="salePK">
 					<option value="">Select Order:</option>
@@ -186,7 +191,7 @@ if(request.getParameter("message")!=null){
 			    <td></td>
 			    <td class="lineItems">
 				<br>
-				* Please enter your message here:
+				* Please enter your message here:<br>
 				<textarea cols="60" rows="5" name="message" onKeyPress="limitText(this, 2048)" onChange="limitText(this, 2048)"><%=body%></textarea><br>
 				<fd:ErrorHandler result='<%=result%>' name='message' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 				</td>
@@ -200,17 +205,17 @@ if(request.getParameter("message")!=null){
 
 <%-- info --%>
 <%if(identity == null){%>
-                <table border="0" cellspacing="0" cellpadding="2" width="675">
+                <table border="0" cellspacing="0" cellpadding="2" width="<%=W_CONTACT_FD_TOTAL%>">
                     <tr valign="TOP">
-                        <td width="675"><img src="/media_stat/images/template/help/enter_contact_info.gif"" width="246" height="9" border="0" alt="ENTER YOUR CONTACT INFORMATION">&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font><br>
-				<img src="/media_stat/images/layout/999966.gif" width="675" height="1" border="0" VSPACE="3"><br><font class="space4pix"><br></font>
+                        <td width="<%=W_CONTACT_FD_TOTAL%>"><img src="/media_stat/images/template/help/enter_contact_info.gif"" width="246" height="9" border="0" alt="ENTER YOUR CONTACT INFORMATION">&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font><br>
+				<img src="/media_stat/images/layout/999966.gif" width="<%=W_CONTACT_FD_TOTAL%>" height="1" border="0" VSPACE="3"><br><font class="space4pix"><br></font>
 			</td>
                     </tr>
                 </table>
 
 		<table border="0" cellspacing="0" cellpadding="0">
 			<tr>
-			    <td width="200" align="right" class="lineItems">* E-mail Address/User Name&nbsp;</td>
+			    <td width="<%=W_CONTACT_FD_LEFT_PAD%>" align="right" class="lineItems">* E-mail Address/User Name&nbsp;</td>
 				<td><input type="text" class="text11" name="email" size="30" value="<%=email%>">&nbsp;<fd:ErrorHandler result='<%=result%>' name='email' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 			</tr>
                         <tr>
@@ -238,17 +243,17 @@ if(request.getParameter("message")!=null){
 			</tr>
 		</table>
 <%}else{%>
-		<table border="0" cellspacing="0" cellpadding="2" width="675">
+		<table border="0" cellspacing="0" cellpadding="2" width="<%=W_CONTACT_FD_TOTAL%>">
                     <tr valign="TOP">
-                        <td width="675"><img src="/media_stat/images/template/help/review_contact_info.gif"" width="246" height="9" border="0" alt="REVIEW YOUR CONTACT INFORMATION">&nbsp;&nbsp;&nbsp;<br>
-				<img src="/media_stat/images/layout/999966.gif" width="675" height="1" border="0" VSPACE="3"><br><font class="space4pix"><br></font>
+                        <td width="<%=W_CONTACT_FD_TOTAL%>"><img src="/media_stat/images/template/help/review_contact_info.gif"" width="246" height="9" border="0" alt="REVIEW YOUR CONTACT INFORMATION">&nbsp;&nbsp;&nbsp;<br>
+				<img src="/media_stat/images/layout/999966.gif" width="<%=W_CONTACT_FD_TOTAL%>" height="1" border="0" VSPACE="3"><br><font class="space4pix"><br></font>
 			</td>
                     </tr>
 		</table>
                 
                 <table border="0" cellspacing="0" cellpadding="2">
                     <tr>
-                        <td width="200" align="right" class="lineItems" valign='bottom'><b>E-mail Address/User Name:&nbsp;</b></td>
+                        <td width="<%=W_CONTACT_FD_LEFT_PAD%>" align="right" class="lineItems" valign='bottom'><b>E-mail Address/User Name:&nbsp;</b></td>
                         <td valign='bottom'><%=email%></td>
                     </tr>
                     <tr>
@@ -261,8 +266,8 @@ if(request.getParameter("message")!=null){
                 </table>
 <%}%>
 		<br>
-		<img src="/media_stat/images/layout/FF9933.gif" width="675" height="1" border="0" vspace="4">
-		<table border="0" cellspacing="0" cellpadding="2" width="675">
+		<img src="/media_stat/images/layout/FF9933.gif" width="<%=W_CONTACT_FD_TOTAL%>" height="1" border="0" vspace="4">
+		<table border="0" cellspacing="0" cellpadding="2" width="<%=W_CONTACT_FD_TOTAL%>">
 			<tr valign="right">
 				<td width="25%"></td>
 				<td width="50%" align="center">
@@ -271,7 +276,7 @@ if(request.getParameter("message")!=null){
 				<td width="25%"></td>
 			</tr>
 		</table>
-		<img src="/media_stat/images/layout/FF9933.gif" width="675" height="1" border="0" vspace="4">
+		<img src="/media_stat/images/layout/FF9933.gif" width="<%=W_CONTACT_FD_TOTAL%>" height="1" border="0" vspace="4">
 	</td>
 </tr>
 </form>

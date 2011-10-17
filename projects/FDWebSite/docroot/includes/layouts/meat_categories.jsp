@@ -19,6 +19,11 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
+<% //expanded page dimensions
+final int W_MEAT_CATEGORIES_IS_DEPARTMENT = 765;
+final int W_MEAT_CATEGORIES_NOT_DEPARTMENT = 601; 
+%>
+
 <%! // INTERNALS
 	
 	
@@ -107,7 +112,7 @@
 	//***          the Featured Category Layout                  ***
 	//**************************************************************
 
-	int maxWidth = (request.getRequestURI().toLowerCase().indexOf("department.jsp") != -1 ) ? 550 : 400;
+	int maxWidth = (request.getRequestURI().toLowerCase().indexOf("department.jsp") != -1 ) ? W_MEAT_CATEGORIES_IS_DEPARTMENT : W_MEAT_CATEGORIES_NOT_DEPARTMENT;
 	List availableList = new ArrayList();
 	String prodNameAttribute = JspMethods.getProductNameToUse(currentFolder);
 	

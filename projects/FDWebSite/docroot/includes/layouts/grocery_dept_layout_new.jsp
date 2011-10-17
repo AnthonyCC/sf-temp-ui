@@ -16,6 +16,14 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
 
+<% //expanded page dimensions
+final int W_GROCERY_DEPT_LAYOUT_NEW_TOTAL = 765;
+final int W_GROCERY_DEPT_LAYOUT_NEW_IMG = 191;
+final int W_GROCERY_DEPT_LAYOUT_NEW_PADDING = 14;
+final int W_GROCERY_DEPT_LAYOUT_NEW_TEXT = 273;
+%>
+
+
 <%
 	//********** Start of Stuff to let JSPF's become JSP's **************
 	
@@ -77,24 +85,24 @@
 	}
 %>
 
-<table cellpadding="0" cellspacing="0" border="0" width="550">
+<table cellpadding="0" cellspacing="0" border="0" width="<%=W_GROCERY_DEPT_LAYOUT_NEW_TOTAL%>">
     <tr valign="top">
-    	<td width="550"> <%-- this is the category column --%>
+    	<td width="<%=W_GROCERY_DEPT_LAYOUT_NEW_TOTAL%>"> <%-- this is the category column --%>
         	<table cellpadding="0" cellspacing="0" border="0" width="100%">
 		    	<% if (currentFolder.getEditorialTitle() != null && currentFolder.getEditorialTitle().length() > 0) { %>
-					<tr><td colspan="6">
+					<tr><td colspan="5">
 						<span class="title16"><%= currentFolder.getEditorialTitle() %></span>
 					</td></tr>
 	
 					<!-- separator  -->
-					<tr><td colspan="6">
-						<br/><img src="/media_stat/images/layout/cccccc.gif" width="550" height="1" border="0"><br/>
+					<tr><td colspan="5">
+						<br/><img src="/media_stat/images/layout/cccccc.gif" width="<%=W_GROCERY_DEPT_LAYOUT_NEW_TOTAL%>" height="1" border="0"><br/>
 						<font CLASS="space4pix"><br/><br/></font>
 					</td></tr>
 				<% } %>
 
 	            <tr>
-	                <td colspan="6"><img src="<%= BrowseHeader %>"><br/><br/></td>
+	                <td colspan="5"><img src="<%= BrowseHeader %>"><br/><br/></td>
 	            </tr>
 	            
 				<%
@@ -158,14 +166,12 @@
 				%>
 				
 				<tr>
-					<td width="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0"></td>
-					<td width="100" valign="top"><%= imageCell.toString() %></td>
-					<td width="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0"></td>
-					<td width="205" valign="top" class="text13bold"><%= listColumn1.toString() %></td>
-					<td width="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0"></td>
-					<td width="205" valign="top" class="text13bold"><%= listColumn2.toString() %></td>
+					<td width="<%=W_GROCERY_DEPT_LAYOUT_NEW_IMG%>" valign="top" align="center"><%= imageCell.toString() %></td>
+					<td width="<%=W_GROCERY_DEPT_LAYOUT_NEW_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_GROCERY_DEPT_LAYOUT_NEW_PADDING%>" height="1" border="0"></td>
+					<td width="<%=W_GROCERY_DEPT_LAYOUT_NEW_TEXT%>" valign="top" class="text13bold"><%= listColumn1.toString() %></td>
+					<td width="<%=W_GROCERY_DEPT_LAYOUT_NEW_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_GROCERY_DEPT_LAYOUT_NEW_PADDING%>" height="1" border="0"></td>
+					<td width="<%=W_GROCERY_DEPT_LAYOUT_NEW_TEXT%>" valign="top" class="text13bold"><%= listColumn2.toString() %></td>
 				</tr><%-- end of categories --%>
-
 
 				<%-- Editorial media section--%>
 				<% 
@@ -174,14 +180,14 @@
 				if ( editorial != null && editorial.size() > 0 ) { %>
 					<!-- separator  -->
 					<tr>
-						<td colspan="6">
-							<br /><img src="/media_stat/images/layout/cccccc.gif" width="550" height="1" border="0"><br />
+						<td colspan="5">
+							<br /><img src="/media_stat/images/layout/cccccc.gif" width="<%=W_GROCERY_DEPT_LAYOUT_NEW_TOTAL%>" height="1" border="0"><br />
 							<font class="space4pix"><br /><br /></font>
 						</td>
 					</tr>
 					<!-- assoc editorial media -->
 					<tr>
-						<td colspan="6">
+						<td colspan="5">
 					        <%
 							for ( Html media : editorial ) {
 								if (media != null) {
@@ -201,19 +207,20 @@
 				// display the featured brands, based on each of the featured categories
 		        List<CategoryModel> featuredCats = ((DepartmentModel)currentFolder).getFeaturedCategories();
 		        List<BrandModel> featuredBrands = null;
-		        int trimAt=10;
+		        int trimAt=15;
 		
 		        int brandsShown=0;
 		
 		        if (featuredCats != null && featuredCats.size() > 0) { %>
 					<!-- separator  -->
-		            <tr><td colspan="6"><br/>
-	            		<img src="/media_stat/images/layout/cccccc.gif" width="550" height="1" border="0"><br/>
+		            <tr><td colspan="5"><br/>
+	            		<img src="/media_stat/images/layout/cccccc.gif" width="<%=W_GROCERY_DEPT_LAYOUT_NEW_TOTAL%>" height="1" border="0"><br/>
 	            		<font CLASS="space4pix"><br/><br/></font>
 	            		<img src="/media_stat/images/layout/dfgs_featured_brands.gif" width="115" height="10" border="0"><br/><br/>
 		            </td></tr>
 		
-		            <tr><td colspan="6">
+		            <tr><td colspan="5">
+                    <div style="float: left; width: 100%">
 						<%
 						for (int fc = 0; fc < featuredCats.size(); fc++) {
 			                CategoryModel catMod= featuredCats.get(fc);
@@ -221,8 +228,8 @@
 			  
 			                featuredBrands = catMod.getFeaturedBrands();
 			                brandsShown=0;
-			                
-			       			for(int i=0; i<featuredBrands.size();i++){                	
+
+			                for(int i=0; i<featuredBrands.size();i++){                	
 			                    BrandModel brandMod= featuredBrands.get(i);
 			
 			                    if (brandMod==null) 
@@ -237,15 +244,11 @@
 			
 			                    String brandLink = response.encodeURL("/category.jsp?catId="+catMod+"&brandValue="+brandMod.getContentName()+"&groceryVirtual="+catMod+"&trk=feat");
 			                    brandsShown++;
-								%><a href="<%= brandLink %>"><img src="<%= bLogo.getPath() %>" width="<%= bLogo.getWidth() %>" height="<%= bLogo.getHeight() %>" alt="<%= brandMod.getFullName() %>" border="0"></a><%= (brandsShown%trimAt)==0 ? "<br/>": "" %><%                      
+                      %><div style="float: left; padding: 2px 4px;"><a href="<%= brandLink %>"><img src="<%= bLogo.getPath() %>" width="<%= bLogo.getWidth() %>" height="<%= bLogo.getHeight() %>" alt="<%= brandMod.getFullName() %>" border="0"></a></div><%
 			                }
-			                   
-							// put a break between categories, if any brand images were displayed
-							if (brandsShown > 0) { 
-					 			%><font class="space4pix"><br/></font><%
-							}
 			        	}
-						%>
+                %>
+            </div>
 					</td></tr>
 				<% } %>
 			</table>

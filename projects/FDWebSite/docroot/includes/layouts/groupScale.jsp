@@ -24,7 +24,9 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
-
+<% //expanded page dimensions
+final int W_GROUPSCALE_TOTAL = 601;
+%>
 <%!
 	java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 	NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.US);
@@ -463,7 +465,7 @@
 			<% if (request.getParameter("fdsc.source") != null) { %>
 				<input type="hidden" name="fdsc.source" value="<%=request.getParameter("fdsc.source")%>" />
 			<% } %>
-			<table border="0" cellspacing="0" cellpadding="0" width="425"><%-- entire product table --%>
+      <table border="0" cellspacing="0" cellpadding="0" width="<%= W_GROUPSCALE_TOTAL %>"><%-- entire product table --%>
 				<%
 				//If there is a specific product selected then show it above the listings here
 				//lets get the product with the product cod in the section, display this product, then the rest of the products
@@ -494,7 +496,7 @@
 						</tr>
 						<tr>
 							<td align="right" style="padding-top: 5px;" class="text11">
-								<input width="93" type="image" height="20" border="0" style="padding-top: 5px; padding-bottom: 3px; display: block;" src="/media_stat/images/buttons/add_to_cart.gif" name="add_to_cart">
+								<input width="93" type="image" height="20" border="0" style="padding: 5px 2px 3px; display: block;" src="/media_stat/images/buttons/add_to_cart.gif" name="add_to_cart">
 							</td>
 							<td width="10">&nbsp;</td><%-- buffer cell --%>
 							<td align="right" style="padding-top: 8px; 5px;" class="text11bold">Price&nbsp;<input type="text" value="" onfocus="blur()" onchange="" size="6" name="total" id="total_top" class="text11bold">
@@ -754,7 +756,7 @@
 								<tr>
 									<td align="left">
 									<img src="/media_stat/images/layout/clear.gif" width="100%" height="6">
-									<a href="javascript:pop('/brandpop.jsp?brandId=bd_fd_fresh_guarantee',400,585)">Learn more about our Freshness Guarantee - CLICK HERE</a>
+									<a href="javascript:pop('/brandpop.jsp?brandId=bd_fd_fresh_guarantee',400,585)">Learn more about our Freshness Guarantee - CLICK&nbsp;HERE</a>
 									</td>
 								</tr>
 							</table>
@@ -765,7 +767,6 @@
 					</td>
 				</tr>
 				<tr>
-					<!-- <td valign="bottom" colspan="5"> --> <%-- qty/small image --%>
 						<%-- Product Qty Controls START --%>
 							<%
 								/*imgLinkUrl = response.encodeURL("/group.jsp?catId="+currentFolder
@@ -825,7 +826,6 @@
 									LOGGER.debug("syncProdSkuCode: "+syncProdSkuCode);
 									LOGGER.debug("temp: "+temp);
 								%>
-								<!-- <table border="0" cellspacing="5" cellpadding="1"> --> <%-- Qty control table --%>
 									<td width="40" align="center"><nobr>
 									<% if (!skuAvailable) { %>
 										<font color="#999999">NA</font>
@@ -858,12 +858,12 @@
 									<td width="10" align="center" valign="middle">
 										<img src="/media_stat/images/layout/clear.gif" name="bullet<%= itemShownIndex %>" width="6" height="6" border="0" alt="" />
 									</td>
-									<td align="center" valign="middle">
+									<td align="left" valign="middle">
 										<%
 											Set hideBursts = new HashSet();
 											hideBursts.add(EnumBurstType.DEAL);
 										%>
-										<display:ProductImage product="<%= productNode %>" action="<%= imgLinkUrl %>" showRolloverImage="true" hideBursts="<%= hideBursts %>"/>
+										<display:ProductImage product="<%= productNode %>" showRolloverImage="true" hideBursts="<%= hideBursts %>"/>
 									</td>
 									</tr>
 									<tr>
@@ -876,13 +876,9 @@
 											<%@ include file="/includes/product/i_delivery_note.jspf" %>
 										</td>
 									</tr>
-								<!-- </table> -->
 								<% } %>
 							
 						<%-- Product Qty Controls END --%>
-					<!-- </td>
-				</tr> -->
-<!--			</table> -->
 		<% } %>
 		</fd:FDProductInfo>
 	</fd:ProductGroup>
@@ -917,7 +913,6 @@
 	boolean isAnyProdAvailable = true; //this will always be true for groupScale
 	int loopEnd = skuCount;
 	%>
-	<!-- <table width="425" border="0" cellspacing="0" cellpadding="0"> -->
 	<%
 		int txCount = 0;
 		int tpCount = 0;//Keeps track of Transaction product count
@@ -976,7 +971,7 @@
 				<table cellspacing="0" cellpadding="0" border="0" align="left"> 
 				<tr>
 					<td align="right" style="padding-top: 5px;" class="text11">
-						<input width="93" type="image" height="20" border="0" style="padding-top: 5px; padding-bottom: 3px; display: block;" src="/media_stat/images/buttons/add_to_cart.gif" name="add_to_cart">
+						<input width="93" type="image" height="20" border="0" style="padding: 5px 2px 3px; display: block;" src="/media_stat/images/buttons/add_to_cart.gif" name="add_to_cart">
 					</td>
 					<td width="10">&nbsp;</td><%-- buffer cell --%>
 					<td align="right" style="padding-top: 8px; 5px;" class="text11bold">Price&nbsp;<input type="text" value="" onfocus="blur()" onchange="" size="6" name="total" id="total_bottom" class="text11bold">

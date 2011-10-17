@@ -16,6 +16,12 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
+
+<% //expanded page dimensions
+final int W_HOW_TO_COOK_IT_TOTAL = 601;
+final int W_HOW_TO_COOK_IT_IMG = 123;
+%>
+
 <%!
         JspMethods.ContentNodeComparator contentNodeComparator = new JspMethods.ContentNodeComparator();
 %>
@@ -67,7 +73,6 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
 
     String deptName = parentNode.getFullName(); //getDepartmentPath(webconnect.getFolder().getString("path") );
     String prodNameAttribute = JspMethods.getProductNameToUse(currentFolder);
-    String tablewidth="400";
     String tdwidth="92";
 
 
@@ -165,14 +170,14 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
 <%
     if (favoriteProducts.length()>0) {
 %>
-<TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" WIDTH="<%=tablewidth%>">
+<TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" WIDTH="<%=W_HOW_TO_COOK_IT_TOTAL%>">
 <TR VALIGN="TOP">
-	<TD CLASS="text12bold" WIDTH="<%=tablewidth%>">
+	<TD CLASS="text12bold" WIDTH="<%=W_HOW_TO_COOK_IT_TOTAL%>">
 		Our Favorites
 	</TD>
 </TR>
 </TABLE>
-<TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" WIDTH="<%=tablewidth%>">
+<TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" WIDTH="<%=W_HOW_TO_COOK_IT_TOTAL%>">
 <TR VALIGN="TOP" ALIGN="CENTER">
 	<%=favoriteProducts.toString()%>
 </TR>
@@ -188,19 +193,19 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
 		//CategoryModel displayCategory = null;
 		//displayCategory=(CategoryModel)contentNode;
 %>
-<TABLE CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="400">
+<TABLE CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="<%=W_HOW_TO_COOK_IT_TOTAL%>">
 <TR VALIGN="MIDDLE">
-	<TD WIDTH="400" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4" border="0"></TD>
+	<TD WIDTH="<%=W_HOW_TO_COOK_IT_TOTAL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4" border="0"></TD>
 </TR>
 <TR VALIGN="MIDDLE">
-	<TD WIDTH="400" COLSPAN="4" CLASS="title11"><%=displayCategory.getFullName()%></td></tr>
+	<TD WIDTH="<%=W_HOW_TO_COOK_IT_TOTAL%>" COLSPAN="4" CLASS="title11"><%=displayCategory.getFullName()%></td></tr>
 <%
         Html introCpyAttrib = displayCategory.getEditorial();
         String introCopyPath = introCpyAttrib==null?"":introCpyAttrib.getPath();
         if ( introCopyPath!=null && introCopyPath.trim().length() > 0) {
 %>
 <%//gray line%>
-<tr><td width="400" colspan="4" class="text11"><img src="/media_stat/images/layout/cccccc.gif" width="400" height="1" alt="" border="0"><br>
+<tr><td width="<%=W_HOW_TO_COOK_IT_TOTAL%>" colspan="4" class="text11"><img src="/media_stat/images/layout/cccccc.gif" width="<%=W_HOW_TO_COOK_IT_TOTAL%>" height="1" alt="" border="0"><br>
 <img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"><br>
 
 <fd:IncludeMedia name='<%= introCopyPath %>' /><br><br></TD></TR>
@@ -268,8 +273,8 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
 <%
                 String outputProducts= JspMethods.displayFAProducts(productLinks, productPrices,showPrices,false);
 %>
-<TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" WIDTH="400">
+<TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" WIDTH="<%=W_HOW_TO_COOK_IT_TOTAL%>">
 <TR VALIGN="TOP">
-	<TD width="90"><%=col1.toString()%></td><%=outputProducts%></TR>
+	<TD align="center" width="<%=W_HOW_TO_COOK_IT_IMG%>"><%=col1.toString()%></td><%=outputProducts%></TR>
 </Table>
 </logic:iterate>

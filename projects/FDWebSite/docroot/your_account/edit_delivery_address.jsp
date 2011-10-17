@@ -5,6 +5,9 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<% //expanded page dimensions
+final int W_YA_EDIT_DELIVERY_ADDR = 970;
+%>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <%
 	//stick the current id being edited into the session so we can check it back on delivery info
@@ -24,36 +27,35 @@
 		<%@ include file="/includes/i_error_messages.jspf" %>	
 	</fd:ErrorHandler>
 
-	<table width="675" border="0" cellpadding="0" cellspacing="0">
-		<tr><td width="675" class="text11">
+	<table width="<%= W_YA_EDIT_DELIVERY_ADDR %>" border="0" cellpadding="0" cellspacing="0">
+		<tr><td width="<%= W_YA_EDIT_DELIVERY_ADDR %>" class="text11">
 			<font class="title18">Edit Delivery Address</font><br />
 		</td></tr>
 	</table>
 	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br />
-	<img src="/media_stat/images/layout/ff9933.gif" width="675" height="1" border="0"><br />
+	<img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_EDIT_DELIVERY_ADDR %>" height="1" border="0"><br />
 	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br /><br />
 
 	<form name="address" method="post">
 		<input type="hidden" name="updateShipToAddressId" value="<%=request.getParameter("addressId")%>">
 
-		<table border="0" cellspacing="0" cellpadding="2" width="675">
+		<table border="0" cellspacing="0" cellpadding="2" width="<%= W_YA_EDIT_DELIVERY_ADDR %>">
 			<tr valign="top">
-				<td width="675"><img src="/media_stat/images/navigation/delivery_address.gif" width="116" height="9" border="0" alt="DELIVERY ADDRESS">
+				<td width="<%= W_YA_EDIT_DELIVERY_ADDR %>"><img src="/media_stat/images/navigation/delivery_address.gif" width="133" height="15" border="0" alt="DELIVERY ADDRESS">
 					&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font><br />
-					<img src="/media_stat/images/layout/999966.gif" width="675" height="1" border="0" vspace="3"><br /></td>
+					<img src="/media_stat/images/layout/999966.gif" width="<%= W_YA_EDIT_DELIVERY_ADDR %>" height="1" border="0" vspace="3"><br /></td>
 			</tr>
 		</table>
 
 		<font class="space4pix"><br /></font><%@ include file="/includes/ckt_acct/i_delivery_address_field.jspf" %><br /><br />
 		<br /><br />
 
-		<table cellpadding="0" cellspacing="0" border="0" width="675">
+		<table cellpadding="0" cellspacing="0" border="0" width="<%= W_YA_EDIT_DELIVERY_ADDR %>">
 			<tr valign="top" bgcolor="#ff9933">
-				<td width="675" colspan="2"><img src="/media_stat/images/layout/ff9933.gif" hspace="0" width="1" height="1" border="0"></td>
+				<td width="<%= W_YA_EDIT_DELIVERY_ADDR %>"><img src="/media_stat/images/layout/ff9933.gif" hspace="0" width="1" height="1" border="0"></td>
 			</tr>
 		<tr>
-			<td width="375"></td>
-			<td width="300" align="right" valign="top"><font class="space2pix"><br /></font><a href="<%=response.encodeURL("/your_account/delivery_information.jsp")%>"><image src="/media_stat/images/buttons/cancel.gif" height="16" width="54" alt="Cancel" border="0" hspace="4" vspace="4" name="cancel_delivery"></a><input type="image" src="/media_stat/images/buttons/save_changes.gif" height="16" width="84" alt="Save New Address" border="0" hspace="4" vspace="4" name="edit_delivery_address"></td>
+			<td width="<%= W_YA_EDIT_DELIVERY_ADDR %>" align="right" valign="top"><font class="space2pix"><br /></font><a href="<%=response.encodeURL("/your_account/delivery_information.jsp")%>"><image src="/media_stat/images/buttons/cancel.gif" height="16" width="54" alt="Cancel" border="0" hspace="4" vspace="4" name="cancel_delivery"></a><input type="image" src="/media_stat/images/buttons/save_changes.gif" height="16" width="84" alt="Save New Address" border="0" hspace="4" vspace="4" name="edit_delivery_address"></td>
 		</tr>
 		</table>
 		<br />

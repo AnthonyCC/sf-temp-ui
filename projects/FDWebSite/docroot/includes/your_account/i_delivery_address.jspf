@@ -1,7 +1,10 @@
 <%@ page import="com.freshdirect.delivery.DlvZoneInfoModel" %>
 <%@ page import="com.freshdirect.customer.EnumUnattendedDeliveryFlag" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
-
+<% //expanded page dimensions
+final int W_YA_DELIVERY_ADDR = 970;
+final int W_YA_DELIVERY_ADDR_COL = 290;
+%>
 <%
 int itemCounter = 0;
 boolean showDeleteButtons = shipToAddresses.size() > 1 ? true : false;
@@ -14,13 +17,13 @@ for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
 			</TR></TABLE>
 			<%
 		} %>
-		<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" width="705">
+    <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" width="<%= W_YA_DELIVERY_ADDR %>">
 			<TR>
 		<%
 	}
 	%>
 	<TD width="20" valign="top"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0"/></TD>
-	<TD valign="top" width="195"><font class="text12bold"><%=shipAddress.getFirstName()%> <%=shipAddress.getLastName()%></FONT><BR>
+  <TD valign="top" width="<%= W_YA_DELIVERY_ADDR_COL %>"><font class="text12bold"><%=shipAddress.getFirstName()%> <%=shipAddress.getLastName()%></FONT><BR>
 		<font class="text13">
 		<%if(showingCorporateAddress){%>
 			<%=shipAddress.getCompanyName()%><br>
@@ -71,10 +74,10 @@ for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
 	}
 }
 	if ( (itemCounter%3)==1) {%>
-		<TD WIDTH="490"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="490" HEIGHT="1" BORDER="0"><BR></TD>
+    <TD WIDTH="<%= W_YA_DELIVERY_ADDR_COL * 2 + 60 %>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%= W_YA_DELIVERY_ADDR_COL * 2 + 60 %>" HEIGHT="1" BORDER="0"><BR></TD>
 		<%
 	} else if ( (itemCounter%3)==2) {%>
-		<TD WIDTH="245"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="245" HEIGHT="1" BORDER="0"><BR></TD>
+    <TD WIDTH="<%= W_YA_DELIVERY_ADDR_COL + 30 %>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%= W_YA_DELIVERY_ADDR_COL + 30 %>" HEIGHT="1" BORDER="0"><BR></TD>
 		<%
 	}%>
     </TR>

@@ -3,6 +3,10 @@
 <%@ page import='com.freshdirect.framework.webapp.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 
+<% //expanded page dimensions
+final int W_SURVEY_RETENTION_SURVEY_TOTAL = 970;
+%>
+
 <%
   response.setHeader("Cache-Control", "no-cache");
   response.setHeader("Pragma", "no-cache");
@@ -20,7 +24,7 @@
 	        	<% if(((ActionResult)result).isSuccess() && surveyResult != null) { %>
 	        		<%--MEDIA INCLUDE--%><fd:IncludeMedia name="<%=surveyResult%>" /><%--END MEDIA INCLUDE --%>
 	        	<% } else { %>
-	            <table width="700" cellpadding="0" cellspacing="0" border="0">
+	            <table width="<%=W_SURVEY_RETENTION_SURVEY_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 	                <tr>
 	                  <td colspan="7" class="text12" align="center">
 	   	            <%          Collection pgErrs=((ActionResult)result).getErrors();

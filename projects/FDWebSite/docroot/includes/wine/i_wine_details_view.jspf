@@ -5,6 +5,11 @@
 <%@page import="com.freshdirect.fdstore.content.Image"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
+
+<% //expanded page dimensions
+final int W_WINE_DETAILS_VIEW_TOTAL = 601;
+%>
+
 <%--
 
 	@param group A collection of {@link:ProductRatingGroup} items
@@ -14,7 +19,7 @@
 
 --%>
 <div style="font-size: 0px; padding-top: 16px;">&nbsp;</div>
-<table width="425" cellpadding="2" cellspacing="0" border="0">
+<table width="<%=W_WINE_DETAILS_VIEW_TOTAL%>" cellpadding="2" cellspacing="0" border="0">
 <%
 	for (ProductRatingGroup group : groups) {
 %>

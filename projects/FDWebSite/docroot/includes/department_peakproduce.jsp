@@ -56,15 +56,14 @@
 	<fd:GetPeakProduce deptId='<%= request.getParameter("deptId") %>' id='peakProduces'> 
 	
 			<%
-
+			int tableWidth=(Integer)pageContext.getAttribute("tableWidth");
 			if(peakProduces.size()>0) {
 
 				String mediaPath="/media/brands/fd_ratings/"+deptIdCheck+"/peak_produce.html";
 			%>
 				<fd:IncludeMedia name="<%=mediaPath%>" />
-
 	<% ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(request.getParameter("deptId")); %>
-	<table cellpadding="0" cellspacing="0" border="0">
+	<table cellpadding="0" cellspacing="0" border="0" width="<%= peakProduces.size() < 6 ? tableWidth : "100%"%>">
 		<tr valign="bottom">
 			<logic:iterate id="peakProduce" collection="<%= peakProduces %>" type="com.freshdirect.fdstore.content.SkuModel">
 				<td>
@@ -76,7 +75,7 @@
 				  int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
 				  String actionUrl = FDURLUtil.getProductURI( pm, "dept" );
 				 %>
-				 <td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
+				 <td align="center" width="<%=adjustedImgWidth%>" style="padding-left:15px; padding-right:15px;">
 					<!-- APPDEV-401 Update product display(deals & burst) -->
 					<display:ProductImage product="<%= pm %>" showRolloverImage="false" action="<%= actionUrl %>"/>
 					<!--<a href="<%=displayObj.getItemURL()%>&trk=dept"><img src="<%= displayObj.getImagePath()%>"  <%=displayObj.getImageDimensions() %> ALT="<%=displayObj.getAltText()%>" vspace="0" hspace="0" border="0"></a>-->
@@ -93,7 +92,7 @@
 				  int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
 				  String actionUrl = FDURLUtil.getProductURI( pm, "dept" );
 				 %>
-				 <td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
+				 <td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:15px; padding-right:15px;padding-bottom:10px;">
 					<!-- APPDEV-401 Update product display(deals & burst) -->
 					<display:ProductRating product="<%= pm %>" action="<%= actionUrl %>"/>
 					<display:ProductName product="<%= pm %>" action="<%= actionUrl %>"/>								

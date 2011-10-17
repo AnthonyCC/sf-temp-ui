@@ -1,0 +1,14 @@
+<%@ taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
+<%-- OAS --%>
+<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
+<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
+
+<%-- user, uri, etc (is this an appropriate place for this kind of code?) --%>
+<%
+String globalUri = request.getRequestURI();
+%>
+<%@ include file="/common/template/includes/globalnav/topbar.jspf" %>
+<%@ include file="/common/template/includes/globalnav/menu.jspf" %>
+<%@ include file="/common/template/includes/globalnav/submenu.jspf" %>
+<%@ include file="/common/template/includes/globalnav/searchbar.jspf" %>
+

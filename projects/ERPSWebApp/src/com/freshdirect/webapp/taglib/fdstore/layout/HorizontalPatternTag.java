@@ -48,7 +48,7 @@ public class HorizontalPatternTag extends com.freshdirect.framework.webapp.BodyT
 	private ProductModel					theOnlyProduct				= null;	
 	
 	// pattern layout for 4 columns
-	public static int[][] displayPattern = { 
+	public static int[][] displayPattern4 = { 
 		{ 1, 0, 0, 0, 0 }, { 2, 0, 0, 0, 0 }, { 3, 0, 0, 0, 0 }, { 4, 0, 0, 0, 0 },
 		{ 3, 2, 0, 0, 0 }, { 4, 2, 0, 0, 0 }, { 4, 3, 0, 0, 0 }, { 4, 4, 0, 0, 0 }, 
 		{ 4, 2, 3, 0, 0 }, { 4, 3, 3, 0, 0 }, { 4, 3, 4, 0, 0 }, { 4, 4, 4, 0, 0 }, 
@@ -67,14 +67,22 @@ public class HorizontalPatternTag extends com.freshdirect.framework.webapp.BodyT
 	};
 	
 	// experimental pattern for 5 columns
-	public static int[][] displayPattern5 = { 
+//	public static int[][] displayPattern = { 
+//		{ 1, 0, 0, 0, 0 }, { 2, 0, 0, 0, 0 }, { 3, 0, 0, 0, 0 }, { 4, 0, 0, 0, 0 }, { 5, 0, 0, 0, 0 },
+//		{ 3, 3, 0, 0, 0 }, { 4, 3, 0, 0, 0 }, { 4, 4, 0, 0, 0 }, { 5, 4, 0, 0, 0 }, { 5, 5, 0, 0, 0 },  
+//		{ 4, 4, 3, 0, 0 }, { 4, 4, 4, 0, 0 }, { 5, 4, 4, 0, 0 }, { 5, 5, 4, 0, 0 }, { 5, 5, 5, 0, 0 },
+//		{ 4, 4, 4, 4, 0 }, { 5, 5, 4, 3, 0 }, { 5, 5, 4, 4, 0 }, { 5, 5, 5, 4, 0 }, { 5, 5, 5, 5, 0 },
+//		{ 5, 5, 4, 4, 3 }, { 5, 5, 4, 4, 4 }, { 5, 5, 5, 4, 4 }, { 5, 5, 5, 5, 4 }, { 5, 5, 5, 5, 5 }
+//	};
+
+	public static int[][] displayPattern = { 
 		{ 1, 0, 0, 0, 0 }, { 2, 0, 0, 0, 0 }, { 3, 0, 0, 0, 0 }, { 4, 0, 0, 0, 0 }, { 5, 0, 0, 0, 0 },
-		{ 3, 3, 0, 0, 0 }, { 4, 3, 0, 0, 0 }, { 4, 4, 0, 0, 0 }, { 5, 4, 0, 0, 0 }, { 5, 5, 0, 0, 0 },  
-		{ 4, 4, 3, 0, 0 }, { 4, 4, 4, 0, 0 }, { 5, 4, 4, 0, 0 }, { 5, 5, 4, 0, 0 }, { 5, 5, 5, 0, 0 },
-		{ 4, 4, 4, 4, 0 }, { 5, 5, 4, 3, 0 }, { 5, 5, 4, 4, 0 }, { 5, 5, 5, 4, 0 }, { 5, 5, 5, 5, 0 },
-		{ 5, 5, 4, 4, 3 }, { 5, 5, 4, 4, 4 }, { 5, 5, 5, 4, 4 }, { 5, 5, 5, 5, 4 }, { 5, 5, 5, 5, 5 }
+		{ 3, 3, 0, 0, 0 }, { 4, 3, 0, 0, 0 }, { 5, 3, 0, 0, 0 }, { 5, 4, 0, 0, 0 }, { 5, 5, 0, 0, 0 },  
+		{ 5, 4, 2, 0, 0 }, { 5, 4, 3, 0, 0 }, { 5, 4, 4, 0, 0 }, { 5, 4, 5, 0, 0 }, { 5, 5, 5, 0, 0 },
+		{ 5, 4, 5, 2, 0 }, { 5, 4, 5, 3, 0 }, { 5, 4, 5, 4, 0 }, { 5, 5, 5, 4, 0 }, { 5, 5, 5, 5, 0 },
+		{ 5, 4, 5, 4, 3 }, { 5, 4, 5, 4, 4 }, { 5, 4, 5, 4, 5 }, { 5, 5, 5, 5, 4 }, { 5, 5, 5, 5, 5 }
 	};
-	
+
 	
 	// ========= Attribute setter/getter-s ============
 	
@@ -254,6 +262,36 @@ public class HorizontalPatternTag extends com.freshdirect.framework.webapp.BodyT
 			if ( totalItemsToDisplay < 0 )
 				totalItemsToDisplay = 0;
 			patternArray = displayPattern[ totalItemsToDisplay ];
+
+			int rowOffset = 0;
+			OUTER: for (int rowWidth : patternArray) {
+				int w = 0;
+				for (int i = 0; i < Math.min(rowWidth, itemList.size() - rowOffset); i++) {
+					ContentNodeModel node = (ContentNodeModel)itemList.get( rowOffset + i );
+					
+					Image img = null;
+					if ( node instanceof ProductModel ) {
+						if ( useAlternateImage ) {
+							img = ( (ProductModel)node ).getAlternateImage();
+						}
+						if ( img == null ) {
+							img = ( (ProductModel)node ).getProdImage();
+						}
+						w += img == null ? productCellWidth : img.getWidth();
+					} else if ( node instanceof CategoryModel ) {
+						img = ( (CategoryModel)node ).getCategoryPhoto();
+						w += img == null ? folderCellWidth : img.getWidth();
+					}
+					
+					if (w > tableWidth) {
+						useLayoutPattern = false;
+						dynamicSize = true;
+						break OUTER;
+					}
+					
+				}
+				rowOffset += rowWidth;
+			}
 		}		
 	}
 	

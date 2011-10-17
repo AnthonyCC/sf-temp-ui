@@ -10,6 +10,15 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
+
+<% //expanded page dimensions
+final int W_PICKS_PROMO_TOTAL = 765;
+final int W_PICKS_PROMO_LEFT = 330;
+final int W_PICKS_PROMO_CENTER_PADDING = 29;
+final int W_PICKS_PROMO_RIGHT = 406;
+%>
+
+
 <fd:CheckLoginStatus guestAllowed="true" />
 <%
 String deptId = request.getParameter("deptId");
@@ -25,7 +34,7 @@ List<Html> middleMedia = ((DepartmentModel) currentFolder).getDepartmentMiddleMe
 String promoContent = middleMedia == null || middleMedia.size()==0 ? "" : ((MediaI)(middleMedia.get(0))).getPath();
 
 %>
-<table border="0" cellpadding="0" cellspacing="0" width="540">
+<table border="0" cellpadding="0" cellspacing="0" width="<%=W_PICKS_PROMO_TOTAL%>">
 	<tr valign="top">
 		<td align="center"><fd:IncludeMedia name='<%= picksContent %>'/>
 		</td>
@@ -42,10 +51,10 @@ String promoContent = middleMedia == null || middleMedia.size()==0 ? "" : ((Medi
 				</td>
 	</tr>
 	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" width="300" height="18"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="14" height="18"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_PICKS_PROMO_LEFT%>" height="18"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_PICKS_PROMO_CENTER_PADDING-1)/2%>" height="18"></td>
 		<td><img src="/media_stat/images/layout/clear.gif" width="1" height="18"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="15" height="18"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="210" height="18"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_PICKS_PROMO_CENTER_PADDING-1)/2%>" height="18"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_PICKS_PROMO_RIGHT%>" height="18"></td>
 	</tr>
 </table>

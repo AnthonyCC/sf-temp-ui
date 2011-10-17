@@ -1,5 +1,5 @@
 /* top-level container for giftcard display */
-div.container {
+.giftcard div.container {
 	width: 770px;
 	text-align: center;
 }
@@ -177,7 +177,7 @@ div.clear,p.clear,span.clear { clear: both; display: none; }
 /* Top NAV */
 
 	table.GC_nav_table {
-		width: 745px;
+		width: 970px;
 		background-color: #693;
 		padding: 0;
 		margin: 0;

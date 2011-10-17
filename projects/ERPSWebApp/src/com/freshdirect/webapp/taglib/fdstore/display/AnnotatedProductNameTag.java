@@ -209,8 +209,8 @@ public class AnnotatedProductNameTag extends BodyTagSupport {
 			
 			// <div id="annotate" onmouseover="return overlib(annotation, WIDTH, 240);" onclick="return overlib(detailAnnotation, STICKY, CLOSECLICK, CAPTION, 'Product details', WIDTH, 240);" onmouseout="return nd();" class="title18"><%= productTitle %></div>
 			buf.append("<div id=\"annotate\"");
-			buf.append(" onmouseover=\"return overlib(annotation, WIDTH, 240);\"");
-			buf.append(" onclick=\"return overlib(detailAnnotation, STICKY, CLOSECLICK, CAPTION, 'Product details', WIDTH, 240);\"");
+			buf.append(" onmouseover=\"return overlib(annotation, WIDTH, 230);\"");
+			buf.append(" onclick=\"return overlib(detailAnnotation, STICKY, CLOSECLICK, CAPTION, 'Product details', WIDTH, 230);\"");
 			buf.append(" onmouseout=\"return nd();\"");
 			buf.append(" class=\""+cssClass+"\">");
 			buf.append( productTitle );

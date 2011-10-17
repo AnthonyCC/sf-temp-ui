@@ -1,3 +1,7 @@
+<% //expanded page dimensions
+final int W_RESTRICTION_MESSAGES_TOTAL = 970; //EXPANDED_PAGE_VERIFY not tested
+%>
+
 <%
 	List messagesToDisplay = new ArrayList();
 	String appName = (String) session.getAttribute(SessionName.APPLICATION);
@@ -11,7 +15,7 @@
 	if(messagesToDisplay != null && messagesToDisplay.size() > 0) { 
 %>
 
-<table cellpadding="0" cellspacing="0" width="693"/>
+<table cellpadding="0" cellspacing="0" width="<%=W_RESTRICTION_MESSAGES_TOTAL%>"/>
 		<tr>
 			<td align="left">
 				<br />

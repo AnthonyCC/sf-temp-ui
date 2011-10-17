@@ -16,6 +16,11 @@
 <%@ page import="com.freshdirect.fdstore.content.RecipeCategory"%>
 <%@ page import="com.freshdirect.fdstore.util.RecipesUtil"%>
 
+<% //expanded page dimensions
+final int W_RECIPE_SUBCAT_BODY_TOTAL = 601;
+%>
+
+
 <%
 /*
 -- This includes paints the recipe category body and bottom (no side navs)
@@ -91,7 +96,7 @@ for (;qryStringTokn.hasMoreTokens();) {
 %>
 
 
-<table width="400" cellpadding="0" cellspacing="0">
+<table width="<%=W_RECIPE_SUBCAT_BODY_TOTAL%>" cellpadding="0" cellspacing="0">
 <tr>
 	<td>
 	<% 
@@ -113,9 +118,9 @@ for (;qryStringTokn.hasMoreTokens();) {
 	<%
 	if (editorialPath!=null && !"".equals(editorialPath.trim())) {
 		%>
-		<div style="width: 400px; text-align:left;" class="text11">
+		<div style="width: <%=W_RECIPE_SUBCAT_BODY_TOTAL%>px; text-align:left;" class="text11">
 			<fd:IncludeMedia name='<%= editorialPath %>' />
-			<br/><img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br/><img src="/media_stat/images/layout/cccccc.gif" width="400" height="1" vspace="4">
+			<br/><img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br/><img src="/media_stat/images/layout/cccccc.gif" width="<%=W_RECIPE_SUBCAT_BODY_TOTAL%>" height="1" vspace="4">
 		</div>
 		<%
 	}

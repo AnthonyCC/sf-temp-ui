@@ -3,6 +3,9 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<% //expanded page dimensions
+final int W_YA_ADD_CREDITCARD = 970;
+%>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 
 <tmpl:insert template='/common/template/dnav.jsp'>
@@ -29,10 +32,10 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 
 <%} %>
 
-<table WIDTH="690" cellspacing="0" cellpadding="0" border="0">
+<table WIDTH="<%= W_YA_ADD_CREDITCARD %>" cellspacing="0" cellpadding="0" border="0">
 <form method="post">
 <tr>
-<td class="text11" WIDTH="675">
+<td class="text11" WIDTH="<%= W_YA_ADD_CREDITCARD %>">
 <font class="title18">Add Credit Card</font><br>
 </td>
 </tr>
@@ -42,12 +45,12 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 <br><br>
 
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<img src="/media_stat/images/layout/dotted_line.gif" width="693" height="1" border="0"><br/>
+	<img src="/media_stat/images/layout/dotted_line.gif" width="<%= W_YA_ADD_CREDITCARD %>" height="1" border="0"><br/>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 	
-	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="693">
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_ADD_CREDITCARD %>">
 		<TR VALIGN="BOTTOM">
-				<TD WIDTH="693" ALIGN="RIGHT">
+				<TD WIDTH="<%= W_YA_ADD_CREDITCARD %>" ALIGN="RIGHT">
 					<a href="<%=cancelPage%>"><img src="/media_stat/images/buttons/cancel.gif" WIDTH="72" HEIGHT="19"  HSPACE="19" VSPACE="4" alt="CANCEL" border="0"></a>
 					<input type="image" name="checkout_credit_card_edit" src="/media_stat/images/buttons/save_changes.gif" WIDTH="91" HEIGHT="18" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0">
 				</TD>

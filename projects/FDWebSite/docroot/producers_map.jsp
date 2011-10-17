@@ -17,6 +17,11 @@
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+<% //expanded page dimensions
+final int W_PRODUCERS_MAP = 925;
+%>
+
 <fd:CheckLoginStatus />
 <%
 BrowserInfo bi = new BrowserInfo(request);
@@ -120,7 +125,7 @@ if (cat == null)
 	</tmpl:put>
 	<%-- CONTENT --%>
 	<tmpl:put name='content' direct='true'>
-	<div id="inner-container" style="width: 720px">
+	<div id="inner-container" style="width: <%=W_PRODUCERS_MAP%>px">
 		<%-- CATEGORY HEADER START--%>
 		<div id="category-header">
 			<% if (cat != null) {
@@ -141,7 +146,7 @@ if (cat == null)
 		<%-- CATEGORY HEADER END --%>
 		<!-- MAP -->
 		<div style="padding: 1em 0 1em 0;">
-			<div id="map_canvas" style="width: 718px; height: 718px; border: 2px solid #aaa"></div>
+			<div id="map_canvas" style="width: <%=W_PRODUCERS_MAP-2%>px; height: <%=W_PRODUCERS_MAP-2%>px; border: 2px solid #aaa"></div>
 			<div id="message"></div>
 		</div>
 	</div>

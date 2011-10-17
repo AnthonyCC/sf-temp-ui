@@ -14,23 +14,26 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
-
+<% //expanded page dimensions
+final int W_HORIZ_PATTERN_DEPARTMENT_MAX = 765;
+final int W_HORIZ_PATTERN_NOT_DEPARTMENT_MAX = 601; 
+%>
 <display:InitLayout/>
-<% 	int maxWidth = isDepartment.booleanValue() ? 550 : 380; %>
+<% 	int maxWidth = isDepartment.booleanValue() ? W_HORIZ_PATTERN_DEPARTMENT_MAX : W_HORIZ_PATTERN_NOT_DEPARTMENT_MAX; %>
 <display:HorizontalPattern 
 	id="horizontalPattern" 
 	itemsToShow="<%= sortedCollection %>" 
-	productCellWidth="<%= isDepartment.booleanValue() ? 137 : 100 %>" 
+	productCellWidth="<%= isDepartment.booleanValue() ? 150 : 120 %>" 
 	folderCellWidth="137" 
 	currentFolder="<%= currentFolder %>" 
 	useLayoutPattern="<%= !useAlternateImages.booleanValue() %>"
 	dynamicSize="<%= useAlternateImages.booleanValue() %>" 
-	maxColumns="4"
+	maxColumns="5"
 	showCategories="true"
 	useAlternateImage="<%= useAlternateImages.booleanValue() %>"
 	tableWidth="<%= maxWidth %>"
-	>		
-	<table cellspacing="0" cellpadding="0" width="<%=tableWidth%>">
+	>	
+	<table align="center" cellspacing="0" cellpadding="0" width="100%">
 		<tr align="center" valign="bottom">			
 			<display:PatternRow id="patternRow" itemsToShow="<%= rowList %>">
 			

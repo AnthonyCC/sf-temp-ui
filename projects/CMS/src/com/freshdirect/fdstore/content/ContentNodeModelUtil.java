@@ -101,6 +101,8 @@ public class ContentNodeModelUtil {
         TYPE_MODEL_MAP.put("ProducerType", ProducerTypeModel.class);
         TYPE_MODEL_MAP.put("MyFD", MyFD.class);
         TYPE_MODEL_MAP.put("HolidayGreeting", HolidayGreeting.class);
+        TYPE_MODEL_MAP.put("GlobalMenuItem", GlobalMenuItemModel.class);
+        TYPE_MODEL_MAP.put("GlobalMenuSection", GlobalMenuSectionModel.class);
 	}
 
 	/**

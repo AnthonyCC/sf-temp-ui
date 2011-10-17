@@ -18,23 +18,23 @@
 <% for (ProductRatingGroup prg : groups) { %>
 
 <% if (rawGroups.size() != 1) {%>
-<div style="text-align: left; padding-top: 15px;">
+<div style="text-align: center; padding-top: 15px;">
 	<img src="/media_stat/images/wine/rating_header_<%= prg.getRating().getStarCount() %>.gif" 
-			width="424" height="16" border="0" alt="RATING &ndash; <%= prg.getRating().getStarCount() %> STAR">
+			width="601" height="16" border="0" alt="RATING &ndash; <%= prg.getRating().getStarCount() %> STAR">
 </div>
 <% } %>
 <% 
 	List<PriceCalculator> calcs = prg.getPriceCalculators();
-for (int i = 0; i < calcs.size(); i += 4) { int width = Math.min(4, calcs.size() - i); %>
+for (int i = 0; i < calcs.size(); i += 5) { int width = Math.min(5, calcs.size() - i); %>
 <div style="padding-top: 25px; text-align: center;">
-<table width="<%= 105 * width %>" cellpadding="3" cellspacing="0" border="0" align="center">
+<table width="100%" cellpadding="3" cellspacing="0" border="0" align="center">
 	<tr>
 	<% for (int j = 0; j < width; j++) {
 	    PriceCalculator pc = calcs.get(i + j);
 		ProductModel p = pc.getProductModel();
 		CategoryModel __c = (CategoryModel) ( ((boolean) useProductCategory) ? p.getParentNode() : category );
 	%>
-		<td align="center" width="105" valign="bottom">
+		<td align="center" valign="bottom">
 			<display:ProductUrl id="actionUrl" product="<%= p %>" trackingCode="<%= trk %>" appendWineParams="<%= true %>">
 				<display:GetContentNodeWebId id="webId" product="<%= p %>" clientSafe="<%= true %>">
 					<display:ProductImage priceCalculator="<%= pc %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productImage" webId="<%= webId %>" enableQuickBuy="true" excludeCaseDeals="true"/>

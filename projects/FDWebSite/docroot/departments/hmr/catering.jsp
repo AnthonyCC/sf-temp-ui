@@ -8,6 +8,12 @@
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+<% //expanded page dimensions
+final int W_CATERING = 765;
+%>
+
+
 <fd:CheckLoginStatus guestAllowed="true" />
 <%
 FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
@@ -29,7 +35,7 @@ boolean submitted = "thankYou".equalsIgnoreCase(request.getParameter("info"));
     <tmpl:put name='title' direct='true'>FreshDirect - Catering</tmpl:put>
     <tmpl:put name='content' direct='true'>
 		<fd:CateringOrderTag result="result" actionName="sendCateringOrder" successPage="/departments/hmr/catering.jsp?deptId=hmr">
-			<table width="565" cellpadding="0" cellspacing="0" border="0">
+			<table width="<%=W_CATERING%>" cellpadding="0" cellspacing="0" border="0">
 				<form name="catering" method="post">
 				<tr>
 					<td colspan="7" align="center" class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br>
@@ -67,19 +73,19 @@ boolean submitted = "thankYou".equalsIgnoreCase(request.getParameter("info"));
 			<% if (!submitted) { %>
 				<tr>
 					<td colspan="7" align="center" class="text12">
-					<img src="/media_stat/images/layout/cccccc.gif" width="565" height="1" vspace="8"><br>
+					<img src="/media_stat/images/layout/cccccc.gif" width="<%=W_CATERING%>" height="1" vspace="8"><br>
 					<span class="text11"><b>Please contact us for details by submitting the form below at least three days in advance of your event. We will contact you within 24 hours. Fields marked with <font color="#CC0000">*</font> are required.</b></span>
-					<img src="/media_stat/images/layout/cccccc.gif" width="565" height="1" vspace="8"><br>
+					<img src="/media_stat/images/layout/cccccc.gif" width="<%=W_CATERING%>" height="1" vspace="8"><br>
 					</td>
 				</tr>
 				<tr>
-					<td><img src="/media_stat/images/layout/clear.gif" width="150" height="8"></td>
+					<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_CATERING-100)/3%>" height="8"></td>
 					<td><img src="/media_stat/images/layout/clear.gif" width="5" height="8"></td>
-					<td><img src="/media_stat/images/layout/clear.gif" width="165" height="8"></td>
+					<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_CATERING-100)/3+15%>" height="8"></td>
 					<td><img src="/media_stat/images/layout/clear.gif" width="25" height="8"></td>
 					<td><img src="/media_stat/images/layout/clear.gif" width="50" height="8"></td>
 					<td><img src="/media_stat/images/layout/clear.gif" width="5" height="8"></td>
-					<td><img src="/media_stat/images/layout/clear.gif" width="150" height="8"></td>
+					<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_CATERING-100)/3%>" height="8"></td>
 				</tr>
 				<tr valign="top">
 					<td align="right" class="text12"><span class="space4pix"><br></span><font color="#CC0000">*</font>First Name&nbsp;</td>
@@ -126,7 +132,7 @@ boolean submitted = "thankYou".equalsIgnoreCase(request.getParameter("info"));
 				<tr valign="top">
 					<td align="right" class="text12"><span class="space4pix"><br></span>Brief summary of event and type of food required</td>
 					<td></td>
-					<td colspan="5"><textarea name="summaryRequest" class="text13" rows="6" wrap="VIRTUAL" style="width: 390px;"><%= request.getParameter("summaryRequest") %></textarea></td>
+					<td colspan="5"><textarea name="summaryRequest" class="text13" rows="6" wrap="VIRTUAL" style="width: 490px;"><%= request.getParameter("summaryRequest") %></textarea></td>
 				</tr>
 				<tr>
 					<td colspan="2"></td>

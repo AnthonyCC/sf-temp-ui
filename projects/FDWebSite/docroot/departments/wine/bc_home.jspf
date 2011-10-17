@@ -1,5 +1,11 @@
+<% //expanded page dimensions
+final int W_BC_HOME_TOTAL = 765;
+final int W_BC_HOME_SIDE = 150;
+final int W_BC_HOME_CENTER = 437;
+final int W_BC_HOME_PADDING = 14;
+%>
 
-	<table width="550" cellpadding="0" cellspacing="0">
+	<table width="<%=W_BC_HOME_TOTAL%>" cellpadding="0" cellspacing="0">
 		<tr>
 			<td colspan="7" align="center">
 			<img src="/media_stat/images/template/wine/bc_logo_home.gif" width="555" height="80" border="0" vspace="6" alt="Best Cellars"><br>
@@ -8,11 +14,11 @@
 			<fd:IncludeMedia name="/media/editorial/wine/bc_home_nav.html"/>
 			<br>
 			<font class="space8pix"><br></font><font class="text12"><%@ include file="/includes/wine_system.jspf" %></font><br><font class="space8pix"><br></font>
-			<img src="/media_stat/images/layout/cccccc.gif" width="550" height="1" border="0" vspace="6">
+			<img src="/media_stat/images/layout/cccccc.gif" width="<%=W_BC_HOME_TOTAL%>" height="1" border="0" vspace="6">
 			</td>
 		</tr>
 		<tr><td colspan="7" align="center"><a href="/category.jsp?catId=win_all_region"><img src="/media_stat/images/template/wine/by_region.gif" width="524" height="10" border="0"></a>
-		<br><img src="/media_stat/images/layout/cccccc.gif" width="550" height="1" border="0" vspace="6"></td></tr>
+		<br><img src="/media_stat/images/layout/cccccc.gif" width="<%=W_BC_HOME_TOTAL%>" height="1" border="0" vspace="6"></td></tr>
 		<tr>
 			<td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td>
 			<td rowspan="2" align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
@@ -44,7 +50,7 @@
 		</tr>
 		<tr>
 			<td colspan="7">
-			<img src="/media_stat/images/layout/cccccc.gif" width="550" height="1" border="0" vspace="8">
+			<img src="/media_stat/images/layout/cccccc.gif" width="<%=W_BC_HOME_TOTAL%>" height="1" border="0" vspace="8">
 			<img src="/media_stat/images/template/wine/about_best_cellars.gif" width="126" height="12" border="0" vspace="4" alt="About Best Cellars" align="center"><br>
 			When we opened Best Cellars in 1996 at 87th Street and Lexington Avenue, our goal was simple and straightforward: to make buying wine every bit as enjoyable as drinking it. To this day, we remain committed to this ideal.
 			<br><br>
@@ -54,13 +60,13 @@
 			</td>
 		</tr>
 		<tr>
-			<td><img src="/media_stat/images/layout/clear.gif" width="144" height="1"></td>
-			<td><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_BC_HOME_SIDE%>" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_BC_HOME_PADDING-1%>" height="1"></td>
 			<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-			<td><img src="/media_stat/images/layout/clear.gif" width="240" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_BC_HOME_CENTER%>" height="1"></td>
 			<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-			<td><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
-			<td><img src="/media_stat/images/layout/clear.gif" width="144" height="6"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_BC_HOME_PADDING-1%>" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_BC_HOME_SIDE%>" height="6"></td>
 		</tr>
 		<tr>
 			<td colspan="7" align="center"><br><br><br><font class="space2pix"><br></font><%@ include file="/shared/includes/wine_copyright.jspf" %> <%@ include file="/includes/wine_privacy.jspf" %></td>

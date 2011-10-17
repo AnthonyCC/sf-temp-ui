@@ -15,6 +15,8 @@
 %><%@ taglib uri='logic' prefix='logic'
 %><%@ taglib uri='freshdirect' prefix='fd'
 %><%@ page import='com.freshdirect.framework.util.StringUtil'
+%><% //expanded page dimensions
+final int W_QIUCK_SHOP_CONFIRM_INNER = 590;
 %><%!
 	java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 	java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
@@ -117,7 +119,7 @@ String sPage = firstProductNode != null ? "/grocery_cart_confirm.jsp?catId="
 	%>
 
 	<%@ include file="/includes/i_add_to_cart_confirmation.jspf" %>
-	<TABLE CELLPADDING="0" CELLSPACING="0" border="0" WIDTH="500">
+  <TABLE CELLPADDING="0" CELLSPACING="0" border="0" WIDTH="<%= W_QIUCK_SHOP_CONFIRM_INNER %>">
 		<tr><td colspan="4"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>
 		<TR VALIGN="MIDDLE">
 		<% if (!quickCart.isEveryItemEverOrdered()) { %>

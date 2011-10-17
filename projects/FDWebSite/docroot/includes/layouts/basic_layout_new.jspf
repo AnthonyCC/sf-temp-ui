@@ -53,7 +53,7 @@ if(groupedMap == null) {
 }
 
 %>
-<table style="width:100%">
+<table style="width:100%; margin-top: 10px;">
 <%
 List timeRanges = new ArrayList(groupedMap.keySet());
 for(Iterator itr=timeRanges.iterator();itr.hasNext();){
@@ -76,7 +76,7 @@ List groupedProducts = (List) groupedMap.get(tr);
 if(tr.getDescription() != null && tr.getDescription().length() > 0) {
 %>
 <tr><td colspan="4"><div class="title12" style="text-align: left; margin: 14x 14x 0px;"><%= tr.getDescription()  %>&nbsp;(<%= groupedProducts.size() %>)<br/></div></td></tr>
-<tr><td colspan="4"><hr size="1" style="color:#ccc"></td></tr>
+<tr><td colspan="4"><hr size="1" style="color:#ccc; background: #ccc;"></td></tr>
 <%
 }
 %>
@@ -134,7 +134,7 @@ shouldRenderBlankCells = (itr.hasNext() || shouldRenderBlankCells); //check if b
 						<%= colCount == piRow.size() - 1 ? "padding-right:5px;" : "" %>" valign="top" >
 						
 						<%-- Product Image --%>
-						<table align="center">
+						<table align="center" width="100%">
 							<tr>
 								<td style="padding: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
 									<display:ProductImage product="<%= productNode %>" action="<%= prdURI %>" newProductPage="true" />
@@ -213,7 +213,7 @@ shouldRenderBlankCells = (itr.hasNext() || shouldRenderBlankCells); //check if b
 		<%
 			// don't display the bar below the last product
 			if (row_cnt < n_cols-1) {
-				%><tr><td colspan="4"><hr size="1" style="color:#ccc"></td></tr><%
+				%><tr><td colspan="4"><hr size="1" style="color:#ccc; background: #ccc;"></td></tr><%
 			}
 			row_cnt++;
 		%>

@@ -15,6 +15,10 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
 
+<% //expanded page dimensions
+final int W_TRANSAC_MULTI_CATEGORY_CAT = 601;
+final int W_TRANSAC_MULTI_CATEGORY_DEP = 765; //EXPANDED_PAGE_VERIFY
+%>
 
 <%
 
@@ -51,9 +55,9 @@ int newCategoryCount = 0;
 boolean firstProduct = false;
 
 if (request.getRequestURI().toLowerCase().indexOf("department.jsp")!=-1) {
-    maxWidth = 550;
+    maxWidth = W_TRANSAC_MULTI_CATEGORY_DEP;
 } else {
-    maxWidth = 400;
+    maxWidth = W_TRANSAC_MULTI_CATEGORY_CAT;
 }
 
 String itemNameFont = null;

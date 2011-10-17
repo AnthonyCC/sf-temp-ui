@@ -3,6 +3,11 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+<% //expanded page dimensions
+final int W_GC_ADD_CREDITCARD_TOTAL = 970;
+%>
+
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 
 <tmpl:insert template='/common/template/giftcard.jsp'>
@@ -127,9 +132,9 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 
 
 	<form method="post" style="padding: 0px; margin: 0px;">
-	<table width="690" cellspacing="0" cellpadding="0" border="0">
+	<table width="<%=W_GC_ADD_CREDITCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 		<tr>
-			<td class="text11" WIDTH="675">
+			<td class="text11" WIDTH="<%=W_GC_ADD_CREDITCARD_TOTAL%>">
 				<img src="/media_stat/images/giftcards/payment_method/add_a_credit_card_hdr.gif" WIDTH="164" HEIGHT="21" border="0" alt="ADD CREDIT CARD"><br />
 			</td>
 		</tr>
@@ -139,11 +144,11 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 
 <br><br>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="675" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%=W_GC_ADD_CREDITCARD_TOTAL-2%>" HEIGHT="1" BORDER="0"><BR>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675">
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%=W_GC_ADD_CREDITCARD_TOTAL%>">
 	<TR VALIGN="TOP">
-	<TD WIDTH="675" ALIGN="RIGHT"><a href="<%=success_page%>"><img src="/media_stat/images/buttons/cancel.gif" WIDTH="54" HEIGHT="16"  HSPACE="4" VSPACE="4" alt="CANCEL" border="0"></a><input type="image" name="checkout_credit_card_edit" src="/media_stat/images/buttons/save_changes.gif" WIDTH="84" HEIGHT="16" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0"></TD>
+	<TD WIDTH="<%=W_GC_ADD_CREDITCARD_TOTAL%>" ALIGN="RIGHT"><a href="<%=success_page%>"><img src="/media_stat/images/buttons/cancel.gif" WIDTH="54" HEIGHT="16"  HSPACE="4" VSPACE="4" alt="CANCEL" border="0"></a><input type="image" name="checkout_credit_card_edit" src="/media_stat/images/buttons/save_changes.gif" WIDTH="84" HEIGHT="16" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0"></TD>
 </TR>
 </TABLE>
 <br>

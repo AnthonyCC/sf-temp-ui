@@ -11,6 +11,19 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
+
+<% //expanded page dimensions
+final int W_COFFEE_BEANS_RESULT_TOTAL = 965;
+final int W_COFFEE_BEANS_RESULT_CELL_1 = 280;
+final int W_COFFEE_BEANS_RESULT_CELL_2 = 145;
+final int W_COFFEE_BEANS_RESULT_CELL_3 = 105;
+final int W_COFFEE_BEANS_RESULT_CELL_4 = 85;
+final int W_COFFEE_BEANS_RESULT_CELL_5 = 100;
+final int W_COFFEE_BEANS_RESULT_CELL_6 = 70;
+final int W_COFFEE_BEANS_RESULT_CELL_7 = 60;
+final int W_COFFEE_BEANS_RESULT_CELL_8 = 120;
+%>
+
 <%
 FDUserI sessionuser = (FDUserI) request.getSession().getAttribute(SessionName.USER);
 %>
@@ -172,9 +185,9 @@ for(Iterator itr= coffeeCollection.iterator();itr.hasNext() && matchCounter<15;)
 }
 boolean noItemsFound = (matchCounter==0);
 %>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="700">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_COFFEE_BEANS_RESULT_TOTAL%>">
 <TR VALIGN="TOP">
-	<TD WIDTH="700">
+	<TD WIDTH="<%=W_COFFEE_BEANS_RESULT_TOTAL%>">
 		<FONT CLASS="title16">Recommendations for You</FONT><BR>
 <%
 if (!noItemsFound) { %>
@@ -186,19 +199,19 @@ if (!noItemsFound) { %>
 	</TD>
 </TR>
 </TABLE>
-<TABLE BORDER="0" CELLSPACING="1" CELLPADDING="1" WIDTH="700">
-<tr><td colspan="8"><IMG SRC="/media_stat/images/layout/999966.gif" ALT="" WIDTH="700" HEIGHT="1"></td></tr>
+<TABLE BORDER="0" CELLSPACING="1" CELLPADDING="1" WIDTH="<%=W_COFFEE_BEANS_RESULT_TOTAL%>" style="border-spacing: 1px;">
+<tr><td colspan="8"><IMG SRC="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%=W_COFFEE_BEANS_RESULT_TOTAL%>" HEIGHT="1"></td></tr>
 <tr><td colspan="8"><IMG SRC="/media_stat/images/layout/clear.gif" ALT="" WIDTH="1" HEIGHT="1"></td></tr>
 <TR VALIGN="MIDDLE" BGCOLOR="#DDDDDD">
-	<TD WIDTH="140" ALIGN="CENTER" CLASS="text11bold"><%="name".equalsIgnoreCase(sortCol)?"Name":"<A HREF=\"coffee_beans_results.jsp?sortBy=region&deptId=cof&catId=cof_dkbns"+questionsParams+"\">Name</a>"%><BR></TD>
-	<TD WIDTH="125" ALIGN="CENTER" CLASS="text11bold"><%="coffee_Region".equalsIgnoreCase(sortCol)?"Region":"<A HREF=\"coffee_beans_results.jsp?sortBy=coffee_region&deptId=cof&catId=cof_dkbns"+questionsParams+"\">Region</A>"%><BR></TD>
-	<TD WIDTH="85" ALIGN="CENTER" CLASS="text11bold"><%="coffee_Roast".equalsIgnoreCase(sortCol)?"Roast":"<A HREF=\"coffee_beans_results.jsp?sortBy=coffee_roast&deptId=cof&catId=cof_dkbns"+questionsParams+"\">Roast</A>"%><BR></TD>
-	<TD WIDTH="65" ALIGN="CENTER" CLASS="text11bold">- <%="Body".equalsIgnoreCase(sortCol)?"Body":"<A HREF=\"coffee_beans_results.jsp?sortBy=body&deptId=cof&catId=cof_dkbns"+questionsParams+"\">Body</A>"%> +<BR></TD>
-	<TD WIDTH="80" ALIGN="CENTER" CLASS="text11bold">- <%="Acidity".equalsIgnoreCase(sortCol)?"Acidity":"<A HREF=\"coffee_beans_results.jsp?sortBy=Acidity&deptId=cof&catId=cof_dkbns"+questionsParams+"\">Acidity</A>"%> +<BR></TD>
+	<TD WIDTH="<%=W_COFFEE_BEANS_RESULT_CELL_1%>" ALIGN="CENTER" CLASS="text11bold"><%="name".equalsIgnoreCase(sortCol)?"Name":"<A HREF=\"coffee_beans_results.jsp?sortBy=region&deptId=cof&catId=cof_dkbns"+questionsParams+"\">Name</a>"%><BR></TD>
+	<TD WIDTH="<%=W_COFFEE_BEANS_RESULT_CELL_2%>" ALIGN="CENTER" CLASS="text11bold"><%="coffee_Region".equalsIgnoreCase(sortCol)?"Region":"<A HREF=\"coffee_beans_results.jsp?sortBy=coffee_region&deptId=cof&catId=cof_dkbns"+questionsParams+"\">Region</A>"%><BR></TD>
+	<TD WIDTH="<%=W_COFFEE_BEANS_RESULT_CELL_3%>" ALIGN="CENTER" CLASS="text11bold"><%="coffee_Roast".equalsIgnoreCase(sortCol)?"Roast":"<A HREF=\"coffee_beans_results.jsp?sortBy=coffee_roast&deptId=cof&catId=cof_dkbns"+questionsParams+"\">Roast</A>"%><BR></TD>
+	<TD WIDTH="<%=W_COFFEE_BEANS_RESULT_CELL_4%>" ALIGN="CENTER" CLASS="text11bold">- <%="Body".equalsIgnoreCase(sortCol)?"Body":"<A HREF=\"coffee_beans_results.jsp?sortBy=body&deptId=cof&catId=cof_dkbns"+questionsParams+"\">Body</A>"%> +<BR></TD>
+	<TD WIDTH="<%=W_COFFEE_BEANS_RESULT_CELL_5%>" ALIGN="CENTER" CLASS="text11bold">- <%="Acidity".equalsIgnoreCase(sortCol)?"Acidity":"<A HREF=\"coffee_beans_results.jsp?sortBy=Acidity&deptId=cof&catId=cof_dkbns"+questionsParams+"\">Acidity</A>"%> +<BR></TD>
 <%-- 	<TD WIDTH="80" ALIGN="CENTER" CLASS="text11bold"><%//="Espresso".equalsIgnoreCase(sortCol)?"Great For<BR> Espresso":"<A HREF=\"javascript:soon()">Great For<BR> Espresso</A>"%><BR></TD> --%>
-	<TD WIDTH="50" ALIGN="CENTER" CLASS="text11bold"><%="Organic".equalsIgnoreCase(sortCol)?"Organic":"<A HREF=\"coffee_beans_results.jsp?sortBy=organic&deptId=cof&catId=cof_dkbns"+questionsParams+"\">Organic</A>"%><BR></TD>
-	<TD WIDTH="40" ALIGN="CENTER" CLASS="text11bold"><%="Decaffeinated".equalsIgnoreCase(sortCol)?"Decaf":"<A HREF=\"coffee_beans_results.jsp?sortBy=decaffeinated&deptId=cof&catId=cof_dkbns"+questionsParams+"\">Decaf</A>"%><BR></TD>
-	<TD WIDTH="100" ALIGN="CENTER" CLASS="text11bold"><%="Price".equalsIgnoreCase(sortCol)?"Price":"<A HREF=\"coffee_beans_results.jsp?sortBy=price&deptId=cof&catId=cof_dkbns"+questionsParams+"\">Price</A>"%><BR></TD>
+	<TD WIDTH="<%=W_COFFEE_BEANS_RESULT_CELL_6%>" ALIGN="CENTER" CLASS="text11bold"><%="Organic".equalsIgnoreCase(sortCol)?"Organic":"<A HREF=\"coffee_beans_results.jsp?sortBy=organic&deptId=cof&catId=cof_dkbns"+questionsParams+"\">Organic</A>"%><BR></TD>
+	<TD WIDTH="<%=W_COFFEE_BEANS_RESULT_CELL_7%>" ALIGN="CENTER" CLASS="text11bold"><%="Decaffeinated".equalsIgnoreCase(sortCol)?"Decaf":"<A HREF=\"coffee_beans_results.jsp?sortBy=decaffeinated&deptId=cof&catId=cof_dkbns"+questionsParams+"\">Decaf</A>"%><BR></TD>
+	<TD WIDTH="<%=W_COFFEE_BEANS_RESULT_CELL_8%>" ALIGN="CENTER" CLASS="text11bold"><%="Price".equalsIgnoreCase(sortCol)?"Price":"<A HREF=\"coffee_beans_results.jsp?sortBy=price&deptId=cof&catId=cof_dkbns"+questionsParams+"\">Price</A>"%><BR></TD>
 
 </TR>
 
@@ -264,7 +277,7 @@ for (int displayLoop=0;displayLoop<loopCounter;displayLoop++) {
             displayHeading = "Good For Espresso";
         }
 %>
-<tr><td colspan="8"><br><font class="text11bold"><%=displayHeading%></font><br><IMG SRC="/media_stat/images/layout/999966.gif" ALT="" WIDTH="700" HEIGHT="1"></td></tr>
+<tr><td colspan="8"><br><font class="text11bold"><%=displayHeading%></font><br><IMG SRC="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%=W_COFFEE_BEANS_RESULT_TOTAL%>" HEIGHT="1"></td></tr>
 <%  }
 
     for(Iterator itr= coffeeCollection.iterator();itr.hasNext() && prodCounter<prodsMax;){
@@ -390,15 +403,15 @@ for (int displayLoop=0;displayLoop<loopCounter;displayLoop++) {
 //    if (coffeeProduct.isUnavailable) continue;
 %>
 <tr>
-<TD WIDTH="140" ALIGN="LEFT" bgcolor="<%="name".equalsIgnoreCase(sortCol)?"#dddddd":bgcolor%>" CLASS="text11"><a href="<%=prodURL%>"><%=coffeeProduct.getFullName() %></a></TD>
-<TD WIDTH="125" ALIGN="CENTER" bgcolor="<%="coffee_region".equalsIgnoreCase(sortCol)?"#dddddd":bgcolor%>" CLASS="text11"><%=regionValue%></TD>
-<TD WIDTH="85" ALIGN="CENTER" bgcolor="<%="coffee_roast".equalsIgnoreCase(sortCol)?"#dddddd":bgcolor%>" CLASS="text11"><%=roastValue%></TD>
-<TD WIDTH="65" ALIGN="CENTER" bgcolor="<%="body".equalsIgnoreCase(sortCol)?"#dddddd":bgcolor%>" CLASS="text11"><%=bodyImg%></TD>
-<TD WIDTH="80" ALIGN="CENTER" bgcolor="<%="acidity".equalsIgnoreCase(sortCol)?"#dddddd":bgcolor%>" CLASS="text11"><%=acidityImg%></TD>
+<TD WIDTH="<%=W_COFFEE_BEANS_RESULT_CELL_1%>" ALIGN="LEFT" bgcolor="<%="name".equalsIgnoreCase(sortCol)?"#dddddd":bgcolor%>" CLASS="text11"><a href="<%=prodURL%>"><%=coffeeProduct.getFullName() %></a></TD>
+<TD WIDTH="<%=W_COFFEE_BEANS_RESULT_CELL_2%>" ALIGN="CENTER" bgcolor="<%="coffee_region".equalsIgnoreCase(sortCol)?"#dddddd":bgcolor%>" CLASS="text11"><%=regionValue%></TD>
+<TD WIDTH="<%=W_COFFEE_BEANS_RESULT_CELL_3%>" ALIGN="CENTER" bgcolor="<%="coffee_roast".equalsIgnoreCase(sortCol)?"#dddddd":bgcolor%>" CLASS="text11"><%=roastValue%></TD>
+<TD WIDTH="<%=W_COFFEE_BEANS_RESULT_CELL_4%>" ALIGN="CENTER" bgcolor="<%="body".equalsIgnoreCase(sortCol)?"#dddddd":bgcolor%>" CLASS="text11"><%=bodyImg%></TD>
+<TD WIDTH="<%=W_COFFEE_BEANS_RESULT_CELL_5%>" ALIGN="CENTER" bgcolor="<%="acidity".equalsIgnoreCase(sortCol)?"#dddddd":bgcolor%>" CLASS="text11"><%=acidityImg%></TD>
 <!-- 	<TD WIDTH="80" ALIGN="CENTER" CLASS="text11bold"><A HREF="javascript:soon()">Great For<BR> Espresso</A><BR></TD> -->
-<TD WIDTH="50" ALIGN="CENTER" bgcolor="<%="organic".equalsIgnoreCase(sortCol)?"#dddddd":bgcolor%>" CLASS="text11"><%=organicImg%></TD>
-<TD WIDTH="40" ALIGN="CENTER" bgcolor="<%="decaffeinated".equalsIgnoreCase(sortCol)?"#dddddd":bgcolor%>" CLASS="text11"><%=decafImg%></TD>
-<TD WIDTH="100" ALIGN="CENTER" bgcolor="<%="price".equalsIgnoreCase(sortCol)?"#dddddd":bgcolor%>" CLASS="text11"><%=prodPrice%></TD></tr>
+<TD WIDTH="<%=W_COFFEE_BEANS_RESULT_CELL_6%>" ALIGN="CENTER" bgcolor="<%="organic".equalsIgnoreCase(sortCol)?"#dddddd":bgcolor%>" CLASS="text11"><%=organicImg%></TD>
+<TD WIDTH="<%=W_COFFEE_BEANS_RESULT_CELL_7%>" ALIGN="CENTER" bgcolor="<%="decaffeinated".equalsIgnoreCase(sortCol)?"#dddddd":bgcolor%>" CLASS="text11"><%=decafImg%></TD>
+<TD WIDTH="<%=W_COFFEE_BEANS_RESULT_CELL_8%>" ALIGN="CENTER" bgcolor="<%="price".equalsIgnoreCase(sortCol)?"#dddddd":bgcolor%>" CLASS="text11"><%=prodPrice%></TD></tr>
 
 <%
     }

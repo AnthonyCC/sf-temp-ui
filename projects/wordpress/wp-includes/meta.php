@@ -45,6 +45,7 @@ function add_metadata($meta_type, $object_id, $meta_key, $meta_value, $unique = 
 	// expected_slashed ($meta_key)
 	$meta_key = stripslashes($meta_key);
 	$meta_value = stripslashes_deep($meta_value);
+	$meta_value = sanitize_meta( $meta_key, $meta_value, $meta_type );
 
 	$check = apply_filters( "add_{$meta_type}_metadata", null, $object_id, $meta_key, $meta_value, $unique );
 	if ( null !== $check )
@@ -113,6 +114,7 @@ function update_metadata($meta_type, $object_id, $meta_key, $meta_value, $prev_v
 	// expected_slashed ($meta_key)
 	$meta_key = stripslashes($meta_key);
 	$meta_value = stripslashes_deep($meta_value);
+	$meta_value = sanitize_meta( $meta_key, $meta_value, $meta_type );
 
 	$check = apply_filters( "update_{$meta_type}_metadata", null, $object_id, $meta_key, $meta_value, $prev_value );
 	if ( null !== $check )
@@ -368,19 +370,19 @@ function update_meta_cache($meta_type, $object_ids) {
  *		Possible values: 'NUMERIC', 'BINARY', 'CHAR', 'DATE', 'DATETIME', 'DECIMAL', 'SIGNED', 'TIME', 'UNSIGNED'.
  *		Default: 'CHAR'
  *
- * @param string $meta_type
+ * @param string $type Type of meta
  * @param string $primary_table
  * @param string $primary_id_column
  * @param object $context (optional) The main query object
  * @return array( 'join' => $join_sql, 'where' => $where_sql )
  */
-function _get_meta_sql( $meta_query, $meta_type, $primary_table, $primary_id_column, $context = null ) {
+function _get_meta_sql( $meta_query, $type, $primary_table, $primary_id_column, $context = null ) {
 	global $wpdb;
 
-	if ( ! $meta_table = _get_meta_table( $meta_type ) )
+	if ( ! $meta_table = _get_meta_table( $type ) )
 		return false;
 
-	$meta_id_column = esc_sql( $meta_type . '_id' );
+	$meta_id_column = esc_sql( $type . '_id' );
 
 	$join = '';
 	$where = '';
@@ -442,7 +444,7 @@ function _get_meta_sql( $meta_query, $meta_type, $primary_table, $primary_id_col
 		$where .= $wpdb->prepare( " AND CAST($alias.meta_value AS {$meta_type}) {$meta_compare} {$meta_compare_string}", $meta_value );
 	}
 
-	return apply_filters_ref_array( 'get_meta_sql', array( compact( 'join', 'where' ), $meta_query, $meta_type, $primary_table, $primary_id_column, &$context ) );
+	return apply_filters_ref_array( 'get_meta_sql', array( compact( 'join', 'where' ), $meta_query, $type, $primary_table, $primary_id_column, &$context ) );
 }
 
 /**
@@ -488,4 +490,33 @@ function _get_meta_table($type) {
 
 	return $wpdb->$table_name;
 }
+
+/**
+ * Determine whether a meta key is protected
+ *
+ * @since 3.1.3
+ *
+ * @param string $meta_key Meta key
+ * @return bool True if the key is protected, false otherwise.
+ */
+function is_protected_meta( $meta_key, $meta_type = null ) {
+	$protected = (  '_' == $meta_key[0] );
+
+	return apply_filters( 'is_protected_meta', $protected, $meta_key, $meta_type );
+}
+
+/**
+ * Sanitize meta value
+ *
+ * @since 3.1.3
+ *
+ * @param string $meta_key Meta key
+ * @param mixed $meta_value Meta value to sanitize
+ * @param string $meta_type Type of meta
+ * @return mixed Sanitized $meta_value
+ */
+function sanitize_meta( $meta_key, $meta_value, $meta_type = null ) {
+	return apply_filters( 'sanitize_meta', $meta_value, $meta_key, $meta_type );
+}
+
 ?>

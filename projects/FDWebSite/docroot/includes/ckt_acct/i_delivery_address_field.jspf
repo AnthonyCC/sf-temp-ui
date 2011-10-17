@@ -7,6 +7,10 @@
 <%@ page import="com.freshdirect.delivery.*" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 
+<% //expanded page dimensions
+final int W_DELIVERY_ADDRESS_FIELD_TOTAL = 970;
+%>
+
 <%!
 String[] checkAddressForm = {
     EnumUserInfoName.DLV_FIRST_NAME.getCode(), EnumUserInfoName.DLV_LAST_NAME.getCode(),
@@ -396,11 +400,11 @@ if(request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode()) != nu
 	<%
 		/* We need this section, so we'll just hide the display */
 	%>
-	<table border="0" cellspacing="2" cellpadding="0" width="675" <%= (udConfirm) ? "style=\"display: none;\"" : "" %>>
+	<table border="0" cellspacing="2" cellpadding="0" width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>" <%= (udConfirm) ? "style=\"display: none;\"" : "" %>>
 	<tr valign="top">
-	   <td width="675">
+	   <td width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>">
 		   <img src="/media_stat/images/navigation/unattended_delivery_hdr.gif" alt="UNATTENDED DELIVERY (Limited Availability)" border="0"><br>
-		   <img width="675" vspace="3" height="1" border="0" src="/media_stat/images/layout/999966.gif"/><br>
+		   <img width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>" vspace="3" height="1" border="0" src="/media_stat/images/layout/999966.gif"/><br>
 	   </td>
 	 </tr>
 	 </table>
@@ -414,10 +418,10 @@ if(request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode()) != nu
 		
 			<input type="hidden" name="<%=EnumUserInfoName.DLV_UNATTENDED_CONSENT_SEEN.getCode() %>" value="true"/>
 
-			<table border="0" cellspacing="2" cellpadding="0" width="675">
+			<table border="0" cellspacing="2" cellpadding="0" width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>">
 				<tr>
 					<td><img src="/media_stat/images/layout/clear.gif" width="25" height="1" alt="" /></td>
-					<td><img src="/media_stat/images/layout/clear.gif" width="650" height="1" alt="" /></td>
+					<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL-25%>" height="1" alt="" /></td>
 				</tr>
 				<tr>
 					<td colspan="2" style="font-size: 12px;"><strong>Need to run an errand during your FreshDirect delivery window?</strong> FreshDirect will deliver your order even if you're not home to receive it. If the delivery arrives while you are not home, the delivery team will leave the order on your doorstep or in a location that you designate. We guarantee that your order will remain cool and fresh for at least 30 minutes from drop-off.<br /><br /><br /></td>
@@ -439,10 +443,10 @@ if(request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode()) != nu
 			<%= (!udConfirm) ? "<br />" : "" %>
 
 		<% }else{ %>
-			<table border="0" cellspacing="1" cellpadding="0" width="675">
+			<table border="0" cellspacing="0" cellpadding="0" width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>">
 			<tbody>
 			<tr valign="top">
-				<td width="675" colspan="2" class="bodyCopySmall">
+				<td width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>" colspan="2" class="bodyCopySmall">
 				<fd:IncludeMedia name="/media/editorial/site_pages/unattended_delivery/consent_note.html">
 				   <b>Unattended delivery is now available in Westchester!</b> If you need to run out during your delivery time slot,
 				   we will leave your order at your home. Alcohol cannot be left unattended and will be removed from your order 
@@ -452,7 +456,7 @@ if(request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode()) != nu
 			</tr>
 			<tr>
 				<td width="30"/>
-				<td width="645" class="text12bold">
+				<td width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL-30%>" class="text12bold">
 				   <div style="margin-top: 1em; margin-bottom: 1em;">
 				   <input type="hidden" name="<%=EnumUserInfoName.DLV_UNATTENDED_CONSENT_SEEN.getCode() %>" value="true"/>
 				   <input type="checkbox" class="checkbox"
@@ -468,7 +472,7 @@ if(request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode()) != nu
 			</tr>
 			<tr>
 				<td width="30"/>
-				<td width="645" class="text12">
+				<td width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL-30%>" class="text12">
 				   IMPORTANT: Please let us know your preferred location for unattended deliveries (front door, side door,<br/>
 				   back door, garage, etc).<br/>
 				   <input type="text" SIZE="50" maxlength="80" 
@@ -483,7 +487,7 @@ if(request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode()) != nu
 			</table>
 		<% } %>
 	<% } else { %>
-		<table border="0" cellspacing="1" cellpadding="0" width="675">
+		<table border="0" cellspacing="0" cellpadding="0" width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>">
 		 <tbody>
 		 <tr valign="top">
 		 <td> 
@@ -503,17 +507,17 @@ if(showDoorman){
 	<%
 		/* We need this section, so we'll just hide the display */
 	%>
-	<table border="0" cellspacing="2" cellpadding="0" width="675" <%= (udConfirm) ? "style=\"display: none;\"" : "" %>>
+	<table border="0" cellspacing="2" cellpadding="0" width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>" <%= (udConfirm) ? "style=\"display: none;\"" : "" %>>
 	<tr valign="top">
-		<td width="675">
+		<td width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>">
 			<img src="/media_stat/images/navigation/ttcgi.gif"  border="0" alt="OTHER PERSON AUTHORIZED TO ACCEPT DELIVERY AT THIS ADDRESS (Optional)"><br>
-			<img src="/media_stat/images/layout/999966.gif" width="675" height="1" border="0" VSPACE="3"><br>
+			<img src="/media_stat/images/layout/999966.gif" width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>" height="1" border="0" VSPACE="3"><br>
 		</td>
 	</tr>
 	</table>
-	<table border="0" cellspacing="1" cellpadding="0" width="675" <%= (udConfirm) ? "style=\"display: none;\"" : "" %>>
+	<table border="0" cellspacing="1" cellpadding="0" width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>" <%= (udConfirm) ? "style=\"display: none;\"" : "" %>>
 	<tr valign="top">
-		<td width="675" colspan="2" class="bodyCopySmall">
+		<td width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>" colspan="2" class="bodyCopySmall">
 			We'll always try to bring your order directly to you. However, if your building has a doorman, you may authorize him to receive orders on your behalf &#151; just check the box below.<br>
 			<br>
 			Please let the doorman know about deliveries in advance. Frozen items should be placed in a freezer immediately. Your other products will remain fresh in the delivery box at room temperature (78 degrees) for two hours from the time of delivery. To learn more about this, <a href="javascript:popup('/help/faq_index.jsp?show=delivery#question7','large')">click here</a>.
@@ -526,11 +530,11 @@ if(showDoorman){
 		<input type="checkbox" name="<%=EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode() %>" value="<%=EnumUserInfoName.LEAVE_WITH_DOORMAN.getCode()%>" <%=deliverToDoorman==true?"checked":""%>/>
 		
 		</td>
-		<td width="620" class="text12"><font class="text12bold">Leave with Doorman</font> (Please make sure doorman will accept packages.)<br></td>
+		<td width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL-55%>" class="text12"><font class="text12bold">Leave with Doorman</font> (Please make sure doorman will accept packages.)<br></td>
 	</tr>
 
 	</table>
-	<table border="0" cellspacing="1" cellpadding="0" width="675" <%= (udConfirm) ? "style=\"display: none;\"" : "" %>>
+	<table border="0" cellspacing="1" cellpadding="0" width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>" <%= (udConfirm) ? "style=\"display: none;\"" : "" %>>
 	<tr valign="MIDDLE">
 		<td></td>
 		<td><img src="/media_stat/images/layout/clear.gif" width="105" height="1" border="0"></td>
@@ -548,7 +552,7 @@ if(showAltDelivery){
 	<%
 		/* We need this section, so we'll just hide the display */
 	%>
-	<table border="0" cellspacing="2" cellpadding="0" width="675" <%= (udConfirm) ? "style=\"display: none;\"" : "" %>>
+	<table border="0" cellspacing="0" cellpadding="0" width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>" <%= (udConfirm) ? "style=\"display: none;\"" : "" %>>
 	<tr valign="top">
 		<td width="675">
 	<%if(_user.isDepotUser()){%>
@@ -556,13 +560,13 @@ if(showAltDelivery){
 	<%}else{%>
 			<img src="/media_stat/images/navigation/other_person_auth_delivery.gif" width="487" height="10" border="0" alt="OTHER PERSON AUTHORIZED TO ACCEPT DELIVERY AT THIS ADDRESS (Optional)"><br>
 	<%}%>
-			<img src="/media_stat/images/layout/999966.gif" width="675" height="1" border="0" VSPACE="3"><br>
+			<img src="/media_stat/images/layout/999966.gif" width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>" height="1" border="0" VSPACE="3"><br>
 		</td>
 	</tr>
 	</table>
-	<table border="0" cellspacing="1" cellpadding="0" width="675" <%= (udConfirm) ? "style=\"display: none;\"" : "" %>>
+	<table border="0" cellspacing="1" cellpadding="0" width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>" <%= (udConfirm) ? "style=\"display: none;\"" : "" %>>
 		<tr valign="top">
-			<td width="675" colspan="2" class="bodyCopySmall">
+			<td width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>" colspan="2" class="bodyCopySmall">
 				We will always attempt to deliver your order directly to you.<br>
 				<br>
 				You may authorize FreshDirect to deliver to someone else in your building in the event you are not home to receive your order. Should you choose to authorize an alternate for delivery, please make sure that he or she knows about your delivery in advance. Frozen items should be placed in a freezer immediately. Your other products will remain fresh in the delivery box at room temperature (78 degrees) for two hours from the time of delivery. To learn more about our Alternates Policy, <a href="javascript:popup('/help/faq_index.jsp?show=delivery#question7','large')">click here</a>.
@@ -576,15 +580,15 @@ if(showAltDelivery){
 	</tr>
 	<tr valign="MIDDLE">
 		<td width="55" align="right"><input type="radio" class="radio" name="<%=EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode() %>" value="<%=EnumUserInfoName.NO_ALT_DELIVERY.getCode()%>" <%=isAltDelivery==false?"checked":""%> ></td>
-		<td width="620" class="text12"><b>None</b><br></td>
+		<td width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL-55%>" class="text12"><b>None</b><br></td>
 	</tr>
 	<tr>
 		<td width="55" align="right"><input type="radio" class="radio" name="<%=EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode() %>" value="<%=EnumUserInfoName.LEAVE_WITH_DOORMAN.getCode()%>" <%=deliverToDoorman==true?"checked":""%> ></td>
-		<td width="620" class="text12"><b>Doorman</b> (Please make sure doorman will accept packages)<br></td>
+		<td width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL-55%>" class="text12"><b>Doorman</b> (Please make sure doorman will accept packages)<br></td>
 	</tr>
 	<tr valign="top">
 		<td width="55" align="right" valign="middle"><input type="radio" class="radio" name="<%=EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode() %>" value="<%=EnumUserInfoName.LEAVE_WITH_NEIGHBOR.getCode()%>" <%=deliverToNeighbor==true?"checked":""%>></td>
-		<td width="620" class="text12">
+		<td width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL-55%>" class="text12">
 			<font class="space2pix"><br></font><b>Someone else in your building</b>&nbsp;&nbsp;&nbsp;<br>
 			Must be in your building, please enter all contact info below.<br></td> 
 	</tr>

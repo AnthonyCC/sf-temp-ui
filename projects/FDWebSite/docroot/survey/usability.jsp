@@ -9,6 +9,14 @@
 <%@ page import='com.freshdirect.fdstore.survey.*' %>
 <%@ taglib uri='logic' prefix='logic' %>
 
+<% //expanded page dimensions
+final int W_SURVEY_USABILITY_TOTAL = 970;
+final int W_SURVEY_USABILITY_CELL = 40;
+final int W_SURVEY_USABILITY_LEFT = 285;
+final int W_SURVEY_USABILITY_RIGHT = 100;
+final int W_SURVEY_USABILITY_NA = 305;
+%>
+
 <%
 response.setHeader("Cache-Control", "no-cache");
 response.setHeader("Pragma", "no-cache");
@@ -43,7 +51,7 @@ response.setDateHeader ("Expires", 0);
 <tmpl:insert template='/common/template/no_space_border.jsp'>
     <tmpl:put name='title' direct='true'>Tell us what you think of the site</tmpl:put>
     <tmpl:put name='content' direct='true'>
-<table width="700" cellpadding="0" cellspacing="0" border="0" class="text12">
+<table width="<%=W_SURVEY_USABILITY_TOTAL%>" cellpadding="0" cellspacing="0" border="0" class="text12">
 <% if (submitted) {%>
 <tr>
 	<td colspan="10" class="text12" align="center"><br>
@@ -57,7 +65,7 @@ response.setDateHeader ("Expires", 0);
 We're always looking for ways to make your shopping experience better and your answers to this survey will help us to do so. It should take less than 5 minutes of your time. No one knows the FreshDirect web site as well as our customers, and we value your expert opinion highly. Of course, in accordance with the FreshDirect <a href="javascript:popup('/help/privacy_policy.jsp?type=popup','large')">Privacy Policy</a>, all of your answers will be kept confidential. Thank you in advance for your feedback &mdash; it's greatly appreciated.
 <br><br>
 If you'd rather not take this survey now, <a href="/index.jsp">click here</a>.
-<br><img src="/media_stat/images/layout/999966.gif" width="700" height="1" vspace="8"><br>
+<br><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_USABILITY_TOTAL%>" height="1" vspace="8"><br>
 		<%  if (questions.size() > 0) { %>
 			<fd:ErrorHandler result='<%=result%>' field='<%=checkSurveyForm%>'>
 				<% String errorMsg = SystemMessageList.MSG_MISSING_SURVEY_INFO; %>
@@ -67,16 +75,16 @@ If you'd rather not take this survey now, <a href="/index.jsp">click here</a>.
 		</td>
 	</tr>
 	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="140" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="120" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="170" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_USABILITY_CELL%>" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_USABILITY_CELL%>" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_USABILITY_LEFT%>" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_USABILITY_CELL%>" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_USABILITY_CELL%>" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_USABILITY_CELL%>" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_USABILITY_CELL%>" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_USABILITY_CELL%>" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_USABILITY_RIGHT%>" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_USABILITY_NA%>" height="1"></td>
 	</tr>
 	<tr>
 		<td colspan="10">
@@ -115,7 +123,7 @@ If you'd rather not take this survey now, <a href="/index.jsp">click here</a>.
 				<% if (question.isOpenEnded()) { //textarea %>
 					<tr>
 						<td></td>
-						<td colspan="9" class="text13"><textarea wrap="virtual" cols="80" rows="4" class="text13" name="<%=question.getName()%>"><%=request.getParameter(question.getName())%></textarea></td>
+						<td colspan="9" class="text13"><textarea wrap="virtual" cols="100" rows="4" class="text13" name="<%=question.getName()%>"><%=request.getParameter(question.getName())%></textarea></td>
 					</tr>
 				<% } %>
 			<% } %>
@@ -159,7 +167,7 @@ If you'd rather not take this survey now, <a href="/index.jsp">click here</a>.
 				<% } %>
         		</logic:iterate>
 		</logic:iterate>
-	<tr><td colspan="10" align="center"><img src="/media_stat/images/layout/999966.gif" width="700" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" onClick="usabilitySurvey.submit()" alt="SUBMIT"><br><br><br></td></tr>
+	<tr><td colspan="10" align="center"><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_USABILITY_TOTAL%>" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" onClick="usabilitySurvey.submit()" alt="SUBMIT"><br><br><br></td></tr>
 </form>
 </fd:ReceiptSurvey>
 <% } %>

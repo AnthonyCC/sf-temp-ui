@@ -11,6 +11,11 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
 
+<% //expanded page dimensions
+final int W_CATEGORY_WITH_LEFT_NAV = 601;
+final int W_CATEGORY_NO_LEFT_NAV = 765;
+%>
+
 <fd:CheckLoginStatus />
 
 <%
@@ -159,7 +164,7 @@
 		    }
 		}
 		
-		int tablewid = noLeftNav ? 550 : 425;
+		int tablewid = noLeftNav ? W_CATEGORY_NO_LEFT_NAV : W_CATEGORY_WITH_LEFT_NAV;
 		
 		
 		// Beginning of ifAlternateContent
@@ -212,6 +217,7 @@
 				    || EnumLayoutType.PARTY_PLATTER_CATEGORY.getId()==layouttype ) { //not DFGS %>
 
 					<%-- start header stuff --%>
+					
 					<table width="<%=tablewid%>" border="0" cellspacing="0" cellpadding="0">
 						 
 						<% 
@@ -314,7 +320,7 @@
 					MediaModel catDetailImg = categoryModel != null ? categoryModel.getCategoryDetailImage() : null;
 
 					Html editorialAttribute = currentFolder.getEditorial();
-					String catEditorialPath = editorialAttribute==null ? "" : editorialAttribute.getPath();
+					String catEditorialPath = editorialAttribute==null ? null : editorialAttribute.getPath();
 					%>
 					
 					<table width="<%= tablewid %>" border="0" cellspacing="0" cellpadding="0">
@@ -343,7 +349,7 @@
 			} %>
 					
 			<%-- end header stuff --%>
-			
+
 			<% 
 			//if ( "hmr".equals( currentFolder.getParentNode().toString() ) && currentFolder.getBlurb() != null ) { 
 			//null check

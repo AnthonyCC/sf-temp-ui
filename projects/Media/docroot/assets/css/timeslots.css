@@ -4,11 +4,11 @@
 }
 #timeslots_grid_CRef, #timeslots_gridAdv_CRef, #timeslots_gridAdvNew_CRef {
 	display: none;
-	width: 87px;
+	width: 107px;
 }
 #timeslots_grid_ERef, #timeslots_gridAdv_ERef, #timeslots_gridAdvNew_ERef {
 	display: none;
-	width: 203px;
+	width: 223px;
 }
 
 
@@ -18,11 +18,12 @@ table.tsContainer td {
 
 .tsTable {
 	border-collapse: collapse;
+	cursor: pointer;
 }
 
 .float_children {
 	border: 0px solid #ccc;
-	width: 730px;
+	width: 865px; /* this should be at LEAST (CRefx6)+ERef to fit the whole grid width */
 	overflow-x: hidden;
 }
 
@@ -33,11 +34,12 @@ table.tsContainer td {
 
 .tsHeaderC {
 	height: 56px;
-	width: 87px;
+	width: 107px;
 	background: transparent url('/media/editorial/timeslots/images/date_gradient.gif') repeat-x;
+	cursor: pointer;
 }
 .tsHeaderE {
-	height: 76px;
+	height: 96px;
 	overflow-x: hidden;
 }
 .tsHeadE {
@@ -57,7 +59,7 @@ table.tsContainer td {
 table.tsHeaderC, .tsHeaderC {
 	border: 1px solid #ccc;
 	height: 56px;
-	width: 87px;
+	width: 107px;
 	background-color: #FBFBFB;
 	padding-top: 0px;
 }
@@ -65,7 +67,7 @@ table.tsHeaderC, .tsHeaderC {
 .tsHeaderC td {
 	border:0px solid #ccc;
 	height:56px;
-	width: 87px;
+	width: 107px;
 	background-color:#FBFBFB;
 	padding-top:0px;
 }
@@ -88,7 +90,8 @@ td.footer_container {
 }
 .tsContainerC {
 	height: 31px;
-	width: 88px;
+	width: 108px;
+	cursor: pointer;
 	padding: 0;
 }
 .tsContCon table, .tsContExp table {
@@ -132,7 +135,7 @@ div.tsDayNameE {
 	color:#FFFFFF;
 	font-weight:bold;
 	font-family: Verdana, Arial, sans-serif;
-	padding-top:8px;
+	/*padding-top:8px;*/
 	/*margin-left: 20%;*/
 }
 .tsDayDateE {
@@ -160,8 +163,9 @@ div.tsDayNameE {
 	height: 31px;
 	text-decoration: none;
 	color: #333;
-	overflow: hidden;
 	cursor: pointer;
+	overflow: hidden;
+	padding-left: 20px;
 }
 .tsCol div.tsContent div {
 	/* height: 12px; */
@@ -379,7 +383,6 @@ div.tsHeaderC {
 	font-family: Vernada, Regular;
 	background-color: #E2E2E2;
 	border-collapse: separate;
-	cursor: pointer;
 }
 
 /*Steering Discount slot*/
@@ -573,7 +576,7 @@ div.tsHeaderC {
 }
 .tsNeighbourhoodPropE div div { 
 	float: left; 
-	margin-top: 9px; 
+	margin-top: 5px; 
 	margin-left: 3px; 
 	width: 70px;
 }
@@ -648,7 +651,7 @@ td.noTopBorder {
 }
 #tsContainer {
 	overflow-x: hidden;
-	width: 730px;
+	/* width: 730px; */
 }
 
 #tsContainer table, #timeslotloyalityHeader, #legendCheckout {
@@ -721,7 +724,7 @@ td.noTopBorder {
 }
 .tsNeighbourhoodPropE div div {
 	float: left;
-	margin-top: 9px;
+	margin-top: 5px;
 	margin-left: 3px;
 	width: 70px;
 }
@@ -802,7 +805,7 @@ td.noTopBorder {
 }
 
 .tsTableC {
-	width: 87px;
+	width: 107px;
 	border-bottom: 1px solid #ccc;
 }
 
@@ -812,36 +815,34 @@ td.noTopBorder {
 
 .clickOnlyMouseOver {
 	background: transparent url('/media/editorial/timeslots/images/mouseOverBGC.gif') repeat-x left top;
-	cursor: pointer;
 }
 
 .tsHeaderCMouseOver {
 	background: transparent url('/media/editorial/timeslots/images/date_gradient_mouseOver.gif') repeat-x left top;
-	cursor: pointer;
 }
 
-/* modalbox rounded corner and drop shadow */
-#MB_frame {
-	/*padding-bottom: 4px;*/
-	
-	-webkit-border-bottom-left-radius: 4px;
-	-webkit-border-bottom-right-radius: 4px;
-	-webkit-border-top-left-radius: 4px;
-	-webkit-border-top-right-radius: 4px;
+/* modalbox rounded corner and drop shadow
+	#MB_frame {
+		
+		-webkit-border-bottom-left-radius: 4px;
+		-webkit-border-bottom-right-radius: 4px;
+		-webkit-border-top-left-radius: 4px;
+		-webkit-border-top-right-radius: 4px;
 
-	-moz-border-radius-bottomleft: 4px;
-	-moz-border-radius-bottomright: 4px;
-	-moz-border-radius-topleft: 4px;
-	-moz-border-radius-topright: 4px;
+		-moz-border-radius-bottomleft: 4px;
+		-moz-border-radius-bottomright: 4px;
+		-moz-border-radius-topleft: 4px;
+		-moz-border-radius-topright: 4px;
 
-	border-bottom-left-radius: 4px;
-	border-bottom-right-radius: 4px;
-	border-top-left-radius: 4px;
-	border-top-right-radius: 4px;
-}
-#MB_window {
-	background-color: transparent;
-	-webkit-box-shadow: 0 0 4px 4px #333; 
-	-moz-box-shadow: #333 0 0 4px 4px; 
-	box-shadow: 0 0 4px 4px #333;
-}
+		border-bottom-left-radius: 4px;
+		border-bottom-right-radius: 4px;
+		border-top-left-radius: 4px;
+		border-top-right-radius: 4px;
+	}
+	#MB_window {
+		background-color: transparent;
+		-webkit-box-shadow: 0 0 4px 4px #333; 
+		-moz-box-shadow: #333 0 0 4px 4px; 
+		box-shadow: 0 0 4px 4px #333;
+	}
+*/

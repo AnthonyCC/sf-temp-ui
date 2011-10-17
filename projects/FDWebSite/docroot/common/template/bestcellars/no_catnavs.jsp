@@ -11,10 +11,11 @@
 
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
      <%@ include file="/shared/template/includes/ccl.jspf" %>
 </head>
-<BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333" CLASS="text10">
+<BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
 <%
 	JspMethods.CategoryInfo c = JspMethods.getCategoryInfo(request);
 	String tmplCatId = c.getCatId();
@@ -31,8 +32,8 @@
 	<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 	<script language="JavaScript" src="/assets/javascript/overlib_mini.js"></script>
 <%	} %>
-<CENTER>
 <%@ include file="/common/template/includes/globalnav.jspf" %> 
+<CENTER CLASS="text10">
 <TABLE WIDTH="745" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 <TR>
 	<TD WIDTH="1"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></TD>
@@ -87,8 +88,9 @@
 <td width="733" COLSPAN="3" BGCOLOR="#999966" VALIGN="BOTTOM"><img src="/media_stat/images/layout/999966.gif" width="733" height="1" border="0"></td>
 </TR>
 </TABLE>
-<%@ include file="/common/template/includes/footer.jspf" %>
 </CENTER>
+<%@ include file="/common/template/includes/footer.jspf" %>
 <!-- !!!  Should be able to get map file and mapName based on DeptId/Name Image -->
+<%@ include file="/common/template/includes/i_jsmodules.jspf" %>
 </BODY>
 </HTML>

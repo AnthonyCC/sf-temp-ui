@@ -6,18 +6,21 @@
 <%@ page import="com.freshdirect.fdstore.promotion.PromotionFactory" %>
 <%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionType" %>
 <%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
+<% //expanded page dimensions
+final int W_YA_OD_CART_DETAILS_TOTAL = 970;
+%>
 <%! private final static java.text.DecimalFormat QUANTITY_FORMATTER = new java.text.DecimalFormat("0.##"); %>
-<table border="0" cellspacing="0" cellpadding="1" width="693" align="center">
+<table border="0" cellspacing="0" cellpadding="1" width="<%= W_YA_OD_CART_DETAILS_TOTAL %>" align="center">
 <tr>
-	<td width="<%= cart.hasInvoice()?"110":"80" %>"></td>
-	<td width="<%= cart.hasInvoice()?"298":"328" %>"></td>
-	<td width="60"></td>
-	<td width="65"></td>
-	<td width="60"></td>
+	<td width="120"></td>
+  <td width="<%= W_YA_OD_CART_DETAILS_TOTAL - 455 %>"></td>
 	<td width="70"></td>
-	<td width="10"></td>
-	<td width="10"></td>
-	<td width="10"></td>
+	<td width="70"></td>
+	<td width="70"></td>
+	<td width="80"></td>
+	<td width="15"></td>
+	<td width="15"></td>
+	<td width="15"></td>
 </tr>
 
 <%
@@ -65,25 +68,18 @@ if(cart.hasInvoice()) {
 	<%@ include file="/includes/your_account/i_orderline_detail.jspf" %>
 
 </logic:iterate>
-</table>
 
-<table border="0" cellspacing="0" cellpadding="0" width="693">
 <tr>
 	<td colspan="9"><div class="orderSeparator" /></td>
 </tr>
 
 <tr>
-	<td colspan="3" rowspan="12"></td>
-	<td width="180"></td>
-	<td width="60"></td>
-	<td width="70"></td>
-	<td width="10"></td>
-	<td width="10"></td>
-	<td width="10"></td>
+	<td colspan="1" rowspan="12"></td>
+	<td colspan="6"></td>
 </tr>
 
 <tr class="orderSummary">
-	<td colspan="2" align="right">Order Subtotal:</td>
+	<td colspan="4" align="right">Order Subtotal:</td>
 	<td align="right"><%=currencyFormatter.format(cart.hasInvoice() ? cart.getInvoicedSubTotal() : cart.getSubTotal())%></td>
 	<td colspan="3"><% if (cart.isEstimatedPrice()) { %>*<% } %></td>
 </tr>
@@ -93,18 +89,18 @@ if(cart.hasInvoice()) {
 		if (cart.isDlvPassApplied()) {
 	%>
 
-		<td colspan="2">Delivery Charge:</td>
+		<td colspan="4">Delivery Charge:</td>
 		<td align="right"><%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %></td>
 	<%
 	}
 	else if (cart.isDeliveryChargeWaived()) {
 		%>
-		<td colspan="2">Delivery Charge (waived):</td>
+		<td colspan="4">Delivery Charge (waived):</td>
 		<td align="right">$0.00</td>
 		<%
 	} else {
 		%>
-		<td colspan="2">Delivery Charge:</td>
+		<td colspan="4">Delivery Charge:</td>
 		<td><%= currencyFormatter.format(cart.hasInvoice() ? cart.getInvoicedDeliveryCharge() : cart.getDeliverySurcharge()) %></td>
 	<%}%>
 	<td><b><%=cart.isDeliveryChargeTaxable() && !cart.isDeliveryChargeWaived() ? "&nbsp;T" : "" %></b></td>
@@ -113,7 +109,7 @@ if(cart.hasInvoice()) {
 
 <% if (cart.getMiscellaneousCharge() > 0.0) {%>
 		<tr valign="top" class="orderSummary">
-			<td colspan="2" align="right"><a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">Fuel Surcharge</a><%if(cart.isMiscellaneousChargeWaived()){%> (waived)<%}%>:</td>
+			<td colspan="4" align="right"><a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">Fuel Surcharge</a><%if(cart.isMiscellaneousChargeWaived()){%> (waived)<%}%>:</td>
 			<td align="right"><%if(cart.isMiscellaneousChargeWaived()){%>$0.00<%}else{%><%= currencyFormatter.format(cart.getMiscellaneousCharge()) %><%}%></td>
 		    <td><b><%=cart.isMiscellaneousChargeTaxable() && !cart.isMiscellaneousChargeWaived() ? "&nbsp;T" : "" %></b></td>
 			<td colspan="2"></td>
@@ -124,7 +120,7 @@ if(cart.hasInvoice()) {
 if (cart.getTaxValue() > 0) {
 	%>
 	<tr align="right" class="orderSummary">
-		<td colspan="2">Total Tax:</td>
+		<td colspan="4">Total Tax:</td>
 		<td><%= currencyFormatter.format(cart.hasInvoice() ? cart.getInvoicedTaxValue() : cart.getTaxValue()) %></td>
 		<td colspan="3">&nbsp;</td>
 	</tr>
@@ -134,7 +130,7 @@ if (cart.getTaxValue() > 0) {
 if (cart.getDepositValue() > 0) {
 	%>
 	<tr align="right" class="orderSummary">
-		<td colspan="2">State Bottle Deposit:</td>
+		<td colspan="4">State Bottle Deposit:</td>
 		<td><%= currencyFormatter.format(cart.hasInvoice() ? cart.getInvoicedDepositValue() : cart.getDepositValue()) %></td>
 		<td colspan="3">&nbsp;</td>
 	</tr>
@@ -144,14 +140,14 @@ if (cart.getDepositValue() > 0) {
 
 <% if (cart.isChargeWaived(EnumChargeType.PHONE)) { %>
 	<tr align="right" class="orderSummary">
-		<td colspan="2">Phone Handling Charge (waived):</td>
+		<td colspan="4">Phone Handling Charge (waived):</td>
 		<td>$0.00</td>
 		<td colspan="3">&nbsp;</td>
 	</tr>
 <% } else if (cart.getPhoneCharge() > 0) {
 	%>
 	<tr align="right" class="orderSummary">
-		<td colspan="2">Phone Handling Charge:</td>
+		<td colspan="4">Phone Handling Charge:</td>
 		<td><%= currencyFormatter.format(cart.getPhoneCharge()) %></td>
 		<td colspan="3">&nbsp;</td>
 	</tr>
@@ -175,7 +171,7 @@ if (discountAmt > 0) {
 		String desc = EnumPromotionType.SIGNUP.equals(promotion.getPromotionType()) ? "Free Food" : promotion.getDescription();
 	%>
 	<tr align="right" class="orderSummary">
-		<td colspan="2"><%=desc%>:</td>
+		<td colspan="4"><%=desc%>:</td>
 		<td>-<%= currencyFormatter.format(discount.getAmount()) %></td>
 		<td colspan="3">&nbsp;</td>
 	</tr>
@@ -187,7 +183,7 @@ if (discountAmt > 0) {
 	if(desc != null && !desc.equals("NONE")) {
 %>
 	<tr align="right" class="orderSummary">
-	    <td colspan="2"><%=desc%>:</td>
+	    <td colspan="4"><%=desc%>:</td>
 	    <td>FREE!</td>
 	    <td colspan="3">&nbsp;</td>
 	</tr>	
@@ -197,7 +193,7 @@ if (discountAmt > 0) {
 	if(exDpdesc != null && !exDpdesc.equals("NONE")) {
 %>
 	<tr align="right" class="orderSummary">
-	    <td colspan="2"><%=exDpdesc%>:</td>
+	    <td colspan="4"><%=exDpdesc%>:</td>
 	    <td>Pass extension</td>
 	    <td colspan="3">&nbsp;</td>
 	</tr>	
@@ -206,7 +202,7 @@ if (discountAmt > 0) {
 if (cart.getCustomerCreditsValue() > 0) {
 	%>
 	<tr align="right" class="orderSummary">
-		<td colspan="2">Credits:</td>
+		<td colspan="4">Credits:</td>
 		<td>-<%=currencyFormatter.format(cart.getCustomerCreditsValue())%></td>
 		<td colspan="3">&nbsp;</td>
 	</tr>
@@ -228,7 +224,7 @@ if (cart.hasSettledReturn()) {
 }
 %>
 <tr class="orderTotal">
-	<td colspan="2" align="right"><b><% if (cart.isEstimatedPrice()) { %>ESTIMATED <% } %>ORDER TOTAL:</b></td>
+	<td colspan="4" align="right"><b><% if (cart.isEstimatedPrice()) { %>ESTIMATED <% } %>ORDER TOTAL:</b></td>
 	<td align="right">
 		<b><%=currencyFormatter.format(cart.hasInvoice() ? cart.getInvoicedTotal() : cart.getTotal())%></b>
 	</td>

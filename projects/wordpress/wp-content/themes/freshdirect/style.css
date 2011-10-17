@@ -62,7 +62,7 @@ DESCRIPTION: Two-column fixed layout with one sidebar right of content
 #container {
 	float: left;
 	margin: 0 0 0 0px;
-	width: 481px;
+	width: 681px;
 }
 #content {
 	margin: 0 25px 0 25px;
@@ -97,7 +97,7 @@ DESCRIPTION: One centered column with no sidebar
 
 .one-column #content {
 	margin: 0 auto;
-	width: 640px;
+	width: 840px;
 }
 
 /*
@@ -167,7 +167,7 @@ div.menu,
 #main,
 #wrapper {
 	margin: 0 auto;
-	width: 745px;
+	width: 970px;
 }
 #wrapper {
 	background: #fff;
@@ -197,7 +197,7 @@ div.menu,
 	float: left;
 	font-size: 14px;
 	font-weight: bold;
-	width: 700px;
+	width: 900px;
 }
 #site-generator {
 	float: right;
@@ -357,7 +357,7 @@ a:hover {
 	font-size: 30px;
 	line-height: 36px;
 	margin: 0 0 18px 0;
-	width: 700px;
+	width: 900px;
 }
 #site-title a {
 	color: #000;
@@ -686,7 +686,7 @@ body.page .edit-link {
 	margin: 24px 0;
 	overflow: hidden;
 	padding: 18px 20px;
-	width: 416px;
+	width: 616px;
 	zoom: 1;
 	text-align: justify;
 }
@@ -696,7 +696,7 @@ body.page .edit-link {
 	padding: 10px;
 }
 #entry-author-info #author-description {
-	width: 316px;
+	width: 516px;
 	float: left;
 	padding: 10px;
 	margin: 0px;
@@ -884,7 +884,7 @@ body.page .edit-link {
 	margin: 0px;
 	border: 0px none;
 	overflow: hidden;
-	width: 456px;
+	width: 656px;
 	zoom: 1;
 }
 
@@ -1246,7 +1246,7 @@ img#wpstats {
 
 /* MyFD */
 .myfd-blog-feed {
-	width: 456px;
+	width: 656px;
 }
 
 .myfd-blog-link,
@@ -1412,15 +1412,11 @@ img#wpstats {
 }
 
 .main-frame-side {
-	border-left: 1px solid #999C63;
-	border-right: 1px solid #999C63;
 	zoom: 1;
 }
 
 .main-frame-footer-side {
 	background-color: #D9E5CC;
-	border-left: 1px solid #999C63;
-	border-right: 1px solid #999C63;
 }
 
 .main-frame .frame-top {
@@ -1433,7 +1429,7 @@ img#wpstats {
 }
 
 #fd-main-header {
-	width: 693px;
+	width: 893px;
 	position: relative;
 	text-align: center;
 }

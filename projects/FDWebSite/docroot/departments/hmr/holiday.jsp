@@ -4,11 +4,16 @@
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+<% //expanded page dimensions
+final int W_HOLIDAY = 970;
+%>
+
 <fd:CheckLoginStatus guestAllowed="true" />
 <tmpl:insert template='/common/template/dnav.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Our SuperBowl XXXVII Menu</tmpl:put>
     <tmpl:put name='content' direct='true'>
-	<table cellpadding="0" cellspacing="0" border="0" width="690">
+	<table cellpadding="0" cellspacing="0" border="0" width="<%=W_HOLIDAY%>">
 	<tr><td colspan="3" align="center"><img src="/media_stat/images/template/kitchen/super_title.gif" width="690" height="77" alt="OUR SUPERBOWL XXXII MENU"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10">
 </td></tr>
 <tr><td colspan="3"><table border="0" width="100%"><tr><td><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td><td class="text13">Our chefs <a href="javascript:pop('/media/editorial/manager_bios/david_mcInerney.jsp',400,585)"><b>David McInerney</b></a> (formerly of Bouley and One If by Land, Two If by Sea) and <a href="javascript:pop('/media/editorial/manager_bios/michael_stark.jsp',400,585)"><b>Michael Stark</b></a> (formerly of Tribeca Grill) will be preparing the perfect foods for your Super Bowl party. When we bring it to your door, all you'll have to do is <b>heat and serve, so you can spend time watching the game.</b></td><td><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td></tr></table>
@@ -134,7 +139,7 @@
 	<td class="text12">Serves 4-5</td>
 	<td class="text12" align="right"><b>$8.99</b></td>
 	</tr>
-	<tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="22"><br>
+	<tr><td colspan="3" align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="22"><br>
 <img src="/media_stat/images/template/kitchen/super_footer.gif" width="690" height="149" alt="Phone orders only: 1-866-283-7374"></td></tr>
 	</table>
     </tmpl:put>	

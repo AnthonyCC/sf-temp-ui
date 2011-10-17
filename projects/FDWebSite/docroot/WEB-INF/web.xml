@@ -106,6 +106,10 @@
         <taglib-location>/WEB-INF/shared/tld/struts-html.tld</taglib-location>
     </taglib>
     <taglib>
+    	<taglib-uri>http://java.sun.com/jstl/core</taglib-uri>
+    	<taglib-location>/WEB-INF/shared/tld/c.tld</taglib-location>
+    </taglib>
+    <taglib>
         <taglib-uri>oscache</taglib-uri>
         <taglib-location>/WEB-INF/shared/tld/oscache.tld</taglib-location>
     </taglib>

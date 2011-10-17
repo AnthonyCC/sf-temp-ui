@@ -446,9 +446,7 @@ function OAS_AD(pos) {
 		OAS_NORMAL(pos);
 }
 </script><%
-	}
-
-		if (FDStoreProperties.getAdServerUsesDeferredImageLoading()) {
+} else {
 %><iframe name="oasif" id="OAS_IF" width="1" height="1" src="about:blank" style="visibility: hidden; border: 0; position: absolute; top: 1px; left: 1px;"></iframe>
 <script type="text/javascript">
 OAD_POS = OAS_listpos.split(/,/);
@@ -506,8 +504,12 @@ function createOASFrame() {
     idoc.writeln("}");
 
     idoc.writeln("function do_copy() {");
-    idoc.writeln("  if (tries > 0 && copy_ads() == false) {");
-    idoc.writeln("    --tries;");
+    idoc.writeln("  try {");
+    idoc.writeln("    if (tries > 0 && copy_ads() == false) {");
+    idoc.writeln("      --tries;");
+    idoc.writeln("      window.setTimeout(do_copy, 200);");
+    idoc.writeln("    }");
+    idoc.writeln("  } catch (e) {");
     idoc.writeln("    window.setTimeout(do_copy, 200);");
     idoc.writeln("  }");
     idoc.writeln("}");
@@ -519,11 +521,12 @@ function createOASFrame() {
 <%for (int k = 0; k < listPosArray.length; k++) {%>
 	idoc.writeln("<div id='<%=listPosArray[k]%>'><\/div>");
 <%}%>
-	
+
+
 	// bootstrap loader
-	idoc.writeln('<scr' + 'ipt type="text/javascript" src="' + OAS_url + 'adstream_mjx.ads/' +
+	idoc.writeln('<scr' + 'ipt type="text/javascript" defer="defer" src="' + OAS_url + 'adstream_mjx.ads/' +
 	  OAS_sitepage + '/1' + OAS_rns + '@' +
-	  OAS_listpos + '?' + OAS_query + '" defer="defer"><\/script>');
+	  OAS_listpos + '?' + OAS_query + '"><\/script>');
 	
     // handlers
 	idoc.writeln("<scr" + "ipt type='text/javascript' defer='defer'>");
@@ -544,12 +547,10 @@ if (isOldSafari) {
     createOASFrame();
 }
 
-
 function OAS_AD(pos) {
 	document.writeln('<div id="OAS_' + pos + '"><\/div>');
 }
 
-// document.onDocumentLoaded = createOASIFrame;
 </script>
 <%
 	} //

@@ -21,6 +21,12 @@
 <%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
 <%@page import="org.apache.log4j.Logger"%>
 
+<% //expanded page dimensions
+final int W_MULTI_CATEGORY_IS_DEPARTMENT = 765;
+final int W_MULTI_CATEGORY_NOT_DEPARTMENT = 601; 
+%>
+
+
 <display:InitLayout/>
 <%
 	// create separate lists for each category
@@ -53,7 +59,7 @@
 		}
 	}
 	
-	int maxWidth = isDepartment.booleanValue() ? 550 : 380;
+	int maxWidth = isDepartment.booleanValue() ? W_MULTI_CATEGORY_IS_DEPARTMENT : W_MULTI_CATEGORY_NOT_DEPARTMENT;
 	boolean useAlternate = useAlternateImages.booleanValue();
 	
 	for ( int i = 0; i < multiList.size(); i++ ) {		
@@ -100,12 +106,15 @@
 					tableWidth="<%= maxWidth %>"
 					showCategories="true" 
 					showProducts="true"
-					maxColumns="4"
+					maxColumns="5"
 					useAlternateImage="<%= useAlternate %>"
 				>
 				
-					<table cellspacing="0" cellpadding="0" width="<%=tableWidth%>">
-						<tr align="center" valign="bottom">						
+					<table align="center" cellspacing="0" cellpadding="0" width="100%">
+						<tr align="center" valign="bottom">
+						<%
+						int cellPercentage=100/rowList.size();						
+						%>				
 							<display:PatternRow id="patternRow" itemsToShow="<%= rowList %>">
 							
 								<% if ( currentItem instanceof ProductModel ) {		
@@ -113,7 +122,7 @@
 									String actionUrl = FDURLUtil.getProductURI( product, trackingCode );
 									%>
 								
-									<td width="<%= horizontalPattern.getProductCellWidth() %>" style="padding-bottom: 5px;">										
+									<td width="<%= cellPercentage %>%" style="padding-bottom: 5px;">										
 										<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="<%= useAlternate %>"/>										
 									</td>
 								
@@ -122,7 +131,7 @@
 									String actionUrl = FDURLUtil.getCategoryURI( category, trackingCode );
 									%>
 									
-									<td width="<%= horizontalPattern.getFolderCellWidth() %>" style="padding-bottom: 5px;">									
+									<td width="<%= cellPercentage %>%" style="padding-bottom: 5px;">									
 										<display:CategoryImage category="<%= category %>" action="<%= actionUrl %>"/>										
 									</td>
 								
@@ -139,7 +148,7 @@
 									String actionUrl = FDURLUtil.getProductURI( product, trackingCode );
 									%>
 								
-									<td width="<%= horizontalPattern.getProductCellWidth() %>" style="padding-bottom: 20px; padding-left: 2px; padding-right: 2px;"><font class="catPageProdNameUnderImg">
+									<td width="<%= cellPercentage %>%" style="padding-bottom: 20px; padding-left: 2px; padding-right: 2px;"><font class="catPageProdNameUnderImg">
 										
 										<display:ProductRating product="<%= product %>" action="<%= actionUrl %>"/>
 										<display:ProductName product="<%= product %>" action="<%= actionUrl %>"/>
@@ -152,7 +161,7 @@
 									String actionUrl = FDURLUtil.getCategoryURI( category, trackingCode );
 									%>
 									
-									<td width="<%= horizontalPattern.getFolderCellWidth() %>" style="padding-bottom: 20px; padding-left: 2px; padding-right: 2px;"><font class="text11">
+									<td width="<%= cellPercentage %>%" style="padding-bottom: 20px; padding-left: 2px; padding-right: 2px;"><font class="text11">
 										
 										<display:CategoryName category="<%= category %>" action="<%= actionUrl %>" style="font-weight:normal;"/>
 										

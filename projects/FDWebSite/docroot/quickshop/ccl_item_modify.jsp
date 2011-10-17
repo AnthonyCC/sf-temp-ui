@@ -11,6 +11,9 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<% //expanded page dimensions
+final int W_QUICKSHOP_CCL_ITEM_MODIFY_TOTAL = 601;
+%>
 <fd:CheckLoginStatus guestAllowed='false' recognizedAllowed='false' />
 <%
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
@@ -67,9 +70,9 @@
    request.setAttribute("productLink",productLink);
 %>
 <tmpl:put name='content' direct='true'>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="407">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_QUICKSHOP_CCL_ITEM_MODIFY_TOTAL %>">
 <TR VALIGN="TOP">
-<TD WIDTH="400">
+<TD WIDTH="<%= W_QUICKSHOP_CCL_ITEM_MODIFY_TOTAL %>">
 <FONT CLASS="space4pix"><BR><BR></FONT>
 <% String headerIm = CartName.ACCEPT_ALTERNATIVE.equals(cartMode) ? 
        "/media_stat/images/template/quickshop/rec_alt_hdr_purp.gif":

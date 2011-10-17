@@ -4,11 +4,22 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<% //expanded page dimensions
+
+final int W_QUICK_SHOP_TOTAL = 970;
+final int W_QUICK_SHOP_CONTENT = 765;
+final int W_QUICK_SHOP_CART = 191;
+final int W_QUICK_SHOP_DELIMITER = 14;
+final int W_QUICK_SHOP_LEFTNAV = 150;
+final int W_QUICK_SHOP_CENTER = 601;
+
+%>
 <html>
 <head>
     <title><tmpl:get name='title'/></title>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<%@ include file="/shared/template/includes/ccl.jspf" %>
 <%
@@ -28,41 +39,30 @@
 
 </head>
 
-<BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333" CLASS="text10" 
+<BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333"
       onload="<%= request.getAttribute("bodyOnLoad")%>" 
       onunload="<%= request.getAttribute("bodyOnUnload")%>" >
-<CENTER>
 <%@ include file="/common/template/includes/globalnav.jspf" %>
-<TABLE WIDTH="733" CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<CENTER CLASS="text10">
+<TABLE WIDTH="<%= W_QUICK_SHOP_TOTAL %>" CELLPADDING="0" CELLSPACING="0" BORDER="0">
 <TR VALIGN="TOP">
-	<TD WIDTH="595"><img src="/media_stat/images/layout/clear.gif" width="595" height="1" border="0"></TD>
-	<TD WIDTH="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0"></TD>
-	<TD WIDTH="140"><img src="/media_stat/images/layout/clear.gif" width="140" height="1" border="0"></TD>
+	<TD WIDTH="<%= W_QUICK_SHOP_CONTENT %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_CONTENT %>" height="1" border="0"></TD>
+  <TD WIDTH="<%= W_QUICK_SHOP_DELIMITER %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_DELIMITER %>" height="1" border="0"></TD>
+	<TD WIDTH="<%= W_QUICK_SHOP_CART %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_CART %>" height="1" border="0"></TD>
 </TR>
 <TR VALIGN="TOP">
-	<TD WIDTH="595">
+	<TD WIDTH="<%= W_QUICK_SHOP_CONTENT %>">
 	<!-- nested quick shell here, content inside -->	
-		<TABLE WIDTH="595" CELLPADDING="0" CELLSPACING="0" BORDER="0">
+		<TABLE WIDTH="<%= W_QUICK_SHOP_CONTENT %>" CELLPADDING="0" CELLSPACING="0" BORDER="0">
 		<TR VALIGN="TOP">
-			<TD WIDTH="1"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></TD>
-			<TD WIDTH="4"><img src="/media_stat/images/layout/clear.gif" width="4" height="1" border="0"></TD>
-			<TD WIDTH="85"><img src="/media_stat/images/layout/clear.gif" width="85" height="1" border="0"></TD>
-			<TD WIDTH="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0"></TD>
-			<TD WIDTH="495"><img src="/media_stat/images/layout/clear.gif" width="495" height="1" border="0"></TD>
-			<TD WIDTH="4"><img src="/media_stat/images/layout/clear.gif" width="4" height="1" border="0"></TD>
-			<TD WIDTH="1"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></TD>
-		</TR>
-		<TR>
-			<TD WIDTH="5" COLSPAN="2" ROWSPAN="2"><img src="/media_stat/images/layout/qs_top_left_curve.gif" width="5" height="5" border="0"></TD>
-			<TD colspan="3" BGCOLOR="#996699"><img src="/media_stat/images/layout/996699.gif" width="1" height="1" border="0"></TD>
-			<TD WIDTH="5" COLSPAN="2" ROWSPAN="2"><img src="/media_stat/images/layout/qs_top_right_curve.gif" width="5" height="5" border="0"></TD>
+      <TD WIDTH="<%= W_QUICK_SHOP_LEFTNAV %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_LEFTNAV %>" height="1" border="0"></TD>
+      <TD WIDTH="<%= W_QUICK_SHOP_DELIMITER %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_DELIMITER %>" height="1" border="0"></TD>
+      <TD WIDTH="<%= W_QUICK_SHOP_CENTER %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_CENTER %>" height="1" border="0"></TD>
 		</TR>
 		<TR>
 			<TD colspan="3"><img src="/media_stat/images/layout/dot_clear.gif" width="1" height="4" border="0"></TD>
 		</TR>
 		<TR VALIGN="TOP">
-			<TD WIDTH="1" BGCOLOR="#996699"><img src="/media_stat/images/layout/996699.gif" width="1" height="1" border="0"></TD>
-			<TD WIDTH="4"><BR></TD>
 			<TD colspan="3">
 				
 <% 
@@ -110,8 +110,6 @@ else{
 <%}%>				
 				
 			</TD>
-			<TD WIDTH="4"><BR></TD>
-			<TD WIDTH="1" BGCOLOR="#996699"><img src="/media_stat/images/layout/996699.gif" width="1" height="1" border="0"></TD>
 		</TR>
 
 <% 
@@ -119,38 +117,29 @@ if ("index".equals(level)){}
 else{
 %>	
 		<TR>
-			<TD COLSPAN="7" BGCOLOR="#996699"><img src="/media_stat/images/layout/996699.gif" width="1" height="1" border="0"></TD>
+			<TD COLSPAN="3" BGCOLOR="#996699"><img src="/media_stat/images/layout/996699.gif" width="1" height="1" border="0"></TD>
 		</TR>
 <%}%>		
 
 
 		<TR VALIGN="TOP">
-			<TD WIDTH="1" BGCOLOR="#996699"><img src="/media_stat/images/layout/996699.gif" width="1" height="220" border="0"></TD>
-			<TD WIDTH="4" bgcolor="#E0E3D0"><BR></TD>
-			<td bgcolor="#E0E3D0"><!-- side nav --><tmpl:get name='side_nav'/><!-- end side nav --></td>
+      <td bgcolor="#E0E3D0"><!-- side nav -->
+        <div style="width: 140px; padding: 5px; overflow: hidden; text-overflow: ellipsis;">
+          <tmpl:get name='side_nav'/>
+        </div><!-- end side nav -->
+      </td>
 			<td></td>
 			<td>
 			<!-- page content goes here-->
 				<tmpl:get name='content'/>
-			<!-- end of page content -->
+      <!-- end of page content -->
 			</td>
-			<TD WIDTH="4"><BR></TD>
-			<TD WIDTH="1" BGCOLOR="#996699"><img src="/media_stat/images/layout/996699.gif" width="1" height="1" border="0"></TD>
-		</TR>
-		<TR VALIGN="TOP">
-			<TD WIDTH="5" ROWSPAN="2" COLSPAN="2" bgcolor="#E0E3D0"><img src="/media_stat/images/layout/qs_bottom_left_curve.gif" width="5" height="5" border="0"></TD>
-			<td bgcolor="#E0E3D0"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0"></td>
-			<TD colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0"></TD>
-			<TD WIDTH="5" ROWSPAN="2" COLSPAN="2"><img src="/media_stat/images/layout/qs_bottom_right_curve.gif" width="5" height="5" border="0"></TD>
-		</TR>
-		<TR VALIGN="TOP">
-			<TD colspan="3" BGCOLOR="#996699"><img src="/media_stat/images/layout/996699.gif" width="1" height="1" border="0"></TD>
 		</TR>
 		</TABLE>
 
 	</TD>
 	<TD WIDTH="5"><img src="/media_stat/images/layout/dot_clear.gif" width="5" height="1" border="0"></TD>
-	<TD WIDTH="140">
+	<TD WIDTH="<%= W_QUICK_SHOP_CART %>">
 	<%@ include file="/includes/i_promotion_counter.jspf" %>
 	<% if (FDStoreProperties.isAdServerEnabled()) { %>
 		<SCRIPT LANGUAGE=JavaScript>
@@ -163,7 +152,8 @@ else{
 	</TD>
 </TR>
 </TABLE>
-<%@ include file="/common/template/includes/footer.jspf" %>
 </CENTER>
+<%@ include file="/common/template/includes/footer.jspf" %>
+<%@ include file="/common/template/includes/i_jsmodules.jspf" %>
 </BODY>
 </HTML>

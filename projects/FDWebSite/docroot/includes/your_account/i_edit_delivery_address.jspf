@@ -1,4 +1,7 @@
 <%@page import="com.freshdirect.common.customer.EnumServiceType"%>
+<% //expanded page dimensions
+final int W_YA_EDIT_DELIVERY_ADDR = 970;
+%>
 <script language="javascript">
     function setDlvAction(frmObj,actionName) {
         if (frmObj.dlvActionName==null) return;
@@ -37,7 +40,7 @@ for(Iterator i = FDCustomerManager.getShipToAddresses(identity).iterator(); i.ha
 
 String linkURL = response.encodeURL("/your_account/edit_delivery_address.jsp");
 %>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>">
 <TR VALIGN="TOP">
     <TD>
         <span class="text13">If you need to enter a different address:</span> <a href="<%=response.encodeURL("/your_account/add_delivery_address.jsp")%>"><img src="/media_stat/images/buttons/add_new_address.gif" WIDTH="106" HEIGHT="16" VSPACE="3" HSPACE="4" ALIGN="middle" border="0"></a>
@@ -63,11 +66,11 @@ if(user.isDepotUser()){
 	if (shipToAddresses != null && !shipToAddresses.isEmpty()) {
 		showingCorporateAddress = true;
 		%>
-		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675" >
+		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" >
 			<TR VALIGN="TOP">
-				<TD WIDTH="675">
+				<TD WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>">
 					<img src="/media_stat/images/template/youraccount/hdr_corp_delivery.gif" width="154" height="15" alt="CORPORATE DELIVERY">&nbsp;
-					<IMG src="/media_stat/images/layout/999966.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+					<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
 				</td>
 			</tr>
@@ -83,11 +86,11 @@ if(user.isDepotUser()){
 	if (shipToAddresses != null && !shipToAddresses.isEmpty()) {
 		showingCorporateAddress = false;
 		%>
-		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675" >
+		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" >
 			<TR VALIGN="TOP">
-				<TD WIDTH="675">
+				<TD WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>">
 					<img src="/media_stat/images/template/youraccount/hdr_home_delivery.gif" width="110" height="15" alt="CORPORATE DELIVERY">&nbsp;
-					<IMG src="/media_stat/images/layout/999966.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+					<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
 				</td>
 			</tr>

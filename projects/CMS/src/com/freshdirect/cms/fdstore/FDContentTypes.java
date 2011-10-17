@@ -31,6 +31,7 @@ public class FDContentTypes {
 	public final static ContentType ERP_CHARACTERISTIC = ContentType.get("ErpCharacteristic");
 	public final static ContentType ERP_CHARACTERISTIC_VALUE = ContentType.get("ErpCharacteristicValue");
 
+	public final static ContentType MENU_ITEM = ContentType.get("MenuItem");
 	public static final ContentType RECIPE = ContentType.get("Recipe");
 	public static final ContentType RECIPE_VARIANT = ContentType.get("RecipeVariant");
 	public static final ContentType RECIPE_SECTION = ContentType.get("RecipeSection");

@@ -13,8 +13,8 @@
         if (container_quart) container_table_cols++;
 %>
 
-<table border="0" cellspacing="0" cellpadding="0">
-	<tr><td colspan="<%= container_table_cols %>" align="right"><b>Buying Guide</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+	<tr><td colspan="<%= container_table_cols %>" align="center"><b>Buying Guide</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>
 	<tr>
         <%  if (container_half_pint) { %>
 		<td valign="bottom" align="center"><img src="/media_stat/images/template/deli/container2_sm.jpg" width="35" height="26" alt="" border="0"></td>

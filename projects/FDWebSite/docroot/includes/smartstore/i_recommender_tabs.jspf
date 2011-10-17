@@ -35,12 +35,12 @@
 		
 		final int selectedTab = selectedTabIndex.intValue();
 		//TODO calculate tab sizes depending on number of tabs
-		int totalWidth = 693;
-		int tabSize = numTabs==3 ? 200 : numTabs==2 ? 300 : 600;
+		int totalWidth = 970;
+		int tabSize = numTabs==3 ? 300 : numTabs==2 ? 450 : 900;
 		
 		if(request.getRequestURI().indexOf("quickshop") > -1) {
-			totalWidth = 535;
-			tabSize = numTabs==3 ? 160 : numTabs==2 ? 250 : 500;
+			totalWidth = 740;
+			tabSize = numTabs==3 ? 225 : numTabs==2 ? 340 : 680;
 		}
 		
 		if ( numTabs > 0 ) { %>

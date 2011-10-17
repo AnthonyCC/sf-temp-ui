@@ -29,6 +29,11 @@
 <%@ page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import='com.freshdirect.fdstore.customer.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
+
+<% //expanded page dimensions
+final int W_RECIPE_BODY_TOTAL = 806;
+%>
+
 <%--
 -- This includes paints the recipe body and bottom (no side navs)
 -- Expects the host page to define the following variables:
@@ -111,7 +116,7 @@
 	}
 %>
 
-<table width="550" cellpadding="0" cellspacing="0" border="0">
+<table width="<%=W_RECIPE_BODY_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 	<tr valign="top">
 	 	<td colspan="3">
 			<table width="100%">
@@ -131,7 +136,7 @@
 			</table>
 	 	</td>
 	</tr>
-	<tr><td colspan="3"><img src="/media_stat/recipe/recipe_line<%=theme%>.gif" width="550" height="1" vspace="10"></td></tr>
+	<tr><td colspan="3"><img src="/media_stat/recipe/recipe_line<%=theme%>.gif" width="<%=W_RECIPE_BODY_TOTAL%>" height="1" style="margin: 10px 0;"></td></tr>
 	<tr valign="top">
 		<td style="padding-right:15px;"><% if(recipeIngrdMedia!=null){ %><a href="#ingredients"><img src="/media_stat/recipe/rec_hdr_ingredients<%=theme%>.gif" width="92" height="10" border="0" alt="INGREDIENTS"></a> (<a href="#ingredients"><b>CLICK TO BUY</b></a>)<br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br><fd:IncludeMedia name='<%= recipeIngrdMedia.getPath() %>' /><br><% } %>
 		<table>
@@ -148,9 +153,9 @@
 		<td colspan="2"><% if(recipePrepdMedia!=null){ %><img src="/media_stat/recipe/rec_hdr_preparation<%=theme%>.gif" width="93" height="10" hspace="4" alt="PREPARATION"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br><fd:IncludeMedia name='<%= recipePrepdMedia.getPath() %>' /><% } %></td>
 	</tr>
 	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" width="225" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="175" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="150" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="273" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="127" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_BODY_TOTAL - 400 %>" height="1"></td>
 	</tr>
 </table>
 
@@ -160,7 +165,7 @@
 <script type="text/javascript">var numberOfOrderLines=<%= quickCartSize %>;</script> 
 
 <style type="text/css">
-.ingredientsHeader {
+.ingredientsHeader td {
  font-size: 8pt;
  font-weight: bold;
 }
@@ -193,14 +198,14 @@
 }
 
 .recipe {
- width: 550px;
+ width: <%=W_RECIPE_BODY_TOTAL%>px;
  border: 1px solid #f90;
  -moz-border-radius: 0 8px 8px 8px;
  padding-top: 8px;
 }
 
 .recipeVariants {
- width: 550px;
+ width: <%=W_RECIPE_BODY_TOTAL%>px;
  text-align: left;
 }
 
@@ -235,7 +240,7 @@ span.selectedRecipeVariant {
 
 </style>
 
-<table width="550" border="0" cellspacing="0" cellpadding="0">
+<table width="<%=W_RECIPE_BODY_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td colspan="2" height="25" style="background-image:url(/media_stat/recipe/rectabs_line_bg<%=theme%>.gif)">
 			<table border="0" cellspacing="0" cellpadding="0">
@@ -260,7 +265,7 @@ span.selectedRecipeVariant {
 								<td><img src="/media_stat/recipe/rectabs_btwn_off_on<%=theme%>.gif" width="16" height="25"></td>
 					<% 
 							} %>
-						<td style="background-image:url(/media_stat/recipe/rectabs_bg_on<%=theme%>.gif); padding-bottom:3px;"><span class="recipe_tab"><%= currVariant.getName() %></span></td>
+						<td style="background-image:url(/media_stat/recipe/rectabs_bg_on<%=theme%>.gif);"><span class="recipe_tab"><%= currVariant.getName() %></span></td>
 					<% 
 						}
 						lastTabOn = true;
@@ -278,7 +283,7 @@ span.selectedRecipeVariant {
 								<td><img src="/media_stat/recipe/rectabs_btwn_off_off<%=theme%>.gif" width="16" height="25"></td>
 					<% 
 							} %>
-						<td style="background-image:url(/media_stat/recipe/rectabs_bg_off<%=theme%>.gif); padding-bottom:3px;"><a href="<%=response.encodeURL("recipe.jsp?catId="+catIdParam+"&recipeId="+recipe.getContentName()+subCatIdParam+"&variantId="+currVariant.getContentName())%>&trk=var#ingredients" class="recipe_tab"><%= currVariant.getName() %></a></td>
+						<td style="background-image:url(/media_stat/recipe/rectabs_bg_off<%=theme%>.gif);"><a href="<%=response.encodeURL("recipe.jsp?catId="+catIdParam+"&recipeId="+recipe.getContentName()+subCatIdParam+"&variantId="+currVariant.getContentName())%>&trk=var#ingredients" class="recipe_tab"><%= currVariant.getName() %></a></td>
 					<%
 						}
 						lastTabOn = false;
@@ -352,7 +357,7 @@ if (!result.getErrors().isEmpty()) {
 }
 %>
 
-<table width="500" cellpadding="0" cellspacing="0" border="0"><%
+<table width="<%=W_RECIPE_BODY_TOTAL - 50 %>" cellpadding="0" cellspacing="0" border="0"><%
 	boolean isCRM = request.getRequestURI().startsWith("/order/");
 	String formAction = FDURLUtil.getRecipePageURI(request, recipe, variant, catIdParam, isCRM);
 %>
@@ -377,7 +382,7 @@ if (!result.getErrors().isEmpty()) {
 	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="36" height="4"></td>
 	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="10" height="4"></td>
 	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="20" height="4"></td>
-	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="330" height="4"></td>
+	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_BODY_TOTAL - 220%>" height="4"></td>
 	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="66" height="4"></td>
 	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="18" height="4"></td>
 	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="12" height="4"></td>
@@ -389,7 +394,7 @@ if (!result.getErrors().isEmpty()) {
 %>
 		<tr>
             <td colspan="9" align="right" style="padding-right: 3px;">
-				Item already in cart = <img src="/media_stat/images/template/quickshop/qs_check_gray.gif" name="checkImg" width="9" height="9" border="0" alt="Item is currently in your cart" align="absbottom">
+				Item already in cart = <img src="/media_stat/images/template/quickshop/qs_check_gray.gif" name="checkImg" width="9" height="9" border="0" alt="Item is currently in your cart">
             </td>
         </tr>
 <%
@@ -403,8 +408,8 @@ int prodIdx = 0;
 	<%
 	if (! "main".equals(currSection.getName())) { 
 		%>
-		<tr class="sectionHeader">
-			<td colspan="9" class="recipe_section<%=theme%>"><%= currSection.getName() %></td>
+		<tr>
+			<td colspan="9" class="recipe_section<%=theme%> sectionHeader"><%= currSection.getName() %></td>
 		</tr>
 		<%
 	}
@@ -566,9 +571,9 @@ int prodIdx = 0;
 		</tr>
 		<tr>
 			<td colspan="5" style="padding-top: 1em;">
-			<table width="400" cellspacing="0" cellpadding="0">
+			<table width="<%=W_RECIPE_BODY_TOTAL - 150%>" cellspacing="0" cellpadding="0">
 				<tr><td width="25"><input name="requestNotification" type="checkbox" checked value="true" style="padding:0px;" class="text10"></td>
-				<td width="255" class="text10bold"><b>Email a copy of this recipe on the day of delivery!</b></td>
+				<td width="<%=W_RECIPE_BODY_TOTAL - 295%>" class="text10bold"><b>Email a copy of this recipe on the day of delivery!</b></td>
 				<td width="120" align="right"><b><a href="javascript:popup('/help/estimated_price.jsp','small')">Estimated</a> Total:&nbsp;&nbsp;</b></td></tr>
 			</table>
 			</td>
@@ -598,12 +603,12 @@ int prodIdx = 0;
       </tr>
       <tr>
         <td><img src="/media_stat/recipe/rechm_corn_bl<%=theme%>.gif" width="8" height="8"></td>
-        <td  class="recipe_bottomBorder<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="534" height="1"></td>
+        <td  class="recipe_bottomBorder<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_BODY_TOTAL - 16%>" height="1"></td>
         <td align="right"><img src="/media_stat/recipe/rechm_corn_br<%=theme%>.gif" width="8" height="8"></td>
       </tr>
 	 </form>
     </table>
 	<% if (recipeCpyrghtMedia!=null) {  %>
-			<div align="center" class="recipe_copyright" style="width: 550px; padding-top: 10px;"><fd:IncludeMedia name='<%= recipeCpyrghtMedia.getPath() %>' /></div>
+			<div align="center" class="recipe_copyright" style="width: <%=W_RECIPE_BODY_TOTAL%>px; padding-top: 10px;"><fd:IncludeMedia name='<%= recipeCpyrghtMedia.getPath() %>' /></div>
 	<% } %>
 </fd:FDShoppingCart>

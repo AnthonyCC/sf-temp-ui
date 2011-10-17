@@ -35,6 +35,11 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+<% //expanded page dimensions
+final int W_CHECKOUT_STEP_2_SELECT_TOTAL = 970;
+%>
+
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
 <%
 
@@ -179,7 +184,7 @@ zonePromoEnabled=true;
 	</div>
 
 <!--START TIMESLOT PAGE HEADER-->
-<table border="0" cellspacing="0" cellpadding="0" width="695">
+<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_2_SELECT_TOTAL%>">
 	<TR VALIGN="TOP">
 		<TD CLASS="text11" WIDTH="395" VALIGN="bottom">
 			<table>
@@ -199,7 +204,7 @@ zonePromoEnabled=true;
 		
 	<%if(hasCapacity){%>
 
-			<TD WIDTH="265" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10">
+			<TD WIDTH="<%=W_CHECKOUT_STEP_2_SELECT_TOTAL-430%>" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10">
 		      <FONT CLASS="space2pix"><BR></FONT>
 				<table>
 					<tr>
@@ -255,12 +260,12 @@ zonePromoEnabled=true;
 <!--END TIMESLOT PAGE HEADER-->	
 	
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="693" HEIGHT="3" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="<%=W_CHECKOUT_STEP_2_SELECT_TOTAL%>" HEIGHT="3" BORDER="0"><BR>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 	
 
 
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="695" ALIGN="center">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_2_SELECT_TOTAL%>" ALIGN="center">
 	<TR>
 		<td colspan="2">
 			<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
@@ -568,10 +573,10 @@ if (errorMsg!=null) {%>
 	<%}%>
 <%}%>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="693" HEIGHT="3" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="<%=W_CHECKOUT_STEP_2_SELECT_TOTAL%>" HEIGHT="3" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="675">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_2_SELECT_TOTAL%>">
 <TR VALIGN="TOP">
 			<TD width="35">
 					<a href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="previousX">
@@ -584,7 +589,7 @@ if (errorMsg!=null) {%>
 				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
 			</TD>
 	<%if(hasCapacity){%>
-			<TD WIDTH="265" ALIGN="RIGHT" VALIGN="MIDDLE">
+			<TD WIDTH="<%=W_CHECKOUT_STEP_2_SELECT_TOTAL-410%>" ALIGN="RIGHT" VALIGN="MIDDLE">
 				<input type="image" name="checkout_delivery_timeslot_select"  src="/media_stat/images/buttons/continue_checkout.gif" WIDTH="91" HEIGHT="11" border="0" alt="CONTINUE CHECKOUT" VSPACE="0"><BR>
 				Payment Method<BR>
 			</TD>
@@ -599,7 +604,7 @@ if (errorMsg!=null) {%>
 </TABLE>
 
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="693" HEIGHT="3" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="<%=W_CHECKOUT_STEP_2_SELECT_TOTAL%>" HEIGHT="3" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>

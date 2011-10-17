@@ -51,6 +51,17 @@ import com.freshdirect.framework.webapp.ActionResult;
  */
 public class JspMethods {
 
+	//expanded page dimensions
+	private static final int W_DISPLAY_FA_PRODUCTS_TOTAL = 478;
+	private static final int W_DISPLAY_FA_PRODUCTS_LEFT = 355;
+	private static final int W_DISPLAY_FA_PRODUCTS_PADDING = 14;
+	private static final int W_DISPLAY_FA_PRODUCTS_RIGHT = 109;
+	
+	//these add up to W_DISPLAY_FA_PRODUCTS_TOTAL
+	private static final int W_DISPLAY_FA_PRODUCTS_NO_PRICE_LEFT = 232;
+	private static final int W_DISPLAY_FA_PRODUCTS_NO_PRICE_PADDING = 14;
+	private static final int W_DISPLAY_FA_PRODUCTS_NO_PRICE_RIGHT = 232;
+	
 	private static Logger LOGGER = LoggerFactory.getInstance(JspMethods.class);
 
 	public final static ProductModel.PriceComparator priceComp = new ProductModel.PriceComparator();
@@ -429,26 +440,26 @@ public class JspMethods {
 					outputRows.append("<tr>");
 				} else {
 					outputRows
-							.append("<td width=\"290\"><table border=\"0\" width=\"290\"><tr>");
+							.append("<td width=\""+W_DISPLAY_FA_PRODUCTS_TOTAL+"\"><table border=\"0\" width=\""+W_DISPLAY_FA_PRODUCTS_TOTAL+"\"><tr>");
 					if (listIsUnavailable) {
 						outputRows
-								.append("<td  width=\"260\"><font color=\"#999999\"><b>Currently Unavailable<B></font></td><tr>");
+								.append("<td  width=\"" + W_DISPLAY_FA_PRODUCTS_LEFT + "\"><font color=\"#999999\"><b>Currently Unavailable<B></font></td><tr>");
 					}
 				}
-				outputRows.append("<TD width=\"290\">");
+				outputRows.append("<TD width=\""+W_DISPLAY_FA_PRODUCTS_LEFT+"\">");
 				outputRows.append(productLinks.get(k));
 
-				outputRows.append("</td><TD width=\"5\">");
+				outputRows.append("</td><TD width=\""+W_DISPLAY_FA_PRODUCTS_PADDING+"\">");
 				if (k == 0) { // Since this cell is in the first row use the
 					// image tag to set the spacing
 					outputRows.append("<IMG SRC=\"");
 					outputRows.append("/media_stat/images/layout/clear.gif");
 					outputRows
-							.append("\" ALT=\"\" WIDTH=\"5\" HEIGHT=\"1\" BORDER=\"0\">");
+							.append("\" ALT=\"\" WIDTH=\""+W_DISPLAY_FA_PRODUCTS_PADDING+"\" HEIGHT=\"1\" BORDER=\"0\">");
 				} else {
 					outputRows.append("&nbsp;");
 				}
-				outputRows.append("</td><TD width=\"70\" class=\"text11bold\">");
+				outputRows.append("</td><TD width=\""+W_DISPLAY_FA_PRODUCTS_RIGHT+"\" class=\"text11bold\">");
 				if (productPrices != null) {
 					outputRows.append(productPrices.get(k));
 				}
@@ -462,25 +473,25 @@ public class JspMethods {
 				if (k != 0) {
 					outputRows.append("<tr>");
 				} else {
-					outputRows.append("<td width=\"290\"><table width=\"290\"><tr>");
+					outputRows.append("<td width=\""+W_DISPLAY_FA_PRODUCTS_TOTAL+"\"><table width=\""+W_DISPLAY_FA_PRODUCTS_TOTAL+"\"><tr>");
 					if (listIsUnavailable) {
 						outputRows
-								.append("<td colspan=\"3\" width=\"260\"><br><font color=\"#999999\"><b>Currently Unavailable</b></font></td><tr>");
+								.append("<td colspan=\"3\" width=\"" + W_DISPLAY_FA_PRODUCTS_LEFT + "\"><br><font color=\"#999999\"><b>Currently Unavailable</b></font></td><tr>");
 					}
 				}
-				outputRows.append("<TD valign=\"top\" width=\"140\">");
+				outputRows.append("<TD valign=\"top\" width=\""+W_DISPLAY_FA_PRODUCTS_NO_PRICE_LEFT+"\">");
 				outputRows.append(productLinks.get(k));
-				outputRows.append("</td><TD width=\"10\">");
+				outputRows.append("</td><TD width=\""+W_DISPLAY_FA_PRODUCTS_NO_PRICE_PADDING+"\">");
 				if (k == 0) { // Since this cell is in the first row use the
 					// image tag to set the spacing
 					outputRows.append("<IMG SRC=\"");
 					outputRows.append("/media_stat/images/layout/clear.gif");
 					outputRows
-							.append("\" ALT=\"\" WIDTH=\"10\" HEIGHT=\"1\" BORDER=\"0\">");
+							.append("\" ALT=\"\" WIDTH=\""+W_DISPLAY_FA_PRODUCTS_NO_PRICE_PADDING+"\" HEIGHT=\"1\" BORDER=\"0\">");
 				} else {
 					outputRows.append("&nbsp;");
 				}
-				outputRows.append("</td><TD valign=\"top\" width=\"140\">");
+				outputRows.append("</td><TD valign=\"top\" width=\""+W_DISPLAY_FA_PRODUCTS_NO_PRICE_RIGHT+"\">");
 				if ((columnCutoff + k) < productLinks.size()) {
 					outputRows.append(productLinks.get(columnCutoff + k));
 				} else {

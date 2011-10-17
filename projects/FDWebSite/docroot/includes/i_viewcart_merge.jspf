@@ -1,14 +1,18 @@
 <%@ page import='com.freshdirect.fdstore.*,com.freshdirect.fdstore.customer.*,com.freshdirect.fdstore.content.*' %>
 
+<% //expanded page dimensions
+{ //needs to be in block to avoid duplicate variable definition error
+final int W_VIEW_CART_MERGE_TOTAL = 250;
+%>
+
 <% 
-{
 String lastDept = null;
 %>	
-<table width="150" cellspacing="0" cellpadding="0" border="0">
+<table width="<%=W_VIEW_CART_MERGE_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 <tr>
-	<td width="150">
+	<td width="<%=W_VIEW_CART_MERGE_TOTAL%>">
 		<font class="text11">Est. Total:&nbsp;<b><%= currencyFormatter.format(cart.getTotal()) %></b></font><br>
-		<IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="150" HEIGHT="1" BORDER="0" vspace="3"><BR>
+		<IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%=W_VIEW_CART_MERGE_TOTAL%>" HEIGHT="1" BORDER="0" vspace="3"><BR>
 		<br>
 	</td>
 </tr>
@@ -30,7 +34,7 @@ String lastDept = null;
 </tr>
 </table>
 <%
-}
+} //needs to be in block to avoid duplicate variable definition error
 %>	
 	
 

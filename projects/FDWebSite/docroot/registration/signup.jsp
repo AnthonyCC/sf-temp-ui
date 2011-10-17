@@ -8,6 +8,11 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+<% //expanded page dimensions
+final int W_SIGNUP_TOTAL = 970;
+%>
+
 <fd:CheckLoginStatus />
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(); %>
 <%
@@ -48,9 +53,9 @@
 	<%@ include file="/includes/i_error_messages.jspf" %>	
 </fd:ErrorHandler>
 
-<table width="693" border="0" cellspacing="0" cellpadding="0">
+<table width="<%=W_SIGNUP_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
 <tr>
-	<td width="693" class="text13">
+	<td width="<%=W_SIGNUP_TOTAL%>" class="text13">
 <%
 		int promoValue = 0;
                 PromotionI promotion = userx.getEligibleSignupPromotion();

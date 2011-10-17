@@ -17,6 +17,9 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<% //expanded page dimensions
+final int W_YA_GC_ORDER_DETAILS = 970;
+%>
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" />
 <%  String orderId = request.getParameter("orderId"); %>
 <fd:ModifyOrderController orderId="<%= orderId %>" result="result" successPage='<%= "/your_account/order_details.jsp?orderId=" + orderId %>'>
@@ -99,7 +102,7 @@
 <%@ include file="/includes/i_error_messages.jspf" %>
 <% } %>
 
-<table width="693" align="center" border="0" cellpadding="0" cellspacing="0">
+<table width="<%= W_YA_GC_ORDER_DETAILS %>" align="center" border="0" cellpadding="0" cellspacing="0">
 <tr>
     <td class="text11">
         <font class="title18">Order # <%= orderId %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font> &nbsp;&nbsp;&nbsp;<br>
@@ -124,10 +127,10 @@
 </tr>
 </table>
 <IMG src="/media_stat/images/layout/clear.gif" width="1" HEIGHT="8" border="0"><br>
-<IMG src="/media_stat/images/layout/ff9933.gif" width="693" HEIGHT="1" border="0"><br>
+<IMG src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_GC_ORDER_DETAILS %>" HEIGHT="1" border="0"><br>
 <IMG src="/media_stat/images/layout/clear.gif" width="1" HEIGHT="15" border="0"><br>
 <%@ include file="/includes/your_account/i_gc_order_detail_payment.jspf" %><br>
-<IMG src="/media_stat/images/layout/ff9933.gif" width="693" HEIGHT="1" border="0"><br>
+<IMG src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_GC_ORDER_DETAILS %>" HEIGHT="1" border="0"><br>
 <IMG src="/media_stat/images/layout/clear.gif" width="1" HEIGHT="4" border="0"><br><FONT CLASS="space4pix"><br></FONT>
 
 <%  } %>
@@ -139,7 +142,7 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
 %>
 
  
-<table width="693" cellspacing="0" cellpadding="0" border="0" valign="middle" >
+<table width="<%= W_YA_GC_ORDER_DETAILS %>" cellspacing="0" cellpadding="0" border="0" valign="middle" >
 		<tr>
 			<td><span class="title18"><b>RECIPIENT LIST FOR ORDER <font color="#FF9933">#<%=orderId%></font></b></span><br /><br />
 			</td>

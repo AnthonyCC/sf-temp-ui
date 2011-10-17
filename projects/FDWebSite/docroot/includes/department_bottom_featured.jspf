@@ -1,3 +1,7 @@
+<% //expanded page dimensions
+final int W_DEPARTMENT_BOTTOM_FEATURED_TOTAL = 683;
+%>
+
 <%  
 	Image deptFeatImage = null;
 	DepartmentModel dept = (DepartmentModel) currentFolder;
@@ -80,9 +84,9 @@
 </logic:iterate>
 
 <% if (favoritesToShow > 0) { %>
-	<table width="550" cellpadding="0" cellspacing="0" border="0">
+	<table width="<%=W_DEPARTMENT_BOTTOM_FEATURED_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 		<tr>
-			<td colspan="<%=favoritesToShow%>"><fd:IncludeMedia name="<%= mediaPathBefore %>" /></td>
+			<td align="center" colspan="<%=favoritesToShow%>"><fd:IncludeMedia name="<%= mediaPathBefore %>" /></td>
 		</tr>
 		<tr valign="bottom" align="center">
 			<%=favoriteProductsImages.toString().replaceAll("__cellWidth__", (100/favoritesToShow)+"%")%>

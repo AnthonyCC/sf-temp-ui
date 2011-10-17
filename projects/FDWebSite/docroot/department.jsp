@@ -12,8 +12,18 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
+
+<% //expanded page dimensions
+final int W_DEPARTMENT_TOTAL = 765;
+final int W_DEPARTMENT_RATE_LEFT = 437;
+final int W_DEPARTMENT_RATE_RIGHT = 328;
+
+final int W_DEPARTMENT_COFFEE_LEFT = 656;
+final int W_DEPARTMENT_COFFEE_RIGHT = 109;
+%>
+
 <%!
-	final Logger LOG = LoggerFactory.getInstance("department.jsp");
+final Logger LOG = LoggerFactory.getInstance("department.jsp");
 %>
 <%
 	String deptId=request.getParameter("deptId");
@@ -110,10 +120,10 @@
 				introCopy!=null &&
 				introCopy.trim().length()>0) { %>
 				
-				<table width="550" cellpadding="0" cellspacing="0" border="0">
+				<table width="<%=W_DEPARTMENT_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 					<tr valign="top">
 						<% if (deptIdentifier.equalsIgnoreCase("Coffee")) { %>
-							<td class="text11" width="462">
+							<td class="text11" width="<%=W_DEPARTMENT_COFFEE_LEFT%>">
 								<Img src="/media_stat/images/layout/clear.gif" width="1" height="9" /><br />
 								<font class="title16">
 									<% if (introTitle != null || !"".equals(introTitle)) { %>
@@ -124,11 +134,11 @@
 								<fd:IncludeMedia name='<%= introCopy %>' /><br />
 								<img src="/media_stat/images/layout/clear.gif" width="1" height="4" />
 							</td>
-							<td class="text11" width="88" align="right">
+							<td class="text11" width="<%=W_DEPARTMENT_COFFEE_RIGHT%>" align="right">
 								<img src="<%=deptImage.getPath()%>" width="<%=deptImage.getWidth()%>"  height="<%=deptImage.getHeight()%>" border="0" alt="Coffee Beans" />
 							</td>
 						<% } else if ( EnumLayoutType.FOURMM_DEPARTMENT.getId() != layouttype ) { %>
-							<td class="text11" width="550"><img src="/media_stat/images/layout/clear.gif" width="1" height="9" /><br />
+							<td class="text11" width="<%=W_DEPARTMENT_TOTAL%>"><img src="/media_stat/images/layout/clear.gif" width="1" height="9" /><br />
 								<font class="title16"><%=introTitle%></font><br />
 								<img src="/media_stat/images/layout/clear.gif" width="1" height="3" /><br />
 								<fd:IncludeMedia name='<%= introCopy %>' /><br />
@@ -144,21 +154,21 @@
 			}
 
 			if (rateNRankLinks.length()>0) { %>
-				<table width="550" cellpadding="0" cellspacing="0" border="0">
+				<table width="<%=W_DEPARTMENT_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 					<tr valign="top">
-						<td width="550" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="2" /></td>
+						<td width="<%=W_DEPARTMENT_TOTAL%>" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="2" /></td>
 					</tr>
 					<tr valign="top">
-						<td width="335"><font class="text10bold">Compare <%= departmentModel.getFullName() %> by:&nbsp;</font><%= rateNRankLinks.toString() %><%-- include file="/include/i_show_rating_groups.jsp" --%><br />
+						<td width="<%=W_DEPARTMENT_RATE_LEFT%>"><font class="text10bold">Compare <%= departmentModel.getFullName() %> by:&nbsp;</font><%= rateNRankLinks.toString() %><%-- include file="/include/i_show_rating_groups.jsp" --%><br />
 						<img src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="3" border="0"></td>
-						<td width="215" align="right"><a href="javascript:soon()">View all <%= departmentModel.getFullName().toLowerCase() %></a><br />
-						<img src="/media_stat/images/layout/clear.gif" width="215" height="1" border="0"></td>
+						<td width="<%=W_DEPARTMENT_RATE_RIGHT%>" align="right"><a href="javascript:soon()">View all <%= departmentModel.getFullName().toLowerCase() %></a><br />
+						<img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENT_RATE_RIGHT%>" height="1" border="0"></td>
 					</tr>
 					<tr valign="top">
-						<td width="550" bgcolor="#cccccc" colspan="2"><img src="/media_stat/images/layout/cccccc.gif" width="10" height="1" /></td>
+						<td width="<%=W_DEPARTMENT_TOTAL%>" bgcolor="#cccccc" colspan="2"><img src="/media_stat/images/layout/cccccc.gif" width="10" height="1" /></td>
 					</tr>
 					<tr valign="top">
-						<td width="550" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" /></td>
+						<td width="<%=W_DEPARTMENT_TOTAL%>" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" /></td>
 					</tr>
 				</table>
 			<% } // rateNRankLinks.length()>0
@@ -192,7 +202,7 @@
 					List<Html> middleMediaList = departmentModel.getDepartmentMiddleMedia();
 					if (middleMediaList != null && !middleMediaList.isEmpty() && !"our_picks".equals(deptId)  ) {
 						for ( Html middleMediaPath : middleMediaList ) {
-							%><div style="width: 550px;" align="left"><fd:IncludeMedia name="<%=middleMediaPath.getPath()%>" /></div><%
+							%><div style="width: <%=W_DEPARTMENT_TOTAL%>px;" align="center"><fd:IncludeMedia name="<%=middleMediaPath.getPath()%>" /></div><%
 						}
 					}
 				}

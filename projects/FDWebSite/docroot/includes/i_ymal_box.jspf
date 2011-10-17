@@ -38,6 +38,10 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
+<% //expanded page dimensions
+final int W_YMAL_BOX_TOTAL = 590;
+final int W_YMAL_BOX_INNER = 540;
+%>
 <%--
   == YMAL BOX ==
   
@@ -136,7 +140,7 @@
 
 %>
 	<div style="clear: both; font-size: 0px;"></div>
-	<div id="ymal-table" style="border: 2px solid #996699; width: 400px; margin-left: 0px; margin-top: 15px">
+  <div id="ymal-table" style="border: 2px solid #996699; width: <%= W_YMAL_BOX_TOTAL %>px; margin-left: 0px; margin-top: 15px">
 		<div style="color: white; background: #996699; font-size: 12px; font-weight: bold; padding-top: 0; padding-bottom: 4px; margin-top: 0;">YOU MIGHT ALSO LIKE</div>
 		<div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
 <%
@@ -174,7 +178,7 @@
 					<input type="hidden" name="recs_cached_id" value="<%= recmnd.getRequestId() %>"><% } %>
 
 					<!-- start of ymal products external table -->
-					<table class="ymal" cellspacing="0" cellpadding="0" style="width: 348px;">
+          <table class="ymal" cellspacing="0" cellpadding="0" style="width: <%= W_YMAL_BOX_INNER %>px;">
 <%
 		int rank = 1;
 		int txProdCount = 0;
@@ -186,7 +190,7 @@
 <fd:PIPRow id="pi" impressionRow="<%= piRow %>" isBlankCell="isBlankCell" shouldRenderBlankCells="<%= impressions.size() > 3 %>">
 <%
 		if (isBlankCell.booleanValue()) {
-%>							<td style="width: <%= 348/rsize %>px;">&nbsp;</td>
+%>							<td style="width: <%= W_YMAL_BOX_INNER/rsize %>px;">&nbsp;</td>
 <%
 		} else {
 			// product cell
@@ -203,10 +207,10 @@
 					recmnd != null ? recmnd.getImpressionId(product) : null, 
 					ym_aset != null ? ym_aset.getContentKey().getId() : null, 
 					ym_product != null ? ym_product.getContentName() : null );			
-%>							<td class="ymal_product" style="width: <%= 348/rsize %>px; text-align: center; vertical-align: top;">
+%>							<td class="ymal_product" style="width: <%= W_YMAL_BOX_INNER/rsize %>px; text-align: center; vertical-align: top;">
 
 								<!-- start of ymal products internal table -->								
-								<table align="center" style="border-collapse: collapse; border-spacing: 0px">
+								<table align="center" style="border-collapse: collapse; border-spacing: 0px; margin: 0 auto">
 									<tr>
 										<td style="padding: 0; margin: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
 											<display:ProductImage product="<%= product %>" action="<%= actionURI %>" hideBursts="<%= recmnd != null ? recmnd.getVariant().getHideBursts() : Collections.EMPTY_SET %>"/>
@@ -215,7 +219,7 @@
 <%
 			if (pi instanceof TransactionalProductImpression) {
 %>									<tr>
-										<td style="padding: 0; margin: 0;">
+										<td style="padding: 0; margin: 0 auto;">
 											<input type="hidden" name="trk_<%= txProdCount %>" value="<%= variant.getSiteFeature().getName().toLowerCase() %>">
 											<input type="hidden" name="variant_<%= txProdCount %>" value="<%= variant.getId() %>"/>
 											<input type="hidden" name="rank_<%= txProdCount %>" value="<%= rank %>"/>
@@ -260,11 +264,12 @@
 							<td class="ymal_addtocart" colspan="<%= rsize %>" class="text11bold">
 								<table width="100%">
 									<tr>
-										<td align="left">
+										<td width="33%"/>
+										<td align="center" width="34%">
 											<input type="hidden" name="itemCount" value="<%= nConfProd %>">
 											<input type="image" name="addMultipleToCart" src="/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif" width="145" height="17" border="0" alt="ADD SELECTED TO CART">
 										</td>
-										<td align="right">
+										<td align="right" width="33%">
 											Total&nbsp;Price:&nbsp;&nbsp;<img src="/media_stat/images/layout/clear.gif" width="4" height="1"><input type="text" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()">
 											<script type="text/javascript">	<%= TX_JS_NAMESPACE %>.updateTotal();</script>
 										</td>

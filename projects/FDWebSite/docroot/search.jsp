@@ -91,10 +91,15 @@ if (results != null && results.numberOfResults() > 0) {
 } else {
 	if (FDStoreProperties.isAdServerEnabled()) { %>
 <tmpl:put name="categoryPanel" direct="true">
-<div style="width:155px; margin-top: 1em">
+<%--
+<div style="width:150px; margin-top: 1em; overflow: hidden;">
 <script type="text/javascript">
 	OAS_AD('LittleRandy');
 </script>
+</div>
+--%>
+<div style="width:150px; margin-top: 15px; overflow: hidden;">
+	<a href="javascript:pop('/request_product.jsp',400,585)"><img src="/media_stat/images/template/search/ken_request_a_product.jpg" border="0" hspace="0" vspace="3" width="150" height="100"></a>
 </div>
 </tmpl:put>
 <%
@@ -110,7 +115,7 @@ if (results != null && results.numberOfResults() > 0) {
 <%
 
 if (FDStoreProperties.isAdServerEnabled()) { %>
-<div style="width: 529px; border: 0; margin-top: 15px; padding: 0;">
+<div style="width: 529px; border: 0; margin-top: 15px; padding: 0; margin-left: auto; margin-right: auto;">
 <style type="text/css">
 #OAS_CategoryNote {
 text-align: center;
@@ -178,9 +183,10 @@ if ( results == null) {
 <%
 	}
 %>
-<table cellpadding="0" cellspacing="0" style="width: 529px; border: 0; background-color: #E0E3D0; padding:2px;margin-top: 10px;line-height: 25px;">
+<table cellpadding="0" cellspacing="0" style="width: 100%; border: 0; background-color: #E0E3D0; padding:2px;margin-top: 10px;line-height: 25px;">
 <tr>
-<td style="width: 100%"><%--
+<td style="width: 10px"></td>
+<td style="width: 642px"><%--
 
   ************
   * Sort Bar *
@@ -240,7 +246,7 @@ if ( results == null) {
 		if (nav.getCategory() == null && nav.getDepartment() == null) {
 			List recipes = results.getFilteredRecipes();
 
-%>	<div style="width: 100%; border-top:4px solid #ff9933"></div>
+%>	<div style="width: 100%; border-top:4px solid #ff9933; margin-top: 10px;"></div>
 <%@ include file="/includes/search/recipes.jspf" %><%
 		} else {
 %>	<div style="width: 100%; border-top:4px solid #ff9933"></div>

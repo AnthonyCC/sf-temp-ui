@@ -4,6 +4,13 @@
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.*, com.freshdirect.webapp.taglib.fdstore.*'%>
 
+<% //expanded page dimensions
+final int W_DEPARTMENT_BOTTOM_TOTAL = 765;
+final int W_DEPARTMENT_BOTTOM_LEFT = 115;
+final int W_DEPARTMENT_BOTTOM_CENTER = 220;
+final int W_DEPARTMENT_BOTTOM_RIGHT_PADDING = 10;
+final int W_DEPARTMENT_BOTTOM_RIGHT = 420;
+%>
 
 <%
 /*------ page dependencies:   --------------------------------------------------
@@ -54,10 +61,10 @@ boolean showBars = (deptMngrImg!=null ||  deptBottom.size() > 0 || secondaryCate
 
 
 <BR>
-        <%if(showBars){%><IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="550" HEIGHT="1" BORDER="0"><BR><%}%>
+        <%if(showBars){%><IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%=W_DEPARTMENT_BOTTOM_TOTAL%>" HEIGHT="1" BORDER="0"><BR><%}%>
         <FONT CLASS="space4pix"><BR></FONT>
         <FONT CLASS="space4pix"><BR></FONT>
-        <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="550">
+        <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_DEPARTMENT_BOTTOM_TOTAL%>">
 
 <%-- There are three types of bottoms. Grocery, Tea, and standard (within the Standard, their are several styles--%>
 <%-- we should create an attribute called bottom_layout, that will help in deciding which one to use
@@ -70,14 +77,14 @@ if ("OUR_PICKS, FRO, GRO, DAI, SPE".indexOf(department.getContentName().toUpperC
 %>
               <TR VALIGN="TOP">
 <%-- The Left side of the bottom template --%>
-                   <TD WIDTH="110" ROWSPAN="2">
+                   <TD WIDTH="<%=W_DEPARTMENT_BOTTOM_LEFT%>" ROWSPAN="2">
                       <% if (deptMngrImg != null) { 
                       %>
                       <A HREF="<%=bioLink%>"><img src="<%=deptMngrImg.getPath()%>" <%=JspMethods.getImageDimensions(deptMngrImg) %> border="0" alt="<%=department.getFullName()%>: MANAGER"></A>
                       <% } %>
-                      <BR><IMG src="/media_stat/images/layout/clear.gif"   WIDTH="110" HEIGHT="1" BORDER="0">
+                      <BR><IMG src="/media_stat/images/layout/clear.gif"   WIDTH="<%=W_DEPARTMENT_BOTTOM_LEFT%>" HEIGHT="1" BORDER="0">
                    </TD>
-                   <TD WIDTH="220" ROWSPAN="2"> <%--left side title content --%><BR>
+                   <TD WIDTH="<%=W_DEPARTMENT_BOTTOM_CENTER%>" ROWSPAN="2"> <%--left side title content --%><BR>
 
 <%
                                     for(Iterator edItr = assocEditorial.iterator();edItr.hasNext();) {
@@ -90,11 +97,11 @@ if ("OUR_PICKS, FRO, GRO, DAI, SPE".indexOf(department.getContentName().toUpperC
                                         <%--paint seperator if other left side content type --%>
                       <BR>
 <%-- column seperator --%>
-                   <TD WIDTH="15" ROWSPAN="2"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="15" HEIGHT="1" BORDER="0"></TD>
+                   <TD WIDTH="<%=W_DEPARTMENT_BOTTOM_RIGHT_PADDING%>" ROWSPAN="2"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_DEPARTMENT_BOTTOM_RIGHT_PADDING%>" HEIGHT="1" BORDER="0"></TD>
                             <%-- The Right Side of the Bottom Template  --%>
                    <TD WIDTH="1" <%if(showBars){%>BGCOLOR="#CCCCCC"<%}%> ROWSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1" BORDER="0"><BR></TD>
 <%-- paint the secondary Categories --%>
-                   <TD WIDTH="204">
+                   <TD WIDTH="<%=W_DEPARTMENT_BOTTOM_RIGHT - 1%>">
 <%
 if (deptBottom.size() > 0 ) {
 
@@ -106,7 +113,7 @@ if (deptBottom.size() > 0 ) {
 }else{
     if (secondaryCategories.size() > 0) {
 %>
-                        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="204">
+                        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%=W_DEPARTMENT_BOTTOM_RIGHT - 1%>">
 <%
         int scInCol = 0;
         int cntr=0;
@@ -130,7 +137,7 @@ if (deptBottom.size() > 0 ) {
                 scImgPath = catPhoto.getPath();
                 scImgDims = JspMethods.getImageDimensions(catPhoto);
             }
-            if ((scInCol%2)==0  || makeNewRow) {
+            if ((scInCol%3)==0  || makeNewRow) {
                 scInCol=0;
                 if(cntr !=0 ) {%></tr><% } %>
                         <tr VALIGN="top" ALIGN="CENTER">

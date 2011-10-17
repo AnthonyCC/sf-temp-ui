@@ -16,6 +16,11 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
 
+<% //expanded page dimensions
+final int W_TRANSAC_MULTI_PAIRED_ITEMS_CAT = 601;
+final int W_TRANSAC_MULTI_PAIRED_ITEMS_DEP = 765;
+%>
+
 <%!
     java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
     java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
@@ -65,9 +70,9 @@ Html perfectDesc=categoryModel.getEditorial();
 request.setAttribute("successPage","/wine_cart_confirm.jsp?catId="+request.getParameter("catId"));
 
 if (request.getRequestURI().toLowerCase().indexOf("department.jsp")!=-1) {
-    maxWidth = 550;
+    maxWidth = W_TRANSAC_MULTI_PAIRED_ITEMS_DEP;
 } else {
-    maxWidth = 425;
+    maxWidth = W_TRANSAC_MULTI_PAIRED_ITEMS_CAT;
 }
 %>   
 
@@ -319,7 +324,7 @@ if (prodsAvailable > 0 && !oneNotAvailable) {
 		
 			</td>
 			<td width="10"><%  if (prodUnAvailable) { %>&nbsp;<%  } else {    %>
-			<A HREF="javascript:chgQty<%=catIndex%>(<%=itemShownIndex%>,'<%= qtyFldName %>', <%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);"><img SRC="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></A><BR><A HREF="javascript:chgQty<%=catIndex%>(<%=itemShownIndex%>,'<%= qtyFldName %>', -<%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);"><img SRC="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></A>        
+			<A HREF="javascript:chgQty<%=catIndex%>(<%=itemShownIndex%>,'<%= qtyFldName %>', <%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);"><img SRC="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" style="margin: 1px 0;" alt="Increase quantity"></A><BR><A HREF="javascript:chgQty<%=catIndex%>(<%=itemShownIndex%>,'<%= qtyFldName %>', -<%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);"><img SRC="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" style="margin: 1px 0;" alt="Decrease quantity"></A>        
 			<%  }   %></td>
 			<td style="padding-left:8px;">
 			<%
@@ -410,7 +415,7 @@ if (prodsAvailable > 0 && !oneNotAvailable) {
 		<br>
 		<table cellpadding="0" cellspacing="0" border="0">
 		<tr>
-			<td style="padding-bottom:10px;"><input type="image" name="addMultipleToCart<%=catIndex%>" src="media_stat/images/buttons/add_to_cart_small.gif"width="76" height="17" border="0" alt="ADD SELECTED ITEMS TO CART"></td>
+			<td style="padding-bottom:10px;"><input type="image" name="addMultipleToCart<%=catIndex%>" src="media_stat/images/buttons/add_to_cart_small.gif" width="76" height="17" border="0" alt="ADD SELECTED ITEMS TO CART"></td>
 			<fd:CCLCheck>
 				<td style="padding-bottom:10px;">              
                   <a href="/unsupported.jsp" onclick="return CCL.save_items('wine_perfect_form_<%=catIndex%>',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" border="0" hspace="5"/></a>   		     		         

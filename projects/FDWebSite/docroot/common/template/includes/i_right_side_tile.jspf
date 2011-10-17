@@ -1,6 +1,11 @@
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
+
+<% //expanded page dimensions
+final int W_RIGHT_SIDE_TILE_TOTAL = 191;
+%>
+
 <fd:WineFilter filterId="wineFilter" lastClickedId="wineLastClicked" queryId="query">
 <fd:Tile id="tile" productId="tileProduct" trkdId="trkd">
 <% if (tile.isGoesGreatWith() && tileProduct != null) { %>
@@ -32,9 +37,9 @@
 </fd:Tile>
 <% if (tile == null) { %>
 	<!-- advertising tile is null -->
-    <table border="0" cellspacing="0" cellpadding="0" width="155">
+    <table border="0" cellspacing="0" cellpadding="0" width="<%=W_RIGHT_SIDE_TILE_TOTAL%>">
        <tr>
-            <td align="right">
+            <td align="center">
                 <% if (FDStoreProperties.isAdServerEnabled()) { %>
                     <script type="text/javascript">
                     OAS_AD("LittleRandy");

@@ -17,6 +17,13 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
 
+<% //expanded page dimensions
+final int W_WINE_PRODUCT_TOTAL = 601;
+final int W_WINE_PRODUCT_LEFT = 273;
+final int W_WINE_PRODUCT_CENTER_PADDING = 14;
+final int W_WINE_PRODUCT_RIGHT = 314;
+%>
+
 <%@ include file="/shared/includes/product/i_product_methods.jspf" %>
 
 <%
@@ -43,20 +50,20 @@
     String alignment="align=\"right\"";
     String prodPageRatingStuff = getProdPageRatings(productNode,response); // get and format the product page ratings
 %>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="407">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_WINE_PRODUCT_TOTAL%>">
         <tr><td><a href="/category.jsp?catId=<%=(aliasNode!=null ? aliasNode.getContentName() : request.getParameter("catId"))%>">Back to <%=(aliasNode!=null ? aliasNode.getFullName() : productNode.getParentNode().getFullName().toLowerCase())%></a></td></tr>
 	<TR VALIGN="TOP">
-	<TD WIDTH="250" ALIGN="center" CLASS="text11">
+	<TD WIDTH="<%=W_WINE_PRODUCT_LEFT%>" ALIGN="center" CLASS="text11">
 		<!-- Product transactional area include start -->
-                <img src="/media_stat/images/layout/clear.gif" border="0" width="180" height="1"><br><br>
+                <img src="/media_stat/images/layout/clear.gif" border="0" width="<%=W_WINE_PRODUCT_LEFT%>" height="1"><br><br>
 		<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
 		<%@ include file="/shared/includes/product/i_product_image.jspf" %>
         </TD>
 
-		<TD WIDTH="10"><IMG SRC="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="1" BORDER="0" HSPACE="0" VSPACE="0"></TD>
+		<TD WIDTH="<%=W_WINE_PRODUCT_CENTER_PADDING%>"><IMG SRC="/media_stat/images/layout/clear.gif" WIDTH="<%=W_WINE_PRODUCT_CENTER_PADDING%>" HEIGHT="1" BORDER="0" HSPACE="0" VSPACE="0"></TD>
 
-		<TD "<%=alignment%>" WIDTH="250" CLASS="text12">
-                <img src="/media_stat/images/layout/clear.gif" border="0" width="250" height="1"><br>
+		<TD "<%=alignment%>" WIDTH="<%=W_WINE_PRODUCT_RIGHT%>" CLASS="text12">
+                <img src="/media_stat/images/layout/clear.gif" border="0" width="<%=W_WINE_PRODUCT_RIGHT%>" height="1"><br>
                 <%@ include file="/shared/includes/product/i_show_promo_flag.jspf" %>
 		<%@ include file="/shared/includes/product/i_product.jspf" %>
 		<% if(qualifies && !productNode.isUnavailable()){%>
@@ -80,7 +87,7 @@
 	if (productNode.getWineType()!=null   || 
             productNode.getWineRegion()!=null || 
 	    productNode.getWineFyi()!=null) {  %>
-        <br><img src="/media_stat/images/layout/cccccc.gif" border="0" width="250" height="1"><br><br>
+        <br><img src="/media_stat/images/layout/cccccc.gif" border="0" width="<%=W_WINE_PRODUCT_RIGHT%>" height="1"><br><br>
 	<%@ include file="/shared/includes/product/wine_info.jspf" %><br>
 <%  } %>
 	<!-- Content end -->

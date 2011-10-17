@@ -1,5 +1,4 @@
 	body { font-family:Verdana,Arial,sans-serif; font-size: 10px; height: 100%; }
-	div.container {width: 700px; text-align:left;}
     .container1 {width: 630px;}
 	.ctext { text-align: left; margin: 10px 2px; font-size: 11px; }
 	.etext { text-align: left; margin: 10px 20px; font-size: 11px; font-weight: bold; }
@@ -33,7 +32,7 @@
 
 	.answer_container { overflow: hidden; }
 	.q05_container { float: left; margin: 0; line-height: 23px; }
-	.q05_colwfixed { width: 350px;}
+	.q05_colwfixed { width: 50%;}
 	.q05_col50per { width: 50%; }
 	.q05_col25per { width: 25%; }
 	.q05_col75per { width: 75%; }
@@ -57,7 +56,7 @@
 	.q08_text { float: left; padding: 1px 0; padding-left:10px; line-height: 22px; width: 200px; }
 	.q08_cb { float: right; padding: 1px 0; line-height: 22px; width: 70px; text-align: center; font-weight: bold;}
 	
-	.q09_container { float: left; width: 30%; padding:10px; }
+	.q09_container { float: left; width: 31%; padding:10px; }
 	.q09_container .box { width: 100%; }
 	.leftB { border-left:solid 1px #CCCCCC; border-top:solid 1px #CCCCCC;}
 	.middleB { border:solid 1px #CCCCCC; border-bottom:none; }
@@ -88,7 +87,7 @@
 	.rb_image { text-align: center; width: 110px; }
 
 	.q13_container {width:100%; align:center;}
-	.q14_container {width:700px; align:center;}
+	.q14_container {width:970px; align:center;}
 	.q15_container { margin: 0 10px 0 0; width: 100%; line-height: 22px; }
 
 	/* below is the table styles */

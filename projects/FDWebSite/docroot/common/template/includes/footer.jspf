@@ -4,7 +4,15 @@
 <%@page import="com.freshdirect.fdstore.content.MyFD"%>
 <%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
 <%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
-<table width="745" cellpadding="0" cellspacing="0" border="0">
+
+<% if (com.freshdirect.fdstore.FDStoreProperties.isNewGlobalNav()) { /* new globalnav, please change when we no longer need the old one */ %>
+  <%@ include file="/common/template/includes/footer_grid24.jspf" %>
+<% } else { %>
+<% //expanded page dimensions
+final int W_FOOTER_TOTAL = 970;
+%>
+<center>
+<table width="<%=W_FOOTER_TOTAL %>" cellpadding="0" cellspacing="0" border="0" >
 	<tr>
 		<td>
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /><br />
@@ -89,3 +97,5 @@
 	//add a param to the params sent to the FTL
 	semPixel_PUB.setParam("curPage", request.getRequestURI());
 %><fd:SemPixelIncludeMedia pixelNames="Publicis" />
+</center>
+<% } %>

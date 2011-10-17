@@ -9,6 +9,10 @@
 <%@ page import='com.freshdirect.fdstore.survey.*' %>
 <%@ taglib uri='logic' prefix='logic' %>
 
+<% //expanded page dimensions
+final int W_SURVEY_HAMPTONS_1_TOTAL = 970;
+%>
+
 <%
 response.setHeader("Cache-Control", "no-cache");
 response.setHeader("Pragma", "no-cache");
@@ -47,7 +51,7 @@ response.setDateHeader ("Expires", 0);
     <tmpl:put name='title' direct='true'>Hamptons Delivery Survey</tmpl:put>
     <tmpl:put name='content' direct='true'>
 <fd:ReceiptSurvey actionName="validateSurvey" result="result" successPage="/survey/hamptons_2.jsp" survey="<%=Hamptons05%>">
-<table width="700" cellpadding="0" cellspacing="0" border="0" class="text12">
+<table width="<%=W_SURVEY_HAMPTONS_1_TOTAL%>" cellpadding="0" cellspacing="0" border="0" class="text12">
 <% if (submitted) {%>
 <tr>
 	<td colspan="7" class="text12" align="center"><br>
@@ -58,17 +62,17 @@ response.setDateHeader ("Expires", 0);
 	<tr>
 		<td colspan="7" class="text12"><br><span class="title18">Summertime Hamptons Delivery Survey</span><br><span class="space4pix"><br></span>
 		FreshDirect knows that our customers love our service and the fresh food we deliver. We are currently working hard to try to extend our service to make deliveries to the Hamptons this summer. Your responses to this brief survey will help us understand our customers' needs. Of course, in accordance with the FreshDirect Privacy Policy, all of your answers will be kept confidential.
-<br><img src="/media_stat/images/layout/999966.gif" width="700" height="1" vspace="8"><br>
+<br><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_HAMPTONS_1_TOTAL%>" height="1" vspace="8"><br>
 		</td>
 	</tr>
 	<tr>
 		<td><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
 		<td><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="200" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_SURVEY_HAMPTONS_1_TOTAL-100)/3%>" height="1"></td>
     	<td><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
-    	<td><img src="/media_stat/images/layout/clear.gif" width="200" height="1"></td>
+    	<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_SURVEY_HAMPTONS_1_TOTAL-100)/3%>" height="1"></td>
     	<td><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
-   		<td><img src="/media_stat/images/layout/clear.gif" width="200" height="1"></td>
+   		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_SURVEY_HAMPTONS_1_TOTAL-100)/3%>" height="1"></td>
 	</tr>
 	<% int quesCount = 0; %>
 	    <logic:iterate id="question" collection="<%= shownQuestions %>" type="com.freshdirect.fdstore.survey.FDSurveyQuestion" indexId='index'>
@@ -101,7 +105,7 @@ response.setDateHeader ("Expires", 0);
 						<% if ("".equals(prevLocation)) { %>
 							<tr><td></td><td colspan="6" class="text13"><i>Eastern Long Island:</i><span class="space2pix"><br><br></span></td></tr>
 						<% } else if (prevLocation.indexOf("East LI") > -1 && answer.getName().indexOf("East LI") < 0) { %>
-							<tr><td></td><td colspan="6" class="text13"><img src="/media_stat/images/layout/999999.gif" width="675" height="1" vspace="6"><br><i>Elsewhere:</i><span class="space2pix"><br><br></span></td></tr>
+							<tr><td></td><td colspan="6" class="text13"><img src="/media_stat/images/layout/999999.gif" width="<%=W_SURVEY_HAMPTONS_1_TOTAL-25%>" height="1" vspace="6"><br><i>Elsewhere:</i><span class="space2pix"><br><br></span></td></tr>
 						<% } %>
 						<tr><td></td>
 					<% } %>
@@ -122,7 +126,7 @@ response.setDateHeader ("Expires", 0);
 				<% } %>
         		</logic:iterate>
 		</logic:iterate>
-	<tr><td colspan="7" align="center"><img src="/media_stat/images/layout/999966.gif" width="700" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" <%--onClick="javascript:checkForm(hamptonsSurvey1); return false;"--%> alt="SUBMIT"><br><br><br></td></tr>
+	<tr><td colspan="7" align="center"><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_HAMPTONS_1_TOTAL%>" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" <%--onClick="javascript:checkForm(hamptonsSurvey1); return false;"--%> alt="SUBMIT"><br><br><br></td></tr>
 </form>
 <% } %>
 </table>

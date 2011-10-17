@@ -60,9 +60,9 @@
                                 }
                             }
                             if (asaHTML.length() > 0 && hasLinkableItem && !"".equals(asaLabel)) {
-%>
+%>				
                 <img src="/media_stat/images/template/also_avail.gif" border="0" alt=""><br><%=asaHTML.toString()%><br><br>
-<%
+<%				
                             }
                         }
 %>

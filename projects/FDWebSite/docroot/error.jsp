@@ -1,12 +1,16 @@
 <%@ page isErrorPage="true" %>
 <%@ page import='com.freshdirect.webapp.util.JspLogger' %>
 <%@ taglib uri='template' prefix='tmpl' %>
+<% //expanded page dimensions
+final int W_ERROR_TOTAL = 970;
+%>
+
 <% response.setStatus(500); %> 
 <tmpl:insert template='/common/template/no_space_border.jsp'>
 	<tmpl:put name='title' direct='true'>FreshDirect</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 <center>
-<table border="0" cellpadding="0" cellspacing="0" width="600">
+<table border="0" cellpadding="0" cellspacing="0" width="<%=W_ERROR_TOTAL%>">
 <tr>
 	<td align="center">
 	<!-- 

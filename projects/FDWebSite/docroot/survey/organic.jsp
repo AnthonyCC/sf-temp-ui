@@ -9,6 +9,10 @@
 <%@ page import='com.freshdirect.fdstore.survey.*' %>
 <%@ taglib uri='logic' prefix='logic' %>
 
+<% //expanded page dimensions
+final int W_SURVEY_ORGANIC_TOTAL = 970;
+%>
+
 <%
 response.setHeader("Cache-Control", "no-cache");
 response.setHeader("Pragma", "no-cache");
@@ -47,7 +51,7 @@ response.setDateHeader ("Expires", 0);
 <tmpl:insert template='/common/template/no_space_border.jsp'>
     <tmpl:put name='title' direct='true'>Organic Food Survey</tmpl:put>
     <tmpl:put name='content' direct='true'>
-<table width="700" cellpadding="0" cellspacing="0" border="0" class="text12">
+<table width="<%=W_SURVEY_ORGANIC_TOTAL%>" cellpadding="0" cellspacing="0" border="0" class="text12">
 <% 
 if (submitted) {
 %>
@@ -61,7 +65,7 @@ if (submitted) {
 	<tr>
 		<td colspan="11" class="text12"><br><span class="title18">Organic Food Survey</span><br><span class="space4pix"><br></span>
 		We thank you for your interest in helping us develop our Organic & All-Natural department at FreshDirect. With your help and feedback we will be able to create an experience that will best suit all of your Organic shopping needs.
-		<br><img src="/media_stat/images/layout/999966.gif" width="700" height="1" vspace="8"><br>
+		<br><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_ORGANIC_TOTAL%>" height="1" vspace="8"><br>
 		<%  if (questions.size() > 0) { %>
 			<fd:ErrorHandler result='<%=result%>' field='<%=checkSurveyForm%>'>
 				<% String errorMsg = SystemMessageList.MSG_MISSING_SURVEY_INFO; %>
@@ -73,7 +77,7 @@ if (submitted) {
 	<tr>
 		<td><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
 	    <td><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="110" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="210" height="1"></td>
 	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
 	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
 	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
@@ -81,7 +85,7 @@ if (submitted) {
 	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
 	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
 	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="150" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_ORGANIC_TOTAL-610%>" height="1"></td>	
 	</tr>
 	<tr>
 		<td colspan="11">
@@ -126,7 +130,7 @@ if (submitted) {
 					<% if (question.isOpenEnded()) { //textarea %>
 						<tr>
 							<td></td>
-							<td colspan="10" class="text12"><textarea wrap="virtual" cols="80" rows="4" class="text13" name="<%=question.getName()%>"><%=request.getParameter(question.getName())%></textarea>
+							<td colspan="10" class="text12"><textarea wrap="virtual" cols="100" rows="4" class="text13" name="<%=question.getName()%>"><%=request.getParameter(question.getName())%></textarea>
 						<br><span class="space8pix"><br></span></td>
 						</tr>
 					<% } else { 
@@ -161,7 +165,7 @@ if (submitted) {
 				<% } %>
 			<% } %>
 		</logic:iterate>
-	<tr><td colspan="11" align="center"><img src="/media_stat/images/layout/999966.gif" width="700" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21"alt="SUBMIT"><br><br></td></tr>
+	<tr><td colspan="11" align="center"><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_ORGANIC_TOTAL%>" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21"alt="SUBMIT"><br><br></td></tr>
 </form>
 </fd:ReceiptSurvey>
 <% } %>

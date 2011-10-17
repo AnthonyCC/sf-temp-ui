@@ -11,6 +11,9 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<% //expanded page dimensions
+final int W_CART_CONFIRM_TOTAL = 590;
+%>
 <%!
     java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
     java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
@@ -92,7 +95,7 @@ Recipe recipe = null;
 <tmpl:insert template='<%=jspTemplate%>'>
   <tmpl:put name='title' direct='true'>FreshDirect - Confirmation</tmpl:put>
  <tmpl:put name='content' direct='true'>
-            <table cellpadding="0" cellspacing="0" border="0" width="400">
+             <table cellpadding="0" cellspacing="0" border="0" width="<%= W_CART_CONFIRM_TOTAL %>">
                 <tr>
                 <td colspan="2">
 					<%  if (isWineProductAdded) { %>
@@ -154,7 +157,7 @@ Recipe recipe = null;
     <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td></tr>
     <tr><td class="text12gr" colspan="2"><b>Please note:</b> We are not yet in your area and cannot complete your delivery.</td></tr>
 <%}   %>
-
+	
     <%-- spacers --%>
     <tr>
       <td><img src="/media_stat/images/layout/clear.gif" width="320" height="10"></td>

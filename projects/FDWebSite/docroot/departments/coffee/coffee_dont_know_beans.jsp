@@ -8,30 +8,35 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
 
+<% //expanded page dimensions
+final int W_COFFEE_DONT_KNOW_BEANS_TOTAL = 765;
+%>
+
+
 <tmpl:insert template='/common/template/right_dnav.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Dont't Know Beans</tmpl:put>
 		<tmpl:put name='content' direct='true'>
-			 <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="550">
+			 <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%=W_COFFEE_DONT_KNOW_BEANS_TOTAL%>">
 			 <tr>
 				 <td class="text13">
 					<img src="/media_stat/images/template/coffee/beans.gif" width="30" height="30" alt="" border="0"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"><img src="/media_stat/images/template/coffee/dont_know_beans.gif" width="241" height="17" alt="" border="0"><br>
 					<font class="space2pix"><br></font>
-					<img src="/media_stat/images/layout/cccccc.gif" width="500" height="1" alt="" border="0"><br>
+					<img src="/media_stat/images/layout/cccccc.gif" width="<%=W_COFFEE_DONT_KNOW_BEANS_TOTAL%>" height="1" alt="" border="0"><br>
 					<font class="space2pix"><br></font>
 					Answer a few simple questions and we'll recommend coffees that we know you'll like. <br>			 
 				 </td>
 			 </tr>
 			 </table>
-		  <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="550">
+		  <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%=W_COFFEE_DONT_KNOW_BEANS_TOTAL%>">
 		      <TR VALIGN="TOP">
-			      <TD COLSPAN="5" WIDTH="550"><IMG SRC="/media_stat/images/layout/ffffff.gif" WIDTH="550" HEIGHT="20"></TD>
+			      <TD COLSPAN="5" WIDTH="<%=W_COFFEE_DONT_KNOW_BEANS_TOTAL%>"><IMG SRC="/media_stat/images/layout/ffffff.gif" WIDTH="550" HEIGHT="20"></TD>
 			  </TR>
 			  <form action="/departments/coffee/coffee_beans_results.jsp" method="get">
 			  	<input type="hidden" name="successPage" value="/help/coffee_beans_results.jsp">
 			  	<input type="hidden" name="deptId" value="cof">
 				<input type="hidden" name="catId" value="cof_dkbns">				
 				<TR VALIGN="Top">
-			      <TD CLASS="text13" width="200">
+			      <TD CLASS="text13" width="<%=(W_COFFEE_DONT_KNOW_BEANS_TOTAL-55)/2%>">
 				      <FONT CLASS="text13bold">The flavors I enjoy are...</FONT><BR>
 					  <INPUT TYPE="radio" CLASS="radio"  NAME="question1" VALUE="medium"> Light, mild<BR>
 					  <INPUT TYPE="radio" CLASS="radio"  NAME="question1" VALUE="viennese"> Not too light, not too dark<BR>
@@ -45,10 +50,10 @@
 					  <INPUT TYPE="radio" CLASS="radio"  NAME="question3" VALUE="1"> With milk/cream<BR>
 					  <INPUT TYPE="radio" CLASS="radio"  NAME="question3" VALUE="2"> Black<BR>
 				</TD>
-				<TD WIDTH="5"><IMG SRC="/media_stat/images/layout/ffffff.gif" WIDTH="5" HEIGHT="1" BORDER="0" VSPACE="0"></TD>
+				<TD WIDTH="14"><IMG SRC="/media_stat/images/layout/ffffff.gif" WIDTH="5" HEIGHT="1" BORDER="0" VSPACE="0"></TD>
 				<TD><IMG SRC="/media_stat/images/layout/ff9933.gif" WIDTH="1" HEIGHT="250" BORDER="0" VSPACE="0"></TD>
-				<TD WIDTH="40"><IMG SRC="/media_stat/images/layout/ffffff.gif" WIDTH="20" HEIGHT="1" BORDER="0" VSPACE="0"></TD>
-				<TD CLASS="text13" width="204">
+				<TD WIDTH="41"><IMG SRC="/media_stat/images/layout/ffffff.gif" WIDTH="20" HEIGHT="1" BORDER="0" VSPACE="0"></TD>
+				<TD CLASS="text13" width="<%=(W_COFFEE_DONT_KNOW_BEANS_TOTAL-55)/2%>">
 				    <FONT CLASS="text13bold">Do you drink flavored coffees?</FONT><BR>
 					<INPUT TYPE="radio" CLASS="radio"  NAME="question4" VALUE="Yes"> Yes<BR>
 					<INPUT TYPE="radio" CLASS="radio"  NAME="question4" VALUE="No"> No<BR>
@@ -69,11 +74,11 @@
 			</TR>
 		
 		</TABLE>
-			 <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="550">
+			 <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%=W_COFFEE_DONT_KNOW_BEANS_TOTAL%>">
 			 <tr>
 				 <td>
 					<font class="space4pix"><br></font>
-					<img src="/media_stat/images/layout/cccccc.gif" width="500" height="1" alt="" border="0"><br>
+					<img src="/media_stat/images/layout/cccccc.gif" width="<%=W_COFFEE_DONT_KNOW_BEANS_TOTAL%>" height="1" alt="" border="0"><br>
 					<font class="space6pix"><br></font>
 					<input type="image" src="/media/images/buttons/submit.gif" width="48" height="16" border="0" alt="SUBMIT">
 					</form>		

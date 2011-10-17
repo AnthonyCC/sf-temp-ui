@@ -720,4 +720,9 @@ public class CategoryModel extends ProductContainer {
 	    globalSmartCategoryVersion ++;
 	}
 
+	@Override
+	public Image getPhoto() {
+		return getCategoryPhoto();
+	}
+
 }

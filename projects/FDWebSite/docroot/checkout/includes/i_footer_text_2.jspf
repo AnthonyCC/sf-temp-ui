@@ -1,4 +1,8 @@
-<table border="0" cellspacing="0" cellpadding="0" width="693">
+<% //expanded page dimensions
+final int W_FOOTER_TEXT_2_TOTAL = 970;
+%>
+
+<table border="0" cellspacing="0" cellpadding="0" width="<%= W_FOOTER_TEXT_2_TOTAL %>">
 <tr valign="middle">
 	<td width="30%">
 		<font class="space4pix"><br></font><font class="text12">

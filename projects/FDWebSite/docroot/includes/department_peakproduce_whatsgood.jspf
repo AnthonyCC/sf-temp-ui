@@ -323,9 +323,8 @@
 			<form class="wgForm" name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>">
 			<input name="catId" type="hidden" value="<%=catId%>" />
 		<% } %>
-
-			<table cellpadding="0" cellspacing="0" border="0">
-			<tr valign="bottom">
+			<table border="0" width="100%">
+			<tr valign="bottom" style="width:100%;">
 
 				<logic:iterate id="contentNode" collection="<%= rowColl %>" type="java.lang.Object" indexId="idx">
 
@@ -343,7 +342,7 @@
 					String actionURI = FDURLUtil.getProductURI( pm, trkCode );			
 				%>
 
-					<td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
+					<td style="padding-left:5px; padding-right:5px;">
 						<display:ProductImage product="<%= pm %>" showRolloverImage="false" action="<%= actionURI %>" />
 					</td>
 				
@@ -365,7 +364,7 @@
 					String actionURI = FDURLUtil.getProductURI( pm, trkCode );
 				%>
 
-					<td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
+					<td  align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
 						<div class="WG_deals">
 							<% if (impressions.get(idx) instanceof TransactionalProductImpression && isTransactionalRow) { %>
 								<fd:TxProductControl txNumber="<%= txCount %>" namespace="<%= TX_JS_NAMESPACE %>" impression="<%= (TransactionalProductImpression) impressions.get(idx) %>"/>

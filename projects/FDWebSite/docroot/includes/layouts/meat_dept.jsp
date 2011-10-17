@@ -19,6 +19,12 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
+<% //expanded page dimensions
+final int W_MEAT_DEPT_IS_DEPARTMENT = 715;
+final int W_MEAT_DEPT_OLD_DEPARTMENT = 550;
+final int W_MEAT_DEPT_NOT_DEPARTMENT = 601;
+%>
+
 <%! // INTERNALS
 	
 	
@@ -110,7 +116,8 @@
 	//***          the Featured Category Layout                  ***
 	//**************************************************************
 
-	int maxWidth = (request.getRequestURI().toLowerCase().indexOf("department.jsp") != -1 ) ? 550 : 400;
+  boolean isDepartmentLayout = request.getRequestURI().toLowerCase().indexOf("department.jsp") != -1;
+	int maxWidth = isDepartmentLayout ? W_MEAT_DEPT_OLD_DEPARTMENT : W_MEAT_DEPT_NOT_DEPARTMENT;
 	
 	List availableList = new ArrayList();
 	String prodNameAttribute = JspMethods.getProductNameToUse(currentFolder);
@@ -158,8 +165,13 @@
 			if ( rowWidth == 0 ) 
 				rowWidth = maxWidth;
 			
+      int spareWidth = 0;
+      if ( row.size() > 3 && rowWidth > (2 * maxWidth / 3) ) {
+        spareWidth = ((isDepartmentLayout ? W_MEAT_DEPT_IS_DEPARTMENT : maxWidth) - rowWidth) / (row.size() - 1);
+      }
+
 			%>
-			<table width="<%=rowWidth%>" cellpadding="0" cellspacing="0" border="0">
+      <table width="<%=isDepartmentLayout ? W_MEAT_DEPT_IS_DEPARTMENT : maxWidth %>" cellpadding="0" cellspacing="0" border="0" style="margin-top: 10px;">
 			
 				<tr>
 					<%	// ======= IMAGE ROW =======
@@ -181,8 +193,13 @@
 						DisplayObject displayObject = (DisplayObject)repo.getDisplayObject(contentNode);
 						String actionUrl = displayObject.getItemURL() + "&trk=" + trackingCode; 
 						
+            if (j > 0 && spareWidth > 0) {
+            %>
+              <td width="<%=spareWidth%>"><div style="width: <%=spareWidth%>px;"></div></td>
+            <%
+            }
 						%>	
-						<td align="center" width="<%=displayObject.getImageWidth()%>" style="padding-top: 10px">
+						<td align="center" style="padding-top: 10px">
 							<% if ( contentNode instanceof ProductModel ) { %>
 								<display:ProductImage product="<%= (ProductModel)contentNode %>" action="<%= actionUrl %>" showRolloverImage="true"/>
 							<% } else if ( contentNode instanceof CategoryModel ) { %>
@@ -203,8 +220,13 @@
 						DisplayObject displayObject = (DisplayObject)repo.getDisplayObject(contentNode);
 						String actionUrl = displayObject.getItemURL() + "&trk=" + trackingCode; 
 				
+            if (j > 0 && spareWidth > 0) {
+            %>
+              <td width="<%=spareWidth%>"><div style="width: <%=spareWidth%>px;"></div></td>
+            <%
+            }
 					%>
-						<td align="center" width="<%=displayObject.getImageWidth()%>" style="padding-bottom: 10px">
+						<td align="center" style="padding-bottom: 10px">
 							<% if ( contentNode instanceof ProductModel ) { %>
 							
 								<display:ProductRating product="<%= (ProductModel)contentNode %>" action="<%= actionUrl %>"/>

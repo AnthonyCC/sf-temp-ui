@@ -524,6 +524,10 @@
   <tagclass>com.freshdirect.webapp.taglib.fdstore.layout.InitLayoutTag</tagclass>
   <teiclass>com.freshdirect.webapp.taglib.fdstore.layout.InitLayoutTag$TagEI</teiclass>
   <bodycontent>empty</bodycontent>
+  <attribute>
+  	<name>useAlternateWidth</name>
+  	<required>false</required>
+  </attribute>
  </tag>
  <tag>
   <name>PatternRow</name>
@@ -1093,6 +1097,74 @@
   </attribute>
   <attribute>
    <name>maxFavsToShow</name>
+   <required>true</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+ </tag>
+ <tag>
+  <name>ProductContainerLink</name>
+  <tagclass>com.freshdirect.webapp.taglib.menu.ProductContainerLinkTag</tagclass>
+  <bodycontent>JSP</bodycontent>
+  <attribute>
+   <name>productContainer</name>
+   <required>true</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>cssClass</name>
+   <required>false</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>trackingCode</name>
+   <required>false</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+ </tag>
+ <tag>
+  <name>GlobalMenuItemPopup</name>
+  <tagclass>com.freshdirect.webapp.taglib.menu.GlobalMenuItemPopupTag</tagclass>
+  <bodycontent>none</bodycontent>
+  <info></info>
+  <attribute>
+   <name>globalMenuItem</name>
+   <required>true</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+ </tag>
+ <tag>
+  <name>GlobalMenuIcon</name>
+  <tagclass>com.freshdirect.webapp.taglib.menu.GlobalMenuIconTag</tagclass>
+  <bodycontent>empty</bodycontent>
+  <attribute>
+   <name>productContainer</name>
+   <required>true</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>large</name>
+   <required>false</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+ </tag>
+ <tag>
+  <name>GlobalMenuTag</name>
+  <tagclass>com.freshdirect.webapp.taglib.menu.GlobalMenuTag</tagclass>
+  <bodycontent>JSP</bodycontent>
+  <info></info>
+  <attribute>
+   <name>attrName</name>
+   <required>true</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+ </tag>
+ <tag>
+  <name>FDNotificationTag</name>
+  <tagclass>com.freshdirect.webapp.taglib.fdstore.FDNotificationTag</tagclass>
+  <bodycontent>JSP</bodycontent>
+  <info></info>
+  <attribute>
+   <name>attrName</name>
    <required>true</required>
    <rtexprvalue>true</rtexprvalue>
   </attribute>

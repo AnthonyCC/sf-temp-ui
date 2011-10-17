@@ -5,6 +5,14 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='com.freshdirect.fdstore.customer.*'  %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+
+<% FDUserI user = (FDUserI)session.getAttribute(SessionName.USER); %>
+
+<% //expanded page dimensions
+final int W_CHECKOUT_NAV_TOTAL = 970;
+%>
+
+
 <html>
 	<head>
     	<title><tmpl:get name='title'/></title>
@@ -43,12 +51,10 @@
 
 			<%@ include file="/common/template/includes/checkoutnav.jspf" %> 
 			
-			<table width="745" border="0" cellpadding="0" cellspacing="0">
+			<table width="<%=W_CHECKOUT_NAV_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 				<tr valign="top">
-					<td bgcolor="#<%=color%>" valign="bottom" width="1"><img src="/media_stat/images/layout/999966.gif" width="1" height="1"/></td>
-					<td width="5"><img src="/media_stat/images/layout/clear.gif" height="1" width="5"/></td>
-					<td width="733" align="center">
-						<img src="/media_stat/images/layout/clear.gif" height="15" width="733"/><br/>
+					<td width="<%=W_CHECKOUT_NAV_TOTAL%>" align="center">
+						<img src="/media_stat/images/layout/clear.gif" height="15" width="<%=W_CHECKOUT_NAV_TOTAL%>"/><br/>
 			
 						<!-- content lands here -->
 						
@@ -58,18 +64,14 @@
 			
 						<br/><br/>
 					</td>
-					<td width="5"><img src="/media_stat/images/layout/clear.gif" height="1" width="5"/></td>
-					<td bgcolor="#<%=color%>" valign="bottom" width="1"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"/></td>
 				</tr>
 				
 				<tr valign="bottom">
-					<td width="6" colspan="2" rowspan="2"><img src="/media_stat/images/layout/bottom_left_curve<%=suffix%>.gif" width="6" height="6" border="0"/></td>
-					<td width="733"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"/></td>
-					<td width="6" colspan="2" rowspan="2"><img src="/media_stat/images/layout/bottom_right_curve<%=suffix%>.gif" width="6" height="6" border="0"/></td>
+					<td width="<%=W_CHECKOUT_NAV_TOTAL%>"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"/></td>
 				</tr>
 				
 				<tr>
-					<td width="733" bgcolor="#<%=color%>" valign="bottom"><img src="/media_stat/images/layout/clear.gif" width="733" height="1" border="0"/></td>
+					<td width="<%=W_CHECKOUT_NAV_TOTAL%>" bgcolor="#<%=color%>" valign="bottom"><img src="/media_stat/images/layout/clear.gif" width="<%=W_CHECKOUT_NAV_TOTAL%>" height="1" border="0"/></td>
 				</tr>
 			</table>
 			

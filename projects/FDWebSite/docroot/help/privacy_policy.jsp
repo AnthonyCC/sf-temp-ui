@@ -5,15 +5,23 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<% //expanded page dimensions
+final int W_PRIVACY_POLICY_TOTAL = 970;
+final int W_PRIVACY_POLICY_POPUP_TOTAL = 500;
+%>
+
 <fd:CheckLoginStatus guestAllowed='true'/>
 <%
 FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 String help = " Help -";
 String template = "/common/template/dnav.jsp";
+int tableWidth = W_PRIVACY_POLICY_TOTAL;
+	
 String type = request.getParameter("type");
 if (type != null && !"".equals(type) && type.equalsIgnoreCase("popup")) {
 	template = "/shared/template/large_pop.jsp";
 	help = "";
+	tableWidth = W_PRIVACY_POLICY_POPUP_TOTAL;
 }
 %>
 
@@ -22,11 +30,7 @@ if (type != null && !"".equals(type) && type.equalsIgnoreCase("popup")) {
     <tmpl:put name='title' direct='true'>FreshDirect -<%=help%> Privacy Policy</tmpl:put>
 
     <tmpl:put name='content' direct='true'>
-<table width=500>
-<tr>
-	<td align=left>
-
-<table width="500" border="0" cellspacing="0" cellpadding="0">
+<table width="<%=tableWidth%>" border="0" cellspacing="0" cellpadding="0">
 <tr>
 	<td align=left><img src="/media_stat/images/template/help/privacy_policy.gif" width="178" height="21" alt="" border="0"></td>
 	<td align=right>
@@ -151,8 +155,5 @@ FreshDirect welcomes feedback concerning its Privacy Policy. Please send your co
 	</td>
 </tr>
 </table>
-	</td>
-</tr>
-</table>	
 	</tmpl:put>
 </tmpl:insert>

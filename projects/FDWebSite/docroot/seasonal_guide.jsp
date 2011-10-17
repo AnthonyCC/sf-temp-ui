@@ -2,6 +2,12 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 
+<% //expanded page dimensions
+final int W_SEASONAL_GUIDE_TOTAL = 970;
+final int W_SEASONAL_GUIDE_MONTH = 69;
+%>
+
+
 <fd:CheckLoginStatus />
 
 <%!
@@ -66,9 +72,9 @@ if (
 %>
 <% 
 String category = "/category.jsp?catId=";
-String best = "<img src=\"/media_stat/images/template/fruit/best.gif\" width=\"44\" height=\"18\" border=\"0\">";
-String yes = "<img src=\"/media_stat/images/template/fruit/yes.gif\" width=\"44\" height=\"18\" border=\"0\">";
-String no = "<img src=\"/media_stat/images/template/fruit/no.gif\" width=\"44\" height=\"18\" border=\"0\">";
+String best = "<img src=\"/media_stat/images/template/fruit/best.gif\" width=\""+W_SEASONAL_GUIDE_MONTH+"\" height=\"18\" border=\"0\">";
+String yes = "<img src=\"/media_stat/images/template/fruit/yes.gif\" width=\""+W_SEASONAL_GUIDE_MONTH+"\" height=\"18\" border=\"0\">";
+String no = "<img src=\"/media_stat/images/template/fruit/no.gif\" width=\""+W_SEASONAL_GUIDE_MONTH+"\" height=\"18\" border=\"0\">";
 %>
 <%
 // ARRAYS
@@ -275,7 +281,7 @@ padding: 2px;
 -->
 </style>
 
-<table width="668" border="0" cellspacing="0" cellpadding="0" align="left">
+<table width="<%=W_SEASONAL_GUIDE_TOTAL%>" border="0" cellspacing="0" cellpadding="0" align="left">
 	<tr>
 		<td><img src="/media_stat/images/template/fruit/lil_tony_season.jpg" width="106" height="118"><br><img src="/media_stat/images/layout/clear.gif" width="124" height="8"></td>
 		<td colspan="15"><img src="/media_stat/images/template/fruit/fruit_season_hdr.gif" width="374" height="19"><br><br>
@@ -302,22 +308,22 @@ padding: 2px;
 		<%= season_months[column4] %>
 	</tr>
 	<tr height="4"> 
-		<td><img src="/media_stat/images/layout/clear.gif" width="125" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="44" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="44" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="44" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_TOTAL - W_SEASONAL_GUIDE_MONTH*12 - 5*3%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
 		<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="44" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="44" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="44" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
 		<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="44" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="44" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="44" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
 		<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="44" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="44" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="44" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SEASONAL_GUIDE_MONTH%>" height="1"></td>
 	</tr>
 	<tr style="cursor: hand;" onClick="document.location='<%=category%>apl'">  
 		<td class="fruit"><a href="<%=category%>apl">APPLES</a></td>

@@ -55,6 +55,7 @@ public class FDStoreProperties {
     private final static String PROP_ROUTINGGATEWAY_HOME = "fdstore.routingGateway.home"; //freshdirect.routing.Gateway
     private final static String PROP_DLV_INSTRUCTION_SPECIAL_CHAR = "fdstore.address.validation";
     private final static String PROP_PREVIEW_MODE = "fdstore.preview";
+    private final static String PROP_FLUSH_OSCACHE = "fdstore.flushOscache";
     private final static String PROP_ANNOTATION_MODE = "fdstore.annotation";
     private final static String PROP_ANNOTATION_ERPSY = "fdstore.annotation.erpsy";
     private final static String PROP_MEDIA_PATH = "fdstore.media.path";
@@ -448,7 +449,9 @@ public class FDStoreProperties {
 	private final static String PROP_TIMESLOT_GRID = "fdstore.isNewFDTimeslotGridEnabled";
 	
 	private final static String WS_PROMOTION_PRODUCTION_MODE = "fdstore.ws.promotion.production.mode";
-	
+
+	private final static String PROP_NEW_GLOBAL_NAV = "fdstore.newglobalnav";
+
 	private static final String PROP_PAYMENT_METHOD_VERIFICATION_ENABLED="fdstore.paymentmethod.verify";
 	private static final String PROP_PAYMENT_METHOD_VERIFICATION_LIMIT="fdstore.paymentmethod.verify.limit";
 	
@@ -512,6 +515,7 @@ public class FDStoreProperties {
             "[~ | \\` | \" | \\! | \\@ | \\# | \\ $ | \\% | \\^ | \\& | \\* | \\( | \\) | \\- | _ | + | \\= | \\n | \\r]");
 
         defaults.put(PROP_PREVIEW_MODE, "false");
+        defaults.put(PROP_FLUSH_OSCACHE, "false");
         defaults.put(PROP_ANNOTATION_MODE, "false");
         defaults.put(PROP_ANNOTATION_ERPSY,
             "http://ems1.nyc1.freshdirect.com:8000/ERPSAdmin");
@@ -932,6 +936,8 @@ public class FDStoreProperties {
 
 		defaults.put(SMARTSTORE_QUICKBUY_NEWALERT_ENABLED, "false");
 
+		defaults.put(PROP_NEW_GLOBAL_NAV,"false");
+
 		defaults.put(SESSION_LOGGING_ENABLED, "true");
 		defaults.put(REAL_TIME_EVENT_ANALYSIS, "false");
 		defaults.put(EVENT_KB_SOURCE, "local");
@@ -1091,6 +1097,10 @@ public class FDStoreProperties {
 
     public static boolean getPreviewMode() {
         return (Boolean.valueOf(get(PROP_PREVIEW_MODE))).booleanValue();
+    }
+
+    public static boolean isFlushOscache() {
+        return (Boolean.valueOf(get(PROP_FLUSH_OSCACHE))).booleanValue();
     }
 
     public static boolean isAnnotationMode() {
@@ -2343,6 +2353,7 @@ public class FDStoreProperties {
         return get(PROP_MKTADMIN_AUTOUPLOAD_URL);
     }
 
+    
     public static String getMktAdminUserName() {
         return get(PROP_MKTADMIN_USER_NAME);
     }
@@ -2357,6 +2368,10 @@ public class FDStoreProperties {
     
     public static String getTwoMonthTrailDPrice() {
         return get(PROP_TWO_MONTH_TRIAL_PASS_PRICE);
+    }
+
+    public static boolean isNewGlobalNav() {
+        return Boolean.valueOf(get(PROP_NEW_GLOBAL_NAV));
     }
     
     public static interface ConfigLoadedListener {

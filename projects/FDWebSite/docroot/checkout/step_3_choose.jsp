@@ -26,6 +26,10 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<% //expanded page dimensions
+final int W_CHECKOUT_STEP_3_CHOOSE_TOTAL = 970;
+%>
+
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
 
 <%request.setAttribute("listPos", "SystemMessage,ProductNote,CategoryNote");%>
@@ -145,13 +149,13 @@
     <FORM method="post" name="step_3_choose" id="step_3_choose">
 
     <input type="hidden" name="actionName" id="actionName" value="setNoPaymentMethod">
-    <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
+    <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>">
 	<TR VALIGN="TOP">
 		<TD CLASS="text11" WIDTH="395" VALIGN="bottom">
 			<FONT CLASS="title18">PAYMENT INFO</FONT><BR>
 		    <IMG src="/media_stat/images/layout/clear.gif" WIDTH="395" HEIGHT="1" BORDER="0">
 		</TD>
-		<TD WIDTH="265" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10">
+		<TD WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL-430%>" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10">
 				  <FONT CLASS="space2pix"><BR></FONT>
 					<table>
 						<tr>
@@ -204,7 +208,7 @@
 <%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
 
-<TABLE border="0" cellspacing="0" cellpadding="0" width="693">
+<TABLE border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>">
 	 <tr valign="top"> 
 		 <td class="text12" width="415" valign="bottom"> 
 		<FONT CLASS="title18">Choose Payment Information (Step 3 of 4)</FONT><BR>
@@ -214,20 +218,20 @@
 	</TABLE>
 
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="675" HEIGHT="3" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" HEIGHT="3" BORDER="0"><BR>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
     
-    <div style="width: 685px; text-align: left;"><span style="color: #FF9933;font-size: 17px;">NO PAYMENT NECESSARY... YOUR TOTAL IS COVERED BY YOUR GIFT CARD.</span>
+    <div style="width: <%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>px; text-align: left;"><span style="color: #FF9933;font-size: 17px;">NO PAYMENT NECESSARY... YOUR TOTAL IS COVERED BY YOUR GIFT CARD.</span>
     <p align="left">Good news: you do not need to select a Payment Method because the Gift Card you applied to this order is greater than 
     the order total, including any estimated prices. Please <a href="#" onclick="document.getElementById('step_3_choose').submit();">click here</a> to go to Step 4: Review & Submit, or click the orange 
     Continue Checkout button. Enjoy your free food!</p></div>
 
 
             <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-        <IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="675" HEIGHT="1" BORDER="0"><BR>
+        <IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
             <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
-    <table border="0" cellspacing="0" cellpadding="0" width="675">
+    <table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>">
 	    <tr valign="top">
 			<td width="35">
 					<a href="<%=response.encodeURL("/checkout/step_2_select.jsp ")%>" id="previousX">
@@ -239,7 +243,7 @@
 				Delivery Time<br/>
 				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
 			</td>
-			<td width="265" align="right" valign="middle">
+			<td width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL-410%>" align="right" valign="middle">
 				<font class="space2pix"><br/></font>
 				<input type="image" name="alt_next_step" src="/media_stat/images/buttons/continue_checkout.gif" width="91" height="11" border="0" alt="CONTINUE CHECKOUT" vspace="0" onClick="setActionName(this.form,'setNoPaymentMethod')"><br/>Submit Order<br/>
 			</td>
@@ -307,9 +311,9 @@ if(isPaymentRequired) {
 	<%
 		if(cart.getSelectedGiftCards() != null && cart.getSelectedGiftCards().size() > 0 && gcBufferAmount >0 && ccBufferAmount > 0) {
 	%>
-		<div style="width: 685px; text-align: left;"><strong>PLEASE NOTE: A BACKUP PAYMENT METHOD IS REQUIRED FOR THIS ORDER.</strong> Because your Estimated Total is close to the balance of the Gift Card you entered, we require a second form of payment. This is to cover changes in price that may occur when we weigh your perishable items and fulfill your order. We guarantee that you'll always pay the true price for the actual weight of your products. <a href="javascript:popup('/help/estimated_price.jsp','small')">Learn about Estimated Totals</a>.</div>
+		<div style="width: <%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>px; text-align: left;"><strong>PLEASE NOTE: A BACKUP PAYMENT METHOD IS REQUIRED FOR THIS ORDER.</strong> Because your Estimated Total is close to the balance of the Gift Card you entered, we require a second form of payment. This is to cover changes in price that may occur when we weigh your perishable items and fulfill your order. We guarantee that you'll always pay the true price for the actual weight of your products. <a href="javascript:popup('/help/estimated_price.jsp','small')">Learn about Estimated Totals</a>.</div>
 		<br />
-		<img width="693" vspace="3" height="1" border="0" src="/media_stat/images/layout/cccccc.gif" /><br /><br />
+		<img width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" vspace="3" height="1" border="0" src="/media_stat/images/layout/cccccc.gif" /><br /><br />
 
 	<% } %>
 
@@ -349,7 +353,7 @@ if(isPaymentRequired) {
 			</tr>
 		</table>
 	</div>
-	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>">
 	
 		<input type="hidden" name="actionName" value="">
 		<input type="hidden" name="deletePaymentId" value="">
@@ -358,7 +362,7 @@ if(isPaymentRequired) {
 			<FONT CLASS="title18">PAYMENT INFO</FONT><BR>
 		    <IMG src="/media_stat/images/layout/clear.gif" WIDTH="395" HEIGHT="1" BORDER="0">
 		</TD>
-		<TD WIDTH="265" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10" >
+		<TD WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL-430%>" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10" >
 				  <FONT CLASS="space2pix"><BR></FONT>
 					<table>
 						<tr>
@@ -411,7 +415,7 @@ if(isPaymentRequired) {
 <%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
 
-<TABLE border="0" cellspacing="0" cellpadding="0" width="693">
+<TABLE border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>">
 	 <tr valign="top"> 
 		 <td class="text12" width="415" valign="bottom"> 
 			<FONT CLASS="title18">Choose Payment Information (Step 3 of 4)</FONT><BR>
@@ -421,7 +425,7 @@ if(isPaymentRequired) {
 		</TABLE>
 
 		<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="675" HEIGHT="3" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" HEIGHT="3" BORDER="0"><BR>
 		<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 	<%
 	JspMethods.dumpErrors(result);
@@ -443,9 +447,9 @@ if(isPaymentRequired) {
 		<%@ include file="/includes/i_error_messages.jspf"%> 
 	<%}%>
 
-		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
+		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>">
 		<TR VALIGN="TOP">
-			<TD CLASS="text12" WIDTH="693">
+			<TD CLASS="text12" WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>">
 			<% if ("bnl".equalsIgnoreCase(user.getDepotCode())) {%>
 				<b>If you are using a billing address on the Brookhaven Labs Campus that is different from your home address, please call FreshDirect at <%= user.getCustomerServiceContact() %> to assist you in entering the information.</b><br><br>
 			<% } %>
@@ -477,7 +481,7 @@ if(isPaymentRequired) {
 		
 		<% if (isCheckEligible && !isECheckRestricted) { // show checking acct selections %>
 		<% if (hasCheck) { %>
-		<table width="693" border="0" cellspacing="0" cellpadding="2">
+		<table width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" border="0" cellspacing="0" cellpadding="2">
 			<tr valign="top">
 			<td><img src="/media_stat/images/headers/check_acct_details.gif" width="181" height="9" alt="CHECKING ACCOUNT DETAILS"><br>
 			<IMG src="/media_stat/images/layout/999966.gif" width="675" height="1" border="0" VSPACE="3"><br></td>
@@ -548,10 +552,10 @@ user.setAddressVerificationError(false);
 %>	
 
 
-		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="693">
+		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>">
 		<TR VALIGN="TOP">
-		<TD WIDTH="693"><img src="/media_stat/images/navigation/choose_credit_card.gif" WIDTH="135" HEIGHT="9" border="0" alt="CHOOSE CREDIT CARD">&nbsp;&nbsp;&nbsp;<BR>
-			<IMG src="/media_stat/images/layout/999966.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+		<TD WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>"><img src="/media_stat/images/navigation/choose_credit_card.gif" WIDTH="135" HEIGHT="9" border="0" alt="CHOOSE CREDIT CARD">&nbsp;&nbsp;&nbsp;<BR>
+			<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 			<FONT CLASS="space2pix"><BR></FONT>
 			<span CLASS="text12">If you need to enter another credit card: </span><a href="/checkout/step_3_card_add.jsp"><img ALT="Add New Card" src="/media_stat/images/buttons/add_new_card.gif" WIDTH="96" HEIGHT="16" border="0" VSPACE="3" HSPACE="5" ALIGN="middle"></a></TD>
 		</TR>
@@ -564,10 +568,10 @@ user.setAddressVerificationError(false);
 			<%
 			}%>
 				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="675" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
 				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
-	<table border="0" cellspacing="0" cellpadding="0" width="675">
+	<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>">
 	    <tr valign="top">
 			<td width="35">
 					<a href="<%=response.encodeURL("/checkout/step_2_select.jsp ")%>" id="previousX">
@@ -579,7 +583,7 @@ user.setAddressVerificationError(false);
 				Delivery Time<br/>
 				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
 			</td>
-			<td width="265" align="right" valign="middle">
+			<td width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL-410%>" align="right" valign="middle">
 				<font class="space2pix"><br/></font>
 				<input type="image" name="alt_next_step" src="/media_stat/images/buttons/continue_checkout.gif" width="91" height="11" border="0" alt="CONTINUE CHECKOUT" vspace="0" onClick="setActionName(this.form,'setPaymentMethod')"><br/>Submit Order<br/>
 			</td>
@@ -594,7 +598,7 @@ user.setAddressVerificationError(false);
 	</FORM>
 <% } %>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
-	<img src="/media_stat/images/layout/dotted_line.gif" width="675" height="1" border="0"><br/>
+	<img src="/media_stat/images/layout/dotted_line.gif" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" height="1" border="0"><br/>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>

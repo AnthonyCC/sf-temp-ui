@@ -63,7 +63,6 @@ SimpleDateFormat deliveryDayFormat = new SimpleDateFormat("EEE MM/d");
 <tmpl:insert template='/common/template/delivery_info_nav.jsp'>
 	<tmpl:put name='title' direct='true'>Available Delivery Slots</tmpl:put>
 		<tmpl:put name='content' direct='true'>
-				
 				<%//Finds the address%>
 				<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
 

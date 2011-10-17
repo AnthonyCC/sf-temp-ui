@@ -11,7 +11,12 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<% //expanded page dimensions
+final int W_YA_MANAGE_TOTAL = 970;
+final int W_YA_CSICON = 40;
+final int W_YA_MAIN = 601;
+final int W_YA_CT = 328;
+%>
 <%!
 private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
 		StringBuffer sb = new StringBuffer();
@@ -72,7 +77,7 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 	}
 %>
 </fd:OrderHistoryInfo>
-<table width="675" border="0" cellspacing="0" cellpadding="0">
+<table width="<%= W_YA_MANAGE_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
 	<tr>
 		<td class="text13">
 			<font class="title18">Welcome to Your Account</font><br>If you need to make any changes or updates to
@@ -80,12 +85,12 @@ your account information, this is the place to do it.<br></td>
 	</tr>
 </table>
 <img src="/media_stat/images/layout/clear.gif" width="1" height="8" BORDER="0"><br>
-<img src="/media_stat/images/layout/ff9933.gif" width="675" height="1" BORDER="0"><br>
+<img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_MANAGE_TOTAL %>" height="1" BORDER="0"><br>
 <img src="/media_stat/images/layout/clear.gif" width="1" height="8" BORDER="0"><br><br>
 
-<table width="675" border="0" cellspacing="0" cellpadding="0">
+<table width="<%= W_YA_MANAGE_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="500" valign="top" >
+<td width="<%= W_YA_MAIN %>" valign="top" >
 <!-- ct user logo -->
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr><td valign="top" class="text13">
@@ -182,11 +187,11 @@ your account information, this is the place to do it.<br></td>
 </table>
 </td>
 <% if(!user.isChefsTable() && (user.isOkayToDisplayCTEligibility() && !user.hasQualifiedForCT())) { %>
-	<TD valign="top" align="CENTER" width="40">
-		<img src="/media_stat/images/layout/ff9900.gif" width="1" height="580"><br>
-	</td>
+<TD width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1"></td>
+<TD width="1" bgcolor="#ff9900"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+<TD width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1"></td>
 <% } %>
-<td valign="top">
+<td valign="top" width="<%= W_YA_CT %>">
 	<!-- ct user logo -->
 	<% 
     if(!user.isChefsTable() && user.isOkayToDisplayCTEligibility() && !user.hasQualifiedForCT()) {
@@ -194,14 +199,14 @@ your account information, this is the place to do it.<br></td>
 %>
 
  	
-	<table align="center" border="0" cellspacing="0" cellpadding="0">
+	<table align="center" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_CT %>">
 		<tr valign="top">
 			<td valign="top" class="text13">
 			<td><img src="/media_stat/images/chefs_table/ct_almost_hdr.gif"/><br><br></td>
 		</tr>
 	</table>
 	
-	<table align="center" border="0" cellspacing="0" cellpadding="0">
+	<table align="center" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_CT %>">
 		<tr valign="top">
 			<td valign="top" class="text13">We enroll new members in our Chef's Table rewards program every month. 
 			<br><br><font class="text13bold">
@@ -225,7 +230,7 @@ your account information, this is the place to do it.<br></td>
 <%  }
 	if(user.isChefsTable() || (user.isOkayToDisplayCTEligibility() && !user.hasQualifiedForCT())) {
 		%>
-		<table align="center" border="0" cellspacing="0" cellpadding="0">
+		<table align="center" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_CT %>">
 		<tr valign="top">
 			<td valign="top" class="text13">
 			<% if(!user.isChefsTable() && user.isOkayToDisplayCTEligibility()) { %>
@@ -237,7 +242,7 @@ your account information, this is the place to do it.<br></td>
 		</tr>
 		</table>
 	<% }else{ %>
-		<table align="center" border="0" cellspacing="0" cellpadding="0">
+		<table align="center" border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_CT %>">
 		<tr valign="top">
 			<td valign="top" class="text13">
 		<fd:IncludeMedia name="/media/editorial/site_pages/account/right_all.html" />
@@ -250,12 +255,12 @@ your account information, this is the place to do it.<br></td>
 </table>
 
 <br><br>
-<img src="/media_stat/images/layout/ff9933.gif" width="675" height="1" BORDER="0"><br>
+<img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_MANAGE_TOTAL %>" height="1" BORDER="0"><br>
 <FONT CLASS="space4pix"><br><br></FONT>
-<table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="675">
+<table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="<%= W_YA_MANAGE_TOTAL %>">
 <TR VALIGN="TOP">
-<TD width="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="CONTINUE SHOPPING" ALIGN="LEFT"></a></TD>
-<TD width="640"  class="text11" ><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a>
+<TD width="<%= W_YA_CSICON %>"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="CONTINUE SHOPPING" ALIGN="LEFT"></a></TD>
+<TD width="<%= W_YA_MANAGE_TOTAL - W_YA_CSICON %>"  class="text11" ><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a>
 <br>from <A HREF="/index.jsp"><b>Home Page</b></A><br><img src="/media_stat/images/layout/clear.gif" width="340" height="1" BORDER="0"></TD>
 </TR>
 </table>

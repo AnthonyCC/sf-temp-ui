@@ -10,7 +10,11 @@
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<% //expanded page dimensions
+final int W_PROMOTION_TOTAL = 970;
+final int W_PROMOTION_LEFT = 200;
+final int W_PROMOTION_RIGHT = 100;
+%>
 <fd:CheckLoginStatus/>
 <%
         FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
@@ -60,16 +64,16 @@
     <tmpl:put name='content' direct='true'>
     <table width="100%" cellpadding="0" cellspacing="0">
     <tr>
-    <td><img src="/media_stat/images/layout/clear.gif" width="200" height="1"></td>
-    <td><img src="/media_stat/images/layout/clear.gif" width="443" height="1"></td>
-    <td><img src="/media_stat/images/layout/clear.gif" width="100" height="1"></td>
+      <td width="<%= W_PROMOTION_LEFT %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_PROMOTION_LEFT %>" height="1"></td>
+      <td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+      <td width="<%= W_PROMOTION_RIGHT %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_PROMOTION_RIGHT %>" height="1"></td>
     </tr>
     <tr>
     <td>&nbsp;</td>
     <td align="right">
             <table cellpadding="0" cellspacing="4" border="0">
             <tr valign="middle">
-            <td align="right">
+            <td align="right" style="padding-right: 5px;">
 				<a href="<%=continueShoppingLink%>"><img src="/media_stat/images/buttons/continue_shopping_text.gif" width="117" height="13" border="0" alt="CONTINUE SHOPPING" /></a>
 				<a href="<%=continueShoppingLink%>"><%= hasDepartment?("<br />in the <b>"+deptName+" Department</b>"):""%></a></td>
             <td><a href="<%=continueShoppingLink%>"><img src="/media_stat/images/buttons/arrow_green_right.gif" width="28" height="28" border="0" alt="CONTINUE SHOPPING"></a></td>
@@ -90,7 +94,7 @@
     <td align="right">
             <table cellpadding="0" cellspacing="4" border="0">
             <tr valign="middle">
-            <td align="right">
+            <td align="right" style="padding-right: 5px;">
 				<a href="<%=continueShoppingLink%>"><img src="/media_stat/images/buttons/continue_shopping_text.gif" width="117" height="13" border="0" alt="CONTINUE SHOPPING" /></a>
 				<a href="<%=continueShoppingLink%>"><%= hasDepartment?("<br>in the <b>"+deptName+" Department</b>"):""%></a>
 			</td>

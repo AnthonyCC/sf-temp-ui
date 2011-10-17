@@ -9,6 +9,11 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCustomerCreditUtil"%>
 <%@ page import="com.freshdirect.fdstore.customer.SavedRecipientModel"%>
+
+<% //expanded page dimensions
+final int W_RECIPENT_LIST_TOTAL = 970;
+%>
+
 <%
 //for display of recipient number
 int indx = 1;
@@ -21,12 +26,12 @@ if("true".equalsIgnoreCase(gcStr)){
 FDUserI giftUser = (FDUserI)session.getAttribute(SessionName.USER);
 
 FDRecipientList recipList = giftUser.getRecipientList();
-if(recipList != null) {
+ if(recipList != null) {
 	List<RecipientModel> recipients =  recipList.getRecipients();
-	if(!recipients.isEmpty()) {
+ 	if(!recipients.isEmpty()) {
 		if (isConfirm) {
 			//we're on payment info page
-		%><table width="675" cellspacing="0" cellpadding="0" border="0" valign="middle">
+		%><table width="<%=W_RECIPENT_LIST_TOTAL%>" cellspacing="0" cellpadding="0" border="0" valign="middle">
 			<tr>
 				<td><img src="/media_stat/images/giftcards/purchase/gc_review_recip_list.gif" width="176" height="13" alt="Review Your Recipient List" /><br /><br />
 					Check the names and amounts of your gifts below.
@@ -37,7 +42,7 @@ if(recipList != null) {
 		}else{
 			//we're on gift & recipient options page
 		%>
-		<table width="675" cellspacing="0" cellpadding="0" border="0" valign="middle">
+		<table width="<%=W_RECIPENT_LIST_TOTAL%>" cellspacing="0" cellpadding="0" border="0" valign="middle">
 			<tr>
 				<td><img src="/media_stat/images/giftcards/purchase/recip_list.gif" width="120" height="21" alt="Recipient List" /><br /><br />
 					Check the names and amounts for your giftcards below. <strong>Click the link by the recipient names to see how their Email Gift Card will appear in their Inbox!</strong> If you need to make changes, you may alter the amount here or click the Edit link to change personal info.
@@ -114,6 +119,6 @@ if(recipList != null) {
 		<% } %>
 		</table>
 		<%
-	}
-}
+ 	}
+ }
 		%>

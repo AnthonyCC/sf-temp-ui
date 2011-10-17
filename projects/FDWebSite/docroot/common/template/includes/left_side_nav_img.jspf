@@ -1,6 +1,11 @@
 <!-- Left side nav -->
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+
+<%! //expanded page dimensions
+public final static int W_LEFT_SIDE_NAV_IMG_TOTAL = 150;
+%>
+
 <%!
 
 	/** @return number of displayed rows */
@@ -30,7 +35,7 @@
 		}
 
 		displayedRows++;
-		buf.append("<tr><td align=\"right\" width=\"120\"><div style=\"margin-left:");
+		buf.append("<tr><td align=\"right\" width=\""+(W_LEFT_SIDE_NAV_IMG_TOTAL-5)+"\"><div style=\"margin-left:");
 		buf.append((ne.getDepth() * 4) + 8);
 		buf.append("px; text-indent: -8px;\">");
 
@@ -115,7 +120,7 @@ for (Iterator i = leftNavItemsList.iterator(); i.hasNext(); ) {
 
 if (displayedRows > 0) {
 %>
-<table border="0" cellspacing="0" cellpadding="0" align="right" width="125">
+<table border="0" cellspacing="0" cellpadding="0" align="right" width="<%=W_LEFT_SIDE_NAV_IMG_TOTAL%>">
 <%= buf.toString() %>
 </table><br>
 <%-- spacer 130x20 --%>

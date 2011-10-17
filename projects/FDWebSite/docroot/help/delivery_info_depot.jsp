@@ -12,15 +12,23 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+<% //expanded page dimensions
+final int W_DELIVERY_INFO_DEPOT_TOTAL = 970;
+final int W_DELIVERY_INFO_DEPOT_LEFT = 724;
+final int W_DELIVERY_INFO_DEPOT_CENTER = 55;
+final int W_DELIVERY_INFO_DEPOT_RIGHT = 191;
+%>
+
 <fd:CheckLoginStatus id="user" />
 
 <tmpl:insert template='/common/template/delivery_info_nav.jsp'>
 	<tmpl:put name='title' direct='true'>Delivery Information</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 <% if (user.isDepotUser()) { %>
-<table width="693" CELLPADDING="0" CELLSPACING="0" border="0">
+<table width="<%=W_DELIVERY_INFO_DEPOT_TOTAL%>" CELLPADDING="0" CELLSPACING="0" border="0">
 		  	<tr valign="top">
-		  		<td><IMG src="/media_stat/images/layout/clear.gif" width="693" HEIGHT="15" border="0"><BR><img src="/media_stat/images/template/depot/how_depot_delivery_works.gif" width="525" height="21" alt="" border="0"><br><FONT CLASS="space2pix"><BR></FONT></td>
+		  		<td><IMG src="/media_stat/images/layout/clear.gif" width="<%=W_DELIVERY_INFO_DEPOT_TOTAL%>" HEIGHT="15" border="0"><BR><img src="/media_stat/images/template/depot/how_depot_delivery_works.gif" width="525" height="21" alt="" border="0"><br><FONT CLASS="space2pix"><BR></FONT></td>
 		 	</tr>
 			<tr bgcolor="#CCCCCC">
 			<td><IMG src="/media_stat/images/layout/clear.gif" width="1" HEIGHT="1"></td>
@@ -50,13 +58,13 @@
 	</tr>
 </table>
 <% } else { %>
-<table width="693" border="0" cellpadding="0" cellspacing="0">
+<table width="<%=W_DELIVERY_INFO_DEPOT_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
      <tr>
-          <td><img src="/media_stat/images/layout/clear.gif" width="512" height="18"></td>
-          <td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
+          <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DELIVERY_INFO_DEPOT_LEFT%>" height="18"></td>
+          <td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="<%=(W_DELIVERY_INFO_DEPOT_CENTER-1)/2%>" height="1"></td>
           <td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-          <td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
-          <td><img src="/media_stat/images/layout/clear.gif" width="160" height="1"></td>
+          <td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="<%=(W_DELIVERY_INFO_DEPOT_CENTER-1)/2%>" height="1"></td>
+          <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DELIVERY_INFO_DEPOT_RIGHT%>" height="1"></td>
     </tr>
           
     <tr valign="top">

@@ -214,7 +214,7 @@ private static Category  LOGGER = LoggerFactory.getInstance("group.jsp");
 			}
 
 			leftNavBuf.append("<tr><td width=\"120\"><div style=\"margin-left:");
-			leftNavBuf.append(9);
+			leftNavBuf.append(18);
 			leftNavBuf.append("px; text-indent: -8px;\">");
 				leftNavBuf.append("<b>");
 					leftNavBuf.append("<a href=\"");
@@ -238,11 +238,11 @@ private static Category  LOGGER = LoggerFactory.getInstance("group.jsp");
 <tmpl:insert template='<%= templatePath %>'>
 	<tmpl:put name='title' direct='true'>FreshDirect - Group Scale Pricing</tmpl:put>
 	<tmpl:put name='left_nav_manual' direct='true'>
-		<table border="0" cellspacing="0" cellpadding="0" align="center" width="125">
+		<table border="0" cellspacing="0" cellpadding="0" align="center" width="150">
 			<tr>
-				<td width="1" rowspan="<%= displayedRows %>"><%-- spacer 1x1 --%></td>
-				<td width="120"><%-- spacer 120x1 --%></td>
-				<td width="4" rowspan="<%= displayedRows %>"><%-- spacer 4x1 --%></td>
+				<td width="5" rowspan="<%= displayedRows %>"><%-- spacer 1x1 --%></td>
+				<td width="140"><%-- spacer 120x1 --%></td>
+				<td width="5" rowspan="<%= displayedRows %>"><%-- spacer 4x1 --%></td>
 			</tr>
 			<%= leftNavBuf.toString() %>
 		</table><br>
@@ -284,13 +284,13 @@ private static Category  LOGGER = LoggerFactory.getInstance("group.jsp");
 					// there are errors..Display them
 					Collection myErrs=((ActionResult)result).getErrors();
 					%>
-					<table border="0" cellspacing="0" cellpadding="0" width="425">
+					<table border="0" cellspacing="0" cellpadding="0" width="100%">
 					<%
 						for (Iterator errItr = myErrs.iterator();errItr.hasNext(); ) {
 							String errDesc = ((ActionError)errItr.next()).getDescription();
 						%>
 							<tr valign="top">
-								<td width="350" valign="middle">
+								<td width="100%" valign="middle">
 									<div id="error_descriptions">   <FONT class="text12bold" color="#CC3300"><%=errDesc%></FONT></div>
 								</td>
 							</tr>

@@ -4,6 +4,8 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -20,8 +22,14 @@ public class DepartmentTag extends AbstractGetterTag<ContentNodeModel> {
         this.departmentId = deptId;
     }
     
+    
+    
 	protected ContentNodeModel getResult() throws FDResourceException {
-		return  ContentFactory.getInstance().getContentNode( this.departmentId );
+	    ContentNodeModel res = ContentFactory.getInstance().getContentNode( FDContentTypes.DEPARTMENT, this.departmentId );
+	    if (res == null) {
+	        res = ContentFactory.getInstance().getContentNode( FDContentTypes.RECIPE_DEPARTMENT, this.departmentId );
+	    }
+	    return res;
 	}
 
 	public static class TagEI extends TagExtraInfo {

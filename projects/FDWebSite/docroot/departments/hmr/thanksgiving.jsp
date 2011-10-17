@@ -9,6 +9,11 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
+
+<% //expanded page dimensions
+final int W_THANKSGIVING = 765;
+%>
+
 <fd:CheckLoginStatus guestAllowed="true" />
 <% 
 
@@ -18,9 +23,9 @@ String catId = request.getParameter("catId");
 <tmpl:insert template='/common/template/right_dnav.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Thanksgiving Feast</tmpl:put>
     <tmpl:put name='content' direct='true'><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4"><BR>
-<TABLE border=0 cellPadding=0 cellSpacing=0 width=524>
+<TABLE border=0 cellPadding=0 cellSpacing=0 width="<%=W_THANKSGIVING%>">
 <TR><TD>
-<IMG src="/media_stat/images/template/kitchen/thanksgiving_hdr2.gif" WIDTH="524" HEIGHT="105" BORDER="0" alt="THANKSGIVING FEAST - Order by Sunday Nov. 24"><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10"><BR>
+<div align="center"><IMG src="/media_stat/images/template/kitchen/thanksgiving_hdr2.gif" WIDTH="765" HEIGHT="105" BORDER="0" alt="THANKSGIVING FEAST - Order by Sunday Nov. 24"><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10"></div><BR>
 <FONT class=text12>Your turn to cook this year? We have you covered - from gorgeous all-natural fresh roasted turkey to spiced pumpkin pie, with every glorious morsel in between. Our chefs <a href="javascript:pop('/media/editorial/manager_bios/david_mcInerney.jsp',400,585)">David McInerney</a> (formerly of Bouley and One If by Land, Two If by Sea) and <a href="javascript:pop('/media/editorial/manager_bios/michael_stark.jsp',400,585)">Michael Stark</a> (formerly of Tribeca Grill) will be preparing every dish using top quality ingredients, family recipes, and professional know-how so it's bound to be exceptionally delicious. When we bring it to your door, all you'll have to do is heat and serve, so you can spend time with your family.<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="14"><BR><div align="center"><IMG src="/media_stat/images/template/kitchen/thanksgiving_sub_hdr.gif" WIDTH="507" HEIGHT="63" BORDER="0" alt="thanksgiving sub header"><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="12"><BR><img src="/media_stat/images/template/kitchen/turkey.jpg" WIDTH="252" HEIGHT="182" BORDER="0" alt="thanksgiving turkey"><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="14"><BR><img src="/media_stat/images/template/kitchen/thanksgiving_menu.gif" WIDTH="256" HEIGHT="14" BORDER="0" alt="thanksgiving menu">
 <BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10"><BR>
 <font color="#996699"><b>Choose Fresh Roasted Turkey:</b></font>

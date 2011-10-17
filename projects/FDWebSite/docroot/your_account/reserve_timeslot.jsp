@@ -21,6 +21,11 @@
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
+
+<% //expanded page dimensions
+final int W_RESERVE_TIMESLOTS_TOTAL = 970;
+%>
+
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <%
 String addressId = NVL.apply(request.getParameter("addressId"), "");
@@ -63,9 +68,9 @@ String actionName = request.getParameter("actionName");
 	
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="10">
 		<%//Reservation stuff%>
-		<table width="693" cellpadding="0" cellspacing="0" border="0">
+		<table width="<%=W_RESERVE_TIMESLOTS_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td colspan="7"><img src="/media_stat/images/layout/dotted_line.gif" width="693" height="1"></td>
+				<td colspan="7"><img src="/media_stat/images/layout/dotted_line.gif" width="<%=W_RESERVE_TIMESLOTS_TOTAL%>" height="1"></td>
 			</tr>
 			<tr>
 				<td colspan="7"><img src="/media_stat/images/template/youraccount/choose_reservation_type.gif" width="256" height="10" vspace="10"></td>

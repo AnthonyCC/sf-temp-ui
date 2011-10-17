@@ -14,6 +14,12 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
+
+<% //expanded page dimensions
+final int W_PARTY_PLATTER_TOTAL = 601;
+%>
+
+
 <fd:CheckLoginStatus />
 <%!
 	java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
@@ -41,7 +47,7 @@ String prodPopUpSize = "small";
 EnumProductLayout prodLayout = productNode.getProductLayout(EnumProductLayout.PARTY_PLATTER);
 
 String prodNameAttribute = JspMethods.getProductNameToUse(parentCat);
-int maxWidth=430;
+int maxWidth=W_PARTY_PLATTER_TOTAL;
 String suLabel="";
 Collection pgErrs=((ActionResult)result).getErrors();
 StringBuffer errMsgBuff = new StringBuffer();

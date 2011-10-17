@@ -8,11 +8,16 @@
 %><%@ page import='com.freshdirect.fdstore.*'
 %><%@ taglib prefix="fd" uri="freshdirect"
 %><%@ taglib prefix="logic" uri="logic" %>
+
+<% //expanded page dimensions
+final int W_GLOBAL_NAV_TOP_TOTAL = 970;
+%>
+
 <jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
 <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 <%
 //*****************************************************************
-FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+//FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 
 if(user != null) {
 	//	Defaults to Guest User;
@@ -33,7 +38,7 @@ if(user != null) {
 	<fd:GetSiteAnnouncements id="announcments" user="<%=user%>">
 	
 		<logic:iterate id="ann" collection="<%=announcments%>" type="com.freshdirect.fdstore.FDSiteAnnouncementI">
-			<table width="745" cellpadding="0" cellspacing="0" border="0">
+			<table width="<%=W_GLOBAL_NAV_TOP_TOTAL %>" cellpadding="0" cellspacing="0" border="0">
 				<tr align="center">
 					<td>
 						<font class="text12rbold"><%=ann.getHeader()%></font><br>
@@ -56,18 +61,18 @@ if(user != null) {
 	}
 
 	if (user.isNotServiceable()) {
-	%>	<table width="745" border="0" cellpadding="0" cellspacing="0">
+	%>	<table width="<%=W_GLOBAL_NAV_TOP_TOTAL %>" border="0" cellpadding="0" cellspacing="0">
 		<tr><td class="text18gr "><img src="/media_stat/images/navigation/fd_not_in_area.gif" width="404" height="13" alt="" border="0"></td></tr>
 		<tr><td class="text10grbold">
 		We'll send you an e-mail a few weeks before we arrive in your neighborhood. In the meantime, please feel free to browse around our online store &#151; just remember that you will not be able to sign up or place an order. 
 		<a href="javascript:popup('/help/delivery_zones.jsp','large')">Click here</a> to see current delivery zones. To enter a different zip code, <a href='<%= response.encodeURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp") %>'>click here</a>.
 		</td></tr>
 		<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"></td></tr>
-		<tr><td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="745" height="1" alt="" border="0"></td></tr>
+		<tr><td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="<%=W_GLOBAL_NAV_TOP_TOTAL %>" height="1" alt="" border="0"></td></tr>
 	</table>
 	<br>
 	<% } else if (user.isPickupOnly() && !user.isDepotUser() && !(request.getRequestURI().toLowerCase().indexOf("/checkout") > -1)) { %>
-	<table width="745" border="0" cellpadding="0" cellspacing="0">
+	<table width="<%=W_GLOBAL_NAV_TOP_TOTAL %>" border="0" cellpadding="0" cellspacing="0">
 		<tr valign="top">
 	     <td><img src="/media_stat/images/navigation/banners/home_dlv_not_avail.gif" width="366" height="10" alt="HOME DELIVERY IS NOT CURRENTLY AVAILABLE IN YOUR AREA.">
 	     <br><a href="javascript:popup('/help/delivery_zones.jsp','large')">View our current delivery zones</a> or enter a <a href='<%= response.encodeURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp") %>'>different zip code</a>.
@@ -86,7 +91,7 @@ if(user != null) {
 	</table>
 	<br>
 	<% } %>
-	<table width="745" border="0" cellpadding="0" cellspacing="0">
+	<table width="<%=W_GLOBAL_NAV_TOP_TOTAL %>" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td width="182" ROWSPAN="3" valign="BOTTOM">
 	<%
@@ -131,7 +136,7 @@ if(user != null) {
 				</tr>
 				<tr valign="bottom">
 					<td width="5">&nbsp;</td>
-					<td width="74"><input type="text" name="searchParams" style="width:74px;" maxlength="100" value="<%= request.getParameter("searchParams")!=null ? request.getParameter("searchParams") : "" %>" class="search"></td>
+					<td width="284"><input type="text" name="searchParams" style="width:284px;" maxlength="100" value="<%= request.getParameter("searchParams")!=null ? request.getParameter("searchParams") : "" %>" class="search"></td>
 					<td width="41"><input type="image" src="/media_stat/images/navigation/global_nav/nav_button_find.gif" style="width: 35px; height: 14px; border: 0; padding: 3px 3px;"></td>
 				</tr>
 				</table>
@@ -155,8 +160,8 @@ if(user != null) {
 					} 
 			}
 		%>
-		<td><a href="<%=dlvInfoLink%>.jsp" onMouseover="swapImage('DELIVERY_IMG','/media_stat/images/navigation/global_nav/delivery_r.gif')" onMouseout="swapImage('DELIVERY_IMG','/media_stat/images/navigation/global_nav/delivery.gif')"><img src="/media_stat/images/navigation/global_nav/delivery.gif" name="DELIVERY_IMG" height="26" alt="DELIVERY INFO" border="0"></a></td>
-		<td align="center"><img src="/media_stat/images/layout/clear.gif" width="11" height="1" border="0"  alt=""><br><img src="/media_stat/images/layout/999966.gif" width="1" height="24" alt=""></td>
+		<td width="70"><a href="<%=dlvInfoLink%>.jsp" onMouseover="swapImage('DELIVERY_IMG','/media_stat/images/navigation/global_nav/delivery_r.gif')" onMouseout="swapImage('DELIVERY_IMG','/media_stat/images/navigation/global_nav/delivery.gif')"><img src="/media_stat/images/navigation/global_nav/delivery.gif" name="DELIVERY_IMG" height="26" alt="DELIVERY INFO" border="0"></a></td>
+		<td width="11" align="center"><img src="/media_stat/images/layout/clear.gif" width="11" height="1" border="0"  alt=""><br><img src="/media_stat/images/layout/999966.gif" width="1" height="24" alt=""></td>
 		<td width="54"><a href="/quickshop/index.jsp" onMouseover="swapImage('NAV_QUICKSHOP_IMG','/media_stat/images/navigation/global_nav/nav_button_quick_shop_r.gif')" onMouseout="swapImage('NAV_QUICKSHOP_IMG','/media_stat/images/navigation/global_nav/nav_button_quick_shop.gif')"><img src="/media_stat/images/navigation/global_nav/nav_button_quick_shop.gif" name="NAV_QUICKSHOP_IMG" width="54" height="26" alt="QUICK SHOP" border="0"></a></td>
 		<td width="11" align="center"><img src="/media_stat/images/layout/clear.gif" width="11" height="1" border="0"  alt=""><br><img src="/media_stat/images/layout/999966.gif" width="1" height="24" alt=""></td>
 		<td width="71"><a href="/your_account/manage_account.jsp" onMouseover="swapImage('NAV_YOURACCOUNT_IMG','/media_stat/images/navigation/global_nav/nav_button_your_account2_r.gif')" onMouseout="swapImage('NAV_YOURACCOUNT_IMG','/media_stat/images/navigation/global_nav/nav_button_your_account2.gif')"><img src="/media_stat/images/navigation/global_nav/nav_button_your_account2.gif" name="NAV_YOURACCOUNT_IMG" width="71" height="25" alt="YOUR ACCOUNT" border="0"></a></td>
@@ -165,7 +170,7 @@ if(user != null) {
 	</tr>
 	</table>
 <% } else { %>
-	<table width="745" border="0" cellpadding="0" cellspacing="0">
+	<table width="<%=W_GLOBAL_NAV_TOP_TOTAL %>" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td width="182" ROWSPAN="3" valign="BOTTOM">
 	

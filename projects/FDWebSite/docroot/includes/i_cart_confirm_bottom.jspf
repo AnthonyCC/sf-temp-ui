@@ -14,6 +14,11 @@
 
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<% //expanded page dimensions
+final int W_CART_CONFIRM_BOTTOM_TOTAL = 590;
+final int W_CART_CONFIRM_BOTTOM_ICON = 40;
+final int W_CART_CONFIRM_BOTTOM_ICON_MESSAGE = 255;
+%>
 <%--
 	@param productNode Current product, instance of ProductModel
 	@param recipe      Current recipe, instance of Recipe (optional)
@@ -90,12 +95,12 @@
 	FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 %>
 		
-<table cellpadding="0" cellspacing="0" border="0" width="400">
+<table cellpadding="0" cellspacing="0" border="0" width="<%= W_CART_CONFIRM_BOTTOM_TOTAL %>">
 		<tr>
-			<td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-			<td><img src="/media_stat/images/layout/clear.gif" width="140" height="8"></td>
-			<td><img src="/media_stat/images/layout/clear.gif" width="200" height="8"></td>
-			<td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
+      <td><img src="/media_stat/images/layout/clear.gif" width="<%= W_CART_CONFIRM_BOTTOM_ICON %>" height="8"></td>
+      <td><img src="/media_stat/images/layout/clear.gif" width="<%= W_CART_CONFIRM_BOTTOM_ICON_MESSAGE %>" height="8"></td>
+      <td><img src="/media_stat/images/layout/clear.gif" width="<%= W_CART_CONFIRM_BOTTOM_ICON_MESSAGE %>" height="8"></td>
+      <td><img src="/media_stat/images/layout/clear.gif" width="<%= W_CART_CONFIRM_BOTTOM_ICON %>" height="8"></td>
 		</tr>
 		<tr valign="middle">                    
 			<td valign="top"><a href="<%=continueShoppingLink%>"><img src="/media_stat/images/template/confirmation/arrow_green_left.gif" width="28" height="28" border="0" alt="CONTINUE SHOPPING"></a></td>

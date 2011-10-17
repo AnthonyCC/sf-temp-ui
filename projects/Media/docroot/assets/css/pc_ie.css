@@ -69,6 +69,7 @@ A.list		    { line-height: 12px; }
 .text10trebuchet { font-size: 10px; font-family: Trebuchet MS, sans-serif; }
 .text10_lh16	 { font-size: 9px; line-height: 16px; font-family: Verdana, Arial, sans-serif; }
 .text10grbold    { font-size: 9px; color: #666666; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+.text10grbold td { font-size: 9px; color: #666666; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .text10w	     { font-size: 9px; color: #FFFFFF; font-family: Verdana, Arial, sans-serif; }
 .text10wbold     { font-size: 9px; color: #FFFFFF; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .text10rbold     { font-size: 9px; color: #CC0000; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
@@ -107,11 +108,11 @@ A.list		    { line-height: 12px; }
 .title13g2		 { font-size: 13px;  line-height: 18px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 
 .text14			 { font-size: 13px; font-weight: normal; font-family: Verdana, Arial, sans-serif; }
-.title14		 { font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+.title14		 { font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif; line-height: 16px;}
 .titleor14		 { font-size: 13px; color: #FF9933; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .text14rbold 	 { font-size: 13px; color: #CC0000; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 
-.text15	         { font-size: 14px; font-family: Verdana, Arial, sans-serif; }
+.text15	         { font-size: 14px; font-family: Verdana, Arial, sans-serif; line-height: 18px;}
 
 .text16 	     { font-size: 15px; font-weight: normal; font-family: Verdana, Arial, sans-serif; }
 .title16 	     { font-size: 15px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
@@ -119,9 +120,9 @@ A.list		    { line-height: 12px; }
 
 .title17 	     { font-size: 16px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 
-.title18 	     { font-size: 17px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
-.title18or	     { font-size: 18px; color: #FF9933; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
-.text18gr 		 { font-size: 17px; color: #666666; font-family: Verdana, Arial, sans-serif; }
+.title18 	     { font-size: 17px; font-weight: bold; font-family: Verdana, Arial, sans-serif; line-height: 20px; }
+.title18or	     { font-size: 18px; color: #FF9933; font-weight: bold; font-family: Verdana, Arial, sans-serif; line-height: 20px; }
+.text18gr 		 { font-size: 17px; color: #666666; font-family: Verdana, Arial, sans-serif; line-height: 20px;}
 
 .title19 	     { font-size: 18px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .title20 	     { font-size: 19px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
@@ -321,7 +322,7 @@ td.ymal_separator {
 }
 
 td.ymal_addtocart {
-	padding			: 0px;
+	padding			: 5px 0 5px;
 }
 
 table.ymal caption {
@@ -482,6 +483,7 @@ div.control, div.slotRow, div.time {
 		font-size: 11px;
 		text-decoration: none;
 		padding: 6px;
+		padding-left: 5px;
 		display: block;
 		border-bottom: 1px solid #D5C6A7;
 	}
@@ -696,13 +698,13 @@ a.tab:active	{ color : #845286; }
 .siteAccessInc_RobinHood td { padding: 4px 0px; }
 
 /* COS Survey */
-table.COSSurvey { width: 550px; }
+table.COSSurvey { width: 806px; }
 table.COSSurvey, table.COSSurvey td { padding: 0; margin: 0; border-collapse: collapse; }
 table.COSSurvey td.padLeft10 { padding-left: 10px; }
 table.COSSurvey td.padRight10 { padding-right: 10px; }
-img.COSSurvey_spacer01 { width: 140px; height: 8px; }
-img.COSSurvey_spacer02 { width: 180px; height: 8px; }
-img.COSSurvey_spacer03 { width: 80px; height: 8px; }
+img.COSSurvey_spacer01 { width: 150px; height: 8px; }
+img.COSSurvey_spacer02 { width: 190px; height: 8px; }
+img.COSSurvey_spacer03 { width: 91px; height: 8px; }
 img.COSSurvey_spacer04 { width: 140px; height: 8px; }
 
 /** Product Page / QuickBuy panel **/

@@ -155,7 +155,7 @@ if ( skuSize == 0 ) {
 
 %>	<input type="hidden" name="productId" value='<%= __tempLine.getProductName() %>'>
 	<input type="hidden" name="catId" value='<%= __tempLine.getCategoryName() %>'>
-		<table width="100%" cellpadding="0" cellspacing="0" border="0" <% if (alignRight) { %>align="right"<% } %>>
+		<table width="100%" style="margin-top: 8px;" cellpadding="0" cellspacing="0" border="0" <% if (alignRight) { %>align="right"<% } %>>
 			<tr><td style="<%= CSSTableStyle %>">
 			
         		
@@ -606,7 +606,7 @@ if ( skuSize == 0 ) {
 
     
    				<%-- Nested Table 3 for Quantity box (description) with increment/decrement arrows & price & add to cart display --%>
-				<table cellpadding="0" cellspacing="0" border="0" style="<%= alignRight ? "float: right; margin-right: 0px; margin-left: auto;" : "" %>"> 
+				<table width="100%" cellpadding="0" cellspacing="0" border="0" style="<%= alignRight ? "float: right; margin-right: 0px; margin-left: auto;" : "" %>"> 
     
         			<% if ( displaySalesUnitsOnly ) { // SOLD BY EACHES %>
         			
@@ -834,7 +834,7 @@ if ( skuSize == 0 ) {
         					<a href="<%=referer%>"><img name="no_changes" src="/media_stat/images/buttons/no_change.gif" border="0"></a><br/><font class="space4pix"><br/></font>
         					<% 
         				} else {
-        					%><input type="image" name="add_to_cart" src="/media_stat/images/buttons/add_to_cart.gif" width="93" height="20" border="0" style="<%= alignRight ? "margin-right: 0px; margin-left: auto; " : "" %>padding-top:5px; padding-bottom:3px; display: block;">
+        					%><input type="image" name="add_to_cart" src="/media_stat/images/buttons/add_to_cart.gif" width="93" height="20" border="0" style="<%= alignRight ? "margin-right: 0px; margin-left: auto; " : "" %>padding:5px 2px 3px; display: block;">
         					<%
 								}
 
@@ -885,7 +885,7 @@ if ( skuSize == 0 ) {
 								if ( isWineLayout) {
     					%>
 							<fd:CCLCheck>
-									<a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('product_form',this,'action=CCL:AddToList')"><img src="/media_stat/ccl/save_to_list_btn.gif" width="93" height="20" vspace="5" style="border: 0;"></a>     
+									<a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('product_form',this,'action=CCL:AddToList')"><img src="/media_stat/ccl/save_to_list_btn.gif" width="93" height="20" style="border: 0; margin: 2px;"></a>     
 							</fd:CCLCheck>
 							<%
 								} 
@@ -898,11 +898,11 @@ if ( skuSize == 0 ) {
 							
 								<fd:CCLCheck>
 									<% if ( !isWineLayout ) { %>
-										<a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('product_form',this,'action=CCL:AddToList')">
-											<img src="/media_stat/ccl/save_to_list_btn.gif" width="93" height="20" vspace="5" style="border: 0; padding-left: 14px">
+										<a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('product_form',this,'action=CCL:AddToList')" style="margin: 5px 2px; display: block; width: 93px; float: right;">
+											<img src="/media_stat/ccl/save_to_list_btn.gif" width="93" height="20" style="border: 0;">
 										</a>
 										<%-- bottom black line after add to cart --%>									
-										<img src="/media_stat/images/layout/333333.gif" width="180" height="1" border="0" vspace="10">
+										<img src="/media_stat/images/layout/333333.gif" width="100%" height="1" border="0" style="margin: 10px 0;">
 									<% } %>
 								</fd:CCLCheck>
 								

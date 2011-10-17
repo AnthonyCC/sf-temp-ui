@@ -6,6 +6,10 @@
 <%@ page import='com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 
+<% //expanded page dimensions
+final int W_ADDRESS_FINDER_TOTAL = 970;
+%>
+
 <%
 Collection shipToAddresses = new ArrayList();
 ErpAddressModel address = null;
@@ -32,7 +36,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 
 <%@ include file="/shared/includes/i_loyalty_bar.jspf" %> <br/>
 
-<table width="693" cellpadding="0" cellspacing="0" border="0">
+<table width="<%=W_ADDRESS_FINDER_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 <%if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM) && !timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)){%>
 
 			<%if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS) ||(timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))){ %>
@@ -114,7 +118,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 					</td>
 					<%if(!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM) && !timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)){%>
 						<td class="text12">
-							<b>Please note that you may only have a delivery<br/>timeslot reservation for one address at a time.</b>
+							<b>Please note that you may only have a delivery timeslot reservation for one address at a time.</b>
 						</td>
 					<%}%>
 				
@@ -152,13 +156,14 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 		&&!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)&& !timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM) && user.isEligibleForPreReservation()){
 %>
 
-<table width="693" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC;text-align:center;">
+<table width="<%=W_ADDRESS_FINDER_TOTAL%>" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC;text-align:center;">
+
 	<tr>
 		<td colspan="7">
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br/>
 	<% if(user.isEligibleForPreReservation() && (!"true".equals(request.getParameter("chefstable")))) { %>
 			
-				<table width="100%">
+				<table width="100%" style="padding-left: 5px; padding-right: 5px;">
 					<tr>
 						<td  align="left">
 							<font class="text14"><b>Want to Plan Ahead?</b></font><br/>

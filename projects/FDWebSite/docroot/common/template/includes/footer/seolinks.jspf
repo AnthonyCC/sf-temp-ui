@@ -1,0 +1,72 @@
+<div id="shopbylinks">
+  <div class="container clearfix">
+    <div class="column span-4 dottedborder">
+      <h3>shop by department</h3>
+      <ul>
+        <li><a href="/department.jsp?deptId=fru&amp;trk=bnav">fruits</a> &amp; <a href="/department.jsp?deptId=veg&amp;trk=bnav">vegetables</a></li>
+        <li><a href="/department.jsp?deptId=gro&amp;trk=bnav">grocery</a></li>
+        <li><a href="/department.jsp?deptId=mea&amp;trk=bnav">meat</a> &amp; <a href="/department.jsp?deptId=sea&amp;trk=bnav">seafood</a></li>
+        <li><a href="/department.jsp?deptId=dai&amp;trk=bnav">dairy</a></li>
+        <li><a href="/department.jsp?deptId=fro&amp;trk=bnav">frozen</a></li>
+        <li><a href="/department.jsp?deptId=orgnat&amp;trk=bnav">organic</a></li>
+        <li><a href="/department.jsp?deptId=usq&amp;trk=bnav">wine</a></li>
+        <li><a href="/department.jsp?deptId=local&amp;trk=bnav">local</a></li>
+      </ul>
+    </div>
+    <div class="column span-4 dottedborder">
+      <h3>shop by categories</h3>
+      <ul>
+        <li><a href="/category.jsp?catId=dai_milk&amp;trk=bnav">milk</a></li>
+        <li><a href="/category.jsp?catId=dai_eggs&amp;trk=bnav">eggs</a></li>
+        <li><a href="/category.jsp?catId=whit&amp;trk=bnav">bread</a></li>
+        <li><a href="/category.jsp?catId=gro_cerea&amp;trk=bnav">cereal</a></li>
+        <li><a href="/category.jsp?catId=hba_mouth_tooth&amp;trk=bnav">toothpaste</a></li>
+        <li><a href="/category.jsp?catId=gro_bever_water&amp;trk=bnav">water</a></li>
+        <li><a href="/category.jsp?catId=gro_house_paper_bathr&amp;trk=bnav">toilet paper</a></li>
+        <li><a href="/category.jsp?catId=dai_juice_oran&amp;trk=bnav">orange juice</a></li>
+      </ul>
+    </div>
+    <div class="column span-4 dottedborder">
+      <h3>top searches</h3>
+      <ul>
+        <li><a href="/search.jsp?searchParams=body+wash">body wash</a></li>
+        <li><a href="/search.jsp?searchParams=diapers">diapers</a></li>
+        <li><a href="/search.jsp?searchParams=body+lotion">body lotion</a></li>
+        <li><a href="/search.jsp?searchParams=butter">butter</a></li>
+        <li><a href="/search.jsp?searchParams=garlic">garlic</a></li>
+        <li><a href="/search.jsp?searchParams=onions">onions</a></li>
+        <li><a href="/search.jsp?searchParams=chips">chips</a></li>
+        <li><a href="/search.jsp?searchParams=pasta">pasta</a></li>
+      </ul>
+    </div>
+    <div class="column span-4 dottedborder">
+      <h3>let us help you</h3>
+      <ul>
+        <li><a href="/help/delivery_info.jsp">delivery info</a></li>
+        <li><a class="loginrequired" href="/your_account/order_history.jsp">status of your order</a></li>
+        <li><a class="loginrequired" href="/your_account/order_history.jsp">modify order</a></li>
+        <li><a class="loginrequired" href="/your_account/signin_information.jsp">change your password</a></li>
+        <li><a class="loginrequired" href="/your_account/order_history.jsp">cancel order</a></li>
+        <li><a class="loginrequired" href="/your_account/giftcards.jsp">returns/exchanges</a></li>
+        <li><a class="loginrequired" href="/your_account/manage_account.jsp">chef's table customer</a></li>
+        <li><a href="/help/index.jsp">FAQs</a></li>
+      </ul>
+    </div>
+    <div class="column span-8 last">
+      <h3>all you need to know</h3>
+      <ul>
+        <li><a href="/about/index.jsp">about us</a></li>
+        <li><a href="http://jobs-freshdirect.icims.com/">careers</a></li>
+        <li><a href="/department.jsp?deptId=cmty&amp;trk=bnav">our community</a></li>
+        <li><a href="/category.jsp?catId=about_billrights&amp;trk=bnav">your bill of rights</a></li>
+        <li><a href="/help/index.jsp">help/FAQs</a></li>
+      </ul>
+      <h3>contact us</h3>
+      <ul>
+        <li><a class="clicktocall hastooltip" title="Simply enter your number and we will call you!" href="#"><span>click to call</span></a></li>
+        <li><a href="/help/index.jsp">email us</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+

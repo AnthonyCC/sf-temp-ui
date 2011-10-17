@@ -16,6 +16,11 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
+
+<% //expanded page dimensions
+final int W_COMPONENT_GROUP_MEAL_TOTAL = 601;
+%>
+
 <fd:CheckLoginStatus />
 <%!
 	java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
@@ -46,7 +51,6 @@ String prodPopUpSize = "small";
 EnumProductLayout prodLayout = productNode.getProductLayout(EnumProductLayout.PARTY_PLATTER);
 boolean paintOptionalVertical= true;
 String prodNameAttribute = JspMethods.getProductNameToUse(parentCat);
-int maxWidth=430;
 String suLabel="";
 Collection pgErrs=((ActionResult)result).getErrors();
 StringBuffer errMsgBuff = new StringBuffer();
@@ -161,7 +165,7 @@ if (pgErrs.size()>0) {
 
 	String errorMsg=errMsgBuff.toString();
 %>
-  <table width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
+  <table width="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" cellpadding="0" cellspacing="0" border="0" align="center">
 	<tr><td align="left">
 	<%@ include file="/includes/i_error_messages.jspf" %>
 	</td></tr>
@@ -181,7 +185,7 @@ if (pgErrs.size()>0) {
 %>
 
 <%-- start display of product --%>
-  <table width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
+  <table width="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" cellpadding="0" cellspacing="0" border="0" align="center">
 	<tr><td valign="top" align="center" colspan="3">
 	  <span class="title18"><%=productNode.getFullName()%></span><br>
   <%      if (prodSubtitle!=null && !"".equals(prodSubtitle)) { %>
@@ -267,7 +271,7 @@ if (isAvailable ) {
 
 		//show ComponentGroup  Header Image and Editorial if there are characteristics names
 		if (matCharNames.size()>0) { 	%>
-		   <table width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
+		   <table width="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" cellpadding="0" cellspacing="0" border="0" align="center">
 			<tr><td  align="left"><FONT CLASS="space4pix"><BR><BR></FONT>
 		<%	if (imgMedia!=null) {   %> <img src="<%=imgMedia.getPath()%>" border="0" width="<%=imgMedia.getWidth()%>" height="<%=imgMedia.getHeight()%>"> <%  }  %>
 		<%	if (mediaPath!=null) { %><br><fd:IncludeMedia name='<%= mediaPath %>'/> <%  }  %>
@@ -284,11 +288,11 @@ if (isAvailable ) {
 			Image prodImage =oneProd.getCategoryImage();
 			String imgName = "prodImg_"+compGrpIdx;
 			String imgRollOver = "";   %>
-			<table  width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
+			<table  width="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" cellpadding="0" cellspacing="0" border="0" align="center">
 			  <tr>
 				<td><img src="/media_stat/images/layout/clear.gif" width="95" height="6"></td>
 				<td><img src="/media_stat/images/layout/clear.gif" width="15" height="1"></td>
-				<td><img src="/media_stat/images/layout/clear.gif" width="<%=maxWidth-115%>" height="1"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_COMPONENT_GROUP_MEAL_TOTAL-115%>" height="1"></td>
 			  </tr>
    			  <tr>
 <%			if (paintDropdownVertical) { %>
@@ -353,7 +357,7 @@ if (isAvailable ) {
 							<option value="<%=varOpts[voIdx].getName()%>" <%=selected%>>&nbsp;<%=varOpts[voIdx].getDescription()%></option> <%
 						}
 						%> </select>
-						<% if (paintDropdownVertical || selectTagCnt %2!=0  || !mcnItr.hasNext() ) { %>
+						<% if (paintDropdownVertical || selectTagCnt%3==2  || !mcnItr.hasNext() ) { %>
 						     <br> <font class="space4pix"><br></font><%
 						   } else { %>
 						    <img src="/media_stat/images/layout/clear.gif" width="2" height="1">
@@ -404,13 +408,13 @@ if (isAvailable ) {
 		   DisplayObject dispObj = JspMethods.loadLayoutDisplayStrings(response, optProd.getParentNode().getContentName(),optProd,"full",true,false,"",true);
 		   if (!headingDone) {
 		 	   headingDone = true;  %>
-		      <table width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
+		      <table width="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" cellpadding="0" cellspacing="0" border="0" align="center">
 			<tr><td  align="left">
 	<%	      if (imgMedia!=null) {   %><img src="<%=imgMedia.getPath()%>" border="0" width="<%=imgMedia.getWidth()%>" height="<%=imgMedia.getHeight()%>"> <%  }  %>
 	<%	      if (mediaPath!=null) { %><br><bt><fd:IncludeMedia name='<%= mediaPath %>'/> <%  }  %>
 		       <br><br></td></tr>
 		    </table>
-		    <table width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
+		    <table width="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" cellpadding="0" cellspacing="0" border="0" align="center">
 	<%         }  
 	
 	    	  if (!paintOptionalVertical) {  // paint the optional category using the Horizontal style
@@ -461,8 +465,8 @@ if (isAvailable ) {
 			<tr valign="top">
 			<td width="115">
 			<img src="<%=dispObj.getImagePath()%>" border="0" name="<%=imgName%>"></td>
-			<td width="<%=maxWidth-115%>">
-				<table width="<%=maxWidth-115%>" cellpadding="0" cellspacing="0" border="0" align="center">
+			<td width="<%=W_COMPONENT_GROUP_MEAL_TOTAL-115%>">
+				<table width="<%=W_COMPONENT_GROUP_MEAL_TOTAL-115%>" cellpadding="0" cellspacing="0" border="0" align="center">
 	<% 			} 
 		
 				StringBuffer sbRollover=new StringBuffer();
@@ -482,7 +486,7 @@ if (isAvailable ) {
 				<td width="15"><a HREF="javascript:chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',<%= optProd.getQuantityIncrement() %>,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br>
 				  <a HREF="javascript:chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',-<%= optProd.getQuantityIncrement() %>,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
 				
-				<td width="<%=maxWidth-120%>"><a href="javascript:popup('prod_desc_popup.jsp?catId=<%=optProd.getParentNode()%>&prodId=<%=optProd%>','small')" <%=imgRollOver%>><%=dispObj.getItemNameWithoutBreaks()%></a><nobr> <%=(!"".equals(dispObj.getSalesUnitDescription()) ? dispObj.getSalesUnitDescription()+" - " : "")%><%=dispObj.getPrice()%></nobr>
+				<td width="<%=W_COMPONENT_GROUP_MEAL_TOTAL-120%>"><a href="javascript:popup('prod_desc_popup.jsp?catId=<%=optProd.getParentNode()%>&prodId=<%=optProd%>','small')" <%=imgRollOver%>><%=dispObj.getItemNameWithoutBreaks()%></a><nobr> <%=(!"".equals(dispObj.getSalesUnitDescription()) ? dispObj.getSalesUnitDescription()+" - " : "")%><%=dispObj.getPrice()%></nobr>
 				   <br><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 			</tr>
 			<tr><td colspan="3"><span class="space4pix"><br><br></span></td></tr>
@@ -505,11 +509,11 @@ if (isAvailable ) {
         List catMidMedias = parentCat.getMiddleMedia();
         if (catMidMedias != null && catMidMedias.size()>0) {  %>
             <FONT CLASS="space4pix"><br><br></FONT>
-            <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=maxWidth%>">
+            <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>">
                <TR VALIGN="TOP">
                   <TD align="center">
             <BR>
-            <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%=maxWidth%>" HEIGHT="1" BORDER="0"><BR>
+            <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
               <logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catMidMedias%>" type="com.freshdirect.fdstore.content.MediaModel">
     <%          if (((Html)mediaRef).getPath()!=null  && ((Html)mediaRef).getPath().toLowerCase().indexOf("blank.")==-1) { 
                                if(indexNo.intValue()!=0){ %>
@@ -525,15 +529,15 @@ if (isAvailable ) {
 <%      }
 
 	 if (prodCount > 0) {  %>
-	<table width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
+	<table width="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" cellpadding="0" cellspacing="0" border="0" align="center">
 		<tr><td><BR>
-            <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%=maxWidth%>" HEIGHT="1" BORDER="0"><BR><br>
+            <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" HEIGHT="1" BORDER="0"><BR><br>
         </td></tr>
     </table>
     
 <%
     if (productNode.hasTerms()) { %>
-    <table width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
+    <table width="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" cellpadding="0" cellspacing="0" border="0" align="center">
 	<tr><td align="left"><fd:IncludeMedia name='<%= productNode.getProductTerms().getPath()%>' /></td></tr>
         <tr><td align="left">
     		<fd:ErrorHandler result='<%=result%>' name='agreeToTerms'>
@@ -548,7 +552,7 @@ if (isAvailable ) {
 
 <% }%>
     
-	<table width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
+	<table width="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" cellpadding="0" cellspacing="0" border="0" align="center">
 		<tr valign="top">
 		  <td width="93">
 			<b>Quantity</b>&nbsp;<input type="text" CLASS="text11" size="3" name="quantity<%=suffix%>" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgNamedQty(pricing,'quantity<%=suffix%>',0,<%= productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);" onChange="pricing.setQuantity(this.value);">
@@ -559,7 +563,7 @@ if (isAvailable ) {
 		  </td>
 		  <td width="150">&nbsp;&nbsp;<b>Price</b>&nbsp;<INPUT class="text11bold" TYPE="text" NAME="price" SIZE="6" onChange="" onFocus="blur()" value=""></td>
 
-                   <td width="<%=maxWidth-257%>" align="right">
+                   <td width="<%=W_COMPONENT_GROUP_MEAL_TOTAL-257%>" align="right">
 	<% if(CartName.MODIFY_CART.equals(cartMode) ) {
 			String referer = request.getParameter("referer");
 			if (referer==null) referer = request.getHeader("Referer");
@@ -743,7 +747,7 @@ if (isAvailable ) {
 	</form>
 	<% }
 } else {  %>
-<table width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
+<table width="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" cellpadding="0" cellspacing="0" border="0" align="center">
     <tr>
       <td width="100%">
 	<div align="center"><font class="text12" color="#999999">
@@ -755,11 +759,11 @@ if (isAvailable ) {
 	List catBottomMedias = parentCat.getBottomMedia();
 	if (catBottomMedias != null && catBottomMedias.size()>0  && !CartName.MODIFY_CART.equals(cartMode) ) {
     %>
-    <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=maxWidth%>">
+    <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>">
        <TR VALIGN="TOP">
           <TD align="center">
 			<BR>
-			<IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%=maxWidth%>" HEIGHT="1" BORDER="0"><BR>
+			<IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
 			<FONT CLASS="space4pix"><br><br></FONT>
        </TD>
        <TR><TD align="center">

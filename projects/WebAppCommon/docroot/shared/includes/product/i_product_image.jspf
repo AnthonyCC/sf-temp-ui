@@ -7,7 +7,8 @@
 	Image productImage = __pi_prd.getDetailImage();
 	Image zoomImage=(Image) __pi_prd.getZoomImage();
 	
-	
+	Object useProdImageObj = pageContext.getAttribute("useProdImage");
+  boolean useProdImage = useProdImageObj == null ? false : (Boolean)useProdImageObj;
 	
 	BrowserInfo browserInfo = new BrowserInfo((HttpServletRequest) pageContext.getRequest());
 	boolean supportsPNG = !(browserInfo.isInternetExplorer() && browserInfo.getVersionNumber() < 8.0);
@@ -21,24 +22,19 @@
 	}
 	
 	String burstImage = "/media_stat/images/deals/brst_lg_" + dealPercentage + (supportsPNG ? ".png" : ".gif");
+	boolean isWineProduct = __pi_prd.getDepartment() != null ? "usq".equals(__pi_prd.getDepartment().getContentKey().getId()) : false;
         
-	if ( zoomImage != null && zoomImage.getPath().indexOf("clear.gif") == -1 ) {
-		if ( isDeal ) { %>
-<div style="padding: 0px; border: 0px; margin: 0px auto; position: relative;" width="<%= productImage.getWidth() %>px" height="<%= productImage.getHeight() %>px">
+  if ( zoomImage != null && zoomImage.getPath().indexOf("clear.gif") == -1 && !useProdImage && !isWineProduct) { %>
+    <div style="padding: 0px; border: 0px; margin: 0px auto; position: relative; width:<%=zoomImage.getWidth() %>px" height="<%= zoomImage.getHeight() %>px">
+		<% if ( isDeal ) { %>
 					<div style="position: absolute; top: 0px; left: 0px">
-						<a href="javascript:pop('/shared/prodpop.jsp?productId=<%= __pi_prd %>&catId=<%= __pi_prd.getParentNode() %>',335,375)">
-							<img alt="SAVE" src="<%=burstImage %>" width="55px" height="55px" style="border: 0">
-						</a>
+						<img alt="SAVE" src="<%=burstImage %>" width="55px" height="55px" style="border: 0">
 					</div>
 		<% } %>
 		
-		<a href="javascript:pop('/shared/prodpop.jsp?productId=<%= __pi_prd %>&catId=<%= __pi_prd.getParentNode() %>',335,375)" style="display: inline-block; font-size: 0px; padding: 0px; margin: 0px; width: <%= productImage.getWidth() %>px;">
-			<img border="0" src="<%= productImage.getPath() %>" width="<%= productImage.getWidth() %>" height="<%= productImage.getHeight() %>">
-		</a><br/>
-				
-		<% if ( isDeal ) { %>
-			</div>
-		<% } %>
+			<img border="0" src="<%= zoomImage.getPath() %>" width="<%= zoomImage.getWidth() %>" height="<%= zoomImage.getHeight() %>">
+		<br/>
+    </div>
 				
 	<% } else { 
 		if ( isDeal ) { %>
@@ -48,7 +44,14 @@
 				</div>
 		<% } %>
 
-		<img border="0" src="<%= productImage.getPath() %>" width="<%= productImage.getWidth() %>" height="<%= productImage.getHeight() %>"><br/>
+    <% if ( zoomImage != null && zoomImage.getPath().indexOf("clear.gif") == -1 ) { %>
+      <a href="javascript:pop('/shared/prodpop.jsp?productId=<%= __pi_prd %>&catId=<%= __pi_prd.getParentNode() %>&deptId=',335,375)" style="display: inline-block; font-size: 0px; padding: 0px; margin: 0px; width: <%= productImage.getWidth() %>px;">
+        <img border="0" src="<%= productImage.getPath() %>" width="<%= productImage.getWidth() %>" height="<%= productImage.getHeight() %>">
+      </a>
+    <% } else { %>
+      <img border="0" src="<%= productImage.getPath() %>" width="<%= productImage.getWidth() %>" height="<%= productImage.getHeight() %>">
+    <% } %>
+    <br/>
 		
 		<% if ( isDeal ) { %>
 			</div>
@@ -57,8 +60,7 @@
 
 
 
-<font class="space2pix"><br/></font>
-			
+<font class="space2pix"><br/></font>		
 <% 
 	//Show product summary link only in test environments
 	if (FDStoreProperties.isAnnotationMode()) { 

@@ -9,6 +9,12 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
+
+<% //expanded page dimensions
+final int W_THANKSGIVING_CATEGORY_TOTAL = 765;
+%>
+
+
 <fd:CheckLoginStatus guestAllowed="true" />
 <%
 String catId = request.getParameter("catId");
@@ -35,7 +41,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
 %>
 
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4"><BR>
-<TABLE border=0 cellPadding=0 cellSpacing=0 width=540>
+<TABLE border=0 cellPadding=0 cellSpacing=0 width=<%=W_THANKSGIVING_CATEGORY_TOTAL%>>
 <%
   if (!allSoldOut && !pastCutOff) {  %>
 <TR><TD colspan="3">

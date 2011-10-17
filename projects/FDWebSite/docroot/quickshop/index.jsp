@@ -7,6 +7,9 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<% //expanded page dimensions
+final int W_QUICKSHOP_INDEX_TOTAL = 755;
+%>
 <%! final java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
 <fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='false' redirectPage='/quickshop/index_guest.jsp?successPage=/quickshop/index.jsp' />
 <%        
@@ -48,22 +51,22 @@
 		
 		
 						
-<TABLE WIDTH="535" CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TABLE WIDTH="<%= W_QUICKSHOP_INDEX_TOTAL %>" CELLPADDING="0" CELLSPACING="0" BORDER="0">
 <TR>
-	<TD WIDTH="535" align="center">
-	<img src="/media_stat/images/template/quickshop/quickshop_header.gif" width="535" height="75" alt="" border="0">
+	<TD WIDTH="<%= W_QUICKSHOP_INDEX_TOTAL %>" align="center">
+	<img src="/media_stat/images/template/quickshop/quickshop_header.gif" alt="" border="0">
 	</TD>
 </TR>
 <TR>
-	<TD WIDTH="535"><img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"></TD>
+	<TD WIDTH="<%= W_QUICKSHOP_INDEX_TOTAL %>"><img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"></TD>
 </TR>
 <TR>
-	<TD WIDTH="535" height="1" bgcolor="#996699"><img src="/media_stat/images/layout/996699.gif" width="535" height="1" alt="" border="0"></TD>
+	<TD WIDTH="<%= W_QUICKSHOP_INDEX_TOTAL %>" height="1" bgcolor="#996699"><img src="/media_stat/images/layout/996699.gif" width="<%= W_QUICKSHOP_INDEX_TOTAL %>" height="1" alt="" border="0"></TD>
 </TR>
 <TR>
-	<TD WIDTH="530">
+	<TD WIDTH="<%= W_QUICKSHOP_INDEX_TOTAL - 5 %>">
 
-		<TABLE WIDTH="530" CELLPADDING="0" CELLSPACING="0" BORDER="0">
+		<TABLE WIDTH="<%= W_QUICKSHOP_INDEX_TOTAL - 5 %>" CELLPADDING="0" CELLSPACING="0" BORDER="0">
 		<TR>
 			<TD><br>
 			<fd:QuickShopController id="quickCart" orderId="" action="">
@@ -81,8 +84,8 @@
 			    }
 			    if ((orderHistoryInfo.size() - pendingOrderCount) < 1) { %>
 			        <%@ include file="/quickshop/includes/i_index_none.jspf" %>
-			<%  } else { %>					
-			        <%@ include file="/quickshop/includes/i_index_multiple.jspf" %>								
+			<%  } else { %>
+			        <%@ include file="/quickshop/includes/i_index_multiple.jspf" %>
 			<%  } %>		
 			</fd:OrderHistoryInfo>
 			</fd:QuickShopController>

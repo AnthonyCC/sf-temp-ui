@@ -651,7 +651,7 @@ for (CategoryModel cat : deptCategories) {
 		if (isLink || isCatSelected) {
 		
 %>
-		<a <%if (isLink) { %> href="/category.jsp?catId=<%= cat.getContentName() %>&trk=<%= trk %>"<% } %> id="wine-sidenav-cat-<%= cat.getContentName() %>" style="z-index: <%= zIndex %>;"
+		<a <%if (isLink) { %> href="/category.jsp?catId=<%= cat.getContentName() %>&trk=<%= trk %>"<% } %> id="wine-sidenav-cat-<%= cat.getContentName() %>" style="z-index: <%= zIndex %>; width: 140px; padding-left: 10px;"
 				class="title16 wine-narrow wine-sidenav-category<%= isCatSelected ? "-selected" : "" %> wine-sidenav-category<%= isCatSelected ? "-selected" : "" %>-<%= cat.getContentName() %> <%= isLink ? "" : "over" %>">			
 			<span><%= cat.getFullName() %></span>			
 		</a>
@@ -753,7 +753,7 @@ for (CategoryModel cat : deptCategories) {
 <% if (lastDomainName != null) {%> FreshDirect.WineNav.toggleDomain('<%=lastDomainName %>', '<%=lastDomainId %>');<%}%>
 FreshDirect.WineNav.initSideNavMenus();
 </script>
-<a href="JavaScript:pop(&quot;/request_wine.jsp?department=wine&quot;,400,585);" style="z-index: <%= zIndex %>;" class="title16 wine-narrow wine-sidenav-category">
+<a href="JavaScript:pop(&quot;/request_wine.jsp?department=wine&quot;,400,585);" style="z-index: <%= zIndex %>; width: 140px; padding-left: 10px;" class="title16 wine-narrow wine-sidenav-category">
 	<span>Request a Wine</span>
 </a>
 </fd:WineSorter>

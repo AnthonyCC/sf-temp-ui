@@ -44,29 +44,30 @@ String survey_source=(String)request.getAttribute("survey_source");
            <%@ include file="/includes/i_error_messages.jspf" %>   
     <% } %>
 <form method="post" name="corporateServiceSurvey" action="<%=request.getRequestURI()%>#survey">
-<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<div align="center">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
 <%-- 1 --%>
     <tr>
         <td><img src="/media_stat/images/layout/clear.gif" width="140" height="1" border="0"></td>
-        <td><img src="/media_stat/images/layout/clear.gif" width="180" height="8" border="0"></td>
+        <td><img src="/media_stat/images/layout/clear.gif" width="280" height="8" border="0"></td>
         <td><img src="/media_stat/images/layout/clear.gif" width="80" height="1" border="0"></td>
-        <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1" border="0"></td>
+        <td><img src="/media_stat/images/layout/clear.gif" width="220" height="1" border="0"></td>
     </tr>
     <tr>
         <td class="text12"><fd:ErrorHandler result="<%=result%>" name="companyName"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler>Company Name<fd:ErrorHandler result="<%=result%>" name="companyName"></span></fd:ErrorHandler></td>
-        <td colspan="3"><input type="text" size="25" class="text13" name="companyName" value="<%=request.getParameter("companyName")%>"></td>
+        <td colspan="3"><input type="text" size="35" class="text13" name="companyName" value="<%=request.getParameter("companyName")%>"></td>
     </tr>
     <tr><td><span class="space4pix"><br></span></td></tr>
     <tr>
         <td class="text12"><fd:ErrorHandler result="<%=result%>" name="streetAddress"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler>Street Address<fd:ErrorHandler result="<%=result%>" name="streetAddress"></span></fd:ErrorHandler></td>
-        <td><input type="text" size="25" class="text13" name="streetAddress" value="<%=request.getParameter("streetAddress")%>"></td>
+        <td><input type="text" size="35" class="text13" name="streetAddress" value="<%=request.getParameter("streetAddress")%>"></td>
         <td class="text12" align="right"><fd:ErrorHandler result="<%=result%>" name="floorSuite"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler>Floor/Suite #<fd:ErrorHandler result="<%=result%>" name="floorSuite"></span></fd:ErrorHandler>&nbsp;</td>
         <td><input type="text" size="5" class="text13" name="floorSuite" value="<%=request.getParameter("floorSuite")%>"></td>
     </tr>
     <tr><td><span class="space2pix"><br></span></td></tr>
     <tr>
         <td class="text12"><fd:ErrorHandler result="<%=result%>" name="city"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler>City<fd:ErrorHandler result="<%=result%>" name="city"></span></fd:ErrorHandler></td>
-        <td><input type="text" size="25" class="text13" name="city" value="<%=request.getParameter("city")%>"></td>
+        <td><input type="text" size="35" class="text13" name="city" value="<%=request.getParameter("city")%>"></td>
         <td align="right" class="text12"><fd:ErrorHandler result="<%=result%>" name="state"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler>State<fd:ErrorHandler result="<%=result%>" name="state"></span></fd:ErrorHandler>&nbsp;</td>
         <td><input type="text" size="3" class="text13" name="state" value="NY" value="<%=request.getParameter("state")%>"></td>
     </tr>
@@ -83,19 +84,19 @@ String survey_source=(String)request.getAttribute("survey_source");
     <tr><td><span class="space8pix"><br></span></td></tr>
     <tr>
         <td class="text12"><fd:ErrorHandler result="<%=result%>" name="contact"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler>Contact Name<fd:ErrorHandler result="<%=result%>" name="contact"></span></fd:ErrorHandler></td>
-        <td colspan="3"><input type="text" size="25" class="text13" name="contact" value="<%=request.getParameter("contact")%>"></td>
+        <td colspan="3"><input type="text" size="35" class="text13" name="contact" value="<%=request.getParameter("contact")%>"></td>
     </tr>
     <tr>
         <td class="text12"><fd:ErrorHandler result="<%=result%>" name="title"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler>Title<fd:ErrorHandler result="<%=result%>" name="title"></span></fd:ErrorHandler></td>
-        <td colspan="3"><input type="text" size="25" class="text13" name="title" value="<%=request.getParameter("title")%>"></td>
+        <td colspan="3"><input type="text" size="35" class="text13" name="title" value="<%=request.getParameter("title")%>"></td>
     </tr>
     <tr>
         <td class="text12"><fd:ErrorHandler result="<%=result%>" name="phone"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler>Contact Number<fd:ErrorHandler result="<%=result%>" name="phone"></span></fd:ErrorHandler></td>
-        <td colspan="3"><input type="text" size="25" class="text13" name="phone" value="<%=request.getParameter("phone")%>"></td>
+        <td colspan="3"><input type="text" size="35" class="text13" name="phone" value="<%=request.getParameter("phone")%>"></td>
     </tr>
     <tr>
         <td class="text12"><fd:ErrorHandler result="<%=result%>" name="email"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler>Email Address<fd:ErrorHandler result="<%=result%>" name="email"></span></fd:ErrorHandler></td>
-        <td colspan="3"><input type="text" size="25" class="text13" name="email" value="<%=request.getParameter("email")%>"><fd:ErrorHandler result="<%=result%>" name="email" id="errorMsg"> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+        <td colspan="3"><input type="text" size="35" class="text13" name="email" value="<%=request.getParameter("email")%>"><fd:ErrorHandler result="<%=result%>" name="email" id="errorMsg"> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
     </tr>
         <tr>
             <td colspan="4" class="text12" align="center"><br><img src="/media_stat/images/layout/999966.gif" width="100%" height="1" vspace="10"><br>
@@ -112,6 +113,7 @@ String survey_source=(String)request.getAttribute("survey_source");
       <input type="hidden" name="survey_source" value="<%=survey_source%>">
     <%  }  %>  
 </table>
+</div>
 </form>
 <% } %>
 </fd:CorporateServiceSurvey>

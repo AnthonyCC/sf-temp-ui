@@ -1,5 +1,9 @@
 <%@ page import="com.freshdirect.delivery.restriction.GeographyRestrictionMessage"%>
 
+<% //expanded page dimensions
+final int W_DEPOT_LOCATIONS_TOTAL = 970;
+%>
+
 <%
 
 String  defaultDepotLocation = "";
@@ -16,17 +20,17 @@ if(fldDepotLocation != null && fldDepotLocation.startsWith("DEPOT_")){
 	fldDepotLocation = defaultDepotLocation;
 } 
 
-String tableWidthFAQ = "675";
+int tableWidthFAQ = W_DEPOT_LOCATIONS_TOTAL;
 String fontSizeFAQ = "text13";
 if(request.getRequestURI().indexOf("faq") > -1 ){
-	tableWidthFAQ = "475";
+	tableWidthFAQ = 475;
 	fontSizeFAQ = "bodyCopy";
 	if(request.getParameter("page")== null) {
-		tableWidthFAQ = "375";
+		tableWidthFAQ = 375;
 	}
 }
 if( request.getRequestURI().indexOf("depot") > -1){
-	tableWidthFAQ = "375";
+	tableWidthFAQ = 375;
 	fontSizeFAQ = "bodyCopy";
 }
 %>
@@ -50,7 +54,7 @@ if( request.getRequestURI().indexOf("depot") > -1){
 			<img src="/media_stat/images/template/depot/depot_address.gif" width="99" height="9" alt="" border="0"><br>
     <%}%>
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
-			<img src="/media_stat/images/layout/999966.gif" width="675" height="1" BORDER="0" VSPACE="3"><BR>
+			<img src="/media_stat/images/layout/999966.gif" width="<%=W_DEPOT_LOCATIONS_TOTAL%>" height="1" BORDER="0" VSPACE="3"><BR>
 
 <%}%>
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"><br>

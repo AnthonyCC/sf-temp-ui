@@ -1,5 +1,22 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%-- this file will be included in the <head> tag --%>
+<%@ taglib uri='oscache' prefix='oscache'%>
+<%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
+  <% if (FDStoreProperties.isFlushOscache()) { %><oscache:flush/><% } %>
+  <%-- globalnav header, footer --%>
+  <link rel="stylesheet" href="/assets/css/common/globalnav.css" type="text/css" />
+  <link rel="stylesheet" href="/assets/css/common/footer.css" type="text/css" />
+  <link rel="stylesheet" href="/assets/css/common/freshdirect.css" type="text/css" />
+
+  <%-- IE + IE6 fixes --%>
+  <!--[if IE]>
+  <link rel="stylesheet" href="/assets/css/common/footer.ie.css" type="text/css" />
+  <![endif]-->
+  <!--[if lte IE 6]>
+  <link rel="stylesheet" href="/assets/css/common/globalnav.ie6.css" type="text/css" />
+  <![endif]-->
+
+  <%-- old css files --%>
 	<link rel="stylesheet" href="/assets/css/modalbox.css" type="text/css" />
 	<link rel="stylesheet" href="/assets/css/global.css" type="text/css" />
 	<%

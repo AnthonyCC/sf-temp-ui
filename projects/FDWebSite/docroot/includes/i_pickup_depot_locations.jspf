@@ -5,6 +5,11 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDCustomerFactory"%>
 <%@ page import="com.freshdirect.common.address.*"%>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
+
+<% //expanded page dimensions
+final int W_PICKUP_DEPOT_LOCATIONS_TOTAL = 970;
+%>
+
 <%
 Collection pickups = FDDepotManager.getInstance().getPickupDepots();
 boolean theHamptonsIsOn = FDStoreProperties.getHamptons();
@@ -31,13 +36,13 @@ if( hamptonsPickup==null) hamptonsPickup="";
 
 if(pickups.size() > 0){  %>
 	
-<table border="0" cellpadding="0" cellspacing="0" width="675">
+<table border="0" cellpadding="0" cellspacing="0" width="<%=W_PICKUP_DEPOT_LOCATIONS_TOTAL%>">
 		<tr>
 			<td><img width="134" height="15" src="/media_stat/images/template/youraccount/pickup_locations.gif" alt="PICK UP LOCATIONS"></td>
 		</tr>
 		<tr>
 			<td><img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
-				<img src="/media_stat/images/layout/dotted_line.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+				<img src="/media_stat/images/layout/dotted_line.gif" WIDTH="<%=W_PICKUP_DEPOT_LOCATIONS_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 			</td>
 		</tr>
 
@@ -60,7 +65,7 @@ if(pickups.size() > 0){  %>
 	}
 </script>
 
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" width="675">
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" width="<%=W_PICKUP_DEPOT_LOCATIONS_TOTAL%>">
 <TR VALIGN="TOP">
 <%
 int cnt = 0;

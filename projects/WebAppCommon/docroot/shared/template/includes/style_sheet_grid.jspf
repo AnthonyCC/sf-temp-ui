@@ -1,0 +1,8 @@
+<%-- this file will be included in the <head> tag, when the new grid is used --%>
+  <link rel="stylesheet" href="/assets/css/common/reset.css" type="text/css" />
+  <link rel="stylesheet" href="/assets/css/common/typography.css" type="text/css" />
+  <link rel="stylesheet" href="/assets/css/common/grid.css" type="text/css" />
+
+<!--[if IE]>
+  <link rel="stylesheet" href="/assets/css/common/ie.css" type="text/css" />
+<![endif]-->

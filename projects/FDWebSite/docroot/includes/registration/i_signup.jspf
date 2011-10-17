@@ -5,6 +5,11 @@
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import="com.freshdirect.delivery.restriction.GeographyRestrictionMessage"%>
 <%@ page import='com.freshdirect.fdstore.survey.*' %>
+
+<% //expanded page dimensions
+final int W_REGISTRATION_SIGNUP_TOTAL = 970;
+%>
+
 <%//***********************************  Error Handling ******************************************%>
 <%!
 String[] checkRegistrationForm = {
@@ -75,7 +80,7 @@ if (fldZipCode==null && user!=null && user.getZipCode() !=null){//quite odd. we 
 }
 %>
 
-<table border="0" cellspacing="0" cellpadding="2" width="693">
+<table border="0" cellspacing="0" cellpadding="2" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
 <tr valign="top">
 	<td width="347" valign="bottom">
 <%if(user.isDepotUser() || user.isCorporateUser()){%>
@@ -84,14 +89,14 @@ if (fldZipCode==null && user!=null && user.getZipCode() !=null){//quite odd. we 
 		<img src="/media_stat/images/navigation/name_address.gif" width="108" height="9" border="0" alt="NAME AND ADDRESS">&nbsp;&nbsp;&nbsp;<FONT class="text9">* Required information</FONT>
 <%}%>
 	</td>
-	<td width="346" align="right">
+	<td width="<%=W_REGISTRATION_SIGNUP_TOTAL-347%>" align="right">
 		<font class="bodyCopy"><b>Having problems signing up?</b><br />
 		Call <%=user.getCustomerServiceContact()%> for help</font>
 	</td>
 </tr>
 <tr>
 	<td colspan="2" width="693">
-		<img src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" vspace="3" /><br />
+		<img src="/media_stat/images/layout/999966.gif" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>" height="1" border="0" vspace="3" /><br />
 	</td>
 </tr>
 <%if(!user.isDepotUser() && !user.isCorporateUser()){%>
@@ -231,11 +236,11 @@ if(user.isDepotUser()){
 %>
 
 <%@ include file="/shared/includes/i_depot_locations.jspf" %>
-<table border="0" cellspacing="0" cellpadding="2" width="693">
+<table border="0" cellspacing="0" cellpadding="2" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
 <tr valign="top">
-	<td width="693">
+	<td width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
 		<img src="/media_stat/images/template/depot/home_address.gif" width="96" height="9" alt="" border="0" />&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font><br />
-		<img src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" vspace="3" /><br />
+		<img src="/media_stat/images/layout/999966.gif" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>" height="1" border="0" vspace="3" /><br />
 		If your home address is within a FreshDirect <a href="javascript:popup('/help/delivery_zones.jsp','large')">delivery zone</a>, you can also get deliveries there.<br />
 		<% if ("bnl".equalsIgnoreCase(user.getDepotCode())) {%>
 			<b>If you reside on the Brookhaven Labs Campus, please call FreshDirect at <%=user.getCustomerServiceContact()%> to assist you in registering your address.</b><br />
@@ -255,11 +260,11 @@ if(user.isDepotUser()){
 <br>
 <br>
 <br />
-<table border="0" cellspacing="0" cellpadding="2" width="693">
+<table border="0" cellspacing="0" cellpadding="2" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
 <tr valign="top">
-	<td width="693">
+	<td width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
 		<img src="/media_stat/images/navigation/site_access_preferences.gif" width="160" height="9" border="0" alt="SITE ACCESS PREFERENCES" />&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font><br />
-		<img src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" vspace="3" /><br />
+		<img src="/media_stat/images/layout/999966.gif" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>" height="1" border="0" vspace="3" /><br />
 	</td>
 </tr>
 </table>
@@ -330,10 +335,10 @@ if(user.isDepotUser()){
 <br />
 <br />
 <!--  survey header -->
-<table border="0" cellspacing="0" cellpadding="2" width="693">
-	<td width="693">
+<table border="0" cellspacing="0" cellpadding="2" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
+	<td width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
 		<img src="/media_stat/images/navigation/help_us_serve_you.gif" width="169" height="9" border="0" alt="HELP US SERVE YOU" /><br />
-		<img src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" vspace="3" /><br />
+		<img src="/media_stat/images/layout/999966.gif" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>" height="1" border="0" vspace="3" /><br />
 	</td>
 </tr>
 </table>
@@ -368,13 +373,13 @@ function showSurveys(element) {
 <%@ include file="/includes/i_survey.jspf" %>
 
 <br />
-<table border="0" cellspacing="0" cellpadding="2" width="693">
+<table border="0" cellspacing="0" cellpadding="2" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
 	<tr valign="top">
-		<td width="693"><img src="/media_stat/images/navigation/customer_agreement.gif" border="0" alt="TERMS OF SERVICE" />&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font><br />
-		<img src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" vspace="3" /><br /></td>
+		<td width="<%=W_REGISTRATION_SIGNUP_TOTAL%>"><img src="/media_stat/images/navigation/customer_agreement.gif" border="0" alt="TERMS OF SERVICE" />&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font><br />
+		<img src="/media_stat/images/layout/999966.gif" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>" height="1" border="0" vspace="3" /><br /></td>
 	</tr>
 </table><br />
-<textarea cols="60" rows="7" readonly xname="tos">
+<textarea cols="90" rows="7" readonly xname="tos">
 	<%@ include file="/includes/registration/i_user_agreement.txt" %>
 </textarea>
 <br /><br />
@@ -395,10 +400,10 @@ function showSurveys(element) {
 </table>
 <br /><br />
 <% if (request.getRequestURI().toLowerCase().indexOf("checkout")==-1){ %>
-<table cellpadding="0" cellspacing="0" border="0" width="675">
-	<tr valign="top" bgcolor="#999966"><td width="675"><img src="/media_stat/images/layout/999966.gif" hspace="0" width="1" height="1" border="0" /></td></tr>
-		<td width="675" align="right"><input type="image" src="/media_stat/images/buttons/sign_up_2.gif" name="register_new_user" alt="SIGN UP" vspace="4" hspace="4" border="0" /></td></tr>
-	<tr valign="top" bgcolor="#999966"><td width="675"><img src="/media_stat/images/layout/999966.gif" hspace="0" width="1" height="1" border="0" /></td></tr>
+<table cellpadding="0" cellspacing="0" border="0" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
+	<tr valign="top" bgcolor="#999966"><td width="<%=W_REGISTRATION_SIGNUP_TOTAL%>"><img src="/media_stat/images/layout/999966.gif" hspace="0" width="1" height="1" border="0" /></td></tr>
+		<td width="<%=W_REGISTRATION_SIGNUP_TOTAL%>" align="right"><input type="image" src="/media_stat/images/buttons/sign_up_2.gif" name="register_new_user" alt="SIGN UP" vspace="4" hspace="4" border="0" /></td></tr>
+	<tr valign="top" bgcolor="#999966"><td width="<%=W_REGISTRATION_SIGNUP_TOTAL%>"><img src="/media_stat/images/layout/999966.gif" hspace="0" width="1" height="1" border="0" /></td></tr>
 </table><br />
 <% } %>
 
@@ -406,9 +411,9 @@ function showSurveys(element) {
 String uri = request.getRequestURI();
 if(uri.indexOf("registration")> -1){
 %>
-<table border="0" cellspacing="0" cellpadding="2" width="693">
+<table border="0" cellspacing="0" cellpadding="2" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
 <tr valign="top">
-	<td width="693">
+	<td width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
 		<b>Having problems signing up?</b><br />
 		Call <%=user.getCustomerServiceContact()%> for help 
 	</td>

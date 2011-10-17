@@ -4,6 +4,11 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+<% //expanded page dimensions
+final int W_RH_ADD_CREDITCARD_TOTAL = 970;
+%>
+
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 
 <tmpl:insert template='/common/template/robinhood.jsp'>
@@ -75,23 +80,23 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 <%} %>       
 
 <form method="post" style="padding: 0px; margin: 0px;">
-<table width="690" cellspacing="0" cellpadding="0" border="0">
+<table width="<%=W_RH_ADD_CREDITCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 		<tr>
-			<td class="text11" WIDTH="675">
+			<td class="text11" WIDTH="<%=W_RH_ADD_CREDITCARD_TOTAL%>">
 				<img src="/media_stat/images/giftcards/payment_method/add_a_credit_card_hdr.gif" WIDTH="164" HEIGHT="21" border="0" alt="ADD CREDIT CARD">
 			</td><BR>
 		</tr>
 		<tr>
-			<td class="text11" WIDTH="675">
+			<td class="text11" WIDTH="<%=W_RH_ADD_CREDITCARD_TOTAL%>">
 				Please enter new credit card information. <BR> 
-				<IMG src="/media_stat/images/layout/999966.gif" WIDTH="693" HEIGHT="1" BORDER="0" VSPACE="3"><BR><BR>
+				<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=W_RH_ADD_CREDITCARD_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR><BR>
 			</td>
 		</tr>
 </table>
 <% if(FDStoreProperties.isPaymentMethodVerificationEnabled()) {%>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_RH_ADD_CREDITCARD_TOTAL%>">
 	<tr>	
-		<td width="693" CLASS="text12">
+		<td width="<%=W_RH_ADD_CREDITCARD_TOTAL%>" CLASS="text12">
 			In order to better protect our customer's personal information, we require a $1 authorization to validate credit cards on add and edit. This charge will not be collected and will be returned as soon as permitted by your issuing bank. To learn more about our <font class="text11bold">Customer Agreement</font>, 
 			<a href="javascript:popup('/help/terms_of_service.jsp','large')">click here</a>.
 		</td>
@@ -113,11 +118,11 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 
 <br><br>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="675" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%=W_RH_ADD_CREDITCARD_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675">
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_RH_ADD_CREDITCARD_TOTAL%>">
 	<TR VALIGN="TOP">
-	<TD WIDTH="675" ALIGN="RIGHT">
+	<TD WIDTH="<%=W_RH_ADD_CREDITCARD_TOTAL%>" ALIGN="RIGHT">
 	<a href="<%=success_page%>">
 		<img src="/media_stat/images/buttons/cancel.gif" WIDTH="54" HEIGHT="16"  HSPACE="4" VSPACE="4" alt="CANCEL" border="0">
 	</a>
@@ -126,14 +131,14 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 </TABLE>
 <br>
 
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_RH_ADD_CREDITCARD_TOTAL%>">
 	<tr>	
-		<td width="693" class="text12">
+		<td width="<%=W_RH_ADD_CREDITCARD_TOTAL%>" class="text12">
 			 <font class="text11bold">Having Problems checking out?</font>
 		</td> 
 	</tr>
 	<tr>
-		<td width="693" CLASS="text12">
+		<td width="<%=W_RH_ADD_CREDITCARD_TOTAL%>" CLASS="text12">
 			Please call us at 1-856-511-1240, Monday through Thursday 5:30 a.m. to 12 <BR>
 			a.m., Friday from 5:30 a.m. to 11 p.m., Saturday from 7:30 a.m. to 8 p.m., <BR>
 			and Sunday from 7:30 a.m. to 12 a.m. <BR>
@@ -142,7 +147,7 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 	</tr>
 	
 	<tr>
-		<td width="693" CLASS="text12">
+		<td width="<%=W_RH_ADD_CREDITCARD_TOTAL%>" CLASS="text12">
 		    &nbsp;<BR>
 		    &nbsp;<BR>
 		    &nbsp;<BR>

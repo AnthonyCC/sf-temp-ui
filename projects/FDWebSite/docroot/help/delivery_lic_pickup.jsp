@@ -13,6 +13,15 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+<% //expanded page dimensions
+final int W_DELIVERY_LIC_PICKUP_TOTAL = 970;
+final int W_DELIVERY_LIC_PICKUP_LEFT = 724;
+final int W_DELIVERY_LIC_PICKUP_CENTER = 55;
+final int W_DELIVERY_LIC_PICKUP_RIGHT = 191;
+%>
+
+
 <fd:CheckLoginStatus id="user" />
 <%
 // setting up template parameters
@@ -37,13 +46,13 @@ if (user != null) {
 <tmpl:insert template='/common/template/delivery_info_nav.jsp'>
 	<tmpl:put name='title' direct='true'>Delivery Information</tmpl:put>
 	<tmpl:put name='content' direct='true'>
-		<table width="693" border="0" cellpadding="0" cellspacing="0">
+		<table width="<%=W_DELIVERY_LIC_PICKUP_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 		     <tr>
-				<td><img src="/media_stat/images/layout/clear.gif" width="506" height="18"></td>
-				<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="13" height="1"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DELIVERY_LIC_PICKUP_LEFT%>" height="18"></td>
+				<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="<%=(W_DELIVERY_LIC_PICKUP_CENTER-1)/2%>" height="1"></td>
 				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-				<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="13" height="1"></td>
-				<td><img src="/media_stat/images/layout/clear.gif" width="160" height="1"></td>
+				<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="<%=(W_DELIVERY_LIC_PICKUP_CENTER-1)/2%>" height="1"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DELIVERY_LIC_PICKUP_RIGHT%>" height="1"></td>
 		    </tr>
 		          
 		    <tr valign="top">
@@ -52,7 +61,7 @@ if (user != null) {
 	                <br><br><br>
 				 </td>
 				<td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-				<td align="center">
+				<td align="left">
 	                <fd:IncludeMedia name="/media/editorial/site_pages/delivery_info/pickup/right.ftl" parameters="<%=params%>" withErrorReport="true"/>
 				</td>
 		    </tr>

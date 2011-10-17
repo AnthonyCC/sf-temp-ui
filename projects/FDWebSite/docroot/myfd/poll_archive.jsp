@@ -11,7 +11,11 @@
 <%@taglib uri='template' prefix='tmpl'%>
 <%@taglib uri='logic' prefix='logic'%>
 <%@taglib uri='freshdirect' prefix='fd'%>
-
+<% //expanded page dimensions
+final int W_MYFD_POLL_ARCHIVE_TOTAL = 970;
+final int W_MYFD_POLL_ARCHIVE_MAIN = 738;
+final int W_MYFD_POLL_ARCHIVE_LEFT = 232;
+%>
 <fd:CheckLoginStatus id="user" guestAllowed="false" />
 <%
 	//--------OAS Page Variables-----------------------
@@ -52,11 +56,11 @@
 		<%@ include file="/includes/myfd/i_myfd_header.jspf" %>
 		</div>
 		<%-- Poll Archive content --%>
-		<div style="padding: 30px 25px;">
-			<table cellpadding="0" cellspacing="0" style="width: 693px; text-align: center; margin: 0px auto;">
+		<div style="padding: 30px 0;">
+			<table cellpadding="0" cellspacing="0" style="width: <%= W_MYFD_POLL_ARCHIVE_TOTAL %>px; text-align: center; margin: 0px auto;">
 				<tr>
-					<td style="width: 481px; text-align: left; vertical-align: top;">
-						<div style="width: 456px; overflow: hidden;">
+					<td style="width: <%= W_MYFD_POLL_ARCHIVE_MAIN %>px; text-align: left; vertical-align: top;">
+						<div style="width: <%= W_MYFD_POLL_ARCHIVE_MAIN - 25 %>px; overflow: hidden;">
 							<div class="title20 eagle-bold">POLL ARCHIVE</div>
 							<div style="padding: 6px 0px 10px;">
 							<a href="/myfd/index.jsp?trk=pollarch" class="text14">Back to the myFD page</a>
@@ -69,11 +73,11 @@
 							</div>
 							<div style="padding-top: 25px;">
 								<% if (current != null) { %>
-								<table cellpadding="0" cellspacing="0" style="width: 456px;">
+								<table cellpadding="0" cellspacing="0" style="width: <%= W_MYFD_POLL_ARCHIVE_MAIN - 25 %>px;">
 									<tr>
-										<td style="width: 212px; vertical-align: top;">
-											<div><img src="/media_stat/images/myfd/poll-header.png" width="212" height="26" border="0"></div>
-											<div style="border: solid #F69638; border-width: 0px 1px; padding: 15px 15px 5px;">
+										<td style="width: <%= W_MYFD_POLL_ARCHIVE_LEFT %>px; vertical-align: top;">
+											<div><img src="/media_stat/images/myfd/poll-header.png" width="<%= W_MYFD_POLL_ARCHIVE_LEFT %>" height="26" border="0"></div>
+											<div style="width: <%= W_MYFD_POLL_ARCHIVE_LEFT - 32 %>px; border: solid #F69638; border-width: 0px 1px; padding: 15px 15px 5px;">
 											
 											<div style="width: 180px; overflow: hidden;">
 											<!-- PollDaddy embed start -->
@@ -82,7 +86,7 @@
 											</div>
 											
 											</div>
-											<div><img src="/media_stat/images/myfd/poll-footer.png" width="212" height="16" border="0"></div>							
+											<div><img src="/media_stat/images/myfd/poll-footer.png" width="<%= W_MYFD_POLL_ARCHIVE_LEFT %>" height="16" border="0"></div>							
 										</td>
 										<td style="width: 244px; vertical-align: top;">
 											<div style="padding-left: 25px;">
@@ -128,7 +132,7 @@
 									</tr>
 								</table>
 								<% } else { %><%-- poll list empty --%>
-								<table cellpadding="0" cellspacing="0" border="0" style="width: 456px; height: 456px;">
+								<table cellpadding="0" cellspacing="0" border="0" style="width: <%= W_MYFD_POLL_ARCHIVE_MAIN - 25 %>px; height: <%= W_MYFD_POLL_ARCHIVE_MAIN - 25 %>px;">
 									<tr>
 										<td style="text-align: center; vertical-align: middle;" class="title18or">Sorry for the delay, but the FreshDirect poll archive is currently unavailable. Please check back later!</td>
 									</tr>
@@ -137,8 +141,8 @@
 							</div>
 						</div>
 					</td>
-					<td style="width: 212px; text-align: left; vertical-align: top;">
-						<div style="width: 212px; overflow: hidden;">
+					<td style="width: <%= W_MYFD_POLL_ARCHIVE_LEFT %>px; text-align: left; vertical-align: top;">
+						<div style="width: <%= W_MYFD_POLL_ARCHIVE_LEFT %>px; overflow: hidden;">
 			                <% if (FDStoreProperties.isAdServerEnabled()) { %>
 							<div>
 			                    <script type="text/javascript">

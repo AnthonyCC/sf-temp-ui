@@ -6,6 +6,9 @@
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
+<% //expanded page dimensions
+final int W_YA_NEWSLETTER_TOTAL = 970;
+%>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <tmpl:insert template='/common/template/dnav.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Newsletter Signup</tmpl:put>
@@ -15,7 +18,7 @@
 FDIdentity identity  = user.getIdentity();
 ErpCustomerInfoModel custInfo = FDCustomerFactory.getErpCustomerInfo(identity);%>
 <fd:NewsLetterController actionName="updateOptinNewsletter" result="result" customerInfo="<%=custInfo%>">
-		<table width="675" align="center" border="0" cellpadding="0" cellspacing="0">
+		<table width="<%= W_YA_NEWSLETTER_TOTAL %>" align="center" border="0" cellpadding="0" cellspacing="0">
 		<form name="reminder_signup" method="POST">
 			<tr>
 				<td colspan="2" class="text12" valign="top">
@@ -49,10 +52,10 @@ ErpCustomerInfoModel custInfo = FDCustomerFactory.getErpCustomerInfo(identity);%
 			</tr>
 			<tr>
 				<td><img src="/media_stat/images/layout/clear.gif" width="35" height="20" border="0"></td>
-				<td><img src="/media_stat/images/layout/clear.gif" width="480" height="20" border="0"></td>
+        <td><img src="/media_stat/images/layout/clear.gif" width="<%= W_YA_NEWSLETTER_TOTAL - 195 %>" height="20" border="0"></td>
 				<td><img src="/media_stat/images/layout/clear.gif" width="160" height="20" border="0"></td>
 			</tr>
-			<tr><td colspan="3"><img src="/media_stat/images/layout/ff9933.gif" width="675" height="1" border="0" vspace="8"></td></tr>
+			<tr><td colspan="3"><img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_NEWSLETTER_TOTAL %>" height="1" border="0" vspace="8"></td></tr>
 			<tr valign="top">
 				<td><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="continue shopping" align="left"></a></td>
 				<td colspan="2"><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="continue shopping"></a>

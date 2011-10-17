@@ -1,6 +1,10 @@
+<% //expanded page dimensions
+final int W_CHECKOUT_FOOTER_TEXT_TOTAL = 970;
+%>
+
 <% boolean isSmall = request.getRequestURI().indexOf("step_4_receipt") > -1; 
-String width="693";
-if (isSmall) width="630";
+int width=W_CHECKOUT_FOOTER_TEXT_TOTAL;
+if (isSmall) width=630;
 %>
 <table align="center" border="0" cellspacing="0" cellpadding="0" width="<%=width%>">
 <tr align="center" valign="top">

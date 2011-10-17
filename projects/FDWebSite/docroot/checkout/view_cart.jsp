@@ -10,6 +10,10 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<% //expanded page dimensions
+final int W_CHECKOUT_VIEW_CART_TOTAL = 970;
+%>
+
 <%! final java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
 <%! final java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##"); %>
 <fd:CheckLoginStatus id="user" />
@@ -158,19 +162,19 @@ StringBuffer buffer = new StringBuffer(
 		</table>
 	</div>
 
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="695">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_VIEW_CART_TOTAL%>">
     <TR VALIGN="TOP">
 	    <TD CLASS="text11" WIDTH="395" VALIGN="bottom">
 	        <FONT CLASS="title18">YOUR CART</FONT><BR>
 	        Please review the items in your cart before going to Checkout.<BR>
 	        <IMG src="/media_stat/images/layout/clear.gif" WIDTH="375" HEIGHT="1" BORDER="0">
 		</TD>
-		<TD WIDTH="265" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10" style="color:#666666;font-weight:bold;">
+		<TD WIDTH="<%=W_CHECKOUT_VIEW_CART_TOTAL-430%>" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10" style="color:#666666;font-weight:bold;">
 	      <FONT CLASS="space2pix"><BR></FONT>
 			<table>
 				<tr>
 					<td align="left" style="color:#666666;font-weight:bold;">Delivery Charge:</td>
-					<td align="right" style="color:#666666;font-weight:bold;">
+					<td align="right" style="color:#666666;font-weight:bold;padding-left:4px;">
 						<%	
 								String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge() );								
 							if(cart.isDlvPassApplied()) {
@@ -196,12 +200,12 @@ StringBuffer buffer = new StringBuffer(
 								%>
 							<tr>
 								<td align="left" style="color:#669933;font-weight:bold;">Delivery Discount:</td>
-								<td align="right" style="color:#669933;font-weight:bold;">-<%= JspMethods.formatPrice(discount.getAmount()) %></td>
+								<td align="right" style="color:#669933;font-weight:bold;padding-left:4px;">-<%= JspMethods.formatPrice(discount.getAmount()) %></td>
 							</tr>
 				<%}	}%>
 				<tr>
 					<td align="left" style="color:#666666;font-weight:bold;"><A HREF="javascript:popup('/help/estimated_price.jsp','small')"></A>Estimated Total:</td>
-					<td align="right" style="color:#666666;font-weight:bold;"><%= currencyFormatter.format(cart.getTotal()) %></td>
+					<td align="right" style="color:#666666;font-weight:bold;padding-left:4px;"><%= currencyFormatter.format(cart.getTotal()) %></td>
 				</tr>
 			</table>
 	    </TD>
@@ -238,14 +242,14 @@ StringBuffer buffer = new StringBuffer(
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 <% if (!"true".equals(request.getAttribute("recommendationsRendered"))) { %>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="693" HEIGHT="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%=W_CHECKOUT_VIEW_CART_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 <% } %>
 
 <form name="viewcart_bottom" method="POST" style="margin:0px">
-	<table width="693" border="0" cellspacing="0" cellpadding="0">
+	<table width="<%=W_CHECKOUT_VIEW_CART_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
 		<tr valign="top">
-			<TD WIDTH="658" ALIGN="RIGHT" VALIGN="MIDDLE">
+			<TD WIDTH="<%=W_CHECKOUT_VIEW_CART_TOTAL-35%>" ALIGN="RIGHT" VALIGN="MIDDLE">
 				<input type="image" name="checkout_delivery_address_select"  src="/media_stat/images/buttons/continue_checkout.gif" WIDTH="91" HEIGHT="11" border="0" alt="CONTINUE CHECKOUT" VSPACE="0"><BR>Delivery Address<BR>
 			</TD>
 			<td width="35" align="right">
@@ -258,7 +262,7 @@ StringBuffer buffer = new StringBuffer(
 </form>
 
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-<img src="/media_stat/images/layout/dotted_line.gif" width="675" height="1" border="0"><br/>
+<img src="/media_stat/images/layout/dotted_line.gif" width="<%=W_CHECKOUT_VIEW_CART_TOTAL%>" height="1" border="0"><br/>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>

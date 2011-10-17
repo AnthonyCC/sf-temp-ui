@@ -1,10 +1,14 @@
+<% //expanded page dimensions
+final int W_BC_ABOUT_TOTAL = 601;
+%>
+
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus guestAllowed='true' />
 <tmpl:insert template='/common/template/bestcellars/no_botcatnav.jsp'>
 	<tmpl:put name='title' direct='true'>FreshDirect - About Best Cellars</tmpl:put>
 	<tmpl:put name='content' direct='true'>
-	<table width="428" cellpadding="0" cellspacing="0">
+	<table width="<%=W_BC_ABOUT_TOTAL%>" cellpadding="0" cellspacing="0">
 	<tr><td><br>
 		<img src="/media_stat/images/template/wine/about_bc.gif" width="106" height="21" vspace="25"><br>
 		<font class="bc_header"><b>What makes Best Cellars different?</b></font>

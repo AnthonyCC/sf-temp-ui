@@ -16,6 +16,18 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+<% //expanded page dimensions
+final int W_BULK_MEAT_PRODUCT_TOTAL = 601;
+final int W_BULK_MEAT_PRODUCT_TOP_LEFT = 273;
+final int W_BULK_MEAT_PRODUCT_TOP_PADDING = 14;
+final int W_BULK_MEAT_PRODUCT_TOP_RIGHT = 314;
+
+final int W_BULK_MEAT_PRODUCT_LEFT = 287;
+final int W_BULK_MEAT_PRODUCT_RIGHT = 314;
+%>
+
+
 <fd:CheckLoginStatus id="user"/>
 <%
 //********** Start of Stuff to let JSPF's become JSP's **************
@@ -135,7 +147,7 @@ String fullName = currentFolder.getFullName()!=null?currentFolder.getFullName():
 if (result.isFailure()) {
 Collection myErrs=((ActionResult)result).getErrors();
 %>
-    <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="400">
+    <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>">
 <%
     for (Iterator errItr = myErrs.iterator();errItr.hasNext(); ) {
         String errDesc = ((ActionError)errItr.next()).getDescription();
@@ -189,9 +201,9 @@ if (firstProduct!=null) {
 
  %>
 
-<TABLE CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="400">
+<TABLE CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>">
 <TR VALIGN="TOP">
-<TD CLASS="text11" WIDTH="150" ALIGN="RIGHT" valign="top">
+<TD CLASS="text11" WIDTH="<%=W_BULK_MEAT_PRODUCT_TOP_LEFT%>" ALIGN="RIGHT" valign="top">
 <% 
 if (brandLogo !=null) {
     if (brandPopupLink!=null) {
@@ -209,8 +221,8 @@ if (brandLogo !=null) {
    if ((packageDesc != null) && !"".equals(packageDesc)) { %>
 <br><%= packageDesc %><BR>
 <% } %>
-</TD><TD WIDTH="5"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="5" HEIGHT="1" BORDER="0"><BR></TD>
-<TD WIDTH="245">
+</TD><TD WIDTH="<%=W_BULK_MEAT_PRODUCT_TOP_PADDING%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="5" HEIGHT="1" BORDER="0"><BR></TD>
+<TD WIDTH="<%=W_BULK_MEAT_PRODUCT_TOP_RIGHT%>">
 <% if(qualifies && firstProduct!=null && !firstProduct.isUnavailable()){%>
 
     <table border=0>
@@ -239,7 +251,7 @@ if (firstProduct==null) {
 }else { // something is available.. 
 %>
 <TR VALIGN="TOP">
-<TD CLASS="text11" WIDTH="400" COLSPAN="3">
+<TD CLASS="text11" WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>" COLSPAN="3">
 <%
 if ( blkIntroCopy!=null && blkIntroCopy.trim().length() > 0) {
 %><BR><fd:IncludeMedia name='<%=blkIntroCopy%>' />
@@ -256,12 +268,12 @@ int selectedSUIndex = 0;
 Learn more about <a href="javascript:popup('/departments/meat/info_buying_bulk_meat.jsp','small');">buying bulk meat</a>.
 </TD></TR></TABLE>
 <form  name="bulk_meat_product" method="post">
-<TABLE CELLSPACING="2" CELLPADDING="0" BORDER="0" WIDTH="400">
+<TABLE CELLSPACING="2" CELLPADDING="0" BORDER="0" WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>">
 <TR VALIGN="TOP">
-<TD WIDTH="400" COLSPAN="3">&nbsp;<br>
+<TD WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>" COLSPAN="3">&nbsp;<br>
 <font class="text10bold"><%=fullName%> cut into: </font> <br>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="3"><BR>
-<IMG src="/media_stat/images/layout/999966.gif" WIDTH="400" HEIGHT="1"><BR>
+<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>" HEIGHT="1"><BR>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="7">
 </TD>
 </TR>
@@ -312,14 +324,14 @@ String prodDescPath = null;
     optionImage=bulkProduct.getDescriptiveImage();
 %>
     <TR VALIGN="TOP">
-    <TD WIDTH="175">
+    <TD WIDTH="<%=W_BULK_MEAT_PRODUCT_LEFT%>" align="center">
 <% if(bulkImage!=null) { %>
     <img src="<%= bulkImage.getPath() %>" <%= JspMethods.getImageDimensions(bulkImage) %> border="0" alt="<%= bulkProduct.getFullName() %>">
 <% }else {%>&nbsp;<%}%></TD>
-<TD WIDTH="200">
+<TD WIDTH="<%=W_BULK_MEAT_PRODUCT_RIGHT%>">
 <% if(optionImage!=null) { %>
 <img src="<%= optionImage.getPath() %>" <%= JspMethods.getImageDimensions(optionImage) %> border="0" alt="<%= bulkProduct.getFullName() %>"><br>
-<img src="/media_stat/images/layout/cccccc.gif" width="200" height="1" border="0"><br>
+<img src="/media_stat/images/layout/cccccc.gif" width="<%=W_BULK_MEAT_PRODUCT_RIGHT%>" height="1" border="0"><br>
 <% }else {%>&nbsp;<%}%>
 <% if (prodDescPath!=null) {%> <fd:IncludeMedia name="<%= prodDescPath%>" /> <BR><%}%>
 <input type="hidden" value="<%=currentFolder.getContentName()%>" name="catId_<%=prodsShown%>"><input type="hidden" value="<%=bulkProduct.getContentName()%>"   name="productId_<%=prodsShown%>"><input type="hidden" value="" name="salesUnit_<%=prodsShown%>">
@@ -389,24 +401,24 @@ String prodDescPath = null;
     }
     prodsShown++;
 %>  </TD></TR>
-    <TR VALIGN="TOP"><TD COLSPAN="3" WIDTH="400"><BR></TD>
+    <TR VALIGN="TOP"><TD COLSPAN="3" WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>"><BR></TD>
     </TR>
 </logic:iterate>
 <input type="hidden" name="itemCount" value="<%=prodsShown%>">
 </TABLE>
 <BR><!-- End of Customization display -->
-<TABLE CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="400">
+<TABLE CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>">
 
 <TR VALIGN="TOP">
-<TD COLSPAN="4" WIDTH="400" BGCOLOR="#999966"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1"></TD>
+<TD COLSPAN="4" WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>" BGCOLOR="#999966"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1"></TD>
 </TR>
 <TR VALIGN="TOP">
-<TD COLSPAN="4" WIDTH="400"><IMG SRC="<%= IMAGE_CLEAR %>" WIDTH="1" HEIGHT="4"></TD>
+<TD COLSPAN="4" WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>"><IMG SRC="<%= IMAGE_CLEAR %>" WIDTH="1" HEIGHT="4"></TD>
 </TR>
 <TR VALIGN="TOP">
 <TD ALIGN="RIGHT"><FONT CLASS="text10bold"><%= quantityText %></FONT> <INPUT TYPE="text" class="text10" NAME="quantity" SIZE="3" MAXLENGTH="4" value="<%=selectedQty!=null?selectedQty:prodMinQuantity+""%>" onChange="chgQty(0,<%= prodMinQuantity%>,<%= prodMaxQuantity%>);"></TD>
-<TD WIDTH="15"><A HREF="javascript:chgQty(<%= prodIncrement%>,<%= prodMinQuantity%>,<%= prodMaxQuantity%>);"><img SRC="<%= IMAGE_GREEN_ARROW_UP %>" width="10" height="9" border="0" vspace="1" alt="greater quantity"></A><BR>
-<A HREF="javascript:chgQty(<%= -prodIncrement%>,<%= prodMinQuantity%>,<%= prodMaxQuantity%>);"><img SRC="<%= IMAGE_GREEN_ARROW_DOWN %>" width="10" height="9" border="0" vspace="1" alt="lesser quantity"></A></TD>
+<TD WIDTH="15"><A HREF="javascript:chgQty(<%= prodIncrement%>,<%= prodMinQuantity%>,<%= prodMaxQuantity%>);"><img SRC="<%= IMAGE_GREEN_ARROW_UP %>" width="10" height="9" border="0" style="margin: 1px 0;" alt="greater quantity"></A><BR>
+<A HREF="javascript:chgQty(<%= -prodIncrement%>,<%= prodMinQuantity%>,<%= prodMaxQuantity%>);"><img SRC="<%= IMAGE_GREEN_ARROW_DOWN %>" width="10" height="9" border="0" style="margin: 1px 0;" alt="lesser quantity"></A></TD>
 <TD colspan="2" ALIGN="RIGHT"><FONT CLASS="text10bold"><%
 if (isOnePricedByLb) { %>
 <A HREF="javascript:popup('/help/estimated_price.jsp','small')">Est. Price:</a>
@@ -481,7 +493,7 @@ if (cvprice > 0.0) { %>
 </logic:iterate>
 </TD></tr>
 <TR VALIGN="TOP">
-<TD COLSPAN="4" WIDTH="400" BGCOLOR="#999966"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1"></TD>
+<TD COLSPAN="4" WIDTH="<%=W_BULK_MEAT_PRODUCT_TOTAL%>" BGCOLOR="#999966"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1"></TD>
 </TR>
 <tr><TD colspan="4" ALIGN="center"><br>
 <input type="image" name="addToCart" src="/media/images/buttons/add_to_cart.gif"  ALT="ADD ITEMS TO YOUR CART" height="20" width="93" HSPACE="2" VSPACE="0" BORDER="0"><br>

@@ -15,6 +15,14 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
 <%@ taglib uri='oscache' prefix='oscache' %>
+
+<% //expanded page dimensions
+final int W_USQ_WINE_INFO_TOTAL = 601;
+final int W_USQ_WINE_INFO_LEFT = 150;
+final int W_USQ_WINE_INFO_CENTER_PADDING = 14;
+final int W_USQ_WINE_INFO_RIGHT = 437;
+%>
+
 <%
 		final ProductModel _wprd = (ProductModel) productNode;
 
@@ -162,9 +170,9 @@
 
 <%-- THE TABLE --%>
 <div class="prdsep" style="background-color: #cccccc">&nbsp;</div>
-<div style="width: 430px">
+<div style="width: <%=W_USQ_WINE_INFO_TOTAL%>px">
 	<% if (hasLeftColumn) { %>
-	<div style="float: left; margin-right: 2em; x-margin-bottom: 2em; text-align: left; width: 150px;">
+	<div style="float: left; margin-right: <%=W_USQ_WINE_INFO_CENTER_PADDING%>px; x-margin-bottom: 2em; text-align: left; width: <%=W_USQ_WINE_INFO_LEFT%>px;">
 			<%-- REGION IMAGE --%>
 			<% if (wineRegionName != null) { %>
 			<fd:IncludeMedia name="<%= wineRegionName %>" />
@@ -246,7 +254,7 @@
             <%}%>
 	</div>
 	<% } %>
-	<div style="<%= hasLeftColumn ? "float: left; width: 260px" : "" %>">
+	<div style="<%= hasLeftColumn ? "float: left; width: " + W_USQ_WINE_INFO_RIGHT +"px" : "" %>">
 			<%-- DESC --%>
    		<% if ( FDStoreProperties.useOscache() ) { %> 
 	        <oscache:cache time="300">

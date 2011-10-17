@@ -1,4 +1,8 @@
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
+<% //expanded page dimensions
+final int W_CREDITCARD_SELECT_TOTAL = 970;
+final int W_CREDITCARD_SELECT_CARD = 290;
+%>
 <%-- Dependencies
     Host page must :
         - bring in the common_javascript.js file 
@@ -98,13 +102,13 @@
         </TR></TABLE><br><br>
 <%              } %>
 
-	<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" width="675">
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" width="<%= W_CREDITCARD_SELECT_TOTAL %>">
 	<TR valign="top">
 <%
             itemCounter=0;
           } %>
 	<TD width="20"><input type="<%=showRadioButtons?"radio":"hidden"%>" name="paymentMethodList" <%=checked%> value="<%=paymentPKId%>" ></TD>
-	<TD width="185"> <%--<font class="text10bold">Credit Card</font><br>  --%>
+  <TD width="<%= W_CREDITCARD_SELECT_CARD %>"> <%--<font class="text10bold">Credit Card</font><br>  --%>
 		<%-- <font class="text10bold"><%=paymentM.getCardType().getFdName()%></font><BR> --%>
 		<FONT CLASS="text12"><%=paymentM.getName()%><BR>
 		<b><%=paymentM.getCardType().getDisplayName()%></b> - <br><%= paymentM.getMaskedAccountNumber() %><BR>
@@ -131,7 +135,7 @@
 <input name="delete_cc" type="IMAGE" src="/media_stat/images/buttons/delete.gif" WIDTH="51" HEIGHT="16" ALT="Delete" BORDER="0" onClick="javascript:setDeletePaymentId(this.form,'<%=paymentPKId%>');setActionName(this.form,'deletePaymentMethod')">
 <%      }%>
 	<!-- error message about card being expired goes here -->
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="185" HEIGHT="1">
+  <IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%= W_CREDITCARD_SELECT_CARD %>" HEIGHT="1">
 	</TD>
 <%          itemCounter++;
 			itemNum++;
@@ -146,12 +150,12 @@
             if (itemCounter==1) {
 %>
         <%-- this spacer cell and image width should be dynamic: when no second payment method, 460 --%>
-        <TD WIDTH="470"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="470" HEIGHT="1" BORDER="0"><BR></TD>
+        <TD WIDTH="<%= W_CREDITCARD_SELECT_TOTAL - W_CREDITCARD_SELECT_CARD - 50 %>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%= W_CREDITCARD_SELECT_TOTAL - W_CREDITCARD_SELECT_CARD - 50 %>" HEIGHT="1" BORDER="0"><BR></TD>
 <%
             } else if(itemCounter==2) {
 %>
         <%-- this spacer cell  --%>
-        <TD WIDTH="235"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="235" HEIGHT="1" BORDER="0"><BR></TD>
+        <TD WIDTH="<%= W_CREDITCARD_SELECT_TOTAL - W_CREDITCARD_SELECT_CARD * 2 - 100 %>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%= W_CREDITCARD_SELECT_TOTAL - W_CREDITCARD_SELECT_CARD * 2 - 100 %>" HEIGHT="1" BORDER="0"><BR></TD>
 <%
             }
 %>

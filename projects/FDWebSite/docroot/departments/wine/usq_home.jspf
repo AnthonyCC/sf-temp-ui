@@ -25,6 +25,11 @@
 <%@taglib uri="logic" prefix="logic"%>
 <%@taglib uri="freshdirect" prefix="fd"%>
 <%@taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
+
+<% //expanded page dimensions
+final int W_USQ_HOME_TOTAL = 765;
+%>
+
 <%
 	if (!user.isHealthWarningAcknowledged()) {
 		String redirectURL1 = "/health_warning.jsp?successPage=/department.jsp" + URLEncoder.encode("?" + request.getQueryString(), "utf-8");
@@ -33,7 +38,7 @@
 	}
 %>
 
-<div style="width: 572px; text-align: center; margin: 0px auto;">
+<div style="width: <%=W_USQ_HOME_TOTAL%>px; text-align: center; margin: 0px auto;">
 <%
 	boolean useAlternateImage = true;
 	String trk = "dpage";
@@ -44,7 +49,9 @@
 <script type="text/javascript">
 YAHOO.util.Event.onDOMReady(FreshDirect.WineNav.onLoad);
 </script>
+<div align="center">
 <fd:IncludeHtml html="<%= dept.getEditorial() %>"/>
+</div>
 <%
 	}
 	{ // TOP rated multitab carousel
@@ -55,7 +62,7 @@ FreshDirect.Wine.addTabItem("top-rated", "<%="tab_price_" + price.name().toLower
 <%}%>
 </script>
 <div class="usq" style="padding-top: 15px;">
-<table width="572" cellpadding="0" cellspacing="0" border="0">
+<table width="<%=W_USQ_HOME_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 	<tr>
 		<td class="usq-xprt-bg" width="6" valign="top"><img src="/media_stat/images/wine/top_left_usq_xprt_filled.png" width="7" height="7"></td>
 		<td class="usq-xprt-bg usq-lightbrown" align="left">
@@ -72,7 +79,7 @@ FreshDirect.Wine.addTabItem("top-rated", "<%="tab_price_" + price.name().toLower
 	</tr>
 </table>
 <div class="usq-brown-border" style="border-width: 0px 0px 1px; font-size: 0px;"></div>
-<table class="usq-xprt" width="572" height="27" cellspacing="0" cellpadding="0" border="0" style="text-align: center; line-height: 19px;">
+<table class="usq-xprt" width="<%=W_USQ_HOME_TOTAL%>" height="27" cellspacing="0" cellpadding="0" border="0" style="text-align: center; line-height: 19px;">
 	<tr>
 	<% 
 	{ EnumWinePrice[] values = EnumWinePrice.values();
@@ -109,10 +116,10 @@ FreshDirect.Wine.addTabItem("top-rated", "<%="tab_price_" + price.name().toLower
 
 				ids.add("tab_price_" + price.name().toLowerCase());
 		%>
-			<fd:WineTopRatedFeed id="prods" price="<%= price %>" maxItems="12" useAlternateImage="true" imageHeightId="imgHeight">
+			<fd:WineTopRatedFeed id="prods" price="<%= price %>" maxItems="15" useAlternateImage="true" imageHeightId="imgHeight">
 				<div id="tab_price_<%=price.name().toLowerCase()%>" class="fd-carousel-tab">
 					<display:Carousel id="carouselTag" carouselId="<%= carouselId %>" itemsToShow="<%= prods %>" maxItems="12" useAlternateImage="<%= useAlternateImage %>" 
-							width="460" trackingCode="<%= trk %>" numItems="4" hideContainer="<%= tabId %>" parentId="topRatedContainer" offset="45"><%
+							width="<%=W_USQ_HOME_TOTAL-90%>" trackingCode="<%= trk %>" numItems="5" hideContainer="<%= tabId %>" parentId="topRatedContainer" offset="45"><%
 						ProductModel product = (ProductModel) currentItem;
 						PriceCalculator calculator = product.getPriceCalculator();
 					%>
@@ -163,18 +170,18 @@ YAHOO.util.Event.onDOMReady(function() {
 	if (usqRegion != null) {
 %>
 <div style="padding-top: 20px; text-align: left;">
-<table width="572" cellpadding="0" cellspacing="0" border="0">
+<table width="<%=W_USQ_HOME_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 	<tr>
 		<td class="wine-pop-brown-bg" width="6" valign="top"><img src="/media_stat/images/wine/top_left_usq_brown_filled.png" width="7" height="7"></td>
-		<td class="wine-pop-brown-bg" width="560" align="left"><div class="title17 wine-narrow usq-lightbrown" style="padding: 0.35em 5px 0.2em;">Most Popular</div></td>
+		<td class="wine-pop-brown-bg" width="<%=W_USQ_HOME_TOTAL-12%>" align="left"><div class="title17 wine-narrow usq-lightbrown" style="padding: 0.35em 5px 0.2em;">Most Popular</div></td>
 		<td class="wine-pop-brown-bg" width="6" valign="top"><img src="/media_stat/images/wine/top_right_usq_brown_filled.png" width="7" height="7"></td>
 	</tr>
 </table>
 <div class="usq-lightbrown usq-brown-border usq usq-popular" style="padding: 20px 0px 10px;">
 <fd:ProductGroupRecommender itemCount="24" siteFeature="PROD_GRP_POPULAR" facility="usq_dept_pop" currentNode="<%= usqRegion %>" id="deptPopular">
 	<display:UniqueFilter in="<%= deptPopular.getProducts() %>" out="prods" groupId="usq_popular">
-		<display:Carousel id="carouselTag" carouselId="usq-popular" itemsToShow="<%= prods %>" maxItems="16" useAlternateImage="<%= useAlternateImage %>" 
-				width="460" trackingCode="<%= trk %>" numItems="4">
+		<display:Carousel id="carouselTag" carouselId="usq-popular" itemsToShow="<%= prods %>" maxItems="20" useAlternateImage="<%= useAlternateImage %>" 
+				width="<%=W_USQ_HOME_TOTAL-90%>" trackingCode="<%= trk %>" numItems="5">
 			<% ProductModel product = (ProductModel) currentItem; 
 			PriceCalculator calculator = product.getPriceCalculator();
 			%>
@@ -201,8 +208,10 @@ YAHOO.util.Event.onDOMReady(function() {
 	Map<String, String> params = new HashMap<String, String>();
 	params.put("baseUrl", "");
 %>
-<div style="padding-top: 15px;">
+<div style="padding-top: 15px;" width="100%">
+<div align="center">
 <fd:IncludeMedia name="<%= dept.getTemplatePath().trim() %>" parameters="<%= params %>" />
+</div>
 <div style="clear: both; font-size: 0px;"></div>
 </div>
 <% } %>

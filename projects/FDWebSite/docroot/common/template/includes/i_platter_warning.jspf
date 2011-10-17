@@ -4,6 +4,12 @@
 <%@ page import='com.freshdirect.framework.util.TimeOfDay'%>
 <%@ page import='com.freshdirect.delivery.restriction.EnumDlvRestrictionReason'%>
 <%@ page import='com.freshdirect.webapp.util.RestrictionUtil'%>
+
+<% //expanded page dimensions
+final int W_PLATTER_WARNING_TOTAL = 970;
+%>
+
+
 <%
 {
 	Set restrictions = user.getShoppingCart().getApplicableRestrictions();
@@ -30,7 +36,7 @@
 		
 		if (now.after(showCal) && now.before(cutoffTime)) {
 			%>
-			<table width="745" cellpadding="0" cellspacing="0" border="0">
+			<table width="<%=W_PLATTER_WARNING_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 				<tr align="center">
 					<td>
 						<font color="#ff9933"><b>PLEASE ORDER BY <%= headerTime %> FOR DELIVERY TOMORROW</b></font><br>

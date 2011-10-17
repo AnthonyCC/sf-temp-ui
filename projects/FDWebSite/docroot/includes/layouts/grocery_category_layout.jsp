@@ -21,6 +21,16 @@
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
 
+<% //expanded page dimensions
+final int W_GROCERY_CATEGORY_LAYOUT_TOTAL = 765;
+final int W_GROCERY_CATEGORY_LAYOUT_LEFT = 396;
+final int W_GROCERY_CATEGORY_LAYOUT_LEFT_COL = 191;
+final int W_GROCERY_CATEGORY_LAYOUT_LEFT_PADDING = 14;
+final int W_GROCERY_CATEGORY_LAYOUT_CENTER_PADDING = 14;
+final int W_GROCERY_CATEGORY_LAYOUT_RIGHT_COL = 109;
+final int W_GROCERY_CATEGORY_LAYOUT_RIGHT_PADDING = 14;
+%>
+
 <%!
 
 static Category LOGGER = LoggerFactory.getInstance("grocery_category_layout");
@@ -102,9 +112,9 @@ int typesCount = typesList.size();
 
 
 %>
-<TABLE CELLPADDING="0" CELLSPACING="0" WIDTH="550" BORDER="0">
+<TABLE CELLPADDING="0" CELLSPACING="0" WIDTH="<%=W_GROCERY_CATEGORY_LAYOUT_TOTAL%>" BORDER="0">
     <TR VALIGN="TOP">
-        <TD WIDTH="550">
+        <TD WIDTH="<%=W_GROCERY_CATEGORY_LAYOUT_TOTAL%>">
 <%
 if (currentCategory != null) {
     //
@@ -143,14 +153,14 @@ if (currentCategory != null) {
 	// Favorite Products
 	//
 %>
-<fd:ProductGroupRecommender siteFeature="FEATURED_ITEMS" id="recommendations" facility="cat_feat_items"  currentNode="<%= currentFolder %>" itemCount="5"><%
+<fd:ProductGroupRecommender siteFeature="FEATURED_ITEMS" id="recommendations" facility="cat_feat_items"  currentNode="<%= currentFolder %>" itemCount="6"><%
 	if (recommendations != null && recommendations.getProducts().size() > 0) {
 		request.setAttribute("recommendationsRendered","true");
 	
 		List products = recommendations.getProducts();
 		int ord=1;
 %>
-		<table cellpadding="0" cellspacing="0" width="550" border="0">
+		<table cellpadding="0" cellspacing="0" width="<%=W_GROCERY_CATEGORY_LAYOUT_TOTAL%>" border="0">
 			<tr>
 				<td class="title14" colspan="<%= products.size()*2 %>"><%= recommendations.getVariant().getServiceConfig().getFILabel() %><br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td>
 			</tr>
@@ -219,20 +229,20 @@ String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVaria
 
 
 	int typeSpan = (currentCategory != null ? currentCategory.getColumnSpan(2) : 2);
-	int brandSpan = 4 - typeSpan;
+	int brandSpan = 5 - typeSpan;
 
 %>
 <BR><BR>
     
-<IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="550" HEIGHT="1"><BR>
+<IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%=W_GROCERY_CATEGORY_LAYOUT_TOTAL%>" HEIGHT="1"><BR>
 <FONT CLASS="space4pix"><BR></FONT>
-<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="550">
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%=W_GROCERY_CATEGORY_LAYOUT_TOTAL%>">
 <tr VALIGN="TOP">
-    <td WIDTH="550" colspan="6"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="5"></td>
+    <td WIDTH="<%=W_GROCERY_CATEGORY_LAYOUT_TOTAL%>" colspan="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="5"></td>
 </tr>
 <TR VALIGN="TOP">
-    <TD WIDTH="10"><BR></TD>
-    <TD ALIGN="CENTER">
+<!--     <TD WIDTH="27"><BR></TD> -->
+    <TD ALIGN="CENTER" width="<%=W_GROCERY_CATEGORY_LAYOUT_LEFT%>">
         <table cellpadding="0" cellspacing="0" border="0">
             <tr>
                 <td colspan="<%=typeSpan+(typeSpan-1)%>">
@@ -256,7 +266,7 @@ String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVaria
     int currentRow = 0;
 
 %>
-                <TD WIDTH="125"><%
+                <TD WIDTH="<%=W_GROCERY_CATEGORY_LAYOUT_LEFT_COL%>"><%
     
     if (makeFakeAllLink) {
     	%><div style="margin-left: 8px; text-indent: -8px;">
@@ -319,11 +329,11 @@ String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVaria
 
         if (canBreak) {
         	%></TD>
-        	<TD WIDTH="8"><IMG SRC="media/images/layout/clear.gif" HEIGHT="1" WIDTH="8"></TD>
+        	<TD WIDTH="<%=W_GROCERY_CATEGORY_LAYOUT_LEFT_PADDING%>"><IMG SRC="media/images/layout/clear.gif" HEIGHT="1" WIDTH="<%=W_GROCERY_CATEGORY_LAYOUT_LEFT_PADDING%>"></TD>
 <%
             if (idx != typesCount) {
             	%>
-            	<TD WIDTH="125">
+            	<TD WIDTH="<%=W_GROCERY_CATEGORY_LAYOUT_LEFT_COL%>">
 <%
             }
             currentRow = 0;
@@ -377,10 +387,9 @@ String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVaria
 	       </TD></tr>
     	</table>
     </TD>
-    <td width="10"><BR></TD>
     <td bgcolor="#cccccc" width="1"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></TD>
-    <td width="10"><br /></td>
-    <td width="<%=125*brandSpan+((brandSpan+1)*6)%>">
+    <td width="<%=W_GROCERY_CATEGORY_LAYOUT_CENTER_PADDING-1%>"><BR></TD>
+    <td width="<%=W_GROCERY_CATEGORY_LAYOUT_RIGHT_COL*brandSpan+((brandSpan-1)*W_GROCERY_CATEGORY_LAYOUT_RIGHT_PADDING)%>">
 		<%-- Everything inside this td is the brand section --%>
 		<%
 			//APPDEV-1308
@@ -456,17 +465,15 @@ String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVaria
 		%>
 		<% if (!useBrandMedia) { %>
 			<%-- START brand section --%>
-				<table WIDTH="<%=125*brandSpan+((brandSpan+1)*6)%>" cellpadding="0" cellspacing="0" border="0">
+				<table WIDTH="<%=W_GROCERY_CATEGORY_LAYOUT_RIGHT_COL*brandSpan+((brandSpan-1)*W_GROCERY_CATEGORY_LAYOUT_RIGHT_PADDING)%>" cellpadding="0" cellspacing="0" border="0">
 					<tr>
-						<td width="6"><img src="/media_stat/images/layout/clear.gif" width="6" height="1" alt="" /></td>
 						<td colspan="<%=(2*brandSpan)+1%>">
 							<img src="/media/images/navigation/department/grocery/gro_choose_brand.gif" width="123" height="10" alt="CHOOSE A BRAND" border="0" /><br />
 							<img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" />
 						</td>
 					</tr>
 					<tr valign="top">
-						<td width="6"><img src="/media_stat/images/layout/clear.gif" width="6" height="1" alt="" /></td>
-						<td width="125"><%
+						<td width="<%=W_GROCERY_CATEGORY_LAYOUT_RIGHT_COL%>"><%
 						//
 						// "CHOOSE A BRAND" COLUMN
 						//
@@ -526,9 +533,9 @@ String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVaria
 							<%
 							if (++currentRow == brandsRows) {
 								%></td>
-								<td width="6"><img src="/media_stat/images/layout/clear.gif" height="1" width="6" alt="" /></td>
 								<% if (i.hasNext()) { %>
-									<td width="125"><%
+									<td width="<%=W_GROCERY_CATEGORY_LAYOUT_RIGHT_PADDING%>"><img src="/media_stat/images/layout/clear.gif" height="1" width="<%=W_GROCERY_CATEGORY_LAYOUT_RIGHT_PADDING%>" alt="" /></td>
+									<td width="<%=W_GROCERY_CATEGORY_LAYOUT_RIGHT_COL%>"><%
 								}
 
 								currentRow = 0;
@@ -549,6 +556,6 @@ String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVaria
 	</td>
 </tr>
 <tr>
-	<td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" /></td>
+	<td colspan="4"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" /></td>
 </tr>
 </table>

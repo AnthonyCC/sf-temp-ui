@@ -14,6 +14,10 @@
 <%@ taglib uri='oscache' prefix='oscache'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
+<% //expanded page dimensions
+final int W_VERTICAL_LAYOUT_PRODUCT_CELL = 145;
+final int W_VERTICAL_LAYOUT_FOLDER_CELL = 145;
+%>
 
 <display:InitLayout/>
 
@@ -21,8 +25,6 @@
 	//**************************************************************
 	//***          Vertical Layout Pattern                       ***
 	//**************************************************************
-	final int PRODUCT_CELL_WIDTH = 105;
-	final int FOLDER_CELL_WIDTH = 136;
 	final int MAX_COLUMNS = 4;
 	boolean firstRow = true;
 	boolean showSeparator[] = null;
@@ -37,8 +39,8 @@
 	returnCategory="<%= isDepartment.booleanValue() %>" 
 	labeled="<%= isDepartment.booleanValue() %>" 
 	maxColumns='<%= MAX_COLUMNS %>' 
-	productCellWidth="<%= PRODUCT_CELL_WIDTH %>" 
-	folderCellWidth="<%= FOLDER_CELL_WIDTH %>" 
+	productCellWidth="<%= W_VERTICAL_LAYOUT_PRODUCT_CELL %>" 
+	folderCellWidth="<%= W_VERTICAL_LAYOUT_FOLDER_CELL %>" 
 	currentFolder="<%= currentFolder %>" 
 	itemsToShow='<%= sortedCollection %>'
 >
@@ -119,7 +121,7 @@
 					String actionUrl = FDURLUtil.getProductURI( product, trackingCode );
 					%>
 				
-					<td	width="<%= verticalPattern.isLabeled() ? verticalPattern.getFolderCellWidth() : verticalPattern.getProductCellWidth() %>" > 
+					<td	width="<%= verticalPattern.isLabeled() ? verticalPattern.getFolderCellWidth() : verticalPattern.getProductCellWidth() %>" style="padding-bottom: 8px;">
 						
 					<font class="catPageProdNameUnderImg">
 						

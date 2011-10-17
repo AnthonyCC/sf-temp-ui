@@ -50,7 +50,6 @@
 					<%@ include file="/includes/i_error_messages.jspf" %>
 				</fd:ErrorHandler>
 				<% //END error messaging %>
-		
 	<%
 		String curRow = ""; //holds current row
 		String[] resultDynRows = strDynRows.split(",");
@@ -60,8 +59,8 @@
 				if (!emailPage) { isTransactionalRow = true; }else{ isTransactionalRow = false; }
 				minForRowVisibility = 0;
 				MIN_FAVS2SHOW = 1;
-				perRow = 5; //used in generic_row
-				perRowPP = 6; //used in peak_produce
+				perRow = emailPage ? 5 : 8; //used in generic_row
+				perRowPP = emailPage ? 5 : 8; //used in peak_produce
 				maxRows = 1; //used in generic_row
 				grabberDepth = 0;
 				dealsFrom = "gro";
@@ -381,6 +380,7 @@
 			//obsolete old deals special totally
 			if ("wg_deals".equals(curRow)) { curRow = "wgd_deals"; }
 			
+			
 			//special : peak produce
 			if ("wgd_produce".equals(curRow)) {
 
@@ -466,7 +466,7 @@
 						log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 					myDebugStr = "???: including: GENERIC:deptId="+deptId+", catId="+catId;
 						log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
-					%><%@include file="/includes/i_dynamicRows_generic.jspf" %><%
+          %><%@include file="/includes/i_dynamicRows_generic.jspf" %><%
 
 				}else{
 					//is NOT a category

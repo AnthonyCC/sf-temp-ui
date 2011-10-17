@@ -29,6 +29,10 @@ String redirectPage = "/login/login.jsp?successPage=" + successPage;
     String department = request.getParameter("department");
 
 %>
+<tmpl:insert template='/common/template/dnav.jsp'>
+<tmpl:put name='title' direct='true'>FreshDirect - Your Profile</tmpl:put>
+<tmpl:put name='content' direct='true'>
+
 <script type="text/javascript">
 
 function clear(p) {
@@ -46,14 +50,10 @@ function _submit(p) {
    p.submit();
 }
 </script>
-<tmpl:insert template='/common/template/dnav.jsp'>
-<tmpl:put name='title' direct='true'>FreshDirect - Your Profile</tmpl:put>
-<tmpl:put name='content' direct='true'>
-
 <fd:CustomerProfileSurveyTag actionName="submitSurvey" result="result" successPage="<%=successPage%>" survey="Customer Profile Survey">
-<div style="width:700px;"><fd:IncludeMedia name="/media/editorial/site_pages/survey/cps_intro.html" /></div>
+<div><fd:IncludeMedia name="/media/editorial/site_pages/survey/cps_intro.html" /></div>
 <form id="junk" name="request_product" method="POST">	
-<table width="700" cellpadding="0" cellspacing="0" border="0" align="center">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" align="center">
     
 <input type="hidden" name="department" value="<%=department%>">
 <tr>

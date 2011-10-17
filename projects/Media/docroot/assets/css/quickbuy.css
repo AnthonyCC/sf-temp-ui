@@ -1,6 +1,6 @@
 .qbBody {
 	margin: 0;
-	width: 410px;
+	width: 450px;
 }
 
 .qbContainer {
@@ -148,7 +148,7 @@
 	float:left;
 	margin:10px;
 	_margin:5px;
-	width:180px;
+	width:220px;
 	text-align: right;
 }
 
@@ -156,7 +156,7 @@
 	float:left;
 	margin: 10px 10px 0;
 	_margin:5px;
-	width:180px;
+	width:220px;
 	text-align: right;
 }
 
@@ -188,7 +188,7 @@
 }
 
 .yui-panel-container.quickbuy-dialog .prodframe {
-	width: 410px;
+	width: 450px;
 	/* height: 420px; */
 	border: 0;
 	padding: 0;
@@ -208,7 +208,7 @@
 
 
 .yui-panel-container.quickbuy-dialog .overbox {
-	width: 410px;
+	width: 450px;
 	bottom: 100%;
 	left: 0px;
 	position: absolute;

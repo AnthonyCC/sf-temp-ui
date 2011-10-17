@@ -13,6 +13,10 @@
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<% //expanded page dimensions
+final int W_CHECKOUT_STEP_2_UNAVAIL_TOTAL = 970;
+%>
+
 <%! java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##"); %>
 
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
@@ -31,10 +35,10 @@ Map<String,FDAvailabilityInfo> invsInfoMap = cart.getUnavailabilityMap();
 Date day = null;
 if(invsInfoMap.size() > 0 ){
 %>
-<table width="690">
+<table width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 <tr><td><span class="title18">Some Items Unavailable for <%= dateFormatter.format(reservation.getStartTime()) %></span></td></tr>
 <tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"><br>
-<img src="/media_stat/images/layout/ff9933.gif" width="693" height="1" border="0"><br>
+<img src="/media_stat/images/layout/ff9933.gif" width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL%>" height="1" border="0"><br>
 <img src="/media_stat/images/layout/clear.gif" width="1" height="6" border="0"><br>
 </td></tr>
 <tr><td class="text11">
@@ -55,11 +59,11 @@ if(invsInfoMap.size() > 0 ){
 
 <!-- ===================================================== composite goes here ============================================================= -->
 
-<table BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="657">
+<table BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL%>">
 <tr VALIGN="TOP">
-<td WIDTH="320" COLSPAN="2" CLASS="text12bold">Unavailable for <%= dateFormatter.format(reservation.getStartTime()) %> <%= FDTimeslot.format(reservation.getStartTime(), reservation.getEndTime()) %><br></td>
-<td WIDTH="17"><br></td>
-<td WIDTH="320" COLSPAN="2" CLASS="text12bold">Details<br></td>
+<td WIDTH="<%=(W_CHECKOUT_STEP_2_UNAVAIL_TOTAL-18)/2%>" COLSPAN="2" CLASS="text12bold">Unavailable for <%= dateFormatter.format(reservation.getStartTime()) %> <%= FDTimeslot.format(reservation.getStartTime(), reservation.getEndTime()) %><br></td>
+<td WIDTH="18"><br></td>
+<td WIDTH="<%=(W_CHECKOUT_STEP_2_UNAVAIL_TOTAL-18)/2%>" COLSPAN="2" CLASS="text12bold">Details<br></td>
 </tr>
 <tr><td colspan="5">&nbsp;</td></tr>
 
@@ -111,14 +115,14 @@ String lastGroupKey="";
 	%>
 	<tr VALIGN="TOP">
 	<td WIDTH="30">&nbsp;&nbsp;<b><%= quantityFormatter.format( cartLine.getQuantity() ) %></b></td>
-	<td WIDTH="280">
+	<td WIDTH="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL-367%>">
 		<b><%=cartLine.getDescription() %></b>
 		<%= "".equals(cartLine.getConfigurationDesc()) ? "" : "(" + cartLine.getConfigurationDesc() + ")" %>
 	</td>
 	<td WIDTH="17">&nbsp;</td>
 	<td WIDTH="5">&nbsp;&nbsp;</td>
 	<td WIDTH="315">
-		<%
+ 		<%
 		if (info instanceof FDRestrictedAvailabilityInfo) {
 			EnumDlvRestrictionReason rsn = ((FDRestrictedAvailabilityInfo)info).getRestriction().getReason();
 			if (EnumDlvRestrictionReason.KOSHER.equals(rsn)) {
@@ -162,7 +166,7 @@ String lastGroupKey="";
 			if (!singleOptionIsOut) {
 			%>
 			<a href="/product_modify.jsp?cartLine=<%= cartLine.getRandomId() %>&skuCode=<%=cartLine.getSku().getSkuCode()%>">Click here</a> to select other options.
-			<%
+ 			<%
 			}
 		} else if (info instanceof FDMuniAvailabilityInfo) {
 			MunicipalityInfo muni = ((FDMuniAvailabilityInfo)info).getMunicipalityInfo();
@@ -221,7 +225,7 @@ if (day != null) {
 		%>
 		<tr VALIGN="TOP">
 		<td WIDTH="30">&nbsp;&nbsp;<b><%= quantityFormatter.format( cartLine.getQuantity() ) %></b></td>
-		<td WIDTH="280">
+		<td WIDTH="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL-367%>">
 			<b><%=cartLine.getDescription() %></b>
 			<%= "".equals(cartLine.getConfigurationDesc()) ? "" : "(" + cartLine.getConfigurationDesc() + ")" %>
 		</td>
@@ -239,9 +243,9 @@ if (day != null) {
 <%-- DELIVERY PASS BLOCK END--%>
 <CENTER>
 <img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"><br>
-<img src="/media_stat/images/layout/ff9933.gif" width="693" height="1" border="0"><br>
+<img src="/media_stat/images/layout/ff9933.gif" width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL%>" height="1" border="0"><br>
 <img src="/media_stat/images/layout/clear.gif" width="1" height="6" border="0"><br>
-<table border="0" cellspacing="0" cellpadding="0" width="675">
+<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL%>">
 	<tr valign="TOP">
 		<td width="25"><a href="<% if (day != null) { %>/checkout/step_2_select<% } else { %>/index<% } %>.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" width="28" height="28" alt="" border="0"></a></td>
 		<td><img src="/media_stat/images/layout/clear.gif" width="10" height="1" alt="" border="0"></td>
@@ -256,7 +260,7 @@ if (day != null) {
 			<% } %>
 		</td>
 		<td></td>
-		<td width="265" align="RIGHT" valign="MIDDLE">
+		<td width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL-410%>" align="RIGHT" valign="MIDDLE">
 			<a href="/checkout/step_2_adjust.jsp?successPage=<%=request.getParameter("successPage")%>"><img src="/media_stat/images/buttons/continue_checkout.gif" WIDTH="91" HEIGHT="11" border="0" alt="CONTINUE CHECKOUT" vspace="0"></a>
 			<br>Items will be removed from your cart<br>
 		</td>
@@ -266,7 +270,7 @@ if (day != null) {
 	</tr>
 </table>
 <img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br>
-<img src="/media_stat/images/layout/ff9933.gif" width="693" height="1" border="0"><br>
+<img src="/media_stat/images/layout/ff9933.gif" width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL%>" height="1" border="0"><br>
 
 </CENTER>
 

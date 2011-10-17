@@ -13,6 +13,11 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
+
+<% //expanded page dimensions
+final int W_RECIPE_SEARCH_TOTAL = 601;
+%>
+
 <fd:CheckLoginStatus guestAllowed="true" />
 <%
 //RecipeDepartment recipeDepartment = (RecipeDepartment) RecipeDepartment.getDefault();
@@ -30,7 +35,7 @@ request.setAttribute("listPos", "SystemMessage,SideCartBottom");
 .section {
  border-bottom: 1px solid #f93;
  padding-bottom: 1em;
- margin: 1em;
+ margin: 14px;
  margin-top: 0em;
  text-align: left;
 }
@@ -185,7 +190,7 @@ boolean searchPerformed = false;
 		}
 		
 		%>
-		<div class="resultsHeading" style="width:400px;">
+		<div class="resultsHeading" style="width:<%=W_RECIPE_SEARCH_TOTAL%>px;">
 		<h1><%=resultHeading%></h1>
 		<%
         List classifications = (List) pageContext.getAttribute("classifications");
@@ -212,7 +217,7 @@ boolean searchPerformed = false;
         }
 		%>
 		</div>
-		<div style="width: 400px;">
+		<div style="width: <%=W_RECIPE_SEARCH_TOTAL%>px;">
 		<%
 
 		for (Iterator i = recipes.iterator(); i.hasNext(); ) {
@@ -243,10 +248,10 @@ if (!searchPerformed) {
 	<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><form name="recipeSearch"><td valign="top">
 	<div class="section" style="padding-bottom: 2em;">
 		<label for="keyword" class="keyword" style="font-size: 9pt; font-family:Verdana, Helvetica, sans-serif;"><b>Search for:</b></label>
-		<input type="text" id="keyword" name="keyword" class="search" style="width:200px;" value="<%= request.getParameter("keyword") %>"/>
+		<input type="text" id="keyword" name="keyword" class="search" style="width:245px;" value="<%= request.getParameter("keyword") %>"/>
 	</div>
 
-	<div class="section">
+	<div class="section" style="padding: 0px 50px 0px 50px;">
 		<%
 		List dropdownCriteria = searchPage.getCriteriaBySelectionType(RecipeSearchCriteria.TYPE_ONE);	
 		int countDropdown = 0;
@@ -351,7 +356,7 @@ if (!searchPerformed) {
 					</div>
 					<% 
 					
-					if (colCount%3==0) { 
+					if (colCount%4==0) { 
 						colCount = 0;
 					%>
 						<br clear ="all">
@@ -360,12 +365,17 @@ if (!searchPerformed) {
 						if (itemCount == (crit.getCriteriaDomainValues().size())) {
 							if (colCount == 1) { 
 							%>
-								<div style="float:left; width:146px;"></div><div style="float:left; width:146px;"></div><br clear ="all">
+								<div style="float:left; width:146px;"></div><div style="float:left; width:146px;"></div><div style="float:left; width:146px;"></div><br clear ="all">
 							<%
 							} else if (colCount == 2) { 
 							%>
+								<div style="float:left; width:146px;"></div><div style="float:left; width:146px;"></div><br clear ="all">
+							<%
+							} else if (colCount == 3) {
+								%>
 								<div style="float:left; width:146px;"></div><br clear ="all">
 							<%
+								
 							}
 						}
 				}

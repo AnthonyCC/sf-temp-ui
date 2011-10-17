@@ -1,4 +1,9 @@
 <%@ taglib uri='template' prefix='tmpl' %>
+
+<% //expanded page dimensions
+final int W_AOL_NOTE_TOTAL = 970;
+%>
+
 <tmpl:insert template='/common/template/no_space_border.jsp'>
 	<tmpl:put name='title' direct='true'>Note to AOL Users</tmpl:put>
 		<tmpl:put name='content' direct='true'>
@@ -11,19 +16,16 @@
 	<td><img src="/media_stat/images/layout/clear.gif" width="1" height="20" alt="" border="0"></td>
 </tr>
 <tr>
-	<td><img src="/media_stat/images/layout/clear.gif" width="30" height="1" alt="" border="0"></td>
 	<td><img src="/media_stat/images/template/help/aolnote_hdr.gif" width="215" height="16" alt="" border="0"></td>
 </tr>
 <tr>
 	<td><img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"></td>
 </tr>
 <tr>
-	<td></td>
-	<td bgcolor="#ff9933"><img src="/media_stat/images/layout/ff9933.gif" width="640" height="1" alt="" border="0"></td>
+	<td bgcolor="#ff9933"><img src="/media_stat/images/layout/ff9933.gif" width="<%=W_AOL_NOTE_TOTAL%>" height="1" alt="" border="0"></td>
 </tr>
 <tr>
-	<td></td>
-	<td width="640" class="bodyCopy">
+	<td width="<%=W_AOL_NOTE_TOTAL%>" class="bodyCopy">
 	<font class="space4pix"><br></font>
 	AOL users may notice that pictures on the FreshDirect Web site appear blurry or discolored. See the instructions below to change your AOL preferences so you can view images from our and other Web sites at their original quality.
 <br><br>
@@ -31,7 +33,7 @@ AOL reduces the size and quality of all images viewed using its Web browser and 
 <br><br>
 		<table cellpadding="0" cellspacing="0" border=0>
 		<tr>
-			<td><img src="/media_stat/images/layout/clear.gif" width="40" height="1" alt="" border="0"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_AOL_NOTE_TOTAL-406)/2%>" height="1" alt="" border="0"></td>
 			<td align="left" class="bodyCopy">
 			<b>Instructions for users of AOL Versions 6 and 7</b><br>
 				1. Click "Settings" at the top of the AOL window <br>
@@ -49,8 +51,7 @@ AOL reduces the size and quality of all images viewed using its Web browser and 
 	</td>
 </tr>
 <tr>
-	<td></td>
-	<td width="640" class="bodyCopy">
+	<td width="<%=W_AOL_NOTE_TOTAL%>" class="bodyCopy">
 	<br>
 		<b>That's all there is to it!</b><br>
 

@@ -14,6 +14,14 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
+
+<% //expanded page dimensions
+final int W_HOLIDAY_MENU_TOTAL = 601;
+final int W_HOLIDAY_MENU_LEFT = 519;
+final int W_HOLIDAY_MENU_PADDING = 14;
+final int W_HOLIDAY_MENU_RIGHT = 68;
+%>
+
 <%
 
 //********** Start of Stuff to let JSPF's become JSP's **************
@@ -194,27 +202,27 @@ if (sortedColl==null) sortedColl = new ArrayList();
             }
             // display it //
             if (!headingShown) {   %>
-                <TABLE CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="400">
+                <TABLE CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>">
                 <TR VALIGN="MIDDLE">
-                	<TD WIDTH="400" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="12" border="0"></TD>
+                	<TD WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="12" border="0"></TD>
                 </TR>
                 <TR VALIGN="MIDDLE">
-                	<TD ALIGN="CENTER" WIDTH="400" COLSPAN="4" CLASS="title12"><font color="#FF9933"><%=displayCategory.getFullName().toUpperCase()%></font></TD>
+                	<TD ALIGN="CENTER" WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>" COLSPAN="4" CLASS="title12"><font color="#FF9933"><%=displayCategory.getFullName().toUpperCase()%></font></TD>
                 </TR>
-                <TR VALIGN="MIDDLE"><TD WIDTH="400" COLSPAN="4"><img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"></TD></TR>
+                <TR VALIGN="MIDDLE"><TD WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>" COLSPAN="4"><img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"></TD></TR>
                 <TR VALIGN="MIDDLE">
-                	<TD WIDTH="400" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4"></TD>
+                	<TD WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4"></TD>
                 </TR>
                 </TABLE>
 
                 <%-- set up for the rows of products --%>
-                <TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" WIDTH="400">
+                <TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>">
  <%              headingShown = true;
              }  %>
              <tr valign="top">
-                <TD  align="left" width"345"><%=appendColumn.toString()%></td>
-                <TD width="5">&nbsp;</td>
-                <TD align="right" width="50" class="text11bold"><%=appendColumnPrices.toString()%>&nbsp;</td>
+                <TD  align="left" width="<%=W_HOLIDAY_MENU_LEFT%>"><%=appendColumn.toString()%></td>
+                <TD width="<%=W_HOLIDAY_MENU_PADDING%>">&nbsp;</td>
+                <TD align="right" width="<%=W_HOLIDAY_MENU_RIGHT%>" class="text11bold"><%=appendColumnPrices.toString()%>&nbsp;</td>
              </tr>
 <%
     }// end of Product instance check

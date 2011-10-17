@@ -18,6 +18,9 @@
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.Comparator"%>
 <%@page import="java.util.ListIterator"%><fd:CheckLoginStatus />
+<% //expanded page dimensions
+final int W_RATING_RANKING_TOTAL = 820;
+%>
 <% 
 FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 
@@ -73,9 +76,9 @@ boolean breakOnSubfolder = productContainer != null ? productContainer.isRatingB
 <% 
 int tablewid = 0;
 if (noLeftNav==true) {
-    tablewid = 733;
+    tablewid = 970;
 } else {
-    tablewid = 540;
+    tablewid = 800;
 }
 
 String introTitle = currentFolder.getEditorialTitle();
@@ -143,18 +146,13 @@ if (orderBy==null) {
 <font class="space4pix"><BR></font>
 <%    ContentFactory contentFactory = ContentFactory.getInstance();  %>
 
-<TABLE BORDER="0" CELLSPACING="1" CELLPADDING="2" WIDTH="<%= tablewid %>">
+<TABLE BORDER="0" CELLSPACING="1" CELLPADDING="2" WIDTH="<%= tablewid %>" style="border-spacing: 1px;">
 <TR VALIGN="BOTTOM">
 <%
 // get the display labels from the category's "rating" attribute, price is the only hard coded column.  Also we assume that the name is there
 // and that it will be the first column (or the longest)
                 priceColWidth=90;
-                if(atrDisplayCount == 0 ) {
-                        nameColWidth = 300;
-                }
-                else {
-                        nameColWidth = 125;
-                }
+                nameColWidth = 300;
                 remainColWidth = (tablewid-(nameColWidth+priceColWidth))/(atrDisplayCount==0?1:atrDisplayCount);
 
 %><TD bgcolor="#eeeeee" WIDTH="<%= nameColWidth %>" CLASS="text10bold">

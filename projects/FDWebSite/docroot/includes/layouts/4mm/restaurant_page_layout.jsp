@@ -139,7 +139,9 @@
 		<div class="meals">
 			<% 	topMediaList=sides.getTopMedia();
 			if(topMediaList!=null && !topMediaList.isEmpty()) { %>
-				<fd:IncludeMedia name="<%= topMediaList.get(0).getPath() %>"></fd:IncludeMedia>
+        <div>
+  				<fd:IncludeMedia name="<%= topMediaList.get(0).getPath() %>"></fd:IncludeMedia>
+        </div>
 				<% topMediaList=null;
 			} %>
 			<display:ContentNodeIterator trackingCode="<%= trackingCode %>" itemsToShow="<%= products %>" id="sidesIt" showCategories="false"><span class="meal">
@@ -163,7 +165,9 @@
 		<div class="meals">
 			<% 	topMediaList=entrees.getTopMedia();
 			if(topMediaList!=null && !topMediaList.isEmpty()) { %>
-				<fd:IncludeMedia name="<%= topMediaList.get(0).getPath() %>"></fd:IncludeMedia>
+        <div>
+				  <fd:IncludeMedia name="<%= topMediaList.get(0).getPath() %>"></fd:IncludeMedia>
+        </div>
 				<% topMediaList=null;
 			} %>
 			<display:ContentNodeIterator trackingCode="<%= trackingCode %>" itemsToShow="<%= products %>" id="entreesIt" showCategories="false"><span class="meal">

@@ -1,17 +1,20 @@
 <%@ taglib uri='template' prefix='tmpl' %>
+<% //expanded page dimensions
+final int W_BAKERY_KITCHEN_TOTAL = 970;
+%>
 <tmpl:insert template='/common/template/no_space_border.jsp'>
 	<tmpl:put name='title' direct='true'>About FreshDirect</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 
-<TABLE  width="701" CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TABLE  width="<%= W_BAKERY_KITCHEN_TOTAL %>" CELLPADDING="0" CELLSPACING="0" BORDER="0">
 
     <tr valign="top">
-		<td> <img src="/media_stat/images/template/kitchen/kb_coming_hm_hdr1.jpg" width="134" height="67" alt="" border="0"></td>
-		<td><img src="/media_stat/images/template/kitchen/kb_coming_hm_hdr2.gif" width="433" height="67" alt="" border="0"></td>
-		<td><img src="/media_stat/images/template/kitchen/kb_coming_hm_hdr3.jpg" width="133" height="67" alt="" border="0"></td>
+		<td align="left"><img src="/media_stat/images/template/kitchen/kb_coming_hm_hdr1.jpg" width="134" height="67" alt="" border="0"></td>
+		<td align="center"><img src="/media_stat/images/template/kitchen/kb_coming_hm_hdr2.gif" width="433" height="67" alt="" border="0"></td>
+		<td align="right"><img src="/media_stat/images/template/kitchen/kb_coming_hm_hdr3.jpg" width="133" height="67" alt="" border="0"></td>
 	</tr>	
     <tr valign="top">
-		<td colspan=3>
+		<td colspan="3" align="center">
 		<img src="/media_stat/images/template/kitchen/kb_coming_hm_hdr4.gif" width="700" height="23" alt="" border="0">
 		</td>
 	</tr>	
@@ -24,7 +27,7 @@
     <tr valign="top">
 		<td align=center colspan=3>
 			
-			<table border="0" cellspacing="0" cellpadding="0" width=550>
+      <table border="0" cellspacing="0" cellpadding="0" width="<%= W_BAKERY_KITCHEN_TOTAL %>">
 			    <tr valign="top">
 					<td>
 						<img src="/media_stat/images/template/kitchen/kb_coming_hm_pepole.jpg" width="150" height="200" alt="" border="0">

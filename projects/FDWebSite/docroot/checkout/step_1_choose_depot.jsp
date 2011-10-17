@@ -14,6 +14,10 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<% //expanded page dimensions
+final int W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL = 970;
+%>
+
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 
@@ -36,12 +40,12 @@
 
 
 <FORM method="post">
-	<table border="0" cellspacing="0" cellpadding="0" width="675">
+	<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL%>">
 	    <tr valign="top"> 
 			<td CLASS="text11" WIDTH="395" VALIGN="bottom">
 				<img src="/media_stat/images/navigation/delivery_address_top.gif" WIDTH="143" HEIGHT="16" border="0" alt="DELIVERY ADDRESS">
 			</td>
-			<TD WIDTH="265" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10">
+			<TD WIDTH="<%=W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL-430%>" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10">
 				  <FONT CLASS="space2pix"><BR></FONT>
 					<table>
 						<tr>
@@ -83,9 +87,9 @@
 <%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
 
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="675">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL%>">
 	<TR VALIGN="TOP">
-		<TD CLASS="text12" WIDTH="675" VALIGN="bottom">
+		<TD CLASS="text12" WIDTH="<%=W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL%>" VALIGN="bottom">
 		<FONT CLASS="title18">FreshDirect Depot Delivery</FONT><BR>
 		FreshDirect offers depot delivery to select companies. If you are eligible for depot delivery, choose your company's name below. Then enter your access code to continue with checkout. <br>
 		<br>
@@ -95,19 +99,19 @@
 </TABLE>
 		
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="675" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="<%=W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4" BORDER="0"><BR>
 
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL%>">
 	<tr>
 		<td align="right">* Required information</td>
 	</tr>
 </table>
 
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%=W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL%>">
 <tr>
 	<td><img src="/media_stat/images/layout/clear.gif" width="170" height="1" alt="" border="0"></td>
-	<td><img src="/media_stat/images/layout/clear.gif" width="510" height="1" alt="" border="0"></td>
+	<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL-175%>" height="1" alt="" border="0"></td>
 </tr>
 <TR VALIGN="TOP">
 	<TD align="right">* Find your company name:&nbsp;</td>
@@ -141,9 +145,9 @@
 	
 
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="675" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="<%=W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<table border="0" cellspacing="0" cellpadding="0" width="675">
+	<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL%>">
 	    <tr valign="top">
 			<td width="35">
 					<a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc ")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="previousX">
@@ -155,7 +159,7 @@
 				View Cart<br/>
 				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
 			</td>
-			<td width="265" align="right" valign="middle">
+			<td width="<%=W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL-410%>" align="right" valign="middle">
 				<font class="space2pix"><br/></font>
 				<input type="image" name="checkout_delivery_address_select" src="/media_stat/images/buttons/continue_checkout.gif" width="91" height="11" border="0" alt="CONTINUE CHECKOUT" vspace="0"><br/>Delivery Time<br/>
 			</td>
@@ -169,7 +173,7 @@
 	<%@ include file="/checkout/includes/i_footer_text.jspf" %>
 
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
-	<img src="/media_stat/images/layout/dotted_line.gif" width="675" height="1" border="0"><br/>
+	<img src="/media_stat/images/layout/dotted_line.gif" width="<%=W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL%>" height="1" border="0"><br/>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>

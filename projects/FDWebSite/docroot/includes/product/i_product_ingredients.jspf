@@ -5,18 +5,18 @@
          </td>
     </tr>
 	<tr>
-    	<td><img src="/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="6"/></td>
+    	<td><img src="/media_stat/images/layout/330000.gif" ALT="" WIDTH="369" HEIGHT="6" style="padding-top: 5px; padding-bottom: 5px;"/></td>
     </tr>
     <tr>
-		<td>
+		<td WIDTH="314">
             <%= fdprd.getIngredients() %>
             <br><br>
 
 			<%@ include file="/shared/includes/product/allergens.jspf" %>
 
-            <% if (request.getRequestURI().indexOf("meal_item_detail.jsp") < 0) { %>
-				<br><a href="javascript:pop('/shared/product_nutrition_note.jsp',335,375)">An important note about our nutrition and ingredients information.</a>
-			<% } %>
         </td>
 	</tr>
 </table>
+<% if (request.getRequestURI().indexOf("meal_item_detail.jsp") < 0) { %>
+	<br><a href="javascript:pop('/shared/product_nutrition_note.jsp',335,375)">An important note about our nutrition and ingredients information.</a>
+<% } %>

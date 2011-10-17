@@ -11,10 +11,15 @@
 <%@ page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@ page import="com.freshdirect.fdstore.content.DomainValue"%>
 
-<table border="0" cellspacing="0" cellpadding="0" align="center" width="125">
-<tr><td width="1"><%-- spacer 1x1 --%></td>
-<td width="120"><%-- spacer 120x1 --%></td>
-<td width="4"><%-- spacer 4x1 --%></td></tr>
+<% //expanded page dimensions
+final int W_RECIPE_LEFTNAV_TOTAL = 150;
+%>
+
+
+<table border="0" cellspacing="0" cellpadding="0" align="center" width="<%=W_RECIPE_LEFTNAV_TOTAL%>">
+<tr><td width="10"></td>
+<td width="<%=W_RECIPE_LEFTNAV_TOTAL-15%>"><%-- spacer 135x1 --%></td>
+<td width="5"><%-- spacer 5x1 --%></td></tr>
 <%
  String lnav_catId = request.getParameter("catId");
  RecipeCategory rcpCategory = null;
@@ -36,13 +41,13 @@
    Image catImage = rcpCategory.getZoomLabel();
    if (catImage!=null) {
 	%>
-	<tr><td><a href="<%=response.encodeURL("recipe_cat.jsp?catId="+rcpCategory+"&trk=snav")%>">
+	<tr><td width="10"></td><td><a href="<%=response.encodeURL("recipe_cat.jsp?catId="+rcpCategory+"&trk=snav")%>">
 	<img src="<%=catImage.getPath()%>" width="<%=catImage.getWidth()%>" height="<%=catImage.getHeight()%>" border="0"></a><br/>&nbsp;
-	</td></tr>
+	</td><td width="5"></td></tr>
 <% 
    }   %>
 <logic:iterate id="recipeSubcategory" collection="<%= rcpCategory.getSubcategories() %>" type="com.freshdirect.fdstore.content.RecipeSubcategory">
-     <tr><td width="120">
+     <tr><td width="10"></td><td width="<%=W_RECIPE_LEFTNAV_TOTAL-15%>">
        <div style="margin-left: 8px; text-indent: -8px; font-weight: bold; ">
       <a href="<%=response.encodeURL("/recipe_subcat.jsp?catId="+rcpCategory+"&subCatId="+recipeSubcategory+"&trk=snav")%>"><%=recipeSubcategory.getName()%></a>
       	<%
@@ -62,7 +67,7 @@
       		}
       	%>
       </div>
-     </td></tr>
+     </td><td width="5"></td></tr>
 
 </logic:iterate>
 <% } %>

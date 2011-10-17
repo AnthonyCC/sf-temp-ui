@@ -12,6 +12,12 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+<% //expanded page dimensions
+final int W_HELP_INDEX_TOTAL = 970;
+%>
+
+
 <fd:CheckLoginStatus />
 <%
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
@@ -149,7 +155,7 @@
 			</script>
 
 			<form method="post" name="contact_fd" id="contact_fd">
-				<div style="width: 700px; vertical-align: top; text-align: left;">
+				<div style="width: <%=W_HELP_INDEX_TOTAL%>px; vertical-align: top; text-align: left;">
 					<div class="title16">
 						Welcome to Help
 					</div>

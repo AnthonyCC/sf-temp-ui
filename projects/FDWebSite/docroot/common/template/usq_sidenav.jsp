@@ -6,15 +6,26 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+<% //expanded page dimensions
+final int W_USQ_SIDENAV_TOTAL = 970;
+final int W_USQ_SIDENAV_LEFT = 150;
+final int W_USQ_PADDING = 14;
+final int W_USQ_SIDENAV_CENTER = 601;
+final int W_USQ_SIDENAV_RIGHT = 191;
+%>
+
+
 <html>
 <head>
     <title><tmpl:get name='title'/></title>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<%@ include file="/shared/template/includes/ccl.jspf" %>
 </head>
-<BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333" CLASS="text10">
+<BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
 <%
 
 	JspMethods.CategoryInfo c = JspMethods.getCategoryInfo(request);
@@ -32,69 +43,51 @@
 	<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 	<script language="JavaScript" src="/assets/javascript/overlib_mini.js"></script>
 <%	} %>
-<CENTER>
 <%@ include file="/common/template/includes/globalnav.jspf" %> 
-<table width="745" border="0" cellpadding="0" cellspacing="0">
+<CENTER CLASS="text10">
+<table width="<%=W_USQ_SIDENAV_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 <tr>
-	<td width="1"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></td>
-	<td width="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0"></td>
-	<td width="125"><img src="/media_stat/images/layout/clear.gif" width="125" height="1" border="0"></td>
-	<td width="458"><img src="/media_stat/images/layout/clear.gif" width="458" height="1" border="0"></td>
-	<td width="150"><img src="/media_stat/images/layout/clear.gif" width="150" height="1" border="0"></td>
-	<td width="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0"></td>
-	<td width="1"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></td>
+	<td width="<%=W_USQ_SIDENAV_LEFT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_USQ_SIDENAV_LEFT%>" height="1" border="0"></td>
+	<td width="<%=W_USQ_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_USQ_PADDING%>" height="1" border="0"></td>
+	<td width="<%=W_USQ_SIDENAV_CENTER%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_USQ_SIDENAV_CENTER%>" height="1" border="0"></td>
+	<td width="<%=W_USQ_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_USQ_PADDING%>" height="1" border="0"></td>
+	<td width="<%=W_USQ_SIDENAV_RIGHT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_USQ_SIDENAV_RIGHT%>" height="1" border="0"></td>
 </tr>
 <tr valign="top">
-  <td colspan="3" rowspan="2"><img src="/media/editorial/win_usq/usq_logo_sidenav_top.gif"></td>
-  <td colspan="2" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></td>
-  <td colspan="2" rowspan="2"><img src="/media_stat/images/layout/top_right_curve.gif" width="6" height="6" border="0"></td>
-  </tr>
-<tr>
-  <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
-  </tr>
-<tr valign="top">
-	<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-	<td colspan="2" bgcolor="#e2dfcc" style="z-index: 0;"><a href="/department.jsp?deptId=usq&trk=snav"><img src="/media/editorial/win_usq/usq_logo_sidenav_bottom.gif" width="130" height="109" border="0"></a><br>
+	<td class="wine-sidenav" bgcolor="#e2dfcc" style="z-index: 0;"><div align="center" style="background: #272324"><a href="/department.jsp?deptId=usq&trk=snav"><img src="/media/editorial/win_usq/usq_logo_sidenav_bottom.gif" width="150" height="109" border="0"></a><br></div>
 	<% try { %><%@ include file="/common/template/includes/left_side_nav_usq.jspf" %>
                 <% } catch (Exception ex) {ex.printStackTrace();} %></td>
-	<td style="padding-left:10px;padding-right:5px;" align="center">   
+	<td width="<%=W_USQ_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_USQ_PADDING%>" height="1" border="0"></td>
+	<td align="center">   
                 <!-- content lands here -->
          		<tmpl:get name='content'/>
                 <!-- content ends above here-->
     </td>
-    <td colspan="2" align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"><br /><%@ include file="/common/template/includes/right_side_nav.jspf" %></td>
-    <td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></td>
+	<td width="<%=W_USQ_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_USQ_PADDING%>" height="1" border="0"></td>
+    <td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"><br /><%@ include file="/common/template/includes/right_side_nav.jspf" %></td>
 </tr>
 <tr valign="top">
-	<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-	<td colspan="2" bgcolor="#e2dfcc"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+	<td bgcolor="#e2dfcc"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+	<td width="<%=W_USQ_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_USQ_PADDING%>" height="1" border="0"></td>
 	<td style="padding-top:20px;padding-bottom:5px;" align="center">
 		<%@ include file="/shared/includes/usq_bottom_links.jspf" %>
 	</td>
-    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-	<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></td>
+	<td width="<%=W_USQ_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_USQ_PADDING%>" height="1" border="0"></td>
+    <td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 </tr>
 <tr valign="top">
-	<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-	<td colspan="2" bgcolor="#e2dfcc"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+	<td bgcolor="#e2dfcc"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+	<td width="<%=W_USQ_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_USQ_PADDING%>" height="1" border="0"></td>
 	<td style="padding-top:5px;padding-bottom:10px;" align="center">
 		<%@ include file="/shared/includes/usq_copyright.jspf" %>
 	</td>
-    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-	<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></td>
-</tr>
-<tr valign="bottom">
-	<td colspan="2" rowspan="2"><img src="/media_stat/images/layout/bottom_left_curve_nav_usq.gif" width="6" height="6" border="0"></td>
-	<td bgcolor="#e2dfcc"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
-	<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
-	<td colspan="2" rowspan="2" align="right"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6" border="0"></td>
-</tr>
-<tr>
-<td colspan="3" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></td>
+	<td width="<%=W_USQ_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_USQ_PADDING%>" height="1" border="0"></td>
+    <td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 </tr>
 </table>
-<%@ include file="/common/template/includes/footer.jspf" %>
 </center>
+<%@ include file="/common/template/includes/footer.jspf" %>
+    <%@ include file="/common/template/includes/i_jsmodules.jspf" %>
 
 </body>
 </html>

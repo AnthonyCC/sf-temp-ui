@@ -9,7 +9,12 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
-<div style="width: 425px; text-align: center; margin: 0px auto;">
+
+<% //expanded page dimensions
+final int W_WINE_FILTER_TOTAL = 601;
+%>
+
+<div style="width: <%=W_WINE_FILTER_TOTAL%>px; text-align: center; margin: 0px auto;">
 <fd:Parameters id="params">
 <fd:WineFilter filterId="wineFilter" lastClickedId="lastClicked" queryId="wineQuery">
 <fd:WineSorter sorterId="wineSorter">
@@ -27,9 +32,9 @@
 
 <!-- sort by panel -->
 <hr>
-<table width="425" cellpadding="0" cellspacing="0" border="0">
+<table width="<%=W_WINE_FILTER_TOTAL%>" cellpadding="0" cellspacing="0" border="0" style="padding-top: 4px;">
 <tr>
-<td valign="middle">
+<td valign="middle" align="right">
 Sort by:<%
    for (WineSorter.Type sortBy : WineSorter.Type.values()) { 
       %><fd:WineSortByLink sortBy="<%= sortBy %>" className="wine-sortby"><span class="wine-sortby-<%= sortBy.name().toLowerCase() %><%= selected ? "-selected" : "" %>"></span></fd:WineSortByLink><%

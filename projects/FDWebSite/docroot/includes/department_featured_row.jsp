@@ -15,7 +15,7 @@
 <%
 Collection sortedColl = null;
 int favoritesToShow = 0;
-int FAVS_PER_LINE		= 5; //number of products to show per line
+int FAVS_PER_LINE		= 6; //number of products to show per line
 int MAX_FAVSLINES2SHOW	= 1; //number of lines of featured products
 int MIN_FAVS2SHOW		= 3; //minimum featured products required to show featured section
 int	MAX_FAVS2SHOW		= FAVS_PER_LINE*MAX_FAVSLINES2SHOW; //to keep each row matching
@@ -68,7 +68,7 @@ List tmpList=new ArrayList();
 	<fd:IncludeMedia name="<%= mediaPath %>" />
 	<!--<div align="center"><a href="/category.jsp?catId=wgd_butchers_deals&trk=cpage"><img src="/media/images/navigation/department/meat/mea_block.jpg"></img></a></div>-->
 	<br><br>
-	<table cellpadding="0" cellspacing="0" border="0">
+	<table cellpadding="0" cellspacing="0" border="0" width="100%">
 		<tr valign="bottom">
 		<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
 			<%

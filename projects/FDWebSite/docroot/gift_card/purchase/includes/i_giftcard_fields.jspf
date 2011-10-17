@@ -8,6 +8,13 @@
 <%@ page import="com.freshdirect.delivery.*" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 
+
+<% //expanded page dimensions
+final int W_ADD_GIFTCARD_FIELDS_TOTAL = 970;
+final int W_ADD_GIFTCARD_FIELDS_TABLE = 675;
+%>
+
+
 <%!
 String[] checkGiftCardForm = {
 	EnumUserInfoName.GC_BUYER_NAME.getCode(), 
@@ -142,7 +149,7 @@ if (request.getParameter("fldMessage") !=null) {
 <%@ include file="/gift_card/purchase/includes/i_fetch_giftcard_info_from_cms.jspf" %>
 
 
-<table border="0" cellspacing="0" cellpadding="0" width="100%" valign="middle" class="gcTable">
+<table border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TABLE%>" valign="middle" class="gcTable">
 	<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'>
     <tr>
         <td colspan="4"><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler> <fd:ErrorHandler result='<%=result%>' name='duplicate_user_address' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></td>
@@ -257,27 +264,27 @@ if (request.getParameter("fldMessage") !=null) {
 
 <img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
 
-<table border="0" cellspacing="0" cellpadding="2" width="675">
+<table border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>">
     <tr valign="top">
-        <td width="675" class="text10bold">
+        <td align="center" <%=W_ADD_GIFTCARD_FIELDS_TOTAL%>" class="text10bold">
 			We deliver only to portions of New York and New Jersey.
         </td>
     </tr>
     <tr>
-        <td>
+        <td align="center">
 			<a href="#" onClick="checkAddrShow(); return false;">Click here to check if we deliver to your recipient's address</a>.
         </td>
     </tr>
     <tr valign="middle">
-	    <td><img src="/media_stat/images/layout/999966.gif" width="675" height="1" border="0" vspace="3"></td>
+	    <td><img src="/media_stat/images/layout/999966.gif" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>" height="1" border="0" vspace="3"></td>
 	</tr>
 </table>
 
 <img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
 
-<table border="0" cellspacing="0" cellpadding="2" width="675">
+<table border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>">
 	<tr valign="top">
-		<td width="675" align="right">
+		<td width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>" align="right">
 			<a href="/gift_card/purchase/add_giftcard.jsp"><img src="/media_stat/images/giftcards/purchase/clear_btn.gif" width="50" height="25" alt="CLEAR" border="0" /></a>
 			<input type="image" name="gcPreview" src="/media_stat/images/giftcards/purchase/preview_btn.gif" width="61" height="25" alt="PREVIEW" border="0" onclick="window['<%=gcDisplayId%>'].emailPreview(); return false;" />
 			<%= addEditButton %>
@@ -285,7 +292,7 @@ if (request.getParameter("fldMessage") !=null) {
 	</tr>
 </table>
 
-<table border="0" cellspacing="1" cellpadding="0" width="675">
+<table border="0" cellspacing="1" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>">
 <tr valign="MIDDLE">
     <td><img src="/media_stat/images/layout/clear.gif" width="105" height="1" border="0"></td>
 </tr>

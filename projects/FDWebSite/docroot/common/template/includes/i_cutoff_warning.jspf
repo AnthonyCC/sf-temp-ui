@@ -3,6 +3,11 @@
 <%@ page import="com.freshdirect.framework.util.TimeOfDay" %>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 
+<% //expanded page dimensions
+final int W_CUTOFF_WARNING_TOTAL = 970;
+%>
+
+
 <%
 boolean cutoffInfoDisplayed = false;
 try {
@@ -22,7 +27,7 @@ if (cutoffInfo != null) {
 if (cutoffInfo.displayWarning()) {
     cutoffInfoDisplayed = true;
 %>
-	<table width="745" cellpadding="0" cellspacing="0" border="0">
+	<table width="<%=W_CUTOFF_WARNING_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 		<tr align="center">
 			<td>
 				<% if (cutoffInfo.hasMultipleCutoff() && !cutoffInfo.getNextCutoff().equals(cutoffInfo.getLastCutoff())) { %>
@@ -56,7 +61,7 @@ if (cutoffInfo.displayWarning()) {
 	if (uri.endsWith("index.jsp") || uri.endsWith("view_cart.jsp")) {
 		cutoffInfoDisplayed = true;
 %>
-		<table width="745" cellpadding="0" cellspacing="0" border="0">
+		<table width="<%=W_CUTOFF_WARNING_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 			<tr align="center">
 				<td>
 					<b><font color="#CC0000">Please note:</font> The cut off time for <%= isPickupAddr || isUnknown?"pickup":"delivery"%> <%=dayDateFormat.format(cutoffInfo.getDeliveryDate())%> was <%=cutoffInfo.getCutoffTime().toString()%></b><br>

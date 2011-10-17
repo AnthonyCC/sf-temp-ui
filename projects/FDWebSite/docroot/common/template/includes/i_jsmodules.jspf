@@ -1,0 +1,10 @@
+<%-- this file will be included just before the closing </body> tag --%>
+<script src="/assets/javascript/fd/modules/common/utils.js" type="text/javascript" language="javascript"></script>
+<script src="/assets/javascript/fd/modules/common/placeholder.js" type="text/javascript" language="javascript"></script>
+<script src="/assets/javascript/fd/modules/common/tooltip.js" type="text/javascript" language="javascript"></script>
+<script src="/assets/javascript/fd/modules/common/clickleavetoggler.js" type="text/javascript" language="javascript"></script>
+
+<script src="/assets/javascript/fd/modules/header/notifications.js" type="text/javascript" language="javascript"></script>
+<script src="/assets/javascript/fd/modules/header/loginbox.js" type="text/javascript" language="javascript"></script>
+<script src="/assets/javascript/fd/modules/header/popsubmenu.js" type="text/javascript" language="javascript"></script>
+<script src="/assets/javascript/fd/modules/header/pinnedsearchbar.js" type="text/javascript" language="javascript"></script>

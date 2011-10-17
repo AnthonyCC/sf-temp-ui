@@ -1,0 +1,9 @@
+<div id="alldepartments" class="cltoggler">
+  <a class="goto cltrigger" href="#alldepartments">go to department</a>
+  <ul class="department_list">
+    <li><a href="#">fruit</a></li>
+    <li><a href="#">vegetables</a></li>
+    <li><a href="#">meat</a></li>
+    <li><a href="#">seafood</a></li>
+  </ul>
+</div>

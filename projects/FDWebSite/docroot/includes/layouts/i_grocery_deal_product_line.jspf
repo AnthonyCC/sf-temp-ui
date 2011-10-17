@@ -48,7 +48,7 @@
 <TD WIDTH="10" ALIGN="CENTER" VALIGN="MIDDLE">
     <img SRC="/media_stat/images/layout/clear.gif" name="bullet<%= itemShownIndex %>" width="6" height="6" border="0" alt="">
 </TD>
-<TD width="300">
+<TD>
 <%
     String unAvailableFontStart = "";
     String unAvailableFontEnd = "";
@@ -118,7 +118,7 @@
 
 %>
 <fd:CCLCheck>
-<TD ALIGN="CENTER">
+<TD width="40" ALIGN="CENTER">
 <%   if (skuAvailable) { 
         String sideBarIndex = "ccl_sidebar_" + itemShownIndex;
 %>
@@ -127,7 +127,7 @@
 <%   } %>
 </TD>
 </fd:CCLCheck>
-<TD ALIGN="CENTER">
+<TD width="40" ALIGN="CENTER">
     <input type="hidden" name="salesUnit_<%= itemShownIndex %>" value="<%= salesUnitName %>">
     <input type="hidden" name="skuCode_<%= itemShownIndex %>" value="<%= sku.getSkuCode() %>">
     <input type="hidden" name="catId_<%= itemShownIndex %>" value="<%= displayProduct.getParentNode() %>">

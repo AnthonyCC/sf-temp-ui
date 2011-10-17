@@ -116,7 +116,7 @@
 %>
 		<img src="/media_stat/images/4mm/browse_header.gif" />
 		<% boolean fourColumnLayout = true; boolean needToFilter = false; boolean enableAllItem=true; %>
-		<div style="width:676px;margin:6px auto">
+		<div style="margin:6px">
 		<%@ include file="/includes/layouts/4mm/filter_widget.jspf"%>
 		</div>					
 		<div id="ads">

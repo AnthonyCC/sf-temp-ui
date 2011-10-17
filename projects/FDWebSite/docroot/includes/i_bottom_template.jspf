@@ -1,3 +1,8 @@
+<% //expanded page dimensions
+final int W_BOTTOM_WITH_LEFT_NAV = 601;
+final int W_BOTTOM_NO_LEFT_NAV = 765; //EXPANDED_PAGE_VERIFY
+%>
+
 <%
 String bottomCatId = request.getParameter("catId");
 // get the node for this category
@@ -9,7 +14,7 @@ int bottLayoutType = cm_ForBottom.getLayoutType(-1);
 boolean isBottOfGroceryVirtual = false;
 boolean hasLeftNav = true;
 boolean noLeftNavLayout = false;
-int bottTblWidth = 400;
+int bottTblWidth = W_BOTTOM_WITH_LEFT_NAV;
 
 if (request.getParameter("groceryVirtual")!=null ) {
     isBottOfGroceryVirtual=true;
@@ -24,7 +29,7 @@ if (!isBottOfGroceryVirtual && (noLeftNavLayout)){
 } else if (isBottOfGroceryVirtual) hasLeftNav=true;
 
 
-if (!hasLeftNav) bottTblWidth = 550;
+if (!hasLeftNav) bottTblWidth = W_BOTTOM_NO_LEFT_NAV;
 
 boolean isGroceryProdPage = request.getParameter("groceryVirtual")==null?false:true;
 if (EnumLayoutType.GROCERY_PRODUCT.getId()==bottLayoutType) {

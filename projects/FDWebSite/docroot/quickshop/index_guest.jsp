@@ -8,6 +8,9 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus guestAllowed='true'/>
+<% //expanded page dimensions
+final int W_QUICKSHOP_INDEX_GUEST_TOTAL = 755;
+%>
 <%
 	request.setAttribute("quickshop.level","index");
 	
@@ -18,7 +21,7 @@
 <tmpl:insert template='/common/template/quick_shop.jsp'>
 	<tmpl:put name='title' direct='true'>Quick Shop</tmpl:put>
 		<tmpl:put name='content' direct='true'>
-<TABLE WIDTH="535" CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TABLE WIDTH="<%= W_QUICKSHOP_INDEX_GUEST_TOTAL %>" CELLPADDING="0" CELLSPACING="0" BORDER="0">
 <tr>
 	<td align="center">
 	<img src="/media_stat/images/template/quickshop/quickshop_header.gif" width="535" height="75" border="0">
@@ -48,7 +51,6 @@
 			</td>
 		</tr>
 
-		<tr><td colspan="2" bgcolor="#996699"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" border="0"></td></tr>
 		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>		
 		<tr><td colspan="2" align="center" class="text13"><b>If you've already placed an order with us log in:</b></td></tr>		
 		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>				
@@ -58,7 +60,6 @@
 				<%@ include file="/includes/i_login_field.jspf" %>		
 			</td>
 		</tr>	
-		<tr><td colspan="2" bgcolor="#996699"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" border="0"></td></tr>
 		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>		
 		<tr>
 		<td colspan="2" align="center">

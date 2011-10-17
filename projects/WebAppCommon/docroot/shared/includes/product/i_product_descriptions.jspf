@@ -257,7 +257,7 @@
 			String seasonText = productNode.getSeasonText();
 				
 			if (seasonText!=null) {
-					%><br /><img src="/media_stat/images/layout/cccccc.gif" vspace="6" width="200" height="1"><br /><%=seasonText%><img src="/media_stat/images/layout/cccccc.gif" vspace="6" width="200" height="1"><br />
+					%><br /><img src="/media_stat/images/layout/cccccc.gif" style="margin: 6px 0;" width="100%" height="1"><br /><%=seasonText%><img src="/media_stat/images/layout/cccccc.gif" style="margin: 6px 0;" width="100%" height="1"><br />
 				<%
 				}
 

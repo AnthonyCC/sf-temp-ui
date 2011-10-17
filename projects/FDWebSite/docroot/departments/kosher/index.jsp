@@ -3,6 +3,10 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<% //expanded page dimensions
+final int W_KOSHER_INDEX_TOTAL = 765;
+%>
+
 <fd:CheckLoginStatus guestAllowed="true" />
 <%--fd:Department id='department' departmentId='<%= request.getParameter("deptId") %>'/--%>
 
@@ -11,14 +15,14 @@
     
 	<tmpl:put name='content' direct='true'>
 	
-	<table width="550" cellpadding="0" cellspacing="6" border="0">
+	<table width="<%=W_KOSHER_INDEX_TOTAL%>" cellpadding="0" cellspacing="6" border="0">
 		<tr>
 			<td align="center">
 			<br>
 			<img src="/media_stat/images/template/kosher/ksoon_coming_soon.gif" width="175" height="17"><br>
-			<img src="/media_stat/images/template/kosher/ksoon_stars.gif" width="540" height="23" vspace="6"><br>
+			<img src="/media_stat/images/template/kosher/ksoon_stars.gif" width="765" height="23" vspace="6"><br>
 			<img src="/media_stat/images/template/kosher/ksoon_kosher.gif" width="536" height="119"><br>
-			<img src="/media_stat/images/template/kosher/ksoon_stars.gif" width="540" height="23" vspace="6"><br>
+			<img src="/media_stat/images/template/kosher/ksoon_stars.gif" width="765" height="23" vspace="6"><br>
 			<font class="title18">You ask, we listen.</font>
 			</td>
 		</tr>
@@ -30,7 +34,7 @@
 		<tr>
 			<td align="center">
 			<img src="/media_stat/images/template/kosher/ksoon_icons.jpg" width="543" height="58" vspace="4">
-			<img src="/media_stat/images/template/kosher/ksoon_stars.gif" width="540" height="23" vspace="2">
+			<img src="/media_stat/images/template/kosher/ksoon_stars.gif" width="765" height="23" vspace="2">
 			</td>
 		</tr>
 	</table>

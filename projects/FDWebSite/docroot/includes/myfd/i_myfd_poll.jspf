@@ -6,7 +6,7 @@
 	if (current != null) {
 %>
 <div>
-<div><img src="/media_stat/images/myfd/poll-header.png" width="212" height="26" border="0"></div>
+<div><img src="/media_stat/images/myfd/poll-header.png" width="232" height="26" border="0"></div>
 <div style="border: solid #F69638; border-width: 0px 1px;">
 <div style="padding: 15px 15px 5px">
 
@@ -23,7 +23,7 @@ pd_tags["customer_id"] = "<%= user.getIdentity().getErpCustomerPK() %>";
 </div>
 </div>
 </div>
-<div><img src="/media_stat/images/myfd/poll-footer.png" width="212" height="16" border="0"></div>
+<div><img src="/media_stat/images/myfd/poll-footer.png" width="232" height="16" border="0"></div>
 </div>
 <%
 	}

@@ -3,6 +3,11 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+<% //expanded page dimensions
+final int W_NO_NAV_TOTAL = 970;
+%>
+
 <% request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE); %>
 <html>
 <head>
@@ -21,6 +26,7 @@
 		Cufon.replace('.eagle-bold', { fontFamily: 'EagleCufonBold' });
 	</script>
 	<% } %>
+  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<link rel="stylesheet" href="/assets/css/giftcards.css" type="text/css">
 	<link rel="stylesheet" type="text/css" href="/assets/css/timeslots.css"/>
@@ -39,10 +45,9 @@
 %>
 
 </head>
-<body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#ff9900" text="#333333" class="text10 yui-skin-sam" 
+<body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#ff9900" text="#333333" class="yui-skin-sam" 
       onload="<%= request.getAttribute("bodyOnLoad")%>" 
       onunload="<%= request.getAttribute("bodyOnUnload")%>" >
-	<center>
 		<%
 		boolean modOrder = false;
 		boolean inViewCart = false;
@@ -74,40 +79,20 @@
 
 		%>
 		<%@ include file="/common/template/includes/globalnav.jspf" %> 
-		<table width="745" border="0" cellpadding="0" cellspacing="0">
-			<tr><td width="6" colspan="2" rowspan="2"><img src="/media_stat/images/layout/top_left_curve<%=suffix%>.gif" width="6" height="6" border="0"></td>
-				<td width="733" valign="top" bgcolor="#<%=color%>"><img src="/media_stat/images/layout/clear.gif" width="733" height="1" border="0"></td>
-				<td width="6" colspan="2" rowspan="2"><img src="/media_stat/images/layout/top_right_curve<%=suffix%>.gif" width="6" height="6" border="0"></td>
-			</tr>
-			<tr>
-				<td width="733" valign="top"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
-			</tr>
+    <center class="text10">
+		<table width="<%=W_NO_NAV_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 			<tr valign="TOP">
-				<td bgcolor="#<%=color%>" valign="bottom" width="1" rowspan="2"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-				<td colspan="3" align="center">
-					<img src="/media_stat/images/layout/clear.gif" height="15" width="733"><br />
+				<td align="center">
+					<img src="/media_stat/images/layout/clear.gif" height="15" width="<%=W_NO_NAV_TOTAL%>"><br />
 					<!-- content lands here -->
 					<tmpl:get name='content'/>
 					<!-- content ends above here-->
 					<br /><br />
 				</td>
-				<td bgcolor="#<%=color%>" valign="bottom" width="1" rowspan="2"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-			</tr>
-			<tr>
-				<td width="5"><img src="/media_stat/images/layout/clear.gif" height="1" width="5"></td>
-				<td width="733" align="center"><img src="/media_stat/images/layout/clear.gif" height="1" width="733"><br /></td>
-				<td width="5"><img src="/media_stat/images/layout/clear.gif" height="1" width="5"></td>
-			</tr>
-			<tr valign="bottom">
-				<td width="6" colspan="2" rowspan="2"><img src="/media_stat/images/layout/bottom_left_curve<%=suffix%>.gif" width="6" height="6" border="0"></td>
-				<td width="733"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
-				<td width="6" colspan="2" rowspan="2"><img src="/media_stat/images/layout/bottom_right_curve<%=suffix%>.gif" width="6" height="6" border="0"></td>
-			</tr>
-			<tr>
-				<td width="733" bgcolor="#<%=color%>" valign="bottom"><img src="/media_stat/images/layout/clear.gif" width="733" height="1" border="0"></td>
 			</tr>
 		</table>
+  </center>
 		<%@ include file="/common/template/includes/footer.jspf" %>
-	</center>
+    <%@ include file="/common/template/includes/i_jsmodules.jspf" %>
 </body>
 </html>

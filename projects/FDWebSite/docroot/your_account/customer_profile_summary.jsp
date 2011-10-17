@@ -14,6 +14,9 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='template' prefix='tmpl' %>
+<% //expanded page dimensions
+final int W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL = 970;
+%>
 <%
 String successPage = "/your_account/customer_profile_summary.jsp";
 String redirectPage = "/login/login.jsp?successPage=" + successPage;
@@ -83,7 +86,7 @@ response.setHeader("Cache-Control", "no-cache");
 	.vTop { vertical-align: top; }
 	.col25per { width: 25%; }
 	.col33per { width: 33.3%; }	
-	.col39per { width: 39%; }	
+	.col39per { width: 250px; }	
 	.col49per { width: 49%; }
 	.col50per { width: 50%; }
 	.col59per { width: 59%; }
@@ -127,7 +130,7 @@ response.setHeader("Cache-Control", "no-cache");
 
 <!-- * start the actual summary info * -->
 
-	<table cellpadding="0" cellspacing="0" border="0" width="693px">
+	<table cellpadding="0" cellspacing="0" border="0" width="100%">
 	<tr>
 	<!-- left column -->
 		<td class="col39per padLR10px vTop">
@@ -265,12 +268,12 @@ response.setHeader("Cache-Control", "no-cache");
 
 <!-- * end the actual summary info * -->
 <br><br>
-<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="675" HEIGHT="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
 <FONT CLASS="space4pix"><BR><BR></FONT>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="675">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL %>">
 <tr VALIGN="TOP">
 <td WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="CONTINUE SHOPPING" ALIGN="LEFT"></a></td>
-<td WIDTH="640"><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a>
+<td WIDTH="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL - 35 %>"><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a>
 <BR>from <FONT CLASS="text11bold"><A HREF="/index.jsp">Home Page</A></FONT><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="340" HEIGHT="1" BORDER="0"></td>
 </tr>
 

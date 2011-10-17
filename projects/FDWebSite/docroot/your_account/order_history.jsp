@@ -14,7 +14,9 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<% //expanded page dimensions
+final int W_YA_ORDER_HISTORY_TOTAL = 970;
+%>
 <%!
 private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
 		StringBuffer sb = new StringBuffer();
@@ -74,7 +76,7 @@ if (user.isEligibleForClientCodes()) {
 			String errorMsg= "We were unable to deliver your order (#"+firstOrderInfo.getErpSalesId()+") scheduled for between "+deliveryTime+" on "+dateFormatter.format( firstOrderInfo.getRequestedDate() )+". Please contact us as soon as possible at "+user.getCustomerServiceContact()+" to reschedule delivery.";
 			ActionResult result = new ActionResult();
 %>
-<TABLE WIDTH="675" ALIGN="CENTER" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TABLE WIDTH="<%= W_YA_ORDER_HISTORY_TOTAL %>" ALIGN="CENTER" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 	<tr>
 		<td><%@ include file="/includes/i_error_messages.jspf"%></td>
 	</tr>
@@ -83,11 +85,11 @@ if (user.isEligibleForClientCodes()) {
 		}
 %>
 <%-- Order Info --%>
-<div class="text11" style="width: 675px; text-align: left;">
+<div class="text11" style="width: <%= W_YA_ORDER_HISTORY_TOTAL %>px; text-align: left;">
 	<font class="title18">Your Orders</font><br>
 	Please review your orders. To check the status of an order, click on the order number.<BR>
 </div>
-<div style="height: 1px; width: 675px; background-color: #ff9933; margin-top: 8px; margin-bottom: 8px;"></div>
+<div style="height: 1px; width: <%= W_YA_ORDER_HISTORY_TOTAL %>; background-color: #ff9933; margin-top: 8px; margin-bottom: 8px;"></div>
 <!-- client codes begin -->
 <% if (user.isEligibleForClientCodes()) { 
 	DateFormat usDateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -99,7 +101,7 @@ if (user.isEligibleForClientCodes()) {
 	String ccrFirstDate = usDateFormat.format(ccrCal.getTime());
 	String ccrFirstIso = isoDateFormat.format(ccrCal.getTime());
 %>
-<div style="width: 675px; text-align: right; overflow: hidden;">
+<div style="width: <%= W_YA_ORDER_HISTORY_TOTAL %>px; text-align: right; overflow: hidden;">
 <table border="0" cellspacing="0" cellpadding="0" style="text-align: left; float: right;">
 	<tr>
 		<td class="text11" style="text-align: right; vertical-align: middle; font-weight: bold;">
@@ -115,11 +117,11 @@ if (user.isEligibleForClientCodes()) {
 	</tr>
 </table>
 </div>
-<div style="height: 1px; width: 675px; background-color: #ff9933; margin-top: 8px; margin-bottom: 8px;"></div>
+<div style="height: 1px; width: <%= W_YA_ORDER_HISTORY_TOTAL %>px; background-color: #ff9933; margin-top: 8px; margin-bottom: 8px;"></div>
 <!-- client codes end -->
 <% } %>
 <br>
-<TABLE WIDTH="690" ALIGN="CENTER" BORDER="0" CELLPADDING="2" CELLSPACING="0">
+<TABLE WIDTH="<%= W_YA_ORDER_HISTORY_TOTAL %>" ALIGN="CENTER" BORDER="0" CELLPADDING="2" CELLSPACING="0">
 	<tr>
 		<td class="text10bold" bgcolor="#DDDDDD" WIDTH="75">Order #</td>
 		<td class="text10bold" bgcolor="#DDDDDD" WIDTH="175">&nbsp;&nbsp;&nbsp;&nbsp;Delivery Date</td>
@@ -194,17 +196,17 @@ for (FDOrderInfoI orderInfo : orderHistoryInfo) {
 %>
 </TABLE>
 <% 	} else { %>
-<div style="width: 675px; text-align: center; font-weight: bold;">You have not yet placed an order with us.</div>
+<div style="width: <%= W_YA_ORDER_HISTORY_TOTAL %>px; text-align: center; font-weight: bold;">You have not yet placed an order with us.</div>
 <% 	} // end if-else orderHistory > 0%>
 </fd:OrderHistoryInfo>
 <br>
 <br>
-<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="675" HEIGHT="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%= W_YA_ORDER_HISTORY_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
 <FONT CLASS="space4pix"><BR><BR></FONT>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="675">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_ORDER_HISTORY_TOTAL %>">
 	<tr VALIGN="TOP">
 		<td WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="CONTINUE SHOPPING" ALIGN="LEFT"></a></td>
-		<td WIDTH="640"><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a><BR>
+    <td WIDTH="<%= W_YA_ORDER_HISTORY_TOTAL - 35 %>"><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a><BR>
 			from <FONT CLASS="text11bold"><A HREF="/index.jsp">Home Page</A></FONT><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="340" HEIGHT="1" BORDER="0">
 		</td>
 	</tr>

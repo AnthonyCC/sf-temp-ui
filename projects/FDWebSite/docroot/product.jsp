@@ -106,7 +106,6 @@ if (EnumTemplateType.WINE.equals( productNode.getTemplateType() )) {
 } else { //assuming the default (Generic) Template
 	jspTemplate = "/common/template/both_dnav.jsp";
 }
-
 %>
 <tmpl:insert template='<%=jspTemplate%>'>
     <tmpl:put name='title' direct='true'>FreshDirect - <%= productNode.getFullName() %></tmpl:put>
@@ -138,6 +137,7 @@ if (EnumTemplateType.WINE.equals( productNode.getTemplateType() )) {
 <%@ include file="/includes/product/cutoff_notice.jspf" %>
 <%@ include file="/includes/product/i_dayofweek_notice.jspf" %>
 <!-- product layout : <%= prodPageLayout.getLayoutPath() %> --> 
+
 <jsp:include page="<%= prodPageLayout.getLayoutPath() %>" flush="false"/>
 
 </fd:FDShoppingCart>

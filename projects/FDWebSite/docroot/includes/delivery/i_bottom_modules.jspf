@@ -1,3 +1,8 @@
+<% //expanded page dimensions
+final int W_BOTTOM_MODULES = 970;
+final int W_BOTTOM_MODULES_C = 313;
+%>
+
 <%
 boolean ClickToCallEnabled=false;
 if(user.getIdentity()!=null && ClickToCallUtil.evaluateClick2CallInfoDisplay(user,null)){
@@ -24,9 +29,9 @@ double currentTime = h1+m1;
 	var serviceHourString = "<%= hourString %>";
 	var CTBottomMsg = "<%= CTBottomMsg %>";
 </script>
-<table width="695" cellpadding="0" cellpadding="0" border="0" align="center">
+<table width="<%= W_BOTTOM_MODULES %>" cellpadding="0" cellpadding="0" border="0" align="center">
 	<tr valign="TOP">
-		<td width="180" rowspan="2" >
+    <td width="<%= W_BOTTOM_MODULES_C %>" rowspan="2" >
 			<% if(user.isChefsTable() && !ClickToCallEnabled) {%>
 				<fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/faq_bottom_module.html"/>
 			<%}else if(user.isChefsTable() && ClickToCallEnabled){%>
@@ -40,7 +45,7 @@ double currentTime = h1+m1;
 		</td>
 		<td width="15" rowspan="2"><img height="1" border="0" width="15" src="/media_stat/images/layout/clear.gif"></td>
 		
-		<td width='<%=user.isChefsTable()?"290":"200"%>' rowspan="2">
+		<td width='<%= W_BOTTOM_MODULES_C %>' rowspan="2">
 			<%if(user.isChefsTable()){
 				if(user.getPercSlotsSold() == 100 && currentTime >= 21){
 			%>
@@ -61,28 +66,22 @@ double currentTime = h1+m1;
 		<td width="15" rowspan="2"><img height="1" border="0" width="15" src="/media_stat/images/layout/clear.gif"></td>
 		
 		<%if(user.isChefsTable()){%>
-			<td width="180" rowspan="2">
+      <td width="<%= W_BOTTOM_MODULES_C %>" rowspan="2">
 				<fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/emailUs_bottom_module.html"/>
 			</td>
 		<%}else{%>
 			<%if(ClickToCallEnabled) {%>
-			<td width="200" rowspan="2">
-				<fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/click-to-call_bottom_module.html"/>
-			</td>
-			<td bgcolor="#cccccc" width="1" rowspan="4">
-				<img height="1" border="0" width="1" src="/media_stat/images/layout/dotted_line.gif"><br>
-			</td>
-			<td width="15" rowspan="2"><img height="1" border="0" width="15" src="/media_stat/images/layout/clear.gif"></td>	
+        <td width="<%= W_BOTTOM_MODULES_C %>" rowspan="2">
+          <fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/click-to-call_bottom_module.html"/>
+        </td>
+        <td bgcolor="#cccccc" width="1" rowspan="4">
+          <img height="1" border="0" width="1" src="/media_stat/images/layout/dotted_line.gif"><br>
+        </td>
+        <td width="15" rowspan="2"><img height="1" border="0" width="15" src="/media_stat/images/layout/clear.gif"></td>	
 			<%}%>
-			<%if(!user.isChefsTable()){%>
-				<td width="180" rowspan="2">
-					<fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/emailUs_bottom_module.html"/>
-				</td>
-			<%}else{%>
-				<td width='<%=ClickToCallEnabled?"100":"180"%>'>
-					<fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/emailUs_right_bottom_module.html"/>
-				</td>
-			<%}%>
+      <td width="<%= W_BOTTOM_MODULES_C %>" rowspan="2">
+        <fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/emailUs_bottom_module.html"/>
+      </td>
 		<%}%>
 	</tr>
 
