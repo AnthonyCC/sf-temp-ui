@@ -140,6 +140,14 @@ public class RoutingDateUtil {
 		return cal.getTime();
 	}
 	
+	public static Date getPreviousDate(Date d1) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(d1);
+		cal = truncate(cal);
+		cal.add(Calendar.DATE, -1);
+		return cal.getTime();
+	}
+
 	public static Date getCurrentDate() {
 		return Calendar.getInstance().getTime();
 	}

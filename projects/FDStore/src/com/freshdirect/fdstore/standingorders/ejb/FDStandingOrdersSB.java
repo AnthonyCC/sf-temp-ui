@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.ejb.EJBObject;
 
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.lists.FDCustomerList;
@@ -30,4 +31,5 @@ public interface FDStandingOrdersSB extends EJBObject {
 	public FDStandingOrderInfoList getFailedStandingOrdersCustInfo()throws RemoteException;
 	public FDStandingOrderInfoList getMechanicalFailedStandingOrdersCustInfo()throws RemoteException;
 	public Map<Date,Date> getStandingOrdersAlternateDeliveryDates() throws RemoteException;
+	public void addStandingOrderAltDeliveryDate(Date deliveryDate, Date altDate) throws RemoteException;	
 }

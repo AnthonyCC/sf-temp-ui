@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.CreateException;
 import javax.naming.Context;
@@ -728,6 +729,22 @@ public class CallCenterServices {
 		try {
 			CallCenterManagerSB sb = callCenterHome.create();
 			return sb.cancelReservations(resvCriteria, initiator, notes);
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	public static int cancelReservations(Set<String> reservationIds, String agent) throws FDResourceException {
+		if(callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			return sb.cancelReservations(reservationIds, agent);
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");

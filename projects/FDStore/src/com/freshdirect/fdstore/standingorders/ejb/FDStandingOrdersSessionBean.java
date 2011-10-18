@@ -1,11 +1,9 @@
 package com.freshdirect.fdstore.standingorders.ejb;
 
-import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Category;
@@ -306,6 +304,21 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			return map;
 		} catch (SQLException e) {
 			LOGGER.error( "SQL ERROR in getStandingOrdersAlternateDeliveryDates() : " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public void addStandingOrderAltDeliveryDate(Date deliveryDate, Date altDate) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();			
+			dao.addStandingOrderAltDeliveryDate(conn, deliveryDate, altDate );
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in addStandingOrderAltDeliveryDate() : " + e.getMessage(), e );
 			e.printStackTrace();
 			throw new FDResourceException(e);
 		} finally {

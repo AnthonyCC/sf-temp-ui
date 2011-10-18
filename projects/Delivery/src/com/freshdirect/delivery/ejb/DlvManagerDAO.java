@@ -7,9 +7,11 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -1407,6 +1409,30 @@ public class DlvManagerDAO {
 		PreparedStatement ps = conn.prepareStatement(FIX_DISASSOCIATED_TIMESLOTS);	
 		ps.executeUpdate();
 		ps.close();
-	} 
+	}
+
+	private static final String CANCEL_RESERVATIONS_QUERY01 = "UPDATE DLV.RESERVATION SET STATUS_CODE = ?, MODIFIED_DTTM=SYSDATE WHERE ID IN (";
+
+	public static int cancelReservations(Connection conn, Set<String> rsvIds) throws SQLException {
+		StringBuffer updateQ = new StringBuffer();
+		if(rsvIds != null && rsvIds.size() > 0) {			
+			updateQ.append(CANCEL_RESERVATIONS_QUERY01);
+			int intCount = 0;
+			for(String rsvId : rsvIds) {
+				updateQ.append("'").append(rsvId).append("'");
+				intCount++;
+				if(intCount != rsvIds.size()) {
+					updateQ.append(",");
+				}
+			}
+			updateQ.append(")");
+		}
+		
+		PreparedStatement ps = conn.prepareStatement(updateQ.toString());
+		ps.setInt(1, EnumReservationStatus.ADMINCANCELED.getCode());
+		
+		int updateCount = ps.executeUpdate();
+		return updateCount;
+	}
 	
 }

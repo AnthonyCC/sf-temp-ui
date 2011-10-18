@@ -3533,12 +3533,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		aInfo.setNote("Make Pre-Reservation");
 		
 		return this.makeReservation(identity, timeslot, rsvType, addressId,
-				aInfo, chefstable, event);
+				aInfo, chefstable, event, false);
 	}
 
 	public FDReservation makeReservation(FDIdentity identity,
 			FDTimeslot timeslot, EnumReservationType rsvType, String addressId,
-			FDActionInfo aInfo, boolean chefsTable, TimeslotEventModel event) throws FDResourceException,
+			FDActionInfo aInfo, boolean chefsTable, TimeslotEventModel event, boolean isForced) throws FDResourceException,
 			ReservationException {
 
 		long duration = timeslot.getCutoffDateTime().getTime()
@@ -3550,7 +3550,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 
 		ErpAddressModel address=getAddress(identity,addressId);
-		FDReservation rsv=FDDeliveryManager.getInstance().reserveTimeslot(timeslot, identity.getErpCustomerPK(), duration, rsvType, address, chefsTable,null,false, event);			
+		FDReservation rsv=FDDeliveryManager.getInstance().reserveTimeslot(timeslot, identity.getErpCustomerPK(), duration, rsvType, address, chefsTable, null, isForced, event);
 
 		if (EnumReservationType.RECURRING_RESERVATION.equals(rsvType)) {
 			this.updateRecurringReservation(identity,

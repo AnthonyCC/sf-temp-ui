@@ -55,11 +55,12 @@ import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.rules.FDRuleContextI;
-import com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceSessionBean.ProcessActionResult;
 import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.giftcard.ErpGiftCardModel;
+import com.freshdirect.webapp.util.StandingOrderUtil;
+import com.freshdirect.webapp.util.StandingOrderUtil.ProcessActionResult;
 
 public class ServiceTest extends MockObjectTestCase {
 	private final static DateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
@@ -374,7 +375,7 @@ public class ServiceTest extends MockObjectTestCase {
 
 		
 		
-		bean.updateDeliverySurcharges(cart, ctx);
+		StandingOrderUtil.updateDeliverySurcharges(cart, ctx);
 
 		Calendar cal = Calendar.getInstance();
 		int dno = cal.get(Calendar.DAY_OF_WEEK);
@@ -407,7 +408,7 @@ public class ServiceTest extends MockObjectTestCase {
 		MockRuleContext ctx = new MockRuleContext(user, pm);
 		ctx.setSelectedServiceType(EnumServiceType.HOME);
 		
-		bean.updateDeliverySurcharges(cart, ctx);
+		StandingOrderUtil.updateDeliverySurcharges(cart, ctx);
 
 		// Expected rule is "Default Fee"
 		assertEquals(5.79, cart.getChargeAmount(EnumChargeType.DELIVERY), 0);
@@ -462,7 +463,7 @@ public class ServiceTest extends MockObjectTestCase {
 		cart.setAvailability(new FDCompositeAvailability(map1));
 
 		ProcessActionResult vr = new ProcessActionResult();
-		bean.doATPCheck(identity, cart, vr);
+		StandingOrderUtil.doATPCheck(identity, cart, vr);
 
 		return vr.hasInvalidItems();
 	}
@@ -476,25 +477,22 @@ public class ServiceTest extends MockObjectTestCase {
 class StandingOrdersServiceSessionBeanMockup extends StandingOrdersServiceSessionBean {
 	private static final long serialVersionUID = 1636173239113263268L;
 
-	@Override
 	public boolean isValidCustomerList(List<FDCustomerListItem> lineItems) {
 		return true;
 	}
 	
-	@Override
+
 	protected FDCartModel checkAvailability(FDIdentity identity,
 			FDCartModel cart, long timeout) throws FDResourceException {
 		return cart;
 	}
 
-
-	@Override
 	public FDCartModel buildCart(FDCustomerList soList,
 			ErpPaymentMethodI paymentMethod, AddressModel deliveryAddressModel,
 			List<FDTimeslot> timeslots, DlvZoneInfoModel zoneInfo,
 			FDReservation reservation, ProcessActionResult vr)
 			throws FDResourceException {
-		return super.buildCart(soList, paymentMethod, deliveryAddressModel, timeslots,
+		return StandingOrderUtil.buildCart(soList, paymentMethod, deliveryAddressModel, timeslots,
 				zoneInfo, reservation, vr);
 	}
 }

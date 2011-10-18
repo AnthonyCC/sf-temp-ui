@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.ejb.CreateException;
@@ -1876,7 +1877,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			//Create Activity Log.
 			AdminToolsDAO.logCancelledReservations(conn, reservations, initiator, notes);
 			
-			postMassCancellation(reservations);
+			postMassCancellation(reservations, null);
 			
 			return updateCount;
 		} catch (SQLException e) {
@@ -1893,8 +1894,56 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	private void postMassCancellation(List reservations) {
-		TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.CUSTOMER_REP.getCode(), 
+	public int cancelReservations(Set<String> reservationIds, String agent) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			/*
+			 * Get the reservations for the given reservationIds for
+			 * logging into the activity log after deleting the reservations.
+			 */
+			List<FDCustomerReservationInfo> reservations = getReservationsById(reservationIds);
+			//cancel reservations for the given criteria.
+			int updateCount = DlvManagerDAO.cancelReservations(conn, reservationIds);
+			//Create Activity Log.
+			AdminToolsDAO.logCancelledReservations(conn, reservations, agent, null);
+			
+			postMassCancellation(reservations, EnumTransactionSource.ADMINISTRATOR);
+			
+			return updateCount;
+		} catch (SQLException e) {
+			LOGGER.error("SQL Error occurred while creating activity logs after cancelling reservations.");
+			throw new EJBException(e);
+		}finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					LOGGER.warn("Trouble closing connection after cancelReservations", e);
+				}
+			}
+		}
+	}
+	
+	public List getReservationsById(Set<String> reservationIds) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return GenericSearchDAO.findReservationsById(conn, reservationIds);
+		} catch (SQLException e) {
+			throw new FDResourceException(e, "Could not find reservations matching criteria entered.");
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					LOGGER.warn("Trouble closing connection after searchCustomerReservations", e);
+				}
+			}
+		}
+	}
+	private void postMassCancellation(List reservations, EnumTransactionSource transactionSource) {
+		TimeslotEventModel event = new TimeslotEventModel(transactionSource == null ? EnumTransactionSource.CUSTOMER_REP.getCode(): transactionSource.getCode(), 
 				false,0.00, false, false);
 		for (Iterator i = reservations.iterator(); i.hasNext();) {
 			FDCustomerReservationInfo info = (FDCustomerReservationInfo)i.next();

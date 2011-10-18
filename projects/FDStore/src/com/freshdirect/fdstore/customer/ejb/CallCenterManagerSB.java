@@ -121,4 +121,6 @@ public interface CallCenterManagerSB extends EJBObject {
 	
 //	public CrmClick2CallModel getClick2CallInfo() throws FDResourceException, RemoteException;
 	
+	public int cancelReservations(Set<String> reservationIds, String agent) throws FDResourceException, RemoteException;
+	
 }

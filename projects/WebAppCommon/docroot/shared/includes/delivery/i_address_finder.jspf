@@ -188,7 +188,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 			
 	<% }else if(!user.isDlvPassActive() && !(user.isEligibleForPreReservation() && (!"true".equals(request.getParameter("chefstable"))))) { %>
 			<table width="100%">
-				<div align="center">
+				<tr>
 				<% if (FDStoreProperties.isAdServerEnabled()) { %>
 					<SCRIPT LANGUAGE=JavaScript>
 						<!--
@@ -196,7 +196,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 						//-->
 					</SCRIPT><br/><br/>
 				<% } %>
-				 </div>
+				 </tr>
 			 </table>
 	<% } %>
 		</td>

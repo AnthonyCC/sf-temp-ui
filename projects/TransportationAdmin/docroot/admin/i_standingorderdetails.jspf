@@ -1,0 +1,142 @@
+<style>
+	.yui-skin-sam .yui-dt-body { cursor:pointer; } 
+	#single { margin-top:2em; }
+	
+	/* white on black */
+	#parentcontordertable .yui-dt-selected {
+	    background-color: #000;
+	    color: #FFF;
+	}
+</style>
+
+<script>
+      var standingOrderDataTable;
+      var editStandingOrderPanel; 
+      var _currentBatchId;
+ 
+      function showStandingOrderTable(inputVal) {
+	
+	_currentBatchId = inputVal;
+         editStandingOrderPanel = new YAHOO.widget.Panel("standingorder-panel", {
+                          width: "980px",
+                          fixedcenter: true, 
+                          close: true, 
+                          draggable: false, 
+                          zindex:4,
+                          modal: true,
+                          visible: false,
+                          effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
+        
+		var standingOrderDataIncrementer = function() {
+			var result = jsonrpcClient.AsyncCrisisMngProvider.getStandingOrderByBatchId(_currentBatchId);
+			return result.list;
+		};
+          
+		standingOrderDataSource = new YAHOO.util.DataSource(standingOrderDataIncrementer);
+
+		var standingOrderColumns =  [ 
+			    {key:"isSel", label:"Select?", formatter:"checkbox", className:'align-center'},
+			    {key:"customerId", label:"Customer ID",sortable:false, width: 85, className:'align-center'},
+			    {key:"area", label:"Area",sortable:true, width: 35, className:'align-center'}, 
+			    {key:"standingOrderId", label:"Standing OrderNo.",sortable:false, width: 110, className:'align-center'},
+			    {key:"saleId", label:"Order No.",sortable:false, width: 90, className:'align-center'},
+			    {key:"lineItemCount", label:"Order LineItems",sortable:true, width: 90, className:'align-center'},
+			    {key:"tempLineItemCount", label:"Template LineItems", sortable:true, width: 110, className:'align-center'},
+			    {key:"lineItemChangeCount", label:"LineItems Change", sortable:false, width: 130, className:'align-center'},
+			    {key:"status", label:"Status", sortable:false, width: 70, className:'align-center'},
+			    {key:"errorHeader", label:"Error Info", sortable:false, width: 130, className:'align-center'},
+			   
+		 ];
+	
+		var sMyConfigs = { 
+			paginator : new YAHOO.widget.Paginator({ 
+			       rowsPerPage    : 25
+			})
+		};
+		
+		standingOrderDataTable = new YAHOO.widget.DataTable("contstandingordertable", standingOrderColumns, standingOrderDataSource, sMyConfigs);
+
+		setAllChecks( standingOrderDataTable, true );
+
+		standingOrderDataTable.subscribe("rowClickEvent", standingOrderDataTable.onEventSelectRow );
+
+		editStandingOrderPanel.render(document.body); 
+		editStandingOrderPanel.show(); 
+	}
+
+	function setAllChecks( arg_dt, flag) {
+		var oRS = arg_dt.getRecordSet();
+		arg_dt.render();
+		for(var i=0; i < oRS.getLength(); i++) {
+			var oRec = oRS.getRecord(i);
+			if(oRec._oData.status === 'SUCCESS'){
+				var x = document.getElementById(oRec['_sId']);
+				if (x && x.getElementsByTagName('input')[0])
+				{
+					x.getElementsByTagName('input')[0].disabled = true;
+				}
+			}else{
+				var x = document.getElementById(oRec['_sId']);
+				if (x && x.getElementsByTagName('input')[0])
+				{
+					x.getElementsByTagName('input')[0].checked = true;
+					oRec.setData( 'isSel', flag );
+				}
+			}
+		}
+	}
+
+	function submitStandingOrder() { 
+		var _data = new Array();
+		if(standingOrderDataTable.getRecordSet() != null && 
+			standingOrderDataTable.getRecordSet().getRecords()) { 
+			var records = standingOrderDataTable.getRecordSet().getRecords();
+			for(i=0; i < records.length; i++) { 
+				if(records[i].getData('isSel')){
+					_data[i] = new Array(); 
+					_data[i][0] = records[i].getData('standingOrderId');
+				}
+			}
+		} 
+		var _placeOrderResult = jsonrpcClient.AsyncCrisisMngProvider.placeStandingOrder(_currentBatchId, _data);
+		if(_placeOrderResult){
+			standingOrderDataTable.destroy(); 
+			editStandingOrderPanel.hide();
+		}
+		
+	} 
+     </script> 
+     
+     <style> 
+	.yui-skin-sam .yui-dt-paginator { 
+		display: block;
+		margin: 6px 0; 
+		text-align: center;
+		white-space: nowrap; }
+
+	.yui-skin-sam .yui-dt table {
+	   border: 1px solid #7F7F7F;
+	   border-collapse: separate;
+	   border-spacing: 0;
+	   font-family: arial;
+	   font-size: inherit;
+	   margin: 0 0 0 5px;
+	   padding: 0;
+	   width: 100%;
+	}
+	
+ </style>
+ <div style='display:none;height:0px;width:0px;'> 
+        <div id="standingorder-panel">
+	  <div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />
+      		&nbsp;&nbsp;&nbsp;Standing Order List</div>
+          <div class="bd">
+             <div id="parentcontstandingordertable" style="overflow-y:auto;background-color:#F2F2F2;border:1px dotted #000;">
+		<div id="contstandingordertable"></div> 
+	      </div>
+	      <div align="center">
+	       	<input type="button" id="standing_order" value="&nbsp;Submit&nbsp;" onclick="javascript:submitStandingOrder();" />
+	      </div>
+          </div>
+   	 </div>
+ </div>

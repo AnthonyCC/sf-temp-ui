@@ -27,7 +27,9 @@ public class SecurityManager {
 		UNSECURED_URL.add("cutoffreport.do");
 		UNSECURED_URL.add("sapupload.do"); 
 		UNSECURED_URL.add("communityreport.do"); 
-		UNSECURED_URL.add("gpsadminex.do"); 
+		UNSECURED_URL.add("gpsadminex.do");
+		UNSECURED_URL.add("voiceshotreport.do"); 
+		UNSECURED_URL.add("marketingreport.do");
 	}
 	
 	public static String getUserRole(ServletRequest request, Set roles) {		

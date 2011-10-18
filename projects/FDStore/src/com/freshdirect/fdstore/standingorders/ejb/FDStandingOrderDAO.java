@@ -701,4 +701,28 @@ public class FDStandingOrderDAO {
 		
 		return map;
 	}
+	
+	private static final String INSERT_STANDINGORDER_ALTERNATE_DELIVERY_DATE = "INSERT INTO CUST.SO_HOLIDAY_ALT_DATE (CURRENT_DELIVERY_DATE, ALTERNATE_DELIVERY_DATE) VALUES( ?,? ) ";
+	
+	public void addStandingOrderAltDeliveryDate(Connection conn, Date deliveryDate, Date altDate) throws SQLException {
+		
+		PreparedStatement ps = null;		
+		try {
+			ps = conn.prepareStatement(INSERT_STANDINGORDER_ALTERNATE_DELIVERY_DATE);
+						
+			ps.setDate(1, deliveryDate != null ? new java.sql.Date( deliveryDate.getTime() ) : null);
+			ps.setDate(2, altDate != null ? new java.sql.Date( altDate.getTime() ) : null);
+			
+			ps.execute();	
+			ps.close();
+		
+		} catch (SQLException exc) {
+			throw exc;
+		} finally {
+			if(ps != null) {
+				ps.close();
+			}
+		}
+	}
+	
 }

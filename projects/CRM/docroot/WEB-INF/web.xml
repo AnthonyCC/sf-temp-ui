@@ -129,6 +129,10 @@
         <servlet-name>PromoPublishServlet</servlet-name>
         <servlet-class>com.freshdirect.fdstore.promotion.pxp.PromoPublishServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CrisisManagerServlet</servlet-name>
+        <servlet-class>com.freshdirect.fdstore.admin.pxp.CrisisManagerServlet</servlet-class>
+    </servlet>
     
    <servlet-mapping>
         <servlet-name>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-name>
@@ -181,7 +185,11 @@
     <servlet-mapping>
         <servlet-name>PromoPublishServlet</servlet-name>
         <url-pattern>/promo_publish</url-pattern>
-    </servlet-mapping> 
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CrisisManagerServlet</servlet-name>
+        <url-pattern>/admin_service</url-pattern>
+    </servlet-mapping>  
     <session-config>
         <session-timeout>15</session-timeout>
     </session-config>
@@ -249,6 +257,7 @@
 		<url-pattern>/no_auth.jsp</url-pattern>			
 		<url-pattern>/main/error.jsp</url-pattern>
 		<url-pattern>/promo_publish</url-pattern>
+		<url-pattern>/admin_service</url-pattern>		
 		<http-method>POST</http-method>
       	<http-method>GET</http-method>
       	<http-method>PUT</http-method>

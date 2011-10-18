@@ -146,8 +146,12 @@
                	<prop key="/maintenancelog.do">domainController</prop>
                	<prop key="/editvirrecordlog.do">vitRecordLogFormController</prop>
                	<prop key="/editmaintenancelog.do">maintenanceLogFormController</prop>
-
 				<prop key="/zipcode.do">adminController</prop>
+
+    			<prop key="/crisismanage.ax">asyncCrisisMngController</prop>
+    			<prop key="/crisismanage.do">crisisMngFormController</prop>
+    			<prop key="/marketingreport.do">crisisMngController</prop>
+               	<prop key="/voiceshotreport.do">crisisMngController</prop>
     
 			</props>
 		</property>
@@ -155,7 +159,10 @@
 
 
 	<!-- ========================= CONTROLLER DEFINITIONS ========================= -->
-	
+
+	<bean id="crisisMngController" class="com.freshdirect.transadmin.web.CrisisManagerController">
+		<property name="methodNameResolver" ref="transAdminControllerResolver"/> 
+	</bean>
 	
 	<bean id="domainController" class="com.freshdirect.transadmin.web.DomainController">
 		<property name="methodNameResolver" ref="transAdminControllerResolver"/>
@@ -303,8 +310,11 @@
             <prop key="/gpsadminex.do">gpsDrivingDirectionsHandlerEx</prop>
             <prop key="/virrecordlog.do">virRecordLogHandler</prop>
             <prop key="/maintenancelog.do">maintenanceLogHandler</prop>
+			<prop key="/zipcode.do">zipcodeHandler</prop>
 
-			 <prop key="/zipcode.do">zipcodeHandler</prop>
+			<prop key="/marketingreport.do">marketingReportHandler</prop>
+            <prop key="/voiceshotreport.do">voiceshotReportHandler</prop> 
+
         </props>
 		</property>
 	</bean>
@@ -602,6 +612,16 @@
         <property name="formView" value="maintenanceRecordEdit" />
 	</bean>
 	
+	<bean id="crisisMngFormController" class="com.freshdirect.transadmin.web.CrisisManagerFormController">
+		<property name="zoneManagerService" ref="zoneManager"/>
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.web.model.CrisisManagerCommand"/>
+        <property name="validator" ref="crisisMngValidator"/>
+        <property name="successView" value="routingCrisisManagement" />
+        <property name="formView" value="routingCrisisManagement" />
+	</bean>
+
 	<bean name="asyncGeographyController" class="com.freshdirect.transadmin.web.json.GeographyProviderController">
 		<property name="restrictionManagerService" ref="restrictionManager"/>
 	  	<property name="domainManagerService" ref="zoneExpansionBase"/>
@@ -664,7 +684,15 @@
 			</map>
 		</property>
 	</bean>
-	
+
+	<bean name="asyncCrisisMngController" class="com.freshdirect.transadmin.web.json.CrisisMngProviderController">
+		<property name="ajaxServices">
+			<map>
+				<entry key="AsyncCrisisMngProvider" value="com.freshdirect.transadmin.web.json.ICrisisMngProvider" />
+			</map>
+		</property>
+	</bean>
+
 	<bean id="geographyController" class="com.freshdirect.transadmin.web.GeographyController">
 		<property name="methodNameResolver" ref="transAdminControllerResolver"/>
         <property name="domainManagerService" ref="domainManager"/>
@@ -733,6 +761,8 @@
 	<bean id="assetValidator" class="com.freshdirect.transadmin.web.validation.AssetValidator"/>
 	<bean id="assetTemplateValidator" class="com.freshdirect.transadmin.web.validation.AssetTemplateValidator"/>
 	<bean id="virRecordValidator" class="com.freshdirect.transadmin.web.validation.VIRRecordValidator"/>
-	<bean id="maintenanceRecordValidator" class="com.freshdirect.transadmin.web.validation.MaintenanceRecordValidator"/>	
-		
+	<bean id="maintenanceRecordValidator" class="com.freshdirect.transadmin.web.validation.MaintenanceRecordValidator"/>
+
+	<bean id="crisisMngValidator" class="com.freshdirect.transadmin.web.validation.CrisisManagerValidator"/>
+
 </beans>

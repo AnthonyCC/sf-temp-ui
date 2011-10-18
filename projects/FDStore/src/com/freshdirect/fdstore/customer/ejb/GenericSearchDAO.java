@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Category;
 
@@ -423,22 +424,44 @@ public class GenericSearchDAO {
 			ContactAddressModel address = new ContactAddressModel();
 			address.setId(rs.getString("ADDRESS_ID"));
 			
-			FDCustomerReservationInfo rInfo = new FDCustomerReservationInfo(id, 
-																			baseDate, 
-																			cutoffTime, 
-																			firstName, 
-																			lastName, 
-																			identity,
-																			email,
-																			phone,
-																			altPhone,
-																			bizPhone,
-																			startTime, 
-																			endTime,
-																			zone,rsvType);
+			FDCustomerReservationInfo rInfo = new FDCustomerReservationInfo(id,
+					baseDate, cutoffTime, firstName, lastName, identity, email,
+					phone, altPhone, bizPhone, startTime, endTime, zone,
+					rsvType);
+			rInfo.setAddress(address);
 			lst.add(rInfo);
 		}
 		return lst;
+	}
+	
+	private static String RESERVATION_SEARCHBYID_QUERY = 
+		"SELECT "
+		+ "ci.customer_id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, "
+		+ "ci.cell_phone, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ze.zone_code, rs.id, rs.type, rs.address_id  "
+		+ "from dlv.reservation rs, dlv.timeslot ts, dlv.zone ze, cust.customerinfo ci, cust.customer c "
+		+ "where ts.id = rs.timeslot_id and ze.id = ts.zone_id and rs.customer_id = c.id and ci.customer_id = c.id "
+		+ "and rs.id in (";
+
+	public static List<FDCustomerReservationInfo> findReservationsById(Connection conn, Set<String> rsvIds) throws SQLException {
+		StringBuffer updateQ = new StringBuffer();
+		if(rsvIds != null && rsvIds.size() > 0) {			
+			updateQ.append(RESERVATION_SEARCHBYID_QUERY);
+			int intCount = 0;
+			for(String rsvId : rsvIds) {
+				updateQ.append("'").append(rsvId).append("'");
+				intCount++;
+				if(intCount != rsvIds.size()) {
+					updateQ.append(",");
+				}
+			}
+			updateQ.append(")");
+		}
+		PreparedStatement ps = conn.prepareStatement(updateQ.toString());
+		ResultSet rs = ps.executeQuery();
+		List<FDCustomerReservationInfo> lst = processReservationResultSet(rs);
+		rs.close();
+		ps.close();
+		return lst;	
 	}
 	
 	private static String ORDER_SEARCH_FOR_RESERVATION = 

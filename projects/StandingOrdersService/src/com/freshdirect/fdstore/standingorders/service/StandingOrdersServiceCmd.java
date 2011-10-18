@@ -28,11 +28,9 @@ import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfo;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfoList;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
-import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.fdstore.standingorders.StandingOrdersServiceResult;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
-import com.freshdirect.routing.util.RoutingServicesProperties;
-
 
 public class StandingOrdersServiceCmd {
 

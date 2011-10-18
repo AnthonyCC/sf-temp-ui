@@ -48,6 +48,7 @@ public class FDStandingOrder extends ModelSupport {
 
 	String customerListName;	// Only used when standing order is not yet persisted!
 
+	Date altDeliveryDate;		// alternate delivery date
 	
 	public FDStandingOrder() {
 		super();
@@ -178,12 +179,20 @@ public class FDStandingOrder extends ModelSupport {
 		this.customerListName = customerListName;
 	}
 
+	public Date getAltDeliveryDate() {
+		return altDeliveryDate;
+	}
+
+	public void setAltDeliveryDate(Date altDeliveryDate) {
+		this.altDeliveryDate = altDeliveryDate;
+	}
 
 	public void setupDelivery(FDReservation r) {
 		setStartTime(r.getStartTime());
 		setEndTime(r.getEndTime());
-		
-		calculateNextDeliveryDate( r.getTimeslot().getBaseDate() );
+		if(this.altDeliveryDate == null){
+			calculateNextDeliveryDate( r.getTimeslot().getBaseDate() );
+		}
 	}
 
 	/**

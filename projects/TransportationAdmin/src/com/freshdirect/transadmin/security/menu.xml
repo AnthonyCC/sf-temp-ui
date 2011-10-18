@@ -140,15 +140,16 @@
 	     	<access-uris>region.do,deleteregion.do,editregion.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
 	     </menu>
-         <menu id="GEO008" title="Geo Restriction" orientation="RIGHT" link="georestriction.do">
+
+		 <menu id="GEO008" title="Geo Restriction" orientation="RIGHT" link="georestriction.do">
 	     	<access-uris>georestriction.do,deletegeorestriction.do,editgeorestriction.do</access-uris>
 	     	<access-roles>TrnAdmin</access-roles>
 	     </menu>
+
 	     <menu id="GEO009" title="GMap" orientation="RIGHT" link="gmap.do">
 	     	<access-uris>gmap.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnGuest,TrnDispatch,TrnPlanning,TrnOperations</access-roles>
 	     </menu>
-         
 </menu>
 
 <menu id="MNM004" title="ADMIN" orientation="LEFT" link="">
@@ -194,12 +195,17 @@
 	     <menu id="ADO008" title="Routing Merge" orientation="LEFT" link="routingmerge.do">
 	     	<access-uris>routingmerge.do,rsmergefile.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
-	     </menu>    	     
- 
-		 <menu id="ADO009" title="Zip Code" orientation="RIGHT" link="zipcode.do">
+	     </menu>
+
+         <menu id="ADO009" title="Zip Code" orientation="RIGHT" link="zipcode.do">
 	     	<access-uris>zipcode.do</access-uris>
 	     	<access-roles>TrnAdmin</access-roles>
 	     </menu>
 
-</menu>
+	     <menu id="ADO010" title="Crisis Management" orientation="LEFT" link="crisismanage.do">
+	     	<access-uris>crisismanage.do</access-uris>
+	     	<access-roles>TrnAdmin</access-roles>
+	     </menu>
+
+	</menu>
 </menus>

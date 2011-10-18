@@ -13,6 +13,7 @@ public class EnumReservationStatus implements java.io.Serializable {
 	public final static EnumReservationStatus COMMITTED = new EnumReservationStatus(1, 10, "Committed");
 	public final static EnumReservationStatus CANCELED = new EnumReservationStatus(2, 15, "Canceled");
 	public final static EnumReservationStatus EXPIRED = new EnumReservationStatus(3, 20, "Expired");
+	public final static EnumReservationStatus ADMINCANCELED = new EnumReservationStatus(3, 25, "Admin Cancelled");
 
 	protected final int id;
 	private final int code;
@@ -34,6 +35,8 @@ public class EnumReservationStatus implements java.io.Serializable {
 				return CANCELED;
 			case 20 :
 				return EXPIRED;
+			case 25 :
+				return ADMINCANCELED;
 			default :
 				return null;
 		}

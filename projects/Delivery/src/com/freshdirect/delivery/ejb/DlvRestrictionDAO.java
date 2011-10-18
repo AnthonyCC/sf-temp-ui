@@ -458,7 +458,7 @@ public class DlvRestrictionDAO {
 		ps.close();				
 	}
 	
-	private static final String DELIVERY_RESTRICTION_INSERT="insert into dlv.restricted_days(ID,TYPE,NAME,REASON,MESSAGE,CRITERION,DAY_OF_WEEK,START_TIME,END_TIME.MEDIA_PATH)"+ 
+	private static final String DELIVERY_RESTRICTION_INSERT="insert into dlv.restricted_days(ID,TYPE,NAME,REASON,MESSAGE,CRITERION,DAY_OF_WEEK,START_TIME,END_TIME,MEDIA_PATH)"+ 
                                                             "values(?,?,?,?,?,?,?,?,?,?)";
 	
 	public static void insertDeliveryRestriction(Connection conn, RestrictionI restriction) throws SQLException {

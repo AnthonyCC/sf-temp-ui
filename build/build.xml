@@ -1514,7 +1514,8 @@
                 <pathelement location="${thirdparty.home}/wsdl4j-1.5.1.jar"/>
                 <pathelement location="${thirdparty.home}/xml-apis.jar"/>
 				<pathelement location="${thirdparty.home}/lpsolve55j.jar"/>
-			</path>     
+				<pathelement location="${thirdparty.home}/gwt/gwt-dev-oophm.jar"/>
+			</path>
 	
 			<makeProject
 				project="RoutingServices"

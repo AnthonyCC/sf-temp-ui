@@ -40,6 +40,7 @@ import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAbstractOrderModel;
+import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
@@ -772,13 +773,13 @@ public class FDCustomerManager {
 		FDTimeslot timeslot,
 		EnumReservationType rsvType,
 		String addressId,
-		FDActionInfo aInfo, boolean chefsTable, TimeslotEventModel event)
+		FDActionInfo aInfo, boolean chefsTable, TimeslotEventModel event,boolean isForced)
 		throws FDResourceException, ReservationException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 
-			return sb.makeReservation(identity, timeslot, rsvType, addressId, aInfo, chefsTable,event);
+			return sb.makeReservation(identity, timeslot, rsvType, addressId, aInfo, chefsTable, event, isForced);
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error talking to session bean");
@@ -3765,6 +3766,18 @@ public class FDCustomerManager {
 		try {
 			ActivityLogSB logSB = home.create();
 			logSB.logDupeCCActivity(info.getIdentity().getErpCustomerPK(), paymentMethod, info.getSource().getCode(), info.getInitiator(), currentUserId);
+		} catch (RemoteException e) {
+			throw new EJBException(e);
+		} catch (CreateException e) {
+			throw new EJBException(e);
+		}
+	}
+	
+	public static void logMassCancelActivity(ErpActivityRecord record) {
+		ActivityLogHome home = getActivityLogHome();
+		try {
+			ActivityLogSB logSB = home.create();
+			logSB.logActivity(record);
 		} catch (RemoteException e) {
 			throw new EJBException(e);
 		} catch (CreateException e) {

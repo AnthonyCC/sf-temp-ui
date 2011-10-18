@@ -66,6 +66,7 @@ public class TransStringUtil {
 	public final static long DAY = 24 * HOUR;
 	
 	public static String MASTER_WEEKOF = "01/01/1900";
+	public static String MASTER_DATE = "01/01/1970";
 	
 	static {
 			for(int intCount=0;intCount<daysList.length;intCount++) {
@@ -643,7 +644,11 @@ public class TransStringUtil {
 	public static Date getMasterWeekOf() throws ParseException {							
 		return getWeekOf(getServerDate(MASTER_WEEKOF));
 	}
-		
+
+	public static Date getNormalDate() throws ParseException {							
+		return getDate(MASTER_DATE);
+	}
+
 	public static void main(String args[]) throws Exception {
 		/*Calendar cal = Calendar.getInstance();
 		Date _tmpDate = getDate("05/09/2010");

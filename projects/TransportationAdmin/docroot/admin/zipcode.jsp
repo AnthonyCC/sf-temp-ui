@@ -235,8 +235,7 @@
 		  } else if(result === 2){
 			 addSysMessage("Unable to add zipcode, Please check STREET DATA for zipcode!", true);
 		  }else {
-          	  addSysMessage("ZipCode added successfully", false);
-			  addZipCodePanel.destroy();
+          	  addSysMessage("ZipCode added successfully", false); 
           }
 
 		  if(rpcException){
