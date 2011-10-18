@@ -76,6 +76,10 @@ public class RoutingServiceLocator {
 	public IHandOffService getHandOffService() {
 		return (IHandOffService)factory.getBean("handOffService");
 	}
+	
+	public ICrisisManagerService getCrisisManagerService() {
+		return (ICrisisManagerService)factory.getBean("crisisManagerService");
+	}
 
 	public RouteNetWebService getRouteNetService() throws AxisFault {
 		RouteNetWebServiceStub stub = new RouteNetWebServiceStub(RoutingServicesProperties.getRoadNetProviderURL());
