@@ -11,14 +11,14 @@
 		<title>Gift Card Examples</title>
 		
 
-	<script src="/assets/javascript/prototype.js" type="text/javascript" language="javascript"></script>
-	<script src="/assets/javascript/scriptaculous.js?load=effects,builder" type="text/javascript" language="javascript"></script>
-	<script  src="/assets/javascript/modalbox.js" type="text/javascript" language="javascript"></script>
-	<script  src="/assets/javascript/FD_GiftCards.js" type="text/javascript" language="javascript"></script>
+	<fd:javascript src="/assets/javascript/prototype.js"/>
+	<fd:javascript src="/assets/javascript/scriptaculous.js?load=effects,builder"/>
+	<fd:javascript src="/assets/javascript/modalbox.js"/>
+	<fd:javascript src="/assets/javascript/FD_GiftCards.js"/>
 
-	<link href="/assets/css/pc_ie.css" rel="stylesheet" type="text/css" />
-	<link href="/assets/css/giftcards.css" rel="stylesheet" type="text/css" />
-	<link href="/assets/css/modalbox.css" rel="stylesheet" type="text/css" />
+	<fd:css href="/assets/css/pc_ie.css"/>
+	<fd:css href="/assets/css/giftcards.css"/>
+	<fd:css href="/assets/css/modalbox.css"/>
 
 
  </head>

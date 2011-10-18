@@ -1,36 +1,37 @@
 <%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <!DOCTYPE html>
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<link rel="stylesheet" href="css/reset.css">
-		<link rel="stylesheet" href="css/typography.css">
-		<link rel="stylesheet" href="css/grid.css">
+		<fd:css href="css/reset.css"/>
+		<fd:css href="css/typography.css"/>
+		<fd:css href="css/grid.css"/>
 
-		<link rel="stylesheet" href="css/fdgeneral.css">
-		<link rel="stylesheet" href="css/header.css">
-		<link rel="stylesheet" href="css/footer.css">
-		<link rel="stylesheet" href="css/content.css">
+		<fd:css href="css/fdgeneral.css"/>
+		<fd:css href="css/header.css"/>
+		<fd:css href="css/footer.css"/>
+		<fd:css href="css/content.css"/>
 
 <!--[if IE]>
-		<link rel="stylesheet" href="css/ie.css">
+		<fd:css href="css/ie.css"/>
 <![endif]-->
 
     <!-- YUI includes START --> 
-    <link rel="stylesheet" href="/assets/yui/container/assets/container.css" type="text/css"> 
-    <script type="text/javascript" src="/assets/yui/yahoo/yahoo.js"></script> 
-    <script type="text/javascript" src="/assets/yui/event/event.js"></script> 
-    <script type="text/javascript" src="/assets/yui/dom/dom.js"></script> 
-    <script type="text/javascript" src="/assets/yui/event-mouseenter/event-mouseenter.js"></script> 
-    <script type="text/javascript" src="/assets/yui/connection/connection.js"></script> 
-    <script type="text/javascript" src="/assets/yui/animation/animation.js"></script> 
-    <script type="text/javascript" src="/assets/yui/dragdrop/dragdrop.js"></script> 
-    <script type="text/javascript" src="/assets/yui/utilities/utilities.js"></script> 
-    <script type="text/javascript" src="/assets/yui/container/container.js"></script> 
-    <script type="text/javascript" src="/assets/yui/json/json.js"></script> 
-    <script type="text/javascript" src="/assets/yui/datasource/datasource.js"></script> 
-    <script type="text/javascript" src="/assets/yui/animation/animation.js"></script> 
-    <script type="text/javascript" src="/assets/yui/yahoo-dom-event/yahoo-dom-event.js"></script> 
+    <fd:css href="/assets/yui/container/assets/container.css"/> 
+    <fd:javascript src="/assets/yui/yahoo/yahoo.js"/> 
+    <fd:javascript src="/assets/yui/event/event.js"/> 
+    <fd:javascript src="/assets/yui/dom/dom.js"/> 
+    <fd:javascript src="/assets/yui/event-mouseenter/event-mouseenter.js"/> 
+    <fd:javascript src="/assets/yui/connection/connection.js"/> 
+    <fd:javascript src="/assets/yui/animation/animation.js"/> 
+    <fd:javascript src="/assets/yui/dragdrop/dragdrop.js"/> 
+    <fd:javascript src="/assets/yui/utilities/utilities.js"/> 
+    <fd:javascript src="/assets/yui/container/container.js"/> 
+    <fd:javascript src="/assets/yui/json/json.js"/> 
+    <fd:javascript src="/assets/yui/datasource/datasource.js"/> 
+    <fd:javascript src="/assets/yui/animation/animation.js"/> 
+    <fd:javascript src="/assets/yui/yahoo-dom-event/yahoo-dom-event.js"/> 
 
     <script type="text/javascript"> 
       var $E  = YAHOO.util.Event;  

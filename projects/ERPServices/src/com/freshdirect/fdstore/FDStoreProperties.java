@@ -461,6 +461,11 @@ public class FDStoreProperties {
 	private static final String PROP_TWO_MONTH_TRIAL_PASS_SKU = "fdstore.twomonth.trialdp.sku";
 	private static final String PROP_TWO_MONTH_TRIAL_PASS_PRICE = "fdstore.twomonth.trialdp.price";
 	
+
+	// APPDEV-1850 build versioning of JavaScript/CSS files
+	private static final String BUILDVER_ENABLE = "fdstore.buildver.enable";
+	private static final String BUILDVER_MINIFY = "fdstore.buildver.minify";
+
 	private static final String EVENTLOGGING_ENABLED = "fdstore.eventlogging.enabled";
 	
 	//APPDEV-1920 Remove the "new feature" alert on quickbuy
@@ -932,6 +937,9 @@ public class FDStoreProperties {
 		defaults.put(PROP_TWO_MONTH_TRIAL_PASS_SKU, "MKT0072335");		
 		defaults.put(PROP_TWO_MONTH_TRIAL_PASS_PRICE, "$59.00");
 		
+
+		defaults.put(BUILDVER_ENABLE, "true");
+
 		defaults.put(EVENTLOGGING_ENABLED, "true");
 
 		defaults.put(SMARTSTORE_QUICKBUY_NEWALERT_ENABLED, "false");
@@ -2389,6 +2397,18 @@ public class FDStoreProperties {
     public static int getOrderHistoryQueryId() {
         return Integer.parseInt(get(
                 PROP_ORDER_HISTORY_QUERY_ID));
+    }
+    
+    public static boolean isBuildverEnabled() {
+    	return Boolean.valueOf(get(BUILDVER_ENABLE));
+    }
+    
+    public static Boolean isBuildverMinify() {
+    	String minify = get(BUILDVER_MINIFY);
+    	if (minify != null)
+    		return Boolean.valueOf(minify);
+    	else
+    		return null;
     }
 
     public static boolean isQBNewAlertEnabled() {

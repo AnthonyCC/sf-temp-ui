@@ -286,7 +286,7 @@ String reqSkuCode = request.getParameter("skuCode");
 List skus = new ArrayList( itemsToDisplay );
 
 %>
-<script type="text/javascript" src="/assets/javascript/grocery_product.js"></script>
+<fd:javascript src="/assets/javascript/grocery_product.js"/>
 <%
 
 // iterate throught the list of items in the sorted set and remove all folders.  grab the brands in the process

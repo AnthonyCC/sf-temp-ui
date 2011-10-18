@@ -22,7 +22,7 @@
 <tmpl:insert template='/common/template/quick_shop_nav.jsp'>
 
     <tmpl:put name='extrahead' direct='true'>
-        <script language="javascript" src="/assets/javascript/common_javascript.js"></script>
+        <fd:javascript src="/assets/javascript/common_javascript.js"/>
         <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
     </tmpl:put>
 

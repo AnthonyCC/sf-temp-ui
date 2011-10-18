@@ -1,8 +1,9 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="config.css" />
+	<fd:css href="/test/search/config.css" />
 	<title>Relevancy Configuration</title>
 </head>
 <%@ page

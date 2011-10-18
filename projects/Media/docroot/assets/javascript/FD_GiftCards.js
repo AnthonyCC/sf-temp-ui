@@ -15,23 +15,25 @@ var lastLog;
 gcLog('Last Edit: '+lastEdit);
 
 function formatCurrency(num) {
-	num = num.toString().replace(/\$|\,/g,'');
-	if(isNaN(num))
-	num = "0";
+	num = num.toString().replace(/\$|\,/g, '');
+	if (isNaN(num))
+		num = "0";
 	sign = (num == (num = Math.abs(num)));
-	num = Math.floor(num*100+0.50000000001);
-	cents = num%100;
-	num = Math.floor(num/100).toString();
-	if(cents<10)
-	cents = "0" + cents;
-	for (var i = 0; i < Math.floor((num.length-(1+i))/3); i++)
-	num = num.substring(0,num.length-(4*i+3))+','+
-	num.substring(num.length-(4*i+3));
-	return (((sign)?'':'-') + '$' + num + '.' + cents);
+	num = Math.floor(num * 100 + 0.50000000001);
+	cents = num % 100;
+	num = Math.floor(num / 100).toString();
+	if (cents < 10)
+		cents = "0" + cents;
+	for ( var i = 0; i < Math.floor((num.length - (1 + i)) / 3); i++)
+		num = num.substring(0, num.length - (4 * i + 3)) + ','
+				+ num.substring(num.length - (4 * i + 3));
+	return (((sign) ? '' : '-') + '$' + num + '.' + cents);
 }
 
 function maxLen(elem, len) {
-	if (elem.value.length >= len) { elem.value = (elem.value).substring(0,len); }
+	if (elem.value.length >= len) {
+		elem.value = (elem.value).substring(0, len);
+	}
 }
 
 /*	ranSTR( length as STRING, charset as STRING )
@@ -54,13 +56,57 @@ function ranSTR(length, charset) {
 function gcLog(logMsg) {
 	lastLog = logMsg;
 	var time = new Date();
-	var timeNow = time.getHours()+":"+time.getMinutes()+":"+time.getSeconds()+"."+time.getMilliseconds();
-	if ((global_gcDebug||global_gcLog) && window.console) {	console.log(timeNow+' Log: '+this.lastLog); }
+	var timeNow = time.getHours() + ":" + time.getMinutes() + ":"
+			+ time.getSeconds() + "." + time.getMilliseconds();
+	if ((global_gcDebug || global_gcLog) && window.console) {
+		console.log(timeNow + ' Log: ' + this.lastLog);
+	}
 }
 
-function sI(l,u){var n=(Math.floor(Math.random()*u));if (n<l){n=sI(l,u);}return n;}function dM(){return Boolean(Math.floor(Math.random()*2));}
-function QA(){var d=new Date();var ran=(Math.floor(Math.random()*1000));$('gcBuyerName').value="gcBuyerName "+ran;$('gcBuyerEmail').value='gcBuyerEmail'+ran+'@freshdirect.com';$('gcBuyerName').value="gcBuyerName "+ran;if(!$('quantity')){$('gcRecipientEmail').value='gcRecipientEmail'+ran+'@freshdirect.com';$('gcRecipientName').value="gcRecipientName "+ran;$('fldMessage').value="fldMessage "+ran;}else{$('quantity').value=sI(1,100);}$('fldAmount').selectedIndex=sI(2,$('fldAmount').length);$('gcDisplaySELECT_card_select').selectedIndex=sI(0,$('gcDisplaySELECT_card_select').length);window['gcDisplay'].selectCard();(dM())?$('deliveryMethodPdf').checked=true:$('deliveryMethodEmail').checked=true;}
-function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcResendCRMCancelBox','div.gcResendCRMCancelBoxContent','div.gcResendCRMBox','div.gcResendCRMBoxContent','div.gcCheckAddressBox','div.gcCheckAddressBoxContent','div.gcCheckBalanceBox','div.gcCheckBalanceBoxContent').each(function(x){x.style.display='block';x.style.visibility='visible';x.style.clear='both';x.style.float='none';x.style.height='auto';x.style.width='auto';});}
+function sI(l, u) {
+	var n = (Math.floor(Math.random() * u));
+	if (n < l) {
+		n = sI(l, u);
+	}
+	return n;
+}
+function dM() {
+	return Boolean(Math.floor(Math.random() * 2));
+}
+function QA() {
+	var d = new Date();
+	var ran = (Math.floor(Math.random() * 1000));
+	$('gcBuyerName').value = "gcBuyerName " + ran;
+	$('gcBuyerEmail').value = 'gcBuyerEmail' + ran + '@freshdirect.com';
+	$('gcBuyerName').value = "gcBuyerName " + ran;
+	if (!$('quantity')) {
+		$('gcRecipientEmail').value = 'gcRecipientEmail' + ran + '@freshdirect.com';
+		$('gcRecipientName').value = "gcRecipientName " + ran;
+		$('fldMessage').value = "fldMessage " + ran;
+	} else {
+		$('quantity').value = sI(1, 100);
+	}
+	$('fldAmount').selectedIndex = sI(2, $('fldAmount').length);
+	$('gcDisplaySELECT_card_select').selectedIndex = sI(0,
+			$('gcDisplaySELECT_card_select').length);
+	window['gcDisplay'].selectCard();
+	(dM()) ? $('deliveryMethodPdf').checked = true
+			: $('deliveryMethodEmail').checked = true;
+}
+function showDialogs() {
+	$$('div.gcResendBox', 'div.gcResendBoxContent', 'div.gcResendCRMCancelBox',
+			'div.gcResendCRMCancelBoxContent', 'div.gcResendCRMBox',
+			'div.gcResendCRMBoxContent', 'div.gcCheckAddressBox',
+			'div.gcCheckAddressBoxContent', 'div.gcCheckBalanceBox',
+			'div.gcCheckBalanceBoxContent').each(function(x) {
+		x.style.display = 'block';
+		x.style.visibility = 'visible';
+		x.style.clear = 'both';
+		x.style['float'] = 'none';
+		x.style.height = 'auto';
+		x.style.width = 'auto';
+	});
+}
 
 /*---------------------------------------------------- Test : Debug Functions */
 

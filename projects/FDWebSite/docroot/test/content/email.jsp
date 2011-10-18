@@ -20,7 +20,7 @@
 <html>
 <head>
 <title>FreshDirect - President's Picks</title>
-<link rel="stylesheet" href="http://www.freshdirect.com/assets/css/pc_ie.css" type="text/css">
+<fd:css href="/assets/css/pc_ie.css"/>
 </head>
 <%
 	params = new HashMap();

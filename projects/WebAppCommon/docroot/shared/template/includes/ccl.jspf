@@ -10,6 +10,7 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="java.util.Date"%>
 <%@ page import="java.util.Calendar"%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <jsp:useBean id="JSONRPCBridge" scope="session" class="com.freshdirect.webapp.util.json.FDJSONRPCBridge">
 </jsp:useBean>
 <%@ include file="/shared/template/includes/yui.jspf" %>
@@ -163,7 +164,7 @@ YAHOO.util.Event.onDOMReady(function() {
 }
 if (request.getAttribute("__fd_load_clicode_edit__") != null && fdUser.isEligibleForClientCodes()) {
 	%>
-	<script type="text/javascript" src="/assets/javascript/clicode_edit.js"></script>
+	<fd:javascript src="/assets/javascript/clicode_edit.js"/>
 	<%
 } else {
 	%>
@@ -198,32 +199,16 @@ if (request.getAttribute("__fd_load_clicode_edit__") != null && fdUser.isEligibl
 	</script>
 	<%
 }		
-		if (FDStoreProperties.isCclAjaxDebugClient()) { 
 %>
-<script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>
-
-<script type="text/javascript" src="/assets/javascript/jsonrpc.js"></script>
-<script type="text/javascript" src="/assets/javascript/ccl.js"></script>
-<script type="text/javascript" src="/assets/javascript/fcu.js"></script>
-<script type="text/javascript" src="/assets/javascript/quickbuy.js"></script>
-<script type="text/javascript" src="/assets/javascript/pricing.js"></script>
-<script type="text/javascript" src="/assets/javascript/wine.js"></script>
-<%
-		} else {
-%>
-<script type="text/javascript" src="/assets/javascript/rounded_corners-min.js"></script>
-
-<script type="text/javascript" src="/assets/javascript/jsonrpc-min.js"></script>
-<script type="text/javascript" src="/assets/javascript/ccl-min.js"></script>
-<script type="text/javascript" src="/assets/javascript/fcu-min.js"></script>
-<script type="text/javascript" src="/assets/javascript/quickbuy-min.js"></script>
-<script type="text/javascript" src="/assets/javascript/pricing-min.js"></script>
-<script type="text/javascript" src="/assets/javascript/wine-min.js"></script>
-<%
-		}
-%>
-<script type="text/javascript" src="/assets/javascript/wine-nav.js"></script>
-<link rel="stylesheet" href="/assets/css/ccl.css" type="text/css">
+<fd:javascript src="/assets/javascript/rounded_corners.inc.js"/>
+<fd:javascript src="/assets/javascript/jsonrpc.js"/>
+<fd:javascript src="/assets/javascript/ccl.js"/>
+<fd:javascript src="/assets/javascript/fcu.js"/>
+<fd:javascript src="/assets/javascript/quickbuy.js"/>
+<fd:javascript src="/assets/javascript/pricing.js"/>
+<fd:javascript src="/assets/javascript/wine.js"/>
+<fd:javascript src="/assets/javascript/wine-nav.js"/>
+<fd:css href="/assets/css/ccl.css"/>
 
 <!--[if IE]>
 <style>

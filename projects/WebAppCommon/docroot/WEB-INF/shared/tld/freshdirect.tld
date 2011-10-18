@@ -4533,6 +4533,35 @@
 		<info></info>
 	</tag>
 	<tag>
+
+		<name>javascript</name>
+		<tagclass>com.freshdirect.webapp.taglib.buildver.JavaScriptTag</tagclass>
+		<bodycontent></bodycontent>
+		<info></info>
+		<attribute>
+			<name>src</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>css</name>
+		<tagclass>com.freshdirect.webapp.taglib.buildver.CssTag</tagclass>
+		<bodycontent></bodycontent>
+		<info></info>
+		<attribute>
+			<name>id</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>href</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+
 		<name>CategoryLayoutCollector</name>
 		<tagclass>com.freshdirect.webapp.taglib.test.CategoryLayoutCollectorTag</tagclass>
 		<bodycontent>JSP</bodycontent>

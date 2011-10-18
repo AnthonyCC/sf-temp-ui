@@ -30,10 +30,11 @@ FD_QuickBuy.animFadeOut = function(button) {
 
 
 // util
-FD_QuickBuy._nextSibling = function(n) {
-	x=n.nextSibling;
-	while (x.nodeType != 1) {x=x.nextSibling;}
-	return x;
+FD_QuickBuy._getCloseButton = function(n) {
+	var x = n.parentNode;
+	var nodes = YAHOO.util.Dom.getElementsByClassName('container-close', 'a', x);
+	if (nodes.length)
+		return nodes[0];
 };
 
 // util
@@ -101,10 +102,10 @@ FD_QuickBuy.showPanel = function(deptId, catId, prdId) {
 		
 		if (isWineDept) {
 			YAHOO.util.Dom.addClass(ctPanel.header, 'hd_bg_wine');
-			YAHOO.util.Dom.addClass( FD_QuickBuy._nextSibling(ctPanel.body), 'container-close_wine' );
+			YAHOO.util.Dom.addClass( FD_QuickBuy._getCloseButton(ctPanel.body), 'container-close_wine' );
 		} else {
 			YAHOO.util.Dom.addClass(ctPanel.header, 'hd_bg_normal');
-			YAHOO.util.Dom.addClass( FD_QuickBuy._nextSibling(ctPanel.body), 'container-close_normal' );
+			YAHOO.util.Dom.addClass( FD_QuickBuy._getCloseButton(ctPanel.body), 'container-close_normal' );
 		}
 		
 		ctPanel.hideEvent.subscribe(function(e){
@@ -223,6 +224,7 @@ FD_QuickBuy.decorate = function(hotspot, btn, prd) {
 	//
 	var __panel = FD_QuickBuy.showPanel(prd.departmentId, prd.categoryId, prd.productId);
 
+	var k;
 	for (k in __btns) {
 		__btn = YAHOO.util.Dom.get(__btns[k]);
 		if (null != __btn) {

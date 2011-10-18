@@ -96,7 +96,7 @@ String productPage = prodPageLayout.getLayoutPath();
 		
 </TR>
 </TABLE>
-<script language="JavaScript" src="/assets/javascript/quickshop.js"></script>
+<fd:javascript src="/assets/javascript/quickshop.js"/>
 </tmpl:put>
 
 </tmpl:insert>

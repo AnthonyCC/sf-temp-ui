@@ -44,13 +44,17 @@
 <html>
 <head>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
-	<script language="javascript" src="/assets/javascript/common_javascript.js"></script>
+
+	<fd:javascript src="/assets/javascript/common_javascript.js"/>
+
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<%@ include file="/shared/template/includes/ccl.jspf" %>
 	<%
 	if (FDStoreProperties.isAnnotationMode()) {
 		%>
-		<script language="JavaScript" src="/assets/javascript/overlib_mini.js"></script>
+
+		<fd:javascript src="/assets/javascript/overlib_mini.js"/>
+
 		<%
 	}
 	%>

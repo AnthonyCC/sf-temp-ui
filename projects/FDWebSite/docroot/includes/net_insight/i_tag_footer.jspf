@@ -1,3 +1,4 @@
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%
@@ -7,7 +8,7 @@
 %>
 	<!-- BEGIN: Unica Page Tag -->
 	<!-- Copyright 2004-2008 Unica Corporation. All rights reserved. -->
-	<script language="JavaScript" src="/assets/javascript/ntpagetag.js"></script>
+	<fd:javascript src="/assets/javascript/ntpagetag.js"/>
 	<noscript>
 		<img src="/media_stat/images/tag/ntpagetag.gif?js=0" height="1" width="1" border="0" hspace="0"	vspace="0" alt="">
 	</noscript>

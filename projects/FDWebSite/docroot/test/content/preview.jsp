@@ -28,7 +28,7 @@ params.put("baseUrl", "");
 <html>
 	<head>
 	    
-	    <link rel="stylesheet" href="/assets/css/pc_ie.css" type="text/css"/>
+	    <fd:css href="/assets/css/pc_ie.css"/>
 	</head>
 	<body>
 		<fd:IncludeMedia name            = "<%=templatePath%>"

@@ -39,7 +39,7 @@ final int W_NO_RIGHTNAV_RIGHT = 806;
 	if (FDStoreProperties.isAnnotationMode()) {
 %>
 	<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
-	<script language="JavaScript" src="/assets/javascript/overlib_mini.js"></script>
+	<fd:javascript src="/assets/javascript/overlib_mini.js"/>
 <%	} %>
 <%@ include file="/common/template/includes/globalnav.jspf" %> 
 <CENTER CLASS="text10">

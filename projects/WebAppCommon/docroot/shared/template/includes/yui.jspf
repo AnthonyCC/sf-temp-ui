@@ -1,143 +1,62 @@
-<%--
-
-  YUI include
-
---%><%@ page import='com.freshdirect.fdstore.FDStoreProperties'
-%><%
-	if (request.getAttribute("__yui_included__") == null) {
-%><!-- YUI includes START -->
-<link rel="stylesheet" href="/assets/yui/container/assets/container.css" type="text/css">
+<%@ taglib uri='freshdirect' prefix='fd'%>
 <%
-			if (request.getAttribute("__yui_load_calendar__") != null) {
+if (request.getAttribute("__yui_included__") == null) {
 %>
-<link rel="stylesheet" type="text/css" href="/assets/yui/calendar/assets/skins/sam/calendar.css">
+<fd:css href="/assets/yui/container/assets/container.css" />
 <%
-			}
-			if (request.getAttribute("__yui_load_autocomplete__") != null) {
-	%>
-	<link rel="stylesheet" type="text/css" href="/assets/yui/autocomplete/assets/skins/sam/autocomplete.css">
-	<%
-				}
-			if (request.getAttribute("__yui_load_carousel__") != null) {
-				%>
-				<link rel="stylesheet" type="text/css" href="/assets/yui/carousel/assets/carousel-core.css">
-				<%
-							}
-		if (FDStoreProperties.isCclAjaxDebugClient()) {
-			/*
-			 * Debug libs
-			 */
+	if (request.getAttribute("__yui_load_calendar__") != null) {
 %>
-<script type="text/javascript" src="/assets/yui/yahoo/yahoo.js"></script>
-<script type="text/javascript" src="/assets/yui/event/event.js"></script>
-<script type="text/javascript" src="/assets/yui/dom/dom.js"></script>
-<script type="text/javascript" src="/assets/yui/event-mouseenter/event-mouseenter.js"></script>
-<script type="text/javascript" src="/assets/yui/connection/connection.js"></script>
-<script type="text/javascript" src="/assets/yui/animation/animation.js"></script>
-<script type="text/javascript" src="/assets/yui/dragdrop/dragdrop.js"></script>
-<script type="text/javascript" src="/assets/yui/utilities/utilities.js"></script>
-<script type="text/javascript" src="/assets/yui/container/container.js"></script>
-<script type="text/javascript" src="/assets/yui/json/json.js"></script>
-<script type="text/javascript" src="/assets/yui/datasource/datasource.js"></script>
+<fd:css href="/assets/yui/calendar/assets/skins/sam/calendar.css" />
 <%
-			if (request.getAttribute("__yui_load_carousel__") != null || request.getAttribute("__yui_load_selector__") != null) {
-				/* Include YUI Selector API */
-%><script type="text/javascript" src="/assets/yui/selector/selector.js"></script>
-<%
-			}
-			if (request.getAttribute("__yui_load_buttons__") != null) {
-				/* Include buttons API */
-%><script type="text/javascript" src="/assets/yui/element/element-min.js"></script> 
-<script type="text/javascript" src="/assets/yui/button/button-min.js"></script>
-<%
-			}
-			if (request.getAttribute("__yui_load_dispatcher__") != null) {
-				/* Include Bubbling's dispatcher plugin */
-%><script type="text/javascript" src="/assets/yui/dispatcher/dispatcher.js"></script>
-<%
-			}
-			if (request.getAttribute("__yui_load_calendar__") != null) {
-				/* Include YUI Selector API */
-%><script type="text/javascript" src="/assets/yui/calendar/calendar.js"></script>
-<%
-			}
-			if (request.getAttribute("__yui_load_autocomplete__") != null) {
-				/* Include YUI Autocomplete API */
-%><script type="text/javascript" src="/assets/yui/autocomplete/autocomplete.js"></script>
-<%
-			}
-			if (request.getAttribute("__yui_load_carousel__") != null) {
-				/* Include YUI Autocomplete API */
-%><script type="text/javascript" src="/assets/yui/carousel/carousel.js"></script>
-<%
-			}
-			if (request.getAttribute("__yui_animation__") != null) {
-				/* Include YUI Autocomplete API */
-%><script type="text/javascript" src="/assets/yui/animation/animation.js"></script>
-<%
-			}
-		} else {
-			/*
-			 * Production libs
-			 */
-%>
-<script type="text/javascript" src="/assets/yui/yahoo/yahoo-min.js"></script>
-<script type="text/javascript" src="/assets/yui/event/event-min.js"></script>
-<script type="text/javascript" src="/assets/yui/dom/dom-min.js"></script>
-<script type="text/javascript" src="/assets/yui/event-mouseenter/event-mouseenter-min.js"></script>
-<script type="text/javascript" src="/assets/yui/connection/connection-min.js"></script>
-<script type="text/javascript" src="/assets/yui/animation/animation-min.js"></script>
-<script type="text/javascript" src="/assets/yui/dragdrop/dragdrop-min.js"></script>
-<script type="text/javascript" src="/assets/yui/utilities/utilities.js"></script>
-<script type="text/javascript" src="/assets/yui/container/container-min.js"></script>
-<script type="text/javascript" src="/assets/yui/json/json-min.js"></script>
-<script type="text/javascript" src="/assets/yui/datasource/datasource-min.js"></script>
-<%
-			if (request.getAttribute("__yui_load_carousel__") != null || request.getAttribute("__yui_load_selector__") != null) {
-				/* Include YUI Selector API */
-%><script type="text/javascript" src="/assets/yui/selector/selector-min.js"></script>
-<%
-			}
-			if (request.getAttribute("__yui_load_buttons__") != null) {
-				/* Include buttons API */
-%><script type="text/javascript" src="/assets/yui/element/element-min.js"></script> 
-<script type="text/javascript" src="/assets/yui/button/button-min.js"></script>
-<%
-			}
-			if (request.getAttribute("__yui_load_dispatcher__") != null) {
-				/* Include Bubbling's dispatcher plugin */
-%><script type="text/javascript" src="/assets/yui/dispatcher/dispatcher-min.js"></script> 
-<%
-			}
-			if (request.getAttribute("__yui_load_calendar__") != null) {
-				/* Include YUI Calendar API */
-%><script type="text/javascript" src="/assets/yui/calendar/calendar-min.js"></script>
-<%
-			}
-			if (request.getAttribute("__yui_load_autocomplete__") != null) {
-				/* Include YUI Autocomplete API */
-%><script type="text/javascript" src="/assets/yui/autocomplete/autocomplete-min.js"></script>
-<%
-			}
-			if (request.getAttribute("__yui_load_carousel__") != null) {
-				/* Include YUI Autocomplete API */
-%><script type="text/javascript" src="/assets/yui/carousel/carousel-min.js"></script>
-<%
-			}
-			if (request.getAttribute("__yui_animation__") != null) {
-				/* Include YUI Autocomplete API */
-%><script type="text/javascript" src="/assets/yui/animation/animation-min.js"></script>
-<%
-			}
-		}
-
-
-		// ------------------------ //
-
-%>
-<script type="text/javascript" src="/assets/yui/yahoo-dom-event/yahoo-dom-event.js"></script>
-<!-- YUI includes END -->
-<%
-		request.setAttribute("__yui_included__", Boolean.TRUE);
 	}
+	if (request.getAttribute("__yui_load_autocomplete__") != null) {
+%>
+<fd:css href="/assets/yui/autocomplete/assets/skins/sam/autocomplete.css"/>
+<%
+	}
+%>
+<fd:css href="/assets/yui/carousel/assets/carousel-core.css"/>
+
+<fd:javascript src="/assets/yui/yahoo/yahoo.js" />
+<fd:javascript src="/assets/yui/yahoo-dom-event/yahoo-dom-event.js" />
+<fd:javascript src="/assets/yui/event/event.js" />
+<fd:javascript src="/assets/yui/dom/dom.js" />
+<fd:javascript src="/assets/yui/event-mouseenter/event-mouseenter.js" />
+<fd:javascript src="/assets/yui/connection/connection.js" />
+<fd:javascript src="/assets/yui/animation/animation.js" />
+<fd:javascript src="/assets/yui/dragdrop/dragdrop.js" />
+<fd:javascript src="/assets/yui/utilities/utilities.js" />
+<fd:javascript src="/assets/yui/container/container.js" />
+<fd:javascript src="/assets/yui/json/json.js" />
+<fd:javascript src="/assets/yui/datasource/datasource.js" />
+<fd:javascript src="/assets/yui/carousel/carousel.js" />
+<fd:javascript src="/assets/javascript/carousel.js" />
+<%
+	if (request.getAttribute("__yui_load_selector__") != null) {
+%><fd:javascript src="/assets/yui/selector/selector.js" />
+<%
+	}
+	if (request.getAttribute("__yui_load_buttons__") != null) {
+%><fd:javascript src="/assets/yui/element/element.js" />
+<fd:javascript src="/assets/yui/button/button.js" />
+<%
+	}
+	if (request.getAttribute("__yui_load_dispatcher__") != null) {
+%><fd:javascript src="/assets/yui/dispatcher/dispatcher.js" />
+<%
+	}
+	if (request.getAttribute("__yui_load_calendar__") != null) {
+%><fd:javascript src="/assets/yui/calendar/calendar.js" />
+<%
+	}
+	if (request.getAttribute("__yui_load_autocomplete__") != null) {
+%><fd:javascript src="/assets/yui/autocomplete/autocomplete.js" />
+<%
+	}
+	if (request.getAttribute("__yui_animation__") != null) {
+%><fd:javascript src="/assets/yui/animation/animation.js" />
+<%
+	}
+	request.setAttribute("__yui_included__", Boolean.TRUE);
+}
 %>

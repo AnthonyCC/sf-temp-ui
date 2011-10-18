@@ -276,7 +276,7 @@
 <head>
 <title>CMS - TEST DATA GENERATOR</title>
 
-<script language="javascript" src="/assets/javascript/common_javascript.js"></script>
+<fd:javascript src="/assets/javascript/common_javascript.js"/>
 
 <script type="text/javascript">
 

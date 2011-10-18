@@ -1,3 +1,4 @@
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='java.util.Random' %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.Calendar" %>
@@ -28,7 +29,7 @@
 			border: 1px solid #aaa;
 		}
 	</style>
-	<script src="/assets/javascript/prototype.js" type="text/javascript" language="javascript"></script>
+	<fd:javascript src="/assets/javascript/prototype.js"/>
 
 	<script type="text/javascript">
 		function deptsObj() {
@@ -50,7 +51,7 @@
 						console.log(timeNow+' Log: '+logMsg);
 					}
 				}
-			}
+			};
 
 			this.deptList = new Array(0);
 
@@ -62,7 +63,7 @@
 				this.log("added dept", this.deptList[deptId][0]);
 				
 				this.log("added dept", deptId, name);
-			}
+			};
 
 			this.addCatToDept = function (deptId, catId, name) {
 				if (!this.deptList[deptId]) {
@@ -75,7 +76,7 @@
 					this.deptList[deptId][1][catId] = name;
 				}
 				this.log("addCatToDept", deptId, catId, name);
-			}
+			};
 			
 			this.getDepts = function() {
 				var deptList = new Array();
@@ -86,7 +87,7 @@
 				console.log(deptList);
 
 				return deptList;
-			}
+			};
 
 			this.getCatsFromDept = function(deptId) {
 				if (this.deptList[deptId]) {
@@ -105,7 +106,7 @@
 				}
 
 				return catList;
-			}
+			};
 
 			this.populateDeptList = function (deptListId) {
 				var deptList = this.getDepts();
@@ -129,7 +130,7 @@
 				for (i=0; i < optTexts.length; i++) {
 					$(deptListId).options[$(deptListId).options.length] = new Option(optTexts[i], optValues[i]);
 				}
-			}
+			};
 
 			this.populateCatList = function (catListId, deptListId) {
 
@@ -159,7 +160,7 @@
 				for (i=0; i < optTexts.length; i++) {
 					$(catListId).options[$(catListId).options.length] = new Option(optTexts[i], optValues[i]);
 				}
-			}
+			};
 
 		}
 		window['depts'] = new deptsObj();
@@ -509,7 +510,7 @@
 	<script type="text/javascript">
 	<!--
 		depts.populateDeptList("deptList");
-		depts.populateCatList('catList', 'deptList')
+		depts.populateCatList('catList', 'deptList');
 	//-->
 	</script>
 

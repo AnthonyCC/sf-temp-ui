@@ -21,7 +21,8 @@ RequestUtil.appendToAttribute(request,"windowOnBeforeUnload","FormChangeUtil.war
 %>
 
 
-<script language="javascript" src="/assets/javascript/grocery_product.js"></script>
+<fd:javascript src="/assets/javascript/grocery_product.js"/>
+
 <script language="javascript">
 function doSort(sortBy){
 document.qs_cart.sortBy.value=sortBy;

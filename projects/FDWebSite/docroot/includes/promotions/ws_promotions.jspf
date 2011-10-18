@@ -9,7 +9,8 @@
 
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri="crm" prefix="crm" %>
-<link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<fd:css href="/ccassets/css/crm.css"/>
 <style type="text/css">
 </style>
 <script>

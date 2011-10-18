@@ -23,7 +23,7 @@ final int W_QUICKSHOP_INDEX_TOTAL = 755;
 <fd:SmartSavingsUpdate promoConflictMode="false"/>
 <tmpl:insert template='/common/template/quick_shop.jsp'>
 	<tmpl:put name='title' direct='true'>FreshDirect - Quickshop</tmpl:put>
-	<tmpl:put name="head"><link href="/assets/css/fix.css" rel="stylesheet" type="text/css" /></tmpl:put>
+	<tmpl:put name="head"><fd:css href="/assets/css/fix.css"/></tmpl:put>
 	<tmpl:put name='content' direct='true'>
 					
 <%

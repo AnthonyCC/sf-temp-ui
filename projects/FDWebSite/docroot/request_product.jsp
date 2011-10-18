@@ -44,7 +44,7 @@
 
 
 <%@ include file="/includes/search/brandautocomplete.jspf" %>
-<script src="/assets/javascript/prototype.js" type="text/javascript" language="javascript"></script>
+<fd:javascript src="/assets/javascript/prototype.js"/>
 <script type="text/javascript">
 
 	function deptsObj() {

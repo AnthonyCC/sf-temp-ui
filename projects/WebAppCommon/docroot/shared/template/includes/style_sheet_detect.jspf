@@ -4,37 +4,38 @@
 <%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
   <% if (FDStoreProperties.isFlushOscache()) { %><oscache:flush/><% } %>
   <%-- globalnav header, footer --%>
-  <link rel="stylesheet" href="/assets/css/common/globalnav.css" type="text/css" />
-  <link rel="stylesheet" href="/assets/css/common/footer.css" type="text/css" />
-  <link rel="stylesheet" href="/assets/css/common/freshdirect.css" type="text/css" />
+
+  <fd:css href="/assets/css/common/globalnav.css"/>
+  <fd:css href="/assets/css/common/footer.css"/>
+  <fd:css href="/assets/css/common/freshdirect.css"/>
 
   <%-- IE + IE6 fixes --%>
   <!--[if IE]>
-  <link rel="stylesheet" href="/assets/css/common/footer.ie.css" type="text/css" />
+  <fd:css href="/assets/css/common/footer.ie.css"/>
   <![endif]-->
   <!--[if lte IE 6]>
-  <link rel="stylesheet" href="/assets/css/common/globalnav.ie6.css" type="text/css" />
+  <fd:css href="/assets/css/common/globalnav.ie6.css"/>
   <![endif]-->
 
   <%-- old css files --%>
-	<link rel="stylesheet" href="/assets/css/modalbox.css" type="text/css" />
-	<link rel="stylesheet" href="/assets/css/global.css" type="text/css" />
+  	<fd:css href="/assets/css/modalbox.css"/>
+	<fd:css href="/assets/css/global.css" />
 	<%
 	if (request.getHeader("User-Agent").indexOf("Mac") > -1) {
-	%><link rel="stylesheet" href="/assets/css/mac_ie.css" type="text/css" /><%
+	%><fd:css href="/assets/css/mac_ie.css"/><%
 	} else {
-	%><link rel="stylesheet" href="/assets/css/pc_ie.css" type="text/css" /><%
+	%><fd:css href="/assets/css/pc_ie.css"/><%
 	}
 	%>
-	<link href="/assets/css/carousel.css" rel="stylesheet" type="text/css" />	
+	<fd:css href="/assets/css/carousel.css"/>	
 	<!--[if lte IE 6]>
-	<link rel="stylesheet" href="/assets/css/pngfix_ie6.css" type="text/css">
+	<fd:css href="/assets/css/pngfix_ie6.css"/>
 	<![endif]--> 
-	<link href="/assets/css/wine.css" rel="stylesheet" type="text/css" />
+	<fd:css href="/assets/css/wine.css"/>
 	<!--[if lte IE 7]>
-	<link rel="stylesheet" href="/assets/css/wine-ie.css" type="text/css">
+	<fd:css href="/assets/css/wine-ie.css"/>
 	<![endif]-->
-	<link href="/assets/css/4mm.css" rel="stylesheet" type="text/css" />
-	<link href="/assets/css/quickbuy.css" rel="stylesheet" type="text/css" />
+	<fd:css href="/assets/css/4mm.css"/>
+	<fd:css href="/assets/css/quickbuy.css"/>
 	<%-- Keep the media include last, so it can always override any css auto-loaded --%>
 	<fd:IncludeMedia name="/media/editorial/site_pages/stylesheet.html" />

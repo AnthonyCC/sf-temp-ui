@@ -1,3 +1,4 @@
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%
 	/*
@@ -895,7 +896,7 @@
 		successPage = "/grocery_cart_confirm.jsp?catId="+catId;
 
 		//javascript required for transactional
-		%><script type="text/javascript" src="/assets/javascript/pricing.js"></script><%
+		%><fd:javascript src="/assets/javascript/pricing.js"/><%
 
 		//set media path base
 		mediaPathTempBase=dyn_mediaPath;

@@ -251,7 +251,7 @@ private static Category  LOGGER = LoggerFactory.getInstance("group.jsp");
 	<tmpl:put name='content' direct='true'>
 		<%-- PRICING PART --%>
 			<%-- javascript required for transactional --%>
-			<script type="text/javascript" src="/assets/javascript/pricing.js"></script>
+			<fd:javascript src="/assets/javascript/pricing.js"/>
 			<script type="text/javascript">
 				<%-- javascript required for "grocery" behavior --%>
 				function selectProduct(locationURL,qtyFldName) {

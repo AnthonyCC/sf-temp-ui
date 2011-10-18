@@ -21,36 +21,25 @@ final int W_SEARCH_NAV_RIGHT = 820;
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
   <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	<link rel="stylesheet" href="/assets/yui/container/assets/container.css" type="text/css">
-	<link rel="stylesheet" href="/assets/css/ccl.css" type="text/css">
+	<fd:css href="/assets/css/ccl.css"/>
 
 <%
 final String trk = "srch"; // tracking code
 String criteria = request.getParameter("searchParams");
-
-
-if (FDStoreProperties.isCclAjaxDebugClient()) { 
-	// debug JS libs
 %>
-<script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>
-<%
-} else {
-	// production JS libs
-%>
-<script type="text/javascript" src="/assets/javascript/rounded_corners-min.js"></script>
-<%
-}
-%>
+<fd:javascript src="/assets/javascript/rounded_corners.inc.js"/>
 <%@ include file="/includes/search/autocomplete.jspf" %>
 </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
 <%@ include file="/common/template/includes/globalnav.jspf" %> 
 <CENTER CLASS="text10">
 <TABLE WIDTH="<%=W_SEARCH_NAV_TOTAL%>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+
 <TR>
 	<td width="<%=W_SEARCH_NAV_TOTAL%>" COLSPAN="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0" alt=""></td>
 </TR>
 <TR>
+
 	<TD WIDTH="<%=W_SEARCH_NAV_TOTAL%>" COLSPAN="2">
 		<form name="adv_search" id="adv_search" method="GET">
 		<table width="<%=W_SEARCH_NAV_TOTAL%>" cellpadding="0" cellspacing="0">

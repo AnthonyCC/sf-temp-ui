@@ -1,0 +1,11 @@
+Jul 13, 2011
+
+Each .js and .css file must have a corresponding -min.js and -min.css file.
+I used YUI Compressor tool to create the minified versions of the original files.
+Most of the .js files have corresponding -min.js counterpart. I left these files as is.
+Some .js files don't have their minified counterparts but they're already minified. I simply copied these files.
+All .css files miss their -min.css counterparts. I created these files manually using the YUI Compressor.
+
+!!! Note, if you don't make the -min version of the files then the site will be corrupt !!!
+
+Csongor Somogyi (csongor@euedge.com)

@@ -1,3 +1,4 @@
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
    "http://www.w3.org/TR/html4/loose.dtd">
 
@@ -7,7 +8,7 @@
     <title>DOM Onloaded Test</title>
     <meta name="generator" content="TextMate http://macromates.com/">
     <meta name="author" content="Sebestyén Gábor">
-    <script  type="text/javascript" src="/assets/javascript/common_javascript.js"></script>
+    <fd:javascript src="/assets/javascript/common_javascript.js"/>
     <!-- Date: 2007-12-21 -->
     <script type="text/javascript">
         document.onDocumentLoaded = function() {

@@ -15,9 +15,9 @@ final int W_NO_NAV_TOTAL = 970;
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<% if (request.getRequestURI().contains("/myfd")) { %>
-	<script type="text/javascript" language="javascript" src="/assets/javascript/cufon-yui.js"></script>
-	<script type="text/javascript" language="javascript" src="/assets/javascript/EagleCufon.font.js"></script>
-	<script type="text/javascript" language="javascript" src="/assets/javascript/EagleCufonBold.font.js"></script>
+	<fd:javascript src="/assets/javascript/cufon-yui.js"/>
+	<fd:javascript src="/assets/javascript/EagleCufon.font.js"/>
+	<fd:javascript src="/assets/javascript/EagleCufonBold.font.js"/>
 	<script type="text/javascript" language="javascript">
 		Cufon.replace('.myfd-header-text', { fontFamily: 'EagleCufonBold' });
 		Cufon.replace('.myfd-category a', { fontFamily: 'EagleCufon' });
@@ -28,8 +28,8 @@ final int W_NO_NAV_TOTAL = 970;
 	<% } %>
   <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	<link rel="stylesheet" href="/assets/css/giftcards.css" type="text/css">
-	<link rel="stylesheet" type="text/css" href="/assets/css/timeslots.css"/>
+	<fd:css href="/assets/css/giftcards.css"/>
+	<fd:css href="/assets/css/timeslots.css"/>
 	<%@ include file="/shared/template/includes/ccl.jspf" %>
 <%		
     {

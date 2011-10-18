@@ -517,6 +517,53 @@
 		<JSMin file="${basedir}/${projects.dir}/Media/docroot/assets/javascript/pricing.js" tofile="${basedir}/${projects.dir}/Media/docroot/assets/javascript/pricing-min.js"/>
 		<JSMin file="${basedir}/${projects.dir}/Media/docroot/assets/javascript/wine.js" tofile="${basedir}/${projects.dir}/Media/docroot/assets/javascript/wine-min.js"/>
 	</target>
+	
+	<target name="minify" description="Minifying script files" depends="minify-js, minify-css">
+	</target>
+	
+	<target name="minify-js" depends="minify-clean-js,bundle">
+		<apply executable="java" dest="${basedir}/${projects.dir}/Media/docroot/assets/javascript/" parallel="false" failonerror="true">
+			<fileset dir="${basedir}/${projects.dir}/Media/docroot/assets/javascript/" includes="*.js"/>
+			<arg line="-jar"/>
+			<arg path="${thirdparty.home}/yuicompressor-2.4.6-patched.jar"/>
+			<arg line="--nomunge"/>
+			<srcfile/>
+			<arg line="-o"/>
+			<mapper type="glob" from="*.js" to="*-min.js"/>
+			<targetfile/>
+		</apply>
+	</target>	
+
+	<target name="minify-clean-js">
+		<delete verbose="true">
+			<fileset dir="${basedir}/${projects.dir}/Media/docroot/assets/javascript/" includes="*-min.js"/>
+		</delete>
+	</target>
+
+	<target name="minify-css" depends="minify-clean-css,bundle">
+		<apply executable="java" dest="${basedir}/${projects.dir}/Media/docroot/assets/css/" parallel="false" failonerror="true">
+			<fileset dir="${basedir}/${projects.dir}/Media/docroot/assets/css/" includes="*.css"/>
+			<arg line="-jar"/>
+			<arg path="${thirdparty.home}/yuicompressor-2.4.6-patched.jar"/>
+			<arg line="--line-break 0"/>
+			<srcfile/>
+			<arg line="-o"/>
+			<mapper type="glob" from="*.css" to="*-min.css"/>
+			<targetfile/>
+		</apply>
+	</target>	
+
+	<target name="minify-clean-css">
+		<delete verbose="true">
+			<fileset dir="${basedir}/${projects.dir}/Media/docroot/assets/css/" includes="*-min.css"/>
+		</delete>
+	</target>
+
+	<target name="minify-clean" depends="minify-clean-css,minify-clean-js">
+	</target>
+	
+	<target name="bundle" description="Make a bundle of the JavaScripts/CSS files">
+	</target>
 
 	<target name="test" depends="tests_compile" description="Run unit tests">
 
@@ -1494,7 +1541,7 @@
 			classpathref="cms.classpath"/>
 	</target>
 
-	<target name="fdstore" description="Build FDStore">
+	<target name="fdstore" description="Build FDStore" depends="buildver-compile-time">
 		<path id="fdstore.classpath">
 			<pathelement location="${work.dir}/Framework.jar"/>
 			<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
@@ -1506,6 +1553,18 @@
 		<makeEjbProject
 			project="FDStore"
 			classpathref="fdstore.classpath"/>
+	</target>
+	
+	<target name="buildver-compile-time">
+		<delete file="${basedir}/${projects.dir}/FDStore/src/com/freshdirect/fdstore/util/BuildverCompileTime.java" verbose="true" />
+		<echo message="Generating Java source '${basedir}/${projects.dir}/FDStore/src/com/freshdirect/fdstore/util/BuildverCompileTime.java'"/>
+		<echo message="package com.freshdirect.fdstore.util;${line.separator}" file="${basedir}/${projects.dir}/FDStore/src/com/freshdirect/fdstore/util/BuildverCompileTime.java" append="true" />
+		<echo message="${line.separator}" file="${basedir}/${projects.dir}/FDStore/src/com/freshdirect/fdstore/util/BuildverCompileTime.java" append="true"/>
+		<echo message="public class BuildverCompileTime {${line.separator}" file="${basedir}/${projects.dir}/FDStore/src/com/freshdirect/fdstore/util/BuildverCompileTime.java" append="true"/>
+		<echo message="    public String getBuildver() {${line.separator}" file="${basedir}/${projects.dir}/FDStore/src/com/freshdirect/fdstore/util/BuildverCompileTime.java" append="true"/>
+		<echo message="        return &quot;${build.label}&quot;;${line.separator}" file="${basedir}/${projects.dir}/FDStore/src/com/freshdirect/fdstore/util/BuildverCompileTime.java" append="true"/>
+		<echo message="    }${line.separator}" file="${basedir}/${projects.dir}/FDStore/src/com/freshdirect/fdstore/util/BuildverCompileTime.java" append="true"/>
+		<echo message="}${line.separator}" file="${basedir}/${projects.dir}/FDStore/src/com/freshdirect/fdstore/util/BuildverCompileTime.java" append="true"/>
 	</target>
 
 	<target name="ocf" description="Build OCF">
@@ -2436,7 +2495,7 @@
 		<checkoutLatest dir="${projects.dir}/Media"/>
 	</target>
 
-	<target name="media-stat" depends="jsmin">
+	<target name="media-stat" depends="minify">
 		<mkdir dir="${release.dir}/media" />
 		<delete file="${release.dir}/media/media-stat.tar.gz"/>
 		<tar destfile="${release.dir}/media/media-stat.tar.gz" compression="gzip">

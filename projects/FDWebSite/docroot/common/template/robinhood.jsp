@@ -35,10 +35,10 @@ final int W_ROBINHOOD_TOTAL = 970;
 		Does robinhood need the GC js lib?
 			-batchley 20100827
 	--%>
-	<script  src="/assets/javascript/FD_GiftCards.js" type="text/javascript" language="javascript"></script>
+	<fd:javascript src="/assets/javascript/FD_GiftCards.js"/>
 
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	<link href="/assets/css/giftcards.css" rel="stylesheet" type="text/css" />
+	<fd:css href="/assets/css/giftcards.css"/>
 
 	<%@ include file="/shared/template/includes/ccl.jspf" %>
 

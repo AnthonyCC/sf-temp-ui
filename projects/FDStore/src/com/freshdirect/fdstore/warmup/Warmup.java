@@ -39,6 +39,7 @@ import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.fdstore.content.WineFilterPriceIndex;
 import com.freshdirect.fdstore.content.WineFilterRatingIndex;
 import com.freshdirect.fdstore.grp.FDGrpInfoManager;
+import com.freshdirect.fdstore.util.Buildver;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.service.CmsRecommenderRegistry;

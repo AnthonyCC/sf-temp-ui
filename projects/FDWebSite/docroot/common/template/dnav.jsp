@@ -17,12 +17,19 @@ final int W_DNAV_TOTAL = 970;
     <%@ include file="/common/template/includes/metatags.jspf" %>
 	<meta http-equiv="X-UA-Compatible" content="IE=8" />
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-	<script src="/assets/javascript/timeslots.js"  type="text/javascript" language="javascript"></script>
+
+	<fd:javascript src="/assets/javascript/timeslots.js"/>
   <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
   <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	<link rel="stylesheet" href="/assets/css/giftcards.css" type="text/css">
-  <link rel="stylesheet" type="text/css" href="/assets/css/timeslots.css"/>
-  <%@ include file="/shared/template/includes/ccl.jspf" %>
+	<fd:css href="/assets/css/giftcards.css"/>
+    <fd:css href="/assets/css/timeslots.css"/>
+	 <%
+		if ( (request.getRequestURI().indexOf("/your_account/giftcards.jsp")>-1) || (request.getRequestURI().indexOf("/your_account/gc_order_details.jsp")>-1) ) {
+			//do nothing
+		} else { %>
+			<%@ include file="/shared/template/includes/ccl.jspf" %>
+	<% } %>
+
 </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333" CLASS="yui-skin-sam">
 <%@ include file="/common/template/includes/globalnav.jspf" %> 

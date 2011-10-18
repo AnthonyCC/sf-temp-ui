@@ -111,7 +111,9 @@ request.setAttribute("listPos", "CategoryNote,SiteAccess");
 
     <%@ include file="/shared/template/includes/ccl.jspf" %>
 
-		<script src="/assets/javascript/swfobject.js" type="text/javascript"></script>
+
+		<fd:javascript src="/assets/javascript/swfobject.js"/>
+
 	</head>
 	<body>
 	

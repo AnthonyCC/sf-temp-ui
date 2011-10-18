@@ -5,10 +5,12 @@
 <%@page import="com.freshdirect.fdstore.content.SearchResults"%>
 <%@page import="com.freshdirect.fdstore.content.ContentSearch"%>
 <%@page import="com.freshdirect.fdstore.content.ContentSearchUtil"%>
-<%@page import="java.net.URLEncoder"%><html>
+<%@page import="java.net.URLEncoder"%>
+<%@ taglib uri='freshdirect' prefix='fd'%>
+<html>
 <head>
 	<title>Search Compare Page</title>
-	<link rel="stylesheet" type="text/css" href="config.css" />
+	<fd:css href="/test/search/config.css" />
 </head>
 <body>
 <%

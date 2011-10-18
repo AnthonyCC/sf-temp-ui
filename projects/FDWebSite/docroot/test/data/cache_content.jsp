@@ -8,6 +8,7 @@
 <%@page import="com.freshdirect.fdstore.FDProduct"%>
 <%@page import="com.freshdirect.fdstore.FDSku"%>
 <%@page import="com.freshdirect.fdstore.FDCachedFactory"%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%!
 	String format(Object x) {
     	if (x == null) {
@@ -39,7 +40,7 @@
 %>    
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="/test/search/config.css" />
+	<fd:css href="/test/search/config.css"/>
 	<title>Cache Content</title>
 </head>
 <body>

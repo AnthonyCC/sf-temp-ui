@@ -41,7 +41,7 @@ if(deptId!=null) {
 Collection sortedColl = (Collection) request.getAttribute("itemGrabberResult");
 if (sortedColl==null) sortedColl = new ArrayList();
 %>
-<script language="javascript" src="/assets/javascript/transac_multi_cat.js"></script>
+<fd:javascript src="/assets/javascript/transac_multi_cat.js"/>
 
 <%
 //**************************************************************

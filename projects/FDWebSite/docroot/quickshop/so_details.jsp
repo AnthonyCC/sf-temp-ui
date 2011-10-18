@@ -43,7 +43,7 @@
 	<tmpl:insert template='/common/template/quick_shop_nav.jsp'>
 		<tmpl:put name='title' direct='true'>FreshDirect - Quickshop - Standing Order</tmpl:put>
 	    <tmpl:put name='extrahead' direct='true'>
-			<link href="/assets/css/fix.css" rel="stylesheet" type="text/css" />
+			<fd:css href="/assets/css/fix.css"/>
 	    </tmpl:put>
 		<tmpl:put name='side_nav' direct='true'><font class="space4pix"><br/></font>
 			<a href="/quickshop/standing_orders.jsp" ><img src="/media_stat/images/template/quickshop/standingorders_catnav.gif" border="0" width="80" height="38"></a>
@@ -148,7 +148,7 @@
 	<tmpl:insert template='/common/template/quick_shop_nav.jsp'>
 		<tmpl:put name='title' direct='true'>FreshDirect - Quickshop - Standing Order</tmpl:put>
 	    <tmpl:put name='extrahead' direct='true'>
-			<link href="/assets/css/fix.css" rel="stylesheet" type="text/css" />
+			<fd:css href="/assets/css/fix.css"/>
 	    </tmpl:put>
 		<tmpl:put name='side_nav' direct='true'><font class="space4pix"><br/></font>
 			<a href="/quickshop/standing_orders.jsp" ><img src="/media_stat/images/template/quickshop/standingorders_catnav.gif" border="0" width="80" height="38"></a>

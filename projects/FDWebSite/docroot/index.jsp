@@ -16,7 +16,9 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 
-<link rel="stylesheet" href="/assets/css/homepage/homepage.css" type="text/css" />
+
+<fd:css href="/assets/css/homepage/homepage.css"/>
+
 	
 	
 <% //expanded page dimensions

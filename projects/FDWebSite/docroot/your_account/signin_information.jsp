@@ -16,7 +16,7 @@ final int W_YA_SIGNIN_INFO = 970;
 <tmpl:insert template='/common/template/dnav.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - User Name, Password, & Contact Info</tmpl:put>
     <tmpl:put name='content' direct='true'>
-<script type="text/javascript" src="/assets/javascript/phone_number.js"></script>
+<fd:javascript src="/assets/javascript/phone_number.js"/>
 
 <fd:RegistrationController actionName='<%=request.getParameter("actionName")%>' result='result'>
 

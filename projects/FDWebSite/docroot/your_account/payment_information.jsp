@@ -18,7 +18,7 @@ final int W_YA_PAYMENT_INFO_TOTAL = 970;
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 
 <%-- bring in the common javascript functions  --%>
-<script language="javascript" src="/assets/javascript/common_javascript.js"></script>
+<fd:javascript src="/assets/javascript/common_javascript.js"/>
 
 <% String actionName =  request.getParameter("actionName"); %>
 <tmpl:insert template='/common/template/dnav.jsp'>

@@ -28,9 +28,6 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 <%
 	String deptId=request.getParameter("deptId");
 	final boolean isIncludeDeptBottom = !"dai".equals(deptId) && !"gro".equals(deptId) && !"hba".equals(deptId) && !"fro".equals(deptId) && !"fdi".equals(deptId);
-	if ("usq".equals(deptId)) {
-		request.setAttribute("__yui_load_carousel__", Boolean.TRUE);
-	}
 %>
 
 <fd:CheckLoginStatus guestAllowed="true" />

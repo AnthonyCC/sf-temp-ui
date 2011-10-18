@@ -32,10 +32,10 @@ final int W_GIFTCARD_TOTAL = 970;
 
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-	<script  src="/assets/javascript/FD_GiftCards.js" type="text/javascript" language="javascript"></script>
+	<fd:javascript src="/assets/javascript/FD_GiftCards.js"/>
 
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	<link href="/assets/css/giftcards.css" rel="stylesheet" type="text/css" />
+	<fd:css href="/assets/css/giftcards.css"/>
 
 	<%-- NOT THIS INCLUDE @ include file="/shared/template/includes/ccl.jspf" --%>
 

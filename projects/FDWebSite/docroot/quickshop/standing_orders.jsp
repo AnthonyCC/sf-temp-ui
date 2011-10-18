@@ -22,8 +22,8 @@
 <tmpl:insert template='/common/template/quick_shop_nav.jsp'>
 
     <tmpl:put name='extrahead' direct='true'>
-        <script language="javascript" src="/assets/javascript/common_javascript.js"></script>
-		<link href="/assets/css/fix.css" rel="stylesheet" type="text/css" />
+        <fd:javascript src="/assets/javascript/common_javascript.js"/>
+		<fd:css href="/assets/css/fix.css"/>
     </tmpl:put>
 	<%-- PAGE TITLE --%>
 	<tmpl:put name='title' direct='true'>FreshDirect - Quickshop - Standing Orders</tmpl:put>

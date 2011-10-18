@@ -30,13 +30,7 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 	final ProductContainer productContainer = (currentFolder instanceof ProductContainer) ? (ProductContainer) currentFolder : null;
 	final CategoryModel categoryModel = (currentFolder instanceof CategoryModel) ? (CategoryModel) currentFolder : null;
 	if (categoryModel != null) {
-		
-		//deptId=((CategoryModel)currentFolder).getDepartment().getContentName();
-		//null check for orphaned cats
 		deptId = (((CategoryModel)currentFolder).getDepartment() != null) ? ((CategoryModel)currentFolder).getDepartment().getContentName() : "";
-	 	if ("usq".equals(deptId)) {
-			request.setAttribute("__yui_load_carousel__", Boolean.TRUE);
-		}
 	}
 	
 	

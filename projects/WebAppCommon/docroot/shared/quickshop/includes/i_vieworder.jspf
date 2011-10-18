@@ -68,7 +68,7 @@ final boolean isCCLorSO = QuickCart.PRODUCT_TYPE_CCL.equals(cartType) || QuickCa
 
 
 <script type="text/javascript">var numberOfOrderLines=<%= quickCartSize %>;</script> 
-<script type="text/javascript" src="/assets/javascript/quickshop.js"></script>
+<fd:javascript src="/assets/javascript/quickshop.js"/>
 <script type="text/javascript">var quant=<%= quickCartSize %>;</script> 
 <script type="text/javascript">
 function addQuantToLink(self,link, idx) {

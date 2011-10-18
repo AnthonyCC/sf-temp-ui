@@ -204,18 +204,8 @@ public class CarouselTag extends ContentNodeIteratorTag {
 		// carouselCall.append("");
 
 
-		carouselCall.append(");\n");
-		println("<script>\n" + 
-				"if (window.fd_carousel === undefined) {\n" +
-				"  YAHOO.util.Get.css('/assets/css/carousel.css');\n" +
-				"  YAHOO.util.Get.script('/assets/javascript/carousel.js', {\n" +
-				"    onSuccess: function() {\n" +
-				carouselCall +
-				"    }\n" +
-				"  });\n" +
-				"} else {\n" +
-				carouselCall +
-				"}\n</script>\n");
+		carouselCall.append(");");
+		println("<script>" + carouselCall + "</script>");
 	}
 
 	public static class TagEI extends TagExtraInfo {

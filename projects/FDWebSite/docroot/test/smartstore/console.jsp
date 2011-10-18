@@ -4,9 +4,10 @@
 <%@page import="java.io.PrintStream"%>
 <%@page import="java.io.ByteArrayOutputStream"%>
 <%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="/test/search/config.css" />
+	<fd:css href="/test/search/config.css"/>
 	<title>Console</title>
 </head>
 <body>

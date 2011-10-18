@@ -22,10 +22,11 @@
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession" %>
 <%@ page import="com.freshdirect.webapp.crm.security.CrmSecurityManager" %>
 <%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 
 <%-- include calendar setup/callbacks --%>
 
-<script type="text/javascript" language="javascript" src="/assets/javascript/promo.js"></script>
+<fd:javascript src="/assets/javascript/promo.js"/>
 <%
 	String snav_pageURI = request.getRequestURI();
 	boolean promo_ws_create = snav_pageURI.indexOf("/promo_ws_create.jsp") > -1;

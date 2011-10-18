@@ -18,9 +18,9 @@ final int W_CHECKOUT_NAV_TOTAL = 970;
     	<title><tmpl:get name='title'/></title>
 		<%@ include file="/common/template/includes/metatags.jspf" %>
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-		<script src="/assets/javascript/timeslots.js" type="text/javascript" language="javascript"></script>
+		<fd:javascript src="/assets/javascript/timeslots.js"/>
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-		<link href="/assets/css/timeslots.css" rel="stylesheet" type="text/css" />
+		<fd:css href="/assets/css/timeslots.css"/>
 		<%@ include file="/shared/template/includes/ccl.jspf" %>
 	</head>
 	

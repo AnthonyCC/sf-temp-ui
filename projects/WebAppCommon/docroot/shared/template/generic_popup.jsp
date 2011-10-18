@@ -52,7 +52,7 @@ if(windowSize.equalsIgnoreCase("custom")){
 <head>
 	<title> <%=name%></title>
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-		<script language="javascript" src="/assets/javascript/common_javascript.js"></script>
+		<fd:javascript src="/assets/javascript/common_javascript.js"/>
 </head>
 
 <body bgcolor="#ffffff" link="#336600" vlink="#336600" alink="#ff9900" text="#333333"  onLoad="window.focus()">

@@ -3,6 +3,7 @@
 /* author greg
 */
 %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='com.freshdirect.webapp.util.AutoCompleteFacade'%>
   
 <style type="text/css">
@@ -27,11 +28,11 @@
 	}
 </style>
  
-<script type="text/javascript" src="/assets/yui/yahoo-dom-event/yahoo-dom-event.js"></script> 
-<script type="text/javascript" src="/assets/yui/datasource/datasource-min.js"></script>
-<script type="text/javascript" src="/assets/yui/connection/connection-min.js"></script>
-<script type="text/javascript" src="/assets/yui/autocomplete/autocomplete-min.js"></script> 
-<script type="text/javascript" src="/assets/javascript/smsearch_autocomplete.js"></script>
+<fd:javascript src="/assets/yui/yahoo-dom-event/yahoo-dom-event.js"/> 
+<fd:javascript src="/assets/yui/datasource/datasource.js"/>
+<fd:javascript src="/assets/yui/connection/connection.js"/>
+<fd:javascript src="/assets/yui/autocomplete/autocomplete.js"/> 
+<fd:javascript src="/assets/javascript/smsearch_autocomplete.js"/>
 <script type="text/javascript">
 YAHOO.util.Event.onDOMReady(autoCompleteFunctionFactory());
 </script>

@@ -11,7 +11,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <head>
-	<link rel="stylesheet" type="text/css" href="config.css" />
+	<fd:css href="/test/search/config.css" />
 	<title>Category Scoring</title>
 </head>
 

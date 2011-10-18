@@ -19,23 +19,14 @@ final int W_NEW_PRODUCTS_NAV_TOTAL = 970;
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
   <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	<link rel="stylesheet" href="/assets/yui/container/assets/container.css" type="text/css">
-	<link rel="stylesheet" href="/assets/css/ccl.css" type="text/css">
+	<fd:css href="/assets/css/ccl.css"/>
 
 <%
 final String trk = "srch"; // tracking code
 String criteria = request.getParameter("searchParams");
 
-if (FDStoreProperties.isCclAjaxDebugClient()) { 
-	// debug JS libs
 %>
-	<script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>
-<%
-} else {
-	// production JS libs
-%>
-	<script type="text/javascript" src="/assets/javascript/rounded_corners-min.js"></script>
-<% } %>
+<fd:javascript src="/assets/javascript/rounded_corners.inc.js"/>
 <%@ include file="/includes/search/autocomplete.jspf" %>
 </head>
 <body bgcolor="#ffffff" link="#336600" vlink="#336600" alink="#ff9900" text="#333333">
@@ -49,6 +40,7 @@ if (FDStoreProperties.isCclAjaxDebugClient()) {
 	<tr>
 		<td width="<tmpl:get name='colLeftWidth'/>" align="center"><img src="/media_stat/images/layout/clear.gif" width="<tmpl:get name='colLeftWidth'/>" height="1" alt=""></td>
 		<td width="<tmpl:get name='colRightWidth'/>"><img src="/media_stat/images/layout/clear.gif" height="1" width="<tmpl:get name='colRightWidth'/>" border="0" alt=""></td>
+
 	</tr>
 	<tr>
 		<td width="<%=W_NEW_PRODUCTS_NAV_TOTAL%>" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0" alt=""></td>

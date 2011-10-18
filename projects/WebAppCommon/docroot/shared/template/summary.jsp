@@ -7,7 +7,7 @@
 <head>
     <title><tmpl:get name='title'/></title>
 	    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-        <script language="javascript" src="/assets/javascript/common_javascript.js"></script>
+        <fd:javascript src="/assets/javascript/common_javascript.js"/>
 </head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" onLoad="window.focus();" topmargin="10" marginheight="10">
 <center>

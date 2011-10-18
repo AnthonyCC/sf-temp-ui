@@ -18,8 +18,10 @@ final int W_DELIVERY_INFO_NAV_TOTAL = 970;
     <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<%@ include file="/shared/template/includes/ccl.jspf" %>
-	<script src="/assets/javascript/timeslots.js" type="text/javascript" language="javascript"></script>
-	<link href="/assets/css/timeslots.css" rel="stylesheet" type="text/css" />
+
+	<fd:javascript src="/assets/javascript/timeslots.js"/>
+	<fd:css href="/assets/css/timeslots.css"/>
+
 </head>
 <BODY bgcolor="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
 <%@ include file="/common/template/includes/globalnav.jspf" %>

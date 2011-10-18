@@ -44,7 +44,7 @@
 	@input parentVariantId String parent variant ID
 
 --%>
-<script type="text/javascript" src="/assets/javascript/pricing.js"></script>
+<fd:javascript src="/assets/javascript/pricing.js"/>
 <%
 {
 	// mandatory parameter

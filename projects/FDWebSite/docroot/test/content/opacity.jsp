@@ -31,17 +31,17 @@ BrowserInfo bi = new BrowserInfo(request);
 		padding-right: 1em;
 	}
 	</style>
-	<script type="text/javascript" src="/assets/javascript/common_javascript.js"></script>
+	<fd:javascript src="/assets/javascript/common_javascript.js"/>
 <%
 if (request.getHeader("User-Agent").indexOf("Mac") > -1) {
-%>	<link rel="stylesheet" href="/assets/css/mac_ie.css" type="text/css"><%
+%>	<fd:css href="/assets/css/mac_ie.css"/><%
 } else {
-%>	<link rel="stylesheet" href="/assets/css/pc_ie.css" type="text/css"><%
+%>	<fd:css href="/assets/css/pc_ie.css"/><%
 }
 %>
-	<link href="/assets/css/wine.css" rel="stylesheet" type="text/css">
+	<fd:css href="/assets/css/wine.css"/>
 	<!--[if lte IE 7]>
-	<link href="/assets/css/wine-ie.css" rel="stylesheet" type="text/css" />
+	<fd:css href="/assets/css/wine-ie.css"/>
 	<![endif]-->
 </head>
 <body>
