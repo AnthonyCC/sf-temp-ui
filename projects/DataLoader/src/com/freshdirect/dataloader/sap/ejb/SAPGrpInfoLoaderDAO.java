@@ -248,9 +248,11 @@ public class SAPGrpInfoLoaderDAO {
 			    ps.setInt(2, batchNumber);
 			    ps.setString(3, grpId);			    
 			    ps.setString(4, zoneModel.getZoneId());
-			    ps.setDouble(5, zoneModel.getQty());
+			    //ps.setDouble(5, zoneModel.getQty());
+			    ps.setBigDecimal(5, new java.math.BigDecimal(zoneModel.getQty()));
 			    ps.setString(6, zoneModel.getUnitOfMeasure());
-			    ps.setDouble(7,zoneModel.getPrice());
+			    //ps.setDouble(7,zoneModel.getPrice());
+			    ps.setBigDecimal(7,new java.math.BigDecimal(zoneModel.getPrice()));
 			    ps.setString(8,zoneModel.getScaleUnit());
 			    ps.addBatch();			    			    	    	     		    			    
 	    	  } 
