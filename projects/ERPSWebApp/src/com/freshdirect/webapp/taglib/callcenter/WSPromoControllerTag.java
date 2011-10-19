@@ -197,6 +197,15 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 						//Create a new WS Promotion.
 						FDPromotionNewModel promotion = constructPromotion(effectiveDate, startDateStr, endDateStr, zone, startTime, endTime, discount, redeemLimit);
 						postValidate(promotion, actionResult);
+						/*APPDEV-2004*/
+						List<FDPromoCustStrategyModel> custStrategies = promotion.getCustStrategies();
+						custStrategies = new ArrayList<FDPromoCustStrategyModel>();
+						FDPromoCustStrategyModel model = new FDPromoCustStrategyModel();
+						custStrategies.add(model);
+						promotion.setCustStrategies(custStrategies);						
+						String[] cohorts = request.getParameterValues("cohorts");
+						model.setCohorts(cohorts);
+						
 						if(actionResult.isSuccess()){
 							promotion.setStatus(EnumPromotionStatus.APPROVE);
 							promotion.setCreatedBy(agent.getUserId());
@@ -240,6 +249,12 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 						promotion.setModifiedDate(new Date());
 						updatePromotion(promotion, effectiveDate, startDateStr, endDateStr, zone, startTime, endTime, discount, redeemLimit);
 						postValidate(promotion, actionResult);
+						/*APPDEV-2004*/
+						List<FDPromoCustStrategyModel> custStrategies = promotion.getCustStrategies();
+						FDPromoCustStrategyModel model = custStrategies.get(0);
+						String[] cohorts = request.getParameterValues("cohorts");
+						model.setCohorts(cohorts);
+						
 						if(actionResult.isSuccess()){
 							promotion.setStatus(EnumPromotionStatus.APPROVE);
 							FDPromotionNewManager.storePromotion(promotion, true);

@@ -6,7 +6,7 @@
 <%@ page import="com.freshdirect.fdstore.promotion.*" %>
 <%@ page import="com.freshdirect.fdstore.promotion.management.*" %>
 <%@ page import="com.freshdirect.delivery.model.*" %>
-
+<%@ page import="com.freshdirect.smartstore.fdstore.VariantSelection" %>
 <%@page import="com.freshdirect.framework.util.NVL"%>
 <%@page import="com.freshdirect.webapp.util.CCFormatter"%>
 
@@ -448,6 +448,67 @@ function numbersonly(myfield, e, dec)
 						<input name="cancel" type="button" value=" CANCEL " class="submit" onclick="location.href('/promotion/promo_ws_view.jsp')" >	
 					</td>
 					
+				</tr>
+				
+				<tr>
+						<td class="promo_page_header_text">Edit&nbsp;Customer&nbsp;Requirement&nbsp;</td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"><div style="text-align: left;" class="fright">Smart Store cohort:<br />(match any)</div></td>
+					<td class="alignL vTop padL8R16">
+					<%
+					List cohortList = new ArrayList();
+					if(promotion != null) {
+						List<FDPromoCustStrategyModel> csms = promotion.getCustStrategies();
+						if(csms != null && csms.size() > 0) {
+							FDPromoCustStrategyModel csm = (FDPromoCustStrategyModel) csms.get(0);
+							if(csm != null && csm.getCohorts() != null) {
+								cohortList = Arrays.asList(csm.getCohorts());
+							}								
+						}
+					}
+					VariantSelection vs = VariantSelection.getInstance();
+					List<String> cohorts = vs.getCohortNames();
+					if(null != cohorts && !cohorts.isEmpty()){
+					%>
+						<table class="tableCollapse" id="edit_custreq_ssParent">
+						 <% for(int i=0;i<cohorts.size();i++){
+								String checked = "";
+								if(cohortList.isEmpty() || cohortList.size() == 0) {
+									if(!cohorts.get(i).equals("C3") && !cohorts.get(i).equals("C4")) {
+										checked = "checked";
+									}
+								} else {
+									if(cohortList.contains(cohorts.get(i))) {
+										checked = "checked";
+									}
+								}
+						  %>
+						  <%if(i%5 ==0){ %>
+						     <% if(i!=0){ %></tr>	<%} %>
+						  	<tr>
+								<td><input type="checkbox" id="cohorts" name="cohorts" value="<%= cohorts.get(i)%>" <%= checked %>/> <%= cohorts.get(i)%></td>
+													
+							<%} else { %>
+								<td><input type="checkbox" id="cohorts" name="cohorts" value="<%= cohorts.get(i)%>" <%= checked %>/> <%= cohorts.get(i)%></td>
+							<%} %>
+							<%} %>
+							<tr>
+								<td colspan="4" class="alignR">
+									<a href="#" onclick="selectAllCB('edit_custreq_ssParent'); return false;" class="greenLink">(Select All)</a>&nbsp;
+									<a href="#" onclick="selectNoneCB('edit_custreq_ssParent'); return false;" class="greenLink">(Select None)</a>
+								</td>
+							</tr>
+							<tr>
+								<%-- sets the column widths --%>
+								<td class="w75px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+								<td class="w75px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+								<td class="w75px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+								<td class="w75px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+							</tr>
+						</table>
+						<%} %>
+					</td>
 				</tr>
 															
 			</table>			
