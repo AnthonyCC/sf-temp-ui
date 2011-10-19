@@ -37,7 +37,7 @@ public interface ICrisisManagerService {
 	void clearCrisisMngBatch(String orderCrisisBatchId) throws RoutingServiceException;
 	
 	List<ICrisisManagerBatchOrder> getOrderByCriteria(Date deliveryDate, Date cutOffDateTime, String[] area
-			, Date startTime, Date endTime, String[] deliveryType, boolean isSOIncluded) throws RoutingServiceException;
+			, String startTime, String endTime, String[] deliveryType, boolean isSOIncluded) throws RoutingServiceException;
 	
 	Map<EnumSaleStatus, Integer> getOrderStatsByDate(Date deliveryDate, String batchId) throws RoutingServiceException;
 
@@ -47,7 +47,7 @@ public interface ICrisisManagerService {
 	
 	void updateCrisisMngOrderException(String orderCrisisBatchId, List<String> exceptionOrderIds) throws RoutingServiceException;
 	
-	List<ICrisisManagerBatchReservation> getReservationByCriteria(Date deliveryDate, Date cutOffDateTime, String[] area, Date startTime, Date endTime) throws RoutingServiceException;
+	List<ICrisisManagerBatchReservation> getReservationByCriteria(Date deliveryDate, Date cutOffDateTime, String[] area, String startTime, String endTime) throws RoutingServiceException;
 	
 	void addNewCrisisMngBatchReservation(List<ICrisisManagerBatchReservation> reservations) throws RoutingServiceException;
 	
@@ -71,7 +71,7 @@ public interface ICrisisManagerService {
 	
 	void clearCrisisMngBatchDeliverySlot(String batchId) throws RoutingServiceException;
 	
-	List<IStandingOrderModel> getStandingOrderByCriteria(Date deliveryDate,Date cutOffDateTime, String[] area, Date startTime, Date endTime, String[] deliveryType, boolean isSOIncluded) throws RoutingServiceException;
+	List<IStandingOrderModel> getStandingOrderByCriteria(Date deliveryDate,Date cutOffDateTime, String[] area, String startTime, String endTime, String[] deliveryType, boolean isSOIncluded) throws RoutingServiceException;
 	
 	void addNewCrisisMngBatchStandingOrder(List<IStandingOrderModel> soOrders) throws RoutingServiceException;
 	

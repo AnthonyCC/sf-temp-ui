@@ -51,8 +51,8 @@ public class CrisisManagerOrderInAction extends AbstractCrisisManagerAction {
 		    	List<ICrisisManagerBatchReservation> reservationList = proxy.getReservationByCriteria(CrisisManagerOrderInAction.this.getBatch().getDeliveryDate()
 																, CrisisManagerOrderInAction.this.getBatch().getCutOffDateTime()
 																, CrisisManagerOrderInAction.this.getBatch().getArea()
-																, CrisisManagerOrderInAction.this.getBatch().getStartTime()
-																, CrisisManagerOrderInAction.this.getBatch().getEndTime());
+																, RoutingDateUtil.getServerTime(CrisisManagerOrderInAction.this.getBatch().getStartTime())
+																, RoutingDateUtil.getServerTime(CrisisManagerOrderInAction.this.getBatch().getEndTime()));
 		    	
 		    	if(reservationList != null && reservationList.size() > 0){
 		    		for(ICrisisManagerBatchReservation rsvModel : reservationList) {
@@ -64,8 +64,8 @@ public class CrisisManagerOrderInAction extends AbstractCrisisManagerAction {
 		    	List<IStandingOrderModel> standingOrderLst = proxy.getStandingOrderByCriteria(CrisisManagerOrderInAction.this.getBatch().getDeliveryDate()
 																, CrisisManagerOrderInAction.this.getBatch().getCutOffDateTime()
 																, CrisisManagerOrderInAction.this.getBatch().getArea()
-																, CrisisManagerOrderInAction.this.getBatch().getStartTime()
-																, CrisisManagerOrderInAction.this.getBatch().getEndTime()
+																, RoutingDateUtil.getServerTime(CrisisManagerOrderInAction.this.getBatch().getStartTime())
+																, RoutingDateUtil.getServerTime(CrisisManagerOrderInAction.this.getBatch().getEndTime())
 																, CrisisManagerOrderInAction.this.getBatch().getDeliveryType()
 																, CrisisManagerOrderInAction.this.getBatch().isStandingOrderIncluded()
 															);
@@ -81,8 +81,8 @@ public class CrisisManagerOrderInAction extends AbstractCrisisManagerAction {
 		    		inputDataList = proxy.getOrderByCriteria(CrisisManagerOrderInAction.this.getBatch().getDeliveryDate()
 		    													, CrisisManagerOrderInAction.this.getBatch().getCutOffDateTime()
 		    													, CrisisManagerOrderInAction.this.getBatch().getArea()
-		    													, CrisisManagerOrderInAction.this.getBatch().getStartTime()
-		    													, CrisisManagerOrderInAction.this.getBatch().getEndTime()
+		    													, RoutingDateUtil.getServerTime(CrisisManagerOrderInAction.this.getBatch().getStartTime())
+																, RoutingDateUtil.getServerTime(CrisisManagerOrderInAction.this.getBatch().getEndTime())
 		    													, CrisisManagerOrderInAction.this.getBatch().getDeliveryType()
 		    													, CrisisManagerOrderInAction.this.getBatch().isStandingOrderIncluded()
 		    												);

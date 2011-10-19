@@ -444,7 +444,7 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 	}
 	
 	public List<ICrisisManagerBatchOrder> getOrderByCriteria(final Date deliveryDate, final Date cutOffDateTime
-			, final String[] area, final Date startTime, final Date endTime, final String[] deliveryType, boolean isSOIncluded) throws SQLException {
+			, final String[] area, final String startTime, final String endTime, final String[] deliveryType, boolean isSOIncluded) throws SQLException {
 		
 		final List<ICrisisManagerBatchOrder> result = new ArrayList<ICrisisManagerBatchOrder>();
 		
@@ -481,10 +481,10 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 			updateQ.append(" and to_char(di.cutofftime, 'HH:MI AM') = to_char(?, 'HH:MI AM')");
 		}
 		if(startTime != null){
-			updateQ.append(" and to_char(di.starttime, 'HH:MI AM') >= to_char(?, 'HH:MI AM')");
+			updateQ.append(" and to_date(to_char(di.starttime, 'HH:MI AM'),'HH:MI AM') >= to_date(?, 'HH:MI AM')");
 		}
 		if(endTime != null){
-			updateQ.append(" and to_char(di.endtime, 'HH:MI AM') <= to_char(?, 'HH:MI AM')");
+			updateQ.append(" and to_date(to_char(di.endtime, 'HH:MI AM'),'HH:MI AM') <= to_date(?, 'HH:MI AM')");
 		}
 		if(!isSOIncluded){
 			updateQ.append(" and s.standingorder_id is null ");
@@ -498,9 +498,12 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 						connection.prepareStatement(updateQ.toString());
 					ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
 					int paramIndex = 2;
-					if(cutOffDateTime != null) ps.setTimestamp(paramIndex++, new Timestamp(cutOffDateTime.getTime()));					
-					if(startTime != null) ps.setDate(paramIndex++, new java.sql.Date(startTime.getTime()));
-					if(endTime != null) ps.setDate(paramIndex++, new java.sql.Date(endTime.getTime()));
+					if(cutOffDateTime != null)
+							ps.setTimestamp(paramIndex++, new Timestamp(cutOffDateTime.getTime()));					
+					if(startTime != null)				
+							ps.setString(paramIndex++, startTime);						
+					if(endTime != null) 
+							ps.setString(paramIndex++, endTime);
 						
 					return ps;
 				}  
@@ -751,7 +754,8 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 		}
 	}
 	
-	public List<ICrisisManagerBatchReservation> getReservationByCriteria(final Date deliveryDate, final Date cutOffDateTime, String[] area, final Date startTime, final Date endTime) throws SQLException{
+	public List<ICrisisManagerBatchReservation> getReservationByCriteria(final Date deliveryDate, final Date cutOffDateTime
+			, String[] area, final String startTime, final String endTime) throws SQLException{
 		
 		final List<ICrisisManagerBatchReservation> result = new ArrayList<ICrisisManagerBatchReservation>();
 		
@@ -773,10 +777,10 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 			updateQ.append(" and to_char(ts.cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')");
 		}
 		if(startTime != null){
-			updateQ.append(" and to_char(ts.start_time, 'HH:MI AM') >= to_char(?, 'HH:MI AM')");
+			updateQ.append(" and to_date(to_char(ts.start_time, 'HH:MI AM'), 'HH:MI AM') >= to_date(?, 'HH:MI AM')");
 		}
 		if(endTime != null){
-			updateQ.append(" and to_char(ts.end_time, 'HH:MI AM') <= to_char(?, 'HH:MI AM')");
+			updateQ.append(" and to_date(to_char(ts.end_time, 'HH:MI AM'), 'HH:MI AM') <= to_date(?, 'HH:MI AM')");
 		}
 	
 		Connection connection = null;
@@ -792,10 +796,10 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 						ps.setTimestamp(paramIndex++, new Timestamp(cutOffDateTime.getTime()));
 					}
 					if(startTime != null) {
-						ps.setDate(paramIndex++, new java.sql.Date(startTime.getTime()));
+						ps.setString(paramIndex++, startTime);
 					}					
 					if(endTime != null) { 
-						ps.setDate(paramIndex++, new java.sql.Date(endTime.getTime())); 
+						ps.setString(paramIndex++, endTime); 
 					}
 						
 					return ps;
@@ -1210,7 +1214,7 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 	}
 	
 	public List<IStandingOrderModel> getStandingOrderByCriteria(final Date deliveryDate, final Date cutOffDateTime
-			, final String[] area, final Date startTime, final Date endTime, final String[] deliveryType, boolean isSOIncluded) throws SQLException {
+			, final String[] area, final String startTime, final String endTime, final String[] deliveryType, boolean isSOIncluded) throws SQLException {
 		
 		final List<IStandingOrderModel> result = new ArrayList<IStandingOrderModel>();
 		
@@ -1243,10 +1247,10 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 			updateQ.append(" and to_char(di.cutofftime, 'HH:MI AM') = to_char(?, 'HH:MI AM')");
 		}
 		if(startTime != null){
-			updateQ.append(" and to_char(di.starttime, 'HH:MI AM') >= to_char(?, 'HH:MI AM')");
+			updateQ.append(" and to_date(to_char(di.starttime, 'HH:MI AM'), 'HH:MI AM') >= to_date(?, 'HH:MI AM')");
 		}
 		if(endTime != null){
-			updateQ.append(" and to_char(di.endtime, 'HH:MI AM') <= to_char(?, 'HH:MI AM')");
+			updateQ.append(" and to_date(to_char(di.endtime, 'HH:MI AM'), 'HH:MI AM') <= to_date(?, 'HH:MI AM')");
 		}
 		if(!isSOIncluded){
 			updateQ.append(" and s.standingorder_id is null ");
@@ -1261,8 +1265,8 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 					ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
 					int paramIndex = 2;
 					if(cutOffDateTime != null) ps.setTimestamp(paramIndex++, new Timestamp(cutOffDateTime.getTime()));					
-					if(startTime != null) ps.setDate(paramIndex++, new java.sql.Date(startTime.getTime()));
-					if(endTime != null) ps.setDate(paramIndex++, new java.sql.Date(endTime.getTime()));
+					if(startTime != null) ps.setString(paramIndex++, startTime);
+					if(endTime != null) ps.setString(paramIndex++, endTime);
 						
 					return ps;
 				}  

@@ -59,7 +59,7 @@ public class CrisisManagerServiceProxy  extends BaseServiceProxy  {
 		getService().clearCrisisMngBatch(orderCrisisBatchId);
 	}
 	
-	public List<ICrisisManagerBatchOrder> getOrderByCriteria(Date deliveryDate, Date cutOffDateTime, String[] area, Date startTime, Date endTime, String[] deliveryType, boolean isSOIncluded) throws RoutingServiceException {
+	public List<ICrisisManagerBatchOrder> getOrderByCriteria(Date deliveryDate, Date cutOffDateTime, String[] area, String startTime, String endTime, String[] deliveryType, boolean isSOIncluded) throws RoutingServiceException {
 		return getService().getOrderByCriteria(deliveryDate, cutOffDateTime, area, startTime, endTime, deliveryType, isSOIncluded);		
 	}
 	
@@ -79,7 +79,7 @@ public class CrisisManagerServiceProxy  extends BaseServiceProxy  {
 		getService().updateCrisisMngOrderException(orderCrisisBatchId, exceptionOrderIds);
 	}
 	
-	public List<ICrisisManagerBatchReservation> getReservationByCriteria(Date deliveryDate, Date cutOffDateTime, String[] area, Date startTime, Date endTime) throws RoutingServiceException {
+	public List<ICrisisManagerBatchReservation> getReservationByCriteria(Date deliveryDate, Date cutOffDateTime, String[] area, String startTime, String endTime) throws RoutingServiceException {
 		return getService().getReservationByCriteria(deliveryDate, cutOffDateTime, area, startTime, endTime);		
 	}
 	
@@ -125,7 +125,7 @@ public class CrisisManagerServiceProxy  extends BaseServiceProxy  {
 		getService().clearCrisisMngBatchDeliverySlot(batchId);
 	}
 	
-	public List<IStandingOrderModel> getStandingOrderByCriteria(Date deliveryDate,Date cutOffDateTime, String[] area, Date startTime, Date endTime, String[] deliveryType, boolean isSOIncluded) throws RoutingServiceException{
+	public List<IStandingOrderModel> getStandingOrderByCriteria(Date deliveryDate,Date cutOffDateTime, String[] area, String startTime, String endTime, String[] deliveryType, boolean isSOIncluded) throws RoutingServiceException{
 		return getService().getStandingOrderByCriteria(deliveryDate, cutOffDateTime, area, startTime, endTime, deliveryType, isSOIncluded);		
 	}
 	

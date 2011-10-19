@@ -123,7 +123,7 @@ public class CrisisManagerService extends BaseService implements ICrisisManagerS
 		}
 	}
 	
-	public List<ICrisisManagerBatchOrder> getOrderByCriteria(Date deliveryDate,Date cutOffDateTime, String[] area, Date startTime, Date endTime, String[] deliveryType, boolean isSOIncluded) throws RoutingServiceException{
+	public List<ICrisisManagerBatchOrder> getOrderByCriteria(Date deliveryDate,Date cutOffDateTime, String[] area, String startTime, String endTime, String[] deliveryType, boolean isSOIncluded) throws RoutingServiceException{
 		try{
 			return getCrisisManagerDAOImpl().getOrderByCriteria(deliveryDate, cutOffDateTime, area, startTime, endTime, deliveryType, isSOIncluded);
 		}catch(SQLException e) {
@@ -163,7 +163,7 @@ public class CrisisManagerService extends BaseService implements ICrisisManagerS
 		}
 	}
 	
-	public List<ICrisisManagerBatchReservation> getReservationByCriteria(Date deliveryDate, Date cutOffDateTime, String[] area, Date startTime, Date endTime) throws RoutingServiceException {
+	public List<ICrisisManagerBatchReservation> getReservationByCriteria(Date deliveryDate, Date cutOffDateTime, String[] area, String startTime, String endTime) throws RoutingServiceException {
 		try{
 			return getCrisisManagerDAOImpl().getReservationByCriteria(deliveryDate, cutOffDateTime, area, startTime, endTime);
 		}catch(SQLException e) {
@@ -259,7 +259,7 @@ public class CrisisManagerService extends BaseService implements ICrisisManagerS
 		}
 	}	
 	
-	public List<IStandingOrderModel> getStandingOrderByCriteria(Date deliveryDate,Date cutOffDateTime, String[] area, Date startTime, Date endTime, String[] deliveryType, boolean isSOIncluded) throws RoutingServiceException{
+	public List<IStandingOrderModel> getStandingOrderByCriteria(Date deliveryDate,Date cutOffDateTime, String[] area, String startTime, String endTime, String[] deliveryType, boolean isSOIncluded) throws RoutingServiceException{
 		try{
 			return getCrisisManagerDAOImpl().getStandingOrderByCriteria(deliveryDate, cutOffDateTime, area, startTime, endTime, deliveryType, isSOIncluded);
 		}catch(SQLException e) {
