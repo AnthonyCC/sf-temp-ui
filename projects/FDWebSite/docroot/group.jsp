@@ -15,6 +15,8 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.webapp.util.ProductImpression' %>
+<%@ page import='com.freshdirect.fdstore.pricing.ProductPricingFactory' %>
+<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
 <%@ page import='java.net.URLEncoder' %>
 <%@ page import='java.util.*' %>
 <%@ page import='org.apache.log4j.Category' %>
@@ -32,8 +34,7 @@ private static Category  LOGGER = LoggerFactory.getInstance("group.jsp");
 
 <%@page import="com.freshdirect.webapp.util.prodconf.ProductConfigurationStrategy"%><fd:CheckLoginStatus guestAllowed='true' />
 <%
-
-	String templatePath = "/common/template/both_dnav_manual_left.jsp"; //the default
+	
 	String trkCode= NVL.apply(request.getParameter("trk"), "trkCode");
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	StringBuffer leftNavBuf = new StringBuffer(10000);
@@ -41,10 +42,25 @@ private static Category  LOGGER = LoggerFactory.getInstance("group.jsp");
 	String version=NVL.apply(request.getParameter("version"), "");
 	/*  general */
 	String catId=NVL.apply(request.getParameter("catId"), ""); //category id
-		request.setAttribute("catId", catId);
+	if(catId.equals(""))
+		catId=NVL.apply(request.getParameter("prodCatId"), ""); //prodCatId
+	request.setAttribute("catId", catId);
 	String deptId=NVL.apply(request.getParameter("deptId"), ""); //department id (not used)
 		request.setAttribute("deptId", deptId);
 	int displayedRows = 1;
+	String pCatId = NVL.apply(request.getParameter("prodCatId"), "");
+	if("".equals(pCatId))
+		pCatId = catId;
+	ProductModel pm = ContentFactory.getInstance().getProductByName( pCatId, request.getParameter("productId") );
+	ProductModel displayProduct = ProductPricingFactory.getInstance().getPricingAdapter(pm, user.getPricingContext());
+	
+	String templatePath = "/common/template/both_dnav_manual_left.jsp"; //the default
+	
+	if(displayProduct != null) {
+		if (EnumTemplateType.WINE.equals( pm.getTemplateType() )) {
+			templatePath = "/common/template/usq_sidenav.jsp";
+		}
+	}
 	List impressions = new ArrayList();
 
 %>	
