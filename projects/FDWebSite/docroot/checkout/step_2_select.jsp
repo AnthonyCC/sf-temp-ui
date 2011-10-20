@@ -374,6 +374,11 @@ if (errorMsg!=null) {%>
 	<%@ include file="/includes/delivery/i_valentine.jspf"%>
 	
 <%}%>
+<%if (cart.hasAdvanceOrderItem() && advOrdRangeOK && (!deliveryModel.isEasterMealRestriction() && !deliveryModel.isThxgivingRestriction())){%>
+	
+	<%@ include file="/includes/delivery/i_adv_order_items.jspf"%>
+
+<%}%>
 <!--END MESSAGING SECTION-->
 <BR>
 <%if(FDStoreProperties.isNewFDTimeslotGridEnabled()){%>
