@@ -809,20 +809,34 @@ function showDialogs() {
 				transitions: false,
 				autoFocusing: false,
 				centered: true,
-				afterLoad: function() { window.scrollTo(0,0); },
+				afterLoad: function() {
+					window.scrollTo(0,0);
+					
+					//default state choice if needed
+					var state = null;
+					$$('state').each( function() { if (this.checked) { state = this.value; } });
+					if (state == null) {
+						if ($('stateNY') && !$('stateNY').checked) {
+							$('stateNY').checked = true;
+						}
+					}
+				},
 				afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
 			})
 
 	}
 
 	function checkAddress() {
-		if ( $('stateNY').checked || $('stateNJ').checked) {
-			var state;
-			if($('stateNY').checked) {
-				state = 'NY';
-			} else  {
-				state = 'NJ';        
-			}
+		var state = null;
+		if ($('stateNY') && $('stateNY').checked) {
+			state = 'NY';
+		} else if ($('stateNJ') && $('stateNJ').checked) {
+			state = 'NJ';
+		} else if ($('stateCT') && $('stateCT').checked) {
+			state = 'CT';
+		}
+
+		if (state != null) {
 			new Ajax.Request('/gift_card/postbacks/checkAddress.jsp', {
 				parameters: {
 					address1: $('address1').value,
