@@ -5313,7 +5313,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * @return
 	 * @throws FDResourceException
 	 */
-	public EnumIPhoneCaptureType iPhoneCaptureEmail(String emailId)
+	public EnumIPhoneCaptureType iPhoneCaptureEmail(String emailId, EnumTransactionSource source)
 			throws FDResourceException {
 
 		if (null == emailId || "".equals(emailId)) {
@@ -5337,7 +5337,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			LOGGER.info("valid iphone capture email: " + emailId);
 			// If unknown email, save it in dlv.zonenotification table
 			FDDeliveryManager.getInstance().saveFutureZoneNotification(emailId,
-					"iphone", EnumServiceType.IPHONE);
+					source.getCode(), EnumServiceType.IPHONE);
 
 			// Send notification email with content managed in CMS.
 			this.doEmail(ErpEmailFactory.getInstance().createIPhoneEmail(

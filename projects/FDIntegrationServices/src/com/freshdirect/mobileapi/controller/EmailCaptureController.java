@@ -6,8 +6,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.fdstore.customer.EnumIPhoneCaptureType;
+import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.customer.EnumIPhoneCaptureType;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.EmailUtil;
@@ -26,6 +27,8 @@ public class EmailCaptureController extends BaseController {
     private static Category LOGGER = LoggerFactory.getInstance(EmailCaptureController.class);
 
     private static final String PARAM_EMAIL = "email";
+    
+    private static final String PARAM_SOURCE_ANDROID = "ANW";
 
     protected boolean validateUser() {
         return false;
@@ -37,10 +40,15 @@ public class EmailCaptureController extends BaseController {
         String emailAddress = request.getParameter(PARAM_EMAIL);
         Message responseMessage = null;
         if (EmailUtil.isValidEmailAddress(emailAddress)) {
-            if (EnumIPhoneCaptureType.UNREGISTERED.equals(FDCustomerManager.iPhoneCaptureEmail(emailAddress))) {
+        	String source = getPostData(request, response);
+        	EnumTransactionSource srcEnum = EnumTransactionSource.IPHONE_WEBSITE;
+        	if(source != null && source.indexOf(PARAM_SOURCE_ANDROID) > 0 ) {
+        		srcEnum = EnumTransactionSource.ANDROID_WEBSITE;
+        	}
+            if (EnumIPhoneCaptureType.UNREGISTERED.equals(FDCustomerManager.iPhoneCaptureEmail(emailAddress, srcEnum))) {
 				LOGGER.info("controller: email is unregistered " + emailAddress);
                 responseMessage = Message.createSuccessMessage("Email address has been submitted successfully.");
-            } else if (EnumIPhoneCaptureType.EXISTING.equals(FDCustomerManager.iPhoneCaptureEmail(emailAddress))) {
+            } else if (EnumIPhoneCaptureType.EXISTING.equals(FDCustomerManager.iPhoneCaptureEmail(emailAddress, srcEnum))) {
 				LOGGER.info("controller:  existing iphone capture email: " + emailAddress);
                 responseMessage = getErrorMessage(ERR_INVALID_EMAIL,
                 "The email address you entered matches an existing account in our system. Please sign in to start shopping. If you have forgotten your password or need additional assistance, visit our website or call (1-212-796-8002).");
