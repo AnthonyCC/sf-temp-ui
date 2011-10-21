@@ -25,7 +25,7 @@
 
 	<%-- protoype must load AFTER YUI. YUI doesn't extend elements, so the modalbox usages will fail --%>
 	<script type="text/javascript" language="javascript" src="/assets/javascript/prototype.js"></script>
-	<script type="text/javascript" language="javascript" src="/assets/javascript/scriptaculous.js?load=effects,builder"></script>
+	<script src="/assets/javascript/scriptaculous/1.9.0/scriptaculous.js?load=effects,builder" type="text/javascript" language="javascript"></script>
 	<script type="text/javascript" language="javascript" src="/assets/javascript/modalbox.js"></script>
 	<script type="text/javascript" language="javascript" src="/assets/javascript/FD_GiftCards.js"></script>
 	<script type="text/javascript" language="javascript" src="/assets/javascript/common_javascript.js"></script>

@@ -12,7 +12,7 @@
 		
 
 	<fd:javascript src="/assets/javascript/prototype.js"/>
-	<fd:javascript src="/assets/javascript/scriptaculous.js?load=effects,builder"/>
+	<script src="/assets/javascript/scriptaculous/1.9.0/scriptaculous.js?load=effects,builder" type="text/javascript"></script>
 	<fd:javascript src="/assets/javascript/modalbox.js"/>
 	<fd:javascript src="/assets/javascript/FD_GiftCards.js"/>
 

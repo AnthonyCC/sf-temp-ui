@@ -16,7 +16,7 @@
 	<link rel="stylesheet" href="/ccassets/javascript/jscalendar-1.0/calendar-system.css" type="text/css">
          
 	<script src="/assets/javascript/prototype.js" type="text/javascript" language="javascript"></script>
-	<script src="/assets/javascript/scriptaculous.js?load=effects,builder" type="text/javascript" language="javascript"></script>
+	<script src="/assets/javascript/scriptaculous/1.9.0/scriptaculous.js?load=effects,builder" type="text/javascript" language="javascript"></script>
 	<script  src="/assets/javascript/modalbox.js" type="text/javascript" language="javascript"></script>
 	<script  src="/assets/javascript/FD_GiftCards.js" type="text/javascript" language="javascript"></script>
 	<script language="JavaScript" src="/assets/javascript/common_javascript.js"></script>
