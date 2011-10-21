@@ -145,10 +145,15 @@ final int W_RECIPE_BODY_TOTAL = 806;
 				<td align="right"><a href="javascript:popup('/shared/recipe_print.jsp?recipeId=<%=recipe%>','print')"><img src="/media_stat/recipe/print.gif" width="16" height="16" border="0"></a></td>
 				<td><a href="javascript:popup('/shared/recipe_print.jsp?recipeId=<%=recipe%>','print')"><strong>Print recipe</strong></a></td>
 			</tr>
+			<% String app = (String)session.getAttribute(SessionName.APPLICATION);
+
+    		boolean isWebApp = "WEB".equalsIgnoreCase(app); %>
+    		<% if(isWebApp){ %>
 			<tr>
 				<td><a href="javascript:popup('/tell_a_friend/step_1_compose.jsp?recipeId=<%=recipe%>','large')"><img src="/media_stat/recipe/email.gif" width="25" height="10" border="0"></a></td>
 				<td><a href="javascript:popup('/tell_a_friend/step_1_compose_recipe.jsp?recipeId=<%=recipe%>','minimal')"><strong>Email to a friend</strong></a></td>
 			</tr>
+			<% } %>
 		</table>
 		</td>
 		<td colspan="2"><% if(recipePrepdMedia!=null){ %><img src="/media_stat/recipe/rec_hdr_preparation<%=theme%>.gif" width="93" height="10" hspace="4" alt="PREPARATION"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br><fd:IncludeMedia name='<%= recipePrepdMedia.getPath() %>' /><% } %></td>

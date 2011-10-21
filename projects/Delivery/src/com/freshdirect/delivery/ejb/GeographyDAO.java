@@ -1153,6 +1153,7 @@ public class GeographyDAO {
 
 		String apt = address.getApartment();
 		String city = null;
+		String state = null;
 
 		ps.setString(1, streetAddress.toUpperCase());
 		ps.setString(2, apt != null ? apt.toUpperCase().trim() : null);
@@ -1164,6 +1165,10 @@ public class GeographyDAO {
 			city = rs.getString("CITY");
 			if(city != null) {
 				address.setCity( WordUtils.capitalizeFully( city ) );
+			}
+			state = rs.getString("STATE");
+			if(state != null) {
+				address.setState(state);
 			}
 			info.setAddressType(EnumAddressType.getEnum(rs.getString("ADDRESS_TYPE")));
 			info.setCounty(rs.getString("COUNTY"));
