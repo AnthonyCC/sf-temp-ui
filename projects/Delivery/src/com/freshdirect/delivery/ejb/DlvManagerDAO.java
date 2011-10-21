@@ -19,9 +19,14 @@ import javax.ejb.FinderException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.crm.ejb.CriteriaBuilder;
+import com.freshdirect.customer.EnumDeliverySetting;
+import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.DlvProperties;
 import com.freshdirect.delivery.DlvTimeslotCapacityInfo;
 import com.freshdirect.delivery.DlvZipInfoModel;
@@ -43,9 +48,11 @@ import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneDescriptor;
 import com.freshdirect.delivery.model.DlvZoneModel;
+import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.GenericSearchCriteria;
+import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumOrderMetricsSource;
@@ -437,6 +444,68 @@ public class DlvManagerDAO {
 		return reservations;
 	}
 
+	private static UnassignedDlvReservationModel loadUnassignedDlvReservationFromResultSet(ResultSet rs) throws SQLException {
+		return new UnassignedDlvReservationModel(
+			new PrimaryKey(rs.getString("ID")),
+			rs.getString("ORDER_ID"),
+			rs.getString("CUSTOMER_ID"),
+			rs.getInt("STATUS_CODE"),
+			rs.getTimestamp("EXPIRATION_DATETIME"),
+			rs.getString("TIMESLOT_ID"),
+			rs.getString("ZONE_ID"),
+			EnumReservationType.getEnum(rs.getString("TYPE")),
+			rs.getString("ADDRESS")!=null?getAddress(rs):null,
+			rs.getDate("BASE_DATE"),
+			rs.getString("ZONE_CODE"),
+			RoutingActivityType.getEnum( rs.getString("UNASSIGNED_ACTION")) ,
+			"X".equalsIgnoreCase(rs.getString("IN_UPS"))?true:false
+			, rs.getBigDecimal("ORDER_SIZE") != null ? new Double(rs.getDouble("ORDER_SIZE")) : null
+			, rs.getBigDecimal("SERVICE_TIME") != null ? new Double(rs.getDouble("SERVICE_TIME")) : null
+			, rs.getBigDecimal("RESERVED_ORDER_SIZE") != null ? new Double(rs.getDouble("RESERVED_ORDER_SIZE")) : null
+			, rs.getBigDecimal("RESERVED_SERVICE_TIME") != null ? new Double(rs.getDouble("RESERVED_SERVICE_TIME")) : null
+			, rs.getBigDecimal("NUM_CARTONS") != null ? new Long(rs.getLong("NUM_CARTONS")) : null
+			, rs.getBigDecimal("NUM_FREEZERS") != null ? new Long(rs.getLong("NUM_FREEZERS")) : null
+			, rs.getBigDecimal("NUM_CASES") != null ? new Long(rs.getLong("NUM_CASES")) : null
+			, EnumRoutingUpdateStatus.getEnum(rs.getString("UPDATE_STATUS"))
+			, EnumOrderMetricsSource.getEnum(rs.getString("METRICS_SOURCE")));
+		
+	}
+	
+	private static PhoneNumber convertPhoneNumber(String phone, String extension) {
+		return "() -".equals(phone) ? null : new PhoneNumber(phone, NVL.apply(extension, ""));
+	}
+	private static ErpAddressModel getAddress(ResultSet rs) throws SQLException{
+		
+		ErpAddressModel model=new ErpAddressModel();
+		model.setFirstName(rs.getString("FIRST_NAME"));
+		model.setLastName(rs.getString("LAST_NAME"));
+		model.setAddress1(rs.getString("ADDRESS1"));
+		model.setAddress2(NVL.apply(rs.getString("ADDRESS2"), "").trim());
+		model.setApartment(NVL.apply(rs.getString("APARTMENT"), "").trim());
+		model.setCity(rs.getString("CITY"));
+		model.setState(rs.getString("STATE"));
+		model.setZipCode(rs.getString("ZIP"));
+		model.setCountry(rs.getString("COUNTRY"));
+		model.setPhone(convertPhoneNumber( rs.getString("PHONE"), rs.getString("PHONE_EXT") ));
+		model.setAltContactPhone(convertPhoneNumber( rs.getString("ALT_PHONE"), rs.getString("ALT_PHONE_EXT") ));
+		model.setInstructions(rs.getString("DELIVERY_INSTRUCTIONS"));
+		model.setServiceType(EnumServiceType.getEnum(rs.getString("SERVICE_TYPE")));
+		model.setCompanyName(rs.getString("COMPANY_NAME"));
+		model.setAltDelivery(EnumDeliverySetting.getDeliverySetting(rs.getString("ALT_DEST")));
+		model.setAltFirstName(rs.getString("ALT_FIRST_NAME"));
+		model.setAltLastName(rs.getString("ALT_LAST_NAME"));
+		model.setAltApartment(rs.getString("ALT_APARTMENT"));
+		model.setAltPhone(convertPhoneNumber(rs.getString("ALT_CONTACT_PHONE"), rs.getString("ALT_CONTACT_EXT")));		
+		model.setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag.fromSQLValue(rs.getString("UNATTENDED_FLAG")));
+		model.setUnattendedDeliveryInstructions(rs.getString("UNATTENDED_INSTR"));
+		model.setCustomerId(rs.getString("CUSTOMER_ID"));
+		AddressInfo addressInfo = new AddressInfo();
+		addressInfo.setLongitude(rs.getDouble("LONGITUDE"));
+		addressInfo.setLatitude(rs.getDouble("LATITUDE"));
+		model.setAddressInfo(addressInfo);
+		return model;
+		
+	}
 	private static DlvReservationModel loadReservationFromResultSet(ResultSet rs) throws SQLException {
 		return new DlvReservationModel(
 			new PrimaryKey(rs.getString("ID")),
@@ -1165,24 +1234,28 @@ public class DlvManagerDAO {
 	}
 	//List<DlvReservationModel> getUnassignedReservations()
 	
-	private static final String FETCH_UNASSIGNED_RESERVATIONS_QUERY="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, "+
+	private static final String FETCH_UNASSIGNED_RESERVATIONS_QUERY="SELECT  R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, "+
 	" T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE" +
 	", R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE " +
-	", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES " +
-	"FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z "+
-	" WHERE R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND t.BASE_DATE=TRUNC(?) " +
+	", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, " +
+	" A.ID as ADDRESS, A.FIRST_NAME,A.LAST_NAME,A.ADDRESS1,A.ADDRESS2,A.APARTMENT,A.CITY,A.STATE,A.ZIP,A.COUNTRY, "+
+	" A.PHONE,A.PHONE_EXT,A.DELIVERY_INSTRUCTIONS,A.SCRUBBED_ADDRESS,A.ALT_DEST,A.ALT_FIRST_NAME, "+
+	" A.ALT_LAST_NAME,A.ALT_APARTMENT,A.ALT_PHONE,A.ALT_PHONE_EXT,A.LONGITUDE,A.LATITUDE,A.SERVICE_TYPE, "+
+	" A.COMPANY_NAME,A.ALT_CONTACT_PHONE,A.ALT_CONTACT_EXT,A.UNATTENDED_FLAG,A.UNATTENDED_INSTR,A.CUSTOMER_ID "+
+	" FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z,CUST.ADDRESS A "+
+	" WHERE R.ADDRESS_ID=A.ID(+) AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND t.BASE_DATE=TRUNC(?) " +
 	"AND (unassigned_action IS NOT NULL OR (UPDATE_STATUS IS NOT NULL AND UPDATE_STATUS <> 'SUS'))  " +
 	"ORDER BY R.unassigned_action, R.UPDATE_STATUS NULLS LAST ";
 	
-	public static List<DlvReservationModel> getUnassignedReservations(Connection conn, Date _date)  throws SQLException {
+	public static List<UnassignedDlvReservationModel> getUnassignedReservations(Connection conn, Date _date)  throws SQLException {
 		PreparedStatement ps =
 			conn.prepareStatement(FETCH_UNASSIGNED_RESERVATIONS_QUERY);
 		
 		ps.setDate(1, new java.sql.Date(_date.getTime()));
 		ResultSet rs = ps.executeQuery();
-		List<DlvReservationModel>  reservations = new ArrayList<DlvReservationModel>();
+		List<UnassignedDlvReservationModel>  reservations = new ArrayList<UnassignedDlvReservationModel>();
 		while (rs.next()) {
-			DlvReservationModel rsv = loadReservationFromResultSet(rs);
+			UnassignedDlvReservationModel rsv = loadUnassignedDlvReservationFromResultSet(rs);
 			reservations.add(rsv);
 		}
 
@@ -1195,18 +1268,22 @@ public class DlvManagerDAO {
 	private static final String FETCH_REROUTE_RESERVATIONS_QUERY="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, "+
 	" T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE" +
 	", R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE " +
-	", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES " +
-	"FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z "+
-	" WHERE R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND t.BASE_DATE > TRUNC(SYSDATE-1) " +
+	", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, " +
+	" A.ID as ADDRESS,A.FIRST_NAME,A.LAST_NAME,A.ADDRESS1,A.ADDRESS2,A.APARTMENT,A.CITY,A.STATE,A.ZIP,A.COUNTRY, "+
+	" A.PHONE,A.PHONE_EXT,A.DELIVERY_INSTRUCTIONS,A.SCRUBBED_ADDRESS,A.ALT_DEST,A.ALT_FIRST_NAME, "+
+	" A.ALT_LAST_NAME,A.ALT_APARTMENT,A.ALT_PHONE,A.ALT_PHONE_EXT,A.LONGITUDE,A.LATITUDE,A.SERVICE_TYPE, "+
+	" A.COMPANY_NAME,A.ALT_CONTACT_PHONE,A.ALT_CONTACT_EXT,A.UNATTENDED_FLAG,A.UNATTENDED_INSTR,A.CUSTOMER_ID "+
+	"FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z, CUST.ADDRESS A "+
+	" WHERE  A.ID=R.ADDRESS_ID AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND t.BASE_DATE > TRUNC(SYSDATE-1) " +
 	" AND  R.DO_REROUTE = 'X' ORDER BY T.BASE_DATE, Z.ZONE_CODE";
-	public static List<DlvReservationModel> getReRouteReservations(Connection conn)  throws SQLException {
+	public static List<UnassignedDlvReservationModel> getReRouteReservations(Connection conn)  throws SQLException {
 		PreparedStatement ps =
 			conn.prepareStatement(FETCH_REROUTE_RESERVATIONS_QUERY);
 		
 		ResultSet rs = ps.executeQuery();
-		List<DlvReservationModel>  reservations = new ArrayList<DlvReservationModel>();
+		List<UnassignedDlvReservationModel>  reservations = new ArrayList<UnassignedDlvReservationModel>();
 		while (rs.next()) {
-			DlvReservationModel rsv = loadReservationFromResultSet(rs);
+			UnassignedDlvReservationModel rsv = loadUnassignedDlvReservationFromResultSet(rs);
 			reservations.add(rsv);
 		}
 

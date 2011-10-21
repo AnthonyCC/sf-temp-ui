@@ -31,7 +31,6 @@ import java.util.Set;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.ejb.ObjectNotFoundException;
-import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 
 import org.apache.log4j.Category;
@@ -76,17 +75,15 @@ import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneDescriptor;
 import com.freshdirect.delivery.model.DlvZoneModel;
+import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.delivery.restriction.ejb.DlvRestrictionDAO;
 import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
-import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDDynamicTimeslotList;
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
-import com.freshdirect.fdstore.FDZoneNotFoundException;
 import com.freshdirect.fdstore.RoutingUtil;
 import com.freshdirect.fdstore.StateCounty;
 import com.freshdirect.framework.core.GatewaySessionBeanSupport;
@@ -2193,7 +2190,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		}
 
 	}
-	public List<DlvReservationModel> getUnassignedReservations(Date _date) throws DlvResourceException {
+	public List<UnassignedDlvReservationModel> getUnassignedReservations(Date _date) throws DlvResourceException {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
@@ -2214,7 +2211,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 
 	}
 	
-	public List<DlvReservationModel> getReRouteReservations() throws DlvResourceException {
+	public List<UnassignedDlvReservationModel> getReRouteReservations() throws DlvResourceException {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();

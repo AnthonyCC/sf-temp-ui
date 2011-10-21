@@ -1,7 +1,6 @@
 package com.freshdirect.fdstore;
 
 import java.rmi.RemoteException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -44,10 +43,10 @@ import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.delivery.announcement.SiteAnnouncement;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
-import com.freshdirect.delivery.ejb.DlvManagerSessionBean;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneModel;
+import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
@@ -1017,7 +1016,7 @@ public class FDDeliveryManager {
 		}
 	}
 	
-	public List<DlvReservationModel> getUnassignedReservations(Date _date) throws FDResourceException {
+	public List<UnassignedDlvReservationModel> getUnassignedReservations(Date _date) throws FDResourceException {
 
 		try {
 

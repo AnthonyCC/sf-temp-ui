@@ -15,6 +15,8 @@ import java.util.Set;
 import javax.ejb.EJBObject;
 import javax.ejb.FinderException;
 
+import com.freshdirect.analytics.EventType;
+import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -39,9 +41,7 @@ import com.freshdirect.delivery.model.DlvRegionModel;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneModel;
-import com.freshdirect.analytics.TimeslotEventModel;
-import com.freshdirect.analytics.EventType;
-import com.freshdirect.analytics.TimeslotEventModel;
+import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
@@ -147,9 +147,9 @@ public interface DlvManagerSB extends EJBObject {
 	
 	public void releaseReservationEx(DlvReservationModel reservation,ContactAddressModel address, TimeslotEventModel event) throws  RemoteException;
 	
-	public List<DlvReservationModel> getUnassignedReservations(Date _date) throws DlvResourceException, RemoteException;
+	public List<UnassignedDlvReservationModel> getUnassignedReservations(Date _date) throws DlvResourceException, RemoteException;
 	
-	List<DlvReservationModel> getReRouteReservations() throws DlvResourceException, RemoteException;
+	List<UnassignedDlvReservationModel> getReRouteReservations() throws DlvResourceException, RemoteException;
 	
 	void clearReRouteReservations() throws DlvResourceException, RemoteException;
 	

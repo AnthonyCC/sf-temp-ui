@@ -591,4 +591,14 @@ class MockRuleContext implements FDRuleContextI {
 	public EnumServiceType getSelectedServiceType() {
 		return selectedServiceType;
 	}
+
+
+
+
+
+	@Override
+	public Date getDeliveryDate() {
+		// TODO Auto-generated method stub
+		return user.getShoppingCart().getDeliveryReservation().getTimeslot().getBaseDate();
+	}
 }
