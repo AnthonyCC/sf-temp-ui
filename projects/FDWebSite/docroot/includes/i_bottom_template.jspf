@@ -163,7 +163,7 @@ if (!isGroceryProdPage) {
 					 <td width="<%=bottTblWidth%>">
 					  <img src="/media_stat/images/layout/cccccc.gif" width="<%=bottTblWidth%>" HEIGHT="1"><br>
 					  <br>
-					  <img src="/media_stat/images/layout/clear.gif" width="10" height="1" alt="" border="0"><img src="/media_stat/images/layout/featured_brands.gif" width="94" HEIGHT="8" border="0"><br>
+					  <img src="/media_stat/images/layout/clear.gif" width="10" height="1" alt="" border="0"><img src="/media_stat/images/layout/dfgs_featured_brands.gif" width="115" height="10" border="0">
 					  <br><br>
 					 </td>
 					</tr>
