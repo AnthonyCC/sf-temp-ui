@@ -184,9 +184,11 @@ while (e.hasMoreElements()) {
 										Free! 
 										<% }else{ %> Free!(<%= dlvCharge %> waived)<% } %>
 												
-								<%  } else {%>
-										<%= (int)cart.getDeliverySurcharge() == 0 ? "Free!" : dlvCharge %>
-								<%}%>
+								<%  } else if((int)cart.getDeliverySurcharge() == 0) {%>
+										check&nbsp;<A HREF="javascript:popup('/help/delivery_info.jsp','large')">delivery fee</A>
+								<%} else { %>
+										<%= dlvCharge %>
+								<%} %>
 						</td>
 						</tr>
 						<%if (cart.getTotalDiscountValue() > 0) {
