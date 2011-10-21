@@ -18,20 +18,20 @@
 <![endif]-->
 
     <!-- YUI includes START --> 
-    <fd:css href="/assets/yui/container/assets/container.css"/> 
-    <fd:javascript src="/assets/yui/yahoo/yahoo.js"/> 
-    <fd:javascript src="/assets/yui/event/event.js"/> 
-    <fd:javascript src="/assets/yui/dom/dom.js"/> 
-    <fd:javascript src="/assets/yui/event-mouseenter/event-mouseenter.js"/> 
-    <fd:javascript src="/assets/yui/connection/connection.js"/> 
-    <fd:javascript src="/assets/yui/animation/animation.js"/> 
-    <fd:javascript src="/assets/yui/dragdrop/dragdrop.js"/> 
-    <fd:javascript src="/assets/yui/utilities/utilities.js"/> 
-    <fd:javascript src="/assets/yui/container/container.js"/> 
-    <fd:javascript src="/assets/yui/json/json.js"/> 
-    <fd:javascript src="/assets/yui/datasource/datasource.js"/> 
-    <fd:javascript src="/assets/yui/animation/animation.js"/> 
-    <fd:javascript src="/assets/yui/yahoo-dom-event/yahoo-dom-event.js"/> 
+    <fd:css href="/assets/yui-2.9.0/container/assets/container.css"/> 
+    <fd:javascript src="/assets/yui-2.9.0/yahoo/yahoo.js"/> 
+    <fd:javascript src="/assets/yui-2.9.0/event/event.js"/> 
+    <fd:javascript src="/assets/yui-2.9.0/dom/dom.js"/> 
+    <fd:javascript src="/assets/yui-2.9.0/event-mouseenter/event-mouseenter.js"/> 
+    <fd:javascript src="/assets/yui-2.9.0/connection/connection.js"/> 
+    <fd:javascript src="/assets/yui-2.9.0/animation/animation.js"/> 
+    <fd:javascript src="/assets/yui-2.9.0/dragdrop/dragdrop.js"/> 
+    <fd:javascript src="/assets/yui-2.9.0/utilities/utilities.js"/> 
+    <fd:javascript src="/assets/yui-2.9.0/container/container.js"/> 
+    <fd:javascript src="/assets/yui-2.9.0/json/json.js"/> 
+    <fd:javascript src="/assets/yui-2.9.0/datasource/datasource.js"/> 
+    <fd:javascript src="/assets/yui-2.9.0/animation/animation.js"/> 
+    <fd:javascript src="/assets/yui-2.9.0/yahoo-dom-event/yahoo-dom-event.js"/> 
 
     <script type="text/javascript"> 
       var $E  = YAHOO.util.Event;  

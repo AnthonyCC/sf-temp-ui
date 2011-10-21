@@ -3,7 +3,8 @@
 <%-- this file will be included in the <head> tag --%>
 
 	<fd:javascript src="/assets/javascript/prototype.js"/>
-	<fd:javascript src="/assets/javascript/scriptaculous/1.9.0/scriptaculous.js?load=effects,builder"/>
+	<%-- when upgrading scriptaculous please create a new directory for the version --%>
+	<script src="/assets/javascript/scriptaculous/1.9.0/scriptaculous.js?load=effects,builder" type="text/javascript" language="javascript"></script>
 	<fd:javascript src="/assets/javascript/modalbox.js"/>
 	<% if(request.getRequestURI().indexOf("brownie_points.jsp") == -1)  { %>
 	<fd:javascript src="/assets/javascript/common_javascript.js"/>

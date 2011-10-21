@@ -523,7 +523,7 @@
 	
 	<target name="minify-js" depends="minify-clean-js,bundle">
 		<apply executable="java" dest="${basedir}/${projects.dir}/Media/docroot/assets/javascript/" parallel="false" failonerror="true">
-			<fileset dir="${basedir}/${projects.dir}/Media/docroot/assets/javascript/" includes="*.js"/>
+			<fileset dir="${basedir}/${projects.dir}/Media/docroot/assets/javascript/" includes="**/*.js"/>
 			<arg line="-jar"/>
 			<arg path="${thirdparty.home}/yuicompressor-2.4.6-patched.jar"/>
 			<arg line="--nomunge"/>
@@ -536,13 +536,13 @@
 
 	<target name="minify-clean-js">
 		<delete verbose="true">
-			<fileset dir="${basedir}/${projects.dir}/Media/docroot/assets/javascript/" includes="*-min.js"/>
+			<fileset dir="${basedir}/${projects.dir}/Media/docroot/assets/javascript/" includes="**/*-min.js"/>
 		</delete>
 	</target>
 
 	<target name="minify-css" depends="minify-clean-css,bundle">
 		<apply executable="java" dest="${basedir}/${projects.dir}/Media/docroot/assets/css/" parallel="false" failonerror="true">
-			<fileset dir="${basedir}/${projects.dir}/Media/docroot/assets/css/" includes="*.css"/>
+			<fileset dir="${basedir}/${projects.dir}/Media/docroot/assets/css/" includes="**/*.css"/>
 			<arg line="-jar"/>
 			<arg path="${thirdparty.home}/yuicompressor-2.4.6-patched.jar"/>
 			<arg line="--line-break 0"/>
@@ -555,7 +555,7 @@
 
 	<target name="minify-clean-css">
 		<delete verbose="true">
-			<fileset dir="${basedir}/${projects.dir}/Media/docroot/assets/css/" includes="*-min.css"/>
+			<fileset dir="${basedir}/${projects.dir}/Media/docroot/assets/css/" includes="**/*-min.css"/>
 		</delete>
 	</target>
 

@@ -27,7 +27,8 @@
 
 	<%-- YUI --%>
 	<!-- Sam Skin CSS -->
-	<link rel="stylesheet" type="text/css" href="/assets/yui/container/assets/skins/sam/container.css">
+	<%-- when upgrading yui please create a new directory for the version --%>
+	<link rel="stylesheet" type="text/css" href="/assets/yui-2.9.0/container/assets/skins/sam/container.css">
 	
 <%@ include file="/shared/template/includes/yui.jspf" %>
 <% if ("true".equals(request.getAttribute("needsCCL"))) {

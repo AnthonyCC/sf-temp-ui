@@ -27,11 +27,12 @@
 		cursor: default ! important;
 	}
 </style>
- 
-<fd:javascript src="/assets/yui/yahoo-dom-event/yahoo-dom-event.js"/> 
-<fd:javascript src="/assets/yui/datasource/datasource.js"/>
-<fd:javascript src="/assets/yui/connection/connection.js"/>
-<fd:javascript src="/assets/yui/autocomplete/autocomplete.js"/> 
+
+<%-- when upgrading yui please create a new directory for the version --%>
+<script type="text/javascript" src="/assets/yui-2.9.0/yahoo-dom-event/yahoo-dom-event.js"></script> 
+<script type="text/javascript" src="/assets/yui-2.9.0/datasource/datasource.js"></script>
+<script type="text/javascript" src="/assets/yui-2.9.0/connection/connection.js"></script>
+<script type="text/javascript" src="/assets/yui-2.9.0/autocomplete/autocomplete.js"></script> 
 <fd:javascript src="/assets/javascript/smsearch_autocomplete.js"/>
 <script type="text/javascript">
 YAHOO.util.Event.onDOMReady(autoCompleteFunctionFactory("/api/brandautocompleteresults.jsp","brands","brandParams",false));
