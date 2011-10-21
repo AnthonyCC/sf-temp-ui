@@ -1440,18 +1440,22 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 							continue;
 						}
 
-						if (quantity < prodNode.getQuantityMinimum()) {
-							quantity = prodNode.getQuantityMinimum();
-						} else {
-							double totalQty = cart.getTotalQuantity(prodNode);
-							if (quantity + totalQty - orderLine.getQuantity() > user.getQuantityMaximum(prodNode)) {
-								quantity = user.getQuantityMaximum(prodNode) - totalQty + orderLine.getQuantity();
+						
+						//make sure prodNode isn't null before checking mins
+						if (prodNode != null) {
+							if (quantity < prodNode.getQuantityMinimum()) {
+								quantity = prodNode.getQuantityMinimum();
+							} else {
+								double totalQty = cart.getTotalQuantity(prodNode);
+								if (quantity + totalQty - orderLine.getQuantity() > user.getQuantityMaximum(prodNode)) {
+									quantity = user.getQuantityMaximum(prodNode) - totalQty + orderLine.getQuantity();
+								}
 							}
+							quantity = Math.floor((quantity - prodNode.getQuantityMinimum())
+									/ prodNode.getQuantityIncrement())
+									* prodNode.getQuantityIncrement()
+									+ prodNode.getQuantityMinimum();
 						}
-						quantity = Math.floor((quantity - prodNode.getQuantityMinimum())
-								/ prodNode.getQuantityIncrement())
-								* prodNode.getQuantityIncrement()
-								+ prodNode.getQuantityMinimum();
 
 						if (quantity <= 0) {
 							// set quantity to compensate for subsequent
