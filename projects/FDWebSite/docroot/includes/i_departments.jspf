@@ -47,7 +47,7 @@ String presPicks = "/newsletter.jsp?catId=picks_love&trk=wgd";
       </tr>
 		  <tr>
 			<td align="center">
-			<img src="/media_stat/images/navigation/department/home/fdhome_row1_header.gif" width="734" height="16" border="0" alt="DELICIOUS FOOD TREATED WITH LOVE & RESPECT"><br>
+			<img src="/media_stat/images/navigation/department/home/fdhome_row1_header.gif" width="734" height="21" border="0" alt="DELICIOUS FOOD TREATED WITH LOVE & RESPECT"><br>
 			<!-- <img src="/media_stat/images/navigation/department/home/fdhome_row1.jpg" width="491" height="52" usemap="#Row1" border="0" vspace="3"> -->
 				<!-- /media_stat/images/navigation/department/home/fdhome_row1.jpg -->
 				<table border='0' cellpadding='0' cellspacing='0' class="departmentPicRow1">
@@ -104,11 +104,11 @@ String presPicks = "/newsletter.jsp?catId=picks_love&trk=wgd";
 				    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENTS_PAD_1%>" height="1"/></td>
 				    <td width='139'><a href='<%=pasta%>'><img src='/media_stat/images/navigation/department_selection/pasta.jpg' alt='Pasta'/></a></td>
 				    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENTS_PAD_1%>" height="1"/></td>
-				    <td width='72'><a href='<%=kosher%>'><img src='/media_stat/images/navigation/department_selection/kosher.jpg' alt='Kosher'/></a></td>
+				    <td width='72'><a href='<%=kosher%>'><img src='/media_stat/images/navigation/department_selection/kosher_2.gif' alt='Kosher'/></a></td>
 				    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENTS_PAD_1%>" height="1"/></td>
-				    <td width='72'><a href='<%=organic%>'><img src='/media_stat/images/navigation/department_selection/organic.jpg' alt='Organic & All-Natural'/></a></td>
+				    <td width='72'><a href='<%=organic%>'><img src='/media_stat/images/navigation/department_selection/organic_2.gif' alt='Organic & All-Natural'/></a></td>
 				    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENTS_PAD_1%>" height="1"/></td>
-				    <td width='72'><a href='<%=localFoods%>'><img src='/media_stat/images/navigation/department_selection/local.jpg' alt='Local Foods'/></a></td>
+				    <td width='72'><a href='<%=localFoods%>'><img src='/media_stat/images/navigation/department_selection/local_2.gif' alt='Local Foods'/></a></td>
 				    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENTS_PAD_1%>" height="1"/></td>
 				  </tr>
 				</table>	  	
@@ -129,7 +129,7 @@ String presPicks = "/newsletter.jsp?catId=picks_love&trk=wgd";
 					<td width="<%=W_DEPARTMENTS_PAD_1%>"></td>
 					<td width="72"><a href="<%=kosher%>">Kosher</a></td>
 					<td width="<%=W_DEPARTMENTS_PAD_1%>"></td>
-					<td width="72"><a href="<%=organic%>">Organic & All-Natural</a></td>
+					<td width="72"><a href="<%=organic%>">Organic &<br>All-Natural</a></td>
 					<td width="<%=W_DEPARTMENTS_PAD_1%>"></td>
 					<td width="72"><a href="<%=localFoods%>">Local Foods</a></td>
 				  </tr>
@@ -138,7 +138,7 @@ String presPicks = "/newsletter.jsp?catId=picks_love&trk=wgd";
 		  </tr>
 		  <tr>
 			<td align="center" class="text11" style="padding-top:20px;">
-			<img src="/media_stat/images/navigation/department/home/fdhome_row4_header.gif" width="734" height="16" border="0" alt="EASY MEALS PREPARED BY EXPERT CHEFS" vspace="3"><br>
+			<img src="/media_stat/images/navigation/department/home/fdhome_row4_header.gif" width="734" height="21" border="0" alt="EASY MEALS PREPARED BY EXPERT CHEFS" vspace="3"><br>
 				<!-- /media_stat/images/navigation/department/home/fdhome_row4.jpg -->
 				<table border='0' cellpadding='0' cellspacing='0'  class="departmentPicRow3">
           <tr>
@@ -178,7 +178,7 @@ String presPicks = "/newsletter.jsp?catId=picks_love&trk=wgd";
 		  <tr>
 			<td align="center" style="padding-top:20px;">
         <%-- example header: <h2 class="centerline"><span>POPULAR BRANDS &amp; EVERYDAY PANTRY NEEDS</span></h2> --%>
-				<img src="/media_stat/images/navigation/department/home/fdhome_row5_header.gif" width="734" height="16" border="0" alt="POPULAR BRANDS & EVERYDAY PANTRY NEEDS"><br>
+				<img src="/media_stat/images/navigation/department/home/fdhome_row5_header.gif" width="734" height="21" border="0" alt="POPULAR BRANDS & EVERYDAY PANTRY NEEDS"><br>
 				<!-- /media_stat/images/navigation/department/home/fdhome_row5.jpg -->
 				<table border='0' cellpadding='0' cellspacing='0'>
           <tr>
