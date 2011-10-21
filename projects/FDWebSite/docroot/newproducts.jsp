@@ -204,7 +204,7 @@ final int W_NEWPRODUCTS_RIGHT = 806;
 	<tmpl:put name='featured' direct='true'><%@ include file="/includes/i_featured_new.jspf" %></tmpl:put>
 <% } %>
 <tmpl:put name='content' direct='true'>
-	<table width="<%=W_NEWPRODUCTS_RIGHT%>" cellpadding="0" cellspacing="0" border="0" style="margin-left: <%=W_NEWPRODUCTS_CENTER_PADDING%>px; margin-top: 10px;">
+	<table width="<%=W_NEWPRODUCTS_RIGHT%>" cellpadding="0" cellspacing="0" border="0" style="margin-left: <%=W_NEWPRODUCTS_CENTER_PADDING%>px;">
 		<% if (!"".equals(filteredHeader) && !isBrand) { %>
 			<tr><td style="font-size: 18px; font-weight: normal; padding-bottom: 10px;"><%=filteredHeader%></td></tr>
 		<% } %>

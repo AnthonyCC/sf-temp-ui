@@ -58,8 +58,13 @@ final int W_MULTI_CATEGORY_NOT_DEPARTMENT = 601;
 			//skip node
 		}
 	}
-	
 	int maxWidth = isDepartment.booleanValue() ? W_MULTI_CATEGORY_IS_DEPARTMENT : W_MULTI_CATEGORY_NOT_DEPARTMENT;
+//	if (!isDepartment.booleanValue()) {
+//		CategoryModel _cat = (CategoryModel) currentFolder;
+//		if (!_cat.isShowSideNav())
+//			maxWidth = W_MULTI_CATEGORY_IS_DEPARTMENT;
+//	}
+	
 	boolean useAlternate = useAlternateImages.booleanValue();
 	
 	for ( int i = 0; i < multiList.size(); i++ ) {		
