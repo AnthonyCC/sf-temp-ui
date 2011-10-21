@@ -1,6 +1,5 @@
 package com.freshdirect.routing.dao.impl;
 
-
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -32,6 +31,7 @@ import org.springframework.jdbc.object.BatchSqlUpdate;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.routing.constants.EnumDeliveryType;
+import com.freshdirect.routing.constants.EnumProfileList;
 import com.freshdirect.routing.constants.EnumReservationType;
 import com.freshdirect.routing.constants.EnumCrisisMngBatchActionType;
 import com.freshdirect.routing.constants.EnumCrisisMngBatchStatus;
@@ -69,7 +69,7 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 			"ACTION_DATETIME, ACTION_TYPE, ACTION_BY ) VALUES ( ?,?,?,?)";
 	
 	private static final String GET_CRISISMNGBATCH_DELIVERYDATE = "SELECT b.BATCH_ID, b.DELIVERY_DATE, B.BATCH_STATUS, B.SYS_MESSAGE, B.IS_CANCEL_ELIGIBLE, "+ 
-	    " BA.ACTION_BY, BA.ACTION_DATETIME, BA.ACTION_TYPE , B.DESTINATION_DATE, B.CUTOFF_DATETIME, B.AREA ZONE_NO, B.WINDOW_STARTTIME, B.WINDOW_ENDTIME, B.DELIVERY_TYPE, B.INCLUDE_STANDINGORDER, "+             
+	    " BA.ACTION_BY, BA.ACTION_DATETIME, BA.ACTION_TYPE , B.DESTINATION_DATE, B.CUTOFF_DATETIME, B.AREA ZONE_NO, B.WINDOW_STARTTIME, B.WINDOW_ENDTIME, B.DELIVERY_TYPE, B.INCLUDE_STANDINGORDER, B.PROFILE_NAME, "+             
 	    " BO.WEBORDER_ID, BO.ERPORDER_ID,  BO.AREA,  BO.RESERVATION_TYPE, BO.WINDOW_STARTTIME ORDER_STARTTIME, BO.WINDOW_ENDTIME ORDER_ENDTIME, "+
 	    " (select count(1) from transp.CRISISMNG_BATCHORDER xO where xO.BATCH_ID = B.BATCH_ID) ORDERCOUNT, "+
 	    " (select count(1) from transp.CRISISMNG_BATCHORDER xO where xO.BATCH_ID = B.BATCH_ID and xO.ORDER_STATUS='CAN') ORDERCANCELCOUNT, "+
@@ -80,7 +80,7 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 	    " order by B.BATCH_ID, B.DELIVERY_DATE, BA.ACTION_DATETIME"; 
 	
 	private static final String GET_CRISISMNGBATCH_DATERANGE = "SELECT b.BATCH_ID, b.DELIVERY_DATE, B.BATCH_STATUS, B.SYS_MESSAGE, B.IS_CANCEL_ELIGIBLE, "+ 
-        " BA.ACTION_BY, BA.ACTION_DATETIME, BA.ACTION_TYPE , B.DESTINATION_DATE, B.CUTOFF_DATETIME, B.AREA ZONE_NO, B.WINDOW_STARTTIME, B.WINDOW_ENDTIME, B.DELIVERY_TYPE, B.INCLUDE_STANDINGORDER, "+             
+        " BA.ACTION_BY, BA.ACTION_DATETIME, BA.ACTION_TYPE , B.DESTINATION_DATE, B.CUTOFF_DATETIME, B.AREA ZONE_NO, B.WINDOW_STARTTIME, B.WINDOW_ENDTIME, B.DELIVERY_TYPE, B.INCLUDE_STANDINGORDER,B.PROFILE_NAME, "+             
         " BO.WEBORDER_ID, BO.ERPORDER_ID,  BO.AREA,  BO.RESERVATION_TYPE, BO.WINDOW_STARTTIME ORDER_STARTTIME, BO.WINDOW_ENDTIME ORDER_ENDTIME, "+
         " (select count(1) from transp.CRISISMNG_BATCHORDER xO where xO.BATCH_ID = B.BATCH_ID) ORDERCOUNT, "+
         " (select count(1) from transp.CRISISMNG_BATCHORDER xO where xO.BATCH_ID = B.BATCH_ID and xO.ORDER_STATUS='CAN') ORDERCANCELCOUNT, "+
@@ -92,14 +92,14 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 		
 	private static String GET_ORDER_BYCRITERIA = 
 		"SELECT "
-		+ "c.id CUSTOMERID, fdc.id FDCUSTOMERID, ci.first_name FIRSTNAME, ci.last_name LASTNAME, c.user_id EMAIL, ci.home_phone, ci.business_phone, ci.business_ext, "
-		+ "ci.cell_phone, s.id WEBORDER_ID, s.sap_number ERPORDER_ID, sa.requested_date DELIVERY_DATE, s.status STATUS, sa.amount, di.starttime, di.endtime, "
-		+ "di.cutofftime CUTOFFTIME, rs.type RSVTYPE, di.zone AREA, di.delivery_type, di.company_name, di.charity_name, s.standingorder_id, rs.address_id "
-		+ "from cust.customer c, cust.fdcustomer fdc, cust.customerinfo ci, cust.sale s, cust.salesaction sa, cust.deliveryinfo di, dlv.reservation rs "
-		+ "where c.id = ci.customer_id and c.id = fdc.erp_customer_id and c.id = s.customer_id and s.id = sa.sale_id and sa.action_type IN ('CRO', 'MOD') "
-		+ "and s.type ='REG' "
-		+ "and s.status in ('SUB','AVE','AUT','AUF') and sa.action_date = s.cromod_date "		
-		+ "and sa.id = di.salesaction_id and rs.id = di.reservation_id and sa.requested_date = ? ";
+		+ " c.id CUSTOMERID, ci.first_name FIRSTNAME, ci.last_name LASTNAME, c.user_id EMAIL, ci.home_phone, ci.business_phone, ci.business_ext, "
+		+ " ci.cell_phone, s.id WEBORDER_ID, s.sap_number ERPORDER_ID, sa.requested_date DELIVERY_DATE, s.status STATUS, sa.amount, di.starttime, di.endtime, "
+		+ " di.cutofftime CUTOFFTIME, rs.type RSVTYPE, di.zone AREA, di.delivery_type, di.company_name, di.charity_name, s.standingorder_id, rs.address_id "
+		+ " from cust.customer c, cust.customerinfo ci, cust.sale s, cust.salesaction sa, cust.deliveryinfo di, dlv.reservation rs "
+		+ " where c.id = ci.customer_id and c.id = s.customer_id and s.id = sa.sale_id and sa.action_type IN ('CRO', 'MOD') "
+		+ " and sa.customer_id = s.customer_id and sa.action_date = s.cromod_date and sa.id = di.salesaction_id and rs.id = di.reservation_id "
+		+ " and s.type ='REG' and s.status in ('SUB','AVE','AUT','AUF')  "		
+		+ " and sa.requested_date = ? ";
 	
 	private static String GET_ORDERSTATSBY_DATE_BATCH = "SELECT s.status, count(*) as order_count "+
 		" from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, dlv.reservation rs "+
@@ -111,16 +111,16 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 	private static String GET_STANDINGORDER_BYCRITERIA = "select c.id CUSTOMERID, ci.first_name FIRSTNAME, ci.last_name LASTNAME, s.id WEBORDER_ID, SO.ID STANDINGORDER_ID, di.zone AREA, "+
 		" (select count(*) from CUST.ORDERLINE o where O.SALESACTION_ID=sa.id) SALE_LINEITEMCOUNT, "+        
 		" (select count(*) from CUST.CUSTOMERLIST_DETAILS x where X.LIST_ID=CL.ID) TEMPLATE_LINEITEMCOUNT "+       
-		" from cust.sale s, cust.salesaction sa, cust.standing_order so, cust.customerlist cl, cust.customer c, cust.customerinfo ci, cust.deliveryinfo di "+
-		" where c.id = ci.customer_id and c.id = s.customer_id and s.id = sa.sale_id and sa.action_type IN ('CRO', 'MOD') and s.type='REG' and s.status in('SUB','AVE','AUT','AUF') "+
-		" and sa.action_date = s.cromod_date and sa.id = di.salesaction_id and S.STANDINGORDER_ID = so.id and SO.CUSTOMERLIST_ID = CL.ID and sa.requested_date = ? ";
+		" from cust.customer c, cust.customerinfo ci, cust.sale s, cust.salesaction sa, cust.standing_order so, cust.customerlist cl, cust.deliveryinfo di "+
+		" where c.id = ci.customer_id and c.id = s.customer_id and s.id = sa.sale_id and sa.action_type IN ('CRO', 'MOD') and s.type='REG' and s.status in ('SUB','AVE','AUT','AUF') "+
+		" and sa.action_date = s.cromod_date and sa.id = di.salesaction_id and s.standingorder_id = so.id and so.customerlist_id = cl.id and sa.requested_date = ? ";
 	
 	private static final String GET_RESERVATION_BYCRITERIA = 
         "SELECT " + 
         " c.id CUSTOMERID, ci.first_name FIRSTNAME , ci.last_name LASTNAME, c.user_id EMAIL, ci.home_phone, ci.business_phone, "+ 
         " ci.cell_phone, ts.base_date DELIVERY_DATE, ts.start_time STARTTIME, ts.end_time ENDTIME, ts.cutoff_time CUTOFFTIME, ze.zone_code AREA, rs.id, rs.type, "+
         " rs.address_id ,rs.status_code, rs.expiration_datetime EXPDATETIME "+
-        " from dlv.reservation rs, dlv.timeslot ts, dlv.zone ze, cust.customerinfo ci, cust.customer c "+ 
+        " from cust.customer c, cust.customerinfo ci, dlv.reservation rs, dlv.timeslot ts, dlv.zone ze "+ 
         " where ts.id = rs.timeslot_id and ze.id = ts.zone_id and rs.customer_id = c.id and ci.customer_id = c.id and rs.status_code = ? "+ 
         " and rs.type in ('WRR','OTR','STD')  "+
         " and ts.base_date = ? ";	
@@ -130,7 +130,7 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 	private static final String UPDATE_CRISISMNGBATCH_STATUS = "UPDATE TRANSP.CRISISMNG_BATCH SET BATCH_STATUS = ? where BATCH_ID = ?";
 			
 	private static final String GET_CRISISMNGBATCH_BYID = "SELECT b.BATCH_ID, b.DELIVERY_DATE, B.BATCH_STATUS, B.SYS_MESSAGE, B.IS_CANCEL_ELIGIBLE, "+ 
-	    " BA.ACTION_BY, BA.ACTION_DATETIME, BA.ACTION_TYPE , B.DESTINATION_DATE, B.CUTOFF_DATETIME, B.AREA ZONE_NO, B.WINDOW_STARTTIME, B.WINDOW_ENDTIME, B.DELIVERY_TYPE, B.INCLUDE_STANDINGORDER, "+             
+	    " BA.ACTION_BY, BA.ACTION_DATETIME, BA.ACTION_TYPE , B.DESTINATION_DATE, B.CUTOFF_DATETIME, B.AREA ZONE_NO, B.WINDOW_STARTTIME, B.WINDOW_ENDTIME, B.DELIVERY_TYPE, B.INCLUDE_STANDINGORDER, B.PROFILE_NAME, "+             
 	    " BO.WEBORDER_ID, BO.ERPORDER_ID,  BO.AREA,  BO.RESERVATION_TYPE, BO.WINDOW_STARTTIME ORDER_STARTTIME, BO.WINDOW_ENDTIME ORDER_ENDTIME, "+
 	    " (select count(1) from transp.CRISISMNG_BATCHORDER xO where xO.BATCH_ID = B.BATCH_ID) ORDERCOUNT, "+
         " (select count(1) from transp.CRISISMNG_BATCHORDER xO where xO.BATCH_ID = B.BATCH_ID and xO.ORDER_STATUS='CAN') ORDERCANCELCOUNT, "+
@@ -144,8 +144,8 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 	
 	private static final String INSERT_CRISISMNGBATCH_ORDER = "INSERT INTO TRANSP.CRISISMNG_BATCHORDER ( BATCH_ID,"+
 		" DELIVERY_DATE, WEBORDER_ID, ERPORDER_ID, AREA, WINDOW_STARTTIME, WINDOW_ENDTIME, ORDER_STATUS, CUTOFFTIME, CUSTOMER_ID, FIRST_NAME, LAST_NAME, EMAIL, " +
-		" HOME_PHONE, BUSINESS_PHONE, CELL_PHONE, RESERVATION_TYPE, AMOUNT, DELIVERY_TYPE, STANDINGORDER_ID, FDCUSTOMER_ID, ADDRESS_ID, COMPANY_NAME, BUSINESS_EXT ) "+
-		" VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
+		" HOME_PHONE, BUSINESS_PHONE, CELL_PHONE, RESERVATION_TYPE, AMOUNT, DELIVERY_TYPE, STANDINGORDER_ID, ADDRESS_ID, COMPANY_NAME, BUSINESS_EXT ) "+
+		" VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
 	
 	private static final String GET_CRISISMNGBATCH_ORDERS = "SELECT * FROM TRANSP.CRISISMNG_BATCHORDER X WHERE X.BATCH_ID = ? ";
 	
@@ -351,6 +351,7 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 			_batch.setNoOfOrdersCancelled(orderCancelCount);
 			_batch.setNoOfReservations(rsvCount);
 			_batch.setNoOfReservationsCancelled(rsvCancelCount);
+			_batch.setProfile(rs.getString("PROFILE_NAME"));
 			
 			_batch.setAction(new TreeSet<ICrisisManagerBatchAction>());
 			_batch.setOrder(new ArrayList<ICrisisManagerBatchOrder>());
@@ -444,51 +445,15 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 	}
 	
 	public List<ICrisisManagerBatchOrder> getOrderByCriteria(final Date deliveryDate, final Date cutOffDateTime
-			, final String[] area, final String startTime, final String endTime, final String[] deliveryType, boolean isSOIncluded) throws SQLException {
+			, final String[] area, final String startTime, final String endTime, final String[] deliveryType, String profileName, boolean isSOIncluded) throws SQLException {
 		
 		final List<ICrisisManagerBatchOrder> result = new ArrayList<ICrisisManagerBatchOrder>();
 		
 		final StringBuffer updateQ = new StringBuffer();
 		updateQ.append(GET_ORDER_BYCRITERIA);
 		
-		if(area != null && area.length > 0){
-			updateQ.append(" and di.zone in (");
-			for(int intCount = 0; intCount < area.length; intCount++ ) {
-				updateQ.append("'").append(area[intCount]).append("'");				
-				if(intCount < area.length-1) {
-					updateQ.append(",");
-				}
-			}
-			updateQ.append(")");
-		}
-		
-		if(deliveryType != null && deliveryType.length > 0){
-			updateQ.append(" and di.delivery_type in (");
-			for(int intCount = 0; intCount < deliveryType.length; intCount++ ) {
-				updateQ.append("'").append(deliveryType[intCount]).append("'");				
-				if(intCount < deliveryType.length-1) {
-					updateQ.append(",");
-				}
-			}
-			updateQ.append(")");
-		}
-		
-		if(deliveryType != null && deliveryType.length == 0 && isSOIncluded){
-			updateQ.append(" and s.standingorder_id is not null ");
-		}
-		
-		if(cutOffDateTime != null){
-			updateQ.append(" and to_char(di.cutofftime, 'HH:MI AM') = to_char(?, 'HH:MI AM')");
-		}
-		if(startTime != null){
-			updateQ.append(" and to_date(to_char(di.starttime, 'HH:MI AM'),'HH:MI AM') >= to_date(?, 'HH:MI AM')");
-		}
-		if(endTime != null){
-			updateQ.append(" and to_date(to_char(di.endtime, 'HH:MI AM'),'HH:MI AM') <= to_date(?, 'HH:MI AM')");
-		}
-		if(!isSOIncluded){
-			updateQ.append(" and s.standingorder_id is null ");
-		}
+		orderSearchCriteria(cutOffDateTime, area, startTime, endTime,
+				deliveryType, profileName, isSOIncluded, updateQ);
 		
 		Connection connection = null;
 		try{
@@ -516,8 +481,7 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 								ICrisisManagerBatchOrder orderModel = new CrisisManagerBatchOrder();	
 								result.add(orderModel);
 																
-								orderModel.setErpCustomerPK(rs.getString("CUSTOMERID"));
-								orderModel.setFdCustomerPK(rs.getString("FDCUSTOMERID"));
+								orderModel.setErpCustomerPK(rs.getString("CUSTOMERID"));								
 								orderModel.setFirstName(rs.getString("FIRSTNAME"));
 								orderModel.setLastName(rs.getString("LASTNAME"));								
 								orderModel.setAmount(rs.getString("AMOUNT"));
@@ -609,8 +573,7 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
-				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
-				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));		
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));	
@@ -627,7 +590,7 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 										_order.getFirstName(),_order.getLastName(), _order.getEmail(),_order.getHomePhone(),
 										_order.getBusinessPhone(), _order.getCellPhone(),_order.getReservationType().getName(),
 										_order.getAmount(),_order.getDeliveryType().getName(),_order.getStandingOrderId(),
-										_order.getFdCustomerPK(), _order.getAddressId(),_order.getCompanyName(),_order.getBusinessExt()
+										_order.getAddressId(),_order.getCompanyName(),_order.getBusinessExt()
 									});
 					
 				}
@@ -755,7 +718,7 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 	}
 	
 	public List<ICrisisManagerBatchReservation> getReservationByCriteria(final Date deliveryDate, final Date cutOffDateTime
-			, String[] area, final String startTime, final String endTime) throws SQLException{
+			, String[] area, final String startTime, final String endTime, final String profileName) throws SQLException{
 		
 		final List<ICrisisManagerBatchReservation> result = new ArrayList<ICrisisManagerBatchReservation>();
 		
@@ -781,6 +744,15 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 		}
 		if(endTime != null){
 			updateQ.append(" and to_date(to_char(ts.end_time, 'HH:MI AM'), 'HH:MI AM') <= to_date(?, 'HH:MI AM')");
+		}
+		if(EnumProfileList.CHEFSTABLE.getName().equals(profileName)){
+			updateQ.append(" and exists (select 1 from cust.profile p, cust.fdcustomer fdc, cust.customer c "
+							+" where p.customer_id=fdc.ID and c.id=fdc.erp_customer_id"
+							+" and p.profile_name='ChefsTable' and p.profile_value='1' and c.id=ci.customer_id)");
+		} else if(EnumProfileList.NONCHEFSTABLE.getName().equals(profileName)){
+			updateQ.append(" and not exists (select 1 from cust.profile p, cust.fdcustomer fdc, cust.customer c "
+							+" where p.customer_id=fdc.ID and c.id=fdc.erp_customer_id"
+							+" and p.profile_name='ChefsTable' and p.profile_value='1' and c.id=ci.customer_id)");
 		}
 	
 		Connection connection = null;
@@ -1214,47 +1186,15 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 	}
 	
 	public List<IStandingOrderModel> getStandingOrderByCriteria(final Date deliveryDate, final Date cutOffDateTime
-			, final String[] area, final String startTime, final String endTime, final String[] deliveryType, boolean isSOIncluded) throws SQLException {
+			, final String[] area, final String startTime, final String endTime, final String[] deliveryType, String profileName, boolean isSOIncluded) throws SQLException {
 		
 		final List<IStandingOrderModel> result = new ArrayList<IStandingOrderModel>();
 		
 		final StringBuffer updateQ = new StringBuffer();
 		updateQ.append(GET_STANDINGORDER_BYCRITERIA);
 		
-		if(area != null && area.length > 0){
-			updateQ.append(" and di.zone in (");
-			for(int intCount = 0; intCount < area.length; intCount++ ) {
-				updateQ.append("'").append(area[intCount]).append("'");				
-				if(intCount < area.length-1) {
-					updateQ.append(",");
-				}
-			}
-			updateQ.append(")");
-		}
-		
-		if(deliveryType != null && deliveryType.length > 0){
-			updateQ.append(" and di.delivery_type in (");
-			for(int intCount = 0; intCount < deliveryType.length; intCount++ ) {
-				updateQ.append("'").append(deliveryType[intCount]).append("'");				
-				if(intCount < deliveryType.length-1) {
-					updateQ.append(",");
-				}
-			}
-			updateQ.append(")");
-		}
-		
-		if(cutOffDateTime != null){
-			updateQ.append(" and to_char(di.cutofftime, 'HH:MI AM') = to_char(?, 'HH:MI AM')");
-		}
-		if(startTime != null){
-			updateQ.append(" and to_date(to_char(di.starttime, 'HH:MI AM'), 'HH:MI AM') >= to_date(?, 'HH:MI AM')");
-		}
-		if(endTime != null){
-			updateQ.append(" and to_date(to_char(di.endtime, 'HH:MI AM'), 'HH:MI AM') <= to_date(?, 'HH:MI AM')");
-		}
-		if(!isSOIncluded){
-			updateQ.append(" and s.standingorder_id is null ");
-		}
+		orderSearchCriteria(cutOffDateTime, area, startTime, endTime,
+				deliveryType, profileName, isSOIncluded, updateQ);
 		
 		Connection connection = null;
 		try{
@@ -1303,6 +1243,55 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 		} finally {
 			if(connection!=null) connection.close();
 		}		
+	}
+
+	private void orderSearchCriteria(final Date cutOffDateTime,
+			final String[] area, final String startTime, final String endTime,
+			final String[] deliveryType, String profileName,
+			boolean isSOIncluded, final StringBuffer updateQ) {
+		if(area != null && area.length > 0){
+			updateQ.append(" and di.zone in (");
+			for(int intCount = 0; intCount < area.length; intCount++ ) {
+				updateQ.append("'").append(area[intCount]).append("'");				
+				if(intCount < area.length-1) {
+					updateQ.append(",");
+				}
+			}
+			updateQ.append(")");
+		}
+		
+		if(deliveryType != null && deliveryType.length > 0){
+			updateQ.append(" and di.delivery_type in (");
+			for(int intCount = 0; intCount < deliveryType.length; intCount++ ) {
+				updateQ.append("'").append(deliveryType[intCount]).append("'");				
+				if(intCount < deliveryType.length-1) {
+					updateQ.append(",");
+				}
+			}
+			updateQ.append(")");
+		}
+		
+		if(cutOffDateTime != null){
+			updateQ.append(" and to_char(di.cutofftime, 'HH:MI AM') = to_char(?, 'HH:MI AM')");
+		}
+		if(startTime != null){
+			updateQ.append(" and to_date(to_char(di.starttime, 'HH:MI AM'), 'HH:MI AM') >= to_date(?, 'HH:MI AM')");
+		}
+		if(endTime != null){
+			updateQ.append(" and to_date(to_char(di.endtime, 'HH:MI AM'), 'HH:MI AM') <= to_date(?, 'HH:MI AM')");
+		}
+		if(!isSOIncluded){
+			updateQ.append(" and s.standingorder_id is null ");
+		}
+		if(EnumProfileList.CHEFSTABLE.getName().equals(profileName)){
+			updateQ.append(" and exists (select 1 from cust.profile p, cust.fdcustomer fdc, cust.customer c "
+							+" where p.customer_id=fdc.ID and c.id=fdc.erp_customer_id "
+							+" and p.profile_name='ChefsTable' and p.profile_value='1' and c.id=ci.customer_id)");
+		} else if(EnumProfileList.NONCHEFSTABLE.getName().equals(profileName)){
+			updateQ.append(" and not exists (select 1 from cust.profile p, cust.fdcustomer fdc, cust.customer c "
+							+" where p.customer_id=fdc.ID and c.id=fdc.erp_customer_id "
+							+" and p.profile_name='ChefsTable' and p.profile_value='1' and c.id=ci.customer_id)");
+		}
 	}
 	
 	public void addNewCrisisMngBatchStandingOrder(List<IStandingOrderModel> batchSOs) throws SQLException {

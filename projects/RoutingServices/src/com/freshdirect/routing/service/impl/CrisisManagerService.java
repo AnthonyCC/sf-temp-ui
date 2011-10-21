@@ -123,9 +123,9 @@ public class CrisisManagerService extends BaseService implements ICrisisManagerS
 		}
 	}
 	
-	public List<ICrisisManagerBatchOrder> getOrderByCriteria(Date deliveryDate,Date cutOffDateTime, String[] area, String startTime, String endTime, String[] deliveryType, boolean isSOIncluded) throws RoutingServiceException{
+	public List<ICrisisManagerBatchOrder> getOrderByCriteria(Date deliveryDate,Date cutOffDateTime, String[] area, String startTime, String endTime, String[] deliveryType, String profileName,boolean isSOIncluded) throws RoutingServiceException{
 		try{
-			return getCrisisManagerDAOImpl().getOrderByCriteria(deliveryDate, cutOffDateTime, area, startTime, endTime, deliveryType, isSOIncluded);
+			return getCrisisManagerDAOImpl().getOrderByCriteria(deliveryDate, cutOffDateTime, area, startTime, endTime, deliveryType, profileName, isSOIncluded);
 		}catch(SQLException e) {
 			throw new RoutingServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}
@@ -163,9 +163,9 @@ public class CrisisManagerService extends BaseService implements ICrisisManagerS
 		}
 	}
 	
-	public List<ICrisisManagerBatchReservation> getReservationByCriteria(Date deliveryDate, Date cutOffDateTime, String[] area, String startTime, String endTime) throws RoutingServiceException {
+	public List<ICrisisManagerBatchReservation> getReservationByCriteria(Date deliveryDate, Date cutOffDateTime, String[] area, String startTime, String endTime, String profileName) throws RoutingServiceException {
 		try{
-			return getCrisisManagerDAOImpl().getReservationByCriteria(deliveryDate, cutOffDateTime, area, startTime, endTime);
+			return getCrisisManagerDAOImpl().getReservationByCriteria(deliveryDate, cutOffDateTime, area, startTime, endTime, profileName);
 		}catch(SQLException e) {
 			throw new RoutingServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}
@@ -259,9 +259,9 @@ public class CrisisManagerService extends BaseService implements ICrisisManagerS
 		}
 	}	
 	
-	public List<IStandingOrderModel> getStandingOrderByCriteria(Date deliveryDate,Date cutOffDateTime, String[] area, String startTime, String endTime, String[] deliveryType, boolean isSOIncluded) throws RoutingServiceException{
+	public List<IStandingOrderModel> getStandingOrderByCriteria(Date deliveryDate,Date cutOffDateTime, String[] area, String startTime, String endTime, String[] deliveryType, String profileName, boolean isSOIncluded) throws RoutingServiceException{
 		try{
-			return getCrisisManagerDAOImpl().getStandingOrderByCriteria(deliveryDate, cutOffDateTime, area, startTime, endTime, deliveryType, isSOIncluded);
+			return getCrisisManagerDAOImpl().getStandingOrderByCriteria(deliveryDate, cutOffDateTime, area, startTime, endTime, deliveryType, profileName, isSOIncluded);
 		}catch(SQLException e) {
 			throw new RoutingServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}

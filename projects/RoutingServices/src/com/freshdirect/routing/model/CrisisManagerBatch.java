@@ -16,6 +16,7 @@ public class CrisisManagerBatch extends BaseModel implements ICrisisManagerBatch
 	private String systemMessage;
 	private Date cutOffDateTime;
 	private boolean isEligibleForCancel;
+	private String profile;
 	
 	private Set<ICrisisManagerBatchAction> action;
 	private List<ICrisisManagerBatchOrder> order;
@@ -205,6 +206,14 @@ public class CrisisManagerBatch extends BaseModel implements ICrisisManagerBatch
 
 	public void setActiveOrder(List<IActiveOrderModel> activeOrder) {
 		this.activeOrder = activeOrder;
+	}
+	
+	public String getProfile() {
+		return profile;
+	}
+
+	public void setProfile(String profile) {
+		this.profile = profile;
 	}
 
 	@Override

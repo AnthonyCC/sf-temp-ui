@@ -59,8 +59,8 @@ public class CrisisManagerServiceProxy  extends BaseServiceProxy  {
 		getService().clearCrisisMngBatch(orderCrisisBatchId);
 	}
 	
-	public List<ICrisisManagerBatchOrder> getOrderByCriteria(Date deliveryDate, Date cutOffDateTime, String[] area, String startTime, String endTime, String[] deliveryType, boolean isSOIncluded) throws RoutingServiceException {
-		return getService().getOrderByCriteria(deliveryDate, cutOffDateTime, area, startTime, endTime, deliveryType, isSOIncluded);		
+	public List<ICrisisManagerBatchOrder> getOrderByCriteria(Date deliveryDate, Date cutOffDateTime, String[] area, String startTime, String endTime, String[] deliveryType, String profileName,boolean isSOIncluded) throws RoutingServiceException {
+		return getService().getOrderByCriteria(deliveryDate, cutOffDateTime, area, startTime, endTime, deliveryType, profileName,isSOIncluded);		
 	}
 	
 	public Map<EnumSaleStatus, Integer> getOrderStatsByDate(Date deliveryDate, String batchId) throws RoutingServiceException {
@@ -79,8 +79,8 @@ public class CrisisManagerServiceProxy  extends BaseServiceProxy  {
 		getService().updateCrisisMngOrderException(orderCrisisBatchId, exceptionOrderIds);
 	}
 	
-	public List<ICrisisManagerBatchReservation> getReservationByCriteria(Date deliveryDate, Date cutOffDateTime, String[] area, String startTime, String endTime) throws RoutingServiceException {
-		return getService().getReservationByCriteria(deliveryDate, cutOffDateTime, area, startTime, endTime);		
+	public List<ICrisisManagerBatchReservation> getReservationByCriteria(Date deliveryDate, Date cutOffDateTime, String[] area, String startTime, String endTime,String profileName) throws RoutingServiceException {
+		return getService().getReservationByCriteria(deliveryDate, cutOffDateTime, area, startTime, endTime, profileName);		
 	}
 	
 	public void addNewCrisisMngBatchReservation(List<ICrisisManagerBatchReservation> reservations) throws RoutingServiceException {
@@ -125,8 +125,8 @@ public class CrisisManagerServiceProxy  extends BaseServiceProxy  {
 		getService().clearCrisisMngBatchDeliverySlot(batchId);
 	}
 	
-	public List<IStandingOrderModel> getStandingOrderByCriteria(Date deliveryDate,Date cutOffDateTime, String[] area, String startTime, String endTime, String[] deliveryType, boolean isSOIncluded) throws RoutingServiceException{
-		return getService().getStandingOrderByCriteria(deliveryDate, cutOffDateTime, area, startTime, endTime, deliveryType, isSOIncluded);		
+	public List<IStandingOrderModel> getStandingOrderByCriteria(Date deliveryDate,Date cutOffDateTime, String[] area, String startTime, String endTime, String[] deliveryType, String profileName,boolean isSOIncluded) throws RoutingServiceException{
+		return getService().getStandingOrderByCriteria(deliveryDate, cutOffDateTime, area, startTime, endTime, deliveryType, profileName,isSOIncluded);		
 	}
 	
 	public void addNewCrisisMngBatchStandingOrder(List<IStandingOrderModel> soOrders){

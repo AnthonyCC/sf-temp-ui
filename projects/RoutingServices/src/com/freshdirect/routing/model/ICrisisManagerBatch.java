@@ -70,6 +70,9 @@ public interface ICrisisManagerBatch {
 	void setCancelOrder(List<ICancelOrderModel> cancelOrder);
 
 	List<IActiveOrderModel> getActiveOrder();
-    void setActiveOrder(List<IActiveOrderModel> activeOrder); 
+    void setActiveOrder(List<IActiveOrderModel> activeOrder);
+    
+    String getProfile();
+	void setProfile(String profile);
  
 }

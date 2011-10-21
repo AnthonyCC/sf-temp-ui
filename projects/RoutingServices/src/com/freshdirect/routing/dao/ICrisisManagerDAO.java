@@ -37,7 +37,7 @@ public interface ICrisisManagerDAO {
 	void clearCrisisMngBatchOrder(String orderCrisisBatchId) throws SQLException;
 	
 	List<ICrisisManagerBatchOrder> getOrderByCriteria(Date deliveryDate, Date cutOffDateTime
-			, String[] area, String startTime, String endTime, String[] deliveryType, boolean isSOIncluded) throws SQLException;
+			, String[] area, String startTime, String endTime, String[] deliveryType, String profileName,boolean isSOIncluded) throws SQLException;
 		
 	Map<EnumSaleStatus, Integer> getOrderStatsByDate(Date deliveryDate, String batchId) throws SQLException;
 	
@@ -49,7 +49,7 @@ public interface ICrisisManagerDAO {
 	
 	void updateCrisisMngOrderStatus(String orderCrisisBatchId, List<String> exceptionOrderIds) throws SQLException;
 	
-	List<ICrisisManagerBatchReservation> getReservationByCriteria(Date deliveryDate, Date cutOffDateTime, String[] area, String startTime, String endTime) throws SQLException;
+	List<ICrisisManagerBatchReservation> getReservationByCriteria(Date deliveryDate, Date cutOffDateTime, String[] area, String startTime, String endTime, String profileName) throws SQLException;
 	
 	void clearCrisisMngBatchReservation(String orderCrisisBatchId) throws SQLException;
 	
@@ -74,7 +74,7 @@ public interface ICrisisManagerDAO {
 	void clearCrisisMngBatchDeliverySlot(String batchId) throws SQLException;
 	
 	List<IStandingOrderModel> getStandingOrderByCriteria(final Date deliveryDate, final Date cutOffDateTime
-			, final String[] area, final String startTime, final String endTime, final String[] deliveryType, boolean isSOIncluded) throws SQLException;
+			, final String[] area, final String startTime, final String endTime, final String[] deliveryType, String profileName, boolean isSOIncluded) throws SQLException;
 	
 	void addNewCrisisMngBatchStandingOrder(List<IStandingOrderModel> batchSOs) throws SQLException;
 	

@@ -52,7 +52,8 @@ public class CrisisManagerOrderInAction extends AbstractCrisisManagerAction {
 																, CrisisManagerOrderInAction.this.getBatch().getCutOffDateTime()
 																, CrisisManagerOrderInAction.this.getBatch().getArea()
 																, RoutingDateUtil.getServerTime(CrisisManagerOrderInAction.this.getBatch().getStartTime())
-																, RoutingDateUtil.getServerTime(CrisisManagerOrderInAction.this.getBatch().getEndTime()));
+																, RoutingDateUtil.getServerTime(CrisisManagerOrderInAction.this.getBatch().getEndTime())
+																, CrisisManagerOrderInAction.this.getBatch().getProfile());
 		    	
 		    	if(reservationList != null && reservationList.size() > 0){
 		    		for(ICrisisManagerBatchReservation rsvModel : reservationList) {
@@ -67,6 +68,7 @@ public class CrisisManagerOrderInAction extends AbstractCrisisManagerAction {
 																, RoutingDateUtil.getServerTime(CrisisManagerOrderInAction.this.getBatch().getStartTime())
 																, RoutingDateUtil.getServerTime(CrisisManagerOrderInAction.this.getBatch().getEndTime())
 																, CrisisManagerOrderInAction.this.getBatch().getDeliveryType()
+																, CrisisManagerOrderInAction.this.getBatch().getProfile()
 																, CrisisManagerOrderInAction.this.getBatch().isStandingOrderIncluded()
 															);
 		    	
@@ -84,6 +86,7 @@ public class CrisisManagerOrderInAction extends AbstractCrisisManagerAction {
 		    													, RoutingDateUtil.getServerTime(CrisisManagerOrderInAction.this.getBatch().getStartTime())
 																, RoutingDateUtil.getServerTime(CrisisManagerOrderInAction.this.getBatch().getEndTime())
 		    													, CrisisManagerOrderInAction.this.getBatch().getDeliveryType()
+		    													, CrisisManagerOrderInAction.this.getBatch().getProfile()
 		    													, CrisisManagerOrderInAction.this.getBatch().isStandingOrderIncluded()
 		    												);
 		    	}
