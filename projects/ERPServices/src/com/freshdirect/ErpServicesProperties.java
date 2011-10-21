@@ -304,7 +304,7 @@ public class ErpServicesProperties {
 		
 		defaults.put(PROP_FUNCTION_COOLINFO, "ZSDI_COUNTRY_ORIGIN");
 		
-		defaults.put(PROP_FD_GIVEX_TOKEN, "42bfc7aacd6eb4a0c7e911f923286337");
+		defaults.put(PROP_FD_GIVEX_TOKEN, "535253d3a36d10810d1471de42f3c3a5");
 		defaults.put(PROP_FD_GIVEX_USER, "10947");
 		defaults.put(PROP_FD_GIVEX_USER_PASSWD, "7368");
 		defaults.put(PROP_GIVEX_SERVER_URL, "https://dev-gapi.givex.com:50081/1.0/trans/");
