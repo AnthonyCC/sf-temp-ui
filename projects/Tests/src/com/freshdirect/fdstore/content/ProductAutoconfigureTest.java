@@ -226,14 +226,14 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 			inventoryEntries.add(new ErpInventoryEntryModel(now, 10000));
 			inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, inventoryEntries));
 
-			
+			Date[] availDates = new Date[0];
 			productInfo    = new FDProductInfo(sku,
 					                           1,
 					                           materials,
 					                           EnumATPRule.MATERIAL,
 					                           EnumAvailabilityStatus.AVAILABLE,
 					                           now,
-					                           inventoryCache,"",null,ZonePriceInfoListing.getDummy(), null,"", null);
+					                           inventoryCache,null,null,ZonePriceInfoListing.getDummy(), null,"", null, availDates);
 
 			return productInfo;
 		}

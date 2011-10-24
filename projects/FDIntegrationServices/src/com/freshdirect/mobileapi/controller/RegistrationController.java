@@ -62,7 +62,12 @@ public class RegistrationController extends BaseController {
 	private static Category LOGGER = LoggerFactory
 			.getInstance(SiteAccessController.class);
 
-	public static final String ACTION_REGISTER_FROM_IPHONE = "registerFromIphone";
+	public static final String ACTION_REGISTER_FROM_IPHONE = "register";
+	
+    private final static String ACTION_ADD_DELIVERY_ADDRESS = "adddeliveryaddress";
+
+    private final static String ACTION_EDIT_DELIVERY_ADDRESS = "editdeliveryaddress";
+
 
 	protected boolean validateUser() {
 		return false;
@@ -84,7 +89,13 @@ public class RegistrationController extends BaseController {
 			RegisterMessage requestMessage = parseRequestObject(request,
 					response, RegisterMessage.class);
 			model = register(model, requestMessage, request, response,user);
-		} 
+		} else if (ACTION_ADD_DELIVERY_ADDRESS.equals(action)) {
+        	DeliveryAddressRequest requestMessage = parseRequestObject(request, response, DeliveryAddressRequest.class);
+            model = addDeliveryAddress(model, user, requestMessage, request);
+        }else if (ACTION_EDIT_DELIVERY_ADDRESS.equals(action)) {
+        	DeliveryAddressRequest requestMessage = parseRequestObject(request, response, DeliveryAddressRequest.class);
+            model = editDeliveryAddress(model, user, requestMessage, request);
+        }
 		return model;
 	}
 
@@ -100,6 +111,8 @@ public class RegistrationController extends BaseController {
 			RegisterMessage requestMessage, HttpServletRequest request,
 			HttpServletResponse response, SessionUser user) throws FDException,
 			NoSessionException, JsonException {
+		if(user == null)
+			throw new NoSessionException("No session");
 		RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());
 		ResultBundle resultBundle = tagWrapper.register(requestMessage);
 		ActionResult result = resultBundle.getActionResult();
@@ -152,4 +165,43 @@ public class RegistrationController extends BaseController {
 				.isBrowseEnabled());
 		return responseMessage;
 	}
+	
+    private ModelAndView addDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressRequest reqestMessage,
+            HttpServletRequest request) throws FDException, JsonException {
+    	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());
+        ResultBundle resultBundle = tagWrapper.addDeliveryAddress(reqestMessage);
+        ActionResult result = resultBundle.getActionResult();
+
+        propogateSetSessionValues(request.getSession(), resultBundle);
+
+        Message responseMessage = null;
+        if (result.isSuccess()) {
+            responseMessage = Message.createSuccessMessage("Delivery Address added successfully.");
+        } else {
+            responseMessage = getErrorMessage(result, request);
+        }
+        responseMessage.addWarningMessages(result.getWarnings());
+        setResponseMessage(model, responseMessage, user);
+        return model;
+    }
+
+    private ModelAndView editDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressRequest reqestMessage,
+            HttpServletRequest request) throws FDException, JsonException {
+    	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());
+        ResultBundle resultBundle = tagWrapper.editDeliveryAddress(reqestMessage);
+        ActionResult result = resultBundle.getActionResult();
+
+        propogateSetSessionValues(request.getSession(), resultBundle);
+
+        Message responseMessage = null;
+        if (result.isSuccess()) {
+            responseMessage = Message.createSuccessMessage("Delivery Address updated successfully.");
+        } else {
+            responseMessage = getErrorMessage(result, request);
+        }
+        responseMessage.addWarningMessages(result.getWarnings());
+        setResponseMessage(model, responseMessage, user);
+        return model;
+    }
+	
 }

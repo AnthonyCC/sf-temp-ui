@@ -23,6 +23,7 @@ import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDDepotManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.StateCounty;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -264,11 +265,11 @@ public class RegistrationAction extends WebActionSupport {
 
 		ContactInfo cInfo = new ContactInfo(request);
 		AccountInfo aInfo = new AccountInfo(request);
-		AddressInfo addInfo = new AddressInfo(request);
+		//AddressInfo addInfo = new AddressInfo(request);
 
-		EnumServiceType serviceType = addInfo.getAddressType();
+		//EnumServiceType serviceType = addInfo.getAddressType();
 		aInfo.validate(actionResult);
-		cInfo.validateEx(actionResult, serviceType);
+		cInfo.validateEx(actionResult);
 
 		if (!actionResult.isSuccess() /*&& !ALLOW_ALL*/) {
 			return ERROR;
@@ -278,20 +279,20 @@ public class RegistrationAction extends WebActionSupport {
 		// Scrub the delivery address contained within the request
 		// we'll bail out here if the
 		//
-		 //Address1 will not be null when user signs up for a Partial Delivery address
-		String address1 = request.getParameter("address1");
-		boolean isPartialDelivery =  address1 != null && address1.length() > 0;
-	
-		AddressModel address = null;
-		if(isPartialDelivery) {
+		 
+		//String address1 = request.getParameter("address1");
+		//boolean isPartialDelivery =  address1 != null && address1.length() > 0;
+		EnumServiceType serviceType = user.getSelectedServiceType();
+		AddressModel address = user.getAddress();
+		//Address will not be null when user signs up for a Partial Delivery address
+		if(address != null) {
 			// VALIDATE DELIVERY ADDRESS
 		
 			// NOTE: don't be strict in USPS service checking if user is pickup or depot
-			AddressModel dlvAddress = addInfo.getDlvAddress();
-			dlvAddress.setServiceType(serviceType);
-			DeliveryAddressValidator validator = new DeliveryAddressValidator(dlvAddress, user.isHomeUser() || user.isCorporateUser());
+			//AddressModel dlvAddress = addInfo.getDlvAddress();
+			address.setServiceType(user.getSelectedServiceType());
+			DeliveryAddressValidator validator = new DeliveryAddressValidator(address, user.isHomeUser() || user.isCorporateUser());
 			
-			boolean addressValid = validator.validateAddress(actionResult);
 			if (!actionResult.isSuccess()  /*&& !ALLOW_ALL*/) {
 				return ERROR;
 			}
@@ -307,13 +308,12 @@ public class RegistrationAction extends WebActionSupport {
 			this.reclassifyUser(user, address, serviceType, validator.getServiceResult());
 		} else {
 			//Directly from Zip Check page
-			String zipCode = addInfo.getZipCode();
+			String zipCode = user.getZipCode();
 			DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkZipCode(zipCode);
 	        AddressModel addr = new AddressModel();
 	        addr.setZipCode(zipCode);
-			this.reclassifyUser(user, addr, serviceType, serviceResult);
+			this.reclassifyUser(user, addr,serviceType , serviceResult);
 		}
-		String application = (String) session.getAttribute(SessionName.APPLICATION);
 
 		//
 		// Absence of an FDIdentity in session means this is a new registration.
@@ -340,7 +340,6 @@ public class RegistrationAction extends WebActionSupport {
 				erpAddress.setPhone(customerInfo.getHomePhone());
 				erpAddress.setAddressInfo(address.getAddressInfo());
 				erpAddress.setServiceType(serviceType);
-				erpAddress.setCompanyName(addInfo.getCompanyName());
 				erpCustomer.addShipToAddress(erpAddress);
 			} else {
 				erpAddress=new ErpAddressModel();
@@ -353,9 +352,18 @@ public class RegistrationAction extends WebActionSupport {
 				erpAddress.setState("NY");
 				erpAddress.setCountry("US");
 				erpAddress.setZipCode("11101");
-				
+				/*
+				 * Alternatively we can pass the actual city,state and zipcode to SAP.
+				 */
+				//Lookup state and city by zipcode.
+				/*
+				StateCounty scinfo = FDDeliveryManager.getInstance().lookupStateCountyByZip(addInfo.getZipCode());
+				erpAddress.setCity(scinfo.getCity());
+				erpAddress.setState(scinfo.getState());
+				erpAddress.setCountry("US");
+				erpAddress.setZipCode(addInfo.getZipCode());
+				*/
 				erpAddress.setServiceType(serviceType);
-				erpAddress.setCompanyName(addInfo.getCompanyName());
 				erpCustomer.setSapBillToAddress(erpAddress);
 			}
 
@@ -363,8 +371,6 @@ public class RegistrationAction extends WebActionSupport {
 
 			fdCustomer.setPasswordHint(aInfo.getPasswordHint());
 			fdCustomer.setDepotCode(user.getDepotCode());
-			if(addInfo.getLocationId() != null) 
-				fdCustomer.setDefaultDepotLocationPK(addInfo.getLocationId());
 			fdCustomer.setDepotCode(user.getDepotCode());
 
 			FDSurveyResponse survey = aInfo.getMarketingSurvey(new SurveyKey(EnumSurveyType.REGISTRATION_SURVEY, serviceType), request);
@@ -376,7 +382,7 @@ public class RegistrationAction extends WebActionSupport {
 				user.invalidateCache();
 				user.isLoggedIn(true);
 				user.setZipCode(erpAddress.getZipCode());
-				if(isPartialDelivery) {
+				if(address != null) {
 					//This is from partial zip check page from where we will have a valid address.
 					user.setSelectedServiceType(AddressUtil.getDeliveryServiceType(erpAddress));
 					//Added the following line for zone pricing to keep user service type up-to-date.
@@ -531,7 +537,7 @@ public class RegistrationAction extends WebActionSupport {
 			}
 		}
 		
-		public void validateEx(ActionResult actionResult, EnumServiceType serviceType) {
+		public void validateEx(ActionResult actionResult) {
 			actionResult.addError("".equals(this.lastName), EnumUserInfoName.DLV_LAST_NAME.getCode(),
 				SystemMessageList.MSG_REQUIRED);
 			
@@ -626,6 +632,30 @@ public class RegistrationAction extends WebActionSupport {
 			actionResult.addError(!termsAccepted, "terms", SystemMessageList.MSG_AGREEMENT_CHECK);
 		}
 
+		public void validateEx(ActionResult actionResult) {
+			actionResult.addError("".equals(emailAddress), EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_REQUIRED);
+
+			actionResult.addError(!actionResult.hasError(EnumUserInfoName.EMAIL.getCode())
+				&& !EmailUtil.isValidEmailAddress(emailAddress), EnumUserInfoName.EMAIL.getCode(),
+				SystemMessageList.MSG_EMAIL_FORMAT);
+
+			if ("".equals(repeatEmailAddress)) {
+				actionResult.addError(new ActionError(EnumUserInfoName.REPEAT_EMAIL.getCode(), SystemMessageList.MSG_REQUIRED));
+			} else if (!emailAddress.equals(repeatEmailAddress)) {
+				actionResult.addError(new ActionError(EnumUserInfoName.REPEAT_EMAIL.getCode(), SystemMessageList.MSG_EMAIL_REPEAT));
+			}
+
+			actionResult.addError(!"".equals(altEmailAddress) && !EmailUtil.isValidEmailAddress(altEmailAddress),
+				EnumUserInfoName.ALT_EMAIL.getCode(), SystemMessageList.MSG_EMAIL_FORMAT);
+			//These are not required for IPhone.
+			//AccountUtil.validatePassword(actionResult, password, repeatPassword);
+
+			actionResult
+				.addError("".equals(passwordHint), EnumUserInfoName.PASSWORD_HINT.getCode(), SystemMessageList.MSG_REQUIRED);
+
+			actionResult.addError(!termsAccepted, "terms", SystemMessageList.MSG_AGREEMENT_CHECK);
+		}
+		
 		public void decorateCustomerInfo(ErpCustomerInfoModel customerInfo) {
 			customerInfo.setEmail(this.emailAddress);
 			customerInfo.setUnsubscribeDate(this.receiveNews ? null : new java.util.Date());

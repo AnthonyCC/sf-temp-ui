@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore.content;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -82,6 +83,7 @@ public class AvailabilityFactory {
 		}
 
 		ErpInventoryModel inventory = fdProductInfo.getInventory();
+		Date[] availableDates = fdProductInfo.getAvailabilityDates();
 		if (inventory != null) {
 			ProductModel productModel = skuModel.getProductModel();
 			if (productModel != null) {
@@ -89,7 +91,7 @@ public class AvailabilityFactory {
 			            inventory,
 			            productModel.getQuantityMinimum(),
 			            productModel.getQuantityMinimum(),
-			            productModel.getQuantityIncrement());
+			            productModel.getQuantityIncrement(),availableDates);
 			} else {
 			    LOG.error("Product model for " + skuModel.getSkuCode() + " not found, however product info is available :" + fdProductInfo);
 			}

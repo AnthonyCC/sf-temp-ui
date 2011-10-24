@@ -286,7 +286,7 @@ public class ServiceTest extends MockObjectTestCase {
 			erpEntries.add(new ErpInventoryEntryModel(DF.parse("2010-01-01 00:00:00.0"), 1));
 
 			ErpInventoryModel erpInv = new ErpInventoryModel("000000000100200300", new Date(), erpEntries);
-			FDAvailabilityI inventory = new FDStockAvailability(erpInv, 1, 1, 1);
+			FDAvailabilityI inventory = new FDStockAvailability(erpInv, 1, 1, 1, null);
 
 			assertFalse( doATPCheck(identity, ols, inventory));
 		}
@@ -298,7 +298,7 @@ public class ServiceTest extends MockObjectTestCase {
 			erpEntries.add(new ErpInventoryEntryModel(DF.parse("2004-01-19 00:00:00.0"), 0));
 
 			ErpInventoryModel erpInv = new ErpInventoryModel("000000000100200300", new Date(), erpEntries);
-			FDAvailabilityI inventory = new FDStockAvailability(erpInv, 1, 1, 1);
+			FDAvailabilityI inventory = new FDStockAvailability(erpInv, 1, 1, 1, null);
 
 			assertTrue( doATPCheck(identity, ols, inventory));
 		}
@@ -593,10 +593,6 @@ class MockRuleContext implements FDRuleContextI {
 	}
 
 
-
-
-
-	@Override
 	public Date getDeliveryDate() {
 		// TODO Auto-generated method stub
 		return user.getShoppingCart().getDeliveryReservation().getTimeslot().getBaseDate();

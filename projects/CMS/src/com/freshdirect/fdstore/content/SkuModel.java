@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.cms.ContentKey;
@@ -20,6 +21,8 @@ import com.freshdirect.fdstore.OncePerRequestDateCache;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.atp.FDAvailabilityHelper;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
+import com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo;
+import com.freshdirect.fdstore.atp.FDStockAvailability;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 
@@ -87,6 +90,9 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 		return this.getAvailability().getEarliestAvailability();
 	}
 	
+	public List<FDLimitedAvailabilityInfo> getLimitedAvailability() {
+		return this.getAvailability().getLimitedAvailability();
+	}
 	/** @return null if sku is available */
 	public String getEarliestAvailabilityMessage() {
 		DateRange dr = OncePerRequestDateCache.getAvailabilityHorizon();
@@ -180,7 +186,10 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 	    }
 	    public Date getEarliestAvailability() {
 	    	return null;
-	    }		
+	    }	
+	    public List<FDLimitedAvailabilityInfo> getLimitedAvailability(){
+	    	return null;
+	    }	
 	};
 	
 	/**
@@ -247,6 +256,13 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 			}
 			
 			return FDAvailabilityHelper.getFirstAvailableDate(this.availability, days) != null;
+		}
+		
+		public List<FDLimitedAvailabilityInfo> getLimitedAvailability() {
+			if (this.isDiscontinued() || this.isTempUnavailable() || this.isOutOfSeason()) {
+				return null;
+			}
+			return FDAvailabilityHelper.getLimitedAvailabilityInfo(this.availability);
 		}
 	}
 

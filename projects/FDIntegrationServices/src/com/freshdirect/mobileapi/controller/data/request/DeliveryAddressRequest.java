@@ -18,7 +18,8 @@ public class DeliveryAddressRequest extends Message{
 	private  String deliveryInstructions;
 	private  String alternatePhone;
 	private  String alternatePhoneExt;
-	private  String alternateDelivery;
+	private  boolean doorman;
+
 	private  String alternateFirstName;
 	private  String alternateLastName;
 	private  String alternateApartment;
@@ -29,6 +30,13 @@ public class DeliveryAddressRequest extends Message{
 	private  String unattendedDeliveryNoticeSeen;
 	private  String shipToAddressId;
 	private  String dlvServiceType; 
+	
+	public boolean isDoorman() {
+		return doorman;
+	}
+	public void setDoorman(boolean doorman) {
+		this.doorman = doorman;
+	}
 	
 	public String getDlvServiceType() {
 		return dlvServiceType;
@@ -126,12 +134,12 @@ public class DeliveryAddressRequest extends Message{
 	public void setAlternatePhoneExt(String alternatePhoneExt) {
 		this.alternatePhoneExt = alternatePhoneExt;
 	}
-	public String getAlternateDelivery() {
+/*	public String getAlternateDelivery() {
 		return alternateDelivery;
 	}
 	public void setAlternateDelivery(String alternateDelivery) {
 		this.alternateDelivery = alternateDelivery;
-	}
+	}*/
 	public String getAlternateFirstName() {
 		return alternateFirstName;
 	}

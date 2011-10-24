@@ -45,7 +45,7 @@ function loadStuff() {
   var loaddata = $("#loaddata").val();
   if(loaddata == "Signup") {  	
   	$("#url").val("/saptest12@freshdirect.com/register/");
-  	$("#payload").val('{ "firstName": "Sairam", "lastName":"Krishnasamy", "email":"iphonetest@freshdirect.com", "confirmEmail":"iphonetest@freshdirect.com", "password":"test", "confirmPassword":"test","securityQuestion":"newyork", "address1":"", "apartment":"", "city":"", "state":"", "zipCode" : "11101", "serviceType" : "HOME"}');
+  	$("#payload").val('{ "firstName": "Sairam", "lastName":"Krishnasamy", "email":"iphonetest@freshdirect.com", "confirmEmail":"iphonetest@freshdirect.com", "password":"test", "securityQuestion":"newyork", "address1":"", "apartment":"", "city":"", "state":"", "zipCode" : "11101", "serviceType" : "HOME"}');
   	$("#result").val("");
   } if(loaddata == "CheckByZip") {  	
   	$("#url").val("/saptest12@freshdirect.com/zipcheck/checkbyzip/");
@@ -177,23 +177,35 @@ function loadStuff() {
   	$("#payload").val('{ "billingRef": "", "cardExpMonth" : "06", "cardExpYear" : "2012", "cardBrand" : "VISA",  "accountNumber" : "4184798082857938", "abaRouteNumber" : "", "bankName" : "AMC Bank", "terms" : "", "accountNumberVerify" : "", "bankAccountType" : "", "accountHolder" : "Sairam","billAddress1" : "2100 Rachel Terrace", "billAddress2" : "", "billApt" : "14", "billCity" : "Pinebrook", "billState" : "NJ", "billZipCode" : "07058", "paymentMethodType" : "CC", "csv":"", "terms":"Y"}');
   	$("#result").val("");
   } else if (loaddata == "EditPaymentMethod") {
-  	$("#url").val("/saptest12@freshdirect.com/paymentmethod/edit/");
+  	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/edit/");
   	$("#payload").val('{"paymentMethodId" : "", "cardExpMonth" : "", "cardExpYear" : "", "cardBrand" : "",  "accountNumber" : "123456700000", "abaRouteNumber" : "221982389", "bankName" : "AMC Bank", "terms" : "", "accountNumberVerify" : "123456700000", "bankAccountType" : "C", "accountHolder" : "Sairam","billAddress1" : "2100 Rachel Terrace", "billAddress2" : "", "billApt" : "14", "billCity" : "Pinebrook", "billState" : "NJ", "billZipCode" : "07058", "paymentMethodType" : "EC", "csv":"", "terms":"Y"}');
   	$("#result").val("");
   } else if (loaddata == "DeletePaymentMethod") {
-  	$("#url").val("/saptest12@freshdirect.com/paymentmethod/delete/");
+  	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/delete/");
   	$("#payload").val('{ "paymentMethodId" : ""}');
   	$("#result").val("");
   } else if (loaddata == "AddDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/deliveryaddress/add/");
+  	$("#payload").val('{"dlvfirstname" : "David","dlvlastname" : "Saad","dlvcompanyname":"", "dlvhomephone" : "7189281226","dlvhomephoneext" : "","address1" : "23-30 Borden Ave","address2" : "","apartment" : "","city" : "Long Island","state" : "NY","zipcode" : "11101","country" : "US","deliveryInstructions" : "", doorman:""}');
+  	$("#result").val("");
+  } else if (loaddata == "AddAndSetDeliveryAddress") {
+  	$("#url").val("/saptest12@freshdirect.com/checkout/deliveryaddresses/addandset/");
   	$("#payload").val('{"dlvfirstname" : "David","dlvlastname" : "Saad","dlvcompanyname":"", "dlvhomephone" : "7189281226","dlvhomephoneext" : "","address1" : "23-30 Borden Ave","address2" : "","apartment" : "","city" : "Long Island","state" : "NY","zipcode" : "11101","country" : "US","deliveryInstructions" : "","alternatePhone" : "7189281000","alternatePhoneExt" : "","alternateDelivery" : "","alternateFirstName" : "","alternateLastName" : "","alternateApartment" : "","altContactPhone" : "","altContactPhoneExt" : "","unattendedDeliveryOpt" : "","unattendedDeliveryInstr" : "","unattendedDeliveryNoticeSeen" : "","dlvServiceType" : "HOME"}');
   	$("#result").val("");
   } else if (loaddata == "EditDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/deliveryaddress/edit/");
   	$("#payload").val('{"shipToAddressId" : "", "dlvfirstname" : "David","dlvlastname" : "Chance", "dlvcompanyname" : "ABC Company", "dlvhomephone" : "7189281226","dlvhomephoneext" : "","address1" : "23-30 Borden Ave","address2" : "","apartment" : "","city" : "Long Island","state" : "NY","zipcode" : "11101","country" : "US","deliveryInstructions" : "","alternatePhone" : "7189281000","alternatePhoneExt" : "","alternateDelivery" : "","alternateFirstName" : "","alternateLastName" : "","alternateApartment" : "","altContactPhone" : "","altContactPhoneExt" : "","unattendedDeliveryOpt" : "","unattendedDeliveryInstr" : "","unattendedDeliveryNoticeSeen" : "","dlvServiceType" : "HOME"}');
   	$("#result").val("");
+  } else if (loaddata == "CheckoutEditDeliveryAddress") {
+  	$("#url").val("/saptest12@freshdirect.com/checkout/deliveryaddresses/edit/");
+  	$("#payload").val('{"shipToAddressId" : "", "dlvfirstname" : "David","dlvlastname" : "Chance", "dlvcompanyname" : "ABC Company", "dlvhomephone" : "7189281226","dlvhomephoneext" : "","address1" : "23-30 Borden Ave","address2" : "","apartment" : "","city" : "Long Island","state" : "NY","zipcode" : "11101","country" : "US","deliveryInstructions" : "","alternatePhone" : "7189281000","alternatePhoneExt" : "","alternateDelivery" : "","alternateFirstName" : "","alternateLastName" : "","alternateApartment" : "","altContactPhone" : "","altContactPhoneExt" : "","unattendedDeliveryOpt" : "","unattendedDeliveryInstr" : "","unattendedDeliveryNoticeSeen" : "","dlvServiceType" : "HOME"}');
+  	$("#result").val("");
   } else if (loaddata == "DeleteDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/deliveryaddress/delete/");
+  	$("#payload").val('{ "shipToAddressId" : ""}');
+  	$("#result").val("");
+  } else if (loaddata == "CheckoutDeleteDeliveryAddress") {
+  	$("#url").val("/saptest12@freshdirect.com/checkout/deliveryaddresses/delete/");
   	$("#payload").val('{ "shipToAddressId" : ""}');
   	$("#result").val("");
   } else if (loaddata == "OrderDetail") {
@@ -456,6 +468,10 @@ function loadStuff() {
   	$("#url").val("/help/learnMorePromo");
   	$("#payload").val("");
   	$("#result").val("");
+  }  else if (loaddata == "CustomerAgreement") {
+  	$("#url").val("/termsofuse/");
+  	$("#payload").val("");
+  	$("#result").val("");
   }  else if (loaddata == "Ping") {
   	$("#url").val("/saptest12@freshdirect.com/ping/");
   	$("#payload").val("");
@@ -545,9 +561,9 @@ function doStuff() {
   <option value="CheckoutAuthenticate">CHECKOUT - Auth</option>
   <option value="GetDeliveryAddresses">CHECKOUT - Get Delivery Addresses</option>
   <option value="SetDeliveryAddress">CHECKOUT - Set Delivery Address</option>
-  <option value="AddDeliveryAddress">CHECKOUT - Add Delivery Address</option>
-  <option value="EditDeliveryAddress">CHECKOUT - Edit Delivery Address</option>
-  <option value="DeleteDeliveryAddress">CHECKOUT - Delete Delivery Address</option>
+  <option value="AddAndSetDeliveryAddress">CHECKOUT - Add and Set Delivery Address</option>
+  <option value="CheckoutEditDeliveryAddress">CHECKOUT - Edit Delivery Address</option>
+  <option value="CheckoutDeleteDeliveryAddress">CHECKOUT - Delete Delivery Address</option>
   <option value="VerifyAge">CHECKOUT - Verify Age</option>
   <option value="RemoveAlcohol">CHECKOUT - Remove All Alcohol</option>
   <option value="ReserveDeliverySlot">CHECKOUT - Set Delivery Slot</option>
@@ -620,8 +636,10 @@ function doStuff() {
   <option value="Help">Help</option>
   <option value="HelpContactUs">Help - Contact Us</option>
   <option value="HelpLearnMorePromo">Help - Learn More Promo</option>
+  <option value="CustomerAgreement">Help - Customer Agreement</option>
   <option value=""> ========== External Interface ========== </option>
   <option value="IvrEmail">Send - IVR Delivery Email</option>
+
   </select>
   
   <input value="Go" type="button" onclick='JavaScript:doStuff()'></p>

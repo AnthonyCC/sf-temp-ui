@@ -3,9 +3,11 @@ package com.freshdirect.mobileapi.model.tagwrapper;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressRequest;
 import com.freshdirect.mobileapi.controller.data.request.RegisterMessage;
 import com.freshdirect.mobileapi.controller.data.request.ZipCheck;
 import com.freshdirect.mobileapi.model.ResultBundle;
@@ -16,26 +18,21 @@ import com.freshdirect.webapp.taglib.fdstore.RegistrationControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SiteAccessControllerTag;
 
-public class RegistrationControllerTagWrapper extends NonStandardControllerTagWrapper implements RequestParamName, SessionParamName {
+public class RegistrationControllerTagWrapper extends ControllerTagWrapper implements RequestParamName, SessionParamName {
 
 	private static Category LOGGER = LoggerFactory.getInstance(RegistrationControllerTagWrapper.class);
 	
-    public static final String ACTION_REGISTER_FROM_IPHONE = "registerFromIphone";
+    public static final String ACTION_REGISTER_FROM_IPHONE = "registerEx";
+    
+    public static final String ACTION_ADD_DELIVERY_ADDRESS = "addDeliveryAddressEx";
+    
+    public static final String ACTION_EDIT_DELIVERY_ADDRESS = "editDeliveryAddress";
+
 
     public RegistrationControllerTagWrapper(FDUserI user) {
         super(new RegistrationControllerTag(), user);
     }
 
-    @Override
-    protected void setResult() {
-        ((RegistrationControllerTag) wrapTarget).setResult(ACTION_RESULT);
-    }
-
-    @Override
-    protected Object getResult() throws FDException {
-        // TODO Auto-generated method stub
-        return null;
-    }
     
     public ResultBundle register(RegisterMessage registerMessage) throws FDException {
         addExpectedSessionValues(new String[] {SESSION_PARAM_APPLICATION,SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT,
@@ -82,5 +79,96 @@ public class RegistrationControllerTagWrapper extends NonStandardControllerTagWr
         return resultBundle;
         
     }
-    
+
+    public ResultBundle addDeliveryAddress(DeliveryAddressRequest deliveryAddress) throws FDException {
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT },
+                new String[] { SESSION_PARAM_USER, SessionName.SIGNUP_WARNING }); //gets,sets
+        addExpectedRequestValues(new String[] {EnumUserInfoName.DLV_FIRST_NAME.getCode(),EnumUserInfoName.DLV_LAST_NAME.getCode(),EnumUserInfoName.DLV_HOME_PHONE.getCode(),EnumUserInfoName.DLV_HOME_PHONE_EXT.getCode(),
+        		EnumUserInfoName.DLV_ADDRESS_1.getCode(),EnumUserInfoName.DLV_ADDRESS_2.getCode(),EnumUserInfoName.DLV_APARTMENT.getCode(),EnumUserInfoName.DLV_CITY.getCode(),EnumUserInfoName.DLV_STATE.getCode(),EnumUserInfoName.DLV_ZIPCODE.getCode(),
+        		EnumUserInfoName.DLV_COUNTRY.getCode(),EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode(),EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(),EnumUserInfoName.DLV_ALT_FIRSTNAME.getCode(),
+        		EnumUserInfoName.DLV_ALT_LASTNAME.getCode(),EnumUserInfoName.DLV_ALT_APARTMENT.getCode(),EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(),
+        		EnumUserInfoName.DLV_ALT_CONTACT_EXT.getCode(),EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode(),EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode(),
+        		EnumUserInfoName.DLV_UNATTENDED_CONSENT_SEEN.getCode(), EnumUserInfoName.DLV_ALT_PHONE.getCode(), EnumUserInfoName.DLV_ALT_EXT.getCode(),
+        		EnumUserInfoName.DLV_COMPANY_NAME.getCode(), EnumUserInfoName.DLV_SERVICE_TYPE.getCode()}, new String[] {});//gets,sets
+        addRequestValue(EnumUserInfoName.DLV_FIRST_NAME.getCode(), deliveryAddress.getDlvfirstname());
+        addRequestValue(EnumUserInfoName.DLV_LAST_NAME.getCode(), deliveryAddress.getDlvlastname());
+        addRequestValue(EnumUserInfoName.DLV_COMPANY_NAME.getCode(), deliveryAddress.getDlvcompanyname());
+        addRequestValue(EnumUserInfoName.DLV_HOME_PHONE.getCode(), deliveryAddress.getDlvhomephone());
+        addRequestValue(EnumUserInfoName.DLV_HOME_PHONE_EXT.getCode(), deliveryAddress.getDlvhomephoneext());
+        addRequestValue(EnumUserInfoName.DLV_ADDRESS_1.getCode(), deliveryAddress.getAddress1());
+        addRequestValue(EnumUserInfoName.DLV_ADDRESS_2.getCode(), deliveryAddress.getAddress2());
+        addRequestValue(EnumUserInfoName.DLV_APARTMENT.getCode(), deliveryAddress.getApartment());
+        addRequestValue(EnumUserInfoName.DLV_CITY.getCode(), deliveryAddress.getCity());
+        addRequestValue(EnumUserInfoName.DLV_STATE.getCode(), deliveryAddress.getState());
+        addRequestValue(EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), deliveryAddress.getDlvServiceType());
+        addRequestValue(EnumUserInfoName.DLV_ZIPCODE.getCode(), deliveryAddress.getZipcode());
+        addRequestValue(EnumUserInfoName.DLV_COUNTRY.getCode(), deliveryAddress.getCountry());
+        addRequestValue(EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode(), deliveryAddress.getDeliveryInstructions());
+        if(deliveryAddress.isDoorman())
+        	addRequestValue(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(), EnumDeliverySetting.DOORMAN.getName());
+        else
+        	addRequestValue(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(), EnumDeliverySetting.NONE.getName());
+        addRequestValue(EnumUserInfoName.DLV_ALT_FIRSTNAME.getCode(), deliveryAddress.getAlternateFirstName());
+        addRequestValue(EnumUserInfoName.DLV_ALT_LASTNAME.getCode(), deliveryAddress.getAlternateLastName());
+        addRequestValue(EnumUserInfoName.DLV_ALT_APARTMENT.getCode(), deliveryAddress.getAlternateApartment());
+        addRequestValue(EnumUserInfoName.DLV_ALT_PHONE.getCode(), deliveryAddress.getAlternatePhone());
+        addRequestValue(EnumUserInfoName.DLV_ALT_EXT.getCode(), deliveryAddress.getAlternatePhoneExt());
+        addRequestValue(EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(), deliveryAddress.getAltContactPhone());
+        addRequestValue(EnumUserInfoName.DLV_ALT_CONTACT_EXT.getCode(), deliveryAddress.getAltContactPhoneExt());
+        addRequestValue(EnumUserInfoName.DLV_UNATTENDED_CONSENT_SEEN.getCode(),deliveryAddress.getUnattendedDeliveryNoticeSeen());
+        addRequestValue(EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode(), deliveryAddress.getUnattendedDeliveryInstr());
+        addRequestValue(EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode(), deliveryAddress.getUnattendedDeliveryOpt());
+        
+
+        getWrapTarget().setActionName(ACTION_ADD_DELIVERY_ADDRESS);
+        setMethodMode(true);
+        return new ResultBundle(executeTagLogic(), this);
+    }
+
+    public ResultBundle editDeliveryAddress(DeliveryAddressRequest deliveryAddress) throws FDException {
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT },
+                new String[] { SESSION_PARAM_USER, SessionName.SIGNUP_WARNING }); //gets,sets
+        addExpectedRequestValues(new String[] {EnumUserInfoName.DLV_FIRST_NAME.getCode(),EnumUserInfoName.DLV_LAST_NAME.getCode(),EnumUserInfoName.DLV_HOME_PHONE.getCode(),EnumUserInfoName.DLV_HOME_PHONE_EXT.getCode(),
+        		EnumUserInfoName.DLV_ADDRESS_1.getCode(),EnumUserInfoName.DLV_ADDRESS_2.getCode(),EnumUserInfoName.DLV_APARTMENT.getCode(),EnumUserInfoName.DLV_CITY.getCode(),EnumUserInfoName.DLV_STATE.getCode(),EnumUserInfoName.DLV_ZIPCODE.getCode(),
+        		EnumUserInfoName.DLV_COUNTRY.getCode(),EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode(),EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(),EnumUserInfoName.DLV_ALT_FIRSTNAME.getCode(),
+        		EnumUserInfoName.DLV_ALT_LASTNAME.getCode(),EnumUserInfoName.DLV_ALT_APARTMENT.getCode(),EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(),
+        		EnumUserInfoName.DLV_ALT_CONTACT_EXT.getCode(),EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode(),EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode(),
+        		EnumUserInfoName.DLV_UNATTENDED_CONSENT_SEEN.getCode(), EnumUserInfoName.DLV_ALT_PHONE.getCode(), EnumUserInfoName.DLV_ALT_EXT.getCode(),
+        		EnumUserInfoName.DLV_COMPANY_NAME.getCode(), EnumUserInfoName.DLV_SERVICE_TYPE.getCode()}, new String[] {});//gets,sets
+        addRequestValue(EnumUserInfoName.DLV_FIRST_NAME.getCode(), deliveryAddress.getDlvfirstname());
+        addRequestValue(EnumUserInfoName.DLV_LAST_NAME.getCode(), deliveryAddress.getDlvlastname());
+        addRequestValue(EnumUserInfoName.DLV_COMPANY_NAME.getCode(), deliveryAddress.getDlvcompanyname());
+        addRequestValue(EnumUserInfoName.DLV_HOME_PHONE.getCode(), deliveryAddress.getDlvhomephone());
+        addRequestValue(EnumUserInfoName.DLV_HOME_PHONE_EXT.getCode(), deliveryAddress.getDlvhomephoneext());
+        addRequestValue(EnumUserInfoName.DLV_ADDRESS_1.getCode(), deliveryAddress.getAddress1());
+        addRequestValue(EnumUserInfoName.DLV_ADDRESS_2.getCode(), deliveryAddress.getAddress2());
+        addRequestValue(EnumUserInfoName.DLV_APARTMENT.getCode(), deliveryAddress.getApartment());
+        addRequestValue(EnumUserInfoName.DLV_CITY.getCode(), deliveryAddress.getCity());
+        addRequestValue(EnumUserInfoName.DLV_STATE.getCode(), deliveryAddress.getState());
+        addRequestValue(EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), deliveryAddress.getDlvServiceType());
+        addRequestValue(EnumUserInfoName.DLV_ZIPCODE.getCode(), deliveryAddress.getZipcode());
+        addRequestValue(EnumUserInfoName.DLV_COUNTRY.getCode(), deliveryAddress.getCountry());
+        addRequestValue(EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode(), deliveryAddress.getDeliveryInstructions());
+        if(deliveryAddress.isDoorman())
+        	addRequestValue(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(), EnumDeliverySetting.DOORMAN.getName());
+        else
+        	addRequestValue(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(), EnumDeliverySetting.NONE.getName());
+
+        addRequestValue(EnumUserInfoName.DLV_ALT_FIRSTNAME.getCode(), deliveryAddress.getAlternateFirstName());
+        addRequestValue(EnumUserInfoName.DLV_ALT_LASTNAME.getCode(), deliveryAddress.getAlternateLastName());
+        addRequestValue(EnumUserInfoName.DLV_ALT_APARTMENT.getCode(), deliveryAddress.getAlternateApartment());
+        addRequestValue(EnumUserInfoName.DLV_ALT_PHONE.getCode(), deliveryAddress.getAlternatePhone());
+        addRequestValue(EnumUserInfoName.DLV_ALT_EXT.getCode(), deliveryAddress.getAlternatePhoneExt());
+        addRequestValue(EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(), deliveryAddress.getAltContactPhone());
+        addRequestValue(EnumUserInfoName.DLV_ALT_CONTACT_EXT.getCode(), deliveryAddress.getAltContactPhoneExt());
+        addRequestValue(EnumUserInfoName.DLV_UNATTENDED_CONSENT_SEEN.getCode(),deliveryAddress.getUnattendedDeliveryNoticeSeen());
+        addRequestValue(EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode(), deliveryAddress.getUnattendedDeliveryInstr());
+        addRequestValue(EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode(), deliveryAddress.getUnattendedDeliveryOpt());
+        addRequestValue(REQ_PARAM_UPDATE_SHIP_ADDRESS_ID, deliveryAddress.getShipToAddressId());
+
+        getWrapTarget().setActionName(ACTION_EDIT_DELIVERY_ADDRESS);
+        setMethodMode(true);
+        return new ResultBundle(executeTagLogic(), this);
+    }
+
 }

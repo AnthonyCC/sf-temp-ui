@@ -96,6 +96,8 @@ public interface ErpInfoSB extends EJBObject {
 
 	public List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws RemoteException;
 
-	public void refreshNewAndBackViews() throws RemoteException;   
+	public void refreshNewAndBackViews() throws RemoteException;
+	
+	public List<Date> getAvailableDeliveryDates(String materialNumber) throws RemoteException;
 }
 

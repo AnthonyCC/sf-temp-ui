@@ -28,6 +28,7 @@ public class HelpController extends BaseController {
     public static final String HELP_ACTION = "help";
 
     public static final String CONTACT_US_ACTION = "contactUs";
+    public static final String TERMS_OF_USE_ACTION = "termsOfUse";
 
     public static final String LEARN_MORE_PROMO_ACTION = "learnMorePromo";
 
@@ -36,6 +37,8 @@ public class HelpController extends BaseController {
     private String learnMorePromoPath = "/media/mobile/iphone/home/learn_more_promo.json";
 
     private String helpPath = "/media/mobile/iphone/help/help.json";
+    
+    private String customerAgreementPath = "/media/mobile/iphone/customer_agreement/customer_agreement.json";
 
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
@@ -54,6 +57,14 @@ public class HelpController extends BaseController {
         } else if (LEARN_MORE_PROMO_ACTION.equals(action)) {
             try {
                 remoteUrl = new URL(mediaPath + learnMorePromoPath);
+                data = ProductUtil.readContent(remoteUrl);
+            } catch (IOException e) {
+                LOGGER.warn("Unable to rerieve data from " + remoteUrl.toString());
+                data = "";
+            }
+        } else if (TERMS_OF_USE_ACTION.equals(action)) {
+            try {
+                remoteUrl = new URL(mediaPath + customerAgreementPath);
                 data = ProductUtil.readContent(remoteUrl);
             } catch (IOException e) {
                 LOGGER.warn("Unable to rerieve data from " + remoteUrl.toString());

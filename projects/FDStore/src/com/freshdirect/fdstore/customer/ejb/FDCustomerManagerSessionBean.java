@@ -129,6 +129,7 @@ import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
 import com.freshdirect.fdstore.atp.NullAvailability;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.EnumIPhoneCaptureType;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
@@ -2830,8 +2831,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		try {
 			ProductModel p = ContentFactory.getInstance().getProduct(
 					ol.getSku().getSkuCode());
+			SkuModel skuModel = p.getSku(ol.getSku().getSkuCode()); 
 			return new FDStockAvailability(erpInv, ol.getQuantity(), p
-					.getQuantityMinimum(), p.getQuantityIncrement());
+					.getQuantityMinimum(), p.getQuantityIncrement(),
+					skuModel.getProductInfo().getAvailabilityDates());
 		} catch (FDSkuNotFoundException e) {
 			throw new FDResourceException(e);
 		}

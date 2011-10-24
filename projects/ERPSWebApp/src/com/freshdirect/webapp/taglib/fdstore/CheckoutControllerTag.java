@@ -141,13 +141,10 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 					}
 				}
 				LOGGER.debug("setDeliveryAddress[END] :");
-			} else if ( "addDeliveryAddress".equalsIgnoreCase( action ) ) { //Added IPhone functionality APPDEV-1565
-				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, getActionName());
-				m.performAddDeliveryAddress();
-			} else if ( "editDeliveryAddress".equalsIgnoreCase( action ) ) { //Added IPhone functionality APPDEV-1565
-				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, getActionName());
-				m.performEditDeliveryAddress(event);
-			} else if ( "editAndSetDeliveryAddress".equalsIgnoreCase( action ) ) {
+			}  else if ( "addAndSetDeliveryAddress".equalsIgnoreCase( action ) ) { //Added IPhone functionality APPDEV-1565
+				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, "addDeliveryAddressEx");
+				m.performAddAndSetDeliveryAddress();
+			}  else if ( "editAndSetDeliveryAddress".equalsIgnoreCase( action ) ) {
 				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, getActionName());
 				m.performEditAndSetDeliveryAddress();
 			} else if ( "deleteDeliveryAddress".equalsIgnoreCase( action ) ) {

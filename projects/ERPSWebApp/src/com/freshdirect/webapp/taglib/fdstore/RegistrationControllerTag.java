@@ -112,7 +112,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				ra.execute();
 				this.setSuccessPage(ra.getSuccessPage()); //reset if changed.
 
-			} else if ("registerFromIphone".equalsIgnoreCase(actionName)) {
+			} else if ("registerEx".equalsIgnoreCase(actionName)) {
 				RegistrationAction ra = new RegistrationAction(this.registrationType);
 
 				HttpContext ctx =
@@ -125,7 +125,11 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				ra.setResult(actionResult);
 				ra.executeEx();
 
-			}else if ("addDeliveryAddress".equalsIgnoreCase(actionName)) {
+			}else if ("addDeliveryAddressEx".equalsIgnoreCase(actionName)) {
+				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, actionResult, actionName);
+				m.performAddDeliveryAddress();
+
+			} else if ("addDeliveryAddress".equalsIgnoreCase(actionName)) {
 				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, actionResult, actionName);
 				m.performAddDeliveryAddress();
 

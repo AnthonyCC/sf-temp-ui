@@ -2,9 +2,11 @@ package com.freshdirect.dataloader.sap.ejb;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.EJBObject;
 
+import com.freshdirect.customer.ErpRestrictedAvailabilityModel;
 import com.freshdirect.dataloader.LoaderException;
 
 public interface SapGrpInfoLoaderSB extends EJBObject {
@@ -18,4 +20,6 @@ public interface SapGrpInfoLoaderSB extends EJBObject {
      * @throws LoaderException any problems encountered creating or updating objects in the system
      */    
     public void loadData(List grpInfoList) throws RemoteException, LoaderException;
+    
+    
 }

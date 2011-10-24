@@ -418,6 +418,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		}
 		return ea;
 	}
+	
 
 	/**
 	 * 

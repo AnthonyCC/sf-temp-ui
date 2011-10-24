@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.ERPServiceLocator;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.common.pricing.util.DealsHelper;
 import com.freshdirect.content.attributes.AttributeCollection;
@@ -35,6 +37,7 @@ import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceEB;
 import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceHome;
 import com.freshdirect.erp.ejb.ErpGrpInfoHome;
 import com.freshdirect.erp.ejb.ErpGrpInfoSB;
+import com.freshdirect.erp.ejb.ErpInfoSB;
 import com.freshdirect.erp.model.ErpCharacteristicModel;
 import com.freshdirect.erp.model.ErpCharacteristicValueModel;
 import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
@@ -194,6 +197,21 @@ class FDProductHelper {
 				throw new FDResourceException( e1 );
 			}					
 		}
+		List<Date> deliveryDates = null;
+		if(FDStoreProperties.isLimitedAvailabilityEnabled()) {//otherwise group will not be associated with the product.
+			ErpInfoSB remote;
+			try{
+				remote = getErpInfoSB();
+				deliveryDates = remote.getAvailableDeliveryDates(erpProductInfo.getMaterialSapIds()[0]);
+			} catch (RemoteException e1) {
+				e1.printStackTrace();
+				throw new FDResourceException( e1 );
+			} 					
+		}
+		Date[] availDates = new Date[0];
+		if(!deliveryDates.isEmpty())
+			availDates = (Date[])deliveryDates.toArray(new Date[deliveryDates.size()]);
+		
 		return new FDProductInfo(
 			erpProductInfo.getSkuCode(),
 			erpProductInfo.getVersion(),
@@ -207,9 +225,7 @@ class FDProductHelper {
 			zonePriceInfoList,
 			group,
 			erpProductInfo.getSustainabilityRating(),
-			erpProductInfo.getUpc()
-		);
-	
+			erpProductInfo.getUpc(), availDates);
 	}
 	
 	 private Comparator<ErpMaterialPrice> matlPriceComparator = new Comparator<ErpMaterialPrice>() {
@@ -485,5 +501,7 @@ class FDProductHelper {
 		}
 	}
 
-	
+	protected ErpInfoSB getErpInfoSB() {
+	    return ERPServiceLocator.getInstance().getErpInfoSessionBean();
+	}	
 }

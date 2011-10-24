@@ -33,6 +33,9 @@ public class FDProductInfo extends FDSku  {
     private final FDInventoryCacheI inventory;
 	
     private final String rating;
+    /** availability restricted dates for the product */
+    private final Date[] availabilityDates;
+
     
     /*  days guaranteed fresh upon delivery */
     private final String freshness;
@@ -53,7 +56,7 @@ public class FDProductInfo extends FDSku  {
     		String[] materialNumbers, EnumATPRule atpRule, EnumAvailabilityStatus availStatus, Date availDate, 
     		FDInventoryCacheI inventory, String rating, String freshness,
     		ZonePriceInfoListing zonePriceInfoList, FDGroup group, String sustainabilityRating,
-    		String upc) {
+    		String upc, Date[] availabilityDates) {
 
 		super(skuCode, version);
 
@@ -72,7 +75,13 @@ public class FDProductInfo extends FDSku  {
         	this.sustainabilityRating=sustainabilityRating;
         }
         this.upc = upc;
+        this.availabilityDates = availabilityDates;
+	
     }
+
+	public Date[] getAvailabilityDates() {
+		return availabilityDates;
+	}
 
 	/**
 	 * Get inventory (short term availability) information.

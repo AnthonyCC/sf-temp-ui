@@ -31,6 +31,12 @@ public class ErpInventoryModel extends ModelSupport {
 	/** Date of last inventory update */
 	private Date lastUpdated;
 	
+	private Date inventoryStartDate;
+	
+	public Date getInventoryStartDate() {
+		return inventoryStartDate;
+	}
+
 	/**
 	 * Inventory entries
 	 * @link aggregationByValue
@@ -49,6 +55,10 @@ public class ErpInventoryModel extends ModelSupport {
 		this.lastUpdated = lastUpdated;
 		this.entries = new ArrayList<ErpInventoryEntryModel>( entries );
 		Collections.<ErpInventoryEntryModel>sort( this.entries );
+		if(this.entries.size() > 0) 
+			this.inventoryStartDate = this.entries.get(0).getStartDate();
+		else
+			this.inventoryStartDate = new Date();
 		this.entries = Collections.unmodifiableList( this.entries );
 	}
 

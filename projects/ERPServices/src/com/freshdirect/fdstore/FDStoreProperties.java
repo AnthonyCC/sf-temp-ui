@@ -426,6 +426,7 @@ public class FDStoreProperties {
     private final static String PROP_VALIDATIONGROUPEXPORT_ENABLED = "fdstore.validation.groupexport.enabled";
     private final static String PROP_VALIDATIONGROUPEXPORTSAPINPUT_ENABLED = "fdstore.validation.groupexportsapinput.enabled";
     private final static String PROP_GROUPSCALE_ENABLED = "fdstore.groupscale.enabled";
+    private final static String PROP_LIMITED_AVAILABILITY_ENABLED = "fdstore.limited.availability.enabled";
     
 	//[APPDEV-1208] Time slot Redesign
 	private static final String PROP_CT_TIMESLOT_LABEL = "fdstore.chefstable.ts.label";
@@ -743,6 +744,8 @@ public class FDStoreProperties {
         defaults.put(PROP_FDSURVEY_HOME, "freshdirect.fdstore.FDSurvey");
 
         defaults.put(SMART_SAVINGS_FEATURE_ENABLED, "true");
+        
+        defaults.put(PROP_LIMITED_AVAILABILITY_ENABLED, "true");
 
         //		What's Good Department
         defaults.put(PROP_FDWHATSGOOD_ENABLED, "false");
@@ -2309,7 +2312,11 @@ public class FDStoreProperties {
         return get(PROP_CT_TIMESLOT_LABEL);
     }
 
-    public static String getPromotionLabel() {
+   public static boolean isLimitedAvailabilityEnabled() {
+        return (new Boolean(get(PROP_LIMITED_AVAILABILITY_ENABLED))).booleanValue();
+    }
+ 
+	public static String getPromotionLabel(){
         return get(PROP_PROMO_TIMESLOT_LABEL);
     }
 

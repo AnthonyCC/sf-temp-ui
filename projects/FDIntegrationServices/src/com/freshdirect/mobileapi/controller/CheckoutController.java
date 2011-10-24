@@ -74,11 +74,9 @@ public class CheckoutController extends BaseController {
     
     private final static String ACTION_DELETE_PAYMENT_METHOD = "deletepaymentmethod";
     
-    private final static String ACTION_ADD_DELIVERY_ADDRESS = "adddeliveryaddress";
-
-    private final static String ACTION_EDIT_DELIVERY_ADDRESS = "editdeliveryaddress";
-    
     private final static String ACTION_DELETE_DELIVERY_ADDRESS = "deletedeliveryaddress";
+    
+    private final static String ACTION_ADD_AND_SET_DELIVERY_ADDRESS = "addandsetdeliveryaddress";
 
     private final static String ACTION_SUBMIT_ORDER = "submitorder";
 
@@ -106,7 +104,10 @@ public class CheckoutController extends BaseController {
         } else if (ACTION_SET_DELIVERY_ADDRESS.equals(action)) {
             DeliveryAddressSelection reqestMessage = parseRequestObject(request, response, DeliveryAddressSelection.class);
             model = setDeliveryAddress(model, user, reqestMessage, request);
-        } else if (ACTION_RESERVE_TIMESLOT.equals(action)) {
+        } else if (ACTION_ADD_AND_SET_DELIVERY_ADDRESS.equals(action)) {
+        	DeliveryAddressRequest requestMessage = parseRequestObject(request, response, DeliveryAddressRequest.class);
+            model = addAndSetDeliveryAddress(model, user, requestMessage, request);
+        }else if (ACTION_RESERVE_TIMESLOT.equals(action)) {
             String slotId = request.getParameter(PARAM_SLOT_ID);
             if (slotId == null) {
                 DeliverySlotReservation requestMessage = parseRequestObject(request, response, DeliverySlotReservation.class);
@@ -142,12 +143,6 @@ public class CheckoutController extends BaseController {
         }else if (ACTION_DELETE_PAYMENT_METHOD.equals(action)) {
         	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
             model = deletePaymentMethod(model, user, requestMessage, request);
-        }else if (ACTION_ADD_DELIVERY_ADDRESS.equals(action)) {
-        	DeliveryAddressRequest requestMessage = parseRequestObject(request, response, DeliveryAddressRequest.class);
-            model = addDeliveryAddress(model, user, requestMessage, request);
-        }else if (ACTION_EDIT_DELIVERY_ADDRESS.equals(action)) {
-        	DeliveryAddressRequest requestMessage = parseRequestObject(request, response, DeliveryAddressRequest.class);
-            model = editDeliveryAddress(model, user, requestMessage, request);
         }else if (ACTION_DELETE_DELIVERY_ADDRESS.equals(action)) {
         	DeliveryAddressRequest requestMessage = parseRequestObject(request, response, DeliveryAddressRequest.class);
             model = deleteDeliveryAddress(model, user, requestMessage, request);
@@ -557,43 +552,6 @@ public class CheckoutController extends BaseController {
         return model;
     }
     
-    private ModelAndView addDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressRequest reqestMessage,
-            HttpServletRequest request) throws FDException, JsonException {
-        Checkout checkout = new Checkout(user);
-        ResultBundle resultBundle = checkout.addDeliveryAddress(reqestMessage);
-        ActionResult result = resultBundle.getActionResult();
-
-        propogateSetSessionValues(request.getSession(), resultBundle);
-
-        Message responseMessage = null;
-        if (result.isSuccess()) {
-            responseMessage = Message.createSuccessMessage("Delivery Address added successfully.");
-        } else {
-            responseMessage = getErrorMessage(result, request);
-        }
-        responseMessage.addWarningMessages(result.getWarnings());
-        setResponseMessage(model, responseMessage, user);
-        return model;
-    }
-
-    private ModelAndView editDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressRequest reqestMessage,
-            HttpServletRequest request) throws FDException, JsonException {
-        Checkout checkout = new Checkout(user);
-        ResultBundle resultBundle = checkout.editDeliveryAddress(reqestMessage);
-        ActionResult result = resultBundle.getActionResult();
-
-        propogateSetSessionValues(request.getSession(), resultBundle);
-
-        Message responseMessage = null;
-        if (result.isSuccess()) {
-            responseMessage = Message.createSuccessMessage("Delivery Address updated successfully.");
-        } else {
-            responseMessage = getErrorMessage(result, request);
-        }
-        responseMessage.addWarningMessages(result.getWarnings());
-        setResponseMessage(model, responseMessage, user);
-        return model;
-    }
     
     private ModelAndView deleteDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressRequest reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
@@ -630,6 +588,25 @@ public class CheckoutController extends BaseController {
         PaymentMethods responseMessage = new PaymentMethods(isCheckEligible, isEcheckRestricted, creditCards, electronicChecks);
         responseMessage.setSelectedId(new Checkout(user).getPreselectedPaymethodMethodId());
         responseMessage.getCheckoutHeader().setHeader(user.getShoppingCart());
+        setResponseMessage(model, responseMessage, user);
+        return model;
+    }
+    
+    private ModelAndView addAndSetDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressRequest reqestMessage,
+            HttpServletRequest request) throws FDException, JsonException {
+        Checkout checkout = new Checkout(user);
+        ResultBundle resultBundle = checkout.addAndSetDeliveryAddress(reqestMessage);
+        ActionResult result = resultBundle.getActionResult();
+
+        propogateSetSessionValues(request.getSession(), resultBundle);
+
+        Message responseMessage = null;
+        if (result.isSuccess()) {
+            responseMessage = Message.createSuccessMessage("Delivery Address added successfully.");
+        } else {
+            responseMessage = getErrorMessage(result, request);
+        }
+        responseMessage.addWarningMessages(result.getWarnings());
         setResponseMessage(model, responseMessage, user);
         return model;
     }

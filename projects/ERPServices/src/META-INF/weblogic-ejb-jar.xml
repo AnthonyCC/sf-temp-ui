@@ -149,6 +149,10 @@
         </stateless-session-descriptor>
         <transaction-descriptor></transaction-descriptor>
         <reference-descriptor>
+            <resource-description>
+                <res-ref-name>jdbc/dbpool</res-ref-name>
+                <jndi-name>fddatasource</jndi-name>
+            </resource-description>        
             <ejb-reference-description>
                 <ejb-ref-name>ejb/ErpInventory</ejb-ref-name>
                 <jndi-name>freshdirect.erp.Inventory</jndi-name>

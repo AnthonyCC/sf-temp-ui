@@ -3,6 +3,7 @@ package com.freshdirect.webapp.checkout;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -23,6 +24,8 @@ import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpDuplicateAddressException;
+import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.delivery.DlvAddressGeocodeResponse;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumRestrictedAddressReason;
@@ -138,6 +141,70 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 	}
 	
+	public void performAddAndSetDeliveryAddress() throws FDResourceException {
+		FDSessionUser user = (FDSessionUser) session.getAttribute( SessionName.USER);
+
+		// call common delivery address check
+		ErpAddressModel erpAddress = checkDeliveryAddressInForm(request, result, session);
+		if (erpAddress == null) {
+			return;
+		}
+		Calendar date = new GregorianCalendar();
+		date.add( Calendar.DATE, 7 );
+		
+		DlvZoneInfoModel zoneInfo = AddressUtil.getZoneInfo( request, erpAddress, result, date.getTime() );
+
+		try {
+			boolean foundFraud =
+				FDCustomerManager.addShipToAddress(AccountActivityUtil.getActionInfo(session), !user.isDepotUser(), erpAddress);			
+			if (foundFraud) {
+//				session.setAttribute(SessionName.SIGNUP_WARNING, MessageFormat.format(
+//					SystemMessageList.MSG_NOT_UNIQUE_INFO,
+//					new Object[] {user.getCustomerServiceContact()}));
+				this.applyFraudChange(user);
+			}
+			if ( !result.isSuccess() )
+				return;
+
+			List<ErpAddressModel> dlvAddresses = FDCustomerFactory.getErpCustomer( getIdentity() ).getShipToAddresses();
+			ErpAddressModel thisAddress = null;
+			if( dlvAddresses.size() > 0 ) {
+				thisAddress =  (ErpAddressModel)dlvAddresses.get( dlvAddresses.size()-1 ) ;
+				if (EnumCheckoutMode.NORMAL == user.getCheckoutMode()) {
+					String zoneId = zoneInfo.getZoneCode();
+					if ( zoneId != null && zoneId.length() > 0 ) {
+						LOGGER.debug( "success! adding address to cart & setting defaultShipToAddress." );
+			
+						setDeliveryAddress(thisAddress, zoneInfo, null, true);
+					}
+			
+					if ( foundFraud ) {
+						user.invalidateCache();
+					}
+					user.updateUserState();
+					if ( user.isFraudulent() ) {
+						PromotionI promo = user.getRedeemedPromotion();
+						if ( promo != null && !user.getPromotionEligibility().isEligible( promo.getPromotionCode() ) ) {
+							user.setRedeemedPromotion( null );
+						}
+					}
+					session.setAttribute( SessionName.USER, user );
+				} else {
+					// Set delivery address PK
+					setSODeliveryAddress(thisAddress, zoneInfo, thisAddress.getPK().getId());
+				}
+			}
+		} catch (ErpDuplicateAddressException ex) {
+			LOGGER.warn(
+				"AddressUtil:addShipToAddress(): ErpDuplicateAddressException caught while trying to add a shipping address to the customer info:",
+				ex);
+			result.addError(
+				new ActionError(
+				"duplicate_user_address",
+					"The information entered for this address matches an existing address in your account."));
+		}
+	}
+
 	public void performEditDeliveryAddress(TimeslotEventModel event) throws FDResourceException {
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 
@@ -175,11 +242,14 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 
 	}
-	public static ErpAddressModel checkDeliveryAddressInForm(HttpServletRequest request, ActionResult actionResult, HttpSession session) throws FDResourceException {
+	public ErpAddressModel checkDeliveryAddressInForm(HttpServletRequest request, ActionResult actionResult, HttpSession session) throws FDResourceException {
 
 		AddressForm addressForm = new AddressForm();
 		addressForm.populateForm(request);
-		addressForm.validateForm(actionResult);
+		if(this.actionName.equals("addDeliveryAddressEx"))
+			addressForm.validateFormEx(actionResult);
+		else
+			addressForm.validateForm(actionResult);
 		if (!actionResult.isSuccess())
 			return null;
 

@@ -1,6 +1,10 @@
 package com.freshdirect.fdstore.content;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo;
 
 
 public interface AvailabilityI {
@@ -19,6 +23,7 @@ public interface AvailabilityI {
      * @return  */    
     public boolean isUnavailable();
 
+
     /**
      *  Tell if the product is available within the specified number
      *  of days.
@@ -33,5 +38,8 @@ public interface AvailabilityI {
     /**
      * @return  */    
     public Date getEarliestAvailability();
+    
+    public List<FDLimitedAvailabilityInfo> getLimitedAvailability();
+    
     
 }

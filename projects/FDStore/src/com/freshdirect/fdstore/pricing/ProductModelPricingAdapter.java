@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.cms.AttributeDefI;
@@ -18,6 +19,7 @@ import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
+import com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ComponentGroupModel;
@@ -1190,6 +1192,10 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	@Override
 	public boolean isUnavailable() {
 		return this.prodModel.isUnavailable();
+	}
+	@Override
+	public List<FDLimitedAvailabilityInfo> getLimitedAvailability() {
+		return this.prodModel.getLimitedAvailability();
 	}
 
 	@Override

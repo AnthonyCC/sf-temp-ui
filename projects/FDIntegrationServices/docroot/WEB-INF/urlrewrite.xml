@@ -74,7 +74,7 @@
 	<!--  Sign Up -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/register/</from>
-		<to last="true">/register.do?action=registerFromIphone&amp;ver=$1</to>
+		<to last="true">/register.do?action=register&amp;ver=$1</to>
 	</rule>
 		
 	<!-- Cart : Apply Promo -->
@@ -169,16 +169,29 @@
 	</rule>
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/deliveryaddress/add/</from>
-		<to last="true">/checkout.do?action=adddeliveryaddress&amp;ver=$1</to>
+		<to last="true">/register.do?action=adddeliveryaddress&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/checkout/deliveryaddresses/addandset/$</from>
+		<to last="true">/checkout.do?action=addandsetdeliveryaddress&amp;ver=$1</to>
 	</rule>
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/deliveryaddress/edit/</from>
-		<to last="true">/checkout.do?action=editdeliveryaddress&amp;ver=$1</to>
+		<to last="true">/register.do?action=editdeliveryaddress&amp;ver=$1</to>
 	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/checkout/deliveryaddresses/edit/$</from>
+		<to last="true">/register.do?action=editdeliveryaddress&amp;ver=$1</to>
+	</rule>
+	
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/deliveryaddress/delete/</from>
 		<to last="true">/checkout.do?action=deletedeliveryaddress&amp;ver=$1</to>
 	</rule>		
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/checkout/deliveryaddresses/delete/$</from>
+		<to last="true">/checkout.do?action=deletedeliveryaddress&amp;ver=$1</to>
+	</rule>
 
 	<!-- xxxxxxxxxxxxxxxxxxx -->
 	<!-- Set Delivery Slot -->
@@ -235,11 +248,11 @@
 		<to last="true">/checkout.do?action=addandsetpaymentmethod&amp;ver=$1</to>
 	</rule>
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/paymentmethod/edit/</from>
+		<from>^/v/([0-9]+)/(.*)/checkout/paymentmethod/edit/</from>
 		<to last="true">/checkout.do?action=editpaymentmethod&amp;ver=$1</to>
 	</rule>
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/paymentmethod/delete/</from>
+		<from>^/v/([0-9]+)/(.*)/checkout/paymentmethod/delete/</from>
 		<to last="true">/checkout.do?action=deletepaymentmethod&amp;ver=$1</to>
 	</rule>
 	<!-- Submit Order -->
@@ -503,6 +516,20 @@
 	<rule>
 		<from>^/v/([0-9]+)/help/(.*)</from>
 		<to last="true">/help.do?action=$2&amp;ver=$1</to>
+	</rule>
+	
+		<!-- Help -->
+	<!-- Terms of use -->
+	<rule>
+		<from>^/v/([0-9]+)/termsofuse/</from>
+		<to last="true">/help.do?action=termsOfUse&amp;ver=$1</to>
+	</rule>
+	
+	<!-- Terms of use -->
+		
+	<rule>
+		<from>^/v/([0-9]+)/help/(.*)</from>
+		<to last="true">/customeragreement.do?action=$2&amp;ver=$1</to>
 	</rule>
 	
 	<!-- Browse -->

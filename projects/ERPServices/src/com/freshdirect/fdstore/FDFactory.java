@@ -410,7 +410,7 @@ class FDFactory {
 			EnumAvailabilityStatus.AVAILABLE,
 			new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),
 			null,pinfo.getRating(),pinfo.getFreshness(), pinfo.getZonePriceInfoList(),pinfo.getGroup(),pinfo.getSustainabilityRating(),
-			pinfo.getUpc());
+			pinfo.getUpc(), pinfo.getAvailabilityDates());
 	}
 	
 	/**
@@ -424,7 +424,7 @@ class FDFactory {
 			EnumATPRule.JIT,
 			EnumAvailabilityStatus.TEMP_UNAV,
 			new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),
-			null,"",null,ZonePriceInfoListing.getDummy(), null,"", null);
+			null,null,null,ZonePriceInfoListing.getDummy(), null,"", null, new Date[0]);
 	}
 
 

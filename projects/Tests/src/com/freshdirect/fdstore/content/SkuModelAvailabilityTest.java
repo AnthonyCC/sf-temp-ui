@@ -43,12 +43,13 @@ public class SkuModelAvailabilityTest extends TestCase {
 		erpEntries.add(new ErpInventoryEntryModel(DF.parse("2004-01-23"), 10000));
 		inventoryModel = new ErpInventoryModel("SAP12345", now, erpEntries);
 		inventoryCache.addInventory(materials[0], inventoryModel);
-		availability   = new FDStockAvailability(inventoryModel, 1, 1, 1);
+		Date[] availDates = new Date[0];
+		availability   = new FDStockAvailability(inventoryModel, 1, 1, 1, availDates);
 
 		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
 		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-        productInfo = new FDProductInfo("SKU123456",1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList, null,"", null);
+        productInfo = new FDProductInfo("SKU123456",1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList, null,"", null, new Date[0]);
 
 		adapter = new SkuModel.AvailabilityAdapter(productInfo, availability);
 
@@ -81,12 +82,13 @@ public class SkuModelAvailabilityTest extends TestCase {
 		erpEntries.add(new ErpInventoryEntryModel(dayAfterTomorrow, 10000));
 		inventoryModel   = new ErpInventoryModel("SAP12345", today, erpEntries);
 		inventoryCache.addInventory(materials[0], inventoryModel);
-		availability     = new FDStockAvailability(inventoryModel, 1, 1, 1);
+		Date[] availDates = new Date[0];
+		availability     = new FDStockAvailability(inventoryModel, 1, 1, 1, availDates);
 
 		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
 		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-		productInfo = new FDProductInfo("SKU123456",1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, today,inventoryCache,"",null,dummyList,null,"", null);
+		productInfo = new FDProductInfo("SKU123456",1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, today,inventoryCache,"",null,dummyList,null,"", null, new Date[0]);
 
 		adapter = new SkuModel.AvailabilityAdapter(productInfo, availability);
 
@@ -124,12 +126,13 @@ public class SkuModelAvailabilityTest extends TestCase {
 		erpEntries.add(new ErpInventoryEntryModel(dayAfterTomorrow, 10000));
 		inventoryModel   = new ErpInventoryModel("SAP12345", today, erpEntries);
 		inventoryCache.addInventory(materials[0], inventoryModel);
-		availability     = new FDStockAvailability(inventoryModel, 1, 1, 1);
+		Date[] availDates = new Date[0];
+		availability     = new FDStockAvailability(inventoryModel, 1, 1, 1, availDates);
 		
 		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
 		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-		productInfo = new FDProductInfo("SKU123456",1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.DISCONTINUED, today,inventoryCache,"",null,dummyList, null,"", null);
+		productInfo = new FDProductInfo("SKU123456",1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.DISCONTINUED, today,inventoryCache,"",null,dummyList, null,"", null, new Date[0]);
 		
 		adapter = new SkuModel.AvailabilityAdapter(productInfo, availability);
 

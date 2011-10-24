@@ -29,7 +29,7 @@ public class WLSSapGrpServer extends ApplicationLifecycleListener {
 
 	public void postStart(ApplicationLifecycleEvent evt) {
 
-		System.out.println("inside WLSSapZoneServer:"+ErpServicesProperties.getJcoClientListenersEnabled());
+		System.out.println("inside WLSSapGrpServer:"+ErpServicesProperties.getJcoClientListenersEnabled());
 		
 		if (ErpServicesProperties.getJcoClientListenersEnabled()) {
 

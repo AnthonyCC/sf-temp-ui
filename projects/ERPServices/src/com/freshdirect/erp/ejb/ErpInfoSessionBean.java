@@ -1379,4 +1379,35 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
+	
+	private static final String QUERY_AVAILABILITY_DATES = 
+		"SELECT DATE_AVAILABLE FROM ERPS.AVAILABILITY_DELIVERY_DATES WHERE MATERIAL_SAP_ID = ?";
+	
+	public List<Date> getAvailableDeliveryDates(String materialNumber){
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement(QUERY_AVAILABILITY_DATES);
+			ps.setString(1, materialNumber);
+			rs = ps.executeQuery();
+
+			List<Date> restrictedDates = new ArrayList<Date>();
+			while (rs.next()) {
+				restrictedDates.add(rs.getDate("DATE_AVAILABLE"));
+			}
+
+			return restrictedDates;
+
+		} catch (SQLException sqle) {
+			LOGGER.error("Unable to find availability restriction for materialNumber : " + materialNumber, sqle);
+			throw new EJBException(sqle);
+		} finally {
+                    close(rs);
+                    close(ps);
+                    close(conn);
+		}
+		
+	}
 }

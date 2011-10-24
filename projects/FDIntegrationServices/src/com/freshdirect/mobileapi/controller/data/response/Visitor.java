@@ -8,7 +8,7 @@ public class Visitor extends Message {
 	
 	private String zipCode;
 	private EnumServiceType serviceType;
-	private EnumDeliveryStatus deliveryStatus;
+	private String deliveryStatus;
 	private String address1;
 	private String apartment;
 	private String city;
@@ -50,10 +50,10 @@ public class Visitor extends Message {
 	public void setServiceType(EnumServiceType serviceType) {
 		this.serviceType = serviceType;
 	}
-	public EnumDeliveryStatus getDeliveryStatus() {
+	public String getDeliveryStatus() {
 		return deliveryStatus;
 	}
-	public void setDeliveryStatus(EnumDeliveryStatus deliveryStatus) {
+	public void setDeliveryStatus(String deliveryStatus) {
 		this.deliveryStatus = deliveryStatus;
 	}
 

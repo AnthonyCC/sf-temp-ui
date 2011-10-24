@@ -16,6 +16,7 @@ import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
 public abstract class AbstractProductModelImpl extends ContentNodeModelImpl implements ProductModel {
@@ -566,6 +567,17 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 			} catch (FDSkuNotFoundException e) {
 				//ignore
 			}			
+		}
+		return null;
+	}
+	
+	/**
+	 * return default skus limited availability.
+	 */
+	public List<FDLimitedAvailabilityInfo> getLimitedAvailability() {
+		SkuModel sku = getDefaultSku();
+		if(sku != null){
+			return sku.getLimitedAvailability();
 		}
 		return null;
 	}

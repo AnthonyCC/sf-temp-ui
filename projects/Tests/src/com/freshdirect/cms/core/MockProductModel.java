@@ -23,6 +23,7 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -1961,6 +1962,12 @@ public class MockProductModel extends MockContentNodeModel implements
 			} catch (FDSkuNotFoundException e) {				
 			}			
 		}
+		return null;
+	}
+
+	@Override
+	public List<FDLimitedAvailabilityInfo> getLimitedAvailability() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

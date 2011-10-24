@@ -302,6 +302,7 @@ final int W_PRODUCT_MULTIPLE_SKUS_SEC_DOMAIN = 15;
 <%-- ========================================================= Rating ============================================================================ --%>
 		<% if (!isWineLayout) { %>
 		<%@include file="/shared/includes/product/i_product_skus_rating.jspf" %>
+        <%@include file="/shared/includes/product/i_sku_availability.jspf" %>
 		<% } %>
 <%-- =========================================================  ============================================================================ --%>
 

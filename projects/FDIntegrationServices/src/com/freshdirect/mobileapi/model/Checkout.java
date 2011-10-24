@@ -121,17 +121,12 @@ public class Checkout {
         return result;
     }
 
-    public ResultBundle addDeliveryAddress(DeliveryAddressRequest deliveryAddress) throws FDException {
+    public ResultBundle addAndSetDeliveryAddress(DeliveryAddressRequest deliveryAddress) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
-        ResultBundle result = tagWrapper.addDeliveryAddress(deliveryAddress);
+        ResultBundle result = tagWrapper.addAndSetDeliveryAddress(deliveryAddress);
         return result;
     }
     
-    public ResultBundle editDeliveryAddress(DeliveryAddressRequest deliveryAddress) throws FDException {
-        CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
-        ResultBundle result = tagWrapper.editDeliveryAddress(deliveryAddress);
-        return result;
-    }
     
     public ResultBundle deleteDeliveryAddress(String deleteShipToAddressId) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);

@@ -275,7 +275,7 @@ public class SmartStoreConfigurationStrategyTest extends FDCustomerManagerTestSu
 				ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
 				ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, -1, -1, ZonePriceListing.MASTER_DEFAULT_ZONE);
 				dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-				productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"", null, dummyList, null,"", null);
+				productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"", null, dummyList, null,"", null, new Date[0]);
 				
 			} else {
 				// fallback: return all other items as available
@@ -286,7 +286,7 @@ public class SmartStoreConfigurationStrategyTest extends FDCustomerManagerTestSu
 				ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
 				ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 				dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-				productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"", null, dummyList, null,"", null);
+				productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"", null, dummyList, null,"", null, new Date[0]);
 				
 			}
 

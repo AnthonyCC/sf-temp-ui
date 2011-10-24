@@ -97,6 +97,7 @@
 		
 		<% if (!isWineLayout) { %>
 		<%@include file="/shared/includes/product/i_product_skus_rating.jspf" %>
+        <%@include file="/shared/includes/product/i_sku_availability.jspf" %>
 		<% } %>
 		<input type="hidden" name="skuCode" value="<%= defaultSku.getSkuCode() %>">
 		

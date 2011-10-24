@@ -1,7 +1,10 @@
 package com.freshdirect.fdstore.atp;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdstore.OncePerRequestDateCache;
@@ -46,4 +49,13 @@ public class FDAvailabilityHelper {
 		return av.getFirstAvailableDate(new DateRange(startCal.getTime(), endCal.getTime()));
 	}
 
+	public static List<FDLimitedAvailabilityInfo> getLimitedAvailabilityInfo(FDAvailabilityI av) {
+		if(av instanceof FDStockAvailability){
+			FDStockAvailability availability = (FDStockAvailability) av;
+			return availability.getLimitedAvailabilityInfo();
+			
+		}
+		return null;
+	}
+	
 }

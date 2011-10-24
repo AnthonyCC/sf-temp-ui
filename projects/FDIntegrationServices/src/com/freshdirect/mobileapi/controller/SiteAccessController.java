@@ -149,8 +149,9 @@ public class SiteAccessController extends BaseController {
         responseMessage = new Visitor();
         ((Visitor) responseMessage).setZipCode(user.getZipCode());
         ((Visitor) responseMessage).setServiceType(user.getServiceType());
-        ((Visitor) responseMessage).setDeliveryStatus((EnumDeliveryStatus)resultBundle.getExtraData(
-        		SiteAccessControllerTagWrapper.REQUESTED_SERVICE_TYPE_DLV_STATUS));
+        EnumDeliveryStatus dlvStatus = (EnumDeliveryStatus)resultBundle.getExtraData(
+        					SiteAccessControllerTagWrapper.REQUESTED_SERVICE_TYPE_DLV_STATUS);
+        ((Visitor) responseMessage).setDeliveryStatus(dlvStatus != null ? dlvStatus.getName() : "");
         //AddressModel address = user.getAddress();
         if(requestMessage.getAddress1() != null){
         	((Visitor) responseMessage).setAddress1(requestMessage.getAddress1());

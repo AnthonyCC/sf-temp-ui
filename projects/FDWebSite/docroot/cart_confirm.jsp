@@ -5,6 +5,7 @@
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import="com.freshdirect.common.pricing.*" %>
+<%@ page import='com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo';%>
 <%@ page import='java.util.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='bean' prefix='bean' %>
@@ -146,7 +147,39 @@ Recipe recipe = null;
        <img src="/media_stat/images/layout/clear.gif" width="30" height="1" border="0">
 <%   }  %>
     </td></tr>
-<%  if(displayShortTermUnavailability && earliestAvailability != null) {%>
+<%
+    boolean displayLimitedAvailability = false;
+    SkuModel a_sku = prdNode.getSku(orderLine.getSkuCode());
+    if(displayShortTermUnavailability) {
+        List<FDLimitedAvailabilityInfo> limitedAvailibility = a_sku.getLimitedAvailability();
+        if(limitedAvailibility != null && limitedAvailibility.size() > 0){
+%>
+		<tr><td colspan="2">
+		<font class="text12bold">Limited Delivery Availability&nbsp;-&nbsp;</font>
+<%        
+            Calendar cal = Calendar.getInstance();
+            displayLimitedAvailability = true;
+            for(FDLimitedAvailabilityInfo l: limitedAvailibility) {
+                cal.setTime(l.getRequestedDate());
+                int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+                double quantity = l.getQuantity();
+                if(quantity > 0) {
+            %>
+                <img src="/media_stat/images/limited_avail/<%= dayOfWeek %>.gif" width="13" height="13" border="0" vspace="1" alt="Item Available">
+            <%
+                } else {
+            %>
+                <img src="/media_stat/images/limited_avail/<%= dayOfWeek %>_x.gif" width="13" height="13" border="0" vspace="1" alt="Item Unavailable">
+            <%                
+                }
+                
+            }
+%>
+		</td></tr>
+<%            
+        }
+    }
+    if(!displayLimitedAvailability && displayShortTermUnavailability && earliestAvailability != null) {%>
         <tr><td colspan="2"><br><font class="text11rbold">Reminder: Earliest Delivery <%=earliestAvailability%><br></font></td></tr>
 <%  }
             itemShown++;
