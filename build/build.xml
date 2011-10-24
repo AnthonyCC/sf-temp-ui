@@ -53,7 +53,7 @@
 
 	<path id="common.classpath">
 		<pathelement location="${thirdparty.home}/${log4j.jar}"/>
-        <pathelement location="${thirdparty.home}/javaee-api-5.jar"/>
+        	<pathelement location="${thirdparty.home}/javaee-api-5.jar"/>
 		<pathelement location="${thirdparty.home}/commons-lang-2.3.jar"/>
 		<pathelement location="${thirdparty.home}/commons-logging-1.1.1.jar"/>
 		<pathelement location="${thirdparty.home}/commons-collections-3.1.jar"/>
@@ -82,9 +82,9 @@
 		<pathelement location="${thirdparty.home}/jsonrpc-1.0.jar"/>
 		<pathelement location="${thirdparty.home}/bsh-2.0b4.jar"/>
 		<pathelement location="${thirdparty.home}/jxl.jar"/>
-        <pathelement location="${thirdparty.home}/jasypt-1.5.jar"/>
-        <pathelement location="${thirdparty.home}/iText-2.0.8.jar"/>
-        <pathelement location="${thirdparty.home}/core-renderer.jar"/>
+        	<pathelement location="${thirdparty.home}/jasypt-1.5.jar"/>
+	        <pathelement location="${thirdparty.home}/iText-2.0.8.jar"/>
+        	<pathelement location="${thirdparty.home}/core-renderer.jar"/>
 		<pathelement location="${thirdparty.home}/httpclient-4.0.1.jar"/>
 		<pathelement location="${thirdparty.home}/httpcore-4.0.1.jar"/>
 		<pathelement location="${thirdparty.home}/httpmime-4.0.1.jar"/>
@@ -101,6 +101,7 @@
 		<pathelement location="${thirdparty.home}/mvel2.jar"/>
 		<pathelement location="${thirdparty.home}/org.eclipse.jdt.core_3.6.1.v_A68_R36x.jar"/>
 		<pathelement location="${thirdparty.home}/stringtemplate.jar"/>
+		<pathelement location="${thirdparty.home}/jstl.jar"/>
 	</path>
 
 	<path id="testing.classpath">
@@ -1716,7 +1717,7 @@
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
 			<pathelement location="${work.dir}/RoutingServices.jar"/>
 			<pathelement location="${thirdparty.home}/struts.jar"/>
-            <pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
+	                <pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
 			<pathelement location="${thirdparty.home}/castor-0.9.5.3-xml.jar"/>
 			<pathelement location="${thirdparty.home}/jstl.jar"/>
 			<pathelement location="${thirdparty.home}/standard.jar"/>
