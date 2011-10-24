@@ -235,7 +235,7 @@ public class SmartStore {
                 // otherwise the product property will be null
                 smartStoreRecommendationContainer.addProduct(resultItem);
             } catch (ModelException e) {
-                LOG.error("ModelException encountered while trying to wrap sku=" + pi.getSku().getSkuCode(), e);
+                LOG.debug("ModelException encountered while trying to wrap sku=" + pi.getSku().getSkuCode(), e);
                 continue;
             }
             rank++;
