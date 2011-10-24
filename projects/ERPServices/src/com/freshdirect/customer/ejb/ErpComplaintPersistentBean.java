@@ -1,5 +1,6 @@
 package com.freshdirect.customer.ejb;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,8 +11,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.freshdirect.crm.ejb.CustomerEmailDAO;
-import com.freshdirect.customer.EnumComplaintType;
 import com.freshdirect.customer.EnumComplaintStatus;
+import com.freshdirect.customer.EnumComplaintType;
 import com.freshdirect.customer.EnumSendCreditEmail;
 import com.freshdirect.customer.ErpComplaintLineModel;
 import com.freshdirect.customer.ErpComplaintModel;
@@ -113,7 +114,7 @@ public class ErpComplaintPersistentBean extends DependentPersistentBeanSupport {
 		// when a complaint is created conceptualy these values should be null :(
 		ps.setTimestamp(5, this.model.getApprovedDate() != null ? new java.sql.Timestamp(this.model.getApprovedDate().getTime()) : null);
 		ps.setString(6, this.model.getApprovedBy());
-		ps.setDouble(7, this.model.getAmount());
+		ps.setBigDecimal(7, new BigDecimal(String.valueOf(this.model.getAmount())));
 		ps.setString(8, this.model.getDescription());
 		ps.setString(9, this.model.getStatus().getStatusCode());
 		ps.setString(10,this.model.getCustomerEmail() !=null ? this.model.getCustomerEmail().getPK().getId(): "");
@@ -156,7 +157,7 @@ public class ErpComplaintPersistentBean extends DependentPersistentBeanSupport {
 		}
 		
 		ps.setString(5, this.model.getApprovedBy());
-		ps.setDouble(6, this.model.getAmount());
+		ps.setBigDecimal(6, new BigDecimal(String.valueOf(this.model.getAmount())));
 		ps.setString(7, this.model.getDescription());
 		ps.setString(8, this.model.getStatus().getStatusCode());
 		ps.setString(9, this.model.getCustomerEmail() !=null ? this.model.getCustomerEmail().getPK().getId() : null);

@@ -2,12 +2,19 @@
 
 package com.freshdirect.customer.ejb;
 
-import java.sql.*;
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.List;
 
-import com.freshdirect.framework.core.*;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.customer.ErpCustomerCreditModel;
-import java.util.List;
+import com.freshdirect.framework.core.DependentPersistentBeanSupport;
+import com.freshdirect.framework.core.ModelI;
+import com.freshdirect.framework.core.PrimaryKey;
 
 /**
  * ErpCustomerCredit persistent bean.
@@ -109,8 +116,9 @@ public class ErpCustomerCreditPersistentBean extends DependentPersistentBeanSupp
 		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.CUSTOMERCREDIT (ID, CUSTOMER_ID, AMOUNT, ORIGINAL_AMOUNT, DEPARTMENT, COMPLAINT_ID, CREATE_DATE, AFFILIATE) values (?,?,?,?,?,?,?,?)");
 		ps.setString(1, id);
 		ps.setString(2, this.getParentPK().getId());
-		ps.setDouble(3, this.remainingAmount);
-		ps.setDouble(4, this.originalAmount);
+		ps.setBigDecimal(3, new BigDecimal(String.valueOf(this.remainingAmount)));
+		ps.setBigDecimal(4, new BigDecimal(String.valueOf(this.originalAmount)));
+	
 		ps.setString(5, this.department);
 		ps.setString(6, (this.complaintPk == null ? "" : this.complaintPk.getId()) );
 		ps.setTimestamp(7, (this.createDate == null ? new java.sql.Timestamp(System.currentTimeMillis()): new Timestamp(this.createDate.getTime())));
@@ -161,8 +169,8 @@ public class ErpCustomerCreditPersistentBean extends DependentPersistentBeanSupp
 	public void store(Connection conn) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.CUSTOMERCREDIT SET COMPLAINT_ID = ?, AMOUNT = ?, ORIGINAL_AMOUNT = ?, DEPARTMENT = ?, CUSTOMER_ID = ? , AFFILIATE = ? WHERE ID=?");
 		ps.setString(1, this.complaintPk.getId());
-		ps.setDouble(2, this.remainingAmount);
-		ps.setDouble(3, this.originalAmount);
+		ps.setBigDecimal(2, new BigDecimal(String.valueOf(this.remainingAmount)));
+		ps.setBigDecimal(3, new BigDecimal(String.valueOf(this.originalAmount)));
 		ps.setString(4, this.department);
 		ps.setString(5, this.getParentPK().getId());
 		ps.setString(6, this.affiliate == null ? "" : this.affiliate.getCode());

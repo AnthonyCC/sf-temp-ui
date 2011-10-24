@@ -9,6 +9,7 @@
 
 package com.freshdirect.customer.ejb;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -256,10 +257,10 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 		ps.setString(19, this.altApartment);
 		ps.setString(20, this.convertPhone(this.altPhone));
 		ps.setString(21, this.convertExtension(this.altPhone));
-		ps.setDouble(22, this.addressInfo.getLongitude());
-		ps.setDouble(23, this.addressInfo.getLatitude());
-		ps.setDouble(24, this.addressInfo.getLongitude());
-		ps.setDouble(25, this.addressInfo.getLatitude());
+		ps.setBigDecimal(22, new BigDecimal(String.valueOf(this.addressInfo.getLongitude())));
+		ps.setBigDecimal(23, new BigDecimal(String.valueOf(this.addressInfo.getLatitude())));
+		ps.setBigDecimal(24, new BigDecimal(String.valueOf(this.addressInfo.getLongitude())));
+		ps.setBigDecimal(25, new BigDecimal(String.valueOf(this.addressInfo.getLatitude())));
 		if(this.serviceType == null){
 			ps.setNull(26, Types.VARCHAR);
 		} else {
@@ -377,10 +378,11 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 		ps.setString(18, ("".equals(this.altApartment) ? " " : this.altApartment));
 		ps.setString(19, this.convertPhone(this.altPhone));		
 		ps.setString(20, this.convertExtension(this.altPhone));
-		ps.setDouble(21, this.addressInfo.getLongitude());
-		ps.setDouble(22, this.addressInfo.getLatitude());
-		ps.setDouble(23, this.addressInfo.getLongitude());
-		ps.setDouble(24, this.addressInfo.getLatitude());
+		ps.setBigDecimal(21, new BigDecimal(String.valueOf(this.addressInfo.getLongitude())));
+		ps.setBigDecimal(22, new BigDecimal(String.valueOf(this.addressInfo.getLatitude())));
+		ps.setBigDecimal(23, new BigDecimal(String.valueOf(this.addressInfo.getLongitude())));
+		ps.setBigDecimal(24, new BigDecimal(String.valueOf(this.addressInfo.getLatitude())));
+
 		if(this.serviceType == null){
 			ps.setNull(25, Types.VARCHAR);
 		}else{

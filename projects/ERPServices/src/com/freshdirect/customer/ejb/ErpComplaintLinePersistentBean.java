@@ -2,11 +2,20 @@
 
 package com.freshdirect.customer.ejb;
 
-import java.sql.*;
-import com.freshdirect.framework.core.*;
-import com.freshdirect.customer.*;
-
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
+
+import com.freshdirect.customer.EnumComplaintDlvIssueType;
+import com.freshdirect.customer.EnumComplaintLineMethod;
+import com.freshdirect.customer.EnumComplaintLineType;
+import com.freshdirect.customer.ErpComplaintLineModel;
+import com.freshdirect.customer.ErpComplaintReason;
+import com.freshdirect.framework.core.ModelI;
+import com.freshdirect.framework.core.PrimaryKey;
 
 /**
  * ErpComplaintLine persistent bean.
@@ -94,12 +103,12 @@ public class ErpComplaintLinePersistentBean extends ErpReadOnlyPersistentBean {
 		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.COMPLAINTLINE (ID, COMPLAINT_ID, AMOUNT, COMPLAINT_DEPT_CODE_ID, COMPLAINT_TYPE, METHOD, LINE_NUMBER, QUANTITY, ORDERLINE_ID, CARTON_NUMBER) values (?,?,?,?,?,?,?,?,?,?)");
 		ps.setString(1, id);
 		ps.setString(2, this.getParentPK().getId());
-		ps.setDouble(3, this.model.getAmount());
+		ps.setBigDecimal(3, new BigDecimal(String.valueOf(this.model.getAmount())));
 		ps.setString(4, this.model.getReason().getId());
 		ps.setString(5, this.model.getType().getStatusCode());
 		ps.setString(6, this.model.getMethod().getStatusCode());
 		ps.setString(7, this.model.getComplaintLineNumber());
-		ps.setDouble(8, this.model.getQuantity());
+		ps.setBigDecimal(8, new BigDecimal(String.valueOf(this.model.getQuantity())));
 		ps.setString(9, this.model.getOrderLineId());
 		ps.setString(10, this.model.getCartonNumber());
 		try {
