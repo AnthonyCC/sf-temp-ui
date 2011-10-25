@@ -1,3 +1,4 @@
+<%@ page autoFlush='false' buffer="64kb" %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.webapp.util.JspLogger' %>
