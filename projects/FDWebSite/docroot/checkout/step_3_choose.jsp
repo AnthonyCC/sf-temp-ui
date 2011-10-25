@@ -484,7 +484,7 @@ if(isPaymentRequired) {
 		<table width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" border="0" cellspacing="0" cellpadding="2">
 			<tr valign="top">
 			<td><img src="/media_stat/images/headers/check_acct_details.gif" width="181" height="9" alt="CHECKING ACCOUNT DETAILS"><br>
-			<IMG src="/media_stat/images/layout/999966.gif" width="675" height="1" border="0" VSPACE="3"><br></td>
+			<IMG src="/media_stat/images/layout/999966.gif" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" height="1" border="0" VSPACE="3"><br></td>
 			</tr>
 			<tr valign="middle">
 			<td class="text12">If you need to enter another checking account: <a href="/checkout/step_3_checkacct_add.jsp"><IMG src="/media_stat/images/buttons/add_new_acct.gif" width="108" height="16" ALT="Add New Checking Account" border="0" ALIGN="absmiddle"></a>
