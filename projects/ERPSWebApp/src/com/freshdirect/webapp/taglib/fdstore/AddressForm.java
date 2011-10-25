@@ -112,11 +112,6 @@ public class AddressForm implements WebFormI { //, AddressName
             homePhone = request.getParameter("homephone");
         }
         
-        if ( homePhone == null || homePhone.trim().equals("") ) {
-            homePhone = request.getParameter("homephone");
-        }
-        
-        
         
         if ("true".equals(request.getParameter(EnumUserInfoName.DLV_UNATTENDED_CONSENT_SEEN.getCode()))) {
         

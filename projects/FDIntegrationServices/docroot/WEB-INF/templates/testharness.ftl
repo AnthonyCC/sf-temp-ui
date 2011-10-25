@@ -45,7 +45,7 @@ function loadStuff() {
   var loaddata = $("#loaddata").val();
   if(loaddata == "Signup") {  	
   	$("#url").val("/saptest12@freshdirect.com/register/");
-  	$("#payload").val('{ "firstName": "Sairam", "lastName":"Krishnasamy", "email":"iphonetest@freshdirect.com", "confirmEmail":"iphonetest@freshdirect.com", "password":"test", "securityQuestion":"newyork", "address1":"", "apartment":"", "city":"", "state":"", "zipCode" : "11101", "serviceType" : "HOME"}');
+  	$("#payload").val('{ "firstName": "Sairam", "lastName":"Krishnasamy", "email":"iphonetest@freshdirect.com", "confirmEmail":"iphonetest@freshdirect.com", "password":"test", "securityQuestion":"newyork"}');
   	$("#result").val("");
   } if(loaddata == "CheckByZip") {  	
   	$("#url").val("/saptest12@freshdirect.com/zipcheck/checkbyzip/");
@@ -186,11 +186,11 @@ function loadStuff() {
   	$("#result").val("");
   } else if (loaddata == "AddDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/deliveryaddress/add/");
-  	$("#payload").val('{"dlvfirstname" : "David","dlvlastname" : "Saad","dlvcompanyname":"", "dlvhomephone" : "7189281226","dlvhomephoneext" : "","address1" : "23-30 Borden Ave","address2" : "","apartment" : "","city" : "Long Island","state" : "NY","zipcode" : "11101","country" : "US","deliveryInstructions" : "", doorman:""}');
+  	$("#payload").val('{"dlvfirstname" : "David","dlvlastname" : "Saad", "dlvhomephone" : "7189281226","dlvhomephoneext" : "","address1" : "23-30 Borden Ave","address2" : "","apartment" : "","city" : "Long Island","state" : "NY","zipcode" : "11101","country" : "US","deliveryInstructions" : "", "doorman":"false", "dlvServiceType" : "HOME"}');
   	$("#result").val("");
   } else if (loaddata == "AddAndSetDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/deliveryaddresses/addandset/");
-  	$("#payload").val('{"dlvfirstname" : "David","dlvlastname" : "Saad","dlvcompanyname":"", "dlvhomephone" : "7189281226","dlvhomephoneext" : "","address1" : "23-30 Borden Ave","address2" : "","apartment" : "","city" : "Long Island","state" : "NY","zipcode" : "11101","country" : "US","deliveryInstructions" : "","alternatePhone" : "7189281000","alternatePhoneExt" : "","alternateDelivery" : "","alternateFirstName" : "","alternateLastName" : "","alternateApartment" : "","altContactPhone" : "","altContactPhoneExt" : "","unattendedDeliveryOpt" : "","unattendedDeliveryInstr" : "","unattendedDeliveryNoticeSeen" : "","dlvServiceType" : "HOME"}');
+  	$("#payload").val('{"dlvfirstname" : "David","dlvlastname" : "Saad", "dlvhomephone" : "7189281226","dlvhomephoneext" : "","address1" : "23-30 Borden Ave","address2" : "","apartment" : "","city" : "Long Island","state" : "NY","zipcode" : "11101","country" : "US","deliveryInstructions" : "","doorman":"false", "dlvServiceType" : "HOME"}');
   	$("#result").val("");
   } else if (loaddata == "EditDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/deliveryaddress/edit/");

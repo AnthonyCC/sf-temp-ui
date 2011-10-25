@@ -268,7 +268,7 @@ public class RegistrationAction extends WebActionSupport {
 		//AddressInfo addInfo = new AddressInfo(request);
 
 		//EnumServiceType serviceType = addInfo.getAddressType();
-		aInfo.validate(actionResult);
+		aInfo.validateEx(actionResult);
 		cInfo.validateEx(actionResult);
 
 		if (!actionResult.isSuccess() /*&& !ALLOW_ALL*/) {
@@ -285,27 +285,13 @@ public class RegistrationAction extends WebActionSupport {
 		EnumServiceType serviceType = user.getSelectedServiceType();
 		AddressModel address = user.getAddress();
 		//Address will not be null when user signs up for a Partial Delivery address
-		if(address != null) {
-			// VALIDATE DELIVERY ADDRESS
+		if(address != null && address.getAddress1() != null && address.getAddress1().length() > 0) {
+			// VALIDATE DELIVERY ADDRESS to see if service restricted
 		
-			// NOTE: don't be strict in USPS service checking if user is pickup or depot
-			//AddressModel dlvAddress = addInfo.getDlvAddress();
 			address.setServiceType(user.getSelectedServiceType());
-			DeliveryAddressValidator validator = new DeliveryAddressValidator(address, user.isHomeUser() || user.isCorporateUser());
-			
-			if (!actionResult.isSuccess()  /*&& !ALLOW_ALL*/) {
-				return ERROR;
-			}
-	
-			address = validator.getScrubbedAddress();
-	
-	
-			if (validator.getServiceResult() != null && validator.getServiceResult().isServiceRestricted()) {
-				restrictedAddress = true;
-				session.setAttribute(SessionName.BLOCKED_ADDRESS_WARNING, Boolean.TRUE);
-			}
+			DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkAddress(address);
 
-			this.reclassifyUser(user, address, serviceType, validator.getServiceResult());
+			this.reclassifyUser(user, address, serviceType, serviceResult);
 		} else {
 			//Directly from Zip Check page
 			String zipCode = user.getZipCode();
@@ -333,7 +319,7 @@ public class RegistrationAction extends WebActionSupport {
 			
 			erpCustomer.setCustomerInfo(customerInfo);
 			ErpAddressModel erpAddress = null;
-			if(address != null) {//Only true when customer came from partial zip check page in IPhone.
+			if(address != null && address.getAddress1() != null && address.getAddress1().length() > 0) {//Only true when customer came from partial zip check page in IPhone.
 				erpAddress = new ErpAddressModel(address);
 				erpAddress.setFirstName(customerInfo.getFirstName());
 				erpAddress.setLastName(customerInfo.getLastName());

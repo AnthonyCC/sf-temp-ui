@@ -471,6 +471,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 				oldCart = user.getShoppingCart();
 			}
 			user = new FDSessionUser(FDCustomerManager.createNewUser(this.address, serviceType), session);
+			user.setAddress(this.address);
 			user.setSelectedServiceType(serviceType);
 			//Added the following line for zone pricing to keep user service type up-to-date.
 			user.setZPServiceType(serviceType);
