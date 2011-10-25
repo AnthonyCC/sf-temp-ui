@@ -2135,15 +2135,19 @@ a .usq-rating-sm,a .usq-rating-lg,a .usq-rating-half-sm,a .usq-rating-half-lg {
 }
 
 #usq-er-panel .bd {
-	width: 500px;
+	width: 630px;
+	margin-left: auto;
+	margin-right: auto;
 	padding: 0px;
 	margin: 0px;
 }
 
 #usq-er-panel .bde {
-	width: 460px;
+	width: 600px;
 	margin: 20px;
 	padding: 0px;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 #usq-er-panel .usq-xprt-rating-key table {

@@ -27,7 +27,7 @@ String lastDept = null;
 %>
 	<font class="text11orbold"><%=lastDept%></font>
 <%  }%>
-<div style="margin-left: 8px; text-indent: -8px;"><%=orderLine.getDescription()%></div>
+<div style="margin-left: 8px; text-indent: -8px; font-weight:bold;"><%=orderLine.getDescription()%></div>
 </logic:iterate>	
 		</font>
 	</td>

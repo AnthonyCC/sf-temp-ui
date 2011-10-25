@@ -77,7 +77,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			visible: false,
 			modal: true,
 			draggable: false,
-			width: "500px"
+			width: "630px"
 		});
 		erPanel.setBody(o.responseText);
 		

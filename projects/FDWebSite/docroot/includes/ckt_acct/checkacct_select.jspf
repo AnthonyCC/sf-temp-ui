@@ -102,7 +102,7 @@
         </TR></TABLE><br><br>
 <%              } %>
 
-	<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" width="675">
+	<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" width="675" align="left" style="padding-bottom: 20px;">
 	<TR valign="top">
 <%
             itemCounter=0;

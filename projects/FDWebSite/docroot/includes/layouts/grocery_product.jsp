@@ -23,6 +23,7 @@
 
 <% //expanded page dimensions
 final int W_GROCERY_PRODUCT = 601;
+final int W_GROCERY_PRODUCT_CENTER_PADDING = 10;
 %>
 
 
@@ -391,6 +392,7 @@ if(productCode!=null && prodCatId !=null ) {
         bigProdShown = true;
         SkuModel minSku = null;
         bigProductImage = productNode.getDetailImage();
+        
         String thisProdBrandLabel = "";
         String thisProdBrand = "";
         String prodNameLower= productNode.getFullName().toLowerCase();
@@ -693,7 +695,7 @@ if(productCode!=null && prodCatId !=null ) {
 	}
 %><br>
 </td>
-<td width="10">&nbsp;</td><%-- buffer cell --%>
+<td width=<%= W_GROCERY_PRODUCT_CENTER_PADDING %>>&nbsp;</td><%-- buffer cell --%>
 <td align="center">
 	<br />
 	<table border="0" width="100%" cellspacing="0" cellpadding="0">

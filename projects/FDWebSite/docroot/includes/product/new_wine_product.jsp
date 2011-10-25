@@ -92,6 +92,7 @@ final int W_NEW_WINE_PRODUCT_RIGHT = 165;
 			<%@ include file="/shared/includes/product/usq_wine_info.jspf" %>
 		</td>
 	</tr>
+	
 	<%-- RATINGS LEGEND --%>
 	<%
 
@@ -109,6 +110,7 @@ final int W_NEW_WINE_PRODUCT_RIGHT = 165;
 			<%@ include file="/shared/includes/wine/i_wine_expert_ratings_key.jspf" %>
 		</td>
 	</tr>
+
 	<%
 	}
 	%>

@@ -1,4 +1,3 @@
-<%@ page autoFlush='false' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.webapp.util.JspLogger' %>

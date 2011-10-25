@@ -16,7 +16,7 @@
 	<tr>
 		<td width="1%"><img src="<%=headerBurst.getPath()%>" height="<%=headerBurst.getHeight()%>" width="<%=headerBurst.getWidth()%>" border="0" alt="New" /></td>
 		<td>
-			<div style="padding-bottom: 2px; margin: 12px 14px; border-bottom: 4px solid #360;">
+			<div style="padding-bottom: 2px; margin-left: 14px; border-bottom: 4px solid #360;">
 				<div style="float: left;"><img src="<%=catLabel.getPath()%>" height="<%=catLabel.getHeight()%>" width="<%=catLabel.getWidth()%>" border="0" alt="<%=(currentCAT != null) ? currentCAT.getFullName() : "" %>" /></div>
         <div style="font-size: 18px; font-weight: normal;float: right; line-height: 21px;"><%=countText%></div>
         <div class="clear" style="line-height: 1px; height: 1px; overflow: hidden;"></div>

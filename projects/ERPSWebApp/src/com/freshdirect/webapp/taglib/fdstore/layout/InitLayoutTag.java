@@ -70,7 +70,6 @@ public class InitLayoutTag extends com.freshdirect.framework.webapp.BodyTagSuppo
 		List<ContentNodeModel> sortedColl = (List<ContentNodeModel>)pageContext.getRequest().getAttribute( "itemGrabberResult" );
 		if ( sortedColl == null )
 			sortedColl = new ArrayList<ContentNodeModel>();
-
 		
 		if ( catId != null )
 			pageContext.setAttribute( categoryIdVariableName, catId );

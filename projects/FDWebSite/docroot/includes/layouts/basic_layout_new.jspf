@@ -126,11 +126,11 @@ shouldRenderBlankCells = (itr.hasNext() || shouldRenderBlankCells); //check if b
 				if (!shouldRenderBlankCells) { w = singleRow ? Math.round(100.0/piRow.size()) : Math.round(100.0/GRID_ROW_SIZE); }
 
 				if (isBlankCell) {
-					%><td style="width: <%= w %>%; text-align: center; <%= colCount == 0 ? "padding-left: 5px;" :""%> 
+					%><td style="width: <%= w %>%; text-align: center; <%= colCount == 0 ? "padding-left: 10px;" :""%> 
 						<%= colCount == piRow.size() - 1 ? "padding-right:5px;" : "" %>" valign="top" ><!-- blank --></td><%
 				}else{
 				%>
-					<td style="width: <%= w %>%; text-align: center; <%= colCount == 0 ? "padding-left: 5px;" :""%> 
+					<td style="width: <%= w %>%; text-align: center; <%= colCount == 0 ? "padding-left: 10px;" :""%> 
 						<%= colCount == piRow.size() - 1 ? "padding-right:5px;" : "" %>" valign="top" >
 						
 						<%-- Product Image --%>

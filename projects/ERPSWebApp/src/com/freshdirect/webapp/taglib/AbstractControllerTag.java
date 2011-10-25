@@ -29,6 +29,7 @@ public abstract class AbstractControllerTag extends com.freshdirect.framework.we
 	private String actionName;
 	private String successPage;
 	private String result;
+	private boolean ajax = false;
 
 	public String getSuccessPage() {
 		return successPage;
@@ -53,6 +54,14 @@ public abstract class AbstractControllerTag extends com.freshdirect.framework.we
 		this.result = resultName;
 	}
 
+	public void setAjax(boolean ajax) {
+		this.ajax = ajax;
+	}
+
+	public boolean isAjax() {
+		return ajax;
+	}
+
 	public int doStartTag() throws JspException {
 		//
 		// perform any actions requested by the user if the request was a POST
@@ -72,9 +81,13 @@ public abstract class AbstractControllerTag extends com.freshdirect.framework.we
 			// and a success page was defined
 			//
 			if (actionResult.isSuccess() && (successPage != null)) {
-				LOGGER.debug("Success, redirecting to: " + successPage);
-				this.redirectTo(successPage);
-				return SKIP_BODY;
+				if (ajax) {
+					LOGGER.debug("Skipping redirect, eval body");
+				} else {
+					LOGGER.debug("Success, redirecting to: " + successPage);
+					this.redirectTo(successPage);
+					return SKIP_BODY;
+				}
 			}
 		}else if ("GET".equalsIgnoreCase(request.getMethod())) {
 			boolean proceed = this.performGetAction(request, actionResult);
@@ -86,6 +99,9 @@ public abstract class AbstractControllerTag extends com.freshdirect.framework.we
 		// place the result as a scripting variabl1e in the page
 		//
 		pageContext.setAttribute(this.result, actionResult);
+		// for AJAX login
+		if (ajax)
+			pageContext.getRequest().setAttribute("fd_successPage", getSuccessPage());
 		return EVAL_BODY_BUFFERED;
 
 	}

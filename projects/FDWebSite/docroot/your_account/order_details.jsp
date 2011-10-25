@@ -154,19 +154,20 @@ final int W_YA_ORDER_DETAILS_3C_COLUMN = 268;
 <%@ include file="/includes/your_account/i_order_detail_delivery_payment.jspf" %><br>
 <IMG src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_ORDER_DETAILS_TOTAL %>" HEIGHT="1" border="0"><br>
 <IMG src="/media_stat/images/layout/clear.gif" width="1" HEIGHT="4" border="0"><br><FONT CLASS="space4pix"><br></FONT>
-<table width="<%= W_YA_ORDER_DETAILS_TOTAL %>" cellpadding="0" cellspacing="0" border="0">
+<table cellpadding="0" cellspacing="0" border="0" style="padding-bottom: 20px; margin: 0px auto;">
 <tr valign="top">
-    <td width="<%= W_YA_ORDER_DETAILS_3C_GAP %>"><br></td>
-    <td width="<%= W_YA_ORDER_DETAILS_3C_COLUMN %>">
-    <%  if (!cart.isPending()) { %>
+
+	<%  if (!cart.isPending()) { %>
+    <td>
         <A HREF="/quickshop/shop_from_order.jsp?orderId=<%= orderId %>"><IMG src="/media_stat/images/buttons/shop_from_order.gif" width="144" HEIGHT="16" border="0" ALT="SHOP FROM THIS ORDER"></A><br>
         <FONT CLASS="space4pix"><br></FONT>
         Click here to reorder items from this order in Quickshop.<br>
-    <%  } %>
     </td>
     <td width="<%= W_YA_ORDER_DETAILS_3C_GAP %>"><br></td>
-    <td width="<%= W_YA_ORDER_DETAILS_3C_COLUMN %>">
-        <% if (allowModifyOrder.booleanValue()) { %>
+    <%  } %>
+    
+    <% if (allowModifyOrder.booleanValue()) { %>
+    <td>
         <a href="/your_account/modify_order.jsp?orderId=<%=orderId%>"><img src="/media_stat/images/buttons/change_this_order.gif" border="0" ALT="CHANGE THIS ORDER"></a>
 
         <FONT CLASS="space4pix"><br></FONT>
@@ -176,18 +177,19 @@ final int W_YA_ORDER_DETAILS_3C_COLUMN = 268;
         - change delivery time slot<br>
         - change payment information<br>
 
-        <% } else { %>&nbsp;<br><% } %>
     </td>
     <td width="<%= W_YA_ORDER_DETAILS_3C_GAP %>"><br></td>
-    <td width="<%= W_YA_ORDER_DETAILS_3C_COLUMN %>">
-        <% if (allowCancelOrder.booleanValue()) { %>
+    <% } %>
+    
+    <% if (allowCancelOrder.booleanValue()) { %>
+    <td>
         <a href="/your_account/cancel_order.jsp?orderId=<%=orderId%>"><img src="/media_stat/images/buttons/cancel_this_order_mrn.gif" width="112" HEIGHT="16" border="0" ALT="CANCEL THIS ORDER"></a>
         <FONT CLASS="space4pix"><br></FONT>
         Click here to cancel this order.
         
-        <% } else { %>&nbsp;<br><% } %>
     </td>
     <td width="<%= W_YA_ORDER_DETAILS_3C_GAP %>"><br></td>
+   <% } %>
 </tr>
 </table>
 <%@ include file="/includes/your_account/i_order_detail_cart_details.jspf" %><br>

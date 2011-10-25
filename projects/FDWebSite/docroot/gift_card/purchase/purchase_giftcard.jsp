@@ -248,9 +248,9 @@ boolean isCheckEligible = false;
     	</td>
     	</tr>
     	<tr>
-    	<td class="text12">
+    	<td class="text12" width="80">
     		<span <fd:ErrorHandler result="<%=result%>" name="serviceType">  class="text11rbold"</fd:ErrorHandler>>
-    			&nbsp;Purchase&nbsp;Type
+    			&nbsp;Purchase&nbsp;Type:
     		</span>
         	</td>
     	<td>
@@ -280,7 +280,7 @@ boolean isCheckEligible = false;
 		</tr>
 
 		<tr valign="middle">
-			<td class="text11">If you need to enter another credit card: <a href="/gift_card/purchase/includes/gc_add_creditcard.jsp">
+			<td class="text11" style="padding-top: 5px; padding-bottom: 5px;">If you need to enter another credit card: <a href="/gift_card/purchase/includes/gc_add_creditcard.jsp">
 				<IMG src="/media_stat/images/buttons/add_new_card.gif" WIDTH="96" HEIGHT="16" ALT="Add New Credit Card" BORDER="0" ALIGN="absmiddle"></a>
 			</td>
 		</tr>

@@ -187,6 +187,7 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 			//-----------------------------------------------------------------------------------	
 			
 			} else {
+				
 				//use this spacer image if not on buy big department (media include available for spacing)
 				if (!"big".equals(deptId)) {
 					%><img src="/media_stat/images/layout/clear.gif" width="1" height="10" /><%
@@ -216,6 +217,7 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 				}
 			}
 		} // !isIncludeMediaLayout
+		
 	} catch (Exception ex) {
 		LOG.error("error while generating department page body", ex);  		%>
 		<oscache:usecached/>

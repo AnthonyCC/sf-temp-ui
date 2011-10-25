@@ -30,8 +30,9 @@ final int[] seaPattern = { 1, 5, 4, 1, 4, 2 }; // - no of items per row
 final int[] seaGap = { -1, -1, -1, -1, -1, 40 }; // -1 means automatic strech to full width
 final int[] vegPattern = { 1, 5, 4, 5, 5, 4, 1, 5 }; // - no of items per row
 final int[] vegGap = { -1, -1, -1, -1, -1, -1, -1, -1 }; // -1 means automatic strech to full width
-final int[] delPattern = { 2, 7, 6 }; // - no of items per row
+final int[] delPattern = { 2, 7, 5 }; // - no of items per row
 final int[] delGap = { 40, -1, -1 }; // -1 means automatic strech to full width
+final int[] delPatternFallback = {2, 7, 6};
 %>
 
 <%! // INTERNALS
@@ -163,8 +164,11 @@ final int[] delGap = { 40, -1, -1 }; // -1 means automatic strech to full width
 		} else if ("veg".equals(departmentId)) {
 			pattern = vegPattern;
 			gap = vegGap;
-		} else if ("del".equals(departmentId)) {
+		} else if ("del".equals(departmentId) && categories.size()==14) {
 			pattern = delPattern;
+			gap = delGap;
+		} else if ("del".equals(departmentId) && categories.size()==15) {
+			pattern = delPatternFallback;
 			gap = delGap;
 		}
 		

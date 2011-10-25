@@ -239,7 +239,7 @@ if (request.getParameter("fldMessage") !=null) {
 						<input type="text" tabIndex="8"  maxlength="10" size="8" class="text9" name="fldAltAmount" id="fldAltAmount" value="<%=fldAltAmount%>" <%=!"".equalsIgnoreCase(fldAmount)?"":"disabled"%> onkeydown="$('fldAmount').value='OTHER';" />
 					</td>
 					<td>
-						Enter amount (min. $20.00)
+						<span style="white-space: nowrap;">Enter amount<br>(min. $20.00)</span>
 					</td>
 				</tr>
 			</table>
@@ -271,7 +271,7 @@ if (request.getParameter("fldMessage") !=null) {
         </td>
     </tr>
     <tr>
-        <td align="center">
+        <td align="center" style="padding-top: 5px;">
 			<a href="#" onClick="checkAddrShow(); return false;">Click here to check if we deliver to your recipient's address</a>.
         </td>
     </tr>

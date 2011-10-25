@@ -23,7 +23,7 @@ table.tsContainer td {
 
 .float_children {
 	border: 0px solid #ccc;
-	width: 865px; /* this should be at LEAST (CRefx6)+ERef to fit the whole grid width */
+	width: 875px; /* this should be at LEAST (CRefx6)+ERef to fit the whole grid width */
 	overflow-x: hidden;
 }
 

@@ -2,7 +2,7 @@
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
 <% if (user.isChefsTable()) {  %>
 <%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
-<table cellspacing="0" cellpadding="0" border="0" width="695">
+<table cellspacing="0" cellpadding="0" border="0" width="970">
 	<tr>
 		<td colspan="3" align="center"><br />
 		<IMG
