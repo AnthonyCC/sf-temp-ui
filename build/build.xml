@@ -53,7 +53,7 @@
 
 	<path id="common.classpath">
 		<pathelement location="${thirdparty.home}/${log4j.jar}"/>
-        	<pathelement location="${thirdparty.home}/javaee-api-5.jar"/>
+        <pathelement location="${thirdparty.home}/javaee-api-5.jar"/>
 		<pathelement location="${thirdparty.home}/commons-lang-2.3.jar"/>
 		<pathelement location="${thirdparty.home}/commons-logging-1.1.1.jar"/>
 		<pathelement location="${thirdparty.home}/commons-collections-3.1.jar"/>
@@ -82,9 +82,9 @@
 		<pathelement location="${thirdparty.home}/jsonrpc-1.0.jar"/>
 		<pathelement location="${thirdparty.home}/bsh-2.0b4.jar"/>
 		<pathelement location="${thirdparty.home}/jxl.jar"/>
-        	<pathelement location="${thirdparty.home}/jasypt-1.5.jar"/>
-	        <pathelement location="${thirdparty.home}/iText-2.0.8.jar"/>
-        	<pathelement location="${thirdparty.home}/core-renderer.jar"/>
+        <pathelement location="${thirdparty.home}/jasypt-1.5.jar"/>
+        <pathelement location="${thirdparty.home}/iText-2.0.8.jar"/>
+        <pathelement location="${thirdparty.home}/core-renderer.jar"/>
 		<pathelement location="${thirdparty.home}/httpclient-4.0.1.jar"/>
 		<pathelement location="${thirdparty.home}/httpcore-4.0.1.jar"/>
 		<pathelement location="${thirdparty.home}/httpmime-4.0.1.jar"/>
@@ -1597,6 +1597,7 @@
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
 			<pathelement location="${work.dir}/FDStore.jar"/>
 			<pathelement location="${thirdparty.home}/spring.jar"/>
+			<pathelement location="${thirdparty.home}/jstl.jar"/>
 			<pathelement location="${thirdparty.home}/standard.jar"/>
             		<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/> 
             		<pathelement location="${thirdparty.home}/opencsv-1.8.jar"/>
@@ -1715,8 +1716,9 @@
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
 			<pathelement location="${work.dir}/RoutingServices.jar"/>
 			<pathelement location="${thirdparty.home}/struts.jar"/>
-	                <pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
+            <pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
 			<pathelement location="${thirdparty.home}/castor-0.9.5.3-xml.jar"/>
+			<pathelement location="${thirdparty.home}/jstl.jar"/>
 			<pathelement location="${thirdparty.home}/standard.jar"/>
 		</path>
 		<makeWebProject
@@ -1735,6 +1737,7 @@
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
 			<pathelement location="${work.dir}/RoutingServices.jar"/>
 			<pathelement location="${thirdparty.home}/struts.jar"/>
+			<pathelement location="${thirdparty.home}/jstl.jar"/>
 			<pathelement location="${thirdparty.home}/standard.jar"/>
             <pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
 		</path>
@@ -2011,6 +2014,7 @@
 			<pathelement location="${work.dir}/RoutingServices.jar"/>
             <pathelement location="${work.dir}/ERPServices.jar"/>
 			<pathelement location="${thirdparty.home}/spring.jar"/>
+			<pathelement location="${thirdparty.home}/jstl.jar"/>
 			<pathelement location="${thirdparty.home}/standard.jar"/>
 			<pathelement location="${thirdparty.home}/extremecomponents-1.0.1.jar"/>  
 			<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
@@ -2259,6 +2263,7 @@
 				<include name="lucene-spellchecker-${lucene.version}.jar"/>
 				<include name="jxl.jar"/>
 				<include name="standard.jar"/>
+				<include name="jstl.jar"/>				
 
 				<include name="${scarab.jar}"/>
 <!-- scarab runtime dependencies -->
@@ -2290,6 +2295,7 @@
 				<include name="lcc.jar"/>
 				<include name="sapjco.jar"/>
 				<include name="standard.jar"/>
+				<include name="jstl.jar"/>				
                 <include name="givexclient.jar"/>
                 <include name="${scarab.jar}"/>
 		<!-- scarab runtime dependencies -->
@@ -2332,6 +2338,7 @@
 				<include name="struts.jar"/>
 				<include name="spring.jar"/>
 				<include name="standard.jar"/>
+				<include name="jstl.jar"/>				
 				<include name="poi-3.5-FINAL-20090928.jar"/>
 
 				<include name="lucene-core-${lucene.version}.jar"/>
@@ -2441,6 +2448,7 @@
 				<include name="jgroups-2.2.7.jar"/>
 				<include name="jxl.jar"/>
 				<include name="standard.jar"/>
+				<include name="jstl.jar"/>				
 				<include name="${scarab.jar}"/>
 				<!-- scarab runtime dependencies -->
 				<include name="httpclient-4.0.1.jar"/>
@@ -2879,6 +2887,7 @@
 				<include name="struts.jar"/>
 				<include name="spring.jar"/>
 				<include name="standard.jar"/>
+				<include name="jstl.jar"/>		
 				<include name="${scarab.jar}"/>
 			<!-- scarab runtime dependencies -->
 				<include name="poi-3.5-FINAL-20090928.jar"/>
