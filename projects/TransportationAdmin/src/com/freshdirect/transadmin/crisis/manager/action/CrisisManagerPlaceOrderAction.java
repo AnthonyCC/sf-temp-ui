@@ -1,18 +1,18 @@
 package com.freshdirect.transadmin.crisis.manager.action;
 
-import static com.freshdirect.routing.manager.IProcessMessage.INFO_MESSAGE_PLACESTANDINGORDERPROGRESS;
-import static com.freshdirect.routing.manager.IProcessMessage.INFO_MESSAGE_PLACESTANDINGORDERCOMPLETED;
+import static com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage.INFO_MESSAGE_PLACESTANDINGORDERPROGRESS;
+import static com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage.INFO_MESSAGE_PLACESTANDINGORDERCOMPLETED;
 
 import java.util.List;
 
-import com.freshdirect.routing.constants.EnumCrisisMngBatchActionType;
-import com.freshdirect.routing.constants.EnumCrisisMngBatchStatus;
-import com.freshdirect.routing.model.ICrisisManagerBatch;
+import com.freshdirect.transadmin.constants.EnumCrisisMngBatchActionType;
+import com.freshdirect.transadmin.constants.EnumCrisisMngBatchStatus;
+import com.freshdirect.transadmin.model.ICrisisManagerBatch;
 import com.freshdirect.routing.model.IStandingOrderModel;
-import com.freshdirect.routing.service.exception.IIssue;
-import com.freshdirect.routing.service.exception.RoutingServiceException;
-import com.freshdirect.routing.service.proxy.CrisisManagerServiceProxy;
 import com.freshdirect.routing.util.RoutingDateUtil;
+import com.freshdirect.transadmin.service.ICrisisManagerService;
+import com.freshdirect.transadmin.service.exception.IIssue;
+import com.freshdirect.transadmin.service.exception.TransAdminServiceException;
 import com.freshdirect.transadmin.util.CrisisManagerUtil;
 
 public class CrisisManagerPlaceOrderAction extends AbstractCrisisManagerAction {
@@ -20,23 +20,22 @@ public class CrisisManagerPlaceOrderAction extends AbstractCrisisManagerAction {
 	private List<IStandingOrderModel> standingOrders;
 	
 	public CrisisManagerPlaceOrderAction(ICrisisManagerBatch batch,
-			String userId, List<IStandingOrderModel> standingOrders) {
-		super(batch, userId);
+			String userId, List<IStandingOrderModel> standingOrders, ICrisisManagerService  crisisMngService) {
+		super(batch, userId, crisisMngService);	
 		this.standingOrders = standingOrders;
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object doExecute() throws Exception {
-		
-		CrisisManagerServiceProxy proxy = new CrisisManagerServiceProxy();
+				
 		System.out.println("######################### Place Standing Order START #########################");
 		
-		proxy.updateCrisisMngBatchStatus(this.getBatch().getBatchId(), EnumCrisisMngBatchStatus.PROCESSING);
-	    proxy.addNewCrisisMngBatchAction(this.getBatch().getBatchId(), RoutingDateUtil.getCurrentDateTime()
+		this.getCrisisMngService().updateCrisisMngBatchStatus(this.getBatch().getBatchId(), EnumCrisisMngBatchStatus.PROCESSING);
+		this.getCrisisMngService().addNewCrisisMngBatchAction(this.getBatch().getBatchId(), RoutingDateUtil.getCurrentDateTime()
 					, EnumCrisisMngBatchActionType.PLACEORDER, this.getUserId());
 	    	
-	    proxy.updateCrisisMngBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_PLACESTANDINGORDERPROGRESS);
+		this.getCrisisMngService().updateCrisisMngBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_PLACESTANDINGORDERPROGRESS);
 	   
 	    CrisisManagerUtil orderMngAgent = new CrisisManagerUtil();
 	   	orderMngAgent.setAgent(this.getUserId());
@@ -44,7 +43,7 @@ public class CrisisManagerPlaceOrderAction extends AbstractCrisisManagerAction {
 	    List<IStandingOrderModel> standingOrderResult = orderMngAgent.placeStandingOrders();
 	    	
 	    if(standingOrderResult != null && standingOrderResult.size() > 0){
-	    	proxy.updateCrisisMngBatchStandingOrder(this.getBatch().getBatchId(), standingOrderResult);	    		
+	    	this.getCrisisMngService().updateCrisisMngBatchStandingOrder(this.getBatch().getBatchId(), standingOrderResult);	    		
 	    	StringBuffer errorBuf = new StringBuffer();	    		
 	    	for(IStandingOrderModel model : standingOrderResult){	    			
 		   		if(errorBuf.length() > 0) { errorBuf.append(", "); }		    		
@@ -53,13 +52,13 @@ public class CrisisManagerPlaceOrderAction extends AbstractCrisisManagerAction {
 	    	} 		
 	    	    		
 	    	if(errorBuf.toString().length() > 0){
-	    		throw new RoutingServiceException("Standing Order failures: "+ errorBuf.toString()    		
+	    		throw new TransAdminServiceException("Standing Order failures: "+ errorBuf.toString()    		
 					, null, IIssue.PROCESS_CRISISMNGBATCH_ERROR);
 	    	}
 	    }		
 		
-		proxy.updateCrisisMngBatchStatus(this.getBatch().getBatchId(), EnumCrisisMngBatchStatus.COMPLETED);
-		proxy.updateCrisisMngBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_PLACESTANDINGORDERCOMPLETED);
+	    this.getCrisisMngService().updateCrisisMngBatchStatus(this.getBatch().getBatchId(), EnumCrisisMngBatchStatus.COMPLETED);
+	    this.getCrisisMngService().updateCrisisMngBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_PLACESTANDINGORDERCOMPLETED);
 	
 		System.out.println("######################### Place Standing Order STOP #########################");
 		return null;

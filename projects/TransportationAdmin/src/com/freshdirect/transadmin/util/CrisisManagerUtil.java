@@ -17,7 +17,6 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.log4j.Category;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.routing.model.ICrisisManagerBatchOrder;
 import com.freshdirect.routing.model.IReservationModel;
 import com.freshdirect.routing.model.IStandingOrderModel;
 import com.freshdirect.routing.util.json.CrisisManagerJSONSerializer;
@@ -25,6 +24,7 @@ import com.metaparadigm.jsonrpc.JSONSerializer;
 import com.metaparadigm.jsonrpc.MarshallException;
 import com.metaparadigm.jsonrpc.UnmarshallException;
 
+@SuppressWarnings("unchecked")
 public class CrisisManagerUtil {
 	
 	private static Category	LOGGER = LoggerFactory.getInstance( CrisisManagerUtil.class );
@@ -32,6 +32,7 @@ public class CrisisManagerUtil {
 	private String agent;
 	private List orders;
 	private Set reservations;
+	
 	private List lastResult = null;	
 		
 	public void setAgent(String agent) {
@@ -165,14 +166,14 @@ public class CrisisManagerUtil {
 		tStart = new Date();
 		boolean orderCancelSuccess = false;
 		lastResult = new ArrayList();
-		Iterator<ICrisisManagerBatchOrder> orderItr = orders.iterator();
+		Iterator<String> orderItr = orders.iterator();
 		
 		while(orderItr.hasNext()){
-			ICrisisManagerBatchOrder _order = orderItr.next();
+			String _orderId = orderItr.next();
 			// Serialize orders
 			String orderPayload = null;
 			try {				
-				orderPayload = ser.toJSON(_order);
+				orderPayload = ser.toJSON(_orderId);
 			} catch (MarshallException e) {
 				LOGGER.error("Failed to serialize order model", e);				
 			}
@@ -205,8 +206,8 @@ public class CrisisManagerUtil {
 			try {				
 				int status = client.executeMethod(meth);
 				if (status != HttpStatus.SC_OK) {
-					LOGGER.error("Cancel Order # "+_order.getOrderNumber() +" failed with status code " + status);
-					lastResult.add(_order.getOrderNumber());
+					LOGGER.error("Cancel Order # "+_orderId +" failed with status code " + status);
+					lastResult.add(_orderId);
 				}				
 				// process answer?			
 				String respBody = new String(meth.getResponseBody());
@@ -216,17 +217,17 @@ public class CrisisManagerUtil {
 					orderCancelSuccess = (Boolean) resp;
 				}
 				if(!orderCancelSuccess){
-					lastResult.add(_order.getOrderNumber());
+					lastResult.add(_orderId);
 				}
 			} catch (HttpException e) {
 				LOGGER.error("Failed to Cancel Orders", e);
-				lastResult.add(_order.getOrderNumber());
+				lastResult.add(_orderId);
 			} catch (IOException e) {
 				LOGGER.error("Failed to Cancel Orders", e);
-				lastResult.add(_order.getOrderNumber());
+				lastResult.add(_orderId);
 			} catch (UnmarshallException e) {
 				LOGGER.error("Failed to Cancel Orders", e);
-				lastResult.add(_order.getOrderNumber());
+				lastResult.add(_orderId);
 			}			
 		}
 		tEnd = new Date();				

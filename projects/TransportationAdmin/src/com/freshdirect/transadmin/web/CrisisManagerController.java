@@ -16,9 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.routing.model.ICrisisManagerBatch;
-import com.freshdirect.routing.model.ICrisisManagerBatchOrder;
-import com.freshdirect.routing.service.proxy.CrisisManagerServiceProxy;
+import com.freshdirect.transadmin.model.ICrisisManagerBatch;
+import com.freshdirect.transadmin.model.ICrisisManagerBatchOrder;
 import com.freshdirect.transadmin.datamanager.model.CancelOrderInfoModel;
 import com.freshdirect.transadmin.datamanager.model.ICancelOrderInfo;
 import com.freshdirect.transadmin.datamanager.report.IMarketingReport;
@@ -26,10 +25,21 @@ import com.freshdirect.transadmin.datamanager.report.IVoiceShotReport;
 import com.freshdirect.transadmin.datamanager.report.XlsMarketingReport;
 import com.freshdirect.transadmin.datamanager.report.XlsVoiceShotReport;
 import com.freshdirect.transadmin.datamanager.report.model.CrisisManagerReportData;
+import com.freshdirect.transadmin.service.ICrisisManagerService;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 
 public class CrisisManagerController extends AbstractMultiActionController  {
+	
+	private ICrisisManagerService  crisisManagerService;
+	
+	public ICrisisManagerService getCrisisManagerService() {
+		return crisisManagerService;
+	}
+
+	public void setCrisisManagerService(ICrisisManagerService crisisManagerService) {
+		this.crisisManagerService = crisisManagerService;
+	}	
 	
 	/**
 	 * Custom handler for welcome
@@ -46,11 +56,10 @@ public class CrisisManagerController extends AbstractMultiActionController  {
 		if(crisisMngBatchId != null && crisisMngBatchId.trim().length() > 0) {
 
 			try {
+								
+				ICrisisManagerBatch batch = this.crisisManagerService.getCrisisMngBatchById(crisisMngBatchId);
 				
-				CrisisManagerServiceProxy proxy = new CrisisManagerServiceProxy(); 
-				ICrisisManagerBatch batch = proxy.getCrisisMngBatchById(crisisMngBatchId);
-				
-				List<ICrisisManagerBatchOrder> orders = proxy.getCrisisMngBatchOrders(crisisMngBatchId, true, false);
+				List<ICrisisManagerBatchOrder> orders = this.crisisManagerService.getCrisisMngBatchOrders(crisisMngBatchId, true, false);
 				
 				Map<String, List<ICancelOrderInfo>> orderMapping = getOrderInfo(orders);
 							
@@ -99,11 +108,10 @@ public class CrisisManagerController extends AbstractMultiActionController  {
 		if(crisisMngBatchId != null && crisisMngBatchId.trim().length() > 0) {
 
 			try {
+								
+				ICrisisManagerBatch batch = this.crisisManagerService.getCrisisMngBatchById(crisisMngBatchId);
 				
-				CrisisManagerServiceProxy proxy = new CrisisManagerServiceProxy(); 
-				ICrisisManagerBatch batch = proxy.getCrisisMngBatchById(crisisMngBatchId);
-				
-				List<ICrisisManagerBatchOrder> orders = proxy.getCrisisMngBatchOrders(crisisMngBatchId, true, false);
+				List<ICrisisManagerBatchOrder> orders = this.crisisManagerService.getCrisisMngBatchOrders(crisisMngBatchId, true, false);
 				
 				Map<String, List<ICancelOrderInfo>> orderMapping = getOrderInfo(orders);
 							

@@ -57,6 +57,4 @@ public interface IIssue {
 	
 	public final static String PROCESS_WAVEINSTANCE_NOTPUBLISHED = "ISSUE039";
 	
-	public final static String PROCESS_CRISISMNGBATCH_ERROR = "ISSUE036";
-	
 }

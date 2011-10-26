@@ -57,8 +57,7 @@ public class Issue implements IIssue {
 		
 		messages.put(PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL,"Retrieve Wave Instance Failed");
 		messages.put(PROCESS_SAVEWAVEINSTANCE_UNSUCCESSFUL,"Save Wave Instance Failed");
-		messages.put(PROCESS_WAVEINSTANCE_NOTPUBLISHED,"Plan not published");
-		messages.put(PROCESS_CRISISMNGBATCH_ERROR,"Crisis Manager Batch Processing Error");
+		messages.put(PROCESS_WAVEINSTANCE_NOTPUBLISHED,"Plan not published");		
 	}
 	
 	public static String getMessage(String id) {

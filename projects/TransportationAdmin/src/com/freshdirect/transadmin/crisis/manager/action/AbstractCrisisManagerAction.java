@@ -1,7 +1,5 @@
 package com.freshdirect.transadmin.crisis.manager.action;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -9,27 +7,29 @@ import java.util.StringTokenizer;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.routing.constants.EnumCrisisMngBatchStatus;
-import com.freshdirect.routing.model.ICrisisManagerBatch;
-import com.freshdirect.routing.model.ICrisisManagerBatchDeliverySlot;
-import com.freshdirect.routing.service.exception.IIssue;
-import com.freshdirect.routing.service.exception.RoutingProcessException;
-import com.freshdirect.routing.service.exception.RoutingServiceException;
-import com.freshdirect.routing.service.proxy.CrisisManagerServiceProxy;
+import com.freshdirect.transadmin.constants.EnumCrisisMngBatchStatus;
+import com.freshdirect.transadmin.model.ICrisisManagerBatch;
+import com.freshdirect.transadmin.model.ICrisisManagerBatchDeliverySlot;
+import com.freshdirect.transadmin.service.ICrisisManagerService;
+import com.freshdirect.transadmin.service.exception.IIssue;
+import com.freshdirect.transadmin.service.exception.TransAdminProcessException;
+import com.freshdirect.transadmin.service.exception.TransAdminServiceException;
 
 public abstract class AbstractCrisisManagerAction {
+	
 	private final static Logger LOGGER = LoggerFactory.getInstance(AbstractCrisisManagerAction.class);
 	
 	private ICrisisManagerBatch batch;
 	
 	private String userId;
 	
-	private NumberFormat formatter = new DecimalFormat("00");
-	
-	public AbstractCrisisManagerAction(ICrisisManagerBatch batch, String userId) {
+	private ICrisisManagerService  crisisMngService;
+		
+	public AbstractCrisisManagerAction(ICrisisManagerBatch batch, String userId, ICrisisManagerService  crisisManagerService) {
 		super();
 		this.batch = batch;
 		this.userId = userId;
+		this.crisisMngService = crisisManagerService;
 	}
 
 	public ICrisisManagerBatch getBatch() {
@@ -47,6 +47,14 @@ public abstract class AbstractCrisisManagerAction {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
+	
+	public ICrisisManagerService getCrisisMngService() {
+		return crisisMngService;
+	}
+	
+	public void setCrisisManagerService(ICrisisManagerService crisisMngService) {
+		this.crisisMngService = crisisMngService;
+	}
 
 	public Object execute() {
 		long startTime = System.currentTimeMillis();
@@ -56,30 +64,29 @@ public abstract class AbstractCrisisManagerAction {
 			LOGGER.info("CrisisManagerAction "+this.getClass().getName()+" completed in"+ ((endTime - startTime)/60) +" secs");
 			return result;
 		} catch (Exception exp) {
-			CrisisManagerServiceProxy proxy = new CrisisManagerServiceProxy();
-			
+					
 			try {
 				if(getFailureStatus() != null) {
 					
-					proxy.updateCrisisMngBatchStatus(this.getBatch().getBatchId(), getFailureStatus());
-					proxy.updateCrisisMngBatchMessage(this.getBatch().getBatchId(), decodeErrorMessage(exp));
+					this.crisisMngService.updateCrisisMngBatchStatus(this.getBatch().getBatchId(), getFailureStatus());
+					this.crisisMngService.updateCrisisMngBatchMessage(this.getBatch().getBatchId(), decodeErrorMessage(exp));
 				}
-			} catch (RoutingServiceException e) {
+			} catch (TransAdminServiceException e) {
 				LOGGER.error("Failure to update OrderScenario batch status", e);
 			}
 
-			throw new RoutingServiceException(exp, IIssue.PROCESS_CRISISMNGBATCH_ERROR);
+			throw new TransAdminServiceException(exp, IIssue.PROCESS_CRISISMNGBATCH_ERROR);
 		} catch (Throwable e) {
 			LOGGER.error("something really weird occured", e);
-			throw new RoutingServiceException(new Exception(e), IIssue.PROCESS_CRISISMNGBATCH_ERROR);
+			throw new TransAdminServiceException(new Exception(e), IIssue.PROCESS_CRISISMNGBATCH_ERROR);
 		}
 	}
 	
 	protected static String decodeErrorMessage(Exception exp) {
 		String strErrMessage = exp.getMessage() != null ? exp.getMessage() : "";
 		if(strErrMessage == null || strErrMessage.trim().length() == 0) {
-			if(exp instanceof RoutingProcessException) {
-				strErrMessage = ((RoutingProcessException)exp).getIssueMessage();
+			if(exp instanceof TransAdminProcessException) {
+				strErrMessage = ((TransAdminProcessException)exp).getIssueMessage();
 			}
 		}
 		if(strErrMessage == null || strErrMessage.trim().length() == 0) {

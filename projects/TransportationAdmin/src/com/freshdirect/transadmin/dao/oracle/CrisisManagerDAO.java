@@ -1,4 +1,4 @@
-package com.freshdirect.routing.dao.impl;
+package com.freshdirect.transadmin.dao.oracle;
 
 import java.sql.Array;
 import java.sql.Connection;
@@ -20,9 +20,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.sql.DataSource;
+
 import oracle.sql.ARRAY;
 import oracle.sql.ArrayDescriptor;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.SqlParameter;
@@ -33,31 +36,37 @@ import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.routing.constants.EnumDeliveryType;
 import com.freshdirect.routing.constants.EnumProfileList;
 import com.freshdirect.routing.constants.EnumReservationType;
-import com.freshdirect.routing.constants.EnumCrisisMngBatchActionType;
-import com.freshdirect.routing.constants.EnumCrisisMngBatchStatus;
+import com.freshdirect.transadmin.constants.EnumCrisisMngBatchActionType;
+import com.freshdirect.transadmin.constants.EnumCrisisMngBatchStatus;
 import com.freshdirect.routing.constants.EnumReservationStatus;
-import com.freshdirect.routing.dao.ICrisisManagerDAO;
-import com.freshdirect.routing.model.ActiveOrderModel;
-import com.freshdirect.routing.model.CancelOrderModel;
-import com.freshdirect.routing.model.CrisisManagerBatchDeliverySlot;
-import com.freshdirect.routing.model.CrisisManagerBatchReservation;
+import com.freshdirect.transadmin.dao.ICrisisManagerDAO;
+import com.freshdirect.transadmin.model.ActiveOrderModel;
+import com.freshdirect.transadmin.model.CancelOrderModel;
+import com.freshdirect.transadmin.model.CrisisManagerBatchDeliverySlot;
+import com.freshdirect.transadmin.model.CrisisManagerBatchReservation;
 import com.freshdirect.routing.model.CustomerModel;
-import com.freshdirect.routing.model.IActiveOrderModel;
-import com.freshdirect.routing.model.ICancelOrderModel;
-import com.freshdirect.routing.model.ICrisisManagerBatch;
-import com.freshdirect.routing.model.ICrisisManagerBatchAction;
-import com.freshdirect.routing.model.ICrisisManagerBatchDeliverySlot;
-import com.freshdirect.routing.model.ICrisisManagerBatchOrder;
-import com.freshdirect.routing.model.CrisisManagerBatch;
-import com.freshdirect.routing.model.CrisisManagerBatchAction;
-import com.freshdirect.routing.model.CrisisManagerBatchOrder;
-import com.freshdirect.routing.model.ICrisisManagerBatchReservation;
+import com.freshdirect.transadmin.model.IActiveOrderModel;
+import com.freshdirect.transadmin.model.ICancelOrderModel;
+import com.freshdirect.transadmin.model.ICrisisManagerBatch;
+import com.freshdirect.transadmin.model.ICrisisManagerBatchAction;
+import com.freshdirect.transadmin.model.ICrisisManagerBatchDeliverySlot;
+import com.freshdirect.transadmin.model.ICrisisManagerBatchOrder;
+import com.freshdirect.transadmin.model.CrisisManagerBatch;
+import com.freshdirect.transadmin.model.CrisisManagerBatchAction;
+import com.freshdirect.transadmin.model.CrisisManagerBatchOrder;
+import com.freshdirect.transadmin.model.ICrisisManagerBatchReservation;
 import com.freshdirect.routing.model.ICustomerModel;
 import com.freshdirect.routing.model.IStandingOrderModel;
 import com.freshdirect.routing.model.StandingOrderModel;
 
 
-public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
+public class CrisisManagerDAO implements ICrisisManagerDAO   {
+	
+	private JdbcTemplate jdbcTemplate;
+	
+	public void setDataSource(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    }
 	
 	private static final String GET_CRISISMNGBATCHNEXTSEQ_QRY = "SELECT TRANSP.CRISISMNGBATCHSEQ.nextval FROM DUAL";
 	
@@ -98,7 +107,7 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 		+ " from cust.customer c, cust.customerinfo ci, cust.sale s, cust.salesaction sa, cust.deliveryinfo di, dlv.reservation rs "
 		+ " where c.id = ci.customer_id and c.id = s.customer_id and s.id = sa.sale_id and sa.action_type IN ('CRO', 'MOD') "
 		+ " and sa.customer_id = s.customer_id and sa.action_date = s.cromod_date and sa.id = di.salesaction_id and rs.id = di.reservation_id "
-		+ " and s.type ='REG' and s.status in ('SUB','AVE','AUT','AUF')  "		
+		+ " and s.type ='REG' and s.status <> 'CAN'  "		
 		+ " and sa.requested_date = ? ";
 	
 	private static String GET_ORDERSTATSBY_DATE_BATCH = "SELECT s.status, count(*) as order_count "+
@@ -112,7 +121,7 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 		" (select count(*) from CUST.ORDERLINE o where O.SALESACTION_ID=sa.id) SALE_LINEITEMCOUNT, "+        
 		" (select count(*) from CUST.CUSTOMERLIST_DETAILS x where X.LIST_ID=CL.ID) TEMPLATE_LINEITEMCOUNT "+       
 		" from cust.customer c, cust.customerinfo ci, cust.sale s, cust.salesaction sa, cust.standing_order so, cust.customerlist cl, cust.deliveryinfo di "+
-		" where c.id = ci.customer_id and c.id = s.customer_id and s.id = sa.sale_id and sa.action_type IN ('CRO', 'MOD') and s.type='REG' and s.status in ('SUB','AVE','AUT','AUF') "+
+		" where c.id = ci.customer_id and c.id = s.customer_id and s.id = sa.sale_id and sa.action_type IN ('CRO', 'MOD') and s.type='REG' and s.status <> 'CAN' "+
 		" and sa.action_date = s.cromod_date and sa.id = di.salesaction_id and s.standingorder_id = so.id and so.customerlist_id = cl.id and sa.requested_date = ? ";
 	
 	private static final String GET_RESERVATION_BYCRITERIA = 
@@ -206,7 +215,7 @@ public class CrisisManagerDAO extends BaseDAO implements ICrisisManagerDAO   {
 	private static final String GET_ACTIVEORDERS_BYAREA = "SELECT  di.zone AREA, di.starttime, di.endtime, count(di.zone) as ORDERCOUNT "+
         " from cust.customer c, cust.fdcustomer fdc, cust.customerinfo ci, cust.sale s, cust.salesaction sa, cust.deliveryinfo di, dlv.reservation rs "+
         " where c.id = ci.customer_id and c.id = fdc.erp_customer_id and c.id = s.customer_id and s.id = sa.sale_id and sa.action_type IN ('CRO', 'MOD') "+ 
-        " and s.type ='REG' and s.status in('SUB','AVE','AUT','AUF') and sa.action_date = s.cromod_date "+         
+        " and s.type ='REG' and s.status <> 'CAN' and sa.action_date = s.cromod_date "+         
         " and sa.id = di.salesaction_id and rs.id = di.reservation_id and sa.requested_date = ? "+ 
         " group by di.zone, di.starttime, di.endtime order by  di.zone, di.starttime asc ";
 	

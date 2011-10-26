@@ -1,8 +1,9 @@
-package com.freshdirect.routing.model;
+package com.freshdirect.transadmin.model;
 
 import java.util.Date;
 
-import com.freshdirect.routing.constants.EnumCrisisMngBatchActionType;
+import com.freshdirect.transadmin.constants.EnumCrisisMngBatchActionType;
+import com.freshdirect.routing.model.BaseModel;
 
 @SuppressWarnings("serial")
 public class CrisisManagerBatchAction extends BaseModel implements ICrisisManagerBatchAction, Comparable<CrisisManagerBatchAction>  {

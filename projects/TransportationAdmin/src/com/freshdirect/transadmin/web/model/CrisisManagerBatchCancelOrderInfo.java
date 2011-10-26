@@ -1,10 +1,8 @@
 package com.freshdirect.transadmin.web.model;
 
 import java.text.ParseException;
-import java.util.Date;
 
-import com.freshdirect.routing.model.ICancelOrderModel;
-import com.freshdirect.routing.model.ICrisisManagerBatchOrder;
+import com.freshdirect.transadmin.model.ICancelOrderModel;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class CrisisManagerBatchCancelOrderInfo implements java.io.Serializable {

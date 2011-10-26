@@ -1,4 +1,4 @@
-package com.freshdirect.routing.model;
+package com.freshdirect.transadmin.model;
 
 public class CrisisManagerBatchDeliverySlot extends TimeslotModel implements ICrisisManagerBatchDeliverySlot{
 	

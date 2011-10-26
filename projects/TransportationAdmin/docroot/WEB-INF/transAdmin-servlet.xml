@@ -161,7 +161,8 @@
 	<!-- ========================= CONTROLLER DEFINITIONS ========================= -->
 
 	<bean id="crisisMngController" class="com.freshdirect.transadmin.web.CrisisManagerController">
-		<property name="methodNameResolver" ref="transAdminControllerResolver"/> 
+		<property name="methodNameResolver" ref="transAdminControllerResolver"/>
+		<property name="crisisManagerService" ref="crisisManagerService"/>
 	</bean>
 	
 	<bean id="domainController" class="com.freshdirect.transadmin.web.DomainController">
@@ -613,6 +614,7 @@
 	</bean>
 	
 	<bean id="crisisMngFormController" class="com.freshdirect.transadmin.web.CrisisManagerFormController">
+		<property name="crisisManagerService" ref="crisisManagerService"/>
 		<property name="zoneManagerService" ref="zoneManager"/>
 		<property name="domainManagerService" ref="domainManager"/>
 		<property name="sessionForm" value="true"/>
@@ -686,6 +688,7 @@
 	</bean>
 
 	<bean name="asyncCrisisMngController" class="com.freshdirect.transadmin.web.json.CrisisMngProviderController">
+		<property name="crisisManagerService" ref="crisisManagerService"/>
 		<property name="ajaxServices">
 			<map>
 				<entry key="AsyncCrisisMngProvider" value="com.freshdirect.transadmin.web.json.ICrisisMngProvider" />

@@ -2,7 +2,6 @@ package com.freshdirect.transadmin.web.json;
 
 import java.util.List;
 
-import com.freshdirect.routing.model.IStandingOrderModel;
 import com.freshdirect.transadmin.web.model.CrisisManagerBatchInfo;
 import com.freshdirect.transadmin.web.model.CrisisManagerBatchStandingOrderInfo;
 import com.freshdirect.transadmin.web.model.CrisisManagerBatchTimeslotInfo;

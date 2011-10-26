@@ -1,4 +1,6 @@
-package com.freshdirect.routing.model;
+package com.freshdirect.transadmin.model;
+
+import com.freshdirect.routing.model.ReservationModel;
 
 public class CrisisManagerBatchReservation extends ReservationModel implements ICrisisManagerBatchReservation {
 	

@@ -75,7 +75,7 @@
 				<value>com/freshdirect/transadmin/model/IssueSubType.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/VIRRecord.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/IssueLog.hbm.xml</value>
-				<value>com/freshdirect/transadmin/model/MaintenanceIssue.hbm.xml</value>													
+				<value>com/freshdirect/transadmin/model/MaintenanceIssue.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -188,6 +188,10 @@
 	
 	<bean id="assetManagerDAO" class="com.freshdirect.transadmin.dao.hibernate.AssetManagerDaoHibernateImpl">
 		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	
+	<bean id="crisisManagerDAO" class="com.freshdirect.transadmin.dao.oracle.CrisisManagerDAO">
+		<property name="dataSource" ref="dataSource"/>
 	</bean>	
 	
     <!-- who is driving the transactions? No one... Probably should use directly -->
@@ -221,8 +225,12 @@
     <bean id="assetManagerService" class="com.freshdirect.transadmin.service.impl.AssetManagerImpl">
         <property name="assetManagerDao" ref="assetManagerDAO"/>
     </bean>
+    
+    <bean id="crisisManagerService" class="com.freshdirect.transadmin.service.impl.CrisisManagerService">
+           <property name="crisisManagerDAOImpl" ref="crisisManagerDAO"/>    		
+	</bean>
          
-     <bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+    <bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>   
     <!-- the following is jta configuration via spring        
@@ -302,6 +310,18 @@
             </props>
         </property>
     </bean>
+    
+    <bean id="crisisManagerServiceMng" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager" ref="transactionManager"/>
+		<property name="target" ref="crisisManagerService"/>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+	
     <!-- Hibernate 3.0's JMX statistics service -->
 	<!-- Implements the StatisticsServiceMBean management interface -->
 	

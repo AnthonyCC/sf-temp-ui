@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.freshdirect.routing.model.IActiveOrderModel;
-import com.freshdirect.routing.model.ICancelOrderModel;
-import com.freshdirect.routing.model.ICrisisManagerBatch;
-import com.freshdirect.routing.model.ICrisisManagerBatchAction;
-import com.freshdirect.routing.model.ICrisisManagerBatchOrder;
+import com.freshdirect.transadmin.model.IActiveOrderModel;
+import com.freshdirect.transadmin.model.ICancelOrderModel;
+import com.freshdirect.transadmin.model.ICrisisManagerBatch;
+import com.freshdirect.transadmin.model.ICrisisManagerBatchAction;
+import com.freshdirect.transadmin.model.ICrisisManagerBatchOrder;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class CrisisManagerBatchInfo implements java.io.Serializable {
@@ -82,10 +82,10 @@ public class CrisisManagerBatchInfo implements java.io.Serializable {
 				strBuf.append("Zone: <b>ALL</b><br/>");
 			}
 			if(batch.getStartTime() != null) {
-				strBuf.append("Start Time: <b>"+TransStringUtil.getServerTime(batch.getStartTime())).append("</b><br/>");
+				strBuf.append("Start Time: "+TransStringUtil.getServerTime(batch.getStartTime())).append("<br/>");
 			}
 			if(batch.getEndTime() != null) {
-				strBuf.append("End Time: <b>"+TransStringUtil.getServerTime(batch.getEndTime())).append("</b><br/>");
+				strBuf.append("End Time: "+TransStringUtil.getServerTime(batch.getEndTime())).append("<br/>");
 			}
 			if(batch.getDeliveryType() != null && batch.getDeliveryType().length > 0){
 				strBuf.append("Delivery Type: (");

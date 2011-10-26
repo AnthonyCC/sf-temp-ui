@@ -1,24 +1,24 @@
 package com.freshdirect.transadmin.crisis.manager.action;
 
-import static com.freshdirect.routing.manager.IProcessMessage.ERROR_MESSAGE_NOORDER;
+import static com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage.ERROR_MESSAGE_NOORDER;
 
 import java.util.List;
 
-import com.freshdirect.routing.constants.EnumCrisisMngBatchActionType;
-import com.freshdirect.routing.constants.EnumCrisisMngBatchStatus;
-import com.freshdirect.routing.manager.IProcessMessage;
-import com.freshdirect.routing.model.ICrisisManagerBatch;
-import com.freshdirect.routing.model.ICrisisManagerBatchOrder;
-import com.freshdirect.routing.model.ICrisisManagerBatchReservation;
+import com.freshdirect.transadmin.constants.EnumCrisisMngBatchActionType;
+import com.freshdirect.transadmin.constants.EnumCrisisMngBatchStatus;
+import com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage;
+import com.freshdirect.transadmin.model.ICrisisManagerBatch;
+import com.freshdirect.transadmin.model.ICrisisManagerBatchOrder;
+import com.freshdirect.transadmin.model.ICrisisManagerBatchReservation;
 import com.freshdirect.routing.model.IStandingOrderModel;
-import com.freshdirect.routing.service.exception.RoutingServiceException;
-import com.freshdirect.routing.service.proxy.CrisisManagerServiceProxy;
 import com.freshdirect.routing.util.RoutingDateUtil;
+import com.freshdirect.transadmin.service.ICrisisManagerService;
+import com.freshdirect.transadmin.service.exception.TransAdminServiceException;
 
 public class CrisisManagerOrderInAction extends AbstractCrisisManagerAction {
 		
-	public CrisisManagerOrderInAction(ICrisisManagerBatch batch, String userId) {
-		super(batch, userId);	
+	public CrisisManagerOrderInAction(ICrisisManagerBatch batch, String userId, ICrisisManagerService  crisisMngService) {
+		super(batch, userId, crisisMngService);	
 	}
 
 	public Object doExecute() throws Exception {
@@ -28,89 +28,95 @@ public class CrisisManagerOrderInAction extends AbstractCrisisManagerAction {
 		dataCollectionThread.start();
 		return null;
 	}
-	 
+	
+	private ICrisisManagerService getService(){ 
+		return CrisisManagerOrderInAction.this.getCrisisMngService();
+	}
+	
+	private ICrisisManagerBatch getProcess(){ 
+		return CrisisManagerOrderInAction.this.getBatch();
+	}
+	
 	private class OrderDataInTask  implements Runnable {
 
 		@Override
 		public void run() {
 			
-			CrisisManagerServiceProxy proxy = new CrisisManagerServiceProxy();
-			
 		    System.out.println("######################### OrderDataInTask START #########################");
 		    try {
 		    	
-		    	proxy.clearCrisisMngBatch(CrisisManagerOrderInAction.this.getBatch().getBatchId());		    	
+		    	getService().clearCrisisMngBatch(getProcess().getBatchId());		    	
 		    	
-		    	proxy.updateCrisisMngBatchStatus(CrisisManagerOrderInAction.this.getBatch().getBatchId(), EnumCrisisMngBatchStatus.PROCESSING);
-				proxy.addNewCrisisMngBatchAction(CrisisManagerOrderInAction.this.getBatch().getBatchId(), RoutingDateUtil.getCurrentDateTime()
+		    	getService().updateCrisisMngBatchStatus(getProcess().getBatchId(), EnumCrisisMngBatchStatus.PROCESSING);
+		    	getService().addNewCrisisMngBatchAction(getProcess().getBatchId(), RoutingDateUtil.getCurrentDateTime()
 						, EnumCrisisMngBatchActionType.ORDERDATAIN, CrisisManagerOrderInAction.this.getUserId());
 		    	
-				List<ICrisisManagerBatchOrder> inputDataList = CrisisManagerOrderInAction.this.getBatch().getOrder();
-		    	proxy.updateCrisisMngBatchMessage(CrisisManagerOrderInAction.this.getBatch().getBatchId(), IProcessMessage.INFO_MESSAGE_ORDERDATACOLLECTIONPROGRESS);
+				List<ICrisisManagerBatchOrder> inputDataList = getProcess().getOrder();
+				getService().updateCrisisMngBatchMessage(getProcess().getBatchId(), ICrisisManagerProcessMessage.INFO_MESSAGE_ORDERDATACOLLECTIONPROGRESS);
 		    	
-		    	List<ICrisisManagerBatchReservation> reservationList = proxy.getReservationByCriteria(CrisisManagerOrderInAction.this.getBatch().getDeliveryDate()
-																, CrisisManagerOrderInAction.this.getBatch().getCutOffDateTime()
-																, CrisisManagerOrderInAction.this.getBatch().getArea()
-																, RoutingDateUtil.getServerTime(CrisisManagerOrderInAction.this.getBatch().getStartTime())
-																, RoutingDateUtil.getServerTime(CrisisManagerOrderInAction.this.getBatch().getEndTime())
-																, CrisisManagerOrderInAction.this.getBatch().getProfile());
+		    	List<ICrisisManagerBatchReservation> reservationList = getService().getReservationByCriteria(getProcess().getDeliveryDate()
+																, getProcess().getCutOffDateTime()
+																, getProcess().getArea()
+																, RoutingDateUtil.getServerTime(getProcess().getStartTime())
+																, RoutingDateUtil.getServerTime(getProcess().getEndTime())
+																, getProcess().getProfile());
 		    	
 		    	if(reservationList != null && reservationList.size() > 0){
 		    		for(ICrisisManagerBatchReservation rsvModel : reservationList) {
 		    			rsvModel.setBatchId(CrisisManagerOrderInAction.this.getBatch().getBatchId());
 					}
-		    		proxy.addNewCrisisMngBatchReservation(reservationList);
+		    		getService().addNewCrisisMngBatchReservation(reservationList);
 		    	}
 		    	
-		    	List<IStandingOrderModel> standingOrderLst = proxy.getStandingOrderByCriteria(CrisisManagerOrderInAction.this.getBatch().getDeliveryDate()
-																, CrisisManagerOrderInAction.this.getBatch().getCutOffDateTime()
-																, CrisisManagerOrderInAction.this.getBatch().getArea()
-																, RoutingDateUtil.getServerTime(CrisisManagerOrderInAction.this.getBatch().getStartTime())
-																, RoutingDateUtil.getServerTime(CrisisManagerOrderInAction.this.getBatch().getEndTime())
-																, CrisisManagerOrderInAction.this.getBatch().getDeliveryType()
-																, CrisisManagerOrderInAction.this.getBatch().getProfile()
-																, CrisisManagerOrderInAction.this.getBatch().isStandingOrderIncluded()
+		    	List<IStandingOrderModel> standingOrderLst = getService().getStandingOrderByCriteria(getProcess().getDeliveryDate()
+																, getProcess().getCutOffDateTime()
+																, getProcess().getArea()
+																, RoutingDateUtil.getServerTime(getProcess().getStartTime())
+																, RoutingDateUtil.getServerTime(getProcess().getEndTime())
+																, getProcess().getDeliveryType()
+																, getProcess().getProfile()
+																, getProcess().isStandingOrderIncluded()
 															);
 		    	
 		    	if(standingOrderLst != null && standingOrderLst.size() > 0){
 		    		for(IStandingOrderModel soModel : standingOrderLst) {
-		    			soModel.setBatchId(CrisisManagerOrderInAction.this.getBatch().getBatchId());
+		    			soModel.setBatchId(getProcess().getBatchId());
 					}
-		    		proxy.addNewCrisisMngBatchStandingOrder(standingOrderLst);
+		    		getService().addNewCrisisMngBatchStandingOrder(standingOrderLst);
 		    	}
 		    	
 		    	if(inputDataList.size() == 0) {
-		    		inputDataList = proxy.getOrderByCriteria(CrisisManagerOrderInAction.this.getBatch().getDeliveryDate()
-		    													, CrisisManagerOrderInAction.this.getBatch().getCutOffDateTime()
-		    													, CrisisManagerOrderInAction.this.getBatch().getArea()
-		    													, RoutingDateUtil.getServerTime(CrisisManagerOrderInAction.this.getBatch().getStartTime())
-																, RoutingDateUtil.getServerTime(CrisisManagerOrderInAction.this.getBatch().getEndTime())
-		    													, CrisisManagerOrderInAction.this.getBatch().getDeliveryType()
-		    													, CrisisManagerOrderInAction.this.getBatch().getProfile()
-		    													, CrisisManagerOrderInAction.this.getBatch().isStandingOrderIncluded()
+		    		inputDataList = getService().getOrderByCriteria(getProcess().getDeliveryDate()
+		    													, getProcess().getCutOffDateTime()
+		    													, getProcess().getArea()
+		    													, RoutingDateUtil.getServerTime(getProcess().getStartTime())
+																, RoutingDateUtil.getServerTime(getProcess().getEndTime())
+		    													, getProcess().getDeliveryType()
+		    													, getProcess().getProfile()
+		    													, getProcess().isStandingOrderIncluded()
 		    												);
 		    	}
 		    	
 		    	System.out.println("######################### OrderScenario NO OF ORDERS ######################### " + inputDataList.size());
 				if(inputDataList != null && inputDataList.size() > 0) {
 					for(ICrisisManagerBatchOrder orderModel : inputDataList) {
-						orderModel.setBatchId(CrisisManagerOrderInAction.this.getBatch().getBatchId());
+						orderModel.setBatchId(getProcess().getBatchId());
 					}
 					
 					// Logging order data collection complete
-					proxy.updateCrisisMngBatchStatus(CrisisManagerOrderInAction.this.getBatch().getBatchId(), EnumCrisisMngBatchStatus.ORDERCOLECTIONCOMPETE);
-					proxy.updateCrisisMngBatchMessage(CrisisManagerOrderInAction.this.getBatch().getBatchId(), IProcessMessage.INFO_MESSAGE_ORDERDATACOLLECTIONCOMPLETED);
-					proxy.addNewCrisisMngBatchOrder(inputDataList);			
+					getService().updateCrisisMngBatchStatus(getProcess().getBatchId(), EnumCrisisMngBatchStatus.ORDERCOLECTIONCOMPETE);
+					getService().updateCrisisMngBatchMessage(getProcess().getBatchId(), ICrisisManagerProcessMessage.INFO_MESSAGE_ORDERDATACOLLECTIONCOMPLETED);
+					getService().addNewCrisisMngBatchOrder(inputDataList);			
 				} else {
-					proxy.updateCrisisMngBatchStatus(CrisisManagerOrderInAction.this.getBatch().getBatchId(), EnumCrisisMngBatchStatus.ORDERCOLECTIONFAILED);
-					proxy.updateCrisisMngBatchMessage(CrisisManagerOrderInAction.this.getBatch().getBatchId(), ERROR_MESSAGE_NOORDER);
+					getService().updateCrisisMngBatchStatus(getProcess().getBatchId(), EnumCrisisMngBatchStatus.ORDERCOLECTIONFAILED);
+					getService().updateCrisisMngBatchMessage(getProcess().getBatchId(), ERROR_MESSAGE_NOORDER);
 				}
 		    } catch (Exception exp) {
 		    	exp.printStackTrace();
 		    	try {
-					proxy.updateCrisisMngBatchStatus(CrisisManagerOrderInAction.this.getBatch().getBatchId(), EnumCrisisMngBatchStatus.ORDERCOLECTIONFAILED);
-					proxy.updateCrisisMngBatchMessage(CrisisManagerOrderInAction.this.getBatch().getBatchId(),  decodeErrorMessage(exp));
-				} catch (RoutingServiceException e) {
+		    		getService().updateCrisisMngBatchStatus(getProcess().getBatchId(), EnumCrisisMngBatchStatus.ORDERCOLECTIONFAILED);
+		    		getService().updateCrisisMngBatchMessage(getProcess().getBatchId(),  decodeErrorMessage(exp));
+				} catch (TransAdminServiceException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}

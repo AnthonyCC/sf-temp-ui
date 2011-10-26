@@ -1,6 +1,8 @@
-package com.freshdirect.routing.model;
+package com.freshdirect.transadmin.model;
 
 import java.util.Date;
+
+import com.freshdirect.routing.model.BaseModel;
 
 public class ActiveOrderModel extends BaseModel implements IActiveOrderModel{
 

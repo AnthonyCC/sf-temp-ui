@@ -1,4 +1,4 @@
-package com.freshdirect.routing.model;
+package com.freshdirect.transadmin.model;
 
 import java.util.Date;
 

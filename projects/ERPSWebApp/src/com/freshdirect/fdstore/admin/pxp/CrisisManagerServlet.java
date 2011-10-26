@@ -6,9 +6,7 @@ import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.ejb.CreateException;
@@ -19,7 +17,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
 
@@ -62,12 +59,9 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
-import com.freshdirect.routing.model.ICrisisManagerBatchOrder;
 import com.freshdirect.routing.model.IReservationModel;
 import com.freshdirect.routing.model.IStandingOrderModel;
 import com.freshdirect.routing.util.json.CrisisManagerJSONSerializer;
-import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
-import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.StandingOrderUtil;
 import com.metaparadigm.jsonrpc.JSONSerializer;
 import com.metaparadigm.jsonrpc.MarshallException;
@@ -170,7 +164,7 @@ public class CrisisManagerServlet extends HttpServlet {
 	
 	private IStandingOrderModel processStandingOrder(HttpServletRequest request,
 			HttpServletResponse response, String agent, String payload){
-		Map<String, String> soResult = new HashMap<String, String>();
+
 		IStandingOrderModel soModel = extractStandingOrderPayload(payload);
 		if (soModel == null) {
 			LOGGER.error("Cannot extract Reservation Model from payload");			
@@ -203,7 +197,7 @@ public class CrisisManagerServlet extends HttpServlet {
 		
 			try {
 				so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(standingOrderId));				
-				FDActionInfo info = getActionInfo(request, initiator);
+				FDActionInfo info = getActionInfo(initiator);
 				if(info.getIdentity() == null)info.setIdentity(so.getCustomerIdentity());
 				if(null != altDate){
 					so.setAltDeliveryDate(altDate);
@@ -401,8 +395,9 @@ public class CrisisManagerServlet extends HttpServlet {
 				ErpAddressModel address = getAddress(user.getIdentity(),userReservation.getAddressId());
 				FDDeliveryManager.getInstance().removeReservation(userReservation.getPK().getId(),address, event);
 			}
-			FDActionInfo info = getActionInfo(request, agent);
-			if(info.getIdentity() == null)info.setIdentity(identity);
+			FDActionInfo info = getActionInfo(agent);
+			info.setIdentity(identity);
+
 			FDReservation reservation = FDCustomerManager.makeReservation(identity, 
 					timeslot, EnumReservationType.ONETIME_RESERVATION, rsvModel.getAddressId(), info, user.isChefsTable(), event, true);
 		
@@ -424,8 +419,8 @@ public class CrisisManagerServlet extends HttpServlet {
 	private boolean processCancelOrder(HttpServletRequest request,
 			HttpServletResponse response, String agent, String payload, boolean sendEmail) {
 		boolean success = false;
-		ICrisisManagerBatchOrder orderModel = extractOrderPayload(payload);
-		if (orderModel == null) {
+		String orderId = payload;//extractOrderPayload(payload);
+		if (orderId == null) {
 			LOGGER.error("Cannot extract order model from payload");
 			// no payload
 			sendError(response, ":[");
@@ -433,24 +428,19 @@ public class CrisisManagerServlet extends HttpServlet {
 		}
 		
 		FDCustomerOrderInfo orderInfo = new FDCustomerOrderInfo();
-		FDIdentity identity = new FDIdentity(orderModel.getErpCustomerPK(), orderModel.getFdCustomerPK());		
-		orderInfo.setIdentity(identity);
-		orderInfo.setSaleId(orderModel.getOrderNumber());
+		orderInfo.setSaleId(orderId);
 				
 		// Assume everything is fine...
 		success = this.cancelOrder(orderInfo, request, agent, sendEmail);
 		return success;
 	}
 	
-	protected FDActionInfo getActionInfo(HttpServletRequest request, String agent){
-		HttpSession session = request.getSession();
-		FDSessionUser currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
-		FDIdentity identity = currentUser == null ? null : currentUser.getIdentity();
+	protected FDActionInfo getActionInfo(String agent){
 		
 		EnumTransactionSource src = EnumTransactionSource.TRANSPORTATION;
 		CrmAgentModel crmAgent = new CrmAgentModel();
 		crmAgent.setLdapId(agent);
-		FDActionInfo info = new FDActionInfo(src, identity, agent, null, crmAgent);
+		FDActionInfo info = new FDActionInfo(src, null, agent, null, crmAgent);
 		
 		return info;
 	}
@@ -467,12 +457,17 @@ public class CrisisManagerServlet extends HttpServlet {
 	
 	protected boolean cancelOrder(FDCustomerOrderInfo orderModel, HttpServletRequest request, String agent, boolean sendEmail) {
 		boolean success = true;
-		FDActionInfo actionInfo = getActionInfo(request, agent);
-		// Set it to actionInfo object to write to the activity log.
-		actionInfo.setIdentity(orderModel.getIdentity());
+
 		try {
-			FDOrderI order = FDCustomerManager.getOrder(orderModel.getSaleId());		
-			FDCustomerManager.cancelOrder(actionInfo, orderModel.getSaleId(), sendEmail, 0);			
+			
+			FDOrderI order = FDCustomerManager.getOrder(orderModel.getSaleId());
+			FDIdentity identity = new FDIdentity(order.getCustomerId(), null);		
+			orderModel.setIdentity(identity);
+			FDActionInfo actionInfo = getActionInfo(agent);
+			// Set it to actionInfo object to write to the activity log.
+			actionInfo.setIdentity(identity);
+			FDCustomerManager.cancelOrder(actionInfo, orderModel.getSaleId(), sendEmail, 0);
+
 			ErpActivityRecord rec = actionInfo.createActivity(EnumAccountActivityType.CANCEL_ORDER);
 			rec.setNote("Order Cancelled");
 			rec.setChangeOrderId( orderModel.getSaleId());
@@ -500,31 +495,6 @@ public class CrisisManagerServlet extends HttpServlet {
 		}
 	}
 
-	/**
-	 * Unserialize Order Id's from JSON string
-	 * 
-	 * @param payload serialized form of orders
-	 * @return Map of order Id's, custId's, fdCustId's
-	 */
-	protected ICrisisManagerBatchOrder extractOrderPayload(String orderPayload) {
-		
-		ICrisisManagerBatchOrder orderModel = null;
-		try {
-			orderModel = (ICrisisManagerBatchOrder) serializer.fromJSON(orderPayload);
-		} catch (ClassCastException e) {
-			LOGGER.error("Error raised during Order model deserialization", e);
-			return null;
-		} catch (UnmarshallException e) {
-			LOGGER.error("Error raised during Order model deserialization", e);
-			return null;
-		} catch (Exception e) {
-			LOGGER.error("Error raised during Order model deserialization", e);
-			return null;
-		}
-		
-		return orderModel;
-	}
-	
 	private int processCancelReservation(HttpServletRequest request,
 			HttpServletResponse response, String userAgent, String payload) {
 		

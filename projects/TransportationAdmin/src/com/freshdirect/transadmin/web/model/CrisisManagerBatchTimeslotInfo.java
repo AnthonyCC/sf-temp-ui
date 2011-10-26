@@ -2,7 +2,7 @@ package com.freshdirect.transadmin.web.model;
 
 import java.text.ParseException;
 
-import com.freshdirect.routing.model.ICrisisManagerBatchDeliverySlot;
+import com.freshdirect.transadmin.model.ICrisisManagerBatchDeliverySlot;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class CrisisManagerBatchTimeslotInfo implements java.io.Serializable {

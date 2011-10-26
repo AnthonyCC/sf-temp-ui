@@ -30,5 +30,8 @@ public class CrisisManagerValidator extends AbstractValidator {
 		if(model != null && model.getDestinationDate() != null && model.getSelectedDate()!= null && model.getDestinationDate().before(model.getSelectedDate())) {
 			errors.rejectValue("destinationDate", "app.error.144", new Object[]{"Destination Date"},"can't be before selected date");
 		}
+		if(model != null && model.getSelectedDate() != null && model.getDestinationDate()!= null && model.getDestinationDate().equals(model.getSelectedDate())) {
+			errors.rejectValue("destinationDate", "app.error.145", new Object[]{},"can't be equal");
+		}
 	}
 }

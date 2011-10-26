@@ -27,12 +27,10 @@ import org.apache.tools.ant.util.DateUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumDeliveryType;
 import com.freshdirect.routing.constants.EnumReservationType;
-import com.freshdirect.routing.model.CrisisManagerBatchOrder;
 import com.freshdirect.routing.model.ReservationModel;
 import com.freshdirect.routing.model.StandingOrderModel;
 import com.metaparadigm.jsonrpc.AbstractSerializer;
@@ -47,8 +45,8 @@ public class CrisisManagerJSONSerializer extends AbstractSerializer {
 
 	private static Category		LOGGER	= LoggerFactory.getInstance( CrisisManagerJSONSerializer.class );
 
-	private static Class<?>[] _serializableClasses = new Class[] { EnumDeliveryType.class, EnumSaleStatus.class,
-		EnumReservationType.class, CrisisManagerBatchOrder.class, ReservationModel.class, StandingOrderModel.class};
+	private static Class<?>[] _serializableClasses = new Class[] { EnumDeliveryType.class, 
+		EnumReservationType.class, ReservationModel.class, StandingOrderModel.class};
 
 	private static Class<?>[] _JSONClasses = new Class[] { JSONObject.class };
 

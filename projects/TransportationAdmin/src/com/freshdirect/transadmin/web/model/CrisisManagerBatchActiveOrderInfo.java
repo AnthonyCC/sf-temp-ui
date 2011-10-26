@@ -2,7 +2,7 @@ package com.freshdirect.transadmin.web.model;
 
 import java.text.ParseException;
 
-import com.freshdirect.routing.model.IActiveOrderModel;
+import com.freshdirect.transadmin.model.IActiveOrderModel;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class CrisisManagerBatchActiveOrderInfo implements java.io.Serializable {

@@ -1,10 +1,11 @@
-package com.freshdirect.routing.model;
+package com.freshdirect.transadmin.model;
 
 import java.util.Date;
 
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.routing.constants.EnumDeliveryType;
 import com.freshdirect.routing.constants.EnumReservationType;
+import com.freshdirect.routing.model.BaseModel;
 
 public class CrisisManagerBatchOrder extends BaseModel implements ICrisisManagerBatchOrder, Comparable<CrisisManagerBatchOrder>  {
 	

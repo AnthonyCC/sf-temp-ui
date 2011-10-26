@@ -1,4 +1,4 @@
-package com.freshdirect.routing.constants;
+package com.freshdirect.transadmin.constants;
 
 public enum EnumCrisisMngBatchStatus {
 	

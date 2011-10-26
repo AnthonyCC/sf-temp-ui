@@ -1,11 +1,12 @@
-package com.freshdirect.routing.model;
+package com.freshdirect.transadmin.model;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.freshdirect.routing.constants.EnumCrisisMngBatchStatus;
+import com.freshdirect.transadmin.constants.EnumCrisisMngBatchStatus;
+import com.freshdirect.routing.model.BaseModel;
 
 public class CrisisManagerBatch extends BaseModel implements ICrisisManagerBatch  {
 	

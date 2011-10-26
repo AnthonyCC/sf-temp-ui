@@ -19,20 +19,20 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.framework.util.StringUtil;
-import com.freshdirect.routing.constants.EnumCrisisMngBatchStatus;
+import com.freshdirect.transadmin.constants.EnumCrisisMngBatchStatus;
 import com.freshdirect.routing.constants.EnumDeliveryType;
 import com.freshdirect.routing.constants.EnumProfileList;
-import com.freshdirect.routing.model.ICrisisManagerBatch;
-import com.freshdirect.routing.model.TriggerCrisisManagerResult;
-import com.freshdirect.routing.service.exception.RoutingServiceException;
-import com.freshdirect.routing.service.proxy.CrisisManagerServiceProxy;
+import com.freshdirect.transadmin.model.ICrisisManagerBatch;
+import com.freshdirect.transadmin.web.model.TriggerCrisisManagerResult;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.transadmin.crisis.manager.action.CrisisManagerOrderInAction;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.TrnCutOff;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DomainManagerI;
+import com.freshdirect.transadmin.service.ICrisisManagerService;
 import com.freshdirect.transadmin.service.ZoneManagerI;
+import com.freshdirect.transadmin.service.exception.TransAdminServiceException;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.CrisisManagerCommand;
 
@@ -41,6 +41,16 @@ public class CrisisManagerFormController extends BaseFormController {
 	private DomainManagerI domainManagerService;
 
 	private ZoneManagerI zoneManagerService;
+	
+	private ICrisisManagerService  crisisManagerService;
+	
+	public ICrisisManagerService getCrisisManagerService() {
+		return crisisManagerService;
+	}
+
+	public void setCrisisManagerService(ICrisisManagerService crisisManagerService) {
+		this.crisisManagerService = crisisManagerService;
+	}
 
 	public DomainManagerI getDomainManagerService() {
 		return domainManagerService;
@@ -107,8 +117,7 @@ public class CrisisManagerFormController extends BaseFormController {
 											throws ServletException, IOException {
 
 		CrisisManagerCommand bean = (CrisisManagerCommand) command;
-		
-		CrisisManagerServiceProxy proxy = new CrisisManagerServiceProxy();
+				
 		try {
 			String userId = com.freshdirect.transadmin.security.SecurityManager.getUserName(request);
 			TrnCutOff cutOff = getDomainManagerService().getCutOff(bean.getCutOff());
@@ -130,7 +139,7 @@ public class CrisisManagerFormController extends BaseFormController {
 				endTime = TransStringUtil.getDatewithTime(TransStringUtil.getDate(bean.getSelectedDate())+" "+bean.getEndTime());
 			}
 			
-			Set<ICrisisManagerBatch> batches = proxy.getCrisisMngBatch(bean.getSelectedDate());
+			Set<ICrisisManagerBatch> batches = this.crisisManagerService.getCrisisMngBatch(bean.getSelectedDate());
 			boolean hasRunningbatch = false;
 			
 			for(ICrisisManagerBatch batch : batches) {
@@ -142,19 +151,19 @@ public class CrisisManagerFormController extends BaseFormController {
 				}
 			}
 			if(!hasRunningbatch) {
-				TriggerCrisisManagerResult triggerResult = proxy.createNewCrisisMngBatch( bean.getSelectedDate()
+				TriggerCrisisManagerResult triggerResult = this.crisisManagerService.createNewCrisisMngBatch( bean.getSelectedDate()
 					, bean.getDestinationDate(), userId, getZoneArray(request), cutoff, startTime, endTime
 					, deliveryType, "X".equalsIgnoreCase(bean.getIncludeStandingOrder()), profileName, hasRunningbatch);
 			
 				if(triggerResult.getCrisisMngBatchId() != null) {
-					ICrisisManagerBatch batch = proxy.getCrisisMngBatchById(triggerResult.getCrisisMngBatchId());
-					CrisisManagerOrderInAction orderIn = new CrisisManagerOrderInAction(batch, userId);
+					ICrisisManagerBatch batch = this.crisisManagerService.getCrisisMngBatchById(triggerResult.getCrisisMngBatchId());
+					CrisisManagerOrderInAction orderIn = new CrisisManagerOrderInAction(batch, userId, this.crisisManagerService);
 					orderIn.execute();
 				}
 				saveMessage(request, formatMessages(triggerResult.getMessages()));
 			}
 			
-		} catch (RoutingServiceException e) {			
+		} catch (TransAdminServiceException e) {			
 			e.printStackTrace();
 			saveErrorMessage(request, e.getMessage());
 		} catch (ParseException e) {
