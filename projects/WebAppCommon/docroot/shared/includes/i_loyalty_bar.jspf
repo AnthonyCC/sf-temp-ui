@@ -6,7 +6,7 @@ final int W_LOYALTY_BAR_FP = 570;
 final int W_LOYALTY_BAR_LP = 400;
 %>
 
-<table cellspacing="0" cellpadding="0" border="0" width="<%= W_LOYALTY_BAR %>" id="timeslotloyalityHeader" align="center">
+<table cellspacing="0" cellpadding="0" border="0" width="<%= W_LOYALTY_BAR %>" id="timeslotloyalityHeader" align="left">
 	<tr>
 	<%if(user.isChefsTable()){%>
 		<td width="30"><img src="/media/editorial/site_pages/ct/CT_header_left.gif" width="30" height="25" border="0"></td>

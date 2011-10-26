@@ -253,7 +253,7 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 								showLine=true;
 							
 							if ( introCopy != null && introCopy.trim().length() > 0 ) {
-								%><tr><td>
+								%><tr><td align="center">
 									<img src="/media_stat/images/layout/clear.gif" height="5" width="1"><br/>
 									<fd:IncludeMedia name='<%= introCopy %>'/><br/>
 									<img src="/media_stat/images/layout/clear.gif" height="4" width="1">

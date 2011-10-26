@@ -81,7 +81,7 @@ if(isCheckAddress){
 				<td colspan="3" class="text12" align="left" width="100%"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
 			</tr>
 			<tr>
-				<td colspan="3" class="text12" align="left">Here are the currently available timeslots for delivery to this <%=isCheckAddress ? "address" : "customer's addresses"%>:
+				<td colspan="3" class="text12" align="left" style="padding-bottom: 5px;">Here are the currently available timeslots for delivery to this <%=isCheckAddress ? "address" : "customer's addresses"%>:
 						<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0">
 				</td>
 			</tr>
