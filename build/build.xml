@@ -1601,7 +1601,6 @@
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
 			<pathelement location="${work.dir}/FDStore.jar"/>
 			<pathelement location="${thirdparty.home}/spring.jar"/>
-			<pathelement location="${thirdparty.home}/standard.jar"/>
       		<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/> 
        		<pathelement location="${thirdparty.home}/opencsv-1.8.jar"/>
        		<pathelement location="${thirdparty.home}/extremecomponents-1.0.1.jar"/>
@@ -1721,7 +1720,6 @@
 			<pathelement location="${thirdparty.home}/struts.jar"/>
             <pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
 			<pathelement location="${thirdparty.home}/castor-0.9.5.3-xml.jar"/>
-			<pathelement location="${thirdparty.home}/standard.jar"/>
 		</path>
 		<makeWebProject
 			project="FDWebSite"
@@ -1739,7 +1737,6 @@
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
 			<pathelement location="${work.dir}/RoutingServices.jar"/>
 			<pathelement location="${thirdparty.home}/struts.jar"/>
-			<pathelement location="${thirdparty.home}/standard.jar"/>
             <pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
 		</path>
 		<makeWebProject
@@ -2017,7 +2014,6 @@
 			<pathelement location="${work.dir}/RoutingServices.jar"/>
             <pathelement location="${work.dir}/ERPServices.jar"/>
 			<pathelement location="${thirdparty.home}/spring.jar"/>
-			<pathelement location="${thirdparty.home}/standard.jar"/>
 			<pathelement location="${thirdparty.home}/extremecomponents-1.0.1.jar"/>  
 			<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
 			<pathelement location="${thirdparty.home}/fop-0.20.5.jar"/>
@@ -2264,7 +2260,6 @@
 				<include name="lucene-queries-${lucene.version}.jar"/>
 				<include name="lucene-spellchecker-${lucene.version}.jar"/>
 				<include name="jxl.jar"/>
-				<include name="standard.jar"/>
 				<include name="jstl-api-1.2.jar"/>
 				<include name="jstl-impl-1.2.jar"/>
 
@@ -2297,7 +2292,6 @@
 			<lib>
 				<include name="lcc.jar"/>
 				<include name="sapjco.jar"/>
-				<include name="standard.jar"/>
 				<include name="jstl-api-1.2.jar"/>
 				<include name="jstl-impl-1.2.jar"/>
                 <include name="givexclient.jar"/>
@@ -2341,7 +2335,6 @@
 				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
 				<include name="spring.jar"/>
-				<include name="standard.jar"/>
 				<include name="jstl-api-1.2.jar"/>
 				<include name="jstl-impl-1.2.jar"/>
 				<include name="poi-3.5-FINAL-20090928.jar"/>
@@ -2452,7 +2445,6 @@
 				<include name="lucene-spellchecker-${lucene.version}.jar"/>
 				<include name="jgroups-2.2.7.jar"/>
 				<include name="jxl.jar"/>
-				<include name="standard.jar"/>
 				<include name="jstl-api-1.2.jar"/>
 				<include name="jstl-impl-1.2.jar"/>
 				<include name="${scarab.jar}"/>
@@ -2891,7 +2883,6 @@
 				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
 				<include name="spring.jar"/>
-				<include name="standard.jar"/>
 				<include name="jstl-api-1.2.jar"/>
 				<include name="jstl-impl-1.2.jar"/>
 				<include name="${scarab.jar}"/>
