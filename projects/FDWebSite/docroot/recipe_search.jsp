@@ -251,7 +251,7 @@ if (!searchPerformed) {
 		<input type="text" id="keyword" name="keyword" class="search" style="width:245px;" value="<%= request.getParameter("keyword") %>"/>
 	</div>
 
-	<div class="section" style="padding: 0px 50px 0px 0px;">
+	<div class="section" style="padding: 0px 105px 0px 0px;">
 		<%
 		List dropdownCriteria = searchPage.getCriteriaBySelectionType(RecipeSearchCriteria.TYPE_ONE);	
 		int countDropdown = 0;
