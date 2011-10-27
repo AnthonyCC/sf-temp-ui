@@ -194,7 +194,7 @@ final int W_NEWPRODUCTS_DFGS_RIGHT = 191;
 <tmpl:put name='header_seperator' direct='true'><tr>
 	<td width="<%=W_NEWPRODUCTS_DFGS_TOTAL%>" bgcolor="#999966" colspan="2"><img width="1" height="1" src="/media_stat/images/layout/999966.gif"></td>
 </tr></tmpl:put>
-<tmpl:put name='header_2' direct='true'><br /><%@ include file="/includes/i_header_new.jspf" %></tmpl:put>
+<tmpl:put name='header_2' direct='true'><br /><div style="width: <%=W_NEWPRODUCTS_DFGS_LEFT%>px;"><%@ include file="/includes/i_header_new.jspf" %></div></tmpl:put>
 <% if (showFeatNew) { %>
 	<tmpl:put name='featured' direct='true'><%@ include file="/includes/i_featured_new.jspf" %></tmpl:put>
 <% } %>

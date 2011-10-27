@@ -4,6 +4,9 @@
         - Have a form field named actionName 
 --%>
 <% 
+final int W_CHECKACCT_SELECT_TOTAL = 970;
+final int W_CHECKACCT_SELECT_CARD = 280;
+	
     String editPage = null;
     FDUserI _user = (FDUserI)session.getAttribute(SessionName.USER);
 
@@ -102,7 +105,7 @@
         </TR></TABLE><br><br>
 <%              } %>
 
-	<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" width="675" align="left" style="padding-bottom: 20px;">
+	<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" width=<%= W_CHECKACCT_SELECT_TOTAL %> align="left" style="padding-bottom: 20px;">
 	<TR valign="top">
 <%
             itemCounter=0;
@@ -113,7 +116,7 @@
 <% } else { %>	
 	<TD width="20">&nbsp;</TD>
 <% } %>	
-	<TD width="185"> 
+	<TD width=<%= W_CHECKACCT_SELECT_CARD %>> 
 		<FONT CLASS="text12"><%=paymentM.getName()%><br>
 		<b><%=(paymentM.getBankAccountType() != null) ? paymentM.getBankAccountType().getDescription() : "&nbsp;" %></b><br>
 		Routing # <%=paymentM.getAbaRouteNumber()%><br>
@@ -135,7 +138,7 @@
 		<input name="delete_cc" type="IMAGE" src="/media_stat/images/buttons/delete.gif" WIDTH="51" HEIGHT="16" ALT="Delete" BORDER="0" onClick="javascript:setDeletePaymentId(this.form,'<%=paymentPKId%>');setActionName(this.form,'deletePaymentMethod')">
 		
 	<!-- error message about card being expired goes here -->
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="185" HEIGHT="1">
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH=<%= W_CHECKACCT_SELECT_CARD %> HEIGHT="1">
 	</TD>
 <%          itemCounter++;
 			itemNum++;
@@ -150,12 +153,12 @@
             if (itemCounter==1) {
 %>
         <%-- this spacer cell and image width should be dynamic: when no second payment method, 460 --%>
-        <TD WIDTH="470"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="470" HEIGHT="1" BORDER="0"><BR></TD>
+        <TD WIDTH=<%= W_CHECKACCT_SELECT_TOTAL - W_CHECKACCT_SELECT_CARD - 50 %>><IMG src="/media_stat/images/layout/clear.gif" WIDTH=<%= W_CHECKACCT_SELECT_TOTAL - W_CHECKACCT_SELECT_CARD - 50 %> HEIGHT="1" BORDER="0"><BR></TD>
 <%
             } else if(itemCounter==2) {
 %>
         <%-- this spacer cell  --%>
-        <TD WIDTH="235"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="235" HEIGHT="1" BORDER="0"><BR></TD>
+        <TD WIDTH=<%= W_CHECKACCT_SELECT_TOTAL - W_CHECKACCT_SELECT_CARD * 2 - 100 %>><IMG src="/media_stat/images/layout/clear.gif" WIDTH=<%= W_CHECKACCT_SELECT_TOTAL - W_CHECKACCT_SELECT_CARD * 2 - 100 %> HEIGHT="1" BORDER="0"><BR></TD>
 <%
             }
 %>

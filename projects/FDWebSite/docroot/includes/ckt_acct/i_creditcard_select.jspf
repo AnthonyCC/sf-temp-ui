@@ -1,7 +1,7 @@
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 <% //expanded page dimensions
 final int W_CREDITCARD_SELECT_TOTAL = 970;
-final int W_CREDITCARD_SELECT_CARD = 290;
+final int W_CREDITCARD_SELECT_CARD = 280;
 %>
 <%-- Dependencies
     Host page must :

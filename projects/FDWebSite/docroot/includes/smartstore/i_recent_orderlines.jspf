@@ -59,10 +59,10 @@
 </style>
 <![endif]-->
 <%
-int imageWidth = 970;
+int imageWidth = 968;
 int cartLineWidth = 906;
 if(request.getRequestURI().indexOf("quickshop") > -1) {
-	imageWidth = 740;
+	imageWidth = 738;
 	cartLineWidth = 676;
 }
 %>
