@@ -1519,6 +1519,7 @@
                 <pathelement location="${thirdparty.home}/xml-apis.jar"/>
 				<pathelement location="${thirdparty.home}/lpsolve55j.jar"/>
 				<pathelement location="${thirdparty.home}/gwt/gwt-dev-oophm.jar"/>
+				<pathelement location="${thirdparty.home}/jsonrpc-1.0.jar"/>
 			</path>
 	
 			<makeProject
