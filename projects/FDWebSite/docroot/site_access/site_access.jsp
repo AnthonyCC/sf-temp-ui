@@ -104,19 +104,16 @@ request.setAttribute("listPos", "CategoryNote,SiteAccess");
 		<title>FreshDirect</title>
 
 		<%@ include file="/common/template/includes/metatags.jspf" %>
+		<meta http-equiv="X-UA-Compatible" content="IE=8">
+
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <%--<%@ include file="/shared/template/includes/style_sheet_grid.jspf" %>--%>
-    <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-
-    <%@ include file="/shared/template/includes/ccl.jspf" %>
-
-
-		<fd:javascript src="/assets/javascript/swfobject.js"/>
-
+		<fd:javascript src="/assets/javascript/swfobject.js" />
+		
+		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	</head>
-	<body>
+	<body bgcolor="#ffffff" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
 	
+		
 		<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
 		<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 		
@@ -210,6 +207,5 @@ request.setAttribute("listPos", "CategoryNote,SiteAccess");
 				semPixel_PUB.setParam("curPage", request.getRequestURI());
 			%><fd:SemPixelIncludeMedia pixelNames="Publicis" />
 		</fd:SiteAccessController>
-    <%@ include file="/common/template/includes/i_jsmodules.jspf" %>
 	</body>
 </html>

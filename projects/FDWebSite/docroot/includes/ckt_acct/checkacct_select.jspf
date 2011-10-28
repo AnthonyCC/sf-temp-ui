@@ -112,7 +112,7 @@ final int W_CHECKACCT_SELECT_CARD = 280;
           } %>
 <%	
    if (!disablePaymentMethod) { %>          
-	<TD width="20"><input type="<%=showRadioButtons?"radio":"hidden"%>" name="paymentMethodList" <%=methodChecked%> value="<%=paymentPKId%>" ></TD>
+	<TD width="20" class="chooser_radio"><input type="<%=showRadioButtons?"radio":"hidden"%>" name="paymentMethodList" <%=methodChecked%> value="<%=paymentPKId%>" ></TD>
 <% } else { %>	
 	<TD width="20">&nbsp;</TD>
 <% } %>	
@@ -143,7 +143,7 @@ final int W_CHECKACCT_SELECT_CARD = 280;
 <%          itemCounter++;
 			itemNum++;
             if (itemNum <  numEChecks && (itemCounter % 3)!=0){     %>
-			<TD width="15"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="15" HEIGHT="1"></TD>
+			<TD width="20"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="20" HEIGHT="1"></TD>
 			<TD width="1" bgcolor="#CCCCCC"><IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="1" HEIGHT="1"></TD>
 			<TD width="14"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="14" HEIGHT="1"></TD>
 <%          }
@@ -153,12 +153,12 @@ final int W_CHECKACCT_SELECT_CARD = 280;
             if (itemCounter==1) {
 %>
         <%-- this spacer cell and image width should be dynamic: when no second payment method, 460 --%>
-        <TD WIDTH=<%= W_CHECKACCT_SELECT_TOTAL - W_CHECKACCT_SELECT_CARD - 50 %>><IMG src="/media_stat/images/layout/clear.gif" WIDTH=<%= W_CHECKACCT_SELECT_TOTAL - W_CHECKACCT_SELECT_CARD - 50 %> HEIGHT="1" BORDER="0"><BR></TD>
+        <TD WIDTH="670"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="670" HEIGHT="1" BORDER="0"><BR></TD>
 <%
             } else if(itemCounter==2) {
 %>
         <%-- this spacer cell  --%>
-        <TD WIDTH=<%= W_CHECKACCT_SELECT_TOTAL - W_CHECKACCT_SELECT_CARD * 2 - 100 %>><IMG src="/media_stat/images/layout/clear.gif" WIDTH=<%= W_CHECKACCT_SELECT_TOTAL - W_CHECKACCT_SELECT_CARD * 2 - 100 %> HEIGHT="1" BORDER="0"><BR></TD>
+        <TD WIDTH="335"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="335" HEIGHT="1" BORDER="0"><BR></TD>
 <%
             }
 %>

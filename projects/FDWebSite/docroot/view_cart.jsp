@@ -13,11 +13,11 @@
 
 <% //expanded page dimensions
 final int W_VIEWCART_TOTAL = 970;
-final int W_VIEWCART_FHALF = 492;
+final int W_VIEWCART_FHALF = 525;
 final int W_VIEWCART_LHALF = 478;
 final int W_VIEWCART_LHALF_FP = 410;
-final int W_VIEWCART_TOTAL_FP = 902;
-final int W_VIEWCART_LP = 68;
+final int W_VIEWCART_TOTAL_FP = 935;
+final int W_VIEWCART_LP = 35;
 %>
 
 <%! final java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
@@ -197,7 +197,7 @@ StringBuffer buffer = new StringBuffer(
 				</tr>
 			</table>
 	    </TD>
-      <TD WIDTH="<%= W_VIEWCART_LP %>" ALIGN="CENTER" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT>
+      <TD WIDTH="<%= W_VIEWCART_LP %>" ALIGN="RIGHT" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT>
 	        <input type="image" name="checkout" src="/media_stat/images/buttons/checkout_right.gif"
 	         BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2">
 		</TD>

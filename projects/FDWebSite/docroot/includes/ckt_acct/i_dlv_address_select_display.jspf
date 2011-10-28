@@ -92,7 +92,7 @@ if (__shipToAddresses.size() > 0) {
 				}%>
             <%if (__allowSelection) {
 				%>
-				<TD width="20" valign="top"><input type="radio" name="selectAddressList" class="radio" value="<%=shipAddress.getPK().getId()%>" <%=checkedAddress?"checked":"" %> ><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="20" HEIGHT="1"><BR><!--must test for checked--></TD>
+				<TD width="20" valign="top" class="chooser_radio"><input type="radio" name="selectAddressList" class="radio" value="<%=shipAddress.getPK().getId()%>" <%=checkedAddress?"checked":"" %> ><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="20" HEIGHT="1"><BR><!--must test for checked--></TD>
 				<%
 			} else { 
 				%>
@@ -157,15 +157,15 @@ if (__shipToAddresses.size() > 0) {
         }//End of the loop
         if (itemCounter==1) {
 			%>
-			<TD WIDTH="660"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="470" HEIGHT="1" BORDER="0"><BR></TD>
+			<TD WIDTH="750"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="750" HEIGHT="1" BORDER="0"><BR></TD>
 			<%
         } else if (itemCounter==2) {
 			%>
-			<TD WIDTH="440"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="235" HEIGHT="1" BORDER="0"><BR></TD>
+			<TD WIDTH="500"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="500" HEIGHT="1" BORDER="0"><BR></TD>
 			<%
         } else if (itemCounter==3) {
 			%>
-			<TD WIDTH="220"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="235" HEIGHT="1" BORDER="0"><BR></TD>
+			<TD WIDTH="250"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="250" HEIGHT="1" BORDER="0"><BR></TD>
 			<%
         }
 		%>

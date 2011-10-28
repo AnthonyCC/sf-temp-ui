@@ -81,6 +81,15 @@ List<ErpAddressModel> dlvAddresses = FDCustomerFactory.getErpCustomer(user.getId
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Choose Delivery Address</tmpl:put>
 <tmpl:put name='content' direct='true'>
+<style type="text/css">
+	td.chooser_radio {
+		text-align: center;
+	}
+	td.chooser_radio input {
+		margin: 0px;
+		padding: 0px;
+	}
+</style>
 <%  
 String actionName = "setDeliveryAddress";
 String successPage = "/checkout/step_2_select.jsp";

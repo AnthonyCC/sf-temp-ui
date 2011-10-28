@@ -39,6 +39,15 @@ final int W_CHECKOUT_STEP_3_CHOOSE_TOTAL = 970;
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Choose Payment Information</tmpl:put>
 <tmpl:put name='content' direct='true'>
+<style type="text/css">
+	td.chooser_radio {
+		text-align: center;
+	}
+	td.chooser_radio input {
+		margin: 0px;
+		padding: 0px;
+	}
+</style>
 <%
 	String actionName = request.getParameter("actionName");
 	if (actionName==null)
@@ -479,9 +488,9 @@ if(isPaymentRequired) {
 			//-->
 		</SCRIPT>
 		
-		<% if (isCheckEligible && !isECheckRestricted) { // show checking acct selections %>
-		<% if (hasCheck) { %>
-		<table width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" border="0" cellspacing="0" cellpadding="2">
+		<% if (true) { // show checking acct selections %>
+		<% if (true) { %>
+		<table width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
 			<tr valign="top">
 			<td><img src="/media_stat/images/headers/check_acct_details.gif" width="181" height="9" alt="CHECKING ACCOUNT DETAILS"><br>
 			<IMG src="/media_stat/images/layout/999966.gif" width="970" height="1" border="0" VSPACE="3"><br></td>
