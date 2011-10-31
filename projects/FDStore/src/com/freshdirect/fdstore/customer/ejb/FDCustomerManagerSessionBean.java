@@ -5340,7 +5340,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			LOGGER.info("valid iphone capture email: " + emailId);
 			// If unknown email, save it in dlv.zonenotification table
 			FDDeliveryManager.getInstance().saveFutureZoneNotification(emailId,
-					source.getCode(), EnumServiceType.IPHONE);
+					source.getCode(), (source != null && EnumTransactionSource.ANDROID_WEBSITE.equals(source) 
+												? EnumServiceType.ANDROID : EnumServiceType.IPHONE));
 
 			// Send notification email with content managed in CMS.
 			this.doEmail(ErpEmailFactory.getInstance().createIPhoneEmail(
