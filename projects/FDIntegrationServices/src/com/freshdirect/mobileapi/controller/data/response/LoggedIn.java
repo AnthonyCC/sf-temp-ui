@@ -27,8 +27,18 @@ public class LoggedIn extends Message {
     private String customerServicePhoneNumber;
     
     private boolean isBrowseEnabled;
+    
+    private int orderCount;
 
-    public String getCustomerServicePhoneNumber() {
+    public int getOrderCount() {
+		return orderCount;
+	}
+
+	public void setOrderCount(int orderCount) {
+		this.orderCount = orderCount;
+	}
+
+	public String getCustomerServicePhoneNumber() {
         return customerServicePhoneNumber;
     }
 

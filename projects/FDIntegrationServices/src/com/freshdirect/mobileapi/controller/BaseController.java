@@ -268,6 +268,12 @@ public abstract class BaseController extends AbstractController implements Messa
         return responseMessage;
     }
 
+    protected Message getWarningMessage(String code, String message) {
+        Message responseMessage = new Message();
+        responseMessage.setStatus(Message.STATUS_FAILED);
+        responseMessage.addWarningMessage(code, message);
+        return responseMessage;
+    }
     protected void setResponseMessage(ModelAndView model, Message responseMessage, SessionUser user) throws JsonException {
         try {
             try {

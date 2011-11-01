@@ -48,7 +48,7 @@ public class SiteAccessControllerTagWrapper extends NonStandardControllerTagWrap
         addExpectedRequestValues(new String[] {EnumUserInfoName.DLV_ZIPCODE.getCode(),EnumUserInfoName.DLV_CORP_ZIPCODE.getCode(),
         		REQ_PARAM_SERVICE_TYPE, REQ_PARAM_CORP_SERVICE_TYPE, EnumUserInfoName.DLV_ADDRESS_1.getCode(),
         		EnumUserInfoName.DLV_APARTMENT.getCode(), EnumUserInfoName.DLV_CITY.getCode(),EnumUserInfoName.DLV_STATE.getCode(),REQ_PARAM_DELIVERY_STATUS }
-        		, new String[] {REQ_PARAM_DELIVERY_STATUS});//gets,sets
+        		, new String[] {REQ_PARAM_DELIVERY_STATUS, "failed"});//gets,sets
         
         if(EnumServiceType.CORPORATE.getName().equals(zipcheck.getServiceType())){
         	addRequestValue(EnumUserInfoName.DLV_CORP_ZIPCODE.getCode(), zipcheck.getZipCode());	

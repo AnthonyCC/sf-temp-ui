@@ -521,17 +521,12 @@
 		<!-- Help -->
 	<!-- Terms of use -->
 	<rule>
-		<from>^/v/([0-9]+)/termsofuse/</from>
+		<from>^/v/([0-9]+)/help/termsofuse</from>
 		<to last="true">/help.do?action=termsOfUse&amp;ver=$1</to>
 	</rule>
 	
 	<!-- Terms of use -->
 		
-	<rule>
-		<from>^/v/([0-9]+)/help/(.*)</from>
-		<to last="true">/customeragreement.do?action=$2&amp;ver=$1</to>
-	</rule>
-	
 	<!-- Browse -->
 	<rule>
 		<from>^/v/([0-9]+)/browse/departments/(.*)</from>

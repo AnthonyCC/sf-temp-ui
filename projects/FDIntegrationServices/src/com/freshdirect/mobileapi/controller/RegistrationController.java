@@ -154,7 +154,8 @@ public class RegistrationController extends BaseController {
 				.setSuccessMessage("User has been logged in successfully.");
 		((LoggedIn) responseMessage).setItemsInCartCount(user
 				.getItemsInCartCount());
-
+		((LoggedIn) responseMessage).setOrderCount(user.getOrderHistory().getValidOrderCount());
+				
 		// Check payment methods
 		if ((user.getPaymentMethods() == null)
 				|| (user.getPaymentMethods().size() == 0)) {

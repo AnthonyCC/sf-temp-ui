@@ -469,7 +469,7 @@ function loadStuff() {
   	$("#payload").val("");
   	$("#result").val("");
   }  else if (loaddata == "CustomerAgreement") {
-  	$("#url").val("/termsofuse/");
+  	$("#url").val("/help/termsofuse");
   	$("#payload").val("");
   	$("#result").val("");
   }  else if (loaddata == "Ping") {

@@ -71,7 +71,7 @@ public class FDStockAvailability implements Serializable, FDAvailabilityI {
 			//If material falls under restricted availability.
 			double avQty = 0;
 			for(FDLimitedAvailabilityInfo l: limitedAvInfo) {
-				if(!l.getRequestedDate().before(requestedRange.getEndDate())){
+				if(l.getRequestedDate().after(requestedRange.getEndDate())){
 					break;
 				}
 				if(!l.isAvailable())

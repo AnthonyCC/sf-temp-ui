@@ -169,9 +169,17 @@ public class CheckoutController extends BaseController {
             throws JsonException, FDResourceException {
         boolean valid = true;
         Message responseMessage = new Message();
-
+        try {
+	        if ((user.getDeliveryAddresses() == null) || (user.getDeliveryAddresses().size() == 0)) {
+	            responseMessage = getWarningMessage(ERR_NO_DELIVERY_ADDRESS, ERR_NO_DELIVERY_ADDRESS_MSG);
+	            valid = false;
+	        }
+        }catch(FDException fe){
+        	throw new FDResourceException(fe);
+        }
+        
         if ((user.getPaymentMethods() == null) || (user.getPaymentMethods().size() == 0)) {
-            responseMessage = getErrorMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);
+            responseMessage = getWarningMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);
             valid = false;
         }
 

@@ -9,10 +9,12 @@ import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 public interface MessageCodes {
 
     public static final String ERR_NO_DELIVERY_ADDRESS = "ERR_NO_DELIVERY_ADDRESS";
+    
+    public static final String ERR_NO_DELIVERY_ADDRESS_MSG = "You do not have a delivery address associated with your account and will not be able to complete checkout. Please add a delivery address to your account.";
 
     public static final String ERR_NO_PAYMENT_METHOD = "ERR_NO_PAYMENT_METHOD";
 
-    public static final String ERR_NO_PAYMENT_METHOD_MSG = "You do not have a payment method associated with your account and will not be able to complete checkout. Please visit FreshDirect.com to add a payment method to your account.";
+    public static final String ERR_NO_PAYMENT_METHOD_MSG = "You do not have a payment method associated with your account and will not be able to complete checkout. Please add a payment method to your account.";
 
     public static final String ERR_SESSION_EXPIRED = "ERR_SESSION_EXPIRED";
 
