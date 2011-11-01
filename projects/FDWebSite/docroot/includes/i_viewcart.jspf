@@ -90,6 +90,7 @@ YAHOO.util.Event.onDOMReady(FreshDirect.ClientCodes.onLoad);
 FDIdentity identity = user.getIdentity();
 
 %>
+<br />
 <div style="width: <%= W_VIEWCART_FULL %>px;">
 <style type="text/css">
  .promotionError { font-size: 10px; font-weight: bold; color: #CC0000; font-family: Verdana, Arial, sans-serif; }
