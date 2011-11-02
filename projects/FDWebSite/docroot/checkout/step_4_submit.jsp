@@ -155,14 +155,21 @@ java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 	</tr>
 	</table>
 
-	<img src="/media_stat/images/layout/clear.gif" width="1" height="16" border="0"><br/>
+	<div>
+	<div style="font-size: 0px; padding-top: 16px;"></div>
 	<!-- PROFILE HEADER -->
+	<div>
 	<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
+	<div style="clear: both;"></div>
+	</div>
+	<div style="font-size: 0px; padding-top: 16px;"></div>
 
 	<% if (!orderAmountFraud && !doubleSubmit) { %>
+		<div>
 		<input type="image" name="checkout_submit_order" src="/media_stat/images/template/checkout/order_not_placed.gif" width="439" height="35" border="0" alt="Continue Checkout" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Banner');" id="checkout_submit_order_banner"><br><IMG src="/media_stat/images/layout/clear.gif" width="1" height="14" BORDER="0"><br>
+		</div>
 	<% } %>
+	</div>
    
     <%-- error system messages happen here --%>
    <% StringBuffer sbErrorMsg= new StringBuffer(); %>

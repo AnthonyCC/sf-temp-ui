@@ -25,16 +25,16 @@
 <% } %>
 <% 
 	List<PriceCalculator> calcs = prg.getPriceCalculators();
-for (int i = 0; i < calcs.size(); i += 5) { int width = Math.min(5, calcs.size() - i); %>
+for (int i = 0; i < calcs.size(); i += 5) { int width = Math.min(5, calcs.size() - i); int tableWidth = width * 120; %>
 <div style="padding-top: 25px; text-align: center;">
-<table width="100%" cellpadding="3" cellspacing="0" border="0" align="center">
+<table width="<%= tableWidth %>" cellpadding="3" cellspacing="0" border="0" align="center" style="margin: 0px auto;">
 	<tr>
 	<% for (int j = 0; j < width; j++) {
 	    PriceCalculator pc = calcs.get(i + j);
 		ProductModel p = pc.getProductModel();
 		CategoryModel __c = (CategoryModel) ( ((boolean) useProductCategory) ? p.getParentNode() : category );
 	%>
-		<td align="center" valign="bottom" style="padding-left: 3px; padding-right: 3px;">
+		<td width="120" align="center" valign="bottom" style="padding-left: 3px; padding-right: 3px;">
 			<display:ProductUrl id="actionUrl" product="<%= p %>" trackingCode="<%= trk %>" appendWineParams="<%= true %>">
 				<display:GetContentNodeWebId id="webId" product="<%= p %>" clientSafe="<%= true %>">
 					<display:ProductImage priceCalculator="<%= pc %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productImage" webId="<%= webId %>" enableQuickBuy="true" excludeCaseDeals="true"/>
@@ -49,7 +49,7 @@ for (int i = 0; i < calcs.size(); i += 5) { int width = Math.min(5, calcs.size()
 		ProductModel p = pc.getProductModel();
 		CategoryModel __c = (CategoryModel) ( ((boolean) useProductCategory) ? p.getParentNode() : category );
 	%>
-		<td align="center" width="105" valign="baseline" style="padding-bottom: 0px; padding-top: 0px; padding-left: 3px; padding-right: 3px;">
+		<td align="center" width="120" valign="baseline" style="padding-bottom: 0px; padding-top: 0px; padding-left: 3px; padding-right: 3px;">
 			<display:ProductUrl id="actionUrl" product="<%= p %>" trackingCode="<%= trk %>" appendWineParams="<%= true %>">
 				<display:WineShowRatings product="<%= p %>"><display:WineRating product="<%= p %>" small="true" action="<%= actionUrl %>"/></display:WineShowRatings>
 			</display:ProductUrl>
@@ -62,7 +62,7 @@ for (int i = 0; i < calcs.size(); i += 5) { int width = Math.min(5, calcs.size()
 			ProductModel p = pc.getProductModel();
 			CategoryModel __c = (CategoryModel) ( ((boolean) useProductCategory) ? p.getParentNode() : category );
 	%>
-		<td align="center" width="105" valign="top" style="padding-top: 0px; padding-left: 3px; padding-right: 3px;">
+		<td align="center" width="120" valign="top" style="padding-top: 0px; padding-left: 3px; padding-right: 3px;">
 			<display:ProductUrl id="actionUrl" product="<%= p %>" trackingCode="<%= trk %>" appendWineParams="<%= true %>">
 				<display:GetContentNodeWebId id="webId" product="<%= p %>" clientSafe="<%= true %>">
 					<display:WineShowRatings product="<%= p %>"><display:WinePrice priceCalculator="<%= pc %>" action="<%= actionUrl %>"/></display:WineShowRatings>
