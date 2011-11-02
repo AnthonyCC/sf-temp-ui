@@ -119,9 +119,12 @@ body {
 			<form name="settlement" method="POST">
 			<input type="hidden" name="actionName" id="actionName" value="">
             <input type="hidden" name="batch_id" id="batch_id" value="<%= sbInfo.getBatch_id() %>">
+			
+			<% if ("08".equals(sbInfo.getBatch_status()) && sbInfo.getSales_transactions()==0 ) {%>
+			<input type="button" value="FIX SETTLEMENT BATCH" class="submit" onclick="javascript:doAction('fixSettlemnentBatch',<%=index.intValue()%>);">&nbsp;&nbsp;
 			<%
-				if((!"04".equals(sbInfo.getBatch_status()) && !"05".equals(sbInfo.getBatch_status()) && !"08".equals(sbInfo.getBatch_status())) ||!"BATCH ERROR".equals(sbInfo.getBatch_response_msg().trim()) || sbInfo.getProcessor_batch_id() == null || sbInfo.getSales_transactions() <=0 || sbInfo.getSales_amount() <=0) {
-			%>
+				} else if( (!"04".equals(sbInfo.getBatch_status()) && !"05".equals(sbInfo.getBatch_status()) ) ||!"BATCH ERROR".equals(sbInfo.getBatch_response_msg().trim()) || sbInfo.getProcessor_batch_id() == null || sbInfo.getSales_transactions() <=0 || sbInfo.getSales_amount() <=0) {%>
+			
 
 			<input type="button" value="FIX SETTLEMENT BATCH" class="submit" disabled>&nbsp;&nbsp;
 			<%
