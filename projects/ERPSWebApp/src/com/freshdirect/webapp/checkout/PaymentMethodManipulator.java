@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.checkout;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -206,24 +207,31 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 			}
 			if ( result.isSuccess() && identity != null ) {
 				PaymentMethodUtil.addPaymentMethod( request, result, paymentMethod );
+				//
+				// return the ID of the payment method (should only be one)
+				//
+				List<ErpPaymentMethodI> payMethods = FDCustomerFactory.getErpCustomer( identity ).getPaymentMethods();
+				String paymentId = null;
+				if( payMethods.size() > 0 ) {
+					//paymentId = ( (ErpPaymentMethodModel)payMethods.get( payMethods.size()-1 ) ).getPK().getId();
+					for(Iterator<ErpPaymentMethodI> it = payMethods.iterator(); it.hasNext();){
+						ErpPaymentMethodI payMethod = it.next();
+						if(paymentMethod.getAccountNumber().equals(payMethod.getAccountNumber()))
+							paymentId = payMethod.getPK().getId();
+					}
+				}
+				setPaymentMethod( request, result, paymentId, request.getParameter( "billingRef" ), false, "" );
+				if ( result.isSuccess() ) {
+					applyCustomerCredits();
+				}				
 			}
+			
 		}
 		if ( identity == null ) {
 			result.addError( new ActionError( "unexpected_error", "User Identity cannot be Null" ) );
 			return;
 		}
-		//
-		// return the ID of the payment method (should only be one)
-		//
-		List<ErpPaymentMethodI> payMethods = FDCustomerFactory.getErpCustomer( identity ).getPaymentMethods();
-		String paymentId = null;
-		if( payMethods.size() > 0 ) {
-			paymentId = ( (ErpPaymentMethodModel)payMethods.get( payMethods.size()-1 ) ).getPK().getId();
-		}
-		setPaymentMethod( request, result, paymentId, request.getParameter( "billingRef" ), false, "" );
-		if ( result.isSuccess() ) {
-			applyCustomerCredits();
-		}
+
 
 	}
 

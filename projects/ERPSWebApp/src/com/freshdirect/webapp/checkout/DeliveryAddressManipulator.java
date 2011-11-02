@@ -3,6 +3,7 @@ package com.freshdirect.webapp.checkout;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -169,7 +170,15 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			List<ErpAddressModel> dlvAddresses = FDCustomerFactory.getErpCustomer( getIdentity() ).getShipToAddresses();
 			ErpAddressModel thisAddress = null;
 			if( dlvAddresses.size() > 0 ) {
-				thisAddress =  (ErpAddressModel)dlvAddresses.get( dlvAddresses.size()-1 ) ;
+				for(Iterator<ErpAddressModel> it = dlvAddresses.iterator(); it.hasNext();){
+					ErpAddressModel addr = it.next();
+					if(matchAddress(addr, erpAddress)) {
+						thisAddress = addr;
+						break;
+					}
+						
+				}
+				//thisAddress =  (ErpAddressModel)dlvAddresses.get( dlvAddresses.size()-1 ) ;
 				if (EnumCheckoutMode.NORMAL == user.getCheckoutMode()) {
 					String zoneId = zoneInfo.getZoneCode();
 					if ( zoneId != null && zoneId.length() > 0 ) {
@@ -205,6 +214,21 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 	}
 
+	private boolean matchAddress(ErpAddressModel addr1, ErpAddressModel addr2){
+		if(addr1 == null || addr2 == null) return false;
+			if(addr1.getAddress1() != null 
+				&& addr1.getAddress1().equals(addr2.getAddress1()) 
+				&& ((addr1.getAddress2() == null && addr2.getAddress2() == null) 
+						|| (addr1.getAddress2() != null && addr1.getAddress2().equals(addr2.getAddress2())))
+				&& ((addr1.getApartment() == null && addr2.getApartment() == null) 
+						|| (addr1.getApartment() != null && addr1.getApartment().equals(addr2.getApartment())))
+				&& addr1.getCity() != null 
+					&& addr1.getCity().equals(addr2.getCity())						
+						){
+			return true;
+		}
+		return false;
+	}
 	public void performEditDeliveryAddress(TimeslotEventModel event) throws FDResourceException {
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 

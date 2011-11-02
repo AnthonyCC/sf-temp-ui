@@ -197,7 +197,8 @@ public class LoginController extends BaseController {
                 .createOrderList(orderHistoryInfo));
         ((LoggedIn) responseMessage).setSuccessMessage("User has been logged in successfully.");
         ((LoggedIn) responseMessage).setItemsInCartCount(user.getItemsInCartCount());
-
+        ((LoggedIn) responseMessage).setOrderCount(user.getOrderHistory().getValidOrderCount());
+        
         if (cutoffMessage != null) {
             responseMessage.addNoticeMessage(MessageCodes.NOTICE_DELIVERY_CUTOFF, cutoffMessage);
         }

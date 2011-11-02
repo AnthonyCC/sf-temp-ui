@@ -180,7 +180,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         		REQ_PARAM_ACCOUNT_NUMBER, REQ_PARAM_ABA_ROUTE_NUMBER, REQ_PARAM_BANK_NAME, REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, REQ_PARAM_TERMS,
         		REQ_PARAM_ACCOUNT_NUMBER_VERIFY,REQ_PARAM_BANK_ACCOUNT_TYPE,REQ_PARAM_ACCOUNT_HOLDER,REQ_PARAM_BIL_ADDRESS_1,
         		REQ_PARAM_BIL_ADDRESS_2,REQ_PARAM_BIL_APARTMENT,REQ_PARAM_BIL_CITY,REQ_PARAM_BIL_STATE,REQ_PARAM_BIL_ZIPCODE, REQ_PARAM_PAYMENT_METHOD_TYPE,
-        		REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, REQ_PARAM_IS_PAYMENT_METHOD_DONATION, REQ_PARAM_CSV}, new String[] {});//gets,sets
+        		REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, REQ_PARAM_IS_PAYMENT_METHOD_DONATION, REQ_PARAM_CSV, REQ_PARAM_BIL_COUNTRY}, new String[] {});//gets,sets
         addRequestValue(REQ_PARAM_CARD_EXP_MONTH, paymentMethod.getCardExpMonth());
         addRequestValue(REQ_PARAM_CARD_EXP_YEAR, paymentMethod.getCardExpYear());
         addRequestValue(REQ_PARAM_CARD_BRAND, paymentMethod.getCardBrand());
@@ -188,7 +188,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         addRequestValue(REQ_PARAM_ABA_ROUTE_NUMBER, paymentMethod.getAbaRouteNumber());
         addRequestValue(REQ_PARAM_BANK_NAME, paymentMethod.getBankName());        
         addRequestValue(REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, null);
-        addRequestValue(REQ_PARAM_TERMS, paymentMethod.getTerms());
+        //addRequestValue(REQ_PARAM_TERMS, paymentMethod.getTerms());
+        addRequestValue(REQ_PARAM_TERMS, "Y");
         addRequestValue(REQ_PARAM_ACCOUNT_NUMBER_VERIFY, paymentMethod.getAccountNumberVerify());
         addRequestValue(REQ_PARAM_BANK_ACCOUNT_TYPE, paymentMethod.getBankAccountType());        
         addRequestValue(REQ_PARAM_ACCOUNT_HOLDER, paymentMethod.getAccountHolder());
@@ -216,7 +217,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         		REQ_PARAM_ACCOUNT_NUMBER, REQ_PARAM_ABA_ROUTE_NUMBER, REQ_PARAM_BANK_NAME, REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, REQ_PARAM_TERMS,
         		REQ_PARAM_ACCOUNT_NUMBER_VERIFY,REQ_PARAM_BANK_ACCOUNT_TYPE,REQ_PARAM_ACCOUNT_HOLDER,REQ_PARAM_BIL_ADDRESS_1,
         		REQ_PARAM_BIL_ADDRESS_2,REQ_PARAM_BIL_APARTMENT,REQ_PARAM_BIL_CITY,REQ_PARAM_BIL_STATE,REQ_PARAM_BIL_ZIPCODE, REQ_PARAM_PAYMENT_METHOD_TYPE,
-        		REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, REQ_PARAM_IS_PAYMENT_METHOD_DONATION, REQ_PARAM_CSV}, new String[] {});//gets,sets
+        		REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, REQ_PARAM_IS_PAYMENT_METHOD_DONATION, REQ_PARAM_CSV, REQ_PARAM_BIL_COUNTRY}, new String[] {});//gets,sets
         addRequestValue(REQ_PARAM_CARD_EXP_MONTH, paymentMethod.getCardExpMonth());
         addRequestValue(REQ_PARAM_CARD_EXP_YEAR, paymentMethod.getCardExpYear());
         addRequestValue(REQ_PARAM_CARD_BRAND, paymentMethod.getCardBrand());
@@ -224,7 +225,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         addRequestValue(REQ_PARAM_ABA_ROUTE_NUMBER, paymentMethod.getAbaRouteNumber());
         addRequestValue(REQ_PARAM_BANK_NAME, paymentMethod.getBankName());        
         addRequestValue(REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, null);
-        addRequestValue(REQ_PARAM_TERMS, paymentMethod.getTerms());
+        //addRequestValue(REQ_PARAM_TERMS, paymentMethod.getTerms());
+        addRequestValue(REQ_PARAM_TERMS, "Y");
         addRequestValue(REQ_PARAM_ACCOUNT_NUMBER_VERIFY, paymentMethod.getAccountNumberVerify());
         addRequestValue(REQ_PARAM_BANK_ACCOUNT_TYPE, paymentMethod.getBankAccountType());        
         addRequestValue(REQ_PARAM_ACCOUNT_HOLDER, paymentMethod.getAccountHolder());
@@ -239,6 +241,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, "false");
         addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_DONATION, "false");
         addRequestValue(REQ_PARAM_BILLING_REF, paymentMethod.getBillingRef());
+        addRequestValue(REQ_PARAM_BIL_COUNTRY, "US");
 
         getWrapTarget().setActionName(ACTION_ADD_SET_PAYMENT_METHOD);
         setMethodMode(true);
