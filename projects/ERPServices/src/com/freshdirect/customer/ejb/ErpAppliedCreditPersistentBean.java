@@ -2,11 +2,17 @@
 
 package com.freshdirect.customer.ejb;
 
-import java.sql.*;
-import com.freshdirect.framework.core.*;
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.customer.ErpAppliedCreditModel;
-import java.util.List;
+import com.freshdirect.framework.core.ModelI;
+import com.freshdirect.framework.core.PrimaryKey;
 
 /**
  * ErpAppliedCredit persistent bean.
@@ -88,7 +94,7 @@ public class ErpAppliedCreditPersistentBean extends ErpReadOnlyPersistentBean {
 		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.APPLIEDCREDIT (ID, SALESACTION_ID, AMOUNT, DEPARTMENT, CUSTOMERCREDIT_ID, SAP_NUMBER, AFFILIATE) values (?,?,?,?,?,?,?)");
 		ps.setString(1, id);
 		ps.setString(2, this.getParentPK().getId());
-		ps.setDouble(3, this.model.getAmount());
+		ps.setBigDecimal(3, new BigDecimal(String.valueOf(this.model.getAmount())));
 		ps.setString(4, this.model.getDepartment());
 		ps.setString(5, this.model.getCustomerCreditPk().getId());
 		ps.setString(6, this.model.getSapNumber());
