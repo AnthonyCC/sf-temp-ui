@@ -98,7 +98,7 @@
 	<listener-uri>
                 DataLoaderEJB-WL.jar
             </listener-uri>
-    </listener>
+    </listener><!--
     <listener>
         <listener-class>
             com.freshdirect.dataloader.inventory.WLSSapAvailRestrictedInfoServer
@@ -107,7 +107,7 @@
                 DataLoaderEJB-WL.jar
     </listener-uri>
     </listener>    
-    <prefer-application-packages>
+    --><prefer-application-packages>
         <package-name>com.sun.jmx.*</package-name>
         <package-name>org.hibernate.*</package-name>
         <package-name>antlr.*</package-name>
