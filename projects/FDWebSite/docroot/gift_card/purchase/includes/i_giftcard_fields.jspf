@@ -267,7 +267,7 @@ if (request.getParameter("fldMessage") !=null) {
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>">
     <tr valign="top">
         <td align="center" <%=W_ADD_GIFTCARD_FIELDS_TOTAL%>" class="text10bold">
-			We deliver only to portions of New York and New Jersey.
+			We deliver only to portions of New York, New Jersey and Connecticut.
         </td>
     </tr>
     <tr>
