@@ -194,11 +194,11 @@ function loadStuff() {
   	$("#result").val("");
   } else if (loaddata == "EditDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/deliveryaddress/edit/");
-  	$("#payload").val('{"shipToAddressId" : "", "dlvfirstname" : "David","dlvlastname" : "Chance", "dlvcompanyname" : "ABC Company", "dlvhomephone" : "7189281226","dlvhomephoneext" : "","address1" : "23-30 Borden Ave","address2" : "","apartment" : "","city" : "Long Island","state" : "NY","zipcode" : "11101","country" : "US","deliveryInstructions" : "","alternatePhone" : "7189281000","alternatePhoneExt" : "","alternateDelivery" : "","alternateFirstName" : "","alternateLastName" : "","alternateApartment" : "","altContactPhone" : "","altContactPhoneExt" : "","unattendedDeliveryOpt" : "","unattendedDeliveryInstr" : "","unattendedDeliveryNoticeSeen" : "","dlvServiceType" : "HOME"}');
+  	$("#payload").val('{"shipToAddressId" : "2148933356", "dlvfirstname" : "David","dlvlastname" : "Chance", "dlvcompanyname" : "ABC Company", "dlvhomephone" : "7189281226","dlvhomephoneext" : "","address1" : "2100 Rachel terrace","address2" : "","apartment" : "4","city" : "Pine brook","state" : "NJ","zipcode" : "07058","country" : "US","deliveryInstructions" : "","dlvServiceType" : "HOME"}');
   	$("#result").val("");
   } else if (loaddata == "CheckoutEditDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/deliveryaddresses/edit/");
-  	$("#payload").val('{"shipToAddressId" : "", "dlvfirstname" : "David","dlvlastname" : "Chance", "dlvcompanyname" : "ABC Company", "dlvhomephone" : "7189281226","dlvhomephoneext" : "","address1" : "23-30 Borden Ave","address2" : "","apartment" : "","city" : "Long Island","state" : "NY","zipcode" : "11101","country" : "US","deliveryInstructions" : "","alternatePhone" : "7189281000","alternatePhoneExt" : "","alternateDelivery" : "","alternateFirstName" : "","alternateLastName" : "","alternateApartment" : "","altContactPhone" : "","altContactPhoneExt" : "","unattendedDeliveryOpt" : "","unattendedDeliveryInstr" : "","unattendedDeliveryNoticeSeen" : "","dlvServiceType" : "HOME"}');
+  	$("#payload").val('{"shipToAddressId" : "2148933356", "dlvfirstname" : "David","dlvlastname" : "Chance", "dlvcompanyname" : "ABC Company", "dlvhomephone" : "7189281226","dlvhomephoneext" : "","address1" : "2100 Rachel terrace","address2" : "","apartment" : "4","city" : "Pine brook","state" : "NJ","zipcode" : "07058","country" : "US","deliveryInstructions" : "","dlvServiceType" : "HOME"}');
   	$("#result").val("");
   } else if (loaddata == "DeleteDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/deliveryaddress/delete/");
@@ -214,6 +214,10 @@ function loadStuff() {
   	$("#result").val("");
   } else if (loaddata == "SubmitOrder") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/ordersubmit/");
+  	$("#payload").val('');
+  	$("#result").val("");
+  }  else if (loaddata == "GetSelectedDeliveryAddress") {
+  	$("#url").val("/saptest12@freshdirect.com/checkout/getselectedeliverydaddress/");
   	$("#payload").val('');
   	$("#result").val("");
   } else if (loaddata == "VerifyAge") {  	
@@ -576,6 +580,7 @@ function doStuff() {
   <option value="DeletePaymentMethod">CHECKOUT - Delete Payment Method</option>
   <option value="OrderDetail">CHECKOUT - Order Detail</option>
   <option value="SubmitOrder">CHECKOUT - Submit Order</option>
+  <option value="GetSelectedDeliveryAddress">CHECKOUT - Get Selected Delivery Address</option>
   <option value=""> ========== SEARCH ========== </option>
   <option value="Search">SEARCH - Basic</option>
   <option value="SearchUPC">SEARCH - UPC barcode</option>

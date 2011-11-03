@@ -192,7 +192,10 @@
 		<from>^/v/([0-9]+)/(.*)/checkout/deliveryaddresses/delete/$</from>
 		<to last="true">/checkout.do?action=deletedeliveryaddress&amp;ver=$1</to>
 	</rule>
-
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/checkout/getselectedeliverydaddress/</from>
+		<to last="true">/checkout.do?action=getselecteddeliveryaddress&amp;ver=$1</to>
+	</rule>
 	<!-- xxxxxxxxxxxxxxxxxxx -->
 	<!-- Set Delivery Slot -->
 	<!-- xxxxxxxxxxxxxxxxxxx -->

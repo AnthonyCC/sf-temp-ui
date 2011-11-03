@@ -1,6 +1,7 @@
 package com.freshdirect.mobileapi.controller;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,8 +11,14 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.customer.EnumDeliveryType;
+import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpDepotAddressModel;
+import com.freshdirect.delivery.depot.DlvDepotModel;
+import com.freshdirect.fdstore.FDDepotManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -23,9 +30,11 @@ import com.freshdirect.mobileapi.controller.data.request.Login;
 import com.freshdirect.mobileapi.controller.data.request.PaymentMethodRequest;
 import com.freshdirect.mobileapi.controller.data.request.PaymentMethodSelection;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryAddresses;
+import com.freshdirect.mobileapi.controller.data.response.DepotLocation;
 import com.freshdirect.mobileapi.controller.data.response.OrderReceipt;
 import com.freshdirect.mobileapi.controller.data.response.PaymentMethods;
 import com.freshdirect.mobileapi.exception.JsonException;
+import com.freshdirect.mobileapi.model.Cart;
 import com.freshdirect.mobileapi.model.Checkout;
 import com.freshdirect.mobileapi.model.DeliveryAddress;
 import com.freshdirect.mobileapi.model.DeliveryTimeslots;
@@ -81,6 +90,8 @@ public class CheckoutController extends BaseController {
     private final static String ACTION_SUBMIT_ORDER = "submitorder";
 
     private final static String ACTION_ALCOHOL_AGE_VERIFY = "alcoholageverify";
+    
+    private final static String ACTION_GET_SELECTED_DELIVERY_ADDRESS = "getselecteddeliveryaddress";
 
     /* (non-Javadoc)
      * @see org.springframework.web.servlet.mvc.Controller#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -146,6 +157,8 @@ public class CheckoutController extends BaseController {
         }else if (ACTION_DELETE_DELIVERY_ADDRESS.equals(action)) {
         	DeliveryAddressRequest requestMessage = parseRequestObject(request, response, DeliveryAddressRequest.class);
             model = deleteDeliveryAddress(model, user, requestMessage, request);
+        }else if (ACTION_GET_SELECTED_DELIVERY_ADDRESS.equals(action)) {
+            model = getSelectedDeliveryAddress(model, user);
         }
         return model;
     }
@@ -576,6 +589,59 @@ public class CheckoutController extends BaseController {
             responseMessage = getErrorMessage(result, request);
         }
         responseMessage.addWarningMessages(result.getWarnings());
+        setResponseMessage(model, responseMessage, user);
+        return model;
+    }
+    
+    private ModelAndView getSelectedDeliveryAddress(ModelAndView model, SessionUser user) throws FDException, JsonException {
+//        Checkout checkout = new Checkout(user);
+//        ResultBundle resultBundle = checkout.deleteDeliveryAddress(reqestMessage.getShipToAddressId());
+//        ActionResult result = resultBundle.getActionResult();
+//
+//        propogateSetSessionValues(request.getSession(), resultBundle);
+//
+    	Message responseMessage = null;
+//        if (result.isSuccess()) {
+//            responseMessage = Message.createSuccessMessage("Delivery Address deleted successfully.");
+//        } else {
+//            responseMessage = getErrorMessage(result, request);
+//        }
+//        responseMessage.addWarningMessages(result.getWarnings());
+//        setResponseMessage(model, responseMessage, user);
+//        return model;
+        //Delivery Address
+        //If missing, just don't display it.
+    	Cart cart = user.getShoppingCart();
+    	ErpAddressModel dlvAddress =  user.getShoppingCart().getDeliveryAddress();
+        if (null != dlvAddress) {
+            boolean pickupOrder = cart instanceof FDOrderI ? EnumDeliveryType.PICKUP.equals(((FDOrderI) cart).getDeliveryType())
+                    : dlvAddress instanceof ErpDepotAddressModel && ((ErpDepotAddressModel) dlvAddress).isPickup();
+            boolean isHomeOrder = cart instanceof FDOrderI ? EnumDeliveryType.HOME.equals(((FDOrderI) cart).getDeliveryType())
+                    : dlvAddress instanceof ErpAddressModel;
+            boolean isCorporateOrder = cart instanceof FDOrderI ? EnumDeliveryType.CORPORATE.equals(((FDOrderI) cart).getDeliveryType())
+                    : dlvAddress instanceof ErpAddressModel;
+
+            if (pickupOrder) {
+                
+                responseMessage = getErrorMessage("invalidbilladdress", "Cannot add pickup address as a billing address.");
+            } else {
+            	responseMessage = new DeliveryAddresses();
+            	List<com.freshdirect.mobileapi.controller.data.response.ShipToAddress> selectedAddress = new ArrayList<com.freshdirect.mobileapi.controller.data.response.ShipToAddress>();
+            	com.freshdirect.mobileapi.controller.data.response.ShipToAddress shipToAddress = new com.freshdirect.mobileapi.controller.data.response.ShipToAddress(ShipToAddress
+                        .wrap(dlvAddress));
+            	selectedAddress.add(shipToAddress);
+            	
+                if (isHomeOrder ) {
+                	((DeliveryAddresses)responseMessage).setResidentialAddresses(selectedAddress);
+                } else if (isCorporateOrder) {
+                	((DeliveryAddresses)responseMessage).setCorporateAddresses(selectedAddress);
+                } else {
+                    throw new IllegalArgumentException("Unrecongized delivery type. dlvAddress.getId=" + dlvAddress.getId());
+                }
+            }
+        } else {
+        	responseMessage = getErrorMessage("shiptoaddrnotselected", "Delivery address not selected.");
+        }
         setResponseMessage(model, responseMessage, user);
         return model;
     }
