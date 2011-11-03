@@ -8,6 +8,9 @@
 <%@ page import="java.util.Calendar" %>
 <%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
 <%@ page import="com.freshdirect.customer.ErpClientCode"%>
+<%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
+<%@ page import='com.freshdirect.fdstore.sempixel.GoogleAnalyticsCartProduct' %>
+<%@ page import='java.util.*'  %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
@@ -16,7 +19,23 @@ final int W_CHECKOUT_STEP_4_CART_DETAILS_TOTAL = 970;
 %>
 
 <%
-Integer totalItemsInCart = 0; //keep running count of the number of items for SEM
+	boolean isSmaller = request.getRequestURI().indexOf("step_4_receipt") > -1; 
+	String detailWidth="693";
+	boolean isReceiptPage = false;
+	if (request.getRequestURI().startsWith("/checkout/step_4_receipt.jsp")) {
+		isReceiptPage = true;
+		
+		//check if Google Analytic pixel is on, else turn off on receipt page
+		if (!FDSemPixelCache.getInstance().getSemPixel("GoogleAnalytics").isEnabled()) {
+			isReceiptPage = false;
+		}
+	}
+	
+	Integer totalItemsInCart = 0; //keep running count of the number of items for SEM
+	//create a map to hold all unique products by skuCode (send info to GA after the iterate)
+	Map<String, GoogleAnalyticsCartProduct> GACartProds = new HashMap<String, GoogleAnalyticsCartProduct>();
+
+if (isSmaller) detailWidth="630";
 %>
 
 
@@ -45,6 +64,32 @@ int idx = 0;
 		<%
 		ProductModel productNode = cartLine.lookupProduct();
 		FDProduct fdProduct = cartLine.lookupFDProduct();
+
+		if (isReceiptPage) {
+			//check if we've already gotten this sku in a different cartLine
+			if (GACartProds.containsKey(fdProduct.getSkuCode())) {
+				GoogleAnalyticsCartProduct GACartProd = GACartProds.get(fdProduct.getSkuCode());
+				
+				//add to qty
+				GACartProd.addToQty( Double.parseDouble(cartLine.getOrderedQuantity()) );
+				//add to total
+				GACartProd.addToTotal(cartLine.getPrice());
+			} else {
+				//we haven't, create a new one
+				GoogleAnalyticsCartProduct GACartProd = new GoogleAnalyticsCartProduct(fdProduct.getSkuCode(), Double.parseDouble(cartLine.getOrderedQuantity()), cartLine.getPrice());
+				//unit price comes back as "$#.##/UOM", so remove dollar sign and split it out to add to the two seperate attributes...
+				String unitPriceInfo[] = cartLine.getUnitPrice().replace("$", "").split("/");
+				//add unit price
+				GACartProd.setUnitPrice(unitPriceInfo[0]);
+				//add category
+				GACartProd.setProductCategoryId((productNode.getCategory()!=null)?productNode.getCategory().toString():"");
+				//add product name
+				GACartProd.setProductId(productNode.toString());
+				
+				//add to hashmap
+				GACartProds.put(fdProduct.getSkuCode(), GACartProd);
+			}
+		}
 		
 		FDCartLineI nextLine = viewIndex.intValue() + 1 == orderLines.size() ? null : (FDCartLineI)orderLines.get(viewIndex.intValue() + 1);
 		boolean lastItemInDept = nextLine==null || !nextLine.getDepartmentDesc().equals(cartLine.getDepartmentDesc());
@@ -326,5 +371,59 @@ int idx = 0;
 	<tr><td colspan="8" align="right"><br><strong>T</strong> = Taxable Item&nbsp;&nbsp;&nbsp;&nbsp;<strong>S</strong> = Special Price&nbsp;&nbsp;&nbsp;&nbsp;<strong>D</strong> = State Bottle Deposit</td></tr>
 	
 </table>
+<%
+	if (isReceiptPage) {
+		//send all info to GA
+		
+		//create a transaction
+		%>
+		<script type="text/javascript">
+			_gaq.push(['_addTrans',      
+	           '<%= sem_orderNumber %>',           // order ID - required
+	           'FreshDirect', // affiliation or store name
+	           '<%= JspMethods.formatPrice(cart.getTotal()).replace("$", "") %>',          // total - required
+	           '<%= JspMethods.formatPrice(cart.getTaxValue()).replace("$", "") %>',           // tax
+	           '<%= (cart.isDeliveryChargeWaived()) ? "0.00" : JspMethods.formatPrice(cart.getDeliverySurcharge()).replace("$", "") %>',          // shipping
+	           '<%= dlvAddress.getCity() %>',       // city
+	           '<%= dlvAddress.getState() %>',     // state or province
+	           '<%= dlvAddress.getCountry() %>'             // country
+	        ]);
+		<%
+		
+		//add product info
+		for (Iterator gaIter = GACartProds.entrySet().iterator(); gaIter.hasNext();) {
+			Map.Entry e = (Map.Entry) gaIter.next();
+			GoogleAnalyticsCartProduct GACartProd = GACartProds.get((String) e.getKey());
+			%>
+			 _gaq.push(['_addItem',
+			            '<%= sem_orderNumber %>',         // order ID - necessary to associate item with transaction
+			            '<%= GACartProd.getSkuCode() %>',         // SKU/code - required
+			            '<%= GACartProd.getProductId() %>',      // product name - necessary to associate revenue with product
+			            '<%= GACartProd.getProductCategoryId() %>', // category or variation
+			            '<%= GACartProd.getUnitPrice() %>',        // unit price - required
+			            '<%= GACartProd.getQtyFormatted() %>'             // quantity - required
+			         ]);
+			<%
+		}
+		
+			//add the discount if there is one
+			if (cart.getTotalDiscountValue() >= 0) {
 
+				%>
+				 _gaq.push(['_addItem',
+				            '<%= sem_orderNumber %>',         // order ID - necessary to associate item with transaction
+				            '0000000000',         // SKU/code - required
+				            'DISCOUNT',      // product name - necessary to associate revenue with product
+				            'DISCOUNT', // category or variation
+				            '<%= JspMethods.formatPrice(cart.getTotalDiscountValue()).replace("$", "") %>',        // unit price - required
+				            '1'             // quantity - required
+				         ]);
+				<%
+			}
+			//push transaction to google analytics
+		%>
+			_gaq.push(['_trackTrans']);
+		</script><%
+	}
+%>
 </div>

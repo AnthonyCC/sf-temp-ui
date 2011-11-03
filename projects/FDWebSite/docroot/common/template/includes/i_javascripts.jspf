@@ -1,4 +1,7 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
+<%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
+<%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%-- this file will be included in the <head> tag --%>
 
@@ -11,5 +14,10 @@
 	<% } %>
 	<fd:javascript src="/assets/javascript/FD_PromoEligibility.js"/>
 
+	<%
+		/* Google Analytics Pixel */
+		SemPixelModel semPixel_GA = FDSemPixelCache.getInstance().getSemPixel("GoogleAnalytics");
+		semPixel_GA.setParam("GAKey", FDStoreProperties.getGoogleAnalyticsKey());
+	%>
 	<fd:SemPixelIncludeMedia pixelNames="GoogleAnalytics" />
 	<fd:IncludeMedia name="/media/editorial/site_pages/javascript.html"/>

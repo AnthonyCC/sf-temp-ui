@@ -86,6 +86,11 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
   <td colspan="2"><IMG src="/media_stat/images/layout/669933.gif" HEIGHT="4" WIDTH="<%=W_CHECKOUT_STEP_4_RECEIPT_TOTAL%>"></td>
 </tr>
 </TABLE>
+<%
+	//this needs to be BEFORE the i_checkout_receipt.jspf include, since it's used in it
+	String sem_orderNumber = "0";
+	sem_orderNumber = NVL.apply((String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER), "0");
+%>
 
 <%@include file="/checkout/includes/i_checkout_receipt.jspf"%>
 
@@ -99,14 +104,10 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
 			sem_validOrderCount = Integer.toString(sem_user.getAdjustedValidOrderCount());
 		double sem_checkCartSubtotal = 0;
 		String sem_cartSubtotal = "0";
-		String sem_orderNumber = "0";
 		DecimalFormat sem_df = new DecimalFormat("0.00");
 			sem_cartSubtotal = NVL.apply((String)request.getAttribute("cartSubtotal"), "0").replace("$", "");
 			sem_cartSubtotal = sem_df.format(Double.parseDouble(sem_cartSubtotal));
-		
-			sem_orderNumber = NVL.apply((String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER), "0");
-		
-		
+				
 		String sem_totalDiscountAmount = "0";
 			sem_totalDiscountAmount = NVL.apply((String)request.getAttribute("totalDiscountAmount"), "0").replace("$", "");
 			sem_totalDiscountAmount = sem_df.format(Double.parseDouble(sem_totalDiscountAmount));

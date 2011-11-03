@@ -56,6 +56,9 @@ java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 		
 		// Save checkout mode for receipt page.
 		session.setAttribute("checkout_mode", user.getCheckoutMode().toString());
+		
+		//for Google Analytics (used in shared include i_step_4_cart_details.jspf)
+		String sem_orderNumber = "0";
 %>
 <fd:SmartSavingsUpdate promoConflictMode="true"/>
 

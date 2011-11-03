@@ -324,10 +324,10 @@ public class FDStoreProperties {
     //iphone
     private final static String MOBILE_IPHONE_LANDING_ENABLED = "fdstore.mobile.iPhone.landingEnabled";
     private final static String MOBILE_IPHONE_LANDING_PAGE = "fdstore.mobile.iPhone.landingPage";
+
     //android
     private final static String MOBILE_ANDROID_LANDING_ENABLED = "fdstore.mobile.Android.landingEnabled";
     private final static String MOBILE_ANDROID_LANDING_PAGE = "fdstore.mobile.Android.landingPage";
-    
     private final static String PROP_GC_NSM_AUTHSKIP_SECS = "fdstore.gcnsm.authskip.secs";
     private final static String PROP_GC_NSM_FREQ_SECS = "fdstore.gcnsm.frequency.secs";
     private final static String PROP_ZONE_PICKUP_ZIPCODE = "fdstore.zone.pricing.pickup.zipcode";
@@ -427,60 +427,53 @@ public class FDStoreProperties {
     private final static String PROP_VALIDATIONGROUPEXPORTSAPINPUT_ENABLED = "fdstore.validation.groupexportsapinput.enabled";
     private final static String PROP_GROUPSCALE_ENABLED = "fdstore.groupscale.enabled";
     private final static String PROP_LIMITED_AVAILABILITY_ENABLED = "fdstore.limited.availability.enabled";
-    
-	//[APPDEV-1208] Time slot Redesign
-	private static final String PROP_CT_TIMESLOT_LABEL = "fdstore.chefstable.ts.label";
-	private static final String PROP_PROMO_TIMESLOT_LABEL = "fdstore.promo.ts.label";
-	private static final String PROP_ALCOHOL_TIMESLOT_LABEL = "fdstore.alcohol.ts.label";
-	private static final String PROP_ECOFRIENDLY_TIMESLOT_LABEL = "fdstore.ecofriendly.ts.label";
-	private static final String PROP_BUILDINGFAVS_TIMESLOT_LABEL = "fdstore.buildingfavs.ts.label";
-	
-	private final static String PROP_STANDING_ORDER_REPORT_TO_EMAIL = "fdstore.standingorder.report.email.to";
-	private final static String PROP_STANDING_ORDER_REPORT_EMAIL_SUBJECT = "fdstore.standingorder.report.email.subject";
-	
-	private final static String PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_ENABLED = "fdstore.mktadmin.auto.upload.report.email.enabled";
-	private final static String PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_TO = "fdstore.mktadmin.auto.upload.report.email.to";
-	private final static String PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_SUBJECT = "fdstore.mktadmin.auto.upload.report.email.subject";
-	private final static String PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_CC = "fdstore.mktadmin.auto.upload.report.email.cc";
-	private final static String PROP_MKTADMIN_AUTOUPLOAD_URL = "fdstore.mktadmin.auto.upload.url";
-	private final static String PROP_MKTADMIN_USER_NAME = "fdstore.mktadmin.username";
-	private final static String PROP_MKTADMIN_PASSWORD = "fdstore.mktadmin.password";
-    
-	//Enable Timeslot GRID
-	private final static String PROP_TIMESLOT_GRID = "fdstore.isNewFDTimeslotGridEnabled";
-	
-	private final static String WS_PROMOTION_PRODUCTION_MODE = "fdstore.ws.promotion.production.mode";
 
-	private final static String PROP_NEW_GLOBAL_NAV = "fdstore.newglobalnav";
+    //[APPDEV-1208] Time slot Redesign
+    private static final String PROP_CT_TIMESLOT_LABEL = "fdstore.chefstable.ts.label";
+    private static final String PROP_PROMO_TIMESLOT_LABEL = "fdstore.promo.ts.label";
+    private static final String PROP_ALCOHOL_TIMESLOT_LABEL = "fdstore.alcohol.ts.label";
+    private static final String PROP_ECOFRIENDLY_TIMESLOT_LABEL = "fdstore.ecofriendly.ts.label";
+    private static final String PROP_BUILDINGFAVS_TIMESLOT_LABEL = "fdstore.buildingfavs.ts.label";
+    private final static String PROP_STANDING_ORDER_REPORT_TO_EMAIL = "fdstore.standingorder.report.email.to";
+    private final static String PROP_STANDING_ORDER_REPORT_EMAIL_SUBJECT = "fdstore.standingorder.report.email.subject";
+    private final static String PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_ENABLED = "fdstore.mktadmin.auto.upload.report.email.enabled";
+    private final static String PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_TO = "fdstore.mktadmin.auto.upload.report.email.to";
+    private final static String PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_SUBJECT = "fdstore.mktadmin.auto.upload.report.email.subject";
+    private final static String PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_CC = "fdstore.mktadmin.auto.upload.report.email.cc";
+    private final static String PROP_MKTADMIN_AUTOUPLOAD_URL = "fdstore.mktadmin.auto.upload.url";
+    private final static String PROP_MKTADMIN_USER_NAME = "fdstore.mktadmin.username";
+    private final static String PROP_MKTADMIN_PASSWORD = "fdstore.mktadmin.password";
 
-	private static final String PROP_PAYMENT_METHOD_VERIFICATION_ENABLED="fdstore.paymentmethod.verify";
-	private static final String PROP_PAYMENT_METHOD_VERIFICATION_LIMIT="fdstore.paymentmethod.verify.limit";
-	
-	private static final String PROP_ORDER_HISTORY_QUERY_ID="fdstore.orderhistory.query.id";
-	
-	//[APPDEV-1846] Pop up for DP copy update
-	private static final String PROP_TWO_MONTH_TRIAL_PASS_SKU = "fdstore.twomonth.trialdp.sku";
-	private static final String PROP_TWO_MONTH_TRIAL_PASS_PRICE = "fdstore.twomonth.trialdp.price";
-	
+    //Enable Timeslot GRID
+    private final static String PROP_TIMESLOT_GRID = "fdstore.isNewFDTimeslotGridEnabled";
+    private final static String WS_PROMOTION_PRODUCTION_MODE = "fdstore.ws.promotion.production.mode";
+    private final static String PROP_NEW_GLOBAL_NAV = "fdstore.newglobalnav";
+    private static final String PROP_PAYMENT_METHOD_VERIFICATION_ENABLED = "fdstore.paymentmethod.verify";
+    private static final String PROP_PAYMENT_METHOD_VERIFICATION_LIMIT = "fdstore.paymentmethod.verify.limit";
+    private static final String PROP_ORDER_HISTORY_QUERY_ID = "fdstore.orderhistory.query.id";
 
-	// APPDEV-1850 build versioning of JavaScript/CSS files
-	private static final String BUILDVER_ENABLE = "fdstore.buildver.enable";
-	private static final String BUILDVER_MINIFY = "fdstore.buildver.minify";
+    //[APPDEV-1846] Pop up for DP copy update
+    private static final String PROP_TWO_MONTH_TRIAL_PASS_SKU = "fdstore.twomonth.trialdp.sku";
+    private static final String PROP_TWO_MONTH_TRIAL_PASS_PRICE = "fdstore.twomonth.trialdp.price";
 
-	private static final String EVENTLOGGING_ENABLED = "fdstore.eventlogging.enabled";
-	
-	//APPDEV-1920 Remove the "new feature" alert on quickbuy
-	private static final String SMARTSTORE_QUICKBUY_NEWALERT_ENABLED = "fdstore.smartstore.quickbuy.newalert.enabled";
-	
-	//Event Management (Roll and Bounce) Capacity Management Phase 2
-	private static final String SESSION_LOGGING_ENABLED = "session.logging.enabled";
-	private static final String REAL_TIME_EVENT_ANALYSIS = "realtime.event.analysis";
-	private static final String EVENT_KB_SOURCE = "event.kb.source";
-	private static final String RULES_REPOSITORY = "rules.repository";
-	private static final String DEBUG_EVENT_ANALYSIS = "debug.event.analysis";
-	
-	private static final String PROP_COUNTRY_INFO_REFRESH_INTERVAL="fdstore.countryInfo.refresh.minutes";
-	
+    // APPDEV-1850 build versioning of JavaScript/CSS files
+    private static final String BUILDVER_ENABLE = "fdstore.buildver.enable";
+    private static final String BUILDVER_MINIFY = "fdstore.buildver.minify";
+    private static final String EVENTLOGGING_ENABLED = "fdstore.eventlogging.enabled";
+
+    //APPDEV-1920 Remove the "new feature" alert on quickbuy
+    private static final String SMARTSTORE_QUICKBUY_NEWALERT_ENABLED = "fdstore.smartstore.quickbuy.newalert.enabled";
+
+    //Event Management (Roll and Bounce) Capacity Management Phase 2
+    private static final String SESSION_LOGGING_ENABLED = "session.logging.enabled";
+    private static final String REAL_TIME_EVENT_ANALYSIS = "realtime.event.analysis";
+    private static final String EVENT_KB_SOURCE = "event.kb.source";
+    private static final String RULES_REPOSITORY = "rules.repository";
+    private static final String DEBUG_EVENT_ANALYSIS = "debug.event.analysis";
+    private static final String PROP_COUNTRY_INFO_REFRESH_INTERVAL = "fdstore.countryInfo.refresh.minutes";
+    //APPDEV-2072 google analytics environment specific key
+    private static final String PROP_GOOGLE_ANALYTICS_KEY = "fdstore.google.analytics.key";
+
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -744,7 +737,7 @@ public class FDStoreProperties {
         defaults.put(PROP_FDSURVEY_HOME, "freshdirect.fdstore.FDSurvey");
 
         defaults.put(SMART_SAVINGS_FEATURE_ENABLED, "true");
-        
+
         defaults.put(PROP_LIMITED_AVAILABILITY_ENABLED, "true");
 
         //		What's Good Department
@@ -913,49 +906,56 @@ public class FDStoreProperties {
         defaults.put(PROP_GROUPSCALE_ENABLED, "true");
 
         defaults.put(PROP_CT_TIMESLOT_LABEL, "Chef's Table Delivery Times");
-		defaults.put(PROP_PROMO_TIMESLOT_LABEL,"Discount Delivery Times");
-		defaults.put(PROP_ALCOHOL_TIMESLOT_LABEL, "Alcohol Delivery Restriction");
-		defaults.put(PROP_ECOFRIENDLY_TIMESLOT_LABEL, "Eco-Friendly");
-		defaults.put(PROP_BUILDINGFAVS_TIMESLOT_LABEL,"Delivery Helper");
-		
-		defaults.put(PROP_STANDING_ORDER_REPORT_TO_EMAIL, "applicationdevelopment@freshdirect.com");
-		defaults.put(PROP_STANDING_ORDER_REPORT_EMAIL_SUBJECT, "Standing Orders Cron Report: ");
-		defaults.put(PROP_TIMESLOT_GRID,"true");
-		defaults.put(WS_PROMOTION_PRODUCTION_MODE,"true");
-		
-		defaults.put(PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_ENABLED,"true");
-		defaults.put(PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_TO,"applicationdevelopment@freshdirect.com");
-		defaults.put(PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_CC,"applicationdevelopment@freshdirect.com");
-		defaults.put(PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_SUBJECT,"Auto Upload Customer Restriction List's Status");
-		defaults.put(PROP_MKTADMIN_AUTOUPLOAD_URL, "/mktAdmin_autoUpload");
-		defaults.put(PROP_MKTADMIN_USER_NAME, "qaadmin");
-		defaults.put(PROP_MKTADMIN_PASSWORD, "password01");
-		
-		defaults.put(PROP_PAYMENT_METHOD_VERIFICATION_ENABLED, "true");
-		defaults.put(PROP_PAYMENT_METHOD_VERIFICATION_LIMIT, "3");
-		
-		
-		defaults.put(PROP_ORDER_HISTORY_QUERY_ID,"3");
-		
-		defaults.put(PROP_TWO_MONTH_TRIAL_PASS_SKU, "MKT0072335");		
-		defaults.put(PROP_TWO_MONTH_TRIAL_PASS_PRICE, "$59.00");
-		
+        defaults.put(PROP_PROMO_TIMESLOT_LABEL, "Discount Delivery Times");
+        defaults.put(PROP_ALCOHOL_TIMESLOT_LABEL, "Alcohol Delivery Restriction");
+        defaults.put(PROP_ECOFRIENDLY_TIMESLOT_LABEL, "Eco-Friendly");
+        defaults.put(PROP_BUILDINGFAVS_TIMESLOT_LABEL, "Delivery Helper");
 
-		defaults.put(BUILDVER_ENABLE, "true");
+        defaults.put(PROP_STANDING_ORDER_REPORT_TO_EMAIL,
+            "applicationdevelopment@freshdirect.com");
+        defaults.put(PROP_STANDING_ORDER_REPORT_EMAIL_SUBJECT,
+            "Standing Orders Cron Report: ");
+        defaults.put(PROP_TIMESLOT_GRID, "true");
+        defaults.put(WS_PROMOTION_PRODUCTION_MODE, "true");
 
-		defaults.put(EVENTLOGGING_ENABLED, "true");
+        defaults.put(PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_ENABLED, "true");
+        defaults.put(PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_TO,
+            "applicationdevelopment@freshdirect.com");
+        defaults.put(PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_CC,
+            "applicationdevelopment@freshdirect.com");
+        defaults.put(PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_SUBJECT,
+            "Auto Upload Customer Restriction List's Status");
+        defaults.put(PROP_MKTADMIN_AUTOUPLOAD_URL, "/mktAdmin_autoUpload");
+        defaults.put(PROP_MKTADMIN_USER_NAME, "qaadmin");
+        defaults.put(PROP_MKTADMIN_PASSWORD, "password01");
 
-		defaults.put(SMARTSTORE_QUICKBUY_NEWALERT_ENABLED, "false");
+        defaults.put(PROP_PAYMENT_METHOD_VERIFICATION_ENABLED, "true");
+        defaults.put(PROP_PAYMENT_METHOD_VERIFICATION_LIMIT, "3");
 
-		defaults.put(PROP_NEW_GLOBAL_NAV,"false");
+        defaults.put(PROP_ORDER_HISTORY_QUERY_ID, "3");
 
-		defaults.put(SESSION_LOGGING_ENABLED, "true");
-		defaults.put(REAL_TIME_EVENT_ANALYSIS, "false");
-		defaults.put(EVENT_KB_SOURCE, "local");
-		defaults.put(RULES_REPOSITORY, "Events.drl");
-		defaults.put(DEBUG_EVENT_ANALYSIS, "false");
-		defaults.put(PROP_COUNTRY_INFO_REFRESH_INTERVAL,"5");
+        defaults.put(PROP_TWO_MONTH_TRIAL_PASS_SKU, "MKT0072335");
+        defaults.put(PROP_TWO_MONTH_TRIAL_PASS_PRICE, "$59.00");
+
+        defaults.put(BUILDVER_ENABLE, "true");
+
+        defaults.put(EVENTLOGGING_ENABLED, "true");
+
+        defaults.put(SMARTSTORE_QUICKBUY_NEWALERT_ENABLED, "false");
+
+        defaults.put(PROP_NEW_GLOBAL_NAV, "false");
+
+        defaults.put(SESSION_LOGGING_ENABLED, "true");
+        defaults.put(REAL_TIME_EVENT_ANALYSIS, "false");
+        defaults.put(EVENT_KB_SOURCE, "local");
+        defaults.put(RULES_REPOSITORY, "Events.drl");
+        defaults.put(DEBUG_EVENT_ANALYSIS, "false");
+        defaults.put(PROP_COUNTRY_INFO_REFRESH_INTERVAL, "5");
 		
+		//APPDEV-2072 google analytics key
+        defaults.put(PROP_GOOGLE_ANALYTICS_KEY, ""); //default to an empty string
+
+
         refresh();
     }
 
@@ -1451,8 +1451,7 @@ public class FDStoreProperties {
     }
 
     public static int getPromotionRTRefreshPeriod() {
-        return Integer.parseInt(get(
-                PROP_PROMOTION_RT_REFRESH_PERIOD));
+        return Integer.parseInt(get(PROP_PROMOTION_RT_REFRESH_PERIOD));
     }
 
     public static String getAlternateZipcodeForGeocode(String srcZipcode) {
@@ -1947,7 +1946,8 @@ public class FDStoreProperties {
     }
 
     public static boolean isAndroidLandingEnabled() {
-        return Boolean.valueOf(get(MOBILE_ANDROID_LANDING_ENABLED)).booleanValue();
+        return Boolean.valueOf(get(MOBILE_ANDROID_LANDING_ENABLED))
+                      .booleanValue();
     }
 
     public static String getAndroidLandingPage() {
@@ -1967,13 +1967,11 @@ public class FDStoreProperties {
     }
 
     public static boolean isZonePricingEnabled() {
-        return Boolean.valueOf(get(PROP_ZONE_PRICING_ENABLED))
-                      .booleanValue();
+        return Boolean.valueOf(get(PROP_ZONE_PRICING_ENABLED)).booleanValue();
     }
 
     public static boolean isZonePricingAdEnabled() {
-        return Boolean.valueOf(get(PROP_ZONE_PRICING_AD_ENABLED))
-                      .booleanValue();
+        return Boolean.valueOf(get(PROP_ZONE_PRICING_AD_ENABLED)).booleanValue();
     }
 
     public static String getWindowSteeringPromoPrefix() {
@@ -1991,13 +1989,11 @@ public class FDStoreProperties {
     }
 
     public static boolean isStandingOrdersEnabled() {
-        return Boolean.valueOf(get(SO_GLOBAL_ENABLER))
-                      .booleanValue();
+        return Boolean.valueOf(get(SO_GLOBAL_ENABLER)).booleanValue();
     }
 
     public static boolean isClientCodesEnabled() {
-        return Boolean.valueOf(get(CLIENT_CODES_GLOBAL_ENABLER))
-                      .booleanValue();
+        return Boolean.valueOf(get(CLIENT_CODES_GLOBAL_ENABLER)).booleanValue();
     }
 
     //new products revamp
@@ -2071,8 +2067,7 @@ public class FDStoreProperties {
 
     //Email Opt-Down (APPDEV-662)
     public static boolean isEmailOptdownEnabled() {
-        return Boolean.valueOf(get(PROP_EMAIL_OPTDOWN_ENABLED))
-                      .booleanValue();
+        return Boolean.valueOf(get(PROP_EMAIL_OPTDOWN_ENABLED)).booleanValue();
     }
 
     /**
@@ -2111,8 +2106,7 @@ public class FDStoreProperties {
     }
 
     public static int getRedeemCntRefreshPeriod() {
-        return Integer.parseInt(get(
-                PROP_REDEMPTION_CNT_REFRESH_PERIOD));
+        return Integer.parseInt(get(PROP_REDEMPTION_CNT_REFRESH_PERIOD));
     }
 
     public static int getRedemptionServerCount() {
@@ -2121,8 +2115,7 @@ public class FDStoreProperties {
 
     //Delivery Pass at Checkout (APPDEV-664)
     public static boolean isDPCartEnabled() {
-        return Boolean.valueOf(get(PROP_DP_CART_ENABLED))
-                      .booleanValue();
+        return Boolean.valueOf(get(PROP_DP_CART_ENABLED)).booleanValue();
     }
 
     //Brand media replacement (APPDEV-1308)
@@ -2203,18 +2196,15 @@ public class FDStoreProperties {
     }
 
     public static int getCrmMenuRolesRefreshPeriod() {
-        return Integer.parseInt(get(
-                PROP_CRM_MENU_ROLES_REFRESH_PERIOD));
+        return Integer.parseInt(get(PROP_CRM_MENU_ROLES_REFRESH_PERIOD));
     }
 
     public static int getCrmLDAPUsersRefreshPeriod() {
-        return Integer.parseInt(get(
-                PROP_CRM_LDAP_USERS_REFRESH_PERIOD));
+        return Integer.parseInt(get(PROP_CRM_LDAP_USERS_REFRESH_PERIOD));
     }
 
     public static int getCrmAgentsCacheRefreshPeriod() {
-        return Integer.parseInt(get(
-                PROP_CRM_AGENTS_CACHE_REFRESH_PERIOD));
+        return Integer.parseInt(get(PROP_CRM_AGENTS_CACHE_REFRESH_PERIOD));
     }
 
     public static String getCrmLDAPPrimaryHostName() {
@@ -2222,8 +2212,7 @@ public class FDStoreProperties {
     }
 
     public static int getCrmCCDetailsLookupLimit() {
-        return Integer.parseInt(get(
-                PROP_CRM_CC_DETAILS_LOOKUP_LIMIT));
+        return Integer.parseInt(get(PROP_CRM_CC_DETAILS_LOOKUP_LIMIT));
     }
 
     public static boolean isCrmCCSecurityNotificationEnabled() {
@@ -2257,9 +2246,9 @@ public class FDStoreProperties {
     public static boolean isMyfdEnabled() {
         return Boolean.parseBoolean(get(MYFD_ENABLED));
     }
-    
+
     public static String getMyfdBlogUrl() {
-    	return get(MYFD_BLOG_URL);
+        return get(MYFD_BLOG_URL);
     }
 
     public static String getMyFdPollDaddyApiKey() {
@@ -2312,11 +2301,11 @@ public class FDStoreProperties {
         return get(PROP_CT_TIMESLOT_LABEL);
     }
 
-   public static boolean isLimitedAvailabilityEnabled() {
+    public static boolean isLimitedAvailabilityEnabled() {
         return (new Boolean(get(PROP_LIMITED_AVAILABILITY_ENABLED))).booleanValue();
     }
- 
-	public static String getPromotionLabel(){
+
+    public static String getPromotionLabel() {
         return get(PROP_PROMO_TIMESLOT_LABEL);
     }
 
@@ -2359,28 +2348,27 @@ public class FDStoreProperties {
     public static String getMktAdminAutouploadReportEmailSubject() {
         return get(PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_SUBJECT);
     }
-    
+
     public static String getMktAdminAutouploadReportCCEmail() {
         return get(PROP_MKTADMIN_AUTOUPLOAD_REPORT_EMAIL_CC);
     }
-    
+
     public static String getMktAdminAutouploadUrl() {
         return get(PROP_MKTADMIN_AUTOUPLOAD_URL);
     }
 
-    
     public static String getMktAdminUserName() {
         return get(PROP_MKTADMIN_USER_NAME);
     }
-    
+
     public static String getMktAdminPassword() {
         return get(PROP_MKTADMIN_PASSWORD);
     }
-    
+
     public static String getTwoMonthTrailDPSku() {
         return get(PROP_TWO_MONTH_TRIAL_PASS_SKU);
     }
-    
+
     public static String getTwoMonthTrailDPrice() {
         return get(PROP_TWO_MONTH_TRIAL_PASS_PRICE);
     }
@@ -2388,58 +2376,67 @@ public class FDStoreProperties {
     public static boolean isNewGlobalNav() {
         return Boolean.valueOf(get(PROP_NEW_GLOBAL_NAV));
     }
-    
-    public static interface ConfigLoadedListener {
-        void configLoaded();
-    }
+
     public static boolean isPaymentMethodVerificationEnabled() {
         return (new Boolean(get(PROP_PAYMENT_METHOD_VERIFICATION_ENABLED))).booleanValue();
-    } 
-    
+    }
+
     public static int getPaymentMethodVerificationLimit() {
-        return Integer.parseInt(get(
-                PROP_PAYMENT_METHOD_VERIFICATION_LIMIT));
+        return Integer.parseInt(get(PROP_PAYMENT_METHOD_VERIFICATION_LIMIT));
     }
-    
+
     public static int getOrderHistoryQueryId() {
-        return Integer.parseInt(get(
-                PROP_ORDER_HISTORY_QUERY_ID));
+        return Integer.parseInt(get(PROP_ORDER_HISTORY_QUERY_ID));
     }
-    
+
     public static boolean isBuildverEnabled() {
-    	return Boolean.valueOf(get(BUILDVER_ENABLE));
+        return Boolean.valueOf(get(BUILDVER_ENABLE));
     }
-    
+
     public static Boolean isBuildverMinify() {
-    	String minify = get(BUILDVER_MINIFY);
-    	if (minify != null)
-    		return Boolean.valueOf(minify);
-    	else
-    		return null;
+        String minify = get(BUILDVER_MINIFY);
+
+        if (minify != null) {
+            return Boolean.valueOf(minify);
+        } else {
+            return null;
+        }
     }
 
     public static boolean isQBNewAlertEnabled() {
         return (new Boolean(get(SMARTSTORE_QUICKBUY_NEWALERT_ENABLED))).booleanValue();
-    } 
-    		
-	public static boolean isSessionLoggingEnabled() {
+    }
+
+    public static boolean isSessionLoggingEnabled() {
         return (Boolean.valueOf(get(SESSION_LOGGING_ENABLED))).booleanValue();
     }
-    
+
     public static boolean isRealTimeAnalysisEnabled() {
         return (new Boolean(get(REAL_TIME_EVENT_ANALYSIS))).booleanValue();
     }
+
     public static String getKbSource() {
         return get(EVENT_KB_SOURCE);
     }
+
     public static String getRuleRepository() {
         return get(RULES_REPOSITORY);
     }
+
     public static boolean isDebugEventAnalysis() {
-    	return (new Boolean(get(DEBUG_EVENT_ANALYSIS))).booleanValue();
+        return (new Boolean(get(DEBUG_EVENT_ANALYSIS))).booleanValue();
     }
+
     public static int getCountryInfoRefreshInterval() {
         return Integer.parseInt(get(PROP_COUNTRY_INFO_REFRESH_INTERVAL));
+    }    
+	
+	//APPDEV-2072 google analytics key
+    public static String getGoogleAnalyticsKey() {
+        return get(PROP_GOOGLE_ANALYTICS_KEY);
     }
-    
+
+    public static interface ConfigLoadedListener {
+        void configLoaded();
+    }
 }
