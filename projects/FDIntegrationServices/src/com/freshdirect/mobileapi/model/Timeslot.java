@@ -152,10 +152,15 @@ public class Timeslot {
 	/* Eco Friendly timeslot*/
 	public boolean isEcoFriendly() {
 		return slot.isEcoFriendly();
-}
+	}
 
 	/* Building Favs timeslot*/
 	public boolean isDepot() {
 		return slot.isDepot();
+	}
+	
+	/* Alcohol Delivery Restricted timeslot*/
+	public boolean isAlcoholRestricted() {
+		return slot.isAlcoholRestricted();
 	}
 }
