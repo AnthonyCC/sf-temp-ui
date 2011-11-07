@@ -177,6 +177,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 					String redeemLimit = request.getParameter("redeemlimit");
 					String promoCode =  NVL.apply(request.getParameter("promoCode"), "").trim();
 					Date startDate = dateFormat.parse(startDateStr);
+					String[] cohorts = request.getParameterValues("cohorts");
 					if(promoCode.length() == 0 ){
 						//Validate if the given effecttive_date/zone/timeslot combination already exists.
 						WSPromotionInfo pInfo = FDPromotionNewManager.getWSPromotionInfo(zone, startTime, endTime, startDate);
@@ -195,16 +196,9 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 							return true;
 						}
 						//Create a new WS Promotion.
-						FDPromotionNewModel promotion = constructPromotion(effectiveDate, startDateStr, endDateStr, zone, startTime, endTime, discount, redeemLimit);
+						FDPromotionNewModel promotion = constructPromotion(effectiveDate, startDateStr, endDateStr, zone, startTime, endTime, discount, redeemLimit, cohorts);
 						postValidate(promotion, actionResult);
-						/*APPDEV-2004*/
-						List<FDPromoCustStrategyModel> custStrategies = promotion.getCustStrategies();
-						custStrategies = new ArrayList<FDPromoCustStrategyModel>();
-						FDPromoCustStrategyModel model = new FDPromoCustStrategyModel();
-						custStrategies.add(model);
-						promotion.setCustStrategies(custStrategies);						
-						String[] cohorts = request.getParameterValues("cohorts");
-						model.setCohorts(cohorts);
+						
 						
 						if(actionResult.isSuccess()){
 							promotion.setStatus(EnumPromotionStatus.APPROVE);
@@ -252,7 +246,6 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 						/*APPDEV-2004*/
 						List<FDPromoCustStrategyModel> custStrategies = promotion.getCustStrategies();
 						FDPromoCustStrategyModel model = custStrategies.get(0);
-						String[] cohorts = request.getParameterValues("cohorts");
 						model.setCohorts(cohorts);
 						
 						if(actionResult.isSuccess()){
@@ -393,6 +386,12 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			actionResult.addError(true, "discount", "Please select a Discount Amount.");
 			success = false; 
 		}
+		
+		String[] cohorts = request.getParameterValues("cohorts"); 
+		if(cohorts == null || cohorts.length == 0) {
+			actionResult.addError(true, "cohortsEmpty", "Select atleast one Cohort to create this WSPromotion.");
+		}
+		
 		try {
 			Date startDateTime = timeFormat.parse(startTime);
 			Date endDateTime = timeFormat.parse(endTime);
@@ -438,7 +437,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			}
 	}
 	private FDPromotionNewModel constructPromotion(String effectiveDate, String startDateStr, String endDateStr, String zone, String startTime, 
-			String endTime, String discount, String redeemLimit) throws FDResourceException {
+			String endTime, String discount, String redeemLimit, String[] cohorts) throws FDResourceException {
 		try {
 			Date startDate = dateFormat.parse(startDateStr);
 			Date expDate = endDateFormat.parse(endDateStr+" "+JUST_BEFORE_MIDNIGHT);
@@ -467,6 +466,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			custModel.setOrderTypeHome(true);
 			custModel.setOrderTypeCorporate(true);
 			custModel.setOrderTypePickup(true);
+			custModel.setCohorts(cohorts);
 			custStrategies.add(custModel);
 			promotion.setCustStrategies(custStrategies);
 			promotion.setGeoRestrictionType("ZONE");
@@ -710,6 +710,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 						}
 					}
 				}
+				
 				List<FDPromoCustStrategyModel> custStrategies = promotion.getCustStrategies();
 				if(null!= custStrategies && !custStrategies.isEmpty()){
 					FDPromoCustStrategyModel custModel = (FDPromoCustStrategyModel)custStrategies.get(0);
