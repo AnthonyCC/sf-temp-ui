@@ -1,19 +1,15 @@
-package com.freshdirect.transadmin.model;
+package com.freshdirect.routing.model;
 
 import java.util.Date;
 
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.routing.constants.EnumDeliveryType;
 import com.freshdirect.routing.constants.EnumReservationType;
-import com.freshdirect.routing.model.BaseModel;
 
-public class CrisisManagerBatchOrder extends BaseModel implements ICrisisManagerBatchOrder, Comparable<CrisisManagerBatchOrder>  {
+public abstract class CrisisMngBatchOrder extends BaseModel implements ICrisisMngBatchOrder, Comparable<CrisisMngBatchOrder>  {
 	
 	private String batchId;
-	private String firstName;
-	private String lastName;	
-	private String erpCustomerPK;
-	private String fdCustomerPK;
+	private ICustomerModel customerModel;
 	private Date deliveryDate;
 	private Date cutOffTime;
 	private String area;
@@ -21,22 +17,15 @@ public class CrisisManagerBatchOrder extends BaseModel implements ICrisisManager
 	private Date endTime;
 	private String orderNumber;
 	private String erpOrderNumber;
-	private String email;
-	private String amount;
+	private String orderAmount;
 	private EnumReservationType reservationType;
 	private EnumSaleStatus orderStatus;
 	private EnumDeliveryType deliveryType;
-	private String homePhone;
-	private String businessPhone;
-	private String businessExt;
-	private String cellPhone;
-	private String standingOrderId;
 	private boolean isException;
-	private String addressId;
-	private String companyName;
+	private String addressId;	
 	private String reservationId;
 	
-	public CrisisManagerBatchOrder() {
+	public CrisisMngBatchOrder() {
 		super();
 	}
 	
@@ -54,22 +43,6 @@ public class CrisisManagerBatchOrder extends BaseModel implements ICrisisManager
 
 	public void setArea(String area) {
 		this.area = area;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
 	}
 	
 	public Date getDeliveryDate() {
@@ -128,20 +101,12 @@ public class CrisisManagerBatchOrder extends BaseModel implements ICrisisManager
 		this.erpOrderNumber = erpOrderNumber;
 	}
 
-	public String getEmail() {
-		return email;
+	public String getOrderAmount() {
+		return orderAmount;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getAmount() {
-		return amount;
-	}
-
-	public void setAmount(String amount) {
-		this.amount = amount;
+	public void setOrderAmount(String orderAmount) {
+		this.orderAmount = orderAmount;
 	}
 
 	public EnumReservationType getReservationType() {
@@ -160,38 +125,6 @@ public class CrisisManagerBatchOrder extends BaseModel implements ICrisisManager
 		this.deliveryType = deliveryType;
 	}
 	
-	public String getHomePhone() {
-		return homePhone;
-	}
-
-	public void setHomePhone(String homePhone) {
-		this.homePhone = homePhone;
-	}
-
-	public String getBusinessPhone() {
-		return businessPhone;
-	}
-
-	public void setBusinessPhone(String businessPhone) {
-		this.businessPhone = businessPhone;
-	}
-
-	public String getCellPhone() {
-		return cellPhone;
-	}
-
-	public void setCellPhone(String cellPhone) {
-		this.cellPhone = cellPhone;
-	}
-	
-	public String getStandingOrderId() {
-		return standingOrderId;
-	}
-
-	public void setStandingOrderId(String standingOrderId) {
-		this.standingOrderId = standingOrderId;
-	}
-	
 	public boolean isException() {
 		return isException;
 	}
@@ -200,22 +133,14 @@ public class CrisisManagerBatchOrder extends BaseModel implements ICrisisManager
 		this.isException = isException;
 	}	
 
-	public String getErpCustomerPK() {
-		return erpCustomerPK;
+	public ICustomerModel getCustomerModel() {
+		return customerModel;
 	}
 
-	public void setErpCustomerPK(String erpCustomerPK) {
-		this.erpCustomerPK = erpCustomerPK;
+	public void setCustomerModel(ICustomerModel customerModel) {
+		this.customerModel = customerModel;
 	}
 
-	public String getFdCustomerPK() {
-		return fdCustomerPK;
-	}
-	
-	public void setFdCustomerPK(String fdCustomerPK) {
-		this.fdCustomerPK = fdCustomerPK;
-	}
-	
 	public String getAddressId() {
 		return addressId;
 	}
@@ -224,22 +149,6 @@ public class CrisisManagerBatchOrder extends BaseModel implements ICrisisManager
 		this.addressId = addressId;
 	}
 	
-	public String getBusinessExt() {
-		return businessExt;
-	}
-
-	public void setBusinessExt(String businessExt) {
-		this.businessExt = businessExt;
-	}
-	
-	public String getCompanyName() {
-		return companyName;
-	}
-
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
-	}
-
 	public String getReservationId() {
 		return reservationId;
 	}
@@ -268,7 +177,7 @@ public class CrisisManagerBatchOrder extends BaseModel implements ICrisisManager
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		CrisisManagerBatchOrder other = (CrisisManagerBatchOrder) obj;
+		CrisisMngBatchOrder other = (CrisisMngBatchOrder) obj;
 	
 		if (deliveryDate == null) {
 			if (other.deliveryDate != null)
@@ -289,7 +198,7 @@ public class CrisisManagerBatchOrder extends BaseModel implements ICrisisManager
 	}
 
 	@Override
-	public int compareTo(CrisisManagerBatchOrder o) {
+	public int compareTo(CrisisMngBatchOrder o) {
 		// TODO Auto-generated method stub
 		if(this.equals(o)) {
 			return 0;

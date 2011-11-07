@@ -13,6 +13,9 @@ public class CancelOrderInfoModel  implements ICancelOrderInfo {
 	private String deliveryWindow;
 	private String businessPhone;
 	private String cellPhone;
+	private String orderStatus;
+	private int lineItemCount;
+	private int tempLineItemCount;
 	
 	public String getFullName(){
 		return this.getLastName()+" "+this.getFirstName();
@@ -78,5 +81,26 @@ public class CancelOrderInfoModel  implements ICancelOrderInfo {
 	public void setCellPhone(String cellPhone) {
 		this.cellPhone = cellPhone;
 	}
-
+	public String getOrderStatus() {
+		return orderStatus;
+	}
+	public void setOrderStatus(String orderStatus) {
+		this.orderStatus = orderStatus;
+	}
+	
+	public int getLineItemCount() {
+		return lineItemCount;
+	}
+	public void setLineItemCount(int lineItemCount) {
+		this.lineItemCount = lineItemCount;
+	}
+	public int getTempLineItemCount() {
+		return tempLineItemCount;
+	}
+	public void setTempLineItemCount(int tempLineItemCount) {
+		this.tempLineItemCount = tempLineItemCount;
+	}
+	public int getLineItemChangeCount(){
+		return this.tempLineItemCount - this.lineItemCount;
+	}
 }

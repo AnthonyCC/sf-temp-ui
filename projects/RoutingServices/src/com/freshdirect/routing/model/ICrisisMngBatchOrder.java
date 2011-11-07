@@ -1,4 +1,4 @@
-package com.freshdirect.transadmin.model;
+package com.freshdirect.routing.model;
 
 import java.util.Date;
 
@@ -6,26 +6,17 @@ import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.routing.constants.EnumDeliveryType;
 import com.freshdirect.routing.constants.EnumReservationType;
 
-public interface ICrisisManagerBatchOrder {
+public interface ICrisisMngBatchOrder {
 	
 	String getBatchId();
 	void setBatchId(String batchId);
 	
+	ICustomerModel getCustomerModel();
+	void setCustomerModel(ICustomerModel customerModel);
+
 	String getArea();	
 	void setArea(String area);
-
-	String getFirstName();
-	void setFirstName(String firstName);	
-
-	String getLastName();
-	void setLastName(String lastName);
 	
-	String getErpCustomerPK();
-	void setErpCustomerPK(String erpCustomerPK);
-	
-	String getFdCustomerPK();	
-	void setFdCustomerPK(String fdCustomerPK);
-
 	Date getDeliveryDate();
 	void setDeliveryDate(Date deliveryDate);
 
@@ -44,11 +35,8 @@ public interface ICrisisManagerBatchOrder {
 	String getErpOrderNumber();
 	void setErpOrderNumber(String erpOrderNumber);
 
-	String getEmail();
-	void setEmail(String email);
-
-	String getAmount();
-	void setAmount(String amount);
+	String getOrderAmount();
+	void setOrderAmount(String orderAmount);
 
 	EnumReservationType getReservationType();
 	void setReservationType(EnumReservationType reservationType);
@@ -59,30 +47,32 @@ public interface ICrisisManagerBatchOrder {
 	EnumDeliveryType getDeliveryType();
 	void setDeliveryType(EnumDeliveryType deliveryType);
 	
-	String getHomePhone();
-	void setHomePhone(String homePhone);
-
-	String getBusinessPhone();
-	void setBusinessPhone(String businessPhone);
-
-	String getCellPhone();
-	void setCellPhone(String cellPhone);
-	
-	String getStandingOrderId();
-	void setStandingOrderId(String standingOrderId);
-	
 	boolean isException();
 	void setException(boolean isException);
 	
 	String getAddressId();
 	void setAddressId(String addressId);
 	
-	String getBusinessExt();
-	void setBusinessExt(String businessExt);
-	
-	String getCompanyName();
-	void setCompanyName(String companyName);
-	
 	String getReservationId();
 	void setReservationId(String reservationId);
+	
+	 String getId();
+	 void setId(String id);
+	
+	 int getLineItemCount();
+	 void setLineItemCount(int lineItemCount) ;
+	
+	 int getTempLineItemCount();
+	 void setTempLineItemCount(int tempLineItemCount);
+	
+	 int getLineItemChangeCount();
+	 
+	 String getErrorHeader();
+	 void setErrorHeader(String errorHeader);
+	 
+	 Date getAltDeliveryDate();
+	 void setAltDeliveryDate(Date altDeliveryDate);
+		
+	 String getStatus();
+	 void setStatus(String status);
 }

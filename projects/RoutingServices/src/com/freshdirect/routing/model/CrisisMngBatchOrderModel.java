@@ -2,33 +2,23 @@ package com.freshdirect.routing.model;
 
 import java.util.Date;
 
-public class StandingOrderModel extends BaseModel implements IStandingOrderModel{
+public class CrisisMngBatchOrderModel extends CrisisMngBatchOrder {
 		
 	private static final long serialVersionUID = 4837425644599397996L;
 	
-	private String id;
-	private String saleId;
+	private String id;	
 	private int lineItemCount;
 	private int tempLineItemCount;
 	private ICustomerModel customerModel;
-	private String area;
 	private String errorHeader;
 	private Date altDeliveryDate;
 	private String status;
-	
-	private String batchId;
-	
+		
 	public String getId() {
 		return id;
 	}
 	public void setId(String id) {
 		this.id = id;
-	}
-	public String getSaleId() {
-		return saleId;
-	}
-	public void setSaleId(String saleId) {
-		this.saleId = saleId;
 	}
 	public int getLineItemCount() {
 		return lineItemCount;
@@ -47,18 +37,6 @@ public class StandingOrderModel extends BaseModel implements IStandingOrderModel
 	}
 	public void setCustomerModel(ICustomerModel customerModel) {
 		this.customerModel = customerModel;
-	}
-	public String getBatchId() {
-		return batchId;
-	}
-	public void setBatchId(String batchId) {
-		this.batchId = batchId;
-	}
-	public String getArea() {
-		return area;
-	}
-	public void setArea(String area) {
-		this.area = area;
 	}	
 	public int getLineItemChangeCount(){
 		return this.tempLineItemCount - this.lineItemCount;
@@ -80,7 +58,6 @@ public class StandingOrderModel extends BaseModel implements IStandingOrderModel
 	}
 	public void setStatus(String status) {
 		this.status = status;
-	}
-	
+	}	
 	
 }

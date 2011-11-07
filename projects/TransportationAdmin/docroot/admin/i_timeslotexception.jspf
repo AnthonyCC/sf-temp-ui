@@ -13,11 +13,12 @@
       var exceptionDataTable;
       var editExceptionPanel; 
       var _currentBatchId;
-      var myDynamicEditor;
+      var myDynamicEditor; var _currentBatchType;
 	
-      function showExceptionTable(inputVal) {
+      function showExceptionTable(inputVal, batchType) {
 	
 	_currentBatchId = inputVal;
+	_currentBatchType = batchType;
          editExceptionPanel = new YAHOO.widget.Panel("Timeslot-panel", {
                           width: "600px",
                           fixedcenter: true, 
@@ -93,12 +94,21 @@
 			}
       		}
       	}
-      	var createRsvResult = jsonrpcClient.AsyncCrisisMngProvider.doCrisisMngCreateReservation(_currentBatchId, false, _data);
+
+      	var createRsvResult;
+	if(_currentBatchType == 'ROB'){
+		createRsvResult = jsonrpcClient.AsyncCrisisMngProvider.doCrisisMngCreateReservation(_currentBatchId, false, _data);
+	} else {
+		createRsvResult = jsonrpcClient.AsyncCrisisMngProvider.placeStandingOrder(_currentBatchId, null, false, _data);
+	}
 	if(createRsvResult != null) {
-      		if(confirm(createRsvResult)) {
-		}
+      		if(confirm(createRsvResult)) { }
 	}else{
-		jsonrpcClient.AsyncCrisisMngProvider.doCrisisMngCreateReservation(_currentBatchId, true, _data);
+		if(_currentBatchType == 'ROB'){
+			jsonrpcClient.AsyncCrisisMngProvider.doCrisisMngCreateReservation(_currentBatchId, false, _data);
+		} else {
+			jsonrpcClient.AsyncCrisisMngProvider.placeStandingOrder(_currentBatchId, null, false, _data);
+		}
 	}
 	exceptionDataTable.destroy();
 	editExceptionPanel.hide();

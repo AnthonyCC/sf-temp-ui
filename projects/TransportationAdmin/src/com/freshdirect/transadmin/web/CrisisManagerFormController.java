@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.transadmin.constants.EnumCrisisMngBatchStatus;
+import com.freshdirect.transadmin.constants.EnumCrisisMngBatchType;
 import com.freshdirect.routing.constants.EnumDeliveryType;
 import com.freshdirect.routing.constants.EnumProfileList;
 import com.freshdirect.transadmin.model.ICrisisManagerBatch;
@@ -125,7 +126,8 @@ public class CrisisManagerFormController extends BaseFormController {
 			if(cutOff != null){				
 				cutoff = RoutingDateUtil.getNormalDate(RoutingDateUtil.getPreviousDate(bean.getSelectedDate()), cutOff.getCutOffTime().getAsDate());
 			}
-			String[] deliveryType = StringUtil.decodeStrings(bean.getDeliveryType());			
+			String[] deliveryType = StringUtil.decodeStrings(bean.getDeliveryType());
+			
 			String profileName = null;
 			if(!"All".equalsIgnoreCase(bean.getCustomerType())){
 				profileName = bean.getCustomerType();
@@ -153,7 +155,8 @@ public class CrisisManagerFormController extends BaseFormController {
 			if(!hasRunningbatch) {
 				TriggerCrisisManagerResult triggerResult = this.crisisManagerService.createNewCrisisMngBatch( bean.getSelectedDate()
 					, bean.getDestinationDate(), userId, getZoneArray(request), cutoff, startTime, endTime
-					, deliveryType, "X".equalsIgnoreCase(bean.getIncludeStandingOrder()), profileName, hasRunningbatch);
+					, deliveryType,((deliveryType == null) ? EnumCrisisMngBatchType.STANDINGORDER : EnumCrisisMngBatchType.REGULARORDER)
+					, profileName, hasRunningbatch);
 			
 				if(triggerResult.getCrisisMngBatchId() != null) {
 					ICrisisManagerBatch batch = this.crisisManagerService.getCrisisMngBatchById(triggerResult.getCrisisMngBatchId());

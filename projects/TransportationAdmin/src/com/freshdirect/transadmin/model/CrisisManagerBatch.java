@@ -6,7 +6,9 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.freshdirect.transadmin.constants.EnumCrisisMngBatchStatus;
+import com.freshdirect.transadmin.constants.EnumCrisisMngBatchType;
 import com.freshdirect.routing.model.BaseModel;
+import com.freshdirect.routing.model.ICrisisMngBatchOrder;
 
 public class CrisisManagerBatch extends BaseModel implements ICrisisManagerBatch  {
 	
@@ -14,26 +16,25 @@ public class CrisisManagerBatch extends BaseModel implements ICrisisManagerBatch
 	private Date deliveryDate;
 	private Date destinationDate;
 	private EnumCrisisMngBatchStatus status;
+	private EnumCrisisMngBatchType batchType;
 	private String systemMessage;
 	private Date cutOffDateTime;
 	private boolean isEligibleForCancel;
 	private String profile;
 	
 	private Set<ICrisisManagerBatchAction> action;
-	private List<ICrisisManagerBatchOrder> order;
+	private List<ICrisisMngBatchOrder> order;
 	private List<ICancelOrderModel> cancelOrder;
 	private List<IActiveOrderModel> activeOrder;
-	
-	private int noOfOrders;
-	private int noOfOrdersCancelled;
+			
 	private Date startTime;
 	private Date endTime;
 	private String[] area;
 	private String[] deliveryType;
-	private boolean isStandingOrderIncluded; 
+			
+	private int noOfOrders;
 	private int noOfReservations;
-	private int noOfReservationsCancelled;
-	
+
 	public ICrisisManagerBatchAction getLastAction() {
 		if(action != null && action instanceof TreeSet) {
 			return (ICrisisManagerBatchAction)((TreeSet)action).last();
@@ -48,11 +49,11 @@ public class CrisisManagerBatch extends BaseModel implements ICrisisManagerBatch
 		return null;
 	}
 	
-	public List<ICrisisManagerBatchOrder> getOrder() {
+	public List<ICrisisMngBatchOrder> getOrder() {
 		return order;
 	}
 
-	public void setOrder(List<ICrisisManagerBatchOrder> order) {
+	public void setOrder(List<ICrisisMngBatchOrder> order) {
 		this.order = order;
 	}
 
@@ -86,14 +87,6 @@ public class CrisisManagerBatch extends BaseModel implements ICrisisManagerBatch
 
 	public void setEligibleForCancel(boolean isEligibleForCancel) {
 		this.isEligibleForCancel = isEligibleForCancel;
-	}
-
-	public int getNoOfOrdersCancelled() {
-		return noOfOrdersCancelled;
-	}
-
-	public void setNoOfOrdersCancelled(int noOfOrdersCancelled) {
-		this.noOfOrdersCancelled = noOfOrdersCancelled;
 	}
 
 	public Date getDeliveryDate() {
@@ -168,14 +161,6 @@ public class CrisisManagerBatch extends BaseModel implements ICrisisManagerBatch
 		this.deliveryType = deliveryType;
 	}
 	
-	public boolean isStandingOrderIncluded() {
-		return isStandingOrderIncluded;
-	}
-
-	public void setStandingOrderIncluded(boolean isStandingOrderIncluded) {
-		this.isStandingOrderIncluded = isStandingOrderIncluded;
-	}
-
 	public int getNoOfReservations() {
 		return noOfReservations;
 	}
@@ -184,15 +169,6 @@ public class CrisisManagerBatch extends BaseModel implements ICrisisManagerBatch
 		this.noOfReservations = noOfReservations;
 	}
 	
-
-	public int getNoOfReservationsCancelled() {
-		return noOfReservationsCancelled;
-	}
-
-	public void setNoOfReservationsCancelled(int noOfReservationsCancelled) {
-		this.noOfReservationsCancelled = noOfReservationsCancelled;
-	}
-
 	public List<ICancelOrderModel> getCancelOrder() {
 		return cancelOrder;
 	}
@@ -215,6 +191,14 @@ public class CrisisManagerBatch extends BaseModel implements ICrisisManagerBatch
 
 	public void setProfile(String profile) {
 		this.profile = profile;
+	}
+
+	public EnumCrisisMngBatchType getBatchType() {
+		return batchType;
+	}
+
+	public void setBatchType(EnumCrisisMngBatchType batchType) {
+		this.batchType = batchType;
 	}
 
 	@Override

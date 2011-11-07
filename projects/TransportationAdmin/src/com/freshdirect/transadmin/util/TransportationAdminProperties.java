@@ -197,6 +197,8 @@ public class TransportationAdminProperties {
 	private static final String ADMIN_SERVICE_URL_KEY = "admin.service.url";
     private final static String PROP_TRANSPORTATION_FILENAME_MARKETINGORDERRPT = "transportation.filename.marketingorderrpt";
 	private final static String PROP_TRANSPORTATION_FILENAME_VOICESHOTORDERRPT = "transportation.filename.voiceshotorderrpt";
+	private final static String PROP_TRANSPORTATION_FILENAME_TIMESLOTEXCEPTIONRPT = "transportation.filename.timeslotexceptionrpt";
+	private final static String PROP_TRANSPORTATION_FILENAME_SOSIMULATIONRPT = "transportation.filename.sosimulationrpt";
 	
 	static {
 
@@ -350,9 +352,11 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_AUTODISPATCH_ENABLED,"true");
 
 		// APPDEV-1606 Order Crisis Management URL
-        defaults.put(ADMIN_SERVICE_URL_KEY, "http://localhost:7001/admin_service");
+        defaults.put(ADMIN_SERVICE_URL_KEY, "http://localhost:7001/admn_service");
         defaults.put(PROP_TRANSPORTATION_FILENAME_MARKETINGORDERRPT,"trn_marketingorderreport_");
     	defaults.put(PROP_TRANSPORTATION_FILENAME_VOICESHOTORDERRPT, "trn_voiceshotorderreport_");
+    	defaults.put(PROP_TRANSPORTATION_FILENAME_TIMESLOTEXCEPTIONRPT,"trn_timeslotexceptionreport_");
+		defaults.put(PROP_TRANSPORTATION_FILENAME_SOSIMULATIONRPT, "trn_sosimulationreport_");
 		
 		refresh();
 	}
@@ -745,6 +749,14 @@ public class TransportationAdminProperties {
 	
 	public static String getAdminServiceURL() {
 	    return get(ADMIN_SERVICE_URL_KEY);
+	}
+
+	public static String getTimeSlotExceptionRptFileName() {
+		return get(PROP_TRANSPORTATION_FILENAME_TIMESLOTEXCEPTIONRPT);
+	}
+
+	public static String getSOSimulationRptFileName() {
+		return get(PROP_TRANSPORTATION_FILENAME_SOSIMULATIONRPT);
 	}
 
 }

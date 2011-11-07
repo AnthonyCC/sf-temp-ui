@@ -4,7 +4,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.freshdirect.routing.model.ICrisisMngBatchOrder;
 import com.freshdirect.transadmin.constants.EnumCrisisMngBatchStatus;
+import com.freshdirect.transadmin.constants.EnumCrisisMngBatchType;
 
 public interface ICrisisManagerBatch {
 	
@@ -19,6 +21,9 @@ public interface ICrisisManagerBatch {
 
 	EnumCrisisMngBatchStatus getStatus();	
 	void setStatus(EnumCrisisMngBatchStatus status);
+	
+	EnumCrisisMngBatchType getBatchType();
+	void setBatchType(EnumCrisisMngBatchType batchType);
 
 	String getSystemMessage();
 	void setSystemMessage(String systemMessage);
@@ -26,8 +31,8 @@ public interface ICrisisManagerBatch {
 	public Set<ICrisisManagerBatchAction> getAction();
 	void setAction(Set<ICrisisManagerBatchAction> action);
 	
-	List<ICrisisManagerBatchOrder> getOrder();
-	void setOrder(List<ICrisisManagerBatchOrder> order);
+	List<ICrisisMngBatchOrder> getOrder();
+	void setOrder(List<ICrisisMngBatchOrder> order);
 	
 	ICrisisManagerBatchAction getLastAction();
 	
@@ -42,9 +47,6 @@ public interface ICrisisManagerBatch {
 	int getNoOfOrders();
 	void setNoOfOrders(int noOfOrders);
 	
-	int getNoOfOrdersCancelled();
-	void setNoOfOrdersCancelled(int noOfOrdersCancelled);
-
 	Date getStartTime(); 
 	void setStartTime(Date startTime);
 
@@ -57,14 +59,8 @@ public interface ICrisisManagerBatch {
     String[] getDeliveryType();
     void setDeliveryType(String[] deliveryType);
     
-    boolean isStandingOrderIncluded();
-	void setStandingOrderIncluded(boolean isStandingOrderIncluded);
-	
-	int getNoOfReservations();
+    int getNoOfReservations();
 	void setNoOfReservations(int noOfReservations);
-	
-	int getNoOfReservationsCancelled();
-	void setNoOfReservationsCancelled(int noOfReservationsCancelled);
 	
 	List<ICancelOrderModel> getCancelOrder();
 	void setCancelOrder(List<ICancelOrderModel> cancelOrder);

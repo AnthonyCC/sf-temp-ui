@@ -32,7 +32,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumDeliveryType;
 import com.freshdirect.routing.constants.EnumReservationType;
 import com.freshdirect.routing.model.ReservationModel;
-import com.freshdirect.routing.model.StandingOrderModel;
+import com.freshdirect.routing.model.CrisisMngBatchOrderModel;
 import com.metaparadigm.jsonrpc.AbstractSerializer;
 import com.metaparadigm.jsonrpc.MarshallException;
 import com.metaparadigm.jsonrpc.ObjectMatch;
@@ -46,7 +46,7 @@ public class CrisisManagerJSONSerializer extends AbstractSerializer {
 	private static Category		LOGGER	= LoggerFactory.getInstance( CrisisManagerJSONSerializer.class );
 
 	private static Class<?>[] _serializableClasses = new Class[] { EnumDeliveryType.class, 
-		EnumReservationType.class, ReservationModel.class, StandingOrderModel.class};
+		EnumReservationType.class, ReservationModel.class, CrisisMngBatchOrderModel.class};
 
 	private static Class<?>[] _JSONClasses = new Class[] { JSONObject.class };
 

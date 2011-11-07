@@ -1,12 +1,10 @@
 package com.freshdirect.transadmin.datamanager.report;
 
-import java.util.Date;
+import java.text.ParseException;
 
 import com.freshdirect.transadmin.datamanager.report.model.CrisisManagerReportData;
 
-
-
-public interface IMarketingReport {
+public interface ICrisisManagerReport {
 	
 	String CSV_SEPARATOR = ",";
 	
@@ -20,4 +18,13 @@ public interface IMarketingReport {
 	
 	void generateMarketingReport(String file, CrisisManagerReportData reportData ) 
 												throws ReportGenerationException;
+	
+	void generateVoiceShotReport(String file, CrisisManagerReportData reportData ) 
+												throws ReportGenerationException;
+	
+	void generateTimeSlotExceptionReport(String file, CrisisManagerReportData reportData ) 
+												throws ReportGenerationException, ParseException;
+	
+	void generateSOSimulationReport(String file, CrisisManagerReportData reportData ) 
+												throws ReportGenerationException, ParseException;
 }

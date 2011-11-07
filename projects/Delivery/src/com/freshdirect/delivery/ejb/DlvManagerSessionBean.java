@@ -2795,4 +2795,40 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			}
 		}
 	}
+	
+	public int blockTimeslotCapacity(Date sourceDate) throws DlvResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return DlvManagerDAO.blockTimeslotCapacity(conn, sourceDate);
+		} catch (SQLException e) {			
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("DlvManagerSB fixDisassociatedTimeslots: Exception while cleaning: " + se);
+			}
+		}
+	}
+	
+	public int unBlockTimeslotCapacity(Date sourceDate) throws DlvResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return DlvManagerDAO.unBlockTimeslotCapacity(conn, sourceDate);
+		} catch (SQLException e) {			
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("DlvManagerSB fixDisassociatedTimeslots: Exception while cleaning: " + se);
+			}
+		}
+	}
 }

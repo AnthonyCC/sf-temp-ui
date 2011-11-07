@@ -10,14 +10,14 @@
 </style>
 
 <script>
-      var standingOrderDataTable;
-      var editStandingOrderPanel; 
+      var cancelStandingOrderDataTable;
+      var editCancelStandingOrderPanel; 
       var _currentBatchId;
  
-      function showStandingOrderTable(inputVal) {
+      function showCancelStandingOrderTable(inputVal) {
 	
 	_currentBatchId = inputVal;
-         editStandingOrderPanel = new YAHOO.widget.Panel("standingorder-panel", {
+         editCancelStandingOrderPanel = new YAHOO.widget.Panel("cancelstandingorder-panel", {
                           width: "980px",
                           fixedcenter: true, 
                           close: true, 
@@ -27,14 +27,14 @@
                           visible: false,
                           effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
         
-		var standingOrderDataIncrementer = function() {
+		var cancelStandingOrderDataIncrementer = function() {
 			var result = jsonrpcClient.AsyncCrisisMngProvider.getStandingOrderByBatchId(_currentBatchId);
 			return result.list;
 		};
           
-		standingOrderDataSource = new YAHOO.util.DataSource(standingOrderDataIncrementer);
+		cancelStandingOrderDataSource = new YAHOO.util.DataSource(cancelStandingOrderDataIncrementer);
 
-		var standingOrderColumns =  [ 
+		var cancelStandingOrderColumns =  [ 
 			    {key:"isSel", label:"Select?", formatter:"checkbox", className:'align-center'},
 			    {key:"customerId", label:"Customer ID",sortable:false, width: 85, className:'align-center'},
 			    {key:"area", label:"Area",sortable:true, width: 35, className:'align-center'}, 
@@ -43,9 +43,7 @@
 			    {key:"lineItemCount", label:"Order LineItems",sortable:true, width: 90, className:'align-center'},
 			    {key:"tempLineItemCount", label:"Template LineItems", sortable:true, width: 110, className:'align-center'},
 			    {key:"lineItemChangeCount", label:"LineItems Change", sortable:false, width: 130, className:'align-center'},
-			    {key:"status", label:"Status", sortable:false, width: 70, className:'align-center'},
-			    {key:"errorHeader", label:"Error Info", sortable:false, width: 130, className:'align-center'},
-			   
+			    {key:"orderStatus", label:"Status", sortable:false, width: 70, className:'align-center'}
 		 ];
 	
 		var sMyConfigs = { 
@@ -54,14 +52,14 @@
 			})
 		};
 		
-		standingOrderDataTable = new YAHOO.widget.DataTable("contstandingordertable", standingOrderColumns, standingOrderDataSource, sMyConfigs);
+		cancelStandingOrderDataTable = new YAHOO.widget.DataTable("contcancelstandingordertable", cancelStandingOrderColumns, cancelStandingOrderDataSource, sMyConfigs);
 
-		setAllChecks( standingOrderDataTable, true );
+		setAllChecks( cancelStandingOrderDataTable, true );
 
-		standingOrderDataTable.subscribe("rowClickEvent", standingOrderDataTable.onEventSelectRow );
-
-		editStandingOrderPanel.render(document.body); 
-		editStandingOrderPanel.show(); 
+		cancelStandingOrderDataTable.subscribe("rowClickEvent", cancelStandingOrderDataTable.onEventSelectRow );
+		
+		editCancelStandingOrderPanel.render(document.body); 
+		editCancelStandingOrderPanel.show(); 
 	}
 
 	function setAllChecks( arg_dt, flag) {
@@ -69,7 +67,7 @@
 		arg_dt.render();
 		for(var i=0; i < oRS.getLength(); i++) {
 			var oRec = oRS.getRecord(i);
-			if(oRec._oData.status === 'SUCCESS'){
+			if(oRec._oData.orderStatus === 'CAN'){
 				var x = document.getElementById(oRec['_sId']);
 				if (x && x.getElementsByTagName('input')[0])
 				{
@@ -86,22 +84,24 @@
 		}
 	}
 
-	function submitStandingOrder() { 
-		var _data = new Array();
-		if(standingOrderDataTable.getRecordSet() != null && 
-			standingOrderDataTable.getRecordSet().getRecords()) { 
-			var records = standingOrderDataTable.getRecordSet().getRecords();
+	function submitCancelStandingOrder() { 
+		var _soData = new Array();
+		if(cancelStandingOrderDataTable.getRecordSet() != null && 
+			cancelStandingOrderDataTable.getRecordSet().getRecords()) { 
+			var records = cancelStandingOrderDataTable.getRecordSet().getRecords();
 			for(i=0; i < records.length; i++) { 
-				if(records[i].getData('isSel')){
-					_data[i] = new Array(); 
-					_data[i][0] = records[i].getData('standingOrderId');
+				var x = document.getElementById(records[i]['_sId']);
+				if (x && x.getElementsByTagName('input')[0] && x.getElementsByTagName('input')[0].checked)
+				{
+					_soData[i] = new Array(); 
+					_soData[i][0] = records[i].getData('saleId');
 				}
 			}
 		} 
-		var _placeOrderResult = jsonrpcClient.AsyncCrisisMngProvider.placeStandingOrder(_currentBatchId, _data);
+		var _placeOrderResult = jsonrpcClient.AsyncCrisisMngProvider.doCancelOrder(_currentBatchId, _soData);
 		if(_placeOrderResult){
-			standingOrderDataTable.destroy(); 
-			editStandingOrderPanel.hide();
+			cancelStandingOrderDataTable.destroy(); 
+			editCancelStandingOrderPanel.hide();
 		}
 		
 	} 
@@ -127,15 +127,15 @@
 	
  </style>
  <div style='display:none;height:0px;width:0px;'> 
-        <div id="standingorder-panel">
+        <div id="cancelstandingorder-panel">
 	  <div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />
       		&nbsp;&nbsp;&nbsp;Standing Order List</div>
           <div class="bd">
-             <div id="parentcontstandingordertable" style="overflow-y:auto;background-color:#F2F2F2;border:1px dotted #000;">
-		<div id="contstandingordertable"></div> 
+             <div id="parentcontcancelstandingordertable" style="overflow-y:auto;background-color:#F2F2F2;border:1px dotted #000;">
+		<div id="contcancelstandingordertable"></div> 
 	      </div>
 	      <div align="center">
-	       	<input type="button" id="standing_order" value="&nbsp;Submit&nbsp;" onclick="javascript:submitStandingOrder();" />
+	       	<input type="button" id="standing_order" value="&nbsp;Submit&nbsp;" onclick="javascript:submitCancelStandingOrder();" />
 	      </div>
           </div>
    	 </div>

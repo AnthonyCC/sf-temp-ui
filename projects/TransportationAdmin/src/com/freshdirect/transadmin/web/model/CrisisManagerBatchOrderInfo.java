@@ -3,16 +3,16 @@ package com.freshdirect.transadmin.web.model;
 import java.text.ParseException;
 import java.util.Date;
 
-import com.freshdirect.transadmin.model.ICrisisManagerBatchOrder;
+import com.freshdirect.routing.model.ICrisisMngBatchOrder;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class CrisisManagerBatchOrderInfo implements java.io.Serializable {
 	
 	private static final long serialVersionUID = 1430425791125990598L;
 	
-	private ICrisisManagerBatchOrder batchOrder;
+	private ICrisisMngBatchOrder batchOrder;
 		
-	public CrisisManagerBatchOrderInfo(ICrisisManagerBatchOrder batchOrder) {
+	public CrisisManagerBatchOrderInfo(ICrisisMngBatchOrder batchOrder) {
 		super();
 		this.batchOrder = batchOrder;
 	}
@@ -22,19 +22,19 @@ public class CrisisManagerBatchOrderInfo implements java.io.Serializable {
 	}	
 
 	public String getFirstName(){
-		return this.batchOrder.getFirstName();
+		return this.batchOrder.getCustomerModel().getFirstName();
 	}	
 
 	public String getLastName(){
-		return this.batchOrder.getLastName();
+		return this.batchOrder.getCustomerModel().getLastName();
 	}
 	
 	public String getErpCustomerId(){
-		return this.batchOrder.getErpCustomerPK();
+		return this.batchOrder.getCustomerModel().getErpCustomerPK();
 	}
 	
 	public String getFDCustomerId(){
-		return this.batchOrder.getFdCustomerPK();
+		return this.batchOrder.getCustomerModel().getFdCustomerPK();
 	}
 
 	public Date getDeliveryDate(){

@@ -2,7 +2,7 @@ package com.freshdirect.transadmin.constants;
 
 public enum EnumCrisisMngBatchStatus {
 	
-	NEW, ORDERCOLECTIONCOMPETE, COMPLETED, STOPPED, PROCESSING, CANCELLED, ORDERCOLECTIONFAILED, ORDERCANCELCOMPLETE, ORDERCANCELFAILED, CREATERESERVATIONCOMPLETE, CREATERESERVATIONFAILED, PLACESOCOMPETE, PLACESOFAILED;
+	NEW, ORDERCOLECTIONCOMPETE, COMPLETED, STOPPED, PROCESSING, CANCELLED, ORDERCOLECTIONFAILED, ORDERCANCELCOMPLETE, ORDERCANCELFAILED, CREATERESERVATIONCOMPLETE, CREATERESERVATIONFAILED, PLACESOCOMPETE, PLACESOFAILED, AUTOCOMPLETED;
 	
 	public String value(){
 	    switch(this) {
@@ -18,7 +18,8 @@ public enum EnumCrisisMngBatchStatus {
 	     case PLACESOFAILED: return "POF";
 	     case CANCELLED: return "CAN";
 	     case STOPPED: return "STD";
-	     case COMPLETED: return "CPD";	     
+	     case COMPLETED: return "CPD";
+	     case AUTOCOMPLETED: return "CPD/OCC";	 
 	    
 	     default: return "";
 	   }
@@ -32,6 +33,8 @@ public enum EnumCrisisMngBatchStatus {
 			return NEW;
 		} else if(value.equals(COMPLETED.value())) {
 			return COMPLETED;
+		} else if(value.equals(AUTOCOMPLETED.value())) {
+			return AUTOCOMPLETED;
 		} else if(value.equals(STOPPED.value())) {
 			return STOPPED;
 		} else if(value.equals(PROCESSING.value())) {

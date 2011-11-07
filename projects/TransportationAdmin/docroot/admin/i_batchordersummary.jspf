@@ -133,14 +133,15 @@
 	  <div class="bd">
              <div id="parentcontainer"  class="yui-navset">
 		    <ul class="yui-nav"> 
-		        <li class="selected"><a href="#tab1"><em>Cancel Order Summary</em></a></li> 
-			<li><a href="#tab2"><em>Active Order Summary</em></a></li>
-			<li><a href="#tab2"><em>Order Details</em></a></li> 
+			<li class="selected"><a href="#tab2"><em>Batch Order Details</em></a></li>
+			<li><a href="#tab2"><em>Cancel Order Summary</em></a></li> 
+			<li><a href="#tab3"><em>Active Order Summary</em></a></li>
+
 		    </ul>
 		    <div class="yui-content"> 
-		        <div id="contcancelordertable"></div>
-			<div id="contactiveordertable"></div> 
-			<div id="contordertable"></div> 
+			<div id="contordertable"></div>
+			<div id="contcancelordertable"></div>
+			<div id="contactiveordertable"></div>
 		    </div>
 	      </div>
           </div>

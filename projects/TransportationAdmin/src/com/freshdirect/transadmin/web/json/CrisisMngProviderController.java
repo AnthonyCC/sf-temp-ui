@@ -15,8 +15,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.transadmin.model.CrisisManagerBatchDeliverySlot;
 import com.freshdirect.transadmin.model.ICrisisManagerBatch;
 import com.freshdirect.transadmin.model.ICrisisManagerBatchDeliverySlot;
-import com.freshdirect.transadmin.model.ICrisisManagerBatchOrder;
-import com.freshdirect.routing.model.IStandingOrderModel;
+import com.freshdirect.routing.model.ICrisisMngBatchOrder;
+import com.freshdirect.transadmin.constants.EnumCrisisMngBatchType;
 import com.freshdirect.transadmin.crisis.manager.action.CrisisManagerCancelAction;
 import com.freshdirect.transadmin.crisis.manager.action.CrisisManagerCreateReservationAction;
 import com.freshdirect.transadmin.crisis.manager.action.CrisisManagerOrderCancelAction;
@@ -67,14 +67,18 @@ public class CrisisMngProviderController extends BaseJsonRpcController  implemen
 	public CrisisManagerBatchInfo getOrderCrisisBatchById(String batchId) {
 				
 		try {
-			ICrisisManagerBatch batch = this.crisisManagerService.getCrisisMngBatchById(batchId);
-			batch.setOrder(this.crisisManagerService.getCrisisMngBatchOrders(batchId, true, false));
-			batch.setCancelOrder(this.crisisManagerService.getCancelOrderByArea(batchId));
-			batch.setActiveOrder(this.crisisManagerService.getActiveOrderByArea(batch.getDeliveryDate()));
+			ICrisisManagerBatch batch = this.crisisManagerService.getCrisisMngBatchById(batchId);			
+			batch.setOrder(EnumCrisisMngBatchType.REGULARORDER.equals(batch.getBatchType()) ? 
+					this.crisisManagerService.getCrisisMngBatchRegularOrder(batchId, false, false)
+						: this.crisisManagerService.getCrisisMngBatchStandingOrder(batchId, false, false));			
+			batch.setCancelOrder(this.crisisManagerService.getCancelOrderByArea(batchId, batch.getBatchType()));
+			batch.setActiveOrder(this.crisisManagerService.getActiveOrderByArea(batch.getDeliveryDate(), batch.getBatchType()));
 			return new CrisisManagerBatchInfo(batch);
 			
 		} catch (TransAdminServiceException e) {
-			LOGGER.error("service exception", e);
+			LOGGER.error("TransAdmin ServiceException ", e);
+		} catch (Exception ex) {
+			LOGGER.error("TransAdmin ServiceException ", ex);
 		} 
 		return null;
 	}
@@ -104,6 +108,9 @@ public class CrisisMngProviderController extends BaseJsonRpcController  implemen
 		} catch (ParseException ex) {
 			ex.printStackTrace();
 			LOGGER.error("parse exception", ex);
+		} catch (Exception e) {
+			e.printStackTrace();
+			LOGGER.error("Exception wile retriving batches for source date ", e);
 		}
 		Collections.sort(result, new OrderCrisisBatchInfoComparator());	
 		return result;
@@ -121,7 +128,6 @@ public class CrisisMngProviderController extends BaseJsonRpcController  implemen
 		} catch (TransAdminServiceException e) {
 			LOGGER.error("<doOrderCollectionIn:> service exception", e);
 		}
-		
 		return true;
 	}
 	
@@ -147,12 +153,18 @@ public class CrisisMngProviderController extends BaseJsonRpcController  implemen
 		ICrisisManagerBatch batch;
 		try {
 			batch = this.crisisManagerService.getCrisisMngBatchById(orderCrisisBatchId);
-			List<ICrisisManagerBatchOrder> cancelOrders = this.crisisManagerService.getCrisisMngBatchOrders(orderCrisisBatchId, false, true);			
-			if(cancelOrders != null && cancelOrders.size() > 0){
-				Iterator<ICrisisManagerBatchOrder> orderItr = cancelOrders.iterator();
-				while(orderItr.hasNext()){
-					ICrisisManagerBatchOrder _order = orderItr.next();
-					orderIds.add(_order.getOrderNumber());
+			if(EnumCrisisMngBatchType.STANDINGORDER.equals(batch.getBatchType()) && orders != null){
+				for (int i = 0; i < orders.length; i++) {		
+					orderIds.add(orders[i][0]);
+				}
+			} else if(EnumCrisisMngBatchType.REGULARORDER.equals(batch.getBatchType())){
+				List<ICrisisMngBatchOrder> cancelOrders = this.crisisManagerService.getCrisisMngBatchRegularOrder(orderCrisisBatchId, false, true);			
+				if(cancelOrders != null && cancelOrders.size() > 0){
+					Iterator<ICrisisMngBatchOrder> orderItr = cancelOrders.iterator();
+					while(orderItr.hasNext()){
+						ICrisisMngBatchOrder _order = orderItr.next();
+						orderIds.add(_order.getOrderNumber());
+					}
 				}
 			}
 			CrisisManagerOrderCancelAction process = new CrisisManagerOrderCancelAction(batch, userId, orderIds, this.crisisManagerService);
@@ -273,44 +285,93 @@ public class CrisisMngProviderController extends BaseJsonRpcController  implemen
 	public List<CrisisManagerBatchStandingOrderInfo> getStandingOrderByBatchId(String batchId){
 				
 		List<CrisisManagerBatchStandingOrderInfo> standingOrders = new ArrayList<CrisisManagerBatchStandingOrderInfo>();
-		List<IStandingOrderModel> batchSOList = this.crisisManagerService.getStandingOrderByBatchId(batchId);
-		Iterator<IStandingOrderModel> itr =  batchSOList.iterator();
+		List<ICrisisMngBatchOrder> batchSOList = this.crisisManagerService.getCrisisMngBatchStandingOrder(batchId, false, false);
+		Iterator<ICrisisMngBatchOrder> itr =  batchSOList.iterator();
 		while(itr.hasNext()){
-			IStandingOrderModel model = itr.next();			
+			ICrisisMngBatchOrder model = itr.next();			
 			standingOrders.add(new CrisisManagerBatchStandingOrderInfo(model));
 		}
 		return standingOrders;
 	}
 	
-	public boolean placeStandingOrder(String batchId, String[][] _standingOrderData){
+	public String placeStandingOrder(String batchId, String[][] _standingOrderData, boolean isExceptionCheck, String[][] timeslot){
 		
 		String userId = com.freshdirect.transadmin.security.SecurityManager.getUserName(getHttpServletRequest());		
-		List<IStandingOrderModel> standingOrders = new ArrayList<IStandingOrderModel>();
+		List<ICrisisMngBatchOrder> standingOrders = new ArrayList<ICrisisMngBatchOrder>();
 		ICrisisManagerBatch batch;
 		
 		try {
 			batch = this.crisisManagerService.getCrisisMngBatchById(batchId);
-			List<IStandingOrderModel> batchSOList = this.crisisManagerService.getStandingOrderByBatchId(batchId);
 			
-			for(int i= 0;i < _standingOrderData.length;i++){		
-				Iterator<IStandingOrderModel> itr =  batchSOList.iterator();
-				while(itr.hasNext()){
-					IStandingOrderModel model = itr.next();
-					if(model != null && model.getId().equalsIgnoreCase(_standingOrderData[i][0])){
-						model.setAltDeliveryDate(batch.getDestinationDate());
-						standingOrders.add(model);
-						break;
+			String normalDate = TransStringUtil.getDate(TransStringUtil.getNormalDate());
+			List<ICrisisManagerBatchDeliverySlot> exceptionSlots = new ArrayList<ICrisisManagerBatchDeliverySlot>();
+			
+			if(!isExceptionCheck && timeslot != null){
+				Map<String, List<ICrisisManagerBatchDeliverySlot>> deliverySlots 
+												= this.crisisManagerService.getTimeslotByDate(batch.getDestinationDate());
+
+				for(int i= 0;i < timeslot.length;i++){					
+					ICrisisManagerBatchDeliverySlot _slot = new CrisisManagerBatchDeliverySlot();
+					exceptionSlots.add(_slot);
+					_slot.setBatchId(batchId);
+					_slot.setArea(timeslot[i][0]);
+					_slot.setStartTime(TransStringUtil.getDatewithTime(normalDate +" "+ timeslot[i][1].substring(0, 8)));
+					_slot.setEndTime(TransStringUtil.getDatewithTime(normalDate +" "+ timeslot[i][1].substring(11, 19)));
+					_slot.setDestStartTime(TransStringUtil.getDatewithTime(normalDate +" "+ timeslot[i][2].substring(0, 8)));
+					_slot.setDestEndTime(TransStringUtil.getDatewithTime(normalDate +" "+ timeslot[i][2].substring(11, 19)));
+				
+					if(deliverySlots != null && deliverySlots.get(timeslot[i][0]) != null){				
+						for(ICrisisManagerBatchDeliverySlot _deliverySlot : deliverySlots.get(timeslot[i][0])){
+							if(_slot.getDestStartTime().equals(_deliverySlot.getStartTime())
+									&& _slot.getDestEndTime().equals(_deliverySlot.getEndTime())){
+								_slot.setTimeSlotId(_deliverySlot.getTimeSlotId());
+								break;
+							}
+						}
+					}
+				}		
+				
+				this.crisisManagerService.updateCrisisMngBatchDeliveryslot(exceptionSlots);
+			}
+			
+			List<ICrisisMngBatchOrder> batchSOList = this.crisisManagerService.getCrisisMngBatchStandingOrder(batchId,false,false);
+			
+			if(_standingOrderData != null){
+				for(int i= 0;i < _standingOrderData.length;i++){
+					Iterator<ICrisisMngBatchOrder> itr =  batchSOList.iterator();
+					while(itr.hasNext()){
+						ICrisisMngBatchOrder model = itr.next();
+						if(model != null && model.getId().equalsIgnoreCase(_standingOrderData[i][0])){
+							model.setAltDeliveryDate(batch.getDestinationDate());
+							standingOrders.add(model);
+							break;
+						}
 					}
 				}
 			}
-			CrisisManagerPlaceOrderAction process = new CrisisManagerPlaceOrderAction(batch, userId, standingOrders, this.crisisManagerService);
-			process.execute();
+			CrisisManagerPlaceOrderAction process = new CrisisManagerPlaceOrderAction(batch, userId, standingOrders, isExceptionCheck, this.crisisManagerService);
+					
+			Map<String, Integer> exceptions = (Map<String, Integer>) process.execute();
+			boolean hasError = (exceptions != null && exceptions.keySet().size() > 0);
+			if(hasError) {
+				StringBuffer exceptionMessage = new StringBuffer();
+				exceptionMessage.append("Below are the list of Timeslot exceptions: \n\n");
+				exceptionMessage.append("Area - No of Timeslots \n");
+				for(Map.Entry<String, Integer> exp : exceptions.entrySet()) {					
+					exceptionMessage.append("\n").append(exp.getKey()+"  =  "+exp.getValue());
+				}
+				if(!isExceptionCheck) {
+					exceptionMessage.append("\n\n"+"Please handle timeslot exceptions as reservations can't be created for orders cancelled. Do you want to continue?");
+				} 
+				return exceptionMessage.toString();
+			}
 		} catch (TransAdminServiceException e) {
-			e.printStackTrace();
 			LOGGER.error("<placeStandingOrder:> service exception", e);
-			return false;
+			return null;
+		} catch (ParseException e) {
+			LOGGER.error("<placeStandingOrder:> Date parse exception", e);			
 		} 	
 		
-		return true;
+		return null;
 	}
 }

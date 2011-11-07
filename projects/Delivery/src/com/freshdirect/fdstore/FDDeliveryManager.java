@@ -1102,6 +1102,26 @@ public class FDDeliveryManager {
 			throw new FDResourceException(re);
 		}
 	}
+	public int blockTimeslotCapacity(Date sourceDate) throws FDResourceException {
+		try {
+			DlvManagerSB sb = getDlvManagerHome().create();
+			return sb.blockTimeslotCapacity(sourceDate);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
 	
+	public int unBlockTimeslotCapacity(Date sourceDate) throws FDResourceException {
+		try {
+			DlvManagerSB sb = getDlvManagerHome().create();
+			return sb.unBlockTimeslotCapacity(sourceDate);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
 
 }

@@ -1,12 +1,12 @@
 package com.freshdirect.transadmin.web.model;
 
-import com.freshdirect.routing.model.IStandingOrderModel;
+import com.freshdirect.routing.model.ICrisisMngBatchOrder;
 
 public class CrisisManagerBatchStandingOrderInfo implements java.io.Serializable {
 	
-	private final IStandingOrderModel model;
+	private final ICrisisMngBatchOrder model;
 	
-	public CrisisManagerBatchStandingOrderInfo(IStandingOrderModel model){
+	public CrisisManagerBatchStandingOrderInfo(ICrisisMngBatchOrder model){
 		this.model = model;
 	}
 	
@@ -15,7 +15,7 @@ public class CrisisManagerBatchStandingOrderInfo implements java.io.Serializable
 	}
 	
 	public String getSaleId() {
-		return this.model.getSaleId();
+		return this.model.getOrderNumber();
 	}
 	
 	public int getLineItemCount() {
@@ -41,6 +41,9 @@ public class CrisisManagerBatchStandingOrderInfo implements java.io.Serializable
 	}
 	public String getStatus() {
 		return this.model.getStatus();
+	}
+	public String getOrderStatus() {
+		return this.model.getOrderStatus().getStatusCode();
 	}
 
 }

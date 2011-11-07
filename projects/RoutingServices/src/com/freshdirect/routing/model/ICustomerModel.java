@@ -24,5 +24,13 @@ public interface ICustomerModel {
 
 	String getCellPhone();
 	void setCellPhone(String cellPhone);
-
+	
+	String getBusinessExt();
+	void setBusinessExt(String businessExt);
+	
+	String getCompanyName();
+	void setCompanyName(String companyName);
+	
+	String getBatchId();
+	void setBatchId(String batchId);
 }

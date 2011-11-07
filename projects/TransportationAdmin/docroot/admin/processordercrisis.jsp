@@ -1,9 +1,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
-<%@ taglib uri="/tld/extremecomponents" prefix="ec" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
-<%@ page import='com.freshdirect.transadmin.util.TransportationAdminProperties' %>
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 
@@ -34,10 +32,10 @@
               
 			  <table class="forms1" style="height:100%;width:98%;border:1px dotted;background-color:#F7F7F7;">
 						<tr>
-							<td align="left" valign="top">
+							<td align="left" valign="top" width="545">
 								  <table>
 										<tr>
-										  <td>Delivery Date</td>
+										  <td>Source Date</td>
 										  <td>  
 											<spring:bind path="command.selectedDate">
 											   <input maxlength="10" size="10" name='<c:out value="${status.expression}"/>' id='<c:out value="${status.expression}"/>' 
@@ -76,7 +74,7 @@
 									   </tr>
 
 									   <tr>
-										  <td>New Delivery Date</td>
+										  <td>Destination Date</td>
 										  <td>  
 											<spring:bind path="command.destinationDate">
 											   <input maxlength="10" size="10" name='<c:out value="${status.expression}"/>' id='<c:out value="${status.expression}"/>' 
@@ -129,26 +127,7 @@
 												 </td>
 												<td>&nbsp;</td>
 										</tr>
-										<tr>
-						                  <td>Delivery Type</td>
-										  <td>
-											   <form:checkbox path="deliveryType" value="H"/>&nbsp;<font style="font-size:11px;">Residential</font>&nbsp;
-											   <form:checkbox path="deliveryType" value="C"/>&nbsp;<font style="font-size:11px;">Corporate</font>&nbsp;
-											   <form:checkbox path="deliveryType" value="P"/>&nbsp;<font style="font-size:11px;">Pick-Up</font>&nbsp;
-										   </td>
-										   <td>
-											  &nbsp;<form:errors path="deliveryType" />
-										   </td>
-										</tr>
-										<tr>
-						                  <td>Include Standing Order</td>
-										  <td>
-											   <form:checkbox path="includeStandingOrder" value="X"/>
-										   </td>
-										   <td>
-											  &nbsp;<form:errors path="includeStandingOrder" />
-										   </td>
-										</tr>
+
 									  <tr>
 									   <td>Customer Type</td>
 												<td>
@@ -158,13 +137,13 @@
 													  <c:forEach var="customerTypeRow" items="${customerTypes}"> 
 														  <c:choose>
 															<c:when test="${status.value == customerTypeRow}" > 
-															  <option selected value="<c:out value="${customerTypeRow}"/>"><c:out value="${customerTypeRow}"/></option>
+															  <option selected value="<c:out value="${customerTypeRow}"/>"><c:out value="${customerTypeRow.profileName}"/></option>
 															</c:when>
 															<c:otherwise> 
-															  <option value="<c:out value="${customerTypeRow}"/>"><c:out value="${customerTypeRow}"/></option>
+															  <option value="<c:out value="${customerTypeRow}"/>"><c:out value="${customerTypeRow.profileName}"/></option>
 															</c:otherwise> 
-														  </c:choose>      
-														</c:forEach>   
+														  </c:choose>
+														</c:forEach>
 												  </select>
 														<c:forEach items="${status.errorMessages}" var="error">
 															&nbsp;<span id="customerType.errors"><c:out value="${error}"/></span>
@@ -174,7 +153,7 @@
 												<td>&nbsp;</td>
 										</tr>
 										<tr>
-										     <td>Timeslot Start Time</td>
+										     <td>Timeslot Range Start</td>
 											 <td>
 												<spring:bind path="command.startTime">
 													<c:choose>
@@ -190,7 +169,7 @@
 											<td>&nbsp;</td>	
 										</tr>
 										<tr>
-											<td>Timeslot End Time</td> 
+											<td>Timeslot Range End</td> 
 											 <td>
 												<spring:bind path="command.endTime">
 													<c:choose>
@@ -205,15 +184,47 @@
 												</td>
 											<td>&nbsp;</td>	
 										</tr>
-									 
+
+										<tr>
+											<td>Order Type</td>
+											<td>
+												<div><input TYPE="radio" checked="true" NAME="selectDeliveryRadio" id="regularorder" onclick="toggleDeliveryType(this.id)"/>&nbsp;<font style="font-size:11px;">Regular Order</font>&nbsp;<br/></div>
+												<div style="padding-left:20%;" id="deliverytypeDisp">
+													<c:forEach var="dType" items="${deliveryTypes}">
+														<input type="checkbox" name="deliveryType" value="<c:out value='${dType.name}'/>"><font style="font-size:11px;"><c:out value="${dType.deliveryType}"/></font></input>
+													</c:forEach>
+												</div>
+												<div>
+													<input TYPE="radio" NAME="selectDeliveryRadio" id="standingorder" onclick="toggleDeliveryType(this.id)"/>&nbsp;<font style="font-size:11px;">Standing Order</font>&nbsp;
+												</div>
+												<script type="text/javascript">
+													function toggleDeliveryType(idVar) {
+														var x = document.getElementsByName('deliveryType');
+														for(var i=0;i < x.length;i++){
+															x[i].checked=false;
+														}
+														if (idVar === 'regularorder') {
+															document.getElementById('deliverytypeDisp').style.display = '';
+														} else if (idVar === 'standingorder') {
+
+															document.getElementById('deliverytypeDisp').style.display = 'none';
+														}
+													}
+												</script>
+											</td>
+											<td><form:errors path="deliveryType" cssClass="error" /></td>
+										</tr>
+										
+										
 									  </table>
 							</td>
 
-							<td align="center" valign="top">
+							<td align="center" valign="top" width="545">
 								<div>
-									<INPUT TYPE="radio" checked="true" NAME="selectRadio" id="selectRadioZone" onclick="toggleDisplay(this.id)"> Zone
-									<INPUT TYPE="radio" NAME="selectRadio" id="selectRadioRegion" onclick="toggleDisplay(this.id)"> Region
-									<SCRIPT LANGUAGE="JavaScript">
+									<input TYPE="radio" checked="true" NAME="selectRadio" id="selectRadioZone" onclick="toggleDisplay(this.id)"> Zone
+									<input TYPE="radio" NAME="selectRadio" id="selectRadioRegion" onclick="toggleDisplay(this.id)"> Region
+									
+									<script type="text/javascript">
 										function toggleDisplay(idVar) {
 											if (idVar === 'selectRadioZone') {
 												document.getElementById('selectRadioZoneDisp').style.display = '';
@@ -227,7 +238,7 @@
 												document.getElementById('regions').disabled = false;
 											}
 										}
-									</SCRIPT>
+									</script>
 								</div>
 								<div id="selectRadioZoneDisp">
 									 <table>
@@ -312,7 +323,7 @@
 											&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 									<input type = "button" value="&nbsp;Clear&nbsp;" onclick="javascript:clearInputData();" />
 									&nbsp;&nbsp;&nbsp;<input type = "button" id="refreshgrid" value="&nbsp;Refresh&nbsp;" onclick="javascript:refreshTable();"  />
-									&nbsp;&nbsp;&nbsp;<input type="checkbox" name="autoRefresh" onclick="doAutoRefresh(this)" />&nbsp;Auto Refresh
+									&nbsp;&nbsp;&nbsp;<input checked type="checkbox" name="autoRefresh" onclick="doAutoRefresh(this)" />&nbsp;Auto Refresh
 									&nbsp;&nbsp;&nbsp;<span style="font-weight:bold;color:green;margin:5px" id="lastUpdateTime"></span>
 							</td>   
 						</tr>
@@ -327,7 +338,7 @@
      <br/>
  	
 	 <div style='height:400px;width:98%;border:1px dotted;background-color:#F7F7F7;margin-left:9px' align="center">		
-		<div id="contbatch">
+		<div id="batchcontainer">
 		</div>  
     </div>
 
@@ -337,7 +348,7 @@
       var sDataSource; 
       var myCallback;
       var sDataTable;
-     					  
+
       function refreshTable() {
       		sDataTable.getDataSource().sendRequest('', myCallback);  
       		showTable();
@@ -348,36 +359,66 @@
          var dataIncrementer = function() {         
          	var result = jsonrpcClient.AsyncCrisisMngProvider.getOrderCrisisBatch
          												(document.getElementById("selectedDate").value);
-            updateRefreshTimestamp();
+            updateRefreshTimestamp();recordCount = result.list.length;
             return result.list;
          };
           
           sDataSource = new YAHOO.util.DataSource(dataIncrementer);
-        
+
+		  var myBatchEditor = new YAHOO.widget.DropdownCellEditor({multiple:false});
+
 		  var sColumns =  [ 
-					{key:"processId", label:"Process ID",sortable:false, className:"forms1"}, 
-					{key:"deliveryDate", label:"Delivery Dates",sortable:false, width: 120,className:"forms1"},
-					{key:"cutOffInfo", label:"Search Criteria",sortable:false, width: 145,className:"forms1"},
-					{key:"creationInfo", label:"Process Audit Details",sortable:false, width: 142,className:"forms1"},
-					{key:"status", label:"Status",sortable:false, width: 40,className:"forms1"},
-					{key:"systemMessage", label:"System Message", width: 265,sortable:false,className:"forms1"},
+					{key:"processId", label:"Process ID",sortable:false, width: 58,className:"forms1"},
+					{key:"batchType", label:"Batch Type",sortable:false, width: 60,className:"forms1"},
+					{key:"dateInfo", label:"Delivery Dates",sortable:false, width: 120,className:"forms1"},
+					{key:"criteriaInfo", label:"Search Criteria",sortable:false, width: 145,className:"forms1"},
+					{key:"creationInfo", label:"Process Audit Details",sortable:false, width: 138,className:"forms1"},
+					{key:"status", label:"Status",sortable:false, width: 50,className:"forms1"},
+					{key:"systemMessage", label:"System Message", width: 225,sortable:false,className:"forms1"},
 					
-					{key:"action", label:"Action", sortable:false, width: 150, className:"forms1",
-									formatter:"dropdown", dropdownOptions:["","ORDERIN","CANCELORDER","CREATERSV","PLACEORDER","CANCEL"] },
+					{key:"action", label:"Action", sortable:false, width: 125, className:"forms1",
+									formatter: function(elCell, oRecord, oColumn, oData){
+										var sel;
+										if (elCell.childElementCount == 0) {
+											sel = document.createElement("select");
+											
+											if(oRecord.getData("batchType") == 'ROB') {
+												sel.options[0] = new Option("","");
+												sel.options[1] = new Option("ORDERIN","ORDERIN");
+												sel.options[2] = new Option("CANCELORDER","CANCELORDER");
+												sel.options[3] = new Option("CREATERSV","CREATERSV");
+												sel.options[4] = new Option("CANCEL BATCH","CANCEL BATCH");
+											} else {
+												sel.options[0] = new Option("","");
+												sel.options[1] = new Option("ORDERIN","ORDERIN");
+												sel.options[2] = new Option("CANCELORDER","CANCELORDER");
+												sel.options[3] = new Option("PLACEORDER","PLACEORDER");
+												sel.options[4] = new Option("CANCEL BATCH","CANCEL BATCH");
+											}
+											
+											elCell.appendChild(sel);
+											sel.onchange = function() {
+															doBatchAction(sel, sel.options[sel.selectedIndex].value
+                												, oRecord.getData("status")
+                												, oRecord.getData("processId"), oRecord.getData("batchType"));
+															};
+										} else {
+											sel = elCell.children[0];
+										}
+									}},
 
 					{key:"report", label:"Download", sortable:false, width: 125, className:"forms1",
-									formatter:"dropdown", dropdownOptions:["","Mrk Report","VoiceShot Report"] }
-					
+									formatter:"dropdown", dropdownOptions:["","TIMESLOTEXCEPTION","MARKETING","VOICESHOT","SOSIMREPORT"] }
 			 ];
 	
 		  var sMyConfigs = { 
 			    paginator : new YAHOO.widget.Paginator({ 
-			        rowsPerPage    : 3
-			    }) 
+			        rowsPerPage: 3
+				}) 
 		  }; 
 		 	 
-  		sDataTable = new YAHOO.widget.DataTable("contbatch", sColumns, sDataSource, sMyConfigs);
-  		
+  		sDataTable = new YAHOO.widget.DataTable("batchcontainer", sColumns, sDataSource, sMyConfigs);
+
   		sDataTable.subscribe("dropdownChangeEvent", function(oArgs){
                 var elDropdown = oArgs.target;   
                 var _currCol =  this.getColumn(elDropdown);
@@ -388,17 +429,17 @@
                 		
                 		doBatchAction(elDropdown, elDropdown.options[elDropdown.selectedIndex].value
                 										, oRecord.getData("status")
-                											, oRecord.getData("processId"));
+                											, oRecord.getData("processId"), oRecord.getData("batchType"));
                 									
                 	} else {
                 		
                 		doReport(elDropdown, elDropdown.options[elDropdown.selectedIndex].value
                 										, oRecord.getData("status")
-                											, oRecord.getData("processId"));
+                											, oRecord.getData("processId"), oRecord.getData("batchType"));
                 	}
                 }
          });
-            
+
   		 // Set up polling
         myCallback = {
             success: sDataTable.onDataReturnInitializeTable,
@@ -408,38 +449,43 @@
             scope: sDataTable
         };
       }
-      
+
       var actionMapping = {
       	 'NEW': {CANCEL:0},
-	     'PRC': {},
 	     'DCC': {ORDERIN:0,CANCELORDER:0,CANCEL:0},
 	     'DCF': {ORDERIN:0,CANCEL:0},
 	     'OCF': {CANCELORDER:0},
-		 'OCC': {CREATERSV:0},
+		 'OCC': {PLACEORDER:0},
+		 'CPD/OCC': {CREATERSV:0},
 	     'CRF': {CREATERSV:0},
-	     'CRC': {PLACEORDER:0},
+		 'POF': {PLACEORDER:0},
 		 'POC': {PLACEORDER:0},
+		 'PRC': {},
 		 'CAN': {},
-		 'CPD': {PLACEORDER:0}
+		 'CPD': {}
       }
-      
+
       function updateRefreshTimestamp() {
       	var d = new Date();
 		document.getElementById("lastUpdateTime").innerHTML = d.getHours() + ':' + d.getMinutes()+ ':' + d.getSeconds();
       }
-      
-      function doReport(elDropdown, actionType, currentStatus, currentBatchId) {
+
+      function doReport(elDropdown, actionType, currentStatus, currentBatchId, currentBatchType) {
       		
             if(actionType != "") {
       			if (!confirm ("You are about to perform "+actionType+" generation. Do you want to continue?")) {
 					elDropdown.value = '';
 					return;
 				}
-				if (currentStatus == 'OCC' || currentStatus == 'CRC' || currentStatus == 'CRF' || currentStatus == 'POC' || currentStatus == 'CPD'){
-					if(actionType == 'Mrk Report') {
-						showCrisisMngReportForm(currentBatchId, 'MKR');
-					} else if(actionType == 'VoiceShot Report') {
-						showCrisisMngReportForm(currentBatchId, 'VSR');
+				if (currentStatus != 'CAN' || currentStatus == 'NEW' || currentStatus == 'PRC' ){
+					if(actionType == 'MARKETING') {
+						location.href = 'crisismanagereport.do?batchId='+currentBatchId+'&reportType='+actionType;
+					} else if(actionType == 'VOICESHOT') {
+						location.href = 'crisismanagereport.do?batchId='+currentBatchId+'&reportType='+actionType;
+					} else if(actionType == 'TIMESLOTEXCEPTION') {
+						location.href = 'crisismanagereport.do?batchId='+currentBatchId+'&reportType='+actionType;
+					} else if(actionType == 'SOSIMREPORT' && currentBatchType == 'SOB') {
+						location.href = 'crisismanagereport.do?batchId='+currentBatchId+'&reportType='+actionType;
 					} else {
 						alert("Feature not available");
 					}
@@ -449,35 +495,48 @@
       		}
       		elDropdown.value = '';
       }
-      
-      function doBatchAction(elDropdown, actionType, currentStatus, currentBatchId) {
+
+      function doBatchAction(elDropdown, actionType, currentStatus, currentBatchId, currentBatchType) {
             if(actionType != "") {
       			if(actionMapping[currentStatus][actionType] == null) {
       				alert(actionType+" is not allowed for batch status "+currentStatus);
       				elDropdown.value = '';
       			} else {
-      				
+	
 					if (!confirm ("You are about to perform "+actionType+" action. Do you want to continue?")) {
 						elDropdown.value = '';
 						return;
 					}
 					try {
+						var currentBatch = jsonrpcClient.AsyncCrisisMngProvider.getOrderCrisisBatchById(currentBatchId);
       					if(actionType == 'ORDERIN') {
-      						jsonrpcClient.AsyncCrisisMngProvider.doOrderCollectionIn(currentBatchId);
+      						var result = jsonrpcClient.AsyncCrisisMngProvider.doOrderCollectionIn(actionCallBack, currentBatchId);
       					}else if(actionType == 'CANCELORDER') {
-      						jsonrpcClient.AsyncCrisisMngProvider.doCancelOrder(currentBatchId, null);
+							if(currentBatchType == 'ROB'){
+								jsonrpcClient.AsyncCrisisMngProvider.doCancelOrder(currentBatchId, null);
+							} else {
+								showCancelStandingOrderTable(currentBatchId);
+							}
       					} else if(actionType == 'CREATERSV') {
       						var result = jsonrpcClient.AsyncCrisisMngProvider.doCrisisMngCreateReservation(currentBatchId, false, null);
 							if(result != null) {
       							if(confirm(result)) {
-      								showExceptionTable(currentBatchId);
+      								showExceptionTable(currentBatchId, currentBatchType);
       							}
       						} else {
 								jsonrpcClient.AsyncCrisisMngProvider.doCrisisMngCreateReservation(currentBatchId, true, null);
 							}
       					} else if(actionType == 'PLACEORDER'){
-							showStandingOrderTable(currentBatchId);
-						}else if(actionType == 'CANCEL') {
+							var result = jsonrpcClient.AsyncCrisisMngProvider.placeStandingOrder(currentBatchId, null, false, null);
+							if(result != null) {
+      							if(confirm(result)) {
+      								showExceptionTable(currentBatchId,currentBatchType);
+      							}
+      						} else {
+								showStandingOrderTable(currentBatchId);
+							}
+							
+						} else if(actionType == 'CANCEL') {
       						jsonrpcClient.AsyncCrisisMngProvider.doCrisisMngBatchCancel(currentBatchId);
       					} else {
       						alert("Processing "+actionType+" on BATCH ID:"+currentBatchId);
@@ -485,17 +544,18 @@
       				} catch(rpcException) {
       					alert("There was a problem in communication to the server. Please try to refresh the browser window!\n"+e);
       				}
-      				sDataTable.destroy();
-                	showTable();
+					showTable();
       			}
       		}
       }
-      
+		 function actionCallBack(result, exception){
+			refreshTable();
+		 }
 		  function doAutoRefresh(src) {
 			if(src.checked) {
 				sDataSource.setInterval(30000, null, myCallback);
 			} else {
-				sDataSource. clearAllIntervals();
+				sDataSource.clearAllIntervals();
 			}
 		  }      
 		  showTable();
@@ -511,15 +571,17 @@
 		 }
 
 		function startProcess(){
-			if(confirm('You are about to start a new Order Scenario batch session. Do you want to continue?')){
+			if(confirm('You are about to start a new Crisis Manager batch. Do you want to continue?')){
 				document.getElementById('zone').value = getValues('zones');
 				document.getElementById('region').value = getValues('regions');
+			}else{
+				return;
 			}
 		}
       </script>
-	 <%@ include file='i_standingorderdetails.jspf'%> 
+	 <%@ include file='i_batchstandingorder.jspf'%> 
 	 <%@ include file='i_timeslotexception.jspf'%>
-	  <%@ include file='i_processcrisismngreport.jspf'%>
-	  <%@ include file='i_orderdetails.jspf'%> 
+	 <%@ include file='i_cancelstandingorder.jspf'%>
+	 <%@ include file='i_batchorderdsummary.jspf'%> 
   </tmpl:put>
 </tmpl:insert>

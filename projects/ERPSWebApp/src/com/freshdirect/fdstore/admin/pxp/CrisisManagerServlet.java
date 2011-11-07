@@ -24,6 +24,7 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
@@ -59,8 +60,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
+import com.freshdirect.routing.model.ICrisisMngBatchOrder;
 import com.freshdirect.routing.model.IReservationModel;
-import com.freshdirect.routing.model.IStandingOrderModel;
 import com.freshdirect.routing.util.json.CrisisManagerJSONSerializer;
 import com.freshdirect.webapp.util.StandingOrderUtil;
 import com.metaparadigm.jsonrpc.JSONSerializer;
@@ -75,8 +76,8 @@ public class CrisisManagerServlet extends HttpServlet {
 	
 	private static final String ACTION_PLACE_SO_ORDER = "placeSOOrder";
 	private static final String ACTION_CANCEL_ORDER = "cancelOrder";
-	private static final String ACTION_BLOCK_CAPACITY = "blockDeliveryDate";
-	private static final String ACTION_UNBLOCK_CAPACITY = "unBlockDeliveryDate";
+	private static final String ACTION_BLOCK_CAPACITY = "blockCapacity";
+	private static final String ACTION_UNBLOCK_CAPACITY = "unBlockCapacity";
 	private static final String ACTION_CREATE_RESERVATION = "createReservation";
 	private static final String ACTION_CANCEL_RESERVATION = "cancelReservation";
 	
@@ -88,12 +89,6 @@ public class CrisisManagerServlet extends HttpServlet {
 		} catch (Exception e) {
 			LOGGER.error("Failed to setup serializer", e);
 		}
-	}
-	
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		
 	}
 	
 	@Override
@@ -148,7 +143,13 @@ public class CrisisManagerServlet extends HttpServlet {
 											, agent
 											, payload);
 		} else if(ACTION_BLOCK_CAPACITY.equalsIgnoreCase(action)){
-		
+			try {
+				result = FDDeliveryManager.getInstance().blockTimeslotCapacity((Date) serializer.fromJSON(payload));
+			} catch (FDResourceException e) {
+				e.printStackTrace();
+			} catch (UnmarshallException e) {
+				e.printStackTrace();
+			}
 		} else if(ACTION_UNBLOCK_CAPACITY.equalsIgnoreCase(action)){
 		
 		}
@@ -162,10 +163,10 @@ public class CrisisManagerServlet extends HttpServlet {
 		}
 	}
 	
-	private IStandingOrderModel processStandingOrder(HttpServletRequest request,
+	private ICrisisMngBatchOrder processStandingOrder(HttpServletRequest request,
 			HttpServletResponse response, String agent, String payload){
 
-		IStandingOrderModel soModel = extractStandingOrderPayload(payload);
+		ICrisisMngBatchOrder soModel = extractStandingOrderPayload(payload);
 		if (soModel == null) {
 			LOGGER.error("Cannot extract Reservation Model from payload");			
 			sendError(response, ":[");
@@ -457,31 +458,30 @@ public class CrisisManagerServlet extends HttpServlet {
 	
 	protected boolean cancelOrder(FDCustomerOrderInfo orderModel, HttpServletRequest request, String agent, boolean sendEmail) {
 		boolean success = true;
-
 		try {
 			
 			FDOrderI order = FDCustomerManager.getOrder(orderModel.getSaleId());
-			FDIdentity identity = new FDIdentity(order.getCustomerId(), null);		
-			orderModel.setIdentity(identity);
-			FDActionInfo actionInfo = getActionInfo(agent);
-			// Set it to actionInfo object to write to the activity log.
-			actionInfo.setIdentity(identity);
-			FDCustomerManager.cancelOrder(actionInfo, orderModel.getSaleId(), sendEmail, 0);
-
-			ErpActivityRecord rec = actionInfo.createActivity(EnumAccountActivityType.CANCEL_ORDER);
-			rec.setNote("Order Cancelled");
-			rec.setChangeOrderId( orderModel.getSaleId());
-			rec.setStandingOrderId(order.getStandingOrderId());
-			FDCustomerManager.logMassCancelActivity(rec);
+			if(!EnumSaleStatus.CANCELED.equals(order.getOrderStatus())){
+				FDIdentity identity = new FDIdentity(order.getCustomerId(), null);		
+				orderModel.setIdentity(identity);
+				FDActionInfo actionInfo = getActionInfo(agent);
+				// Set it to actionInfo object to write to the activity log.
+				actionInfo.setIdentity(identity);
+				FDCustomerManager.cancelOrder(actionInfo, orderModel.getSaleId(), sendEmail, 0);
+				
+				ErpActivityRecord rec = actionInfo.createActivity(EnumAccountActivityType.CANCEL_ORDER);
+				rec.setNote("Order Cancelled");
+				rec.setChangeOrderId( orderModel.getSaleId());
+				rec.setStandingOrderId(order.getStandingOrderId());
+				FDCustomerManager.logMassCancelActivity(rec);
+			}
 		} catch (FDResourceException fe) {
-			LOGGER.error("System Error occurred while processing Sale ID : " + orderModel.getSaleId() + "\n" + fe.getMessage());
-			success = false;
+			LOGGER.error("System Error occurred while processing Sale ID : " + orderModel.getSaleId() + "\n" + fe.getMessage());			
 		} catch (ErpTransactionException te) {
 			LOGGER.error("Transaction Error occurred while processing Sale ID : " + orderModel.getSaleId() + "\n" + te.getMessage());
 			success = false;
 		} catch (DeliveryPassException de) {
-			LOGGER.error("Delivery Pass Error occurred while processing Sale ID : " + orderModel.getSaleId() + "\n" + de.getMessage());
-			success = false;
+			LOGGER.error("Delivery Pass Error occurred while processing Sale ID : " + orderModel.getSaleId() + "\n" + de.getMessage());			
 		}
 		return success;
 	}
@@ -563,11 +563,11 @@ public class CrisisManagerServlet extends HttpServlet {
 		return orderModel;
 	}
 	
-	protected IStandingOrderModel extractStandingOrderPayload(String soPayload) {
+	protected ICrisisMngBatchOrder extractStandingOrderPayload(String soPayload) {
 		
-		IStandingOrderModel standingOrderModel = null;
+		ICrisisMngBatchOrder standingOrderModel = null;
 		try {
-			standingOrderModel = (IStandingOrderModel) serializer.fromJSON(soPayload);
+			standingOrderModel = (ICrisisMngBatchOrder) serializer.fromJSON(soPayload);
 		} catch (ClassCastException e) {
 			LOGGER.error("Error raised during create Reservation deserialization", e);
 			return null;

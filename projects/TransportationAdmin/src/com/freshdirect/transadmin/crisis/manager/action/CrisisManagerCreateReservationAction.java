@@ -4,6 +4,7 @@ import static com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage.IN
 import static com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage.INFO_MESSAGE_CREATERESERVATIONCOMPLETED;
 import static com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage.ERROR_MESSAGE_TIMESLOTEXCEPTION;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -11,13 +12,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.httpclient.HttpException;
+
+import weblogic.wsee.handler.InvocationException;
+
 import com.freshdirect.transadmin.constants.EnumCrisisMngBatchActionType;
 import com.freshdirect.transadmin.constants.EnumCrisisMngBatchStatus;
 import com.freshdirect.routing.constants.EnumReservationType;
 import com.freshdirect.routing.model.CustomerModel;
 import com.freshdirect.transadmin.model.ICrisisManagerBatch;
 import com.freshdirect.transadmin.model.ICrisisManagerBatchDeliverySlot;
-import com.freshdirect.transadmin.model.ICrisisManagerBatchOrder;
+import com.freshdirect.routing.model.ICrisisMngBatchOrder;
 import com.freshdirect.routing.model.ICustomerModel;
 import com.freshdirect.routing.model.IReservationModel;
 import com.freshdirect.routing.model.ReservationModel;
@@ -25,6 +30,7 @@ import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.transadmin.service.ICrisisManagerService;
 import com.freshdirect.transadmin.service.exception.TransAdminServiceException;
 import com.freshdirect.transadmin.util.CrisisManagerUtil;
+import com.metaparadigm.jsonrpc.UnmarshallException;
 
 public class CrisisManagerCreateReservationAction extends
 		AbstractCrisisManagerAction {
@@ -75,7 +81,14 @@ public class CrisisManagerCreateReservationAction extends
 				processCreateReservation();
 			}
 	    			    	
-	    }catch(Exception e){
+			this.getCrisisMngService().updateCrisisMngBatchStatus(this.getBatch().getBatchId(), EnumCrisisMngBatchStatus.COMPLETED);
+		    this.getCrisisMngService().updateCrisisMngBatchMessage(this.getBatch().getBatchId(),  INFO_MESSAGE_CREATERESERVATIONCOMPLETED);
+		    
+		    /*Un-Block Capacity for source & destination dates*/
+	    	CrisisManagerUtil orderMngAgent = new CrisisManagerUtil();
+	    	orderMngAgent.doUnBlockCapacity(this.getBatch().getDeliveryDate(), this.getBatch().getDestinationDate());
+	    	
+		}catch(Exception e){
 	    	e.printStackTrace();
 	    	try {
 	    		this.getCrisisMngService().updateCrisisMngBatchStatus(this.getBatch().getBatchId(), getFailureStatus());
@@ -84,27 +97,25 @@ public class CrisisManagerCreateReservationAction extends
 				exp.printStackTrace();
 			}
 	    }	
-	    this.getCrisisMngService().updateCrisisMngBatchStatus(this.getBatch().getBatchId(), EnumCrisisMngBatchStatus.CREATERESERVATIONCOMPLETE);
-	    this.getCrisisMngService().updateCrisisMngBatchMessage(this.getBatch().getBatchId(),  INFO_MESSAGE_CREATERESERVATIONCOMPLETED);
-		
+	    		
 	    System.out.println("######################### Create Reservation STOP #########################");
 		return null;
 	}
 	
-	private void processCreateReservation(){
+	private void processCreateReservation() throws HttpException, InvocationException, UnmarshallException, IOException{
 		
 		Set<IReservationModel> rsvModels = new HashSet<IReservationModel>();
 		
-		List<ICrisisManagerBatchOrder> cancelledOrders = this.getCrisisMngService().getCrisisMngBatchOrders(this.getBatch().getBatchId(), true, false);
+		List<ICrisisMngBatchOrder> cancelledOrders = this.getCrisisMngService().getCrisisMngBatchRegularOrder(this.getBatch().getBatchId(), true, false);
 		Map<String, List<ICrisisManagerBatchDeliverySlot>> batchTimeSlots 
 												= this.getCrisisMngService().getCrisisMngBatchTimeslot(this.getBatch().getBatchId(), true);
 		
 		if(cancelledOrders != null && cancelledOrders.size() > 0){
-			Iterator<ICrisisManagerBatchOrder> orderItr = cancelledOrders.iterator();
+			Iterator<ICrisisMngBatchOrder> orderItr = cancelledOrders.iterator();
 			List<ICrisisManagerBatchDeliverySlot> areaSlots = null;
 			IReservationModel rsvModel = null;
 			while(orderItr.hasNext()){
-				ICrisisManagerBatchOrder _order = orderItr.next();				
+				ICrisisMngBatchOrder _order = orderItr.next();				
 				if(!_order.isException()){
 					rsvModel = new ReservationModel();
 					areaSlots = batchTimeSlots.get(_order.getArea());
@@ -125,10 +136,10 @@ public class CrisisManagerCreateReservationAction extends
 						rsvModels.add(rsvModel);
 						
 						ICustomerModel customerModel = new CustomerModel();				
-						customerModel.setErpCustomerPK(_order.getErpCustomerPK());
-						customerModel.setFdCustomerPK(_order.getFdCustomerPK());				
-						customerModel.setFirstName(_order.getFirstName());
-						customerModel.setLastName(_order.getLastName());
+						customerModel.setErpCustomerPK(_order.getCustomerModel().getErpCustomerPK());
+						customerModel.setFdCustomerPK(_order.getCustomerModel().getFdCustomerPK());				
+						customerModel.setFirstName(_order.getCustomerModel().getFirstName());
+						customerModel.setLastName(_order.getCustomerModel().getLastName());
 						
 						rsvModel.setCustomerModel(customerModel);
 						rsvModel.setArea(_order.getArea());

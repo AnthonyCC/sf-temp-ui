@@ -150,9 +150,8 @@
 
     			<prop key="/crisismanage.ax">asyncCrisisMngController</prop>
     			<prop key="/crisismanage.do">crisisMngFormController</prop>
-    			<prop key="/marketingreport.do">crisisMngController</prop>
-               	<prop key="/voiceshotreport.do">crisisMngController</prop>
-    
+    			<prop key="/crisismanagereport.do">crisisMngController</prop>
+
 			</props>
 		</property>
 	</bean>
@@ -313,8 +312,7 @@
             <prop key="/maintenancelog.do">maintenanceLogHandler</prop>
 			<prop key="/zipcode.do">zipcodeHandler</prop>
 
-			<prop key="/marketingreport.do">marketingReportHandler</prop>
-            <prop key="/voiceshotreport.do">voiceshotReportHandler</prop> 
+			<prop key="/crisismanagereport.do">crisisMngReportHandler</prop>
 
         </props>
 		</property>

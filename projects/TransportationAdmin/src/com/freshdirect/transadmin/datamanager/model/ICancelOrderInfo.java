@@ -33,4 +33,15 @@ public interface ICancelOrderInfo {
 	public void setCellPhone(String cellPhone);
 	
 	String getFullName();
+	
+	String getOrderStatus();
+	void setOrderStatus(String orderStatus);
+	
+	 int getLineItemCount();
+	 void setLineItemCount(int lineItemCount) ;
+	
+	 int getTempLineItemCount();
+	 void setTempLineItemCount(int tempLineItemCount);
+	
+	 int getLineItemChangeCount();
 }

@@ -1512,4 +1512,26 @@ public class DlvManagerDAO {
 		return updateCount;
 	}
 	
+	private static final String BLOCK_TIMESLOT_CAPACITY = "UPDATE DLV.TIMESLOT SET IS_CLOSED = 'X' WHERE BASE_DATE = ? ";
+
+	public static int blockTimeslotCapacity(Connection conn, Date sourceDate) throws SQLException {
+		
+		PreparedStatement ps = conn.prepareStatement(BLOCK_TIMESLOT_CAPACITY);	    
+		ps.setDate(1, new java.sql.Date(sourceDate.getTime()));		
+		int updateCount = ps.executeUpdate();
+	    ps.close();
+		return updateCount;
+	}
+	
+	private static final String UNBLOCK_TIMESLOT_CAPACITY = "UPDATE DLV.TIMESLOT SET IS_CLOSED = null WHERE BASE_DATE = ? ";
+
+	public static int unBlockTimeslotCapacity(Connection conn, Date sourceDate) throws SQLException {
+		
+		PreparedStatement ps = conn.prepareStatement(UNBLOCK_TIMESLOT_CAPACITY);	    
+		ps.setDate(1, new java.sql.Date(sourceDate.getTime()));		
+		int updateCount = ps.executeUpdate();
+	    ps.close();
+		return updateCount;
+	}
+	
 }

@@ -8,6 +8,7 @@ import com.freshdirect.transadmin.constants.EnumCrisisMngBatchStatus;
 import com.freshdirect.transadmin.model.ICrisisManagerBatch;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.transadmin.service.ICrisisManagerService;
+import com.freshdirect.transadmin.util.CrisisManagerUtil;
 
 public class CrisisManagerCancelAction extends AbstractCrisisManagerAction {
 	
@@ -21,6 +22,12 @@ public class CrisisManagerCancelAction extends AbstractCrisisManagerAction {
 		this.getCrisisMngService().addNewCrisisMngBatchAction(this.getBatch().getBatchId(), RoutingDateUtil.getCurrentDateTime()
 				, EnumCrisisMngBatchActionType.CANCEL, this.getUserId());
 		this.getCrisisMngService().updateCrisisMngBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_BATCHCANCELCOMPLETED);
+		
+		/*Un-Block Capacity for source & destination dates*/
+    	CrisisManagerUtil orderMngAgent = new CrisisManagerUtil();
+    	orderMngAgent.setAgent(this.getUserId());	
+    	orderMngAgent.doUnBlockCapacity(this.getBatch().getDeliveryDate(), this.getBatch().getDestinationDate());
+    	
 		return null;
 		
 	}

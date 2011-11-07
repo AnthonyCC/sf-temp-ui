@@ -11,6 +11,7 @@ import java.util.Set;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.transadmin.constants.EnumCrisisMngBatchActionType;
 import com.freshdirect.transadmin.constants.EnumCrisisMngBatchStatus;
+import com.freshdirect.transadmin.constants.EnumCrisisMngBatchType;
 import com.freshdirect.transadmin.dao.ICrisisManagerDAO;
 import com.freshdirect.routing.manager.IProcessMessage;
 import com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage;
@@ -18,15 +19,16 @@ import com.freshdirect.transadmin.model.IActiveOrderModel;
 import com.freshdirect.transadmin.model.ICancelOrderModel;
 import com.freshdirect.transadmin.model.ICrisisManagerBatch;
 import com.freshdirect.transadmin.model.ICrisisManagerBatchDeliverySlot;
-import com.freshdirect.transadmin.model.ICrisisManagerBatchOrder;
 import com.freshdirect.transadmin.model.ICrisisManagerBatchReservation;
-import com.freshdirect.routing.model.IStandingOrderModel;
+import com.freshdirect.routing.model.ICrisisMngBatchOrder;
+import com.freshdirect.routing.model.ICustomerModel;
 import com.freshdirect.transadmin.web.model.TriggerCrisisManagerResult;
 import com.freshdirect.transadmin.service.ICrisisManagerService;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.transadmin.service.exception.IIssue;
 import com.freshdirect.transadmin.service.exception.TransAdminServiceException;
+import com.google.gwt.dev.util.collect.HashSet;
 
 public class CrisisManagerService implements ICrisisManagerService {
 	
@@ -41,7 +43,7 @@ public class CrisisManagerService implements ICrisisManagerService {
 	}
 
 	public TriggerCrisisManagerResult createNewCrisisMngBatch(Date deliveryDate, Date destinationDate, String userId, String[] zone, 
-			Date cutOffDateTime, Date startTime, Date endTime, String[] deliveryType, boolean includeSO, String profileName, boolean isStandByMode) throws TransAdminServiceException{
+			Date cutOffDateTime, Date startTime, Date endTime, String[] deliveryType, EnumCrisisMngBatchType batchType, String profileName, boolean isStandByMode) throws TransAdminServiceException{
 		
 		TriggerCrisisManagerResult result = new TriggerCrisisManagerResult();
 		String batchId = null;
@@ -54,11 +56,17 @@ public class CrisisManagerService implements ICrisisManagerService {
 			}
 			
 			batchId = getCrisisManagerDAOImpl().addNewCrisisMngBatch(deliveryDate, destinationDate, zone
-													,cutOffDateTime, startTime, endTime, deliveryType, includeSO, profileName, isStandByMode);
+													,cutOffDateTime, startTime, endTime, deliveryType, batchType, profileName, isStandByMode);
 			getCrisisManagerDAOImpl().addNewCrisisMngBatchAction(batchId, RoutingDateUtil.getCurrentDateTime()
 													, EnumCrisisMngBatchActionType.CREATE, userId);
-			
-			messages.add(ICrisisManagerProcessMessage.INFO_MESSAGE_ORDERSCENARIOBATCHTRIGERRED);
+			if(batchId != null) {
+				ICrisisManagerBatch batch = getCrisisManagerDAOImpl().getCrisisMngBatchById(batchId);
+				if(EnumCrisisMngBatchType.REGULARORDER.equals(batch.getBatchType())){
+					messages.add(ICrisisManagerProcessMessage.INFO_MESSAGE_CRISISMNGREGORDERBATCHTRIGERRED);
+				}else{
+					messages.add(ICrisisManagerProcessMessage.INFO_MESSAGE_CRISISMNGSOORDERBATCHTRIGERRED);
+				}
+			}			
 			result.setCrisisMngBatchId(batchId);
 			result.setMessages(messages);
 			
@@ -114,19 +122,24 @@ public class CrisisManagerService implements ICrisisManagerService {
 		}
 	}
 	
-	public void clearCrisisMngBatch(String crisisMngBatchId) throws TransAdminServiceException{
+	public void clearCrisisMngBatch(String batchId, EnumCrisisMngBatchType batchType) throws TransAdminServiceException{
 		try{
-			getCrisisManagerDAOImpl().clearCrisisMngBatchOrder(crisisMngBatchId);
-			getCrisisManagerDAOImpl().clearCrisisMngBatchReservation(crisisMngBatchId);
-			getCrisisManagerDAOImpl().clearCrisisMngBatchStandingOrder(crisisMngBatchId);
+			getCrisisManagerDAOImpl().clearCrisisMngBatchCustomer(batchId);
+			if(EnumCrisisMngBatchType.REGULARORDER.equals(batchType)){
+				getCrisisManagerDAOImpl().clearCrisisMngBatchReservation(batchId);
+				getCrisisManagerDAOImpl().clearCrisisMngBatchOrder(batchId);
+			} else {				
+				getCrisisManagerDAOImpl().clearCrisisMngBatchStandingOrder(batchId);
+			}
+			getCrisisManagerDAOImpl().clearCrisisMngBatchDeliverySlot(batchId);
 		}catch(SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}
 	}
 	
-	public List<ICrisisManagerBatchOrder> getOrderByCriteria(Date deliveryDate,Date cutOffDateTime, String[] area, String startTime, String endTime, String[] deliveryType, String profileName,boolean isSOIncluded) throws TransAdminServiceException{
+	public List<ICrisisMngBatchOrder> getOrderByCriteria(Date deliveryDate,Date cutOffDateTime, String[] area, String startTime, String endTime, String[] deliveryType, String profileName) throws TransAdminServiceException{
 		try{
-			return getCrisisManagerDAOImpl().getOrderByCriteria(deliveryDate, cutOffDateTime, area, startTime, endTime, deliveryType, profileName, isSOIncluded);
+			return getCrisisManagerDAOImpl().getOrderByCriteria(deliveryDate, cutOffDateTime, area, startTime, endTime, deliveryType, profileName);
 		}catch(SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}
@@ -140,25 +153,33 @@ public class CrisisManagerService implements ICrisisManagerService {
 		}
 	}
 	
-	public void addNewCrisisMngBatchOrder(List<ICrisisManagerBatchOrder> batchOrders) throws TransAdminServiceException {
-		try{
-			getCrisisManagerDAOImpl().addNewCrisisMngBatchOrder(batchOrders);
+	public void addNewCrisisMngBatchCustomer(Set<ICustomerModel> batchCustomers, String batchId) throws TransAdminServiceException {
+		try{			
+			getCrisisManagerDAOImpl().addNewCrisisMngBatchCustomer(batchCustomers, batchId);
 		}catch(SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}
 	}
 	
-	public List<ICrisisManagerBatchOrder> getCrisisMngBatchOrders(String batchId, boolean filterException, boolean filterOrder) throws TransAdminServiceException {
-		try{
-			return getCrisisManagerDAOImpl().getCrisisMngBatchOrders(batchId, filterException, filterOrder);
+	public void addNewCrisisMngBatchRegularOrder(List<ICrisisMngBatchOrder> batchOrders, String batchId) throws TransAdminServiceException {
+		try{		
+			getCrisisManagerDAOImpl().addNewCrisisMngBatchRegularOrder(batchOrders, batchId);
 		}catch(SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}
 	}
 	
-	public void updateCrisisMngOrderException(String orderCrisisBatchId, List<String> exceptionOrderIds) throws TransAdminServiceException {
+	public List<ICrisisMngBatchOrder> getCrisisMngBatchRegularOrder(String batchId, boolean filterException, boolean filterOrder) throws TransAdminServiceException {
 		try{
-			getCrisisManagerDAOImpl().updateCrisisMngOrderException(orderCrisisBatchId, exceptionOrderIds);			
+			return getCrisisManagerDAOImpl().getCrisisMngBatchRegularOrder(batchId, filterException, filterOrder);
+		}catch(SQLException e) {
+			throw new TransAdminServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
+		}
+	}
+	
+	public void updateCrisisMngOrderException(String orderCrisisBatchId, String batchType, List<String> exceptionOrderIds) throws TransAdminServiceException {
+		try{
+			getCrisisManagerDAOImpl().updateCrisisMngOrderException(orderCrisisBatchId, batchType, exceptionOrderIds);			
 		}catch(SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}
@@ -172,9 +193,9 @@ public class CrisisManagerService implements ICrisisManagerService {
 		}
 	}
 	
-	public void addNewCrisisMngBatchReservation(List<ICrisisManagerBatchReservation> reservations) throws TransAdminServiceException {
+	public void addNewCrisisMngBatchReservation(List<ICrisisManagerBatchReservation> reservations, String batchId) throws TransAdminServiceException {
 		try{
-			getCrisisManagerDAOImpl().addNewCrisisMngBatchReservation(reservations);
+			getCrisisManagerDAOImpl().addNewCrisisMngBatchReservation(reservations, batchId);
 		}catch(SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}
@@ -196,9 +217,9 @@ public class CrisisManagerService implements ICrisisManagerService {
 		}
 	}
 	
-	public void updateCrisisMngOrderStatus(String crisisMngBatchId, List<String> exceptionOrderIds) throws TransAdminServiceException {
+	public void updateCrisisMngOrderStatus(String crisisMngBatchId, String batchType, List<String> exceptionOrderIds) throws TransAdminServiceException {
 		try{
-			getCrisisManagerDAOImpl().updateCrisisMngOrderStatus(crisisMngBatchId, exceptionOrderIds);
+			getCrisisManagerDAOImpl().updateCrisisMngOrderStatus(crisisMngBatchId, batchType, exceptionOrderIds);
 		}catch(SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}
@@ -212,9 +233,9 @@ public class CrisisManagerService implements ICrisisManagerService {
 		}
 	}
 	
-	public Map<String, List<ICrisisManagerBatchDeliverySlot>> getCrisisMngBatchTimeslotByZone(String crisisMngBatchId) throws TransAdminServiceException {
+	public Map<String, List<ICrisisManagerBatchDeliverySlot>> getCrisisMngBatchTimeslotByZone(String crisisMngBatchId, EnumCrisisMngBatchType batchType) throws TransAdminServiceException {
 		try{
-			return getCrisisManagerDAOImpl().getCrisisMngBatchTimeslotByZone(crisisMngBatchId);
+			return getCrisisManagerDAOImpl().getCrisisMngBatchTimeslotByZone(crisisMngBatchId, batchType);
 		}catch(SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}
@@ -260,31 +281,31 @@ public class CrisisManagerService implements ICrisisManagerService {
 		}
 	}	
 	
-	public List<IStandingOrderModel> getStandingOrderByCriteria(Date deliveryDate,Date cutOffDateTime, String[] area, String startTime, String endTime, String[] deliveryType, String profileName, boolean isSOIncluded) throws TransAdminServiceException{
+	public List<ICrisisMngBatchOrder> getStandingOrderByCriteria(Date deliveryDate,Date cutOffDateTime, String[] area, String startTime, String endTime, String[] deliveryType, String profileName) throws TransAdminServiceException{
 		try{
-			return getCrisisManagerDAOImpl().getStandingOrderByCriteria(deliveryDate, cutOffDateTime, area, startTime, endTime, deliveryType, profileName, isSOIncluded);
+			return getCrisisManagerDAOImpl().getStandingOrderByCriteria(deliveryDate, cutOffDateTime, area, startTime, endTime, deliveryType, profileName);
 		}catch(SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}
 	}
 	
-	public void addNewCrisisMngBatchStandingOrder(List<IStandingOrderModel> soOrders) throws TransAdminServiceException{
-		try{
-			getCrisisManagerDAOImpl().addNewCrisisMngBatchStandingOrder(soOrders);
+	public void addNewCrisisMngBatchStandingOrder(List<ICrisisMngBatchOrder> soOrders, String batchId) throws TransAdminServiceException{
+		try{			
+			getCrisisManagerDAOImpl().addNewCrisisMngBatchStandingOrder(soOrders, batchId);
 		}catch(SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}
 	}
 	
-	public List<IStandingOrderModel> getStandingOrderByBatchId(String batchId) throws TransAdminServiceException{
+	public List<ICrisisMngBatchOrder> getCrisisMngBatchStandingOrder(String batchId, boolean filterException,boolean filterOrder) throws TransAdminServiceException{
 		try{
-			return getCrisisManagerDAOImpl().getStandingOrderByBatchId(batchId);
+			return getCrisisManagerDAOImpl().getCrisisMngBatchStandingOrder(batchId, filterException, filterOrder);
 		}catch(SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}
 	}
 	
-	public void updateCrisisMngBatchStandingOrder(String batchId, List<IStandingOrderModel> batchStandingOrders) throws TransAdminServiceException {
+	public void updateCrisisMngBatchStandingOrder(String batchId, List<ICrisisMngBatchOrder> batchStandingOrders) throws TransAdminServiceException {
 		try{
 			getCrisisManagerDAOImpl().updateCrisisMngBatchStandingOrder(batchId, batchStandingOrders);
 		}catch(SQLException e) {
@@ -292,9 +313,9 @@ public class CrisisManagerService implements ICrisisManagerService {
 		}
 	}
 	
-	public List<IActiveOrderModel> getActiveOrderByArea(Date deliveryDate) throws TransAdminServiceException {
+	public List<IActiveOrderModel> getActiveOrderByArea(Date deliveryDate, EnumCrisisMngBatchType batchType) throws TransAdminServiceException {
 		try{
-			return getCrisisManagerDAOImpl().getActiveOrderByArea(deliveryDate);
+			return getCrisisManagerDAOImpl().getActiveOrderByArea(deliveryDate, batchType);
 		}catch(SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}
@@ -308,9 +329,9 @@ public class CrisisManagerService implements ICrisisManagerService {
 		}
 	}
 	
-	public List<ICancelOrderModel> getCancelOrderByArea(String batchId) throws TransAdminServiceException {
+	public List<ICancelOrderModel> getCancelOrderByArea(String batchId, EnumCrisisMngBatchType batchType) throws TransAdminServiceException {
 		try{
-			return getCrisisManagerDAOImpl().getCancelOrderByArea(batchId);
+			return getCrisisManagerDAOImpl().getCancelOrderByArea(batchId, batchType);
 		}catch(SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}

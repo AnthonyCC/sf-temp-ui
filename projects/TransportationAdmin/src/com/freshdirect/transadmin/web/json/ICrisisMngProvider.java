@@ -27,5 +27,5 @@ public interface ICrisisMngProvider {
 	
 	List<CrisisManagerBatchStandingOrderInfo> getStandingOrderByBatchId(String batchId);
 	
-	boolean placeStandingOrder(String batchId, String[][] _standingOrderData);
+	String placeStandingOrder(String batchId, String[][] _standingOrderData, boolean isExceptionCheck, String[][] timeslot);
 }

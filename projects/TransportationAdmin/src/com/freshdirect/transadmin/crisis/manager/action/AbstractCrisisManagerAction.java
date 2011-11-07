@@ -2,6 +2,7 @@ package com.freshdirect.transadmin.crisis.manager.action;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
@@ -106,6 +107,28 @@ public abstract class AbstractCrisisManagerAction {
 		}
 		return valueArray;
 	}
+	
+	protected void checkDeliverySlotExceptions() throws TransAdminServiceException {
+		
+		Map<String, List<ICrisisManagerBatchDeliverySlot>> batchTimeSlots 
+											= this.crisisMngService.getCrisisMngBatchTimeslotByZone(this.getBatch().getBatchId(), this.getBatch().getBatchType());
+		
+		Map<String, List<ICrisisManagerBatchDeliverySlot>> destinationTimeSlots 
+											= this.crisisMngService.getTimeslotByDate(this.getBatch().getDestinationDate());
+		if(batchTimeSlots != null && destinationTimeSlots != null){
+			List<ICrisisManagerBatchDeliverySlot> destAreaSlots = null;
+			for(Map.Entry<String, List<ICrisisManagerBatchDeliverySlot>> slotEntry : batchTimeSlots.entrySet()){
+				destAreaSlots = destinationTimeSlots.get(slotEntry.getKey());
+				for(ICrisisManagerBatchDeliverySlot _slot : slotEntry.getValue()){
+					if(destAreaSlots != null)
+						matchTimeslot(_slot, destAreaSlots);
+					else
+						break;
+				}
+			}
+			this.crisisMngService.addCrisisMngBatchDeliveryslot(batchTimeSlots);
+		}		
+	}	
 	
 	protected boolean matchTimeslot(ICrisisManagerBatchDeliverySlot _slot
 												, List<ICrisisManagerBatchDeliverySlot> destAreaSlots) {

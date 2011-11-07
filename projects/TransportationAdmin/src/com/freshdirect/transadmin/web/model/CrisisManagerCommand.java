@@ -21,8 +21,6 @@ public class CrisisManagerCommand implements Serializable {
 	
 	private String deliveryType;
 	
-	private String includeStandingOrder; 
-	
 	public String getCutOff() {
 		return cutOff;
 	}
@@ -86,13 +84,4 @@ public class CrisisManagerCommand implements Serializable {
 	public void setDeliveryType(String deliveryType) {
 		this.deliveryType = deliveryType;
 	}
-
-	public String getIncludeStandingOrder() {
-		return includeStandingOrder;
-	}
-
-	public void setIncludeStandingOrder(String includeStandingOrder) {
-		this.includeStandingOrder = includeStandingOrder;
-	}
-	
 }
