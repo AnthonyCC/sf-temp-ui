@@ -220,6 +220,10 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/checkout/getselectedeliverydaddress/");
   	$("#payload").val('');
   	$("#result").val("");
+  } else if (loaddata == "GetPaymentMethodVerifyStatus") {
+  	$("#url").val("/saptest12@freshdirect.com/checkout/getpmverifystatus/");
+  	$("#payload").val('');
+  	$("#result").val("");
   } else if (loaddata == "VerifyAge") {  	
   	$("#url").val("/saptest12@freshdirect.com/alcohol/verifyage/");
   	$("#payload").val('');
@@ -581,6 +585,7 @@ function doStuff() {
   <option value="OrderDetail">CHECKOUT - Order Detail</option>
   <option value="SubmitOrder">CHECKOUT - Submit Order</option>
   <option value="GetSelectedDeliveryAddress">CHECKOUT - Get Selected Delivery Address</option>
+  <option value="GetPaymentMethodVerifyStatus">CHECKOUT - Get Payment Method Verificaton Status(CVV)</option>
   <option value=""> ========== SEARCH ========== </option>
   <option value="Search">SEARCH - Basic</option>
   <option value="SearchUPC">SEARCH - UPC barcode</option>

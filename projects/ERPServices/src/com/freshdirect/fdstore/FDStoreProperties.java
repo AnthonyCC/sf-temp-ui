@@ -474,6 +474,7 @@ public class FDStoreProperties {
     //APPDEV-2072 google analytics environment specific key
     private static final String PROP_GOOGLE_ANALYTICS_KEY = "fdstore.google.analytics.key";
 
+    private static final  String PROP_AVAILABILITY_DAYS_IN_PAST_TO_LOOKUP = "fdstore.availdays.past.lookup";
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -955,7 +956,7 @@ public class FDStoreProperties {
 		//APPDEV-2072 google analytics key
         defaults.put(PROP_GOOGLE_ANALYTICS_KEY, ""); //default to an empty string
 
-
+        defaults.put(PROP_AVAILABILITY_DAYS_IN_PAST_TO_LOOKUP, "3");
         refresh();
     }
 
@@ -2436,6 +2437,11 @@ public class FDStoreProperties {
         return get(PROP_GOOGLE_ANALYTICS_KEY);
     }
 
+	//APPDEV-991 
+    public static int getAvailDaysInPastToLookup() {
+        return  Integer.parseInt(get(PROP_AVAILABILITY_DAYS_IN_PAST_TO_LOOKUP));
+    }
+    
     public static interface ConfigLoadedListener {
         void configLoaded();
     }

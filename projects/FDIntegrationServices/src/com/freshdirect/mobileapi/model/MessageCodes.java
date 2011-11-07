@@ -118,6 +118,78 @@ public interface MessageCodes {
     //ForgotPassword - Unable to find customer
     public static final String ERR_FORGOTPASSWORD_EMAIL_NOT_EXPIRED = "ERR_FORGOTPASSWORD_EMAIL_NOT_EXPIRED";
     
+    public static final String ERR_ZIP_INVALID = "ERR_ZIP_INVALID";
+    
+    public static final String ERR_ZIP_REQUIRED = "ERR_ZIP_REQUIRED";
+    public static final String ERR_ZIP_REQUIRED_MSG = "Zip Code is required.";
+
+    public static final String ERR_ADDRESS1_REQUIRED = "ERR_ADDRESS1_REQUIRED";
+    public static final String ERR_ADDRESS1_REQUIRED_MSG = "Address is required.";
+    
+    public static final String ERR_CITY_REQUIRED = "ERR_CITY_REQUIRED";
+    public static final String ERR_CITY_REQUIRED_MSG = "City is required.";
+    
+    public static final String ERR_STATE_REQUIRED = "ERR_STATE_REQUIRED";
+    public static final String ERR_STATE_REQUIRED_MSG = "State is required.";
+
+    public static final String ERR_FIRSTNAME_REQUIRED = "ERR_FIRSTNAME_REQUIRED";
+    public static final String ERR_FIRSTNAME_REQUIRED_MSG = "First Name is required.";
+    
+    public static final String ERR_LASTNAME_REQUIRED = "ERR_LASTNAME_REQUIRED";
+    public static final String ERR_LASTNAME_REQUIRED_MSG = "Last Name is required.";
+    
+    public static final String ERR_EMAIL_REQUIRED = "ERR_EMAIL_REQUIRED";
+    public static final String ERR_EMAIL_REQUIRED_MSG = "Email is required.";
+    
+    public static final String ERR_REPEATEMAIL_REQUIRED = "ERR_REPEATEMAIL_REQUIRED";
+    public static final String ERR_REPEATEMAIL_REQUIRED_MSG = "Repeat Email is required.";
+    
+    public static final String ERR_PASSWORD_REQUIRED = "ERR_PASSWORD_REQUIRED";
+    public static final String ERR_PASSWORD_REQUIRED_MSG = "Password is required.";
+    
+    public static final String ERR_PASSWORDHINT_REQUIRED = "ERR_PASSWORDHINT_REQUIRED";
+    public static final String ERR_PASSWORDHINT_REQUIRED_MSG = "Security Question is required.";
+    
+    public static final String ERR_DLVPHONE_REQUIRED = "ERR_DLVPHONE_REQUIRED";
+    public static final String ERR_DLVPHONE_REQUIRED_MSG = "Home Phone is required.";
+
+    public static final String ERR_CCEXPIRATION_REQUIRED = "ERR_CCEXPIRATION_REQUIRED";
+    public static final String ERR_CCEXPIRATION_REQUIRED_MSG = "Expiration date is required.";
+    
+    public static final String ERR_ACCTNUMBER_REQUIRED = "ERR_ACCTNUMBER_REQUIRED";
+    public static final String ERR_ACCTNUMBER_REQUIRED_MSG = "Account Number/Credit Cart Number is required.";
+    
+    public static final String ERR_ACCTTYPE_REQUIRED = "ERR_ACCTTYPE_REQUIRED";
+    public static final String ERR_ACCTTYPE_REQUIRED_MSG = "Bank Account Type is required.";
+
+    public static final String ERR_CARDBRAND_REQUIRED = "ERR_CARDBRAND_REQUIRED";
+    public static final String ERR_CARDBRAND_REQUIRED_MSG = "Card Type is required.";
+    
+    public static final String ERR_ABAROUTE_NUMBER_REQUIRED = "ERR_ABAROUTE_NUMBER_REQUIRED";
+    public static final String ERR_ABAROUTE_NUMBER_REQUIRED_MSG = "Bank Routing Number is required.";
+    
+    public static final String ERR_BANK_NAME_REQUIRED = "ERR_BANK_NAME_REQUIRED";
+    public static final String ERR_BANK_NAME_REQUIRED_MSG = "Bank Name is required.";
+    
+    public static final String ERR_CVV_REQUIRED = "ERR_CCEXPIRATION_REQUIRED";
+    public static final String ERR_CVV_REQUIRED_MSG = "CVV number is required.";
+    
+    public static final String ERR_ACCOUNT_HOLDER_NAME_REQUIRED = "ERR_ACCOUNT_HOLDER_NAME_REQUIRED";
+    public static final String ERR_ACCOUNT_HOLDER_NAME_REQUIRED_MSG = "Account Holder Name is required.";
+
+    public static final String ERR_BILL_ZIP_REQUIRED = "ERR_BILL_ZIP_REQUIRED";
+    public static final String ERR_BILL_ZIP_REQUIRED_MSG = "Billing Zip Code is required.";
+
+    public static final String ERR_BILL_ADDRESS1_REQUIRED = "ERR_BILL_ADDRESS1_REQUIRED";
+    public static final String ERR_BILL_ADDRESS1_REQUIRED_MSG = "Billing Address is required.";
+    
+    public static final String ERR_BILL_CITY_REQUIRED = "ERR_BILL_CITY_REQUIRED";
+    public static final String ERR_BILL_CITY_REQUIRED_MSG = "Billing City is required.";
+    
+    public static final String ERR_BILL_STATE_REQUIRED = "ERR_BILL_STATE_REQUIRED";
+    public static final String ERR_BILL_STATE_REQUIRED_MSG = "Billing State is required.";
+
+    
     public static class ErrorMessage {
         public final static String PASS_THROUGH = "PASS_THROUGH";
 
@@ -145,6 +217,30 @@ public interface MessageCodes {
 
         static {
             translations.put("undeliverableAddress", new ErrorMessage(ERR_RESTRICTED_ADDRESS, ERR_RESTRICTED_ADDRESS_MSG));
+            translations.put("zipcode", new ErrorMessage(ERR_ZIP_REQUIRED, ERR_ZIP_REQUIRED_MSG));
+            translations.put("state", new ErrorMessage(ERR_STATE_REQUIRED, ERR_STATE_REQUIRED_MSG));
+            translations.put("address1", new ErrorMessage(ERR_ADDRESS1_REQUIRED, ERR_ADDRESS1_REQUIRED_MSG));
+            translations.put("city", new ErrorMessage(ERR_CITY_REQUIRED, ERR_CITY_REQUIRED_MSG));
+            translations.put("dlvfirstname", new ErrorMessage(ERR_FIRSTNAME_REQUIRED, ERR_FIRSTNAME_REQUIRED_MSG));
+            translations.put("dlvlastname", new ErrorMessage(ERR_LASTNAME_REQUIRED, ERR_LASTNAME_REQUIRED_MSG));
+            translations.put("email", new ErrorMessage(ERR_EMAIL_REQUIRED, ERR_EMAIL_REQUIRED_MSG));
+            translations.put("repeat_email", new ErrorMessage(ERR_REPEATEMAIL_REQUIRED, ERR_REPEATEMAIL_REQUIRED_MSG));
+            translations.put("password", new ErrorMessage(ERR_PASSWORD_REQUIRED, ERR_PASSWORD_REQUIRED_MSG));
+            translations.put("password_hint", new ErrorMessage(ERR_PASSWORDHINT_REQUIRED, ERR_PASSWORDHINT_REQUIRED_MSG));
+            translations.put("dlvhomephone", new ErrorMessage(ERR_DLVPHONE_REQUIRED, ERR_DLVPHONE_REQUIRED_MSG));
+            translations.put("expiration", new ErrorMessage(ERR_CCEXPIRATION_REQUIRED, ERR_CCEXPIRATION_REQUIRED_MSG));
+            translations.put("cardNum", new ErrorMessage(ERR_ACCTNUMBER_REQUIRED, ERR_ACCTNUMBER_REQUIRED_MSG));
+            translations.put("csv", new ErrorMessage(ERR_CVV_REQUIRED, ERR_CVV_REQUIRED_MSG));
+            translations.put("cardBrand", new ErrorMessage(ERR_CARDBRAND_REQUIRED, ERR_CARDBRAND_REQUIRED_MSG));
+            translations.put("bankAccountType", new ErrorMessage(ERR_ACCTTYPE_REQUIRED, ERR_ACCTTYPE_REQUIRED_MSG));
+            translations.put("abaRouteNumber", new ErrorMessage(ERR_ABAROUTE_NUMBER_REQUIRED, ERR_ABAROUTE_NUMBER_REQUIRED_MSG));
+            translations.put("bankName", new ErrorMessage(ERR_BANK_NAME_REQUIRED, ERR_BANK_NAME_REQUIRED_MSG));
+            translations.put("cardHolderName", new ErrorMessage(ERR_ACCOUNT_HOLDER_NAME_REQUIRED, ERR_ACCOUNT_HOLDER_NAME_REQUIRED_MSG));
+            translations.put("bil_address1", new ErrorMessage(ERR_BILL_ADDRESS1_REQUIRED, ERR_BILL_ADDRESS1_REQUIRED_MSG));
+            translations.put("bil_state", new ErrorMessage(ERR_BILL_STATE_REQUIRED, ERR_BILL_STATE_REQUIRED_MSG));
+            translations.put("bil_zipcode", new ErrorMessage(ERR_BILL_ZIP_REQUIRED, ERR_BILL_ZIP_REQUIRED_MSG));
+            translations.put("bil_city", new ErrorMessage(ERR_CITY_REQUIRED, ERR_CITY_REQUIRED_MSG));
+            
         }
 
         public static ErrorMessage translate(String key, String desc, SessionUser user) {
@@ -161,8 +257,10 @@ public interface MessageCodes {
             } else if ("system".equals(key)) {
                 //Generic system error. Pass description through
                 returnValue = new ErrorMessage(ERR_SYSTEM, desc);
-            } else if ("cardNum".equals(key)) {
+            } else if ("cardNum".equals(key) && desc.contains("invalid")) {
                 returnValue = new ErrorMessage(ERR_PAYMENT_INVAID_CREDIT_CARD_NUMBER, desc);
+            } else if ("zipcode".equals(key) && !desc.contains("required")) {
+                returnValue = new ErrorMessage(ERR_ZIP_INVALID, desc);
             } else if ("quantity".equals(key)) {
                 returnValue = new ErrorMessage(ERR_QUANTITY_LIMIT, desc);
             } else if ("order_amount_fraud".equals(key)) {

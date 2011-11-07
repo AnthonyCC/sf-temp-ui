@@ -1381,9 +1381,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	}
 	
 	private static final String QUERY_AVAILABILITY_DATES = 
-		"SELECT DATE_AVAILABLE FROM ERPS.AVAILABILITY_DELIVERY_DATES WHERE MATERIAL_SAP_ID = ?";
+		"SELECT DATE_AVAILABLE FROM ERPS.AVAILABILITY_DELIVERY_DATES WHERE MATERIAL_SAP_ID = ? AND DATE_AVAILABLE >= (SYSDATE - ?)";
 	
-	public List<Date> getAvailableDeliveryDates(String materialNumber){
+	public List<Date> getAvailableDeliveryDates(String materialNumber, int daysInPast){
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -1391,6 +1391,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			conn = getConnection();
 			ps = conn.prepareStatement(QUERY_AVAILABILITY_DATES);
 			ps.setString(1, materialNumber);
+			ps.setInt(2, daysInPast);
 			rs = ps.executeQuery();
 
 			List<Date> restrictedDates = new ArrayList<Date>();

@@ -20,6 +20,7 @@ import java.util.Map;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.OncePerRequestDateCache;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
@@ -154,6 +155,9 @@ public class FDStockAvailability implements Serializable, FDAvailabilityI {
 		
 		
 		double totalAvailable = 0.0;
+		Date today = new Date();
+		Date pastAvailDate = null;
+		Date pastInventoryDate = DateUtil.addDays(today, -(FDStoreProperties.getAvailDaysInPastToLookup()));
 		while(!currentDate.after(endDate)) {
 			FDLimitedAvailabilityInfo limitedAvInfo = null;
 			if(!isDeliverable(currentDate)){
@@ -164,6 +168,20 @@ public class FDStockAvailability implements Serializable, FDAvailabilityI {
 				ErpInventoryEntryModel e = getInventoryEntry(availDate);
 				if(e != null) {
 					totalAvailable += e.getQuantity();
+					if(availDate.compareTo(today) == 0){
+						//if its today, then go past n days(property based) or until hit a non deliverable date.
+						//to get total available inventory. This scenario can happen when delivery date is for
+						//tomorrow but there is no inventory arrived today but can in the past which usually
+						//shouldn't be beyond 3 days.
+						Date deliveryDate = availDate;
+						while(isDeliverable(deliveryDate) && !deliveryDate.before(pastInventoryDate)){
+							pastAvailDate =  DateUtil.addDays(deliveryDate, -1);
+							ErpInventoryEntryModel e1 = getInventoryEntry(pastAvailDate); 
+							totalAvailable += e1.getQuantity();
+							deliveryDate = pastAvailDate;
+						}
+						
+					}
 					limitedAvInfo =  new FDLimitedAvailabilityInfo(currentDate, totalAvailable, (roundQuantity(totalAvailable, minQty, qtyInc) >= reqQty) );
 				} else {
 					//Inventory entry not available for this date. Apply

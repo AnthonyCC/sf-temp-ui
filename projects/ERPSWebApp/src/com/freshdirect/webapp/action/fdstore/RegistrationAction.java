@@ -633,8 +633,8 @@ public class RegistrationAction extends WebActionSupport {
 
 			actionResult.addError(!"".equals(altEmailAddress) && !EmailUtil.isValidEmailAddress(altEmailAddress),
 				EnumUserInfoName.ALT_EMAIL.getCode(), SystemMessageList.MSG_EMAIL_FORMAT);
-			//These are not required for IPhone.
-			//AccountUtil.validatePassword(actionResult, password, repeatPassword);
+			
+			AccountUtil.validatePasswordEx(actionResult, password, repeatPassword);
 
 			actionResult
 				.addError("".equals(passwordHint), EnumUserInfoName.PASSWORD_HINT.getCode(), SystemMessageList.MSG_REQUIRED);

@@ -98,6 +98,6 @@ public interface ErpInfoSB extends EJBObject {
 
 	public void refreshNewAndBackViews() throws RemoteException;
 	
-	public List<Date> getAvailableDeliveryDates(String materialNumber) throws RemoteException;
+	public List<Date> getAvailableDeliveryDates(String materialNumber, int daysInPast) throws RemoteException;
 }
 

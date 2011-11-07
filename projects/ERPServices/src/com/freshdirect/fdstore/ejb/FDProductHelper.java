@@ -202,7 +202,7 @@ class FDProductHelper {
 			ErpInfoSB remote;
 			try{
 				remote = getErpInfoSB();
-				deliveryDates = remote.getAvailableDeliveryDates(erpProductInfo.getMaterialSapIds()[0]);
+				deliveryDates = remote.getAvailableDeliveryDates(erpProductInfo.getMaterialSapIds()[0], FDStoreProperties.getAvailDaysInPastToLookup());
 			} catch (RemoteException e1) {
 				e1.printStackTrace();
 				throw new FDResourceException( e1 );

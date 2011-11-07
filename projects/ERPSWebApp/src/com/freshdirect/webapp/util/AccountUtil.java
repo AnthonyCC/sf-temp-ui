@@ -24,4 +24,14 @@ public class AccountUtil {
 			result.addError(new ActionError(EnumUserInfoName.REPEAT_PASSWORD.getCode(), SystemMessageList.MSG_PASSWORD_REPEAT));
 		}
 	}
+	
+	public static void validatePasswordEx(ActionResult result, String password, String repeatPassword) {
+		if ("".equals(password)) {
+			result.addError(new ActionError(EnumUserInfoName.PASSWORD.getCode(), SystemMessageList.MSG_REQUIRED));
+
+		} else if (password.length() < MIN_PASSWORD_LENGTH) {
+			result.addError(new ActionError(EnumUserInfoName.PASSWORD.getCode(), SystemMessageList.MSG_PASSWORD_LENGTH));
+
+		} 
+	}
 }
