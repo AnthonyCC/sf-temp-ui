@@ -20,7 +20,7 @@ final int W_CART_LOWER_LINE_PADDING= 10;
 <fd:GetCart id='cart'>
     <table border="0" cellspacing="0" cellpadding="0" width="<%=W_CART_TOTAL%>">
         <tr>
-            <td colspan="3" width="<%=W_CART_TOTAL%>"><a href="/view_cart.jsp?trk=sidcrt" id="your_cart"><img src="/media_stat/images/template/lists/cart_hdr.gif" width="<%=W_CART_TOTAL%>" height="18" border="0" alt="Your Cart"></a><br>
+            <td colspan="3" width="<%=W_CART_TOTAL%>"><a href="/view_cart.jsp?trk=sidcrt" id="your_cart"><img src="/media_stat/images/template/lists/cart_hdr_w.gif" width="<%=W_CART_TOTAL%>" height="18" border="0" alt="Your Cart"></a><br>
             <table border="0" cellspacing="0" cellpadding="0" width="<%=W_CART_TOTAL%>">
                 <tr valign="top" style="background-color: #FF9933;">
                     <td width="<%=W_CART_SIDE%>"><img src="/media_stat/images/template/lists/cart_lft.gif" width="<%=W_CART_SIDE%>" height="16" border="0"></td>
@@ -97,7 +97,7 @@ final int W_CART_LOWER_LINE_PADDING= 10;
                         <td width="<%=W_CART_SIDE%>"><img src="/media_stat/images/template/lists/cart_rt.gif" width="<%=W_CART_SIDE%>" height="17" border="0"></td>
                     </tr>
                     <tr valign="top">
-                        <td width="<%=W_CART_TOTAL%>" colspan="3" bgcolor="#FF9933"><img src="/media_stat/images/template/lists/cart_btm_crnrs.gif" width="<%=W_CART_TOTAL%>" height="5" border="0"></td>
+                        <td width="<%=W_CART_TOTAL%>" colspan="3" bgcolor="#FF9933"><img src="/media_stat/images/template/lists/cart_btm_crnrs_w.gif" width="<%=W_CART_TOTAL%>" height="5" border="0"></td>
                     </tr>
                 </table>
             </td>

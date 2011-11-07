@@ -51,7 +51,7 @@ public class GlobalMenuIconTag extends SimpleTagSupport {
 			
 
 			buf.append("<img src=\"");
-			buf.append(photo.getPath());
+			buf.append(photo.getPathWithPublishId());
 			buf.append("\"");
 			
 			buf.append(" width=\"");

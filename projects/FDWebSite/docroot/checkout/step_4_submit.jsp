@@ -253,7 +253,7 @@ if (user.isPromoConflictResolutionApplied()) {
 <%@ include file="/includes/ckt_acct/i_step_4_delivery_payment.jspf" %>
 
 <IMG src="/media_stat/images/layout/clear.gif" width="1" height="1"><br>
-<IMG src="/media_stat/images/layout/dotted_line.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1"><br>
+<IMG src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1"><br>
 <IMG src="/media_stat/images/layout/clear.gif" width="1" height="20"><br>
 
 <table width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
@@ -276,7 +276,7 @@ if (user.isPromoConflictResolutionApplied()) {
 
 <BR>
 <IMG src="/media_stat/images/layout/clear.gif" width="1" height="8" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/dotted_line.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/clear.gif" width="1" height="8" BORDER="0"><BR>
 
 <table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>">
@@ -310,7 +310,7 @@ if (user.isPromoConflictResolutionApplied()) {
 </FORM>
 
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
-<img src="/media_stat/images/layout/dotted_line.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1" border="0"><br/>
+<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1" border="0"><br/>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>

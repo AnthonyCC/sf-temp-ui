@@ -162,7 +162,7 @@ final int W_CHECKACCT_SELECT_CARD = 280;
 <%
             }
 %>
-    </TR></TABLE>
+    </TR></TABLE><div style="font-size: 0px; clear: both;"></div>
 <%
         }
     }

@@ -71,7 +71,6 @@ Make changes to this item, then click "add to cart" below. To find out more info
 <br><br></TD>
 </TR>
 </TABLE>
-<h1>cica</h1>
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_QUICKSHOP_ITEM_MODIFY_TOTAL %>">
 <TR VALIGN="TOP">
     <TD ALIGN="RIGHT" CLASS="text11">

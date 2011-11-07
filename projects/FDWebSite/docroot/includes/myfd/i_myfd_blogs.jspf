@@ -13,7 +13,7 @@
 	var a2a_config = {};
 	a2a_config.color_link_text = "336600";
 </script>
-<script type="text/javascript" src="http://static.addtoany.com/menu/page.js"></script>
+<script type="text/javascript" src="https://static.addtoany.com/menu/page.js"></script>
 	<div class="myfd-blog-feed">
 <%
 try {
@@ -83,7 +83,7 @@ try {
 } catch (IllegalStateException e) {
 	e.printStackTrace();
 %>
-<table cellpadding="0" cellspacing="0" border="0" style="width: 456px; height: 456px;">
+<table cellpadding="0" cellspacing="0" border="0">
 	<tr>
 		<td style="text-align: center; vertical-align: middle;" class="title18or">Sorry for the delay, but the FreshDirect Feed is currently unavailable. Please check back later!</td>
 	</tr>

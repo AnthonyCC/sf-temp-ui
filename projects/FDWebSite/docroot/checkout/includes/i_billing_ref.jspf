@@ -13,4 +13,4 @@
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<INPUT TYPE="text" size="20" name="billingRef" value="<%=cart.getPaymentMethod() != null ? cart.getPaymentMethod().getBillingRef() : ""%>"><BR>
     </TD>
 </TR>
-</TABLE>
+</TABLE><div style="font-size: 0px; clear: both;"></div>

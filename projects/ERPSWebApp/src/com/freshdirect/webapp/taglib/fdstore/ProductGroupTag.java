@@ -38,7 +38,6 @@ public class ProductGroupTag extends AbstractGetterTag<ProductModel> {
 	
 	protected ProductModel getResult() throws FDResourceException {
 		ProductModel pm = ContentFactory.getInstance().getProductByName( this.categoryId, this.productId );
-		EnumLayoutType e=pm.getLayout();
 		//Convert to Product Pricing Adapter for Zone Pricing.
 		FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
 		if(pm != null)

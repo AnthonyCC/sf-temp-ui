@@ -607,7 +607,7 @@ public class JspMethods {
 			if (itemImage == null) {
 				itemImage = displayProduct.getCategoryImage();// displayProduct.getContent("ATR_image_product").getString("url");
 			}
-			imagePath = itemImage.getPath();
+			imagePath = itemImage.getPathWithPublishId();
 			StringBuffer tmpName = new StringBuffer();
 			if ("nav".equalsIgnoreCase(productNameAttribute)) {
 				tmpName.append(displayProduct.getNavName());
@@ -895,7 +895,7 @@ public class JspMethods {
 					&& ContentNodeModel.TYPE_CATEGORY.equals(wokingCat.getContentType())) {
 				Image categoryLabel = wokingCat.getCategoryLabel();
 				if (categoryLabel != null) {
-					c.fldrLbl = categoryLabel.getPath();
+					c.fldrLbl = categoryLabel.getPathWithPublishId();
 					// c.link = "/category.jsp?catId=" + tmplCat;
 					c.link = FDURLUtil.getCategoryURI(tmplCat.getContentName(), null);
 				}

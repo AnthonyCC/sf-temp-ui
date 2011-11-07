@@ -78,7 +78,7 @@ if (sameDayPendingOrderCount == 1) {
 	</tr>
 	<tr><td>
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br>
-		<img src="/media_stat/images/layout/dotted_line.gif" width="<%=W_CHECKOUT_STEP_2_DUPLICATE_TOTAL%>" height="1" border="0"><br>
+		<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_2_DUPLICATE_TOTAL%>" height="1" border="0"><br>
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br>
 		<table border="0" cellspacing="0" cellpadding="0">
 		    <tr valign="top">
@@ -108,7 +108,7 @@ if (sameDayPendingOrderCount == 1) {
 	<%@ include file="/checkout/includes/i_footer_text.jspf" %></td></tr>
 </table>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
-	<img src="/media_stat/images/layout/dotted_line.gif" width="<%=W_CHECKOUT_STEP_2_DUPLICATE_TOTAL%>" height="1" border="0"><br/>
+	<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_2_DUPLICATE_TOTAL%>" height="1" border="0"><br/>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>

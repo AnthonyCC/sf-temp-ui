@@ -253,7 +253,7 @@ StringBuffer buffer = new StringBuffer(
 </TABLE>
 
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-<img src="/media_stat/images/layout/dotted_line.gif" width="<%= W_VIEWCART_TOTAL-2 %>" height="1" border="0"><br/>
+<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%= W_VIEWCART_TOTAL-2 %>" height="1" border="0"><br/>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>

@@ -37,7 +37,7 @@ final int W_FEATURED_PRODUCTS_BND = 683;
 			<% ContentNodeModelUtil.setNearestParentForProducts( null, (List<ProductModel>)(List)mostPopularProds ); %>
 			<div class="carousel-box">
 				<div class="separator"><img src="/media/4mm/dpt_4mm_hdr_most_popular.gif" /></div>
-				<display:Carousel  id="popular_carousel" carouselId="popular_carousel" width="<%=W_FEATURED_PRODUCTS_BND%>" height="142" numItems="5" showCategories="false" itemsToShow="<%= mostPopularProds %>" trackingCode="mpop-4mm" maxItems="15">
+				<display:Carousel  id="popular_carousel" carouselId="popular_carousel" width="<%=W_FEATURED_PRODUCTS_BND%>" numItems="5" showCategories="false" itemsToShow="<%= mostPopularProds %>" trackingCode="mpop-4mm" maxItems="15">
 					<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 						<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" 
 							useAlternateImage="true" className="productImage" height="90" enableQuickBuy="true"/>

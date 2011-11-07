@@ -227,7 +227,7 @@ final int W_CHECKOUT_STEP_3_CHOOSE_TOTAL = 970;
 	</TABLE>
 
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" HEIGHT="3" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" HEIGHT="3" BORDER="0"><BR>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
     
     <div style="width: <%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>px; text-align: left;"><span style="color: #FF9933;font-size: 17px;">NO PAYMENT NECESSARY... YOUR TOTAL IS COVERED BY YOUR GIFT CARD.</span>
@@ -237,7 +237,7 @@ final int W_CHECKOUT_STEP_3_CHOOSE_TOTAL = 970;
 
 
             <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-        <IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
+        <IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
             <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
     <table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>">
@@ -434,7 +434,7 @@ if(isPaymentRequired) {
 		</TABLE>
 
 		<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" HEIGHT="3" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" HEIGHT="3" BORDER="0"><BR>
 		<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 	<%
 	JspMethods.dumpErrors(result);
@@ -488,8 +488,8 @@ if(isPaymentRequired) {
 			//-->
 		</SCRIPT>
 		
-		<% if (true) { // show checking acct selections %>
-		<% if (true) { %>
+		<% if (isCheckEligible && !isECheckRestricted) { // show checking acct selections %>
+		<% if (hasCheck) { %>
 		<table width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
 			<tr valign="top">
 			<td><img src="/media_stat/images/headers/check_acct_details.gif" width="181" height="9" alt="CHECKING ACCOUNT DETAILS"><br>
@@ -505,7 +505,7 @@ if(isPaymentRequired) {
 		<% } else { %>
 			<%@ include file="/includes/your_account/add_checkacct.jspf"%>
 		<% } %>
-		<br><br>
+		<br>
 		<% } %>
 	<%
 		if (user.getFailedAuthorizations() > 0) { 
@@ -573,11 +573,11 @@ user.setAddressVerificationError(false);
 			<%
 			if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){%>
 				<%@ include file="/checkout/includes/i_billing_ref.jspf" %>
-				<BR><BR><BR><BR>
+				<BR><BR>
 			<%
 			}%>
 				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
 				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 	<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>">
@@ -607,7 +607,7 @@ user.setAddressVerificationError(false);
 	</FORM>
 <% } %>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
-	<img src="/media_stat/images/layout/dotted_line.gif" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" height="1" border="0"><br/>
+	<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" height="1" border="0"><br/>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>

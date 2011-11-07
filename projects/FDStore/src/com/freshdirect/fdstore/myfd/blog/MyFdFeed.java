@@ -111,7 +111,12 @@ public class MyFdFeed implements Serializable, Iterable<MyFdPost> {
 				
 			} catch (Exception e) {
 				LOGGER.warn("Error in processing feed from blog URL, opening last saved version...", e);
-				processFeedUrl(feedFilePath);
+				try{
+					processFeedUrl(feedFilePath);
+				} catch (Exception e2) {
+					posts.clear();
+					LOGGER.error("Error in opening last saved version...", e);
+				}
 			}
 		}
 	}

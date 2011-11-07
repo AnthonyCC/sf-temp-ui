@@ -75,6 +75,7 @@ public class PublishXmlTask implements PublishTask {
 		Element rootElement = doc.getRootElement();
 		rootElement.addNamespace("dc", NS_DC);
 		rootElement.addElement("dc:type").addText(storeFilePath);
+		// IF YOU CHANGE DESCRIPTION THEN UPDATE FlexContentHandler ACCORDINGLY !!!
 		rootElement.addElement("dc:description").addText("PublishId: " + publish.getId());
 		rootElement.addElement("dc:date").addText(QuickDateFormat.ISO_FORMATTER.format(publish.getTimestamp()));
 

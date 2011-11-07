@@ -1,56 +1,56 @@
 <!-- /media_stat/images/navigation/global_nav/bottom_nav_off.gif -->
 <table border='0' cellpadding='0' cellspacing='0' class="footertable">
   <tr height='22px'>
-    <td width='10px'><img src='/media_stat/images/navigation/footer_parts/off0.gif'/></td>
+    <td width='10px'><img src='/media_stat/images/navigation/footer_parts_w/off0.gif'/></td>
     <% if ("aboutus".equals(botNav)) { %>
-    <td width='62px'><a href='/department.jsp?deptId=about&trk=bnav'><img src='/media_stat/images/navigation/footer_parts/aboutus_selected.gif' alt='About Us'/></a></td>
+    <td width='62px'><a href='/department.jsp?deptId=about&trk=bnav'><img src='/media_stat/images/navigation/footer_parts_w/aboutus_selected.gif' alt='About Us'/></a></td>
     <% } else { %>
-    <td width='62px'><a href='/department.jsp?deptId=about&trk=bnav'><img src='/media_stat/images/navigation/footer_parts/aboutus.gif' alt='About Us'/></a></td>
+    <td width='62px'><a href='/department.jsp?deptId=about&trk=bnav'><img src='/media_stat/images/navigation/footer_parts_w/aboutus.gif' alt='About Us'/></a></td>
     <% } %>
     <% if ("careers".equals(botNav)) { %>
-    <td width='62px'><a href='<%=FDStoreProperties.getCareerLink()%>'><img src='/media_stat/images/navigation/footer_parts/careers_selected.gif' alt='Careers'/></a></td>
+    <td width='62px'><a href='<%=FDStoreProperties.getCareerLink()%>'><img src='/media_stat/images/navigation/footer_parts_w/careers_selected.gif' alt='Careers'/></a></td>
     <% } else { %>
-    <td width='62px'><a href='<%=FDStoreProperties.getCareerLink()%>'><img src='/media_stat/images/navigation/footer_parts/careers.gif' alt='Careers'/></a></td>
+    <td width='62px'><a href='<%=FDStoreProperties.getCareerLink()%>'><img src='/media_stat/images/navigation/footer_parts_w/careers.gif' alt='Careers'/></a></td>
     <% } %>
     <% if ("community".equals(botNav)) { %>
-    <td width='1px'><img src='/media_stat/images/navigation/footer_parts/community20.gif'/></td>
-    <td width='104px'><a href='/department.jsp?deptId=cmty&trk=bnav'><img src='/media_stat/images/navigation/footer_parts/community_selected.gif' alt='Our Community'/></a></td>
+    <td width='1px'><img src='/media_stat/images/navigation/footer_parts_w/community20.gif'/></td>
+    <td width='104px'><a href='/department.jsp?deptId=cmty&trk=bnav'><img src='/media_stat/images/navigation/footer_parts_w/community_selected.gif' alt='Our Community'/></a></td>
     <% } else { %>
-    <td width='1px'><img src='/media_stat/images/navigation/footer_parts/off3.gif'/></td>
-    <td width='104px'><a href='/department.jsp?deptId=cmty&trk=bnav'><img src='/media_stat/images/navigation/footer_parts/community.gif' alt='Our Community'/></a></td>
+    <td width='1px'><img src='/media_stat/images/navigation/footer_parts_w/off3.gif'/></td>
+    <td width='104px'><a href='/department.jsp?deptId=cmty&trk=bnav'><img src='/media_stat/images/navigation/footer_parts_w/community.gif' alt='Our Community'/></a></td>
     <% } %>
-    <td width='2px'><img src='/media_stat/images/navigation/footer_parts/off5.gif'/></td>
+    <td width='2px'><img src='/media_stat/images/navigation/footer_parts_w/off5.gif'/></td>
     <% if ("billorrights".equals(botNav)) { %>
-    <td width='121px'><a href='/category.jsp?catId=about_billrights&trk=bnav'><img src='/media_stat/images/navigation/footer_parts/billorrights_selected.gif' alt='Your Bill of Rights'/></a></td>
+    <td width='121px'><a href='/category.jsp?catId=about_billrights&trk=bnav'><img src='/media_stat/images/navigation/footer_parts_w/billorrights_selected.gif' alt='Your Bill of Rights'/></a></td>
     <% } else { %>
-    <td width='121px'><a href='/category.jsp?catId=about_billrights&trk=bnav'><img src='/media_stat/images/navigation/footer_parts/billorrights.gif' alt='Your Bill of Rights'/></a></td>
+    <td width='121px'><a href='/category.jsp?catId=about_billrights&trk=bnav'><img src='/media_stat/images/navigation/footer_parts_w/billorrights.gif' alt='Your Bill of Rights'/></a></td>
     <% } %>
-    <td width='308px' style="background-color: #669933"><img src='/media_stat/images/navigation/footer_parts/off7.gif'/></td>
+    <td width='308px' style="background-color: #669933"><img src='/media_stat/images/navigation/footer_parts_w/off7.gif'/></td>
     <% if (hasMyFD) { %>
 	  <%   if ("myfd".equals(botNav)) { %>
-           <td width='43px'><a href='/myfd/index.jsp?trk=bnav'><img src='/media_stat/images/navigation/footer_parts/myfd_selected.gif' alt='My FD'/></a></td>
+           <td width='43px'><a href='/myfd/index.jsp?trk=bnav'><img src='/media_stat/images/navigation/footer_parts_w/myfd_selected.gif' alt='My FD'/></a></td>
         <% } else { %>
-           <td width='43px'><a href='/myfd/index.jsp?trk=bnav'><img src='/media_stat/images/navigation/footer_parts/myfd.gif' alt='My FD'/></a></td>
+           <td width='43px'><a href='/myfd/index.jsp?trk=bnav'><img src='/media_stat/images/navigation/footer_parts_w/myfd.gif' alt='My FD'/></a></td>
         <% } %>
     <% } else { %>
-           <td width='43px'><img src='/media_stat/images/navigation/footer_parts/no_myfd.gif'/></td>
+           <td width='43px'><img src='/media_stat/images/navigation/footer_parts_w/no_myfd.gif'/></td>
     <% } %>
     <% if ("office".equals(botNav)) { %>
-    <td width='86px'><a href='/department.jsp?deptId=COS&trk=bnav'><img src='/media_stat/images/navigation/footer_parts/office_selected.gif' alt='At the Office'/></a></td>
-    <td width='2px'><img src='/media_stat/images/navigation/footer_parts/office25.gif'/></td>
+    <td width='86px'><a href='/department.jsp?deptId=COS&trk=bnav'><img src='/media_stat/images/navigation/footer_parts_w/office_selected.gif' alt='At the Office'/></a></td>
+    <td width='2px'><img src='/media_stat/images/navigation/footer_parts_w/office25.gif'/></td>
     <% } else { %>
-    <td width='86px'><a href='/department.jsp?deptId=COS&trk=bnav'><img src='/media_stat/images/navigation/footer_parts/office.gif' alt='At the Office'/></a></td>
-    <td width='2px'><img src='/media_stat/images/navigation/footer_parts/off10.gif'/></td>
+    <td width='86px'><a href='/department.jsp?deptId=COS&trk=bnav'><img src='/media_stat/images/navigation/footer_parts_w/office.gif' alt='At the Office'/></a></td>
+    <td width='2px'><img src='/media_stat/images/navigation/footer_parts_w/off10.gif'/></td>
     <% } %>
     <% if ("giftcards".equals(botNav)) { %>
-    <td width='72px'><a href='<%=giftPath%>'><img src='/media_stat/images/navigation/footer_parts/giftcards_selected.gif' alt='Gift Cards'/></a></td>
+    <td width='72px'><a href='<%=giftPath%>'><img src='/media_stat/images/navigation/footer_parts_w/giftcards_selected.gif' alt='Gift Cards'/></a></td>
     <% } else { %>
-    <td width='72px'><a href='<%=giftPath%>'><img src='/media_stat/images/navigation/footer_parts/giftcards.gif' alt='Gift Cards'/></a></td>
+    <td width='72px'><a href='<%=giftPath%>'><img src='/media_stat/images/navigation/footer_parts_w/giftcards.gif' alt='Gift Cards'/></a></td>
     <% } %>
     <% if ("newprod".equals(botNav)) { %>
-    <td width='97px'><a href='/newproducts.jsp?trk=bnav'><img src='/media_stat/images/navigation/footer_parts/newprod_selected.gif' alt='New Products'/></a></td>
+    <td width='97px'><a href='/newproducts.jsp?trk=bnav'><img src='/media_stat/images/navigation/footer_parts_w/newprod_selected.gif' alt='New Products'/></a></td>
     <% } else { %>
-    <td width='97px'><a href='/newproducts.jsp?trk=bnav'><img src='/media_stat/images/navigation/footer_parts/newprod.gif' alt='New Products'/></a></td>
+    <td width='97px'><a href='/newproducts.jsp?trk=bnav'><img src='/media_stat/images/navigation/footer_parts_w/newprod.gif' alt='New Products'/></a></td>
     <% } %>
   </tr>
 </table>

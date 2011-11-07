@@ -47,7 +47,7 @@ String presPicks = "/newsletter.jsp?catId=picks_love&trk=wgd";
       </tr>
 		  <tr>
 			<td align="center">
-			<img src="/media_stat/images/navigation/department/home/fdhome_row1_header.gif" width="734" height="21" border="0" alt="DELICIOUS FOOD TREATED WITH LOVE & RESPECT"><br>
+			<img src="/media_stat/images/navigation/department/home/fdhome_row1_header_w.gif" width="734" height="21" border="0" alt="DELICIOUS FOOD TREATED WITH LOVE & RESPECT"><br>
 			<!-- <img src="/media_stat/images/navigation/department/home/fdhome_row1.jpg" width="491" height="52" usemap="#Row1" border="0" vspace="3"> -->
 				<!-- /media_stat/images/navigation/department/home/fdhome_row1.jpg -->
 				<table border='0' cellpadding='0' cellspacing='0' class="departmentPicRow1">
@@ -138,7 +138,7 @@ String presPicks = "/newsletter.jsp?catId=picks_love&trk=wgd";
 		  </tr>
 		  <tr>
 			<td align="center" class="text11" style="padding-top:20px;">
-			<img src="/media_stat/images/navigation/department/home/fdhome_row4_header.gif" width="734" height="21" border="0" alt="EASY MEALS PREPARED BY EXPERT CHEFS" vspace="3"><br>
+			<img src="/media_stat/images/navigation/department/home/fdhome_row4_header_w.gif" width="734" height="21" border="0" alt="EASY MEALS PREPARED BY EXPERT CHEFS" vspace="3"><br>
 				<!-- /media_stat/images/navigation/department/home/fdhome_row4.jpg -->
 				<table border='0' cellpadding='0' cellspacing='0'  class="departmentPicRow3">
           <tr>
@@ -178,7 +178,7 @@ String presPicks = "/newsletter.jsp?catId=picks_love&trk=wgd";
 		  <tr>
 			<td align="center" style="padding-top:20px;">
         <%-- example header: <h2 class="centerline"><span>POPULAR BRANDS &amp; EVERYDAY PANTRY NEEDS</span></h2> --%>
-				<img src="/media_stat/images/navigation/department/home/fdhome_row5_header.gif" width="734" height="21" border="0" alt="POPULAR BRANDS & EVERYDAY PANTRY NEEDS"><br>
+				<img src="/media_stat/images/navigation/department/home/fdhome_row5_header_w.gif" width="734" height="21" border="0" alt="POPULAR BRANDS & EVERYDAY PANTRY NEEDS"><br>
 				<!-- /media_stat/images/navigation/department/home/fdhome_row5.jpg -->
 				<table border='0' cellpadding='0' cellspacing='0'>
           <tr>

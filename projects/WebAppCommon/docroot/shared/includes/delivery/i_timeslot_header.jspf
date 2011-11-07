@@ -25,7 +25,7 @@ if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)|| timeSlotCtx.equals(Ti
 			<%} if(user.isChefsTable()){ %>
 				<fd:IncludeMedia name="/media/editorial/site_pages/ct/preferred_access_timeslots.html" />
 			<%}%>	
-			<img height="1" border="0" width="<%=W_TIMESLOT_HEADER_TOTAL%>" src="/media_stat/images/layout/dotted_line.gif"><br><br>	
+			<img height="1" border="0" width="<%=W_TIMESLOT_HEADER_TOTAL%>" src="/media_stat/images/layout/dotted_line_w.gif"><br><br>	
 		</td>
 	</tr>
 </table>

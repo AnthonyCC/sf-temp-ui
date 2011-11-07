@@ -44,4 +44,4 @@ final int W_LOYALTY_BAR_LP = 400;
 		<td width="10"><img src="/media/editorial/site_pages/non_chefstable/NC_header_right.gif" width="10" height="25" border="0"></td>
 	<%}%>
 	</tr>
-</table>
+</table><div style="font-size: 0px; clear: both;"></div>

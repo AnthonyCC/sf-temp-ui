@@ -20,6 +20,7 @@ import com.freshdirect.cms.EnumDefI;
 import com.freshdirect.cms.RelationshipDefI;
 import com.freshdirect.cms.meta.ContentTypeUtil;
 import com.freshdirect.cms.publish.PublishXmlTask;
+import com.freshdirect.cms.util.PublishId;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -178,6 +179,17 @@ public class FlexContentHandler extends CmsNodeHandler {
 		} else if (last instanceof Metadata) {
 			Metadata meta = (Metadata) last;
 			meta.value += chars;
+			if ("description".equals(meta.key)) {
+				if (PublishId.getInstance().getPublishId() == null) {
+					if (meta.value.startsWith("PublishId: ")) {
+						PublishId.getInstance().setPublishId(meta.value.substring("PublishId: ".length()));
+					} else {
+						LOGGER.error("!!! Unable to determine publish id !!!");
+					}
+				} else {
+					LOGGER.warn("Publish id was already initialized");
+				}
+			}
 
 		} else if (chars.trim().length() != 0) {
 			throw new SAXException("No text allowed here: '" + chars + "'");

@@ -45,7 +45,7 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 <br><br>
 
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<img src="/media_stat/images/layout/dotted_line.gif" width="<%= W_YA_ADD_CREDITCARD %>" height="1" border="0"><br/>
+	<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%= W_YA_ADD_CREDITCARD %>" height="1" border="0"><br/>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 	
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_ADD_CREDITCARD %>">

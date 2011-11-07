@@ -57,7 +57,7 @@ public class IncludeMediaTag extends BodyTagSupport {
 		    
 		    if ( media instanceof Image ) {
 		    	Image img = (Image)media;
-		    	pageContext.getOut().append( img.toHtml(name) );		    	
+		    	pageContext.getOut().append( img.toHtml(name, true) );		    	
 			return SKIP_BODY;
 		    } 
 		    		    

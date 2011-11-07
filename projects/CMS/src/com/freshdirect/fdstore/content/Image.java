@@ -2,6 +2,8 @@
 
 package com.freshdirect.fdstore.content;
 
+import com.freshdirect.cms.util.PublishId;
+
 public class Image extends MediaModel {
     
     public Image() {
@@ -36,20 +38,37 @@ public class Image extends MediaModel {
     	return "Image["+ getPK() +", "+ getPath() +", "+ getWidth() +"x"+ getHeight() +"]";
     }
     
-    public String toHtml(String alternateName, String className) {
-        return "<img src=\"" + getPath() + "\" width=\"" + getWidth() + "\" height=\"" + getHeight() +'"' +  
+    public String toHtml(String alternateName, String className, boolean withPublishId) {
+        return "<img src=\"" + (withPublishId ? getPathWithPublishId() : getPath()) + "\" width=\"" + getWidth() +
+        	"\" height=\"" + getHeight() +'"' +  
             (alternateName != null && alternateName.trim().length()>0 ? " alt=\"" + alternateName + '"' : "") + 
             (className != null && className.trim().length()>0 ? " class=\"" + className + '"' : "") + 
             '>';
     }
-    public String toHtml(String alternateName) {
-        return toHtml(alternateName, null);
+
+    public String toHtml(String alternateName, String className) {
+    	return toHtml(alternateName, className, false);
     }
     
+    public String toHtml(String alternateName) {
+        return toHtml(alternateName, null, false);
+    }
+    
+    public String toHtml(String alternateName, boolean withPublishId) {
+        return toHtml(alternateName, null, withPublishId);
+    }
+
     public String toHtml() {
         return toHtml(null);
     }
-    
+
+    public String getPathWithPublishId() {
+    	String publishId = PublishId.getInstance().getPublishId();
+    	if (publishId != null)
+    		return getPath() + "?publishId=" + publishId;
+    	else
+    		return getPath();
+    }
     
     private int width;
     private int height;

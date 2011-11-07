@@ -70,7 +70,7 @@ String actionName = request.getParameter("actionName");
 		<%//Reservation stuff%>
 		<table width="<%=W_RESERVE_TIMESLOTS_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td colspan="7"><img src="/media_stat/images/layout/dotted_line.gif" width="<%=W_RESERVE_TIMESLOTS_TOTAL%>" height="1"></td>
+				<td colspan="7"><img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_RESERVE_TIMESLOTS_TOTAL%>" height="1"></td>
 			</tr>
 			<tr>
 				<td colspan="7"><img src="/media_stat/images/template/youraccount/choose_reservation_type.gif" width="256" height="10" vspace="10"></td>

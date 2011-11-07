@@ -7,6 +7,7 @@ import javax.servlet.jsp.JspWriter;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
+import com.freshdirect.cms.util.PublishId;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
 
@@ -26,7 +27,7 @@ public class IncludeImageTag extends BodyTagSupportEx {
 			return SKIP_BODY;
 		StringBuilder buf = new StringBuilder();
 		buf.append("<img src=\"");
-		buf.append(StringEscapeUtils.escapeHtml(image.getPath()));
+		buf.append(StringEscapeUtils.escapeHtml(image.getPathWithPublishId()));
 		buf.append("\"");
 		buf.append(" width=\"");
 		buf.append(image.getWidth());

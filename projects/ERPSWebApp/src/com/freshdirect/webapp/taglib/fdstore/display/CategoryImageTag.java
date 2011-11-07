@@ -102,7 +102,7 @@ public class CategoryImageTag extends BodyTagSupport {
 			buf.append("<img src=\"");
 			if (this.prefix != null)
 				buf.append(this.prefix);
-			buf.append(catImg.getPath());
+			buf.append(catImg.getPathWithPublishId());
 			buf.append("\"");
 			
 			buf.append(" width=\"");

@@ -238,8 +238,8 @@ public class ProductImageTag extends BodyTagSupport {
 			Image rolloverImage = product.getRolloverImage();
 			
 			if ( rolloverImage != null ) {					
-				String rolloverImagePath = rolloverImage.getPath();
-				String baseImagePath = prodImg.getPath();
+				String rolloverImagePath = rolloverImage.getPathWithPublishId();
+				String baseImagePath = prodImg.getPathWithPublishId();
 				
 				if ( ! "".equals( rolloverImagePath ) && ! "".equals( baseImagePath ) ) {
 					rolloverStr = 
@@ -262,7 +262,7 @@ public class ProductImageTag extends BodyTagSupport {
 		buf.append("<img src=\"");
 		if (this.prefix != null)
 			buf.append(this.prefix);
-		buf.append(prodImg.getPath());
+		buf.append(prodImg.getPathWithPublishId());
 		buf.append("\"");
 		
 //		buf.append(" id=\"prdImg_");

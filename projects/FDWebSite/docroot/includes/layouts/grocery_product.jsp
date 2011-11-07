@@ -1050,7 +1050,7 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
 	}
 %>
         </tr>
-</table>
+</table><div style="font-size: 0px; clear: both;"></div>
 <br>
 <table width="<%=W_GROCERY_PRODUCT%>" border="0" cellspacing="0" cellpadding="0">
 <%@include file="/includes/layouts/i_grocery_product_separator.jspf"%>
