@@ -582,6 +582,6 @@
 	 <%@ include file='i_batchstandingorder.jspf'%> 
 	 <%@ include file='i_timeslotexception.jspf'%>
 	 <%@ include file='i_cancelstandingorder.jspf'%>
-	 <%@ include file='i_batchorderdsummary.jspf'%> 
+	 <%@ include file='i_batchordersummary.jspf'%> 
   </tmpl:put>
 </tmpl:insert>
