@@ -176,7 +176,7 @@ StringBuffer buffer = new StringBuffer(
 					<td align="left" style="color:#666666;font-weight:bold;">Delivery Charge:</td>
 					<td align="right" style="color:#666666;font-weight:bold;padding-left:4px;">
 						<%	
-								String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge() );								
+								String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge() );
 							if(cart.isDlvPassApplied()) {
 						%>
 							<%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
@@ -184,12 +184,14 @@ StringBuffer buffer = new StringBuffer(
 						<%	} else if (cart.isDeliveryChargeWaived()) {
 								if((int)cart.getDeliverySurcharge() == 0){
 						%>     
-								<b>Free!</b>
-								<% }else{ %> <b>Free!</b>(<%= dlvCharge %> waived)<% } %>
+								Free! 
+								<% }else{ %> Free!(<%= dlvCharge %> waived)<% } %>
 										
-						<%  } else {%>
-								<%= (int)cart.getDeliverySurcharge() == 0 ? "Free!" : dlvCharge %>
-						<%}%>
+						<%  } else if((int)cart.getDeliverySurcharge() == 0) {%>
+								<b>$</b>&nbsp;<b>--</b>
+						<%} else { %>
+							<%= dlvCharge %>
+						<%} %>
 					</td>
 				</tr>
 				<%if (cart.getTotalDiscountValue() > 0) {

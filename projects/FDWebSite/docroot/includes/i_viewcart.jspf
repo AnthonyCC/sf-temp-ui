@@ -612,8 +612,14 @@ FDIdentity identity = user.getIdentity();
 			<td><b><%=cart.isDeliveryChargeTaxable() && !cart.isDeliveryChargeWaived() ? "&nbsp;T" : "" %></b></td>
 			<td></td>
 		</tr>
-		<%
-	} %>
+		<%	} else if(cart.getDeliverySurcharge() == 0 ) {%>   
+			<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right">Delivery Charge<% if(cart.isDeliveryChargeWaived()){%> (waived)<%}%>:</td>
+			<td colspan="3" align="left"><%if(cart.isDeliveryChargeWaived()){%>$0.00<%}else{%>&nbsp;&nbsp;&nbsp;<b>check</b>&nbsp;<A HREF="javascript:popup('/help/delivery_info.jsp','large_long')"><b>delivery fee</b></A><%}%></td>
+			<td></td>		
+			</tr>
+        <%}%>
+	
 	<%-- DPCart APPDEV-664 --%>
 	<%if (user!=null && user.getIdentity() !=null) { %>
 		<%

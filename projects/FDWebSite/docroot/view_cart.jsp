@@ -174,7 +174,7 @@ StringBuffer buffer = new StringBuffer(
 								<% }else{ %> Free!(<%= dlvCharge %> waived)<% } %>
 										
 						<%  } else if((int)cart.getDeliverySurcharge() == 0) {%>
-								check&nbsp;<A HREF="javascript:popup('/help/delivery_info.jsp','large')">delivery fee</A>
+								<b>$</b>&nbsp;<b>--</b>
 						<%} else { %>
 							<%= dlvCharge %>
 						<%} %>
