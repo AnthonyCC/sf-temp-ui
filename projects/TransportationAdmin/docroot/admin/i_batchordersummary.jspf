@@ -70,19 +70,22 @@
 
 	var cancelOrderMyConfigs = { 
 		paginator : new YAHOO.widget.Paginator({ 
-		       rowsPerPage    : 25
+		      rowsPerPage    : 25,
+		      template : "{FirstPageLink}{PreviousPageLink}  "+cancelOrderDataIncrementer.length+" total records "+" {NextPageLink}{LastPageLink}"
 		})
 	};
 
 	var activeOrderMyConfigs = { 
 		paginator : new YAHOO.widget.Paginator({ 
-		       rowsPerPage    : 25
+		       rowsPerPage    : 25,
+		       template : "{FirstPageLink}{PreviousPageLink}  "+activeOrderDataIncrementer.length+" total records "+" {NextPageLink}{LastPageLink}"
 		})
 	};
 
 	var orderMyConfigs = { 
 		paginator : new YAHOO.widget.Paginator({ 
-		       rowsPerPage    : 25
+		       rowsPerPage    : 25,
+		       template : "{FirstPageLink}{PreviousPageLink}  "+orderDataIncrementer.length+" total records "+" {NextPageLink}{LastPageLink}"
 		})
 	};
 

@@ -15,8 +15,8 @@
       var _currentBatchId;
  
       function showCancelStandingOrderTable(inputVal) {
-	
-	_currentBatchId = inputVal;
+		addCancelSOSysMessage("", false);
+		_currentBatchId = inputVal;
          editCancelStandingOrderPanel = new YAHOO.widget.Panel("cancelstandingorder-panel", {
                           width: "980px",
                           fixedcenter: true, 
@@ -26,13 +26,9 @@
                           modal: true,
                           visible: false,
                           effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
-        
-		var cancelStandingOrderDataIncrementer = function() {
-			var result = jsonrpcClient.AsyncCrisisMngProvider.getStandingOrderByBatchId(_currentBatchId);
-			return result.list;
-		};
-          
-		cancelStandingOrderDataSource = new YAHOO.util.DataSource(cancelStandingOrderDataIncrementer);
+
+		var cancelStandingOrderData = jsonrpcClient.AsyncCrisisMngProvider.getStandingOrderByBatchId(_currentBatchId);
+		cancelStandingOrderDataSource = new YAHOO.util.DataSource(cancelStandingOrderData.list);
 
 		var cancelStandingOrderColumns =  [ 
 			    {key:"isSel", label:"Select?", formatter:"checkbox", className:'align-center'},
@@ -45,14 +41,15 @@
 			    {key:"lineItemChangeCount", label:"LineItems Change", sortable:false, width: 130, className:'align-center'},
 			    {key:"orderStatus", label:"Status", sortable:false, width: 70, className:'align-center'}
 		 ];
-	
-		var sMyConfigs = { 
+
+		var cancelSOConfigs = { 
 			paginator : new YAHOO.widget.Paginator({ 
-			       rowsPerPage    : 25
+			       rowsPerPage    : 25,
+			       template : "{FirstPageLink}{PreviousPageLink}  "+cancelStandingOrderData.list.length+" total records "+" {NextPageLink}{LastPageLink}"
 			})
 		};
 		
-		cancelStandingOrderDataTable = new YAHOO.widget.DataTable("contcancelstandingordertable", cancelStandingOrderColumns, cancelStandingOrderDataSource, sMyConfigs);
+		cancelStandingOrderDataTable = new YAHOO.widget.DataTable("contcancelstandingordertable", cancelStandingOrderColumns, cancelStandingOrderDataSource, cancelSOConfigs);
 
 		setAllChecks( cancelStandingOrderDataTable, true );
 
@@ -98,13 +95,27 @@
 				}
 			}
 		} 
-		var _placeOrderResult = jsonrpcClient.AsyncCrisisMngProvider.doCancelOrder(_currentBatchId, _soData);
-		if(_placeOrderResult){
-			cancelStandingOrderDataTable.destroy(); 
+
+		if(_soData.length > 0){
+			var _placeOrderResult = jsonrpcClient.AsyncCrisisMngProvider.doCancelOrder(_currentBatchId, _soData);
+			cancelStandingOrderDataTable.destroy();
+			YAHOO.util.Dom.get("errcancelSOContainer").value = "";
 			editCancelStandingOrderPanel.hide();
+		}else{
+       		addCancelSOSysMessage("Please select atleast one standing order to cancel", true);
 		}
 		
 	} 
+	function addCancelSOSysMessage(msg, isError) {
+      		var errContObj = YAHOO.util.Dom.get("errcancelSOContainer");
+		    if(isError) {
+		    	errContObj.style.color = errColor;
+	      	} else {
+	      		errContObj.style.color = msgColor;
+	      	}
+	      	errContObj.style.fontWeight="bold";
+      		YAHOO.util.Dom.get("errcancelSOContainer").innerHTML = msg;
+	}
      </script> 
      
      <style> 
@@ -131,6 +142,7 @@
 	  <div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />
       		&nbsp;&nbsp;&nbsp;Standing Order List</div>
           <div class="bd">
+			<div id="errcancelSOContainer"></div>
              <div id="parentcontcancelstandingordertable" style="overflow-y:auto;background-color:#F2F2F2;border:1px dotted #000;">
 		<div id="contcancelstandingordertable"></div> 
 	      </div>

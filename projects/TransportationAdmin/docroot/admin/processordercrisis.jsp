@@ -191,7 +191,7 @@
 												<div><input TYPE="radio" checked="true" NAME="selectDeliveryRadio" id="regularorder" onclick="toggleDeliveryType(this.id)"/>&nbsp;<font style="font-size:11px;">Regular Order</font>&nbsp;<br/></div>
 												<div style="padding-left:20%;" id="deliverytypeDisp">
 													<c:forEach var="dType" items="${deliveryTypes}">
-														<input type="checkbox" name="deliveryType" value="<c:out value='${dType.name}'/>"><font style="font-size:11px;"><c:out value="${dType.deliveryType}"/></font></input>
+														<input type="checkbox" checked="true" name="deliveryType" value="<c:out value='${dType.name}'/>"><font style="font-size:11px;"><c:out value="${dType.deliveryType}"/></font></input>
 													</c:forEach>
 												</div>
 												<div>
@@ -205,8 +205,10 @@
 														}
 														if (idVar === 'regularorder') {
 															document.getElementById('deliverytypeDisp').style.display = '';
+															for(var i=0;i < x.length;i++){
+																x[i].checked=true;
+															}
 														} else if (idVar === 'standingorder') {
-
 															document.getElementById('deliverytypeDisp').style.display = 'none';
 														}
 													}
@@ -393,7 +395,7 @@
 												sel.options[1] = new Option("ORDERIN","ORDERIN");
 												sel.options[2] = new Option("CANCELORDER","CANCELORDER");
 												sel.options[3] = new Option("PLACEORDER","PLACEORDER");
-												sel.options[4] = new Option("CANCEL BATCH","CANCEL BATCH");
+												sel.options[4] = new Option("CANCEL BATCH","CANCELBATCH");
 											}
 											
 											elCell.appendChild(sel);
@@ -451,9 +453,9 @@
       }
 
       var actionMapping = {
-      	 'NEW': {CANCEL:0},
-	     'DCC': {ORDERIN:0,CANCELORDER:0,CANCEL:0},
-	     'DCF': {ORDERIN:0,CANCEL:0},
+      	 'NEW': {CANCELBATCH:0},
+	     'DCC': {ORDERIN:0,CANCELORDER:0,CANCELBATCH:0},
+	     'DCF': {ORDERIN:0,CANCELBATCH:0},
 	     'OCF': {CANCELORDER:0},
 		 'OCC': {PLACEORDER:0},
 		 'CPD/OCC': {CREATERSV:0},
@@ -558,9 +560,12 @@
 				sDataSource.clearAllIntervals();
 			}
 		  }      
-		  showTable();
+		showTable();
 
-		  function clearInputData(){
+		var errColor = "#FF0000";
+		var msgColor = "#00FF00";
+
+		function clearInputData(){
 			  document.getElementById('selectedDate').value='';
 			  document.getElementById('destinationDate').value='';
 			  document.getElementById('startTime').value='';

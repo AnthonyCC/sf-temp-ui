@@ -31,5 +31,7 @@ public interface ICrisisManagerProcessMessage {
 	String INFO_MESSAGE_PLACESTANDINGORDERPROGRESS = "Place Standing Order : in progress";
 	
 	String INFO_MESSAGE_PLACESTANDINGORDERCOMPLETED = "Place Standing Order : Completed";
+	
+	String INFO_MESSAGE_PLACESTANDINGORDERFAILED = "Place Standing Order : Failed";
 
 }

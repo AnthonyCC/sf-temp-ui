@@ -278,9 +278,6 @@ public class CrisisManagerDAO implements ICrisisManagerDAO   {
 											, deliveryTypeId
 											, batchType.value()
 											, profileName});
-			
-			
-			
 		} finally {
 			if(connection!=null) connection.close();
 		}
@@ -807,7 +804,7 @@ public class CrisisManagerDAO implements ICrisisManagerDAO   {
 			updateQ.append(" and to_date(to_char(ts.start_time, 'HH:MI AM'), 'HH:MI AM') >= to_date(?, 'HH:MI AM')");
 		}
 		if(endTime != null){
-			updateQ.append(" and to_date(to_char(ts.end_time, 'HH:MI AM'), 'HH:MI AM') <= to_date(?, 'HH:MI AM')");
+			updateQ.append(" and to_date(to_char(ts.start_time, 'HH:MI AM'), 'HH:MI AM') <= to_date(?, 'HH:MI AM')");
 		}
 		if(EnumProfileList.CHEFSTABLE.getName().equals(profileName)){
 			updateQ.append(" and exists (select 1 from cust.profile p, cust.fdcustomer fdc, cust.customer c "
@@ -1347,7 +1344,7 @@ public class CrisisManagerDAO implements ICrisisManagerDAO   {
 			updateQ.append(" and to_date(to_char(di.starttime, 'HH:MI AM'), 'HH:MI AM') >= to_date(?, 'HH:MI AM')");
 		}
 		if(endTime != null){
-			updateQ.append(" and to_date(to_char(di.endtime, 'HH:MI AM'), 'HH:MI AM') <= to_date(?, 'HH:MI AM')");
+			updateQ.append(" and to_date(to_char(di.starttime, 'HH:MI AM'), 'HH:MI AM') <= to_date(?, 'HH:MI AM')");
 		}
 		if(EnumCrisisMngBatchType.STANDINGORDER.equals(batchType)){
 			updateQ.append(" and s.standingorder_id is not null ");

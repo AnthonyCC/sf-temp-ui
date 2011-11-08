@@ -65,10 +65,7 @@ public class CrisisManagerBatchInfo implements java.io.Serializable {
 	}
 	public String getCriteriaInfo() {
 		StringBuffer strBuf = new StringBuffer();
-		try {			
-			if(batch.getBatchType() != null) {
-				strBuf.append("Batch Type: "+ batch.getBatchType().value()+"<br/>");
-			}
+		try {
 			if(batch.getCutOffDateTime() != null) {
 				strBuf.append("Cutoff Time: <b>"+TransStringUtil.getServerTime(batch.getCutOffDateTime())).append("</b><br/>");
 			}else{

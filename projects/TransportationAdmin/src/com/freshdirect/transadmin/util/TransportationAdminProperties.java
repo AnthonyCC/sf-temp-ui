@@ -352,7 +352,7 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_AUTODISPATCH_ENABLED,"true");
 
 		// APPDEV-1606 Order Crisis Management URL
-        defaults.put(ADMIN_SERVICE_URL_KEY, "http://localhost:7001/admn_service");
+        defaults.put(ADMIN_SERVICE_URL_KEY, "http://localhost:7001/admin_service");
         defaults.put(PROP_TRANSPORTATION_FILENAME_MARKETINGORDERRPT,"trn_marketingorderreport_");
     	defaults.put(PROP_TRANSPORTATION_FILENAME_VOICESHOTORDERRPT, "trn_voiceshotorderreport_");
     	defaults.put(PROP_TRANSPORTATION_FILENAME_TIMESLOTEXCEPTIONRPT,"trn_timeslotexceptionreport_");

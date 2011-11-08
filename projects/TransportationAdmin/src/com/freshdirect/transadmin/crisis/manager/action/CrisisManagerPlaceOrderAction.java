@@ -3,6 +3,7 @@ package com.freshdirect.transadmin.crisis.manager.action;
 import static com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage.ERROR_MESSAGE_TIMESLOTEXCEPTION;
 import static com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage.INFO_MESSAGE_PLACESTANDINGORDERPROGRESS;
 import static com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage.INFO_MESSAGE_PLACESTANDINGORDERCOMPLETED;
+import static com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage.INFO_MESSAGE_PLACESTANDINGORDERFAILED;
 
 import java.util.HashMap;
 import java.util.List;
@@ -90,6 +91,9 @@ public class CrisisManagerPlaceOrderAction extends AbstractCrisisManagerAction {
 		    }		
 		    this.getCrisisMngService().updateCrisisMngBatchStatus(this.getBatch().getBatchId(), EnumCrisisMngBatchStatus.COMPLETED);
 		    this.getCrisisMngService().updateCrisisMngBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_PLACESTANDINGORDERCOMPLETED);
+		} else{
+			this.getCrisisMngService().updateCrisisMngBatchStatus(this.getBatch().getBatchId(), getFailureStatus());
+			this.getCrisisMngService().updateCrisisMngBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_PLACESTANDINGORDERFAILED);			
 		}
 	    
 		System.out.println("######################### Place Standing Order STOP #########################");

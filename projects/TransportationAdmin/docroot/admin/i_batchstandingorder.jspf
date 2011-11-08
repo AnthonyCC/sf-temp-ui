@@ -13,10 +13,10 @@
       var standingOrderDataTable;
       var editStandingOrderPanel; 
       var _currentBatchId;
- 
-      function showStandingOrderTable(inputVal) {
-	
-	_currentBatchId = inputVal;
+
+    function showStandingOrderTable(inputVal) {
+		addSysMessage("", false);
+		_currentBatchId = inputVal;
          editStandingOrderPanel = new YAHOO.widget.Panel("standingorder-panel", {
                           width: "980px",
                           fixedcenter: true, 
@@ -27,12 +27,9 @@
                           visible: false,
                           effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
         
-		var standingOrderDataIncrementer = function() {
-			var result = jsonrpcClient.AsyncCrisisMngProvider.getStandingOrderByBatchId(_currentBatchId);
-			return result.list;
-		};
+		var standingOrderData = jsonrpcClient.AsyncCrisisMngProvider.getStandingOrderByBatchId(_currentBatchId);
           
-		standingOrderDataSource = new YAHOO.util.DataSource(standingOrderDataIncrementer);
+		standingOrderDataSource = new YAHOO.util.DataSource(standingOrderData.list);
 
 		var standingOrderColumns =  [ 
 			    {key:"isSel", label:"Select?", formatter:"checkbox", className:'align-center'},
@@ -50,7 +47,8 @@
 	
 		var sMyConfigs = { 
 			paginator : new YAHOO.widget.Paginator({ 
-			       rowsPerPage    : 25
+			       rowsPerPage    : 25,
+			       template : "{FirstPageLink}{PreviousPageLink}  "+standingOrderData.list.length+" total records "+" {NextPageLink}{LastPageLink}"
 			})
 		};
 		
@@ -98,10 +96,25 @@
 				}
 			}
 		} 
-		var _placeOrderResult = jsonrpcClient.AsyncCrisisMngProvider.placeStandingOrder(_currentBatchId, _data, false, null);
-		standingOrderDataTable.destroy(); 
-		editStandingOrderPanel.hide();
-	} 
+		if(_data.length > 0){
+			var _placeOrderResult = jsonrpcClient.AsyncCrisisMngProvider.placeStandingOrder(_currentBatchId, _data, true, null);
+			standingOrderDataTable.destroy();
+			YAHOO.util.Dom.get("errSOContainer").value = "";
+			editStandingOrderPanel.hide();
+		}else{
+        	addSysMessage("Please select atleast one standing order to place order", true);
+		}
+	}
+	function addSysMessage(msg, isError) {
+      		var errContObj = YAHOO.util.Dom.get("errSOContainer");
+		    if(isError) {
+		    	errContObj.style.color = errColor;
+	      	} else {
+	      		errContObj.style.color = msgColor;
+	      	}
+	      	errContObj.style.fontWeight="bold";
+      		YAHOO.util.Dom.get("errSOContainer").innerHTML = msg;
+	}
      </script> 
      
      <style> 
@@ -128,6 +141,7 @@
 	  <div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />
       		&nbsp;&nbsp;&nbsp;Standing Order List</div>
           <div class="bd">
+	     <div id="errSOContainer"></div>
              <div id="parentcontstandingordertable" style="overflow-y:auto;background-color:#F2F2F2;border:1px dotted #000;">
 		<div id="contstandingordertable"></div> 
 	      </div>
