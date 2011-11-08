@@ -10,7 +10,7 @@ function fdTSDisplay(refIdArg) {
 		indexVar: '%%I%%', //idTemplates var
 		timeSlotInfo: false, //global variable setting if on timeslot info page
 		topLevelElemId: 'tsContainer', //top-level HTML elem. effect children under this
-		debug: true, //global debug controller
+		debug: false, //global debug controller
 		cleaner: null, //cleanup function
 		cleanerWaitTime: 2000, //ms to wait after expand before attempting clean
 		timer_StartTime: -1, //timer function holder
