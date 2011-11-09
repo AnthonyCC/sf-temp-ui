@@ -538,7 +538,7 @@
 								showStandingOrderTable(currentBatchId);
 							}
 							
-						} else if(actionType == 'CANCEL') {
+						} else if(actionType == 'CANCELBATCH') {
       						jsonrpcClient.AsyncCrisisMngProvider.doCrisisMngBatchCancel(currentBatchId);
       					} else {
       						alert("Processing "+actionType+" on BATCH ID:"+currentBatchId);
