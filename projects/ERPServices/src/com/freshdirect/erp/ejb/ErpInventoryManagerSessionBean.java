@@ -112,7 +112,7 @@ public class ErpInventoryManagerSessionBean extends SessionBeanSupport {
 	
 	private final String DELETE_RESTRICTED_ENTRIES = "delete from ERPS.AVAILABILITY_DELIVERY_DATES where MATERIAL_SAP_ID IN (";
 	
-	private final String INSERTED_RESTRICTED_ENTRIES = "insert into ERPS.AVAILABILITY_DELIVERY_DATES(MATERIAL_SAP_ID, DATE_RESTRICTED) VALUES (?,?)";
+	private final String INSERTED_RESTRICTED_ENTRIES = "insert into ERPS.AVAILABILITY_DELIVERY_DATES(MATERIAL_SAP_ID, DATE_AVAILABLE) VALUES (?,?)";
 			
 	
 	private void processRestrictedEntries(Connection conn, Set<ErpRestrictedAvailabilityModel> restrictedInfos, Set<String> deletedMaterials) throws SQLException{
