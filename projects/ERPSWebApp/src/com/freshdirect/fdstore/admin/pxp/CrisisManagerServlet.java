@@ -151,7 +151,13 @@ public class CrisisManagerServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 		} else if(ACTION_UNBLOCK_CAPACITY.equalsIgnoreCase(action)){
-		
+			try {
+				result = FDDeliveryManager.getInstance().unBlockTimeslotCapacity((Date) serializer.fromJSON(payload));
+			} catch (FDResourceException e) {
+				e.printStackTrace();
+			} catch (UnmarshallException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		PrintWriter writer = response.getWriter();
