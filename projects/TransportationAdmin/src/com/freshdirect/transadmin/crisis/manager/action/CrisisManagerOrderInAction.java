@@ -60,7 +60,7 @@ public class CrisisManagerOrderInAction extends AbstractCrisisManagerAction {
 				/*Block Capacity for source & destination dates*/
 		    	CrisisManagerUtil orderMngAgent = new CrisisManagerUtil();
 		    	orderMngAgent.setAgent(CrisisManagerOrderInAction.this.getUserId());	
-		    	//orderMngAgent.doBlockCapacity(getProcess().getDeliveryDate(), getProcess().getDestinationDate());
+		    	orderMngAgent.doBlockCapacity(getProcess().getDeliveryDate(), getProcess().getDestinationDate());
 		    	
 				List<ICrisisMngBatchOrder> inputDataList = getProcess().getOrder();
 				Set<ICustomerModel> custModels = new HashSet<ICustomerModel>();
