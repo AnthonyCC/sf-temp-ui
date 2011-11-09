@@ -112,15 +112,16 @@ public class CrisisManagerOrderInAction extends AbstractCrisisManagerAction {
 		    		} else {
 						getService().addNewCrisisMngBatchStandingOrder(inputDataList, getProcess().getBatchId());
 		    		}
+		    		
+		    		getService().updateCrisisMngBatchStatus(getProcess().getBatchId(), EnumCrisisMngBatchStatus.ORDERCOLECTIONCOMPETE);
+					getService().updateCrisisMngBatchMessage(getProcess().getBatchId(), ICrisisManagerProcessMessage.INFO_MESSAGE_ORDERDATACOLLECTIONCOMPLETED);
+					
 				} else {
 					getService().updateCrisisMngBatchStatus(getProcess().getBatchId(), EnumCrisisMngBatchStatus.ORDERCOLECTIONFAILED);
 					getService().updateCrisisMngBatchMessage(getProcess().getBatchId(), ERROR_MESSAGE_NOORDER);
 				}		    	
 		    	/*map timeslots for selected & destination dates*/
-		    	checkDeliverySlotExceptions();
-		    	
-				getService().updateCrisisMngBatchStatus(getProcess().getBatchId(), EnumCrisisMngBatchStatus.ORDERCOLECTIONCOMPETE);
-				getService().updateCrisisMngBatchMessage(getProcess().getBatchId(), ICrisisManagerProcessMessage.INFO_MESSAGE_ORDERDATACOLLECTIONCOMPLETED);
+		    	checkDeliverySlotExceptions();	    	
 				
 		    } catch (Exception exp) {
 		    	exp.printStackTrace();
