@@ -389,13 +389,13 @@
 												sel.options[1] = new Option("ORDERIN","ORDERIN");
 												sel.options[2] = new Option("CANCELORDER","CANCELORDER");
 												sel.options[3] = new Option("CREATERSV","CREATERSV");
-												sel.options[4] = new Option("CANCEL BATCH","CANCEL BATCH");
+												sel.options[4] = new Option("CANCELBATCH","CANCELBATCH");
 											} else {
 												sel.options[0] = new Option("","");
 												sel.options[1] = new Option("ORDERIN","ORDERIN");
 												sel.options[2] = new Option("CANCELORDER","CANCELORDER");
 												sel.options[3] = new Option("PLACEORDER","PLACEORDER");
-												sel.options[4] = new Option("CANCEL BATCH","CANCELBATCH");
+												sel.options[4] = new Option("CANCELBATCH","CANCELBATCH");
 											}
 											
 											elCell.appendChild(sel);
