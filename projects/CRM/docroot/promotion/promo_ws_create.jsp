@@ -166,7 +166,10 @@ function numbersonly(myfield, e, dec)
 				</fd:ErrorHandler>							
 				<fd:ErrorHandler result='<%= result %>' name='usageCountEmpty' id='errorMsg'>
 				   <%@ include file="/includes/i_error_messages.jspf" %>   
-				</fd:ErrorHandler>							
+				</fd:ErrorHandler>
+				<fd:ErrorHandler result='<%= result %>' name='cohortsEmpty' id='errorMsg'>
+				   <%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>					
 				<fd:ErrorHandler result='<%= result %>' name='offerTypeEmpty' id='errorMsg'>
 				   <%@ include file="/includes/i_error_messages.jspf" %>   
 				</fd:ErrorHandler>							
