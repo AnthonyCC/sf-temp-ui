@@ -113,12 +113,12 @@ public class XlsCrisisManagerReport extends BaseXlsReport implements ICrisisMana
 
 	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("titleStyle"));
 	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
-	        hssfCell.setCellValue(new HSSFRichTextString("TimeSlot Exception Summary"));
+	        hssfCell.setCellValue(new HSSFRichTextString("Timeslot Exception Summary"));
 	        			        
 			sheet.addMergedRegion(new Region(0,(short)0,0,(short)8));
 			row = sheet.createRow(rownum++);//blank Row
-
-			createTotalRows(row, reportData.getOrders().size(), styles);		       
+			row = sheet.createRow(rownum++);//blank Row
+			createTotalRows(row, reportData.getTimeslots().size(), styles);		       
 		    row = sheet.createRow(rownum++);//blank Row
 		    cellnum = 0;
 	        row = sheet.createRow(rownum++);
@@ -201,7 +201,7 @@ public class XlsCrisisManagerReport extends BaseXlsReport implements ICrisisMana
 	        			        
 			sheet.addMergedRegion(new Region(0,(short)0,0,(short)8));
 			row = sheet.createRow(rownum++);//blank Row
-
+			row = sheet.createRow(rownum++);//blank Row
 			createTotalRows(row, reportData.getOrders().size(), styles);		       
 		    row = sheet.createRow(rownum++);//blank Row
 		    cellnum = 0;
@@ -284,7 +284,7 @@ public class XlsCrisisManagerReport extends BaseXlsReport implements ICrisisMana
 	        			        
 			sheet.addMergedRegion(new Region(0,(short)0,0,(short)8));
 			row = sheet.createRow(rownum++);//blank Row
-
+			row = sheet.createRow(rownum++);//blank Row
 			createTotalRows(row, reportData.getOrders().size(), styles);		       
 		    row = sheet.createRow(rownum++);//blank Row
 		    cellnum = 0;
@@ -388,7 +388,7 @@ public class XlsCrisisManagerReport extends BaseXlsReport implements ICrisisMana
 	        			        
 			sheet.addMergedRegion(new Region(0,(short)0,0,(short)8));
 			row = sheet.createRow(rownum++);//blank Row
-
+			row = sheet.createRow(rownum++);//blank Row
 			createTotalRows(row, reportData.getOrders().size(), styles);		       
 		    row = sheet.createRow(rownum++);//blank Row
 		    cellnum = 0;
@@ -461,7 +461,7 @@ public class XlsCrisisManagerReport extends BaseXlsReport implements ICrisisMana
 	        			        
 			sheet.addMergedRegion(new Region(0,(short)0,0,(short)8));
 			row = sheet.createRow(rownum++);//blank Row
-			
+			row = sheet.createRow(rownum++);//blank Row
 			createTotalRows(row, reportData.getOrders().size(), styles);		       
 		    row = sheet.createRow(rownum++);//blank Row
 		    cellnum = 0;
@@ -573,7 +573,7 @@ public class XlsCrisisManagerReport extends BaseXlsReport implements ICrisisMana
 	        			        
 			sheet.addMergedRegion(new Region(0,(short)0,0,(short)8));
 			row = sheet.createRow(rownum++);//blank Row
-			    
+			row = sheet.createRow(rownum++);//blank Row
 	        createTotalRows(row, reportData.getOrders().size(), styles);
 	        
 	        row = sheet.createRow(rownum++);//blank Row

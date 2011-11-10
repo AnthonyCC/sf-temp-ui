@@ -80,11 +80,10 @@ public class CrisisManagerCreateReservationAction extends
 			}
 			
 			if(foundExceptions.size() == 0 && isExceptionCheck){
+				this.unBlockDeliveryCapacity();
 				processCreateReservation();
 				this.getCrisisMngService().updateCrisisMngBatchStatus(this.getBatch().getBatchId(), EnumCrisisMngBatchStatus.COMPLETED);
 			    this.getCrisisMngService().updateCrisisMngBatchMessage(this.getBatch().getBatchId(),  INFO_MESSAGE_CREATERESERVATIONCOMPLETED);
-			    
-			    this.unBlockDeliveryCapacity();
 			} else {
 				this.getCrisisMngService().updateCrisisMngBatchStatus(this.getBatch().getBatchId(), getFailureStatus());
 				this.getCrisisMngService().updateCrisisMngBatchMessage(this.getBatch().getBatchId(),  INFO_MESSAGE_CREATERESERVATIONFAILED);

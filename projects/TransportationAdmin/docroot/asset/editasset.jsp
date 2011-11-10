@@ -199,7 +199,6 @@
 			    {key:"attributeType", label:"Attribute Type", sortable:true, sortOptions: { defaultDir: YAHOO.widget.DataTable.CLASS_ASC }, className:"forms1"}, 
 			    {key:"attributeValue", label:"Attribute Value", sortable:false, className:"forms1"},
 				{key:'attributeMatch',label:'Is Overriden?',formatter:function(elCell, oRecord, oColumn, oData) {
-												console.log(oData);
 												if(oData === 'O'){
         											elCell.innerHTML = '<img src="images/icons/tick.gif" title="Overriden" />';
         										}else if(oData === 'U'){

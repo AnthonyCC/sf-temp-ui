@@ -413,7 +413,7 @@
 									}},
 
 					{key:"report", label:"Download", sortable:false, width: 125, className:"forms1",
-									formatter:"dropdown", dropdownOptions:["","TIMESLOTEXCEPTION","MARKETING","VOICESHOT","SOSIMREPORT"] }
+									formatter:"dropdown", dropdownOptions:["","SOSIMREPORT","TIMESLOTEXCEPTION","MARKETING","VOICESHOT"] }
 			 ];
 	
 		  var sMyConfigs = { 

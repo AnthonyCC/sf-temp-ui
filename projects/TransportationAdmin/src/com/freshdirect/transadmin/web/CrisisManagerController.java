@@ -72,7 +72,7 @@ public class CrisisManagerController extends AbstractMultiActionController  {
 					orders = this.crisisManagerService.getCrisisMngBatchStandingOrder(batch.getBatchId(), false, false);
 				}
 				
-				Map<String, List<ICrisisManagerBatchDeliverySlot>> batchTimeslots = this.crisisManagerService.getCrisisMngBatchTimeslot(batch.getBatchId(), true);
+				Map<String, List<ICrisisManagerBatchDeliverySlot>> batchTimeslots = this.crisisManagerService.getCrisisMngBatchTimeslot(batch.getBatchId(), false);
 				List<ICrisisManagerBatchDeliverySlot> slots = new ArrayList<ICrisisManagerBatchDeliverySlot>();
 				for(Map.Entry<String, List<ICrisisManagerBatchDeliverySlot>> _slotEntry : batchTimeslots.entrySet()){
 					slots.addAll(_slotEntry.getValue());

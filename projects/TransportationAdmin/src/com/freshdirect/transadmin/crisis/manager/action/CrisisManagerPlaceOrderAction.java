@@ -69,7 +69,7 @@ public class CrisisManagerPlaceOrderAction extends AbstractCrisisManagerAction {
 		}
 
 		if (foundExceptions.size() == 0 && isExceptionCheck) {
-		
+			this.unBlockDeliveryCapacity();
 		    CrisisManagerUtil orderMngAgent = new CrisisManagerUtil();
 		   	orderMngAgent.setAgent(this.getUserId());
 		    orderMngAgent.setOrders(this.standingOrders);
@@ -91,7 +91,6 @@ public class CrisisManagerPlaceOrderAction extends AbstractCrisisManagerAction {
 		    }		
 		    this.getCrisisMngService().updateCrisisMngBatchStatus(this.getBatch().getBatchId(), EnumCrisisMngBatchStatus.COMPLETED);
 		    this.getCrisisMngService().updateCrisisMngBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_PLACESTANDINGORDERCOMPLETED);
-		    this.unBlockDeliveryCapacity();
 		} else{
 			this.getCrisisMngService().updateCrisisMngBatchStatus(this.getBatch().getBatchId(), getFailureStatus());
 			this.getCrisisMngService().updateCrisisMngBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_PLACESTANDINGORDERFAILED);			

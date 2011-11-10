@@ -236,13 +236,13 @@ public class CrisisMngProviderController extends BaseJsonRpcController  implemen
 			boolean hasError = (exceptions != null && exceptions.keySet().size() > 0);
 			if(hasError) {
 				StringBuffer exceptionMessage = new StringBuffer();
-				exceptionMessage.append("Below are the list of Timeslot exceptions: \n\n");
-				exceptionMessage.append("Area - No of Timeslots \n");
+				/*exceptionMessage.append("Below are the list of Timeslot exceptions: \n\n");
+				exceptionMessage.append("Area - No of Exceptions \n");
 				for(Map.Entry<String, Integer> exp : exceptions.entrySet()) {					
 					exceptionMessage.append("\n").append(exp.getKey()+"  =  "+exp.getValue());
-				}
+				}*/
 				if(!isExceptionCheck) {
-					exceptionMessage.append("\n\n"+"Please handle timeslot exceptions as reservations can't be created for orders cancelled. Do you want to continue?");
+					exceptionMessage.append("\n\n"+"Please handle timeslot exceptions as reservation(s) can't be created. Do you want to continue?");
 				} 
 				return exceptionMessage.toString();
 			}
@@ -372,13 +372,13 @@ public class CrisisMngProviderController extends BaseJsonRpcController  implemen
 			boolean hasError = (exceptions != null && exceptions.keySet().size() > 0);
 			if(hasError) {
 				StringBuffer exceptionMessage = new StringBuffer();
-				exceptionMessage.append("Below are the list of Timeslot exceptions: \n\n");
+				/*exceptionMessage.append("Below are the list of Timeslot exceptions: \n\n");
 				exceptionMessage.append("Area - No of Timeslots \n");
 				for(Map.Entry<String, Integer> exp : exceptions.entrySet()) {					
 					exceptionMessage.append("\n").append(exp.getKey()+"  =  "+exp.getValue());
-				}
+				}*/
 				if(!isExceptionCheck) {
-					exceptionMessage.append("\n\n"+"Please handle timeslot exceptions as reservations can't be created for orders cancelled. Do you want to continue?");
+					exceptionMessage.append("\n\n"+"Please handle timeslot exceptions before you place order(s). Do you want to continue?");
 				} 
 				return exceptionMessage.toString();
 			}
