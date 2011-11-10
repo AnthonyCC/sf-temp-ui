@@ -211,7 +211,9 @@ public interface DlvManagerSB extends EJBObject {
 			DlvReservationModel reservation, IOrderModel order, 
 			ContactAddressModel address, EventType eventType, int responseTime) throws RemoteException;
 	
-	int blockTimeslotCapacity(Date sourceDate) throws RemoteException;
-	int unBlockTimeslotCapacity(Date sourceDate) throws RemoteException;
+	int blockTimeslotCapacity(Date sourceDate
+			, Date cutoffDate, String[] area, Date startTime, Date endTime) throws RemoteException;
+	int unBlockTimeslotCapacity(Date sourceDate
+			, Date cutoffDate, String[] area, Date startTime, Date endTime) throws RemoteException;
 
 }   

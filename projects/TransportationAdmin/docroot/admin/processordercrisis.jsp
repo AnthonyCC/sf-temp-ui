@@ -321,7 +321,7 @@
 						<tr><td colspan="2" align="center">&nbsp;</td></tr>
 						 <tr>
 							<td colspan="2" align="center">
-									<input type = "submit" value="&nbsp;Start&nbsp;" onclick="javascript:startProcess();" />
+									<input type = "submit" value="&nbsp;Start&nbsp;" onclick="javascript:return startProcess();" />
 											&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 									<input type = "button" value="&nbsp;Clear&nbsp;" onclick="javascript:clearInputData();" />
 									&nbsp;&nbsp;&nbsp;<input type = "button" id="refreshgrid" value="&nbsp;Refresh&nbsp;" onclick="javascript:refreshTable();"  />
@@ -343,33 +343,34 @@
 		<div id="batchcontainer">
 		</div>  
     </div>
-
+	<style>
+		.yui-dt-dropdown {
+			width:130px;
+		}
+	</style>
 	<script>
-        
+
       var jsonrpcClient = new JSONRpcClient("crisismanage.ax");
       var sDataSource; 
       var myCallback;
       var sDataTable;
+	
+		showTable();
 
-      function refreshTable() {
-      		sDataTable.getDataSource().sendRequest('', myCallback);  
-      		showTable();
-      }   
-      
-      function showTable() {
+	  function showTable() {
          
-         var dataIncrementer = function() {         
+         var dataIncrementer = function() {
          	var result = jsonrpcClient.AsyncCrisisMngProvider.getOrderCrisisBatch
          												(document.getElementById("selectedDate").value);
-            updateRefreshTimestamp();recordCount = result.list.length;
+            updateRefreshTimestamp();
             return result.list;
          };
-          
-          sDataSource = new YAHOO.util.DataSource(dataIncrementer);
 
-		  var myBatchEditor = new YAHOO.widget.DropdownCellEditor({multiple:false});
+		sDataSource = new YAHOO.util.DataSource(dataIncrementer);
 
-		  var sColumns =  [ 
+		var myBatchEditor = new YAHOO.widget.DropdownCellEditor({multiple:false});
+
+		var sColumns =  [ 
 					{key:"processId", label:"Process ID",sortable:false, width: 58,className:"forms1"},
 					{key:"batchType", label:"Batch Type",sortable:false, width: 60,className:"forms1"},
 					{key:"dateInfo", label:"Delivery Dates",sortable:false, width: 120,className:"forms1"},
@@ -388,14 +389,16 @@
 												sel.options[0] = new Option("","");
 												sel.options[1] = new Option("ORDERIN","ORDERIN");
 												sel.options[2] = new Option("CANCELORDER","CANCELORDER");
-												sel.options[3] = new Option("CREATERSV","CREATERSV");
-												sel.options[4] = new Option("CANCELBATCH","CANCELBATCH");
+												sel.options[3] = new Option("BATCHCOMPLETE","BATCHCOMPLETE");
+												sel.options[4] = new Option("CREATERSV","CREATERSV");
+												sel.options[5] = new Option("CANCELBATCH","CANCELBATCH");
 											} else {
 												sel.options[0] = new Option("","");
 												sel.options[1] = new Option("ORDERIN","ORDERIN");
 												sel.options[2] = new Option("CANCELORDER","CANCELORDER");
-												sel.options[3] = new Option("PLACEORDER","PLACEORDER");
-												sel.options[4] = new Option("CANCELBATCH","CANCELBATCH");
+												sel.options[3] = new Option("BATCHCOMPLETE","BATCHCOMPLETE");
+												sel.options[4] = new Option("PLACEORDER","PLACEORDER");
+												sel.options[5] = new Option("CANCELBATCH","CANCELBATCH");
 											}
 											
 											elCell.appendChild(sel);
@@ -452,13 +455,17 @@
         };
       }
 
+	  function refreshTable() {
+      		sDataTable.getDataSource().sendRequest('', myCallback);  
+      		showTable();
+      }  
+
       var actionMapping = {
       	 'NEW': {CANCELBATCH:0},
 	     'DCC': {ORDERIN:0,CANCELORDER:0,CANCELBATCH:0},
 	     'DCF': {ORDERIN:0,CANCELBATCH:0},
 	     'OCF': {CANCELORDER:0},
-		 'OCC': {PLACEORDER:0},
-		 'CPD/OCC': {CREATERSV:0},
+		 'OCC': {CREATERSV:0,PLACEORDER:0,BATCHCOMPLETE:0},
 	     'CRF': {CREATERSV:0},
 		 'POF': {PLACEORDER:0},
 		 'POC': {PLACEORDER:0},
@@ -468,7 +475,7 @@
       }
 
       function updateRefreshTimestamp() {
-      	var d = new Date();
+		var d = new Date();
 		document.getElementById("lastUpdateTime").innerHTML = d.getHours() + ':' + d.getMinutes()+ ':' + d.getSeconds();
       }
 
@@ -511,15 +518,15 @@
 					}
 					try {
 						var currentBatch = jsonrpcClient.AsyncCrisisMngProvider.getOrderCrisisBatchById(currentBatchId);
-      					if(actionType == 'ORDERIN') {
-      						var result = jsonrpcClient.AsyncCrisisMngProvider.doOrderCollectionIn(actionCallBack, currentBatchId);
-      					}else if(actionType == 'CANCELORDER') {
-							if(currentBatchType == 'ROB'){
+      					if(actionType === 'ORDERIN') {
+      						jsonrpcClient.AsyncCrisisMngProvider.doOrderCollectionIn(currentBatchId);
+      					}else if(actionType === 'CANCELORDER') {
+							if(currentBatchType === 'ROB'){
 								jsonrpcClient.AsyncCrisisMngProvider.doCancelOrder(currentBatchId, null);
 							} else {
 								showCancelStandingOrderTable(currentBatchId);
 							}
-      					} else if(actionType == 'CREATERSV') {
+      					} else if(actionType === 'CREATERSV') {
       						var result = jsonrpcClient.AsyncCrisisMngProvider.doCrisisMngCreateReservation(currentBatchId, false, null);
 							if(result != null) {
       							if(confirm(result)) {
@@ -528,7 +535,7 @@
       						} else {
 								jsonrpcClient.AsyncCrisisMngProvider.doCrisisMngCreateReservation(currentBatchId, true, null);
 							}
-      					} else if(actionType == 'PLACEORDER'){
+      					} else if(actionType === 'PLACEORDER'){
 							var result = jsonrpcClient.AsyncCrisisMngProvider.placeStandingOrder(currentBatchId, null, false, null);
 							if(result != null) {
       							if(confirm(result)) {
@@ -538,7 +545,9 @@
 								showStandingOrderTable(currentBatchId);
 							}
 							
-						} else if(actionType == 'CANCELBATCH') {
+						} else if(actionType === 'BATCHCOMPLETE') {
+      						var cmdResult = jsonrpcClient.AsyncCrisisMngProvider.doCrisisMngBatchComplete(currentBatchId);
+      					} else if(actionType === 'CANCELBATCH') {
       						jsonrpcClient.AsyncCrisisMngProvider.doCrisisMngBatchCancel(currentBatchId);
       					} else {
       						alert("Processing "+actionType+" on BATCH ID:"+currentBatchId);
@@ -550,17 +559,15 @@
       			}
       		}
       }
-		 function actionCallBack(result, exception){
-			refreshTable();
-		 }
-		  function doAutoRefresh(src) {
+		 
+		 function doAutoRefresh(src) {
 			if(src.checked) {
 				sDataSource.setInterval(30000, null, myCallback);
 			} else {
 				sDataSource.clearAllIntervals();
 			}
-		  }      
-		showTable();
+		}      
+		
 
 		var errColor = "#FF0000";
 		var msgColor = "#00FF00";
@@ -580,7 +587,7 @@
 				document.getElementById('zone').value = getValues('zones');
 				document.getElementById('region').value = getValues('regions');
 			}else{
-				return;
+				return false;
 			}
 		}
       </script>

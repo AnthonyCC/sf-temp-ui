@@ -1,13 +1,21 @@
 package com.freshdirect.transadmin.crisis.manager.action;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.routing.model.GenericSearchModel;
+import com.freshdirect.routing.model.IGenericSearchModel;
+import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.transadmin.constants.EnumCrisisMngBatchStatus;
 import com.freshdirect.transadmin.model.ICrisisManagerBatch;
 import com.freshdirect.transadmin.model.ICrisisManagerBatchDeliverySlot;
@@ -15,6 +23,9 @@ import com.freshdirect.transadmin.service.ICrisisManagerService;
 import com.freshdirect.transadmin.service.exception.IIssue;
 import com.freshdirect.transadmin.service.exception.TransAdminProcessException;
 import com.freshdirect.transadmin.service.exception.TransAdminServiceException;
+import com.freshdirect.transadmin.util.CrisisManagerUtil;
+import com.freshdirect.transadmin.util.TransStringUtil;
+import com.metaparadigm.jsonrpc.UnmarshallException;
 
 public abstract class AbstractCrisisManagerAction {
 	
@@ -73,7 +84,7 @@ public abstract class AbstractCrisisManagerAction {
 					this.crisisMngService.updateCrisisMngBatchMessage(this.getBatch().getBatchId(), decodeErrorMessage(exp));
 				}
 			} catch (TransAdminServiceException e) {
-				LOGGER.error("Failure to update OrderScenario batch status", e);
+				LOGGER.error("Failure to update CrisisMng batch status", e);
 			}
 
 			throw new TransAdminServiceException(exp, IIssue.PROCESS_CRISISMNGBATCH_ERROR);
@@ -158,7 +169,47 @@ public abstract class AbstractCrisisManagerAction {
 		}
 		return strBuf.toString();
 	}
-
+	
+	protected void blockDeliveryCapacity() throws TransAdminServiceException, HttpException, IOException, UnmarshallException, ParseException {
+		/*Block Capacity for source & destination dates*/
+    	CrisisManagerUtil orderMngAgent = new CrisisManagerUtil();
+    	orderMngAgent.setAgent(this.getUserId());
+    	orderMngAgent.doBlockCapacity(getDates());
+	}
+	
+	protected void unBlockDeliveryCapacity() throws TransAdminServiceException, HttpException, IOException, UnmarshallException, ParseException {
+		/*Un-Block Capacity for source & destination dates*/
+    	CrisisManagerUtil orderMngAgent = new CrisisManagerUtil();
+    	orderMngAgent.setAgent(this.getUserId());
+    	orderMngAgent.doUnBlockCapacity(getDates());
+	}
+	
+	private List<IGenericSearchModel> getDates() throws ParseException {
+		List<IGenericSearchModel> models = new ArrayList<IGenericSearchModel>();    	
+		Date startTime = null; Date endTime = null;
+		if(this.getBatch().getStartTime()!= null && this.getBatch().getEndTime() != null){
+		 startTime = TransStringUtil.getDatewithTime(TransStringUtil.getDate(TransStringUtil.getNormalDate())
+				 +" "+ RoutingDateUtil.getServerTime(this.getBatch().getStartTime()));
+		 endTime = TransStringUtil.getDatewithTime(TransStringUtil.getDate(TransStringUtil.getNormalDate())
+				 +" "+ RoutingDateUtil.getServerTime(this.getBatch().getEndTime()));
+		}
+		IGenericSearchModel sourceModel = new GenericSearchModel();
+    	sourceModel.setSourceDate(this.getBatch().getDeliveryDate());
+    	sourceModel.setCutOffDate(this.getBatch().getCutOffDateTime());
+    	sourceModel.setArea(this.getBatch().getArea());
+    	sourceModel.setStartTime(startTime);
+    	sourceModel.setEndTime(endTime);
+    	models.add(sourceModel);
+    	
+    	IGenericSearchModel destModel = new GenericSearchModel();
+    	destModel.setSourceDate(this.getBatch().getDestinationDate());
+    	destModel.setCutOffDate(this.getBatch().getCutOffDateTime());
+    	destModel.setArea(this.getBatch().getArea());
+    	destModel.setStartTime(startTime);
+    	destModel.setEndTime(endTime);
+    	models.add(destModel);
+		return models;
+	}
 	
 	public abstract Object doExecute() throws Exception;
 	

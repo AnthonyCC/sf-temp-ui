@@ -17,15 +17,15 @@
       function showCancelStandingOrderTable(inputVal) {
 		addCancelSOSysMessage("", false);
 		_currentBatchId = inputVal;
-         editCancelStandingOrderPanel = new YAHOO.widget.Panel("cancelstandingorder-panel", {
-                          width: "980px",
-                          fixedcenter: true, 
-                          close: true, 
-                          draggable: false, 
-                          zindex:4,
-                          modal: true,
-                          visible: false,
-                          effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
+		editCancelStandingOrderPanel = new YAHOO.widget.Panel("cancelstandingorder-panel", {
+						  width: "980px",
+						  fixedcenter: true, 
+						  close: true, 
+						  draggable: false, 
+						  zindex:4,
+						  modal: true,
+						  visible: false,
+						  effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
 
 		var cancelStandingOrderData = jsonrpcClient.AsyncCrisisMngProvider.getStandingOrderByBatchId(_currentBatchId);
 		cancelStandingOrderDataSource = new YAHOO.util.DataSource(cancelStandingOrderData.list);

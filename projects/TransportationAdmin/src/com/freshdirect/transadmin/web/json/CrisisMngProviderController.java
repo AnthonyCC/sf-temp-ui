@@ -18,6 +18,7 @@ import com.freshdirect.transadmin.model.ICrisisManagerBatchDeliverySlot;
 import com.freshdirect.routing.model.ICrisisMngBatchOrder;
 import com.freshdirect.transadmin.constants.EnumCrisisMngBatchType;
 import com.freshdirect.transadmin.crisis.manager.action.CrisisManagerCancelAction;
+import com.freshdirect.transadmin.crisis.manager.action.CrisisManagerCompleteAction;
 import com.freshdirect.transadmin.crisis.manager.action.CrisisManagerCreateReservationAction;
 import com.freshdirect.transadmin.crisis.manager.action.CrisisManagerOrderCancelAction;
 import com.freshdirect.transadmin.crisis.manager.action.CrisisManagerOrderInAction;
@@ -145,6 +146,22 @@ public class CrisisMngProviderController extends BaseJsonRpcController  implemen
 		
 		return true;
 	}
+	
+	public boolean doCrisisMngBatchComplete(String batchId) {
+		
+		String userId = com.freshdirect.transadmin.security.SecurityManager.getUserName(getHttpServletRequest());		
+		ICrisisManagerBatch batch;
+		try {
+			batch = this.crisisManagerService.getCrisisMngBatchById(batchId);
+			CrisisManagerCompleteAction process = new CrisisManagerCompleteAction(batch, userId, this.crisisManagerService);
+			process.execute();
+		} catch (TransAdminServiceException e) {
+			LOGGER.error("<doOrderScenarioComplete:> TransAdmin service exception", e);
+		}
+		
+		return true;
+	}
+	
 	
 	public boolean doCancelOrder(String orderCrisisBatchId, String[][] orders){
 		

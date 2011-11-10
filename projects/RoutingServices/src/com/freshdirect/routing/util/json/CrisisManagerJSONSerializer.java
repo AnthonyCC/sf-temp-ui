@@ -31,6 +31,7 @@ import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumDeliveryType;
 import com.freshdirect.routing.constants.EnumReservationType;
+import com.freshdirect.routing.model.GenericSearchModel;
 import com.freshdirect.routing.model.ReservationModel;
 import com.freshdirect.routing.model.CrisisMngBatchOrderModel;
 import com.metaparadigm.jsonrpc.AbstractSerializer;
@@ -46,7 +47,7 @@ public class CrisisManagerJSONSerializer extends AbstractSerializer {
 	private static Category		LOGGER	= LoggerFactory.getInstance( CrisisManagerJSONSerializer.class );
 
 	private static Class<?>[] _serializableClasses = new Class[] { EnumDeliveryType.class, 
-		EnumReservationType.class, ReservationModel.class, CrisisMngBatchOrderModel.class};
+		EnumReservationType.class, ReservationModel.class, CrisisMngBatchOrderModel.class, GenericSearchModel.class};
 
 	private static Class<?>[] _JSONClasses = new Class[] { JSONObject.class };
 

@@ -1102,10 +1102,11 @@ public class FDDeliveryManager {
 			throw new FDResourceException(re);
 		}
 	}
-	public int blockTimeslotCapacity(Date sourceDate) throws FDResourceException {
+	public int blockTimeslotCapacity(Date sourceDate
+			, Date cutoffDate, String[] area, Date startTime, Date endTime) throws FDResourceException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			return sb.blockTimeslotCapacity(sourceDate);
+			return sb.blockTimeslotCapacity(sourceDate, cutoffDate, area, startTime, endTime);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -1113,10 +1114,11 @@ public class FDDeliveryManager {
 		}
 	}
 	
-	public int unBlockTimeslotCapacity(Date sourceDate) throws FDResourceException {
+	public int unBlockTimeslotCapacity(Date sourceDate
+			, Date cutoffDate, String[] area, Date startTime, Date endTime) throws FDResourceException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			return sb.unBlockTimeslotCapacity(sourceDate);
+			return sb.unBlockTimeslotCapacity(sourceDate, cutoffDate, area, startTime, endTime);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {

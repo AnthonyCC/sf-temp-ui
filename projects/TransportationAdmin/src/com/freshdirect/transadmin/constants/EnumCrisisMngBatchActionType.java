@@ -2,7 +2,7 @@ package com.freshdirect.transadmin.constants;
 
 public enum EnumCrisisMngBatchActionType {
 	
-	CREATE, ORDERDATAIN, ORDERCANCEL, CREATERESERVATION, PLACEORDER, CANCEL;
+	CREATE, ORDERDATAIN, ORDERCANCEL, CREATERESERVATION, PLACEORDER, COMPLETE, CANCEL;
 	
 	public String value(){
 	    switch(this) {
@@ -11,6 +11,7 @@ public enum EnumCrisisMngBatchActionType {
 	     case ORDERCANCEL: return "OCL";
 	     case CREATERESERVATION: return "CRV";
 	     case PLACEORDER: return "PWO";
+	     case COMPLETE: return "CPD";
 	     case CANCEL: return "CCL";
 	     default: return "";
 	   }
@@ -30,6 +31,8 @@ public enum EnumCrisisMngBatchActionType {
 			return CREATERESERVATION;
 		} else if(value.equals(PLACEORDER.value())) {
 			return PLACEORDER;
+		} else if(value.equals(COMPLETE.value())) {
+			return COMPLETE;
 		} else if(value.equals(CANCEL.value())) {
 			return CANCEL;
 		} else throw new RuntimeException("EnumOrderScenarioBatchActionType: undefined enum :"+value);

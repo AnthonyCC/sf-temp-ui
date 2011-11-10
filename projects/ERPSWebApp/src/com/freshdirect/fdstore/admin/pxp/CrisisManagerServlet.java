@@ -61,6 +61,7 @@ import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.routing.model.ICrisisMngBatchOrder;
+import com.freshdirect.routing.model.IGenericSearchModel;
 import com.freshdirect.routing.model.IReservationModel;
 import com.freshdirect.routing.util.json.CrisisManagerJSONSerializer;
 import com.freshdirect.webapp.util.StandingOrderUtil;
@@ -106,7 +107,6 @@ public class CrisisManagerServlet extends HttpServlet {
 		String payload = request.getParameter("payload");
 		if (payload == null) {
 			LOGGER.error("Empty payload");
-			// no payload
 			sendError(response, ":/");
 			return;
 		}
@@ -144,18 +144,18 @@ public class CrisisManagerServlet extends HttpServlet {
 											, payload);
 		} else if(ACTION_BLOCK_CAPACITY.equalsIgnoreCase(action)){
 			try {
-				result = FDDeliveryManager.getInstance().blockTimeslotCapacity((Date) serializer.fromJSON(payload));
+				IGenericSearchModel model = extractDatePayload(payload);
+				result = FDDeliveryManager.getInstance().blockTimeslotCapacity(model.getSourceDate(), model.getCutOffDate()
+						, model.getArea(), model.getStartTime(), model.getEndTime());
 			} catch (FDResourceException e) {
-				e.printStackTrace();
-			} catch (UnmarshallException e) {
 				e.printStackTrace();
 			}
 		} else if(ACTION_UNBLOCK_CAPACITY.equalsIgnoreCase(action)){
 			try {
-				result = FDDeliveryManager.getInstance().unBlockTimeslotCapacity((Date) serializer.fromJSON(payload));
+				IGenericSearchModel model = extractDatePayload(payload);
+				result = FDDeliveryManager.getInstance().unBlockTimeslotCapacity(model.getSourceDate(), model.getCutOffDate()
+											, model.getArea(), model.getStartTime(), model.getEndTime());
 			} catch (FDResourceException e) {
-				e.printStackTrace();
-			} catch (UnmarshallException e) {
 				e.printStackTrace();
 			}
 		}
@@ -393,7 +393,7 @@ public class CrisisManagerServlet extends HttpServlet {
 			if(cart!=null && cart.getZoneInfo()!=null)
 				zoneId = cart.getZoneInfo().getZoneId();
 			
-			TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.TRANSPORTATION.getCode(), (cart != null) ? cart.isDlvPassApplied() : false, (cart != null) ? cart.getDeliverySurcharge() : 0.00,
+			TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.ADMINISTRATOR.getCode(), (cart != null) ? cart.isDlvPassApplied() : false, (cart != null) ? cart.getDeliverySurcharge() : 0.00,
 					(cart != null) ? cart.isDeliveryChargeWaived() : false, Util.isZoneCtActive(zoneId));
 		
 			FDTimeslot timeslot = FDDeliveryManager.getInstance().getTimeslotsById(rsvModel.getTimeSlotId());
@@ -444,7 +444,7 @@ public class CrisisManagerServlet extends HttpServlet {
 	
 	protected FDActionInfo getActionInfo(String agent){
 		
-		EnumTransactionSource src = EnumTransactionSource.TRANSPORTATION;
+		EnumTransactionSource src = EnumTransactionSource.ADMINISTRATOR;
 		CrmAgentModel crmAgent = new CrmAgentModel();
 		crmAgent.setLdapId(agent);
 		FDActionInfo info = new FDActionInfo(src, null, agent, null, crmAgent);
@@ -586,5 +586,23 @@ public class CrisisManagerServlet extends HttpServlet {
 		}
 		
 		return standingOrderModel;
+	}
+	
+	protected IGenericSearchModel extractDatePayload(String payload) {
+		
+		IGenericSearchModel model = null;
+		try {
+			model = (IGenericSearchModel) serializer.fromJSON(payload);
+		} catch (ClassCastException e) {
+			LOGGER.error("Error raised during create Reservation deserialization", e);
+			return null;
+		} catch (UnmarshallException e) {
+			LOGGER.error("Error raised during create Reservation deserialization", e);
+			return null;
+		} catch (Exception e) {
+			LOGGER.error("Error raised during create Reservation deserialization", e);
+			return null;
+		}
+		return model;
 	}
 }

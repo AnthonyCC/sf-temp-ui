@@ -14,10 +14,10 @@
       var editStandingOrderPanel; 
       var _currentBatchId;
 
-    function showStandingOrderTable(inputVal) {
+	function showStandingOrderTable(inputVal) {
 		addSysMessage("", false);
 		_currentBatchId = inputVal;
-         editStandingOrderPanel = new YAHOO.widget.Panel("standingorder-panel", {
+		editStandingOrderPanel = new YAHOO.widget.Panel("standingorder-panel", {
                           width: "980px",
                           fixedcenter: true, 
                           close: true, 
@@ -41,8 +41,7 @@
 			    {key:"tempLineItemCount", label:"Template LineItems", sortable:true, width: 110, className:'align-center'},
 			    {key:"lineItemChangeCount", label:"LineItems Change", sortable:false, width: 130, className:'align-center'},
 			    {key:"status", label:"Status", sortable:false, width: 70, className:'align-center'},
-			    {key:"errorHeader", label:"Error Info", sortable:false, width: 130, className:'align-center'},
-			   
+			    {key:"errorHeader", label:"Error Info", sortable:false, width: 130, className:'align-center'}
 		 ];
 	
 		var sMyConfigs = { 
@@ -54,7 +53,7 @@
 		
 		standingOrderDataTable = new YAHOO.widget.DataTable("contstandingordertable", standingOrderColumns, standingOrderDataSource, sMyConfigs);
 
-		setAllChecks( standingOrderDataTable, true );
+		setStandingOrderChecks( standingOrderDataTable, true );
 
 		standingOrderDataTable.subscribe("rowClickEvent", standingOrderDataTable.onEventSelectRow );
 
@@ -62,7 +61,7 @@
 		editStandingOrderPanel.show(); 
 	}
 
-	function setAllChecks( arg_dt, flag) {
+	function setStandingOrderChecks( arg_dt, flag) {
 		var oRS = arg_dt.getRecordSet();
 		arg_dt.render();
 		for(var i=0; i < oRS.getLength(); i++) {

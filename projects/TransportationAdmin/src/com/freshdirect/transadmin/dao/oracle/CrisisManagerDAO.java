@@ -177,15 +177,23 @@ public class CrisisManagerDAO implements ICrisisManagerDAO   {
 	
 	private static final String UPDATE_CRISISMNGBATCH_RSVSTATUS = "UPDATE TRANSP.CRISISMNG_BATCHRESERVATION SET STATUS_CODE = 25 where BATCH_ID = ? ";
 	
-	private static final String GETCRISISMNGBATCH_RO_TIMESLOTBYZONEQRY = "select b.batch_id, o.area, o.window_starttime, o.window_endtime "+
+	private static final String GETCRISISMNGBATCH_RO_TIMESLOTBYZONEQRY = "select b.batch_id, o.area area, o.window_starttime starttime, o.window_endtime endtime "+
 		" from TRANSP.CRISISMNG_BATCHORDER o, TRANSP.CRISISMNG_BATCH b "+
 		" where b.batch_id = o.batch_id and b.batch_id = ? "+
-		" group by b.batch_id, o.area, o.window_starttime, o.window_endtime order by o.area, o.window_starttime asc";
+		" UNION " +
+		" select b.batch_id, r.area area, r.window_starttime starttime, r.window_endtime endtime "+
+		" from TRANSP.CRISISMNG_BATCHRESERVATION r, TRANSP.CRISISMNG_BATCH b "+
+		" where b.batch_id = r.batch_id and b.batch_id = ? "+
+		" order by area, starttime asc";
 	
-	private static final String GETCRISISMNGBATCH_SO_TIMESLOTBYZONEQRY = "select b.batch_id, o.area, o.window_starttime, o.window_endtime "+
+	private static final String GETCRISISMNGBATCH_SO_TIMESLOTBYZONEQRY = "select b.batch_id, o.area area, o.window_starttime starttime, o.window_endtime endtime"+
 		" from TRANSP.CRISISMNG_BATCHSTANDINGORDER o, TRANSP.CRISISMNG_BATCH b "+
 		" where b.batch_id = o.batch_id and b.batch_id = ? "+
-		" group by b.batch_id, o.area, o.window_starttime, o.window_endtime order by o.area, o.window_starttime asc";
+		" UNION " +
+		" select b.batch_id, r.area area, r.window_starttime starttime, r.window_endtime endtime"+
+		" from TRANSP.CRISISMNG_BATCHRESERVATION r, TRANSP.CRISISMNG_BATCH b "+
+		" where b.batch_id = r.batch_id and b.batch_id = ? "+
+		" order by area, starttime asc";
 	
 	private static final String GET_TIMESLOT_BYDATEQRY = "select z.ZONE_CODE AREA, t.START_TIME, t.END_TIME, t.ID "+
         " from dlv.timeslot t, dlv.zone z, transp.zone ta "+
@@ -903,14 +911,14 @@ public class CrisisManagerDAO implements ICrisisManagerDAO   {
 				BatchSqlUpdate batchUpdater = new BatchSqlUpdate(this.jdbcTemplate.getDataSource(), INSERT_CRISISMNGBATCH_RESERVATION);
 
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
-				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));			
+				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.declareParameter(new SqlParameter(Types.DATE));
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
 				batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
 				batchUpdater.declareParameter(new SqlParameter(Types.INTEGER));
 				batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
-				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.compile();
@@ -1053,7 +1061,8 @@ public class CrisisManagerDAO implements ICrisisManagerDAO   {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
 				PreparedStatement ps =
 					connection.prepareStatement(updateQ.toString());
-				ps.setString(1, batchId);				
+				ps.setString(1, batchId);
+				ps.setString(2, batchId);
 				return ps;
 			}  
 		};
@@ -1081,8 +1090,8 @@ public class CrisisManagerDAO implements ICrisisManagerDAO   {
 		ICrisisManagerBatchDeliverySlot model = new CrisisManagerBatchDeliverySlot();		
 		model.setBatchId(_batchId);
 		model.setArea(_area);
-		model.setStartTime(rs.getTimestamp("WINDOW_STARTTIME"));
-		model.setEndTime(rs.getTimestamp("WINDOW_ENDTIME"));
+		model.setStartTime(rs.getTimestamp("STARTTIME"));
+		model.setEndTime(rs.getTimestamp("ENDTIME"));
 		slotMapping.get(_area).add(model);
 	}
 	

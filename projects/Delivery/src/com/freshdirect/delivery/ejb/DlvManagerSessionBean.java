@@ -2796,11 +2796,12 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		}
 	}
 	
-	public int blockTimeslotCapacity(Date sourceDate) throws DlvResourceException {
+	public int blockTimeslotCapacity(Date sourceDate
+			, Date cutoffDate, String[] area, Date startTime, Date endTime) throws DlvResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			return DlvManagerDAO.blockTimeslotCapacity(conn, sourceDate);
+			return DlvManagerDAO.blockTimeslotCapacity(conn, sourceDate, cutoffDate, area, startTime, endTime);
 		} catch (SQLException e) {			
 			throw new DlvResourceException(e);
 		} finally {
@@ -2814,11 +2815,12 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		}
 	}
 	
-	public int unBlockTimeslotCapacity(Date sourceDate) throws DlvResourceException {
+	public int unBlockTimeslotCapacity(Date sourceDate
+			, Date cutoffDate, String[] area, Date startTime, Date endTime) throws DlvResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			return DlvManagerDAO.unBlockTimeslotCapacity(conn, sourceDate);
+			return DlvManagerDAO.unBlockTimeslotCapacity(conn, sourceDate, cutoffDate, area, startTime, endTime);
 		} catch (SQLException e) {			
 			throw new DlvResourceException(e);
 		} finally {

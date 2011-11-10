@@ -22,6 +22,7 @@ import com.freshdirect.transadmin.model.ICrisisManagerBatch;
 import com.freshdirect.transadmin.model.ICrisisManagerBatchReservation;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.transadmin.service.ICrisisManagerService;
+import com.freshdirect.transadmin.service.exception.IIssue;
 import com.freshdirect.transadmin.service.exception.TransAdminServiceException;
 import com.freshdirect.transadmin.util.CrisisManagerUtil;
 
@@ -93,19 +94,18 @@ public class CrisisManagerOrderCancelAction extends AbstractCrisisManagerAction 
 		    		getService().updateCrisisMngOrderException(getProcess().getBatchId(), getProcess().getBatchType().name(),exceptionOrderIds);
 		    		getService().updateCrisisMngBatchStatus(getProcess().getBatchId(), getFailureStatus());
 		    		getService().updateCrisisMngBatchMessage(getProcess().getBatchId(),  formatMessages(messages));					
+		    	}else{
+		    		getService().updateCrisisMngBatchStatus(getProcess().getBatchId(), EnumCrisisMngBatchStatus.ORDERCANCELCOMPLETE);
+			    	getService().updateCrisisMngBatchMessage(getProcess().getBatchId()
+			    				,  EnumCrisisMngBatchType.STANDINGORDER.equals(getProcess().getBatchType()) ? INFO_MESSAGE_ORDERCANCELCOMPLETED : INFO_MESSAGE_REGULARORDERCANCELCOMPLETED);
+			
 		    	}
 		    	
 		    	/*update the order status*/
 		    	getService().updateCrisisMngReservationStatus(getProcess().getBatchId(), null);
 		    	getService().updateCrisisMngOrderStatus(getProcess().getBatchId(),getProcess().getBatchType().name(), exceptionOrderIds);
-		    	if(EnumCrisisMngBatchType.STANDINGORDER.equals(getProcess().getBatchType())){
-		    		getService().updateCrisisMngBatchStatus(getProcess().getBatchId(), EnumCrisisMngBatchStatus.ORDERCANCELCOMPLETE);
-		    		getService().updateCrisisMngBatchMessage(getProcess().getBatchId(),  INFO_MESSAGE_ORDERCANCELCOMPLETED);
-				}else{
-					getService().updateCrisisMngBatchStatus(getProcess().getBatchId(), EnumCrisisMngBatchStatus.AUTOCOMPLETED);
-					getService().updateCrisisMngBatchMessage(getProcess().getBatchId(),  INFO_MESSAGE_REGULARORDERCANCELCOMPLETED);
-				}
 		    	
+
 		    } catch(Exception e){
 		    	LOGGER.error("CancelOrderTask failed with exception ", e);
 		    	try {
@@ -141,12 +141,8 @@ public class CrisisManagerOrderCancelAction extends AbstractCrisisManagerAction 
 		if (exceptions.size() > 0) {
 			messages.add(ICrisisManagerProcessMessage.ERROR_MESSAGE_ORDEREXCEPTION);
 			messages.addAll(exceptions);
-
-			getService().updateCrisisMngBatchStatus(getProcess().getBatchId()
-														,getFailureStatus());
-			getService().updateCrisisMngBatchMessage(getProcess().getBatchId()
-														,formatMessages(messages));
-			return;
+			throw new TransAdminServiceException("Error in Order Cancellation: "+formatMessages(messages)
+					, null, IIssue.PROCESS_CRISISMNGBATCH_ERROR);
 		}
 	}
 	

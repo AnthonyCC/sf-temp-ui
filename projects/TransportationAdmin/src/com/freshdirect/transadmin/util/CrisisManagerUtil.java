@@ -20,6 +20,7 @@ import weblogic.wsee.handler.InvocationException;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.model.ICrisisMngBatchOrder;
+import com.freshdirect.routing.model.IGenericSearchModel;
 import com.freshdirect.routing.model.IReservationModel;
 import com.freshdirect.routing.util.json.CrisisManagerJSONSerializer;
 import com.metaparadigm.jsonrpc.JSONSerializer;
@@ -50,10 +51,10 @@ public class CrisisManagerUtil {
 		this.reservations = reservations;
 	}	
 	
-	public int doBlockCapacity(Date sourceDate, Date destDate) throws HttpException, IOException, UnmarshallException {
+	public int doBlockCapacity(List<IGenericSearchModel> models) throws HttpException, IOException, UnmarshallException {
 		int result = 0;
 		// check parameters
-		if (sourceDate == null || destDate == null) {
+		if (models == null) {
 			LOGGER.error("SoureDate or DestDate are null");
 			return 0;
 		}
@@ -69,18 +70,15 @@ public class CrisisManagerUtil {
 		} catch (Exception e) {
 			LOGGER.error("Failed to register serializer modules", e);
 			return 0;
-		}
-		List dates = new ArrayList();
-		dates.add(sourceDate);
-		dates.add(destDate);
-		Iterator<Date> dateItr = dates.iterator();
+		}		
+		Iterator<IGenericSearchModel> dateItr = models.iterator();
 		while(dateItr.hasNext()){
-			Date _sourceDate = dateItr.next();
+			IGenericSearchModel model = dateItr.next();
 			String datePayload = null;
 			try {
-				datePayload = ser.toJSON(_sourceDate);
+				datePayload = ser.toJSON(model);
 			} catch (MarshallException e) {
-				LOGGER.error("Failed to serialize Reservation list ", e);
+				LOGGER.error("Failed to serialize date list ", e);
 				return 0;
 			}		
 			final String adminServiceURL = TransportationAdminProperties.getAdminServiceURL();
@@ -96,7 +94,7 @@ public class CrisisManagerUtil {
 			NameValuePair[] pairs = new NameValuePair[2];		
 			pairs[0] = new NameValuePair();
 			pairs[0].setName("payload");
-			pairs[0].setValue(datePayload);		
+			pairs[0].setValue(datePayload);
 			pairs[1] = new NameValuePair();
 			pairs[1].setName("agent");
 			pairs[1].setValue(agent);		
@@ -123,10 +121,10 @@ public class CrisisManagerUtil {
 		return result;		
 	}
 	
-	public int doUnBlockCapacity(Date sourceDate, Date destDate) throws HttpException, IOException, UnmarshallException {
+	public int doUnBlockCapacity(List<IGenericSearchModel> models) throws HttpException, IOException, UnmarshallException {
 		int result = 0;
 		// check parameters
-		if (sourceDate == null || destDate == null) {
+		if (models == null) {
 			LOGGER.error("SoureDate or DestDate are null");
 			return 0;
 		}
@@ -143,15 +141,13 @@ public class CrisisManagerUtil {
 			LOGGER.error("Failed to register serializer modules", e);
 			return 0;
 		}
-		List dates = new ArrayList();
-		dates.add(sourceDate);
-		dates.add(destDate);
-		Iterator<Date> dateItr = dates.iterator();		
+		
+		Iterator<IGenericSearchModel> dateItr = models.iterator();		
 		while(dateItr.hasNext()){
-			Date _sourceDate = dateItr.next();
+			IGenericSearchModel _model = dateItr.next();
 			String datePayload = null;
 			try {
-				datePayload = ser.toJSON(_sourceDate);
+				datePayload = ser.toJSON(_model);
 			} catch (MarshallException e) {
 				LOGGER.error("Failed to serialize date list  ", e);
 				return 0;

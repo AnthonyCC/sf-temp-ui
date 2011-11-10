@@ -22,6 +22,8 @@ public interface ICrisisManagerProcessMessage {
 	
 	String INFO_MESSAGE_CREATERESERVATIONPROGRESS = "Create Reservation : in progress";
 	
+	String INFO_MESSAGE_CREATERESERVATIONFAILED = "Create Reservation : Failed";
+	
 	String INFO_MESSAGE_CREATERESERVATIONCOMPLETED = "Create Reservation : Completed";
 	
 	String ERROR_MESSAGE_TIMESLOTEXCEPTION = "There are timeslot exceptions. Please map the timeslots or setup if needed. ";	
@@ -33,5 +35,7 @@ public interface ICrisisManagerProcessMessage {
 	String INFO_MESSAGE_PLACESTANDINGORDERCOMPLETED = "Place Standing Order : Completed";
 	
 	String INFO_MESSAGE_PLACESTANDINGORDERFAILED = "Place Standing Order : Failed";
+	
+	String INFO_MESSAGE_BATCHCOMPLETED = "Batch Completed";
 
 }

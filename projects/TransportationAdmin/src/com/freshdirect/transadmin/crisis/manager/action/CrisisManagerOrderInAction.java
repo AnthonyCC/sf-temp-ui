@@ -18,7 +18,6 @@ import com.freshdirect.routing.model.ICustomerModel;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.transadmin.service.ICrisisManagerService;
 import com.freshdirect.transadmin.service.exception.TransAdminServiceException;
-import com.freshdirect.transadmin.util.CrisisManagerUtil;
 
 
 public class CrisisManagerOrderInAction extends AbstractCrisisManagerAction {
@@ -58,9 +57,7 @@ public class CrisisManagerOrderInAction extends AbstractCrisisManagerAction {
 						, EnumCrisisMngBatchActionType.ORDERDATAIN, CrisisManagerOrderInAction.this.getUserId());
 		    	getService().updateCrisisMngBatchMessage(getProcess().getBatchId(), ICrisisManagerProcessMessage.INFO_MESSAGE_ORDERDATACOLLECTIONPROGRESS);
 				/*Block Capacity for source & destination dates*/
-		    	CrisisManagerUtil orderMngAgent = new CrisisManagerUtil();
-		    	orderMngAgent.setAgent(CrisisManagerOrderInAction.this.getUserId());	
-		    	orderMngAgent.doBlockCapacity(getProcess().getDeliveryDate(), getProcess().getDestinationDate());
+		    	blockDeliveryCapacity();
 		    	
 				List<ICrisisMngBatchOrder> inputDataList = getProcess().getOrder();
 				Set<ICustomerModel> custModels = new HashSet<ICustomerModel>();
@@ -113,7 +110,7 @@ public class CrisisManagerOrderInAction extends AbstractCrisisManagerAction {
 						getService().addNewCrisisMngBatchStandingOrder(inputDataList, getProcess().getBatchId());
 		    		}
 		    		
-		    		getService().updateCrisisMngBatchStatus(getProcess().getBatchId(), EnumCrisisMngBatchStatus.ORDERCOLECTIONCOMPETE);
+		    		getService().updateCrisisMngBatchStatus(getProcess().getBatchId(), EnumCrisisMngBatchStatus.ORDERCOLECTIONCOMPLETE);
 					getService().updateCrisisMngBatchMessage(getProcess().getBatchId(), ICrisisManagerProcessMessage.INFO_MESSAGE_ORDERDATACOLLECTIONCOMPLETED);
 					
 				} else {

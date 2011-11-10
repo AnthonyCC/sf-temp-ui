@@ -1512,23 +1512,86 @@ public class DlvManagerDAO {
 		return updateCount;
 	}
 	
-	private static final String BLOCK_TIMESLOT_CAPACITY = "UPDATE DLV.TIMESLOT SET IS_CLOSED = 'X' WHERE BASE_DATE = ? ";
+	private static final String BLOCK_TIMESLOT_CAPACITY = "UPDATE DLV.TIMESLOT ts SET ts.IS_CLOSED = 'X' WHERE ts.BASE_DATE = ? ";
 
-	public static int blockTimeslotCapacity(Connection conn, Date sourceDate) throws SQLException {
+	public static int blockTimeslotCapacity(Connection conn, Date sourceDate
+			, Date cutoffDate, String[] area, Date startTime, Date endTime) throws SQLException {
 		
-		PreparedStatement ps = conn.prepareStatement(BLOCK_TIMESLOT_CAPACITY);	    
+		final StringBuffer updateQ = new StringBuffer();
+		updateQ.append(BLOCK_TIMESLOT_CAPACITY);
+		if(cutoffDate != null){
+			updateQ.append(" and to_char(ts.cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM') ");
+		}
+		if(startTime != null){
+			updateQ.append(" and ts.start_time >= ? ");
+		}
+		if(endTime != null){
+			updateQ.append(" and ts.start_time <= ? ");
+		}
+		if(area != null && area.length > 0){
+			updateQ.append(" and ts.zone_id in ( select id from dlv.zone z where z.zone_code in (");
+			for(int intCount = 0; intCount < area.length; intCount++ ) {
+				updateQ.append("'").append(area[intCount]).append("'");				
+				if(intCount < area.length-1) {
+					updateQ.append(",");
+				}
+			}
+			updateQ.append("))");
+		}	
+		PreparedStatement ps = conn.prepareStatement(updateQ.toString());	    
 		ps.setDate(1, new java.sql.Date(sourceDate.getTime()));		
+		int paramIndex = 2;
+		if(cutoffDate != null){ 
+			ps.setTimestamp(paramIndex++, new Timestamp(cutoffDate.getTime()));
+		}
+		if(startTime != null) {
+			ps.setTimestamp(paramIndex++, new Timestamp(startTime.getTime()));
+		}					
+		if(endTime != null) { 
+			ps.setTimestamp(paramIndex++, new Timestamp(endTime.getTime())); 
+		}
 		int updateCount = ps.executeUpdate();
 	    ps.close();
 		return updateCount;
 	}
 	
-	private static final String UNBLOCK_TIMESLOT_CAPACITY = "UPDATE DLV.TIMESLOT SET IS_CLOSED = null WHERE BASE_DATE = ? ";
+	private static final String UNBLOCK_TIMESLOT_CAPACITY = "UPDATE DLV.TIMESLOT ts SET ts.IS_CLOSED = null WHERE ts.BASE_DATE = ? ";
 
-	public static int unBlockTimeslotCapacity(Connection conn, Date sourceDate) throws SQLException {
-		
-		PreparedStatement ps = conn.prepareStatement(UNBLOCK_TIMESLOT_CAPACITY);	    
+	public static int unBlockTimeslotCapacity(Connection conn, Date sourceDate
+			, Date cutoffDate, String[] area, Date startTime, Date endTime) throws SQLException {
+		final StringBuffer updateQ = new StringBuffer();
+		updateQ.append(UNBLOCK_TIMESLOT_CAPACITY);
+		if(cutoffDate != null){
+			updateQ.append(" and to_char(ts.cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM') ");
+		}
+		if(startTime != null){
+			updateQ.append(" and ts.start_time >= ? ");
+		}
+		if(endTime != null){
+			updateQ.append(" and ts.start_time <= ? ");
+		}
+		if(area != null && area.length > 0){
+			updateQ.append(" and ts.zone_id in ( select id from dlv.zone z where z.zone_code in (");
+			for(int intCount = 0; intCount < area.length; intCount++ ) {
+				updateQ.append("'").append(area[intCount]).append("'");				
+				if(intCount < area.length-1) {
+					updateQ.append(",");
+				}
+			}
+			updateQ.append("))");
+		}
+		PreparedStatement ps = conn.prepareStatement(updateQ.toString());	    
 		ps.setDate(1, new java.sql.Date(sourceDate.getTime()));		
+		int paramIndex = 2;
+		if(cutoffDate != null){ 
+			ps.setTimestamp(paramIndex++, new Timestamp(cutoffDate.getTime()));
+		}
+		if(startTime != null) {
+			ps.setTimestamp(paramIndex++, new Timestamp(startTime.getTime()));
+		}
+		if(endTime != null) { 
+			ps.setTimestamp(paramIndex++, new Timestamp(endTime.getTime())); 
+		}
 		int updateCount = ps.executeUpdate();
 	    ps.close();
 		return updateCount;
