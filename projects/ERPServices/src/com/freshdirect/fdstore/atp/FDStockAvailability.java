@@ -155,9 +155,9 @@ public class FDStockAvailability implements Serializable, FDAvailabilityI {
 		
 		
 		double totalAvailable = 0.0;
-		Date today = new Date();
+
 		Date lastUnavailDate = null;
-		Date pastInventoryDate = DateUtil.addDays(today, -(FDStoreProperties.getAvailDaysInPastToLookup()));
+
 		while(!currentDate.after(endDate)) {
 			FDLimitedAvailabilityInfo limitedAvInfo = null;
 			if(!isDeliverable(currentDate)){
