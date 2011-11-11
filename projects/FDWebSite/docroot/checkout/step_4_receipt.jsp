@@ -105,7 +105,7 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
 		double sem_checkCartSubtotal = 0;
 		String sem_cartSubtotal = "0";
 		DecimalFormat sem_df = new DecimalFormat("0.00");
-			sem_cartSubtotal = NVL.apply((String)request.getAttribute("cartSubtotal"), "0").replace("$", "");
+			sem_cartSubtotal = NVL.apply((String)request.getAttribute("cartSubtotal"), "0").replace("$", "").replace(",","");
 			sem_cartSubtotal = sem_df.format(Double.parseDouble(sem_cartSubtotal));
 				
 		String sem_totalDiscountAmount = "0";
