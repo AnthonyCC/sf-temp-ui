@@ -197,10 +197,11 @@ public class CheckoutController extends BaseController {
         	throw new FDResourceException(fe);
         }
         
-        if ((user.getPaymentMethods() == null) || (user.getPaymentMethods().size() == 0)) {
+        //With Mobile App having given ability to add/remove payment method this is removed
+        /*if ((user.getPaymentMethods() == null) || (user.getPaymentMethods().size() == 0)) {
             responseMessage = getWarningMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);
             valid = false;
-        }
+        }*/
 
         if (valid) {
             if (!isCheckoutAuthenticated(request)) {
@@ -219,13 +220,7 @@ public class CheckoutController extends BaseController {
                 }
             }
         }
-
-        //        if (valid) {
-        //            if ((user.getPaymentMethods() == null) || (user.getPaymentMethods().size() == 0)) {
-        //                responseMessage = getErrorMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);
-        //                valid = false;
-        //            }
-        //        }
+        
         setResponseMessage(model, responseMessage, user);
         return valid;
     }
@@ -661,7 +656,13 @@ public class CheckoutController extends BaseController {
         boolean isEcheckRestricted = user.isEcheckRestricted();
 
         PaymentMethods responseMessage = new PaymentMethods(isCheckEligible, isEcheckRestricted, creditCards, electronicChecks);
-        responseMessage.setSelectedId(new Checkout(user).getPreselectedPaymethodMethodId());
+
+        if ((responseMessage.getCreditCards() != null && responseMessage.getCreditCards().size() == 0) 
+        		&& (responseMessage.getElectronicChecks() != null && responseMessage.getElectronicChecks().size() == 0)) {
+            responseMessage.addWarningMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);         
+        } else {
+        	responseMessage.setSelectedId(new Checkout(user).getPreselectedPaymethodMethodId());
+        }
         responseMessage.getCheckoutHeader().setHeader(user.getShoppingCart());
         setResponseMessage(model, responseMessage, user);
         return model;

@@ -14,7 +14,8 @@ public interface MessageCodes {
 
     public static final String ERR_NO_PAYMENT_METHOD = "WARN_NO_PAYMENT_METHOD";
 
-    public static final String ERR_NO_PAYMENT_METHOD_MSG = "You do not have a payment method associated with your account and will not be able to complete checkout. Please add a payment method to your account.";
+    //public static final String ERR_NO_PAYMENT_METHOD_MSG = "You do not have a payment method associated with your account and will not be able to complete checkout. Please add a payment method to your account.";
+    public static final String ERR_NO_PAYMENT_METHOD_MSG = "Sorry, you do not have a payment method associated with your account. Please visit our website to add payment information.";    
 
     public static final String ERR_SESSION_EXPIRED = "ERR_SESSION_EXPIRED";
 

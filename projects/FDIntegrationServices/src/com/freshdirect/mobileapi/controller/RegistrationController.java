@@ -156,12 +156,10 @@ public class RegistrationController extends BaseController {
 				.getItemsInCartCount());
 		((LoggedIn) responseMessage).setOrderCount(user.getOrderHistory().getValidOrderCount());
 				
-		// Check payment methods
-		if ((user.getPaymentMethods() == null)
-				|| (user.getPaymentMethods().size() == 0)) {
-			responseMessage.addWarningMessage(ERR_NO_PAYMENT_METHOD,
-					ERR_NO_PAYMENT_METHOD_MSG);
-		}
+		//With Mobile App having given ability to add/remove payment method this is removed
+		/* if ((user.getPaymentMethods() == null)	|| (user.getPaymentMethods().size() == 0)) {
+			responseMessage.addWarningMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);
+		}*/
 		((LoggedIn) responseMessage).setBrowseEnabled(MobileApiProperties
 				.isBrowseEnabled());
 		return responseMessage;
