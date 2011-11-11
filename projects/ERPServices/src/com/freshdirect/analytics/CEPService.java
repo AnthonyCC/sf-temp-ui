@@ -32,15 +32,6 @@ public class CEPService{
 	private static final Category LOGGER = LoggerFactory.getInstance(CEPService.class);
 
 		private static StatelessKnowledgeSession ksession = null;
-	/*	static
-		{
-			KnowledgeBase kbase = getKnowledgeBase();
-			ksession = kbase.newStatelessKnowledgeSession();
-			ksession.addEventListener( new CustomAgendaEventListener() );
-			ksession.addEventListener(new CustomWorkingMemoryEventListener());
-			KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "auditlogfile");
-			
-		}*/
 		
 		@SuppressWarnings("unchecked")
 		public static Map insert(List e)
@@ -112,75 +103,5 @@ public class CEPService{
 			 kagent.applyChangeSet( ResourceFactory.newInputStreamResource(CEPService.class.getResourceAsStream(FDStoreProperties.getRuleRepository())));
 			 return kagent.getKnowledgeBase();
 		}
-		
-	/*	private static StatefulKnowledgeSession session = null;
-		
-		static
-		{
-			if(session == null)
-				getInstance();
-		}
-		public static synchronized StatefulKnowledgeSession getInstance(){
-			try
-			{
-			KnowledgeBase knowledgeBase = readKnowledgeBase();
-			session = knowledgeBase.newStatefulKnowledgeSession();
-			session.addEventListener( new CustomAgendaEventListener() );
-			session.addEventListener(new CustomWorkingMemoryEventListener());
-			KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(session, "auditlogfile");
-			
-			new Thread(new Runnable() {
-				public void run() {
-				session.fireUntilHalt();
-				}
-				}).start();
-			}
-			catch(Exception e)
-			{
-				System.out.println(e.getMessage());
-			}
-
-			return session;
-			
-			
-
-
-		}
-
-		public static void insert(TimeslotEventModel event)
-		{
-			try
-			{
-			if(session == null)
-			{
-				getInstance();
-			    
-			}
-			session.insert(event);
-			
-			}
-			catch(Exception e)
-			{
-				System.out.println(e.getMessage());
-			}
-		}
-		private static KnowledgeBase readKnowledgeBase() throws Exception {
-			KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-			kbuilder.add(ResourceFactory.newInputStreamResource(CEPService.class.getResourceAsStream("Bounce.drl")),  ResourceType.DRL);
-			KnowledgeBuilderErrors errors = kbuilder.getErrors();
-			if (errors.size() > 0) {
-				for (KnowledgeBuilderError error: errors) {
-					System.err.println(error);
-				}
-				throw new IllegalArgumentException("Could not parse knowledge.");
-			}
-			KnowledgeBaseConfiguration configuration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-		    configuration.setOption(EventProcessingOption.STREAM);
-			KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(configuration);
-			kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-			return kbase;
-		}
-		
-		*/
 	}
 	

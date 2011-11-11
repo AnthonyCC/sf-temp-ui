@@ -6,6 +6,7 @@ package com.freshdirect.analytics;
  *
  */
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -311,7 +312,7 @@ public class TimeslotEventDAO {
 	   
 	    	ps.setString(9, event.getTransactionSource());
 	    	ps.setString(10,(event.isDlvPassApplied())?"Y":"N");
-	    	ps.setDouble(11, event.getDeliveryCharge());
+	    	ps.setBigDecimal(11, new BigDecimal(event.getDeliveryCharge()));
 	    	ps.setString(12, (event.isDeliveryChargeWaived())?"Y":"N");
 	    	ps.setString(13, (event.isZoneCtActive())?"Y":"N");
 	    	
@@ -321,7 +322,7 @@ public class TimeslotEventDAO {
 	    	return;
 	    }
 		
-		if(event.getDetail() != null) {
+		if(event.getDetail() != null && event.getDetail().size() > 0 ) {
 		    boolean isAnalyseCall=isAnalyzeCall(event.getEventType());
 		    if(isAnalyseCall) {
 		    	ps=conn.prepareStatement(TIMESLOT_LOG_DTL_WITH_COST_INSERT);
@@ -352,7 +353,7 @@ public class TimeslotEventDAO {
 		    				ps.setInt(10, cost.getFixedRouteSetupCost());
 		    				ps.setInt(11, cost.getMaxRunTime());
 		    				ps.setInt(12, cost.getOvertimeHourlyWage());
-		    				ps.setDouble(13, cost.getPercentageAvailable());
+		    				ps.setBigDecimal(13, new BigDecimal(cost.getPercentageAvailable()));
 		    				ps.setInt(14, cost.getPrefRunTime());
 		    				ps.setInt(15, cost.getRegularHourlyWage());
 		    				ps.setInt(16, cost.getRegularWageDurationSeconds());
@@ -378,9 +379,9 @@ public class TimeslotEventDAO {
 
 		    				ps.setString(46, cost.getUnavailabilityReason());
 		    				ps.setInt(47, cost.getWaveOrdersTaken());
-		    				ps.setDouble(48,cost.getTotalQuantities());
+		    				ps.setBigDecimal(48,new BigDecimal(cost.getTotalQuantities()));
 		    				ps.setString(49,get(cost.isNewRoute()));
-		    				ps.setDouble(50,cost.getCapacities());
+		    				ps.setBigDecimal(50,new BigDecimal(cost.getCapacities()));
 
 		    			} else {
 		    				ps.setInt(5, 0);
@@ -422,7 +423,7 @@ public class TimeslotEventDAO {
 
 		    			}
 		    			ps.setString(30, eventD.getZoneCode());
-		    			ps.setDouble(31, eventD.getWs_amount());
+		    			ps.setBigDecimal(31, new BigDecimal(eventD.getWs_amount()));
 		    			ps.setString(32, get(eventD.isAlcohol_restriction()));
 		    			ps.setString(33,get(eventD.isHoliday_restriction()));
 		    			ps.setString(34,get(eventD.isEcofriendlyslot()));
@@ -444,7 +445,7 @@ public class TimeslotEventDAO {
 		    		ps.addBatch();
 		    	}
 		}
-	    ps.executeBatch();
+		ps.executeBatch();
 		ps.close();
 	    }
 		
