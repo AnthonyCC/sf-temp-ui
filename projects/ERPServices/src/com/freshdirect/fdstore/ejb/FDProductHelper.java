@@ -197,20 +197,20 @@ class FDProductHelper {
 				throw new FDResourceException( e1 );
 			}					
 		}
-		List<Date> deliveryDates = null;
-		if(FDStoreProperties.isLimitedAvailabilityEnabled()) {//otherwise group will not be associated with the product.
+		 Date[] availDates = new Date[0];
+		 if(FDStoreProperties.isLimitedAvailabilityEnabled()) {//otherwise group will not be associated with the product.
 			ErpInfoSB remote;
 			try{
 				remote = getErpInfoSB();
-				deliveryDates = remote.getAvailableDeliveryDates(erpProductInfo.getMaterialSapIds()[0], FDStoreProperties.getAvailDaysInPastToLookup());
+				List<Date> deliveryDates = remote.getAvailableDeliveryDates(erpProductInfo.getMaterialSapIds()[0], FDStoreProperties.getAvailDaysInPastToLookup());
+				if(deliveryDates != null && !deliveryDates.isEmpty())
+					availDates = (Date[])deliveryDates.toArray(new Date[deliveryDates.size()]);
 			} catch (RemoteException e1) {
 				e1.printStackTrace();
 				throw new FDResourceException( e1 );
-			} 					
+			} 	
 		}
-		Date[] availDates = new Date[0];
-		if(!deliveryDates.isEmpty())
-			availDates = (Date[])deliveryDates.toArray(new Date[deliveryDates.size()]);
+
 		
 		return new FDProductInfo(
 			erpProductInfo.getSkuCode(),

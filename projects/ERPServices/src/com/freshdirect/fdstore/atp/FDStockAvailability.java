@@ -156,38 +156,24 @@ public class FDStockAvailability implements Serializable, FDAvailabilityI {
 		
 		double totalAvailable = 0.0;
 		Date today = new Date();
-		Date pastAvailDate = null;
+		Date lastUnavailDate = null;
 		Date pastInventoryDate = DateUtil.addDays(today, -(FDStoreProperties.getAvailDaysInPastToLookup()));
 		while(!currentDate.after(endDate)) {
 			FDLimitedAvailabilityInfo limitedAvInfo = null;
 			if(!isDeliverable(currentDate)){
 				limitedAvInfo =  new FDLimitedAvailabilityInfo(currentDate, 0.0, false);
-				totalAvailable = 0.0;
+				lastUnavailDate = currentDate;
 			} else {
-				Date availDate = DateUtil.addDays(currentDate, -1); //Availability  Date for Delivery Date D is D - 1.
-				ErpInventoryEntryModel e = getInventoryEntry(availDate);
-				if(e != null) {
-					totalAvailable += e.getQuantity();
-					if(availDate.compareTo(today) == 0){
-						//if its today, then go past n days(property based) or until hit a non deliverable date.
-						//to get total available inventory. This scenario can happen when delivery date is for
-						//tomorrow but there is no inventory arrived today but can in the past which usually
-						//shouldn't be beyond 3 days.
-						Date deliveryDate = availDate;
-						while(isDeliverable(deliveryDate) && !deliveryDate.before(pastInventoryDate)){
-							pastAvailDate =  DateUtil.addDays(deliveryDate, -1);
-							ErpInventoryEntryModel e1 = getInventoryEntry(pastAvailDate); 
-							totalAvailable += e1.getQuantity();
-							deliveryDate = pastAvailDate;
-						}
-						
+				List<ErpInventoryEntryModel> entries = this.inventory.getEntries();
+				for (ErpInventoryEntryModel e : entries) {
+					if (e.getStartDate().after(currentDate)) {
+						break;
 					}
-					limitedAvInfo =  new FDLimitedAvailabilityInfo(currentDate, totalAvailable, (roundQuantity(totalAvailable, minQty, qtyInc) >= reqQty) );
-				} else {
-					//Inventory entry not available for this date. Apply
-					//previous availability
-					limitedAvInfo =  new FDLimitedAvailabilityInfo(currentDate, totalAvailable, totalAvailable > 0);
-				}
+					//Inventory start date cannot be before last unavailability date.
+					if(lastUnavailDate == null || !e.getStartDate().before(lastUnavailDate))
+						totalAvailable += e.getQuantity();
+				}				
+				limitedAvInfo =  new FDLimitedAvailabilityInfo(currentDate, totalAvailable, (roundQuantity(totalAvailable, minQty, qtyInc) >= reqQty) );
 			}
 			if(!currentDate.before(startDate))
 				limitedAvList.add(limitedAvInfo);
@@ -232,15 +218,15 @@ public class FDStockAvailability implements Serializable, FDAvailabilityI {
 		return null;
 	}
 	private boolean isDeliverable(Date input) {
-		boolean restricted = false;
+		boolean deliverable = false;
 		if(input != null && this.availableDates != null){
 			for(int i = 0; i < this.availableDates.length; i++) {
-				Date restrictedDate = this.availableDates[i];
-				if(input.compareTo(restrictedDate) == 0)//Date match
-					restricted = true;
+				Date availableDate = this.availableDates[i];
+				if(DateUtil.isSameDay(input, availableDate))//Date match
+					deliverable = true;
 			}
 		}
-		return restricted;
+		return deliverable;
 	}
 	
 	public String toString() {
