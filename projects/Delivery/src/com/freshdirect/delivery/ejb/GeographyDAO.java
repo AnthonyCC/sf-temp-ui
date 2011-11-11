@@ -281,7 +281,7 @@ public class GeographyDAO {
 					if (streetNames.size() == 0) {
 						// if this didn't match anything at all, the subsequent queries wouldn't help either
 						if(intCount == intLength -1) {
-							return zipplusfourGeocodeHack(address, conn, result);
+							return zipplusfourGeocodeHack(address, conn, result,streetAddress);
 						} else {
 							continue;
 						}
@@ -404,7 +404,7 @@ public class GeographyDAO {
 		//System.out.println(info + " city = " + address.getCity());
 
 		if (!EnumAddressVerificationResult.ADDRESS_OK.equals(result) && !EnumAddressVerificationResult.APT_WRONG.equals(result)) {
-			result = this.zipplusfourGeocodeHack(address, conn, result);
+			result = this.zipplusfourGeocodeHack(address, conn, result, streetAddress);
 		}
 
 		return result;
@@ -1402,7 +1402,7 @@ public class GeographyDAO {
 	private EnumAddressVerificationResult zipplusfourGeocodeHack(
 		AddressModel address,
 		Connection conn,
-		EnumAddressVerificationResult result) throws SQLException {
+		EnumAddressVerificationResult result, String scrubbedStreet) throws SQLException {
 		try {
 			if (GEOCODE_OK.equals(geocode(address, false, conn))) {
 				String county = getCounty(conn, address.getCity(), address.getState());
@@ -1412,6 +1412,7 @@ public class GeographyDAO {
 				address.setCity( WordUtils.capitalizeFully( address.getCity() ) );
 				address.getAddressInfo().setCounty(county);
 				address.getAddressInfo().setAddressType(EnumAddressType.STREET);
+				address.getAddressInfo().setScrubbedStreet(scrubbedStreet);
 
 				//validate city
 				if(lookupCitiesByZip(conn, address.getZipCode()).contains(address.getCity().toUpperCase())){
