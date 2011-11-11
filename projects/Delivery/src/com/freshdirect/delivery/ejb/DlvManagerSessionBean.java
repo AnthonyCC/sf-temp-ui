@@ -2563,6 +2563,26 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		}
 	}
 	
+	public void deleteZeroSyncWaveInstance(IRoutingSchedulerIdentity schedulerId) throws DlvResourceException {
+		
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+			DlvManagerDAO.deleteZeroSyncWaveInstance(conn, schedulerId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			LOGGER.warn("DlvManagerSB deleteZeroSyncWaveInstance(): " + e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.warn("DlvManagerSB deleteZeroSyncWaveInstance(): Exception while cleaning: " + e);
+			}
+		}
+	}
+	
 	public List<Date> getFutureTimeslotDates() throws DlvResourceException {
 		
 		Connection conn = null;
@@ -2629,6 +2649,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		List<IWaveInstance> waveInstances = RoutingUtil.synchronizeWaveInstance(schedulerId, waveInstanceTree, inSyncZones);
 		if(waveInstances != null && waveInstances.size() > 0) {
 			updateWaveInstanceStatus(waveInstances);
+			deleteZeroSyncWaveInstance(schedulerId);
 		}
 	}
 	

@@ -1440,6 +1440,18 @@ public class DlvManagerDAO {
 		return count.length;
 	}
 	
+	private static final String DELETE_ZERO_RESOURCE_WAVEINSTANCES = "DELETE TRANSP.WAVE_INSTANCE WHERE STATUS = 'SYN' AND RESOURCE_COUNT=0" +
+	" AND DELIVERY_DATE = ?";
+
+	
+	public static void deleteZeroSyncWaveInstance(Connection conn, IRoutingSchedulerIdentity schedulerId ) throws SQLException{
+		
+		PreparedStatement ps = conn.prepareStatement(DELETE_ZERO_RESOURCE_WAVEINSTANCES);	
+		ps.setDate(1, new java.sql.Date(schedulerId.getDeliveryDate().getTime()));
+		ps.execute();
+		ps.close();
+	}
+	
 		
 	private static final String SELECT_ACTIVE_ZONES = "select ZONE_CODE from TRANSP.Zone where OBSOLETE IS NULL Order By ZONE_CODE";
 	

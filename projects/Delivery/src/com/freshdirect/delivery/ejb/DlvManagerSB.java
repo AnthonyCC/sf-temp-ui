@@ -199,6 +199,7 @@ public interface DlvManagerSB extends EJBObject {
 			, Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree
 			, Set<String> inSyncZones) throws DlvResourceException, RemoteException;
 	List<Date> getFutureTimeslotDates() throws DlvResourceException, RemoteException;
+	void deleteWaveInstancesWithZeroResources(IRoutingSchedulerIdentity schedulerId) throws RemoteException;
 	void purgeSchedulerByIdentity(IRoutingSchedulerIdentity schedulerId) throws DlvResourceException, RemoteException;
 	
 	Set<String> getInSyncWaveInstanceZones(Date deliveryDate) throws DlvResourceException, RemoteException;
