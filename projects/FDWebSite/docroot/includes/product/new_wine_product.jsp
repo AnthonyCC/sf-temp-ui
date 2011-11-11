@@ -64,7 +64,7 @@ final int W_NEW_WINE_PRODUCT_RIGHT = 165;
 	</tr>
 	<tr valign="top">
 		<td class="text12" style="width: <%=W_NEW_WINE_PRODUCT_LEFT%>px;">
-		<% if (!_isModifyCart && isWebApp) { %><div style="padding-bottom: 20px; width: <%=W_NEW_WINE_PRODUCT_LEFT%>px;">
+		<% if (!_isModifyCart && (null==app || isWebApp)) { %><div style="padding-bottom: 20px; width: <%=W_NEW_WINE_PRODUCT_LEFT%>px;">
 			<display:WineProductBackToLink/>
 		</div><% } %>
 		

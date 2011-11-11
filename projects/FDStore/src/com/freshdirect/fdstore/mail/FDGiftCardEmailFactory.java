@@ -78,7 +78,7 @@ public class FDGiftCardEmailFactory extends FDEmailFactory{
 	@Override
 	public XMLEmailI createAuthorizationFailedEmail(FDCustomerInfo customer,
 			String orderNumber, Date startTime, Date endTime, Date cutoffTime) {
-		FDAuthorizationFailedEmail email = new FDAuthorizationFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime);
+		FDAuthorizationFailedEmail email = new FDAuthorizationFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime,super.getFDCSHours());
 		email.setXslPath("h_gc_authorization_failure.xsl", "x_gc_authorization_failure.xsl");
 		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
 		email.setSubject("Gift Card Authorization Failure");		

@@ -187,7 +187,7 @@ public class CrmAgentEntityDAO implements EntityDAOI {
 	}
 	
 	public PrimaryKey findAgentByLdapId(Connection conn, String agentLdapId) throws SQLException, ObjectNotFoundException {
-		PreparedStatement ps = conn.prepareStatement("SELECT ID FROM CUST.AGENT WHERE LDAP_ID = ?");
+		PreparedStatement ps = conn.prepareStatement("SELECT ID FROM CUST.AGENT WHERE lower(LDAP_ID) = lower(?) order by ID");
 		ps.setString(1, agentLdapId);
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {

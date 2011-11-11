@@ -53,30 +53,16 @@
 							<tr align="center">
 								<td><div style="border-top: 1px solid #666; padding: 1px;"><br /></div></td>
 							</tr>
+							<xsl:for-each select="contactHours/contactHours">
+
 							<tr align="center">
-								<td style="border: 1px solid #666; padding: 0px; background-color: #ccc;"><strong>Monday-Thursday</strong></td>
+								<td style="border: 1px solid #666; padding: 0px; background-color: #ccc;"><strong><xsl:value-of select="daysDisplay"/></strong></td>
 							</tr>
 							<tr align="center" style="background-color: #eee;">
-								<td>6:30 AM to 12 AM</td>
+								<td><xsl:value-of select="hoursDisplay"/></td>
 							</tr>
-							<tr align="center">
-								<td style="border: 1px solid #666; padding: 0px; background-color: #ccc;"><strong>Friday</strong></td>
-							</tr>
-							<tr align="center">
-								<td>6:30 AM to 11 PM</td>
-							</tr>
-							<tr align="center">
-								<td style="border: 1px solid #666; padding: 0px; background-color: #ccc;"><strong>Saturday</strong></td>
-							</tr>
-							<tr align="center" style="background-color: #eee;">
-								<td>7:30 AM to 8 PM</td>
-							</tr>
-							<tr align="center">
-								<td style="border: 1px solid #666; padding: 0px; background-color: #ccc;"><strong>Sunday</strong></td>
-							</tr>
-							<tr align="center" style="background-color: #eee;">
-								<td>7:30 AM to 12 AM</td>
-							</tr>
+							</xsl:for-each>
+							
 						</table>
 					</td>
 				</tr>

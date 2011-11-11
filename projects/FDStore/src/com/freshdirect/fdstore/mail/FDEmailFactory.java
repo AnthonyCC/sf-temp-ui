@@ -30,6 +30,7 @@ import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.MediaI;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeSource;
+import com.freshdirect.fdstore.customer.FDCSContactHours;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
@@ -182,7 +183,7 @@ public class FDEmailFactory {
 	}
 	
 	public XMLEmailI createAuthorizationFailedEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime, Date cutoffTime){
-		FDAuthorizationFailedEmail email = new FDAuthorizationFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime);
+		FDAuthorizationFailedEmail email = new FDAuthorizationFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime,getFDCSHours());
 		email.setXslPath("h_authorization_failure.xsl", "x_authorization_failure.xsl");
 		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
 		email.setSubject("Credit Card Authorization Failure");
@@ -195,7 +196,7 @@ public class FDEmailFactory {
 	 * AR - Stands for Auto Renew DP
 	 */
 	public XMLEmailI createARAuthorizationFailedEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime, Date cutoffTime){
-		FDAuthorizationFailedEmail email = new FDAuthorizationFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime);
+		FDAuthorizationFailedEmail email = new FDAuthorizationFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime,getFDCSHours());
 		email.setXslPath("h_ar_authorization_failure.xsl", "x_ar_authorization_failure.xsl");
 		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
 		email.setSubject("Credit Card Authorization Failure");
@@ -615,6 +616,7 @@ public class FDEmailFactory {
 		private Date deliveryStartTime;
 		private Date deliveryEndTime;
 		private Date cutoffTime;
+		private List<FDCSContactHours> contactHours;
 
 		public FDAuthorizationFailedEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime, Date cutoffTime) {
 			super(customer);
@@ -624,6 +626,15 @@ public class FDEmailFactory {
 			this.cutoffTime = cutoffTime;
 		}
 
+		public FDAuthorizationFailedEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime, Date cutoffTime,List<FDCSContactHours> contactHours) {
+			super(customer);
+			this.orderNumber = orderNumber;
+			this.deliveryStartTime = startTime;
+			this.deliveryEndTime = endTime;
+			this.cutoffTime = cutoffTime;
+			this.contactHours = contactHours;
+		}
+		
 		/**
 		 * @see com.freshdirect.fdstore.mail.FDInfoEmail#decorateMap(java.util.Map)
 		 */
@@ -633,6 +644,7 @@ public class FDEmailFactory {
 			map.put("deliveryStartTime", DT_FORMATTER.format(this.deliveryStartTime));
 			map.put("deliveryEndTime", DT_FORMATTER.format(this.deliveryEndTime));
 			map.put("cutoffTime", DT_FORMATTER.format(this.cutoffTime));
+			map.put("contactHours", this.contactHours);
 		}
 
 	}
@@ -1036,7 +1048,7 @@ public class FDEmailFactory {
 		return email;
 	}
 	public XMLEmailI createSettlementFailedEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime, Date cutoffTime){
-		FDSettlementFailedEmail email = new FDSettlementFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime);
+		FDSettlementFailedEmail email = new FDSettlementFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime,getFDCSHours());
 		email.setXslPath("h_settlement_failure.xsl", "x_settlement_failure.xsl");
 		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
 		email.setSubject("e-Check Settlement Failure");
@@ -1050,6 +1062,7 @@ public class FDEmailFactory {
 		private Date deliveryStartTime;
 		private Date deliveryEndTime;
 		private Date cutoffTime;
+		private List<FDCSContactHours> contactHours;
 
 		public FDSettlementFailedEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime, Date cutoffTime) {
 			super(customer);
@@ -1059,6 +1072,14 @@ public class FDEmailFactory {
 			this.cutoffTime = cutoffTime;
 		}
 
+		public FDSettlementFailedEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime, Date cutoffTime,List<FDCSContactHours> contactHours) {
+			super(customer);
+			this.orderNumber = orderNumber;
+			this.deliveryStartTime = startTime;
+			this.deliveryEndTime = endTime;
+			this.cutoffTime = cutoffTime;
+			this.contactHours = contactHours;
+		}
 		/**
 		 * @see com.freshdirect.fdstore.mail.FDInfoEmail#decorateMap(java.util.Map)
 		 */
@@ -1068,8 +1089,24 @@ public class FDEmailFactory {
 			map.put("deliveryStartTime", DT_FORMATTER.format(this.deliveryStartTime));
 			map.put("deliveryEndTime", DT_FORMATTER.format(this.deliveryEndTime));
 			map.put("cutoffTime", DT_FORMATTER.format(this.cutoffTime));
+			map.put("contactHours", this.contactHours);
 		}
 
+	}
+	
+	protected List<FDCSContactHours> getFDCSHours(){
+		String days=FDStoreProperties.getCSContactDays();
+		String hours=FDStoreProperties.getCSContactHours();
+		List<FDCSContactHours> list = new ArrayList<FDCSContactHours>();
+		if(null != days & null != hours){
+			String[] daysArr =days.split(",");
+			String[] hoursArr =hours.split(",");
+			for (int i = 0; i < hoursArr.length; i++) {
+				FDCSContactHours contactHrs = new FDCSContactHours(" "+daysArr[i]+" ",hoursArr[i]);
+				list.add(contactHrs);
+			}
+		}
+		return list;
 	}
 	
 }

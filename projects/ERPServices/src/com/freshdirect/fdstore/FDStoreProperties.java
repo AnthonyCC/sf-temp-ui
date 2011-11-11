@@ -473,6 +473,10 @@ public class FDStoreProperties {
     private static final String PROP_COUNTRY_INFO_REFRESH_INTERVAL = "fdstore.countryInfo.refresh.minutes";
     //APPDEV-2072 google analytics environment specific key
     private static final String PROP_GOOGLE_ANALYTICS_KEY = "fdstore.google.analytics.key";
+    
+    //APPDEV-2062 CS Hours.
+    private static final String CUST_SERV_HOURS_DAYS="fdstore.cust_serv_days";
+    private static final String CUST_SERV_HOURS_HOURS="fdstore.cust_serv_hours";
 
     private static final  String PROP_AVAILABILITY_DAYS_IN_PAST_TO_LOOKUP = "fdstore.availdays.past.lookup";
     static {
@@ -957,6 +961,8 @@ public class FDStoreProperties {
         defaults.put(PROP_GOOGLE_ANALYTICS_KEY, ""); //default to an empty string
 
         defaults.put(PROP_AVAILABILITY_DAYS_IN_PAST_TO_LOOKUP, "3");
+        defaults.put(CUST_SERV_HOURS_DAYS, "Monday through Sunday");
+        defaults.put(CUST_SERV_HOURS_HOURS, "6:30 AM to 12 AM");
         refresh();
     }
 
@@ -2441,6 +2447,14 @@ public class FDStoreProperties {
     public static int getAvailDaysInPastToLookup() {
         return  Integer.parseInt(get(PROP_AVAILABILITY_DAYS_IN_PAST_TO_LOOKUP));
     }
+    
+    public static String getCSContactDays() {
+        return get(CUST_SERV_HOURS_DAYS);
+    }
+    public static String getCSContactHours() {
+        return get(CUST_SERV_HOURS_HOURS);
+    }
+    
     
     public static interface ConfigLoadedListener {
         void configLoaded();

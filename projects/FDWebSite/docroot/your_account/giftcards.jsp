@@ -6,6 +6,7 @@
 <%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
 <%@ page import='com.freshdirect.webapp.taglib.giftcard.*' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import='com.freshdirect.framework.util.FormatterUtil' %>
 <%@ page import="java.text.*" %>
 
 <%@ taglib uri="template" prefix="tmpl" %>
@@ -212,7 +213,7 @@ final int W_YA_GIFTCARDS = 970;
 						<tr>
 							<td><%= recipient.getCertificationNumber() != null ? recipient.getCertificationNumber() : "" %></td>
 							<td><%= dateFormatter.format(recipient.getPurchaseDate()) %></td>
-							<td>$<%= recipient.getRecepientModel().getAmount() %></td>    
+							<td>$<%= FormatterUtil.formatToTwoDecimal(recipient.getRecepientModel().getAmount()) %></td>    
                             <%  
                                 String cardType = GiftCardUtil.getTemplateName(recipient.getRecepientModel().getTemplateId());
                             %>
