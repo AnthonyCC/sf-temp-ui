@@ -277,8 +277,8 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 			StringBuffer originalXML = new StringBuffer("<campaign menuid=\"");
 			originalXML.append(campaignMenuID);
 			originalXML.append("\" action=\"0\"  username=\"mtrachtenberg\" password=\"whitshell\" callid=\"" + call_id + "\">");
-			//originalXML.append(phonesb.toString());
-			originalXML.append("<phonenumbers><phonenumber number=\"(203) 446-9229\" dateandtime=\""+ formatter_start_date + "\"/><phonenumber number=\"(203) 843-0301\"  dateandtime=\""+ formatter_start_date + "\"/></phonenumbers>");
+			originalXML.append(phonesb.toString());
+			//originalXML.append("<phonenumbers><phonenumber number=\"(203) 446-9229\" dateandtime=\""+ formatter_start_date + "\"/><phonenumber number=\"(203) 843-0301\"  dateandtime=\""+ formatter_start_date + "\"/></phonenumbers>");
 			originalXML.append("</campaign>");
 
 			System.out.println("OriginalXML:" + originalXML.toString());
@@ -294,7 +294,7 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 			//System.out.println(sb.toString());
 			
 			
-			java.net.URL programUrl = new java.net.URL("http://apiproxy.voiceshot.com/ivrapi.asp");   //'Do not swap these two URLs. Always post to api.voiceshot.com first.
+			java.net.URL programUrl = new java.net.URL("http://apiproxy.voiceshot.com/ivrapi.asp");   
 			java.net.HttpURLConnection connection = (java.net.HttpURLConnection)programUrl.openConnection();
 			connection.setRequestMethod("POST");
 			connection.setDoOutput(true);

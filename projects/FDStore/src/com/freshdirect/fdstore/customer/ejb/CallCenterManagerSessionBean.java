@@ -2539,8 +2539,8 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 	private VoiceShotResponseParser getCallData(String xmlPost) {
 		try {
-			/*
-			java.net.URL programUrl = new java.net.URL("http://apiproxy.voiceshot.com/ivrapi.asp");   //'Do not swap these two URLs. Always post to api.voiceshot.com first.
+			
+			java.net.URL programUrl = new java.net.URL("http://apiproxy.voiceshot.com/ivrapi.asp");   
 			java.net.HttpURLConnection connection = (java.net.HttpURLConnection)programUrl.openConnection();
 			connection.setRequestMethod("POST");
 			connection.setDoOutput(true);
@@ -2562,9 +2562,9 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			}
 			
 			System.out.println(firstresult);
-			*/
 			
-			String firstresult = "<?xml version=\"1.0\"?><campaign menuid=\"4766-159328639\" ><phonenumbers><phonenumber number=\"12038430301\"  dateandtime=\"11/8/2011 2:13:45 PM\"     callid=\"CID_42\"   duration=\"7\" status=\"Successful\"     lasterror=\"Human Answer\"><prompts></prompts></phonenumber><phonenumber number=\"12034469229\"  dateandtime=\"11/8/2011 2:14:22 PM\"     callid=\"CID_42\"   duration=\"44\" status=\"Successful\"     lasterror=\"Answering Machine\"><prompts><prompt promptid=\"1\" keypress=\"\" /></prompts></phonenumber></phonenumbers></campaign> ";
+			
+			//String firstresult = "<?xml version=\"1.0\"?><campaign menuid=\"4766-159328639\" ><phonenumbers><phonenumber number=\"12038430301\"  dateandtime=\"11/8/2011 2:13:45 PM\"     callid=\"CID_42\"   duration=\"7\" status=\"Successful\"     lasterror=\"Human Answer\"><prompts></prompts></phonenumber><phonenumber number=\"12034469229\"  dateandtime=\"11/8/2011 2:14:22 PM\"     callid=\"CID_42\"   duration=\"44\" status=\"Successful\"     lasterror=\"Answering Machine\"><prompts><prompt promptid=\"1\" keypress=\"\" /></prompts></phonenumber></phonenumbers></campaign> ";
 			
 			if(firstresult.indexOf("status=\"Pending\"") == -1) {
 				LOGGER.debug("Ready to update the call record");
