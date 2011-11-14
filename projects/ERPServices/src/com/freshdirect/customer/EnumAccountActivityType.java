@@ -111,6 +111,8 @@ public class EnumAccountActivityType implements java.io.Serializable {
 	
 	public final static EnumAccountActivityType		PAYMENT_METHOD_VERIFICATION			= new EnumAccountActivityType( "CC Verify", "Credit Card verification." );
 	public final static EnumAccountActivityType		DUPLICATE_PAYMENT_METHOD			= new EnumAccountActivityType( "Dupe Payment", "Duplicate Payment Used." );
+	public final static EnumAccountActivityType		REFER_A_FRIEND						= new EnumAccountActivityType( "ReferAFriend", "Referral Sent." );
+	public final static EnumAccountActivityType		VOICE_SHOT						= new EnumAccountActivityType( "Voiceshot", "Voiceshot Sent" );
 	
     private EnumAccountActivityType(String code, String name) {
         this.id = idCounter++;

@@ -25,6 +25,7 @@ public class RouteStopReportLine implements Serializable {
 		private String stopSequence;
 		private String email;
 		private String emailFormatType;
+		private String customerId;
 	
 		public String getOrderNumcer() {
 			return orderNumber;
@@ -116,5 +117,13 @@ public class RouteStopReportLine implements Serializable {
 
 		public void setEmailFormatType(String string) {
 			emailFormatType = string;
+		}
+
+		public void setCustomerId(String customerId) {
+			this.customerId = customerId;
+		}
+
+		public String getCustomerId() {
+			return customerId;
 		}
 }

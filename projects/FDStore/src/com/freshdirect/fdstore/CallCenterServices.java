@@ -25,6 +25,7 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.crm.CrmClick2CallModel;
+import com.freshdirect.crm.CrmVSCampaignModel;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumSaleStatus;
@@ -908,4 +909,181 @@ public class CallCenterServices {
 			throw new FDResourceException(re, "Error talking to bean");
 		}
 	}
+	
+	public static List<CrmVSCampaignModel> getVSCampaignList() throws FDResourceException{
+		if (callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			return sb.getVSCampaignList();
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to bean");
+		}
+	}
+	
+	public static String saveVSCampaignInfo(CrmVSCampaignModel model) throws FDResourceException{
+		if (callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			return sb.saveVSCampaignInfo(model);
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to bean");
+		}
+	}
+		
+	public static List<CrmVSCampaignModel> getVoiceShotLog() throws FDResourceException{
+		if (callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			return sb.getVoiceShotLog();
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to bean");
+		}
+	}
+	
+	public static List<CrmVSCampaignModel> getVoiceShotCallDetails(String id) throws FDResourceException{
+		if (callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			return sb.getVoiceShotCallDetails(id);
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to bean");
+		}
+	}
+	
+	public static List<CrmVSCampaignModel> getVSRedialList(String id) throws FDResourceException{
+		if (callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			return sb.getVSRedialList(id);
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to bean");
+		}
+	}
+	
+	public static String saveVSRedialInfo(CrmVSCampaignModel model) throws FDResourceException{
+		if (callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			return sb.saveVSRedialInfo(model);
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to bean");
+		}
+	}
+	
+	public static void addNewCampaign(CrmVSCampaignModel model) throws FDResourceException{
+		if (callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			sb.addNewCampaign(model);
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to bean");
+		}
+	}
+	
+	public static CrmVSCampaignModel getCampaignDetails(String id) throws FDResourceException{
+		if (callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			return sb.getCampaignDetails(id);
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to bean");
+		}
+	}
+	
+	public static void updateCampaign(CrmVSCampaignModel model) throws FDResourceException{
+		if (callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			sb.updateCampaign(model);
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to bean");
+		}
+	}
+	
+	public static void deleteCampaign(String id) throws FDResourceException{
+		if (callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			sb.deleteCampaign(id);
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to bean");
+		}
+	}
+	
+	public static String getVSMsgForOrderPage(String orderId) throws FDResourceException{
+		if (callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			return sb.getVSMsgForOrderPage(orderId);
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to bean");
+		}
+	}
+	
 } // class CallCenterServices

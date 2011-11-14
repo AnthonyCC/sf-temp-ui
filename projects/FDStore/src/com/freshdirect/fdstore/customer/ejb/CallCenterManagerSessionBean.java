@@ -15,6 +15,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,7 +24,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +45,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.analytics.TimeslotEventModel;
+import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.crm.CrmCaseOrigin;
@@ -48,6 +53,8 @@ import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmClick2CallTimeModel;
 import com.freshdirect.crm.CrmOrderStatusReportLine;
 import com.freshdirect.crm.CrmSettlementProblemReportLine;
+import com.freshdirect.crm.CrmVSCampaignModel;
+import com.freshdirect.crm.VoiceShotResponseParser;
 import com.freshdirect.crm.ejb.CriteriaBuilder;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumAccountActivityType;
@@ -59,6 +66,7 @@ import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumTransactionType;
+import com.freshdirect.customer.EnumVSStatus;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
@@ -1273,7 +1281,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 	}
 
 	private static final String ROUTE_STOP_QRY = "select * from ( "
-		+ " select s.wave_number, s.truck_number, s.stop_sequence, s.id as order_number, di.first_name, di.last_name, di.phone, di.phone_ext,"
+		+ " select s.customer_id, s.wave_number, s.truck_number, s.stop_sequence, s.id as order_number, di.first_name, di.last_name, di.phone, di.phone_ext,"
 		+ " ci.email, decode(ci.email_plain_text, 'X', 'TEXT', 'HTML') as email_format_type"
 		+ " from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, cust.customerinfo ci"
 		+ " where s.id=sa.sale_id and s.type ='REG' and sa.id=di.salesaction_id and s.customer_id=ci.customer_id and sa.requested_date=?";
@@ -1359,6 +1367,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				rl.setStopSequence(rs.getString("stop_Sequence"));
 				rl.setEmail(rs.getString("email"));
 				rl.setEmailFormatType(rs.getString("email_format_type"));
+				rl.setCustomerId(rs.getString("customer_id"));
 				rpt.add(rl);
 			}
 			ps.close();
@@ -2250,4 +2259,669 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
+	
+	public List<CrmVSCampaignModel> getVSCampaignList() throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<CrmVSCampaignModel> cList = new ArrayList<CrmVSCampaignModel>();
+		
+		try{
+			conn = this.getConnection();
+			ps = conn.prepareStatement("select * from CUST.VOICESHOT_CAMPAIGN");
+			rs = ps.executeQuery();			
+			while(rs.next()) {
+				CrmVSCampaignModel model = new CrmVSCampaignModel();
+				model.setCampaignId(rs.getString("CAMPAIGN_ID"));
+				model.setCampaignName(rs.getString("CAMPAIGN_NAME"));
+				model.setCampaignMenuId(rs.getString("CAMPAIGN_MENU_ID"));
+				model.setAddByDate(rs.getString("ADD_BY_DATE"));
+				model.setAddByUser(rs.getString("ADD_BY_USER"));
+				model.setChangeByDate(rs.getString("CHANGE_BY_DATE"));
+				model.setChangeByUser(rs.getString("CHANGE_BY_USER"));
+				model.setSoundfileName(rs.getString("SOUND_FILE_NAME"));
+				model.setSoundFileText(rs.getString("SOUND_FILE_TEXT"));
+				cList.add(model);
+			}
+		}catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage());
+			throw new FDResourceException(sqle);
+		} finally {
+			try {
+				if (conn != null) 				
+					conn.close();
+				if(ps != null)
+					ps.close();
+				if(rs != null)
+					rs.close();
+			} catch (SQLException sqle) {
+				LOGGER.debug("Error while cleaning:", sqle);
+			}			
+		}
+		return cList;
+	}
+	
+	public String saveVSCampaignInfo(CrmVSCampaignModel model) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		long id = 1; 
+		String call_id = "CID_" + id;
+		try{
+			conn = this.getConnection();
+			id = Long.parseLong(SequenceGenerator.getNextId(conn, "CUST", "VOICESHOT_SEQUENCE"));
+			call_id = "CID_" + id;
+			ps = conn.prepareStatement("INSERT INTO CUST.VOICESHOT_DETAILS(ID,ROUTE,CAMPAIGN_ID,REASON_ID,STOP_SEQUENCE,CREATED_BY_USER,CREATED_BY_DATE,SOUND_FILE_TEXT,START_TIME,END_TIME, CALL_ID)" +
+										" VALUES(?,?,?,?,?,?,?,?,TO_DATE(?, 'HH:MI AM'),TO_DATE(?, 'HH:MI AM'),?)");
+			System.out.println(model.toString());
+			ps.setLong(1,id);
+			ps.setString(2, model.getRoute());
+			ps.setString(3, model.getCampaignId());
+			ps.setString(4, model.getReasonId());
+			ps.setString(5, model.getStopSequence());
+			ps.setString(6, model.getAddByUser());
+			ps.setTimestamp(7, new Timestamp(new Date().getTime()));
+			ps.setString(8, model.getSoundFileText());
+			ps.setString(9, model.getStartTime());
+			ps.setString(10, model.getEndTime());
+			ps.setString(11, call_id);
+			ps.execute();
+		}catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage());
+			throw new FDResourceException(sqle);
+		} finally {
+			try {
+				if (conn != null) 				
+					conn.close();
+				if(ps != null)
+					ps.close();
+			} catch (SQLException sqle) {
+				LOGGER.debug("Error while cleaning:", sqle);
+			}
+		}
+		storePhoneNumbers(id, model);
+		return call_id;
+	}	
+	
+	private void storePhoneNumbers(long id, CrmVSCampaignModel model) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		List<String> phonenumbers = model.getPhonenumbers();
+		
+		try {
+			conn = this.getConnection();
+			ps = conn.prepareStatement("INSERT INTO CUST.CUST_VOICESHOT_STATUS(VS_DETAIL_ID,SALE_ID,PHONE, CUSTOMER_ID)" +
+										" VALUES(?,?,?,?)");
+			for(int i=0;i<phonenumbers.size(); i++) {
+				String pStr = (String) phonenumbers.get(i);
+				StringTokenizer st = new StringTokenizer(pStr, "|");
+				String phone = st.nextToken();
+				String saleId = st.nextToken();
+				String customerId = st.nextToken();
+				ps.setLong(1, id);
+				ps.setString(2, saleId);
+				ps.setString(3, phone);
+				ps.setString(4, customerId);
+				ps.execute();
+			}
+		} catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage(), sqle);			
+		} finally {
+			try {
+				if (conn != null) 				
+					conn.close();
+				if(ps != null)
+					ps.close();
+			} catch (SQLException sqle) {
+				LOGGER.debug("Error while cleaning:", sqle);
+			}
+		}
+		//record the call activity
+		updateActivity(model);
+	}
+	
+	public static final String GET_VS_LOG = "select vd.ID, vd.route, vd.campaign_id, vd.reason_id, vd.stop_sequence, vd.redial, vd.created_by_user, " + 
+		"to_char(vd.created_by_date,  'MM/DD/YYYY HH12:MI AM') created_by_Date, vd.sound_file_text,  " +
+		"to_char(vd.start_time, 'HH12:MI AM') start_time,to_char(vd.end_time, 'HH12:MI AM') end_time, " +
+		"vd.scheduled_calls, vd.delivered_calls_live, vd.delivered_calls_am, vd.undelivered_calls,  " +
+		"to_char(vd.change_by_date, 'MM/DD/YYYY HH12:MI AM') change_by_Date, vd.change_by_user, " +
+		"vd.call_id, vd.call_data_pulled, " +
+		"VC.CAMPAIGN_NAME, VC.CAMPAIGN_MENU_ID, VC.SOUND_FILE_NAME from " + 
+		"CUST.VOICESHOT_CAMPAIGN vc, " +
+		"CUST.VOICESHOT_DETAILS vd " +
+		"where VC.CAMPAIGN_ID = VD.CAMPAIGN_ID " + 
+		"order by vd.created_by_date desc";		
+	
+	public List<CrmVSCampaignModel> getVoiceShotLog() throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<CrmVSCampaignModel> cList = new ArrayList<CrmVSCampaignModel>();
+		
+		try{
+			conn = this.getConnection();
+			ps = conn.prepareStatement(GET_VS_LOG);
+			rs = ps.executeQuery();			
+			while(rs.next()) {
+				CrmVSCampaignModel model = new CrmVSCampaignModel();
+				model.setVsDetailsID(rs.getString("ID"));
+				model.setRoute(rs.getString("ROUTE"));				
+				model.setCampaignId(rs.getString("CAMPAIGN_ID"));
+				model.setCampaignName(rs.getString("CAMPAIGN_NAME"));
+				model.setCampaignMenuId(rs.getString("CAMPAIGN_MENU_ID"));
+				model.setReasonId(rs.getString("REASON_ID"));
+				model.setStopSequence(rs.getString("STOP_SEQUENCE"));
+				model.setRedial(rs.getString("REDIAL"));				
+				model.setAddByDate(rs.getString("CREATED_BY_DATE"));
+				model.setAddByUser(rs.getString("CREATED_BY_USER"));
+				model.setChangeByDate(rs.getString("CHANGE_BY_DATE"));
+				model.setChangeByUser(rs.getString("CHANGE_BY_USER"));
+				model.setSoundfileName(rs.getString("SOUND_FILE_NAME"));
+				model.setSoundFileText(rs.getString("SOUND_FILE_TEXT"));
+				model.setStartTime(rs.getString("START_TIME"));
+				model.setEndTime(rs.getString("END_TIME"));
+				model.setScheduledCalls(rs.getInt("SCHEDULED_CALLS"));
+				model.setDeliveredCallsLive(rs.getInt("DELIVERED_CALLS_LIVE"));
+				model.setDeliveredCallsAM(rs.getInt("DELIVERED_CALLS_AM"));
+				model.setUndeliveredCalls(rs.getInt("UNDELIVERED_CALLS"));
+				model.setCallId(rs.getString("CALL_ID"));
+				model.setUpdatable(true);
+				boolean data_pulled = "Y".equals(rs.getString("CALL_DATA_PULLED"))?true:false;
+				if(!data_pulled && rs.getString("CALL_ID") != null) {
+					StringBuffer sb = new StringBuffer("<campaign action=\"3\" menuid=\"");
+					sb.append(rs.getString("CAMPAIGN_MENU_ID"));
+					sb.append("\" username=\"mtrachtenberg\" password=\"whitshell\"><phonenumbers><phonenumber callid=\"");
+					sb.append(rs.getString("CALL_ID"));
+					sb.append("\" /></phonenumbers></campaign>");
+					System.out.println(sb.toString());
+					VoiceShotResponseParser vsrp = getCallData(sb.toString());
+					if(vsrp != null) {
+						model.setUpdatable(true);
+						updateVSLog(rs.getLong("ID"), vsrp, rs.getInt("DELIVERED_CALLS_LIVE"), rs.getInt("DELIVERED_CALLS_AM"),rs.getInt("UNDELIVERED_CALLS"), rs.getInt("SCHEDULED_CALLS")) ;
+						updateUserStatus(rs.getLong("ID"), vsrp.getPhonenumbers());
+						model.setScheduledCalls(vsrp.getTotalCalls());
+						model.setDeliveredCallsLive(vsrp.getHumanAnsweredCalls());
+						model.setDeliveredCallsAM(vsrp.getAnswerMachineCalls());
+						model.setUndeliveredCalls(vsrp.getUnsuccessfulCalls());
+					} else {
+						model.setUpdatable(false);
+					}
+				}
+				cList.add(model);
+			}
+		}catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage());
+			throw new FDResourceException(sqle);
+		} finally {
+			try {
+				if (conn != null) 				
+					conn.close();
+				if(ps != null)
+					ps.close();
+				if(rs != null)
+					rs.close();
+			} catch (SQLException sqle) {
+				LOGGER.debug("Error while cleaning:", sqle);
+			}			
+		}
+		return cList;
+	}
+	
+	private void updateUserStatus(long long1, Hashtable<String, String> phonenumbers) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		
+		try{
+			conn = this.getConnection();
+			ps = conn.prepareStatement("update CUST.CUST_VOICESHOT_STATUS set STATUS=? where VS_DETAIL_ID=? and PHONE=?");
+			Enumeration<String> enumber = phonenumbers.keys();
+			while(enumber.hasMoreElements()) {
+				String key = (String)enumber.nextElement();
+				String phone = key;
+				if(phone.length() == 11) {
+					//remove 1 and make it 10
+					phone = phone.substring(1);
+				}
+				PhoneNumber phonenumber = new PhoneNumber(phone);
+				
+				String value = phonenumbers.get(key);
+				ps.setInt(1, Integer.parseInt(value));
+				ps.setLong(2, long1);
+				ps.setString(3, phonenumber.getPhone());
+				ps.execute();
+			}			
+		}catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage(), sqle);
+		} finally {
+			try {
+				if (conn != null) 				
+					conn.close();
+				if(ps != null)
+					ps.close();
+			} catch (SQLException sqle) {
+				LOGGER.debug("Error while cleaning:", sqle);
+			}			
+		}		
+	}
+
+	private void updateVSLog(long id, VoiceShotResponseParser vsrp, int liveAnswered, int answerMachine, int undeliverable, int totalCalls) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		
+		try{
+			conn = this.getConnection();
+			ps = conn.prepareStatement("update CUST.VOICESHOT_DETAILS set SCHEDULED_CALLS=?,DELIVERED_CALLS_LIVE=?,DELIVERED_CALLS_AM=?," +
+									   "UNDELIVERED_CALLS=?,CALL_DATA_PULLED='Y' where ID=?");
+			if(totalCalls > 0) {
+				ps.setInt(1, totalCalls);
+			}
+			else {
+				ps.setInt(1, vsrp.getTotalCalls());
+			}
+			ps.setInt(2, vsrp.getHumanAnsweredCalls() + liveAnswered);
+			ps.setInt(3, vsrp.getAnswerMachineCalls() + answerMachine);
+			int unsuccessfulCalls = undeliverable - vsrp.getTotalCalls();
+			ps.setInt(4, vsrp.getUnsuccessfulCalls() + unsuccessfulCalls);
+			ps.setLong(5, id);
+			ps.execute();
+		}catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage(), sqle);
+		} finally {
+			try {
+				if (conn != null) 				
+					conn.close();
+				if(ps != null)
+					ps.close();
+			} catch (SQLException sqle) {
+				LOGGER.debug("Error while cleaning:", sqle);
+			}			
+		}		
+	}
+
+	private VoiceShotResponseParser getCallData(String xmlPost) {
+		try {
+			/*
+			java.net.URL programUrl = new java.net.URL("http://apiproxy.voiceshot.com/ivrapi.asp");   //'Do not swap these two URLs. Always post to api.voiceshot.com first.
+			java.net.HttpURLConnection connection = (java.net.HttpURLConnection)programUrl.openConnection();
+			connection.setRequestMethod("POST");
+			connection.setDoOutput(true);
+			connection.setUseCaches(false); 
+			connection.setRequestProperty("Content-Type", "text/xml");
+			java.io.PrintWriter output = new java.io.PrintWriter(new java.io.OutputStreamWriter(connection.getOutputStream()));
+			output.println(xmlPost);
+			output.close(); 
+			connection.connect();
+			java.io.InputStream is = connection.getInputStream();
+			java.io.InputStreamReader isr = new java.io.InputStreamReader(is);
+			java.io.BufferedReader br = new java.io.BufferedReader(isr);
+		 
+			String line = null;
+			String firstresult = "";
+		 
+			while ((line = br.readLine()) != null) {
+				 firstresult += "\n" + line;
+			}
+			
+			System.out.println(firstresult);
+			*/
+			
+			String firstresult = "<?xml version=\"1.0\"?><campaign menuid=\"4766-159328639\" ><phonenumbers><phonenumber number=\"12038430301\"  dateandtime=\"11/8/2011 2:13:45 PM\"     callid=\"CID_42\"   duration=\"7\" status=\"Successful\"     lasterror=\"Human Answer\"><prompts></prompts></phonenumber><phonenumber number=\"12034469229\"  dateandtime=\"11/8/2011 2:14:22 PM\"     callid=\"CID_42\"   duration=\"44\" status=\"Successful\"     lasterror=\"Answering Machine\"><prompts><prompt promptid=\"1\" keypress=\"\" /></prompts></phonenumber></phonenumbers></campaign> ";
+			
+			if(firstresult.indexOf("status=\"Pending\"") == -1) {
+				LOGGER.debug("Ready to update the call record");
+				VoiceShotResponseParser vsrp = new VoiceShotResponseParser(firstresult);				
+				vsrp.populateCallData();
+				LOGGER.debug("Total calls:" + vsrp.getTotalCalls());
+				LOGGER.debug("Total Successful calls:" + vsrp.getSuccessfulCalls());
+				LOGGER.debug("Total UnSuccessful calls:" + vsrp.getUnsuccessfulCalls());
+				LOGGER.debug("Total Human Answered calls:" + vsrp.getHumanAnsweredCalls());
+				LOGGER.debug("Total Answer Machine calls:" + vsrp.getAnswerMachineCalls());
+				return vsrp;
+			} else {
+				LOGGER.debug("Call is still happening. Don't let the user redial.");
+			}
+		} catch(Exception e) {
+			LOGGER.error("",e);
+		}
+		return null;
+	}
+	
+	public List<CrmVSCampaignModel> getVoiceShotCallDetails(String id) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rset = null;
+		List<CrmVSCampaignModel> cList = new ArrayList<CrmVSCampaignModel>();
+		try{
+			conn = this.getConnection();
+			ps = conn.prepareStatement("select * from cust.cust_voiceshot_status where VS_DETAIL_ID = ?");
+			ps.setLong(1, Long.parseLong(id));
+			rset = ps.executeQuery();
+			while(rset.next()) {
+				String phone = rset.getString("PHONE");
+				int status = rset.getInt("STATUS");
+				CrmVSCampaignModel model = new CrmVSCampaignModel();
+				model.setPhonenumber(phone);
+				model.setStatus(status);
+				cList.add(model);
+			}
+		}catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage(), sqle);
+		} finally {
+			try {
+				if (conn != null) 				
+					conn.close();
+				if(ps != null)
+					ps.close();
+				if(rset != null)
+					rset.close();
+			} catch (SQLException sqle) {
+				LOGGER.debug("Error while cleaning:", sqle);
+			}			
+		}
+		return cList;
+	}
+	
+	public static final String GET_REDIAL_LIST = "select phone, nvl(vss.last_redialed_date, vd.created_by_date) last_redialed_Date, sale_id, customer_id " +
+												"from cust.cust_voiceshot_status  vss, " +
+												      "CUST.VOICESHOT_DETAILS vd " +
+												"where vss.vs_Detail_id = vd.id " +
+												"and     vd.id = ? " +
+												"and     vss.status = ? ";
+	
+	public List<CrmVSCampaignModel> getVSRedialList(String id) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rset = null;
+		List<CrmVSCampaignModel> cList = new ArrayList<CrmVSCampaignModel>();
+		try{
+			conn = this.getConnection();
+			ps = conn.prepareStatement(GET_REDIAL_LIST);
+			ps.setLong(1, Long.parseLong(id));
+			ps.setInt(2, EnumVSStatus.UNSUCCESSFUL.getValue());
+			rset = ps.executeQuery();
+			while(rset.next()) {
+				String phone = rset.getString("PHONE");
+				Date last_date = rset.getDate("last_redialed_Date");
+				Calendar c1 = Calendar.getInstance();
+				c1.setTime(last_date);
+				Calendar c2 = Calendar.getInstance();
+				c2.setTime(new Date());
+				long days_between = ((c2.getTime().getTime() - c1.getTime().getTime())	/ (24 * 3600 * 1000));
+				System.out.println("Days Between " + c1.getTime() + " and "
+						+ c2.getTime() + " is:" + days_between);
+				if(days_between < 15) {
+					CrmVSCampaignModel model = new CrmVSCampaignModel();
+					model.setPhonenumber(phone);
+					model.setVsDetailsID(id);
+					model.setSaleId(rset.getString("sale_id"));
+					model.setCustomerId(rset.getString("customer_id"));
+					cList.add(model);
+				}
+			}
+		}catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage(), sqle);
+		} finally {
+			try {
+				if (conn != null) 				
+					conn.close();
+				if(ps != null)
+					ps.close();
+				if(rset != null)
+					rset.close();
+			} catch (SQLException sqle) {
+				LOGGER.debug("Error while cleaning:", sqle);
+			}			
+		}
+		return cList;
+	}
+	
+	public String saveVSRedialInfo(CrmVSCampaignModel model) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		try{
+			conn = this.getConnection();
+			ps = conn.prepareStatement("Update cust.voiceshot_details set redial='Y', change_by_date = sysdate, change_by_user=?, CALL_DATA_PULLED=null where id = ?");
+			ps.setString(1, model.getAddByUser());
+			ps.setLong(2, Long.parseLong(model.getVsDetailsID()));
+			ps.execute();
+		}catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage());
+			throw new FDResourceException(sqle);
+		} finally {
+			try {
+				if (conn != null) 				
+					conn.close();
+				if(ps != null)
+					ps.close();
+			} catch (SQLException sqle) {
+				LOGGER.debug("Error while cleaning:", sqle);
+			}
+		}
+		updatePhonenumbers(model.getPhonenumbers(), model.getVsDetailsID());
+		updateActivity(model);
+		return "CID_" + model.getVsDetailsID(); 
+	}
+	
+	private void updatePhonenumbers(List<String> phonenumbers, String detailId) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		
+		try {
+			conn = this.getConnection();
+			ps = conn.prepareStatement("UPDATE CUST.CUST_VOICESHOT_STATUS set LAST_REDIALED_DATE=sysdate where sale_id = ? and customer_id = ? and vs_detail_id = ?");
+			for(int i=0;i<phonenumbers.size(); i++) {
+				String pStr = (String) phonenumbers.get(i);
+				StringTokenizer st = new StringTokenizer(pStr, "|");
+				String phone = st.nextToken();
+				String saleId = st.nextToken();
+				String customerId = st.nextToken();
+				ps.setString(1, saleId);
+				ps.setString(2, customerId);
+				ps.setLong(3, Long.parseLong(detailId));				
+				ps.execute();
+			}
+		} catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage(), sqle);			
+		} finally {
+			try {
+				if (conn != null) 				
+					conn.close();
+				if(ps != null)
+					ps.close();
+			} catch (SQLException sqle) {
+				LOGGER.debug("Error while cleaning:", sqle);
+			}
+		}
+	}
+
+	private void updateActivity(CrmVSCampaignModel model) {
+		List<String> phonenumbers = model.getPhonenumbers();
+		for(int i=0;i<phonenumbers.size(); i++) {
+			String pStr = (String) phonenumbers.get(i);
+			StringTokenizer st = new StringTokenizer(pStr, "|");
+			String phone = st.nextToken();
+			String saleId = st.nextToken();
+			String customerId = st.nextToken();
+				
+			//record the call activity
+			ErpActivityRecord rec = new ErpActivityRecord();
+			rec.setActivityType(EnumAccountActivityType.VOICE_SHOT);
+			rec.setSource(EnumTransactionSource.CUSTOMER_REP);
+			rec.setInitiator(model.getAddByUser());
+			rec.setChangeOrderId(saleId);
+			rec.setCustomerId(customerId);
+			rec.setDate(new Date());
+			rec.setNote(model.getCampaignName() + " - " + model.getReasonId());
+			this.logActivity(rec);				
+		}
+	}
+	
+	public void addNewCampaign(CrmVSCampaignModel model) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		
+		try {
+			conn = this.getConnection();
+			ps = conn.prepareStatement("INSERT INTO CUST.VOICESHOT_CAMPAIGN(CAMPAIGN_ID,CAMPAIGN_NAME,ADD_BY_DATE,ADD_BY_USER,SOUND_FILE_NAME,SOUND_FILE_TEXT,CAMPAIGN_MENU_ID)" +
+										" VALUES(?,?,sysdate,?,?,?,?)");
+			long id = Long.parseLong(SequenceGenerator.getNextId(conn, "CUST", "VOICESHOT_SEQUENCE"));
+			ps.setLong(1, id);
+			ps.setString(2, model.getCampaignName());
+			ps.setString(3, model.getAddByUser());
+			ps.setString(4, model.getSoundfileName());
+			ps.setString(5, model.getSoundFileText());
+			ps.setString(6, model.getCampaignMenuId());
+			ps.execute();
+		} catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage(), sqle);			
+		} finally {
+			try {
+				if (conn != null) 				
+					conn.close();
+				if(ps != null)
+					ps.close();
+			} catch (SQLException sqle) {
+				LOGGER.debug("Error while cleaning:", sqle);
+			}
+		}
+	}
+	
+	public CrmVSCampaignModel getCampaignDetails(String id) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		CrmVSCampaignModel model = new CrmVSCampaignModel();
+		
+		try{
+			conn = this.getConnection();
+			ps = conn.prepareStatement("select * from CUST.VOICESHOT_CAMPAIGN where CAMPAIGN_ID=?");
+			ps.setLong(1, Long.parseLong(id));
+			rs = ps.executeQuery();			
+			while(rs.next()) {
+				model.setCampaignId(rs.getString("CAMPAIGN_ID"));
+				model.setCampaignName(rs.getString("CAMPAIGN_NAME"));
+				model.setCampaignMenuId(rs.getString("CAMPAIGN_MENU_ID"));
+				model.setAddByDate(rs.getString("ADD_BY_DATE"));
+				model.setAddByUser(rs.getString("ADD_BY_USER"));
+				model.setChangeByDate(rs.getString("CHANGE_BY_DATE"));
+				model.setChangeByUser(rs.getString("CHANGE_BY_USER"));
+				model.setSoundfileName(rs.getString("SOUND_FILE_NAME"));
+				model.setSoundFileText(rs.getString("SOUND_FILE_TEXT"));
+			}
+		}catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage());
+			throw new FDResourceException(sqle);
+		} finally {
+			try {
+				if (conn != null) 				
+					conn.close();
+				if(ps != null)
+					ps.close();
+				if(rs != null)
+					rs.close();
+			} catch (SQLException sqle) {
+				LOGGER.debug("Error while cleaning:", sqle);
+			}			
+		}
+		return model;
+	}
+	
+	public void updateCampaign(CrmVSCampaignModel model) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		
+		try {
+			conn = this.getConnection();
+			ps = conn.prepareStatement("UPDATE CUST.VOICESHOT_CAMPAIGN set CAMPAIGN_NAME=?, SOUND_FILE_NAME=?, SOUND_FILE_TEXT=?, CAMPAIGN_MENU_ID=?," +
+										" CHANGE_BY_USER=?, CHANGE_BY_DATE=SYSDATE where CAMPAIGN_ID=?");
+			ps.setString(1, model.getCampaignName());			
+			ps.setString(2, model.getSoundfileName());
+			ps.setString(3, model.getSoundFileText());
+			ps.setString(4, model.getCampaignMenuId());
+			ps.setString(5, model.getChangeByUser());
+			ps.setLong(6, Long.parseLong(model.getCampaignId()));
+			ps.execute();
+		} catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage(), sqle);			
+		} finally {
+			try {
+				if (conn != null) 				
+					conn.close();
+				if(ps != null)
+					ps.close();
+			} catch (SQLException sqle) {
+				LOGGER.debug("Error while cleaning:", sqle);
+			}
+		}
+	}
+	
+	public void deleteCampaign(String id) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		
+		try {
+			conn = this.getConnection();
+			ps = conn.prepareStatement("DELETE CUST.VOICESHOT_CAMPAIGN where CAMPAIGN_ID=?");
+			ps.setLong(1, Long.parseLong(id));
+			ps.execute();
+		} catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage(), sqle);			
+		} finally {
+			try {
+				if (conn != null) 				
+					conn.close();
+				if(ps != null)
+					ps.close();
+			} catch (SQLException sqle) {
+				LOGGER.debug("Error while cleaning:", sqle);
+			}
+		}
+	}
+	
+	public static final String GET_VS_DETAILS_FOR_ORDER = "select vc.campaign_name, VC.ADD_BY_USER,  to_char(VC.ADD_BY_DATE, 'MM/DD/YYYY HH:MI AM') ADD_BY_DATE, VD.REASON_ID "
+			+ "from CUST.CUST_VOICESHOT_STATUS vs, cust.voiceshot_campaign vc, CUST.VOICESHOT_DETAILS vd "
+			+ "where vs.sale_id = ? "
+			+ "and vs.status is not null "
+			+ "and VS.VS_DETAIL_ID = VD.ID "
+			+ "and  VD.CAMPAIGN_ID = VC.CAMPAIGN_ID "
+			+ "order by vs_detail_id desc";
+	
+	public String getVSMsgForOrderPage(String orderId) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rset = null;
+		String vsMsg = null;
+		try {
+			conn = this.getConnection();
+			ps = conn.prepareStatement(GET_VS_DETAILS_FOR_ORDER);
+			ps.setString(1, orderId);			
+			rset = ps.executeQuery();
+			if(rset.next()) {
+				StringBuffer sb = new StringBuffer("Late Report: logged on:");
+				sb.append(rset.getString("ADD_BY_DATE"));
+				sb.append(", By:");
+				sb.append(rset.getString("ADD_BY_USER"));
+				sb.append(", Campaign:");
+				sb.append( rset.getString("CAMPAIGN_NAME"));
+				sb.append(", Reason For Delay:");
+				sb.append(rset.getString("REASON_ID"));
+				
+				vsMsg = sb.toString();  
+			}
+		} catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage(), sqle);			
+		} finally {
+			try {
+				if (conn != null) 				
+					conn.close();
+				if(ps != null)
+					ps.close();
+				if(rset != null)
+					rset.close();
+			} catch (SQLException sqle) {
+				LOGGER.debug("Error while cleaning:", sqle);
+			}
+		}
+		return vsMsg;
+	}
+	
 }

@@ -31,7 +31,7 @@ List linksList = MenuManager.getInstance().getLinksForRole(request);
 					<a href="/admintools/admintools_index.jsp"	class="<%=pageURI.indexOf("/admin_tools/") > -1?"main_nav_on":"main_nav_link"%>">Admin Tools</a> 
 				<% } %>	
 				<% if(linksList.contains("crmLateIssues.jsp")){%>	
-				<a href="/transportation/crmLateIssues.jsp?lateLog=true" class="<%=pageURI.indexOf("/transportation/") > -1?"main_nav_on":"main_nav_link"%>">Transportation Ops</a>
+				<a href="/transportation/VSStatusLog.jsp" class="<%=pageURI.indexOf("/transportation/") > -1?"main_nav_on":"main_nav_link"%>">Transportation Ops</a>
 				<% } %>
 				<% if(linksList.contains("reports_index.jsp")){%>		
 				<a href="/reports/reports_index.jsp" class="<%=pageURI.indexOf("/reports/")	> -1?"main_nav_on":"main_nav_link"%>">Reports</a>

@@ -16,6 +16,7 @@ import java.util.*;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.*;
 import com.freshdirect.crm.CrmClick2CallModel;
+import com.freshdirect.crm.CrmVSCampaignModel;
 import com.freshdirect.customer.*;
 import com.freshdirect.delivery.model.RestrictedAddressModel;
 import com.freshdirect.delivery.restriction.RestrictionI;
@@ -122,5 +123,27 @@ public interface CallCenterManagerSB extends EJBObject {
 //	public CrmClick2CallModel getClick2CallInfo() throws FDResourceException, RemoteException;
 	
 	public int cancelReservations(Set<String> reservationIds, String agent) throws FDResourceException, RemoteException;
+	
+	public List<CrmVSCampaignModel> getVSCampaignList() throws FDResourceException, RemoteException;
+	
+	public String saveVSCampaignInfo(CrmVSCampaignModel model) throws FDResourceException, RemoteException;
+	
+	public List<CrmVSCampaignModel> getVoiceShotLog() throws FDResourceException, RemoteException;
+	
+	public List<CrmVSCampaignModel> getVoiceShotCallDetails(String id) throws FDResourceException, RemoteException;
+	
+	public List<CrmVSCampaignModel> getVSRedialList(String id) throws FDResourceException, RemoteException;
+	
+	public String saveVSRedialInfo(CrmVSCampaignModel model) throws FDResourceException, RemoteException;
+	
+	public void addNewCampaign(CrmVSCampaignModel model) throws FDResourceException, RemoteException;
+	
+	public CrmVSCampaignModel getCampaignDetails(String id) throws FDResourceException, RemoteException;
+	
+	public void updateCampaign(CrmVSCampaignModel model) throws FDResourceException, RemoteException;
+	
+	public void deleteCampaign(String id) throws FDResourceException, RemoteException;
+	
+	public String getVSMsgForOrderPage(String orderId) throws FDResourceException, RemoteException;
 	
 }

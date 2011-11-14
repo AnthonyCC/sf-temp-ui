@@ -14,6 +14,21 @@
 	- boolean showDeleteButtons
     - boolean displayDeliveryInfo
 --%>
+
+<%-- ~~~~~~~~~~~~~~~~~~~DISPLAY VOICESHOT MESSAGE IF AVAILABLE~~~~~~~~~~~~~~~~~ --%>
+<% String vsMessage = CallCenterServices.getVSMsgForOrderPage(orderId); 
+	if(vsMessage != null) {
+%>
+<table>
+	<tr>
+		<td>
+		<font style="color:red;font-weight:bold;"><%=vsMessage%></font>
+		</td>
+		</tr>
+		<tr><td>&nbsp;</td></tr>
+	</table>
+<% } %>
+
 <%-- ~~~~~~~~~~~~~~~~~~~~~~~ BEGIN DELIVERY & PAYMENT INFO SECTION ~~~~~~~~~~~~~~~~~~~~~~~ --%>
 <%	
 	String fmtDlvDate = CCFormatter.formatDeliveryDate( order.getDeliveryReservation().getStartTime() );
