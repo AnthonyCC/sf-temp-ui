@@ -248,10 +248,19 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
 	<%
 				}
 		}
-    %>
-    <%@include file="/shared/includes/product/i_sku_availability.jspf" %>
 
-    <br><%=productNode.getBlurb() != null && !"".equals(productNode.getBlurb())?"<span class=\"productPageSinglePriceUnit\">":""%><%=productNode.getBlurb()%><%=productNode.getBlurb() != null && !"".equals(productNode.getBlurb())?" - </span>":""%><%
+    if (displayShortTermUnavailability && shortTermUnavailable.size() > 0) {
+        Date earliestDate = defaultSku.getEarliestAvailability();
+        // cheat: if no availability indication, show the horizon as the
+        //        earliest availability
+        if (earliestDate == null) {
+            earliestDate = DateUtil.addDays(DateUtil.truncate(new Date()),
+                                            ErpServicesProperties.getHorizonDays());
+        }
+          %><font class="text10rbold">* Earliest delivery-<%=CCFormatter.formatAvailabilityDate(earliestDate)%></font><br><%
+    }
+
+    %><br><%=productNode.getBlurb() != null && !"".equals(productNode.getBlurb())?"<span class=\"productPageSinglePriceUnit\">":""%><%=productNode.getBlurb()%><%=productNode.getBlurb() != null && !"".equals(productNode.getBlurb())?" - </span>":""%><%
     
     if (hasSingleSku) {
         %>
