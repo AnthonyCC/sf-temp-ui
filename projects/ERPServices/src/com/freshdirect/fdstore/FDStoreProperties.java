@@ -960,7 +960,7 @@ public class FDStoreProperties {
 		//APPDEV-2072 google analytics key
         defaults.put(PROP_GOOGLE_ANALYTICS_KEY, ""); //default to an empty string
 
-        defaults.put(PROP_AVAILABILITY_DAYS_IN_PAST_TO_LOOKUP, "3");
+        defaults.put(PROP_AVAILABILITY_DAYS_IN_PAST_TO_LOOKUP, "7");
         defaults.put(CUST_SERV_HOURS_DAYS, "Monday through Sunday");
         defaults.put(CUST_SERV_HOURS_HOURS, "6:30 AM to 12 AM");
         refresh();

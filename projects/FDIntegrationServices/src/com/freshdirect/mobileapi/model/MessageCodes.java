@@ -80,8 +80,10 @@ public interface MessageCodes {
     public static final String ERR_RESTRICTED_ADDRESS = "ERR_RESTRICTED_ADDRESS";
     public static final String ERR_RESTRICTED_ADDRESS_MSG = "We're sorry; FreshDirect does not deliver to this address because it is a commercial building. Unfortunately we are only able to make deliveries to residential buildings. You may enter another address or choose the Pickup option.";
 
-    //Minimum Order Amount Error
+
     public static final String ERR_PAYMENT_INVAID_CREDIT_CARD_NUMBER = "ERR_PAYMENT_INVAID_CREDIT_CARD_NUMBER";
+    
+    public static final String ERR_DELIVERY_ADDRESS_INVALID = "ERR_DELIVERY_ADDRESS_INVALID";
 
     //Invalid Promo code
     public static final String ERR_REDEMPTION_ERROR = "ERR_REDEMPTION_ERROR";
@@ -260,6 +262,8 @@ public interface MessageCodes {
                 returnValue = new ErrorMessage(ERR_SYSTEM, desc);
             } else if ("cardNum".equals(key) && desc.contains("invalid")) {
                 returnValue = new ErrorMessage(ERR_PAYMENT_INVAID_CREDIT_CARD_NUMBER, desc);
+            } else if ("address1".equals(key) && desc.contains("valid home address")) {
+                returnValue = new ErrorMessage(ERR_DELIVERY_ADDRESS_INVALID, desc);
             } else if ("zipcode".equals(key) && !desc.contains("required")) {
                 returnValue = new ErrorMessage(ERR_ZIP_INVALID, desc);
             } else if ("quantity".equals(key)) {

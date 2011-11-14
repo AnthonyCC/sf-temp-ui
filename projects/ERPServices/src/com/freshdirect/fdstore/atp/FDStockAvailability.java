@@ -151,33 +151,39 @@ public class FDStockAvailability implements Serializable, FDAvailabilityI {
 		else
 			availDate = startDate;
 			*/
-		Date currentDate = startDate;
+		Date nextDate = startDate;
 		
 		
 		double totalAvailable = 0.0;
+		int count = 0;
+		Date lastUnavailDate = new Date();
+		//Initialize last Unavailable date.
+		while(isDeliverable(lastUnavailDate) || count < FDStoreProperties.getAvailDaysInPastToLookup()){
+			//Check previuos day.
+			lastUnavailDate = DateUtil.addDays(lastUnavailDate, -1);
+			count++;
+		}
 
-		Date lastUnavailDate = null;
-
-		while(!currentDate.after(endDate)) {
+		while(!nextDate.after(endDate)) {
 			FDLimitedAvailabilityInfo limitedAvInfo = null;
-			if(!isDeliverable(currentDate)){
-				limitedAvInfo =  new FDLimitedAvailabilityInfo(currentDate, 0.0, false);
-				lastUnavailDate = currentDate;
+			if(!isDeliverable(nextDate)){
+				limitedAvInfo =  new FDLimitedAvailabilityInfo(nextDate, 0.0, false);
+				lastUnavailDate = nextDate;
 			} else {
 				List<ErpInventoryEntryModel> entries = this.inventory.getEntries();
 				for (ErpInventoryEntryModel e : entries) {
-					if (e.getStartDate().after(currentDate)) {
+					if (e.getStartDate().after(nextDate)) {
 						break;
 					}
 					//Inventory start date cannot be before last unavailability date.
 					if(lastUnavailDate == null || !e.getStartDate().before(lastUnavailDate))
 						totalAvailable += e.getQuantity();
 				}				
-				limitedAvInfo =  new FDLimitedAvailabilityInfo(currentDate, totalAvailable, (roundQuantity(totalAvailable, minQty, qtyInc) >= reqQty) );
+				limitedAvInfo =  new FDLimitedAvailabilityInfo(nextDate, totalAvailable, (roundQuantity(totalAvailable, minQty, qtyInc) >= reqQty) );
 			}
-			if(!currentDate.before(startDate))
+			if(!nextDate.before(startDate))
 				limitedAvList.add(limitedAvInfo);
-			currentDate = DateUtil.addDays(currentDate, 1);
+			nextDate = DateUtil.addDays(nextDate, 1);
 		}
 		return limitedAvList;
 		

@@ -170,7 +170,23 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
 
         getWrapTarget().setActionName(ACTION_ADD_SET_DELIVERY_ADDRESS);
         setMethodMode(true);
-        return new ResultBundle(executeTagLogic(), this);
+
+        ActionResult actionResult = executeTagLogic();
+        LOGGER.debug("setCheckoutDeliveryAddress[executeTagLogic] :"+ actionResult);
+        String successPage = ((CheckoutControllerTag) wrapTarget).getSuccessPage();
+
+        if (actionResult == null) {
+            actionResult = new ActionResult();
+        }
+
+        CheckoutControllerTag wrappedTag = (CheckoutControllerTag) this.getWrapTarget();
+        if (wrappedTag.getAgeVerificationPage().equals(successPage)) {
+        	LOGGER.debug("addAndSetDeliveryAddress[ERR_AGE_VERIFICATION] :"+ successPage);
+            actionResult.addError(new ActionError(ERR_AGE_VERIFICATION, MobileApiProperties.getMediaPath()
+                    + MobileApiProperties.getAlcoholAgeWarningMediaPath()));
+        }
+        LOGGER.debug("addAndSetDeliveryAddress[END] ");
+        return new ResultBundle(actionResult, this);
     }
 
     public ResultBundle addPaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {

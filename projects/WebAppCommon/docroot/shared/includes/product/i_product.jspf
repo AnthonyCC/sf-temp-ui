@@ -298,7 +298,8 @@ if ( skuSize == 0 ) {
 				    if ( _packDesc != null && _packDesc.length() > 0 ) {
 				        %><br/><%= _packDesc %><br/><%
 				    }
-
+                %>
+<%--
 				    if ( displayShortTermUnavailability && shortTermUnavailable.size() > 0 ) {
 				        if ( !hasSingleSku ) {
 				          %><font class="text10rbold">* Some Items Unavailable Tomorrow</font><br/><%
@@ -312,6 +313,8 @@ if ( skuSize == 0 ) {
 					        %><font class="text10rbold">* Earliest delivery-<%=CCFormatter.formatAvailabilityDate(earliestDate)%></font><br/><%
 				        }
 				    }
+--%>
+                <%
 				    if ( (salesUnitDescrsMatch && hasSingleSalesUnit && !hasSingleSku) || (hasSingleSku && hasVariationMatrix && hasSingleSalesUnit) ) {
 				        String salesUnitDescr = defaultProduct.getSalesUnits()[0].getDescription();
 				        if ( !"nm".equalsIgnoreCase(salesUnitDescr) ) {
