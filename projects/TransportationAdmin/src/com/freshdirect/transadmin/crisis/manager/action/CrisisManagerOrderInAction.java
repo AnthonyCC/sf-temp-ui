@@ -62,6 +62,7 @@ public class CrisisManagerOrderInAction extends AbstractCrisisManagerAction {
 				List<ICrisisMngBatchOrder> inputDataList = getProcess().getOrder();
 				Set<ICustomerModel> custModels = new HashSet<ICustomerModel>();
 				List<ICrisisManagerBatchReservation> reservationList = new ArrayList<ICrisisManagerBatchReservation>();
+				ICustomerModel tmpModel = null;
 				/*check batch type STANDINGORDER or REGULARORDER*/
 		    	if(EnumCrisisMngBatchType.STANDINGORDER.equals(getProcess().getBatchType())){
 		    		inputDataList = getService().getStandingOrderByCriteria(getProcess().getDeliveryDate()
@@ -80,8 +81,10 @@ public class CrisisManagerOrderInAction extends AbstractCrisisManagerAction {
 																				, RoutingDateUtil.getServerTime(getProcess().getStartTime())
 																				, RoutingDateUtil.getServerTime(getProcess().getEndTime())
 																				, getProcess().getProfile());
-		    		for(ICrisisManagerBatchReservation _order : reservationList){				
-						custModels.add(_order.getCustomerModel());
+		    		for(ICrisisManagerBatchReservation rsvModel : reservationList){				
+		    			tmpModel = rsvModel.getCustomerModel();
+		    			tmpModel.setBatchId(getProcess().getBatchId());
+		    			custModels.add(rsvModel.getCustomerModel());
 					}
 		    		System.out.println("########### CrisisMngBatch -> RESERVATION COUNT ############ " + reservationList.size());
 		    		inputDataList = getService().getOrderByCriteria(getProcess().getDeliveryDate()
@@ -95,8 +98,9 @@ public class CrisisManagerOrderInAction extends AbstractCrisisManagerAction {
 			    	
 			    	System.out.println("########### CrisisMngBatch -> REGULAR ORDER COUNT ############ " + inputDataList.size());						    		
 		    	}
-		    	if(inputDataList != null && inputDataList.size() > 0) {												
-		    		ICustomerModel tmpModel = null;
+		    	if((inputDataList != null && inputDataList.size() > 0)
+		    			|| (reservationList != null && reservationList.size() > 0)) {												
+		    		
 		    		for(ICrisisMngBatchOrder _order : inputDataList){				
 		    			tmpModel = _order.getCustomerModel();
 		    			tmpModel.setBatchId(getProcess().getBatchId());

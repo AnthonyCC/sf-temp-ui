@@ -16,7 +16,16 @@ public class CancelOrderInfoModel  implements ICancelOrderInfo {
 	private String orderStatus;
 	private int lineItemCount;
 	private int tempLineItemCount;
+	private String standingOrderId;
 	
+	public String getStandingOrderId() {
+		return standingOrderId;
+	}
+
+	public void setStandingOrderId(String standingOrderId) {
+		this.standingOrderId = standingOrderId;
+	}
+
 	public String getFullName(){
 		return this.getLastName()+" "+this.getFirstName();
 	}
@@ -101,6 +110,6 @@ public class CancelOrderInfoModel  implements ICancelOrderInfo {
 		this.tempLineItemCount = tempLineItemCount;
 	}
 	public int getLineItemChangeCount(){
-		return this.tempLineItemCount - this.lineItemCount;
+		return this.lineItemCount - this.tempLineItemCount;
 	}
 }

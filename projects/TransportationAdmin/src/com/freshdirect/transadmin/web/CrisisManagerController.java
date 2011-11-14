@@ -60,14 +60,15 @@ public class CrisisManagerController extends AbstractMultiActionController  {
 				ICrisisManagerBatch batch = this.crisisManagerService.getCrisisMngBatchById(crisisMngBatchId);
 				
 				List<ICrisisMngBatchOrder> orders = new ArrayList<ICrisisMngBatchOrder>();
-				if(batch != null && EnumCrisisMngBatchType.REGULARORDER.equals(batch.getBatchType()) && (EnumCrisisMngBatchStatus.ORDERCANCELCOMPLETE.equals(batch.getStatus())
-						|| EnumCrisisMngBatchStatus.ORDERCANCELFAILED.equals(batch.getStatus()))){
+				if(batch != null && EnumCrisisMngBatchType.REGULARORDER.equals(batch.getBatchType()) 
+						&& !(EnumCrisisMngBatchStatus.ORDERCOLECTIONCOMPLETE.equals(batch.getStatus()) || EnumCrisisMngBatchStatus.CANCELLED.equals(batch.getStatus()))){
 					orders = this.crisisManagerService.getCrisisMngBatchRegularOrder(batch.getBatchId(), true, false);
 				} else if(batch != null && EnumCrisisMngBatchType.REGULARORDER.equals(batch.getBatchType())) {
 					orders = this.crisisManagerService.getCrisisMngBatchRegularOrder(batch.getBatchId(), false, false);
-				}if(batch != null && EnumCrisisMngBatchType.STANDINGORDER.equals(batch.getBatchType()) && (EnumCrisisMngBatchStatus.ORDERCANCELCOMPLETE.equals(batch.getStatus())
-						|| EnumCrisisMngBatchStatus.ORDERCANCELFAILED.equals(batch.getStatus()))){
-					orders = this.crisisManagerService.getCrisisMngBatchStandingOrder(batch.getBatchId(), true, false);
+				}if(batch != null && EnumCrisisMngBatchType.STANDINGORDER.equals(batch.getBatchType()) 
+						&& !(EnumCrisisMngBatchStatus.ORDERCOLECTIONCOMPLETE.equals(batch.getStatus()) || EnumCrisisMngBatchStatus.CANCELLED.equals(batch.getStatus()))
+						&& !(EnumCrisisMngBatchReportType.SOSIMULATIONREPORT.getDescription().equals(reportType))){
+					orders = this.crisisManagerService.getCrisisMngBatchStandingOrder(batch.getBatchId(), true, true);
 				} else if(batch != null && EnumCrisisMngBatchType.STANDINGORDER.equals(batch.getBatchType())) {
 					orders = this.crisisManagerService.getCrisisMngBatchStandingOrder(batch.getBatchId(), false, false);
 				}
@@ -161,6 +162,7 @@ public class CrisisManagerController extends AbstractMultiActionController  {
 					} else {
 						orderInfo = new CancelOrderInfoModel();
 						standingOrders.add(orderInfo);
+						orderInfo.setStandingOrderId( _order.getId());
 						orderInfo.setCompanyName(_order.getCustomerModel().getCompanyName());
 						orderInfo.setCustomerId(_order.getCustomerModel().getErpCustomerPK());
 						orderInfo.setOrderNumber(_order.getOrderNumber());					

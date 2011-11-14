@@ -6,9 +6,9 @@ public interface ICrisisManagerProcessMessage {
 	
 	String INFO_MESSAGE_BATCHCANCELCOMPLETED = "Batch Cancel : Completed";
 	
-	String INFO_MESSAGE_CRISISMNGREGORDERBATCHTRIGERRED = "Crisis Manager Regular order Batch created successfully";
+	String INFO_MESSAGE_CRISISMNGREGORDERBATCHTRIGERRED = "Regular order batch created successfully";
 	
-	String INFO_MESSAGE_CRISISMNGSOORDERBATCHTRIGERRED = "Crisis Manager Standing order Batch created successfully";
+	String INFO_MESSAGE_CRISISMNGSOORDERBATCHTRIGERRED = "Standing order batch created successfully";
 	
 	String INFO_MESSAGE_ORDERDATACOLLECTIONPROGRESS = "OrderIn : Data collection in progress";
 	
@@ -18,7 +18,7 @@ public interface ICrisisManagerProcessMessage {
 	
 	String INFO_MESSAGE_ORDERCANCELCOMPLETED = "Order Cancel : Completed";
 	
-	String INFO_MESSAGE_REGULARORDERCANCELCOMPLETED = "Order Cancel : Completed, either you can perform create reservation action or mark as completed.";
+	String INFO_MESSAGE_REGULARORDERCANCELCOMPLETED = "Order Cancel : Completed, either you can create reservation(s) or mark batch as completed.";
 	
 	String INFO_MESSAGE_CREATERESERVATIONPROGRESS = "Create Reservation : in progress";
 	
@@ -37,5 +37,7 @@ public interface ICrisisManagerProcessMessage {
 	String INFO_MESSAGE_PLACESTANDINGORDERFAILED = "Place Standing Order : Failed";
 	
 	String INFO_MESSAGE_BATCHCOMPLETED = "Batch Completed";
+	
+	String INFO_MESSAGE_BATCHTIMESLOTEXPMSG = "Batch contains timeslot exception(s)";
 
 }

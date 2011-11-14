@@ -438,10 +438,10 @@ div.t_tab_hspacer {
 }
 /*sub tab angles l/r height comes from: A tag height + padding (18+(4*2)=26*/
 .sub_tableft {
-	border-width: 26px 10px 0px 0px;
+	border-width: 27px 10px 0px 0px;
 }
 .sub_tabright {
-	border-width: 0px 10px 26px 0px ;
+	border-width: 0px 10px 27px 0px ;
 }
 
 
@@ -473,7 +473,7 @@ div.t_tab a {
 }
 div.subtab a {
 	font-size: 14px;
-	padding: 4px;
+	padding: 5px;
 }
 
 

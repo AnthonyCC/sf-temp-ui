@@ -22,7 +22,7 @@ public class CrisisManagerCompleteAction extends AbstractCrisisManagerAction {
 				, EnumCrisisMngBatchActionType.COMPLETE, this.getUserId());
 		this.getCrisisMngService().updateCrisisMngBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_BATCHCOMPLETED);
 		
-		unBlockDeliveryCapacity();
+		unBlockDeliveryCapacity(true);
     	
 		return null;
 		

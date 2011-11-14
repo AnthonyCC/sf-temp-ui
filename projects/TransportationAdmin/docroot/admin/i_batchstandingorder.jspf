@@ -27,7 +27,7 @@
                           visible: false,
                           effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
         
-		var standingOrderData = jsonrpcClient.AsyncCrisisMngProvider.getStandingOrderByBatchId(_currentBatchId);
+		var standingOrderData = crisisMngRpcClient.AsyncCrisisMngProvider.getStandingOrderByBatchId(_currentBatchId);
           
 		standingOrderDataSource = new YAHOO.util.DataSource(standingOrderData.list);
 
@@ -82,21 +82,27 @@
 			}
 		}
 	}
-
+	 
 	function submitStandingOrder() { 
 		var _data = new Array();
 		if(standingOrderDataTable.getRecordSet() != null && 
 			standingOrderDataTable.getRecordSet().getRecords()) { 
 			var records = standingOrderDataTable.getRecordSet().getRecords();
 			for(i=0; i < records.length; i++) { 
-				if(records[i].getData('isSel')){
-					_data[i] = new Array(); 
-					_data[i][0] = records[i].getData('standingOrderId');
+				var k = _data.length;
+				var x = document.getElementById(records[i]['_sId']);
+				if (x && x.getElementsByTagName('input')[0] && x.getElementsByTagName('input')[0].checked)
+				{	
+					_data[k] = new Array(); 
+					_data[k][0] = records[i].getData('standingOrderId');
+					_data[k][1] = records[i].getData('saleId');
 				}
 			}
 		} 
 		if(_data.length > 0){
-			var _placeOrderResult = jsonrpcClient.AsyncCrisisMngProvider.placeStandingOrder(_currentBatchId, _data, true, null);
+			document.getElementById('ajaxBusy').style.display = 'block';
+			var _placeOrderResult = crisisMngRpcClient.AsyncCrisisMngProvider.placeStandingOrder(_currentBatchId, _data, true, null);
+			document.getElementById('ajaxBusy').style.display = 'none';
 			standingOrderDataTable.destroy();
 			YAHOO.util.Dom.get("errSOContainer").value = "";
 			editStandingOrderPanel.hide();

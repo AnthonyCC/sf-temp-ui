@@ -16,6 +16,7 @@ import com.freshdirect.transadmin.model.ICrisisManagerBatchDeliverySlot;
 import com.freshdirect.transadmin.model.ICrisisManagerBatchReservation;
 import com.freshdirect.routing.model.ICrisisMngBatchOrder;
 import com.freshdirect.routing.model.ICustomerModel;
+import com.freshdirect.routing.model.StandingOrderModel;
 import com.freshdirect.transadmin.web.model.TriggerCrisisManagerResult;
 import com.freshdirect.transadmin.service.exception.TransAdminServiceException;
 
@@ -80,7 +81,7 @@ public interface ICrisisManagerService {
 	
 	List<ICrisisMngBatchOrder> getCrisisMngBatchStandingOrder(String batchId, boolean filterException, boolean filterOrder) throws TransAdminServiceException;
 	
-	void updateCrisisMngBatchStandingOrder(String batchId, List<ICrisisMngBatchOrder> batchStandingOrders) throws TransAdminServiceException;
+	void updateCrisisMngBatchStandingOrder(String batchId, List<StandingOrderModel> batchStandingOrders) throws TransAdminServiceException;
 	
 	List<IActiveOrderModel> getActiveOrderByArea(Date deliveryDate, EnumCrisisMngBatchType batchType) throws TransAdminServiceException;
 	

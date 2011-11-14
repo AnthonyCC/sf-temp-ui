@@ -44,4 +44,7 @@ public interface ICancelOrderInfo {
 	 void setTempLineItemCount(int tempLineItemCount);
 	
 	 int getLineItemChangeCount();
+ 
+	 String getStandingOrderId();
+	 void setStandingOrderId(String standingOrderId);
 }

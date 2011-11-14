@@ -22,10 +22,13 @@ import com.freshdirect.transadmin.model.ICrisisManagerBatchDeliverySlot;
 import com.freshdirect.transadmin.model.ICrisisManagerBatchReservation;
 import com.freshdirect.routing.model.ICrisisMngBatchOrder;
 import com.freshdirect.routing.model.ICustomerModel;
+import com.freshdirect.routing.model.StandingOrderModel;
+import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.TriggerCrisisManagerResult;
 import com.freshdirect.transadmin.service.ICrisisManagerService;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingServicesProperties;
+import com.freshdirect.routing.util.RoutingUtil;
 import com.freshdirect.transadmin.service.exception.IIssue;
 import com.freshdirect.transadmin.service.exception.TransAdminServiceException;
 
@@ -153,16 +156,30 @@ public class CrisisManagerService implements ICrisisManagerService {
 	}
 	
 	public void addNewCrisisMngBatchCustomer(Set<ICustomerModel> batchCustomers, String batchId) throws TransAdminServiceException {
-		try{			
-			getCrisisManagerDAOImpl().addNewCrisisMngBatchCustomer(batchCustomers, batchId);
+		try{
+			List<ICustomerModel> customers = new ArrayList<ICustomerModel>();
+			for(ICustomerModel cust : batchCustomers){
+				customers.add(cust);
+			}
+			if(customers != null) {
+				List<List<?>> buckets = RoutingUtil.splitList(customers, RoutingServicesProperties.getJDBCBatchUpdateThreshold());
+				for(List bucket: buckets) {
+					getCrisisManagerDAOImpl().addNewCrisisMngBatchCustomer(bucket, batchId);
+				}
+			}			
 		}catch(SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}
 	}
 	
 	public void addNewCrisisMngBatchRegularOrder(List<ICrisisMngBatchOrder> batchOrders, String batchId) throws TransAdminServiceException {
-		try{		
-			getCrisisManagerDAOImpl().addNewCrisisMngBatchRegularOrder(batchOrders, batchId);
+		try{
+			if(batchOrders != null) {
+				List<List<?>> buckets = RoutingUtil.splitList(batchOrders, RoutingServicesProperties.getJDBCBatchUpdateThreshold());
+				for(List bucket: buckets) {
+					getCrisisManagerDAOImpl().addNewCrisisMngBatchRegularOrder(bucket, batchId);
+				}
+			}
 		}catch(SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}
@@ -178,7 +195,12 @@ public class CrisisManagerService implements ICrisisManagerService {
 	
 	public void updateCrisisMngOrderException(String orderCrisisBatchId, String batchType, List<String> exceptionOrderIds) throws TransAdminServiceException {
 		try{
-			getCrisisManagerDAOImpl().updateCrisisMngOrderException(orderCrisisBatchId, batchType, exceptionOrderIds);			
+			if(exceptionOrderIds != null) {
+				List<List<?>> buckets = RoutingUtil.splitList(exceptionOrderIds, TransportationAdminProperties.getJDBCBatchUpdateThreshold());
+				for(List bucket: buckets) {
+					getCrisisManagerDAOImpl().updateCrisisMngOrderException(orderCrisisBatchId, batchType, bucket);
+				}
+			}
 		}catch(SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}
@@ -194,7 +216,12 @@ public class CrisisManagerService implements ICrisisManagerService {
 	
 	public void addNewCrisisMngBatchReservation(List<ICrisisManagerBatchReservation> reservations, String batchId) throws TransAdminServiceException {
 		try{
-			getCrisisManagerDAOImpl().addNewCrisisMngBatchReservation(reservations, batchId);
+			if(reservations != null) {
+				List<List<?>> buckets = RoutingUtil.splitList(reservations, RoutingServicesProperties.getJDBCBatchUpdateThreshold());
+				for(List bucket: buckets) {
+					getCrisisManagerDAOImpl().addNewCrisisMngBatchReservation(bucket, batchId);
+				}
+			}
 		}catch(SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}
@@ -210,7 +237,12 @@ public class CrisisManagerService implements ICrisisManagerService {
 	
 	public void updateCrisisMngReservationException(String crisisMngBatchId, List<String> exceptionRsvIds) throws TransAdminServiceException {
 		try{
-			getCrisisManagerDAOImpl().updateCrisisMngReservationException(crisisMngBatchId, exceptionRsvIds);
+			if(exceptionRsvIds != null) {
+				List<List<?>> buckets = RoutingUtil.splitList(exceptionRsvIds, TransportationAdminProperties.getJDBCBatchUpdateThreshold());
+				for(List bucket: buckets) {
+					getCrisisManagerDAOImpl().updateCrisisMngReservationException(crisisMngBatchId, bucket);
+				}
+			}
 		}catch(SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}
@@ -218,14 +250,25 @@ public class CrisisManagerService implements ICrisisManagerService {
 	
 	public void updateCrisisMngOrderStatus(String crisisMngBatchId, String batchType, List<String> exceptionOrderIds) throws TransAdminServiceException {
 		try{
-			getCrisisManagerDAOImpl().updateCrisisMngOrderStatus(crisisMngBatchId, batchType, exceptionOrderIds);
-		}catch(SQLException e) {
+			if(exceptionOrderIds != null) {
+				List<List<?>> buckets = RoutingUtil.splitList(exceptionOrderIds, TransportationAdminProperties.getJDBCBatchUpdateThreshold());
+				for(List bucket: buckets) {
+					getCrisisManagerDAOImpl().updateCrisisMngOrderStatus(crisisMngBatchId, batchType, bucket);
+				}
+			}
+		} catch(SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}
 	}
 	
 	public void updateCrisisMngReservationStatus(String crisisMngBatchId, List<String> exceptionRsvIds) throws TransAdminServiceException {
 		try{
+			if(exceptionRsvIds != null) {
+				List<List<?>> buckets = RoutingUtil.splitList(exceptionRsvIds, TransportationAdminProperties.getJDBCBatchUpdateThreshold());
+				for(List bucket: buckets) {
+					getCrisisManagerDAOImpl().updateCrisisMngReservationStatus(crisisMngBatchId, bucket);
+				}
+			}
 			getCrisisManagerDAOImpl().updateCrisisMngReservationStatus(crisisMngBatchId, exceptionRsvIds);
 		}catch(SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
@@ -289,8 +332,13 @@ public class CrisisManagerService implements ICrisisManagerService {
 	}
 	
 	public void addNewCrisisMngBatchStandingOrder(List<ICrisisMngBatchOrder> soOrders, String batchId) throws TransAdminServiceException{
-		try{			
-			getCrisisManagerDAOImpl().addNewCrisisMngBatchStandingOrder(soOrders, batchId);
+		try{
+			if(soOrders != null) {
+				List<List<?>> buckets = RoutingUtil.splitList(soOrders, RoutingServicesProperties.getJDBCBatchUpdateThreshold());
+				for(List bucket: buckets) {
+					getCrisisManagerDAOImpl().addNewCrisisMngBatchStandingOrder(bucket, batchId);
+				}
+			}
 		}catch(SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}
@@ -304,9 +352,14 @@ public class CrisisManagerService implements ICrisisManagerService {
 		}
 	}
 	
-	public void updateCrisisMngBatchStandingOrder(String batchId, List<ICrisisMngBatchOrder> batchStandingOrders) throws TransAdminServiceException {
+	public void updateCrisisMngBatchStandingOrder(String batchId, List<StandingOrderModel> batchStandingOrders) throws TransAdminServiceException {
 		try{
-			getCrisisManagerDAOImpl().updateCrisisMngBatchStandingOrder(batchId, batchStandingOrders);
+			if(batchStandingOrders != null) {
+				List<List<?>> buckets = RoutingUtil.splitList(batchStandingOrders, TransportationAdminProperties.getJDBCBatchUpdateThreshold());
+				for(List bucket: buckets) {
+					getCrisisManagerDAOImpl().updateCrisisMngBatchStandingOrder(batchId, bucket);
+				}
+			}
 		}catch(SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}

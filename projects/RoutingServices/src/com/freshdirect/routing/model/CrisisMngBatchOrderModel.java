@@ -4,8 +4,6 @@ import java.util.Date;
 
 public class CrisisMngBatchOrderModel extends CrisisMngBatchOrder {
 		
-	private static final long serialVersionUID = 4837425644599397996L;
-	
 	private String id;	
 	private int lineItemCount;
 	private int tempLineItemCount;
@@ -39,7 +37,7 @@ public class CrisisMngBatchOrderModel extends CrisisMngBatchOrder {
 		this.customerModel = customerModel;
 	}	
 	public int getLineItemChangeCount(){
-		return this.tempLineItemCount - this.lineItemCount;
+		return this.lineItemCount - this.tempLineItemCount;
 	}
 	public String getErrorHeader() {
 		return errorHeader;

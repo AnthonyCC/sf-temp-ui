@@ -16,6 +16,7 @@ import com.freshdirect.transadmin.model.CrisisManagerBatchDeliverySlot;
 import com.freshdirect.transadmin.model.ICrisisManagerBatch;
 import com.freshdirect.transadmin.model.ICrisisManagerBatchDeliverySlot;
 import com.freshdirect.routing.model.ICrisisMngBatchOrder;
+import com.freshdirect.routing.model.StandingOrderModel;
 import com.freshdirect.transadmin.constants.EnumCrisisMngBatchType;
 import com.freshdirect.transadmin.crisis.manager.action.CrisisManagerCancelAction;
 import com.freshdirect.transadmin.crisis.manager.action.CrisisManagerCompleteAction;
@@ -235,12 +236,7 @@ public class CrisisMngProviderController extends BaseJsonRpcController  implemen
 			Map<String, Integer> exceptions = (Map<String, Integer>) process.execute();
 			boolean hasError = (exceptions != null && exceptions.keySet().size() > 0);
 			if(hasError) {
-				StringBuffer exceptionMessage = new StringBuffer();
-				/*exceptionMessage.append("Below are the list of Timeslot exceptions: \n\n");
-				exceptionMessage.append("Area - No of Exceptions \n");
-				for(Map.Entry<String, Integer> exp : exceptions.entrySet()) {					
-					exceptionMessage.append("\n").append(exp.getKey()+"  =  "+exp.getValue());
-				}*/
+				StringBuffer exceptionMessage = new StringBuffer();				
 				if(!isExceptionCheck) {
 					exceptionMessage.append("\n\n"+"Please handle timeslot exceptions as reservation(s) can't be created. Do you want to continue?");
 				} 
@@ -314,7 +310,7 @@ public class CrisisMngProviderController extends BaseJsonRpcController  implemen
 	public String placeStandingOrder(String batchId, String[][] _standingOrderData, boolean isExceptionCheck, String[][] timeslot){
 		
 		String userId = com.freshdirect.transadmin.security.SecurityManager.getUserName(getHttpServletRequest());		
-		List<ICrisisMngBatchOrder> standingOrders = new ArrayList<ICrisisMngBatchOrder>();
+		List<StandingOrderModel> standingOrders = new ArrayList<StandingOrderModel>();
 		ICrisisManagerBatch batch;
 		
 		try {
@@ -351,19 +347,13 @@ public class CrisisMngProviderController extends BaseJsonRpcController  implemen
 				this.crisisManagerService.updateCrisisMngBatchDeliveryslot(exceptionSlots);
 			}
 			
-			List<ICrisisMngBatchOrder> batchSOList = this.crisisManagerService.getCrisisMngBatchStandingOrder(batchId,false,false);
-			
 			if(_standingOrderData != null){
-				for(int i= 0;i < _standingOrderData.length;i++){
-					Iterator<ICrisisMngBatchOrder> itr =  batchSOList.iterator();
-					while(itr.hasNext()){
-						ICrisisMngBatchOrder model = itr.next();
-						if(model != null && model.getId().equalsIgnoreCase(_standingOrderData[i][0])){
-							model.setAltDeliveryDate(batch.getDestinationDate());
-							standingOrders.add(model);
-							break;
-						}
-					}
+				for(int i= 0;i < _standingOrderData.length;i++){							
+					StandingOrderModel model = new StandingOrderModel();
+					model.setId(_standingOrderData[i][0]);
+					model.setOrderId(_standingOrderData[i][1]);
+					model.setAltDate(batch.getDestinationDate());
+					standingOrders.add(model);
 				}
 			}
 			CrisisManagerPlaceOrderAction process = new CrisisManagerPlaceOrderAction(batch, userId, standingOrders, isExceptionCheck, this.crisisManagerService);
@@ -371,12 +361,7 @@ public class CrisisMngProviderController extends BaseJsonRpcController  implemen
 			Map<String, Integer> exceptions = (Map<String, Integer>) process.execute();
 			boolean hasError = (exceptions != null && exceptions.keySet().size() > 0);
 			if(hasError) {
-				StringBuffer exceptionMessage = new StringBuffer();
-				/*exceptionMessage.append("Below are the list of Timeslot exceptions: \n\n");
-				exceptionMessage.append("Area - No of Timeslots \n");
-				for(Map.Entry<String, Integer> exp : exceptions.entrySet()) {					
-					exceptionMessage.append("\n").append(exp.getKey()+"  =  "+exp.getValue());
-				}*/
+				StringBuffer exceptionMessage = new StringBuffer();			
 				if(!isExceptionCheck) {
 					exceptionMessage.append("\n\n"+"Please handle timeslot exceptions before you place order(s). Do you want to continue?");
 				} 

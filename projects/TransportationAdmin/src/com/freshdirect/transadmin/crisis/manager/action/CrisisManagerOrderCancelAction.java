@@ -6,6 +6,7 @@ import static com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage.IN
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -57,16 +58,12 @@ public class CrisisManagerOrderCancelAction extends AbstractCrisisManagerAction 
 		@Override
 		public void run() {
 					
-			List<String> exceptionOrderIds = null;
+			List<String> exceptionOrderIds = new ArrayList<String>();
 			List<String> messages = new ArrayList<String>();			
 			List<String> exceptions = new ArrayList<String>();
 			
 			System.out.println("########### CancelOrderTask START ############");
 		    try {
-		    	CrisisManagerUtil orderMngAgent = new CrisisManagerUtil();
-		    	orderMngAgent.setAgent(CrisisManagerOrderCancelAction.this.getUserId());		    		
-		    	orderMngAgent.setOrders(CrisisManagerOrderCancelAction.this.cancelOrders);
-		    	
 		    	getService().updateCrisisMngBatchStatus(getProcess().getBatchId(), EnumCrisisMngBatchStatus.PROCESSING);
 		    	getService().addNewCrisisMngBatchAction(getProcess().getBatchId(), RoutingDateUtil.getCurrentDateTime()
 						, EnumCrisisMngBatchActionType.ORDERCANCEL, CrisisManagerOrderCancelAction.this.getUserId());
@@ -80,31 +77,37 @@ public class CrisisManagerOrderCancelAction extends AbstractCrisisManagerAction 
 		    						= getService().getCrisisMngBatchReservation(getProcess().getBatchId(), false);
 		    			    	
 		    	System.out.println("############ Cancel Reservation Count ########### " + rsvMapping.keySet().size());
-		    	Set keySet = new HashSet(rsvMapping.keySet());
-		    	orderMngAgent.setReservations(keySet);
-		    	orderMngAgent.doCancelReservations();		    		
+		    	Set rsvIds = new HashSet(rsvMapping.keySet());
 		    	
-		    	System.out.println("############ Cancel Order Count ########### " + orderMngAgent.getOrders().size());
-	    		
-		    	if(orderMngAgent.getOrders().size() > 0)
-		    		exceptionOrderIds = orderMngAgent.doCancelOrders();		    		
-		    			    	
+		    	if(rsvIds != null && rsvIds.size() > 0){
+		    		CrisisManagerUtil.doCancelReservations(rsvIds, CrisisManagerOrderCancelAction.this.getUserId());
+		    		getService().updateCrisisMngReservationStatus(getProcess().getBatchId(), null);
+		    	}
+		    	
+		    	System.out.println("############ Cancel Order Count ########### " + CrisisManagerOrderCancelAction.this.cancelOrders.size());	    		
+		    	if(CrisisManagerOrderCancelAction.this.cancelOrders.size() > 0){
+		    		exceptionOrderIds = CrisisManagerUtil.doCancelOrders(CrisisManagerOrderCancelAction.this.cancelOrders
+		    				, CrisisManagerOrderCancelAction.this.getUserId());
+		    		Iterator<String> _orderItr = CrisisManagerOrderCancelAction.this.cancelOrders.iterator();
+		    		while(_orderItr.hasNext()){
+		    			String _orderId = _orderItr.next();
+		    			if(exceptionOrderIds.contains(_orderId)) {
+		    				_orderItr.remove();
+		    			}
+		    		}
+		    		/*update the batch order status*/
+			    	getService().updateCrisisMngOrderStatus(getProcess().getBatchId(),getProcess().getBatchType().name(), CrisisManagerOrderCancelAction.this.cancelOrders);
+		    	}
+		    	
 		    	if(exceptionOrderIds != null && exceptionOrderIds.size() > 0){
 		    		messages.addAll(exceptionOrderIds);
 		    		getService().updateCrisisMngOrderException(getProcess().getBatchId(), getProcess().getBatchType().name(),exceptionOrderIds);
-		    		getService().updateCrisisMngBatchStatus(getProcess().getBatchId(), getFailureStatus());
-		    		getService().updateCrisisMngBatchMessage(getProcess().getBatchId(),  formatMessages(messages));					
-		    	}else{
-		    		getService().updateCrisisMngBatchStatus(getProcess().getBatchId(), EnumCrisisMngBatchStatus.ORDERCANCELCOMPLETE);
-			    	getService().updateCrisisMngBatchMessage(getProcess().getBatchId()
-			    				,  EnumCrisisMngBatchType.STANDINGORDER.equals(getProcess().getBatchType()) ? INFO_MESSAGE_ORDERCANCELCOMPLETED : INFO_MESSAGE_REGULARORDERCANCELCOMPLETED);
-			
+		    		throw new TransAdminServiceException("Below orders failed to cancel "+formatMessages1(messages),null,null);		    							
 		    	}
-		    	
-		    	/*update the order status*/
-		    	getService().updateCrisisMngReservationStatus(getProcess().getBatchId(), null);
-		    	getService().updateCrisisMngOrderStatus(getProcess().getBatchId(),getProcess().getBatchType().name(), exceptionOrderIds);
-		    	
+		    	getService().updateCrisisMngBatchStatus(getProcess().getBatchId(), EnumCrisisMngBatchStatus.ORDERCANCELCOMPLETE);
+			    getService().updateCrisisMngBatchMessage(getProcess().getBatchId()
+			    				,  EnumCrisisMngBatchType.STANDINGORDER.equals(getProcess().getBatchType())
+			    								? INFO_MESSAGE_ORDERCANCELCOMPLETED : INFO_MESSAGE_REGULARORDERCANCELCOMPLETED);
 
 		    } catch(Exception e){
 		    	LOGGER.error("CancelOrderTask failed with exception ", e);

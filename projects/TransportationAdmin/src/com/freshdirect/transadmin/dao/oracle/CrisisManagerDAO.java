@@ -57,6 +57,7 @@ import com.freshdirect.transadmin.model.ICrisisManagerBatchReservation;
 import com.freshdirect.routing.model.ICrisisMngBatchOrder;
 import com.freshdirect.routing.model.ICustomerModel;
 import com.freshdirect.routing.model.CrisisMngBatchOrderModel;
+import com.freshdirect.routing.model.StandingOrderModel;
 
 public class CrisisManagerDAO implements ICrisisManagerDAO   {
 	
@@ -220,7 +221,7 @@ public class CrisisManagerDAO implements ICrisisManagerDAO   {
 		" WHERE bo.BATCH_ID = ? and bo.batch_id = bc.batch_id and bo.customer_id = bc.customer_id ";
 	
 	private static final String UPDATE_CRISISMNGBATCH_SO_PLACEORDEREXCEPTION = "UPDATE TRANSP.CRISISMNG_BATCHSTANDINGORDER SET NOTIFICATION_MSG = ?, PLACEORDER_STATUS = ? " +
-					" where BATCH_ID = ? AND STANDINGORDER_ID = ? ";
+					" where BATCH_ID = ? AND STANDINGORDER_ID = ? and WEBORDER_ID = ? ";
 	
 	private static final String UPDATE_CRISISMNGBATCH_STANDINGORDEREXCEPTION = "UPDATE TRANSP.CRISISMNG_BATCHSTANDINGORDER SET IS_EXCEPTION = 'X' " +
 					" where BATCH_ID = ? AND WEBORDER_ID in (";
@@ -584,7 +585,7 @@ public class CrisisManagerDAO implements ICrisisManagerDAO   {
 		return result;
 	}
 	
-	public void addNewCrisisMngBatchCustomer(Set<ICustomerModel> batchCustomers, final String batchId) throws SQLException {
+	public void addNewCrisisMngBatchCustomer(List<ICustomerModel> batchCustomers, final String batchId) throws SQLException {
 		
 		Connection connection = null;
 		if(batchCustomers != null && batchCustomers.size() > 0) {
@@ -765,7 +766,7 @@ public class CrisisManagerDAO implements ICrisisManagerDAO   {
 			else
 				updateQ.append(UPDATE_CRISISMNGBATCH_STANDINGORDERSTATUS);
 			if(exceptionOrderIds != null && exceptionOrderIds.size() > 0) {
-				updateQ.append(" AND WEBORDER_ID not in (");
+				updateQ.append(" AND WEBORDER_ID in (");
 				int intCount = 0;
 				for(String expOrder : exceptionOrderIds) {
 					updateQ.append("'").append(expOrder).append("'");
@@ -1436,7 +1437,7 @@ public class CrisisManagerDAO implements ICrisisManagerDAO   {
 		final StringBuffer updateQ = new StringBuffer();
 		updateQ.append(GET_CRISISMNGBATCH_STANDINGORDER);
 		if(filterOrder){
-			updateQ.append(" and bo.ORDER_STATUS <> 'CAN' ");
+			updateQ.append(" and bo.ORDER_STATUS = 'CAN' ");
 		}
 		Connection connection = null;
 		try{
@@ -1494,7 +1495,7 @@ public class CrisisManagerDAO implements ICrisisManagerDAO   {
 		}		
 	}
 
-	public void updateCrisisMngBatchStandingOrder(String batchId, List<ICrisisMngBatchOrder> batchStandingOrders) throws SQLException {
+	public void updateCrisisMngBatchStandingOrder(String batchId, List<StandingOrderModel> batchStandingOrders) throws SQLException {
 		
 		Connection connection = null;
 		if(batchStandingOrders != null && batchStandingOrders.size() > 0) {
@@ -1506,12 +1507,13 @@ public class CrisisManagerDAO implements ICrisisManagerDAO   {
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.compile();
 				
 				connection = this.jdbcTemplate.getDataSource().getConnection();
 				
-				for(ICrisisMngBatchOrder _soEntry : batchStandingOrders){
-					batchUpdater.update(new Object[]{_soEntry.getErrorHeader(),_soEntry.getStatus(), batchId, _soEntry.getId()});			
+				for(StandingOrderModel _soEntry : batchStandingOrders){
+					batchUpdater.update(new Object[]{_soEntry.getErrorHeader(),_soEntry.getStatus(), batchId, _soEntry.getId(),_soEntry.getOrderId()});			
 				}	
 			
 				batchUpdater.flush();		

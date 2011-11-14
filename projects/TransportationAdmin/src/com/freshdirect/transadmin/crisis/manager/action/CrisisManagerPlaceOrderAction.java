@@ -6,6 +6,7 @@ import static com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage.IN
 import static com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage.INFO_MESSAGE_PLACESTANDINGORDERFAILED;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import com.freshdirect.transadmin.constants.EnumCrisisMngBatchStatus;
 import com.freshdirect.transadmin.model.ICrisisManagerBatch;
 import com.freshdirect.transadmin.model.ICrisisManagerBatchDeliverySlot;
 import com.freshdirect.routing.model.ICrisisMngBatchOrder;
+import com.freshdirect.routing.model.StandingOrderModel;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.transadmin.service.ICrisisManagerService;
 import com.freshdirect.transadmin.service.exception.IIssue;
@@ -22,11 +24,11 @@ import com.freshdirect.transadmin.util.CrisisManagerUtil;
 
 public class CrisisManagerPlaceOrderAction extends AbstractCrisisManagerAction {
 	
-	private List<ICrisisMngBatchOrder> standingOrders;
+	private List<StandingOrderModel> standingOrders;
 	private boolean isExceptionCheck;
 	
 	public CrisisManagerPlaceOrderAction(ICrisisManagerBatch batch,
-			String userId, List<ICrisisMngBatchOrder> standingOrders, boolean isExceptionCheck, ICrisisManagerService  crisisMngService) {
+			String userId, List<StandingOrderModel> standingOrders, boolean isExceptionCheck, ICrisisManagerService  crisisMngService) {
 		super(batch, userId, crisisMngService);	
 		this.standingOrders = standingOrders;
 		this.isExceptionCheck = isExceptionCheck;
@@ -68,30 +70,46 @@ public class CrisisManagerPlaceOrderAction extends AbstractCrisisManagerAction {
 			return foundExceptions;
 		}
 
-		if (foundExceptions.size() == 0 && isExceptionCheck) {
-			this.unBlockDeliveryCapacity();
-		    CrisisManagerUtil orderMngAgent = new CrisisManagerUtil();
-		   	orderMngAgent.setAgent(this.getUserId());
-		    orderMngAgent.setOrders(this.standingOrders);
-		    List<ICrisisMngBatchOrder> standingOrderResult = orderMngAgent.placeStandingOrders();
-		    	
-		    if(standingOrderResult != null && standingOrderResult.size() > 0){
-		    	this.getCrisisMngService().updateCrisisMngBatchStandingOrder(this.getBatch().getBatchId(), standingOrderResult);	    		
-		    	StringBuffer errorBuf = new StringBuffer();	    		
-		    	for(ICrisisMngBatchOrder model : standingOrderResult){	    			
-			   		if(errorBuf.length() > 0) { errorBuf.append(", "); }		    		
-		    		if(model.getErrorHeader() != null && !"".equalsIgnoreCase(model.getErrorHeader()))
-		    			errorBuf.append(model.getId()).append(" - ").append(model.getErrorHeader());
-		    	} 		
-		    	    		
-		    	if(errorBuf.toString().length() > 0){
-		    		throw new TransAdminServiceException("Standing Order failures: "+ errorBuf.toString()    		
+		if (foundExceptions.size() == 0 && isExceptionCheck) {			
+			this.unBlockDeliveryCapacity(true);			
+			try{
+				List<StandingOrderModel> standingOrderResult = CrisisManagerUtil.placeStandingOrders(this.standingOrders, this.getUserId());
+			    	
+			    if(standingOrderResult != null && standingOrderResult.size() > 0){
+			    	this.getCrisisMngService().updateCrisisMngBatchStandingOrder(this.getBatch().getBatchId(), standingOrderResult);	    		
+			    	StringBuffer errorBuf = new StringBuffer();	    		
+			    	for(StandingOrderModel model : standingOrderResult){	    			
+				   		if(errorBuf.length() > 0) { errorBuf.append(", "); }		    		
+			    		if(model.getErrorHeader() != null && !"".equalsIgnoreCase(model.getErrorHeader()))
+			    			errorBuf.append(model.getId()).append(" - ").append(model.getErrorHeader());
+			    	} 		
+			    	    		
+			    	if(errorBuf.toString().length() > 0){
+			    		throw new TransAdminServiceException("Standing Order failures: "+ errorBuf.toString()    		
+							, null, IIssue.PROCESS_CRISISMNGBATCH_ERROR);
+			    	}
+			    }
+			} catch(Exception ex){
+				throw new TransAdminServiceException("Standing Order failure: "+ ex.toString()    		
 						, null, IIssue.PROCESS_CRISISMNGBATCH_ERROR);
-		    	}
-		    }		
-		    this.getCrisisMngService().updateCrisisMngBatchStatus(this.getBatch().getBatchId(), EnumCrisisMngBatchStatus.COMPLETED);
-		    this.getCrisisMngService().updateCrisisMngBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_PLACESTANDINGORDERCOMPLETED);
-		} else{
+			}
+			List<ICrisisMngBatchOrder> batchOrders = this.getCrisisMngService().getCrisisMngBatchStandingOrder(this.getBatch().getBatchId(), false, false);
+			Iterator<ICrisisMngBatchOrder> _orderItr = batchOrders.iterator();
+			int orderCount = 0;
+			while(_orderItr.hasNext()){
+				ICrisisMngBatchOrder _order = _orderItr.next();
+				if(_order.getStatus() == null || "FAILURE".equals(_order.getStatus())){
+					orderCount++;
+				}
+		    }
+			if(orderCount > 0){
+				this.getCrisisMngService().updateCrisisMngBatchStatus(this.getBatch().getBatchId(), EnumCrisisMngBatchStatus.PLACESOCOMPETE);
+			    this.getCrisisMngService().updateCrisisMngBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_PLACESTANDINGORDERCOMPLETED);
+			} else {
+				this.getCrisisMngService().updateCrisisMngBatchStatus(this.getBatch().getBatchId(), EnumCrisisMngBatchStatus.COMPLETED);
+			    this.getCrisisMngService().updateCrisisMngBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_PLACESTANDINGORDERCOMPLETED);
+			}			
+		} else {
 			this.getCrisisMngService().updateCrisisMngBatchStatus(this.getBatch().getBatchId(), getFailureStatus());
 			this.getCrisisMngService().updateCrisisMngBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_PLACESTANDINGORDERFAILED);			
 		}

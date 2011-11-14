@@ -32,6 +32,7 @@ import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.ReservationException;
+import com.freshdirect.delivery.ReservationUnavailableException;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -60,9 +61,9 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
-import com.freshdirect.routing.model.ICrisisMngBatchOrder;
 import com.freshdirect.routing.model.IGenericSearchModel;
 import com.freshdirect.routing.model.IReservationModel;
+import com.freshdirect.routing.model.StandingOrderModel;
 import com.freshdirect.routing.util.json.CrisisManagerJSONSerializer;
 import com.freshdirect.webapp.util.StandingOrderUtil;
 import com.metaparadigm.jsonrpc.JSONSerializer;
@@ -169,19 +170,17 @@ public class CrisisManagerServlet extends HttpServlet {
 		}
 	}
 	
-	private ICrisisMngBatchOrder processStandingOrder(HttpServletRequest request,
+	private String processStandingOrder(HttpServletRequest request,
 			HttpServletResponse response, String agent, String payload){
 
-		ICrisisMngBatchOrder soModel = extractStandingOrderPayload(payload);
+		StandingOrderModel soModel = extractStandingOrderPayload(payload);
 		if (soModel == null) {
 			LOGGER.error("Cannot extract Reservation Model from payload");			
 			sendError(response, ":[");
 			return null;
-		}
-		StandingOrdersServiceResult.Result result = placeStandingOrder(soModel.getId(), soModel.getAltDeliveryDate(), agent,request);		
-		soModel.setStatus(result.getStatus().name());
-		soModel.setErrorHeader(result.getErrorHeader());
-		return soModel;	
+		}		
+		StandingOrdersServiceResult.Result result = placeStandingOrder(soModel.getId(), soModel.getAltDate(), agent,request);
+		return result.getErrorHeader();	
 	}
 	
 	private StandingOrdersServiceResult.Result placeStandingOrder(String standingOrderId, Date altDate, String initiator, HttpServletRequest request) {
@@ -393,7 +392,7 @@ public class CrisisManagerServlet extends HttpServlet {
 			if(cart!=null && cart.getZoneInfo()!=null)
 				zoneId = cart.getZoneInfo().getZoneId();
 			
-			TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.ADMINISTRATOR.getCode(), (cart != null) ? cart.isDlvPassApplied() : false, (cart != null) ? cart.getDeliverySurcharge() : 0.00,
+			TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.SYSTEM.getCode(), (cart != null) ? cart.isDlvPassApplied() : false, (cart != null) ? cart.getDeliverySurcharge() : 0.00,
 					(cart != null) ? cart.isDeliveryChargeWaived() : false, Util.isZoneCtActive(zoneId));
 		
 			FDTimeslot timeslot = FDDeliveryManager.getInstance().getTimeslotsById(rsvModel.getTimeSlotId());
@@ -404,10 +403,17 @@ public class CrisisManagerServlet extends HttpServlet {
 			}
 			FDActionInfo info = getActionInfo(agent);
 			info.setIdentity(identity);
-
-			FDReservation reservation = FDCustomerManager.makeReservation(identity, 
-					timeslot, EnumReservationType.ONETIME_RESERVATION, rsvModel.getAddressId(), info, user.isChefsTable(), event, true);
-		
+			FDReservation reservation = null;
+			try{
+				reservation = FDCustomerManager.makeReservation(identity, 
+						timeslot, EnumReservationType.ONETIME_RESERVATION, rsvModel.getAddressId(), info, user.isChefsTable(), event, false);				
+			} catch (ReservationUnavailableException re ) {
+				// no more capacity in this timeslot
+				LOGGER.info( "No more capacity in timeslot: " + timeslot.toString(), null );
+				reservation = FDCustomerManager.makeReservation(identity, 
+						timeslot, EnumReservationType.ONETIME_RESERVATION, rsvModel.getAddressId(), info, user.isChefsTable(), event, true);				
+			
+			} 
 			return reservation != null ? reservation.getId().toString() : null;
 			
 		} catch (FDResourceException fe) {
@@ -444,7 +450,7 @@ public class CrisisManagerServlet extends HttpServlet {
 	
 	protected FDActionInfo getActionInfo(String agent){
 		
-		EnumTransactionSource src = EnumTransactionSource.ADMINISTRATOR;
+		EnumTransactionSource src = EnumTransactionSource.SYSTEM;
 		CrmAgentModel crmAgent = new CrmAgentModel();
 		crmAgent.setLdapId(agent);
 		FDActionInfo info = new FDActionInfo(src, null, agent, null, crmAgent);
@@ -483,8 +489,11 @@ public class CrisisManagerServlet extends HttpServlet {
 			}
 		} catch (FDResourceException fe) {
 			LOGGER.error("System Error occurred while processing Sale ID : " + orderModel.getSaleId() + "\n" + fe.getMessage());			
+			fe.printStackTrace();
+			success = false;
 		} catch (ErpTransactionException te) {
 			LOGGER.error("Transaction Error occurred while processing Sale ID : " + orderModel.getSaleId() + "\n" + te.getMessage());
+			te.printStackTrace();
 			success = false;
 		} catch (DeliveryPassException de) {
 			LOGGER.error("Delivery Pass Error occurred while processing Sale ID : " + orderModel.getSaleId() + "\n" + de.getMessage());			
@@ -569,11 +578,11 @@ public class CrisisManagerServlet extends HttpServlet {
 		return orderModel;
 	}
 	
-	protected ICrisisMngBatchOrder extractStandingOrderPayload(String soPayload) {
+	protected StandingOrderModel extractStandingOrderPayload(String soPayload) {
 		
-		ICrisisMngBatchOrder standingOrderModel = null;
+		StandingOrderModel model = null;
 		try {
-			standingOrderModel = (ICrisisMngBatchOrder) serializer.fromJSON(soPayload);
+			model = (StandingOrderModel) serializer.fromJSON(soPayload);
 		} catch (ClassCastException e) {
 			LOGGER.error("Error raised during create Reservation deserialization", e);
 			return null;
@@ -585,7 +594,7 @@ public class CrisisManagerServlet extends HttpServlet {
 			return null;
 		}
 		
-		return standingOrderModel;
+		return model;
 	}
 	
 	protected IGenericSearchModel extractDatePayload(String payload) {

@@ -29,7 +29,7 @@
                           visible: false,
                           effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
         
-	var result = jsonrpcClient.AsyncCrisisMngProvider.getOrderCrisisBatchById(_currentBatchId);
+	var result = crisisMngRpcClient.AsyncCrisisMngProvider.getOrderCrisisBatchById(_currentBatchId);
 
 	var cancelOrderDataIncrementer = result.cancelOrder.list;
 	var activeOrderDataIncrementer = result.activeOrder.list;

@@ -5,17 +5,12 @@ import static com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage.IN
 import static com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage.ERROR_MESSAGE_TIMESLOTEXCEPTION;
 import static com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage.INFO_MESSAGE_CREATERESERVATIONFAILED;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.httpclient.HttpException;
-
-import weblogic.wsee.handler.InvocationException;
 
 import com.freshdirect.transadmin.constants.EnumCrisisMngBatchActionType;
 import com.freshdirect.transadmin.constants.EnumCrisisMngBatchStatus;
@@ -32,7 +27,6 @@ import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.transadmin.service.ICrisisManagerService;
 import com.freshdirect.transadmin.service.exception.TransAdminServiceException;
 import com.freshdirect.transadmin.util.CrisisManagerUtil;
-import com.metaparadigm.jsonrpc.UnmarshallException;
 
 public class CrisisManagerCreateReservationAction extends
 		AbstractCrisisManagerAction {
@@ -80,7 +74,7 @@ public class CrisisManagerCreateReservationAction extends
 			}
 			
 			if(foundExceptions.size() == 0 && isExceptionCheck){
-				this.unBlockDeliveryCapacity();
+				this.unBlockDeliveryCapacity(true);
 				processCreateReservation();
 				this.getCrisisMngService().updateCrisisMngBatchStatus(this.getBatch().getBatchId(), EnumCrisisMngBatchStatus.COMPLETED);
 			    this.getCrisisMngService().updateCrisisMngBatchMessage(this.getBatch().getBatchId(),  INFO_MESSAGE_CREATERESERVATIONCOMPLETED);
@@ -102,19 +96,18 @@ public class CrisisManagerCreateReservationAction extends
 		return null;
 	}
 	
-	private void processCreateReservation() throws HttpException, InvocationException, UnmarshallException, IOException{
+	private void processCreateReservation() throws Exception{
 		
 		Set<IReservationModel> rsvModels = new HashSet<IReservationModel>();
 		
 		List<ICrisisMngBatchOrder> cancelledOrders = this.getCrisisMngService().getCrisisMngBatchRegularOrder(this.getBatch().getBatchId(), true, false);
 
-		Map<String, ICrisisManagerBatchReservation> canceledRsvMapping 
-										= this.getCrisisMngService().getCrisisMngBatchReservation(this.getBatch().getBatchId(), false);
+		/*Map<String, ICrisisManagerBatchReservation> canceledRsvMapping 
+										= this.getCrisisMngService().getCrisisMngBatchReservation(this.getBatch().getBatchId(), false);*/
 		Map<String, List<ICrisisManagerBatchDeliverySlot>> batchTimeSlots 
 												= this.getCrisisMngService().getCrisisMngBatchTimeslot(this.getBatch().getBatchId(), true);
 		
-		if(cancelledOrders != null && cancelledOrders.size() > 0
-				|| canceledRsvMapping != null && canceledRsvMapping.size() > 0){
+		if(cancelledOrders != null && cancelledOrders.size() > 0){
 			Iterator<ICrisisMngBatchOrder> orderItr = cancelledOrders.iterator();
 			List<ICrisisManagerBatchDeliverySlot> areaSlots = null;
 			IReservationModel rsvModel = null;
@@ -154,7 +147,7 @@ public class CrisisManagerCreateReservationAction extends
 				}
 			}
 		
-			for(Map.Entry<String, ICrisisManagerBatchReservation> rsvEntry : canceledRsvMapping.entrySet()){
+			/*for(Map.Entry<String, ICrisisManagerBatchReservation> rsvEntry : canceledRsvMapping.entrySet()){
 				ICrisisManagerBatchReservation _tmpRsvModel = rsvEntry.getValue();
 				rsvModel = new ReservationModel();
 				areaSlots = batchTimeSlots.get(_tmpRsvModel.getArea());
@@ -186,12 +179,9 @@ public class CrisisManagerCreateReservationAction extends
 					rsvModel.setAddressId(_tmpRsvModel.getAddressId());
 					rsvModel.setOrderId(_tmpRsvModel.getId());
 				}
-			}
-			
-			CrisisManagerUtil orderMngAgent = new CrisisManagerUtil();
-	    	orderMngAgent.setAgent(this.getUserId());		    		
-	    	orderMngAgent.setReservations(rsvModels);
-	    	Map<String, String> reservations = orderMngAgent.doCreateReservations();
+			}*/
+
+	    	Map<String, String> reservations = CrisisManagerUtil.doCreateReservations(rsvModels, this.getUserId());
 	    	if(reservations != null && reservations.size() > 0){
 	    		this.getCrisisMngService().updateCrisisMngBatchOrderReservation(this.getBatch().getBatchId(), reservations);
 	    	}

@@ -17,6 +17,7 @@ import com.freshdirect.transadmin.model.ICrisisManagerBatchDeliverySlot;
 import com.freshdirect.transadmin.model.ICrisisManagerBatchReservation;
 import com.freshdirect.routing.model.ICrisisMngBatchOrder;
 import com.freshdirect.routing.model.ICustomerModel;
+import com.freshdirect.routing.model.StandingOrderModel;
 
 
 public interface ICrisisManagerDAO {
@@ -44,7 +45,7 @@ public interface ICrisisManagerDAO {
 		
 	Map<EnumSaleStatus, Integer> getOrderStatsByDate(Date deliveryDate, String batchId) throws SQLException;
 	
-	void addNewCrisisMngBatchCustomer(Set<ICustomerModel> batchCustomers, String batchId) throws SQLException;
+	void addNewCrisisMngBatchCustomer(List<ICustomerModel> batchCustomers, String batchId) throws SQLException;
 	
 	void addNewCrisisMngBatchRegularOrder(List<ICrisisMngBatchOrder> batchOrders, String batchId) throws SQLException;
 	
@@ -87,7 +88,7 @@ public interface ICrisisManagerDAO {
 	
 	List<ICrisisMngBatchOrder> getCrisisMngBatchStandingOrder(String batchId, boolean filterException, boolean filterOrder) throws SQLException;
 	
-	void updateCrisisMngBatchStandingOrder(String batchId, List<ICrisisMngBatchOrder> batchStandingOrders) throws SQLException;
+	void updateCrisisMngBatchStandingOrder(String batchId, List<StandingOrderModel> batchStandingOrders) throws SQLException;
 	
 	List<IActiveOrderModel> getActiveOrderByArea(Date deliveryDate, EnumCrisisMngBatchType batchType) throws SQLException;
 	

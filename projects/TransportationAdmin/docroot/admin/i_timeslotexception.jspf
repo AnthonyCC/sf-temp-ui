@@ -30,7 +30,7 @@
                           effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
         
 	var exceptionDataIncrementer = function() {
-		var exceptionResult = jsonrpcClient.AsyncCrisisMngProvider.getTimeslotExceptions(_currentBatchId);
+		var exceptionResult = crisisMngRpcClient.AsyncCrisisMngProvider.getTimeslotExceptions(_currentBatchId);
 		return exceptionResult.list;
         };
           
@@ -40,8 +40,8 @@
 
 	var orderColumns =  [ 
 			{key:"area", label:"Area",sortable:false, width: 50, className:'datatable'},
-			{key:"timeslot",label:"Time Slot",sortable:false, className:'datatable'},
-		    	{key:"action", label:"New Time Slot", sortable:false, className:'datatable',editor: myDynamicEditor}
+			{key:"timeslot",label:"Source Window",sortable:false, className:'datatable'},
+		    	{key:"action", label:"Destination Window", sortable:false, className:'datatable',editor: myDynamicEditor}
 		 ];
 		
 	
@@ -67,7 +67,7 @@
 		    var column = exceptionDataTable.getColumn(target);
 		    if (column.key == 'action') {
 			var record = this.getRecord(target);
-			var result = jsonrpcClient.AsyncCrisisMngProvider.getTimeslotByZone(_currentBatchId,  record.getData('area'))
+			var result = crisisMngRpcClient.AsyncCrisisMngProvider.getTimeslotByZone(_currentBatchId,  record.getData('area'))
 			myDynamicEditor.dropdownOptions = eval(result.list);
 			myDynamicEditor.render();
 		    }
@@ -76,6 +76,7 @@
 	
 	editExceptionPanel.render(document.body);
         editExceptionPanel.show();
+	document.getElementById('ajaxBusy').style.display = 'none';
      }
 
      function submitTimeslotExceptionTable() { 
@@ -97,17 +98,17 @@
 
       	var createRsvResult;
 	if(_currentBatchType == 'ROB'){
-		createRsvResult = jsonrpcClient.AsyncCrisisMngProvider.doCrisisMngCreateReservation(_currentBatchId, false, _data);
+		createRsvResult = crisisMngRpcClient.AsyncCrisisMngProvider.doCrisisMngCreateReservation(_currentBatchId, false, _data);
 	} else {
-		createRsvResult = jsonrpcClient.AsyncCrisisMngProvider.placeStandingOrder(_currentBatchId, null, false, _data);
+		createRsvResult = crisisMngRpcClient.AsyncCrisisMngProvider.placeStandingOrder(_currentBatchId, null, false, _data);
 	}
 	if(createRsvResult != null) {
       		if(confirm(createRsvResult)) { }
 	}else{
 		if(_currentBatchType == 'ROB'){
-			jsonrpcClient.AsyncCrisisMngProvider.doCrisisMngCreateReservation(_currentBatchId, false, _data);
+			crisisMngRpcClient.AsyncCrisisMngProvider.doCrisisMngCreateReservation(_currentBatchId, false, _data);
 		} else {
-			jsonrpcClient.AsyncCrisisMngProvider.placeStandingOrder(_currentBatchId, null, false, _data);
+			crisisMngRpcClient.AsyncCrisisMngProvider.placeStandingOrder(_currentBatchId, null, false, _data);
 		}
 	}
 	exceptionDataTable.destroy();

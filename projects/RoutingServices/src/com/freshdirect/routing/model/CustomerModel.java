@@ -1,6 +1,6 @@
 package com.freshdirect.routing.model;
 
-public class CustomerModel extends BaseModel implements java.io.Serializable, ICustomerModel{
+public class CustomerModel implements java.io.Serializable, ICustomerModel{
 	
 	private String firstName;
 	private String lastName;	

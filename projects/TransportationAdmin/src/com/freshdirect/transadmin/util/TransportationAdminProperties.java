@@ -198,7 +198,8 @@ public class TransportationAdminProperties {
     private final static String PROP_TRANSPORTATION_FILENAME_MARKETINGORDERRPT = "transportation.filename.marketingorderrpt";
 	private final static String PROP_TRANSPORTATION_FILENAME_VOICESHOTORDERRPT = "transportation.filename.voiceshotorderrpt";
 	private final static String PROP_TRANSPORTATION_FILENAME_TIMESLOTEXCEPTIONRPT = "transportation.filename.timeslotexceptionrpt";
-	private final static String PROP_TRANSPORTATION_FILENAME_SOSIMULATIONRPT = "transportation.filename.sosimulationrpt";
+	private final static String PROP_TRANSPORTATION_FILENAME_SOSIMULATIONRPT = "transportation.filename.sosimulationrpt";	
+	private final static String PROP_JDBCBATCHUPDATE_THRESHOLD		= "transportation.jdbcbatchupdate.threshold";
 	
 	static {
 
@@ -357,7 +358,7 @@ public class TransportationAdminProperties {
     	defaults.put(PROP_TRANSPORTATION_FILENAME_VOICESHOTORDERRPT, "trn_voiceshotorderreport_");
     	defaults.put(PROP_TRANSPORTATION_FILENAME_TIMESLOTEXCEPTIONRPT,"trn_timeslotexceptionreport_");
 		defaults.put(PROP_TRANSPORTATION_FILENAME_SOSIMULATIONRPT, "trn_sosimulationreport_");
-		
+		defaults.put(PROP_JDBCBATCHUPDATE_THRESHOLD, "999");
 		refresh();
 	}
 
@@ -757,6 +758,10 @@ public class TransportationAdminProperties {
 
 	public static String getSOSimulationRptFileName() {
 		return get(PROP_TRANSPORTATION_FILENAME_SOSIMULATIONRPT);
+	}
+
+	public static int getJDBCBatchUpdateThreshold() {
+		return getIntVal(get(PROP_JDBCBATCHUPDATE_THRESHOLD));
 	}
 
 }

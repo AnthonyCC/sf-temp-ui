@@ -27,7 +27,7 @@
 						  visible: false,
 						  effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
 
-		var cancelStandingOrderData = jsonrpcClient.AsyncCrisisMngProvider.getStandingOrderByBatchId(_currentBatchId);
+		var cancelStandingOrderData = crisisMngRpcClient.AsyncCrisisMngProvider.getStandingOrderByBatchId(_currentBatchId);
 		cancelStandingOrderDataSource = new YAHOO.util.DataSource(cancelStandingOrderData.list);
 
 		var cancelStandingOrderColumns =  [ 
@@ -87,17 +87,20 @@
 			cancelStandingOrderDataTable.getRecordSet().getRecords()) { 
 			var records = cancelStandingOrderDataTable.getRecordSet().getRecords();
 			for(i=0; i < records.length; i++) { 
+				var k = _soData.length;
 				var x = document.getElementById(records[i]['_sId']);
 				if (x && x.getElementsByTagName('input')[0] && x.getElementsByTagName('input')[0].checked)
 				{
-					_soData[i] = new Array(); 
-					_soData[i][0] = records[i].getData('saleId');
+					_soData[k] = new Array(); 
+					_soData[k][0] = records[i].getData('saleId');
 				}
 			}
 		} 
 
 		if(_soData.length > 0){
-			var _placeOrderResult = jsonrpcClient.AsyncCrisisMngProvider.doCancelOrder(_currentBatchId, _soData);
+			document.getElementById('ajaxBusy').style.display = 'block';
+			var _placeOrderResult = crisisMngRpcClient.AsyncCrisisMngProvider.doCancelOrder(_currentBatchId, _soData);
+			document.getElementById('ajaxBusy').style.display = 'none';
 			cancelStandingOrderDataTable.destroy();
 			YAHOO.util.Dom.get("errcancelSOContainer").value = "";
 			editCancelStandingOrderPanel.hide();

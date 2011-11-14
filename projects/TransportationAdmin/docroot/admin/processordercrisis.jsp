@@ -321,12 +321,11 @@
 						<tr><td colspan="2" align="center">&nbsp;</td></tr>
 						 <tr>
 							<td colspan="2" align="center">
-									<input type = "submit" value="&nbsp;Start&nbsp;" onclick="javascript:return startProcess();" />
+								<input type = "submit" value="&nbsp;Start&nbsp;" onclick="javascript:return startProcess();" />
 											&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-									<input type = "button" value="&nbsp;Clear&nbsp;" onclick="javascript:clearInputData();" />
+								<input type = "button" value="&nbsp;Clear&nbsp;" onclick="javascript:clearInputData();" />
 									&nbsp;&nbsp;&nbsp;<input type = "button" id="refreshgrid" value="&nbsp;Refresh&nbsp;" onclick="javascript:refreshTable();"  />
-									&nbsp;&nbsp;&nbsp;<input checked type="checkbox" name="autoRefresh" onclick="doAutoRefresh(this)" />&nbsp;Auto Refresh
-									&nbsp;&nbsp;&nbsp;<span style="font-weight:bold;color:green;margin:5px" id="lastUpdateTime"></span>
+								&nbsp;&nbsp;&nbsp;<input type="checkbox" name="autoRefresh" onclick="doAutoRefresh(this);" />&nbsp;Auto Refresh&nbsp;&nbsp;&nbsp;<span style="font-weight:bold;color:green;margin:5px" id="lastUpdateTime"></span>
 							</td>   
 						</tr>
 						 <tr><td>&nbsp;</td></tr>
@@ -350,25 +349,25 @@
 	</style>
 	<script>
 
-      var jsonrpcClient = new JSONRpcClient("crisismanage.ax");
+      var crisisMngRpcClient = new JSONRpcClient("crisismanage.ax");
       var sDataSource; 
       var myCallback;
       var sDataTable;
 	
-		showTable();
-
+	  function refreshTable() {
+      		sDataTable.getDataSource().sendRequest('', myCallback);  
+      		showTable();
+      }
 	  function showTable() {
          
          var dataIncrementer = function() {
-         	var result = jsonrpcClient.AsyncCrisisMngProvider.getOrderCrisisBatch
+         	var result = crisisMngRpcClient.AsyncCrisisMngProvider.getOrderCrisisBatch
          												(document.getElementById("selectedDate").value);
             updateRefreshTimestamp();
             return result.list;
          };
 
 		sDataSource = new YAHOO.util.DataSource(dataIncrementer);
-
-		var myBatchEditor = new YAHOO.widget.DropdownCellEditor({multiple:false});
 
 		var sColumns =  [ 
 					{key:"processId", label:"Process ID",sortable:false, width: 58,className:"forms1"},
@@ -396,8 +395,8 @@
 												sel.options[0] = new Option("","");
 												sel.options[1] = new Option("ORDERIN","ORDERIN");
 												sel.options[2] = new Option("CANCELORDER","CANCELORDER");
-												sel.options[3] = new Option("BATCHCOMPLETE","BATCHCOMPLETE");
-												sel.options[4] = new Option("PLACEORDER","PLACEORDER");
+												sel.options[3] = new Option("PLACEORDER","PLACEORDER");
+												sel.options[4] = new Option("BATCHCOMPLETE","BATCHCOMPLETE");
 												sel.options[5] = new Option("CANCELBATCH","CANCELBATCH");
 											}
 											
@@ -443,7 +442,7 @@
                 											, oRecord.getData("processId"), oRecord.getData("batchType"));
                 	}
                 }
-         });
+         }); 
 
   		 // Set up polling
         myCallback = {
@@ -453,13 +452,11 @@
             },
             scope: sDataTable
         };
+		return { 
+		    oDS: sDataSource, 
+	        oDT: sDataTable 
+	    }; 
       }
-
-	  function refreshTable() {
-      		sDataTable.getDataSource().sendRequest('', myCallback);  
-      		showTable();
-      }  
-
       var actionMapping = {
       	 'NEW': {CANCELBATCH:0},
 	     'DCC': {ORDERIN:0,CANCELORDER:0,CANCELBATCH:0},
@@ -468,7 +465,7 @@
 		 'OCC': {CREATERSV:0,PLACEORDER:0,BATCHCOMPLETE:0},
 	     'CRF': {CREATERSV:0},
 		 'POF': {PLACEORDER:0},
-		 'POC': {PLACEORDER:0},
+		 'POC': {PLACEORDER:0,BATCHCOMPLETE:0},
 		 'PRC': {},
 		 'CAN': {},
 		 'CPD': {}
@@ -517,57 +514,77 @@
 						return;
 					}
 					try {
-						var currentBatch = jsonrpcClient.AsyncCrisisMngProvider.getOrderCrisisBatchById(currentBatchId);
+						document.getElementById('ajaxBusy').style.display = 'block';
       					if(actionType === 'ORDERIN') {
-      						jsonrpcClient.AsyncCrisisMngProvider.doOrderCollectionIn(currentBatchId);
-      					}else if(actionType === 'CANCELORDER') {
+								var orderInResult = crisisMngRpcClient.AsyncCrisisMngProvider.doOrderCollectionIn(populateOrderCallback, currentBatchId);
+      					} else if(actionType === 'CANCELORDER') {
 							if(currentBatchType === 'ROB'){
-								jsonrpcClient.AsyncCrisisMngProvider.doCancelOrder(currentBatchId, null);
+								var orderInResult = crisisMngRpcClient.AsyncCrisisMngProvider.doCancelOrder(populateOrderCallback, currentBatchId, null);
 							} else {
+								document.getElementById('ajaxBusy').style.display = 'none';
 								showCancelStandingOrderTable(currentBatchId);
 							}
       					} else if(actionType === 'CREATERSV') {
-      						var result = jsonrpcClient.AsyncCrisisMngProvider.doCrisisMngCreateReservation(currentBatchId, false, null);
+      						var result = crisisMngRpcClient.AsyncCrisisMngProvider.doCrisisMngCreateReservation(currentBatchId, false, null);
 							if(result != null) {
+								document.getElementById('ajaxBusy').style.display = 'none';
       							if(confirm(result)) {
-      								showExceptionTable(currentBatchId, currentBatchType);
+									showExceptionTable(currentBatchId, currentBatchType);
       							}
       						} else {
-								jsonrpcClient.AsyncCrisisMngProvider.doCrisisMngCreateReservation(currentBatchId, true, null);
+								crisisMngRpcClient.AsyncCrisisMngProvider.doCrisisMngCreateReservation(populateOrderCallback, currentBatchId, true, null);
 							}
       					} else if(actionType === 'PLACEORDER'){
-							var result = jsonrpcClient.AsyncCrisisMngProvider.placeStandingOrder(currentBatchId, null, false, null);
+							var result = crisisMngRpcClient.AsyncCrisisMngProvider.placeStandingOrder(currentBatchId, null, false, null);
 							if(result != null) {
+								document.getElementById('ajaxBusy').style.display = 'none';
       							if(confirm(result)) {
       								showExceptionTable(currentBatchId,currentBatchType);
       							}
       						} else {
+								document.getElementById('ajaxBusy').style.display = 'none';
 								showStandingOrderTable(currentBatchId);
 							}
 							
 						} else if(actionType === 'BATCHCOMPLETE') {
-      						var cmdResult = jsonrpcClient.AsyncCrisisMngProvider.doCrisisMngBatchComplete(currentBatchId);
+      						crisisMngRpcClient.AsyncCrisisMngProvider.doCrisisMngBatchComplete(currentBatchId);
+							document.getElementById('ajaxBusy').style.display = 'none';
       					} else if(actionType === 'CANCELBATCH') {
-      						jsonrpcClient.AsyncCrisisMngProvider.doCrisisMngBatchCancel(currentBatchId);
+      						crisisMngRpcClient.AsyncCrisisMngProvider.doCrisisMngBatchCancel(currentBatchId);
+							document.getElementById('ajaxBusy').style.display = 'none';
       					} else {
+							document.getElementById('ajaxBusy').style.display = 'none';
       						alert("Processing "+actionType+" on BATCH ID:"+currentBatchId);
       					} 
       				} catch(rpcException) {
-      					alert("There was a problem in communication to the server. Please try to refresh the browser window!\n"+e);
+						document.getElementById('ajaxBusy').style.display = 'none';
+      					alert("There was a problem in communication to the server. Please try to refresh the browser window!\n");
       				}
-					showTable();
+					sDataTable.destroy();
+                	showTable();
       			}
       		}
       }
-		 
-		 function doAutoRefresh(src) {
+		function populateOrderCallback(result, exception){
+			document.getElementById('ajaxBusy').style.display = 'none';
+		}
+		function actionCallBack(result, Exception) {
+			if(result){
+				document.getElementById('ajaxBusy').style.display = 'none';
+			}else{
+				document.getElementById('ajaxBusy').style.display = 'none';
+      			alert("There was a problem in communication to the server. Please try to refresh the browser window!\n"+e);
+			}
+			showTable();
+		}
+		function doAutoRefresh(src) {
 			if(src.checked) {
-				sDataSource.setInterval(30000, null, myCallback);
+				sDataSource.setInterval(30000, null, showTable);
 			} else {
 				sDataSource.clearAllIntervals();
 			}
 		}      
-		
+		showTable();
 
 		var errColor = "#FF0000";
 		var msgColor = "#00FF00";
