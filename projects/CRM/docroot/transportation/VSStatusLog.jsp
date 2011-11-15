@@ -21,7 +21,6 @@
     	<tmpl:put name='content' direct='true'>
 <%@ include file="/includes/transportation_nav.jsp"%>
     		<crm:GetCurrentAgent id='currAgent'>
-			<crm:VSStatusLog id="lateIssues" result="result">
 
 <script type="text/javascript" language="javascript" src="/assets/javascript/scriptaculous.js"></script>
 <script type="text/javascript" language="javascript" src="/ccassets/javascript/HelpBalloon.js"></script>
@@ -128,7 +127,6 @@
 
 
 </table>
-			</crm:VSStatusLog>
 			</crm:GetCurrentAgent>
 	    </tmpl:put>
 
