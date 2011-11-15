@@ -19,7 +19,7 @@ public interface ICrisisMngProvider {
 	
 	boolean doCancelOrder(String orderCrisisBatchId, String[][] orders);
 	
-	String doCrisisMngCreateReservation(String batchId, boolean isExceptionCheck, String[][] timeslots);
+	String doCrisisMngCreateReservation(String batchId, String[][] timeslots);
 	
 	List<CrisisManagerBatchTimeslotInfo> getTimeslotExceptions(String batchId);
 	
@@ -27,7 +27,7 @@ public interface ICrisisMngProvider {
 	
 	List<CrisisManagerBatchStandingOrderInfo> getStandingOrderByBatchId(String batchId);
 	
-	String placeStandingOrder(String batchId, String[][] _standingOrderData, boolean isExceptionCheck, String[][] timeslot);
+	String placeStandingOrder(String batchId, String[][] _standingOrderData, String[][] timeslot);
 	
 	boolean doCrisisMngBatchComplete(String batchId);
 }

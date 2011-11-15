@@ -44,7 +44,7 @@ public class CrisisManagerUtil {
 	private static String getServiceURL() {
 		String adminServiceURL = TransportationAdminProperties
 				.getAdminServiceURL();
-		LOGGER.error("### Admin Service URL ### " + adminServiceURL);
+		LOGGER.debug("### Admin Service URL ### " + adminServiceURL);
 		if (adminServiceURL == null) {
 			LOGGER.error("Admin Service URL is not set in transportation.properties!");
 			throw new TransAdminServiceException(

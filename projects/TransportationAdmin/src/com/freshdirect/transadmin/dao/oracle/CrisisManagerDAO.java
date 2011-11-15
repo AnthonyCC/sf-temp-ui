@@ -178,23 +178,15 @@ public class CrisisManagerDAO implements ICrisisManagerDAO   {
 	
 	private static final String UPDATE_CRISISMNGBATCH_RSVSTATUS = "UPDATE TRANSP.CRISISMNG_BATCHRESERVATION SET STATUS_CODE = 25 where BATCH_ID = ? ";
 	
-	private static final String GETCRISISMNGBATCH_RO_TIMESLOTBYZONEQRY = "select b.batch_id, o.area area, o.window_starttime starttime, o.window_endtime endtime "+
+	private static final String GETCRISISMNGBATCH_RO_TIMESLOTBYZONEQRY = "select distinct b.batch_id, o.area area, o.window_starttime starttime, o.window_endtime endtime "+
 		" from TRANSP.CRISISMNG_BATCHORDER o, TRANSP.CRISISMNG_BATCH b "+
 		" where b.batch_id = o.batch_id and b.batch_id = ? "+
-		" UNION " +
-		" select b.batch_id, r.area area, r.window_starttime starttime, r.window_endtime endtime "+
-		" from TRANSP.CRISISMNG_BATCHRESERVATION r, TRANSP.CRISISMNG_BATCH b "+
-		" where b.batch_id = r.batch_id and b.batch_id = ? "+
-		" order by area, starttime asc";
+		" order by area, starttime asc ";
 	
-	private static final String GETCRISISMNGBATCH_SO_TIMESLOTBYZONEQRY = "select b.batch_id, o.area area, o.window_starttime starttime, o.window_endtime endtime"+
+	private static final String GETCRISISMNGBATCH_SO_TIMESLOTBYZONEQRY = "select distinct b.batch_id, o.area area, o.window_starttime starttime, o.window_endtime endtime"+
 		" from TRANSP.CRISISMNG_BATCHSTANDINGORDER o, TRANSP.CRISISMNG_BATCH b "+
-		" where b.batch_id = o.batch_id and b.batch_id = ? "+
-		" UNION " +
-		" select b.batch_id, r.area area, r.window_starttime starttime, r.window_endtime endtime"+
-		" from TRANSP.CRISISMNG_BATCHRESERVATION r, TRANSP.CRISISMNG_BATCH b "+
-		" where b.batch_id = r.batch_id and b.batch_id = ? "+
-		" order by area, starttime asc";
+		" where b.batch_id = o.batch_id and b.batch_id = ? "+		
+		" order by area, starttime asc ";
 	
 	private static final String GET_TIMESLOT_BYDATEQRY = "select z.ZONE_CODE AREA, t.START_TIME, t.END_TIME, t.ID "+
         " from dlv.timeslot t, dlv.zone z, transp.zone ta "+
@@ -1063,7 +1055,6 @@ public class CrisisManagerDAO implements ICrisisManagerDAO   {
 				PreparedStatement ps =
 					connection.prepareStatement(updateQ.toString());
 				ps.setString(1, batchId);
-				ps.setString(2, batchId);
 				return ps;
 			}  
 		};

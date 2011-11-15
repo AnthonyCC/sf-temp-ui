@@ -194,7 +194,7 @@ public class CrisisMngProviderController extends BaseJsonRpcController  implemen
 	}
 	
 	@SuppressWarnings("unchecked")
-	public String doCrisisMngCreateReservation(String batchId, boolean isExceptionCheck, String[][] timeslot){
+	public String doCrisisMngCreateReservation(String batchId, String[][] timeslot){
 		
 		String userId = com.freshdirect.transadmin.security.SecurityManager.getUserName(getHttpServletRequest());		
 		ICrisisManagerBatch batch;
@@ -203,7 +203,7 @@ public class CrisisMngProviderController extends BaseJsonRpcController  implemen
 			String normalDate = TransStringUtil.getDate(TransStringUtil.getNormalDate());
 			List<ICrisisManagerBatchDeliverySlot> exceptionSlots = new ArrayList<ICrisisManagerBatchDeliverySlot>();
 			
-			if(!isExceptionCheck && timeslot != null){
+			if(timeslot != null){
 				Map<String, List<ICrisisManagerBatchDeliverySlot>> deliverySlots 
 												= this.crisisManagerService.getTimeslotByDate(batch.getDestinationDate());
 
@@ -231,15 +231,13 @@ public class CrisisMngProviderController extends BaseJsonRpcController  implemen
 				this.crisisManagerService.updateCrisisMngBatchDeliveryslot(exceptionSlots);
 			}
 			
-			CrisisManagerCreateReservationAction process = new CrisisManagerCreateReservationAction(batch, userId, isExceptionCheck, this.crisisManagerService);
+			CrisisManagerCreateReservationAction process = new CrisisManagerCreateReservationAction(batch, userId, this.crisisManagerService);
 			
 			Map<String, Integer> exceptions = (Map<String, Integer>) process.execute();
 			boolean hasError = (exceptions != null && exceptions.keySet().size() > 0);
 			if(hasError) {
 				StringBuffer exceptionMessage = new StringBuffer();				
-				if(!isExceptionCheck) {
-					exceptionMessage.append("\n\n"+"Please handle timeslot exceptions as reservation(s) can't be created. Do you want to continue?");
-				} 
+				exceptionMessage.append("\n\n"+"Please handle timeslot exceptions as reservation(s) can't be created. Do you want to continue?");				 
 				return exceptionMessage.toString();
 			}
 		} catch (TransAdminServiceException e) {
@@ -307,7 +305,7 @@ public class CrisisMngProviderController extends BaseJsonRpcController  implemen
 		return standingOrders;
 	}
 	
-	public String placeStandingOrder(String batchId, String[][] _standingOrderData, boolean isExceptionCheck, String[][] timeslot){
+	public String placeStandingOrder(String batchId, String[][] _standingOrderData, String[][] timeslot){
 		
 		String userId = com.freshdirect.transadmin.security.SecurityManager.getUserName(getHttpServletRequest());		
 		List<StandingOrderModel> standingOrders = new ArrayList<StandingOrderModel>();
@@ -319,7 +317,7 @@ public class CrisisMngProviderController extends BaseJsonRpcController  implemen
 			String normalDate = TransStringUtil.getDate(TransStringUtil.getNormalDate());
 			List<ICrisisManagerBatchDeliverySlot> exceptionSlots = new ArrayList<ICrisisManagerBatchDeliverySlot>();
 			
-			if(!isExceptionCheck && timeslot != null){
+			if(timeslot != null){
 				Map<String, List<ICrisisManagerBatchDeliverySlot>> deliverySlots 
 												= this.crisisManagerService.getTimeslotByDate(batch.getDestinationDate());
 
@@ -354,19 +352,20 @@ public class CrisisMngProviderController extends BaseJsonRpcController  implemen
 					model.setOrderId(_standingOrderData[i][1]);
 					model.setAltDate(batch.getDestinationDate());
 					standingOrders.add(model);
+				}				
+			}
+			if(timeslot == null || timeslot.length == 0) {
+				CrisisManagerPlaceOrderAction process = new CrisisManagerPlaceOrderAction(batch, userId, standingOrders, this.crisisManagerService);
+				
+				Map<String, Integer> exceptions = (Map<String, Integer>) process.execute();
+				boolean hasError = (exceptions != null && exceptions.keySet().size() > 0);
+				if(hasError) {
+					StringBuffer exceptionMessage = new StringBuffer();			
+					exceptionMessage.append("\n\n"+"Please handle timeslot exceptions before you place order(s). Do you want to continue?");				 
+					return exceptionMessage.toString();
 				}
 			}
-			CrisisManagerPlaceOrderAction process = new CrisisManagerPlaceOrderAction(batch, userId, standingOrders, isExceptionCheck, this.crisisManagerService);
-					
-			Map<String, Integer> exceptions = (Map<String, Integer>) process.execute();
-			boolean hasError = (exceptions != null && exceptions.keySet().size() > 0);
-			if(hasError) {
-				StringBuffer exceptionMessage = new StringBuffer();			
-				if(!isExceptionCheck) {
-					exceptionMessage.append("\n\n"+"Please handle timeslot exceptions before you place order(s). Do you want to continue?");
-				} 
-				return exceptionMessage.toString();
-			}
+			
 		} catch (TransAdminServiceException e) {
 			LOGGER.error("<placeStandingOrder:> service exception", e);
 			return null;

@@ -1,9 +1,8 @@
 package com.freshdirect.transadmin.crisis.manager.action;
 
-import static com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage.INFO_MESSAGE_CREATERESERVATIONPROGRESS;
-import static com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage.INFO_MESSAGE_CREATERESERVATIONCOMPLETED;
 import static com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage.ERROR_MESSAGE_TIMESLOTEXCEPTION;
-import static com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage.INFO_MESSAGE_CREATERESERVATIONFAILED;
+import static com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage.INFO_MESSAGE_CREATERESERVATIONCOMPLETED;
+import static com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage.INFO_MESSAGE_CREATERESERVATIONPROGRESS;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,30 +11,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.freshdirect.transadmin.constants.EnumCrisisMngBatchActionType;
-import com.freshdirect.transadmin.constants.EnumCrisisMngBatchStatus;
 import com.freshdirect.routing.constants.EnumReservationType;
 import com.freshdirect.routing.model.CustomerModel;
-import com.freshdirect.transadmin.model.ICrisisManagerBatch;
-import com.freshdirect.transadmin.model.ICrisisManagerBatchDeliverySlot;
 import com.freshdirect.routing.model.ICrisisMngBatchOrder;
 import com.freshdirect.routing.model.ICustomerModel;
 import com.freshdirect.routing.model.IReservationModel;
 import com.freshdirect.routing.model.ReservationModel;
 import com.freshdirect.routing.util.RoutingDateUtil;
+import com.freshdirect.transadmin.constants.EnumCrisisMngBatchActionType;
+import com.freshdirect.transadmin.constants.EnumCrisisMngBatchStatus;
+import com.freshdirect.transadmin.model.ICrisisManagerBatch;
+import com.freshdirect.transadmin.model.ICrisisManagerBatchDeliverySlot;
 import com.freshdirect.transadmin.service.ICrisisManagerService;
 import com.freshdirect.transadmin.service.exception.TransAdminServiceException;
 import com.freshdirect.transadmin.util.CrisisManagerUtil;
 
 public class CrisisManagerCreateReservationAction extends
 		AbstractCrisisManagerAction {
-	
-	private boolean isExceptionCheck;
-	
+		
 	public CrisisManagerCreateReservationAction(ICrisisManagerBatch batch,
-			String userId, boolean isExceptionCheck, ICrisisManagerService crisisMngService) {
-		super(batch, userId, crisisMngService);	
-		this.isExceptionCheck = isExceptionCheck;
+			String userId, ICrisisManagerService crisisMngService) {
+		super(batch, userId, crisisMngService);
 	}
 
 	@Override
@@ -66,21 +62,17 @@ public class CrisisManagerCreateReservationAction extends
 				}
 			}
 			
-			if(!isExceptionCheck && foundExceptions.size() > 0) {
+			if(foundExceptions != null && foundExceptions.size() > 0) {
 				this.getCrisisMngService().updateCrisisMngBatchStatus(this.getBatch().getBatchId(), getFailureStatus());
 				this.getCrisisMngService().updateCrisisMngBatchMessage(this.getBatch().getBatchId(),  ERROR_MESSAGE_TIMESLOTEXCEPTION);
 				return foundExceptions;
 			}
 			
-			if(foundExceptions.size() == 0 && isExceptionCheck){
-				this.unBlockDeliveryCapacity(true);
-				processCreateReservation();
-				this.getCrisisMngService().updateCrisisMngBatchStatus(this.getBatch().getBatchId(), EnumCrisisMngBatchStatus.COMPLETED);
-			    this.getCrisisMngService().updateCrisisMngBatchMessage(this.getBatch().getBatchId(),  INFO_MESSAGE_CREATERESERVATIONCOMPLETED);
-			} else {
-				this.getCrisisMngService().updateCrisisMngBatchStatus(this.getBatch().getBatchId(), getFailureStatus());
-				this.getCrisisMngService().updateCrisisMngBatchMessage(this.getBatch().getBatchId(),  INFO_MESSAGE_CREATERESERVATIONFAILED);
-			}
+			this.unBlockDeliveryCapacity(true);
+			processCreateReservation();
+			this.getCrisisMngService().updateCrisisMngBatchStatus(this.getBatch().getBatchId(), EnumCrisisMngBatchStatus.COMPLETED);
+		    this.getCrisisMngService().updateCrisisMngBatchMessage(this.getBatch().getBatchId(),  INFO_MESSAGE_CREATERESERVATIONCOMPLETED);
+			
 		}catch(Exception e){
 	    	e.printStackTrace();
 	    	try {

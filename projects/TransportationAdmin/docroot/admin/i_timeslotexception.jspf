@@ -13,6 +13,7 @@
       var exceptionDataTable;
       var editExceptionPanel; 
       var _currentBatchId;
+      var _data;
       var myDynamicEditor; var _currentBatchType;
 	
       function showExceptionTable(inputVal, batchType) {
@@ -80,7 +81,7 @@
      }
 
      function submitTimeslotExceptionTable() { 
-     	var _data = new Array();
+     	_data = new Array();
      	if(exceptionDataTable.getRecordSet() != null 
      				&& exceptionDataTable.getRecordSet().getRecords()) {
       		var records = exceptionDataTable.getRecordSet().getRecords();
@@ -96,24 +97,29 @@
       		}
       	}
 
+	editExceptionPanel.hide();
+	exceptionDataTable.destroy();
+
       	var createRsvResult;
 	if(_currentBatchType == 'ROB'){
-		createRsvResult = crisisMngRpcClient.AsyncCrisisMngProvider.doCrisisMngCreateReservation(_currentBatchId, false, _data);
+		createRsvResult = crisisMngRpcClient.AsyncCrisisMngProvider.doCrisisMngCreateReservation(sendTimeSlotExceptionCallback
+												, _currentBatchId, _data);
 	} else {
-		createRsvResult = crisisMngRpcClient.AsyncCrisisMngProvider.placeStandingOrder(_currentBatchId, null, false, _data);
-	}
-	if(createRsvResult != null) {
-      		if(confirm(createRsvResult)) { }
-	}else{
-		if(_currentBatchType == 'ROB'){
-			crisisMngRpcClient.AsyncCrisisMngProvider.doCrisisMngCreateReservation(_currentBatchId, false, _data);
-		} else {
-			crisisMngRpcClient.AsyncCrisisMngProvider.placeStandingOrder(_currentBatchId, null, false, _data);
-		}
-	}
-	exceptionDataTable.destroy();
-	editExceptionPanel.hide();
+		createRsvResult = crisisMngRpcClient.AsyncCrisisMngProvider.placeStandingOrder(sendTimeSlotExceptionCallback
+					, _currentBatchId, null, _data);
+	}			
      }
+
+     function sendTimeSlotExceptionCallback(createRsvResult, exception) {
+		if(exception) {
+		    alert('Unable to connect to host system. Please contact system administrator!');               
+		    return;
+		}
+
+		if(createRsvResult != null) {
+      			if(confirm(createRsvResult)) {}
+		} 
+	}
 
  </script>
 

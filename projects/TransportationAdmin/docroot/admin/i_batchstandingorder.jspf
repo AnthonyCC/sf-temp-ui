@@ -100,7 +100,7 @@
 			}
 		} 
 		if(_data.length > 0){
-			var result = crisisMngRpcClient.AsyncCrisisMngProvider.placeStandingOrder(sendFormCallback, _currentBatchId, _data, true, null);
+			var result = crisisMngRpcClient.AsyncCrisisMngProvider.placeStandingOrder(sendFormCallback, _currentBatchId, _data, null);
 		} else {
 			addSysMessage("Please select atleast one standing order to place order", true);
 		}
