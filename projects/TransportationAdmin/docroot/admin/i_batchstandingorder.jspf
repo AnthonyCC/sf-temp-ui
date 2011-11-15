@@ -100,16 +100,21 @@
 			}
 		} 
 		if(_data.length > 0){
-			document.getElementById('ajaxBusy').style.display = 'block';
-			var _placeOrderResult = crisisMngRpcClient.AsyncCrisisMngProvider.placeStandingOrder(_currentBatchId, _data, true, null);
-			document.getElementById('ajaxBusy').style.display = 'none';
-			standingOrderDataTable.destroy();
-			YAHOO.util.Dom.get("errSOContainer").value = "";
-			editStandingOrderPanel.hide();
-		}else{
-        	addSysMessage("Please select atleast one standing order to place order", true);
+			var result = crisisMngRpcClient.AsyncCrisisMngProvider.placeStandingOrder(sendFormCallback, _currentBatchId, _data, true, null);
+		} else {
+			addSysMessage("Please select atleast one standing order to place order", true);
+		}
+		standingOrderDataTable.destroy();
+		editStandingOrderPanel.hide();
+	}
+	
+	function sendFormCallback(result, exception) {
+		if(exception) {
+		    alert('Unable to connect to host system. Please contact system administrator!');               
+		    return;
 		}
 	}
+	
 	function addSysMessage(msg, isError) {
       		var errContObj = YAHOO.util.Dom.get("errSOContainer");
 		    if(isError) {

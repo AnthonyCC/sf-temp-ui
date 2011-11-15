@@ -98,9 +98,7 @@
 		} 
 
 		if(_soData.length > 0){
-			document.getElementById('ajaxBusy').style.display = 'block';
 			var _placeOrderResult = crisisMngRpcClient.AsyncCrisisMngProvider.doCancelOrder(_currentBatchId, _soData);
-			document.getElementById('ajaxBusy').style.display = 'none';
 			cancelStandingOrderDataTable.destroy();
 			YAHOO.util.Dom.get("errcancelSOContainer").value = "";
 			editCancelStandingOrderPanel.hide();

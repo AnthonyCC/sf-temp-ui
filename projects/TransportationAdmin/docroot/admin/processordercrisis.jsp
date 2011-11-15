@@ -514,69 +514,49 @@
 						return;
 					}
 					try {
-						document.getElementById('ajaxBusy').style.display = 'block';
       					if(actionType === 'ORDERIN') {
-								var orderInResult = crisisMngRpcClient.AsyncCrisisMngProvider.doOrderCollectionIn(populateOrderCallback, currentBatchId);
+								crisisMngRpcClient.AsyncCrisisMngProvider.doOrderCollectionIn(currentBatchId);
       					} else if(actionType === 'CANCELORDER') {
 							if(currentBatchType === 'ROB'){
-								var orderInResult = crisisMngRpcClient.AsyncCrisisMngProvider.doCancelOrder(populateOrderCallback, currentBatchId, null);
+								crisisMngRpcClient.AsyncCrisisMngProvider.doCancelOrder(currentBatchId, null);
 							} else {
-								document.getElementById('ajaxBusy').style.display = 'none';
 								showCancelStandingOrderTable(currentBatchId);
 							}
       					} else if(actionType === 'CREATERSV') {
       						var result = crisisMngRpcClient.AsyncCrisisMngProvider.doCrisisMngCreateReservation(currentBatchId, false, null);
 							if(result != null) {
-								document.getElementById('ajaxBusy').style.display = 'none';
       							if(confirm(result)) {
 									showExceptionTable(currentBatchId, currentBatchType);
       							}
       						} else {
-								crisisMngRpcClient.AsyncCrisisMngProvider.doCrisisMngCreateReservation(populateOrderCallback, currentBatchId, true, null);
+								crisisMngRpcClient.AsyncCrisisMngProvider.doCrisisMngCreateReservation(currentBatchId, true, null);
 							}
       					} else if(actionType === 'PLACEORDER'){
 							var result = crisisMngRpcClient.AsyncCrisisMngProvider.placeStandingOrder(currentBatchId, null, false, null);
 							if(result != null) {
-								document.getElementById('ajaxBusy').style.display = 'none';
       							if(confirm(result)) {
       								showExceptionTable(currentBatchId,currentBatchType);
       							}
       						} else {
-								document.getElementById('ajaxBusy').style.display = 'none';
 								showStandingOrderTable(currentBatchId);
 							}
 							
 						} else if(actionType === 'BATCHCOMPLETE') {
       						crisisMngRpcClient.AsyncCrisisMngProvider.doCrisisMngBatchComplete(currentBatchId);
-							document.getElementById('ajaxBusy').style.display = 'none';
       					} else if(actionType === 'CANCELBATCH') {
       						crisisMngRpcClient.AsyncCrisisMngProvider.doCrisisMngBatchCancel(currentBatchId);
-							document.getElementById('ajaxBusy').style.display = 'none';
       					} else {
-							document.getElementById('ajaxBusy').style.display = 'none';
       						alert("Processing "+actionType+" on BATCH ID:"+currentBatchId);
       					} 
       				} catch(rpcException) {
-						document.getElementById('ajaxBusy').style.display = 'none';
       					alert("There was a problem in communication to the server. Please try to refresh the browser window!\n");
       				}
 					sDataTable.destroy();
                 	showTable();
       			}
       		}
-      }
-		function populateOrderCallback(result, exception){
-			document.getElementById('ajaxBusy').style.display = 'none';
 		}
-		function actionCallBack(result, Exception) {
-			if(result){
-				document.getElementById('ajaxBusy').style.display = 'none';
-			}else{
-				document.getElementById('ajaxBusy').style.display = 'none';
-      			alert("There was a problem in communication to the server. Please try to refresh the browser window!\n"+e);
-			}
-			showTable();
-		}
+
 		function doAutoRefresh(src) {
 			if(src.checked) {
 				sDataSource.setInterval(30000, null, showTable);

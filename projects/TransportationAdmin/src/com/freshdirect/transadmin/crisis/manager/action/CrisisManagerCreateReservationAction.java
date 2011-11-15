@@ -18,7 +18,6 @@ import com.freshdirect.routing.constants.EnumReservationType;
 import com.freshdirect.routing.model.CustomerModel;
 import com.freshdirect.transadmin.model.ICrisisManagerBatch;
 import com.freshdirect.transadmin.model.ICrisisManagerBatchDeliverySlot;
-import com.freshdirect.transadmin.model.ICrisisManagerBatchReservation;
 import com.freshdirect.routing.model.ICrisisMngBatchOrder;
 import com.freshdirect.routing.model.ICustomerModel;
 import com.freshdirect.routing.model.IReservationModel;
