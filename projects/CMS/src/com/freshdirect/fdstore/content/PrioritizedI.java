@@ -17,10 +17,10 @@ public interface PrioritizedI {
     
     public int getPriority();
     
-    public static Comparator PRIORITY_COMPARATOR = new Comparator() {
-        public int compare(Object o1, Object o2) {
-            int p1 = ((PrioritizedI) o1).getPriority();
-            int p2 = ((PrioritizedI) o2).getPriority();
+    public static Comparator<PrioritizedI> PRIORITY_COMPARATOR = new Comparator<PrioritizedI>() {
+        public int compare(PrioritizedI o1, PrioritizedI o2) {
+            int p1 = o1.getPriority();
+            int p2 = o2.getPriority();
             return p1==p2 ? 0 : (p1<p2 ? -1 : 1); 
         }
     };

@@ -79,8 +79,22 @@ public interface ContentNodeModel {
 
     public ContentKey getContentKey();
 
+
+    /**
+     *	Attention! - getContentName() returns the content id part of content keys,
+     *	and not the name of the content nodes, as you might think.
+     *
+     * 	Method name is seriously misleading! 
+     * 	Should be something like getContentId() ...
+     * 
+     * @return The id part of the content key!
+     */
     public String getContentName();
 
+    /**
+     * 
+     * @return The type part of the content key.
+     */
     public String getContentType();
 
     

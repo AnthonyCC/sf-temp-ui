@@ -81,20 +81,29 @@ public class LayoutManager extends BodyTagSupport {
 
 	private Settings setupLayout(HttpServletRequest request, HttpSession session, ActionResult result) {
 
-		String sortBy = request.getParameter("sortBy");
-		if (sortBy == null)
-			sortBy = "name";
-
-		String sortNameAttrib = currentNode instanceof ProductContainer ? ((ProductContainer)currentNode).getListAs("full") : "full";
-		if (!sortNameAttrib.equalsIgnoreCase(SortStrategyElement.SORTNAME_GLANCE) && !sortNameAttrib.equalsIgnoreCase(SortStrategyElement.SORTNAME_NAV))
-			sortNameAttrib = SortStrategyElement.SORTNAME_FULL;
-
 		if (request.getParameter("groceryVirtual") != null) {
 			//groceryVirtual = true;
 			//alwasy force the layout to the GrocerProduct if the groceryVitrual is found in the queryStrng
 			layoutType = EnumLayoutType.GROCERY_PRODUCT.getId();
 		}
 		
+		String sortBy = request.getParameter("sortBy");
+		if (sortBy == null) {			
+			if ( EnumLayoutType.GROCERY_PRODUCT.getId() == layoutType && currentNode instanceof ProductContainer ) {
+				// Grocery layout gets its default from CMS
+				sortBy = ( (ProductContainer)currentNode ).getDefaultGrocerySort();
+			} else {			
+				// Other layouts have name as the default
+				sortBy = "name";
+			}
+		}
+		// put this in the request for the jsp-s
+		request.setAttribute( "sortBy", sortBy );
+
+		String sortNameAttrib = currentNode instanceof ProductContainer ? ((ProductContainer)currentNode).getListAs("full") : "full";
+		if (!sortNameAttrib.equalsIgnoreCase(SortStrategyElement.SORTNAME_GLANCE) && !sortNameAttrib.equalsIgnoreCase(SortStrategyElement.SORTNAME_NAV))
+			sortNameAttrib = SortStrategyElement.SORTNAME_FULL;
+
 		boolean sortDescending = "true".equalsIgnoreCase(request.getParameter("sortDescending")) ? true : false;
 
 		/* for testing only..override incoming layout with specified layout
@@ -217,6 +226,14 @@ public class LayoutManager extends BodyTagSupport {
 						ErpNutritionType.getType(ErpNutritionType.TOTAL_CALORIES).getDisplayName(),
 						sortDescending));
 				s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortDescending));
+			} else if ("popularity".equalsIgnoreCase(sortBy)) {
+				s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_AVAILABILITY));
+				s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_POPULARITY, false));
+				s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortDescending));
+			} else if ("sale".equalsIgnoreCase(sortBy)) {
+				s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_AVAILABILITY));
+				s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_SALE, false));
+				s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortDescending));
 			} else if ("kosher".equalsIgnoreCase(sortBy)) {
 				s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_AVAILABILITY));
 				s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_KOSHER, false));
@@ -226,6 +243,7 @@ public class LayoutManager extends BodyTagSupport {
 				s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRICE, sortDescending));
 				s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortDescending));
 			} else if ("name".equalsIgnoreCase(sortBy)) {
+				s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_AVAILABILITY));
 				s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortDescending));
 			}
 		} else if (layoutType == EnumLayoutType.PRODUCT_FOLDER_LIST.getId()) {

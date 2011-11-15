@@ -192,6 +192,10 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 		return getAttribute("NUTRITION_SORT", true);
 	}
 
+	public String getDefaultGrocerySort() {
+		return getAttribute("GROCERY_DEFAULT_SORT", "name");
+	}
+	
 	public final Html getMediaContent() {
 		return FDAttributeFactory.constructHtml(this, "MEDIA_CONTENT");
 	}
