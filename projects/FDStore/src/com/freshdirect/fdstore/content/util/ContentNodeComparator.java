@@ -22,8 +22,6 @@ import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.PrioritizedI;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
-import com.freshdirect.fdstore.content.sort.PopularityComparator;
-import com.freshdirect.fdstore.content.sort.SaleComparator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**@author ekracoff on Feb 13, 2004*/
@@ -32,24 +30,9 @@ public class ContentNodeComparator implements Comparator<ContentNodeModel> {
 	private static Logger LOGGER = LoggerFactory.getInstance(ContentNodeComparator.class);
 
 	List<SortStrategyElement> strategy;
-	
-	private Comparator<ContentNodeModel> popularityComparator = null;
-	private Comparator<ContentNodeModel> saleComparator = null;
 
 	public ContentNodeComparator(List<SortStrategyElement> strategy) {
 		this.strategy = strategy;
-		
-		for ( SortStrategyElement e : strategy ) {
-			
-			if ( e.getSortType() == SortStrategyElement.PRODUCTS_BY_POPULARITY && popularityComparator == null ) {
-				popularityComparator = new PopularityComparator();
-			}
-			
-			if ( e.getSortType() == SortStrategyElement.PRODUCTS_BY_SALE && saleComparator == null ) {
-				saleComparator = new SaleComparator();
-			}
-			
-		}
 	}
 
 	public int compare(ContentNodeModel node1, ContentNodeModel node2) {
@@ -127,25 +110,10 @@ public class ContentNodeComparator implements Comparator<ContentNodeModel> {
 				return compareByProductRating(node1, node2, descending);
 			case SortStrategyElement.PRODUCTS_BY_SEAFOOD_SUSTAINABILITY :
 				return compareByProductSeafoodSustainabilityRating(node1, node2, descending);
-				
-			case SortStrategyElement.PRODUCTS_BY_POPULARITY :
-				return compareByPopularity(node1, node2, descending);
-				
-			case SortStrategyElement.PRODUCTS_BY_SALE :
-				return compareBySale(node1, node2, descending);
-				
 			default :
 				throw new IllegalArgumentException("Unknown sort type " + strategyElement.getSortType());
 		}
 
-	}
-
-	private int compareBySale( ContentNodeModel node1, ContentNodeModel node2, boolean descending ) {
-		return descending ? saleComparator.compare( node2, node1 ) : saleComparator.compare( node1, node2 );
-	}
-
-	private int compareByPopularity( ContentNodeModel node1, ContentNodeModel node2, boolean descending ) {
-		return descending ? popularityComparator.compare( node2, node1 ) : popularityComparator.compare( node1, node2 );
 	}
 
 	private int compareByWineCountry(ProductModel node1, ProductModel node2, boolean descending) {

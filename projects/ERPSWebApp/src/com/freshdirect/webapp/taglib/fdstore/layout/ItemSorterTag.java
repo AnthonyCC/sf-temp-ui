@@ -38,14 +38,11 @@ public class ItemSorterTag extends TagSupport {
 	public int doStartTag() throws JspException {
 
 		LOGGER.info(">>>Sorting " + nodes.size() + " items by " + strategy.size() + " attributes");
-		long t = System.currentTimeMillis();
-		
+//		FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
 		if (strategy.isEmpty() || strategy.get(0).getSortType() != SortStrategyElement.NO_SORT)
 			Collections.sort(nodes, new ContentNodeComparator(strategy));
 
-		t = System.currentTimeMillis() - t;
-		LOGGER.info(">>>Sorting completed in " + t + " milliseconds." );
-		
+		LOGGER.info(">>>Sort complete");
 		String debug = pageContext.getRequest().getParameter("debug");
 		if ("dumpSortResult".equals(debug)) {
 		    JspWriter out = pageContext.getOut();

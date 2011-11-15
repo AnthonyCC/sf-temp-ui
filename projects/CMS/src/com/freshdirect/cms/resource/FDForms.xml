@@ -184,7 +184,6 @@
 							<CmsField><attribute>FAKE_ALL_FOLDER</attribute></CmsField>
 							<CmsField><attribute>CONTAINS_BEER</attribute></CmsField>
 							<CmsField><attribute>NUTRITION_SORT</attribute></CmsField>
-							<CmsField><attribute>GROCERY_DEFAULT_SORT</attribute></CmsField>
 							<CmsField><attribute>NOT_SEARCHABLE</attribute></CmsField>
 							<CmsField><attribute>ALIAS</attribute></CmsField>
 							<CmsField><attribute>TREAT_AS_PRODUCT</attribute></CmsField>

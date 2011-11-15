@@ -249,6 +249,9 @@ public class ErpNutritionType {
             }
         }
         
+        public boolean equals(java.lang.Object obj) {
+            return this.equals(obj);
+        }
     }
     
 }

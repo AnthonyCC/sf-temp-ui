@@ -52,18 +52,4 @@ public class Score implements Comparable {
         }
         return node.getContentKey().getId().compareTo(sc.node.getContentKey().getId());
     }
-    
-    @Override
-    public String toString() {
-    	StringBuilder sb = new StringBuilder();
-    	sb.append( "Score[" );
-    	sb.append( node.getContentKey().getEncoded() );
-    	sb.append( "=" );
-    	for ( double d : values ) {
-        	sb.append( d );    		
-        	sb.append( "," );    		
-    	}
-    	sb.append( "]" );
-    	return sb.toString();
-    }
 }

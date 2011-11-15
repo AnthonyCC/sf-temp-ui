@@ -58,12 +58,9 @@ String sortBy = request.getParameter("sortBy");
 String nutriName = request.getParameter("nutritionName");
 String display = request.getParameter("disp");
 boolean descending = "true".equals(request.getParameter("sortDescending"))?true:false;
-if (sortBy==null) {
-	String s = (String)request.getAttribute( "sortBy" );
-	sortBy = s != null ? s : "name";
-}
+if (sortBy==null) sortBy = "name";
 
-List<ContentNodeModel> sortedColl = (List) request.getAttribute("itemGrabberResult");
+List sortedColl = (List) request.getAttribute("itemGrabberResult");
 %>
 
 <%!
@@ -846,8 +843,8 @@ if (brandLogo !=null) {
 }
 %>
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_GROCERY_PRODUCT%>">
-<tr id="headerRow" valign="BOTTOM">
-    <td colspan="2" style="padding-bottom: 10px;"><%
+<tr valign="BOTTOM">
+    <td><%
     	if (brandPopupLink!=null) {
     %><a href="<%=brandPopupLink%>"><%
     	}
@@ -857,51 +854,40 @@ if (brandLogo !=null) {
     	}
     %> (<%=skuCount%>&nbsp;items)
     </td>
-</tr>
+    <td ALIGN="RIGHT">
+        <SELECT NAME="brand" onChange="javascript:gotoWindow(this.options[this.selectedIndex].value)" CLASS="text10">
+<%
+	String categoryTitle = groceryCategory.getFullName();
+        String optionURL = response.encodeURL("/category.jsp?catId=" + groceryCategory + buildOtherParams(showThumbnails,itemsToDisplay,-1,"",sortBy,nutriName,request,groceryCategory.getContentName()) + "&disp=" + display + "&sortDescending=" + descending + "&trk=trans");
+%>
+            <OPTION NAME="ACK">Find a Brand in  <%=categoryTitle%>
+<%
+	if(!"".equals(brandValue)) {
+%>
+            <OPTION NAME="ACK" value="<%=optionURL%>">All Brands<%
+            	}
 
-<tr id="sortRow">
-
-	<td style="text-align: left; background-color: #e0e3d0; padding: 8px 12px;">
-		<b>Sort:</b>
-		<a href="<%=response.encodeURL("/category.jsp?catId=" + currentFolder + "&sortBy=name&groceryVirtual=All&trk=cpage")%>" style="font-weight: <%="name".equalsIgnoreCase( sortBy )?"bold":"normal"%>;">Name</a>
-		<span style="color: gray; padding: 2px;">&bull;</span>
-		<a href="<%=response.encodeURL("/category.jsp?catId=" + currentFolder + "&sortBy=price&groceryVirtual=All&trk=cpage")%>" style="font-weight: <%="price".equalsIgnoreCase( sortBy )?"bold":"normal"%>;">Price</a>
-		<span style="color: gray; padding: 2px;">&bull;</span>
-		<a href="<%=response.encodeURL("/category.jsp?catId=" + currentFolder + "&sortBy=popularity&groceryVirtual=All&trk=cpage")%>" style="font-weight: <%="popularity".equalsIgnoreCase( sortBy )?"bold":"normal"%>;">Popularity</a>
-		<span style="color: gray; padding: 2px;">&bull;</span>
-		<a href="<%=response.encodeURL("/category.jsp?catId=" + currentFolder + "&sortBy=sale&groceryVirtual=All&trk=cpage")%>" style="font-weight: <%="sale".equalsIgnoreCase( sortBy )?"bold":"normal"%>;">Sale</a>
-		<span style="color: gray; padding: 2px;">&bull;</span>
-		<a href="<%=response.encodeURL("/category.jsp?catId=" + currentFolder + "&sortBy=kosher&groceryVirtual=All&trk=cpage")%>" style="font-weight: <%="kosher".equalsIgnoreCase( sortBy )?"bold":"normal"%>;">Kosher</a>
-	</td>
-	
-    <td style="text-align: right; background-color: #e0e3d0; padding: 8px 12px;">
-        <select name="brand" onChange="javascript:gotoWindow(this.options[this.selectedIndex].value)" CLASS="text10">
-			<%
-			String categoryTitle = groceryCategory.getFullName();
-		    String optionURL = response.encodeURL("/category.jsp?catId=" + groceryCategory + buildOtherParams(showThumbnails,itemsToDisplay,-1,"",sortBy,nutriName,request,groceryCategory.getContentName()) + "&disp=" + display + "&sortDescending=" + descending + "&trk=trans");
-			%>
-			<% if(!"".equals(brandValue)) { %>
-	            <option name="ACK" value="<%=optionURL%>">All Brands</option>
-	        <% } else { %>
-	            <option name="ACK" value="<%=optionURL%>">Filter by brand</option>	        
-			<% } 
-            for (Iterator br = groceryCategory.getAllBrands().iterator(); br.hasNext(); ) {
-	            BrandModel myBrand = (BrandModel)br.next();
-	            String brandId = myBrand.getContentName(); 
-	            optionURL = response.encodeURL("/category.jsp?catId=" + groceryCategory + buildOtherParams(showThumbnails,itemsToDisplay,-1,brandId,sortBy,nutriName,request,groceryCategory.getContentName())+ "&disp=" + display + "&sortDescending=" + descending + "&trk=trans");
+                    for (Iterator br = groceryCategory.getAllBrands().iterator(); br.hasNext(); ) {
+                            BrandModel myBrand = (BrandModel)br.next();
+                            optionURL = response.encodeURL("/category.jsp?catId=" + groceryCategory + buildOtherParams(showThumbnails,itemsToDisplay,-1,myBrand.getContentName(),sortBy,nutriName,request,groceryCategory.getContentName())+ "&disp=" + display + "&sortDescending=" + descending + "&trk=trans");
             %>
-	            <option <%=brandId.equalsIgnoreCase(brandValue)?"selected":""%> value="<%=optionURL%>"><%=myBrand.getFullName()%></option>
-			<%
-				}
-			%>
-        </select>
+            <OPTION  value="<%=optionURL%>"><%=myBrand.getFullName()%></OPTION>
+<%
+	}
+%>
+        </SELECT>
     </td>
 </tr>
-
+<tr>
+    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+</tr>
+<tr>
+    <td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+</tr>
 <%
 	if (FDStoreProperties.isAdServerEnabled()) {
 %>
-<tr id="adRow">
+<tr>
     <td colspan="2">
         <SCRIPT LANGUAGE=JavaScript>
         <!--
@@ -959,29 +945,44 @@ if (doRenderEditorialPartial && editorialMedia != null && !editorialMedia.isBlan
 </table>
 
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_GROCERY_PRODUCT%>">
-	<tr valign="top">
-    	<td CLASS="text10bold" width="215">Page: <%=pageNumberLinks%></td>    
-    <%
+<tr valign="top">
+    <td CLASS="text10bold" width="215">Page: <%=pageNumberLinks%></td>
+    <td ALIGN="RIGHT"><b>Sort by:</b>
+        <SELECT NAME="sort" onChange="javascript:gotoWindow(this.options[this.selectedIndex].value!=''?this.options[this.selectedIndex].value:null)" CLASS="text10">
+<%
+	optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + "&groceryVirtual=All&trk=cpage");
+%>
+        <OPTION NAME="Ack" <%="name".equalsIgnoreCase(sortBy)?"selected":""%> value="<%=optionURL%>">Name</option>
+<%
+	optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + "&sortBy=price&groceryVirtual=All&trk=cpage");
+%>
+        <OPTION NAME="Ack" <%="price".equalsIgnoreCase(sortBy)?"selected":""%>  value="<%=optionURL%>">Price</option>
+<%
+	optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + "&sortBy=kosher&groceryVirtual=All&trk=cpage");
+%>
+        <OPTION NAME="Ack" <%="kosher".equalsIgnoreCase(sortBy)?"selected":""%>  value="<%=optionURL%>">Kosher</option>
+<%
         boolean allowNutSort = ((CategoryModel)currentFolder).isNutritionSort();
         if(allowNutSort){
-    	%>
-    		<td ALIGN="RIGHT" style="padding-right: 12px;"><b>Sort by Nutrition:</b>
-        		<SELECT NAME="sort" onChange="javascript:gotoWindow(this.options[this.selectedIndex].value!=''?this.options[this.selectedIndex].value:null)" CLASS="text10">
-        			<OPTION NAME="Ack" value="">Select...</option>
-					<%
-						for(Iterator i = ErpNutritionType.getCommonList().iterator(); i.hasNext();){
-					                ErpNutritionType.Type nutriType = (ErpNutritionType.Type)i.next();
-					                optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(false,45,-1,brandValue,"nutrition",nutriType.getName(),request,null)+"&disp="+nutriType.getName()+"&sortDescending="+nutriType.isGood()+"&trk=trans");
-					                String optionDisplay = StringUtils.replace( nutriType.getDisplayName(), " quantity", "");
-					                if(nutriType.getUom().equals("%"))
-					                    optionDisplay = optionDisplay + " % daily value";
-					%>
-				        <OPTION NAME="Ack" <%=nutriType.getName().equalsIgnoreCase(display)?"selected":""%>  value="<%=optionURL%>"><%=optionDisplay%></option>
-					<% } %>
-		        </SELECT>
-    		</td>
-    	<% } %>
-	</tr>
+%>
+        <OPTION value="">Nutrition:</option>
+<%
+	for(Iterator i = ErpNutritionType.getCommonList().iterator(); i.hasNext();){
+                ErpNutritionType.Type nutriType = (ErpNutritionType.Type)i.next();
+                optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(false,45,-1,brandValue,"nutrition",nutriType.getName(),request,null)+"&disp="+nutriType.getName()+"&sortDescending="+nutriType.isGood()+"&trk=trans");
+                String optionDisplay = StringUtils.replace( nutriType.getDisplayName(), " quantity", "");
+                if(nutriType.getUom().equals("%"))
+                    optionDisplay = optionDisplay + " % daily value";
+%>
+        <OPTION NAME="Ack" <%=nutriType.getName().equalsIgnoreCase(display)?"selected":""%>  value="<%=optionURL%>">&nbsp;&nbsp;<%=optionDisplay%></option>
+<%
+	}
+        }
+%>
+
+        </SELECT>
+    </td>
+</tr>
 </table>
 <%
 	//========================  end header area ===============================================
@@ -1004,6 +1005,8 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
 <%
 	if(!bigProdShown && isAnyProdAvailable) {
 %><td><input type="image" name="addMultipleToCart" src="/media_stat/images/buttons/add_selected_to_cart.gif" width="145" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART"></td><%
+	} if(allowNutSort){
+%><td align="right"><img src="/media_stat/images/template/grocery/sort_by_nutrition.gif"></td><%
 	}
 %></tr></table>
 <img src="/media_stat/images/layout/clear.gif" width="1" height="6">
