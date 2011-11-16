@@ -1,5 +1,8 @@
 package com.freshdirect.mobileapi.controller;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,6 +33,10 @@ public class ExternalInterfaceController extends BaseController {
 
     private static final String PARAM_ORDER_ID = "data";
     
+    private static final String PARAM_BCC_ID = "bcc";
+    
+    private static final String PARAM_CC_ID = "cc";
+    
     private static final String PARAM_SECURITY_ID = "t001_x";
 
     protected boolean validateUser() {
@@ -39,11 +46,27 @@ public class ExternalInterfaceController extends BaseController {
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
             SessionUser user) throws JsonException, FDException, ServiceException, NoSessionException {
+    	
     	if(MobileApiProperties.isExternalInterfaceEnabled()) {
+    		    		    		    		
 	        String saleId = request.getParameter(PARAM_ORDER_ID);
 	        String securityId = request.getParameter(PARAM_SECURITY_ID);
 	        
-	        LOGGER.info("T001: Send Contact Notification " + saleId);
+	        String bcc = request.getParameter(PARAM_BCC_ID);
+	        String cc = request.getParameter(PARAM_CC_ID);
+	        	        
+	        Collection<String> ccLst = null;
+	        Collection<String> bccLst = null;
+	        
+	        if(cc != null && cc.trim().length() > 0) {
+	        	ccLst = Arrays.asList(cc.split(","));
+	        }
+	        
+	        if(bcc != null && bcc.trim().length() > 0) {
+	        	bccLst = Arrays.asList(bcc.split(","));
+	        }
+	        
+	        LOGGER.info("T001: Send Contact Notification " + saleId+" ,cc:"+ccLst+" ,bcc:"+bccLst);
 	        
 	        Message responseMessage = null;
 	        if(saleId != null && saleId.trim().length() > 0) {        	
@@ -53,7 +76,7 @@ public class ExternalInterfaceController extends BaseController {
 		        	if(order != null) {
 		        		LOGGER.info("T001: Customer Notification " + order.getCustomerId());
 		        		FDCustomerInfo fdInfo = FDCustomerManager.getCustomerInfo(new FDIdentity( order.getCustomerId(), null));
-		        		FDCustomerManager.doEmail(FDEmailFactory.getInstance().createOrderIvrContactEmail(fdInfo, saleId));
+		        		FDCustomerManager.doEmail(FDEmailFactory.getInstance().createOrderIvrContactEmail(fdInfo, saleId, ccLst, bccLst));
 		        		responseMessage = Message.createSuccessMessage("T001 Successfully.");
 		        	} else {
 		        		LOGGER.info("T001: Unable to find Order " + saleId);
@@ -72,5 +95,4 @@ public class ExternalInterfaceController extends BaseController {
     	}
         return model;
     }
-
 }

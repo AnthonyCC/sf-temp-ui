@@ -515,7 +515,7 @@ function loadStuff() {
   	$("#result").val("");
   }  else if (loaddata == "IvrEmail") {
   	$("#url").val("/ext/t001");
-  	$("#payload").val("2202928245");
+  	$("#payload").val("2202928245,applicationdevelopment@freshdirect.com,qa@freshdirect.com");
   	$("#result").val("");
   }  
 }
@@ -524,16 +524,33 @@ function doStuff() {
   var version = $("#version").val();
   $.cookie("version", version);
   var strURL = "/mobileapi/v/" + version + $("#url").val();
+  var postData = "";
   var payload = $("#payload").val();
-  $.ajax({
-      type: "POST",
-      url: strURL,
-      data: "data=" + $.URLEncode(payload),
-      dataType: "html",
-      success: function(msg){
-         $("#result").val(msg);
-      }
-  });	
+  var dType = "html";
+  if($("#loaddata").val() == "IvrEmail") {
+  	 var temp = payload.split(",");
+  	 if(temp != null && temp.length > 0) {
+  	 	postData = postData + "data=" + $.URLEncode(temp[0]);
+  	 	if(temp.length > 1) {
+  	 		postData = postData + "&cc=" + $.URLEncode(temp[1]);
+  	 	}
+  	 	if(temp.length > 2) {
+  	 		postData = postData + "&bcc=" + $.URLEncode(temp[2]);
+  	 	}
+  	 } 
+  } else {
+	  postData = "data=" + $.URLEncode(payload);
+  }
+  
+   $.ajax({
+	      type: "POST",
+	      url: strURL,
+	      data: postData,
+	      dataType: dType,
+	      success: function(msg){
+	         $("#result").val(msg);
+	      }
+	});	
 }	
 </script>
 </head>
