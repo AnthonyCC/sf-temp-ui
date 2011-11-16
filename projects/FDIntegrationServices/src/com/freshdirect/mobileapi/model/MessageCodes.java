@@ -174,7 +174,7 @@ public interface MessageCodes {
     public static final String ERR_BANK_NAME_REQUIRED = "ERR_BANK_NAME_REQUIRED";
     public static final String ERR_BANK_NAME_REQUIRED_MSG = "Bank Name is required.";
     
-    public static final String ERR_CVV_REQUIRED = "ERR_CCEXPIRATION_REQUIRED";
+    public static final String ERR_CVV_REQUIRED = "ERR_CVV_REQUIRED";
     public static final String ERR_CVV_REQUIRED_MSG = "CVV number is required.";
     
     public static final String ERR_ACCOUNT_HOLDER_NAME_REQUIRED = "ERR_ACCOUNT_HOLDER_NAME_REQUIRED";
