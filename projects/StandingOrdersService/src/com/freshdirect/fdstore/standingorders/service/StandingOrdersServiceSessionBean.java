@@ -142,9 +142,9 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 						false, 0.00, false, false);
 
 				if(null !=altDates){
-					result = StandingOrderUtil.process( so,altDates.get(so.getNextDeliveryDate()), event, null, mailerHome );
+					result = StandingOrderUtil.process( so,altDates.get(so.getNextDeliveryDate()), event, null, mailerHome, false );
 				}else{
-					result = StandingOrderUtil.process( so,null, event, null, mailerHome);
+					result = StandingOrderUtil.process( so,null, event, null, mailerHome, false);
 				}
 //				result = process( so );
 				
@@ -309,9 +309,9 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			try {
 				so=soManager.load(new PrimaryKey(_so));
 				if(null !=altDates){
-					result = StandingOrderUtil.process( so,altDates.get(so.getNextDeliveryDate()), event, null, mailerHome );
+					result = StandingOrderUtil.process( so,altDates.get(so.getNextDeliveryDate()), event, null, mailerHome, false );
 				}else{
-					result = StandingOrderUtil.process( so, null, event, null, mailerHome);
+					result = StandingOrderUtil.process( so, null, event, null, mailerHome, false);
 				}
 //				result = process( so );
 				

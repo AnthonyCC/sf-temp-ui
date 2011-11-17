@@ -47,4 +47,7 @@ public interface ICancelOrderInfo {
  
 	 String getStandingOrderId();
 	 void setStandingOrderId(String standingOrderId);
+	 
+	 String getErrorDetail();
+     void setErrorDetail(String errorDetail);
 }

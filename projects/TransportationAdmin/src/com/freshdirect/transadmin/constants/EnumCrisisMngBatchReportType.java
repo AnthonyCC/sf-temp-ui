@@ -14,8 +14,10 @@ public class EnumCrisisMngBatchReportType  extends Enum {
     
     public static final EnumCrisisMngBatchReportType TIMESLOTEXCEPTION = new EnumCrisisMngBatchReportType("TSR","TIMESLOTEXCEPTION");
     
-    public static final EnumCrisisMngBatchReportType SOSIMULATIONREPORT = new EnumCrisisMngBatchReportType("SSR","SOSIMREPORT");
-    
+    public static final EnumCrisisMngBatchReportType SOSIMULATIONREPORT = new EnumCrisisMngBatchReportType("SSR","SOSIMULATIONREPORT");
+
+    public static final EnumCrisisMngBatchReportType SOFAILUREREPORT = new EnumCrisisMngBatchReportType("SFR","SOFAILUREREPORT");
+
     private final String description;
 
 	public EnumCrisisMngBatchReportType(String name, String description) {

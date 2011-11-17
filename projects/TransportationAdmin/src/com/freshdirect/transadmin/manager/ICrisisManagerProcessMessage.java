@@ -40,4 +40,8 @@ public interface ICrisisManagerProcessMessage {
 	
 	String INFO_MESSAGE_BATCHTIMESLOTEXPMSG = "Batch contains timeslot exception(s)";
 
+	String INFO_MESSAGE_PLACESTANDINGORDERMSG = "There are standing order failures. Please check the standing order report for more details";
+
+	String INFO_MESSAGE_STANDINGORDEREXPCLEARMSG = "No Timeslot Exceptions. You can start placing order(s) or mark batch as complete.";
+
 }

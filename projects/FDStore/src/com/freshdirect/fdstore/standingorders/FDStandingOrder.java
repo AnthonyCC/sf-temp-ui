@@ -190,9 +190,7 @@ public class FDStandingOrder extends ModelSupport {
 	public void setupDelivery(FDReservation r) {
 		setStartTime(r.getStartTime());
 		setEndTime(r.getEndTime());
-		if(this.altDeliveryDate == null){
-			calculateNextDeliveryDate( r.getTimeslot().getBaseDate() );
-		}
+		calculateNextDeliveryDate( r.getTimeslot().getBaseDate() );
 	}
 
 	/**

@@ -17,6 +17,7 @@ public class CancelOrderInfoModel  implements ICancelOrderInfo {
 	private int lineItemCount;
 	private int tempLineItemCount;
 	private String standingOrderId;
+	private String errorDetail;
 	
 	public String getStandingOrderId() {
 		return standingOrderId;
@@ -111,5 +112,13 @@ public class CancelOrderInfoModel  implements ICancelOrderInfo {
 	}
 	public int getLineItemChangeCount(){
 		return this.lineItemCount - this.tempLineItemCount;
+	}
+
+	public String getErrorDetail() {
+		return errorDetail;
+	}
+
+	public void setErrorDetail(String errorDetail) {
+		this.errorDetail = errorDetail;
 	}
 }

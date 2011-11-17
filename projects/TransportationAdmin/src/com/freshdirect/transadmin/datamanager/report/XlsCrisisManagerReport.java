@@ -73,6 +73,15 @@ public class XlsCrisisManagerReport extends BaseXlsReport implements ICrisisMana
 		new RouteFileManager().generateReportFile(file, wb);				
 	}
 	
+	public void generateSOFailureReport(String file, CrisisManagerReportData reportData)
+										throws ReportGenerationException, ParseException {
+
+		HSSFWorkbook wb = new HSSFWorkbook();
+		Map styles = initStyles(wb);	
+		createStandingOrderFailureSheet(wb, reportData, styles);
+		new RouteFileManager().generateReportFile(file, wb);				
+	}
+	
 	@SuppressWarnings("deprecation")
 	private void createTotalRows(HSSFRow row, int totalOrders, Map styles) {
 				      
@@ -556,7 +565,7 @@ public class XlsCrisisManagerReport extends BaseXlsReport implements ICrisisMana
 	}
 	
 	@SuppressWarnings("deprecation")
-	private short createStandingOrderSimulationSheet(HSSFWorkbook wb, CrisisManagerReportData reportData, Map styles) {
+	private short createStandingOrderSimulationSheet(HSSFWorkbook wb, CrisisManagerReportData reportData, Map styles) throws ParseException {
 		if(reportData.getOrders() != null) {
 			
 			short rownum = 0;	
@@ -586,6 +595,12 @@ public class XlsCrisisManagerReport extends BaseXlsReport implements ICrisisMana
 	        row = sheet.createRow(rownum++);//blank Row
 	        cellnum = 0;
 	        row = sheet.createRow(rownum++);	        
+	        
+	        hssfCell = row.createCell(cellnum++);		        
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Delivery Date"));
+	       
 	        hssfCell = row.createCell(cellnum++);		        
 	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
 	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
@@ -652,6 +667,11 @@ public class XlsCrisisManagerReport extends BaseXlsReport implements ICrisisMana
 	        	hssfCell = row.createCell(cellnum++);		        
 			    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
 			    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			    hssfCell.setCellValue(new HSSFRichTextString(TransStringUtil.getDate(reportData.getBatch().getDestinationDate())));
+					        	
+	        	hssfCell = row.createCell(cellnum++);		        
+			    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
+			    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 			    hssfCell.setCellValue(new HSSFRichTextString(_model.getCompanyName() != null ? _model.getCompanyName() : ""));
 				
 	        	hssfCell = row.createCell(cellnum++);		        
@@ -704,6 +724,119 @@ public class XlsCrisisManagerReport extends BaseXlsReport implements ICrisisMana
 			    hssfCell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
 			    hssfCell.setCellValue(_model.getLineItemChangeCount());
 			    		
+			}
+		}
+		return rownum;
+	}
+	
+	@SuppressWarnings("deprecation")
+	private short createStandingOrderFailureSheet(HSSFWorkbook wb, CrisisManagerReportData reportData, Map styles) {
+		if(reportData.getOrders() != null) {
+			
+			short rownum = 0;	
+		    short cellnum = 0;
+		    
+		    HSSFSheet sheet = wb.createSheet("Standing Order Failure Rpt");
+		    sheet.setDefaultColumnWidth((short)DEFAULT_WIDTH);	
+			sheet.setPrintGridlines(true);
+		    
+		    HSSFPrintSetup ps = sheet.getPrintSetup();
+		    sheet.setAutobreaks(true);
+	        ps.setFitHeight((short) 1);
+	        ps.setFitWidth((short) 1);
+	        	            
+	        HSSFRow row = sheet.createRow(rownum++);
+		    HSSFCell hssfCell = row.createCell(cellnum);
+
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("titleStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Standing Order Failure Report"));
+	        			        
+			sheet.addMergedRegion(new Region(0,(short)0,0,(short)8));
+			row = sheet.createRow(rownum++);//blank Row
+			row = sheet.createRow(rownum++);//blank Row
+	        createTotalRows(row, reportData.getOrders().size(), styles);
+	        
+	        row = sheet.createRow(rownum++);//blank Row
+	        cellnum = 0;
+	        row = sheet.createRow(rownum++);	        
+	        hssfCell = row.createCell(cellnum++);		        
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Company Name"));
+	       
+	        hssfCell = row.createCell(cellnum++);		        
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Customer #"));
+	             
+	        hssfCell = row.createCell(cellnum++);		        
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("StandingOrder #"));
+	       	              
+	        hssfCell = row.createCell(cellnum++);		        
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Delivery Window"));
+	        
+	        hssfCell = row.createCell(cellnum++);		        
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Business Phone"));
+	        
+	        hssfCell = row.createCell(cellnum++);		        
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Cell Phone"));
+	        
+	        hssfCell = row.createCell(cellnum++);		        
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Error Detail"));
+	                        
+	        Iterator<ICancelOrderInfo> _orderItr = reportData.getOrders().iterator();
+	        while (_orderItr.hasNext()) {
+	        	cellnum = 0;
+	        	ICancelOrderInfo _model = _orderItr.next();
+	        	
+	        	row = sheet.createRow(rownum++);
+	        	
+	        	hssfCell = row.createCell(cellnum++);		        
+			    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
+			    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			    hssfCell.setCellValue(new HSSFRichTextString(_model.getCompanyName() != null ? _model.getCompanyName() : ""));
+				
+	        	hssfCell = row.createCell(cellnum++);		        
+			    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+			    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			    hssfCell.setCellValue(new HSSFRichTextString(_model.getCustomerId()));
+			    
+			    hssfCell = row.createCell(cellnum++);		        
+			    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+			    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			    hssfCell.setCellValue(new HSSFRichTextString(_model.getStandingOrderId()));
+			   			    
+			    hssfCell = row.createCell(cellnum++);		        
+			    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
+			    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			    hssfCell.setCellValue(new HSSFRichTextString(_model.getDeliveryWindow()));
+			    
+			    hssfCell = row.createCell(cellnum++);		        
+			    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+			    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			    hssfCell.setCellValue(new HSSFRichTextString(_model.getBusinessPhone()));
+			    
+			    hssfCell = row.createCell(cellnum++);		        
+			    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+			    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			    hssfCell.setCellValue(new HSSFRichTextString(_model.getCellPhone()));
+			    
+			    hssfCell = row.createCell(cellnum++);		        
+			    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
+			    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			    hssfCell.setCellValue(new HSSFRichTextString(_model.getErrorDetail()));
+		    			    		
 			}
 		}
 		return rownum;

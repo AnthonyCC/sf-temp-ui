@@ -1,22 +1,27 @@
 package com.freshdirect.transadmin.web.json;
 
+import static com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage.ERROR_MESSAGE_TIMESLOTEXCEPTION;
+import static com.freshdirect.transadmin.manager.ICrisisManagerProcessMessage.INFO_MESSAGE_STANDINGORDEREXPCLEARMSG;
+
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.transadmin.model.CrisisManagerBatchDeliverySlot;
 import com.freshdirect.transadmin.model.ICrisisManagerBatch;
 import com.freshdirect.transadmin.model.ICrisisManagerBatchDeliverySlot;
 import com.freshdirect.routing.model.ICrisisMngBatchOrder;
 import com.freshdirect.routing.model.StandingOrderModel;
+import com.freshdirect.transadmin.constants.EnumCrisisMngBatchStatus;
 import com.freshdirect.transadmin.constants.EnumCrisisMngBatchType;
 import com.freshdirect.transadmin.crisis.manager.action.CrisisManagerCancelAction;
 import com.freshdirect.transadmin.crisis.manager.action.CrisisManagerCompleteAction;
@@ -341,31 +346,21 @@ public class CrisisMngProviderController extends BaseJsonRpcController  implemen
 						}
 					}
 				}		
-				
-				this.crisisManagerService.updateCrisisMngBatchDeliveryslot(exceptionSlots);
+				if(exceptionSlots.size() > 0)
+					this.crisisManagerService.updateCrisisMngBatchDeliveryslot(exceptionSlots);
 			}
 			
-			if(_standingOrderData != null){
-				for(int i= 0;i < _standingOrderData.length;i++){							
-					StandingOrderModel model = new StandingOrderModel();
-					model.setId(_standingOrderData[i][0]);
-					model.setOrderId(_standingOrderData[i][1]);
-					model.setAltDate(batch.getDestinationDate());
-					standingOrders.add(model);
-				}				
+			String foundException = checkExceptions(batch);
+			if(foundException == null && _standingOrderData != null){				
+				standingOrders = getStandingOrderModels(batch, _standingOrderData);
+				CrisisManagerPlaceOrderAction process = new CrisisManagerPlaceOrderAction(batch, userId
+																				, standingOrders, this.crisisManagerService);
+				process.execute();
+			} else if(foundException == null){
+				this.crisisManagerService.updateCrisisMngBatchMessage(batch.getBatchId(), INFO_MESSAGE_STANDINGORDEREXPCLEARMSG);			
+			} else {
+				return foundException;
 			}
-			if(timeslot == null || timeslot.length == 0) {
-				CrisisManagerPlaceOrderAction process = new CrisisManagerPlaceOrderAction(batch, userId, standingOrders, this.crisisManagerService);
-				
-				Map<String, Integer> exceptions = (Map<String, Integer>) process.execute();
-				boolean hasError = (exceptions != null && exceptions.keySet().size() > 0);
-				if(hasError) {
-					StringBuffer exceptionMessage = new StringBuffer();			
-					exceptionMessage.append("\n\n"+"Please handle timeslot exceptions before you place order(s). Do you want to continue?");				 
-					return exceptionMessage.toString();
-				}
-			}
-			
 		} catch (TransAdminServiceException e) {
 			LOGGER.error("<placeStandingOrder:> service exception", e);
 			return null;
@@ -374,5 +369,88 @@ public class CrisisMngProviderController extends BaseJsonRpcController  implemen
 		} 	
 		
 		return null;
+	}
+
+	private String checkExceptions(ICrisisManagerBatch batch) {
+		Map<String, Integer> foundExceptions = new HashMap<String, Integer>();
+		
+		Map<String, List<ICrisisManagerBatchDeliverySlot>> batchExpSlots 
+											= this.crisisManagerService.getCrisisMngBatchTimeslot(batch.getBatchId(), false);
+		if (batchExpSlots.size() > 0) {
+			for (Map.Entry<String, List<ICrisisManagerBatchDeliverySlot>> exceptionEntry : batchExpSlots.entrySet()) {
+				for (ICrisisManagerBatchDeliverySlot _slot : exceptionEntry.getValue()) {
+					if (!foundExceptions.containsKey(_slot.getArea())) {
+						foundExceptions.put(_slot.getArea(), 0);
+					}
+					foundExceptions.put(_slot.getArea(), foundExceptions.get(_slot.getArea()).intValue() + 1);
+				}
+			}
+		}
+
+		if (foundExceptions != null && foundExceptions.size() > 0) {
+			this.crisisManagerService.updateCrisisMngBatchStatus(batch.getBatchId(), EnumCrisisMngBatchStatus.PLACESOFAILED);
+			this.crisisManagerService.updateCrisisMngBatchMessage(batch.getBatchId(), ERROR_MESSAGE_TIMESLOTEXCEPTION);
+			boolean hasError = (foundExceptions != null && foundExceptions.keySet().size() > 0);
+			if(hasError) {
+				StringBuffer exceptionMessage = new StringBuffer();			
+				exceptionMessage.append("Please handle timeslot exceptions before you place order(s). Do you want to continue?");				 
+				return exceptionMessage.toString();
+			}
+		}
+		return null;
+	}
+	
+	private List<StandingOrderModel> getStandingOrderModels(ICrisisManagerBatch batch, String[][] _standingOrderData){
+		
+		List<StandingOrderModel> standingOrders = new ArrayList<StandingOrderModel>();
+		
+		Map<String, ICrisisMngBatchOrder> orderMapping = getBatchOrder(batch.getBatchId());
+
+		Map<String, List<ICrisisManagerBatchDeliverySlot>> batchTimeSlots 
+												= this.crisisManagerService.getCrisisMngBatchTimeslot(batch.getBatchId(), true);
+		
+		if(_standingOrderData != null && _standingOrderData.length > 0){
+			List<ICrisisManagerBatchDeliverySlot> areaSlots = null;
+			StandingOrderModel _standingOrder = null;
+			ICrisisMngBatchOrder _batchOrder = null;
+			for(int i= 0;i < _standingOrderData.length;i++){							
+				_standingOrder = new StandingOrderModel();
+				_standingOrder.setId(_standingOrderData[i][0]);
+				_standingOrder.setOrderId(_standingOrderData[i][1]);
+				_standingOrder.setAltDate(batch.getDestinationDate());
+				_batchOrder = orderMapping.get(_standingOrderData[i][1]);
+				
+				areaSlots = batchTimeSlots.get(_batchOrder.getArea());
+				Iterator<ICrisisManagerBatchDeliverySlot> itr = areaSlots.iterator();
+				while (itr.hasNext()) {
+					ICrisisManagerBatchDeliverySlot _tempSlot = itr.next();
+					if (_batchOrder.getStartTime().equals(_tempSlot.getStartTime())
+							&& _batchOrder.getEndTime().equals(_tempSlot.getEndTime()) 
+							&& _tempSlot.getDestStartTime() != null && _tempSlot.getDestEndTime() != null) {
+						_standingOrder.setStartTime(_tempSlot.getDestStartTime());
+						_standingOrder.setEndTime(_tempSlot.getDestEndTime());							
+						break;
+					}
+				}				
+				standingOrders.add(_standingOrder);
+			}
+	    }
+		return standingOrders;
+	}
+	
+	private Map<String, ICrisisMngBatchOrder> getBatchOrder(String batchId){
+		Map<String, ICrisisMngBatchOrder> orderMapping = new HashMap<String, ICrisisMngBatchOrder>();
+		List<ICrisisMngBatchOrder> batchOrders = this.crisisManagerService.getCrisisMngBatchStandingOrder(batchId, false, false);
+		if(batchOrders != null && batchOrders.size() > 0){
+			Iterator<ICrisisMngBatchOrder> orderItr = batchOrders.iterator();
+			while(orderItr.hasNext()){
+				ICrisisMngBatchOrder _order = orderItr.next();
+				if(!orderMapping.containsKey(_order.getOrderNumber())){
+					orderMapping.put(_order.getOrderNumber(), _order);
+				}
+			}
+		}
+		
+		return orderMapping;
 	}
 }

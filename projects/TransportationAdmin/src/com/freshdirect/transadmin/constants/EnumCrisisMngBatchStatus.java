@@ -2,7 +2,7 @@ package com.freshdirect.transadmin.constants;
 
 public enum EnumCrisisMngBatchStatus {
 	
-	NEW, ORDERCOLECTIONCOMPLETE, COMPLETED, STOPPED, PROCESSING, CANCELLED, ORDERCOLECTIONFAILED, ORDERCANCELCOMPLETE, ORDERCANCELFAILED, CREATERESERVATIONCOMPLETE, CREATERESERVATIONFAILED, PLACESOCOMPETE, PLACESOFAILED, AUTOCOMPLETED;
+	NEW, ORDERCOLECTIONCOMPLETE, COMPLETED, STOPPED, PROCESSING, CANCELLED, ORDERCOLECTIONFAILED, ORDERCANCELCOMPLETE, ORDERCANCELFAILED, CREATERESERVATIONCOMPLETE, CREATERESERVATIONFAILED, PLACESOCOMPLETE, PLACESOFAILED, AUTOCOMPLETED;
 	
 	public String value(){
 	    switch(this) {
@@ -14,7 +14,7 @@ public enum EnumCrisisMngBatchStatus {
 	     case CREATERESERVATIONCOMPLETE: return "CRC";
 	     case ORDERCANCELCOMPLETE: return "OCC";
 	     case ORDERCANCELFAILED: return "OCF";
-	     case PLACESOCOMPETE: return "POC";
+	     case PLACESOCOMPLETE: return "POC";
 	     case PLACESOFAILED: return "POF";
 	     case CANCELLED: return "CAN";
 	     case STOPPED: return "STD";
@@ -55,8 +55,8 @@ public enum EnumCrisisMngBatchStatus {
 			return CREATERESERVATIONFAILED;
 		} else if(value.equals(PLACESOFAILED.value())) {
 			return PLACESOFAILED;
-		} else if(value.equals(PLACESOCOMPETE.value())) {
-			return PLACESOCOMPETE;
+		} else if(value.equals(PLACESOCOMPLETE.value())) {
+			return PLACESOCOMPLETE;
 		} else {
 			throw new RuntimeException("EnumOrderScenarioBatchStatus: undefined enum :"+value);
 		}

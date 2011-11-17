@@ -179,11 +179,11 @@ public class CrisisManagerServlet extends HttpServlet {
 			sendError(response, ":[");
 			return null;
 		}		
-		StandingOrdersServiceResult.Result result = placeStandingOrder(soModel.getId(), soModel.getAltDate(), agent,request);
-		return result.getErrorHeader();	
+		StandingOrdersServiceResult.Result result = placeStandingOrder(soModel.getId(), soModel.getAltDate(), soModel.getStartTime(), soModel.getEndTime(), agent,request);
+		return result != null ? result.getErrorHeader() : null;
 	}
 	
-	private StandingOrdersServiceResult.Result placeStandingOrder(String standingOrderId, Date altDate, String initiator, HttpServletRequest request) {
+	private StandingOrdersServiceResult.Result placeStandingOrder(String standingOrderId, Date altDate, Date startTime, Date endTime, String initiator, HttpServletRequest request) {
 		
 		lookupMailerHome();
 		
@@ -192,7 +192,7 @@ public class CrisisManagerServlet extends HttpServlet {
 			sendTechnicalMail("Empty standingOrderId passed.");
 			return null;
 		}
-		TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.TRANSPORTATION.getCode(), 
+		TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.SYSTEM.getCode(), 
 					false, 0.00, false, false);			
 		
 			
@@ -202,17 +202,20 @@ public class CrisisManagerServlet extends HttpServlet {
 		FDStandingOrder so = null;
 		
 			try {
-				so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(standingOrderId));				
+				so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(standingOrderId));
 				FDActionInfo info = getActionInfo(initiator);
 				if(info.getIdentity() == null)info.setIdentity(so.getCustomerIdentity());
 				if(null != altDate){
 					so.setAltDeliveryDate(altDate);
-					so.clearLastError();					
-					result = StandingOrderUtil.process( so, altDate, event, info, mailerHome);
+					so.setStartTime(startTime);
+					so.setEndTime(endTime);
+					so.clearLastError();
+					result = StandingOrderUtil.process( so, altDate, event, info, mailerHome, true);
 				}else{
-					result = StandingOrderUtil.process( so, null, event, info, mailerHome);
-				}				
-			} catch (FDResourceException re) {			
+					LOGGER.info( "Alternate date for standing order # " + standingOrderId + " missing." );
+					return null;
+				}
+			} catch (FDResourceException re) {
 				invalidateMailerHome();
 				LOGGER.error( "Processing standing order failed with FDResourceException!", re );
 				result = new StandingOrdersServiceResult.Result( ErrorCode.TECHNICAL, ErrorCode.TECHNICAL.getErrorHeader(), "Processing standing order failed with FDResourceException!", null );
@@ -222,25 +225,10 @@ public class CrisisManagerServlet extends HttpServlet {
 				if ( result.isTechnicalError() ) {
 					// technical error
 					sendTechnicalMail( result.getErrorDetail() );
-				} else {
-					// other error -> set so to error state
-					so.setLastError( result.getErrorCode(), result.getErrorHeader(), result.getErrorDetail() );
-					sendErrorMail( so, result.getCustomerInfo() );
 				}
-			}		
-		
-			if ( result.getStatus() != StandingOrdersServiceResult.Status.SKIPPED ) {
-				try {
-					FDActionInfo info = new FDActionInfo(EnumTransactionSource.TRANSPORTATION, so.getCustomerIdentity(),
-							initiator, "Updating Standing Order Status", null);
-					FDStandingOrdersManager.getInstance().save( info, so );
-				} catch (FDResourceException re) {
-					invalidateMailerHome();
-					LOGGER.error( "Saving standing order failed! (FDResourceException)", re );
-				}
-				
-				logActivity( so, result, initiator );
 			}
+			logActivity( so, result, initiator );
+
 		return result;
 	}
 	
@@ -278,7 +266,7 @@ public class CrisisManagerServlet extends HttpServlet {
 		activityRecord.setCustomerId( so.getCustomerId() );
 		activityRecord.setDate( new Date() );
 		activityRecord.setInitiator( initiator );
-		activityRecord.setSource( EnumTransactionSource.TRANSPORTATION );
+		activityRecord.setSource( EnumTransactionSource.SYSTEM );
 		if (result.getErrorHeader() != null || result.getErrorDetail() != null) {
 			String note;
 			if (result.getErrorHeader() != null) {

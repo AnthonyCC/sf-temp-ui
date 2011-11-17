@@ -1,10 +1,12 @@
 package com.freshdirect.transadmin.web.validation;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
-
+import com.freshdirect.framework.util.DateRange;
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.transadmin.web.model.CrisisManagerCommand;
 
 public class CrisisManagerValidator extends AbstractValidator {	
@@ -33,5 +35,27 @@ public class CrisisManagerValidator extends AbstractValidator {
 		if(model != null && model.getSelectedDate() != null && model.getDestinationDate()!= null && model.getDestinationDate().equals(model.getSelectedDate())) {
 			errors.rejectValue("destinationDate", "app.error.145", new Object[]{},"can't be equal");
 		}
+		if(model != null && model.getSelectedDate() != null && !isWithInRange(model.getSelectedDate())) {
+			errors.rejectValue("selectedDate", "app.error.146", new Object[]{"Selected date"},"");
+		}
+		if(model != null && model.getDestinationDate() != null && !isWithInRange(model.getDestinationDate())) {
+			errors.rejectValue("destinationDate", "app.error.146", new Object[]{"Destination date"},"");
+		}
+	}
+	
+	private boolean isWithInRange(Date sourceDate) {
+		Calendar begCal = Calendar.getInstance();
+		begCal.add(Calendar.DATE, 1);
+		begCal = DateUtil.truncate(begCal);
+
+		Calendar endCal = Calendar.getInstance();
+		endCal.add(Calendar.DATE, 8);
+		endCal = DateUtil.truncate(endCal);
+		
+		DateRange deliveryRange = new DateRange(begCal.getTime(), endCal.getTime());
+		if(deliveryRange.contains(sourceDate)){
+			return true;
+		}
+		return false;
 	}
 }

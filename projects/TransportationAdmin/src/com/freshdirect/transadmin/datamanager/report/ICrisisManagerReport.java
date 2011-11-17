@@ -8,8 +8,6 @@ public interface ICrisisManagerReport {
 	
 	String CSV_SEPARATOR = ",";
 	
-	String MARKETINGREPORT_TITLE = "Crisis Management Marketing Report";
-	
 	String MARKETINGREPORT_DATETITLE = "Date";
 	
 	String MARKETINGREPORT_ORDERSTITLE = "Total Orders";
@@ -26,5 +24,8 @@ public interface ICrisisManagerReport {
 												throws ReportGenerationException, ParseException;
 	
 	void generateSOSimulationReport(String file, CrisisManagerReportData reportData ) 
+												throws ReportGenerationException, ParseException;
+	
+	void generateSOFailureReport(String file, CrisisManagerReportData reportData ) 
 												throws ReportGenerationException, ParseException;
 }

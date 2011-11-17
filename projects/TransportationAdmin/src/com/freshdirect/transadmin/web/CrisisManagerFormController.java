@@ -27,6 +27,7 @@ import com.freshdirect.transadmin.model.ICrisisManagerBatch;
 import com.freshdirect.transadmin.web.model.TriggerCrisisManagerResult;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.transadmin.crisis.manager.action.CrisisManagerOrderInAction;
+import com.freshdirect.transadmin.model.ICrisisManagerBatchDeliverySlot;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.TrnCutOff;
 import com.freshdirect.transadmin.model.Zone;
@@ -160,8 +161,13 @@ public class CrisisManagerFormController extends BaseFormController {
 			
 				if(triggerResult.getCrisisMngBatchId() != null) {
 					ICrisisManagerBatch batch = this.crisisManagerService.getCrisisMngBatchById(triggerResult.getCrisisMngBatchId());
-					CrisisManagerOrderInAction orderIn = new CrisisManagerOrderInAction(batch, userId, this.crisisManagerService);
-					orderIn.execute();
+					CrisisManagerOrderInAction process = new CrisisManagerOrderInAction(batch, userId, this.crisisManagerService);
+					process.execute();
+					Map<String, List<ICrisisManagerBatchDeliverySlot>> exceptionSlots = 
+						this.crisisManagerService.getCrisisMngBatchTimeslot(triggerResult.getCrisisMngBatchId(), false);
+					if(exceptionSlots != null && exceptionSlots.size() > 0){
+						saveErrorMessage(request, "There are timeslot exceptions for the batch created.");
+					}
 				}
 				saveMessage(request, formatMessages(triggerResult.getMessages()));
 			}

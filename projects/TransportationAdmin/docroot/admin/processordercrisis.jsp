@@ -412,7 +412,7 @@
 									}},
 
 					{key:"report", label:"Download", sortable:false, width: 125, className:"forms1",
-									formatter:"dropdown", dropdownOptions:["","SOSIMREPORT","TIMESLOTEXCEPTION","MARKETING","VOICESHOT"] }
+									formatter:"dropdown", dropdownOptions:["","SOSIMULATIONREPORT","TIMESLOTEXCEPTION","MARKETING","VOICESHOT","SOFAILUREREPORT"] }
 			 ];
 	
 		  var sMyConfigs = { 
@@ -484,16 +484,18 @@
 					return;
 				}
 				if (currentStatus != 'CAN' || currentStatus == 'NEW' || currentStatus == 'PRC' ){
-					if(actionType == 'MARKETING') {
+					if(actionType == 'MARKETING' || actionType == 'VOICESHOT' || actionType == 'TIMESLOTEXCEPTION') {
 						location.href = 'crisismanagereport.do?batchId='+currentBatchId+'&reportType='+actionType;
-					} else if(actionType == 'VOICESHOT') {
+					} else if(actionType == 'SOSIMULATIONREPORT' && currentBatchType == 'SOB') {
 						location.href = 'crisismanagereport.do?batchId='+currentBatchId+'&reportType='+actionType;
-					} else if(actionType == 'TIMESLOTEXCEPTION') {
-						location.href = 'crisismanagereport.do?batchId='+currentBatchId+'&reportType='+actionType;
-					} else if(actionType == 'SOSIMREPORT' && currentBatchType == 'SOB') {
-						location.href = 'crisismanagereport.do?batchId='+currentBatchId+'&reportType='+actionType;
+					} else if(actionType == 'SOFAILUREREPORT' && currentBatchType == 'SOB') {
+						if(currentStatus == 'POC' || currentStatus == 'POF' || currentStatus == 'CPD'){
+							location.href = 'crisismanagereport.do?batchId='+currentBatchId+'&reportType='+actionType;
+						} else {
+							alert("Feature available only with batch status 'POC', 'POF' or 'CPD'.");
+						}
 					} else {
-						alert("Feature not available");
+						alert("Feature not available for current Batch.");
 					}
 				} else {
 					alert(actionType+" is not allowed for batch status "+currentStatus);
@@ -587,6 +589,7 @@
 				return false;
 			}
 		}
+
       </script>
 	 <%@ include file='i_batchstandingorder.jspf'%> 
 	 <%@ include file='i_timeslotexception.jspf'%>

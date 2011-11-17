@@ -79,6 +79,26 @@ public class TransStringUtil {
 		serverDateFormat.setLenient(false);
 		dayFormat.setLenient(false);
 	}
+	public static Calendar toCalendar(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		return cal;
+	}	
+	public static Date truncate(Date date) {
+		Calendar cal = toCalendar(date);
+		cal = truncate(cal);
+		return cal.getTime();
+	}
+
+	/** @return the calendar passed in, for convenience */
+	public static Calendar truncate(Calendar cal) {
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		return cal;
+	}
+	
 	public static String substringAfter(String str, String separator) {
         if (isEmpty(str)) {
             return str;

@@ -114,7 +114,7 @@ public class StandingOrderUtil {
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	public static StandingOrdersServiceResult.Result process( FDStandingOrder so, Date altDate, TimeslotEventModel event, FDActionInfo info, MailerGatewayHome mailerHome) throws FDResourceException {
+	public static StandingOrdersServiceResult.Result process( FDStandingOrder so, Date altDate, TimeslotEventModel event, FDActionInfo info, MailerGatewayHome mailerHome, boolean forceCapacity) throws FDResourceException {
 		
 		LOGGER.info( "Processing Standing Order : " + so );		
 		
@@ -353,6 +353,15 @@ public class StandingOrderUtil {
 				selectedTimeslot = timeslot;
 				LOGGER.info( "Timeslot reserved successfully: " + timeslot.toString() );
 			} catch ( ReservationUnavailableException e ) {
+				if(forceCapacity){
+					try {
+						reservation = FDCustomerManager.makeReservation( customer, timeslot, EnumReservationType.STANDARD_RESERVATION, deliveryAddressId, reserveActionInfo, false, event, forceCapacity);
+					} catch (ReservationException e1) {						
+						e1.printStackTrace();
+					}
+					selectedTimeslot = timeslot;
+					LOGGER.info( "Timeslot reserved successfully: " + timeslot.toString() );
+				}
 				// no more capacity in this timeslot
 				LOGGER.info( "No more capacity in timeslot: " + timeslot.toString(), e );
 			} catch (ReservationException e) {
