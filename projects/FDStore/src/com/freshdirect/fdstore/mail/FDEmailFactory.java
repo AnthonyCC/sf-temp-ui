@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -131,11 +132,18 @@ public class FDEmailFactory {
 		return email;
 	}
 	
-	public XMLEmailI createOrderIvrContactEmail(FDCustomerInfo customer, String orderNumber) {
+	public XMLEmailI createOrderIvrContactEmail(FDCustomerInfo customer, String orderNumber, Collection<String> ccLst, Collection<String> bccLst) {
 		FDOrderDeliveryIVRContactEmail email = new FDOrderDeliveryIVRContactEmail(customer, orderNumber);
 
 		email.setXslPath("h_delivery_ivrcontact_v1.xsl", "x_delivery_ivrcontact_v1.xsl");
 		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
+		
+		if(ccLst != null && ccLst.size() > 0) {
+			email.setCCList(ccLst);
+		}
+		if(bccLst != null && bccLst.size() > 0) {
+			email.setBCCList(bccLst);
+		}
 		email.setSubject("FreshDirect is trying to reach you");
 		return email;
 	}
