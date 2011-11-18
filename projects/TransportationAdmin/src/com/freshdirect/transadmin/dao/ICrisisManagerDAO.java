@@ -43,7 +43,7 @@ public interface ICrisisManagerDAO {
 	List<ICrisisMngBatchOrder> getOrderByCriteria(Date deliveryDate, Date cutOffDateTime
 			, String[] area, String startTime, String endTime, String[] deliveryType, String profileName) throws SQLException;
 		
-	Map<EnumSaleStatus, Integer> getOrderStatsByDate(Date deliveryDate, String batchId) throws SQLException;
+	Map<EnumSaleStatus, Integer> getOrderStatsByDate(Date deliveryDate, String batchId, EnumCrisisMngBatchType batchType) throws SQLException;
 	
 	void addNewCrisisMngBatchCustomer(List<ICustomerModel> batchCustomers, String batchId) throws SQLException;
 	

@@ -106,9 +106,7 @@ public class CrisisManagerDAO implements ICrisisManagerDAO   {
 	private static String GET_ORDERSTATSBY_DATE_BATCH = "SELECT s.status, count(*) as order_count "+
 		" from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, dlv.reservation rs "+
         " where s.id = sa.sale_id  and sa.CUSTOMER_ID = s.CUSTOMER_ID  and sa.requested_date = ? and s.cromod_date=sa.action_date and sa.action_type IN ('CRO', 'MOD') "+ 
-        " and s.type ='REG' and sa.id = di.salesaction_id and rs.id = di.reservation_id "+
-        " and s.id in (select weborder_id from transp.CRISISMNG_BATCHORDER where batch_id = ?) "+  
-        " group by s.status ";
+        " and s.type ='REG' and sa.id = di.salesaction_id and rs.id = di.reservation_id ";
 	
 	private static String GET_STANDINGORDER_BYCRITERIA = "select c.id CUSTOMERID, ci.first_name FIRSTNAME, ci.last_name LASTNAME, c.user_id EMAIL, s.id WEBORDER_ID, s.sap_number ERPORDER_ID, sa.requested_date DELIVERY_DATE, so.id STANDINGORDER_ID, di.zone AREA, s.status ORDER_STATUS, "+
 	    " ci.home_phone, ci.business_phone, ci.business_ext, ci.cell_phone, di.starttime, di.endtime, di.delivery_type, di.company_name, di.charity_name,  "+
@@ -548,16 +546,19 @@ public class CrisisManagerDAO implements ICrisisManagerDAO   {
 		}
 	}
 	
-	public Map<EnumSaleStatus, Integer> getOrderStatsByDate(final Date deliveryDate, final String batchId) throws SQLException {
+	public Map<EnumSaleStatus, Integer> getOrderStatsByDate(final Date deliveryDate, final String batchId, EnumCrisisMngBatchType batchType) throws SQLException {
 
 		final Map<EnumSaleStatus, Integer> result = new HashMap<EnumSaleStatus, Integer>();
-
+		final StringBuffer updateQ = new StringBuffer();
+		updateQ.append(GET_ORDERSTATSBY_DATE_BATCH);
+		if(EnumCrisisMngBatchType.REGULARORDER.name().equals(batchType))
+			updateQ.append(" and s.id in (select weborder_id from transp.CRISISMNG_BATCHORDER where batch_id = ?) group by s.status ");
+		else
+			updateQ.append(" and s.id in (select weborder_id from transp.CRISISMNG_BATCHSTANDINGORDER where batch_id = ?) group by s.status ");
 		PreparedStatementCreator creator = new PreparedStatementCreator() {
-			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {	
-				String query = GET_ORDERSTATSBY_DATE_BATCH;
-				
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 				PreparedStatement ps =
-					connection.prepareStatement(query);
+					connection.prepareStatement(updateQ.toString());
 				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
 				ps.setString(2, batchId);
 				return ps;
@@ -568,9 +569,8 @@ public class CrisisManagerDAO implements ICrisisManagerDAO   {
 				new RowCallbackHandler() { 
 				public void processRow(ResultSet rs) throws SQLException {				    	
 					do { 
-						result.put(EnumSaleStatus.getSaleStatus(rs.getString("status")), rs.getInt("order_count"));						
-	
-					} while(rs.next());		        		    	
+						result.put(EnumSaleStatus.getSaleStatus(rs.getString("status")), rs.getInt("order_count"));
+					} while(rs.next());
 				}
 		}
 		);

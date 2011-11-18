@@ -41,7 +41,7 @@ public interface ICrisisManagerService {
 	List<ICrisisMngBatchOrder> getOrderByCriteria(Date deliveryDate, Date cutOffDateTime, String[] area
 			, String startTime, String endTime, String[] deliveryType, String profileName) throws TransAdminServiceException;
 	
-	Map<EnumSaleStatus, Integer> getOrderStatsByDate(Date deliveryDate, String batchId) throws TransAdminServiceException;
+	Map<EnumSaleStatus, Integer> getOrderStatsByDate(Date deliveryDate, String batchId, EnumCrisisMngBatchType batchType) throws TransAdminServiceException;
 	
 	void addNewCrisisMngBatchCustomer(Set<ICustomerModel> batchCustomers, String batchId) throws TransAdminServiceException;
 	

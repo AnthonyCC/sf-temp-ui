@@ -127,7 +127,7 @@ public class CrisisManagerOrderCancelAction extends AbstractCrisisManagerAction 
 		
 		Map<EnumSaleStatus, Integer> orderStats = getService()
 				.getOrderStatsByDate(getProcess().getDeliveryDate(),
-						getProcess().getBatchId());
+						getProcess().getBatchId(), getProcess().getBatchType());
 
 		for (Map.Entry<EnumSaleStatus, Integer> statusEntry : orderStats.entrySet()) {
 

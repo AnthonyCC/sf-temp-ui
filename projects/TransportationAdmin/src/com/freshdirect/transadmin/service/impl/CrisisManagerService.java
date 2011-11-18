@@ -147,9 +147,9 @@ public class CrisisManagerService implements ICrisisManagerService {
 		}
 	}
 	
-	public Map<EnumSaleStatus, Integer> getOrderStatsByDate(Date deliveryDate, String batchId) throws TransAdminServiceException {
+	public Map<EnumSaleStatus, Integer> getOrderStatsByDate(Date deliveryDate, String batchId, EnumCrisisMngBatchType batchType) throws TransAdminServiceException {
 		try{
-			return getCrisisManagerDAOImpl().getOrderStatsByDate(deliveryDate, batchId);
+			return getCrisisManagerDAOImpl().getOrderStatsByDate(deliveryDate, batchId, batchType);
 		}catch(SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_CRISISMNGBATCH_ERROR);			
 		}
