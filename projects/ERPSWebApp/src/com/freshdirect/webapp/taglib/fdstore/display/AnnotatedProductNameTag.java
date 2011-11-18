@@ -164,7 +164,7 @@ public class AnnotatedProductNameTag extends BodyTagSupport {
 	    		} catch (FDResourceException e) {
 		    		throw new JspException(e);
 				} catch (FDSkuNotFoundException e) {
-		    		throw new JspException(e);
+		    		//throw new JspException(e);
 				}
 				
 				buf.append("  ann = '&nbsp;';\n");
