@@ -22,18 +22,7 @@
 <%@ include file="/includes/transportation_nav.jsp"%>
     		<crm:GetCurrentAgent id='currAgent'>
 
-<script type="text/javascript" language="javascript" src="/assets/javascript/scriptaculous.js"></script>
-<script type="text/javascript" language="javascript" src="/ccassets/javascript/HelpBalloon.js"></script>
-<link rel="stylesheet" type="text/css" href="/ccassets/css/helpBaloonstyle.css" />
-<script type="text/javascript">
-		<!--
-		//
-		// Override the default settings to point to the parent directory
-		//
-		HelpBalloon.Options.prototype = Object.extend(HelpBalloon.Options.prototype, {
-			button: '/images/button.png',
-			balloonPrefix: '/images/balloon-'
-		});
+<script type="text/javascript">		
 		
 		function openwindow(win1, id1) {
 			if(win1 == "details") {
@@ -45,8 +34,7 @@
 			}
 		}
 		
-		//-->
-		</script>
+</script>
 
 
 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="padding:5px;">
@@ -88,16 +76,7 @@
 				<td width="5%" class="border_bottom" align="center"><%= model.getScheduledCalls() %></td>
 				<td width="15%" class="border_bottom" align="center"><%= model.getDeliveredCallsLive() %> live | <%= model.getDeliveredCallsAM() %> answering machine</td>
 				<td width="5%" class="border_bottom" align="center"><%= model.getUndeliveredCalls() %></td>
-				<td width="10" class="border_bottom" align="center"><a href="#" id="mynewanchor<%=i%>" onclick="return false;">Sound file message</a></td>
-					<script type="text/javascript">  
-						new HelpBalloon({ 
-							title: 'Sound File for Campaign:<%=model.getCampaignName()%>', 
-							content: '<%=model.getSoundFileText()%>', 
-							icon: $('mynewanchor<%=i%>'),
-							balloonDimensions: [550,200] 							
-							}); 
-					</script>
-				
+				<td width="10" class="border_bottom" align="center"><a href="javascript:window.alert('<%=model.getSoundFileText()%>')" id="mynewanchor<%=i%>">Sound file message</a></td>
 				<td width="14%" class="border_bottom" align="center">
 					<% if(model.isUpdatable()) {%> 
 						<a href="javascript:openwindow('details','<%= model.getVsDetailsID()%>')">details</a> 

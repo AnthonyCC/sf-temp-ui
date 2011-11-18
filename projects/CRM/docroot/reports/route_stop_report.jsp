@@ -326,7 +326,22 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 	%>	
 		<span style="color:red;font-weight:bold;font-size:10pt;"/><br/><br/>&nbsp;&nbsp;Message From VoiceShot: <%= vsrp.getErrorMessage() %></span>	
 	<% } else { 
+		String route_date = (month+1) + "/" + day + "/" + year;
+		System.out.println("[************route_date********]"+route_date);
+		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+		Date user_date = format.parse(route_date);
+		Calendar rDate = Calendar.getInstance();
+		rDate.setTime(user_date);
+		Date _today = new Date();
+		Calendar today_date = Calendar.getInstance();
+		today_date.setTime(_today);
+		long days_between = ((rDate.getTimeInMillis() - today_date.getTimeInMillis())	/ (24 * 3600 * 1000));
+		if (days_between < 0)
+			days_between = -days_between;
+
+		System.out.println("[********days_between************] " + days_between);
 		
+		if(days_between < 15) {
 	%>
 	
 	<!-----new Voiceshot box-------->
@@ -422,6 +437,7 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 		</tr>
 	</table>
 	</div>
+	<%} %>
 	<div class="list_content" id="result">
 		<table width="100%" cellpadding="0" cellspacing="0" border="0" class="list_content_text">
 	<logic:iterate id="routeStopLine" collection="<%= routeStopLines %>" type="com.freshdirect.fdstore.customer.RouteStopReportLine" indexId="counter">

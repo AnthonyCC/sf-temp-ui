@@ -71,22 +71,22 @@
 <% if(!processed) { %>
 <table cellpadding="5" cellspacing="10" border="0" style="font-size:12pt;">
 	<tr><td align="right"  valign="top">Campaign Name</td>
-		<td><input name="camp_name" value="" size="60"/><%=camp_name_err%>
+		<td><input name="camp_name" value="<%=camp_name%>" size="60"/><%=camp_name_err%>
 		<br/><span style="font-size:8pt;color:green"><font style="color:red">**</font>Voiceshot will be unable to recognize the campaign name, <br/>if the name and ID#'s are not properly entered as it appears in Voiceshot.com.</span>
 		</td>
 	</tr>
 	<tr><td align="right" valign="top">Campaign MenuID</td>
-		<td><input name="camp_id" value="" size="60"/><%=camp_id_err%>
+		<td><input name="camp_id" value="<%=camp_id%>" size="60"/><%=camp_id_err%>
 		<br/><span style="font-size:8pt;color:green;"><font style="color:red">**</font>Its very important that this Campaign ManuID matches with Campaign MenuID from Voiceshot. <br/>Login to voiceshot.com, choose the specific outbound campaign, choose "Campaign Options" in the left hand side menu. <br/>Click "Developer Options" tab and copy the "Campaign MenuID". <br/>That Campain MenuID needs to be pasted in this text box.</span></td>
 	</tr>
 	<tr><td align="right" valign="top">Sound File Name</td>
-		<td><input name="sound_file_name" value="" size="60"/><%=sound_file_err%></td>
+		<td><input name="sound_file_name" value="<%=sound_file%>" size="60"/><%=sound_file_err%></td>
 	</tr>
 	<tr><td align="right" valign="top">Sound File Message</td>
-		<td><textarea name="sound_file_text" rows="5" cols="80"></textarea><%=sound_file_text_err%></td>
+		<td><textarea name="sound_file_text" rows="5" cols="80"><%=sound_file_text%></textarea><%=sound_file_text_err%></td>
 	</tr>
 	<tr><td align="right">&nbsp;</td>
-		<td align="center"><input type="button" name="Cancel" value="Cancel" style="text-decoration:none;background-color:orange;color:white;font-weight:bold;border:1px orange solid;padding:2px;width:60px;"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" name="Add" value="Add" style="text-decoration:none;background-color:green;color:white;font-weight:bold;border:1px green solid;padding:2px;width:60px;"/></td>
+		<td align="center"><a href="/transportation/campaigns.jsp" style="text-decoration:none;background-color:orange;color:white;font-weight:bold;border:1px orange solid;padding:2px;width:60px;">Cancel</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" name="Add" value="Add" style="text-decoration:none;background-color:green;color:white;font-weight:bold;border:1px green solid;padding:2px;width:60px;"/></td>
 	</tr>
 </table>
 <% } else { %>
