@@ -651,7 +651,7 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
    public Date getStartTimeEx() {
 		
 		try {
-			return TransStringUtil.getServerTime(getStartTime());
+			return getStartTime() != null ? TransStringUtil.getServerTime(getStartTime()) : null;
 		} catch (ParseException e) {
 			return null;
 		}
@@ -660,7 +660,7 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 		
 	public Date getFirstDeliveryTimeEx() {
 		try {
-			return TransStringUtil.getServerTime(getFirstDeliveryTime());
+			return getFirstDeliveryTime() != null ? TransStringUtil.getServerTime(getFirstDeliveryTime()): null;
 		} catch (ParseException e) {
 			return null;
 		}
@@ -668,7 +668,7 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	
 	public Date getLastDeliveryTimeEx() {
 		try {
-			return TransStringUtil.getServerTime(getLastDeliveryTime());
+			return getLastDeliveryTime() != null ? TransStringUtil.getServerTime(getLastDeliveryTime()) : null;
 		} catch (ParseException e) {
 			return null;
 		}
