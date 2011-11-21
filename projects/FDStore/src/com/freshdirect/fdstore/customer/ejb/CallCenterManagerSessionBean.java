@@ -2645,10 +2645,11 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				c1.setTime(last_date);
 				Calendar c2 = Calendar.getInstance();
 				c2.setTime(new Date());
-				long days_between = ((c2.getTime().getTime() - c1.getTime().getTime())	/ (24 * 3600 * 1000));
-				System.out.println("Days Between " + c1.getTime() + " and "
-						+ c2.getTime() + " is:" + days_between);
-				if(days_between < 15) {
+				long timeDiff = (c2.getTime().getTime() - c1.getTime().getTime());
+				long hours = java.util.concurrent.TimeUnit.MILLISECONDS.toHours(timeDiff);
+				System.out.println("hours Between " + c1.getTime() + " and "
+						+ c2.getTime() + " is:" + hours);
+				if (hours > -24 &&hours < 0) {
 					CrmVSCampaignModel model = new CrmVSCampaignModel();
 					model.setPhonenumber(phone);
 					model.setVsDetailsID(id);
