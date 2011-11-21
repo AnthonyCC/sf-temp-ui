@@ -335,13 +335,12 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 		Date _today = new Date();
 		Calendar today_date = Calendar.getInstance();
 		today_date.setTime(_today);
-		long days_between = ((rDate.getTimeInMillis() - today_date.getTimeInMillis())	/ (24 * 3600 * 1000));
-		if (days_between < 0)
-			days_between = -days_between;
-
-		System.out.println("[********days_between************] " + days_between);
+		long timDiff = (rDate.getTimeInMillis() - today_date.getTimeInMillis());
+		long hours = java.util.concurrent.TimeUnit.MILLISECONDS.toHours(timDiff);
+		System.out.println("****hours:" + hours);
 		
-		if(days_between < 15) {
+		
+		if (hours > -24 &&hours < 0) {
 	%>
 	
 	<!-----new Voiceshot box-------->
