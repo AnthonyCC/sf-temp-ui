@@ -399,6 +399,6 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 
 <% } 
 //*** IN order to supress the extra blank lines in the export, we had to move these page import down, which is OK as far as the JSP compiler is concerned
-%><%@ page import="java.util.*,java.text.*,java.io.*" %><%@ page import="com.freshdirect.fdstore.customer.*,com.freshdirect.fdstore.*,com.freshdirect.webapp.util.*,com.freshdirect.crm.CrmVSCampaignModel,com.freshdirect.webapp.taglib.crm.CrmSession,com.freshdirect.crm.VoiceShotResponseParser,com.freshdirect.customer.EnumVSReasonCodes,java.util.*" %>
+%><%@ page import="java.util.*,java.text.*,java.io.*" %><%@ page import="com.freshdirect.fdstore.customer.*,com.freshdirect.fdstore.*,com.freshdirect.webapp.util.*,com.freshdirect.crm.CrmVSCampaignModel,com.freshdirect.webapp.taglib.crm.CrmSession,com.freshdirect.crm.VoiceShotResponseParser,com.freshdirect.customer.EnumVSReasonCodes,java.util.*,com.freshdirect.webapp.crm.security.CrmSecurityManager" %>
 <%! DateFormatSymbols symbols = new DateFormatSymbols(); %>
 
