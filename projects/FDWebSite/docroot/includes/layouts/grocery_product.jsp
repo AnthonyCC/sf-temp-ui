@@ -14,6 +14,7 @@
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.framework.util.*' %>
 <%@ page import='com.freshdirect.content.nutrition.*' %>
+<%@ page import='com.freshdirect.fdstore.atp.*';%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -538,26 +539,61 @@ if(productCode!=null && prodCatId !=null ) {
 	}
 %></font><br>
 <%
-	boolean showUnavailableText = true;
-        Date earliestDate = minSku.getEarliestAvailability();
-        Calendar testDate = new GregorianCalendar();
-        testDate.add(Calendar.DATE, 1);
-    // cheat: if no availability indication, show the horizon as the
-    //        earliest availability
-    if (earliestDate == null) {
-        earliestDate = DateUtil.addDays(DateUtil.truncate(new Date()),
-                                        ErpServicesProperties.getHorizonDays());
-    }
-        if(skuAvailable && QuickDateFormat.SHORT_DATE_FORMATTER.format(testDate.getTime()).compareTo(QuickDateFormat.SHORT_DATE_FORMATTER.format(earliestDate)) < 0){
-                SimpleDateFormat sf = new SimpleDateFormat("MM/dd");
-                showUnavailableText = false;
+    boolean displayLimitedAvailability = false;
+    
+    List<FDLimitedAvailabilityInfo> limitedAvailibility = minSku.getLimitedAvailability();
+    if(limitedAvailibility != null && limitedAvailibility.size() > 0){
 %>
-<br>
-<b><font class="text12rbold">Earliest Delivery - <%=sf.format(earliestDate)%></font></b>
-<br>
+		<table width="190" cellpadding="0" cellspacing="0" border="0">
+		<tr><td>			
+        <br/><span><font class="text12bold">Limited Delivery Availability</font></span><br/>
+        <img src="/media_stat/images/layout/clear.gif" width="65" height="8" border="0">
 <%
-	}
-%>
+            Calendar cal = Calendar.getInstance();
+            displayLimitedAvailability = true;
+            for(FDLimitedAvailabilityInfo l: limitedAvailibility) {
+                cal.setTime(l.getRequestedDate());
+                int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+                double quantity = l.getQuantity();
+                if(quantity > 0) {
+            %>
+                <img src="/media_stat/images/limited_avail/<%= dayOfWeek %>.gif" width="13" height="13" border="0" vspace="1" alt="Item Available">
+            <%
+                } else {
+            %>
+                <img src="/media_stat/images/limited_avail/<%= dayOfWeek %>_x.gif" width="13" height="13" border="0" vspace="1" alt="Item Unavailable">
+            <%                
+                }
+                
+            }
+%>            
+            </td></tr>
+            </table>
+<%
+        }
+     boolean showUnavailableText = true;
+    if (!displayLimitedAvailability) {
+           
+                Date earliestDate = minSku.getEarliestAvailability();
+                Calendar testDate = new GregorianCalendar();
+                testDate.add(Calendar.DATE, 1);
+            // cheat: if no availability indication, show the horizon as the
+            //        earliest availability
+            if (earliestDate == null) {
+                earliestDate = DateUtil.addDays(DateUtil.truncate(new Date()),
+                                                ErpServicesProperties.getHorizonDays());
+            }
+                if(skuAvailable && QuickDateFormat.SHORT_DATE_FORMATTER.format(testDate.getTime()).compareTo(QuickDateFormat.SHORT_DATE_FORMATTER.format(earliestDate)) < 0){
+                        SimpleDateFormat sf = new SimpleDateFormat("MM/dd");
+                        showUnavailableText = false;
+        %>
+        <br>
+        <b><font class="text12rbold">Earliest Delivery - <%=sf.format(earliestDate)%></font></b>
+        <br>
+        <%
+            }
+    }        
+        %>
 
 <%
 	if (!skuAvailable) {

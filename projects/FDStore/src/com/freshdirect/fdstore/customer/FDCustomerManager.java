@@ -1781,6 +1781,7 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 
 			boolean skipModifyLines = true;
+			boolean sameDeliveryDate = true;
 			if (cart instanceof FDModifyCartModel) {
 				FDReservation originalReservation = ((FDModifyCartModel) cart).getOriginalOrder().getDeliveryReservation();
 				Date d1 = DateUtil.truncate(cart.getDeliveryReservation().getStartTime());
@@ -1789,11 +1790,14 @@ public class FDCustomerManager {
 					// order moved to a prior day, need to re-check everything
 					skipModifyLines = false;
 				}
+				if(d1.after(d2) || d1.before(d2)){
+					sameDeliveryDate = false;
+				}
 			}
 
 			
 			// note: FDModifyCartLineI instances skipped
-			ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart, skipModifyLines);
+			ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart, skipModifyLines, sameDeliveryDate);
 
 			long timer = System.currentTimeMillis();
 			Map<String, FDAvailabilityI> fdInvMap = sb.checkAvailability(identity, createOrder, timeout);

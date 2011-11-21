@@ -2832,8 +2832,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			ProductModel p = ContentFactory.getInstance().getProduct(
 					ol.getSku().getSkuCode());
 			SkuModel skuModel = p.getSku(ol.getSku().getSkuCode()); 
-			return new FDStockAvailability(erpInv, ol.getQuantity(), p
-					.getQuantityMinimum(), p.getQuantityIncrement(),
+			return new FDStockAvailability(erpInv, skuModel.getProductInfo().getInventory(),
+					 ol.getQuantity(), 
+					p.getQuantityMinimum(), p.getQuantityIncrement(),
 					skuModel.getProductInfo().getAvailabilityDates());
 		} catch (FDSkuNotFoundException e) {
 			throw new FDResourceException(e);

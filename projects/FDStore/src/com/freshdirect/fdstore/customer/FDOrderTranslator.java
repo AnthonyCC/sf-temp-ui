@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.customer;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import com.freshdirect.common.address.AddressModel;
@@ -32,29 +33,29 @@ import com.freshdirect.fdstore.FDResourceException;
 public class FDOrderTranslator {
 
 	public static ErpCreateOrderModel getErpCreateOrderModel(FDCartModel cart, EnumSaleType saleType) throws FDResourceException {
-		return getErpCreateOrderModel(cart,saleType, false);
+		return getErpCreateOrderModel(cart,saleType, false, false);
 	}
 
 	public static ErpCreateOrderModel getErpCreateOrderModel(FDCartModel cart) throws FDResourceException {
-		return getErpCreateOrderModel(cart,false);
+		return getErpCreateOrderModel(cart,false,false);
 	}
-	public static ErpCreateOrderModel getErpCreateOrderModel(FDCartModel cart, boolean skipModifyLines) throws FDResourceException {
+	public static ErpCreateOrderModel getErpCreateOrderModel(FDCartModel cart, boolean skipModifyLines, boolean sameDeliveryDate) throws FDResourceException {
 		ErpCreateOrderModel createOrder = new ErpCreateOrderModel();
-		translateOrder(cart, createOrder, skipModifyLines);
+		translateOrder(cart, createOrder, skipModifyLines, sameDeliveryDate);
 		return createOrder;
 	}
 
 	public static ErpModifyOrderModel getErpModifyOrderModel(FDCartModel cart) throws FDResourceException {
 		ErpModifyOrderModel modifyOrder = new ErpModifyOrderModel();
-		translateOrder(cart, modifyOrder, false);
+		translateOrder(cart, modifyOrder, false, false);
 		return modifyOrder;
 	}
 	
-	public static ErpCreateOrderModel getErpCreateOrderModel(FDCartModel cart,EnumSaleType saleType, boolean skipModifyLines) throws FDResourceException {
+	public static ErpCreateOrderModel getErpCreateOrderModel(FDCartModel cart,EnumSaleType saleType, boolean skipModifyLines, boolean sameDeliveryDate) throws FDResourceException {
 		ErpCreateOrderModel createOrder = new ErpCreateOrderModel();
 		//createOrder.setSaleType(saleType);
 		//if(EnumSaleType.REGULAR.equals(saleType.getSaleType())) {
-			translateOrder(cart, createOrder, skipModifyLines);
+			translateOrder(cart, createOrder, skipModifyLines, sameDeliveryDate);
 		//}
 		/*else if(EnumSaleType.SUBSCRIPTION.equals(saleType)) {
 			translateSubscriptionOrder(cart, createOrder, skipModifyLines);
@@ -62,7 +63,7 @@ public class FDOrderTranslator {
 		return createOrder;
 	}
 
-	private static void translateOrder(FDCartModel cart, ErpAbstractOrderModel order, boolean skipModifyLines) throws FDResourceException {
+	private static void translateOrder(FDCartModel cart, ErpAbstractOrderModel order, boolean skipModifyLines, boolean sameDeliveryDate) throws FDResourceException {
 		try {
 			order.setPaymentMethod(cart.getPaymentMethod());
 			//System.out.println("Selected gift cards "+cart.getSelectedGiftCards() != null ? cart.getSelectedGiftCards().size() : 0);
@@ -124,8 +125,17 @@ public class FDOrderTranslator {
 			List<ErpOrderLineModel> orderLines = new ArrayList<ErpOrderLineModel>();
 			int num = 0;
 			for ( FDCartLineI line : cart.getOrderLines() ) {
-				if (skipModifyLines && (line instanceof FDModifyCartLineI)) {
-					continue;
+				Date[] availDates = line.lookupFDProductInfo().getAvailabilityDates(); 
+				if(availDates != null && availDates.length > 0) {
+					//Limited Availability Line item.
+					if(sameDeliveryDate && line instanceof FDModifyCartLineI) {
+						continue;
+					}
+				} else {
+					//Regular Availability item.
+					if (skipModifyLines && line instanceof FDModifyCartLineI) {
+						continue;
+					}
 				}
 				num += addTranslatedLine(num, line, orderLines);
 			}
