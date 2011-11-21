@@ -352,7 +352,8 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
     <input type="hidden" name="route" value="<%=route%>" />
     <input type="hidden" name="stop1" value="<%=stop1%>" />
 	<input type="hidden" name="stop2" value="<%=stop2%>" />
-	<% if(CrmSecurityManager.hasAccessToPage(userRole,"voiceshot.jsp")){ %>
+	<% String userRole = CrmSession.getCurrentAgent(request.getSession()).getRole().getLdapRoleName();
+	   if(CrmSecurityManager.hasAccessToPage(userRole,"voiceshot.jsp")){ %>
 	<jsp:include page="voiceshot.jsp" />
 	<% } %>
 	
