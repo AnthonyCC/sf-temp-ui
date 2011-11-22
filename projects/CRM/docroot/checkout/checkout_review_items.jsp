@@ -20,6 +20,8 @@
 <%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 <%@ page import="com.freshdirect.webapp.util.RestrictionUtil" %>
 <%@ page import='com.freshdirect.fdstore.promotion.EnumOfferType' %>
+<%@ page import='com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo';%>
+
 <%@ page import='java.text.*, java.util.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -415,6 +417,7 @@
 										groupDiscountMsg = "Group Discount <span style=\"color: #ff0000;\">(You Saved "+JspMethods.formatPrice(savings)+")</span> <a href=\"#\" onclick=\"return fetchGroupScaleInfoCrm('"+cartLine.getFDGroup().getGroupId() +"','"+ cartLine.getFDGroup().getVersion() +"')\" style=\"font-weight: normal;\">See details</a>";
 								}
 							}
+							boolean displayLimitedAvailability = false;
 						%>
 			
 							<td colspan="2"><div style="margin-left:16px; text-indent:-8px;"><span class="text10bold"><a href="/order/product_modify.jsp?cartLine=<%= cartLine.getRandomId() %>&trk=cart"><%= cartLine.getDescription() %></a></span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
@@ -423,8 +426,38 @@
 							<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= discountMsg %></span><% } %>
 							<% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= groupDiscountMsg %></span><% } %>
 							<% if ((cart instanceof FDModifyCartModel) && !(cartLine instanceof FDModifyCartLineI)) { %><span class="text10rbold">(new)</span><% } %>
-							<% if (displayShortTermUnavailability && earliestAvailability != null && !(cartLine instanceof FDModifyCartLineI)) { %><br />&nbsp;&nbsp;<span class="text10rbold">Earliest Delivery <%=earliestAvailability%></span><% }%></div>
-							</td>
+							<% if (displayShortTermUnavailability && !(cartLine instanceof FDModifyCartLineI)) { 
+
+    							SkuModel a_sku = cartLine.getProductRef().lookupProductModel().getSku(cartLine.getSkuCode());
+        						List<FDLimitedAvailabilityInfo> limitedAvailibility = a_sku.getLimitedAvailability();
+			        			if(limitedAvailibility != null && limitedAvailibility.size() > 0){
+							%>
+								<br/><font class="text11">Limited Delivery Availability&nbsp;-&nbsp;</font>
+							<%        
+            					Calendar cal = Calendar.getInstance();
+            					displayLimitedAvailability = true;
+            					for(FDLimitedAvailabilityInfo l: limitedAvailibility) {
+                					cal.setTime(l.getRequestedDate());
+                					int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+                					double quantity = l.getQuantity();
+                					if(quantity > 0) {
+            				%>
+                				<img src="/media_stat/images/limited_avail/<%= dayOfWeek %>.gif" width="13" height="13" border="0" vspace="1" alt="Item Available">
+            				<%
+                				} else {
+            				%>
+                				<img src="/media_stat/images/limited_avail/<%= dayOfWeek %>_x.gif" width="13" height="13" border="0" vspace="1" alt="Item Unavailable">
+            				<%                
+                				}
+                
+            				}
+            
+        				}
+					}
+			%>
+					<% if (!displayLimitedAvailability && displayShortTermUnavailability && earliestAvailability != null && !(cartLine instanceof FDModifyCartLineI)) { %><br>&nbsp;&nbsp;<span class="text10rbold">Earliest Delivery <%=earliestAvailability%></span><%  }%>
+					</div>
+					</td>
 							<td align="right"><span class="<%= (cartLine.getDiscount() != null) ? "text10rbold" : "text10bold" %>">(<%= cartLine.getUnitPrice() %>)</span> </td>
 							
 							<% if (makegood) { %>

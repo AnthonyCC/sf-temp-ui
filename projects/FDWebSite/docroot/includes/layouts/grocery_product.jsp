@@ -544,10 +544,9 @@ if(productCode!=null && prodCatId !=null ) {
     List<FDLimitedAvailabilityInfo> limitedAvailibility = minSku.getLimitedAvailability();
     if(limitedAvailibility != null && limitedAvailibility.size() > 0){
 %>
-		<table width="190" cellpadding="0" cellspacing="0" border="0">
-		<tr><td>			
-        <br/><span><font class="text12bold">Limited Delivery Availability</font></span><br/>
-        <img src="/media_stat/images/layout/clear.gif" width="65" height="8" border="0">
+		<div><table width="100%" cellpadding="0" cellspacing="0" border="0">
+		<tr><td align="right">			
+        <span><font class="text11">Limited Delivery Availability</font></span><br/>
 <%
             Calendar cal = Calendar.getInstance();
             displayLimitedAvailability = true;
@@ -568,7 +567,7 @@ if(productCode!=null && prodCatId !=null ) {
             }
 %>            
             </td></tr>
-            </table>
+            </table></div>
 <%
         }
      boolean showUnavailableText = true;

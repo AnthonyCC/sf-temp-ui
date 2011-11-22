@@ -155,7 +155,7 @@ Recipe recipe = null;
         if(limitedAvailibility != null && limitedAvailibility.size() > 0){
 %>
 		<tr><td colspan="2">
-		<font class="text12bold">Limited Delivery Availability&nbsp;-&nbsp;</font>
+		<font class="text11">Limited Delivery Availability&nbsp;-&nbsp;</font>
 <%        
             Calendar cal = Calendar.getInstance();
             displayLimitedAvailability = true;

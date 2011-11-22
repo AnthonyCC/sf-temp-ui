@@ -1803,7 +1803,7 @@ public class FDCustomerManager {
 			Map<String, FDAvailabilityI> fdInvMap = sb.checkAvailability(identity, createOrder, timeout);
 			timer = System.currentTimeMillis() - timer;
 
-			Map<String,FDAvailabilityI> invs = FDAvailabilityMapper.mapInventory(cart, createOrder, fdInvMap, skipModifyLines);
+			Map<String,FDAvailabilityI> invs = FDAvailabilityMapper.mapInventory(cart, createOrder, fdInvMap, skipModifyLines, sameDeliveryDate);
 			cart.setAvailability(new FDCompositeAvailability(invs));
 
 			if (LOGGER.isInfoEnabled()) {

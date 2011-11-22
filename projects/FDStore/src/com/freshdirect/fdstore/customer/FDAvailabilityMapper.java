@@ -45,7 +45,7 @@ class FDAvailabilityMapper {
 	 * @param fdInvs Map of orderLineNumber -> FDInventoryI
 	 * @return Map of cartLineId -> FDInventoryI
 	 */
-	public static Map<String, FDAvailabilityI> mapInventory(FDCartModel cart, ErpCreateOrderModel order, Map<String,FDAvailabilityI> fdInvs, boolean skipModifyLines) throws FDResourceException {
+	public static Map<String, FDAvailabilityI> mapInventory(FDCartModel cart, ErpCreateOrderModel order, Map<String,FDAvailabilityI> fdInvs, boolean skipModifyLines, boolean sameDeliveryDate) throws FDResourceException {
 		Map<String, FDAvailabilityI> cartInvMap = new HashMap<String, FDAvailabilityI>();
 
 		DlvRestrictionsList allRestrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
@@ -70,15 +70,28 @@ class FDAvailabilityMapper {
 			int orderlineSize = cartline.getErpOrderLineSize();
 
 			FDAvailabilityI inv;
+			Date[] availDates = cartline.lookupFDProductInfo().getAvailabilityDates(); 
+			if(availDates != null && availDates.length > 0) {
+				//Limited Availability Line item.
+				if(sameDeliveryDate && cartline instanceof FDModifyCartLineI) {
+					// orderlines that came from the original order are always available
+					inv = NullAvailability.AVAILABLE;					
+				} else {
+					inv = fdInvs.get(posex);
 
-			if (skipModifyLines && (cartline instanceof FDModifyCartLineI)) {
-				// orderlines that came from the original order are always available
-				inv = NullAvailability.AVAILABLE;
-
+				}
 			} else {
-				inv = fdInvs.get(posex);
+				//Regular Availability item.
+				if (skipModifyLines && (cartline instanceof FDModifyCartLineI)) {
+					// orderlines that came from the original order are always available
+					inv = NullAvailability.AVAILABLE;
 
+				} else {
+					inv = fdInvs.get(posex);
+
+				}
 			}
+
 
 			Set<EnumDlvRestrictionReason> applicableRestrictions = cartline.getApplicableRestrictions();
 			
