@@ -1,3 +1,5 @@
+<%@ page import='java.util.List' %>
+<%@ page import='java.util.Iterator' %>
 <% //expanded page dimensions
 final int W_CHECKOUT_FOOTER_TEXT_TOTAL = 970;
 %>
@@ -11,8 +13,12 @@ if (isSmall) width=630;
 	<td>
 		<font class="space4pix"><br><br><br></font><font class="text13">
 		<img src="/media/editorial/site_pages/click_to_call/c2c_hdr_trouble_offhours.gif" alt="Timeslot Full?"> <br>
-		Our service hours are Monday through Thursday 6:30a.m. to Midnight, Friday from 6:30a.m. to 11p.m.,<br>
-		Saturday from 7:30a.m. to 8p.m., and Sunday from 7:30a.m. to Midnight.<br><br>
+		Our service hours are <% List<FDCSContactHours> fdcsHours = FDCSContactHoursUtil.getFDCSHours();
+for (Iterator iterator = fdcsHours.iterator(); iterator.hasNext();) {
+	FDCSContactHours contactHours = (FDCSContactHours) iterator.next();%>
+	<%= contactHours.getDaysDisplay() %>&nbsp;<%= contactHours.getHoursDisplay() %>;
+<%}
+%><br><br>
 		</font><font class="text12">
 		You can reach us at:  <%=user.getCustomerServiceContact()%> or <a href="mailto:<%=user.getCustomerServiceEmail()%> "><%=user.getCustomerServiceEmail()%> </a>
                 </font>
