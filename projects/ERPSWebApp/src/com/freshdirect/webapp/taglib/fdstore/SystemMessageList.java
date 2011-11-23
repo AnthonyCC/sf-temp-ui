@@ -72,6 +72,7 @@ public interface SystemMessageList {
 	public final static String MSG_INVALID_ABA_ROUTE_NUMBER 	= "This ABA route number is invalid.";
 	public final static String MSG_INVALID_BANK_ACCOUNT_TYPE 	= "This bank account type is invalid.";
 	public final static String MSG_INVALID_BANK_NAME 			= "This bank name is invalid.";
+	public final static String MSG_INVALID_CARD_TYPE 			= "Invalid Card Brand.";
 	public final static String MSG_INVALID_ACCOUNT_NUMBER_VERIFY= "Account numbers don''t match.";
 	public final static String MSG_ACCOUNT_NUMBER_LENGTH 		= "Account number must have at least 5 digits.";
 	

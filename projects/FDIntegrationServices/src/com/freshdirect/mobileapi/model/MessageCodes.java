@@ -83,6 +83,8 @@ public interface MessageCodes {
 
     public static final String ERR_PAYMENT_INVAID_CREDIT_CARD_NUMBER = "ERR_PAYMENT_INVAID_CREDIT_CARD_NUMBER";
     
+    public static final String ERR_PAYMENT_INCORRECT_CVV = "ERR_PAYMENT_INCORRECT_CVV";
+    
     public static final String ERR_DELIVERY_ADDRESS_INVALID = "ERR_DELIVERY_ADDRESS_INVALID";
 
     //Invalid Promo code
@@ -191,7 +193,12 @@ public interface MessageCodes {
     
     public static final String ERR_BILL_STATE_REQUIRED = "ERR_BILL_STATE_REQUIRED";
     public static final String ERR_BILL_STATE_REQUIRED_MSG = "Billing State is required.";
+    
+    public static final String ERR_PAYMENT_METHOD_FRAUD = "ERR_PAYMENT_METHOD_FRAUD";
+    public static final String ERR_PAYMENT_METHOD_FRAUD_MSG = "There was a problem with the credit card you added. Please try adding a different payment method.";
 
+    public static final String ERR_INVALID_CARD_BRAND = "ERR_INVALID_CARD_BRAND";
+    public static final String ERR_INVALID_CARD_BRAND_MSG = "Invalid card brand.";
     
     public static class ErrorMessage {
         public final static String PASS_THROUGH = "PASS_THROUGH";
@@ -243,6 +250,8 @@ public interface MessageCodes {
             translations.put("bil_state", new ErrorMessage(ERR_BILL_STATE_REQUIRED, ERR_BILL_STATE_REQUIRED_MSG));
             translations.put("bil_zipcode", new ErrorMessage(ERR_BILL_ZIP_REQUIRED, ERR_BILL_ZIP_REQUIRED_MSG));
             translations.put("bil_city", new ErrorMessage(ERR_CITY_REQUIRED, ERR_CITY_REQUIRED_MSG));
+            translations.put("payment_method_fraud", new ErrorMessage(ERR_PAYMENT_METHOD_FRAUD, ERR_PAYMENT_METHOD_FRAUD_MSG));
+            translations.put("cardBrand", new ErrorMessage(ERR_INVALID_CARD_BRAND, ERR_INVALID_CARD_BRAND_MSG));
             
         }
 
@@ -262,6 +271,8 @@ public interface MessageCodes {
                 returnValue = new ErrorMessage(ERR_SYSTEM, desc);
             } else if ("cardNum".equals(key) && desc.contains("invalid")) {
                 returnValue = new ErrorMessage(ERR_PAYMENT_INVAID_CREDIT_CARD_NUMBER, desc);
+            } else if ("csv".equals(key) && desc.contains("double-check")) {
+                returnValue = new ErrorMessage(ERR_PAYMENT_INCORRECT_CVV, desc);
             } else if ("address1".equals(key) && desc.contains("valid home address")) {
                 returnValue = new ErrorMessage(ERR_DELIVERY_ADDRESS_INVALID, desc);
             } else if ("zipcode".equals(key) && !desc.contains("required")) {

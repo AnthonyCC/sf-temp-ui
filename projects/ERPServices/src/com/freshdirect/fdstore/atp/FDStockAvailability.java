@@ -85,26 +85,33 @@ public class FDStockAvailability implements Serializable, FDAvailabilityI {
 		if(entries.isEmpty()) {
 			return null;
 		}
-		
-		List<FDLimitedAvailabilityInfo> limitedAvInfo = getLimitedAvailabilityInfo();
-		if(!limitedAvInfo.isEmpty()){
-			//If material falls under restricted availability.
-			double avQty = 0;
-			for(FDLimitedAvailabilityInfo l: limitedAvInfo) {
-				if(l.getRequestedDate().after(requestedRange.getEndDate())){
+		double avQty = 0;
+		if(this.availableDates != null && this.availableDates.length > 0){
+			//If material falls under limited availability.
+			int count = 0;
+			Date lastUnavailDate = requestedRange.getStartDate();
+			//Find last Unavailable date.
+			while(isDeliverable(lastUnavailDate) && count < FDStoreProperties.getAvailDaysInPastToLookup()){
+				//Check previous day.
+				lastUnavailDate = DateUtil.addDays(lastUnavailDate, -1);
+				count++;
+			}
+			//Remove the time part.
+			lastUnavailDate = DateUtil.truncate(lastUnavailDate);
+			for (ErpInventoryEntryModel e : entries) {
+				if (!e.getStartDate().before(requestedRange.getEndDate())) {
 					break;
 				}
-				if(!l.isAvailable())
-					//If material unavailable for that day then reset availability.
-					avQty = 0;
-				else
-					avQty = l.getQuantity();
+
+				//Inventory start date cannot be before last unavailability date.
+				if(lastUnavailDate == null || !e.getStartDate().before(lastUnavailDate))
+					avQty += e.getQuantity();
 				if (roundQuantity(avQty, minQty, qtyInc) >= reqQty) {
-					return l.getRequestedDate();
-				}
+					return e.getStartDate();
+				}				
 			}
-		} else {
-			double avQty = 0;
+		}else {
+			
 			for (ErpInventoryEntryModel e : entries) {
 				if (!e.getStartDate().before(requestedRange.getEndDate())) {
 					break;
@@ -145,15 +152,17 @@ public class FDStockAvailability implements Serializable, FDAvailabilityI {
 				//Remove the time part.
 				lastUnavailDate = DateUtil.truncate(lastUnavailDate);
 				double newInvQty = 0.0; //Remaining inventory from the last unavailable date.
-				List<ErpInventoryEntryModel> exportEntries = this.inventoryExport.getEntries();
-				for (ErpInventoryEntryModel e : exportEntries) {
-					if (!e.getStartDate().before(requestedRange.getStartDate())) {
-						break;
+				if(this.inventoryExport != null) {
+					List<ErpInventoryEntryModel> exportEntries = this.inventoryExport.getEntries();
+					for (ErpInventoryEntryModel e : exportEntries) {
+						if (!e.getStartDate().before(requestedRange.getEndDate())) {
+							break;
+						}
+	
+						//Inventory start date cannot be before last unavailability date.
+						if(lastUnavailDate == null || !e.getStartDate().before(lastUnavailDate))
+							newInvQty += e.getQuantity();
 					}
-
-					//Inventory start date cannot be before last unavailability date.
-					if(lastUnavailDate == null || !e.getStartDate().before(lastUnavailDate))
-						newInvQty += e.getQuantity();
 				}
 				//Inventory received from ATP check.
 				for (ErpInventoryEntryModel e : entries) {
@@ -167,7 +176,7 @@ public class FDStockAvailability implements Serializable, FDAvailabilityI {
 						avQty += e.getQuantity();
 				}			
 				
-				if(newInvQty <= 0.0){
+				if(this.inventoryExport != null && newInvQty <= 0.0){
 					//When there are no new inventory after last restricted date from inventory export
 					//then reset the quantity from ATP check to 0 as ATP can return old stock as per
 					//current ATP check.

@@ -178,10 +178,14 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        PaymentMethodName.CARD_BRAND,SystemMessageList.MSG_REQUIRED
 	        );
 	        result.addError(
+	        EnumCardType.getEnum(cardType) == null,
+	        PaymentMethodName.CARD_BRAND,SystemMessageList.MSG_INVALID_CARD_TYPE
+	        );	        
+	        result.addError(
 	        month == null || year == null || month.trim().length() <= 0 || year.trim().length() <= 0,
 	        "expiration", SystemMessageList.MSG_REQUIRED
 	        );
-
+	        
 	        if (result.isSuccess()) {
 		        SimpleDateFormat sf = new SimpleDateFormat("MMyyyy");
 	            Date date = sf.parse(month.trim()+year.trim(), new ParsePosition(0));

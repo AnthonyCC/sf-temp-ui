@@ -220,7 +220,9 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 							paymentId = payMethod.getPK().getId();
 					}
 				}
-				setPaymentMethod( request, result, paymentId, request.getParameter( "billingRef" ), false, "" );
+				if(paymentId != null) {
+					setPaymentMethod( request, result, paymentId, request.getParameter( "billingRef" ), false, "" );
+				}
 				if ( result.isSuccess() ) {
 					applyCustomerCredits();
 				}				

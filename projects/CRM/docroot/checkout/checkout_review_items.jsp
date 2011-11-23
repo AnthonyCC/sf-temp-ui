@@ -432,7 +432,7 @@
         						List<FDLimitedAvailabilityInfo> limitedAvailibility = a_sku.getLimitedAvailability();
 			        			if(limitedAvailibility != null && limitedAvailibility.size() > 0){
 							%>
-								<br/><font class="text11">Limited Delivery Availability&nbsp;-&nbsp;</font>
+								<font class="text11">&nbsp;&nbsp;&nbsp;Limited Delivery Availability:&nbsp;</font>
 							<%        
             					Calendar cal = Calendar.getInstance();
             					displayLimitedAvailability = true;

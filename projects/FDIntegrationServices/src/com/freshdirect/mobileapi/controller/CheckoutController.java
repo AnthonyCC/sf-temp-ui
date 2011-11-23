@@ -188,6 +188,8 @@ public class CheckoutController extends BaseController {
             throws JsonException, FDResourceException {
         boolean valid = true;
         Message responseMessage = new Message();
+      //With Mobile App having given ability to add/remove payment method this is removed
+        /*
         try {
 	        if ((user.getDeliveryAddresses() == null) || (user.getDeliveryAddresses().size() == 0)) {
 	            responseMessage = getWarningMessage(ERR_NO_DELIVERY_ADDRESS, ERR_NO_DELIVERY_ADDRESS_MSG);
@@ -196,7 +198,7 @@ public class CheckoutController extends BaseController {
         }catch(FDException fe){
         	throw new FDResourceException(fe);
         }
-        
+        */
         //With Mobile App having given ability to add/remove payment method this is removed
         /*if ((user.getPaymentMethods() == null) || (user.getPaymentMethods().size() == 0)) {
             responseMessage = getWarningMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);

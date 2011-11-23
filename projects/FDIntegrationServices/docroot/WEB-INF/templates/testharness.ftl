@@ -477,7 +477,7 @@ function loadStuff() {
   	$("#payload").val("");
   	$("#result").val("");
   }  else if (loaddata == "CustomerAgreement") {
-  	$("#url").val("/help/termsofuse");
+  	$("#url").val("/help/termsOfUse");
   	$("#payload").val("");
   	$("#result").val("");
   }  else if (loaddata == "Ping") {

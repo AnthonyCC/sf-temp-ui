@@ -179,7 +179,13 @@ public class AccountController extends BaseController {
             if (user.getDefaultShipToAddress() != null){
                 addressId = user.getDefaultShipToAddress();
             } else{
-                addressId =  user.getDeliveryAddresses().get(0).getId();
+            	if(user.getDeliveryAddresses().size() == 0) {//This can happen when user signed up through Iphone.
+            		Message responseMessage = Message.createSuccessMessage("You need to add a delivery address to perform this action.");
+            		setResponseMessage(model, responseMessage, user);
+            		return model;
+            	}
+            		
+            		addressId =  user.getDeliveryAddresses().get(0).getId();
             }
         }
         return getDeliveryTimeslot(model, user, addressId);
