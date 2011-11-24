@@ -32,6 +32,7 @@ import com.freshdirect.fdstore.content.MediaI;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeSource;
 import com.freshdirect.fdstore.customer.FDCSContactHours;
+import com.freshdirect.fdstore.customer.FDCSContactHoursUtil;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
@@ -191,7 +192,7 @@ public class FDEmailFactory {
 	}
 	
 	public XMLEmailI createAuthorizationFailedEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime, Date cutoffTime){
-		FDAuthorizationFailedEmail email = new FDAuthorizationFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime,getFDCSHours());
+		FDAuthorizationFailedEmail email = new FDAuthorizationFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime,FDCSContactHoursUtil.getFDCSHours());
 		email.setXslPath("h_authorization_failure.xsl", "x_authorization_failure.xsl");
 		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
 		email.setSubject("Credit Card Authorization Failure");
@@ -204,7 +205,7 @@ public class FDEmailFactory {
 	 * AR - Stands for Auto Renew DP
 	 */
 	public XMLEmailI createARAuthorizationFailedEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime, Date cutoffTime){
-		FDAuthorizationFailedEmail email = new FDAuthorizationFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime,getFDCSHours());
+		FDAuthorizationFailedEmail email = new FDAuthorizationFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime,FDCSContactHoursUtil.getFDCSHours());
 		email.setXslPath("h_ar_authorization_failure.xsl", "x_ar_authorization_failure.xsl");
 		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
 		email.setSubject("Credit Card Authorization Failure");
@@ -1056,7 +1057,7 @@ public class FDEmailFactory {
 		return email;
 	}
 	public XMLEmailI createSettlementFailedEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime, Date cutoffTime){
-		FDSettlementFailedEmail email = new FDSettlementFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime,getFDCSHours());
+		FDSettlementFailedEmail email = new FDSettlementFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime,FDCSContactHoursUtil.getFDCSHours());
 		email.setXslPath("h_settlement_failure.xsl", "x_settlement_failure.xsl");
 		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
 		email.setSubject("e-Check Settlement Failure");
@@ -1102,7 +1103,7 @@ public class FDEmailFactory {
 
 	}
 	
-	protected List<FDCSContactHours> getFDCSHours(){
+	/*protected List<FDCSContactHours> getFDCSHours(){
 		String days=FDStoreProperties.getCSContactDays();
 		String hours=FDStoreProperties.getCSContactHours();
 		List<FDCSContactHours> list = new ArrayList<FDCSContactHours>();
@@ -1115,6 +1116,6 @@ public class FDEmailFactory {
 			}
 		}
 		return list;
-	}
+	}*/
 	
 }

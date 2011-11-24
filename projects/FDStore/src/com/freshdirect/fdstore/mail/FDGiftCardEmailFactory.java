@@ -14,6 +14,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDCSContactHoursUtil;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.framework.mail.EmailAddress;
@@ -78,7 +79,7 @@ public class FDGiftCardEmailFactory extends FDEmailFactory{
 	@Override
 	public XMLEmailI createAuthorizationFailedEmail(FDCustomerInfo customer,
 			String orderNumber, Date startTime, Date endTime, Date cutoffTime) {
-		FDAuthorizationFailedEmail email = new FDAuthorizationFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime,super.getFDCSHours());
+		FDAuthorizationFailedEmail email = new FDAuthorizationFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime,FDCSContactHoursUtil.getFDCSHours());
 		email.setXslPath("h_gc_authorization_failure.xsl", "x_gc_authorization_failure.xsl");
 		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
 		email.setSubject("Gift Card Authorization Failure");		
