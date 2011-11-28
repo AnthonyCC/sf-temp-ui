@@ -11,7 +11,7 @@ Dear <xsl:value-of select="customer/firstName"/>,
 
 We are unable to process your order (#<xsl:value-of select="orderNumber"/>), using the Gift Card you have chosen. The card may be on hold, or there may be a network error. So that we can process your order as soon as possible, please call customer service at <xsl:choose><xsl:when test="customer/chefsTable = 'true'">1-866-511-1240</xsl:when><xsl:otherwise>1-212-796-8002</xsl:otherwise></xsl:choose>.
 
-To be sure that your order is delivered, please make any changes before  <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template>. If you need further assistance, we're here: Monday-Thursday 6:30 AM to 12 AM; Friday 6:30 AM to 11 PM; Saturday 7:30 AM to 8 PM; Sunday 7:30 AM to 12 AM.
+To be sure that your order is delivered, please make any changes before  <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template>. If you need further assistance, we're here: <xsl:for-each select="contactHours/contactHours"><xsl:value-of select="daysDisplay"/><xsl:value-of select="hoursDisplay"/>;</xsl:for-each>
 
 
 	Sincerely,
