@@ -33,7 +33,14 @@ public class PaymentMethodRequest extends Message {
 	private String paymentMethodId;
 	private String billingRef;
 	private String csv;
+	private String billingCtry;
 	
+	public String getBillingCtry() {
+		return billingCtry;
+	}
+	public void setBillingCtry(String billingCtry) {
+		this.billingCtry = billingCtry;
+	}
 	public String getCsv() {
 		return csv;
 	}

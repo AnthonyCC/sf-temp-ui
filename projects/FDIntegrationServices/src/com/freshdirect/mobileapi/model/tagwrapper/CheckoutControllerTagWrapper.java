@@ -217,6 +217,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         addRequestValue(REQ_PARAM_BIL_ZIPCODE, paymentMethod.getBillZipCode());        
         addRequestValue(REQ_PARAM_PAYMENT_METHOD_TYPE, paymentMethod.getPaymentMethodType());
         addRequestValue(REQ_PARAM_CSV, paymentMethod.getCsv());
+        addRequestValue(REQ_PARAM_BIL_COUNTRY, paymentMethod.getBillingCtry());
         addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, "false");
         addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_DONATION, "false");
         
@@ -257,7 +258,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, "false");
         addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_DONATION, "false");
         addRequestValue(REQ_PARAM_BILLING_REF, paymentMethod.getBillingRef());
-        addRequestValue(REQ_PARAM_BIL_COUNTRY, "US");
+        addRequestValue(REQ_PARAM_BIL_COUNTRY, paymentMethod.getBillingCtry());
 
         getWrapTarget().setActionName(ACTION_ADD_SET_PAYMENT_METHOD);
         setMethodMode(true);
