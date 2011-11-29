@@ -248,6 +248,11 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 				errors = true;
 			}
 			
+			if("-1".equals(reason)) {
+				errMsg += ", Reason";
+				errors = true;
+			}
+			
 			if(!errors) {
 			
 				//Save the campaign info

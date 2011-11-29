@@ -1,5 +1,12 @@
 <%@ page import="com.freshdirect.crm.CrmVSCampaignModel,com.freshdirect.customer.EnumVSReasonCodes,java.util.*,com.freshdirect.fdstore.*" %>
-
+<%
+String campid = request.getParameter("campaign_id");
+String reason = request.getParameter("reason");
+int reason_id = 0;
+if(reason != null && !"-1".equals(reason)) {
+	reason_id = Integer.parseInt(reason);
+}
+%>
 <form method='POST' name="timePick" id="timePick">	
 	<div class="vs_container">
 		<table width="100%" cellpadding="2" cellspacing="0" border="0" class="sub_nav_text" style="padding:7px;">
@@ -16,9 +23,12 @@
 							CrmVSCampaignModel model = (CrmVSCampaignModel) campaigns.get(i);
 							inputs.append("<input type=\"hidden\" name=\""+ model.getCampaignId() + "\" value=\"" + model.getCampaignName() + "\"/>");
 							inputs.append("<input type=\"hidden\" name=\""+ model.getCampaignId() + "_menu_id\" value=\"" + model.getCampaignMenuId() + "\"/>");
+							if(campid != null && campid.equals(model.getCampaignId())) {
 							%>
-								<option value="<%=model.getCampaignId()%>"><%=model.getCampaignName()%></option>
-							<%
+								<option value="<%=model.getCampaignId()%>" selected><%=model.getCampaignName()%></option>
+							<% } else { %>
+								<option value="<%=model.getCampaignId()%>" ><%=model.getCampaignName()%></option>
+							<% }
 						}
 					%>
 					</select></td>
@@ -33,9 +43,13 @@
 							EnumVSReasonCodes value = (EnumVSReasonCodes) rCodes.get(key);
 							String name = value.getName();
 							int val = value.getValue();
+							
+							if(val == reason_id) {
 					%>
-						<option value="<%=val%>"><%=name%></option>
-					<% } %>
+						<option value="<%= val %>" selected><%=name%></option>
+					<% } else { %>
+						<option value="<%= val %>"><%=name%></option>
+					<% } } %>
 					</select> </td>
 					<td align="right" colspan="2">					
 					<script language="JavaScript" type="text/javascript">					
