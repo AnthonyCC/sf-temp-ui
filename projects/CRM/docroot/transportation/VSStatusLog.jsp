@@ -86,7 +86,7 @@
 				</td>
 				<td width="14%" class="border_bottom" align="center">
 					<% if(model.isUpdatable()) { %>
-						<a href="javascript:openwindow('redial','<%=model.getVsDetailsID()%>')">redial</a>
+						<a href="javascript:openwindow('redial','<%=model.getVsDetailsID()%>&menuid=<%=model.getCampaignMenuId()%>')">redial</a>
 					<% } else { %>
 						redial 
 					<% } %>

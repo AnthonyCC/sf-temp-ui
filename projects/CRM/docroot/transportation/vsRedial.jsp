@@ -15,6 +15,7 @@
 <crm:GetCurrentAgent id='currAgent'>
 <%
 	String id1 = request.getParameter("id");
+	String menuid = request.getParameter("menuid");
 	VoiceShotResponseParser vsrp = null;
 	if("true".equals(request.getParameter("submission"))) {
 		//handle form submission
@@ -39,7 +40,7 @@
 		
 		String phone = "<phonenumbers><phonenumber number=\"(203) 446-9229\" /><phonenumber number=\"(203) 843-0301\" /></phonenumbers>";
 		StringBuffer sb = new StringBuffer("<campaign menuid=\"");
-		sb.append("4766-962581812");
+		sb.append(menuid);
 		sb.append("\" action=\"0\"  username=\"mtrachtenberg\" password=\"whitshell\" callid=\"");
 		sb.append(call_id);
 		sb.append("\" >");
