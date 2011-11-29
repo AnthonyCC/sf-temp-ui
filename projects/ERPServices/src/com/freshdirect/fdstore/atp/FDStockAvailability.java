@@ -86,7 +86,7 @@ public class FDStockAvailability implements Serializable, FDAvailabilityI {
 			return null;
 		}
 		double avQty = 0;
-		if(this.availableDates != null && this.availableDates.length > 0){
+		if(FDStoreProperties.isLimitedAvailabilityEnabled() && this.availableDates != null && this.availableDates.length > 0){
 			//If material falls under limited availability.
 			int count = 0;
 			Date lastUnavailDate = requestedRange.getStartDate();
@@ -134,7 +134,7 @@ public class FDStockAvailability implements Serializable, FDAvailabilityI {
 		}
 		double avQty = 0;
 
-		if(this.availableDates != null && this.availableDates.length > 0){
+		if(FDStoreProperties.isLimitedAvailabilityEnabled() && this.availableDates != null && this.availableDates.length > 0){
 			//If material falls under limited availability.
 
 			if(!isDeliverable(requestedRange.getStartDate())){
