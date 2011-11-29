@@ -215,9 +215,11 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 </div>
 <%
   VoiceShotResponseParser vsrp = null;
+  boolean errors = false;
+  String errMsg = "Required fields - ";
   if ("POST".equals(request.getMethod())) {
     if (routeStopLines.size() > 0) { 
-		if("true".equals(request.getParameter("vssubmit"))) {
+		if("true".equals(request.getParameter("vssubmit"))) {			
 			String campaignID = request.getParameter("campaign_id");
 			String campaignMenuID = request.getParameter(campaignID + "_menu_id");
 			String sFile = request.getParameter("sound_file");
@@ -236,90 +238,102 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 				stop_seq = stop_seq + " - " + _stop2 + ", 5, 0";
 			}
 			
-			//Save the campaign info
-			CrmVSCampaignModel cModel = new CrmVSCampaignModel();
-			cModel.setCampaignId(campaignID);
-			cModel.setSoundfileName(sFile);
-			cModel.setSoundFileText(sText);
-			cModel.setStartTime(start_time);
-			cModel.setEndTime(end_time);
-			cModel.setReasonId(reason);
-			cModel.setRoute(_route);
-			cModel.setStopSequence(stop_seq);			
-			cModel.setAddByUser(CrmSession.getCurrentAgent(session).getLdapId()); 
-			cModel.setCampaignName(request.getParameter(campaignID));
+			if(campaignID == null  || campaignID.length() == 0 || "-1".equals(campaignID)) {
+				errMsg += "Campaign";
+				errors = true;
+			}
 			
-			DateFormat formatter2 = new SimpleDateFormat("MM/dd/yyyy");
-			String formatter_start_date = formatter2.format(new Date());
-			formatter_start_date = formatter_start_date + " " + start_time;
+			if(start_time == null  || start_time.length() == 0) {
+				errMsg += ", Start time";
+				errors = true;
+			}
 			
-			System.out.println("*********formatter_start_date********" + formatter_start_date);
+			if(!errors) {
 			
-			List<String> phonenumbers = new ArrayList<String>();			
-			StringBuffer phonesb = new StringBuffer("<phonenumbers>");
-			for(int i=0;i<routeStopLines.size();i++) {
-				String selValue = request.getParameter("selectphone"+i);
-				if(selValue != null && selValue.length() > 0)  {
-					phonenumbers.add(selValue);
-					phonesb.append("<phonenumber number=\"");
-					phonesb.append(selValue.substring(0, selValue.indexOf("|")));
-					phonesb.append("\" dateandtime=\"");
-					phonesb.append(formatter_start_date);
-					phonesb.append("\" />");
+				//Save the campaign info
+				CrmVSCampaignModel cModel = new CrmVSCampaignModel();
+				cModel.setCampaignId(campaignID);
+				cModel.setSoundfileName(sFile);
+				cModel.setSoundFileText(sText);
+				cModel.setStartTime(start_time);
+				cModel.setEndTime(end_time);
+				cModel.setReasonId(reason);
+				cModel.setRoute(_route);
+				cModel.setStopSequence(stop_seq);			
+				cModel.setAddByUser(CrmSession.getCurrentAgent(session).getLdapId()); 
+				cModel.setCampaignName(request.getParameter(campaignID));
+				
+				DateFormat formatter2 = new SimpleDateFormat("MM/dd/yyyy");
+				String formatter_start_date = formatter2.format(new Date());
+				formatter_start_date = formatter_start_date + " " + start_time;
+				
+				System.out.println("*********formatter_start_date********" + formatter_start_date);
+				
+				List<String> phonenumbers = new ArrayList<String>();			
+				StringBuffer phonesb = new StringBuffer("<phonenumbers>");
+				for(int i=0;i<routeStopLines.size();i++) {
+					String selValue = request.getParameter("selectphone"+i);
+					if(selValue != null && selValue.length() > 0)  {
+						phonenumbers.add(selValue);
+						phonesb.append("<phonenumber number=\"");
+						phonesb.append(selValue.substring(0, selValue.indexOf("|")));
+						phonesb.append("\" dateandtime=\"");
+						phonesb.append(formatter_start_date);
+						phonesb.append("\" />");
+					}
 				}
-			}
-			phonesb.append("</phonenumbers>");
-			cModel.setPhonenumbers(phonenumbers);
-			String call_id = CallCenterServices.saveVSCampaignInfo(cModel);
-			
-			System.out.println("**********phones*********"+ phonesb.toString());
-			
-			StringBuffer originalXML = new StringBuffer("<campaign menuid=\"");
-			originalXML.append(campaignMenuID);
-			originalXML.append("\" action=\"0\"  username=\"mtrachtenberg\" password=\"whitshell\" callid=\"" + call_id + "\">");
-			originalXML.append(phonesb.toString());
-			//originalXML.append("<phonenumbers><phonenumber number=\"(203) 446-9229\" dateandtime=\""+ formatter_start_date + "\"/><phonenumber number=\"(203) 843-0301\"  dateandtime=\""+ formatter_start_date + "\"/></phonenumbers>");
-			originalXML.append("</campaign>");
+				phonesb.append("</phonenumbers>");
+				cModel.setPhonenumbers(phonenumbers);
+				String call_id = CallCenterServices.saveVSCampaignInfo(cModel);
+				
+				System.out.println("**********phones*********"+ phonesb.toString());
+				
+				StringBuffer originalXML = new StringBuffer("<campaign menuid=\"");
+				originalXML.append(campaignMenuID);
+				originalXML.append("\" action=\"0\"  username=\"mtrachtenberg\" password=\"whitshell\" callid=\"" + call_id + "\">");
+				originalXML.append(phonesb.toString());
+				//originalXML.append("<phonenumbers><phonenumber number=\"(203) 446-9229\" dateandtime=\""+ formatter_start_date + "\"/><phonenumber number=\"(203) 843-0301\"  dateandtime=\""+ formatter_start_date + "\"/></phonenumbers>");
+				originalXML.append("</campaign>");
 
-			System.out.println("OriginalXML:" + originalXML.toString());
-			
-			//start voiceshot
-			//String phone = "<phonenumbers><phonenumber number=\"(203) 446-9229\" /><phonenumber number=\"(203) 843-0301\" /></phonenumbers>";
-			//StringBuffer sb = new StringBuffer("<campaign menuid=\"");
-			//sb.append("4766-962581812");
-			//sb.append("\" action=\"0\"  username=\"mtrachtenberg\" password=\"whitshell\" callid=\"" + call_id + "\" >");
-			//sb.append(phone);
-			//sb.append("</campaign>");
-			
-			//System.out.println(sb.toString());
-			
-			
-			java.net.URL programUrl = new java.net.URL("http://apiproxy.voiceshot.com/ivrapi.asp");   
-			java.net.HttpURLConnection connection = (java.net.HttpURLConnection)programUrl.openConnection();
-			connection.setRequestMethod("POST");
-			connection.setDoOutput(true);
-			connection.setUseCaches(false); 
-			connection.setRequestProperty("Content-Type", "text/xml");
-			PrintWriter output = new PrintWriter(new OutputStreamWriter(connection.getOutputStream()));
-			output.println(originalXML.toString());
-			output.close(); 
-			connection.connect();
-			InputStream is = connection.getInputStream();
-			InputStreamReader isr = new InputStreamReader(is);
-			BufferedReader br = new BufferedReader(isr);
-		 
-			String line = null;
-			String firstresult = "";
-		 
-			while ((line = br.readLine()) != null) {
-				 firstresult += "\n" + line;
+				System.out.println("OriginalXML:" + originalXML.toString());
+				
+				//start voiceshot
+				//String phone = "<phonenumbers><phonenumber number=\"(203) 446-9229\" /><phonenumber number=\"(203) 843-0301\" /></phonenumbers>";
+				//StringBuffer sb = new StringBuffer("<campaign menuid=\"");
+				//sb.append("4766-962581812");
+				//sb.append("\" action=\"0\"  username=\"mtrachtenberg\" password=\"whitshell\" callid=\"" + call_id + "\" >");
+				//sb.append(phone);
+				//sb.append("</campaign>");
+				
+				//System.out.println(sb.toString());
+				
+				
+				java.net.URL programUrl = new java.net.URL("http://apiproxy.voiceshot.com/ivrapi.asp");   
+				java.net.HttpURLConnection connection = (java.net.HttpURLConnection)programUrl.openConnection();
+				connection.setRequestMethod("POST");
+				connection.setDoOutput(true);
+				connection.setUseCaches(false); 
+				connection.setRequestProperty("Content-Type", "text/xml");
+				PrintWriter output = new PrintWriter(new OutputStreamWriter(connection.getOutputStream()));
+				output.println(originalXML.toString());
+				output.close(); 
+				connection.connect();
+				InputStream is = connection.getInputStream();
+				InputStreamReader isr = new InputStreamReader(is);
+				BufferedReader br = new BufferedReader(isr);
+			 
+				String line = null;
+				String firstresult = "";
+			 
+				while ((line = br.readLine()) != null) {
+					 firstresult += "\n" + line;
+				}
+				
+				System.out.println(firstresult);
+				
+				vsrp = new VoiceShotResponseParser(firstresult);
+				System.out.println(vsrp.getErrorCode());
 			}
-			
-			System.out.println(firstresult);
-			
-			vsrp = new VoiceShotResponseParser(firstresult);
-			System.out.println(vsrp.getErrorCode());
-			
 		}
 	
 	if("true".equals(request.getParameter("vssubmit")) && vsrp != null) {
@@ -340,7 +354,7 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 		System.out.println("****hours:" + hours);
 		
 		
-		if (hours > -24 &&hours < 0) {
+		if (hours > -24 && hours < 0) {
 	%>	
 	<!-----new Voiceshot box-------->
 	<form method='POST' name="timePick" id="timePick">
@@ -354,6 +368,9 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 	<input type="hidden" name="stop2" value="<%=stop2%>" />
 	<% String userRole = CrmSession.getCurrentAgent(request.getSession()).getRole().getLdapRoleName();
 	   if(CrmSecurityManager.hasAccessToPage(userRole,"voiceshot.jsp")){ %>
+	   <% if(errors) { %>
+	   <font style="color:red;"><%= errMsg %></font>
+	   <% } %>
 	<jsp:include page="voiceshot.jsp" />
 	<% } %>
 	
