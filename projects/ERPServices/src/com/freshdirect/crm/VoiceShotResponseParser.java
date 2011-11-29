@@ -123,7 +123,7 @@ public class VoiceShotResponseParser {
 		        if(atr_name.equalsIgnoreCase("status")) {
 		        	if(value.equalsIgnoreCase("Successful")) {
 		        		successful++;
-		        		status = EnumVSStatus.SUCCESS.getValue();
+		        		//status = EnumVSStatus.SUCCESS.getValue();
 		        	} else {
 		        		unsuccessful++;
 		        		status = EnumVSStatus.UNSUCCESSFUL.getValue();

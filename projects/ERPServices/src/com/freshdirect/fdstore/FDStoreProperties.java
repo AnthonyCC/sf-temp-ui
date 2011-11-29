@@ -479,6 +479,12 @@ public class FDStoreProperties {
     private static final String CUST_SERV_HOURS_HOURS="fdstore.cust_serv_hours";
 
     private static final  String PROP_AVAILABILITY_DAYS_IN_PAST_TO_LOOKUP = "fdstore.availdays.past.lookup";
+    
+    //[APPDEV-1993] voiceshot
+    private static final String PROP_VS_USERNAME="fdstore.voiceshot.username";
+    private static final String PROP_VS_PASSWORD="fdstore.voiceshot.password";
+    private static final String PROP_VS_URL="fdstore.voiceshot.url";
+
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -963,6 +969,12 @@ public class FDStoreProperties {
         defaults.put(PROP_AVAILABILITY_DAYS_IN_PAST_TO_LOOKUP, "7");
         defaults.put(CUST_SERV_HOURS_DAYS, "Monday through Sunday");
         defaults.put(CUST_SERV_HOURS_HOURS, "6:30 AM to 12 AM");
+        
+        //[APPDEV-1993] voiceshot
+        defaults.put(PROP_VS_USERNAME, "mtrachtenberg");
+        defaults.put(PROP_VS_PASSWORD, "whitshell");
+        defaults.put(PROP_VS_URL, "http://apiproxy.voiceshot.com/ivrapi.asp");
+
         refresh();
     }
 
@@ -2459,4 +2471,17 @@ public class FDStoreProperties {
     public static interface ConfigLoadedListener {
         void configLoaded();
     }
+    
+    public static String getVSUserName() {
+    	return get(PROP_VS_USERNAME);
+    }
+    
+    public static String getVSPassword() {
+    	return get(PROP_VS_PASSWORD);
+    }
+    
+    public static String getVSURL() {
+    	return get(PROP_VS_URL);
+    }
+
 }

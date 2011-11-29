@@ -59,4 +59,20 @@ public class EnumVSReasonCodes extends ValuedEnum {
 	public static Iterator iterator() {
 		return iterator(EnumVSReasonCodes.class);
 	}
+	
+	public static String getReasonString(int intValue) {
+		Map rCodes = EnumVSReasonCodes.getEnumMap();
+		java.util.Set keys = rCodes.keySet();
+		Iterator iter = keys.iterator();
+		while(iter.hasNext()) {
+			String key = (String) iter.next();
+			EnumVSReasonCodes value = (EnumVSReasonCodes) rCodes.get(key);
+			String name = value.getName();
+			int val = value.getValue();
+			if(val == intValue) {
+				return name;
+			}
+		}
+		return "";
+	}
 }

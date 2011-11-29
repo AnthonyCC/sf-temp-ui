@@ -66,6 +66,7 @@ import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumTransactionType;
+import com.freshdirect.customer.EnumVSReasonCodes;
 import com.freshdirect.customer.EnumVSStatus;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpActivityRecord;
@@ -97,6 +98,7 @@ import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.meal.MealModel;
 import com.freshdirect.fdstore.content.meal.ejb.MealPersistentBean;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -2429,7 +2431,12 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				if(!data_pulled && rs.getString("CALL_ID") != null) {
 					StringBuffer sb = new StringBuffer("<campaign action=\"3\" menuid=\"");
 					sb.append(rs.getString("CAMPAIGN_MENU_ID"));
-					sb.append("\" username=\"mtrachtenberg\" password=\"whitshell\"><phonenumbers><phonenumber callid=\"");
+					//sb.append("\" username=\"mtrachtenberg\" password=\"whitshell\"><phonenumbers><phonenumber callid=\"");
+					sb.append("\" username=\"");
+					sb.append(FDStoreProperties.getVSUserName());
+					sb.append("\" password=\"");
+					sb.append(FDStoreProperties.getVSPassword());
+					sb.append("\"><phonenumbers><phonenumber callid=\"");
 					sb.append(rs.getString("CALL_ID"));
 					sb.append("\" /></phonenumbers></campaign>");
 					System.out.println(sb.toString());
@@ -2520,6 +2527,8 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			ps.setInt(2, vsrp.getHumanAnsweredCalls() + liveAnswered);
 			ps.setInt(3, vsrp.getAnswerMachineCalls() + answerMachine);
 			int unsuccessfulCalls = undeliverable - vsrp.getTotalCalls();
+			if(unsuccessfulCalls < 0)
+				unsuccessfulCalls = 0;
 			ps.setInt(4, vsrp.getUnsuccessfulCalls() + unsuccessfulCalls);
 			ps.setLong(5, id);
 			ps.execute();
@@ -2540,7 +2549,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 	private VoiceShotResponseParser getCallData(String xmlPost) {
 		try {
 			
-			java.net.URL programUrl = new java.net.URL("http://apiproxy.voiceshot.com/ivrapi.asp");   
+			java.net.URL programUrl = new java.net.URL(FDStoreProperties.getVSURL());   
 			java.net.HttpURLConnection connection = (java.net.HttpURLConnection)programUrl.openConnection();
 			connection.setRequestMethod("POST");
 			connection.setDoOutput(true);
@@ -2570,12 +2579,14 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				LOGGER.debug("Ready to update the call record");
 				VoiceShotResponseParser vsrp = new VoiceShotResponseParser(firstresult);				
 				vsrp.populateCallData();
-				LOGGER.debug("Total calls:" + vsrp.getTotalCalls());
-				LOGGER.debug("Total Successful calls:" + vsrp.getSuccessfulCalls());
-				LOGGER.debug("Total UnSuccessful calls:" + vsrp.getUnsuccessfulCalls());
-				LOGGER.debug("Total Human Answered calls:" + vsrp.getHumanAnsweredCalls());
-				LOGGER.debug("Total Answer Machine calls:" + vsrp.getAnswerMachineCalls());
-				return vsrp;
+				if(vsrp.getTotalCalls() > 0) {
+					LOGGER.debug("Total calls:" + vsrp.getTotalCalls());
+					LOGGER.debug("Total Successful calls:" + vsrp.getSuccessfulCalls());
+					LOGGER.debug("Total UnSuccessful calls:" + vsrp.getUnsuccessfulCalls());
+					LOGGER.debug("Total Human Answered calls:" + vsrp.getHumanAnsweredCalls());
+					LOGGER.debug("Total Answer Machine calls:" + vsrp.getAnswerMachineCalls());
+					return vsrp;
+				}
 			} else {
 				LOGGER.debug("Call is still happening. Don't let the user redial.");
 			}
@@ -2649,7 +2660,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				long hours = java.util.concurrent.TimeUnit.MILLISECONDS.toHours(timeDiff);
 				System.out.println("hours Between " + c1.getTime() + " and "
 						+ c2.getTime() + " is:" + hours);
-				if (hours > -24 &&hours < 0) {
+				if (hours < 24) {
 					CrmVSCampaignModel model = new CrmVSCampaignModel();
 					model.setPhonenumber(phone);
 					model.setVsDetailsID(id);
@@ -2904,7 +2915,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				sb.append(", Campaign:");
 				sb.append( rset.getString("CAMPAIGN_NAME"));
 				sb.append(", Reason For Delay:");
-				sb.append(rset.getString("REASON_ID"));
+				sb.append(EnumVSReasonCodes.getReasonString(rset.getInt("REASON_ID")));
 				
 				vsMsg = sb.toString();  
 			}
