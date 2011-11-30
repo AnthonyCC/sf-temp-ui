@@ -2889,7 +2889,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	public static final String GET_VS_DETAILS_FOR_ORDER = "select vc.campaign_name, VC.ADD_BY_USER,  to_char(VC.ADD_BY_DATE, 'MM/DD/YYYY HH:MI AM') ADD_BY_DATE, VD.REASON_ID "
+	public static final String GET_VS_DETAILS_FOR_ORDER = "select vc.campaign_name, VC.ADD_BY_USER,  to_char(vd.created_BY_DATE, 'MM/DD/YYYY HH:MI AM') ADD_BY_DATE, VD.REASON_ID "
 			+ "from CUST.CUST_VOICESHOT_STATUS vs, cust.voiceshot_campaign vc, CUST.VOICESHOT_DETAILS vd "
 			+ "where vs.sale_id = ? "
 			+ "and vs.status is not null "
