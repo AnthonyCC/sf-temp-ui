@@ -1538,7 +1538,7 @@ public class DlvManagerDAO {
 			updateQ.append(" and ts.start_time >= ? ");
 		}
 		if(endTime != null){
-			updateQ.append(" and ts.start_time <= ? ");
+			updateQ.append(" and ts.start_time < ? ");
 		}
 		if(area != null && area.length > 0){
 			updateQ.append(" and ts.zone_id in ( select id from dlv.zone z where z.zone_code in (");
@@ -1580,7 +1580,7 @@ public class DlvManagerDAO {
 			updateQ.append(" and ts.start_time >= ? ");
 		}
 		if(endTime != null){
-			updateQ.append(" and ts.start_time <= ? ");
+			updateQ.append(" and ts.start_time < ? ");
 		}
 		if(area != null && area.length > 0){
 			updateQ.append(" and ts.zone_id in ( select id from dlv.zone z where z.zone_code in (");

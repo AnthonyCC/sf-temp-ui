@@ -351,13 +351,12 @@ public class CrisisMngProviderController extends BaseJsonRpcController  implemen
 			}
 			
 			String foundException = checkExceptions(batch);
-			if(foundException == null && _standingOrderData != null){				
+			if(foundException == null && _standingOrderData != null){
+				this.crisisManagerService.updateCrisisMngBatchMessage(batch.getBatchId(), INFO_MESSAGE_STANDINGORDEREXPCLEARMSG);
 				standingOrders = getStandingOrderModels(batch, _standingOrderData);
 				CrisisManagerPlaceOrderAction process = new CrisisManagerPlaceOrderAction(batch, userId
 																				, standingOrders, this.crisisManagerService);
 				process.execute();
-			} else if(foundException == null){
-				this.crisisManagerService.updateCrisisMngBatchMessage(batch.getBatchId(), INFO_MESSAGE_STANDINGORDEREXPCLEARMSG);			
 			} else {
 				return foundException;
 			}
