@@ -19,20 +19,28 @@ if(reason != null && !"-1".equals(reason)) {
 					<%
 						List<CrmVSCampaignModel> campaigns = CallCenterServices.getVSCampaignList();
 						StringBuffer inputs = new StringBuffer();
+						String sfile = "";
+						String sfiletext = "";
 						for(int i=0;i<campaigns.size();i++) {
 							CrmVSCampaignModel model = (CrmVSCampaignModel) campaigns.get(i);
 							inputs.append("<input type=\"hidden\" name=\""+ model.getCampaignId() + "\" value=\"" + model.getCampaignName() + "\"/>");
-							inputs.append("<input type=\"hidden\" name=\""+ model.getCampaignId() + "_menu_id\" value=\"" + model.getCampaignMenuId() + "\"/>");
+							inputs.append("<input type=\"hidden\" name=\""+ model.getCampaignId() + "_menu_id\" value=\"" + model.getCampaignMenuId() + "\"/>");							
 							if(campid != null && campid.equals(model.getCampaignId())) {
+								sfile = model.getSoundfileName();
+								sfiletext = model.getSoundFileText();
 							%>
 								<option value="<%=model.getCampaignId()%>" selected><%=model.getCampaignName()%></option>
+								<script language="javascript">
+									document.getElementById("sound_file").value = camps[i].soundFile;
+									document.getElementById("sound_file_text").value = camps[i].soundFileText;
+								</script>
 							<% } else { %>
 								<option value="<%=model.getCampaignId()%>" ><%=model.getCampaignName()%></option>
 							<% }
 						}
 					%>
 					</select></td>
-					<td align="right">Sound File: </td><td align="left"><input type="text" name="sound_file" style="background-color:#E0E0E0;border:1px solid #585858;padding:3px;" id="sound_file" readonly="readonly"/></td></tr>
+					<td align="right">Sound File: </td><td align="left"><input type="text" name="sound_file" style="background-color:#E0E0E0;border:1px solid #585858;padding:3px;" id="sound_file" readonly="readonly" value="<%= sfile %>"/></td></tr>
 					<tr><td align="right">Reason:</td> <td align="left"><select name="reason" style="background-color:#E0E0E0;border:1px solid #585858;padding:3px;width:160px;"><option value="-1">--Select Reason--</option>
 					<%
 						Map rCodes = EnumVSReasonCodes.getEnumMap();
@@ -72,7 +80,7 @@ if(reason != null && !"-1".equals(reason)) {
 							
 					</script>
 					</td></tr>
-					<tr><td align="right">Sound File Message:</td><td colspan="3"> <textarea style="outline:none;width: 600px;height: 120px;border: 2px solid #cccccc;padding: 5px;" id="sound_file_text" name="sound_file_text"></textarea></td></tr></table>
+					<tr><td align="right">Sound File Message:</td><td colspan="3"> <textarea style="outline:none;width: 600px;height: 120px;border: 2px solid #cccccc;padding: 5px;" id="sound_file_text" name="sound_file_text"> value="<%= sfiletext %>"</textarea></td></tr></table>
 					</td>
 					<td width="30%" valign="bottom">
 						<a href="javascript:document.timePick.submit();" style="background-color:green;text-decoration:none;color:white;padding:5px;font-weight:bold;">Start Voiceshot</a>
