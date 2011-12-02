@@ -167,7 +167,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 					<tr>
 						<td  align="left">
 							<font class="text14"><b>Want to Plan Ahead?</b></font><br/>
-							<span class="text12">As a <% (user.isChefsTable() ? "Chef's Table":"DeliveryPass") %> member, you may reserve a timeslot ahead of time.</span>
+							<span class="text12">As a <% if (user.isChefsTable()){ %>Chef's Table<% } else { %>DeliveryPass<% }%> member, you may reserve a timeslot ahead of time.</span>
 						</td>
 						<td align="right">
 							<a href="/your_account/reserve_timeslot.jsp" style="text-align:right;">
