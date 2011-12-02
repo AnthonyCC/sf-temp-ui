@@ -161,13 +161,13 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 	<tr>
 		<td colspan="7">
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br/>
-	<% if(user.isEligibleForPreReservation() && (!"true".equals(request.getParameter("chefstable")))) { %>
+	<% if(user.isEligibleForPreReservation()) { %>
 			
-				<table width="100%" style="padding-left: 5px; padding-right: 5px;">
+	<table width="100%" style="padding-left: 5px; padding-right: 5px;">
 					<tr>
 						<td  align="left">
 							<font class="text14"><b>Want to Plan Ahead?</b></font><br/>
-							<span class="text12">As a Chef's table customer, you may reserve a timeslot ahead of time.</span>
+							<span class="text12">As a <% (user.isChefsTable() ? "Chef's Table":"DeliveryPass") %> member, you may reserve a timeslot ahead of time.</span>
 						</td>
 						<td align="right">
 							<a href="/your_account/reserve_timeslot.jsp" style="text-align:right;">
