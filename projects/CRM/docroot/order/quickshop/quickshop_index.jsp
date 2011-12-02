@@ -30,7 +30,7 @@
 	}  
 %>
 
-<div class="order_content" style="position: absolute;">
+<div class="order_content" style="position: absolute; width: 60%;">
 <TABLE WIDTH="100%" CELLPADDING="2" CELLSPACING="0" BORDER="0" ALIGN="CENTER" class="order">
 	<TR VALIGN="TOP">
 		<TD WIDTH="60%">

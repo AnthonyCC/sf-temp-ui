@@ -538,12 +538,12 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
             </td>
     <% } else { %>
                 <input type="hidden" name="salesUnit_<%=idx%>" value="<%= orderLine.getSalesUnit() %>">
-            <td colspan="2">
+            <td colspan="2" width="40">
             <% String quant = QT_FORMATTER.format(orderLine.getQuantity()); %>    
             <input type="text" name="quantity_<%=idx%>" value="<%= !"0".equals(quant)?quant:"" %>" style="width: 36px" size="3" maxlength="4" class="text10" onChange="chgQty<%=idx%>(0);" onBlur="pricing<%=idx%>.setQuantity(this.value);">
             </td>
-            <td><a href="javascript:chgQty<%=idx%>(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/template/quickshop/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br><a href="javascript:chgQty<%=idx%>(<%= -productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/template/quickshop/grn_arrow.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
-            <td><%if (!"".equals(orderLine.getLabel())){%><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br><img src="/media_stat/images/layout/clear.gif" width="2" height="1"><%=orderLine.getLabel()%><% } else { %>&nbsp;<% } %></td>
+            <td  width="10"><a href="javascript:chgQty<%=idx%>(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/template/quickshop/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br><a href="javascript:chgQty<%=idx%>(<%= -productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/template/quickshop/grn_arrow.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
+            <td  width="20"><%if (!"".equals(orderLine.getLabel())){%><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br><img src="/media_stat/images/layout/clear.gif" width="2" height="1"><%=orderLine.getLabel()%><% } else { %>&nbsp;<% } %></td>
     <% }
                 String earliestAvailability = productNode.getSku(orderLine.getSkuCode()).getEarliestAvailabilityMessage();
 
@@ -552,7 +552,7 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
                 
     %>
     <%-- product description display --%> 
-    <td><font class="text11bold"><%= orderLine.getDescription() %></font>    
+    <td  width="432"><font class="text11bold"><%= orderLine.getDescription() %></font>    
    
     
     <%if(request.getRequestURI().indexOf("makegood")>-1){%>
@@ -611,7 +611,7 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
 	</NOBR>
     </td>
     
-    <td align="right">
+    <td align="right" width="81">
     	<NOBR>
 	
 	<display:ProductPrice impression="<%= impression %>" quickShop="true" showDescription="false" showScalePricing="false" showSaveText="true"/>

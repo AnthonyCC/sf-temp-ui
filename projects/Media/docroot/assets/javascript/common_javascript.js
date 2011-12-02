@@ -121,8 +121,11 @@ function popResizeHelp(URL,h,w,name) {
 	newWin.focus();
 }
 function backtoWin(url) {
-	parent.window.opener.location = url ;
-	parent.window.opener.focus();
+	if (window.opener && !window.opener.closed){
+		parent.window.opener.location = url ;
+		parent.window.opener.focus();		
+	}
+	window.location=url;
 }
 
 function backtoWinPop(url, size) {

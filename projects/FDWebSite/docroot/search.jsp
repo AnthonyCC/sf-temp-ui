@@ -115,7 +115,7 @@ if (results != null && results.numberOfResults() > 0) {
 <%
 
 if (FDStoreProperties.isAdServerEnabled()) { %>
-<div style="width: 529px; border: 0; margin-top: 15px; padding: 0; margin-left: auto; margin-right: auto;">
+<div style="width: 806px; border: 0; margin-top: 15px; padding: 0; margin-left: auto; margin-right: auto; text-align:center;">
 <style type="text/css">
 #OAS_CategoryNote {
 text-align: center;

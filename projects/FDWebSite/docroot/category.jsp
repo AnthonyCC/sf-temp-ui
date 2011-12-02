@@ -121,6 +121,7 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 	        jspTemplate = "/common/template/both_dnav.jsp";
 	    }
 	}
+	request.setAttribute("noLeftNav",noLeftNav);
 %>
 <tmpl:insert template='<%=jspTemplate%>'>
 	

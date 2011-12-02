@@ -726,7 +726,7 @@ if(productCode!=null && prodCatId !=null ) {
 <%
 	if (hasNutrition || hasIngredients) {
 %>
-<br><A HREF="javascript:pop('/shared/nutrition_info.jsp?catId=<%=request.getParameter("prodCatId")%>&productId=<%=request.getParameter("productId")%>',335,375)">Nutrition, Ingredients, and Allergens</A>
+<br><A HREF="javascript:pop('/shared/nutrition_info.jsp?catId=<%=request.getParameter("prodCatId")%>&productId=<%=request.getParameter("productId")%>',335,575,'nutrition')">Nutrition, Ingredients, and Allergens</A>
 <%
 	} else {
 %><br>Please check product label for nutrition, ingredients, and allergens.<%

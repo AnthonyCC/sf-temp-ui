@@ -8,6 +8,10 @@
 <%@ taglib uri="/WEB-INF/shared/tld/freshdirect.tld" prefix='fd'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
 
+<% //expanded page dimensions
+final int W_FAVORITE_PRODUCTS_BND = 683;
+%>
+
 <%--
   your_favorites.jspf
 	requires:
@@ -30,7 +34,7 @@
 		%>
 		<div class="carousel-box" style="margin-top:0px;">
 			<div class="separator" style="margin-bottom:15px"><img src="/media/4mm/dpt_4mm_hdr_your_fave_return.gif" /></div>
-			<display:Carousel id="your_favourites_carousel" carouselId="your_favourites_carousel" width="510" numItems="4" showCategories="false" itemsToShow="<%= YFProds %>" trackingCode="yf-4mm" maxItems="12">
+			<display:Carousel id="your_favourites_carousel" carouselId="your_favourites_carousel" width="<%=W_FAVORITE_PRODUCTS_BND%>" numItems="5" showCategories="false" itemsToShow="<%= YFProds %>" trackingCode="yf-4mm" maxItems="12">
 				<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 					<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>"
 							useAlternateImage="true" hideBursts="<%= hideBursts %>" className="productImage" height="90" enableQuickBuy="true" webId="<%= webId %>"/>

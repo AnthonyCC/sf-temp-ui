@@ -252,7 +252,7 @@ span.selectedRecipeVariant {
       <tr>
         <td colspan="2" height="25" style="background-image:url(/media_stat/recipe/rectabs_line_bg<%=theme%>.gif)">
 			<table border="0" cellspacing="0" cellpadding="0">
-			  <tr valign="bottom">
+			  <tr valign="middle">
 			  <% 
 			  	int numTabs = 0; 
 			  	boolean lastTabOn = false;

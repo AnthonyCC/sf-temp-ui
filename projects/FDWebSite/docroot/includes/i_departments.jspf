@@ -212,7 +212,7 @@ String presPicks = "/newsletter.jsp?catId=picks_love&trk=wgd";
 			</td>
 		  </tr>
 	</table>
-				<div style="border-top: 1px solid #cccccc; margin-top: 16px; padding-top: 16px;">
+				<div style="border-top: 1px solid #cccccc; margin-top: 16px; padding-top: 16px; border-bottom: 1px solid #cccccc; padding-bottom: 16px;">
 				
 					<table cellspacing="0" cellpadding="0" style="width: 744px; text-align: center; margin: 0px auto;">
 						<tr>

@@ -52,7 +52,11 @@
 			<% if ( txCount < impressions.size() && impressions.get(txCount) instanceof TransactionalProductImpression ) { %>
 				<nobr><div class="groceryProductLinePrice" style="text-align: left; padding-left: 2px;">QTY</div>
 				<img width="1" height="4" src="/media_stat/images/layout/clear.gif" alt="" /><br />
-				<fd:TxProductControl txNumber="<%= tpCount %>" namespace="<%= TX_JS_NAMESPACE %>" impression="<%= (TransactionalProductImpression) impressions.get(txCount) %>"/></nobr>
+				<table align="left">
+				<td>
+					<fd:TxProductControl txNumber="<%= tpCount %>" namespace="<%= TX_JS_NAMESPACE %>" impression="<%= (TransactionalProductImpression) impressions.get(txCount) %>"/></nobr>
+				</td>
+				</table>
 			<%} else { %>
 				<span class="text10"><a href="/product.jsp?productId=<%= displayProduct %>&catId=<%= displayProduct.getParentNode() %>&trk=pmod">(click here to buy)</a></span>
 				<% itemShownIndex--; /* no qty box, decrease display count */ %>

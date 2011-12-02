@@ -58,7 +58,7 @@ if (selected == null || wineFilter.isFiltering()) {
 	<div class="nav-filter-name nav-filter-name-CLEARALL title16 wine-narrow">		
 		<div class="nav-filter-clickable">
 			<span class="nav-filter-carrot nav-filter-carrot-CLEARALL" style="vertical-align: top;" id="CLEARALL-carrot">&nbsp;</span>
-			<a class="clear-all-link-value" style="display: inline-block; margin-left: -4px; margin-top: 2px" href="/wine/filter.jsp"><span class="nav-filter-category">SHOW ALL</span><br>
+			<a class="clear-all-link-value" style="display: inline-block; margin-left: -4px; margin-top: 2px; text-decoration: none;" href="/wine/filter.jsp"><span class="nav-filter-category">SHOW ALL</span><br>
 			<span class="nav-filter-category">Clear All</span>
 			</a>
 		</div>

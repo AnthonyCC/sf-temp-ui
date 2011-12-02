@@ -835,7 +835,11 @@ final int W_GROUPSCALE_TOTAL = 601;
 										<% if (impressions.get(bigProdIndex) instanceof TransactionalProductImpression) { %>
 											<div class="groceryProductLinePrice" style="text-align: left; padding-left: 2px;">QTY</div>
 											<img width="1" height="4" src="/media_stat/images/layout/clear.gif" alt="" /><br />
-											<fd:TxProductControl txNumber="<%= displayIdx %>" namespace="<%= TX_JS_NAMESPACE %>" impression="<%= (TransactionalProductImpression) impressions.get(bigProdIndex) %>"/>
+											<table align="left">
+											<td>
+												<fd:TxProductControl txNumber="<%= displayIdx %>" namespace="<%= TX_JS_NAMESPACE %>" impression="<%= (TransactionalProductImpression) impressions.get(bigProdIndex) %>"/>
+											</td>
+											</table>
 										<% } else { %>
 											<span class="text10"><a href="/product.jsp?productId=<%= productNode %>&catId=<%= productNode.getParentNode() %>&trk=pmod">(click here to buy)</a></span>
 											<%-- product needs configuring --%>

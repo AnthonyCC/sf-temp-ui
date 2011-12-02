@@ -49,6 +49,7 @@ a:hover     { color: #009900; text-decoration: overline underline; }
 	padding: 0px;
 	margin: 0px;
 	overflow-y: auto;
+	min-height: 700px;
 }
 
 .content_bgcolor {

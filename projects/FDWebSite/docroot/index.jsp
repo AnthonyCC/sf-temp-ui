@@ -321,7 +321,7 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 	   		
 	   	<%-- PROMO 4 BOTTOM--%>
 			<div class="ad4">
-				<div class="adbox">
+				<div class="adbox4">
 					<span>
 						<SCRIPT LANGUAGE=JavaScript>
 						<!--
@@ -329,7 +329,7 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 						//-->
 						</SCRIPT>
 					</span>
-					<div class="adbox_bottom"></div>
+					<div class="adbox_bottom4"></div>
 				</div>			
 			</div> 
 		<%-- END PROMO 4 BOTTOM--%>

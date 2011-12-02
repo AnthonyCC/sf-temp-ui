@@ -31,7 +31,7 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
 <form name="fd_login" method="post" action="<%= request.getRequestURI()+"?"+StringUtil.escapeXssUri(request.getQueryString()) %>">
 <TR>
-	<TD width="110" ALIGN="right" class="text13" style="padding-right: 10px;">* E-mail Address&nbsp;</TD>
+	<TD width="110" ALIGN="right" class="text13" style="padding-right: 10px;"><span style="white-space: nowrap;">* E-mail Address&nbsp;</span></TD>
 	<TD width="125"><input name="userid" size="14" style="width: 140px" type="text" required="true" maxlength="128" tabindex="1" class="text11" value="<%= request.getParameter("userid")!=null ? request.getParameter("userid") : ""%>"></td> 
 	<td></td>
 	<td class="text11rbold" width=220>

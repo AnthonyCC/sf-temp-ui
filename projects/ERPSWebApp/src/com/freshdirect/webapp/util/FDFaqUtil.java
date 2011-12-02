@@ -19,7 +19,7 @@ public class FDFaqUtil {
 		
 		List<ContentNodeI> faqSubFolders = new LinkedList<ContentNodeI>();
 		if ( null != contentNode ) {
-			Set<ContentKey> subNodes = contentNode.getChildKeys();
+			List<ContentKey> subNodes = (List<ContentKey>) contentNode.getAttributeValue("children");
 			for ( Object object : subNodes ) {
 				ContentKey subContentKey = (ContentKey)object;
 				if ( null != subContentKey ) {
