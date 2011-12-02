@@ -17,6 +17,7 @@ import com.freshdirect.fdstore.content.ProductModel;
  * @author segabor
  */
 public class SaleComparator extends PopularityComparator {
+	
     SaleComparator(boolean inverse, boolean hideUnavailable, List<ProductModel> products, PricingContext pricingContext) {
         super(inverse, hideUnavailable, products, pricingContext);
     }
@@ -33,7 +34,7 @@ public class SaleComparator extends PopularityComparator {
         	
             // Stage 0 -- sort out non-display cases
             //
-            {
+            if (hideUnavailable) {
                 boolean h1 = isDisplayable(c1.getContentKey()) && c1.getDefaultSku()!=null;
                 boolean h2 = isDisplayable(c2.getContentKey()) && c2.getDefaultSku()!=null;
                 if (!h1 && h2) {
@@ -47,8 +48,18 @@ public class SaleComparator extends PopularityComparator {
                 	// unavailable products sorted by popularity ...
                 	return super.compare(c1, c2);
                 }
+            } else {
+            	boolean unav1 = c1.isUnavailable();
+            	boolean unav2 = c1.isUnavailable();
+            	
+            	if ( unav1 && unav2 ) 
+            		return 0;
+            	else if ( unav1 ) 
+            		return 1;
+            	else if ( unav2 )
+            		return -1;
             }
-
+            
             FDProductInfo i1 = c1.getDefaultSku().getProductInfo();
             FDProductInfo i2 = c2.getDefaultSku().getProductInfo();
 
@@ -85,6 +96,7 @@ public class SaleComparator extends PopularityComparator {
             // Stage 4 -- equal prices --> compare by popularity
             //
             return super.compare(c1, c2);
+            
         } catch (FDSkuNotFoundException noSkuExc) {
             return 0;
         } catch (FDResourceException se) {

@@ -229,6 +229,12 @@
 			<AttributeDef type="B" name="HIDE_INACTIVE_SIDE_NAV"  label="Hide Inactive Category in Side Nav" inheritable="true"/>
 			<AttributeDef type="B" name="TREAT_AS_PRODUCT"  label="Treat as Product" inheritable="true"/>
 			<AttributeDef type="B" name="NUTRITION_SORT"  label="Nutrition Sort" inheritable="true"/>
+			<EnumDef type="S" name="GROCERY_DEFAULT_SORT"  label="Default sorting for grocery" inheritable="true">
+				<EnumValue value="name" label="Sort by Name"/>
+				<EnumValue value="price" label="Sort by Price"/>
+				<EnumValue value="popularity" label="Sort by Popularity"/>
+				<EnumValue value="sale" label="Sort by Sale"/>
+			</EnumDef>			
 			<AttributeDef type="B" name="SIDENAV_BOLD"  label="Side Nav Bold"/>
 			<AttributeDef type="B" name="SIDENAV_LINK" label="Side Nav Link" inheritable="true"/>
 			<AttributeDef type="I" name="SIDENAV_PRIORITY"  label="Side Nav Priority"/>            
