@@ -79,7 +79,7 @@ public class CEPService{
 		{
 			KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 			
-			kbuilder.add(ResourceFactory.newInputStreamResource(CEPService.class.getResourceAsStream(FDStoreProperties.getRuleRepository())),  ResourceType.DRL);
+			kbuilder.add(ResourceFactory.newInputStreamResource(ClassLoader.getSystemResourceAsStream(FDStoreProperties.getRuleRepository())),  ResourceType.DRL);
 			KnowledgeBuilderErrors errors = kbuilder.getErrors();
 			if (errors.size() > 0) {
 				for (KnowledgeBuilderError error: errors) {
