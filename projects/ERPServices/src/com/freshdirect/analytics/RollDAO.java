@@ -8,7 +8,9 @@ package com.freshdirect.analytics;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -30,7 +32,8 @@ public class RollDAO {
 	private static final String ROLL_INSERT="INSERT INTO MIS.roll_event (ID, CUSTOMER_ID, CREATEDATE, UNAVAILABLE_PCT, ZONE, CUTOFF, LOG_ID, DELIVERY_DATE) " +
 			"VALUES (?,?,?,?,?,?,?,?)";
 	
-	
+	private static final String ROLL_SELECT="select count(*) cnt, zone, cutoff, to_char(createdate, 'HH:MI AM') time from mis.roll_event where to_char(createdate, 'mm/dd/yyyy') = ?" +
+			" group by zone, cutoff,  to_char(createdate, 'HH:MI AM') order by  to_char(createdate, 'HH:MI AM')  asc";
 	public static void insert(Connection conn, List<RollEvent> roll) 
 	{
 		PreparedStatement ps = null;
@@ -65,5 +68,54 @@ public class RollDAO {
 					}	
 			}
 	}
+	
+	
+	public static List<RollData> getData(Connection conn, String createDate) 
+	{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<RollData> dataList = new ArrayList<RollData>();
+		 try {
+		    	ps = conn.prepareStatement(ROLL_SELECT);
+		    	ps.setString(1, createDate);
+		    	rs = ps.executeQuery();
+		    	
+		    	while(rs.next())
+		    	{
+		    		RollData data = new RollData();
+		    		data.setCnt(rs.getInt("cnt"));
+		    		data.setCutOff(rs.getDate("cutoff"));
+		    		data.setZone(rs.getString("zone"));
+		    		data.setTime(rs.getString("time"));
+		    		dataList.add(data);
+		    		
+		    	}
+		    	
+		 }
+		 catch(Exception e)
+			{
+				LOGGER.info(e.getMessage());
+				e.printStackTrace();
+			}
+		    	
+		 finally
+			{
+				try
+				{
+					if(rs!=null)
+						rs.close();
+					if(ps!=null)
+						ps.close();
+				}
+				catch(SQLException e)
+				{
+					LOGGER.info("There was an exception cleaning up the resources", e);
+				}
+			}
+		 return dataList;
+		
+	}
+	
+	
 }
 

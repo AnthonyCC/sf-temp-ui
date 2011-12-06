@@ -17,8 +17,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Category;
+
+import com.freshdirect.framework.util.log.LoggerFactory;
+
 public class OrderRateDAO {
 
+	private static final Category LOGGER = LoggerFactory.getInstance(OrderRateDAO.class);
+	
+	
+	
 	private static final String ORDER_RATE_QUERY_BY_TIMESLOT_SNAPSHOT = "select t.base_date , to_date(to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.START_TIME, 'HH:MI:SS AM'),'MM/DD/YYYY HH:MI:SS AM') starttime , t.capacity, " +
 			"to_date(to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.END_TIME, 'HH:MI:SS AM'),'MM/DD/YYYY HH:MI:SS AM') endtime , t.zone_code zone , to_date(to_char(t.base_date-1, 'MM/DD/YYYY')||' '|| to_char(t.cutoff_time, 'HH:MI:SS AM'),'MM/DD/YYYY HH:MI:SS AM') cutofftime, t.capacity, " +
 			" count(a.id) as \"oCount\" from (select t.base_date, t.start_time, t.end_time, t.capacity, t.cutoff_time, z.zone_code  from dlv.timeslot t, dlv.zone z where t.zone_ID = z.ID and " +
@@ -48,7 +56,15 @@ public class OrderRateDAO {
 	private static final String CAPACITY_QUERY = "select capacity,order_count, " +
 			"delivery_date, timeslot_start, timeslot_end, zone, snapshot_time from MIS.order_rate where delivery_date >= ?";
 	
-
+	private static final String ORDER_DATA_QUERY = "select orders, projorders, projso, ts,te, a.zone, capacity, orders_expected, utilization from " +
+			"(select  timeslot_start, timeslot_end, zone,  sum(order_count) orders, sum(weighted_projected_count) projorders, max(project_so) projso, " +
+			"to_char(timeslot_start,'hh:mi am') ts, to_char(timeslot_end, 'hh:mi am') te from mis.order_rate where to_char(timeslot_start, 'mm/dd/yyyy') = " +
+			"? group by timeslot_Start, timeslot_end, zone) a, (select timeslot_start, timeslot_end, zone, capacity, orders_expected, case when capacity<>0 " +
+			"then (orders_expected*100/capacity)/100 else 0 end utilization from mis.order_rate where (snapshot_time,timeslot_start, timeslot_end,zone) " +
+			"in (select max(snapshot_time), timeslot_Start, timeslot_end,zone from mis.order_rate where to_char(timeslot_start, 'mm/dd/yyyy') = ? " +
+			"group by timeslot_start, timeslot_end, zone)   ) b where a.timeslot_start = b.timeslot_start and a.timeslot_end = b.timeslot_end " +
+			"and a.zone = b.zone";
+			
 
 	private static Timestamp getTimestamp(Timestamp timeStamp, int lookback)
 	{
@@ -338,6 +354,59 @@ public class OrderRateDAO {
 				e.printStackTrace();
 			}
 		}
+		
+	}
+	
+	
+	public static List<OrderData> getData(Connection conn, String createDate) 
+	{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<OrderData> dataList = new ArrayList<OrderData>();
+		 try {
+		    	ps = conn.prepareStatement(ORDER_DATA_QUERY);
+		    	ps.setString(1, createDate);
+		    	ps.setString(2, createDate);
+		    	rs = ps.executeQuery();
+		    	
+		    	while(rs.next())
+		    	{
+		    		OrderData data = new OrderData();
+		    		data.setOrderCount(rs.getDouble("orders"));
+		    		data.setProjectedCount(rs.getDouble("projorders"));
+		    		data.setProjectedSoldOut(rs.getDate("projso"));
+		    		data.setZone(rs.getString("zone"));
+		    		data.setStartTime(rs.getString("ts"));
+		    		data.setEndime(rs.getString("te"));
+		    		data.setCapacity(rs.getInt("capacity"));
+		    		data.setOrdersExpected(rs.getDouble("orders_expected"));
+		    		data.setUtilization(rs.getDouble("utilization"));
+		    		dataList.add(data);
+		    		
+		    	}
+		    	
+		 }
+		 catch(Exception e)
+			{
+				LOGGER.info(e.getMessage());
+				e.printStackTrace();
+			}
+		    	
+		 finally
+			{
+				try
+				{
+					if(rs!=null)
+						rs.close();
+					if(ps!=null)
+						ps.close();
+				}
+				catch(SQLException e)
+				{
+					LOGGER.info("There was an exception cleaning up the resources", e);
+				}
+			}
+		 return dataList;
 		
 	}
 }
