@@ -215,7 +215,7 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
                         status = "In Process";
                         isPending = true;
                     }else{
-                        if(recipient.getRecepientModel().getDeliveryMode().equals(EnumGCDeliveryMode.PDF)) status = "Completed";
+                        if(recipient.getRecepientModel().getDeliveryMode().equals(EnumGCDeliveryMode.PDF)) status = "Printed";
                         else status = "Sent";
                         FDGiftCardI gc =user.getGiftCardList().getGiftCard(recipient.getCertificationNumber());
                         if( gc!= null && gc.getBalance() != recipient.getRecepientModel().getAmount()) status = "Redeemed";
@@ -224,7 +224,7 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
                 %>
                 <td><%= status %></td>
                 <% if(!isPending) { %>
-                    <td><span id="email<%= indx %>cont"><a href="#" id="email<%= indx %>" onClick="statusCheckPHEmail('email<%= indx %>', '<%= recipient.getCertificationNumber() %>', '<%= cart.getErpSalesId() %>'); return false;" class="resendLink" style="color: #639;"><%= status.equals("Completed") ? "Send" : "Resend" %> Email</a></span></td>
+                    <td><span id="email<%= indx %>cont"><a href="#" id="email<%= indx %>" onClick="statusCheckPHEmail('email<%= indx %>', '<%= recipient.getCertificationNumber() %>', '<%= cart.getErpSalesId() %>'); return false;" class="resendLink" style="color: #639;"><%= status.equals("Printed") ? "Send" : "Resend" %> Email</a></span></td>
                     <td><%--  <a href="/gift_card/postbacks/pdf_gen.jsp?saleId=<%= cart.getErpSalesId() %>&certNum=<%= recipient.getCertificationNumber() %>" > --%>View/Print<!-- </a>  --></td>
                     <td><span id="emailCancel<%= indx %>cont"><a href="#" id="emailCancel<%= indx %>" onClick="statusCheckPHEmailCancel('emailCancel<%= indx %>', '<%= recipient.getCertificationNumber() %>', '<%= cart.getErpSalesId() %>'); return false;" class="resendCancelLink" style="color: #9F1010;">Send Cancellation</a></span></td>
                 <% } else { %>    

@@ -225,7 +225,7 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
                         status = "In Process";
                         isPending = true;
                     } else {
-                        if(recipient.getRecepientModel().getDeliveryMode().equals(EnumGCDeliveryMode.PDF)) status = "Completed";
+                        if(recipient.getRecepientModel().getDeliveryMode().equals(EnumGCDeliveryMode.PDF)) status = "Printed";
                         else status = "Sent";
                         FDGiftCardI gc =user.getGiftCardList().getGiftCard(recipient.getCertificationNumber());
                         if( gc!= null && gc.getBalance() != recipient.getRecepientModel().getAmount()) status = "Redeemed";
@@ -234,7 +234,7 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
                 %>
                 <td><%= status %></td>
                 <% if(!isPending) { %>
-                    <td><a href="#" onClick="recipResendFetch('<%= cart.getErpSalesId() %>','<%= recipient.getCertificationNumber() %>'); return false;"><%= status.equals("Completed") ? "Send" : "Resend" %></a></td>
+                    <td><a href="#" onClick="recipResendFetch('<%= cart.getErpSalesId() %>','<%= recipient.getCertificationNumber() %>'); return false;"><%= status.equals("Printed") ? "Send" : "Resend" %></a></td>
                     <td><a href="/gift_card/postbacks/pdf_gen.jsp?saleId=<%= cart.getErpSalesId() %>&certNum=<%= recipient.getCertificationNumber() %>" >View/Print</a></td>
                 <% } else { %>    
                     <td>&nbsp;</td>

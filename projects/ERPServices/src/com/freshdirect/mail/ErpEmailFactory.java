@@ -87,7 +87,7 @@ public class ErpEmailFactory  {
 		email.getParameters().put("gcMediaRoot", FDStoreProperties.getGCTemplateBaseUrl()+gcMediaPath+giftCardInfo.getGcType()+"/");
 		//email.getParameters().put("gcMediaRootWithTemplate", FDStoreProperties.getMediaPath()+gcMediaPath+giftCardInfo.getGcType()+"/");
 		email.setFromAddress(new EmailAddress(giftCardInfo.getGcFrom(), giftCardInfo.getGcSenderEmail()));
-		email.setSubject("A Gift for You");
+		email.setSubject(giftCardInfo.getGcFrom()+" Has Sent You a FreshDirect Gift Card.");
 		return email;
 	}
 	
