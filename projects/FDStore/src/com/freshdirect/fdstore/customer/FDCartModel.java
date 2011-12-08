@@ -1234,7 +1234,18 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 	
 	public void addDiscount(Discount discount) {
-		this.discounts.add(new ErpDiscountLineModel(discount));
+		boolean isDuplicate = false;
+		if(!discounts.isEmpty()){
+			for (ErpDiscountLineModel erpDiscountLineModel : discounts) {
+				if(erpDiscountLineModel.getDiscount().getPromotionCode().equalsIgnoreCase(discount.getPromotionCode())){
+					isDuplicate= true;
+					break;
+				}
+			}
+		}
+		if(!isDuplicate){
+			this.discounts.add(new ErpDiscountLineModel(discount));
+		}
 	}
 
 	public double getTotalDiscountValue() {
