@@ -89,6 +89,14 @@ public class TransportationAdminProperties {
 	private final static String PROP_TRANSPORTATION_ZONETYPE_RUNNER_REQ="transportation.zonetype.runner.req";
 	private final static String PROP_TRANSPORTATION_ZONETYPE_RUNNER_MAX="transportation.zonetype.runner.max";
 
+	/* Trailer resource req */
+	private final static String PROP_TRANSPORTATION_TRAILER_DRIVER_REQ = "transportation.trailer.driver.req";
+	private final static String PROP_TRANSPORTATION_TRAILER_DRIVER_MAX = "transportation.trailer.driver.max";
+	private final static String PROP_TRANSPORTATION_TRAILER_HELPER_REQ = "transportation.trailer.helper.req";
+	private final static String PROP_TRANSPORTATION_TRAILER_HELPER_MAX = "transportation.trailer.helper.max";
+	private final static String PROP_TRANSPORTATION_TRAILER_RUNNER_REQ = "transportation.trailer.runner.req";
+	private final static String PROP_TRANSPORTATION_TRAILER_RUNNER_MAX = "transportation.trailer.runner.max";
+
 	// remember it is in minutes
 	private static final String PROP_TRANSPORTATION_TRK_CACHE_EXPIRY_TIME="transportation.truck.cache.expiry.time";
 	private static final String PROP_TRANSPORTATION_ROUTE_CACHE_EXPIRY_TIME="transportation.route.cache.expiry.time";
@@ -266,6 +274,13 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_BULLPEN_RUNNER_REQ, "0");
 		defaults.put(PROP_TRANSPORTATION_BULLPEN_RUNNER_MAX, "5");
 
+		defaults.put(PROP_TRANSPORTATION_TRAILER_DRIVER_REQ, "1");
+		defaults.put(PROP_TRANSPORTATION_TRAILER_DRIVER_MAX, "1");
+		defaults.put(PROP_TRANSPORTATION_TRAILER_HELPER_REQ, "0");
+		defaults.put(PROP_TRANSPORTATION_TRAILER_HELPER_MAX, "5");
+		defaults.put(PROP_TRANSPORTATION_TRAILER_RUNNER_REQ, "0");
+		defaults.put(PROP_TRANSPORTATION_TRAILER_RUNNER_MAX, "5");
+
 		defaults.put(PROP_TRANSPORTATION_ZONETYPE_DRIVER_REQ, "0");
 		defaults.put(PROP_TRANSPORTATION_ZONETYPE_DRIVER_MAX, "10");
 		defaults.put(PROP_TRANSPORTATION_ZONETYPE_HELPER_REQ, "0");
@@ -361,6 +376,7 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_FILENAME_SOSIMULATIONRPT, "trn_sosimulationreport_");
 		defaults.put(PROP_TRANSPORTATION_FILENAME_SOFAILURERPT, "trn_sofailurereport_");
 		defaults.put(PROP_JDBCBATCHUPDATE_THRESHOLD, "999");
+
 		refresh();
 	}
 
@@ -767,5 +783,22 @@ public class TransportationAdminProperties {
 	public static int getJDBCBatchUpdateThreshold() {
 		return getIntVal(get(PROP_JDBCBATCHUPDATE_THRESHOLD));
 	}
-
+	public static int getDriverReqForTrailer() {
+		return getIntVal(get(PROP_TRANSPORTATION_TRAILER_DRIVER_REQ));
+}
+	public static int getDriverMaxForTrailer() {
+		return getIntVal(get(PROP_TRANSPORTATION_TRAILER_DRIVER_MAX));
+	}
+	public static int getHelperReqForTrailer() {
+		return getIntVal(get(PROP_TRANSPORTATION_TRAILER_HELPER_REQ));
+	}
+	public static int getHelperMaxForTrailer() {
+		return getIntVal(get(PROP_TRANSPORTATION_TRAILER_HELPER_MAX));
+	}
+	public static int getRunnerReqForTrailer() {
+		return getIntVal(get(PROP_TRANSPORTATION_TRAILER_RUNNER_REQ));
+	}
+	public static int getRunnerMaxForTrailer() {
+		return getIntVal(get(PROP_TRANSPORTATION_TRAILER_RUNNER_MAX));
+	}
 }

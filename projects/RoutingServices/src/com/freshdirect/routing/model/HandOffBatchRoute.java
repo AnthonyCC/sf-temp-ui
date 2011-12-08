@@ -11,9 +11,11 @@ public class HandOffBatchRoute extends RouteModel implements IHandOffBatchRoute 
 	private String area;
 	private String sessionName;
 	private String truckNumber;
+	private String trailerId;
 	
 	public HandOffBatchRoute(IRouteModel refModel) {
 		super();
+		this.setOriginId(refModel.getOriginId());
 		this.setRouteId(refModel.getRouteId());
 		this.setStartTime(refModel.getStartTime());
 		this.setStops(refModel.getStops());
@@ -60,6 +62,14 @@ public class HandOffBatchRoute extends RouteModel implements IHandOffBatchRoute 
 		this.truckNumber = truckNumber;
 	}
 	
+	public String getTrailerId() {
+		return trailerId;
+	}
+
+	public void setTrailerId(String trailerId) {
+		this.trailerId = trailerId;
+	}
+
 	@Override
 	public Date getCheckInTime() {
 		// TODO Auto-generated method stub
@@ -88,6 +98,7 @@ public class HandOffBatchRoute extends RouteModel implements IHandOffBatchRoute 
 	public Date getRouteDispatchTime() {
 		
 		if(this.getDispatchTime() != null) {
+
 			return this.getDispatchTime().getAsDate();
 		} else {
 			return null;

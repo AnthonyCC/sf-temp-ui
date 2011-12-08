@@ -29,7 +29,16 @@ public class WaveInstance implements java.io.Serializable, TrnBaseEntityI  {
 	private String referenceId;
 	private String notificationMessage;
 	private Boolean forceSynchronize;
+	private TrnFacility originFacility;
 	
+	public TrnFacility getOriginFacility() {
+		return originFacility;
+	}
+
+	public void setOriginFacility(TrnFacility originFacility) {
+		this.originFacility = originFacility;
+	}
+
 	public String getWaveInstanceId() {
 		return waveInstanceId;
 	}

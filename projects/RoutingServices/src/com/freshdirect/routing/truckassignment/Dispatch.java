@@ -30,6 +30,7 @@ public class Dispatch extends Id implements Cloneable, Comparable<Dispatch> {
 	private int nextAvailable;
 	private int plannedEnd;
 	private Employee employee;
+	private boolean isTrailer;
 
 	public Dispatch(String id) {
 		super(id);
@@ -105,6 +106,14 @@ public class Dispatch extends Id implements Cloneable, Comparable<Dispatch> {
 
 	public void setEmployee(Employee employee) {
 		this.employee = employee;
+	}
+
+	public boolean isTrailer() {
+		return isTrailer;
+	}
+
+	public void setTrailer(boolean isTrailer) {
+		this.isTrailer = isTrailer;
 	}
 
 	private static int indexOf(LinkedHashMap<Truck, Integer> preferences, Truck truck) {

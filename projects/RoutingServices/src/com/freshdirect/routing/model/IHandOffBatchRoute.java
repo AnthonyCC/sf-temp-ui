@@ -19,4 +19,7 @@ public interface IHandOffBatchRoute extends IRouteModel, BapiSendHandOff.HandOff
 	String getTruckNumber();
 	void setTruckNumber(String truckNumber);
 		
+	String getTrailerId();
+	void setTrailerId(String trailerId);
+
 }

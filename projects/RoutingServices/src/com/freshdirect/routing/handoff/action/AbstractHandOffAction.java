@@ -3,6 +3,7 @@ package com.freshdirect.routing.handoff.action;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -16,6 +17,7 @@ import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;
 import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
+import com.freshdirect.routing.model.ITrailerModel;
 import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingProcessException;
@@ -34,6 +36,8 @@ public abstract class AbstractHandOffAction {
 	
 	private NumberFormat formatter = new DecimalFormat("00");
 	
+	private NumberFormat formatter1 = new DecimalFormat("0000");
+
 	private static final String ERROR_MSG_DISPATCHSTATUSINVALIDCHG = "Dispatches marked as COMPLETE in a previous cutoff cannot be changed to PENDING";
 	private static final String ERROR_MSG_NEWINVALIDPDISPATCH = "A new dispatch has been added that is earlier than previously completed dispatches";
 	
@@ -71,6 +75,17 @@ public abstract class AbstractHandOffAction {
 		return 0;
 	}
 	
+	public static int getTrailerIndex(String search) {
+		try {
+			String[] dataLst = StringUtils.split(search, "-");
+			if(dataLst != null && dataLst.length >1) {
+				return Integer.parseInt(dataLst[1]);
+			} 
+		} catch(Exception e) {
+			//do nothing
+		}
+		return 0;
+	}
 	public static String splitStringForCode(String search) {
 		String[] dataLst = StringUtils.split(search, "-");
 		if(dataLst != null && dataLst.length >0) {
@@ -108,6 +123,41 @@ public abstract class AbstractHandOffAction {
 		return formatter.format(input);
 	}
 	
+	public String formatTrailerNumber(int input) {
+		return formatter1.format(input);
+	}
+
+	protected class RouteComparator1 implements Comparator<IHandOffBatchRoute> {		
+
+		public int compare(IHandOffBatchRoute obj1, IHandOffBatchRoute obj2){
+
+			String routeId1 = ((IHandOffBatchRoute) obj1).getRouteId();
+			String routeId2 = ((IHandOffBatchRoute) obj2).getRouteId();			
+			return routeId1.compareTo(routeId2);
+		}
+	}
+
+	protected class TrailerComparator implements Comparator<ITrailerModel> {		
+
+		public int compare(ITrailerModel obj1, ITrailerModel obj2){
+
+			int trailerId1 = getTrailerIndex(((ITrailerModel) obj1).getTrailerId());
+			int trailerId2 = getTrailerIndex(((ITrailerModel) obj2).getTrailerId());			
+			return trailerId1 - trailerId2;
+		}
+	}
+
+	protected class TrailerComparator1 implements Comparator<ITrailerModel> {		
+
+		public int compare(ITrailerModel obj1, ITrailerModel obj2){
+			if(obj1 != null && obj2 != null
+					&& obj1.getDispatchTime() != null && obj2.getDispatchTime() != null){
+				return obj1.getDispatchTime().getAsDate().compareTo(obj2.getDispatchTime().getAsDate());
+			}
+			return 0;
+		}
+	}
+
 	protected DispatchCorrelationResult correlateDispatch(List<IHandOffBatchRoute> routes
 															, Map<String, IAreaModel> areaLookup) throws RoutingServiceException {
 		

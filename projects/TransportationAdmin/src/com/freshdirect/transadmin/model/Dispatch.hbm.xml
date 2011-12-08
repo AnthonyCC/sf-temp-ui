@@ -85,6 +85,12 @@
          <property name="physicalTruck" type="string">
             <column name="PHYSICAL_TRUCK" length="6" />
         </property>
+        <many-to-one name="originFacility" class="com.freshdirect.transadmin.model.TrnFacility" fetch="select" lazy="false">
+            <column name="ORIGIN_FACILITY" length="16" not-null="true"/>
+        </many-to-one>
+        <many-to-one name="destinationFacility" class="com.freshdirect.transadmin.model.TrnFacility" fetch="select" lazy="false">
+            <column name="DESTINATION_FACILITY" length="16" not-null="true"/>
+        </many-to-one>
         <many-to-one name="region" class="com.freshdirect.transadmin.model.Region" fetch="select" lazy="false">
             <column name="REGION" length="16" not-null="true" />
         </many-to-one>      

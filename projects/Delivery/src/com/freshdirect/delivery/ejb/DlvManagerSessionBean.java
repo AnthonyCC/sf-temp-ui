@@ -103,6 +103,7 @@ import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IRoutingNotificationModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IWaveInstance;
+import com.freshdirect.routing.model.TrnFacilityType;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
@@ -2645,8 +2646,8 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 	
 	public void synchronizeWaveInstance(IRoutingSchedulerIdentity schedulerId
 										, Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree
-										, Set<String> inSyncZones) throws DlvResourceException {
-		List<IWaveInstance> waveInstances = RoutingUtil.synchronizeWaveInstance(schedulerId, waveInstanceTree, inSyncZones);
+										, Set<String> inSyncZones, Map<String, TrnFacilityType> routingLocationMap) throws DlvResourceException {
+		List<IWaveInstance> waveInstances = RoutingUtil.synchronizeWaveInstance(schedulerId, waveInstanceTree, inSyncZones, routingLocationMap);
 		if(waveInstances != null && waveInstances.size() > 0) {
 			updateWaveInstanceStatus(waveInstances);
 			deleteZeroSyncWaveInstance(schedulerId);
@@ -2851,6 +2852,25 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				}
 			} catch (SQLException se) {
 				LOGGER.warn("DlvManagerSB fixDisassociatedTimeslots: Exception while cleaning: " + se);
+			}
+		}
+	}
+
+	public Map<String, TrnFacilityType> retrieveTrnFacilitys()throws RemoteException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return DlvManagerDAO.retrieveTrnFacilitys(conn);
+
+		} catch (SQLException e) {
+			throw new EJBException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+}
+			} catch (SQLException se) {
+				LOGGER.warn("DlvManagerSB getTrnFacility: Exception while cleaning: " + se);
 			}
 		}
 	}

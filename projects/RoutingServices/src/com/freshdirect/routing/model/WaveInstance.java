@@ -44,7 +44,25 @@ public class WaveInstance  extends BaseModel implements IWaveInstance {
 	private IAreaModel area;
 	
 	private EnumWaveInstancePublishSrc source;
+	private String originFacility;
+	private String routingCode;
 	
+	public String getRoutingCode() {
+		return routingCode;
+	}
+
+	public void setRoutingCode(String routingCode) {
+		this.routingCode = routingCode;
+	}
+
+	public String getOriginFacility() {
+		return originFacility;
+	}
+
+	public void setOriginFacility(String originFacility) {
+		this.originFacility = originFacility;
+	}
+
 	public IAreaModel getArea() {
 		return area;
 	}
@@ -357,7 +375,7 @@ public class WaveInstance  extends BaseModel implements IWaveInstance {
 		this.setCapacityCheck1(baseInstance.isCapacityCheck1());
 		this.setCapacityCheck2(baseInstance.isCapacityCheck2());
 		this.setCapacityCheck3(baseInstance.isCapacityCheck3());
-		this.setDepotId(baseInstance.getDepotId());
+		//this.setDepotId(baseInstance.getDepotId());
 		this.setEquipmentType(baseInstance.getEquipmentType());
 		this.setHourlyWage(baseInstance.getHourlyWage());
 		this.setHourlyWageDuration(baseInstance.getHourlyWageDuration());

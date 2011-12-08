@@ -81,17 +81,18 @@
               <ec:column cell="date" property="weekDate" sortable="true" title="Week"/>
               <ec:column cell="date" property="planDate" sortable="true" title="Date"/>
               <ec:column property="planDay" sortable="true" title="Day"/>
+			  <ec:column property="facilityInfoEx" sortable="true" title="ORF-DTF"/>
               <ec:column  cell="tooltip" alias="zoneCode" property="zoneNameEx" title="Zone"/>
               <ec:column alias="region" property="regionCode" title="Region"/>
-              <ec:column property="supervisorEx"   title="Supervisor" cell="tooltip"  />
+              <ec:column property="supervisorEx"   title="Sup" cell="tooltip"  />
               <ec:column cell="date" format="hh:mm aaa" alias="startTime" property="startTimeEx" title="Start Time"/>
               <ec:column cell="date" format="hh:mm aaa" alias="firstDeliveryTime" property="firstDeliveryTimeEx" title="First Dlv Time"/>
               <ec:column cell="date" format="hh:mm aaa" alias="lastDeliveryTime" property="lastDeliveryTimeEx" title="Last Dlv Time"/>
               <ec:column  filterable="true" property="drivers"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Driver" alias="drivers"/>
               <ec:column  filterable="true" property="helpers"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Helper" alias="helpers"/>
               <ec:column  filterable="true" property="runners"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Runner" alias="runners"/>
-              <ec:column property="sequence"  title="Rank"/>
-              <ec:column property="open"  title="Open"/>
+              <ec:column property="sequence"  width="4px" title="Rank"/>
+              <ec:column property="open"  width="4px" title="Open"/>
               <ec:column cell="date" format="hh:mm aaa" alias="cutOffTime" property="cutOffTimeEx" title="CutOff"/>
             </ec:row>
           </ec:table>

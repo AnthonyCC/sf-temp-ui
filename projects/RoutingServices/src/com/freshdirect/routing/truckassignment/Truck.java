@@ -32,6 +32,7 @@ public class Truck extends Id implements Comparable<Truck> {
 	private String rental;
 	private boolean inService;
 	private boolean virtual;
+	private boolean isTrailer;
 
 	public Truck(String id) {
 		super(id);
@@ -77,6 +78,14 @@ public class Truck extends Id implements Comparable<Truck> {
 		this.virtual = virtual;
 	}
 
+	public boolean isTrailer() {
+		return isTrailer;
+	}
+
+	public void setTrailer(boolean isTrailer) {
+		this.isTrailer = isTrailer;
+	}
+
 	@Override
 	public int compareTo(Truck t) {
 		return getId().compareTo(t.getId());
@@ -95,6 +104,8 @@ public class Truck extends Id implements Comparable<Truck> {
 		builder.append(rental);
 		builder.append(", inService=");
 		builder.append(inService);
+		builder.append(", isTrailer=");
+		builder.append(isTrailer);
 		builder.append(", virtual=");
 		builder.append(virtual);
 		builder.append("]");

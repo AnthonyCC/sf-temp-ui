@@ -1,5 +1,6 @@
 package com.freshdirect.transadmin.datamanager.report;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,11 +21,14 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.Region;
 
 import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;
+import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
+import com.freshdirect.routing.model.IHandOffBatchTrailer;
 import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 import com.freshdirect.transadmin.datamanager.RouteFileManager;
 import com.freshdirect.transadmin.datamanager.model.OrderRouteInfoModel;
+import com.freshdirect.transadmin.datamanager.model.TrailerRouteInfoModel;
 import com.freshdirect.transadmin.datamanager.report.model.CutOffReportData;
 import com.freshdirect.transadmin.datamanager.report.model.CutOffReportKey;
 import com.freshdirect.transadmin.datamanager.report.model.TimeWindow;
@@ -51,7 +55,7 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 	}
 
 	public void generateCutOffReport(String file, CutOffReportData reportData)
-										throws ReportGenerationException {
+										throws ReportGenerationException, ParseException {
 
 		HSSFWorkbook wb = new HSSFWorkbook();
 		Map styles = initStyles(wb);
@@ -234,6 +238,7 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 			createTripInfoSheet(wb, reportData, styles);
 			createDetailInfoSheet(wb, reportData, styles);
 			createDispatchStatusSheet(wb, reportData, styles);
+			createTrailerRouteSummarySheet(wb, reportData, styles);
 		}		 
 
 		new RouteFileManager().generateReportFile(file, wb);
@@ -699,7 +704,122 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
         return rownum;
 	}
 	
+	protected DtlTrailerSummaryData getDtlTrailerSummaryData(IHandOffBatchTrailer trailer, List routeLst, IHandOffBatch batch ) throws ParseException {
 		
+		DtlTrailerSummaryData result = new DtlTrailerSummaryData();
+		if(routeLst != null) {
+			int size = routeLst.size();
+			result.setTrailerId(trailer.getTrailerId());
+			result.setNoOfRoutes(size);
+			result.setCrossDockId(trailer.getCrossDockId());
+			result.setDeliveryDate(batch.getDeliveryDate());
+			result.setDispatchTime(trailer.getDispatchTime().getAsDate());
+			
+			result.setTotalTravelTime(TransStringUtil.getTime(TransStringUtil.calcHMS(TransStringUtil.getDiffInSeconds(trailer.getCompletionTime(), trailer.getStartTime()))));
+			
+			int noOfConts = 0;
+			int noOfCartons = 0;
+			TrailerRouteInfoModel model = null;
+			for(int i=0; i < size; i++){
+				model = (TrailerRouteInfoModel)routeLst.get(i);
+				noOfCartons +=  model.getNoOfCartons();
+			}
+			noOfConts = noOfCartons/model.getMaxCartonsPerCont() > 1 ? noOfCartons/model.getMaxCartonsPerCont() : 1;
+			result.setNoOfConts(noOfConts);
+			if(routeLst.get(0) != null)
+				result.setMaxContainers(((TrailerRouteInfoModel)routeLst.get(0)).getMaxContPerTrailer());
+		}
+		return result;
+	}
+	
+	class DtlTrailerSummaryData {
+		
+		Date deliveryDate;
+		Date dispatchTime;
+		Date travelTime;
+		int noOfRoutes;
+		int noOfConts;
+		String crossDockId;
+		String trailerType;
+		double totalConts;
+		double totalCartons;
+		Date totalTravelTime;
+		String trailerId;
+		int maxContainers;
+		
+		public String getTrailerId() {
+			return trailerId;
+		}
+		public void setTrailerId(String trailerId) {
+			this.trailerId = trailerId;
+		}
+		public Date getDeliveryDate() {
+			return deliveryDate;
+		}
+		public void setDeliveryDate(Date deliveryDate) {
+			this.deliveryDate = deliveryDate;
+		}
+		public Date getDispatchTime() {
+			return dispatchTime;
+		}
+		public void setDispatchTime(Date dispatchTime) {
+			this.dispatchTime = dispatchTime;
+		}
+		public int getNoOfRoutes() {
+			return noOfRoutes;
+		}
+		public void setNoOfRoutes(int noOfRoutes) {
+			this.noOfRoutes = noOfRoutes;
+		}
+		public String getCrossDockId() {
+			return crossDockId;
+		}
+		public void setCrossDockId(String crossDockId) {
+			this.crossDockId = crossDockId;
+		}
+		public String getTrailerType() {
+			return trailerType;
+		}
+		public void setTrailerType(String trailerType) {
+			this.trailerType = trailerType;
+		}
+		public double getTotalConts() {
+			return totalConts;
+		}
+		public void setTotalConts(double totalConts) {
+			this.totalConts = totalConts;
+		}
+		public double getTotalCartons() {
+			return totalCartons;
+		}
+		public void setTotalCartons(double totalCartons) {
+			this.totalCartons = totalCartons;
+		}
+		public Date getTotalTravelTime() {
+			return totalTravelTime;
+		}
+		public void setTotalTravelTime(Date totalTravelTime) {
+			this.totalTravelTime = totalTravelTime;
+		}
+		public int getNoOfConts() {
+			return noOfConts;
+		}
+		public void setNoOfConts(int noOfConts) {
+			this.noOfConts = noOfConts;
+		}
+		public Date getTravelTime() {
+			return travelTime;
+		}
+		public void setTravelTime(Date travelTime) {
+			this.travelTime = travelTime;
+		}
+		public int getMaxContainers() {
+			return maxContainers;
+		}
+		public void setMaxContainers(int maxContainers) {
+			this.maxContainers = maxContainers;
+		}
+	}
 	protected DtlSummaryData getDtlSummaryData(List rnOrderLst ) {
 		
 		DtlSummaryData result = new DtlSummaryData();
@@ -1114,6 +1234,242 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
         return rownum;
 	}
 	
+	private short createTrailerRouteSummarySheet(HSSFWorkbook wb, CutOffReportData reportData, Map styles) throws ParseException {
+		if(reportData.getTrailerDetailData() != null) {
+			Set trailerKeys = reportData.getTrailerDetailData().keySet();
+			
+			Iterator _trailerKeyItr = trailerKeys.iterator();
+			
+			short rownum = 0;	
+		    short cellnum = 0;
+		    
+		    HSSFSheet sheet = wb.createSheet("Trailer Details");
+		    sheet.setDefaultColumnWidth((short)DEFAULT_WIDTH);	
+					    
+		    HSSFPrintSetup ps = sheet.getPrintSetup();
+		    ps.setScale((short)100);
+	        sheet.setGridsPrinted(false);
+	        
+	        ps.setLandscape(true);
+	         
+	        ps.setHeaderMargin((double) .25);
+	        ps.setFooterMargin((double) .25);
+	        sheet.setMargin(HSSFSheet.TopMargin, (double) .25);
+	        sheet.setMargin(HSSFSheet.BottomMargin, (double) .25);
+	        sheet.setMargin(HSSFSheet.LeftMargin, (double) .25);
+	        sheet.setMargin(HSSFSheet.RightMargin, (double) .25);
+		    
+		    HSSFRow row = sheet.createRow(rownum++);
+		    HSSFCell hssfCell = row.createCell(cellnum);
+
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("titleStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Trailer-Route Details"));
+	        			        
+			sheet.addMergedRegion(new Region(0,(short)0,0,(short)8));
+			int totalRoutes =  0;   
+			List _detailData = null;
+			while (_trailerKeyItr.hasNext()) {
+				String _trailerId = (String) _trailerKeyItr.next();
+				
+				_detailData = ((List)reportData.getTrailerDetailData().get(_trailerId));
+				totalRoutes = _detailData.size();
+				
+				DtlTrailerSummaryData _summaryData = getDtlTrailerSummaryData(reportData.getTrailerMapping().get(_trailerId)
+						, _detailData, reportData.getBatch());
+				
+		        Iterator _colsRouteItr = _detailData.iterator();
+	       		
+		        row = sheet.createRow(rownum++);//blank Row
+		        sheet.addMergedRegion(new Region(rownum-1,(short)0,rownum-1,(short)8));
+		        row = sheet.createRow(rownum++);//blank Row
+		        sheet.addMergedRegion(new Region(rownum-1,(short)0,rownum-1,(short)8));
+		        
+		        row = sheet.createRow(rownum++);
+		        cellnum = 0;
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("CrossDock"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString(_summaryData.getCrossDockId()));
+		        
+		        cellnum = (short)(cellnum+4);
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString(CUTOFFREPORT_DATETITLE));
+		        		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString(getFormattedDate(_summaryData.getDeliveryDate())));
+		        		        		             
+		        row = sheet.createRow(rownum++);
+		        cellnum = 0;		        
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Trailer"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString(_trailerId));
+		        
+		        row = sheet.createRow(rownum++);
+		        cellnum = 1;
+		        
+		        sheet.addMergedRegion(new Region(rownum-1,(short)1,rownum-1,(short)7));
+		        hssfCell = row.createCell(cellnum++);
+		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("titlePlainStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Trailer Summary"));
+		        		        
+		        row = sheet.createRow(rownum++);
+		        cellnum = 1; 	        
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Routes"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString(""+_summaryData.getNoOfRoutes()));
+		        
+		        cellnum = (short)(cellnum+3);
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Dispatch Time"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString(_summaryData.getDispatchTime() != null 
+						? TransStringUtil.formatTime(_summaryData.getDispatchTime()) : ""));
+		        
+		        row = sheet.createRow(rownum++);
+		        cellnum = 1;
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Containers"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString(""+_summaryData.getNoOfConts()));
+		        
+		        cellnum = (short)(cellnum+3);
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Drive Time"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString(""+TransStringUtil.formatTime(_summaryData.getTotalTravelTime())));
+		        
+		        row = sheet.createRow(rownum++);
+		        cellnum = 1;
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Max Cont(s)"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString(""+_summaryData.getMaxContainers()));
+		       		         
+		        row = sheet.createRow(rownum++);
+		        cellnum = 1;
+		        
+		        sheet.addMergedRegion(new Region(rownum-1,(short)1,rownum-1,(short)7));
+		        hssfCell = row.createCell(cellnum++);
+		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("titlePlainStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Trailer Routes"));
+		        
+		        row = sheet.createRow(rownum++);//blank Row
+		        
+		        row = sheet.createRow(rownum++);
+		        cellnum = 1;
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Route No"));
+	              	        	        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("No of Stops"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Dispatch Time"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Dispatch Seq"));
+		        
+		        boolean rowStyleSwitch = true;
+		        Date currentDispatch = null;
+		        while (_colsRouteItr.hasNext()) {
+		        	cellnum = 1;
+		        	TrailerRouteInfoModel _model = (TrailerRouteInfoModel)_colsRouteItr.next();
+		        	
+		        	if(!_model.getDispatchTime().equals(currentDispatch)) {
+		        		currentDispatch = _model.getDispatchTime();
+		        		rowStyleSwitch = !rowStyleSwitch;
+		        	}
+		        	
+		        	row = sheet.createRow(rownum++);
+		        	
+					hssfCell = row.createCell(cellnum++);		        
+				    hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyle" : "textStyleHighlight"));
+				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+				    hssfCell.setCellValue(new HSSFRichTextString(_model.getRouteId()));
+			    	    				    
+				    hssfCell = row.createCell(cellnum++);		        
+				    hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyle" : "textStyleHighlight"));
+				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+				    hssfCell.setCellValue(new HSSFRichTextString(_model.getNoOfStops()+""));
+				    				    
+				    hssfCell = row.createCell(cellnum++);		        
+				    hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyle" : "textStyleHighlight"));
+				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+				    hssfCell.setCellValue(new HSSFRichTextString(_model.getDispatchTime() != null 
+							? TransStringUtil.formatTime(_model.getDispatchTime()) : ""));
+				    
+				    hssfCell = row.createCell(cellnum++);		        
+				    hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyleNoWrap" : "textStyleHighlight"));
+				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+				    hssfCell.setCellValue(new HSSFRichTextString(_model.getDispatchSequence()+""));
+				}		        			        
+				
+			}
+		}		        
+        return rownum;		
+	}
 	private Map<RoutingTimeOfDay, DispatchStatusInfo> getDispatchStatusInfo(CutOffReportData reportData) {
 		
 		Map<RoutingTimeOfDay, DispatchStatusInfo> result = new TreeMap<RoutingTimeOfDay, DispatchStatusInfo>();

@@ -14,6 +14,8 @@ import com.freshdirect.transadmin.model.DlvLocation;
 import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
+import com.freshdirect.transadmin.model.TrnFacility;
+import com.freshdirect.transadmin.model.TrnFacilityType;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
@@ -210,5 +212,25 @@ public class LocationManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 		return (DeliveryGroup)getEntityById("DeliveryGroup","id",id);
 	}
 
+	public Collection getTrnFacilitys() throws DataAccessException {
 
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from TrnFacility ");
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+}
+	
+	public Collection getTrnFacilityTypes() throws DataAccessException {
+
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from TrnFacilityType ");
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
+	
+	public TrnFacility getTrnFacility(String id) throws DataAccessException {
+		return (TrnFacility)getEntityById("TrnFacility","id",id);
+	}
+	
+	public TrnFacilityType getTrnFacilityType(String id) throws DataAccessException {
+		return (TrnFacilityType)getEntityById("TrnFacilityType","id",id);
+	}
 }

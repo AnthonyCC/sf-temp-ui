@@ -38,10 +38,27 @@
                     <span style="font-size: 18px;font-weight: bold;">Dispatch</span>
                 </td>                
                   <td> 
-                    <span><input maxlength="10" size="10" name="dispDate" id="dispDate" value='<c:out value="${dispDate}"/>' /></span>
+                    <span>
+						<input maxlength="10" size="10" name="dispDate" id="dispDate" value='<c:out value="${dispDate}"/>' />
+					</span>
                      <span><a href="#" id="trigger_dispatchDate" style="font-size: 9px;">
                         <img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date">
                     </a></span>
+					<span>
+						  <select id="facilityLocation" name="facilityLocation">
+							  <option value="">ALL</option> 
+							  <c:forEach var="facility" items="${trnFacilitys}">                             
+								  <c:choose>
+									<c:when test="${param.facilityLocation == facility.name}" > 
+									  <option selected value="<c:out value="${facility.name}"/>"><c:out value="${facility.name}"/></option>
+									</c:when>
+									<c:otherwise> 
+									  <option value="<c:out value="${facility.name}"/>"><c:out value="${facility.name}"/></option>
+									</c:otherwise> 
+								  </c:choose>
+								</c:forEach>
+							</select>
+					</span>
                      <script language="javascript">                 
                       Calendar.setup(
                       {
@@ -57,7 +74,8 @@
                    function refreshRoute() 
                    {
                    		var param1 = document.getElementById("dispDate").value;
-                        location.href = "<c:out value="${pageContext.request.contextPath}"/>/dispatchDashboard.do?dispDate="+param1;
+						var param2 = document.getElementById("facilityLocation").value;
+                        location.href = "<c:out value="${pageContext.request.contextPath}"/>/dispatchDashboard.do?dispDate="+param1+"&facilityLocation="+param2;
                         
                     }
                     
@@ -83,6 +101,7 @@
 	                   		param1+="&pagerefreshtime="+eval("props.pagerefreshtime"+mode+".value");
 	                   		param1+="&pagesize="+eval("props.pagesize"+mode+".value");
 	                   		param1+="&mode="+mode;
+							param1+="&facilityLocation="+document.getElementById("facilityLocation").value;
                     		window.open('<c:out value="${pageContext.request.contextPath}"/>/dispatchDashboardView.do?'+param1,'view'+mode,'width='+width+',height='+height+',left=0,top=0,toolbar=no,location=no,resizable=yes,scrollbars=yes'); 
                      }
                   </script>

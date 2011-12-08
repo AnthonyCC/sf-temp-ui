@@ -329,6 +329,7 @@
               <ec:column viewsAllowed="fd" title="Dispatched" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="dispatched" />   
               <ec:column viewsAllowed="fd" title="ChIn" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="checkedIn" />  
               <ec:column alias="trnStatus" property="dispatchStatus"  title="Status"/> 
+			  <ec:column property="facilityInfoEx" sortable="true" title="ORF-DTF"/>
               <ec:column alias="trnZoneRegion" property="regionZone" title="Region - Zone" />             
               <ec:column property="supervisorEx"   title="Sup" cell="tooltip"  />
               <ec:column  alias="trnTimeslotslotName" cell="date" format="hh:mm aaa" property="startTimeEx" title="Start Time"/> 

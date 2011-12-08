@@ -189,6 +189,26 @@
                 </td>
                </tr>
                
+			    <tr>
+                  <td>No. of Containers / Trailer</td>
+                  <td>                  
+                    <form:input maxlength="50" size="30" path="defaultTrailerContainerCount" />
+                </td>
+                <td>
+                  &nbsp;<form:errors path="defaultTrailerContainerCount" />
+                </td>
+               </tr>
+
+			    <tr>
+                  <td>No. of Cartons / Containers</td>
+                  <td>                  
+                    <form:input maxlength="50" size="30" path="defaultContainerCartonCount" />
+                </td>
+                <td>
+                  &nbsp;<form:errors path="defaultContainerCartonCount" />
+                </td>
+               </tr>
+               
               <tr><td colspan="3">&nbsp;</td></tr>
     
               <tr>

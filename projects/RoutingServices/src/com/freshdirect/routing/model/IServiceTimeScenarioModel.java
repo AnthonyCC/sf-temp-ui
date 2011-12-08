@@ -37,4 +37,9 @@ public interface IServiceTimeScenarioModel {
 	 
 	Map<String, IZoneScenarioModel> getZoneConfiguration();
 	void setZoneConfiguration(Map<String, IZoneScenarioModel> zoneConfiguration);
+
+	int getDefaultTrailerContainerCount();
+	void setDefaultTrailerContainerCount(int defaultTrailerContainerCount);
+	int getDefaultContainerCartonCount();
+	void setDefaultContainerCartonCount(int defaultContainerCartonCount);
 }

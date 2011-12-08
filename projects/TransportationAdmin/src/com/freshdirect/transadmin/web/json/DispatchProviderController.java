@@ -25,6 +25,7 @@ import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.framework.util.MD5Hasher;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.routing.constants.EnumArithmeticOperator;
+import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
@@ -57,6 +58,7 @@ import com.freshdirect.transadmin.model.ScribLabel;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
+import com.freshdirect.transadmin.model.TrnFacility;
 import com.freshdirect.transadmin.model.UserPref;
 import com.freshdirect.transadmin.model.VIRRecord;
 import com.freshdirect.transadmin.model.WaveInstancePublish;
@@ -1035,4 +1037,22 @@ public class DispatchProviderController extends JsonRpcController implements
 		return vendorName;
 	}
 	
+	public String[] getFacilityInfo(String orgFacilityId, String destFacilityId){
+		String[] result = new String[2];
+		TrnFacility orgFacility = null;
+		TrnFacility destFacility = null;
+		if(orgFacilityId != null && !"".equals(orgFacilityId))
+				orgFacility = locationManagerService.getTrnFacility(orgFacilityId);
+		if(destFacilityId != null && !"".equals(destFacilityId))
+				destFacility = locationManagerService.getTrnFacility(destFacilityId);
+		
+		if(orgFacility != null && orgFacility.getTrnFacilityType() != null)
+			result[0] = orgFacility.getTrnFacilityType().getName();
+
+		if(destFacility != null && destFacility.getTrnFacilityType() != null)
+			result[1] = destFacility.getTrnFacilityType().getName();
+
+		return result;
+	}
+
 }

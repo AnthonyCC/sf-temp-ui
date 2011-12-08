@@ -16,6 +16,8 @@ import com.freshdirect.transadmin.model.DlvLocation;
 import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
+import com.freshdirect.transadmin.model.TrnFacility;
+import com.freshdirect.transadmin.model.TrnFacilityType;
 import com.freshdirect.transadmin.service.LocationManagerI;
 
 
@@ -169,4 +171,19 @@ public class LocationManagerImpl extends BaseManagerImpl  implements LocationMan
 		return locations;					
     }     
     
+    public Collection getTrnFacilityTypes() {
+    	return getLocationManagerDao().getTrnFacilityTypes();
+}
+    
+    public 	Collection getTrnFacilitys(){
+    	return getLocationManagerDao().getTrnFacilitys();   
+    }
+    
+    public TrnFacility getTrnFacility(String id) {
+    	return getLocationManagerDao().getTrnFacility(id);
+    }
+    
+    public TrnFacilityType getTrnFacilityType(String id) {
+    	return getLocationManagerDao().getTrnFacilityType(id);
+    }
 }

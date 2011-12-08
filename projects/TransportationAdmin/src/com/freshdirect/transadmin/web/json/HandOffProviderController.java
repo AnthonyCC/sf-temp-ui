@@ -38,6 +38,7 @@ import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.transadmin.service.DispatchManagerI;
+import com.freshdirect.transadmin.service.exception.TransAdminServiceException;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.HandOffBatchInfo;
 
@@ -257,7 +258,9 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 			List<IHandOffBatchDispatchResource> batchPlanResources = new ArrayList<IHandOffBatchDispatchResource>();			
 
 			batchPlans = proxy.getHandOffBatchPlansByDispatchStatus(batch.getBatchId(), batch.getDeliveryDate());
+			batchPlans.addAll(proxy.getHandOffBatchTrailerPlans(batch.getDeliveryDate(), batch.getCutOffDateTime()));
 			batchPlanResources =  proxy.getHandOffBatchPlanResourcesByDispatchStatus(batch.getBatchId(), batch.getDeliveryDate());
+			batchPlanResources.addAll(proxy.getHandOffBatchTrailerPlanResource(batch.getDeliveryDate(), batch.getCutOffDateTime()));
 
 			Map<String, Set<IHandOffBatchDispatchResource>> resourceMapping = new HashMap<String, Set<IHandOffBatchDispatchResource>>();
 			Iterator<IHandOffBatchDispatchResource> itr = batchPlanResources.iterator();

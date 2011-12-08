@@ -41,7 +41,8 @@ public class DispatchPlanUtil {
 	public static final String ASSETTYPE_GPS = "GPS";
 	public static final String ASSETTYPE_EZPASS = "EZPASS";
 	public static final String ASSETTYPE_MOTKIT = "MOTKIT";
-
+	public static final String ASSETTYPE_TRUCK = "TRUCK";
+	public static final String ASSETTYPE_TRAILER = "TRAILER";
 	private static class EmployeeComparator implements Comparator{
 
 
@@ -90,6 +91,8 @@ public class DispatchPlanUtil {
 		planInfo.setIsBullpen(plan.getIsBullpen());
 		planInfo.setSequence(plan.getSequence());
 		planInfo.setSupervisorCode(plan.getSupervisorId());
+		planInfo.setOriginFacility(plan.getOriginFacility());
+		planInfo.setDestinationFacility(plan.getDestinationFacility());
 		WebEmployeeInfo webEmp=employeeManagerService.getEmployee(plan.getSupervisorId());
 		if(webEmp!=null && webEmp.getEmpInfo()!=null) {
 			planInfo.setSupervisorName(webEmp.getEmpInfo().getName());
@@ -132,6 +135,8 @@ public class DispatchPlanUtil {
 		command.setZoneType(zoneType);
 		command.setRegionCode(dispatch.getRegion().getCode());
 		command.setRegionName(dispatch.getRegion().getName());
+		command.setOriginFacility(dispatch.getOriginFacility());
+		command.setDestinationFacility(dispatch.getDestinationFacility());
 		if(dispatch.getBullPen()!=null)
 			command.setIsBullpen(String.valueOf(dispatch.getBullPen().booleanValue()));
 		else
@@ -213,8 +218,11 @@ public class DispatchPlanUtil {
 		plan.setPlanDate(planInfo.getPlanDate());
 
 		if(!DispatchPlanUtil.isBullpen(planInfo.getIsBullpen())) {
-			Zone zone=new Zone();
+			Zone zone = null;
+			if(planInfo.getZoneCode() != null && !"".equalsIgnoreCase(planInfo.getZoneCode())){
+				zone = new Zone();
 			zone.setZoneCode(planInfo.getZoneCode());
+			}
 			plan.setZone(zone);
 		}
 
@@ -239,6 +247,8 @@ public class DispatchPlanUtil {
 		plan.setUserId(planInfo.getUserId());	
 		plan.setOpen(planInfo.getOpen());
 		plan.setIsTeamOverride(planInfo.getIsTeamOverride());
+		plan.setOriginFacility(planInfo.getOriginFacility());
+		plan.setDestinationFacility(planInfo.getDestinationFacility());
 		return plan;
 
 	}
@@ -291,6 +301,8 @@ public class DispatchPlanUtil {
 		dispatch.setPhonesAssigned(Boolean.valueOf(command.isPhoneAssigned()));
 		dispatch.setKeysReady(Boolean.valueOf(command.isKeysReady()));
 		dispatch.setIsOverride(command.getIsOverride());
+		dispatch.setOriginFacility(command.getOriginFacility());
+		dispatch.setDestinationFacility(command.getDestinationFacility());
 		if(command.getOverrideReasonCode()!=null&&command.getOverrideReasonCode().length()>0)
 		{
 			DispatchReason reason=new DispatchReason();
@@ -481,9 +493,9 @@ public class DispatchPlanUtil {
 				setRunnerRequirements(model,0,0);
 			}
 		} else {
-			setDriverRequirements(model,0,0);
-			setHelperRequirements(model,0,0);
-			setRunnerRequirements(model,0,0);
+			setDriverRequirements(model,TransportationAdminProperties.getDriverReqForTrailer(),TransportationAdminProperties.getDriverMaxForTrailer());
+			setHelperRequirements(model,TransportationAdminProperties.getHelperReqForTrailer(),TransportationAdminProperties.getHelperMaxForTrailer());
+			setRunnerRequirements(model,TransportationAdminProperties.getRunnerReqForTrailer(),TransportationAdminProperties.getRunnerMaxForTrailer());
 		}
 	}
 
@@ -647,26 +659,25 @@ public class DispatchPlanUtil {
 		return null;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static Collection getsortedDispatch(Collection unsorted)
 	{
 		Collection total=new ArrayList();
-		if(unsorted!=null)
-		{
+		if (unsorted != null) {
 			List ready=new ArrayList();
 			List bullpen=new ArrayList();
 			List dispatched=new ArrayList();
 			Iterator unsortedIterator=unsorted.iterator();
 			int dispatchCategory = 0;
 			while(unsortedIterator.hasNext())	{
-				DispatchCommand command = (DispatchCommand)unsortedIterator.next();
+				DispatchCommand command = (DispatchCommand) unsortedIterator
+						.next();
 				dispatchCategory = categorizeDispatch(command);
 				if(dispatchCategory == 1) {
 					dispatched.add(command);
-				}
-				else if(dispatchCategory == 0)	{
+				} else if (dispatchCategory == 0) {
 					bullpen.add(command);
-				}
-				else {
+				} else {
 					ready.add(command);
 				}					
 			}
@@ -680,11 +691,13 @@ public class DispatchPlanUtil {
 			total.addAll(bullpen);
 			total.addAll(dispatched);
 			int READY_MAX=TransportationAdminProperties.getMaxReady();
-			int n=total.size();if(n>READY_MAX) n=READY_MAX;
-			for(int i=0;i<n;i++ )
-			{
+			int n = total.size();
+			if (n > READY_MAX)
+				n = READY_MAX;
+			for (int i = 0; i < n; i++) {
 				DispatchCommand temp=(DispatchCommand)((List)total).get(i);
-				if(temp.getDispatchStatus()==EnumStatus.EmpReady) temp.setDispatchStatus(EnumStatus.Ready);
+				if (temp.getDispatchStatus() == EnumStatus.EmpReady)
+					temp.setDispatchStatus(EnumStatus.Ready);
 			}
 		}
 		return total;
@@ -694,13 +707,12 @@ public class DispatchPlanUtil {
 		// 1  - Dispatched
 		// 0  - Bullpen
 		// -1 - Ready
-		if(command.getDispatchTime()!=null&&command.getDispatchTime().trim().length()>0) {
+		if (command.getDispatchTime() != null
+				&& command.getDispatchTime().trim().length() > 0) {
 			return 1;
-		}
-		else if(TransStringUtil.isEmpty(command.getZoneName()))	{
+		} else if (TransStringUtil.isEmpty(command.getZoneName())) {
 			return 0;
-		}
-		else {
+		} else {
 			return -1;
 		}
 	}
@@ -884,105 +896,97 @@ public class DispatchPlanUtil {
 			Calendar currentCalendar = Calendar.getInstance();
 			Calendar startCalendar = Calendar.getInstance();		
 			Iterator iterator=c.iterator();
-			while(iterator.hasNext())
-			{
+			while (iterator.hasNext()) {
 				try {
 					DispatchCommand command=(DispatchCommand)iterator.next();
-					Date startTime=TransStringUtil.getServerTime(command.getDispatchTime()!=null?command.getDispatchTime():command.getStartTime());
+					Date startTime = TransStringUtil.getServerTime(command
+							.getDispatchTime() != null ? command
+							.getDispatchTime() : command.getStartTime());
 					startCalendar.setTime(startTime);
-					startCalendar.set(currentCalendar.get(Calendar.YEAR), currentCalendar.get(Calendar.MONTH), currentCalendar.get(Calendar.DATE));
-					long timediff=startCalendar.getTimeInMillis()-currentCalendar.getTimeInMillis();					
-					if((timediff<dispatchProcessedTime&&!TransStringUtil.isEmpty(command.getDispatchTime())||timediff>dispatchProcessingTime))
-					{
+					startCalendar.set(currentCalendar.get(Calendar.YEAR)
+												,currentCalendar.get(Calendar.MONTH)
+													,currentCalendar.get(Calendar.DATE));
+					long timediff = startCalendar.getTimeInMillis()
+										- currentCalendar.getTimeInMillis();
+					if ((timediff < dispatchProcessedTime
+							&& !TransStringUtil.isEmpty(command
+									.getDispatchTime()) || timediff > dispatchProcessingTime)) {
 						iterator.remove();
 					}
-				} catch (Exception e) {	}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				
 			}
 		}
 		Iterator iterator=c.iterator();
-		while(iterator.hasNext())
-		{
+		while (iterator.hasNext()) {
 			setDispatchStatus((DispatchCommand)(iterator.next()) );
 		}
 	}
 	
-	public static void setDispatchStatus(DispatchCommand command)
-	{
+	public static void setDispatchStatus(DispatchCommand command) {
 		//for all non bullpen dispatches
-		if(!TransStringUtil.isEmpty(command.getZoneName()))	
-	    {		
+		if (!TransStringUtil.isEmpty(command.getZoneName())) {
 			
 			//decide the dispatch status after dispatch;
-			if(!TransStringUtil.isEmpty(command.getDispatchTime()))
-			{
+			if (!TransStringUtil.isEmpty(command.getDispatchTime())) {
 				command.setDispatchStatus(EnumStatus.Dispatched);				
 				
 				//checkedIn status
-				if(!TransStringUtil.isEmpty(command.getCheckedInTime()))
-				{					
+				if (!TransStringUtil.isEmpty(command.getCheckedInTime())) {
 					command.setDispatchStatus(EnumStatus.CheckedIn);
-				}
-				else
-				{
+				} else {
 					return;
 				}
 				
-				if(checkEmployeeStatus(command,command.getDrivers(),false)&&checkEmployeeStatus(command,command.getHelpers(),false))
-				{
+				if (checkEmployeeStatus(command, command.getDrivers(), false)
+									&& checkEmployeeStatus(command, command.getHelpers(), false)) {
 					command.setDispatchStatus(EnumStatus.OffPremises);
 				}
-			}
-			else//decide the dispatch status before dispatch
-			{				
+			} else {// decide the dispatch status before dispatch
+			
 				command.setDispatchStatus(EnumStatus.NoStatus);
 				
 				boolean empReady=false;
-				if(checkEmployeeStatus(command,command.getDrivers(),true)&&checkEmployeeStatus(command,command.getHelpers(),true))
-				{
+				if (checkEmployeeStatus(command, command.getDrivers(), true)
+						&& checkEmployeeStatus(command, command.getHelpers(), true)) {
 					empReady=true;
 				}
 				
 				//route status
-				if(!TransStringUtil.isEmpty(command.getRoute()))
-				{					
+				if (!TransStringUtil.isEmpty(command.getRoute())) {
 					command.setDispatchStatus(EnumStatus.Route);
-				}
-				else
-				{
+				} else {
 					return;
 				}
 				
 				//truck status
-				if(!TransStringUtil.isEmpty(command.getTruck()) && command.isActualTruckAssigned())			
+				if (!TransStringUtil.isEmpty(command.getTruck())
+							&& command.isActualTruckAssigned())
 					command.setDispatchStatus(EnumStatus.ActualTruck);
-				else if(!TransStringUtil.isEmpty(command.getTruck()) && !command.isActualTruckAssigned())
+				else if (!TransStringUtil.isEmpty(command.getTruck())
+							&& !command.isActualTruckAssigned())
 					command.setDispatchStatus(EnumStatus.PlannedTruck);
 				else
 					return;
 				
 				//do not do any status if no employees assigned
-				if(!command.getIsOverride()&&"Y".equalsIgnoreCase(command.getOpen())) 
-				{
+				if (!command.getIsOverride()
+						&& "Y".equalsIgnoreCase(command.getOpen())) {
 					//command.setDispatchStatus(EnumStatus.NoStatus);
 					return ;
 				}
 				
 				//Packet status
-				if(command.isKeysReady()&& command.isPhoneAssigned())
-				{					
+				if (command.isKeysReady() && command.isPhoneAssigned()) {
 					command.setDispatchStatus(EnumStatus.Packet);
-				}
-				else
-				{
+				} else {
 					return;
 				}
-				if(empReady)
-				{
+				if (empReady) {
 					command.setDispatchStatus(EnumStatus.EmpReady);
-				}
-				else
-				{
+				} else {
 					return;
 				}
 //				if(checkReady(command.getStartTime()))
@@ -991,30 +995,23 @@ public class DispatchPlanUtil {
 //				}
 				
 			}
-	     }
-		else
-		{
-			if(!TransStringUtil.isEmpty(command.getDispatchTime()))
-			{
+		} else {
+			if (!TransStringUtil.isEmpty(command.getDispatchTime())) {
 				command.setDispatchStatus(EnumStatus.Dispatched);				
 				
 				//checkedIn status
-				if(!TransStringUtil.isEmpty(command.getCheckedInTime()))
-				{					
+				if (!TransStringUtil.isEmpty(command.getCheckedInTime())) {
 					command.setDispatchStatus(EnumStatus.CheckedIn);
-				}
-				else
-				{
+				} else {
 					return;
 				}
-				
-				if(checkEmployeeStatus(command,command.getDrivers(),false)&&checkEmployeeStatus(command,command.getHelpers(),false))
-				{
+				if (checkEmployeeStatus(command, command.getDrivers(), false)
+						&& checkEmployeeStatus(command, command.getHelpers(),
+								false)) {
 					command.setDispatchStatus(EnumStatus.OffPremises);
 				}
 			}
 		}
-				
 	}
 	
 	public static boolean checknonNullEmployees(DispatchCommand command)

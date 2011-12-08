@@ -23,6 +23,8 @@ public class HandOffBatchPlan implements IHandOffBatchPlan  {
 	
 	private Date lastDeliveryTime;
 	private Date cutOffTime;
+	private String originFacility;
+	private String destinationFacility;
 	
 	public HandOffBatchPlan() {
 		super();
@@ -31,7 +33,8 @@ public class HandOffBatchPlan implements IHandOffBatchPlan  {
 	public HandOffBatchPlan(String planId, String zoneCode, String region,
 			Date planDate, Date firstDeliveryTime, Date startTime,
 			int sequence, String isBullpen, Set batchPlanResources,
-			String supervisorId,String userId, Date maxTime, String isOpen, Boolean isTeamOverride,
+			String supervisorId,String userId, Date maxTime, String isOpen, Boolean isTeamOverride, String originFacility,
+			String destinationFacility,
 			Date lastDeliveryTime, Date cutOffTime) {
 		super();
 		this.planId = planId;
@@ -49,6 +52,8 @@ public class HandOffBatchPlan implements IHandOffBatchPlan  {
 		this.isOpen = isOpen;
 		this.isTeamOverride = isTeamOverride;
 		this.lastDeliveryTime = lastDeliveryTime;
+		this.originFacility = originFacility;
+		this.destinationFacility = destinationFacility;
 		this.cutOffTime = cutOffTime;
 	}
 
@@ -180,4 +185,20 @@ public class HandOffBatchPlan implements IHandOffBatchPlan  {
 		this.cutOffTime = cutOffTime;
 	}	
 		
+	public String getOriginFacility() {
+		return originFacility;
+}
+
+	public void setOriginFacility(String originFacility) {
+		this.originFacility = originFacility;
+	}
+
+	public String getDestinationFacility() {
+		return destinationFacility;
+	}
+
+	public void setDestinationFacility(String destinationFacility) {
+		this.destinationFacility = destinationFacility;
+	}
+
 }

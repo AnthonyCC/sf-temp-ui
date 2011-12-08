@@ -9,17 +9,14 @@
 <%@ page import='com.freshdirect.transadmin.security.*' %>
 <%@ page import='java.util.*' %>
 
-<%  pageContext.setAttribute("HAS_ADDBUTTON", "false"); 
+<% 
+	pageContext.setAttribute("HAS_ADDBUTTON", "false"); 
   pageContext.setAttribute("HAS_CONFIRMBUTTON", "false"); 
   pageContext.setAttribute("HAS_DELETEBUTTON", "false"); 
    String dateRangeVal = request.getParameter("dispDate") != null ? request.getParameter("dispDate") : "";
    if(dateRangeVal == null || dateRangeVal.length() == 0) dateRangeVal = TransStringUtil.getCurrentDate();
   %>
   
- 	
-
-
-	
 <%
 String modeStr="";
 if("1".equals(request.getParameter("mode"))) modeStr=" - READY";
@@ -146,6 +143,7 @@ else if("3".equals(request.getParameter("mode"))) modeStr=" - N/R";
    </body>
    </html> 
 <script>
+
 var t;
 var pageParam;
 
@@ -226,4 +224,3 @@ function stopCount() {
 initPagination();
 
 </script>
-

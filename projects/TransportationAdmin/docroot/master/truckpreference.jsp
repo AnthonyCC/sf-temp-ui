@@ -92,13 +92,13 @@
 								<ec:column property="lastName" title="Last Name"/>
 								<ec:column alias="kronosId" property="employeeId" title="KronosID" width="5px"/>
 								<ec:column property="jobType" title="JobType"/>
-								<ec:column property="employeeRoleType" title="Roles"/>
+								<ec:column property="employeeRoleType" title="Role"/>
 								<ec:column property="leadInfoEx.name" title="Lead"/>
-								<ec:column property="truckPref01" title="TRUCK 1"/>
-								<ec:column property="truckPref02" title="TRUCK 2"/>
-								<ec:column property="truckPref03" title="TRUCK 3"/>
-								<ec:column property="truckPref04" title="TRUCK 4"/>
-								<ec:column property="truckPref05" title="TRUCK 5"/>
+								<ec:column property="truckPref01" title="Truck/Trailer 01"/>
+								<ec:column property="truckPref02" title="Truck/Trailer 02"/>
+								<ec:column property="truckPref03" title="Truck/Trailer 03"/>
+								<ec:column property="truckPref04" title="Truck/Trailer 04"/>
+								<ec:column property="truckPref05" title="Truck/Trailer 05"/>
 							</ec:row>
 						</ec:table>
 					</form>

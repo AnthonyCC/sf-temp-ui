@@ -1,5 +1,6 @@
 package com.freshdirect.routing.service;
 
+import java.sql.Connection;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +12,7 @@ import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.IZoneScenarioModel;
+import com.freshdirect.routing.model.TrnFacilityType;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 
@@ -39,4 +41,8 @@ public interface IRoutingInfoService {
 	boolean isPlanPublished(Date deliveryDate)  throws RoutingServiceException;
 	
 	Map<Date, List<String>> getDynamicEnabledZoneMapping()  throws RoutingServiceException;
+
+	Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> getPlannedTrailerDispatchTree(Date deliveryDate, Date cutOff)  throws RoutingServiceException;
+
+	Map<String, TrnFacilityType> retrieveTrnFacilitys()throws RoutingServiceException;
 }

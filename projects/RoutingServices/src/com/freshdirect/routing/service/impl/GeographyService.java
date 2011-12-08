@@ -15,6 +15,7 @@ import com.freshdirect.routing.model.BuildingModel;
 import com.freshdirect.routing.model.GeographicLocation;
 import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IBuildingModel;
+import com.freshdirect.routing.model.IFacilityModel;
 import com.freshdirect.routing.model.IGeocodeResult;
 import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.model.ILocationModel;
@@ -540,5 +541,13 @@ public class GeographyService extends BaseService implements IGeographyService {
 		return RoutingUtil.getRegion(zone.getArea());
 	}
 	
+	public Map<String, IFacilityModel> getFacilityLookup() throws RoutingServiceException {
+		try {
+			return geographyDAOImpl.getFacilityLookup();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_LOCATION_SAVEERROR);
+		}
+	}
 	
 }

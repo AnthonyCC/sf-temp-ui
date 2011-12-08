@@ -94,4 +94,9 @@ public interface IWaveInstance {
 	EnumWaveInstancePublishSrc getSource();
 	void setSource(EnumWaveInstancePublishSrc source);
 
+	String getOriginFacility();
+	void setOriginFacility(String originFacility);
+
+	String getRoutingCode();
+	void setRoutingCode(String routingCode);
 }

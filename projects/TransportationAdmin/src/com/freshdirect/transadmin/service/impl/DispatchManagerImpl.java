@@ -130,7 +130,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		// get the route and truck for the date order by route number
 		// create the dispatch model from above data
 		// insert the data in dispatch table		
-		Collection dispList=getDispatchList(date,null,null);	
+		Collection dispList = getDispatchList(date,null,null,null);
 		
 		if(dispList!=null || dispList.size()>0){						
 			  Iterator iterator=dispList.iterator();
@@ -177,7 +177,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	
 	public void autoDisptchRegion(String date) {
 		
-		Collection dispList=getDispatchList(date,null,null);	
+		Collection dispList=getDispatchList(date,null,null,null);
 		
 		if(dispList!=null || dispList.size()>0){						
 			  Iterator iterator=dispList.iterator();
@@ -222,8 +222,8 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 
 	}
 	
-	public Collection getDispatchList(String date, String zone, String region) {
-		Collection coll = getDispatchManagerDao().getDispatchList(date, zone, region);
+	public Collection getDispatchList(String date, String facilityLocation, String zone, String region) {
+		Collection coll = getDispatchManagerDao().getDispatchList(date, facilityLocation, zone, region);
 		if(coll.size() > 0){
 			Dispatch dispatch = (Dispatch) coll.iterator().next();
 		}
@@ -234,7 +234,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		try{
 			//Get the dispatch list for the day from DB.
 			String dateString = TransStringUtil.getServerDate(requestedDate);
-			Collection coll = getDispatchList(dateString, null, null);
+			Collection coll = getDispatchList(dateString, null, null, null);
 			List changeList = new ArrayList();
 			Iterator iter = coll.iterator();
 			while(iter.hasNext()){
@@ -446,7 +446,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			if(punchInfo==null || punchInfo.isEmpty())
 				return unassignedPunchedInEmployees;
 			
-			Collection dispList=getDispatchList(date,null,null);	
+			Collection dispList=getDispatchList(date,null,null,null);
 			Set dispatchResources=new HashSet();
 			if(dispList!=null || dispList.size()>0)
 			{						

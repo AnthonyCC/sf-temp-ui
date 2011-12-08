@@ -17,6 +17,7 @@ import com.freshdirect.routing.model.IHandOffBatchDispatchResource;
 import com.freshdirect.routing.model.IHandOffBatchPlan;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IHandOffBatchStop;
+import com.freshdirect.routing.model.IHandOffBatchTrailer;
 import com.freshdirect.routing.model.IHandOffDispatch;
 import com.freshdirect.routing.model.TriggerHandOffResult;
 import com.freshdirect.routing.model.TruckPreferenceStat;
@@ -83,9 +84,9 @@ public class HandOffServiceProxy  extends BaseServiceProxy  {
 		getService().clearHandOffBatchStopRoute(deliveryDate, handOffBatchId);
 	}
 	
-	public void updateHandOffBatchDetails(String handOffBatchId, List<IHandOffBatchRoute> routes
+	public void updateHandOffBatchDetails(String handOffBatchId, List<IHandOffBatchTrailer> trailers, List<IHandOffBatchRoute> routes
 											, List<IHandOffBatchStop> stops, Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus) throws RoutingServiceException {
-		getService().updateHandOffBatchDetails(handOffBatchId, routes, stops, dispatchStatus);
+		getService().updateHandOffBatchDetails(handOffBatchId, trailers, routes, stops, dispatchStatus);
 	}
 	
 	public List<IHandOffBatchStop> getHandOffBatchStops(String batchId, boolean filterException) throws RoutingServiceException {
@@ -160,8 +161,8 @@ public class HandOffServiceProxy  extends BaseServiceProxy  {
 		return getService().getEmployeeTruckPreferences();
 	}
 	
-	public void clearHandOffBatchAutoDispatches(String handoffBatchId, Date deliveryDate) throws RoutingServiceException{
-		getService().clearHandOffBatchAutoDispatches(handoffBatchId, deliveryDate);
+	public void clearHandOffBatchAutoDispatches(String handoffBatchId, Date deliveryDate, Date cutOffTime) throws RoutingServiceException{
+		getService().clearHandOffBatchAutoDispatches(handoffBatchId, deliveryDate, cutOffTime);
 	}
 	
 	public void addNewHandOffBatchAutoDispatches(Collection dataList) throws RoutingServiceException {
@@ -178,5 +179,21 @@ public class HandOffServiceProxy  extends BaseServiceProxy  {
 		
 	public String getLastCommittedHandOffBatch(Date deliveryDate) throws RoutingServiceException {
 		return getService().getLastCommittedHandOffBatch(deliveryDate);
+	}
+
+	public Map<String, Integer> getHandOffBatchTrailerCnt(Date deliveryDate) throws RoutingServiceException {
+		return getService().getHandOffBatchTrailerCnt(deliveryDate);
+}
+
+	public List<IHandOffBatchTrailer> getHandOffBatchTrailers(String batchId) throws RoutingServiceException {
+		return getService().getHandOffBatchTrailers(batchId);
+	}
+
+	public List<IHandOffBatchPlan> getHandOffBatchTrailerPlans(Date deliveryDate, Date cutOffDate) throws RoutingServiceException {
+		return getService().getHandOffBatchTrailerPlans(deliveryDate, cutOffDate);
+	}
+
+	public List<IHandOffBatchDispatchResource> getHandOffBatchTrailerPlanResource(Date deliveryDate, Date cutOffDate) throws RoutingServiceException{
+		return getService().getHandOffBatchTrailerPlanResource(deliveryDate, cutOffDate);
 	}
 }

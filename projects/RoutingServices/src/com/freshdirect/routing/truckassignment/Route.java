@@ -76,7 +76,7 @@ public class Route {
 
 	@Override
 	public String toString() {
-		return "Route [start=" + start + ", end=" + end + ", dispatchId=" + dispatch.getId() + ", truckList="
+		return "Route [start=" + start + ", end=" + end + ", dispatchId=" + dispatch.getId() + ", trailerDispatch=" + dispatch.isTrailer() + ",truckList="
 				+ trucks + ", solution=" + solution + "]";
 	}
 

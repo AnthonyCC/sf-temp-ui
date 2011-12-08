@@ -1,5 +1,6 @@
 package com.freshdirect.routing.service.impl;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
@@ -13,6 +14,7 @@ import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.IZoneScenarioModel;
+import com.freshdirect.routing.model.TrnFacilityType;
 import com.freshdirect.routing.service.IRoutingInfoService;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
@@ -137,5 +139,22 @@ public class RoutingInfoService extends BaseService implements IRoutingInfoServi
 		this.routingInfoDAOImpl = routingInfoDAOImpl;
 	}
 
+	public Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> getPlannedTrailerDispatchTree(Date deliveryDate, Date cutOff)  throws RoutingServiceException {
+		try {
+			return routingInfoDAOImpl.getPlannedTrailerDispatchTree(deliveryDate, cutOff);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);
+		}
+	}
+	
+	public Map<String, TrnFacilityType> retrieveTrnFacilitys()  throws RoutingServiceException {
+		try {
+			return routingInfoDAOImpl.retrieveTrnFacilitys();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);
+}
+	}
 	
 }

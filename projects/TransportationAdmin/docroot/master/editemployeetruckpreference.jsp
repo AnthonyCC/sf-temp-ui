@@ -100,50 +100,50 @@
 							 	</td>
 							 </tr>
                             <tr>
-								<td>TRUCK 1</td>
+								<td>Truck/Trailer 01</td>
 								<td>
 									<form:select path="truckPref01" onChange="checkDuplicateTruckPreference('', this);">
-											<form:option value="" label="Select Truck"/>
+											<form:option value="" label="--Select Truck--"/>
 											<form:options items="${trucks}" itemLabel="assetNo" itemValue="assetNo" />
 									</form:select>
 								</td>
 								<td>&nbsp;<form:errors path="truckPref01" />&nbsp;</td>
 							</tr>
 							    <tr>
-								<td>TRUCK 2</td>
+								<td>Truck/Trailer 02</td>
 								<td>
 									<form:select path="truckPref02" onChange="checkDuplicateTruckPreference('', this);">
-											<form:option value="" label="Select Truck"/>
+											<form:option value="" label="--Select Truck--"/>
 											<form:options items="${trucks}" itemLabel="assetNo" itemValue="assetNo" />
 									</form:select>
 								</td>
 								<td>&nbsp;<form:errors path="truckPref02" />&nbsp;</td>
 							</tr>
 							    <tr>
-								<td>TRUCK 3</td>
+								<td>Truck/Trailer 03</td>
 								<td>
 									<form:select path="truckPref03" onChange="checkDuplicateTruckPreference('', this);">
-											<form:option value="" label="Select Truck"/>
+											<form:option value="" label="--Select Truck--"/>
 											<form:options items="${trucks}" itemLabel="assetNo" itemValue="assetNo" />
 									</form:select>
 								</td>
 								<td>&nbsp;<form:errors path="truckPref03" />&nbsp;</td>
 							</tr>
 							    <tr>
-								<td>TRUCK 4</td>
+								<td>Truck/Trailer 04</td>
 								<td>
 									<form:select path="truckPref04" onChange="checkDuplicateTruckPreference('', this);">
-											<form:option value="" label="Select Truck"/>
+											<form:option value="" label="--Select Truck--"/>
 											<form:options items="${trucks}" itemLabel="assetNo" itemValue="assetNo" />
 									</form:select>
 								</td>
 								<td>&nbsp;<form:errors path="truckPref04" />&nbsp;</td>
 							</tr>
 							    <tr>
-								<td>TRUCK 5</td>
+								<td>Truck/Trailer 05</td>
 								<td>
 									<form:select path="truckPref05" onChange="checkDuplicateTruckPreference('', this);">
-											<form:option value="" label="Select Truck"/>
+											<form:option value="" label="--Select Truck--"/>
 											<form:options items="${trucks}" itemLabel="assetNo" itemValue="assetNo" />
 									</form:select>
 								</td>

@@ -275,6 +275,15 @@ public class TransStringUtil {
 		}
         return "0";
 	}	
+	public static String formatTime2(Date dateVal) {
+		try {
+			String strTime1 = serverTimeFormat.format(dateVal);
+			return strTime1;
+		} catch (Exception e) {
+			// Do Nothing
+		}
+        return ">>";
+	}	
 	
 	public static String calcHMS(int timeInSeconds) {
 	      int hours, minutes, seconds;
@@ -567,6 +576,14 @@ public class TransStringUtil {
 	
 	public static int getDiffInHours(Date d1, Date d2) {
 		return Math.abs((int) Math.round(((d1.getTime() - d2.getTime()) / (double) HOUR)));
+	}
+	
+	public static int getDiffInMinutes(Date d1, Date d2) {
+		return Math.abs((int) Math.round(((d1.getTime() - d2.getTime()) / (double) MINUTE)));
+	}
+	
+	public static int getDiffInSeconds(Date d1, Date d2) {
+		return Math.abs((int) Math.round(((d1.getTime() - d2.getTime()) / (double) SECOND)));
 	}
 	
 	public static boolean isToday(String date) throws ParseException

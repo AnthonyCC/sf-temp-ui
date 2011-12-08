@@ -24,6 +24,7 @@ import com.freshdirect.transadmin.model.ResourceI;
 import com.freshdirect.transadmin.model.ResourceId;
 import com.freshdirect.transadmin.model.ResourceInfoI;
 import com.freshdirect.transadmin.model.ScheduleEmployeeInfo;
+import com.freshdirect.transadmin.model.TrnFacility;
 
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.util.EnumResourceSubType;
@@ -67,7 +68,25 @@ public class DispatchCommand extends WebPlanInfo {
 	
 	private String extras;
 	private boolean isActualTruckAssigned;
+	private TrnFacility originFacility;
+	private TrnFacility destinationFacility;
 	
+	public TrnFacility getOriginFacility() {
+		return originFacility;
+	}
+
+	public void setOriginFacility(TrnFacility originFacility) {
+		this.originFacility = originFacility;
+	}
+
+	public TrnFacility getDestinationFacility() {
+		return destinationFacility;
+	}
+
+	public void setDestinationFacility(TrnFacility destinationFacility) {
+		this.destinationFacility = destinationFacility;
+	}
+
     public int getResourceSize(List resources)
 	{
 		int result=0;
@@ -494,11 +513,10 @@ public class DispatchCommand extends WebPlanInfo {
 	public void setUPSRouteInfo(Collection rInfo)
 	{
 		Iterator iterator=rInfo.iterator();			
-		while(iterator.hasNext())	
-		{
+		while (iterator.hasNext()) {
 			UPSRouteInfo upsRouteInfo = (UPSRouteInfo)iterator.next();
-			if(route!=null&&route.equalsIgnoreCase(upsRouteInfo.getRouteNumber()))
-			{
+			if (route != null
+					&& route.equalsIgnoreCase(upsRouteInfo.getRouteNumber())) {
 				this.upsRouteInfo=upsRouteInfo;
 				break;
 			}

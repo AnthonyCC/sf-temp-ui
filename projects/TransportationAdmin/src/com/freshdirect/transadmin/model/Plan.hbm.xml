@@ -14,7 +14,7 @@
             <column name="ZONE" length="16" />
         </many-to-one>
         <many-to-one name="region" class="com.freshdirect.transadmin.model.Region" fetch="select" lazy="false">
-            <column name="REGION" length="16" not-null="true" />
+            <column name="REGION" length="16" />
         </many-to-one>
         <property name="supervisorId" type="string">
             <column name="SUPERVISOR_ID" length="10" />
@@ -49,6 +49,12 @@
         <property name="cutOffTime" type="timestamp">
             <column name="CUTOFF_DATETIME" length="7" />
         </property>
+        <many-to-one name="originFacility" class="com.freshdirect.transadmin.model.TrnFacility" fetch="select" lazy="false">
+            <column name="ORIGIN_FACILITY" length="16" />
+        </many-to-one>
+        <many-to-one name="destinationFacility" class="com.freshdirect.transadmin.model.TrnFacility" fetch="select" lazy="false">
+            <column name="DESTINATION_FACILITY" length="16" />
+        </many-to-one>
         <set name="planResources" inverse="true" lazy="false" cascade="all,delete-orphan">
             <key>
                 <column name="PLAN_ID" length="10" not-null="true" />

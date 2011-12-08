@@ -16,6 +16,7 @@ import com.freshdirect.transadmin.model.ResourceI;
 import com.freshdirect.transadmin.model.ResourceId;
 import com.freshdirect.transadmin.model.ResourceInfoI;
 import com.freshdirect.transadmin.model.TrnBaseEntityI;
+import com.freshdirect.transadmin.model.TrnFacility;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.util.EnumResourceType;
 import com.freshdirect.transadmin.util.TransStringUtil;
@@ -70,7 +71,43 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	
 	private String lastDeliveryTime;
 	private String cutOffTime;
+	private String destFacilityModified;
+	private boolean isZoneReg;
+	private TrnFacility originFacility;
+	private TrnFacility destinationFacility;
 	
+	public TrnFacility getOriginFacility() {
+		return originFacility;
+	}
+
+	public void setOriginFacility(TrnFacility originFacility) {
+		this.originFacility = originFacility;
+	}
+
+	public TrnFacility getDestinationFacility() {
+		return destinationFacility;
+	}
+
+	public void setDestinationFacility(TrnFacility destinationFacility) {
+		this.destinationFacility = destinationFacility;
+	}
+
+	public boolean isZoneReg() {
+		return isZoneReg;
+	}
+
+	public void setZoneReg(boolean isZoneReg) {
+		this.isZoneReg = isZoneReg;
+	}
+
+	public String getDestFacilityModified() {
+		return destFacilityModified;
+	}
+
+	public void setDestFacilityModified(String destFacilityModified) {
+		this.destFacilityModified = destFacilityModified;
+	}
+
 	public String getFirstDeliveryTimeModified() {
 		return firstDeliveryTimeModified;
 	}
@@ -142,8 +179,10 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 		if(!TransStringUtil.isEmpty(zoneName)) {
 			String value=new StringBuffer(100).append(zoneName).append("\n").append(zoneType).toString();
 			return new Tooltip(this.getZoneCode(), value);
+		}else if ("Y".equalsIgnoreCase(isBullpen)){
+			return new Tooltip("Bullpen","");
 		}
-		return new Tooltip("Bullpen","");
+		return new Tooltip("","");
 
 	}
 	
@@ -763,5 +802,13 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 		this.cutOffTime = cutOffTime;
 	}
 	
+	public String getFacilityInfoEx() {
+		if (originFacility == null || destinationFacility == null)
+			return null;
 	
+		StringBuffer buf = new StringBuffer();
+		buf.append(originFacility.getName()+" - "+destinationFacility.getName());
+
+		return buf.toString();
+}
 }

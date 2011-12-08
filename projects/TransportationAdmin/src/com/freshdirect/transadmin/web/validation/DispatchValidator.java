@@ -37,6 +37,14 @@ public class DispatchValidator extends AbstractValidator {
 		if(model != null && TransStringUtil.isEmpty(model.getRegionCode())&& DispatchPlanUtil.isBullpen(model.getIsBullpen())) {
 			errors.rejectValue("regionCode", "app.error.112", new Object[]{"Region"},"required field");
 		}
+
+		if(model != null && model.getOriginFacility() == null) {
+			errors.rejectValue("originFacility", "app.error.112", new Object[]{"Origin Facility"},"required field");
+		}
+
+		if(model != null && model.getDestinationFacility() == null) {
+			errors.rejectValue("destinationFacility", "app.error.112", new Object[]{"Destination Facility"},"required field");
+		}
 		/*
 		if(DispatchPlanUtil.isBullpen(model.getIsBullpen()) && TransStringUtil.isEmpty(model.getRegionCode())) {
 			errors.rejectValue("regionCode", "app.error.112", new Object[]{"Region"},"required field");

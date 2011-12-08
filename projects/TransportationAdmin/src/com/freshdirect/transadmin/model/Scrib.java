@@ -3,12 +3,12 @@ package com.freshdirect.transadmin.model;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.TimeZone;
 
 import com.freshdirect.transadmin.util.TransStringUtil;
 
-public class Scrib implements java.io.Serializable, IWaveInstanceSource
-{
+public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 	
 	private String scribId;
 	private Zone zone;
@@ -31,7 +31,25 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource
 	private String zoneModified;
 	
 	private Date cutOffTime;
+	private TrnFacility originFacility;
+	private TrnFacility destinationFacility;
 	
+	public TrnFacility getOriginFacility() {
+		return originFacility;
+	}
+
+	public void setOriginFacility(TrnFacility originFacility) {
+		this.originFacility = originFacility;
+	}
+
+	public TrnFacility getDestinationFacility() {
+		return destinationFacility;
+	}
+
+	public void setDestinationFacility(TrnFacility destinationFacility) {
+		this.destinationFacility = destinationFacility;
+	}
+
 	public Date getFirstDeliveryTime() {
 		return firstDeliveryTime;
 	}
@@ -136,7 +154,9 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource
 		Calendar c=Calendar.getInstance();
 		c.setTime(lastDeliveryTime);
 		int stemTime=0;
-		if(zone.getStemNotNullFromTime()!=null)stemTime=zone.getStemNotNullFromTime().intValue();
+		if(zone != null && zone.getStemNotNullFromTime()!=null)
+			stemTime = zone.getStemNotNullFromTime().intValue();
+
 		c.add(Calendar.MINUTE, stemTime);
 		return c.getTime();
 	}
@@ -166,7 +186,8 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource
 		Calendar c=Calendar.getInstance();
 		c.setTime(firstDeliveryTime);
 		int stemTime=0;
-		if(zone.getStemToTime()!=null)stemTime=zone.getStemToTime().intValue();
+		if(zone != null && zone.getStemToTime()!=null)
+				stemTime=zone.getStemToTime().intValue();
 		c.add(Calendar.MINUTE, -stemTime);
 		return c.getTime();
 	}
@@ -292,6 +313,7 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource
 			
 		}
 	}
+
 	public String getZoneS() 
 	{
 		if(zone!=null)return zone.getZoneCode();
@@ -373,7 +395,7 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource
 	@Override
 	public boolean isValidSource() {
 		// TODO Auto-generated method stub
-		return this.getDeliveryDate() != null && this.getStartTime()!= null 
+		return this.getOriginFacility() != null && this.getDeliveryDate() != null && this.getStartTime()!= null 
 					&& this.getFirstDeliveryTime() != null && this.getLastDeliveryTime() != null 
 					&& this.getCutOffTime() != null && this.getZone() != null;
 	}
@@ -397,5 +419,15 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource
 			this.setCount(value);
 		}
 	}
+	
+	public String getFacilityInfoEx() {
+		if (originFacility == null || destinationFacility == null)
+			return null;
+
+		StringBuffer buf = new StringBuffer();
+		buf.append(originFacility.getName()+" - "+destinationFacility.getName());
+
+		return buf.toString();
+}
 	
 }

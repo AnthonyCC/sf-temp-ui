@@ -13,11 +13,9 @@
                          effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});  
      }
       function showForm()  {   
-     	
         panel.setHeader("Plasma Configuration");
         panel.render(document.body);
         panel.show();
-		  
       }              
   	  
   	  function hidePanel() { 

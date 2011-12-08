@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -22,10 +23,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.routing.handoff.action.HandOffRoutingOutAction;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IHandOffBatchSession;
 import com.freshdirect.routing.model.IHandOffBatchStop;
+import com.freshdirect.routing.model.IHandOffBatchTrailer;
+import com.freshdirect.routing.model.IServiceTimeScenarioModel;
+import com.freshdirect.routing.service.exception.RoutingProcessException;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
@@ -33,6 +38,7 @@ import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.transadmin.datamanager.IRouteFileManager;
 import com.freshdirect.transadmin.datamanager.RouteFileManager;
 import com.freshdirect.transadmin.datamanager.model.OrderRouteInfoModel;
+import com.freshdirect.transadmin.datamanager.model.TrailerRouteInfoModel;
 import com.freshdirect.transadmin.datamanager.report.ICommunityReport;
 import com.freshdirect.transadmin.datamanager.report.XlsCommunityReport;
 import com.freshdirect.transadmin.datamanager.report.XlsCutOffReport;
@@ -41,6 +47,7 @@ import com.freshdirect.transadmin.datamanager.report.model.CutOffReportKey;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
+import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.SpatialBoundary;
@@ -263,6 +270,8 @@ public class HandOffController extends AbstractMultiActionController  {
 
 			try {
 				HandOffServiceProxy proxy = new HandOffServiceProxy();
+				RoutingInfoServiceProxy routingInfoProxy = new RoutingInfoServiceProxy();
+
 				IHandOffBatch batch = proxy.getHandOffBatchById(handOffBatchId);
 				List<String> depotSessions = new ArrayList<String>();
 				if(batch.getSession() != null) { 
@@ -274,6 +283,12 @@ public class HandOffController extends AbstractMultiActionController  {
 				}
 				Map<String, IHandOffBatchRoute> routeMapping = getRouteInfo(batch);
 
+				Map<String, IHandOffBatchTrailer> trailerMapping = getTrailerInfo(batch);
+
+				IServiceTimeScenarioModel scenarioModel = routingInfoProxy.getRoutingScenarioByCode(batch.getServiceTimeScenario());
+				if(scenarioModel == null) {
+					throw new RoutingProcessException(null, null, IIssue.PROCESS_SCENARIO_NOTFOUND);
+				}
 
 				String reportFileName = TransportationAdminProperties.getRoutingCutOffRptFilename()
 												+com.freshdirect.transadmin.security.SecurityManager.getUserName(request)
@@ -284,11 +299,14 @@ public class HandOffController extends AbstractMultiActionController  {
 				result.setBatch(batch);
 				result.setPlannedDispatchTree(new RoutingInfoServiceProxy().getPlannedDispatchTree(batch.getDeliveryDate()));
 				result.setCutOff(TransStringUtil.getServerTime(batch.getCutOffDateTime()));
+				result.setScenarioModel(scenarioModel);
 				result.setRouteMapping(routeMapping);
+				result.setTrailerMapping(trailerMapping);
 				result.setReportData(new TreeMap());
 				result.setTripReportData(new TreeMap());
 				result.setSummaryData(new TreeMap());
 				result.setDetailData(new TreeMap());
+				result.setTrailerDetailData(new TreeMap());
 				
 				for(Map.Entry<String, IHandOffBatchRoute> routeEntry : routeMapping.entrySet()) {
 
@@ -320,6 +338,33 @@ public class HandOffController extends AbstractMultiActionController  {
 						}
 					}
 				}
+				int maxCartonsPerCont = 0;
+				int maxContPerTrailer = 0;
+				if(scenarioModel != null && scenarioModel.getDefaultContainerCartonCount() !=0 &&
+						scenarioModel.getDefaultTrailerContainerCount() != 0){
+					 maxCartonsPerCont = scenarioModel.getDefaultContainerCartonCount();
+					 maxContPerTrailer = scenarioModel.getDefaultTrailerContainerCount();
+				}else{
+					maxCartonsPerCont = RoutingServicesProperties.getMaxTrailerCartonSize();
+					maxContPerTrailer = RoutingServicesProperties.getMaxTrailerContainerSize();
+				}
+				for(Map.Entry<String, IHandOffBatchTrailer> trailerEntry : trailerMapping.entrySet()) {
+					IHandOffBatchTrailer _trailer = trailerEntry.getValue();
+					IHandOffBatchRoute _route = null;
+					TrailerRouteInfoModel _trailerModel = null;
+					
+					if(_trailer.getRoutes() != null){
+						Iterator<IHandOffBatchRoute> _iterator = _trailer.getRoutes().iterator();
+						while(_iterator.hasNext()){
+							_route = _iterator.next();
+							_trailerModel = getTrailerRouteInfoModel(_trailer, _route, maxCartonsPerCont, maxContPerTrailer);
+							if(_trailerModel.getTrailerNo() != null){
+								result.putTrailerDetailData(_trailerModel.getTrailerNo(), _trailerModel);
+							}
+						}
+					}
+				}
+
 				XlsCutOffReport report = new XlsCutOffReport();
 				report.setNeedsDistanceFactor(false);
 				
@@ -342,6 +387,33 @@ public class HandOffController extends AbstractMultiActionController  {
 		return null;
 	}
 
+	private TrailerRouteInfoModel getTrailerRouteInfoModel(IHandOffBatchTrailer _trailer, IHandOffBatchRoute _route, int maxCartonsPerCont, int maxContPerTrailer) throws ParseException{
+		TrailerRouteInfoModel result = new TrailerRouteInfoModel();
+		
+		result.setRouteId(_route.getRouteId());		
+		result.setTrailerNo(_trailer.getTrailerId());		
+		result.setDispatchTime(_route.getDispatchTime() != null ? _route.getDispatchTime().getAsDate() : null);
+		result.setDispatchSequence(_route.getDispatchSequence());		
+		result.setNoOfStops(_route.getStops().size());
+		
+		int routeCartonCnt = 0;
+		if(_route.getStops() != null){
+			Iterator _iterator = _route.getStops().iterator();
+			IHandOffBatchStop _stop = null;	
+			while(_iterator.hasNext()) {
+				_stop = (IHandOffBatchStop)_iterator.next();
+				if(_stop.getDeliveryInfo() != null && _stop.getDeliveryInfo().getPackagingDetail() != null){
+					routeCartonCnt += (int)_stop.getDeliveryInfo().getPackagingDetail().getNoOfCartons();
+				}
+			}	
+		}
+		
+		result.setNoOfCartons(routeCartonCnt);
+		result.setMaxCartonsPerCont(maxCartonsPerCont);
+		result.setMaxContPerTrailer(maxContPerTrailer);
+		return result;
+	}
+	
 	private OrderRouteInfoModel getOrderRouteInfoModel(IHandOffBatchRoute _route, IHandOffBatchStop _stop)
 			throws ParseException {
 		
@@ -408,6 +480,15 @@ public class HandOffController extends AbstractMultiActionController  {
 		
 		HandOffServiceProxy proxy = new HandOffServiceProxy();
 		
+		List<IHandOffBatchStop> handOffStops = proxy.getOrderByCutoff(batch.getDeliveryDate(), batch.getCutOffDateTime());
+		Map<String, Double> orderNoToCartonNo = new HashMap<String, Double>();
+
+		if(handOffStops != null) {
+			for(IHandOffBatchStop stop : handOffStops) {
+				orderNoToCartonNo.put(stop.getOrderNumber(), stop.getReservedOrderSize());
+			}
+		}
+
 		if(batch != null) {
 			List routes = proxy.getHandOffBatchRoutes(batch.getBatchId());
 			List stops = proxy.getHandOffBatchStops(batch.getBatchId(), true);
@@ -421,6 +502,7 @@ public class HandOffController extends AbstractMultiActionController  {
 			Iterator<IHandOffBatchStop> itrStop = stops.iterator();
 			while( itrStop.hasNext()) {
 				IHandOffBatchStop stop = itrStop.next();
+				stop.setReservedOrderSize(orderNoToCartonNo.get(stop.getOrderNumber()));
 				IHandOffBatchRoute route = routeMapping.get(stop.getRouteId());
 				if(route != null) {
 					if(route.getStops() == null) {
@@ -434,6 +516,37 @@ public class HandOffController extends AbstractMultiActionController  {
 			
 	}
 	
+	private Map<String, IHandOffBatchTrailer> getTrailerInfo(IHandOffBatch batch) throws RoutingServiceException {
+		Map<String, IHandOffBatchTrailer> trailerMapping = new HashMap<String, IHandOffBatchTrailer>();
+		
+		HandOffServiceProxy proxy = new HandOffServiceProxy();
+		
+		if(batch != null) {
+			List<IHandOffBatchTrailer> trailers = proxy.getHandOffBatchTrailers(batch.getBatchId());
+			Map<String, IHandOffBatchRoute> routeMapping = getRouteInfo(batch); 
+
+			Iterator<IHandOffBatchTrailer> itr = trailers.iterator();
+			while(itr.hasNext()) {
+				IHandOffBatchTrailer trailer = itr.next();
+				trailerMapping.put(trailer.getTrailerId(), trailer);
+			}
+
+			for(Map.Entry<String, IHandOffBatchRoute> routeEntry : routeMapping.entrySet()){
+				IHandOffBatchRoute route = routeEntry.getValue();
+				if(route.getTrailerId() != null){
+					IHandOffBatchTrailer trailer = trailerMapping.get(route.getTrailerId());
+					if(trailer != null){
+						if(trailer.getRoutes() == null) {
+							trailer.setRoutes(new TreeSet(new RouteComparator()));
+						}
+						trailer.getRoutes().add(route);
+					}
+				}
+			}
+		}
+		return trailerMapping;
+	}
+
 	protected List filterRoutesFromOrders(List orderDataList) {
 		List routeIds = new ArrayList();
 		List routes = new ArrayList();
@@ -468,6 +581,13 @@ public class HandOffController extends AbstractMultiActionController  {
 		return areaMapping;
 	}
 	
+	private class RouteComparator implements Comparator<IHandOffBatchRoute> {		
+	
+		public int compare(IHandOffBatchRoute obj1, IHandOffBatchRoute obj2){
+			String routeId1 = ((IHandOffBatchRoute) obj1).getRouteId();
+			String routeId2 = ((IHandOffBatchRoute) obj2).getRouteId();			
+			return routeId1.compareTo(routeId2);
+}
+	}
 	
 }
-	

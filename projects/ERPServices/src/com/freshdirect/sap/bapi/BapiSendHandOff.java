@@ -20,6 +20,12 @@ import java.util.Map;
  */
 public interface BapiSendHandOff extends BapiFunctionI {
 	
+	public static interface HandOffTrailerIn {
+		public String getTrailerId();
+		public Date getTrailerDispatchTime();
+		public String getCrossDockId();
+	}
+
 	public static interface HandOffRouteIn {
 		
 		public String getRouteId();
@@ -41,6 +47,8 @@ public interface BapiSendHandOff extends BapiFunctionI {
 		
 		public Date getReturnToBuildingTime();
 		public Date getCheckInTime();
+		public String getTrailerId();
+
 	}
 	
 	public static interface HandOffStopIn {
@@ -55,6 +63,7 @@ public interface BapiSendHandOff extends BapiFunctionI {
 		public String getCrossStreet();
 		public String getCrossStreet2();
 		public String getServiceEntrance();
+		public String getServiceAddress2();
 		public Date getServiceEntranceOpenTime();
 		public Date getServiceEntranceCloseTime();
 		public Date getBuildingOpenTime();
@@ -70,6 +79,8 @@ public interface BapiSendHandOff extends BapiFunctionI {
 		public boolean isComplete();
 	}
 	
+	void setHandOffTrailers(List<HandOffTrailerIn> trailerIn);
+
 	void setHandOffRoutes(List<HandOffRouteIn> routesIn);
 	
 	void setHandOffStops(List<HandOffStopIn> stopsIn);

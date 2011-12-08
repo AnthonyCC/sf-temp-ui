@@ -141,4 +141,6 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 	
 	Collection getEmployeeTruckPreference(String empId) throws DataAccessException;
 
+	Collection getEmployeesByRoleTypeAndSubRoleType(String roleTypeId, String subRoleTypeId)throws DataAccessException;
+
 }

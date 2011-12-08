@@ -12,6 +12,8 @@ import java.util.TreeMap;
 
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
+import com.freshdirect.routing.model.IHandOffBatchTrailer;
+import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 import com.freshdirect.transadmin.datamanager.model.OrderRouteInfoModel;
@@ -21,12 +23,13 @@ public class CutOffReportData implements  Serializable {
 	private TreeMap reportData;
 	private TreeMap summaryData;
 	private TreeMap tripReportData;
-	
 	private TreeMap detailData;
+	private TreeMap trailerDetailData;
 	
 	private Map<String, IHandOffBatchRoute> routeMapping;
-	
+	private Map<String, IHandOffBatchTrailer> trailerMapping;
 	private IHandOffBatch batch;
+	private IServiceTimeScenarioModel scenarioModel;
 	
 	private Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> plannedDispatchTree = null;
 		
@@ -51,6 +54,12 @@ public class CutOffReportData implements  Serializable {
 		this.routeMapping = routeMapping;
 	}
 	
+	public Map<String, IHandOffBatchTrailer> getTrailerMapping() {
+		return trailerMapping;
+	}
+	public void setTrailerMapping(Map<String, IHandOffBatchTrailer> trailerMapping) {
+		this.trailerMapping = trailerMapping;
+	}
 	public TreeMap getDetailData() {
 		return detailData;
 	}
@@ -63,8 +72,20 @@ public class CutOffReportData implements  Serializable {
 	public void setCutOff(String cutOff) {
 		this.cutOff = cutOff;
 	}
+	public IServiceTimeScenarioModel getScenarioModel() {
+		return scenarioModel;
+	}
+	public void setScenarioModel(IServiceTimeScenarioModel scenarioModel) {
+		this.scenarioModel = scenarioModel;
+	}
 	public TreeMap getReportData() {
 		return reportData;
+	}
+	public TreeMap getTrailerDetailData() {
+		return trailerDetailData;
+	}
+	public void setTrailerDetailData(TreeMap trailerDetailData) {
+		this.trailerDetailData = trailerDetailData;
 	}
 	public void setReportData(TreeMap reportData) {
 		this.reportData = reportData;
@@ -111,6 +132,12 @@ public class CutOffReportData implements  Serializable {
 		((List)tripReportData.get(key)).add(value);
 	}
 	
+	public void putTrailerDetailData(Object key , Object value) {
+		if(!trailerDetailData.containsKey(key)) {
+			trailerDetailData.put(key, new ArrayList());
+		}
+		((List)trailerDetailData.get(key)).add(value);
+	}
 	public List<String> getSummaryKeys() {
 		Set summaryKeys = getSummaryData().keySet();
 		List<String> sortedKeys = new ArrayList<String>();

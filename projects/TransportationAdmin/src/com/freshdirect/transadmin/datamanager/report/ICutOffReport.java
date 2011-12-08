@@ -1,5 +1,7 @@
 package com.freshdirect.transadmin.datamanager.report;
 
+import java.text.ParseException;
+
 import com.freshdirect.transadmin.datamanager.report.model.CutOffReportData;
 
 
@@ -18,6 +20,12 @@ public interface ICutOffReport {
 	
 	String CUTOFFREPORT_STOPSTITLE = "Total Stops";
 	
+	String CUTOFFREPORT_TRAILERTITLE = "Trailers";
+	
+	String CUTOFFREPORT_CONTAINERSTITLE = "Max Containers";
+
+	String CUTOFFREPORT_CARTONSTITLE = "Max Cartons";
+
 	void generateCutOffReport(String file, CutOffReportData reportData ) 
-												throws ReportGenerationException;
+												throws ReportGenerationException, ParseException;
 }

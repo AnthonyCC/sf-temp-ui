@@ -15,6 +15,7 @@ import java.util.Map;
 import com.freshdirect.framework.util.QuickDateFormat;
 import com.freshdirect.sap.bapi.BapiSendHandOff;
 import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffDispatchIn;
+import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffTrailerIn;
 import com.sap.mw.jco.JCO;
 
 /**
@@ -31,10 +32,24 @@ class JcoBapiSendHandOff extends JcoBapiFunction implements BapiSendHandOff {
 	
 	private JCO.Table dispatches;
 
+	private JCO.Table trailers;
+
 	public JcoBapiSendHandOff() {
 		super("ZBAPI_ROUTEINFO_UPLOAD_TO_SAP");
 	}
 	
+	public void setHandOffTrailers(List<HandOffTrailerIn> trailerIn){
+
+		trailers = this.function.getTableParameterList().getTable("T_TRAILER_UPLOAD");
+		for(HandOffTrailerIn trailer : trailerIn){
+			trailers.insertRow(1);
+			trailers.setValue(trailer.getTrailerId(), "ZTRAILER_NO"); //Trailer No
+			trailers.setValue(formatTime1(trailer.getTrailerDispatchTime()), "ZTRL_DISP_TM"); //Trailer Dispatch Time
+			trailers.setValue(trailer.getCrossDockId(), "ZCD_ID"); //CrossDock Id
+			trailers.nextRow();
+		}
+	}
+
 	@Override
 	public void setHandOffRoutes(List<HandOffRouteIn> routesIn) {
 		
@@ -53,6 +68,7 @@ class JcoBapiSendHandOff extends JcoBapiFunction implements BapiSendHandOff {
 			routes.setValue(formatTime(route.getFirstStopTime()), "ZTRUCK_FRT_STOP");
 			routes.setValue(formatTime(route.getLastStopCompletionTime()), "ZTRUCK_RTN_TIME");
 			routes.setValue(formatTime(route.getCheckInTime()), "ZTRUCK_CHECK_IN");
+			routes.setValue(route.getTrailerId(), "ZTRAILER_NO");
 							
 			routes.nextRow();
 		}
@@ -72,6 +88,7 @@ class JcoBapiSendHandOff extends JcoBapiFunction implements BapiSendHandOff {
 			stops.setValue(stop.getCrossStreet(), "CROSS_STREET"); // SVC Cross Street
 			stops.setValue(stop.getCrossStreet2(), "CROSS_STREET2"); // Cross Street 2
 			stops.setValue(stop.getServiceEntrance(), "SVC_ENTER_ADD"); // SVC Enter Address
+			stops.setValue(stop.getServiceAddress2(), "SVC_ENTER_ADD_2"); // SVC Enter Address
 			stops.setValue(formatTime(stop.getServiceEntranceOpenTime()), "SVC_OPEN_TIME"); // SVC Open Time
 			stops.setValue(formatTime(stop.getServiceEntranceCloseTime()), "SVC_CLOSE_TIME"); // SVC Close Time
 			stops.setValue(formatTime(stop.getBuildingOpenTime()), "BLDG_OPEN_TIME"); // Building Open Time
@@ -99,8 +116,6 @@ class JcoBapiSendHandOff extends JcoBapiFunction implements BapiSendHandOff {
 		
 	}
 
-	
-
 	@Override
 	public void setParameters(String plantCode, Date deliveryDate,
 			String waveRunNo, boolean dropNow) {
@@ -118,6 +133,14 @@ class JcoBapiSendHandOff extends JcoBapiFunction implements BapiSendHandOff {
 		}
 	}
 	
+	private String formatTime1(Date input) {
+		if(input != null) {
+			return QuickDateFormat.TIME_FORMATTER.format(input);
+		} else {
+			return null;
+		}
+	}
+
 	public String getHandOffResult() {
 		
 		/*Map cartonInfoMap = new HashMap();
@@ -136,7 +159,4 @@ class JcoBapiSendHandOff extends JcoBapiFunction implements BapiSendHandOff {
 		}*/
 		return null;
 	}
-
-	
-
 }

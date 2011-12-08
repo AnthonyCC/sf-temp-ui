@@ -2,6 +2,7 @@ package com.freshdirect.transadmin.datamanager;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,7 +33,7 @@ public class RouteOutputDataManager extends RouteDataManager  {
 	private final String INVALID_TRUCKSCHEDULEFILE = "Invalid Depot Truck Schedule File : SAP Order No:";
 	
 	public RoutingResult process(IRoutingOutputInfo routingInfo
-			,String userName, IServiceProvider serviceProvider) throws IOException {
+			,String userName, IServiceProvider serviceProvider) throws IOException, ParseException {
 		
 		long time = System.currentTimeMillis();
 		String outputFileName1 = TransportationAdminProperties.getRoutingOutputOrderFilename()+userName+time;
@@ -48,7 +49,7 @@ public class RouteOutputDataManager extends RouteDataManager  {
 	
 	
 	private RoutingResult processRoutingOutput(IRoutingOutputInfo routingInfo
-												, RoutingResult result, IServiceProvider serviceProvider) {
+												, RoutingResult result, IServiceProvider serviceProvider) throws ParseException {
 
 		collectOrders(routingInfo, result);
 		validateData(routingInfo, result, serviceProvider);

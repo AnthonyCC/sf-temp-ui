@@ -22,24 +22,33 @@ import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;
 import com.freshdirect.routing.model.HandOffBatchDepotSchedule;
 import com.freshdirect.routing.model.HandOffBatchRoute;
 import com.freshdirect.routing.model.HandOffBatchStop;
+import com.freshdirect.routing.model.HandOffBatchTrailer;
 import com.freshdirect.routing.model.IAreaModel;
+import com.freshdirect.routing.model.IFacilityModel;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchDepotSchedule;
 import com.freshdirect.routing.model.IHandOffBatchDepotScheduleEx;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IHandOffBatchSession;
 import com.freshdirect.routing.model.IHandOffBatchStop;
+import com.freshdirect.routing.model.IHandOffBatchTrailer;
 import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IRoutingStopModel;
+import com.freshdirect.routing.model.IServiceTimeScenarioModel;
+import com.freshdirect.routing.model.ITrailerModel;
+import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.model.RouteModel;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
+import com.freshdirect.routing.model.TrailerModel;
 import com.freshdirect.routing.service.exception.IIssue;
+import com.freshdirect.routing.service.exception.RoutingProcessException;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
 import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
+import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
@@ -60,17 +69,19 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		
 		HandOffServiceProxy proxy = new HandOffServiceProxy();
 		GeographyServiceProxy geoProxy = new GeographyServiceProxy();
-		
+		RoutingInfoServiceProxy routingInfoProxy = new RoutingInfoServiceProxy();
 		DeliveryServiceProxy dlvProxy = new DeliveryServiceProxy();
+		
 		Map<IHandOffBatchSession, Map<String, Set<IRouteModel>>> sessionMapping = new HashMap<IHandOffBatchSession
 																						, Map<String, Set<IRouteModel>>>();
 		
 		List<IHandOffBatchStop> s_stops = new ArrayList<IHandOffBatchStop>();
 		List<IHandOffBatchRoute> s_routes = new ArrayList<IHandOffBatchRoute>();
+		List<IHandOffBatchTrailer> s_trailers = new ArrayList<IHandOffBatchTrailer>();
 		IHandOffBatchStop s_stop = null;
 		IHandOffBatchRoute s_route = null;
+		IHandOffBatchTrailer s_trailer = null;
 		
-				
 		proxy.addNewHandOffBatchDepotSchedules(this.getBatch().getBatchId(), this.getBatch().getDepotSchedule());
 		proxy.addNewHandOffBatchDepotSchedulesEx(dayOfWeek,this.getBatch().getCutOffDateTime(), masterDepotSchedule);
 		
@@ -78,10 +89,23 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		proxy.addNewHandOffBatchAction(this.getBatch().getBatchId(), RoutingDateUtil.getCurrentDateTime()
 												, EnumHandOffBatchActionType.ROUTEOUT, this.getUserId());
 		proxy.updateHandOffBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_ROUTINGOUTPROGRESS);
+
 		Map<String, IAreaModel> areaLookup = geoProxy.getAreaLookup();
 		Map<String, IZoneModel> zoneLookup = geoProxy.getZoneLookup();
+		Map<String, IFacilityModel> facilityLookup = geoProxy.getFacilityLookup();
 		Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> currDispStatus = null;
 		String lastCommittedBatchId = null;
+		List<DispatchTrailerCorrelationResult> trailerResult = new ArrayList<DispatchTrailerCorrelationResult>();
+
+		IServiceTimeScenarioModel scenarioModel = routingInfoProxy.getRoutingScenarioByCode(HandOffRoutingOutAction.this.getBatch().getServiceTimeScenario());
+		if(scenarioModel == null) {
+			throw new RoutingProcessException(null, null, IIssue.PROCESS_SCENARIO_NOTFOUND);
+		}
+
+		//Description -> Map<DestinatinFacility, Map<DispatchTIme, Map<CutOffTime, IWaveInstance>>>
+		Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> plannedTrailerDispatchTree 
+									= routingInfoProxy.getPlannedTrailerDispatchTree(this.getBatch().getDeliveryDate(), this.getBatch().getCutOffDateTime());
+
 		if(this.getBatch() != null && this.getBatch().getBatchId() != null) {
 			
 			if(this.getBatch() != null) {
@@ -91,6 +115,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 				}
 				proxy.clearHandOffBatchStopRoute(this.getBatch().getDeliveryDate(), this.getBatch().getBatchId());
 				Map<String, Integer> routeCnts = proxy.getHandOffBatchRouteCnt(this.getBatch().getDeliveryDate());
+				Map<String, Integer> trailerCnts = proxy.getHandOffBatchTrailerCnt(this.getBatch().getDeliveryDate());
 								
 				Set<IHandOffBatchSession> sessions = this.getBatch().getSession();
 				if(sessions != null) {
@@ -104,6 +129,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 						
 						String routeArea = null;
 						sessionMapping.put(session, routeMapping);
+
 						for(IRouteModel route : routes) {
 							routeArea = getRouteArea(route.getRouteId());
 							if(!routeMapping.containsKey(routeArea)) {
@@ -163,6 +189,69 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 						}
 					}			
 				}
+
+				/*OriginLocation->RouteModel*/
+				Map<String, List<IHandOffBatchRoute>> routeLocationMapping = new HashMap<String, List<IHandOffBatchRoute>>();	
+							String originLocationId = null;
+				for(IHandOffBatchRoute _routeModel : s_routes) {
+					originLocationId = _routeModel.getOriginId();
+					_routeModel.setDispatchTime(_routeModel.getStartTime() != null 
+							? new RoutingTimeOfDay(RoutingDateUtil.addMinutes(_routeModel.getStartTime(), -25)) : null);
+
+								IFacilityModel model = facilityLookup.get(originLocationId);
+								if(model != null && IFacilityModel.CROSS_DOCK.equalsIgnoreCase(model.getFacilityTypeModel())){
+									if(!routeLocationMapping.containsKey(originLocationId)){
+							routeLocationMapping.put(originLocationId, new ArrayList<IHandOffBatchRoute>());
+			}
+						routeLocationMapping.get(originLocationId).add(_routeModel);
+		}
+								}
+
+				/*OriginLocation->DispatchTrailerCorrelationResult*/
+				Map<String, DispatchTrailerCorrelationResult> trailerRouteMapping = new HashMap<String, DispatchTrailerCorrelationResult>();
+		
+				for(Map.Entry<String, List<IHandOffBatchRoute>> locEntry : routeLocationMapping.entrySet()) {
+		
+					DispatchTrailerCorrelationResult result = this.assignRoutesToTrailers(locEntry.getKey(), locEntry.getValue()
+																							, plannedTrailerDispatchTree.get(locEntry.getKey())
+																							, scenarioModel);
+					trailerRouteMapping.put(locEntry.getKey(), result);
+				}
+
+				for (Map.Entry<String, DispatchTrailerCorrelationResult> locEntry : trailerRouteMapping.entrySet()) {
+					if (locEntry.getValue() != null) {
+
+							DispatchTrailerCorrelationResult result = locEntry.getValue();
+							trailerResult.add(result);
+
+							for(ITrailerModel trailer : result.getTrailers()){							
+								if(!trailerCnts.containsKey(locEntry.getKey())) {
+									trailerCnts.put(locEntry.getKey(), 0);
+								}
+								trailerCnts.put(locEntry.getKey(), trailerCnts.get(locEntry.getKey()).intValue()+1);
+								trailer.appendRoutingTrailer(trailer.getTrailerId());
+								String formattedTrailerSeq = RoutingServicesProperties.isTrailerNoFormatEnabled() 
+											?  formatTrailerNumber(trailerCnts.get(locEntry.getKey())): formatRouteNumber(trailerCnts.get(locEntry.getKey()));
+								trailer.setTrailerId(facilityLookup.get(locEntry.getKey()).getPrefix()
+										+ splitStringForCode(trailer.getTrailerId())+ formattedTrailerSeq);
+								Iterator<IRouteModel> itr = trailer.getRoutes().iterator();
+								IRouteModel _route = null;								
+								IHandOffBatchRoute t_route = null; 
+								while(itr.hasNext()){
+									_route = itr.next();
+									t_route = new HandOffBatchRoute(_route); 
+									if(t_route.getTrailerId() == null &&
+											trailer.getTrailerId() != null && trailer.getTrailerId().length() > 0){
+										t_route.setTrailerId(trailer.getTrailerId());
+									}
+								}
+								s_trailer = new HandOffBatchTrailer(trailer);
+								s_trailer.setBatchId(this.getBatch().getBatchId());
+								s_trailer.setOriginId(locEntry.getKey());								
+								s_trailers.add(s_trailer);
+							}
+					}
+				}
 			}
 		}
 		
@@ -185,9 +274,10 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 				}
 			}
 		}
-		proxy.updateHandOffBatchDetails(this.getBatch().getBatchId(), s_routes, s_stops, correlationResult.getDispatchStatus());
+		proxy.updateHandOffBatchDetails(this.getBatch().getBatchId(), s_trailers, s_routes, s_stops, correlationResult.getDispatchStatus());
 		
 		checkStopExceptions();
+		checkTrailerRouteExceptions(trailerResult);
 				
 		proxy.updateHandOffBatchStatus(this.getBatch().getBatchId(), EnumHandOffBatchStatus.ROUTEGENERATED);
 		proxy.updateHandOffBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_ROUTINGOUTCOMPLETED);
@@ -472,6 +562,157 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		return _preSchInfo;
 	}
 	
+	private void checkTrailerRouteExceptions(List<DispatchTrailerCorrelationResult> result) throws RoutingServiceException {
+		Iterator<DispatchTrailerCorrelationResult> itr = result.iterator();
+		StringBuffer errorBuf = new StringBuffer();
+		while(itr.hasNext()){
+			DispatchTrailerCorrelationResult _r = itr.next();
+			if (_r != null && _r.getUnassignedRoutes() != null
+												&& _r.getUnassignedRoutes().size() > 0) {
+				for (IRouteModel unassignedRoute : _r.getUnassignedRoutes()) {
+					if (errorBuf.length() > 0) {
+						errorBuf.append(",");
+					}
+					errorBuf.append(unassignedRoute.getRouteId()).append(
+							unassignedRoute.getRoutingRouteId());
+				}
+				throw new RoutingServiceException("Routes unassigned to Trailers: " + errorBuf.toString(),
+																				null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private DispatchTrailerCorrelationResult  assignRoutesToTrailers(String crossDockLoc, List<IHandOffBatchRoute> crossDockRoutes
+										, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>> plannedTrailerDispatchTree
+										, IServiceTimeScenarioModel scenarioModel) {
+		
+		DispatchTrailerCorrelationResult result = new DispatchTrailerCorrelationResult();
+		
+		HandOffServiceProxy proxy = new HandOffServiceProxy();
+		
+		List<IHandOffBatchStop> handOffStops = proxy.getOrderByCutoff(this.getBatch().getDeliveryDate()
+																, this.getBatch().getCutOffDateTime());
+		Map<String, Integer> orderNoToCartonNo = new HashMap<String, Integer>();		
+		
+		if(handOffStops != null) {
+			for(IHandOffBatchStop stop : handOffStops) {
+				if(stop.getDeliveryInfo() != null && stop.getDeliveryInfo().getPackagingDetail() != null)
+					orderNoToCartonNo.put(stop.getOrderNumber(), (int)stop.getDeliveryInfo().getPackagingDetail().getNoOfCartons());
+			}
+		}
+
+		int maxCartonsPerCont = 0;
+		int maxContPerTrailer = 0;
+		if(scenarioModel != null && scenarioModel.getDefaultContainerCartonCount() !=0 &&
+				scenarioModel.getDefaultTrailerContainerCount() != 0){
+			 maxCartonsPerCont = scenarioModel.getDefaultContainerCartonCount();
+			 maxContPerTrailer = scenarioModel.getDefaultTrailerContainerCount();
+		}else{
+			maxCartonsPerCont = RoutingServicesProperties.getMaxTrailerCartonSize();
+			maxContPerTrailer = RoutingServicesProperties.getMaxTrailerContainerSize();
+		}
+		
+		Set<ITrailerModel> trailers = new TreeSet<ITrailerModel>(new TrailerComparator1());
+		StringBuffer errorBuf = new StringBuffer();
+			
+		if(plannedTrailerDispatchTree != null && plannedTrailerDispatchTree.size() > 0){
+			for(Map.Entry<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>> dispatchEntry : plannedTrailerDispatchTree.entrySet()){
+				for(Map.Entry<RoutingTimeOfDay, List<IWaveInstance>> waveInstanceEntry : dispatchEntry.getValue().entrySet()){
+					List<IWaveInstance> waveInstances = waveInstanceEntry.getValue();
+					if(waveInstances != null){
+						Iterator<IWaveInstance> itr = waveInstances.iterator();
+						int trailerCount = 0;
+						while(itr.hasNext()){
+							IWaveInstance _waveInstance = itr.next();
+						
+							ITrailerModel model = new TrailerModel();
+							trailers.add(model);
+							
+							model.setTrailerId(_waveInstance.getRoutingCode()+"-"+(++trailerCount));
+							model.setDispatchTime(_waveInstance.getDispatchTime());
+							model.setPreferredRunTime(_waveInstance.getPreferredRunTime());
+							model.setMaxRunTime(_waveInstance.getMaxRunTime());
+							model.setStartTime(_waveInstance.getWaveStartTime().getAsDate());											
+							model.setCompletionTime(RoutingDateUtil.addSeconds(model.getStartTime(), model.getMaxRunTime()));
+								}
+							}
+				}
+			}
+		} else {
+			for (IHandOffBatchRoute unassignedRoute : crossDockRoutes) {
+				if (errorBuf.length() > 0) {
+					errorBuf.append(",");
+				}
+				errorBuf.append(unassignedRoute.getRouteId()).append(
+						unassignedRoute.getRoutingRouteId());
+			}
+			throw new RoutingServiceException("CrossDock Loc: " + crossDockLoc + ", No planned trailers to assign routes: " + errorBuf.toString(),
+					null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+
+		for(ITrailerModel trailer : trailers){
+							double trailerContainerCnt = 0;						
+			Collections.sort(crossDockRoutes, new HandOffBatchRouteComparator());
+			Iterator<IHandOffBatchRoute> routeItr = crossDockRoutes.iterator();
+			while(routeItr.hasNext()){
+				IHandOffBatchRoute route = routeItr.next();
+				if(route.getDispatchTime() != null && route.getDispatchTime().after(new RoutingTimeOfDay(trailer.getCompletionTime()))){
+									double routeCartonCnt = 0;
+									double routeContCnt = 0;
+									Iterator<IRoutingStopModel> _stopItr = route.getStops().iterator();							
+									IRoutingStopModel _order = null;
+									while(_stopItr.hasNext()){
+										_order = _stopItr.next();
+										routeCartonCnt += orderNoToCartonNo.get(_order.getOrderNumber())!= null 
+																			? orderNoToCartonNo.get(_order.getOrderNumber()) : 0;								
+									}
+									
+									routeContCnt = routeCartonCnt/maxCartonsPerCont;
+									
+									if((routeContCnt + trailerContainerCnt) < maxContPerTrailer){
+										trailerContainerCnt += routeContCnt;
+						if(trailer.getRoutes() == null){
+							trailer.setRoutes(new TreeSet<IHandOffBatchRoute>(new RouteComparator1()));
+						}
+						trailer.getRoutes().add(route);
+						routeItr.remove();
+									}else{
+										break;
+									}
+								}
+							
+						}
+			if(trailer.getRoutes().size() > 0){
+				if(result.getTrailers() == null) { 
+					result.setTrailers(new TreeSet<ITrailerModel>(new TrailerComparator()));
+					}
+				result.getTrailers().add(trailer);
+				}
+			}
+		result.setUnassignedRoutes(crossDockRoutes);
+		return result;
+	}
+
+	class DispatchTrailerCorrelationResult {
+
+		List<IHandOffBatchRoute> unassignedRoutes;
+		Set<ITrailerModel> trailers;
+
+		public List<IHandOffBatchRoute> getUnassignedRoutes() {
+			return unassignedRoutes;
+		}
+		public void setUnassignedRoutes(List<IHandOffBatchRoute> unassignedRoutes) {
+			this.unassignedRoutes = unassignedRoutes;
+		}
+		public Set<ITrailerModel> getTrailers() {
+			return trailers;
+		}
+		public void setTrailers(Set<ITrailerModel> trailers) {
+			this.trailers = trailers;
+		}
+	}
+
 	private class CustomTruckScheduleInfo extends HandOffBatchDepotSchedule {
 		
 		List orders = null;
@@ -548,4 +789,14 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		}
 	}
 	
+	private class HandOffBatchRouteComparator implements Comparator<IHandOffBatchRoute> {
+
+		public int compare(IHandOffBatchRoute route1, IHandOffBatchRoute route2) {
+			if(route1.getDispatchTime() != null &&  route2.getDispatchTime() != null) {
+				return route1.getDispatchTime().getAsDate().compareTo(route2.getDispatchTime().getAsDate());
+}
+			return 0;
+		}
+
+	}
 }

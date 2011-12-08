@@ -26,6 +26,7 @@ import com.freshdirect.routing.proxy.stub.roadnet.MapPoint;
 import com.freshdirect.routing.proxy.stub.transportation.Address;
 import com.freshdirect.routing.proxy.stub.transportation.CategoryQuantities;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder;
+import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderCriteria;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrieveOptions;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveAttributes;
@@ -428,7 +429,10 @@ public class RoutingDataEncoder {
 		return options;		
 	}
 
-	
+	public static DeliveryAreaOrderCriteria encodeDeliveryAreaOrderCriteria() {
+		DeliveryAreaOrderCriteria options = new DeliveryAreaOrderCriteria();		
+		return options;	
+	}
 	
 	public static RoutingSessionCriteria encodeRoutingSessionCriteria(IRoutingSchedulerIdentity schedulerId, String sessionDescription) {
 		//param1 regionIdentity;

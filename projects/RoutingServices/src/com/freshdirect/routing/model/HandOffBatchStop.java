@@ -10,6 +10,7 @@ public class HandOffBatchStop extends RoutingStopModel implements IHandOffBatchS
 	private String sessionName;
 	
 	private String routeId;
+	private String serviceAddress2;
 	
 	private boolean isException;
 	
@@ -161,6 +162,12 @@ public class HandOffBatchStop extends RoutingStopModel implements IHandOffBatchS
 	}
 	
 	@Override
+	public String getServiceAddress2() {
+		return serviceAddress2;
+	}
+	
+	
+	@Override
 	public String getDeliveryInstructionA() {
 		if(this.getDeliveryInfo() != null
 				&& this.getDeliveryInfo().getDeliveryLocation() != null
@@ -227,4 +234,11 @@ public class HandOffBatchStop extends RoutingStopModel implements IHandOffBatchS
 	public void setException(boolean isException) {
 		this.isException = isException;
 	}
+
+	@Override
+	public void setServiceAddress2(String serviceAddress2) {
+		// TODO Auto-generated method stub
+		this.serviceAddress2 = serviceAddress2;
+		
+}
 }

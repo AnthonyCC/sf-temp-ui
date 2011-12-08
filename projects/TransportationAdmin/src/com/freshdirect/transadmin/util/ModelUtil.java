@@ -326,19 +326,16 @@ public class ModelUtil {
 		// construct Dispatch list from plan list merged with route List and truck List
 		// return the Dispatch List
 
-		Iterator planIterator=planList.iterator();
-		Iterator routeIterator=routeList.iterator();
-
-
-		//System.out.println("planList before:"+planList.size());
+		Iterator<Plan> planIterator = planList.iterator();
+		Iterator<ErpRouteMasterInfo> routeIterator = routeList.iterator();		
 
 		Map planMap=new HashMap();
 		Map routeMap=new HashMap();
-		// for null zone
-		List noZonePlanList=new ArrayList();
+
+		List<Plan> noZonePlanList = new ArrayList<Plan>();
 
 		while(planIterator.hasNext()){
-			Plan plan=(Plan)planIterator.next();
+			Plan plan = planIterator.next();
 			Zone zone=plan.getZone();
 			if(zone==null){
 				noZonePlanList.add(plan);
@@ -357,13 +354,11 @@ public class ModelUtil {
 		while(keyIterator.hasNext()){
 			String planKey=(String)keyIterator.next();
 			List newPlanList=(List)planMap.get(planKey);
-			//Collections.sort(newPlanList,PLAN_COMPARATOR);
-
 		}
 
 
 		while(routeIterator.hasNext()){
-			ErpRouteMasterInfo route=(ErpRouteMasterInfo)routeIterator.next();
+			ErpRouteMasterInfo route = routeIterator.next();
 			String zoneCode=route.getZoneNumber();
 			List routeTmpList=(List)routeMap.get(zoneCode);
 			if(routeTmpList==null){
@@ -383,23 +378,22 @@ public class ModelUtil {
 
 		// for the dispatch object from the above lists
 		List dispatchList=new ArrayList();
-		//int start_index=0;
-		//int end_index=0;
+
 		Set finalSet=planMap.keySet();
 	    Iterator finalIterator=finalSet.iterator();
 		while(finalIterator.hasNext()){
 			String zoneCode=(String)finalIterator.next();
-			//start_index=end_index;
-			//end_index=end_index+((List)planMap.get(zoneCode)).size();
 			List routeLst=(List)routeMap.get(zoneCode);
-			if(routeLst==null) routeLst=Collections.EMPTY_LIST;
-			constructDispatchModelList(dispatchList,(List)planMap.get(zoneCode),routeLst);
-
+			if (routeLst == null)
+				routeLst = Collections.EMPTY_LIST;
+			constructDispatchModelList(dispatchList
+											, (List) planMap.get(zoneCode)
+											, routeLst);
 		}
 
-		//start_index=end_index;
-		//end_index=end_index+noZonePlanList.size();
-		constructDispatchModelList(dispatchList,noZonePlanList,Collections.EMPTY_LIST);
+		constructDispatchModelList(dispatchList
+											,noZonePlanList
+												,Collections.EMPTY_LIST);
 		return dispatchList;
 	}
 
@@ -417,6 +411,8 @@ public class ModelUtil {
 			Dispatch d=new Dispatch();
 			d.setPlanId(p.getPlanId());
 			d.setDispatchDate(p.getPlanDate());
+			d.setOriginFacility(p.getOriginFacility());
+			d.setDestinationFacility(p.getDestinationFacility());
 			d.setStartTime(p.getStartTime());
 			d.setSupervisorId(p.getSupervisorId());
 			d.setDispatchResources(convertPlnToDispatchResource(p.getPlanResources(),d));

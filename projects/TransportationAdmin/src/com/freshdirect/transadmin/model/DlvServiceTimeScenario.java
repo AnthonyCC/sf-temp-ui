@@ -18,6 +18,8 @@ public class DlvServiceTimeScenario implements java.io.Serializable, TrnBaseEnti
 	private BigDecimal defaultFreezerCount;
 	private String orderSizeFormula;
 	private String isDefault;
+	private BigDecimal defaultTrailerContainerCount;
+	private BigDecimal defaultContainerCartonCount;
 	
 	private DlvServiceTimeType defaultServiceTimeType;
 		
@@ -121,6 +123,24 @@ public class DlvServiceTimeScenario implements java.io.Serializable, TrnBaseEnti
 		this.defaultServiceTimeType = defaultServiceTimeType;
 	}
 	
+	public BigDecimal getDefaultTrailerContainerCount() {
+		return defaultTrailerContainerCount;
+	}
+
+	public void setDefaultTrailerContainerCount(
+			BigDecimal defaultTrailerContainerCount) {
+		this.defaultTrailerContainerCount = defaultTrailerContainerCount;
+	}
+
+	public BigDecimal getDefaultContainerCartonCount() {
+		return defaultContainerCartonCount;
+	}
+
+	public void setDefaultContainerCartonCount(
+			BigDecimal defaultContainerCartonCount) {
+		this.defaultContainerCartonCount = defaultContainerCartonCount;
+	}
+
 	public String getServiceTimeType() {
 		if(getDefaultServiceTimeType() == null) {
 			return null;

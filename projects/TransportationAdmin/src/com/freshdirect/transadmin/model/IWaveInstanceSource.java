@@ -6,6 +6,7 @@ import java.util.Date;
 public interface IWaveInstanceSource {
 	
 	Date getDeliveryDate();
+	TrnFacility getOriginFacility();
 	Zone getZone();
 	Date getStartTime();
 	Date getFirstDeliveryTime();
@@ -15,6 +16,7 @@ public interface IWaveInstanceSource {
 	boolean isValidSource();
 	boolean needsConsolidation();
 	
+	void setOriginFacility(TrnFacility originFacility);
 	void setStartTime(Date value);
 	void setFirstDeliveryTime(Date value);
 	void setLastDeliveryTime(Date value);

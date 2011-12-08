@@ -42,6 +42,24 @@ public class Dispatch implements java.io.Serializable{
 	
 	private String motKitNumber;
 	private String additionalNextels;
+	private TrnFacility originFacility;
+	private TrnFacility destinationFacility;	
+	
+	public TrnFacility getOriginFacility() {
+		return originFacility;
+	}
+
+	public void setOriginFacility(TrnFacility originFacility) {
+		this.originFacility = originFacility;
+	}
+
+	public TrnFacility getDestinationFacility() {
+		return destinationFacility;
+	}
+
+	public void setDestinationFacility(TrnFacility destinationFacility) {
+		this.destinationFacility = destinationFacility;
+	}
 	
 	public Dispatch() {
 	}

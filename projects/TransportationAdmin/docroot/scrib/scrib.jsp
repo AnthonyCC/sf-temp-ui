@@ -81,9 +81,10 @@
                     filterable="false" sortable="false" cell="selectcol"
                     property="scribId" />              
               <ec:column cell="date" property="scribDate" sortable="true" title="Date"/>
+              <ec:column property="facilityInfoEx" sortable="true" title="ORF-DTF"/>
               <ec:column property="zoneS" sortable="true" title="Zone"/>
               <ec:column property="regionS" sortable="true" title="Region" /> 
-              <ec:column property="supervisorName" sortable="true" title="Supervisor" />                              
+              <ec:column property="supervisorName" sortable="true" title="Sup" />
               <ec:column cell="date" format="hh:mm aaa"  property="startTime" title="Emp Start Time"/>
               <ec:column cell="date" format="hh:mm aaa"  property="firstDeliveryTime" title="First Dlv Time"/>
               <ec:column cell="date" format="hh:mm aaa"  property="lastDeliveryTime" title="Last Dlv Time"/>
@@ -91,7 +92,7 @@
               <ec:column cell="date" format="HH:mm"      property="stemFromTime" title="From Zone Time"/>
 			  <ec:column cell="date" format="hh:mm aaa"  property="prefRuturn" title="*Pref Return"/>  
 			  <ec:column cell="date" format="hh:mm aaa"  property="maxReturnTimeDisplay1" title="Max Return"/>  
-              <ec:column property="count" sortable="true" title="No of Trucks"/> 
+              <ec:column property="count" sortable="true" title="No of Trucks/CD Trailers"/> 
               <ec:column property="count1" sortable="true" title="No of HandTrucks"/> 
               <ec:column cell="date" format="hh:mm aaa"  property="waveStart" title="*Wave Start"/>     
 			  <ec:column cell="date" format="HH:mm"  property="prefTime" title="*Pref Time"/>  

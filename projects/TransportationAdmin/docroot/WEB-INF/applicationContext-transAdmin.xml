@@ -76,6 +76,8 @@
 				<value>com/freshdirect/transadmin/model/VIRRecord.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/IssueLog.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/MaintenanceIssue.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/TrnFacility.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/TrnFacilityType.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">

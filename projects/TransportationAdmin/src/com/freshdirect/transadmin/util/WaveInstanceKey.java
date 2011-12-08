@@ -2,6 +2,8 @@ package com.freshdirect.transadmin.util;
 
 import java.util.Date;
 
+import com.freshdirect.transadmin.model.TrnFacility;
+
 public class WaveInstanceKey implements java.io.Serializable {
 	
 	private Date deliveryDate;
@@ -10,6 +12,16 @@ public class WaveInstanceKey implements java.io.Serializable {
 	private Date lastDeliveryTime;
 	private Date cutOffTime;
 	private String zone;
+	private TrnFacility originFacility;	
+
+	public TrnFacility getOriginFacility() {
+		return originFacility;
+	}
+
+	public void setOriginFacility(TrnFacility originFacility) {
+		this.originFacility = originFacility;
+	}
+
 	public Date getDeliveryDate() {
 		return deliveryDate;
 	}
@@ -46,6 +58,7 @@ public class WaveInstanceKey implements java.io.Serializable {
 	public void setZone(String zone) {
 		this.zone = zone;
 	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -64,6 +77,8 @@ public class WaveInstanceKey implements java.io.Serializable {
 				* result
 				+ ((lastDeliveryTime == null) ? 0 : lastDeliveryTime.hashCode());
 		result = prime * result + ((zone == null) ? 0 : zone.hashCode());
+		result = prime * result + ((originFacility == null) ? 0 : originFacility.hashCode());
+
 		return result;
 	}
 	@Override
@@ -104,6 +119,11 @@ public class WaveInstanceKey implements java.io.Serializable {
 			if (other.zone != null)
 				return false;
 		} else if (!zone.equals(other.zone))
+			return false;
+		if (originFacility == null) {
+			if (other.originFacility != null)
+				return false;
+		} else if (!originFacility.equals(other.originFacility))
 			return false;
 		return true;
 	}

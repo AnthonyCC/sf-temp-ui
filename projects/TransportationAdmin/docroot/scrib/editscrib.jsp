@@ -33,14 +33,12 @@
 		border:solid #999999 1px;
 		background:#ffffff;}
 		
-</style>
-<style>
-        .time_picker_div {padding:5px;
+	.time_picker_div {
+	   padding:5px;
             border:solid #999999 1px;
             background:#ffffff;}
       </style>
     
-
 <tmpl:insert template='/common/sitelayout.jsp'>
 
     <tmpl:put name='title' direct='true'>Add/Edit Scrib</tmpl:put>
@@ -51,7 +49,7 @@
 		<form:form commandName = "scribForm" method="post">		
 		<form:hidden path="firstDeliveryTimeModified"/>
 		<form:hidden path="zoneModified"/>		
-		<table width="100%" cellpadding="0" cellspacing="0" border="0">
+		<table width="100%" height="75%" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td class="screentitle">Add/Edit Scrib</td>
 			</tr>
@@ -60,9 +58,9 @@
 			</tr>      
 			<tr>
 				<td class="screencontent">
-					<table class="forms1" border="0">  
+					<table class="forms1" style="height:100%;width:90%;align:center;border:1px dotted;background-color:#F7F7F7;">
 						<tr>
-							<td>Date</td>
+							<td align="right">Date</td>
 							<td>
 								<form:input maxlength="50" size="24" path="scribDate" onchange="javascript:getActiveZoneInfo(this.value,scribForm.zoneS)"/>&nbsp;
 								<a href="#" id="trigger_scribDate" style="font-size: 9px;">
@@ -75,37 +73,60 @@
 							</td>
 						</tr>  
 						<tr>
-							<td>Zone</td>
+							<td align="right">Origin Facility</td>
 							<td> 
-								<c:if test='${!empty scribForm.scribId}'>
-									<c:set var="hasScrib" value="true"/>
+								<form:select path="originFacility" onChange="showZoneSelection(this, scribForm.destinationFacility)">
+									<form:option value="" label="--Please Select Origin Facility"/>
+									<form:options items="${trnFacilitys}" itemLabel="name" itemValue="facilityId" />
+								</form:select> 
+							</td>
+							<td><form:errors path="originFacility" />&nbsp;</td>
+						</tr>
+						<tr>
+							<td align="right">Destination Facility</td>
+							<td> 
+								<form:select path="destinationFacility" onChange="showZoneSelection(scribForm.originFacility,this)">
+									<form:option value="" label="--Please Select Destination Facility"/>
+									<form:options items="${trnFacilitys}" itemLabel="name" itemValue="facilityId" />
+								</form:select> 
+							</td>
+							<td><form:errors path="destinationFacility" />&nbsp;</td>
+						</tr>
+						<tr id="zoneRow">
+							<td align="right">Zone</td>
+							<td>
+								<c:if test="${scribForm.destinationFacility ne 'DLVZONE'}">
+									<c:set var="_disableZone" value="true"/>
 								</c:if>
-								<c:choose>          
-									<c:when test='${hasScrib}'>    
-										<form:select path="zoneS">
-											<form:option value="" label="--Please Select Zone"/>
+								<form:select path="zoneS" disabled="${_disableZone}" onChange="zoneChanged()">
+									<form:option value="null" label="--Please Select Zone"/>
 											<form:options items="${zones}" itemLabel="displayName" itemValue="zoneCode" />
 										</form:select>
-									</c:when>
-									<c:otherwise>
-										<form:select path="zoneS" onChange="zoneChanged()">
-											<form:option value="" label="--Please Select Zone"/>
-											<form:options items="${zones}" itemLabel="displayName" itemValue="zoneCode" />
-										</form:select> 
-									</c:otherwise>
-								</c:choose>
+								
+								
+									
 							</td>
 							<td><form:errors path="zoneS" />&nbsp;</td>
 						</tr>
+						<tr id="regionRow">
+							<td align="right">Region</td>
+								<td> 
+									<form:select path="region">
+										<form:option value="null" label="--Please Select Region"/>
+										<form:options items="${regions}" itemLabel="code" itemValue="code" />
+									</form:select>
+								</td>
+							<td><form:errors path="region" />&nbsp;</td>
+						</tr>  
 						<tr>
-							<td>Start&nbsp;Time</td>
+							<td align="right">Start&nbsp;Time</td>
 							<td>         
 								<form:input maxlength="50" size="24" path="startTimeS" onblur="this.value=time(this.value);" /> 
 							</td>
 							<td><form:errors path="startTimeS" />&nbsp;</td>                 
 						</tr>
 						<tr>
-							<td>First Dlv Time</td>
+							<td align="right">First Dlv Time</td>
 							<td>  
 								<c:if test='${!empty scribForm.scribId}'>
 									<c:set var="hasScrib" value="true"/>
@@ -122,35 +143,35 @@
 							<td><form:errors path="firstDlvTimeS" />&nbsp;</td>                 
 						</tr>
 						<tr>
-							<td>Last Dlv Time</td>
+							<td align="right">Last Dlv Time</td>
 							<td>         
 								<form:input maxlength="50" size="24" path="endDlvTimeS" onblur="this.value=time(this.value);" /> 
 							</td>
 							<td><form:errors path="endDlvTimeS" />&nbsp;</td>                 
 						</tr>   
 						<tr>
-							<td>Max Return Time</td>
+							<td align="right">Max Return Time</td>
 							<td>         
 								<form:input maxlength="50" size="24" path="maxReturnTimeS" onblur="this.value=time(this.value);" /> 
 							</td>
 							<td><form:errors path="maxReturnTimeS" />&nbsp;</td>                 
 						</tr> 
 						<tr>
-							<td>No of Trucks</td>
+							<td align="right">No of Trucks/CD Trailers </td>
 							<td>         
 								<form:input maxlength="50" size="24" path="count"  /> 
 							</td>
 							<td><form:errors path="count" />&nbsp;</td>                 
 						</tr>  
 						<tr>
-							<td>No of HandTrucks</td>
+							<td align="right">No of HandTrucks</td>
 							<td>         
 								<form:input maxlength="50" size="24" path="resources"  /> 
 							</td>
 							<td><form:errors path="resources" />&nbsp;</td>                 
 						</tr>
 						<tr> 
-						<td>Supervisor</td>
+						<td align="right">Supervisor</td>
 							<td> 
 								<form:select path="supervisorCode">
 									<form:option value="" label="--Please Select Supervisor"/>
@@ -160,7 +181,7 @@
 							<td><form:errors path="supervisorCode" />&nbsp;</td>   
 						</tr>
 						<tr>
-							<td>CutOff&nbsp;Time</td>
+							<td align="right">CutOff&nbsp;Time</td>
 							<td> 
 								<form:select path="cutOffTimeS">
 									<form:option value="" label="--Please Select CutOff"/>
@@ -170,22 +191,24 @@
 							<td><form:errors path="cutOffTimeS" />&nbsp;</td>
 						</tr>						
 						<tr>
-							<td><input type = "submit" value="&nbsp;Save&nbsp;" />  </td>
-							<td>         
-								<input type = "button" value="&nbsp;Cancel&nbsp;" onclick="javascript:location.href ='scrib.do'" />
+							<td colspan="3" align="center">
+								<input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:back();" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<input type = "submit" value="&nbsp;Save&nbsp;" />&nbsp;&nbsp;&nbsp;&nbsp;
+								<input type = "button" value="&nbsp;Cancel&nbsp;" onclick="javascript:location.href ='scrib.do'" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							</td>
-							<td>
-							   <input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:back();" /> 
+						</tr>
+					</table>
 							   </td>          
 						</tr>  
-						
-						   
-						
+			<tr><td>&nbsp;</td></tr>
 		</table>
 	</form:form>
 	</div>
      
 	<script language="javascript">             
+		var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+		showZoneSelection(document.getElementById('originFacility'), document.getElementById('destinationFacility'));
+
 		Calendar.setup(
 			{
 				showsTime : false,
@@ -202,26 +225,52 @@
 			if(selIndex == 0) selIndex = 7;
 			// document.getElementById('dispatchDay').selectedIndex =  selIndex;
 		};
+		
+		function showZoneSelection(originRefVar, destRefVar) {
+		 
+			var originRef = originRefVar.value || '';
+			var destRef = destRefVar.value || '';
+			
+			var result = jsonrpcClient.AsyncDispatchProvider.getFacilityInfo(sendFormCallback, originRef, destRef); 
+			
+			function sendFormCallback(result, exception) {
+			  if(exception) {
+				  alert('Unable to connect to host system. Please contact system administrator!');               
+				  return;
+			  }
+
+			  if( result[0] === 'SIT'){
+				  alert('Origin Facility cannot be Delivery Zone.');
+				  originRefVar.selectedIndex = 0;
+			  }
+			  if( result[1] === 'FD'){
+				  alert('Destination Facility cannot be Main Plant.');
+				  destRefVar.selectedIndex = 0;
+			  } else if((result[1] === result[0]) && (originRef != '' && destRef != '')){
+				  alert('Both Origin & Desination Facility cannot be same.');
+			  } else {
+					if( result[1] === 'SIT'){
+						document.getElementById("zoneS").disabled=false;
+						document.getElementById('region').disabled= true;
+					}else{
+						document.getElementById("zoneS").disabled=true;
+						document.getElementById("zoneS").selectedIndex=0;
+						document.getElementById('region').disabled= false;
+					}
+			  }
+
+			}
+		 
+		}
+
 		function zoneChanged() {
 			document.getElementById("zoneModified").value = "true";
 			submitData();
 		} 
 		function submitData() {
-			//document.getElementById("ignoreErrors").value = "true";
 			document.getElementById("scribForm").submit();
 		}
-		function bullpen() {
-			if(document.getElementById("isBullpen1").checked) {
-				document.getElementById("zoneCode").disabled=true;
-				document.getElementById("regionCode").disabled=false;
-			} else {
-				document.getElementById("zoneCode").disabled=false;
-				document.getElementById("regionCode").disabled=true;
-			}
-			document.getElementById("zoneModified").value = "true";
-			document.getElementById("ignoreErrors").value = "true";
-			document.getElementById("planForm").submit();
-		}
+
 		function  firstDeliveryTimeChanged() {
 			document.getElementById("firstDeliveryTimeModified").value = "true";
 			submitData();			

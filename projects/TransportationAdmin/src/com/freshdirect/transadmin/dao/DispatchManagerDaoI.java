@@ -37,7 +37,7 @@ public interface DispatchManagerDaoI extends BaseManagerDaoI {
 	Plan getPlan(String id) throws DataAccessException;
 
 	//Added for new dispatch model.
-	Collection getDispatchList(String date, String zone, String region) throws DataAccessException;
+	Collection getDispatchList(String date, String facilityLocation, String zone, String region) throws DataAccessException;
 	
 	void saveDispatch(Dispatch dispatch) throws DataAccessException;
 	

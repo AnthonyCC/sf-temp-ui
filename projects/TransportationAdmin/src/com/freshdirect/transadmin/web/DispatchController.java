@@ -76,6 +76,7 @@ import com.freshdirect.transadmin.service.AssetManagerI;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
+import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
 import com.freshdirect.transadmin.util.ModelUtil;
@@ -100,8 +101,8 @@ public class DispatchController extends AbstractMultiActionController {
 	private EmployeeManagerI employeeManagerService;
 	private DomainManagerI domainManagerService;
 	private AssetManagerI assetManagerService;
+	private LocationManagerI locationManagerService;
 	
-
 	private short rownum;
 	private short cellnum;
 	private Collection unsorted;
@@ -164,6 +165,14 @@ public class DispatchController extends AbstractMultiActionController {
 
 	public void setAssetManagerService(AssetManagerI assetManagerService) {
 		this.assetManagerService = assetManagerService;
+	}
+
+	public LocationManagerI getLocationManagerService() {
+		return locationManagerService;
+	}
+
+	public void setLocationManagerService(LocationManagerI locationManagerService) {
+		this.locationManagerService = locationManagerService;
 	}
 
 	/**
@@ -778,7 +787,7 @@ public class DispatchController extends AbstractMultiActionController {
 		
 		if(!TransStringUtil.isEmpty(dispDate)) {			
 			//boolean punchInfo=getServerDate(dispDate).equals(TransStringUtil.getCurrentServerDate())?true:false;			
-			Collection c = getDispatchInfos(getServerDate(dispDate), zone, region
+			Collection c = getDispatchInfos(getServerDate(dispDate), null, zone, region
 												, false, TransWebUtil.isPunch(request, dispatchManagerService)
 												, TransWebUtil.isAirClick(request, dispatchManagerService)
 												, mav.getModel());
@@ -787,7 +796,7 @@ public class DispatchController extends AbstractMultiActionController {
 			mav.getModel().put("dispDate", dispDate);
 		} else {
 			//By default get the today's dispatches.
-			Collection c = getDispatchInfos(getServerDate(TransStringUtil.getDispatchCurrentDate()), zone, region
+			Collection c = getDispatchInfos(getServerDate(TransStringUtil.getDispatchCurrentDate()), null, zone, region
 																	, false,TransWebUtil.isPunch(request, dispatchManagerService)
 																	, TransWebUtil.isAirClick(request, dispatchManagerService)
 																	, mav.getModel());
@@ -809,7 +818,7 @@ public class DispatchController extends AbstractMultiActionController {
 	public ModelAndView dispatchSummaryHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException, DateFilterException {
 
 		ModelAndView mav = new ModelAndView("dispatchSummaryView");
-		Collection dispatchList = getDispatchInfos(getServerDate(TransStringUtil.getDispatchCurrentDate()), null, null
+		Collection dispatchList = getDispatchInfos(getServerDate(TransStringUtil.getDispatchCurrentDate()), null, null, null
 															, true,TransWebUtil.isPunch(request, dispatchManagerService)
 															, TransWebUtil.isAirClick(request, dispatchManagerService)
 															, null);
@@ -1046,10 +1055,10 @@ public class DispatchController extends AbstractMultiActionController {
 		try {
 			mode=Integer.parseInt(request.getParameter("mode"));
 		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if(mode==3) view="dispatchDashboardNewNRView";
+		if (mode == 3)
+			view = "dispatchDashboardNewNRView";
 			
 		return processDashboardViewRequest(request, response, view,mode);
 	}
@@ -1057,6 +1066,7 @@ public class DispatchController extends AbstractMultiActionController {
 		
 		try {
 			String dispDate = request.getParameter("dispDate");			
+			String facilityLocation = request.getParameter("facilityLocation");	
 			if(TransStringUtil.isEmpty(dispDate)) {
 				dispDate=TransStringUtil.getDispatchCurrentDate();
 			}
@@ -1064,30 +1074,40 @@ public class DispatchController extends AbstractMultiActionController {
 				request.setAttribute("lastTime", TransStringUtil.getServerTime(new Date()));
 			} catch (ParseException e1) {}
 			//By default get the today's dispatches.
-			Collection c=getDispatchInfos(getServerDate(dispDate), null, null
+			Collection dispList = null;
+			if(!TransStringUtil.isEmpty(facilityLocation)){
+				dispList = getDispatchInfos(getServerDate(dispDate), facilityLocation, null, null
 														, true, TransWebUtil.isPunch(request, dispatchManagerService)
 														, TransWebUtil.isAirClick(request, dispatchManagerService)
 														, null);
+			} else {
+				dispList = getDispatchInfos(getServerDate(dispDate), null, null, null
+														, true, TransWebUtil.isPunch(request, dispatchManagerService)
+														, TransWebUtil.isAirClick(request, dispatchManagerService)
+														, null);
+			}
+						
 			if(mode==3)
-			DispatchPlanUtil.setDispatchStatus(c,false);
-			else DispatchPlanUtil.setDispatchStatus(c,true);
+				DispatchPlanUtil.setDispatchStatus(dispList, false);
+			else
+				DispatchPlanUtil.setDispatchStatus(dispList, true);
 				
 			Collection upsRouteInfos=UPSDataCacheManager.getInstance().getData(domainManagerService);
-			if(upsRouteInfos!=null&&upsRouteInfos.size()>0)
-			{
-				Iterator iterator=c.iterator();			
-				while(iterator.hasNext())	
-				{
-					DispatchCommand command = (DispatchCommand)iterator.next();
+
+			if (upsRouteInfos != null && upsRouteInfos.size() > 0) {
+				Iterator<DispatchCommand> iterator = dispList.iterator();
+				while (iterator.hasNext()) {
+					DispatchCommand command = iterator.next();
 					command.setUPSRouteInfo(upsRouteInfos);
 				}
 			}
 			ModelAndView mav=new ModelAndView(view);
-			mav.getModel().put("dispatchInfos",DispatchPlanUtil.getsortedDispatchView(c,mode));
+			mav.getModel().put("dispatchInfos",	DispatchPlanUtil.getsortedDispatchView(dispList, mode));
 			mav.getModel().put("dispDate", dispDate);
+			mav.getModel().put("facilityLocation", facilityLocation);
+			mav.getModel().put("trnFacilitys", locationManagerService.getTrnFacilitys());
 			return mav;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return new ModelAndView("dispatchDashboardView");
@@ -1106,23 +1126,34 @@ public class DispatchController extends AbstractMultiActionController {
 		
 		try {
 			String dispDate = request.getParameter("dispDate");			
+			String facilityLocation = request.getParameter("facilityLocation");	
 			if(TransStringUtil.isEmpty(dispDate)) {
 				dispDate=TransStringUtil.getDispatchCurrentDate();
 			}
+
 			try {
 				request.setAttribute("lastTime", TransStringUtil.getServerTime(new Date()));
 			} catch (ParseException e1) {}
 			//By default get the today's dispatches.
-			Collection c=getDispatchInfos(getServerDate(dispDate), null, null
+			Collection dispList = null;
+			if(!TransStringUtil.isEmpty(facilityLocation)){
+				dispList = getDispatchInfos(getServerDate(dispDate), facilityLocation, null, null
 												, true, TransWebUtil.isPunch(request, dispatchManagerService)
 												, TransWebUtil.isAirClick(request, dispatchManagerService)
 												, null);
-			DispatchPlanUtil.setDispatchStatus(c,true);
+			} else {
+				dispList = getDispatchInfos(getServerDate(dispDate), null, null, null
+														, true, TransWebUtil.isPunch(request, dispatchManagerService)
+														, TransWebUtil.isAirClick(request, dispatchManagerService)
+														, null);
+			}
+			DispatchPlanUtil.setDispatchStatus(dispList,true);
 						
-			
 			ModelAndView mav=new ModelAndView(view);
-			mav.getModel().put("dispatchInfos",DispatchPlanUtil.getsortedDispatch(c));
+			mav.getModel().put("dispatchInfos",	DispatchPlanUtil.getsortedDispatch(dispList));
 			mav.getModel().put("dispDate", dispDate);
+			mav.getModel().put("facilityLocation", facilityLocation);
+			mav.getModel().put("trnFacilitys", locationManagerService.getTrnFacilitys());
 			return mav;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -1131,30 +1162,32 @@ public class DispatchController extends AbstractMultiActionController {
 		return new ModelAndView("dispatchDashboardView");
 	}
 
-	private Collection getDispatchInfos(String dispDate, String zoneStr
+	private Collection getDispatchInfos(String dispDate
+											, String facilityLocation
+												, String zoneStr
 											, String region, boolean isSummary
-													, boolean needsPunchInfo
-																, boolean needsAirClick
-																	, Map modelMap){
+												, boolean needsPunchInfo, boolean needsAirClick, Map modelMap){
 
 		Collection dispatchInfos = new ArrayList();
 		List termintedEmployees = getTermintedEmployeeIds();
 		try {
-		Collection dispatchList = dispatchManagerService.getDispatchList(dispDate, zoneStr, region);
-		if(dispatchList!=null) Collections.sort((List)dispatchList,new DispatchPlanUtil.DispatchPunchTimeComparator());
+			Collection dispatchList = dispatchManagerService.getDispatchList(dispDate, facilityLocation, zoneStr, region);
+			if (dispatchList != null) 
+				Collections.sort((List)dispatchList, new DispatchPlanUtil.DispatchPunchTimeComparator());
 		Collection punchInfo=null;
 		Map htInData=null;
 		Map htOutData=null;
-		domainManagerService.refreshCachedData(EnumCachedDataType.TRUCK_DATA);
+				domainManagerService
+						.refreshCachedData(EnumCachedDataType.TRUCK_DATA);
 		//needsPunchInfo=false;
 		if(needsPunchInfo && dispatchList!=null && !dispatchList.isEmpty())
 			punchInfo=employeeManagerService.getPunchInfo(dispDate);
 			Date dispDateTemp=TransStringUtil.serverDateFormat.parse(dispDate);
-			if(needsAirClick)
-			{
+				if (needsAirClick) {
 				htInData=dispatchManagerService.getHTInScan(dispDateTemp);
 				htOutData=dispatchManagerService.getHTOutScan(dispDateTemp);
 			}
+				
 		Iterator iter = dispatchList.iterator();
 			while(iter.hasNext()){
 				Dispatch dispatch = (Dispatch) iter.next();
@@ -1165,19 +1198,21 @@ public class DispatchController extends AbstractMultiActionController {
 				DispatchCommand command = DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService,punchInfo,htInData,htOutData);
 				command.setTermintedEmployees(termintedEmployees);
 				if(isSummary){
+						//Retrive Route/Stop Information
 					FDRouteMasterInfo routeInfo = domainManagerService.getRouteMasterInfo(command.getRoute(), new Date());
 					if(routeInfo != null){
 						command.setNoOfStops(routeInfo.getNumberOfStops());
 					}
 
 				}
-				ErpTruckMasterInfo truckInfo=domainManagerService.getERPTruck(command.getTruck());
+					//Retrive Truck Information
+					ErpTruckMasterInfo truckInfo= null;
+					if(command.getTruck()!=null)
+						truckInfo = domainManagerService.getERPTruck(command.getTruck());
 				if(truckInfo!=null)
-				{
-					
 					command.setLocation(truckInfo.getLocation());
-				}
 				
+					
 				StringBuffer strBuf = new StringBuffer();
 				if(command.getGpsNumber() != null) {
 					strBuf.append(getAssetIdentifier(modelMap,DispatchPlanUtil.ASSETTYPE_GPS, command.getGpsNumber())).append(" ");
@@ -1434,7 +1469,7 @@ public class DispatchController extends AbstractMultiActionController {
 			    	return planHandler(request,response);
 			   }
 		    }
-			Collection dispList = dispatchManagerService.getDispatchList(dispatchDate,null,null);
+			Collection dispList = dispatchManagerService.getDispatchList(dispatchDate,null,null,null);
 			if(!SecurityManager.isUserAdmin(request)){
 				  saveMessage(request, getMessage("app.actionmessage.140", null));
 				  return planHandler(request,response);

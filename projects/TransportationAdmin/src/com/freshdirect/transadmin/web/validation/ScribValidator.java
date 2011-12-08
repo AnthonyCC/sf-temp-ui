@@ -1,10 +1,8 @@
 package com.freshdirect.transadmin.web.validation;
 
 import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
 
 import com.freshdirect.transadmin.model.Scrib;
-import com.freshdirect.transadmin.model.Zone;
 
 public class ScribValidator extends AbstractValidator {	
 	
@@ -15,6 +13,13 @@ public class ScribValidator extends AbstractValidator {
 	public void validate(Object obj, Errors errors) {
 		
 		Scrib model = (Scrib)obj;
+		if(model != null && model.getOriginFacility() == null) {
+			errors.rejectValue("originFacility", "app.error.112", new Object[]{"Origin Facility"},"required field");
+		}
+		
+		if(model != null && model.getDestinationFacility() == null) {
+			errors.rejectValue("destinationFacility", "app.error.112", new Object[]{"Destination Facility"},"required field");
+		}
 		if(model.getStartTime()==null)
 		{
 			errors.rejectValue("startTimeS", "app.error.112", new Object[]{"Start Time"},"required field");
@@ -30,10 +35,6 @@ public class ScribValidator extends AbstractValidator {
 		if(model.getScribDate()==null)
 		{
 			errors.rejectValue("scribDate", "app.error.112", new Object[]{"Date"},"required field");
-		}
-		if(model.getZone()==null)
-		{
-			errors.rejectValue("zoneS", "app.error.112", new Object[]{"Zone"},"required field");
 		}
 		if(model.getSupervisorCode()==null||model.getSupervisorCode().trim().length()==0)
 		{

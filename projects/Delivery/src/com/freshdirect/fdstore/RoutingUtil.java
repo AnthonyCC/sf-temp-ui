@@ -40,6 +40,7 @@ import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IPackagingModel;
+import com.freshdirect.routing.model.IRoutingDepotId;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
@@ -49,7 +50,9 @@ import com.freshdirect.routing.model.LocationModel;
 import com.freshdirect.routing.model.OrderEstimationResult;
 import com.freshdirect.routing.model.OrderModel;
 import com.freshdirect.routing.model.PackagingModel;
+import com.freshdirect.routing.model.RoutingDepotId;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
+import com.freshdirect.routing.model.TrnFacilityType;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.CapacityEngineServiceProxy;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
@@ -585,7 +588,7 @@ public class RoutingUtil {
 	
 	public static List<IWaveInstance> synchronizeWaveInstance(IRoutingSchedulerIdentity schedulerId
 								, Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree
-								, Set<String> inSyncZones) {
+								, Set<String> inSyncZones, Map<String, TrnFacilityType> routingLocationMap) {
 		
 		List<IWaveInstance> waveInstancesResult = new ArrayList<IWaveInstance>();
 		CapacityEngineServiceProxy capacityProxy = new CapacityEngineServiceProxy();
@@ -677,6 +680,14 @@ public class RoutingUtil {
 							System.out.println("SYNCHRONIZING WAVE :"+schedulerId+"->"+_syncWaveInst);
 							syncWaveInstance.copyBaseAttributes(waveIdMap.get(syncWaveInstance.getRoutingWaveInstanceId()));
 							
+							IRoutingDepotId routingDepotId = new RoutingDepotId();
+							routingDepotId.setLocationId(syncWaveInstance.getOriginFacility());
+							routingDepotId.setRegionID(schedulerId.getRegionId());
+							/*if(syncWaveInstance.getOriginFacility() != null)
+								routingDepotId.setLocationType(routingLocationMap.get(syncWaveInstance.getOriginFacility()).getName());*/
+							routingDepotId.setLocationType(RoutingServicesProperties.getDefaultUpsLocationType());
+							syncWaveInstance.setDepotId(routingDepotId);
+
 							List<String> unassignedOrder = null;
 							try {
 								unassignedOrder = capacityProxy.saveWaveInstances(schedulerId, syncWaveInstance, syncWaveInstance.isForce());

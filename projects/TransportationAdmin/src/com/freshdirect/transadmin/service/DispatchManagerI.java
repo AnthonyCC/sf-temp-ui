@@ -42,7 +42,7 @@ public interface DispatchManagerI extends BaseManagerI {
 	void autoDisptch(String date);
 	void autoDisptchRegion(String date);
 	//Based on new Dispatch Model
-	Collection getDispatchList (String date, String zone, String region);
+	Collection getDispatchList(String date, String facilityLocation, String zone, String region);
 	
 	boolean refreshRoute(Date requestedDate);
 	

@@ -52,4 +52,5 @@ public interface IDispatchProvider {
 			, String[][] recordIssues);
 	boolean doRejectMaintenanceIssue(String id, String userId);
 	String getTruckVendorInfo(String truckNumber);
+	String[] getFacilityInfo(String orgFacilityId, String destFacilityId);
 }

@@ -10,6 +10,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
 import com.freshdirect.framework.util.DateComparator;
+import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
@@ -34,10 +35,17 @@ public class PlanValidator extends AbstractValidator {
 		checkDate("startTime", model.getStartTime(), model.getFirstDeliveryTime(),errors);
 		checkDate("firstDeliveryTime", model.getFirstDeliveryTime(), model.getLastDeliveryTime(),errors);
 		
-		if(model != null && TransStringUtil.isEmpty(model.getZoneCode())&& !DispatchPlanUtil.isBullpen(model.getIsBullpen())) {
+		if(model != null && model.getOriginFacility() == null) {
+			errors.rejectValue("originFacility", "app.error.112", new Object[]{"Origin Facility"},"required field");
+		}
+		if(model != null && model.getDestinationFacility() == null) {
+			errors.rejectValue("destinationFacility", "app.error.112", new Object[]{"Destination Facility"},"required field");
+		}
+		if(model != null && TransStringUtil.isEmpty(model.getZoneCode()) && model.getDestinationFacility().getTrnFacilityType() != null
+				&& !DispatchPlanUtil.isBullpen(model.getIsBullpen()) && EnumTransportationFacilitySrc.DELIVERYZONE.getName().equalsIgnoreCase(model.getDestinationFacility().getTrnFacilityType().getName())) {
 			errors.rejectValue("zoneCode", "app.error.112", new Object[]{"Zone"},"required field");
 		}
-		if(DispatchPlanUtil.isBullpen(model.getIsBullpen()) && TransStringUtil.isEmpty(model.getRegionCode())) {
+		if(TransStringUtil.isEmpty(model.getRegionCode())) {
 			errors.rejectValue("regionCode", "app.error.112", new Object[]{"Region"},"required field");
 		}
 		if(model != null && TransStringUtil.isEmpty(model.getSupervisorCode())) {
@@ -72,7 +80,9 @@ public class PlanValidator extends AbstractValidator {
 				continue;
 			}
 			if(validResources.contains(resource.getEmployeeId())) {
-				errors.rejectValue(field, "app.error.122", new Object[]{resource.getName()},"Resource is selected more than once.");
+				errors.rejectValue(field, "app.error.122"
+						, new Object[] { resource.getName() }
+						, "Resource is selected more than once.");
 			} else {
 				validResources.add(resource.getEmployeeId());
 			}

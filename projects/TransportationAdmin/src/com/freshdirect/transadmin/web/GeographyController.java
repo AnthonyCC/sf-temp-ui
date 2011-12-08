@@ -5,8 +5,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,8 +19,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.transadmin.model.Scrib;
+import com.freshdirect.transadmin.model.TrnFacility;
+import com.freshdirect.transadmin.model.TrnFacilityType;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DomainManagerI;
+import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.service.RestrictionManagerI;
 import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.web.model.SpatialBoundary;
@@ -28,6 +37,16 @@ public class GeographyController extends AbstractMultiActionController {
 	private DomainManagerI domainManagerService;
 	
 	private ZoneManagerI zoneManagerService;
+
+	private LocationManagerI locationManagerService;
+
+	public LocationManagerI getLocationManagerService() {
+		return locationManagerService;
+	}
+
+	public void setLocationManagerService(LocationManagerI locationManagerService) {
+		this.locationManagerService = locationManagerService;
+	}
 
 	public DomainManagerI getDomainManagerService() {
 		return domainManagerService;
@@ -144,5 +163,77 @@ public class GeographyController extends AbstractMultiActionController {
 		return null;
 	}
 	
+	/**
+	 * Custom handler for facilityView
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
+	public ModelAndView facilityHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		ModelAndView mav = new ModelAndView("facilityView");
+		mav.getModel().put("trnFacilitys", getLocationManagerService().getTrnFacilitys());
+		mav.getModel().put("trnFacilityTypes", getLocationManagerService().getTrnFacilityTypes());
 	
+		return mav;
+}
+
+	/**
+	 * Custom handler for deleteFacilityView
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
+	public ModelAndView deleteFacilityHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		try {
+			Set<TrnFacility> faciltySet=new HashSet<TrnFacility>();
+			String arrEntityList[] = getParamList(request);
+			
+			if (arrEntityList != null) {
+				int arrLength = arrEntityList.length;
+				for (int intCount = 0; intCount < arrLength; intCount++) {
+					TrnFacility p = getLocationManagerService().getTrnFacility(arrEntityList[intCount]);					
+					faciltySet.add(p);					
+				}
+			}
+			if(faciltySet.size() > 0){
+				getLocationManagerService().removeEntity(faciltySet);
+				saveMessage(request, getMessage("app.actionmessage.103", null));
+			}
+			return facilityHandler(request,response);
+		}catch(Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new RuntimeException("Error in getiing Scrib List");
+		}
+	}
+
+	/**
+	 * Custom handler for deleteFacilityView
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
+	public ModelAndView deleteFacilityTypeHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		try {
+			Set<TrnFacilityType> faciltySet=new HashSet<TrnFacilityType>();
+			String arrEntityList[] = getParamList(request);
+			
+			if (arrEntityList != null) {
+				int arrLength = arrEntityList.length;
+				for (int intCount = 0; intCount < arrLength; intCount++) {
+					TrnFacilityType p = getLocationManagerService().getTrnFacilityType(arrEntityList[intCount]);					
+					faciltySet.add(p);
+				}
+			}
+			if(faciltySet.size() > 0){
+				getLocationManagerService().removeEntity(faciltySet);
+				saveMessage(request, getMessage("app.actionmessage.103", null));
+			}
+			return facilityHandler(request,response);
+		}catch(Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new RuntimeException("Error in getiing Scrib List");
+		}
+	}
 }

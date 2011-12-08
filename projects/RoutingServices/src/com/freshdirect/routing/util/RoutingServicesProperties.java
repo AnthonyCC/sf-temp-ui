@@ -131,6 +131,10 @@ public class RoutingServicesProperties {
 	private final static String PROP_TRUCKASSIGNMENT_SOLVERTIMEOUT = "routingservices.handoff.solvertimeout";
 	
 	private final static String MAX_ORDERSIZE_FOR_DEPOTZONE = "ordersize.depotzone.max";
+	private final static String PROP_TRAILER_ESTIMATIONCONTAINERRANGE	= "routingservices.trailer.container.max";
+	private final static String PROP_TRAILER_ESTIMATIONCARTONSRANGE		= "routingservices.trailer.cartons.max";
+	private final static String PROP_DEFAULT_UPS_LOCATIONTYPE		= "routingservices.default.ups.locationtype";
+	private final static String PROP_TRAILERNUMFORMAT_ENABLED		= "routingservices.trailerformat.enabled";
 	
 	private final static String PROP_HANDOFF_SORTSTOPBYWINDOW		= "routingservices.handoff.sortstopbywindow";
 	
@@ -209,6 +213,11 @@ public class RoutingServicesProperties {
 	    defaults.put(PROP_TRUCK_PREFERENCESIZE, "5");
 	    defaults.put(MAX_ORDERSIZE_FOR_DEPOTZONE, "16");
 	    defaults.put(PROP_HANDOFF_SORTSTOPBYWINDOW, "true");
+
+	    defaults.put(PROP_TRAILER_ESTIMATIONCONTAINERRANGE, 	"20");
+	    defaults.put(PROP_TRAILER_ESTIMATIONCARTONSRANGE, 	"15");
+		defaults.put(PROP_DEFAULT_UPS_LOCATIONTYPE, "DPT");
+		defaults.put(PROP_TRAILERNUMFORMAT_ENABLED, "true");
 
 		refresh();		
 	}
@@ -496,8 +505,24 @@ public class RoutingServicesProperties {
 	public static double getMaxOrderSize() {
 		return getDoubleVal(get(MAX_ORDERSIZE_FOR_DEPOTZONE));
 	}
-	
 	 public static boolean sortStopbyWindow() {
 	        return Boolean.valueOf(get(PROP_HANDOFF_SORTSTOPBYWINDOW));
 	    }
+	
+	public static int getMaxTrailerContainerSize() {
+		return getIntVal(get(PROP_TRAILER_ESTIMATIONCONTAINERRANGE));
+	}
+
+	public static int getMaxTrailerCartonSize() {
+		return getIntVal(get(PROP_TRAILER_ESTIMATIONCARTONSRANGE));
+	}
+	
+	public static String getDefaultUpsLocationType() {
+		return get(PROP_DEFAULT_UPS_LOCATIONTYPE);
+	}
+	
+	public static boolean isTrailerNoFormatEnabled() {
+        return (new Boolean(get(PROP_TRAILERNUMFORMAT_ENABLED))).booleanValue();
+    }
+
 }

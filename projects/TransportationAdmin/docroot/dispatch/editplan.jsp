@@ -6,8 +6,8 @@
 <%@ page import= 'com.freshdirect.transadmin.web.model.WebPlanInfo' %>
 <%@ taglib uri="http://java.sun.com/jstl/fmt" prefix="fmt" %>
 
-<% boolean hasErrors = session.getAttribute("apperrors") != null; 
- 
+<% 
+	boolean hasErrors = session.getAttribute("apperrors") != null;
 %>
 <script src="js/jsonrpc.js" language="javascript" type="text/javascript"></script>
 <script src="js/activeZone.js" language="javascript" type="text/javascript"></script>
@@ -34,18 +34,16 @@
 		border:solid #999999 1px;
 		background:#ffffff;}
 		
-</style>
-<style>
-        .time_picker_div {padding:5px;
+	.time_picker_div {
+		padding:5px;
             border:solid #999999 1px;
-            background:#ffffff;}
+        background:#ffffff;
+	}
       </style>
     
-
 <tmpl:insert template='/common/sitelayout.jsp'>
 
     <tmpl:put name='title' direct='true'>Add/Edit Plan</tmpl:put>
-
 	<tmpl:put name='content' direct='true'>
 	<br/> 
 	<div align="center">
@@ -57,39 +55,59 @@
 		<form:hidden path="errorDate"/>
 		<form:hidden path="zoneModified"/>
 		<form:hidden path="firstDeliveryTimeModified"/>		
-		<table width="100%" cellpadding="0" cellspacing="0" border="0">
+		<form:hidden path="destFacilityModified"/>
+		
+		<table width="100%" height="75%" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td class="screentitle">Add/Edit Plan</td>
 			</tr>
-			<tr>
-				<td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>
-			</tr>      
+			<tr><td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td></tr>
 			<tr>
 				<td class="screencontent">
-					<table class="forms1" border="0">  
+					<table class="forms1" style="height:100%;width:90%;border:1px dotted;background-color:#F7F7F7;">
 						<tr>
+							<td align="center" valign="top">
+								<table>  
+									<tr>
 							<td>Date</td>
 							<td>
 								<form:input maxlength="50" size="24" path="planDate" onchange="javascript:getActiveZoneInfo(this.value,planForm.zoneCode)" />&nbsp;
 								<a href="#" id="trigger_planDate" style="font-size: 9px;">
 									<img src="images/calendar.gif" style="border: 0;" alt=">>" />
 								</a>
-                     
 							</td>   
+										<td><form:errors path="planDate" />&nbsp;</td>
+									</tr>
+									<tr>
+										<td>Origin Facility</td>
 							<td>
-								<form:errors path="planDate" />&nbsp;
+											<form:select path="originFacility" >
+												<form:option value="" label="--Please Select Origin Facility"/>
+												<form:options items="${trnFacilitys}" itemLabel="name" itemValue="facilityId" />
+											</form:select> 
 							</td>
+										<td><form:errors path="originFacility" />&nbsp;</td>
 						</tr>  
 						<tr>
+										<td>Destination Facility</td>
+										<td> 
+											<form:select path="destinationFacility" onChange="showZoneSelection(planForm.originFacility, this)">
+												<form:option value="" label="--Please Select Destination Facility"/>
+												<form:options items="${trnFacilitys}" itemLabel="name" itemValue="facilityId" />
+											</form:select> 
+										</td>
+										<td><form:errors path="destinationFacility" />&nbsp;</td>
+									</tr>
+									<tr>
 							<td>Zone</td>
 							<td> 
 								<c:if test="${!empty planForm.zoneCode }">
 									<c:set var="hasZone" value="true"/>
 								</c:if>
-								<c:if test="${planForm.isBullpen eq 'Y' }">
-									<c:set var="_isBullpen" value="true"/>
+											<c:if test="${(planForm.isBullpen eq 'Y') || (planForm.destinationFacility.trnFacilityType.name ne 'SIT')}">
+												<c:set var="_disableZone" value="true"/>
 								</c:if>
-								<form:select path="zoneCode" disabled="${_isBullpen}" onChange="zoneChanged()">
+											<form:select path="zoneCode" disabled="${_disableZone}" onChange="zoneChanged()">
 									<form:option value="null" label="--Please Select Zone"/>
 									<form:options items="${zones}" itemLabel="displayName" itemValue="zoneCode" />
 								</form:select>
@@ -100,7 +118,7 @@
 							<td>Region</td>
 							<td> 
 								<form:select path="regionCode" disabled="${hasZone}">
-									<form:option value="null" label="--Please Select Region"/>
+												<form:option value="" label="--Please Select Region"/>
 									<form:options items="${regions}" itemLabel="code" itemValue="code" />
 								</form:select>
 							</td>
@@ -158,12 +176,14 @@
 							</td>
 							<td><form:errors path="maxTime" />&nbsp;</td>                 
 						</tr>
+								</table>
+							</td>
+							<td align="center" valign="top">
+								<table>
 						<tr>
 							<td>&nbsp;</td>
-							<td align="right">     
-								Adjust Time
-							</td>
-							<td></td>                 
+											<td align="right">Adjust Time</td>
+											<td>&nbsp;</td>
 						</tr>
 						<tr>
 							<td>Drivers (Req:<spring:bind path="planForm.driverReq"><c:out value="${planForm.driverReq}"/></spring:bind> Max: <spring:bind path="planForm.driverMax"><c:out value="${planForm.driverMax}"/></spring:bind>)</td>
@@ -248,7 +268,9 @@
 							</td>
 							<td><form:errors path="cutOffTime" />&nbsp;</td>
 						</tr>    
-						                                     
+									</table>
+								</td>
+							</tr>
 						<tr>
 						<% if(hasErrors) { %>
 							<td colspan="3" align="center">
@@ -266,11 +288,14 @@
 					</table>
 				</td>
 			</tr>
+			<tr><td>&nbsp;</td></tr>
 		</table>
 	</form:form>
 	</div>
      
 	<script language="javascript">             
+		var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+
 		Calendar.setup(
 			{
 				showsTime : false,
@@ -285,8 +310,51 @@
 		function updateDate(cal) {
 			var selIndex = cal.date.getDay();
 			if(selIndex == 0) selIndex = 7;
-			// document.getElementById('dispatchDay').selectedIndex =  selIndex;
 		};
+
+		function showZoneSelection(originRefVar, destRefVar) {
+			
+			var originRef = originRefVar.value || '';
+			var destRef = destRefVar.value || '';
+			
+			var result = jsonrpcClient.AsyncDispatchProvider.getFacilityInfo(sendFormCallback, originRef, destRef); 
+			
+			function sendFormCallback(result, exception) {
+			  if(exception) {
+				  alert('Unable to connect to host system. Please contact system administrator!');               
+				  return;
+			  }
+
+			  if( result[0] === 'SIT'){
+				  alert('Origin Facility cannot be Delivery Zone.');
+				  originRefVar.selectedIndex = 0;
+			  }
+			  if( result[1] === 'FD'){
+				  alert('Destination Facility cannot be Main Plant.');
+				  destRefVar.selectedIndex = 0;
+			  } else if((result[1] === result[0]) && (originRef != '' && destRef != '')){
+				  alert('Both Origin & Desination Facility cannot be same.');
+			  } else {
+					if( result[1] === 'SIT'){
+						document.getElementById("zoneCode").disabled=false;
+
+						if(document.getElementById("isBullpen1").checked){
+							document.getElementById("regionCode").disabled=false;
+							document.getElementById("zoneCode").disabled=true;
+							document.getElementById("zoneCode").selectedIndex=0;
+						}
+					}else{
+						document.getElementById("zoneCode").disabled=true;
+						document.getElementById("regionCode").disabled=false;
+						document.getElementById("regionCode").selectedIndex=0;
+						document.getElementById("zoneCode").selectedIndex=0;
+					}
+			  }
+			  document.getElementById("destFacilityModified").value = "true";
+			  submitData();
+			}
+		}
+		
 		function zoneChanged() {
 			document.getElementById("zoneModified").value = "true";
 			submitData();
@@ -300,6 +368,15 @@
 			document.getElementById("planForm").submit();
 		}
 		function bullpen() {
+			var destRef = document.getElementById('destinationFacility').value || '';
+
+			var result = jsonrpcClient.AsyncDispatchProvider.getFacilityInfo(sendFormCallback, null, destRef); 
+
+			function sendFormCallback(result, exception) {
+				if(exception) {
+					alert('Unable to connect to host system. Please contact system administrator!');               
+					return;
+				}
 			if(document.getElementById("isBullpen1").checked) {
 				document.getElementById("zoneCode").disabled=true;
 				document.getElementById("regionCode").disabled=false;
@@ -310,6 +387,8 @@
 			document.getElementById("zoneModified").value = "true";
 			document.getElementById("ignoreErrors").value = "true";
 			document.getElementById("planForm").submit();
+				
+		}
 		}
 		function back()
 	    {

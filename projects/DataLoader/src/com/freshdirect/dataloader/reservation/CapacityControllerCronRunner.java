@@ -26,7 +26,6 @@ import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.util.DateUtil;
-import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
@@ -34,6 +33,7 @@ import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IWaveInstance;
+import com.freshdirect.routing.model.TrnFacilityType;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 
@@ -63,7 +63,6 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 			ctx = cron.getInitialContext();
 			DlvManagerHome dlh =(DlvManagerHome) ctx.lookup("freshdirect.delivery.DeliveryManager");
 			DlvManagerSB dsb = dlh.create();
-
 
 			if (args.length >= 1) {
 				for (String arg : args) {
@@ -115,6 +114,8 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 					
 					List<DlvTimeslotModel> slots = dsb.getTimeslotsForDate(processDate);
 					
+					Map<String, TrnFacilityType> routingLocationMap = dsb.retrieveTrnFacilitys();
+
 					LOGGER.info("CapacityControllerCronRunner beginning to synchronize "+slots.size()
 										+" timeslots for date "+processDate+ (isTrialRun ? " and is a trail run" : ""));
 					TimeslotGroup group = groupDeliverySlotByZone(slots);
@@ -125,7 +126,7 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 							for(IRoutingSchedulerIdentity schedulerId : group.getSchedulerIds()) {
 								if(waveInstanceTree.containsKey(schedulerId.getDeliveryDate())) {
 									if(waveInstanceTree.get(schedulerId.getDeliveryDate()).containsKey(schedulerId.getArea().getAreaCode())) {
-										dsb.synchronizeWaveInstance(schedulerId, waveInstanceTree, inSyncZones);
+										dsb.synchronizeWaveInstance(schedulerId, waveInstanceTree, inSyncZones, routingLocationMap);
 									}
 								}
 							}

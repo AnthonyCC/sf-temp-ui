@@ -17,8 +17,6 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 
 import com.freshdirect.transadmin.constants.EnumIssueStatus;
 import com.freshdirect.transadmin.dao.DomainManagerDaoI;
-import com.freshdirect.transadmin.model.Asset;
-import com.freshdirect.transadmin.model.AssetAttribute;
 import com.freshdirect.transadmin.model.DispositionType;
 import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
@@ -271,6 +269,14 @@ public class DomainManagerDaoHibernateImpl
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
 
+	public Collection getEmployeesByRoleTypeAndSubRoleType(String roleTypeId, String subRoleTypeId)throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from EmployeeRole er");
+		strBuf.append(" where er.id.role='").append(roleTypeId).append("'");
+		strBuf.append(" and er.employeeSubRoleType='").append(subRoleTypeId).append("'");
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
+
 	public void saveZoneType(TrnZoneType zoneType) throws DataAccessException {
 
 		if(zoneType.getZoneTypeId()==null ||"".equals(zoneType.getZoneTypeId())) {
@@ -490,5 +496,4 @@ public class DomainManagerDaoHibernateImpl
 		strBuf.append("from EmployeeTruckPreference tp where tp.id.kronosId ='").append(empId).append("'");
 		return (Collection) getHibernateTemplate().find(strBuf.toString());		
 	}
-
 }

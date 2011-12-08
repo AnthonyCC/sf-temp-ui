@@ -58,6 +58,7 @@ import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IRoutingNotificationModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IWaveInstance;
+import com.freshdirect.routing.model.TrnFacilityType;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 
 public interface DlvManagerSB extends EJBObject {
@@ -197,7 +198,7 @@ public interface DlvManagerSB extends EJBObject {
 	Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> retrieveWaveInstanceTree(Date deliveryDate, EnumWaveInstanceStatus status) throws DlvResourceException, RemoteException;
 	void synchronizeWaveInstance(IRoutingSchedulerIdentity schedulerId
 			, Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree
-			, Set<String> inSyncZones) throws DlvResourceException, RemoteException;
+			, Set<String> inSyncZones, Map<String, TrnFacilityType> routingLocationMap) throws DlvResourceException, RemoteException;
 	List<Date> getFutureTimeslotDates() throws DlvResourceException, RemoteException;
 	public void deleteZeroSyncWaveInstance(IRoutingSchedulerIdentity schedulerId) throws RemoteException;
 	void purgeSchedulerByIdentity(IRoutingSchedulerIdentity schedulerId) throws DlvResourceException, RemoteException;
@@ -217,4 +218,5 @@ public interface DlvManagerSB extends EJBObject {
 	int unBlockTimeslotCapacity(Date sourceDate
 			, Date cutoffDate, String[] area, Date startTime, Date endTime) throws RemoteException;
 
+	Map<String, TrnFacilityType> retrieveTrnFacilitys()throws RemoteException;
 }   

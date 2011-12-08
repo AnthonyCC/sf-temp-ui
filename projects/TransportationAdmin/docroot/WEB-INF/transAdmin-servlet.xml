@@ -152,6 +152,12 @@
     			<prop key="/crisismanage.do">crisisMngFormController</prop>
     			<prop key="/crisismanagereport.do">crisisMngController</prop>
 
+				<prop key="/facility.do">geographyController</prop>
+    			<prop key="/editfacility.do">facilityFormController</prop>
+    			<prop key="/deletefacility.do">geographyController</prop>
+    			<prop key="/deletefacilitytype.do">geographyController</prop>
+    			<prop key="/editfacilitytype.do">facilityTypeFormController</prop>
+
 			</props>
 		</property>
 	</bean>
@@ -212,6 +218,7 @@
         <property name="employeeManagerService" ref="employeeManager"/>
         <property name="domainManagerService" ref="domainManager"/>
         <property name="assetManagerService" ref="assetManagerService"/>
+        <property name="locationManagerService" ref="locationManager"/>
 	</bean>
 	
 	<bean id="locationController" class="com.freshdirect.transadmin.web.LocationController">
@@ -314,6 +321,10 @@
 
 			<prop key="/crisismanagereport.do">crisisMngReportHandler</prop>
 
+			<prop key="/facility.do">facilityHandler</prop>
+            <prop key="/deletefacility.do">deleteFacilityHandler</prop>
+            <prop key="/deletefacilitytype.do">deleteFacilityTypeHandler</prop>
+
         </props>
 		</property>
 	</bean>
@@ -407,6 +418,7 @@
 		<property name="dispatchManagerService" ref="dispatchManager"/>
         <property name="employeeManagerService" ref="employeeManager"/>
         <property name="zoneManagerService" ref="zoneManager"/>
+        <property name="locationManagerService" ref="locationManager"/>
 		<property name="sessionForm" value="true"/>
         <property name="commandName" value="planForm"/>
         <property name="commandClass" value="com.freshdirect.transadmin.web.model.WebPlanInfo"/>
@@ -421,6 +433,7 @@
 		<property name="employeeManagerService" ref="employeeManager"/>
 		<property name="zoneManagerService" ref="zoneManager"/>
 		<property name="assetManagerService" ref="assetManagerService"/>
+		<property name="locationManagerService" ref="locationManager"/>
 		<property name="sessionForm" value="true"/>
         <property name="commandName" value="dispatchForm"/>
         <property name="commandClass" value="com.freshdirect.transadmin.web.model.DispatchCommand"/>
@@ -699,6 +712,7 @@
         <property name="domainManagerService" ref="domainManager"/>
         <property name="restrictionManagerService" ref="restrictionManager"/>        
         <property name="zoneManagerService" ref="zoneManager"/>
+        <property name="locationManagerService" ref="locationManager"/>
 	</bean>
 	
 	<bean id="scribController" class="com.freshdirect.transadmin.web.ScribController">
@@ -712,6 +726,7 @@
 		<property name="domainManagerService" ref="domainManager"/>
 		<property name="dispatchManagerService" ref="dispatchManager"/>
 		<property name="zoneManagerService" ref="zoneManager"/>
+		<property name="locationManagerService" ref="locationManager"/>
         <property name="sessionForm" value="true"/>
         <property name="commandName" value="scribForm"/>
         <property name="commandClass" value="com.freshdirect.transadmin.model.Scrib"/>
@@ -730,6 +745,27 @@
         <property name="validator" ref="scheduleValidator"/>
         <property name="successView" value="scheduleEdit" />
         <property name="formView" value="scheduleEdit" />
+	</bean>
+	    
+	<bean id="facilityFormController" class="com.freshdirect.transadmin.web.FacilityFormController">		  
+		<property name="locationManagerService" ref="locationManager"/>
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="zoneManagerService" ref="zoneManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="facilityForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.TrnFacility"/>
+        <property name="validator" ref="facilityValidator"/> 
+        <property name="successView" value="facilityEdit" />
+        <property name="formView" value="facilityEdit" />
+	</bean>
+	<bean id="facilityTypeFormController" class="com.freshdirect.transadmin.web.FacilityTypeFormController">		     
+		<property name="locationManagerService" ref="locationManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="facilityTypeForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.TrnFacilityType"/>
+        <property name="validator" ref="facilityTypeValidator"/> 
+        <property name="successView" value="facilityTypeEdit" />
+        <property name="formView" value="facilityTypeEdit" />
 	</bean>
 	    
 	<bean id="employeeValidator" class="com.freshdirect.transadmin.web.validation.EmployeeValidator"/>
@@ -763,7 +799,8 @@
 	<bean id="assetTemplateValidator" class="com.freshdirect.transadmin.web.validation.AssetTemplateValidator"/>
 	<bean id="virRecordValidator" class="com.freshdirect.transadmin.web.validation.VIRRecordValidator"/>
 	<bean id="maintenanceRecordValidator" class="com.freshdirect.transadmin.web.validation.MaintenanceRecordValidator"/>
+	<bean id="facilityValidator" class="com.freshdirect.transadmin.web.validation.TrnFacilityValidator"/>
+	<bean id="facilityTypeValidator" class="com.freshdirect.transadmin.web.validation.TrnFacilityTypeValidator"/>
 
 	<bean id="crisisMngValidator" class="com.freshdirect.transadmin.web.validation.CrisisManagerValidator"/>
-
 </beans>

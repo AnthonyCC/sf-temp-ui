@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.dao.DataAccessException;
+
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.transadmin.model.DeliveryGroup;
 import com.freshdirect.transadmin.model.DlvBuilding;
@@ -13,6 +15,8 @@ import com.freshdirect.transadmin.model.DlvLocation;
 import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
+import com.freshdirect.transadmin.model.TrnFacility;
+import com.freshdirect.transadmin.model.TrnFacilityType;
 
 public interface LocationManagerI  extends BaseManagerI {
 	
@@ -54,7 +58,8 @@ public interface LocationManagerI  extends BaseManagerI {
 	
 	Collection getDeliveryLocations(String buildingId);
     
-   	DlvBuildingDetail getDlvBuildingDtl(String id);		//agb
+   	DlvBuildingDetail getDlvBuildingDtl(String id);
+
    	Collection getDeliveryBuildingDetails(String srubbedAddress, String zipCode);
    	
    	Collection getDlvScenarioZones(String scenarioId);
@@ -72,4 +77,9 @@ public interface LocationManagerI  extends BaseManagerI {
    	DeliveryGroup getDeliveryGroupById(String Id);
    	
    	List<DlvLocation> getBuildingGroup(String dlvGroup);
+
+   	Collection getTrnFacilityTypes();
+   	Collection getTrnFacilitys();
+   	TrnFacility getTrnFacility(String id);
+   	TrnFacilityType getTrnFacilityType(String id);
 }

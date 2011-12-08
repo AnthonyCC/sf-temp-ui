@@ -16,6 +16,7 @@ import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IHandOffBatchStop;
+import com.freshdirect.routing.model.IHandOffBatchTrailer;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
@@ -26,6 +27,7 @@ import com.freshdirect.sap.bapi.BapiInfo;
 import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffDispatchIn;
 import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffRouteIn;
 import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffStopIn;
+import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffTrailerIn;
 import com.freshdirect.sap.command.SapSendHandOff;
 import com.freshdirect.sap.ejb.SapException;
 
@@ -64,12 +66,14 @@ public class HandOffCommitAction extends AbstractHandOffAction {
 				exceptionOrderIds.add(exp.getKey());
 			}
 		}
+		List trailers = proxy.getHandOffBatchTrailers(this.getBatch().getBatchId());
 		List routes = proxy.getHandOffBatchRoutes(this.getBatch().getBatchId());
 		List stops = proxy.getHandOffBatchStops(this.getBatch().getBatchId(), false);
 		List<HandOffDispatchIn> dispatchStatus = proxy.getHandOffBatchDispatches(this.getBatch().getBatchId());
 		
 		List<HandOffStopIn> stopsToCommit = new ArrayList<HandOffStopIn>();
 		List<HandOffRouteIn> routesToCommit = new ArrayList<HandOffRouteIn>(); 
+		List<HandOffTrailerIn> trailersToCommit = new ArrayList<HandOffTrailerIn>();
 		
 		int noOfRoutes = routes != null ? routes.size() : 0;
 		int noOfStops = stops != null ? stops.size() : 0;
@@ -85,6 +89,13 @@ public class HandOffCommitAction extends AbstractHandOffAction {
 			routeMapping.put(route.getRouteId(), route);
 		}
 		
+		Map<String, IHandOffBatchTrailer> trailerMapping = new HashMap<String, IHandOffBatchTrailer>();
+		Iterator<IHandOffBatchTrailer> _trailerItr = trailers.iterator();
+		while(_trailerItr.hasNext()) {
+			IHandOffBatchTrailer _trailer = _trailerItr.next();
+			trailerMapping.put(_trailer.getTrailerId(), _trailer);
+		}
+
 		Map<String, EnumSaleStatus> foundExceptions = new HashMap<String, EnumSaleStatus>();
 		
 		Iterator<IHandOffBatchStop> itrStop = stops.iterator();
@@ -109,6 +120,19 @@ public class HandOffCommitAction extends AbstractHandOffAction {
 				} 
 			}
 		}
+
+		Iterator<IHandOffBatchRoute> itrRoute = routes.iterator();
+		while( itrRoute.hasNext()) {
+			IHandOffBatchRoute _route = itrRoute.next();
+			if(_route.getTrailerId() != null){
+				IHandOffBatchTrailer _trailer = trailerMapping.get(_route.getTrailerId());
+				if(_trailer.getRoutes() == null){
+					_trailer.setRoutes(new TreeSet(new RouteComparator1()));
+				}
+				_trailer.getRoutes().add(_route);
+			}
+		}
+
 		if(exceptionOrderIds.size() > 0) {
 			proxy.updateHandOffStopException(this.getBatch().getBatchId(), exceptionOrderIds);
 		}
@@ -130,8 +154,15 @@ public class HandOffCommitAction extends AbstractHandOffAction {
 					}
 				}
 				
+				List<IHandOffBatchTrailer> rootTrailersIn = (List<IHandOffBatchTrailer>)trailers; 
+				for(IHandOffBatchTrailer trailer : rootTrailersIn) {
+					if(trailer.getRoutes() != null && trailer.getRoutes().size() > 0) {
+						trailersToCommit.add(trailer);
+					}
+				}
 	    		SapSendHandOff sapHandOffEngine = new SapSendHandOff(routesToCommit
 																		, stopsToCommit
+																		, trailersToCommit
 																		, dispatchStatus
 																		, RoutingServicesProperties.getDefaultPlantCode()
 																		, this.getBatch().getDeliveryDate()

@@ -1,6 +1,7 @@
 package com.freshdirect.transadmin.web;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +42,7 @@ public class RoutingMergeFormController extends BaseRoutingFormController {
 	}
 	
 	protected ModelAndView onSubmit(HttpServletRequest request,HttpServletResponse response,
-		      Object command, BindException errors) throws ServletException, IOException
+		      Object command, BindException errors) throws ServletException, IOException, ParseException
 		  {
 		    // cast the bean
 		    logger.info("Merge FileUploadController -- executing onSubmit!");

@@ -34,6 +34,7 @@ public class GeographyManager extends BaseProcessManager {
 			String scrubbedStreet = proxy.standardizeStreetAddress(locModel);
 			locModel.getBuilding().setStreetAddress1(scrubbedStreet);
 			locModel.getBuilding().setSrubbedStreet(scrubbedStreet);
+			String streetAddress2 = locModel.getBuilding().getStreetAddress2(); //retain street Address2
 			ILocationModel locationModel = fetchLocation(request, proxy, locModel);//proxy.getLocation(locModel);			
 			
 			IBuildingModel buildingModel = null;			
@@ -57,6 +58,7 @@ public class GeographyManager extends BaseProcessManager {
 			} else {
 				locModel = locationModel;
 			}
+			locModel.getBuilding().setStreetAddress2(streetAddress2);
 			orderModel.getDeliveryInfo().setDeliveryLocation(locModel);
 			addProcessInfo(request, orderModel, locModel, isNew);
 		} catch (RoutingServiceException e) {			

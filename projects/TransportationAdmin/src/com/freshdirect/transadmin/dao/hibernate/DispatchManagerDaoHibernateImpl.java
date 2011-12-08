@@ -219,12 +219,15 @@ public class DispatchManagerDaoHibernateImpl extends
 		return (Plan) getEntityById("Plan", "id.planId", id);
 	}
 
-	public Collection getDispatchList(String date, String zone, String region)
+	public Collection getDispatchList(String date, String facilityLocation, String zone, String region)
 			throws DataAccessException {
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from Dispatch dp");
 		strBuf.append(" where dp.dispatchDate='").append(date).append("'");
 
+		if (facilityLocation != null && facilityLocation.length() > 0 && !facilityLocation.equals("null")) {
+			strBuf.append(" and dp.originFacility='").append(facilityLocation).append("'");
+		}
 		if (zone != null && zone.length() > 0 && !zone.equals("0")
 				&& !zone.equals("null")) {
 			strBuf.append(" and dp.zone.zoneCode='").append(zone).append("'");

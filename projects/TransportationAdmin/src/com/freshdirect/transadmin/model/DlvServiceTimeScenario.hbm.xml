@@ -41,6 +41,12 @@
         <property name="lateDeliveryFactor" type="big_decimal">
             <column name="LATEDELIVERY_FACTOR" precision="10" />
         </property>   
+        <property name="defaultTrailerContainerCount" type="big_decimal">
+            <column name="TRAILER_CONTAINERMAX" precision="10" />
+        </property>
+        <property name="defaultContainerCartonCount" type="big_decimal">
+            <column name="TRAILER_CONTAINERCARTONMAX" precision="10" />
+        </property>   
         <set name="scenarioDays" inverse="true" lazy="false">
             <key>
                 <column name="SCENARIO_CODE" length="8" not-null="true" />

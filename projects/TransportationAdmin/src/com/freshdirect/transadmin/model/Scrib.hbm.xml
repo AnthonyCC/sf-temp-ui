@@ -14,7 +14,7 @@
             <column name="ZONE_ID" length="16" />
         </many-to-one>
         <many-to-one name="region" class="com.freshdirect.transadmin.model.Region" fetch="select" lazy="false">
-            <column name="REGION_ID" length="16" not-null="true" />
+            <column name="REGION_ID" length="16" />
         </many-to-one>
         <property name="scribDate" type="date">
             <column name="SCRIB_DATE" length="7" />
@@ -46,5 +46,11 @@
      	<property name="cutOffTime" type="timestamp">
             <column name="CUTOFF_DATETIME" length="7" />
         </property>
+         <many-to-one name="originFacility" class="com.freshdirect.transadmin.model.TrnFacility" fetch="select" lazy="false">
+            <column name="ORIGIN_FACILITY" length="16" not-null="true"/>
+        </many-to-one>
+        <many-to-one name="destinationFacility" class="com.freshdirect.transadmin.model.TrnFacility" fetch="select" lazy="false">
+            <column name="DESTINATION_FACILITY" length="16" not-null="true"/>
+        </many-to-one>
     </class>
 </hibernate-mapping>

@@ -33,6 +33,8 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI, IWaveInstance
 	
 	private Date lastDeliveryTime;
 	private Date cutOffTime;
+	private TrnFacility originFacility;
+	private TrnFacility destinationFacility;
 	private Set waveResources = new HashSet(0);
 	
 	public Set getWaveResources() {
@@ -41,6 +43,22 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI, IWaveInstance
 
 	public void setWaveResources(Set waveResources) {
 		this.waveResources = waveResources;
+	}
+
+	public TrnFacility getOriginFacility() {
+		return originFacility;
+	}
+
+	public void setOriginFacility(TrnFacility originFacility) {
+		this.originFacility = originFacility;
+	}
+
+	public TrnFacility getDestinationFacility() {
+		return destinationFacility;
+	}
+
+	public void setDestinationFacility(TrnFacility destinationFacility) {
+		this.destinationFacility = destinationFacility;
 	}
 
 	public String getSupervisorId() {

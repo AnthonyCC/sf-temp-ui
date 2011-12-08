@@ -11,149 +11,23 @@
  <script src="js/jsonrpc.js" language="javascript" type="text/javascript"></script>
  <script src="js/activeZone.js" language="javascript" type="text/javascript"></script>
  <script src="js/resourceedit.js" language="javascript" type="text/javascript"></script>
-        <script language="javascript">         
-        function setTruckNumber(truckNo) {
-            dispatchForm.truck.value = truckNo;
-        }
-       function resetDetails() {
-             document.location.href='<c:out value="${pageContext.request.contextPath}" />/editdispatch.do?id=<%= id %>&dispDate=<%= dispDate %>';
-        }
-       function init_clock(){
-            var tpStartTime = new TimePicker('timeStart_picker', 'startTime', 'timeStart_toggler', {imagesPath:"images"});
-            var tpFirstDlvTime = new TimePicker('timeFirstDlv_picker', 'firstDeliveryTime', 'timeFirstDlv_toggler', {imagesPath:"images"});
-	    }
         
-        function $() {
-            var elements = new Array();
-            for (var i = 0; i < arguments.length; i++) {
-                var element = arguments[i];
-                if (typeof element == 'string')
-                    element = document.getElementById(element);
-                if (arguments.length == 1)
-                    return element;
-                elements.push(element);
-            }
-            return elements;
-        }
-        function getResourcesInfo() {
-            dispatchForm.submit();
-        }
-        function bullpen(chxbox) {
-                var hasConfirmed = confirm ("Are you sure you want to flag/unflag it as a BullPen? You may loose your exisitng dispatch information.");
-                if(hasConfirmed)
-                    dispatchForm.submit();
-                else{
-                    chxbox.checked = !(chxbox.checked);
-                }                
-        }
-       function checkRouteInfo()
-       {
-       if(!dispatchForm.confirmed.checked)getRouteInfo();
-       }
-       function getRouteInfo()
-        {
-         if(!dispatchForm.confirmed.checked)
-         {
-        	var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
-        	var dispatchDate=dispatchForm.dispatchDate.value;
-        	var zoneCode=dispatchForm.zoneCode.value;
-        	jsonrpcClient.AsyncDispatchProvider.getActiveRoute(getRouteInfoCallback,dispatchDate,zoneCode);
-         }
-        }
-        function getRouteInfoCallback(result, exception) 
-        {
-      	  
-          if(exception) {               
-              alert('Unable to connect to host system. Please contact system administrator!');               
-              return;
-          }
-         
-		 	  
-		  for(var i=dispatchForm.route.options.length-1;i>=1;i--)
-		  {
-				dispatchForm.route.remove(i);
-		  }		 
-		  var selected=false;
-		  var results=result.list;
-		  for(var i=0;i<results.length;i++)
-		  {
-			  if( results[i].length>0)
-			  {
-			  	var optn = document.createElement("OPTION");
-			  	optn.text = results[i];
-	          	optn.value = results[i];
-	          	if(optn.text==dispatchForm.selectedroute.value)
-	          	{
-	          		optn.selected=true;
-	          		selected=true;
-	          	}
-	          	dispatchForm.route.options.add(optn);
-	          	
-	          }
-          }
-  /*        //testing
-          var optn = document.createElement("OPTION");
-		  optn.text = dispatchForm.selectedroute.value;
-	      optn.value = dispatchForm.selectedroute.value;
-	      dispatchForm.route.options.add(optn);
-	      */
-	      
-          if(!selected)     
-          dispatchForm.route.options[0].selected=true;
-                                
-      }        
-      
-      function back()
-      {
-      	var filters=unescape(getParameter("filter"));      	
-      	var params=filters.split("&");
-      	var dispatchForm=document.forms["dispatch"];
-      	for(var i=0;i<params.length;i++)
-      	{
-      		var param=params[i].split("=");         				
-      		add_input(dispatchForm,"hidden",param[0],param[1]);
-      	}     	      	
-      	dispatchForm.submit();
-      }
-
-      function checkOverride(chxbox)
-      {    	 
-          if(chxbox.checked)
-          {
-        	  dispatchForm.overrideReasonCode.disabled=false;
-          }
-          else
-          {
-        	  dispatchForm.overrideReasonCode.disabled=true;
-          }
-      }
-      
-      function handleResoureChangeEvent(target, src) {			
-			resoureChangeEvent(src, 'D', document.getElementById('dispatchDate'), document.getElementById('dispatchId'));	
-	  }
-      
-      function  firstDeliveryTimeChanged() {
-			document.getElementById("firstDeliveryTimeModified").value = "true";			
-			dispatchForm.submit();
-	  }
-
-      function  initAssets() {
-    	  document.getElementById("curr_gpsNumber").value = document.getElementById("gpsNumber").value;
-    	  document.getElementById("curr_ezpassNumber").value = document.getElementById("ezpassNumber").value;
-    	  document.getElementById("curr_motKitNumber").value = document.getElementById("motKitNumber").value;
-	  }
-      
-      </script>
-      <style>
-        .time_picker_div {padding:5px;
+	<style>
+        .time_picker_div {
+			padding:5px;
             border:solid #999999 1px;
-            background:#ffffff;}
-      </style>      
+            background:#ffffff;
+            }
+      	  
+		* {font-family:Arial, Helvetica, sans-serif;
+		font-size:9pt;}
+    </style>
+         
 <tmpl:insert template='/common/sitelayout.jsp'>
-
     <tmpl:put name='title' direct='true'> Operations : Dispatch : Add/Edit Dispatch</tmpl:put>
   <tmpl:put name='content' direct='true'>
     <br/> 
+
     <div align="center">
       <form:form commandName = "dispatchForm" method="post">
       <form:hidden path="dispatchId" />
@@ -164,28 +38,31 @@
       <input type=hidden name="dispDate" value="<%=dispDate %>" />
 	  <form:hidden path="overrideUser" />
 	  <form:hidden path="firstDeliveryTimeModified"/>
+      <form:hidden path="destFacilityModified"/>
       
       <input type=hidden id="curr_gpsNumber" value="" />
       <input type=hidden id="curr_ezpassNumber" value="" />
       <input type=hidden id="curr_motKitNumber" value="" />
       
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+      <table width="100%" height="80%" cellpadding="0" cellspacing="0" border="0">
 		<tr>
 			<td class="screentitle">Add/Edit Dispatch</td>
 		</tr>
 		<tr>
 			<td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>
 		</tr>
-          
 		<tr>
 			<td class="screencontent">
-			<table ><tr><td valign="top">
-				<table class="forms1" border="0">
+				<table class="forms1" style="height:100%;width:95%;border:1px dotted;background-color:#F7F7F7;">
 					<tr>
-						<td>Date</td>
+					<td align="center" valign="top" width="50%">
+					<table>
+						<tr>
+							<td width="150">Date</td>
 						<td>
 								<span><form:input maxlength="50" size="24" path="dispatchDate" onChange="javascript:getRouteInfo();javascript:getActiveZoneInfo(this.value,dispatchForm.zoneCode)"/></span>
-							<span><a href="#" id="trigger_dispatchDate" style="font-size: 9px;">
+								<span>
+									<a href="#" id="trigger_dispatchDate" style="font-size: 9px;">
 								<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date"></a>
 							</span>
 
@@ -204,37 +81,47 @@
 							  function updateDate(cal) {
 								  var selIndex = cal.date.getDay();
 								  if(selIndex == 0) selIndex = 7;
-								 // document.getElementById('dispatchDay').selectedIndex =  selIndex;
 								};
 							</script>
 						</td>   
+							<td width="200"><form:errors path="dispatchDate" />&nbsp;</td>
+						</tr>
+						<tr>
+								<td>Origin Facility</td>
 						<td>
-							<form:errors path="dispatchDate" />&nbsp;
+									<form:select path="originFacility">
+										<form:option value="" label="--Please Select Origin Facility"/>
+										<form:options items="${trnFacilitys}" itemLabel="name" itemValue="facilityId" />
+									</form:select> 
 						</td>
+								<td><form:errors path="originFacility" />&nbsp;</td>
 					</tr>                                   
 					<tr>
+								<td>Destination Facility</td>
+								<td> 
+									<form:select path="destinationFacility" onChange="showZoneSelection(dispatchForm.originFacility, this)">
+										<form:option value="" label="--Please Select Destination Facility"/>
+										<form:options items="${trnFacilitys}" itemLabel="name" itemValue="facilityId" />
+									</form:select> 
+								</td>
+								<td><form:errors path="destinationFacility" />&nbsp;</td>
+						</tr>
+						<tr>
 						<td>Zone</td>
-						<td colspan="2">         
-					  
-							<spring:bind path="dispatchForm.zoneCode">   
-								<c:choose>                    
-								<c:when test='${status.value == ""}'> 
-								  <spring:bind path="dispatchForm.isBullpen">   
-									<form:select path="zoneCode" onChange="javascript:getResourcesInfo();" disabled="${status.value}">
-										<form:option value="" label="Select Zone"/>
+							<td>
+								<c:if test="${!empty dispatchForm.zoneCode }">
+									<c:set var="hasZone" value="true"/>
+								</c:if>
+								<c:if test="${(dispatchForm.isBullpen eq 'true')|| (dispatchForm.destinationFacility.trnFacilityType.name ne 'SIT')}">
+									<c:set var="disableZone" value="true"/>
+								</c:if>
+								<form:select path="zoneCode" disabled="${disableZone}" onChange="getResourcesInfo()">
+									<form:option value="" label="--Please Select Zone"/>
 										<form:options items="${zones}" itemLabel="displayName" itemValue="zoneCode" />
 									</form:select>
-								   </spring:bind>
-								</c:when>
-								 <c:otherwise> 
-									   <form:input maxlength="50" size="10" path="zoneCode" readOnly="true" cssClass="noborder"/>
-								</c:otherwise> 
-								 </c:choose>
-							 </spring:bind>&nbsp;
+							
 						</td>
-                         <td>
-                          &nbsp;<form:errors path="zoneCode" />
-                        </td>                        
+							 <td>&nbsp;<form:errors path="zoneCode"/></td>
 					</tr>
 					<tr>
 						<td>Confirmed</td>
@@ -276,21 +163,11 @@
 					</tr>                   
 					<tr>
 						<td>Region</td>
-						<td colspan="2">       
-							<c:choose>                    
-								<c:when test='${dispatchForm.isBullpen == "true"}'> 
-									<form:select path="regionCode">
-										<form:option value="" label="Select Region"/>
-										<form:options items="${regions}" itemLabel="name" itemValue="code" />
+							<td>
+								<form:select path="regionCode" disabled="${hasZone}">
+									<form:option value="null" label="--Please Select Region"/>
+									<form:options items="${regions}" itemLabel="code" itemValue="code" />
 									</form:select>
-								</c:when>
-								<c:otherwise> 
-									<form:select path="regionCode" disabled="true">
-										<form:option value="" label="Select Region"/>
-										<form:options items="${regions}" itemLabel="name" itemValue="code" />
-									</form:select>
-								</c:otherwise> 
-							</c:choose>
 						</td>
                         <td>
                           &nbsp;<form:errors path="regionCode" />
@@ -399,9 +276,7 @@
                      </spring:bind> 
 
                  </td>
-                <td>
-                  &nbsp;<form:errors path="route" />
-                </td>                  
+						<td>&nbsp;<form:errors path="route" /></td>
                 </tr>  
 					<spring:bind path="dispatchForm.isBullpen">   
 						<c:choose>                    
@@ -419,7 +294,6 @@
 												</c:forEach>
 									</c:when>
 								</c:choose>
-						
 						</td>
 						<td>
 							<form:errors path="truck" />&nbsp;
@@ -430,7 +304,7 @@
 					</spring:bind> 
 					<tr>
 						<td>Drivers</td>
-						<td width="600px"> 
+							<td width="375px"> 
 							<div class="fleft">
 								<c:forEach items="${dispatchForm.drivers}" var="driver" varStatus="gridRow">
 									<div class="dipatch_AddEdit_row">
@@ -574,8 +448,8 @@
 					</table>
 					</td>
 					<!-- new table goes here -->
-					<td valign="top">
-					<table class="forms1" border="0">
+					<td align="center" valign="top">
+							<table>
 					<tr>
 						<td>Status</td>
 						<td colspan="2">                  
@@ -599,20 +473,20 @@
 					</tr> 
 					
 					<tr>
-						<td>GPS No</td>
-						<td colspan="2">       
+									<td width="150">GPS No</td>
+									<td>
 							<form:select path="gpsNumber" onchange="return assetChangeEvent(this);">
 										<form:option value="" label="Select GPS"/>
 										<form:options items="${GPS}" itemLabel="assetNo" itemValue="assetId" />
 									</form:select>
 						</td>
-                        <td>
+									<td width="200">
                           &nbsp;<form:errors path="gpsNumber" />
                         </td>  
 					</tr>   					
 					<tr>
 						<td>EzPass No</td>
-						<td colspan="2">       
+									<td>       
 							<form:select path="ezpassNumber" onchange="return assetChangeEvent(this);">
 										<form:option value="" label="Select EZPass"/>
 										<form:options items="${EZPASS}" itemLabel="assetNo" itemValue="assetId" />
@@ -625,7 +499,7 @@
 					
 					<tr>
 						<td>MotKit No</td>
-						<td colspan="2">       
+									<td>       
 							<form:select path="motKitNumber" onchange="return assetChangeEvent(this);">
 										<form:option value="" label="Select MotKit"/>
 										<form:options items="${MOTKIT}" itemLabel="assetNo" itemValue="assetId" />
@@ -734,7 +608,9 @@
 					<tr>
 						<td colspan="3">&nbsp;</td>
 					</tr>
-					</table></td></tr>
+							</table>
+						</td>
+					</tr>
 					<tr>
 						<td colspan="3" align="center">
 							<input type = "submit" value="&nbsp;Save&nbsp;"  />
@@ -745,12 +621,179 @@
 				</table>        
 			</td>
 		</tr>               
+		<tr><td>&nbsp;</td></tr>
 	</table>
       </form:form>
      </div>
      
+	 <script language="javascript">
+
+		var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+	   
+		function showZoneSelection(originRefVar, destRefVar) {
+			
+			var originRef = originRefVar.value || '';
+			var destRef = destRefVar.value || '';
+			
+			var result = jsonrpcClient.AsyncDispatchProvider.getFacilityInfo(sendFormCallback, originRef, destRef); 
+			
+			function sendFormCallback(result, exception) {
+			  if(exception) {
+				  alert('Unable to connect to host system. Please contact system administrator!');               
+				  return;
+			  }
+
+			  if( result[0] === 'SIT'){
+				  alert('Origin Facility cannot be Delivery Zone.');
+				  originRefVar.selectedIndex = 0;
+			  }
+			  if( result[1] === 'FD'){
+				  alert('Destination Facility cannot be Main Plant.');
+				  destRefVar.selectedIndex = 0;
+			  } else if((result[1] === result[0]) && (originRef != '' && destRef != '')){
+				  alert('Both Origin & Desination Facility cannot be same.');
+			  } 
+			  document.getElementById("destFacilityModified").value = "true";
+			  dispatchForm.submit();
+			}
+		}
+
+	   function setTruckNumber(truckNo) {
+            dispatchForm.truck.value = truckNo;
+       }
+       function resetDetails() {
+             document.location.href='<c:out value="${pageContext.request.contextPath}" />/editdispatch.do?id=<%= id %>&dispDate=<%= dispDate %>';
+        }
+       function init_clock(){
+            var tpStartTime = new TimePicker('timeStart_picker', 'startTime', 'timeStart_toggler', {imagesPath:"images"});
+            var tpFirstDlvTime = new TimePicker('timeFirstDlv_picker', 'firstDeliveryTime', 'timeFirstDlv_toggler', {imagesPath:"images"});
+	    }
+        
+        function $() {
+            var elements = new Array();
+            for (var i = 0; i < arguments.length; i++) {
+                var element = arguments[i];
+                if (typeof element == 'string')
+                    element = document.getElementById(element);
+                if (arguments.length == 1)
+                    return element;
+                elements.push(element);
+            }
+            return elements;
+        }
+        function getResourcesInfo() {
+            dispatchForm.submit();
+        }
+        function bullpen(chxbox) {
+                var hasConfirmed = confirm ("Are you sure you want to flag/unflag it as a BullPen? You may loose your exisitng dispatch information.");
+                if(hasConfirmed)
+                    dispatchForm.submit();
+                else{
+                    chxbox.checked = !(chxbox.checked);
+                }                
+        }
+       function checkRouteInfo()
+       {
+       if(!dispatchForm.confirmed.checked)getRouteInfo();
+       }
+       function getRouteInfo()
+        {
+         if(!dispatchForm.confirmed.checked)
+         {
+        	var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+        	var dispatchDate=dispatchForm.dispatchDate.value;
+        	var zoneCode=dispatchForm.zoneCode.value;
+        	jsonrpcClient.AsyncDispatchProvider.getActiveRoute(getRouteInfoCallback,dispatchDate,zoneCode);
+         }
+        }
+        function getRouteInfoCallback(result, exception) 
+        {
+          if(exception) {               
+              alert('Unable to connect to host system. Please contact system administrator!');               
+              return;
+          }
+		  for(var i=dispatchForm.route.options.length-1;i>=1;i--)
+		  {
+				dispatchForm.route.remove(i);
+		  }		 
+		  var selected=false;
+		  var results=result.list;
+		  for(var i=0;i<results.length;i++)
+		  {
+			  if( results[i].length>0)
+			  {
+			  	var optn = document.createElement("OPTION");
+			  	optn.text = results[i];
+	          	optn.value = results[i];
+	          	if(optn.text==dispatchForm.selectedroute.value)
+	          	{
+	          		optn.selected=true;
+	          		selected=true;
+	          	}
+	          	dispatchForm.route.options.add(optn);
+	          	
+	          }
+          }
+  /*        //testing
+          var optn = document.createElement("OPTION");
+		  optn.text = dispatchForm.selectedroute.value;
+	      optn.value = dispatchForm.selectedroute.value;
+	      dispatchForm.route.options.add(optn);
+	      */
+	      
+          if(!selected)     
+          dispatchForm.route.options[0].selected=true;
+                                
+      }        
+      
+      function back()
+      {
+      	var filters=unescape(getParameter("filter"));
+      	var params=filters.split("&");
+      	var dispatchForm=document.forms["dispatch"];
+      	for(var i=0;i<params.length;i++)
+      	{
+      		var param=params[i].split("=");
+      		add_input(dispatchForm,"hidden",param[0],param[1]);
+      	}     	      	
+      	dispatchForm.submit();
+      }
+
+      function checkOverride(chxbox)
+      {    	 
+          if(chxbox.checked)
+          {
+        	  dispatchForm.overrideReasonCode.disabled=false;
+          }
+          else
+          {
+        	  dispatchForm.overrideReasonCode.disabled=true;
+          }
+      }
+      
+      function handleResoureChangeEvent(target, src) {			
+			resoureChangeEvent(src, 'D', document.getElementById('dispatchDate'), document.getElementById('dispatchId'));	
+	  }
+      
+      function  firstDeliveryTimeChanged() {
+			document.getElementById("firstDeliveryTimeModified").value = "true";			
+			dispatchForm.submit();
+	  }
+
+      function  initAssets() {
+    	  document.getElementById("curr_gpsNumber").value = document.getElementById("gpsNumber").value;
+    	  document.getElementById("curr_ezpassNumber").value = document.getElementById("ezpassNumber").value;
+    	  document.getElementById("curr_motKitNumber").value = document.getElementById("motKitNumber").value;
+	  }
+      
+	 </script>
   </tmpl:put>
 </tmpl:insert>
-<script>checkRouteInfo();initAssets();</script>
+<script>
+
+
+checkRouteInfo();
+initAssets();
+</script>
 <form name="dispatch" action="dispatch.do" method="post">  </form>
 

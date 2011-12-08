@@ -290,6 +290,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 			empTruckPrefId.setPrefKey(truckPrefs.getKey());
 			empTruckPref.setId(empTruckPrefId);
 			empTruckPref.setTruckNumber(truckPrefs.getValue());
+			if (empTruckPref.getTruckNumber() != null)
 			finalTruckPrefList.add(empTruckPref);
 		}
 		 
@@ -385,20 +386,39 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		return employeeManagerDAO.getTerminatedEmployees();
 	}
 
+	/*Get Employees By RoleType*/
+	@SuppressWarnings("unchecked")
 	public Collection getEmployeesByRole(String roleTypeId) {
 
-		Collection employeeIDsByRole = domainManagerDao
-				.getEmployeesByRoleType(roleTypeId);
+		Collection employeeIDsByRole = domainManagerDao.getEmployeesByRoleType(roleTypeId);
 		Collection employees = new ArrayList(employeeIDsByRole.size());
 		Collection activeEmpl = getTransAppActiveEmployees();
 		Iterator it = employeeIDsByRole.iterator();
 		while (it.hasNext()) {
 			EmployeeRole empRole = (EmployeeRole) it.next();
-			EmployeeInfo info = getTransAppActiveEmployees(activeEmpl, empRole
-					.getId().getKronosId());
+			EmployeeInfo info = getTransAppActiveEmployees(activeEmpl
+															, empRole.getId().getKronosId());
 			if (info != null) {
 				employees.add(info);
 			}
+		}
+		return employees;
+	}
+	/*Get Employees By RoleType & SubRoleType*/
+	@SuppressWarnings("unchecked")
+	public Collection getEmployeesByRoleAndSubRole(String roleTypeId, String subRoleTypeId) {
+
+		Collection employeeIDsByRole = domainManagerDao.getEmployeesByRoleTypeAndSubRoleType(roleTypeId
+																								,subRoleTypeId);
+		Collection employees = new ArrayList(employeeIDsByRole.size());
+		Collection activeEmpl = getTransAppActiveEmployees();
+		Iterator it = employeeIDsByRole.iterator();
+		while (it.hasNext()) {
+			EmployeeRole empRole = (EmployeeRole) it.next();
+			EmployeeInfo info = getTransAppActiveEmployees(activeEmpl
+																, empRole.getId().getKronosId());
+			if (info != null) 
+				employees.add(info);
 		}
 		return employees;
 	}

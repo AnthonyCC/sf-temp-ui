@@ -249,13 +249,16 @@ public class ScribController extends AbstractMultiActionController
 									
 					List<ScheduleEmployeeDetails> employees = scheduleEmployeesByRegion.get(region);
 					
-					if(employees!=null)filldate(date, employees);
+					if (employees != null)
+						filldate(date, employees);
 					PlanTree tree = new PlanTree();
-					if(scribs!=null)tree.prepare(scribs);
-					if(employees!=null)tree.prepare(employees);
+					if (scribs != null)
+						tree.prepare(scribs);
+					if (employees != null)
+						tree.prepare(employees);
 					tree.prepareTeam(teamInfo);
 					Collection plans = tree.getPlan();
-					for (Iterator i = plans.iterator(); i.hasNext();)
+					for (Iterator<Plan> i = plans.iterator(); i.hasNext();)
 						getDispatchManagerService().savePlan((Plan) i.next());					
 				}//end loop
 				
@@ -263,9 +266,7 @@ public class ScribController extends AbstractMultiActionController
 					
 						for (Iterator<Region> it = dlvregions.iterator(); it.hasNext();) {
 							Region _r =  it.next();
-							if(_regLst.contains(_r.getCode())){
-								
-							}else{
+							if(!_regLst.contains(_r.getCode())){
 								Collection<Plan> planList = plansByRegion.get(_r.getCode());
 								if(planList!=null){
 									for (Iterator<Plan> i = planList.iterator(); i.hasNext();) {

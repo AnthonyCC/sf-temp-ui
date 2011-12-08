@@ -27,9 +27,11 @@ import com.freshdirect.routing.constants.EnumGeocodeQualityType;
 import com.freshdirect.routing.dao.IGeographyDAO;
 import com.freshdirect.routing.model.AreaModel;
 import com.freshdirect.routing.model.BuildingModel;
+import com.freshdirect.routing.model.FacilityModel;
 import com.freshdirect.routing.model.GeographicLocation;
 import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IBuildingModel;
+import com.freshdirect.routing.model.IFacilityModel;
 import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
@@ -110,6 +112,9 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 	
 	private static final String GET_AREAS = "select * from transp.trn_area a ";
 	private static final String GET_ZONES = "select * from transp.zone z ";
+	
+	private static final String GET_FACILITYS = "select f.FACILITY_CODE CODE, f.ROUTING_CODE ROUTING_CODE, f.PREFIX, f.LEAD_FROM_TIME "
+		+" ,f.LEAD_TO_TIME, f.FACILITYTYPE_CODE FACILITYTYPEMODEL from transp.trn_facility f ";
 	
 	private static final String INSERT_LOCATION_INFORMATION_NOKEY = "INSERT INTO DLV.DELIVERY_LOCATION ( ID,"+
 																		"APARTMENT, BUILDINGID) VALUES ( "+
@@ -905,6 +910,42 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 					zoneModel.setLoadingPriority(rs.getInt("LOADING_PRIORITY"));
 										
 					result.put(zoneModel.getZoneNumber(), zoneModel);				    		
+
+				} while(rs.next());
+			}
+		}
+		);
+
+		return result;
+	}
+	
+	public Map<String, IFacilityModel> getFacilityLookup() throws SQLException {
+		final Map<String, IFacilityModel> result = new HashMap<String, IFacilityModel>();
+
+		PreparedStatementCreator creator=new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+
+				PreparedStatement ps =
+					connection.prepareStatement(GET_FACILITYS);
+				
+				return ps;
+			}
+		};
+
+		jdbcTemplate.query(creator,
+				new RowCallbackHandler() {
+			public void processRow(ResultSet rs) throws SQLException {
+
+				do {					
+					IFacilityModel facilityModel = new FacilityModel();
+					facilityModel.setFacilityCode(rs.getString("CODE"));
+					facilityModel.setRoutingCode(rs.getString("ROUTING_CODE"));
+					facilityModel.setLeadFromTime(rs.getInt("LEAD_FROM_TIME"));
+					facilityModel.setLeadToTime(rs.getInt("LEAD_TO_TIME"));
+					facilityModel.setPrefix(rs.getString("PREFIX"));
+					facilityModel.setFacilityTypeModel(rs.getString("FACILITYTYPEMODEL"));
+					
+					result.put(facilityModel.getFacilityCode(), facilityModel);				    		
 
 				} while(rs.next());
 			}

@@ -17,6 +17,7 @@ import com.freshdirect.routing.model.IHandOffBatchPlan;
 import com.freshdirect.routing.model.IHandOffBatchDispatchResource;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IHandOffBatchStop;
+import com.freshdirect.routing.model.IHandOffBatchTrailer;
 import com.freshdirect.routing.model.IHandOffDispatch;
 import com.freshdirect.routing.model.TriggerHandOffResult;
 import com.freshdirect.routing.model.TruckPreferenceStat;
@@ -50,7 +51,7 @@ public interface IHandOffService {
 	
 	void clearHandOffBatchStopRoute(Date deliveryDate, String handOffBatchId) throws RoutingServiceException;
 	
-	void updateHandOffBatchDetails(String handOffBatchId, List<IHandOffBatchRoute> routes
+	void updateHandOffBatchDetails(String handOffBatchId, List<IHandOffBatchTrailer> trailers, List<IHandOffBatchRoute> routes
 			, List<IHandOffBatchStop> stops, Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus) throws RoutingServiceException;
 	
 	List<IHandOffBatchStop> getHandOffBatchStops(String batchId, boolean filterException) throws RoutingServiceException;
@@ -85,7 +86,7 @@ public interface IHandOffService {
 	
 	List<TruckPreferenceStat> getEmployeeTruckPreferences() throws RoutingServiceException;
 	
-	void clearHandOffBatchAutoDispatches(String handoffBatchId, Date deliveryDate) throws RoutingServiceException;
+	void clearHandOffBatchAutoDispatches(String handoffBatchId, Date deliveryDate, Date cutOffTime) throws RoutingServiceException;
 	
 	void addNewHandOffBatchAutoDispatches(Collection dataList) throws RoutingServiceException;
 	
@@ -94,4 +95,12 @@ public interface IHandOffService {
 	Set<IHandOffDispatch> getHandOffDispatch(String handoffBatchId, Date deliveryDate) throws RoutingServiceException;
 			
 	String getLastCommittedHandOffBatch(Date deliveryDate) throws RoutingServiceException;
+
+	Map<String, Integer> getHandOffBatchTrailerCnt(final Date deliveryDate) throws RoutingServiceException;
+	
+	List<IHandOffBatchTrailer> getHandOffBatchTrailers(String batchId) throws RoutingServiceException;
+	
+	List<IHandOffBatchPlan> getHandOffBatchTrailerPlans(Date deliveryDate, Date cutOffDate) throws RoutingServiceException;
+	
+	List<IHandOffBatchDispatchResource> getHandOffBatchTrailerPlanResource(Date deliveryDate, Date cutoffDate) throws RoutingServiceException;
 }

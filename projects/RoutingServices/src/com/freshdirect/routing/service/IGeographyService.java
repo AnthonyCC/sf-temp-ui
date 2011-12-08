@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IBuildingModel;
+import com.freshdirect.routing.model.IFacilityModel;
 import com.freshdirect.routing.model.IGeocodeResult;
 import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.model.ILocationModel;
@@ -62,5 +63,6 @@ public interface IGeographyService {
 	
 	Map<String, IAreaModel> getAreaLookup() throws RoutingServiceException;
 	Map<String, IZoneModel> getZoneLookup() throws RoutingServiceException;
+	Map<String, IFacilityModel> getFacilityLookup() throws RoutingServiceException;
 
 }

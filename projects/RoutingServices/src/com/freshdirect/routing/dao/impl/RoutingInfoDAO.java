@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -29,6 +30,7 @@ import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.IZoneScenarioModel;
 import com.freshdirect.routing.model.ServiceTimeScenario;
 import com.freshdirect.routing.model.ServiceTimeTypeModel;
+import com.freshdirect.routing.model.TrnFacilityType;
 import com.freshdirect.routing.model.WaveInstance;
 import com.freshdirect.routing.model.ZoneScenarioModel;
 import com.freshdirect.routing.util.RoutingDateUtil;
@@ -184,6 +186,9 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 		tmpModel.setLateDeliveryFactor(rs.getDouble("LATEDELIVERY_FACTOR"));
 		tmpModel.setNeedsLoadBalance("X".equalsIgnoreCase(rs.getString("NEEDS_LOADBALANCE")) ? true : false);
 		
+		tmpModel.setDefaultTrailerContainerCount(rs.getInt("TRAILER_CONTAINERMAX"));
+		tmpModel.setDefaultContainerCartonCount(rs.getInt("TRAILER_CONTAINERCARTONMAX"));
+
 		return tmpModel;
 	}
 	
@@ -266,28 +271,28 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 		return result;
 	}
 	
-	private static final String GET_WAVEINSTANCE_BYSTATUS_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
+	private static final String GET_WAVEINSTANCE_BYSTATUS_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, F.FACILITY_CODE ORIGIN_FACILITY, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
 	", P.DISPATCH_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.SOURCE, P.STATUS, P.NOTIFICATION_MSG " +
 	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, a.IS_DEPOT IS_DEPOT " +
-	"from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a where P.DELIVERY_DATE = ?  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE and STATUS = ? " +
+	"from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a, transp.trn_facility f where P.DELIVERY_DATE = ?  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE and f.ID = P.ORIGIN_FACILITY and STATUS = ? " +
 	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
 	
-	private static final String GET_WAVEINSTANCE_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
+	private static final String GET_WAVEINSTANCE_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, F.FACILITY_CODE ORIGIN_FACILITY, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
 	", P.DISPATCH_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.SOURCE, P.STATUS, P.NOTIFICATION_MSG " +
 	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, a.IS_DEPOT IS_DEPOT " +
-	"from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a where P.DELIVERY_DATE = ?  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE " +
+	"from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a, transp.trn_facility f where P.DELIVERY_DATE = ?  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE and f.ID = P.ORIGIN_FACILITY " +
 	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
 	
-	private static final String GET_FUTURE_WAVEINSTANCE_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
+	private static final String GET_FUTURE_WAVEINSTANCE_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, F.FACILITY_CODE ORIGIN_FACILITY, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
 	", P.DISPATCH_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.SOURCE, P.STATUS, P.NOTIFICATION_MSG " +
 	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, a.IS_DEPOT IS_DEPOT " +
-	"from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a where P.DELIVERY_DATE > sysdate  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE " +
+	" from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a, transp.trn_facility f where P.DELIVERY_DATE > sysdate  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE and f.ID = P.ORIGIN_FACILITY " +
 	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
 	
-	private static final String GET_FUTURE_WAVEINSTANCE_BYSTATUS_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
+	private static final String GET_FUTURE_WAVEINSTANCE_BYSTATUS_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, F.FACILITY_CODE ORIGIN_FACILITY, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
 	", P.DISPATCH_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.SOURCE, P.STATUS, P.NOTIFICATION_MSG " +
 	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, a.IS_DEPOT IS_DEPOT " +
-	"from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a where P.DELIVERY_DATE > sysdate  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE and STATUS = ? " +
+	" from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a, transp.trn_facility f where P.DELIVERY_DATE > sysdate  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE and f.ID = P.ORIGIN_FACILITY and STATUS = ? " +
 	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
 	
 	public Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> getWaveInstanceTree
@@ -343,6 +348,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 										? "X".equalsIgnoreCase(rs.getString("IS_DEPOT")) : false;
 					String notificationMsg = rs.getString("NOTIFICATION_MSG");
 					EnumWaveInstancePublishSrc source = EnumWaveInstancePublishSrc.getEnum(rs.getString("SOURCE"));
+					String originFacility = rs.getString("ORIGIN_FACILITY");
 					
 					if(_firstDeliveryTime != null && _lastDeliveryTime != null 
 							&& _startTime != null && _cutOffTime != null && _zoneCode != null) {
@@ -373,6 +379,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 						waveInstance.setNotificationMessage(notificationMsg);
 						waveInstance.setStatus(status);
 						waveInstance.setSource(source);
+						waveInstance.setOriginFacility(originFacility);
 						
 						IAreaModel area = new AreaModel();
 						area.setAreaCode(_zoneCode);
@@ -619,6 +626,134 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 			}
 		}
 		);		
+		return result;
+	}
+
+	private static final String GET_PLANNEDTRAILERBYDATE_QRY = "select P.PLAN_DATE DISPATCH_DATE, P.REGION, P.START_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.MAX_TIME, P.CUTOFF_DATETIME CUT_OFF, F.FACILITY_CODE, "+ 
+			"F.LEAD_TO_TIME TO_LEADTIME, F.LEAD_FROM_TIME FROM_LEADTIME, F.ROUTING_CODE " +
+			"from transp.plan p, TRANSP.TRN_FACILITY f "+
+			"where P.DESTINATION_FACILITY = F.ID and P.PLAN_DATE = ? and to_char(P.CUTOFF_DATETIME, 'HH:MI AM') = to_char(?, 'HH:MI AM') "+
+			"and F.FACILITYTYPE_CODE = 'CD' ";
+	
+	public Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> getPlannedTrailerDispatchTree(final Date deliveryDate, final Date cutOff)  throws SQLException {
+		//Result Description -> Map<DestinatinFacility, Map<DispatchTIme, Map<CutOffTime, IWaveInstance>>>
+		final Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> result 
+							= new HashMap<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>();
+
+		PreparedStatementCreator creator=new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+			
+			PreparedStatement ps =	connection.prepareStatement(GET_PLANNEDTRAILERBYDATE_QRY);
+			ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
+			ps.setTimestamp(2, new Timestamp(cutOff.getTime()));
+			return ps;
+}
+		};
+		
+		jdbcTemplate.query(creator, 
+				  new RowCallbackHandler() { 
+				      public void processRow(ResultSet rs) throws SQLException {				    	
+				    	  	do{
+				    	  		Date _firstDeliveryTime = rs.getTimestamp("FIRST_DLV_TIME");
+					    		Date _lastDeliveryTime = rs.getTimestamp("LAST_DLV_TIME");
+					    		Date _startTime = rs.getTimestamp("DISPATCH_TIME");
+					    		RoutingTimeOfDay _cutOffTime = new RoutingTimeOfDay(rs.getTimestamp("CUT_OFF"));
+					    		
+					    		String _destCode = rs.getString("FACILITY_CODE");
+					    		int toLeadTime = rs.getInt("TO_LEADTIME");
+					    		int fromLeadTime = rs.getInt("FROM_LEADTIME");
+					    		String routingCode = rs.getString("ROUTING_CODE");
+					    		
+					    		if(_firstDeliveryTime != null && _lastDeliveryTime != null 
+				    					&& _startTime != null && _cutOffTime != null && _destCode != null) {
+					    			
+					    			RoutingTimeOfDay _dispatchTime = new RoutingTimeOfDay(_startTime);
+					    			
+					    			Date startTime = RoutingDateUtil.addMinutes(_firstDeliveryTime
+					    															, (toLeadTime != 0 ? -toLeadTime : -fromLeadTime));
+					    			Date endTime = RoutingDateUtil.addMinutes(_lastDeliveryTime
+																					, (fromLeadTime != 0 ? fromLeadTime : toLeadTime));
+
+					    			int runTime = RoutingDateUtil.getDiffInSeconds(endTime, startTime);
+					    			
+					    			RoutingTimeOfDay _waveStartTime = new RoutingTimeOfDay(startTime);
+					    								    			
+					    			IWaveInstance waveInstance = new WaveInstance();
+						    		waveInstance.setCutOffTime(_cutOffTime);
+						    		waveInstance.setDispatchTime(_dispatchTime);
+						    		waveInstance.setWaveStartTime(_waveStartTime);
+						    		waveInstance.setMaxRunTime(runTime);
+						    		waveInstance.setPreferredRunTime(runTime);
+						    		
+						    		waveInstance.setRoutingCode(routingCode);
+						    		
+						    		if(!result.containsKey(_destCode)) {
+						    			result.put(_destCode, new HashMap<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>());
+						    		}
+						    		if(!result.get(_destCode).containsKey(_dispatchTime)) {
+						    			result.get(_destCode).put(_dispatchTime, new HashMap<RoutingTimeOfDay, List<IWaveInstance>>());
+						    		}
+						    		
+						    		if(result.get(_destCode).get(_dispatchTime).containsKey(_cutOffTime)) {
+						    			List<IWaveInstance> _tmpWaves = result.get(_destCode).get(_dispatchTime).get(_cutOffTime);
+						    			boolean matchFound = false;
+						    			for(IWaveInstance _instance : _tmpWaves) {
+						    				if(_instance.equals(waveInstance)) {
+						    					_instance.setNoOfResources(_instance.getNoOfResources()+1);				    					
+						    					matchFound = true;
+						    					break;
+						    				}
+						    			}
+						    			if(!matchFound) {
+						    				_tmpWaves.add(waveInstance);
+							    			waveInstance.setNoOfResources(1);
+						    			}
+						    		} else {
+						    			List<IWaveInstance> _tmpWaves = new ArrayList<IWaveInstance>();
+						    			_tmpWaves.add(waveInstance);
+						    			waveInstance.setNoOfResources(1);
+						    			result.get(_destCode).get(_dispatchTime).put(_cutOffTime, _tmpWaves);
+						    		}
+					    		}
+				    	  	}while(rs.next());
+				      }
+		});	
+		
+		return result;
+	}
+	
+	private static final String SELECT_ACTIVE_FACILITYS = "SELECT F.FACILITY_CODE CODE, FT.FACILITYTYPE_CODE, FT.DESCRIPTION" 
+		+" from TRANSP.TRN_FACILITY F, TRANSP.TRN_FACILITYTYPE FT"
+		+" where F.FACILITYTYPE_CODE = FT.FACILITYTYPE_CODE";
+	
+	public Map<String, TrnFacilityType> retrieveTrnFacilitys()throws SQLException{
+		
+		final Map<String, TrnFacilityType> result = new HashMap<String, TrnFacilityType>();
+		
+		PreparedStatementCreator creator = new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+			
+				PreparedStatement ps =	connection.prepareStatement(SELECT_ACTIVE_FACILITYS);			
+				return ps;
+			}
+		};
+		
+		jdbcTemplate.query(creator, 
+				  new RowCallbackHandler() { 
+				      public void processRow(ResultSet rs) throws SQLException {				    	
+				    	  	do{
+				    	  		String code = rs.getString("CODE");			
+				    			
+				    			TrnFacilityType facilityType = new TrnFacilityType();
+				    			
+				    			facilityType.setName(rs.getString("FACILITYTYPE_CODE"));
+				    			facilityType.setDescription("DESCRIPTION");			
+				    			
+				    			result.put(code, facilityType);				    	  		
+				    	  	}while(rs.next());
+				      }
+		});	
+		
 		return result;
 	}
 }

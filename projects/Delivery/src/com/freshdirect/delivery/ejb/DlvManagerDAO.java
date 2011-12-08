@@ -64,6 +64,7 @@ import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
+import com.freshdirect.routing.model.TrnFacilityType;
 import com.freshdirect.routing.util.RoutingUtil;
 
 /**
@@ -1607,6 +1608,26 @@ public class DlvManagerDAO {
 		int updateCount = ps.executeUpdate();
 	    ps.close();
 		return updateCount;
+	}
+	
+	private static final String SELECT_ACTIVE_FACILITYS = "SELECT F.FACILITY_CODE CODE, FT.FACILITYTYPE_CODE, FT.DESCRIPTION" 
+		+" from TRANSP.TRN_FACILITY F, TRANSP.TRN_FACILITYTYPE FT"
+		+" where F.FACILITYTYPE_CODE = FT.FACILITYTYPE_CODE";
+
+	public static Map<String, TrnFacilityType> retrieveTrnFacilitys(Connection conn)throws SQLException{
+
+		Map<String, TrnFacilityType> result = new HashMap<String, TrnFacilityType>();
+		PreparedStatement ps = conn.prepareStatement(SELECT_ACTIVE_FACILITYS);
+		ResultSet rs = ps.executeQuery();
+
+		while(rs.next()){
+	  		String code = rs.getString("CODE");
+			TrnFacilityType facilityType = new TrnFacilityType();
+			facilityType.setName(rs.getString("FACILITYTYPE_CODE"));
+			facilityType.setDescription("DESCRIPTION");			
+			result.put(code, facilityType);
+}
+		return result;
 	}
 	
 }

@@ -128,6 +128,7 @@ public class WaveUtil {
 				key.setLastDeliveryTime(_tmpWaveInstance.getLastDeliveryTime());
 				key.setCutOffTime(_tmpWaveInstance.getCutOffTime());
 				key.setZone(_tmpWaveInstance.getArea());
+				key.setOriginFacility(_tmpWaveInstance.getOriginFacility());
 
 				waveMappingCurrent.put(key, _tmpWaveInstance);
 			}
@@ -148,6 +149,7 @@ public class WaveUtil {
 					key.setLastDeliveryTime(instanceSource.getLastDeliveryTime());
 					key.setCutOffTime(instanceSource.getCutOffTime());
 					key.setZone(instanceSource.getZone().getZoneCode());
+					key.setOriginFacility(instanceSource.getOriginFacility());
 					int initialResource = 0;
 					if(waveMappingNew.containsKey(key)) {
 						initialResource = initialResource + waveMappingNew.get(key);
@@ -194,6 +196,7 @@ public class WaveUtil {
 			if(_tmpWaveInstance == null) {
 				_tmpWaveInstance = new WaveInstance();						
 			} 
+			_tmpWaveInstance.setOriginFacility(waveMppEntry.getKey().getOriginFacility());
 			_tmpWaveInstance.setArea(waveMppEntry.getKey().getZone());				
 			_tmpWaveInstance.setCutOffTime(waveMppEntry.getKey().getCutOffTime());
 			_tmpWaveInstance.setDeliveryDate(waveMppEntry.getKey().getDeliveryDate());

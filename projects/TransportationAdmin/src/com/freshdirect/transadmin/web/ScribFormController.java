@@ -15,24 +15,45 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.web.bind.ServletRequestDataBinder;
 
+import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.routing.util.RoutingServicesProperties;
+import com.freshdirect.transadmin.constants.EnumRouteType;
+import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.Scrib;
+import com.freshdirect.transadmin.model.TrnArea;
+import com.freshdirect.transadmin.model.TrnFacility;
+import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
+import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.ScribUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.WaveUtil;
+import com.freshdirect.transadmin.web.editor.RegionPropertyEditor;
+import com.freshdirect.transadmin.web.editor.TrnAreaPropertyEditor;
+import com.freshdirect.transadmin.web.editor.TrnFacilityPropertyEditor;
+import com.freshdirect.transadmin.web.editor.TrnZoneTypePropertyEditor;
 
 public class ScribFormController extends AbstractDomainFormController {
 			
 	private DispatchManagerI dispatchManagerService;
 	private EmployeeManagerI employeeManagerService;
 	private ZoneManagerI zoneManagerService;
+	private LocationManagerI locationManagerService;
+	
+	public LocationManagerI getLocationManagerService() {
+		return locationManagerService;
+	}
+
+	public void setLocationManagerService(LocationManagerI locationManagerService) {
+		this.locationManagerService = locationManagerService;
+	}
 	
 	public EmployeeManagerI getEmployeeManagerService() {
 		return employeeManagerService;
@@ -60,6 +81,9 @@ public class ScribFormController extends AbstractDomainFormController {
 		refData.put("zones",zones);	
 		refData.put("supervisors", DispatchPlanUtil.getSortedResources(employeeManagerService.getSupervisors()));
 		refData.put("cutoffs", getDomainManagerService().getCutOffs());
+		refData.put("routeTypes", EnumRouteType.getEnumList());
+		refData.put("trnFacilitys", locationManagerService.getTrnFacilitys());
+		refData.put("regions", getDomainManagerService().getRegions());
 		return refData;
 	}
 
@@ -86,11 +110,17 @@ public class ScribFormController extends AbstractDomainFormController {
 
 		Scrib model = (Scrib) command;
 		String zoneId = request.getParameter("zoneS");
+		String destFacility = request.getParameter("destinationFacility");
 		Zone zone = getDomainManagerService().getZone(zoneId);
 		if(zone!=null)
 		{
 			model.setZone(zone);
 			model.setRegion(zone.getRegion());
+		}
+		TrnFacility deliveryFacility = locationManagerService.getTrnFacility(destFacility);
+		if(deliveryFacility != null && 
+				!EnumTransportationFacilitySrc.DELIVERYZONE.getName().equalsIgnoreCase(deliveryFacility.getTrnFacilityType().getName())){
+			model.setZone(null);
 		}
 		model= ScribUtil.reconstructWebPlanInfo(model,zone,model.getFirstDeliveryTimeModified(),
 				employeeManagerService,zoneManagerService);		
@@ -169,4 +199,10 @@ public class ScribFormController extends AbstractDomainFormController {
 		this.zoneManagerService = zoneManagerService;
 	}
 	
+	public void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+		super.initBinder(request,binder);
+		binder.registerCustomEditor(Region.class, new RegionPropertyEditor());
+		binder.registerCustomEditor(TrnFacility.class, new TrnFacilityPropertyEditor());
+    }
+
 }

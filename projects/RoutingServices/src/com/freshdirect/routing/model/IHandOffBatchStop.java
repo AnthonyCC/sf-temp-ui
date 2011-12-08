@@ -19,4 +19,7 @@ public interface IHandOffBatchStop extends IRoutingStopModel, BapiSendHandOff.Ha
 	
 	boolean isException();
 	void setException(boolean isException);
+	
+	
+	void setServiceAddress2(String serviceAddress2);
 }

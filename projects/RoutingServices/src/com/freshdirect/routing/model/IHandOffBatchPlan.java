@@ -71,4 +71,12 @@ public interface IHandOffBatchPlan {
 	
 	public void setCutOffTime(Date cutOffTime);
 		
+	String getOriginFacility();
+
+	void setOriginFacility(String originFacility);
+
+	String getDestinationFacility();
+
+	void setDestinationFacility(String destinationFacility);
+
 }

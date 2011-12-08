@@ -61,4 +61,6 @@ public interface EmployeeManagerI extends BaseManagerI {
 	Map<String, String> getTeamMapping();
 	
 	Collection getEmployeesTruckPrefrence();
+
+	Collection getEmployeesByRoleAndSubRole(String roleTypeId, String subRoleTypeId);
 }

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IBuildingModel;
+import com.freshdirect.routing.model.IFacilityModel;
 import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IZoneModel;
@@ -42,4 +43,6 @@ public interface IGeographyDAO {
 	
 	Map<String, IZoneModel> getZoneLookup() throws SQLException;
 	
+	Map<String, IFacilityModel> getFacilityLookup() throws SQLException;
+
 }

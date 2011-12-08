@@ -20,6 +20,10 @@ public class HandOffDispatch implements IHandOffDispatch  {
 	private String route;
 	private String truck;
 	private Date cutoffTime;
+	private String originFacility;
+	private String destinationFacility;
+	private boolean isTrailer;
+
 	private Set batchDispatchResources = new HashSet(0);
 	
 	public HandOffDispatch() {
@@ -29,7 +33,8 @@ public class HandOffDispatch implements IHandOffDispatch  {
 	public HandOffDispatch(String dispatchId, String planId, String zone,
 			String region, Date dispatchDate, Date firstDeliveryTime,
 			Date startTime, String isBullpen, String supervisorId,
-			Date maxTime, Date checkInTime, String route, String truck, Date cutoffTime,
+			Date maxTime, Date checkInTime, String route, String truck, Date cutoffTime, String originFacility,
+			String destinationFacility,
 			Set batchDispatchResources) {
 		super();
 		this.dispatchId = dispatchId;
@@ -46,6 +51,8 @@ public class HandOffDispatch implements IHandOffDispatch  {
 		this.route = route;
 		this.truck = truck;
 		this.cutoffTime = cutoffTime;
+		this.originFacility = originFacility;
+		this.destinationFacility = destinationFacility;
 		this.batchDispatchResources = batchDispatchResources;
 	}
 
@@ -169,6 +176,30 @@ public class HandOffDispatch implements IHandOffDispatch  {
 		this.batchDispatchResources = batchDispatchResources;
 	}
 	
+	public String getOriginFacility() {
+		return originFacility;
+	}
+
+	public void setOriginFacility(String originFacility) {
+		this.originFacility = originFacility;
+	}
+
+	public String getDestinationFacility() {
+		return destinationFacility;
+	}
+
+	public void setDestinationFacility(String destinationFacility) {
+		this.destinationFacility = destinationFacility;
+	}
+	
+	public boolean isTrailer() {
+		return isTrailer;
+	}
+
+	public void setTrailer(boolean isTrailer) {
+		this.isTrailer = isTrailer;
+	}
+
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;

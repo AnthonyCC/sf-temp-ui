@@ -47,7 +47,6 @@ import com.freshdirect.transadmin.util.EnumCachedDataType;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransAdminCacheManager;
 import com.freshdirect.transadmin.util.TransStringUtil;
-import com.freshdirect.transadmin.web.model.WebSchedule;
 
 public class DomainManagerImpl  
 		extends BaseManagerImpl  implements DomainManagerI {

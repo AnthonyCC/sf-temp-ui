@@ -2,8 +2,6 @@ package com.freshdirect.routing.model;
 
 import java.util.Map;
 
-
-
 public class ServiceTimeScenario extends BaseModel implements IServiceTimeScenarioModel {
 	
 	private String code;
@@ -25,6 +23,8 @@ public class ServiceTimeScenario extends BaseModel implements IServiceTimeScenar
 	private boolean needsLoadBalance;
 	
 	private Map<String, IZoneScenarioModel> zoneConfiguration;
+	private int defaultTrailerContainerCount;
+	private int defaultContainerCartonCount;
 		
 	public String getCode() {
 		return code;
@@ -111,6 +111,18 @@ public class ServiceTimeScenario extends BaseModel implements IServiceTimeScenar
 	public void setZoneConfiguration(
 			Map<String, IZoneScenarioModel> zoneConfiguration) {
 		this.zoneConfiguration = zoneConfiguration;
+	}
+	public int getDefaultTrailerContainerCount() {
+		return defaultTrailerContainerCount;
+	}
+	public void setDefaultTrailerContainerCount(int defaultTrailerContainerCount) {
+		this.defaultTrailerContainerCount = defaultTrailerContainerCount;
+	}
+	public int getDefaultContainerCartonCount() {
+		return defaultContainerCartonCount;
+	}
+	public void setDefaultContainerCartonCount(int defaultContainerCartonCount) {
+		this.defaultContainerCartonCount = defaultContainerCartonCount;
 	}
 	
 	

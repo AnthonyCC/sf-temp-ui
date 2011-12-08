@@ -40,7 +40,7 @@ public class RouteDataManager {
 	
 	       
 	public RoutingResult process(IRoutingOutputInfo routingInfo
-									,String userName, IServiceProvider serviceProvider) throws IOException {		
+									,String userName, IServiceProvider serviceProvider) throws IOException, ParseException {		
 		return null;
 	}
 		

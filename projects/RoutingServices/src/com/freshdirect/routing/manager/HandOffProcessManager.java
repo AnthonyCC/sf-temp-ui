@@ -28,10 +28,13 @@ import com.freshdirect.routing.model.HandOffBatchSession;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchSession;
 import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IRoutingDepotId;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IWaveInstance;
+import com.freshdirect.routing.model.RoutingDepotId;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
+import com.freshdirect.routing.model.TrnFacilityType;
 import com.freshdirect.routing.model.WaveInstance;
 import com.freshdirect.routing.service.IGeographyService;
 import com.freshdirect.routing.service.RoutingServiceLocator;
@@ -291,6 +294,8 @@ public class HandOffProcessManager {
     			Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree = routeInfoProxy
     																													.getWaveInstanceTree(handOffBatch.getDeliveryDate(), null);
     			RoutingTimeOfDay cutOff = new RoutingTimeOfDay(handOffBatch.getCutOffDateTime());
+    			Map<String, TrnFacilityType> facilityLookUp = routeInfoProxy.retrieveTrnFacilitys();
+
     			if(waveInstanceTree != null) {																																
 	    	    	Iterator tmpIterator = schedulerIdLst.iterator();
 	    	    	IRoutingSchedulerIdentity schedulerId = null;
@@ -336,6 +341,20 @@ public class HandOffProcessManager {
 	    								_destInst.setNoOfResources(_tmpMatch.getNoOfResources());
 	    								_destInst.setPreferredRunTime(_tmpMatch.getPreferredRunTime());
 	    								_destInst.setWaveStartTime(_tmpMatch.getWaveStartTime());	    								
+
+	    								if(!schedulerId.isDepot()){
+		    								IRoutingDepotId routingDepotId = new RoutingDepotId();
+		    								routingDepotId.setLocationId(_tmpMatch.getOriginFacility());
+		    								routingDepotId.setRegionID(schedulerId.getRegionId());
+
+		    								/*if(_tmpMatch.getOriginFacility() != null)
+		    									routingDepotId.setLocationType(facilityLookUp.get(_tmpMatch.getOriginFacility()).getName());
+											*/
+		    								routingDepotId.setLocationType(RoutingServicesProperties.getDefaultUpsLocationType());
+
+		    								_tmpMatch.setDepotId(routingDepotId);
+		    								_destInst.setDepotId(_tmpMatch.getDepotId());
+	    								}
 	    							} else {
 	    								_destInst.setNoOfResources(0);	    								
 	    							}
