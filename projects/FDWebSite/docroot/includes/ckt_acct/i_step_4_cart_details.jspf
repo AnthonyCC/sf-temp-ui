@@ -64,7 +64,9 @@ int idx = 0;
 		<%
 		ProductModel productNode = cartLine.lookupProduct();
 		FDProduct fdProduct = cartLine.lookupFDProduct();
-
+		
+		/* Google Analytics data. */
+		
 		if (isReceiptPage && fdProduct != null && productNode != null) {
 			//check if we've already gotten this sku in a different cartLine
 			if (GACartProds.containsKey(fdProduct.getSkuCode())) {
@@ -72,13 +74,16 @@ int idx = 0;
 				
 				//add to qty
 				GACartProd.addToQty( Double.parseDouble(cartLine.getOrderedQuantity()) );
+				
 				//add to total
 				GACartProd.addToTotal(cartLine.getPrice());
 			} else {
-				//we haven't, create a new one
-				GoogleAnalyticsCartProduct GACartProd = new GoogleAnalyticsCartProduct(fdProduct.getSkuCode(), Double.parseDouble(cartLine.getOrderedQuantity()), cartLine.getPrice());
 				//unit price comes back as "$#.##/UOM", so remove dollar sign and split it out to add to the two seperate attributes...
 				String unitPriceInfo[] = cartLine.getUnitPrice().replace("$", "").split("/");
+
+				//we haven't, create a new one
+				GoogleAnalyticsCartProduct GACartProd = new GoogleAnalyticsCartProduct(fdProduct.getSkuCode(), Double.parseDouble(cartLine.getOrderedQuantity()), cartLine.getPrice());
+
 				//add unit price
 				GACartProd.setUnitPrice(unitPriceInfo[0]);
 				//add category
@@ -90,6 +95,7 @@ int idx = 0;
 				GACartProds.put(fdProduct.getSkuCode(), GACartProd);
 			}
 		}
+		
 		
 		FDCartLineI nextLine = viewIndex.intValue() + 1 == orderLines.size() ? null : (FDCartLineI)orderLines.get(viewIndex.intValue() + 1);
 		boolean lastItemInDept = nextLine==null || !nextLine.getDepartmentDesc().equals(cartLine.getDepartmentDesc());
@@ -388,8 +394,9 @@ int idx = 0;
 	           '<%= dlvAddress.getState() %>',     // state or province
 	           '<%= dlvAddress.getCountry() %>'             // country
 	        ]);
+
 		<%
-		
+		/* Google Analytics data. */
 		//add product info
 		for (Iterator gaIter = GACartProds.entrySet().iterator(); gaIter.hasNext();) {
 			Map.Entry e = (Map.Entry) gaIter.next();
