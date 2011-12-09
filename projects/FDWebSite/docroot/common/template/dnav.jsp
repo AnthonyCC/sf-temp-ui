@@ -17,8 +17,8 @@ final int W_DNAV_TOTAL = 970;
     <%@ include file="/common/template/includes/metatags.jspf" %>
 	<meta http-equiv="X-UA-Compatible" content="IE=8" />
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-
-	<fd:javascript src="/assets/javascript/timeslots.js"/>
+	<fd:javascript src="/assets/javascript/timeslots.js" />
+	<fd:javascript src="/assets/javascript/FD_GiftCards.js" />
   <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
   <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<fd:css href="/assets/css/giftcards.css"/>
