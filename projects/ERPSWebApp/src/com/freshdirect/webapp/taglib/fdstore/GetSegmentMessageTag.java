@@ -79,12 +79,16 @@ public class GetSegmentMessageTag extends AbstractGetterTag {
 					 
 					 
 					 
-			case 15:  sm.setLocation1(true);
-					  sm.setLocation2(false);
-					  sm.setGreeting("Welcome back, ");
-					  sm.setMessage("You're close to joining our Chef\'s Table rewards program!");
-					  sm.setMessageLink("<a href=\"/your_account/manage_account.jsp\">Click here to learn more.</A>");
-					  return sm;
+			case 15:  
+					if(user!=null && !user.isChefsTable()) {
+					      sm.setLocation1(true);
+						  sm.setLocation2(false);
+						  sm.setGreeting("Welcome back, ");
+						  sm.setMessage("You're close to joining our Chef\'s Table rewards program!");
+						  sm.setMessageLink("<a href=\"/your_account/manage_account.jsp\">Click here to learn more.</A>");
+						  return sm;
+					}
+				
 					  
 					  
 					  
