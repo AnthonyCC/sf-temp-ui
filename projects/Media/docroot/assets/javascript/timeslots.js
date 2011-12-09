@@ -16,7 +16,7 @@ function fdTSDisplay(refIdArg) {
 		timer_StartTime: -1, //timer function holder
 		timer_LastTime: -1, //timer function holder
 		timer_EndTime: -1, //timer function holder
-		reorgRowLimit: 4, //sequential days required for a reorg
+		reorgRowLimit: 3, //sequential days required for a reorg
 		emptyDayAMRowTotal: 4, //make empty day have this many rows in AM section
 		emptyDayPMRowTotal: 4, //make empty day have this many rows in PM section
 		emptyDayNewDayPart: 4, //day part for an empty day defaults to this
