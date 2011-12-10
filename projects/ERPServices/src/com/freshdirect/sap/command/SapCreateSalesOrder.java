@@ -209,9 +209,12 @@ public class SapCreateSalesOrder extends SapCommandSupport implements SapOrderCo
 		
 		String recipeFlag = StringUtils.rightPad(order.isRecipeOrder() ? "1" : " ", 5);
 		
-		// 10 spaces + 5 (flag) + 70 spaces + 20 chars
+		String goGreen = StringUtils.rightPad(order.getCustomer().isGoGreen() ? "GREEN" : " ", 5);
+		
+		// 10 spaces + 5 (flag) + 5 (GREEN) + 70 spaces + 20 chars
 		bapi.addExtension("BAPE_VBAK", StringUtils.repeat(" ", 10)
 			+ recipeFlag
+			+ goGreen
 			+ StringUtils.repeat(" ", 70)
 			+ billingRef  // offset 86 --> 105
 			+ StringUtils.repeat(" ", 20) // offset 106 - 125

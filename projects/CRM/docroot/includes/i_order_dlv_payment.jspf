@@ -34,7 +34,6 @@
 <%	
 	String fmtDlvDate = CCFormatter.formatDeliveryDate( order.getDeliveryReservation().getStartTime() );
 	String fmtDlvTime = CCFormatter.formatDeliveryTime( order.getDeliveryReservation().getStartTime() ) + " - " + CCFormatter.formatDeliveryTime( order.getDeliveryReservation().getEndTime() );
-	CrmLateIssueModel lateIssue = (order instanceof FDOrderI) ? CrmManager.getInstance().getRecentLateIssueForOrder(((FDOrderI)order).getErpSalesId()) : null;
 	double perishableBufferAmount = 0;
     double gcSelectedBalance = user.getGiftcardBalance()- order.getTotalAppliedGCAmount();
     double gcBufferAmount=0;
@@ -88,16 +87,7 @@
 		</tr><tr></tr>
 	</table>
 	<% } %>
-	<%if (lateIssue!=null) {
-%>
-
-<table width="100%" cellpadding="0" cellspacing="0" border="0" class="order_detail" style="padding: 1px;">
-	<tr class="inactive">
-		<td class="error">Late Report: <%=lateIssue.getDelayMinutes()%> minutes, <%=lateIssue.getComments()%></td>
-		</tr>
-	</table>
-
-<%  }  %>
+	
 <table width="100%" cellpadding="0" cellspacing="0" border="0" class="order_detail" style="padding: 1px;">
 	<tr class="inactive">
     <% if(displayDeliveryInfo){%>

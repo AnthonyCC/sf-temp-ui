@@ -17,6 +17,7 @@ public class CustomerAdapter implements SapCustomerI {
 	private final BasicContactAddressI billToAddress;
 	private final PaymentMethodI paymentMethod;
 	private final BasicContactAddressI alternateAddress;
+	private final boolean goGreen;
 
 	public CustomerAdapter(boolean phonePrivate, ErpCustomerModel erpCustomer, BasicContactAddressI shipToAddress, BasicContactAddressI billToAddress) {
 		this.sapCustomerNumber = erpCustomer.getSapId();
@@ -25,6 +26,7 @@ public class CustomerAdapter implements SapCustomerI {
 		this.billToAddress = billToAddress==null ? null : new ContactAddressAdapter(billToAddress, customerInfo.getFirstName(), customerInfo.getLastName(),customerInfo.getId(), filterPhone(phonePrivate, billToAddress.getPhone()));
 		this.paymentMethod = null;
 		this.alternateAddress = null;
+		this.goGreen = customerInfo.isGoGreen();
 	}
 
 	public CustomerAdapter(boolean phonePrivate, ErpCustomerModel erpCustomer, BasicContactAddressI shipToAddress, ErpPaymentMethodI erpPaymentMethod, BasicContactAddressI alternateAddress) {
@@ -46,6 +48,8 @@ public class CustomerAdapter implements SapCustomerI {
 	
 		// JCN --  MUST DEFINE AN ECHECK ADAPTER AND CHANGE THIS
 		this.paymentMethod = new PaymentMethodAdapter(erpPaymentMethod);
+		
+		this.goGreen = customerInfo.isGoGreen();
 	}
 	
 	private static PhoneNumber filterPhone(boolean phonePrivate, PhoneNumber phone) {
@@ -70,6 +74,10 @@ public class CustomerAdapter implements SapCustomerI {
 
 	public String getSapCustomerNumber() {
 		return this.sapCustomerNumber;
+	}
+
+	public boolean isGoGreen() {
+		return goGreen;
 	}
 
 }

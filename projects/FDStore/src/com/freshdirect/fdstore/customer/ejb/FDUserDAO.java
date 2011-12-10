@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.fdstore.FDResourceException;
@@ -147,6 +148,7 @@ public class FDUserDAO {
 	private static final String LOAD_FROM_IDENTITY_QUERY =
 		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE,fdu.HPLETTER_VISITED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
 		"erpc.active, ci.receive_news,fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID, fdu.ZP_SERVICE_TYPE " +
+		//",fdc.referer_customer_id, fdc.referral_prgm_id " +
 		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci " +
 		"WHERE fdu.FDCUSTOMER_ID=fdc.id and fdc.ERP_CUSTOMER_ID=erpc.ID and erpc.id=? " +
 		"AND erpc.id = ci.customer_id";
@@ -176,6 +178,7 @@ public class FDUserDAO {
 	private static final String LOAD_FROM_EMAIL_QUERY =
 		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE,fdu.HPLETTER_VISITED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
 		"erpc.active, ci.receive_news,fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID, fdu.ZP_SERVICE_TYPE  " +
+		//",fdc.referer_customer_id, fdc.referral_prgm_id " +
 		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci " +
 		"WHERE fdu.FDCUSTOMER_ID=fdc.id and fdc.ERP_CUSTOMER_ID=erpc.ID and erpc.user_id=? " +
 		"AND erpc.id = ci.customer_id";
@@ -201,6 +204,7 @@ public class FDUserDAO {
 	private static final String LOAD_FROM_COOKIE_QUERY =
 		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE, fdu.HPLETTER_VISITED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
 		"erpc.active, ci.receive_news, fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID, fdu.ZP_SERVICE_TYPE " +
+		//",fdc.referral_link, fdc.referer_customer_id, fdc.referral_prgm_id " +
 		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci " +
 		"WHERE fdu.cookie=? and fdu.FDCUSTOMER_ID=fdc.id(+) and fdc.ERP_CUSTOMER_ID=erpc.ID(+) " +
 		"AND erpc.id = ci.customer_id(+)";
@@ -267,6 +271,10 @@ public class FDUserDAO {
 
 			// Smart Store - Cohort ID
 			user.setCohortName(rs.getString("COHORT_ID"));
+			
+			//APPDEV-1888 referral info
+			//user.setReferralPrgmId(rs.getString("referral_prgm_id"));
+			//user.setReferralCustomerId(rs.getString("referer_customer_id"));
 		} else {
 			user = new FDUser();
 		}
@@ -412,5 +420,86 @@ public class FDUserDAO {
 			throw new SQLException("Row not updated");
 		}
 		ps.close();
+	}
+	
+	public static void storeMobilePreferences(Connection conn, String customerId, String mobileNumber, String textOffers, String textDelivery) {
+		PreparedStatement ps = null;
+		PhoneNumber phone = new PhoneNumber(mobileNumber); 
+		try {
+			ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=?,no_thanks_flag='N' where customer_id=?");				
+			ps.setString(1, phone.getPhone());
+			ps.setString(2, "Y".equals(textOffers)?"Y":"N");
+			ps.setString(3, "Y".equals(textDelivery)?"Y":"N");
+			ps.setString(4, customerId);
+			ps.execute();
+		} catch (Exception e) {
+			LOGGER.error("Error updating mobile preferences", e);
+		} finally {
+			try {
+				if(ps != null)
+					ps.close();
+			} catch (Exception e1) {}
+		}
+	}
+	
+	public static void storeGoGreenPreferences(Connection conn, String customerId, String goGreen) {
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement("update CUST.CUSTOMERINFO set go_green=?,no_thanks_flag='N' where customer_id=?");				
+			ps.setString(1, "Y".equals(goGreen)?"Y":"N");
+			ps.setString(2, customerId);
+			ps.execute();
+		} catch (Exception e) {
+			LOGGER.error("Error updating mobile preferences", e);
+		} finally {
+			try {
+				if(ps != null)
+					ps.close();
+			} catch (Exception e1) {}
+		}
+	}
+	
+	public static void storeMobilePreferencesNoThanks(Connection conn, String customerId) {
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement("update CUST.CUSTOMERINFO set no_thanks_flag='Y' where customer_id=?");				
+			ps.setString(1, customerId);
+			ps.execute();
+		} catch (Exception e) {
+			LOGGER.error("Error updating mobile preferences", e);
+		} finally {
+			try {
+				if(ps != null)
+					ps.close();
+			} catch (Exception e1) {}
+		}
+	}
+	
+	public static void storeAllMobilePreferences(Connection conn, String customerId, String mobileNumber, String textOffers, String textDelivery, String goGreen, String phone, String ext, boolean isCorpUser) {
+		PreparedStatement ps = null;
+		PhoneNumber mphone = new PhoneNumber(mobileNumber);
+		PhoneNumber bphone = new PhoneNumber(phone, ext);
+		
+		try {
+			if(isCorpUser)
+				ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=?, go_green=?,business_phone=?,business_ext=?  where customer_id=?");
+			else
+				ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=?, go_green=?, home_phone = ?, home_ext = ? where customer_id=?");
+			ps.setString(1, mphone.getPhone());
+			ps.setString(2, "Y".equals(textOffers)?"Y":"N");
+			ps.setString(3, "Y".equals(textDelivery)?"Y":"N");
+			ps.setString(4, "Y".equals(goGreen)?"Y":"N");
+			ps.setString(5, bphone.getPhone());
+			ps.setString(6, bphone.getExtension());
+			ps.setString(7, customerId);
+			ps.execute();
+		} catch (Exception e) {
+			LOGGER.error("Error updating mobile preferences", e);
+		} finally {
+			try {
+				if(ps != null)
+					ps.close();
+			} catch (Exception e1) {}
+		}
 	}
 }

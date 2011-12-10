@@ -10,6 +10,7 @@ package com.freshdirect.fdstore;
 
 import java.rmi.RemoteException;
 import java.sql.Connection;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -17,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.ejb.CreateException;
 import javax.naming.Context;
@@ -25,6 +27,7 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.crm.CrmClick2CallModel;
+import com.freshdirect.crm.CrmLateIssueModel;
 import com.freshdirect.crm.CrmVSCampaignModel;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumPaymentResponse;
@@ -37,6 +40,7 @@ import com.freshdirect.customer.ErpReturnOrderModel;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.customer.VSReasonCodes;
 import com.freshdirect.delivery.model.RestrictedAddressModel;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.fdstore.content.meal.MealModel;
@@ -49,8 +53,11 @@ import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.customer.ejb.CallCenterManagerHome;
 import com.freshdirect.fdstore.customer.ejb.CallCenterManagerSB;
+import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.GenericSearchCriteria;
+import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.framework.webapp.ActionError;
 
 /**
  * Singleton class for accessing functionality in ERP Services.
@@ -244,13 +251,13 @@ public class CallCenterServices {
 		}
 	}
 	
-	public static List getRouteStopReport(Date date, String wave, String route, String stop1, String stop2) throws FDResourceException {
+	public static List getRouteStopReport(Date date, String wave, String route, String stop1, String stop2, String call_format) throws FDResourceException {
 		if (callCenterHome == null) {
 			lookupManagerHome();
 		}
 		try {
 			CallCenterManagerSB sb = callCenterHome.create();
-			return sb.getRouteStopReport(date, wave, route, stop1, stop2);
+			return sb.getRouteStopReport(date, wave, route, stop1, stop2, call_format);
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -941,6 +948,7 @@ public class CallCenterServices {
 			throw new FDResourceException(re, "Error talking to bean");
 		}
 	}
+	
 		
 	public static List<CrmVSCampaignModel> getVoiceShotLog() throws FDResourceException{
 		if (callCenterHome == null) {
@@ -1077,6 +1085,22 @@ public class CallCenterServices {
 		try {
 			CallCenterManagerSB sb = callCenterHome.create();
 			return sb.getVSMsgForOrderPage(orderId);
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to bean");
+		}
+	}
+	
+	public static List<VSReasonCodes> getVSReasonCodes() throws FDResourceException {
+		if (callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			return sb.getVSReasonCodes();
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating bean");

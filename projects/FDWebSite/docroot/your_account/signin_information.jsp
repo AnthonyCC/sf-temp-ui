@@ -166,6 +166,18 @@ if (request.getParameter("employeeId") != null) {
 		noContactPhone = "checked";
 	} else noContactPhone = "";
 
+	String mobile_number = cm.getMobileNumber()==null?"":cm.getMobileNumber().getPhone();
+	boolean text_offers = cm.isOffersNotification();
+	if(request.getParameter("text_offers") != null)
+		text_offers = "Y".equals(request.getParameter("text_offers"))?true:false;
+	boolean text_delivery = cm.isDeliveryNotification();
+	if(request.getParameter("text_delivery") != null)
+		text_delivery = "Y".equals(request.getParameter("text_delivery"))?true:false;
+	if(request.getParameter("mobile_number") != null)
+		mobile_number = request.getParameter("mobile_number");
+	boolean go_green = cm.isGoGreen();
+	if(request.getParameter("go_green") != null)
+		go_green = "Y".equals(request.getParameter("go_green"))?true:false;
 %>
 <%// CONFIRMATION MESSAGE %>
 <%if(result.isSuccess() && "POST".equalsIgnoreCase(request.getMethod())){
@@ -449,6 +461,65 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	</tr>
 	</form>
 <% } %>
+
+<!-- mobile preferences-->
+<form name="update_email_preference" method="post">
+	<input type="hidden" name="actionName" value="mobilepreferences">	
+	<tr>
+		<td colspan="6"><br><br>
+			<img src="/media_stat/images/navigation/mobile_preferences.gif" border="0" alt="MOBILE PREFERENCES"><br>
+			<img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"><br>
+		</td>
+	</tr>
+	<tr>	
+	<td align="right" valign="top" colspan="6"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_email_preference" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></td>
+	</tr>
+	<tr>
+	<td colspan="2" align="right" style="padding-right:5px;" class="text12">* Mobile Number</td>
+    <td><input type="text" size="28" maxlength="45" class="text9" name="mobile_number" value="<%=mobile_number%>" style="width:150px; padding:1px;"></td>
+	<td colspan="3"><fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+</tr> 
+	<tr><td colspan="6">&nbsp;</td></tr>
+	<tr valign="top">
+		<td align="right" style="padding-top:5px; padding-right:5px;"><input class="radio" type="checkbox" name="text_delivery" value="Y" <%=text_delivery ? "checked":""%>></td>
+		<td colspan="4" style="padding-top:5px;" class="text12">Yes please notify me via text message with important information about my delivery.<br><br/>
+		</td>
+		<td align="right"></td>
+	</tr>
+	<tr valign="top">
+		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="text_offers" value="Y" <%=text_offers ? "checked":""%>></td>
+		<td colspan="4" class="text12">Yes please notiofy me about <b>offers, discounts</b> and <b>promotions</b> from time to time.<br/><br/><br/></td>
+		<td></td>
+	</tr>
+	<tr valign="top">
+		<td style="padding-right: 5px;" align="left" colspan="6"><FONT class="text9" style="color:gray;font-style:italic;">* Standard text messaging rate apply</FONT></td>
+	</tr>	
+	</form>
+	
+	<form name="go_green" method="post">
+	<input type="hidden" name="actionName" value="otherpreferences">	
+	<tr>
+		<td colspan="6"><br><br>
+			<img src="/media_stat/images/navigation/other_preferences.gif" border="0" alt="OTHER PREFERENCES"><br>
+			<img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"><br>
+		</td>
+	</tr>
+	<tr>	
+	<td align="right" valign="top" colspan="6"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_email_preference" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></td>
+	</tr>
+	<tr>
+		<td colspan="6">
+			<span class="title18">Go green!</span>&nbsp;<img src="/media_stat/images/navigation/go_green_leaf.gif" border="0" alt="GO GREEN"><br>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td align="right" style="padding-top:5px; padding-right:5px;">
+		<input class="radio" type="checkbox" name="go_green" value="Y" <%=go_green ? "checked":""%>></td>
+		<td colspan="4" style="padding-top:5px;" class="text12">I want to turn off paper statement delivery and receive my statements online.<br><br/>
+		</td>
+		<td></td>
+	</tr>
+	</form>
 
 </table>
 

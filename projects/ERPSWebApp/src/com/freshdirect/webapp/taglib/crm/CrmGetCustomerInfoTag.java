@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.taglib.crm;
 
+import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
@@ -25,7 +26,12 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag {
 			fdCustomer.getPasswordHint(),
 			customer.getCustomerInfo().isReceiveNewsletter(),
 			customer.getCustomerInfo().isEmailPlaintext(),
-			customer.getCustomerInfo().isReceiveOptinNewsletter());
+			customer.getCustomerInfo().isReceiveOptinNewsletter(),
+			customer.getCustomerInfo().getMobileNumber(),
+			customer.getCustomerInfo().isDeliveryNotification(),
+			customer.getCustomerInfo().isOffersNotification(),
+			customer.getCustomerInfo().isGoGreen(),
+			customer.getCustomerInfo().isNoThanksFlag());
 	}
 
 	public static class TagEI extends AbstractGetterTag.TagEI {
@@ -41,13 +47,28 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag {
 		private boolean recieveNews;
 		private boolean textOnlyEmail;
 		private boolean receiveOptinNewsletter;
+		private PhoneNumber mobileNumber;
+		private boolean delNotification;
+		private boolean offNotification;
+		private boolean goGreen;
+		private boolean noThanks;
+		
+		
 
-		public CrmCustomerInfo(String userId, String passwordHint, boolean recieveNews, boolean textOnlyEmail, boolean receiveOptinNewsletter) {
+		
+
+		public CrmCustomerInfo(String userId, String passwordHint, boolean recieveNews, boolean textOnlyEmail, boolean receiveOptinNewsletter,
+					PhoneNumber mobileNumber, boolean delNotification, boolean offNotification, boolean goGreen, boolean noThanks ) {
 			this.userId = userId;
 			this.passwordHint = passwordHint;
 			this.recieveNews = recieveNews;
 			this.textOnlyEmail = textOnlyEmail;
 			this.receiveOptinNewsletter = receiveOptinNewsletter;
+			this.mobileNumber = mobileNumber;
+			this.delNotification = delNotification;
+			this.offNotification = offNotification;
+			this.goGreen = goGreen;
+			this.noThanks = noThanks;
 		}
 
 		public String getUserId() {
@@ -96,6 +117,46 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag {
 		
 		public void setReceiveOptinNewsletter(boolean receiveOptinNewsletter) {
 			this.receiveOptinNewsletter = receiveOptinNewsletter;
+		}
+		
+		public PhoneNumber getMobileNumber() {
+			return mobileNumber;
+		}
+
+		public void setMobileNumber(PhoneNumber mobileNumber) {
+			this.mobileNumber = mobileNumber;
+		}
+
+		public boolean isDelNotification() {
+			return delNotification;
+		}
+
+		public void setDelNotification(boolean delNotification) {
+			this.delNotification = delNotification;
+		}
+
+		public boolean isOffNotification() {
+			return offNotification;
+		}
+
+		public void setOffNotification(boolean offNotification) {
+			this.offNotification = offNotification;
+		}
+
+		public boolean isGoGreen() {
+			return goGreen;
+		}
+
+		public void setGoGreen(boolean goGreen) {
+			this.goGreen = goGreen;
+		}
+
+		public boolean isNoThanks() {
+			return noThanks;
+		}
+
+		public void setNoThanks(boolean noThanks) {
+			this.noThanks = noThanks;
 		}
 		
 	}

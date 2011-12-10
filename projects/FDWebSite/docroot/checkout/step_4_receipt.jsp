@@ -22,6 +22,51 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
 <tmpl:insert template='/common/template/blank.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Order Placed</tmpl:put>
 <tmpl:put name='content' direct='true'>
+<%  FDUserI curruser = (FDUserI)session.getAttribute(SessionName.USER);
+	FDIdentity curridentity  = curruser.getIdentity();
+	ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(curridentity);
+	if(!cm.isNoThanksFlag()) {
+		String _ordNum = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
+		//session.removeAttribute("SMSSubmission"+ _ordNum);
+		if(session.getAttribute("SMSSubmission" + _ordNum) == null) { %>
+<script language="javascript">
+/* display an overlay containing a remote page */
+	function doRemoteOverlay(olURL) {
+		var olURL = olURL || '';
+		if (olURL == '') { return false; }
+
+		Modalbox.show(olURL, {
+			loadingString: 'Loading Preview...',
+			closeValue: ' ',
+			closeString: 'Close Preview',
+			title: '',
+			overlayOpacity: .80,
+			overlayClose: false,
+			//width: 320,
+			transitions: false,
+			autoFocusing: false,
+			centered: true,
+			overlayClose: true,
+			afterLoad: function() {
+					window.scrollTo(0,0);
+					$('MB_window').style.width = 'auto';
+					$('MB_window').style.height = 'auto';
+					$('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
+
+
+					ccSettings.topColour = "#ffffff";
+					ccSettings.bottomColour = "#ffffff";
+					curvyCornersHelper('MB_frame', ccSettings);
+			},
+			afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
+		});
+	}
+</script>
+<script language="javascript">
+doRemoteOverlay('sms_capture.jsp');
+$('MB_content').style.padding = '0px';
+</script>
+<% } } %>
 <%
 //--------OAS Page Variables-----------------------
         request.setAttribute("sitePage", "www.freshdirect.com/checkout");
@@ -29,6 +74,7 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
 %>
 
 <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
+
 <div class="groupScaleBox" style="display:none"><!--  -->
 		<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="groupScaleBoxContent" id="groupScaleBox" >
 			<tr>
@@ -93,7 +139,6 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
 %>
 
 <%@include file="/checkout/includes/i_checkout_receipt.jspf"%>
-
 
 <%
 	FDUserI sem_user = (FDUserI)session.getAttribute(SessionName.USER);

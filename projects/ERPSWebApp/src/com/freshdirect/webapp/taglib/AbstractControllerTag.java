@@ -68,9 +68,8 @@ public abstract class AbstractControllerTag extends com.freshdirect.framework.we
 		//
 		ActionResult actionResult = new ActionResult();
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-
-		if ("POST".equalsIgnoreCase(request.getMethod())) {
-
+		
+		if ("POST".equalsIgnoreCase(request.getMethod()) || "ordermobilepref".equals(request.getParameter("actionName"))) {
 			boolean proceed = this.performAction(request, actionResult);
 			if (!proceed) {
 				return SKIP_BODY;
@@ -93,7 +92,7 @@ public abstract class AbstractControllerTag extends com.freshdirect.framework.we
 			boolean proceed = this.performGetAction(request, actionResult);
 			if (!proceed) {
 				return SKIP_BODY;
-			}
+			}			
 		}
 		//
 		// place the result as a scripting variabl1e in the page

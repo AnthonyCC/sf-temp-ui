@@ -36,7 +36,6 @@ import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.Discount;
-import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmCaseSubject;
@@ -47,7 +46,6 @@ import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.DlvSaleInfo;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumAlertType;
-import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumComplaintLineMethod;
 import com.freshdirect.customer.EnumComplaintStatus;
 import com.freshdirect.customer.EnumDeliverySetting;
@@ -143,7 +141,6 @@ import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDCustomerRequest;
 import com.freshdirect.fdstore.customer.FDCustomerSearchCriteria;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDOrderSearchCriteria;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
@@ -163,6 +160,7 @@ import com.freshdirect.fdstore.mail.FDGiftCardEmailFactory;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.ejb.FDPromotionNewDAO;
+//import com.freshdirect.fdstore.referral.ejb.FDReferAFriendDAO;
 import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.request.FDProductRequestDAO;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
@@ -6223,6 +6221,78 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			rec.setNote(msg.toString());
 			new ErpLogActivityCommand(LOCATOR, rec, true).execute();
 		
+	}
+/*	
+	public void recordReferral(String customerId, String referralId, String customerEmail) throws FDResourceException, RemoteException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDReferAFriendDAO.recordReferral(customerId, referralId, customerEmail, conn);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}		
+	}
+	
+	public boolean dupeEmailAddress(String email) throws FDResourceException, RemoteException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return FDReferAFriendDAO.dupeEmailAddress(email, conn);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+	}
+*/	
+	public void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDUserDAO.storeMobilePreferences(conn, customerId, mobileNumber, textOffers, textDelivery);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public void storeGoGreenPreferences(String customerId, String goGreen) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDUserDAO.storeGoGreenPreferences(conn, customerId, goGreen);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public void storeMobilePreferencesNoThanks(String customerId) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDUserDAO.storeMobilePreferencesNoThanks(conn, customerId);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public void storeAllMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery, String goGreen, String phone, String ext, boolean isCorpUser) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDUserDAO.storeAllMobilePreferences(conn, customerId, mobileNumber, textOffers, textDelivery, goGreen, phone, ext, isCorpUser);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
 	}
 
 

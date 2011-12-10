@@ -4,6 +4,7 @@
 <%@ page import='java.util.HashSet,java.text.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.crm.CrmSession' %>
 <%@ page import='com.freshdirect.crm.VoiceShotResponseParser' %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -32,7 +33,6 @@
 			}
 		}
 		cModel.setPhonenumbers(phonenumbers);
-		System.out.println(phonenumbers1);
 		cModel.setVsDetailsID(id);
 		cModel.setAddByUser(CrmSession.getCurrentAgent(session).getLdapId()); 
 		String call_id = "CID_"+id1;
@@ -41,16 +41,20 @@
 		String phone = "<phonenumbers><phonenumber number=\"(203) 446-9229\" /><phonenumber number=\"(203) 843-0301\" /></phonenumbers>";
 		StringBuffer sb = new StringBuffer("<campaign menuid=\"");
 		sb.append(menuid);
-		sb.append("\" action=\"0\"  username=\"mtrachtenberg\" password=\"whitshell\" callid=\"");
+		sb.append("\" action=\"0\"  username=\"");
+		sb.append(FDStoreProperties.getVSUserName());
+		sb.append("\" password=\"");
+		sb.append(FDStoreProperties.getVSPassword());
+		sb.append("\" callid=\"");
 		sb.append(call_id);
 		sb.append("\" >");
 		sb.append(phone);
 		sb.append("</campaign>");
 			
-		System.out.println(sb.toString());
+		System.out.println("Voiceshot RedialXML:"+sb.toString());
 		
 		//post the calls to vs
-		java.net.URL programUrl = new java.net.URL("http://apiproxy.voiceshot.com/ivrapi.asp");   //'Do not swap these two URLs. Always post to api.voiceshot.com first.
+		java.net.URL programUrl = new java.net.URL(FDStoreProperties.getVSURL());   
 		java.net.HttpURLConnection connection = (java.net.HttpURLConnection)programUrl.openConnection();
 		connection.setRequestMethod("POST");
 		connection.setDoOutput(true);
@@ -71,10 +75,9 @@
 			 firstresult += "\n" + line;
 		}
 		
-		System.out.println(firstresult);
+		System.out.println("voiceshot RedialResult:"+firstresult);
 			
 		vsrp = new VoiceShotResponseParser(firstresult);
-		System.out.println(vsrp.getErrorCode());
 	}	
 	List<CrmVSCampaignModel> calldetails = CallCenterServices.getVSRedialList(id1);
 
@@ -96,14 +99,35 @@
 		  <input type="hidden" name="phonesize" value="<%=calldetails.size()%>" />
 		  <input type="hidden" name="id" value="<%=id1%>" />
 		  <tr><td>&nbsp;</td></tr>
-		  <%			
-			for(int i=0;i<calldetails.size();i++) {
-				CrmVSCampaignModel model = (CrmVSCampaignModel) calldetails.get(i);
-			%>
-				<tr> <td align="left">
-					<input type="checkbox" name="selectphone<%=i%>" value="<%=model.getPhonenumber()%>|<%=model.getSaleId()%>|<%=model.getCustomerId()%>" checked>&nbsp;<%=model.getPhonenumber()%>
-				</td></tr>			
-			<% } %>
+		  <tr><td>
+		  
+		  <table width="80%" cellspacing="0" cellpadding="5" bgcolor="#ffffff" id="Table3" style="font-family:Verdana,Arial,Helvetica,sans-serif;font-size:8pt;border-width: 1px;border-style: solid;border-color:#000 ;background-color: white;">
+					<tr style="font-weight:bold;background-color:#E7E7D6;"><td align="center">&nbsp;</td>
+					<td align="center">Phone#</td>
+					<td align="center">Order#</td>
+					<td align="center">Route#</td>
+					<td align="center">Stop#</td>
+					</tr>
+					<% for(int i=0;i<calldetails.size();i++) {
+						String style = "style=\"background-color: #996666; color: black;\"";
+						CrmVSCampaignModel model = (CrmVSCampaignModel) calldetails.get(i);
+						if((i%2) == 0) style="";
+					%>
+					<tr <%=style%>>
+						<td align="center"><input type="checkbox" name="selectphone<%=i%>" value="<%=model.getPhonenumber()%>|<%=model.getSaleId()%>|<%=model.getCustomerId()%>" checked></td>
+						<td align="center"><%=model.getPhonenumber()%></td>
+						<td align="center"><%= model.getSaleId() %></td>
+						<td align="center"><%= model.getRoute() %></td>
+						<td align="center"><%= model.getStopSequence() %></td>						
+					</tr>				
+					<% } %>
+				</table>
+		  
+		  
+		  
+		  </td></tr>
+		  <tr><td>&nbsp;</td></tr>
+
 			<tr><td align="center">
 			<input type="submit" value="Redial" style="background-color:#996666;border:1px solid #999999;color:#FFFFFF;font-size:8pt;padding:10px 20px 10px 20px;font-weight:bold;"/>
 			</td></tr>

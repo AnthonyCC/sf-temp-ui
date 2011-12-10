@@ -9,6 +9,7 @@
 package com.freshdirect.fdstore.customer.ejb;
 
 import java.rmi.RemoteException;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -51,6 +52,7 @@ import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.crm.CrmCaseOrigin;
 import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmClick2CallTimeModel;
+import com.freshdirect.crm.CrmLateIssueModel;
 import com.freshdirect.crm.CrmOrderStatusReportLine;
 import com.freshdirect.crm.CrmSettlementProblemReportLine;
 import com.freshdirect.crm.CrmVSCampaignModel;
@@ -82,6 +84,7 @@ import com.freshdirect.customer.ErpReturnOrderModel;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.customer.VSReasonCodes;
 import com.freshdirect.customer.ejb.ErpComplaintManagerHome;
 import com.freshdirect.customer.ejb.ErpComplaintManagerSB;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
@@ -95,6 +98,7 @@ import com.freshdirect.deliverypass.EnumDlvPassExtendReason;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
+import com.freshdirect.crm.CrmManager;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
@@ -119,6 +123,7 @@ import com.freshdirect.fdstore.customer.MakeGoodOrderInfo;
 import com.freshdirect.fdstore.customer.RouteStopReportLine;
 import com.freshdirect.fdstore.customer.SubjectReportLine;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
+import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.core.ServiceLocator;
@@ -1286,7 +1291,11 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		+ " select s.customer_id, s.wave_number, s.truck_number, s.stop_sequence, s.id as order_number, di.first_name, di.last_name, di.phone, di.phone_ext,"
 		+ " ci.email, decode(ci.email_plain_text, 'X', 'TEXT', 'HTML') as email_format_type"
 		+ " from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, cust.customerinfo ci"
-		+ " where s.id=sa.sale_id and s.type ='REG' and sa.id=di.salesaction_id and s.customer_id=ci.customer_id and sa.requested_date=?";
+		+ " where s.id=sa.sale_id and s.type ='REG' and sa.id=di.salesaction_id and s.customer_id=ci.customer_id and sa.requested_date=? and ";
+	
+	private static final String SMS_NOTIFICATION = "ci.delivery_notification = 'Y' ";
+	
+	private static final String NO_SMS_NOTIFICATION = "(ci.delivery_notification = 'N' or ci.delivery_notification is null) ";
 
 	private String finalRouteStopQuery;
 
@@ -1300,13 +1309,19 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		+ " and s.CROMOD_DATE = sa.action_date "
 		+ ") order by wave_number, truck_number, stop_sequence";
 
-	public List getRouteStopReport(Date date, String wave, String route, String stop1, String stop2) throws FDResourceException {
+	public List getRouteStopReport(Date date, String wave, String route, String stop1, String stop2, String call_format) throws FDResourceException {
 
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
 
 			finalRouteStopQuery = ROUTE_STOP_QRY;
+			
+			if("SMS".equals(call_format)) {
+				finalRouteStopQuery += SMS_NOTIFICATION;
+			} else {
+				finalRouteStopQuery += NO_SMS_NOTIFICATION;
+			}
 
 			System.out.println("wave: " + wave +  " route: " + route + " stop: " + stop1 + " to " + stop2);
 
@@ -1330,7 +1345,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			int index = 1;
 			//ps.setTimestamp(index++, truncDate);
 			ps.setDate(index++, new java.sql.Date(date.getTime()));
-
+			
 			if (wave != null && !"".equals(wave)) {
 				ps.setString(index++, wave);
 			}
@@ -2270,7 +2285,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		
 		try{
 			conn = this.getConnection();
-			ps = conn.prepareStatement("select * from CUST.VOICESHOT_CAMPAIGN");
+			ps = conn.prepareStatement("select * from CUST.VOICESHOT_CAMPAIGN order by campaign_name");
 			rs = ps.executeQuery();			
 			while(rs.next()) {
 				CrmVSCampaignModel model = new CrmVSCampaignModel();
@@ -2303,30 +2318,92 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		return cList;
 	}
 	
-	public String saveVSCampaignInfo(CrmVSCampaignModel model) throws FDResourceException {
+	private static String getStops(List<String> phonenumbers) {
+		StringBuffer stopSeq = new StringBuffer();
+		Hashtable stopHash = new Hashtable();
+		for(int i=0;i<phonenumbers.size(); i++) {
+			String pStr = (String) phonenumbers.get(i);
+			StringTokenizer st = new StringTokenizer(pStr, "|");
+			String phone = st.nextToken();
+			String saleId = st.nextToken();
+			String customerId = st.nextToken();
+			String stopNumber = st.nextToken();
+			if(stopNumber != null)
+				stopNumber = Integer.parseInt(stopNumber) + "";
+			if(!stopHash.containsKey(stopNumber)) {
+				stopSeq.append(stopNumber);
+				stopHash.put(stopNumber, stopNumber);
+				if(i+1 != phonenumbers.size())
+					stopSeq.append(",");
+			}			
+		}
+		return stopSeq.toString();
+	}
+	
+	private String createLateIssue(CrmVSCampaignModel model) {
 		Connection conn = null;
 		PreparedStatement ps = null;
+		Date now = new Date();
+		String id = null;
+		try {			
+			conn = this.getConnection();
+			id = SequenceGenerator.getNextId(conn, "CUST");
+			ps = conn.prepareStatement(
+					"INSERT INTO CUST.LATEISSUE(ID, ROUTE, STOPSTEXT, DELIVERY_DATE, AGENT_USER_ID, REPORTED_AT, REPORTED_BY,DELAY_MINUTES,DELIVERY_WINDOW,COMMENTS,ACTUAL_STOPSTEXT,ACTUAL_STOPSCOUNT) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+			ps.setString(1, id);
+			ps.setString(2, model.getRoute());
+			ps.setString(3,getStops(model.getPhonenumbers()));
+			ps.setDate(4, new java.sql.Date(now.getTime()));
+			ps.setString(5,model.getAddByUser());
+			ps.setTimestamp(6, new java.sql.Timestamp(now.getTime()));
+			ps.setString(7, "Driver");
+			ps.setInt(8, Integer.parseInt(model.getDelayMinutes()));
+			ps.setString(9, "");
+			ps.setString(10, "Comments");
+			ps.setString(11, "");
+			ps.setInt(12, model.getPhonenumbers().size());
+			ps.executeUpdate();
+		} catch (Exception e) {
+			LOGGER.error("LateIssue row not created for: Route:"+model.getRoute(),e);
+		} finally {		
+			if(ps != null) {
+				try {
+					ps.close();
+				} catch(Exception e1) {}
+			}
+		}
+		return id;
+	}
+	
+	public String saveVSCampaignInfo(CrmVSCampaignModel model) throws FDResourceException {
+		//Create LASTISSUE 
+		String lateIssueId = createLateIssue(model);
+		
+		//Create voiceshot details for this late issue
+		Connection conn = null;
+		PreparedStatement ps = null;
+		PreparedStatement ps1 = null;
 		long id = 1; 
 		String call_id = "CID_" + id;
 		try{
 			conn = this.getConnection();
 			id = Long.parseLong(SequenceGenerator.getNextId(conn, "CUST", "VOICESHOT_SEQUENCE"));
 			call_id = "CID_" + id;
-			ps = conn.prepareStatement("INSERT INTO CUST.VOICESHOT_DETAILS(ID,ROUTE,CAMPAIGN_ID,REASON_ID,STOP_SEQUENCE,CREATED_BY_USER,CREATED_BY_DATE,SOUND_FILE_TEXT,START_TIME,END_TIME, CALL_ID)" +
-										" VALUES(?,?,?,?,?,?,?,?,TO_DATE(?, 'HH:MI AM'),TO_DATE(?, 'HH:MI AM'),?)");
+			ps = conn.prepareStatement("INSERT INTO CUST.VOICESHOT_SCHEDULED(VS_ID,CAMPAIGN_ID,REASON_ID,CREATED_BY_USER,CREATED_BY_DATE,START_TIME, CALL_ID, CAMPAIGN_TYPE)" +
+										" VALUES(?,?,?,?,?,TO_DATE(?, 'HH:MI AM'),?,'LATEISSUE')");			
 			System.out.println(model.toString());
-			ps.setLong(1,id);
-			ps.setString(2, model.getRoute());
-			ps.setString(3, model.getCampaignId());
-			ps.setString(4, model.getReasonId());
-			ps.setString(5, model.getStopSequence());
-			ps.setString(6, model.getAddByUser());
-			ps.setTimestamp(7, new Timestamp(new Date().getTime()));
-			ps.setString(8, model.getSoundFileText());
-			ps.setString(9, model.getStartTime());
-			ps.setString(10, model.getEndTime());
-			ps.setString(11, call_id);
+			ps.setLong(1,id);			
+			ps.setString(2, model.getCampaignId());
+			ps.setString(3, model.getReasonId());
+			ps.setString(4, model.getAddByUser());
+			ps.setTimestamp(5, new Timestamp(new Date().getTime()));
+			ps.setString(6, model.getStartTime());
+			ps.setString(7, call_id);
 			ps.execute();
+			ps1 = conn.prepareStatement("INSERT INTO CUST.VOICESHOT_LATEISSUE(VS_ID, LATEISSUE_ID) VALUES(?,?)");
+			ps1.setLong(1, id);
+			ps1.setString(2, lateIssueId);
+			ps1.execute();
 		}catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
@@ -2336,34 +2413,46 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 					conn.close();
 				if(ps != null)
 					ps.close();
+				if(ps1 != null)
+					ps1.close();
 			} catch (SQLException sqle) {
 				LOGGER.debug("Error while cleaning:", sqle);
 			}
 		}
-		storePhoneNumbers(id, model);
+		
+		//Create lateissue_orders rows
+		storePhoneNumbers(id, model, lateIssueId);
 		return call_id;
 	}	
 	
-	private void storePhoneNumbers(long id, CrmVSCampaignModel model) {
+	private void storePhoneNumbers(long id, CrmVSCampaignModel model, String lateIssueId) {
 		Connection conn = null;
 		PreparedStatement ps = null;
+		PreparedStatement ps1 = null;
 		List<String> phonenumbers = model.getPhonenumbers();
 		
 		try {
 			conn = this.getConnection();
-			ps = conn.prepareStatement("INSERT INTO CUST.CUST_VOICESHOT_STATUS(VS_DETAIL_ID,SALE_ID,PHONE, CUSTOMER_ID)" +
+			ps = conn.prepareStatement("INSERT INTO CUST.VOICESHOT_ORDERS(VS_ID,PHONE, CUSTOMER_ID, SALE_ID)" +
 										" VALUES(?,?,?,?)");
+			ps1 = conn.prepareStatement("insert into cust.lateissue_orders columns(lateissue_id,stop_number,sale_id) values(?,?,?)");
 			for(int i=0;i<phonenumbers.size(); i++) {
 				String pStr = (String) phonenumbers.get(i);
+				System.out.println(pStr + "-lateid" + lateIssueId);
 				StringTokenizer st = new StringTokenizer(pStr, "|");
 				String phone = st.nextToken();
 				String saleId = st.nextToken();
 				String customerId = st.nextToken();
+				String stopNumber = st.nextToken();				
 				ps.setLong(1, id);
-				ps.setString(2, saleId);
-				ps.setString(3, phone);
-				ps.setString(4, customerId);
+				ps.setString(2, phone);
+				ps.setString(3, customerId);
+				ps.setString(4, saleId);
 				ps.execute();
+				ps1.setString(1, lateIssueId);
+				ps1.setString(2, stopNumber);
+				ps1.setString(3, saleId);
+				ps1.execute();
 			}
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);			
@@ -2381,17 +2470,20 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		updateActivity(model);
 	}
 	
-	public static final String GET_VS_LOG = "select vd.ID, vd.route, vd.campaign_id, vd.reason_id, vd.stop_sequence, vd.redial, vd.created_by_user, " + 
-		"to_char(vd.created_by_date,  'MM/DD/YYYY HH12:MI AM') created_by_Date, vd.sound_file_text,  " +
-		"to_char(vd.start_time, 'HH12:MI AM') start_time,to_char(vd.end_time, 'HH12:MI AM') end_time, " +
-		"vd.scheduled_calls, vd.delivered_calls_live, vd.delivered_calls_am, vd.undelivered_calls,  " +
-		"to_char(vd.change_by_date, 'MM/DD/YYYY HH12:MI AM') change_by_Date, vd.change_by_user, " +
-		"vd.call_id, vd.call_data_pulled, " +
-		"VC.CAMPAIGN_NAME, VC.CAMPAIGN_MENU_ID, VC.SOUND_FILE_NAME from " + 
-		"CUST.VOICESHOT_CAMPAIGN vc, " +
-		"CUST.VOICESHOT_DETAILS vd " +
-		"where VC.CAMPAIGN_ID = VD.CAMPAIGN_ID " + 
-		"order by vd.created_by_date desc";		
+	public static final String GET_VS_LOG = "select vl.lateissue_id, vl.vs_ID, L.ROUTE, VC.CAMPAIGN_ID, VC.CAMPAIGN_MENU_ID, VC.CAMPAIGN_NAME, L.STOPSTEXT, vs.redial, " + 
+    "vs.created_by_user, vc.sound_file_text, " +
+    "to_char(vs.created_by_date,  'MM/DD/YYYY HH12:MI AM') created_by_Date, VC.SOUND_FILE_NAME, to_char(vs.start_time, 'HH12:MI AM') start_time, " + 
+    "vs.scheduled_calls, vs.delivered_calls_live, vs.delivered_calls_am, vs.undelivered_calls, vs.call_id, vs.call_data_pulled, vr.reason " +
+    "from CUST.LATEISSUE l, " +
+    "CUST.VOICESHOT_SCHEDULED vs, " + 
+    "CUST.VOICESHOT_CAMPAIGN vc, " +
+    "cust.voiceshot_reasoncodes vr, " +
+    "cust.voiceshot_lateissue vl " +
+    "where L.ID = vl.lateissue_id " +
+    "and    vl.vs_id = vs.vs_id " +
+    "and    vs.campaign_id = VC.CAMPAIGN_ID " + 
+    "and    vs.reason_id = vr.reason_id " +
+    "order by vs.created_by_date desc";
 	
 	public List<CrmVSCampaignModel> getVoiceShotLog() throws FDResourceException {
 		Connection conn = null;
@@ -2405,22 +2497,23 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			rs = ps.executeQuery();			
 			while(rs.next()) {
 				CrmVSCampaignModel model = new CrmVSCampaignModel();
-				model.setVsDetailsID(rs.getString("ID"));
+				model.setVsDetailsID(rs.getString("VS_ID"));
+				model.setLateIssueId(rs.getString("lateissue_id"));
 				model.setRoute(rs.getString("ROUTE"));				
 				model.setCampaignId(rs.getString("CAMPAIGN_ID"));
 				model.setCampaignName(rs.getString("CAMPAIGN_NAME"));
 				model.setCampaignMenuId(rs.getString("CAMPAIGN_MENU_ID"));
-				model.setReasonId(rs.getString("REASON_ID"));
-				model.setStopSequence(rs.getString("STOP_SEQUENCE"));
+				model.setReasonId(rs.getString("REASON"));
+				model.setStopSequence(rs.getString("STOPSTEXT"));
 				model.setRedial(rs.getString("REDIAL"));				
 				model.setAddByDate(rs.getString("CREATED_BY_DATE"));
 				model.setAddByUser(rs.getString("CREATED_BY_USER"));
-				model.setChangeByDate(rs.getString("CHANGE_BY_DATE"));
-				model.setChangeByUser(rs.getString("CHANGE_BY_USER"));
+				//model.setChangeByDate(rs.getString("CHANGE_BY_DATE"));
+				//model.setChangeByUser(rs.getString("CHANGE_BY_USER"));
 				model.setSoundfileName(rs.getString("SOUND_FILE_NAME"));
 				model.setSoundFileText(rs.getString("SOUND_FILE_TEXT"));
 				model.setStartTime(rs.getString("START_TIME"));
-				model.setEndTime(rs.getString("END_TIME"));
+				//model.setEndTime(rs.getString("END_TIME"));
 				model.setScheduledCalls(rs.getInt("SCHEDULED_CALLS"));
 				model.setDeliveredCallsLive(rs.getInt("DELIVERED_CALLS_LIVE"));
 				model.setDeliveredCallsAM(rs.getInt("DELIVERED_CALLS_AM"));
@@ -2443,8 +2536,8 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 					VoiceShotResponseParser vsrp = getCallData(sb.toString());
 					if(vsrp != null) {
 						model.setUpdatable(true);
-						updateVSLog(rs.getLong("ID"), vsrp, rs.getInt("DELIVERED_CALLS_LIVE"), rs.getInt("DELIVERED_CALLS_AM"),rs.getInt("UNDELIVERED_CALLS"), rs.getInt("SCHEDULED_CALLS")) ;
-						updateUserStatus(rs.getLong("ID"), vsrp.getPhonenumbers());
+						updateVSLog(rs.getLong("VS_ID"), vsrp, rs.getInt("DELIVERED_CALLS_LIVE"), rs.getInt("DELIVERED_CALLS_AM"),rs.getInt("UNDELIVERED_CALLS"), rs.getInt("SCHEDULED_CALLS")) ;
+						updateUserStatus(rs.getLong("VS_ID"), vsrp.getPhonenumbers());
 						model.setScheduledCalls(vsrp.getTotalCalls());
 						model.setDeliveredCallsLive(vsrp.getHumanAnsweredCalls());
 						model.setDeliveredCallsAM(vsrp.getAnswerMachineCalls());
@@ -2479,7 +2572,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		
 		try{
 			conn = this.getConnection();
-			ps = conn.prepareStatement("update CUST.CUST_VOICESHOT_STATUS set STATUS=? where VS_DETAIL_ID=? and PHONE=?");
+			ps = conn.prepareStatement("update CUST.VOICESHOT_ORDERS set STATUS=? where VS_ID=? and PHONE=?");
 			Enumeration<String> enumber = phonenumbers.keys();
 			while(enumber.hasMoreElements()) {
 				String key = (String)enumber.nextElement();
@@ -2516,8 +2609,8 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		
 		try{
 			conn = this.getConnection();
-			ps = conn.prepareStatement("update CUST.VOICESHOT_DETAILS set SCHEDULED_CALLS=?,DELIVERED_CALLS_LIVE=?,DELIVERED_CALLS_AM=?," +
-									   "UNDELIVERED_CALLS=?,CALL_DATA_PULLED='Y' where ID=?");
+			ps = conn.prepareStatement("update CUST.VOICESHOT_SCHEDULED set SCHEDULED_CALLS=?,DELIVERED_CALLS_LIVE=?,DELIVERED_CALLS_AM=?," +
+									   "UNDELIVERED_CALLS=?,CALL_DATA_PULLED='Y' where VS_ID=?");
 			if(totalCalls > 0) {
 				ps.setInt(1, totalCalls);
 			}
@@ -2603,7 +2696,11 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		List<CrmVSCampaignModel> cList = new ArrayList<CrmVSCampaignModel>();
 		try{
 			conn = this.getConnection();
-			ps = conn.prepareStatement("select * from cust.cust_voiceshot_status where VS_DETAIL_ID = ?");
+			ps = conn.prepareStatement("select  vo.customer_id, vo.sale_id, vo.phone, vo.status, S.TRUCK_NUMBER, S.STOP_SEQUENCE " +
+										    "from cust.VOICESHOT_ORDERS vo, " +
+										    "cust.sale s " +
+										    "where VS_ID = ? " +
+										    "and     vo.sale_id = s.id");
 			ps.setLong(1, Long.parseLong(id));
 			rset = ps.executeQuery();
 			while(rset.next()) {
@@ -2612,6 +2709,10 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				CrmVSCampaignModel model = new CrmVSCampaignModel();
 				model.setPhonenumber(phone);
 				model.setStatus(status);
+				model.setCustomerId(rset.getString("CUSTOMER_ID"));
+				model.setSaleId(rset.getString("SALE_ID"));
+				model.setRoute(rset.getString("TRUCK_NUMBER"));
+				model.setStopSequence(rset.getString("STOP_SEQUENCE"));
 				cList.add(model);
 			}
 		}catch (SQLException sqle) {
@@ -2631,12 +2732,14 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		return cList;
 	}
 	
-	public static final String GET_REDIAL_LIST = "select phone, nvl(vss.last_redialed_date, vd.created_by_date) last_redialed_Date, sale_id, customer_id " +
-												"from cust.cust_voiceshot_status  vss, " +
-												      "CUST.VOICESHOT_DETAILS vd " +
-												"where vss.vs_Detail_id = vd.id " +
-												"and     vd.id = ? " +
-												"and     vss.status = ? ";
+	public static final String GET_REDIAL_LIST = "select phone, nvl(vo.last_redialed_date, vd.created_by_date) last_redialed_Date, vo.sale_id, vo.customer_id, S.TRUCK_NUMBER, S.STOP_SEQUENCE " +
+													    "from cust.VOICESHOT_ORDERS  vo, " +
+													    "CUST.VOICESHOT_SCHEDULED vd, " +
+													    "cust.sale s " +
+													"where vo.vs_id = vd.vs_id " +
+													"and     vd.vs_id = ? " +                                         
+													"and     vo.status = ? " +
+													"and     vo.sale_id = s.id";
 	
 	public List<CrmVSCampaignModel> getVSRedialList(String id) throws FDResourceException {
 		Connection conn = null;
@@ -2666,6 +2769,8 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 					model.setVsDetailsID(id);
 					model.setSaleId(rset.getString("sale_id"));
 					model.setCustomerId(rset.getString("customer_id"));
+					model.setRoute(rset.getString("TRUCK_NUMBER"));
+					model.setStopSequence(rset.getString("STOP_SEQUENCE"));
 					cList.add(model);
 				}
 			}
@@ -2691,7 +2796,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		PreparedStatement ps = null;
 		try{
 			conn = this.getConnection();
-			ps = conn.prepareStatement("Update cust.voiceshot_details set redial='Y', change_by_date = sysdate, change_by_user=?, CALL_DATA_PULLED=null where id = ?");
+			ps = conn.prepareStatement("Update cust.voiceshot_scheduled set redial='Y', change_by_date = sysdate, change_by_user=?, CALL_DATA_PULLED=null where vs_id = ?");
 			ps.setString(1, model.getAddByUser());
 			ps.setLong(2, Long.parseLong(model.getVsDetailsID()));
 			ps.execute();
@@ -2719,7 +2824,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		
 		try {
 			conn = this.getConnection();
-			ps = conn.prepareStatement("UPDATE CUST.CUST_VOICESHOT_STATUS set LAST_REDIALED_DATE=sysdate where sale_id = ? and customer_id = ? and vs_detail_id = ?");
+			ps = conn.prepareStatement("UPDATE CUST.VOICESHOT_ORDERS set LAST_REDIALED_DATE=sysdate where sale_id = ? and customer_id = ? and vs_id = ?");
 			for(int i=0;i<phonenumbers.size(); i++) {
 				String pStr = (String) phonenumbers.get(i);
 				StringTokenizer st = new StringTokenizer(pStr, "|");
@@ -2889,13 +2994,15 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	public static final String GET_VS_DETAILS_FOR_ORDER = "select vc.campaign_name, VC.ADD_BY_USER,  to_char(vd.created_BY_DATE, 'MM/DD/YYYY HH:MI AM') ADD_BY_DATE, VD.REASON_ID "
-			+ "from CUST.CUST_VOICESHOT_STATUS vs, cust.voiceshot_campaign vc, CUST.VOICESHOT_DETAILS vd "
-			+ "where vs.sale_id = ? "
-			+ "and vs.status is not null "
-			+ "and VS.VS_DETAIL_ID = VD.ID "
-			+ "and  VD.CAMPAIGN_ID = VC.CAMPAIGN_ID "
-			+ "order by vs_detail_id desc";
+	public static final String GET_VS_DETAILS_FOR_ORDER = "select vc.campaign_name, Vs.created_BY_USER,  to_char(vs.created_BY_DATE, 'MM/DD/YYYY HH:MI AM') ADD_BY_DATE, Vr.REASON, vo.vs_id " +
+            "from CUST.VOICESHOT_ORDERS vo, cust.voiceshot_campaign vc, CUST.VOICESHOT_SCHEDULED vs, " +
+            " cust.voiceshot_Reasoncodes vr " +
+            "where vo.sale_id = ? " +
+            "and    vs.vs_id = vo.vs_id " +
+            "and    vo.status is not null " +
+            "and  Vs.CAMPAIGN_ID = VC.CAMPAIGN_ID " + 
+            "and  vs.reason_id = vr.reason_id " +
+            "order by vo.vs_id desc";
 	
 	public String getVSMsgForOrderPage(String orderId) throws FDResourceException {
 		Connection conn = null;
@@ -2911,11 +3018,11 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				StringBuffer sb = new StringBuffer("Late Report: logged on:");
 				sb.append(rset.getString("ADD_BY_DATE"));
 				sb.append(", By:");
-				sb.append(rset.getString("ADD_BY_USER"));
+				sb.append(rset.getString("created_BY_USER"));
 				sb.append(", Campaign:");
 				sb.append( rset.getString("CAMPAIGN_NAME"));
 				sb.append(", Reason For Delay:");
-				sb.append(EnumVSReasonCodes.getReasonString(rset.getInt("REASON_ID")));
+				sb.append(rset.getString("REASON"));
 				
 				vsMsg = sb.toString();  
 			}
@@ -2934,6 +3041,39 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 		return vsMsg;
+	}
+	
+	public List<VSReasonCodes> getVSReasonCodes() throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rset = null;
+		List<VSReasonCodes> lst = new ArrayList<VSReasonCodes>();
+		try {
+			conn = this.getConnection();
+			ps = conn.prepareStatement("select * from cust.voiceshot_reasoncodes");
+			rset = ps.executeQuery();
+			while(rset.next()) {
+				VSReasonCodes vrc = new VSReasonCodes();
+				vrc.setDelay(rset.getInt("DELAY_IN_MINUTES"));
+				vrc.setReasonId(rset.getString("REASON_ID"));
+				vrc.setReason(rset.getString("REASON"));
+				lst.add(vrc);
+			}
+		} catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage(), sqle);			
+		} finally {
+			try {
+				if (conn != null) 				
+					conn.close();
+				if(ps != null)
+					ps.close();
+				if(rset != null)
+					rset.close();
+			} catch (SQLException sqle) {
+				LOGGER.debug("Error while cleaning:", sqle);
+			}
+		}
+		return lst;
 	}
 	
 }

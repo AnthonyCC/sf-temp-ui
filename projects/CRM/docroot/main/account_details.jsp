@@ -282,6 +282,14 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
 							<%= hasNewsletterSubscription ? "<br>&nbsp;&nbsp;&nbsp;Subscribed to President\'s Picks newsletters" : "" %>
 							</td>
                         </tr>
+						<tr>
+                            <td colspan="2"><hr class="gray1px"><b>Mobile Options:</b>
+							<%= custInfo.isDeliveryNotification() || custInfo.isOffersNotification() ? "<br/>&nbsp;&nbsp;&nbsp;Mobile Number:"+custInfo.getMobileNumber().getPhone() : ""%>
+							<%= custInfo.isDeliveryNotification() ? "<br>&nbsp;&nbsp;&nbsp;Notify information about delivery via textmessage" : ""%>
+							<%= custInfo.isOffersNotification() ? "<br>&nbsp;&nbsp;&nbsp;Notify offers/discounts/promotion info via textmessage" : ""%>
+							<%= custInfo.isGoGreen() ? "<br>&nbsp;&nbsp;&nbsp;Turn off paper statement delivery." : "" %>
+							</td>
+                        </tr>
                         <%if (!forPrint) {%>
                             <tr><td colspan="2" height="8"></td></tr>
                             <tr>

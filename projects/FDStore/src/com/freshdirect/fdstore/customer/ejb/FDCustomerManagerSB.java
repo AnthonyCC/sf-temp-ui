@@ -766,6 +766,17 @@ public interface FDCustomerManagerSB extends EJBObject {
 			RemoteException;
 	
 	public ErpAuthorizationModel verify(FDActionInfo info,ErpPaymentMethodI paymentMethod) throws FDResourceException,ErpAuthorizationException, RemoteException;
-
+	
+	//public void recordReferral(String customerId, String referralId, String customerEmail) throws FDResourceException, RemoteException;
+	
+	//public boolean dupeEmailAddress(String email) throws FDResourceException, RemoteException;
+	
+	public void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery) throws FDResourceException, RemoteException;
+	
+	public void storeGoGreenPreferences(String customerId, String goGreen) throws FDResourceException, RemoteException;
+	
+	public void storeMobilePreferencesNoThanks(String customerId) throws FDResourceException, RemoteException;
+	
+	public void storeAllMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery, String goGreen, String phone, String ext, boolean isCorpUser) throws FDResourceException, RemoteException;
 }
 

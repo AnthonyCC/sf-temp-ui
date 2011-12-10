@@ -8,8 +8,6 @@
  */
 package com.freshdirect.webapp.taglib.fdstore;
 
-import java.text.MessageFormat;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -25,7 +23,6 @@ import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateAddressException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpInvalidPasswordException;
-import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDDepotManager;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
@@ -41,6 +38,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mail.EmailUtil;
+import com.freshdirect.webapp.action.Action;
 import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.fdstore.RegistrationAction;
 import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
@@ -83,7 +81,9 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		try {
 			HttpSession session = (HttpSession) pageContext.getSession();
 			FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
-			FDCartModel cart = user.getShoppingCart();
+			FDCartModel cart = null;
+			if(user != null)
+				cart = user.getShoppingCart();
 			String zoneId = null;
 			if(cart!=null && cart.getZoneInfo()!=null)
 				zoneId = cart.getZoneInfo().getZoneId();
@@ -124,6 +124,20 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				ra.setHttpContext(ctx);
 				ra.setResult(actionResult);
 				ra.executeEx();
+				/* APPDEV-1888 Refer a Friend
+				String result = ra.executeEx();
+				if((Action.SUCCESS).equals(result)) {
+					//if referral information is available, record it.
+					if(this.pageContext.getSession().getAttribute("REFERRALNAME") != null) {
+						try {						
+							LOGGER.debug("Adding referral record for CID:" + user.getIdentity().getErpCustomerPK() + "-email:" + user.getUserId() + "-reflink:" + (String) this.pageContext.getSession().getAttribute("REFERRALNAME"));
+							FDCustomerManager.recordReferral(user.getIdentity().getErpCustomerPK(), (String) this.pageContext.getSession().getAttribute("REFERRALNAME"), user.getUserId());
+						} catch (Exception e) {
+							LOGGER.error("Exception when trying to update FDCustomer with referral ID",e);
+						}
+					}
+				}
+				*/
 
 			}else if ("addDeliveryAddressEx".equalsIgnoreCase(actionName)) {
 				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, actionResult, actionName);
@@ -160,6 +174,15 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 
 			} else if ("changeEmailPreferenceLevel".equalsIgnoreCase(actionName)) {
 				this.changeEmailPreferenceLevel(request, actionResult);
+			} else if ("mobilepreferences".equals(actionName)) {
+				//Save mobile preferences
+				this.changeMobilePreferences(request, actionResult);
+			} else if ("otherpreferences".equals(actionName)) {
+				//Save mobile preferences
+				this.changeOtherPreferences(request, actionResult);
+			} else if("ordermobilepref".equals(actionName)) {
+				//coming from order receipt screen. store all of them together.
+				this.storeMobilePreferences(request, actionResult);
 			}
 
 		} catch (Exception ex) {
@@ -167,6 +190,107 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 			actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
 		}
 		return true;
+	}
+	
+	private void storeMobilePreferences(HttpServletRequest request, ActionResult actionResult) {		
+		HttpSession session = (HttpSession) pageContext.getSession();
+		String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
+		session.removeAttribute("SMSSubmission" + orderNumber);
+		String submitbutton = request.getParameter("submitbutton");
+		if("update".equals(submitbutton)) {
+			String text_offers = request.getParameter("text_offers");
+			String text_delivery = request.getParameter("text_delivery");		
+			String mobile_number = request.getParameter("mobile_number");
+			String go_green = request.getParameter("go_green");
+			
+			if("Y".equals(text_offers) || "Y".equals(text_delivery)) {			
+				if(mobile_number == null || mobile_number.length() == 0) {
+					actionResult.addError(true, "mobile_number", SystemMessageList.MSG_REQUIRED);
+					return;
+				}
+				PhoneNumber phone = new PhoneNumber(mobile_number);
+				if(!phone.isValid()) {
+					actionResult.addError(true, "mobile_number", SystemMessageList.MSG_PHONE_FORMAT);
+					return;
+				}
+			}
+			
+			//check for the other phone
+			String busphone = request.getParameter("busphone");
+			String ext = request.getParameter("busphoneext");
+			if(busphone == null || busphone.length() == 0) {
+				actionResult.addError(true, "busphone", SystemMessageList.MSG_REQUIRED);
+				return;
+			}
+			PhoneNumber bphone = new PhoneNumber(busphone, ext);
+			if(!bphone.isValid()) {
+				actionResult.addError(true, "busphone", SystemMessageList.MSG_PHONE_FORMAT);
+				return;
+			}
+			
+			
+			//save it to DB			
+			if("Y".equals(text_offers) || "Y".equals(text_delivery) || mobile_number.length() > 0) {
+				FDSessionUser user = (FDSessionUser) session.getAttribute(USER);				
+				try {
+					FDCustomerManager.storeAllMobilePreferences(user.getIdentity().getErpCustomerPK(), mobile_number, text_offers, text_delivery, go_green, busphone, ext, user.isCorporateUser());
+				} catch (FDResourceException e) {
+					LOGGER.error("Error from mobile preferences", e);
+				}				
+			}
+			session.setAttribute("SMSSubmission" + orderNumber, "done");
+		} else if ("remind".equals(submitbutton)) {
+			//ignore
+		} else {
+			//no thanks
+			FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
+			try {
+				FDCustomerManager.storeMobilePreferencesNoThanks(user.getIdentity().getErpCustomerPK());
+			} catch (FDResourceException e) {
+				LOGGER.error("Error from mobile preferences", e);
+			}
+			session.setAttribute("SMSSubmission" + orderNumber, "done");
+		}
+	}
+
+	private void changeMobilePreferences(HttpServletRequest request, ActionResult actionResult) {
+		String text_offers = request.getParameter("text_offers");
+		String text_delivery = request.getParameter("text_delivery");		
+		String mobile_number = request.getParameter("mobile_number");
+		
+		if("Y".equals(text_offers) || "Y".equals(text_delivery)) {			
+			if(mobile_number == null || mobile_number.length() == 0) {
+				actionResult.addError(true, "mobile_number", SystemMessageList.MSG_REQUIRED);
+				return;
+			}
+			PhoneNumber phone = new PhoneNumber(mobile_number);
+			if(!phone.isValid()) {
+				actionResult.addError(true, "mobile_number", SystemMessageList.MSG_PHONE_FORMAT);
+				return;
+			}
+		}		
+		
+		//save it to DB
+		if("Y".equals(text_offers) || "Y".equals(text_delivery) || mobile_number.length() > 0) {
+			HttpSession session = (HttpSession) pageContext.getSession();
+			FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
+			try {
+				FDCustomerManager.storeMobilePreferences(user.getIdentity().getErpCustomerPK(), mobile_number, text_offers, text_delivery);
+			} catch (FDResourceException e) {
+				LOGGER.error("Error from mobile preferences", e);
+			}
+		}
+	}
+	
+	private void changeOtherPreferences(HttpServletRequest request, ActionResult actionResult) {
+		String go_green = request.getParameter("go_green");		
+		HttpSession session = (HttpSession) pageContext.getSession();
+		FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
+		try {
+			FDCustomerManager.storeGoGreenPreferences(user.getIdentity().getErpCustomerPK(), go_green);
+		} catch (FDResourceException e) {
+			LOGGER.error("Error from mobile preferences", e);
+		}
 	}
 
 	protected void performDeleteDeliveryAddress(HttpServletRequest request, ActionResult actionResult, TimeslotEventModel event) throws FDResourceException {

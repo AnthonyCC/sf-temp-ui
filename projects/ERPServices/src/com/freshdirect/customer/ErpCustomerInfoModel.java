@@ -63,6 +63,53 @@ public class ErpCustomerInfoModel extends ModelSupport {
 	
 	private String hasAutoRenewDP;
 	private String autoRenewDPSKU;
+	
+	//APPDEV-2114 - SMS Capture
+	private PhoneNumber mobileNumber;
+	private boolean noThanksFlag;
+	private boolean deliveryNotification;
+	private boolean offersNotification;
+	private boolean goGreen;
+
+	public PhoneNumber getMobileNumber() {
+		return mobileNumber;
+	}
+
+	public void setMobileNumber(PhoneNumber mobileNumber) {
+		this.mobileNumber = mobileNumber;
+	}
+
+	public boolean isNoThanksFlag() {
+		return noThanksFlag;
+	}
+
+	public void setNoThanksFlag(boolean noThanksFlag) {
+		this.noThanksFlag = noThanksFlag;
+	}
+
+	public boolean isDeliveryNotification() {
+		return deliveryNotification;
+	}
+
+	public void setDeliveryNotification(boolean deliveryNotification) {
+		this.deliveryNotification = deliveryNotification;
+	}
+
+	public boolean isOffersNotification() {
+		return offersNotification;
+	}
+
+	public void setOffersNotification(boolean offersNotification) {
+		this.offersNotification = offersNotification;
+	}
+
+	public boolean isGoGreen() {
+		return goGreen;
+	}
+
+	public void setGoGreen(boolean goGreen) {
+		this.goGreen = goGreen;
+	}
 
 	/**
 	 * Default constructor.

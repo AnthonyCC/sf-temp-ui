@@ -52,6 +52,26 @@
                     <tr>
                         <td colspan="2"><input type="checkbox" name="receiveOptinNewsletter" <%=customerInfo.isReceiveOptinNewsletter() ? "checked" : "" %>> Please include me on the President's Picks newsletter</td>
                     </tr>
+					<tr>
+                        <td colspan="2"><br><b>Mobile Options:</b><hr class="black1px"></td>
+                    </tr>
+					<tr>
+                        <td align="right">Mobile number:&nbsp;&nbsp;</td>
+                        <td><input type="text" class="input_text" style="width: 200px;" name="mobile_number" value="<%= customerInfo.getMobileNumber() != null?customerInfo.getMobileNumber().getPhone():"" %>"><fd:ErrorHandler result="<%=result%>" name="mobile_number" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+                    </tr>
+					<tr>
+                        <td colspan="2"><input class="radio" type="checkbox" name="text_delivery" value="Y" <%=customerInfo.isDelNotification() ? "checked":""%>> Yes please notify me via text message with important information about my delivery.</td>
+                    </tr>
+					<tr valign="top">
+						<td colspan="2"><input class="radio" type="checkbox" name="text_offers" value="Y" <%=customerInfo.isOffNotification() ? "checked":""%>/>Yes please notiofy me about <b>offers, discounts</b> and <b>promotions</b> from time to time.</td>
+					</tr>
+					<tr>
+                        <td colspan="2"><br><b>Go Green:</b><hr class="black1px"></td>
+                    </tr>
+					<tr valign="top">
+						<td colspan="2"><input class="radio" type="checkbox" name="go_green" value="Y" <%=customerInfo.isGoGreen() ? "checked":""%>>I want to turn off paper statement delivery and receive my statements online.
+						</td>
+					</tr>
                 </table><br>
             </div>
 		</form>

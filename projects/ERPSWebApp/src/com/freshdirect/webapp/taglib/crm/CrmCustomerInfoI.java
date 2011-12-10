@@ -1,5 +1,7 @@
 package com.freshdirect.webapp.taglib.crm;
 
+import com.freshdirect.common.address.PhoneNumber;
+
 public interface CrmCustomerInfoI {
 	
 	public String getUserId();
@@ -19,5 +21,20 @@ public interface CrmCustomerInfoI {
 	
 	public boolean isReceiveOptinNewsletter();
 	public void setReceiveOptinNewsletter(boolean receiveOptinNewsletter);
+	
+	public PhoneNumber getMobileNumber();
+	public void setMobileNumber(PhoneNumber mobileNumber);
+
+	public boolean isDelNotification();	
+	public void setDelNotification(boolean delNotification);
+
+	public boolean isOffNotification();
+	public void setOffNotification(boolean offNotification);
+
+	public boolean isGoGreen();
+	public void setGoGreen(boolean goGreen);
+
+	public boolean isNoThanks();
+	public void setNoThanks(boolean noThanks);
 
 }

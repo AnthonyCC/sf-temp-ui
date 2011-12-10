@@ -34,6 +34,7 @@ import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.DlvSaleInfo;
+import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
@@ -74,6 +75,7 @@ import com.freshdirect.customer.ErpWebOrderHistory;
 import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.customer.ejb.ActivityLogHome;
 import com.freshdirect.customer.ejb.ActivityLogSB;
+import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.delivery.DlvServiceSelectionResult;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumDeliveryStatus;
@@ -2867,6 +2869,25 @@ public class FDCustomerManager {
 		}
 	}
 
+	/*APPDEV-1888
+	public static FDUser getFDUserByEmail(String email)
+			throws FDAuthenticationException, FDResourceException {
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			FDUser user = sb.recognizeByEmail(email);
+			return user;
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	*/
+	
+	
 	public static Object[] getAutoRenewalInfo() throws FDResourceException {
 		Object[] autoRenewInfo = null;
 		lookupManagerHome();
@@ -3809,5 +3830,114 @@ public class FDCustomerManager {
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
+	}
+	
+	/* APPDEV-1888
+	public static void recordReferral(String customerId, String referralId, String customerEmail) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			sb.recordReferral(customerId, referralId, customerEmail);
+		} catch (RemoteException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		} catch (CreateException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		}
+	}
+	
+	
+	public static boolean dupeEmailAddress(String email) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			return sb.dupeEmailAddress(email);
+		} catch (RemoteException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		} catch (CreateException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		}
+	}
+	*/
+
+	public static void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			sb.storeMobilePreferences(customerId, mobileNumber, textOffers, textDelivery);
+			logGoGreenActivity(customerId, "Y".equals(textOffers)?"Y":"N", EnumAccountActivityType.OFFER_NOTIFICATION);
+			logGoGreenActivity(customerId, "Y".equals(textDelivery)?"Y":"N", EnumAccountActivityType.DELIVERY_NOTIFICATION);
+		} catch (RemoteException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		} catch (CreateException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		}
+	}
+	
+	public static void storeGoGreenPreferences(String customerId, String goGreen) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			sb.storeGoGreenPreferences(customerId, goGreen);
+			logGoGreenActivity(customerId, "Y".equals(goGreen)?"Y":"N", EnumAccountActivityType.GO_GREEN);
+		} catch (RemoteException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		} catch (CreateException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		}
+	}
+	
+	public static void storeMobilePreferencesNoThanks(String customerId) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			sb.storeMobilePreferencesNoThanks(customerId);
+			logGoGreenActivity(customerId, "Y", EnumAccountActivityType.NO_THANKS);
+		} catch (RemoteException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		} catch (CreateException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		}
+	}
+	
+	public static void storeAllMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery, String goGreen, String phone, String ext, boolean isCorpUser) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			sb.storeAllMobilePreferences(customerId, mobileNumber, textOffers, textDelivery, goGreen, phone, ext, isCorpUser);
+			logGoGreenActivity(customerId, "Y".equals(goGreen)?"Y":"N", EnumAccountActivityType.GO_GREEN);
+			logGoGreenActivity(customerId, "Y".equals(textOffers)?"Y":"N", EnumAccountActivityType.OFFER_NOTIFICATION);
+			logGoGreenActivity(customerId, "Y".equals(textDelivery)?"Y":"N", EnumAccountActivityType.DELIVERY_NOTIFICATION);
+		} catch (RemoteException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		} catch (CreateException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		}
+	}
+	
+	public static void logGoGreenActivity(String customerId, String flag, EnumAccountActivityType activity) {
+		ErpActivityRecord rec = new ErpActivityRecord();
+		rec.setActivityType(activity);
+		rec.setSource(EnumTransactionSource.WEBSITE);
+		rec.setInitiator("CUSTOMER");
+		rec.setCustomerId(customerId);
+		rec.setDate(new Date());
+		rec.setNote("Flag updated to:" + flag);
+		logActivity(rec);		
+	}
+	
+	private static void logActivity(ErpActivityRecord record) {
+		new ErpLogActivityCommand(LOCATOR, record).execute();
 	}
 }

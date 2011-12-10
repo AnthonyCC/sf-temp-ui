@@ -41,12 +41,11 @@
 <tr class="list_header" style="background: #996666;">
 						<td width="5%" align="center" class="list_header_text"><b>Route#</b></td>
 						<td width="5%" align="center" class="list_header_text"><b>Campaign</b></td>
-						<td width="5%" align="center" class="list_header_text"><b>Reason</b></td>
-						<td width="3%" align="center" class="list_header_text"><b>Redial</b></td>
-						<td width="5%" align="center" class="list_header_text"><b>Route <br/> Stop</b></td>
+						<td width="10%" align="center" class="list_header_text"><b>Reason</b></td>
+						<td width="10%" align="center" class="list_header_text"><b>Route <br/> Stop</b></td>
+						<td width="3%" align="center" class="list_header_text"><b>Redial</b></td>						
 						<td width="8%" align="center" class="list_header_text"><b>VoiceShot <br/> Created By</b></td>
 						<td width="10%" align="center" class="list_header_text"><b>VoiceShot <br/> Created Date</b></td>
-						<td width="10%" align="center" class="list_header_text"><b>Sound File</b></td>
 						<td width="8%" align="center" class="list_header_text"><b>Start Time - <br/> End Time</b></td>
 						<td width="5%" align="center" class="list_header_text"><b>Scheduled <br/> Calls</b></td>
 						<td width="15%" align="center" class="list_header_text"><b>Delivered <br/> Calls</b></td>
@@ -66,12 +65,11 @@
 			<tr id="result" class="list_content" style="position:static;">
 				<td width="5%" class="border_bottom" align="center"><%= model.getRoute() %></td>
 				<td width="5%" class="border_bottom" align="center"><%= model.getCampaignName() %></td>
-				<td width="5%" class="border_bottom" align="center"><%= model.getReasonId() %></td>
-				<td width="5%" class="border_bottom" align="center"><%= model.getStopSequence() %></td>
+				<td width="10%" class="border_bottom" align="center"><%= model.getReasonId() %></td>
+				<td width="10%" class="border_bottom" align="center"><%= model.getStopSequence() %></td>
 				<td width="3%" class="border_bottom" align="center"><%= "Y".equals(model.getRedial())?"Yes":"No" %></td>
 				<td width="8%" class="border_bottom" align="center"><%= model.getAddByUser() %></td>
 				<td width="10%" class="border_bottom" align="center"><%= model.getAddByDate() %></td>
-				<td width="10%" class="border_bottom" align="center"><%= model.getSoundfileName() %></td>
 				<td width="8%" class="border_bottom" align="center"><%= model.getStartTime() %> - <%= model.getEndTime() %></td>
 				<td width="5%" class="border_bottom" align="center"><%= model.getScheduledCalls() %></td>
 				<td width="15%" class="border_bottom" align="center"><%= model.getDeliveredCallsLive() %> live | <%= model.getDeliveredCallsAM() %> answering machine</td>

@@ -4,11 +4,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
+import com.freshdirect.common.address.PhoneNumber;
+import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpInvalidPasswordException;
+import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -69,12 +74,22 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 		this.customerInfo.setRecieveFdNews(request.getParameter("recieveFdNews") != null);
 		this.customerInfo.setTextOnlyEmail(request.getParameter("textOnlyEmail") != null);
 		this.customerInfo.setReceiveOptinNewsletter(request.getParameter("receiveOptinNewsletter") != null);
+		this.customerInfo.setMobileNumber(new PhoneNumber(NVL.apply(request.getParameter("mobile_number"), "")));
+		this.customerInfo.setDelNotification("Y".equals(request.getParameter("text_delivery")));
+		this.customerInfo.setOffNotification("Y".equals(request.getParameter("text_offers")));
+		this.customerInfo.setGoGreen("Y".equals(request.getParameter("go_green")));
 	}
 	
 	private void validateInfo(ActionResult result) {
 		result.addError("".equals(this.customerInfo.getUserId()), "userId", SystemMessageList.MSG_REQUIRED);
 		result.addError(!EmailUtil.isValidEmailAddress(this.customerInfo.getUserId()), "userId", SystemMessageList.MSG_EMAIL_FORMAT);
 		result.addError("".equals(this.customerInfo.getPasswordHint()), "passwordHint", SystemMessageList.MSG_REQUIRED);
+		if(this.customerInfo.isDelNotification() || this.customerInfo.isOffNotification()) {
+			//check for mobile number
+			if(!this.customerInfo.getMobileNumber().isValid()) {
+				result.addError(true, "mobile_number", SystemMessageList.MSG_PHONE_FORMAT);
+			}
+		}
 	}
 	
 	private void validatePassword(ActionResult result) {
@@ -89,39 +104,92 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 	}
 	
 	public void updateCustomerInfo() throws ErpDuplicateUserIdException, FDResourceException, ErpInvalidPasswordException {
-		FDUserI user = this.getUser();
-		
+		FDUserI user = this.getUser();		
 		ErpCustomerModel customer = FDCustomerFactory.getErpCustomer(user.getIdentity());
 		ErpCustomerInfoModel info = customer.getCustomerInfo();
+		boolean beforeUpdateDelNotif = info.isDeliveryNotification();
+		boolean beforeUpdateOfferNotif = info.isOffersNotification();
+		boolean beforeUpdateGoGreen = info.isGoGreen();
+		FDActionInfo aInfo = AccountActivityUtil.getActionInfo(pageContext.getSession());
 		if (customerInfo.isRecieveFdNews() != info.isReceiveNewsletter()
 				|| customerInfo.isTextOnlyEmail() != info.isEmailPlaintext()
-				|| customerInfo.isReceiveOptinNewsletter() != info.isReceiveOptinNewsletter()) {
+				|| customerInfo.isReceiveOptinNewsletter() != info.isReceiveOptinNewsletter()
+				|| this.customerInfo.getMobileNumber() != null 
+				|| (info.getMobileNumber() != null && this.customerInfo.getMobileNumber().getPhone() != info.getMobileNumber().getPhone()) 
+				|| this.customerInfo.isDelNotification() != info.isDeliveryNotification()
+				|| this.customerInfo.isOffNotification() != info.isOffersNotification()
+				|| this.customerInfo.isGoGreen() != info.isGoGreen()) {
 			info.setReceiveNewsletter(this.customerInfo.isRecieveFdNews());
 			info.setEmailPlaintext(this.customerInfo.isTextOnlyEmail()); 
 			info.setReceiveOptinNewsletter(this.customerInfo.isReceiveOptinNewsletter());
-			FDCustomerManager.updateCustomerInfo(AccountActivityUtil.getActionInfo(pageContext.getSession()), info);
+			info.setMobileNumber(this.customerInfo.getMobileNumber());
+			info.setDeliveryNotification(this.customerInfo.isDelNotification());
+			info.setOffersNotification(this.customerInfo.isOffNotification());
+			info.setGoGreen(this.customerInfo.isGoGreen());
+			FDCustomerManager.updateCustomerInfo(aInfo, info);
 		}
 		
 		if(!this.customerInfo.getUserId().equalsIgnoreCase(customer.getUserId())){
 				//
 				// Update UserId first since if new user id is a duplicate it will not perform the second change (of user email address)
 				//
-				FDCustomerManager.updateUserId(AccountActivityUtil.getActionInfo(pageContext.getSession()), this.customerInfo.getUserId());
+				FDCustomerManager.updateUserId(aInfo, this.customerInfo.getUserId());
 				//
 				// No errors updating UserId, so update the email address too
 				//
 				info.setEmail(this.customerInfo.getUserId());
-				FDCustomerManager.updateCustomerInfo(AccountActivityUtil.getActionInfo(pageContext.getSession()), info);
+				FDCustomerManager.updateCustomerInfo(aInfo, info);
 		}
 		
 		if(!"".equals(this.password) && !this.customerInfo.getPassword().equals(customer.getPasswordHash())){
 			FDCustomerManager.changePassword(
-				AccountActivityUtil.getActionInfo(pageContext.getSession()),
+				aInfo,
 				this.customerInfo.getUserId(),
 				this.password);
 		}
 		
 		FDCustomerManager.updatePasswordHint(user.getIdentity(), this.customerInfo.getPasswordHint());
+		
+		//Record activity info for new gogreen and notification flags
+		boolean delNotifChanged = false;
+		if(beforeUpdateDelNotif != this.customerInfo.isDelNotification()) {
+			delNotifChanged = true;
+		}
+		boolean offerNotifChanged = false;
+		if(beforeUpdateOfferNotif != this.customerInfo.isOffNotification()) {
+			offerNotifChanged = true;
+		}
+		boolean goGreenChanged = false;
+		if(beforeUpdateGoGreen != this.customerInfo.isGoGreen()) {
+			goGreenChanged = true;
+		}
+		if(delNotifChanged || offerNotifChanged || goGreenChanged ) {
+			ErpActivityRecord rec = new ErpActivityRecord();
+			rec.setSource(aInfo.getSource());
+			rec.setInitiator(aInfo.getInitiator());
+			rec.setCustomerId(user.getIdentity().getErpCustomerPK());
+			
+			if(goGreenChanged) {
+				rec.setActivityType( EnumAccountActivityType.GO_GREEN );
+				rec.setNote("Flag updated to " + (this.customerInfo.isGoGreen()?"Y":"N"));
+				ErpLogActivityCommand command = new ErpLogActivityCommand(rec);
+				command.execute();
+			}
+			
+			if(delNotifChanged) {
+				rec.setActivityType( EnumAccountActivityType.DELIVERY_NOTIFICATION );
+				rec.setNote("Flag updated to " + (this.customerInfo.isDelNotification()?"Y":"N"));
+				ErpLogActivityCommand command = new ErpLogActivityCommand(rec);
+				command.execute();
+			}
+			
+			if(offerNotifChanged) {
+				rec.setActivityType( EnumAccountActivityType.OFFER_NOTIFICATION );
+				rec.setNote("Flag updated to " + (this.customerInfo.isOffNotification()?"Y":"N"));
+				ErpLogActivityCommand command = new ErpLogActivityCommand(rec);
+				command.execute();
+			}
+		}
 	}
 	
 	private FDUserI getUser() {

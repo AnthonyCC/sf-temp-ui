@@ -56,9 +56,12 @@
 					CrmVSCampaignModel model = (CrmVSCampaignModel) campaigns.get(i);
 					String style = "background-color: #D8D8D8; color: black;";
 					if((i%2) == 0) style="";					
+					String msg = model.getSoundFileText();
+					msg = msg.replaceAll("[\r\n|\n]+", " ");
+					System.out.println(msg);
 			%>
 			<script language="javascript">				
-				cids[<%=model.getCampaignId()%>] = '<%=model.getSoundFileText()%>';				
+				cids[<%=model.getCampaignId()%>] = '<%=msg%>';				
 				cnames[<%=model.getCampaignId()%>] = '<%=model.getCampaignName()%> - <%=model.getSoundfileName()%>';
 			</script>
 			<tr id="CID<%=model.getCampaignId()%>" style="<%=style%>;font-size: 10pt;height: 75%;overflow: auto;padding: 0;position: relative;">			

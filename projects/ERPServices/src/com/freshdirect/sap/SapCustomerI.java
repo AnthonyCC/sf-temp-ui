@@ -28,6 +28,8 @@ public interface SapCustomerI extends Serializable {
 	public BasicContactAddressI getAlternateAddress();
 
 	public String getSapCustomerNumber();
+	
+	public boolean isGoGreen();
 
 }
 

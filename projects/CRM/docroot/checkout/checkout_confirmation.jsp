@@ -43,8 +43,56 @@
 	String sEndHour = endHour==0 ? "12am" : (endHour==12 ? "noon" : (endHour > 12 ? (endHour - 12)+"pm" : endHour+"am"));
 %>
 
+
 <tmpl:put name='content' direct='true'>
 <jsp:include page='/includes/order_header.jsp'/>
+
+<%  
+	FDIdentity curridentity  = user.getIdentity();
+	ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(curridentity);
+	if(!cm.isNoThanksFlag()) {
+		//session.removeAttribute("SMSSubmission"+ orderId);
+		if(session.getAttribute("SMSSubmission" + orderId) == null) { 
+		%>
+<script language="javascript">
+/* display an overlay containing a remote page */
+	function doRemoteOverlay(olURL) {
+		var olURL = olURL || '';
+		if (olURL == '') { return false; }
+
+		Modalbox.show(olURL, {
+			loadingString: 'Loading Preview...',
+			closeValue: ' ',
+			closeString: 'Close Preview',
+			title: '',
+			overlayOpacity: .80,
+			overlayClose: false,
+			//width: 320,
+			transitions: false,
+			autoFocusing: false,
+			centered: true,
+			overlayClose: true,
+			afterLoad: function() {
+					window.scrollTo(0,0);
+					$('MB_window').style.width = 'auto';
+					$('MB_window').style.height = 'auto';
+					$('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
+
+
+					ccSettings.topColour = "#ffffff";
+					ccSettings.bottomColour = "#ffffff";
+					curvyCornersHelper('MB_frame', ccSettings);
+			},
+			afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
+		});
+	}
+</script>
+<script language="javascript">
+doRemoteOverlay('sms_capture.jsp');
+$('MB_content').style.padding = '0px';
+</script>
+<% } } %>
+
 
 <fd:ComplaintGrabber order="<%= order %>" complaints="complaints" lineComplaints="lineComplaints" deptComplaints="deptComplaints" miscComplaints="miscComplaints" fullComplaints="fullComplaints" restockComplaints="restockComplaints" retrieveApproved="true" retrievePending="false" retrieveRejected="false">
 

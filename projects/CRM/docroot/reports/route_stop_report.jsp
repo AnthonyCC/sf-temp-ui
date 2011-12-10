@@ -8,9 +8,10 @@
     int day   = request.getParameter("day") != null ? Integer.parseInt(request.getParameter("day")) : currday;
     int year  = request.getParameter("year") != null ? Integer.parseInt(request.getParameter("year")) : curryear;
     String wave = request.getParameter("wave") != null ? request.getParameter("wave") : " ";
-    String route = request.getParameter("route") != null ? request.getParameter("route") : " ";
+    String route = request.getParameter("route") != null ? request.getParameter("route") : null;
     String stop1 = request.getParameter("stop1") != null ? request.getParameter("stop1") : " ";
     String stop2= request.getParameter("stop2") != null ? request.getParameter("stop2") : " ";
+	String vs_format = request.getParameter("vs_format");
     
     List routeStopLines = null;
     Calendar cal = Calendar.getInstance();
@@ -23,8 +24,18 @@
             cal.set(Calendar.MONTH, month);
             cal.set(Calendar.YEAR, year);
             dateParam = cal.getTime();
-         
-            routeStopLines = CallCenterServices.getRouteStopReport(dateParam, wave, route, stop1, stop2);
+			
+			boolean route_error = false;
+			
+			String route_date1 = (month+1) + "/" + day + "/" + year;
+			SimpleDateFormat format1 = new SimpleDateFormat("MM/dd/yyyy");
+			Date user_date1 = format1.parse(route_date1);
+			
+			if(route != null) {
+				routeStopLines = CallCenterServices.getRouteStopReport(user_date1, wave, route, stop1, stop2, vs_format);
+			} else {
+				route_error = true;
+			}
     }
 if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getParameter("xPortVS")) && routeStopLines.size() > 0) { 
             response.addHeader ("Content-Disposition","attachment;filename=route_stop.txt");
@@ -58,36 +69,7 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 <table width="100%" cellpadding="0" cellspacing="0" border="0" class="sub_nav_text">
 
 <form name="routestop_report" method="post">
-<input type="hidden" name="startTime" id="startTime" value="">
-<input type="hidden" name="endTime" id="endTime" value="">
  <input type="hidden" name="xPortVS" value='no'>
-<script language="Javascript">
-	function Campaign(campaignId, soundFile, soundFileText) {
-		this.campaignId = campaignId;
-		this.soundFile = soundFile;
-		this.soundFileText = soundFileText;
-	}
-	
-	var camps = new Array();
-	
-	<%
-		for(int i=0;i<campaigns.size();i++) {
-			CrmVSCampaignModel model = (CrmVSCampaignModel) campaigns.get(i);
-			%>
-				camps[<%=i%>] = new Campaign("<%=model.getCampaignId()%>","<%=model.getSoundfileName()%>","<%=model.getSoundFileText()%>");
-			<%
-		}
-	%>
-	
-	checked = false;
-    function checkedAll () {
-		if (checked == false){checked = true}else{checked = false}
-		for (var i = 0; i < document.getElementById('timePick').elements.length; i++) {
-			document.getElementById('timePick').elements[i].checked = checked;
-		}
-    }
-	
-</script>
 
 <script language="JavaScript">
     function checkForm(thisForm) {
@@ -115,6 +97,11 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
             alert('The WAVE field is invalid. Please correct and try again.');
             okToSubmit = false;
         }
+		
+		if(route.length == 0) {
+			alert('The ROUTE is required. Please enter and try again.');
+            okToSubmit = false;
+		}
 
         if(isNaN(route)) {
             alert('The ROUTE field is invalid. Please correct and try again.');
@@ -148,26 +135,11 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
         document.routestop_report.submit();
     }
 	
-	function fillSoundFile() {
-		//alert("here");
-		var element_value = document.getElementById("campaign_id").value;
-		//alert("element_value=" + element_value);
-		if(element_value != "-1") {
-			for(i=0;i<camps.length;i++) {
-				if(camps[i].campaignId == element_value) {
-					document.getElementById("sound_file").value = camps[i].soundFile;
-					document.getElementById("sound_file_text").value = camps[i].soundFileText;
-					break;
-				}
-			}
-		}
-	}
-	
 	
 </script>
     <tr>
         <td width="15%"><span class="sub_nav_title">Orders by Route & Stop <% if (routeStopLines!= null && routeStopLines.size()>0) {%>( <span class="result"><%= routeStopLines.size() %></span> ) <span class="note" style="font-weight:normal;"><input type="checkbox" name="forPrint" onClick="javascript:toggleScroll('result','list_content','content_fixed');"> Print View</span><% } %></span></td>
-        <td width="55%" align="center">
+        <td width="55%" align="center" colspan="2">
             Date* 
             <select name="month" required="true" class="pulldown">
                 <option value="">Month</option>
@@ -193,10 +165,17 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
             Route <input type="text" name="route" size="6" maxlength="6" class="text" value="<%=request.getParameter("route")%>">
             &nbsp;
             Stop <input type="text" name="stop1" size="5" maxlength="5" class="text" value="<%=request.getParameter("stop1")%>"> to <input type="text" name="stop2" size="5" maxlength="5" class="text" value="<%=request.getParameter("stop2")%>">
+			&nbsp;
+			Voiceshot Format <select name="vs_format" id="vs_format">
+			<option value="REG" <%= !("SMS".equals(vs_format))?"selected=\"yes\"":""%>>Voiceshot with Sound File</option>
+			<option value="SMS" <%= "SMS".equals(vs_format)?"selected=\"yes\"":""%>>Voiceshot with SMS Message</option>
+			</select>
 
-            <input type="submit" class="submit" onClick="javascript:checkForm(routestop_report); return false;" value="GO"> 
+            <input type="submit" class="submit" onClick="javascript:checkForm(routestop_report); return false;" value="GO"> 			
         </td>
-        <td width="30%" align="left"><a href="javascript:setXportVSOn();">Manually Exp. to VoiceShot fmt</a> | <a href="/reports/reports_index.jsp">All Reports >></a></td>
+	</tr>
+	<tr>
+        <td colspan="3" width="30%" align="right"><a href="javascript:setXportVSOn();">Manually Exp. to VoiceShot fmt</a> | <a href="/reports/reports_index.jsp">All Reports >></a></td>
     </tr>
 	<script language"javascript">
 	<!--
@@ -213,38 +192,36 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
     </form>
 </table>
 </div>
-<%
+
+<% 
   VoiceShotResponseParser vsrp = null;
   boolean errors = false;
   String errMsg = "Required fields - ";
   if ("POST".equals(request.getMethod())) {
     if (routeStopLines.size() > 0) { 
+		
 		if("true".equals(request.getParameter("vssubmit"))) {			
 			String campaignID = request.getParameter("campaign_id");
 			String campaignMenuID = request.getParameter(campaignID + "_menu_id");
 			String sFile = request.getParameter("sound_file");
 			String sText = request.getParameter("sound_file_text");
-			String start_time = request.getParameter("picked0");
-			String end_time = request.getParameter("picked1");
+			String shour = request.getParameter("shour");
+			String sminutes = request.getParameter("sminutes");
+			String sampm = request.getParameter("sampm");
 			String reason = request.getParameter("reason");
 			String _route = request.getParameter("route");
 			String _stop1 = request.getParameter("stop1");
 			String _stop2 = request.getParameter("stop2");
 			String stop_seq = "";
 			if(_stop1 != null && _stop1.length() > 0) {
-				stop_seq = _stop1 + ", 5, 0";
+				stop_seq = _stop1;
 			} 
 			if(_stop2 != null && _stop2.length() > 0) {
-				stop_seq = stop_seq + " - " + _stop2 + ", 5, 0";
+				stop_seq = stop_seq + " - " + _stop2;
 			}
 			
 			if(campaignID == null  || campaignID.length() == 0 || "-1".equals(campaignID)) {
 				errMsg += "Campaign";
-				errors = true;
-			}
-			
-			if(start_time == null  || start_time.length() == 0) {
-				errMsg += ", Start time";
 				errors = true;
 			}
 			
@@ -253,26 +230,34 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 				errors = true;
 			}
 			
+			if("-1".equals(shour)) {
+				errMsg += ", Start time:Hours";
+				errors = true;
+			}
+			
+			if("-1".equals(sminutes)) {
+				errMsg += ", Start time:Minutes";
+				errors = true;
+			}
+			
 			if(!errors) {
+			
+				String start_time = shour + ":" + sminutes + " " + sampm;
 			
 				//Save the campaign info
 				CrmVSCampaignModel cModel = new CrmVSCampaignModel();
 				cModel.setCampaignId(campaignID);
-				cModel.setSoundfileName(sFile);
-				cModel.setSoundFileText(sText);
 				cModel.setStartTime(start_time);
-				cModel.setEndTime(end_time);
 				cModel.setReasonId(reason);
 				cModel.setRoute(_route);
 				cModel.setStopSequence(stop_seq);			
 				cModel.setAddByUser(CrmSession.getCurrentAgent(session).getLdapId()); 
 				cModel.setCampaignName(request.getParameter(campaignID));
+				cModel.setDelayMinutes(request.getParameter("delay_"+reason));
 				
 				DateFormat formatter2 = new SimpleDateFormat("MM/dd/yyyy");
 				String formatter_start_date = formatter2.format(new Date());
 				formatter_start_date = formatter_start_date + " " + start_time;
-				
-				System.out.println("*********formatter_start_date********" + formatter_start_date);
 				
 				List<String> phonenumbers = new ArrayList<String>();			
 				StringBuffer phonesb = new StringBuffer("<phonenumbers>");
@@ -291,29 +276,20 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 				cModel.setPhonenumbers(phonenumbers);
 				String call_id = CallCenterServices.saveVSCampaignInfo(cModel);
 				
-				System.out.println("**********phones*********"+ phonesb.toString());
-				
 				StringBuffer originalXML = new StringBuffer("<campaign menuid=\"");
 				originalXML.append(campaignMenuID);
-				originalXML.append("\" action=\"0\"  username=\"mtrachtenberg\" password=\"whitshell\" callid=\"" + call_id + "\">");
-				originalXML.append(phonesb.toString());
-				//originalXML.append("<phonenumbers><phonenumber number=\"(203) 446-9229\" dateandtime=\""+ formatter_start_date + "\"/><phonenumber number=\"(203) 843-0301\"  dateandtime=\""+ formatter_start_date + "\"/></phonenumbers>");
+				originalXML.append("\" action=\"0\"  username=\"");
+				originalXML.append(FDStoreProperties.getVSUserName());
+				originalXML.append("\" password=\"");
+				originalXML.append(FDStoreProperties.getVSPassword());
+				originalXML.append("\" callid=\"" + call_id + "\">");
+				originalXML.append(phonesb.toString());				
 				originalXML.append("</campaign>");
 
-				System.out.println("OriginalXML:" + originalXML.toString());
-				
-				//start voiceshot
-				//String phone = "<phonenumbers><phonenumber number=\"(203) 446-9229\" /><phonenumber number=\"(203) 843-0301\" /></phonenumbers>";
-				//StringBuffer sb = new StringBuffer("<campaign menuid=\"");
-				//sb.append("4766-962581812");
-				//sb.append("\" action=\"0\"  username=\"mtrachtenberg\" password=\"whitshell\" callid=\"" + call_id + "\" >");
-				//sb.append(phone);
-				//sb.append("</campaign>");
-				
-				//System.out.println(sb.toString());
+				System.out.println("VoiceshotXML:" + originalXML.toString());
 				
 				
-				java.net.URL programUrl = new java.net.URL("http://apiproxy.voiceshot.com/ivrapi.asp");   
+				java.net.URL programUrl = new java.net.URL(FDStoreProperties.getVSURL());   
 				java.net.HttpURLConnection connection = (java.net.HttpURLConnection)programUrl.openConnection();
 				connection.setRequestMethod("POST");
 				connection.setDoOutput(true);
@@ -334,10 +310,9 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 					 firstresult += "\n" + line;
 				}
 				
-				System.out.println(firstresult);
+				System.out.println("VoiceshotResult:"+firstresult);
 				
 				vsrp = new VoiceShotResponseParser(firstresult);
-				System.out.println(vsrp.getErrorCode());
 			}
 		}
 	
@@ -346,7 +321,6 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 		<span style="color:red;font-weight:bold;font-size:10pt;"/><br/><br/>&nbsp;&nbsp;Message From VoiceShot: <%= vsrp.getErrorMessage() %></span>	
 	<% } else { 
 		String route_date = (month+1) + "/" + day + "/" + year;
-		System.out.println("[************route_date********]"+route_date);
 		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
 		Date user_date = format.parse(route_date);
 		Calendar rDate = Calendar.getInstance();
@@ -356,11 +330,11 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 		today_date.setTime(_today);
 		long timDiff = (rDate.getTimeInMillis() - today_date.getTimeInMillis());
 		long hours = java.util.concurrent.TimeUnit.MILLISECONDS.toHours(timDiff);
-		System.out.println("****hours:" + hours);
-		
 		
 		if (hours > -24 && hours < 0) {
-	%>	
+			if(!"SMS".equals(vs_format)) {
+	%>
+	
 	<!-----new Voiceshot box-------->
 	<form method='POST' name="timePick" id="timePick">
 	<input type="hidden" name="vssubmit" value="true"/>
@@ -371,13 +345,14 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
     <input type="hidden" name="route" value="<%=route%>" />
     <input type="hidden" name="stop1" value="<%=stop1%>" />
 	<input type="hidden" name="stop2" value="<%=stop2%>" />
+	<input type="hidden" name="vs_format" value="<%=vs_format%>" />
 	<% String userRole = CrmSession.getCurrentAgent(request.getSession()).getRole().getLdapRoleName();
 	   if(CrmSecurityManager.hasAccessToPage(userRole,"voiceshot.jsp")){ %>
 	   <% if(errors) { %>
 	   <font style="color:red;"><%= errMsg %></font>
 	   <% } %>
 	<jsp:include page="voiceshot.jsp" />
-	<% } %>
+	<% } } }%>
 	
 	<div class="list_header">
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="list_header_text">
@@ -406,13 +381,13 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 				<td width="10%" class="border_bottom"><%=routeStopLine.getWaveNumber()!=null? routeStopLine.getWaveNumber():"&nbsp;"%></td>
 				<td width="10%" class="border_bottom"><%=routeStopLine.getTruckNumber()!=null? routeStopLine.getTruckNumber():"&nbsp;"%></td>
 				<td width="10%" class="border_bottom"><%=routeStopLine.getStopSequence()!=null ? routeStopLine.getStopSequence() : "&nbsp;"%></td>
-				<td width="10%" class="border_bottom"><input type="checkbox" value="<%=routeStopLine.getPhoneNumber()%>|<%=routeStopLine.getOrderNumber()%>|<%=routeStopLine.getCustomerId()%>" name="selectphone<%=counter%>" checked/></td>
+				<td width="10%" class="border_bottom"><input type="checkbox" value="<%=routeStopLine.getPhoneNumber()%>|<%=routeStopLine.getOrderNumber()%>|<%=routeStopLine.getCustomerId()%>|<%=routeStopLine.getStopSequence()%>" name="selectphone<%=counter%>" checked/></td>
 			</tr>
 		</logic:iterate>
 		</table>
 	</div>
 	</form>
-<%      } } else { %>
+<%     } else { %>
     <div class="content_fixed" align="center"><br><b>No Deliveries for <%= CCFormatter.formatDate(dateParam) %></b><br><br></div>
 <%      }   %>
 <%  }  %>

@@ -88,7 +88,7 @@ public interface CallCenterManagerSB extends EJBObject {
 
 	public List getLateDeliveryReport(java.util.Date date) throws FDResourceException, RemoteException;
 	
-	public List getRouteStopReport(java.util.Date date, String wave, String route, String stop1, String stop2) throws FDResourceException, RemoteException;
+	public List getRouteStopReport(java.util.Date date, String wave, String route, String stop1, String stop2, String call_format) throws FDResourceException, RemoteException;
 	
 	public List getOrderStatusReport(String[] statusCodes) throws FDResourceException, RemoteException;
 	
@@ -145,5 +145,7 @@ public interface CallCenterManagerSB extends EJBObject {
 	public void deleteCampaign(String id) throws FDResourceException, RemoteException;
 	
 	public String getVSMsgForOrderPage(String orderId) throws FDResourceException, RemoteException;
+	
+	public List<VSReasonCodes> getVSReasonCodes() throws FDResourceException, RemoteException;
 	
 }

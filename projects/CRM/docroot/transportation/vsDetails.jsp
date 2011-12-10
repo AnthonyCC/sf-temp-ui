@@ -13,7 +13,6 @@
 <crm:GetCurrentAgent id='currAgent'>
 <%
 	String id = request.getParameter("id");
-	System.out.println("*************id="+id);
 	List<CrmVSCampaignModel> calldetails = CallCenterServices.getVoiceShotCallDetails(id);
 %>
 	<table cellspacing="15" cellpadding="0" border="0" align="center" width="600" 
@@ -28,9 +27,15 @@
 					<tr style="font-weight:bold;background-color:#E7E7D6;"><td align="center">Scheduled Calls</td>
 					<td  align="center" colspan="2">Successful Calls</td>
 					<td align="center">Unsuccessful Calls</td>
+					<td align="center">Order#</td>
+					<td align="center">Route#</td>
+					<td align="center">Stop#</td>
 					</tr>
 					<tr  style="font-weight:bold;background-color:#E7E7D6;"><td align="center">&nbsp;</td>
 					<td align="center">Live</td><td align="center">Machine</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 					</tr>
 					<% for(int i=0;i<calldetails.size();i++) {
@@ -43,6 +48,9 @@
 						<td align="center"><%= model.getStatus() == EnumVSStatus.LIVE_ANS.getValue()?"&#8730;":"&nbsp;" %></td>
 						<td align="center"><%= model.getStatus() == EnumVSStatus.ANS_MACHINE.getValue()?"&#8730;":"&nbsp;" %></td>
 						<td align="center"><%= model.getStatus() == EnumVSStatus.UNSUCCESSFUL.getValue()?"&#8730;":"&nbsp;" %></td>
+						<td align="center"><%= model.getSaleId() %></td>
+						<td align="center"><%= model.getRoute() %></td>
+						<td align="center"><%= model.getStopSequence() %></td>						
 					</tr>				
 					<% } %>
 				</table>
