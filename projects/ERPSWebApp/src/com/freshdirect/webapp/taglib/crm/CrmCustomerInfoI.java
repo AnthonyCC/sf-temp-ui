@@ -34,7 +34,7 @@ public interface CrmCustomerInfoI {
 	public boolean isGoGreen();
 	public void setGoGreen(boolean goGreen);
 
-	public boolean isNoThanks();
-	public void setNoThanks(boolean noThanks);
+	public String getMobilePreference();
+	public void setMobilePreference(String mobilePrefs);
 
 }

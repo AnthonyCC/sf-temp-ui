@@ -31,7 +31,7 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag {
 			customer.getCustomerInfo().isDeliveryNotification(),
 			customer.getCustomerInfo().isOffersNotification(),
 			customer.getCustomerInfo().isGoGreen(),
-			customer.getCustomerInfo().isNoThanksFlag());
+			customer.getCustomerInfo().getMobilePreference());
 	}
 
 	public static class TagEI extends AbstractGetterTag.TagEI {
@@ -51,14 +51,14 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag {
 		private boolean delNotification;
 		private boolean offNotification;
 		private boolean goGreen;
-		private boolean noThanks;
+		private String mobilePrefs;
 		
 		
 
 		
 
 		public CrmCustomerInfo(String userId, String passwordHint, boolean recieveNews, boolean textOnlyEmail, boolean receiveOptinNewsletter,
-					PhoneNumber mobileNumber, boolean delNotification, boolean offNotification, boolean goGreen, boolean noThanks ) {
+					PhoneNumber mobileNumber, boolean delNotification, boolean offNotification, boolean goGreen, String mobilePrefs ) {
 			this.userId = userId;
 			this.passwordHint = passwordHint;
 			this.recieveNews = recieveNews;
@@ -68,7 +68,7 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag {
 			this.delNotification = delNotification;
 			this.offNotification = offNotification;
 			this.goGreen = goGreen;
-			this.noThanks = noThanks;
+			this.mobilePrefs = mobilePrefs;
 		}
 
 		public String getUserId() {
@@ -151,12 +151,12 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag {
 			this.goGreen = goGreen;
 		}
 
-		public boolean isNoThanks() {
-			return noThanks;
+		public String getMobilePreference() {
+			return mobilePrefs;
 		}
 
-		public void setNoThanks(boolean noThanks) {
-			this.noThanks = noThanks;
+		public void setMobilePreference(String mobilePrefs) {
+			this.mobilePrefs = mobilePrefs;
 		}
 		
 	}
