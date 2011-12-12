@@ -41,10 +41,18 @@ String presPicks = "/newsletter.jsp?catId=picks_love&trk=wgd";
 	<%-- start i_departments --%>  
 
 <%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
+
 <table border="0" cellspacing="0" cellpadding="0" style="margin-top: 20px">
       <tr>
-				    <td><img src="/media_stat/images/layout/clear.gif" width="1" height="5"/></td>
-      </tr>
+		<td>
+			<script type="text/javascript">
+				OAS_AD('HPWideTop');
+			</script>
+		</td>
+	</tr>
+	<tr>
+		<td><img src="/media_stat/images/layout/clear.gif" width="1" height="5"/></td>
+	</tr>
 		  <tr>
 			<td align="center">
 			<img src="/media_stat/images/navigation/department/home/fdhome_row1_header_w.gif" width="734" height="21" border="0" alt="DELICIOUS FOOD TREATED WITH LOVE & RESPECT"><br>
