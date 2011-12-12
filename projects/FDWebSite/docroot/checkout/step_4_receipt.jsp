@@ -25,7 +25,7 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
 <%  FDUserI curruser = (FDUserI)session.getAttribute(SessionName.USER);
 	FDIdentity curridentity  = curruser.getIdentity();
 	ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(curridentity);
-	if(!cm.isNoThanksFlag()) {
+	if(cm.getMobilePreference() == null || "N".equals(cm.getMobilePreference())) {
 		String _ordNum = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
 		//session.removeAttribute("SMSSubmission"+ _ordNum);
 		if(session.getAttribute("SMSSubmission" + _ordNum) == null) { %>
@@ -37,36 +37,33 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
 
 		Modalbox.show(olURL, {
 			loadingString: 'Loading Preview...',
-			closeValue: ' ',
-			closeString: 'Close Preview',
-			title: '',
+			title: ' ',
 			overlayOpacity: .80,
-			overlayClose: false,
-			//width: 320,
-			transitions: false,
-			autoFocusing: false,
+			width: 650,
 			centered: true,
-			overlayClose: true,
+			method: 'post',
 			afterLoad: function() {
-					window.scrollTo(0,0);
+					$('MB_header').style.border = '0px solid #CCCCCC';
+					$('MB_header').style.display = 'block';
+					window.scrollTo(0,0);					
 					$('MB_window').style.width = 'auto';
 					$('MB_window').style.height = 'auto';
 					$('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
-
+					$('MB_content').style.padding = '0px';
+					$('MB_close').style.color = 'gray';
 
 					ccSettings.topColour = "#ffffff";
 					ccSettings.bottomColour = "#ffffff";
 					curvyCornersHelper('MB_frame', ccSettings);
-			},
-			afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
+			}
+			
 		});
 	}
 </script>
 <script language="javascript">
 doRemoteOverlay('sms_capture.jsp');
-$('MB_content').style.padding = '0px';
 </script>
-<% } } %>
+<%  } } %>
 <%
 //--------OAS Page Variables-----------------------
         request.setAttribute("sitePage", "www.freshdirect.com/checkout");

@@ -74,7 +74,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 	
 	//APPDEV-2114 - SMS Capture
 	private PhoneNumber mobileNumber;
-	private boolean noThanksFlag;
+	private String  mobilePrefs;
 	private boolean deliveryNotification;
 	private boolean offersNotification;
 	private boolean goGreen;
@@ -123,7 +123,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		this.autoRenewDPSKU=null;
 		
 		this.mobileNumber = null;
-		this.noThanksFlag = false;
+		this.mobilePrefs = null;
 		this.deliveryNotification = false;
 		this.offersNotification = false;
 		this.goGreen = false;
@@ -201,7 +201,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		
 		//APPDEV-2114
 		model.setMobileNumber(this.mobileNumber);
-		model.setNoThanksFlag(this.noThanksFlag);
+		model.setMobilePreference(this.mobilePrefs);
 		model.setDeliveryNotification(this.deliveryNotification);
 		model.setOffersNotification(this.offersNotification);
 		model.setGoGreen(this.goGreen);
@@ -257,7 +257,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		
 		//APPDEV-2114
 		this.mobileNumber = m.getMobileNumber();
-		this.noThanksFlag = m.isNoThanksFlag();
+		this.mobilePrefs = m.getMobilePreference();
 		this.deliveryNotification = m.isDeliveryNotification();
 		this.offersNotification = m.isOffersNotification();
 		this.goGreen = m.isGoGreen();
@@ -416,7 +416,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 					+ " REMINDER_LAST_SEND, REMINDER_FREQUENCY, REMINDER_DAY_OF_WEEK, REMINDER_ALT_EMAIL, RSV_DAY_OF_WEEK, RSV_START_TIME, "
 					+ " RSV_END_TIME, RSV_ADDRESS_ID, UNSUBSCRIBE_DATE, REG_REF_TRACKING_CODE, REG_REF_PROG_ID, REF_PROG_INVT_ID, "
 					+ " RECEIVE_OPTINNEWSLETTER, HAS_AUTORENEW_DP, AUTORENEW_DP_TYPE, EMAIL_LEVEL, NO_CONTACT_MAIL, NO_CONTACT_PHONE "
-					+ " ,mobile_number, no_thanks_flag, delivery_notification, offers_notification, go_green "
+					+ " ,mobile_number, mobile_preference_flag, delivery_notification, offers_notification, go_green "
 					+ " FROM CUST.CUSTOMERINFO WHERE CUSTOMER_ID = ?");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
@@ -465,7 +465,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 				this.mobileNumber = this.convertPhoneNumber(rs.getString("mobile_number"), "");
 			else
 				this.mobileNumber = null;
-			this.noThanksFlag = "Y".equals(rs.getString("no_thanks_flag"))?true:false;
+			this.mobilePrefs = rs.getString("mobile_preference_flag");
 			this.deliveryNotification = "Y".equals(rs.getString("delivery_notification"))?true:false;
 			this.offersNotification = "Y".equals(rs.getString("offers_notification"))?true:false;
 			this.goGreen = "Y".equals(rs.getString("go_green"))?true:false;
@@ -492,7 +492,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 				+ " RSV_START_TIME=?, RSV_END_TIME=?, RSV_ADDRESS_ID=?, UNSUBSCRIBE_DATE=?, REG_REF_TRACKING_CODE=?, REG_REF_PROG_ID=?, "
 				+ " REF_PROG_INVT_ID=?, RECEIVE_OPTINNEWSLETTER=?, HAS_AUTORENEW_DP=?, AUTORENEW_DP_TYPE=?, "
 				+" EMAIL_LEVEL=?, NO_CONTACT_MAIL=?, NO_CONTACT_PHONE=?"
-				+ " ,mobile_number=?, no_thanks_flag='N',delivery_notification=?, offers_notification=?, go_green=?"
+				+ " ,mobile_number=?, mobile_preference_flag='N',delivery_notification=?, offers_notification=?, go_green=?"
 				+" WHERE CUSTOMER_ID=?");
 		//ps.setString(, this.getPK().getId() );
 

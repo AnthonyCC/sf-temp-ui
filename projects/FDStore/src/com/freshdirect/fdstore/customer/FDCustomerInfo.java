@@ -31,6 +31,7 @@ public class FDCustomerInfo implements java.io.Serializable{
     private boolean chefsTable;
     private String customerServiceContact;
     private double userGiftCardsBalance;
+    private boolean goGreen;
 	
 	public FDCustomerInfo(String firstName, String lastName){
 		this.firstName = firstName;
@@ -193,5 +194,13 @@ public class FDCustomerInfo implements java.io.Serializable{
 	 */
 	public void setUserGiftCardsBalance(double userGiftCardsBalance) {
 		this.userGiftCardsBalance = userGiftCardsBalance;
+	}
+
+	public boolean isGoGreen() {
+		return goGreen;
+	}
+
+	public void setGoGreen(boolean goGreen) {
+		this.goGreen = goGreen;
 	}
 }

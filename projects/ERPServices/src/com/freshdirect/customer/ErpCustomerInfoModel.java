@@ -66,7 +66,7 @@ public class ErpCustomerInfoModel extends ModelSupport {
 	
 	//APPDEV-2114 - SMS Capture
 	private PhoneNumber mobileNumber;
-	private boolean noThanksFlag;
+	private String mobilePrefs;
 	private boolean deliveryNotification;
 	private boolean offersNotification;
 	private boolean goGreen;
@@ -79,12 +79,12 @@ public class ErpCustomerInfoModel extends ModelSupport {
 		this.mobileNumber = mobileNumber;
 	}
 
-	public boolean isNoThanksFlag() {
-		return noThanksFlag;
+	public String getMobilePreference() {
+		return mobilePrefs;
 	}
 
-	public void setNoThanksFlag(boolean noThanksFlag) {
-		this.noThanksFlag = noThanksFlag;
+	public void setMobilePreference(String pref) {
+		this.mobilePrefs = pref;
 	}
 
 	public boolean isDeliveryNotification() {

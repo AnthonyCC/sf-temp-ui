@@ -169,7 +169,7 @@
 		<table class="butCont fright" style="margin-left: 15px;">
 			<tr>
 				<td class="butBrownLeft"><!-- --></td>
-				<td class="butBrownMiddle"><a class="butText" style="color:#000000;text-shadow:none;" href="#" onclick="Modalbox.show('sms_capture.jsp?submitbutton=remind', {title: '', params: Form.serialize('smsform') }); return false;">&nbsp;&nbsp;Remind Me Later&nbsp;&nbsp;</a></td>
+				<td class="butBrownMiddle"><a class="butText" style="color:#000000;text-shadow:none;" href="#" onclick="Modalbox.hide(); return false;">&nbsp;&nbsp;Remind Me Later&nbsp;&nbsp;</a></td>
 				<td class="butBrownRight"><!-- --></td>
 				<td>&nbsp;</td>
 				<td class="butOrangeLeft"><!-- --></td>

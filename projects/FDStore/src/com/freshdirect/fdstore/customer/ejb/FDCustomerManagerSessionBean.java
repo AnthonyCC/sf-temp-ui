@@ -886,13 +886,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			FDCustomerInfo fdInfo = new FDCustomerInfo(erpCustomerInfo
 					.getFirstName(), erpCustomerInfo.getLastName());
 			fdInfo.setHtmlEmail(!erpCustomerInfo.isEmailPlaintext());
-			fdInfo.setEmailAddress(erpCustomerInfo.getEmail());
+			fdInfo.setEmailAddress(erpCustomerInfo.getEmail());			
 
 			if(identity.getFDCustomerPK() != null) {
 				String depotCode = this.getDepotCode(identity);
 				fdInfo.setDepotCode(depotCode);
 			}
 			fdInfo.setChefsTable(fduser.isChefsTable());
+			
+			/*APPDEV-2114*/
+			fdInfo.setGoGreen(erpCustomerInfo.isGoGreen());
+			
 			return fdInfo;
 
 		} catch (FinderException fe) {
@@ -6247,11 +6251,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 */	
-	public void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery) throws FDResourceException {
+	public void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery, String mobilePrefs) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			FDUserDAO.storeMobilePreferences(conn, customerId, mobileNumber, textOffers, textDelivery);
+			FDUserDAO.storeMobilePreferences(conn, customerId, mobileNumber, textOffers, textDelivery, mobilePrefs);
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
