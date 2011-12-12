@@ -50,7 +50,7 @@
 <%  
 	FDIdentity curridentity  = user.getIdentity();
 	ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(curridentity);
-	if(!cm.isNoThanksFlag()) {
+	if(cm.getMobilePreference() == null || "N".equals(cm.getMobilePreference())) {
 		//session.removeAttribute("SMSSubmission"+ orderId);
 		if(session.getAttribute("SMSSubmission" + orderId) == null) { 
 		%>
