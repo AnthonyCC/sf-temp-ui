@@ -271,14 +271,12 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		}		
 		
 		//save it to DB
-		if("Y".equals(text_offers) || "Y".equals(text_delivery) || mobile_number.length() > 0) {
-			HttpSession session = (HttpSession) pageContext.getSession();
-			FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
-			try {
-				FDCustomerManager.storeMobilePreferences(user.getIdentity().getErpCustomerPK(), mobile_number, text_offers, text_delivery);
-			} catch (FDResourceException e) {
-				LOGGER.error("Error from mobile preferences", e);
-			}
+		HttpSession session = (HttpSession) pageContext.getSession();
+		FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
+		try {
+			FDCustomerManager.storeMobilePreferences(user.getIdentity().getErpCustomerPK(), mobile_number, text_offers, text_delivery);
+		} catch (FDResourceException e) {
+			LOGGER.error("Error from mobile preferences", e);
 		}
 	}
 	
