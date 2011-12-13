@@ -29,7 +29,7 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 		cal.add(Calendar.DATE, lookback);
 		return new java.sql.Timestamp(cal.getTimeInMillis());
 	}
-	private Float roundValue(double value)
+	private float roundValue(double value)
 	{
 		float val = 0;
 		try

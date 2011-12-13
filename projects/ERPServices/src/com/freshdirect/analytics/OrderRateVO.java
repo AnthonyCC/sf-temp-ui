@@ -10,14 +10,14 @@ public class OrderRateVO {
 	private Timestamp cutoffTime;
 	private Timestamp startTime;
 	private Timestamp endTime;
-	private Float orderCount;
+	private float orderCount;
 	private Date baseDate;
 	private Timestamp snapshotTime;
 	private float projectedRate;
 	private Timestamp soldOutTime;
 	private float weightedProjectRate;
 	private Date expectedSoldOutTime;
-	private float OrdersExpected;
+	private float ordersExpected;
 	
 	public String getZone() {
 		return zone;
@@ -43,10 +43,10 @@ public class OrderRateVO {
 	public void setEndTime(Timestamp endTime) {
 		this.endTime = endTime;
 	}
-	public Float getOrderCount() {
+	public float getOrderCount() {
 		return orderCount;
 	}
-	public void setOrderCount(Float orderCount) {
+	public void setOrderCount(float orderCount) {
 		this.orderCount = orderCount;
 	}
 	public Date getBaseDate() {
@@ -92,10 +92,10 @@ public class OrderRateVO {
 		this.capacity = capacity;
 	}
 	public float getOrdersExpected() {
-		return OrdersExpected;
+		return ordersExpected;
 	}
 	public void setOrdersExpected(float ordersExpected) {
-		OrdersExpected = ordersExpected;
+		this.ordersExpected = ordersExpected;
 	}
 	
 	
