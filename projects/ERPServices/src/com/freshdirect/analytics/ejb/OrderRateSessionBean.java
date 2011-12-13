@@ -173,9 +173,9 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 						if(capacityMap.get(range7).get(vo.getZone()).get(snapshot7)!=null
 								 && capacityMap.get(range14).get(vo.getZone()).get(snapshot14)!=null)
 						{
-							rate += roundValue( (capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[1]+ capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[1]) /2);
-		
-							vo.setOrdersExpected(orderCount + vo.getOrderCount() + rate);
+							rate += roundValue( new Float(capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[1]+ capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[1]) /2);
+							
+							vo.setOrdersExpected(rate);
 							if((orderCount + vo.getOrderCount() - capacity) <0 && (orderCount + vo.getOrderCount() + rate) - capacity >=0 && evaluate)
 							{
 								vo.setExpectedSoldOutTime(expectedSoldTime);
@@ -195,6 +195,8 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 					{
 						done = true;
 					}
+					
+					
 				}
 				
 			}
