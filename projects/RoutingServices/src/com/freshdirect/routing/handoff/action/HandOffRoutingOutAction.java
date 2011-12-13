@@ -223,32 +223,33 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 
 							DispatchTrailerCorrelationResult result = locEntry.getValue();
 							trailerResult.add(result);
-
-							for(ITrailerModel trailer : result.getTrailers()){							
-								if(!trailerCnts.containsKey(locEntry.getKey())) {
-									trailerCnts.put(locEntry.getKey(), 0);
-								}
-								trailerCnts.put(locEntry.getKey(), trailerCnts.get(locEntry.getKey()).intValue()+1);
-								trailer.appendRoutingTrailer(trailer.getTrailerId());
-								String formattedTrailerSeq = RoutingServicesProperties.isTrailerNoFormatEnabled() 
-											?  formatTrailerNumber(trailerCnts.get(locEntry.getKey())): formatRouteNumber(trailerCnts.get(locEntry.getKey()));
-								trailer.setTrailerId(facilityLookup.get(locEntry.getKey()).getPrefix()
-										+ splitStringForCode(trailer.getTrailerId())+ formattedTrailerSeq);
-								Iterator<IRouteModel> itr = trailer.getRoutes().iterator();
-								IRouteModel _route = null;								
-								IHandOffBatchRoute t_route = null; 
-								while(itr.hasNext()){
-									_route = itr.next();
-									t_route = new HandOffBatchRoute(_route); 
-									if(t_route.getTrailerId() == null &&
-											trailer.getTrailerId() != null && trailer.getTrailerId().length() > 0){
-										t_route.setTrailerId(trailer.getTrailerId());
+							if(result.getTrailers() != null){
+								for(ITrailerModel trailer : result.getTrailers()){							
+									if(!trailerCnts.containsKey(locEntry.getKey())) {
+										trailerCnts.put(locEntry.getKey(), 0);
 									}
+									trailerCnts.put(locEntry.getKey(), trailerCnts.get(locEntry.getKey()).intValue()+1);
+									trailer.appendRoutingTrailer(trailer.getTrailerId());
+									String formattedTrailerSeq = RoutingServicesProperties.isTrailerNoFormatEnabled() 
+												?  formatTrailerNumber(trailerCnts.get(locEntry.getKey())): formatRouteNumber(trailerCnts.get(locEntry.getKey()));
+									trailer.setTrailerId(facilityLookup.get(locEntry.getKey()).getPrefix()
+											+ splitStringForCode(trailer.getTrailerId())+ formattedTrailerSeq);
+									Iterator<IRouteModel> itr = trailer.getRoutes().iterator();
+									IRouteModel _route = null;								
+									IHandOffBatchRoute t_route = null; 
+									while(itr.hasNext()){
+										_route = itr.next();
+										t_route = new HandOffBatchRoute(_route); 
+										if(t_route.getTrailerId() == null &&
+												trailer.getTrailerId() != null && trailer.getTrailerId().length() > 0){
+											t_route.setTrailerId(trailer.getTrailerId());
+										}
+									}
+									s_trailer = new HandOffBatchTrailer(trailer);
+									s_trailer.setBatchId(this.getBatch().getBatchId());
+									s_trailer.setOriginId(locEntry.getKey());								
+									s_trailers.add(s_trailer);
 								}
-								s_trailer = new HandOffBatchTrailer(trailer);
-								s_trailer.setBatchId(this.getBatch().getBatchId());
-								s_trailer.setOriginId(locEntry.getKey());								
-								s_trailers.add(s_trailer);
 							}
 					}
 				}
@@ -635,8 +636,11 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 							model.setMaxRunTime(_waveInstance.getMaxRunTime());
 							model.setStartTime(_waveInstance.getWaveStartTime().getAsDate());											
 							model.setCompletionTime(RoutingDateUtil.addSeconds(model.getStartTime(), model.getMaxRunTime()));
-								}
-							}
+							
+							model.setRoutes(new TreeSet<IHandOffBatchRoute>(
+									new RouteComparator1()));
+						}
+					}
 				}
 			}
 		} else {
@@ -652,7 +656,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		}
 
 		for(ITrailerModel trailer : trailers){
-							double trailerContainerCnt = 0;						
+			double trailerContainerCnt = 0;						
 			Collections.sort(crossDockRoutes, new HandOffBatchRouteComparator());
 			Iterator<IHandOffBatchRoute> routeItr = crossDockRoutes.iterator();
 			while(routeItr.hasNext()){
@@ -670,23 +674,19 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 									
 									routeContCnt = routeCartonCnt/maxCartonsPerCont;
 									
-									if((routeContCnt + trailerContainerCnt) < maxContPerTrailer){
+									if ((routeContCnt + trailerContainerCnt) < maxContPerTrailer) {
 										trailerContainerCnt += routeContCnt;
-						if(trailer.getRoutes() == null){
-							trailer.setRoutes(new TreeSet<IHandOffBatchRoute>(new RouteComparator1()));
-						}
-						trailer.getRoutes().add(route);
-						routeItr.remove();
-									}else{
+										trailer.getRoutes().add(route);
+										routeItr.remove();
+									} else {
 										break;
 									}
-								}
-							
-						}
+				}
+			}
 			if(trailer.getRoutes().size() > 0){
 				if(result.getTrailers() == null) { 
 					result.setTrailers(new TreeSet<ITrailerModel>(new TrailerComparator()));
-					}
+				}
 				result.getTrailers().add(trailer);
 				}
 			}
@@ -697,7 +697,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 	class DispatchTrailerCorrelationResult {
 
 		List<IHandOffBatchRoute> unassignedRoutes;
-		Set<ITrailerModel> trailers;
+		Set<ITrailerModel> trailers = new TreeSet<ITrailerModel>(new TrailerComparator1());
 
 		public List<IHandOffBatchRoute> getUnassignedRoutes() {
 			return unassignedRoutes;
