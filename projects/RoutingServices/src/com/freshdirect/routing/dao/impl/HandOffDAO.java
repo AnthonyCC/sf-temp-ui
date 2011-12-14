@@ -2087,7 +2087,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 				PreparedStatement ps =
 					connection.prepareStatement(query);
 				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
-				ps.setDate(3, new java.sql.Date(cutoffDate.getTime()));
+				ps.setDate(2, new java.sql.Date(cutoffDate.getTime()));
 			
 				return ps;
 			}  
