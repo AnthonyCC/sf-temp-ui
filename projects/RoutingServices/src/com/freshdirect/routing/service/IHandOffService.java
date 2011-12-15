@@ -82,7 +82,7 @@ public interface IHandOffService {
 	
 	List<IHandOffBatchRoute> getHandOffBatchDispatchRoutes(String handoffBatchId, Date deliveryDate) throws RoutingServiceException;
 	
-	List<Truck> getAvailableTrucksInService(String assetType, Date deliveryDate, String assetStatus) throws RoutingServiceException;
+	List<Truck> getAvailableTrucksInService(Date deliveryDate) throws RoutingServiceException;
 	
 	List<TruckPreferenceStat> getEmployeeTruckPreferences() throws RoutingServiceException;
 	
@@ -103,4 +103,6 @@ public interface IHandOffService {
 	List<IHandOffBatchPlan> getHandOffBatchTrailerPlans(Date deliveryDate, Date cutOffDate) throws RoutingServiceException;
 	
 	List<IHandOffBatchDispatchResource> getHandOffBatchTrailerPlanResource(Date deliveryDate, Date cutoffDate) throws RoutingServiceException;
+
+	Set<IHandOffDispatch> getHandOffTrailerDispatch(Date deliveryDate, Date cutOffDate) throws RoutingServiceException;
 }

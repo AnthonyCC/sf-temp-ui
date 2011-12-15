@@ -361,12 +361,23 @@ public class StandingOrderUtil {
 					}
 					selectedTimeslot = timeslot;
 					LOGGER.info( "Timeslot reserved successfully: " + timeslot.toString() );
+				} else {
+					// no more capacity in this timeslot
+					LOGGER.info( "No more capacity in timeslot: " + timeslot.toString(), e );
 				}
-				// no more capacity in this timeslot
-				LOGGER.info( "No more capacity in timeslot: " + timeslot.toString(), e );
 			} catch (ReservationException e) {
-				// other error
-				LOGGER.warn( "Reservation failed for timeslot: " + timeslot.toString(), e );
+				if(forceCapacity){
+					try {
+						reservation = FDCustomerManager.makeReservation( customer, timeslot, EnumReservationType.STANDARD_RESERVATION, deliveryAddressId, reserveActionInfo, false, event, forceCapacity);
+					} catch (ReservationException e1) {						
+						e1.printStackTrace();
+					}
+					selectedTimeslot = timeslot;
+					LOGGER.info( "Timeslot reserved successfully: " + timeslot.toString() );
+				} else {
+					// other error
+					LOGGER.warn( "Reservation failed for timeslot: " + timeslot.toString(), e );
+				}
 			}
 			if ( reservation != null ) 
 				break;

@@ -771,6 +771,7 @@ public class DispatchController extends AbstractMultiActionController {
 	 * @param response current HTTP response
 	 * @return a ModelAndView to render the response
 	 */
+	@SuppressWarnings("unchecked")
 	public ModelAndView dispatchHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
 		String dispDate = request.getParameter("dispDate");

@@ -360,9 +360,9 @@ public class HandOffService extends BaseService implements IHandOffService {
 		return routes;
 	}
 	
-	public List<Truck> getAvailableTrucksInService(String assetType, Date deliveryDate, String assetStatus) throws RoutingServiceException {
+	public List<Truck> getAvailableTrucksInService(Date deliveryDate) throws RoutingServiceException {
 		try {
-			return getHandOffDAOImpl().getAvailableTrucksInService(assetType, deliveryDate, assetStatus);
+			return getHandOffDAOImpl().getAvailableTrucksInService(deliveryDate);
 		} catch (SQLException e) {
 			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 		}
@@ -459,6 +459,14 @@ public class HandOffService extends BaseService implements IHandOffService {
 			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 		}
 		return planResources;
+	}
+
+	public Set<IHandOffDispatch> getHandOffTrailerDispatch(Date deliveryDate, Date cutOffDate) throws RoutingServiceException {
+		try {
+			return getHandOffDAOImpl().getHandOffTrailerDispatch(deliveryDate, cutOffDate);
+		} catch (SQLException e) {
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
 	}
 
 }

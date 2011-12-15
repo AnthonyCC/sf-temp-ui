@@ -279,9 +279,9 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 
 	private static final String GET_HANDOFFBATCH_DEPOTSCHEDULE_EX = "SELECT * FROM TRANSP.HANDOFF_BATCHDEPOTSCHEDULE_EX X WHERE X.DAY_OF_WEEK = ? and CUTOFF_DATETIME = ?";
 		
-	private static final String GET_HANDOFFBATCH_ASSETTRUCKS = "SELECT A.ASSET_NO, A.ASSET_STATUS, A.ASSET_TYPE "
-																	+" FROM TRANSP.ASSET A "
-																	+" WHERE A.ASSET_TYPE = ? and A.ASSET_STATUS = ? and A.ASSET_NO not in (SELECT D.PHYSICAL_TRUCK FROM TRANSP.DISPATCH D WHERE D.DISPATCH_DATE = ? AND D.PHYSICAL_TRUCK IS NOT NULL)"; 
+	private static final String GET_HANDOFFBATCH_ASSETTRUCKS = "SELECT A.ASSET_NO, A.ASSET_STATUS, A.ASSET_TYPE " +
+			" FROM TRANSP.ASSET A WHERE A.ASSET_TYPE in ('TRUCK', 'TRAILER') and A.ASSET_STATUS = 'ACT' " +
+			" and A.ASSET_NO not in (SELECT D.PHYSICAL_TRUCK FROM TRANSP.DISPATCH D WHERE D.DISPATCH_DATE = ? AND D.PHYSICAL_TRUCK IS NOT NULL)"; 
 	
 	private static final String GET_HANDOFFBATCH_TRUCKPREFERECES = "SELECT * FROM TRANSP.TRUCK_PREFERENCE"; 
 	
@@ -322,8 +322,9 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
             "and BX.CUTOFF_DATETIME < (select BZ.CUTOFF_DATETIME from TRANSP.HANDOFF_BATCH bz where BZ.BATCH_ID = ? ) "+
             "and DX.STATUS = 'CPD'))";
 	
-	private static final String INSERT_HANDOFFBATCH_AUTODISPATCHES = "INSERT INTO TRANSP.DISPATCH ( DISPATCH_ID, DISPATCH_DATE , ZONE, SUPERVISOR_ID, ROUTE, START_TIME, FIRST_DLV_TIME, PLAN_ID, ISBULLPEN, REGION, PHYSICAL_TRUCK )" +
-																" VALUES ( ?,?,?,?,?,?,?,?,?,?,? )";
+	private static final String INSERT_HANDOFFBATCH_AUTODISPATCHES = "INSERT INTO TRANSP.DISPATCH ( DISPATCH_ID, DISPATCH_DATE, ORIGIN_FACILITY, DESTINATION_FACILITY, " +
+			" ZONE, SUPERVISOR_ID, ROUTE, START_TIME, FIRST_DLV_TIME, PLAN_ID, ISBULLPEN, REGION, PHYSICAL_TRUCK, CUTOFF_DATETIME ) " +
+			" VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
 	
 	private static final String CLEAR_HANDOFFBATCH_AUTODISPATCHES = "DELETE FROM TRANSP.DISPATCH D WHERE D.DISPATCH_DATE = ? " +
 			"and D.START_TIME in (select B.DISPATCHTIME from TRANSP.HANDOFF_BATCHDISPATCHEX B where B.BATCH_ID = ? and B.STATUS = 'CPD' "+ 
@@ -363,19 +364,24 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	"from  transp.HANDOFF_BATCH b, TRANSP.HANDOFF_BATCHTRAILER r  where B.BATCH_ID = ? and B.BATCH_ID = R.BATCH_ID";
 
 	private static final String GET_HANDOFFBATCH_TRAILER_PLANS = "SELECT p.* FROM TRANSP.PLAN P, TRANSP.TRN_FACILITY f "+ 
-    		" WHERE P.PLAN_DATE = ? and P.CUTOFF_DATETIME = ? and F.ID = P.DESTINATION_FACILITY and F.FACILITYTYPE_CODE = 'CD'";
+    		" WHERE P.PLAN_DATE = ? and to_char(P.CUTOFF_DATETIME, 'HH:MI AM') = to_char(?, 'HH:MI AM') and F.ID = P.DESTINATION_FACILITY and F.FACILITYTYPE_CODE = 'CD'";
 
 	private static final String GET_HANDOFFBATCH_TRAILER_PLANRESOURCES = "SELECT PR.* FROM TRANSP.PLAN_RESOURCE PR, TRANSP.PLAN P "+
 			" WHERE PR.PLAN_ID = P.PLAN_ID and P.PLAN_ID IN (SELECT P.PLAN_ID FROM TRANSP.PLAN P, TRANSP.TRN_FACILITY f "+ 
-			" WHERE P.PLAN_DATE = ? and P.CUTOFF_DATETIME = ? and F.ID = P.DESTINATION_FACILITY and F.FACILITYTYPE_CODE = 'CD')";
+			" WHERE P.PLAN_DATE = ? and to_char(P.CUTOFF_DATETIME, 'HH:MI AM') = to_char(?, 'HH:MI AM') and F.ID = P.DESTINATION_FACILITY and F.FACILITYTYPE_CODE = 'CD')";
+
+	private static final String GET_TRAILER_DISPATCHS = "SELECT D.* FROM TRANSP.DISPATCH D, TRANSP.TRN_FACILITY f "+ 
+			" WHERE D.DISPATCH_DATE = ? and to_char(D.CUTOFF_DATETIME, 'HH:MI AM') = to_char(?, 'HH:MI AM') and F.ID = D.DESTINATION_FACILITY and F.FACILITYTYPE_CODE = 'CD'";
 
 	private static final String CLEAR_TRAILER_DISPATCHS = "DELETE FROM TRANSP.DISPATCH WHERE DISPATCH_ID IN "+ 
     		" (select D.DISPATCH_ID FROM TRANSP.DISPATCH D, TRANSP.TRN_FACILITY F  "+
-    		" where F.ID=D.DESTINATION_FACILITY and F.FACILITYTYPE_CODE='CD' and D.DISPATCH_DATE = ? and D.CUTOFF_DATE = ? )";
+    		" where F.ID=D.DESTINATION_FACILITY and F.FACILITYTYPE_CODE='CD' and D.DISPATCH_DATE = ? " +
+    		" and to_char(D.CUTOFF_DATETIME, 'HH:MI AM') = to_char(?, 'HH:MI AM') )";
 
-	private static final String CLEAR_TRAILER_DISPATCHRESOURCES ="DELETE FROM TRANSP.DISPATCH_RESOURCE DR WHERE DR.DISPATCH_ID IN "+
+	private static final String CLEAR_TRAILER_DISPATCHRESOURCES = "DELETE FROM TRANSP.DISPATCH_RESOURCE DR WHERE DR.DISPATCH_ID IN "+
     		" (select D.DISPATCH_ID FROM TRANSP.DISPATCH D, TRANSP.TRN_FACILITY F  "+
-    		" where F.ID=D.DESTINATION_FACILITY and F.FACILITYTYPE_CODE='CD' and D.DISPATCH_DATE = ? and D.CUTOFF_DATE = ?)";
+    		" where F.ID=D.DESTINATION_FACILITY and F.FACILITYTYPE_CODE='CD' and D.DISPATCH_DATE = ? " +
+    		" and to_char(D.CUTOFF_DATETIME, 'HH:MI AM') = to_char(?, 'HH:MI AM')) ";
 
 	private static final String GET_HANDOFFBATCH_TRAILERCNT = "select T.CROSSDOCK_CODE, count(1) NOOFTRAILERS " +
 			"from TRANSP.HANDOFF_BATCH b, TRANSP.HANDOFF_BATCHTRAILER t where B.DELIVERY_DATE = ? " +
@@ -1678,7 +1684,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 						_dispatch.setPlanId(rs.getString("PLAN_ID"));
 						_dispatch.setStartTime(rs.getTimestamp("START_TIME"));
 						_dispatch.setStartTime(rs.getTimestamp("FIRST_DLV_TIME"));
-						//_dispatch.setCutoffTime(rs.getTimestamp("CUTOFF_DATETIME"));
+						_dispatch.setCutoffTime(rs.getTimestamp("CUTOFF_DATETIME"));
 						result.add(_dispatch);
 					} while(rs.next());		        		    	
 				}
@@ -1687,17 +1693,52 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		
 		return result;
 	}
-	
-	public List<Truck> getAvailableTrucksInService(final String assetType, final Date deliveryDate, final String assetStatus) throws SQLException {
+	public Set<IHandOffDispatch> getHandOffTrailerDispatch(final Date deliveryDate, final Date cutOffDate) throws SQLException {
+
+		final Set<IHandOffDispatch> result = new HashSet<IHandOffDispatch>();
+			
+		PreparedStatementCreator creator = new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+			
+				PreparedStatement ps = null;
+				ps = connection.prepareStatement(GET_TRAILER_DISPATCHS);
+				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
+				ps.setTimestamp(2, new Timestamp(cutOffDate.getTime()));				
+				return ps;
+			}  
+		};
+
+		jdbcTemplate.query(creator, 
+				new RowCallbackHandler() { 
+				public void processRow(ResultSet rs) throws SQLException {				    	
+					do { 
+						IHandOffDispatch _dispatch = new HandOffDispatch();
+						_dispatch.setDispatchId(rs.getString("DISPATCH_ID"));
+						_dispatch.setDispatchDate(rs.getDate("DISPATCH_DATE"));
+						_dispatch.setOriginFacility(rs.getString("ORIGIN_FACILITY"));
+						_dispatch.setDestinationFacility(rs.getString("DESTINATION_FACILITY"));
+						_dispatch.setRoute(rs.getString("ROUTE"));
+						_dispatch.setTruck(rs.getString("TRUCK"));
+						_dispatch.setPlanId(rs.getString("PLAN_ID"));
+						_dispatch.setStartTime(rs.getTimestamp("START_TIME"));
+						_dispatch.setStartTime(rs.getTimestamp("FIRST_DLV_TIME"));
+						_dispatch.setCutoffTime(rs.getTimestamp("CUTOFF_DATETIME"));
+						result.add(_dispatch);
+					} while(rs.next());		        		    	
+				}
+		}
+		);
+		
+		return result;
+	}
+	public List<Truck> getAvailableTrucksInService(final Date deliveryDate) throws SQLException {
 		final List<Truck> result = new ArrayList<Truck>();
 		
 		PreparedStatementCreator creator = new PreparedStatementCreator() {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
 				PreparedStatement ps =
 					connection.prepareStatement(GET_HANDOFFBATCH_ASSETTRUCKS);
-				ps.setString(1, assetType);
-				ps.setString(2, assetStatus);
-				ps.setDate(3, new java.sql.Date(deliveryDate.getTime()));
+				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
 				return ps;
 			}  
 		};
@@ -1781,7 +1822,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		Connection connection = null;		
 		try {
 			
-			this.jdbcTemplate.update(CLEAR_TRAILER_DISPATCHRESOURCES, new Object[] {deliveryDate, cutOffDate});
+			this.jdbcTemplate.update(CLEAR_TRAILER_DISPATCHRESOURCES, new Object[] {deliveryDate, new Timestamp(cutOffDate.getTime())});
 			
 			connection = this.jdbcTemplate.getDataSource().getConnection();	
 			
@@ -1795,7 +1836,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		Connection connection = null;
 		try {
 			
-			this.jdbcTemplate.update(CLEAR_TRAILER_DISPATCHS, new Object[] {deliveryDate,  cutOffDate});
+			this.jdbcTemplate.update(CLEAR_TRAILER_DISPATCHS, new Object[] {deliveryDate,  new Timestamp(cutOffDate.getTime())});
 			
 			connection = this.jdbcTemplate.getDataSource().getConnection();	
 			
@@ -1816,6 +1857,8 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 				batchUpdater.declareParameter(new SqlParameter(Types.DATE));
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));				
 				batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
 				batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
@@ -1823,6 +1866,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+				batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
 				batchUpdater.compile();
 	
 				connection = this.jdbcTemplate.getDataSource().getConnection();
@@ -1835,6 +1879,8 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 					handOffDispatchId = this.getNewHandOffAutoDispatchId();
 					batchUpdater.update(new Object[]{ handOffDispatchId
 												, model.getDispatchDate()
+												, model.getOriginFacility()
+												, model.getDestinationFacility()
 												, model.getZone()
 												, model.getSupervisorId()
 												, model.getRoute()												
@@ -1844,6 +1890,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 												, model.getIsBullpen()
 												, model.getRegion()
 												, model.getTruck()
+												, model.getCutoffTime()
 										});
 				}			
 				batchUpdater.flush();
@@ -2038,7 +2085,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 				PreparedStatement ps =
 					connection.prepareStatement(query);
 				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));				
-				ps.setDate(2, new java.sql.Date(cutOffDate.getTime()));
+				ps.setTimestamp(2, new Timestamp(cutOffDate.getTime()));
 				
 				return ps;
 			}  
@@ -2087,8 +2134,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 				PreparedStatement ps =
 					connection.prepareStatement(query);
 				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
-				ps.setDate(2, new java.sql.Date(cutoffDate.getTime()));
-			
+				ps.setTimestamp(2, new Timestamp(cutoffDate.getTime()));
 				return ps;
 			}  
 		};

@@ -215,15 +215,14 @@
 				electric : false,
 				inputField : "scribDate",
 				ifFormat : "%m/%d/%Y",
-				singleClick: true,                                            
+				singleClick: true,
 				button : "trigger_scribDate",
-				onUpdate : updateDate                        
+				onUpdate : updateDate
 			}
 		);
 		function updateDate(cal) {
 			var selIndex = cal.date.getDay();
 			if(selIndex == 0) selIndex = 7;
-			// document.getElementById('dispatchDay').selectedIndex =  selIndex;
 		};
 		
 		function showZoneSelection(originRefVar, destRefVar) {
@@ -243,11 +242,13 @@
 				  alert('Origin Facility cannot be Delivery Zone.');
 				  originRefVar.selectedIndex = 0;
 			  }
-			  if( result[1] === 'FD'){
+			  if( result[1] === 'DPT'){
 				  alert('Destination Facility cannot be Main Plant.');
 				  destRefVar.selectedIndex = 0;
 			  } else if((result[1] === result[0]) && (originRef != '' && destRef != '')){
 				  alert('Both Origin & Desination Facility cannot be same.');
+				  originRefVar.selectedIndex = 0;
+				  destRefVar.selectedIndex = 0;
 			  } else {
 					if( result[1] === 'SIT'){
 						document.getElementById("zoneS").disabled=false;

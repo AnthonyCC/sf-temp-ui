@@ -153,8 +153,8 @@ public class HandOffServiceProxy  extends BaseServiceProxy  {
 		return getService().getHandOffBatchDispatchRoutes(handoffBatchId, deliveryDate);
 	}
 	
-	public List<Truck> getAvailableTrucksInService(String assetType, Date deliveryDate, String assetStatus) throws RoutingServiceException {
-		return getService().getAvailableTrucksInService(assetType, deliveryDate, assetStatus);
+	public List<Truck> getAvailableTrucksInService(Date deliveryDate) throws RoutingServiceException {
+		return getService().getAvailableTrucksInService(deliveryDate);
 	}
 	
 	public List<TruckPreferenceStat> getEmployeeTruckPreferences() throws RoutingServiceException {
@@ -195,5 +195,9 @@ public class HandOffServiceProxy  extends BaseServiceProxy  {
 
 	public List<IHandOffBatchDispatchResource> getHandOffBatchTrailerPlanResource(Date deliveryDate, Date cutOffDate) throws RoutingServiceException{
 		return getService().getHandOffBatchTrailerPlanResource(deliveryDate, cutOffDate);
+	}
+
+	public Set<IHandOffDispatch> getHandOffTrailerDispatch(Date deliveryDate, Date cutOffDate) throws RoutingServiceException {
+		return getService().getHandOffTrailerDispatch(deliveryDate, cutOffDate);
 	}
 }

@@ -28,6 +28,7 @@ import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
 import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
 import com.freshdirect.routing.constants.EnumTruckPreference;
+import com.freshdirect.routing.model.HandOffBatchRoute;
 import com.freshdirect.routing.model.HandOffDispatch;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchDispatchResource;
@@ -132,7 +133,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 									trailerMapping.put(trailer.getTrailerId(), trailer);
 								}
 							}
-							//clear if any dispatched exists
+							//clear if any dispatches exists
 							proxy.clearHandOffBatchAutoDispatches(this.getBatch().getBatchId()
 																		, this.getBatch().getDeliveryDate()
 																		, this.getBatch().getCutOffDateTime());
@@ -148,6 +149,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 				            proxy.addNewHandOffBatchAutoDispatches(dispatchMapping.values());				            
 				            
 							Set<IHandOffDispatch> batchDispatches = proxy.getHandOffDispatch(this.getBatch().getBatchId(), this.getBatch().getDeliveryDate());
+							batchDispatches.addAll(proxy.getHandOffTrailerDispatch(this.getBatch().getDeliveryDate(), this.getBatch().getCutOffDateTime()));
 							for(IHandOffDispatch dispatch : batchDispatches){
 								IHandOffDispatch d = dispatchMapping.get(dispatch.getPlanId());
 								if(d != null){
@@ -169,6 +171,16 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 									routesToTrucksCommit.add(route);									
 								}
 								
+								for(Map.Entry<String, IHandOffBatchTrailer> trailerEntry : trailerMapping.entrySet()) {									
+									IHandOffDispatch d = routeDispatchMapping.get(trailerEntry.getValue().getTrailerId());
+									if(d != null){
+										IHandOffBatchRoute _route = new HandOffBatchRoute();
+										_route.setRouteId(trailerEntry.getValue().getTrailerId());
+										_route.setTruckNumber(d.getTruck());
+										routesToTrucksCommit.add(_route);
+									}
+								}
+
 								if(routesToTrucksCommit.size() > 0){
 																
 								SapSendPhysicalTruckInfo sapHandOffEngine 
@@ -247,7 +259,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			deliveryDate = this.getBatch().getDeliveryDate();
 		}
 		
-		trucks = proxy.getAvailableTrucksInService("TRUCK", deliveryDate, "ACT");
+		trucks = proxy.getAvailableTrucksInService(deliveryDate);
 		Iterator<Truck> truckItr = trucks.iterator();
 		while(truckItr.hasNext()){
 			Truck truck = truckItr.next();
@@ -275,7 +287,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 				continue;
 			}
 			if(_plan.getZoneCode() == null 
-					&& EnumTransportationFacilitySrc.CROSSDOCK.getName().equalsIgnoreCase(facilityLookUp.get(_plan.getOriginFacility()).getName())){
+					&& EnumTransportationFacilitySrc.CROSSDOCK.getName().equalsIgnoreCase(facilityLookUp.get(_plan.getDestinationFacility()).getName())){
 				trailerPlans.add(_plan);
 				continue;
 			}
@@ -304,7 +316,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 				zoneRouteList = Collections.EMPTY_LIST;
 			constructDispatchModelList(dispatchMapping, (List<IHandOffBatchPlan>)batchPlanMap.get(zone), zoneRouteList, Collections.EMPTY_LIST, false);
 		}
-		//Bullpen Plan List
+		//Bull-pen Plan List
 		constructDispatchModelList(dispatchMapping, bullpens, Collections.EMPTY_LIST, Collections.EMPTY_LIST, false);
 		
 		//Trailer Plan List
@@ -336,6 +348,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			_dispatch.setMaxTime(_plan.getMaxTime());
 			_dispatch.setRegion(_plan.getRegion());
 			_dispatch.setZone(_plan.getZoneCode());
+			_dispatch.setCutoffTime(_plan.getCutOffTime());
 			_dispatch.setBatchDispatchResources(_plan.getBatchPlanResources());
 			
 			IHandOffBatchRoute route = matchRoute(_plan, zoneRouteList);
@@ -419,7 +432,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			
 			IHandOffDispatch _dispatch = dispatchEntry.getValue();
 			
-			if((_dispatch.getZone() == null && _dispatch.isTrailer()) && _dispatch.getRoute() != null){
+			if(_dispatch.getRoute() != null){
 				String id = _dispatch.getDispatchId();
 				Date date = _dispatch.getDispatchDate();
 				String zone = _dispatch.getZone();
@@ -639,7 +652,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 					// find the first not colliding
 					for (Dispatch d : freeDispatches)
 						COLLISION: for (Dispatch e : engaged)
-							if (!d.collide(e)) {
+							if (!d.collide(e) && !d.isTrailer()) {
 								for (Dispatch f : engaged)
 									if (!f.getId().equals(e.getId()) && e.getTruck().equals(f.getTruck()) &&
 											d.collide(f))
@@ -660,12 +673,18 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 					}
 				}
 			}
-			if((dispatch.isTrailer() && truck.isTrailer())||(!dispatch.isTrailer() && !truck.isTrailer())){
-			dispatch.setTruck(truck);
-			LOGGER.info("Free Dispatch >>> Leaves>> "+dispatch.getLeaves()+" nextAvailable>> "+dispatch.getNextAvailable()+" Route>>> "+dispatch.getRoute()+" Truck>>> "+dispatch.getTruck().getId());
-			engaged.add(dispatch);
-			free.remove(dispatch);
-		}
+			if(dispatch.isTrailer() && truck.isTrailer()){
+				dispatch.setTruck(truck);
+				LOGGER.info("Free Dispatch >>> Leaves>> "+dispatch.getLeaves()+" nextAvailable>> "+dispatch.getNextAvailable()+" Trailer Route>>> "+dispatch.getRoute()+" Trailer Truck>>> "+dispatch.getTruck().getId());
+				engaged.add(dispatch);
+				free.remove(dispatch);
+			}
+			if(!dispatch.isTrailer() && !truck.isTrailer()){
+				dispatch.setTruck(truck);
+				LOGGER.info("Free Dispatch >>> Leaves>> "+dispatch.getLeaves()+" nextAvailable>> "+dispatch.getNextAvailable()+" Route>>> "+dispatch.getRoute()+" Truck>>> "+dispatch.getTruck().getId());
+				engaged.add(dispatch);
+				free.remove(dispatch);
+			}
 		}
 
 		LOGGER.info("Auto-assignment took " + (System.currentTimeMillis() - start) + "ms");
@@ -744,7 +763,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 	
 	private void dumpDispatches(Map<String, IHandOffDispatch> dispatchMapping) {
 		
-		if(dispatchMap !=null){				
+		if(dispatchMap !=null){
 			for (Map.Entry<String, IHandOffDispatch> dispatchEntry : dispatchMapping.entrySet()) {				
 				IHandOffDispatch dispatch = dispatchEntry.getValue();
 				Dispatch d = dispatchMap.get(dispatch.getDispatchId());

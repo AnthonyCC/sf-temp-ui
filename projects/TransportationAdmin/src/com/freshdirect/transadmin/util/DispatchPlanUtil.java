@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
 import com.freshdirect.transadmin.model.Asset;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.DispatchReason;
@@ -926,8 +927,9 @@ public class DispatchPlanUtil {
 	}
 	
 	public static void setDispatchStatus(DispatchCommand command) {
-		//for all non bullpen dispatches
-		if (!TransStringUtil.isEmpty(command.getZoneName())) {
+		//for all non bullpen dispatches or trailer routes
+		if (!TransStringUtil.isEmpty(command.getZoneName())
+				|| EnumTransportationFacilitySrc.CROSSDOCK.getName().equals(command.getDestinationFacility().getTrnFacilityType().getName())) {
 			
 			//decide the dispatch status after dispatch;
 			if (!TransStringUtil.isEmpty(command.getDispatchTime())) {

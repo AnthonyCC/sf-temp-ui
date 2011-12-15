@@ -162,6 +162,7 @@ public class DispatchCommand extends WebPlanInfo {
 	}
 		
 
+	@SuppressWarnings("unchecked")
 	public Set getResources() {
 		Set dispatchResources=new HashSet();
 		dispatchResources.addAll(getResources(this.getDrivers(),EnumResourceType.DRIVER));
@@ -463,10 +464,12 @@ public class DispatchCommand extends WebPlanInfo {
 	
 	public String getRegionZone()
 	{
-		String zone=getZoneCode()==null?"":""+getZoneCode();
-		if("true".equalsIgnoreCase(getIsBullpen())) zone="Bullpen";		
-		if(getRegionName()==null) return zone;
-		return (getRegionName()==null?"":getRegionName())+"-"+zone;
+		String zone = getZoneCode() == null ? "" : "" + getZoneCode();
+		if ("true".equalsIgnoreCase(getIsBullpen()))
+			zone = "Bullpen";
+		if (getRegionName() == null)
+			return zone;
+		return (getRegionName() == null ? "" : getRegionName()) + "-" + zone;
 	}
 		
 	public Date getHtinDate() {
@@ -581,4 +584,14 @@ public class DispatchCommand extends WebPlanInfo {
 		this.physicalTruck = physicalTruck;
 	}
 	
+	public String getFacilityInfoEx() {
+		if (originFacility == null || destinationFacility == null)
+			return null;
+	
+		StringBuffer buf = new StringBuffer();
+		buf.append(originFacility.getName()+" - "+destinationFacility.getName());
+
+		return buf.toString();
+	}
+
 }
