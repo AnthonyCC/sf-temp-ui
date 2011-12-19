@@ -2285,7 +2285,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		
 		try{
 			conn = this.getConnection();
-			ps = conn.prepareStatement("select * from CUST.VOICESHOT_CAMPAIGN order by campaign_name");
+			ps = conn.prepareStatement("select * from CUST.VOICESHOT_CAMPAIGN order by upper(campaign_name)");
 			rs = ps.executeQuery();			
 			while(rs.next()) {
 				CrmVSCampaignModel model = new CrmVSCampaignModel();
@@ -2298,6 +2298,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				model.setChangeByUser(rs.getString("CHANGE_BY_USER"));
 				model.setSoundfileName(rs.getString("SOUND_FILE_NAME"));
 				model.setSoundFileText(rs.getString("SOUND_FILE_TEXT"));
+				model.setDelay(rs.getInt("DELAY_IN_MINUTES"));
 				cList.add(model);
 			}
 		}catch (SQLException sqle) {
@@ -2712,7 +2713,9 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				model.setCustomerId(rset.getString("CUSTOMER_ID"));
 				model.setSaleId(rset.getString("SALE_ID"));
 				model.setRoute(rset.getString("TRUCK_NUMBER"));
-				model.setStopSequence(rset.getString("STOP_SEQUENCE"));
+				String sSeq = rset.getString("STOP_SEQUENCE");
+				int iSeq = Integer.parseInt(sSeq);
+				model.setStopSequence(iSeq + "");
 				cList.add(model);
 			}
 		}catch (SQLException sqle) {
@@ -2770,7 +2773,9 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 					model.setSaleId(rset.getString("sale_id"));
 					model.setCustomerId(rset.getString("customer_id"));
 					model.setRoute(rset.getString("TRUCK_NUMBER"));
-					model.setStopSequence(rset.getString("STOP_SEQUENCE"));
+					String sSeq = rset.getString("STOP_SEQUENCE");
+					int iSeq = Integer.parseInt(sSeq);
+					model.setStopSequence(iSeq + "");
 					cList.add(model);
 				}
 			}
@@ -2878,8 +2883,8 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		
 		try {
 			conn = this.getConnection();
-			ps = conn.prepareStatement("INSERT INTO CUST.VOICESHOT_CAMPAIGN(CAMPAIGN_ID,CAMPAIGN_NAME,ADD_BY_DATE,ADD_BY_USER,SOUND_FILE_NAME,SOUND_FILE_TEXT,CAMPAIGN_MENU_ID)" +
-										" VALUES(?,?,sysdate,?,?,?,?)");
+			ps = conn.prepareStatement("INSERT INTO CUST.VOICESHOT_CAMPAIGN(CAMPAIGN_ID,CAMPAIGN_NAME,ADD_BY_DATE,ADD_BY_USER,SOUND_FILE_NAME,SOUND_FILE_TEXT,CAMPAIGN_MENU_ID,DELAY_IN_MINUTES)" +
+										" VALUES(?,?,sysdate,?,?,?,?,?)");
 			long id = Long.parseLong(SequenceGenerator.getNextId(conn, "CUST", "VOICESHOT_SEQUENCE"));
 			ps.setLong(1, id);
 			ps.setString(2, model.getCampaignName());
@@ -2887,6 +2892,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			ps.setString(4, model.getSoundfileName());
 			ps.setString(5, model.getSoundFileText());
 			ps.setString(6, model.getCampaignMenuId());
+			ps.setInt(7, model.getDelay());
 			ps.execute();
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);			
@@ -2923,6 +2929,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				model.setChangeByUser(rs.getString("CHANGE_BY_USER"));
 				model.setSoundfileName(rs.getString("SOUND_FILE_NAME"));
 				model.setSoundFileText(rs.getString("SOUND_FILE_TEXT"));
+				model.setDelay(rs.getInt("DELAY_IN_MINUTES"));
 			}
 		}catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
@@ -2949,13 +2956,14 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		try {
 			conn = this.getConnection();
 			ps = conn.prepareStatement("UPDATE CUST.VOICESHOT_CAMPAIGN set CAMPAIGN_NAME=?, SOUND_FILE_NAME=?, SOUND_FILE_TEXT=?, CAMPAIGN_MENU_ID=?," +
-										" CHANGE_BY_USER=?, CHANGE_BY_DATE=SYSDATE where CAMPAIGN_ID=?");
+										" CHANGE_BY_USER=?, CHANGE_BY_DATE=SYSDATE, DELAY_IN_MINUTES=? where CAMPAIGN_ID=?");
 			ps.setString(1, model.getCampaignName());			
 			ps.setString(2, model.getSoundfileName());
 			ps.setString(3, model.getSoundFileText());
 			ps.setString(4, model.getCampaignMenuId());
 			ps.setString(5, model.getChangeByUser());
-			ps.setLong(6, Long.parseLong(model.getCampaignId()));
+			ps.setInt(6, model.getDelay());
+			ps.setLong(7, Long.parseLong(model.getCampaignId()));
 			ps.execute();
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);			
@@ -3015,13 +3023,13 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			ps.setString(1, orderId);			
 			rset = ps.executeQuery();
 			if(rset.next()) {
-				StringBuffer sb = new StringBuffer("Late Report: logged on:");
+				StringBuffer sb = new StringBuffer("Late Report: ");
 				sb.append(rset.getString("ADD_BY_DATE"));
-				sb.append(", By:");
+				sb.append(", ");
 				sb.append(rset.getString("created_BY_USER"));
-				sb.append(", Campaign:");
+				sb.append(", ");
 				sb.append( rset.getString("CAMPAIGN_NAME"));
-				sb.append(", Reason For Delay:");
+				sb.append(", ");
 				sb.append(rset.getString("REASON"));
 				
 				vsMsg = sb.toString();  
@@ -3054,7 +3062,6 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			rset = ps.executeQuery();
 			while(rset.next()) {
 				VSReasonCodes vrc = new VSReasonCodes();
-				vrc.setDelay(rset.getInt("DELAY_IN_MINUTES"));
 				vrc.setReasonId(rset.getString("REASON_ID"));
 				vrc.setReason(rset.getString("REASON"));
 				lst.add(vrc);

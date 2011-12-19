@@ -43,6 +43,11 @@
             alert('The WAVE field is invalid. Please correct and try again.');
             okToSubmit = false;
         }
+		
+		if(route.length == 0) {
+			alert('The ROUTE is required. Please enter and try again.');
+            okToSubmit = false;
+		}
 
         if(isNaN(route)) {
             alert('The ROUTE field is invalid. Please correct and try again.');
@@ -84,7 +89,7 @@
     <tr>
         <td width="15%"><table><tr><td><span class="sub_nav_title">Orders by Route & Stop</span></td></tr></table></td>
         <td width="55%" align="center"><table><tr><td>
-            Date* 
+            Date<font color="red">*</font> 
             <select name="month" required="true" class="pulldown">
                 <option value="">Month</option>
                             <%  for (int i=0; i<12; i++) {  %>
@@ -106,7 +111,7 @@
             &nbsp;
             Wave <input type="text" name="wave" size="6" maxlength="6" class="text" value="<%=request.getParameter("wave")%>">
             &nbsp;
-            Route <input type="text" name="route" size="6" maxlength="6" class="text" value="<%=request.getParameter("route")%>">
+            Route<font color="red">*</font> <input type="text" name="route" size="6" maxlength="6" class="text" value="<%=request.getParameter("route")%>">
             &nbsp;
             Stop <input type="text" name="stop1" size="5" maxlength="5" class="text" value="<%=request.getParameter("stop1")%>"> to <input type="text" name="stop2" size="5" maxlength="5" class="text" value="<%=request.getParameter("stop2")%>">
 

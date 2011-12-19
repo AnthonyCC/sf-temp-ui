@@ -46,7 +46,7 @@
 						<td width="3%" align="center" class="list_header_text"><b>Redial</b></td>						
 						<td width="8%" align="center" class="list_header_text"><b>VoiceShot <br/> Created By</b></td>
 						<td width="10%" align="center" class="list_header_text"><b>VoiceShot <br/> Created Date</b></td>
-						<td width="8%" align="center" class="list_header_text"><b>Start Time - <br/> End Time</b></td>
+						<td width="8%" align="center" class="list_header_text"><b>Start Time </b></td>
 						<td width="5%" align="center" class="list_header_text"><b>Scheduled <br/> Calls</b></td>
 						<td width="15%" align="center" class="list_header_text"><b>Delivered <br/> Calls</b></td>
 						<td width="5%" align="center" class="list_header_text"><b>UnDelivered <br/> Calls</b></td>
@@ -70,7 +70,7 @@
 				<td width="3%" class="border_bottom" align="center"><%= "Y".equals(model.getRedial())?"Yes":"No" %></td>
 				<td width="8%" class="border_bottom" align="center"><%= model.getAddByUser() %></td>
 				<td width="10%" class="border_bottom" align="center"><%= model.getAddByDate() %></td>
-				<td width="8%" class="border_bottom" align="center"><%= model.getStartTime() %> - <%= model.getEndTime() %></td>
+				<td width="8%" class="border_bottom" align="center"><%= model.getStartTime() %></td>
 				<td width="5%" class="border_bottom" align="center"><%= model.getScheduledCalls() %></td>
 				<td width="15%" class="border_bottom" align="center"><%= model.getDeliveredCallsLive() %> live | <%= model.getDeliveredCallsAM() %> answering machine</td>
 				<td width="5%" class="border_bottom" align="center"><%= model.getUndeliveredCalls() %></td>

@@ -6,7 +6,7 @@ public class VSReasonCodes  {
 	
 	String reasonId;
 	String reason;
-	int delay;
+	
 	
 	public String getReasonId() {
 		return reasonId;
@@ -20,12 +20,7 @@ public class VSReasonCodes  {
 	public void setReason(String reason) {
 		this.reason = reason;
 	}
-	public int getDelay() {
-		return delay;
-	}
-	public void setDelay(int delay) {
-		this.delay = delay;
-	}
+	
 		
 	
 }

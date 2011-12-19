@@ -24,10 +24,12 @@
 	String camp_id = request.getParameter("camp_id");
 	String sound_file = request.getParameter("sound_file_name");
 	String sound_file_text = request.getParameter("sound_file_text");		
+	String camp_minutes = request.getParameter("camp_minutes");		
 	String camp_name_err = "";
 	String camp_id_err = "";
 	String sound_file_err = "";
-	String sound_file_text_err = "";	
+	String sound_file_text_err = "";
+	String camp_minutes_err = "";
 	boolean errors_found = false;
 	boolean processed = false;
 	if("done".equals(request.getParameter("submission"))) {
@@ -39,6 +41,18 @@
 		if(camp_id == null || camp_id.length() == 0) {
 			camp_id_err = "<span style=\"font-size:9pt;font-weight:bold;color:red;\"><br/>Campaign MenuID cannot be empty. Voiceshot cannot be completed without the correct MenuID. Please follow the instructions to copy and paste the Campaign MenuID. </span>";
 			errors_found = true;
+		}
+		if(camp_minutes == null || camp_minutes.length() == 0) {
+			camp_minutes_err = "<span style=\"font-size:9pt;font-weight:bold;color:red;\"><br/>Delay in Minutes cannot be empty. </span>";
+			errors_found = true;
+		}
+		if(camp_minutes != null && camp_minutes.length() > 0) {
+			try {
+				int min = Integer.parseInt(camp_minutes);
+			} catch (Exception e ) {
+				camp_minutes_err = "<span style=\"font-size:9pt;font-weight:bold;color:red;\"><br/>Delay in Minutes should be delay time in minutes. </span>";
+				errors_found = true;
+			}
 		}
 		if(sound_file == null || sound_file.length() == 0) {
 			sound_file_err = "<span style=\"font-size:9pt;font-weight:bold;color:red;\"><br/>Sound File Name cannot be empty. Please make sure a sound file has been attached in voiceshot.com for this campaign. Enter the sound file name. </span><br/>";
@@ -57,6 +71,7 @@
 			model.setSoundfileName(sound_file);
 			model.setSoundFileText(sound_file_text);
 			model.setAddByUser(CrmSession.getCurrentAgent(session).getLdapId()); 
+			model.setDelay(Integer.parseInt(camp_minutes));
 			
 			CallCenterServices.addNewCampaign(model);
 			processed = true;
@@ -77,7 +92,11 @@
 	</tr>
 	<tr><td align="right" valign="top">Campaign MenuID</td>
 		<td><input name="camp_id" value="<%=camp_id%>" size="60"/><%=camp_id_err%>
-		<br/><span style="font-size:8pt;color:green;"><font style="color:red">**</font>Its very important that this Campaign ManuID matches with Campaign MenuID from Voiceshot. <br/>Login to voiceshot.com, choose the specific outbound campaign, choose "Campaign Options" in the left hand side menu. <br/>Click "Developer Options" tab and copy the "Campaign MenuID". <br/>That Campain MenuID needs to be pasted in this text box.</span></td>
+		<br/><span style="font-size:8pt;color:green;"><font style="color:red">**</font>Its very important that this Campaign MenuID matches with Campaign MenuID from Voiceshot. <br/>Login to voiceshot.com, choose the specific outbound campaign, choose "Campaign Options" in the left hand side menu. <br/>Click "Developer Options" tab and copy the "Campaign MenuID". <br/>That Campain MenuID needs to be pasted in this text box.</span></td>
+	</tr>
+	<tr><td align="right" valign="top">Delay in Minutes</td>
+		<td><input name="camp_minutes" value="<%=camp_minutes%>" size="60"/><%=camp_minutes_err%>
+		<br/><span style="font-size:8pt;color:green;"><font style="color:red">**</font>Must convert hours to minutes</span></td>
 	</tr>
 	<tr><td align="right" valign="top">Sound File Name</td>
 		<td><input name="sound_file_name" value="<%=sound_file%>" size="60"/><%=sound_file_err%></td>

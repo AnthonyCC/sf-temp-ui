@@ -36,6 +36,16 @@ public class CrmVSCampaignModel extends ModelSupport {
 	int status;
 	String saleId;
 	String customerId;
+	int delay;
+	String delayMinutes;
+	String lateIssueId;
+	
+	public int getDelay() {
+		return delay;
+	}
+	public void setDelay(int delay) {
+		this.delay = delay;
+	}
 	
 	public String getLateIssueId() {
 		return lateIssueId;
@@ -45,10 +55,6 @@ public class CrmVSCampaignModel extends ModelSupport {
 	public void setLateIssueId(String lateIssueId) {
 		this.lateIssueId = lateIssueId;
 	}
-
-
-	String delayMinutes;
-	String lateIssueId;
 	
 	public CrmVSCampaignModel() {
 		super();	

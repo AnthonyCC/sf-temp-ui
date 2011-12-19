@@ -140,7 +140,7 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
     <tr>
         <td width="15%"><span class="sub_nav_title">Orders by Route & Stop <% if (routeStopLines!= null && routeStopLines.size()>0) {%>( <span class="result"><%= routeStopLines.size() %></span> ) <span class="note" style="font-weight:normal;"><input type="checkbox" name="forPrint" onClick="javascript:toggleScroll('result','list_content','content_fixed');"> Print View</span><% } %></span></td>
         <td width="55%" align="center" colspan="2">
-            Date* 
+            Date<font color="red">*</font>
             <select name="month" required="true" class="pulldown">
                 <option value="">Month</option>
                             <%  for (int i=0; i<12; i++) {  %>
@@ -162,7 +162,7 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
             &nbsp;
             Wave <input type="text" name="wave" size="6" maxlength="6" class="text" value="<%=request.getParameter("wave")%>">
             &nbsp;
-            Route <input type="text" name="route" size="6" maxlength="6" class="text" value="<%=request.getParameter("route")%>">
+            Route<font color="red">*</font> <input type="text" name="route" size="6" maxlength="6" class="text" value="<%=request.getParameter("route")%>">
             &nbsp;
             Stop <input type="text" name="stop1" size="5" maxlength="5" class="text" value="<%=request.getParameter("stop1")%>"> to <input type="text" name="stop2" size="5" maxlength="5" class="text" value="<%=request.getParameter("stop2")%>">
 			&nbsp;
@@ -196,7 +196,7 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 <% 
   VoiceShotResponseParser vsrp = null;
   boolean errors = false;
-  String errMsg = "Required fields - ";
+  String errMsg = "Enter required fields - ";
   if ("POST".equals(request.getMethod())) {
     if (routeStopLines.size() > 0) { 
 		
@@ -253,7 +253,7 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 				cModel.setStopSequence(stop_seq);			
 				cModel.setAddByUser(CrmSession.getCurrentAgent(session).getLdapId()); 
 				cModel.setCampaignName(request.getParameter(campaignID));
-				cModel.setDelayMinutes(request.getParameter("delay_"+reason));
+				cModel.setDelayMinutes(request.getParameter("delay_"+campaignID));
 				
 				DateFormat formatter2 = new SimpleDateFormat("MM/dd/yyyy");
 				String formatter_start_date = formatter2.format(new Date());
@@ -348,10 +348,19 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 	<input type="hidden" name="vs_format" value="<%=vs_format%>" />
 	<% String userRole = CrmSession.getCurrentAgent(request.getSession()).getRole().getLdapRoleName();
 	   if(CrmSecurityManager.hasAccessToPage(userRole,"voiceshot.jsp")){ %>
-	   <% if(errors) { %>
-	   <font style="color:red;"><%= errMsg %></font>
+	   <div class="vs_container">
+	   <% if(errors) { %>	   
+		<table width="100%" cellpadding="0" cellspacing="0" border="0" class="sub_nav_text">
+			<tr>
+				<td width="15%"><span class="sub_nav_title">&nbsp;</span></td>
+				<td width="85%" align="left" style="background-color:#E0E0E0;">
+					<font style="color:red;"><%= errMsg %></font>
+				</td>
+			</tr>
+		</table>	   
 	   <% } %>
 	<jsp:include page="voiceshot.jsp" />
+		</div>
 	<% } } }%>
 	
 	<div class="list_header">
@@ -369,7 +378,8 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 		</tr>
 	</table>
 	</div>
-	<%} %>
+		
+	
 	<div class="list_content" id="result">
 		<table width="100%" cellpadding="0" cellspacing="0" border="0" class="list_content_text">
 	<logic:iterate id="routeStopLine" collection="<%= routeStopLines %>" type="com.freshdirect.fdstore.customer.RouteStopReportLine" indexId="counter">
@@ -380,14 +390,14 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 				<td width="25%" class="border_bottom"><%=routeStopLine.getEmail()%>&nbsp;</td>
 				<td width="10%" class="border_bottom"><%=routeStopLine.getWaveNumber()!=null? routeStopLine.getWaveNumber():"&nbsp;"%></td>
 				<td width="10%" class="border_bottom"><%=routeStopLine.getTruckNumber()!=null? routeStopLine.getTruckNumber():"&nbsp;"%></td>
-				<td width="10%" class="border_bottom"><%=routeStopLine.getStopSequence()!=null ? routeStopLine.getStopSequence() : "&nbsp;"%></td>
+				<td width="10%" class="border_bottom"><%=routeStopLine.getStopSequence()!=null ? Integer.parseInt(routeStopLine.getStopSequence()) : "&nbsp;"%></td>
 				<td width="10%" class="border_bottom"><input type="checkbox" value="<%=routeStopLine.getPhoneNumber()%>|<%=routeStopLine.getOrderNumber()%>|<%=routeStopLine.getCustomerId()%>|<%=routeStopLine.getStopSequence()%>" name="selectphone<%=counter%>" checked/></td>
 			</tr>
 		</logic:iterate>
 		</table>
 	</div>
 	</form>
-<%     } else { %>
+<%  }    } else { %>
     <div class="content_fixed" align="center"><br><b>No Deliveries for <%= CCFormatter.formatDate(dateParam) %></b><br><br></div>
 <%      }   %>
 <%  }  %>
