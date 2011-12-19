@@ -16,7 +16,7 @@ when
     not BounceEvent(customerId == event.customerId)
 then
 	BounceEvent bounce = new BounceEvent(event.getCustomerId(),"NEW", new Date(), event.getCutOff(),event.getZone(), 
-	event.getLastTimeslot(), event.getPageType(), DateUtil.truncate(event.getCutOff()));
+	event.getLastTimeslot(), event.getPageType(), DateUtil.addDays(DateUtil.truncate(event.getCutOff()), 1) );
 	insert(bounce);
 	BounceEventList.add(bounce);
 end
@@ -26,11 +26,11 @@ salience 2
 no-loop
 when
 	event : SessionEvent(eval( (availCount + soldCount) > 0 && orderId != null ))
-    order : OrderEvent(customerId == event.customerId && orderId == event.orderId && eval(EventHelper.isFutureDay(order.getDeliveryDate(), 2)))
+    order : OrderEvent(customerId == event.customerId && orderId == event.orderId && eval(DateUtil.getDiffInDaysFloor(order.getDeliveryDate(), event.getCutOff())==2) )
     not RollEvent(customerId == event.customerId)
 then
 	RollEvent roll  = new RollEvent(event.getCustomerId(), new Date(), new Float(event.getSoldCount()*100/(event.getSoldCount()+event.getAvailCount())), 
-	event.getZone(), event.getCutOff(), event.getLastTimeslot(),DateUtil.truncate(event.getCutOff()) );
+	event.getZone(), event.getCutOff(), event.getLastTimeslot(),DateUtil.addDays(DateUtil.truncate(event.getCutOff()), 1) );
 	insert(roll);
 	RollEventList.add(roll);
 end
