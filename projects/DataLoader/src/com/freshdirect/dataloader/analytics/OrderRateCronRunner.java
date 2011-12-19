@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
@@ -12,6 +13,8 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import javax.mail.MessagingException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -24,6 +27,7 @@ import com.freshdirect.analytics.ejb.OrderRateHome;
 import com.freshdirect.analytics.ejb.OrderRateSB;
 import com.freshdirect.dataloader.payment.SaleCronRunner;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.mail.ErpMailSender;
 
 public class OrderRateCronRunner {
 
@@ -53,7 +57,7 @@ public class OrderRateCronRunner {
 		e.printStackTrace(new PrintWriter(sw));			
 		LOGGER.info(new StringBuilder("OrderRateCronRunner failed with Exception...").append(sw.toString()).toString());
 		LOGGER.error(sw.toString());
-	//	email(Calendar.getInstance().getTime(), sw.getBuffer().toString());		
+		email(Calendar.getInstance().getTime(), sw.getBuffer().toString());		
 	} finally {
 		try {
 			if (ctx != null) {
@@ -63,12 +67,37 @@ public class OrderRateCronRunner {
 		} catch (NamingException ne) {
 			StringWriter sw = new StringWriter();
 			ne.printStackTrace(new PrintWriter(sw));	
-		//	email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
+			email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
 		}
 	}
 	}
 
-	
+	private static void email(Date processDate, String exceptionMsg) {
+		// TODO Auto-generated method stub
+		try {
+			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
+			String subject="OrderRateCronRunner:	"+ (processDate != null ? dateFormatter.format(processDate) : " date error");
+
+			StringBuffer buff = new StringBuffer();
+
+			buff.append("<html>").append("<body>");			
+			
+			if(exceptionMsg != null) {
+				buff.append("Exception is :").append("\n");
+				buff.append(exceptionMsg);
+			}
+			buff.append("</body>").append("</html>");
+
+			ErpMailSender mailer = new ErpMailSender();
+			mailer.sendMail(ErpServicesProperties.getCronFailureMailFrom(),
+					ErpServicesProperties.getCronFailureMailTo(),ErpServicesProperties.getCronFailureMailCC(),
+					subject, buff.toString(), true, "");
+			
+		}catch (MessagingException e) {
+			LOGGER.warn("Error Sending OrderRate Cron report email: ", e);
+		}
+		
+	}
 	
 	static public Context getInitialContext() throws NamingException {
 		Hashtable<String, String> h = new Hashtable<String, String>();
