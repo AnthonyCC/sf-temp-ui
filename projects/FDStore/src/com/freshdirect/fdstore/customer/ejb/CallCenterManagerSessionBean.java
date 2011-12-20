@@ -2474,7 +2474,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 	public static final String GET_VS_LOG = "select vl.lateissue_id, vl.vs_ID, L.ROUTE, VC.CAMPAIGN_ID, VC.CAMPAIGN_MENU_ID, VC.CAMPAIGN_NAME, L.STOPSTEXT, vs.redial, " + 
     "vs.created_by_user, vc.sound_file_text, " +
     "to_char(vs.created_by_date,  'MM/DD/YYYY HH12:MI AM') created_by_Date, VC.SOUND_FILE_NAME, to_char(vs.start_time, 'HH12:MI AM') start_time, " + 
-    "vs.scheduled_calls, vs.delivered_calls_live, vs.delivered_calls_am, vs.undelivered_calls, vs.call_id, vs.call_data_pulled, vr.reason " +
+    "vs.call_id, vs.call_data_pulled, vr.reason " +    		
     "from CUST.LATEISSUE l, " +
     "CUST.VOICESHOT_SCHEDULED vs, " + 
     "CUST.VOICESHOT_CAMPAIGN vc, " +
@@ -2498,6 +2498,8 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			rs = ps.executeQuery();			
 			while(rs.next()) {
 				CrmVSCampaignModel model = new CrmVSCampaignModel();
+				String vs_id = rs.getString("VS_ID");
+				String lateissue_id = rs.getString("lateissue_id");
 				model.setVsDetailsID(rs.getString("VS_ID"));
 				model.setLateIssueId(rs.getString("lateissue_id"));
 				model.setRoute(rs.getString("ROUTE"));				
@@ -2509,16 +2511,9 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				model.setRedial(rs.getString("REDIAL"));				
 				model.setAddByDate(rs.getString("CREATED_BY_DATE"));
 				model.setAddByUser(rs.getString("CREATED_BY_USER"));
-				//model.setChangeByDate(rs.getString("CHANGE_BY_DATE"));
-				//model.setChangeByUser(rs.getString("CHANGE_BY_USER"));
 				model.setSoundfileName(rs.getString("SOUND_FILE_NAME"));
 				model.setSoundFileText(rs.getString("SOUND_FILE_TEXT"));
 				model.setStartTime(rs.getString("START_TIME"));
-				//model.setEndTime(rs.getString("END_TIME"));
-				model.setScheduledCalls(rs.getInt("SCHEDULED_CALLS"));
-				model.setDeliveredCallsLive(rs.getInt("DELIVERED_CALLS_LIVE"));
-				model.setDeliveredCallsAM(rs.getInt("DELIVERED_CALLS_AM"));
-				model.setUndeliveredCalls(rs.getInt("UNDELIVERED_CALLS"));
 				model.setCallId(rs.getString("CALL_ID"));
 				model.setUpdatable(true);
 				boolean data_pulled = "Y".equals(rs.getString("CALL_DATA_PULLED"))?true:false;
@@ -2537,16 +2532,15 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 					VoiceShotResponseParser vsrp = getCallData(sb.toString());
 					if(vsrp != null) {
 						model.setUpdatable(true);
-						updateVSLog(rs.getLong("VS_ID"), vsrp, rs.getInt("DELIVERED_CALLS_LIVE"), rs.getInt("DELIVERED_CALLS_AM"),rs.getInt("UNDELIVERED_CALLS"), rs.getInt("SCHEDULED_CALLS")) ;
+						updateVSLog(rs.getLong("VS_ID"), vsrp);
 						updateUserStatus(rs.getLong("VS_ID"), vsrp.getPhonenumbers());
-						model.setScheduledCalls(vsrp.getTotalCalls());
-						model.setDeliveredCallsLive(vsrp.getHumanAnsweredCalls());
-						model.setDeliveredCallsAM(vsrp.getAnswerMachineCalls());
-						model.setUndeliveredCalls(vsrp.getUnsuccessfulCalls());
 					} else {
 						model.setUpdatable(false);
 					}
 				}
+				
+				//get call data
+				getCallStats(model, vs_id, lateissue_id);
 				cList.add(model);
 			}
 		}catch (SQLException sqle) {
@@ -2567,6 +2561,58 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		return cList;
 	}
 	
+	private void getCallStats(CrmVSCampaignModel model, String vsId, String lateissueId) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = this.getConnection();
+			ps = conn.prepareStatement("select count(*) from CUST.LATEISSUE_ORDERS where lateissue_id = ?");
+			ps.setString(1, lateissueId);
+			rs = ps.executeQuery();
+			if(rs.next()) {
+				model.setScheduledCalls(rs.getInt(1));
+			}
+			
+			ps = conn.prepareStatement("select NVL(vo.status,1) from CUST.LATEISSUE_ORDERS lo, cust.voiceshot_lateissue vl, cust.voiceshot_orders vo " +
+									   "where LO.LATEISSUE_ID = ? and LO.LATEISSUE_ID = vl.lateissue_id and vl.vs_id = vo.vs_id " +
+									   "and   vl.vs_id = ? and LO.SALE_ID = vo.sale_id");
+			ps.setString(1, lateissueId);
+			ps.setString(2, vsId);
+			rs = ps.executeQuery();
+			int unsucessful = 0;
+			int am_calls = 0;
+			int live_calls = 0;
+			while (rs.next()) {
+				int status = rs.getInt(1);
+				if(status == EnumVSStatus.UNSUCCESSFUL.getValue())
+					unsucessful++;
+				else if(status == EnumVSStatus.ANS_MACHINE.getValue())
+					am_calls++;
+				else if(status == EnumVSStatus.LIVE_ANS.getValue())
+					live_calls++;
+			}
+			model.setDeliveredCallsLive(live_calls);
+			model.setDeliveredCallsAM(am_calls);
+			model.setUndeliveredCalls(unsucessful);
+		}catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage(), sqle);
+		} finally {
+			try {
+				if (conn != null) 				
+					conn.close();
+				if(ps != null)
+					ps.close();
+				if(rs != null)
+					rs.close();
+			} catch (SQLException sqle) {
+				LOGGER.debug("Error while cleaning:", sqle);
+			}			
+		}	
+		
+	}
+
 	private void updateUserStatus(long long1, Hashtable<String, String> phonenumbers) {
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -2604,27 +2650,14 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		}		
 	}
 
-	private void updateVSLog(long id, VoiceShotResponseParser vsrp, int liveAnswered, int answerMachine, int undeliverable, int totalCalls) {
+	private void updateVSLog(long id, VoiceShotResponseParser vsrp) {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		
 		try{
 			conn = this.getConnection();
-			ps = conn.prepareStatement("update CUST.VOICESHOT_SCHEDULED set SCHEDULED_CALLS=?,DELIVERED_CALLS_LIVE=?,DELIVERED_CALLS_AM=?," +
-									   "UNDELIVERED_CALLS=?,CALL_DATA_PULLED='Y' where VS_ID=?");
-			if(totalCalls > 0) {
-				ps.setInt(1, totalCalls);
-			}
-			else {
-				ps.setInt(1, vsrp.getTotalCalls());
-			}
-			ps.setInt(2, vsrp.getHumanAnsweredCalls() + liveAnswered);
-			ps.setInt(3, vsrp.getAnswerMachineCalls() + answerMachine);
-			int unsuccessfulCalls = undeliverable - vsrp.getTotalCalls();
-			if(unsuccessfulCalls < 0)
-				unsuccessfulCalls = 0;
-			ps.setInt(4, vsrp.getUnsuccessfulCalls() + unsuccessfulCalls);
-			ps.setLong(5, id);
+			ps = conn.prepareStatement("update CUST.VOICESHOT_SCHEDULED set CALL_DATA_PULLED='Y' where VS_ID=?");
+			ps.setLong(1, id);
 			ps.execute();
 		}catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
