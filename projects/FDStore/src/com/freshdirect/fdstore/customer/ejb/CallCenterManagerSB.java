@@ -130,9 +130,9 @@ public interface CallCenterManagerSB extends EJBObject {
 	
 	public List<CrmVSCampaignModel> getVoiceShotLog() throws FDResourceException, RemoteException;
 	
-	public List<CrmVSCampaignModel> getVoiceShotCallDetails(String id) throws FDResourceException, RemoteException;
+	public List<CrmVSCampaignModel> getVoiceShotCallDetails(String id, String lateId) throws FDResourceException, RemoteException;
 	
-	public List<CrmVSCampaignModel> getVSRedialList(String id) throws FDResourceException, RemoteException;
+	public List<CrmVSCampaignModel> getVSRedialList(String id, String lateId) throws FDResourceException, RemoteException;
 	
 	public String saveVSRedialInfo(CrmVSCampaignModel model) throws FDResourceException, RemoteException;
 	
@@ -147,5 +147,7 @@ public interface CallCenterManagerSB extends EJBObject {
 	public String getVSMsgForOrderPage(String orderId) throws FDResourceException, RemoteException;
 	
 	public List<VSReasonCodes> getVSReasonCodes() throws FDResourceException, RemoteException;
+	
+	public String getSoundFileMessage(String campaignId) throws FDResourceException, RemoteException;
 	
 }

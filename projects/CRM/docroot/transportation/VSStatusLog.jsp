@@ -31,7 +31,7 @@
 			} else {
 				//display redial window
 				window.open('/transportation/vsRedial.jsp?id='+id1,'','height=300,width=700,menubar=no,status=no,titlebar=no,toolbar=no,scrollbars=yes');
-			}
+			} 
 		}
 		
 </script>
@@ -74,25 +74,22 @@
 				<td width="5%" class="border_bottom" align="center"><%= model.getScheduledCalls() %></td>
 				<td width="15%" class="border_bottom" align="center"><%= model.getDeliveredCallsLive() %> live | <%= model.getDeliveredCallsAM() %> answering machine</td>
 				<td width="5%" class="border_bottom" align="center"><%= model.getUndeliveredCalls() %></td>
-				<td width="10" class="border_bottom" align="center"><a href="javascript:window.alert('<%=model.getSoundFileText()%>')" id="mynewanchor<%=i%>">Sound file message</a></td>
+				<td width="10" class="border_bottom" align="center"><a href="javascript:openwindow('details','<%= model.getCampaignId()%>&dmsg=sfile')" id="mynewanchor<%=i%>">Sound file message</a></td>
 				<td width="14%" class="border_bottom" align="center">
 					<% if(model.isUpdatable()) {%> 
-						<a href="javascript:openwindow('details','<%= model.getVsDetailsID()%>')">details</a> 
+						<a href="javascript:openwindow('details','<%= model.getVsDetailsID()%>&lateid=<%=model.getLateIssueId() %>')">details</a> 
 					<% } else { %> 
 						details 
 					<%  } %>
 				</td>
 				<td width="14%" class="border_bottom" align="center">
 					<% if(model.isUpdatable()) { %>
-						<a href="javascript:openwindow('redial','<%=model.getVsDetailsID()%>&menuid=<%=model.getCampaignMenuId()%>')">redial</a>
+						<a href="javascript:openwindow('redial','<%=model.getVsDetailsID()%>&menuid=<%=model.getCampaignMenuId()%>&lateid=<%=model.getLateIssueId() %>')">redial</a>
 					<% } else { %>
 						redial 
 					<% } %>
 				</td>
-			</tr>
-			<script language="Javascript">
-				camps[<%=i%>] = new Campaign("<%=model.getVsDetailsID()%>","<%=model.getSoundfileName()%>","<%=model.getSoundFileText()%>");
-			</script>
+			</tr>			
 		<%
 		}
 		%>

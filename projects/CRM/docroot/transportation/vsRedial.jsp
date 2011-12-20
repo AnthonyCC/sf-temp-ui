@@ -79,7 +79,8 @@
 			
 		vsrp = new VoiceShotResponseParser(firstresult);
 	}	
-	List<CrmVSCampaignModel> calldetails = CallCenterServices.getVSRedialList(id1);
+	String lateId = request.getParameter("lateid");
+	List<CrmVSCampaignModel> calldetails = CallCenterServices.getVSRedialList(id1, lateId);
 
 	if("true".equals(request.getParameter("submission")) && vsrp != null) {
 	%>	

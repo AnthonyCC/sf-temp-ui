@@ -966,13 +966,13 @@ public class CallCenterServices {
 		}
 	}
 	
-	public static List<CrmVSCampaignModel> getVoiceShotCallDetails(String id) throws FDResourceException{
+	public static List<CrmVSCampaignModel> getVoiceShotCallDetails(String id, String lateId) throws FDResourceException{
 		if (callCenterHome == null) {
 			lookupManagerHome();
 		}
 		try {
 			CallCenterManagerSB sb = callCenterHome.create();
-			return sb.getVoiceShotCallDetails(id);
+			return sb.getVoiceShotCallDetails(id, lateId);
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating bean");
@@ -982,13 +982,13 @@ public class CallCenterServices {
 		}
 	}
 	
-	public static List<CrmVSCampaignModel> getVSRedialList(String id) throws FDResourceException{
+	public static List<CrmVSCampaignModel> getVSRedialList(String id, String lateId) throws FDResourceException{
 		if (callCenterHome == null) {
 			lookupManagerHome();
 		}
 		try {
 			CallCenterManagerSB sb = callCenterHome.create();
-			return sb.getVSRedialList(id);
+			return sb.getVSRedialList(id, lateId);
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating bean");
@@ -1101,6 +1101,22 @@ public class CallCenterServices {
 		try {
 			CallCenterManagerSB sb = callCenterHome.create();
 			return sb.getVSReasonCodes();
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to bean");
+		}
+	}
+	
+	public static String getSoundFileMessage(String campaignId) throws FDResourceException{
+		if (callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			return sb.getSoundFileMessage(campaignId);
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating bean");

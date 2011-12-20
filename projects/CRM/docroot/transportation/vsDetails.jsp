@@ -11,9 +11,24 @@
 
 
 <crm:GetCurrentAgent id='currAgent'>
-<%
+<%	
 	String id = request.getParameter("id");
-	List<CrmVSCampaignModel> calldetails = CallCenterServices.getVoiceShotCallDetails(id);
+	String dmsg = request.getParameter("dmsg");
+	if("sfile".equals(dmsg)) {
+		String message = CallCenterServices.getSoundFileMessage(id);
+%>	
+	<table cellspacing="15" cellpadding="0" border="0" align="center" width="600" 
+		style="font-family:Verdana,Arial,Helvetica,sans-serif;font-size:9pt;border-width: 1px;border-spacing: 2px;border-style: solid;border-color:#CCCC99 #999966 #CCCC99 #CCCC99 ;border-collapse: separate;background-color: white;">
+		<tbody><tr> 
+            <td style="background-color:#E7E7D6;height:50px;font-weight:bold;">Call Results</td>
+          </tr>
+		  <tr><td>&nbsp;</td></tr>
+		  <tr> <td align="center"> <%= message %> </td> </tr>
+		 </tbody>
+	</table>		  
+<%	} else {
+		String lateId = request.getParameter("lateid");
+		List<CrmVSCampaignModel> calldetails = CallCenterServices.getVoiceShotCallDetails(id, lateId);	
 %>
 	<table cellspacing="15" cellpadding="0" border="0" align="center" width="600" 
 		style="font-family:Verdana,Arial,Helvetica,sans-serif;font-size:9pt;border-width: 1px;border-spacing: 2px;border-style: solid;border-color:#CCCC99 #999966 #CCCC99 #CCCC99 ;border-collapse: separate;background-color: white;">
@@ -59,7 +74,7 @@
 			<tr><td>&nbsp;</td></tr>
 		</tbody>
 	</table>
-
+<% } %>
 			
 			
 
