@@ -81,7 +81,7 @@
 									<tr>
 										<td>Origin Facility</td>
 							<td>
-											<form:select path="originFacility" >
+											<form:select path="originFacility" onChange="showZoneSelection(this, planForm.destinationFacility)">
 												<form:option value="" label="--Please Select Origin Facility"/>
 												<form:options items="${trnFacilitys}" itemLabel="name" itemValue="facilityId" />
 											</form:select> 
@@ -302,9 +302,9 @@
 				electric : false,
 				inputField : "planDate",
 				ifFormat : "%m/%d/%Y",
-				singleClick: true,                                            
+				singleClick: true,
 				button : "trigger_planDate",
-				onUpdate : updateDate                        
+				onUpdate : updateDate
 			}
 		);
 		function updateDate(cal) {
@@ -326,16 +326,15 @@
 			  }
 
 			  if( result[0] === 'SIT'){
-				  alert('Origin Facility cannot be Delivery Zone.');
-				  originRefVar.selectedIndex = 0;
-			  }
-			  if( result[1] === 'DPT'){
-				  alert('Destination Facility cannot be Main Plant.');
-				  destRefVar.selectedIndex = 0;
+				  alert('Origin facility cannot be delivery zone.');
+				  originRefVar.selectedIndex = 0; return;
+			  } else if( result[1] === 'DPT'){
+				  alert('Destination facility cannot be main plant.');
+				  destRefVar.selectedIndex = 0; return;
 			  } else if((result[1] === result[0]) && (originRef != '' && destRef != '')){
-				  alert('Both Origin & Desination Facility cannot be same.');
+				  alert('Both origin & desination facility cannot be same.');
 				  originRefVar.selectedIndex = 0;
-				  destRefVar.selectedIndex = 0;
+				  destRefVar.selectedIndex = 0; return;
 			  } else {
 					if( result[1] === 'SIT'){
 						document.getElementById("zoneCode").disabled=false;
@@ -382,6 +381,8 @@
 			if(document.getElementById("isBullpen1").checked) {
 				document.getElementById("zoneCode").disabled=true;
 				document.getElementById("regionCode").disabled=false;
+				document.getElementById('destinationFacility').selectedIndex=0;
+				document.getElementById('originFacility').selectedIndex=0;
 			} else {
 				document.getElementById("zoneCode").disabled=false;
 				document.getElementById("regionCode").disabled=true;

@@ -89,7 +89,7 @@
 						<tr>
 								<td>Origin Facility</td>
 						<td>
-									<form:select path="originFacility">
+									<form:select path="originFacility" onChange="showZoneSelection(this, dispatchForm.destinationFacility)">
 										<form:option value="" label="--Please Select Origin Facility"/>
 										<form:options items="${trnFacilitys}" itemLabel="name" itemValue="facilityId" />
 									</form:select> 
@@ -639,21 +639,21 @@
 			
 			function sendFormCallback(result, exception) {
 			  if(exception) {
-				  alert('Unable to connect to host system. Please contact system administrator!');               
+				  alert('Unable to connect to host system. Please contact system administrator!');
 				  return;
 			  }
 
 			  if( result[0] === 'SIT'){
-				  alert('Origin Facility cannot be Delivery Zone.');
-				  originRefVar.selectedIndex = 0;
+				  alert('Origin facility cannot be delivery zone.');
+				  originRefVar.selectedIndex = 0; return;
 			  }
 			  if( result[1] === 'DPT'){
-				  alert('Destination Facility cannot be Main Plant.');
-				  destRefVar.selectedIndex = 0;
+				  alert('Destination facility cannot be main plant.');
+				  destRefVar.selectedIndex = 0; return;
 			  } else if((result[1] === result[0]) && (originRef != '' && destRef != '')){
-				  alert('Both Origin & Desination Facility cannot be same.');
+				  alert('Both origin & desination facility cannot be same.');
 				  originRefVar.selectedIndex = 0;
-				  destRefVar.selectedIndex = 0;
+				  destRefVar.selectedIndex = 0; return;
 			  } 
 			  document.getElementById("destFacilityModified").value = "true";
 			  dispatchForm.submit();
@@ -688,11 +688,13 @@
         }
         function bullpen(chxbox) {
                 var hasConfirmed = confirm ("Are you sure you want to flag/unflag it as a BullPen? You may loose your exisitng dispatch information.");
-                if(hasConfirmed)
-                    dispatchForm.submit();
-                else{
+                if(hasConfirmed){
+					document.getElementById('destinationFacility').selectedIndex=0;
+					document.getElementById('originFacility').selectedIndex=0;
+					dispatchForm.submit();
+                }else{
                     chxbox.checked = !(chxbox.checked);
-                }                
+                }
         }
        function checkRouteInfo()
        {

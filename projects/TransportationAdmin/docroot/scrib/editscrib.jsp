@@ -49,7 +49,7 @@
 		<form:form commandName = "scribForm" method="post">		
 		<form:hidden path="firstDeliveryTimeModified"/>
 		<form:hidden path="zoneModified"/>		
-		<table width="100%" height="75%" cellpadding="0" cellspacing="0" border="0">
+		<table width="100%" height="90%" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td class="screentitle">Add/Edit Scrib</td>
 			</tr>
@@ -58,9 +58,9 @@
 			</tr>      
 			<tr>
 				<td class="screencontent">
-					<table class="forms1" style="height:100%;width:90%;align:center;border:1px dotted;background-color:#F7F7F7;">
+					<table class="forms1" style="height:100%;width:98%;align:center;border:1px dotted;background-color:#F7F7F7;">
 						<tr>
-							<td align="right">Date</td>
+							<td align="right">Date *</td>
 							<td>
 								<form:input maxlength="50" size="24" path="scribDate" onchange="javascript:getActiveZoneInfo(this.value,scribForm.zoneS)"/>&nbsp;
 								<a href="#" id="trigger_scribDate" style="font-size: 9px;">
@@ -73,7 +73,7 @@
 							</td>
 						</tr>  
 						<tr>
-							<td align="right">Origin Facility</td>
+							<td align="right">Origin Facility *</td>
 							<td> 
 								<form:select path="originFacility" onChange="showZoneSelection(this, scribForm.destinationFacility)">
 									<form:option value="" label="--Please Select Origin Facility"/>
@@ -83,7 +83,7 @@
 							<td><form:errors path="originFacility" />&nbsp;</td>
 						</tr>
 						<tr>
-							<td align="right">Destination Facility</td>
+							<td align="right">Destination Facility *</td>
 							<td> 
 								<form:select path="destinationFacility" onChange="showZoneSelection(scribForm.originFacility,this)">
 									<form:option value="" label="--Please Select Destination Facility"/>
@@ -95,7 +95,7 @@
 						<tr id="zoneRow">
 							<td align="right">Zone</td>
 							<td>
-								<c:if test="${scribForm.destinationFacility ne 'DLVZONE'}">
+								<c:if test="${scribForm.destinationFacility.trnFacilityType.name ne 'SIT'}">
 									<c:set var="_disableZone" value="true"/>
 								</c:if>
 								<form:select path="zoneS" disabled="${_disableZone}" onChange="zoneChanged()">
@@ -206,8 +206,8 @@
 	</div>
      
 	<script language="javascript">             
+
 		var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
-		showZoneSelection(document.getElementById('originFacility'), document.getElementById('destinationFacility'));
 
 		Calendar.setup(
 			{
@@ -220,13 +220,14 @@
 				onUpdate : updateDate
 			}
 		);
+
 		function updateDate(cal) {
 			var selIndex = cal.date.getDay();
 			if(selIndex == 0) selIndex = 7;
 		};
-		
+
 		function showZoneSelection(originRefVar, destRefVar) {
-		 
+
 			var originRef = originRefVar.value || '';
 			var destRef = destRefVar.value || '';
 			
@@ -239,14 +240,13 @@
 			  }
 
 			  if( result[0] === 'SIT'){
-				  alert('Origin Facility cannot be Delivery Zone.');
+				  alert('Origin facility cannot be delivery zone.');
 				  originRefVar.selectedIndex = 0;
-			  }
-			  if( result[1] === 'DPT'){
-				  alert('Destination Facility cannot be Main Plant.');
+			  } else if( result[1] === 'DPT'){
+				  alert('Destination facility cannot be Main Plant.');
 				  destRefVar.selectedIndex = 0;
 			  } else if((result[1] === result[0]) && (originRef != '' && destRef != '')){
-				  alert('Both Origin & Desination Facility cannot be same.');
+				  alert('Both origin & desination facility cannot be same.');
 				  originRefVar.selectedIndex = 0;
 				  destRefVar.selectedIndex = 0;
 			  } else {
@@ -259,9 +259,7 @@
 						document.getElementById('region').disabled= false;
 					}
 			  }
-
 			}
-		 
 		}
 
 		function zoneChanged() {

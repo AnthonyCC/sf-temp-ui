@@ -9,6 +9,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
 import com.freshdirect.framework.util.DateComparator;
+import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
@@ -30,19 +31,19 @@ public class DispatchValidator extends AbstractValidator {
 		ValidationUtils.rejectIfEmpty(errors, "firstDeliveryTime", "app.error.112", new Object[]{"First Delivery Time"},"required field");
 		checkDate("startTime",model.getStartTime(),model.getFirstDeliveryTime(),errors);
 	
-		if(model != null && TransStringUtil.isEmpty(model.getZoneCode())&& !DispatchPlanUtil.isBullpen(model.getIsBullpen())) {
+		if(model != null && TransStringUtil.isEmpty(model.getZoneCode()) && model.getDestinationFacility() != null && model.getDestinationFacility().getTrnFacilityType() != null
+				&& !DispatchPlanUtil.isBullpen(model.getIsBullpen()) && EnumTransportationFacilitySrc.DELIVERYZONE.getName().equalsIgnoreCase(model.getDestinationFacility().getTrnFacilityType().getName())) {
 			errors.rejectValue("zoneCode", "app.error.112", new Object[]{"Zone"},"required field");
 		}
-		
 		if(model != null && TransStringUtil.isEmpty(model.getRegionCode())&& DispatchPlanUtil.isBullpen(model.getIsBullpen())) {
 			errors.rejectValue("regionCode", "app.error.112", new Object[]{"Region"},"required field");
 		}
 
-		if(model != null && model.getOriginFacility() == null) {
+		if(model != null && model.getOriginFacility() == null && !"true".equalsIgnoreCase(model.getIsBullpen())) {
 			errors.rejectValue("originFacility", "app.error.112", new Object[]{"Origin Facility"},"required field");
 		}
 
-		if(model != null && model.getDestinationFacility() == null) {
+		if(model != null && model.getDestinationFacility() == null && !"true".equalsIgnoreCase(model.getIsBullpen())) {
 			errors.rejectValue("destinationFacility", "app.error.112", new Object[]{"Destination Facility"},"required field");
 		}
 		/*

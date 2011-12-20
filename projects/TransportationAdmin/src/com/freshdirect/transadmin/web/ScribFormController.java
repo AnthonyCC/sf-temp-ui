@@ -2,13 +2,10 @@ package com.freshdirect.transadmin.web;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -23,9 +20,7 @@ import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.transadmin.constants.EnumRouteType;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.Scrib;
-import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnFacility;
-import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
@@ -36,9 +31,8 @@ import com.freshdirect.transadmin.util.ScribUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.WaveUtil;
 import com.freshdirect.transadmin.web.editor.RegionPropertyEditor;
-import com.freshdirect.transadmin.web.editor.TrnAreaPropertyEditor;
 import com.freshdirect.transadmin.web.editor.TrnFacilityPropertyEditor;
-import com.freshdirect.transadmin.web.editor.TrnZoneTypePropertyEditor;
+
 
 public class ScribFormController extends AbstractDomainFormController {
 			
@@ -63,6 +57,7 @@ public class ScribFormController extends AbstractDomainFormController {
 		this.employeeManagerService = employeeManagerService;
 	}
 
+	@SuppressWarnings("unchecked")
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
 
 		Collection zones=getDomainManagerService().getZones();
@@ -112,12 +107,12 @@ public class ScribFormController extends AbstractDomainFormController {
 		String zoneId = request.getParameter("zoneS");
 		String destFacility = request.getParameter("destinationFacility");
 		Zone zone = getDomainManagerService().getZone(zoneId);
-		if(zone!=null)
-		{
+		if (zone != null) {
 			model.setZone(zone);
 			model.setRegion(zone.getRegion());
 		}
 		TrnFacility deliveryFacility = locationManagerService.getTrnFacility(destFacility);
+		model.setDestinationFacility(deliveryFacility);
 		if(deliveryFacility != null && 
 				!EnumTransportationFacilitySrc.DELIVERYZONE.getName().equalsIgnoreCase(deliveryFacility.getTrnFacilityType().getName())){
 			model.setZone(null);

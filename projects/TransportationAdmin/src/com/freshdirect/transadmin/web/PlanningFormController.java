@@ -134,7 +134,7 @@ public class PlanningFormController extends AbstractFormController {
 			model = (WebPlanInfo)this.getBackingObject(request.getParameter("id"));
 
 		String destFacility = request.getParameter("destinationFacility");
-		TrnFacility deliveryFacility = locationManagerService.getTrnFacility(destFacility == null ? (model != null ?
+		TrnFacility deliveryFacility = locationManagerService.getTrnFacility(destFacility == null ? (model != null &&  model.getDestinationFacility() != null ?
 				 model.getDestinationFacility().getFacilityId() : destFacility) : destFacility);
 		if(deliveryFacility != null && 
 				!EnumTransportationFacilitySrc.DELIVERYZONE.getName().equalsIgnoreCase(deliveryFacility.getTrnFacilityType().getName())){
@@ -242,7 +242,7 @@ public class PlanningFormController extends AbstractFormController {
 		String destFacility = request.getParameter("destinationFacility");
 		Zone zone=null;
 
-		if(!TransStringUtil.isEmpty(model.getIsBullpen()) &&"Y".equalsIgnoreCase(model.getIsBullpen())) {
+		if(!TransStringUtil.isEmpty(model.getIsBullpen()) && "Y".equalsIgnoreCase(model.getIsBullpen())) {
 			model.setZoneCode("");
 			model.setZoneName("");
 		}
@@ -254,7 +254,7 @@ public class PlanningFormController extends AbstractFormController {
 		}
 		model.setDestinationFacility(deliveryFacility);
 		if(!TransStringUtil.isEmpty(model.getZoneCode())) {
-			zone=domainManagerService.getZone(model.getZoneCode());
+			zone = domainManagerService.getZone(model.getZoneCode());
 		}
 
 		model= DispatchPlanUtil.reconstructWebPlanInfo(model, zone, model.getFirstDeliveryTimeModified()
