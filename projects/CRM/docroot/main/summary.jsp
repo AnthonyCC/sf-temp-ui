@@ -45,6 +45,7 @@
 <%@ page import="com.freshdirect.security.ticket.TicketService"%>
 <%@ page import="com.freshdirect.security.ticket.Ticket"%>
 <%@ page import='com.freshdirect.webapp.crm.security.*' %>
+<%@ page import='com.freshdirect.fdstore.CallCenterServices' %>
 <%
 String orderId = request.getParameter("orderId");
 FDSessionUser user = null;
@@ -166,9 +167,11 @@ if (ldlv != null) {
 			<h2>Last Delivery Info</h2>
 			<div style="font-size: 120%; padding-bottom: 1em;">Last Delivery: <%= CCFormatter.formatDate(ldlv.getRequestedDate()) %> ORDER # <a href="/main/order_details.jsp?orderId=<%= ldlv.getErpSalesId() %>"><%= ldlv.getErpSalesId() %></a></div>
 <%
-	recentLateIssue = util.getLateIssueForOrder( ldlv );
-	if (recentLateIssue != null) {
-%>			<div style="font-size: 120%; padding-bottom: 1em; color: red; font-weight: bold;">Late Report: <%=recentLateIssue.getDelayMinutes()%> minutes, <%=recentLateIssue.getComments()%></div>
+	//recentLateIssue = util.getLateIssueForOrder( ldlv );
+	//if (recentLateIssue != null) {
+	String vsMessage = CallCenterServices.getVSMsgForOrderPage(ldlv.getErpSalesId()); 
+	if(vsMessage != null) {
+%>			<div style="font-size: 120%; padding-bottom: 1em; color: red; font-weight: bold;"><%=vsMessage%></div>
 <%
 	}
 	
