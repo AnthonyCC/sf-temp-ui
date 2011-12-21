@@ -36,6 +36,7 @@ public class ScheduleUploadDataManager extends ScheduleDataManager{
 		updatedSchedules = parseFile(TransportationAdminProperties.getScribOutputFormat(), 
 														new ByteArrayInputStream(inputStream), 
 														ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, null, null);
+		System.out.println(" #### Upload Process End >"+Calendar.getInstance().getTime());
 		return updatedSchedules;	
 	}
 	
@@ -47,6 +48,7 @@ public class ScheduleUploadDataManager extends ScheduleDataManager{
 		updatedSchedules = parseFile(TransportationAdminProperties.getEmployeeScheduleOutputFormat(), 
 														new ByteArrayInputStream(inputStream), 
 														ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, null, null);
+		System.out.println(" #### Upload Process End >"+Calendar.getInstance().getTime());
 		return updatedSchedules;	
 	}
 	

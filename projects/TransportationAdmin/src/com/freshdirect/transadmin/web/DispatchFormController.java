@@ -128,7 +128,8 @@ public class DispatchFormController extends AbstractFormController {
 		if(id != null)
 			model = (DispatchCommand)this.getBackingObject(request.getParameter("id"));
 
-		TrnFacility deliveryFacility = locationManagerService.getTrnFacility(destFacility == null ? (model != null ? model
+		TrnFacility deliveryFacility = locationManagerService.getTrnFacility(destFacility == null ? (model != null && model
+				.getDestinationFacility() != null ? model
 						.getDestinationFacility().getFacilityId(): destFacility) : destFacility);
 		if(deliveryFacility != null && 
 				!EnumTransportationFacilitySrc.DELIVERYZONE.getName().equalsIgnoreCase(deliveryFacility.getTrnFacilityType().getName())){
@@ -139,7 +140,7 @@ public class DispatchFormController extends AbstractFormController {
 																										, EnumResourceSubType.TRAILER_HELPER.getName()));
 			runners = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRoleAndSubRole(EnumResourceType.RUNNER.getName()
 																										, EnumResourceSubType.TRAILER_RUNNER.getName()));
-		}else{
+		} else {
 			drivers = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.DRIVER.getName()));
 			helpers = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.HELPER.getName()));
 			runners = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.RUNNER.getName()));
@@ -261,11 +262,6 @@ public class DispatchFormController extends AbstractFormController {
 	protected void onBind(HttpServletRequest request, Object command,BindException errors) {
 		DispatchCommand model = (DispatchCommand) command;
 
-		if(!TransStringUtil.isEmpty(model.getIsBullpen()) && model.getIsBullpen().equals("true") && !TransStringUtil.isEmpty(model.getZoneCode())){
-			model.setZoneCode("");
-			model.setZoneName("");
-			model.setZoneType("");
-		}
 		TrnFacility deliveryFacility = locationManagerService.getTrnFacility(request.getParameter("destinationFacility"));
 		if(deliveryFacility != null && 
 				!EnumTransportationFacilitySrc.DELIVERYZONE.getName().equalsIgnoreCase(deliveryFacility.getTrnFacilityType().getName())){
@@ -273,8 +269,17 @@ public class DispatchFormController extends AbstractFormController {
 			model.setZoneName("");
 		}
 		model.setDestinationFacility(deliveryFacility);
-		Zone zone=null;
 
+		if(!TransStringUtil.isEmpty(model.getIsBullpen()) 
+				&& model.getIsBullpen().equals("true")){
+			model.setZoneCode("");
+			model.setZoneName("");
+			model.setZoneType("");
+			model.setOriginFacility(null);
+			model.setDestinationFacility(null);
+		}
+
+		Zone zone=null;
 		if(!TransStringUtil.isEmpty(model.getZoneCode())) {
 			zone=domainManagerService.getZone(model.getZoneCode());
 		}

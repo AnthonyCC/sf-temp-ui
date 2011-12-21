@@ -64,7 +64,7 @@
 			<tr><td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td></tr>
 			<tr>
 				<td class="screencontent">
-					<table class="forms1" style="height:100%;width:90%;border:1px dotted;background-color:#F7F7F7;">
+					<table class="forms1" style="height:100%;width:95%;border:1px dotted;background-color:#F7F7F7;">
 						<tr>
 							<td align="center" valign="top">
 								<table>  
@@ -176,14 +176,13 @@
 							</td>
 							<td><form:errors path="maxTime" />&nbsp;</td>                 
 						</tr>
-								</table>
-							</td>
-							<td align="center" valign="top">
-								<table>
+					</table>
+				</td>
+				<td align="center" valign="top">
+					<table>
 						<tr>
-							<td>&nbsp;</td>
-											<td align="right">Adjust Time</td>
-											<td>&nbsp;</td>
+							<td colspan="2">&nbsp;</td>
+							<td align="right">Adjust Time</td>
 						</tr>
 						<tr>
 							<td>Drivers (Req:<spring:bind path="planForm.driverReq"><c:out value="${planForm.driverReq}"/></spring:bind> Max: <spring:bind path="planForm.driverMax"><c:out value="${planForm.driverMax}"/></spring:bind>)</td>

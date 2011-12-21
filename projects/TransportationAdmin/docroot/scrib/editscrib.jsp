@@ -100,8 +100,8 @@
 								</c:if>
 								<form:select path="zoneS" disabled="${_disableZone}" onChange="zoneChanged()">
 									<form:option value="null" label="--Please Select Zone"/>
-											<form:options items="${zones}" itemLabel="displayName" itemValue="zoneCode" />
-										</form:select>
+									<form:options items="${zones}" itemLabel="displayName" itemValue="zoneCode" />
+								</form:select>
 								
 								
 									
@@ -110,8 +110,11 @@
 						</tr>
 						<tr id="regionRow">
 							<td align="right">Region</td>
-								<td> 
-									<form:select path="region">
+								<td>
+									<c:if test="${scribForm.destinationFacility.trnFacilityType.name eq 'SIT'}">
+										<c:set var="_disableRegion" value="true"/>
+									</c:if>
+									<form:select path="region" disabled="${_disableRegion}">
 										<form:option value="null" label="--Please Select Region"/>
 										<form:options items="${regions}" itemLabel="code" itemValue="code" />
 									</form:select>
@@ -243,7 +246,7 @@
 				  alert('Origin facility cannot be delivery zone.');
 				  originRefVar.selectedIndex = 0;
 			  } else if( result[1] === 'DPT'){
-				  alert('Destination facility cannot be Main Plant.');
+				  alert('Destination facility cannot be main plant.');
 				  destRefVar.selectedIndex = 0;
 			  } else if((result[1] === result[0]) && (originRef != '' && destRef != '')){
 				  alert('Both origin & desination facility cannot be same.');

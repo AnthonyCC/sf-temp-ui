@@ -929,7 +929,7 @@ public class DispatchPlanUtil {
 	public static void setDispatchStatus(DispatchCommand command) {
 		//for all non bullpen dispatches or trailer routes
 		if (!TransStringUtil.isEmpty(command.getZoneName())
-				|| EnumTransportationFacilitySrc.CROSSDOCK.getName().equals(command.getDestinationFacility().getTrnFacilityType().getName())) {
+				|| (command.getDestinationFacility() != null && EnumTransportationFacilitySrc.CROSSDOCK.getName().equals(command.getDestinationFacility().getTrnFacilityType().getName()))) {
 			
 			//decide the dispatch status after dispatch;
 			if (!TransStringUtil.isEmpty(command.getDispatchTime())) {

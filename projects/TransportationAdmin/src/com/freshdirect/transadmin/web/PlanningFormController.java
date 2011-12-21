@@ -242,10 +242,6 @@ public class PlanningFormController extends AbstractFormController {
 		String destFacility = request.getParameter("destinationFacility");
 		Zone zone=null;
 
-		if(!TransStringUtil.isEmpty(model.getIsBullpen()) && "Y".equalsIgnoreCase(model.getIsBullpen())) {
-			model.setZoneCode("");
-			model.setZoneName("");
-		}
 		TrnFacility deliveryFacility = locationManagerService.getTrnFacility(destFacility);
 		if(deliveryFacility != null && 
 				!EnumTransportationFacilitySrc.DELIVERYZONE.getName().equalsIgnoreCase(deliveryFacility.getTrnFacilityType().getName())){
@@ -253,6 +249,13 @@ public class PlanningFormController extends AbstractFormController {
 			model.setZoneName("");
 		}
 		model.setDestinationFacility(deliveryFacility);
+		if(!TransStringUtil.isEmpty(model.getIsBullpen()) && "Y".equalsIgnoreCase(model.getIsBullpen())) {
+			model.setZoneCode("");
+			model.setZoneName("");
+			model.setOriginFacility(null);
+			model.setDestinationFacility(null);
+		}
+
 		if(!TransStringUtil.isEmpty(model.getZoneCode())) {
 			zone = domainManagerService.getZone(model.getZoneCode());
 		}
@@ -304,4 +307,3 @@ public class PlanningFormController extends AbstractFormController {
 	}
 
 	}
-
