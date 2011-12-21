@@ -39,7 +39,7 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
 			loadingString: 'Loading Preview...',
 			title: ' ',
 			overlayOpacity: .80,
-			width: 650,
+			width: 750,
 			centered: true,
 			method: 'post',
 			afterLoad: function() {

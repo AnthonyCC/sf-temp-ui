@@ -64,7 +64,7 @@
 			loadingString: 'Loading Preview...',
 			title: ' ',
 			overlayOpacity: .80,
-			width: 650,
+			width: 750,
 			centered: true,
 			method: 'post',
 			afterLoad: function() {

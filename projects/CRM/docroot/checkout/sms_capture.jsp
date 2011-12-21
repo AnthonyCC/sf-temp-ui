@@ -13,6 +13,11 @@
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<%-- NOT CCL @ include file="/shared/template/includes/ccl.jspf" --%>
+	<style>
+		.trpad {
+			padding-left:20px;
+		}
+	</style>
 </head>
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0">
 
@@ -49,7 +54,7 @@
 	if (request.getParameter("busphoneext")!=null) {
 		phoneExt = phone == null || phone.length() == 0 ? "" : request.getParameter("busphoneext");
 	}
-	final int W_YA_SIGNIN_INFO = 650;
+	final int W_YA_SIGNIN_INFO = 750;
 	boolean form_processed = false;
 	final String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
 	if(session.getAttribute("SMSSubmission"+orderNumber) != null)
@@ -77,21 +82,21 @@
 <table border="0" cellpadding="0" cellspacing="0">
 <tr><td>&nbsp;</td></tr>
 <tr>
-	<td class="text11">
-		&nbsp;&nbsp;<img src="/media_stat/images/navigation/preferences_title.gif" border="0" /> <br/><br/>
+	<td class="text11 trpad">
+		<img src="/media_stat/images/navigation/preferences_title.gif" border="0" /> <br/><br/>
 	</td>
 </tr>
-<tr><td><img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"></td></tr>
+<tr><td><img src="/media_stat/images/layout/dotted_line.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"></td></tr>
 <tr>
 	<td>
 		<table>
 			<tr><td colspan="2" >&nbsp;</td></tr>
-			<tr><td colspan="2" ><span class="title18or">1.&nbsp;</span><span class="title18">Verify primary contact information</span></td></tr>						
+			<tr><td colspan="2" class="trpad"><span class="title18or">1.&nbsp;</span><span class="title18">Verify primary contact information</span></td></tr>						
 			<tr><td colspan="2" >&nbsp;</td></tr>
-			<tr><td colspan="2" style="padding-right:5px;" class="text12" style="font-weight:bold;">&nbsp;Please verify your emergency contact informationb below.</td></tr>
+			<tr><td colspan="2" class="text12 trpad">Please verify your emergency contact informationb below.</td></tr>
 			<tr><td colspan="2" >&nbsp;</td></tr>
 			<tr valign="top">
-				<td colspan="2" style="padding-right:5px;font-weight:bold;" class="text12">&nbsp;
+				<td colspan="2" style="padding-right:5px;font-weight:bold;" class="text12 trpad">
 					<input type="text" size="28" maxlength="45" class="text9" name="busphone" value="<%=phone%>" style="width:175px; padding:1px; height:20px;"> &nbsp;&nbsp;Ext.<input type="text" size="5" maxlength="5" class="text9" name="busphoneext" value="<%=phoneExt%>" style="width:75px; padding:1px; height:20px;">
 				</td>
 			</tr>
@@ -100,24 +105,24 @@
 		</table>
 	</td>
 </tr>
-<tr><td><img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"></td></tr>
+<tr><td><img src="/media_stat/images/layout/dotted_line.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"></td></tr>
 <tr>
 	<td>		
 		<table>
 			<tr><td colspan="2" >&nbsp;</td></tr>
-			<tr><td colspan="2" ><span class="title18or">2.&nbsp;</span><span class="title18">Receive text messages:</span></td></tr>
+			<tr><td colspan="2" ><span class="title18or trpad">2.&nbsp;</span><span class="title18">Receive text messages:</span></td></tr>
 			<tr><td colspan="2" >&nbsp;</td></tr>
 			<tr valign="top">
-				<td align="right" style="padding-top:5px; padding-right:5px;"><input class="radio" type="checkbox" name="text_delivery" value="Y" <%=text_delivery ? "checked":""%>></td>
+				<td class="trpad" style="padding-top:5px; padding-right:5px;"><input class="radio" type="checkbox" name="text_delivery" value="Y" <%=text_delivery ? "checked":""%>></td>
 				<td style="padding-top:5px;" class="text12">Yes please notify me via text message with important information about my delivery.<br><br/>
 				</td>
 			</tr>
 			<tr valign="top">
-				<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="text_offers" value="Y" <%=text_offers ? "checked":""%>></td>
+				<td class="trpad" style="padding-right: 5px;"><input class="radio" type="checkbox" name="text_offers" value="Y" <%=text_offers ? "checked":""%>></td>
 				<td class="text12">Yes please notiofy me about <b>offers, discounts</b> and <b>promotions</b> from time to time.<br/><br/><br/></td>
 			</tr>
 			<tr valign="top">
-				<td colspan="2">
+				<td colspan="2" class="trpad">
 					<table>						
 						<tr>						
 						<td style="padding-right:5px;font-weight:bold;" class="text12">Enter mobile phone number*<br/>
@@ -132,48 +137,49 @@
 		</table>
 	</td>
 </tr>
-<tr><td><img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"></td></tr>
+<tr><td><img src="/media_stat/images/layout/dotted_line.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"></td></tr>
 <tr>
 	<td>
 		<table>
 			<tr><td colspan="2">&nbsp;</td></tr>
 			<tr>
-				<td colspan="2">
+				<td colspan="2" class="trpad">
 					<span class="title18or">3.&nbsp;</span><span class="title18">Go green!</span>&nbsp;<img src="/media_stat/images/navigation/go_green_leaf.gif" border="0" alt="GO GREEN"><br>
 				</td>
 			</tr>
 			<td colspan="2">&nbsp;</td></tr>
 			<tr valign="top">
-				<td align="right" style="padding-top:5px; padding-right:5px;"><input class="radio" type="checkbox" name="go_green" value="Y" <%=go_green ? "checked":""%>></td>
+				<td align="right" class="trpad" style="padding-top:5px; padding-right:5px;"><input class="radio" type="checkbox" name="go_green" value="Y" <%=go_green ? "checked":""%>></td>
 				<td style="padding-top:5px;" class="text12">I want to turn off paper statement delivery and receive my statements online.<br><br/>
 				</td>
 			</tr>
 			<tr><td colspan="2">&nbsp;</td></tr>
 		</table>
-		<img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5">
+		<img src="/media_stat/images/layout/dotted_line.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5">
 	</td>
 </tr>
+<tr><td>&nbsp;</td></tr>
 <tr>
 	<td>
 		<table width="100%" border="0"><tr>
-		<td align="left">
+		<td align="left" class="trpad">
 			<table class="butCont">
 				<tr>
 					<td class="butWhiteLeft"><!-- --></td>
-					<td class="butWhiteMiddle"><a class="butText" style="color:#000000;text-shadow:none;" href="#" onclick="Modalbox.show('sms_capture.jsp?submitbutton=nothanks', {title: '', params: Form.serialize('smsform') }); return false;">&nbsp;&nbsp;No, thanks&nbsp;&nbsp;</a></td>
+					<td class="butWhiteMiddle"><a class="butText" style="color:#000000;text-shadow:none;font-weight:bold;" href="#" onclick="Modalbox.show('sms_capture.jsp?submitbutton=nothanks', {title: '', params: Form.serialize('smsform') }); return false;">&nbsp;&nbsp;No, Thanks&nbsp;&nbsp;</a></td>
 					<td class="butWhiteRight"><!-- --></td>
 				</tr>
 			</table>
 		</td>
-		<td align="right">
+		<td align="right" style="padding-right:20px;">
 		<table class="butCont fright" style="margin-left: 15px;">
 			<tr>
 				<td class="butBrownLeft"><!-- --></td>
-				<td class="butBrownMiddle"><a class="butText" style="color:#000000;text-shadow:none;" href="#" onclick="Modalbox.hide(); return false;">&nbsp;&nbsp;Remind Me Later&nbsp;&nbsp;</a></td>
+				<td class="butBrownMiddle"><a class="butText" style="color:#000000;text-shadow:none;font-weight:bold;" href="#" onclick="Modalbox.hide(); return false;">&nbsp;&nbsp;Remind Me Later&nbsp;&nbsp;</a></td>
 				<td class="butBrownRight"><!-- --></td>
-				<td>&nbsp;</td>
+				<td>&nbsp;&nbsp;</td>
 				<td class="butOrangeLeft"><!-- --></td>
-				<td class="butOrangeMiddle"><a class="butText" href="#" onclick="Modalbox.show('sms_capture.jsp?submitbutton=update', {title: '', params: Form.serialize('smsform') }); return false;">Update Preferences</a></td>
+				<td class="butOrangeMiddle"><a class="butText" style="font-weight:bold;" href="#" onclick="Modalbox.show('sms_capture.jsp?submitbutton=update', {title: '', params: Form.serialize('smsform') }); return false;">Update Preferences</a></td>
 				<td class="butOrangeRight"><!-- --></td>
 			</tr>
 		</table> 		
