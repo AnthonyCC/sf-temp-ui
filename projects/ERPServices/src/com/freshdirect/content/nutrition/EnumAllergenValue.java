@@ -97,6 +97,7 @@ public class EnumAllergenValue implements NutritionValueEnum {
         
 
         types.add(new EnumAllergenValue("MC_PEA", "Produced in our bakery, where tree nuts and peanuts are used.", 1));
+        types.add(new EnumAllergenValue("LEGAL","Please note: FreshDirect's kitchen uses eggs, fish, milk, shellfish, soy, peanuts, tree nuts and wheat ingredients.",1));
     }
 
     public static List<EnumAllergenValue> getValues() {

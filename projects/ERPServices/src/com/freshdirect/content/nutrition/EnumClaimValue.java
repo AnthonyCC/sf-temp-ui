@@ -123,6 +123,7 @@ public class EnumClaimValue implements NutritionValueEnum {
 		types.add(new EnumClaimValue("KOS_NOPAS", "Not certified for Passover.", 1));
 
 		types.add(new EnumClaimValue("PEANUTS", "Produced in our bakery, where tree nuts and peanuts are used.", 1));
+		types.add(new EnumClaimValue("LEGAL","Please note: FreshDirect's kitchen uses eggs, fish, milk, shellfish, soy, peanuts, tree nuts and wheat ingredients.",1));
 
 		// 4mm nutrition claims
 		types.add( NUTRITION_4MM_LOWCALORIE );
