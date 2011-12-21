@@ -904,13 +904,13 @@ div.control, div.slotRow, div.time {
 		padding-right: 0px;
 	}
 	.butBrownLeft {
-		background: transparent url('/media/images/buttons/button_brown_left.gif') no-repeat;
+		background: transparent url('/images/buttons/button_brown_left.gif') no-repeat;
 	}
 	.butBrownMiddle {
-		background: transparent url('/media/images/buttons/button_brown_middle.gif') repeat-x;
+		background: transparent url('/images/buttons/button_brown_middle.gif') repeat-x;
 	}
 	.butBrownRight {
-		background: transparent url('/media/images/buttons/button_brown_right.gif') no-repeat;
+		background: transparent url('/images/buttons/button_brown_right.gif') no-repeat;
 	}
 	
 	.butOrangeLeft, .butOrangeMiddle, .butOrangeRight {
@@ -922,13 +922,13 @@ div.control, div.slotRow, div.time {
 		padding-right: 0px;
 	}
 	.butOrangeLeft {
-		background: transparent url('/media/images/buttons/button_orange_left.gif') no-repeat;
+		background: transparent url('/images/buttons/button_orange_left.gif') no-repeat;
 	}
 	.butOrangeMiddle {
-		background: transparent url('/media/images/buttons/button_orange_middle.gif') repeat-x;
+		background: transparent url('/images/buttons/button_orange_middle.gif') repeat-x;
 	}
 	.butOrangeRight {
-		background: transparent url('/media/images/buttons/button_orange_right.gif') no-repeat;
+		background: transparent url('/images/buttons/button_orange_right.gif') no-repeat;
 	}
 	
 	.butRedLeft, .butRedMiddle, .butRedRight {
@@ -940,13 +940,13 @@ div.control, div.slotRow, div.time {
 		padding-right: 0px;
 	}
 	.butRedLeft {
-		background: transparent url('/media/images/buttons/button_red_left.gif') no-repeat;
+		background: transparent url('/images/buttons/button_red_left.gif') no-repeat;
 	}
 	.butRedMiddle {
-		background: transparent url('/media/images/buttons/button_red_middle.gif') repeat-x;
+		background: transparent url('/images/buttons/button_red_middle.gif') repeat-x;
 	}
 	.butRedRight {
-		background: transparent url('/media/images/buttons/button_red_right.gif') no-repeat;
+		background: transparent url('/images/buttons/button_red_right.gif') no-repeat;
 	}
 	
 	.butWhiteLeft, .butWhiteMiddle, .butWhiteRight {
@@ -958,13 +958,13 @@ div.control, div.slotRow, div.time {
 		padding-right: 0px;
 	}
 	.butWhiteLeft {
-		background: transparent url('/media/images/buttons/button_white_left.gif') no-repeat;
+		background: transparent url('/images/buttons/button_white_left.gif') no-repeat;
 	}
 	.butWhiteMiddle {
-		background: transparent url('/media/images/buttons/button_white_middle.gif') repeat-x;
+		background: transparent url('/images/buttons/button_white_middle.gif') repeat-x;
 	}
 	.butWhiteRight {
-		background: transparent url('/media/images/buttons/button_white_right.gif') no-repeat;
+		background: transparent url('/images/buttons/button_white_right.gif') no-repeat;
 	}
 	
 	.modOrdInfo {
