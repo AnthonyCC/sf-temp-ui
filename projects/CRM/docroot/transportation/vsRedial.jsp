@@ -23,6 +23,7 @@
 		int size = Integer.parseInt(request.getParameter("phonesize"));
 		CrmVSCampaignModel cModel = new CrmVSCampaignModel();
 		String id = request.getParameter("id");
+		String lateId = request.getParameter("lateId");
 		List<String> phonenumbers = new ArrayList<String>();
 		List<String> phonenumbers1 = new ArrayList<String>();
 		StringBuffer phonesb = new StringBuffer("<phonenumbers>");
@@ -39,9 +40,9 @@
 		phonesb.append("</phonenumbers>");
 		cModel.setPhonenumbers(phonenumbers);
 		cModel.setVsDetailsID(id);
-		cModel.setAddByUser(CrmSession.getCurrentAgent(session).getLdapId()); 
-		String call_id = "CID_"+id1;
-		CallCenterServices.saveVSRedialInfo(cModel);		
+		cModel.setLateIssueId(lateId);
+		cModel.setAddByUser(CrmSession.getCurrentAgent(session).getLdapId()); 		 
+		String call_id = CallCenterServices.saveVSRedialInfo(cModel);		
 		
 		StringBuffer originalXML = new StringBuffer("<campaign menuid=\"");
 		originalXML.append(menuid);
@@ -102,6 +103,7 @@
 		  <% if(calldetails.size() > 0) { %>
 		  <input type="hidden" name="phonesize" value="<%=calldetails.size()%>" />
 		  <input type="hidden" name="id" value="<%=id1%>" />
+		  <input type="hidden" name="lateId" value="<%=lateId%>" />
 		  <tr><td>&nbsp;</td></tr>
 		  <tr><td>
 		  

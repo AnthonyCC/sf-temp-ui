@@ -2568,12 +2568,6 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		
 		try{
 			conn = this.getConnection();
-			ps = conn.prepareStatement("select count(*) from CUST.LATEISSUE_ORDERS where lateissue_id = ?");
-			ps.setString(1, lateissueId);
-			rs = ps.executeQuery();
-			if(rs.next()) {
-				model.setScheduledCalls(rs.getInt(1));
-			}
 			
 			ps = conn.prepareStatement("select NVL(vo.status,1) from CUST.LATEISSUE_ORDERS lo, cust.voiceshot_lateissue vl, cust.voiceshot_customers vo " +
 									   "where LO.LATEISSUE_ID = ? and LO.LATEISSUE_ID = vl.lateissue_id and vl.vs_id = vo.vs_id " +
@@ -2584,7 +2578,9 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			int unsucessful = 0;
 			int am_calls = 0;
 			int live_calls = 0;
+			int total_calls = 0;
 			while (rs.next()) {
+				total_calls++;
 				int status = rs.getInt(1);
 				if(status == EnumVSStatus.UNSUCCESSFUL.getValue())
 					unsucessful++;
@@ -2596,6 +2592,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			model.setDeliveredCallsLive(live_calls);
 			model.setDeliveredCallsAM(am_calls);
 			model.setUndeliveredCalls(unsucessful);
+			model.setScheduledCalls(total_calls);
 		}catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
@@ -2846,13 +2843,52 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 	public String saveVSRedialInfo(CrmVSCampaignModel model) throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement ps = null;
-		try{
+		PreparedStatement ps1 = null;
+		PreparedStatement ps2 = null;
+		long id = 1;
+		String call_id = "CID_" + id;
+		try {
 			conn = this.getConnection();
-			ps = conn.prepareStatement("Update cust.voiceshot_scheduled set redial='Y', change_by_date = sysdate, change_by_user=?, CALL_DATA_PULLED=null where vs_id = ?");
-			ps.setString(1, model.getAddByUser());
-			ps.setLong(2, Long.parseLong(model.getVsDetailsID()));
+			id = Long.parseLong(SequenceGenerator.getNextId(conn, "CUST", "VOICESHOT_SEQUENCE"));
+			ps = conn.prepareStatement("INSERT INTO CUST.VOICESHOT_SCHEDULED(VS_ID,CAMPAIGN_ID,REASON_ID,CREATED_BY_USER,CREATED_BY_DATE,START_TIME, CALL_ID, CAMPAIGN_TYPE, redial) " +
+										"select ?, campaign_id, reason_id, ?, sysdate, TO_DATE(?, 'HH:MI AM'),?,'LATEISSUE', 'Y' " +
+										"from cust.voiceshot_scheduled where vs_id = ?");
+			
+			call_id = "CID_" + id;
+			System.out.println(model.toString());
+			ps.setLong(1,id);
+			ps.setString(2, model.getAddByUser());
+			Calendar today_date = Calendar.getInstance();
+			today_date.setTime(new Date());
+			int hour = today_date.get(Calendar.HOUR);
+			int minute = today_date.get(Calendar.MINUTE);
+			String am_pm = today_date.get(Calendar.AM_PM) == 0?"AM":"PM";
+			String start_time = hour + ":" + minute + " " + am_pm;
+			ps.setString(3, start_time);
+			ps.setString(4, call_id);
+			ps.setLong(5, Long.parseLong(model.getVsDetailsID()));
 			ps.execute();
-		}catch (SQLException sqle) {
+			
+			ps1 = conn.prepareStatement("INSERT INTO CUST.VOICESHOT_LATEISSUE(VS_ID, LATEISSUE_ID) VALUES(?,?)");
+			ps1.setLong(1, id);
+			ps1.setString(2, model.getLateIssueId());
+			ps1.execute();
+			
+			ps2 = conn.prepareStatement("INSERT INTO CUST.voiceshot_customers(VS_ID,PHONE, CUSTOMER_ID, SALE_ID, LAST_REDIALED_DATE)" +
+											" VALUES(?,?,?,?, sysdate)");
+			for(int i=0;i<model.getPhonenumbers().size(); i++) {
+				String pStr = (String) model.getPhonenumbers().get(i);
+				StringTokenizer st = new StringTokenizer(pStr, "|");
+				String phone = st.nextToken();
+				String saleId = st.nextToken();
+				String customerId = st.nextToken();
+				ps2.setLong(1, id);
+				ps2.setString(2, phone);
+				ps2.setString(3, customerId);
+				ps2.setString(4, saleId);
+				ps2.execute();
+			}
+		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
@@ -2861,13 +2897,16 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 					conn.close();
 				if(ps != null)
 					ps.close();
+				if(ps1 != null)
+					ps1.close();
+				if(ps2 != null)
+					ps2.close();
 			} catch (SQLException sqle) {
 				LOGGER.debug("Error while cleaning:", sqle);
 			}
 		}
-		updatePhonenumbers(model.getPhonenumbers(), model.getVsDetailsID());
 		updateActivity(model);
-		return "CID_" + model.getVsDetailsID(); 
+		return call_id;
 	}
 	
 	private void updatePhonenumbers(List<String> phonenumbers, String detailId) {

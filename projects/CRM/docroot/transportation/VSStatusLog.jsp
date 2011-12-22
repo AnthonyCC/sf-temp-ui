@@ -67,7 +67,7 @@
 				<td width="5%" class="border_bottom" align="center"><%= model.getCampaignName() %></td>
 				<td width="10%" class="border_bottom" align="center"><%= model.getReasonId() %></td>
 				<td width="10%" class="border_bottom" align="center"><%= model.getStopSequence() %></td>
-				<td width="3%" class="border_bottom" align="center"><%= "Y".equals(model.getRedial())?"Yes":"No" %></td>
+				<td width="3%" class="border_bottom" align="center"><%= "Y".equals(model.getRedial())?"Yes":"" %></td>
 				<td width="8%" class="border_bottom" align="center"><%= model.getAddByUser() %></td>
 				<td width="10%" class="border_bottom" align="center"><%= model.getAddByDate() %></td>
 				<td width="8%" class="border_bottom" align="center"><%= model.getStartTime() %></td>
