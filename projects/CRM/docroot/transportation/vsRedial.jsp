@@ -25,33 +25,36 @@
 		String id = request.getParameter("id");
 		List<String> phonenumbers = new ArrayList<String>();
 		List<String> phonenumbers1 = new ArrayList<String>();
+		StringBuffer phonesb = new StringBuffer("<phonenumbers>");
 		for(int i=0;i<size;i++) {
 			String selValue = request.getParameter("selectphone"+i);
 			if(selValue != null && selValue.length() > 0) {
 				phonenumbers.add(selValue);
 				phonenumbers1.add(selValue.substring(0, selValue.indexOf("|")));
+				phonesb.append("<phonenumber number=\"");
+				phonesb.append(selValue.substring(0, selValue.indexOf("|")));
+				phonesb.append("\" />");
 			}
 		}
+		phonesb.append("</phonenumbers>");
 		cModel.setPhonenumbers(phonenumbers);
 		cModel.setVsDetailsID(id);
 		cModel.setAddByUser(CrmSession.getCurrentAgent(session).getLdapId()); 
 		String call_id = "CID_"+id1;
-		CallCenterServices.saveVSRedialInfo(cModel);
+		CallCenterServices.saveVSRedialInfo(cModel);		
 		
-		String phone = "<phonenumbers><phonenumber number=\"(203) 446-9229\" /><phonenumber number=\"(203) 843-0301\" /></phonenumbers>";
-		StringBuffer sb = new StringBuffer("<campaign menuid=\"");
-		sb.append(menuid);
-		sb.append("\" action=\"0\"  username=\"");
-		sb.append(FDStoreProperties.getVSUserName());
-		sb.append("\" password=\"");
-		sb.append(FDStoreProperties.getVSPassword());
-		sb.append("\" callid=\"");
-		sb.append(call_id);
-		sb.append("\" >");
-		sb.append(phone);
-		sb.append("</campaign>");
+		StringBuffer originalXML = new StringBuffer("<campaign menuid=\"");
+		originalXML.append(menuid);
+		originalXML.append("\" action=\"0\"  username=\"");
+		originalXML.append(FDStoreProperties.getVSUserName());
+		originalXML.append("\" password=\"");
+		originalXML.append(FDStoreProperties.getVSPassword());
+		originalXML.append("\" callid=\"" + call_id + "\">");
+		originalXML.append(phonesb.toString());				
+		originalXML.append("</campaign>");
+
 			
-		System.out.println("Voiceshot RedialXML:"+sb.toString());
+		System.out.println("Voiceshot RedialXML:"+originalXML.toString());
 		
 		//post the calls to vs
 		java.net.URL programUrl = new java.net.URL(FDStoreProperties.getVSURL());   
@@ -61,16 +64,16 @@
 		connection.setUseCaches(false); 
 		connection.setRequestProperty("Content-Type", "text/xml");
 		PrintWriter output = new PrintWriter(new OutputStreamWriter(connection.getOutputStream()));
-		output.println(sb.toString());
+		output.println(originalXML.toString());
 		output.close(); 
 		connection.connect();
 		InputStream is = connection.getInputStream();
 		InputStreamReader isr = new InputStreamReader(is);
 		BufferedReader br = new BufferedReader(isr);
-		
+			 
 		String line = null;
 		String firstresult = "";
-		
+			 
 		while ((line = br.readLine()) != null) {
 			 firstresult += "\n" + line;
 		}
