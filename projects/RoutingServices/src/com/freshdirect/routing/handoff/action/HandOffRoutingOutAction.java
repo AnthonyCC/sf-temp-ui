@@ -618,27 +618,26 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		StringBuffer errorBuf = new StringBuffer();
 			
 		if(plannedTrailerDispatchTree != null && plannedTrailerDispatchTree.size() > 0){
+			int trailerCount = 0;
 			for(Map.Entry<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>> dispatchEntry : plannedTrailerDispatchTree.entrySet()){
 				for(Map.Entry<RoutingTimeOfDay, List<IWaveInstance>> waveInstanceEntry : dispatchEntry.getValue().entrySet()){
 					List<IWaveInstance> waveInstances = waveInstanceEntry.getValue();
 					if(waveInstances != null){
 						Iterator<IWaveInstance> itr = waveInstances.iterator();
-						int trailerCount = 0;
 						while(itr.hasNext()){
 							IWaveInstance _waveInstance = itr.next();
-						
+							trailerCount++;
 							ITrailerModel model = new TrailerModel();
-							trailers.add(model);
 							
-							model.setTrailerId(_waveInstance.getRoutingCode()+"-"+(++trailerCount));
+							model.setTrailerId(_waveInstance.getRoutingCode()+"-"+trailerCount);
 							model.setDispatchTime(_waveInstance.getDispatchTime());
 							model.setPreferredRunTime(_waveInstance.getPreferredRunTime());
 							model.setMaxRunTime(_waveInstance.getMaxRunTime());
 							model.setStartTime(_waveInstance.getWaveStartTime().getAsDate());											
 							model.setCompletionTime(RoutingDateUtil.addSeconds(model.getStartTime(), model.getMaxRunTime()));
 							
-							model.setRoutes(new TreeSet<IHandOffBatchRoute>(
-									new RouteComparator1()));
+							model.setRoutes(new TreeSet<IHandOffBatchRoute>(new RouteComparator1()));
+							trailers.add(model);
 						}
 					}
 				}
@@ -674,7 +673,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 									
 									routeContCnt = routeCartonCnt/maxCartonsPerCont;
 									
-									if ((routeContCnt + trailerContainerCnt) < maxContPerTrailer) {
+									if ((routeContCnt + trailerContainerCnt) <= maxContPerTrailer) {
 										trailerContainerCnt += routeContCnt;
 										trailer.getRoutes().add(route);
 										routeItr.remove();

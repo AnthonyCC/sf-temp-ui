@@ -151,8 +151,13 @@ public abstract class AbstractHandOffAction {
 
 		public int compare(ITrailerModel obj1, ITrailerModel obj2){
 			if(obj1 != null && obj2 != null
-					&& obj1.getDispatchTime() != null && obj2.getDispatchTime() != null){
-				return obj1.getDispatchTime().getAsDate().compareTo(obj2.getDispatchTime().getAsDate());
+					&& obj1.getDispatchTime() != null && obj2.getDispatchTime() != null
+					&& obj1.getTrailerId() != null && obj2.getTrailerId() != null){
+				if(obj1.getDispatchTime().getAsDate().compareTo(obj2.getDispatchTime().getAsDate()) == 0){
+					return obj1.getTrailerId().compareTo(obj2.getTrailerId());
+				}else{
+					return obj1.getDispatchTime().getAsDate().compareTo(obj2.getDispatchTime().getAsDate());
+				}
 			}
 			return 0;
 		}
