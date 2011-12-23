@@ -51,6 +51,7 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
 					$('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
 					$('MB_content').style.padding = '0px';
 					$('MB_close').style.color = 'gray';
+					$('MB_close').style.background = "url(/media/editorial/site_access/images/round_x.gif) no-repeat";
 
 					ccSettings.topColour = "#ffffff";
 					ccSettings.bottomColour = "#ffffff";
