@@ -59,9 +59,9 @@
         JSONObject json = new JSONObject();
         if(success) {
 		    //if we return anything, it will de displayed in the overlay (can be html)
-            json.put("returnMsg", "<b<span style=\"color: #f00;\">Gift Card resent successfully.</span></b>");
+            json.put("returnMsg", "<b><span style=\"color: #f00;\">Gift Card resent successfully.</span></b>");
         } else {
-            json.put("returnMsg", "<b><span style=\"color: #f00;\">Unable to process your request. Please contact customer service.</span></b");
+            json.put("returnMsg", "<b><span style=\"color: #f00;\">Unable to process your request. Please contact customer service.</span></b>");
         }
 		%>  <%=json.toString()%>
 		<%
