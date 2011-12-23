@@ -5,7 +5,6 @@ package com.freshdirect.transadmin.web.model;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -24,8 +23,6 @@ import com.freshdirect.transadmin.model.ResourceI;
 import com.freshdirect.transadmin.model.ResourceId;
 import com.freshdirect.transadmin.model.ResourceInfoI;
 import com.freshdirect.transadmin.model.ScheduleEmployeeInfo;
-import com.freshdirect.transadmin.model.TrnFacility;
-
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.util.EnumResourceSubType;
 import com.freshdirect.transadmin.util.EnumResourceType;
@@ -68,24 +65,6 @@ public class DispatchCommand extends WebPlanInfo {
 	
 	private String extras;
 	private boolean isActualTruckAssigned;
-	private TrnFacility originFacility;
-	private TrnFacility destinationFacility;
-	
-	public TrnFacility getOriginFacility() {
-		return originFacility;
-	}
-
-	public void setOriginFacility(TrnFacility originFacility) {
-		this.originFacility = originFacility;
-	}
-
-	public TrnFacility getDestinationFacility() {
-		return destinationFacility;
-	}
-
-	public void setDestinationFacility(TrnFacility destinationFacility) {
-		this.destinationFacility = destinationFacility;
-	}
 
     public int getResourceSize(List resources)
 	{
@@ -583,15 +562,4 @@ public class DispatchCommand extends WebPlanInfo {
 	public void setPhysicalTruck(String physicalTruck) {
 		this.physicalTruck = physicalTruck;
 	}
-	
-	public String getFacilityInfoEx() {
-		if (originFacility == null || destinationFacility == null)
-			return null;
-	
-		StringBuffer buf = new StringBuffer();
-		buf.append(originFacility.getName()+" - "+destinationFacility.getName());
-
-		return buf.toString();
-	}
-
 }

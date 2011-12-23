@@ -246,8 +246,15 @@
                         <c:when test='${status.value == "false"}'> 
                             <form:select path="route">
                                 <form:option value="" label="Select Route"/>
-                                 <c:choose>                    
-                                  <c:when test='${dispatchForm.zoneCode != ""}'>                                 
+                                <c:choose>
+                                   <c:when test="${dispatchForm.destinationFacility.trnFacilityType eq 'CD'}">
+                                    <c:forEach items="${routes}" var="route" varStatus="gridRow">
+                                        <c:if test="${route.zonePrefix == dispatchForm.destinationFacility.routingCode}">
+                                            <form:option label="${route.routeNumber}" value="${route.routeNumber}" />
+                                        </c:if>
+                                    </c:forEach>
+                                   </c:when>
+								  <c:when test='${dispatchForm.zoneCode != ""}'>                                 
                                     <c:forEach items="${routes}" var="route" varStatus="gridRow">
                                         <c:if test="${route.zonePrefix == dispatchForm.zoneCode}">
                                             <form:option label="${route.routeNumber}" value="${route.routeNumber}" />
@@ -705,9 +712,14 @@
          if(!dispatchForm.confirmed.checked)
          {
         	var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
-        	var dispatchDate=dispatchForm.dispatchDate.value;
-        	var zoneCode=dispatchForm.zoneCode.value;
-        	jsonrpcClient.AsyncDispatchProvider.getActiveRoute(getRouteInfoCallback,dispatchDate,zoneCode);
+        	var dispatchDate = dispatchForm.dispatchDate.value;
+        	var zoneCode = dispatchForm.zoneCode.value;
+			var isTrailerRoute = false;
+			if(dispatchForm.zoneCode.value == ''){
+				zoneCode = '<c:out value="${dispatchForm.destinationFacility.routingCode}"/>';
+				isTrailerRoute = true;
+			}
+        	jsonrpcClient.AsyncDispatchProvider.getActiveRoute(getRouteInfoCallback,dispatchDate,zoneCode, isTrailerRoute);
          }
         }
         function getRouteInfoCallback(result, exception) 
@@ -746,9 +758,8 @@
 	      */
 	      
           if(!selected)     
-          dispatchForm.route.options[0].selected=true;
-                                
-      }        
+				dispatchForm.route.options[0].selected=true;
+      }
       
       function back()
       {

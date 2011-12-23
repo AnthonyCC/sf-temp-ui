@@ -38,7 +38,6 @@ import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.transadmin.service.DispatchManagerI;
-import com.freshdirect.transadmin.service.exception.TransAdminServiceException;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.HandOffBatchInfo;
 

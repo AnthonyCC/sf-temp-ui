@@ -159,7 +159,8 @@ public class DispatchProviderController extends JsonRpcController implements
 		return result;
 	}
 
-	public Collection getActiveRoute(String date, String zoneCode) {
+	@SuppressWarnings("unchecked")
+	public Collection getActiveRoute(String date, String zoneCode, boolean isTrailerRoute) {
 		Collection results = null;
 
 		try {
@@ -171,27 +172,25 @@ public class DispatchProviderController extends JsonRpcController implements
 					while (iterator.hasNext()) {
 						TrnAdHocRoute info = (TrnAdHocRoute) iterator.next();
 						results.add(info.getRouteNumber());
-
 					}
 				}
 			} else {
-				Collection c = domainManagerService.getRoutes(TransStringUtil
-						.getServerDate(date));
-				if (c != null) {
+				Collection routes = domainManagerService.getRoutes(TransStringUtil.getServerDate(date));
+				if (routes != null) {
 					results = new ArrayList();
-					Iterator iterator = c.iterator();
+					Iterator iterator = routes.iterator();
 					while (iterator.hasNext()) {
-						ErpRouteMasterInfo info = (ErpRouteMasterInfo) iterator
-								.next();
-						if (zoneCode.equals(info.getZoneNumber())) {
-							results.add(info.getRouteNumber());
+						ErpRouteMasterInfo _route = (ErpRouteMasterInfo) iterator.next();
+						if(isTrailerRoute && zoneCode.equals(_route.getRouteNumber().substring(1, 4))){							
+							results.add(_route.getRouteNumber());
+						} else if (zoneCode.equals(_route.getZoneNumber())) {
+							results.add(_route.getRouteNumber());
 						}
 					}
 				}
 			}
 
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return results;
