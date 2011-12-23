@@ -15,6 +15,8 @@ import com.freshdirect.webapp.taglib.AbstractControllerTag;
 public abstract class ControllerTagWrapper extends TagWrapper {
 
     public static final String ACTION_RESULT = "actionResult";
+    
+    public static final String ACTION_NAME = "actionName";
 
     public ControllerTagWrapper(AbstractControllerTag wrapTarget, SessionUser user) {
         this(wrapTarget, user.getFDSessionUser());
@@ -23,7 +25,7 @@ public abstract class ControllerTagWrapper extends TagWrapper {
     public ControllerTagWrapper(AbstractControllerTag wrapTarget, FDUserI user) {
         super(wrapTarget, user);
         wrapTarget.setResult(ACTION_RESULT);
-        addExpectedRequestValues(new String[] { ACTION_RESULT }, new String[] { ACTION_RESULT }); //gets,sets
+        addExpectedRequestValues(new String[] { ACTION_RESULT, ACTION_NAME }, new String[] { ACTION_RESULT, ACTION_NAME }); //gets,sets
     }
 
     public AbstractControllerTag getWrapTarget() {
