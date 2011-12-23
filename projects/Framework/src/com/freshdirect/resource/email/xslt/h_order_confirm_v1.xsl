@@ -49,7 +49,7 @@
 									</xsl:if>
 									</p>
 
-									<p>As soon as we select and weigh your items, we'll send you an e-mail with the final order total. We'll also include an itemized, printed receipt with your delivery.</p>
+									<p>As soon as we select and weigh your items, we'll send you an e-mail with the final order total. <xsl:if test="customer/goGreen = 'false'">We'll also include an itemized, printed receipt with your delivery.<xsl:if></p>
 
 									<xsl:choose>
 										<xsl:when test="order/deliveryType != 'H' and order/deliveryType != 'C'">
@@ -93,7 +93,7 @@
 									</p>
 
 
-									<p>As soon as we select and weigh your items, we'll send you an e-mail with the final order total. We'll also include an itemized, printed receipt with your delivery.</p>
+									<p>As soon as we select and weigh your items, we'll send you an e-mail with the final order total. <xsl:if test="customer/goGreen = 'false'">We'll also include an itemized, printed receipt with your delivery.</xsl:if></p>
                                                                         
                                     <xsl:choose>
                                         <xsl:when test="order/deliveryType != 'H' and order/deliveryType != 'C'"> You'll need to bring photo ID to pick up your food. Just present it to the attendant when you arrive. You are under no obligation to tip but have the option of providing a nominal tip if you feel that you've received exceptional service.</xsl:when>
@@ -134,7 +134,7 @@
 									</xsl:if>
 
 									
-									<p>As soon as we select and weigh your items, we'll send you an e-mail with the final order amount. We'll also include an itemized, printed receipt with your delivery.</p>
+									<p>As soon as we select and weigh your items, we'll send you an e-mail with the final order amount. <xsl:if test="customer/goGreen = 'false'">We'll also include an itemized, printed receipt with your delivery.</xsl:if></p>
 
 									<xsl:choose>
 										<xsl:when test="order/deliveryType != 'H' and order/deliveryType != 'C'">
