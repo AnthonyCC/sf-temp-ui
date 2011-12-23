@@ -194,6 +194,8 @@ public class ErpServicesProperties {
 	public final static String PROP_MKTADMIN_UPSOUTAGE_SUBJECT		    = "mktAdmin.upsoutage.mail.subject";
 	public final static String PROP_MKTADMIN_UPSOUTAGE_MESSAGE	        = "mktAdmin.upsoutage.mail.message";
 	
+	private final static String PROP_AIRCLIC_BLACKHOLE		= "airclic.blackhole";
+	private final static String PROP_HANDOFF_ADDRESS_LINE2		= "send.handoff.addressline2";
 	static {
 		Properties defaults = new Properties();
 
@@ -346,6 +348,8 @@ public class ErpServicesProperties {
 		defaults.put(PROP_MKTADMIN_UPSOUTAGE_FROM_ADDRESS, "");
 		defaults.put(PROP_MKTADMIN_UPSOUTAGE_SUBJECT, "");
 		defaults.put(PROP_MKTADMIN_UPSOUTAGE_MESSAGE, "");
+		defaults.put(PROP_AIRCLIC_BLACKHOLE, "false");
+		defaults.put(PROP_HANDOFF_ADDRESS_LINE2, "true");
 		
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
@@ -814,6 +818,11 @@ public class ErpServicesProperties {
 	public static String getMktAdmUpsOutageMessage() {
 		return config.getProperty(PROP_MKTADMIN_UPSOUTAGE_MESSAGE);
 	}
-	
+	public static boolean isAirclicBlackhole() {
+        return Boolean.valueOf(config.getProperty(PROP_AIRCLIC_BLACKHOLE)).booleanValue();
+    }
+	public static boolean isSendAddressLine2() {
+        return Boolean.valueOf(config.getProperty(PROP_HANDOFF_ADDRESS_LINE2)).booleanValue();
+    }
 	
 }

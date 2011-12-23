@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.framework.util.QuickDateFormat;
 import com.freshdirect.sap.bapi.BapiSendHandOff;
 import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffDispatchIn;
@@ -88,7 +89,11 @@ class JcoBapiSendHandOff extends JcoBapiFunction implements BapiSendHandOff {
 			stops.setValue(stop.getCrossStreet(), "CROSS_STREET"); // SVC Cross Street
 			stops.setValue(stop.getCrossStreet2(), "CROSS_STREET2"); // Cross Street 2
 			stops.setValue(stop.getServiceEntrance(), "SVC_ENTER_ADD"); // SVC Enter Address
-			stops.setValue(stop.getServiceAddress2(), "SVC_ENTER_ADD_2"); // SVC Enter Address
+			//added the flag to reduce the dependency with SAP changes. The handoff will work even if SAP reverts back the changes.
+			if(ErpServicesProperties.isSendAddressLine2())
+			{
+				stops.setValue(stop.getServiceAddress2(), "SVC_ENTER_ADD_2"); // SVC Enter Address 2
+			}
 			stops.setValue(formatTime(stop.getServiceEntranceOpenTime()), "SVC_OPEN_TIME"); // SVC Open Time
 			stops.setValue(formatTime(stop.getServiceEntranceCloseTime()), "SVC_CLOSE_TIME"); // SVC Close Time
 			stops.setValue(formatTime(stop.getBuildingOpenTime()), "BLDG_OPEN_TIME"); // Building Open Time
