@@ -1291,12 +1291,10 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		+ " select s.customer_id, s.wave_number, s.truck_number, s.stop_sequence, s.id as order_number, di.first_name, di.last_name, di.phone, di.phone_ext,"
 		+ " ci.email, decode(ci.email_plain_text, 'X', 'TEXT', 'HTML') as email_format_type"
 		+ " from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, cust.customerinfo ci"
-		+ " where s.id=sa.sale_id and s.type ='REG' and sa.id=di.salesaction_id and s.customer_id=ci.customer_id and sa.requested_date=? and ";
+		+ " where s.id=sa.sale_id and s.type ='REG' and sa.id=di.salesaction_id and s.customer_id=ci.customer_id and sa.requested_date=?";
 	
-	private static final String SMS_NOTIFICATION = "ci.delivery_notification = 'Y' ";
+	private static final String SMS_NOTIFICATION = " and ci.delivery_notification = 'Y' ";
 	
-	private static final String NO_SMS_NOTIFICATION = "(ci.delivery_notification = 'N' or ci.delivery_notification is null) ";
-
 	private String finalRouteStopQuery;
 
 	private static final String ROUTE_STOP_QRY_WHERE_WAVE = " and s.wave_number=LPAD(?, 6, '0')";
@@ -1319,9 +1317,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			
 			if("SMS".equals(call_format)) {
 				finalRouteStopQuery += SMS_NOTIFICATION;
-			} else {
-				finalRouteStopQuery += NO_SMS_NOTIFICATION;
-			}
+			} 
 
 			System.out.println("wave: " + wave +  " route: " + route + " stop: " + stop1 + " to " + stop2);
 
@@ -1338,7 +1334,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			}
 
 			finalRouteStopQuery += ROUTE_STOP_QRY_END;
-
+			
 			PreparedStatement ps = conn.prepareStatement(finalRouteStopQuery);
 			date = DateUtil.truncate(date);
 			//Timestamp truncDate = new Timestamp(DateUtil.truncate(date).getTime());
