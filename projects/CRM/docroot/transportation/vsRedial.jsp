@@ -140,7 +140,7 @@
 		<% } else { %>
 			<tr><td align="left">There are no calls eligible to be redialed. To be eligible for redialing, calls must meet the following criteria <br/><br/>
 				<ul>
-					<li>Be less than 15 days old.</li>
+					<li>Be less than 24 hours old.</li>
 					<li>Have one of these call reason routes: Busy, No answer, Operator Intercept.</li>
 					<li>Cannot already be dialing or scheduled for dialing.
 				</ul>
