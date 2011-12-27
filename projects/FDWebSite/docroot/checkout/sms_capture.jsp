@@ -119,7 +119,7 @@
 			</tr>
 			<tr valign="top">
 				<td class="trpad" style="padding-right: 5px;"><input class="radio" type="checkbox" name="text_offers" value="Y" <%=text_offers ? "checked":""%>></td>
-				<td class="text12">Yes please notiofy me about <b>offers, discounts</b> and <b>promotions</b> from time to time.<br/><br/><br/></td>
+				<td class="text12">Yes please notify me about <b>offers, discounts</b> and <b>promotions</b> from time to time.<br/><br/><br/></td>
 			</tr>
 			<tr valign="top">
 				<td colspan="2" class="trpad">
