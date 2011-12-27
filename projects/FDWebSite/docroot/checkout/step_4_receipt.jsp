@@ -22,13 +22,17 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
 <tmpl:insert template='/common/template/blank.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Order Placed</tmpl:put>
 <tmpl:put name='content' direct='true'>
-<%  boolean isModifyOrder = Boolean.parseBoolean(NVL.apply((String)request.getAttribute("modifyOrderMode"), "false"));
-    if(!isModifyOrder) {
+<%  boolean _modifyOrderMode = false; 	
+	String _ordNum = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
+	if(session.getAttribute("MODIFIED" + _ordNum) != null && session.getAttribute("MODIFIED" + _ordNum).equals(_ordNum)) {
+		_modifyOrderMode = true;
+	}
+	
+	if(!_modifyOrderMode) {
 	FDUserI curruser = (FDUserI)session.getAttribute(SessionName.USER);
 	FDIdentity curridentity  = curruser.getIdentity();
 	ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(curridentity);
-	if(cm.getMobilePreference() == null) {
-		String _ordNum = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
+	if(cm.getMobilePreference() == null) {		
 		//session.removeAttribute("SMSSubmission"+ _ordNum);
 		if(session.getAttribute("SMSSubmission" + _ordNum) == null) { %>
 		<script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>
