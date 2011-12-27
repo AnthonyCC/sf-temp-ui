@@ -483,9 +483,9 @@ public class FDUserDAO {
 		
 		try {
 			if(isCorpUser)
-				ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=?, go_green=?,business_phone=?,business_ext=?,mobile_preference_flag='U'  where customer_id=?");
+				ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=?, go_green=?,business_phone=replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),business_ext=?,mobile_preference_flag='U'  where customer_id=?");
 			else
-				ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=?, go_green=?, home_phone = ?, home_ext = ?,mobile_preference_flag='U' where customer_id=?");
+				ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=?, go_green=?, home_phone = replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'), home_ext = ?,mobile_preference_flag='U' where customer_id=?");
 			ps.setString(1, mphone.getPhone());
 			ps.setString(2, "Y".equals(textOffers)?"Y":"N");
 			ps.setString(3, "Y".equals(textDelivery)?"Y":"N");
