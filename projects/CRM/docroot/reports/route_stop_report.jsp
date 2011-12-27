@@ -72,6 +72,14 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
  <input type="hidden" name="xPortVS" value='no'>
 
 <script language="JavaScript">
+	checked = false;
+    function checkedAll () {
+		if (checked == false){checked = true}else{checked = false}
+		for (var i = 0; i < document.getElementById('timePick').elements.length; i++) {
+			document.getElementById('timePick').elements[i].checked = checked;
+		}
+    }
+	
     function checkForm(thisForm) {
         var okToSubmit= true;
         var day = thisForm.day.value;
@@ -92,16 +100,17 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
             alert('The DATE field is invalid. Please correct and try again.');
             okToSubmit = false;
         }
-        
-        if(isNaN(wave)) {
-            alert('The WAVE field is invalid. Please correct and try again.');
-            okToSubmit = false;
-        }
 		
 		if(route.length == 0) {
 			alert('The ROUTE is required. Please enter and try again.');
             okToSubmit = false;
 		}
+
+		
+		if(isNaN(wave)) {
+            alert('The WAVE field is invalid. Please correct and try again.');
+            okToSubmit = false;
+        }
 
         if(isNaN(route)) {
             alert('The ROUTE field is invalid. Please correct and try again.');
