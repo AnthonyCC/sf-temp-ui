@@ -49,7 +49,7 @@
 									</xsl:if>
 									</p>
 
-									<p>As soon as we select and weigh your items, we'll send you an e-mail with the final order total. <xsl:if test="customer/goGreen = 'false'">We'll also include an itemized, printed receipt with your delivery.<xsl:if></p>
+									<p>As soon as we select and weigh your items, we'll send you an e-mail with the final order total. <xsl:if test="customer/goGreen = 'false'">We'll also include an itemized, printed receipt with your delivery.</xsl:if></p>
 
 									<xsl:choose>
 										<xsl:when test="order/deliveryType != 'H' and order/deliveryType != 'C'">
