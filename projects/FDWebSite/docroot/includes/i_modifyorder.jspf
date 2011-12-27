@@ -26,6 +26,8 @@
 	if (mCart instanceof FDModifyCartModel) {
 		modifyOrderMode = true;
 		FDModifyCartModel modCart = (FDModifyCartModel) mCart;
+		String oId = modCart.getOriginalOrder().getErpSalesId();
+		session.setAttribute("MODIFIED" + oId, oId);
 
 		// Date originalOrderDate = modCart.getOriginalOrder().getDatePlaced();
 		Calendar cal  = Calendar.getInstance();
