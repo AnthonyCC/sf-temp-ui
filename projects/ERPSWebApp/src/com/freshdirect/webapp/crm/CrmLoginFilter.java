@@ -73,7 +73,8 @@ public class CrmLoginFilter implements Filter {
 			if(null ==redirectUrl){
 				redirectUrl="/main/main_index.jsp";
 				if(CrmAgentRole.OPS_CODE.equals(agentRole.getCode())||CrmAgentRole.SOP_CODE.equals(agentRole.getCode())){
-					redirectUrl="/transportation/crmLateIssues.jsp?lateLog=true";
+					//redirectUrl="/transportation/crmLateIssues.jsp?lateLog=true";
+					redirectUrl="/transportation/transportation/VSStatusLog.jsp";
 				}
 			}
 			
