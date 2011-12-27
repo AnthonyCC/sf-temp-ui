@@ -276,11 +276,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		try {
 			FDIdentity identity = user.getIdentity();
 			ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
-			if("U".equals(cm.getMobilePreference())) {
-				FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), mobile_number, text_offers, text_delivery, "U");
-			} else {
-				FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), mobile_number, text_offers, text_delivery, "N");
-			}
+			FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), mobile_number, text_offers, text_delivery);			
 		} catch (FDResourceException e) {
 			LOGGER.error("Error from mobile preferences", e);
 		}

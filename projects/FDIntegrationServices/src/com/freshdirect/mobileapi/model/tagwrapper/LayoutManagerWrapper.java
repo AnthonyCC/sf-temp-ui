@@ -14,6 +14,8 @@ import com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings;
 public class LayoutManagerWrapper extends TagWrapper implements RequestParamName {
 
     private static final String LAYOUT_NAME = "LAYOUT_NAME";
+    
+    private static final String SORT_BY = "sortBy";
 
     public LayoutManagerWrapper(SessionUser user) {
         super(new LayoutManager(), user.getFDSessionUser());
@@ -29,7 +31,7 @@ public class LayoutManagerWrapper extends TagWrapper implements RequestParamName
     public Settings getLayoutManagerSettings(ContentNodeModel currentFolder) throws FDException {
         Settings layoutManagerSetting = null;
         addExpectedRequestValues(new String[] { id, LAYOUT_NAME, REQ_PARAM_SORTBY, REQ_PARAM_GROCERY_VIRTUAL, REQ_PARAM_SORT_DESCENDING },
-                new String[] { id, LAYOUT_NAME });
+                new String[] { id, LAYOUT_NAME, SORT_BY });
         boolean isDept = (currentFolder instanceof DepartmentModel);
         boolean isCat = (currentFolder instanceof CategoryModel);
 

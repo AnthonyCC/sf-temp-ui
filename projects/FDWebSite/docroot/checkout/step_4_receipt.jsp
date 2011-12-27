@@ -22,10 +22,12 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
 <tmpl:insert template='/common/template/blank.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Order Placed</tmpl:put>
 <tmpl:put name='content' direct='true'>
-<%  FDUserI curruser = (FDUserI)session.getAttribute(SessionName.USER);
+<%  boolean isModifyOrder = Boolean.parseBoolean(NVL.apply((String)request.getAttribute("modifyOrderMode"), "false"));
+    if(!isModifyOrder) {
+	FDUserI curruser = (FDUserI)session.getAttribute(SessionName.USER);
 	FDIdentity curridentity  = curruser.getIdentity();
 	ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(curridentity);
-	if(cm.getMobilePreference() == null || "N".equals(cm.getMobilePreference())) {
+	if(cm.getMobilePreference() == null) {
 		String _ordNum = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
 		//session.removeAttribute("SMSSubmission"+ _ordNum);
 		if(session.getAttribute("SMSSubmission" + _ordNum) == null) { %>
@@ -64,7 +66,7 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
 <script language="javascript">
 doRemoteOverlay('sms_capture.jsp');
 </script>
-<%  } } %>
+<%  } } }%>
 <%
 //--------OAS Page Variables-----------------------
         request.setAttribute("sitePage", "www.freshdirect.com/checkout");

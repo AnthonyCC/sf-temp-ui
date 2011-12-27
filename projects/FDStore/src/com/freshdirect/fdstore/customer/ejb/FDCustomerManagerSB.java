@@ -771,7 +771,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 	
 	//public boolean dupeEmailAddress(String email) throws FDResourceException, RemoteException;
 	
-	public void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery, String mobilePrefs) throws FDResourceException, RemoteException;
+	public void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery) throws FDResourceException, RemoteException;
 	
 	public void storeGoGreenPreferences(String customerId, String goGreen) throws FDResourceException, RemoteException;
 	

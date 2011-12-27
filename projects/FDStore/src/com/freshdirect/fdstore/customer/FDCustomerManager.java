@@ -3863,11 +3863,11 @@ public class FDCustomerManager {
 	}
 	*/
 
-	public static void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery, String mobilePrefs) throws FDResourceException {
+	public static void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			sb.storeMobilePreferences(customerId, mobileNumber, textOffers, textDelivery, mobilePrefs);
+			sb.storeMobilePreferences(customerId, mobileNumber, textOffers, textDelivery);
 			logGoGreenActivity(customerId, "Y".equals(textOffers)?"Y":"N", EnumAccountActivityType.OFFER_NOTIFICATION);
 			logGoGreenActivity(customerId, "Y".equals(textDelivery)?"Y":"N", EnumAccountActivityType.DELIVERY_NOTIFICATION);
 		} catch (RemoteException e) {

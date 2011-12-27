@@ -6251,11 +6251,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 */	
-	public void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery, String mobilePrefs) throws FDResourceException {
+	public void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			FDUserDAO.storeMobilePreferences(conn, customerId, mobileNumber, textOffers, textDelivery, mobilePrefs);
+			FDUserDAO.storeMobilePreferences(conn, customerId, mobileNumber, textOffers, textDelivery);
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {

@@ -48,9 +48,17 @@
 <jsp:include page='/includes/order_header.jsp'/>
 
 <%  
+	boolean modifyOrderMode = false; 
+	FDCartModel mCart = (FDCartModel) user.getShoppingCart();		
+	if (mCart instanceof FDModifyCartModel) {		
+		modifyOrderMode = true;
+	}
+	
+	if(!modifyOrderMode) {
+
 	FDIdentity curridentity  = user.getIdentity();
 	ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(curridentity);
-	if(cm.getMobilePreference() == null || "N".equals(cm.getMobilePreference())) {
+	if(cm.getMobilePreference() == null) {
 		//session.removeAttribute("SMSSubmission"+ orderId);
 		if(session.getAttribute("SMSSubmission" + orderId) == null) { 
 		%>
@@ -89,7 +97,7 @@
 <script language="javascript">
 doRemoteOverlay('sms_capture.jsp');
 </script>
-<% } } %>
+<% } } }%>
 
 
 <fd:ComplaintGrabber order="<%= order %>" complaints="complaints" lineComplaints="lineComplaints" deptComplaints="deptComplaints" miscComplaints="miscComplaints" fullComplaints="fullComplaints" restockComplaints="restockComplaints" retrieveApproved="true" retrievePending="false" retrieveRejected="false">

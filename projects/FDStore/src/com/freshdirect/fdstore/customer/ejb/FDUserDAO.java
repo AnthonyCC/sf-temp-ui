@@ -422,17 +422,16 @@ public class FDUserDAO {
 		ps.close();
 	}
 	
-	public static void storeMobilePreferences(Connection conn, String customerId, String mobileNumber, String textOffers, String textDelivery, String mobilePrefs) {
+	public static void storeMobilePreferences(Connection conn, String customerId, String mobileNumber, String textOffers, String textDelivery) {
 		PreparedStatement ps = null;
 		PhoneNumber phone = new PhoneNumber(mobileNumber);
 		
 		try {
-			ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=?,mobile_preference_flag=? where customer_id=?");				
+			ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=? where customer_id=?");				
 			ps.setString(1, phone.getPhone());
 			ps.setString(2, "Y".equals(textOffers)?"Y":"N");
 			ps.setString(3, "Y".equals(textDelivery)?"Y":"N");
-			ps.setString(4, mobilePrefs);
-			ps.setString(5, customerId);
+			ps.setString(4, customerId);
 			ps.execute();
 		} catch (Exception e) {
 			LOGGER.error("Error updating mobile preferences", e);
@@ -447,7 +446,7 @@ public class FDUserDAO {
 	public static void storeGoGreenPreferences(Connection conn, String customerId, String goGreen) {
 		PreparedStatement ps = null;
 		try {
-			ps = conn.prepareStatement("update CUST.CUSTOMERINFO set go_green=?,mobile_preference_flag='N' where customer_id=?");				
+			ps = conn.prepareStatement("update CUST.CUSTOMERINFO set go_green=? where customer_id=?");				
 			ps.setString(1, "Y".equals(goGreen)?"Y":"N");
 			ps.setString(2, customerId);
 			ps.execute();

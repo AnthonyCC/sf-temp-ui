@@ -25,7 +25,7 @@ public abstract class ControllerTagWrapper extends TagWrapper {
     public ControllerTagWrapper(AbstractControllerTag wrapTarget, FDUserI user) {
         super(wrapTarget, user);
         wrapTarget.setResult(ACTION_RESULT);
-        addExpectedRequestValues(new String[] { ACTION_RESULT, ACTION_NAME }, new String[] { ACTION_RESULT, ACTION_NAME }); //gets,sets
+        addExpectedRequestValues(new String[] { ACTION_RESULT, ACTION_NAME }, new String[] { ACTION_RESULT }); //gets,sets
     }
 
     public AbstractControllerTag getWrapTarget() {
