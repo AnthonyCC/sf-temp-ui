@@ -31,7 +31,24 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
 		String _ordNum = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
 		//session.removeAttribute("SMSSubmission"+ _ordNum);
 		if(session.getAttribute("SMSSubmission" + _ordNum) == null) { %>
+		<script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>
 <script language="javascript">
+	function curvyCornersHelper(elemId, settingsObj) {
+		if (document.getElementById(elemId)) {
+			var temp = new curvyCorners(settingsObj, document.getElementById(elemId)).applyCornersToAll();
+		}
+	}
+	var ccSettings = {
+		tl: { radius: 6 },
+		tr: { radius: 6 },
+		bl: { radius: 6 },
+		br: { radius: 6 },
+		topColour: "#FFFFFF",
+		bottomColour: "#FFFFFF",
+		antiAlias: true,
+		autoPad: true
+	};
+	
 /* display an overlay containing a remote page */
 	function doRemoteOverlay(olURL) {
 		var olURL = olURL || '';
