@@ -20,7 +20,7 @@
 	<table cellspacing="15" cellpadding="0" border="0" align="center" width="600" 
 		style="font-family:Verdana,Arial,Helvetica,sans-serif;font-size:9pt;border-width: 1px;border-spacing: 2px;border-style: solid;border-color:#CCCC99 #999966 #CCCC99 #CCCC99 ;border-collapse: separate;background-color: white;">
 		<tbody><tr> 
-            <td style="background-color:#E7E7D6;height:50px;font-weight:bold;">Call Results</td>
+            <td style="background-color:#E7E7D6;height:50px;font-weight:bold;">Sound File Message</td>
           </tr>
 		  <tr><td>&nbsp;</td></tr>
 		  <tr> <td align="center"> <%= message %> </td> </tr>
