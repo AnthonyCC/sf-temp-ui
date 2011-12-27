@@ -48,9 +48,8 @@
 <jsp:include page='/includes/order_header.jsp'/>
 
 <%  
-	boolean modifyOrderMode = false; 
-	FDCartModel mCart = (FDCartModel) user.getShoppingCart();		
-	if (mCart instanceof FDModifyCartModel) {		
+	boolean modifyOrderMode = false; 	
+	if(session.getAttribute("MODIFIED" + orderId) != null && session.getAttribute("MODIFIED" + orderId).equals(orderId)) {
 		modifyOrderMode = true;
 	}
 	
@@ -62,7 +61,24 @@
 		//session.removeAttribute("SMSSubmission"+ orderId);
 		if(session.getAttribute("SMSSubmission" + orderId) == null) { 
 		%>
+		<script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>
 <script language="javascript">
+	function curvyCornersHelper(elemId, settingsObj) {
+		if (document.getElementById(elemId)) {
+			var temp = new curvyCorners(settingsObj, document.getElementById(elemId)).applyCornersToAll();
+		}
+	}
+	var ccSettings = {
+		tl: { radius: 6 },
+		tr: { radius: 6 },
+		bl: { radius: 6 },
+		br: { radius: 6 },
+		topColour: "#FFFFFF",
+		bottomColour: "#FFFFFF",
+		antiAlias: true,
+		autoPad: true
+	};
+	
 /* display an overlay containing a remote page */
 	function doRemoteOverlay(olURL) {
 		var olURL = olURL || '';
@@ -76,6 +92,7 @@
 			centered: true,
 			method: 'post',
 			afterLoad: function() {
+					$('MB_frame').style.border = '1px solid #CCCCCC';
 					$('MB_header').style.border = '0px solid #CCCCCC';
 					$('MB_header').style.display = 'block';
 					window.scrollTo(0,0);					
@@ -86,11 +103,9 @@
 					$('MB_close').style.color = 'gray';
 					$('MB_close').style.background = "url(/media/editorial/site_access/images/round_x.gif) no-repeat";
 
-					ccSettings.topColour = "#ffffff";
-					ccSettings.bottomColour = "#ffffff";
 					curvyCornersHelper('MB_frame', ccSettings);
-			}
-			
+			},
+			afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }	
 		});
 	}
 </script>

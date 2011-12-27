@@ -15,6 +15,8 @@ boolean modifyOrderMode = false;
 	if (mCart instanceof FDModifyCartModel) {
 		modifyOrderMode = true;
 		FDModifyCartModel modCart = (FDModifyCartModel) mCart;
+		String oId = modCart.getOriginalOrder().getErpSalesId();
+		session.setAttribute("MODIFIED" + oId, oId);
 		
 		java.text.SimpleDateFormat modDateFormat = new java.text.SimpleDateFormat("h:mm a 'on' EEEE MMMM d, yyyy");
 

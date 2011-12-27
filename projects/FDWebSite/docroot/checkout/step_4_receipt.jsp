@@ -45,6 +45,7 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
 			centered: true,
 			method: 'post',
 			afterLoad: function() {
+					$('MB_frame').style.border = '1px solid #CCCCCC';
 					$('MB_header').style.border = '0px solid #CCCCCC';
 					$('MB_header').style.display = 'block';
 					window.scrollTo(0,0);					
@@ -55,11 +56,9 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
 					$('MB_close').style.color = 'gray';
 					$('MB_close').style.background = "url(/media/editorial/site_access/images/round_x.gif) no-repeat";
 
-					ccSettings.topColour = "#ffffff";
-					ccSettings.bottomColour = "#ffffff";
 					curvyCornersHelper('MB_frame', ccSettings);
-			}
-			
+			},
+			afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }	
 		});
 	}
 </script>
