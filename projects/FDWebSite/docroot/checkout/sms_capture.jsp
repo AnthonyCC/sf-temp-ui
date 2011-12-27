@@ -40,10 +40,10 @@
 	if(request.getParameter("go_green") != null)
 		go_green = "Y".equals(request.getParameter("go_green"))?true:false;
 		
-	System.out.println(cm.getHomePhone().getPhone() + cm.getHomePhone().getExtension());
+	//System.out.println("home phone: " + cm.getHomePhone().getPhone() + cm.getHomePhone().getExtension());
 	String phone = cm.getHomePhone()==null?"":cm.getHomePhone().getPhone();
 	String phoneExt = cm.getHomePhone()==null?"":cm.getHomePhone().getExtension();
-	
+	//System.out.println("Bus phone: " + cm.getBusinessPhone().getPhone() + cm.getBusinessPhone().getExtension());
 	if(user.isCorporateUser()) {
 		phone = cm.getBusinessPhone()==null?"":cm.getBusinessPhone().getPhone();
 		phoneExt = cm.getBusinessPhone()==null?"":cm.getBusinessPhone().getExtension();
@@ -93,7 +93,7 @@
 			<tr><td colspan="2" >&nbsp;</td></tr>
 			<tr><td colspan="2" class="trpad"><span class="title18or">1.&nbsp;</span><span class="title18">Verify primary contact information</span></td></tr>						
 			<tr><td colspan="2" >&nbsp;</td></tr>
-			<tr><td colspan="2" class="text12 trpad">Please verify your emergency contact informationb below.</td></tr>
+			<tr><td colspan="2" class="text12 trpad">Please verify your emergency contact information below.</td></tr>
 			<tr><td colspan="2" >&nbsp;</td></tr>
 			<tr valign="top">
 				<td colspan="2" style="padding-right:5px;font-weight:bold;" class="text12 trpad">
