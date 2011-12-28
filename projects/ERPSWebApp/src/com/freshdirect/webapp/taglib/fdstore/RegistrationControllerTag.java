@@ -213,9 +213,9 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 					actionResult.addError(true, "mobile_number", SystemMessageList.MSG_PHONE_FORMAT);
 					return;
 				}
-			} else if(mobile_number != null || mobile_number.length() != 0) {
+			} else if(mobile_number != null && mobile_number.length() != 0) {
 				if(!"Y".equals(text_offers) && !"Y".equals(text_delivery)) {
-					actionResult.addError(true, "mobile_number", "Pick a text option.");
+					actionResult.addError(true, "mobile_number", "Pick a texting option.");
 					return;
 				}
 			}
@@ -271,6 +271,11 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 			PhoneNumber phone = new PhoneNumber(mobile_number);
 			if(!phone.isValid()) {
 				actionResult.addError(true, "mobile_number", SystemMessageList.MSG_PHONE_FORMAT);
+				return;
+			}
+		} else if(mobile_number != null && mobile_number.length() != 0) {
+			if(!"Y".equals(text_offers) && !"Y".equals(text_delivery)) {
+				actionResult.addError(true, "mobile_number", "Pick a texting option.");
 				return;
 			}
 		}		

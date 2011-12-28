@@ -73,7 +73,7 @@
 		</td>
 	</tr>
 	<tr><td colspan="2">&nbsp;</td></tr>
-	<tr><td  colspan="2"><img src="/media_stat/images/layout/dotted_line.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"></td></tr>
+	<tr><td  colspan="2"><img src="/media_stat/images/layout/dotted_line.gif" width="100%" height="1" border="0" vspace="5"></td></tr>
 	<tr><td colspan="2">&nbsp;</td></tr>
 	<tr><td align="center" colspan="2">
 		<table class="butCont"> <tr>
@@ -94,7 +94,7 @@
 		<img src="/media_stat/images/navigation/preferences_title.gif" border="0" /> <br/><br/>
 	</td>
 </tr>
-<tr><td><img src="/media_stat/images/layout/dotted_line.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"></td></tr>
+<tr><td><img src="/media_stat/images/layout/dotted_line.gif" width="100%" height="1" border="0" vspace="5"></td></tr>
 <tr>
 	<td>
 		<table>
@@ -113,7 +113,7 @@
 		</table>
 	</td>
 </tr>
-<tr><td><img src="/media_stat/images/layout/dotted_line.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"></td></tr>
+<tr><td><img src="/media_stat/images/layout/dotted_line.gif" width="100%" height="1" border="0" vspace="5"></td></tr>
 <tr>
 	<td>		
 		<table width="100%" border="0">
@@ -147,7 +147,7 @@
 		</table>
 	</td>
 </tr>
-<tr><td><img src="/media_stat/images/layout/dotted_line.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"></td></tr>
+<tr><td><img src="/media_stat/images/layout/dotted_line.gif" width="100%" height="1" border="0" vspace="5"></td></tr>
 <tr>
 	<td>
 		<table width="100%" border="0">
@@ -162,12 +162,12 @@
 			<tr><td colspan="2" >&nbsp;</td></tr>
 		</table>
 		
-		<img src="/media_stat/images/layout/dotted_line.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5">
+		<img src="/media_stat/images/layout/dotted_line.gif" width="100%" height="1" border="0" vspace="5">
 	</td>
 </tr>
 <tr><td>&nbsp;</td></tr>
 <tr>
-	<td><br />
+	<td>
 		<table width="100%" border="0"><tr>
 		<td align="left" class="trpad">
 			<table class="butCont">
@@ -194,6 +194,7 @@
 		</tr></table>
 	</td>
 </tr>
+<tr><td>&nbsp;</td></tr>
 </table>
 </form>
 <% } %>

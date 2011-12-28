@@ -84,29 +84,28 @@
 		var olURL = olURL || '';
 		if (olURL == '') { return false; }
 
-		Modalbox.show(olURL, {
-			loadingString: 'Loading Preview...',			
-			title: ' ',
-			overlayOpacity: .80,
-			width: 750,
-			centered: true,
-			method: 'post',			
-			afterLoad: function() {
-					$('MB_frame').style.border = '1px solid #CCCCCC';
-					$('MB_header').style.border = '0px solid #CCCCCC';
-					$('MB_header').style.display = 'block';
-					window.scrollTo(0,0);					
-					$('MB_window').style.width = 'auto';
-					$('MB_window').style.height = 'auto';
-					$('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
-					$('MB_content').style.padding = '0px';
-					$('MB_close').style.color = 'gray';
-					$('MB_close').style.background = "url(/media/editorial/site_access/images/round_x.gif) no-repeat";
+		 Modalbox.show(olURL, {
+                        loadingString: 'Loading Preview...',
+                        title: ' ',
+                        overlayOpacity: .80,
+                        width: 750,
+                        centered: true,
+                        method: 'post',
+                        closeValue: '<img src="/media/editorial/site_access/images/round_x.gif" />',
+                        afterLoad: function() {
+                                        $('MB_frame').style.border = '1px solid #CCCCCC';
+                                        $('MB_header').style.border = '0px solid #CCCCCC';
+                                        $('MB_header').style.display = 'block';
+                                        window.scrollTo(0,0);
+                                        $('MB_window').style.width = 'auto';
+                                        $('MB_window').style.height = 'auto';
+                                        $('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
+                                        $('MB_content').style.padding = '0px';
 
-					curvyCornersHelper('MB_frame', ccSettings);
-			},
-			afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }	
-		});
+                                        curvyCornersHelper('MB_frame', ccSettings);
+                        },
+                        afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
+                });
 	}
 	
 	function doRemoteOverlay1(olURL) {
@@ -117,6 +116,7 @@
 				title: ' ',
 				width: 750,
 				params: Form.serialize('smsform'),
+				closeValue: '<img src="/media/editorial/site_access/images/round_x.gif" />',
 				afterLoad: function() {
 						$('MB_frame').style.border = '1px solid #CCCCCC';
 						$('MB_header').style.border = '0px solid #CCCCCC';
@@ -126,8 +126,6 @@
 						$('MB_window').style.height = 'auto';
 						$('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
 						$('MB_content').style.padding = '0px';
-						$('MB_close').style.color = 'gray';
-						$('MB_close').style.background = "url(/media/editorial/site_access/images/round_x.gif) no-repeat";
 
 						curvyCornersHelper1('MB_frame', ccSettings1);
 				},
