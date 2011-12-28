@@ -50,10 +50,10 @@
 							  <c:forEach var="facility" items="${trnFacilitys}">                             
 								  <c:choose>
 									<c:when test="${param.facilityLocation == facility.name}" > 
-									  <option selected value="<c:out value="${facility.name}"/>"><c:out value="${facility.name}"/></option>
+									  <option selected value="<c:out value="${facility.facilityId}"/>"><c:out value="${facility.name}"/></option>
 									</c:when>
 									<c:otherwise> 
-									  <option value="<c:out value="${facility.name}"/>"><c:out value="${facility.name}"/></option>
+									  <option value="<c:out value="${facility.facilityId}"/>"><c:out value="${facility.name}"/></option>
 									</c:otherwise> 
 								  </c:choose>
 								</c:forEach>
