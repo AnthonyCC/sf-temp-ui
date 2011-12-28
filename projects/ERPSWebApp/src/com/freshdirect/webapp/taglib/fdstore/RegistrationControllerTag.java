@@ -213,6 +213,11 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 					actionResult.addError(true, "mobile_number", SystemMessageList.MSG_PHONE_FORMAT);
 					return;
 				}
+			} else if(mobile_number != null || mobile_number.length() != 0) {
+				if(!"Y".equals(text_offers) && !"Y".equals(text_delivery)) {
+					actionResult.addError(true, "mobile_number", "Pick a text option.");
+					return;
+				}
 			}
 			
 			//check for the other phone

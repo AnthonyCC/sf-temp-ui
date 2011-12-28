@@ -45,6 +45,30 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 			if(!actionResult.isSuccess()){
 				return true;	
 			}
+			
+			if(request.getParameter("mobile_number") != null && request.getParameter("mobile_number").length() != 0) {
+				PhoneNumber mPhone = new PhoneNumber(request.getParameter("mobile_number"));
+				if(!mPhone.isValid()) {
+					actionResult.addError(true, "mobile_number", SystemMessageList.MSG_PHONE_FORMAT);
+					return true;
+				} else {
+					if(!"Y".equals(request.getParameter("text_delivery")) && !"Y".equals(request.getParameter("text_offers"))) {
+						actionResult.addError(true, "mobile_number", "Pick a text messaging option");
+					}
+				}
+			}
+			
+			if("Y".equals(request.getParameter("text_delivery")) || "Y".equals(request.getParameter("text_offers"))) {
+				if(request.getParameter("mobile_number") == null || request.getParameter("mobile_number").length() == 0) {
+					actionResult.addError(true, "mobile_number", "Mobile number is required");
+					return true;
+				}
+			}
+			
+			//mobile number is valid. check for textoptions.
+			
+				
+			
 			if(!"".equals(this.password)){
 				this.customerInfo.setPassword(this.password);
 			}
@@ -83,13 +107,7 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 	private void validateInfo(ActionResult result) {
 		result.addError("".equals(this.customerInfo.getUserId()), "userId", SystemMessageList.MSG_REQUIRED);
 		result.addError(!EmailUtil.isValidEmailAddress(this.customerInfo.getUserId()), "userId", SystemMessageList.MSG_EMAIL_FORMAT);
-		result.addError("".equals(this.customerInfo.getPasswordHint()), "passwordHint", SystemMessageList.MSG_REQUIRED);
-		if(this.customerInfo.isDelNotification() || this.customerInfo.isOffNotification()) {
-			//check for mobile number
-			if(!this.customerInfo.getMobileNumber().isValid()) {
-				result.addError(true, "mobile_number", SystemMessageList.MSG_PHONE_FORMAT);
-			}
-		}
+		result.addError("".equals(this.customerInfo.getPasswordHint()), "passwordHint", SystemMessageList.MSG_REQUIRED);		
 	}
 	
 	private void validatePassword(ActionResult result) {
