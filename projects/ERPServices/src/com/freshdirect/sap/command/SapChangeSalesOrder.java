@@ -193,10 +193,14 @@ public class SapChangeSalesOrder extends SapCommandSupport implements SapOrderCo
 		billingRef = StringUtils.rightPad(billingRef, 20);
 		
 		String recipeFlag = StringUtils.rightPad(order.isRecipeOrder() ? "1" : " ", 5);
+		
+		String goGreen = StringUtils.rightPad(order.getCustomer().isGoGreen() ? "GREEN" : " ", 5);
 	
+		// 10 spaces + 5 (flag) + 5 (GREEN) + 65 spaces + 20 chars
 		bapi.addExtension("BAPE_VBAK", salesDocumentNumber
 			+ recipeFlag
-			+ StringUtils.repeat(" ", 70)
+			+ goGreen
+			+ StringUtils.repeat(" ", 65)
 			+ billingRef
 			+ StringUtils.repeat(" ", 20) // offset 106 - 125
 			+ StringUtils.left(NVL.apply(order.getDeliveryRegionId(), "").trim(), 20)  // offset 126  --> 145
