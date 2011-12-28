@@ -16,6 +16,7 @@ import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.CustomerRatingI;
+import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAddressVerificationException;
@@ -68,10 +69,10 @@ import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.standingorders.DeliveryInterval;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
+import com.freshdirect.fdstore.standingorders.StandingOrdersServiceResult;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 import com.freshdirect.fdstore.standingorders.StandingOrdersServiceResult.Result;
 import com.freshdirect.fdstore.standingorders.StandingOrdersServiceResult.Status;
-import com.freshdirect.fdstore.standingorders.StandingOrdersServiceResult;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -775,16 +776,26 @@ public class StandingOrderUtil {
 			List<FDOrderInfoI> orders = so.getAllOrders();
 			for ( FDOrderInfoI order : orders ) {
 				Date notificationDate = subtract2WorkDays( order.getRequestedDate() );
-				if ( isWithin24Hours( notificationDate ) ) {
-					LOGGER.info( "Sending 2days notification email: so["+so.getId()+"], order["+order.getErpSalesId()+"]" );
-					sendNotificationMail( so, so.getUserInfo(), order.getErpSalesId(), mailerHome );
+				if ( isWithin24Hours( notificationDate )) {
+					if (isCancelledOrder(order)) {
+						LOGGER.info( "Not sending 2days notification email as order instance is cancelled: so["+so.getId()+"], order["+order.getErpSalesId()+"]" );
+					} else {
+						LOGGER.info( "Sending 2days notification email: so["+so.getId()+"], order["+order.getErpSalesId()+"]" );
+						sendNotificationMail( so, so.getUserInfo(), order.getErpSalesId(), mailerHome );
+					}
 				}
 			}			
 		} catch (FDAuthenticationException e) {
 			LOGGER.error("authentication error while sending notification mail", e);
 		}		
 	}
-	
+	private static boolean isCancelledOrder(FDOrderInfoI order) {
+		if (EnumSaleStatus.CANCELED.equals(order.getOrderStatus()) ||
+			EnumSaleStatus.MODIFIED_CANCELED.equals(order.getOrderStatus())
+		    )
+			return true;
+		return false;
+	}
 	private static Date subtract2WorkDays( Date d ) {
 		Calendar c = Calendar.getInstance();
 		c.setTime( d );
