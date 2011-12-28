@@ -43,6 +43,8 @@ public class WebEmployeeInfo implements Serializable,
 	public void setTruckPref01(String truckPref01) {
 		if(truckPref01 != null && !"".equals(truckPref01))
 			empTruckPreferences.put(EnumTruckPreference.TRUCK_PREF_01.getName(), truckPref01);
+		else
+			empTruckPreferences.remove(EnumTruckPreference.TRUCK_PREF_01.getName());
 	}
 
 	public String getTruckPref02() {
@@ -53,7 +55,9 @@ public class WebEmployeeInfo implements Serializable,
 
 	public void setTruckPref02(String truckPref02) {
 		if(truckPref02 != null && !"".equals(truckPref02))
-			empTruckPreferences.put(EnumTruckPreference.TRUCK_PREF_02.getName(), truckPref02);		
+			empTruckPreferences.put(EnumTruckPreference.TRUCK_PREF_02.getName(), truckPref02);
+		else
+			empTruckPreferences.remove(EnumTruckPreference.TRUCK_PREF_02.getName());
 	}
 
 	public String getTruckPref03() {
@@ -65,6 +69,8 @@ public class WebEmployeeInfo implements Serializable,
 	public void setTruckPref03(String truckPref03) {		
 		if(truckPref03 != null && !"".equals(truckPref03))
 			empTruckPreferences.put(EnumTruckPreference.TRUCK_PREF_03.getName(), truckPref03);
+		else
+			empTruckPreferences.remove(EnumTruckPreference.TRUCK_PREF_03.getName());
 	}
 
 	public String getTruckPref04() {
@@ -76,6 +82,8 @@ public class WebEmployeeInfo implements Serializable,
 	public void setTruckPref04(String truckPref04) {
 		if(truckPref04 != null && !"".equals(truckPref04))
 			empTruckPreferences.put(EnumTruckPreference.TRUCK_PREF_04.getName(), truckPref04);
+		else
+			empTruckPreferences.remove(EnumTruckPreference.TRUCK_PREF_04.getName());
 	}
 
 	public String getTruckPref05() {
@@ -87,6 +95,8 @@ public class WebEmployeeInfo implements Serializable,
 	public void setTruckPref05(String truckPref05) {
 		if(truckPref05 != null && !"".equals(truckPref05))
 			empTruckPreferences.put(EnumTruckPreference.TRUCK_PREF_05.getName(), truckPref05);
+		else
+			empTruckPreferences.remove(EnumTruckPreference.TRUCK_PREF_05.getName());
 	}
 
 	public Map<String, String> getEmpTruckPreferences() {

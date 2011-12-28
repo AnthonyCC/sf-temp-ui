@@ -37,6 +37,7 @@ import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IHandOffBatchTrailer;
 import com.freshdirect.routing.model.IHandOffDispatch;
 import com.freshdirect.routing.model.IRouteModel;
+import com.freshdirect.routing.model.TrnFacility;
 import com.freshdirect.routing.model.TrnFacilityType;
 import com.freshdirect.routing.model.TruckPreferenceStat;
 import com.freshdirect.routing.service.exception.IIssue;
@@ -273,11 +274,12 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 		
 		Map<String, List<IHandOffBatchPlan>> batchPlanMap = new HashMap<String, List<IHandOffBatchPlan>>();
 		Map<String, List<IHandOffBatchRoute>> batchRouteMap = new HashMap<String, List<IHandOffBatchRoute>>();
-				
-		List<IHandOffBatchPlan> bullpens = new ArrayList<IHandOffBatchPlan>();
-		List<IHandOffBatchPlan> trailerPlans = new ArrayList<IHandOffBatchPlan>();
+		Map<String, List<IHandOffBatchPlan>> batchTrailerPlanMap = new HashMap<String, List<IHandOffBatchPlan>>();
+		Map<String, List<IHandOffBatchTrailer>> batchTrailerMap = new HashMap<String, List<IHandOffBatchTrailer>>();
+
+		List<IHandOffBatchPlan> bullpens = new ArrayList<IHandOffBatchPlan>();	
 		RoutingInfoServiceProxy routeInfoProxy = new RoutingInfoServiceProxy();
-		Map<String, TrnFacilityType> facilityLookUp = routeInfoProxy.retrieveTrnFacilitys();
+		Map<String, TrnFacility> facilityLookUp = routeInfoProxy.retrieveTrnFacilityLocations();
 		
 		Iterator<IHandOffBatchPlan> planItr = this.batchPlanList.iterator();
 		while(planItr.hasNext()){
@@ -286,9 +288,12 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 				bullpens.add(_plan);
 				continue;
 			}
-			if(_plan.getZoneCode() == null 
-					&& EnumTransportationFacilitySrc.CROSSDOCK.getName().equalsIgnoreCase(facilityLookUp.get(_plan.getDestinationFacility()).getName())){
-				trailerPlans.add(_plan);
+			if(_plan.getZoneCode() == null && _plan.getDestinationFacility() != null 
+					&& EnumTransportationFacilitySrc.CROSSDOCK.getName().equalsIgnoreCase(facilityLookUp.get(_plan.getDestinationFacility()).getTrnFacilityType().getName())){
+				if(!batchTrailerPlanMap.containsKey(facilityLookUp.get(_plan.getDestinationFacility()).getRoutingCode())){
+					batchTrailerPlanMap.put(facilityLookUp.get(_plan.getDestinationFacility()).getRoutingCode(), new ArrayList<IHandOffBatchPlan>());
+				}
+				batchTrailerPlanMap.get(facilityLookUp.get(_plan.getDestinationFacility()).getRoutingCode()).add(_plan);
 				continue;
 			}
 			if(!batchPlanMap.containsKey(_plan.getZoneCode())){
@@ -320,8 +325,26 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 		constructDispatchModelList(dispatchMapping, bullpens, Collections.EMPTY_LIST, Collections.EMPTY_LIST, false);
 		
 		//Trailer Plan List
-		constructDispatchModelList(dispatchMapping, trailerPlans, Collections.EMPTY_LIST, trailers, true);
-
+		Iterator<IHandOffBatchTrailer> trailerItr = trailers.iterator();
+		while(trailerItr.hasNext()){
+			IHandOffBatchTrailer _trailer = trailerItr.next();
+			if(_trailer.getTrailerId() != null){
+				if(!batchTrailerMap.containsKey(_trailer.getTrailerId().substring(1, 4))){
+					batchTrailerMap.put(_trailer.getTrailerId().substring(1, 4), new ArrayList<IHandOffBatchTrailer>());
+				}
+				batchTrailerMap.get(_trailer.getTrailerId().substring(1, 4)).add(_trailer);
+			}
+		}	
+		
+		Set finalTrailerKeySet = batchTrailerPlanMap.keySet();
+		Iterator<String> finalBatchTrailerPlanItr = finalTrailerKeySet.iterator();
+		while(finalBatchTrailerPlanItr.hasNext()){
+			String locRoutingCode = finalBatchTrailerPlanItr.next();
+			List<IHandOffBatchTrailer> locTrailerRouteList = batchTrailerMap.get(locRoutingCode);
+			if(locTrailerRouteList == null) 
+				locTrailerRouteList = Collections.EMPTY_LIST;
+			constructDispatchModelList(dispatchMapping, (List<IHandOffBatchPlan>)batchTrailerPlanMap.get(locRoutingCode), Collections.EMPTY_LIST, locTrailerRouteList, true);
+		}		
 	}
 	
 	private static void constructDispatchModelList(Map<String, IHandOffDispatch> dispatchMapping
@@ -351,19 +374,6 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			_dispatch.setCutoffTime(_plan.getCutOffTime());
 			_dispatch.setBatchDispatchResources(_plan.getBatchPlanResources());
 			
-			IHandOffBatchRoute route = matchRoute(_plan, zoneRouteList);
-							
-			if(route != null) {					
-				_dispatch.setRoute(route.getRouteId());
-				if(route.getFirstDeliveryTime() != null){
-					_dispatch.setFirstDeliveryTime(RoutingDateUtil.getServerTime(route.getFirstDeliveryTime()) != null ?
-						RoutingDateUtil.getServerTime(RoutingDateUtil.getServerTime(route.getFirstDeliveryTime())): null);
-				}
-				
-				_dispatch.setCheckInTime(route.getCheckInTime());				
-				_dispatch.setZone(route.getArea());
-				route = null;				
-			}
 			if(isTrailer){
 				_dispatch.setTrailer(true);
 				IHandOffBatchTrailer trailer = matchTrailer(_plan, batchTrailers);
@@ -375,6 +385,20 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 					}
 					_dispatch.setCheckInTime(trailer.getCompletionTime());		
 					trailer = null;
+				}
+			} else {
+				IHandOffBatchRoute route = matchRoute(_plan, zoneRouteList);
+
+				if(route != null) {
+					_dispatch.setRoute(route.getRouteId());
+					if(route.getFirstDeliveryTime() != null){
+						_dispatch.setFirstDeliveryTime(RoutingDateUtil.getServerTime(route.getFirstDeliveryTime()) != null ?
+							RoutingDateUtil.getServerTime(RoutingDateUtil.getServerTime(route.getFirstDeliveryTime())): null);
+					}
+
+					_dispatch.setCheckInTime(route.getCheckInTime());				
+					_dispatch.setZone(route.getArea());
+					route = null;
 				}
 			}
 			if(!dispatchMapping.containsKey(_dispatch.getDispatchId()))
@@ -389,9 +413,9 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			while(_routeItr.hasNext()) {
 				IHandOffBatchRoute route = _routeItr.next();
 						
-				if(route.getRouteDispatchTime()!= null && p.getStartTime()!= null){
-					String firstDlvTimeFromRoute = RoutingDateUtil.getServerTime(route.getRouteDispatchTime()) != null ? RoutingDateUtil.getServerTime(route.getRouteDispatchTime()) : "";
-					String firstDlvTime = RoutingDateUtil.getServerTime(p.getStartTime());					
+				if(route.getFirstDeliveryTime()!= null && p.getFirstDeliveryTime()!= null){
+					String firstDlvTimeFromRoute = RoutingDateUtil.getServerTime(route.getFirstDeliveryTime()) != null ? RoutingDateUtil.getServerTime(route.getFirstDeliveryTime()) : "";
+					String firstDlvTime = RoutingDateUtil.getServerTime(p.getFirstDeliveryTime());					
 					if(firstDlvTime != null && firstDlvTime.length() > 0 && firstDlvTime.equals(firstDlvTimeFromRoute)) {
 						result = route;						
 						_routeItr.remove();
@@ -412,9 +436,9 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 				IHandOffBatchTrailer trailer = _trailerItr.next();
 						
 				if(trailer.getTrailerDispatchTime()!= null && p.getStartTime()!= null){
-					String firstDlvTimeFromRoute = RoutingDateUtil.getServerTime(trailer.getTrailerDispatchTime()) != null ? RoutingDateUtil.getServerTime(trailer.getTrailerDispatchTime()) : "";
-					String firstDlvTime = RoutingDateUtil.getServerTime(p.getStartTime());					
-					if(firstDlvTime != null && firstDlvTime.length() > 0 && firstDlvTime.equals(firstDlvTimeFromRoute)) {
+					String startTimeFromRoute = RoutingDateUtil.getServerTime(trailer.getTrailerDispatchTime()) != null ? RoutingDateUtil.getServerTime(trailer.getTrailerDispatchTime()) : "";
+					String planStartTime = RoutingDateUtil.getServerTime(p.getStartTime());					
+					if(planStartTime != null && planStartTime.length() > 0 && planStartTime.equals(startTimeFromRoute)) {
 						result = trailer;
 						_trailerItr.remove();
 						break;

@@ -11,6 +11,7 @@ import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.IZoneScenarioModel;
+import com.freshdirect.routing.model.TrnFacility;
 import com.freshdirect.routing.model.TrnFacilityType;
 import com.freshdirect.routing.service.IRoutingInfoService;
 import com.freshdirect.routing.service.RoutingServiceLocator;
@@ -73,9 +74,13 @@ public class RoutingInfoServiceProxy  extends BaseServiceProxy  {
 
 	public Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> getPlannedTrailerDispatchTree(Date deliveryDate, Date cutOff)  throws RoutingServiceException {
 		return getService().getPlannedTrailerDispatchTree(deliveryDate, cutOff);
-}
+    }
 
 	public Map<String, TrnFacilityType> retrieveTrnFacilitys()throws RoutingServiceException {
 		return getService().retrieveTrnFacilitys();
+	}
+
+	public Map<String, TrnFacility> retrieveTrnFacilityLocations() throws RoutingServiceException {
+		return getService().retrieveTrnFacilityLocations();
 	}
 }

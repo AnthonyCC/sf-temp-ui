@@ -71,7 +71,7 @@
 							 	</td>
 							 </tr> 
 							  <tr>
-							    <td>Lead From Time</td>
+							    <td>From Time</td>
 							    <td> 								  
 							  	 	<form:input maxlength="50" size="30" path="leadFromTime" />
 							 	</td>
@@ -80,7 +80,7 @@
 							 	</td>
 							 </tr> 
 							  <tr>
-							    <td>Lead To Time</td>
+							    <td>To Time</td>
 							    <td> 								  
 							  	 	<form:input maxlength="50" size="30" path="leadToTime" />
 							 	</td>

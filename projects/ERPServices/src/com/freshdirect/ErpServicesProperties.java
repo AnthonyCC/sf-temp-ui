@@ -196,6 +196,8 @@ public class ErpServicesProperties {
 	
 	private final static String PROP_AIRCLIC_BLACKHOLE		= "airclic.blackhole";
 	private final static String PROP_HANDOFF_ADDRESS_LINE2		= "send.handoff.addressline2";
+	private final static String PROP_HANDOFF_TRAILER_INFO_ENABLED = "send.handoff.trailerinfo.enabled";
+
 	static {
 		Properties defaults = new Properties();
 
@@ -350,7 +352,7 @@ public class ErpServicesProperties {
 		defaults.put(PROP_MKTADMIN_UPSOUTAGE_MESSAGE, "");
 		defaults.put(PROP_AIRCLIC_BLACKHOLE, "false");
 		defaults.put(PROP_HANDOFF_ADDRESS_LINE2, "true");
-		
+		defaults.put(PROP_HANDOFF_TRAILER_INFO_ENABLED, "true");
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);
@@ -823,6 +825,9 @@ public class ErpServicesProperties {
     }
 	public static boolean isSendAddressLine2() {
         return Boolean.valueOf(config.getProperty(PROP_HANDOFF_ADDRESS_LINE2)).booleanValue();
+    }
+	public static boolean isSendTrailerInfo() {
+        return Boolean.valueOf(config.getProperty(PROP_HANDOFF_TRAILER_INFO_ENABLED)).booleanValue();
     }
 	
 }

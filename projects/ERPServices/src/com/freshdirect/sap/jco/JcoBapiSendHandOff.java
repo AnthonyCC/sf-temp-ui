@@ -40,14 +40,16 @@ class JcoBapiSendHandOff extends JcoBapiFunction implements BapiSendHandOff {
 	}
 	
 	public void setHandOffTrailers(List<HandOffTrailerIn> trailerIn){
-
-		trailers = this.function.getTableParameterList().getTable("T_TRAILER_UPLOAD");
-		for(HandOffTrailerIn trailer : trailerIn){
-			trailers.insertRow(1);
-			trailers.setValue(trailer.getTrailerId(), "ZTRAILER_NO"); //Trailer No
-			trailers.setValue(formatTime1(trailer.getTrailerDispatchTime()), "ZTRL_DISP_TM"); //Trailer Dispatch Time
-			trailers.setValue(trailer.getCrossDockId(), "ZCD_ID"); //CrossDock Id
-			trailers.nextRow();
+		if(ErpServicesProperties.isSendTrailerInfo())
+		{
+			trailers = this.function.getTableParameterList().getTable("T_TRAILER_UPLOAD");
+			for(HandOffTrailerIn trailer : trailerIn){
+				trailers.insertRow(1);
+				trailers.setValue(trailer.getTrailerId(), "ZTRAILER_NO"); //Trailer No
+				trailers.setValue(formatTime1(trailer.getTrailerDispatchTime()), "ZTRL_DISP_TM"); //Trailer Dispatch Time
+				trailers.setValue(trailer.getCrossDockId(), "ZCD_ID"); //CrossDock Id
+				trailers.nextRow();
+			}
 		}
 	}
 
@@ -69,8 +71,11 @@ class JcoBapiSendHandOff extends JcoBapiFunction implements BapiSendHandOff {
 			routes.setValue(formatTime(route.getFirstStopTime()), "ZTRUCK_FRT_STOP");
 			routes.setValue(formatTime(route.getLastStopCompletionTime()), "ZTRUCK_RTN_TIME");
 			routes.setValue(formatTime(route.getCheckInTime()), "ZTRUCK_CHECK_IN");
-			routes.setValue(route.getTrailerId(), "ZTRAILER_NO");
-							
+			//added the flag to reduce the dependency with SAP changes. The handoff will work even if SAP reverts back the changes.
+			if(ErpServicesProperties.isSendTrailerInfo())
+			{
+				routes.setValue(route.getTrailerId(), "ZTRAILER_NO");
+			}
 			routes.nextRow();
 		}
 	}

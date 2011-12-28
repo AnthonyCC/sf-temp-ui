@@ -123,6 +123,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void autoDisptch(String date) {
 		// TODO Auto-generated method stub
 		
@@ -173,55 +174,52 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			
 		}
 	}
-
 	
-	public void autoDisptchRegion(String date) {
+	@SuppressWarnings("unchecked")
+	public void processAutoDispatch(String dispatchDate) {
 		
-		Collection dispList=getDispatchList(date,null,null,null);
+		Collection dispList = getDispatchList(dispatchDate, null, null, null);
+
+		if (dispList != null && dispList.size() > 0) {
+			Iterator iterator = dispList.iterator();
+			while (iterator.hasNext()) {
+				Dispatch disp = (Dispatch) iterator.next();
+				Object[] param = new Object[] { disp.getDispatchId(),"DELETED", "", "" };
+				logManager.log("AUTO-DISPATCH", 3, param);
+				Set disResList = disp.getDispatchResources();
+				removeEntity(disResList);
+			}
+			removeEntity(dispList);
+		}
+
+		Collection planList = getPlanList(dispatchDate);
+		Collection routeList = getDomainManagerService().getRoutes(dispatchDate);
+		Collection dispatchList = ModelUtil.constructDispatchModel(planList, routeList);
 		
-		if(dispList!=null || dispList.size()>0){						
-			  Iterator iterator=dispList.iterator();
-			  while(iterator.hasNext()){							  
-						  Dispatch disp=(Dispatch)iterator.next();
-						  Object[] param=new Object[]{disp.getDispatchId(),"DELETED","",""};
-						  logManager.log("AUTO-DISPATCH", 3, param);
-						  Set disResList=disp.getDispatchResources();
-						  removeEntity(disResList);							  							  
-				  }
-				  removeEntity(dispList);			
-		}		  		  				
-						
-		Collection planList=getPlanList(date);		
-		Collection routeList=getDomainManagerService().getRoutes(date);		
-		Collection zones=getDomainManagerService().getZones();	
-		Collection dispatchList=ModelUtil.constructDispatchModel(planList,routeList,zones);
-		
-		Map childMap=new HashMap();
-		Iterator iterator=dispatchList.iterator();
-		while(iterator.hasNext()){
-			Dispatch dis=(Dispatch)iterator.next();
-			Set res=dis.getDispatchResources();
-			childMap.put(dis.getPlanId(),res);
+		Map childMap = new HashMap();
+		Iterator iterator = dispatchList.iterator();
+		while (iterator.hasNext()) {
+			Dispatch dis = (Dispatch) iterator.next();
+			Set res = dis.getDispatchResources();
+			childMap.put(dis.getPlanId(), res);
 			dis.setDispatchResources(null);
 		}
 		
-		// first save the parent 
+		// first save the parent
 		getDispatchManagerDao().saveEntityList(dispatchList);
-		
-		Iterator resIterator=dispatchList.iterator();
-		while(resIterator.hasNext()){
-			Dispatch dis=(Dispatch)resIterator.next();
-			Set disResource=(Set)childMap.get(dis.getPlanId());
-			if(disResource!=null)
-			{ 
-				ModelUtil.assosiateDispatchToResource(disResource,dis);
+
+		Iterator resIterator = dispatchList.iterator();
+		while (resIterator.hasNext()) {
+			Dispatch dis = (Dispatch) resIterator.next();
+			Set disResource = (Set) childMap.get(dis.getPlanId());
+			if (disResource != null) {
+				ModelUtil.assosiateDispatchToResource(disResource, dis);
 				getDispatchManagerDao().saveEntityList(disResource);
 			}
-			
 		}
-
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Collection getDispatchList(String date, String facilityLocation, String zone, String region) {
 		Collection coll = getDispatchManagerDao().getDispatchList(date, facilityLocation, zone, region);
 		if(coll.size() > 0){

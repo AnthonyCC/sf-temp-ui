@@ -40,7 +40,8 @@ public interface DispatchManagerI extends BaseManagerI {
 	void copyPlan(Collection addPlanList, Collection removePlanList);
 	
 	void autoDisptch(String date);
-	void autoDisptchRegion(String date);
+
+	void processAutoDispatch(String date);
 	//Based on new Dispatch Model
 	Collection getDispatchList(String date, String facilityLocation, String zone, String region);
 	

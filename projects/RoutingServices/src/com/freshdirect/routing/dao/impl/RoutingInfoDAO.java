@@ -30,6 +30,7 @@ import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.IZoneScenarioModel;
 import com.freshdirect.routing.model.ServiceTimeScenario;
 import com.freshdirect.routing.model.ServiceTimeTypeModel;
+import com.freshdirect.routing.model.TrnFacility;
 import com.freshdirect.routing.model.TrnFacilityType;
 import com.freshdirect.routing.model.WaveInstance;
 import com.freshdirect.routing.model.ZoneScenarioModel;
@@ -750,6 +751,41 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 				    			facilityType.setDescription("DESCRIPTION");			
 				    			
 				    			result.put(code, facilityType);				    	  		
+				    	  	}while(rs.next());
+				      }
+		});	
+		
+		return result;
+	}
+
+	private static final String GET_ACTIVE_FACILITYS = "SELECT ID, FACILITY_CODE, "+
+		" DESCRIPTION, ROUTING_CODE, PREFIX, LEAD_FROM_TIME, LEAD_TO_TIME, FACILITYTYPE_CODE from TRANSP.TRN_FACILITY ";
+	
+	public Map<String, TrnFacility> retrieveTrnFacilityLocations()throws SQLException{
+		
+		final Map<String, TrnFacility> result = new HashMap<String, TrnFacility>();
+		
+		PreparedStatementCreator creator = new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+			
+				PreparedStatement ps =	connection.prepareStatement(GET_ACTIVE_FACILITYS);			
+				return ps;
+			}
+		};
+		
+		jdbcTemplate.query(creator, 
+				  new RowCallbackHandler() { 
+				      public void processRow(ResultSet rs) throws SQLException {				    	
+				    	  	do {				    	  				
+				    	  		TrnFacility _loc = new TrnFacility();
+				    	  		_loc.setFacilityId(rs.getString("ID"));
+				    	  		_loc.setName(rs.getString("FACILITY_CODE"));
+				    	  		_loc.setRoutingCode(rs.getString("ROUTING_CODE"));
+				    	  		_loc.setPrefix(rs.getString("PREFIX"));
+				    	  		_loc.setTrnFacilityType(new TrnFacilityType());				    			
+				    	  		_loc.getTrnFacilityType().setName(rs.getString("FACILITYTYPE_CODE"));
+				    			
+				    			result.put(_loc.getFacilityId(), _loc);
 				    	  	}while(rs.next());
 				      }
 		});	

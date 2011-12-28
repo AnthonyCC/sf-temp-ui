@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.customer.ErpRouteMasterInfo;
+import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
 import com.freshdirect.routing.model.BuildingModel;
 import com.freshdirect.routing.model.DeliveryModel;
 import com.freshdirect.routing.model.GeographicLocation;
@@ -239,86 +240,105 @@ public class ModelUtil {
 		return result;
 	}
 	//region wise auto dispatch
-	public static List constructDispatchModel(Collection planList,Collection routeList,Collection zones)
-	{
-		Iterator planIterator=planList.iterator();
-		Iterator routeIterator=routeList.iterator();
+	@SuppressWarnings("unchecked")
+	public static List constructDispatchModel(Collection planList, Collection routeList) {
 		
-		Map planMap=new HashMap();
-		Map routeMap=new HashMap();
-		// for null zone
-		List noZonePlanList=new ArrayList();
-
-		while(planIterator.hasNext()){
-			Plan plan=(Plan)planIterator.next();
-			Zone zone=plan.getZone();
-			if(zone==null){
-				noZonePlanList.add(plan);
+		List<Dispatch> dispatchLst = new ArrayList<Dispatch>();
+		List<Plan> bullpens = new ArrayList<Plan>();
+	
+		Map<String, List<Plan>> planMapping = new HashMap<String, List<Plan>>();
+		Map<String, List<ErpRouteMasterInfo>> routeMapping = new HashMap<String, List<ErpRouteMasterInfo>>();
+		
+		Iterator<Plan> planItr = planList.iterator();
+		while(planItr.hasNext()){
+			Plan _plan = planItr.next();
+			if(_plan.getZone() == null && "Y".equalsIgnoreCase(_plan.getIsBullpen())){
+				bullpens.add(_plan);
 				continue;
 			}
-			String regionCode=getRegionCode(zones,zone.getZoneCode());
-			List planTmpList=(List)planMap.get(regionCode);
-			if(planTmpList==null){
-				planTmpList=new ArrayList();
-				planMap.put(regionCode,planTmpList);
+			if(_plan.getZone() == null && _plan.getDestinationFacility() != null
+					&& EnumTransportationFacilitySrc.CROSSDOCK.getName().equalsIgnoreCase(_plan.getDestinationFacility().getTrnFacilityType().getName())){
+				_plan.setZoneCode(_plan.getDestinationFacility().getRoutingCode());
 			}
-			planTmpList.add(plan);
-		}
-
-		Set keySet=planMap.keySet();
-		Iterator keyIterator=keySet.iterator();
-		while(keyIterator.hasNext()){
-			String regionKey=(String)keyIterator.next();
-			List newPlanList=(List)planMap.get(regionKey);
-			Collections.sort(newPlanList,PLAN_REGION_COMPARATOR);
-
-		}
-
-
-		while(routeIterator.hasNext())
-		{
-			ErpRouteMasterInfo route=(ErpRouteMasterInfo)routeIterator.next();
-			String zoneCode=route.getZoneNumber();
-			String regionCode=getRegionCode(zones,zoneCode);
-			Zone zone=getZone(zones, zoneCode);
-			RouteDecorator routeDecor=new RouteDecorator(route,zone);
-			List routeTmpList=(List)routeMap.get(regionCode);
-			if(routeTmpList==null){
-				routeTmpList=new ArrayList();
-				routeMap.put(regionCode,routeTmpList);
+			if(!planMapping.containsKey(_plan.getZoneCode())){
+				planMapping.put(_plan.getZoneCode(), new ArrayList<Plan>());
 			}
-			routeTmpList.add(routeDecor);
+			planMapping.get(_plan.getZoneCode()).add(_plan);		
 		}
-
-		Set routeSet=routeMap.keySet();
-		Iterator routeTmpIterator=routeSet.iterator();
-		while(routeTmpIterator.hasNext()){
-			String routeKey=(String)routeTmpIterator.next();
-			List newPlanList=(List)routeMap.get(routeKey);
-			Collections.sort(newPlanList,ROUTE_REGION_COMPARATOR);
-		}
-
-		// for the dispatch object from the above lists
-		List dispatchList=new ArrayList();
 		
-		Set finalSet=planMap.keySet();
-	    Iterator finalIterator=finalSet.iterator();
-		while(finalIterator.hasNext())
-		{
-			String regionCode=(String)finalIterator.next();			
-			List routeLst=(List)routeMap.get(regionCode);
-			if(routeLst==null) routeLst=Collections.EMPTY_LIST;
-			else routeLst=getRoute(routeLst);
-			constructDispatchModelList(dispatchList,(List)planMap.get(regionCode),routeLst);
-
-		}
-
+		Iterator<ErpRouteMasterInfo> routeItr = routeList.iterator();
+		while(routeItr.hasNext()){
+			ErpRouteMasterInfo _route = routeItr.next();
+			if(_route.getZoneNumber() != null){
+				if(!routeMapping.containsKey(_route.getZoneNumber())){				
+					routeMapping.put(_route.getZoneNumber(), new ArrayList<ErpRouteMasterInfo>());				
+				}
+				routeMapping.get(_route.getZoneNumber()).add(_route);	
+			} else {
+				if(!routeMapping.containsKey(_route.getRouteNumber().substring(1,4))){
+					routeMapping.put(_route.getRouteNumber().substring(1,4), new ArrayList<ErpRouteMasterInfo>());
+				}
+				routeMapping.get(_route.getRouteNumber().substring(1,4)).add(_route);	
+			}					
+		}		
 		
-		constructDispatchModelList(dispatchList,noZonePlanList,Collections.EMPTY_LIST);
-		return dispatchList;
+		Set finalKeySet = planMapping.keySet();
+		Iterator<String> finalBatchPlanItr = finalKeySet.iterator();
+		while(finalBatchPlanItr.hasNext()){
+			String zone = finalBatchPlanItr.next();
+			List<ErpRouteMasterInfo> zoneRouteList = routeMapping.get(zone);
+			if(zoneRouteList == null) 
+				zoneRouteList = Collections.EMPTY_LIST;
+			constructDispatchModelList(dispatchLst, (List<Plan>)planMapping.get(zone), zoneRouteList);
+		}
+				
+		//Bull-pen Plan List
+		constructDispatchModelList(dispatchLst, bullpens, Collections.EMPTY_LIST);
+							
+		return dispatchLst;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static void constructDispatchModelList(
+			List<Dispatch> dispatchLst,
+			List<Plan> zonePlanList, List<ErpRouteMasterInfo> zoneRouteList) {
+		
+		ErpRouteMasterInfo r = null;
+		Date firstDlvTime = null;
+
+		Iterator<Plan> planItr = zonePlanList.iterator();
+		while (planItr.hasNext()) {
+			Plan p = planItr.next();
+
+			Dispatch d = new Dispatch();
+			d.setPlanId(p.getPlanId());
+			d.setDispatchDate(p.getPlanDate());
+			d.setOriginFacility(p.getOriginFacility());
+			d.setDestinationFacility(p.getDestinationFacility());
+			d.setStartTime(p.getStartTime());
+			d.setSupervisorId(p.getSupervisorId());
+			d.setDispatchResources(convertPlnToDispatchResource(p.getPlanResources(),d));
+			d.setFirstDlvTime(p.getFirstDeliveryTime());
+			d.setBullPen("Y".equalsIgnoreCase(p.getIsBullpen())? Boolean.TRUE:Boolean.FALSE);
+			d.setRegion(p.getRegion());
+
+			List routeMatch = matchRoute(p, zoneRouteList);
+			if(routeMatch != null) {
+				r = (ErpRouteMasterInfo)routeMatch.get(0);
+				firstDlvTime = (Date)routeMatch.get(1);
+				d.setRoute(r.getRouteNumber());
+				d.setTruck(r.getTruckNumber());
+				d.setFirstDlvTime(firstDlvTime);
+				d.setZone(new Zone());
+				d.getZone().setZoneCode(r.getZoneNumber());
+				r = null;
+				firstDlvTime = null;
+			}
+			dispatchLst.add(d);
+		}
 	}
 
-	public static List constructDispatchModel(Collection planList,Collection routeList){
+	public static List constructDispatchModelOld(Collection planList,Collection routeList){
 		// lot of crap stuff to do
 		// form the hashMap with zone as key and list contaiining plan(sort the plan based on sequence number)
 		// form the hashMap with zone as key and list containing route(sort by route number)
@@ -386,12 +406,12 @@ public class ModelUtil {
 			List routeLst=(List)routeMap.get(zoneCode);
 			if (routeLst == null)
 				routeLst = Collections.EMPTY_LIST;
-			constructDispatchModelList(dispatchList
+			constructDispatchModelListOld(dispatchList
 											, (List) planMap.get(zoneCode)
 											, routeLst);
 		}
 
-		constructDispatchModelList(dispatchList
+		constructDispatchModelListOld(dispatchList
 											,noZonePlanList
 												,Collections.EMPTY_LIST);
 		return dispatchList;
@@ -399,7 +419,8 @@ public class ModelUtil {
 
 	
 	
-	private static void  constructDispatchModelList(List dispatchList,List planList,List routeList){
+	@SuppressWarnings("unchecked")
+	private static void  constructDispatchModelListOld(List dispatchList,List planList,List routeList){
 
 		Iterator ite1=routeList.iterator();
 		ErpRouteMasterInfo r = null;
@@ -450,12 +471,9 @@ public class ModelUtil {
 				try {
 					if(_tmpInfo.getFirstDlvTime() != null && _tmpInfo.getFirstDlvTime().trim().length() > 0){
 						Date firstDlvTime = DATE_FORMAT.parse("01/01/1970 "+_tmpInfo.getFirstDlvTime()+" "+_tmpInfo.getRouteTime());
-						Date firstDlvTime1 = DATE_FORMAT.parse("01/01/1970 "+"12:00:00"+" "+"PM");
-						//if(firstDlvTime != null && firstDlvTime.equals(p.getFirstDeliveryTime()))
-						long l1=firstDlvTime.getTime();
-						long l2=p.getFirstDeliveryTime().getTime();
-						long l3=firstDlvTime1.getTime();
-						if(firstDlvTime != null &&p.getFirstDeliveryTime()!=null&& firstDlvTime.getTime()==p.getFirstDeliveryTime().getTime()) 
+					
+						if(firstDlvTime != null && p.getFirstDeliveryTime()!= null
+								&& firstDlvTime.getTime() == p.getFirstDeliveryTime().getTime()) 
 						{
 							result = new ArrayList();
 							result.add(_tmpInfo);
@@ -465,7 +483,6 @@ public class ModelUtil {
 						}
 					}
 				} catch (ParseException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

@@ -14,6 +14,7 @@ import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.IZoneScenarioModel;
+import com.freshdirect.routing.model.TrnFacility;
 import com.freshdirect.routing.model.TrnFacilityType;
 import com.freshdirect.routing.service.IRoutingInfoService;
 import com.freshdirect.routing.service.exception.IIssue;
@@ -154,7 +155,15 @@ public class RoutingInfoService extends BaseService implements IRoutingInfoServi
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			throw new RoutingServiceException(e, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);
-}
+		}
+	}
+	public Map<String, TrnFacility> retrieveTrnFacilityLocations() throws RoutingServiceException {
+		try {
+			return routingInfoDAOImpl.retrieveTrnFacilityLocations();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);
+		}
 	}
 	
 }

@@ -12,6 +12,7 @@ import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.IZoneScenarioModel;
+import com.freshdirect.routing.model.TrnFacility;
 import com.freshdirect.routing.model.TrnFacilityType;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 
@@ -44,4 +45,6 @@ public interface IRoutingInfoDAO {
 	Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> getPlannedTrailerDispatchTree(final Date deliveryDate, final Date cutOff)  throws SQLException;
 
 	Map<String, TrnFacilityType> retrieveTrnFacilitys()throws SQLException;
+
+	Map<String, TrnFacility> retrieveTrnFacilityLocations()throws SQLException;
 }

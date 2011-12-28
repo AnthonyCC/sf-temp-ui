@@ -1475,7 +1475,7 @@ public class DispatchController extends AbstractMultiActionController {
 				  saveMessage(request, getMessage("app.actionmessage.140", null));
 				  return planHandler(request,response);
 			}
-		   dispatchManagerService.autoDisptchRegion(dispatchDate);
+		   dispatchManagerService.processAutoDispatch(dispatchDate);
 		   saveMessage(request, getMessage("app.actionmessage.143", null));
 		   return planHandler(request,response);
 	}

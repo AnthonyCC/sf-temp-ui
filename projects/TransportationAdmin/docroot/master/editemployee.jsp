@@ -100,7 +100,7 @@
 							 	</td>
 							 </tr>				                                                            
                              <tr>
-							    <td>Role</td>
+							    <td>Sub-Role</td>
 							    <td> 	
                               <spring:bind path="employeeForm.employeeRoleTypes">
                                    <SELECT name="employeeRoleTypes" >     

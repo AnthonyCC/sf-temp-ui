@@ -106,8 +106,8 @@
 								<ec:column alias="kronosId" property="employeeId" title="KronosID"/>
 								<ec:column property="hireDate" title="Seniourity RankDate"/>
 								<ec:column property="jobType" title="JobType"/>
-								<ec:column property="supervisorFirstName" title="supervisor"/>
-								<ec:column property="employeeRoleType" title="roles"/>
+								<ec:column property="supervisorFirstName" title="Supervisor"/>
+								<ec:column property="employeeRoleType" title="Sub-Role"/>
                                 <ec:column property="terminationDate" title="Terminated"/>
                                 <ec:column property="leadInfoEx.name" title="Lead"/>
 							</ec:row>
@@ -138,7 +138,7 @@
 								<ec:column property="hireDate" title="Seniourity RankDate"/>
 								<ec:column property="jobType" title="JobType"/>              
 								<ec:column property="supervisorFirstName" title="supervisor"/>
-								<ec:column property="employeeRoleType" title="roles"/>
+								<ec:column property="employeeRoleType" title="Sub-Role"/>
                            		<ec:column property="leadInfoEx.name" title="Lead"/>
 							</ec:row>
 						</ec:table>

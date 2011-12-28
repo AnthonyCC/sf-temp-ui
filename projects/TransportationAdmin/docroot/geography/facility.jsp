@@ -64,8 +64,8 @@
 				  <ec:column property="trnFacilityType" title="Facility Type" />
 				  <ec:column property="routingCode" title="Routing Code"/>
 				  <ec:column property="prefix" title="Prefix"/>
-				  <ec:column property="leadFromTime" title="Lead From Time"/>
-				  <ec:column property="leadToTime" title="Lead To Time"/>
+				  <ec:column property="leadFromTime" title="From Time"/>
+				  <ec:column property="leadToTime" title="To Time"/>
 	            </ec:row>
 	          </ec:table>
 	           </form>  
