@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -159,7 +160,27 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			+ "where sale.id = s.id and sale.type='REG' and sa.sale_id=s.id and sa.action_type in ('CRO','MOD') "
 			+ "and sa.action_date=(select max(action_date) from cust.salesaction za where za.action_type in ('CRO','MOD') and za.sale_id=s.id) "
 			+ "and di.salesaction_id=sa.id and di.starttime > sysdate - 1 and di.cutofftime < sysdate)";
+	private final static String AUTH_NEEDED_CORP_ORDERS_FOR_MONDAY_TUESDAY =
+	"SELECT s.id FROM cust.sale s, cust.salesaction sa, cust.deliveryinfo di "+ 
+    "WHERE s.status='SUB' AND s.type='REG' AND sa.sale_id=s.id AND sa.action_type in ('CRO','MOD') "+ 
+	"AND s.cromod_date=sa.action_date AND di.SALESACTION_ID=sa.ID AND di.starttime > sysdate - 1 AND DI.DELIVERY_TYPE='C' "+
+	"AND  DI.STARTTIME<sysdate+5 AND ( rtrim(to_char(sa.requested_date,'DAY'))='MONDAY' OR rtrim(to_char(sa.requested_date,'DAY'))='TUESDAY') "+
+	"AND rtrim(to_char(sysdate,'DAY'))='FRIDAY' ";
+	
+	
+	private List<String> getSaleIds(Connection con, String query) throws SQLException {
+		List<String> saleIds=new ArrayList<String>(10);
+		PreparedStatement ps = con.prepareStatement(query);
+		ResultSet rs = ps.executeQuery();
 
+		while (rs.next()) {
+			saleIds.add(rs.getString(1));
+		}
+
+		rs.close();
+		ps.close();	
+		return saleIds;
+	}
 	/**
 	 * This method runs a AUTH_QUERY against the erpcustomer and get all the sales, that need payment authorization
 	 * and then authorizes them one by one by calling ErpCustomerManager.
@@ -174,7 +195,12 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			utx = this.getSessionContext().getUserTransaction();
 			utx.begin();
 			con = this.getConnection();
-			PreparedStatement ps = con.prepareStatement(QUERY_AUTH_NEEDED);
+			saleIds.addAll(getSaleIds(con,QUERY_AUTH_NEEDED));
+			Calendar now=Calendar.getInstance();
+			if (Calendar.FRIDAY== now.get(Calendar.DAY_OF_WEEK))  
+				saleIds.addAll(getSaleIds(con,AUTH_NEEDED_CORP_ORDERS_FOR_MONDAY_TUESDAY));
+			
+			/*PreparedStatement ps = con.prepareStatement(QUERY_AUTH_NEEDED);
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
@@ -182,7 +208,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			}
 
 			rs.close();
-			ps.close();
+			ps.close();*/
 
 			utx.commit();
 
@@ -296,6 +322,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 					String saleId = i.next();
 					LOGGER.info("Going to authorize: " + saleId);
 					sb.preAuthorizeSales(saleId);
+					
 					utx.commit();
 
 				} catch (Exception e) {
