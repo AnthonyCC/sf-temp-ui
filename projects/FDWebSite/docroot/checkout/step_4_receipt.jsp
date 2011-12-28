@@ -82,6 +82,32 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
 			afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }	
 		});
 	}
+	
+	function doRemoteOverlay1(olURL) {
+			var olURL = olURL || '';
+			if (olURL == '') { return false; }
+
+			Modalbox.show(olURL, {
+				title: ' ',
+				width: 750,
+				params: Form.serialize('smsform'),
+				afterLoad: function() {
+						$('MB_frame').style.border = '1px solid #CCCCCC';
+						$('MB_header').style.border = '0px solid #CCCCCC';
+						$('MB_header').style.display = 'block';
+						window.scrollTo(0,0);					
+						$('MB_window').style.width = 'auto';
+						$('MB_window').style.height = 'auto';
+						$('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
+						$('MB_content').style.padding = '0px';
+						$('MB_close').style.color = 'gray';
+						$('MB_close').style.background = "url(/media/editorial/site_access/images/round_x.gif) no-repeat";
+
+						curvyCornersHelper1('MB_frame', ccSettings1);
+				},
+				afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }	
+			});
+		}
 </script>
 <script language="javascript">
 doRemoteOverlay('sms_capture.jsp');
