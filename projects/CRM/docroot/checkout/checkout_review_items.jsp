@@ -329,7 +329,7 @@
 		
 						<tr valign="middle">
 						<% if (cartLine.isSoldBySalesUnits()) {	%>
-							<td colspan="3" width="78">
+							<td colspan="3" width="78" align="center">
 								<select name="salesUnit_<%=idx%>" class="text10">
 									<option value="">0</option>
 									
@@ -348,7 +348,7 @@
 								<input name="rnd_<%=idx%>" type="hidden" value="<%= cartLine.getRandomId() %>" />
 							</td>
 						<% } else {	%>
-							<td align="right">
+							<td align="center">
 								<script language="javascript" type="text/javascript">
 									function chgQty<%=idx%>(delta) {
 										val = document.viewcart.quantity_<%=idx%>.value;
@@ -378,7 +378,7 @@
 									}
 								</script>
 								
-								<input name="quantity_<%=idx%>" type="text" size="5" MAXLENGTH="5" CLASS="text10" VALUE="<%= CCFormatter.formatQuantity(cartLine.getQuantity()) %>" onBlur="chgQty<%=idx%>(0);" />
+								&nbsp;&nbsp;&nbsp;&nbsp;<input name="quantity_<%=idx%>" type="text" size="5" MAXLENGTH="5" CLASS="text10" VALUE="<%= CCFormatter.formatQuantity(cartLine.getQuantity()) %>" onBlur="chgQty<%=idx%>(0);" />
 								<input name="rnd_<%=idx%>" type="hidden" value="<%= cartLine.getRandomId() %>"/>
 							</td>
 							<td><a href="javascript:chgQty<%=idx%>(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br /><a href="javascript:chgQty<%=idx%>(<%= -productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity" /></a></td>
