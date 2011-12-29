@@ -101,6 +101,7 @@
 	                   		param1+="&pagerefreshtime="+eval("props.pagerefreshtime"+mode+".value");
 	                   		param1+="&pagesize="+eval("props.pagesize"+mode+".value");
 	                   		param1+="&mode="+mode;
+							param1+="&dispDate="+document.getElementById("dispDate").value;
 							param1+="&facilityLocation="+document.getElementById("facilityLocation").value;
                     		window.open('<c:out value="${pageContext.request.contextPath}"/>/dispatchDashboardView.do?'+param1,'view'+mode,'width='+width+',height='+height+',left=0,top=0,toolbar=no,location=no,resizable=yes,scrollbars=yes'); 
                      }
