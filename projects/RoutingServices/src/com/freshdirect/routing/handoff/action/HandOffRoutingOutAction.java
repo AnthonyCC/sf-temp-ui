@@ -678,7 +678,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 										trailer.getRoutes().add(route);
 										routeItr.remove();
 									} else {
-										break;
+										continue;
 									}
 				}
 			}
