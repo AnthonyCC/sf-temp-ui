@@ -17,6 +17,18 @@
 		.trpad {
 			padding-left:20px;
 		}
+		
+		.hline {
+			background: url("/media/editorial/site_access/images/dots_h.gif") repeat-x scroll 0 0 transparent;
+			font-size: 1px;
+			height: 1px;
+			line-height: 1px;
+			width: 730px;
+		}
+		
+		.fright {
+			float: right;
+		}
 	</style>
 </head>
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0">
@@ -73,7 +85,7 @@
 		</td>
 	</tr>
 	<tr><td colspan="2">&nbsp;</td></tr>
-	<tr><td  colspan="2"><img src="/media_stat/images/layout/dotted_line.gif" width="<%= W_DOTTED_LINE %>" height="1" border="0" vspace="5"></td></tr>
+	<tr><td  colspan="2"><div class="fright hline" id=""><!-- --></div></td></tr>
 	<tr><td colspan="2">&nbsp;</td></tr>
 	<tr><td align="center" colspan="2">
 		<table class="butCont"> <tr>
@@ -94,7 +106,7 @@
 		<img src="/media_stat/images/navigation/preferences_title.gif" border="0" /> <br/><br/>
 	</td>
 </tr>
-<tr><td><img src="/media_stat/images/layout/dotted_line.gif" width="<%= W_DOTTED_LINE %>" height="1" border="0" vspace="5"></td></tr>
+<tr><td><div class="fright hline" id=""><!-- --></div></td></tr>
 <tr>
 	<td>
 		<table>
@@ -112,7 +124,7 @@
 		</table>
 	</td>
 </tr>
-<tr><td><img src="/media_stat/images/layout/dotted_line.gif" width="<%= W_DOTTED_LINE %>" height="1" border="0" vspace="5"></td></tr>
+<tr><td><div class="fright hline" id=""><!-- --></div></td></tr>
 <tr>
 	<td>		
 		<table width="100%" border="0">
@@ -144,7 +156,7 @@
 		</table>
 	</td>
 </tr>
-<tr><td><img src="/media_stat/images/layout/dotted_line.gif" width="<%= W_DOTTED_LINE %>" height="1" border="0" vspace="5"></td></tr>
+<tr><td><div class="fright hline" id=""><!-- --></div></td></tr>
 <tr>
 	<td>
 		<table width="100%" border="0">
@@ -158,7 +170,7 @@
 			<tr><td colspan="2" >&nbsp;</td></tr>
 		</table>
 		
-		<img src="/media_stat/images/layout/dotted_line.gif" width="<%= W_DOTTED_LINE %>" height="1" border="0" vspace="5">
+		<div class="fright hline" id=""><!-- --></div>
 	</td>
 </tr>
 <tr><td>&nbsp;</td></tr>
