@@ -62,14 +62,13 @@
 %>
 <center>
 <% if(form_processed) { %>
-	<table width="<%= W_YA_SIGNIN_INFO %>" border="0" cellpadding="0" cellspacing="0">
-	<tr><td colspan="2">&nbsp;</td></tr>
+	<table width="<%= W_YA_SIGNIN_INFO %>" border="0" cellpadding="0" cellspacing="0">	
 	<tr>
 		<td class="text16bold trpad" valign="top">
-			<img src="/media_stat/images/navigation/tickmark.gif" border="0" />
+			<img src="/media_stat/images/navigation/tickmark.gif" border="0" />&nbsp;&nbsp;&nbsp;&nbsp;
 		</td>
-		<td class="title19">&nbsp;Your preferences have been updated.
-		<br/><span class="text13gr" style="font-weight:normal;color:gray;">&nbsp;You can update users preferences anytime - simply go to Account Details/Edit Username & Password <br/> &nbsp;section to update user's preferences.</span>
+		<td class="title19">Your preferences have been updated.
+		<br/><span class="text13gr" style="font-weight:normal;color:gray;">You can update users preferences anytime - simply go to Account Details/Edit Username & Password <br/> &nbsp;section to update user's preferences.</span>
 		</td>
 	</tr>
 	<tr><td colspan="2">&nbsp;</td></tr>
@@ -78,7 +77,7 @@
 	<tr><td align="center" colspan="2">
 		<table class="butCont"> <tr>
 				<td class="butOrangeLeft"><!-- --></td>
-				<td class="butOrangeMiddle"><a class="butText" style="color:#000000;text-shadow:none;font-weight:bold;padding:0 70px;" href="#" onclick="Modalbox.hide(); return false;">&nbsp;&nbsp;Close&nbsp;&nbsp;</a></td>
+				<td class="butOrangeMiddle"><a class="butText" style="text-shadow:none;font-weight:bold;padding:0 70px;vertical-align:middle;" href="#" onclick="Modalbox.hide(); return false;">&nbsp;&nbsp;Close&nbsp;&nbsp;</a></td>
 				<td class="butOrangeRight"><!-- --></td>
 		</tr> </table>
 	</td></tr>
@@ -101,14 +100,13 @@
 			<tr><td colspan="2" >&nbsp;</td></tr>
 			<tr><td colspan="2" class="trpad"><span class="title18or">1.&nbsp;</span><span class="title18">Verify primary contact information</span></td></tr>						
 			<tr><td colspan="2" >&nbsp;</td></tr>
-			<tr><td colspan="2" class="text12 trpad">Please verify your emergency contact information below.</td></tr>
-			<tr><td colspan="2" >&nbsp;</td></tr>
+			<tr><td colspan="2" class="text12 trpad">Please verify your emergency contact information below.</td></tr>			
 			<tr valign="top">
-				<td colspan="2" style="padding-right:5px;font-weight:bold;" class="text14 trpad">
+				<td colspan="2" style="padding-right:5px;font-weight:bold;" class="text14 trpad" valign="center">
 					<input type="text" size="28" maxlength="45" class="text9" name="busphone" value="<%=phone%>" style="width:175px; padding:1px; height:30px;font-size:13px"> &nbsp;&nbsp;Ext.<input type="text" size="5" maxlength="5" class="text9" name="busphoneext" value="<%=phoneExt%>" style="width:75px; padding:1px; height:30px;font-size:13px">
 				</td>
 			</tr>
-			<tr><td colspan="2" class="text11rbold trpad"><fd:ErrorHandler result='<%=result%>' name='busphone' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></td></tr>
+			<tr><td colspan="2" class="text11rbold trpad" style="width:500px;"><fd:ErrorHandler result='<%=result%>' name='busphone' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></td></tr>
 			<tr><td colspan="2" >&nbsp;</td></tr>
 		</table>
 	</td>
@@ -120,15 +118,13 @@
 			<tr><td colspan="2" >&nbsp;</td></tr>
 			<tr><td colspan="2" ><span class="title18or trpad">2.&nbsp;</span><span class="title18">Receive text messages:</span></td></tr>
 			<tr><td colspan="2" >&nbsp;</td></tr>
-			<tr valign="top">
-				<td class="trpad" style="padding-right:5px;"><input class="radio" type="checkbox" name="text_delivery" value="Y" <%=text_delivery ? "checked":""%>></td>
-				<td style="padding-top:5px;" class="text12" valign="center">Yes please notify me via text message with important information about my delivery.
-				</td>
+			<tr><td colspan="2" class="text11rbold trpad"><fd:ErrorHandler result='<%=result%>' name='text_option' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></td></tr>
+			<tr valign="top" colspan="2">
+				<td class="text12 trpad" style="padding-right:5px;" colspan="2"><input class="radio" type="checkbox" name="text_delivery" value="Y" <%=text_delivery ? "checked":""%>>&nbsp;&nbsp;Yes please notify me via text message with important information about my delivery.</td>
 			</tr>
 			<tr><td colspan="2" >&nbsp;</td></tr>
 			<tr valign="top">
-				<td class="trpad" style="padding-right: 5px;" valign="bottom"><input class="radio" type="checkbox" name="text_offers" value="Y" <%=text_offers ? "checked":""%>></td>
-				<td style="padding-top:5px;" class="text12" valign="center">Yes please notify me about <b>offers, discounts</b> and <b>promotions</b> from time to time.</td>
+				<td class="text12 trpad" style="padding-right: 5px;" valign="bottom" colspan="2"><input class="radio" type="checkbox" name="text_offers" value="Y" <%=text_offers ? "checked":""%>>&nbsp;&nbsp;Yes please notify me about <b>offers, discounts</b> and <b>promotions</b> from time to time.</td>
 			</tr>
 			<tr><td colspan="2" >&nbsp;</td></tr>
 			<tr valign="top">
@@ -142,7 +138,7 @@
 					</table>
 				</td>
 			</tr>
-			<tr><td colspan="2" class="text11rbold trpad"><fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></td></tr>
+			<tr><td colspan="2" class="text11rbold trpad" style="width:500px;"><fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></td></tr>
 			<tr><td colspan="2" >&nbsp;</td></tr>
 		</table>
 	</td>
@@ -155,9 +151,7 @@
 			<tr><td colspan="2" class="trpad"><span class="title18or">3.&nbsp;</span><span class="title18">Go green!</span>&nbsp;<img src="/media_stat/images/navigation/go_green_leaf.gif" border="0" alt="GO GREEN"></td></tr>
 			<tr><td colspan="2" >&nbsp;</td></tr>
 			<tr valign="top">
-				<td class="trpad" style="padding-right:5px;"><input class="radio" type="checkbox" name="go_green" value="Y" <%=go_green ? "checked":""%>></td>
-				<td style="padding-top:5px;" class="text12" valign="center" align="left">I want to turn off paper statement delivery and receive my statements online.
-				</td>
+				<td class="text12 trpad" style="padding-right:5px;" colspan="2"><input class="radio" type="checkbox" name="go_green" value="Y" <%=go_green ? "checked":""%>>&nbsp;&nbsp;I want to turn off paper statement delivery and receive my statements online.</td>				
 			</tr>					
 			<tr><td colspan="2" >&nbsp;</td></tr>
 		</table>
@@ -173,7 +167,7 @@
 			<table class="butCont">
 				<tr>
 					<td class="butWhiteLeft"><!-- --></td>
-					<td class="butWhiteMiddle" valign="center"><a class="butText" style="color:#000000;text-shadow:none;font-weight:bold;" href="#" onclick="doRemoteOverlay1('sms_capture.jsp?submitbutton=nothanks'); return false;">&nbsp;&nbsp;No, Thanks&nbsp;&nbsp;</a></td>
+					<td class="butWhiteMiddle" valign="center"><a class="butText" style="color:#000000;text-shadow:none;font-weight:bold;vertical-align:middle;" href="#" onclick="doRemoteOverlay1('sms_capture.jsp?submitbutton=nothanks'); return false;">&nbsp;&nbsp;No, Thanks&nbsp;&nbsp;</a></td>
 					<td class="butWhiteRight"><!-- --></td>
 				</tr>
 			</table>
@@ -182,11 +176,11 @@
 		<table class="butCont fright" style="margin-left: 15px;">
 			<tr>
 				<td class="butBrownLeft"><!-- --></td>
-				<td class="butBrownMiddle"><a class="butText" style="color:#000000;text-shadow:none;font-weight:bold;" href="#" onclick="Modalbox.hide(); return false;">&nbsp;&nbsp;Remind Me Later&nbsp;&nbsp;</a></td>
+				<td class="butBrownMiddle"><a class="butText" style="color:#000000;text-shadow:none;font-weight:bold;text-shadow:none;vertical-align:middle;" href="#" onclick="Modalbox.hide(); return false;">&nbsp;&nbsp;Remind Me Later&nbsp;&nbsp;</a></td>
 				<td class="butBrownRight"><!-- --></td>
 				<td>&nbsp;&nbsp;</td>
 				<td class="butOrangeLeft"><!-- --></td>
-				<td class="butOrangeMiddle"><a class="butText" style="font-weight:bold;" href="#" onclick="doRemoteOverlay1('sms_capture.jsp?submitbutton=update'); return false;">Update Preferences</a></td>
+				<td class="butOrangeMiddle"><a class="butText" style="font-weight:bold;text-shadow:none;vertical-align:middle;" href="#" onclick="doRemoteOverlay1('sms_capture.jsp?submitbutton=update'); return false;">Update Preferences</a></td>
 				<td class="butOrangeRight"><!-- --></td>
 			</tr>
 		</table> 		

@@ -8,6 +8,7 @@
  */
 package com.freshdirect.webapp.taglib.fdstore;
 
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -38,7 +39,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mail.EmailUtil;
-import com.freshdirect.webapp.action.Action;
 import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.fdstore.RegistrationAction;
 import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
@@ -215,7 +215,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				}
 			} else if(mobile_number != null && mobile_number.length() != 0) {
 				if(!"Y".equals(text_offers) && !"Y".equals(text_delivery)) {
-					actionResult.addError(true, "mobile_number", "Pick a texting option.");
+					actionResult.addError(true, "text_option", "Please select your text messaging preferences below.");
 					return;
 				}
 			}
@@ -235,14 +235,12 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 			
 			
 			//save it to DB			
-			if("Y".equals(text_offers) || "Y".equals(text_delivery) || mobile_number.length() > 0) {
-				FDSessionUser user = (FDSessionUser) session.getAttribute(USER);				
-				try {
-					FDCustomerManager.storeAllMobilePreferences(user.getIdentity().getErpCustomerPK(), mobile_number, text_offers, text_delivery, go_green, busphone, ext, user.isCorporateUser());
-				} catch (FDResourceException e) {
-					LOGGER.error("Error from mobile preferences", e);
-				}				
-			}
+			FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
+			try {
+				FDCustomerManager.storeAllMobilePreferences(user.getIdentity().getErpCustomerPK(), mobile_number, text_offers, text_delivery, go_green, busphone, ext, user.isCorporateUser());
+			} catch (FDResourceException e) {
+				LOGGER.error("Error from mobile preferences", e);
+			}				
 			session.setAttribute("SMSSubmission" + orderNumber, "done");
 		} else if ("remind".equals(submitbutton)) {
 			//ignore
@@ -275,7 +273,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 			}
 		} else if(mobile_number != null && mobile_number.length() != 0) {
 			if(!"Y".equals(text_offers) && !"Y".equals(text_delivery)) {
-				actionResult.addError(true, "mobile_number", "Pick a texting option.");
+				actionResult.addError(true, "text_option", "Please select your text messaging preferences below.");
 				return;
 			}
 		}		
