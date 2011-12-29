@@ -97,7 +97,7 @@
                                         $('MB_header').style.border = '0px solid #CCCCCC';
                                         $('MB_header').style.display = 'block';
                                         window.scrollTo(0,0);
-                                        $('MB_window').style.width = 'auto';
+                                        $('MB_window').style.width = '750';
                                         $('MB_window').style.height = 'auto';
                                         $('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
                                         $('MB_content').style.padding = '0px';
@@ -122,7 +122,7 @@
 						$('MB_header').style.border = '0px solid #CCCCCC';
 						$('MB_header').style.display = 'block';
 						window.scrollTo(0,0);					
-						$('MB_window').style.width = 'auto';
+						$('MB_window').style.width = '750';
 						$('MB_window').style.height = 'auto';
 						$('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
 						$('MB_content').style.padding = '0px';

@@ -55,6 +55,7 @@
 		phoneExt = phone == null || phone.length() == 0 ? "" : request.getParameter("busphoneext");
 	}
 	final int W_YA_SIGNIN_INFO = 750;
+	final int W_DOTTED_LINE = 748;
 	boolean form_processed = false;
 	final String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
 	if(session.getAttribute("SMSSubmission"+orderNumber) != null)
@@ -62,7 +63,7 @@
 %>
 <center>
 <% if(form_processed) { %>
-	<table width="<%= W_YA_SIGNIN_INFO %>" border="0" cellpadding="0" cellspacing="0">	
+	<table border="0" cellpadding="0" cellspacing="0">	
 	<tr>
 		<td class="text16bold trpad" valign="top">
 			<img src="/media_stat/images/navigation/tickmark.gif" border="0" />&nbsp;&nbsp;&nbsp;&nbsp;
@@ -72,7 +73,7 @@
 		</td>
 	</tr>
 	<tr><td colspan="2">&nbsp;</td></tr>
-	<tr><td  colspan="2"><img src="/media_stat/images/layout/dotted_line.gif" width="100%" height="1" border="0" vspace="5"></td></tr>
+	<tr><td  colspan="2"><img src="/media_stat/images/layout/dotted_line.gif" width="<%= W_DOTTED_LINE %>" height="1" border="0" vspace="5"></td></tr>
 	<tr><td colspan="2">&nbsp;</td></tr>
 	<tr><td align="center" colspan="2">
 		<table class="butCont"> <tr>
@@ -93,7 +94,7 @@
 		<img src="/media_stat/images/navigation/preferences_title.gif" border="0" /> <br/><br/>
 	</td>
 </tr>
-<tr><td><img src="/media_stat/images/layout/dotted_line.gif" width="100%" height="1" border="0" vspace="5"></td></tr>
+<tr><td><img src="/media_stat/images/layout/dotted_line.gif" width="<%= W_DOTTED_LINE %>" height="1" border="0" vspace="5"></td></tr>
 <tr>
 	<td>
 		<table>
@@ -111,7 +112,7 @@
 		</table>
 	</td>
 </tr>
-<tr><td><img src="/media_stat/images/layout/dotted_line.gif" width="100%" height="1" border="0" vspace="5"></td></tr>
+<tr><td><img src="/media_stat/images/layout/dotted_line.gif" width="<%= W_DOTTED_LINE %>" height="1" border="0" vspace="5"></td></tr>
 <tr>
 	<td>		
 		<table width="100%" border="0">
@@ -122,7 +123,7 @@
 			<tr valign="top" colspan="2">
 				<td class="text12 trpad" style="padding-right:5px;" colspan="2"><input class="radio" type="checkbox" name="text_delivery" value="Y" <%=text_delivery ? "checked":""%>>&nbsp;&nbsp;Yes please notify me via text message with important information about my delivery.</td>
 			</tr>
-			<tr><td colspan="2" >&nbsp;</td></tr>
+			
 			<tr valign="top">
 				<td class="text12 trpad" style="padding-right: 5px;" valign="bottom" colspan="2"><input class="radio" type="checkbox" name="text_offers" value="Y" <%=text_offers ? "checked":""%>>&nbsp;&nbsp;Yes please notify me about <b>offers, discounts</b> and <b>promotions</b> from time to time.</td>
 			</tr>
@@ -143,7 +144,7 @@
 		</table>
 	</td>
 </tr>
-<tr><td><img src="/media_stat/images/layout/dotted_line.gif" width="100%" height="1" border="0" vspace="5"></td></tr>
+<tr><td><img src="/media_stat/images/layout/dotted_line.gif" width="<%= W_DOTTED_LINE %>" height="1" border="0" vspace="5"></td></tr>
 <tr>
 	<td>
 		<table width="100%" border="0">
@@ -151,12 +152,13 @@
 			<tr><td colspan="2" class="trpad"><span class="title18or">3.&nbsp;</span><span class="title18">Go green!</span>&nbsp;<img src="/media_stat/images/navigation/go_green_leaf.gif" border="0" alt="GO GREEN"></td></tr>
 			<tr><td colspan="2" >&nbsp;</td></tr>
 			<tr valign="top">
-				<td class="text12 trpad" style="padding-right:5px;" colspan="2"><input class="radio" type="checkbox" name="go_green" value="Y" <%=go_green ? "checked":""%>>&nbsp;&nbsp;I want to turn off paper statement delivery and receive my statements online.</td>				
+				<td class="text12 trpad" style="padding-right:5px;" colspan="2"><input class="radio" type="checkbox" name="go_green" value="Y" <%=go_green ? "checked":""%>>&nbsp;&nbsp;I want to turn off paper statement delivery and receive my statements online.<br/>
+				<FONT class="text12" style="color:gray;font-style:italic;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Please note that the following requests will come into effect on your next order.</font></td>				
 			</tr>					
 			<tr><td colspan="2" >&nbsp;</td></tr>
 		</table>
 		
-		<img src="/media_stat/images/layout/dotted_line.gif" width="100%" height="1" border="0" vspace="5">
+		<img src="/media_stat/images/layout/dotted_line.gif" width="<%= W_DOTTED_LINE %>" height="1" border="0" vspace="5">
 	</td>
 </tr>
 <tr><td>&nbsp;</td></tr>
