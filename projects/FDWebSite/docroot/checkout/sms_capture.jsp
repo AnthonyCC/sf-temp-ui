@@ -119,7 +119,7 @@
 			<tr><td colspan="2" >&nbsp;</td></tr>
 			<tr><td colspan="2" ><span class="title18or trpad">2.&nbsp;</span><span class="title18">Receive text messages:</span></td></tr>
 			<tr><td colspan="2" >&nbsp;</td></tr>
-			<tr><td colspan="2" class="text11rbold trpad"><fd:ErrorHandler result='<%=result%>' name='text_option' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></td></tr>
+			<tr><td colspan="2" class="text11rbold trpad">&nbsp;<fd:ErrorHandler result='<%=result%>' name='text_option' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></td></tr>
 			<tr valign="top" colspan="2">
 				<td class="text12 trpad" style="padding-right:5px;" colspan="2"><input class="radio" type="checkbox" name="text_delivery" value="Y" <%=text_delivery ? "checked":""%>>&nbsp;&nbsp;Yes please notify me via text message with important information about my delivery.</td>
 			</tr>
