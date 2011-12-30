@@ -1,6 +1,5 @@
-update CUST.CASE_SUBJECT set name ='First Order and >$450 with GC' where code='ASQ-105';
-
 -- 439 rows inserted
+
 Insert into CUST.CASE_SUBJECT   (CODE, NAME, CASE_QUEUE, CASE_PRIORITY) Values   ('ASQ-010', 'Fraud Review', 'ASQ', 'MD');
 Insert into CUST.CASE_SUBJECT   (CODE, NAME, CASE_QUEUE, CASE_PRIORITY) Values   ('CAQ-015', 'Add Chefs Table Status', 'CAQ', 'MD');
 Insert into CUST.CASE_SUBJECT   (CODE, NAME, CASE_QUEUE, CASE_PRIORITY) Values   ('DSQ-040', 'Damaged Box/Bag', 'DSQ', 'MD');
@@ -1747,8 +1746,9 @@ Insert into CUST.CASE_OPERATION
  Values
    ('DSQ-054', 'CLSD', 'CLSD', 'SOP', 'NOTE');
    
-/*18 rows updated*/   
+/*18 rows updated*/
+
 update cust.case_subject set obsolete='X' where code 
 in ('DSQ-001','DSQ-003','DSQ-005','DSQ-006','DSQ-009','DSQ-018','DSQ-019','DSQ-020','DSQ-021','DSQ-022','DSQ-025','DSQ-026','DSQ-027','DSQ-028','DSQ-033','DSQ-034','DSQ-035','DSQ-039');
 
-   
+
