@@ -1,0 +1,1 @@
+alter table transp.HANDOFF_BATCHSTOP add column SERVICE_ADDR2 VARCHAR2(55);
