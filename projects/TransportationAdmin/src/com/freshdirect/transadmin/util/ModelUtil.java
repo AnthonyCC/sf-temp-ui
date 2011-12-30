@@ -258,7 +258,11 @@ public class ModelUtil {
 			}
 			if(_plan.getZone() == null && _plan.getDestinationFacility() != null
 					&& EnumTransportationFacilitySrc.CROSSDOCK.getName().equalsIgnoreCase(_plan.getDestinationFacility().getTrnFacilityType().getName())){
-				_plan.setZoneCode(_plan.getDestinationFacility().getRoutingCode());
+				if(!planMapping.containsKey(_plan.getDestinationFacility().getRoutingCode())){
+					planMapping.put(_plan.getDestinationFacility().getRoutingCode(), new ArrayList<Plan>());
+				}
+				planMapping.get(_plan.getDestinationFacility().getRoutingCode()).add(_plan);
+				continue;
 			}
 			if(!planMapping.containsKey(_plan.getZoneCode())){
 				planMapping.put(_plan.getZoneCode(), new ArrayList<Plan>());
@@ -269,7 +273,7 @@ public class ModelUtil {
 		Iterator<ErpRouteMasterInfo> routeItr = routeList.iterator();
 		while(routeItr.hasNext()){
 			ErpRouteMasterInfo _route = routeItr.next();
-			if(_route.getZoneNumber() != null){
+			if(!TransStringUtil.isEmpty(_route.getZoneNumber())){
 				if(!routeMapping.containsKey(_route.getZoneNumber())){				
 					routeMapping.put(_route.getZoneNumber(), new ArrayList<ErpRouteMasterInfo>());				
 				}
@@ -308,6 +312,7 @@ public class ModelUtil {
 
 		Iterator<Plan> planItr = zonePlanList.iterator();
 		while (planItr.hasNext()) {
+			boolean isTrailerPlan = false;
 			Plan p = planItr.next();
 
 			Dispatch d = new Dispatch();
@@ -321,8 +326,11 @@ public class ModelUtil {
 			d.setFirstDlvTime(p.getFirstDeliveryTime());
 			d.setBullPen("Y".equalsIgnoreCase(p.getIsBullpen())? Boolean.TRUE:Boolean.FALSE);
 			d.setRegion(p.getRegion());
-
-			List routeMatch = matchRoute(p, zoneRouteList);
+			if(p.getZone() == null && p.getDestinationFacility() != null
+					&& EnumTransportationFacilitySrc.CROSSDOCK.getName().equalsIgnoreCase(p.getDestinationFacility().getTrnFacilityType().getName())){
+				isTrailerPlan = true;
+			}
+			List routeMatch = matchRoute(p, zoneRouteList, isTrailerPlan);
 			if(routeMatch != null) {
 				r = (ErpRouteMasterInfo)routeMatch.get(0);
 				firstDlvTime = (Date)routeMatch.get(1);
@@ -444,7 +452,7 @@ public class ModelUtil {
 			d.setBullPen("Y".equalsIgnoreCase(p.getIsBullpen())?Boolean.TRUE:Boolean.FALSE);
 			d.setRegion(p.getRegion());
 
-			List routeMatch = matchRoute(p, routeList);
+			List routeMatch = matchRoute(p, routeList, false);
 
 			if(routeMatch != null) {
 				r = (ErpRouteMasterInfo)routeMatch.get(0);
@@ -461,7 +469,7 @@ public class ModelUtil {
 		}
 	}
 
-	private static List matchRoute(Plan p, List routeList) {
+	private static List matchRoute(Plan p, List routeList, boolean isTrailerPlan) {
 		List result = null;
 		if(routeList != null && p != null) {
 			Iterator _iterator = routeList.iterator();
@@ -469,15 +477,17 @@ public class ModelUtil {
 			while(_iterator.hasNext()) {
 				_tmpInfo = (ErpRouteMasterInfo)_iterator.next();
 				try {
-					if(_tmpInfo.getFirstDlvTime() != null && _tmpInfo.getFirstDlvTime().trim().length() > 0){
-						Date firstDlvTime = DATE_FORMAT.parse("01/01/1970 "+_tmpInfo.getFirstDlvTime()+" "+_tmpInfo.getRouteTime());
-					
-						if(firstDlvTime != null && p.getFirstDeliveryTime()!= null
-								&& firstDlvTime.getTime() == p.getFirstDeliveryTime().getTime()) 
-						{
+					if (_tmpInfo.getFirstDlvTime() != null
+							&& _tmpInfo.getFirstDlvTime().trim().length() > 0) {
+						Date routeFirstDlvTime = DATE_FORMAT
+								.parse("01/01/1970 "+ _tmpInfo.getFirstDlvTime() + " " + _tmpInfo.getRouteTime());
+						Date planFirstDlvTime = isTrailerPlan ? p.getStartTime() : p.getFirstDeliveryTime();
+						if (routeFirstDlvTime != null
+								&& planFirstDlvTime != null
+								&& routeFirstDlvTime.getTime() == planFirstDlvTime.getTime()) {
 							result = new ArrayList();
 							result.add(_tmpInfo);
-							result.add(firstDlvTime);
+							result.add(routeFirstDlvTime);
 							_iterator.remove();
 							break;
 						}
