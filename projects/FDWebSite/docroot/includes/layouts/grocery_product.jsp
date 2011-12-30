@@ -880,8 +880,22 @@ if (brandLogo !=null) {
         if (brandPopupLink!=null) { brandOrFolderName += "</a>"; }
 }
 %>
+<%
+	/* AD spot row */
+	if (FDStoreProperties.isAdServerEnabled()) {
+%>
+    <div id="adRow">
+        <SCRIPT LANGUAGE=JavaScript>
+        <!--
+        OAS_AD('CategoryNote');
+        -->
+        </SCRIPT>
+    </div>
+<% } %>
+<br />
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_GROCERY_PRODUCT%>">
-<tr id="headerRow" valign="BOTTOM">
+
+<tr id="headerRow" valign="bottom">
     <td colspan="2" style="padding-bottom: 10px;"><%
     	if (brandPopupLink!=null) {
     %><a href="<%=brandPopupLink%>"><%
@@ -934,20 +948,6 @@ if (brandLogo !=null) {
 </tr>
 
 <%
-	if (FDStoreProperties.isAdServerEnabled()) {
-%>
-<tr id="adRow">
-    <td colspan="2">
-        <SCRIPT LANGUAGE=JavaScript>
-        <!--
-        OAS_AD('CategoryNote');
-        //-->
-        </SCRIPT>
-    </td>
-</tr>
-<%
-	}
-
 //
 // EDITORIAL PARTIAL
 //
