@@ -424,7 +424,7 @@ class TimeNode extends PlanTreeNode  {
 		Collections.sort(resources, new HireDateComparator());
 		//Retrieve Trailer resources
 		List<ScheduleEmployeeDetails> trailerResources = TreeDataUtil.getTrailerResources(resources);
-				
+
 		for (Iterator i = trucks.iterator(); i.hasNext();) {
 			Scrib s = ((TruckNode) i.next()).s;
 
@@ -444,141 +444,146 @@ class TimeNode extends PlanTreeNode  {
 			p.setSequence(rank++);
 
 			Set zoneTypeResources = null;
-
-			if(s.getZone() == null){
-				resources = trailerResources;
-			}
-			
 			ScheduleEmployeeDetails _currResource = null;
 			PlanResource _tmpPlanResource = null;
-			if(resources.size() > 0) {
-				_currResource = (ScheduleEmployeeDetails)resources.toArray()[0];
-				if(_currResource.getMembers() != null && _currResource.getMembers().size() > 0) {
-					
-					for(ScheduleEmployeeDetails _members : _currResource.getMembers()) {
-						_tmpPlanResource = TreeDataUtil.matchResource(_members);
-						if(_tmpPlanResource != null) {
-							p.getPlanResources().add(_tmpPlanResource);							
-						} 
-					}
-					resources.remove(_currResource);					
-				} else {
-					if(s.getZone() != null){
-						zoneTypeResources = s.getZone().getTrnZoneType().getZonetypeResources();
-					for (Iterator j = zoneTypeResources.iterator(); j.hasNext();) {
-						ZonetypeResource r = (ZonetypeResource) j.next();
-						// Driver
-						if (ScheduleEmployeeInfo.DRIVER.equalsIgnoreCase(r.getId()
-								.getRole())) {
-							int min = r.getRequiredNo().intValue();
-							int count = 0;
-							for (Iterator k = resources.iterator(); k.hasNext();) {
-								ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
-								if(se.getMembers() == null || se.getMembers().size() == 0) {
-									if (count >= min)
-										break;
-									
-									_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.DRIVER);
-									if(_tmpPlanResource != null) {
-										p.getPlanResources().add(_tmpPlanResource);
-										k.remove();
-										count++;
-									}
-								}
-							}
-						}
 
-						// Helper
-						if (ScheduleEmployeeInfo.HELPER.equalsIgnoreCase(r.getId().getRole())) {
-							int min = r.getRequiredNo().intValue();
-							int count = 0;
-							for (Iterator k = resources.iterator(); k.hasNext();) {
-								ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
-								if(se.getMembers() == null || se.getMembers().size() == 0) {
-									if (count >= min)
-										break;
-									
-									_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.HELPER);
-									if(_tmpPlanResource != null) {
-										p.getPlanResources().add(_tmpPlanResource);
-										k.remove();
-										count++;
-									}
-								}
-							}
+			if(s.getZone() != null){
+				if(resources.size() > 0) {
+					_currResource = (ScheduleEmployeeDetails)resources.toArray()[0];
+					if(_currResource.getMembers() != null && _currResource.getMembers().size() > 0) {
+						
+						for(ScheduleEmployeeDetails _members : _currResource.getMembers()) {
+							_tmpPlanResource = TreeDataUtil.matchResource(_members);
+							if(_tmpPlanResource != null) {
+								p.getPlanResources().add(_tmpPlanResource);							
+							} 
 						}
-
-						// Runner
-						if (ScheduleEmployeeInfo.RUNNER.equalsIgnoreCase(r.getId().getRole())) {
-							int min = r.getRequiredNo().intValue();
-							int count = 0;
-							for (Iterator k = resources.iterator(); k.hasNext();) {
-								ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
-								if(se.getMembers() == null || se.getMembers().size() == 0) {
-									if (count >= min)
-										break;
-									
-									_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.RUNNER);
-									if(_tmpPlanResource != null) {
-										p.getPlanResources().add(_tmpPlanResource);
-										k.remove();
-										count++;
-									}
-								}
-							}
-						}
-					}
-					} else {
-							// Driver
-							int driverCount = 0;
-							for (Iterator k = trailerResources.iterator(); k.hasNext();) {
-								ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
-								if(se.getMembers() == null || se.getMembers().size() == 0) {
-										if (driverCount >= TransportationAdminProperties.getDriverReqForTrailer())
-											break;
-
-										_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.DRIVER);
-										if(_tmpPlanResource != null) {
-											p.getPlanResources().add(_tmpPlanResource);
-											k.remove();
-											driverCount++;
-				}
-			}
-							}
-			
-							// Helper
-							int helperCount = 0;
-							for (Iterator k = trailerResources.iterator(); k.hasNext();) {
-								ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
-								if(se.getMembers() == null || se.getMembers().size() == 0) {
-										if (helperCount >= TransportationAdminProperties.getHelperReqForTrailer())
-											break;
-										
-										_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.HELPER);
-										if(_tmpPlanResource != null) {
-											p.getPlanResources().add(_tmpPlanResource);
-											k.remove();
-											helperCount++;
+						resources.remove(_currResource);					
+					} else {						
+							zoneTypeResources = s.getZone().getTrnZoneType().getZonetypeResources();
+							for (Iterator j = zoneTypeResources.iterator(); j.hasNext();) {
+								ZonetypeResource r = (ZonetypeResource) j.next();
+								// Driver
+								if (ScheduleEmployeeInfo.DRIVER.equalsIgnoreCase(r.getId().getRole())) {
+									int min = r.getRequiredNo().intValue();
+									int count = 0;
+									for (Iterator k = resources.iterator(); k.hasNext();) {
+										ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
+										if(se.getMembers() == null || se.getMembers().size() == 0) {
+											if (count >= min)
+												break;
+											
+											_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.DRIVER);
+											if(_tmpPlanResource != null) {
+												p.getPlanResources().add(_tmpPlanResource);
+												k.remove();
+												count++;
+											}
 										}
+									}
 								}
-							}
-							
-							// Runner							
-							int runnerCount = 0;
-							for (Iterator k = trailerResources.iterator(); k.hasNext();) {
-								ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
-								if(se.getMembers() == null || se.getMembers().size() == 0) {
-									if (runnerCount >= TransportationAdminProperties.getRunnerReqForTrailer())
-											break;
-										
-									_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.RUNNER);
-									if(_tmpPlanResource != null) {
-										p.getPlanResources().add(_tmpPlanResource);
-										k.remove();
-										runnerCount++;
+								// Helper
+								if (ScheduleEmployeeInfo.HELPER.equalsIgnoreCase(r.getId().getRole())) {
+									int min = r.getRequiredNo().intValue();
+									int count = 0;
+									for (Iterator k = resources.iterator(); k.hasNext();) {
+										ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
+										if(se.getMembers() == null || se.getMembers().size() == 0) {
+											if (count >= min)
+												break;
+											
+											_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.HELPER);
+											if(_tmpPlanResource != null) {
+												p.getPlanResources().add(_tmpPlanResource);
+												k.remove();
+												count++;
+											}
+										}
+									}
+								}
+								// Runner
+								if (ScheduleEmployeeInfo.RUNNER.equalsIgnoreCase(r.getId().getRole())) {
+									int min = r.getRequiredNo().intValue();
+									int count = 0;
+									for (Iterator k = resources.iterator(); k.hasNext();) {
+										ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
+										if(se.getMembers() == null || se.getMembers().size() == 0) {
+											if (count >= min)
+												break;
+											
+											_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.RUNNER);
+											if(_tmpPlanResource != null) {
+												p.getPlanResources().add(_tmpPlanResource);
+												k.remove();
+												count++;
+											}
+										}
 									}
 								}
 							}
+						}
+				}
+			} else {
+				if(trailerResources.size() > 0) {
+					_currResource = (ScheduleEmployeeDetails)trailerResources.toArray()[0];
+					if(_currResource.getMembers() != null && _currResource.getMembers().size() > 0) {
+						
+						for(ScheduleEmployeeDetails _members : _currResource.getMembers()) {
+							_tmpPlanResource = TreeDataUtil.matchResource(_members);
+							if(_tmpPlanResource != null) {
+								p.getPlanResources().add(_tmpPlanResource);							
+							} 
+						}
+						trailerResources.remove(_currResource);					
+					} else {
+								// Driver
+								int driverCount = 0;
+								for (Iterator k = trailerResources.iterator(); k.hasNext();) {
+									ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
+									if(se.getMembers() == null || se.getMembers().size() == 0) {
+											if (driverCount >= TransportationAdminProperties.getDriverReqForTrailer())
+												break;
+
+											_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.DRIVER);
+											if(_tmpPlanResource != null) {
+												p.getPlanResources().add(_tmpPlanResource);
+												k.remove();
+												driverCount++;
+											}
+									}
+								}				
+								// Helper
+								int helperCount = 0;
+								for (Iterator k = trailerResources.iterator(); k.hasNext();) {
+									ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
+									if(se.getMembers() == null || se.getMembers().size() == 0) {
+											if (helperCount >= TransportationAdminProperties.getHelperReqForTrailer())
+												break;
+											
+											_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.HELPER);
+											if(_tmpPlanResource != null) {
+												p.getPlanResources().add(_tmpPlanResource);
+												k.remove();
+												helperCount++;
+											}
+									}
+								}								
+								// Runner							
+								int runnerCount = 0;
+								for (Iterator k = trailerResources.iterator(); k.hasNext();) {
+									ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
+									if(se.getMembers() == null || se.getMembers().size() == 0) {
+										if (runnerCount >= TransportationAdminProperties.getRunnerReqForTrailer())
+												break;
+											
+										_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.RUNNER);
+										if(_tmpPlanResource != null) {
+											p.getPlanResources().add(_tmpPlanResource);
+											k.remove();
+											runnerCount++;
+										}
+									}
+								}
 						}
 					}
 			}
@@ -616,37 +621,8 @@ class TimeNode extends PlanTreeNode  {
 				} 
 			}
 		}
-	/*	// add rest of bullpen for remaining employees
-		if (resources != null && resources.size() > 0) {
-			ScheduleEmployeeDetails s = (ScheduleEmployeeDetails) resources.toArray()[0];
-			Plan p = new Plan();
-			plans.add(p);
 
-			p.setPlanDate(s.getDate());
-			p.setRegion(s.getSchedule().getRegion());
-			p.setStartTime(s.getSchedule().getTime());
-			p.setFirstDeliveryTime(s.getSchedule().getTime());
-			p.setLastDeliveryTime(s.getSchedule().getTime());
-			p.setIsBullpen("Y");
-
-			for (Iterator i = resources.iterator(); i.hasNext();) {
-				ScheduleEmployeeDetails ss = (ScheduleEmployeeDetails) i.next();
-				PlanResource planResource = new PlanResource();
-				EmployeeRoleType type = new EmployeeRoleType();
-				for (Iterator si = ss.getEmpRoles().iterator(); si.hasNext();) {
-					type.setCode(((EmployeeRole) (si.next())).getId().getRole());					
-					break;
-				}
-				ResourceId resource = new ResourceId();
-				resource.setResourceId(ss.info.getEmployeeId());
-				planResource.setEmployeeRoleType(type);
-				planResource.setId(resource);
-				p.getPlanResources().add(planResource);
-
-			}
-		}*/
-
-		// add bullpen for remaining employees
+		// create bullpens for remaining employees
 		while(resources != null && resources.size() > 0){
 			ScheduleEmployeeDetails s = (ScheduleEmployeeDetails) resources.toArray()[0];
 			Plan p = new Plan();
@@ -732,49 +708,16 @@ class TimeNode extends PlanTreeNode  {
 						driverCount++;
 						p.getPlanResources().add(planResource);
 						k.remove();
-					}else if(TreeDataUtil.isRole(ScheduleEmployeeInfo.HELPER, c)  && helperCount < helperMax){
+					} else if(TreeDataUtil.isRole(ScheduleEmployeeInfo.HELPER, c)  && helperCount < helperMax){
 						helperCount++;
 						p.getPlanResources().add(planResource);
 						k.remove();
 					}
-				}else{
+				} else {
 					k.remove();
 				}
 			}
 		}
-
-		/*// add trailler bullpen for remaining employees
-		if (trailerResources != null && trailerResources.size() > 0) {
-			ScheduleEmployeeDetails s = (ScheduleEmployeeDetails) trailerResources.toArray()[0];
-			Plan p = new Plan();
-			plans.add(p);
-
-			p.setPlanDate(s.getDate());
-			p.setRegion(s.getSchedule().getRegion());
-			p.setStartTime(s.getSchedule().getTime());
-			p.setFirstDeliveryTime(s.getSchedule().getTime());
-			p.setLastDeliveryTime(s.getSchedule().getTime());
-			p.setIsBullpen("Y");
-
-			for (Iterator i = trailerResources.iterator(); i.hasNext();) {
-				ScheduleEmployeeDetails ss = (ScheduleEmployeeDetails) i.next();
-				Collection c = ss.getEmpRoles();
-				if (!TreeDataUtil.isRole(ScheduleEmployeeInfo.RUNNER, c)) {
-				PlanResource planResource = new PlanResource();
-				EmployeeRoleType type = new EmployeeRoleType();
-				for (Iterator si = ss.getEmpRoles().iterator(); si.hasNext();) {
-					type.setCode(((EmployeeRole) (si.next())).getId().getRole());
-					break;
-				}
-				ResourceId resource = new ResourceId();
-				resource.setResourceId(ss.info.getEmployeeId());
-				planResource.setEmployeeRoleType(type);
-				planResource.setId(resource);
-					p.setIsTrailerBullpen("Y");
-				p.getPlanResources().add(planResource);
-			}
-			}
-		}*/
 	}
 	
 	public String toString() {
@@ -846,122 +789,130 @@ class DepotTimeNode extends PlanTreeNode  {
 			p.setSequence(rank++);
 
 			Set zoneTypeResources = null;
-			if(s.getZone() == null){
-				resources = trailerResources;
-			}
-
 			ScheduleEmployeeDetails _currResource = null;
 			PlanResource _tmpPlanResource = null;
-			if(resources.size() > 0) {
-				_currResource = (ScheduleEmployeeDetails)resources.toArray()[0];
-				if(_currResource.getMembers() != null && _currResource.getMembers().size() > 0) {
-					
-					for(ScheduleEmployeeDetails _members : _currResource.getMembers()) {
-						_tmpPlanResource = TreeDataUtil.matchResource(_members);
-						if(_tmpPlanResource != null) {
-							p.getPlanResources().add(_tmpPlanResource);							
-						} 
-					}
-					resources.remove(_currResource);
-				} else {
-					if(s.getZone() != null){
-						zoneTypeResources = s.getZone().getTrnZoneType().getZonetypeResources();
-					for (Iterator j = zoneTypeResources.iterator(); j.hasNext();) {
-						ZonetypeResource r = (ZonetypeResource) j.next();
-						// Driver
-							if (ScheduleEmployeeInfo.DRIVER.equalsIgnoreCase(r.getId().getRole())) {
-							int min = r.getRequiredNo().intValue();
-							int count = 0;
-							for (Iterator k = resources.iterator(); k.hasNext();) {
-								ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
-								if(se.getMembers() == null || se.getMembers().size() == 0) {
-									if (count >= min)
-										break;
-									
-									_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.DRIVER);
-									if(_tmpPlanResource != null) {
-										p.getPlanResources().add(_tmpPlanResource);
-										k.remove();
-										count++;
+			
+			if(s.getZone() != null){
+				if(resources.size() > 0) {
+					_currResource = (ScheduleEmployeeDetails)resources.toArray()[0];
+					if(_currResource.getMembers() != null && _currResource.getMembers().size() > 0) {
+						
+						for(ScheduleEmployeeDetails _members : _currResource.getMembers()) {
+							_tmpPlanResource = TreeDataUtil.matchResource(_members);
+							if(_tmpPlanResource != null) {
+								p.getPlanResources().add(_tmpPlanResource);							
+							} 
+						}
+						resources.remove(_currResource);
+					} else {
+							zoneTypeResources = s.getZone().getTrnZoneType().getZonetypeResources();
+							for (Iterator j = zoneTypeResources.iterator(); j.hasNext();) {
+								ZonetypeResource r = (ZonetypeResource) j.next();
+								// Driver
+								if (ScheduleEmployeeInfo.DRIVER.equalsIgnoreCase(r.getId().getRole())) {
+									int min = r.getRequiredNo().intValue();
+									int count = 0;
+									for (Iterator k = resources.iterator(); k.hasNext();) {
+										ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
+										if(se.getMembers() == null || se.getMembers().size() == 0) {
+											if (count >= min)
+												break;
+											
+											_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.DRIVER);
+											if(_tmpPlanResource != null) {
+												p.getPlanResources().add(_tmpPlanResource);
+												k.remove();
+												count++;
+											}
+										}
 									}
 								}
-							}
-						}
-		
-						// Helper
-						if (ScheduleEmployeeInfo.HELPER.equalsIgnoreCase(r.getId()
-								.getRole())) {
-							int min = r.getRequiredNo().intValue();
-							int count = 0;
-							for (Iterator k = resources.iterator(); k.hasNext();) {
-								ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
-								if(se.getMembers() == null || se.getMembers().size() == 0) {
-									if (count >= min)
-										break;
-									
-									_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.HELPER);
-									if(_tmpPlanResource != null) {
-										p.getPlanResources().add(_tmpPlanResource);
-										k.remove();
-										count++;
+			
+								// Helper
+								if (ScheduleEmployeeInfo.HELPER.equalsIgnoreCase(r.getId().getRole())) {
+									int min = r.getRequiredNo().intValue();
+									int count = 0;
+									for (Iterator k = resources.iterator(); k.hasNext();) {
+										ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
+										if(se.getMembers() == null || se.getMembers().size() == 0) {
+											if (count >= min)
+												break;
+											
+											_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.HELPER);
+											if(_tmpPlanResource != null) {
+												p.getPlanResources().add(_tmpPlanResource);
+												k.remove();
+												count++;
+											}
+										}
 									}
+								}						
+							}
+							// Runner[add all the runners available]
+							List runners = getRunners(s.getFirstDeliveryTime());
+							if (runners != null) {
+								for (Iterator k = runners.iterator(); k.hasNext();) {
+									ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k
+											.next();
+									PlanResource planResource = new PlanResource();
+									EmployeeRoleType type = new EmployeeRoleType();
+									type.setCode(ScheduleEmployeeInfo.RUNNER);
+									ResourceId resource = new ResourceId();
+									resource.setResourceId(se.info.getEmployeeId());
+									planResource.setEmployeeRoleType(type);
+									planResource.setId(resource);
+									p.getPlanResources().add(planResource);
 								}
 							}
-						}						
-					}
-					// Runner[add all the runners available]
-					List runners = getRunners(s.getFirstDeliveryTime());
-					if (runners != null) {
-						for (Iterator k = runners.iterator(); k.hasNext();) {
-							ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k
-									.next();
-							PlanResource planResource = new PlanResource();
-							EmployeeRoleType type = new EmployeeRoleType();
-							type.setCode(ScheduleEmployeeInfo.RUNNER);
-							ResourceId resource = new ResourceId();
-							resource.setResourceId(se.info.getEmployeeId());
-							planResource.setEmployeeRoleType(type);
-							planResource.setId(resource);
-							p.getPlanResources().add(planResource);
+						}				
+				}
+			} else {
+				if(trailerResources.size() > 0) {
+					_currResource = (ScheduleEmployeeDetails)trailerResources.toArray()[0];
+					if(_currResource.getMembers() != null && _currResource.getMembers().size() > 0) {
+						
+						for(ScheduleEmployeeDetails _members : _currResource.getMembers()) {
+							_tmpPlanResource = TreeDataUtil.matchResource(_members);
+							if(_tmpPlanResource != null) {
+								p.getPlanResources().add(_tmpPlanResource);							
+							} 
 						}
-					}					
-					}else{
-						// Driver
-						int driverCount = 0;
-						for (Iterator k = trailerResources.iterator(); k.hasNext();) {
-							ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
-							if(se.getMembers() == null || se.getMembers().size() == 0) {
-									if (driverCount >= TransportationAdminProperties.getDriverReqForTrailer())
-										break;
+						trailerResources.remove(_currResource);
+					} else {						
+							// Driver
+							int driverCount = 0;
+							for (Iterator k = trailerResources.iterator(); k.hasNext();) {
+								ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
+								if(se.getMembers() == null || se.getMembers().size() == 0) {
+										if (driverCount >= TransportationAdminProperties.getDriverReqForTrailer())
+											break;
 
-									_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.DRIVER);
-									if(_tmpPlanResource != null) {
-										p.getPlanResources().add(_tmpPlanResource);
-										k.remove();
-										driverCount++;
-				}				
-			}
-						}
-
-						// Helper
-						int helperCount = 0;
-						for (Iterator k = trailerResources.iterator(); k.hasNext();) {
-							ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
-							if(se.getMembers() == null || se.getMembers().size() == 0) {
-									if (helperCount >= TransportationAdminProperties.getHelperReqForTrailer())
-										break;
-									
-									_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.HELPER);
-									if(_tmpPlanResource != null) {
-										p.getPlanResources().add(_tmpPlanResource);
-										k.remove();
-										helperCount++;
-									}
+										_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.DRIVER);
+										if(_tmpPlanResource != null) {
+											p.getPlanResources().add(_tmpPlanResource);
+											k.remove();
+											driverCount++;
+										}				
+								}
 							}
-						}
+							// Helper
+							int helperCount = 0;
+							for (Iterator k = trailerResources.iterator(); k.hasNext();) {
+								ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
+								if(se.getMembers() == null || se.getMembers().size() == 0) {
+										if (helperCount >= TransportationAdminProperties.getHelperReqForTrailer())
+											break;
+										
+										_tmpPlanResource = TreeDataUtil.matchResource(se, ScheduleEmployeeInfo.HELPER);
+										if(_tmpPlanResource != null) {
+											p.getPlanResources().add(_tmpPlanResource);
+											k.remove();
+											helperCount++;
+										}
+								}
+							}
 					}
-
-				}				
+				}
 			}
 			p.setOpen(TreeDataUtil.isOpen(p, zoneTypeResources));
 		}
@@ -1049,71 +1000,6 @@ class DepotTimeNode extends PlanTreeNode  {
 			}
 		}
 		
-		/*// add bullpen for remaining employees
-		if (resources != null && resources.size() > 0) {
-			ScheduleEmployeeDetails s = (ScheduleEmployeeDetails) resources.toArray()[0];
-			Plan p = new Plan();
-			plans.add(p);
-
-			p.setPlanDate(s.getDate());
-			p.setRegion(s.getSchedule().getRegion());
-			p.setStartTime(s.getSchedule().getTime());
-			p.setFirstDeliveryTime(s.getSchedule().getTime());
-			p.setLastDeliveryTime(s.getSchedule().getTime());
-			p.setIsBullpen("Y");
-
-			for (Iterator i = resources.iterator(); i.hasNext();) {
-				ScheduleEmployeeDetails ss = (ScheduleEmployeeDetails) i.next();
-				Collection c = ss.getEmpRoles();
-				if (!TreeDataUtil.isRole(ScheduleEmployeeInfo.RUNNER, c)) {
-					PlanResource planResource = new PlanResource();
-					EmployeeRoleType type = new EmployeeRoleType();
-					for (Iterator si = ss.getEmpRoles().iterator(); si.hasNext();) {
-						type.setCode(((EmployeeRole) (si.next())).getId().getRole());						
-						break;
-					}
-					ResourceId resource = new ResourceId();
-					resource.setResourceId(ss.info.getEmployeeId());
-					planResource.setEmployeeRoleType(type);
-					planResource.setId(resource);
-					p.getPlanResources().add(planResource);
-				}
-			}
-		}*/
-
-		// add trailler bullpen for remaining employees
-		/*if (trailerResources != null && trailerResources.size() > 0) {
-			ScheduleEmployeeDetails s = (ScheduleEmployeeDetails) trailerResources.toArray()[0];
-			Plan p = new Plan();
-			plans.add(p);
-			
-			p.setPlanDate(s.getDate());
-			p.setRegion(s.getSchedule().getRegion());
-			p.setStartTime(s.getSchedule().getTime());
-			p.setFirstDeliveryTime(s.getSchedule().getTime());
-			p.setLastDeliveryTime(s.getSchedule().getTime());			
-			p.setIsBullpen("Y");
-			
-			for (Iterator i = trailerResources.iterator(); i.hasNext();) {
-				ScheduleEmployeeDetails ss = (ScheduleEmployeeDetails) i.next();
-				Collection c = ss.getEmpRoles();
-				if (!TreeDataUtil.isRole(ScheduleEmployeeInfo.RUNNER, c)) {
-					PlanResource planResource = new PlanResource();
-					EmployeeRoleType type = new EmployeeRoleType();
-					for (Iterator si = ss.getEmpRoles().iterator(); si.hasNext();) {
-						type.setCode(((EmployeeRole) (si.next())).getId().getRole());						
-						break;
-	}
-					ResourceId resource = new ResourceId();
-					resource.setResourceId(ss.info.getEmployeeId());
-					planResource.setEmployeeRoleType(type);
-					planResource.setId(resource);
-					p.setIsTrailerBullpen("Y");
-					p.getPlanResources().add(planResource);
-				}
-			}
-		}*/
-
 		while(trailerResources != null && trailerResources.size() > 0){
 			ScheduleEmployeeDetails s = (ScheduleEmployeeDetails) trailerResources.toArray()[0];
 			Plan p = new Plan();
@@ -1151,12 +1037,12 @@ class DepotTimeNode extends PlanTreeNode  {
 						driverCount++;
 						p.getPlanResources().add(planResource);
 						k.remove();
-					}else if(TreeDataUtil.isRole(ScheduleEmployeeInfo.HELPER, c)  && helperCount < helperMax){
+					} else if(TreeDataUtil.isRole(ScheduleEmployeeInfo.HELPER, c)  && helperCount < helperMax){
 						helperCount++;
 						p.getPlanResources().add(planResource);
 						k.remove();
 					}
-				}else{
+				} else {
 					k.remove();
 				}
 			}
