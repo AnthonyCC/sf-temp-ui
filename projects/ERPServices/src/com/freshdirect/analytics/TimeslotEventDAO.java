@@ -69,8 +69,6 @@ public class TimeslotEventDAO {
 		try
 		{
 		ps = conn.prepareStatement(EVENTS_QRY);
-		ps.setTimestamp(1, new java.sql.Timestamp(startTime.getTime()));
-		ps.setTimestamp(2, new java.sql.Timestamp(endTime.getTime()));
 		
 		rs = ps.executeQuery();
 		while(rs.next()){
@@ -166,8 +164,6 @@ public class TimeslotEventDAO {
 		try
 		{
 			ps = conn.prepareStatement(ORDER_EVENTS_QRY);
-			ps.setTimestamp(1, new java.sql.Timestamp(startTime.getTime()));
-			ps.setTimestamp(2, new java.sql.Timestamp(endTime.getTime()));
 			
 			rs = ps.executeQuery();
 			while(rs.next()){
