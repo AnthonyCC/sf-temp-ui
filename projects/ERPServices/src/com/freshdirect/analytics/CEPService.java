@@ -24,6 +24,7 @@ import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.rule.QueryResultsRow;
 
+import com.freshdirect.analytics.ejb.EventProcessorSessionBean;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -36,6 +37,8 @@ public class CEPService{
 		@SuppressWarnings("unchecked")
 		public static Map insert(List e)
 		{
+			LOGGER.info("start: insert()");
+			
 			Map map = new HashMap();
 			
 			try
@@ -44,7 +47,9 @@ public class CEPService{
 				if("local".equalsIgnoreCase(FDStoreProperties.getKbSource()))
 					 kbase = getKnowledgeBase();
 				else
-					 kbase = getGuvnorKnowledgeBase();
+					kbase = getGuvnorKnowledgeBase();
+				
+				
 				
 			ksession = kbase.newStatelessKnowledgeSession();
 			if(FDStoreProperties.isDebugEventAnalysis())
@@ -54,6 +59,7 @@ public class CEPService{
 			KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "auditlogfile");
 			}
 	
+			LOGGER.info("Processing number of events "+e.size() );
 			if(e!=null && e.size()>0)
 			{
 				ArrayList RollEventList = new ArrayList();
@@ -73,6 +79,8 @@ public class CEPService{
 			{
 				LOGGER.info("Exception during event processing: ", (Throwable) ex);
 			}
+			LOGGER.info("end: insert()");
+			
 			return map;
 		}
 		private static KnowledgeBase getKnowledgeBase()

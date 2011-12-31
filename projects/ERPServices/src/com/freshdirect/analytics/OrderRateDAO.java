@@ -267,9 +267,9 @@ public class OrderRateDAO {
 	public static Map<DateRangeVO,  Map<String, Integer>> getOrderCount(Connection conn, Date minDate)
 	{
 		long starttime = System.currentTimeMillis();
+		String zone = null;
 		Map<DateRangeVO,  Map<String, Integer>> orderCountMap = new HashMap<DateRangeVO,  Map<String, Integer>>();
-		
-		PreparedStatement ps =null;ResultSet rs = null;float orderCount = 0;
+		PreparedStatement ps =null;ResultSet rs = null;Integer orderCount = 0;
 		try {
 			ps = conn.prepareStatement(CURRENT_ORDER_COUNT);
 			ps.setDate(1, new java.sql.Date(minDate.getTime()));
@@ -277,10 +277,21 @@ public class OrderRateDAO {
 			
 			while(rs.next())
 			{
-				DateRangeVO range = new DateRangeVO(rs.getTimestamp("timeslot_start"), rs.getTimestamp("timeslot_end"));
-				Map<String, Integer> zoneMap = new HashMap<String, Integer>();
-				zoneMap.put(rs.getString("zone"), rs.getInt("oCount"));
-				orderCountMap.put(range, zoneMap);
+			DateRangeVO range = new DateRangeVO(rs.getTimestamp("timeslot_start"), rs.getTimestamp("timeslot_end"));
+			zone = rs.getString("zone");
+			orderCount = rs.getInt("oCount");
+			
+			if(orderCountMap.get(range)!=null)
+			{
+				
+					orderCountMap.get(range).put(zone, orderCount);
+			}
+			else
+			{
+					HashMap zoneMap = new HashMap();
+					zoneMap.put(zone, orderCount);
+					orderCountMap.put(range,zoneMap);
+			}
 			}
 		}catch (Exception e) {
 			// TODO Auto-generated catch block
