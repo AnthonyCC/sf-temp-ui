@@ -43,14 +43,14 @@ public class TimeslotEventDAO {
 		
 	private static final String TIMESLOT_EVENT_DETAIL_QRY = "SELECT * FROM MIS.TIMESLOT_EVENT_DTL WHERE TIMESLOT_LOG_ID = ?";
 	
-	private static final String EVENTS_QRY = "select * from MIS.session_event s where s.logout_time between ? and ?  and last_get_timeslot is not null";
+	private static final String EVENTS_QRY = "select * from MIS.session_event s where s.logout_time between SYSDATE-1/48 AND SYSDATE  and last_get_timeslot is not null";
 	
 	private static final String TIMESLOT_EVENTS_CUSTOMER_QRY = " select * from MIS.timeslot_event_hdr where id in  (select max(to_number(id)) from MIS.timeslot_event_hdr where event_dtm" +
 	" between to_date(?,  'MM-DD-YYYY HH12:MI:SS AM') and to_date(?,  'MM-DD-YYYY HH12:MI:SS AM') and customer_id = ? and " +
 	"transactionsource = 'WEB' group by eventtype)";
 	
 	private static final String ORDER_EVENTS_QRY = "SELECT S.ID, S.CUSTOMER_ID, S.CROMOD_DATE, SA.REQUESTED_DATE FROM cust.sale s, cust.salesaction sa, MIS.SESSION_EVENT se" +
-			" WHERE s.ID=sa.SALE_ID AND se.CUSTOMER_ID = s.CUSTOMER_ID AND se.LOGOUT_TIME BETWEEN ? AND ? " +
+			" WHERE s.ID=sa.SALE_ID AND se.CUSTOMER_ID = s.CUSTOMER_ID AND se.LOGOUT_TIME BETWEEN SYSDATE-1/48 AND SYSDATE " +
 			" AND s.CUSTOMER_ID=sa.CUSTOMER_ID AND s.CROMOD_DATE=sa.ACTION_DATE AND s.CROMOD_DATE BETWEEN se.LOGIN_TIME AND se.LOGOUT_TIME " +
 			"AND sa.ACTION_TYPE IN ('CRO','MOD') AND sa.REQUESTED_DATE > TRUNC(SYSDATE)" +
 			" AND s.type='REG'";
