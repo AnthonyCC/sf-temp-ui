@@ -63,6 +63,8 @@ public class TimeslotEventDAO {
 	{
 		PreparedStatement ps = null; ResultSet rs = null;
 		List events = new ArrayList();
+		LOGGER.warn("startTime"+startTime);
+		LOGGER.warn("endTime"+endTime);
 		
 		try
 		{
@@ -90,7 +92,7 @@ public class TimeslotEventDAO {
 		
 		}
 		catch(SQLException e)
-		{
+		{	e.printStackTrace();
 			LOGGER.warn("Exception while getEvents  ", e);
 		}
 		finally
@@ -102,6 +104,7 @@ public class TimeslotEventDAO {
 			}
 			catch(SQLException e)
 			{
+				e.printStackTrace();
 				LOGGER.warn("Exception while cleaning up   ", e);
 			}
 		}
