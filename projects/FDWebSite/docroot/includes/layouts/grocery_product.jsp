@@ -362,8 +362,19 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
         pageNumber = 1;
 }
 %>
-<table border="0" cellspacing="0" cellpadding="0" width="<%=W_GROCERY_PRODUCT%>">
+<%
+	/* AD spot row */
+	if (FDStoreProperties.isAdServerEnabled()) {
+%>
+    <div id="adRow">
+        <script type="text/javascript">
+        	OAS_AD('ProductNote');
+        </script>
+    </div>
+<% } %>
+<% /* where is the END tag for this "form"? */ %>
 <form name="groceryForm" id='grocery_form' method="POST">
+<table border="0" cellspacing="0" cellpadding="0" width="<%=W_GROCERY_PRODUCT%>">
 <%
 //If there is a specific product selected then show it above the listings here
 //lets get the product with the product cod in the section, display this product, then the rest of the products
@@ -372,15 +383,6 @@ if(productCode!=null && prodCatId !=null ) {
         Image bigProductImage = null;
 
 %>
-<%if (FDStoreProperties.isAdServerEnabled()) {%>
-<tr><td colspan="3">
-        <SCRIPT LANGUAGE=JavaScript>
-        <!--
-        OAS_AD('ProductNote');
-        //-->
-        </SCRIPT>
-</td></tr>
-<%}%>
   <fd:ProductGroup id='productNode' categoryId='<%= prodCatId %>' productId='<%= productCode %>'>
 <%
 
@@ -885,15 +887,34 @@ if (brandLogo !=null) {
 	if (FDStoreProperties.isAdServerEnabled()) {
 %>
     <div id="adRow">
-        <SCRIPT LANGUAGE=JavaScript>
-        <!--
-        OAS_AD('CategoryNote');
-        -->
-        </SCRIPT>
+        <script type="text/javascript">
+        	OAS_AD('CategoryNote');
+        </script>
     </div>
 <% } %>
 <br />
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_GROCERY_PRODUCT%>">
+
+<%
+//
+// EDITORIAL PARTIAL
+//
+
+Html editorialMedia = currentFolder.getEditorial();
+if (doRenderEditorialPartial && editorialMedia != null && !editorialMedia.isBlank()) {
+%>
+<tr>
+    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td>
+</tr>
+<tr>
+    <td colspan="2"><fd:IncludeMedia name='<%=editorialMedia.getPath()%>'/></td>
+</tr>
+<tr>
+    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td>
+</tr>
+<%
+	}
+%>
 
 <tr id="headerRow" valign="bottom">
     <td colspan="2" style="padding-bottom: 10px;"><%
@@ -947,29 +968,6 @@ if (brandLogo !=null) {
     </td>
 </tr>
 
-<%
-//
-// EDITORIAL PARTIAL
-//
-
-Html editorialMedia = currentFolder.getEditorial();
-if (doRenderEditorialPartial && editorialMedia != null && !editorialMedia.isBlank()) {
-%>
-<tr>
-    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td>
-</tr>
-<tr>
-    <td colspan="2"><fd:IncludeMedia name='<%=editorialMedia.getPath()%>'/></td>
-</tr>
-<tr>
-    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td>
-</tr>
-<tr>
-    <td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-</tr>
-<%
-	}
-%>
 <tr>
     <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
 </tr>
