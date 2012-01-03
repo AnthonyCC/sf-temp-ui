@@ -1,3 +1,8 @@
+/*
+	Please execute the below in order
+*/
+
+
 /*Trn_Faciility_type*/
 CREATE TABLE TRANSP.TRN_FACILITYTYPE
 (
