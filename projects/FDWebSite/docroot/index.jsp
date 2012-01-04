@@ -17,8 +17,6 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 
 
-<fd:css href="/assets/css/homepage/homepage.css"/>
-
 	
 	
 <% //expanded page dimensions
@@ -43,6 +41,8 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	<tmpl:put name='title' direct='true'>Welcome to FreshDirect</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 
+
+<fd:css href="/assets/css/homepage/homepage.css"/>
 <fd:GetSegmentMessage id='segmentMessage' user="<%=user%>">
 
 <%
