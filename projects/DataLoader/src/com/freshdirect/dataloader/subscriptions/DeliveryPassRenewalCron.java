@@ -52,6 +52,7 @@ import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
@@ -59,6 +60,7 @@ import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
+import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.DateUtil;
@@ -164,6 +166,8 @@ public class DeliveryPassRenewalCron {
 				if(isExpiredCC(lastOrder.getPaymentMethod())) {
 					LOGGER.warn("Unable to find payment method for autoRenewal order for customer :"+erpCustomerID);
 					createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_CC_EXPIRED);
+					FDCustomerInfo customerInfo=FDCustomerManager.getCustomerInfo(identity);
+					FDEmailFactory.getInstance().createAutoRenewDPCCExpiredEmail(customerInfo);
 				} else if(exists(lastOrder.getPaymentMethod(),pymtMethods)) {
 					try {
 						user=FDCustomerManager.getFDUser(identity);

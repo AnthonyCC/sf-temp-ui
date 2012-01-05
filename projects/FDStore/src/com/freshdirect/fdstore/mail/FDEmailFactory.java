@@ -1118,4 +1118,16 @@ public class FDEmailFactory {
 		return list;
 	}*/
 	
+	public XMLEmailI createAutoRenewDPCCExpiredEmail(FDCustomerInfo customer) {
+		FDInfoEmail email = new FDInfoEmail(customer);
+
+		email.setXslPath("h_ar_ccexpire_v1.xsl", "x_ar_ccexpire_v1.xsl");
+
+		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
+
+		email.setSubject("We were unable to renew your FreshDirect DeliveryPass");
+
+		return email;
+	}
+	
 }
