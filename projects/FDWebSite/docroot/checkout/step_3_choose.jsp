@@ -194,7 +194,7 @@ final int W_CHECKOUT_STEP_3_CHOOSE_TOTAL = 970;
 										Discount discount = discountLine.getDiscount();
 									%>
 								<tr>
-									<td align="left" style="color:#669933;font-weight:bold;">Delivery Discount:</td>
+									<td align="left" style="color:#669933;font-weight:bold;">Promotion Discount:</td>
 									<td align="right" style="color:#669933;font-weight:bold;">-<%= JspMethods.formatPrice(discount.getAmount()) %></td>
 								</tr>
 						<%}	}%>
@@ -401,7 +401,7 @@ if(isPaymentRequired) {
 										Discount discount = discountLine.getDiscount();
 									%>
 								<tr>
-									<td align="left" style="color:#669933;font-weight:bold;">Delivery Discount:</td>
+									<td align="left" style="color:#669933;font-weight:bold;">Promotion Discount:</td>
 									<td align="right" style="color:#669933;font-weight:bold;">-<%= JspMethods.formatPrice(discount.getAmount()) %></td>
 								</tr>
 						<%}	}%>

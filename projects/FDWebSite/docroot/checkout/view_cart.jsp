@@ -201,7 +201,7 @@ StringBuffer buffer = new StringBuffer(
 										Discount discount = discountLine.getDiscount();
 								%>
 							<tr>
-								<td align="left" style="color:#669933;font-weight:bold;">Delivery Discount:</td>
+								<td align="left" style="color:#669933;font-weight:bold;">Promotion Discount:</td>
 								<td align="right" style="color:#669933;font-weight:bold;padding-left:4px;">-<%= JspMethods.formatPrice(discount.getAmount()) %></td>
 							</tr>
 				<%}	}%>
