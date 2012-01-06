@@ -47,7 +47,7 @@ final int W_WINE_PRODUCT_RIGHT = 314;
 
     CategoryModel parentCat = (CategoryModel)productNode.getParentNode();
     ContentNodeModel aliasNode = parentCat.getAlias();
-    String alignment="align=\"right\"";
+    String alignment="align=\"left\"";
     String prodPageRatingStuff = getProdPageRatings(productNode,response); // get and format the product page ratings
 %>
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_WINE_PRODUCT_TOTAL%>">
