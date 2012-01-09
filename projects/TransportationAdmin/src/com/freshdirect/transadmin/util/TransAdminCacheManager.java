@@ -39,7 +39,7 @@ public class TransAdminCacheManager {
 			} catch (SapException e) {
 				LOGGER.error("Could not load load Referral program due to: ", e);
 			}
-			return Collections.EMPTY_LIST;
+			return Collections.EMPTY_MAP;
 		}
 	};
 
@@ -163,12 +163,16 @@ public class TransAdminCacheManager {
 //		System.out.println("refreshing crap truck data");
 
 		if(EnumCachedDataType.TRUCK_DATA.equals(dataType)){
-			truckDataHolder.forceRefresh();
+			if(!(truckDataHolder.getLastRefresh() < TransportationAdminProperties.getEmployeeCacheMinExpiryTime()))
+				truckDataHolder.forceRefresh();
 		}
 		if(EnumCachedDataType.EMPLOYEE_DATA.equals(dataType)){
-			employeeDataHolder.forceRefresh();
-			activeInactivedEmployeeDataHolder.forceRefresh();
-			terminatedEmployeeDataHolder.forceRefresh();
+			if(!(employeeDataHolder.getLastRefresh() < TransportationAdminProperties.getEmployeeCacheMinExpiryTime()))
+				employeeDataHolder.forceRefresh();
+			if(!(activeInactivedEmployeeDataHolder.getLastRefresh() < TransportationAdminProperties.getEmployeeCacheMinExpiryTime()))
+				activeInactivedEmployeeDataHolder.forceRefresh();
+			if(!(terminatedEmployeeDataHolder.getLastRefresh() < TransportationAdminProperties.getEmployeeCacheMinExpiryTime()))
+				terminatedEmployeeDataHolder.forceRefresh();
 		}
 
 	}
@@ -188,7 +192,7 @@ public class TransAdminCacheManager {
 		return (List)manager.getKronosActiveInactiveEmployees();
 	}
 
-	public List loadAllTruckData() throws SapException{
+	public Map<String, ErpTruckMasterInfo> loadAllTruckData() throws SapException{
 		SapTruckMasterInfo truckInfos = new SapTruckMasterInfo();
 
 		truckInfos.execute();
@@ -218,13 +222,10 @@ public class TransAdminCacheManager {
 
 	public ErpTruckMasterInfo getTruckMasterInfo(String truckNumber)
 	{
-		List trkList = (List) this.truckDataHolder.get();
+		Map trkList = (Map) this.truckDataHolder.get();
 		if(trkList==null) return null;
-		for(int i=0;i<trkList.size();i++){
-			ErpTruckMasterInfo info=(ErpTruckMasterInfo)trkList.get(i);
-			if(info.getTruckNumber().equalsIgnoreCase(truckNumber))
-				return info;
-		}
+		if(trkList.containsKey(truckNumber))
+			return (ErpTruckMasterInfo) trkList.get(truckNumber);
 		return null;
 	}
 

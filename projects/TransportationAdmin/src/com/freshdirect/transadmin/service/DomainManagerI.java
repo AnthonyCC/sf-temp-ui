@@ -4,13 +4,13 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.dao.DataAccessException;
 
 import com.freshdirect.customer.ErpTruckMasterInfo;
 import com.freshdirect.transadmin.model.DispositionType;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
-import com.freshdirect.transadmin.model.IssueLog;
 import com.freshdirect.transadmin.model.IssueSubType;
 import com.freshdirect.transadmin.model.IssueType;
 import com.freshdirect.transadmin.model.MaintenanceIssue;
@@ -23,7 +23,6 @@ import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.VIRRecord;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
-import com.freshdirect.transadmin.web.model.WebSchedule;
 
 public interface DomainManagerI extends BaseManagerI {
 	
@@ -176,4 +175,6 @@ public interface DomainManagerI extends BaseManagerI {
 	void saveMaintenanceIssue(MaintenanceIssue model);
 	
 	void updateDisassociatedTimeslots();
+	
+	Map getZoneByIDs(Set ids);
 }

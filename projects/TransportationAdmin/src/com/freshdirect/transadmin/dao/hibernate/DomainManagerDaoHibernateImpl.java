@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -495,5 +496,23 @@ public class DomainManagerDaoHibernateImpl
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from EmployeeTruckPreference tp where tp.id.kronosId ='").append(empId).append("'");
 		return (Collection) getHibernateTemplate().find(strBuf.toString());		
+	}
+
+	public Map findByIDs(Set ids)
+	{
+
+	String hql = "from Zone where zoneCode in (:listParam)";
+	String[] params = { "listParam" };
+	Object[] values = { ids};
+	List<Zone> zoneList = getHibernateTemplate().findByNamedParam(hql, params, values);
+	return convertListToMap(zoneList);
+	}
+	private Map convertListToMap(List<Zone> zoneList)
+	{
+	Map<String,Zone> map = new HashMap<String,Zone>();
+	for (Zone zone : zoneList) 
+		map.put(zone.getZoneCode(), zone);
+	return map;
+			
 	}
 }

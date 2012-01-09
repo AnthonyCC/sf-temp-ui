@@ -2,8 +2,8 @@ package com.freshdirect.transadmin.dao;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.dao.DataAccessException;
 
@@ -142,5 +142,7 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 	Collection getEmployeeTruckPreference(String empId) throws DataAccessException;
 
 	Collection getEmployeesByRoleTypeAndSubRoleType(String roleTypeId, String subRoleTypeId)throws DataAccessException;
+	
+	Map findByIDs(Set ids) throws DataAccessException;
 
 }

@@ -126,6 +126,10 @@ public class DomainManagerImpl
 		return getDomainManagerDao().getZone(id);	
 	}
 	
+	public Map getZoneByIDs(Set ids)  {
+		return getDomainManagerDao().findByIDs(ids);	
+	}
+	
 	public TrnAdHocRoute getAdHocRoute(String id)  {
 		return getDomainManagerDao().getAdHocRoute(id);	
 	}

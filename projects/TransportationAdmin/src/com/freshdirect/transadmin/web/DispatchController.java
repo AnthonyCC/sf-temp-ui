@@ -1189,13 +1189,36 @@ public class DispatchController extends AbstractMultiActionController {
 				htInData=dispatchManagerService.getHTInScan(dispDateTemp);
 				htOutData=dispatchManagerService.getHTOutScan(dispDateTemp);
 			}
-				
+			
+		//collect all the distinct zones in the dispatch and get the zone models
 		Iterator iter = dispatchList.iterator();
+		Dispatch dispatch = null;
+		Set zones = new HashSet();
+		while(iter.hasNext())
+		{
+			dispatch = (Dispatch) iter.next();
+			if(dispatch.getZone() != null) {
+				zones.add(dispatch.getZone().getZoneCode());
+			}
+		}
+		Map<String, Zone> zonesMap =null;
+		if(zones!=null && zones.size()>0)
+		{
+			 zonesMap = domainManagerService.getZoneByIDs(zones);
+		}
+		iter = dispatchList.iterator();
+		Set resourceIds = new HashSet();
+		while(iter.hasNext())
+			{
+			dispatch = (Dispatch) iter.next();
+			resourceIds.add(dispatch.getDispatchResources());
+			}
+		iter = dispatchList.iterator();
 			while(iter.hasNext()){
-				Dispatch dispatch = (Dispatch) iter.next();
+				dispatch = (Dispatch) iter.next();
 				Zone zone=null;
 				if(dispatch.getZone() != null) {
-					zone=domainManagerService.getZone(dispatch.getZone().getZoneCode());
+					zone=zonesMap.get(dispatch.getZone().getZoneCode());
 				}
 				DispatchCommand command = DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService,punchInfo,htInData,htOutData);
 				command.setTermintedEmployees(termintedEmployees);
