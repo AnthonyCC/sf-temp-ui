@@ -16,6 +16,10 @@ import com.freshdirect.customer.ErpTruckMasterInfo;
 import com.freshdirect.sap.bapi.BapiFactory;
 import com.freshdirect.sap.bapi.BapiTruckMasterInfo;
 import com.freshdirect.sap.ejb.SapException;
+import com.freshdirect.sap.jco.JcoManager;
+import com.sap.mw.jco.IFunctionTemplate;
+import com.sap.mw.jco.JCO;
+import com.sap.mw.jco.JCO.Function;
 
 /**
  *
@@ -26,7 +30,7 @@ import com.freshdirect.sap.ejb.SapException;
 public class SapTruckMasterInfo extends SapCommandSupport {
 	
 	
-	private List truckInfoDetails;
+	private Map<String, ErpTruckMasterInfo> truckMap;
 	
 	public SapTruckMasterInfo() {
 		//this.orderIdList = orderIdList;		
@@ -38,19 +42,12 @@ public class SapTruckMasterInfo extends SapCommandSupport {
 		BapiTruckMasterInfo bapi = BapiFactory.getInstance().getBapiTruckMasterInfoBuilder();
 		//bapi.addRequest(new Date());
 		this.invoke(bapi);
-		truckInfoDetails=new ArrayList();
-		Map truckMap = bapi.getTruckMasterInfo();
-		String truckNumber[]=(String[])truckMap.get("truckNumbers");
-		String truckType[]=(String[])truckMap.get("truckTypes");
-		String truckLicencePlate[]=(String[])truckMap.get("truckLicencePlates");
-		String location[]=(String[])truckMap.get("location");
-		for(int i=0;i<truckNumber.length;i++){									
-			ErpTruckMasterInfo info=new ErpTruckMasterInfo(bapi.getTruckNumber(i),bapi.getTruckType(i),bapi.getTruckLicencePlate(i),bapi.getTruckLocation(i));
-			truckInfoDetails.add(info);
-		}
+		truckMap = bapi.getTruckMasterInfo();
+		
 	}
 	
-	public List getTruckMasterInfos() {
-		return truckInfoDetails;
+	public Map<String, ErpTruckMasterInfo> getTruckMasterInfos() {
+		return truckMap;
 	}
+
 }
