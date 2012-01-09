@@ -200,7 +200,13 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
 			</tr>
 		   </table>
 	  	   <img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br>
+	  	   <% String app = (String)session.getAttribute(SessionName.APPLICATION);
+    		  boolean isCRM = "CALLCENTER".equalsIgnoreCase(app);%>
+    	   <% if(!isCRM){ %>	  
 	  	   <a href="<%=response.encodeURL("category.jsp?catId=" + featProdCat)%>" class="text12"><strong>Click here for more...</strong></a>
+	  	   <% }else{ %>
+	  	   <a href="<%=response.encodeURL("build_order_browse.jsp?catId=" + featProdCat)%>" class="text12"><strong>Click here for more...</strong></a>
+	  	   <% } %>
 <%		} else if (featuredSources!=null && !featuredSources.isEmpty() ){ //end of if featureProducts  
 	            int itmCount = 0;       %>
 		   <img src="/media/images/navigation/department/recipes/rechome/rechm_fave_coookbooks2.gif" width="195" height="28"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10">
