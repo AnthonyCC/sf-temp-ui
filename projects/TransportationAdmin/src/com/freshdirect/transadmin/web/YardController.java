@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.transadmin.constants.EnumParkingSlotBarcodeStatus;
+import com.freshdirect.transadmin.constants.EnumParkingSlotPavedStatus;
 import com.freshdirect.transadmin.model.ParkingLocation;
 import com.freshdirect.transadmin.model.ParkingSlot;
 import com.freshdirect.transadmin.service.IYardManagerService;
@@ -54,8 +55,8 @@ public class YardController extends AbstractMultiActionController {
 		}
 		Collections.sort(locations, new ParkingLocationComparator());
 		mav.getModel().put("parkingLocs", locations);
-		mav.getModel().put("parkingSlotStatus", EnumParkingSlotBarcodeStatus.getEnumList());
-				
+		mav.getModel().put("parkingSlotBarcodeStatus", EnumParkingSlotBarcodeStatus.getEnumList());
+		mav.getModel().put("parkingSlotPavedStatus", EnumParkingSlotPavedStatus.getEnumList());
 		return mav;
 	}
 	

@@ -22,15 +22,17 @@
       	  
     	var _slotNumber = YAHOO.util.Dom.get("slotNumber").value;
 	var _slotDesc = YAHOO.util.Dom.get("slotDesc").value;
-	var _slotStatus = YAHOO.util.Dom.get("slotStatus").value;
+	var _slotBarcodeStatus = YAHOO.util.Dom.get("slotBarcodeStatus").value;
+	var _slotPavedStatus = YAHOO.util.Dom.get("slotPavedStatus").value;
        	var _slotLocation = YAHOO.util.Dom.get("plocation").value;
        	 
 
-	if(_slotNumber.trim().length == 0 || _slotLocation.trim().length == 0 || _slotStatus.trim().length == 0) {
+	if(_slotNumber.trim().length == 0 || _slotLocation.trim().length == 0 || _slotBarcodeStatus.trim().length == 0
+		|| _slotPavedStatus.trim().length == 0) {
       		addParkingSlotSysMessage("Please enter the required values", true);
       	} else {
 		var result = yardMngRpcClient.AsyncYardProvider.addParkingSlot(sendLabelFormCallback
-											, _slotNumber, _slotDesc, _slotStatus, _slotLocation);  
+											, _slotNumber, _slotDesc, _slotBarcodeStatus, _slotPavedStatus, _slotLocation);  
 	}
       }
 
@@ -88,11 +90,22 @@
                     		</td>
 		         </tr>
 			 <tr>
-		                  <td>Status</td>
+		                  <td>Barcode status</td>
 		                  <td>
-					<select id="slotStatus" name="slotStatus" >
+					<select id="slotBarcodeStatus" name="slotBarcodeStatus" >
 		                  		<option value='<c:out value=""/>'>--Please Select</option>
-					 	<c:forEach var="sStatus" items="${parkingSlotStatus}">
+					 	<c:forEach var="sStatus" items="${parkingSlotBarcodeStatus}">
+							<option value='<c:out value="${sStatus.name}"/>'><c:out value="${sStatus.name}"/></option>
+			        		</c:forEach>
+					</select>
+                    		</td>
+		         </tr>
+			 <tr>
+		                  <td>Paved status</td>
+		                  <td>
+					<select id="slotPavedStatus" name="slotPavedStatus" >
+		                  		<option value='<c:out value=""/>'>--Please Select</option>
+					 	<c:forEach var="sStatus" items="${parkingSlotPavedStatus}">
 							<option value='<c:out value="${sStatus.name}"/>'><c:out value="${sStatus.name}"/></option>
 			        		</c:forEach>
 					</select>

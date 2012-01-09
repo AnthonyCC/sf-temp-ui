@@ -30,7 +30,6 @@ import com.freshdirect.transadmin.model.ParkingLocation;
 import com.freshdirect.transadmin.model.ParkingSlot;
 import com.freshdirect.transadmin.model.RouteInfo;
 import com.freshdirect.transadmin.model.UPSRouteInfo;
-import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.IYardManagerService;
 import com.freshdirect.transadmin.service.ZoneManagerI;
@@ -111,14 +110,14 @@ public class YardProviderController extends BaseJsonRpcController  implements IY
 		return locations;
 	}
 	
-	public String addParkingSlot(String slotNum, String slotDesc, String status, String parkingLocName){
+	public String addParkingSlot(String slotNum, String slotDesc, String barcodeStatus, String pavedStatus,String parkingLocName){
 		
 		Map<String, ParkingLocation> locationMap = yardManagerService.getParkingLocation();
 		ParkingLocation location = locationMap.get(parkingLocName);
 		StringBuffer exceptionStr = new StringBuffer();
 		try{
 			if(location != null){
-				ParkingSlot slot = new ParkingSlot(slotNum, slotDesc, location, status);
+				ParkingSlot slot = new ParkingSlot(slotNum, slotDesc, location, barcodeStatus, pavedStatus);
 				yardManagerService.addParkingSlot(slot);
 			}
 		} catch (TransAdminServiceException e){

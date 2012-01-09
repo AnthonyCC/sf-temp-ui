@@ -23,6 +23,8 @@ import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.object.BatchSqlUpdate;
 
 import com.freshdirect.transadmin.constants.EnumAssetStatus;
+import com.freshdirect.transadmin.constants.EnumParkingSlotBarcodeStatus;
+import com.freshdirect.transadmin.constants.EnumParkingSlotPavedStatus;
 import com.freshdirect.transadmin.dao.IYardManagerDAO;
 import com.freshdirect.transadmin.model.ParkingLocation;
 import com.freshdirect.transadmin.model.ParkingSlot;
@@ -44,7 +46,7 @@ public class YardManagerDAO implements IYardManagerDAO   {
 	private static final String CLEAR_PARKINGLOCATION = "DELETE FROM TRANSP.PARKING_LOCATION WHERE LOCATION_NAME in ( ";
 	
 	private static final String INSERT_PARKING_SLOT = "INSERT INTO TRANSP.PARKING_LOCATIONSLOT "
-		+" ( SLOT_NUMBER, SLOT_DESCRIPTION, STATUS, PARKINGLOCATION_ID ) VALUES ( ?,?,?,? ) ";
+		+" ( SLOT_NUMBER, SLOT_DESCRIPTION, BARCODE_STATUS, PAVED_STATUS, PARKINGLOCATION_ID ) VALUES ( ?,?,?,? ) ";
 	
 	private static final String GET_PARKINGLOCATION_SLOTS = "SELECT * FROM TRANSP.PARKING_LOCATION PL, TRANSP.PARKING_LOCATIONSLOT PLS "
 		+ " where PL.LOCATION_NAME = PLS.PARKINGLOCATION_ID ";
@@ -140,11 +142,12 @@ public class YardManagerDAO implements IYardManagerDAO   {
 			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));	
 			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));	
 			
 			batchUpdater.compile();			
 			connection = this.jdbcTemplate.getDataSource().getConnection();
-			batchUpdater.update(new Object[]{ slot.getSlotNumber(), slot.getSlotDesc(), slot.getStatus()
+			batchUpdater.update(new Object[]{ slot.getSlotNumber(), slot.getSlotDesc(), slot.getBarcodeStatus(), slot.getPavedStatus() 
 														, slot.getLocation().getLocationName()});
 			
 			batchUpdater.flush();
@@ -177,10 +180,9 @@ public class YardManagerDAO implements IYardManagerDAO   {
 						ParkingSlot slot = new ParkingSlot();
 						slot.setSlotNumber(rs.getString("SLOT_NUMBER"));
 						slot.setSlotDesc(rs.getString("SLOT_DESCRIPTION"));
-						slot.setStatus(rs.getString("STATUS"));
-						slot.setLocation(new ParkingLocation(rs
-								.getString("LOCATION_NAME"), rs
-								.getString("LOCATION_DESCRIPTION")));
+						slot.setBarcodeStatus(EnumParkingSlotBarcodeStatus.getEnum(rs.getString("BARCODE_STATUS")).getName());
+						slot.setPavedStatus(EnumParkingSlotPavedStatus.getEnum(rs.getString("PAVED_STATUS")).getName());
+						slot.setLocation(new ParkingLocation(rs.getString("LOCATION_NAME"), rs.getString("LOCATION_DESCRIPTION")));
 						result.add(slot);
 					} while (rs.next());
 				}

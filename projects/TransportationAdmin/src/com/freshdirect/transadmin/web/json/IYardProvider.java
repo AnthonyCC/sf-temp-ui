@@ -13,7 +13,7 @@ public interface IYardProvider {
 	
 	boolean addParkingLocation(String[][] location);
 	
-	String addParkingSlot(String slotNum, String slotDesc, String status, String parkingLocName);
+	String addParkingSlot(String slotNum, String slotDesc, String barcodeStatus, String pavedStatus, String parkingLocName);
 	
 	List<ParkingSlot> getParkingSlot(String parkingLocName);
 	
