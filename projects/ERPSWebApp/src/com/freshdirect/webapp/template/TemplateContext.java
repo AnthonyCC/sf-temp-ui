@@ -3,6 +3,7 @@ package com.freshdirect.webapp.template;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -38,6 +39,7 @@ import com.freshdirect.fdstore.content.RecipeCategory;
 import com.freshdirect.fdstore.content.RecipeSubcategory;
 import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
+import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.content.BaseTemplateContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.fdstore.display.GetContentNodeWebIdTag;
@@ -51,6 +53,7 @@ import com.freshdirect.webapp.util.ProductImpression;
 public class TemplateContext extends BaseTemplateContext{
 	
 	private PricingContext pricingContext;
+	private List<PricingContext> pricingContexts = getPricingContexts();
 
 	private final static Image IMAGE_BLANK = new Image("/media_stat/images/layout/clear.gif", 1, 1);
 
@@ -64,6 +67,24 @@ public class TemplateContext extends BaseTemplateContext{
 		super();
 	}
 	
+	private List<PricingContext> getPricingContexts() {
+		List<PricingContext> pricingContexts = new ArrayList<PricingContext>();
+		try {
+			Collection<String> zones =FDZoneInfoManager.loadAllZoneInfoMaster();
+			if(null != zones && !zones.isEmpty()){
+				for (Iterator iterator = zones.iterator(); iterator.hasNext();) {
+					String zone = (String) iterator.next();
+					PricingContext context = new PricingContext(zone);
+					pricingContexts.add(context);
+				}
+			}
+		} catch (FDResourceException e) {
+			LOGGER.error("Failed to get all pricing zones:"+e);
+		}
+		
+		return pricingContexts;
+	}
+
 	/**
 	 * Create a template context with additional rendering parameters.
 	 * 
@@ -150,7 +171,52 @@ public class TemplateContext extends BaseTemplateContext{
 			return ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode(id));
 		}
 	}
+	
+	public ContentNodeModel getNode(String id,PricingContext pricingContext) {
+		ContentNodeModel node = null;
+		if (id.startsWith("Product:")) {
+			int sep = id.indexOf('@');
+			if (sep!=-1) {
+				String prodId = id.substring("Product:".length(), sep);
+				
+				String catId = id.substring(sep+1, id.length());
+				
+				node = ContentFactory.getInstance().getProductByName(catId, prodId);
+				
+				if (node == null) {
+					// not found, fallback to primary home
+					id = id.substring(0, sep);
+				} else {
+					//Return ProductModelPricingAdapter for zone pricing.
+					return ProductPricingFactory.getInstance().getPricingAdapter(((ProductModel)node), pricingContext);
+				}
+			}
+		}
+		if (node != null) {
+			return node;
+		}
 
+		//check for a product model...
+		ContentNodeModel nodePMCheck = ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode(id));
+		if (nodePMCheck != null && nodePMCheck instanceof ProductModel) {
+			//...product model, return back a pricing context
+			return ProductPricingFactory.getInstance().getPricingAdapter(((ProductModel)nodePMCheck), pricingContext);
+		}else{
+			//...not product model, do normal decode
+			return ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode(id));
+		}
+	}
+
+	public Object[] getNodes(String id) {
+		Object[] obj = new Object[pricingContexts.size()];
+		int i=0;
+		for (Iterator<PricingContext> iterator = pricingContexts.iterator(); iterator.hasNext();) {
+			PricingContext pricingContext = (PricingContext) iterator.next();
+			ContentNodeModel node =getNode(id, pricingContext);
+			obj[i++]= node;
+		}
+		return obj;
+	}
 	/**
 	 * Get multiple content nodes by ID.
 	 * 
@@ -182,6 +248,18 @@ public class TemplateContext extends BaseTemplateContext{
 			Map.Entry<String, Object> e = i.next();
 			String contentId = (String) e.getKey();
 			ContentNodeModel node = getNode(contentId);
+			ret.put(node, e.getValue());
+		}		
+		return ret;
+	}
+	
+	public Map<Object[], Object> getNodesMapForAllZones(Map<String, Object> idMap) {		
+		
+		Map<Object[], Object> ret = new LinkedHashMap<Object[], Object>(idMap.size());
+		for (Iterator<Map.Entry<String, Object>> i=idMap.entrySet().iterator(); i.hasNext(); ) {
+			Map.Entry<String, Object> e = i.next();
+			String contentId = (String) e.getKey();
+			Object[] node = getNodes(contentId);
 			ret.put(node, e.getValue());
 		}		
 		return ret;
@@ -308,8 +386,23 @@ public class TemplateContext extends BaseTemplateContext{
 		return l;
 	}
 
+	public Object[][] flattenAll(Map<Object[], Object> map) {
+		Object[][] l = new Object[map.size()][2];
+		int c = 0;
+		for (Iterator<Map.Entry<Object[], Object>> i = map.entrySet().iterator(); i.hasNext(); c++) {
+			Map.Entry<Object[], Object> e =  i.next();
+			l[c] = new Object[] {e.getKey(), e.getValue()};
+		}
+		
+		return l;
+	}
+	
 	public Object[][] magic(Map<String, Object> idMap, int maxItemCount) {		
 		return flatten( retainAvailableMap(getNodesMap(idMap), maxItemCount) );
+	}
+	
+	public Object[][] magicNodes(Map<String, Object> idMap, int maxItemCount) {		
+		return flattenAll( getNodesMapForAllZones(idMap));
 	}
 	
 	
@@ -475,5 +568,74 @@ public class TemplateContext extends BaseTemplateContext{
 			}
 		}
 		return scaleDisplay != null ? scaleDisplay : "";
+	}
+	
+	public String getScalePrice(ContentNodeModel node) {
+		String scaleDisplay = "";
+		if (node.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
+			ProductModel productNode = (ProductModel) node;
+			ProductImpression impression = new ProductImpression(productNode);
+			FDGroup group = impression.getFDGroup(); //Returns if group is associated with any sku linked to this product.
+			if(group != null) {
+				try {
+					MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, impression.getPricingZoneId());
+					if(matPrice != null) {
+							double displayPrice = 0.0;
+							boolean isSaleUnitDiff = false;
+							if(matPrice.getPricingUnit().equals(matPrice.getScaleUnit()))
+								displayPrice = matPrice.getPrice() * matPrice.getScaleLowerBound();
+							else {
+								displayPrice = matPrice.getPrice();
+								isSaleUnitDiff = true;
+							}
+							GroupScalePricing grpPricing = GroupScaleUtil.lookupGroupPricing(group);
+							StringBuffer buf1 = new StringBuffer();
+							if(matPrice.getScaleUnit().equals("LB")) {//Other than eaches append the /pricing unit for clarity.
+								buf1.append( "Any " );
+								buf1.append( quantityFormatter.format( matPrice.getScaleLowerBound() ) );
+								buf1.append(matPrice.getScaleUnit().toLowerCase()).append("s");
+								buf1.append( " " );
+								buf1.append( "of any " );
+								buf1.append( " " );
+								buf1.append( grpPricing.getShortDesc() );
+								buf1.append( " for " );
+								buf1.append( currencyFormatter.format( displayPrice) );
+								buf1.append("/").append(matPrice.getPricingUnit().toLowerCase());
+								buf1.append( "</a>" );
+
+							} else {
+								buf1.append( "Any " );
+								buf1.append( quantityFormatter.format( matPrice.getScaleLowerBound() ) );
+								buf1.append( " " );
+								buf1.append( grpPricing.getShortDesc() );
+								buf1.append( " for " );
+								buf1.append( currencyFormatter.format( displayPrice) );
+								if(isSaleUnitDiff)
+									buf1.append("/").append(matPrice.getPricingUnit().toLowerCase());
+								buf1.append( "</a>" );
+
+							}
+							scaleDisplay= buf1.toString();
+					}
+				} catch (FDResourceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}else{
+				//no group, do the normal scale string fetch
+				PriceCalculator priceCalculator = impression.getProductModel().getPriceCalculator();
+				scaleDisplay = priceCalculator.getTieredPrice(0);
+			}
+		}
+		return scaleDisplay != null ? scaleDisplay : "";
+	}
+	
+	public String getRatingInfo(ContentNodeModel node){
+		String rating ="";
+		if (node.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
+			ProductModel productNode = (ProductModel) node;
+			rating =null!=productNode.getRatingRelatedImage()?productNode.getRatingRelatedImage().toHtml():"";
+		}
+		return rating;
 	}
 }
