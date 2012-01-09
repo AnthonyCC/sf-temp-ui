@@ -62,7 +62,7 @@ final int W_WINE_PRODUCT_RIGHT = 314;
 
 		<TD WIDTH="<%=W_WINE_PRODUCT_CENTER_PADDING%>"><IMG SRC="/media_stat/images/layout/clear.gif" WIDTH="<%=W_WINE_PRODUCT_CENTER_PADDING%>" HEIGHT="1" BORDER="0" HSPACE="0" VSPACE="0"></TD>
 
-		<TD "<%=alignment%>" WIDTH="<%=W_WINE_PRODUCT_RIGHT%>" CLASS="text12">
+		<TD <%=alignment%> WIDTH="<%=W_WINE_PRODUCT_RIGHT%>" CLASS="text12">
                 <img src="/media_stat/images/layout/clear.gif" border="0" width="<%=W_WINE_PRODUCT_RIGHT%>" height="1"><br>
                 <%@ include file="/shared/includes/product/i_show_promo_flag.jspf" %>
 		<%@ include file="/shared/includes/product/i_product.jspf" %>
