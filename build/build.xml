@@ -507,7 +507,7 @@
         </copy>
     </target>
 
-	<target name="build" depends="framework,erpservices,routing,delivery,cms,fdstore,listadmin-lib,ocf,dataloader,erpswebapp,tools,StandingOrdersService" description="Build everything">
+	<target name="build" depends="framework,erpservices,routing,telargo,delivery,cms,fdstore,listadmin-lib,ocf,dataloader,erpswebapp,tools,StandingOrdersService" description="Build everything">
 	</target>
 
 	<target name="jsmin" description="Minimizing javascript files">
@@ -667,6 +667,7 @@
 		   				<pathelement location="${work.dir}/ERPSWebApp.jar"/>
 		   				<pathelement location="${work.dir}/listadmin.jar"/>
 		   				<pathelement location="${work.dir}/RoutingServices.jar"/>
+						<pathelement location="${work.dir}/TelargoServices.jar"/>
 						<pathelement location="${work.dir}/StandingOrdersService.jar"/>
 		   			</classpath>
 				</junit>
