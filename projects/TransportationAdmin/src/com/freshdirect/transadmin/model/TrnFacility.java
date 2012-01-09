@@ -1,5 +1,6 @@
 package com.freshdirect.transadmin.model;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public class TrnFacility implements java.io.Serializable {
@@ -11,6 +12,8 @@ public class TrnFacility implements java.io.Serializable {
 	private String prefix;
 	private BigInteger leadFromTime;
 	private BigInteger leadToTime;
+	private String longitude;
+	private String latitude;
 	
 	private TrnFacilityType trnFacilityType;
 
@@ -76,6 +79,22 @@ public class TrnFacility implements java.io.Serializable {
 
 	public void setLeadToTime(BigInteger leadToTime) {
 		this.leadToTime = leadToTime;
+	}
+	
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
+
+	public String getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
 	}
 
 	public int hashCode() {

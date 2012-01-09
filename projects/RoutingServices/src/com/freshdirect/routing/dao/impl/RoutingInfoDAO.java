@@ -633,20 +633,28 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 	private static final String GET_PLANNEDTRAILERBYDATE_QRY = "select P.PLAN_DATE DISPATCH_DATE, P.REGION, P.START_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.MAX_TIME, P.CUTOFF_DATETIME CUT_OFF, F.FACILITY_CODE, "+ 
 			"F.LEAD_TO_TIME TO_LEADTIME, F.LEAD_FROM_TIME FROM_LEADTIME, F.ROUTING_CODE " +
 			"from transp.plan p, TRANSP.TRN_FACILITY f "+
-			"where P.DESTINATION_FACILITY = F.ID and P.PLAN_DATE = ? and to_char(P.CUTOFF_DATETIME, 'HH:MI AM') = to_char(?, 'HH:MI AM') "+
+			"where P.DESTINATION_FACILITY = F.ID and P.PLAN_DATE = ? "+
 			"and F.FACILITYTYPE_CODE = 'CD' ";
 	
 	public Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> getPlannedTrailerDispatchTree(final Date deliveryDate, final Date cutOff)  throws SQLException {
+
 		//Result Description -> Map<DestinatinFacility, Map<DispatchTIme, Map<CutOffTime, IWaveInstance>>>
 		final Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> result 
 							= new HashMap<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>();
 
+		final StringBuffer updateQ = new StringBuffer();
+		updateQ.append(GET_PLANNEDTRAILERBYDATE_QRY);
+		if(cutOff != null){
+			updateQ.append(" and to_char(P.CUTOFF_DATETIME, 'HH:MI AM') = to_char(?, 'HH:MI AM')");
+		}
 		PreparedStatementCreator creator=new PreparedStatementCreator() {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 			
-			PreparedStatement ps =	connection.prepareStatement(GET_PLANNEDTRAILERBYDATE_QRY);
+			PreparedStatement ps =	connection.prepareStatement(updateQ.toString());
 			ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
-			ps.setTimestamp(2, new Timestamp(cutOff.getTime()));
+			if(cutOff != null){
+				ps.setTimestamp(2, new Timestamp(cutOff.getTime()));
+			}
 			return ps;
 }
 		};

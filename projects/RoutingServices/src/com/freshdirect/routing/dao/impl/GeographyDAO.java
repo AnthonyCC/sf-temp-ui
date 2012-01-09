@@ -114,7 +114,7 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 	private static final String GET_ZONES = "select * from transp.zone z ";
 	
 	private static final String GET_FACILITYS = "select f.FACILITY_CODE CODE, f.ROUTING_CODE ROUTING_CODE, f.PREFIX, f.LEAD_FROM_TIME "
-		+" ,f.LEAD_TO_TIME, f.FACILITYTYPE_CODE FACILITYTYPEMODEL from transp.trn_facility f ";
+		+" ,f.LEAD_TO_TIME, f.FACILITYTYPE_CODE FACILITYTYPE, f.LONGITUDE, f.LATITUDE from transp.trn_facility f ";
 	
 	private static final String INSERT_LOCATION_INFORMATION_NOKEY = "INSERT INTO DLV.DELIVERY_LOCATION ( ID,"+
 																		"APARTMENT, BUILDINGID) VALUES ( "+
@@ -943,7 +943,9 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 					facilityModel.setLeadFromTime(rs.getInt("LEAD_FROM_TIME"));
 					facilityModel.setLeadToTime(rs.getInt("LEAD_TO_TIME"));
 					facilityModel.setPrefix(rs.getString("PREFIX"));
-					facilityModel.setFacilityTypeModel(rs.getString("FACILITYTYPEMODEL"));
+					facilityModel.setLatitude(rs.getString("LATITUDE"));
+					facilityModel.setLongitude(rs.getString("LONGITUDE"));
+					facilityModel.setFacilityTypeModel(rs.getString("FACILITYTYPE"));
 					
 					result.put(facilityModel.getFacilityCode(), facilityModel);				    		
 

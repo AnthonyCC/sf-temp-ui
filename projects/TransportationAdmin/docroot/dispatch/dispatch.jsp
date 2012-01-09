@@ -266,17 +266,17 @@
                   </td>
                   <%} %>
                   <td>
-                    <a href="javascript:directions('ec_table','drivingdirection.do', 10)">
+                    <a href="javascript:directions('ec_table','drivingdirection.do', 11)">
                   		<img src="./images/driving-directions.gif" width="114" height="25" border="0" alt="Driving Directions" title="Driving Directions" />
                   	</a>
                   <td>
                   <td>
-                    <a href="javascript:loadGps('ec_table','gpsadmin.do', 10)">
+                    <a href="javascript:loadGps('ec_table','gpsadmin.do', 11)">
                   		<img src="./images/gpsadmin.gif" border="0" alt="Garmin" title="GPS Admin" />
                   	</a>
                   </td>
                   <td>
-	                    <a href="javascript:loadGpsEx('ec_table','gpsadminex.do', 10)">
+	                    <a href="javascript:loadGpsEx('ec_table','gpsadminex.do', 11)">
 	                  		<img src="./images/copilot.png" border="0" alt="CoPilot" title="CoPilot" />
 	                  	</a>
 	              </td>

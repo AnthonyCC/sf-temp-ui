@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.dao.DataAccessException;
+
 import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
@@ -29,6 +31,7 @@ import com.freshdirect.transadmin.model.ResourceI;
 import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.model.ScribLabel;
+import com.freshdirect.transadmin.model.UPSRouteInfo;
 import com.freshdirect.transadmin.model.WaveInstance;
 import com.freshdirect.transadmin.model.WaveInstancePublish;
 import com.freshdirect.transadmin.service.DispatchManagerI;
@@ -222,9 +225,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	@SuppressWarnings("unchecked")
 	public Collection getDispatchList(String date, String facilityLocation, String zone, String region) {
 		Collection coll = getDispatchManagerDao().getDispatchList(date, facilityLocation, zone, region);
-		if(coll.size() > 0){
-			Dispatch dispatch = (Dispatch) coll.iterator().next();
-		}
+
 		return coll;
 	}
 	
@@ -709,4 +710,11 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		}
 	}
 	
+	public List<UPSRouteInfo> getUPSRouteInfo(Date deliveryDate){
+		return this.getRouteManagerDao().getUPSRouteInfo(deliveryDate);
+	}
+	
+	public Collection getDispatchForRoute(Date dispatchDate, String routeNo){
+		return this.getDispatchManagerDao().getDispatchForRoute(dispatchDate, routeNo);
+	}
 }

@@ -428,6 +428,21 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 		buf.append(originFacility.getName()+" - "+destinationFacility.getName());
 
 		return buf.toString();
-}
+	}
+
+	public void setFacilityS(String facilityS) 	{
+		if(facilityS != null && facilityS.length() > 0){ 
+			originFacility = new TrnFacility();
+			destinationFacility = new TrnFacility();
+			String[] facilityLst = TransStringUtil.splitStringForValue1(facilityS);
+			if(facilityLst != null && facilityLst.length > 0){
+				originFacility.setName(facilityLst[0].trim());
+				destinationFacility.setName(facilityLst[1].trim());
+			}
+		} else {
+			originFacility = null;
+			destinationFacility = null;
+		}
+	} 
 	
 }

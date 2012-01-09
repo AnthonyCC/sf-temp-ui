@@ -12,6 +12,8 @@ public class UPSRouteInfo
 	private Date lastStop;
 	private Date endTime;
 	
+	private Date firstStopTime;
+
 	public long getRouteKey() {
 		return routeKey;
 	}
@@ -48,7 +50,10 @@ public class UPSRouteInfo
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
-	
-	
-	
+	public Date getFirstStopTime() {
+		return firstStopTime;
+	}
+	public void setFirstStopTime(Date firstStopTime) {
+		this.firstStopTime = firstStopTime;
+	}
 }

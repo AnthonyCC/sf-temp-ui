@@ -98,6 +98,10 @@
 	     	<access-uris>capacityanalyzer.do</access-uris>
      	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
      	 </menu>
+     	 <menu id="RUT010" title="Yard Monitor" orientation="LEFT" link="yardmonitor.do">
+	     	<access-uris>yardmonitor.do,parkinglocationslot.do</access-uris>
+     	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+     	 </menu>
      	       	 
 </menu>
 
@@ -153,8 +157,7 @@
 	     <menu id="GEO010" title="Facility" orientation="RIGHT" link="facility.do">
 	     	<access-uris>facility.do,deletefacility.do,editfacility.do,deletefacilitytype.do,editfacilitytype.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
-</menu>
-
+		</menu>
 </menu>
 
 <menu id="MNM004" title="ADMIN" orientation="LEFT" link="">

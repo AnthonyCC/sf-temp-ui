@@ -572,87 +572,87 @@ public class DispatchPlanUtil {
 		//1 ---ready view
 		//2 ---waiting view
 		//3 ---NR view		
-		if(unsorted!=null)
-		{
-			if(mode==1)
-			{
-				List ready=new ArrayList();
-				Iterator unsortedIterator=unsorted.iterator();
+		if (unsorted != null) {
+			if(mode==1) {
+				List ready = new ArrayList();
+				Iterator unsortedIterator = unsorted.iterator();
 				int dispatchCategory = 0;
-				while(unsortedIterator.hasNext())	{
-					DispatchCommand command = (DispatchCommand)unsortedIterator.next();
-					dispatchCategory = categorizeDispatch(command);					
-					if(dispatchCategory == -1&&(command.getStartTime()!=null&&checkReady(command.getStartTime()))
-						&&command.getDispatchStatus()==EnumStatus.EmpReady) 
-					{
+				while (unsortedIterator.hasNext()) {
+					DispatchCommand command = (DispatchCommand) unsortedIterator.next();
+					dispatchCategory = categorizeDispatch(command);
+					if (dispatchCategory == -1
+							&& (command.getStartTime() != null && checkReady(command.getStartTime()))
+							&& command.getDispatchStatus() == EnumStatus.EmpReady) {
 						ready.add(command);
-					}									
+					}
 				}
-				DispatchTimeComparator compare=new DispatchTimeComparator();				
+				DispatchTimeComparator compare = new DispatchTimeComparator();
 				compare.setStatus(true);
-				Collections.sort(ready, compare);				
-				int READY_MAX=TransportationAdminProperties.getMaxReadyView();
-				int n=ready.size();if(n>READY_MAX) n=READY_MAX;
-				List readyTotal=new ArrayList();
-				for(int i=0;i<n;i++ )
-				{
-					DispatchCommand temp=(DispatchCommand)((List)ready).get(i);
-					if(temp.getDispatchStatus()==EnumStatus.EmpReady) temp.setDispatchStatus(EnumStatus.Ready);
+				Collections.sort(ready, compare);
+				int READY_MAX = TransportationAdminProperties.getMaxReadyView();
+				int n = ready.size();
+				if (n > READY_MAX)
+					n = READY_MAX;
+				List readyTotal = new ArrayList();
+				for (int i = 0; i < n; i++) {
+					DispatchCommand temp = (DispatchCommand) ((List) ready)
+							.get(i);
+					if (temp.getDispatchStatus() == EnumStatus.EmpReady)
+						temp.setDispatchStatus(EnumStatus.Ready);
 					readyTotal.add(temp);
 				}
-				Collections.sort(readyTotal,new DispatchReadyViewComparator());
+				Collections.sort(readyTotal, new DispatchReadyViewComparator());
 				return readyTotal;
 			}
 			
-			if(mode==2)
-			{
-				List total=new ArrayList();
-				Iterator unsortedIterator=unsorted.iterator();
+			if (mode == 2) {
+				List total = new ArrayList();
+				Iterator unsortedIterator = unsorted.iterator();
 				int dispatchCategory = 0;
-				while(unsortedIterator.hasNext())	{
-					DispatchCommand command = (DispatchCommand)unsortedIterator.next();
+				while (unsortedIterator.hasNext()) {
+					DispatchCommand command = (DispatchCommand) unsortedIterator.next();
 					dispatchCategory = categorizeDispatch(command);
-					if(dispatchCategory == -1)
-					{
+					if (dispatchCategory == -1) {
 						total.add(command);
-					}									
+					}
 				}
-				DispatchTimeComparator compare=new DispatchTimeComparator();				
+				DispatchTimeComparator compare = new DispatchTimeComparator();
 				compare.setStatus(true);
-				Collections.sort(total, compare);				
-				int READY_MAX=TransportationAdminProperties.getMaxReadyView();
-				int n=total.size();if(n>READY_MAX) n=READY_MAX;				
-				Iterator totalItr=total.iterator();
-				int i=0;
-				while(totalItr.hasNext())
-				{				
-					if(i==n) break;
+				Collections.sort(total, compare);
+				int READY_MAX = TransportationAdminProperties.getMaxReadyView();
+				int n = total.size();
+				if (n > READY_MAX)
+					n = READY_MAX;
+				Iterator totalItr = total.iterator();
+				int i = 0;
+				while (totalItr.hasNext()) {
+					if (i == n)
+						break;
 					i++;
-					DispatchCommand temp=(DispatchCommand)totalItr.next();
-					if((temp.getStartTime()!=null&&checkReady(temp.getStartTime()))
-						&&temp.getDispatchStatus()==EnumStatus.EmpReady	)
-					{
+					DispatchCommand temp = (DispatchCommand) totalItr.next();
+					if ((temp.getStartTime() != null && checkReady(temp
+							.getStartTime()))
+							&& temp.getDispatchStatus() == EnumStatus.EmpReady) {
 						totalItr.remove();
 					}
 				}
-				Collections.sort(total,new DispatchWaitingViewComparator());
+				Collections.sort(total, new DispatchWaitingViewComparator());
 				return total;
 			}
 			
-			if(mode==3)
-			{
-				List dispatched=new ArrayList();
-				Iterator unsortedIterator=unsorted.iterator();
+			if (mode == 3) {
+				List dispatched = new ArrayList();
+				Iterator unsortedIterator = unsorted.iterator();
 				int dispatchCategory = 0;
-				while(unsortedIterator.hasNext())	{
-					DispatchCommand command = (DispatchCommand)unsortedIterator.next();
+				while (unsortedIterator.hasNext()) {
+					DispatchCommand command = (DispatchCommand) unsortedIterator
+							.next();
 					dispatchCategory = categorizeDispatch(command);
-					if(dispatchCategory ==1&&!command.isCheckedIn())
-					{
+					if (dispatchCategory == 1 && !command.isCheckedIn()) {
 						dispatched.add(command);
-					}									
-				}								
-				Collections.sort(dispatched, new DispatchNRViewComparator());					
+					}
+				}
+				Collections.sort(dispatched, new DispatchNRViewComparator());
 				return dispatched;
 			}
 			

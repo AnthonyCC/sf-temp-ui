@@ -395,7 +395,7 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 		//credit fields
 		creditFields.add(new Field(TYPE_INDICATOR, 1, true));
 		creditFields.add(new Field(WEB_ORDER_NUMBER, 35, true));
-		creditFields.add(new Field(WEB_REFERENCE_NUMBER, 10, true));
+		creditFields.add(new Field(WEB_REFERENCE_NUMBER, 20, true));
 		creditFields.add(new Field(CREDIT_MEMO_NUMBER, 10, false));
 		creditFields.add(new Field(CREDIT_AMOUNT, 15, true));
 		creditFields.add(new Field(SALES_ORDER_NUMBER, 10, true));

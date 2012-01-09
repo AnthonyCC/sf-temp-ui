@@ -1,11 +1,12 @@
 package com.freshdirect.transadmin.dao;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.dao.DataAccessException;
+
+import com.freshdirect.transadmin.model.UPSRouteInfo;
 
 public interface RouteManagerDaoI {
 	
@@ -24,4 +25,6 @@ public interface RouteManagerDaoI {
 	Map getHTInScan(Date routeDate) throws DataAccessException;
 	
 	List getDispatchTeamResourcesChanged(Date date, String type, String field) throws DataAccessException;
+
+	List<UPSRouteInfo> getUPSRouteInfo(final Date deliveryDate) throws DataAccessException;
 }

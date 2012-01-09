@@ -492,14 +492,14 @@ public class DispatchCommand extends WebPlanInfo {
 		return null;
 		
 	}
-	public void setUPSRouteInfo(Collection rInfo)
+	public void setUPSRouteInfo(List<UPSRouteInfo> rInfo)
 	{
-		Iterator iterator=rInfo.iterator();			
+		Iterator<UPSRouteInfo> iterator = rInfo.iterator();
 		while (iterator.hasNext()) {
-			UPSRouteInfo upsRouteInfo = (UPSRouteInfo)iterator.next();
+			UPSRouteInfo upsRouteInfo = iterator.next();
 			if (route != null
 					&& route.equalsIgnoreCase(upsRouteInfo.getRouteNumber())) {
-				this.upsRouteInfo=upsRouteInfo;
+				this.upsRouteInfo = upsRouteInfo;
 				break;
 			}
 		}

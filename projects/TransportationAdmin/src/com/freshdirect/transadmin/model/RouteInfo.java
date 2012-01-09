@@ -1,14 +1,12 @@
 package com.freshdirect.transadmin.model;
 
 import java.io.Serializable;
-import java.util.*;
-
-import com.freshdirect.customer.ErpRouteMasterInfo;
 
 public class RouteInfo implements Serializable {
 	private String routeNumber;
 	private boolean adHoc;
 	private String zoneNumber;
+	private String truckNumber;
 	
 	public String getRouteNumber() {
 		return routeNumber;
@@ -35,6 +33,12 @@ public class RouteInfo implements Serializable {
 		}
 		return "";
 		
+	}
+	public String getTruckNumber() {
+		return truckNumber;
+	}
+	public void setTruckNumber(String truckNumber) {
+		this.truckNumber = truckNumber;
 	}
 
 }

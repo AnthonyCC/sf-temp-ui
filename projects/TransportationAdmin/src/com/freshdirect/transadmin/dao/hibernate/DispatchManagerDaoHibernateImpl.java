@@ -277,7 +277,14 @@ public class DispatchManagerDaoHibernateImpl extends
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 
 	}
-
+	public Collection getDispatchForRoute(Date dispatchDate, String routeNo)
+		throws DataAccessException {
+	
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from Dispatch d where d.dispatchDate = ? and d.route = ? ");
+		
+		return (Collection) getHibernateTemplate().find(strBuf.toString(),new Object[] { dispatchDate, routeNo });
+	}
 	public void savePlan(Plan plan) throws DataAccessException {
 
 		if (plan.getPlanId() == null || "".equals(plan.getPlanId())) {

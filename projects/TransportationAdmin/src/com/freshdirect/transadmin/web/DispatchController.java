@@ -38,8 +38,6 @@ import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.extremecomponents.table.core.TableModel;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.customer.ErpRouteMasterInfo;
@@ -48,6 +46,7 @@ import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.routing.model.GeoPoint;
 import com.freshdirect.routing.model.IDeliverySlot;
+import com.freshdirect.routing.model.IFacilityModel;
 import com.freshdirect.routing.model.IGeoPoint;
 import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
@@ -55,6 +54,7 @@ import com.freshdirect.routing.model.IRoutingStopModel;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
+import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
 import com.freshdirect.routing.util.RoutingServicesProperties;
@@ -70,6 +70,7 @@ import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PlanResource;
 import com.freshdirect.transadmin.model.RouteMapping;
 import com.freshdirect.transadmin.model.Scrib;
+import com.freshdirect.transadmin.model.UPSRouteInfo;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.security.SecurityManager;
 import com.freshdirect.transadmin.service.AssetManagerI;
@@ -1093,7 +1094,7 @@ public class DispatchController extends AbstractMultiActionController {
 			else
 				DispatchPlanUtil.setDispatchStatus(dispList, true);
 				
-			Collection upsRouteInfos=UPSDataCacheManager.getInstance().getData(domainManagerService);
+			List<UPSRouteInfo> upsRouteInfos = UPSDataCacheManager.getInstance().getData(dispatchManagerService);
 
 			if (upsRouteInfos != null && upsRouteInfos.size() > 0) {
 				Iterator<DispatchCommand> iterator = dispList.iterator();
@@ -1613,6 +1614,11 @@ public class DispatchController extends AbstractMultiActionController {
 					routingRouteId = (String)_itr.next();
 					_tmpRoute = handOffProxy.getHandOffBatchStopsByRoute(TransStringUtil.getDate(routeDate), routingRouteId, true);
 					if(_tmpRoute != null) {
+						Collection dispatchLst = dispatchManagerService.getDispatchForRoute(TransStringUtil.getDate(routeDate), routingRouteId);
+						if(dispatchLst != null){
+							Dispatch _dispatch = (Dispatch)dispatchLst.toArray()[0];
+							_tmpRoute.setOriginId(_dispatch.getOriginFacility().getName());
+						};
 						directionRoutes.put(routingRouteId, _tmpRoute);
 					} else {
 						Collection routes = domainManagerService.getRouteMapping(TransStringUtil.getServerDate(routeDate), routingRouteId);
@@ -1634,6 +1640,11 @@ public class DispatchController extends AbstractMultiActionController {
 								_tmpRoute = (IRouteModel)routingRoutes.get(0);
 								
 								if(_tmpRoute.getStops() != null && _tmpRoute.getStops().size() > 0) {
+									Collection dispatchLst = dispatchManagerService.getDispatchForRoute(TransStringUtil.getDate(routeDate), routingRouteId);
+									if(dispatchLst != null){
+										Dispatch _dispatch = (Dispatch)dispatchLst.toArray()[0];
+										_tmpRoute.setOriginId(_dispatch.getOriginFacility().getName());
+									};
 									directionRoutes.put(routingRouteId, _tmpRoute);
 									hasRoutes = true;
 								} 
@@ -1814,6 +1825,9 @@ public class DispatchController extends AbstractMultiActionController {
 	private Map getRouteDirections(Map routes) throws ReportGenerationException {
 		Map result = new TreeMap();
 		DeliveryServiceProxy proxy = new DeliveryServiceProxy();
+		GeographyServiceProxy geoProxy = new GeographyServiceProxy();
+		Map<String, IFacilityModel> facilityLookup = geoProxy.getFacilityLookup();
+
 		try {
 			Iterator _itr = routes.keySet().iterator();
 			String _routeId = null;
@@ -1822,12 +1836,24 @@ public class DispatchController extends AbstractMultiActionController {
 			while(_itr.hasNext()) {
 				_routeId = (String)_itr.next();
 				route = (IRouteModel)routes.get(_routeId);
+				String originId = null;
 				if(route != null) {
-					route.getStops().add(ModelUtil.getStop(Integer.MIN_VALUE, "DPT/FD", "", "",
-							"", "40740250", "-73951989", true));
-					route.getStops().add(ModelUtil.getStop(Integer.MAX_VALUE, "DPT/FD", "", "",
-							"", "40740250", "-73951989", true));
-		
+					
+					originId = route.getOriginId();
+					System.out.println(originId);
+					IFacilityModel model = facilityLookup.get(originId);
+					if(originId != null && model != null && model.getLatitude() != null && model.getLongitude() != null){									
+						route.getStops().add(ModelUtil.getStop(Integer.MIN_VALUE, "DPT/"+model.getFacilityCode(), "", "",
+								"", model.getLatitude(), model.getLongitude(), true));
+						route.getStops().add(ModelUtil.getStop(Integer.MAX_VALUE, "DPT/"+model.getFacilityCode(), "", "",
+								"", model.getLatitude(), model.getLongitude(), true));
+					} else {
+				
+						route.getStops().add(ModelUtil.getStop(Integer.MIN_VALUE, "DPT/FD", "", "",
+								"", "40740250", "-73951989", true));
+						route.getStops().add(ModelUtil.getStop(Integer.MAX_VALUE, "DPT/FD", "", "",
+								"", "40740250", "-73951989", true));
+					}
 					
 					List points = new ArrayList();
 					

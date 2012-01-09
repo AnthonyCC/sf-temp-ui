@@ -492,6 +492,18 @@ public class TransStringUtil {
 		return 0;
 	}
 	
+	public static String[] splitStringForValue1(String search) {
+		try {
+			String[] dataLst = StringUtils.split(search, "-");
+			if(dataLst != null && dataLst.length >1) {
+				return dataLst;
+			} 
+		} catch(Exception e) {
+			//do nothing
+		}
+		return null;
+	}
+
 	public static String formatStringSearch(String search) throws StringFilterException {
 		String[] dataLst = StringUtils.split(search, ",");
 		StringBuffer strBuf = new StringBuffer();
@@ -652,6 +664,12 @@ public class TransStringUtil {
 	public static Date getAdjustedDayOf(Date _date, int _days) {
 		clientCalendar.setTime(_date);
 		clientCalendar.add(Calendar.DATE, _days) ;
+		return clientCalendar.getTime();
+	}
+
+	public static Date getAdjustedHourOf(Date _date, int _hours) {
+		clientCalendar.setTime(_date);
+		clientCalendar.add(Calendar.HOUR, _hours) ;
 		return clientCalendar.getTime();
 	}
 

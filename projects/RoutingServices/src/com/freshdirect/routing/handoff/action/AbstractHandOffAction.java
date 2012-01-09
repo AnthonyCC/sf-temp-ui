@@ -244,6 +244,23 @@ public abstract class AbstractHandOffAction {
 				}
 			}
 		}
+		//Description -> Map<DestinatinFacility, Map<DispatchTIme, Map<CutOffTime, IWaveInstance>>>
+		Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> plannedTrailerDispatchTree 
+									= routingInfoProxy.getPlannedTrailerDispatchTree(this.getBatch().getDeliveryDate(), null);
+		if(plannedTrailerDispatchTree != null) {
+			for(Map.Entry<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> locEntry : plannedTrailerDispatchTree.entrySet()) {
+				for(Map.Entry<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>> dispEntry : locEntry.getValue().entrySet()) {
+					for(Map.Entry<RoutingTimeOfDay, List<IWaveInstance>> cutOffEntry : dispEntry.getValue().entrySet()) {
+						if(!dispatchStatus.containsKey(dispEntry.getKey())) {
+							dispatchStatus.put(dispEntry.getKey(), EnumHandOffDispatchStatus.COMPLETE);
+						}
+						if(cutOffEntry.getKey().after(rCutOff)) {
+							dispatchStatus.put(dispEntry.getKey(), EnumHandOffDispatchStatus.PENDING);
+						}
+					}
+				}
+			}
+		}
 		result.setDispatchStatus(dispatchStatus);
 		result.setMismatchRoutes(mismatchRoutes);
 		return result;

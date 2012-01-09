@@ -8,7 +8,10 @@ public class FacilityModel extends BaseModel implements IFacilityModel  {
 	private int leadToTime;
     private String prefix;    
     private String facilityTypeModel;
-
+    
+    private String latitude;
+    private String longitude;
+    
 	public String getFacilityCode() {
 		return facilityCode;
 	}
@@ -57,6 +60,22 @@ public class FacilityModel extends BaseModel implements IFacilityModel  {
 		this.prefix = prefix;
 	}
 	
+	public String getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
+
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;

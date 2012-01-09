@@ -196,6 +196,10 @@
 		<property name="dataSource" ref="dataSource"/>
 	</bean>	
 	
+	<bean id="yardManagerDAO" class="com.freshdirect.transadmin.dao.oracle.YardManagerDAO">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>	
+	
     <!-- who is driving the transactions? No one... Probably should use directly -->
     <bean id="domainManager" class="com.freshdirect.transadmin.service.impl.DomainManagerImpl">
         <property name="domainManagerDao" ref="domainManagerDAO"/>
@@ -231,7 +235,11 @@
     <bean id="crisisManagerService" class="com.freshdirect.transadmin.service.impl.CrisisManagerService">
            <property name="crisisManagerDAOImpl" ref="crisisManagerDAO"/>    		
 	</bean>
-         
+
+    <bean id="yardManagerService" class="com.freshdirect.transadmin.service.impl.YardManagerService">
+           <property name="yardMngDAOImpl" ref="yardManagerDAO"/>    		
+	</bean>
+
     <bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>   

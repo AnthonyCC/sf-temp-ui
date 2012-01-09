@@ -24,6 +24,7 @@ import com.freshdirect.transadmin.constants.EnumUploadSource;
 import com.freshdirect.transadmin.datamanager.ScheduleUploadDataManager;
 import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.Scrib;
+import com.freshdirect.transadmin.model.TrnFacility;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
@@ -97,16 +98,27 @@ public class ScheduleUploadFormController extends BaseFormController {
 						if(scribs != null) {
 							Set<Date> scribDates = new TreeSet<Date>();
 							Collection masterZones = getDomainManagerService().getZones();
+							Collection facilityLocs = getLocationManagerService().getTrnFacilitys();
 							Map<String, Zone> zoneMapping = new HashMap<String, Zone>();
-							if(masterZones != null) {
+							Map<String, TrnFacility> facilityMapping = new HashMap<String, TrnFacility>();
+							
+							if(masterZones != null && facilityLocs != null) {
 								Iterator _zoneItr = masterZones.iterator();
 								Zone zone = null;
 								while(_zoneItr.hasNext()) {
 									zone = (Zone)_zoneItr.next();									
 									zoneMapping.put(zone.getZoneCode(), zone);
 								}
+								Iterator _facilityItr = facilityLocs.iterator();
+								TrnFacility facility = null;
+								while(_facilityItr.hasNext()){
+									facility = (TrnFacility)_facilityItr.next();
+									facilityMapping.put(facility.getName(), facility);
+								}
+								TrnFacility originFacility = null;
+								TrnFacility destFacility = null;
 								for(Scrib scrib : scribs) {
-									int _codelength = scrib.getZoneS().length();				
+									int _codelength = scrib.getZoneS() != null ? scrib.getZoneS().length(): 3;				
 									if(_codelength < 3) {
 										StringBuffer strBuf = new StringBuffer();
 										while(3 - _codelength > 0) {
@@ -116,6 +128,10 @@ public class ScheduleUploadFormController extends BaseFormController {
 										scrib.setZoneS(strBuf.toString() + scrib.getZoneS());
 									}
 									zone = zoneMapping.get(scrib.getZoneS());
+									originFacility = facilityMapping.get(scrib.getOriginFacility() != null ? scrib.getOriginFacility().getName() : "");
+									destFacility = facilityMapping.get(scrib.getDestinationFacility() != null ? scrib.getDestinationFacility().getName() : "");
+									scrib.setOriginFacility(originFacility);
+									scrib.setDestinationFacility(destFacility);
 									if(zone != null) {
 										scrib.setZone(zone);
 										scrib.setRegion(zone.getRegion());

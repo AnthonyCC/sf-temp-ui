@@ -12,6 +12,7 @@
                 <record-element length="0" beanref="rowBean.scribDate" type="date">
                 	<conversion-option name="format" value="MM/dd/yyyy"/>
                 </record-element>
+                <record-element length="0" beanref="rowBean.facilityS" type="char"/>
                 <record-element length="0" beanref="rowBean.zoneS" type="char"/>
                 <record-element length="0" beanref="rowBean.startTimeS" type="char"/>
                 <record-element length="0" beanref="rowBean.firstDlvTimeS" type="char"/>

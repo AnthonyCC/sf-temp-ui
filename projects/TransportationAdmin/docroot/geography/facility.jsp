@@ -61,11 +61,13 @@
                     property="facilityId" />
 				  <ec:column property="name" title="Facility Code"/>
 				  <ec:column property="description" title="Facility Description" />
-				  <ec:column property="trnFacilityType" title="Facility Type" />
+				  <ec:column property="trnFacilityType" title="Facility Type" width="10"/>
 				  <ec:column property="routingCode" title="Routing Code"/>
-				  <ec:column property="prefix" title="Prefix"/>
-				  <ec:column property="leadFromTime" title="From Time"/>
-				  <ec:column property="leadToTime" title="To Time"/>
+				  <ec:column property="prefix" title="Prefix" width="10"/>
+				  <ec:column property="latitude" title="Latitude" width="10"/>
+              	  <ec:column property="longitude" title="Longitude" width="10"/>
+           		  <ec:column property="leadFromTime" title="From Time" width="10"/>
+				  <ec:column property="leadToTime" title="To Time" width="10"/>
 	            </ec:row>
 	          </ec:table>
 	           </form>  

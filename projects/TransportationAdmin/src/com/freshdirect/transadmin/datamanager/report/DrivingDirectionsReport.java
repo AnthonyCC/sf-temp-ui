@@ -63,7 +63,7 @@ public class DrivingDirectionsReport {
 				        List paths = _directions.getPathDirections();
 				        xlsfo.append("<fo:block color=\""+SECTION_COLOR+"\">").append("Depart ")
 				        					.append(TransStringUtil.formatTime(_route.getStartTime()))
-				        					.append(" - DPT/FD").append("</fo:block>");	
+				        					.append(" - DPT/").append(_route.getOriginId()).append("</fo:block>");	
 				        
 				        for(int intCount=0; intCount < paths.size(); intCount++) {
 				        	List arcs = ((IPathDirection)paths.get(intCount)).getDirectionsArc();
@@ -106,7 +106,7 @@ public class DrivingDirectionsReport {
 			        		}
 				        	
 				        }
-				        xlsfo.append("<fo:block color=\""+SECTION_COLOR+"\">").append("Arrive DPT/FD").append("</fo:block>");
+				        xlsfo.append("<fo:block color=\""+SECTION_COLOR+"\">").append("Arrive DPT/").append(_route.getOriginId()).append("</fo:block>");
 					}
 					xlsfo.append(regionAfter(_route.getRouteId()));
 				} else {

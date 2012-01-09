@@ -73,6 +73,8 @@ public interface DispatchManagerDaoI extends BaseManagerDaoI {
 	
 	Collection getDispatchForMotKit(Date dispatchDate, String assetId) throws DataAccessException;
 	
+	Collection getDispatchForRoute(Date dispatchDate, String routeNo) throws DataAccessException;
+	
 	Collection getPlan(Date planDate, String zone) throws DataAccessException;
 	
 	Collection getScrib(Date scribDate, String zone) throws DataAccessException;

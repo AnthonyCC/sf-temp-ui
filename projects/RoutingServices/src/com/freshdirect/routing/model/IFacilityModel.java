@@ -22,4 +22,10 @@ public interface IFacilityModel {
 	String getPrefix();
 	void setPrefix(String prefix);
 	
+	String getLatitude();
+	void setLatitude(String latitude);
+
+	String getLongitude();
+	void setLongitude(String longitude);
+	
 }

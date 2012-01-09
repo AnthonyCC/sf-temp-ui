@@ -210,6 +210,11 @@ public class TransportationAdminProperties {
 	private final static String PROP_TRANSPORTATION_FILENAME_SOFAILURERPT = "transportation.filename.sofailurerpt";	
 	private final static String PROP_JDBCBATCHUPDATE_THRESHOLD		= "transportation.jdbcbatchupdate.threshold";
 	
+	private final static String PROP_FDPARKING_HQLOCATION		= "transportation.parking.fdheadquarter";
+	private final static String PROP_FDPARKING_ONROAD		= "transportation.parking.fdonroad";
+	private final static String PROP_FDTRUCKS_ONROAD_IDENTITY		= "transportation.trucks.onroad.identity";
+	private final static String PROP_TRANSPORTATION_YARDMONITOR_PAGEREFRESHTIME = "transportation.yardmonitor.pagerefreshtime";
+
 	static {
 
 
@@ -376,6 +381,11 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_FILENAME_SOSIMULATIONRPT, "trn_sosimulationreport_");
 		defaults.put(PROP_TRANSPORTATION_FILENAME_SOFAILURERPT, "trn_sofailurereport_");
 		defaults.put(PROP_JDBCBATCHUPDATE_THRESHOLD, "999");
+
+		defaults.put(PROP_FDPARKING_HQLOCATION, "FreshDirect Head Quarters");
+		defaults.put(PROP_FDPARKING_ONROAD, "FreshDirect On-Road");
+		defaults.put(PROP_FDTRUCKS_ONROAD_IDENTITY, "Zone");
+		defaults.put(PROP_TRANSPORTATION_YARDMONITOR_PAGEREFRESHTIME, "600000");
 
 		refresh();
 	}
@@ -800,5 +810,18 @@ public class TransportationAdminProperties {
 	}
 	public static int getRunnerMaxForTrailer() {
 		return getIntVal(get(PROP_TRANSPORTATION_TRAILER_RUNNER_MAX));
+	}
+
+	public static String getFDHeadQuarterKey() {
+		return get(PROP_FDPARKING_HQLOCATION);
+	}
+	public static String getFDOnRoadKey() {
+		return get(PROP_FDPARKING_ONROAD);
+	}
+	public static String getFDOnRoadTrucksIdentity() {
+		return get(PROP_FDTRUCKS_ONROAD_IDENTITY);
+	}
+	public static int getYardMonitorRefreshTime() 	{
+		return getIntVal(get(PROP_TRANSPORTATION_YARDMONITOR_PAGEREFRESHTIME));
 	}
 }

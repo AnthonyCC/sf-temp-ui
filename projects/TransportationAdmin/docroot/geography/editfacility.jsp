@@ -69,7 +69,25 @@
 							 	<td>
 							 		&nbsp;<form:errors path="prefix" />
 							 	</td>
-							 </tr> 
+							 </tr>
+							 <tr>
+				                  <td>Latitude</td>
+				                  <td>                  
+				                    <form:input maxlength="50" size="30" path="latitude" />
+				                </td>
+				                <td>
+				                  &nbsp;<form:errors path="latitude" />
+				                </td>
+				             </tr>
+				              <tr>
+				                  <td>Longitude</td>
+				                  <td>                  
+				                    <form:input maxlength="50" size="30" path="longitude" />
+				                  </td>
+				                  <td>
+				                   &nbsp;<form:errors path="longitude" />
+				                  </td>
+				              </tr> 
 							  <tr>
 							    <td>From Time</td>
 							    <td> 								  

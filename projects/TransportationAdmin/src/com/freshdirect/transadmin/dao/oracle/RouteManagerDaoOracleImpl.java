@@ -7,10 +7,8 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -24,11 +22,18 @@ import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.object.BatchSqlUpdate;
 
-import com.freshdirect.framework.util.DateUtil;
+import weblogic.jms.common.UOOHelper;
+
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
+import com.freshdirect.routing.model.AreaModel;
+import com.freshdirect.routing.model.IAreaModel;
+import com.freshdirect.routing.model.IWaveInstance;
+import com.freshdirect.routing.model.WaveInstance;
 import com.freshdirect.transadmin.dao.RouteManagerDaoI;
 import com.freshdirect.transadmin.model.HTOutScanAsset;
 import com.freshdirect.transadmin.model.RouteMappingId;
+import com.freshdirect.transadmin.model.UPSRouteInfo;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class RouteManagerDaoOracleImpl implements RouteManagerDaoI  {
@@ -327,10 +332,40 @@ public class RouteManagerDaoOracleImpl implements RouteManagerDaoI  {
 			return result;
 	}
 	
+	private static final String GET_UPS_ROUTE_QRY = "SELECT B.DELIVERY_DATE, R.ROUTE_NO ROUTE_NUMBER, R.STARTTIME ROUTE_START_TIME, R.COMPLETETIME ROUTE_COMPLETE_TIME, "+
+		" (select S.STOP_DEPARTUREDATETIME from TRANSP.HANDOFF_BATCHSTOP s where S.BATCH_ID = B.BATCH_ID and S.ROUTE_NO = R.ROUTE_NO and "+
+		" S.STOP_SEQUENCE = (select max(STOP_SEQUENCE) from TRANSP.HANDOFF_BATCHSTOP sx where Sx.BATCH_ID = B.BATCH_ID and Sx.ROUTE_NO = R.ROUTE_NO) ) LAST_STOP_COMPLETED "+
+		" from TRANSP.HANDOFF_BATCHROUTE R, TRANSP.HANDOFF_BATCH b where B.DELIVERY_DATE = ? and B.BATCH_ID = R.BATCH_ID and B.BATCH_STATUS IN ('CPD/ADC','CPD','CPD/ADF') "+
+		" order by R.ROUTE_NO";
 	
-	
-	
+	public List<UPSRouteInfo> getUPSRouteInfo(final Date deliveryDate) throws DataAccessException {
+		
+		final List<UPSRouteInfo> result = new ArrayList<UPSRouteInfo>();
+		
+		PreparedStatementCreator creator = new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 
-	
-	
+				PreparedStatement ps = connection.prepareStatement(GET_UPS_ROUTE_QRY);
+				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
+				return ps;
+			}
+		};
+		
+		jdbcTemplate.query(creator, new RowCallbackHandler() { 
+			public void processRow(ResultSet rs) throws SQLException {				    	
+				do {
+					UPSRouteInfo _routeInfo = new UPSRouteInfo();
+					_routeInfo.setRouteDate(rs.getDate("DELIVERY_DATE"));
+					_routeInfo.setRouteNumber(rs.getString("ROUTE_NUMBER"));
+					_routeInfo.setStartTime(rs.getTimestamp("ROUTE_START_TIME"));
+					_routeInfo.setLastStop(rs.getTimestamp("LAST_STOP_COMPLETED"));
+					_routeInfo.setEndTime(rs.getTimestamp("ROUTE_COMPLETE_TIME"));
+				
+					result.add(_routeInfo);					
+				} while(rs.next());		        		    	
+			}
+		}
+		);
+		return result;
+	}	
 }

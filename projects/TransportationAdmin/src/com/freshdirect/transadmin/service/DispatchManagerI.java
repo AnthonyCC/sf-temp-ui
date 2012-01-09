@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.springframework.dao.DataAccessException;
-
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.transadmin.exception.TransAdminApplicationException;
 import com.freshdirect.transadmin.model.Dispatch;
@@ -15,6 +13,7 @@ import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.model.ScribLabel;
+import com.freshdirect.transadmin.model.UPSRouteInfo;
 import com.freshdirect.transadmin.model.WaveInstance;
 
 public interface DispatchManagerI extends BaseManagerI {
@@ -109,6 +108,8 @@ public interface DispatchManagerI extends BaseManagerI {
 	
 	Collection getDispatchForMotKit(Date dispatchDate, String assetId);
 	
+	Collection getDispatchForRoute(Date dispatchDate, String routeNo);
+
 	Collection getPlan(Date planDate, String zone);
 	Collection getScrib(Date scribDate, String zone);	
 	Collection getWaveInstance(Date deliveryDate, String area);
@@ -122,4 +123,6 @@ public interface DispatchManagerI extends BaseManagerI {
 	void uploadScrib(Set<Date> scribDates, List<Scrib> toSaveScribs);
 		
 	void saveWaveInstances(List<WaveInstance> saveWaveInstances, List<WaveInstance> deleteWaveInstances);
+
+	List<UPSRouteInfo> getUPSRouteInfo(Date deliveryDate);
 }

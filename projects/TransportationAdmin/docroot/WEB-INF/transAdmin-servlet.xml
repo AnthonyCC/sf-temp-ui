@@ -146,17 +146,22 @@
                	<prop key="/maintenancelog.do">domainController</prop>
                	<prop key="/editvirrecordlog.do">vitRecordLogFormController</prop>
                	<prop key="/editmaintenancelog.do">maintenanceLogFormController</prop>
-				<prop key="/zipcode.do">adminController</prop>
+    			<prop key="/zipcode.do">adminController</prop>
 
     			<prop key="/crisismanage.ax">asyncCrisisMngController</prop>
     			<prop key="/crisismanage.do">crisisMngFormController</prop>
-    			<prop key="/crisismanagereport.do">crisisMngController</prop>
+				<prop key="/crisismanagereport.do">crisisMngController</prop>
 
 				<prop key="/facility.do">geographyController</prop>
     			<prop key="/editfacility.do">facilityFormController</prop>
     			<prop key="/deletefacility.do">geographyController</prop>
     			<prop key="/deletefacilitytype.do">geographyController</prop>
     			<prop key="/editfacilitytype.do">facilityTypeFormController</prop>
+
+    			<prop key="/yardmonitor.do">yardController</prop>    			
+    			<prop key="/yardmonitor.ax">asyncYardController</prop>
+    			<prop key="/parkinglocationslot.do">yardController</prop> 
+    			
 
 			</props>
 		</property>
@@ -232,6 +237,11 @@
         <property name="assetManagerService" ref="assetManagerService"/>        
 	</bean>
 	
+	<bean id="yardController" class="com.freshdirect.transadmin.web.YardController">
+		<property name="yardManagerService" ref="yardManagerService"/>
+		<property name="methodNameResolver" ref="transAdminControllerResolver"/>
+	</bean>
+
 	<!--
 	  - This bean is a MethodNameResolver definition for a MultiActionController.
 	  -->
@@ -325,7 +335,9 @@
             <prop key="/deletefacility.do">deleteFacilityHandler</prop>
             <prop key="/deletefacilitytype.do">deleteFacilityTypeHandler</prop>
 
-        </props>
+			<prop key="/yardmonitor.do">yardMonitorHandler</prop>
+			<prop key="/parkinglocationslot.do">parkingLocationSlotHandler</prop>
+			</props>
 		</property>
 	</bean>
        	
@@ -706,6 +718,16 @@
 			</map>
 		</property>
 	</bean>
+	
+	<bean name="asyncYardController" class="com.freshdirect.transadmin.web.json.YardProviderController">
+		<property name="yardManagerService" ref="yardManagerService"/>
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="ajaxServices">
+			<map>
+				<entry key="AsyncYardProvider" value="com.freshdirect.transadmin.web.json.IYardProvider" />
+			</map>
+		</property>
+	</bean>
 
 	<bean id="geographyController" class="com.freshdirect.transadmin.web.GeographyController">
 		<property name="methodNameResolver" ref="transAdminControllerResolver"/>
@@ -746,7 +768,7 @@
         <property name="successView" value="scheduleEdit" />
         <property name="formView" value="scheduleEdit" />
 	</bean>
-	    
+
 	<bean id="facilityFormController" class="com.freshdirect.transadmin.web.FacilityFormController">		  
 		<property name="locationManagerService" ref="locationManager"/>
 		<property name="domainManagerService" ref="domainManager"/>

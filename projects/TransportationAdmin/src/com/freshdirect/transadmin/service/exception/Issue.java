@@ -11,6 +11,8 @@ public class Issue implements IIssue {
 		messages.put(UNDEFINED, "Unknown error occured");
 		messages.put(EMPTY, "");
 		messages.put(PROCESS_CRISISMNGBATCH_ERROR,"Crisis Manager Batch Processing Error");
+		messages.put(PROCESS_YARDMONITOR_ERROR,"Yard Monitor Processing Error");
+
 	}
 	
 	public static String getMessage(String id) {

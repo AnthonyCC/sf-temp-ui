@@ -545,6 +545,7 @@ public class ModelUtil {
 			RouteInfo routeInfo = new RouteInfo();
 			routeInfo.setRouteNumber(erpRouteInfo.getRouteNumber());
 			routeInfo.setZoneNumber(erpRouteInfo.getZoneNumber());
+			routeInfo.setTruckNumber(erpRouteInfo.getTruckNumber());
 			routeInfo.setAdHoc(false);
 			routes.add(routeInfo);
 		}
