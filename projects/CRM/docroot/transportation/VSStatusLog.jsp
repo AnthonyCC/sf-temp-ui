@@ -46,7 +46,8 @@
 						<td width="3%" align="center" class="list_header_text"><b>Redial</b></td>						
 						<td width="8%" align="center" class="list_header_text"><b>VoiceShot <br/> Created By</b></td>
 						<td width="10%" align="center" class="list_header_text"><b>VoiceShot <br/> Created Date</b></td>
-						<td width="8%" align="center" class="list_header_text"><b>Start Time </b></td>
+						<td width="4%" align="center" class="list_header_text"><b>VoiceShot/ <br/> Manual</b></td>
+						<td width="6%" align="center" class="list_header_text"><b>Start Time </b></td>
 						<td width="5%" align="center" class="list_header_text"><b>Scheduled <br/> Calls</b></td>
 						<td width="15%" align="center" class="list_header_text"><b>Delivered <br/> Calls</b></td>
 						<td width="5%" align="center" class="list_header_text"><b>UnDelivered <br/> Calls</b></td>
@@ -70,23 +71,36 @@
 				<td width="3%" class="border_bottom" align="center"><%= "Y".equals(model.getRedial())?"Yes":"" %></td>
 				<td width="8%" class="border_bottom" align="center"><%= model.getAddByUser() %></td>
 				<td width="10%" class="border_bottom" align="center"><%= model.getAddByDate() %></td>
-				<td width="8%" class="border_bottom" align="center"><%= model.getStartTime() %></td>
+				<td width="4%" class="border_bottom" align="center"><%= model.getManual()?"Manual":"Voiceshot" %></td>
+				<td width="6%" class="border_bottom" align="center"><%= model.getStartTime() %></td>
 				<td width="5%" class="border_bottom" align="center"><%= model.getScheduledCalls() %></td>
 				<td width="15%" class="border_bottom" align="center"><%= model.getDeliveredCallsLive() %> live | <%= model.getDeliveredCallsAM() %> answering machine</td>
 				<td width="5%" class="border_bottom" align="center"><%= model.getUndeliveredCalls() %></td>
-				<td width="10" class="border_bottom" align="center"><a href="javascript:openwindow('details','<%= model.getCampaignId()%>&dmsg=sfile')" id="mynewanchor<%=i%>">Sound file message</a></td>
-				<td width="14%" class="border_bottom" align="center">
-					<% if(model.isUpdatable()) {%> 
+				<td width="10" class="border_bottom" align="center">
+				<% if(!model.getManual()) { %>
+					<a href="javascript:openwindow('details','<%= model.getCampaignId()%>&dmsg=sfile')" id="mynewanchor<%=i%>">Sound file message</a>
+				<% } else { %>
+					&nbsp;
+				<% } %>
+				</td>
+				<td width="14%" class="border_bottom" align="center">					
+					<% if(!model.getManual()) {
+						if(model.isUpdatable()) {%> 
 						<a href="javascript:openwindow('details','<%= model.getVsDetailsID()%>&lateid=<%=model.getLateIssueId() %>')">details</a> 
 					<% } else { %> 
 						details 
-					<%  } %>
+					<%  } } else { %>
+						&nbsp;
+					<% } %>
 				</td>
 				<td width="14%" class="border_bottom" align="center">
-					<% if(model.isUpdatable()) { %>
+					<% if(!model.getManual()) {
+						if(model.isUpdatable()) { %>
 						<a href="javascript:openwindow('redial','<%=model.getVsDetailsID()%>&menuid=<%=model.getCampaignMenuId()%>&lateid=<%=model.getLateIssueId() %>')">redial</a>
 					<% } else { %>
 						redial 
+					<% } } else { %>
+						&nbsp;
 					<% } %>
 				</td>
 			</tr>			

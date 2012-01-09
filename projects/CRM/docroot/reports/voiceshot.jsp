@@ -27,7 +27,8 @@ if(sampm == null) {
 }
 	
 %>
-<form method='POST' name="timePick" id="timePick">	
+<form method='POST' name="timePick" id="timePick">
+<input type="hidden" name="manual" value="false" />	
 		<table width="100%" cellpadding="2" cellspacing="0" border="0" class="sub_nav_text">
 			<tr>
 				<td width="15%"><span class="sub_nav_title">&nbsp;</span></td>
@@ -89,6 +90,8 @@ if(sampm == null) {
 					</select> 
 					&nbsp;&nbsp;
 					<a href="javascript:document.timePick.submit();" style="background-color:green;text-decoration:none;color:white;padding:5px;font-weight:bold;">Start Voiceshot</a>
+					&nbsp;
+					<a href="javascript:document.timePick.manual.value=true;document.timePick.submit();" style="background-color:red;text-decoration:none;color:white;padding:5px;font-weight:bold;">Manual Call: DO NOT VOICESHOT</a>
 					</td></tr>
 					</table>					
 				</td>

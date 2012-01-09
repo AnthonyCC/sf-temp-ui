@@ -2344,57 +2344,90 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		return stopSeq.toString();
 	}
 	
-	private String createLateIssue(CrmVSCampaignModel model) {
+	private void createLateIssue(CrmVSCampaignModel model, long vsId) {
 		Connection conn = null;
 		PreparedStatement ps = null;
+		PreparedStatement ps1 = null;
+		PreparedStatement ps2 = null;
 		Date now = new Date();
 		String id = null;
 		try {			
 			conn = this.getConnection();
-			id = SequenceGenerator.getNextId(conn, "CUST");
-			ps = conn.prepareStatement(
-					"INSERT INTO CUST.LATEISSUE(ID, ROUTE, STOPSTEXT, DELIVERY_DATE, AGENT_USER_ID, REPORTED_AT, REPORTED_BY,DELAY_MINUTES,DELIVERY_WINDOW,COMMENTS,ACTUAL_STOPSTEXT,ACTUAL_STOPSCOUNT) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
-			ps.setString(1, id);
-			ps.setString(2, model.getRoute());
-			ps.setString(3,getStops(model.getPhonenumbers()));
-			ps.setDate(4, new java.sql.Date(now.getTime()));
-			ps.setString(5,model.getAddByUser());
-			ps.setTimestamp(6, new java.sql.Timestamp(now.getTime()));
-			ps.setString(7, "Driver");
-			ps.setInt(8, Integer.parseInt(model.getDelayMinutes()));
-			ps.setString(9, "");
-			ps.setString(10, "Comments");
-			ps.setString(11, "");
-			ps.setInt(12, model.getPhonenumbers().size());
-			ps.executeUpdate();
+			Enumeration enumer = model.getRouteList().keys();
+			while(enumer.hasMoreElements()) {
+				String key = (String) enumer.nextElement();
+				List phones = (List) model.getRouteList().get(key);			
+			
+				id = SequenceGenerator.getNextId(conn, "CUST");
+				ps = conn.prepareStatement(
+						"INSERT INTO CUST.LATEISSUE(ID, ROUTE, STOPSTEXT, DELIVERY_DATE, AGENT_USER_ID, REPORTED_AT, REPORTED_BY,DELAY_MINUTES,DELIVERY_WINDOW,COMMENTS,ACTUAL_STOPSTEXT,ACTUAL_STOPSCOUNT) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+				ps.setString(1, id);
+				ps.setString(2, key);
+				ps.setString(3,getStops(phones));
+				ps.setDate(4, new java.sql.Date(now.getTime()));
+				ps.setString(5,model.getAddByUser());
+				ps.setTimestamp(6, new java.sql.Timestamp(now.getTime()));
+				ps.setString(7, "Driver");
+				ps.setInt(8, Integer.parseInt(model.getDelayMinutes()));
+				ps.setString(9, "");
+				ps.setString(10, "Comments");
+				ps.setString(11, "");
+				ps.setInt(12, phones.size());
+				ps.executeUpdate();
+				ps1 = conn.prepareStatement("INSERT INTO CUST.VOICESHOT_LATEISSUE(VS_ID, LATEISSUE_ID) VALUES(?,?)");
+				ps1.setLong(1, vsId);
+				ps1.setString(2, id);
+				ps1.execute();
+				
+				ps2 = conn.prepareStatement("insert into cust.lateissue_orders columns(lateissue_id,stop_number,sale_id) values(?,?,?)");
+				for(int i=0;i<phones.size(); i++) {
+					String pStr = (String) phones.get(i);
+					System.out.println(pStr + "-lateid" + id);
+					StringTokenizer st = new StringTokenizer(pStr, "|");
+					String phone = st.nextToken();
+					String saleId = st.nextToken();
+					String customerId = st.nextToken();
+					String stopNumber = st.nextToken();				
+					ps2.setString(1, id);
+					ps2.setString(2, stopNumber);
+					ps2.setString(3, saleId);
+					ps2.execute();
+				}
+			}
 		} catch (Exception e) {
 			LOGGER.error("LateIssue row not created for: Route:"+model.getRoute(),e);
-		} finally {		
-			if(ps != null) {
-				try {
+		} finally {
+			try {
+				if (conn != null) 				
+					conn.close();
+				if(ps != null) 				
 					ps.close();
-				} catch(Exception e1) {}
-			}
+				if(ps1 != null)
+					ps1.close();
+				if(ps2 != null)
+					ps2.close();
+				
+			} catch(Exception e1) {}
 		}
-		return id;
 	}
 	
-	public String saveVSCampaignInfo(CrmVSCampaignModel model) throws FDResourceException {
-		//Create LASTISSUE 
-		String lateIssueId = createLateIssue(model);
-		
+	public String saveVSCampaignInfo(CrmVSCampaignModel model) throws FDResourceException {		
 		//Create voiceshot details for this late issue
 		Connection conn = null;
 		PreparedStatement ps = null;
-		PreparedStatement ps1 = null;
 		long id = 1; 
 		String call_id = "CID_" + id;
 		try{
 			conn = this.getConnection();
 			id = Long.parseLong(SequenceGenerator.getNextId(conn, "CUST", "VOICESHOT_SEQUENCE"));
 			call_id = "CID_" + id;
-			ps = conn.prepareStatement("INSERT INTO CUST.VOICESHOT_SCHEDULED(VS_ID,CAMPAIGN_ID,REASON_ID,CREATED_BY_USER,CREATED_BY_DATE,START_TIME, CALL_ID, CAMPAIGN_TYPE)" +
-										" VALUES(?,?,?,?,?,TO_DATE(?, 'HH:MI AM'),?,'LATEISSUE')");			
+			if(model.getManual()) {						
+				ps = conn.prepareStatement("INSERT INTO CUST.VOICESHOT_SCHEDULED(VS_ID,CAMPAIGN_ID,REASON_ID,CREATED_BY_USER,CREATED_BY_DATE,START_TIME, CALL_ID, CAMPAIGN_TYPE, CALL_DATA_PULLED)" +
+											" VALUES(?,?,?,?,?,TO_DATE(?, 'HH:MI AM'),?,'MANUAL', 'Y')");
+			} else {
+				ps = conn.prepareStatement("INSERT INTO CUST.VOICESHOT_SCHEDULED(VS_ID,CAMPAIGN_ID,REASON_ID,CREATED_BY_USER,CREATED_BY_DATE,START_TIME, CALL_ID, CAMPAIGN_TYPE)" +
+											" VALUES(?,?,?,?,?,TO_DATE(?, 'HH:MI AM'),?,'LATEISSUE')");
+			}
 			System.out.println(model.toString());
 			ps.setLong(1,id);			
 			ps.setString(2, model.getCampaignId());
@@ -2404,10 +2437,6 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			ps.setString(6, model.getStartTime());
 			ps.setString(7, call_id);
 			ps.execute();
-			ps1 = conn.prepareStatement("INSERT INTO CUST.VOICESHOT_LATEISSUE(VS_ID, LATEISSUE_ID) VALUES(?,?)");
-			ps1.setLong(1, id);
-			ps1.setString(2, lateIssueId);
-			ps1.execute();
 		}catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
@@ -2417,32 +2446,30 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 					conn.close();
 				if(ps != null)
 					ps.close();
-				if(ps1 != null)
-					ps1.close();
 			} catch (SQLException sqle) {
 				LOGGER.debug("Error while cleaning:", sqle);
 			}
 		}
 		
 		//Create lateissue_orders rows
-		storePhoneNumbers(id, model, lateIssueId);
+		storePhoneNumbers(id, model);
+		//Create LASTISSUE 
+		createLateIssue(model, id);
+		
 		return call_id;
 	}	
 	
-	private void storePhoneNumbers(long id, CrmVSCampaignModel model, String lateIssueId) {
+	private void storePhoneNumbers(long id, CrmVSCampaignModel model) {
 		Connection conn = null;
 		PreparedStatement ps = null;
-		PreparedStatement ps1 = null;
 		List<String> phonenumbers = model.getPhonenumbers();
 		
 		try {
 			conn = this.getConnection();
 			ps = conn.prepareStatement("INSERT INTO CUST.voiceshot_customers(VS_ID,PHONE, CUSTOMER_ID, SALE_ID)" +
 										" VALUES(?,?,?,?)");
-			ps1 = conn.prepareStatement("insert into cust.lateissue_orders columns(lateissue_id,stop_number,sale_id) values(?,?,?)");
 			for(int i=0;i<phonenumbers.size(); i++) {
 				String pStr = (String) phonenumbers.get(i);
-				System.out.println(pStr + "-lateid" + lateIssueId);
 				StringTokenizer st = new StringTokenizer(pStr, "|");
 				String phone = st.nextToken();
 				String saleId = st.nextToken();
@@ -2453,10 +2480,6 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				ps.setString(3, customerId);
 				ps.setString(4, saleId);
 				ps.execute();
-				ps1.setString(1, lateIssueId);
-				ps1.setString(2, stopNumber);
-				ps1.setString(3, saleId);
-				ps1.execute();
 			}
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);			
@@ -2477,7 +2500,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 	public static final String GET_VS_LOG = "select vl.lateissue_id, vl.vs_ID, L.ROUTE, VC.CAMPAIGN_ID, VC.CAMPAIGN_MENU_ID, VC.CAMPAIGN_NAME, L.STOPSTEXT, vs.redial, " + 
     "vs.created_by_user, vc.sound_file_text, " +
     "to_char(vs.created_by_date,  'MM/DD/YYYY HH12:MI AM') created_by_Date, VC.SOUND_FILE_NAME, to_char(vs.start_time, 'HH12:MI AM') start_time, " + 
-    "vs.call_id, vs.call_data_pulled, vr.reason " +    		
+    "vs.call_id, vs.call_data_pulled, vr.reason, vs.campaign_type " +    		
     "from CUST.LATEISSUE l, " +
     "CUST.VOICESHOT_SCHEDULED vs, " + 
     "CUST.VOICESHOT_CAMPAIGN vc, " +
@@ -2510,7 +2533,8 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				model.setCampaignName(rs.getString("CAMPAIGN_NAME"));
 				model.setCampaignMenuId(rs.getString("CAMPAIGN_MENU_ID"));
 				model.setReasonId(rs.getString("REASON"));
-				model.setStopSequence(rs.getString("STOPSTEXT"));
+				//model.setStopSequence(rs.getString("STOPSTEXT"));
+				model.setStopSequence(getStopsTextInSequence(lateissue_id, vs_id));
 				model.setRedial(rs.getString("REDIAL"));				
 				model.setAddByDate(rs.getString("CREATED_BY_DATE"));
 				model.setAddByUser(rs.getString("CREATED_BY_USER"));
@@ -2519,6 +2543,11 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				model.setStartTime(rs.getString("START_TIME"));
 				model.setCallId(rs.getString("CALL_ID"));
 				model.setUpdatable(true);
+				if("MANUAL".equals(rs.getString("CAMPAIGN_TYPE"))) {
+					model.setManual(true);
+				} else {
+					model.setManual(false);
+				}
 				boolean data_pulled = "Y".equals(rs.getString("CALL_DATA_PULLED"))?true:false;
 				if(!data_pulled && rs.getString("CALL_ID") != null) {
 					StringBuffer sb = new StringBuffer("<campaign action=\"3\" menuid=\"");
@@ -2562,6 +2591,51 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			}			
 		}
 		return cList;
+	}
+	
+	private String getStopsTextInSequence(String lateissueId, String vsId) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		try{
+			conn = this.getConnection();
+			
+			ps = conn.prepareStatement("SELECT SUBSTR (SYS_CONNECT_BY_PATH (stop_number , ','), 2) stop_number " +
+										      "FROM (SELECT to_number(stop_number) stop_number , ROW_NUMBER () OVER (ORDER BY to_number(stop_number) ) rn, " +
+										                   "COUNT (*) OVER () cnt " +
+										                   "FROM  cust.lateissue_orders lo, " +
+										                   "CUST.VOICESHOT_LATEISSUE vl, " +
+										                   "CUST.VOICESHOT_CUSTOMERS vc " +
+										                   "where vl.lateissue_id = ? " +
+										                   "and    VL.VS_ID = ? " +
+										                   "and    VC.VS_ID = VL.VS_ID " +
+										                   "and    VC.SALE_ID = LO.SALE_ID " +
+										                   "and    LO.LATEISSUE_ID = VL.LATEISSUE_ID ) " +
+										     "WHERE rn = cnt " +
+										"START WITH rn = 1 " +
+										"CONNECT BY rn = PRIOR rn + 1");
+			ps.setString(1, lateissueId);
+			ps.setString(2, vsId);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				return rs.getString(1);
+			}
+		}catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage(), sqle);
+		} finally {
+			try {
+				if (conn != null) 				
+					conn.close();
+				if(ps != null)
+					ps.close();
+				if(rs != null)
+					rs.close();
+			} catch (SQLException sqle) {
+				LOGGER.debug("Error while cleaning:", sqle);
+			}			
+		}	
+		return "";
 	}
 	
 	private void getCallStats(CrmVSCampaignModel model, String vsId, String lateissueId) {

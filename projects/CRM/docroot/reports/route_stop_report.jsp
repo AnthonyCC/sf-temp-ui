@@ -101,12 +101,6 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
             okToSubmit = false;
         }
 		
-		if(route.length == 0) {
-			alert('The ROUTE is required. Please enter and try again.');
-            okToSubmit = false;
-		}
-
-		
 		if(isNaN(wave)) {
             alert('The WAVE field is invalid. Please correct and try again.');
             okToSubmit = false;
@@ -171,7 +165,7 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
             &nbsp;
             Wave <input type="text" name="wave" size="6" maxlength="6" class="text" value="<%=request.getParameter("wave")%>">
             &nbsp;
-            Route<font color="red">*</font> <input type="text" name="route" size="6" maxlength="6" class="text" value="<%=request.getParameter("route")%>">
+            Route <input type="text" name="route" size="6" maxlength="6" class="text" value="<%=request.getParameter("route")%>">
             &nbsp;
             Stop <input type="text" name="stop1" size="5" maxlength="5" class="text" value="<%=request.getParameter("stop1")%>"> to <input type="text" name="stop2" size="5" maxlength="5" class="text" value="<%=request.getParameter("stop2")%>">
 			&nbsp;
@@ -251,14 +245,14 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 			
 			if(!errors) {
 			
-				String start_time = shour + ":" + sminutes + " " + sampm;
-			
+				String start_time = shour + ":" + sminutes + " " + sampm;				
+				
 				//Save the campaign info
 				CrmVSCampaignModel cModel = new CrmVSCampaignModel();
 				cModel.setCampaignId(campaignID);
 				cModel.setStartTime(start_time);
 				cModel.setReasonId(reason);
-				cModel.setRoute(_route);
+				//cModel.setRoute(_route);
 				cModel.setStopSequence(stop_seq);			
 				cModel.setAddByUser(CrmSession.getCurrentAgent(session).getLdapId()); 
 				cModel.setCampaignName(request.getParameter(campaignID));
@@ -270,6 +264,7 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 				
 				List<String> phonenumbers = new ArrayList<String>();			
 				StringBuffer phonesb = new StringBuffer("<phonenumbers>");
+				Hashtable<String, List> vroutes = new Hashtable<String, List>();
 				for(int i=0;i<routeStopLines.size();i++) {
 					String selValue = request.getParameter("selectphone"+i);
 					if(selValue != null && selValue.length() > 0)  {
@@ -279,10 +274,22 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 						phonesb.append("\" dateandtime=\"");
 						phonesb.append(formatter_start_date);
 						phonesb.append("\" />");
+						
+						String route_1 = selValue.substring(selValue.lastIndexOf("|") + 1);
+						if(vroutes.containsKey(route_1)) {
+							List phones = (List) vroutes.get(route_1);
+							phones.add(selValue);
+						} else {
+							List<String> phones = new ArrayList<String>();
+							phones.add(selValue);
+							vroutes.put(route_1, phones);
+						}
 					}
 				}
 				phonesb.append("</phonenumbers>");
 				cModel.setPhonenumbers(phonenumbers);
+				cModel.setRouteList(vroutes);
+				cModel.setManual("true".equals(request.getParameter("manual"))?true:false);
 				String call_id = CallCenterServices.saveVSCampaignInfo(cModel);
 				
 				StringBuffer originalXML = new StringBuffer("<campaign menuid=\"");
@@ -294,34 +301,34 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 				originalXML.append("\" callid=\"" + call_id + "\">");
 				originalXML.append(phonesb.toString());				
 				originalXML.append("</campaign>");
-
-				System.out.println("VoiceshotXML:" + originalXML.toString());
 				
-				
-				java.net.URL programUrl = new java.net.URL(FDStoreProperties.getVSURL());   
-				java.net.HttpURLConnection connection = (java.net.HttpURLConnection)programUrl.openConnection();
-				connection.setRequestMethod("POST");
-				connection.setDoOutput(true);
-				connection.setUseCaches(false); 
-				connection.setRequestProperty("Content-Type", "text/xml");
-				PrintWriter output = new PrintWriter(new OutputStreamWriter(connection.getOutputStream()));
-				output.println(originalXML.toString());
-				output.close(); 
-				connection.connect();
-				InputStream is = connection.getInputStream();
-				InputStreamReader isr = new InputStreamReader(is);
-				BufferedReader br = new BufferedReader(isr);
-			 
-				String line = null;
-				String firstresult = "";
-			 
-				while ((line = br.readLine()) != null) {
-					 firstresult += "\n" + line;
+				if("false".equals(request.getParameter("manual"))) {
+					System.out.println("VoiceshotXML:" + originalXML.toString());
+					java.net.URL programUrl = new java.net.URL(FDStoreProperties.getVSURL());   
+					java.net.HttpURLConnection connection = (java.net.HttpURLConnection)programUrl.openConnection();
+					connection.setRequestMethod("POST");
+					connection.setDoOutput(true);
+					connection.setUseCaches(false); 
+					connection.setRequestProperty("Content-Type", "text/xml");
+					PrintWriter output = new PrintWriter(new OutputStreamWriter(connection.getOutputStream()));
+					output.println(originalXML.toString());
+					output.close(); 
+					connection.connect();
+					InputStream is = connection.getInputStream();
+					InputStreamReader isr = new InputStreamReader(is);
+					BufferedReader br = new BufferedReader(isr);
+				 
+					String line = null;
+					String firstresult = "";
+				 
+					while ((line = br.readLine()) != null) {
+						 firstresult += "\n" + line;
+					}
+					
+					System.out.println("VoiceshotResult:"+firstresult);
+					
+					vsrp = new VoiceShotResponseParser(firstresult);
 				}
-				
-				System.out.println("VoiceshotResult:"+firstresult);
-				
-				vsrp = new VoiceShotResponseParser(firstresult);
 			}
 		}
 	
@@ -400,7 +407,7 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 				<td width="10%" class="border_bottom"><%=routeStopLine.getWaveNumber()!=null? routeStopLine.getWaveNumber():"&nbsp;"%></td>
 				<td width="10%" class="border_bottom"><%=routeStopLine.getTruckNumber()!=null? routeStopLine.getTruckNumber():"&nbsp;"%></td>
 				<td width="10%" class="border_bottom"><%=routeStopLine.getStopSequence()!=null ? Integer.parseInt(routeStopLine.getStopSequence()) : "&nbsp;"%></td>
-				<td width="10%" class="border_bottom"><input type="checkbox" value="<%=routeStopLine.getPhoneNumber()%>|<%=routeStopLine.getOrderNumber()%>|<%=routeStopLine.getCustomerId()%>|<%=routeStopLine.getStopSequence()%>" name="selectphone<%=counter%>" checked/></td>
+				<td width="10%" class="border_bottom"><input type="checkbox" value="<%=routeStopLine.getPhoneNumber()%>|<%=routeStopLine.getOrderNumber()%>|<%=routeStopLine.getCustomerId()%>|<%=routeStopLine.getStopSequence()%>|<%=routeStopLine.getTruckNumber()%>" name="selectphone<%=counter%>" checked/></td>
 			</tr>
 		</logic:iterate>
 		</table>

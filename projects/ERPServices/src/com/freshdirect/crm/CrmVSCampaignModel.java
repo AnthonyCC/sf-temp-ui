@@ -1,6 +1,7 @@
 package com.freshdirect.crm;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import com.freshdirect.framework.core.ModelSupport;
@@ -39,10 +40,29 @@ public class CrmVSCampaignModel extends ModelSupport {
 	int delay;
 	String delayMinutes;
 	String lateIssueId;
+	Hashtable<String, List> routeList;
+	boolean manual;
+	
+	public boolean getManual() {
+		return manual;
+	}
+
+	public void setManual(boolean manual) {
+		this.manual = manual;
+	}
+
+	public Hashtable<String, List> getRouteList() {
+		return routeList;
+	}
+	
+	public void setRouteList(Hashtable<String, List> routeList) {
+		this.routeList = routeList;
+	}
 	
 	public int getDelay() {
 		return delay;
 	}
+	
 	public void setDelay(int delay) {
 		this.delay = delay;
 	}
