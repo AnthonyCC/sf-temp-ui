@@ -34,6 +34,10 @@ public abstract class ExpiringReference<X> {
 	public synchronized void forceRefresh() {
 		lastRefresh = 0;
 	}
+	
+	public long getLastRefresh() {
+		return lastRefresh;
+	}
 
 	public synchronized void set(X value) {
 		referent = value;
