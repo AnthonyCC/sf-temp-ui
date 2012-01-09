@@ -438,7 +438,8 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			int index = 1;
 			ps.setDate(index++, new java.sql.Date(criteria.getTransactionDate().getTime()));
 			ps.setDate(index++, new java.sql.Date(criteria.getTransactionDate().getTime()));
-			ps.setDouble(index++, criteria.getChargedAmount());
+			//ps.setDouble(index++, criteria.getChargedAmount());
+			ps.setBigDecimal(index++, new java.math.BigDecimal(criteria.getChargedAmount()));
 			ps.setString(index++, criteria.getCCKnownNum().replace('*', '%'));
 			if (criteria.getCardType() != null) {
 				ps.setString(index++, criteria.getCardType().getFdName());

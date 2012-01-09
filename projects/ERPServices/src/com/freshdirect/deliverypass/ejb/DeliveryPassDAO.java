@@ -51,7 +51,8 @@ public class DeliveryPassDAO {
 			ps.setString(3, model.getType().getCode());
 			ps.setString(4, model.getDescription());
 			ps.setTimestamp(5, new Timestamp(model.getPurchaseDate().getTime()));
-			ps.setDouble(6, model.getAmount());
+			//ps.setDouble(6, model.getAmount());
+			ps.setBigDecimal(6, new java.math.BigDecimal(model.getAmount()));
 			ps.setString(7, model.getPurchaseOrderId());
 			ps.setInt(8, model.getTotalNoOfDlvs());
 			ps.setInt(9, model.getRemainingDlvs());
@@ -308,7 +309,8 @@ public class DeliveryPassDAO {
 		PreparedStatement ps = null;
 		try{
 			ps = conn.prepareStatement(UPDATE_PRICE);
-			ps.setDouble(1,newPrice);
+			//ps.setDouble(1,newPrice);
+			ps.setBigDecimal(1,new java.math.BigDecimal(newPrice));
 			ps.setString(2,model.getPK().getId());
 			if (ps.executeUpdate() <= 0) {
 				LOGGER.error("Error updating price for delivery pass.");

@@ -128,10 +128,13 @@ public class ErpReturnOrderPersistentBean extends ErpTransactionPersistentBean {
 		ps.setString(2, this.getParentPK().getId());
 		ps.setTimestamp(3, new java.sql.Timestamp(this.model.getTransactionDate().getTime()));
 		ps.setString(4, EnumTransactionType.RETURN_ORDER.getCode());
-		ps.setDouble(5, this.model.getAmount());
+		//ps.setDouble(5, this.model.getAmount());
+		ps.setBigDecimal(5, new java.math.BigDecimal(this.model.getAmount()));
 		ps.setString(6, this.model.getTransactionSource().getCode());
-		ps.setDouble(7, this.model.getTax());
-		ps.setDouble(8, this.model.getSubTotal()); 
+		//ps.setDouble(7, this.model.getTax());
+		ps.setBigDecimal(7, new java.math.BigDecimal(this.model.getTax()));
+		//ps.setDouble(8, this.model.getSubTotal()); 
+		ps.setBigDecimal(8, new java.math.BigDecimal(this.model.getSubTotal()));
 		ps.setString(9, this.model.getCustomerId());
 		
 		try {

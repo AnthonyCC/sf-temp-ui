@@ -54,8 +54,10 @@ public class ErpCartonsDAO {
 				psDetails.setString(3, details.getOrderLineNumber());
 				psDetails.setString(4, details.getMaterialNumber());
 				psDetails.setString(5, details.getBarcode());
-				psDetails.setDouble(6, details.getPackedQuantity());
-				psDetails.setDouble(7, details.getNetWeight());
+				//psDetails.setDouble(6, details.getPackedQuantity());
+				psDetails.setBigDecimal(6, new java.math.BigDecimal(details.getPackedQuantity()));
+				//psDetails.setDouble(7, details.getNetWeight());
+				psDetails.setBigDecimal(7, new java.math.BigDecimal(details.getNetWeight()));
 				psDetails.setString(8, details.getWeightUnit());
 				psDetails.addBatch();
 			}

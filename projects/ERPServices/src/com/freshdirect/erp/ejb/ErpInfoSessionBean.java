@@ -1076,8 +1076,10 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			conn = this.getConnection();
 	
 			PreparedStatement ps = conn.prepareStatement(statement.toString());
-			ps.setDouble(1, lowerLimit);
-			ps.setDouble(2, upperLimit);
+			//ps.setDouble(1, lowerLimit);
+			ps.setBigDecimal(1, new java.math.BigDecimal(lowerLimit));
+			//ps.setDouble(2, upperLimit);
+			ps.setBigDecimal(2, new java.math.BigDecimal(upperLimit));
 			
 			if(hasValue(skuPrefixes)) {
 				for(int i=0;i<skuPrefixes.size();i++) {

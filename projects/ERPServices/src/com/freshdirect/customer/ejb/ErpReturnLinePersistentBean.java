@@ -80,7 +80,8 @@ public class ErpReturnLinePersistentBean extends ErpReadOnlyPersistentBean {
 		ps.setString(1, id);
 		ps.setString(2, this.getParentPK().getId());
 		ps.setString(3, this.model.getLineNumber());
-		ps.setDouble(4, this.model.getQuantity());
+		//ps.setDouble(4, this.model.getQuantity());
+		ps.setBigDecimal(4, new java.math.BigDecimal(this.model.getQuantity()));
 		ps.setString(5, (this.model.isRestockingOnly() ? "X" : ""));
 		
 		try{

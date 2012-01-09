@@ -179,9 +179,10 @@ public class SettlementSummaryPersistentBean extends DependentPersistentBeanSupp
         ps.setString(5, this.batchNumber);
         ps.setDate(6, new java.sql.Date(this.processDate.getTime()));
         ps.setDate(7, new java.sql.Date(this.depositDate.getTime()));
-        ps.setDouble(8, this.netSalesAmount);
+        //ps.setDouble(8, this.netSalesAmount);
+        ps.setBigDecimal(8, new java.math.BigDecimal(this.netSalesAmount));
         ps.setInt(9, this.numberOfAdjustments);
-        ps.setDouble(10, this.adjustmentAmount);
+        ps.setBigDecimal(10, new java.math.BigDecimal(this.adjustmentAmount));
         ps.setDate(11, new java.sql.Date(this.settlementFileDate.getTime()));
         
         

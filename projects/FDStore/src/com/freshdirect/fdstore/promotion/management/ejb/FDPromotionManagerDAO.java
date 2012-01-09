@@ -145,12 +145,14 @@ public class FDPromotionManagerDAO {
 		}
 		ps.setString(i++, promotion.getPromotionType());
 		if (!"".equals(promotion.getMinSubtotal())) {
-			ps.setDouble(i++, Double.parseDouble(promotion.getMinSubtotal()));
+			//ps.setDouble(i++, Double.parseDouble(promotion.getMinSubtotal()));
+			ps.setBigDecimal(i++, new java.math.BigDecimal(promotion.getMinSubtotal()));
 		} else {
 			ps.setNull(i++, Types.DOUBLE);					
 		}		
 		if (!"".equals(promotion.getMaxAmount())) {
-			ps.setDouble(i++, Double.parseDouble(promotion.getMaxAmount()));
+			//ps.setDouble(i++, Double.parseDouble(promotion.getMaxAmount()));
+			ps.setBigDecimal(i++, new java.math.BigDecimal(promotion.getMaxAmount()));
 		} else {
 			ps.setNull(i++, Types.DOUBLE);					
 		}

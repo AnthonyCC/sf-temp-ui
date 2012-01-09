@@ -129,7 +129,8 @@ public class SettlementInvoicePersistentBean extends DependentPersistentBeanSupp
         ps.setString(1, id);
         ps.setString(2, this.getParentPK().getId());
         ps.setDate(3, new java.sql.Date(this.invoiceDate.getTime()));
-        ps.setDouble(4, this.invoiceAmount);
+        //ps.setDouble(4, this.invoiceAmount);
+        ps.setBigDecimal(4, new java.math.BigDecimal(this.invoiceAmount));
         ps.setString(5, this.invoiceNumber);
         ps.setString(6, this.description);
         

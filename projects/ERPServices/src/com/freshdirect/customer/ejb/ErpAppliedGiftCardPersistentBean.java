@@ -90,7 +90,8 @@ public class ErpAppliedGiftCardPersistentBean extends ErpReadOnlyPersistentBean 
 		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.APPLIED_GIFT_CARD (ID, SALESACTION_ID, AMOUNT, CERTIFICATE_NUM, AFFILIATE) values (?,?,?,?,?)");
 		ps.setString(1, id);
 		ps.setString(2, this.getParentPK().getId());
-		ps.setDouble(3, this.model.getAmount());
+		//ps.setDouble(3, this.model.getAmount());
+		ps.setBigDecimal(3, new java.math.BigDecimal(this.model.getAmount()));
 		ps.setString(4, this.model.getCertificateNum());
 		ps.setString(5, this.model.getAffiliate().getCode());
 		if (ps.executeUpdate() != 1) {

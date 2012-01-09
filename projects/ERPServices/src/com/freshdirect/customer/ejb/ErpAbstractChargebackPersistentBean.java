@@ -133,12 +133,14 @@ public abstract class ErpAbstractChargebackPersistentBean extends ErpPaymentPers
 		ps.setDate(index++, new java.sql.Date(this.model.getBatchDate().getTime()));
 		ps.setString(index++, this.model.getBatchNumber());
 		ps.setString(index++, this.model.getCbkControlNumber());
-		ps.setDouble(index++, this.model.getCbkDiscount());
+		//ps.setDouble(index++, this.model.getCbkDiscount());
+		ps.setBigDecimal(index++, new java.math.BigDecimal(this.model.getCbkDiscount()));
 		ps.setString(index++, this.model.getCbkReasonCode());
 		ps.setString(index++, this.model.getCbkReferenceNumber());
 		ps.setDate(index++, new java.sql.Date(this.model.getCbkRespondDate().getTime()));
 		ps.setDate(index++, new java.sql.Date(this.model.getCbkWorkDate().getTime()));
-		ps.setDouble(index++, this.model.getOriginalTxAmount());
+		//ps.setDouble(index++, this.model.getOriginalTxAmount());
+		ps.setBigDecimal(index++, new java.math.BigDecimal(this.model.getOriginalTxAmount()));
 		ps.setDate(index++, new java.sql.Date(this.model.getOriginalTxDate().getTime()));
 		ps.setString(index++, this.model.getDescription());
 		ps.setString(index++, (this.model.getCardType() != null) ? this.model.getCardType().getFdName() : null);		

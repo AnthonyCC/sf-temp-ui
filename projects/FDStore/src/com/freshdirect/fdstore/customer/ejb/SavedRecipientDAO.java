@@ -45,7 +45,8 @@ public class SavedRecipientDAO {
 			ps.setString(6, nvl(model.getRecipientEmail()));
 			ps.setString(7, nvl(model.getTemplateId()));			
 			ps.setString(8, nvl(model.getDeliveryMode().getName()));
-			ps.setDouble(9, model.getAmount());
+			//ps.setDouble(9, model.getAmount());
+			ps.setBigDecimal(9, new java.math.BigDecimal(model.getAmount()));
 			ps.setString(10, nvl(model.getPersonalMessage()));
 			ps.addBatch();
 		} 
@@ -68,7 +69,8 @@ public class SavedRecipientDAO {
 			ps.setString(6, nvl(model.getRecipientEmail()));
 			ps.setString(7, nvl(model.getTemplateId()));
 			ps.setString(8, nvl(model.getDeliveryMode().getName()));
-			ps.setDouble(9, model.getAmount());
+			//ps.setDouble(9, model.getAmount());
+			ps.setBigDecimal(9, new java.math.BigDecimal(model.getAmount()));
 			ps.setString(10, nvl(model.getPersonalMessage()));
 			ps.execute();
 			
@@ -88,7 +90,8 @@ public class SavedRecipientDAO {
 			ps.setString(5, nvl(model.getRecipientEmail()));
 			ps.setString(6, nvl(model.getTemplateId()));
 			ps.setString(7, nvl(model.getDeliveryMode().getName()));
-			ps.setDouble(8, model.getAmount());
+			//ps.setDouble(8, model.getAmount());
+			ps.setBigDecimal(8, new java.math.BigDecimal(model.getAmount()));
 			ps.setString(9, nvl(model.getPersonalMessage()));
 			ps.setString(10, model.getPK().getId());
 			

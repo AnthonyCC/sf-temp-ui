@@ -2717,8 +2717,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		try {
 			conn = this.getConnection();
 			PreparedStatement ps = conn.prepareStatement(PENDING_COMPLAINT_QUERY);
-			ps.setDouble(1, ErpServicesProperties.getCreditAutoApproveAmount());
-			ps.setDouble(2, ErpServicesProperties.getCreditAutoApproveAmount());
+			//ps.setDouble(1, ErpServicesProperties.getCreditAutoApproveAmount());
+			ps.setBigDecimal(1, new java.math.BigDecimal(ErpServicesProperties.getCreditAutoApproveAmount()));
+			//ps.setDouble(2, ErpServicesProperties.getCreditAutoApproveAmount());
+			ps.setBigDecimal(2, new java.math.BigDecimal(ErpServicesProperties.getCreditAutoApproveAmount()));
 			ResultSet rs = ps.executeQuery();
 			List<String> lst = new ArrayList<String>();
 

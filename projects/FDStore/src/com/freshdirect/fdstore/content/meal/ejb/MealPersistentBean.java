@@ -110,7 +110,8 @@ public class MealPersistentBean extends DependentPersistentBeanSupport {
         ps.setTimestamp(4, new java.sql.Timestamp(this.meal.getDelivery().getTime()));
         ps.setString(5, this.getAgent());
         ps.setString(6, this.meal.getStatus().getTypeName());
-        ps.setDouble(7, this.meal.getPrice());
+        //ps.setDouble(7, this.meal.getPrice());
+        ps.setBigDecimal(7, new java.math.BigDecimal(this.meal.getPrice()));
 		
 		if (ps.executeUpdate() != 1) {
             throw new SQLException("Row not created");
@@ -181,7 +182,8 @@ public class MealPersistentBean extends DependentPersistentBeanSupport {
 		ps.setString(1, this.meal.getName());
 		ps.setTimestamp(2, new java.sql.Timestamp(this.meal.getDelivery().getTime()));
         ps.setString(3, this.meal.getStatus().getTypeName());
-        ps.setDouble(4, this.meal.getPrice());
+        //ps.setDouble(4, this.meal.getPrice());
+        ps.setBigDecimal(4, new java.math.BigDecimal(this.meal.getPrice()));
         ps.setString(5, this.getPK().getId());
         
 		if (ps.executeUpdate() != 1) {

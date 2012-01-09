@@ -110,7 +110,8 @@ public class ErpDeliveryConfirmPersistentBean extends ErpTransactionPersistentBe
 		ps.setString(2, this.getParentPK().getId());
 		ps.setTimestamp(3, new java.sql.Timestamp(this.model.getTransactionDate().getTime()));
 		ps.setString(4, EnumTransactionType.DELIVERY_CONFIRM.getCode());
-		ps.setDouble(5, this.model.getAmount());
+		//ps.setDouble(5, this.model.getAmount());
+		ps.setBigDecimal(5, new java.math.BigDecimal(this.model.getAmount()));
 		ps.setString(6, this.model.getTransactionSource().getCode()); 
 		ps.setString(7, this.model.getCustomerId());
 		try {

@@ -391,8 +391,10 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 				ps.setString(4, model.getCustomerPk().getId());
 				ps.setString(5, cartItem.getKey());
 				ps.setString(6, getPK().getId());
-				ps.setDouble(7, ccItem.getUnitPrice());
-				ps.setDouble(8, ccItem.getTaxRate());
+				//ps.setDouble(7, ccItem.getUnitPrice());
+				ps.setBigDecimal(7, new java.math.BigDecimal(ccItem.getUnitPrice()));
+				//ps.setDouble(8, ccItem.getTaxRate());
+				ps.setBigDecimal(8, new java.math.BigDecimal(ccItem.getTaxRate()));
 				ps.setString(9, ccItem.getProductDescription());
 				ps.setDate(10, new java.sql.Date(ccItem.getDeliveryDate().getTime()));
 				ps.addBatch();

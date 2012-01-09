@@ -100,11 +100,14 @@ public class ErpChargeInvoicePersistentBean extends ErpTransactionPersistentBean
 		ps.setString(2, this.getParentPK().getId());
 		ps.setTimestamp(3, new java.sql.Timestamp(this.model.getTransactionDate().getTime()));
 		ps.setString(4, this.getTransactionType().getCode());
-		ps.setDouble(5, this.model.getAmount());
+		//ps.setDouble(5, this.model.getAmount());
+		ps.setBigDecimal(5, new java.math.BigDecimal(this.model.getAmount()));
 		ps.setString(6, this.model.getTransactionSource().getCode());
 		ps.setString(7, this.model.getInvoiceNumber());
-		ps.setDouble(8, this.model.getTax());
-		ps.setDouble(9, this.model.getSubTotal()); 
+		//ps.setDouble(8, this.model.getTax());
+		ps.setBigDecimal(8, new java.math.BigDecimal(this.model.getTax()));
+		//ps.setDouble(9, this.model.getSubTotal()); 
+		ps.setBigDecimal(9, new java.math.BigDecimal(this.model.getSubTotal()));
 		ps.setString(10, this.model.getCustomerId());
 		
 		try {

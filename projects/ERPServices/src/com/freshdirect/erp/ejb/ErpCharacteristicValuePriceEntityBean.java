@@ -117,7 +117,8 @@ public class ErpCharacteristicValuePriceEntityBean extends VersionedEntityBeanSu
         ps.setString(3, this.materialId);
         ps.setString(4, this.characteristicValueId);
         ps.setString(5, this.sapId);
-        ps.setDouble(6, this.price);
+        //ps.setDouble(6, this.price);
+        ps.setBigDecimal(6, new java.math.BigDecimal(this.price));
         ps.setString(7, this.pricingUnit);
         ps.setString(8, this.conditionType);
         
