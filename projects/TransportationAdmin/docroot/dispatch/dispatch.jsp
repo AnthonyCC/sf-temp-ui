@@ -10,6 +10,13 @@
   %>
   
   <link rel="stylesheet" href="css/transportation.css" type="text/css" />		
+  <link rel="stylesheet" href="css/airclic.css" type="text/css" />
+  
+  <% boolean airclic_msg = false; 
+  
+  if(dateRangeVal.equals(TransStringUtil.getCurrentDate())) airclic_msg = true;
+  %>
+  
 <tmpl:insert template='/common/sitelayout.jsp'>
 
     <tmpl:put name='title' direct='true'>Dispatch Sheet</tmpl:put>
@@ -213,7 +220,7 @@
                   &nbsp;<form:errors path="dispDate" />
                 </td>
                 <td> 
-                  <select id="zone" width="60" name="zone">
+                  <select id="zone" width="40" name="zone">
                       <option value="">Select Zone</option> 
                       <c:forEach var="zone" items="${zones}">                             
                           <c:choose>
@@ -267,9 +274,11 @@
                   <%} %>
                   <td>
                     <a href="javascript:directions('ec_table','drivingdirection.do', 11)">
-                  		<img src="./images/driving-directions.gif" width="114" height="25" border="0" alt="Driving Directions" title="Driving Directions" />
+                  		<img src="./images/driving-directions.gif" width="90" height="25" border="0" alt="Driving Directions" title="Driving Directions" />
                   	</a>
                   <td>
+                 
+                 
                   <td>
                     <a href="javascript:loadGps('ec_table','gpsadmin.do', 11)">
                   		<img src="./images/gpsadmin.gif" border="0" alt="Garmin" title="GPS Admin" />
@@ -280,6 +289,15 @@
 	                  		<img src="./images/copilot.png" border="0" alt="CoPilot" title="CoPilot" />
 	                  	</a>
 	              </td>
+	              <td>
+						<% 
+						if(airclic_msg)
+						{%>
+						<%@ include file="/airclic/airclic_msg.jspf%>
+						<% 	
+						}
+						%>
+				</td>
               </tr>
               </table>        
               

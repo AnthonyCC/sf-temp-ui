@@ -1329,4 +1329,8 @@ public class FDOrderAdapter implements FDOrderI {
 		return promoCode;
 	}
 
+	public boolean hasSignature() {
+		return sale.hasSignature();
+	}
+	
 }

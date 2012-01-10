@@ -49,7 +49,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	private double subTotal;
 	private EnumDeliveryType deliveryType;
 	private Date createDate;
-
+	private boolean hasSignature;
 	private String standingOrderId;
 
 	/**
@@ -103,7 +103,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	 * @param standingOrderId ID of StandingOrder that created this sale
 	 */
 	public ErpSaleModel(PrimaryKey customerPk, EnumSaleStatus status, List<ErpTransactionModel> transactions, List<ErpComplaintModel> complaints, String sapOrderNumber, ErpShippingInfo shippingInfo,
-		Set<String> usedPromotionCodes, List<ErpCartonInfo> cartonInfo, String dlvPassId, EnumSaleType type, String standingOrderId) {
+		Set<String> usedPromotionCodes, List<ErpCartonInfo> cartonInfo, String dlvPassId, EnumSaleType type, String standingOrderId, boolean hasSignature) {
 		this.customerPk = customerPk;
 		this.status = status;
 		this.transactions = transactions;
@@ -116,6 +116,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.type=type;
 		this.deliveryType = EnumDeliveryType.getDeliveryType("");
 		this.standingOrderId = standingOrderId;
+		this.hasSignature = hasSignature;
 	}
 
 	private boolean isStatus(EnumSaleStatus[] states) {
@@ -1692,6 +1693,9 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return createDate;
 	}
 	
+	public boolean hasSignature(){
+		return hasSignature;
+	}
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
 	}

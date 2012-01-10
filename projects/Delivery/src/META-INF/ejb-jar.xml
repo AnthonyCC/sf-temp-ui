@@ -59,6 +59,20 @@
                 <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
             </resource-env-ref>
         </session>
+        <session>
+             
+            <ejb-name>AirclicManager</ejb-name>            
+            <home>com.freshdirect.delivery.ejb.AirclicManagerHome</home>
+            <remote>com.freshdirect.delivery.ejb.AirclicManagerSB</remote>
+            <ejb-class>com.freshdirect.delivery.ejb.AirclicManagerSessionBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+            <resource-ref>
+                <res-ref-name>jdbc/dbpool</res-ref-name>
+                <res-type>javax.sql.DataSource</res-type>
+                <res-auth>Container</res-auth>
+            </resource-ref>	   
+        </session>
         
         <session>
             <ejb-name>DlvRestrictionManager</ejb-name>
@@ -176,6 +190,10 @@
 			</method>
 			<method>
 				<ejb-name>DlvManager</ejb-name>
+				<method-name>*</method-name>
+			</method>
+			<method>
+				<ejb-name>AirclicManager</ejb-name>
 				<method-name>*</method-name>
 			</method>
 			<method>

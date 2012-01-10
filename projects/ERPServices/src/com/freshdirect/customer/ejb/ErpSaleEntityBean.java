@@ -101,7 +101,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	private ErpComplaintList complaints;
 
 	public void initialize() {
-		model = new ErpSaleModel(null, null, new ArrayList<ErpTransactionModel>(), new ArrayList<ErpComplaintModel>(), null, null, Collections.<String>emptySet(), new ArrayList<ErpCartonInfo>(), null, null, null);
+		model = new ErpSaleModel(null, null, new ArrayList<ErpTransactionModel>(), new ArrayList<ErpComplaintModel>(), null, null, Collections.<String>emptySet(), new ArrayList<ErpCartonInfo>(), null, null, null, false);
 		complaints = new ErpComplaintList();
 	}
 
@@ -471,6 +471,15 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		if(_saleType!=null) {
 			saleType=EnumSaleType.getSaleType(_saleType);
 		}
+		
+		boolean hasSignature = false; 
+		conn.prepareStatement(
+				"SELECT 1 FROM CUST.SIGNATURE WHERE ID=?");
+			ps.setString(1, getPK().getId());
+			rs = ps.executeQuery();
+			if(rs.next())
+				hasSignature = true;
+			
 		rs.close();
 		ps.close();
 
@@ -489,7 +498,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		PrimaryKey oldPk = model.getPK();
 
 		List<ErpCartonInfo> cartonInfo = ErpCartonsDAO.getCartonInfo(conn, getPK());		
-		model = new ErpSaleModel(customerPk, status, txList.getModelList(), compList.getModelList(), sapOrderNumber, shippingInfo, usedPromotionCodes, cartonInfo, dlvPassId, saleType, standingOrderId);
+		model = new ErpSaleModel(customerPk, status, txList.getModelList(), compList.getModelList(), sapOrderNumber, shippingInfo, usedPromotionCodes, cartonInfo, dlvPassId, saleType, standingOrderId, hasSignature);
 		model.setPK(oldPk);
 		
 		super.decorateModel(model);

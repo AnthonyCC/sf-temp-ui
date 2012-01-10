@@ -1,0 +1,218 @@
+<%@ page import="com.freshdirect.delivery.model.AirclicMessageVO"%>
+<%@ page import="com.freshdirect.delivery.ejb.AirclicManager"%>
+<%@ page import="com.metaparadigm.jsonrpc.JSONRPCBridge"%>
+
+<script type="text/javascript" src="/assets/javascript/jsonrpc.js"></script>
+<script type="text/javascript" language="javascript">
+//<!--
+
+/* escapeOverlay's construction is a bit hard to grasp. It is needed to be able to
+stop the event listener. See the prototype API docs for more information:
+http://www.prototypejs.org/api/event
+*/
+var escapeOverlay = {
+	fx: function(e) 
+	{
+		// To make script compatable with both MSIE and Firefox
+		var kC  = (window.event) ? event.keyCode : e.keyCode;
+		var Esc = (window.event) ? 27 : e.DOM_VK_ESCAPE;
+		
+		// If keypressed is escape and the new entry field is empty
+		if(kC==Esc && ($F('messageDesc') == '' || $F('messageDesc') == null) )
+			closeDialogue();
+		else if(kC==Esc && window.confirm('Are you sure you wish to close the dialogue box?') )
+			closeDialogue();
+	}
+}
+
+// Save in cache (to be able to stopObserving() it), see Prototype API docs for more info:
+// http://www.prototypejs.org/api/event
+escapeOverlay.bfx = escapeOverlay.fx.bindAsEventListener(escapeOverlay);
+
+// loadPopup shows the overlay and dialogue box
+function loadPopup()
+{
+    	// Show the overlay (disables rest of page)
+	showOverlay();
+
+	// Show dialogue and focus on newvalue
+	$('dialogue').show();
+}
+ 
+// Shows the overlay and starts the ESCAPE event listener
+function showOverlay()
+{
+	$('overlay').show();
+}
+
+// Hides the overlay and stops the ESCAPE event listener
+function hideOverlay()
+{
+	$('overlay').hide();
+}
+
+// Closes the dialogue box, resets it and hides the overlay
+function closeDialogue()
+{
+	hideOverlay();
+	
+	// Hide dialogue
+	$('dialogue').hide();
+}
+
+
+
+// Adds an entry
+function addEntry(date, route, stop, message, msgSrc, userId, orderId)
+{
+	try
+	{
+	 var jsonrpcClient = new JSONRpcClient("/api/message.jsp");
+	 var _data = new Array();
+	 _data[0] = date;
+	 _data[1] = route;
+	 _data[2] = stop;
+	 _data[3] = message;
+	 _data[4] = msgSrc;
+	 _data[5] = userId;
+	 _data[6] = orderId;
+	 
+	 result = jsonrpcClient.manager.sendMessage(_data);
+	 $('error').update(result);
+	}
+	catch(e)
+	{
+		 $('error').update(e);
+	}
+	 
+
+}
+function populateText(message)
+{
+	$('messageDesc').update(message);
+}
+//-->
+</script>
+
+<style type="text/css">
+
+#overlay
+{
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	
+	width: 100%;
+	height: 100%;
+	
+	background: url(/images/overlay1.gif);
+	
+	/* Set both opacity and filter, for MSIE and firefox compatability */
+	opacity: .7;
+	filter: alpha(opacity=70);
+	
+	/* z-index sets the layer order, so that the overlay rests on top.
+	Bear in mind that the popup dialogue needs to be even higher! */
+	z-index: 1000;
+}
+
+
+#dialogue #close a
+{
+	color: #DD0000;
+	text-decoration: none;
+	background: url("/images/close.png") no-repeat scroll left top transparent;
+    cursor: pointer;
+    display: none;
+    height: 13px;
+    position: absolute;
+    right: 12px;
+    top: 10px;
+    width: 13px;
+    z-index: 1103;
+}
+
+#dialogue
+{
+	position: absolute;
+	
+	left: 50%;
+	margin-left: -100px;
+	top: 50px;
+	
+	width: 350px;
+	padding: 20px;
+	
+	background-color: #FFFFFF;
+	
+	z-index: 2000;
+}
+#error
+{
+text-align:center;
+font-weight:bold;
+}
+#airclic_table
+{
+cellpadding:5px;
+cellspacing:10px;
+}
+</style>
+
+	<!-- These DIVs are the popups and overlay. Leave these here. -->
+	<div id="overlay" style="display: none;"> </div>	
+	
+	<div id="dialogue" style="display: none;">
+	<% if(order instanceof FDOrderI){
+				FDOrderI _order = (FDOrderI)order;
+				ErpShippingInfo shippingInfo = _order.getShippingInfo();
+				String source = _order.getOrderSource().getName();
+				
+		%>
+	
+		<div id="close"><a href="javascript:void(0);" style="display: inline;" onclick="closeDialogue()" ></a></div>
+		<table id="airclic_table">
+		<tr>
+		<td id="error"></td>
+		<tr><td><label for="ddate">Delivery Date:</label> </td><td> <input disabled="disabled" name="ddate" id="ddate" type="text" value="<%=  CCFormatter.defaultFormatDate(order.getDeliveryReservation().getStartTime()) %>"></td>
+		<tr>
+		<td><label for="route">Route: </label> </td><td> <input disabled="disabled" name="route" id="route" type="text" value="<%= shippingInfo.getTruckNumber() %>"></td>
+		<tr>
+		<td><label for="stop">Stop: </label> </td><td><input disabled="disabled" name="stop" id="stop" type="text" value="<%= shippingInfo.getStopSequence()%>"></td>
+		<input type="hidden" name="source" id="source" value="<%=source%>" />
+		<input type="hidden" name="userId" id="userId" value="<%=request.getRemoteUser()%>" />
+		<input type="hidden" name="orderId" id="orderId" value="<%=_order.getErpSalesId()%>" />
+		
+		<tr>
+		<td><label for="message">Message</label> </td><td><select id="message" name="message" value="" style="width: 120px;" onchange="populateText($F('message'));">
+			
+		<option value="">Select Message</option>			
+            <%
+			List messages=AirclicManager.getInstance().getMessages();
+			%>
+			<logic:iterate collection="<%= messages %>" id="message" type="com.freshdirect.delivery.model.AirclicMessageVO">
+			<%  
+			AirclicMessageVO msg=(AirclicMessageVO)message;
+			%>
+				<option value="<%= msg.getDescription() %>"><%= msg.getMessage() %></option>
+			</logic:iterate>
+
+		</select></td>
+		<tr>
+		<td></td>
+		<td><textarea rows="4" cols="10" id="messageDesc"></textarea></td>
+		
+		</table>
+		<jsp:useBean id="JSONRPCBridge" scope="session" class="com.metaparadigm.jsonrpc.JSONRPCBridge" />
+		<% JSONRPCBridge.registerObject("manager", AirclicManager.getInstance()); %> 
+	
+
+		
+		<input onclick="addEntry($F('ddate'), $F('route'), $F('stop'), $F('messageDesc'), $F('source'), $F('userId'), $F('orderId'));" value="Add" type="button"><br>
+	
+	<%} %>
+	</div>
+
+<div>
+	<p><a href="javascript:void(0);" onclick="loadPopup()">Delivery Instructions for Driver</a></p>	
+</div>
