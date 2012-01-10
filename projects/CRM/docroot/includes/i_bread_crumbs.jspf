@@ -29,7 +29,7 @@ if (requestNode != null) {
         while (it.hasPrevious()) {
                 HashMap map = (HashMap) it.previous();
                 if ( it.hasPrevious() ) {
-                        String linkURL = "build_order_browse.jsp?catId=" + ((ContentNodeModel) map.get("link")).toString();
+                        String linkURL = "/order/build_order_browse.jsp?catId=" + ((ContentNodeModel) map.get("link")).toString();
                         browsePath.append("<a href=\"");
                         browsePath.append( response.encodeURL(linkURL) );
                         browsePath.append("\">");
@@ -43,6 +43,6 @@ if (requestNode != null) {
 }
 %>
 
-<div class="column"><%= browsePath.toString() %></div><div class="column" style="float: right;">[ <A HREF="place_order_batch_search_results.jsp?searchIndex=<%= srchIdx %>">back to list in progress</A> ]</div>
+<div class="column"><%= browsePath.toString() %></div><div class="column" style="float: right;">[ <A HREF="/order/place_order_batch_search_results.jsp?searchIndex=<%= srchIdx %>">back to list in progress</A> ]</div>
 <br clear="all">
 <hr class="gray1px">

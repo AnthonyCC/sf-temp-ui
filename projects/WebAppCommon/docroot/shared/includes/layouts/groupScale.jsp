@@ -583,7 +583,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 								productTitle += salesUnitDesc;
 							}
 							if (FDStoreProperties.isAnnotationMode()) {
-								%><%@ include file="/includes/layouts/i_grocery_annotated_title.jspf" %><%
+								%><%@ include file="/shared/includes/layouts/i_grocery_annotated_title.jspf" %><%
 							} else {
 								// no annotation, just display title
 								%><%=productTitle%><%
@@ -951,8 +951,8 @@ final int W_GROUPSCALE_TOTAL = 601;
 			//Add the material number to the displaySet.
 			displaySet.add(matId);
 			
-			%><%@include file="/includes/layouts/i_groupScale_product_separator.jspf"%>
-			<fd:ProductGroup id='productNode' categoryId='<%= displayProduct.getParentNode().toString() %>' productId='<%= displayProduct.toString() %>'><%@include file="/includes/layouts/i_groupScale_product_line.jspf"%></fd:ProductGroup>
+			%><%@include file="/shared/includes/layouts/i_groupScale_product_separator.jspf"%>
+			<fd:ProductGroup id='productNode' categoryId='<%= displayProduct.getParentNode().toString() %>' productId='<%= displayProduct.toString() %>'><%@include file="/shared/includes/layouts/i_groupScale_product_line.jspf"%></fd:ProductGroup>
 			<%
 			if(impressions.get(txCount) instanceof TransactionalProductImpression)
 				tpCount++;

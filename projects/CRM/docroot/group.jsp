@@ -15,8 +15,6 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.webapp.util.ProductImpression' %>
-<%@ page import='com.freshdirect.fdstore.pricing.ProductPricingFactory' %>
-<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
 <%@ page import='java.net.URLEncoder' %>
 <%@ page import='java.util.*' %>
 <%@ page import='org.apache.log4j.Category' %>
@@ -34,7 +32,8 @@ private static Category  LOGGER = LoggerFactory.getInstance("group.jsp");
 
 <%@page import="com.freshdirect.webapp.util.prodconf.ProductConfigurationStrategy"%><fd:CheckLoginStatus guestAllowed='true' />
 <%
-	
+
+	String templatePath = "/common/template/both_dnav_manual_left.jsp"; //the default
 	String trkCode= NVL.apply(request.getParameter("trk"), "trkCode");
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	StringBuffer leftNavBuf = new StringBuffer(10000);
@@ -42,29 +41,23 @@ private static Category  LOGGER = LoggerFactory.getInstance("group.jsp");
 	String version=NVL.apply(request.getParameter("version"), "");
 	/*  general */
 	String catId=NVL.apply(request.getParameter("catId"), ""); //category id
-	if(catId.equals(""))
-		catId=NVL.apply(request.getParameter("prodCatId"), ""); //prodCatId
-	request.setAttribute("catId", catId);
+		request.setAttribute("catId", catId);
 	String deptId=NVL.apply(request.getParameter("deptId"), ""); //department id (not used)
 		request.setAttribute("deptId", deptId);
 	int displayedRows = 1;
-	String pCatId = NVL.apply(request.getParameter("prodCatId"), "");
-	if("".equals(pCatId))
-		pCatId = catId;
-	ProductModel pm = ContentFactory.getInstance().getProductByName( pCatId, request.getParameter("productId") );
-	ProductModel displayProduct = ProductPricingFactory.getInstance().getPricingAdapter(pm, user.getPricingContext());
-	
-	String templatePath = "/common/template/both_dnav_manual_left.jsp"; //the default
-	
-	if(displayProduct != null) {
-		if (EnumTemplateType.WINE.equals( pm.getTemplateType() )) {
-			templatePath = "/common/template/usq_sidenav.jsp";
-		}
-	}
 	List impressions = new ArrayList();
 
 %>	
 	<fd:GetGSProducts skuModelList="skuModelList" productList="pmList" groupId='<%= grpId %>' version='<%= version %>'>
+	<%	int searchIdx = 0;
+	if (request.getParameter("searchIndex") != null) {
+		searchIdx = Integer.parseInt( request.getParameter("searchIndex") );
+	}
+	String index = String.valueOf(searchIdx);
+	String rawList = request.getParameter("search_pad");   
+	
+%>
+<fd:ParseSearchTerms searchParams="<%= rawList %>" isBulkSearch="true" searchFor="criteria" searchList="searchTerms">
 	<%
 		boolean showNewText     = true; //show NEW! on new products (text)
 		boolean showDescrips    = true; //set by "descrips" sub attribute
@@ -118,7 +111,7 @@ private static Category  LOGGER = LoggerFactory.getInstance("group.jsp");
 			//ConfigurationContext confContext = new ConfigurationContext();
 			//confContext.setFDUser(user);
 			//ConfigurationStrategy cUtil = new ProductConfigurationStrategy();
-			String successPage = "/grocery_cart_confirm.jsp?catId="+catId; //successPage when adding to cart
+			String successPage = "/group.jsp?" + request.getQueryString(); //successPage when adding to cart
 
 			String base_url = request.getParameter("base_url");
 			if (base_url == null) {
@@ -230,7 +223,7 @@ private static Category  LOGGER = LoggerFactory.getInstance("group.jsp");
 			}
 
 			leftNavBuf.append("<tr><td width=\"120\"><div style=\"margin-left:");
-			leftNavBuf.append(18);
+			leftNavBuf.append(9);
 			leftNavBuf.append("px; text-indent: -8px;\">");
 				leftNavBuf.append("<b>");
 					leftNavBuf.append("<a href=\"");
@@ -246,28 +239,63 @@ private static Category  LOGGER = LoggerFactory.getInstance("group.jsp");
 		displayedRows++;
 	%>
 	</logic:iterate>
-</fd:GetGSProducts>	
+
 	<%
 	String TX_FORM_NAME        = "groupScale_form"; // impression form name
 	String TX_JS_NAMESPACE     = "groupScale_JSnamespace"; // impression javascript namespace
 	 %>
-<tmpl:insert template='<%= templatePath %>'>
+<tmpl:insert template='/template/top_nav.jsp'>
 	<tmpl:put name='title' direct='true'>FreshDirect - Group Scale Pricing</tmpl:put>
 	<tmpl:put name='left_nav_manual' direct='true'>
-		<table border="0" cellspacing="0" cellpadding="0" align="center" width="150">
+	
+		<table border="0" cellspacing="0" cellpadding="0" align="center" width="125">
 			<tr>
-				<td width="5" rowspan="<%= displayedRows %>"><%-- spacer 1x1 --%></td>
-				<td width="140"><%-- spacer 120x1 --%></td>
-				<td width="5" rowspan="<%= displayedRows %>"><%-- spacer 4x1 --%></td>
+				<td width="1" rowspan="<%= displayedRows %>"><%-- spacer 1x1 --%></td>
+				<td width="120"><%-- spacer 120x1 --%></td>
+				<td width="4" rowspan="<%= displayedRows %>"><%-- spacer 4x1 --%></td>
 			</tr>
 			<%= leftNavBuf.toString() %>
 		</table><br>
 		<%-- spacer 130x20 --%>
 	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
+	<jsp:include page='/includes/order_header.jsp'/>
+
+<div class="content" style="position: relative; float: left; width: 60%; height: 70%;">
+<TABLE WIDTH="100%" CELLPADDING="2" CELLSPACING="0" BORDER="0" ALIGN="CENTER" class="order">
+	<TR VALIGN="TOP">
+		<TD width="1%">&nbsp;</TD>
+                <TD>
+                <%
+                ContentNodeModel requestNode = currentFolder; %>
+                <%@ include file="/includes/i_bread_crumbs.jspf"%>
+                </TD>
+        </TR>
+</TABLE>
+<!-- batch search items section -->
+<% if (searchTerms.size() > 0) { %>
+<div class="content_fixed">
+		<TABLE width="100%" CELLPADDING="2" CELLSPACING="0" BORDER="0">
+			<TR VALIGN="TOP">
+				<TD width="100%">
+<%	int termCounter = 0; %>
+					<logic:iterate id="term" collection="<%= searchTerms %>" type="java.lang.String">
+<%	if ( term.equalsIgnoreCase(criteria) ) { %>
+					&nbsp;<a href="<%= response.encodeURL("/order/place_order_batch_search_results.jsp?searchIndex=" +  termCounter ) %>" class="text8"><b><%= term %></b></a>&nbsp;
+<%	} else {  %>
+					&nbsp;<a href="<%= response.encodeURL("/order/place_order_batch_search_results.jsp?searchIndex=" +  termCounter ) %>"><%= term %></a>&nbsp;
+<% 	}
+termCounter++; %>
+					</logic:iterate>
+					<hr class="gray1px">
+				</TD>
+			</TR>
+		</TABLE>
+</div>
+<% } %>
 		<%-- PRICING PART --%>
 			<%-- javascript required for transactional --%>
-			<fd:javascript src="/assets/javascript/pricing.js"/>
+			<script type="text/javascript" src="/assets/javascript/pricing.js"></script>
 			<script type="text/javascript">
 				<%-- javascript required for "grocery" behavior --%>
 				function selectProduct(locationURL,qtyFldName) {
@@ -294,19 +322,19 @@ private static Category  LOGGER = LoggerFactory.getInstance("group.jsp");
 		<% request.setAttribute("TX_JS_NAMESPACE", TX_JS_NAMESPACE); %>
 		<% request.setAttribute("impressions", impressions); %>
 		
-		<fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' successPage='<%= "/grocery_cart_confirm.jsp?catId="+catId %>' source='<%= request.getParameter("fdsc.source")%>'>
+		<fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' successPage='<%= successPage %>' source='<%= request.getParameter("fdsc.source")%>'>
 			<%
 				{
 					// there are errors..Display them
 					Collection myErrs=((ActionResult)result).getErrors();
 					%>
-					<table border="0" cellspacing="0" cellpadding="0" width="100%">
+					<table border="0" cellspacing="0" cellpadding="0" width="425">
 					<%
 						for (Iterator errItr = myErrs.iterator();errItr.hasNext(); ) {
 							String errDesc = ((ActionError)errItr.next()).getDescription();
 						%>
 							<tr valign="top">
-								<td width="100%" valign="middle">
+								<td width="350" valign="middle">
 									<div id="error_descriptions">   <FONT class="text12bold" color="#CC3300"><%=errDesc%></FONT></div>
 								</td>
 							</tr>
@@ -319,5 +347,12 @@ private static Category  LOGGER = LoggerFactory.getInstance("group.jsp");
 			%>
 			<jsp:include page="/shared/includes/layouts/groupScale.jsp" flush="false"/>
 		</fd:FDShoppingCart>
+		</div>
+		<div class="order_list">
+	<%@ include file="/includes/cart_header.jspf"%>
+</div>
+		
 	</tmpl:put>
 </tmpl:insert>
+	</fd:ParseSearchTerms>
+</fd:GetGSProducts>	
