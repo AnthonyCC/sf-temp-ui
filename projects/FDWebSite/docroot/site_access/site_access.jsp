@@ -105,6 +105,7 @@ request.setAttribute("listPos", "CategoryNote,SiteAccess");
 
 		<%@ include file="/common/template/includes/metatags.jspf" %>
 		<meta http-equiv="X-UA-Compatible" content="IE=8">
+		<meta name="msvalidate.01" content="2E163086C8383686A98EE1B694357FE7" />
 
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 		<fd:javascript src="/assets/javascript/swfobject.js" />
