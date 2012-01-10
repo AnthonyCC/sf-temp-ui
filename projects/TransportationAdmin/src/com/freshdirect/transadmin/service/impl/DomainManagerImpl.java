@@ -98,7 +98,7 @@ public class DomainManagerImpl
 		return adHocRoutes; 
 	}
 	
-	public Collection getTrucks() {
+	public Map getTrucks() {
 		// get the data from CacheManager
 		// if data does not exist then get the data from sap and add it in cache
 		
@@ -226,12 +226,8 @@ public class DomainManagerImpl
 	
 	public Collection getTruckNumbers() {
 		Set truckNumbers = new TreeSet();
-		Collection routes = getTrucks();
-		Iterator iter = routes.iterator();
-		while(iter.hasNext()){
-			ErpTruckMasterInfo truckInfo = (ErpTruckMasterInfo) iter.next();
-			truckNumbers.add(truckInfo.getTruckNumber());
-		}
+		Map routes = getTrucks();
+		truckNumbers = routes.keySet();
 		return truckNumbers;
 	}
 

@@ -38,7 +38,7 @@ public interface DomainManagerI extends BaseManagerI {
 	
 	Collection getRoutes(String requestedDate);
 	
-	Collection getTrucks();
+	Map getTrucks();
 	
 	ErpTruckMasterInfo getERPTruck(String truckId);
 	

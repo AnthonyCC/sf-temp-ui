@@ -28,6 +28,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.customer.ErpTruckMasterInfo;
+import com.freshdirect.sap.command.SapTruckMasterInfo;
 import com.freshdirect.transadmin.constants.EnumIssueStatus;
 import com.freshdirect.transadmin.constants.EnumServiceStatus;
 import com.freshdirect.transadmin.datamanager.assembler.IDataAssembler;
@@ -461,7 +463,8 @@ public class DomainController extends AbstractMultiActionController {
 		if("true".equalsIgnoreCase(isRefreshReqd)){
 			domainManagerService.refreshCachedData(EnumCachedDataType.TRUCK_DATA);
 		}
-		Collection dataList = domainManagerService.getTrucks();
+		Map trkMap = domainManagerService.getTrucks();
+		ArrayList<ErpTruckMasterInfo> dataList = new ArrayList<ErpTruckMasterInfo>(trkMap.values());
 		return new ModelAndView("truckView","trucks",dataList);
 	}
 

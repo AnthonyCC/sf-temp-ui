@@ -149,7 +149,6 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 						
 		Collection planList=getPlanList(date);		
 		Collection routeList=getDomainManagerService().getRoutes(date);
-		Collection truckList=getDomainManagerService().getTrucks();
 		
 		Collection dispatchList=ModelUtil.constructDispatchModel(planList,routeList);
 		

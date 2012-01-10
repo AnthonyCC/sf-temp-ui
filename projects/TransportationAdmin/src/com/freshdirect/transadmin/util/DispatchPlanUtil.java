@@ -20,6 +20,9 @@ import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.DispatchReason;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.EmployeeRole;
+import com.freshdirect.transadmin.model.EmployeeStatus;
+import com.freshdirect.transadmin.model.EmployeeTeam;
+import com.freshdirect.transadmin.model.EmployeeTruckPreference;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.UPSRouteInfo;
@@ -112,10 +115,10 @@ public class DispatchPlanUtil {
 		return planInfo;
 	}
 
-	public static DispatchCommand getDispatchCommand(Dispatch dispatch, Zone zone,EmployeeManagerI employeeManagerService, Collection punchInfos,Map htInData,Map htOutData) {
+	public static DispatchCommand getDispatchCommand(Dispatch dispatch, Zone zone,EmployeeManagerI employeeManagerService, Collection punchInfos,
+			Map htInData,Map htOutData, Map empInfo, Map empRoleMap,Map empStatusMap,Map empTruckPrefMap,Map empTeams) {
 		DispatchCommand command = new DispatchCommand();
 		command.setDispatchId(dispatch.getDispatchId());
-		
 		try{
 			command.setDispatchDate(TransStringUtil.getDate(dispatch.getDispatchDate()));
 		}catch(ParseException ex){
@@ -147,8 +150,24 @@ public class DispatchPlanUtil {
 			command.setStatusName(dispatch.getDispositionType().getName());
 		}
 		//command.setStatus(dispatch.getDispositionType().getCode());
-		WebEmployeeInfo supInfo = employeeManagerService.getEmployee(dispatch.getSupervisorId());
+		WebEmployeeInfo supInfo = null;
+		if(empInfo!=null && empInfo.containsKey(dispatch.getSupervisorId()))
+		{
+			Object obj = empInfo.get(dispatch.getSupervisorId());
+			Object roles = (empRoleMap!=null)?empRoleMap.get(dispatch.getSupervisorId()):null;
+			Object status = (empStatusMap!=null)?empStatusMap.get(dispatch.getSupervisorId()):null;
+			Object truckPref = (empTruckPrefMap!=null)?empTruckPrefMap.get(dispatch.getSupervisorId()):null;
+			Object teams = (empTeams!=null)?empTeams.get(dispatch.getSupervisorId()):null;
+			
+			supInfo = command.buildEmpInfo((obj!=null)?(EmployeeInfo)obj:null,(roles!=null)?(List<EmployeeRole>)roles:null, 
+					(status!=null)?(List<EmployeeStatus>)status:null, (truckPref!=null)?(List<EmployeeTruckPreference>)truckPref:null, 
+							(teams!=null)?(List<EmployeeTeam>)teams:null, employeeManagerService);	
+		}
+		else
+		    supInfo = employeeManagerService.getEmployee(dispatch.getSupervisorId());
 
+		
+		
     	if(supInfo!=null && supInfo.getEmpInfo()!=null) {
 	    	command.setSupervisorCode(supInfo.getEmpInfo().getEmployeeId());
 	    	command.setSupervisorName(supInfo.getEmpInfo().getName());
@@ -185,7 +204,7 @@ public class DispatchPlanUtil {
 		command.setResourceRequirements(resourceReqs);
 		//Comment code for black hole testing
 		//if(punchInfos!=null && !punchInfos.isEmpty())
-			command.setResources(employeeManagerService,resources,resourceReqs,punchInfos);
+			command.setResources(employeeManagerService,resources,resourceReqs,punchInfos,  empInfo,  empRoleMap, empStatusMap, empTruckPrefMap, empTeams);
 		/*else
 			command.setResources(employeeManagerService,resources,resourceReqs);*/
 		//command.setResources(employeeManagerService,resources,resourceReqs,resourceSchedule);
@@ -210,7 +229,6 @@ public class DispatchPlanUtil {
 		return command;
 	}
 
-    
 	public static Plan getPlan(WebPlanInfo planInfo) {
 
 		Plan plan=new Plan();

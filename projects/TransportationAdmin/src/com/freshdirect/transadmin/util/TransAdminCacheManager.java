@@ -214,17 +214,16 @@ public class TransAdminCacheManager {
 	}
 
 
-	public List getAllTruckMasterInfo()
+	public Map getAllTruckMasterInfo()
 	{
-		return (List) this.truckDataHolder.get();
+		return (Map) this.truckDataHolder.get();
 	}
 
 
 	public ErpTruckMasterInfo getTruckMasterInfo(String truckNumber)
 	{
 		Map trkList = (Map) this.truckDataHolder.get();
-		if(trkList==null) return null;
-		if(trkList.containsKey(truckNumber))
+		if(trkList!=null && trkList.containsKey(truckNumber))
 			return (ErpTruckMasterInfo) trkList.get(truckNumber);
 		return null;
 	}
@@ -334,4 +333,13 @@ public class TransAdminCacheManager {
 		}
 		return null;
 	}	
+	
+	public Map getActiveInactiveEmployees(EmployeeManagerI mgr) {
+		// TODO Auto-generated method stub
+		this.manager=mgr;
+		return  ((Map)this.activeInactivedEmployeeDataHolder.get());
+	}
+	
+	
+	
 }

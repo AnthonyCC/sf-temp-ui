@@ -173,7 +173,7 @@ public class DispatchFormController extends AbstractFormController {
 		if(isToday&&TransWebUtil.isPunch(getDispatchManagerService()))
 			punchInfo=employeeManagerService.getPunchInfo(TransStringUtil.getServerDate(dispatch.getDispatchDate()));
 		
-		DispatchCommand dispatchCommand=DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService,punchInfo,null,null);
+		DispatchCommand dispatchCommand=DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService,punchInfo,null,null,null,null,null,null,null);
 		if(isToday&&TransWebUtil.isPunch(getDispatchManagerService())) DispatchPlanUtil.setDispatchStatus(dispatchCommand);
 		return dispatchCommand;
 	}

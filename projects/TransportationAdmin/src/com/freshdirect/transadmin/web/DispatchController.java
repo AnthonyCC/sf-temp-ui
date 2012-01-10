@@ -62,12 +62,14 @@ import com.freshdirect.transadmin.datamanager.report.DrivingDirectionsReport;
 import com.freshdirect.transadmin.datamanager.report.ReportGenerationException;
 import com.freshdirect.transadmin.model.Asset;
 import com.freshdirect.transadmin.model.Dispatch;
+import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeSubRoleType;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.HTOutScanAsset;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PlanResource;
+import com.freshdirect.transadmin.model.ResourceI;
 import com.freshdirect.transadmin.model.RouteMapping;
 import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.model.UPSRouteInfo;
@@ -81,6 +83,7 @@ import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
 import com.freshdirect.transadmin.util.ModelUtil;
+import com.freshdirect.transadmin.util.TransAdminCacheManager;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.WaveUtil;
 import com.freshdirect.transadmin.util.TransStringUtil.DateFilterException;
@@ -1194,25 +1197,43 @@ public class DispatchController extends AbstractMultiActionController {
 		Iterator iter = dispatchList.iterator();
 		Dispatch dispatch = null;
 		Set zones = new HashSet();
+		Set resourceIds = new HashSet();
+		Iterator resourceIterator = null;
+		ResourceI resource = null;
 		while(iter.hasNext())
 		{
 			dispatch = (Dispatch) iter.next();
 			if(dispatch.getZone() != null) {
 				zones.add(dispatch.getZone().getZoneCode());
 			}
+			if(dispatch.getSupervisorId()!=null)
+				resourceIds.add(dispatch.getSupervisorId());
+			if(dispatch.getDispatchResources()!=null){
+				resourceIterator = dispatch.getDispatchResources().iterator();
+				while(resourceIterator.hasNext())
+				{
+					resource = (ResourceI)resourceIterator.next();
+					if(resource.getId()!=null && resource.getId().getResourceId()!=null)
+					resourceIds.add( resource.getId().getResourceId());
+				}
+			}
 		}
-		Map<String, Zone> zonesMap =null;
+		Map<String, Zone> zonesMap =new HashMap<String,Zone>();
 		if(zones!=null && zones.size()>0)
 		{
 			 zonesMap = domainManagerService.getZoneByIDs(zones);
 		}
-		iter = dispatchList.iterator();
-		Set resourceIds = new HashSet();
-		while(iter.hasNext())
-			{
-			dispatch = (Dispatch) iter.next();
-			resourceIds.add(dispatch.getDispatchResources());
-			}
+		
+		Map<String, EmployeeInfo> empInfo = TransAdminCacheManager.getInstance().getActiveInactiveEmployees(employeeManagerService);
+		Map empRoleMap = null,empStatusMap = null,empTruckPrefMap=null,empTeams=null;
+		if(resourceIds!=null  && resourceIds.size()>0)
+		{
+			empRoleMap = employeeManagerService.getEmployeeRoles(resourceIds);
+			empStatusMap =  employeeManagerService.getEmployeeStatus(resourceIds);
+			empTruckPrefMap =  employeeManagerService.getEmployeeTruckPref(resourceIds);
+			empTeams =  employeeManagerService.getTeamByEmployees(resourceIds);
+		}
+		
 		iter = dispatchList.iterator();
 			while(iter.hasNext()){
 				dispatch = (Dispatch) iter.next();
@@ -1220,7 +1241,7 @@ public class DispatchController extends AbstractMultiActionController {
 				if(dispatch.getZone() != null) {
 					zone=zonesMap.get(dispatch.getZone().getZoneCode());
 				}
-				DispatchCommand command = DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService,punchInfo,htInData,htOutData);
+				DispatchCommand command = DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService,punchInfo,htInData,htOutData, empInfo, empRoleMap,empStatusMap,empTruckPrefMap,empTeams );
 				command.setTermintedEmployees(termintedEmployees);
 				if(isSummary){
 						//Retrive Route/Stop Information

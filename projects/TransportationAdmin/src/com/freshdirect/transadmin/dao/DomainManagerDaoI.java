@@ -144,5 +144,12 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 	Collection getEmployeesByRoleTypeAndSubRoleType(String roleTypeId, String subRoleTypeId)throws DataAccessException;
 	
 	Map findByIDs(Set ids) throws DataAccessException;
+	
+	Map getEmpRolesByIds(Set empIds) throws DataAccessException;
+	
+	Map getEmployeeStatusByIds(Set empIds)  throws DataAccessException;
+	
+	Map getEmployeeTruckPreferenceByIds(Set empIds) throws DataAccessException;
 
+	Map getTeamByEmployees(Set empIds) throws DataAccessException;
 }

@@ -482,7 +482,7 @@ public class DispatchProviderController extends JsonRpcController implements
 				if(dispatch.getZone()!=null) {
 					zone = domainManagerService.getZone(dispatch.getZone().getZoneCode());
 				}
-				DispatchCommand command = DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService,null,null,null);
+				DispatchCommand command = DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService,null,null,null,null,null,null,null,null);
 				dispatchInfos.add(command);
 			}
 			

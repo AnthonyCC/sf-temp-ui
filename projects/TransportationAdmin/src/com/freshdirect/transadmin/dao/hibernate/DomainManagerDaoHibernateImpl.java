@@ -16,12 +16,15 @@ import org.hibernate.Session;
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.HibernateCallback;
 
+import com.freshdirect.transadmin.model.EmployeeTruckPreference;
 import com.freshdirect.transadmin.constants.EnumIssueStatus;
 import com.freshdirect.transadmin.dao.DomainManagerDaoI;
 import com.freshdirect.transadmin.model.DispositionType;
 import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
+import com.freshdirect.transadmin.model.EmployeeStatus;
 import com.freshdirect.transadmin.model.EmployeeSubRoleType;
+import com.freshdirect.transadmin.model.EmployeeTeam;
 import com.freshdirect.transadmin.model.IssueLog;
 import com.freshdirect.transadmin.model.IssueSubType;
 import com.freshdirect.transadmin.model.IssueType;
@@ -500,19 +503,130 @@ public class DomainManagerDaoHibernateImpl
 
 	public Map findByIDs(Set ids)
 	{
-
-	String hql = "from Zone where zoneCode in (:listParam)";
-	String[] params = { "listParam" };
-	Object[] values = { ids};
-	List<Zone> zoneList = getHibernateTemplate().findByNamedParam(hql, params, values);
-	return convertListToMap(zoneList);
+		String hql = "from Zone where zoneCode in (:listParam)";
+		String[] params = { "listParam" };
+		Object[] values = { ids};
+		List<Zone> zoneList = getHibernateTemplate().findByNamedParam(hql, params, values);
+		return convertListToMap(zoneList);
 	}
 	private Map convertListToMap(List<Zone> zoneList)
 	{
-	Map<String,Zone> map = new HashMap<String,Zone>();
-	for (Zone zone : zoneList) 
-		map.put(zone.getZoneCode(), zone);
-	return map;
+		Map<String,Zone> map = new HashMap<String,Zone>();
+		for (Zone zone : zoneList) 
+			map.put(zone.getZoneCode(), zone);
+		return map;			
+	}
+	
+	public Map getEmpRolesByIds(Set ids)
+	{
+
+		String hql = "from EmployeeRole re where re.id.kronosId in (:listParam)";
+		String[] params = { "listParam" };
+		Object[] values = { ids};
+		List<EmployeeRole> empList = getHibernateTemplate().findByNamedParam(hql, params, values);
+		for(Iterator it=empList.iterator();it.hasNext();)
+		{
+			EmployeeRole e=(EmployeeRole)it.next();
+			e.migrate();
+		}
+		return convertEmpListToMap(empList);
+	}
+	private Map convertEmpListToMap(List empList)
+	{
+		Map<String, List> map = new HashMap<String, List>();
+		
+		for (Object obj : empList)
+		{
+			if(obj instanceof EmployeeRole)
+			{
+				EmployeeRole role = (EmployeeRole)obj;
+				if(map.containsKey(role.getId().getKronosId()))
+				{
+					map.get(role.getId().getKronosId()).add(role);
+				}
+				else
+				{
+					List roles = new ArrayList();
+					roles.add(role);
+					map.put(role.getId().getKronosId(), roles);
+				}
+			}
+			else if(obj instanceof EmployeeStatus)
+			{
+				EmployeeStatus status = (EmployeeStatus)obj;
+				if(map.containsKey(status.getPersonnum()))
+				{
+					map.get(status.getPersonnum()).add(status);
+				}
+				else
+				{
+					List statuses = new ArrayList();
+					statuses.add(status);
+					map.put(status.getPersonnum(), statuses);
+				}
+			}
+			else if(obj instanceof EmployeeTruckPreference)
+			{
+				EmployeeTruckPreference truckPref = (EmployeeTruckPreference)obj;
+				if(map.containsKey(truckPref.getId().getKronosId()))
+				{
+					map.get(truckPref.getId().getKronosId()).add(truckPref);
+				}
+				else
+				{
+					List truckPrefs = new ArrayList();
+					truckPrefs.add(truckPref);
+					map.put(truckPref.getId().getKronosId(), truckPrefs);
+				}
+			}
+			else if(obj instanceof EmployeeTeam)
+			{
+				EmployeeTeam team = (EmployeeTeam)obj;
+				if(map.containsKey(team.getKronosId()))
+				{
+					map.get(team.getKronosId()).add(team);
+				}
+				else
+				{
+					List teams = new ArrayList();
+					teams.add(team);
+					map.put(team.getKronosId(), teams);
+				}
+			}
+		}
+		return map;
 			
 	}
+
+	public Map getEmployeeStatusByIds(Set empIds)
+			throws DataAccessException {
+		
+		String hql = "from EmployeeStatus e where e.personnum in (:listParam)";
+		String[] params = { "listParam" };
+		Object[] values = { empIds};
+		List<EmployeeStatus> empList = getHibernateTemplate().findByNamedParam(hql, params, values);
+		return convertEmpListToMap(empList);
+	}
+	
+	public Map getEmployeeTruckPreferenceByIds(Set empIds) throws DataAccessException {
+		String hql = "from EmployeeTruckPreference tp where tp.id.kronosId in (:listParam)";
+		String[] params = { "listParam" };
+		Object[] values = { empIds};
+		List<EmployeeTruckPreference> empList = getHibernateTemplate().findByNamedParam(hql, params, values);
+		return convertEmpListToMap(empList);
+	}
+	
+	public Map getTeamByEmployees(Set empIds) throws DataAccessException {
+		String hql = "from EmployeeTeam te where te.kronosId in (:listParam)";
+		String[] params = { "listParam" };
+		Object[] values = { empIds};
+		List<EmployeeTeam> empList = getHibernateTemplate().findByNamedParam(hql, params, values);
+		return convertEmpListToMap(empList);
+	}
+	
+
+
+
+	
+	
 }

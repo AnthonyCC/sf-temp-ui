@@ -829,5 +829,23 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 	public Map<String, String> getTeamMapping() {
 		return ModelUtil.getIdMappedTeam(domainManagerDao.getTeamInfo());
 	}
+	
+	public Map getEmployeeRoles(Set empIds){
+		return getDomainManagerDao().getEmpRolesByIds(empIds);
+	}
+	public Map getEmployeeStatus(Set empIds) {
+		return getDomainManagerDao().getEmployeeStatusByIds(empIds);
+	}
+	
+	public Map getEmployeeTruckPref(Set empIds)
+	{
+		return getDomainManagerDao().getEmployeeTruckPreferenceByIds(empIds);
 		
+	}
+	public Map getTeamByEmployees(Set empIds)
+	{
+		return getDomainManagerDao().getTeamByEmployees(empIds);
+		
+	}
+	
 }

@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -17,6 +18,9 @@ import com.freshdirect.transadmin.model.DispatchResource;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
+import com.freshdirect.transadmin.model.EmployeeStatus;
+import com.freshdirect.transadmin.model.EmployeeTeam;
+import com.freshdirect.transadmin.model.EmployeeTruckPreference;
 import com.freshdirect.transadmin.model.PunchInfo;
 import com.freshdirect.transadmin.model.PunchInfoI;
 import com.freshdirect.transadmin.model.ResourceI;
@@ -27,6 +31,7 @@ import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.util.EnumResourceSubType;
 import com.freshdirect.transadmin.util.EnumResourceType;
 import com.freshdirect.transadmin.util.EnumStatus;
+import com.freshdirect.transadmin.util.TransAdminCacheManager;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.model.UPSRouteInfo;
 
@@ -189,7 +194,8 @@ public class DispatchCommand extends WebPlanInfo {
 		this.noOfStops = noOfStops;
 	}
 	
-	public void setResources(EmployeeManagerI employeeManagerService,Set resources, Map resourceReqs, Collection punchInfos) {
+	public void setResources(EmployeeManagerI employeeManagerService,Set resources, Map resourceReqs, Collection punchInfos , Map empInfo,Map empRoleMap,
+			Map empStatusMap,Map empTruckPrefMap,Map empTeams) {
 		
 		boolean hasPunchInfo=(punchInfos==null)?false:punchInfos.isEmpty()?false:true;
 		if(resources == null || resources.isEmpty())
@@ -202,9 +208,34 @@ public class DispatchCommand extends WebPlanInfo {
         	
         	
             ResourceI resource=(ResourceI)_it.next();          
-            EnumResourceType role=EnumResourceType.getEnum(resource.getEmployeeRoleType().getCode());   
-            WebEmployeeInfo webEmpInfo=employeeManagerService.getEmployee(resource.getId().getResourceId());
-            Collection empRoles=employeeManagerService.getEmployeeRole(webEmpInfo.getEmployeeId());
+            EnumResourceType role=EnumResourceType.getEnum(resource.getEmployeeRoleType().getCode());  
+            WebEmployeeInfo webEmpInfo = null;
+            
+            if(empInfo!=null && empInfo.containsKey(resource.getId().getResourceId()))
+            {
+            	Object obj = empInfo.get(resource.getId().getResourceId());
+    			Object roles = (empRoleMap!=null)?empRoleMap.get(resource.getId().getResourceId()):null;
+    			Object status = (empStatusMap!=null)?empStatusMap.get(resource.getId().getResourceId()):null;
+    			Object truckPref = (empTruckPrefMap!=null)?empTruckPrefMap.get(resource.getId().getResourceId()):null;
+    			Object teams = (empTeams!=null)?empTeams.get(resource.getId().getResourceId()):null;
+    			
+    			webEmpInfo = buildEmpInfo((obj!=null)?(EmployeeInfo)obj:null,(roles!=null)?(List<EmployeeRole>)roles:null, 
+    					(status!=null)?(List<EmployeeStatus>)status:null, (truckPref!=null)?(List<EmployeeTruckPreference>)truckPref:null, 
+    							(teams!=null)?(List<EmployeeTeam>)teams:null, employeeManagerService);	
+            }
+            else
+            {
+            	webEmpInfo=employeeManagerService.getEmployee(resource.getId().getResourceId());
+            }
+            
+            
+            
+            Collection empRoles = null;
+            if(empRoleMap!=null && empRoleMap.containsKey(webEmpInfo.getEmployeeId()))
+            	empRoleMap.get(webEmpInfo.getEmployeeId());
+            else
+            	empRoles=employeeManagerService.getEmployeeRole(webEmpInfo.getEmployeeId());
+            
             ResourceInfoI resourceInfo = getResourceInfo(webEmpInfo, resource);
 			if(empRoles!=null&&empRoles.size()>0)
 			{
@@ -252,6 +283,32 @@ public class DispatchCommand extends WebPlanInfo {
         }
 	}
 	
+	  public WebEmployeeInfo buildEmpInfo( EmployeeInfo empInfo, List<EmployeeRole> empRoles,List<EmployeeStatus> empStatus,
+	    		List<EmployeeTruckPreference> empTruckPrefs,List<EmployeeTeam> empTeam, EmployeeManagerI employeeManagerService)
+	    {
+	    	Map empTruckPrefMap = new HashMap<String, String>();
+	    	if(empTruckPrefs!=null)
+	    	{
+		    	Iterator truckIterator = empTruckPrefs.iterator();
+		    	while(truckIterator.hasNext())
+		    	{
+		    		EmployeeTruckPreference pref  = (EmployeeTruckPreference) truckIterator.next();
+		    		empTruckPrefMap.put(pref.getId().getPrefKey(), pref.getTruckNumber());
+		    	}
+	    	}
+			WebEmployeeInfo webInfo = new WebEmployeeInfo(empInfo, empRoles, empTruckPrefMap);
+			if (empStatus != null && empStatus.size() > 0) {
+				webInfo.setTrnStatus(""
+						+ ((EmployeeStatus) (empStatus.toArray()[0])).isStatus());
+			}
+			if (empTeam != null && empTeam.size() > 0) {
+				EmployeeTeam _team = (EmployeeTeam)(empTeam.toArray()[0]);
+				EmployeeInfo _leadInfo = TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo(_team.getLeadKronosId(), employeeManagerService);
+				webInfo.setLeadInfo(_leadInfo);
+			}
+			return webInfo;
+	    }
+	  
 	private void setStatus(PunchInfoI punchInfo)
 	{
 		try 

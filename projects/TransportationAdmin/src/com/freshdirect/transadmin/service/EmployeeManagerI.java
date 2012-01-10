@@ -63,4 +63,13 @@ public interface EmployeeManagerI extends BaseManagerI {
 	Collection getEmployeesTruckPrefrence();
 
 	Collection getEmployeesByRoleAndSubRole(String roleTypeId, String subRoleTypeId);
+	
+	Map getEmployeeRoles(Set empIds);
+	
+	Map getEmployeeStatus(Set empIds);
+	
+	Map getEmployeeTruckPref(Set empIds);
+	
+	Map getTeamByEmployees(Set empIds);
+	
 }
