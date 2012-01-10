@@ -36,7 +36,7 @@ public abstract class ExpiringReference<X> {
 	}
 	
 	public long getLastRefresh() {
-		return lastRefresh;
+		return System.currentTimeMillis() - lastRefresh;
 	}
 
 	public synchronized void set(X value) {
