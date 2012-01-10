@@ -1639,11 +1639,19 @@ inner:
 		return getSustainabilityRating(null);
 	}
 
+	public boolean showDefaultSustainabilityRating() {
+		return getAttribute("DEFAULT_SUSTAINABILITY_RATING", false);
+	}
+	
 	@Override
 	public String getSustainabilityRating(String skuCode)throws FDResourceException {
-		
+		/* APPDEV-1979 changes this to make no rating use the default, if CMS has it marked to */
 		EnumSustainabilityRating rating = getSustainabilityRatingEnum(skuCode);
+		
     	if (rating == EnumSustainabilityRating.NO_RATING) {
+    		if (this.showDefaultSustainabilityRating()) { /* if this attib is TRUE */
+        		return "00";
+    		}
     		return "";
     	}
     	return rating.getStatusCodeInDisplayFormat();
@@ -1680,6 +1688,7 @@ inner:
             // get the FDProductInfo from the FDCachedFactory
             //
             try {
+            	/* APPDEV-1979 changes this logic */
                 /*
                  * grab property to determine which sku prefixes to display
                  * ratings for
@@ -1701,6 +1710,7 @@ inner:
                 // LOG.debug("* getRatingsSkuPrefixes :"+_skuPrefixes);
 
                 // if we have prefixes then check them
+                /*
                 if (_skuPrefixes != null && !"".equals(_skuPrefixes)) {
                     StringTokenizer st = new StringTokenizer(_skuPrefixes, ","); // setup for splitting property
                     String curPrefix = ""; // holds prefix to check against
@@ -1736,6 +1746,24 @@ inner:
                             break;
                         }
                         spacer = spacer + "   ";
+                    }
+                }
+                */
+                productInfo = FDCachedFactory.getProductInfo(skuCode);
+                String tmpRating = productInfo.getSustainabilityRating();
+                if (tmpRating != null && tmpRating.trim().length() > 0) {
+                	EnumSustainabilityRating enumRating = EnumSustainabilityRating.getEnumByStatusCode(tmpRating);
+                    // LOG.debug(" enumRating :"+enumRating);
+
+                    if (enumRating != null && enumRating.isEligibleToDisplay()) { 
+                    	if (enumRating.getId() == 0) { /* check against CMS */
+                    		if (this.showDefaultSustainabilityRating()) {
+                    			rating = enumRating;
+                    		}
+                    	} else {
+                    		rating = enumRating;
+            				// LOG.debug(" rating in display format  :"+rating);
+                        }
                     }
                 }
             } catch (FDSkuNotFoundException ignore) {

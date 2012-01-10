@@ -71,10 +71,10 @@
 		        
 		        if(success) {
 				    //if we return anything, it will de displayed in the overlay (can be html)
-		            json.put("returnMsg", "<b<span style=\"color: #f00;\">Gift Card resent successfully.</span></b>");
+		            json.put("returnMsg", "<b><span style=\"color: #f00;\">Gift Card resent successfully.</span></b>");
 		            json.put("opStatus","ok");
 		        } else {
-		            json.put("returnMsg", "<b><span style=\"color: #f00;\">Unable to process your request. Please contact customer service.</span></b");
+		            json.put("returnMsg", "<b><span style=\"color: #f00;\">Unable to process your request. Please contact customer service.</span></b>");
 		            json.put("opStatus","error");
 		        }
             }
@@ -93,9 +93,9 @@
 		boolean success= true;
 		String[] emailAddrs = GiftCardUtil.sendGiftCardCancellationEmail(request,saleId,certNum,isOrigRecp,isSelf,isnewRecipient,newRecipientAddr);
 		 JSONObject json = new JSONObject();
-	        if(null != emailAddrs && emailAddrs.length > 0) {
+			if(null != emailAddrs && emailAddrs.length > 0) {
 			    //if we return anything, it will de displayed in the overlay (can be html)
-	            json.put("returnMsg", "<b<span style=\"color: #f00;\">Gift Card Cancellation mails sent successfully.</span></b>");
+	            json.put("returnMsg", "<b><span style=\"color: #f00;\">Gift Card Cancellation mails sent successfully.</span></b>");
 			    json.put("opStatus","ok");
 			    json.put("gcCertNum",certNum);
 			    json.put("origRecpEmail",emailAddrs[0]);
@@ -103,7 +103,7 @@
 			    json.put("newRecpEmail",emailAddrs[2]);
 			    
 	        } else {
-	            json.put("returnMsg", "<b><span style=\"color: #f00;\">Unable to process your request. Please cancel the Gift Card, then try again.</span></b");
+	            json.put("returnMsg", "<b><span style=\"color: #f00;\">Unable to process your request. Please cancel the Gift Card, then try again.</span></b>");
 	            json.put("opStatus","error");
 	        }
 			%>  <%=json.toString()%>

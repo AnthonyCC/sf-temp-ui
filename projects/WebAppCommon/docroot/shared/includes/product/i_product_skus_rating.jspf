@@ -63,47 +63,60 @@
 </fd:ProduceRatingCheck>
 <fd:SeafoodSustainCheck>
 <%
+	/* APPDEV-1979 eliminates the need to check the sku prefix */
 
-	boolean matchFound = false; //default to false
-
-	//this is taking the place of a skuCode
-	String deptIdCheck = productInfo.getSkuCode().toString().substring(0,3);
+	/*
+		boolean matchFound = false; //default to false
 	
-	if ( deptIdCheck != null && !"".equals(deptIdCheck) ) {
-		deptIdCheck= deptIdCheck.toUpperCase();
-
-		// grab sku prefixes that should show ratings
-		String _skuPrefixes = FDStoreProperties.getRatingsSkuPrefixes();
-
-		//if we have prefixes then check them
-		if ( _skuPrefixes != null && !"".equals(_skuPrefixes) ) {
-			StringTokenizer st = new StringTokenizer(_skuPrefixes, ","); //setup for splitting property
-			String curPrefix = ""; //holds prefix to check against
-			String spacer="* "; //spacing for sysOut calls
-			
-			//loop and check each prefix
-			while( st.hasMoreElements() ) {				
-				curPrefix = st.nextToken();
-
-				//if prefix matches get product info
-				if( deptIdCheck.startsWith(curPrefix) ) {
-					matchFound = true;
+		//this is taking the place of a skuCode
+		String deptIdCheck = productInfo.getSkuCode().toString().substring(0,3);
+		
+		if ( deptIdCheck != null && !"".equals(deptIdCheck) ) {
+			deptIdCheck= deptIdCheck.toUpperCase();
+	
+			// grab sku prefixes that should show ratings
+			String _skuPrefixes = FDStoreProperties.getRatingsSkuPrefixes();
+	
+			//if we have prefixes then check them
+			if ( _skuPrefixes != null && !"".equals(_skuPrefixes) ) {
+				StringTokenizer st = new StringTokenizer(_skuPrefixes, ","); //setup for splitting property
+				String curPrefix = ""; //holds prefix to check against
+				String spacer="* "; //spacing for sysOut calls
+				
+				//loop and check each prefix
+				while( st.hasMoreElements() ) {				
+					curPrefix = st.nextToken();
+	
+					//if prefix matches get product info
+					if( deptIdCheck.startsWith(curPrefix) ) {
+						matchFound = true;
+					}
+					//exit on matched sku prefix
+					if ( matchFound ) { break; }
+					spacer = spacer + "   ";
 				}
-				//exit on matched sku prefix
-				if ( matchFound ) { break; }
-				spacer = spacer + "   ";
 			}
 		}
-	}
+	*/
 
-	if ( matchFound ) {
-		if ( productInfo.getSustainabilityRating() != null && productInfo.getSustainabilityRating().trim().length() > 0 ) { 
+	/* if ( matchFound ) { */
+		if ( productInfo.getSustainabilityRating() != null ) { 
 				
 			String rating="";
+			boolean skipDisplay = true;
 			EnumSustainabilityRating enumRating=EnumSustainabilityRating.getEnumByStatusCode(productInfo.getSustainabilityRating());
-				if ( enumRating != null && enumRating.isEligibleToDisplay() ) {
+			
+			if ( enumRating != null && enumRating.isEligibleToDisplay() ) {
+				if (enumRating.getId() == 0) {
+					if (__prd.showDefaultSustainabilityRating()) {
+						rating = enumRating.getStatusCodeInDisplayFormat();
+						skipDisplay = false;
+					}
+				} else {
 					rating = enumRating.getStatusCodeInDisplayFormat();
-					%>
+					skipDisplay = false;
+				}
+				if (!skipDisplay) { %>
 					<table cellpadding="0" cellspacing="0" border="0" <% if (alignRight) { %>align="right"<% } %>>
 						<tr valign="middle">
 							<td class="ssRating ssRating<%=rating%>">
@@ -115,9 +128,10 @@
 						</tr>
 					</table>
 					<% if (alignRight) { %><div style="clear: both; font-size: 0px;"></div><% } %>
+				<% } %>
 			<% }
 		}
-	}
+	/* } */
 %>
 </fd:SeafoodSustainCheck>
 <%---- Mulitple skus for Freshness Guaranteed ---%>

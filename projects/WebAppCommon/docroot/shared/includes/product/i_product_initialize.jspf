@@ -139,6 +139,7 @@
 				if ( productInfo.getSustainabilityRating() != null && productInfo.getSustainabilityRating().trim().length() > 0 ) {
 					EnumSustainabilityRating enumRating=EnumSustainabilityRating.getEnumByStatusCode(productInfo.getSustainabilityRating());
 					//rating id is +1, only display here for rating of 4,5,6 (or id 5,6,7)
+					/* this only affects ratings with ids > 4, so APPDEV-1979 doesn't touch it. */
 					if ( enumRating != null && enumRating.isEligibleToDisplay() && enumRating.getId() > 4 ) {
 						//qualifies, get Brand and add to list
 						ContentNodeModel ssBrandCheck = null;

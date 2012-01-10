@@ -458,7 +458,8 @@
 							<CmsField><attribute>WE_RECOMMEND_TEXT</attribute></CmsField>
 							<CmsField><attribute>FRESH_TIPS</attribute></CmsField>
 							<CmsField><attribute>RATING</attribute></CmsField>                            
-							<CmsField><attribute>USAGE_LIST</attribute></CmsField>
+							<CmsField><attribute>USAGE_LIST</attribute></CmsField>                            
+							<CmsField><attribute>DEFAULT_SUSTAINABILITY_RATING</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>

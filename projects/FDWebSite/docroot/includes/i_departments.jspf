@@ -42,7 +42,7 @@ String presPicks = "/newsletter.jsp?catId=picks_love&trk=wgd";
 
 <%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
 
-<table border="0" cellspacing="0" cellpadding="0" style="margin-top: 20px">
+<table border="0" cellspacing="0" cellpadding="0" style="margin-top: 10px">
       <tr>
 		<td>
 			<script type="text/javascript">
@@ -51,7 +51,7 @@ String presPicks = "/newsletter.jsp?catId=picks_love&trk=wgd";
 		</td>
 	</tr>
 	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" width="1" height="5"/></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="1" height="15"/></td>
 	</tr>
 		  <tr>
 			<td align="center">

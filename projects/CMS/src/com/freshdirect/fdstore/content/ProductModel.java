@@ -931,7 +931,7 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	
 	public String getSustainabilityRating(String skuCode) throws FDResourceException;
 	
-	
+	public boolean showDefaultSustainabilityRating();
 	
 	public FDGroup getFDGroup() throws FDResourceException;
 }

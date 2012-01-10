@@ -36,6 +36,9 @@ public enum EnumSustainabilityRating {
 	}
 
 	public static EnumSustainabilityRating getEnumByStatusCode(String statusCode) {
+		if ("".equals(statusCode) || statusCode == null || (EnumSustainabilityRating) STATUSCODE_MAP.get(statusCode.toUpperCase()) == null) {
+			statusCode = "00";
+		}
 		return statusCode == null ? null : (EnumSustainabilityRating) STATUSCODE_MAP.get(statusCode.toUpperCase());
 	}
 
@@ -63,9 +66,10 @@ public enum EnumSustainabilityRating {
 	}
 
 	public boolean isEligibleToDisplay() {
-		if (id < 2) {
-			return false;
-		}
+		/* APPDEV-1979 changes 0 to be an allowed value */
+			if (id < 2 && id != 0) {
+				return false;
+			}
 		return true;
 	}
 

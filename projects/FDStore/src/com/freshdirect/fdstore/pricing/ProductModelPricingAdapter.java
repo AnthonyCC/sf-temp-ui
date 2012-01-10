@@ -1388,4 +1388,9 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 		// TODO Auto-generated method stub
 		return prodModel.isShowWineRatings();
 	}
+
+	@Override
+	public boolean showDefaultSustainabilityRating() {
+		return this.prodModel.showDefaultSustainabilityRating();
+	}
 }
