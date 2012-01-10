@@ -1638,10 +1638,6 @@ inner:
 	public String getSustainabilityRating() throws FDResourceException {
 		return getSustainabilityRating(null);
 	}
-
-	public boolean showDefaultSustainabilityRating() {
-		return getAttribute("DEFAULT_SUSTAINABILITY_RATING", false);
-	}
 	
 	@Override
 	public String getSustainabilityRating(String skuCode)throws FDResourceException {

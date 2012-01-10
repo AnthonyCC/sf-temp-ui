@@ -1970,4 +1970,9 @@ public class MockProductModel extends MockContentNodeModel implements
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public 	boolean showDefaultSustainabilityRating() {
+		return false;
+	}
 }

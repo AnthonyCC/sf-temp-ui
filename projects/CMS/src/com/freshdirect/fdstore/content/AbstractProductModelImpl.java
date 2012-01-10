@@ -581,4 +581,10 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		}
 		return null;
 	}
+
+	@Override
+	public 	boolean showDefaultSustainabilityRating() {
+		return getAttribute("DEFAULT_SUSTAINABILITY_RATING", false);
+	}
+	
 }
