@@ -8,18 +8,12 @@
  */
 package com.freshdirect.sap.command;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.customer.ErpTruckMasterInfo;
 import com.freshdirect.sap.bapi.BapiFactory;
 import com.freshdirect.sap.bapi.BapiTruckMasterInfo;
 import com.freshdirect.sap.ejb.SapException;
-import com.freshdirect.sap.jco.JcoManager;
-import com.sap.mw.jco.IFunctionTemplate;
-import com.sap.mw.jco.JCO;
-import com.sap.mw.jco.JCO.Function;
 
 /**
  *

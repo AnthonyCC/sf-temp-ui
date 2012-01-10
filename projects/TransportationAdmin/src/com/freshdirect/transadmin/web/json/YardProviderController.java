@@ -18,8 +18,10 @@ import org.datacontract.schemas._2004._07.telargo_generalservices_logic_services
 import org.datacontract.schemas._2004._07.telargo_generalservices_logic_services_interface_dto_core.AssetWithStateDto;
 
 import com.freshdirect.customer.ErpRouteMasterInfo;
+import com.freshdirect.customer.ErpRouteStatusInfo;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.sap.command.SapRouteStatusInfo;
 import com.freshdirect.telargo.model.FDAssetInfo;
 import com.freshdirect.telargo.service.exception.TelargoServiceException;
 import com.freshdirect.telargo.service.proxy.TelargoServiceProxy;
@@ -28,7 +30,6 @@ import com.freshdirect.transadmin.constants.EnumRouteStatus;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.ParkingLocation;
 import com.freshdirect.transadmin.model.ParkingSlot;
-import com.freshdirect.transadmin.model.RouteInfo;
 import com.freshdirect.transadmin.model.UPSRouteInfo;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.IYardManagerService;
@@ -48,8 +49,6 @@ public class YardProviderController extends BaseJsonRpcController  implements IY
 	private IYardManagerService yardManagerService;
 	
 	private DomainManagerI domainManagerService;
-
-	private ZoneManagerI zoneManagerService;
 				
 	public IYardManagerService getYardManagerService() {
 		return yardManagerService;
@@ -67,14 +66,6 @@ public class YardProviderController extends BaseJsonRpcController  implements IY
 		this.domainManagerService = domainManagerService;
 	}
 	
-	public ZoneManagerI getZoneManagerService() {
-		return zoneManagerService;
-	}
-
-	public void setZoneManagerService(ZoneManagerI zoneManagerService) {
-		this.zoneManagerService = zoneManagerService;
-	}
-
 	public boolean addParkingLocation(String[][] location){
 		
 		Set<ParkingLocation> newLocations = new HashSet<ParkingLocation>();
@@ -131,7 +122,7 @@ public class YardProviderController extends BaseJsonRpcController  implements IY
 	public List<ParkingSlot> getParkingSlot(String parkingLocName) {
 		
 		List<ParkingSlot> slots = new ArrayList<ParkingSlot>();
-		slots = yardManagerService.getParkingSlot(parkingLocName);
+		slots = yardManagerService.getParkingSlots(parkingLocName);
 		return slots;
 	}
 	
@@ -146,13 +137,13 @@ public class YardProviderController extends BaseJsonRpcController  implements IY
 		if(locationMap != null){
 			List<ParkingSlot> locationSlots = null;
 			for(Map.Entry<String, ParkingLocation> locEntry : locationMap.entrySet()){
-				locationSlots = yardManagerService.getParkingSlot(locEntry.getKey());
+				locationSlots = yardManagerService.getParkingSlots(locEntry.getKey());
 				locationMapping.put(locEntry.getKey(), locationSlots != null ? locationSlots.size() : 0);
 			}
 		}
 		
 		List<ParkingSlot> slots = new ArrayList<ParkingSlot>();
-		slots = yardManagerService.getParkingSlot(null);		
+		slots = yardManagerService.getParkingSlots(null);		
 		
 		TelargoServiceProxy proxy = new TelargoServiceProxy();
 		ArrayOfAssetWithStateDto assetStateArray;
@@ -278,7 +269,7 @@ public class YardProviderController extends BaseJsonRpcController  implements IY
 		Map<String, EnumAssetStatus> assetMapping = yardManagerService.getAssets(assetTypes);
 		
 		List<ParkingSlot> parkingSlots = new ArrayList<ParkingSlot>();
-		parkingSlots = yardManagerService.getParkingSlot(null);		
+		parkingSlots = yardManagerService.getParkingSlots(null);
 		
 		try {
 			
@@ -345,7 +336,15 @@ public class YardProviderController extends BaseJsonRpcController  implements IY
 				
 				/*Is Route or truck*/
 				if (isRouteNo) {
-					command.setLoadStatus(EnumRouteStatus.LOADED.value());
+					SapRouteStatusInfo routeStatusInfo = new SapRouteStatusInfo(TransStringUtil.getCurrentDate(), routeNo);
+					routeStatusInfo.execute();
+					
+					ErpRouteStatusInfo _routeStatusInfo = routeStatusInfo.getRouteStatusInfo();
+					if(_routeStatusInfo != null && EnumRouteStatus.LOADED.value().equals(_routeStatusInfo.getRouteStatus())){
+						command.setLoadStatus(EnumRouteStatus.LOADED.value());
+					} else {
+						command.setLoadStatus(EnumRouteStatus.EMPTY.value());
+					}
 				} else {
 					/*has active route */
 					if (!hasActiveRoute) {
@@ -376,125 +375,6 @@ public class YardProviderController extends BaseJsonRpcController  implements IY
 				return command;
 			}			
 			
-		} catch(ParseException px){
-			LOGGER.error("########## Parsing date failed with exception ##########" + px);
-		} catch (TelargoServiceException exp) {			
-			exp.printStackTrace();
-			LOGGER.error("########## Retrive Telargo data failed with exception ##########" + exp);
-		} catch (Exception ex) {			
-			ex.printStackTrace();
-			LOGGER.error("########## Exception when fetching route data ##########" + ex);
-		}		
-		return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	public RouteInfoCommand getRouteStatusInfo1(String routeNo){
-		
-		RouteInfoCommand command = new RouteInfoCommand();
-		
-		List<String> assetTypes = new ArrayList<String>();
-		assetTypes.add("TRUCK");assetTypes.add("TRAILER");
-		Map<String, EnumAssetStatus> assetMapping = yardManagerService.getAssets(assetTypes);
-		
-		List<ParkingSlot> parkingSlots = new ArrayList<ParkingSlot>();
-		parkingSlots = yardManagerService.getParkingSlot(null);		
-		
-		try {
-			
-			routeNo = routeNo != null ? routeNo.trim() : "";
-			String truckNo = null; String activeRouteNo = null;
-			boolean matchFound = false, isRouteNo = false, hasActiveRoute = false, isOnFDProperty = false;
-					
-			FDRouteMasterInfo routeInfo = domainManagerService.getRouteMasterInfo(routeNo, new Date());
-			if(routeInfo != null){
-				isRouteNo = true;
-				hasActiveRoute = true;
-				truckNo = routeInfo.getTruckNumber();
-			} else {
-				truckNo = routeNo;
-				Collection routes = domainManagerService.getRoutes(TransStringUtil.getServerDate(new Date()));				
-				if(routes != null){
-					Iterator<RouteInfo> routeItr = routes.iterator();
-					while(routeItr.hasNext()){
-						RouteInfo _route = routeItr.next();
-						if(_route.getTruckNumber().equals(truckNo)){
-							matchFound = true;
-							hasActiveRoute = true;
-							activeRouteNo = _route.getRouteNumber();
-							break;
-						}
-					}
-					if(!matchFound && assetMapping.get(truckNo) != null){
-						matchFound = true; 
-					}
-				}
-			}
-			
-			Map<String, String> telargoAssetMapping = new HashMap<String, String>();
-			
-			if(matchFound){
-				TelargoServiceProxy proxy = new TelargoServiceProxy();
-				ArrayOfAssetWithStateDto assetStateArray;
-			
-				assetStateArray = proxy.getAssetsWithLastState();		
-				List<FDAssetInfo> assetInfos = new ArrayList<FDAssetInfo>();
-				
-				if (assetStateArray != null) {
-					AssetWithStateDto[] assetStateDtos = assetStateArray.getAssetWithStateDto();
-					if (assetStateDtos != null) {
-						for (AssetWithStateDto assetDTO : assetStateDtos) {
-							FDAssetInfo assetInfo = new FDAssetInfo(assetDTO);
-							assetInfos.add(new FDAssetInfo(assetDTO));
-							telargoAssetMapping.put(assetInfo.getInternalNo().trim(), assetInfo.getLastLocation());
-						}
-					} else {
-						LOGGER.debug("########## Empty AssetWithStateDto ############### ");
-					}
-				} else {
-					LOGGER.debug("########## Empty ArrayOfAssetWithStateDto ##########");
-				}
-				System.out.println("Total Assets:"+assetInfos.size());
-				for(FDAssetInfo assetInfo : assetInfos) {			
-					System.out.println(assetInfo);
-				}
-				
-				command.setServiceStatus(assetMapping.get(truckNo) != null ? assetMapping.get(truckNo).getDescription():">>");
-				command.setCurrentLocation(telargoAssetMapping.get(truckNo) != null ? telargoAssetMapping.get(truckNo):"No location found");
-				
-				/*Is Route or truck*/
-				if (isRouteNo) {
-					command.setLoadStatus(EnumRouteStatus.LOADED.value());
-				} else {
-					/*has active route */
-					if (!hasActiveRoute) {
-						command.setLoadStatus(EnumRouteStatus.EMPTY.value());
-					} else {
-						if(telargoAssetMapping.get(truckNo) != null){
-							String[] locArray = StringUtil.decodeStrings(telargoAssetMapping.get(truckNo));
-							for(int i=0; i < locArray.length; i++){
-								if(parkingSlots != null){
-									for(ParkingSlot _slot : parkingSlots){
-										if(_slot.getSlotNumber().trim().equalsIgnoreCase(locArray[i].trim())) {
-											isOnFDProperty = true;
-											break;
-										}
-									}
-								} else 
-									break;
-								
-								if(isOnFDProperty)	break;
-							}
-						}
-						if(isOnFDProperty && isPastFirstDeliveryWindow(activeRouteNo)){
-							command.setLoadStatus(EnumRouteStatus.EMPTY.value());
-						} else 
-							command.setLoadStatus(EnumRouteStatus.LOADED.value());
-					}
-				}
-			}
-			
-			return command;
 		} catch(ParseException px){
 			LOGGER.error("########## Parsing date failed with exception ##########" + px);
 		} catch (TelargoServiceException exp) {			

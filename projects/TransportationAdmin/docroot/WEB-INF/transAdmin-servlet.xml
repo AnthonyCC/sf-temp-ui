@@ -160,8 +160,9 @@
 
     			<prop key="/yardmonitor.do">yardController</prop>    			
     			<prop key="/yardmonitor.ax">asyncYardController</prop>
-    			<prop key="/parkinglocationslot.do">yardController</prop> 
-    			
+    			<prop key="/parkingslot.do">yardController</prop>
+    			<prop key="/deleteparkingslot.do">yardController</prop> 
+    			<prop key="/editparkingslot.do">parkingSlotFormController</prop> 
 
 			</props>
 		</property>
@@ -336,7 +337,9 @@
             <prop key="/deletefacilitytype.do">deleteFacilityTypeHandler</prop>
 
 			<prop key="/yardmonitor.do">yardMonitorHandler</prop>
-			<prop key="/parkinglocationslot.do">parkingLocationSlotHandler</prop>
+			<prop key="/parkingslot.do">parkingLocationSlotHandler</prop>
+			<prop key="/deleteparkingslot.do">deleteParkingSlotHandler</prop>
+			
 			</props>
 		</property>
 	</bean>
@@ -788,6 +791,14 @@
         <property name="validator" ref="facilityTypeValidator"/> 
         <property name="successView" value="facilityTypeEdit" />
         <property name="formView" value="facilityTypeEdit" />
+	</bean>
+	<bean id="parkingSlotFormController" class="com.freshdirect.transadmin.web.ParkingSlotFormController">		  
+		<property name="yardManagerService" ref="yardManagerService"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="parkingSlotForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.ParkingSlot"/>
+        <property name="successView" value="parkingSlotEdit" />
+        <property name="formView" value="parkingSlotEdit" />
 	</bean>
 	    
 	<bean id="employeeValidator" class="com.freshdirect.transadmin.web.validation.EmployeeValidator"/>

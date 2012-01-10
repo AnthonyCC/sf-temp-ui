@@ -128,7 +128,7 @@
 		var msgColor = "#00FF00";
 		
 		function viewSlots(){
-			javascript:pop('parkinglocationslot.do',400, 680);
+			javascript:pop('parkingslot.do',400, 680);
 		}
 
 		function showYardMonitorData(){

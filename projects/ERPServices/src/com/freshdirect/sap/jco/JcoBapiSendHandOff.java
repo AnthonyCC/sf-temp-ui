@@ -10,13 +10,10 @@ package com.freshdirect.sap.jco;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.framework.util.QuickDateFormat;
 import com.freshdirect.sap.bapi.BapiSendHandOff;
-import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffDispatchIn;
-import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffTrailerIn;
 import com.sap.mw.jco.JCO;
 
 /**

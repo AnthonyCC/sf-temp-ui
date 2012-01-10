@@ -32,6 +32,9 @@ public class ParkingLocation implements Serializable {
 		this.locationName = locationName;
 		this.locationDesc = locationDesc;
 	}
+	public ParkingLocation() {
+		// TODO Auto-generated constructor stub
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;

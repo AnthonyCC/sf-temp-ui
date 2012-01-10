@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.transadmin.constants.EnumParkingSlotBarcodeStatus;
 import com.freshdirect.transadmin.constants.EnumParkingSlotPavedStatus;
@@ -77,7 +78,7 @@ public class YardController extends AbstractMultiActionController {
 		String parkingLocName = request.getParameter("parlingloc");
 		
 		List<ParkingSlot> slots = new ArrayList<ParkingSlot>();
-		slots = yardManagerService.getParkingSlot(parkingLocName);
+		slots = yardManagerService.getParkingSlots(parkingLocName);
 		
 		List<ParkingLocation> locations = new ArrayList<ParkingLocation>();
 		Map<String, ParkingLocation> locationMap = yardManagerService.getParkingLocation();
@@ -91,25 +92,35 @@ public class YardController extends AbstractMultiActionController {
 		return mav;
 	}
 	
-	interface EarlyWarningFormatter {
-		
-		String formatCapacity(double value);
-	}
+	@SuppressWarnings("unchecked")
+	public ModelAndView deleteParkingSlotHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 	
-	class TimeEarlyWarningFormatter implements EarlyWarningFormatter{
-		
-		public String formatCapacity(double value) {
-			return ""+TransStringUtil.formatIntoHHMM(value);
+		ModelAndView mav = new ModelAndView("parkingLocSlotView");
+		String parkingLocName = request.getParameter("parlingloc");
+		List<String> slotNumbers = new ArrayList<String>();
+		String arrEntityList[] = getParamList(request);	
+		if (arrEntityList != null) {
+			int arrLength = arrEntityList.length;
+			for (int intCount = 0; intCount < arrLength; intCount++) {
+				slotNumbers.add(arrEntityList[intCount]);
+			}
 		}
-	}
-	
-	class OrderEarlyWarningFormatter implements EarlyWarningFormatter{
 		
-		public String formatCapacity(double value) {
-			return ""+Math.round(value);
+		if(slotNumbers.size() > 0 )
+			yardManagerService.deleteParkingSlot(slotNumbers);
+		
+		List<ParkingSlot> slots = new ArrayList<ParkingSlot>();
+		slots = yardManagerService.getParkingSlots(parkingLocName);
+		
+		List<ParkingLocation> locations = new ArrayList<ParkingLocation>();
+		Map<String, ParkingLocation> locationMap = yardManagerService.getParkingLocation();
+		if(locationMap != null){
+			for(Map.Entry<String, ParkingLocation> locEntry : locationMap.entrySet()){
+				locations.add(locEntry.getValue());
+			}
 		}
+		mav.getModel().put("parkingLocs", locations);
+		mav.getModel().put("parkingLocSlots", slots);
+		return mav;
 	}
-	
-	
-	
 }

@@ -41,19 +41,23 @@ public class YardManagerDAO implements IYardManagerDAO   {
 	private static final String GET_PARKINGLOCATION = " SELECT * FROM TRANSP.PARKING_LOCATION ";
 	
 	private static final String INSERT_PARKING_LOCATION = "INSERT INTO TRANSP.PARKING_LOCATION ( LOCATION_NAME, "+
-			" LOCATION_DESCRIPTION ) VALUES ( ?,? )";
+			" LOCATION_DESC ) VALUES ( ?,? )";
 	
 	private static final String CLEAR_PARKINGLOCATION = "DELETE FROM TRANSP.PARKING_LOCATION WHERE LOCATION_NAME in ( ";
 	
-	private static final String INSERT_PARKING_SLOT = "INSERT INTO TRANSP.PARKING_LOCATIONSLOT "
-		+" ( SLOT_NUMBER, SLOT_DESCRIPTION, BARCODE_STATUS, PAVED_STATUS, PARKINGLOCATION_ID ) VALUES ( ?,?,?,? ) ";
+	private static final String INSERT_PARKING_SLOT = "INSERT INTO TRANSP.PARKING_SLOT "
+			+" ( SLOT_NUMBER, SLOT_DESC, BARCODE_STATUS, PAVED_STATUS, PARKINGLOCATION_ID ) VALUES ( ?,?,?,? ) ";
 	
-	private static final String GET_PARKINGLOCATION_SLOTS = "SELECT * FROM TRANSP.PARKING_LOCATION PL, TRANSP.PARKING_LOCATIONSLOT PLS "
-		+ " where PL.LOCATION_NAME = PLS.PARKINGLOCATION_ID ";
+	private static final String GET_PARKINGLOCATION_SLOTS = "SELECT * FROM TRANSP.PARKING_LOCATION PL, TRANSP.PARKING_SLOT PLS "
+			+ " where PL.LOCATION_NAME = PLS.PARKINGLOCATION_ID ";
 	
-	private static final String GET_PARKINGSLOTSBY_LOCATION = "SELECT * FROM TRANSP.PARKING_LOCATION PL, TRANSP.PARKING_LOCATIONSLOT PLS "
-		+ " where PL.LOCATION_NAME = PLS.PARKINGLOCATION_ID and PL.LOCATION_NAME = ? ";
+	private static final String GET_PARKINGSLOT = "SELECT * FROM TRANSP.PARKING_SLOT S where S.SLOT_NUMBER = ? ";
 	
+	private static final String CLEAR_PARKINGSLOT = "DELETE FROM TRANSP.PARKING_SLOT WHERE SLOT_NUMBER in ( ";
+	
+	private static final String UPDATE_PARKINGSLOT = "update TRANSP.PARKING_SLOT  s set s.SLOT_NUMBER = ? , s.SLOT_DESC = ?, s.BARCODE_STATUS = ?, s.PAVED_STATUS = ?, s.PARKINGLOCATION_ID = ? "+ 
+			" where SLOT_NUMBER = ? ";
+		
 	private static final String GET_ASSETS = " SELECT ASSET_NO, ASSET_STATUS FROM TRANSP.ASSET WHERE ASSET_TYPE in ( ";
 	
 	private static final String GET_ROUTE_FIRSTSTOP_WINDOW = "SELECT R.ROUTE_NO ROUTE_NUMBER, " +
@@ -125,7 +129,7 @@ public class YardManagerDAO implements IYardManagerDAO   {
 						public void processRow(ResultSet rs) throws SQLException {				    	
 							do { 
 								ParkingLocation model = new ParkingLocation(rs.getString("LOCATION_NAME")
-																				, rs.getString("LOCATION_DESCRIPTION"));								
+																				, rs.getString("LOCATION_DESC"));								
 								result.put(rs.getString("LOCATION_NAME"), model);
 							} while(rs.next());
 						}
@@ -156,21 +160,20 @@ public class YardManagerDAO implements IYardManagerDAO   {
 		}
 	}
 	
-	public List<ParkingSlot> getParkingSlot(final String parkingLocName) throws SQLException {
+	public List<ParkingSlot> getParkingSlots(final String parkingLocName) throws SQLException {
 		final List<ParkingSlot> result = new ArrayList<ParkingSlot>();
 		final StringBuffer updateQ = new StringBuffer();
-		if (parkingLocName == null || "".equalsIgnoreCase(parkingLocName)) {
-			updateQ.append(GET_PARKINGLOCATION_SLOTS);
-		} else {
-			updateQ.append(GET_PARKINGSLOTSBY_LOCATION);
-		}
+		updateQ.append(GET_PARKINGLOCATION_SLOTS);
+		if (parkingLocName != null && !"".equalsIgnoreCase(parkingLocName)) {
+			updateQ.append(" and PL.LOCATION_NAME = ? ");
+		} 
 		Connection connection = null;
 		try {
 			PreparedStatementCreator creator = new PreparedStatementCreator() {
 				public PreparedStatement createPreparedStatement(
 						Connection connection) throws SQLException {
 					PreparedStatement ps = connection.prepareStatement(updateQ.toString());
-					if(parkingLocName != null)ps.setString(1, parkingLocName);
+					if(parkingLocName != null && !"".equalsIgnoreCase(parkingLocName))ps.setString(1, parkingLocName);
 					return ps;
 				}
 			};
@@ -179,10 +182,10 @@ public class YardManagerDAO implements IYardManagerDAO   {
 					do {
 						ParkingSlot slot = new ParkingSlot();
 						slot.setSlotNumber(rs.getString("SLOT_NUMBER"));
-						slot.setSlotDesc(rs.getString("SLOT_DESCRIPTION"));
-						slot.setBarcodeStatus(EnumParkingSlotBarcodeStatus.getEnum(rs.getString("BARCODE_STATUS")).getName());
-						slot.setPavedStatus(EnumParkingSlotPavedStatus.getEnum(rs.getString("PAVED_STATUS")).getName());
-						slot.setLocation(new ParkingLocation(rs.getString("LOCATION_NAME"), rs.getString("LOCATION_DESCRIPTION")));
+						slot.setSlotDesc(rs.getString("SLOT_DESC"));
+						slot.setBarcodeStatus(rs.getString("BARCODE_STATUS") != null ? EnumParkingSlotBarcodeStatus.getEnum(rs.getString("BARCODE_STATUS")).getName(): null);
+						slot.setPavedStatus(rs.getString("PAVED_STATUS") != null ? EnumParkingSlotPavedStatus.getEnum(rs.getString("PAVED_STATUS")).getName(): null);
+						slot.setLocation(new ParkingLocation(rs.getString("LOCATION_NAME"), rs.getString("LOCATION_DESC")));
 						result.add(slot);
 					} while (rs.next());
 				}
@@ -253,6 +256,88 @@ public class YardManagerDAO implements IYardManagerDAO   {
 		}
 		);
 		return _routeInfo;
-	}	
+	}
 	
+	public void deleteParkingSlot(List<String> slotNumbers) throws SQLException {
+		
+		Connection connection = null;
+		if(slotNumbers != null && slotNumbers.size() > 0) {
+			try {			
+				
+				final StringBuffer updateQ = new StringBuffer();
+				updateQ.append(CLEAR_PARKINGSLOT);
+				int intCount = 0;
+				for(String slotNo : slotNumbers) {
+					updateQ.append("'").append(slotNo).append("'");
+					intCount++;
+					if(intCount != slotNumbers.size()) {
+						updateQ.append(",");
+					}
+				}
+				updateQ.append(")");
+				this.jdbcTemplate.update(updateQ.toString(), new Object[] {});
+				connection = this.jdbcTemplate.getDataSource().getConnection();		
+			} finally {
+				if(connection!=null) connection.close();
+			}
+		}
+	}
+	
+	public void updateParkingSlot(ParkingSlot slot) throws SQLException {
+		Connection connection = null;
+		try {
+			BatchSqlUpdate batchUpdater = new BatchSqlUpdate(this.jdbcTemplate.getDataSource(),UPDATE_PARKINGSLOT);
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			batchUpdater.compile();			
+			connection = this.jdbcTemplate.getDataSource().getConnection();
+			
+			if(slot != null) {
+				
+				batchUpdater.update(new Object[]{ slot.getSlotNumber()
+								, slot.getSlotDesc()
+								, slot.getBarcodeStatus()
+								, slot.getPavedStatus()
+								, slot.getLocation().getLocationName()
+								, slot.getSlotNumber()
+				});
+			}			
+			batchUpdater.flush();
+		}finally{
+			if(connection!=null) connection.close();
+		}
+	}
+	
+	public ParkingSlot getParkingSlot(final String slotNumber) throws SQLException {
+		
+		final ParkingSlot _slotInfo = new ParkingSlot();
+		PreparedStatementCreator creator = new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+
+				PreparedStatement ps = connection.prepareStatement(GET_PARKINGSLOT);			
+				ps.setString(1, slotNumber);
+				return ps;
+			}
+		};
+		
+		jdbcTemplate.query(creator, new RowCallbackHandler() { 
+			public void processRow(ResultSet rs) throws SQLException {				    	
+				do {
+					_slotInfo.setSlotNumber(rs.getString("SLOT_NUMBER"));
+					_slotInfo.setSlotDesc(rs.getString("SLOT_DESC"));
+					_slotInfo.setBarcodeStatus(rs.getString("BARCODE_STATUS"));
+					_slotInfo.setPavedStatus(rs.getString("PAVED_STATUS"));
+					
+					ParkingLocation _loc = new ParkingLocation(rs.getString("PARKINGLOCATION_ID"), null);					
+					_slotInfo.setLocation(_loc);	
+				} while(rs.next());		        		    	
+			}
+		}
+		);
+		return _slotInfo;
+	}
 }

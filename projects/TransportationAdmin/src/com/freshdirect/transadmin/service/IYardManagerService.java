@@ -21,9 +21,15 @@ public interface IYardManagerService {
 	
 	void addParkingSlot(ParkingSlot slot) throws TransAdminServiceException;
 	
-	List<ParkingSlot> getParkingSlot(String parkingLocName)  throws TransAdminServiceException;
+	List<ParkingSlot> getParkingSlots(String parkingLocName)  throws TransAdminServiceException;
 	
 	Map<String, EnumAssetStatus> getAssets(List<String> assetTypes) throws TransAdminServiceException;
 	
 	UPSRouteInfo getUPSRouteInfo(final Date deliveryDate, final String routeNo) throws TransAdminServiceException;
+	
+	void deleteParkingSlot(List<String> slotNumbers) throws TransAdminServiceException;
+	
+	void updateParkingSlot(ParkingSlot slot) throws TransAdminServiceException;
+	
+	ParkingSlot getParkingSlot(String slotNumber) throws TransAdminServiceException;
 }

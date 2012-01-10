@@ -63,9 +63,9 @@ public class YardManagerService implements IYardManagerService {
 		}
 	}
 	
-	public List<ParkingSlot> getParkingSlot(String parkingLocName) throws TransAdminServiceException {
+	public List<ParkingSlot> getParkingSlots(String parkingLocName) throws TransAdminServiceException {
 		try{
-			return yardMngDAOImpl.getParkingSlot(parkingLocName);	
+			return yardMngDAOImpl.getParkingSlots(parkingLocName);	
 		} catch (SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_YARDMONITOR_ERROR);
 		}
@@ -85,4 +85,27 @@ public class YardManagerService implements IYardManagerService {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_YARDMONITOR_ERROR);
 		}
 	}
+	public void deleteParkingSlot(List<String> slotNumbers) throws TransAdminServiceException {
+		try{
+			yardMngDAOImpl.deleteParkingSlot(slotNumbers) ;	
+		} catch (SQLException e) {
+			throw new TransAdminServiceException(e, IIssue.PROCESS_YARDMONITOR_ERROR);
+		}
+	}
+	public void updateParkingSlot(ParkingSlot slot) throws TransAdminServiceException {
+		try{
+			yardMngDAOImpl.updateParkingSlot(slot) ;	
+		} catch (SQLException e) {
+			throw new TransAdminServiceException(e, IIssue.PROCESS_YARDMONITOR_ERROR);
+		}
+	}
+	
+	public ParkingSlot getParkingSlot(String slotNumber) throws TransAdminServiceException {
+		try{
+			return yardMngDAOImpl.getParkingSlot(slotNumber) ;	
+		} catch (SQLException e) {
+			throw new TransAdminServiceException(e, IIssue.PROCESS_YARDMONITOR_ERROR);
+		}
+	}
+	
 }

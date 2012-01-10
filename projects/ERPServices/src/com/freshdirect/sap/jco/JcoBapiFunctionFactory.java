@@ -15,6 +15,7 @@ import com.freshdirect.sap.bapi.BapiFactory;
 import com.freshdirect.sap.bapi.BapiMaterialAvailability;
 import com.freshdirect.sap.bapi.BapiPostReturnI;
 import com.freshdirect.sap.bapi.BapiRouteMasterInfo;
+import com.freshdirect.sap.bapi.BapiRouteStatusInfo;
 import com.freshdirect.sap.bapi.BapiSalesOrderCancel;
 import com.freshdirect.sap.bapi.BapiSalesOrderChange;
 import com.freshdirect.sap.bapi.BapiSalesOrderCreate;
@@ -114,6 +115,10 @@ public class JcoBapiFunctionFactory extends BapiFactory {
 	
 	public BapiSendPhysicalTruckInfo getHandOffPhysicalTruckInfoSender() {
 		return new JcoBapiSendPhysicalTruckInfo();
+	}
+
+	public BapiRouteStatusInfo getBapiRouteStatusInfoBuilder() {
+		return new JcoBapiRouteStatusInfo();
 	}
 
 }

@@ -22,9 +22,15 @@ public interface IYardManagerDAO {
 	
 	void addParkingSlot(ParkingSlot slot) throws SQLException;
 	
-	List<ParkingSlot> getParkingSlot(String parkingLocName) throws SQLException;
+	List<ParkingSlot> getParkingSlots(String parkingLocName) throws SQLException;
 	
 	Map<String, EnumAssetStatus> getAssets(List<String> assetTypes) throws SQLException;
 	
 	UPSRouteInfo getUPSRouteInfo(final Date deliveryDate, final String routeNo) throws SQLException;
+	
+	void deleteParkingSlot(List<String> slotNumbers) throws SQLException;
+	
+	void updateParkingSlot(ParkingSlot slot) throws SQLException;
+	
+	ParkingSlot getParkingSlot(String slotNumber) throws SQLException;
 }

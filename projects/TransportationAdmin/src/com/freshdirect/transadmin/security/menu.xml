@@ -99,7 +99,7 @@
      	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
      	 </menu>
      	 <menu id="RUT010" title="Yard Monitor" orientation="LEFT" link="yardmonitor.do">
-	     	<access-uris>yardmonitor.do,parkinglocationslot.do</access-uris>
+	     	<access-uris>yardmonitor.do,parkingslot.do,editparkingslot.do,deleteparkingslot.do</access-uris>
      	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
      	 </menu>
      	       	 
