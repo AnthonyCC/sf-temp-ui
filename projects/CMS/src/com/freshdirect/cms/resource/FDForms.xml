@@ -58,6 +58,7 @@
 							<CmsField><attribute>HIDE_IN_QUICKSHOP</attribute></CmsField>
 							<CmsField><attribute>DEPT_MENU_LABEL</attribute></CmsField>
 							<CmsField><attribute>DEPT_MENU_MORE_LABEL</attribute></CmsField>
+							<CmsField><attribute>DEFAULT_SUSTAINABILITY_RATING</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -194,6 +195,7 @@
                             <CmsField><attribute>TEMPLATE_PATH</attribute></CmsField>                            
 							<CmsField><attribute>DEPT_MENU_LABEL</attribute></CmsField>
 							<CmsField><attribute>DEPT_MENU_MORE_LABEL</attribute></CmsField>
+							<CmsField><attribute>DEFAULT_SUSTAINABILITY_RATING</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -458,7 +460,7 @@
 							<CmsField><attribute>WE_RECOMMEND_TEXT</attribute></CmsField>
 							<CmsField><attribute>FRESH_TIPS</attribute></CmsField>
 							<CmsField><attribute>RATING</attribute></CmsField>                            
-							<CmsField><attribute>USAGE_LIST</attribute></CmsField>                            
+							<CmsField><attribute>USAGE_LIST</attribute></CmsField>
 							<CmsField><attribute>DEFAULT_SUSTAINABILITY_RATING</attribute></CmsField>
 						</fields>
 					</CmsSection>
