@@ -8,6 +8,9 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.crm.CrmAgentRole"%>
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession"%>
+<%@ page import="com.freshdirect.framework.util.DateUtil" %>
+<script type="text/javascript" src="/assets/javascript/prototype.js"></script>
+<script type="text/javascript" src="/assets/javascript/scriptaculous/1.9.0/scriptaculous.js?load=effects,builder"></script>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -93,6 +96,13 @@
 %>
 <div class="content_<%=forPrint?"fixed":"scroll"%>" style="height:72%;">
 <% String receipt = "true"; %>
+<%if(!isGiftCardOrder)
+					if( order.getDeliveryReservation()!=null &&  order.getDeliveryReservation().getStartTime()!=null)
+					{
+					airclic_msg  = CCFormatter.defaultFormatDate(order.getDeliveryReservation().getStartTime())
+							.equals(CCFormatter.defaultFormatDate(DateUtil.getCurrentTime())) && !EnumSaleStatus.CANCELED.equals(order.getOrderStatus());
+					}
+				%>
 	<%@ include file="/includes/i_order_dlv_payment.jspf"%>
 	
 	<%	boolean showEditOrderButtons = false;

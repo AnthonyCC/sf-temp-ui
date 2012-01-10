@@ -10,7 +10,7 @@
         <script language="javascript" src="/assets/javascript/common_javascript.js"></script>
 </head>
 <body style="padding:0px; margin: 0px;">
-
+<%boolean airclic_msg = false;  %>
 <a name="top"></a>
 <table width="100%" cellpadding="5">
 	<tr>

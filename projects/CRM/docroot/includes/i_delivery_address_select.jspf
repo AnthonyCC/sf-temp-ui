@@ -155,6 +155,15 @@
     }
     
     %>
+    <tr><td>
+<% 
+if(airclic_msg)
+{%>
+<%@ include file="/includes/airclic_msg.jspf%>
+<% 	
+}
+%>
+</td></tr>
     </table>
 </fd:AltAddressInfo>
 <%  if (showAddressButtons) { %>

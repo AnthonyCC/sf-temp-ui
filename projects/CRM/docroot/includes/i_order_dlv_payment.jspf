@@ -5,6 +5,39 @@
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import='com.freshdirect.payment.EnumPaymentMethodType'%>
 <%@ page import='com.freshdirect.fdstore.CallCenterServices' %>
+<script type="text/javascript" language="javascript">
+//<!--
+
+function loadSignature(order)
+{
+	
+	
+	var ajaxRequest = new Ajax.Request('/api/signature.jsp', {
+	    method:       'get', 
+	    parameters:   {orderId: order}, 
+	    asynchronous: true,
+	    onComplete:   showResponse
+	});
+
+	function showResponse(xmlHttpRequest, responseHeader) {
+	    // Process HTTP response and update input form
+	    var img = new Element('img', { id: "signature",  width:"50%" ,height:"50%"});
+	    
+	    $('sigLink').insert({after:img});
+	    
+		 $('signature').writeAttribute('src', '/media_stat/images/signatures/'+order+'.jpg');
+		 $('sigLink').hide();
+	}
+	               
+	           
+	
+
+}
+//-->
+</script>
+
+
+   
 <%-- THIS FILE DEPENDS ON THE FOLLOWING VARIABLES:
 	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	- FDOrderI order
@@ -153,10 +186,11 @@
 				<tr>
 					<td width="35%">Order Total:</td>
 					<%if(order instanceof FDOrderI && ((FDOrderI)order).hasInvoice()){ %>
-					<td width="65%"><%= JspMethods.formatPrice(((FDOrderI)order).getInvoicedTotal()) %>*</td>
+					<td width="65%"><%= JspMethods.formatPrice(((FDOrderI)order).getInvoicedTotal()) %>* </td>
 					<% }else { %>
 					<td width="65%"><%= JspMethods.formatPrice(order.getTotal()) %>*</td>
 					<% } %>	
+					
 				</tr>  
 				 <% if(order.getTotalAppliedGCAmount()> 0){ %> 
 	            
@@ -203,7 +237,11 @@
 				
 				<tr>
 					<td>Name on account&nbsp;&nbsp;</td>
-					<td><%= paymentMethod.getName() %></td>
+					<td><%= paymentMethod.getName() %>
+				 	<%if(airclic_msg && order instanceof FDOrderI && ((FDOrderI)order).hasSignature()){%>
+					&nbsp; <a href="javascript:void(0);" id="sigLink" onclick="loadSignature('<%=((FDOrderI)order).getErpSalesId()%>')">View Signature</a></td>
+					<%}%> 
+					
 				</tr>
 				<% if (paymentMethod.getCardType() != null) { %>
 				<tr>

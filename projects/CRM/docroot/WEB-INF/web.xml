@@ -80,6 +80,20 @@
         <servlet-name>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-name>
         <servlet-class>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-class>
    </servlet>
+   <servlet>
+        <servlet-name>JSONRPCServlet</servlet-name>
+        <servlet-class>com.metaparadigm.jsonrpc.JSONRPCServlet</servlet-class>
+  <init-param> 
+    <param-name>auto-session-bridge</param-name> 
+    <param-value>0</param-value> 
+  </init-param> 
+   </servlet>
+   
+    <servlet>
+        <servlet-name>SignatureServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.util.SignatureServlet</servlet-class>
+   </servlet>
+   
     <servlet>
         <servlet-name>WorkflowImage</servlet-name>
         <servlet-class>com.freshdirect.webapp.crm.WorkflowImageServlet</servlet-class>
@@ -138,6 +152,15 @@
         <servlet-name>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-name>
         <url-pattern>/api/json-rpc.jsp</url-pattern>
    </servlet-mapping>	
+    <servlet-mapping>
+        <servlet-name>JSONRPCServlet</servlet-name>
+        <url-pattern>/api/message.jsp</url-pattern>
+   </servlet-mapping>	
+     <servlet-mapping>
+        <servlet-name>SignatureServlet</servlet-name>
+        <url-pattern>/api/signature.jsp</url-pattern>
+   </servlet-mapping>	
+   
     <servlet-mapping>
         <servlet-name>WorkflowImage</servlet-name>
         <url-pattern>/images/workflow.png</url-pattern>
@@ -257,7 +280,7 @@
 		<url-pattern>/no_auth.jsp</url-pattern>			
 		<url-pattern>/main/error.jsp</url-pattern>
 		<url-pattern>/promo_publish</url-pattern>
-		<url-pattern>/admin_service</url-pattern>		
+		<url-pattern>/admin_service</url-pattern>	
 		<http-method>POST</http-method>
       	<http-method>GET</http-method>
       	<http-method>PUT</http-method>
