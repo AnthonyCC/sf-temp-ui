@@ -67,7 +67,7 @@ public class FDTimeslotUtil implements Serializable {
 			if(shiftMap!=null){
 				for(List<FDTimeslot> list : shiftMap.values()){
 					if ( list == null || restrictions.isRestricted( EnumDlvRestrictionCriterion.DELIVERY, EnumDlvRestrictionReason.CLOSED, startCal.getTime() ) ) {
-						timeslotMap.put( startCal.getTime(), new HashMap<String,List<FDTimeslot>>());
+						//timeslotMap.put( startCal.getTime(), new HashMap<String,List<FDTimeslot>>());
 						holidaySet.add(startCal.getTime());
 					}	
 				}		

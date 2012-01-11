@@ -252,7 +252,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 				Collection<FDTimeslot> col = j.next();
 				for (Iterator<FDTimeslot> k = col.iterator(); k.hasNext();) {
 					FDTimeslot timeslot = k.next();
-					if(timeslot.isTimeslotRemoved())
+					if(timeslot.isTimeslotRemoved()||timeslot.isHolidayRestricted())
 					{
 						k.remove();
 					}
@@ -457,73 +457,82 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		boolean isAlcoholDelivery = FDDeliveryManager.getInstance().checkForAlcoholDelivery(address);
 		deliveryModel.setAlcoholDelivery(isAlcoholDelivery);
 
-		for (Iterator<FDTimeslotUtil> i = timeslotList.iterator(); i.hasNext();) {
+		for (Iterator<FDTimeslotUtil> i = timeslotList.iterator(); i.hasNext();) 
+		{
 			
 			FDTimeslotUtil list = i.next();
-			for (Iterator<List<FDTimeslot>> j = list.getTimeslots().iterator(); j.hasNext();) {
+			for (Iterator<List<FDTimeslot>> j = list.getTimeslots().iterator(); j.hasNext();) 
+			{
 				Collection<FDTimeslot> col = j.next();
-				for (Iterator<FDTimeslot> k = col.iterator(); k.hasNext();) {
+				for (Iterator<FDTimeslot> k = col.iterator(); k.hasNext();) 
+				{
 					FDTimeslot timeslot = k.next();
-					timeslot.setStoreFrontAvailable("A");
-					DlvTimeslotModel ts = timeslot.getDlvTimeslot();
-					ts.setSteeringDiscount(PromotionHelper.getDiscount(user, timeslot));
-					boolean geoRestricted = GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions,
-							timeslot, messages, geoRestrictionRange,comments);
-					boolean isTimeslotRemoved = false;
-					timeslot.setGeoRestricted(geoRestricted);
-					if ((ts.getCapacity() <= 0 || geoRestricted)&& !retainTimeslotIds.contains(ts.getId())) {
-						LOGGER.debug("Timeslot Removed By Tag :"+ts);
-						timeslot.setStoreFrontAvailable("H");
-						timeslot.setTimeslotRemoved(true);
-						isTimeslotRemoved = true;
-					}
-					String zoneCode = timeslot.getZoneId();
-					if (!zonesMap.containsKey(zoneCode)) {
-						try {
-							FDDeliveryManager deliveryManager = FDDeliveryManager.getInstance();
-							DlvZoneModel zoneModel = deliveryManager.findZoneById(zoneCode);
-							if(zoneModel.isCtActive()) {
-								ctActive = true;
-							}
-							zonesMap.put(zoneCode, zoneModel);
-						} catch (FDZoneNotFoundException e) {
-							LOGGER.error("Referenced zone not found, database error. Zone:"+zoneCode+" timeslot id:"+timeslot.getTimeslotId());
-						}
-					}
-					
-					if(isTimeslotHolidayRestricted(deliveryModel.getHolidayRestrictions(), timeslot))
+					if(!list.getHolidays().contains(timeslot.getBaseDate()))
 					{
-						timeslot.setHolidayRestricted(true);
-						timeslot.setStoreFrontAvailable("R");
+						timeslot.setStoreFrontAvailable("A");
+						DlvTimeslotModel ts = timeslot.getDlvTimeslot();
+						ts.setSteeringDiscount(PromotionHelper.getDiscount(user, timeslot));
+						boolean geoRestricted = GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions,
+								timeslot, messages, geoRestrictionRange,comments);
+						boolean isTimeslotRemoved = false;
+						timeslot.setGeoRestricted(geoRestricted);
+						if ((ts.getCapacity() <= 0 || geoRestricted)&& !retainTimeslotIds.contains(ts.getId())) 
+						{
+							LOGGER.debug("Timeslot Removed By Tag :"+ts);
+							timeslot.setStoreFrontAvailable("H");
+							timeslot.setTimeslotRemoved(true);
+							isTimeslotRemoved = true;
+						}
+						String zoneCode = timeslot.getZoneId();
+						if (!zonesMap.containsKey(zoneCode)) 
+						{
+							try {
+								FDDeliveryManager deliveryManager = FDDeliveryManager.getInstance();
+								DlvZoneModel zoneModel = deliveryManager.findZoneById(zoneCode);
+								if(zoneModel.isCtActive()) {
+									ctActive = true;
+								}
+								zonesMap.put(zoneCode, zoneModel);
+							} catch (FDZoneNotFoundException e) {
+								LOGGER.error("Referenced zone not found, database error. Zone:"+zoneCode+" timeslot id:"+timeslot.getTimeslotId());
+							}
+						}
+						
+						if(isAlcoholDelivery && isTimeslotAlcoholRestricted(alcoholRestrictions, timeslot)&& !isTimeslotRemoved){
+							timeslot.setAlcoholRestricted(true);
+							alcoholSlots = alcoholSlots+1;
+						}
+						checkTimeslotCapacity(user, zonesMap, timeslot);
+						if (ts.getSteeringDiscount() > maxDiscount && !isTimeslotRemoved)
+							maxDiscount = ts.getSteeringDiscount();
+						if(!timeslot.hasNormalAvailCapacity()&& timeslot.hasAvailCTCapacity() && !isTimeslotRemoved)
+							ctSlots = ctSlots+1;
+						if(!timeslot.isDepot() && timeslot.isEcoFriendly() && !isTimeslotRemoved)
+							ecoFriendlySlots = ecoFriendlySlots+1;
+						if(timeslot.isDepot() && timeslot.isEcoFriendly() && !isTimeslotRemoved)
+							neighbourhoodSlots = neighbourhoodSlots+1;
+						
+						if (!isTimeslotRemoved && !timeslot.hasAvailCTCapacity() && !(timeslot.getTimeslotId().equals(deliveryModel.getTimeSlotId()) || 
+								(timeslot.getTimeslotId().equals(deliveryModel.getPreReserveSlotId()) && deliveryModel.isPreReserved())) 
+							&& ( !forceorder || (timeslot.getDlvTimeslot() != null && timeslot.getDlvTimeslot().getRoutingSlot() != null
+								&& (timeslot.getDlvTimeslot().getRoutingSlot().isManuallyClosed()
+									|| !timeslot.getDlvTimeslot().getRoutingSlot().isDynamicActive())))) 
+						{
+						
+								
+								
+								timeslot.setStoreFrontAvailable("S");
+								soldOut = soldOut + 1;;
+						}
+						if(!isTimeslotRemoved)
+							totalSlots = totalSlots + 1; 
+					}  
+					else
+					{
+							timeslot.setHolidayRestricted(true);
+							timeslot.setStoreFrontAvailable("R");
 					}
-					if(isAlcoholDelivery && isTimeslotAlcoholRestricted(alcoholRestrictions, timeslot)&& !isTimeslotRemoved){
-						timeslot.setAlcoholRestricted(true);
-						alcoholSlots = alcoholSlots+1;
-					}
-					checkTimeslotCapacity(user, zonesMap, timeslot);
-					if (ts.getSteeringDiscount() > maxDiscount && !isTimeslotRemoved)
-						maxDiscount = ts.getSteeringDiscount();
-					if(!timeslot.hasNormalAvailCapacity()&& timeslot.hasAvailCTCapacity() && !isTimeslotRemoved)
-						ctSlots = ctSlots+1;
-					if(!timeslot.isDepot() && timeslot.isEcoFriendly() && !isTimeslotRemoved)
-						ecoFriendlySlots = ecoFriendlySlots+1;
-					if(timeslot.isDepot() && timeslot.isEcoFriendly() && !isTimeslotRemoved)
-						neighbourhoodSlots = neighbourhoodSlots+1;
-					
-					if (!isTimeslotRemoved && !timeslot.hasAvailCTCapacity() && !(timeslot.getTimeslotId().equals(deliveryModel.getTimeSlotId()) || 
-							(timeslot.getTimeslotId().equals(deliveryModel.getPreReserveSlotId()) && deliveryModel.isPreReserved())) 
-						&& ( !forceorder || (timeslot.getDlvTimeslot() != null && timeslot.getDlvTimeslot().getRoutingSlot() != null
-							&& (timeslot.getDlvTimeslot().getRoutingSlot().isManuallyClosed()
-								|| !timeslot.getDlvTimeslot().getRoutingSlot().isDynamicActive())))) {
-					
-							
-							
-							timeslot.setStoreFrontAvailable("S");
-							soldOut = soldOut + 1;;
-			}
-					if(!isTimeslotRemoved)
-						totalSlots = totalSlots + 1; 
-		}  
+				}
 			}
 			
 			isKosherSlotAvailable = isKosherSlotAvailable || list.isKosherSlotAvailable(restrictions);
