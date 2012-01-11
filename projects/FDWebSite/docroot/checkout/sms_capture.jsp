@@ -82,7 +82,7 @@
 				<img src="/media_stat/images/navigation/tickmark.gif" border="0" />&nbsp;&nbsp;&nbsp;&nbsp;
 			</td>
 			<td class="title19">Your preferences have been updated.
-			<br /><span class="text13gr" style="font-weight:normal;color:gray;">You can update your preferences any time - simply go to <a href="/your_account/manage_account.jsp">My Account</a> section and change your preferences.</span>
+			<br /><span class="text13gr" style="font-weight:normal;color:gray;">You can update your preferences any time - simply go to <a href="/your_account/signin_information.jsp">My Account</a> section and change your preferences.</span>
 			</td>
 		</tr>
 		<tr><td colspan="2">&nbsp;</td></tr>
@@ -101,6 +101,7 @@
 		</tr>
 	</table>
 <% } else { %>
+<div style="height:585px;">
 <form id="smsform" name="smsform" method="post" action="">
 	<input type="hidden" name="actionName" value="ordermobilepref" />	
 
@@ -124,18 +125,15 @@
 							<input type="text" size="28" maxlength="45" class="text9" name="busphone" value="<%=phone%>" style="width:175px; padding:1px; height:30px;font-size:13px" /> &nbsp;&nbsp;Ext.<input type="text" size="5" maxlength="5" class="text9" name="busphoneext" value="<%=phoneExt%>" style="width:75px; padding:1px; height:30px;font-size:13px" />
 						</td>
 					</tr>
-					<fd:ErrorHandler result='<%=result%>' name='busphone' id='errorMsg'><tr><td colspan="2" class="text11rbold trpad" style="width:500px; text-align: left;"><%=errorMsg%></td></tr></fd:ErrorHandler>
-					<tr><td colspan="2" >&nbsp;</td></tr>
+					<tr><td colspan="2" class="text11rbold trpad" style="width:600px;text-align: left;height:25px;"><fd:ErrorHandler result='<%=result%>' name='busphone' id='errorMsg'><%=errorMsg%></fd:ErrorHandler>&nbsp;</td></tr>
 				</table>
 			</td>
 		</tr>
 		<tr>
 			<td>		
 				<table width="100%" border="0">
-					<tr><td colspan="2" >&nbsp;</td></tr>
 					<tr><td colspan="2" ><span class="title18or trpad">2.&nbsp;</span><span class="title18">Receive text messages:</span></td></tr>
-					<tr><td colspan="2" >&nbsp;</td></tr>
-					<fd:ErrorHandler result='<%=result%>' name='text_option' id='errorMsg'><tr><td colspan="2" class="text11rbold trpad" style="text-align: left;">&nbsp;<%=errorMsg%></td></tr></fd:ErrorHandler>
+					<tr><td colspan="2" class="text11rbold trpad" style="text-align: left;">&nbsp;<fd:ErrorHandler result='<%=result%>' name='text_option' id='errorMsg'>&nbsp;<%=errorMsg%></fd:ErrorHandler></td></tr>
 					<tr valign="middle">
 						<td class="text12 trpad" style="width: 30px;"><input class="radio" type="checkbox" name="text_delivery" value="Y" <%=text_delivery ? "checked":""%> /></td>
 						<td class="text12" style="padding-right: 10px;">Yes please notify me via text message with important information about my delivery.</td>
@@ -152,13 +150,12 @@
 								<tr>						
 								<td style="padding-right:5px;font-weight:bold;" class="text12">Enter mobile phone number*<br />
 									<input type="text" size="28" maxlength="45" class="text9" name="mobile_number" value="<%=mobile_number%>" style="width:175px; padding:1px; height:30px;font-size:13px" /></td>
-									<td class="text12" style="color:gray; font-style:italic; text-indent: -10px; padding: 0 5px;" align="left" colspan="2" valign="bottom">* Standard text messaging rates apply. You can unsubscribe anytime - <br /> simply go to "My Account" section and update your preferences.</td>
+									<td class="text12" style="color:gray; font-style:italic; text-indent: -10px; padding: 0 5px;" align="left" colspan="2" valign="center">* Standard text messaging rates apply. You can unsubscribe anytime - <br /> simply go to "My Account" section and update your preferences.</td>
 								</tr>						
 							</table>
 						</td>
 					</tr>
-					<fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><tr><td colspan="2" class="text11rbold trpad" style="width:500px; text-align: left; padding-left: 15px;"><%=errorMsg%></td></tr></fd:ErrorHandler>
-					<tr><td colspan="2" >&nbsp;</td></tr>
+					<tr><td colspan="2" class="text11rbold trpad" style="width:500px; text-align: left;padding-left: 15px;height:25px;">&nbsp;<fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></td></tr>
 				</table>
 			</td>
 		</tr>
@@ -214,6 +211,7 @@
 		<tr><td>&nbsp;</td></tr>
 	</table>
 </form>
+</div>
 <% } %>
 </center>
 </fd:RegistrationController>
