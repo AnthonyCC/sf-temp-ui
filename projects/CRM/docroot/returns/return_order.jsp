@@ -67,7 +67,7 @@
 %>
 
 <div class="content_scroll" style="height: 15%; border-bottom: 1px solid;">
-<% String receipt = "true"; %>
+<% String receipt = "true"; boolean airclic_msg = false;%>
 <%@ include file="/includes/i_order_dlv_payment.jspf"%>
 </div>
 <div class="sub_nav">

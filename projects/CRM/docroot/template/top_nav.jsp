@@ -77,7 +77,7 @@
 	<tmpl:get name='styles'/>
 </head>
 
-<%boolean airclic_msg = false;  %>
+
 
 <body onload="<%=request.getAttribute("bodyOnLoad")%>" onunload="<%=request.getAttribute("bodyOnUnload")%>">
 	<div class="crm_container">

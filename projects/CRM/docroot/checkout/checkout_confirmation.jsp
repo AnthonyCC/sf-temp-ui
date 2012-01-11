@@ -152,7 +152,7 @@ doRemoteOverlay('sms_capture.jsp');
 	boolean showDeleteButtons = false; 
     boolean displayDeliveryInfo = true;    
 %>
-<% String receipt = "true"; %>
+<% String receipt = "true";boolean airclic_msg = false; %>
 <%@ include file="/includes/i_order_dlv_payment.jspf"%>
 <hr class="gray1px">
 <%	boolean showEditOrderButtons = false;
