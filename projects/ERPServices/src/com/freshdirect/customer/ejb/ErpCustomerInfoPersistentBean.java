@@ -594,7 +594,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 
 		ps.setString(38, this.noContactPhone ? "X" : "");
 		
-		ps.setString(39, this.mobileNumber.getPhone());
+		ps.setString(39, this.convertPhone(this.mobileNumber));
 		
 		ps.setString(40, this.deliveryNotification?"Y":"N");
 		
