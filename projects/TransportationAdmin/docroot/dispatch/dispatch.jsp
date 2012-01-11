@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.transadmin.util.TransportationAdminProperties"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="/tld/extremecomponents" prefix="ec" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -291,7 +292,7 @@
 	              </td>
 	              <td>
 						<% 
-						if(airclic_msg)
+						if(airclic_msg && TransportationAdminProperties.isAirclicEnabled())
 						{%>
 						<%@ include file="/airclic/airclic_msg.jspf%>
 						<% 	

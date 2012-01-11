@@ -485,6 +485,7 @@ public class FDStoreProperties {
     private static final String PROP_VS_USERNAME="fdstore.voiceshot.username";
     private static final String PROP_VS_PASSWORD="fdstore.voiceshot.password";
     private static final String PROP_VS_URL="fdstore.voiceshot.url";
+	private final static String PROP_ENABLE_AIRCLIC = "transportation.enable.airclic";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -977,7 +978,7 @@ public class FDStoreProperties {
         defaults.put(PROP_VS_USERNAME, "mtrachtenberg");
         defaults.put(PROP_VS_PASSWORD, "whitshell");
         defaults.put(PROP_VS_URL, "http://apiproxy.voiceshot.com/ivrapi.asp");
-
+        defaults.put(PROP_ENABLE_AIRCLIC, "false");
         refresh();
     }
 
@@ -1019,6 +1020,10 @@ public class FDStoreProperties {
         config.setProperty(key, value);
     }
 
+    public static boolean isAirclicEnabled() {
+        return (Boolean.valueOf(get(PROP_ENABLE_AIRCLIC))).booleanValue();
+    }
+    
     public static String getDlvInstructionsSpecialChar() {
         return get(PROP_DLV_INSTRUCTION_SPECIAL_CHAR);
     }

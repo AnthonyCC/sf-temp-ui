@@ -219,6 +219,8 @@ public class TransportationAdminProperties {
 	private final static String PROP_FDTRUCKS_ONROAD_IDENTITY		= "transportation.trucks.onroad.identity";
 	private final static String PROP_TRANSPORTATION_YARDMONITOR_PAGEREFRESHTIME = "transportation.yardmonitor.pagerefreshtime";
 
+	private final static String PROP_ENABLE_AIRCLIC = "transportation.enable.airclic";
+
 	static {
 
 
@@ -393,7 +395,7 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_FDPARKING_ONROAD, "FreshDirect On-Road");
 		defaults.put(PROP_FDTRUCKS_ONROAD_IDENTITY, "Zone");
 		defaults.put(PROP_TRANSPORTATION_YARDMONITOR_PAGEREFRESHTIME, "600000");
-
+		defaults.put(PROP_ENABLE_AIRCLIC, "false");
 		refresh();
 	}
 
@@ -404,6 +406,10 @@ public class TransportationAdminProperties {
     private static void refresh() {
 		refresh(false);
 	}
+    
+    public static boolean isAirclicEnabled() {
+        return (Boolean.valueOf(get(PROP_ENABLE_AIRCLIC))).booleanValue();
+    }
 
     public static String getSapOrderFileEncoding() {
     	return get(PROP_TRANSPORTATION_SAPORDERFILE_ENCODING);

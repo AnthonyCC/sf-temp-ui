@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ taglib uri="crm" prefix="crm" %>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 <%@ page import="com.freshdirect.customer.EnumUnattendedDeliveryFlag" %>
@@ -157,7 +158,7 @@
     %>
     <tr><td>
 <% 
-if(airclic_msg)
+if(airclic_msg && FDStoreProperties.isAirclicEnabled())
 {%>
 <%@ include file="/includes/airclic_msg.jspf%>
 <% 	
