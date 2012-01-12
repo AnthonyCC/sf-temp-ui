@@ -215,7 +215,7 @@ public class PlanningFormController extends AbstractFormController {
 			errorList = new ArrayList();
 			errorList.add(this.getMessage("sys.error.1001", new Object[]{this.getDomainObjectName()}));
 		}
-		if(errorList == null && model != null && !RoutingServicesProperties.getRoutingDynaSyncEnabled()) {
+		if(errorList == null && model != null && RoutingServicesProperties.getRoutingDynaSyncEnabled()) {
 			try {
 				WaveUtil.recalculateWave(this.getDispatchManagerService(), previousModel, model, EnumWaveInstancePublishSrc.PLAN
 								, com.freshdirect.transadmin.security.SecurityManager.getUserName(request));

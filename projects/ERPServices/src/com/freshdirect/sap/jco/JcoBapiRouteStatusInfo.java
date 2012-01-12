@@ -15,14 +15,14 @@ public class JcoBapiRouteStatusInfo extends JcoBapiFunction implements BapiRoute
 	private ErpRouteStatusInfo routeInfo;
 	
 	public JcoBapiRouteStatusInfo() {
-		super("");
+		super("ZBAPI_TRUCK_LOAD_STATUS");
 	}
 
 	@Override
 	public void addRequest(String requestedDate, String routeNumber) {
-		this.function.getImportParameterList().setValue(routeNumber, "");						
+		this.function.getImportParameterList().setValue(routeNumber, "I_ROUTE");
 		try {			
-			this.function.getImportParameterList().setValue(DATE_FORMAT.parse(requestedDate), "VDATU");			
+			this.function.getImportParameterList().setValue(DATE_FORMAT.parse(requestedDate), "I_VDATU");
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -31,9 +31,9 @@ public class JcoBapiRouteStatusInfo extends JcoBapiFunction implements BapiRoute
 	public void processResponse() throws BapiException {
 		
 		super.processResponse();
-		JCO.Table wmdvex = function.getTableParameterList().getTable("");
+		JCO.Table wmdvex = function.getTableParameterList().getTable("T_ROUTE_STATUS");
 		wmdvex.firstRow();
-		routeInfo = new ErpRouteStatusInfo(wmdvex.getString(""),wmdvex.getString(""));
+		routeInfo = new ErpRouteStatusInfo(wmdvex.getString("I_ROUTE"),wmdvex.getString("STATUS"),wmdvex.getString("STTXT"));
 
 	}
 

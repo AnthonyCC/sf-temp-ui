@@ -21,6 +21,7 @@ import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.customer.ErpRouteStatusInfo;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.sap.SapProperties;
 import com.freshdirect.sap.command.SapRouteStatusInfo;
 import com.freshdirect.telargo.model.FDAssetInfo;
 import com.freshdirect.telargo.service.exception.TelargoServiceException;
@@ -332,23 +333,25 @@ public class YardProviderController extends BaseJsonRpcController  implements IY
 				}
 				
 				command.setServiceStatus(assetMapping.get(truckNo) != null ? assetMapping.get(truckNo).getDescription():">>");
-				command.setCurrentLocation(telargoAssetMapping.get(truckNo) != null ? telargoAssetMapping.get(truckNo):"No location found");
+				command.setCurrentLocation(telargoAssetMapping.get(truckNo) != null ? telargoAssetMapping.get(truckNo):"Last location not found");
 				
 				/*Is Route or truck*/
 				if (isRouteNo) {
-					SapRouteStatusInfo routeStatusInfo = new SapRouteStatusInfo(TransStringUtil.getCurrentDate(), routeNo);
-					routeStatusInfo.execute();
-					
-					ErpRouteStatusInfo _routeStatusInfo = routeStatusInfo.getRouteStatusInfo();
-					if(_routeStatusInfo != null && EnumRouteStatus.LOADED.value().equals(_routeStatusInfo.getRouteStatus())){
-						command.setLoadStatus(EnumRouteStatus.LOADED.value());
+					if(!SapProperties.isBlackhole()) {
+						SapRouteStatusInfo routeStatusInfo = new SapRouteStatusInfo(TransStringUtil.getCurrentDate(), routeNo);
+						routeStatusInfo.execute();
+						
+						ErpRouteStatusInfo _routeStatusInfo = routeStatusInfo.getRouteStatusInfo();
+						if(_routeStatusInfo != null){
+							command.setLoadStatus(_routeStatusInfo.getStatusDesc());
+						}
 					} else {
-						command.setLoadStatus(EnumRouteStatus.EMPTY.value());
+						command.setLoadStatus(EnumRouteStatus.NODATA.value());
 					}
 				} else {
 					/*has active route */
 					if (!hasActiveRoute) {
-						command.setLoadStatus(EnumRouteStatus.EMPTY.value());
+						command.setLoadStatus(EnumRouteStatus.OPEN.value());
 					} else {
 						if(telargoAssetMapping.get(truckNo) != null){
 							String[] locArray = StringUtil.decodeStrings(telargoAssetMapping.get(truckNo));
@@ -367,7 +370,7 @@ public class YardProviderController extends BaseJsonRpcController  implements IY
 							}
 						}
 						if(isOnFDProperty && isPastFirstDeliveryWindow(activeRouteNo)){
-							command.setLoadStatus(EnumRouteStatus.EMPTY.value());
+							command.setLoadStatus(EnumRouteStatus.OPEN.value());
 						} else 
 							command.setLoadStatus(EnumRouteStatus.LOADED.value());
 					}

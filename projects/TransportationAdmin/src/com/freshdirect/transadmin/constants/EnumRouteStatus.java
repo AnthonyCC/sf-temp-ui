@@ -2,13 +2,14 @@ package com.freshdirect.transadmin.constants;
 
 public enum EnumRouteStatus {
 	
-	NEW, EMPTY, LOADED;
+	NODATA, OPEN, LOADED, PARTIALLOADED;
 	
 	public String value(){
 	    switch(this) {
-	     case NEW: return "NEW";	     
-	     case EMPTY: return "EYT";
-	     case LOADED: return "LAD";
+	     case NODATA: return "No-Data";
+	     case OPEN: return "Open";
+	     case LOADED: return "Loaded";
+	     case PARTIALLOADED: return "Partially Loaded";
 	     default: return "";
 	   }
 	}
@@ -17,12 +18,14 @@ public enum EnumRouteStatus {
 		
 		if(value==null || "".equals(value.trim())) {
 			return null;
-		} else if(value.equals(NEW.value())) {
-			return NEW;
-		} else if(value.equals(EMPTY.value())) {
-			return EMPTY;
+		} else if(value.equals(NODATA.value())) {
+			return NODATA;
+		} else if(value.equals(OPEN.value())) {
+			return OPEN;
 		} else if(value.equals(LOADED.value())) {
 			return LOADED;
+		} else if(value.equals(PARTIALLOADED.value())) {
+			return PARTIALLOADED;
 		} else {
 			throw new RuntimeException("EnumRouteStatus: undefined enum :"+value);
 		}

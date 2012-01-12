@@ -23,13 +23,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.routing.handoff.action.HandOffRoutingOutAction;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IHandOffBatchSession;
 import com.freshdirect.routing.model.IHandOffBatchStop;
 import com.freshdirect.routing.model.IHandOffBatchTrailer;
+import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
+import com.freshdirect.routing.model.PackagingModel;
 import com.freshdirect.routing.service.exception.RoutingProcessException;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
@@ -481,11 +482,12 @@ public class HandOffController extends AbstractMultiActionController  {
 		HandOffServiceProxy proxy = new HandOffServiceProxy();
 		
 		List<IHandOffBatchStop> handOffStops = proxy.getOrderByCutoff(batch.getDeliveryDate(), batch.getCutOffDateTime());
-		Map<String, Double> orderNoToCartonNo = new HashMap<String, Double>();
+		Map<String, Integer> orderNoToCartonNo = new HashMap<String, Integer>();
 
 		if(handOffStops != null) {
 			for(IHandOffBatchStop stop : handOffStops) {
-				orderNoToCartonNo.put(stop.getOrderNumber(), stop.getReservedOrderSize());
+				if(stop.getDeliveryInfo() != null && stop.getDeliveryInfo().getPackagingDetail() != null)
+					orderNoToCartonNo.put(stop.getOrderNumber(), (int)stop.getDeliveryInfo().getPackagingDetail().getNoOfCartons());
 			}
 		}
 
@@ -502,7 +504,15 @@ public class HandOffController extends AbstractMultiActionController  {
 			Iterator<IHandOffBatchStop> itrStop = stops.iterator();
 			while( itrStop.hasNext()) {
 				IHandOffBatchStop stop = itrStop.next();
-				stop.setReservedOrderSize(orderNoToCartonNo.get(stop.getOrderNumber()));
+				if(stop.getDeliveryInfo() != null && stop.getDeliveryInfo().getPackagingDetail() == null){
+					IPackagingModel tmpPackageModel = new PackagingModel();
+					tmpPackageModel.setNoOfCartons(orderNoToCartonNo.get(stop.getOrderNumber())!= null 
+																			? orderNoToCartonNo.get(stop.getOrderNumber()) : 0);
+					stop.getDeliveryInfo().setPackagingDetail(tmpPackageModel);
+				} else {
+					stop.getDeliveryInfo().getPackagingDetail().setNoOfCartons(orderNoToCartonNo.get(stop.getOrderNumber())!= null 
+																			? orderNoToCartonNo.get(stop.getOrderNumber()) : 0);
+				}
 				IHandOffBatchRoute route = routeMapping.get(stop.getRouteId());
 				if(route != null) {
 					if(route.getStops() == null) {
