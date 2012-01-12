@@ -36,7 +36,7 @@ public class SaleComparator implements Comparator<ContentNodeModel> {
 			return -1;
 		
     	boolean unav1 = prod1.isUnavailable();
-    	boolean unav2 = prod1.isUnavailable();
+    	boolean unav2 = prod2.isUnavailable();
     	
     	if ( unav1 && unav2 ) 
     		return 0;

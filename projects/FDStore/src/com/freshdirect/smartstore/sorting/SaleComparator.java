@@ -50,7 +50,7 @@ public class SaleComparator extends PopularityComparator {
                 }
             } else {
             	boolean unav1 = c1.isUnavailable();
-            	boolean unav2 = c1.isUnavailable();
+            	boolean unav2 = c2.isUnavailable();
             	
             	if ( unav1 && unav2 ) 
             		return 0;
