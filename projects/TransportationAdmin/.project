@@ -4,12 +4,7 @@
 	<comment></comment>
 	<projects>
 	</projects>
-	<buildSpec>
-		<buildCommand>
-			<name>org.eclipse.wst.jsdt.core.javascriptValidator</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
+	<buildSpec>		
 		<buildCommand>
 			<name>org.eclipse.jdt.core.javabuilder</name>
 			<arguments>
