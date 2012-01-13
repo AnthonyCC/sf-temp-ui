@@ -15,7 +15,8 @@
 		<div id="close"><a href="javascript:void(0);" style="display: inline;" onclick="closeDialogue()" ></a></div>
 		<table id="airclic_table">
 		<tr>
-		<td id="error"></td>
+		<td id="ac_info"></td>
+		<tr><td id="ac_error"></td>
 		<tr>
 		<td><label for="ddate">Delivery Date:</label> </td><td> <input  disabled="disabled" name="ddate" id="ddate" type="text"></td>
 		<tr>
@@ -36,7 +37,7 @@
 		
 
 		
-		<input onclick="addEntry($F('ddate'), $F('route'), null, $F('messageDesc'), $F('source'), $F('userId'), null);" value="Add" type="button"><br>
+		<input onclick="addEntry($F('ddate'), $F('route'), null, $F('messageDesc'), $F('source'), $F('userId'), null);" value="Send" type="button"><br>
 	
 	</div>
 

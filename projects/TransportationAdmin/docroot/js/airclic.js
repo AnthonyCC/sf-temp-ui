@@ -56,8 +56,9 @@ function loadPopup()
      
     	// Show the overlay (disables rest of page)
 	showOverlay();
-	
-	
+	$('messageDesc').update("");
+	$('ac_info').update("");
+	$('ac_error').update("");
 	document.getElementById('ddate').value = dateField;
 	
      document.getElementById('route').value = routeId;  
@@ -105,11 +106,11 @@ function addEntry(date, route, stop, message, msgSrc, userId, orderId)
 	 _data[6] = orderId;
 	 
 	 result = jsonrpcClient.manager.sendMessage(_data);
-	 $('error').update(result);
+	 $('ac_info').update(result);
 	}
 	catch(e)
 	{
-		 $('error').update(e);
+		 $('ac_error').update("There was an error. Try Again");
 	}
 	 
 

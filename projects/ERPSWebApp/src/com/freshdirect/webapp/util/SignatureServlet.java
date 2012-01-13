@@ -17,11 +17,11 @@ public class SignatureServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		String order = request.getParameter("orderId");
-		String path = getServletContext().getRealPath(getServletContext().getContextPath());
+		String path = getServletContext().getRealPath(getServletContext().getContextPath())+"/media_stat/images/signatures/"+order+".jpg";
 		if(!new File(path).exists())
 		{	
 			byte[] signBytes = AirclicManager.getInstance().getSignature(order);
-			generateSignature(order, signBytes, getServletContext().getRealPath(getServletContext().getContextPath()));
+			generateSignature(order, signBytes, path);
 		}
 		
 	}
@@ -29,7 +29,7 @@ public class SignatureServlet extends HttpServlet {
 	private void generateSignature(String order, byte[] signBytes, String path)
 			throws IOException {
 		
-		 FileOutputStream file = new FileOutputStream (path+"/media_stat/images/signatures/"+order+".jpg");
+		 FileOutputStream file = new FileOutputStream (path);
 		 file.write(signBytes);
 	     file.close();
 	}

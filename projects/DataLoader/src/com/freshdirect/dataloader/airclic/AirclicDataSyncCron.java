@@ -55,7 +55,7 @@ public class AirclicDataSyncCron {
 					}
 				}
 			}
-			else
+			if(jobDate==null)
 			{
 				jobDate = DateUtil.truncate(Calendar.getInstance()).getTime();
 			}

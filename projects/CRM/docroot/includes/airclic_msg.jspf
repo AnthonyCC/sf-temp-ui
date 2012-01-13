@@ -34,7 +34,11 @@ function loadPopup()
 {
     	// Show the overlay (disables rest of page)
 	showOverlay();
-
+	$('message').value="";	
+	$('messageDesc').update("");
+	$('ac_info').update("");
+	$('ac_error').update("");
+	
 	// Show dialogue and focus on newvalue
 	$('dialogue').show();
 }
@@ -78,11 +82,11 @@ function addEntry(date, route, stop, message, msgSrc, userId, orderId)
 	 _data[6] = orderId;
 	 
 	 result = jsonrpcClient.manager.sendMessage(_data);
-	 $('error').update(result);
+	 $('ac_info').update(result);
 	}
 	catch(e)
 	{
-		 $('error').update(e);
+		 $('ac_error').update("There was an error. Try Again");
 	}
 	 
 
@@ -147,7 +151,14 @@ function populateText(message)
 	
 	z-index: 2000;
 }
-#error
+#ac_error
+{
+text-align:center;
+font-weight:bold;
+font-color:red;
+}
+
+#ac_info
 {
 text-align:center;
 font-weight:bold;
@@ -173,7 +184,8 @@ cellspacing:10px;
 		<div id="close"><a href="javascript:void(0);" style="display: inline;" onclick="closeDialogue()" ></a></div>
 		<table id="airclic_table">
 		<tr>
-		<td id="error"></td>
+		<td id="ac_info"></td>
+		<tr><td id="ac_error"></td>
 		<tr><td><label for="ddate">Delivery Date:</label> </td><td> <input disabled="disabled" name="ddate" id="ddate" type="text" value="<%=  CCFormatter.defaultFormatDate(order.getDeliveryReservation().getStartTime()) %>"></td>
 		<tr>
 		<td><label for="route">Route: </label> </td><td> <input disabled="disabled" name="route" id="route" type="text" value="<%= shippingInfo.getTruckNumber() %>"></td>
@@ -205,10 +217,8 @@ cellspacing:10px;
 		</table>
 		<jsp:useBean id="JSONRPCBridge" scope="session" class="com.metaparadigm.jsonrpc.JSONRPCBridge" />
 		<% JSONRPCBridge.registerObject("manager", AirclicManager.getInstance()); %> 
-	
-
 		
-		<input onclick="addEntry($F('ddate'), $F('route'), $F('stop'), $F('messageDesc'), $F('source'), $F('userId'), $F('orderId'));" value="Add" type="button"><br>
+		<input onclick="addEntry($F('ddate'), $F('route'), $F('stop'), $F('messageDesc'), $F('source'), $F('userId'), $F('orderId'));" value="Send" type="button"><br>
 	
 	<%} %>
 	</div>

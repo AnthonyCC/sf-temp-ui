@@ -361,16 +361,18 @@ public class AirclicDAO {
 		ps.setString(2,  dateStr+" 23:59:59");
 		
 		rs = ps.executeQuery();
-		ps1 = conn.prepareStatement("insert into cust.signature(sale_id, signature) values (?,?)");
+		ps1 = conn.prepareStatement("insert into cust.signature(sale_id, deliverydate, signature) values (?,?,?)");
 		
 		while (rs.next()) {
 			order = rs.getString("webordernum");
+			
 			in=rs.getBytes("SIGNATURE");
 			
 			if(in!=null)
 				{
 				  	ps1.setString(1, order);
-				    ps1.setBytes(2, in);
+				  	ps1.setDate(2, new java.sql.Date(deliveryDate.getTime()));
+				    ps1.setBytes(3, in);
 				    ps1.addBatch();
 				}
 			

@@ -32,12 +32,18 @@
     width: 13px;
     z-index: 1103;
 }
-#error
+#ac_error
+{
+text-align:center;
+font-weight:bold;
+font-color:red;
+}
+
+#ac_info
 {
 text-align:center;
 font-weight:bold;
 }
-
 #dialogue
 {
 	position: absolute;
