@@ -131,9 +131,6 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 								<fd:IncludeMedia name='<%= introCopy %>' /><br />
 								<img src="/media_stat/images/layout/clear.gif" width="1" height="4" />
 							</td>
-							<td class="text11" width="<%=W_DEPARTMENT_COFFEE_RIGHT%>" align="right">
-								<img src="<%=deptImage.getPath()%>" width="<%=deptImage.getWidth()%>"  height="<%=deptImage.getHeight()%>" border="0" alt="Coffee Beans" />
-							</td>
 						<% } else if ( EnumLayoutType.FOURMM_DEPARTMENT.getId() != layouttype ) { %>
 							<td class="text11" width="<%=W_DEPARTMENT_TOTAL%>"><img src="/media_stat/images/layout/clear.gif" width="1" height="9" /><br />
 								<font class="title16"><%=introTitle%></font><br />
