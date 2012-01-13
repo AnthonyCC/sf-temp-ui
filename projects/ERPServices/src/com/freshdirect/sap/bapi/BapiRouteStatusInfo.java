@@ -6,5 +6,5 @@ public interface BapiRouteStatusInfo extends BapiFunctionI {
 	
 	void addRequest(String requestedDate, String routeNumber);
 	
-	ErpRouteStatusInfo getRouteMasterInfo();
+	ErpRouteStatusInfo getRouteStatusInfo();
 }

@@ -31,14 +31,18 @@ public class JcoBapiRouteStatusInfo extends JcoBapiFunction implements BapiRoute
 	public void processResponse() throws BapiException {
 		
 		super.processResponse();
-		JCO.Table wmdvex = function.getTableParameterList().getTable("T_ROUTE_STATUS");
-		wmdvex.firstRow();
-		routeInfo = new ErpRouteStatusInfo(wmdvex.getString("I_ROUTE"),wmdvex.getString("STATUS"),wmdvex.getString("STTXT"));
-
+		JCO.Table _routeStatusTbl = function.getTableParameterList().getTable("T_ROUTE_STATUS");
+		
+		if(_routeStatusTbl.getNumRows() > 0){
+			_routeStatusTbl.firstRow();
+			routeInfo = new ErpRouteStatusInfo(_routeStatusTbl.getString("ROUTE")
+												,_routeStatusTbl.getString("STATUS")
+												,_routeStatusTbl.getString("STTXT"));
+		}
 	}
 
 	@Override
-	public ErpRouteStatusInfo getRouteMasterInfo() {
+	public ErpRouteStatusInfo getRouteStatusInfo() {
 		return routeInfo;
 	}
 

@@ -60,7 +60,7 @@
 									</ec:row>
 							</ec:table>  
 						  <div id="noparkinglocslotdata" style="">
-          						<img  height="650" width="100%" src="images/unavailable_data.gif">
+          						<img  height="650" width="100%" src="images/no-data.gif">
 						  </div>
 					</td>
 					<td valign="top" height="400">
@@ -81,7 +81,7 @@
 								</ec:row>
 							</ec:table>
 						 <div id="noparkingloctruckdata" style="">
-          						<img  height="100%" width="100%" src="images/unavailable_data.gif">
+          						<img  height="100%" width="100%" src="images/no-data.gif">
 						  </div>
 					</td>
 				</tr>
@@ -103,7 +103,7 @@
 						<table class="searchresult_table">
 						
 							<tr class="noBorder">
-								<td>Empty / Loaded : </td>
+								<td>Open / Loaded : </td>
 								<td id="loadStatus" align="left">&nbsp;</td>
 							</tr>
 							<tr class="noBorder">
@@ -134,7 +134,7 @@
 		function showYardMonitorData(){
 			try {
 				var locationSummary = yardMngRpcClient.AsyncYardProvider.getYardMonitorSummary();
-				if(locationSummary != null){
+				if(locationSummary != null && (locationSummary.locationSlotSummary != null || locationSummary.locationTruckSummary != null)){
 					var locationSlotSummary = locationSummary.locationSlotSummary.list;
 					var locationTruckSummary =  locationSummary.locationTruckSummary.list;
 					   
@@ -235,6 +235,10 @@
 
 		function getRouteSummary(routeNo){
 				addRouteSysMessage('', false);
+				document.getElementById("loadStatus").innerHTML = '';
+				document.getElementById("serviceStatus").innerHTML = '';
+				document.getElementById("currentLocation").innerHTML = '';
+
 				if(routeNo && routeNo.length > 0){
 					var routeSummary = yardMngRpcClient.AsyncYardProvider.getRouteStatusInfo(routeNo);
 					if(routeSummary != null){
@@ -244,6 +248,9 @@
 						//document.getElementById("fueledStatus").innerHTML = routeSummary.fueled;
 					}else{
 						addRouteSysMessage('No matching route/truck found', true);
+						document.getElementById("loadStatus").innerHTML = '';
+						document.getElementById("serviceStatus").innerHTML = '';
+						document.getElementById("currentLocation").innerHTML = '';
 					}
 				}
 		}

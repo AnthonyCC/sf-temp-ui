@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
 
 import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
@@ -65,6 +66,12 @@ public class DispatchFormController extends AbstractFormController {
 		this.assetManagerService = assetManagerService;
 	}
 
+	@Override
+	protected Map referenceData(HttpServletRequest request, Object command,
+			Errors errors) throws Exception {
+		request.setAttribute("commandObj",command);
+		return referenceData(request);
+	}
 	public DispatchManagerI getDispatchManagerService() {
 		return dispatchManagerService;
 	}
@@ -122,17 +129,14 @@ public class DispatchFormController extends AbstractFormController {
 		List drivers = null;
 		List helpers = null;
 		List runners = null;
-		
-		DispatchCommand model = null;
-		String id = request.getParameter("id");
-		if(id != null)
-			model = (DispatchCommand)this.getBackingObject(request.getParameter("id"));
 
-		TrnFacility deliveryFacility = locationManagerService.getTrnFacility(destFacility == null ? (model != null && model
-				.getDestinationFacility() != null ? model
-						.getDestinationFacility().getFacilityId(): destFacility) : destFacility);
-		if(deliveryFacility != null && 
-				!EnumTransportationFacilitySrc.DELIVERYZONE.getName().equalsIgnoreCase(deliveryFacility.getTrnFacilityType().getName())){
+		TrnFacility facility = null;
+		DispatchCommand model = (DispatchCommand)request.getAttribute("commandObj");
+		if(null != model){
+			facility = model.getDestinationFacility();
+		}
+		if(facility != null && 
+				!EnumTransportationFacilitySrc.DELIVERYZONE.getName().equalsIgnoreCase(facility.getTrnFacilityType().getName())){
 
 			drivers = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRoleAndSubRole(EnumResourceType.DRIVER.getName()
 																										, EnumResourceSubType.TRAILER_DRIVER.getName()));
@@ -192,7 +196,9 @@ public class DispatchFormController extends AbstractFormController {
 			command.setDispatchDate(TransStringUtil.getDate(new Date()));
 			command.setStartTime(TransStringUtil.getServerTime(new Date()));
 			command.setFirstDeliveryTime(TransStringUtil.getServerTime(new Date()));
-		}catch(ParseException exp){}
+		} catch (ParseException exp) {
+			exp.printStackTrace();
+		}
 		return command;
 	}
 
@@ -200,8 +206,8 @@ public class DispatchFormController extends AbstractFormController {
 		try{
 			DispatchCommand command = getCommand(getDispatchManagerService().getDispatch(id));
 			return command;
-		}
-		catch(Exception ex){
+		} catch(Exception ex){
+			ex.printStackTrace();
 			throw new RuntimeException("An Error Ocuurred when trying construct command object "+ex.getMessage());
 		}
 

@@ -34,7 +34,6 @@ import com.freshdirect.transadmin.model.ParkingSlot;
 import com.freshdirect.transadmin.model.UPSRouteInfo;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.IYardManagerService;
-import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.service.exception.TransAdminServiceException;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
@@ -144,99 +143,102 @@ public class YardProviderController extends BaseJsonRpcController  implements IY
 		}
 		
 		List<ParkingSlot> slots = new ArrayList<ParkingSlot>();
-		slots = yardManagerService.getParkingSlots(null);		
+		slots = yardManagerService.getParkingSlots(null);
 		
-		TelargoServiceProxy proxy = new TelargoServiceProxy();
-		ArrayOfAssetWithStateDto assetStateArray;
-		try {
-			assetStateArray = proxy.getAssetsWithLastState();		
-			List<FDAssetInfo> assetInfos = new ArrayList<FDAssetInfo>();
+		if(!TransportationAdminProperties.isTelargoServiceBlackhole()){
 			
-			if (assetStateArray != null) {
-				AssetWithStateDto[] assetStateDtos = assetStateArray.getAssetWithStateDto();
-				if (assetStateDtos != null) {
-					for (AssetWithStateDto assetDTO : assetStateDtos) {
-						assetInfos.add(new FDAssetInfo(assetDTO));
+			TelargoServiceProxy proxy = new TelargoServiceProxy();
+			ArrayOfAssetWithStateDto assetStateArray;
+			try {
+				assetStateArray = proxy.getAssetsWithLastState();		
+				List<FDAssetInfo> assetInfos = new ArrayList<FDAssetInfo>();
+				
+				if (assetStateArray != null) {
+					AssetWithStateDto[] assetStateDtos = assetStateArray.getAssetWithStateDto();
+					if (assetStateDtos != null) {
+						for (AssetWithStateDto assetDTO : assetStateDtos) {
+							assetInfos.add(new FDAssetInfo(assetDTO));
+						}
+					} else {
+						LOGGER.debug("########## Empty AssetWithStateDto ############### ");
 					}
 				} else {
-					LOGGER.debug("########## Empty AssetWithStateDto ############### ");
+					LOGGER.debug("########## Empty ArrayOfAssetWithStateDto ##########");
 				}
-			} else {
-				LOGGER.debug("########## Empty ArrayOfAssetWithStateDto ##########");
-			}
-			
-			Map<String, Integer> locTruckMapping = new HashMap<String, Integer>();
-			
-			locTruckMapping.put(TransportationAdminProperties.getFDHeadQuarterKey(), 0);
-			locTruckMapping.put(TransportationAdminProperties.getFDOnRoadKey(), 0);
-			
-			Map<ParkingSlot, Integer> usedSlotMapping = new HashMap<ParkingSlot, Integer>();		
-			for (FDAssetInfo asset : assetInfos) {
-				boolean foundSlot = false;
-				if(asset.getLastLocation() != null){
-					String[] locArray = StringUtil.decodeStrings(asset.getLastLocation());
-					for(int i=0; i < locArray.length; i++){
-						if(slots != null){
-							for(ParkingSlot _slot : slots){
-								if(_slot.getSlotNumber().trim().equalsIgnoreCase(locArray[i].trim())) {
-									foundSlot = true;
-									if(!usedSlotMapping.containsKey(_slot.getSlotNumber())){
-										usedSlotMapping.put(_slot, 0);
+				
+				Map<String, Integer> locTruckMapping = new HashMap<String, Integer>();
+				
+				locTruckMapping.put(TransportationAdminProperties.getFDHeadQuarterKey(), 0);
+				locTruckMapping.put(TransportationAdminProperties.getFDOnRoadKey(), 0);
+				
+				Map<ParkingSlot, Integer> usedSlotMapping = new HashMap<ParkingSlot, Integer>();		
+				for (FDAssetInfo asset : assetInfos) {
+					boolean foundSlot = false;
+					if(asset.getLastLocation() != null){
+						String[] locArray = StringUtil.decodeStrings(asset.getLastLocation());
+						for(int i=0; i < locArray.length; i++){
+							if(slots != null){
+								for(ParkingSlot _slot : slots){
+									if(_slot.getSlotNumber().trim().equalsIgnoreCase(locArray[i].trim())) {
+										foundSlot = true;
+										if(!usedSlotMapping.containsKey(_slot.getSlotNumber())){
+											usedSlotMapping.put(_slot, 0);
+										}
+										usedSlotMapping.put(_slot, usedSlotMapping.get(_slot).intValue()+1);
+										break;
 									}
-									usedSlotMapping.put(_slot, usedSlotMapping.get(_slot).intValue()+1);
-									break;
 								}
+							} else {
+								break;
 							}
-						} else {
-							break;
+							if(TransportationAdminProperties.getFDHeadQuarterKey().equalsIgnoreCase(locArray[i].trim())) {
+								locTruckMapping.put(TransportationAdminProperties.getFDHeadQuarterKey()
+										, locTruckMapping.get(TransportationAdminProperties.getFDHeadQuarterKey()).intValue()+1);
+								foundSlot = true;
+							}
+							if(foundSlot) break;
 						}
-						if(TransportationAdminProperties.getFDHeadQuarterKey().equalsIgnoreCase(locArray[i].trim())) {
-							locTruckMapping.put(TransportationAdminProperties.getFDHeadQuarterKey()
-									, locTruckMapping.get(TransportationAdminProperties.getFDHeadQuarterKey()).intValue()+1);
-							foundSlot = true;
+						if(asset.getLastLocation().startsWith(TransportationAdminProperties.getFDOnRoadTrucksIdentity())){
+							locTruckMapping.put(TransportationAdminProperties.getFDOnRoadKey()
+									, locTruckMapping.get(TransportationAdminProperties.getFDOnRoadKey()).intValue()+1);
 						}
-						if(foundSlot) break;
-					}
-					if(asset.getLastLocation().startsWith(TransportationAdminProperties.getFDOnRoadTrucksIdentity())){
+					} else {
 						locTruckMapping.put(TransportationAdminProperties.getFDOnRoadKey()
 								, locTruckMapping.get(TransportationAdminProperties.getFDOnRoadKey()).intValue()+1);
 					}
-				} else {
-					locTruckMapping.put(TransportationAdminProperties.getFDOnRoadKey()
-							, locTruckMapping.get(TransportationAdminProperties.getFDOnRoadKey()).intValue()+1);
 				}
+				
+				ParkingLocationSlotInfo _locSlotInfo = null;
+				for(Map.Entry<String, Integer> locEntry : locationMapping.entrySet()){
+					_locSlotInfo = new ParkingLocationSlotInfo();
+					int usedSlotsPerLoc = 0; 
+					for(Map.Entry<ParkingSlot, Integer> slotEntry : usedSlotMapping.entrySet()){
+						if(slotEntry.getKey().getLocation().getLocationName().equalsIgnoreCase(locEntry.getKey())){
+							usedSlotsPerLoc = usedSlotsPerLoc + slotEntry.getValue();
+						}
+					}				
+					_locSlotInfo.setLocation(locEntry.getKey());
+					_locSlotInfo.setUsedSlots(usedSlotsPerLoc);
+					_locSlotInfo.setAvailableSlots(locEntry.getValue() > 0 ? locEntry.getValue() - usedSlotsPerLoc : 0);
+					locSlotInfoLst.add(_locSlotInfo);
+				}
+				Collections.sort(locSlotInfoLst, new ParkingLocationSlotInfoComparator());
+				command.setLocationSlotSummary(locSlotInfoLst);
+				
+				ParkingLocationTruckInfo _locTruckInfo = null;
+				for(Map.Entry<String, Integer> locEntry : locTruckMapping.entrySet()){
+					_locTruckInfo = new ParkingLocationTruckInfo();
+					_locTruckInfo.setLocation(locEntry.getKey());
+					_locTruckInfo.setNoOfTrucks(locEntry.getValue());
+					locTruckInfoLst.add(_locTruckInfo);
+				}
+				Collections.sort(locTruckInfoLst, new ParkingLocationTruckInfoComparator());
+				command.setLocationTruckSummary(locTruckInfoLst);
+				
+			} catch (TelargoServiceException exp) {			
+				exp.printStackTrace();
+				LOGGER.error("########## Retrive Telargo data failed with exception ##########" + exp);
 			}
-			
-			ParkingLocationSlotInfo _locSlotInfo = null;
-			for(Map.Entry<String, Integer> locEntry : locationMapping.entrySet()){
-				_locSlotInfo = new ParkingLocationSlotInfo();
-				int usedSlotsPerLoc = 0; 
-				for(Map.Entry<ParkingSlot, Integer> slotEntry : usedSlotMapping.entrySet()){
-					if(slotEntry.getKey().getLocation().getLocationName().equalsIgnoreCase(locEntry.getKey())){
-						usedSlotsPerLoc = usedSlotsPerLoc + slotEntry.getValue();
-					}
-				}				
-				_locSlotInfo.setLocation(locEntry.getKey());
-				_locSlotInfo.setUsedSlots(usedSlotsPerLoc);
-				_locSlotInfo.setAvailableSlots(locEntry.getValue() > 0 ? locEntry.getValue() - usedSlotsPerLoc : 0);
-				locSlotInfoLst.add(_locSlotInfo);
-			}
-			Collections.sort(locSlotInfoLst, new ParkingLocationSlotInfoComparator());
-			command.setLocationSlotSummary(locSlotInfoLst);
-			
-			ParkingLocationTruckInfo _locTruckInfo = null;
-			for(Map.Entry<String, Integer> locEntry : locTruckMapping.entrySet()){
-				_locTruckInfo = new ParkingLocationTruckInfo();
-				_locTruckInfo.setLocation(locEntry.getKey());
-				_locTruckInfo.setNoOfTrucks(locEntry.getValue());
-				locTruckInfoLst.add(_locTruckInfo);
-			}
-			Collections.sort(locTruckInfoLst, new ParkingLocationTruckInfoComparator());
-			command.setLocationTruckSummary(locTruckInfoLst);
-			
-		} catch (TelargoServiceException exp) {			
-			exp.printStackTrace();
-			LOGGER.error("########## Retrive Telargo data failed with exception ##########" + exp);
 		}
 		return command;
 	}
@@ -281,7 +283,7 @@ public class YardProviderController extends BaseJsonRpcController  implements IY
 			FDRouteMasterInfo routeInfo = domainManagerService.getRouteMasterInfo(routeNo, new Date());
 			if(routeInfo != null){
 				isRouteNo = true;
-				hasActiveRoute = true;
+				hasActiveRoute = true; matchFound = true;
 				truckNo = routeInfo.getTruckNumber();
 			} else {
 				truckNo = routeNo;
@@ -306,7 +308,7 @@ public class YardProviderController extends BaseJsonRpcController  implements IY
 			
 			Map<String, String> telargoAssetMapping = new HashMap<String, String>();
 			
-			if(matchFound){
+			if(matchFound && !TransportationAdminProperties.isTelargoServiceBlackhole()){
 				TelargoServiceProxy proxy = new TelargoServiceProxy();
 				ArrayOfAssetWithStateDto assetStateArray;
 			
@@ -327,10 +329,6 @@ public class YardProviderController extends BaseJsonRpcController  implements IY
 				} else {
 					LOGGER.debug("########## Empty ArrayOfAssetWithStateDto ##########");
 				}
-				System.out.println("Total Assets:"+assetInfos.size());
-				for(FDAssetInfo assetInfo : assetInfos) {			
-					System.out.println(assetInfo);
-				}
 				
 				command.setServiceStatus(assetMapping.get(truckNo) != null ? assetMapping.get(truckNo).getDescription():">>");
 				command.setCurrentLocation(telargoAssetMapping.get(truckNo) != null ? telargoAssetMapping.get(truckNo):"Last location not found");
@@ -338,7 +336,7 @@ public class YardProviderController extends BaseJsonRpcController  implements IY
 				/*Is Route or truck*/
 				if (isRouteNo) {
 					if(!SapProperties.isBlackhole()) {
-						SapRouteStatusInfo routeStatusInfo = new SapRouteStatusInfo(TransStringUtil.getCurrentDate(), routeNo);
+						SapRouteStatusInfo routeStatusInfo = new SapRouteStatusInfo(TransStringUtil.getServerDate(new Date()), routeNo);
 						routeStatusInfo.execute();
 						
 						ErpRouteStatusInfo _routeStatusInfo = routeStatusInfo.getRouteStatusInfo();

@@ -39,7 +39,7 @@ public class SapRouteStatusInfo extends SapCommandSupport {
 		bapi.addRequest(requestedDate, routeNumber);
 		this.invoke(bapi);
 		
-		routeInfo = ((SapRouteStatusInfo) bapi).getRouteStatusInfo();
+		routeInfo = bapi.getRouteStatusInfo();
 	}
 	
 	public ErpRouteStatusInfo getRouteStatusInfo(){

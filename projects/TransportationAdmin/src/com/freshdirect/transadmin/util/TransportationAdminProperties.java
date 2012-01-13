@@ -220,6 +220,7 @@ public class TransportationAdminProperties {
 	private final static String PROP_TRANSPORTATION_YARDMONITOR_PAGEREFRESHTIME = "transportation.yardmonitor.pagerefreshtime";
 
 	private final static String PROP_ENABLE_AIRCLIC = "transportation.enable.airclic";
+	private final static String PROP_TELARGO_BLACKHOLE = "telargo.blackhole";
 
 	static {
 
@@ -396,6 +397,8 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_FDTRUCKS_ONROAD_IDENTITY, "Zone");
 		defaults.put(PROP_TRANSPORTATION_YARDMONITOR_PAGEREFRESHTIME, "600000");
 		defaults.put(PROP_ENABLE_AIRCLIC, "false");
+		defaults.put(PROP_TELARGO_BLACKHOLE, "true");
+
 		refresh();
 	}
 
@@ -844,5 +847,9 @@ public class TransportationAdminProperties {
 	}
 	public static int getYardMonitorRefreshTime() 	{
 		return getIntVal(get(PROP_TRANSPORTATION_YARDMONITOR_PAGEREFRESHTIME));
+	}
+
+	public static boolean isTelargoServiceBlackhole() {
+		return Boolean.valueOf(get(PROP_TELARGO_BLACKHOLE)).booleanValue();
 	}
 }
