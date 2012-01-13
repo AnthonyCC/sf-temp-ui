@@ -356,41 +356,12 @@ public class AirclicDAO {
 		ps = conn.prepareStatement("select webordernum,SIGNATURE from (select distinct webordernum, EVENTID, to_char(scandate,'mm/dd/yyyy')  from dlv.cartonstatus cs" +
 				" where  scandate  between to_date( ?, 'mm/dd/yyyy hh24:mi:ss') and  to_date( ?, 'mm/dd/yyyy hh24:mi:ss') and CS.CARTONSTATUS = 'DELIVERED'  ) CS," +
 				" dlv.signature s   where  S.EVENTID = CS.EVENTID");
-		if(dateStr!=null){
-			ps.setString(1,  dateStr+" 00:00:00");
-			ps.setString(2,  dateStr+" 23:59:59");
-		}
-		else{	
-		ps.setString(1,  "12/01/2011 00:00:00");
-		ps.setString(2,  "12/14/2011 23:59:59");
-		}
 		
-		ps1 = conn.prepareStatement("insert into cust.signature(sale_id, signature) values (?,?)");
+		ps.setString(1,  dateStr+" 00:00:00");
+		ps.setString(2,  dateStr+" 23:59:59");
+		
 		rs = ps.executeQuery();
-		
-			
-			/*while (rs.next()) {
-				order = rs.getString("webordernum");
-				in=rs.getBinaryStream("SIGNATURE");
-				
-				if(in!=null)
-					{
-					  FileOutputStream file = null;
-				      file = new FileOutputStream (order+".jpg");
-				      int chunk;
-				      while ((chunk = in.read()) != -1)
-				         file.write(chunk);
-				      File f = new File("test.gif");
-				      int length = (int) f.length();
-				      FileInputStream fis = new FileInputStream(order+".jpg");
-				      
-						ps1.setString(1, order);
-					    ps1.setBinaryStream(2, fis, length);
-					    ps1.execute();
-					    System.out.println(rownum++);
-					}
-				
-			}*/
+		ps1 = conn.prepareStatement("insert into cust.signature(sale_id, signature) values (?,?)");
 		
 		while (rs.next()) {
 			order = rs.getString("webordernum");
@@ -404,12 +375,12 @@ public class AirclicDAO {
 				}
 			
 		}
+
 		ps1.executeBatch();
 		
 		long end = System.currentTimeMillis();
 		
 		System.out.println("Time spent syncing the signatures "+(end-start)/(1000)+" sec");
-		
 		}
 		catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -459,7 +430,7 @@ public class AirclicDAO {
 	   static public InitialContext getInitialContext() throws NamingException {
 	        Hashtable h = new Hashtable();
 	        h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
-	        h.put(Context.PROVIDER_URL, "t3://localhost:7001");//"t3://app01.stprd01.nyc2.freshdirect.com:7001"
+	        h.put(Context.PROVIDER_URL, "t3://localhost:7001");
 	        return new InitialContext(h);
 	  }
 	
