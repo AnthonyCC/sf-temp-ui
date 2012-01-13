@@ -194,7 +194,7 @@ cellspacing:10px;
 			<%  
 			AirclicMessageVO msg=(AirclicMessageVO)message;
 			%>
-				<option value="<%= msg.getDescription() %>"><%= msg.getMessage() %></option>
+				<option value="<%= msg.getDescription().replace("Stop X","Stop "+shippingInfo.getStopSequence()) %>"><%= msg.getMessage() %></option>
 			</logic:iterate>
 
 		</select></td>
