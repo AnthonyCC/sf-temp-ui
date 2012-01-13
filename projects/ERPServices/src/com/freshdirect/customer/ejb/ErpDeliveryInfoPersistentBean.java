@@ -91,7 +91,7 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		" FIRST_NAME, LAST_NAME, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP, COUNTRY, PHONE, PHONE_EXT, DELIVERY_INSTRUCTIONS," +
 		"SCRUBBED_ADDRESS, ALT_DEST, ALT_FIRST_NAME, ALT_LAST_NAME, ALT_APARTMENT, ALT_PHONE, ALT_PHONE_EXT, DELIVERY_TYPE," +
 		"ALT_CONTACT_PHONE, ALT_CONTACT_EXT, GEOLOC, UNATTENDED_INSTR,CHARITY_NAME,COMPANY_NAME) " +
-        " values (?,?,?,?,?,?,?,?,?,?,REPLACE(REPLACE(UPPER(?),'-'),' '),?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')')," +
+        " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')')," +
         "' '),'-'),'.'),?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.')," +
         "?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?," +
         "MDSYS.SDO_GEOMETRY(2001, 8265, MDSYS.SDO_POINT_TYPE (?, ?,NULL),NULL,NULL),?,?,?)";
