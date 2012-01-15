@@ -56,7 +56,6 @@ public class CEPService{
 			{
 			ksession.addEventListener( new CustomAgendaEventListener() );
 			ksession.addEventListener(new CustomWorkingMemoryEventListener());
-			KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "auditlogfile");
 			}
 	
 			LOGGER.info("Processing number of events "+e.size() );

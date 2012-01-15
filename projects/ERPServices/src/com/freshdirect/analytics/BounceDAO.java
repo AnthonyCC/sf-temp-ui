@@ -10,7 +10,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Category;
@@ -30,8 +34,15 @@ public class BounceDAO {
 			" and s.CROMOD_DATE=sa.ACTION_DATE AND sa.ACTION_TYPE IN ('CRO', 'MOD') AND sa.REQUESTED_DATE > TRUNC(SYSDATE)  and be.status = 'NEW' " +
 			"and trunc(S.CROMOD_DATE) = trunc(be.createdate) AND s.type='REG' AND s.status <> 'CAN')";
 	
-	private static final String BOUNCE_SELECT = "select count(*) cnt, zone, cutoff, type, to_char(createdate, 'HH:MI AM') time from mis.bounce_event where status = 'NEW' and to_char(createdate, 'mm/dd/yyyy') = ? " +
-			"group by zone, cutoff, type,  to_char(createdate, 'HH:MI AM') order by  to_char(createdate, 'HH:MI AM')  asc";
+	private static final String BOUNCE_SELECT = "select count(*) cnt, createdate, zone, cutoff from mis.bounce_event where status = 'NEW' and " +
+			"type in ('DELIVERYINFO', 'CHECKOUT','RESERVED_SLOT') and to_char(delivery_date, 'mm/dd/yyyy') = ? and zone=? group by  zone, cutoff,createdate " +
+			"order by  createdate  asc";
+	
+	private static final String BOUNCE_SELECT_BYZONE = "select count(*) cnt, zone, cutoff from mis.bounce_event where status = 'NEW' and " +
+			"type in ('DELIVERYINFO', 'CHECKOUT','RESERVED_SLOT') and to_char(delivery_date, 'mm/dd/yyyy') = ? group by  zone, cutoff " +
+			"order by zone,cutoff  asc";
+	
+	
 	
 	public static void insert(Connection conn, List<BounceEvent> bounce) 
 	{
@@ -73,24 +84,32 @@ public class BounceDAO {
 	}
 
 	
-	public static List<BounceData> getData(Connection conn, String createDate) 
+	public static List<BounceData> getData(Connection conn, String deliveryDate,String zone) 
 	{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		DateFormat df = new SimpleDateFormat("hh:mm a");
+		Date createDate = null;
 		List<BounceData> dataList = new ArrayList<BounceData>();
+		Calendar cal = Calendar.getInstance();
 		 try {
 		    	ps = conn.prepareStatement(BOUNCE_SELECT);
-		    	ps.setString(1, createDate);
+		    	ps.setString(1, deliveryDate);
+		    	ps.setString(2, zone);
 		    	rs = ps.executeQuery();
 		    	
 		    	while(rs.next())
 		    	{
 		    		BounceData data = new BounceData();
 		    		data.setCnt(rs.getInt("cnt"));
-		    		data.setCutOff(rs.getDate("cutoff"));
+		    		data.setCutOff(new Date(rs.getTimestamp("cutoff").getTime()));
+		    		data.setCutoffTimeFormatted(df.format(new Date(rs.getTimestamp("cutoff").getTime())));
 		    		data.setZone(rs.getString("zone"));
-		    		data.setType(rs.getString("type"));
-		    		data.setTime(rs.getString("time"));
+		    		createDate = new Date(rs.getTimestamp("createdate").getTime());
+		    		cal.setTime(createDate);
+		    		cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE) - cal.get(Calendar.MINUTE)%30);
+		    		data.setSnapshotTime(cal.getTime());
+		    		data.setSnapshotTimeFormatted(df.format(cal.getTime()));
 		    		dataList.add(data);
 		    		
 		    	}
@@ -119,6 +138,54 @@ public class BounceDAO {
 		 return dataList;
 		
 	}
+	
+	public static List<BounceData> getDataByZone(Connection conn, String deliveryDate) 
+	{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<BounceData> dataList = new ArrayList<BounceData>();
+		DateFormat df = new SimpleDateFormat("hh:mm a");
+		 try {
+		    	ps = conn.prepareStatement(BOUNCE_SELECT_BYZONE);
+		    	ps.setString(1, deliveryDate);
+		    	rs = ps.executeQuery();
+		    	
+		    	while(rs.next())
+		    	{
+		    		BounceData data = new BounceData();
+		    		data.setCnt(rs.getInt("cnt"));
+		    		data.setCutOff(new Date(rs.getTimestamp("cutoff").getTime()));
+		    		data.setCutoffTimeFormatted(df.format(new Date(rs.getTimestamp("cutoff").getTime())));
+		    		data.setZone(rs.getString("zone"));
+		    		dataList.add(data);
+		    		
+		    	}
+		    	
+		 }
+		 catch(Exception e)
+			{
+				LOGGER.info(e.getMessage());
+				e.printStackTrace();
+			}
+		    	
+		 finally
+			{
+				try
+				{
+					if(rs!=null)
+						rs.close();
+					if(ps!=null)
+						ps.close();
+				}
+				catch(SQLException e)
+				{
+					LOGGER.info("There was an exception cleaning up the resources", e);
+				}
+			}
+		 return dataList;
+		
+	}
+	
 	public static void cancelBounce(Connection conn)
 	{
 		PreparedStatement ps = null;

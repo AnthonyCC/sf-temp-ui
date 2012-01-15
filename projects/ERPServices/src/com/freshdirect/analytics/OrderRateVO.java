@@ -1,23 +1,25 @@
 package com.freshdirect.analytics;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
 public class OrderRateVO {
 
 	private int capacity;
 	private String zone;
-	private Timestamp cutoffTime;
-	private Timestamp startTime;
-	private Timestamp endTime;
+	private Date cutoffTime;
+	private Date startTime;
+	private Date endTime;
 	private float orderCount;
 	private Date baseDate;
-	private Timestamp snapshotTime;
+	private Date snapshotTime;
+	private String snapshotTimeFmt;
 	private float projectedRate;
-	private Timestamp soldOutTime;
+	private Date soldOutTime;
 	private float weightedProjectRate;
 	private Date expectedSoldOutTime;
 	private float ordersExpected;
+	private String cutoffTimeFormatted;
+	private String startTimeFormatted;
 	
 	public String getZone() {
 		return zone;
@@ -28,19 +30,19 @@ public class OrderRateVO {
 	public Date getCutoffTime() {
 		return cutoffTime;
 	}
-	public void setCutoffTime(Timestamp cutoffTime) {
+	public void setCutoffTime(Date cutoffTime) {
 		this.cutoffTime = cutoffTime;
 	}
-	public Timestamp getStartTime() {
+	public Date getStartTime() {
 		return startTime;
 	}
-	public void setStartTime(Timestamp startTime) {
+	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
-	public Timestamp getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
-	public void setEndTime(Timestamp endTime) {
+	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
 	public float getOrderCount() {
@@ -55,11 +57,17 @@ public class OrderRateVO {
 	public void setBaseDate(Date baseDate) {
 		this.baseDate = baseDate;
 	}
-	public Timestamp getSnapshotTime() {
+	public Date getSnapshotTime() {
 		return snapshotTime;
 	}
-	public void setSnapshotTime(Timestamp snapshotTime) {
+	public void setSnapshotTime(Date snapshotTime) {
 		this.snapshotTime = snapshotTime;
+	}
+	public String getSnapshotTimeFmt() {
+		return snapshotTimeFmt;
+	}
+	public void setSnapshotTimeFmt(String snapshotTimeFmt) {
+		this.snapshotTimeFmt = snapshotTimeFmt;
 	}
 	public float getProjectedRate() {
 		return projectedRate;
@@ -67,10 +75,10 @@ public class OrderRateVO {
 	public void setProjectedRate(float projectedRate) {
 		this.projectedRate = projectedRate;
 	}
-	public Timestamp getSoldOutTime() {
+	public Date getSoldOutTime() {
 		return soldOutTime;
 	}
-	public void setSoldOutTime(Timestamp soldOutTime) {
+	public void setSoldOutTime(Date soldOutTime) {
 		this.soldOutTime = soldOutTime;
 	}
 	public float getWeightedProjectRate() {
@@ -96,6 +104,18 @@ public class OrderRateVO {
 	}
 	public void setOrdersExpected(float ordersExpected) {
 		this.ordersExpected = ordersExpected;
+	}
+	public String getCutoffTimeFormatted() {
+		return cutoffTimeFormatted;
+	}
+	public void setCutoffTimeFormatted(String cutoffTimeFormatted) {
+		this.cutoffTimeFormatted = cutoffTimeFormatted;
+	}
+	public String getStartTimeFormatted() {
+		return startTimeFormatted;
+	}
+	public void setStartTimeFormatted(String startTimeFormatted) {
+		this.startTimeFormatted = startTimeFormatted;
 	}
 	
 	

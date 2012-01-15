@@ -8,7 +8,17 @@ public class BounceData {
 	private String zone;
 	private Date cutOff;
 	private String type;
-	private String time;
+	private Date snapshotTime;
+	private String cutoffTimeFormatted;
+	private String snapshotTimeFormatted;
+	
+	public String getCutoffTimeFormatted() {
+		return cutoffTimeFormatted;
+	}
+	public void setCutoffTimeFormatted(String cutoffTimeFormatted) {
+		this.cutoffTimeFormatted = cutoffTimeFormatted;
+	}
+	
 	public int getCnt() {
 		return cnt;
 	}
@@ -33,11 +43,17 @@ public class BounceData {
 	public void setType(String type) {
 		this.type = type;
 	}
-	public String getTime() {
-		return time;
+	public Date getSnapshotTime() {
+		return snapshotTime;
 	}
-	public void setTime(String time) {
-		this.time = time;
+	public void setSnapshotTime(Date snapshotTime) {
+		this.snapshotTime = snapshotTime;
+	}
+	public String getSnapshotTimeFormatted() {
+		return snapshotTimeFormatted;
+	}
+	public void setSnapshotTimeFormatted(String snapshotTimeFormatted) {
+		this.snapshotTimeFormatted = snapshotTimeFormatted;
 	}
 	
 }

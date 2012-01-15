@@ -3,16 +3,13 @@ package com.freshdirect.analytics.ejb;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.*;
-import org.apache.log4j.Category;
 
-import weblogic.auddi.util.Logger;
+import org.apache.log4j.Category;
 
 import com.freshdirect.analytics.DateRangeVO;
 import com.freshdirect.analytics.OrderRateDAO;
+import com.freshdirect.analytics.OrderRateUtil;
 import com.freshdirect.analytics.OrderRateVO;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.DateUtil;
@@ -22,40 +19,9 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 
 	private static final Category LOGGER = LoggerFactory.getInstance(OrderRateSessionBean.class);
 	
-	private static Timestamp getDate(Timestamp date, int lookback)
-	{
-		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(date.getTime());
-		cal.add(Calendar.DATE, lookback);
-		return new java.sql.Timestamp(cal.getTimeInMillis());
-	}
-	private float roundValue(double value)
-	{
-		float val = 0;
-		try
-		{
-		DecimalFormat df = new DecimalFormat("#.##");
-		val =  Float.valueOf(df.format(value)).floatValue();
-		}
-		catch(NumberFormatException nfe)
-		{
-			Logger.info("Exception while rounding the value: "+value);
-		}
-		return val;
-	}
 	
-	public Date getSample(Calendar cal, Map holidayMap)
-	{
-		cal.add(Calendar.DATE, -7);
-		while(holidayMap!= null && holidayMap.get(cal.getTime()) != null)
-		{
-			cal.add(Calendar.DATE, -7);
-		}
-		return cal.getTime();
-		
-	}
 	@SuppressWarnings("unchecked")
-	public void getOrderRate(Timestamp timeStamp) throws RemoteException{
+	public void getOrderRate(Date timeStamp) throws RemoteException{
 		
 		final String METHODNAME = "getOrderRate()";
 		LOGGER.info("start: "+METHODNAME );
@@ -81,9 +47,9 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 				cal.setTime(baseDate);
 				cal = DateUtil.truncate(cal);
 				Date[] samples = new Date[2];
-				samples[0] = getSample(cal, holidayMap);
+				samples[0] = OrderRateUtil.getSample(cal, holidayMap);
 				dates.add(samples[0]);
-				samples[1] = getSample(cal, holidayMap);
+				samples[1] = OrderRateUtil.getSample(cal, holidayMap);
 				dates.add(samples[1]);
 				sampleMap.put(baseDate, samples);
 				
@@ -91,7 +57,7 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 			
 			Date minDate = Collections.min(dates);
 				
-			Map<DateRangeVO,  Map<String, Map<Timestamp, Integer[]>>> capacityMap = OrderRateDAO.getCapacityMap(conn,minDate);
+			Map<DateRangeVO,  Map<String, Map<Date, Integer[]>>> capacityMap = OrderRateDAO.getCapacityMap(conn,minDate);
 			Map<DateRangeVO, Map<String, Integer>> orderCountMap = OrderRateDAO.getOrderCount(conn,minDate);
 			
 			
@@ -103,16 +69,16 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 				
 				int days1 = (int)DateUtil.diffInDays(vo.getBaseDate(), sampleMap.get(vo.getBaseDate())[0]) * -1;
 				int days2 = (int)DateUtil.diffInDays(vo.getBaseDate(), sampleMap.get(vo.getBaseDate())[1]) * -1;
-				Timestamp snapshot7 = getDate(timeStamp, days1);
-				Timestamp startTime7 = getDate(vo.getStartTime(),days1);
-				Timestamp endTime7 = getDate(vo.getEndTime(),days1);
-				Timestamp snapshot14 = getDate(timeStamp, days2);
-				Timestamp startTime14 = getDate(vo.getStartTime(), days2);
-				Timestamp endTime14 = getDate(vo.getEndTime(),days2);
+				Date snapshot7 = OrderRateUtil.getDate(timeStamp, days1);
+				Date startTime7 = OrderRateUtil.getDate(vo.getStartTime(),days1);
+				Date endTime7 = OrderRateUtil.getDate(vo.getEndTime(),days1);
+				Date snapshot14 = OrderRateUtil.getDate(timeStamp, days2);
+				Date startTime14 = OrderRateUtil.getDate(vo.getStartTime(), days2);
+				Date endTime14 = OrderRateUtil.getDate(vo.getEndTime(),days2);
 				
 				
-				snapshot7 = (Timestamp) addTime(snapshot7);
-				snapshot14 = (Timestamp) addTime(snapshot14);
+				snapshot7 = OrderRateUtil.addTime(snapshot7);
+				snapshot14 = OrderRateUtil.addTime(snapshot14);
 				
 				DateRangeVO range = new DateRangeVO(vo.getStartTime(), vo.getEndTime());
 				DateRangeVO range7 = new DateRangeVO(startTime7, endTime7);
@@ -126,7 +92,7 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 						 && capacityMap.get(range14).get(vo.getZone()).get(snapshot14)!=null)
 			
 	
-					vo.setProjectedRate(roundValue( new Float(capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[1] + capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[1]) / 2));
+					vo.setProjectedRate(OrderRateUtil.roundValue( new Float(capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[1] + capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[1]) / 2));
 				
 				else
 					vo.setProjectedRate(0);
@@ -141,7 +107,7 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 						 && capacityMap.get(range14).get(vo.getZone()).get(snapshot14)!=null
 						 && (capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[0] + capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[0] > 0) )
 				
-						weightedProjection = roundValue(new Float( vo.getProjectedRate() * vo.getCapacity() / ((capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[0]+ capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[0])/2)));
+						weightedProjection = OrderRateUtil.roundValue(new Float( vo.getProjectedRate() * vo.getCapacity() / ((capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[0]+ capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[0])/2)));
 				
 				else
 						weightedProjection = 0;
@@ -152,7 +118,7 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 				
 				
 				
-				Timestamp expectedSoldTime = addTime(vo.getSnapshotTime());
+				Date expectedSoldTime = OrderRateUtil.addTime(vo.getSnapshotTime());
 				
 				float rate = 0;
 				boolean done = false, evaluate = true;
@@ -173,7 +139,7 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 						if(capacityMap.get(range7).get(vo.getZone()).get(snapshot7)!=null
 								 && capacityMap.get(range14).get(vo.getZone()).get(snapshot14)!=null)
 						{
-							rate += roundValue( new Float(capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[1]+ capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[1]) /2);
+							rate += OrderRateUtil.roundValue( new Float(capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[1]+ capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[1]) /2);
 							
 							vo.setOrdersExpected(rate);
 							if((orderCount + vo.getOrderCount() - capacity) <0 && (orderCount + vo.getOrderCount() + rate) - capacity >=0 && evaluate)
@@ -185,9 +151,9 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 						if(expectedSoldTime.getTime()>vo.getCutoffTime().getTime())
 							done = true;
 					
-						snapshot7 = addTime(snapshot7);
-						snapshot14 = addTime(snapshot14);
-						expectedSoldTime = addTime(expectedSoldTime);	
+						snapshot7 = OrderRateUtil.addTime(snapshot7);
+						snapshot14 = OrderRateUtil.addTime(snapshot14);
+						expectedSoldTime = OrderRateUtil.addTime(expectedSoldTime);	
 						
 				
 					}
@@ -203,7 +169,7 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 			
 			save(list);
 			long endtime= System.currentTimeMillis();
-			System.err.println("Total time for execution of order rate job for snapshot: "+new Date(timeStamp.getTime()).toString()+" "+new Double(endtime-starttime));
+			System.err.println("Total time for execution of order rate job for snapshot: "+timeStamp.toString()+" "+new Double(endtime-starttime));
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
@@ -224,14 +190,7 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 		
 	}
 	
-	private Timestamp addTime(Timestamp time)
-	{
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(time);
-		cal.add(Calendar.MINUTE, 30);
-		return new java.sql.Timestamp(cal.getTimeInMillis());
-		
-	}
+
 	public void save(List<OrderRateVO> voList)
 	{
 		Connection conn = null;

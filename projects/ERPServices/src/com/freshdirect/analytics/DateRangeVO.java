@@ -1,27 +1,26 @@
 package com.freshdirect.analytics;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
 public class DateRangeVO {
 
-	private Timestamp startTime;
-	private Timestamp endTime;
-	public DateRangeVO(Timestamp start, Timestamp end) {
+	private Date startTime;
+	private Date endTime;
+	public DateRangeVO(Date start, Date end) {
 		
 		this.startTime = start;
 		this.endTime = end;
 	}
-	public Timestamp getStartTime() {
+	public Date getStartTime() {
 		return startTime;
 	}
-	public void setStartTime(Timestamp startTime) {
+	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
-	public Timestamp getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
-	public void setEndTime(Timestamp endTime) {
+	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
 	

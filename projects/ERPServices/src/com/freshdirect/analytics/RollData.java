@@ -7,7 +7,29 @@ public class RollData {
 	private int cnt;
 	private String zone;
 	private Date cutOff;
-	private String time;
+	private Date time;
+	private Date snapshotTime;
+	private String cutoffTimeFormatted;
+	private String snapshotTimeFormatted;
+
+	public String getCutoffTimeFormatted() {
+		return cutoffTimeFormatted;
+	}
+	public void setCutoffTimeFormatted(String cutoffTimeFormatted) {
+		this.cutoffTimeFormatted = cutoffTimeFormatted;
+	}
+	public Date getSnapshotTime() {
+		return snapshotTime;
+	}
+	public void setSnapshotTime(Date snapshotTime) {
+		this.snapshotTime = snapshotTime;
+	}
+	public String getSnapshotTimeFormatted() {
+		return snapshotTimeFormatted;
+	}
+	public void setSnapshotTimeFormatted(String snapshotTimeFormatted) {
+		this.snapshotTimeFormatted = snapshotTimeFormatted;
+	}
 	public int getCnt() {
 		return cnt;
 	}
@@ -26,10 +48,10 @@ public class RollData {
 	public void setCutOff(Date cutOff) {
 		this.cutOff = cutOff;
 	}
-	public String getTime() {
+	public Date getTime() {
 		return time;
 	}
-	public void setTime(String time) {
+	public void setTime(Date time) {
 		this.time = time;
 	}
 	
