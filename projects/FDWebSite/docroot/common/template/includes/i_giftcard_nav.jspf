@@ -66,7 +66,7 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
 			<% } %>
 			
 			<% if (user.getLevel() == FDUserI.SIGNED_IN) { %>
-				<a href="/login/logout.jsp"><b>Click here to log out</b></a>
+				<a href="/logout.jsp"><b>Click here to log out</b></a>
 			<% } else if (user.getLevel() == FDUserI.RECOGNIZED) { %>
 				<a href="/login/login.jsp"><b>Click here to log in</b></a>
 			<% } else {	%>

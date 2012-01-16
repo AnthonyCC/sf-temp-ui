@@ -413,7 +413,7 @@ public class FDStoreProperties {
     private final static String PROP_CRM_AGENTS_CACHE_REFRESH_PERIOD = "crm.agents.cache.refresh.period";
     private final static String MYFD_ENABLED = "myfd.enabled";
     private final static String MYFD_BLOG_URL = "myfd.blogUrl";
-    private static final String MYFD_POLLDADDY_API_KEY = "myfd.pollDaddy.apiKey";
+	private static final String MYFD_POLLDADDY_API_KEY = "myfd.pollDaddy.apiKey";
     private static final String PROP_CLICK2CALL_CALL_BACL_URL = "fdstore.c2c.callback.url";
 
     //APPDEV-1215 Sustainable Seafood
@@ -2277,10 +2277,10 @@ public class FDStoreProperties {
         return Boolean.parseBoolean(get(MYFD_ENABLED));
     }
 
-    public static String getMyfdBlogUrl() {
-        return get(MYFD_BLOG_URL);
+	public static String getMyfdBlogUrl() {
+		return get(MYFD_BLOG_URL);
     }
-
+    
     public static String getMyFdPollDaddyApiKey() {
         return get(MYFD_POLLDADDY_API_KEY);
     }

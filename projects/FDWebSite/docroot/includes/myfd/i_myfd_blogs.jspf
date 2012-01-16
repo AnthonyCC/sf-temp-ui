@@ -39,6 +39,10 @@ try {
 			<div class="post-links">
 				<div><%=post.getPostDayLink() %> by <%=post.getAuthorLink()%> 
 					<%if (post.getCategory() != null && !post.getCategory().equals("") && !post.getCategory().equals("Uncategorized")) {%>in <a href="<%=post.getCategoryLink() %>"><%=post.getCategoryDescription() %></a> <%} %>
+					
+					<%if (post.getCommentNum() > 0) {%>
+					 - <a href="<%=post.getCommentsLink() %>"><%=post.getCommentNum() %> <%=post.getCommentNum() == 1 ? "Comment" : "Comments"%></a>
+					 <%}%>
 				</div>
 				
 				

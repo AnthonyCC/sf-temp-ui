@@ -10,8 +10,8 @@
       <li class="notifications"><a class="topbarlink" id="notifications_trigger" href="#notifications"><span>notifications</span><span class="notif_count">3</span></a></li>
       <% if (user.getLevel() == FDUserI.SIGNED_IN) { %>
         <li class="myaccount"><a class="topbarlink" href="<c:url value="/your_account/manage_account.jsp"/>">my account</a></li>
-        <li class="logout"><a class="topbarlink" href="<c:url value="/login/logout.jsp"/>"><em>&gt;</em> log out</a></li>
-        <li class="welcome" id="loggedin">Welcome Ruchi (<a href="<c:url value="/login/logout.jsp"/>">not ruchi?</a>)</li>
+        <li class="logout"><a class="topbarlink" href="<c:url value="/logout.jsp"/>"><em>&gt;</em> log out</a></li>
+        <li class="welcome" id="loggedin">Welcome Ruchi (<a href="<c:url value="/logout.jsp"/>">not ruchi?</a>)</li>
       <% } else { %>
         <li class="myaccount"><a class="topbarlink loginrequired" href="<c:url value="/your_account/manage_account.jsp"/>">my account</a></li>
         <li class="login"><a class="topbarlink" id="loginbox_trigger" href="<c:url value="/login/login.jsp"><c:param name="successPage"><%= globalUri %></c:param></c:url>"><em>&gt;</em> log in</a></li>

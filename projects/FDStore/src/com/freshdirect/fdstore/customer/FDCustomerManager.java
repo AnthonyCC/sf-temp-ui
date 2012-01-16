@@ -2869,7 +2869,6 @@ public class FDCustomerManager {
 		}
 	}
 
-	/*APPDEV-1888
 	public static FDUser getFDUserByEmail(String email)
 			throws FDAuthenticationException, FDResourceException {
 		lookupManagerHome();
@@ -2885,7 +2884,6 @@ public class FDCustomerManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-	*/
 	
 	
 	public static Object[] getAutoRenewalInfo() throws FDResourceException {

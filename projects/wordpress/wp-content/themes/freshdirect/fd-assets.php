@@ -36,4 +36,10 @@ a2a_config.color_link_text = "336600";
 <![endif]-->
 <link href="<?php bloginfo('template_url'); ?>/assets/css/4mm.css" rel="stylesheet" type="text/css" />
 <link href="<?php bloginfo('template_url'); ?>/assets/css/quickbuy.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" language="javascript">
+var OasConfig = {
+		serverDomain: "<?php echo get_option('fdc_oasconfig_serverdomain') ?>",
+		sitePage: "<?php echo get_option('fdc_oasconfig_sitepage') ?>"
+};
+</script>
 <script src="<?php bloginfo('template_url'); ?>/js/oas.js" type="text/javascript" language="javascript"></script>

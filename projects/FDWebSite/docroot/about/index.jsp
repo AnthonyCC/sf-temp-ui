@@ -2,6 +2,7 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import="com.freshdirect.fdstore.myfd.blog.MyFdFeed"%>
 
 <fd:CheckLoginStatus />
 
@@ -62,5 +63,9 @@
 		<fd:IncludeMedia name="/media/editorial/site_access/aboutus.ftl" parameters="<%=params%>" withErrorReport="true"/>
 	<% } %>
 <% } %>
+
+	<% if ("true".equalsIgnoreCase(request.getParameter("bloglogout"))) {%>
+		<iframe src="<%=MyFdFeed.getInstance().getBlogUrl()%>/?autologout" width="0" height="0" frameBorder="0"/>
+	<%} %>
 </tmpl:put>
 </tmpl:insert>

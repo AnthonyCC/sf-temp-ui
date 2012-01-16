@@ -9,9 +9,17 @@
 
 get_header(); ?>
 
+<? if (isset($_GET['oautherror'])) {?>
+
+    <div class="text11rbold" style="padding: 20px 25px 50px 25px">
+		Sorry, the Web site is unable to process that request. Please click your browser's back button and try again. If that does not work, contact FreshDirect customer service at 1-212-796-8002. We apologize for any inconvenience.
+		<br><br>
+		Reference: Blog login error
+	</div>
+
+<?} else {?>
 	<div id="container">
 		<div id="content" role="main">
-
 			<div id="post-0" class="post error404 not-found">
 				<h1 class="entry-title"><?php _e( 'Not Found', 'twentyten' ); ?></h1>
 				<div class="entry-content">
@@ -19,12 +27,12 @@ get_header(); ?>
 					<?php get_search_form(); ?>
 				</div><!-- .entry-content -->
 			</div><!-- #post-0 -->
-
 		</div><!-- #content -->
 	</div><!-- #container -->
 	<script type="text/javascript">
 		// focus on search field after it has loaded
 		document.getElementById('s') && document.getElementById('s').focus();
 	</script>
+<?}?>
 
 <?php get_footer(); ?>

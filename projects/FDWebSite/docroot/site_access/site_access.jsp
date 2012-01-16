@@ -6,6 +6,7 @@
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import="com.freshdirect.fdstore.myfd.blog.MyFdFeed"%>
 <%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
 <%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -208,5 +209,9 @@ request.setAttribute("listPos", "CategoryNote,SiteAccess");
 				semPixel_PUB.setParam("curPage", request.getRequestURI());
 			%><fd:SemPixelIncludeMedia pixelNames="Publicis" />
 		</fd:SiteAccessController>
+
+		<% if ("true".equalsIgnoreCase(request.getParameter("bloglogout"))) {%>
+			<iframe src="<%=MyFdFeed.getInstance().getBlogUrl()%>/?autologout" width="0" height="0" frameBorder="0"/>
+		<%} %>
 	</body>
 </html>

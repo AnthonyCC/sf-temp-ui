@@ -41,7 +41,7 @@
 </div>
 <div class="title18"><%= user.getGreeting() %></div>
 <div class="text9">(If you're not <%= user.getFirstName() %>, <a
-	href="/login/logout.jsp?logoutPage=site_access">click here</a>!)</div>
+	href="/logout.jsp?logoutPage=site_access">click here</a>!)</div>
 <% 
 if (user.isChefsTable()) { 
 %>

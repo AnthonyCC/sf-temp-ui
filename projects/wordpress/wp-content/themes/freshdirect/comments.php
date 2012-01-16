@@ -62,17 +62,16 @@
 			</div><!-- .navigation -->
 <?php endif; // check for comment navigation ?>
 
-<?php else : // or, if we don't have comments:
+<?php endif; // end have_comments() ?>
 
-	/* If there are no comments and comments are closed,
+<?php
+ 	/* If comments are closed,
 	 * let's leave a little note, shall we?
 	 */
 	if ( ! comments_open() ) :
 ?>
 	<p class="nocomments"><?php _e( 'Comments are closed.', 'twentyten' ); ?></p>
 <?php endif; // end ! comments_open() ?>
-
-<?php endif; // end have_comments() ?>
 
 <?php comment_form(); ?>
 

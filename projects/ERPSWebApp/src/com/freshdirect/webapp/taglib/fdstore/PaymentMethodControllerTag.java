@@ -120,7 +120,7 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
             else if(request.getSession().getAttribute("verifyFail")!=null) {
             	HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
                 try {
-                    response.sendRedirect(response.encodeRedirectURL("/login/logout.jsp"));
+                    response.sendRedirect(response.encodeRedirectURL("/logout.jsp"));
                     JspWriter writer = pageContext.getOut();
                     writer.close();
                     return SKIP_BODY;

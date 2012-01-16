@@ -15,6 +15,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import net.oauth.OAuthException;
+
 import org.apache.log4j.Category;
 
 import com.freshdirect.cms.ContentKey;
@@ -39,7 +41,7 @@ import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.fdstore.content.WineFilterPriceIndex;
 import com.freshdirect.fdstore.content.WineFilterRatingIndex;
 import com.freshdirect.fdstore.grp.FDGrpInfoManager;
-import com.freshdirect.fdstore.util.Buildver;
+import com.freshdirect.fdstore.oauth.provider.OAuthProvider;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.service.CmsRecommenderRegistry;
@@ -71,6 +73,8 @@ public class Warmup {
 	public void warmup() {
 
 		LOGGER.info("Warmup started");
+		warmupOAuthProvider();
+		
 		long time = System.currentTimeMillis();
 		contentFactory.getStore();
 		LOGGER.info("Store warmup in "+ (System.currentTimeMillis() - time) + " ms");
@@ -243,4 +247,11 @@ public class Warmup {
 		}
 	}
 
+	private void warmupOAuthProvider(){
+		try {
+			OAuthProvider.deleteOldAccessors();
+		} catch (OAuthException e) {
+			LOGGER.error("OAuth warmup error",e);
+		}
+	}
 }

@@ -142,7 +142,7 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 			Please call us at 1-856-511-1240, Monday through Thursday 5:30 a.m. to 12 <BR>
 			a.m., Friday from 5:30 a.m. to 11 p.m., Saturday from 7:30 a.m. to 8 p.m., <BR>
 			and Sunday from 7:30 a.m. to 12 a.m. <BR>
-			If you need to disconnect from the Internet, please <a href="/login/logout.jsp">Log Out</a> first.
+			If you need to disconnect from the Internet, please <a href="/logout.jsp">Log Out</a> first.
 		</td>
 	</tr>
 	

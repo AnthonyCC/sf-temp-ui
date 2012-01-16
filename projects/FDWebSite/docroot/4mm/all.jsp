@@ -115,7 +115,7 @@
 			</logic:iterate>		
 		</select>
 </div>
-		<%-- RESULT DISPLAY --%>		
+		<%-- RESULT DISPLAY AREA --%>		
 		<% 
 			boolean showBrand = true; //!FourMinuteMealsHelper.sortBrand.equals(selectedSortInfo) && selectedRestaurants.size() == 0;
 		

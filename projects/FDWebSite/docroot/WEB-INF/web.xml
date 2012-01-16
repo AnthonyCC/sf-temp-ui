@@ -62,6 +62,27 @@
 		<servlet-name>ClientCodeReportServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.util.ClientCodeReportServlet</servlet-class>
 	</servlet>
+
+	<servlet>
+		<servlet-name>AccessTokenServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.oauth.provider.AccessTokenServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>AuthorizationServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.oauth.provider.AuthorizationServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>RequestTokenServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.oauth.provider.RequestTokenServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>UserDataServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.oauth.provider.UserDataServlet</servlet-class>
+	</servlet>
+
    
    <servlet-mapping>
      <servlet-name>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-name>
@@ -71,6 +92,26 @@
 	<servlet-mapping>
 		<servlet-name>ClientCodeReportServlet</servlet-name>
 		<url-pattern>/api/clientCodeReport.jsp</url-pattern>
+	</servlet-mapping>	
+
+	<servlet-mapping>
+		<servlet-name>AccessTokenServlet</servlet-name>
+		<url-pattern>/oauth/access_token</url-pattern>
+	</servlet-mapping>	
+
+	<servlet-mapping>
+		<servlet-name>AuthorizationServlet</servlet-name>
+		<url-pattern>/oauth/authorize</url-pattern>
+	</servlet-mapping>	
+
+	<servlet-mapping>
+		<servlet-name>RequestTokenServlet</servlet-name>
+		<url-pattern>/oauth/request_token</url-pattern>
+	</servlet-mapping>	
+
+	<servlet-mapping>
+		<servlet-name>UserDataServlet</servlet-name>
+		<url-pattern>/oauth/user_data</url-pattern>
 	</servlet-mapping>	
 
     <session-config>

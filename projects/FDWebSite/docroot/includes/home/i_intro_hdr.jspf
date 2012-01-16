@@ -13,7 +13,7 @@
 	Learn more <a href="/about/index.jsp">About Us</a>, or get <a href="/help/<% if(user.isDepotUser()){ %>delivery_info_depot.jsp<% } else { %>delivery_info.jsp<% } %>">Delivery & Pickup Info</a>.<br>
      </td></tr>
 <% } else if (validOrderCount == 0) { %>
-     <tr align="center"><td><font class="title14">Welcome <%=custFirstName%>. Thank you for signing up!</font><br><font class="text9">(If you're not <font color="#336600"><%=custFirstName%>, <a href="/login/logout.jsp?logoutPage=site_access">click here</a>!</font>)</font>
+     <tr align="center"><td><font class="title14">Welcome <%=custFirstName%>. Thank you for signing up!</font><br><font class="text9">(If you're not <font color="#336600"><%=custFirstName%>, <a href="/logout.jsp?logoutPage=site_access">click here</a>!</font>)</font>
      <% if (user.isEligibleForSignupPromotion()){ 
 	 		Promotion promo = (Promotion) user.getEligibleSignupPromotion();
 			%>
@@ -39,7 +39,7 @@
        		 	<% } %>
          
 			<td>
-			 <font class="title14">Welcome back, <%=custFirstName%>!</font><br><font class="text9">(If you're not <font color="#336600"><%=custFirstName%>, <a href="/login/logout.jsp?logoutPage=site_access">click here</A>!</font>)</font>
+			 <font class="title14">Welcome back, <%=custFirstName%>!</font><br><font class="text9">(If you're not <font color="#336600"><%=custFirstName%>, <a href="/logout.jsp?logoutPage=site_access">click here</A>!</font>)</font>
 			 <% if (rule != null) { %>
 			 	<br><br>Get $<%=(int)rule.getMaxAmount()%> off your next order when you order 
 			 	$<%=(int)rule.getMinSubtotal()%> or more. <a href="/promotion.jsp">See offer details</a>.
@@ -55,7 +55,7 @@
      		     <% } %>
           
      		     <td><font class="title14">Welcome back, <%=custFirstName%>!</font>&nbsp;&nbsp;
-     		     <font class="text9">(If you're not <font color="#336600"><%=custFirstName%>, <a href="/login/logout.jsp?logoutPage=site_access">click here</A>!</font>)</font></td></tr>
+     		     <font class="text9">(If you're not <font color="#336600"><%=custFirstName%>, <a href="/logout.jsp?logoutPage=site_access">click here</A>!</font>)</font></td></tr>
      
      		<% } 
  
@@ -84,7 +84,7 @@
 		} %>
 	       	<tr align="<%=alignment%>"> 
 		<td><font class="title14"><%= segmentMessage.getGreeting()%><%=custFirstName%>!</font>&nbsp;&nbsp;
-		          <font class="text9">(If you're not <font color="#336600"><%=custFirstName%>, <a href="/login/logout.jsp?logoutPage=site_access">click here</A>!</font>)</font></td></tr>
+		          <font class="text9">(If you're not <font color="#336600"><%=custFirstName%>, <a href="/logout.jsp?logoutPage=site_access">click here</A>!</font>)</font></td></tr>
      
 		<tr align="<%=alignment%>"><td><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td></tr>
 		<tr align="<%=alignment%>"><td><font class="title12"><%=segmentMessage.getMessage()%></font>&nbsp;&nbsp;

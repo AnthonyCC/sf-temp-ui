@@ -114,7 +114,7 @@ if(user != null) {
 			<a href="/your_account/delivery_pass.jsp"><img src="/media_stat/images/navigation/global_nav/global_hdr_dp.gif" width="217" height="10" alt="CLICK HERE FOR DETAILS"  vspace="0" border="0"></a><br>
 		<% } %>
 	   <% if (user.getLevel() == FDUserI.SIGNED_IN) {
-	%>		        <a href="/login/logout.jsp"><b>Click here to log out</b></a>
+	%>		        <a href="/logout.jsp"><b>Click here to log out</b></a>
 	<%             } else if (user.getLevel() == FDUserI.RECOGNIZED) {	%>
 			          <a href="/login/login.jsp"><b>Click here to log in</b></a>
 	<%	} else {	%>
