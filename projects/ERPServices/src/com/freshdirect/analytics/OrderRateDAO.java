@@ -73,7 +73,7 @@ public class OrderRateDAO {
 			">=  ? and to_char(timeslot_start,'MM/DD/YYYY HH:MI:SS AM')  = ? and zone = ?))";
 	
 	private static final String CURRENT_ORDER_COUNT = "select sum(o.order_count) oCount, o.timeslot_start, o.timeslot_end, o.zone  " +
-		"from MIS.order_rate o where delivery_date >= ? group by o.timeslot_start, o.zone";
+		"from MIS.order_rate o where delivery_date >= ? group by o.timeslot_start, o.timeslot_end, o.zone";
     
 	private static final String HOLIDAY_QUERY = "select sum(order_count) as oCount, delivery_date from MIS.order_rate group by delivery_date having sum(order_count) = 0";
 
