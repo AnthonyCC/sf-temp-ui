@@ -141,7 +141,7 @@ public class CompareNodesUtil {
 		for (String key : keys) {
 			final ContentNodeAttributeI attr = nodeAttributes.get(key);
 
-			if (attr.getFieldObject()== null)
+			if (attr==null || attr.getFieldObject()== null)
 				continue;
 			
 			Serializable otherValue = null;
