@@ -101,7 +101,7 @@
 		</tr>
 	</table>
 <% } else { %>
-<div style="height:585px;">
+<div style="height:585px; overflow-y: auto; overflow-x: hide;">
 <form id="smsform" name="smsform" method="post" action="">
 	<input type="hidden" name="actionName" value="ordermobilepref" />	
 
