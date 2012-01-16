@@ -19,7 +19,7 @@
 
 	
 	
-<% //expanded page dimensions
+<% //expanded page dimension
 final int W_INDEX_TOTAL = 970;
 final int W_INDEX_CENTER_PADDING = 20;
 final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
