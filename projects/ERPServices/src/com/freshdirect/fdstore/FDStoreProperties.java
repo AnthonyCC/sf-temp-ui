@@ -486,6 +486,10 @@ public class FDStoreProperties {
     private static final String PROP_VS_PASSWORD="fdstore.voiceshot.password";
     private static final String PROP_VS_URL="fdstore.voiceshot.url";
 	private final static String PROP_ENABLE_AIRCLIC = "transportation.enable.airclic";
+	
+	private final static String PROP_FD_GIVEX_WEB_USER  = "fdstore.givex.web.user";
+	private final static String PROP_FD_GIVEX_WEB_USER_PASSWD  = "fdstore.givex.web.user.passwd";
+	private final static String PROP_GIVEX_WEB_SERVER_URL  = "fdstore.givex.web.url";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -979,6 +983,9 @@ public class FDStoreProperties {
         defaults.put(PROP_VS_PASSWORD, "whitshell");
         defaults.put(PROP_VS_URL, "http://apiproxy.voiceshot.com/ivrapi.asp");
         defaults.put(PROP_ENABLE_AIRCLIC, "false");
+        defaults.put(PROP_FD_GIVEX_WEB_USER, "freshdirect");
+		defaults.put(PROP_FD_GIVEX_WEB_USER_PASSWD, "fd8848admin");
+		defaults.put(PROP_GIVEX_WEB_SERVER_URL, "https://dev-wwws.givex.com/portal/login.py?_LANGUAGE_:en");
         refresh();
     }
 
@@ -2495,4 +2502,16 @@ public class FDStoreProperties {
     	return get(PROP_VS_URL);
     }
 
+    public static String getFDGivexWebUser() {
+		return config.getProperty(PROP_FD_GIVEX_WEB_USER);
+	}
+	
+	public static String getFDGivexWebUserPassword() {
+		return config.getProperty(PROP_FD_GIVEX_WEB_USER_PASSWD);
+	}
+
+	
+	public static String getGivexWebServerURL() {
+		return config.getProperty(PROP_GIVEX_WEB_SERVER_URL);
+	}
 }

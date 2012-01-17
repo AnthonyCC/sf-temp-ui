@@ -17,7 +17,7 @@
 	<tmpl:put name='title' direct='true'>Supervisor Resources >Givex Admin</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 
-			<iframe src ="/supervisor/connect.html" width="100%" height="500">
+			<iframe src ="/supervisor/givexconnect.jsp" width="100%" height="500">
 				<p>Your browser does not support iframes.</p>
 			</iframe>
 
