@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -73,12 +74,12 @@ public class OrderRateDAO {
 			">=  ? and to_char(timeslot_start,'MM/DD/YYYY HH:MI:SS AM')  = ? and zone = ?))";
 	
 	private static final String CURRENT_ORDER_COUNT = "select sum(o.order_count) oCount, o.timeslot_start, o.timeslot_end, o.zone  " +
-		"from MIS.order_rate o where delivery_date >= ? group by o.timeslot_start, o.timeslot_end, o.zone";
+		"from MIS.order_rate o where delivery_date >= ? and delivery_date <= ? group by o.timeslot_start, o.timeslot_end, o.zone";
     
 	private static final String HOLIDAY_QUERY = "select sum(order_count) as oCount, delivery_date from MIS.order_rate group by delivery_date having sum(order_count) = 0";
 
 	private static final String CAPACITY_QUERY = "select capacity,order_count, " +
-			"delivery_date, timeslot_start, timeslot_end, zone, snapshot_time from MIS.order_rate where delivery_date >= ?";
+			"delivery_date, timeslot_start, timeslot_end, zone, snapshot_time from MIS.order_rate where delivery_date in (%s)";
 	
 	private static final String CAPACITY_QUERY_FORECAST = "select capacity,order_count, " +
 			"delivery_date, timeslot_start, timeslot_end, zone, snapshot_time from MIS.order_rate where delivery_date in ( ?, ?) and zone = ?";
@@ -87,6 +88,9 @@ public class OrderRateDAO {
 			"sum(capacity) capacity from mis.order_rate where to_char(snapshot_time,'mm/dd/yyyy') =  ? and delivery_date = to_date(?,'mm/dd/yyyy') " +
 			"and zone = ? group by snapshot_time, cutoff, zone order by snapshot_time, cutoff, zone asc";
 	
+	private static final String CURRENT_DATE_ORDER_RATE_EX = "select  snapshot_time, sum(order_count) order_count, sum(capacity) capacity from mis.order_rate " +
+			"where to_char(snapshot_time,'mm/dd/yyyy') =  ? and delivery_date = to_date( ?,'mm/dd/yyyy') group by snapshot_time order by snapshot_time asc";
+	
 	private static final String MAX_SNAPSHOT_DELIVERY_DATE = "select o.capacity, o.snapshot_time, o.timeslot_start, o.timeslot_end, o.cutoff, o.zone from mis.order_rate o " +
 			"where o.delivery_date = to_date(?,'mm/dd/yyyy') and o.zone = ? and o.snapshot_time = (select max(snapshot_time) snapshot from mis.order_rate o1 where " +
 			"o1.delivery_date =o.delivery_date and o1.cutoff=o.cutoff)";
@@ -94,7 +98,10 @@ public class OrderRateDAO {
 	private static final String ORDER_COUNT_QRY = "select sum(order_count) as oCount, zone,cutoff " +
 			" from MIS.order_rate where delivery_date = to_date(?,'mm/dd/yyyy') and zone = ? and trunc(snapshot_time) < to_date(?,'mm/dd/yyyy') group by zone,cutoff";
 	
-			
+	private static final String ORDER_COUNT_QRY_EX = "select sum(order_count) as oCount from MIS.order_rate where delivery_date = to_date(?,'mm/dd/yyyy') " +
+			"and trunc(snapshot_time) < to_date( ?,'mm/dd/yyyy')";
+	
+	private static final String GET_PLANT_DISPATCH = "select * from ";
 	public static List<OrderRateVO> getCurrentOrdersByZoneCutoff(Connection conn, String deliveryDate)
 	{
 		List<OrderRateVO> voList = new ArrayList<OrderRateVO>();
@@ -401,15 +408,33 @@ public class OrderRateDAO {
 		
 	}
 	
-	public static Map<DateRangeVO,  Map<String, Map<Date, Integer[]>>> getCapacityMap(Connection conn, Date minDate)
+	public static String preparePlaceHolders(int length) {
+	    StringBuilder builder = new StringBuilder();
+	    for (int i = 0; i < length;) {
+	        builder.append("?");
+	        if (++i < length) {
+	            builder.append(",");
+	        }
+	    }
+	    return builder.toString();
+	}
+
+	public static void setValues(PreparedStatement preparedStatement, Object... values) throws SQLException {
+	    for (int i = 0; i < values.length; i++) {
+	        preparedStatement.setObject(i + 1, values[i]);
+	    }
+	}
+	
+	public static Map<DateRangeVO,  Map<String, Map<Date, Integer[]>>> getCapacityMap(Connection conn, List sampleDates)
 	{
 		PreparedStatement ps =null;ResultSet rs = null;
 		Map<DateRangeVO,  Map<String, Map<Date, Integer[]>>> capacityMap = new HashMap<DateRangeVO,  Map<String, Map<Date, Integer[]>>>();
 		
 		try
 		{
-			ps = conn.prepareStatement(CAPACITY_QUERY);
-			ps.setDate(1, new java.sql.Date(minDate.getTime()));
+			String sql = String.format(CAPACITY_QUERY, preparePlaceHolders(sampleDates.size()));
+			ps = conn.prepareStatement(sql);
+			setValues(ps, sampleDates.toArray());
 			rs = ps.executeQuery();
 			
 			while(rs.next())
@@ -604,7 +629,7 @@ public class OrderRateDAO {
 		return map;
 	}
 	
-	public static Map<DateRangeVO,  Map<String, Integer>> getOrderCount(Connection conn, Date minDate)
+	public static Map<DateRangeVO,  Map<String, Integer>> getOrderCount(Connection conn, Set<Date> baseDates)
 	{
 		long starttime = System.currentTimeMillis();
 		Map<DateRangeVO,  Map<String, Integer>> orderCountMap = new HashMap<DateRangeVO,  Map<String, Integer>>();
@@ -612,7 +637,10 @@ public class OrderRateDAO {
 		PreparedStatement ps =null;ResultSet rs = null;Integer orderCount = 0;
 		try {
 			ps = conn.prepareStatement(CURRENT_ORDER_COUNT);
+			Date minDate = Collections.min(baseDates);
+			Date maxDate = Collections.max(baseDates);
 			ps.setDate(1, new java.sql.Date(minDate.getTime()));
+			ps.setDate(2, new java.sql.Date(maxDate.getTime()));
 			rs = ps.executeQuery();
 			
 			while(rs.next())
@@ -886,6 +914,8 @@ public class OrderRateDAO {
 			zone = DEFAULT_ZONE;
 		List<OrderRateVO> dataList = new ArrayList<OrderRateVO>();
 		 try {
+			 if(!"0".equals(zone))
+			 {
 		    	ps = conn.prepareStatement(CURRENT_DATE_ORDER_RATE);
 		    	ps.setString(1, currentDate);
 		    	ps.setString(2, deliveryDate);
@@ -905,6 +935,25 @@ public class OrderRateDAO {
 		    		data.setCapacity(rs.getInt("capacity"));
 		    		dataList.add(data);
 		    	}
+			 }
+			 else
+			 {
+				 ps = conn.prepareStatement(CURRENT_DATE_ORDER_RATE_EX);
+			    	ps.setString(1, currentDate);
+			    	ps.setString(2, deliveryDate);
+			    	rs = ps.executeQuery();
+			    	Date snapshotTime = null;
+			    	while(rs.next())
+			    	{
+			    		OrderRateVO data = new OrderRateVO();
+			    		data.setOrderCount(rs.getFloat("order_count"));
+			    		snapshotTime = new Date(rs.getTimestamp("snapshot_time").getTime());
+			    		data.setSnapshotTime(snapshotTime);
+			    		data.setSnapshotTimeFmt(sdf.format(snapshotTime));
+			    		data.setCapacity(rs.getInt("capacity"));
+			    		dataList.add(data);
+			    	}
+			 }
 		 }
 		 catch(Exception e)
 			{
@@ -942,20 +991,36 @@ public class OrderRateDAO {
 		if(zone ==null ||"".equals(zone))
 			zone = DEFAULT_ZONE;
 		 try {	
-	
-			ps = conn.prepareStatement(ORDER_COUNT_QRY);
-			ps.setString(1, deliveryDate);
-			ps.setString(2, zone);
-			ps.setString(3, currentDate);
-			rs = ps.executeQuery();
-			while(rs.next())
-			{
-				OrderData data = new OrderData();
-				data.setOrderCount(rs.getFloat("oCount"));
-				data.setCutoff(df.format(new Date(rs.getTimestamp("cutoff").getTime())));
-				data.setZone(rs.getString("zone"));
-				dataList.add(data);
-			}
+			 
+			 if(!"0".equals(zone))
+			 {
+				ps = conn.prepareStatement(ORDER_COUNT_QRY);
+				ps.setString(1, deliveryDate);
+				ps.setString(2, zone);
+				ps.setString(3, currentDate);
+				rs = ps.executeQuery();
+				while(rs.next())
+				{
+					OrderData data = new OrderData();
+					data.setOrderCount(rs.getFloat("oCount"));
+					data.setCutoff(df.format(new Date(rs.getTimestamp("cutoff").getTime())));
+					data.setZone(rs.getString("zone"));
+					dataList.add(data);
+				}
+			 }
+			 else
+			 {
+				 ps = conn.prepareStatement(ORDER_COUNT_QRY_EX);
+					ps.setString(1, deliveryDate);
+					ps.setString(2, currentDate);
+					rs = ps.executeQuery();
+					while(rs.next())
+					{
+						OrderData data = new OrderData();
+						data.setOrderCount(rs.getFloat("oCount"));
+						dataList.add(data);
+					}
+			 }
 		}
 		catch(Exception e)
 		{
@@ -978,6 +1043,44 @@ public class OrderRateDAO {
 			}
 		}
 		 return dataList;
+	}
+	public static List<PlantDispatchData> getPlantDispatchData(Connection conn,
+			String deliveryDate) {
+
+		List<PlantDispatchData> voList = new ArrayList<PlantDispatchData>();
+		PreparedStatement ps =null;ResultSet rs = null;
+		DateFormat df = new SimpleDateFormat("hh:mm a");
+		
+		try {
+				ps = conn.prepareStatement(GET_PLANT_DISPATCH);
+				ps.setString(1, deliveryDate);
+				rs = ps.executeQuery();
+				
+				while(rs.next())
+				{
+					PlantDispatchData vo = new PlantDispatchData();
+					voList.add(vo);
+				                                                                                                                        
+				}
+			}catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			finally{
+				try 
+				{
+					rs.close();
+					ps.close();
+				} 
+				catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		return voList;
+			
+		
+	
 	}
 	
 	/*public static void main(String s[]) throws SQLException, NamingException, IOException

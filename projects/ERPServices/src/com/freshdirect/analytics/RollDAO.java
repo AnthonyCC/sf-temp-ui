@@ -34,11 +34,11 @@ public class RollDAO {
 	private static final String ROLL_INSERT="INSERT INTO MIS.roll_event (ID, CUSTOMER_ID, CREATEDATE, UNAVAILABLE_PCT, ZONE, CUTOFF, LOG_ID, DELIVERY_DATE) " +
 			"VALUES (?,?,?,?,?,?,?,?)";
 	
-	private static final String ROLL_SELECT=" select count(*) cnt, createdate,  zone, cutoff from mis.roll_event " +
+	private static final String ROLL_SELECT=" select count(distinct(customer_id)) cnt, createdate,  zone, cutoff from mis.roll_event " +
 			"where to_char(delivery_date, 'mm/dd/yyyy') = ? and zone=? group by zone, cutoff,  createdate " +
 			"order by  createdate asc";
 	
-	private static final String ROLL_SELECT_BYZONE =" select count(*) cnt, zone, cutoff from mis.roll_event " +
+	private static final String ROLL_SELECT_BYZONE =" select count(distinct(customer_id)) cnt, zone, cutoff from mis.roll_event " +
 			"where to_char(delivery_date, 'mm/dd/yyyy') = ? group by zone, cutoff" +
 			" order by  zone,cutoff";
 	
@@ -84,6 +84,8 @@ public class RollDAO {
 		ResultSet rs = null;
 		Date fmtDate = null;
 		Calendar cal = Calendar.getInstance();
+		
+		DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
 		DateFormat df = new SimpleDateFormat("hh:mm a");
 		
 		List<RollData> dataList = new ArrayList<RollData>();
@@ -98,12 +100,13 @@ public class RollDAO {
 		    		RollData data = new RollData();
 		    		data.setCnt(rs.getInt("cnt"));
 		    		data.setCutOff(new Date(rs.getTimestamp("cutoff").getTime()));
+		    		data.setCutoffTimeFormatted(df.format(new Date(rs.getTimestamp("cutoff").getTime())));
 		    		data.setZone(rs.getString("zone"));
 		    		fmtDate = new Date(rs.getTimestamp("createdate").getTime());
 		    		cal.setTime(fmtDate);
 		    		cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE) - cal.get(Calendar.MINUTE)%30);
 		    		data.setSnapshotTime(cal.getTime());
-		    		data.setSnapshotTimeFormatted(df.format(cal.getTime()));
+		    		data.setSnapshotTimeFormatted(sdf.format(cal.getTime()));
 		    		
 		    		dataList.add(data);
 		    		

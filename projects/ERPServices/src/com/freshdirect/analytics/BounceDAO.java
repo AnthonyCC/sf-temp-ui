@@ -34,11 +34,11 @@ public class BounceDAO {
 			" and s.CROMOD_DATE=sa.ACTION_DATE AND sa.ACTION_TYPE IN ('CRO', 'MOD') AND sa.REQUESTED_DATE > TRUNC(SYSDATE)  and be.status = 'NEW' " +
 			"and trunc(S.CROMOD_DATE) = trunc(be.createdate) AND s.type='REG' AND s.status <> 'CAN')";
 	
-	private static final String BOUNCE_SELECT = "select count(*) cnt, createdate, zone, cutoff from mis.bounce_event where status = 'NEW' and " +
+	private static final String BOUNCE_SELECT = "select count(distinct(customer_id)) cnt, createdate, zone, cutoff from mis.bounce_event where status = 'NEW' and " +
 			"type in ('DELIVERYINFO', 'CHECKOUT','RESERVED_SLOT') and to_char(delivery_date, 'mm/dd/yyyy') = ? and zone=? group by  zone, cutoff,createdate " +
 			"order by  createdate  asc";
 	
-	private static final String BOUNCE_SELECT_BYZONE = "select count(*) cnt, zone, cutoff from mis.bounce_event where status = 'NEW' and " +
+	private static final String BOUNCE_SELECT_BYZONE = "select count(distinct(customer_id)) cnt, zone, cutoff from mis.bounce_event where status = 'NEW' and " +
 			"type in ('DELIVERYINFO', 'CHECKOUT','RESERVED_SLOT') and to_char(delivery_date, 'mm/dd/yyyy') = ? group by  zone, cutoff " +
 			"order by zone,cutoff  asc";
 	
@@ -88,6 +88,8 @@ public class BounceDAO {
 	{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		
+		DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
 		DateFormat df = new SimpleDateFormat("hh:mm a");
 		Date createDate = null;
 		List<BounceData> dataList = new ArrayList<BounceData>();
@@ -109,7 +111,7 @@ public class BounceDAO {
 		    		cal.setTime(createDate);
 		    		cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE) - cal.get(Calendar.MINUTE)%30);
 		    		data.setSnapshotTime(cal.getTime());
-		    		data.setSnapshotTimeFormatted(df.format(cal.getTime()));
+		    		data.setSnapshotTimeFormatted(sdf.format(cal.getTime()));
 		    		dataList.add(data);
 		    		
 		    	}

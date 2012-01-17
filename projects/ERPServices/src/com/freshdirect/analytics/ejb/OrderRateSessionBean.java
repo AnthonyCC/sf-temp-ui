@@ -54,11 +54,14 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 				sampleMap.put(baseDate, samples);
 				
 			}
-			
-			Date minDate = Collections.min(dates);
+			List sampleDates = new ArrayList();
+			sampleDates.addAll(baseDates);
+			Iterator<Date> datesIterator = dates.iterator();
+			while(datesIterator.hasNext())
+				sampleDates.add(new java.sql.Date(datesIterator.next().getTime()));
 				
-			Map<DateRangeVO,  Map<String, Map<Date, Integer[]>>> capacityMap = OrderRateDAO.getCapacityMap(conn,minDate);
-			Map<DateRangeVO, Map<String, Integer>> orderCountMap = OrderRateDAO.getOrderCount(conn,minDate);
+			Map<DateRangeVO,  Map<String, Map<Date, Integer[]>>> capacityMap = OrderRateDAO.getCapacityMap(conn,sampleDates);
+			Map<DateRangeVO, Map<String, Integer>> orderCountMap = OrderRateDAO.getOrderCount(conn,baseDates);
 			
 			
 			Iterator<OrderRateVO> voIterator = list.iterator();
