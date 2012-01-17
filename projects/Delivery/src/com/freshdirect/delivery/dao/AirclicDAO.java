@@ -344,23 +344,33 @@ public class AirclicDAO {
 		ResultSet rs = null;
 		//InputStream in = null;
 		byte[] in = null;
-		String order, dateStr=null;
-		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+		String order;
 		
-		if(deliveryDate!=null)
-			dateStr = df.format(deliveryDate);
+		DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+		Date fromTime = null, toTime = null;
 		
 		try
 		{
 		long start = System.currentTimeMillis();
+		
+		ps = conn.prepareStatement("select max(last_export) last_export from cust.salesign_export where success= 'Y'");
+		rs = ps.executeQuery();
+		if(rs.next() && rs.getDate("last_export")!=null)
+		{
+			fromTime = new java.util.Date(rs.getDate("last_export").getTime());
+		}
+		else
+			fromTime = deliveryDate;
+		toTime = new java.util.Date();
+		
 		ps = conn.prepareStatement("select webordernum,SIGNATURE from (select distinct webordernum, EVENTID, to_char(scandate,'mm/dd/yyyy')  from dlv.cartonstatus cs" +
-				" where  scandate  between to_date( ?, 'mm/dd/yyyy hh24:mi:ss') and  to_date( ?, 'mm/dd/yyyy hh24:mi:ss') and CS.CARTONSTATUS = 'DELIVERED'  ) CS," +
+				" where  scandate  between to_date( ?, 'mm/dd/yyyy hh:mi:ss am') and to_date( ?, 'mm/dd/yyyy hh:mi:ss am') and CS.CARTONSTATUS = 'DELIVERED'  ) CS," +
 				" dlv.signature s   where  S.EVENTID = CS.EVENTID");
 		
-		ps.setString(1,  dateStr+" 00:00:00");
-		ps.setString(2,  dateStr+" 23:59:59");
-		
+		ps.setString(1, sdf.format(fromTime));
+		ps.setString(2, sdf.format(toTime));
 		rs = ps.executeQuery();
+		
 		ps1 = conn.prepareStatement("insert into cust.signature(sale_id, deliverydate, signature) values (?,?,?)");
 		
 		while (rs.next()) {
@@ -379,6 +389,10 @@ public class AirclicDAO {
 		}
 
 		ps1.executeBatch();
+		
+		ps1 = conn.prepareStatement("insert into cust.salesign_export(last_export, success) values (?,'Y')");
+		ps1.setTimestamp(1, new java.sql.Timestamp(toTime.getTime()));
+		ps1.execute();
 		
 		long end = System.currentTimeMillis();
 		

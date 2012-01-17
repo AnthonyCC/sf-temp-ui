@@ -485,7 +485,7 @@ public class FDStoreProperties {
     private static final String PROP_VS_USERNAME="fdstore.voiceshot.username";
     private static final String PROP_VS_PASSWORD="fdstore.voiceshot.password";
     private static final String PROP_VS_URL="fdstore.voiceshot.url";
-	private final static String PROP_ENABLE_AIRCLIC = "transportation.enable.airclic";
+	private final static String PROP_ENABLE_AIRCLIC = "fdstore.enable.airclic";
 	
 	private final static String PROP_FD_GIVEX_WEB_USER  = "fdstore.givex.web.user";
 	private final static String PROP_FD_GIVEX_WEB_USER_PASSWD  = "fdstore.givex.web.user.passwd";
