@@ -84,10 +84,11 @@ public class SaleCronRunner {
 
 		} catch (Exception e) {
 			StringWriter sw = new StringWriter();
-			e.printStackTrace(new PrintWriter(sw));			
+			String _msg=sw.getBuffer().toString();
 			LOGGER.info(new StringBuilder("SaleCronRunner failed with Exception...").append(sw.toString()).toString());
 			LOGGER.error(sw.toString());
-			email(Calendar.getInstance().getTime(), sw.getBuffer().toString());		
+			if(_msg!=null && _msg.indexOf("timed out while waiting to get an instance from the free pool")==-1)
+				email(Calendar.getInstance().getTime(), _msg);		
 		} finally {
 			try {
 				if (ctx != null) {
