@@ -3846,7 +3846,7 @@ public class FDCustomerManager {
 	}
 	
 	
-	public static boolean dupeEmailAddress(String email) throws FDResourceException {
+	public static String dupeEmailAddress(String email) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
@@ -3937,5 +3937,19 @@ public class FDCustomerManager {
 	
 	private static void logActivity(ErpActivityRecord record) {
 		new ErpLogActivityCommand(LOCATOR, record).execute();
+	}
+	
+	public static boolean isInitialDisplay(String customerId) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			return sb.isInitialDisplay(customerId);
+		} catch (RemoteException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		} catch (CreateException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		}
 	}
 }

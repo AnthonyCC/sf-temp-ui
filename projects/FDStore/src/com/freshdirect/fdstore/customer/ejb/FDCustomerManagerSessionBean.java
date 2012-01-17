@@ -6228,7 +6228,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			new ErpLogActivityCommand(LOCATOR, rec, true).execute();
 		
 	}
-/*	
+
+	/*
 	public void recordReferral(String customerId, String referralId, String customerEmail) throws FDResourceException, RemoteException {
 		Connection conn = null;
 		try {
@@ -6241,7 +6242,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}		
 	}
 	
-	public boolean dupeEmailAddress(String email) throws FDResourceException, RemoteException {
+	public String dupeEmailAddress(String email) throws FDResourceException, RemoteException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -6252,7 +6253,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
-*/	
+	*/
+	
 	public void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery) throws FDResourceException {
 		Connection conn = null;
 		try {
@@ -6294,6 +6296,18 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		try {
 			conn = getConnection();
 			FDUserDAO.storeAllMobilePreferences(conn, customerId, mobileNumber, textOffers, textDelivery, goGreen, phone, ext, isCorpUser);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public boolean isInitialDisplay(String customerId) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return FDUserDAO.isInitialDisplay(conn, customerId);
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {

@@ -503,4 +503,30 @@ public class FDUserDAO {
 			} catch (Exception e1) {}
 		}
 	}
+	
+	public static boolean isInitialDisplay(Connection conn, String customerId) {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement("select 1 from cust.customerinfo ci where customer_id = ? " +
+									   "and CI.DELIVERY_NOTIFICATION is null and CI.OFFERS_NOTIFICATION is null " +
+									   "and CI.GO_GREEN is null and CI.MOBILE_NUMBER is null " +
+									   "and CI.MOBILE_PREFERENCE_FLAG is null");				
+			ps.setString(1, customerId);
+			rs = ps.executeQuery();
+			if(rs.next()) {
+				return true;
+			}
+		} catch (Exception e) {
+			LOGGER.error("Error updating mobile preferences", e);
+		} finally {
+			try {
+				if(ps != null)
+					ps.close();
+				if(rs != null)
+					rs.close();
+			} catch (Exception e1) {}
+		}
+		return false;
+	}
 }
