@@ -1,23 +1,4 @@
 
-var escapeOverlay = {
-	fx: function(e) 
-	{
-		// To make script compatable with both MSIE and Firefox
-		var kC  = (window.event) ? event.keyCode : e.keyCode;
-		var Esc = (window.event) ? 27 : e.DOM_VK_ESCAPE;
-		
-		// If keypressed is escape and the new entry field is empty
-		if(kC==Esc && ($F('newvalue') == '' || $F('newvalue') == null) )
-			closeDialogue();
-		else if(kC==Esc && window.confirm('Are you sure you wish to close the dialogue box?') )
-			closeDialogue();
-	}
-}
-
-// Save in cache (to be able to stopObserving() it), see Prototype API docs for more info:
-// http://www.prototypejs.org/api/event
-escapeOverlay.bfx = escapeOverlay.fx.bindAsEventListener(escapeOverlay);
-
 // loadPopup shows the overlay and dialogue box
 function loadPopup()
 {
@@ -95,6 +76,13 @@ function addEntry(date, route, stop, message, msgSrc, userId, orderId)
 {
 	try
 	{
+		if(message=="")
+		{
+		 	$('ac_info').update("");
+			$('ac_error').update("Message is empty. Please select a message");
+		}
+	else
+		{
 	 var jsonrpcClient = new JSONRpcClient("api/message.jsp");
 	 var _data = new Array();
 	 _data[0] = date;
@@ -106,11 +94,15 @@ function addEntry(date, route, stop, message, msgSrc, userId, orderId)
 	 _data[6] = orderId;
 	 
 	 result = jsonrpcClient.manager.sendMessage(_data);
+	 $('ac_error').update("");
 	 $('ac_info').update(result);
+		}
+		
 	}
 	catch(e)
 	{
-		 $('ac_error').update("There was an error. Try Again");
+		$('ac_info').update("");
+		 $('ac_error').update("There was an error. Try again later");
 	}
 	 
 

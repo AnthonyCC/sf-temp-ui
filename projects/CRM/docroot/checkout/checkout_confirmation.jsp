@@ -16,6 +16,7 @@
 	SimpleDateFormat deliveryTimeFormatter = new SimpleDateFormat("h:mm a");
 	SimpleDateFormat monthYearFormatter = new SimpleDateFormat("MM.yyyy");
 	DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
+	boolean showSignature = false;
 %>
 <tmpl:insert template='/template/top_nav_modalbox.jsp'>
 

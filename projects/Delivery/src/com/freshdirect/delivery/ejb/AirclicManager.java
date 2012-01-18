@@ -96,7 +96,7 @@ public class AirclicManager {
 				e.printStackTrace();
 			}
 			
-			return "technical diffculties. please try again";
+			return "Sorry, we're experiencing technical difficulties. Please try again later.";
 		}
 		public synchronized List<AirclicMessageVO> getMessages() throws FDResourceException {
 			if (System.currentTimeMillis() - lastRefresh > REFRESH_PERIOD) {

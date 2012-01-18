@@ -10,7 +10,7 @@
 <%@ taglib uri="freshdirect" prefix="fd" %>
 <%
 	// Get the OrderModel using the orderId from the request
-	
+	boolean showSignature = false;
 	String orderId = request.getParameter("orderId");
 	FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 	String successPage = "/main/order_details.jsp?orderId="+orderId;

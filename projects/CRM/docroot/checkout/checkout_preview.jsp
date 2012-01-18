@@ -32,6 +32,7 @@
 	ErpPaymentMethodI paymentMethod = order.getPaymentMethod();
 	boolean returnPage = false;
 	String orderId = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
+	boolean showSignature = false;
 	
 %>
 <tmpl:put name='content' direct='true'>

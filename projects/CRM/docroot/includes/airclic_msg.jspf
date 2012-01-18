@@ -4,30 +4,6 @@
 
 <script type="text/javascript" src="/assets/javascript/jsonrpc.js"></script>
 <script type="text/javascript" language="javascript">
-//<!--
-
-/* escapeOverlay's construction is a bit hard to grasp. It is needed to be able to
-stop the event listener. See the prototype API docs for more information:
-http://www.prototypejs.org/api/event
-*/
-var escapeOverlay = {
-	fx: function(e) 
-	{
-		// To make script compatable with both MSIE and Firefox
-		var kC  = (window.event) ? event.keyCode : e.keyCode;
-		var Esc = (window.event) ? 27 : e.DOM_VK_ESCAPE;
-		
-		// If keypressed is escape and the new entry field is empty
-		if(kC==Esc && ($F('messageDesc') == '' || $F('messageDesc') == null) )
-			closeDialogue();
-		else if(kC==Esc && window.confirm('Are you sure you wish to close the dialogue box?') )
-			closeDialogue();
-	}
-}
-
-// Save in cache (to be able to stopObserving() it), see Prototype API docs for more info:
-// http://www.prototypejs.org/api/event
-escapeOverlay.bfx = escapeOverlay.fx.bindAsEventListener(escapeOverlay);
 
 // loadPopup shows the overlay and dialogue box
 function loadPopup()
@@ -71,23 +47,35 @@ function addEntry(date, route, stop, message, msgSrc, userId, orderId)
 {
 	try
 	{
-	 var jsonrpcClient = new JSONRpcClient("/api/message.jsp");
-	 var _data = new Array();
-	 _data[0] = date;
-	 _data[1] = route;
-	 _data[2] = stop;
-	 _data[3] = message;
-	 _data[4] = msgSrc;
-	 _data[5] = userId;
-	 _data[6] = orderId;
-	 
-	 result = jsonrpcClient.manager.sendMessage(_data);
-	 $('ac_info').update(result);
+		if(message=="")
+			{
+			 	$('ac_info').update("");
+				$('ac_error').update("Message is empty. Please select a message");
+			}
+		else
+			{
+			 var jsonrpcClient = new JSONRpcClient("/api/message.jsp");
+			 var _data = new Array();
+			 _data[0] = date;
+			 _data[1] = route;
+			 _data[2] = stop;
+			 _data[3] = message;
+			 _data[4] = msgSrc;
+			 _data[5] = userId;
+			 _data[6] = orderId;
+			 
+			 result = jsonrpcClient.manager.sendMessage(_data);
+			 $('ac_error').update("");
+			 $('ac_info').update(result);
+			}
 	}
-	catch(e)
-	{
-		 $('ac_error').update("There was an error. Try Again");
-	}
+			catch(e)
+			{
+				$('ac_info').update("");
+				 $('ac_error').update("There was an error. Try again later.");
+			}
+			
+	
 	 
 
 }
@@ -109,7 +97,7 @@ function populateText(message)
 	width: 100%;
 	height: 100%;
 	
-	background: url(/images/overlay1.gif);
+	background: url(/media_stat/crm/images/overlay1.gif);
 	
 	/* Set both opacity and filter, for MSIE and firefox compatability */
 	opacity: .7;
@@ -125,7 +113,7 @@ function populateText(message)
 {
 	color: #DD0000;
 	text-decoration: none;
-	background: url("/images/close.png") no-repeat scroll left top transparent;
+	background: url("/media_stat/crm/images/close.png") no-repeat scroll left top transparent;
     cursor: pointer;
     display: none;
     height: 13px;
@@ -151,16 +139,17 @@ function populateText(message)
 	
 	z-index: 2000;
 }
+
 #ac_error
 {
-text-align:center;
+text-align:left;
 font-weight:bold;
 font-color:red;
 }
 
 #ac_info
 {
-text-align:center;
+text-align:left;
 font-weight:bold;
 }
 #airclic_table
@@ -184,8 +173,8 @@ cellspacing:10px;
 		<div id="close"><a href="javascript:void(0);" style="display: inline;" onclick="closeDialogue()" ></a></div>
 		<table id="airclic_table">
 		<tr>
-		<td id="ac_info"></td>
-		<tr><td id="ac_error"></td>
+		<td id="ac_info" colspan="2"></td>
+		<tr><td id="ac_error" colspan="2"></td>
 		<tr><td><label for="ddate">Delivery Date:</label> </td><td> <input disabled="disabled" name="ddate" id="ddate" type="text" value="<%=  CCFormatter.defaultFormatDate(order.getDeliveryReservation().getStartTime()) %>"></td>
 		<tr>
 		<td><label for="route">Route: </label> </td><td> <input disabled="disabled" name="route" id="route" type="text" value="<%= shippingInfo.getTruckNumber() %>"></td>
@@ -212,7 +201,7 @@ cellspacing:10px;
 		</select></td>
 		<tr>
 		<td></td>
-		<td><textarea rows="4" cols="10" id="messageDesc"></textarea></td>
+		<td><textarea rows="4" cols="25" id="messageDesc"></textarea></td>
 		
 		</table>
 		<jsp:useBean id="JSONRPCBridge" scope="session" class="com.metaparadigm.jsonrpc.JSONRPCBridge" />

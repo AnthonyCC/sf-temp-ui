@@ -347,42 +347,36 @@ public class AirclicDAO {
 		String order;
 		
 		DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
-		Date fromTime = null, toTime = null;
+		Date toTime = null;
 		
 		try
 		{
+		toTime = new Date();
 		long start = System.currentTimeMillis();
 		
-		ps = conn.prepareStatement("select max(last_export) last_export from cust.salesign_export where success= 'Y'");
-		rs = ps.executeQuery();
-		if(rs.next() && rs.getDate("last_export")!=null)
-		{
-			fromTime = new java.util.Date(rs.getDate("last_export").getTime());
-		}
-		else
-			fromTime = deliveryDate;
-		toTime = new java.util.Date();
-		
-		ps = conn.prepareStatement("select webordernum,SIGNATURE from (select distinct webordernum, EVENTID, to_char(scandate,'mm/dd/yyyy')  from dlv.cartonstatus cs" +
-				" where  scandate  between to_date( ?, 'mm/dd/yyyy hh:mi:ss am') and to_date( ?, 'mm/dd/yyyy hh:mi:ss am') and CS.CARTONSTATUS = 'DELIVERED'  ) CS," +
-				" dlv.signature s   where  S.EVENTID = CS.EVENTID");
-		
-		ps.setString(1, sdf.format(fromTime));
-		ps.setString(2, sdf.format(toTime));
+		ps = conn.prepareStatement("SELECT WEBORDERNUM,SIGNATURE_TIMESTAMP, DELIVEREDTO, RECIPIENT, CONTAINS_ALCOHOL, SIGNATURE FROM (SELECT DISTINCT " +
+				"WEBORDERNUM, EVENTID FROM DLV.CARTONSTATUS CS WHERE  CS.SCANDATE  between (SELECT MAX(LAST_EXPORT) LAST_EXPORT FROM CUST.SALESIGN_EXPORT " +
+				"WHERE SUCCESS= 'Y') and to_date(?,'MM/DD/YYYY HH:MI:SS AM') AND CS.CARTONSTATUS = 'DELIVERED'  ) CS, DLV.SIGNATURE S " +
+				"WHERE S.EVENTID = CS.EVENTID"); //toTime is required here because we want to know till what time we are getting the signatures. The same to Time
+		//will be updated in the last export.
+		ps.setString(1, sdf.format(toTime));
 		rs = ps.executeQuery();
 		
-		ps1 = conn.prepareStatement("insert into cust.signature(sale_id, deliverydate, signature) values (?,?,?)");
+		ps1 = conn.prepareStatement("INSERT INTO CUST.SALE_SIGNATURE (SALE_ID, SIGNATURE_TIMESTAMP, DELIVEREDTO, RECIPIENT, CONTAINS_ALCOHOL, SIGNATURE) " +
+				"VALUES (?,?,?,?,?,?)");
 		
 		while (rs.next()) {
-			order = rs.getString("webordernum");
 			
 			in=rs.getBytes("SIGNATURE");
 			
-			if(in!=null)
+			if(in!=null && in.length>0)
 				{
-				  	ps1.setString(1, order);
-				  	ps1.setDate(2, new java.sql.Date(deliveryDate.getTime()));
-				    ps1.setBytes(3, in);
+				  	ps1.setString(1, rs.getString("WEBORDERNUM"));
+				  	ps1.setTimestamp(2, rs.getTimestamp("SIGNATURE_TIMESTAMP"));
+				  	ps1.setString(3, rs.getString("DELIVEREDTO"));
+				  	ps1.setString(4, rs.getString("RECIPIENT"));
+				  	ps1.setString(5, rs.getString("CONTAINS_ALCOHOL"));
+				    ps1.setBytes(6, in);
 				    ps1.addBatch();
 				}
 			
@@ -390,7 +384,7 @@ public class AirclicDAO {
 
 		ps1.executeBatch();
 		
-		ps1 = conn.prepareStatement("insert into cust.salesign_export(last_export, success) values (?,'Y')");
+		ps1 = conn.prepareStatement("INSERT INTO CUST.SALESIGN_EXPORT(LAST_EXPORT, SUCCESS) VALUES (?,'Y')");
 		ps1.setTimestamp(1, new java.sql.Timestamp(toTime.getTime()));
 		ps1.execute();
 		

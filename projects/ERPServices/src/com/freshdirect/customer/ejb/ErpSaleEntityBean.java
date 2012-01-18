@@ -474,7 +474,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		
 		boolean hasSignature = false; 
 		conn.prepareStatement(
-				"SELECT 1 FROM CUST.SIGNATURE WHERE ID=?");
+				"SELECT 1 FROM CUST.SIGNATURE WHERE SALE_ID=?");
 			ps.setString(1, getPK().getId());
 			rs = ps.executeQuery();
 			if(rs.next())

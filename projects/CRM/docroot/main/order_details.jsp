@@ -89,6 +89,7 @@
 <%@ include file="/includes/order_summary.jspf"%>
 
 <%	boolean airclic_msg = false;
+	boolean showSignature = true;
 	boolean showPaymentButtons = false;
 	boolean showAddressButtons = false;
 	boolean showDeleteButtons = false;
