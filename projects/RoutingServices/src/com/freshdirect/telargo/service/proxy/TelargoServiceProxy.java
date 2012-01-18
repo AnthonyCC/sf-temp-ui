@@ -10,7 +10,7 @@ import com.freshdirect.telargo.proxy.stub.coreservices.CoreService;
 import com.freshdirect.telargo.service.TelargoServiceLocator;
 import com.freshdirect.telargo.service.exception.IIssue;
 import com.freshdirect.telargo.service.exception.TelargoServiceException;
-import com.freshdirect.telargo.service.proxy.BaseServiceProxy;
+import com.freshdirect.routing.service.proxy.BaseServiceProxy;
 
 
 public class TelargoServiceProxy extends BaseServiceProxy {
