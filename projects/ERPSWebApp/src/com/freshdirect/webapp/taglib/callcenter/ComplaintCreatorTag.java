@@ -279,10 +279,10 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
             final double previousAmount = this.getPreviousComplaintAmount(order.getComplaints(), this.orderLineId[i]);
             
             if (olstat.get(this.orderLineId[i]) != null) {
-            	System.err.println(this.orderLineId[i] + "/" +i+" +> "+previousAmount);
+            	//System.err.println(this.orderLineId[i] + "/" +i+" +> "+previousAmount);
             	// olstat.get(this.orderLineId[i]).addPrevCredit(previousAmount);
             } else {
-            	System.err.println(this.orderLineId[i] + "/" +i+" => "+previousAmount);
+            	//System.err.println(this.orderLineId[i] + "/" +i+" => "+previousAmount);
             	OLStat s = new OLStat(this.orderLineId[i], previousAmount);
             	olstat.put(this.orderLineId[i], s );
             }

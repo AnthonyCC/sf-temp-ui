@@ -454,7 +454,7 @@ public class FDProductSelection implements FDProductSelectionI {
 				this.orderLine.setDiscountAmount(price.getPromotionValue());
 			}	
 			
-			System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$Price is set here?" + this.getDescription() + " -price:" + this.orderLine.getPrice() + " -discount:" + this.orderLine.getDiscountAmount());
+			//System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$Price is set here?" + this.getDescription() + " -price:" + this.orderLine.getPrice() + " -discount:" + this.orderLine.getDiscountAmount());
 
 		} catch (PricingException e) {
 			throw new FDRuntimeException(e, "PricingException occured on "+getSkuCode() + " - " + getConfiguration());
