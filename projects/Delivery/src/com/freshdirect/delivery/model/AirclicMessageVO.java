@@ -1,6 +1,8 @@
 package com.freshdirect.delivery.model;
 
-public class AirclicMessageVO {
+import java.io.Serializable;
+
+public class AirclicMessageVO implements Serializable {
 
 	private String message;
 	private String description;

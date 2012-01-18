@@ -1,8 +1,9 @@
 package com.freshdirect.delivery.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class AirclicTextMessageVO {
+public class AirclicTextMessageVO implements Serializable  {
 
 	public AirclicTextMessageVO(Date deliveryDate,String route,int stop,
 			String message,  String source,  String sender, 
