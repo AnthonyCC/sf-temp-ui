@@ -2,6 +2,7 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDIdentity" %>
 <%@ page import="com.freshdirect.customer.ErpCustomerInfoModel" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDCustomerFactory" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDCustomerManager" %>
 <%@page import="com.freshdirect.common.address.PhoneNumber"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -19,17 +20,15 @@
 			text-align: right;
 		}
 		
-		.hline {
+		.smshline {
 			background: url("/media/editorial/site_access/images/dots_h.gif") repeat-x scroll 0 0 transparent;
 			font-size: 1px;
 			height: 1px;
 			line-height: 1px;
 			width: 730px;
-		}
-		
-		.fright {
 			float: right;
 		}
+		
 	</style>
 </head>
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0">
@@ -71,6 +70,14 @@
 	final int W_DOTTED_LINE = 748;
 	boolean form_processed = false;
 	final String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
+	
+	boolean isFirstTime = FDCustomerManager.isInitialDisplay(identity.getErpCustomerPK());
+	if(isFirstTime) {
+		text_offers = true;
+		text_delivery = true;
+		go_green = true;
+	}
+	
 	if(session.getAttribute("SMSSubmission"+orderNumber) != null)
 		form_processed = true;
 %>
@@ -86,7 +93,7 @@
 			</td>
 		</tr>
 		<tr><td colspan="2">&nbsp;</td></tr>
-		<tr><td  colspan="2"><div class="fright hline" id=""><!-- --></div></td></tr>
+		<tr><td  colspan="2"><div class="smshline" id=""><!-- --></div></td></tr>
 		<tr><td colspan="2">&nbsp;</td></tr>
 		<tr>
 			<td align="center" colspan="2">
@@ -101,7 +108,7 @@
 		</tr>
 	</table>
 <% } else { %>
-<div style="height:585px;">
+<div style="height:550px; overflow-y: auto; overflow-x: hide;">
 <form id="smsform" name="smsform" method="post" action="">
 	<input type="hidden" name="actionName" value="ordermobilepref" />	
 
@@ -112,7 +119,7 @@
 				<img src="/media_stat/images/navigation/preferences_title.gif" border="0" /> <br/><br/>
 			</td>
 		</tr>
-		<tr><td><div class="fright hline" id=""><!-- --></div></td></tr>
+		<tr><td><div class="smshline" id=""><!-- --></div></td></tr>
 		<tr>
 			<td>
 				<table>
@@ -120,6 +127,7 @@
 					<tr><td colspan="2"><span class="title18or trpad">1.&nbsp;</span><span class="title18">Verify primary contact information</span></td></tr>						
 					<tr><td colspan="2" >&nbsp;</td></tr>
 					<tr><td colspan="2" class="text12 trpad" style="text-align: left;">Please verify your emergency contact information below.</td></tr>			
+					<tr><td colspan="2" >&nbsp;</td></tr>
 					<tr valign="top">
 						<td colspan="2" style="padding-right:5px; font-weight: bold; text-align: left;" class="text14 trpad" valign="middle">
 							<input type="text" size="28" maxlength="45" class="text9" name="busphone" value="<%=phone%>" style="width:175px; padding:1px; height:30px;font-size:13px" /> &nbsp;&nbsp;Ext.<input type="text" size="5" maxlength="5" class="text9" name="busphoneext" value="<%=phoneExt%>" style="width:75px; padding:1px; height:30px;font-size:13px" />
@@ -129,16 +137,18 @@
 				</table>
 			</td>
 		</tr>
+		<tr><td><div class="smshline" id=""><!-- --></div></td></tr>
 		<tr>
 			<td>		
 				<table width="100%" border="0">
+					<tr><td colspan="2" >&nbsp;</td></tr>
 					<tr><td colspan="2" ><span class="title18or trpad">2.&nbsp;</span><span class="title18">Receive text messages:</span></td></tr>
 					<tr><td colspan="2" class="text11rbold trpad" style="text-align: left;">&nbsp;<fd:ErrorHandler result='<%=result%>' name='text_option' id='errorMsg'>&nbsp;<%=errorMsg%></fd:ErrorHandler></td></tr>
 					<tr valign="middle">
 						<td class="text12 trpad" style="width: 30px;"><input class="radio" type="checkbox" name="text_delivery" value="Y" <%=text_delivery ? "checked":""%> /></td>
 						<td class="text12" style="padding-right: 10px;">Yes please notify me via text message with important information about my delivery.</td>
 					</tr>
-					
+					<tr><td colspan="2" >&nbsp;</td></tr>
 					<tr valign="middle">
 						<td class="text12 trpad" style="width: 30px;"><input class="radio" type="checkbox" name="text_offers" value="Y" <%=text_offers ? "checked":""%> /></td>
 						<td class="text12" style="padding-right: 10px;">Yes please notify me about <b>offers, discounts</b> and <b>promotions</b> from time to time.</td>
@@ -159,7 +169,7 @@
 				</table>
 			</td>
 		</tr>
-		<tr><td><div class="fright hline" id=""><!-- --></div></td></tr>
+		<tr><td><div class="smshline" id=""><!-- --></div></td></tr>
 		<tr>
 			<td>
 				<table width="100%" border="0">
@@ -178,7 +188,8 @@
 				</table>
 			</td>
 		</tr>
-		<tr><td><div class="fright hline" id=""><!-- --></div></td></tr>
+		<tr><td><div class="smshline" id=""><!-- --></div></td></tr>
+		<tr><td>&nbsp;</td></tr>
 		<tr><td>&nbsp;</td></tr>
 		<tr>
 			<td>

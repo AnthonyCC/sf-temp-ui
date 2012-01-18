@@ -17,7 +17,7 @@
 	SimpleDateFormat monthYearFormatter = new SimpleDateFormat("MM.yyyy");
 	DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 %>
-<tmpl:insert template='/template/top_nav.jsp'>
+<tmpl:insert template='/template/top_nav_modalbox.jsp'>
 
 <tmpl:put name='title' direct='true'>Checkout > Order Confirmation</tmpl:put>
 <%
@@ -111,11 +111,17 @@
 	function doRemoteOverlay1(olURL) {
 			var olURL = olURL || '';
 			if (olURL == '') { return false; }
-
+			
+			paramsvar = Form.serialize('smsform');
+			Modalbox.hide();
 			Modalbox.show(olURL, {
-				title: ' ',
-				width: 750,
-				params: Form.serialize('smsform'),
+				loadingString: 'Loading Preview...',
+                title: ' ',
+                overlayOpacity: .80,
+                width: 750,
+                centered: true,
+                method: 'post',
+                params: paramsvar,
 				closeValue: '<img src="/media/editorial/site_access/images/round_x.gif" />',
 				afterLoad: function() {
 						$('MB_frame').style.border = '1px solid #CCCCCC';
