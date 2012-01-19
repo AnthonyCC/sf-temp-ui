@@ -1,10 +1,9 @@
 package com.freshdirect.webapp.util;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,24 +14,24 @@ public class SignatureServlet extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		String order = request.getParameter("orderId");
-		String path = getServletContext().getRealPath(getServletContext().getContextPath())+"/media_stat/images/signatures/"+order+".jpg";
-		if(!new File(path).exists())
-		{	
+		response.setContentType("image/jpeg");
+		ServletOutputStream out = response.getOutputStream();
+		try
+		{
+			String order = request.getParameter("orderId");
 			byte[] signBytes = AirclicManager.getInstance().getSignature(order);
-			generateSignature(order, signBytes, path);
+			out.write(signBytes);
+		}
+		catch(Exception e)
+		{
+			out.println("<table><tr><td>There was an error while fetching the signature</table>");
+		}
+		finally
+		{
+			out.flush();
+			out.close();
 		}
 		
 	}
-
-	private void generateSignature(String order, byte[] signBytes, String path)
-			throws IOException {
-		
-		 FileOutputStream file = new FileOutputStream (path);
-		 file.write(signBytes);
-	     file.close();
-	}
-
 	
 }
