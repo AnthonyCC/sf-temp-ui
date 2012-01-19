@@ -328,14 +328,20 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 					System.out.println("VoiceshotResult:"+firstresult);
 					
 					vsrp = new VoiceShotResponseParser(firstresult);
+				} else {
+					vsrp = new VoiceShotResponseParser("<?xml version=\"1.0\"?><campaign errorid=\"0\" comment=\"ok\" />");
 				}
 			}
 		}
 	
 	if("true".equals(request.getParameter("vssubmit")) && vsrp != null) {
+		if("false".equals(request.getParameter("manual"))) {
 	%>	
 		<span style="color:red;font-weight:bold;font-size:10pt;"/><br/><br/>&nbsp;&nbsp;Message From VoiceShot: <%= vsrp.getErrorMessage() %></span>	
-	<% } else { 
+	<%  } else { %>
+		<span style="color:red;font-weight:bold;font-size:10pt;"/><br/><br/>&nbsp;&nbsp;Manual Voiceshot is created successfully.</span>	
+	<%  }
+		} else { 
 		String route_date = (month+1) + "/" + day + "/" + year;
 		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
 		Date user_date = format.parse(route_date);

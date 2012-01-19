@@ -74,8 +74,8 @@
 				<td width="4%" class="border_bottom" align="center"><%= model.getManual()?"Manual":"Voiceshot" %></td>
 				<td width="6%" class="border_bottom" align="center"><%= model.getStartTime() %></td>
 				<td width="5%" class="border_bottom" align="center"><%= model.getScheduledCalls() %></td>
-				<td width="15%" class="border_bottom" align="center"><%= model.getDeliveredCallsLive() %> live | <%= model.getDeliveredCallsAM() %> answering machine</td>
-				<td width="5%" class="border_bottom" align="center"><%= model.getUndeliveredCalls() %></td>
+				<td width="15%" class="border_bottom" align="center"><%= model.getManual()?"&nbsp;":model.getDeliveredCallsLive()+" live | "+model.getDeliveredCallsAM()+" answering machine" %></td>
+				<td width="5%" class="border_bottom" align="center"><%= model.getManual()?"&nbsp;":model.getUndeliveredCalls() %></td>
 				<td width="10" class="border_bottom" align="center">
 				<% if(!model.getManual()) { %>
 					<a href="javascript:openwindow('details','<%= model.getCampaignId()%>&dmsg=sfile')" id="mynewanchor<%=i%>">Sound file message</a>

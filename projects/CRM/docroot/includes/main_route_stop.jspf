@@ -44,11 +44,6 @@
             okToSubmit = false;
         }
 		
-		if(route.length == 0) {
-			alert('The ROUTE is required. Please enter and try again.');
-            okToSubmit = false;
-		}
-
         if(isNaN(route)) {
             alert('The ROUTE field is invalid. Please correct and try again.');
             okToSubmit = false;
@@ -111,7 +106,7 @@
             &nbsp;
             Wave <input type="text" name="wave" size="6" maxlength="6" class="text" value="<%=request.getParameter("wave")%>">
             &nbsp;
-            Route<font color="red">*</font> <input type="text" name="route" size="6" maxlength="6" class="text" value="<%=request.getParameter("route")%>">
+            Route <input type="text" name="route" size="6" maxlength="6" class="text" value="<%=request.getParameter("route")%>">
             &nbsp;
             Stop <input type="text" name="stop1" size="5" maxlength="5" class="text" value="<%=request.getParameter("stop1")%>"> to <input type="text" name="stop2" size="5" maxlength="5" class="text" value="<%=request.getParameter("stop2")%>">
 
