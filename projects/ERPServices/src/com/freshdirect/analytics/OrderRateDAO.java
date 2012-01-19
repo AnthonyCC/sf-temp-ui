@@ -91,9 +91,10 @@ public class OrderRateDAO {
 	private static final String CURRENT_DATE_ORDER_RATE_EX = "select  snapshot_time, sum(order_count) order_count, sum(capacity) capacity from mis.order_rate " +
 			"where to_char(snapshot_time,'mm/dd/yyyy') =  ? and delivery_date = to_date( ?,'mm/dd/yyyy') group by snapshot_time order by snapshot_time asc";
 	
-	private static final String MAX_SNAPSHOT_DELIVERY_DATE = "select o.capacity, o.snapshot_time, o.timeslot_start, o.timeslot_end, o.cutoff, o.zone from mis.order_rate o " +
-			"where o.delivery_date = to_date(?,'mm/dd/yyyy') and o.zone = ? and o.snapshot_time = (select max(snapshot_time) snapshot from mis.order_rate o1 where " +
-			"o1.delivery_date =o.delivery_date and o1.cutoff=o.cutoff)";
+	private static final String MAX_SNAPSHOT_DELIVERY_DATE = "select o.capacity, o.snapshot_time, o.timeslot_start, o.timeslot_end, o.cutoff, o.zone from " +
+			"mis.order_rate o ,(select max(snapshot_time) sh, O.CUTOFF co from mis.order_rate o where o.delivery_date = to_date(?,'mm/dd/yyyy') " +
+			"and o.zone = ? group by O.CUTOFF) t where o.delivery_date = to_date(?,'mm/dd/yyyy') and o.zone = ? and O.SNAPSHOT_TIME=t.sh " +
+			"and O.CUTOFF=t.co";
 	
 	private static final String ORDER_COUNT_QRY = "select sum(order_count) as oCount, zone,cutoff " +
 			" from MIS.order_rate where delivery_date = to_date(?,'mm/dd/yyyy') and zone = ? and trunc(snapshot_time) < to_date(?,'mm/dd/yyyy') group by zone,cutoff";
@@ -775,6 +776,8 @@ public class OrderRateDAO {
 			ps = conn.prepareStatement(MAX_SNAPSHOT_DELIVERY_DATE);
 			ps.setString(1, deliveryDate);
 			ps.setString(2, zone);
+			ps.setString(3, deliveryDate);
+			ps.setString(4, zone);
 			rs = ps.executeQuery();
 			while(rs.next())
 			{
