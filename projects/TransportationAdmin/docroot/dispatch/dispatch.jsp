@@ -27,7 +27,8 @@
 	<tmpl:put name='yui-skin'>yui-skin-sam</tmpl:put>
 	
   <tmpl:put name='content' direct='true'>
-    <br/> 
+    <br/> <div id="overlay" style="display: none;"> </div>	
+    
     <div class="contentroot">               
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
           <c:if test="${not empty messages}">
@@ -290,7 +291,7 @@
 	                  		<img src="./images/copilot.png" border="0" alt="CoPilot" title="CoPilot" />
 	                  	</a>
 	              </td>
-	              <td>
+	              <td>	
 						<% 
 						if(airclic_msg && TransportationAdminProperties.isAirclicEnabled())
 						{%>

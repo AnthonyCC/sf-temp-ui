@@ -2,13 +2,12 @@
 <%@ page import="com.freshdirect.delivery.model.AirclicMessageVO"%>
 <%@ page import="com.freshdirect.delivery.ejb.AirclicManager"%>
 <%@ page import="com.metaparadigm.jsonrpc.JSONRPCBridge"%>
-<script type="text/javascript" src="js/prototype/prototype.js"></script>
+<script type="text/javascript" src="js/prototype/prototype17.js"></script>
 <script type="text/javascript" src="js/scriptaculous/1.9.0/scriptaculous.js?load=effects,builder"></script>
-<script type="text/javascript" src="js/jsonrpc.js"></script>
 <script type="text/javascript" src="js/airclic.js"></script>
 
+
 	<!-- These DIVs are the popups and overlay. Leave these here. -->
-	<div id="overlay" style="display: none;"> </div>	
 	
 	<div id="dialogue" style="display: none;">
 	
@@ -29,16 +28,16 @@
 		<td>
 		<tr>
 		<td></td>
-		<td><textarea rows="4" cols="10" id="messageDesc"></textarea></td>
+		<td><textarea rows="4" cols="25" id="messageDesc"></textarea></td>
 		
+		<tr><td><input onclick="addEntry($F('ddate'), $F('route'), null, $F('messageDesc'), $F('source'), $F('userId'), null);" value="Send" type="button"><br>
+	
 		</table>
 		<jsp:useBean id="JSONRPCBridge" scope="session" class="com.metaparadigm.jsonrpc.JSONRPCBridge" />
 		<% JSONRPCBridge.registerObject("manager", AirclicManager.getInstance()); %> 
 		
 
 		
-		<input onclick="addEntry($F('ddate'), $F('route'), null, $F('messageDesc'), $F('source'), $F('userId'), null);" value="Send" type="button"><br>
-	
 	</div>
 
 	<div style="display: block;">

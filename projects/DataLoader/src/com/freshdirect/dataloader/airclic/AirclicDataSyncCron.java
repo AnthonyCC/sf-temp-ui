@@ -15,8 +15,6 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.analytics.ejb.EventProcessorHome;
-import com.freshdirect.analytics.ejb.EventProcessorSB;
 import com.freshdirect.delivery.ejb.AirclicManagerHome;
 import com.freshdirect.delivery.ejb.AirclicManagerSB;
 import com.freshdirect.framework.util.DateUtil;
@@ -59,13 +57,15 @@ public class AirclicDataSyncCron {
 			{
 				jobDate = DateUtil.truncate(Calendar.getInstance()).getTime();
 			}
-			
-			ctx = getInitialContext();
-			AirclicManagerHome  home = (AirclicManagerHome) ctx.lookup("freshdirect.delivery.AirclicManager");
-			AirclicManagerSB sb = home.create();
-			sb.sendMessages();
-			if(signature)
-				sb.getSignatureData(jobDate);
+			if(!ErpServicesProperties.isAirclicBlackhole())
+			{
+				ctx = getInitialContext();
+				AirclicManagerHome  home = (AirclicManagerHome) ctx.lookup("freshdirect.delivery.AirclicManager");
+				AirclicManagerSB sb = home.create();
+				sb.sendMessages();
+				if(signature)
+					sb.getSignatureData(jobDate);
+			}
 			
 			
 			

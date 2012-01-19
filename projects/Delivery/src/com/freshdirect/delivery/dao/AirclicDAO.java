@@ -17,8 +17,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -80,12 +82,12 @@ public class AirclicDAO {
 	
 	private static final String ROUTE_DWLD_QUERY = "select * FROM DLV.routedownload rd where to_char(scandate,'mm/dd/yyyy') = ? and route = ?";
 	
-	public static List<String> getUserId(Connection conn, AirclicTextMessageVO textMessage)
+	public static Set<String> getUserId(Connection conn, AirclicTextMessageVO textMessage)
 	{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		String sql = null;
-		List<String> userIds = new ArrayList<String>();
+		Set<String> userIds = new HashSet<String>();
 		try
 		{
 			DateFormat df = new SimpleDateFormat("mm/dd/yyyy");
@@ -129,7 +131,7 @@ public class AirclicDAO {
 			return userIds;
 	}
 	
-	public static void sendMessage(Connection conn, List<String> userIds, AirclicTextMessageVO message) throws DlvResourceException
+	public static void sendMessage(Connection conn, Set<String> userIds, AirclicTextMessageVO message) throws DlvResourceException
 	{
 		//airclic table
 
@@ -244,7 +246,7 @@ public class AirclicDAO {
 		OutputStream out = null;byte[] signBytes = null;
 		try
 		{
-			ps = conn.prepareStatement("select signature from cust.signature " +
+			ps = conn.prepareStatement("select signature from cust.sale_signature " +
 					"where sale_id = ?");
 			
 			

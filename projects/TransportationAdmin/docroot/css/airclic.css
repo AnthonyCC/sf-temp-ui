@@ -34,15 +34,16 @@
 }
 #ac_error
 {
-text-align:center;
+text-align:left;
 font-weight:bold;
-font-color:red;
+color:red;
 }
 
 #ac_info
 {
-text-align:center;
+text-align:left;
 font-weight:bold;
+color:blue;
 }
 #dialogue
 {

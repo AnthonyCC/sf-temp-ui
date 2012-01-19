@@ -239,7 +239,7 @@ function loadSignature(order)
 				<tr>
 					<td>Name on account&nbsp;&nbsp;</td>
 					<td><%= paymentMethod.getName() %>
-				 	<%if(airclic_msg  && FDStoreProperties.isAirclicEnabled() && order instanceof FDOrderI && ((FDOrderI)order).hasSignature()){%>
+				 	<%if(showSignature  && FDStoreProperties.isAirclicEnabled() && order instanceof FDOrderI && ((FDOrderI)order).hasSignature()){%>
 					&nbsp; <a href="javascript:void(0);" id="sigLink" onclick="loadSignature('<%=((FDOrderI)order).getErpSalesId()%>')">View Signature</a></td>
 					<%}%> 
 					

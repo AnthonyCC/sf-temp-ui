@@ -471,15 +471,20 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		if(_saleType!=null) {
 			saleType=EnumSaleType.getSaleType(_saleType);
 		}
-		
-		boolean hasSignature = false; 
+		boolean hasSignature = false;
+		try
+		{
 		conn.prepareStatement(
-				"SELECT 1 FROM CUST.SIGNATURE WHERE SALE_ID=?");
+				"SELECT 1 FROM CUST.SALE_SIGNATURE WHERE SALE_ID=?");
 			ps.setString(1, getPK().getId());
 			rs = ps.executeQuery();
 			if(rs.next())
 				hasSignature = true;
-			
+		}
+		catch(Exception e)
+		{
+			LOGGER.debug("Exception while fetching the signature");
+		}
 		rs.close();
 		ps.close();
 

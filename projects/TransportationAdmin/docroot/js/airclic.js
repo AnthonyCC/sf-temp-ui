@@ -69,9 +69,6 @@ function closeDialogue()
 	$('dialogue').hide();
 }
 
-
-
-// Adds an entry
 function addEntry(date, route, stop, message, msgSrc, userId, orderId)
 {
 	try
@@ -81,32 +78,35 @@ function addEntry(date, route, stop, message, msgSrc, userId, orderId)
 		 	$('ac_info').update("");
 			$('ac_error').update("Message is empty. Please select a message");
 		}
-	else
+		else
 		{
-	 var jsonrpcClient = new JSONRpcClient("api/message.jsp");
-	 var _data = new Array();
-	 _data[0] = date;
-	 _data[1] = route;
-	 _data[2] = stop;
-	 _data[3] = message;
-	 _data[4] = msgSrc;
-	 _data[5] = userId;
-	 _data[6] = orderId;
-	 
-	 result = jsonrpcClient.manager.sendMessage(_data);
-	 $('ac_error').update("");
-	 $('ac_info').update(result);
+			var jsonrpcClient = new JSONRpcClient("api/message.jsp");
+
+			 var _data = new Array();
+			 _data[0] = date;
+			 _data[1] = route;
+			 _data[2] = stop;
+			 _data[3] = message;
+			 _data[4] = msgSrc;
+			 _data[5] = userId;
+			 _data[6] = orderId;
+			 
+			 var result=jsonrpcClient.manager.sendMessage(_data);
+			 $('ac_error').update("");
+			 $('ac_info').update(result);
 		}
 		
 	}
 	catch(e)
 	{
 		$('ac_info').update("");
-		 $('ac_error').update("There was an error. Try again later");
+		$('ac_error').update("There was an error. Try again later");
 	}
 	 
 
 }
+
+
 function populateText(message)
 {
 	$('messageDesc').update(message);

@@ -144,13 +144,14 @@ function populateText(message)
 {
 text-align:left;
 font-weight:bold;
-font-color:red;
+color:red;
 }
 
 #ac_info
 {
 text-align:left;
 font-weight:bold;
+color:blue;
 }
 #airclic_table
 {

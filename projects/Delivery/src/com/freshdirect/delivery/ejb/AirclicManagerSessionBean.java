@@ -17,9 +17,7 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
+import java.util.Set;
 
 import org.apache.log4j.Category;
 
@@ -28,7 +26,6 @@ import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.dao.AirclicDAO;
 import com.freshdirect.delivery.model.AirclicMessageVO;
 import com.freshdirect.delivery.model.AirclicTextMessageVO;
-import com.freshdirect.framework.core.GatewaySessionBeanSupport;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -86,7 +83,7 @@ public class AirclicManagerSessionBean extends SessionBeanSupport {
 			}
 			else
 			{
-				List<String> userIds = getUserId(textMessage);
+				Set<String> userIds = getUserId(textMessage);
 				saveMessageInQueue(textMessage);
 				sendMessage(userIds, textMessage);
 				updateMessage(textMessage);
@@ -127,7 +124,7 @@ public class AirclicManagerSessionBean extends SessionBeanSupport {
 	
 	
 	}
-	private List<String> getUserId(AirclicTextMessageVO textMessage) throws DlvResourceException
+	private Set<String> getUserId(AirclicTextMessageVO textMessage) throws DlvResourceException
 	{
 
 		Connection conn = null;
@@ -153,7 +150,7 @@ public class AirclicManagerSessionBean extends SessionBeanSupport {
 			
 	
 	}
-	public void sendMessage(List<String> userIds , AirclicTextMessageVO textMessage) throws DlvResourceException
+	public void sendMessage(Set<String> userIds , AirclicTextMessageVO textMessage) throws DlvResourceException
 	{
 		Connection conn = null;
 		try
@@ -240,7 +237,7 @@ public class AirclicManagerSessionBean extends SessionBeanSupport {
 				try {
 				
 					textMessage = i.next();
-					List<String> userIds = getUserId(textMessage);
+					Set<String> userIds = getUserId(textMessage);
 					sendMessage(userIds, textMessage);
 					updateMessage(textMessage);
 					
