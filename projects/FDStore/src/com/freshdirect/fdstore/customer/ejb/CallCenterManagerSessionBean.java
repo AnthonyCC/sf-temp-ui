@@ -2602,7 +2602,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		try{
 			conn = this.getConnection();
 			
-			ps = conn.prepareStatement("SELECT SUBSTR (SYS_CONNECT_BY_PATH (stop_number , ','), 2) stop_number " +
+			ps = conn.prepareStatement("SELECT SUBSTR (SYS_CONNECT_BY_PATH (stop_number , ', '), 2) stop_number " +
 										      "FROM (SELECT to_number(stop_number) stop_number , ROW_NUMBER () OVER (ORDER BY to_number(stop_number) ) rn, " +
 										                   "COUNT (*) OVER () cnt " +
 										                   "FROM  cust.lateissue_orders lo, " +
@@ -2940,8 +2940,10 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			today_date.setTime(new Date());
 			int hour = today_date.get(Calendar.HOUR);
 			int minute = today_date.get(Calendar.MINUTE);
+			if(hour == 0)
+				hour = 12;
 			String am_pm = today_date.get(Calendar.AM_PM) == 0?"AM":"PM";
-			String start_time = hour + ":" + minute + " " + am_pm;
+			String start_time = hour + ":" + minute + " " + am_pm;	
 			ps.setString(3, start_time);
 			ps.setString(4, call_id);
 			ps.setLong(5, Long.parseLong(model.getVsDetailsID()));
