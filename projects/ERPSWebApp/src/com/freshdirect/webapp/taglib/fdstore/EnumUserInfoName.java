@@ -121,6 +121,8 @@ public class EnumUserInfoName implements Serializable {
 	public final static EnumUserInfoName					GC_ACCOUNT_FROM							= new EnumUserInfoName( "fromGCAccount", "From GC Account" );
 	public final static EnumUserInfoName					GC_ACCOUNT_TO							= new EnumUserInfoName( "toGCAccount", "To GC Account" );
 	public final static EnumUserInfoName					GC_AMOUNT								= new EnumUserInfoName( "gcAmount", "GC Amount" );
+	public final static EnumUserInfoName					MOBILE_NUMBER							= new EnumUserInfoName( "mobile_number", "Mobile Number" );
+	public final static EnumUserInfoName					TEXT_OPTION								= new EnumUserInfoName( "text_option", "Text Messaging Preferences" );
 	
 	private int id;
 	private String code;

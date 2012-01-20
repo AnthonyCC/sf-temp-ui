@@ -71,13 +71,6 @@
 	boolean form_processed = false;
 	final String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
 	
-	boolean isFirstTime = FDCustomerManager.isInitialDisplay(identity.getErpCustomerPK());
-	if(isFirstTime) {
-		text_offers = true;
-		text_delivery = true;
-		go_green = true;
-	}
-	
 	if(session.getAttribute("SMSSubmission"+orderNumber) != null)
 		form_processed = true;
 %>
@@ -125,8 +118,7 @@
 				<table>
 					<tr><td colspan="2" >&nbsp;</td></tr>
 					<tr><td colspan="2"><span class="title18or trpad">1.&nbsp;</span><span class="title18">Verify primary contact information</span></td></tr>						
-					<tr><td colspan="2" >&nbsp;</td></tr>
-					<tr><td colspan="2" class="text12 trpad" style="text-align: left;">Please verify your emergency contact information below.</td></tr>			
+					<tr><td colspan="2" >&nbsp;</td></tr>					
 					<tr><td colspan="2" >&nbsp;</td></tr>
 					<tr valign="top">
 						<td colspan="2" style="padding-right:5px; font-weight: bold; text-align: left;" class="text14 trpad" valign="middle">

@@ -145,9 +145,9 @@ your account information, this is the place to do it.<br></td>
 		Update your payment information.
 		<br><br>
 		<font class="text13bold">
-		<a href="<%=response.encodeURL("/your_account/signin_information.jsp")%>">User Name, Password &amp; Contact Information</a>
+		<a href="<%=response.encodeURL("/your_account/signin_information.jsp")%>">Your Account Preferences</a>
 		</font><br>
-		Change your user name, password, and contact info.
+		Change your user name, password, and other account preferences.
 		<br><br>
 		<% if (!FDStoreProperties.isEmailOptdownEnabled()) { %>
 			<a href="<%=response.encodeURL("/your_account/newsletter.jsp")%>"><font class="text13bold">President's Picks Newsletter</a></font><br />
@@ -180,7 +180,20 @@ your account information, this is the place to do it.<br></td>
 				Check your received and purchased Gift Cards
 				<br><br>
 		<% } %>
-		
+		<% //if(user.isReferralProgramAvailable()) { %>
+		<!--
+        <font class="text13bold">
+		<a href="<%=response.encodeURL("/your_account/brownie_points.jsp")%>">Refer A Friend</a> </font>  <font class="text13bold" color="#990000"></font>
+		<br>
+		Invite your friends and earn $$$ credits.
+		<br><br>
+		<% //} %>
+		<font class="text13bold">
+		<a href="<%=response.encodeURL("/your_account/credits.jsp")%>">Account Credits</a> </font>  <font class="text13bold" color="#990000"></font>
+		<br>
+		View your credit balance and history
+		<br><br>
+		-->
 	</td>
 	<td width="30"><img src="/media_stat/images/layout/clear.gif" ALT="" width="30" height="1"></td>
 	</tr>

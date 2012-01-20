@@ -196,7 +196,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 							EnumUserInfoName.DLV_FIRST_NAME.getCode(), EnumUserInfoName.DLV_LAST_NAME.getCode(),
 							EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode(), EnumUserInfoName.DLV_EMPLOYEE_ID.getCode(),
 							EnumUserInfoName.ALT_EMAIL.getCode(), EnumUserInfoName.DLV_WORK_PHONE.getCode(),
-							EnumUserInfoName.DLV_CELL_PHONE.getCode()}; 
+							EnumUserInfoName.DLV_CELL_PHONE.getCode(), "mobile_number", "text_option"}; 
 %>
 <fd:ErrorHandler result='<%=result%>' field='<%=checkInfoForm%>'>
 	<% String errorMsg = SystemMessageList.MSG_MISSING_INFO; %>	
@@ -210,8 +210,8 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 <table width="<%= W_YA_SIGNIN_INFO %>" border="0" cellpadding="0" cellspacing="0">
 <tr>
 	<td colspan="6"class="text11">
-		<span class="title18">User Name, Password, &amp; Contact Information</span><br>
-		Update your user name, password, and contact information.<br>
+		<span class="title18">Your Account Preferences</span><br>
+		Change your user name, password, and other account preferences.<br>
     <img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="8"><br>
 	</td>
 </tr>
@@ -489,7 +489,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	</tr>
 	<tr valign="top">
 		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="text_offers" value="Y" <%=text_offers ? "checked":""%>></td>
-		<td colspan="4" class="text12">Yes please notiofy me about <b>offers, discounts</b> and <b>promotions</b> from time to time.<br/><br/><br/></td>
+		<td colspan="4" class="text12">Yes please notify me about <b>offers, discounts</b> and <b>promotions</b> from time to time.<br/><br/><br/></td>
 		<td></td>
 	</tr>
 	<tr valign="top">
