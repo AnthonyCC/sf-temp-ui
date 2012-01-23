@@ -123,7 +123,7 @@ if (user.isEligibleForClientCodes()) {
 <br>
 <TABLE WIDTH="<%= W_YA_ORDER_HISTORY_TOTAL %>" ALIGN="CENTER" BORDER="0" CELLPADDING="2" CELLSPACING="0">
 	<tr>
-		<td class="text10bold" bgcolor="#DDDDDD" WIDTH="75">Order #</td>
+		<td class="text10bold" bgcolor="#DDDDDD" WIDTH="125">Order #</td>
 		<td class="text10bold" bgcolor="#DDDDDD" WIDTH="175">&nbsp;&nbsp;&nbsp;&nbsp;Delivery Date</td>
         <td class="text10bold" bgcolor="#DDDDDD" WIDTH="140">Delivery Type</td>
 		<td class="text10bold" bgcolor="#DDDDDD" WIDTH="75" align="right">Order Total</td>
@@ -135,7 +135,7 @@ if (user.isEligibleForClientCodes()) {
 	<fd:ListStandingOrders id="solist">
 		<% for (FDStandingOrder so : solist) { %>
 			<tr bgcolor="<%= (rowCounter++ % 2 == 0) ? "#FFFFFF" : "#EEEEEE" %>">
-				<td><div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; width: 75px;">
+				<td><div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; width: 125px;">
 					<a title="<%= so.getCustomerListName() %>" href="<%= FDURLUtil.getStandingOrderLandingPage(so, null) %>"><%= so.getCustomerListName() %></a>
 				</div></td>
 				<td class="text10"><%= StandingOrderHelper.getDeliveryDate(so,true) %></td>
@@ -161,7 +161,7 @@ for (FDOrderInfoI orderInfo : orderHistoryInfo) {
     } else {
 		orderDetailsUrl = "/your_account/order_details.jsp?orderId="+ orderInfo.getErpSalesId() ;
     }
-%>	    <td><a href="<%= orderDetailsUrl %>"><%= orderInfo.getErpSalesId() %></a></td>
+%>	    <td WIDTH="125"><a href="<%= orderDetailsUrl %>"><%= orderInfo.getErpSalesId() %></a></td>
 		<td class="text10"><%= dateFormatter.format( orderInfo.getRequestedDate() ) %></td>
 <%
 	String deliveryType = "";
