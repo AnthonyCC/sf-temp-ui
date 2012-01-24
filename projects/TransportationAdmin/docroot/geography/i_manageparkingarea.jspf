@@ -8,8 +8,11 @@
       var editAreaPanel;
 
       function showParkingLocation() {
-      	
-         editAreaPanel = new YAHOO.widget.Panel("panelarea", {
+
+    	 document.getElementById('parea').value='';
+    	 document.getElementById('pareadesc').value='';
+
+    	 editAreaPanel = new YAHOO.widget.Panel("panelarea", {
                           width: "450px", 
                           fixedcenter: true, 
                           close: true, 
