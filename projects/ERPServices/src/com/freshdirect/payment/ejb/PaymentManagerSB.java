@@ -17,7 +17,7 @@ public interface PaymentManagerSB extends EJBObject {
 	
 	public List<ErpAuthorizationModel> authorizeSaleRealtime(String saleId) throws ErpAuthorizationException, ErpAddressVerificationException, RemoteException;
 	
-	public EnumPaymentResponse authorizeSale(String saleId) throws RemoteException;
+	public EnumPaymentResponse authorizeSale(String saleId, boolean force) throws RemoteException;
 	
 	public void voidCapturesNoTrans(String saleId) throws ErpTransactionException, RemoteException;
 	

@@ -3451,7 +3451,23 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 		try {
 			PaymentManagerSB sb = this.getPaymentManagerHome().create();
-			EnumPaymentResponse response = sb.authorizeSale(salesId);
+			EnumPaymentResponse response = sb.authorizeSale(salesId,false);
+
+			if (!EnumPaymentResponse.APPROVED.equals(response)
+					&& !EnumPaymentResponse.ERROR.equals(response)) {
+				sendAuthFailedEmail(salesId);
+			}
+		} catch (RemoteException e) {
+			throw new FDResourceException(e);
+		} catch (CreateException e) {
+			throw new FDResourceException(e);
+		}
+	}
+	public void authorizeSale(String salesId, boolean force) throws FDResourceException {
+
+		try {
+			PaymentManagerSB sb = this.getPaymentManagerHome().create();
+			EnumPaymentResponse response = sb.authorizeSale(salesId,force);
 
 			if (!EnumPaymentResponse.APPROVED.equals(response)
 					&& !EnumPaymentResponse.ERROR.equals(response)) {
@@ -4823,7 +4839,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} else if (EnumSaleType.SUBSCRIPTION.equals(type)) {
 			try {
 				PaymentManagerSB sb = this.getPaymentManagerHome().create();
-				EnumPaymentResponse response = sb.authorizeSale(saleID);
+				EnumPaymentResponse response = sb.authorizeSale(saleID,false);
 
 				if (!EnumPaymentResponse.APPROVED.equals(response)
 						&& !EnumPaymentResponse.ERROR.equals(response)) {

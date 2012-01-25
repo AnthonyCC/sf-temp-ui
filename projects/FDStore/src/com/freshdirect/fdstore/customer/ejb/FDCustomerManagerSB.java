@@ -769,6 +769,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 	
 	//public void recordReferral(String customerId, String referralId, String customerEmail) throws FDResourceException, RemoteException;
 	
+	//public boolean dupeEmailAddress(String email) throws FDResourceException, RemoteException;
 	//public String dupeEmailAddress(String email) throws FDResourceException, RemoteException;
 	
 	public void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery) throws FDResourceException, RemoteException;
@@ -780,5 +781,6 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public void storeAllMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery, String goGreen, String phone, String ext, boolean isCorpUser) throws FDResourceException, RemoteException;
 	
 	public boolean isInitialDisplay(String customerId) throws FDResourceException, RemoteException;
+	
+	public void authorizeSale(String salesId, boolean force) throws FDResourceException, RemoteException;
 }
-

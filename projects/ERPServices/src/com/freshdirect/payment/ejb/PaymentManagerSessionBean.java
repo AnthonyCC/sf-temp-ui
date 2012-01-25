@@ -223,7 +223,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 	
 	
 	
-	public EnumPaymentResponse authorizeSale(String saleId) {
+	public EnumPaymentResponse authorizeSale(String saleId, boolean force) {
 
 				
 		try {
@@ -250,7 +250,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			  }									
 
 									
-			if(!isAuthorizationRequired(order
+			if(!force && !isAuthorizationRequired(order
 					.getDeliveryInfo()
 					.getDeliveryStartTime())){
 				return EnumPaymentResponse.ERROR;

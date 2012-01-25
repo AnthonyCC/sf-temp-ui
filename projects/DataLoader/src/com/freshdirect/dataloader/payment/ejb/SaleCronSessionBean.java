@@ -8,9 +8,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -164,11 +166,12 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	"SELECT s.id FROM cust.sale s, cust.salesaction sa, cust.deliveryinfo di "+ 
     "WHERE s.status='SUB' AND s.type='REG' AND sa.sale_id=s.id AND sa.action_type in ('CRO','MOD') "+ 
 	"AND s.cromod_date=sa.action_date AND di.SALESACTION_ID=sa.ID AND di.starttime > sysdate - 1 AND DI.DELIVERY_TYPE='C' "+
-	"AND  DI.STARTTIME<sysdate+5 AND ( rtrim(to_char(sa.requested_date,'DAY'))='MONDAY' OR rtrim(to_char(sa.requested_date,'DAY'))='TUESDAY') "+
-	"AND rtrim(to_char(sysdate,'DAY'))='FRIDAY' ";
+	"AND  DI.STARTTIME<sysdate+6 AND ( rtrim(to_char(sa.requested_date,'DAY'))='MONDAY' OR rtrim(to_char(sa.requested_date,'DAY'))='TUESDAY') ";
+	//"AND rtrim(to_char(sysdate,'DAY'))='FRIDAY' ";
 	
 	
 	private List<String> getSaleIds(Connection con, String query) throws SQLException {
+		
 		List<String> saleIds=new ArrayList<String>(10);
 		PreparedStatement ps = con.prepareStatement(query);
 		ResultSet rs = ps.executeQuery();
@@ -188,8 +191,9 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	 */
 	public void authorizeSales(long timeout) {
 		Connection con = null;
-		List<String> saleIds = new ArrayList<String>();
-
+		Set<String> saleIds = new HashSet<String>();
+		Set<String> corpSaleIds = new HashSet<String>();
+		
 		UserTransaction utx = null;
 		try {
 			utx = this.getSessionContext().getUserTransaction();
@@ -197,19 +201,22 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			con = this.getConnection();
 			saleIds.addAll(getSaleIds(con,QUERY_AUTH_NEEDED));
 			Calendar now=Calendar.getInstance();
-			if (Calendar.FRIDAY== now.get(Calendar.DAY_OF_WEEK))  
-				saleIds.addAll(getSaleIds(con,AUTH_NEEDED_CORP_ORDERS_FOR_MONDAY_TUESDAY));
+			DAY_OF_WEEK dayOfWeek=getDayOfWeek(/*FDStoreProperties.getDayOfWeekForCOSMondayAuths()*/4);
 			
-			/*PreparedStatement ps = con.prepareStatement(QUERY_AUTH_NEEDED);
-			ResultSet rs = ps.executeQuery();
-
-			while (rs.next()) {
-				saleIds.add(rs.getString(1));
+			
+			if (dayOfWeek.getCode()== now.get(Calendar.DAY_OF_WEEK))  {
+				StringBuilder query=new StringBuilder(AUTH_NEEDED_CORP_ORDERS_FOR_MONDAY_TUESDAY);
+				query.append(" AND rtrim(to_char(sysdate,'DAY'))='").append(dayOfWeek.toString())
+				.append("' ");
+				List<String> tmp=getSaleIds(con,query.toString());
+				
+				for(String sale:tmp) {
+					
+					if(!saleIds.contains(sale)) {
+						corpSaleIds.add(sale);
+					}
+				}
 			}
-
-			rs.close();
-			ps.close();*/
-
 			utx.commit();
 
 		} catch (Exception e) {
@@ -230,9 +237,17 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 				LOGGER.warn("SQLException while cleaning up", se);
 			}
 		}
+		long startTime = System.currentTimeMillis();
+		authorizeSale(saleIds,startTime, timeout,false);
+		authorizeSale(corpSaleIds,startTime, timeout,true);
+		
+	}
+
+	private void authorizeSale(Set<String> saleIds, long startTime, long timeout, boolean force) {
+		UserTransaction utx = null;
 		FDCustomerManagerSB sb = this.getFDCustomerManagerSB();
 		if (saleIds.size() > 0) {
-			long startTime = System.currentTimeMillis();
+			
 			for (Iterator<String> i = saleIds.iterator(); i.hasNext();) {
 				if (System.currentTimeMillis() - startTime > timeout) {
 					LOGGER.warn("Authorization process was running longer than" + timeout / 60 / 1000);
@@ -245,7 +260,11 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 
 					String saleId = i.next();
 					LOGGER.info("Going to authorize: " + saleId);
-					sb.authorizeSale(saleId);
+					if(force) {
+						sb.authorizeSale(saleId, force);
+					} else {
+						sb.authorizeSale(saleId);
+					}
 					utx.commit();
 
 				} catch (Exception e) {
@@ -261,7 +280,6 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-
 	public void preAuthorizeSales(long timeout) {
 		if(FDStoreProperties.isGivexBlackHoleEnabled()){
 			//Pre auth is not performed at this point.
@@ -983,5 +1001,29 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		}catch(RemoteException e){
 			throw new EJBException(e);
 		}
+	}
+	private  enum DAY_OF_WEEK {
+		   SUNDAY(1), MONDAY(2),TUESDAY(3), WEDNESDAY(4), THURSDAY (5), FRIDAY(6),
+		   SATURDAY(7);
+		   private int code;
+
+		   private DAY_OF_WEEK(int c) {
+		     code = c;
+		   }
+
+		   public int getCode() {
+		     return code;
+		   }
+		 }
+	
+	private  DAY_OF_WEEK getDayOfWeek(int code) {
+		DAY_OF_WEEK selected=DAY_OF_WEEK.FRIDAY;
+		for(DAY_OF_WEEK c : DAY_OF_WEEK.values()) {
+			 if(c.getCode()==code) {
+				 selected=c;
+				 break;
+			 }
+		}
+		return selected;
 	}
 }

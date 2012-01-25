@@ -490,6 +490,8 @@ public class FDStoreProperties {
 	private final static String PROP_FD_GIVEX_WEB_USER  = "fdstore.givex.web.user";
 	private final static String PROP_FD_GIVEX_WEB_USER_PASSWD  = "fdstore.givex.web.user.passwd";
 	private final static String PROP_GIVEX_WEB_SERVER_URL  = "fdstore.givex.web.url";
+	
+	private final static String PROP_DAY_OF_WEEK_FOR_COS_MON_AUTHS="fdstore.cos.montue.auth.dayofweek";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -984,6 +986,7 @@ public class FDStoreProperties {
         defaults.put(PROP_VS_URL, "http://apiproxy.voiceshot.com/ivrapi.asp");
         defaults.put(PROP_ENABLE_AIRCLIC, "false");
         defaults.put(PROP_FD_GIVEX_WEB_USER, "freshdirect");
+        defaults.put(PROP_DAY_OF_WEEK_FOR_COS_MON_AUTHS, "6");
 		defaults.put(PROP_FD_GIVEX_WEB_USER_PASSWD, "fd8848admin");
 		defaults.put(PROP_GIVEX_WEB_SERVER_URL, "https://dev-wwws.givex.com/portal/login.py?_LANGUAGE_:en");
         refresh();
@@ -2514,4 +2517,7 @@ public class FDStoreProperties {
 	public static String getGivexWebServerURL() {
 		return config.getProperty(PROP_GIVEX_WEB_SERVER_URL);
 	}
+    public static int getDayOfWeekForCOSMondayAuths() {
+        return  Integer.parseInt(get(PROP_DAY_OF_WEEK_FOR_COS_MON_AUTHS));
+    }
 }
