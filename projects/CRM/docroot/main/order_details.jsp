@@ -10,8 +10,6 @@
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession"%>
 <%@ page import="com.freshdirect.framework.util.DateUtil" %>
 <%@ page import="com.freshdirect.fdstore.*" %>
-<script type="text/javascript" src="/assets/javascript/prototype.js"></script>
-<script type="text/javascript" src="/assets/javascript/scriptaculous/1.9.0/scriptaculous.js?load=effects,builder"></script>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>

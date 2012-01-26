@@ -10,8 +10,8 @@ function loadPopup()
 {
     	// Show the overlay (disables rest of page)
 	showOverlay();
-	$('message').value="";	
-	$('messageDesc').update("");
+	$('message').value="";
+	$('messageDesc').value="";
 	$('ac_info').update("");
 	$('ac_error').update("");
 	
