@@ -2467,8 +2467,13 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		
 		try {
 			conn = this.getConnection();
-			ps = conn.prepareStatement("INSERT INTO CUST.voiceshot_customers(VS_ID,PHONE, CUSTOMER_ID, SALE_ID)" +
-										" VALUES(?,?,?,?)");
+			if(model.getManual()) {
+				ps = conn.prepareStatement("INSERT INTO CUST.voiceshot_customers(VS_ID,PHONE, CUSTOMER_ID, SALE_ID, status)" +
+											" VALUES(?,?,?,?,0)");
+			} else {
+				ps = conn.prepareStatement("INSERT INTO CUST.voiceshot_customers(VS_ID,PHONE, CUSTOMER_ID, SALE_ID)" +
+											" VALUES(?,?,?,?)");
+			}
 			for(int i=0;i<phonenumbers.size(); i++) {
 				String pStr = (String) phonenumbers.get(i);
 				StringTokenizer st = new StringTokenizer(pStr, "|");
