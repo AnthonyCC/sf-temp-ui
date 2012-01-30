@@ -287,12 +287,12 @@ public class ErpComplaintModel extends ModelSupport {
 				&& (getComplaintMethod() == ErpComplaintModel.STORE_CREDIT)
 				&& (EnumSaleStatus.SETTLED.equals(orderStatus)
 					|| EnumSaleStatus.PAYMENT_PENDING.equals(orderStatus)
-					|| EnumSaleStatus.CAPTURE_PENDING.equals(orderStatus)))
+					/*|| EnumSaleStatus.CAPTURE_PENDING.equals(orderStatus)*/))
 			|| ((0 == Math.round(amount * 100.0))
 				&& (getComplaintMethod() == ErpComplaintModel.STORE_CREDIT)
 				&& (EnumSaleStatus.SETTLED.equals(orderStatus)
 					|| EnumSaleStatus.PAYMENT_PENDING.equals(orderStatus)
-					|| EnumSaleStatus.CAPTURE_PENDING.equals(orderStatus)
+					/*|| EnumSaleStatus.CAPTURE_PENDING.equals(orderStatus)*/
 					|| EnumSaleStatus.ENROUTE.equals(orderStatus)))
 			|| ((getComplaintMethod() == ErpComplaintModel.CASH_BACK
 					|| getComplaintMethod() == ErpComplaintModel.MIXED)
