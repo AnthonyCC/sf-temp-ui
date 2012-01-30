@@ -201,7 +201,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			con = this.getConnection();
 			saleIds.addAll(getSaleIds(con,QUERY_AUTH_NEEDED));
 			Calendar now=Calendar.getInstance();
-			DAY_OF_WEEK dayOfWeek=getDayOfWeek(/*FDStoreProperties.getDayOfWeekForCOSMondayAuths()*/4);
+			DAY_OF_WEEK dayOfWeek=getDayOfWeek(FDStoreProperties.getDayOfWeekForCOSMondayAuths());
 			
 			
 			if (dayOfWeek.getCode()== now.get(Calendar.DAY_OF_WEEK))  {
