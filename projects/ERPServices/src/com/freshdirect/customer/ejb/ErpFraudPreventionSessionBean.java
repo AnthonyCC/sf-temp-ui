@@ -466,7 +466,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 			NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.US);
 
 			CrmCaseSubject subject = CrmCaseSubject.getEnum(CrmCaseSubject.CODE_ORDER_OVER_MAX);
-			String summary = subject.getDescription() + " because order total = " + currencyFormatter.format(order.getAmount());
+			String summary = subject.getDescription() + " because order total = " + currencyFormatter.format(order.getAmount())+ " and delivery type:"+order.getDeliveryInfo().getDeliveryType().getName();
 			LOGGER.debug("Creating case " + summary);
 			String note =
 				"Order total of "
