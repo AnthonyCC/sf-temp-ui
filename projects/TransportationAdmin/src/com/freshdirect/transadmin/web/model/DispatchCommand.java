@@ -211,33 +211,34 @@ public class DispatchCommand extends WebPlanInfo {
             EnumResourceType role=EnumResourceType.getEnum(resource.getEmployeeRoleType().getCode());  
             WebEmployeeInfo webEmpInfo = null;
             
-            if(empInfo!=null && empInfo.containsKey(resource.getId().getResourceId()))
-            {
+			if (empInfo != null	&& empInfo.containsKey(resource.getId().getResourceId())) {
+
             	Object obj = empInfo.get(resource.getId().getResourceId());
     			Object roles = (empRoleMap!=null)?empRoleMap.get(resource.getId().getResourceId()):null;
     			Object status = (empStatusMap!=null)?empStatusMap.get(resource.getId().getResourceId()):null;
     			Object truckPref = (empTruckPrefMap!=null)?empTruckPrefMap.get(resource.getId().getResourceId()):null;
     			Object teams = (empTeams!=null)?empTeams.get(resource.getId().getResourceId()):null;
     			
-    			webEmpInfo = buildEmpInfo((obj!=null)?(EmployeeInfo)obj:null,(roles!=null)?(List<EmployeeRole>)roles:null, 
-    					(status!=null)?(List<EmployeeStatus>)status:null, (truckPref!=null)?(List<EmployeeTruckPreference>)truckPref:null, 
-    							(teams!=null)?(List<EmployeeTeam>)teams:null, employeeManagerService);	
+				webEmpInfo = buildEmpInfo(
+						(obj != null) ? (EmployeeInfo) obj : null,
+						(roles != null) ? (List<EmployeeRole>) roles : null,
+						(status != null) ? (List<EmployeeStatus>) status : null,
+						(truckPref != null) ? (List<EmployeeTruckPreference>) truckPref : null,
+						(teams != null) ? (List<EmployeeTeam>) teams : null, employeeManagerService);
             }
             else
             {
-            	webEmpInfo=employeeManagerService.getEmployee(resource.getId().getResourceId());
+            	webEmpInfo = employeeManagerService.getEmployee(resource.getId().getResourceId());
             }
-            
-            
-            
-            Collection empRoles = null;
-            if(empRoleMap!=null && empRoleMap.containsKey(webEmpInfo.getEmployeeId()))
-            	empRoleMap.get(webEmpInfo.getEmployeeId());
-            else
-            	empRoles=employeeManagerService.getEmployeeRole(webEmpInfo.getEmployeeId());
+
+			Collection empRoles = null;
+			if(empRoleMap!=null && empRoleMap.containsKey(webEmpInfo.getEmployeeId()))
+				empRoles = (List<EmployeeRole>) empRoleMap.get(webEmpInfo.getEmployeeId());
+			else
+            	empRoles = employeeManagerService.getEmployeeRole(webEmpInfo.getEmployeeId());
             
             ResourceInfoI resourceInfo = getResourceInfo(webEmpInfo, resource);
-			if(empRoles!=null&&empRoles.size()>0)
+			if (empRoles != null && empRoles.size() > 0)
 			{
 				if(EnumResourceSubType.ignorePunch((EnumResourceSubType.getEnum(((EmployeeRole)empRoles.toArray()[0]).getEmployeeSubRoleType().getCode()))))
 				{
@@ -245,7 +246,6 @@ public class DispatchCommand extends WebPlanInfo {
 				}
 				else
 				{
-		            
 		            if(hasPunchInfo) 
 		            {
 		            	PunchInfoI tempPunchInfo=getPunchInfo(resourceInfo.getEmployeeId(),punchInfos);
