@@ -521,12 +521,15 @@ final int W_GROUPSCALE_TOTAL = 601;
 						<table border="0" width="100%" cellspacing="0" cellpadding="0"><%-- image --%>
 							<tr>
 								<td align="left">
+									<%String appl = (String)session.getAttribute(SessionName.APPLICATION);
+									if(!"CALLCENTER".equals(appl)){ %>
 									<% if ( FDStoreProperties.useOscache() ) { %> 
 										<oscache:cache time="300">
 											<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
 										</oscache:cache>
 									<% } else { %>
 											<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
+									<% } %>
 									<% } %>
 									<% if(qualifies && !productNode.isUnavailable()) { %>
 										<table>
