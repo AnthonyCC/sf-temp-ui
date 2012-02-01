@@ -99,6 +99,7 @@
 				</table>
 			</td>
 		</tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
 	</table>
 <% } else { %>
 <div style="height:550px; overflow-y: auto; overflow-x: hide;">
