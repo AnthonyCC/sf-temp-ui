@@ -3952,4 +3952,17 @@ public class FDCustomerManager {
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
+	
+	public static void sendEmail(XMLEmailI email) throws FDResourceException {
+		lookupMailerGatewayHome();
+		lookupManagerHome();
+		try {
+			MailerGatewaySB mailer = mailerHome.create();
+			mailer.enqueueEmail(email);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce, "Cannot create MailerGatewaySB");
+		} catch (RemoteException re) {
+			throw new FDResourceException(re, "Cannot talk to MailerGatewaySB");
+		}
+	}
 }

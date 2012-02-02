@@ -63,6 +63,7 @@ import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
+import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
@@ -167,7 +168,9 @@ public class DeliveryPassRenewalCron {
 					LOGGER.warn("Unable to find payment method for autoRenewal order for customer :"+erpCustomerID);
 					createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_CC_EXPIRED);
 					FDCustomerInfo customerInfo=FDCustomerManager.getCustomerInfo(identity);
-					FDEmailFactory.getInstance().createAutoRenewDPCCExpiredEmail(customerInfo);
+					XMLEmailI email =FDEmailFactory.getInstance().createAutoRenewDPCCExpiredEmail(customerInfo);
+					 		
+					FDCustomerManager.sendEmail(email);
 				} else if(exists(lastOrder.getPaymentMethod(),pymtMethods)) {
 					try {
 						user=FDCustomerManager.getFDUser(identity);
@@ -332,18 +335,19 @@ public class DeliveryPassRenewalCron {
 			LOGGER.error("Error running DeliveryPassRenewalCron :",fe);
 			return null;
 		}
-		/*
-		 Object[] obj=new Object[2];
-		ArrayList customers=new ArrayList(1);
-		customers.add("146089061");//  146064725
-		ArrayList skus=new ArrayList(1);
-		//skus.add("MKT0072630");
+		
+		/* Object[] obj=new Object[2];
+		ArrayList<String> customers=new ArrayList<String>(2);
+		customers.add("145530113");
+		customers.add("145636033");
+		ArrayList<String> skus=new ArrayList<String>(2);
+		skus.add("MKT0072733");
 		skus.add("MKT0072733");
 		obj[0]=customers;
 		obj[1]=skus;
-		return obj;
+		return obj;*/
 
-*/
+
 	}
 
 	private static FDOrderI getLastNonCOSOrderUsingCC(String erpCustomerID) throws FDResourceException {
@@ -418,5 +422,6 @@ public class DeliveryPassRenewalCron {
 		if(paymentMethod.getExpirationDate().before(java.util.Calendar.getInstance().getTime()))
 			return true;
 		return false;
+		
 	}
 }

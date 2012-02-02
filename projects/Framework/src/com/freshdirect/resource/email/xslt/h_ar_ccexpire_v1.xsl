@@ -5,7 +5,7 @@
 	<xsl:include href='h_footer_v1.xsl'/>
 	<xsl:output method="html"/>
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
-<xsl:template match="erp-email">
+<xsl:template match="fdemail">
 <HTML>
 <HEAD>
 	<TITLE>Subscription cancelled</TITLE>
@@ -29,7 +29,7 @@
 </table><br/>
 <table cellpadding="0" cellspacing="0" width="90%">
 	<TR><TD>
-<P><b>Hello <xsl:value-of select="@first-name"/></b>,</P>
+<P>Dear <xsl:value-of select="customer/firstName"/>,</P>
 
 <P>Unfortunately, we were unable to process your auto-renewal of FreshDirect DeliveryPass because the credit card in your account has expired.</P>
 <br/>
