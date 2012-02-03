@@ -26,5 +26,7 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ERPServices"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/lpsolve55j.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/jsonrpc-1.0.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/telargoservices.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/axis2-transport-http-1.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
