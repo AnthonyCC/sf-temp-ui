@@ -1,6 +1,7 @@
 package com.freshdirect.delivery.ejb;
 
 import java.rmi.RemoteException;
+import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -13,6 +14,7 @@ import javax.naming.NamingException;
 import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.model.AirclicMessageVO;
 import com.freshdirect.delivery.model.AirclicTextMessageVO;
+import com.freshdirect.delivery.model.SignatureVO;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ServiceLocator;
@@ -37,13 +39,13 @@ public class AirclicManager {
 			this.serviceLocator = new ServiceLocator(FDStoreProperties.getInitialContext());
 		}
 		
-		public byte[] getSignature(String order)
+		public SignatureVO getSignatureDetails(String order)
 		{
-			byte[] signBytes = null;
+			SignatureVO signatureVO = null;
 			try
 			{
 			AirclicManagerSB sb = getAirclicManagerHome().create();
-			signBytes = sb.getSignature(order);
+			signatureVO = sb.getSignatureDetails(order);
 			}
 		
 			catch (CreateException e) {
@@ -51,7 +53,25 @@ public class AirclicManager {
 				} catch (RemoteException e) {
 				e.printStackTrace();
 			} 
-			return signBytes;
+			return signatureVO;
+
+		}
+		
+		public byte[] getSignature(String order)
+		{
+			byte[] _image = null;
+			try
+			{
+			AirclicManagerSB sb = getAirclicManagerHome().create();
+			_image = sb.getSignature(order);
+			}
+		
+			catch (CreateException e) {
+				e.printStackTrace();
+				} catch (RemoteException e) {
+				e.printStackTrace();
+			} 
+			return _image;
 
 		}
 

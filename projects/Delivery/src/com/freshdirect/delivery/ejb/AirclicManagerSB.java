@@ -43,6 +43,7 @@ import com.freshdirect.delivery.model.DlvRegionModel;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneModel;
+import com.freshdirect.delivery.model.SignatureVO;
 import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
@@ -74,7 +75,7 @@ public interface AirclicManagerSB extends EJBObject {
 	
 	public void getSignatureData(Date deliveryDate) throws RemoteException;
 	
-	
+	SignatureVO getSignatureDetails(String order) throws RemoteException;
 	
 	
 }   

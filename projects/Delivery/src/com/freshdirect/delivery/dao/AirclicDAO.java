@@ -32,6 +32,7 @@ import com.freshdirect.crm.ejb.CriteriaBuilder;
 import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.model.AirclicMessageVO;
 import com.freshdirect.delivery.model.AirclicTextMessageVO;
+import com.freshdirect.delivery.model.SignatureVO;
 
 
 public class AirclicDAO {
@@ -239,44 +240,81 @@ public class AirclicDAO {
 		}
 	}
 	
-	public static byte[] getSignature(Connection conn,String order) throws IOException
-	{
+	public static SignatureVO getSignatureDetails(Connection conn, String order)
+			throws IOException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		OutputStream out = null;byte[] signBytes = null;
-		try
-		{
-			ps = conn.prepareStatement("select signature from cust.sale_signature " +
-					"where sale_id = ?");
-			
-			
+		OutputStream out = null;
+		SignatureVO vo = null;
+		try {
+			ps = conn
+					.prepareStatement("select sale_id, signature_timestamp, deliveredto , recipient , contains_alcohol  from cust.sale_signature where sale_id = ?");
+
 			ps.setString(1, order);
 			rs = ps.executeQuery();
 			if (rs.next()) {
-				signBytes = rs.getBytes("signature");
-				}
-		}
-		catch(SQLException e)
-		{
+				vo = new SignatureVO();
+				vo.setOrderNo(rs.getString("sale_id"));
+				vo.setSignatureTime(rs.getTimestamp("signature_timestamp"));
+				vo.setDeliveredTo(rs.getString("deliveredto"));
+				vo.setRecipient(rs.getString("recipient"));
+				vo.setContailsAlcohol("0".equalsIgnoreCase(rs
+						.getString("contains_alcohol")) ? false : true);
+				// vo.setSignature(rs.getBytes("signature"));
+			}
+		} catch (SQLException e) {
 			System.out.println(e);
-		}
-		finally
-		{
+		} finally {
 			try {
-				if(rs!=null)
+				if (rs != null)
 					rs.close();
-				if(ps!=null)
+				if (ps != null)
 					ps.close();
-				
+
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		}
-		
-		return signBytes;
+
+		return vo;
 	}
+
+	public static byte[] getSignature(Connection conn, String order)
+			throws IOException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		OutputStream out = null;
+		byte[] _image = null;
+		try {
+			ps = conn
+					.prepareStatement("select signature from cust.sale_signature where sale_id = ?");
+
+			ps.setString(1, order);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				_image = rs.getBytes("signature");
+			}
+		} catch (SQLException e) {
+			System.out.println(e);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close();
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+
+		return _image;
+	}
+	
 	public static void updateMessage(Connection conn, AirclicTextMessageVO message) throws DlvResourceException
 	{
 		PreparedStatement ps = null;

@@ -26,6 +26,7 @@ import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.dao.AirclicDAO;
 import com.freshdirect.delivery.model.AirclicMessageVO;
 import com.freshdirect.delivery.model.AirclicTextMessageVO;
+import com.freshdirect.delivery.model.SignatureVO;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -94,16 +95,14 @@ public class AirclicManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public byte[] getSignature(String order) throws RemoteException
+	public SignatureVO getSignatureDetails(String order) throws RemoteException
 	{
-
-
 		Connection conn = null;
-		byte[] signBytes =null;
+		SignatureVO signatureVO =null;
 		try
 		{
 			conn = getConnection();
-			signBytes = AirclicDAO.getSignature( conn, order);
+			signatureVO = AirclicDAO.getSignatureDetails( conn, order);
 		}
 		catch(Exception e)
 		{
@@ -118,12 +117,34 @@ public class AirclicManagerSessionBean extends SessionBeanSupport {
 				LOGGER.warn("AirclicManagerSB getSignature: Exception while cleaning: " + se);
 			}
 		}
-		return signBytes;
-		
-			
-	
-	
+		return signatureVO;
 	}
+	
+	public byte[] getSignature(String order) throws RemoteException
+	{
+		Connection conn = null;
+		byte[] _image =null;
+		try
+		{
+			conn = getConnection();
+			_image = AirclicDAO.getSignature( conn, order);
+		}
+		catch(Exception e)
+		{
+			
+		}
+		finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("AirclicManagerSB getSignature: Exception while cleaning: " + se);
+			}
+		}
+		return _image;
+	}
+	
 	private Set<String> getUserId(AirclicTextMessageVO textMessage) throws DlvResourceException
 	{
 
