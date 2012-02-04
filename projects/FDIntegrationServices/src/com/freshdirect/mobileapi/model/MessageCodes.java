@@ -146,11 +146,19 @@ public interface MessageCodes {
     public static final String ERR_EMAIL_REQUIRED = "ERR_EMAIL_REQUIRED";
     public static final String ERR_EMAIL_REQUIRED_MSG = "Email is required.";
     
+    public static final String ERR_EMAIL_ALREADY_EXISTS = "ERR_EMAIL_ALREADY_EXISTS";
+    public static final String ERR_EMAIL_ALREADY_EXISTS_MSG = "Account already exists.";
+    
     public static final String ERR_REPEATEMAIL_REQUIRED = "ERR_REPEATEMAIL_REQUIRED";
     public static final String ERR_REPEATEMAIL_REQUIRED_MSG = "Repeat Email is required.";
     
     public static final String ERR_PASSWORD_REQUIRED = "ERR_PASSWORD_REQUIRED";
     public static final String ERR_PASSWORD_REQUIRED_MSG = "Password is required.";
+    
+    public static final String ERR_PASSWORD_LENGTH = "ERR_PASSWORD_LENGTH";
+    public static final String ERR_PASSWORD_LENGTH_MSG = "Password should be at least four characters long.";
+    //public static final String ERR_REPEAT_PASSWORD_MISMATCH = "ERR_REPEAT_PASSWORD_MISMATCH";
+    //public static final String ERR_REPEAT_PASSWORD_MISMATCH_MSG = "Repeat password doesn't match.";
     
     public static final String ERR_PASSWORDHINT_REQUIRED = "ERR_PASSWORDHINT_REQUIRED";
     public static final String ERR_PASSWORDHINT_REQUIRED_MSG = "Security Question is required.";
@@ -236,6 +244,7 @@ public interface MessageCodes {
             translations.put("email", new ErrorMessage(ERR_EMAIL_REQUIRED, ERR_EMAIL_REQUIRED_MSG));
             translations.put("repeat_email", new ErrorMessage(ERR_REPEATEMAIL_REQUIRED, ERR_REPEATEMAIL_REQUIRED_MSG));
             translations.put("password", new ErrorMessage(ERR_PASSWORD_REQUIRED, ERR_PASSWORD_REQUIRED_MSG));
+            //translations.put("repeat_password", new ErrorMessage(ERR_REPEAT_PASSWORD_MISMATCH, ERR_REPEAT_PASSWORD_MISMATCH_MSG));
             translations.put("password_hint", new ErrorMessage(ERR_PASSWORDHINT_REQUIRED, ERR_PASSWORDHINT_REQUIRED_MSG));
             translations.put("dlvhomephone", new ErrorMessage(ERR_DLVPHONE_REQUIRED, ERR_DLVPHONE_REQUIRED_MSG));
             translations.put("expiration", new ErrorMessage(ERR_CCEXPIRATION_REQUIRED, ERR_CCEXPIRATION_REQUIRED_MSG));
@@ -279,6 +288,10 @@ public interface MessageCodes {
                 returnValue = new ErrorMessage(ERR_ZIP_INVALID, desc);
             } else if ("quantity".equals(key)) {
                 returnValue = new ErrorMessage(ERR_QUANTITY_LIMIT, desc);
+            } else if ("password".equals(key) && desc.contains("at least four characters long")) {
+                returnValue = new ErrorMessage(ERR_PASSWORD_LENGTH, ERR_PASSWORD_LENGTH_MSG);
+            } else if ("email".equals(key) && desc.contains("An account already exists")) {
+                returnValue = new ErrorMessage(ERR_EMAIL_ALREADY_EXISTS, ERR_EMAIL_ALREADY_EXISTS_MSG);
             } else if ("order_amount_fraud".equals(key)) {
                 if (user != null) {
                     returnValue = new ErrorMessage(ERR_CHECKOUT_AMOUNT_TOO_LARGE, MessageFormat.format(
