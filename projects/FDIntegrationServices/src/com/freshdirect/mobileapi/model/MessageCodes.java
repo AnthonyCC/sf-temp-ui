@@ -145,7 +145,7 @@ public interface MessageCodes {
     
     public static final String ERR_EMAIL_REQUIRED = "ERR_EMAIL_REQUIRED";
     public static final String ERR_EMAIL_REQUIRED_MSG = "Email is required.";
-    
+    //Fix for APPDEV-2242
     public static final String ERR_EMAIL_ALREADY_EXISTS = "ERR_EMAIL_ALREADY_EXISTS";
     public static final String ERR_EMAIL_ALREADY_EXISTS_MSG = "Account already exists.";
     
@@ -155,6 +155,7 @@ public interface MessageCodes {
     public static final String ERR_PASSWORD_REQUIRED = "ERR_PASSWORD_REQUIRED";
     public static final String ERR_PASSWORD_REQUIRED_MSG = "Password is required.";
     
+    //Fix for APPDEV-2243
     public static final String ERR_PASSWORD_LENGTH = "ERR_PASSWORD_LENGTH";
     public static final String ERR_PASSWORD_LENGTH_MSG = "Password should be at least four characters long.";
     //public static final String ERR_REPEAT_PASSWORD_MISMATCH = "ERR_REPEAT_PASSWORD_MISMATCH";
