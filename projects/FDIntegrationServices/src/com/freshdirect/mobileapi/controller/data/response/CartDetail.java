@@ -197,6 +197,14 @@ public class CartDetail {
             this.applied = applied;
             this.warningMessage = warningMessage;
         }
+        
+        public RedemptionPromotion(String code, RedemptionPromotionType type, String description
+        		, boolean automatic, boolean applied, String warningMessage, boolean displayAmount, String label) {
+            
+            this(code, type, description, automatic, applied, warningMessage);
+            this.displayAmount = displayAmount;
+            this.label = label;
+        }
 
         public enum RedemptionPromotionType {
             SAMPLE, WAIVE_CHARGE, DOLLAR_VALUE_DISCOUNT, EXTEND_DELIVERY_PASS
@@ -220,6 +228,18 @@ public class CartDetail {
         private String code;
 
         private double amount = 0.0;
+        
+        private boolean displayAmount = true;
+
+        private String label;
+        
+        public boolean isDisplayAmount() {
+            return displayAmount;
+        }
+
+        public String getLabel() {
+            return label;
+        }
 
         public RedemptionPromotionType getType() {
             return type;

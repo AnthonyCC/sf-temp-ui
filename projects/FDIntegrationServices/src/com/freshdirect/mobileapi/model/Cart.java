@@ -848,7 +848,7 @@ public class Cart {
                 //        <%
             } else if(redemptionPromo.isExtendDeliveryPass()) {
             	cartDetail.addRedemptionPromotion(new RedemptionPromotion(redemptionPromo.getPromotionCode(),
-                        RedemptionPromotionType.EXTEND_DELIVERY_PASS, redemptionPromo.getDescription(), false, isRedemptionApplied, warningMessage));
+                        RedemptionPromotionType.EXTEND_DELIVERY_PASS, redemptionPromo.getDescription(), false, isRedemptionApplied, warningMessage, false, "Pass Extended"));
             }
             else {
             	if (!isRedemptionApplied){
