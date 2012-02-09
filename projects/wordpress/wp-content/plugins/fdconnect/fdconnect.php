@@ -1189,6 +1189,7 @@ function fdc_comment_form_defaults($defaults)
 {
 	global $user_identity;
 	$defaults['logged_in_as'] = '<p class="logged-in-as">Logged in as '.$user_identity.'</p>';
+	$defaults['comment_field'] = '<p class="comment-form-comment"><div style="overflow:hidden"><label for="comment" style="float:left;padding:3px 0px">' . _x( 'Comment', 'noun' ) . '</label><a style="float:right;padding-right:8px;padding-top:3px" href="'.get_option('fdc_fd_storefront_base').'/help/privacy_policy.jsp">Privacy Policy</a></div><textarea id="comment" name="comment" cols="45" rows="8" aria-required="true"></textarea></p>';
 	return $defaults;
 }
 
