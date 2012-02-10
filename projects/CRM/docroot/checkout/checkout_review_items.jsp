@@ -676,11 +676,17 @@
 				for (Iterator iter = discounts.iterator(); iter.hasNext();) {
 					ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
 					Discount discount = discountLine.getDiscount();							
-					
-					if (user.isEligibleForSignupPromotion() && cart.getTotalDiscountValue() >= 0.01) {
-				%>
-						<tr valign="top" class="orderSummary">
-							<td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=signup','large')">FREE FOOD</a></b>:</td>
+					PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
+					if (cart.getTotalDiscountValue() >= 0.01 && !isRedemptionApplied) {
+						%>
+								<tr valign="top" class="orderSummary">
+							<% if(EnumPromotionType.SIGNUP.equals(promotion.getPromotionType())) { %>
+									<td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=signup','large')">FREE FOOD</a></b>:</td>
+							<% } else {%>
+									<td colspan="3" align="right"><b><%=promotion.getDescription()%></b>:</td>
+
+							<% } %>
+
 							<td colspan="1" align="right">-<%=JspMethods.formatPrice(discount.getAmount())%></td>
 							<td colspan="3"></td>	   
 						</tr>	   

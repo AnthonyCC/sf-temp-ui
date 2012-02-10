@@ -15,6 +15,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -71,6 +72,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     private final static int MASTERCARD			= 1;
     private final static int AMERICAN_EXPRESS	= 2;
     private final static int DISCOVER			= 3;
+    private final static String NAME_REGEX      ="^[^\\n]*[A-Za-z]+[^\\n]*$";//"^[\\w.-_@(){}/?#$&!+%*<>=,\\s:;'|\"\\\\/`~]*[A-Za-z]+[\\w.-_@(){}/?#$&!+%*<>=,\\s:;'|\"\\\\/`~]*$"; 
     
     private PaymentMethodUtil() {
     }
@@ -154,6 +156,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
         String bankAccountType = RequestUtil.getRequestParameter(request,PaymentMethodName.BANK_ACCOUNT_TYPE);
         String bypassBadAccountCheck = RequestUtil.getRequestParameter(request,PaymentMethodName.BYPASS_BAD_ACCOUNT_CHECK);
         String csv=RequestUtil.getRequestParameter(request,PaymentMethodName.CSV);
+        String name=RequestUtil.getRequestParameter(request,PaymentMethodName.ACCOUNT_HOLDER);
         boolean verifyBankAccountNumber = true;
         
         /* Check Account number is null or blank - This validation was moved up to the resolve the issue we had with Ingrian Encryption. Issue was Ingrian unable
@@ -170,6 +173,24 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
         	accountNumber = paymentMethod.getAccountNumber();
         	verifyBankAccountNumber = false;
         }
+        
+        CharSequence inputStr = name;   
+        Pattern pattern = Pattern.compile(NAME_REGEX,Pattern.CASE_INSENSITIVE);  
+        Matcher matcher = pattern.matcher(inputStr);  
+        if(!matcher.matches()){  
+        	if (EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())){
+        	result.addError(true,
+	    	        PaymentMethodName.ACCOUNT_HOLDER,SystemMessageList.MSG_INVALID_CC_NAME
+	    	        );
+        	}else{
+        	result.addError(true,
+	    	        PaymentMethodName.ACCOUNT_HOLDER,SystemMessageList.MSG_INVALID_CHK_NAME
+	    	        );
+        	}
+        }  
+        result.addError(name == null ||"".equals(name),
+    	        PaymentMethodName.ACCOUNT_HOLDER,SystemMessageList.MSG_REQUIRED
+    	        );
         
         Calendar expCal = new GregorianCalendar();
         if (EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())){
@@ -210,9 +231,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 				    	        );
 		        	}
 	        	
-	        }
-	        
-	        
+	        }            
         } else if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
 	        if (abaRouteNumber != null && !"".equals(abaRouteNumber)) {
 	        	abaRouteNumber = StringUtils.leftPad(abaRouteNumber, 9, "0");
@@ -233,8 +252,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	    	        bankName == null || bankName.length() <= 0,
 	    	        PaymentMethodName.BANK_NAME,SystemMessageList.MSG_REQUIRED
 	    	        );
-
-            if (accountNumber != null && !"".equals(accountNumber)) { 
+	       if (accountNumber != null && !"".equals(accountNumber)) { 
 
             	if (verifyBankAccountNumber) {
 	        	
@@ -397,7 +415,11 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 		        	}
 	        	
 	        }
-
+            String name=RequestUtil.getRequestParameter(request,PaymentMethodName.ACCOUNT_HOLDER);
+            result.addError(name == null ||"".equals(name),
+	    	        PaymentMethodName.ACCOUNT_HOLDER,SystemMessageList.MSG_REQUIRED
+	    	        );
+           
 	        FDReservation reservation = null;
 	        if ( gift_card ) {
 		        //check expiration date

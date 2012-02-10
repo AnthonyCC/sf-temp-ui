@@ -485,7 +485,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 						</td>
 					</tr>
 				<% }  
-				if (skuAvailable) { %>
+				//if (skuAvailable) { %>
 				
 				<tr>
 					<td colspan="5">
@@ -514,7 +514,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 				<tr>
 					<td colspan="5"><img width="1" height="4" src="/media_stat/images/layout/clear.gif" alt="" /></td>
 				</tr>
-				<% } %>
+				<% //} %>
 				<tr valign="top">
 					<td align="center" colspan="3"><%-- image/summary column --%>
 						<br />
