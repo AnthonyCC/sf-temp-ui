@@ -14,6 +14,6 @@
 		<span class="help_link"><a name="news" onclick="hoverHelp('news','News & Updates','/includes/news.jsp',250,300); return false;" href="javascript:void(0);">News</a></span>
 		<span class="bookend_r">&nbsp;</span>
 	</td>
-	<td width="20%" align="right" valign="middle">&copy; 2002 - <%= Calendar.getInstance().get(Calendar.YEAR) %> FreshDirect. All Rights Reserved.</td>
+	<td width="20%" align="right" valign="middle">&copy; 2002 - <%= Calendar.getInstance().get(Calendar.YEAR) %> Fresh Direct, LLC. All Rights Reserved.</td>
 </tr>
 </table>

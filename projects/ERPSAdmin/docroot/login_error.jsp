@@ -1,3 +1,4 @@
+<%@ page import="java.util.Calendar" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 
@@ -159,7 +160,7 @@
 			</table><br />
 		
 		</div>
-		<br /><span class="copyright">&copy; 2002 - 2011 FreshDirect. All Rights Reserved.</span><br /><br />
+		<br /><span class="copyright">&copy; 2002 - <%= Calendar.getInstance().get(Calendar.YEAR) %> Fresh Direct, LLC. All Rights Reserved.</span><br /><br />
 	</div>
 </body>
-</html>
+</html> 

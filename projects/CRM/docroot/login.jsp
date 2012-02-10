@@ -4,6 +4,7 @@
 <%@ page import='com.freshdirect.framework.webapp.*' %>
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession"%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import="java.util.Calendar" %>
 <script type="text/javascript" language="javascript" src="/ccassets/javascript/callcenter_javascript.js"></script>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -166,7 +167,7 @@ if(null !=CrmSession.getSessionStatus(session)){
 			</table><br />
 		
 		</div>
-		<br /><span class="copyright">&copy; 2002 - 2011 FreshDirect. All Rights Reserved.</span><br /><br />
+		<br />&copy; 2002 - <%= Calendar.getInstance().get(Calendar.YEAR) %> Fresh Direct, LLC. All Rights Reserved.</span><br /><br />
 	</div>
 </body>
 </html>
