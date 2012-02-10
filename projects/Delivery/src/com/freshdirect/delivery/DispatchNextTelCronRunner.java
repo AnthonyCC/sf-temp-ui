@@ -128,16 +128,19 @@ public class DispatchNextTelCronRunner {
 				if (nextTelMapping.containsKey(resourceEntry.getKey())) {
 					DispatchNextTelVO _resourceNexTel = resourceEntry.getValue();
 					AirclicNextelVO _airclicNexTelInfo = nextTelMapping.get(resourceEntry.getKey());
-					if (_airclicNexTelInfo.getCnNo() != null && !_airclicNexTelInfo.getCnNo().equalsIgnoreCase(_resourceNexTel.getNextTelNo())) {
-						_resourceNexTel.setNextTelNo(_airclicNexTelInfo.getCnNo().replaceAll("[a-zA-Z+]", ""));
-						updateResourceNexTelLst.add(_resourceNexTel);
+					if (_airclicNexTelInfo.getCnNo() != null){
+						_airclicNexTelInfo.setCnNo(_airclicNexTelInfo.getCnNo().replaceAll("[a-zA-Z+]", ""));
+						if(!_airclicNexTelInfo.getCnNo().equalsIgnoreCase(_resourceNexTel.getNextTelNo())) {
+							_resourceNexTel.setNextTelNo(_airclicNexTelInfo.getCnNo());
+							updateResourceNexTelLst.add(_resourceNexTel);
+						}
 					}
-				} else {
+				} else if (resourceEntry.getValue().getNextTelNo() == null){
 					noNextelDataLst.add(resourceEntry.getValue());
 				}
 			}
-			if(updateResourceNexTelLst.size() > 0) {
-				LOGGER.info( "Updating dispatch resource nexttel data >> "+ updateResourceNexTelLst.size() + "count.");
+			LOGGER.info( "Updating dispatch resource nexttel data >> "+ updateResourceNexTelLst.size() + " count.");
+			if(updateResourceNexTelLst.size() > 0) {				
 				sb.updateEmployeeNexTelData(updateResourceNexTelLst);
 			}
 			sendReportMail(processDate, updateResourceNexTelLst, noCNLst, noNextelDataLst);
@@ -163,28 +166,27 @@ public class DispatchNextTelCronRunner {
 	
 		try {
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
-			String subject="Dispatch Resource Nextel Synchronizer Cron : "+ (processDate != null ? dateFormatter.format(processDate) : " date error");
+			String subject="Dispatch Resource Handheld Synchronizer Cron : "+ (processDate != null ? dateFormatter.format(processDate) : " date error");
 
 			StringBuffer buff = new StringBuffer();
 
 			buff.append("<html>").append("<body>");
-			buff.append("<h2>").append("DispatchNextTelCronRunner synchronized "+(updateResourceNexTelLst != null ? updateResourceNexTelLst.size() : "0")
-					+" resource nextels for date "+(processDate != null ? dateFormatter.format(processDate) : " date error")).append("</h2>");
+			buff.append("<h2>").append("DispatchHandheldCronRunner synchronized "+(updateResourceNexTelLst != null ? updateResourceNexTelLst.size() : "0")
+					+" resource handhelds for date "+(processDate != null ? dateFormatter.format(processDate) : " date error")).append("</h2>");
 			
-			if(noNextelDataLst != null && noNextelDataLst.size() > 0){
+			/*if(noNextelDataLst != null && noNextelDataLst.size() > 0){
 				buff.append("<table border=\"1\" valign=\"top\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\">");
 				buff.append("<tr>").append("<th>").append("Employee").append("</th>").append("</tr>");
-				buff.append("<tr>").append("<th>").append("Nextel Phone Number").append("</th>").append("</tr>");			
 				Iterator<DispatchNextTelVO> itr = noNextelDataLst.iterator();
 				while(itr.hasNext()){
 					DispatchNextTelVO _nextelVO = itr.next();
-					buff.append("<tr>").append("<td>").append(_nextelVO.getEmployeeId()).append("</td>").append("<td>").append(_nextelVO.getNextTelNo()).append("</td>").append("</tr>");				
+					buff.append("<tr>").append("<td>").append(_nextelVO.getEmployeeId()).append("</td>").append("</tr>");				
 				}
 				buff.append("</table>");
-			}
+			}*/
 			if(noCNLst != null && noCNLst.size() > 0){
-				buff.append("<table border=\"1\" valign=\"top\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\">");
-				buff.append("<tr>").append("<th>").append("Nextel Phone Number").append("</th>").append("</tr>");			
+				buff.append("&nbsp;&nbsp;&nbsp;<table border=\"1\" valign=\"top\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\">");
+				buff.append("<tr>").append("<th>").append("Handheld(s) with no matching CN(s)").append("</br>").append(" in Transp Asset list").append("</th>").append("</tr>");			
 				Iterator<String> itr = noCNLst.iterator();
 				while(itr.hasNext()){
 					String _nextel = itr.next();

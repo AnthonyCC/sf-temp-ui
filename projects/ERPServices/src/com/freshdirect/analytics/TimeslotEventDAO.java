@@ -85,6 +85,7 @@ public class TimeslotEventDAO {
 			event.setSoldCount(rs.getInt("sold_count"));
 			event.setOrderId(rs.getString("order_id"));
 			event.setPageType(rs.getString("last_gettype"));
+			event.setNeighbourhood(rs.getString("neighbourhood"));
 			events.add(event);
 		}
 		
@@ -127,6 +128,7 @@ public class TimeslotEventDAO {
 			event.setReservationId(rs.getString("reservation_id"));
 			event.setEventDate(rs.getTimestamp("event_dtm"));	
 			event.setTransactionSource(rs.getString("transactionsource"));
+			event.setNeighbouthood(rs.getString("neighbourhood"));
 			TimeslotEventDetailModel eventD = new TimeslotEventDetailModel();
 			eventD.setDeliveryDate(rs.getDate("base_date"));
 			eventD.setCutOff(rs.getTimestamp("cutoff"));

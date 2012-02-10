@@ -26,7 +26,6 @@ import javax.sql.DataSource;
 import com.freshdirect.crm.ejb.CriteriaBuilder;
 import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.model.AirclicMessageVO;
-import com.freshdirect.delivery.model.AirclicNextTelAsset;
 import com.freshdirect.delivery.model.AirclicNextelVO;
 import com.freshdirect.delivery.model.AirclicTextMessageVO;
 import com.freshdirect.delivery.model.DispatchNextTelVO;
@@ -455,7 +454,7 @@ public class AirclicDAO {
 		ResultSet rs = null;
 		try{
 			ps = conn
-					.prepareStatement(" select resource_id, nextel_no, dispatch_id " +
+					.prepareStatement(" select resource_id, nextel_no, d.dispatch_id " +
 									  " from transp.dispatch d, transp.dispatch_resource dr where d.dispatch_id = dr.dispatch_id and d.dispatch_date = ? ");
 	
 			ps.setDate(1, new java.sql.Date(dispatchDate.getTime()));
