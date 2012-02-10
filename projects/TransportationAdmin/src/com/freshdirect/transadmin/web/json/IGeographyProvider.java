@@ -3,16 +3,29 @@ package com.freshdirect.transadmin.web.json;
 import java.util.List;
 
 import com.freshdirect.transadmin.model.DeliveryGroup;
+import com.freshdirect.transadmin.model.Neighbourhood;
 import com.freshdirect.transadmin.web.model.SpatialBoundary;
 
 public interface IGeographyProvider {
-	
+
 	SpatialBoundary getGeoRestrictionBoundary(String code);
+
 	SpatialBoundary getZoneBoundary(String code);
+
 	List getBoundaries(String code);
-	boolean doZoneExpansion(String worktable, String zone[][], String deliveryFee, String expansionType);
+
+	boolean doZoneExpansion(String worktable, String zone[][],
+			String deliveryFee, String expansionType);
+
 	boolean generateTimeslots(String zone[][], String worktable);
+
 	boolean doGeoRestriction(String zone[][]);
+
 	List<DeliveryGroup> getDeliveryGroups();
+
 	boolean doDeliveryGroup(String[][] zone);
+
+	List<Neighbourhood> getNeighbourhood();
+
+	boolean addNeighbourhood(String[][] _neighbourhoodData);
 }

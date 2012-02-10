@@ -48,6 +48,7 @@ import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneDescriptor;
 import com.freshdirect.delivery.model.DlvZoneModel;
+import com.freshdirect.delivery.model.NeighbourhoodVO;
 import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -1626,8 +1627,33 @@ public class DlvManagerDAO {
 			facilityType.setName(rs.getString("FACILITYTYPE_CODE"));
 			facilityType.setDescription("DESCRIPTION");			
 			result.put(code, facilityType);
-}
+		}
 		return result;
 	}
 	
+	private static final String GET_NEIGHBOURHOOD_INFO = "select name, description from transp.neighbourhood where active='X' and zipcode = ? ";
+	
+	public static NeighbourhoodVO getNeighbourhoodInfo(Connection conn, AddressModel address)
+																throws SQLException {
+		NeighbourhoodVO response = null;
+		
+		LOGGER.debug("getNeighbourhoodInfo[QUERY] :" + address );
+		if(address != null){
+			PreparedStatement ps = conn.prepareStatement(GET_NEIGHBOURHOOD_INFO);
+			ps.setString(1, address.getZipCode());
+			
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				response = new NeighbourhoodVO();
+				response.setName(rs.getString("name"));
+				response.setDescription(rs.getString("description"));
+			} else {
+				LOGGER.debug("DlvManagerDAO.getNeighbourhoodInfo(NO_NEIGHBOURHOOD): " + address.getZipCode());
+			}
+		
+			rs.close();
+			ps.close();
+		}
+		return response;
+	}
 }

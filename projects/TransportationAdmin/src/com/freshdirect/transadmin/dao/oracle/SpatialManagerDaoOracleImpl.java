@@ -41,7 +41,11 @@ private JdbcTemplate jdbcTemplate;
 						"where zd.zone_code = z.zone_code and rd.id = z.region_data_id and rd.region_id = r.id and z.zone_code = ? " +
 						"and rd.start_date = (select max(start_date) from dlv.region_data where start_date <= sysdate and region_id=r.id)";
 	
-		/*"select z.zone_code, z.name,gg.column_value  from dlv.region r, dlv.region_data rd, dlv.zone z, table(z.geoloc.sdo_ordinates) gg "+
+
+	private static final String GET_NEIGHOURHOOD_GEOMENTRICBOUNDARY_QRY = "select nz.zipcode CODE, nz.neighbourhood_name NAME, gg.column_value "+
+			" from transp.neighbourhood_zipcode nz, dlv.zipcode z,  table(z.geoloc.sdo_ordinates) gg where nz.zipcode=z.zipcode and nz.neighbourhood_name = ? ";
+
+	/*"select z.zone_code, z.name,gg.column_value  from dlv.region r, dlv.region_data rd, dlv.zone z, table(z.geoloc.sdo_ordinates) gg "+
             "where r.id = rd.region_id "+
             "and rd.id = z.region_data_id "+
             "and (rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= sysdate and region_id = r.id) "+
@@ -56,6 +60,11 @@ private JdbcTemplate jdbcTemplate;
 	public SpatialBoundary getZoneBoundary(final String code) throws DataAccessException  {
 		
 		return getSpatialBoundary(code, GET_ZONE_GEOMENTRICBOUNDARY_QRY);
+	}
+	
+	public SpatialBoundary getNeighbourhoodBoundary(final String code) throws DataAccessException  {
+		
+		return getSpatialBoundary(code, GET_NEIGHOURHOOD_GEOMENTRICBOUNDARY_QRY);
 	}
 	
 	private SpatialBoundary getSpatialBoundary(final String code, final String query) throws DataAccessException   {
@@ -90,6 +99,49 @@ private JdbcTemplate jdbcTemplate;
 		return result;
 	}
 	
+	private SpatialBoundary getNeighbourhoodSpatialBoundary(final List<String> code, final String query) throws DataAccessException   {
+		
+		final SpatialBoundary result = new SpatialBoundary();
+		final List geoloc = new ArrayList();
+		result.setGeoloc(geoloc);
+		
+		final StringBuffer updateQ = new StringBuffer();
+		updateQ.append(query);
+		int intCount = 0;
+		for(String _code : code) {
+			updateQ.append("'").append(_code).append("'");
+			intCount++;
+			if(intCount != code.size()) {
+				updateQ.append(",");
+			}
+		}		
+		updateQ.append(")");
+		
+		PreparedStatementCreator creator=new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+                PreparedStatement ps =
+                    connection.prepareStatement(updateQ.toString());
+                return ps;
+            }  
+        };
+        jdbcTemplate.query(creator, 
+       		  new RowCallbackHandler() { 
+       		      public void processRow(ResultSet rs) throws SQLException {
+       		    	do {
+       		    		SpatialPoint point = new SpatialPoint();
+       		    		point.setX(rs.getDouble(3));
+       		    		rs.next();
+       		    		point.setY(rs.getDouble(3));
+       		    		geoloc.add(point);
+       		    		result.setCode(rs.getString(1));
+       		    		result.setName(rs.getString(2));
+       		    	 } while(rs.next());
+       		    	
+       		      }
+       		   });
+		return result;
+	}
+	
 	public List matchCommunity(final double latitiude, final double longitude, final String deliveryModel) throws DataAccessException   {
 		final List result = new ArrayList();
 	
@@ -119,6 +171,4 @@ private JdbcTemplate jdbcTemplate;
         
 		return result;
 	}
-	
-	
 }

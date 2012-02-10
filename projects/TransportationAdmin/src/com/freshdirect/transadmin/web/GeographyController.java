@@ -1,11 +1,10 @@
 package com.freshdirect.transadmin.web;
 
-import java.io.ByteArrayOutputStream;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -19,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.transadmin.model.Scrib;
+import com.freshdirect.transadmin.model.NeighbourhoodZipcode;
 import com.freshdirect.transadmin.model.TrnFacility;
 import com.freshdirect.transadmin.model.TrnFacilityType;
 import com.freshdirect.transadmin.model.Zone;
@@ -83,12 +82,16 @@ public class GeographyController extends AbstractMultiActionController {
 
 		ModelAndView mav = new ModelAndView("geographyView");
 		
+		String status = request.getParameter("status");
+		
 		Collection geoRestrictions = new ArrayList();
 		Collection geoZones = new ArrayList();
+		Collection geoNeighbourhoods = new ArrayList();
 		
 		geoRestrictions = restrictionManagerService.getGeoRestrictionBoundaries();
-		
+		geoNeighbourhoods = domainManagerService.getNeighbourhood();
 		geoZones = domainManagerService.getZones();
+		
 		Collection activeZoneCodes = zoneManagerService.getActiveZoneCodes();
     	if(geoZones != null && activeZoneCodes != null) {
     		Iterator _iterator = geoZones.iterator();
@@ -101,7 +104,8 @@ public class GeographyController extends AbstractMultiActionController {
     		}
     	}	
     	mav.getModel().put("zoneboundaries", geoZones);
-		mav.getModel().put("georestrictionboundaries", geoRestrictions);		
+		mav.getModel().put("georestrictionboundaries", geoRestrictions);
+		mav.getModel().put("geoNeighbourhoods", geoNeighbourhoods);
 		return mav;
 	}
 	
@@ -128,6 +132,10 @@ public class GeographyController extends AbstractMultiActionController {
 					boundary = null;
 			        if(_tmpCode.startsWith("$_")) {
 			        	boundary = getRestrictionManagerService().getGeoRestrictionBoundary(_tmpCode.substring(2, _tmpCode.length()));
+			        } else if(_tmpCode.startsWith("NH_")) {
+			        	Map<String, NeighbourhoodZipcode> zipInfo = zoneManagerService.getNeighbourhoodZipCodeInfo(_tmpCode.substring(3, _tmpCode.length()));
+			        	if(zipInfo != null && zipInfo.size() > 0)
+			        		boundary = getRestrictionManagerService().getNeighbourhoodBoundary(_tmpCode.substring(3, _tmpCode.length()));
 			        } else {
 			        	boundary = getRestrictionManagerService().getZoneBoundary(_tmpCode);
 			        }
@@ -235,5 +243,24 @@ public class GeographyController extends AbstractMultiActionController {
 			e.printStackTrace();
 			throw new RuntimeException("Error in getiing Scrib List");
 		}
+	}
+
+	/**
+	 * Custom handler for welcome
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
+	public ModelAndView neighbourhoodHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		
+		String _neighbourhood = request.getParameter("nbhood");
+				
+		ModelAndView mav = new ModelAndView("neighbourhoodView");
+		Map<String, NeighbourhoodZipcode> zipInfo = new HashMap<String, NeighbourhoodZipcode>();
+		zipInfo = zoneManagerService.getNeighbourhoodZipCodeInfo(_neighbourhood);
+		
+		mav.getModel().put("neighbourhoodZipInfo", zipInfo.values());
+		mav.getModel().put("neighbourhoods", domainManagerService.getNeighbourhood());
+		return mav;
 	}
 }

@@ -100,7 +100,7 @@
      	 </menu>
      	 <menu id="RUT010" title="Yard Monitor" orientation="LEFT" link="yardmonitor.do">
 	     	<access-uris>yardmonitor.do,parkingslot.do,editparkingslot.do,deleteparkingslot.do</access-uris>
-     	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+     	 	<access-roles>TrnAdmin,TrnPlanning,TrnOperations</access-roles>
      	 </menu>
      	       	 
 </menu>
@@ -156,6 +156,10 @@
 
 	     <menu id="GEO010" title="Facility" orientation="RIGHT" link="facility.do">
 	     	<access-uris>facility.do,deletefacility.do,editfacility.do,deletefacilitytype.do,editfacilitytype.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+		</menu>
+		<menu id="GEO011" title="Neighbourhood" orientation="LEFT" link="neighbourhood.do">
+	     	<access-uris>neighbourhood.do,deleteneighbourhood.do,editneighbourhood.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
 		</menu>
 </menu>

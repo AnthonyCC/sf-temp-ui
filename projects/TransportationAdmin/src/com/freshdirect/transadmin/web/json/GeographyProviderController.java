@@ -1,22 +1,21 @@
 package com.freshdirect.transadmin.web.json;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import com.freshdirect.routing.constants.EnumArithmeticOperator;
-import com.freshdirect.routing.service.IDeliveryService;
 import com.freshdirect.transadmin.model.DeliveryGroup;
-import com.freshdirect.transadmin.model.DlvScenarioZones;
-import com.freshdirect.transadmin.model.ScenarioZonesId;
-import com.freshdirect.transadmin.model.Zone;
+import com.freshdirect.transadmin.model.Neighbourhood;
+import com.freshdirect.transadmin.model.NeighbourhoodZipcode;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.RestrictionManagerI;
+import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
-import com.freshdirect.transadmin.web.model.ScenarioZoneCommand;
 import com.freshdirect.transadmin.web.model.SpatialBoundary;
 import com.freshdirect.transadmin.web.util.ZoneWorkTableUtil;
 
@@ -25,6 +24,8 @@ public class GeographyProviderController extends JsonRpcController  implements I
 	private RestrictionManagerI restrictionManagerService;
 	
 	private DomainManagerI domainManagerService;
+	
+	private ZoneManagerI zoneManagerService;
 	
 	public RestrictionManagerI getRestrictionManagerService() {
 		return restrictionManagerService;
@@ -43,7 +44,13 @@ public class GeographyProviderController extends JsonRpcController  implements I
 	public void setDomainManagerService(DomainManagerI domainManagerService) {
 		this.domainManagerService = domainManagerService;
 	}
-	
+	public ZoneManagerI getZoneManagerService() {
+		return zoneManagerService;
+	}
+
+	public void setZoneManagerService(ZoneManagerI zoneManagerService) {
+		this.zoneManagerService = zoneManagerService;
+	}
 
 	public SpatialBoundary getGeoRestrictionBoundary(String code) {
 		// TODO Auto-generated method stub
@@ -63,13 +70,18 @@ public class GeographyProviderController extends JsonRpcController  implements I
 			for (String _tmpCode : splitCodes) {
 		        if(_tmpCode.startsWith("$_")) {
 		        	boundary = getRestrictionManagerService().getGeoRestrictionBoundary(_tmpCode.substring(2, _tmpCode.length()));		        	
+		        } else if(_tmpCode.startsWith("NH_")) {
+		        	Map<String, NeighbourhoodZipcode> zipInfo = zoneManagerService.getNeighbourhoodZipCodeInfo(_tmpCode.substring(3, _tmpCode.length()));
+		        	if(zipInfo != null && zipInfo.size() > 0){
+		        		boundary = getRestrictionManagerService().getNeighbourhoodBoundary(_tmpCode.substring(3, _tmpCode.length()));
+		        	}
 		        } else{
 		        	boundary = getRestrictionManagerService().getZoneBoundary(_tmpCode);
 		        	boundary.setZone(true);
 		        }
-		        result.add(boundary);
+		        if(boundary != null) 
+		        	result.add(boundary);
 			}
-
 		}
 		return result;
 	}
@@ -191,6 +203,48 @@ public class GeographyProviderController extends JsonRpcController  implements I
 				domainManagerService.saveEntityList(newGroupList);
 			}
 		} catch (Exception exp) {
+			return false;
+		}
+		return true;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Neighbourhood> getNeighbourhood(){
+		List<Neighbourhood> result = new ArrayList<Neighbourhood>();
+		Collection neighbourhoodDataLst = domainManagerService.getNeighbourhood();
+		for (Object o : neighbourhoodDataLst){
+			result.add((Neighbourhood) o);
+		}		
+		return result;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public boolean addNeighbourhood(String[][] _neighbourhoodData){
+		
+		Set<Neighbourhood> newNeighbourhoods = new HashSet<Neighbourhood>();	
+		Map<String, Neighbourhood> previousNeighbourhoods = new HashMap<String, Neighbourhood>();
+		
+		Collection neighbourhoodDataLst = domainManagerService.getNeighbourhood();
+		for (Object o : neighbourhoodDataLst){
+			Neighbourhood _nHood = (Neighbourhood) o;
+			previousNeighbourhoods.put(_nHood.getName(), _nHood);
+		}
+		try{
+			for(int i=0;i < _neighbourhoodData.length;i++) {
+				Neighbourhood _neighbourhoodModel = new Neighbourhood(_neighbourhoodData[i][0], _neighbourhoodData[i][1], _neighbourhoodData[i][2]);
+				if(!previousNeighbourhoods.containsKey(_neighbourhoodModel.getName()))
+					newNeighbourhoods.add(_neighbourhoodModel);
+				else
+					previousNeighbourhoods.remove(_neighbourhoodModel.getName());
+					newNeighbourhoods.add(_neighbourhoodModel);
+			}
+			if(previousNeighbourhoods != null && previousNeighbourhoods.size() > 0)
+				domainManagerService.removeEntity(previousNeighbourhoods.values());
+			if(newNeighbourhoods.size() > 0) {				
+				domainManagerService.saveEntityList(newNeighbourhoods);
+			}
+		} catch (Exception ex){
+			ex.printStackTrace();
 			return false;
 		}
 		return true;

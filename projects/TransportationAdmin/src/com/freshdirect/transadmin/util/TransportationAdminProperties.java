@@ -220,7 +220,7 @@ public class TransportationAdminProperties {
 	private final static String PROP_TRANSPORTATION_YARDMONITOR_PAGEREFRESHTIME = "transportation.yardmonitor.pagerefreshtime";
 
 	private final static String PROP_ENABLE_AIRCLIC = "transportation.enable.airclic";
-	private final static String PROP_TELARGO_BLACKHOLE = "telargo.blackhole";
+	private final static String PROP_TELARGO_BLACKHOLE = "transportation.telargo.blackhole";
 
 	static {
 
@@ -850,6 +850,6 @@ public class TransportationAdminProperties {
 	}
 
 	public static boolean isTelargoServiceBlackhole() {
-		return Boolean.valueOf(get(PROP_TELARGO_BLACKHOLE)).booleanValue();
+		return (new Boolean(get(PROP_TELARGO_BLACKHOLE))).booleanValue();
 	}
 }

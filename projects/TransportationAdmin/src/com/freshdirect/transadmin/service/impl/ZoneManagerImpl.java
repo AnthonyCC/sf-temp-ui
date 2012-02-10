@@ -11,6 +11,7 @@ import org.springframework.dao.DataAccessException;
 
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.ZoneManagerDaoI;
+import com.freshdirect.transadmin.model.NeighbourhoodZipcode;
 import com.freshdirect.transadmin.model.ZipCodeModel;
 import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.web.model.TimeRange;
@@ -73,5 +74,8 @@ public class ZoneManagerImpl extends BaseManagerImpl implements ZoneManagerI {
 	}
 	public 	Set<ZipCodeModel> getZipCodeInfo(final String zipCode){
 		return getZoneManagerDAO().getZipCodeInfo(zipCode);
+	}
+	public Map<String, NeighbourhoodZipcode> getNeighbourhoodZipCodeInfo(String neighbourhoodName) {
+		return getZoneManagerDAO().getNeighbourhoodZipCodeInfo(neighbourhoodName);
 	}
 }

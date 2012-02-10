@@ -29,6 +29,7 @@
 					<td align="left">
 						 &nbsp;&nbsp;&nbsp;<input style="font-size:11px" type = "button" value="Force Refresh" onclick="javascript:showYardMonitorData();" />
 					</td>
+					<td>&nbsp;&nbsp;&nbsp;<div id="errExceptionContainer" style="float:left;"></div></td>
             		<td align="right">
 					 <input style="font-size:11px" type = "button" value="Manage Locations" onclick="javascript:showParkingLocation();" />
 					 <input style="font-size:11px" type = "button" value="View Slots" onclick="javascript:viewSlots();" />
@@ -132,6 +133,7 @@
 		}
 
 		function showYardMonitorData(){
+			YAHOO.util.Dom.get("errExceptionContainer").value = "";
 			try {
 				var locationSummary = yardMngRpcClient.AsyncYardProvider.getYardMonitorSummary();
 				if(locationSummary != null && (locationSummary.locationSlotSummary != null || locationSummary.locationTruckSummary != null)){
@@ -208,7 +210,7 @@
 					updateRefreshTimestamp();
 				}
 			} catch(rpcException) {
-				alert("There was a problem in communication to the server. Please try to refresh the browser window!\n");
+				showSysExceptionMsg("There was a problem in communication to the server. Please try to refresh the browser window!",true);
 			}
 		}
 		
@@ -263,6 +265,16 @@
 					}
 					errContObj1.style.fontWeight="bold";
 					YAHOO.util.Dom.get("errRouteSearchContainer").innerHTML = msg;
+		}
+		function showSysExceptionMsg(msg, isError) {
+			var errContObj1 = YAHOO.util.Dom.get("errExceptionContainer");
+					if(isError) {
+						errContObj1.style.color = errColor;
+					} else {
+						errContObj1.style.color = msgColor;
+					}
+					errContObj1.style.fontWeight="bold";
+					YAHOO.util.Dom.get("errExceptionContainer").innerHTML = msg;
 		}
 	 </script>
 

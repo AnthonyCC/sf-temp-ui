@@ -37,7 +37,7 @@ function loadPopup()
      
     	// Show the overlay (disables rest of page)
 	showOverlay();
-	$('messageDesc').update("");
+	$('messageDesc').value="";
 	$('ac_info').update("");
 	$('ac_error').update("");
 	document.getElementById('ddate').value = dateField;
@@ -94,6 +94,7 @@ function addEntry(date, route, stop, message, msgSrc, userId, orderId)
 			 var result=jsonrpcClient.manager.sendMessage(_data);
 			 $('ac_error').update("");
 			 $('ac_info').update(result);
+			 closeDialogue();
 		}
 		
 	}

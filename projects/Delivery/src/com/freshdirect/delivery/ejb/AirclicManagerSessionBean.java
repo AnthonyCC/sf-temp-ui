@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Category;
@@ -25,7 +26,10 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.dao.AirclicDAO;
 import com.freshdirect.delivery.model.AirclicMessageVO;
+import com.freshdirect.delivery.model.AirclicNextTelAsset;
+import com.freshdirect.delivery.model.AirclicNextelVO;
 import com.freshdirect.delivery.model.AirclicTextMessageVO;
+import com.freshdirect.delivery.model.DispatchNextTelVO;
 import com.freshdirect.delivery.model.SignatureVO;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -72,7 +76,7 @@ public class AirclicManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	public String saveMessage(AirclicTextMessageVO textMessage)  throws DlvResourceException{
+	public String saveMessage(AirclicTextMessageVO textMessage)  throws DlvResourceException {
 		try 
 		{
 				
@@ -87,8 +91,11 @@ public class AirclicManagerSessionBean extends SessionBeanSupport {
 				Set<String> userIds = getUserId(textMessage);
 				saveMessageInQueue(textMessage);
 				sendMessage(userIds, textMessage);
-				updateMessage(textMessage);
-				return "Message Sent to Airclic";
+				if (userIds != null && userIds.size() > 0) {
+					updateMessage(textMessage);
+					return "Message sent to Airclic";
+				}
+				return "Unable to find user(s). Message Queued";				
 			}
 		} catch (Exception e) {			
 			throw new DlvResourceException(e);
@@ -260,7 +267,8 @@ public class AirclicManagerSessionBean extends SessionBeanSupport {
 					textMessage = i.next();
 					Set<String> userIds = getUserId(textMessage);
 					sendMessage(userIds, textMessage);
-					updateMessage(textMessage);
+					if (userIds != null && userIds.size() > 0) 
+						updateMessage(textMessage);
 					
 
 				} catch (Exception e) {
@@ -311,5 +319,75 @@ public class AirclicManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
+	public Map<String, DispatchNextTelVO> getDispatchResourceNextTel(Date dispatchDate) throws DlvResourceException, RemoteException {
+		Connection conn = null;
+		try {			
+			conn = getConnection();
+			return AirclicDAO.getDispatchResourceNextTel(conn, dispatchDate);
+		} catch(Exception e) {
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("AirclicManagerSB getDispatchResourceNextTel: Exception while cleaning: " + se);
+			}
+		}
+	}
+	public Map<String, AirclicNextelVO> getNXOutScan(Date scanDate) throws DlvResourceException, RemoteException {
+		Connection conn = null;
+		try {			
+			conn = getConnection();
+			return AirclicDAO.getNXOutScan(conn, scanDate);
+		} catch(Exception e) {
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("AirclicManagerSB getNXOutScan: Exception while cleaning: " + se);
+			}
+		}		
+	}
+	
+	public void updateEmployeeNexTelData(List<DispatchNextTelVO> employeeNextTels) throws DlvResourceException, RemoteException {
+		Connection conn = null;
+		try {			
+			conn = getConnection();
+			AirclicDAO.updateEmployeeNexTelData(conn, employeeNextTels);
+		} catch(Exception e) {
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("AirclicManagerSB updateEmployeeNexTelData: Exception while cleaning: " + se);
+			}
+		}
+	}
+	
+	public Map<String, String> getNextTelAssets() throws DlvResourceException, RemoteException {
+		Connection conn = null;
+		try {			
+			conn = getConnection();
+			return AirclicDAO.getNextTelAssets(conn);
+		} catch(Exception e) {
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("AirclicManagerSB getNXOutScan: Exception while cleaning: " + se);
+			}
+		}	
+	}
 	
 }

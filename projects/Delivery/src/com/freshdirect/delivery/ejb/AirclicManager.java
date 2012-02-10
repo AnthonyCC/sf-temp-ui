@@ -1,19 +1,24 @@
 package com.freshdirect.delivery.ejb;
 
 import java.rmi.RemoteException;
-import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.naming.NamingException;
 
 import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.model.AirclicMessageVO;
+import com.freshdirect.delivery.model.AirclicNextTelAsset;
+import com.freshdirect.delivery.model.AirclicNextelVO;
 import com.freshdirect.delivery.model.AirclicTextMessageVO;
+import com.freshdirect.delivery.model.DispatchNextTelVO;
 import com.freshdirect.delivery.model.SignatureVO;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -138,5 +143,66 @@ public class AirclicManager {
 				}
 			}
 			return messages;
+		}
+		
+		public Map<String, DispatchNextTelVO> getDispatchResourceNextTel(Date dispatchDate) throws FDResourceException {
+			
+			Map<String, DispatchNextTelVO> result = new HashMap<String, DispatchNextTelVO>();
+			try {
+				AirclicManagerSB sb = getAirclicManagerHome().create();
+				result = sb.getDispatchResourceNextTel(dispatchDate); 
+			} catch (CreateException e) {
+				throw new FDResourceException(e, "Cannot create SessionBean");
+			} catch (RemoteException e) {
+				throw new FDResourceException(e, "Cannot talk to the SessionBean");
+			} catch (DlvResourceException e) {				
+				e.printStackTrace();
+			}
+			return result;
+		}
+		
+		public Map<String, AirclicNextelVO> getNXOutScan(Date scanDate) throws FDResourceException {
+			
+			Map<String, AirclicNextelVO> result = new HashMap<String, AirclicNextelVO>();
+			try {
+				AirclicManagerSB sb = getAirclicManagerHome().create();
+				result = sb.getNXOutScan(scanDate); 
+			} catch (CreateException e) {
+				throw new FDResourceException(e, "Cannot create SessionBean");
+			} catch (RemoteException e) {
+				throw new FDResourceException(e, "Cannot talk to the SessionBean");
+			} catch (DlvResourceException e) {				
+				e.printStackTrace();
+			}
+			return result;
+		}
+		
+		public void updateEmployeeNexTelData(List<DispatchNextTelVO> employeeNextTels) throws FDResourceException {
+			try {
+				AirclicManagerSB sb = getAirclicManagerHome().create();
+				sb.updateEmployeeNexTelData(employeeNextTels); 
+			} catch (CreateException e) {
+				throw new FDResourceException(e, "Cannot create SessionBean");
+			} catch (RemoteException e) {
+				throw new FDResourceException(e, "Cannot talk to the SessionBean");
+			} catch (DlvResourceException e) {				
+				e.printStackTrace();
+			}
+		}
+		
+		public Map<String, String> getNextTelAssets() throws FDResourceException {
+			
+			Map<String, String> result = new HashMap<String, String>();
+			try {
+				AirclicManagerSB sb = getAirclicManagerHome().create();
+				result = sb.getNextTelAssets(); 
+			} catch (CreateException e) {
+				throw new FDResourceException(e, "Cannot create SessionBean");
+			} catch (RemoteException e) {
+				throw new FDResourceException(e, "Cannot talk to the SessionBean");
+			} catch (DlvResourceException e) {				
+				e.printStackTrace();
+			}
+			return result;
 		}
 	}

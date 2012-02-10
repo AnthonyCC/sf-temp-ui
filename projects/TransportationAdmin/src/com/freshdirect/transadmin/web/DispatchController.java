@@ -963,15 +963,17 @@ public class DispatchController extends AbstractMultiActionController {
 	}
 		
 	
+	@SuppressWarnings("unchecked")
 	private void getDispatchHandTruckInventoryForLastScanOut(HttpServletRequest request, HttpServletResponse response) throws ServletException, ParseException, DateFilterException
 	{
 		List htOutList  = dispatchManagerService.getHTOutScanAsset(TransStringUtil.getServerDateString1(TransStringUtil.getCurrentDate()));
-		
-		Collections.sort(htOutList, new HandTruckComparator()); 
 		StringBuffer htOBfr = new StringBuffer(100);
-		for (Iterator<HTOutScanAsset> iterator = htOutList.iterator(); iterator.hasNext();) {
-			HTOutScanAsset asset = iterator.next();
-			htOBfr.append(asset.getAssetIdentifier()+", "+TransStringUtil.getTime(asset.getAssetDate())).append("<br />");					 	
+		if(htOutList != null) {
+			Collections.sort(htOutList, new HandTruckComparator());
+			for (Iterator<HTOutScanAsset> iterator = htOutList.iterator(); iterator.hasNext();) {
+				HTOutScanAsset asset = iterator.next();
+				htOBfr.append(asset.getAssetIdentifier()+", "+TransStringUtil.getTime(asset.getAssetDate())).append("<br />");					 	
+			}
 		}
 		request.setAttribute("handTruckInvList",htOBfr.toString());		
 	}
@@ -1245,7 +1247,7 @@ public class DispatchController extends AbstractMultiActionController {
 				command.setTermintedEmployees(termintedEmployees);
 				if(isSummary){
 						//Retrive Route/Stop Information
-					FDRouteMasterInfo routeInfo = domainManagerService.getRouteMasterInfo(command.getRoute(), new Date());
+					FDRouteMasterInfo routeInfo = domainManagerService.getRouteMasterInfo(command.getRoute(), TransStringUtil.serverDateFormat.parse(dispDate));
 					if(routeInfo != null){
 						command.setNoOfStops(routeInfo.getNumberOfStops());
 					}

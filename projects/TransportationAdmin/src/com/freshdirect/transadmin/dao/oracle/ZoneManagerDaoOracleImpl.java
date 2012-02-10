@@ -29,6 +29,8 @@ import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.model.IHandOffBatchStop;
 import com.freshdirect.transadmin.dao.ZoneManagerDaoI;
+import com.freshdirect.transadmin.model.Neighbourhood;
+import com.freshdirect.transadmin.model.NeighbourhoodZipcode;
 import com.freshdirect.transadmin.model.ZipCodeModel;
 import com.freshdirect.transadmin.model.ZoneSupervisor;
 import com.freshdirect.transadmin.util.TransStringUtil;
@@ -431,6 +433,53 @@ public class ZoneManagerDaoOracleImpl implements ZoneManagerDaoI {
 		return result;
 	}
 	
-	
+	private static final String GET_NEIGHBOURHOOD_ZIPCODEINFO = "select nhz.zipcode zipcode, cs.STATE, cs.COUNTY, nh.name, nh.description, nh.active "+
+				" from dlv.zipplusfour zpf, dlv.city_state cs, transp.neighbourhood_zipcode nhz, transp.neighbourhood nh "+
+				" where zpf.CITY_STATE_KEY = cs.CITY_STATE_KEY and nhz.zipcode=zpf.zipcode and nh.name = nhz.neighbourhood_name ";
+					
+	public Map<String, NeighbourhoodZipcode> getNeighbourhoodZipCodeInfo(final String neighbourhoodName) throws DataAccessException {
+		
+		final Map<String, NeighbourhoodZipcode> result = new HashMap<String, NeighbourhoodZipcode>();		
+		final StringBuffer updateQ = new StringBuffer();
+		updateQ.append(GET_NEIGHBOURHOOD_ZIPCODEINFO);
+		if(neighbourhoodName != null && !"".equalsIgnoreCase(neighbourhoodName)){
+			updateQ.append("and nhz.neighbourhood_name = ? ");
+		}		
+		updateQ.append(" group by nhz.zipcode, state, county, name, description, active order by county ");
+		
+		PreparedStatementCreator creator=new PreparedStatementCreator() {
+	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+	                PreparedStatement ps =
+	                    connection.prepareStatement(updateQ.toString());	
+	                if(neighbourhoodName != null && !"".equalsIgnoreCase(neighbourhoodName)) ps.setString(1, neighbourhoodName);
+	                return ps;
+	            }  
+	     };
+	     
+	     jdbcTemplate.query(creator, 
+	       		  new RowCallbackHandler() { 
+	       		      public void processRow(ResultSet rs) throws SQLException {	       		    	
+	       		    	do {       		 
+	       		    		String _zipcode = rs.getString("zipcode");
+	       		    		String _county = rs.getString("county");
+	       		    		String _state = rs.getString("state");
+	       		    		
+	       		    		NeighbourhoodZipcode model = new NeighbourhoodZipcode();	       		    		
+	       		    		Neighbourhood _nhood = new Neighbourhood();
+	       		    		_nhood.setName(rs.getString("name"));
+	       		    		_nhood.setDescription(rs.getString("description"));
+	       		    		_nhood.setActive(rs.getString("active"));
+	       		    		
+	       		    		model.setZipcode(_zipcode);
+	       		    		model.setCounty(_county);
+	       		    		model.setState(_state);
+	       		    		model.setNeighborhood(_nhood);
+	       		    		result.put(model.getZipcode(), model);
+	       		    	}  while(rs.next());
+	       		      }
+	       		   });
+		
+		return result;
+	}
 
 }

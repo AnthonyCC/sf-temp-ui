@@ -38,7 +38,10 @@ import com.freshdirect.delivery.InvalidAddressException;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.delivery.announcement.SiteAnnouncement;
 import com.freshdirect.delivery.model.AirclicMessageVO;
+import com.freshdirect.delivery.model.AirclicNextTelAsset;
+import com.freshdirect.delivery.model.AirclicNextelVO;
 import com.freshdirect.delivery.model.AirclicTextMessageVO;
+import com.freshdirect.delivery.model.DispatchNextTelVO;
 import com.freshdirect.delivery.model.DlvRegionModel;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
@@ -77,5 +80,12 @@ public interface AirclicManagerSB extends EJBObject {
 	
 	SignatureVO getSignatureDetails(String order) throws RemoteException;
 	
+	Map<String, DispatchNextTelVO> getDispatchResourceNextTel(Date dispatchDate) throws DlvResourceException,RemoteException;;
+	 
+	Map<String, AirclicNextelVO> getNXOutScan(Date scanDate) throws DlvResourceException, RemoteException;
+	
+	void updateEmployeeNexTelData(List<DispatchNextTelVO> employeeNextTels) throws DlvResourceException,RemoteException;
+	
+	Map<String, String> getNextTelAssets() throws DlvResourceException, RemoteException;
 	
 }   

@@ -23,4 +23,7 @@ public interface RestrictionManagerI extends BaseManagerI {
 	SpatialBoundary getZoneBoundary(String code);
 	
 	void deleteGeoRestrictions(Set restrictions);
+
+	SpatialBoundary getNeighbourhoodBoundary(String code);
+
 }

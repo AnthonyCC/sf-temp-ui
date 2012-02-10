@@ -251,4 +251,9 @@ public class DateUtil {
 		else if (T < 2*YEAR) return "1 year " + suffix;
 		else return "" + (T/YEAR) + " years " + suffix;
 	}
+
+	public static String getDate(Date dateVal) throws ParseException {		
+        return MONTH_DATE_YEAR_FORMATTER.format(dateVal);
+	}
+
 } 

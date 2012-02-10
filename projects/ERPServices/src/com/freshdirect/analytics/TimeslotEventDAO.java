@@ -26,8 +26,8 @@ public class TimeslotEventDAO {
 
 	private static final Category LOGGER = LoggerFactory.getInstance(TimeslotEventDAO.class);
 	private static final String TIMESLOT_LOG_INSERT="INSERT INTO MIS.TIMESLOT_EVENT_HDR (ID, EVENT_DTM,RESERVATION_ID, " +
-			"ORDER_ID, CUSTOMER_ID, EVENTTYPE,RESPONSE_TIME,COMMENTS,TransactionSource,DlvPassApplied,DeliveryCharge,isDeliveryChargeWaived,zonectactive) " +
-			"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			"ORDER_ID, CUSTOMER_ID, EVENTTYPE,RESPONSE_TIME,COMMENTS,TransactionSource,DlvPassApplied,DeliveryCharge,isDeliveryChargeWaived,zonectactive,neighbourhood) " +
+			"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	
 	private static final String TIMESLOT_LOG_DTL_INSERT="INSERT INTO MIS.TIMESLOT_EVENT_DTL (TIMESLOT_LOG_ID, BASE_DATE, START_TIME" +
 			", END_TIME, ZONE_CODE) VALUES (?,?,?,?,?)";
@@ -314,6 +314,7 @@ public class TimeslotEventDAO {
 	    	ps.setBigDecimal(11, new BigDecimal(event.getDeliveryCharge()));
 	    	ps.setString(12, (event.isDeliveryChargeWaived())?"Y":"N");
 	    	ps.setString(13, (event.isZoneCtActive())?"Y":"N");
+	    	ps.setString(14, event.getNeighbouthood());
 	    	
 	    	ps.execute();
 	 	    ps.close();

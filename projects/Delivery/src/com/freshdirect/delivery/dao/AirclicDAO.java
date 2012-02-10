@@ -1,14 +1,8 @@
 package com.freshdirect.delivery.dao;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.sql.Blob;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,9 +11,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.naming.Context;
@@ -27,12 +23,15 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.crm.ejb.CriteriaBuilder;
 import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.model.AirclicMessageVO;
+import com.freshdirect.delivery.model.AirclicNextTelAsset;
+import com.freshdirect.delivery.model.AirclicNextelVO;
 import com.freshdirect.delivery.model.AirclicTextMessageVO;
+import com.freshdirect.delivery.model.DispatchNextTelVO;
 import com.freshdirect.delivery.model.SignatureVO;
+import com.freshdirect.framework.util.DateUtil;
 
 
 public class AirclicDAO {
@@ -258,7 +257,7 @@ public class AirclicDAO {
 				vo.setSignatureTime(rs.getTimestamp("signature_timestamp"));
 				vo.setDeliveredTo(rs.getString("deliveredto"));
 				vo.setRecipient(rs.getString("recipient"));
-				vo.setContailsAlcohol("0".equalsIgnoreCase(rs
+				vo.setContainsAlcohol("0".equalsIgnoreCase(rs
 						.getString("contains_alcohol")) ? false : true);
 				// vo.setSignature(rs.getBytes("signature"));
 			}
@@ -389,99 +388,233 @@ public class AirclicDAO {
 		DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
 		Date toTime = null;
 		
-		try
-		{
-		toTime = new Date();
-		long start = System.currentTimeMillis();
-		
-		ps = conn.prepareStatement("SELECT WEBORDERNUM,SIGNATURE_TIMESTAMP, DELIVEREDTO, RECIPIENT, CONTAINS_ALCOHOL, SIGNATURE FROM (SELECT DISTINCT " +
-				"WEBORDERNUM, EVENTID FROM DLV.CARTONSTATUS CS WHERE  CS.SCANDATE  between (SELECT MAX(LAST_EXPORT) LAST_EXPORT FROM CUST.SALESIGN_EXPORT " +
-				"WHERE SUCCESS= 'Y') and to_date(?,'MM/DD/YYYY HH:MI:SS AM') AND CS.CARTONSTATUS = 'DELIVERED'  ) CS, DLV.SIGNATURE S " +
-				"WHERE S.EVENTID = CS.EVENTID"); //toTime is required here because we want to know till what time we are getting the signatures. The same to Time
-		//will be updated in the last export.
-		ps.setString(1, sdf.format(toTime));
-		rs = ps.executeQuery();
-		
-		ps1 = conn.prepareStatement("INSERT INTO CUST.SALE_SIGNATURE (SALE_ID, SIGNATURE_TIMESTAMP, DELIVEREDTO, RECIPIENT, CONTAINS_ALCOHOL, SIGNATURE) " +
-				"VALUES (?,?,?,?,?,?)");
-		
-		while (rs.next()) {
+		try	{
+			toTime = new Date();
+			long start = System.currentTimeMillis();
 			
-			in=rs.getBytes("SIGNATURE");
+			ps = conn.prepareStatement("SELECT WEBORDERNUM,SIGNATURE_TIMESTAMP, DELIVEREDTO, RECIPIENT, CONTAINS_ALCOHOL, SIGNATURE FROM (SELECT DISTINCT " +
+					"WEBORDERNUM, EVENTID FROM DLV.CARTONSTATUS CS WHERE  CS.SCANDATE  between (SELECT MAX(LAST_EXPORT) LAST_EXPORT FROM CUST.SALESIGN_EXPORT " +
+					"WHERE SUCCESS= 'Y') and to_date(?,'MM/DD/YYYY HH:MI:SS AM') AND CS.CARTONSTATUS = 'DELIVERED'  ) CS, DLV.SIGNATURE S " +
+					"WHERE S.EVENTID = CS.EVENTID"); //toTime is required here because we want to know till what time we are getting the signatures. The same to Time
+			//will be updated in the last export.
+			ps.setString(1, sdf.format(toTime));
+			rs = ps.executeQuery();
 			
-			if(in!=null && in.length>0)
-				{
-				  	ps1.setString(1, rs.getString("WEBORDERNUM"));
-				  	ps1.setTimestamp(2, rs.getTimestamp("SIGNATURE_TIMESTAMP"));
-				  	ps1.setString(3, rs.getString("DELIVEREDTO"));
-				  	ps1.setString(4, rs.getString("RECIPIENT"));
-				  	ps1.setString(5, rs.getString("CONTAINS_ALCOHOL"));
-				    ps1.setBytes(6, in);
-				    ps1.addBatch();
-				}
+			ps1 = conn.prepareStatement("INSERT INTO CUST.SALE_SIGNATURE (SALE_ID, SIGNATURE_TIMESTAMP, DELIVEREDTO, RECIPIENT, CONTAINS_ALCOHOL, SIGNATURE) " +
+					"VALUES (?,?,?,?,?,?)");
 			
-		}
-
-		ps1.executeBatch();
-		
-		ps1 = conn.prepareStatement("INSERT INTO CUST.SALESIGN_EXPORT(LAST_EXPORT, SUCCESS) VALUES (?,'Y')");
-		ps1.setTimestamp(1, new java.sql.Timestamp(toTime.getTime()));
-		ps1.execute();
-		
-		long end = System.currentTimeMillis();
-		
-		System.out.println("Time spent syncing the signatures "+(end-start)/(1000)+" sec");
-		}
-		catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			}
-			finally
-			{
-				try {
-					if(rs!=null)
-						rs.close();
-					if(ps!=null)
-						ps.close();
-					if(ps1!=null)
-						ps1.close();
-					
-					
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			while (rs.next()) {
+				
+				in=rs.getBytes("SIGNATURE");
+				
+				if(in!=null && in.length>0)
+					{
+					  	ps1.setString(1, rs.getString("WEBORDERNUM"));
+					  	ps1.setTimestamp(2, rs.getTimestamp("SIGNATURE_TIMESTAMP"));
+					  	ps1.setString(3, rs.getString("DELIVEREDTO"));
+					  	ps1.setString(4, rs.getString("RECIPIENT"));
+					  	ps1.setString(5, rs.getString("CONTAINS_ALCOHOL"));
+					    ps1.setBytes(6, in);
+					    ps1.addBatch();
+					}
 				
 			}
-		
-			
-		}
-
 	
-	public static void main(String s[]) throws SQLException, NamingException, IOException
-	{
+			ps1.executeBatch();
+			
+			ps1 = conn.prepareStatement("INSERT INTO CUST.SALESIGN_EXPORT(LAST_EXPORT, SUCCESS) VALUES (?,'Y')");
+			ps1.setTimestamp(1, new java.sql.Timestamp(toTime.getTime()));
+			ps1.execute();
+			
+			long end = System.currentTimeMillis();
+			
+			System.out.println("Time spent syncing the signatures "+(end-start)/(1000)+" sec");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close();
+				if (ps1 != null)
+					ps1.close();
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public static Map<String, DispatchNextTelVO> getDispatchResourceNextTel(Connection conn, Date dispatchDate) throws DlvResourceException {
+		
+		Map<String, DispatchNextTelVO> result = new HashMap<String, DispatchNextTelVO>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try{
+			ps = conn
+					.prepareStatement(" select resource_id, nextel_no, dispatch_id " +
+									  " from transp.dispatch d, transp.dispatch_resource dr where d.dispatch_id = dr.dispatch_id and d.dispatch_date = ? ");
+	
+			ps.setDate(1, new java.sql.Date(dispatchDate.getTime()));
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				DispatchNextTelVO empNextTel = new DispatchNextTelVO();
+				empNextTel.setEmployeeId(rs.getString("resource_id"));
+				empNextTel.setNextTelNo(rs.getString("nextel_no"));
+				empNextTel.setDispatchId(rs.getString("dispatch_id"));			
+				
+				result.put(empNextTel.getEmployeeId(), empNextTel);
+			}
+			
+		} catch (Exception e) {			
+			e.printStackTrace();
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}		
+		return result;		
+	}
+
+	public static Map<String, AirclicNextelVO> getNXOutScan(Connection conn, Date scanDate) throws DlvResourceException {
+		
+		Map<String, AirclicNextelVO> result = new HashMap<String, AirclicNextelVO>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try{
+			final String scanStartTime = DateUtil.getDate(scanDate)+":12:00:00AM";
+			final String scanEndTime = DateUtil.getDate(scanDate)+":11:59:59PM";
+		
+			ps = conn
+					.prepareStatement(" select employee, asset, route, scandate "+
+									  " from transp.assetstatus a1 where a1.scandate = ( " +
+									  " select max(scandate) "+
+									  " from transp.assetstatus a where a.scandate BETWEEN TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam') AND TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam') "+ 
+									  " AND a.ASSET LIKE 'NX%' AND a.assetstatus='OUT' and a.employee=a1.employee)");
+	
+			ps.setString(1, scanStartTime);
+            ps.setString(2, scanEndTime);
+          
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				AirclicNextelVO nextTelVO = new AirclicNextelVO();
+				nextTelVO.setEmployee(rs.getString("employee"));
+				nextTelVO.setNextTelNo(rs.getString("asset") != null ? rs.getString("asset").replaceAll("[a-zA-Z]+","") : null);
+				nextTelVO.setRouteNo(rs.getString("route"));
+				nextTelVO.setScanDate(rs.getTimestamp("scandate"));
+				
+				result.put(nextTelVO.getEmployee(), nextTelVO);
+			}
+			
+		} catch (Exception e) {			
+			e.printStackTrace();
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}		
+		return result;		
+	}
+	
+	public static Map<String, String> getNextTelAssets(Connection conn) throws DlvResourceException {
+		
+		Map<String, String> result = new HashMap<String, String>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try{
+			ps = conn.prepareStatement(" select asset_no ASSETNO, asset_description as NEXTELNO from transp.asset a where a.asset_status not in 'O/S' ");
+	
+			rs = ps.executeQuery();
+			while (rs.next()) {				
+				result.put(rs.getString("NEXTELNO") != null ? rs.getString("NEXTELNO").replace("-", "") : null, rs.getString("ASSETNO"));
+			}			
+		} catch (Exception e) {			
+			e.printStackTrace();
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}		
+		return result;		
+	}
+	
+	
+	public static void updateEmployeeNexTelData(Connection conn, List<DispatchNextTelVO> employeeNextTels) throws DlvResourceException {
+		
+		PreparedStatement ps = null;	
+		try	{			
+			if(employeeNextTels !=null && employeeNextTels.size()>0)
+			{
+				ps = conn.prepareStatement(" UPDATE TRANSP.DISPATCH_RESOURCE set NEXTEL_NO = ? WHERE RESOURCE_ID = ? and DISPATCH_ID = ? ");
+					
+				for(DispatchNextTelVO empNextTel : employeeNextTels)	{
+					ps.setString(1, empNextTel.getNextTelNo());	
+					ps.setString(2, empNextTel.getEmployeeId());
+					ps.setString(3, empNextTel.getDispatchId());
+					ps.addBatch();
+				}
+				ps.executeBatch();							
+			}
+		} catch(SQLException e) {
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if(ps!=null) ps.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public static void main(String s[]) throws SQLException, NamingException, IOException	{
 		
 		Connection conn = getDataSource().getConnection();
 		getSignatureData(conn, null);
 		
 	}
 
-		public static DataSource getDataSource() throws NamingException {
-	        InitialContext initCtx = null;
-	    try {
-	        initCtx = getInitialContext();
-	        return (DataSource) initCtx.lookup("fddatasource");
-	    } finally {
-	        if (initCtx!=null) try {
-	              initCtx.close();
-	        } catch (NamingException ne) {}
-	    }
-	 }
-	   static public InitialContext getInitialContext() throws NamingException {
-	        Hashtable h = new Hashtable();
-	        h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
-	        h.put(Context.PROVIDER_URL, "t3://localhost:7001");
-	        return new InitialContext(h);
-	  }
+	public static DataSource getDataSource() throws NamingException {
+		InitialContext initCtx = null;
+		try {
+			initCtx = getInitialContext();
+			return (DataSource) initCtx.lookup("fddatasource");
+		} finally {
+			if (initCtx != null)
+				try {
+					initCtx.close();
+				} catch (NamingException ne) {
+				}
+		}
+	}
+
+	static public InitialContext getInitialContext() throws NamingException {
+		Hashtable h = new Hashtable();
+		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
+		h.put(Context.PROVIDER_URL, "t3://localhost:7001");
+		return new InitialContext(h);
+	}
 	
+	   
+	   
 }

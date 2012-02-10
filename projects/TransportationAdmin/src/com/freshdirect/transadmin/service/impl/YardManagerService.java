@@ -57,7 +57,7 @@ public class YardManagerService implements IYardManagerService {
 		try{
 			yardMngDAOImpl.addParkingSlot(slot);
 		} catch (DataIntegrityViolationException e) {
-			throw new TransAdminServiceException(e, "Parking slot already exists with the same slot number.");
+			throw new TransAdminServiceException("Parking slot already exists with the same slot number.", e, IIssue.EMPTY);
 		} catch (SQLException e) {
 			throw new TransAdminServiceException(e, IIssue.PROCESS_YARDMONITOR_ERROR);
 		}

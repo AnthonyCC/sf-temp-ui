@@ -33,6 +33,7 @@ import com.freshdirect.transadmin.model.IssueLog;
 import com.freshdirect.transadmin.model.IssueSubType;
 import com.freshdirect.transadmin.model.IssueType;
 import com.freshdirect.transadmin.model.MaintenanceIssue;
+import com.freshdirect.transadmin.model.NeighbourhoodZipcode;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
@@ -960,5 +961,15 @@ public class DomainManagerImpl
 		return recordId;
 	}
 	
+	public Collection getNeighbourhood() {
+		return getDomainManagerDao().getNeighbourhood();
+	}
+	
+	public Collection getActiveNeighbourhood() {
+		return getDomainManagerDao().getActiveNeighbourhood();
+	}
+	public NeighbourhoodZipcode getNeighbourhoodZipCode(String zipCode){
+		return getDomainManagerDao().getNeighbourhoodZipCode(zipCode);
+	}
 }
 

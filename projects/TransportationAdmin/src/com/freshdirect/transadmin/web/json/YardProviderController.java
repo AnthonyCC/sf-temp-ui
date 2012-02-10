@@ -69,7 +69,6 @@ public class YardProviderController extends BaseJsonRpcController  implements IY
 	public boolean addParkingLocation(String[][] location){
 		
 		Set<ParkingLocation> newLocations = new HashSet<ParkingLocation>();
-		Set<ParkingLocation> clearLocations = new HashSet<ParkingLocation>();
 		Map<String, ParkingLocation> previousLocs = yardManagerService.getParkingLocation();
 		try{
 			for(int i=0;i < location.length;i++) {

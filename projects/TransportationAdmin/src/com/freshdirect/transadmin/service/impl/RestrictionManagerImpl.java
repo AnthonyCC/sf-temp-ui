@@ -95,6 +95,9 @@ public class RestrictionManagerImpl extends BaseManagerImpl implements Restricti
 		this.removeEntity(restrictions);
 	}
 	
+	public SpatialBoundary getNeighbourhoodBoundary(String code) {
+		return this.getSpatialManagerDao().getNeighbourhoodBoundary(code);
+	}
 }	
 	
 

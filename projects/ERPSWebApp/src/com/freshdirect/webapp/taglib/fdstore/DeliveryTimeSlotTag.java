@@ -36,6 +36,7 @@ import com.freshdirect.delivery.EnumDeliveryStatus;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneModel;
+import com.freshdirect.delivery.model.NeighbourhoodVO;
 import com.freshdirect.delivery.restriction.AlcoholRestriction;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
@@ -241,6 +242,11 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 				(address.getPK()!=null && address.getPK().getId()!=null && address.getPK().getId().equals(deliveryModel.getRsv().getAddressId())) )
 			event.setReservationId(deliveryModel.getRsv().getId());
 		
+		NeighbourhoodVO neighbourhoodInfo = FDDeliveryManager.getInstance().getNeighbourhoodInfo(address);
+		if(neighbourhoodInfo != null){
+			event.setNeighbouthood(neighbourhoodInfo.getName());
+		}
+
 		if(FDStoreProperties.isSessionLoggingEnabled())	{
 			logTimeslotSessionInfo(user, timeslotList, result, event);
 		}
@@ -351,6 +357,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 							sessionEvent.setAvailCount(availCount);
 							sessionEvent.setSoldCount(soldCount);
 							sessionEvent.setHiddenCount(hiddenCount);
+							sessionEvent.setNeighbourhood(event.getNeighbouthood());
 							user.setSessionEvent(sessionEvent);
 						}
 				}

@@ -46,6 +46,7 @@ import com.freshdirect.delivery.ejb.DlvManagerSB;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneModel;
+import com.freshdirect.delivery.model.NeighbourhoodVO;
 import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
@@ -509,9 +510,12 @@ public class FDDeliveryManager {
 
 		try {
 
-
-
 			DlvManagerSB sb = getDlvManagerHome().create();
+
+			NeighbourhoodVO neighbourhoodInfo = sb.getNeighbourhoodInfo(address);
+			if(neighbourhoodInfo != null){
+				event.setNeighbouthood(neighbourhoodInfo.getName());
+			}
 			DlvReservationModel dlvReservation = sb
 				.reserveTimeslot(timeslot.getDlvTimeslot(), customerId, holdTime, type, address, chefsTable,ctDeliveryProfile,isForced, event);
 
@@ -574,6 +578,10 @@ public class FDDeliveryManager {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			sb.removeReservation(reservationId);
+			NeighbourhoodVO neighbourhoodInfo = FDDeliveryManager.getInstance().getNeighbourhoodInfo(address);
+			if(neighbourhoodInfo != null){
+				event.setNeighbouthood(neighbourhoodInfo.getName());
+			}
 			removeReservationEx(reservationId, address,event);
 
 		} catch (RemoteException re) {
@@ -644,6 +652,10 @@ public class FDDeliveryManager {
 			sb.commitReservation(rsvId, customerId, orderId,pr1);
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
 				DlvReservationModel reservation=sb.getReservation(rsvId);
+				NeighbourhoodVO neighbourhoodInfo = FDDeliveryManager.getInstance().getNeighbourhoodInfo(address);
+				if (neighbourhoodInfo != null) {
+					event.setNeighbouthood(neighbourhoodInfo.getName());
+				}
 				boolean isSent=RoutingUtil.getInstance().sendCommitReservationRequest(reservation, address, event);
 				if(!isSent && !reservation.isUnassigned()) {
 					sb.setUnassignedInfo(rsvId, RoutingActivityType.CONFIRM_TIMESLOT);
@@ -669,6 +681,10 @@ public class FDDeliveryManager {
 				 if(isRestored) {
 					 //RoutingUtil.getInstance().sendUpdateReservationRequest(reservation,address);
 				 } else {
+					 	NeighbourhoodVO neighbourhoodInfo = FDDeliveryManager.getInstance().getNeighbourhoodInfo(address);
+						if (neighbourhoodInfo != null) {
+							event.setNeighbouthood(neighbourhoodInfo.getName());
+						}
 						 boolean isSent=RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address,event);
 						 if(!isSent &&!reservation.isUnassigned()) {
 								sb.setUnassignedInfo(rsvId, RoutingActivityType.CANCEL_TIMESLOT);
@@ -1123,6 +1139,17 @@ public class FDDeliveryManager {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
+		}
+	}
+
+	public NeighbourhoodVO getNeighbourhoodInfo(AddressModel address) throws FDResourceException {
+		try {
+			DlvManagerSB sb = getDlvManagerHome().create();
+			return sb.getNeighbourhoodInfo(address);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
 		}
 	}
 

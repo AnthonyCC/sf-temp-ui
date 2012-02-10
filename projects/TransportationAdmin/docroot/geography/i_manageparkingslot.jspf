@@ -1,6 +1,7 @@
 <script>
       var addParkingSlotPanel;
       function init() {
+       	
         addParkingSlotPanel = new YAHOO.widget.Panel("parkingSlotPanel", {
                           width: "400px", 
                           fixedcenter: true, 
@@ -14,16 +15,23 @@
 	}
 
      function showParkingSlotForm() {
+    	addParkingSlotSysMessage("", false);
+    	document.getElementById('slotNumber').value='';
+        document.getElementById('slotDesc').value='';
+ 		document.getElementById('slotBarcodeStatus').value='';
+ 		document.getElementById('slotPavedStatus').value='';
+ 		document.getElementById('plocation').value='';
+
           addParkingSlotPanel.render(document.body);
           addParkingSlotPanel.show();
      }
              
       function sendLabelForm() {
-      	  
+    	addParkingSlotSysMessage("", false);  
     	var _slotNumber = YAHOO.util.Dom.get("slotNumber").value;
-	var _slotDesc = YAHOO.util.Dom.get("slotDesc").value;
-	var _slotBarcodeStatus = YAHOO.util.Dom.get("slotBarcodeStatus").value;
-	var _slotPavedStatus = YAHOO.util.Dom.get("slotPavedStatus").value;
+		var _slotDesc = YAHOO.util.Dom.get("slotDesc").value;
+		var _slotBarcodeStatus = YAHOO.util.Dom.get("slotBarcodeStatus").value;
+		var _slotPavedStatus = YAHOO.util.Dom.get("slotPavedStatus").value;
        	var _slotLocation = YAHOO.util.Dom.get("plocation").value;
        	 
 

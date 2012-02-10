@@ -29,6 +29,7 @@ import com.freshdirect.transadmin.model.IssueLog;
 import com.freshdirect.transadmin.model.IssueSubType;
 import com.freshdirect.transadmin.model.IssueType;
 import com.freshdirect.transadmin.model.MaintenanceIssue;
+import com.freshdirect.transadmin.model.NeighbourhoodZipcode;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.RouteMappingId;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
@@ -408,7 +409,7 @@ public class DomainManagerDaoHibernateImpl
 			strBuf.append("where m.truckNumber='").append(truckNumber).append("'");
 			strBuf.append("and m.issueType='").append(issueType).append("'");
 			strBuf.append("and m.issueSubType='").append(issueSubType).append("'");
-			strBuf.append("and m.issueStatus='Open'");
+			strBuf.append("and m.issueStatus in ('Open','Verified','Re-Verified')");
 		}
 		
 		return (Collection)getHibernateTemplate().find(strBuf.toString());
@@ -624,9 +625,15 @@ public class DomainManagerDaoHibernateImpl
 		return convertEmpListToMap(empList);
 	}
 	
-
-
-
+	public Collection getNeighbourhood() throws DataAccessException {
+		return getDataList("Neighbourhood Order By NAME");
+	}
 	
+	public Collection getActiveNeighbourhood() throws DataAccessException {
+		return getDataList("Neighbourhood where active = 'X' Order By NAME");
+	}	
 	
+	public NeighbourhoodZipcode getNeighbourhoodZipCode(String zipCode) throws DataAccessException {
+		return (NeighbourhoodZipcode)getEntityById("NeighbourhoodZipcode", "zipcode", zipCode);
+	}
 }

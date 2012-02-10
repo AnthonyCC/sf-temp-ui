@@ -36,7 +36,7 @@ public class AirclicDataSyncCron {
 		try 
 		{
 			Date jobDate = null;
-			boolean signature = false;
+			boolean signature = true;
 			if (args.length >= 1) {
 				for (String arg : args) {
 					try { 

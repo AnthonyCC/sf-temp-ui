@@ -8,7 +8,7 @@ public class SignatureVO implements Serializable {
 	private String orderNo;
 	private String deliveredTo;
 	private String recipient;
-	private boolean contailsAlcohol;
+	private boolean containsAlcohol;
 	//private byte[] signature;
 	private Date signatureTime;
 	
@@ -30,11 +30,11 @@ public class SignatureVO implements Serializable {
 	public void setRecipient(String recipient) {
 		this.recipient = recipient;
 	}
-	public boolean isContailsAlcohol() {
-		return contailsAlcohol;
+	public boolean isContainsAlcohol() {
+		return containsAlcohol;
 	}
-	public void setContailsAlcohol(boolean contailsAlcohol) {
-		this.contailsAlcohol = contailsAlcohol;
+	public void setContainsAlcohol(boolean containsAlcohol) {
+		this.containsAlcohol = containsAlcohol;
 	}
 	
 	public Date getSignatureTime() {

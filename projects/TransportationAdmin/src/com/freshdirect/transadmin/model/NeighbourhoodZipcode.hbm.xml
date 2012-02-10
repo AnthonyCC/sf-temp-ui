@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping schema="transp">
+    <class name="com.freshdirect.transadmin.model.NeighbourhoodZipcode" table="NEIGHBOURHOOD_ZIPCODE">
+        <id name="zipcode" type="string">
+            <column name="ZIPCODE" length="5" />
+            <generator class="assigned" />
+        </id>
+       
+       <many-to-one name="neighborhood" class="com.freshdirect.transadmin.model.Neighbourhood" fetch="select" lazy="false" >
+            <column name="NEIGHBOURHOOD_NAME" length="50" />
+        </many-to-one>
+        
+    </class>
+</hibernate-mapping>

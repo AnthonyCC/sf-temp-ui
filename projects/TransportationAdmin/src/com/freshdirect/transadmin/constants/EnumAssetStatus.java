@@ -8,9 +8,11 @@ import org.apache.commons.lang.enums.Enum;
 
 public class EnumAssetStatus  extends Enum {
 	
-	public static final EnumAssetStatus ACTIVE = new EnumAssetStatus("ACT","In-Service");
+	public static final EnumAssetStatus ACTIVE = new EnumAssetStatus("ACT","Active");
 
-    public static final EnumAssetStatus INACTIVE = new EnumAssetStatus("IAC","Out-Service");
+    public static final EnumAssetStatus INACTIVE = new EnumAssetStatus("IAC","In-Active");
+    
+    public static final EnumAssetStatus OUTSERVICE = new EnumAssetStatus("O/S","Out-Service");
     
     public static final EnumAssetStatus DECOMMISSIONED = new EnumAssetStatus("DCM","DECOMMISSIONED");
     
