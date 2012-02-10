@@ -633,10 +633,14 @@ public class FDPromotionManagerNewDAO {
 		storeCustomerStrategy(conn, id, promotion);
 		storePromoDlvZoneStrategy(conn, id, promotion);
 		storePromoDlvDates(conn,id, promotion);
-
+		storeDiscountOffers(conn, id, promotion);
 		if (!promotion.getZipRestrictions().isEmpty()) {
 			storeGeography(conn, id, promotion.getZipRestrictions());
 		}
+		if("STCO".equals(promotion.getGeoRestrictionType()))
+			storeStateCountyInfo(conn, promotion.getId(), promotion.getStateCountyList());
+		else
+			removeStateCountyData(conn, promotion.getId());
 		return new PrimaryKey(id);
 	}
 
@@ -653,7 +657,7 @@ public class FDPromotionManagerNewDAO {
 								"AUDIENCE_DESC, TERMS, REDEEM_CNT, HASSKUQUANTITY, " +
 								"PERISHABLEONLY, NEEDDRYGOODS, NEEDCUSTOMERLIST, " +
 								"RULE_BASED, FAVORITES_ONLY, COMBINE_OFFER, " +
-								"CREATED_BY, CREATE_DATE, MODIFIED_BY, MODIFY_DATE, DONOT_APPLY_FRAUD, PUBLISHES,OFFER_TYPE, INCL_FUEL_SURCHARGE)"//, referral_promo)"
+								"CREATED_BY, CREATE_DATE, MODIFIED_BY, MODIFY_DATE, DONOT_APPLY_FRAUD, PUBLISHES,OFFER_TYPE, INCL_FUEL_SURCHARGE, SKU_LIMIT)"//, referral_promo)"
 						+ " VALUES(?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?)"); //,?)");
 
 		int i = 1;
@@ -688,6 +692,11 @@ public class FDPromotionManagerNewDAO {
 			ps.setNull(i++, Types.VARCHAR);
 		}
 		ps.setString(i++, promotion.isFuelSurchargeIncluded()?"Y":"N");
+		if (promotion != null && promotion.getSkuLimit() != null) {
+			ps.setInt(i++, promotion.getSkuLimit().intValue());					
+		} else {
+			ps.setNull(i++, Types.INTEGER);										
+		}
 		//ps.setString(i++, promotion.isReferralPromo()?"Y":"N");
 		// Execute update
 		if (ps.executeUpdate() != 1) {
@@ -2788,7 +2797,13 @@ public class FDPromotionManagerNewDAO {
 		storeCustomerStrategy(conn, id, promotion);
 		storePromoDlvZoneStrategy(conn, id, promotion);
 		storePromoDlvDates(conn, id, promotion);
+		storeDiscountOffers(conn, id, promotion);
 		storeGeography(conn, id, promotion.getZipRestrictions());
+		if("STCO".equals(promotion.getGeoRestrictionType()))
+			storeStateCountyInfo(conn, promotion.getId(), promotion.getStateCountyList());
+		else
+			removeStateCountyData(conn, promotion.getId());
+		
 	}
 
 	public static void updatePromotionBasic(Connection conn, FDPromotionNewModel promotion) throws SQLException {
@@ -2799,7 +2814,7 @@ public class FDPromotionManagerNewDAO {
 						+ " ROLLING_EXPIRATION_DAYS=?, STATUS=?, OFFER_DESC=?, AUDIENCE_DESC=?, TERMS=?, REDEEM_CNT=?,"
 						+ " HASSKUQUANTITY=?, PERISHABLEONLY=?, NEEDDRYGOODS=?, NEEDCUSTOMERLIST=?, RULE_BASED=?,"
 						+ " FAVORITES_ONLY=?, COMBINE_OFFER=?, MODIFIED_BY=?, MODIFY_DATE=?,"
-						+ " DONOT_APPLY_FRAUD=?, PUBLISHES=?, INCL_FUEL_SURCHARGE=?" //, referral_promo=?"
+						+ " DONOT_APPLY_FRAUD=?, PUBLISHES=?, INCL_FUEL_SURCHARGE=?, SKU_LIMIT=?" //, referral_promo=?"
 						+ " WHERE ID = ?");
 
 		int i = 1;
@@ -2821,6 +2836,11 @@ public class FDPromotionManagerNewDAO {
 		
 		ps.setInt(i++, promotion.getPublishes());
 		ps.setString(i++, promotion.isFuelSurchargeIncluded()?"Y":"N");
+		if (promotion != null && promotion.getSkuLimit() != null) {
+			ps.setInt(i++, promotion.getSkuLimit().intValue());					
+		} else {
+			ps.setNull(i++, Types.INTEGER);										
+		}
 		//ps.setString(i++, promotion.isReferralPromo()?"Y":"N");
 		
 		ps.setString(i++, promotion.getPK().getId());
