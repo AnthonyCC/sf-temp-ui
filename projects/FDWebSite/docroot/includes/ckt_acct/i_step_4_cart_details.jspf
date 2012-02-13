@@ -73,7 +73,7 @@ int idx = 0;
 				GoogleAnalyticsCartProduct GACartProd = GACartProds.get(fdProduct.getSkuCode());
 				
 				//add to qty
-				GACartProd.addToQty( Double.parseDouble(cartLine.getOrderedQuantity()) );
+				GACartProd.addToQty(line.getConfiguration()!=null?line.getConfiguration().getQuantity():0 );
 				
 				//add to total
 				GACartProd.addToTotal(cartLine.getPrice());
@@ -82,7 +82,7 @@ int idx = 0;
 				String unitPriceInfo[] = cartLine.getUnitPrice().replace("$", "").split("/");
 
 				//we haven't, create a new one
-				GoogleAnalyticsCartProduct GACartProd = new GoogleAnalyticsCartProduct(fdProduct.getSkuCode(), Double.parseDouble(cartLine.getOrderedQuantity()), cartLine.getPrice());
+				GoogleAnalyticsCartProduct GACartProd = new GoogleAnalyticsCartProduct(fdProduct.getSkuCode(), line.getConfiguration()!=null?line.getConfiguration().getQuantity():0, cartLine.getPrice());
 
 				//add unit price
 				GACartProd.setUnitPrice(unitPriceInfo[0]);
