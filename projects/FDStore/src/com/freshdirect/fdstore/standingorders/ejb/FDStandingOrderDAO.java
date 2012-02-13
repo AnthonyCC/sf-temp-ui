@@ -568,7 +568,7 @@ public class FDStandingOrderDAO {
 		"select  so.id ,cl.name, c.user_id ,NVL(A.COMPANY_NAME,'--') as COMPANY_NAME ,SO.NEXT_DATE ,SO.FREQUENCY,SO.START_TIME,SO.END_TIME,SO.ERROR_HEADER ,SO.CUSTOMER_ID,"+
 		"A.ADDRESS1||', '||a.ADDRESS2||', '||a.APARTMENT||', '||a.CITY||', '||a.STATE||', '||a.ZIP as ADDRESS,NVL(CI.BUSINESS_PHONE||'-'||CI.BUSINESS_EXT,'--') as BUSINESS_PHONE,"+
 		"NVL(CI.CELL_PHONE,'--') as CELL_PHONE, MAX(AL.TIMESTAMP) as FAILED_ON,case when pm.id is null then 'Not Exists' else 'Exists' end  as PAYMENT_METHOD "+
-		"from cust.activity_log al,cust.address a,cust.paymentmethod pm, cust.customerinfo ci,cust.customer c,CUST.STANDING_ORDER so,CUST.CUSTOMERLIST cl "+ 
+		"from cust.activity_log al,cust.address a,cust.paymentmethod_new pm, cust.customerinfo ci,cust.customer c,CUST.STANDING_ORDER so,CUST.CUSTOMERLIST cl "+ 
 		"where  AL.ACTIVITY_ID='SO-Failed' and so.id=AL.STANDINGORDER_ID and SO.CUSTOMERLIST_ID=CL.ID and SO.CUSTOMER_ID=AL.CUSTOMER_ID and SO.ADDRESS_ID=a.id(+) and SO.PAYMENTMETHOD_ID=pm.id(+) "+
 		"and c.id=ci.customer_id and so.customer_id=c.id and SO.DELETED='0' and SO.ERROR_HEADER is not null group by so.id ,cl.name,c.user_id  ,NVL(CI.BUSINESS_PHONE||'-'||CI.BUSINESS_EXT,'--') , "+
 		"NVL(CI.CELL_PHONE,'--') ,A.COMPANY_NAME ,SO.NEXT_DATE  ,SO.FREQUENCY,SO.START_TIME,SO.END_TIME,SO.CUSTOMER_ID ,A.ADDRESS1||', '||a.ADDRESS2||', '||a.APARTMENT||', '||a.CITY||', '||a.STATE||', '||a.ZIP , "+
