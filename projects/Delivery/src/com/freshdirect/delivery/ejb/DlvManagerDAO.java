@@ -1631,7 +1631,8 @@ public class DlvManagerDAO {
 		return result;
 	}
 	
-	private static final String GET_NEIGHBOURHOOD_INFO = "select name, description from transp.neighbourhood where active='X' and zipcode = ? ";
+	private static final String GET_NEIGHBOURHOOD_INFO = "select name, description from transp.neighbourhood n, " +
+				" transp.neighbourhood_zipcode nz where n.name = nz.neighbourhood_name and n.active = 'X' and nz.zipcode = ? ";
 	
 	public static NeighbourhoodVO getNeighbourhoodInfo(Connection conn, AddressModel address)
 																throws SQLException {
