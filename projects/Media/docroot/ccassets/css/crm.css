@@ -21,6 +21,7 @@ body {
 	scrollbar-3dlight-color: #999999; 
 	scrollbar-shadow-color: #666666;
 	scrollbar-darkshadow-color: #666666;
+	overflow: auto;
 }
 
 table           { empty-cells:show; font-size: 10pt;  font-family: Trebuchet MS, Arial, Verdana, sans-serif; }
@@ -49,6 +50,7 @@ a:hover     { color: #009900; text-decoration: overline underline; }
 	padding: 0px;
 	margin: 0px;
 	overflow-y: auto;
+	overflow-x: hidden;
 	min-height: 700px;
 }
 

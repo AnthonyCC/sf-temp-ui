@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Category;
@@ -19,6 +20,7 @@ import com.freshdirect.fdstore.customer.ejb.FDSessionBeanSupport;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDStandingOrderList;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
+import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderFilterCriteria;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfoList;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -200,6 +202,24 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
+	public void markSaleAltDeliveryDateMovement(PrimaryKey salePK) throws FDResourceException {		
+
+		Connection conn=null;
+		try {
+			conn = getConnection();
+			
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();
+			dao.markSaleAltDeliveryDateMovement(conn, salePK.getId());
+			
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in markSaleAltDeliveryDateMovement() : " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		}finally {
+			close(conn);
+		}
+	}
+
 	public void logActivity(ErpActivityRecord record) {
 		new ErpLogActivityCommand(LOCATOR, record).execute();
 	}
@@ -311,14 +331,62 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	public void addStandingOrderAltDeliveryDate(Date deliveryDate, Date altDate) throws FDResourceException {
+	public List<FDStandingOrderAltDeliveryDate> getStandingOrderAltDeliveryDates()  throws FDResourceException{
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();
+			
+			List<FDStandingOrderAltDeliveryDate> altDeliveryDates = dao.getStandingOrderAltDeliveryDates(conn);
+			
+			return altDeliveryDates;
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in getStandingOrdersAlternateDeliveryDates() : " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public void addStandingOrderAltDeliveryDate(FDStandingOrderAltDeliveryDate altDeliveryDate) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			FDStandingOrderDAO dao = new FDStandingOrderDAO();			
-			dao.addStandingOrderAltDeliveryDate(conn, deliveryDate, altDate );
+			dao.addStandingOrderAltDeliveryDate(conn, altDeliveryDate);
 		} catch (SQLException e) {
 			LOGGER.error( "SQL ERROR in addStandingOrderAltDeliveryDate() : " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public void updateStandingOrderAltDeliveryDate(FDStandingOrderAltDeliveryDate altDeliveryDate) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();			
+			dao.updateStandingOrderAltDeliveryDate(conn, altDeliveryDate);
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in updateStandingOrderAltDeliveryDate() : " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}
+
+	public void deleteStandingOrderAltDeliveryDate(FDStandingOrderAltDeliveryDate altDeliveryDate) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();			
+			dao.deleteStandingOrderAltDeliveryDate(conn, altDeliveryDate);
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in deleteStandingOrderAltDeliveryDate() : " + e.getMessage(), e );
 			e.printStackTrace();
 			throw new FDResourceException(e);
 		} finally {

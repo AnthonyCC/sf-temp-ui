@@ -44,7 +44,7 @@
 				if (!s.isObsolete()) {
 					if (c>0) out.print(", ");
 					c++;
-					%>new Subject("<%= s.getCode() %>", "<%= s.getName() %>")<%
+					%>new Subject("<%= s.getCode() %>", '<%= s.getName() %>')<%
 				}			
 			}
 			out.println("]);");

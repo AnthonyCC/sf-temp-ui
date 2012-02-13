@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.standingorders;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 
@@ -170,6 +171,17 @@ public class FDStandingOrderInfo implements Serializable  {
 	public final static Comparator<FDStandingOrderInfo> COMP_NEXT_DATE = new Comparator<FDStandingOrderInfo>() {
 		public int compare(FDStandingOrderInfo c1, FDStandingOrderInfo c2) {
 			return c1.getNextDate().compareTo(c2.getNextDate()); 	
+		}
+	};
+	
+	public final static Comparator<FDStandingOrderInfo> COMP_WEEKDAY = new Comparator<FDStandingOrderInfo>() {
+		public int compare(FDStandingOrderInfo c1, FDStandingOrderInfo c2) {
+			Calendar c1c=Calendar.getInstance();
+			c1c.setTime(c1.getNextDate());
+			Calendar c2c=Calendar.getInstance();
+			c2c.setTime(c2.getNextDate());
+			
+			return c1c.get(Calendar.DAY_OF_WEEK) > c2c.get(Calendar.DAY_OF_WEEK) ? 1 : c1c.get(Calendar.DAY_OF_WEEK) < c2c.get(Calendar.DAY_OF_WEEK) ? -1 : 0;
 		}
 	};
 		

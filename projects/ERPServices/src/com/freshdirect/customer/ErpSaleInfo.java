@@ -53,6 +53,7 @@ public class ErpSaleInfo extends BasicSaleInfo {
 	private String stopSequence;
 	
 	private String standingOrderId;
+	private boolean soHolidayMovement;
 	
 	public ErpSaleInfo(
 		String saleId,
@@ -80,7 +81,8 @@ public class ErpSaleInfo extends BasicSaleInfo {
 		String truckNumber,
 		String stopSequence,
 		boolean isMakeGood,
-		String standingOrderId) {
+		String standingOrderId,
+		boolean soHolidayMovement) {
 
 		super(saleId, erpCustomerId,status);
 		this.amount = amount;
@@ -108,6 +110,7 @@ public class ErpSaleInfo extends BasicSaleInfo {
 		this.isMakeGood=isMakeGood;
 		
 		this.standingOrderId = standingOrderId;
+		this.soHolidayMovement = soHolidayMovement;
 	}
 
 	public boolean isMakeGood() {
@@ -214,5 +217,9 @@ public class ErpSaleInfo extends BasicSaleInfo {
 	
 	public String getStandingOrderId() {
 		return standingOrderId;
+	}
+	
+	public boolean isSoHolidayMovement(){
+		return soHolidayMovement;
 	}
 }

@@ -177,14 +177,14 @@ public class ErpSaleInfoDAO {
 	
 	
 	
-	private static String QUERY_ORDER_HISTORY_NEW=" select cre.customer_id, cre.id, cre.truck_number, cre.stop_sequence, cre.standingorder_id, cre.dlv_pass_id,cre.type, "+
+	private static String QUERY_ORDER_HISTORY_NEW=" select cre.customer_id, cre.id, cre.truck_number, cre.stop_sequence, cre.standingorder_id, cre.so_holiday_movement, cre.dlv_pass_id,cre.type, "+
 	"  del.requested_date, cre.status, sac.amount,sac.sub_total,del.payment_method_type,del.referenced_order,  "+
 	"  cre.action_date as create_date, cre.source as create_source, cre.initiator as create_by, del.action_date as mod_date,   "+
 	"  del.source as mod_source, del.initiator as mod_by, del.starttime, del.endtime, del.cutofftime, del.delivery_type,   "+
 	"  NVL((select /*+ use_nl(c s) */sum(c.amount) from cust.complaint c where c.status='APP' and c.sale_id=cre.id),0) as credit_approved,  "+
 	"  NVL((select /*+ use_nl(c s) */sum(c.amount) from cust.complaint c where c.status='PEN' and c.sale_id=cre.id),0) as credit_pending, del.zone  "+
 	"  from  "+
-	"    ( select  s.customer_id, s.id, s.status, s.dlv_pass_id,s.type, s.truck_number, s.stop_sequence, s.standingorder_id, "+
+	"    ( select  s.customer_id, s.id, s.status, s.dlv_pass_id,s.type, s.truck_number, s.stop_sequence, s.standingorder_id, s.so_holiday_movement, "+
 	"     sa.action_date, sa.source, sa.initiator         from    "+
 	"         cust.sale s, cust.salesaction sa          "+
 	"             where  sale_id = s.id         and    sa.action_type = 'CRO'         and  "+
@@ -292,7 +292,9 @@ public class ErpSaleInfoDAO {
 					rs.getString("TRUCK_NUMBER"),
 					rs.getString("STOP_SEQUENCE"),
 				    (referencedOrder==null || "".equals(referencedOrder))?false:true,
-					rs.getString("STANDINGORDER_ID")));
+					rs.getString("STANDINGORDER_ID"),
+					"Y".equalsIgnoreCase(rs.getString("SO_HOLIDAY_MOVEMENT"))
+				));
 		}
 		rs.close();
 		ps.close();
@@ -350,7 +352,8 @@ public class ErpSaleInfoDAO {
 					rs.getString("TRUCK_NUMBER"),
 					rs.getString("STOP_SEQUENCE"),
 					false,
-					rs.getString("STANDINGORDER_ID")
+					rs.getString("STANDINGORDER_ID"),
+					false
 					));
 		}
 		rs.close();
@@ -812,7 +815,8 @@ public class ErpSaleInfoDAO {
 					rs.getString("TRUCK_NUMBER"),
 					rs.getString("STOP_SEQUENCE"),
 					false,
-					rs.getString("STANDINGORDER_ID")
+					rs.getString("STANDINGORDER_ID"),
+					false
 					));
 		}
 		rs.close();
@@ -926,7 +930,8 @@ public class ErpSaleInfoDAO {
 						"",
 						"",
 						false,
-						null);
+						null,
+						false);
 						list.add(erpSaleInfo);
 			}
 		}

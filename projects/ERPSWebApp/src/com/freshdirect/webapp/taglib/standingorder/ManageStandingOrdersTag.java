@@ -177,7 +177,9 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 			FDCartLineI cartLine = new FDCartLineModel(p.getSku(), prd, p.getConfiguration(), null, p.getPricingContext().getZoneId());
 			//cartLine.refreshConfiguration();
 
-			cart.addOrderLine(cartLine);
+			if (cartLine.lookupFDProductInfo().isAvailable()) {
+				cart.addOrderLine(cartLine);
+			}
 		}
 	}
 	

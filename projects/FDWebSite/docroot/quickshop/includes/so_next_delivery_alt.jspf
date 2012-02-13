@@ -26,8 +26,15 @@
 <% 	} %>
 
 
-
 <% if ( lastOrder != null && lastOrder.getRequestedDate().after( new Date() ) ) { %>
+
+	<% if(lastOrder.isSoHolidayMovement()) { %>
+	<div style="text-align: left; font-weight: bold; margin-top: 15px; margin-bottom: 15px;">
+		<% String errorTitle = "Your delivery this week has been moved."; 
+		String errorText = "FreshDirect is closed on your Standing Order delivery day this week. We have moved your delivery to the next available day and kept your chosen timeslot. Click \"View/Modify\" below to make any necessary changes. <span style=\"font-weight: bold\">Questions or concerns about this change?</span> Please contact your FreshDirect At The Office hospitality team at <a href=\"mailto:StandingOrders@FreshDirect.com\">StandingOrders@FreshDirect.com</a>."; %>
+		<%@ include file="/includes/i_error_with_title.jspf" %>
+	</div>			
+	<%} %>
 	
 	<div class="title15" style="overflow: hidden;">
 		<div style="float: left;">Next Delivery of Your Standing Order:&nbsp;<span style="color: #CC3300; "><%= FDStandingOrder.DATE_FORMATTER_SHORT.format( lastOrder.getRequestedDate() ) %></span></div>

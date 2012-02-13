@@ -64,6 +64,8 @@ public interface FDOrderInfoI extends Serializable {
 	public String getStopSequence();
 	
 	public String getStandingOrderId();
+	
+	public boolean isSoHolidayMovement();
 
 	public boolean isModifiable();
 	

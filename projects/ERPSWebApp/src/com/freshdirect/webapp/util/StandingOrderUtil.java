@@ -37,6 +37,7 @@ import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDInvalidAddressException;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
@@ -434,11 +435,21 @@ public class StandingOrderUtil {
 			}
 		}
 
+		// ============================
+		//    Check SKU availability
+		//      (SKU availability)
+		// ============================
+		vr = new ProcessActionResult();
+		doAvailabilityCheck(customer, cart, vr);
+		if (vr.hasInvalidItems()) {
+			hasInvalidItems = true;
+		}
+		LOGGER.info( "SKU availability check passed." );
 
-		// ==========================
-		//    Check availability
-		//       (ATP Check)
-		// ==========================
+		// ==================================
+		//    Check inventory availability
+		//            (ATP Check)
+		// ==================================
 		vr = new ProcessActionResult();
 		doATPCheck(customer, cart, vr);
 		if (vr.hasInvalidItems()) {
@@ -489,7 +500,16 @@ public class StandingOrderUtil {
 				LOGGER.error("Failed to assign standing order to sale, corresponding order ID="+orderId, e);
 				LOGGER.warn( e.getFDStackTrace() );
 			}
-			
+
+			if (altDate != null){
+				try {
+					FDStandingOrdersManager.getInstance().markSaleAltDeliveryDateMovement(orderId);
+				} catch (FDResourceException e) {
+					LOGGER.error("Failed to mark sale as moved because of holiday, corresponding order ID="+orderId, e);
+					LOGGER.warn( e.getFDStackTrace() );
+				}
+			}
+
 			LOGGER.info( "Order placed successfully. OrderId = " + orderId );
 			
 			sendSuccessMail( so, customerInfo, orderId, hasInvalidItems, mailerHome );
@@ -635,7 +655,36 @@ public class StandingOrderUtil {
 		
 		return cart;
 	}
-	
+
+	/**
+	 * Perform availability check on cart items
+	 * ===============================
+	 * 
+	 * Removes SKUs which are unavailable/discontinued
+	 * 
+	 * 
+	 * @param customer
+	 * @param cart
+	 * @return
+	 * @throws FDResourceException
+	 */
+	public static boolean doAvailabilityCheck(FDIdentity customer, FDCartModel cart, ProcessActionResult vr)
+			throws FDResourceException {
+		List<FDCartLineI> list = cart.getOrderLines();
+		for (int i = 0; i < list.size(); i++) {
+			FDCartLineI cartLine = list.get(i);
+			int randomId = cartLine.getRandomId();
+			FDProductInfo prodInfo = cartLine.lookupFDProductInfo();
+			if (!prodInfo.isAvailable()) {
+				vr.increment();
+				cart.removeOrderLineById(randomId);
+				LOGGER.debug("[AVAILABILITY CHECK] Item " + randomId + " / '" + cartLine.getProductName() + "' - SKU is unavailable/discontinued and therefore item was removed.");
+			}
+		}
+
+		return vr.hasInvalidItems();
+	}
+
 
 	/**
 	 * Perform ATP check on cart items

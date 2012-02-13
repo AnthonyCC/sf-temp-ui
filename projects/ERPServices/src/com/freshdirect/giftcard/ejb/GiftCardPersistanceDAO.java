@@ -559,7 +559,7 @@ public class GiftCardPersistanceDAO {
 					null,
 					EnumSaleType.getSaleType(rs.getString("TYPE")),
 					null,
-					null,false,null);			
+					null,false,null,false);			
 			saleList.add(info);
 		} 
 		
@@ -643,7 +643,7 @@ public class GiftCardPersistanceDAO {
 					null,
 					EnumSaleType.getSaleType(rs.getString("TYPE")),
 					null,
-					null, false, null);			
+					null, false, null,false);			
 			saleList.add(info);
 		} 
 		
@@ -692,7 +692,7 @@ public class GiftCardPersistanceDAO {
 					null,
 					EnumSaleType.getSaleType(rs.getString("TYPE")),
 					null,
-					null, false, null);			
+					null, false, null,false);			
 			saleList.add(info);
 		} 
 

@@ -13,6 +13,7 @@ import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
+import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -53,6 +54,10 @@ public class CreateStandingOrderTag extends BodyTagSupport {
 			if ("".equalsIgnoreCase(standingOrderName)) {
 				result.addError(true, "SO_NAME", "Please specify name for standing order!");
 			}
+			if (standingOrderName.length() > FDCustomerCreatedList.MAX_NAME_LENGTH) {
+				result.addError(true, "SO_NAME", "List name too long (max " + FDCustomerCreatedList.MAX_NAME_LENGTH + " characters)!");
+			}
+			
 			// FDListManager.getListName(u.getIdentity(), EnumCustomerListType.SO, standingOrderName);
 			try {
 				if (FDListManager.isCustomerList(u, EnumCustomerListType.SO, standingOrderName)) {

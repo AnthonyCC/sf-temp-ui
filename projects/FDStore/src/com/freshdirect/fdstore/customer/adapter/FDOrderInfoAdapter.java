@@ -151,6 +151,10 @@ public class FDOrderInfoAdapter implements FDOrderInfoI {
 		return this.saleInfo.getStandingOrderId();
 	}
 
+	@Override
+	public boolean isSoHolidayMovement(){
+		return this.saleInfo.isSoHolidayMovement();
+	}
 
 	@Override
 	public boolean isModifiable() {

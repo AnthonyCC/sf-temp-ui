@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class DateUtil {
 
@@ -19,6 +20,8 @@ public class DateUtil {
 	public final static int MORNING_END = 12; // 12:00 PM
 	private static final DateFormat DATE_YEAR_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
 	private static final DateFormat MONTH_DATE_YEAR_FORMATTER = new SimpleDateFormat("MM/dd/yyyy");
+	private static final DateFormat MONTH_DATE_YEAR_DAY_FORMATTER = new SimpleDateFormat("MM/dd/yyyy E");
+	private static final DateFormat DAY_OF_WEEK_FORMATTER = new SimpleDateFormat("E");
 	
 	private static final DateFormat DATE_PLAIN = new SimpleDateFormat("yyyyMMdd");
 	
@@ -170,6 +173,14 @@ public class DateUtil {
 		return MONTH_DATE_YEAR_FORMATTER.format(dateValue);
 	}
 	
+	public static String formatDateWithDay(Date dateValue) {
+		return MONTH_DATE_YEAR_DAY_FORMATTER.format(dateValue);
+	}
+	
+	public static String formatDayOfWeek(Date dateValue) {
+		return DAY_OF_WEEK_FORMATTER.format(dateValue);
+	}
+	
 	public static String formatTime(Date dateValue) {
 		return MIN_HOUR_FORMATTER.format(dateValue);
 	}
@@ -256,4 +267,23 @@ public class DateUtil {
         return MONTH_DATE_YEAR_FORMATTER.format(dateVal);
 	}
 
+	
+	/**
+	 * Returns the number of days since 1970-01-05, Monday for the date argument. 
+	 * Calculates using UTC, causes no issues with daylight saving.
+	 */
+	public static int getDayNumFromEpochFirstMonday(Date date){
+		Calendar local = Calendar.getInstance();
+		local.setTime(date);
+		
+		Calendar base = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		base.clear();
+		base.set(1970, 0, 5);
+		
+		Calendar actual = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		actual.clear();
+		actual.set(local.get(Calendar.YEAR),local.get(Calendar.MONTH),local.get(Calendar.DATE));
+		
+		return (int) ( (actual.getTimeInMillis() - base.getTimeInMillis()) / DAY );
+	}
 } 

@@ -127,6 +127,7 @@ function setAllCheckBoxes(FormName, FieldName, CheckValue)
 			toDateStr = soFilter.getToDateStr();
 		}	
 	%>
+		<jsp:include page="/includes/crm_standing_orders_nav.jsp" />
 		<form method='POST' name="frmStndOrders" id="frmStndOrders" action="/main/crm_standing_orders.jsp">
 		
 			<crm:CrmStandingOrders id="soList" filter="<%= soFilter %>" result="result">
@@ -236,6 +237,7 @@ function setAllCheckBoxes(FormName, FieldName, CheckValue)
 				SO_COMPARATORS.put("timeslot", FDStandingOrderInfo.COMP_TIMESLOT);
 				SO_COMPARATORS.put("nextDel", FDStandingOrderInfo.COMP_NEXT_DATE);
 				SO_COMPARATORS.put("lastErr", FDStandingOrderInfo.COMP_LAST_ERROR);
+				SO_COMPARATORS.put("weekday", FDStandingOrderInfo.COMP_WEEKDAY);
 			}
 %>
 			<%    
@@ -250,34 +252,32 @@ function setAllCheckBoxes(FormName, FieldName, CheckValue)
 				}
 			}
 			%>
-				</table><div class="list_header">
-				<table>
+				</table>
+				<div id="result" class="list_content" style="height:76%;">
+				<table width="100%" cellspacing="0" border="0" style="empty-cells: show; table-layout:fixed;" id="resubmit_orders">
 				<tr bgcolor="#333366" class="list_header_text">
-					<td align="left" width="1%"><input name="clearErrorsSOId" type="checkbox" id="clearErrorsSOId" value="" onclick="setAllCheckBoxes('frmStndOrders','clearErrorSOId',document.getElementById('clearErrorsSOId').checked)"></td>
-					<td align="center" width="8%"><a href="?<%= sort.getFieldParams("soId") %>" class="list_header_text">SO ID</a></td>					
-					<td align="left" width="12%"><a href="?<%= sort.getFieldParams("userId") %>" class="list_header_text">User ID</a></td>						
+					<td align="left" width="2%"><input name="clearErrorsSOId" type="checkbox" id="clearErrorsSOId" value="" onclick="setAllCheckBoxes('frmStndOrders','clearErrorSOId',document.getElementById('clearErrorsSOId').checked)"></td>
+					<td align="left" width="6%"><a href="?<%= sort.getFieldParams("soId") %>" class="list_header_text">SO ID</a></td>					
+					<td align="left" width="16%"><a href="?<%= sort.getFieldParams("userId") %>" class="list_header_text">User ID</a></td>						
 					<td align="left" width="10%"><a href="?<%= sort.getFieldParams("company") %>" class="list_header_text">Company</a></td>
 					<td align="left" width="11%">Address</td>					
-					<td align="left" width="10%">Business/Cell Phone</td>						
+					<td align="center" width="10%">Business/Cell Phone</td>						
 					<td align="left" width="7%"><a href="?<%= sort.getFieldParams("freq") %>" class="list_header_text">Frequency</a></td>
-					<td align="left" width="10%"><a href="?<%= sort.getFieldParams("timeslot") %>" class="list_header_text">Time Slot</a></td>
-					<td align="left" width="10%"><a href="?<%= sort.getFieldParams("nextDel") %>" class="list_header_text">Next Delivery</a></td>				
-					<td align="left" width="20%"><a href="?<%= sort.getFieldParams("lastErr") %>" class="list_header_text">Last Error</a></td>
+					<td align="left" width="6%"><a href="?<%= sort.getFieldParams("timeslot") %>" class="list_header_text">Time Slot</a></td>
+					<td align="left" width="6%"><a href="?<%= sort.getFieldParams("nextDel") %>" class="list_header_text">Next Delivery</a></td>
+					<td align="left" width="6%"><a href="?<%= sort.getFieldParams("weekday") %>" class="list_header_text">Day of week</a></td>				
+					<td align="left" width="21%"><a href="?<%= sort.getFieldParams("lastErr") %>" class="list_header_text">Last Error</a></td>
 				</tr>				
-			</table>
-			</div>
-			<div id="result" class="list_content" style="height:76%;">
-				<table width="100%" cellspacing="0" border="0" style="empty-cells: show" id="resubmit_orders">
 				<% if(soList.getStandingOrdersInfo().isEmpty()){ %>
 					<tr valign="top" style="color:#CC0000; font-weight: bold;"><td colspan="11" align="center">No matching standing orders found.</td></tr>
 				<% } %>
 				<logic:iterate id="soOrderInfo" collection="<%= soList.getStandingOrdersInfo() %>" type="com.freshdirect.fdstore.standingorders.FDStandingOrderInfo" indexId="idx">
 					<tr <%= idx.intValue() % 2 == 0 ? "class='list_odd_row'" : "" %>>
-						<td class="border_bottom" width="1%"><input name="clearErrorSOId" type="checkbox" id="" value="<%=soOrderInfo.getSoID()+","+soOrderInfo.getCustomerId()%>" <%= (null==soOrderInfo.getErrorHeader())?"disabled":"" %>></td>
-						<td class="border_bottom" width="8%">
+						<td class="border_bottom" width="2%"><input name="clearErrorSOId" type="checkbox" id="" value="<%=soOrderInfo.getSoID()+","+soOrderInfo.getCustomerId()%>" <%= (null==soOrderInfo.getErrorHeader())?"disabled":"" %>></td>
+						<td class="border_bottom" width="6%">
 						
 						<%=soOrderInfo.getSoID()%></td>						
-						<td class="border_bottom" width="12%"><a href="/main/summary.jsp?erpCustId=<%=soOrderInfo.getCustomerId()%>"><%=soOrderInfo.getUserId()%></a>&nbsp;&nbsp;</td>						
+						<td class="border_bottom" width="16%"><a href="/main/summary.jsp?erpCustId=<%=soOrderInfo.getCustomerId()%>"><%=soOrderInfo.getUserId()%></a>&nbsp;&nbsp;</td>						
 						<td class="border_bottom" width="10%"><%=soOrderInfo.getCompanyName()%></td>
 						<td class="border_bottom" width="11%"><%=soOrderInfo.getAddress()%></td>					
 						<td class="border_bottom" align="center" width="10%"><%=soOrderInfo.getBusinessPhone()%><% if(null!=soOrderInfo.getCellPhone()){ %>/<%=soOrderInfo.getCellPhone()%><% } %>&nbsp;</td>
@@ -287,9 +287,10 @@ function setAllCheckBoxes(FormName, FieldName, CheckValue)
 							if(frqItem.getFrequency()==soOrderInfo.getFrequency()){						
 						%>	<%= frqItem.getTitle()%></td>
 						<% break; }  } %>						
-						<td class="border_bottom" width="10%"><%= FDTimeslot.getDisplayString(true,soOrderInfo.getStartTime(),soOrderInfo.getEndTime()) %>&nbsp;</td>
-						<td class="border_bottom" width="10%"><%=DateUtil.formatDate(soOrderInfo.getNextDate())%></td>	
-						<td class="border_bottom" width="20%"><%=soOrderInfo.getErrorHeader()%></td>
+						<td class="border_bottom" width="6%"><%= FDTimeslot.getDisplayString(true,soOrderInfo.getStartTime(),soOrderInfo.getEndTime()) %>&nbsp;</td>
+						<td class="border_bottom" width="6%"><%=DateUtil.formatDate(soOrderInfo.getNextDate())%></td>	
+						<td class="border_bottom" width="6%"><%=DateUtil.formatDayOfWeek(soOrderInfo.getNextDate())%></td>	
+						<td class="border_bottom" width="21%"><%=soOrderInfo.getErrorHeader()%></td>
 					</tr>
 				</logic:iterate>
 				</table>
