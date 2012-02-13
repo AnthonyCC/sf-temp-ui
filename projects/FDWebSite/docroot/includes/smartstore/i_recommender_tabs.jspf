@@ -28,18 +28,24 @@
 		response.sendRedirect(StringEscapeUtils.unescapeHtml(gen.build()));
 		return;
 	}
+
+	//TODO calculate tab sizes depending on number of tabs
+	int totalWidth = 970;
+	final String __uri = request.getRequestURI();
+	if(__uri.indexOf("quickshop") > -1) {
+		if (__uri.endsWith("index.jsp"))
+			totalWidth = 740; // QS main page
+		else
+			totalWidth = 601; // QS inner pages
+	}
 %>
 <fd:PIPTab id="tab" maxTabs="3" maxRecommendations="5" facility="<%= smartStoreFacility %>">
 	<% 
-		final int numTabs = tab.size();
 		
 		final int selectedTab = selectedTabIndex.intValue();
-		//TODO calculate tab sizes depending on number of tabs
-		int totalWidth = 970;
+		final int numTabs = tab.size();
 		int tabSize = numTabs==3 ? 300 : numTabs==2 ? 450 : 900;
-		
-		if(request.getRequestURI().indexOf("quickshop") > -1) {
-			totalWidth = 740;
+		if (__uri.indexOf("quickshop") > -1) {
 			tabSize = numTabs==3 ? 225 : numTabs==2 ? 340 : 680;
 		}
 		

@@ -55,8 +55,8 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 	String app = (String)session.getAttribute( SessionName.APPLICATION );
 	boolean isWebApp = app == null || "WEB".equalsIgnoreCase( app );
 
-	ProductLabeling pl = new ProductLabeling((FDUserI) session.getAttribute(SessionName.USER), productNode);
-    	String actionUrl = FDURLUtil.getProductURI( productNode, pl.getTrackingCode() );
+	// ProductLabeling pl = new ProductLabeling((FDUserI) session.getAttribute(SessionName.USER), productNode);
+    // String actionUrl = FDURLUtil.getProductURI( productNode, pl.getTrackingCode() );
 %>
 
 
@@ -201,6 +201,46 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 			session.setAttribute("freshList", null);
 			%>
 <%-- **************************************** END Shelf Life ****************************************************************************** --%>
+			<%-- [APPDEV-2241] Carousel STARTS here --%>
+			<div id="ymal_pdtl_container" style="padding-top: 32px; width: 218px;">
+				<div style="text-align: center; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px dotted gray;">
+					<img src="/media_stat/images/template/ymal_title.gif" alt="YMAL" width="140" height="12" style="border: 0">
+				</div>
+					<fd:ProductGroupRecommender itemCount="6" siteFeature="YMAL_PDTL" facility="ymal_pdtl" currentNode="<%= __prd %>" id="recommendedProducts" excludeAlcoholicContent="<%= true %>">
+					<display:Carousel id="cat2_carousel" carouselId="cat2_carousel" width="140" numItems="1" showCategories="false" itemsToShow="<%= recommendedProducts.getProducts() %>" trackingCode="ymal_pdtl" maxItems="3" style="margin-left: auto; margin-right: auto;">
+						<%
+							final ProductModel __c_prd = (ProductModel) currentItem;
+						%>
+						<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
+						<div id="hotspot-<%= webId %>">
+							<display:ProductImage product="<%= __c_prd %>" showRolloverImage="true" useAlternateImage="true"
+									className="productImage" height="90" enableQuickBuy="false" webId="<%= webId %>"/>
+							<display:ProductRating product="<%= __c_prd %>" />
+							<div class="productname">
+								<display:ProductName product="<%= __c_prd %>" showBrandName="true"/>
+							</div>
+							<display:ProductPrice impression="<%= new ProductImpression(__c_prd) %>" showDescription="true"/>
+							<%-- QUICK BUY SECTION START --%>
+							<img id="qbButton-<%= webId %>" class="qbButton" style="display: inline-block; position: absolute; left: 18px; top: 65px;" src="/media_stat/images/quickbuy/quickbuy_button_hover.gif">
+							<script>
+								YAHOO.util.Event.onDOMReady(function() {
+									FD_QuickBuy.decorate('hotspot-<%= webId %>', ['qbButton-<%= webId %>', 'hotspot-<%= webId %>'], {
+											departmentId: '<%= __c_prd.getDepartment().getContentName() %>',
+											categoryId: '<%= __c_prd.getCategory().getContentName() %>',
+											productId: '<%= __c_prd.getContentName() %>'
+									}, '<%= webId %>');
+								});
+							</script>
+							<%-- QUICK BUY SECTION END --%>
+						</display:GetContentNodeWebId>
+						</div>
+					</display:Carousel>
+					
+					</fd:ProductGroupRecommender>
+				<div style="text-align: center; padding-bottom: 10px; border-bottom: 1px dotted gray;">
+				</div>
+			</div>
+			<%-- [APPDEV-2241] Carousel ENDS here --%>
 		</td>
 
 		<td width="<%=W_PERISHABLE_PRODUCT_CENTER_PADDING%>">

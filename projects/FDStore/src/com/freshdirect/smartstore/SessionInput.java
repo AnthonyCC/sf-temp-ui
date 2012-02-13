@@ -88,7 +88,14 @@ public class SessionInput implements Cloneable {
 	private int prioritizedCount = 0;
 	
 	private boolean brandUniqSort = false;
-	
+
+
+	/**
+	 * [APPDEV-2241] prevent recommending wines
+	 */
+	private boolean excludeAlcoholicContent = false;
+
+
 	protected SessionInput() {
 	}
 	
@@ -419,6 +426,17 @@ public class SessionInput implements Cloneable {
 		return brandUniqSort;
 	}
 
+
+	public boolean isExcludeAlcoholicContent() {
+		return excludeAlcoholicContent;
+	}
+
+
+	public void setExcludeAlcoholicContent(boolean excludeAlcoholicContent) {
+		this.excludeAlcoholicContent = excludeAlcoholicContent;
+	}
+	
+	
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		SessionInput cloned = new SessionInput(this.customerId, this.customerServiceType, this.pricingCtx);

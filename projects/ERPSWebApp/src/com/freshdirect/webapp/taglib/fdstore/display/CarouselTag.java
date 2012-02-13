@@ -25,6 +25,8 @@ public class CarouselTag extends ContentNodeIteratorTag {
 	private String hideContainer = null;
 	private boolean useAlternateImage = false;
 	
+	private String style; /* Additional styles for the carousel container element (optional) */
+	
 	/**
 	 * Parent container to update with max. value
 	 */
@@ -108,6 +110,11 @@ public class CarouselTag extends ContentNodeIteratorTag {
 		this.useAlternateImage = useAlternateImage;
 	}
 
+	public void setStyle(String style) {
+		this.style = style;
+	}
+	
+	
 	/**
 	 * May not be initialized if called before doFirst()!
 	 * @return maximum image height
@@ -137,8 +144,19 @@ public class CarouselTag extends ContentNodeIteratorTag {
 			if ( img != null )
 				maxHeight = Math.max( maxHeight, img.getHeight() );
 		}		
-		
-		println("<div id=\"carousel-" + carouselId + "\" class=\"fd-carousel fixedheight\" style=\"width:" + width + "\"><ol>");
+
+
+		StringBuilder __style_buf = new StringBuilder();
+		__style_buf.append("width: ");
+		__style_buf.append(Integer.toString(width));
+		__style_buf.append("px");
+		if (this.style != null) {
+			__style_buf.append("; ");
+			__style_buf.append(this.style);
+		}
+
+
+		println("<div id=\"carousel-" + carouselId + "\" class=\"fd-carousel fixedheight\" style=\"" + __style_buf + "\"><ol>");
 	}
 
 	@Override

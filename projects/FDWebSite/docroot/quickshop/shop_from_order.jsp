@@ -75,6 +75,9 @@ RequestUtil.appendToAttribute(request,"windowOnBeforeUnload","FormChangeUtil.war
 <%@ include file="/shared/quickshop/includes/i_vieworder.jspf" %>
 <br>
 
+<%@ include file="/quickshop/includes/cart_n_tabs.jspf" %>
+<div style="height: 2em"></div>
+
 		</tmpl:put>
 
 </tmpl:insert>

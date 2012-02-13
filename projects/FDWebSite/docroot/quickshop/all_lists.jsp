@@ -4,6 +4,7 @@
 <%@ page import='java.util.Calendar' %>
 <%@ page import='java.util.TreeSet' %>
 <%@ page import='java.util.List' %>
+<%@ page import="java.util.Collections"%>
 <%@ page import='java.text.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*'%>
 <%@ page import='com.freshdirect.fdstore.lists.*'%>
@@ -20,7 +21,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 
-<%@page import="java.util.Collections"%><fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='false' redirectPage='/quickshop/index_guest.jsp?successPage=/quickshop/index.jsp' />
+<fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='false' redirectPage='/quickshop/index_guest.jsp?successPage=/quickshop/index.jsp' />
 <fd:FDCustomerCreatedList id="lists" action="loadLists">
 
 <%        
@@ -229,9 +230,13 @@
      </TR>
 </TBODY>
 </TABLE>
-<br><br>
-</tmpl:put>
 
+<div style="height: 1px; width: 100%; background-color: #996699; margin: 2em 0 2em 0;"></div>
+<%@ include file="/quickshop/includes/cart_n_tabs.jspf" %>
+<div style="height: 2em"></div>
+
+
+</tmpl:put>
 </tmpl:insert>
 
 </fd:FDCustomerCreatedList>

@@ -68,27 +68,7 @@ final int W_QUICKSHOP_INDEX_MULTIPLE_LHALF = 350;
         </td></tr>
 	</table>
 	
-	
-<div style="padding-top: 1em">
-<%-- display items just added to cart  --%>
-<%
-	/**
-	 * Display recently added products
-	 */
-	if (cart.getRecentOrderLines().size() > 0 && "1".equalsIgnoreCase(request.getParameter("confirm"))) {
-%><%@ include file="/includes/smartstore/i_recent_orderlines.jspf" %>
-<br/>
-<%
-	}
-%>
-</div>
-
-<!-- ===================================== -->
-<!-- ============ Cart & tabs ============ -->
-<!-- ===================================== -->
-
-<% String smartStoreFacility = "quickshop"; %>
-<%@ include file="/includes/smartstore/i_recommender_tabs.jspf" %>
+<%@ include file="/quickshop/includes/cart_n_tabs.jspf" %>
 
 <BR>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>

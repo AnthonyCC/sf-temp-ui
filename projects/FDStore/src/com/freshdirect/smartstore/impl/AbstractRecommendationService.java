@@ -11,6 +11,7 @@ import java.util.Set;
 import org.apache.log4j.Category;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -112,15 +113,43 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 	 * @return List<ContentNodeModel>
 	 */
 	protected List<ContentNodeModel> sample(SessionInput input, List<RankedContent.Single> nodes, boolean aggregatable, Collection<ContentNodeModel> excludeNodes) {
-		Set<ContentKey> exclusions;
+		Set<ContentKey> exclusions = new HashSet<ContentKey>();
+
+		// prefer explicit exclusion list
 		if (excludeNodes.isEmpty())
-			exclusions = input.getExclusions();
+			exclusions.addAll( input.getExclusions() );
 		else {
-			exclusions = new HashSet<ContentKey>(input.getExclusions());
+			// otherwise get keys from list stored in session input
+			/* exclusions = new HashSet<ContentKey>(input.getExclusions()); */
 			for (ContentNodeModel excludeNode : excludeNodes) {
 				exclusions.add(excludeNode.getContentKey());
 			}
 		}
+
+
+		// [APPDEV-2241] sort out wines
+		if (input.isExcludeAlcoholicContent()) {
+			LOGGER.debug("sampler: exclude alcoholic item enabled");
+			for (RankedContent.Single rc : nodes) {
+				ContentNodeModel m = rc.getModel();
+				try {
+					while (!FDContentTypes.DEPARTMENT.equals(m.getContentKey().getType())) {
+						m = m.getParentNode();
+					}
+					
+
+					// is dept == 'usq' -> exclude item
+					final ContentKey aKey = m.getContentKey();
+					if (m != null && "usq".equalsIgnoreCase(aKey.getId())) {
+						LOGGER.debug("sampler: exclude alcoholic item: " + aKey );
+						exclusions.add(rc.getContentKey());
+					}
+				} catch (Exception exc) {
+					LOGGER.debug("Problem occurred with item " + rc, exc);
+				}
+			}
+		}
+		
 		return sample(input, nodes, aggregatable, exclusions);
 	}
 

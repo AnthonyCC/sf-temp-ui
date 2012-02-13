@@ -13,6 +13,7 @@ final int W_QUICK_SHOP_DELIMITER = 14;
 final int W_QUICK_SHOP_LEFTNAV = 150;
 final int W_QUICK_SHOP_CENTER = 601;
 
+request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
 %>
 <html>
 <head>

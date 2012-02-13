@@ -121,10 +121,11 @@ public class ProductNameTag extends BodyTagSupport {
 			styleStr = " style=\"" + style + "\"";
 		}
 		
-		// buf.append("<span" + styleStr + ">");
 		if ( !this.disabled && action != null )
 			buf.append("<a href=\"" + action + "\"" + styleStr + ">");
-
+		else
+			buf.append("<span " + styleStr + ">");
+		
 		if ( shortenedProductName != null ) {
 			if ( showBrandName ) {
 				buf.append("<span style=\"" );
@@ -145,11 +146,13 @@ public class ProductNameTag extends BodyTagSupport {
 
 		if ( !this.disabled && action != null )
 			buf.append("</a>");
+		else
+			buf.append("</span>");
+		
 		if (showNew && pl.isDisplayNew())
 			buf.append("&nbsp;&nbsp;<span class=\"text10rbold\">NEW!</span>");
 		if (showFavourite && pl.isDisplayFave())
 			buf.append("&nbsp;&nbsp;<span class=\"text11prpbold\">YOUR FAVORITE</span>");	
-		// buf.append("</span>");
 
 		try {
 			// write out

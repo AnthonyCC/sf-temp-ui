@@ -64,11 +64,18 @@
 	if (pip_result == null)
 		pip_result = new ActionResult();
 
-	boolean isAjax = (request.getHeader("X-Requested-With") != null);
+	final boolean isAjax = (request.getHeader("X-Requested-With") != null);
 
 	String formUri = request.getRequestURI();
-	if (request.getHeader("X-Requested-With") != null) {
+	String formQueryParams = null;
+	if (isAjax) {
 		formUri = (String) request.getParameter("formUri");
+	} else {
+		// Remember selected department ID at QS Every Item Ever Ordered page
+		if (request.getRequestURI().indexOf("quickshop/every_item.jsp") > 0 &&
+				request.getParameter("qsDeptId") != null) {
+			formQueryParams = "qsDeptId="+request.getParameter("qsDeptId");
+		}
 	}
 	boolean isRendered = false;
 	
@@ -76,15 +83,7 @@
 	boolean hideSavings = genericRecommendationsVariant.isSmartSavings() && SmartStoreUtil.countSavingProductsInCart(genericRecommendationsVariant, pip_u, prevRecs) < 0;
 
 	if ( genericRecommendationsVariant != null) {
-	
-		if(null == session.getAttribute("quickShop") && request.getRequestURI().indexOf("quickshop") > -1 ) {
-			session.setAttribute("quickShop", "true");
-		} else if(null != session.getAttribute("quickShop") && request.getRequestURI().indexOf("view_cart") > -1) {
-			session.setAttribute("quickShop", null);
-		}
-		
-		
-		final int maxItems = session.getAttribute("quickShop") == null ? 5 : 4;
+		final int maxItems = (request.getRequestURI().indexOf("quickshop") > -1) ? 4 : 5;
 %>
 <fd:GenericRecommendations id="recommendations" facility="<%= smartStoreFacility %>" errorOccurred="<%= !pip_result.isSuccess() %>" parentFeatureImpressionId="<%= parentImpressionId %>" parentVariantId="<%= parentVariantId %>" cacheId="<%= parentImpressionId %>" itemCount="<%=maxItems%>">
 		<% 		
@@ -170,10 +169,10 @@ if (typeof(OST_<%= tx_pricing_FormName %>) == "undefined") {
 }
 </script>
 <div style="display: none">HIDDEN3</div>
-				<form id="id_<%= tx_pricing_FormName %>" name="<%= tx_pricing_FormName %>" method="post" action="<%= formUri %>#cartRec" style="margin:0px">
+				<form id="id_<%= tx_pricing_FormName %>" name="<%= tx_pricing_FormName %>" method="post" action="<%= (formQueryParams != null ? formUri+"?"+formQueryParams : formUri) %>#cartRec" style="margin:0px">
 					<input type="hidden" name="fdsc.action" value="addMultipleToCart"/>
-					<input type="hidden" name="fdsc.succpage" value="<%= formUri %>?confirm=1#cartRec"/>
-					<input type="hidden" name="fdsc.source"  value="SS"/>
+					<input type="hidden" name="fdsc.succpage" value="<%= formUri %>?confirm=1<%= (formQueryParams != null ? "&"+formQueryParams : "") %>#cartRec">
+					<input type="hidden" name="fdsc.source"  value="SS">
 
 					<display:StoreRecommendation recommendations="<%= recommendations %>"/>
 				

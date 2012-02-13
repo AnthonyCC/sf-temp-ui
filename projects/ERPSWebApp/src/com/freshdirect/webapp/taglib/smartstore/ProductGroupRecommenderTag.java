@@ -28,6 +28,9 @@ public class ProductGroupRecommenderTag extends RecommendationsTag {
     private Set<ContentKey> shoppingCart = null;
     String siteFeature=null;
     
+    // [APPDEV-2241] remove wines from recommended items
+    private boolean excludeAlcoholicContent = false;
+    
     public void setCurrentNode(ContentNodeModel cnm) {
         this.nodeModel = cnm;
     }
@@ -36,6 +39,10 @@ public class ProductGroupRecommenderTag extends RecommendationsTag {
     	this.siteFeature=sf;
     }
     
+    public void setExcludeAlcoholicContent(boolean excludeAlcoholicContent) {
+		this.excludeAlcoholicContent = excludeAlcoholicContent;
+	}
+
     /* (non-Javadoc)
      * @see com.freshdirect.webapp.taglib.smartstore.RecommendationsTag#getRecommendations()
      */
@@ -53,6 +60,7 @@ public class ProductGroupRecommenderTag extends RecommendationsTag {
         si.setCurrentNode(nodeModel);
         si.setNoShuffle(noShuffle);
         si.setMaxRecommendations(itemCount);
+        si.setExcludeAlcoholicContent(excludeAlcoholicContent);
         
         if (shoppingCart != null) {
         	si.setCartContents(shoppingCart);

@@ -66,7 +66,7 @@ window.onload = function() {
 	boolean hasDeptId = qsDeptId != null && !"".equals(qsDeptId);
 	String tmpl = hasDeptId ? "/common/template/quick_shop_nav.jsp" : "/common/template/quick_shop.jsp" ;
 	boolean showLink = false;
-	boolean selected = false;
+	// boolean selected = false;
 	String qsMenuLink = "";
 	String actionName = request.getParameter("fdAction");
 
@@ -76,21 +76,18 @@ window.onload = function() {
 
 %>
 <%@ include file="/quickshop/includes/department_nav.jspf" %>
-<fd:QuickShopController id="quickCart" orderId="every" action="<%= actionName %>">
 <tmpl:insert template='<%= tmpl %>'>
     	<tmpl:put name='title' direct='true'>FreshDirect - Quickshop - Shop from Every Item Ordered</tmpl:put>
-     	<%--tmpl:put name='banner' direct='true'><a href="/newproducts.jsp"><img src="/media_stat/images/template/quickshop/qs_banner_newproduct.gif" width="140" height="108" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br></tmpl:put--%>
 		
 		<tmpl:put name='side_nav' direct='true'><font class="space4pix"><br></font><a href="/quickshop/every_item.jsp"><img src="/media_stat/images/template/quickshop/qs_every_item_catnav.gif" width="80" height="38" border="0"></a><br><font class="space4pix"><br></font><%= departmentNav.toString() %><br><br></tmpl:put>
 		
 		<tmpl:put name='content' direct='true'>
-
+<fd:QuickShopController id="quickCart" orderId="every" action="<%= actionName %>">
 <%
 	DateFormat dateFormatter = new SimpleDateFormat("EEE. MMM d, yyyy");
 	NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance( Locale.US );
-%>		
-<%! java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##"); %>
-
+	java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
+%>
 <%@ include file="/quickshop/includes/i_confirm_single.jspf" %>
 
 <% if (hasDeptId) {
@@ -154,8 +151,13 @@ window.onload = function() {
 	<img src="/media_stat/images/layout/cccccc.gif" width="<%= W_QUICKSHOP_EVERY_ITEM_TOTAL %>" height="1" vspace="4"><br><br>
 	<a href="/index.jsp" class="bodyCopy"><b>Click here to continue shopping from our homepage!</b></a><br><br><br>
 <% } %>
-		</tmpl:put>
-	
-</tmpl:insert>
+
 </fd:QuickShopController>
+
+<!--  div style="height: 1px; width: 100%; background-color: #996699; margin: 2em 0 2em 0;"></div -->
+<%@ include file="/quickshop/includes/cart_n_tabs.jspf" %>
+<div style="height: 2em"></div>
+
+</tmpl:put>
+</tmpl:insert>
 

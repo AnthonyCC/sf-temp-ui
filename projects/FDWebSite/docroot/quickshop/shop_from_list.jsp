@@ -49,10 +49,6 @@
 				actionName = "";
 			}
 		%>
-	<fd:QuickShopController id="quickCart" ccListId="<%= ccListIdVal %>" action="<%= actionName %>">
-		<%
-			boolean showDetails = false;
-		%>
 
 		<tmpl:insert template='/common/template/quick_shop_nav.jsp'>
 			<tmpl:put name='title' direct='true'>FreshDirect - Quickshop - Shop from This Order</tmpl:put>
@@ -77,6 +73,10 @@
 
 			</tmpl:put>
 			<tmpl:put name='content' direct='true'>
+	<fd:QuickShopController id="quickCart" ccListId="<%= ccListIdVal %>" action="<%= actionName %>">
+		<%
+			boolean showDetails = false;
+		%>
 
 				<%
 					DateFormat dateFormatter = new SimpleDateFormat("EEE MM/dd/yy");
@@ -178,8 +178,13 @@
 				}
 				%>
 
-			</tmpl:put>
-		</tmpl:insert>
 	</fd:QuickShopController>
+
+<%@ include file="/quickshop/includes/cart_n_tabs.jspf" %>
+<div style="height: 2em"></div>
+
+			</tmpl:put>
+
+		</tmpl:insert>
 </fd:FDCustomerCreatedList>
 
