@@ -140,6 +140,8 @@ public class FDListManagerSessionBean extends FDSessionBeanSupport {
 			LOGGER.debug( "FDListManagerSessionBean:storeCustomerList()" );
 			return dao.store( conn, list );
 		} catch ( SQLException e ) {
+			//in case of sqlexception the container won't roll back the transaction so we have to take care of consistency -- bugfix [APPDEV-2208]
+			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException( e );
 		} finally {
 			close( conn );
