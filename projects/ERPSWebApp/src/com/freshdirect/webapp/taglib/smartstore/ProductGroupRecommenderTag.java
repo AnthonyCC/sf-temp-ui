@@ -8,6 +8,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.SessionInput;
@@ -30,7 +31,13 @@ public class ProductGroupRecommenderTag extends RecommendationsTag {
     
     // [APPDEV-2241] remove wines from recommended items
     private boolean excludeAlcoholicContent = false;
-    
+
+    /**
+     * YMAL Source parameter [optional]. It can be obtained from YmalContextTag
+     * This is required only if recommender utilizes SmartYMAL.
+     */
+    private YmalSource ymalSource = null;
+
     public void setCurrentNode(ContentNodeModel cnm) {
         this.nodeModel = cnm;
     }
@@ -41,6 +48,11 @@ public class ProductGroupRecommenderTag extends RecommendationsTag {
     
     public void setExcludeAlcoholicContent(boolean excludeAlcoholicContent) {
 		this.excludeAlcoholicContent = excludeAlcoholicContent;
+	}
+    
+    
+    public void setYmalSource(YmalSource source) {
+		this.ymalSource = source;
 	}
 
     /* (non-Javadoc)
@@ -61,6 +73,9 @@ public class ProductGroupRecommenderTag extends RecommendationsTag {
         si.setNoShuffle(noShuffle);
         si.setMaxRecommendations(itemCount);
         si.setExcludeAlcoholicContent(excludeAlcoholicContent);
+        if (this.ymalSource != null) {
+        	si.setYmalSource(ymalSource);
+        }
         
         if (shoppingCart != null) {
         	si.setCartContents(shoppingCart);

@@ -3562,6 +3562,12 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<!-- YMAL Source parameter (optional) -->
+		<attribute>
+			<name>ymalSource</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 
 	<tag>
