@@ -18,7 +18,7 @@ import com.freshdirect.payment.BillingRegionInfo;
 
 public class BillingCountryDAO implements EnumDAOI{
 
-	private static final String QUERY="SELECT bc.code, bc.name, br.code rc , br.name rn,bc.zip_check_regex FROM "+
+	private static final String QUERY="SELECT bc.code, bc.name, br.code rc , br.name rn,bc.zip_check_regex,br.code_external FROM "+
 	                                  " cust.country bc, cust.region br "+
 	                                  "	WHERE bc.code=br.country_code ORDER BY bc.name, br.name";
 	
@@ -40,6 +40,7 @@ public class BillingCountryDAO implements EnumDAOI{
 		String regionCode="";
 		String regionName="";
 		String zipCheck="";
+		String regionCodeExt="";
 		List<BillingRegionInfo> regions=new ArrayList<BillingRegionInfo>();
 		while (rs.next()) {
 			countryCode= rs.getString(1);
@@ -47,19 +48,20 @@ public class BillingCountryDAO implements EnumDAOI{
 			regionCode= rs.getString(3);
 			regionName = rs.getString(4);
 			zipCheck=rs.getString(5);
+			regionCodeExt=rs.getString(6);
 			if(activeCountry=="" ) {
 				activeCountry=countryCode;
 				_countryName=countryName;
 				_zipCheck=zipCheck;
 				regions=new ArrayList<BillingRegionInfo>();
-				regions.add(new BillingRegionInfo(countryCode,regionCode,regionName));
+				regions.add(new BillingRegionInfo(countryCode,regionCode,regionName,regionCodeExt));
 			} else if(activeCountry.equals(countryCode)) {
-				regions.add(new BillingRegionInfo(countryCode,regionCode,regionName));
+				regions.add(new BillingRegionInfo(countryCode,regionCode,regionName,regionCodeExt));
 			} else {
 				Collections.sort(regions,BillingRegionInfo.COMPARE_BY_NAME);
 				l.add(new BillingCountryInfo(activeCountry, _countryName,Collections.unmodifiableList(regions),_zipCheck));
 				regions=new ArrayList<BillingRegionInfo>();
-				regions.add(new BillingRegionInfo(countryCode,regionCode,regionName));
+				regions.add(new BillingRegionInfo(countryCode,regionCode,regionName,regionCodeExt));
 				activeCountry=countryCode;
 				_countryName=countryName;
 				_zipCheck=zipCheck;

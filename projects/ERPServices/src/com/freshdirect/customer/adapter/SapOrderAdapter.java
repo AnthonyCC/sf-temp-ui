@@ -11,7 +11,6 @@ package com.freshdirect.customer.adapter;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +49,8 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.NVL;
+import com.freshdirect.payment.BillingCountryInfo;
+import com.freshdirect.payment.BillingRegionInfo;
 import com.freshdirect.sap.SapChargeLineI;
 import com.freshdirect.sap.SapCustomerI;
 import com.freshdirect.sap.SapOrderI;
@@ -82,6 +83,13 @@ public class SapOrderAdapter implements SapOrderI {
 
 		ErpAddressModel shipTo = this.erpOrder.getDeliveryInfo().getDeliveryAddress();
 		ErpPaymentMethodI paymentMethod = this.erpOrder.getPaymentMethod();
+		if(paymentMethod!=null) {
+			BillingCountryInfo bc=BillingCountryInfo.getEnum(paymentMethod.getCountry());
+			if(bc!=null) {
+				BillingRegionInfo br =bc.getRegion(paymentMethod.getState());
+				paymentMethod.setState(br.getCodeExt());
+			}
+		}
 		if (paymentMethod != null) {
 			this.customer = new CustomerAdapter(phonePrivate, erpCustomer, shipTo, paymentMethod, this.getAlternateDeliveryAddress());
 		} else {

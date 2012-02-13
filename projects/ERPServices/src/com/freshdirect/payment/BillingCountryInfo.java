@@ -94,6 +94,14 @@ public class BillingCountryInfo extends EnumModel {
 		return regionCodes.contains(region);
 	}
 	
+	public BillingRegionInfo getRegion(String region) {
+		if(!hasRegion(region))
+			return null;
+		else {
+			int i=regionCodes.indexOf(region);
+			return regions.get(i);
+		}
+	}
 	public static void main(String[] a) {
 		BillingCountryInfo us=BillingCountryInfo.getEnum("US");
 		System.out.println(us);
