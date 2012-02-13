@@ -44,7 +44,7 @@ class FDCustomerListDAO {
 	private static final String UPDATE_LIST = "UPDATE CUST.CUSTOMERLIST SET CUSTOMER_ID=? ,TYPE =? ,NAME=?, MODIFICATION_DATE=? WHERE ID=?";
 
 	public void updateCustomerList(Connection conn, FDCustomerList list) throws SQLException {			
-	  PreparedStatement ps=null;
+	  PreparedStatement ps=null; 
 		try	{
 			ps = conn.prepareStatement(UPDATE_LIST);
 			ps.setString(1, list.getCustomerPk().getId());		
