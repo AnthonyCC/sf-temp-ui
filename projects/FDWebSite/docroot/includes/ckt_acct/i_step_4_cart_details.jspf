@@ -66,8 +66,7 @@ int idx = 0;
 		FDProduct fdProduct = cartLine.lookupFDProduct();
 		
 		/* Google Analytics data. */
-		double qty=0;
-		if(line!=
+		
 		if (isReceiptPage && fdProduct != null && productNode != null) {
 			//check if we've already gotten this sku in a different cartLine
 			if (GACartProds.containsKey(fdProduct.getSkuCode())) {
