@@ -66,14 +66,15 @@ int idx = 0;
 		FDProduct fdProduct = cartLine.lookupFDProduct();
 		
 		/* Google Analytics data. */
-		
+		double qty=0;
+		if(line!=
 		if (isReceiptPage && fdProduct != null && productNode != null) {
 			//check if we've already gotten this sku in a different cartLine
 			if (GACartProds.containsKey(fdProduct.getSkuCode())) {
 				GoogleAnalyticsCartProduct GACartProd = GACartProds.get(fdProduct.getSkuCode());
 				
 				//add to qty
-				GACartProd.addToQty(line.getConfiguration()!=null?line.getConfiguration().getQuantity():0 );
+				GACartProd.addToQty(cartLine.getConfiguration()!=null?cartLine.getConfiguration().getQuantity():0 );
 				
 				//add to total
 				GACartProd.addToTotal(cartLine.getPrice());
@@ -82,7 +83,7 @@ int idx = 0;
 				String unitPriceInfo[] = cartLine.getUnitPrice().replace("$", "").split("/");
 
 				//we haven't, create a new one
-				GoogleAnalyticsCartProduct GACartProd = new GoogleAnalyticsCartProduct(fdProduct.getSkuCode(), line.getConfiguration()!=null?line.getConfiguration().getQuantity():0, cartLine.getPrice());
+				GoogleAnalyticsCartProduct GACartProd = new GoogleAnalyticsCartProduct(fdProduct.getSkuCode(), cartLine.getConfiguration()!=null?cartLine.getConfiguration().getQuantity():0, cartLine.getPrice());
 
 				//add unit price
 				GACartProd.setUnitPrice(unitPriceInfo[0]);
