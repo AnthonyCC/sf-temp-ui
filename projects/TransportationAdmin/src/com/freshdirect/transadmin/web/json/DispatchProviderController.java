@@ -25,7 +25,6 @@ import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.framework.util.MD5Hasher;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.routing.constants.EnumArithmeticOperator;
-import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
@@ -46,7 +45,6 @@ import com.freshdirect.transadmin.model.DispatchReason;
 import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.DlvScenarioZones;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
-import com.freshdirect.transadmin.model.IssueLog;
 import com.freshdirect.transadmin.model.IssueSubType;
 import com.freshdirect.transadmin.model.IssueType;
 import com.freshdirect.transadmin.model.MaintenanceIssue;
@@ -60,7 +58,6 @@ import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
 import com.freshdirect.transadmin.model.TrnFacility;
 import com.freshdirect.transadmin.model.UserPref;
-import com.freshdirect.transadmin.model.VIRRecord;
 import com.freshdirect.transadmin.model.WaveInstancePublish;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.model.ZoneSupervisor;
@@ -75,6 +72,8 @@ import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
+import com.freshdirect.transadmin.web.model.DispatchStatus;
+import com.freshdirect.transadmin.web.model.DispatchStatusList;
 import com.freshdirect.transadmin.web.model.IssueSubTypeCommand;
 import com.freshdirect.transadmin.web.model.ScenarioZoneCommand;
 import com.freshdirect.transadmin.web.model.SpatialBoundary;
@@ -1052,6 +1051,42 @@ public class DispatchProviderController extends JsonRpcController implements
 			result[1] = destFacility.getTrnFacilityType().getName();
 
 		return result;
+	}
+
+	public boolean updateDispatchStatus(DispatchStatusList dispatches, String userId){
+		
+		if(dispatches != null){
+			Set dispatchSet = new HashSet();
+			try{
+				Dispatch tmpDispatch = null;
+				for(DispatchStatus _dispatch : dispatches.getDispatchStatus() ) {
+					tmpDispatch = dispatchManagerService.getDispatch(_dispatch.getDispatchId());
+					if(tmpDispatch != null){
+						tmpDispatch.setUserId(userId);						
+						if(_dispatch.isPhoneAssigned()) {
+							tmpDispatch.setPhonesAssigned(Boolean.TRUE);
+						}
+						if(_dispatch.isKeysReady()) {
+							tmpDispatch.setKeysReady(Boolean.TRUE);
+						}
+						if(_dispatch.isDispatched()) {
+							tmpDispatch.setDispatchTime(TransStringUtil.getServerTime(TransStringUtil.getServerTime(new Date())));
+							tmpDispatch.setConfirmed(Boolean.TRUE);
+						}
+						if(_dispatch.isCheckedIn()){
+							tmpDispatch.setCheckedInTime(TransStringUtil.getServerTime(TransStringUtil.getServerTime(new Date())));
+						}
+					}
+					dispatchSet.add(tmpDispatch);
+				}
+				if(dispatchSet.size() > 0) 
+					dispatchManagerService.saveEntityList(dispatchSet);
+			}catch(ParseException e){
+				e.printStackTrace();
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

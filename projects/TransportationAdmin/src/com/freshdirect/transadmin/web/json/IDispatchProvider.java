@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.freshdirect.transadmin.web.model.DispatchCommand;
+import com.freshdirect.transadmin.web.model.DispatchStatusList;
 import com.freshdirect.transadmin.web.model.IssueSubTypeCommand;
 import com.freshdirect.transadmin.web.model.WavePublishValidationResult;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
@@ -53,4 +54,5 @@ public interface IDispatchProvider {
 	boolean doRejectMaintenanceIssue(String id, String userId);
 	String getTruckVendorInfo(String truckNumber);
 	String[] getFacilityInfo(String orgFacilityId, String destFacilityId);
+	boolean updateDispatchStatus(DispatchStatusList dispatches, String userId);
 }

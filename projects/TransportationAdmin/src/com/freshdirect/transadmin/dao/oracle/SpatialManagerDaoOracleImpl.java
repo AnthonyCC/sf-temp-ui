@@ -5,7 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -16,7 +20,9 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.transadmin.dao.SpatialManagerDaoI;
+import com.freshdirect.transadmin.model.NeighbourhoodZipcode;
 import com.freshdirect.transadmin.web.model.SpatialBoundary;
 import com.freshdirect.transadmin.web.model.SpatialPoint;
 
@@ -62,11 +68,51 @@ private JdbcTemplate jdbcTemplate;
 		return getSpatialBoundary(code, GET_ZONE_GEOMENTRICBOUNDARY_QRY);
 	}
 	
-	public SpatialBoundary getNeighbourhoodBoundary(final String code) throws DataAccessException  {
+	public List<SpatialBoundary> getNeighbourhoodBoundary(final String code) throws DataAccessException  {
 		
-		return getSpatialBoundary(code, GET_NEIGHOURHOOD_GEOMENTRICBOUNDARY_QRY);
+		final List<SpatialBoundary> result = new ArrayList<SpatialBoundary>();
+		final Map<String, SpatialBoundary> boundarymapping = new HashMap<String, SpatialBoundary>();
+		
+		PreparedStatementCreator creator=new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+                PreparedStatement ps =
+                    connection.prepareStatement(GET_NEIGHOURHOOD_GEOMENTRICBOUNDARY_QRY);
+                ps.setString(1, code);
+                return ps;
+            }  
+        };
+        jdbcTemplate.query(creator, 
+       		  new RowCallbackHandler() { 
+       		      public void processRow(ResultSet rs) throws SQLException {
+       		    	do {
+       		    		processBoundaryFromResultset(rs, boundarymapping);
+       		    	 } while(rs.next());       		    	
+       		      }
+       		   });
+        result.addAll(boundarymapping.values());
+		return result;
 	}
 	
+	private void processBoundaryFromResultset(ResultSet rs, Map<String, SpatialBoundary> boundarymapping) throws SQLException {
+		
+		String _zipcode = rs.getString("CODE");
+		String _name = rs.getString("NAME");
+		
+		if(!boundarymapping.containsKey(_zipcode)){
+			SpatialBoundary boundary = new SpatialBoundary();
+			boundary.setCode(_zipcode);
+			boundary.setName(_name);
+			boundary.setNeighbourhood(true);
+			boundary.setGeoloc(new ArrayList<SpatialBoundary>());
+			boundarymapping.put(_zipcode, boundary);
+		}
+		SpatialPoint point = new SpatialPoint();
+   		point.setX(rs.getDouble(3));
+   		rs.next();
+   		point.setY(rs.getDouble(3));
+		boundarymapping.get(_zipcode).getGeoloc().add(point);
+		
+	}
 	private SpatialBoundary getSpatialBoundary(final String code, final String query) throws DataAccessException   {
 		final SpatialBoundary result = new SpatialBoundary();
 		final List geoloc = new ArrayList();
@@ -88,7 +134,7 @@ private JdbcTemplate jdbcTemplate;
        		    		point.setX(rs.getDouble(3));
        		    		rs.next();
        		    		point.setY(rs.getDouble(3));
-       		    		geoloc.add(point);
+       		    		geoloc.add(point);       		    		
        		    		result.setCode(rs.getString(1));
        		    		result.setName(rs.getString(2));
        		    	 } while(rs.next());
@@ -98,50 +144,7 @@ private JdbcTemplate jdbcTemplate;
         
 		return result;
 	}
-	
-	private SpatialBoundary getNeighbourhoodSpatialBoundary(final List<String> code, final String query) throws DataAccessException   {
 		
-		final SpatialBoundary result = new SpatialBoundary();
-		final List geoloc = new ArrayList();
-		result.setGeoloc(geoloc);
-		
-		final StringBuffer updateQ = new StringBuffer();
-		updateQ.append(query);
-		int intCount = 0;
-		for(String _code : code) {
-			updateQ.append("'").append(_code).append("'");
-			intCount++;
-			if(intCount != code.size()) {
-				updateQ.append(",");
-			}
-		}		
-		updateQ.append(")");
-		
-		PreparedStatementCreator creator=new PreparedStatementCreator() {
-            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
-                PreparedStatement ps =
-                    connection.prepareStatement(updateQ.toString());
-                return ps;
-            }  
-        };
-        jdbcTemplate.query(creator, 
-       		  new RowCallbackHandler() { 
-       		      public void processRow(ResultSet rs) throws SQLException {
-       		    	do {
-       		    		SpatialPoint point = new SpatialPoint();
-       		    		point.setX(rs.getDouble(3));
-       		    		rs.next();
-       		    		point.setY(rs.getDouble(3));
-       		    		geoloc.add(point);
-       		    		result.setCode(rs.getString(1));
-       		    		result.setName(rs.getString(2));
-       		    	 } while(rs.next());
-       		    	
-       		      }
-       		   });
-		return result;
-	}
-	
 	public List matchCommunity(final double latitiude, final double longitude, final String deliveryModel) throws DataAccessException   {
 		final List result = new ArrayList();
 	

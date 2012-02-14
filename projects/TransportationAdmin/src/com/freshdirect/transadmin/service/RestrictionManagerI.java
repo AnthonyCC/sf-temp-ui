@@ -1,6 +1,7 @@
 package com.freshdirect.transadmin.service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import com.freshdirect.transadmin.model.GeoRestriction;
@@ -24,6 +25,6 @@ public interface RestrictionManagerI extends BaseManagerI {
 	
 	void deleteGeoRestrictions(Set restrictions);
 
-	SpatialBoundary getNeighbourhoodBoundary(String code);
+	List<SpatialBoundary> getNeighbourhoodBoundary(String code);
 
 }

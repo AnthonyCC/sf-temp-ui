@@ -120,6 +120,7 @@ public class GeographyController extends AbstractMultiActionController {
 		String code = request.getParameter("code");
 		
 		SpatialBoundary boundary = null;
+		List<SpatialBoundary> boundaries = null;
 		response.setContentType("application/csv");
 		response.setHeader("Content-Disposition", "attachment; filename=exportmap.csv");
 		try {
@@ -135,29 +136,16 @@ public class GeographyController extends AbstractMultiActionController {
 			        } else if(_tmpCode.startsWith("NH_")) {
 			        	Map<String, NeighbourhoodZipcode> zipInfo = zoneManagerService.getNeighbourhoodZipCodeInfo(_tmpCode.substring(3, _tmpCode.length()));
 			        	if(zipInfo != null && zipInfo.size() > 0)
-			        		boundary = getRestrictionManagerService().getNeighbourhoodBoundary(_tmpCode.substring(3, _tmpCode.length()));
+			        		boundaries = getRestrictionManagerService().getNeighbourhoodBoundary(_tmpCode.substring(3, _tmpCode.length()));
+			        		if(boundaries != null){
+			        			for(SpatialBoundary _boundary : boundaries){
+			        				  appendBoundary(_boundary, strBuf);
+			        			}
+			        		}
 			        } else {
 			        	boundary = getRestrictionManagerService().getZoneBoundary(_tmpCode);
 			        }
-			        if(boundary != null) {					
-						List points = boundary.getGeoloc();						
-						
-						if(points != null) {
-							int intCount = 0;
-							Iterator itr = points.iterator();
-							SpatialPoint _point = null;					
-							while(itr.hasNext()) {
-								_point = (SpatialPoint)itr.next();
-								strBuf.append(boundary.getCode()).append(",").append(boundary.getName())
-													.append(",").append(_point.getX()).append(",").append(_point.getY())
-													.append(",").append(++intCount).append("\n");
-							}
-							
-						}									
-					}
-			        strBuf.append("").append(",").append("")
-					.append(",").append("").append(",").append("")
-					.append(",").append("").append("\n");
+			        appendBoundary(boundary, strBuf);
 				}
 
 			}
@@ -169,6 +157,28 @@ public class GeographyController extends AbstractMultiActionController {
 		} 
 			
 		return null;
+	}
+
+	private void appendBoundary(SpatialBoundary boundary, StringBuffer strBuf) {
+		if(boundary != null) {
+			List points = boundary.getGeoloc();
+			
+			if(points != null) {
+				int intCount = 0;
+				Iterator itr = points.iterator();
+				SpatialPoint _point = null;
+				while(itr.hasNext()) {
+					_point = (SpatialPoint)itr.next();
+					strBuf.append(boundary.getCode()).append(",").append(boundary.getName())
+										.append(",").append(_point.getX()).append(",").append(_point.getY())
+										.append(",").append(++intCount).append("\n");
+				}
+				
+			}
+		}
+		strBuf.append("").append(",").append("")
+		.append(",").append("").append(",").append("")
+		.append(",").append("").append("\n");
 	}
 	
 	/**

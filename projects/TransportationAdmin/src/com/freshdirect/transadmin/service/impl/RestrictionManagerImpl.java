@@ -3,6 +3,7 @@ package com.freshdirect.transadmin.service.impl;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
@@ -95,7 +96,7 @@ public class RestrictionManagerImpl extends BaseManagerImpl implements Restricti
 		this.removeEntity(restrictions);
 	}
 	
-	public SpatialBoundary getNeighbourhoodBoundary(String code) {
+	public List<SpatialBoundary> getNeighbourhoodBoundary(String code) {
 		return this.getSpatialManagerDao().getNeighbourhoodBoundary(code);
 	}
 }	

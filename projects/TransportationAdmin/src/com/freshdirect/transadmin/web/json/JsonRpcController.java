@@ -62,11 +62,11 @@ public abstract class JsonRpcController extends AbstractController implements
 		// Using global bridge
 		JSONRPCBridge j = JSONRPCBridge.getGlobalBridge();
 		
-		/*try {
-			j.registerSerializer(TransDataSerializer.getInstance());
+		try {
+			j.registerSerializer(DispatchStatusJSONSerializer.getInstance());
 		} catch(Exception e) {
 			e.printStackTrace();
-		}*/
+		}
 		for (Iterator i = ajaxServicesList.keySet().iterator(); i.hasNext();)
 		{
 			String _serviceProviderName = (String) i.next();

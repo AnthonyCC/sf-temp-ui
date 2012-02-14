@@ -2,8 +2,7 @@
  <script>
       
       function getData(date)
-      {
-       var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+      {       
        return jsonrpcClient.AsyncDispatchProvider.getActivityLog(date);
       }
       function showForm(date) 

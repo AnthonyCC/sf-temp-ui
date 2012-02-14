@@ -27,18 +27,19 @@
 	<tmpl:put name='yui-skin'>yui-skin-sam</tmpl:put>
 	
   <tmpl:put name='content' direct='true'>
-    <br/> <div id="overlay" style="display: none;"> </div>	
+    <br/> <div id="overlay" style="display: none;"> </div>
     
     <div class="contentroot">               
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
           <c:if test="${not empty messages}">
           <tr>
-            <td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>
+            <td class="screenmessages">
+            	<jsp:include page='/common/messages.jsp'/>            	
+            </td>
           </tr>
           </c:if>         
           <tr>
-            <td>
-
+            <td>			 
               <table border = "0">
                 <tr>
                 <td> 
@@ -50,25 +51,31 @@
                         		<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date">
                      </a>
                     
-                     <script language="javascript">                 
-                      Calendar.setup(
-                      {
-                        showsTime : false,
-                        electric : false,
-                        inputField : "dispDate",
-                        ifFormat : "%m/%d/%Y",
-                        singleClick: true,
-                        button : "trigger_dispatchDate" 
-                       }
-                      );
-                      
-                   function doDelete(tableId, url) {    
-                     sendRequest(tableId, url, "Do you want to delete the selected records?");                       
-                   }
+                  <script language="javascript">
+                     var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+                     var errColor = "#FF0000";
+               	     var msgColor = "#0000FF";
+               	     
+                     Calendar.setup(
+	                      {
+	                        showsTime : false,
+	                        electric : false,
+	                        inputField : "dispDate",
+	                        ifFormat : "%m/%d/%Y",
+	                        singleClick: true,
+	                        button : "trigger_dispatchDate" 
+	                       }
+	                      );
+	                      
+                     function doDelete(tableId, url) {    
+                        sendRequest(tableId, url, "Do you want to delete the selected records?");                       
+                     }
                     
-                    function doConfirm(tableId, url) {
-                        sendRequestNew(tableId, url, "Do you want to confirm/deconfirm the selected records?");                      
-                    }
+                     function doConfirm(tableId, url) {
+                    	 if(confirm('You are about to update the selected records. Do you want to continue?')){
+                    		 doDispatchStatus(tableId);
+                    	 }                      
+                     }
                     
                     function refreshRoute() {
                         var hasConfirmed = confirm ("This action can overwrite existing Route/Truck Assignment. Are you sure you want to perform this operation?");
@@ -84,8 +91,7 @@
 
                     function sendRequest(tableId, url, message, action) {
                       var table = document.getElementById(tableId);
-                        var checkboxList = table.getElementsByTagName("input");
-                        var confirmedList = table.getElementsByTagName("input");
+                        var checkboxList = table.getElementsByTagName("input");                        
                         var dateField = document.getElementById("dispDate").value;    
                         var paramValues = null;
                         for (i = 0; i < checkboxList.length; i++) {
@@ -110,15 +116,12 @@
                     
                    function sendRequestNew(tableId, url, message, action) {
                       var table = document.getElementById(tableId);
-                        var checkboxList = table.getElementsByTagName("input");
-                        var confirmedList = table.getElementsByTagName("input");
+                        var checkboxList = table.getElementsByTagName("input");                        
                         var dateField = document.getElementById("dispDate").value;    
-                        var checked="";
-                        var unchecked="";
+                        var checked="";                        
                         for (i = 0; i < checkboxList.length; i++) 
-                        {
-                        
-                          if (checkboxList[i].type=="checkbox" && !checkboxList[i].disabled&&checkboxList[i].name.indexOf("_")!=-1) 
+                        {                        
+                          if (checkboxList[i].type=="checkbox" && !checkboxList[i].disabled && checkboxList[i].name.indexOf("_")!=-1) 
                           {
                           	if(checkboxList[i].checked)
                           	{
@@ -127,12 +130,9 @@
                           }
                         }
                         checked=checked.substring(0,checked.length-1);                        
-                        if(checked.length==0)
-                        {
-                         alert('Please Select a Row!');
-                        }
-                        else
-                        {
+                        if(checked.length==0){
+                         	alert('Please Select a Row!');
+                        } else {
                         	var newForm=document.forms["newSubmit"];
                         	newForm.action=url;
                         	newForm.id.value=checked;
@@ -140,8 +140,73 @@
                         	setFilter(document.getElementById("ec"),newForm);                    	
                         	newForm.submit();
                         }
-                    }                    
-                    				
+                    } 
+                  
+                   function doDispatchStatus(tableId){
+                	   addSysMessage('', false);
+                	   var table = document.getElementById(tableId);
+                       var checkboxList = table.getElementsByTagName("input");
+                       var dateField = document.getElementById("dispDate").value;    
+                       var myJSONObject = {"dispatch" :[]};
+                       var status; 
+                       var prevRow = 0;
+                       var currentRow = 0;
+                       var dispatchObj; var j = 0;
+                       for (var i=0;i < checkboxList.length; i++) 
+                       {                    	   
+                    	   if (checkboxList[i].type == "checkbox" && !checkboxList[i].disabled 
+                    			   && checkboxList[i].name.indexOf("_")!=-1 && checkboxList[i].checked) 
+                           {                    		   
+                    		   currentRow = checkboxList[i].name.split(/_/)[0];
+                    		   status = checkboxList[i].name.split(/_/)[1];
+                           	   if(currentRow != prevRow){
+                           		   dispatchObj = {
+		                   				  		 "javaClass" : "com.freshdirect.transadmin.web.model.DispatchStatus",
+                           				   		 "dispatchId" : currentRow,
+		                   						 "isKeysReady" : false,
+		                   						 "phoneAssigned" : false,
+		                   						 "isDispatched" : false,
+		                   						 "isCheckedIn" : false 
+		                   				  		};
+	                           		
+                           		   myJSONObject.dispatch[j++] = dispatchObj;  
+                           	   }
+                           	  if(status=='keysReady')
+                       			dispatchObj.isKeysReady = true;
+                       		  else if(status=='phoneAssigned')
+                       			dispatchObj.phoneAssigned = true; 
+                       		  else if(status=='dispatched')
+                       			dispatchObj.isDispatched = true;
+                       		  else if(status=='isCheckedIn')
+                         			dispatchObj.isCheckedIn = true;
+                           }
+                    	   prevRow = currentRow;
+                       } 
+                       
+                       if(myJSONObject.dispatch.length==0){
+                    	    addSysMessage('Please Select a Row!', true); 
+                       } else {
+                    	    jsonrpcClient.AsyncDispatchProvider.updateDispatchStatus(myJSONObject, '<%= com.freshdirect.transadmin.security.SecurityManager.getUserName(request)%>');
+	                       	var newForm=document.forms["newSubmit"];
+	                       	newForm.action=location.href;	                     
+	                       	newForm.dispDate.value=dateField;
+	                       	setFilter(document.getElementById("ec"),newForm);                    	
+	                       	newForm.submit();
+	                       	addSysMessage('Records updated successfully', false); 
+                       }
+                   }
+                  
+                  function addSysMessage(msg, isError) {
+                 		var errContObj = YAHOO.util.Dom.get("errContainer");
+	           		    if(isError) {
+	           		    	errContObj.style.color = errColor;
+	           	      	} else {
+	           	      		errContObj.style.color = msgColor;
+	           	      	}
+           	      	    errContObj.style.fontWeight="bold";
+                 		YAHOO.util.Dom.get("errContainer").innerHTML = msg;
+                  }
+                   		
                     function directions(tableId, url, columnIndex) {
                       var table = document.getElementById(tableId);
                        var checkboxList = table.getElementsByTagName("input");
@@ -300,9 +365,9 @@
 						}
 						%>
 				</td>
-              </tr>
+              </tr>              
               </table>        
-              
+              <div align="center" id="errContainer"></div></td>
             </td>
           </tr>               
         </table>    

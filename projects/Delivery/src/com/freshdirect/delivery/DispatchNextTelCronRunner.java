@@ -28,6 +28,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
+import com.freshdirect.routing.util.RoutingServicesProperties;
 
 /**
  * @author kkanuganti
@@ -196,8 +197,9 @@ public class DispatchNextTelCronRunner {
 			}
 			
 			ErpMailSender mailer = new ErpMailSender();
-			mailer.sendMail(FDStoreProperties.getCustomerServiceEmail(), "kkanuganti@freshdirect.com",
-							"", subject, buff.toString(), true, "");
+			mailer.sendMail(RoutingServicesProperties.getRoutingSubscriptionMailFrom(),
+					RoutingServicesProperties.getRoutingSubscriptionMailTo(),
+					RoutingServicesProperties.getRoutingSubscriptionMailCC(), subject, buff.toString(), true, "");
 			
 		} catch (MessagingException e) {
 			LOGGER.warn("Error Sending Standing Order cron report email: ", e);

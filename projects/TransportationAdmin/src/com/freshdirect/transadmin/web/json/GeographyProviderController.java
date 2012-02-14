@@ -65,6 +65,7 @@ public class GeographyProviderController extends JsonRpcController  implements I
 	public List getBoundaries(String code) {
 		List result = new ArrayList<SpatialBoundary>();
 		SpatialBoundary boundary = null;
+		List<SpatialBoundary> boundaries = null;
 		if (code != null && code.trim().length() > 0) {
 			String[] splitCodes = code.split(",");	
 			for (String _tmpCode : splitCodes) {
@@ -72,8 +73,10 @@ public class GeographyProviderController extends JsonRpcController  implements I
 		        	boundary = getRestrictionManagerService().getGeoRestrictionBoundary(_tmpCode.substring(2, _tmpCode.length()));		        	
 		        } else if(_tmpCode.startsWith("NH_")) {
 		        	Map<String, NeighbourhoodZipcode> zipInfo = zoneManagerService.getNeighbourhoodZipCodeInfo(_tmpCode.substring(3, _tmpCode.length()));
-		        	if(zipInfo != null && zipInfo.size() > 0){
-		        		boundary = getRestrictionManagerService().getNeighbourhoodBoundary(_tmpCode.substring(3, _tmpCode.length()));
+		        	if(zipInfo != null && zipInfo.size() > 0){		        		
+		        		boundaries = getRestrictionManagerService().getNeighbourhoodBoundary(_tmpCode.substring(3, _tmpCode.length()));
+		        		if(boundaries != null)
+		        			result.addAll(boundaries);
 		        	}
 		        } else{
 		        	boundary = getRestrictionManagerService().getZoneBoundary(_tmpCode);

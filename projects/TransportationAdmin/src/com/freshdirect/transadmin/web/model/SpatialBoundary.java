@@ -16,6 +16,7 @@ public class SpatialBoundary implements java.io.Serializable {
 	private List geoloc;
 	
 	private boolean isZone;
+	private boolean isNeighbourhood;
 
 	public boolean isZone() {
 		return isZone;
@@ -48,7 +49,16 @@ public class SpatialBoundary implements java.io.Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	public boolean isNeighbourhood() {
+		return isNeighbourhood;
+	}
+
+	public void setNeighbourhood(boolean isNeighbourhood) {
+		this.isNeighbourhood = isNeighbourhood;
+	}
 	
+
 	public SpatialPoint getCenter() {
 		double minX = Integer.MAX_VALUE;
 		double maxX = Integer.MIN_VALUE;	

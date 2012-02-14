@@ -3,8 +3,7 @@ function addReason()
 {
 	if(document.getElementById("addReason").value.length>0)
 	{
-	 var reason=document.getElementById("addReason").value;
-	 var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+	 var reason=document.getElementById("addReason").value;	 
      var result= jsonrpcClient.AsyncDispatchProvider.addReasonCode(reason);
      if(result==0){ document.getElementById("result").innerHTML="Reason Code Successfully Added"; loadReasons();}
      else document.getElementById("result").innerHTML="Operation failed";

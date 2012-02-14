@@ -14,5 +14,5 @@ public interface SpatialManagerDaoI {
 
 	List matchCommunity(double latitiude, double longitude, String deliveryModel) throws DataAccessException;
 
-	SpatialBoundary getNeighbourhoodBoundary(String code) throws DataAccessException;
+	List<SpatialBoundary> getNeighbourhoodBoundary(String code) throws DataAccessException;
 }
