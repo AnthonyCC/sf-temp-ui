@@ -1,6 +1,8 @@
 package com.freshdirect.delivery.model;
 
-public class NeighbourhoodVO {
+import java.io.Serializable;
+
+public class NeighbourhoodVO implements Serializable {
 	
 	private String name;
 	private String description;
