@@ -415,11 +415,11 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 		        	}
 	        	
 	        }
-            String name=RequestUtil.getRequestParameter(request,PaymentMethodName.ACCOUNT_HOLDER);
+           /* String name=RequestUtil.getRequestParameter(request,PaymentMethodName.ACCOUNT_HOLDER);
             result.addError(name == null ||"".equals(name),
 	    	        PaymentMethodName.ACCOUNT_HOLDER,SystemMessageList.MSG_REQUIRED
 	    	        );
-           
+           */
 	        FDReservation reservation = null;
 	        if ( gift_card ) {
 		        //check expiration date
