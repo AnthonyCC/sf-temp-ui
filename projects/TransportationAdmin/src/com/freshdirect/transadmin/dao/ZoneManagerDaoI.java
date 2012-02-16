@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.springframework.dao.DataAccessException;
 
-import com.freshdirect.transadmin.model.NeighbourhoodZipcode;
+import com.freshdirect.transadmin.model.SectorZipcode;
 import com.freshdirect.transadmin.model.ZipCodeModel;
 import com.freshdirect.transadmin.web.model.TimeRange;
 
@@ -39,6 +39,6 @@ public interface ZoneManagerDaoI {
 
 	Set<ZipCodeModel> getZipCodeInfo(String zipCode) throws DataAccessException;
 
-	Map<String, NeighbourhoodZipcode> getNeighbourhoodZipCodeInfo(String neighbourhoodName) throws DataAccessException;
+	Map<String, SectorZipcode> getSectorZipCodeInfo(String neighbourhoodName) throws DataAccessException;
 
 }

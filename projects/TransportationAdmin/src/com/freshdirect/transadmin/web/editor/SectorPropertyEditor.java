@@ -2,15 +2,15 @@ package com.freshdirect.transadmin.web.editor;
 
 import java.beans.PropertyEditorSupport;
 
-import com.freshdirect.transadmin.model.Neighbourhood;
+import com.freshdirect.transadmin.model.Sector;
 
-public class NeighbourhoodPropertyEditor extends PropertyEditorSupport {
+public class SectorPropertyEditor extends PropertyEditorSupport {
 	
 	public String getAsText() {
 		if (getValue() == null) {
 			return "null";
 		}
-		Neighbourhood p = (Neighbourhood) getValue();
+		Sector p = (Sector) getValue();
 		return "" + p.getName();
 	}
 
@@ -20,7 +20,7 @@ public class NeighbourhoodPropertyEditor extends PropertyEditorSupport {
 			setValue(null);
 		} else {
 			try {
-				Neighbourhood view = new Neighbourhood();
+				Sector view = new Sector();
 				view.setName(text);
 				if (view == null) {
 					throw new IllegalArgumentException(

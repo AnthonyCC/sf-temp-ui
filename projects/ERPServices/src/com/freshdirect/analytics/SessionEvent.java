@@ -17,7 +17,7 @@ public class SessionEvent extends EventModel{
 	private String lastTimeslot;
 	private String isTimeout = "Y";
 	private String pageType;
-	private String neighbourhood;
+	private String sector;
 	
 	public String getCustomerId() {
 		return customerId;
@@ -91,10 +91,10 @@ public class SessionEvent extends EventModel{
 	public void setHiddenCount(Integer hiddenCount) {
 		this.hiddenCount = hiddenCount;
 	}
-	public String getNeighbourhood() {
-		return neighbourhood;
+	public String getSector() {
+		return sector;
 	}
-	public void setNeighbourhood(String neighbourhood) {
-		this.neighbourhood = neighbourhood;
+	public void setSector(String sector) {
+		this.sector = sector;
 	}
 }

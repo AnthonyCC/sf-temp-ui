@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.transadmin.model.DeliveryGroup;
-import com.freshdirect.transadmin.model.Neighbourhood;
-import com.freshdirect.transadmin.model.NeighbourhoodZipcode;
+import com.freshdirect.transadmin.model.Sector;
+import com.freshdirect.transadmin.model.SectorZipcode;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.RestrictionManagerI;
 import com.freshdirect.transadmin.service.ZoneManagerI;
@@ -72,9 +72,9 @@ public class GeographyProviderController extends JsonRpcController  implements I
 		        if(_tmpCode.startsWith("$_")) {
 		        	boundary = getRestrictionManagerService().getGeoRestrictionBoundary(_tmpCode.substring(2, _tmpCode.length()));		        	
 		        } else if(_tmpCode.startsWith("NH_")) {
-		        	Map<String, NeighbourhoodZipcode> zipInfo = zoneManagerService.getNeighbourhoodZipCodeInfo(_tmpCode.substring(3, _tmpCode.length()));
+		        	Map<String, SectorZipcode> zipInfo = zoneManagerService.getSectorZipCodeInfo(_tmpCode.substring(3, _tmpCode.length()));
 		        	if(zipInfo != null && zipInfo.size() > 0){		        		
-		        		boundaries = getRestrictionManagerService().getNeighbourhoodBoundary(_tmpCode.substring(3, _tmpCode.length()));
+		        		boundaries = getRestrictionManagerService().getSectorBoundary(_tmpCode.substring(3, _tmpCode.length()));
 		        		if(boundaries != null)
 		        			result.addAll(boundaries);
 		        	}
@@ -212,39 +212,39 @@ public class GeographyProviderController extends JsonRpcController  implements I
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Neighbourhood> getNeighbourhood(){
-		List<Neighbourhood> result = new ArrayList<Neighbourhood>();
-		Collection neighbourhoodDataLst = domainManagerService.getNeighbourhood();
-		for (Object o : neighbourhoodDataLst){
-			result.add((Neighbourhood) o);
+	public List<Sector> getSector(){
+		List<Sector> result = new ArrayList<Sector>();
+		Collection SectorDataLst = domainManagerService.getSector();
+		for (Object o : SectorDataLst){
+			result.add((Sector) o);
 		}		
 		return result;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public boolean addNeighbourhood(String[][] _neighbourhoodData){
+	public boolean addSector(String[][] _SectorData){
 		
-		Set<Neighbourhood> newNeighbourhoods = new HashSet<Neighbourhood>();	
-		Map<String, Neighbourhood> previousNeighbourhoods = new HashMap<String, Neighbourhood>();
+		Set<Sector> newSectors = new HashSet<Sector>();	
+		Map<String, Sector> previousSectors = new HashMap<String, Sector>();
 		
-		Collection neighbourhoodDataLst = domainManagerService.getNeighbourhood();
-		for (Object o : neighbourhoodDataLst){
-			Neighbourhood _nHood = (Neighbourhood) o;
-			previousNeighbourhoods.put(_nHood.getName(), _nHood);
+		Collection SectorDataLst = domainManagerService.getSector();
+		for (Object o : SectorDataLst){
+			Sector _nHood = (Sector) o;
+			previousSectors.put(_nHood.getName(), _nHood);
 		}
 		try{
-			for(int i=0;i < _neighbourhoodData.length;i++) {
-				Neighbourhood _neighbourhoodModel = new Neighbourhood(_neighbourhoodData[i][0], _neighbourhoodData[i][1], _neighbourhoodData[i][2]);
-				if(!previousNeighbourhoods.containsKey(_neighbourhoodModel.getName()))
-					newNeighbourhoods.add(_neighbourhoodModel);
+			for(int i=0;i < _SectorData.length;i++) {
+				Sector _SectorModel = new Sector(_SectorData[i][0], _SectorData[i][1], _SectorData[i][2]);
+				if(!previousSectors.containsKey(_SectorModel.getName()))
+					newSectors.add(_SectorModel);
 				else
-					previousNeighbourhoods.remove(_neighbourhoodModel.getName());
-					newNeighbourhoods.add(_neighbourhoodModel);
+					previousSectors.remove(_SectorModel.getName());
+					newSectors.add(_SectorModel);
 			}
-			if(previousNeighbourhoods != null && previousNeighbourhoods.size() > 0)
-				domainManagerService.removeEntity(previousNeighbourhoods.values());
-			if(newNeighbourhoods.size() > 0) {				
-				domainManagerService.saveEntityList(newNeighbourhoods);
+			if(previousSectors != null && previousSectors.size() > 0)
+				domainManagerService.removeEntity(previousSectors.values());
+			if(newSectors.size() > 0) {				
+				domainManagerService.saveEntityList(newSectors);
 			}
 		} catch (Exception ex){
 			ex.printStackTrace();

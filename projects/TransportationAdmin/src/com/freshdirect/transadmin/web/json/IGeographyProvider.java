@@ -3,7 +3,7 @@ package com.freshdirect.transadmin.web.json;
 import java.util.List;
 
 import com.freshdirect.transadmin.model.DeliveryGroup;
-import com.freshdirect.transadmin.model.Neighbourhood;
+import com.freshdirect.transadmin.model.Sector;
 import com.freshdirect.transadmin.web.model.SpatialBoundary;
 
 public interface IGeographyProvider {
@@ -25,7 +25,7 @@ public interface IGeographyProvider {
 
 	boolean doDeliveryGroup(String[][] zone);
 
-	List<Neighbourhood> getNeighbourhood();
+	List<Sector> getSector();
 
-	boolean addNeighbourhood(String[][] _neighbourhoodData);
+	boolean addSector(String[][] _neighbourhoodData);
 }

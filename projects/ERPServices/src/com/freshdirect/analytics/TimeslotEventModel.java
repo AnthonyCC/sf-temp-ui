@@ -28,7 +28,7 @@ public class TimeslotEventModel extends EventModel {
 	private String id;
 	private boolean filter;
 	private long logoutTime;
-	private String neighbouthood;
+	private String sector;
 	private List<TimeslotEventDetailModel> detail;
 	public TimeslotEventModel(String transactionSource, boolean dlvPassApplied, double deliveryCharge, boolean deliveryChargeWaived, boolean zoneCtActive)
 	{
@@ -159,12 +159,11 @@ public class TimeslotEventModel extends EventModel {
 	public void setLogoutTime(long logoutTime) {
 		this.logoutTime = logoutTime;
 	}
-
-	public String getNeighbouthood() {
-		return neighbouthood;
+	public String getSector() {
+		return sector;
 	}
 
-	public void setNeighbouthood(String neighbouthood) {
-		this.neighbouthood = neighbouthood;
+	public void setSector(String sector) {
+		this.sector = sector;
 	}
 }

@@ -164,8 +164,8 @@
     			<prop key="/deleteparkingslot.do">yardController</prop> 
     			<prop key="/editparkingslot.do">parkingSlotFormController</prop> 
 
-				<prop key="/neighbourhood.do">geographyController</prop>
-				<prop key="/editneighbourhood.do">neighbourhoodFormController</prop>
+				<prop key="/sector.do">geographyController</prop>
+				<prop key="/editsector.do">sectorFormController</prop>
 			</props>
 		</property>
 	</bean>
@@ -342,7 +342,7 @@
 			<prop key="/parkingslot.do">parkingLocationSlotHandler</prop>
 			<prop key="/deleteparkingslot.do">deleteParkingSlotHandler</prop>
 			
-			<prop key="/neighbourhood.do">neighbourhoodHandler</prop>
+			<prop key="/sector.do">sectorHandler</prop>
 			</props>
 		</property>
 	</bean>
@@ -804,13 +804,13 @@
         <property name="successView" value="parkingSlotEdit" />
         <property name="formView" value="parkingSlotEdit" />
 	</bean>
-	<bean id="neighbourhoodFormController" class="com.freshdirect.transadmin.web.NeighbourhoodFormController">
+	<bean id="sectorFormController" class="com.freshdirect.transadmin.web.SectorFormController">
 		<property name="domainManagerService" ref="domainManager"/>
 		<property name="sessionForm" value="true"/>
         <property name="commandName" value="neighbourhoodForm"/>
-        <property name="commandClass" value="com.freshdirect.transadmin.model.NeighbourhoodZipcode"/>
-        <property name="successView" value="neighbourhoodEdit" />
-        <property name="formView" value="neighbourhoodEdit" />
+        <property name="commandClass" value="com.freshdirect.transadmin.model.SectorZipcode"/>
+        <property name="successView" value="sectorEdit" />
+        <property name="formView" value="sectorEdit" />
 	</bean>
 	    
 	<bean id="employeeValidator" class="com.freshdirect.transadmin.web.validation.EmployeeValidator"/>

@@ -16,7 +16,7 @@ public class SpatialBoundary implements java.io.Serializable {
 	private List geoloc;
 	
 	private boolean isZone;
-	private boolean isNeighbourhood;
+	private boolean isSector;
 
 	public boolean isZone() {
 		return isZone;
@@ -50,12 +50,12 @@ public class SpatialBoundary implements java.io.Serializable {
 		this.name = name;
 	}
 
-	public boolean isNeighbourhood() {
-		return isNeighbourhood;
+	public boolean isSector() {
+		return isSector;
 	}
 
-	public void setNeighbourhood(boolean isNeighbourhood) {
-		this.isNeighbourhood = isNeighbourhood;
+	public void setSector(boolean isSector) {
+		this.isSector = isSector;
 	}
 	
 

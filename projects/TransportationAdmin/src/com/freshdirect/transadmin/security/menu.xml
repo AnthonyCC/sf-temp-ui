@@ -158,8 +158,8 @@
 	     	<access-uris>facility.do,deletefacility.do,editfacility.do,deletefacilitytype.do,editfacilitytype.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
 		</menu>
-		<menu id="GEO011" title="Neighbourhood" orientation="LEFT" link="neighbourhood.do">
-	     	<access-uris>neighbourhood.do,deleteneighbourhood.do,editneighbourhood.do</access-uris>
+		<menu id="GEO011" title="Sector" orientation="LEFT" link="sector.do">
+	     	<access-uris>sector.do,deletesector.do,editsector.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
 		</menu>
 </menu>

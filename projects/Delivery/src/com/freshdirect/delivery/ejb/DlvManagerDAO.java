@@ -48,7 +48,7 @@ import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneDescriptor;
 import com.freshdirect.delivery.model.DlvZoneModel;
-import com.freshdirect.delivery.model.NeighbourhoodVO;
+import com.freshdirect.delivery.model.SectorVO;
 import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -1631,25 +1631,25 @@ public class DlvManagerDAO {
 		return result;
 	}
 	
-	private static final String GET_NEIGHBOURHOOD_INFO = "select name, description from transp.neighbourhood n, " +
-				" transp.neighbourhood_zipcode nz where n.name = nz.neighbourhood_name and n.active = 'X' and nz.zipcode = ? ";
+	private static final String GET_SECTOR_INFO = "select name, description from transp.sector s, " +
+				" transp.sector_zipcode sz where s.name = sz.sector_name and s.active = 'X' and sz.zipcode = ? ";
 	
-	public static NeighbourhoodVO getNeighbourhoodInfo(Connection conn, AddressModel address)
+	public static SectorVO getSectorInfo(Connection conn, AddressModel address)
 																throws SQLException {
-		NeighbourhoodVO response = null;
+		SectorVO response = null;
 		
-		LOGGER.debug("getNeighbourhoodInfo[QUERY] :" + address );
+		LOGGER.debug("getSectorInfo[QUERY] :" + address );
 		if(address != null){
-			PreparedStatement ps = conn.prepareStatement(GET_NEIGHBOURHOOD_INFO);
+			PreparedStatement ps = conn.prepareStatement(GET_SECTOR_INFO);
 			ps.setString(1, address.getZipCode());
 			
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				response = new NeighbourhoodVO();
+				response = new SectorVO();
 				response.setName(rs.getString("name"));
 				response.setDescription(rs.getString("description"));
 			} else {
-				LOGGER.debug("DlvManagerDAO.getNeighbourhoodInfo(NO_NEIGHBOURHOOD): " + address.getZipCode());
+				LOGGER.debug("DlvManagerDAO.getSectorInfo(NO_SECTOR): " + address.getZipCode());
 			}
 		
 			rs.close();

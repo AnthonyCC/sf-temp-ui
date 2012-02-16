@@ -29,7 +29,7 @@ import com.freshdirect.transadmin.model.IssueLog;
 import com.freshdirect.transadmin.model.IssueSubType;
 import com.freshdirect.transadmin.model.IssueType;
 import com.freshdirect.transadmin.model.MaintenanceIssue;
-import com.freshdirect.transadmin.model.NeighbourhoodZipcode;
+import com.freshdirect.transadmin.model.SectorZipcode;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.RouteMappingId;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
@@ -625,15 +625,15 @@ public class DomainManagerDaoHibernateImpl
 		return convertEmpListToMap(empList);
 	}
 	
-	public Collection getNeighbourhood() throws DataAccessException {
-		return getDataList("Neighbourhood Order By NAME");
+	public Collection getSector() throws DataAccessException {
+		return getDataList("Sector Order By NAME");
 	}
 	
-	public Collection getActiveNeighbourhood() throws DataAccessException {
-		return getDataList("Neighbourhood where active = 'X' Order By NAME");
+	public Collection getActiveSector() throws DataAccessException {
+		return getDataList("Sector where active = 'X' Order By NAME");
 	}	
 	
-	public NeighbourhoodZipcode getNeighbourhoodZipCode(String zipCode) throws DataAccessException {
-		return (NeighbourhoodZipcode)getEntityById("NeighbourhoodZipcode", "zipcode", zipCode);
+	public SectorZipcode getSectorZipCode(String zipCode) throws DataAccessException {
+		return (SectorZipcode)getEntityById("SectorZipcode", "zipcode", zipCode);
 	}
 }

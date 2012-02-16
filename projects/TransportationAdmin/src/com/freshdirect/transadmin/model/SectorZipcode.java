@@ -1,22 +1,22 @@
 package com.freshdirect.transadmin.model;
 
-public class NeighbourhoodZipcode {
+public class SectorZipcode {
 	
 	private String zipcode;
 	private String county;
 	private String state;
-	private Neighbourhood neighborhood;
+	private Sector sector;
 	
-	public NeighbourhoodZipcode() {
+	public SectorZipcode() {
 		super();
 	}
-	public NeighbourhoodZipcode(String zipcode, String county, String state,
-			Neighbourhood neighborhood) {
+	public SectorZipcode(String zipcode, String county, String state,
+			Sector sector) {
 		super();
 		this.zipcode = zipcode;
 		this.county = county;
 		this.state = state;
-		this.neighborhood = neighborhood;
+		this.sector = sector;
 	}
 	public String getZipcode() {
 		return zipcode;
@@ -29,12 +29,12 @@ public class NeighbourhoodZipcode {
 	}
 	public void setCounty(String county) {
 		this.county = county;
+	}	
+	public Sector getSector() {
+		return sector;
 	}
-	public Neighbourhood getNeighborhood() {
-		return neighborhood;
-	}
-	public void setNeighborhood(Neighbourhood neighborhood) {
-		this.neighborhood = neighborhood;
+	public void setSector(Sector sector) {
+		this.sector = sector;
 	}
 	public String getState() {
 		return state;

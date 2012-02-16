@@ -42,7 +42,7 @@ import com.freshdirect.delivery.model.DlvRegionModel;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneModel;
-import com.freshdirect.delivery.model.NeighbourhoodVO;
+import com.freshdirect.delivery.model.SectorVO;
 import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
@@ -222,5 +222,5 @@ public interface DlvManagerSB extends EJBObject {
 
 	Map<String, TrnFacilityType> retrieveTrnFacilitys()throws RemoteException;
 	
-	public NeighbourhoodVO getNeighbourhoodInfo(AddressModel address)throws RemoteException;
+	public SectorVO getSectorInfo(AddressModel address)throws RemoteException;
 }   

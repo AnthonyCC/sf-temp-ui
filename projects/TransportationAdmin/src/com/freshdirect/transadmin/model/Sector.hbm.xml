@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping schema="transp">
-    <class name="com.freshdirect.transadmin.model.Neighbourhood" table="NEIGHBOURHOOD">
+    <class name="com.freshdirect.transadmin.model.Sector" table="SECTOR">
         <id name="name" type="string">
             <column name="NAME" length="50" />
             <generator class="assigned" />

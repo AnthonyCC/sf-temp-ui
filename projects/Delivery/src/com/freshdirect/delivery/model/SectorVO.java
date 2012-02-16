@@ -2,7 +2,7 @@ package com.freshdirect.delivery.model;
 
 import java.io.Serializable;
 
-public class NeighbourhoodVO implements Serializable {
+public class SectorVO implements Serializable {
 	
 	private String name;
 	private String description;

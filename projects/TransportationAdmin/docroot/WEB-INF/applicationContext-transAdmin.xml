@@ -79,8 +79,8 @@
 				<value>com/freshdirect/transadmin/model/TrnFacility.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/TrnFacilityType.hbm.xml</value>
 
-				<value>com/freshdirect/transadmin/model/Neighbourhood.hbm.xml</value>
-				<value>com/freshdirect/transadmin/model/NeighbourhoodZipcode.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/Sector.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/SectorZipcode.hbm.xml</value>
 
             </list>
         </property>

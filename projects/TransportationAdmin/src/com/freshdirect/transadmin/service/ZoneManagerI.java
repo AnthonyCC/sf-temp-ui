@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.freshdirect.transadmin.model.NeighbourhoodZipcode;
+import com.freshdirect.transadmin.model.SectorZipcode;
 import com.freshdirect.transadmin.model.ZipCodeModel;
 import com.freshdirect.transadmin.web.model.TimeRange;
 
@@ -38,5 +38,5 @@ public interface ZoneManagerI extends BaseManagerI {
 
 	Set<ZipCodeModel> getZipCodeInfo(final String zipCode);
 
-	Map<String, NeighbourhoodZipcode> getNeighbourhoodZipCodeInfo(String neighbourhoodName);
+	Map<String, SectorZipcode> getSectorZipCodeInfo(String neighbourhoodName);
 }

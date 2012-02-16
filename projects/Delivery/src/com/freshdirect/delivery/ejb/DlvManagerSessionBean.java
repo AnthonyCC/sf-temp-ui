@@ -75,7 +75,7 @@ import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneDescriptor;
 import com.freshdirect.delivery.model.DlvZoneModel;
-import com.freshdirect.delivery.model.NeighbourhoodVO;
+import com.freshdirect.delivery.model.SectorVO;
 import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
@@ -375,10 +375,10 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		try {
 			// Create a new Reservation bean and return it.
 			con = getConnection();
-			NeighbourhoodVO neighbourhoodInfo = DlvManagerDAO.getNeighbourhoodInfo(con, address);
+			SectorVO sectorInfo = DlvManagerDAO.getSectorInfo(con, address);
 			ps = con
 				.prepareStatement("INSERT INTO dlv.reservation(ID, TIMESLOT_ID, ZONE_ID, ORDER_ID, CUSTOMER_ID, STATUS_CODE" +
-						", EXPIRATION_DATETIME, TYPE, ADDRESS_ID, CHEFSTABLE, MODIFIED_DTTM,CT_DELIVERY_PROFILE,IS_FORCED, NEIGHBOURHOOD) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?,SYSDATE,?,?,?)");
+						", EXPIRATION_DATETIME, TYPE, ADDRESS_ID, CHEFSTABLE, MODIFIED_DTTM,CT_DELIVERY_PROFILE,IS_FORCED, SECTOR) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?,SYSDATE,?,?,?)");
 			String newId = this.getNextId(con, "DLV");
 			ps.setString(1, newId);
 			ps.setString(2, timeslotModel.getId());
@@ -392,7 +392,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			ps.setString(10, chefsTable ? "X" : " ");
 			ps.setString(11, profileName);
 			ps.setString(12, isForced  ? "X" : null );
-			ps.setString(13, neighbourhoodInfo != null  ? neighbourhoodInfo.getName() : null );
+			ps.setString(13, sectorInfo != null  ? sectorInfo.getName() : null );
 
 			ps.executeUpdate();
 			DlvReservationModel rsv = new DlvReservationModel(
@@ -1849,9 +1849,9 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				if(event!=null && !event.isFilter())
 				{
 					event = buildEvent(timeSlots, event, null, null,address,event.getEventType(), (int)(endTime-startTime));
-					NeighbourhoodVO neighbourhoodInfo = FDDeliveryManager.getInstance().getNeighbourhoodInfo(address);
-					if(event!=null && event.getId()!=null && neighbourhoodInfo != null){
-						event.setNeighbouthood(neighbourhoodInfo.getName());
+					SectorVO sectorInfo = FDDeliveryManager.getInstance().getSectorInfo(address);
+					if(event!=null && event.getId()!=null && sectorInfo != null){
+						event.setSector(sectorInfo.getName());
 					}
 					if(event!=null && event.getId()!=null)
 						logTimeslots(event);
@@ -2882,11 +2882,11 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		}
 	}
 	
-	public NeighbourhoodVO getNeighbourhoodInfo(AddressModel address) throws RemoteException {
+	public SectorVO getSectorInfo(AddressModel address) throws RemoteException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			NeighbourhoodVO neighbourhoodInfo = DlvManagerDAO.getNeighbourhoodInfo(conn, address);
+			SectorVO neighbourhoodInfo = DlvManagerDAO.getSectorInfo(conn, address);
 			
 			return neighbourhoodInfo;
 

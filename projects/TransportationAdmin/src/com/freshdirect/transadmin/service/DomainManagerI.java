@@ -14,7 +14,7 @@ import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.IssueSubType;
 import com.freshdirect.transadmin.model.IssueType;
 import com.freshdirect.transadmin.model.MaintenanceIssue;
-import com.freshdirect.transadmin.model.NeighbourhoodZipcode;
+import com.freshdirect.transadmin.model.SectorZipcode;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
@@ -179,9 +179,9 @@ public interface DomainManagerI extends BaseManagerI {
 	
 	Map getZoneByIDs(Set ids);
 
-	Collection getNeighbourhood();
+	Collection getSector();
 
-	Collection getActiveNeighbourhood();
+	Collection getActiveSector();
 
-	NeighbourhoodZipcode getNeighbourhoodZipCode(String zipCode);
+	SectorZipcode getSectorZipCode(String zipCode);
 }

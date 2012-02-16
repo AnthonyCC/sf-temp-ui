@@ -80,15 +80,15 @@
 	  	</td>
 		 <td style="vertical-align: top;" width="30%">
 	    
-	      <ec:table items="geoNeighbourhoods"   action="${pageContext.request.contextPath}/gmap.do"
-	            imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="Neighbourhoods"
+	      <ec:table items="geoSectors"   action="${pageContext.request.contextPath}/gmap.do"
+	            imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="Sectors"
 	            width="100%"  filterable="false"  showPagination="false" showExports="false" showStatusBar="false" sortable="false" 
 	             tableId="neighbourhood_boundaries" rowsDisplayed="1000" view="fd" >
 	            <ec:row>
 	             <ec:column title=" " width="5px" 
 									filterable="false" sortable="false" cell="selectcol"
 									property="name" alias="bnhname" />                  
-	             <ec:column filterable="false" sortable="false" alias="trnNHBName" property="name" title="Name"/>
+	             <ec:column filterable="false" sortable="false" alias="trnSectorName" property="name" title="Name"/>
 				 <ec:column filterable="false" sortable="false" property="description" title="Description"/>
 				 </ec:row>
 	          </ec:table>

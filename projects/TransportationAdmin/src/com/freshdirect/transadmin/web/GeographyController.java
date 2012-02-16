@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.transadmin.model.NeighbourhoodZipcode;
+import com.freshdirect.transadmin.model.SectorZipcode;
 import com.freshdirect.transadmin.model.TrnFacility;
 import com.freshdirect.transadmin.model.TrnFacilityType;
 import com.freshdirect.transadmin.model.Zone;
@@ -86,10 +86,10 @@ public class GeographyController extends AbstractMultiActionController {
 		
 		Collection geoRestrictions = new ArrayList();
 		Collection geoZones = new ArrayList();
-		Collection geoNeighbourhoods = new ArrayList();
+		Collection geoSectors = new ArrayList();
 		
 		geoRestrictions = restrictionManagerService.getGeoRestrictionBoundaries();
-		geoNeighbourhoods = domainManagerService.getNeighbourhood();
+		geoSectors = domainManagerService.getSector();
 		geoZones = domainManagerService.getZones();
 		
 		Collection activeZoneCodes = zoneManagerService.getActiveZoneCodes();
@@ -105,7 +105,7 @@ public class GeographyController extends AbstractMultiActionController {
     	}	
     	mav.getModel().put("zoneboundaries", geoZones);
 		mav.getModel().put("georestrictionboundaries", geoRestrictions);
-		mav.getModel().put("geoNeighbourhoods", geoNeighbourhoods);
+		mav.getModel().put("geoSectors", geoSectors);
 		return mav;
 	}
 	
@@ -134,9 +134,9 @@ public class GeographyController extends AbstractMultiActionController {
 			        if(_tmpCode.startsWith("$_")) {
 			        	boundary = getRestrictionManagerService().getGeoRestrictionBoundary(_tmpCode.substring(2, _tmpCode.length()));
 			        } else if(_tmpCode.startsWith("NH_")) {
-			        	Map<String, NeighbourhoodZipcode> zipInfo = zoneManagerService.getNeighbourhoodZipCodeInfo(_tmpCode.substring(3, _tmpCode.length()));
+			        	Map<String, SectorZipcode> zipInfo = zoneManagerService.getSectorZipCodeInfo(_tmpCode.substring(3, _tmpCode.length()));
 			        	if(zipInfo != null && zipInfo.size() > 0)
-			        		boundaries = getRestrictionManagerService().getNeighbourhoodBoundary(_tmpCode.substring(3, _tmpCode.length()));
+			        		boundaries = getRestrictionManagerService().getSectorBoundary(_tmpCode.substring(3, _tmpCode.length()));
 			        		if(boundaries != null){
 			        			for(SpatialBoundary _boundary : boundaries){
 			        				  appendBoundary(_boundary, strBuf);
@@ -261,16 +261,16 @@ public class GeographyController extends AbstractMultiActionController {
 	 * @param response current HTTP response
 	 * @return a ModelAndView to render the response
 	 */
-	public ModelAndView neighbourhoodHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+	public ModelAndView sectorHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		
-		String _neighbourhood = request.getParameter("nbhood");
+		String _sector = request.getParameter("sector");
 				
-		ModelAndView mav = new ModelAndView("neighbourhoodView");
-		Map<String, NeighbourhoodZipcode> zipInfo = new HashMap<String, NeighbourhoodZipcode>();
-		zipInfo = zoneManagerService.getNeighbourhoodZipCodeInfo(_neighbourhood);
+		ModelAndView mav = new ModelAndView("sectorView");
+		Map<String, SectorZipcode> zipInfo = new HashMap<String, SectorZipcode>();
+		zipInfo = zoneManagerService.getSectorZipCodeInfo(_sector);
 		
-		mav.getModel().put("neighbourhoodZipInfo", zipInfo.values());
-		mav.getModel().put("neighbourhoods", domainManagerService.getNeighbourhood());
+		mav.getModel().put("sectorZipInfo", zipInfo.values());
+		mav.getModel().put("sectors", domainManagerService.getSector());
 		return mav;
 	}
 }

@@ -29,8 +29,8 @@ import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.model.IHandOffBatchStop;
 import com.freshdirect.transadmin.dao.ZoneManagerDaoI;
-import com.freshdirect.transadmin.model.Neighbourhood;
-import com.freshdirect.transadmin.model.NeighbourhoodZipcode;
+import com.freshdirect.transadmin.model.Sector;
+import com.freshdirect.transadmin.model.SectorZipcode;
 import com.freshdirect.transadmin.model.ZipCodeModel;
 import com.freshdirect.transadmin.model.ZoneSupervisor;
 import com.freshdirect.transadmin.util.TransStringUtil;
@@ -433,25 +433,25 @@ public class ZoneManagerDaoOracleImpl implements ZoneManagerDaoI {
 		return result;
 	}
 	
-	private static final String GET_NEIGHBOURHOOD_ZIPCODEINFO = "select nhz.zipcode zipcode, cs.STATE, cs.COUNTY, nh.name, nh.description, nh.active "+
-				" from dlv.zipplusfour zpf, dlv.city_state cs, transp.neighbourhood_zipcode nhz, transp.neighbourhood nh "+
-				" where zpf.CITY_STATE_KEY = cs.CITY_STATE_KEY and nhz.zipcode=zpf.zipcode and nh.name = nhz.neighbourhood_name ";
+	private static final String GET_SECTOR_ZIPCODEINFO = "select sz.zipcode zipcode, cs.STATE, cs.COUNTY, s.name, s.description, s.active "+
+				" from dlv.zipplusfour zpf, dlv.city_state cs, transp.sector_zipcode sz, transp.sector s "+
+				" where zpf.CITY_STATE_KEY = cs.CITY_STATE_KEY and sz.zipcode=zpf.zipcode and s.name = sz.sector_name ";
 					
-	public Map<String, NeighbourhoodZipcode> getNeighbourhoodZipCodeInfo(final String neighbourhoodName) throws DataAccessException {
+	public Map<String, SectorZipcode> getSectorZipCodeInfo(final String sectorName) throws DataAccessException {
 		
-		final Map<String, NeighbourhoodZipcode> result = new HashMap<String, NeighbourhoodZipcode>();		
+		final Map<String, SectorZipcode> result = new HashMap<String, SectorZipcode>();		
 		final StringBuffer updateQ = new StringBuffer();
-		updateQ.append(GET_NEIGHBOURHOOD_ZIPCODEINFO);
-		if(neighbourhoodName != null && !"".equalsIgnoreCase(neighbourhoodName)){
-			updateQ.append("and nhz.neighbourhood_name = ? ");
+		updateQ.append(GET_SECTOR_ZIPCODEINFO);
+		if(sectorName != null && !"".equalsIgnoreCase(sectorName)){
+			updateQ.append("and sz.sector_name = ? ");
 		}		
-		updateQ.append(" group by nhz.zipcode, state, county, name, description, active order by county ");
+		updateQ.append(" group by sz.zipcode, state, county, name, description, active order by county ");
 		
 		PreparedStatementCreator creator=new PreparedStatementCreator() {
 	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
 	                PreparedStatement ps =
 	                    connection.prepareStatement(updateQ.toString());	
-	                if(neighbourhoodName != null && !"".equalsIgnoreCase(neighbourhoodName)) ps.setString(1, neighbourhoodName);
+	                if(sectorName != null && !"".equalsIgnoreCase(sectorName)) ps.setString(1, sectorName);
 	                return ps;
 	            }  
 	     };
@@ -464,8 +464,8 @@ public class ZoneManagerDaoOracleImpl implements ZoneManagerDaoI {
 	       		    		String _county = rs.getString("county");
 	       		    		String _state = rs.getString("state");
 	       		    		
-	       		    		NeighbourhoodZipcode model = new NeighbourhoodZipcode();	       		    		
-	       		    		Neighbourhood _nhood = new Neighbourhood();
+	       		    		SectorZipcode model = new SectorZipcode();	       		    		
+	       		    		Sector _nhood = new Sector();
 	       		    		_nhood.setName(rs.getString("name"));
 	       		    		_nhood.setDescription(rs.getString("description"));
 	       		    		_nhood.setActive(rs.getString("active"));
@@ -473,7 +473,7 @@ public class ZoneManagerDaoOracleImpl implements ZoneManagerDaoI {
 	       		    		model.setZipcode(_zipcode);
 	       		    		model.setCounty(_county);
 	       		    		model.setState(_state);
-	       		    		model.setNeighborhood(_nhood);
+	       		    		model.setSector(_nhood);
 	       		    		result.put(model.getZipcode(), model);
 	       		    	}  while(rs.next());
 	       		      }

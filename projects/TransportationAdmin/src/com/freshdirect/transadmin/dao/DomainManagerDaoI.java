@@ -13,7 +13,7 @@ import com.freshdirect.transadmin.model.EmployeeSubRoleType;
 import com.freshdirect.transadmin.model.IssueSubType;
 import com.freshdirect.transadmin.model.IssueType;
 import com.freshdirect.transadmin.model.MaintenanceIssue;
-import com.freshdirect.transadmin.model.NeighbourhoodZipcode;
+import com.freshdirect.transadmin.model.SectorZipcode;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
@@ -154,9 +154,9 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 
 	Map getTeamByEmployees(Set empIds) throws DataAccessException;
 
-	Collection getNeighbourhood() throws DataAccessException;
+	Collection getSector() throws DataAccessException;
 
-	Collection getActiveNeighbourhood() throws DataAccessException;
+	Collection getActiveSector() throws DataAccessException;
 
-	NeighbourhoodZipcode getNeighbourhoodZipCode(String zipCode);
+	SectorZipcode getSectorZipCode(String zipCode);
 }

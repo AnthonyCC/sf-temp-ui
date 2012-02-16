@@ -25,6 +25,6 @@ public interface RestrictionManagerI extends BaseManagerI {
 	
 	void deleteGeoRestrictions(Set restrictions);
 
-	List<SpatialBoundary> getNeighbourhoodBoundary(String code);
+	List<SpatialBoundary> getSectorBoundary(String code);
 
 }

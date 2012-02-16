@@ -12,7 +12,7 @@
 		<%@ include file='/common/i_yui.jspf'%>
 	</tmpl:put>	
 		
-	<tmpl:put name='title' direct='true'>Geography : Neighborhood  </tmpl:put>
+	<tmpl:put name='title' direct='true'>Geography : Sector  </tmpl:put>
 	<tmpl:put name='content' direct='true'>
 	 <br/> 
     <div class="contentroot">
@@ -26,26 +26,26 @@
 
 		<div class="cont_topleft">
 			<div class="cont_row">
-				<div class="cont_Litem" id="page_neighbourhood">
-						<div class="scrTitle" style="float:left;padding-top:3px">Neighbourhood</div>
+				<div class="cont_Litem" id="page_sector">
+						<div class="scrTitle" style="float:left;padding-top:3px">Sector</div>
 				  <div style="float:left;">
-					  <span>&nbsp; <select id="nbhood" width="40" name="zone">
-						  <option value="">--Select Neighbourhood</option>
-						  <c:forEach var="neighbourhood" items="${neighbourhoods}">
+					  <span>&nbsp; <select id="sector" width="40" name="zone">
+						  <option value="">--Select sector</option>
+						  <c:forEach var="sector" items="${sectors}">
 							  <c:choose>
-								<c:when test="${param.neighbourhood == neighbourhood.name}" > 
-								  <option selected value="<c:out value="${neighbourhood.name}"/>"><c:out value="${neighbourhood.name}"/></option>
+								<c:when test="${param.sector == sector.name}" > 
+								  <option selected value="<c:out value="${sector.name}"/>"><c:out value="${sector.name}"/></option>
 								</c:when>
 								<c:otherwise>
-								  <option value="<c:out value="${neighbourhood.name}"/>"><c:out value="${neighbourhood.name}"/></option>
+								  <option value="<c:out value="${sector.name}"/>"><c:out value="${sector.name}"/></option>
 								</c:otherwise> 
 							  </c:choose>
 							</c:forEach>
 					   </select> 
 					   </span>
 					   <span>&nbsp;
-						 <input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('nbhood','neighbourhood.do');" onmousedown="this.src='./images/icons/view_ON.gif'" />
-						<input style="font-size:11px" type = "button" height="18" value="Manage Neighbourhood" onclick="javascript:showNeighbourhood();" /> </span>
+						 <input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('sector','sector.do');" onmousedown="this.src='./images/icons/view_ON.gif'" />
+						<input style="font-size:11px" type = "button" height="18" value="Manage Sector" onclick="javascript:showSector();" /> </span>
 					</div>
 				</div>
 				</div>
@@ -55,15 +55,15 @@
 			<div class="cont_row">
 				<div class="cont_Ritem">
 
-				  <form id="neighbourhoodListForm" action="" method="post">  
-					<ec:table items="neighbourhoodZipInfo" filterRowsCallback="exactMatch" action="${pageContext.request.contextPath}/neighbourhood.do"
+				  <form id="sectorListForm" action="" method="post">  
+					<ec:table items="sectorZipInfo" filterRowsCallback="exactMatch" action="${pageContext.request.contextPath}/sector.do"
 						imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title=""
-						width="98%"  view="fd" form="neighbourhoodListForm" autoIncludeParameters="true" rowsDisplayed="25"  >
+						width="98%"  view="fd" form="sectorListForm" autoIncludeParameters="true" rowsDisplayed="25"  >
 						
-						<ec:exportPdf fileName="neighbourhood.pdf" tooltip="Export PDF" 
+						<ec:exportPdf fileName="sector.pdf" tooltip="Export PDF" 
 								  headerTitle="Transportation Plan" />
-						  <ec:exportXls fileName="neighbourhood.xls" tooltip="Export PDF" />
-						  <ec:exportCsv fileName="neighbourhood.csv" tooltip="Export CSV" delimiter="|"/>
+						  <ec:exportXls fileName="sector.xls" tooltip="Export PDF" />
+						  <ec:exportCsv fileName="sector.csv" tooltip="Export CSV" delimiter="|"/>
 							
 						<ec:row interceptor="obsoletemarker">
 						  <ec:column title=" " width="5px" filterable="false" sortable="false" cell="selectcol"
@@ -71,9 +71,9 @@
 						  <ec:column property="zipcode" sortable="true" title="Zip Code"/>
 						  <ec:column property="county" sortable="true" title="County"/> 
 						  <ec:column property="state" sortable="true" title="State"/> 
-						  <ec:column property="neighborhood.name" title="Neighbourhood Name"/>
-						  <ec:column property="neighborhood.description" title="Neighbourhood Description"/>
-						  <ec:column property="neighborhood.active" title="Active"/>
+						  <ec:column property="sector.name" title="Sector Name"/>
+						  <ec:column property="sector.description" title="Sector Description"/>
+						  <ec:column property="sector.active" title="Active"/>
 						 </ec:row>
 					  </ec:table>
 				   </form>
@@ -81,7 +81,7 @@
 		</div>
 		</div>
      </div>
-	 <%@ include file='i_manageneighbourhood.jspf'%>
+	 <%@ include file='i_managesector.jspf'%>
 	 <script>
 		var geographyRpcClient = new JSONRpcClient("geographyprovider.ax");
 		var errColor = "#FF0000";
@@ -91,7 +91,7 @@
           location.href = url+"?"+compId1+"="+ param1;
 		}		
 		
-		function addNeighbourhoodHandlers(tableId, rowClassName, url, paramName, columnIndex, checkCol, needKeyPress) {
+		function addSectorHandlers(tableId, rowClassName, url, paramName, columnIndex, checkCol, needKeyPress) {
 	
 				var previousClass = null;
 			    var table = document.getElementById(tableId);
@@ -124,12 +124,12 @@
 				    }
 				}
 			}
-			addNeighbourhoodHandlers('ec_table', 'rowMouseOver', 'editneighbourhood.do','id',1, 0);
+			addSectorHandlers('ec_table', 'rowMouseOver', 'editsector.do','id',1, 0);
 
 			function getFilterTestValue() {
-				 var filters = getFilterValue(document.getElementById("neighbourhoodListForm"),false);
-				 var param1 = document.getElementById("nbhood").value;
-				 filters+="&nbhood="+param1;
+				 var filters = getFilterValue(document.getElementById("sectorListForm"),false);
+				 var param1 = document.getElementById("sector").value;
+				 filters+="&sector="+param1;
 				 return escape(filters);
 			}
 

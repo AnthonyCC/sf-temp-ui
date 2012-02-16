@@ -22,7 +22,7 @@ import org.springframework.jdbc.core.RowCallbackHandler;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.transadmin.dao.SpatialManagerDaoI;
-import com.freshdirect.transadmin.model.NeighbourhoodZipcode;
+import com.freshdirect.transadmin.model.SectorZipcode;
 import com.freshdirect.transadmin.web.model.SpatialBoundary;
 import com.freshdirect.transadmin.web.model.SpatialPoint;
 
@@ -48,8 +48,8 @@ private JdbcTemplate jdbcTemplate;
 						"and rd.start_date = (select max(start_date) from dlv.region_data where start_date <= sysdate and region_id=r.id)";
 	
 
-	private static final String GET_NEIGHOURHOOD_GEOMENTRICBOUNDARY_QRY = "select nz.zipcode CODE, nz.neighbourhood_name NAME, gg.column_value "+
-			" from transp.neighbourhood_zipcode nz, dlv.zipcode z,  table(z.geoloc.sdo_ordinates) gg where nz.zipcode=z.zipcode and nz.neighbourhood_name = ? ";
+	private static final String GET_SECTOR_GEOMENTRICBOUNDARY_QRY = "select sz.zipcode CODE, sz.sector_name NAME, gg.column_value "+
+			" from transp.sector_zipcode sz, dlv.zipcode z,  table(z.geoloc.sdo_ordinates) gg where sz.zipcode=z.zipcode and sz.sector_name = ? ";
 
 	/*"select z.zone_code, z.name,gg.column_value  from dlv.region r, dlv.region_data rd, dlv.zone z, table(z.geoloc.sdo_ordinates) gg "+
             "where r.id = rd.region_id "+
@@ -68,7 +68,7 @@ private JdbcTemplate jdbcTemplate;
 		return getSpatialBoundary(code, GET_ZONE_GEOMENTRICBOUNDARY_QRY);
 	}
 	
-	public List<SpatialBoundary> getNeighbourhoodBoundary(final String code) throws DataAccessException  {
+	public List<SpatialBoundary> getSectorBoundary(final String code) throws DataAccessException  {
 		
 		final List<SpatialBoundary> result = new ArrayList<SpatialBoundary>();
 		final Map<String, SpatialBoundary> boundarymapping = new HashMap<String, SpatialBoundary>();
@@ -76,7 +76,7 @@ private JdbcTemplate jdbcTemplate;
 		PreparedStatementCreator creator=new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
                 PreparedStatement ps =
-                    connection.prepareStatement(GET_NEIGHOURHOOD_GEOMENTRICBOUNDARY_QRY);
+                    connection.prepareStatement(GET_SECTOR_GEOMENTRICBOUNDARY_QRY);
                 ps.setString(1, code);
                 return ps;
             }  
@@ -102,7 +102,7 @@ private JdbcTemplate jdbcTemplate;
 			SpatialBoundary boundary = new SpatialBoundary();
 			boundary.setCode(_zipcode);
 			boundary.setName(_name);
-			boundary.setNeighbourhood(true);
+			boundary.setSector(true);
 			boundary.setGeoloc(new ArrayList<SpatialBoundary>());
 			boundarymapping.put(_zipcode, boundary);
 		}

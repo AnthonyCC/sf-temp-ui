@@ -26,7 +26,7 @@ public class TimeslotEventDAO {
 
 	private static final Category LOGGER = LoggerFactory.getInstance(TimeslotEventDAO.class);
 	private static final String TIMESLOT_LOG_INSERT="INSERT INTO MIS.TIMESLOT_EVENT_HDR (ID, EVENT_DTM,RESERVATION_ID, " +
-			"ORDER_ID, CUSTOMER_ID, EVENTTYPE,RESPONSE_TIME,COMMENTS,TransactionSource,DlvPassApplied,DeliveryCharge,isDeliveryChargeWaived,zonectactive,neighbourhood) " +
+			"ORDER_ID, CUSTOMER_ID, EVENTTYPE,RESPONSE_TIME,COMMENTS,TransactionSource,DlvPassApplied,DeliveryCharge,isDeliveryChargeWaived,zonectactive,sector) " +
 			"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	
 	private static final String TIMESLOT_LOG_DTL_INSERT="INSERT INTO MIS.TIMESLOT_EVENT_DTL (TIMESLOT_LOG_ID, BASE_DATE, START_TIME" +
@@ -85,7 +85,7 @@ public class TimeslotEventDAO {
 			event.setSoldCount(rs.getInt("sold_count"));
 			event.setOrderId(rs.getString("order_id"));
 			event.setPageType(rs.getString("last_gettype"));
-			event.setNeighbourhood(rs.getString("neighbourhood"));
+			event.setSector(rs.getString("sector"));
 			events.add(event);
 		}
 		
@@ -128,7 +128,7 @@ public class TimeslotEventDAO {
 			event.setReservationId(rs.getString("reservation_id"));
 			event.setEventDate(rs.getTimestamp("event_dtm"));	
 			event.setTransactionSource(rs.getString("transactionsource"));
-			event.setNeighbouthood(rs.getString("neighbourhood"));
+			event.setSector(rs.getString("sector"));
 			TimeslotEventDetailModel eventD = new TimeslotEventDetailModel();
 			eventD.setDeliveryDate(rs.getDate("base_date"));
 			eventD.setCutOff(rs.getTimestamp("cutoff"));
@@ -316,7 +316,7 @@ public class TimeslotEventDAO {
 	    	ps.setBigDecimal(11, new BigDecimal(event.getDeliveryCharge()));
 	    	ps.setString(12, (event.isDeliveryChargeWaived())?"Y":"N");
 	    	ps.setString(13, (event.isZoneCtActive())?"Y":"N");
-	    	ps.setString(14, event.getNeighbouthood());
+	    	ps.setString(14, event.getSector());
 	    	
 	    	ps.execute();
 	 	    ps.close();

@@ -92,7 +92,7 @@ import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.ejb.DlvManagerDAO;
-import com.freshdirect.delivery.model.NeighbourhoodVO;
+import com.freshdirect.delivery.model.SectorVO;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.EnumDlvPassExtendReason;
@@ -1983,9 +1983,9 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				for (ErpAddressModel address : addressList) {
 					if(address.getId().equals(info.getAddress().getId())) {
 						info.getAddress().setFrom(address, info.getFirstName(), info.getLastName(), info.getIdentity().getErpCustomerPK());
-						NeighbourhoodVO neighbourhoodInfo = FDDeliveryManager.getInstance().getNeighbourhoodInfo(address);
-						if(neighbourhoodInfo != null){
-							event.setNeighbouthood(neighbourhoodInfo.getName());
+						SectorVO sectorInfo = FDDeliveryManager.getInstance().getSectorInfo(address);
+						if(sectorInfo != null){
+							event.setSector(sectorInfo.getName());
 						}
 						FDDeliveryManager.getInstance().removeReservationEx(info.getId(), info.getAddress(), event);
 					}						
