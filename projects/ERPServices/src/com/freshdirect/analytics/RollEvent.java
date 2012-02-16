@@ -5,7 +5,7 @@ import java.util.Date;
 public class RollEvent extends EventModel {
 
 	public RollEvent(String customerId, Date createDate, float unavailablePct,
-			String zone, Date cutOff, String logId, Date deliveryDate) {
+			String zone, Date cutOff, String logId, Date deliveryDate, String sector) {
 		super();
 		this.customerId = customerId;
 		this.createDate = createDate;
@@ -14,6 +14,7 @@ public class RollEvent extends EventModel {
 		this.cutOff = cutOff;
 		this.logId = logId;
 		this.deliveryDate = deliveryDate;
+		this.sector = sector;
 	}
 	private String customerId;
 	private Date createDate;
@@ -22,6 +23,7 @@ public class RollEvent extends EventModel {
 	private Date cutOff;
 	private String logId;
 	private Date deliveryDate;
+	private String sector;
 	
 	public String getCustomerId() {
 		return customerId;
@@ -64,6 +66,12 @@ public class RollEvent extends EventModel {
 	}
 	public void setCutOff(Date cutOff) {
 		this.cutOff = cutOff;
+	}
+	public String getSector() {
+		return sector;
+	}
+	public void setSector(String sector) {
+		this.sector = sector;
 	}
 	
 }

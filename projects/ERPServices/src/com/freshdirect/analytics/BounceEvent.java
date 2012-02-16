@@ -6,7 +6,7 @@ public class BounceEvent extends EventModel {
 
 	public BounceEvent(String customerId, String status, Date createDate,
 			Date cutOff, String zone, String logId, String pageType,
-			Date deliveryDate) {
+			Date deliveryDate, String sector) {
 		super();
 		this.customerId = customerId;
 		this.status = status;
@@ -16,7 +16,7 @@ public class BounceEvent extends EventModel {
 		this.logId = logId;
 		this.pageType = pageType;
 		this.deliveryDate = deliveryDate;
-		System.out.println();
+		this.sector = sector;
 	}
 	private String customerId;
 	private String status;
@@ -27,6 +27,8 @@ public class BounceEvent extends EventModel {
 	private String logId;
 	private String pageType;
 	private Date deliveryDate;
+	private String sector;
+	
 	public String getCustomerId() {
 		return customerId;
 	}
@@ -80,6 +82,12 @@ public class BounceEvent extends EventModel {
 	}
 	public void setUpdateDate(Date updateDate) {
 		this.updateDate = updateDate;
+	}
+	public String getSector() {
+		return sector;
+	}
+	public void setSector(String sector) {
+		this.sector = sector;
 	}
 	
 }
