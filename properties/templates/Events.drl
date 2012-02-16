@@ -16,7 +16,7 @@ when
     not BounceEvent(customerId == event.customerId)
 then
         BounceEvent bounce = new BounceEvent(event.getCustomerId(),"NEW", new Date(), event.getCutOff(),event.getZone(),
-        event.getLastTimeslot(), event.getPageType(), DateUtil.addDays(DateUtil.truncate(event.getCutOff()), 1) );
+        event.getLastTimeslot(), event.getPageType(), DateUtil.addDays(DateUtil.truncate(event.getCutOff()), 1) , event.getSector());
         insert(bounce);
         BounceEventList.add(bounce);
 end
@@ -30,7 +30,7 @@ when
     not RollEvent(customerId == event.customerId)
 then
         RollEvent roll  = new RollEvent(event.getCustomerId(), new Date(), new Float(event.getSoldCount()*100/(event.getSoldCount()+event.getAvailCount())),
-        event.getZone(), event.getCutOff(), event.getLastTimeslot(),DateUtil.addDays(DateUtil.truncate(event.getCutOff()), 1) );
+        event.getZone(), event.getCutOff(), event.getLastTimeslot(),DateUtil.addDays(DateUtil.truncate(event.getCutOff()), 1) ,event.getSector());
         insert(roll);
         RollEventList.add(roll);
 end
