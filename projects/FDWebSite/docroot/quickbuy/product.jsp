@@ -71,24 +71,27 @@
 		<div style="padding-bottom: 2em; text-align: right;">
 			<a class="title12" href="<%= FDURLUtil.getProductURI(productNode, request.getParameter("trk")) %>&amp;backPage=<%= URLEncoder.encode(srcPage, "UTF-8") %>&amp;refTitle=<%= URLEncoder.encode(srcTitle, "UTF-8") %>" target="_top">More about this product</a>
 		</div>
-	<%
-	if (__isWineLayout) {
-		if (productNode.getAlternateImage() != null) { 
-	%>		<div>
-				<img src="<%= productNode.getAlternateImage().getPath() %>" width="<%= productNode.getAlternateImage().getWidth() %>" height="<%= productNode.getAlternateImage().getHeight() %>" style="vertical-align: top;">
-				<img src="<%= productNode.getDescriptiveImage().getPath() %>" width="<%= productNode.getDescriptiveImage().getWidth() %>" height="<%= productNode.getDescriptiveImage().getHeight() %>" style="vertical-align: top;">
-			</div>
 		<%
+		if (__isWineLayout) {
+			if (productNode.getAlternateImage() != null) { 
+			%>
+				<div>
+					<img src="<%= productNode.getAlternateImage().getPath() %>" width="<%= productNode.getAlternateImage().getWidth() %>" height="<%= productNode.getAlternateImage().getHeight() %>" style="vertical-align: top;">
+					<img src="<%= productNode.getDescriptiveImage().getPath() %>" width="<%= productNode.getDescriptiveImage().getWidth() %>" height="<%= productNode.getDescriptiveImage().getHeight() %>" style="vertical-align: top;">
+				</div>
+			<%
+			} else {
+			%>
+				<div>
+					<img src="<%= productNode.getProdImage().getPath() %>" width="<%= productNode.getProdImage().getWidth() %>" height="<%= productNode.getProdImage().getHeight() %>" style="vertical-align: top;">
+				</div>
+			<%
+			}
 		} else {
-%>		<div>
-			<img src="<%= productNode.getProdImage().getPath() %>" width="<%= productNode.getProdImage().getWidth() %>" height="<%= productNode.getProdImage().getHeight() %>" style="vertical-align: top;">
-		</div>
-<%
+			%>
+			<img src="<%= productNode.getDetailImage().getPath() %>" width="<%= productNode.getDetailImage().getWidth() %>" height="<%= productNode.getDetailImage().getHeight() %>">
+			<%
 		}
-	} else {
-	%>		<img src="<%= productNode.getDetailImage().getPath() %>" width="<%= productNode.getDetailImage().getWidth() %>" height="<%= productNode.getDetailImage().getHeight() %>">
-	<%
-	}
 	%>
 	</div>
 	<% if (__isWineLayout) { %>

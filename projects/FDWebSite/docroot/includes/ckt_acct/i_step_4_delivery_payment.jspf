@@ -84,7 +84,7 @@ java.text.SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:
             <TD WIDTH="10"><BR></TD>
             <TD WIDTH="<%=(W_CHECKOUT_STEP_4_DELIVERY_PAYMENT_TOTAL-40)/2-10%>">
             <font class="space4pix"><br></font>
-            <FONT CLASS="text12">
+            <FONT CLASS="text12"><%-- seeing all these nbsp's make me die a little inside --%>
 <b>Time:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_2_select.jsp">Modify</A><%}%><BR>
             <font class="space4pix"><br></font>
             <%=fmtDlvDateTime%><br>

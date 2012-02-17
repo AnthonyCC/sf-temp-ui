@@ -41,6 +41,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
+import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.FDPromotionEligibility;
 import com.freshdirect.fdstore.customer.FDRecipientList;
 import com.freshdirect.fdstore.customer.FDUser;
@@ -75,6 +76,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
 	private int failedAuthorizations = 0;
 	private boolean healthWarningAcknowledged = false;
+	private boolean showPendingOrderOverlay = true;
 
 	private Date startDate;
 	private long lastRequestDate;
@@ -1246,6 +1248,30 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setSessionEvent(SessionEvent event) {
 		// TODO Auto-generated method stub
 		this.user.setSessionEvent(event);
+	}
+
+	public void setShowPendingOrderOverlay(boolean showPendingOrderOverlay) {
+		this.showPendingOrderOverlay = showPendingOrderOverlay;
+	}
+
+	public boolean isShowPendingOrderOverlay() {
+		return showPendingOrderOverlay;
+	}
+
+	public List<FDOrderInfoI> getPendingOrders() throws FDResourceException {
+		return this.user.getPendingOrders();
+	}
+	
+	public List<FDOrderInfoI> getPendingOrders(boolean incGiftCardOrds, boolean incDonationOrds, boolean sorted) throws FDResourceException {
+		return this.user.getPendingOrders(incGiftCardOrds, incDonationOrds, sorted);
+	}
+
+	public boolean hasPendingOrder() throws FDResourceException {
+		return this.user.hasPendingOrder();
+	}
+	
+	public boolean hasPendingOrder(boolean incGiftCardOrds, boolean incDonationOrds) throws FDResourceException {
+		return this.user.hasPendingOrder(incGiftCardOrds, incDonationOrds);
 	}
 }
 

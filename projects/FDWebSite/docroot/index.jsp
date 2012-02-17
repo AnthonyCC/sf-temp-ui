@@ -16,9 +16,6 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 
-
-	
-	
 <% //expanded page dimension
 final int W_INDEX_TOTAL = 970;
 final int W_INDEX_CENTER_PADDING = 20;
@@ -41,8 +38,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	<tmpl:put name='title' direct='true'>Welcome to FreshDirect</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 
-
-<fd:css href="/assets/css/homepage/homepage.css"/>
+		<fd:css href="/assets/css/homepage/homepage.css"/>
 <fd:GetSegmentMessage id='segmentMessage' user="<%=user%>">
 
 <%
@@ -84,12 +80,9 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 						<%if ( mainPromo ) {%>
 							<%@ include file="includes/home/i_main_promo.jspf" %>
 						<%} else if (FDStoreProperties.isAdServerEnabled()) {%>
-							<SCRIPT LANGUAGE=JavaScript>
-							<!--
-							OAS_AD('HPLeftTop');
-							//-->
-							</SCRIPT>
-						
+							<script type="text/javascript">
+								OAS_AD('HPLeftTop');
+							</script>
 						<%}else {%>
 							<%@ include file="includes/home/i_current_promo.jspf" %>
 						<%}%>
@@ -108,11 +101,9 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 						<tr>
 						<td align="center">
 						<% if (FDStoreProperties.isAdServerEnabled()) { %>
-							<SCRIPT LANGUAGE=JavaScript>
-							<!--
-							OAS_AD('HPLeftMiddle');
-							//-->
-							</SCRIPT>
+							<script type="text/javascript">
+								OAS_AD('HPLeftMiddle');
+							</script>
 						<% } else { %>
 							<a href="/about/index.jsp"><img src="/media_stat/images/template/homepages/promos/farm_fresh_hdr.gif" width="170" height="42" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br><a href="/about/index.jsp">Click here to learn more<br>about FreshDirect!</a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="20" border="0"><br><a href="/about/index.jsp"><img src="/media_stat/images/template/homepages/promos/corn.jpg" width="195" height="85" border="0" vspace="0"></a>
 						<% } %>
@@ -131,11 +122,9 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 					<table width="100%" height="100%">
 						<tr>
 						<td align="center">
-							<SCRIPT LANGUAGE=JavaScript>
-							<!--
-							OAS_AD('HPLeftBottom');
-							//-->
-							</SCRIPT>
+							<script type="text/javascript">
+								OAS_AD('HPLeftBottom');
+							</script>
 						</td>
 						</tr>
 					</table>
@@ -183,8 +172,7 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 						}
 					} 			
 					if (orderHistoryInfo != null && orderHistoryInfo.size() != 0 && pendingOrderCount > 0) {
-					%>
-						<table width="100%" cellpadding="0" cellspacing="0" border="0">
+					%>	<table width="100%" cellpadding="0" cellspacing="0" border="1" id="index_table_ordModify_1">
 						<%
 						for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
 							FDOrderInfoI orderInfo = (FDOrderInfoI) hIter.next();
@@ -195,30 +183,41 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
                             //robin hood
                             String donatePersonal = EnumDeliveryType.DONATION_INDIVIDUAL.getCode();
                             String donateCorporate = EnumDeliveryType.DONATION_BUSINESS.getCode();	      				     
-	      				     if (orderInfo.isPending() && orderInfo.getOrderStatus() != EnumSaleStatus.REFUSED_ORDER 
-                            && (!(ordDeliveryType).equals(gcCodePersonal) && !(ordDeliveryType).equals(gcCodeCorporate))
-                            && (!(ordDeliveryType).equals(donatePersonal) && !(ordDeliveryType).equals(donateCorporate))          
-                            ){                            
+                            if (
+                            	orderInfo.isModifiable() && orderInfo.getOrderStatus() != EnumSaleStatus.REFUSED_ORDER 
+       							&& (!(ordDeliveryType).equals(gcCodePersonal) && !(ordDeliveryType).equals(gcCodeCorporate))
+       							&& (!(ordDeliveryType).equals(donatePersonal) && !(ordDeliveryType).equals(donateCorporate))
+       							&& ( new Date().before(orderInfo.getDeliveryCutoffTime()))
+       						){
 	      				%>
-	      				       <tr><td><img src="/media_stat/images/layout/clear.gif" width="310" height="6"></td>
-	      					<td><img src="/media_stat/images/layout/clear.gif" width="150" height="6"></td></tr>
-	      				       <tr><td colspan="2" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
-	      				       <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td></tr>
-	      				       <tr><td><font class="text9"><b>Your order will be delivered on:</b></font> 
-	      				       		<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>">
-	      				       		<%= new SimpleDateFormat("EEE MM/dd/yy").format(orderInfo.getRequestedDate()) %> 
-	      				       		@ <%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%></a></td>
-	      				       <td align="right">
-	      				       <% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
-	      						<font class="text9">To make changes, <a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>">click here</a>.</font>
-	      				       <% } else { %>
-	      						&nbsp;
-	      				       <% } %></td></tr>
-	      
-	      				     <% } else if (orderInfo.getOrderStatus() == EnumSaleStatus.REFUSED_ORDER) { %>
+								<tr>
+									<td><img src="/media_stat/images/layout/clear.gif" width="310" height="6"></td>
+									<td><img src="/media_stat/images/layout/clear.gif" width="150" height="6"></td></tr>
+								<tr>
+									<td colspan="2" bgcolor="#cccccc"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+								</tr>
+								<tr>
+									<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td>
+								</tr>
+								<tr>
+									<td>
+										<font class="text9"><b>Your order will be delivered on:</b></font> 
+										<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>">
+										<%= new SimpleDateFormat("EEE MM/dd/yy").format(orderInfo.getRequestedDate()) %> 
+										@ <%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%></a>
+									</td>
+									<td align="right">
+										<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
+											<font class="text9">To make changes, <a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>">click here</a>.</font>
+										<% } else { %>
+											&nbsp;
+										<% } %>
+									</td>
+								</tr>
+							<% } else if (orderInfo.getOrderStatus() == EnumSaleStatus.REFUSED_ORDER) { %>
 	      					       <tr><td colspan="2" class="text10rbold"><b>Pending Order: Please contact us at <%=user.getCustomerServiceContact()%> as soon as possible to reschedule delivery.</b></td></tr>	
-	      				<%   }
-	      				     break;
+	      					<% }
+							break;
 	      				} 
 	      				%>
 	      
@@ -227,9 +226,21 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 	      		     </fd:OrderHistoryInfo>
 		<% }
 	      
-		  } else if(!showAltHome && !location2Media) {   
+		  } else if(!showAltHome && !location2Media) {
 	     %>
-	   	<%@ include file="includes/home/i_intro_hdr.jspf"%>
+	   	<%@ include file="includes/home/i_intro_hdr.jspf" %>
+	   		<% if(user.isEligibleForPreReservation() && user.getReservation() != null) {
+	   			FDReservation rsv = user.getReservation();
+	   		%>
+		   		<img src="/media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="8" alt="" />
+		   		
+		   		<table width="100%" cellpadding="0" cellspacing="0" border="0">
+		   			<tr>
+		   				<td>
+		   					<font class="text9"><b>You have a delivery slot reserved for:</b></font> <a href="/your_account/reserve_timeslot.jsp"><%=CCFormatter.formatReservationDate(rsv.getStartTime())%> @ <%=FDTimeslot.format(rsv.getStartTime(), rsv.getEndTime())%></a></td>
+		 	  		</tr>
+		 	  	</table>
+	   		<% } %>
 	   		<% if (user.getLevel() >= FDUserI.RECOGNIZED) { %>
 	   						
 	   			<fd:OrderHistoryInfo id='orderHistoryInfo'>
@@ -243,9 +254,6 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 	   				}
 	   			} 			
 	   			if (orderHistoryInfo != null && orderHistoryInfo.size() != 0 && pendingOrderCount > 0) {
-	   			%>
-	   				<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 6px;">
-	   				<%
 	   				for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
 	   				     FDOrderInfoI orderInfo = (FDOrderInfoI) hIter.next();
 						 String ordDeliveryType = orderInfo.getDeliveryType().toString();
@@ -256,78 +264,90 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 						String donatePersonal = EnumDeliveryType.DONATION_INDIVIDUAL.getCode();
 						String donateCorporate = EnumDeliveryType.DONATION_BUSINESS.getCode();
 	   				     
-						if (orderInfo.isPending() && orderInfo.getOrderStatus() != EnumSaleStatus.REFUSED_ORDER 
-							&& (!(ordDeliveryType).equals(gcCodePersonal) && !(ordDeliveryType).equals(gcCodeCorporate))
-							&& (!(ordDeliveryType).equals(donatePersonal) && !(ordDeliveryType).equals(donateCorporate))          
-						){
-	   				%>
-	   				       <tr><td><img src="/media_stat/images/layout/clear.gif" width="310" height="6"></td>
-	   					<td><img src="/media_stat/images/layout/clear.gif" width="150" height="6"></td></tr>
-	   				       <tr><td colspan="2" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
-	   				       <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td></tr>
-	   				       <tr><td><font class="text9"><b>Your order will be delivered on:</b></font> 
-	   				       		<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>">
-	   				       		<%= new SimpleDateFormat("EEE MM/dd/yy").format(orderInfo.getRequestedDate()) %> 
-	   				       		@ <%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%></a></td>
-	   				       <td align="right">
-	   				       <% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
-	   						<font class="text9">To make changes, <a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>">click here</a>.</font>
-	   				       <% } else { %>
-	   						&nbsp;
-	   				       <% } %></td></tr>
-	   
-	   				     <% } else if (orderInfo.getOrderStatus() == EnumSaleStatus.REFUSED_ORDER) { %>
-	   					       <tr><td colspan="2" class="text10rbold"><b>Pending Order: Please contact us at <%=user.getCustomerServiceContact()%> as soon as possible to reschedule delivery.</b></td></tr>	
-	   				<%   }
+						if (
+                            	orderInfo.isModifiable() && orderInfo.getOrderStatus() != EnumSaleStatus.REFUSED_ORDER 
+       							&& (!(ordDeliveryType).equals(gcCodePersonal) && !(ordDeliveryType).equals(gcCodeCorporate))
+       							&& (!(ordDeliveryType).equals(donatePersonal) && !(ordDeliveryType).equals(donateCorporate))
+       							&& ( new Date().before(orderInfo.getDeliveryCutoffTime()))
+       						){
+	   					%>
+	   					
+		   					<div class="index_ordMod_cont" id="index_table_ordModify_0">
+			   					<div class="index_ordMod_cont_child">
+									<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="orderNumb"><%= orderInfo.getErpSalesId() %></a>
+									<span style="padding-left: 30px;"><span class="dow"><%= new SimpleDateFormat("EEEEE").format(orderInfo.getRequestedDate()) %></span> <%= new SimpleDateFormat("MM/dd/yyyy").format(orderInfo.getRequestedDate()) %> 
+										<span class="pipeSep">|</span> <%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%></span></a>
+		
+									<div class="ordModifyButCont">
+										<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
+											<form name="modify_order" id="modify_order" method="POST" action="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">
+										<% } %>
+										<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="">view details</a>&nbsp;
+										<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
+												<input type="hidden" name="orderId" value="<%= orderInfo.getErpSalesId() %>" />
+												<input type="hidden" name="action" value="modify" />
+												<table class="butCont fright" style="margin-left: 10px;">
+													<tr>
+														<td class="butOrangeLeft"><!-- --></td>
+														<td class="butOrangeMiddle"><a class="butText" href="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>" onclick="$('modify_order').submit(); return false;">modify order</a></td>
+														<td class="butOrangeRight"><!-- --></td>
+													</tr>
+												</table>
+											</form>
+													
+											
+										<% } else { %>
+											&nbsp;
+										<% } %>
+									</div>
+								</div>
+							</div>
+							
+					<% } else if (orderInfo.getOrderStatus() == EnumSaleStatus.REFUSED_ORDER) { %>
+	   					<div class="text10rbold">Pending Order: Please contact us at <%=user.getCustomerServiceContact()%> as soon as possible to reschedule delivery.</div>	
+	   				<% }
 	   				     break;
 	   				} 
 	   				%>
-	   				</table>
 	   		     <% } %>
 	   		     </fd:OrderHistoryInfo>
 	   		<% } %>
-	   		<% if(user.isEligibleForPreReservation() && user.getReservation() != null){
-	   			FDReservation rsv = user.getReservation();
-	   		%>
-	   		<img src="/media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="8"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td><font class="text9"><b>You have a delivery slot reserved for:</b></font> <a href="/your_account/reserve_timeslot.jsp"><%=CCFormatter.formatReservationDate(rsv.getStartTime())%> @ <%=FDTimeslot.format(rsv.getStartTime(), rsv.getEndTime())%></a></td>
-	   		</tr></table>
-	   		<% }
+	   	<%
 	   	}
 	   	
-	        if (location2Media) {
-				%>
-
-			<table width="100%" cellpadding="0" cellspacing="0" border="0">
-			<tr><td><img src="/media_stat/images/layout/clear.gif" width="310" height="6"></td>
-			<td><img src="/media_stat/images/layout/clear.gif" width="150" height="6"></td></tr>
-			<tr><td colspan="2" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
-			<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td></tr>
+		if (location2Media) { %>
+			<table width="100%" cellpadding="0" cellspacing="0" border="0" id="index_table_ordModify_2">
+				<tr>
+					<td><img src="/media_stat/images/layout/clear.gif" width="310" height="6"></td>
+					<td><img src="/media_stat/images/layout/clear.gif" width="150" height="6"></td>
+				</tr>
+				<tr>
+					<td colspan="2" bgcolor="#ccc"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+				</tr>
+				<tr>
+					<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></td>
+				</tr>
 			</table>
 			<table width="100%" cellpadding="0" cellspacing="0" border="0">
-			<tr><td>
-				<fd:IncludeMedia name="/media/editorial/hp_notes/winback/lapsed.html" />
-
-				<% user.setCampaignMsgViewed(user.getCampaignMsgViewed() + 1); %>
-			</td></tr>
+				<tr>
+					<td>
+						<fd:IncludeMedia name="/media/editorial/hp_notes/winback/lapsed.html" />
+						<% user.setCampaignMsgViewed(user.getCampaignMsgViewed() + 1); %>
+					</td>
+				</tr>
 			</table>
-
 		<% } %>
-	   		<img src="/media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="8"><br>
-	   		<%@ include file="/includes/i_departments.jspf" %> 
-	   		
-	   	
-	   		
-	   <%-- END MAIN CONTENT--%>
-	   		
+	   	<%@ include file="/includes/i_departments.jspf" %>
+
+		<%-- END MAIN CONTENT--%>
+
 	   	<%-- PROMO 4 BOTTOM--%>
 			<div class="ad4">
 				<div class="adbox4">
 					<span>
-						<SCRIPT LANGUAGE=JavaScript>
-						<!--
+						<script type="text/javascript">
 						OAS_AD('HPWideBottom');
-						//-->
-						</SCRIPT>
+						</script>
 					</span>
 					<div class="adbox_bottom4"></div>
 				</div>			

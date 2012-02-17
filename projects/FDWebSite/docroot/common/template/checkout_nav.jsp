@@ -13,7 +13,7 @@ final int W_CHECKOUT_NAV_TOTAL = 970;
 %>
 
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
     	<title><tmpl:get name='title'/></title>
 		<%@ include file="/common/template/includes/metatags.jspf" %>

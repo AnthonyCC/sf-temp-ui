@@ -817,3 +817,65 @@ function getFrameHeight(frameId) {
 
 	return innerDoc.body.parentNode.scrollHeight;
 }
+
+/* common calls for overlays */
+	function curvyCornersHelper(elemId, settingsObj) {
+		if (document.getElementById(elemId)) {
+			var temp = new curvyCorners(settingsObj, document.getElementById(elemId)).applyCornersToAll();
+		}
+	}
+	var ccSettings_common = {
+		tl: { radius: 6 },
+		tr: { radius: 6 },
+		bl: { radius: 6 },
+		br: { radius: 6 },
+		topColour: "#ffffff",
+		bottomColour: "#ffffff",
+		antiAlias: true,
+		autoPad: true
+	};
+	/* display an overlay containing a remote page */
+	function doRemoteOverlay(olURL) {
+		var olURL = olURL || '';
+		if (olURL == '') { return false; }
+
+		Modalbox.show(olURL, {
+			loadingString: 'Loading Preview...',
+			closeValue: ' ',
+			closeString: 'Close Preview',
+			title: '',
+			overlayOpacity: .80,
+			overlayClose: false,
+			//width: 320,
+			transitions: false,
+			autoFocusing: false,
+			centered: true,
+			overlayClose: true,
+			beforeLoad: function() {
+				$('MB_window').style.width = '150px';
+				$('MB_window').style.height = '150px';
+				$('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
+			},
+			afterLoad: function() {
+				window.scrollTo(0,0);
+				$('MB_window').style.width = 'auto';
+				$('MB_window').style.height = 'auto';
+				$('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
+
+
+				ccSettings_common.topColour = "#ffffff";
+				ccSettings_common.bottomColour = "#ffffff";
+				curvyCornersHelper('MB_frame', ccSettings_common);
+			},
+			afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
+		});
+	}
+/* merge pending form submission */
+	function submitPendOrderMergeChoice() {
+		if ($('mergeChoicePending').checked) {
+			Modalbox.hide();
+			doRemoteOverlay('/ajax/merge_cart_penOrder.jsp');
+		} else {
+			$('mergeChoice').submit();
+		}
+	}

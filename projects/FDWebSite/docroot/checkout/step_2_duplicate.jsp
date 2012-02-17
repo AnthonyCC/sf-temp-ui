@@ -1,4 +1,4 @@
-<%@ page import='com.freshdirect.fdstore.*' %>
+ <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.customer.ErpAddressModel'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -12,6 +12,7 @@
 <%@ page import='com.freshdirect.fdstore.util.ClickToCallUtil'%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri='logic' prefix='logic' %>
 
 <% //expanded page dimensions
 final int W_CHECKOUT_STEP_2_DUPLICATE_TOTAL = 970;
@@ -52,7 +53,10 @@ for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
 if (sameDayPendingOrderCount == 1) {
 	modifyLink = "/your_account/order_details.jsp?orderId=" + orderId;
 }
-	
+
+//button include count
+int incNextButtonCount = 0;
+
 %>
 
 <table width="<%=W_CHECKOUT_STEP_2_DUPLICATE_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
@@ -93,12 +97,7 @@ if (sameDayPendingOrderCount == 1) {
 					<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
 				</TD>
 				<TD align="right" valign="middle" WIDTH="<%=W_CHECKOUT_STEP_2_DUPLICATE_TOTAL-420%>">
-					<a href="/checkout/step_3_choose.jsp?duplicateCheck=skip">
-					<img src="/media_stat/images/buttons/continue_checkout.gif" width="91" height="11" border="0" alt="CONTINUE CHECKOUT"></a><BR>Payment Method<BR>
-				</TD>
-				<TD width="35" align="right" VALIGN="MIDDLE">
-					<a href="/checkout/step_3_choose.jsp?duplicateCheck=skip">
-					<img src="/media_stat/images/buttons/checkout_arrow.gif" width="26" height="26" border="0" alt="CONTINUE CHECKOUT"></a>
+					<%@ include file="/includes/i_cart_next_step_button.jspf" %>
 				</TD>
 		    </tr>
 		</table>
