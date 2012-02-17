@@ -921,5 +921,8 @@ if ( skuSize == 0 ) {
 			    <%@ include file="/includes/product/i_cancellation_note.jspf" %>			    
 			</td></tr>
 		</table>
+		<% if (alignRight) { /* Fix IE6 collapsing container having floating blocks issue */ %>
+		<!--[if IE 6]><div style="clear: both; height: 0; line-height: 1px; padding: 0; visibility: hidden;"></div><![endif]-->
+		<% } %>
 	</form>
 <% } // END OF "THE BIG IF" :) %>
