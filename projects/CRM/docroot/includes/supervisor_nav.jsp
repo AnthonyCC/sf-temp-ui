@@ -20,6 +20,7 @@ boolean broken_accounts = snav_pageURI.indexOf("broken_acct_list") > -1;
 boolean acct_lookup = snav_pageURI.indexOf("acct_lookup") > -1;
 boolean canned_text = snav_pageURI.indexOf("canned_text") > -1;
 boolean connect = snav_pageURI.indexOf("connect") > -1;
+boolean crm_auths_view= snav_pageURI.indexOf("crm_auths_view") > -1;
 %>
 <crm:GetCurrentAgent id='currentAgent'>
 <div class="side_nav_module_supervisor" >
@@ -67,6 +68,8 @@ boolean connect = snav_pageURI.indexOf("connect") > -1;
 <% if(CrmSecurityManager.hasAccessToPage(lAgentRole,"connect.jsp")){ %>
 	<div  class="<%=connect?"sup_nav_on_supervisor":""%>" style="height: auto;"><a href="/supervisor/connect.jsp" class="<%=connect?"sup_nav_on_supervisor":"sup_nav_supervisor"%>">Givex Admin</a></div>
 <% } %>
-
+<% if(CrmSecurityManager.hasAccessToPage(lAgentRole,"crm_auths_view.jsp")){ %>
+	<div  class="<%=connect?"sup_nav_on_supervisor":""%>" style="height: auto;"><a href="/supervisor/crm_auths_view.jsp" class="<%=crm_auths_view?"sup_nav_on_supervisor":"sup_nav_supervisor"%>">Authorizations</a></div>
+<% } %>
 </div>
 </crm:GetCurrentAgent>

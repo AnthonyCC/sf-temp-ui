@@ -553,4 +553,18 @@ public class CrmManager {
 	public void forceRefresh() {
 		agentListCache.forceRefresh();
 	}
+	public List<CrmAuthInfo> getAuthorizations(CrmAgentRole role,CrmAuthSearchCriteria filter) throws FDResourceException{
+		try {
+			return this.getCrmManagerSB().getAuthorizations(role, filter);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB while getting authorizations.");
+		}
+	}
+	
+	public static void main (String[] a) throws Exception {
+		CrmAuthSearchCriteria sc=new CrmAuthSearchCriteria();
+		sc.setFromDateStr("11-16-2011 00:00");
+		sc.setToDateStr("12-16-2011 00:00");
+		CrmManager.getInstance().getAuthorizations(null, sc);
+	}
 }

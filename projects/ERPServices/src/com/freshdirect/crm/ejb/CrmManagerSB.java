@@ -13,6 +13,9 @@ import javax.ejb.FinderException;
 import com.freshdirect.crm.CrmAgentInfo;
 import com.freshdirect.crm.CrmAgentList;
 import com.freshdirect.crm.CrmAgentModel;
+import com.freshdirect.crm.CrmAgentRole;
+import com.freshdirect.crm.CrmAuthInfo;
+import com.freshdirect.crm.CrmAuthSearchCriteria;
 import com.freshdirect.crm.CrmAuthenticationException;
 import com.freshdirect.crm.CrmAuthorizationException;
 import com.freshdirect.crm.CrmCaseAction;
@@ -141,4 +144,6 @@ public interface CrmManagerSB extends EJBObject {
 	public String getLastDeliveredOrder(String erpCustomerId) throws FDResourceException, RemoteException;
 	
 	public CrmAgentModel getAgentByLdapId(String agentLdapId) throws FDResourceException, CrmAuthenticationException,RemoteException;
+	
+	public List<CrmAuthInfo> getAuthorizations(CrmAgentRole role,CrmAuthSearchCriteria filter)throws FDResourceException, RemoteException;
 }

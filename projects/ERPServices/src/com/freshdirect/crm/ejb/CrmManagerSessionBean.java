@@ -24,9 +24,13 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.crm.CrmAgentInfo;
 import com.freshdirect.crm.CrmAgentList;
 import com.freshdirect.crm.CrmAgentModel;
+import com.freshdirect.crm.CrmAgentRole;
+import com.freshdirect.crm.CrmAuthInfo;
+import com.freshdirect.crm.CrmAuthSearchCriteria;
 import com.freshdirect.crm.CrmAuthenticationException;
 import com.freshdirect.crm.CrmAuthorizationException;
 import com.freshdirect.crm.CrmCaseAction;
@@ -50,12 +54,12 @@ import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpCannedText;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
+import com.freshdirect.customer.ErpTruckInfo;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
-import com.freshdirect.customer.ErpTruckInfo;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
@@ -64,6 +68,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 
@@ -1242,5 +1247,68 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 	        }catch(RemoteException e){
 	            throw new FDResourceException(e, "Cannot talk to CrmAgentEB");
 	        }
+	}
+	
+	private static final String AUTH_SEARCH_QUERY=
+	"select CC.TRANS_DATE_TIME ,CC.CUSTOMER_NAME ,CC.MERCHANT_ID,CC.AMOUNT,CC.APPROVAL_CODE,CVV_RESPONSE_CODE, AUTH_RESPONSE_MSG,"+
+    " CC.ZIP_MATCH, "+
+    "( CASE cc.CARD_TYPE WHEN '001' THEN 'VISA' WHEN '002' THEN 'MASTERCARD' WHEN '003' THEN 'AMEX' WHEN '004' THEN 'DISCOVER' WHEN '005' THEN 'ECheck' END) AS CardType "+
+    ",CC.ORDER_NUMBER,"+
+    " CC.CUSTOMER_STREET||' '|| CC.CUSTOMER_CITY||' '|| CC.CUSTOMER_STATE||' '|| CC.CUSTOMER_ZIP as Address "+
+    " from PAYLINX.CC_TRANSACTION_NEW cc where CC.TRANS_DATE_TIME between to_date(?,'MM-DD-YYYY HH24:MI') and   to_date(?,'MM-DD-YYYY HH24:MI') and "+
+    " CC.TRANSACTION_CODE='100' ";
+	//order by cc.TRANS_DATE_TIME asc
+	public List<CrmAuthInfo> getAuthorizations(CrmAgentRole role,CrmAuthSearchCriteria filter)throws FDResourceException {
+		Connection conn = null;
+		try {
+			StringBuilder query=new StringBuilder(AUTH_SEARCH_QUERY);
+			if(!StringUtil.isEmpty(filter.getCustomerName())) {
+				query.append(" AND UPPER(cc.customer_name) LIKE UPPER('%").append(filter.getCustomerName()).append("%') ");
+			}
+			if(filter.getAmount()!="0") {
+				query.append(" AND cc.amount ='").append(filter.getAmount()).append("' ");
+			}
+			
+			conn = this.getConnection();
+
+			PreparedStatement ps = conn.prepareStatement(query.toString());
+			ps.setString(1, filter.getFromDateStr());
+			ps.setString(2, filter.getToDateStr());
+			ResultSet rs = ps.executeQuery();
+			List<CrmAuthInfo> crmAuthInfoList=new ArrayList<CrmAuthInfo>();
+			CrmAuthInfo crmAuthInfo=null;
+			while (rs.next()) {
+				crmAuthInfo=new CrmAuthInfo();
+				crmAuthInfo.setTransactionTime(rs.getTimestamp("TRANS_DATE_TIME"));
+				crmAuthInfo.setCustomerName(rs.getString("CUSTOMER_NAME"));
+				crmAuthInfo.setMerchantId(rs.getString("MERCHANT_ID"));
+				crmAuthInfo.setAmount(rs.getBigDecimal("AMOUNT"));
+				crmAuthInfo.setApprovalCode(rs.getString("APPROVAL_CODE"));
+				crmAuthInfo.setCvvResponseCode(rs.getString("CVV_RESPONSE_CODE"));
+				crmAuthInfo.setAuthResponse(rs.getString("AUTH_RESPONSE_MSG"));
+				crmAuthInfo.setZipCheckReponse(rs.getString("ZIP_MATCH"));
+				crmAuthInfo.setCardType(EnumCardType.getCardType(rs.getString("CardType")));
+				crmAuthInfo.setAddress(rs.getString("Address"));
+				crmAuthInfo.setOrder(rs.getString("ORDER_NUMBER"));
+				crmAuthInfoList.add(crmAuthInfo);
+				
+			}
+			
+
+			rs.close();
+			ps.close();
+			
+			return crmAuthInfoList;
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				throw new FDResourceException(se);
+			}
+		}
 	}
 }
