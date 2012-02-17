@@ -206,8 +206,7 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 				<div style="text-align: center; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px dotted gray;">
 					<img src="/media_stat/images/template/ymal_title.gif" alt="YMAL" width="140" height="12" style="border: 0">
 				</div>
-					<fd:YmalContext id="ymalSource">
-					<fd:ProductGroupRecommender itemCount="6" siteFeature="YMAL_PDTL" facility="ymal_pdtl" currentNode="<%= __prd %>" id="recommendedProducts" excludeAlcoholicContent="<%= true %>" ymalSource="<%= ymalSource %>">
+					<fd:ProductGroupRecommender itemCount="6" siteFeature="YMAL_PDTL" facility="ymal_pdtl" currentNode="<%= __prd %>" id="recommendedProducts" excludeAlcoholicContent="<%= true %>" ymalSource="<%= __prd %>">
 					<display:Carousel id="cat2_carousel" carouselId="cat2_carousel" width="140" numItems="1" showCategories="false" itemsToShow="<%= recommendedProducts.getProducts() %>" trackingCode="ymal_pdtl" maxItems="3" style="margin-left: auto; margin-right: auto;">
 						<%
 							final ProductModel __c_prd = (ProductModel) currentItem;
@@ -238,7 +237,6 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 					</display:Carousel>
 					
 					</fd:ProductGroupRecommender>
-					</fd:YmalContext>
 				<div style="text-align: center; padding-bottom: 10px; border-bottom: 1px dotted gray;">
 				</div>
 			</div>
