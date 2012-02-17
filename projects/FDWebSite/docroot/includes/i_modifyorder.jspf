@@ -20,9 +20,6 @@
 	String uri = request.getRequestURI();
 	final boolean isInDelivery = (uri.indexOf("step_2_select") > -1);	
 	boolean modifyOrderMode = false;
-	
-	//button include count
-	int incNextButtonCount = 0;
 
 	FDUserI mUser = (FDUserI) session.getAttribute( SessionName.USER );
 	FDCartModel mCart = mUser.getShoppingCart();
@@ -30,7 +27,6 @@
 	if (mCart instanceof FDModifyCartModel) {
 		modifyOrderMode = true;
 		FDModifyCartModel modCart = (FDModifyCartModel) mCart;
-		FDModifyCartModel cart = (FDModifyCartModel) mCart; //i_cart_delivery_fee.jspf requires a cart var
 		String oId = modCart.getOriginalOrder().getErpSalesId();
 		session.setAttribute("MODIFIED" + oId, oId);
 
