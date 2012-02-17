@@ -231,7 +231,7 @@
 </TBODY>
 </TABLE>
 
-<div style="height: 1px; width: 100%; background-color: #996699; margin: 2em 0 2em 0;"></div>
+<div style="height: 1px; line-height: 1px; width: 100%; background-color: #996699; margin: 2em 0 2em 0;"><!--  --></div>
 <%@ include file="/quickshop/includes/cart_n_tabs.jspf" %>
 <div style="height: 2em"></div>
 
