@@ -36,6 +36,7 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
     } // local block
 %>
 
+    <tmpl:get name='head'/>
     <tmpl:get name='extrahead'/>
 
 </head>

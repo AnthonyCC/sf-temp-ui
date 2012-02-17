@@ -19,10 +19,34 @@ final int W_QUICKSHOP_EVERY_ITEM_TOTAL = 765;
 RequestUtil.appendToAttribute(request,"bodyOnLoad","FormChangeUtil.recordSignature('qs_cart',false)",";");
 RequestUtil.appendToAttribute(request,"windowOnBeforeUnload","FormChangeUtil.warnOnSignatureChange('qs_cart')",";");
 %>
+<% 	
+	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+	//--------OAS Page Variables-----------------------
+        request.setAttribute("sitePage", "www.freshdirect.com/quickshop");
+        request.setAttribute("listPos", "QSBottom,SystemMessage,LittleRandy,QSTopRight");
+	
+	String custFirstName = user.getFirstName();
+	int firstNameLength = custFirstName.length();
+	int firstNameLastIndex = firstNameLength - 1;
+	String orderId = null; 
+	String qsDeptId = request.getParameter("qsDeptId");
+	boolean hasDeptId = qsDeptId != null && !"".equals(qsDeptId);
+	String tmpl = hasDeptId ? "/common/template/quick_shop_nav.jsp" : "/common/template/quick_shop.jsp" ;
+	boolean showLink = false;
+	// boolean selected = false;
+	String qsMenuLink = "";
+	String actionName = request.getParameter("fdAction");
 
+	if (actionName == null) {
+		actionName = "";
+	}
 
+%>
+<%@ include file="/quickshop/includes/department_nav.jspf" %>
+<tmpl:insert template='<%= tmpl %>'>
+    	<tmpl:put name='title' direct='true'>FreshDirect - Quickshop - Shop from Every Item Ordered</tmpl:put>
+		<tmpl:put name='head' direct='true'>
 <fd:javascript src="/assets/javascript/grocery_product.js"/>
-
 <script language="javascript">
 function doSort(sortBy){
 document.qs_cart.sortBy.value=sortBy;
@@ -51,34 +75,7 @@ window.onload = function() {
 }
 
 </script>
-
-<% 	
-	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
-	//--------OAS Page Variables-----------------------
-        request.setAttribute("sitePage", "www.freshdirect.com/quickshop");
-        request.setAttribute("listPos", "QSBottom,SystemMessage,LittleRandy,QSTopRight");
-	
-	String custFirstName = user.getFirstName();
-	int firstNameLength = custFirstName.length();
-	int firstNameLastIndex = firstNameLength - 1;
-	String orderId = null; 
-	String qsDeptId = request.getParameter("qsDeptId");
-	boolean hasDeptId = qsDeptId != null && !"".equals(qsDeptId);
-	String tmpl = hasDeptId ? "/common/template/quick_shop_nav.jsp" : "/common/template/quick_shop.jsp" ;
-	boolean showLink = false;
-	// boolean selected = false;
-	String qsMenuLink = "";
-	String actionName = request.getParameter("fdAction");
-
-	if (actionName == null) {
-		actionName = "";
-	}
-
-%>
-<%@ include file="/quickshop/includes/department_nav.jspf" %>
-<tmpl:insert template='<%= tmpl %>'>
-    	<tmpl:put name='title' direct='true'>FreshDirect - Quickshop - Shop from Every Item Ordered</tmpl:put>
-		
+		</tmpl:put>
 		<tmpl:put name='side_nav' direct='true'><font class="space4pix"><br></font><a href="/quickshop/every_item.jsp"><img src="/media_stat/images/template/quickshop/qs_every_item_catnav.gif" width="80" height="38" border="0"></a><br><font class="space4pix"><br></font><%= departmentNav.toString() %><br><br></tmpl:put>
 		
 		<tmpl:put name='content' direct='true'>
