@@ -83,7 +83,7 @@
 	boolean hideSavings = genericRecommendationsVariant.isSmartSavings() && SmartStoreUtil.countSavingProductsInCart(genericRecommendationsVariant, pip_u, prevRecs) < 0;
 
 	if ( genericRecommendationsVariant != null) {
-		final int maxItems = (request.getRequestURI().indexOf("quickshop") > -1) ? 4 : 5;
+		final int maxItems = ( /*request.getRequestURI().indexOf("quickshop") > -1  */ "quickshop".equalsIgnoreCase(smartStoreFacility) ) ? 4 : 5;
 %>
 <fd:GenericRecommendations id="recommendations" facility="<%= smartStoreFacility %>" errorOccurred="<%= !pip_result.isSuccess() %>" parentFeatureImpressionId="<%= parentImpressionId %>" parentVariantId="<%= parentVariantId %>" cacheId="<%= parentImpressionId %>" itemCount="<%=maxItems%>">
 		<% 		
