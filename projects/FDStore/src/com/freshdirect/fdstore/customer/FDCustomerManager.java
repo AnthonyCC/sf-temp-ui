@@ -3965,4 +3965,18 @@ public class FDCustomerManager {
 			throw new FDResourceException(re, "Cannot talk to MailerGatewaySB");
 		}
 	}
+	
+	public static void authorizeSale(String salesId, boolean force) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			 sb.authorizeSale(salesId, force);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
 }

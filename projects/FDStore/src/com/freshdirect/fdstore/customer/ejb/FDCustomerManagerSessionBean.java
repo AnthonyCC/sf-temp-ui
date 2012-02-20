@@ -2034,6 +2034,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			// !!! log activity
 
 			FDOrderI fdOrder = getOrder(identity, saleId);
+			
 			if (EnumSaleStatus.NOT_SUBMITTED.equals(fdOrder.getOrderStatus())
 					&& EnumTransactionSource.WEBSITE.equals(order
 							.getTransactionSource())) {
@@ -2270,7 +2271,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			// authorize the sale
 			PaymentManagerSB paymentManager = this.getPaymentManagerHome()
 					.create();
-			paymentManager.authorizeSaleRealtime(saleId);
+			if(EnumSaleStatus.AUTHORIZATION_FAILED.equals(fdOrder.getOrderStatus())) {
+				paymentManager.authorizeSale(saleId, true);
+			} else {
+				paymentManager.authorizeSaleRealtime(saleId);
+			}
 
 			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.MODIFY_ORDER);
 			rec.setChangeOrderId(saleId);

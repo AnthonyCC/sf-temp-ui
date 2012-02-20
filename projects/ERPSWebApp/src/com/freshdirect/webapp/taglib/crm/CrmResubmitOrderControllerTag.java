@@ -114,7 +114,7 @@ public class CrmResubmitOrderControllerTag extends AbstractControllerTag {
 				  now.after(order.getDeliveryReservation().getStartTime())
 				 ) || EnumSaleStatus.AUTHORIZATION_FAILED.equals(order.getOrderStatus())
 			   ){
-				FDCustomerManager.authorizeSale(this.orderId);
+				FDCustomerManager.authorizeSale(this.orderId, true);
 			}
 			else {
 				results.addError(new ActionError("order_status", "This order is not in the proper state to be authorized."));
