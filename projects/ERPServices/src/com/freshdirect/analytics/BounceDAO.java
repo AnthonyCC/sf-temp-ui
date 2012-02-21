@@ -38,9 +38,9 @@ public class BounceDAO {
 			"type in ('DELIVERYINFO', 'CHECKOUT','RESERVED_SLOT') and to_char(delivery_date, 'mm/dd/yyyy') = ? and zone=? group by  zone, cutoff,createdate " +
 			"order by  createdate  asc";
 	
-	private static final String BOUNCE_SELECT_BYZONE = "select count(distinct(customer_id)) cnt, zone, cutoff from mis.bounce_event where status = 'NEW' and " +
-			"type in ('DELIVERYINFO', 'CHECKOUT','RESERVED_SLOT') and to_char(delivery_date, 'mm/dd/yyyy') = ? group by  zone, cutoff " +
-			"order by zone,cutoff  asc";
+	private static final String BOUNCE_SELECT_BYZONE = "select count(distinct(customer_id)) cnt, zone, cutoff,sector from mis.bounce_event where status = 'NEW' and " +
+			"type in ('DELIVERYINFO', 'CHECKOUT','RESERVED_SLOT') and to_char(delivery_date, 'mm/dd/yyyy') = ? group by  zone, cutoff,sector " +
+			"order by zone,cutoff,sector  asc";
 	
 	
 	
@@ -159,6 +159,7 @@ public class BounceDAO {
 		    		data.setCutOff(new Date(rs.getTimestamp("cutoff").getTime()));
 		    		data.setCutoffTimeFormatted(df.format(new Date(rs.getTimestamp("cutoff").getTime())));
 		    		data.setZone(rs.getString("zone"));
+		    		data.setSector(rs.getString("sector"));
 		    		dataList.add(data);
 		    		
 		    	}

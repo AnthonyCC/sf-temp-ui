@@ -3,6 +3,7 @@ package com.freshdirect.analytics;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import weblogic.auddi.util.Logger;
@@ -50,4 +51,14 @@ public class OrderRateUtil {
 		return cal.getTime();
 		
 	}
+	public static Date getSample(Calendar cal,  List<Date> holidays)
+	{
+		cal.add(Calendar.DATE, -7);
+		while(holidays.indexOf(cal.getTime())!=-1)
+		{
+			cal.add(Calendar.DATE, -7);
+		}	
+		return cal.getTime();
+	}
+	
 }

@@ -124,6 +124,7 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 				Date expectedSoldTime = OrderRateUtil.addTime(vo.getSnapshotTime());
 				
 				float rate = 0;
+				float projected = 0;
 				boolean done = false, evaluate = true;
 				if(orderCount - capacity <0 && (orderCount+vo.getOrderCount() - capacity) >=0)
 				{
@@ -142,7 +143,9 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 						if(capacityMap.get(range7).get(vo.getZone()).get(snapshot7)!=null
 								 && capacityMap.get(range14).get(vo.getZone()).get(snapshot14)!=null)
 						{
-							rate += OrderRateUtil.roundValue( new Float(capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[1]+ capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[1]) /2);
+							projected = new Float(capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[1] + capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[1]) / 2;
+							if(capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[0] + capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[0] > 0)
+								rate += OrderRateUtil.roundValue(new Float( projected  * vo.getCapacity() / ((capacityMap.get(range7).get(vo.getZone()).get(snapshot7)[0]+ capacityMap.get(range14).get(vo.getZone()).get(snapshot14)[0])/2)));
 							
 							vo.setOrdersExpected(rate);
 							if((orderCount + vo.getOrderCount() - capacity) <0 && (orderCount + vo.getOrderCount() + rate) - capacity >=0 && evaluate)

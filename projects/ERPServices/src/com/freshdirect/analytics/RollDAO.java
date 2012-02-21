@@ -38,9 +38,9 @@ public class RollDAO {
 			"where to_char(delivery_date, 'mm/dd/yyyy') = ? and zone=? group by zone, cutoff,  createdate " +
 			"order by  createdate asc";
 	
-	private static final String ROLL_SELECT_BYZONE =" select count(distinct(customer_id)) cnt, zone, cutoff from mis.roll_event " +
-			"where to_char(delivery_date, 'mm/dd/yyyy') = ? group by zone, cutoff" +
-			" order by  zone,cutoff";
+	private static final String ROLL_SELECT_BYZONE =" select count(distinct(customer_id)) cnt, zone, cutoff, sector from mis.roll_event " +
+			"where to_char(delivery_date, 'mm/dd/yyyy') = ? group by zone, cutoff, sector" +
+			" order by  zone,cutoff, sector";
 	
 	public static void insert(Connection conn, List<RollEvent> roll) 
 	{
@@ -156,6 +156,7 @@ public class RollDAO {
 		    		data.setCutOff(new Date(rs.getTimestamp("cutoff").getTime()));
 		    		data.setCutoffTimeFormatted(df.format(new Date(rs.getTimestamp("cutoff").getTime())));
 		    		data.setZone(rs.getString("zone"));
+		    		data.setSector(rs.getString("sector"));
 		    		dataList.add(data);
 		    		
 		    	}

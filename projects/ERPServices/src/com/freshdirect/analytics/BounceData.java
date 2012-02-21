@@ -6,6 +6,7 @@ public class BounceData {
 
 	private int cnt;
 	private String zone;
+	private String sector;
 	private Date cutOff;
 	private String type;
 	private Date snapshotTime;
@@ -54,6 +55,12 @@ public class BounceData {
 	}
 	public void setSnapshotTimeFormatted(String snapshotTimeFormatted) {
 		this.snapshotTimeFormatted = snapshotTimeFormatted;
+	}
+	public String getSector() {
+		return sector;
+	}
+	public void setSector(String sector) {
+		this.sector = sector;
 	}
 	
 }

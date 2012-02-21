@@ -7,6 +7,13 @@ public class OrderData {
 	private float orderCount;
 	private String cutoff;
 	private String zone;
+	private String cutoffTimeFormatted;
+	public String getCutoffTimeFormatted() {
+		return cutoffTimeFormatted;
+	}
+	public void setCutoffTimeFormatted(String cutoffTimeFormatted) {
+		this.cutoffTimeFormatted = cutoffTimeFormatted;
+	}
 	
 	public float getOrderCount() {
 		return orderCount;

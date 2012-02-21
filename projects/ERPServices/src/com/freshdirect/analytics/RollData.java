@@ -6,6 +6,7 @@ public class RollData {
 
 	private int cnt;
 	private String zone;
+	private String sector;
 	private Date cutOff;
 	private Date time;
 	private Date snapshotTime;
@@ -53,6 +54,12 @@ public class RollData {
 	}
 	public void setTime(Date time) {
 		this.time = time;
+	}
+	public String getSector() {
+		return sector;
+	}
+	public void setSector(String sector) {
+		this.sector = sector;
 	}
 	
 }

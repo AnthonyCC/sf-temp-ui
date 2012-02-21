@@ -55,16 +55,18 @@ public class OrderRateDAO {
 			"order by area,cutoff_datetime  asc";
 	
 	
-	private static String GET_CURRENT_CAPACITY_CUTOFF = "select sum(capacity) capacity,zone,cutoff from mis.order_rate r where r.delivery_date = to_date(?,'mm/dd/yyyy') AND r.snapshot_time = " +
-			"(select max(snapshot_time) from mis.order_rate where DELIVERY_DATE = r.delivery_date and cutoff = r.cutoff) group by zone,cutoff";
+	private static String GET_CURRENT_CAPACITY_CUTOFF = "select sum(capacity) capacity,zone,cutoff from mis.order_rate o, (select max(snapshot_time) sh, " +
+			"O.CUTOFF co from mis.order_rate o where o.delivery_date = to_date(?,'mm/dd/yyyy') group by O.CUTOFF) t  where o.delivery_date = " +
+			"to_date(?,'mm/dd/yyyy') AND o.snapshot_time = t.sh and o.cutoff = t.co group by zone, cutoff ";
 
-	private static String GET_CURRENT_CAPACITY_TIMESLOT = "select sum(capacity) capacity, sum(orders_expected) projected, zone, timeslot_start, cutoff from mis.order_rate r where r.delivery_date = to_date(?,'mm/dd/yyyy') and zone =? AND r.snapshot_time = " +
-			"(select max(snapshot_time) from mis.order_rate where DELIVERY_DATE = r.delivery_date and cutoff = r.cutoff) group by zone, timeslot_start, cutoff";
+	private static String GET_CURRENT_CAPACITY_TIMESLOT = "select sum(capacity) capacity, sum(orders_expected) projected, zone, timeslot_start, cutoff from mis.order_rate o," +
+			"(select max(snapshot_time) sh, O.CUTOFF co from mis.order_rate o where o.delivery_date = to_date(?,'mm/dd/yyyy') and " +
+			"o.zone = ? group by O.CUTOFF) t  where o.delivery_date = to_date(?,'mm/dd/yyyy') and zone =? AND " +
+			"o.snapshot_time = t.sh and o.cutoff = t.co group by zone, timeslot_start, cutoff";
 	
-	private static String GET_PROJECTED_ORDERS_CUTOFF= "select sum(orders_expected) projected,zone,cutoff from mis.order_rate r where r.delivery_date = to_date(?,'mm/dd/yyyy') AND r.snapshot_time = " +
-			"(select max(snapshot_time) from mis.order_rate where DELIVERY_DATE = r.delivery_date and cutoff = r.cutoff) group by zone,cutoff";
-	
-	
+	private static String GET_PROJECTED_ORDERS_CUTOFF= "select sum(orders_expected) projected,zone,cutoff from mis.order_rate o, (select max(snapshot_time) sh, " +
+			"O.CUTOFF co from mis.order_rate o where o.delivery_date = to_date(?,'mm/dd/yyyy') group by O.CUTOFF) t  where o.delivery_date = " +
+			"to_date(?,'mm/dd/yyyy')   AND o.snapshot_time = t.sh and o.cutoff = t.co group by zone,cutoff";
 	
 	private static final String ORDER_RATE_SNAPSHOT_INSERT = "INSERT INTO MIS.ORDER_RATE(CAPACITY, ZONE, CUTOFF, " +
 			"TIMESLOT_START, TIMESLOT_END, ORDER_COUNT,PROJECTED_COUNT, DELIVERY_DATE, SNAPSHOT_TIME, ACTUAL_SO, PROJECT_SO, WEIGHTED_PROJECTED_COUNT, ORDERS_EXPECTED) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -78,6 +80,8 @@ public class OrderRateDAO {
     
 	private static final String HOLIDAY_QUERY = "select sum(order_count) as oCount, delivery_date from MIS.order_rate group by delivery_date having sum(order_count) = 0";
 
+	private static final String HOLIDAY_QUERY_EX = "select delivery_date from mis.order_rate_holiday";
+	
 	private static final String CAPACITY_QUERY = "select capacity,order_count, " +
 			"delivery_date, timeslot_start, timeslot_end, zone, snapshot_time from MIS.order_rate where delivery_date in (%s)";
 	
@@ -85,11 +89,11 @@ public class OrderRateDAO {
 			"delivery_date, timeslot_start, timeslot_end, zone, snapshot_time from MIS.order_rate where delivery_date in ( ?, ?) and zone = ?";
 			
 	private static final String CURRENT_DATE_ORDER_RATE = "select  snapshot_time, zone, cutoff, sum(order_count) order_count, " +
-			"sum(capacity) capacity from mis.order_rate where to_char(snapshot_time,'mm/dd/yyyy') =  ? and delivery_date = to_date(?,'mm/dd/yyyy') " +
+			"sum(capacity) capacity from mis.order_rate where snapshot_time between to_date(?,'mm/dd/yyyy')  and  to_date(?,'mm/dd/yyyy') and delivery_date = to_date(?,'mm/dd/yyyy') " +
 			"and zone = ? group by snapshot_time, cutoff, zone order by snapshot_time, cutoff, zone asc";
 	
 	private static final String CURRENT_DATE_ORDER_RATE_EX = "select  snapshot_time, sum(order_count) order_count, sum(capacity) capacity from mis.order_rate " +
-			"where to_char(snapshot_time,'mm/dd/yyyy') =  ? and delivery_date = to_date( ?,'mm/dd/yyyy') group by snapshot_time order by snapshot_time asc";
+			"where snapshot_time between to_date(?,'mm/dd/yyyy')  and  to_date(?,'mm/dd/yyyy') and delivery_date = to_date( ?,'mm/dd/yyyy') group by snapshot_time order by snapshot_time asc";
 	
 	private static final String MAX_SNAPSHOT_DELIVERY_DATE = "select o.capacity, o.snapshot_time, o.timeslot_start, o.timeslot_end, o.cutoff, o.zone from " +
 			"mis.order_rate o ,(select max(snapshot_time) sh, O.CUTOFF co from mis.order_rate o where o.delivery_date = to_date(?,'mm/dd/yyyy') " +
@@ -238,6 +242,7 @@ public class OrderRateDAO {
 		try {
 				ps = conn.prepareStatement(GET_CURRENT_CAPACITY_CUTOFF);
 				ps.setString(1, deliveryDate);
+				ps.setString(2, deliveryDate);
 				rs = ps.executeQuery();
 				
 				while(rs.next())
@@ -282,6 +287,8 @@ public class OrderRateDAO {
 				ps = conn.prepareStatement(GET_CURRENT_CAPACITY_TIMESLOT);
 				ps.setString(1, deliveryDate);
 				ps.setString(2, zone);
+				ps.setString(3, deliveryDate);
+				ps.setString(4, zone);
 				rs = ps.executeQuery();
 				
 				while(rs.next())
@@ -323,10 +330,9 @@ public class OrderRateDAO {
 		PreparedStatement ps =null;ResultSet rs = null;
 		DateFormat df = new SimpleDateFormat("hh:mm a");
 		try {
-			LOGGER.info("Running query"+GET_PROJECTED_ORDERS_CUTOFF);
-			
 				ps = conn.prepareStatement(GET_PROJECTED_ORDERS_CUTOFF);
 				ps.setString(1, deliveryDate);
+				ps.setString(2, deliveryDate);
 				rs = ps.executeQuery();
 				
 				while(rs.next())
@@ -583,6 +589,37 @@ public class OrderRateDAO {
 		return holidayMap;
 	}
 	
+	public static List<Date>  getHolidays(Connection conn)
+	{
+		PreparedStatement ps =null;ResultSet rs = null;
+		List<Date> holidays = new ArrayList<Date>();
+		
+		try
+		{
+			ps = conn.prepareStatement(HOLIDAY_QUERY_EX); 
+			rs = ps.executeQuery();
+			while(rs.next())
+			{
+				holidays.add(new Date(rs.getDate("delivery_date").getTime()));
+			}
+		}
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally{
+			try 
+			{
+				rs.close();
+				ps.close();
+			} 
+			catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return holidays;
+	}
 	
 	public static Map<Date, Float> getAverageOrderRate(Connection conn, Date snapshot7, Date startTime7, Date endTime7,
 			 Date snapshot14, Date startTime14, Date endTime14, OrderRateVO vo)
@@ -922,7 +959,8 @@ public class OrderRateDAO {
 		    	ps = conn.prepareStatement(CURRENT_DATE_ORDER_RATE);
 		    	ps.setString(1, currentDate);
 		    	ps.setString(2, deliveryDate);
-		    	ps.setString(3, zone);
+		    	ps.setString(3, deliveryDate);
+		    	ps.setString(4, zone);
 		    	rs = ps.executeQuery();
 		    	Date snapshotTime = null;
 		    	while(rs.next())
@@ -944,6 +982,7 @@ public class OrderRateDAO {
 				 ps = conn.prepareStatement(CURRENT_DATE_ORDER_RATE_EX);
 			    	ps.setString(1, currentDate);
 			    	ps.setString(2, deliveryDate);
+			    	ps.setString(3, deliveryDate);
 			    	rs = ps.executeQuery();
 			    	Date snapshotTime = null;
 			    	while(rs.next())
@@ -1007,6 +1046,8 @@ public class OrderRateDAO {
 					OrderData data = new OrderData();
 					data.setOrderCount(rs.getFloat("oCount"));
 					data.setCutoff(df.format(new Date(rs.getTimestamp("cutoff").getTime())));
+					data.setCutoffTimeFormatted(df.format(new Date(rs.getTimestamp("cutoff").getTime())));
+					
 					data.setZone(rs.getString("zone"));
 					dataList.add(data);
 				}
