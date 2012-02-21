@@ -15,7 +15,7 @@
 		<links name="supervisor">
 			account_deactivations.jsp,payment_exceptions_list.jsp,pending_credits_list.jsp,approve_credit.jsp,order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,refusal_list.jsp,
 			pending_return_list.jsp,order_cc_authorization.jsp,address_exception.jsp,geocode_exception.jsp,make_good_order.jsp,bad_account_list.jsp,remove_bad_account.jsp,add_bad_account.jsp,
-			broken_acct_list.jsp,acct_lookup.jsp,acct_lookup_auth.jsp,canned_text.jsp
+			broken_acct_list.jsp,acct_lookup.jsp,acct_lookup_auth.jsp,canned_text.jsp,crm_auths_view.jsp
 		</links>
 		<links name="admintools">
 			resubmit_orders.jsp,resubmit_customers.jsp,delete_reservations.jsp,mass_cancellation.jsp,mass_returns.jsp,delivery_restrictions.jsp,platterForm.jsp,restrictionForm.jsp,restrictionForm_save.jsp,address_restrictions.jsp,addrRestrictionForm.jsp,
@@ -66,7 +66,7 @@
 			customer_profile_summary.jsp,customer_profile.jsp,giftcard_summary.jsp
 		</links>
 		<links name="customeraccount">add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,place_alert.jsp,customer_alert_list.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,set_profile_attr.jsp,username_password_option.jsp</links>
-		<links name="supervisor">account_deactivations.jsp,payment_exceptions_list.jsp,pending_credits_list.jsp,order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,refusal_list.jsp,pending_return_list.jsp,order_cc_authorization.jsp,address_exception.jsp,geocode_exception.jsp,make_good_order.jsp,bad_account_list.jsp,remove_bad_account.jsp,add_bad_account.jsp,broken_acct_list.jsp,acct_lookup.jsp,acct_lookup_auth.jsp,canned_text.jsp</links>
+		<links name="supervisor">account_deactivations.jsp,payment_exceptions_list.jsp,pending_credits_list.jsp,order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,refusal_list.jsp,pending_return_list.jsp,order_cc_authorization.jsp,address_exception.jsp,geocode_exception.jsp,make_good_order.jsp,bad_account_list.jsp,remove_bad_account.jsp,add_bad_account.jsp,broken_acct_list.jsp,acct_lookup.jsp,acct_lookup_auth.jsp,canned_text.jsp,crm_auths_view.jsp</links>
 		<links name="admintools">resubmit_orders.jsp,resubmit_customers.jsp,delete_reservations.jsp,mass_cancellation.jsp,mass_returns.jsp,delivery_restrictions.jsp,platterForm.jsp,restrictionForm.jsp,restrictionForm_save.jsp,address_restrictions.jsp,addrRestrictionForm.jsp,settlement_batch.jsp,top_faqs.jsp,click_to_call.jsp,search_orders_by_sku.jsp,modify_orders_by_sku.jsp,alcohol_restrictions.jsp,manage_alcohol_restrictions.jsp</links>
 		<links name="cases">summary_case_actions.jsp,new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>		
 		
@@ -113,7 +113,7 @@
 		<links name="customer">summary.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,account_details.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,credit_history.jsp,promotion_history.jsp,promotion_popup.jsp,place_order_build.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,delivery_pass.jsp,customer_profile_summary.jsp,customer_profile.jsp,giftcard_summary.jsp</links>
 		<links name="customeraccount">add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,place_alert.jsp,customer_alert_list.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,username_password_option.jsp</links>
 
-		<links name="supervisor">account_deactivations.jsp,payment_exceptions_list.jsp,pending_credits_list.jsp,approve_credit.jsp,order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,geocode_exception.jsp,make_good_order.jsp,broken_acct_list.jsp</links>
+		<links name="supervisor">account_deactivations.jsp,payment_exceptions_list.jsp,pending_credits_list.jsp,approve_credit.jsp,order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,geocode_exception.jsp,make_good_order.jsp,broken_acct_list.jsp,crm_auths_view.jsp</links>
 		<links name="promotions">promo_view.jsp,promo_details.jsp,promotion_popup.jsp,export_promo_list.jsp</links>		
 		<links name="transportation">crmLateIssues.jsp,VSStatusLog.jsp,campaigns.jsp,add_campaign.jsp,delete_campaign.jsp,update_campaign.jsp,vsDetails.jsp,vsRedial.jsp</links>
 
@@ -254,7 +254,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 		<links name="quickshop">
 			quickshop_index.jsp,all_lists.jsp,ccl_item_modify.jsp,every_item.jsp,item_modify.jsp,recipes.jsp,shop_from_list.jsp,shop_from_order.jsp,makegood_from_order.jsp
 		</links>
-		<links name="supervisor">account_deactivations.jsp,payment_exceptions_list.jsp,pending_credits_list.jsp,order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,refusal_list.jsp,pending_return_list.jsp,order_cc_authorization.jsp,geocode_exception.jsp,broken_acct_list.jsp</links>		
+		<links name="supervisor">account_deactivations.jsp,payment_exceptions_list.jsp,pending_credits_list.jsp,order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,refusal_list.jsp,pending_return_list.jsp,order_cc_authorization.jsp,geocode_exception.jsp,broken_acct_list.jsp,crm_auths_view.jsp</links>		
 		<links name="customer">customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,order_transaction_details.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,credit_history.jsp,promotion_history.jsp,promotion_popup.jsp,profile_list.jsp,activity_log.jsp,delivery_pass.jsp,place_order_build.jsp</links>
 		<links name="returns">approve_credit.jsp,reverse_credit.jsp,issue_credit.jsp,issue_credit_confirm.jsp,return_order.jsp</links>
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
