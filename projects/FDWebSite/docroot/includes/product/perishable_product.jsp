@@ -202,12 +202,12 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 			%>
 <%-- **************************************** END Shelf Life ****************************************************************************** --%>
 			<%-- [APPDEV-2241] Carousel STARTS here --%>
-			<div id="ymal_pdtl_container" style="padding-top: 32px; width: 218px;">
+			<div id="ymal_pdtl_container" class="carousel-box" style="padding-top: 32px;">
 				<div style="text-align: center; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px dotted gray;">
 					<img src="/media_stat/images/template/ymal_title.gif" alt="YMAL" width="140" height="12" style="border: 0">
 				</div>
 					<fd:ProductGroupRecommender itemCount="6" siteFeature="YMAL_PDTL" facility="ymal_pdtl" currentNode="<%= __prd %>" id="recommendedProducts" excludeAlcoholicContent="<%= true %>" ymalSource="<%= __prd %>">
-					<display:Carousel id="cat2_carousel" carouselId="cat2_carousel" width="140" numItems="1" showCategories="false" itemsToShow="<%= recommendedProducts.getProducts() %>" trackingCode="ymal_pdtl" maxItems="3" style="margin-left: auto; margin-right: auto;">
+					<display:Carousel id="cat2_carousel" carouselId="cat2_carousel" width="150" numItems="1" showCategories="false" itemsToShow="<%= recommendedProducts.getProducts() %>" trackingCode="ymal_pdtl" maxItems="3" style="margin-left: auto; margin-right: auto;">
 						<%
 							final ProductModel __c_prd = (ProductModel) currentItem;
 						%>
@@ -221,7 +221,7 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 							</div>
 							<display:ProductPrice impression="<%= new ProductImpression(__c_prd) %>" showDescription="true"/>
 							<%-- QUICK BUY SECTION START --%>
-							<img id="qbButton-<%= webId %>" class="qbButton" style="display: inline-block; position: absolute; left: 10px; top: 65px;" src="/media_stat/images/quickbuy/quickbuy_button_hover.gif">
+							<img id="qbButton-<%= webId %>" class="qbButton" style="display: inline-block; position: absolute; left: 15px; top: 65px;" src="/media_stat/images/quickbuy/quickbuy_button_hover.gif">
 							<script>
 								YAHOO.util.Event.onDOMReady(function() {
 									FD_QuickBuy.decorate('hotspot-<%= webId %>', ['qbButton-<%= webId %>', 'hotspot-<%= webId %>'], {
