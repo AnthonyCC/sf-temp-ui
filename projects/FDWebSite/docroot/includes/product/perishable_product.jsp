@@ -221,7 +221,7 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 							</div>
 							<display:ProductPrice impression="<%= new ProductImpression(__c_prd) %>" showDescription="true"/>
 							<%-- QUICK BUY SECTION START --%>
-							<img id="qbButton-<%= webId %>" class="qbButton" style="display: inline-block; position: absolute; left: 18px; top: 65px;" src="/media_stat/images/quickbuy/quickbuy_button_hover.gif">
+							<img id="qbButton-<%= webId %>" class="qbButton" style="display: inline-block; position: absolute; left: 10px; top: 65px;" src="/media_stat/images/quickbuy/quickbuy_button_hover.gif">
 							<script>
 								YAHOO.util.Event.onDOMReady(function() {
 									FD_QuickBuy.decorate('hotspot-<%= webId %>', ['qbButton-<%= webId %>', 'hotspot-<%= webId %>'], {
