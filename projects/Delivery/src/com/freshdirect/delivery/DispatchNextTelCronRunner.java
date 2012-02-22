@@ -86,7 +86,8 @@ public class DispatchNextTelCronRunner {
 				processDate = DateUtil.truncate(Calendar.getInstance()).getTime();
 			}			
 			if(!ErpServicesProperties.isAirclicBlackhole())	{				
-				 processNextelDataSync(processDate);	
+				 //processNextelDataSyncOld(processDate);
+				 processNextelDataSync(processDate);
 			}
 		} catch (Exception e) {
 			StringWriter sw = new StringWriter();
@@ -102,7 +103,7 @@ public class DispatchNextTelCronRunner {
 	 * @param processDate
 	 * @throws Exception
 	 */
-	private static void processNextelDataSync(Date processDate) throws Exception {
+	private static void processNextelDataSyncOld(Date processDate) throws Exception {
 		try {
 			lookupAirclickrHome();
 			AirclicManagerSB sb = airclicHome.get().create();
@@ -162,6 +163,60 @@ public class DispatchNextTelCronRunner {
 		}
 	}
 	
+	/**
+	 * @param processDate
+	 * @throws Exception
+	 */
+	private static void processNextelDataSync(Date processDate) throws Exception {
+		try {
+			lookupAirclickrHome();
+			AirclicManagerSB sb = airclicHome.get().create();
+			
+			LOGGER.info( "Starting to sync dispatch resource nexttel data" );
+			
+			Map<String, AirclicNextelVO> nextTelMapping = sb.getNXOutScan(processDate);
+			
+			Map<String, DispatchNextTelVO> dispatchNexTelMapping = sb.getDispatchResourceNextTel(processDate);			
+			
+			List<DispatchNextTelVO> updateResourceNexTelLst = new ArrayList<DispatchNextTelVO>();
+			List<DispatchNextTelVO> noNextelDataLst = new ArrayList<DispatchNextTelVO>();
+
+			for (Map.Entry<String, DispatchNextTelVO> resourceEntry : dispatchNexTelMapping.entrySet()) {
+				if (nextTelMapping.containsKey(resourceEntry.getKey())) {
+					DispatchNextTelVO _resourceNexTel = resourceEntry.getValue();
+					AirclicNextelVO _airclicNexTelInfo = nextTelMapping.get(resourceEntry.getKey());
+					if (_airclicNexTelInfo.getNextTelNo() != null){						
+						if(!_airclicNexTelInfo.getNextTelNo().equalsIgnoreCase(_resourceNexTel.getNextTelNo())) {
+							_resourceNexTel.setNextTelNo(_airclicNexTelInfo.getNextTelNo());
+							updateResourceNexTelLst.add(_resourceNexTel);
+						}
+					}
+				} else if (resourceEntry.getValue().getNextTelNo() == null){
+					noNextelDataLst.add(resourceEntry.getValue());
+				}
+			}
+			LOGGER.info( "Updating dispatch resource nexttel data >> "+ updateResourceNexTelLst.size() + " count.");
+			if(updateResourceNexTelLst.size() > 0) {				
+				sb.updateEmployeeNexTelData(updateResourceNexTelLst);
+			}
+			sendReportMail(processDate, updateResourceNexTelLst, null, noNextelDataLst);
+			LOGGER.info( "Finished syncing dispatch resource nexttel data." );			
+			
+		} catch ( CreateException e ) {
+			invalidateAirclicHome();
+			throw new Exception(e);			
+		} catch ( RemoteException e ) {
+			invalidateAirclicHome();
+			throw new Exception(e);
+		} catch (DlvResourceException e) {				
+			e.printStackTrace();
+		} catch ( FDResourceException e ) {
+			invalidateAirclicHome();
+			e.printStackTrace();
+			throw new Exception(e);
+		}
+	}
+	
 	
 	private static void sendReportMail(Date processDate,List<DispatchNextTelVO> updateResourceNexTelLst, List<String> noCNLst, List<DispatchNextTelVO> noNextelDataLst ) {
 	
@@ -185,6 +240,17 @@ public class DispatchNextTelCronRunner {
 				}
 				buff.append("</table>");
 			}*/
+			if(updateResourceNexTelLst != null && updateResourceNexTelLst.size() > 0){
+				buff.append("<table border=\"1\" valign=\"top\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\">");
+				buff.append("<tr>").append("<th>").append("Employee").append("</th>").append("<th>").append("PhoneNumber").append("</th>").append("</tr>");
+				Iterator<DispatchNextTelVO> itr = updateResourceNexTelLst.iterator();
+				while(itr.hasNext()){
+					DispatchNextTelVO _nextelVO = itr.next();
+					buff.append("<tr>").append("<td>").append(_nextelVO.getEmployeeId()).append("</td>").append("<td>").append(_nextelVO.getNextTelNo()).append("</td>").append("</tr>");				
+				}
+				buff.append("</table>");
+			}
+			
 			if(noCNLst != null && noCNLst.size() > 0){
 				buff.append("&nbsp;&nbsp;&nbsp;<table border=\"1\" valign=\"top\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\">");
 				buff.append("<tr>").append("<th>").append("Handheld(s) with no matching CN(s)").append("</br>").append(" in Transp Asset list").append("</th>").append("</tr>");			
