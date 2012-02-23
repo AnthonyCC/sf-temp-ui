@@ -914,9 +914,9 @@ function getFrameHeight(frameId) {
 					contextMBwindowwrapper = Modalbox.MBwindowwrapper;
 				}
 				window.scrollTo(0,0);
-				this.contextMBwindow.style.width = 'auto';
-				this.contextMBwindow.style.height = 'auto';
-				this.contextMBwindow.style.left = parseInt((contextMBoverlay.clientWidth-contextMBwindow.clientWidth)/2)+'px';
+				contextMBwindow.style.width = 'auto';
+				contextMBwindow.style.height = 'auto';
+				contextMBwindow.style.left = parseInt((contextMBoverlay.clientWidth-contextMBwindow.clientWidth)/2)+'px';
 
 
 				ccSettings_common.topColour = "#ffffff";
