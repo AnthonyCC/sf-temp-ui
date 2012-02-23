@@ -835,11 +835,37 @@ function getFrameHeight(frameId) {
 		autoPad: true
 	};
 	/* display an overlay containing a remote page */
-	function doRemoteOverlay(olURL) {
+	function globalDoRemoteOverlay(olURL) {
 		var olURL = olURL || '';
 		if (olURL == '') { return false; }
+		
+		//make this quickbuy capable (of override)
+		var contextMB = null;
+		var contextMBoverlay = null;
+		var contextMBwindow = null;
+		var contextMBwindowwrapper = null;
 
-		Modalbox.show(olURL, {
+		if (window.parent.document.quickbuyPanel) {
+			if (window.parent['Modalbox']) {
+				contextMB = window.parent['Modalbox'];
+				contextMBoverlay = window.parent.Modalbox.MBoverlay;
+				contextMBwindow = window.parent.Modalbox.MBwindow;
+				contextMBwindowwrapper = window.parent.Modalbox.MBwindowwrapper;
+			}
+		} else {
+			if (Modalbox) {
+				contextMB = Modalbox;
+				contextMBoverlay = $('MB_overlay');
+				contextMBwindow = $('MB_window');
+				contextMBwindowwrapper = $('MB_windowwrapper');
+			}
+		}
+		if (contextMB == null) {
+			if (window.console && window.console.log) { console.log('Modalbox library not available.'); }
+			return false;
+		}
+
+		contextMB.show(olURL, {
 			loadingString: 'Loading Preview...',
 			closeValue: ' ',
 			closeString: 'Close Preview',
@@ -852,22 +878,69 @@ function getFrameHeight(frameId) {
 			centered: true,
 			overlayClose: true,
 			beforeLoad: function() {
-				$('MB_window').style.width = '150px';
-				$('MB_window').style.height = '150px';
-				$('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
+				var contextMB;
+				var contextMBwindow;
+				var contextMBoverlay;
+				var contextMBwindowwrapper;
+				if (window.parent.document.quickbuyPanel) {
+					contextMB = window.parent['Modalbox'];
+					contextMBoverlay = window.parent.Modalbox.MBoverlay;
+					contextMBwindow = window.parent.Modalbox.MBwindow;
+					contextMBwindowwrapper = window.parent.Modalbox.MBwindowwrapper;
+				} else {
+					contextMB = Modalbox;
+					contextMBoverlay = Modalbox.MBoverlay;
+					contextMBwindow = Modalbox.MBwindow;
+					contextMBwindowwrapper = Modalbox.MBwindowwrapper;
+				}
+				contextMBwindow.style.width = '150px';
+				contextMBwindow.style.height = '150px';
+				contextMBwindow.style.left = parseInt((contextMBoverlay.clientWidth-contextMBwindow.clientWidth)/2)+'px';
 			},
 			afterLoad: function() {
+				var contextMB;
+				var contextMBwindow;
+				var contextMBoverlay;
+				var contextMBwindowwrapper;
+				if (window.parent.document.quickbuyPanel) {
+					contextMB = window.parent['Modalbox'];
+					contextMBoverlay = window.parent.Modalbox.MBoverlay;
+					contextMBwindow = window.parent.Modalbox.MBwindow;
+					contextMBwindowwrapper = window.parent.Modalbox.MBwindowwrapper;
+				} else {
+					contextMB = Modalbox;
+					contextMBoverlay = Modalbox.MBoverlay;
+					contextMBwindow = Modalbox.MBwindow;
+					contextMBwindowwrapper = Modalbox.MBwindowwrapper;
+				}
 				window.scrollTo(0,0);
-				$('MB_window').style.width = 'auto';
-				$('MB_window').style.height = 'auto';
-				$('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
+				this.contextMBwindow.style.width = 'auto';
+				this.contextMBwindow.style.height = 'auto';
+				this.contextMBwindow.style.left = parseInt((contextMBoverlay.clientWidth-contextMBwindow.clientWidth)/2)+'px';
 
 
 				ccSettings_common.topColour = "#ffffff";
 				ccSettings_common.bottomColour = "#ffffff";
 				curvyCornersHelper('MB_frame', ccSettings_common);
 			},
-			afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
+			afterHide: function() {
+				var contextMB;
+				var contextMBwindow;
+				var contextMBoverlay;
+				var contextMBwindowwrapper;
+				if (window.parent.document.quickbuyPanel) {
+					contextMB = window.parent['Modalbox'];
+					contextMBoverlay = window.parent.Modalbox.MBoverlay;
+					contextMBwindow = window.parent.Modalbox.MBwindow;
+					contextMBwindowwrapper = window.parent.Modalbox.MBwindowwrapper;
+				} else {
+					contextMB = Modalbox;
+					contextMBoverlay = Modalbox.MBoverlay;
+					contextMBwindow = Modalbox.MBwindow;
+					contextMBwindowwrapper = Modalbox.MBwindowwrapper;
+				}
+				window.scrollTo(contextMB.initScrollX, contextMB.initScrollY);
+			}
 		});
 	}
 /* merge pending form submission */

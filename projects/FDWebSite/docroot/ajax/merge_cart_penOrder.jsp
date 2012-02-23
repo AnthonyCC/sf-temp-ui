@@ -143,7 +143,7 @@
 					<table style="width: 800px;">
 						<tr>
 							<td style="width: 30px; padding-left: 20px;">
-								<a href="#" id="" onclick="Modalbox.hide(); doRemoteOverlay('/ajax/merge_cart_penOrder_choice.jsp'); return false;"><img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP" /></a>
+								<a href="#" id="" onclick="Modalbox.hide(); globalDoRemoteOverlay('/ajax/merge_cart_penOrder_choice.jsp'); return false;"><img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP" /></a>
 							</td>
 							<td style="vertical-align: middle;"> Go back</td>
 							<td style="padding-right: 20px;">

@@ -225,7 +225,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		boolean hasPending = false;
 		boolean useMergePendingOverlay = false;
 
-		if (action != null && ("POST".equalsIgnoreCase(request.getMethod()))) {
+		//don't do this in CRM
+		if (!inCallCenter && action != null && ("POST".equalsIgnoreCase(request.getMethod()))) {
 
 			//check if user should see overlay (for only specific actions), not in CRM
 			if (("addToCart".equalsIgnoreCase(action) || "addMultipleToCart".equalsIgnoreCase(action)) 
@@ -795,12 +796,12 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		pageContext.setAttribute(id, cart);
 		pageContext.setAttribute(resultName, result);
 		
-		// if showing overlay, add js to page to make it display
-		if (useMergePendingOverlay) {
+		// if showing overlay, add js to page to make it display, not in CRM
+		if (!inCallCenter && useMergePendingOverlay) {
 			JspWriter out = pageContext.getOut();
 			try {
 				//print out method for overlay display
-				out.print("<script type=\"text/javascript\">doRemoteOverlay('/ajax/merge_cart_penOrder_choice.jsp');</script>");
+				out.print("<script type=\"text/javascript\">globalDoRemoteOverlay('/ajax/merge_cart_penOrder_choice.jsp');</script>");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

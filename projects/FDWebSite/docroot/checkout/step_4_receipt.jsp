@@ -14,19 +14,20 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<% //expanded page dimensions
-final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
-%>
-<%
+<% 
+	//expanded page dimensions
+	final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
+
 	/* this is necessary for the cart n tabs */
 	request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
 %>
-
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 <tmpl:insert template='/common/template/blank.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Order Placed</tmpl:put>
 <tmpl:put name='content' direct='true'>
 	<%
+		/* reset user to see mergePending overlay again */
+		user.setShowPendingOrderOverlay(true);
 		boolean _modifyOrderMode = false; 	
 		String _ordNum = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
 		if(session.getAttribute("MODIFIED" + _ordNum) != null && session.getAttribute("MODIFIED" + _ordNum).equals(_ordNum)) {

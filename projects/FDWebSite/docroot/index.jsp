@@ -160,71 +160,50 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 	%>      
 			<%@ include file="includes/home/i_intro_hdr.jspf"%>
 				<% if (user.getLevel() >= FDUserI.RECOGNIZED) { %>
-					<% int pendingOrderCount = 0;%>
-					<fd:OrderHistoryInfo id='orderHistoryInfo'>
 					<%
-					// also need to know how many orders the customer has that are not still pending
-					pendingOrderCount = 0;
-					for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
-						FDOrderInfoI orderInfo = (FDOrderInfoI) hIter.next();
-						if (orderInfo.isPending()) {
-							pendingOrderCount++;
-						}
-					} 			
-					if (orderHistoryInfo != null && orderHistoryInfo.size() != 0 && pendingOrderCount > 0) {
-					%>	<table width="100%" cellpadding="0" cellspacing="0" border="1" id="index_table_ordModify_1">
-						<%
-						for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
-							FDOrderInfoI orderInfo = (FDOrderInfoI) hIter.next();
-                            String ordDeliveryType = orderInfo.getDeliveryType().toString();
-                            //gift cards
-                            String gcCodePersonal = EnumDeliveryType.GIFT_CARD_PERSONAL.getCode();
-                            String gcCodeCorporate = EnumDeliveryType.GIFT_CARD_CORPORATE.getCode();
-                            //robin hood
-                            String donatePersonal = EnumDeliveryType.DONATION_INDIVIDUAL.getCode();
-                            String donateCorporate = EnumDeliveryType.DONATION_BUSINESS.getCode();	      				     
-                            if (
-                            	orderInfo.isModifiable() && orderInfo.getOrderStatus() != EnumSaleStatus.REFUSED_ORDER 
-       							&& (!(ordDeliveryType).equals(gcCodePersonal) && !(ordDeliveryType).equals(gcCodeCorporate))
-       							&& (!(ordDeliveryType).equals(donatePersonal) && !(ordDeliveryType).equals(donateCorporate))
-       							&& ( new Date().before(orderInfo.getDeliveryCutoffTime()))
-       						){
-	      				%>
-								<tr>
-									<td><img src="/media_stat/images/layout/clear.gif" width="310" height="6"></td>
-									<td><img src="/media_stat/images/layout/clear.gif" width="150" height="6"></td></tr>
-								<tr>
-									<td colspan="2" bgcolor="#cccccc"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
-								</tr>
-								<tr>
-									<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td>
-								</tr>
-								<tr>
-									<td>
-										<font class="text9"><b>Your order will be delivered on:</b></font> 
-										<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>">
-										<%= new SimpleDateFormat("EEE MM/dd/yy").format(orderInfo.getRequestedDate()) %> 
-										@ <%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%></a>
-									</td>
-									<td align="right">
-										<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
-											<font class="text9">To make changes, <a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>">click here</a>.</font>
-										<% } else { %>
-											&nbsp;
-										<% } %>
-									</td>
-								</tr>
-							<% } else if (orderInfo.getOrderStatus() == EnumSaleStatus.REFUSED_ORDER) { %>
-	      					       <tr><td colspan="2" class="text10rbold"><b>Pending Order: Please contact us at <%=user.getCustomerServiceContact()%> as soon as possible to reschedule delivery.</b></td></tr>	
-	      					<% }
-							break;
-	      				} 
-	      				%>
-	      
-	      				</table>
-	      		     <% } %>
-	      		     </fd:OrderHistoryInfo>
-		<% }
+						int pendingOrderCount = 0;
+						List<FDOrderInfoI> validPendingOrders = new ArrayList<FDOrderInfoI>();
+						validPendingOrders.addAll(user.getPendingOrders());
+						//set count (in case this variable is needed elsewhere (and we'll just use it now as well)
+						pendingOrderCount = validPendingOrders.size();
+
+						if (pendingOrderCount > 0) {
+
+							FDOrderInfoI orderInfo = (FDOrderInfoI) validPendingOrders.get(0);
+
+					%>
+						<div class="index_ordMod_cont" id="index_table_ordModify_0">
+		   					<div class="index_ordMod_cont_child">
+								<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="orderNumb"><%= orderInfo.getErpSalesId() %></a>
+								<span style="padding-left: 30px;"><span class="dow"><%= new SimpleDateFormat("EEEEE").format(orderInfo.getRequestedDate()) %></span> <%= new SimpleDateFormat("MM/dd/yyyy").format(orderInfo.getRequestedDate()) %> 
+									<span class="pipeSep">|</span> <%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%></span></a>
+	
+								<div class="ordModifyButCont">
+									<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
+										<form name="modify_order" id="modify_order" method="POST" action="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">
+									<% } %>
+									<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="">view details</a>&nbsp;
+									<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
+											<input type="hidden" name="orderId" value="<%= orderInfo.getErpSalesId() %>" />
+											<input type="hidden" name="action" value="modify" />
+											<table class="butCont fright" style="margin-left: 10px;">
+												<tr>
+													<td class="butOrangeLeft"><!-- --></td>
+													<td class="butOrangeMiddle"><a class="butText" href="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>" onclick="$('modify_order').submit(); return false;">modify order</a></td>
+													<td class="butOrangeRight"><!-- --></td>
+												</tr>
+											</table>
+										</form>
+												
+										
+									<% } else { %>
+										&nbsp;
+									<% } %>
+								</div>
+							</div>
+						</div>
+					<% } %>
+			<% }
 	      
 		  } else if(!showAltHome && !location2Media) {
 	     %>
@@ -242,76 +221,50 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 		 	  	</table>
 	   		<% } %>
 	   		<% if (user.getLevel() >= FDUserI.RECOGNIZED) { %>
-	   						
-	   			<fd:OrderHistoryInfo id='orderHistoryInfo'>
-	   			<%
-	   			// also need to know how many orders the customer has that are not still pending
-	   			int pendingOrderCount = 0;
-	   			for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
-	   				FDOrderInfoI orderInfo = (FDOrderInfoI) hIter.next();
-	   				if (orderInfo.isPending()) {
-	   					pendingOrderCount++;
-	   				}
-	   			} 			
-	   			if (orderHistoryInfo != null && orderHistoryInfo.size() != 0 && pendingOrderCount > 0) {
-	   				for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
-	   				     FDOrderInfoI orderInfo = (FDOrderInfoI) hIter.next();
-						 String ordDeliveryType = orderInfo.getDeliveryType().toString();
-						//gift cards
-						String gcCodePersonal = EnumDeliveryType.GIFT_CARD_PERSONAL.getCode();
-						String gcCodeCorporate = EnumDeliveryType.GIFT_CARD_CORPORATE.getCode();
-						//robin hood
-						String donatePersonal = EnumDeliveryType.DONATION_INDIVIDUAL.getCode();
-						String donateCorporate = EnumDeliveryType.DONATION_BUSINESS.getCode();
-	   				     
-						if (
-                            	orderInfo.isModifiable() && orderInfo.getOrderStatus() != EnumSaleStatus.REFUSED_ORDER 
-       							&& (!(ordDeliveryType).equals(gcCodePersonal) && !(ordDeliveryType).equals(gcCodeCorporate))
-       							&& (!(ordDeliveryType).equals(donatePersonal) && !(ordDeliveryType).equals(donateCorporate))
-       							&& ( new Date().before(orderInfo.getDeliveryCutoffTime()))
-       						){
-	   					%>
-	   					
-		   					<div class="index_ordMod_cont" id="index_table_ordModify_0">
-			   					<div class="index_ordMod_cont_child">
-									<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="orderNumb"><%= orderInfo.getErpSalesId() %></a>
-									<span style="padding-left: 30px;"><span class="dow"><%= new SimpleDateFormat("EEEEE").format(orderInfo.getRequestedDate()) %></span> <%= new SimpleDateFormat("MM/dd/yyyy").format(orderInfo.getRequestedDate()) %> 
-										<span class="pipeSep">|</span> <%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%></span></a>
-		
-									<div class="ordModifyButCont">
-										<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
-											<form name="modify_order" id="modify_order" method="POST" action="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">
-										<% } %>
-										<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="">view details</a>&nbsp;
-										<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
-												<input type="hidden" name="orderId" value="<%= orderInfo.getErpSalesId() %>" />
-												<input type="hidden" name="action" value="modify" />
-												<table class="butCont fright" style="margin-left: 10px;">
-													<tr>
-														<td class="butOrangeLeft"><!-- --></td>
-														<td class="butOrangeMiddle"><a class="butText" href="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>" onclick="$('modify_order').submit(); return false;">modify order</a></td>
-														<td class="butOrangeRight"><!-- --></td>
-													</tr>
-												</table>
-											</form>
-													
-											
-										<% } else { %>
-											&nbsp;
-										<% } %>
-									</div>
+					<%
+						int pendingOrderCount = 0;
+						List<FDOrderInfoI> validPendingOrders = new ArrayList<FDOrderInfoI>();
+						validPendingOrders.addAll(user.getPendingOrders());
+						//set count (in case this variable is needed elsewhere (and we'll just use it now as well)
+						pendingOrderCount = validPendingOrders.size();
+
+						if (pendingOrderCount > 0) {
+
+							FDOrderInfoI orderInfo = (FDOrderInfoI) validPendingOrders.get(0);
+
+					%>
+						<div class="index_ordMod_cont" id="index_table_ordModify_1">
+		   					<div class="index_ordMod_cont_child">
+								<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="orderNumb"><%= orderInfo.getErpSalesId() %></a>
+								<span style="padding-left: 30px;"><span class="dow"><%= new SimpleDateFormat("EEEEE").format(orderInfo.getRequestedDate()) %></span> <%= new SimpleDateFormat("MM/dd/yyyy").format(orderInfo.getRequestedDate()) %> 
+									<span class="pipeSep">|</span> <%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%></span></a>
+	
+								<div class="ordModifyButCont">
+									<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
+										<form name="modify_order" id="modify_order" method="POST" action="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">
+									<% } %>
+									<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="">view details</a>&nbsp;
+									<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
+											<input type="hidden" name="orderId" value="<%= orderInfo.getErpSalesId() %>" />
+											<input type="hidden" name="action" value="modify" />
+											<table class="butCont fright" style="margin-left: 10px;">
+												<tr>
+													<td class="butOrangeLeft"><!-- --></td>
+													<td class="butOrangeMiddle"><a class="butText" href="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>" onclick="$('modify_order').submit(); return false;">modify order</a></td>
+													<td class="butOrangeRight"><!-- --></td>
+												</tr>
+											</table>
+										</form>
+												
+										
+									<% } else { %>
+										&nbsp;
+									<% } %>
 								</div>
 							</div>
-							
-					<% } else if (orderInfo.getOrderStatus() == EnumSaleStatus.REFUSED_ORDER) { %>
-	   					<div class="text10rbold">Pending Order: Please contact us at <%=user.getCustomerServiceContact()%> as soon as possible to reschedule delivery.</div>	
-	   				<% }
-	   				     break;
-	   				} 
-	   				%>
-	   		     <% } %>
-	   		     </fd:OrderHistoryInfo>
-	   		<% } %>
+						</div>
+					<% } %>
+			<% } %>
 	   	<%
 	   	}
 	   	
