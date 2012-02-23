@@ -140,6 +140,8 @@
 				pageId = request.getParameter("catId");
 			if (request.getParameter("subCatId") != null)
 				pageId = request.getParameter("subCatId");
+			if (request.getParameter("grpId") != null)
+				pageId = request.getParameter("grpId");
 			if (request.getParameter("productId") != null)
 				pageId = request.getParameter("productId");
 			if (request.getParameter("recipeId") != null)

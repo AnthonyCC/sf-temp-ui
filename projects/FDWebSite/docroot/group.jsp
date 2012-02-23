@@ -53,7 +53,7 @@ private static Category  LOGGER = LoggerFactory.getInstance("group.jsp");
 		pCatId = catId;
 	ProductModel pm = ContentFactory.getInstance().getProductByName( pCatId, request.getParameter("productId") );
 	ProductModel displayProduct = ProductPricingFactory.getInstance().getPricingAdapter(pm, user.getPricingContext());
-	request.setAttribute("sitePage", pm.getPath());
+	request.setAttribute("sitePage", "www.freshdirect.com/group.jsp");
 	request.setAttribute("listPos", "LittleRandy,SystemMessage,ProductNote,SideCartBottom");
 	
 	String templatePath = "/common/template/both_dnav_manual_left.jsp"; //the default
