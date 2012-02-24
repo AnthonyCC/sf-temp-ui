@@ -38,6 +38,10 @@ public class Score implements Comparable {
     public void setNode(ContentNodeModel node) {
         this.node = node;
     }
+    
+    public double[] getScores() {
+    	return values;
+    }
 
     public int compareTo(Object o) {
         Score sc = (Score) o;
@@ -51,6 +55,26 @@ public class Score implements Comparable {
             }
         }
         return node.getContentKey().getId().compareTo(sc.node.getContentKey().getId());
+    }
+
+    /**
+     * Stupid HACK.<br>
+     * Someone implemented the content id comparison into the default {@link Score#compareTo(Object)} method which is VERY WRONG !!!
+     * @param o
+     * @return
+     */
+    public int compareTo2(Object o) {
+        Score sc = (Score) o;
+        for (int i = 0; i < values.length; i++) {
+            if (!(values[i] == sc.values[i])) {
+                if (values[i] > sc.values[i]) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            }
+        }
+        return 0;
     }
     
     @Override

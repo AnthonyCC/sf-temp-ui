@@ -59,9 +59,8 @@ public class AirclicManager {
 				e.printStackTrace();
 			} 
 			return signatureVO;
-
 		}
-		
+
 		public byte[] getSignature(String order)
 		{
 			byte[] _image = null;

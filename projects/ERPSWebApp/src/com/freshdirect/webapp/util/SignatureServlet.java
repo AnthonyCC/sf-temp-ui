@@ -41,7 +41,7 @@ public class SignatureServlet extends HttpServlet {
 			} else {
 				response.setContentType("image/jpeg");
 				byte[] _image = AirclicManager.getInstance().getSignature(order);
-				out.write(_image);
+				out.write(_image);				
 			}					
 			
 		} catch (Exception e) {

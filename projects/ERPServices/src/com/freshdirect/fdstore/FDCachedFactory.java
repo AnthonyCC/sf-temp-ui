@@ -535,4 +535,24 @@ public class FDCachedFactory {
 	public static void refreshNewAndBackViews() throws FDResourceException {
 		FDFactory.refreshNewAndBackViews();
 	}
+
+	public static FDProductInfo addNewAvailabilityInformation(String skuCode, EnumAvailabilityStatus status, EnumOrderLineRating rating, String freshness) throws FDResourceException, FDSkuNotFoundException { 
+	    FDProductInfo prodInfo = getProductInfo(skuCode);
+	    if (status == null) {
+	        status = prodInfo.getAvailabilityStatus();
+	    }
+	    if (rating == null) {
+	        rating = prodInfo.getRating();
+	    }
+	    if (freshness == null) {
+	        freshness = prodInfo.getFreshness();
+	    }
+	    FDProductInfo copyInfo = prodInfo.copy(prodInfo.getVersion() + 1, status, rating, freshness);
+	    FDProduct prod = getProduct(skuCode, prodInfo.getVersion());
+	    FDProduct copyProd = prod.copy(copyInfo.getVersion());
+	    productInfoCache.put(skuCode, copyInfo);
+	    productCache.put(new FDSku(skuCode, copyInfo.getVersion()), copyProd);
+
+            return copyInfo;
+	}
 }

@@ -1,0 +1,28 @@
+<%-- 
+@input pi ProductImpression
+@input productNode ProductModel 
+@input u FDUserI
+--%>
+<%
+	boolean hasWas = false;
+	Double defaultPrice = null;
+	String priceUnit = null;
+	int wasDeal = -1;
+	double basePrice = Double.NaN;
+	double realBase = 0.0;
+	FDProductInfo fpi = pi.getProductInfo(); 
+	if (fpi != null) {
+	    ZonePriceInfoModel zpi = JspMethods.getZonePriceInfo(fpi, u);
+		defaultPrice = new Double(zpi.getDefaultPrice());
+		priceUnit = JspMethods.formatPricingUnit(fpi);
+		hasWas = zpi.isItemOnSale();
+		wasDeal = -1;
+		basePrice = Double.NaN;
+		if (hasWas) {
+			wasDeal = zpi.getDealPercentage();
+			basePrice = zpi.getSellingPrice();
+		}
+		realBase = DealsHelper.determineBasePrice(basePrice, defaultPrice.doubleValue());
+	}
+	boolean isYourFave = DYFUtil.isFavorite(productNode, u);
+%>

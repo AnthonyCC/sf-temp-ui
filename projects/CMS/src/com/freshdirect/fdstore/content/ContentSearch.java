@@ -8,350 +8,398 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.search.AutoComplete;
 import com.freshdirect.cms.search.AutocompleteService;
-import com.freshdirect.cms.search.BrandNameExtractor;
 import com.freshdirect.cms.search.BrandNameWordList;
 import com.freshdirect.cms.search.CounterCreatorImpl;
-import com.freshdirect.cms.search.LuceneSpellingSuggestionService;
 import com.freshdirect.cms.search.ProductNameWordList;
 import com.freshdirect.cms.search.SearchHit;
 import com.freshdirect.cms.search.SearchRelevancyList;
 import com.freshdirect.cms.search.SimpleCounterCreator;
-import com.freshdirect.cms.search.SpellingHit;
+import com.freshdirect.cms.search.SpellingUtils;
+import com.freshdirect.cms.search.spell.SpellingCandidate;
+import com.freshdirect.cms.search.spell.SpellingHit;
+import com.freshdirect.cms.search.term.ApproximationsPermuter;
+import com.freshdirect.cms.search.term.Term;
 import com.freshdirect.erp.ErpFactory;
 import com.freshdirect.erp.model.ErpProductInfoModel;
+import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class ContentSearch {
-    private final static Logger        LOGGER   = LoggerFactory.getInstance(ContentSearch.class);
-    
-    private static ContentSearch instance = new ContentSearch();
+	private final static Logger LOGGER = LoggerFactory.getInstance(ContentSearch.class);
+
+	private static ContentSearch instance = new ContentSearch();
 
     AutoComplete productAutocompletion = new AutoComplete(new ProductNameWordList(), new CounterCreatorImpl());
     AutoComplete brandAutocompletion = new AutoComplete(new BrandNameWordList(), new SimpleCounterCreator());
-        
 
-    
-    Map<String, SearchRelevancyList> searchRelevancyMap;
-    
-    public static ContentSearch getInstance() {
-        return instance;
-    }
+	public static ContentSearch getInstance() {
+		return instance;
+	}
 
-    public static void setInstance(ContentSearch newInstance) {
-        instance = newInstance;
-        LOGGER.info("ContentSearch instance replaced");
-    }
+	public static void setInstance(ContentSearch newInstance) {
+		instance = newInstance;
+		LOGGER.info("ContentSearch instance replaced");
+	}
 
-    
-    
-    /** Maximum number of the top spelling results that should be analyzed */
-    public static int MAX_SUGGESTIONS = 5;
+	Map<String, SearchRelevancyList> searchRelevancyMap;
 
-    private SearchQuery getSearchQuery(String criteria) {
-        return new SearchQuery(criteria) {
+	double didYouMeanWeight = 0.0;
+	double didYouMeanThreshold = 0.0;
+	int didYouMeanMaxHits = 0;
 
-            private String[] tokens;
-            private String[] rawTokens;
-            private String   normalizedTerm;
-            private String   searchTerm;
+	public double getDidYouMeanRatio() {
+		if (didYouMeanWeight == 0.0) {
+			didYouMeanWeight = FDStoreProperties.getDidYouMeanRatio();
+			if (didYouMeanWeight == 0.0)
+				didYouMeanWeight = 5.0;
+		}
+		return didYouMeanWeight;
+	}
 
-            public String getNormalizedTerm() {
-                return normalizedTerm;
-            }
+	public double getDidYouMeanThreshold() {
+		if (didYouMeanThreshold == 0.0) {
+			didYouMeanThreshold = FDStoreProperties.getDidYouMeanThreshold();
+			if (didYouMeanThreshold == 0.0)
+				didYouMeanThreshold = 0.6;
+		}
+		return didYouMeanThreshold;
+	}
 
-            public String getSearchTerm() {
-                return searchTerm;
-            }
+	public int getDidYouMeanMaxHits() {
+		if (didYouMeanMaxHits == 0) {
+			didYouMeanMaxHits = FDStoreProperties.getDidYouMeanMaxHits();
+			if (didYouMeanMaxHits == 0)
+				didYouMeanMaxHits = 20;
+		}
+		return didYouMeanMaxHits;
+	}
+	
+	public int getSearchMaxHits() {
+		return 10000;
+	}
+	
+	/**
+	 * Utility method for getting the relevancy score of the nearest parent node which has a valid score. Returns an Integer. Value
+	 * is null if no parent has a score set.
+	 * 
+	 * @param scores
+	 *            scores map
+	 * @param node
+	 *            product node
+	 * @return relevancy score
+	 */
+	public static Integer getRelevancyScore(Map<ContentKey, Integer> scores, ContentNodeModel node) {
 
-            public String[] getTokens() {
-                return tokens;
-            }
-            
-            public String[] getTokensWithBrand() {
-                return rawTokens;
-            }
+		if (node == null || scores == null)
+			return null;
 
-            protected void breakUp() {
-                normalizedTerm = ContentSearchUtil.normalizeTerm(getOriginalTerm());
+		Integer score = null;
+		ContentNodeModel parent = null;
 
-                BrandNameExtractor brandNameExtractor = new BrandNameExtractor();
+		while (score == null) {
 
-                tokens = ContentSearchUtil.tokenizeTerm(normalizedTerm);
-                AutocompleteService autocompleter = productAutocompletion.initAutocompleter("product");
-                StringBuffer luceneTerm;
-                
-                // we need to check tokens length, because search like 'v8' cause empty token array.
-                if (autocompleter!=null && tokens.length > 0) {
-                    luceneTerm = new StringBuffer();
-                    for (int i=0;i<tokens.length;i++) {
-                        tokens[i] = autocompleter.removePlural(tokens[i]);
-                        luceneTerm.append(tokens[i]).append(' ');
-                    }
-                } else {
-                    luceneTerm = new StringBuffer(normalizedTerm);
-                }
-                rawTokens = tokens;
-                for (Iterator<CharSequence> i = brandNameExtractor.extract(getOriginalTerm()).iterator(); i.hasNext();) {
-                    String canonicalBrandName = StringUtil.removeAllWhiteSpace(i.next().toString()).toLowerCase();
-                    if (luceneTerm.indexOf(canonicalBrandName) == -1) {
-                        luceneTerm.append(' ').append(canonicalBrandName);
-                    }
-                    if (tokens.length == 0) {
-                        tokens = new String[] { canonicalBrandName };
-                        List<String> rt = ContentSearchUtil.tokenizeTerm(normalizedTerm, " ");
-                        rt.add(canonicalBrandName);
-                        rawTokens = rt.toArray(new String[rt.size()]);
-                        //rawTokens = tokens;
-                    }
-                }
-                searchTerm = luceneTerm.toString();
-            }
+			parent = node.getParentNode();
+			if (parent == null)
+				break;
 
-        };
-    }
-    
+			score = scores.get(parent.getContentKey());
+			node = parent;
+		}
 
+		return score;
+	}
 
-    /**
-     * Perform a simple search.
-     * 
-     * Performs a search and filtering but does not do spell checking (unlike
-     * {@link #search(String) search}).
-     * 
-     * If term is "", return empty results. Otherwise separate the query into
-     * tokens, search for each separately, collate the results (see
-     * {@link ContentSearchUtil}'s filter methods).
-     * 
-     * 
-     * @param criteria
-     *            original query
-     * @return search results
-     */
-    @SuppressWarnings( "unchecked" )
-	public SearchResults simpleSearch(String criteria, SearchQueryStemmer stemmer) {
+	/**
+	 * Search for a given term. If there're no results (neither product, nor recipes, nor categories) then try to suggest spelling
+	 * 
+	 * @param searchTerm
+	 *            the term to be searched for
+	 * @return the search results
+	 */
+	public SearchResults searchProducts(String searchTerm) {
+		searchTerm = searchTerm.trim();
+		boolean quoted = ContentSearchUtil.isQuoted(searchTerm);
+		if (quoted)
+			searchTerm = ContentSearchUtil.removeQuotes(searchTerm);
 
-        SearchQuery searchQuery = getSearchQuery(criteria);
+		SearchResults results = searchProductsInternal(searchTerm, quoted, false);
 
-        if ("".equals(searchQuery.getNormalizedTerm())) {
-            return new SearchResults(Collections.<ProductModel>emptyList(), Collections.<Recipe>emptyList(), false, "");
-        }
+		suggestSpellingInternal(searchTerm, quoted, results);
 
-        List<SearchHit> hits = CmsManager.getInstance().search(searchQuery.getSearchTerm(), 2000);
+		return results;
+	}
 
-        Map<ContentType,List<SearchHit>> hitsByType = ContentSearchUtil.mapHitsByType(hits);
+	/**
+	 * We skip spell checking (used for testing purposes only!)
+	 * 
+	 * @param searchTerm
+	 * @return
+	 */
+	public SearchResults searchProductsNoSpell(String searchTerm) {
+		searchTerm = searchTerm.trim();
+		boolean exact = ContentSearchUtil.isQuoted(searchTerm);
+		if (exact)
+			searchTerm = ContentSearchUtil.removeQuotes(searchTerm);
 
-        List<SearchHit> allProducts = ContentSearchUtil.resolveHits(hitsByType.get(FDContentTypes.PRODUCT));
-        
-        filterOutNonRelevantProducts(searchQuery, allProducts);
-        
-        List<SearchHit> relevantProducts = ContentSearchUtil.filterRelevantNodes(allProducts, searchQuery.getTokensWithBrand(), stemmer);
+		SearchResults results = searchProductsInternal(searchTerm, exact, false);
 
-        List<SearchHit> recipes = ContentSearchUtil.filterRelevantNodes(ContentSearchUtil.resolveHits(hitsByType.get(FDContentTypes.RECIPE)), 
-        		searchQuery.getTokens(), stemmer);
+		return results;
+	}
 
-        List<SearchHit> filteredProducts = ContentSearchUtil.filterProductsByDisplay(relevantProducts.isEmpty() ? 
-        		ContentSearchUtil.restrictToMaximumOccuringNodes(allProducts, searchQuery.getTokensWithBrand(), stemmer) : relevantProducts);
+	public SearchResults searchProductsInternal(String searchTerm, boolean quoted, boolean approximate) {
+		if (searchTerm.length() == 0) {
+			return new SearchResults();
+		}
+	
+		Collection<SearchHit> phraseHits = CmsManager.getInstance().searchProducts(searchTerm, true, approximate, getSearchMaxHits());
+		Collection<SearchHit> nonPhraseHits;
+		if (quoted) {
+			nonPhraseHits = Collections.<SearchHit> emptyList();
+		} else {
+			nonPhraseHits = CmsManager.getInstance().searchProducts(searchTerm, false, approximate, getSearchMaxHits());
 
-        List<SearchHit> filteredRecipes = ContentSearchUtil.filterRecipesByAvailability(recipes);
+			if (approximate && !phraseHits.isEmpty() && !nonPhraseHits.isEmpty()) {
+				int phraseLevel = phraseHits.iterator().next().getApproximationLevel();
+				int nonPhraseLevel = nonPhraseHits.iterator().next().getApproximationLevel();
+				if (phraseLevel < nonPhraseLevel)
+					nonPhraseHits.clear();
+				else if (nonPhraseLevel < phraseLevel)
+					phraseHits.clear();
+			}
 
-        return new SearchResults(
-                (List<ProductModel>)ContentSearchUtil.collectFromSearchHits(filteredProducts), 
-                (List<Recipe>)ContentSearchUtil.collectFromSearchHits(filteredRecipes), 
-                !relevantProducts.isEmpty(), searchQuery.getSearchTerm(), filteredProducts, filteredRecipes);
-    }
+			if (!phraseHits.isEmpty()) {
+				Set<ContentKey> contentKeys = ContentSearchUtil.extractContentKeys(phraseHits);
+				Iterator<SearchHit> it = nonPhraseHits.iterator();
+				while (it.hasNext())
+					if (contentKeys.contains(it.next().getContentKey()))
+						it.remove();
+			}
+		}
 
-    /**
-     * Filter out non relevant products, based on the search relevancy scores from the CMS. This method modifies the product list!
-     * 
-     * @param searchQuery
-     * @param products
-     */
-    private void filterOutNonRelevantProducts(SearchQuery searchQuery, List<SearchHit> products) {
-        Map<ContentKey,Integer> relevancyScores = getSearchRelevancyScores(searchQuery.getSearchTerm());
-        if (relevancyScores!=null) { 
-            // filter out negative categories
-            for (Iterator<SearchHit> i = products.iterator(); i.hasNext();) {
-                SearchHit hit = i.next();
-                ContentNodeModel node = hit.getNode();
-                Integer score = getRelevancyScore( relevancyScores, node );
-                if (score!=null) {
-                    if (score.intValue()<=0) {
-                        i.remove();
-                    }
-                }
-            }
-        }
-    }
+		List<SearchResultItem<ProductModel>> productResults = new ArrayList<SearchResultItem<ProductModel>>();
+		List<SearchResultItem<Recipe>> recipeResults = new ArrayList<SearchResultItem<Recipe>>();
+		List<SearchResultItem<CategoryModel>> categoryResults = new ArrayList<SearchResultItem<CategoryModel>>();
 
+		Set<ProductModel> alreadyAddedProducts = new HashSet<ProductModel>();
 
-    /**
-     * Utility method for getting the relevancy score of the nearest parent node which has a valid score.
-     * Returns an Integer. Value is null if no parent has a score set.  
-     * 
-     * @param scores	scores map
-     * @param node		product node
-     * @return			relevancy score
-     */
-    public static Integer getRelevancyScore( Map<ContentKey,Integer> scores, ContentNodeModel node ) {
-    	
-    	if ( node == null || scores == null )
-    		return null;
-    	
-    	Integer score = null;
-    	ContentNodeModel parent = null;    	
-    	
-    	while ( score == null ) {    		
-    		
-        	parent = node.getParentNode();
-        	if ( parent == null )
-        		break;
-        	
-        	score = scores.get( parent.getContentKey() ); 
-        	node = parent;
-    	}    	    	
-    	
-    	return score;
-    }
+		List<ProductModel> products;
+		List<Recipe> recipes;
+		List<CategoryModel> categories;
 
+		// handle exact items
+		if (!phraseHits.isEmpty()) {
+			products = ContentSearchUtil.filterProducts(ContentSearchUtil.filterProductHits(phraseHits));
+			recipes = ContentSearchUtil.filterRecipes(ContentSearchUtil.filterRecipeHits(phraseHits));
+			categories = ContentSearchUtil.filterCategories(ContentSearchUtil.filterCategoryHits(phraseHits));
 
-    /**
-     * Search and possibly suggest alternative.
-     * 
-     * The following triggers the search for alternative spellings.
-     * 
-     * <ul>
-     * <ol>
-     * The products found by {@link #simpleSearch(String) simpleSearch} were not
-     * 100% relevant (ie. there were no matches that covered all query terms.
-     * </ol>
-     * <ol>
-     * No exact categories and no exact products were found.
-     * </ul>
-     * 
-     * Derivation of the alternative:
-     * <ul>
-     * <ol>
-     * Retrieve a list of spelling suggestions, sorted by relevance (see
-     * {@link LuceneSpellingSuggestionService#getSpellingHits}.
-     * </ol>
-     * <ol>
-     * For earch suggestion (but at most {@link #MAX_SUGGESTIONS} many times),
-     * gather the "would be" search results
-     * </ol>
-     * <ul>
-     * <ol>
-     * If there are no results, skip suggestion.
-     * </ol>
-     * <ol>
-     * If there are some results
-     * </ol>
-     * <ul>
-     * <ol>
-     * See if the edit distance to the "whole" expression is better than that of
-     * the previous suggestions, if so set this as the new candidate for the
-     * suggested alternative
-     * </ol>
-     * <ol>
-     * See if the results could indicate that the results for the suggestion add
-     * new value (that is, calculate (S1 + S2 - S12)/(S1 + S2 + S1S2) where S1
-     * and S2 are the number of results unique to the original and the suggested
-     * queries and S1S2 is the number of elements common to both. This is
-     * similar to the so called Jaccard distance. If this value is 0.80 or
-     * higher, stop here and declare it "the" suggestion
-     * </ul>
-     * </ul> </ul>
-     * 
-     * @param criteria
-     *            original query
-     * @return search results, possibly ammended with a spelling suggestion
-     */
-    @SuppressWarnings( "unchecked" )
-	public SearchResults search(String criteria) {
+			extractCategoryProducts(categories, products, alreadyAddedProducts);
+	
+			productResults.addAll(SearchResultItem.fill(products, EnumSortingValue.PHRASE, 1));
+			recipeResults.addAll(SearchResultItem.fill(recipes, EnumSortingValue.PHRASE, 1));
+			categoryResults.addAll(SearchResultItem.fill(categories, EnumSortingValue.PHRASE, 1));
+		}
 
-        SearchQueryStemmer stemmer = SearchQueryStemmer.Porter;
-        SearchResults filteredResults = simpleSearch(criteria, stemmer);
+		// handle non-phrase items
+		if (!quoted && !nonPhraseHits.isEmpty()) {
+			products = ContentSearchUtil.filterProducts(ContentSearchUtil.filterProductHits(nonPhraseHits));
+			recipes = ContentSearchUtil.filterRecipes(ContentSearchUtil.filterRecipeHits(nonPhraseHits));
+			categories = ContentSearchUtil.filterCategories(ContentSearchUtil.filterCategoryHits(nonPhraseHits));
 
-        SearchResults.SpellingResultsDifferences diffs = null;
-        String spellingSuggestion = null;
-        boolean suggestionMoreRelevant = false;
+			if (productResults.isEmpty()) {
+				extractCategoryProducts(categories, products, alreadyAddedProducts);
+			}
+	
+			productResults.addAll(SearchResultItem.wrap(products));
+			recipeResults.addAll(SearchResultItem.wrap(recipes));
+			categoryResults.addAll(SearchResultItem.wrap(categories));
+		}
+		
+		return new SearchResults(productResults, recipeResults, categoryResults, searchTerm, quoted);
+	}
 
-        if (!filteredResults.isProductsRelevant()) {
+	private void extractCategoryProducts(List<CategoryModel> categories, List<ProductModel> products,
+			Set<ProductModel> alreadyAddedProducts) {
+		if (products.isEmpty() && !categories.isEmpty()) {
+			for (CategoryModel category : categories) {
+				for (ProductModel product : category.getAllChildProducts())
+					if (ContentSearchUtil.isDisplayable(product) && !alreadyAddedProducts.contains(product)) {
+						alreadyAddedProducts.add(product);
+						products.add(product);
+					}
+			}
+		}
+	}
 
-            List<SpellingHit> spellingSuggestions = CmsManager.getInstance().suggestSpelling(criteria, 20);
+	public void suggestSpellingInternal(String searchTerm, boolean quoted, SearchResults originalResults) {
+		boolean replaceOriginal = false;
+		List<SpellingHit> hits = combineSpellingHitResults(searchTerm);
+		
+		Collection<SpellingCandidate> candidates = extractCandidatesFromSpellingHits(hits, quoted, originalResults);
+		
+		if (candidates.isEmpty() && originalResults.isEmpty()) {
+			candidates = suggestApproximationSpellingInternal(hits,  quoted, originalResults);
+			replaceOriginal = true;
+		}
+		
+		List<String> suggestions = new ArrayList<String>();
+		for (SpellingCandidate candidate : candidates)
+			suggestions.add(ContentSearchUtil.quote(quoted, candidate.getPhrase()));
 
-            int count = 0;
-            int bestDistance = criteria.length();
-            for (Iterator<SpellingHit> i = spellingSuggestions.iterator(); count < MAX_SUGGESTIONS && i.hasNext(); ++count) {
+		if (originalResults.isEmpty() && !candidates.isEmpty()) {
+			SearchResults.replaceResults(originalResults, candidates.iterator().next().getSearchResults());
+		} else if (replaceOriginal && !candidates.isEmpty()) {
+			SearchResults.replaceResults(originalResults, SpellingCandidate.extractSearchResults(candidates));
+		}
+		originalResults.setSpellingSuggestions(suggestions);
+	}
 
-                SpellingHit spellingHit = i.next();
-                String suggestion = spellingHit.toString();
+	public List<SpellingHit> combineSpellingHitResults(String searchTerm) {
+		Set<SpellingHit> set = new HashSet<SpellingHit>(CmsManager.getInstance().suggestSpelling(searchTerm, getDidYouMeanThreshold(), getDidYouMeanMaxHits()));
+		set.addAll(CmsManager.getInstance().reconstructSpelling(searchTerm, getDidYouMeanThreshold(), getDidYouMeanMaxHits()));
+		List<SpellingHit> hits = new ArrayList<SpellingHit>(set.size());
+		for (SpellingHit hit : set) {
+			String phrase = hit.getPhrase();
+			Iterator<SpellingHit> it = hits.iterator();
+			boolean add = true;
+			while (it.hasNext()) {
+				SpellingHit hit1 = it.next();
+				String phrase1 = hit1.getPhrase();
+				if (phrase1.contains(phrase) && hit1.getScore() < hit.getScore())
+					it.remove();
+				else if (phrase.contains(phrase1) && hit.getScore() < hit1.getScore())
+					add = false;
+			}
+			if (add)
+				hits.add(hit);
+		}
+		Collections.sort(hits, SpellingHit.SORT_BY_DISTANCE);
+		hits = SpellingUtils.filterBestSpellingHits(hits, getDidYouMeanThreshold());
+		Collections.sort(hits);
+		return hits;
+	}
 
-                SearchResults suggestionResults = simpleSearch(suggestion, stemmer);
-
-                if (!suggestionResults.getRecipes().isEmpty() || !suggestionResults.getProducts().isEmpty()) {
-                    // there are some results
-
-                    if (spellingHit.getDistance() < bestDistance) {
-                        bestDistance = spellingHit.getDistance();
-                    }
-
-                    if (!filteredResults.isProductsRelevant()) { // no original relevant products
-
-                        Collection<? extends ContentNodeModel>[] originalHits = new Collection[] { filteredResults.getProducts(), filteredResults.getRecipes() };
-                        Collection<? extends ContentNodeModel>[] suggestedHits = new Collection[] { suggestionResults.getProducts(), suggestionResults.getRecipes() };
-
-                        diffs = ContentSearchUtil.chopSets(originalHits, suggestedHits);
-                        spellingSuggestion = suggestion;
-                        suggestionMoreRelevant = ((double) (diffs.getOriginal() + diffs.getSuggested() - diffs.getIntersection()) / 
-                        		(double) (diffs.getOriginal() + diffs.getSuggested() + diffs.getIntersection())) > 0.80
-                                && spellingHit.getDistance() == bestDistance;
-
-                        if (suggestionMoreRelevant) {
-                            break;
-                        }
-                    } else if (spellingSuggestion == null) {
-                        spellingSuggestion = suggestion;
-                    }
-                }
-            }
-        }
-
-        filteredResults.setSpellingSuggestion(spellingSuggestion, suggestionMoreRelevant);
-        filteredResults.setSpellingResultsDifferences(diffs);
-
-        return filteredResults;
-    }
-
-    public SearchResults searchUpc(String erpCustomerPK, String upc) {
-    	List<ProductModel> products = new ArrayList<ProductModel>();
-    	ErpFactory erpFactory = ErpFactory.getInstance();
-    	Set<String> skuCodes = new HashSet<String>();
-    	
-    	try {
-			Collection<ErpProductInfoModel> productInfos = erpFactory.findProductsByUPC(upc);
-			for (ErpProductInfoModel productInfo : productInfos) {				
-				if (productInfo.getSkuCode() != null) {
-					skuCodes.add(productInfo.getSkuCode());					
+	public Collection<SpellingCandidate> suggestApproximationSpellingInternal(Collection<SpellingHit> hits, boolean quoted, SearchResults originalResults) {
+		SortedSet<SpellingCandidate> candidates = new TreeSet<SpellingCandidate>();
+		if (!hits.isEmpty()) {
+			// take the best (first) hit as a basis
+			SpellingHit hit = hits.iterator().next();
+			ApproximationsPermuter permuter = new ApproximationsPermuter(new Term(hit.getPhrase()));
+			List<List<Term>> permutations = permuter.permute();
+			for (List<Term> permLevel : permutations) {
+				if (!candidates.isEmpty())
+					break;
+				List<SpellingCandidate> cans = new ArrayList<SpellingCandidate>();
+				for (Term permutation : permLevel) {
+					SpellingCandidate candidate = new SpellingCandidate(new SpellingHit(permutation.toString(), hit.getDistance()));
+					SearchResults hitResults = searchProductsInternal(candidate.getPhrase(), quoted, false);
+					if (hitResults.isEmpty())
+						continue;
+					candidate.setSearchResults(hitResults);
+					cans.add(candidate);
+				}
+				if (!cans.isEmpty()) {
+					if (cans.size() > 3)
+						cans = cans.subList(0, 3);
+					candidates.addAll(cans);
 				}
 			}
-			//If system is not able to find the skus by the material upccodes in erpsy then go search in the customer order
+		}
+		return candidates;
+	}
+
+	public List<SpellingCandidate> extractCandidatesFromSpellingHits(Collection<SpellingHit> hits, boolean quoted, SearchResults originalResults) {
+		SortedSet<SpellingCandidate> candidates = new TreeSet<SpellingCandidate>();
+		Iterator<SpellingHit> it = hits.iterator();
+		SpellingHit baseHit = null;
+		List<SpellingHit> sameScore = new ArrayList<SpellingHit>();
+		while (it.hasNext()) {
+			SpellingHit current = it.next();
+			if (baseHit == null) {
+				baseHit = current;
+				sameScore.add(current);
+			} else if (baseHit.getScore() == current.getScore()) {
+				sameScore.add(current);
+			} else {
+				SortedSet<SpellingCandidate> subCandidates = processSubcandidates(quoted, originalResults, candidates, sameScore);
+				candidates.addAll(subCandidates);
+				if (candidates.size() > 2)
+					break;
+				sameScore.clear();
+				baseHit = current;
+				sameScore.add(current);
+			}
+		}
+
+		SortedSet<SpellingCandidate> subCandidates = processSubcandidates(quoted, originalResults, candidates, sameScore);
+		candidates.addAll(subCandidates);
+		
+		List<SpellingCandidate> ret = new ArrayList<SpellingCandidate>(candidates);
+		while (ret.size() > 3)
+			ret.remove(ret.size() - 1);
+		return ret;
+	}
+
+	private SortedSet<SpellingCandidate> processSubcandidates(boolean quoted, SearchResults originalResults,
+			SortedSet<SpellingCandidate> candidates, List<SpellingHit> sameScore) {
+		SortedSet<SpellingCandidate> subCandidates = new TreeSet<SpellingCandidate>();
+		SUBS: for (SpellingHit hit : sameScore) {
+			SpellingCandidate candidate = new SpellingCandidate(hit);
+			SearchResults hitResults = searchProductsInternal(hit.getPhrase(), quoted, false);
+			if (hitResults.isEmpty())
+				continue;
+			candidate.setSearchResults(hitResults);
+			for (SpellingCandidate can : candidates)
+				if (candidate.getSearchResults().resultsEquals(can.getSearchResults()))
+					continue SUBS;
+			for (SpellingCandidate can : subCandidates)
+				if (candidate.getSearchResults().resultsEquals(can.getSearchResults()))
+					continue SUBS;
+			if (originalResults.isEmpty() || hitResults.size() >= originalResults.size() * getDidYouMeanRatio())
+				if (!hitResults.resultsEquals(originalResults))
+					subCandidates.add(candidate);
+		}
+		return subCandidates;
+	}
+
+	public SearchResults searchUpc(String erpCustomerPK, String upc) {
+		List<ProductModel> products = new ArrayList<ProductModel>();
+		ErpFactory erpFactory = ErpFactory.getInstance();
+		Set<String> skuCodes = new HashSet<String>();
+
+		try {
+			FDProductInfo cachedProductInfo = FDCachedFactory.getProductInfoByUpc(upc);
+			if(cachedProductInfo != null && cachedProductInfo.getSkuCode() != null && cachedProductInfo.getSkuCode().length() > 0) {
+				LOGGER.info("Product Found in UPCCache:"+upc+"->"+cachedProductInfo.getSkuCode());
+				skuCodes.add(cachedProductInfo.getSkuCode());
+			} else {
+				LOGGER.info("Product Not Found in UPCCache Searching DB:"+upc);
+				Collection<ErpProductInfoModel> productInfos = erpFactory.findProductsByUPC(upc);
+				for (ErpProductInfoModel productInfo : productInfos) {
+					if (productInfo.getSkuCode() != null) {
+						skuCodes.add(productInfo.getSkuCode());
+					}
+				}
+			}
+			// If system is not able to find the skus by the material upccodes in erpsy then go search in the customer order
 			// history for the last 60 days for a product with the barcode
-			if(skuCodes.size() == 0 && erpCustomerPK != null && erpCustomerPK.trim().length() > 0) {
+			if (skuCodes.size() == 0 && erpCustomerPK != null && erpCustomerPK.trim().length() > 0) {
 				skuCodes.addAll(erpFactory.findProductsByCustomerUPC(erpCustomerPK, upc));
 			}
-			
-			for(String skuCode : skuCodes) {
+
+			for (String skuCode : skuCodes) {
 				SkuModel sku = (SkuModel) ContentFactory.getInstance().getContentNode(FDContentTypes.SKU, skuCode);
 				if (sku == null)
 					continue;
@@ -362,9 +410,61 @@ public class ContentSearch {
 		} catch (FDResourceException e) {
 			LOGGER.error("failed to retrieve product info for upc: " + upc, e);
 		}
-    	return new SearchResults(products, Collections.<Recipe>emptyList(), false , upc);
-    }
-    
+		
+		List<SearchResultItem<ProductModel>> productResults = new ArrayList<SearchResultItem<ProductModel>>(products.size());
+		for (ProductModel product : products) {
+			SearchResultItem<ProductModel> item = new SearchResultItem<ProductModel>(product);
+			item.putSortingValue(EnumSortingValue.PHRASE, 1);
+			productResults.add(item);
+		}
+		return new SearchResults(productResults, Collections.<SearchResultItem<Recipe>> emptyList(), Collections
+				.<SearchResultItem<CategoryModel>> emptyList(), upc, true);
+	}
+
+	public List<ContentKey> searchFaqs(String searchTerm) {
+		searchTerm = searchTerm.trim();
+		if (searchTerm.length() == 0) {
+			return Collections.emptyList();
+		}
+		boolean exact = ContentSearchUtil.isQuoted(searchTerm);
+		if (exact)
+			searchTerm = ContentSearchUtil.removeQuotes(searchTerm);
+
+		Collection<SearchHit> hits = CmsManager.getInstance().searchFaqs(searchTerm, exact, getSearchMaxHits());
+
+		List<SearchHit> faqHits = ContentSearchUtil.filterFaqHits(hits);
+
+		List<Faq> faqs = ContentSearchUtil.filterFaqs(faqHits);
+
+		List<ContentKey> faqKeys = new ArrayList<ContentKey>();
+		for (Faq faq : faqs)
+			faqKeys.add(faq.getContentKey());
+
+		return faqKeys;
+	}
+
+	public List<ContentKey> searchRecipes(String searchTerm) {
+		searchTerm = searchTerm.trim();
+		if (searchTerm.length() == 0) {
+			return Collections.emptyList();
+		}
+		boolean exact = ContentSearchUtil.isQuoted(searchTerm);
+		if (exact)
+			searchTerm = ContentSearchUtil.removeQuotes(searchTerm);
+
+		Collection<SearchHit> hits = CmsManager.getInstance().searchRecipes(searchTerm, exact, getSearchMaxHits());
+
+		List<SearchHit> recipeHits = ContentSearchUtil.filterRecipeHits(hits);
+
+		List<Recipe> recipes = ContentSearchUtil.filterRecipes(recipeHits);
+
+		List<ContentKey> recipeKeys = new ArrayList<ContentKey>();
+		for (Recipe recipe : recipes)
+			recipeKeys.add(recipe.getContentKey());
+
+		return recipeKeys;
+	}
+
     /**
      * Set a custom autocomplete service
      * @param autocompletion
@@ -396,40 +496,32 @@ public class ContentSearch {
 		return Collections.emptyList();
     }
 
-        
-    /**
-     * Return a Map<ContentKey,Integer> which contains the predefined scores for the given search term. The map can be null.
-     * 
-     * @param searchTerm
-     * @return Map<ContentKey,Integer>
-     */
-    public Map<ContentKey,Integer> getSearchRelevancyScores(String searchTerm) {
-        synchronized(this) {
-            if (this.searchRelevancyMap == null) {
-                this.searchRelevancyMap = SearchRelevancyList.createFromCms();
-            }
-        }
-        SearchRelevancyList srl = searchRelevancyMap.get(searchTerm.trim().toLowerCase());
-        return srl!=null ? Collections.unmodifiableMap(srl.getCategoryScoreMap()) : null;
-    }
-    
-    
-    public void refreshRelevencyScores() {
-        synchronized(this) {
-            this.searchRelevancyMap = SearchRelevancyList.createFromCms();
-            AutocompleteService autocompleter = productAutocompletion.initAutocompleter("product");
+	/**
+	 * Return a Map<ContentKey,Integer> which contains the predefined scores for the given search term. The map can be null.
+	 * 
+	 * @param searchTerm
+	 * @return Map<ContentKey,Integer>
+	 */
+	public Map<ContentKey, Integer> getSearchRelevancyScores(String searchTerm) {
+		synchronized (this) {
+			if (this.searchRelevancyMap == null) {
+				this.searchRelevancyMap = SearchRelevancyList.createFromCms();
+			}
+		}
+		SearchRelevancyList srl = searchRelevancyMap.get(searchTerm.trim().toLowerCase());
+		return srl != null ? Collections.unmodifiableMap(srl.getCategoryScoreMap()) : null;
+	}
 
-            if (autocompleter != null) {
-            	autocompleter.clearBadSingular();
-            	autocompleter.addAllBadSingular(SearchRelevancyList.getBadPluralFormsFromCms());
-            }
-        }
-    }
+	public void refreshRelevancyScores() {
+		synchronized (this) {
+			this.searchRelevancyMap = SearchRelevancyList.createFromCms();
+		}
+	}
 
-    public void invalidateRelevancyScores() {
-        synchronized(this) {
-            this.searchRelevancyMap = null;
-        }
-    }
-    
+	public void invalidateRelevancyScores() {
+		synchronized (this) {
+			this.searchRelevancyMap = null;
+		}
+	}
+
 }

@@ -3,15 +3,14 @@
 %><%@ taglib uri='freshdirect' prefix='fd'
 %><%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature"
 %><%@ page import="com.freshdirect.fdstore.util.SiteFeatureHelper" 
-%><%@page import="com.freshdirect.fdstore.util.URLGenerator"%>
-
+%><%@ page import="com.freshdirect.fdstore.util.URLGenerator"
+%><%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
 <% //expanded page dimensions
 final int W_SEARCH_NAV_TOTAL = 970;
 final int W_SEARCH_NAV_LEFT = 150;
 final int W_SEARCH_NAV_RIGHT = 820;
 //EXPANDED_PAGE_VERIFY - adjust sizes 
 %>
-
 <html>  
 <head>
     <title><tmpl:get name='title'/></title>
@@ -19,19 +18,23 @@ final int W_SEARCH_NAV_RIGHT = 820;
 	<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
 
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<fd:css href="/assets/css/ccl.css"/>
-
+	<style type="text/css">
+	#OAS_CategoryNote {
+	text-align: center;
+	}
+	</style>
 <%
 final String trk = "srch"; // tracking code
 String criteria = request.getParameter("searchParams");
 %>
 <fd:javascript src="/assets/javascript/rounded_corners.inc.js"/>
-<%@ include file="/includes/search/autocomplete.jspf" %>
 </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
 <%@ include file="/common/template/includes/globalnav.jspf" %> 
+<%@ include file="/includes/search/autocomplete.jspf" %>
 <CENTER CLASS="text10">
 <TABLE WIDTH="<%=W_SEARCH_NAV_TOTAL%>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 
@@ -41,19 +44,27 @@ String criteria = request.getParameter("searchParams");
 <TR>
 
 	<TD WIDTH="<%=W_SEARCH_NAV_TOTAL%>" COLSPAN="2">
-		<form name="adv_search" id="adv_search" method="GET">
+		<form name="adv_search" id="adv_search" method="GET" accept-charset="iso-8859-1">
 		<table width="<%=W_SEARCH_NAV_TOTAL%>" cellpadding="0" cellspacing="0">
 			<tr>
 				<td>
-				<div style="margin-top:15px;padding-bottom:15px;border-bottom: 4px solid #FF9933">
-					<table><tr><td style="padding-right:35px;"><img src="/media_stat/images/template/search/search_deptnav_2.gif" style="border: none;" alt=""></td>
-					<td style="vertical-align:bottom;"><div id="searchContainer" style="position: relative; margin-right: 4px;"><INPUT TYPE="text" style="width:284px;" id="searchxParams" name="searchParams" value="<%= criteria %>" size="16" maxlength="50" class="text11">
-						<div id="terms" style="position: absolute;background-color: white"></div>
-					</div></td>			
-					<td style="vertical-align:bottom"><input name="submit" type="image" src="/media_stat/images/template/search/search_find_button.gif" style="border:none;margin-bottom:2px;"></td>
-					<td><div id="searchDebug"></div></td>
-				</tr></table>
-				</div>
+					<div style="margin-top:15px;padding-bottom:15px;border-bottom: 4px solid #FF9933">
+						<table>
+							<tr>
+								<td style="padding-right:35px;"><img src="/media_stat/images/template/search/search_deptnav_2.gif" style="border: none;" alt=""></td>
+								<td style="vertical-align:bottom;">
+									<div id="searchContainer" class="x-yui-skin-sam" style="position: relative; margin-right: 4px;">
+										<INPUT TYPE="text" style="width: 284px; position: static;" id="searchxParams" name="searchParams" value="<%= StringEscapeUtils.escapeHtml(criteria) %>" size="16" maxlength="80" class="text11">
+										<div id="terms" class="termsStyle" style="position: absolute; background-color: white"></div>
+									</div>
+								</td>			
+								<td style="vertical-align:bottom">
+									<input name="submit" type="image" src="/media_stat/images/template/search/search_find_button.gif" style="border:none;">
+								</td>
+								<td><div id="searchDebug"></div></td>
+							</tr>
+						</table>
+					</div>
 				</td>
 			</tr>
 		</table>

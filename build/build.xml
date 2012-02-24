@@ -37,7 +37,7 @@
 	
 	<property name="log4j.jar"				value="log4j.jar"/>
 
-        <property name="lucene.version" value="3.0.0" />
+        <property name="lucene.version" value="3.0.3" />
         <property name="gwt.compiler.style"             value="PRETTY"/>
         <property name="scarab.jar" value="scarab-java-client-2.6.jar"/>
 
@@ -373,6 +373,9 @@
     <target name="prereq" depends="clean,make_dirs" description="Prerequisites">
     </target>
 
+    <target name="nop" description="No operation">
+    </target>
+
     <target name="make_dirs"
             description="create necessary working directories">
 		<mkdir dir="${work.dir}" />
@@ -615,7 +618,7 @@
 		                <pathelement location="${thirdparty.home}/lcc.jar"/>
 				<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
 				<pathelement location="${thirdparty.home}/lucene-queries-${lucene.version}.jar"/>
-				<pathelement location="${thirdparty.home}/lucene-spellchecker-${lucene.version}.jar"/>
+				<pathelement location="${thirdparty.home}/lucene-snowball-${lucene.version}.jar"/>
 
 		                <pathelement location="${work.dir}/Framework-emma.jar"/>
 		                <pathelement location="${work.dir}/ERPServices-emma.jar"/>
@@ -657,7 +660,7 @@
 		                		<pathelement location="${thirdparty.home}/lcc.jar"/>
 						<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
 						<pathelement location="${thirdparty.home}/lucene-queries-${lucene.version}.jar"/>
-						<pathelement location="${thirdparty.home}/lucene-spellchecker-${lucene.version}.jar"/>
+						<pathelement location="${thirdparty.home}/lucene-snowball-${lucene.version}.jar"/>
 
 		   				<pathelement location="${work.dir}/Framework.jar"/>
 		   				<pathelement location="${work.dir}/ERPServices.jar"/>
@@ -1607,7 +1610,7 @@
 			<pathelement location="${work.dir}/DataLoaderEJB-WL.jar"/>
 			<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
 			<pathelement location="${thirdparty.home}/lucene-queries-${lucene.version}.jar"/>
-			<pathelement location="${thirdparty.home}/lucene-spellchecker-${lucene.version}.jar"/>
+			<pathelement location="${thirdparty.home}/lucene-snowball-${lucene.version}.jar"/>
 
 			<pathelement location="${thirdparty.home}/slide/jakarta-slide-webdavlib-2.1.jar"/>
 			<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
@@ -1790,8 +1793,11 @@
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
 			<pathelement location="${work.dir}/RoutingServices.jar"/>
 			<pathelement location="${thirdparty.home}/struts.jar"/>
-            <pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
+			<pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
 			<pathelement location="${thirdparty.home}/castor-0.9.5.3-xml.jar"/>
+			<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
+			<pathelement location="${thirdparty.home}/lucene-queries-${lucene.version}.jar"/>
+			<pathelement location="${thirdparty.home}/lucene-snowball-${lucene.version}.jar"/>
 		</path>
 		<makeWebProject
 			project="FDWebSite"
@@ -2212,7 +2218,7 @@
 
 			<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
 			<pathelement location="${thirdparty.home}/lucene-queries-${lucene.version}.jar"/>
-			<pathelement location="${thirdparty.home}/lucene-spellchecker-${lucene.version}.jar"/>
+			<pathelement location="${thirdparty.home}/lucene-snowball-${lucene.version}.jar"/>
 		</path>
 
 		<makeProject
@@ -2246,7 +2252,7 @@
 						<pathelement path="${thirdparty.home}/ognl-2.3.0-opt.jar"/>
 						<pathelement path="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
 						<pathelement path="${thirdparty.home}/lucene-queries-${lucene.version}.jar"/>
-						<pathelement path="${thirdparty.home}/lucene-spellchecker-${lucene.version}.jar"/>
+						<pathelement path="${thirdparty.home}/lucene-snowball-${lucene.version}.jar"/>
 						<pathelement path="${work.dir}/Framework.jar"/>
 						<pathelement path="${work.dir}/ERPServicesEJB-WL.jar"/>
 						<pathelement path="${work.dir}/DeliveryEJB-WL.jar"/>
@@ -2295,7 +2301,7 @@
 			<!-- scarab runtime dependencies -->
 				<include name="lucene-core-${lucene.version}.jar"/>
 				<include name="lucene-queries-${lucene.version}.jar"/>
-				<include name="lucene-spellchecker-${lucene.version}.jar"/>
+				<include name="lucene-snowball-${lucene.version}.jar"/>
 				<include name="httpclient-4.0.1.jar"/>
 				<include name="httpcore-4.0.1.jar"/>
 				<include name="httpmime-4.0.1.jar"/>
@@ -2328,7 +2334,7 @@
                 <include name="${scarab.jar}"/>
 			<!-- scarab runtime dependencies -->
 				<include name="lucene-queries-${lucene.version}.jar"/>
-				<include name="lucene-spellchecker-${lucene.version}.jar"/>
+				<include name="lucene-snowball-${lucene.version}.jar"/>
 				<include name="httpclient-4.0.1.jar"/>
 				<include name="httpcore-4.0.1.jar"/>
 				<include name="httpmime-4.0.1.jar"/>
@@ -2356,7 +2362,7 @@
 				<include name="struts.jar"/>
 				<include name="lucene-core-${lucene.version}.jar"/>
 				<include name="lucene-queries-${lucene.version}.jar"/>
-				<include name="lucene-spellchecker-${lucene.version}.jar"/>
+				<include name="lucene-snowball-${lucene.version}.jar"/>
 				<include name="jxl.jar"/>
 				<include name="jstl-api-1.2.jar"/>
 				<include name="jstl-impl-1.2.jar"/>
@@ -2403,7 +2409,7 @@
 				<include name="poi-3.5-FINAL-20090928.jar"/>
 				<include name="lucene-core-${lucene.version}.jar"/>
 				<include name="lucene-queries-${lucene.version}.jar"/>
-				<include name="lucene-spellchecker-${lucene.version}.jar"/>
+				<include name="lucene-snowball-${lucene.version}.jar"/>
 				<include name="antlr-2.7.5H3.jar"/>
 				<include name="httpclient-4.0.1.jar"/>
 				<include name="httpcore-4.0.1.jar"/>
@@ -2439,7 +2445,7 @@
 
 				<include name="lucene-core-${lucene.version}.jar"/>
 				<include name="lucene-queries-${lucene.version}.jar"/>
-				<include name="lucene-spellchecker-${lucene.version}.jar"/>
+				<include name="lucene-snowball-${lucene.version}.jar"/>
 
 				<include name="opencsv-1.8.jar"/>
 				
@@ -2540,7 +2546,7 @@
 
 				<include name="lucene-core-${lucene.version}.jar"/>
 				<include name="lucene-queries-${lucene.version}.jar"/>
-				<include name="lucene-spellchecker-${lucene.version}.jar"/>
+				<include name="lucene-snowball-${lucene.version}.jar"/>
 				<include name="jgroups-2.2.7.jar"/>
 				<include name="jxl.jar"/>
 				<include name="jstl-api-1.2.jar"/>
@@ -2624,7 +2630,7 @@
 
 			<zipfileset src="${thirdparty.home}/lucene-core-${lucene.version}.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/lucene-queries-${lucene.version}.jar" excludes="META-INF/*"/>
-			<zipfileset src="${thirdparty.home}/lucene-spellchecker-${lucene.version}.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/lucene-snowball-${lucene.version}.jar" excludes="META-INF/*"/>
 
 			<!-- zipfileset src="${thirdparty.home}/commons-fileupload-1.0.jar" excludes="META-INF/*"/ -->
 			<zipfileset src="${thirdparty.home}/commons-fileupload-1.1.1.jar" excludes="META-INF/*"/>
@@ -2989,7 +2995,7 @@
 
 				<include name="lucene-core-${lucene.version}.jar"/>
 				<include name="lucene-queries-${lucene.version}.jar"/>
-				<include name="lucene-spellchecker-${lucene.version}.jar"/>
+				<include name="lucene-snowball-${lucene.version}.jar"/>
 				<include name="httpclient-4.0.1.jar"/>
 				<include name="httpcore-4.0.1.jar"/>
 				<include name="httpmime-4.0.1.jar"/>

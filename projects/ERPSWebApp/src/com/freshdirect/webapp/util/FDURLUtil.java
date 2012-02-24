@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -15,7 +16,10 @@ import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeVariant;
@@ -76,7 +80,7 @@ public class FDURLUtil {
 		
 		StringBuilder uri = new StringBuilder();
 		
-		appendProduct(uri, productNode);
+		appendProduct(uri, null, productNode);
 
 		// product page with category ID
 		// uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + ProductDisplayUtil.getRealParent(productNode).getContentName());
@@ -128,7 +132,11 @@ public class FDURLUtil {
 	    return getProductURI(productNode, variantId, trackingCode,trackingCodeEx,rank, null);
 	}
         
-    /**
+	public static String getProductURI(ProductContainer parent, ProductModel productNode, String variantId, String trackingCode, String trackingCodeEx, int rank) {
+	    return getProductURI(parent, productNode, variantId, trackingCode,trackingCodeEx,rank, null);
+	}
+
+	/**
 	 * Generate product page URL
 	 * (called from Featured Items pages)
 	 * 
@@ -140,9 +148,19 @@ public class FDURLUtil {
 	 */
 	public static String getProductURI(ProductModel productNode, String variantId, String trackingCode, 
 			String trackingCodeEx, int rank, String impressionId) {
-		return getProductURI(productNode, variantId, trackingCode, trackingCodeEx, rank, impressionId, null, null);
+		return getProductURI(null, productNode, variantId, trackingCode, trackingCodeEx, rank, impressionId, null, null);
 	}
-    
+
+	public static String getProductURI(ProductModel productNode, String variantId, String trackingCode, 
+			String trackingCodeEx, int rank, String impressionId, String ymalSetId, String originatingProductId) {
+		return getProductURI(null, productNode, variantId, trackingCode, trackingCodeEx, rank, impressionId, ymalSetId, originatingProductId);
+	}
+	
+	public static String getProductURI(ProductContainer parent, ProductModel productNode, String variantId, String trackingCode, 
+			String trackingCodeEx, int rank, String impressionId) {
+		return getProductURI(parent, productNode, variantId, trackingCode, trackingCodeEx, rank, impressionId, null, null);
+	}
+	
 	/**
 	 * Generate product page URL
 	 * (called from Featured Items pages)
@@ -155,12 +173,12 @@ public class FDURLUtil {
 	 * @param originatingProductId {@link String} originating product id or YMAL product ID
 	 * @return URI that points to the page of product
 	 */
-	public static String getProductURI(ProductModel productNode, String variantId, String trackingCode, 
+	public static String getProductURI(ProductContainer parent, ProductModel productNode, String variantId, String trackingCode, 
 			String trackingCodeEx, int rank, String impressionId, String ymalSetId, String originatingProductId) {
 		
 		StringBuilder uri = new StringBuilder();
 		
-		appendProduct(uri, productNode);
+		appendProduct(uri, parent, productNode);
 
 		// product page with category ID
 		// uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + ProductDisplayUtil.getRealParent(productNode).getContentName());
@@ -208,6 +226,10 @@ public class FDURLUtil {
 	}
 
 
+	public static String getProductURI(ProductModel productNode, String trackingCode, String trackingCodeEx, int rank) {
+		return getProductURI(null, productNode, trackingCode, trackingCodeEx, rank);
+	}
+
 	/**
 	 * Generates URL for products in search page
 	 * 
@@ -217,11 +239,11 @@ public class FDURLUtil {
 	 * @param rank			Rank (if value is greater or equal to 0)
 	 * @return
 	 */
-	public static String getProductURI(ProductModel productNode, String trackingCode, String trackingCodeEx, int rank) {
+	public static String getProductURI(ProductContainer parent, ProductModel productNode, String trackingCode, String trackingCodeEx, int rank) {
 		
 		StringBuilder uri = new StringBuilder();
 		
-		appendProduct(uri, productNode);
+		appendProduct(uri, parent, productNode);
 		
 		// product page with category ID
 		// uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + ProductDisplayUtil.getRealParent(productNode).getContentName());
@@ -251,15 +273,45 @@ public class FDURLUtil {
 	 * Appends product and its parent category ID to URI
 	 * 
 	 * @param uri
+	 * @param parent 
 	 * @param productNode
 	 * @return
 	 */
-	private static StringBuilder appendProduct(StringBuilder uri, ProductModel productNode) {
-		// product page with category ID
-		uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + ProductDisplayUtil.getRealParent(productNode).getContentName());
+	private static StringBuilder appendProduct(StringBuilder uri, ProductContainer parent, ProductModel productNode) {
+		if (parent == null) {
+			// product page with category ID
+			uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + ProductDisplayUtil.getRealParent(productNode).getContentName());
+	
+			// append product ID
+			uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + ProductDisplayUtil.getRealProduct(productNode).getContentName());
+		} else {
+			// find direct parent
+			Collection<ContentKey> parentKeys = productNode.getParentKeys();
+			ContentKey matching = null;
+			for (ContentKey parentKey : parentKeys) {
+				if (parent.getContentKey().equals(parentKey)) {
+					// direct parent, trivial
+					matching = parentKey;
+					break;
+				}
 
-		// append product ID
-		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + ProductDisplayUtil.getRealProduct(productNode).getContentName());
+				ContentNodeModel node = ContentFactory.getInstance().getContentNodeByKey(parentKey);
+				if (node != null) {
+					if (ContentNodeModelUtil.isChildOf(parent, node, true)) {
+						matching = parentKey;
+						break;
+					}
+				}
+			}
+			
+			if (matching == null) {
+				uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + ProductDisplayUtil.getRealParent(productNode).getContentName());
+				uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + ProductDisplayUtil.getRealProduct(productNode).getContentName());
+			} else {
+				uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + matching.getId());
+				uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + productNode.getContentKey().getId());
+			}
+		}
 
 		return uri;
 	}
@@ -273,7 +325,7 @@ public class FDURLUtil {
 		
 		StringBuilder uri = new StringBuilder();
 		
-		appendProduct(uri, actProd);
+		appendProduct(uri, null, actProd);
 
 		// product page with category ID
 		// uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + actProd.getParentNode().getContentName());
@@ -676,7 +728,7 @@ public class FDURLUtil {
 		
 		StringBuilder uri = new StringBuilder();
 		
-		appendProduct(uri, productNode);
+		appendProduct(uri, null, productNode);
 
 		/* append wine params */
 

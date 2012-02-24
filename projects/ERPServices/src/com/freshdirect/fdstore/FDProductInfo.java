@@ -32,7 +32,7 @@ public class FDProductInfo extends FDSku  {
     /** inventory info for the product but this should only be set in a TEST CASE */
     private final FDInventoryCacheI inventory;
 	
-    private final String rating;
+    private final EnumOrderLineRating rating;
     /** availability restricted dates for the product */
     private final Date[] availabilityDates;
 
@@ -48,14 +48,14 @@ public class FDProductInfo extends FDSku  {
     //FDGroup contains Group identity if applicable.
     private final FDGroup group;
     
-    private String sustainabilityRating="";
+    private EnumSustainabilityRating sustainabilityRating;
     
     private String upc;
     
     public FDProductInfo(String skuCode, int version, 
     		String[] materialNumbers, EnumATPRule atpRule, EnumAvailabilityStatus availStatus, Date availDate, 
-    		FDInventoryCacheI inventory, String rating, String freshness,
-    		ZonePriceInfoListing zonePriceInfoList, FDGroup group, String sustainabilityRating,
+    		FDInventoryCacheI inventory, EnumOrderLineRating rating, String freshness,
+    		ZonePriceInfoListing zonePriceInfoList, FDGroup group, EnumSustainabilityRating sustainabilityRating,
     		String upc, Date[] availabilityDates) {
 
 		super(skuCode, version);
@@ -135,7 +135,7 @@ public class FDProductInfo extends FDSku  {
         return EnumAvailabilityStatus.TEMP_UNAV.equals(this.availStatus);
     }
 
-    public String getRating() {
+    public EnumOrderLineRating getRating() {
     	return this.rating;
     }
     
@@ -219,6 +219,10 @@ public class FDProductInfo extends FDSku  {
 		return this.zonePriceInfoList;
 	}
 
+	public FDProductInfo copy(int version, EnumAvailabilityStatus availability, EnumOrderLineRating newRating, String newFreshness) {
+	    return new FDProductInfo (getSkuCode(), version, materialNumbers, atpRule, availability, new Date(), inventory, newRating, newFreshness, zonePriceInfoList.clone(), group, sustainabilityRating, upc, availabilityDates);
+	}
+
 	public FDGroup getGroup() {
 		return group;
 	}
@@ -226,11 +230,10 @@ public class FDProductInfo extends FDSku  {
 	public boolean isGroupExists(){
 		return group != null;
 	}
-
 	/** Getter for property sustainabilityRating.
      * @return Value of property sustainabilityRating.
      */
-    public String getSustainabilityRating() {
+    public EnumSustainabilityRating getSustainabilityRating() {
         return sustainabilityRating;
     }
     

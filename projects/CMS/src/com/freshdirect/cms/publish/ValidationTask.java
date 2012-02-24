@@ -73,7 +73,7 @@ public class ValidationTask implements PublishTask {
 				service.execute(new Runnable() {
 					public void run() {
 						try {
-							validator.validate(delegate, contentService, node, null);
+							validator.validate(delegate, contentService, node, null, null);
 						} catch (Exception e) {
 							LOGGER.warn("Exception in validator", e);
 							delegate.record(node.getKey(), e.getMessage());

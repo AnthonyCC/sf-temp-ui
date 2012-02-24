@@ -10,11 +10,11 @@ if (request.getAttribute("__yui_included__") == null) {
 <link rel="stylesheet" type="text/css" href="/assets/yui-2.9.0/calendar/assets/skins/sam/calendar.css" />
 <%
 	}
-	if (request.getAttribute("__yui_load_autocomplete__") != null) {
+	//if (request.getAttribute("__yui_load_autocomplete__") != null) {
 %>
 <link rel="stylesheet" type="text/css" href="/assets/yui-2.9.0/autocomplete/assets/skins/sam/autocomplete.css" />
 <%
-	}
+	//}
 %>
 <link rel="stylesheet" type="text/css" href="/assets/yui-2.9.0/carousel/assets/carousel-core.css" />
 
@@ -50,14 +50,17 @@ if (request.getAttribute("__yui_included__") == null) {
 %><script type="text/javascript" src="/assets/yui-2.9.0/calendar/calendar.js"></script>
 <%
 	}
-	if (request.getAttribute("__yui_load_autocomplete__") != null) {
+	/*if (request.getAttribute("__yui_load_autocomplete__") != null) {*/
 %><script type="text/javascript" src="/assets/yui-2.9.0/autocomplete/autocomplete.js"></script>
 <%
-	}
+	//}
 	if (request.getAttribute("__yui_animation__") != null) {
 %><script type="text/javascript" src="/assets/yui-2.9.0/animation/animation.js"></script>
 <%
 	}
+%>
+	<fd:javascript src="/assets/javascript/smsearch_autocomplete.js"/>
+<%
 	request.setAttribute("__yui_included__", Boolean.TRUE);
 }
 %>

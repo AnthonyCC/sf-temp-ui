@@ -44,17 +44,17 @@ public class ActionBar extends LayoutContainer {
         buttonBarLayout.setPadding(new Padding(10));
         buttonBar.setLayout(buttonBarLayout);
         buttonBar.setStyleAttribute("top", "0px");
-        buttonBar.setStyleAttribute("left", "40%");
+        buttonBar.setStyleAttribute("left", "35%");
         
         FlowLayout linkBarLayout = new FlowLayout();
         linkBar.setLayout(linkBarLayout);        
         linkBar.setStyleAttribute("top", "10px");
-        linkBar.setStyleAttribute("left", "60%");
+        linkBar.setStyleAttribute("left", "65%");
         linkBar.setStyleAttribute("text-align", "right");
         
-        add(textBar,new AnchorData("40% 100%"));
-        add(buttonBar,new AnchorData("20% 100%"));
-        add(linkBar,new AnchorData("40% 100%"));
+        add(textBar,new AnchorData("35% 100%"));
+        add(buttonBar,new AnchorData("30% 100%"));
+        add(linkBar,new AnchorData("35% 100%"));
 	}
 	
 

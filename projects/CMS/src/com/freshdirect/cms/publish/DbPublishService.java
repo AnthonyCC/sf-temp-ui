@@ -4,14 +4,14 @@
 
 package com.freshdirect.cms.publish;
 
-import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ConcurrentPublishException;
 import com.freshdirect.cms.application.service.DbService;
 import com.freshdirect.cms.core.CmsDaoFactory;
+import com.freshdirect.cms.search.IBackgroundProcessor;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -20,16 +20,16 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  */
 public class DbPublishService extends DbService implements PublishServiceI {
 
-	private final static Category LOGGER = LoggerFactory.getInstance(DbPublishService.class);
+	private final static Logger LOGGER = LoggerFactory.getInstance(DbPublishService.class);
 	
 	/**
 	 *  The Publish data access object
 	 */
 	private PublishDao	publishDao;
-	
-	private List<PublishTask> publishTasks;
 
 	private String basePath;
+	
+	private IBackgroundProcessor processor;
 
 	/**
 	 *  Constructor.
@@ -45,14 +45,11 @@ public class DbPublishService extends DbService implements PublishServiceI {
 	public void setBasePath(String basePath) {
 		this.basePath = basePath;
 	}
+	
+	public void setProcessor(IBackgroundProcessor processor) {
+            this.processor = processor;
+        }
 
-	public void setPublishTasks(List<PublishTask> publishTasks) {
-		this.publishTasks = publishTasks;
-	}
-
-	public List<PublishTask> getPublishTasks() {
-		return publishTasks;
-	}
 
 	public List<Publish> getPublishHistory() {
 		// return publishDao.getAllPublishesOrdered("timestamp desc");
@@ -106,52 +103,10 @@ public class DbPublishService extends DbService implements PublishServiceI {
 		// as transactions are thread-specific
 		// and the Publisher will run in a different thread
 		publishDao.commitTransaction();
+		newPublish.setPath(basePath + "/" + newPublish.getId());
 
-		Publisher publisher = new Publisher();
-		publisher.publish = newPublish;
-
-		Thread pubThread = new Thread(publisher, "Publisher");
-		pubThread.start();
-
+		processor.executePublish(newPublish);
 		return newPublish.getId();
 	}
-
-	private class Publisher implements Runnable {
-		private Publish publish;
-
-		public void run() {
-			try {
-				publishDao.beginTransaction();
-				
-				publish.setPath(basePath + "/" + publish.getId());
-
-				for ( PublishTask task : publishTasks ) {
-
-					publish.getMessages().add(new PublishMessage(PublishMessage.INFO, task.getComment()));
-					publish.setLastModified(new Date());
-					updatePublish(publish);
-
-					task.execute(publish);
-				}
-
-				publish.setStatus(EnumPublishStatus.COMPLETE);
-				publish.setLastModified(new Date());
-				updatePublish(publish);
-
-			} catch (Throwable e) {
-				LOGGER.error("Exception occured during publish", e);
-				publish.setStatus(EnumPublishStatus.FAILED);
-				publish.setLastModified(new Date());
-				publish.getMessages().add(new PublishMessage(PublishMessage.ERROR, e.toString()));
-				updatePublish(publish);
-			} finally {
-				// one has to commit the transation, as transaction are thread-specific
-				// and the publish status page is polling in a different thread
-				publishDao.commitTransaction();
-				publishDao.closeSession();
-			}
-		
-		}
-
-	}
 }
+

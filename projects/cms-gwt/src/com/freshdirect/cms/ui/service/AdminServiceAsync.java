@@ -8,7 +8,7 @@ public interface AdminServiceAsync {
     public void rebuildIndexes(AsyncCallback<AdminProcStatus> callback);
     
     public void rebuildWineIndexes(AsyncCallback<AdminProcStatus> callback);
-    
+
     public void validateEditors(AsyncCallback<AdminProcStatus> callback);
     
     public void getBuildIndexStatus(AsyncCallback<AdminProcStatus> callback);

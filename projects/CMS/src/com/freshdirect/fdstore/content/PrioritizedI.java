@@ -8,10 +8,11 @@ package com.freshdirect.fdstore.content;
 
 import java.util.Comparator;
 
+
 /**
- *
- * @author  mrose
- * @version 
+ * 
+ * @author mrose
+ * @version
  */
 public interface PrioritizedI {
     
@@ -26,4 +27,3 @@ public interface PrioritizedI {
     };
 
 }
-

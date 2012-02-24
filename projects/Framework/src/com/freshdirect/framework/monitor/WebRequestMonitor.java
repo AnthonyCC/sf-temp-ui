@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.management.ObjectName;
 import javax.naming.Context;
@@ -21,11 +22,8 @@ import javax.servlet.ServletResponse;
 
 import org.apache.log4j.Category;
 
-
 import com.freshdirect.framework.util.JMXUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
-
-import java.util.concurrent.ConcurrentHashMap;
 
 public class WebRequestMonitor implements Filter, WebRequestMonitorMBean {
 
@@ -59,6 +57,7 @@ public class WebRequestMonitor implements Filter, WebRequestMonitorMBean {
 		}
 
 		if (invokeFilter) {
+			RequestLogger.logRequest(request);
 			invokeSensorsBefore(request, response);
 		}
 		

@@ -81,12 +81,12 @@ String transform(HttpSession s, String suggestion, int at) {
 <div class="order_content">
 <% 
 List products = new ArrayList();
-List recipes =  searchResults.getRecipes();
+List recipes =  SearchResultItem.unwrap(searchResults.getRecipes());
 if (searchResults != null && (recipes.size() > 0 || searchResults.getProducts().size() > 0) ) { 
         String offSet = "" + (pageCount * 75);
         
         // remove items that do not have a default sku
-        for (Iterator pi = searchResults.getProducts().iterator();pi.hasNext();) {
+        for (Iterator pi = SearchResultItem.unwrap(searchResults.getProducts()).iterator();pi.hasNext();) {
             ProductModel pm = (ProductModel)pi.next();
             if (pm.getDefaultSku()!=null) products.add(pm);
         }
@@ -141,6 +141,26 @@ if (searchTerms.size() > 0) { %>
                 </tr>
             </table><FONT CLASS="space4pix"><BR></FONT><FONT CLASS="space2pix"><BR></FONT>
             <%-- ~~~~~~~~~~~~~ END RESULTS NAV SECTION ~~~~~~~~~~~~~ --%>
+<%
+	if (searchResults.getSpellingSuggestions() != null & !searchResults.getSpellingSuggestions().isEmpty()) { 
+		java.util.Collection<String> suggestions = searchResults.getSpellingSuggestions();
+%>
+		<div style="width: 100%; padding: 2px; margin-left: 30%" class="order">
+			<div class="text15" style="line-height: 4em">
+			Did you mean <%
+				java.util.Iterator<String> sugIt = suggestions.iterator(); int sugI = 0;
+				while (sugIt.hasNext()) {
+					String suggestion = sugIt.next();
+					String sep = sugI == 0 ? "" : (sugI + 1 == suggestions.size() ? " or " : ", ");
+			%><%= sep %><a style="font-weight: bold;" href="?searchIndex=<%= searchIndex %>&search_pad=<%= transform(session, suggestion, searchIndex) %>"><%=suggestion%></a><%
+					sugI++;
+				}
+			%>?
+			</div>
+		</div>
+<%
+	}
+%>
 
             <%-- ~~~~~~~~~~~~~ BEGIN SEARCH RESULTS SECTION ~~~~~~~~~~~~~ --%>
 <%  if ( (recipes.size() + products.size()) >0)  { 
@@ -150,19 +170,7 @@ if (searchTerms.size() > 0) { %>
         <%@ include file="/includes/i_search_results.jspf"%>
 <%  } else { %>
 		<div style="width: 100%; padding: 2px; margin-left: 30%" class="order">
-<%
-	if (searchResults.getSpellingSuggestion() != null) { 
-		String suggestion = searchResults.getSpellingSuggestion();
-%>
-			<div class="text15" style="line-height: 4em">
-			Did you mean <a style="font-weight: bold;" href="?searchIndex=<%= searchIndex %>&search_pad=<%= transform(session, suggestion, searchIndex) %>"><%=suggestion%></a>?
-			</div>
-<%
-	} else {
-%>			Your search for <span class="text7grbold"><%= criteria %></span> produced no results.
-<%
-	}
-%>
+		Your search for <span class="text7grbold"><%= criteria %></span> produced no results.
 		</div>
 <%  } %>
             <%-- ~~~~~~~~~~~~~ END SEARCH RESULTS SECTION ~~~~~~~~~~~~~ --%>

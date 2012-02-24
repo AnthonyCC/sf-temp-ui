@@ -1473,13 +1473,10 @@ inner:
                         if (skuCode.startsWith(curPrefix)) {
                             productInfo = FDCachedFactory.getProductInfo(skuCode);
                             // LOG.debug(" Rating productInfo :"+productInfo);
-                            String tmpRating = productInfo.getRating();
+                            EnumOrderLineRating enumRating = productInfo.getRating();
 
-                            if (tmpRating != null && tmpRating.trim().length() > 0) {
-                                EnumOrderLineRating enumRating = EnumOrderLineRating.getEnumByStatusCode(tmpRating);
-                                // LOG.debug(" enumRating :"+enumRating);
-
-                                if (enumRating != null && enumRating.isEligibleToDisplay()) {
+                            if (enumRating != null) {
+                                if (enumRating.isEligibleToDisplay()) {
                                     rating = enumRating;
                                     // LOG.debug(" rating in display format  :"+rating);
                                 }
@@ -1723,13 +1720,10 @@ inner:
                         if (skuCode.startsWith(curPrefix)) {
                             productInfo = FDCachedFactory.getProductInfo(skuCode);
                             // LOG.debug(" Rating productInfo :"+productInfo);
-                            String tmpRating = productInfo.getSustainabilityRating();
+                            EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating();
 
-                            if (tmpRating != null && tmpRating.trim().length() > 0) {
-                            	EnumSustainabilityRating enumRating = EnumSustainabilityRating.getEnumByStatusCode(tmpRating);
-                                // LOG.debug(" enumRating :"+enumRating);
-
-                                if (enumRating != null && enumRating.isEligibleToDisplay()) {
+                            if (enumRating != null) {
+                                if (enumRating.isEligibleToDisplay()) {
                                     rating = enumRating;
                                     // LOG.debug(" rating in display format  :"+rating);
                                 }
@@ -1746,20 +1740,15 @@ inner:
                 }
                 */
                 productInfo = FDCachedFactory.getProductInfo(skuCode);
-                String tmpRating = productInfo.getSustainabilityRating();
-                if (tmpRating != null && tmpRating.trim().length() > 0) {
-                	EnumSustainabilityRating enumRating = EnumSustainabilityRating.getEnumByStatusCode(tmpRating);
-                    // LOG.debug(" enumRating :"+enumRating);
-
-                    if (enumRating != null && enumRating.isEligibleToDisplay()) { 
-                    	if (enumRating.getId() == 0) { /* check against CMS */
-                    		if (this.showDefaultSustainabilityRating()) {
-                    			rating = enumRating;
-                    		}
-                    	} else {
-                    		rating = enumRating;
-            				// LOG.debug(" rating in display format  :"+rating);
-                        }
+                EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating();
+                if (enumRating != null && enumRating.isEligibleToDisplay()) { 
+                	if (enumRating.getId() == 0) { /* check against CMS */
+                		if (this.showDefaultSustainabilityRating()) {
+                			rating = enumRating;
+                		}
+                	} else {
+                		rating = enumRating;
+        				// LOG.debug(" rating in display format  :"+rating);
                     }
                 }
             } catch (FDSkuNotFoundException ignore) {

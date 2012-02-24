@@ -1,21 +1,28 @@
 <%@page import="java.util.Map"%>
 <%@page import="java.util.List"%>
+<%@page import="java.util.Collection"%>
 <%@page import="com.freshdirect.cms.ContentKey"%>
 <%@page import="com.freshdirect.cms.search.SearchHit"%>
 <%@page import="com.freshdirect.fdstore.content.SearchResults"%>
 <%@page import="com.freshdirect.fdstore.content.ContentSearch"%>
 <%@page import="com.freshdirect.fdstore.content.ContentSearchUtil"%>
 <%@page import="java.net.URLEncoder"%>
+<%@page import="org.apache.hivemind.Registry"%>
+<%@page import="com.freshdirect.framework.conf.FDRegistry"%>
+<%@page import="com.freshdirect.cms.search.ContentSearchServiceI"%>
+<%@page import="java.util.HashMap"%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <html>
 <head>
 	<title>Search Compare Page</title>
-	<fd:css href="/test/search/config.css" />
+	<fd:css href="/assets/css/test/search/config.css" />
 </head>
 <body>
 <%
 	String s1 = request.getParameter("search1");
 	String s2 = request.getParameter("search2");
+	boolean approximate = request.getParameter("approximate") != null;
+		
 	if (s1 == null) {
 	    s1 = "";
 	}
@@ -23,8 +30,11 @@
 	    s2 = "";
 	}
 
-    SearchResults res1 = s1.trim().length() > 0 ? ContentSearch.getInstance().search(s1) : null;
-    SearchResults res2 = s2.trim().length() > 0 ? ContentSearch.getInstance().search(s2) : null;
+	Registry registry = FDRegistry.getInstance();
+	ContentSearchServiceI search = (ContentSearchServiceI) registry.getService(ContentSearchServiceI.class);
+
+	Collection<SearchHit> res1 = s1.trim().length() > 0 ? search.searchProducts(s1, !approximate, !approximate, 2000) : null;
+	Collection<SearchHit> res2 = s2.trim().length() > 0 ? search.searchProducts(s2, !approximate, !approximate, 2000) : null;
 
 	
 %>
@@ -36,28 +46,30 @@
 	Search term 2 : <input type="text" name="search2" value="<%= s2 %>"/>
 	<% if (s2.trim().length() > 0 ) { %><a href="/search.jsp?searchParams=<%= URLEncoder.encode(s2) %>">Live Search</a><% } %>
 	<br/>
+	<input type="checkbox" name="approximate"<%= approximate ? " checked=\"checked\"" : "" %>> Approximate
+	<br/>
 	<input type="submit" value="Search!">  
 </form>
 
 
 
 <% if (res1 != null && res2 != null) {
-    List<SearchHit> l1 = res1.getProductSearchHit();
-    Map<ContentKey, SearchHit> map = ContentSearchUtil.toMap(res2.getProductSearchHit());
+    Map<ContentKey, SearchHit> map = new HashMap<ContentKey, SearchHit>(res2.size() + 1);
+    for (SearchHit hit : res2)
+    	map.put(hit.getContentKey(), hit);
     
     %>
-    Search result count for <b><%= s1 %></b> is <i><%= l1.size() %></i>, for <b><%= s2 %></b> is <i><%= res2.getProductSearchHit().size() %></i>. 
+    Search result count for <b><%= s1 %></b> is <i><%= res1.size() %></i>, for <b><%= s2 %></b> is <i><%= res2.size() %></i>. 
 	<table>
 	<tr class="head">
 		<td class="head">Content Key</td>
 		<td class="head">Full Name</td>
 		<td class="head">Score for <%= s1 %></td>
-		<td class="head">Keywords</td>
 		<td class="head">Score for <%= s2 %></td>
 	</tr>
     <%
     boolean even = false;
-    for (SearchHit p : l1) {
+    for (SearchHit p : res1) {
         SearchHit other = map.remove(p.getContentKey());
         even = !even;
         String cls = even ? "even":"odd";
@@ -66,7 +78,6 @@
     	<td class="<%= cls %>"><%= p.getContentKey().getId() %></td>
     	<td class="<%= cls %>"><%= p.getNode() != null ? p.getNode().getFullName() : "<b>empty</b>" %></td>
     	<td class="<%= cls %>"><%= p.getScore() %></td>
-    	<td class="<%= cls %>"><%= p.getKeywords() %></td>
     	<% if (other != null) { %>
     	<td class="<%= cls %>"><%= other.getScore() %></td>
     	<% } else { %>
@@ -84,7 +95,6 @@
     	<td class="<%= cls %>"><%= p.getContentKey() %></td>
     	<td class="<%= cls %>"><%= p.getNode() != null ? p.getNode().getFullName() : "<b>empty</b>" %></td>
     	<td class="<%= cls %>"><b>Missing : <i><%= s1 %></i>!</b></td>
-    	<td class="<%= cls %>"><%= p.getKeywords() %></td>
     	<td class="<%= cls %>"><%= p.getScore() %></td>
         <%
     }

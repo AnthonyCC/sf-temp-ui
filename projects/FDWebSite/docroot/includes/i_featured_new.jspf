@@ -1,17 +1,20 @@
+<%@page import="java.util.List"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
+<%@page import="com.freshdirect.webapp.util.DisplayObject"%>
+<%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
+<%@page import="com.freshdirect.fdstore.content.BrandModel"%>
+<%@page import="com.freshdirect.fdstore.content.Image"%>
+<%@page import="com.freshdirect.webapp.util.ProductImpression"%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%
-	//this list of products/brands 
-		List pList=new ArrayList();
-
-	//for now, fake the params we need
-		int itemsMinToShow=1;
-		int itemsToShow=4;
-		int itemsShown=0;
-
-	//verify that we have a cat
-	if (isCat) {
-		pList = currentCAT.getFeaturedNewProdBrands();
-	}
+if (newProds.getFeaturedCategory() != null) {
+	final int itemsMinToShow = 1;
+	final int itemsToShow = 4;
+	int itemsShown = 0;
+	List<ContentNodeModel> pList = newProds.getFeaturedCategory().getFeaturedNewProdBrands();
+	String catId = newProds.getFeaturedCategory().getContentKey().getId();
 
 	//make sure we have the minimum amount first
 	if (pList.size()>=itemsMinToShow) {
@@ -117,4 +120,6 @@
 				</tr>
 				</table>
 			</div>
-	<% } %>
+	<% }
+}	
+%>

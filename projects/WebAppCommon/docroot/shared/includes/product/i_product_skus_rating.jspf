@@ -36,10 +36,10 @@
 	}
 
 	if ( matchFound ) {
-		if ( productInfo.getRating() != null && productInfo.getRating().trim().length() > 0 ) { 
+		if ( productInfo.getRating() != null ) { 
 				
 			String rating="";
-			EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(productInfo.getRating());
+			EnumOrderLineRating enumRating = productInfo.getRating();
 				
 			if ( enumRating != null && enumRating.isEligibleToDisplay() ) {
 				rating = enumRating.getStatusCodeInDisplayFormat();
@@ -104,7 +104,7 @@
 				
 			String rating="";
 			boolean skipDisplay = true;
-			EnumSustainabilityRating enumRating=EnumSustainabilityRating.getEnumByStatusCode(productInfo.getSustainabilityRating());
+			EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating();
 			
 			if ( enumRating != null && enumRating.isEligibleToDisplay() ) {
 				if (enumRating.getId() == 0) {

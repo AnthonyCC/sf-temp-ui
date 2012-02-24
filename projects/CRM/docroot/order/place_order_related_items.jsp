@@ -81,7 +81,7 @@
 		//int itemsShown = 0;
 		//String lastCatName = null;
 		
-		List recipes = searchResults.getRecipes();
+		List recipes = SearchResultItem.unwrap(searchResults.getRecipes());
 		List products = new ArrayList();
 		for (Iterator it = relatedProducts.iterator(); it.hasNext(); ) {
 			Object obj = it.next();

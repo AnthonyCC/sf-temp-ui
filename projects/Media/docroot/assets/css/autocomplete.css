@@ -1,0 +1,29 @@
+/* this is used in autocomplete */
+
+.yui-ac-bd {
+	width: 144px;
+	border: 1px solid black;
+	border-top: none;
+}
+.yui-ac-highlight {
+	background-color: #E0E3D0 ! important;
+}
+
+div.termsStyle {
+	position: absolute;
+	background-color: white;
+	width : 144px;
+}	
+
+div.termsStyle ul {
+	margin: 0px;
+	padding: 0px;
+}
+div.termsStyle li {
+	list-style-type: none;
+	text-indent: -8px;
+	padding: 2px;
+	padding-left: 10px;		
+	cursor: default ! important;
+	background-color: white;
+}

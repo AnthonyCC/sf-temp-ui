@@ -5,6 +5,7 @@ import java.util.Comparator;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
 
 /**
  * Compares content nodes by their short-term-popularity value.
@@ -25,9 +26,8 @@ public class PopularityComparator implements Comparator<ContentNodeModel> {
 	//	private final com.freshdirect.smartstore.sorting.PopularityComparator comp = 
 	//			new com.freshdirect.smartstore.sorting.PopularityComparator( false, false, null, null );
 
-	// Short-term Popularity factor
-	private final com.freshdirect.smartstore.sorting.ShortTermPopularityComparator comp = 
-			new com.freshdirect.smartstore.sorting.ShortTermPopularityComparator( false, null );
+	// Short-term Popularity factor	
+	Comparator<ProductModel> comp = ScriptedContentNodeComparator.createShortTermPopularityComparator(null, null);
 
 	@Override
 	public int compare( ContentNodeModel o1, ContentNodeModel o2 ) {

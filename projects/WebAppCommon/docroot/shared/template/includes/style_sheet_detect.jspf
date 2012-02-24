@@ -27,6 +27,7 @@
 	%><fd:css href="/assets/css/pc_ie.css"/><%
 	}
 	%>
+	<fd:css href="/assets/css/autocomplete.css"/>	
 	<fd:css href="/assets/css/carousel.css"/>	
 	<!--[if lte IE 6]>
 	<fd:css href="/assets/css/pngfix_ie6.css"/>

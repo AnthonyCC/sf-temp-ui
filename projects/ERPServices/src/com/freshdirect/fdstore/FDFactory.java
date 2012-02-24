@@ -24,6 +24,10 @@ import javax.ejb.CreateException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
+import com.freshdirect.common.pricing.GrpMaterialPrice;
+import com.freshdirect.common.pricing.MaterialPrice;
+import com.freshdirect.customer.ErpGrpPriceModel;
+import com.freshdirect.customer.ErpGrpPriceZoneModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.SkuAvailabilityHistory;
@@ -424,7 +428,7 @@ class FDFactory {
 			EnumATPRule.JIT,
 			EnumAvailabilityStatus.TEMP_UNAV,
 			new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),
-			null,null,null,ZonePriceInfoListing.getDummy(), null,"", null, new Date[0]);
+			null,null,null,ZonePriceInfoListing.getDummy(), null,null, null, new Date[0]);
 	}
 
 

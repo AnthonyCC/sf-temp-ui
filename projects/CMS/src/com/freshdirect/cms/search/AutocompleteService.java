@@ -1,6 +1,7 @@
 package com.freshdirect.cms.search;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,10 +27,14 @@ public class AutocompleteService {
     private final static Logger   LOGGER                    = LoggerFactory.getInstance(AutocompleteService.class);
 
     private final static int MAX_AUTOCOMPLETE_HITS     = 20;
+    
+	final static Set<String> stopWords = new HashSet<String>(Arrays.asList(new String[] { "I", "a", "about", "an", "and", "are",
+			"as", "at", "be", "by", "for", "from", "how", "in", "is", "it", "of", "on", "or", "that", "the", "this", "to", "was",
+			"what", "when", "where", "who", "will", "with" }));
 
     final static Set<String> skipWordsInAutoCompletion = new HashSet<String>();
     static {
-        skipWordsInAutoCompletion.addAll(LuceneSearchService.stopWords);
+        skipWordsInAutoCompletion.addAll(stopWords);
         skipWordsInAutoCompletion.add("all");
         skipWordsInAutoCompletion.add("non");
         skipWordsInAutoCompletion.add("without");

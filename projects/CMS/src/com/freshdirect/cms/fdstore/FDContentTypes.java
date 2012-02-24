@@ -49,6 +49,7 @@ public class FDContentTypes {
 	public static final ContentType STARTER_LIST = ContentType.get("StarterList");
 	
 	public static final ContentType SYNONYM = ContentType.get("Synonym");
+	public static final ContentType SPELLING_SYNONYM = ContentType.get("SpellingSynonym");
 
 	public static final ContentType SEARCH_RELEVANCY_LIST = ContentType.get("SearchRelevancyList");
 	public static final ContentType SEARCH_RELEVANCY_HINT = ContentType.get("SearchRelevancyHint");

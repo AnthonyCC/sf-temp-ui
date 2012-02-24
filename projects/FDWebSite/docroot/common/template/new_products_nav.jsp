@@ -27,10 +27,10 @@ String criteria = request.getParameter("searchParams");
 
 %>
 <fd:javascript src="/assets/javascript/rounded_corners.inc.js"/>
-<%@ include file="/includes/search/autocomplete.jspf" %>
 </head>
 <body bgcolor="#ffffff" link="#336600" vlink="#336600" alink="#ff9900" text="#333333">
 <%@ include file="/common/template/includes/globalnav.jspf" %>
+<%@ include file="/includes/search/autocomplete.jspf" %>
 <center class="text10">
 <table width="<%=W_NEW_PRODUCTS_NAV_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 	<tr>

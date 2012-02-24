@@ -41,9 +41,9 @@ final FDUserI u = (FDUserI) request.getSession().getAttribute(SessionName.USER);
 
 // turn products into product impressions
 
-List impressions = new ArrayList();
-for (Iterator it=productList.iterator(); it.hasNext();) {
-	impressions.add( new ProductImpression((ProductModel) it.next()) );
+List<ProductImpression> impressions = new ArrayList<ProductImpression>(search.getPageProducts().size());
+for (Iterator<ProductModel> it=search.getPageProducts().iterator(); it.hasNext();) {
+	impressions.add( new ProductImpression( it.next()) );
 }
 
 final int GRID_ROW_SIZE=4; // maximum number of items per row (number of columns)
@@ -64,25 +64,11 @@ int rank = nav.getPageOffset()+1;
 			<fd:PIPRow id="pi" impressionRow="<%= piRow %>" isBlankCell="isBlankCell" shouldRenderBlankCells="<%= false %>"><%
 				// product to render
 				ProductModel productNode = pi.getProductModel();
-		
-				boolean hasWas = false;
-				Double defaultPrice = null;
-				String priceUnit = null;
-				double basePrice = Double.NaN;
-				if (pi.getProductInfo() != null) {
-					defaultPrice = new Double(pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).getDefaultPrice());
-					priceUnit = JspMethods.formatPricingUnit(pi.getProductInfo());
-					hasWas = pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).isItemOnSale();
-					basePrice = Double.NaN;
-					if (hasWas) {
-						basePrice = pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).getSellingPrice();
-					}
-				}
+%><%@ include file="/includes/search/price_info.jspf" %><%	
 				
-				boolean isYourFave = DYFUtil.isFavorite(productNode, u);
 		
 				// URI that points to product page
-				String prdURI = FDURLUtil.getProductURI(productNode, (String)trk, (isYourFave ? "fave" : nav.getSortByName()), rank);
+				String prdURI = FDURLUtil.getProductURI(search.getParentContainer(), productNode, (String)trk, (isYourFave ? "fave" : nav.getSortByName()), rank);
 			
 				long w = singleRow ? Math.round(100.0/piRow.size()) : Math.round(100.0/GRID_ROW_SIZE) /* = 100/4 */;
 				%>

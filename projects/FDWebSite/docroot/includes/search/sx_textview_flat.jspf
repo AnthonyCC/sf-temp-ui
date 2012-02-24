@@ -41,9 +41,9 @@ final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
 final FDUserI u = (FDUserI) request.getSession().getAttribute(SessionName.USER);
 
 // turn products into product impressions
-List impressions = new ArrayList();
-for (Iterator it=productList.iterator(); it.hasNext();) {
-	impressions.add( new ProductImpression((ProductModel) it.next()) );
+List<ProductImpression> impressions = new ArrayList<ProductImpression>();
+for (Iterator<ProductModel> it=search.getPageProducts().iterator(); it.hasNext();) {
+	impressions.add( new ProductImpression(it.next()) );
 }
 int k = 0;
 
@@ -53,31 +53,12 @@ int k = 0;
 	<tr style="height: 2.6em; <%= (k%2)==1 ? "background-color: #eee" : "" %>">
 <%
 		ProductModel productNode = pi.getProductModel();
-
-		boolean hasWas = false;
-		Double defaultPrice = null;
-		String priceUnit = null;
-		int wasDeal = -1;
-		double basePrice = 0.0;
-		double realBase = 0.0;
-		if (pi.getProductInfo() != null) {
-			defaultPrice = new Double(pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).getDefaultPrice());
-			priceUnit = JspMethods.formatPricingUnit(pi.getProductInfo());
-			hasWas = pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).isItemOnSale();
-			wasDeal = -1;
-			basePrice = 0.0;
-			if (hasWas) {
-				wasDeal = pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).getDealPercentage();
-				basePrice = pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).getSellingPrice();
-			}
-			realBase = DealsHelper.determineBasePrice(basePrice, defaultPrice.doubleValue());
-		}
+%>
+<%@ include file="/includes/search/price_info.jspf" %><%	
 		
-		boolean isYourFave = DYFUtil.isFavorite(productNode, u);
-
 		ContentNodeModel parent = productNode.getParentNode();
 		
-		String actionURI = FDURLUtil.getProductURI(pi.getProductModel(), trk, (isYourFave ? "fave" : nav.getSortByName()), k);
+		String actionURI = FDURLUtil.getProductURI(search.getParentContainer(), pi.getProductModel(), trk, (isYourFave ? "fave" : nav.getSortByName()), k);
 %>
 		<td style="width: 100%; padding-left: 1em">
 			<div>

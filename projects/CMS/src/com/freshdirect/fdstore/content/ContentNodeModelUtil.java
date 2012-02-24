@@ -267,9 +267,10 @@ public class ContentNodeModelUtil {
      */
     private static String buildErrorMessage(ContentNodeModelImpl refModel, ContentKey key, ContentNodeModelImpl cachedContentNodeByKey,
             ContentNodeModel parentNode) {
-        return "Content node already exists for key:" + key + ", node:" + cachedContentNodeByKey + ", hash:"
-                + System.identityHashCode(cachedContentNodeByKey) + " but with different parent : " + parentNode.getContentKey() + '('
-                + System.identityHashCode(parentNode) + ") instead of the expected " + refModel.getContentKey() + "(" + System.identityHashCode(refModel) + ')';
+        return "Content node already exists for key:" + key + ", node:" + cachedContentNodeByKey + ", hash:" + System.identityHashCode(cachedContentNodeByKey)
+                + " but with different parent : " + parentNode.getContentKey() + '(' + System.identityHashCode(parentNode) + ", parents : "
+                + parentNode.getParentKeys() + ") \n\tinstead of the expected " + refModel.getContentKey() + "(" + System.identityHashCode(refModel)
+                + ") which parent are: " + refModel.getParentKeys();
     }
 
 	static boolean compareKeys(List<ContentKey> keys, List<? extends ContentNodeModel> models) {
@@ -504,5 +505,25 @@ public class ContentNodeModelUtil {
         }
         return defValue;
     }
-	
+
+    public static boolean isChildOf(ContentNodeModel parent, ContentNodeModel child, boolean recurse) {
+    	if (child.getContentKey().equals(parent.getContentKey()))
+    		return false; // trivial
+
+    	for (ContentKey key : child.getParentKeys())
+    		if (key.equals(parent.getContentKey()))
+    			return true; // direct parent
+
+    	if (recurse) {
+        	for (ContentKey key : child.getParentKeys()) {
+        		ContentNodeModel p = ContentFactory.getInstance().getContentNodeByKey(key);
+        		if (p != null) {
+        			boolean ret = isChildOf(parent, p, recurse);
+        			if (ret)
+        				return true;
+        		}
+        	}
+    	}
+    	return false;
+    }
 }

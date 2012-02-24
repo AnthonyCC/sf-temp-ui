@@ -17,14 +17,12 @@ import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.node.ContentNodeUtil;
-import com.freshdirect.cms.search.ContentSearchServiceI;
-import com.freshdirect.cms.search.SynonymDictionary;
+import com.freshdirect.cms.search.BackgroundStatus;
+import com.freshdirect.cms.search.IBackgroundProcessor;
 import com.freshdirect.cms.ui.model.AdminProcStatus;
 import com.freshdirect.cms.ui.service.AdminService;
 import com.freshdirect.cms.validation.ContentValidationDelegate;
 import com.freshdirect.cms.validation.ContentValidatorI;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -36,111 +34,64 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
     
     ExecutorService executor = Executors.newSingleThreadExecutor();
 
-    AdminProcStatus status = new AdminProcStatus();
+    
 
     @Override
     public AdminProcStatus getBuildIndexStatus() {
-        status.setElapsedTime(status.isRunning() ? System.currentTimeMillis() - status.getStarted() : 0);
-        return status;
+        
+        IBackgroundProcessor search = getAdminSearch();
+        BackgroundStatus status = search.getStatus();
+        return createAdminProcStatus(status);
+    }
+
+    /**
+     * @param status
+     * @return
+     */
+    AdminProcStatus createAdminProcStatus(BackgroundStatus status) {
+        AdminProcStatus visibleStatus = new AdminProcStatus(status.getCurrent(), status.getLastReindexResult(), status.isRunning(), status.getStarted(), status.isRunning() ? System.currentTimeMillis() - status.getStarted() : 0);
+        return visibleStatus;
     }
 
     @Override
     public AdminProcStatus rebuildIndexes() {
         
         synchronized (AdminServiceImpl.class) {
+            IBackgroundProcessor tool = getAdminSearch();
+            BackgroundStatus status = tool.getStatus();
+            
             LOG.info("rebuild index called ("+status.isRunning()+")");
             if (!status.isRunning()) {
-                status.setRunning(true);
-                executor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            LOG.info("starting indexing");
-                            rebuildIndexImpl();
-                            LOG.info("indexing finished");
-                        } catch (Exception e) {
-                            LOG.error("indexing failed:"+e.getMessage(), e);
-                            setStatus("Failed : " + e.getMessage());
-                        } finally {
-                            status.setRunning(false);
-                        }
-                    }
-                });
+                tool.backgroundReindex();
+                
             }
 
         }
-        return status;
+        return getBuildIndexStatus();
     }
 
     @Override
     public AdminProcStatus rebuildWineIndexes() {
         
         synchronized (AdminServiceImpl.class) {
+            IBackgroundProcessor tool = getAdminSearch();
+            BackgroundStatus status = tool.getStatus();
             LOG.info("rebuild index called ("+status.isRunning()+")");
             if (!status.isRunning()) {
-                status.setRunning(true);
-                executor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            LOG.info("starting wine indexing");
-                            rebuildWineIndexImpl();
-                            LOG.info("indexing wine finished");
-                        } catch (Exception e) {
-                            LOG.error("indexing wine failed:"+e.getMessage(), e);
-                            setStatus("Failed : " + e.getMessage());
-                        } finally {
-                            status.setRunning(false);
-                        }
-                    }
-                });
+                tool.rebuildWineIndex();
             }
 
         }
-        return status;
+        return getBuildIndexStatus();
+    }
+
+    /**
+     * @return
+     */
+    IBackgroundProcessor getAdminSearch() {
+        return (IBackgroundProcessor) FDRegistry.getInstance().getService(IBackgroundProcessor.class);
     }
     
-    private void setStatus(String msg) {
-        status.setCurrent(msg);
-        LOG.info("status:"+msg);
-    }
-    
-    private void rebuildIndexImpl() {
-        long time = System.currentTimeMillis();
-        status.setStarted(time);
-        ContentSearchServiceI searchService = (ContentSearchServiceI) FDRegistry.getInstance().getService(ContentSearchServiceI.class);
-
-        Set<ContentKey> keys = new HashSet<ContentKey>();
-        CmsManager instance = CmsManager.getInstance();
-        for (Iterator<ContentType> i = searchService.getIndexedTypes().iterator(); i.hasNext();) {
-            ContentType type = i.next();
-            keys.addAll(instance.getContentKeysByType(type));
-            setStatus("loading " + keys.size() + " keys");
-        }
-
-        setStatus("loading " + keys.size() + " nodes");
-        Map nodes = instance.getContentNodes(keys);
-        setStatus("setting up synonym dictionary");
-        searchService.setDictionary(SynonymDictionary.createFromCms());
-        setStatus("indexing " + nodes.values().size() + " nodes");
-        searchService.index(nodes.values());
-        setStatus("refreshing relevancy scores. ");
-
-        ContentSearch.getInstance().refreshRelevencyScores();
-        long elapsed = System.currentTimeMillis() - time;
-        setStatus("finished in " + (elapsed / 1000) + " sec");
-        status.setLastReindexResult("indexed " + nodes.values().size() + " nodes in " + (elapsed / 1000) + " sec");
-    }
-
-    private void rebuildWineIndexImpl() {
-        long time = System.currentTimeMillis();
-        status.setStarted(time);
-        setStatus("starting wine index rebuild");
-        ContentFactory.getInstance().refreshWineIndex(true);
-        long elapsed = System.currentTimeMillis() - time;
-        setStatus("completed wine index rebuild");
-        status.setLastReindexResult("indexed " + ContentFactory.getInstance().getAllWineProductKeys().size() + " wine products in " + (elapsed / 1000) + " sec");
-    }
 
     @Override
     public AdminProcStatus validateEditors() {
@@ -156,7 +107,7 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
                 }
             }
         });
-        return status;
+        return getBuildIndexStatus();
     }
 
     private void validateEditorsImpl() {
@@ -167,7 +118,7 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
         ContentValidatorI validator = new CmsFormValidator();
         for (Iterator<ContentNodeI> i = nodes.values().iterator(); i.hasNext();) {
             ContentNodeI e = i.next();
-            validator.validate(delegate, instance, e, null);
+            validator.validate(delegate, instance, e, null, null);
         }
         LOG.warn("editor validation:"+delegate);
     }
@@ -180,7 +131,7 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
      */
     private static class CmsFormValidator implements ContentValidatorI {
 
-        public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request) {
+        public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
             ContentType type = ContentType.get(node.getAttributeValue("contentType").toString());
             ContentTypeDefI def = service.getTypeService().getContentTypeDefinition(type);
 

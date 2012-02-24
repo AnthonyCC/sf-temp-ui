@@ -20,9 +20,10 @@ public interface ContentValidatorI {
 	 * @param service backing content service to validate against
 	 * @param node the node to validate
 	 * @param request request collecting suggested changes (optional)
+	 * @param oldNode the original node, if it's available
 
 	 */
 	public void validate(ContentValidationDelegate delegate,
-			ContentServiceI service, ContentNodeI node, CmsRequestI request);
+			ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode);
 
 }

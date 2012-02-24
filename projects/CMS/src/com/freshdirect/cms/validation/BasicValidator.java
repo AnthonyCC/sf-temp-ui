@@ -25,7 +25,7 @@ import com.freshdirect.cms.application.ContentServiceI;
  */
 public class BasicValidator implements ContentValidatorI {
 
-	public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request) {
+	public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
 		if (node.getKey() == null) {
 			delegate.record("Node with null content key");
 			return;

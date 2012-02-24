@@ -9,7 +9,7 @@ public class AutoComplete {
 
     static boolean disableAutocompleter = false;
 
-    private final static Logger LOGGER = LoggerFactory.getInstance(ContentSearch.class);
+    private final static Logger LOGGER = LoggerFactory.getInstance(AutoComplete.class);
 	private AutocompleteService autocompletion;
 	private Thread autocompleteUpdater;
 	private WordListI wordlist;
@@ -52,7 +52,6 @@ public class AutoComplete {
             LOGGER.info("auto completer is disabled");
             return null;
         }
-        LOGGER.info("initautocompleter");
         synchronized(this) {
             if (this.autocompletion == null) {
                 if (autocompleteUpdater == null) {

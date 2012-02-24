@@ -79,8 +79,8 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
     private final static int      MAX_HITS         = 120;
     
     private static final String[] ROOTKEYS         = { "Store:FreshDirect", "MediaFolder:/", "CmsFolder:forms", "CmsQueryFolder:queries",
-            "CmsQuery:orphans", "FDFolder:recipes", "FDFolder:ymals", GlobalMenuItemModel.DEFAULT_MENU_FOLDER, "FDFolder:starterLists",
-            "FDFolder:synonymList", SearchRelevancyList.SEARCH_RELEVANCY_KEY, SearchRelevancyList.WORD_STEMMING_EXCEPTION,"FDFolder:FAQ" };    
+            "CmsQuery:orphans", "FDFolder:recipes", "FDFolder:ymals", GlobalMenuItemModel.DEFAULT_MENU_FOLDER, "FDFolder:starterLists", "FDFolder:synonymList",
+            "FDFolder:spellingSynonymList", SearchRelevancyList.SEARCH_RELEVANCY_KEY, "FDFolder:FAQ" };    
 
     @Override
     public void init() throws ServletException {
@@ -140,7 +140,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
     
     
     public List<TreeContentNodeModel> search( String searchTerm ) {
-		List<SearchHit> hits = (List<SearchHit>)CmsManager.getInstance().search( searchTerm, MAX_HITS );
+		Collection<SearchHit> hits = (Collection<SearchHit>)CmsManager.getInstance().search( searchTerm, false, MAX_HITS );
 		List<ContentNodeI> resultNodes = new ArrayList<ContentNodeI>( hits.size() );
 		List<TreeContentNodeModel> result = new ArrayList<TreeContentNodeModel>( hits.size() );
 		

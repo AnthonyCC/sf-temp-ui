@@ -3,7 +3,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <html>
 <head>
-	<fd:css href="/test/search/config.css" />
+	<fd:css href="/assets/css/test/search/config.css" />
 	<title>Relevancy Configuration</title>
 </head>
 <%@ page

@@ -6,9 +6,9 @@
 
 <% //expanded page dimensions
 final int W_NO_NAV_TOTAL = 970;
-%>
 
-<% request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE); %>
+request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
+%>
 <html>
 <head>
     <title><tmpl:get name='title'/></title>
@@ -45,7 +45,7 @@ final int W_NO_NAV_TOTAL = 970;
 %>
 
 </head>
-<body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#ff9900" text="#333333" class="yui-skin-sam" 
+<body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#ff9900" text="#333333" 
       onload="<%= request.getAttribute("bodyOnLoad")%>" 
       onunload="<%= request.getAttribute("bodyOnUnload")%>" >
 		<%

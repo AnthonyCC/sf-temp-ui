@@ -119,7 +119,7 @@ public class ProductNameWordList implements WordListI{
 
     private final static Set<String> skipWordsInAutoCompletion = new HashSet<String>();
     static {
-        skipWordsInAutoCompletion.addAll(LuceneSearchService.stopWords);
+        skipWordsInAutoCompletion.addAll(AutocompleteService.stopWords);
         skipWordsInAutoCompletion.add("all");
         skipWordsInAutoCompletion.add("non");
         skipWordsInAutoCompletion.add("without");
