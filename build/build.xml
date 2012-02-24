@@ -254,6 +254,7 @@
     	<checkoutLabeled dir="projects/RoutingServices"/>
 		<checkoutLabeled dir="projects/FDIntegrationServices"/> <!-- Added: Schematic rsung -->
 		<checkoutLabeled dir="projects/StandingOrdersService"/> <!-- Standing Orders background service -->
+		<checkoutLabeled dir="projects/FDServices"/>
 		<checkoutLabeled dir="applications"/>
 		<!--	<checkoutLabeled dir="release"/> -->
 	</target>
@@ -313,6 +314,7 @@
         <checkoutLatest dir="projects/RoutingServices"/>
 		<checkoutLatest dir="projects/FDIntegrationServices"/> <!-- Added: Schematic rsung -->        	
 		<checkoutLatest dir="projects/StandingOrdersService"/>
+		<checkoutLatest dir="projects/FDServices"/>
 		<checkoutLatest dir="applications"/>
 		<!--	<checkoutLatest dir="release"/> -->
 
@@ -405,6 +407,7 @@
 		<mkdir dir="${work.dir}/RoutingServices"/>
 		<mkdir dir="${work.dir}/cms-gwt"/>
 		<mkdir dir="${work.dir}/StandingOrdersService"/>
+    	<mkdir dir="${work.dir}/FDServices"/>
 	</target>
 
     <target name= "copy_shared_dirs"
@@ -505,7 +508,7 @@
         </copy>
     </target>
 
-	<target name="build" depends="framework,erpservices,routing,delivery,cms,fdstore,listadmin-lib,ocf,dataloader,erpswebapp,tools,StandingOrdersService" description="Build everything">
+	<target name="build" depends="framework,erpservices,routing,delivery,cms,fdstore,listadmin-lib,ocf,dataloader,erpswebapp,tools,StandingOrdersService,FDServices" description="Build everything">
 	</target>
 
 	<target name="jsmin" description="Minimizing javascript files">
@@ -1448,6 +1451,71 @@
 
 
 
+	<macrodef name="makeAxisProject">
+		<attribute name="project" />
+		<attribute name="classpathref" default=""/>
+        <attribute name="source" default="${javac.source}"/>	
+		<attribute name="service-name" default=""/>	
+		<sequential>
+			<mkdir dir="${work.dir}/@{project}/target" />
+			<mkdir dir="${work.dir}/@{project}/target/META-INF" />
+			<trycatch>
+				<try>
+					<record name="${work.dir}/logs/log.txt" action="start" append="yes" loglevel="info"/>
+					<tstamp>
+						<format property="compileStart" pattern="MM/dd/yyyy HH:mm" />
+					</tstamp>
+					<echo message="Started Compiling @{project} at:${compileStart}"/>
+					
+					<javac
+				srcdir="${projects.dir}/@{project}/src/"
+				destdir="${work.dir}/@{project}/target/"
+						includeantruntime="false" 
+				deprecation="${javac.deprecation}"
+				optimize="${javac.optimize}"
+				debug="${javac.debug}"
+				source="@{source}">
+						<classpath>
+							<path refid="@{classpathref}"/>
+						</classpath>
+					</javac>
+					<record name="${work.dir}/logs/log.txt" action="stop"/>
+				</try>
+				<catch>
+					<record name="${work.dir}/logs/log.txt" action="stop"/>
+					
+					<emailCompilationError projectName="@{project}"/> 
+					<fail/>
+				</catch>
+			</trycatch>
+			
+			<copy file="${projects.dir}/@{project}/src/META-INF/services.xml" tofile="${work.dir}/@{project}/target/META-INF/services.xml" overwrite="true" />
+			<copy file="${projects.dir}/@{project}/src/applicationContext.xml" tofile="${work.dir}/@{project}/target/applicationContext.xml" overwrite="true" />
+			<copy todir="${work.dir}/@{project}/axis2">
+			    <fileset dir="${projects.dir}/@{project}/axis2"/>
+			 </copy>
+			<copy todir="${work.dir}/@{project}/axis2/WEB-INF/lib">
+			    <fileset dir="${projects.dir}/@{project}/lib">
+			    	 <include name="*.jar"/>
+				</fileset>
+			</copy>
+			
+			<jar basedir="${work.dir}/@{project}/target" destfile="${work.dir}/@{project}/axis2/WEB-INF/services/@{service-name}.aar" />
+			
+			<jar destfile="${work.dir}/@{project}.war">
+				<manifest>
+                    <attribute name="Specification-Version" value="${build.counter}"/>
+                    <attribute name="Specification-Vendor" value="FreshDirect LLC"/>
+					<attribute name="Implementation-Title" value="@{project}"/>
+					<attribute name="Implementation-Version" value="${build.counter}"/>
+					<attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
+					<attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
+				</manifest>
+				<fileset dir="${work.dir}/@{project}/axis2" />
+			</jar>
+		</sequential>
+	</macrodef>
+	
 
 	<target name="framework" description="Build Framework">
 		<path id="framework.classpath">
@@ -2103,6 +2171,30 @@
 			classpathref="StandingOrdersService.classpath"/>
 	</target>
 
+	
+	<target name="FDServices" description="Build FD services project">
+		<echo message="${thirdparty.home}"/>
+		<path id="FDServices.classpath">
+			
+			<fileset dir="${thirdparty.home}">
+				<include name="log4j.jar"/>
+				<include name="commons-logging-1.1.1.jar"/>
+				<include name="axiom-api-1.2.8.jar"/>
+				<include name="axiom-dom-1.2.8.jar"/>
+				<include name="axiom-impl-1.2.8.jar"/>
+				<include name="axis.jar"/>
+				<include name="axis2-adb-1.5.jar"/>
+				<include name="axis2-kernel-1.5.jar"/>
+				<include name="spring-2.5.jar"/>
+			</fileset>
+		</path>
+		
+		<makeAxisProject
+					project="FDServices" 
+					classpathref="FDServices.classpath"
+					service-name="FDService"/>
+	</target>
+	
 	
 	<target name="deployDlvAdmin" description="Build and Deploy dlvadmin" depends="dlvadmin">
 		<copy todir="${weblogic.home}/config/freshdirect/applications/">
