@@ -8,12 +8,11 @@
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 
-	<tmpl:put name='yui-lib'>
-		<%@ include file='/common/i_yui.jspf'%>
-	</tmpl:put>	
-		
-	<tmpl:put name='title' direct='true'>Geography : Sector  </tmpl:put>
+<tmpl:put name='title' direct='true'>Geography : Sector  </tmpl:put>
 	<tmpl:put name='content' direct='true'>
+	<tmpl:put name='yui-lib'>
+		<%@ include file='/common/i_yui.jspf'%>	
+	</tmpl:put>
 	 <br/> 
     <div class="contentroot">
 		<c:if test="${not empty messages}">
@@ -30,7 +29,7 @@
 						<div class="scrTitle" style="float:left;padding-top:3px">Sector</div>
 				  <div style="float:left;">
 					  <span>&nbsp; <select id="sector" width="40" name="zone">
-						  <option value="">--Select sector</option>
+						  <option value="">--Please select Sector</option>
 						  <c:forEach var="sector" items="${sectors}">
 							  <c:choose>
 								<c:when test="${param.sector == sector.name}" > 
@@ -84,6 +83,7 @@
 	 <%@ include file='i_managesector.jspf'%>
 	 <script>
 		var geographyRpcClient = new JSONRpcClient("geographyprovider.ax");
+
 		var errColor = "#FF0000";
 		var msgColor = "#00FF00";
 		function doCompositeLink(compId1, url) {

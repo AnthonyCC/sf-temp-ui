@@ -809,6 +809,7 @@
 		<property name="sessionForm" value="true"/>
         <property name="commandName" value="neighbourhoodForm"/>
         <property name="commandClass" value="com.freshdirect.transadmin.model.SectorZipcode"/>
+        <property name="validator" ref="sectorZipcodeValidator"/> 
         <property name="successView" value="sectorEdit" />
         <property name="formView" value="sectorEdit" />
 	</bean>
@@ -848,4 +849,6 @@
 	<bean id="facilityTypeValidator" class="com.freshdirect.transadmin.web.validation.TrnFacilityTypeValidator"/>
 
 	<bean id="crisisMngValidator" class="com.freshdirect.transadmin.web.validation.CrisisManagerValidator"/>
+	<bean id="sectorZipcodeValidator" class="com.freshdirect.transadmin.web.validation.SectorZipcodeValidator"/>
+
 </beans>
