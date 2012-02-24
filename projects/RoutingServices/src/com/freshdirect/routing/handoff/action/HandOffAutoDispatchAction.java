@@ -657,7 +657,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 				}
 			});
 			Dispatch dispatch;
-			Truck truck;
+			Truck truck = null;
 			SELECT: {
 				if (!tuples.isEmpty()) {
 					DispatchTruckFrequency dtf = tuples.get(0);
@@ -676,7 +676,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 					// find the first not colliding
 					for (Dispatch d : freeDispatches)
 						COLLISION: for (Dispatch e : engaged)
-							if (!d.collide(e) && !d.isTrailer()) {
+							if (!d.collide(e) && !d.isTrailer() && !e.getTruck().isTrailer()) {
 								for (Dispatch f : engaged)
 									if (!f.getId().equals(e.getId()) && e.getTruck().equals(f.getTruck()) &&
 											d.collide(f))
@@ -688,10 +688,31 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 
 					dispatch = freeDispatches.get(0);
 					if (!unused.isEmpty()) {
-						truck = unused.iterator().next(); // practically random
-						unused.remove(truck);
+						if(dispatch.isTrailer()) {
+							Iterator itr = unused.iterator();
+							while(itr.hasNext()){
+								Truck tempTruck = (Truck)itr.next();
+								if(tempTruck.isTrailer()) {
+									truck = tempTruck;  // practically random
+									unused.remove(truck);
+									break;
+								}
+							}
+						} else {
+							Iterator itr = unused.iterator();
+							while(itr.hasNext()){
+								Truck tempTruck = (Truck)itr.next();
+								if(!tempTruck.isTrailer()) {
+									truck = tempTruck;  // practically random
+									unused.remove(truck);
+									break;
+								}
+							}
+						}
 					} else {
 						truck = Truck.newVirtualTruck();
+						if(dispatch.isTrailer()) 
+							truck.setTrailer(true);
 						trucks.add(truck);
 						truckMap.put(truck.getId(), truck);
 					}
