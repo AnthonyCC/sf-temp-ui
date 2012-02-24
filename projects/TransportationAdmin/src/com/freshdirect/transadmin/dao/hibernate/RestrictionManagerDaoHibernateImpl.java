@@ -36,7 +36,7 @@ public class RestrictionManagerDaoHibernateImpl extends BaseManagerDaoHibernateI
 
 	public Collection getGeoRestrictionBoundaries() throws DataAccessException {
 		StringBuffer strBuf = new StringBuffer();
-		strBuf.append("from GeoRestrictionBoundary ORDER BY code");
+		strBuf.append("from GeoRestrictionBoundary ORDER BY name");
 		
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
