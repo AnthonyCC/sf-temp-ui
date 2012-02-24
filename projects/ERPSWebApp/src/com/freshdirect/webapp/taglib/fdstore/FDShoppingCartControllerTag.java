@@ -229,41 +229,45 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		if (!inCallCenter && action != null && ("POST".equalsIgnoreCase(request.getMethod()))) {
 
 			//check if user should see overlay (for only specific actions), not in CRM
-			if (("addToCart".equalsIgnoreCase(action) || "addMultipleToCart".equalsIgnoreCase(action)) 
-					&& (!inCallCenter && this.getEventSource() != EnumEventSource.getEnum("SS"))) {
-				if (user.isShowPendingOrderOverlay()) {
-					//check if user has a pending order
-					try {
-						hasPending = user.hasPendingOrder();
-					} catch (FDResourceException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+			if ( ("addToCart".equalsIgnoreCase(action) || "addMultipleToCart".equalsIgnoreCase(action)) ) {
+				if (session.getAttribute("usedOverlay") == null) {
+					if (user.isShowPendingOrderOverlay()) {
+						//check if user has a pending order
+						try {
+							hasPending = user.hasPendingOrder();
+						} catch (FDResourceException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						if (hasPending) {
+							useMergePendingOverlay = true;
+							
+							//create a new temp cart for use in the overlay
+							FDCartModel tempMergePendCart = new FDCartModel();
+							//set pricing context in that cart
+							tempMergePendCart.setPricingContextToOrderLines(user.getPricingContext());
+							
+							//now, set the cart for this to the temp cart so items get added there
+							this.cart = tempMergePendCart;
+							//put temp cart in session (over writing the cart in use can cause problems)
+							session.setAttribute("tempMergePendCart", tempMergePendCart);
+							
+							//set the other attributes from the original post so we can use them in the overlay
+							session.setAttribute("tempMergeSource", this.source);
+							session.setAttribute("tempMergeAction", this.action);
+							session.setAttribute("tempMergeMultiSuccessPage", this.multiSuccessPage);
+							session.setAttribute("tempMergeSuccessPage", this.successPage);
+							
+						}
 					}
-					if (hasPending) {
-						useMergePendingOverlay = true;
-						
-						//create a new temp cart for use in the overlay
-						FDCartModel tempMergePendCart = new FDCartModel();
-						//set pricing context in that cart
-						tempMergePendCart.setPricingContextToOrderLines(user.getPricingContext());
-						
-						//now, set the cart for this to the temp cart so items get added there
-						this.cart = tempMergePendCart;
-						//put temp cart in session (over writing the cart in use can cause problems)
-						session.setAttribute("tempMergePendCart", tempMergePendCart);
-						
-						//set the other attributes from the original post so we can use them in the overlay
-						session.setAttribute("tempMergeSource", this.source);
-						session.setAttribute("tempMergeAction", this.action);
-						session.setAttribute("tempMergeMultiSuccessPage", this.multiSuccessPage);
-						session.setAttribute("tempMergeSuccessPage", this.successPage);
-						
-					}
+				}else{
+					//turn off overlay for user
+					user.setShowPendingOrderOverlay(false);
 				}
 			}
 			
 			//
-			// an action was request, decide which one
+			// an action was requested, decide which one
 			//
 			if ("pendOrderMerge".equalsIgnoreCase(action)) {
 				//parse out user changes
@@ -743,7 +747,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			cart.sortOrderLines();
 		}
 
-		// Check for expired or cancelled passes if already used.
+		// Check for expired or canceled passes if already used.
 		checkForExpOrCanPasses(user);
 
 		//
@@ -771,6 +775,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 			try {
 				response.sendRedirect(response.encodeRedirectURL(redir));
+				session.removeAttribute("usedOverlay");
 				return SKIP_BODY;
 			} catch (IOException ioe) {
 				// if there was a problem redirecting, well.. fuck it.. :)
@@ -801,7 +806,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			JspWriter out = pageContext.getOut();
 			try {
 				//print out method for overlay display
-				out.print("<script type=\"text/javascript\">globalDoRemoteOverlay('/ajax/merge_cart_penOrder_choice.jsp');</script>");
+				out.print("<script type=\"text/javascript\">globalDoRemoteOverlay('/ajax/merge_cart_penOrder_choice.jsp', 'submitPendOrderMergeChoice');</script>");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

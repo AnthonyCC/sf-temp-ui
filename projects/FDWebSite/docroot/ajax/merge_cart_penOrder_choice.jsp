@@ -14,6 +14,7 @@
     <tmpl:put name='title' direct='true'>FreshDirect - Pending Order Merge</tmpl:put>
     <tmpl:put name='content' direct='true'>
     	<%
+    		session.setAttribute("usedOverlay", true);
     		String source = (String)session.getAttribute("tempMergeSource");
 			String multiSuccessPage = (String)session.getAttribute("tempMergeMultiSuccessPage");
 			String successPage = (String)session.getAttribute("tempMergeSuccessPage");
@@ -131,7 +132,7 @@
 						<table class="butCont fright" style="margin-left: 10px;">
 							<tr>
 								<td class="butOrangeLeft"><!-- --></td>
-								<td class="butOrangeMiddle"><a class="butText" href="#" onclick="submitPendOrderMergeChoice(); return false;">Continue Shopping</a></td>
+								<td class="butOrangeMiddle"><a class="butText" href="#" onclick="submitPendOrderMergeChoice(true, $('mergeChoicePending').checked); return false;">Continue Shopping</a></td>
 								<td class="butOrangeRight"><!-- --></td>
 							</tr>
 						</table>

@@ -835,9 +835,11 @@ function getFrameHeight(frameId) {
 		autoPad: true
 	};
 	/* display an overlay containing a remote page */
-	function globalDoRemoteOverlay(olURL) {
+	function globalDoRemoteOverlay(olURL, closeCallbackVar) {
 		var olURL = olURL || '';
 		if (olURL == '') { return false; }
+
+		var closeCallback = closeCallbackVar || null;
 		
 		//make this quickbuy capable (of override)
 		var contextMB = null;
@@ -871,12 +873,12 @@ function getFrameHeight(frameId) {
 			closeString: 'Close Preview',
 			title: '',
 			overlayOpacity: .80,
-			overlayClose: false,
 			//width: 320,
 			transitions: false,
 			autoFocusing: false,
 			centered: true,
 			overlayClose: true,
+			closeCallback: closeCallback,
 			beforeLoad: function() {
 				var contextMB;
 				var contextMBwindow;
@@ -923,6 +925,16 @@ function getFrameHeight(frameId) {
 				ccSettings_common.bottomColour = "#ffffff";
 				curvyCornersHelper('MB_frame', ccSettings_common);
 			},
+			beforeHide: function() {
+				var contextMB;
+				if (window.parent.document.quickbuyPanel) {
+					contextMB = window.parent['Modalbox'];
+					if (contextMB.options.closeCallback) { window.parent[closeCallback](false); }
+				} else {
+					contextMB = Modalbox;
+					if (contextMB.options.closeCallback) { window[closeCallback](false); }
+				}
+			},
 			afterHide: function() {
 				var contextMB;
 				var contextMBwindow;
@@ -944,11 +956,18 @@ function getFrameHeight(frameId) {
 		});
 	}
 /* merge pending form submission */
-	function submitPendOrderMergeChoice() {
-		if ($('mergeChoicePending').checked) {
-			Modalbox.hide();
-			doRemoteOverlay('/ajax/merge_cart_penOrder.jsp');
+	function submitPendOrderMergeChoice(closeVar, chose) {
+		var close = closeVar || false;
+		if (chose) {
+			if (close) { Modalbox.hide(); }
+			globalDoRemoteOverlay('/ajax/merge_cart_penOrder.jsp');
 		} else {
-			$('mergeChoice').submit();
+			if (FD_QuickBuy.CURID != null) {
+				//using quickbuy
+				if (close) { Modalbox.hide(); }
+				$(FD_QuickBuy.CURID+'_frame').contentDocument.forms['productForm'].submit();
+			} else {
+				$('mergeChoice').submit();
+			}
 		}
 	}
