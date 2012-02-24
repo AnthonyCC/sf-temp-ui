@@ -222,6 +222,9 @@ public class CopyPlanFormController extends AbstractFormController {
 			tmpPlan = (Plan)iterator.next();
 			tmpNewPlan = new Plan();
 			
+			tmpNewPlan.setOriginFacility(tmpPlan.getOriginFacility());
+			tmpNewPlan.setDestinationFacility(tmpPlan.getDestinationFacility());
+			
 			tmpNewPlan.setFirstDeliveryTime(tmpPlan.getFirstDeliveryTime());
 			tmpNewPlan.setLastDeliveryTime(tmpPlan.getLastDeliveryTime());
 			tmpNewPlan.setCutOffTime(tmpPlan.getCutOffTime());
