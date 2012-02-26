@@ -76,7 +76,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
 	private int failedAuthorizations = 0;
 	private boolean healthWarningAcknowledged = false;
-	private boolean showPendingOrderOverlay = true;
 
 	private Date startDate;
 	private long lastRequestDate;
@@ -1249,13 +1248,23 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		// TODO Auto-generated method stub
 		this.user.setSessionEvent(event);
 	}
+	
+	//mergePendingOrder (APPDEV-2031)
 
+	public boolean getShowPendingOrderOverlay() {
+		return this.user.getShowPendingOrderOverlay();
+	}
+	
 	public void setShowPendingOrderOverlay(boolean showPendingOrderOverlay) {
-		this.showPendingOrderOverlay = showPendingOrderOverlay;
+		this.user.setShowPendingOrderOverlay(showPendingOrderOverlay);
 	}
 
-	public boolean isShowPendingOrderOverlay() {
-		return showPendingOrderOverlay;
+	public boolean hasPendingOrder() throws FDResourceException {
+		return this.user.hasPendingOrder();
+	}
+	
+	public boolean hasPendingOrder(boolean incGiftCardOrds, boolean incDonationOrds) throws FDResourceException {
+		return this.user.hasPendingOrder(incGiftCardOrds, incDonationOrds);
 	}
 
 	public List<FDOrderInfoI> getPendingOrders() throws FDResourceException {
@@ -1265,13 +1274,13 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public List<FDOrderInfoI> getPendingOrders(boolean incGiftCardOrds, boolean incDonationOrds, boolean sorted) throws FDResourceException {
 		return this.user.getPendingOrders(incGiftCardOrds, incDonationOrds, sorted);
 	}
-
-	public boolean hasPendingOrder() throws FDResourceException {
-		return this.user.hasPendingOrder();
+	
+	public FDCartModel getMergePendCart() {
+		return this.user.getMergePendCart();
 	}
 	
-	public boolean hasPendingOrder(boolean incGiftCardOrds, boolean incDonationOrds) throws FDResourceException {
-		return this.user.hasPendingOrder(incGiftCardOrds, incDonationOrds);
+	public void setMergePendCart(FDCartModel mergePendCart) {
+		this.user.setMergePendCart(mergePendCart);
 	}
 }
 

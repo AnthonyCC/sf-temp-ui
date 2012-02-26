@@ -26,8 +26,6 @@
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Order Placed</tmpl:put>
 <tmpl:put name='content' direct='true'>
 	<%
-		/* reset user to see mergePending overlay again */
-		user.setShowPendingOrderOverlay(true);
 		boolean _modifyOrderMode = false; 	
 		String _ordNum = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
 		if(session.getAttribute("MODIFIED" + _ordNum) != null && session.getAttribute("MODIFIED" + _ordNum).equals(_ordNum)) {

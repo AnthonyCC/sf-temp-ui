@@ -835,11 +835,20 @@ function getFrameHeight(frameId) {
 		autoPad: true
 	};
 	/* display an overlay containing a remote page */
-	function globalDoRemoteOverlay(olURL, closeCallbackVar) {
+	function globalDoRemoteOverlay(olURL, optsVar) {
 		var olURL = olURL || '';
 		if (olURL == '') { return false; }
+		var opts = optsVar || {};
 
-		var closeCallback = closeCallbackVar || null;
+		var closeCallback = opts.closeCallback || null;
+		var paramsObj = opts.params || {};
+		var title = opts.title || 'Close';
+		var titleStyles = opts.titleStyles || { borderBottom: 'none' }; //override title styles
+		var closeString, closeValue;
+		if (title != '') {
+			closeString = opts.closeString || 'close';
+			closeValue = opts.closeValue || '<img src="/media_stat/images/buttons/round_x.gif" alt="close" />';
+		}
 		
 		//make this quickbuy capable (of override)
 		var contextMB = null;
@@ -869,61 +878,58 @@ function getFrameHeight(frameId) {
 
 		contextMB.show(olURL, {
 			loadingString: 'Loading Preview...',
-			closeValue: ' ',
-			closeString: 'Close Preview',
-			title: '',
+			title: title,
+			titleStyles: titleStyles,
+			closeString: closeString,
+			closeValue: closeValue,
 			overlayOpacity: .80,
-			//width: 320,
 			transitions: false,
 			autoFocusing: false,
 			centered: true,
 			overlayClose: true,
+			params: paramsObj,
 			closeCallback: closeCallback,
 			beforeLoad: function() {
 				var contextMB;
-				var contextMBwindow;
-				var contextMBoverlay;
-				var contextMBwindowwrapper;
 				if (window.parent.document.quickbuyPanel) {
 					contextMB = window.parent['Modalbox'];
-					contextMBoverlay = window.parent.Modalbox.MBoverlay;
-					contextMBwindow = window.parent.Modalbox.MBwindow;
-					contextMBwindowwrapper = window.parent.Modalbox.MBwindowwrapper;
 				} else {
 					contextMB = Modalbox;
-					contextMBoverlay = Modalbox.MBoverlay;
-					contextMBwindow = Modalbox.MBwindow;
-					contextMBwindowwrapper = Modalbox.MBwindowwrapper;
 				}
-				contextMBwindow.style.width = '150px';
-				contextMBwindow.style.height = '150px';
-				contextMBwindow.style.left = parseInt((contextMBoverlay.clientWidth-contextMBwindow.clientWidth)/2)+'px';
+
+				window.scrollTo(0,0);
+
+				curvyCornersHelper(contextMB.MBframe.id, ccSettings_common);
+				contextMB.resizeToContent();
+				//and auto center
+				contextMB.setPosition();
+
+				if (contextMB.options.title == '') {
+					contextMB.MBheader.style.height = 0; //force header out of height check
+				}
+				contextMB.MBheader.hide(); //hide title until loaded
+				contextMB.MBheader.setStyle(contextMB.options.titleStyles);
 			},
 			afterLoad: function() {
 				var contextMB;
-				var contextMBwindow;
-				var contextMBoverlay;
-				var contextMBwindowwrapper;
 				if (window.parent.document.quickbuyPanel) {
 					contextMB = window.parent['Modalbox'];
-					contextMBoverlay = window.parent.Modalbox.MBoverlay;
-					contextMBwindow = window.parent.Modalbox.MBwindow;
-					contextMBwindowwrapper = window.parent.Modalbox.MBwindowwrapper;
 				} else {
 					contextMB = Modalbox;
-					contextMBoverlay = Modalbox.MBoverlay;
-					contextMBwindow = Modalbox.MBwindow;
-					contextMBwindowwrapper = Modalbox.MBwindowwrapper;
 				}
-				window.scrollTo(0,0);
-				contextMBwindow.style.width = 'auto';
-				contextMBwindow.style.height = 'auto';
-				contextMBwindow.style.left = parseInt((contextMBoverlay.clientWidth-contextMBwindow.clientWidth)/2)+'px';
 
+				
+				if (contextMB.options.title != '') {
+					contextMB.MBheader.show();
+				}
+				
+				//let the browser render the height and width
+				contextMB.MBwindow.style.width = 'auto';
+				contextMB.MBwindow.style.height = 'auto';
 
-				ccSettings_common.topColour = "#ffffff";
-				ccSettings_common.bottomColour = "#ffffff";
-				curvyCornersHelper('MB_frame', ccSettings_common);
+				contextMB.resizeToContent();
+				//and auto center
+				contextMB.setPosition();
 			},
 			beforeHide: function() {
 				var contextMB;
@@ -937,37 +943,24 @@ function getFrameHeight(frameId) {
 			},
 			afterHide: function() {
 				var contextMB;
-				var contextMBwindow;
-				var contextMBoverlay;
-				var contextMBwindowwrapper;
 				if (window.parent.document.quickbuyPanel) {
 					contextMB = window.parent['Modalbox'];
-					contextMBoverlay = window.parent.Modalbox.MBoverlay;
-					contextMBwindow = window.parent.Modalbox.MBwindow;
-					contextMBwindowwrapper = window.parent.Modalbox.MBwindowwrapper;
 				} else {
 					contextMB = Modalbox;
-					contextMBoverlay = Modalbox.MBoverlay;
-					contextMBwindow = Modalbox.MBwindow;
-					contextMBwindowwrapper = Modalbox.MBwindowwrapper;
 				}
 				window.scrollTo(contextMB.initScrollX, contextMB.initScrollY);
 			}
 		});
 	}
 /* merge pending form submission */
-	function submitPendOrderMergeChoice(closeVar, chose) {
+	function submitPendOrderMergeChoice(closeVar) {
 		var close = closeVar || false;
-		if (chose) {
+
+		if (FD_QuickBuy.CURID != null) {
+			//using quickbuy
 			if (close) { Modalbox.hide(); }
-			globalDoRemoteOverlay('/ajax/merge_cart_penOrder.jsp');
+			$(FD_QuickBuy.CURID+'_frame').contentDocument.forms['productForm'].submit();
 		} else {
-			if (FD_QuickBuy.CURID != null) {
-				//using quickbuy
-				if (close) { Modalbox.hide(); }
-				$(FD_QuickBuy.CURID+'_frame').contentDocument.forms['productForm'].submit();
-			} else {
-				$('mergeChoice').submit();
-			}
+			$('mergeToPendingChoice').submit();
 		}
 	}

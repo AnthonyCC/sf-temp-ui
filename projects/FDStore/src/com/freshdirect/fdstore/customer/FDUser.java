@@ -172,7 +172,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	private Map assignedCustomerParams;
 
-       private EnumWinePrice preferredWinePrice = null;
+	private EnumWinePrice preferredWinePrice = null;
 
 	/*
 	 * This attribute caches the list of product keys that are already
@@ -218,7 +218,12 @@ public class FDUser extends ModelSupport implements FDUserI {
 	private double percSlotsSold;
 	
 	private Date registrationDate;
+
 	private static final Date EPOCH = new Date(0);
+
+	//mergePendingOrder (APPDEV-2031)
+	private boolean showPendingOrderOverlay = true;
+    private FDCartModel mergePendCart = new FDCartModel();
 
 	/*Appdev-1888
 	private String referralLink;
@@ -2030,7 +2035,17 @@ public class FDUser extends ModelSupport implements FDUserI {
 		// TODO Auto-generated method stub
 		this.event = event;
 	}
+	
+	//mergePendingOrder (APPDEV-2031)
+	
+	public boolean getShowPendingOrderOverlay() {
+		return this.showPendingOrderOverlay;
+	}
 
+	public void setShowPendingOrderOverlay(boolean showPendingOrderOverlay) {
+		this.showPendingOrderOverlay = showPendingOrderOverlay;
+	}
+	
 	/* check if user has a valid (regular) pending order (so exclude all other types) */
 	public boolean hasPendingOrder() throws FDResourceException {
 		return hasPendingOrder(false, false);
@@ -2038,7 +2053,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	
 	/* check if user has a valid pending order. inclusions optional. */
 	public boolean hasPendingOrder(boolean incGiftCardOrds, boolean incDonationOrds) throws FDResourceException {		
-		List orderHistoryInfo = new ArrayList(getPendingOrders(incGiftCardOrds, incDonationOrds, true));
+		List<FDOrderInfoI> orderHistoryInfo = new ArrayList<FDOrderInfoI>(getPendingOrders(incGiftCardOrds, incDonationOrds, true));
 		
 		return (orderHistoryInfo.size() > 0) ? true : false;
 	}
@@ -2067,8 +2082,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 		
 		List<FDOrderInfoI> validPendingOrders = new ArrayList<FDOrderInfoI> ();
 
-		for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
-			FDOrderInfoI orderInfo = (FDOrderInfoI) hIter.next();
+		for (Iterator<FDOrderInfoI> hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
+			FDOrderInfoI orderInfo = hIter.next();
             
 			if (orderInfo.isModifiable()) {
         	   if (orderInfo.getOrderStatus() == EnumSaleStatus.REFUSED_ORDER )
@@ -2111,11 +2126,21 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 	
 	/** Sorts orders by dlv. start time, descending */
-	private final static Comparator ORDER_COMPARATOR = new Comparator() {
-		public int compare(Object o1, Object o2) {
-			return ((FDOrderInfoI) o2).getRequestedDate().compareTo(((FDOrderInfoI) o1).getRequestedDate());
+	private final static Comparator<FDOrderInfoI> ORDER_COMPARATOR = new Comparator<FDOrderInfoI>() {
+		public int compare(FDOrderInfoI o1, FDOrderInfoI o2) {
+			return (o2).getRequestedDate().compareTo((o1).getRequestedDate());
 		}
 	};
+	
+	public FDCartModel getMergePendCart() {
+		return (this.mergePendCart == null) ? new FDCartModel() : this.mergePendCart;
+	}
+	
+	public void setMergePendCart(FDCartModel mergePendCart) {
+		if ( mergePendCart == null || mergePendCart.getClass().isAssignableFrom(getMergePendCart().getClass()) ) {
+			this.mergePendCart = mergePendCart;
+		}
+	}
 
 	/*
 	public void setReferralLink(String referralLink) {

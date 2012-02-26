@@ -461,9 +461,14 @@ public interface FDUserI extends java.io.Serializable {
 	public SessionEvent getSessionEvent();
 
 	public void setSessionEvent(SessionEvent event);
-	
+
+	//mergePendingOrder (APPDEV-2031)
+	public boolean getShowPendingOrderOverlay();
+	public void setShowPendingOrderOverlay(boolean showPendingOrderOverlay);
 	public boolean hasPendingOrder() throws FDResourceException;
 	public boolean hasPendingOrder(boolean incGiftCardOrds, boolean incDonationOrds) throws FDResourceException;
 	public List<FDOrderInfoI> getPendingOrders() throws FDResourceException;
 	public List<FDOrderInfoI> getPendingOrders(boolean incGiftCardOrds, boolean incDonationOrds, boolean sorted) throws FDResourceException;
+	public FDCartModel getMergePendCart();
+	public void setMergePendCart(FDCartModel mergePendCart);	
 }
