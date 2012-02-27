@@ -5,13 +5,8 @@ package com.freshdirect.fdstore.content;
 import com.freshdirect.cms.util.PublishId;
 
 public class Image extends MediaModel {
-
-    private int width;
-    private int height;
-    private int fittedWidth = -1;
-    private int fittedHeight = -1;
-
-	public Image() {
+    
+    public Image() {
         super();
         mediaType = TYPE_IMAGE;
     }
@@ -74,71 +69,7 @@ public class Image extends MediaModel {
     	else
     		return getPath();
     }
-
-    /* directly returns fitted height, -1 by default if it hasn't been calculated */
-    public int getFittedHeight() {
-		return fittedHeight;
-	}
     
-    /* calculate correct height to fit a container */
-    public int getFittedHeight(int fitToWidth, int fitToHeight) {
-    	/* check if sizes have not been calculated, and calc if needed */
-    	if (this.getFittedHeight() == -1 || this.getFittedWidth() == -1) {
-    		this.calculateFittedSizes(fitToHeight, fitToWidth);
-    	}
-    	return fittedHeight;
-    }
-
-	public void setFittedHeight(int fittedHeight) {
-		this.fittedHeight = fittedHeight;
-	}
-
-    /* calculate correct height to fit a container */
-    public int getFittedWidth(int fitToWidth, int fitToHeight) {
-    	/* check if sizes have not been calculated, and calc if needed */
-    	if (this.getFittedHeight() == -1 || this.getFittedWidth() == -1) {
-    		this.calculateFittedSizes(fitToHeight, fitToWidth);
-    	}
-    	return fittedWidth;
-    }
-
-    /* directly returns fitted width, -1 by default if it hasn't been calculated */
-	public int getFittedWidth() {
-		return fittedWidth;
-	}
-
-	public void setFittedWidth(int fittedWidth) {
-		this.fittedWidth = fittedWidth;
-	}
-	
-	/* calculate fitted height and width to fit a container */
-	public void calculateFittedSizes(int fitToWidth, int fitToHeight) {
-		int fittedHeight = 0; 
-		int fittedWidth = 0; 
-		int origHeight = this.getHeight();
-		int origWidth = this.getWidth();
-		float ratio = (float)origWidth / (float)origHeight;
-		int fitToSize;
-		
-		/* use smallest container side */
-		if (fitToHeight > fitToWidth) {
-			fitToSize = fitToWidth;
-		}else{
-			fitToSize = fitToHeight;
-		}
-		
-		/* check if we're resizing up or down */
-		if (fitToSize * ratio > fitToSize) {
-			//size down
-			fittedWidth = fitToWidth;
-			fittedHeight = (int) (fitToSize / ratio);
-		}else{
-			//size up
-			fittedWidth = (int) (fitToSize * ratio);
-			fittedHeight = fitToHeight;
-		}
-
-		this.setFittedWidth(Math.round(fittedWidth));
-		this.setFittedHeight(Math.round(fittedHeight));
-	}
+    private int width;
+    private int height;
 }

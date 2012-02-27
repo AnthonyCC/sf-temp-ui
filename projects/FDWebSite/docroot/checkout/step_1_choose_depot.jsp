@@ -35,11 +35,7 @@ final int W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL = 970;
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	double cartTotal = user.getShoppingCart().getTotal();
 %>
-<%	
-	FDCartModel cart = user.getShoppingCart();
-	//button include count
-	int incNextButtonCount = 0;
-%>
+
 <%@ include file="/includes/i_modifyorder.jspf" %>
 
 
@@ -55,7 +51,8 @@ final int W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL = 970;
 						<tr>
 							<td align="left"  style="color:#666666;font-weight:bold;">Delivery Charge:</td>
 							<td align="right"  style="color:#666666;font-weight:bold;">
-								<%
+								<%	
+									FDCartModel cart = user.getShoppingCart();
 									String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge() );
 									if(cart.isDlvPassApplied()) {
 								%>

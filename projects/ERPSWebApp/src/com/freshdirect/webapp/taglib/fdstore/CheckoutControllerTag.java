@@ -302,9 +302,6 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				//
 				currentUser.saveCart( true );
 			}
-
-			/* reset user to see mergePending overlay again */
-			currentUser.setShowPendingOrderOverlay(true);
 		}
 
 		return true;

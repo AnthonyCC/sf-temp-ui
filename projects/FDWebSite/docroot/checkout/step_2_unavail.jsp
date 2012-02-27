@@ -30,9 +30,6 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 FDCartModel cart = user.getShoppingCart();
 FDReservation reservation = cart.getDeliveryReservation();
 
-//button include count
-int incNextButtonCount = 0;
-
 // get map of cartLineId -> unav FDAvailabilityInfos
 Map<String,FDAvailabilityInfo> invsInfoMap = cart.getUnavailabilityMap();
 Date day = null;
@@ -251,8 +248,8 @@ if (day != null) {
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL%>">
 	<tr valign="TOP">
 		<td width="25"><a href="<% if (day != null) { %>/checkout/step_2_select<% } else { %>/index<% } %>.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" width="28" height="28" alt="" border="0"></a></td>
-		<td width="10"><img src="/media_stat/images/layout/clear.gif" width="10" height="1" alt="" border="0" alt="" /></td>
-		<td width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL/2-35%>">
+		<td><img src="/media_stat/images/layout/clear.gif" width="10" height="1" alt="" border="0"></td>
+		<td width="350">
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"><br>
 			<% if (day != null) { %>
 			<a href="/checkout/step_2_select.jsp"><img src="/media_stat/images/template/checkout/choose_another_time.gif" width="180" height="9" alt="Choose another delivery time" border="0"></a><br>
@@ -262,8 +259,13 @@ if (day != null) {
 			Everything else in your cart is available.
 			<% } %>
 		</td>
-		<td width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL/2%>" align="right" valign="bottom">
-			<%@ include file="/includes/i_cart_next_step_button.jspf" %>
+		<td></td>
+		<td width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL-410%>" align="RIGHT" valign="MIDDLE">
+			<a href="/checkout/step_2_adjust.jsp?successPage=<%=request.getParameter("successPage")%>"><img src="/media_stat/images/buttons/continue_checkout.gif" WIDTH="91" HEIGHT="11" border="0" alt="CONTINUE CHECKOUT" vspace="0"></a>
+			<br>Items will be removed from your cart<br>
+		</td>
+		<td width="35" align="RIGHT" valign="MIDDLE">
+			<font class="space2pix"><br></font><a href="/checkout/step_2_adjust.jsp?successPage=<%=request.getParameter("successPage")%>"><img src="/media_stat/images/buttons/checkout_arrow.gif" width="29" height="29" border="0" alt="CONTINUE CHECKOUT" vspace="0"></a>
 		</td>
 	</tr>
 </table>

@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Category;
 import org.json.JSONObject;
@@ -50,12 +49,10 @@ import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
-import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
-import com.freshdirect.fdstore.content.RecipeVariant;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
@@ -222,150 +219,11 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 
 		ErpComplaintModel complaintModel = new ErpComplaintModel();
 
-		boolean hasPending = false;
-		boolean useMergePendingOverlay = false;
-		FDCartModel tempMergePendCart = null;
-
 		if (action != null && ("POST".equalsIgnoreCase(request.getMethod()))) {
-
-			//check if user should see overlay (for only specific actions), not in CRM
-			if ( !inCallCenter && ("addToCart".equalsIgnoreCase(action) || "addMultipleToCart".equalsIgnoreCase(action)) ) {
-				//check if user should see overlay
-				if (user.getShowPendingOrderOverlay()) {
-					//make sure user has a current pending order as well
-					try {
-						hasPending = user.hasPendingOrder();
-					} catch (FDResourceException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-
-					if (hasPending) {
-						//set var for later checks
-						useMergePendingOverlay = true;
-					}
-					
-					//set the cart to the temp cart (make sure it's clean and setup first)
-					tempMergePendCart = user.getMergePendCart();
-					tempMergePendCart.clearOrderLines();
-					tempMergePendCart.setPricingContextToOrderLines(user.getPricingContext());
-
-					//now, set the cart for this to the temp cart so items get added there, save later if there's no errors
-					this.cart = tempMergePendCart;
-				}
-			}
-			
 			//
-			// an action was requested, decide which one
+			// an action was request, decide which one
 			//
-			if ("pendOrderMergeChoice".equalsIgnoreCase(action)) {
-				String subAction = request.getParameter("action"); 
-				if (subAction == null || "".equalsIgnoreCase(subAction)) {
-					//the user has chosen to merge in to a pending order
-					LOGGER.debug("submit for pending order merging - starting");
-	
-					//set redir to modify
-					String pendOrdId = request.getParameter("pendOrderId");
-					if (pendOrdId == null) {
-						LOGGER.debug("submit for pending order merging - no pending order id sent!");
-						result.addError(true, "pendOrdId", "No Pending Order ID Found.");
-					}
-					
-					//ignore set successPages (use those for new order action instead)
-					String successPage = "/your_account/modify_order.jsp?orderId="+pendOrdId+"&action=modify";
-					
-					//add items to temp cart
-					FDCartModel cartUser = user.getShoppingCart();
-					tempMergePendCart = user.getMergePendCart();
-	
-					//create a list to hold cartLines we're KEEPING
-					List<String> userItemsToKeep = new ArrayList<String>();
-	
-					for (Enumeration<String> e = request.getParameterNames(); e.hasMoreElements();) {
-						String n = e.nextElement();
-						if (n.startsWith("userCLID_")) {
-							userItemsToKeep.add( n.substring("userCLID_".length()) );
-						}
-					}
-					//now loop over cart and save cartLines to keep
-					List<FDCartLineI> cartlinesToKeep = new ArrayList<FDCartLineI>();
-	
-					//now match to find cartLines
-					for (int i = 0; i < cartUser.numberOfOrderLines(); i++) {
-						FDCartLineI cartLine = cartUser.getOrderLine(i);
-						if ( userItemsToKeep.contains(cartLine.getCartlineId()) ) {
-							cartlinesToKeep.add(cartLine);
-						}
-					}
-							
-					//add kept cartLines to temp cart
-					tempMergePendCart.addOrderLines(cartlinesToKeep);
-					//sort and set pricing context
-					tempMergePendCart.sortOrderLines();
-					tempMergePendCart.setPricingContextToOrderLines(user.getPricingContext());
-					
-					//and now save
-					user.setMergePendCart(tempMergePendCart);
-							
-					if (result.isSuccess()) {
-						LOGGER.debug("submit for pending order merging - merged carts");
-						
-						//do redirecting
-						HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-						String redirectURL = response.encodeRedirectURL(successPage);
-										
-						try {
-							response.sendRedirect(redirectURL);
-						} catch (IOException ioe) {
-							throw new JspException("Error redirecting: "+ ioe.getMessage());
-						}
-					}
-	
-					LOGGER.debug("submit for pending order merging - ERROR OCCURED");
-					
-					//turn overlay back on
-					user.setShowPendingOrderOverlay(true);
-					
-					return SKIP_BODY;
-				} else if ("pendOrderMergeChoiceNewOrder".equalsIgnoreCase(subAction)) {
-
-					//user chose new order in overlay
-					LOGGER.debug("submit for pending order merging (new order) - starting");
-					
-					//success pages aren't passed in, get from request instead
-					if (successPage == null) { 
-						this.successPage = request.getParameter("successPage");
-					}
-					if (multiSuccessPage == null) { 
-						this.multiSuccessPage = request.getParameter("multiSuccessPage");
-					}
-					
-					FDCartModel cartUser = user.getShoppingCart();
-					tempMergePendCart = user.getMergePendCart();
-					
-					//merge temp cart to user's cart
-					cartUser.mergeCart(tempMergePendCart);
-					cartUser.sortOrderLines();
-					
-					//set cart as new user cart
-					user.setShoppingCart( cartUser );
-					
-					//set this.cart to merged version
-					this.cart = cartUser;
-					
-					//set affected lines to reflect merge
-					affectedLines = tempMergePendCart.numberOfOrderLines();
-
-					//reset added skus
-					if (session.getAttribute("SkusAdded") != null)
-						frmSkuIds.addAll((List<String>)session.getAttribute("SkusAdded"));
-					
-					//clear temp cart
-					user.setMergePendCart(null);
-					
-					LOGGER.debug("submit for pending order merging (new order) - merged carts");
-				}
-			} else if ("CCL:AddToList".equalsIgnoreCase(action)) {
+			if ("CCL:AddToList".equalsIgnoreCase(action)) {
 				// find suffix from request, strict check, do not use product
 				// minimum, do not skip zeros
 				ItemSelectionCheckResult checkResult = new ItemSelectionCheckResult();
@@ -651,9 +509,6 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		
 		} else if ((request.getParameter("removeRecipe") != null) && "GET".equalsIgnoreCase(request.getMethod())) {
 			affectedLines = this.removeRecipe();
-		} else if ( "pendOrderMergeChoice".equalsIgnoreCase(action) && "GET".equalsIgnoreCase(request.getMethod())) {
-			//overlay view, turn off showing again
-			user.setShowPendingOrderOverlay(false);
 		}
 		
 		
@@ -698,7 +553,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			cart.sortOrderLines();
 		}
 
-		// Check for expired or canceled passes if already used.
+		// Check for expired or cancelled passes if already used.
 		checkForExpOrCanPasses(user);
 
 		//
@@ -706,17 +561,10 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		// if anything in the cart was changed
 		//
 		if (result.isSuccess() && affectedLines > 0) {
-			/*
-			 *	save cart if it hasn't been saved in a while
-			 *	if user is currently using overlay (this.cart = tempMergePendCart), save it instead
-			 */
-			if (useMergePendingOverlay) {
-				if (tempMergePendCart != null) {
-					user.setMergePendCart(tempMergePendCart);
-				}
-			} else {
-				user.saveCart();
-			}
+			//
+			// save cart if it hasn't been saved in a while
+			//
+			user.saveCart();
 			session.setAttribute(USER, user);
 			session.setAttribute("SkusAdded", frmSkuIds);
 		}
@@ -724,42 +572,16 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		//
 		// redirect to success page if an action was successfully performed
 		// and a success page was defined
-		// don't redirect if useMergePendingOverlay is true
 		//
 		if ("POST".equalsIgnoreCase(request.getMethod()) && (action != null) && (successPage != null) && result.isSuccess()) {
-
-			// if showing overlay, add js to page to make it display (only true if not in CRM)
-			if (useMergePendingOverlay) {
-				JspWriter out = pageContext.getOut();
-				try {
-					//print out method for overlay display
-					out.print("<script type=\"text/javascript\">");
-						out.print("globalDoRemoteOverlay('/overlays/merge_cart_penOrder_choice.jsp', {");
-							out.print("closeCallback: 'submitPendOrderMergeChoice',");
-							out.print("title: '&nbsp;',");
-							out.print("params: {");
-								out.print("source: '"+this.source+"',");
-								out.print("action: '"+this.action+"',");
-								out.print("successPage: '"+this.successPage+"',");
-								out.print("multiSuccessPage: '"+this.multiSuccessPage+"'");
-							out.print("}");
-						out.print("});");
-					out.print("</script>");
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			} else {
-				String redir = (affectedLines > 1 && this.multiSuccessPage != null) ? this.multiSuccessPage : successPage;
-				HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-				try {
-					response.sendRedirect(response.encodeRedirectURL(redir));
-					session.removeAttribute("usedOverlay");
-					return SKIP_BODY;
-				} catch (IOException ioe) {
-					// if there was a problem redirecting, well.. fuck it.. :)
-					throw new JspException("Error redirecting " + ioe.getMessage());
-				}
+			String redir = (affectedLines > 1 && this.multiSuccessPage != null) ? this.multiSuccessPage : successPage;
+			HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+			try {
+				response.sendRedirect(response.encodeRedirectURL(redir));
+				return SKIP_BODY;
+			} catch (IOException ioe) {
+				// if there was a problem redirecting, well.. fuck it.. :)
+				throw new JspException("Error redirecting " + ioe.getMessage());
 			}
 		}
 

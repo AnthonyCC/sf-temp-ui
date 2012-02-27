@@ -52,12 +52,6 @@ public class MergeCartControllerTag extends com.freshdirect.framework.webapp.Bod
         // and the cart they previously were working on was stored in the session as well
         //
 		FDCartModel cartCurrent = (FDCartModel) session.getAttribute(CURRENT_CART);
-		
-		/* check for null here */
-		if (cartCurrent == null) {
-			cartCurrent = new FDCartModel();
-		}
-		
 		cartCurrent.setPricingContextToOrderLines(user.getPricingContext());
 
 		FDCartModel cartMerged = new FDCartModel( cartCurrent );

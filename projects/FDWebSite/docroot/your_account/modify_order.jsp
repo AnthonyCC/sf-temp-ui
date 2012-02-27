@@ -87,8 +87,8 @@ final int W_YA_MODIFY_ORDER = 970;
 			We won't forget the items that are in your cart now - you'll see them again as soon as you're done making changes.<br><br> 
 		<%}%>
 		<b>You must complete checkout by <%= modDateFormat.format(reservation.getCutoffTime()) %>, or this order will be delivered as is.</b><br><br>For full details of our order change policy, <a href="javascript:popup('/help/faq_index.jsp?show=shopping#question7','large')">click here</a>.<br><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><div align="center">			
-		<form name="modify_order" method="POST" action="/your_account/modify_order.jsp?orderId=<%=orderId%>&action=modify">
-			<input type="hidden" name="orderId" value="<%= orderId %>">
+		<form name="modify_order" method="POST" action="/your_account/modify_order.jsp">
+			<input type="hidden" name="orderId" value="<%= request.getParameter("orderId") %>">
 			<input type="hidden" name="action" value="modify">
 			<input type="image" src="/media_stat/images/buttons/change_this_order_now.gif" width="145" height="16" border="0" alt="MAKE CHANGES TO ORDER">
 		</form></div><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td></tr>

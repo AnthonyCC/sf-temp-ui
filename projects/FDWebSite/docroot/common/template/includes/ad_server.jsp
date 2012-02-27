@@ -409,7 +409,7 @@ if(document.location.href.substring(0,5) == 'https'){
 OAS_url =  protocol + '<%=FDStoreProperties.getAdServerUrl()%>';
 OAS_sitepage = '<%=sitePage%>';
 OAS_listpos = '<%=listPos%>';
-OAS_query = '<%=URLEncoder.encode(queryString.toString())%>';<%-- '&' is not valid, encode instead of replacing --%>
+OAS_query = '<%=queryString.toString()%>';
 OAS_target = '';
 //end of configuration
 

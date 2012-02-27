@@ -32,8 +32,8 @@ templateToUse = "/common/template/checkout_nav.jsp"; //EXPANDED_PAGE_VERIFY - sh
 
 
 <!-- STARTS FROM HERE -->
-<form name="mergecart" action="merge_cart.jsp" method="post">
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_MERGE_CART_TOTAL%>">
+<form name="mergecart" action="merge_cart.jsp" method="post">
 <input type="hidden" name="successPage" value="<%= request.getParameter("successPage") %>">
 
 <tr>
@@ -138,8 +138,8 @@ templateToUse = "/common/template/checkout_nav.jsp"; //EXPANDED_PAGE_VERIFY - sh
 <input type="image" name="process_merging_cart" src="/media_stat/images/buttons/checkout_arrow.gif"  BORDER="0" alt="GO" VSPACE="2"></TD>
 </TR>
 
-</TABLE>
 </form>
+</TABLE>
 		</tmpl:put>
 
 </tmpl:insert>

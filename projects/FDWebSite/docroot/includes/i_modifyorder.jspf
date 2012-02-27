@@ -6,14 +6,13 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDModifyCartModel"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@ page import="com.freshdirect.fdstore.standingorders.FDStandingOrder"%>
-<%@ page import="com.freshdirect.common.pricing.Discount" %>
 <%!
 	public String printDate(Date date){
-		return new SimpleDateFormat("h:mm a '</b>on<b>' EEEEE, MM/dd/yyyy").format(date);
+		return new SimpleDateFormat("h:mm a 'on' EEEE, MM/d/yy").format(date);
 	} 
 	
 	public String printDateOnly(Date date){
-		return new SimpleDateFormat("EEEEE, MM/dd").format(date);
+		return new SimpleDateFormat("EEEE, MM/d").format(date);
 	}
 %>
 <%
@@ -35,81 +34,24 @@
 		cal.setTime( modCart.getOriginalOrder().getDatePlaced() );
 		cal.add(Calendar.DAY_OF_MONTH, 8);
 		Date weekFromOrderDate = cal.getTime();
-		%>
-		<table width="100%" cellspacing="0" cellpadding="0" border="0">
+%>		<table width="100%" cellspacing="0" cellpadding="0" border="0">
 			<tr>
 				<td align="center">
-					<span class="modOrdInfo"><span class="msg">You are modifying your order: </span><span class="ordNumb"><%= modCart.getOriginalOrder().getErpSalesId() %></span></span>
-					<input type="hidden" name="checkout" />
-				</td>
-				<td>
-					<%@ include file="/includes/i_cart_delivery_fee.jspf" %>
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" /><br />
-				</td>
-				<td>
-					<%@ include file="/includes/i_cart_next_step_button.jspf" %>
-					
-			    	<table class="butCont fright" style="margin-left: 10px;">
-						<tr>
-							<td class="butWhiteLeft"><!-- --></td>
-							<td class="butWhiteMiddle"><a class="butText butTextGreen" href="/your_account/cancel_modify_order.jsp">cancel updates</a></td>
-							<td class="butWhiteRight"><!-- --></td>
-						</tr>
-					</table>
-					<br />
+					<b><span style="color: #336699; font-size: 13px;">You are changing order # <%= modCart.getOriginalOrder().getErpSalesId() %></span></b>
+					<a href="/your_account/cancel_modify_order.jsp">Click here to cancel all changes</a><br/>
+					<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br/>
+					<b>Complete checkout by <%= printDate(modCart.getOriginalOrder().getDeliveryReservation().getCutoffTime()) %></b> or this order <b>will be delivered as is</b>.
+					<% if (isInDelivery) { %><br/>
+						If your new delivery date is on or after <%= printDateOnly(weekFromOrderDate) %>, all of your items will be updated to reflect today's prices.
+					<% } %><br/>
+					<img src="/media_stat/images/layout/clear.gif" width="1" height="10">
 				</td>
 			</tr>
 			<tr>
-				<td bgcolor="#6699CC" colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
-			</tr>
-			<tr>
-				<td align="left" colspan="3">
-				
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" />
-					<table width="100%" cellspacing="0" cellpadding="0" border="0">
-						<tr>
-						    <td rowspan="2" colspan="2" style="font-size:1px;"><img src="/media_stat/images/layout/top_left_curve.gif" width="6" height="5" border="0"></td>
-						    <td bgcolor="#CCCCCC" style="font-size:1px;"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
-						    <td bgcolor="#CCCCCC" rowspan="5" style="font-size:1px;"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
-						    <td bgcolor="#CCCCCC" style="font-size:1px;"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
-						    <td rowspan="2" colspan="2" style="font-size:1px;"><img src="/media_stat/images/layout/top_right_curve.gif" width="6" height="5" border="0"></td>
-						    <% /*<td rowspan="5" style="font-size:1px;"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td> */ %>
-						</tr>
-						<tr>
-						    <td colspan="1" bgcolor="#FFFFFF" height="4" style="font-size:1px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
-						    <td colspan="1" bgcolor="#FFF9D6" height="4" style="font-size:1px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
-						</tr>
-						<tr>
-						    <td bgcolor="#CCCCCC" style="font-size:1px;"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
-						    <td bgcolor="#FFFFFF" style="font-size:1px;"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
-						    <td bgcolor="#FFFFFF" style="margin:0 5px;"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"><img src="/media_stat/images/timeslots/please_note.gif" width="105" height="34" border="0" style="margin:0 5px;"></td>
-						    <td  width="100%" bgcolor="#FFF9D6">
-							<div style="padding: 3px 5px 3px 5px">
-								You must complete any modifications by <b><%= printDate(modCart.getOriginalOrder().getDeliveryReservation().getCutoffTime()) %></b> Learn More
-								<% if (isInDelivery) { %><br />
-									If your new delivery date is on or after <b><%= printDate(weekFromOrderDate) %></b>, all of your items will be updated to reflect today's prices.
-								<% } %><br />
-							</div>
-						    </td>
-						    <td bgcolor="#FFF9D6" style="font-size:1px;"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
-						    <td bgcolor="#CCCCCC" style="font-size:1px;"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
-						</tr>
-						<tr>
-						    <td rowspan="2" colspan="2" style="font-size:1px;"><img src="/media_stat/images/layout/bottom_left_curve.gif" width="6" height="5" border="0"></td>
-						    <td bgcolor="#FFFFFF"  colspan="1"  style="font-size:1px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
-						    <td bgcolor="#FFF9D6"  colspan="1"  style="font-size:1px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
-						    <td rowspan="2" colspan="2" style="font-size:1px;"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="5" border="0"></td>
-						</tr>
-						<tr>
-						    <td  bgcolor="#CCCCCC" style="font-size:1px;"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
-						    <td  bgcolor="#CCCCCC" style="font-size:1px;"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
-						</tr>
-					</table>
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" />
-				</td>
+				<td bgcolor="#6699CC"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
 			</tr>
 		</table>
-		<br />
+		<br/>
 <%
 	} else if (mUser.getCurrentStandingOrder() != null) {
 		%><%@include file="i_so_header.jspf" %><%

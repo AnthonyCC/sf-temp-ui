@@ -16,58 +16,93 @@
 
 <% //expanded page dimensions
 final int W_CHECKOUT_STEP_4_SUBMIT_TOTAL = 970;
-final int submitButtonColWidth = 320; /* middle column for submit button to fit inside (it will float right) */
 %>
+
+
 <%!
 java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
-java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 %>
+
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 <%
 	String actionName = "submitOrder";
 %>
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
-<tmpl:put name='title' direct='true'>FreshDirect - Checkout - Review &amp; Submit Order</tmpl:put>
+<tmpl:put name='title' direct='true'>FreshDirect - Checkout - Review & Submit Order</tmpl:put>
 <tmpl:put name='content' direct='true'>
 
 <fd:FDShoppingCart id='cart' result="result">
 
 <fd:CheckoutController actionName="<%= actionName %>" result="result" successPage="step_4_receipt.jsp">
 <%
-	FDIdentity identity  = user.getIdentity();
-	ErpAddressModel dlvAddress = cart.getDeliveryAddress();
-	ErpPaymentMethodI paymentMethod = cart.getPaymentMethod();
-	ErpCustomerInfoModel customerModel = FDCustomerFactory.getErpCustomerInfo(identity);
-	FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(identity);
+        FDIdentity identity  = user.getIdentity();
+        ErpAddressModel dlvAddress = cart.getDeliveryAddress();
+        ErpPaymentMethodI paymentMethod = cart.getPaymentMethod();
+        ErpCustomerInfoModel customerModel = FDCustomerFactory.getErpCustomerInfo(identity);
+		FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(identity);
 
-	SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE MM/dd/yy");
-	FDReservation reservation = cart.getDeliveryReservation();
-	String fmtDlvDateTime = "";
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE MM/dd/yy");
+        FDReservation reservation = cart.getDeliveryReservation();
+        String fmtDlvDateTime = "";
 	String deliveryTime ="";
-
 	if(reservation!=null && null!=reservation.getStartTime()) {
 		fmtDlvDateTime=dateFormatter.format(reservation.getStartTime()).toUpperCase();
 		if(null!=reservation.getEndTime() && !"".equals(reservation.getStartTime()) && !"".equals(reservation.getEndTime())) 
 			deliveryTime=FDTimeslot.format(reservation.getStartTime(), reservation.getEndTime());
 	}
 
-	boolean orderAmountFraud = result.hasError("order_amount_fraud");
-	boolean doubleSubmit = result.hasError("processing_order");
-
-	// Save checkout mode for receipt page.
-	session.setAttribute("checkout_mode", user.getCheckoutMode().toString());
+		boolean orderAmountFraud = result.hasError("order_amount_fraud");
+		boolean doubleSubmit = result.hasError("processing_order");
 		
-	//for Google Analytics (used in shared include i_step_4_cart_details.jspf)
-	String sem_orderNumber = "0";
-	
-	//button include count
-	int incNextButtonCount = 0;
+		// Save checkout mode for receipt page.
+		session.setAttribute("checkout_mode", user.getCheckoutMode().toString());
+		
+		//for Google Analytics (used in shared include i_step_4_cart_details.jspf)
+		String sem_orderNumber = "0";
 %>
 <fd:SmartSavingsUpdate promoConflictMode="true"/>
 
+
 <%@ include file="/includes/i_modifyorder.jspf" %>
 
-<form method="post" name="order_submit" id="order_submit">
+
+<div class="groupScaleBox" style="display:none"><!--  -->
+		<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="groupScaleBoxContent" id="groupScaleBox" >
+			<tr>
+				<td colspan="2"><img src="/media_stat/images/layout/top_left_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
+				<td rowspan="2" style="background-color: #8A6637; color: #fff; font-size: 14px; line-height: 14px; font-weight: bold; padding: 3px;">GROUP DISCOUNT &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="Modalbox.hide(); return false;" style="text-decoration: none;border: 1px solid #5A3815; background-color: #BE973A; font-size: 10px;	"><img src="/media_stat/images/buttons/exit_trans.gif" width="10" height="10" border="0" alt="" /></a></td>
+				<td colspan="2"><img src="/media_stat/images/layout/top_right_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
+			</tr>
+			<tr>
+				<td colspan="2" style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" /></td>
+				<td colspan="2" style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" /></td>
+			</tr>
+			<tr>
+				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
+				<td>
+					<%-- all your content goes in this div, it controls the height/width --%>
+					<div id="group_info" style="display:none">This is the more info hidden div.<br /><br /></div>
+					<div style="height: auto; width: 200px; text-align: center; font-weight: bold;">
+					<br /><img onclick="Modalbox.hide(); return false;" src="/media_stat/images/buttons/close_window.gif" width="141" height="19" alt="" /><br />
+					</div>
+				</td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
+				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+			</tr>
+			<tr>
+				<td rowspan="2" colspan="2" style="background-color: #8A6637"><img src="/media_stat/images/layout/bottom_left_curve_8A6637.gif" width="6" height="6" alt="" /></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /></td>
+				<td rowspan="2" colspan="2" style="background-color: #8A6637"><img src="/media_stat/images/layout/bottom_right_curve_8A6637.gif" width="6" height="6" alt="" /></td>
+			</tr>
+			<tr>
+				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+			</tr>
+		</table>
+	</div>
+
+
+<form method="post" name="order_submit" id="order_submit" onSubmit="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');">
 	<div class="gcResendBox" style="display:none"><!--  -->
 		<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="gcResendBoxContent" id="gcResendBox">
 			<tr>
@@ -102,72 +137,65 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 			</tr>
 		</table>
 	</div>
- 	<%
-		/* check that cart is not being modified */
-		if (cart instanceof FDModifyCartModel) {
-			/* cart is being modified */
-			%>
-			<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>">
-				<tr valign="top">
-					<td class="text11" valign="middle">
-						<span class="title18">Review&nbsp;Your&nbsp;Order</span>
-					</td>
-				</tr>
-			</table>
-			<%
-		} else {
-			/* cart is not being modified */
-		%>
-			<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>">
-			    <tr valign="top">
-					<td class="text11" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL/2-(submitButtonColWidth/2)%>" valign="middle">
-						<span class="title18">REVIEW</span>
-					</td>
-					<td width="<%= submitButtonColWidth %>" align="center" valign="middle" class="text10">
-						<% if (!orderAmountFraud && !doubleSubmit) { %>
-							<%@ include file="/includes/i_cart_next_step_button.jspf" %>
-						<% } %>
-					</td>
-					<td class="text11" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL/2-(submitButtonColWidth/2)%>" valign="middle">
-						&nbsp;
-					</td>
-			    </tr>
-			</table>
-	<% } %>
+
+<table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>">
+	<tr VALIGN="TOP">
+			<td CLASS="text11" WIDTH="395" VALIGN="bottom">
+				<FONT CLASS="title18">REVIEW & SUBMIT</FONT><BR>
+			    <IMG src="/media_stat/images/layout/clear.gif" WIDTH="395" HEIGHT="1" BORDER="0">
+</td>
+			<td width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL-430%>" align="right" valign="middle">
+				<font class="space2pix"><br/></font><% if (!orderAmountFraud && !doubleSubmit) { %>
+				<input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/submit_order.gif" width="84" height="12" border="0" alt="CONTINUE CHECKOUT" vspace="0" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomText"><br/>
+				<input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/click_to_place_order.gif" width="85" height="10" border="0" alt="CONTINUE CHECKOUT" vspace="0" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomText"><% } %><br/>
+			</td>
+			<td width="35" align="right" valign="middle">
+				<font class="space2pix"><br/></font>
+				<% if (!orderAmountFraud && !doubleSubmit ) {%>
+					<input type="image" name="form_action_name" src="/media_stat/images/buttons/checkout_right.gif" width="26" height="26" border="0" alt="CONTINUE CHECKOUT" VSPACE="2" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomArrow">
+				<% } %>
+			</td>
+	</tr>
+	</table>
 
 	<div>
-		<div style="font-size: 0px; padding-top: 16px;"></div>
-		<!-- PROFILE HEADER -->
+	<div style="font-size: 0px; padding-top: 16px;"></div>
+	<!-- PROFILE HEADER -->
+	<div>
+	<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
+	<div style="clear: both;"></div>
+	</div>
+	<div style="font-size: 0px; padding-top: 16px;"></div>
+
+	<% if (!orderAmountFraud && !doubleSubmit) { %>
 		<div>
-			<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
-			<div style="clear: both;"></div>
+		<input type="image" name="checkout_submit_order" src="/media_stat/images/template/checkout/order_not_placed.gif" width="439" height="35" border="0" alt="Continue Checkout" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Banner');" id="checkout_submit_order_banner"><br><IMG src="/media_stat/images/layout/clear.gif" width="1" height="14" BORDER="0"><br>
 		</div>
-		<div style="font-size: 0px; padding-top: 16px;"></div>
-	
+	<% } %>
 	</div>
    
-	<%-- error system messages happen here --%>
-	<% StringBuffer sbErrorMsg= new StringBuffer(); %>
+    <%-- error system messages happen here --%>
+   <% StringBuffer sbErrorMsg= new StringBuffer(); %>
     
     <fd:ErrorHandler result='<%=result%>' name='system' id='errorMsg'>
         <%
-        sbErrorMsg.append("<br />");
+        sbErrorMsg.append("<br>");
 		sbErrorMsg.append(errorMsg);
-        sbErrorMsg.append("<br />");
+        sbErrorMsg.append("<br>");
         %>
     </fd:ErrorHandler>
     <fd:ErrorHandler result='<%=result%>' name='fraud_check_failed' id='errorMsg'>
         <% 
-        sbErrorMsg.append("<br />Checkout prevented because:<br />");
+        sbErrorMsg.append("<br>Checkout prevented because:<br>");
         sbErrorMsg.append(errorMsg);
-        sbErrorMsg.append("<br />");
+        sbErrorMsg.append("<br>");
         %>
     </fd:ErrorHandler>
     <fd:ErrorHandler result='<%=result%>' name='order_amount_fraud' id='errorMsg'>
         <%
-        sbErrorMsg.append("<br />");
+        sbErrorMsg.append("<br>");
         sbErrorMsg.append(errorMsg);
-        sbErrorMsg.append("<br />");
+        sbErrorMsg.append("<br>");
         %>
     </fd:ErrorHandler>
     <fd:ErrorHandler result='<%=result%>' name='order_minimum' id='errorMsg'>
@@ -176,140 +204,114 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
         %>
 	</fd:ErrorHandler>
 	<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'>
-		<br /><span class="text11rbold"><%= errorMsg %></span><br /><br />
+		<br><span class="text11rbold"><%= errorMsg %></span><br><br>
     </fd:ErrorHandler>
 	<fd:ErrorHandler result='<%=result%>' name='invalid_reservation' id='errorMsg'>
-		<br /><span class="text11rbold"><%= errorMsg %></span><br /><br />
+		<br><span class="text11rbold"><%= errorMsg %></span><br><br>
 	</fd:ErrorHandler>
 	<fd:ErrorHandler result='<%=result%>' name='invalid_deliverypass' id='errorMsg'>
-    	<br /><span class="text11rbold"><%= errorMsg %></span><br /><br />
+    	<br><span class="text11rbold"><%= errorMsg %></span><br><br>
 	</fd:ErrorHandler>
     	<fd:ErrorHandler result='<%=result%>' name='redemption_exceeded' id='errorMsg'>
         <input type = "hidden" name="ignorePromoErrors" value="true"/>
-    	<br /><span class="text11rbold"><%= errorMsg %></span><br /><br />
+    	<br><span class="text11rbold"><%= errorMsg %></span><br><br>
 	</fd:ErrorHandler>
-	<%
-	if (user.isPromoConflictResolutionApplied()) {
-   		user.setPromoConflictResolutionApplied(false);                                    
+    
+    
+<%
+if (user.isPromoConflictResolutionApplied()) {
+    user.setPromoConflictResolutionApplied(false);                                    
 
-   		result.addWarning(new ActionWarning("promo_war2", SystemMessageList.MSG_PROMOTION_APPLIED_VARY2));
-	%><fd:ErrorHandler result='<%= result %>' name='promo_war2' id='errorMsg'>
-		<%@ include file="/includes/i_warning_messages.jspf" %>   
+    result.addWarning(new ActionWarning("promo_war2", SystemMessageList.MSG_PROMOTION_APPLIED_VARY2));
+%>	<fd:ErrorHandler result='<%= result %>' name='promo_war2' id='errorMsg'>
+<%@ include file="/includes/i_warning_messages.jspf" %>   
 	</fd:ErrorHandler>
-	<%
-	}
+<%
+}
 
-	if (doubleSubmit) {
-		sbErrorMsg.append(result.getError("processing_order").getDescription());
-	}
+        if (doubleSubmit) {
+			sbErrorMsg.append(result.getError("processing_order").getDescription());
+        }
 
-	String warningMsg = (String) session.getAttribute(SessionName.SIGNUP_WARNING);
-	if (warningMsg==null && user.isPromotionAddressMismatch()) {
-		Promotion promo = (Promotion)user.getEligibleSignupPromotion();
-		Double totalPromo = new Double(promo.getHeaderDiscountTotal());
-	    warningMsg = MessageFormat.format(SystemMessageList.MSG_CHECKOUT_NOT_ELIGIBLE, new Object[]{totalPromo, user.getCustomerServiceContact()});
-	}
-	if (warningMsg!=null) {
-		sbErrorMsg.append(warningMsg);
-	}
+		String warningMsg = (String) session.getAttribute(SessionName.SIGNUP_WARNING);
+		if (warningMsg==null && user.isPromotionAddressMismatch()) {
+			Promotion promo = (Promotion)user.getEligibleSignupPromotion();
+			Double totalPromo = new Double(promo.getHeaderDiscountTotal());
+		    warningMsg = MessageFormat.format(SystemMessageList.MSG_CHECKOUT_NOT_ELIGIBLE, new Object[]{totalPromo, user.getCustomerServiceContact()});
+		}
+		if (warningMsg!=null) {
+			sbErrorMsg.append(warningMsg);
+		}
 
-	if (sbErrorMsg.length() > 0 ) {
-		String errorMsg = sbErrorMsg.toString();
+        if (sbErrorMsg.length() > 0 ) {
+         String errorMsg = sbErrorMsg.toString();
 	%>
-		<%@ include file="/includes/i_error_messages.jspf"%> 	
-	<%
-	}
-	%><% String receipt = ""; %>
-	<%@ include file="/includes/ckt_acct/i_step_4_delivery_payment.jspf" %>
+	<%@ include file="/includes/i_error_messages.jspf"%> 	
+<%	}
+%>
+<% String receipt = ""; %>
+<%@ include file="/includes/ckt_acct/i_step_4_delivery_payment.jspf" %>
 
-	<img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /><br />
-	<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1" alt="" /><br />
-	<img src="/media_stat/images/layout/clear.gif" width="1" height="20" alt="" /><br />
+<IMG src="/media_stat/images/layout/clear.gif" width="1" height="1"><br>
+<IMG src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1"><br>
+<IMG src="/media_stat/images/layout/clear.gif" width="1" height="20"><br>
 
-	<table width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
-		<tr valign="top">
-			<td width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>"><img src="/media_stat/images/navigation/cart_details.gif" width="96" height="15" border="0" alt="CART DETAILS">&nbsp;&nbsp;&nbsp;
-				<% if (request.getRequestURI().toLowerCase().indexOf("your_account/") != 1){ %>
-					<span class="text9">If you would like to make any changes to your order, <a href="/view_cart.jsp?trk=chkplc">click here</a> to go back to your cart.</span><br />
-				<% } %>
-				<IMG src="/media_stat/images/layout/999966.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1" BORDER="0" VSPACE="3"><br />
-				<IMG src="/media_stat/images/layout/clear.gif" width="1" height="3"><br />
-				<font class="title11"><b>Note:</b></font> <font class="text11orbold">Our goal is to fill your order with food of the highest quality. Occasionally, we'll get a shipment that doesn't meet our standards and we cannot accept it. Of course, if this happens, FreshDirect will not charge you for the missing item.</font>
+<table width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
+	<tr VALIGN="TOP">
+		<td width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>"><img src="/media_stat/images/navigation/cart_details.gif" width="96" height="15" border="0" alt="CART DETAILS">&nbsp;&nbsp;&nbsp;
+<% if (request.getRequestURI().toLowerCase().indexOf("your_account/") != 1){ %>
+<FONT CLASS="text9">If you would like to make any changes to your order, <A HREF="/view_cart.jsp?trk=chkplc">click here</A> to go back to your cart.</FONT><BR>
+<% } %>
+			<IMG src="/media_stat/images/layout/999966.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1" BORDER="0" VSPACE="3"><br>
+			<IMG src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
+			<font class="title11"><b>Note:</b></font> <font class="text11orbold">Our goal is to fill your order with food of the highest quality. Occasionally, we'll get a shipment that doesn't meet our standards and we cannot accept it. Of course, if this happens, FreshDirect will not charge you for the missing item.</font>
+		</td>
+	</tr>
+	<tr>
+		<td align="left">
+			<%@ include file="/includes/ckt_acct/i_step_4_cart_details.jspf" %>
+		</td>
+	</tr>
+</table>
+
+<BR>
+<IMG src="/media_stat/images/layout/clear.gif" width="1" height="8" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" width="1" height="8" BORDER="0"><BR>
+
+<table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>">
+	<tr VALIGN="TOP">
+		
+			<td width="35">
+					<a href="<%=response.encodeURL("/checkout/step_3_choose.jsp")%>" id="previousX">
+					<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
+		</td>
+		    <td width="340">
+				<a href="<%=response.encodeURL("/checkout/step_3_choose.jsp")%>" id="previousX">
+				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
+				Payment Method<br/>
+				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
+		</td>
+			<td width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL-410%>" align="right" valign="middle">
+				<font class="space2pix"><br/></font><% if (!orderAmountFraud && !doubleSubmit) { %>
+				<input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/submit_order.gif" width="84" height="12" border="0" alt="CONTINUE CHECKOUT" vspace="0" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomText"><br/>
+				<input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/click_to_place_order.gif" width="85" height="10" border="0" alt="CONTINUE CHECKOUT" vspace="0" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomText"><% } %><br/>
 			</td>
-		</tr>
-		<tr>
-			<td align="left">
-				<%@ include file="/includes/ckt_acct/i_step_4_cart_details.jspf" %>
-			</td>
-		</tr>
-	</table>
+			<td width="35" align="right" valign="middle">
+				<font class="space2pix"><br/></font>
+				<% if (!orderAmountFraud && !doubleSubmit ) {%>
+					<input type="image" name="form_action_name" src="/media_stat/images/buttons/checkout_right.gif" width="26" height="26" border="0" alt="CONTINUE CHECKOUT" VSPACE="2" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomArrow">
+<% } %>
+		</td>
+	</tr>
+</table>
+<%@ include file="/checkout/includes/i_footer_text.jspf" %>
 
-	<br />
-	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
-	<IMG src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1" border="0" alt="" /><br />
-	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
-	
-	
- 	<%
-		/* check that cart is not being modified */
-		if (cart instanceof FDModifyCartModel) {
-			/* cart is being modified */
-			%>
-			
-			<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>">
-			    <tr valign="top">
-					<td class="text11" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL/2%>" valign="middle">
-						<div style="float: left; margin-right: 10px;">
-							<a href="<%=response.encodeURL("/checkout/step_3_choose.jsp")%>" id="previousX">
-								<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
-						</div>
-						<div style="float: left;">
-							<a href="<%=response.encodeURL("/checkout/step_3_choose.jsp")%>" id="previousX" class="text11">
-								<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br />
-							Payment Method<br />
-						</div>
-					</td>
-					<td width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL/2%>" align="right" valign="middle" class="text10">
-						<% if (!orderAmountFraud && !doubleSubmit) { %>
-							<%@ include file="/includes/i_cart_next_step_button.jspf" %>
-						<% } %>
-					</td>
-			    </tr>
-			</table>
-			<%
-		} else {
-			/* cart is not being modified */
-		%>
-			<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>">
-			    <tr valign="top">
-					<td class="text11" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL/2-(submitButtonColWidth/2)%>" valign="middle">
-						<div style="float: left; margin-right: 10px;">
-							<a href="<%=response.encodeURL("/checkout/step_3_choose.jsp")%>" id="previousX">
-								<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
-						</div>
-						<div style="float: left;">
-							<a href="<%=response.encodeURL("/checkout/step_3_choose.jsp")%>" id="previousX" class="text11">
-								<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br />
-							Payment Method<br />
-						</div>
-					</td>
-					<td width="<%= submitButtonColWidth %>" align="center" valign="middle" class="text10">
-						<% if (!orderAmountFraud && !doubleSubmit) { %>
-							<%@ include file="/includes/i_cart_next_step_button.jspf" %>
-						<% } %>
-					</td>
-					<td class="text11" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL/2-(submitButtonColWidth/2)%>" valign="middle">
-						&nbsp;
-					</td>
-			    </tr>
-			</table>
-	<% } %>
-	<%@ include file="/checkout/includes/i_footer_text.jspf" %>
-</form>
+</FORM>
 
-<img src="/media_stat/images/layout/clear.gif" width="1" height="16" border="0" alt="" /><br />
-<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1" border="0" alt="" /><br />
-<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
+<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_4_SUBMIT_TOTAL%>" height="1" border="0"><br/>
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
 

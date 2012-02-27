@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
@@ -33,8 +32,6 @@ import com.freshdirect.customer.ActivityLog;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumDeliveryType;
-import com.freshdirect.customer.EnumSaleStatus;
-import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
@@ -172,7 +169,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	private Map assignedCustomerParams;
 
-	private EnumWinePrice preferredWinePrice = null;
+       private EnumWinePrice preferredWinePrice = null;
 
 	/*
 	 * This attribute caches the list of product keys that are already
@@ -218,12 +215,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	private double percSlotsSold;
 	
 	private Date registrationDate;
-
 	private static final Date EPOCH = new Date(0);
-
-	//mergePendingOrder (APPDEV-2031)
-	private boolean showPendingOrderOverlay = true;
-    private FDCartModel mergePendCart = new FDCartModel();
 
 	/*Appdev-1888
 	private String referralLink;
@@ -2034,112 +2026,6 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public void setSessionEvent(SessionEvent event) {
 		// TODO Auto-generated method stub
 		this.event = event;
-	}
-	
-	//mergePendingOrder (APPDEV-2031)
-	
-	public boolean getShowPendingOrderOverlay() {
-		return this.showPendingOrderOverlay;
-	}
-
-	public void setShowPendingOrderOverlay(boolean showPendingOrderOverlay) {
-		this.showPendingOrderOverlay = showPendingOrderOverlay;
-	}
-	
-	/* check if user has a valid (regular) pending order (so exclude all other types) */
-	public boolean hasPendingOrder() throws FDResourceException {
-		return hasPendingOrder(false, false);
-	}
-	
-	/* check if user has a valid pending order. inclusions optional. */
-	public boolean hasPendingOrder(boolean incGiftCardOrds, boolean incDonationOrds) throws FDResourceException {		
-		List<FDOrderInfoI> orderHistoryInfo = new ArrayList<FDOrderInfoI>(getPendingOrders(incGiftCardOrds, incDonationOrds, true));
-		
-		return (orderHistoryInfo.size() > 0) ? true : false;
-	}
-
-	/* return List of orderInfos for all pending orders (regular orders only), sorted. */
-	public List<FDOrderInfoI> getPendingOrders() throws FDResourceException {
-		return getPendingOrders(false, false, true);
-	}
-	
-	/* return List of orderInfos for all pending orders inclusions optional. */
-	public List<FDOrderInfoI> getPendingOrders(boolean incGiftCardOrds, boolean incDonationOrds, boolean sorted) throws FDResourceException {
-
-		FDOrderHistory history = (FDOrderHistory) getOrderHistoryInfo(); //get current info, don't use getOrderHistory since it's cached info 
-		
-		List<FDOrderInfoI> orderHistoryInfo = new ArrayList<FDOrderInfoI>(history.getFDOrderInfos(EnumSaleType.REGULAR));
-		
-		if (incGiftCardOrds) {
-			//Add gift cards orders too.
-			orderHistoryInfo.addAll(history.getFDOrderInfos(EnumSaleType.GIFTCARD));
-		}
-
-		if (incDonationOrds) {
-			//ADD Donation Orders too-for Robin Hood.
-			orderHistoryInfo.addAll(history.getFDOrderInfos(EnumSaleType.DONATION));
-		}
-		
-		List<FDOrderInfoI> validPendingOrders = new ArrayList<FDOrderInfoI> ();
-
-		for (Iterator<FDOrderInfoI> hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
-			FDOrderInfoI orderInfo = hIter.next();
-            
-			if (orderInfo.isModifiable()) {
-        	   if (orderInfo.getOrderStatus() == EnumSaleStatus.REFUSED_ORDER )
-        		   continue;
-        	   
-        	   /*
-					if we wanted individual types of GC or donation orders, use this code
-	        	    	String ordDeliveryType = orderInfo.getDeliveryType().toString();
-	        	    	
-	        	    	//gift cards
-						String gcCodePersonal = EnumDeliveryType.GIFT_CARD_PERSONAL.getCode();
-						String gcCodeCorporate = EnumDeliveryType.GIFT_CARD_CORPORATE.getCode();
-						
-						if ((ordDeliveryType).equals(gcCodePersonal))
-							continue;
-						if ((ordDeliveryType).equals(gcCodeCorporate))
-							continue;
-						
-	        	    	//robin hood
-						String donatePersonal = EnumDeliveryType.DONATION_INDIVIDUAL.getCode();
-						String donateCorporate = EnumDeliveryType.DONATION_BUSINESS.getCode();
-						
-						if ((ordDeliveryType).equals(donatePersonal))
-							continue;
-						if ((ordDeliveryType).equals(donateCorporate))
-							continue;
-        	    */
-               
-               if (new Date().before(orderInfo.getDeliveryCutoffTime())) {
-            		validPendingOrders.add(orderInfo);
-               }
-           }
-		}
-		
-		if (sorted) {
-			Collections.sort(orderHistoryInfo, ORDER_COMPARATOR);
-		}
-		
-		return validPendingOrders;
-	}
-	
-	/** Sorts orders by dlv. start time, descending */
-	private final static Comparator<FDOrderInfoI> ORDER_COMPARATOR = new Comparator<FDOrderInfoI>() {
-		public int compare(FDOrderInfoI o1, FDOrderInfoI o2) {
-			return (o2).getRequestedDate().compareTo((o1).getRequestedDate());
-		}
-	};
-	
-	public FDCartModel getMergePendCart() {
-		return (this.mergePendCart == null) ? new FDCartModel() : this.mergePendCart;
-	}
-	
-	public void setMergePendCart(FDCartModel mergePendCart) {
-		if ( mergePendCart == null || mergePendCart.getClass().isAssignableFrom(getMergePendCart().getClass()) ) {
-			this.mergePendCart = mergePendCart;
-		}
 	}
 
 	/*

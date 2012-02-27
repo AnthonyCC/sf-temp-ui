@@ -3,8 +3,6 @@ if (typeof window.FD_QuickBuy == "undefined") {
 }
 
 
-/* store id */
-FD_QuickBuy.CURID = null;
 
 /*** ANIMATION ***/
 FD_QuickBuy.DELAY = 250; // milliseconds
@@ -68,7 +66,6 @@ FD_QuickBuy._randomId = function(length) {
 FD_QuickBuy.showPanel = function(deptId, catId, prdId) {
 	return function() {
 		var elementId= prdId+'_'+FD_QuickBuy._randomId(16);
-		FD_QuickBuy.CURID = elementId;
 		var ctPanel = new YAHOO.widget.Panel(elementId, {
 			fixedcenter: true, 
 			constraintoviewport: true, 
@@ -76,8 +73,7 @@ FD_QuickBuy.showPanel = function(deptId, catId, prdId) {
 			close: true, 
 			visible: true,
 			modal: true,
-			draggable: false,
-			zIndex: 20 }
+			draggable: false}
 		);
 		var isWineDept = ("usq" == deptId);
 		
@@ -114,8 +110,6 @@ FD_QuickBuy.showPanel = function(deptId, catId, prdId) {
 		
 		ctPanel.hideEvent.subscribe(function(e){
 			YAHOO.util.Dom.get(elementId+'_overbox').style.visibility = "hidden";
-			/* remove id */
-			FD_QuickBuy.CURID = null;
 		});
 		
 		document.quickbuyPanel = ctPanel;

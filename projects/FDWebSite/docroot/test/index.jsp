@@ -890,12 +890,6 @@
 		<div class="pageDesc">Needs Description.</div>
 	</div>
 
-	<div class="tag cart merge">
-		<div class="pageName"><span>Merge Cart</span></div>
-		<div class="link"><a href="/test/content/mergePendOrder.jsp">/test/content/mergePendOrder.jsp</a></div>
-		<div class="pageDesc">Test merging in selected items into a cart.</div>
-	</div>
-
 	<hr />
 </div>
 

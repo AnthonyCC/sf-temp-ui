@@ -13,21 +13,6 @@
 <%@ page import='com.freshdirect.framework.util.NVL'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.fdstore.survey.*'%>
-
-<%@ page import='com.freshdirect.fdstore.*,com.freshdirect.fdstore.customer.*,com.freshdirect.fdstore.content.*' %>
-<%@ page import="com.freshdirect.fdstore.promotion.PromotionI" %>
-<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
-<%@ page import="com.freshdirect.common.pricing.Discount" %>
-<%@ page import="java.text.MessageFormat" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
-<%@ page import="java.util.Calendar" %>
-<%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
-<%@ page import="com.freshdirect.customer.ErpClientCode"%>
-<%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
-<%@ page import='com.freshdirect.fdstore.sempixel.GoogleAnalyticsCartProduct' %>
-<%@ page import='java.util.*'  %>
-
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -36,7 +21,9 @@
 final int W_CHECKOUT_RECEIPT_TOTAL = 970;
 %>
 
-<%-- This page is included by step_4_receipt.jsp --%>
+<%--
+This page is included by step_4_confirmation.jsp and step_4_receipt.jsp
+--%>
 <%
     // FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
     FDIdentity identity  = user.getIdentity();
@@ -48,447 +35,283 @@ final int W_CHECKOUT_RECEIPT_TOTAL = 970;
 %>
 <fd:GetOrder id='cart' saleId='<%= orderNumber %>'>
 <%
-	FDReservation reservation = cart.getDeliveryReservation();
-	ErpAddressModel dlvAddress = cart.getDeliveryAddress(); 
-	ErpPaymentMethodI paymentMethod = (ErpPaymentMethodI) cart.getPaymentMethod();
-	ErpCustomerInfoModel customerModel = FDCustomerFactory.getErpCustomerInfo(identity);
-	FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(identity);
-	
-	String fmtDlvDateTime = dateFormatter.format(reservation.getStartTime()).toUpperCase();
-	String deliveryTime = FDTimeslot.format(reservation.getStartTime(), reservation.getEndTime());
-	 
-	boolean modifyOrderMode = cart.isModifiedOrder();
-	request.setAttribute("modifyOrderMode", Boolean.toString(cart.isModifiedOrder())); //for sem use
-	
-	boolean displayReminder = false;
-	if (user.getAdjustedValidOrderCount() > 1 && custInfo.getReminderFrequency() == 0){
-	    displayReminder = true;
-	}
 
-    boolean isDepotAddress = false;
-    ErpDepotAddressModel depotAddress = null;
-	String depotCode = null;
-    String depotName = "";
-	String hamptonsDepotCode = "HAM";
-    
-    if (cart instanceof FDOrderI) {
-    	isDepotAddress = ((FDOrderI)cart).getDeliveryAddress() instanceof ErpDepotAddressModel ? true : false;
-    	if (isDepotAddress) {
-    		depotAddress = (ErpDepotAddressModel) ((FDOrderI)cart).getDeliveryAddress() ;
-    	}
-    } else {
-    	isDepotAddress = user.getShoppingCart().getDeliveryAddress() instanceof ErpDepotAddressModel ? true : false;
-    	if (isDepotAddress) {
-    		depotAddress = (ErpDepotAddressModel) user.getShoppingCart().getDeliveryAddress(); 
-    	}    	
-    }
-	if (isDepotAddress && depotAddress != null) {
-		if(depotAddress.isPickup()){
-			DlvDepotModel depotModel = com.freshdirect.fdstore.FDDepotManager.getInstance().getDepotByLocationId(depotAddress.getLocationId());
-			if (depotModel!=null) {
-				depotName = depotModel.getName();
-				depotCode = depotModel.getDepotCode();
+
+FDReservation reservation = cart.getDeliveryReservation();
+ErpAddressModel dlvAddress = cart.getDeliveryAddress(); 
+ErpPaymentMethodI paymentMethod = (ErpPaymentMethodI) cart.getPaymentMethod();
+ErpCustomerInfoModel customerModel = FDCustomerFactory.getErpCustomerInfo(identity);
+FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(identity);
+
+String fmtDlvDateTime = dateFormatter.format(reservation.getStartTime()).toUpperCase();
+String deliveryTime = FDTimeslot.format(reservation.getStartTime(), reservation.getEndTime());
+ 
+boolean modifyOrderMode = cart.isModifiedOrder();
+request.setAttribute("modifyOrderMode", Boolean.toString(cart.isModifiedOrder())); //for sem use
+
+boolean displayReminder = false;
+if (user.getAdjustedValidOrderCount() > 1 && custInfo.getReminderFrequency() == 0){
+    displayReminder = true;
+}
+
+// INCLUDE STANDING ORDER HEADER
+if ( cart.getStandingOrderId() != null && user.getCheckoutMode() != EnumCheckoutMode.NORMAL ) { %>
+	<div style="width: <%=W_CHECKOUT_RECEIPT_TOTAL%>px; padding-top: 15px; font-size: 10px;">
+		<%@ include file="../../includes/i_so_header.jspf" %>
+	</div>
+	<div style="width: <%=W_CHECKOUT_RECEIPT_TOTAL-200%>px; height: 1px; margin: 1em 0 1em 0; color: #996699;">&nbsp;</div>
+	<% 
+		// standing orders - return to normal mode
+		user.setCurrentStandingOrder(null);
+		user.setCheckoutMode( EnumCheckoutMode.NORMAL );
+		session.setAttribute( "checkout_mode", EnumCheckoutMode.NORMAL );
+} %>
+
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_RECEIPT_TOTAL%>">
+<TR valign="top">
+    <TD><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></TD>
+</TR>
+<TR VALIGN="top">
+	<td width="<%=W_CHECKOUT_RECEIPT_TOTAL-200%>" style="border-right: solid 1px #CCCCCC; padding-right: 10px;">
+		<FONT CLASS="title16"><BIG>Your order has been <%= modifyOrderMode ? "modified" : "placed" %>.</BIG></FONT><BR><BR>
+		<font class="text12">
+			Thank you for shopping with us! Your order is complete. To check your order status anytime, just visit the "<A HREF="/your_account/order_history.jsp">Your Orders</A>" section of Your Account.
+			<br><br>
+			Your estimated receipt is below. On the day of delivery, once we've assembled and weighed your goods, we'll e-mail your final receipt and include a printed copy with your order.
+			<% if (EnumUnattendedDeliveryFlag.OPT_IN.equals(dlvAddress.getUnattendedDeliveryFlag())) { %>
+			<br><br>
+			<fd:IncludeMedia name="/media/editorial/site_pages/unattended_delivery/receipt_notice.html">
+			<b>Unattended delivery service.</b> If you need to run out during your delivery time slot, we will leave your order at your home. Alcohol cannot be left unattended, and will be removed from your order if you are not home. To learn more about Unattended Delivery, click <a href="javascript:popup('/help/unattended_delivery.jsp','large')">here</a>.
+			</fd:IncludeMedia>
+			<% } %>
+			<% 
+			boolean pickupOrder = EnumDeliveryType.PICKUP.equals( cart.getDeliveryType() ); 
+		    boolean isHomeOrder = EnumDeliveryType.HOME.equals( cart.getDeliveryType() );
+				boolean isCorporateOrder = EnumDeliveryType.CORPORATE.equals( cart.getDeliveryType() );
+				if (pickupOrder) {
+					DlvDepotModel dm =  com.freshdirect.fdstore.FDDepotManager.getInstance().getDepotByLocationId( ((ErpDepotAddressModel)dlvAddress).getLocationId());
+					String depotCode = dm!=null ? dm.getDepotCode() : null;
+			%><br><br>
+                  <% 		  if ("HAM".equalsIgnoreCase(depotCode)) {    %>
+				If you get lost call our Customer Service department at <%=user.getCustomerServiceContact()%>.
+		<%                } else { %>
+				<b>New!</b> Call our Order Pickup desk at 718-928-1575 five to ten minutes before you arrive and we'll have your order ready and waiting when you pull up. If you get lost - or have questions about your account or previous orders - call our Customer Service department at <%=user.getCustomerServiceContact()%>.
+			<%        }
+			} %>
+		</font>
+	</TD>
+		<td width="200" align="right" style="padding-left: 10px;">
+		<%
+        // get all recipe sources that can be found related to this order
+        Set<RecipeSource> recipeSources = new HashSet<RecipeSource>();
+
+		for (Iterator<FDCartLineI> i = cart.getOrderLines().iterator(); i.hasNext(); ) {
+			FDCartLineI line = (FDCartLineI) i.next();
+			String recipeId = line.getRecipeSourceId();
+			if (recipeId != null) {
+				Recipe recipe = (Recipe) ContentFactory.getInstance().getContentNode(recipeId);
+				if (recipe != null) {
+					if (recipe.getSource() != null &&
+							!recipe.getSource().getBookRetailers().isEmpty()) {
+                        recipeSources.add(recipe.getSource());
+					}
+				}
 			}
 		}
-    }
+	
+        if (recipeSources.size() > 0) {
+			%>
+			<style>
+				#recipeSource {
+					text-align: center;
+					width: 100%;
+					font-size: 7pt;
+				}
+				#recipeSource h2 {
+					font-family: Verdana, sans-serif;
+					color: #f93;
+					text-transform: uppercase;
+					margin: 0;
+					font-size:9pt;
+				}
+			</style>
+            <%
+        }
 
-	// INCLUDE STANDING ORDER HEADER
-	if ( cart.getStandingOrderId() != null && user.getCheckoutMode() != EnumCheckoutMode.NORMAL) { %>
-		<div style="width: <%=W_CHECKOUT_RECEIPT_TOTAL%>px; padding-top: 15px; font-size: 10px;">
-			<%@ include file="../../includes/i_so_header.jspf" %>
-		</div>
-		<div style="width: <%=W_CHECKOUT_RECEIPT_TOTAL-200%>px; height: 1px; margin: 1em 0 1em 0; color: #996699;">&nbsp;</div>
-		<% 
-			// standing orders - return to normal mode
-			user.setCurrentStandingOrder(null);
-			user.setCheckoutMode( EnumCheckoutMode.NORMAL );
-			session.setAttribute( "checkout_mode", EnumCheckoutMode.NORMAL );
-	}
-%>
-<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_RECEIPT_TOTAL%>" class="receipt_details">
-	<tr><%-- first row (line) --%>
-		<td class="<%=(cart.isModifiedOrder()) ? "modOrderBGColor" : "regOrderBGColor" %>" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="<%=W_CHECKOUT_RECEIPT_TOTAL%>" height="4" alt="" /></td>
-	</tr>
-	<tr valign="top"><%-- spacer --%>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></td>
-	</tr>
-	<tr><%-- main content --%>
-		<td width="<%= W_CHECKOUT_RECEIPT_TOTAL-290 %>" class="receipt_leftColumn"><%-- left column, text and ad --%>
-			<div>
-				<span class="why">why stop now?</span>
-				<fd:ModifyOrderController orderId="<%= orderNumber %>" result="result" successPage='<%= "/your_account/order_details.jsp?orderId=" + orderNumber %>'>
-					<%--
-						if a normal order moves in to modifiable status
-						OR if an order is being modified, and it's before it's cutoff
-						THEN show the modify button
-					--%>
-					<% if (allowModifyOrder.booleanValue() || ( modifyOrderMode && new Date().before(cart.getDeliveryReservation().getCutoffTime()) )) { %>
-						<div class="fright">
-							<form name="modify_order" id="modify_order" method="POST" action="/your_account/modify_order.jsp?orderId=<%=orderNumber%>&action=modify">
-								<input type="hidden" name="orderId" value="<%=orderNumber%>" />
-								<input type="hidden" name="action" value="modify" />
-								<table class="butCont20h fright" style="margin-left: 10px;">
-									<tr>
-										<td class="butOrangeLeft20h"><!-- --></td>
-										<td class="butOrangeMiddle20h"><a class="butText" href="/your_account/modify_order.jsp?orderId=<%=orderNumber%>" onclick="$('modify_order').submit(); return false;">modify order</a></td>
-										<td class="butOrangeRight20h"><!-- --></td>
-									</tr>
-								</table>
-							</form>
-						</div>
-					<% } %>
-				</fd:ModifyOrderController>
-			</div>			
-			<div>Add items to your order, anytime, as many times until <span class="dateTime"><%=
-				new SimpleDateFormat("EEEE, MM/d/yyyy, h").format(cart.getDeliveryReservation().getCutoffTime())
-				+ new SimpleDateFormat("a").format(cart.getDeliveryReservation().getCutoffTime()).toLowerCase()
-				%></span> for no extra delivery fee!
-			</div>
-			<div class="hline" id=""><!-- --></div>
-			<div>
-				<script type="text/javascript">
-					OAS_AD('ReceiptTop');
-				</script>
-			</div>
-			<div class="hline" id=""><!-- --></div>
-			<div><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></div><%-- spacer --%>
-			<div class="text12bold"><%-- default message --%>
-				Thank you for shopping with us!
-			</div>
-			<div class="text12">
-				Your order is complete. To check your order status anytime, just visit the "<a href="/your_account/order_history.jsp">Your Orders</a>" section of Your Account.
-				<br /><br />
-				Your estimated receipt is below. On the day of delivery, once we've assembled and weighed your goods, we'll e-mail your final receipt and include a printed copy with your order.
-				
-				<%
-					boolean pickupOrder = EnumDeliveryType.PICKUP.equals( cart.getDeliveryType() ); 
-			    	boolean isHomeOrder = EnumDeliveryType.HOME.equals( cart.getDeliveryType() );
-					boolean isCorporateOrder = EnumDeliveryType.CORPORATE.equals( cart.getDeliveryType() );
-					if (pickupOrder) {
-						DlvDepotModel dm =  com.freshdirect.fdstore.FDDepotManager.getInstance().getDepotByLocationId( ((ErpDepotAddressModel)dlvAddress).getLocationId());
-						String depotCodePU = (dm != null) ? dm.getDepotCode() : null;
-						%><br /><br />
-	                  	<% if ("HAM".equalsIgnoreCase(depotCodePU)) { %>
-							If you get lost call our Customer Service department at <%=user.getCustomerServiceContact()%>.
-						<% } else { %>
-							<span style="font-weight: bold;">New!</span> Call our Order Pickup desk at 718-928-1575 five to ten minutes before you arrive and we'll have your order ready and waiting when you pull up. If you get lost - or have questions about your account or previous orders - call our Customer Service department at <%=user.getCustomerServiceContact()%>.
-						<% }
-					}
-				%>
-			</div>
-			<div class="text12"><%-- unattended message --%>
-				<% if (EnumUnattendedDeliveryFlag.OPT_IN.equals(dlvAddress.getUnattendedDeliveryFlag())) { %>
-					<fd:IncludeMedia name="/media/editorial/site_pages/unattended_delivery/receipt_notice.html" />
-				<% } %>
-			</div>
-			<div><%-- reservation message --%>
-				<% if (user.isEligibleForPreReservation() && user.getReservation() == null && EnumReservationType.STANDARD_RESERVATION.equals(reservation.getReservationType()) && custInfo.getRsvAddressId() == null) { %>
-					<form method="POST" name="updateWeeklyReservation">
-						<table border="1" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_RECEIPT_TOTAL%>">
-							<tr>
-								<td align="center">
-									<br />
-									<span style="font-weight: bold;">May we hold this time for you?</span><br />
-									Use the "Reserve Delivery" function in Your Account to reserve a delivery time.<br />
-									Please note that you can update or cancel your timeslot reservation at any time.<br /><br />
-									<a href="/your_account/reserve_timeslot.jsp?addressId=<%=fdCustomer.getDefaultShipToAddressPK()%>">Click here to reserve a delivery time.</a><br /><br />
-								</td>
-							</tr>
-						</table>
-					</form>
-					<br />
-					<br />
-				<% } %>
-			</div>
-			<div><%-- default (tipping) message --%>
-				<div><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></div><%-- spacer --%>
-				<img src="/media_stat/images/navigation/receipt_tipping_header.gif" width="173" height="9" border="0" alt="FRESHDIRECT TIPPING POLICY"><br /><img src="/media_stat/images/layout/999966.gif" width="<%=W_CHECKOUT_RECEIPT_TOTAL-290%>" height="1" border="0" vspace="4"><br />
-			</div>
-			<div class="text12">
-				You are under no obligation to tip but have the option of providing a nominal tip if you feel that you've received 
-				exceptional service. FreshDirect delivery personnel are not permitted to solicit tips under any circumstances.<br />
-				<font class="space8px"><br /><br /></font>
-			</div>
-			<div><%-- pickup message --%>
-				<% if (!isHomeOrder && !isCorporateOrder) { %>
-					<table width="100%" cellpadding="2" cellspacing="0" border="0">
-						<tr>
-							<td bgcolor="#FFFFFF" style="padding-top: 8px;" class="text12">
-								<span style="font-weight: bold;">Please bring photo ID when picking up your order.</span><br />
-								Before releasing your order to you - or your authorized representative - our dispensing agents are required to ask for photo ID as proof of identity.
-							</td>
-						</tr>
-					</table>
-					<br /><br />
-				<% } %>
-			</div>
-			<div><%-- survey --%>
-				<%-- INCLUDE RECEIPT PAGE SURVEY, let include figure out show/ not --%>
-				<%@ include file="/survey/includes/post_order.jspf" %><br /><br />
-				<%-- END INCLUDE SURVEY --%>
-			</div>
-		</td>
-		<td width="290" class="receipt_rightColumn"><%-- right column, order details (price, address, etc) --%>
-			<div class="success">
-				<img src="/media_stat/images/layout/checkmark_green.gif" height="18" width="19" alt="" />SUCCESS!
-				<div class="text14bold">
-					<%= (cart.isModifiedOrder()) ? "Order has been modifed." : "Order has been placed." %>
-				</div>
-			</div>
-			<div><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></div><%-- spacer --%>
-			<div class="hline" id=""><!-- --></div>
-			<div><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></div><%-- spacer --%>
-			<div>
-				Order Number: <div class="fright text12bold gbold"><%= orderNumber %></div>
-			</div>
-			<div>
-				Order Subtotal: <div class="fright"><%= JspMethods.formatPrice(cart.getSubTotal()) %></div>
-			</div>
-			<% if (cart.isDlvPassApplied()) { %>
-				<div>
-					Delivery Charge: <div class="fright"><%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %></div>
-				</div>
-			<% } else if (cart.getDeliverySurcharge() > 0) { %>
-				<div>
-					Delivery Charge<% if (cart.isDeliveryChargeWaived()) { %> (waived)<% } %>:
-					<div class="fright"><% if (cart.isDeliveryChargeWaived()) { %>$0.00<% }else{ %><%= JspMethods.formatPrice(cart.getDeliverySurcharge()) %><% } %><%= cart.isDeliveryChargeTaxable() && !cart.isDeliveryChargeWaived() ? "&nbsp;T" : "" %></div>
-				</div>
-			<% } %>
-			<% if (cart.getMiscellaneousCharge() > 0.0) { %>
-				<div>
-					<a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">Fuel Surcharge</a><%if (cart.isMiscellaneousChargeWaived()) {%> (waived)<% } %>:
-					<div class="fright"><%if(cart.isMiscellaneousChargeWaived()){%>$0.00<% }else{ %><%= JspMethods.formatPrice(cart.getMiscellaneousCharge()) %><% } %><%= cart.isMiscellaneousChargeTaxable() && !cart.isMiscellaneousChargeWaived() ? "&nbsp;T" : "" %></div>
-				</div>
-			<%  } %>
-			<% if (cart.getTaxValue() > 0) { %>
-				<div>
-					Total Tax: <div class="fright"><%= JspMethods.formatPrice(cart.getTaxValue()) %></div>
-				</div>
-			<% } %>
-			<% if (cart.getDepositValue() != 0) { %>
-				<div>
-					State Bottle Deposit: <div class="fright"><%= JspMethods.formatPrice(cart.getDepositValue()) %></div>
-				</div>
-			<% } %>
-			<% if (cart.getTotalDiscountValue() >= 0) {
-				List discounts = cart.getDiscounts();
-				for (Iterator iter = discounts.iterator(); iter.hasNext();) {
-					ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
-					Discount discount = discountLine.getDiscount();
-					PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
-					String desc = EnumPromotionType.SIGNUP.equals(promotion.getPromotionType()) ? "Free Food" : promotion.getDescription();
-					%>
-					<div>
-						Discount: <div class="fright">-<%= JspMethods.formatPrice(discount.getAmount()) %></div>
-						<div class="text11italics"><%= desc %></div>
-					</div>
-				<% }
-			} %>
-			<%
-				//MNT-111 Bug Fix
-				String descSample = cart.getRedeemedSampleDescription();
-				if (descSample != null && !descSample.equals("NONE")) { 
-			%>
-				<div>
-					<%= descSample %>: <div class="fright">FREE!</div>
-				</div>
-			<% } %>
-			<%
-				String extendDPDescTop = cart.getExtendDPDiscountDescription();
-				if (extendDPDescTop != null && !extendDPDescTop.equals("NONE")) {
-			%>
-				<div>
-					<%= extendDPDescTop %>: <div class="fright">Pass extension</div>
-				</div>
-			<% } %>
-			<% if (cart.getCustomerCreditsValue() > 0) { %>
-				<div>
-					Credit Applied: <div class="fright">-<%= JspMethods.formatPrice(cart.getCustomerCreditsValue()) %></div>
-				</div>
-			<%  } %>
-			<div><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></div><%-- spacer --%>
-			<div class="hline" id=""><!-- --></div>
-			<div class="orderTotal">
-				<% if (cart.isEstimatedPrice()) { %>Estimated<% } else { %>Order<% } %> Total: <div class="fright text14bold"><%= JspMethods.formatPrice(cart.getTotal()) %><% if (cart.isEstimatedPrice()) { %>*<% } %></div>
-			</div>
-			<div class="hline" id=""><!-- --></div>
-			<% if (cart.getTaxValue() > 0) { %>
-				<div class="center"><strong>T</strong> = Taxable Item</div>
-			<% } %>
-			<div><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></div><%-- spacer --%>
-			<div class="text12bold">
-				Time:
-			</div>
-			<div>
-				<%= fmtDlvDateTime %><br />
-				<%= deliveryTime %>
-			</div>
-			<div><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></div><%-- spacer --%>
-			<div class="hline" id=""><!-- --></div>
-			<div><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></div><%-- spacer --%>
-			<div class="text12bold">
-				Address:
-			</div>
-			<div>
-				<%= dlvAddress.getFirstName() %> <%= dlvAddress.getLastName() %><br />
-            	<% if (depotName != null || depotName.length() > 1) { %><%= depotName %><br /><% } %>         
-            	<%= dlvAddress.getAddress1() %><% if(dlvAddress.getApartment()!=null && dlvAddress.getApartment().trim().length()>0) { %>, <% if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){ %>Floor/Suite <% }else{ %>Apt. <% } %><%=dlvAddress.getApartment()%><% } %><br />
-				<% if (dlvAddress.getAddress2()!= null && dlvAddress.getAddress2().trim().length() > 0) {
-					%><%= dlvAddress.getAddress2() %><br />
-				<% }%>
-            	<%= dlvAddress.getCity() %>, <%= dlvAddress.getState() %> <%= dlvAddress.getZipCode() %><br />
-            	<br />
-            	<% if (dlvAddress.getPhone() != null && !"".equals(dlvAddress.getPhone())) { %>
-            		<div>
-            			Phone: <%= dlvAddress.getPhone().getPhone() %> <%if ( !"".equals(dlvAddress.getPhone().getExtension()) ) { %>Ext. <%= dlvAddress.getPhone().getExtension() %><% } %>
-            		</div>
-            	<% } %>
-				<% if (dlvAddress.getAltContactPhone() != null && !"".equals(dlvAddress.getAltContactPhone().getPhone())) { %>
-            		<div>
-            			Alt Contact: <%= dlvAddress.getAltContactPhone().getPhone() %> <% if ( !"".equals(dlvAddress.getAltContactPhone().getExtension()) ) { %>Ext. <%= dlvAddress.getAltContactPhone().getExtension() %><% } %>
-            		</div>
-            	<% } %>
-            	<br />
-		        <% if (!isDepotAddress) { %>    
-            		<% if (dlvAddress.getInstructions() != null && !dlvAddress.getInstructions().equals("") && !"NONE".equalsIgnoreCase(dlvAddress.getInstructions())) { %>  
-                		<font class="text12bold">Special Delivery Instructions:</font><br />
-                		<%= dlvAddress.getInstructions() %><br /><br />
-            		<% } %>
-            		<% if (EnumUnattendedDeliveryFlag.OPT_IN.equals(dlvAddress.getUnattendedDeliveryFlag())) { %>  
-                		<font class="text12bold">Unattended Delivery:</font><br />
-                		<%= NVL.apply(dlvAddress.getUnattendedDeliveryInstructions(),"") %><br /><br />
-            		<% } %>       
-				<% } else { %>      
-            		<% if (depotAddress.getInstructions() != null && !depotAddress.getInstructions().equals("") && !"NONE".equalsIgnoreCase(depotAddress.getInstructions())) { %>    
-            			<b>Pickup Instructions:</b><br />
-                		<%= depotAddress.getInstructions() %><br /><br />
-            		<% } %>
-        		<% } %>
-        		<% if (dlvAddress.getAltDelivery() != null && dlvAddress.getAltDelivery().getId() > 0) { %>
-            		<font class="text12bold">Alternate delivery</font>:<br />
-            		<%= dlvAddress.getAltDelivery().getName()%><br /><br /> 
-			
-					<% if ("NEIGHBOR".equalsIgnoreCase(dlvAddress.getAltDelivery().getDeliveryCode())) { %>
-		               <%= dlvAddress.getAltFirstName()%> <%=dlvAddress.getAltLastName() %><br />
-		               <% if (EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){ %>Floor/Suite <% }else{ %>Apt. <% } %><%= dlvAddress.getAltApartment()%><br />
-		               <% if (dlvAddress.getAltPhone()!= null) { %><%= dlvAddress.getAltPhone().getPhone() %> <%if ( !"".equals(dlvAddress.getAltPhone().getExtension()) ){ %>Ext. <%= dlvAddress.getAltPhone().getExtension() %> <% }} %><br />
-		           <% } %>
-		       <% } %>
-            	<br />
-				<%
-					boolean isPickup = (cart instanceof FDOrderI) 
-						? EnumDeliveryType.PICKUP.equals( ((FDOrderI)cart).getDeliveryType() )
-						: dlvAddress instanceof ErpDepotAddressModel && ((ErpDepotAddressModel)dlvAddress).isPickup();
-                	
-                    if (isPickup) {
-						if (hamptonsDepotCode.equalsIgnoreCase(depotCode)) { %>
-                         <a href="javascript:popup('/delivery_popup.jsp?location=hamptons','large')">Get Directions</a><br />
-					<% } else { %>
-						<a href="javascript:popup('/delivery_popup.jsp','large')">Get Directions</a><br />
-					<% } %>
-				<% } %>
-			</div>
-			<div class="hline" id=""><!-- --></div>
-			<div><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></div><%-- spacer --%>
-			<div class="fright orderDetails">
-				<a href="/your_account/order_details.jsp?orderId=<%= orderNumber %>" class="orderNumb">view order details</a>
-			</div>
-			<div><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></div><%-- spacer --%>
-			<div class="recipeContainer"><%-- recipe(s) --%>
-				<%
-		        	// get all recipe sources that can be found related to this order
-		        	Set<RecipeSource> recipeSources = new HashSet<RecipeSource>();
-		
-					for (Iterator<FDCartLineI> i = cart.getOrderLines().iterator(); i.hasNext(); ) {
-						FDCartLineI line = (FDCartLineI) i.next();
-						String recipeId = line.getRecipeSourceId();
-						if (recipeId != null) {
-							Recipe recipe = (Recipe) ContentFactory.getInstance().getContentNode(recipeId);
-							if (recipe != null) {
-								if (recipe.getSource() != null &&
-										!recipe.getSource().getBookRetailers().isEmpty()) {
-			                        recipeSources.add(recipe.getSource());
-								}
-							}
-						}
-					}
-					if (recipeSources.size() > 0) {
+		if (recipeSources.size() == 1) {
+            RecipeSource recipeSource = (RecipeSource)
+                                              recipeSources.iterator().next();
+            %>
+			<div id="recipeSource">
+				<h2>You might like...</h2>
+				<p>
+					<%
+					Image img = recipeSource.getImage();
+					if (img != null) {
 						%>
-						<div><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></div><%-- spacer --%>
-						<div id="recipeSource">
-							<h2><%=(recipeSources.size() == 1) ? "You might like..." : "Enjoy your recipes from"%></h2>
-							<% if (recipeSources.size() == 1) {
-					            RecipeSource recipeSource = (RecipeSource) recipeSources.iterator().next(); %>
-								<div><%
-									Image img = recipeSource.getImage();
-									if (img != null) {
-										%>
-										<img src="<%= img.getPath() %>" width="<%= img.getWidth() %>" height="<%= img.getHeight() %>" /><br />
-										<%
-									}
-									%>
-									We hope you enjoy your recipe from<br />
-									<b>"<%= recipeSource.getName() %>"</b><br />
-									<%= recipeSource.getAuthorNames() %><br />
-									<br />
-									<%
-									List<BookRetailer> retailers = recipeSource.getBookRetailers();
-									if (!retailers.isEmpty()) {	%>
-										Get it online:<br />
-										<b>
-										<%
-										for (Iterator<BookRetailer> i = retailers.iterator(); i.hasNext(); ) {
-											BookRetailer retailer = (BookRetailer) i.next();
-											String link = retailer.createIsbnLink(recipeSource.getIsbn());
-											%><a href="<%= link %>" target="retailer"><%= retailer.getName() %></a><%
-											if (i.hasNext()) {
-												%> &middot; <%
-											}
-										}
-										%>
-										</b>
-										<%
-									}
-									%>
-								</div>
-								
-							<% } else { %>
-								<% for (RecipeSource recipeSource : recipeSources) { %>
-			                		<div><b>"<%= recipeSource.getName() %>"</b><br />
-			                    	<%
-			                    		List<BookRetailer> retailers = recipeSource.getBookRetailers();
-			                    	
-					                    if (!retailers.isEmpty()) { %>
-					                        Get it online:<br />
-					                        <b>
-					                        <% for (Iterator<BookRetailer> i = retailers.iterator(); i.hasNext(); ) {
-					                            BookRetailer retailer = (BookRetailer) i.next();
-					                            String link = retailer.createIsbnLink(recipeSource.getIsbn());
-					                            %><a href="<%= link %>" target="retailer"><%= retailer.getName() %></a><%
-					                            if (i.hasNext()) {
-					                                %> &middot; <%
-					                            }
-					                        } %>
-					                        </b>
-										<% } %>
-			                		</div>
-								<% } %>
-							<% } %>
-						</div>
-						<div><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" /></div><%-- spacer --%>
+						<img src="<%= img.getPath() %>" width="<%= img.getWidth() %>" height="<%= img.getHeight() %>" /><br/>
 						<%
 					}
-					
-				%>
+					%>
+					We hope you enjoy your recipe from<br/>
+					<b>"<%= recipeSource.getName() %>"</b><br/>
+					<%= recipeSource.getAuthorNames() %><br/>
+					<br/>
+					<%
+					List<BookRetailer> retailers = recipeSource.getBookRetailers();
+					if (!retailers.isEmpty()) {
+						%>
+						Get it online:<br/>
+						<b>
+						<%
+						for (Iterator<BookRetailer> i = retailers.iterator(); i.hasNext(); ) {
+							BookRetailer retailer = (BookRetailer) i.next();
+							String link = retailer.createIsbnLink(recipeSource.getIsbn());
+							%><a href="<%= link %>" target="retailer"><%= retailer.getName() %></a><%
+							if (i.hasNext()) {
+								%> &middot; <%
+							}
+						}
+						%>
+						</b>
+						<%
+					}
+					%>
+				</p>
 			</div>
+			<%
+        } else if(recipeSources.size() > 1) {
+            %>
+            <div id="recipeSource">
+                <h2>You might like...</h2>
+                <p>
+                    Enjoy your recipes from
+                </p>
+<%
+			for (RecipeSource recipeSource : recipeSources) {
+%>
+                <p>
+                    <b>"<%= recipeSource.getName() %>"</b><br/>
+                    <%
+                    List<BookRetailer> retailers = recipeSource.getBookRetailers();
+                    if (!retailers.isEmpty()) {
+                        %>
+                        Get it online:<br/>
+                        <b>
+                        <%
+                        for (Iterator<BookRetailer> i = retailers.iterator(); i.hasNext(); ) {
+                            BookRetailer retailer = (BookRetailer) i.next();
+                            String link = retailer.createIsbnLink(recipeSource.getIsbn());
+                            %><a href="<%= link %>" target="retailer"><%= retailer.getName() %></a><%
+                            if (i.hasNext()) {
+                                %> &middot; <%
+                            }
+                        }
+                        %>
+                        </b>
+                        <%
+                    }
+                    %>
+                </p>
+<%
+	        }
+%>
+            </div>
+            <%
+		} else {
+			%>
+<SCRIPT type="text/javascript">
+OAS_AD('ReceiptTop');
+</SCRIPT>
+			<%
+		}
+		%>
 		</td>
-	</tr>
+</TR>
+</TABLE>
+<BR>
+
+<%if(user.isEligibleForPreReservation() && user.getReservation() == null && EnumReservationType.STANDARD_RESERVATION.equals(reservation.getReservationType()) && custInfo.getRsvAddressId() == null){%>
+	<table border="1" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_RECEIPT_TOTAL%>">
+		<form method="POST" name="updateWeeklyReservation">
+		<tr>
+			<td align="center">
+				<br>
+				<b>May we hold this time for you?</b><br>
+				Use the "Reserve Delivery" function in Your Account to reserve a delivery time.<br>
+				Please note that you can update or cancel your timeslot reservation at any time.<br><br>
+				<a href="/your_account/reserve_timeslot.jsp?addressId=<%=fdCustomer.getDefaultShipToAddressPK()%>">Click here to reserve a delivery time.</a><br><br>
+			</td>
+		</tr>
+		</form>
+	</table>
+	<br>
+	<br>
+<%} %>
+
+<%-- INCLUDE RECEIPT PAGE SURVEY, let include figure out show/ not --%>
+<%@ include file="/survey/includes/post_order.jspf" %><br><br>
+<%-- END INCLUDE SURVEY --%>
+
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_RECEIPT_TOTAL%>">
+<tr><td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+<tr><td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
+<a name="receiptDetails"></a><span class="title14">COMPLETE DETAILS FOR ORDER #<span class="titleor14"><%=orderNumber%></span></span>
+<br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td></tr>
+<tr><td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+<tr><td><br><br></td></tr>
+<tr>
+	<td align="center">
+	<% String receipt = "true"; %>
+	<%@ include file="/includes/ckt_acct/i_step_4_delivery_payment.jspf" %><br>
+	</td>
+</tr>
+<tr>
+<td class="text13">
+<% if (!isHomeOrder && !isCorporateOrder) { %>
+	<table width="100%" cellpadding="2" cellspacing="0" border="0">
+		<tr>
+			<td bgcolor="#FFFFFF" style="padding-top: 8px;" class="text12">
+<b>Please bring photo ID when picking up your order.</b></span><br>
+Before releasing your order to you - or your authorized representative - our dispensing agents are required to ask for photo ID as proof of identity.
+			</td>
+		</tr>
+	</table><br><br>
+<% } %>
+<img src="/media_stat/images/navigation/receipt_tipping_header.gif" WIDTH="173" HEIGHT="9" border="0" alt="FRESHDIRECT TIPPING POLICY"><br><IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=W_CHECKOUT_RECEIPT_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="4"><br>
+<span class="text12">You are under no obligation to tip but have the option of providing a nominal tip if you feel that you've received exceptional service. FreshDirect delivery personnel are not permitted to solicit tips under any circumstances.</span><br><font class="space8px"><br><br></font></td>
+</tr>
+<TR VALIGN="TOP">
+	<TD>
+	<img src="/media_stat/images/navigation/cart_details.gif" WIDTH="83" HEIGHT="9" border="0" alt="CART DETAILS"><br>
+	<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=W_CHECKOUT_RECEIPT_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="4">
+	</TD>
+</TR>
+<tr>
+	<td align="left">
+<%@ include file="/includes/ckt_acct/i_step_4_cart_details.jspf" %>
+	</td>
+</tr>
+<tr><td><br><br>
+<%@ include file="/checkout/includes/i_footer_text.jspf" %></td></tr>
+<% if (FDStoreProperties.isAdServerEnabled()) { %>
+<tr><td><br><br></td></tr>
+<tr><td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
+<tr><td>
+<table width="<%=W_CHECKOUT_RECEIPT_TOTAL%>" cellpadding="0" cellspacing="0">
+<tr><td width="50%" style="border-right: solid 1px #CCCCCC; padding-right: 10px;" align="center">
+<SCRIPT type="text/javascript">
+OAS_AD('ReceiptBotLeft');
+</SCRIPT>
+</td>
+<td width="50%" style="padding-left: 10px;" align="center">
+<SCRIPT type="text/javascript">
+OAS_AD('ReceiptBotRight');
+</SCRIPT>
+</td>		
+</table><br>
+</td></tr>
+<% } %>
 </table>
-
-<%-- this section will be removed --%>
-	<div id="receiptCartDetails">
-		<%-- cart details, hide for now (used in analytics) --%>
-		<%@ include file="/includes/ckt_acct/i_step_4_cart_details.jspf" %>
-	</div>
-
 </fd:GetOrder>

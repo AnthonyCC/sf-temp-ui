@@ -198,27 +198,13 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 
 
 
-		} else if (this.action != null ) {
+		} else if (this.action!=null && this.action.equalsIgnoreCase(CANCEL_MODIFY_ACTION)) {
 
-			if (this.action.equalsIgnoreCase(CANCEL_MODIFY_ACTION)) {
-				LOGGER.debug("GET + cancelModify");
-				// we got a GET, not a POST, but that's fine.. :)
-				this.cancelModifyOrder(request, results);
-				actionPerformed = true;
-			}
+			LOGGER.debug("GET + cancelModify");
+			// we got a GET, not a POST, but that's fine.. :)
+			this.cancelModifyOrder(request, results);
+			actionPerformed = true;
 
-			if ( MODIFY_ACTION.equalsIgnoreCase(this.action) ) {
-				//change modify page to modify on a get to work around session timeout issue
-				this.modifyOrder(request, results);
-				actionPerformed = true;
-			}
-		} else if (request.getParameter("action") != null) {
-			//change modify page to modify on a GET to work around session timeout issue
-			this.action = request.getParameter("action");
-			if (MODIFY_ACTION.equalsIgnoreCase(this.action)) {
-				this.modifyOrder(request, results);
-				actionPerformed = true;
-			}
 		}
 
 		//
@@ -367,21 +353,6 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			FDCustomerManager.storeUser(currentUser.getUser());
 
 			FDCartModel cart = new FDModifyCartModel(order);
-			
-			//check here if a temp cart is in session to be merged in
-			FDCartModel tempMergePendCart = currentUser.getMergePendCart();
-			
-			if (tempMergePendCart.getOrderLines().size() > 0) {
-				//there is, merge into order's cart
-				cart.mergeCart(tempMergePendCart);
-				
-				//set user as having seen the overlay and used it (in case of login step)
-				currentUser.setShowPendingOrderOverlay(false);
-				
-				//remove temp cart from session
-				currentUser.setMergePendCart(null);
-			}
-			
 			// Check if this order has a extend delivery pass promotion. If so get the no. of extended days.
 			Set<String> usedPromoCodes = order.getSale().getUsedPromotionCodes();
 			for(Iterator<String> it = usedPromoCodes.iterator(); it.hasNext();){
@@ -481,9 +452,6 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
     		FDGiftCardInfoList gcList = currentUser.getGiftCardList();
     		//Clear any hold amounts.
     		gcList.clearAllHoldAmount();
-    		
-    		//reset user to see pendingOrder overlay again since they didn't check out
-    		currentUser.setShowPendingOrderOverlay(true);
             
 		} catch (FDResourceException ex) {
 			LOGGER.warn("Error accessing resources", ex);
