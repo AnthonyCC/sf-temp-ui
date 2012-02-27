@@ -273,4 +273,33 @@ public class GeographyController extends AbstractMultiActionController {
 		mav.getModel().put("sectors", domainManagerService.getSector());
 		return mav;
 	}
+
+	/**
+	 * Custom handler for deleteSectorZipcode
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
+	public ModelAndView deleteSectorZipcode(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		try {
+			Set<SectorZipcode> result = new HashSet<SectorZipcode>();
+			String arrEntityList[] = getParamList(request);
+			
+			if (arrEntityList != null) {
+				int arrLength = arrEntityList.length;
+				for (int intCount = 0; intCount < arrLength; intCount++) {
+					SectorZipcode _sectorZipcode = domainManagerService.getSectorZipCode(arrEntityList[intCount]);					
+					result.add(_sectorZipcode);
+				}
+			}
+			if(result.size() > 0){
+				domainManagerService.removeEntity(result);
+				saveMessage(request, getMessage("app.actionmessage.103", null));
+			}
+			return sectorHandler(request,response);
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("Error in getiing Scrib List");
+		}
+	}
 }

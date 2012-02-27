@@ -16,9 +16,9 @@
 	 <br/> 
     <div class="contentroot">
 		<c:if test="${not empty messages}">
-			<div class="err_messages">
-				<jsp:include page='/common/messages.jsp'/>
-			</div>
+			<div class="screenmessages">
+            	<jsp:include page='/common/messages.jsp'/>            	
+            </div>
 		</c:if>
 		
 		<div class="contentroot">

@@ -166,6 +166,7 @@
 
 				<prop key="/sector.do">geographyController</prop>
 				<prop key="/editsector.do">sectorFormController</prop>
+				<prop key="/deletesector.do">geographyController</prop>
 			</props>
 		</property>
 	</bean>
@@ -343,6 +344,7 @@
 			<prop key="/deleteparkingslot.do">deleteParkingSlotHandler</prop>
 			
 			<prop key="/sector.do">sectorHandler</prop>
+			<prop key="/deletesector.do">deleteSectorZipcode</prop>
 			</props>
 		</property>
 	</bean>
