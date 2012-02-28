@@ -1900,11 +1900,6 @@ function fdTSDisplay(refIdArg) {
 
 		if($('timeslots_gridAdvNew')){
 			$('timeslots_gridAdvNew').toggle();
-
-
-			if ($('displayAdvanceOrderHeader').up('td').down('.tsAdvanceHeader')) {
-				$('displayAdvanceOrderHeader').up('td').down('.tsAdvanceHeader').toggle();
-			}
 		}
 
 		if($('timeslots_gridAdv').style.display !== 'none') {
