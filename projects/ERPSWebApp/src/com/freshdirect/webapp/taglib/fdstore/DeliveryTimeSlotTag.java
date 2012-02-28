@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -168,10 +169,9 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		
 		List dateRanges = getDateRanges(baseRange,
 								(containsSpecialHoliday && !deliveryInfo), restrictions,specialHoliday, containsAdvanceOrderItem);
-		
+		Collections.sort(dateRanges, new DateRangeComparator());
 		/*Holiday & specialItems restrictions*/
 		getHolidayRestrctions(restrictions, dateRanges, deliveryModel);
-		//getSpecialItemDeliveryRestrctions(restrictions, baseRange, deliverymodel, user);
 
 		List<FDTimeslotUtil> timeslotList = new ArrayList();
 		Exception dynaError = null;
@@ -450,6 +450,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 			timeslotList.add(new FDTimeslotUtil(timeslots, DateUtil.toCalendar(range.getStartDate()), DateUtil.toCalendar(range
 				.getEndDate()), restrictions, responseTime));
 		}
+
 		return timeslotList;
 	}
 
@@ -669,7 +670,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		DlvRestrictionsList restrictions,
 		EnumDlvRestrictionReason specialRestriction, boolean useAdvanceOrderDates) {
 	    int daysInAdvance = FDStoreProperties.getHolidayLookaheadDays();
-		
+
 		Calendar restrictionEndCal = Calendar.getInstance();
 		restrictionEndCal.setTime(period.getStartDate());
 		restrictionEndCal.add(Calendar.DATE, daysInAdvance);
@@ -823,6 +824,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 			lst.add(restrictionRange);
 			lst.add(period);
 		}
+
 		return lst;
 
 	}
@@ -1023,4 +1025,15 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 			return Result.class.getName();
 		}
 	}
+
+	private class DateRangeComparator implements Comparator<DateRange> {
+
+		public int compare(DateRange obj1, DateRange obj2) {
+			if(obj1.getStartDate() != null &&  obj2.getStartDate() != null) {
+				return -(obj2.getStartDate().compareTo(obj1.getStartDate()));
+			}
+			return 0;
+		}
+	}
 }
+

@@ -431,39 +431,27 @@ if (errorMsg!=null) {%>
 
 <logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.util.FDTimeslotUtil" indexId="idx">
 	<tr>
-		<td colspan="2"><%
-	if(timeslotList.size()>1 && idx.intValue()==0){
-%><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><span class="title13 fleft tsAdvanceHeader">Advance Order Delivery Timeslots&nbsp;&nbsp;</span><a class="title13 fleft tsDivHide" id="displayAdvanceOrderGrid" href="javascript:hideAdvanceOrder();">Hide Delivery Timeslots</a><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
-<% } %>
-
+		<td colspan="2">
 <%
-	if(timeslotList.size()==3 && idx.intValue()==1){
+	if(timeslotList.size()>1 && idx.intValue()==1){
 %>
-	<div><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
-		<span class="title13 fleft tsAdvanceHeader" id="displayAdvanceOrderHeader">Advance Order Delivery Timeslots</span>
-	<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR></div>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><span class="title13 fleft tsAdvanceHeader">Advance Order Delivery Timeslots&nbsp;&nbsp;</span><a class="title13 fleft tsDivHide" id="displayAdvanceOrderGrid" href="javascript:hideAdvanceOrder();">Hide Delivery Timeslots</a><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
 <% } %>
-
 
 <%	
 	Boolean isForAdvOrdSlots = false;
-	if(timeslotList.size()>1 && idx.intValue()==0){
+	if(timeslotList.size()>1 && idx.intValue()==1){
 		isForAdvOrdSlots = true;
 	}
 	Boolean isForNewAdvOrdSlots = false;
-	if(timeslotList.size()==3 && idx.intValue()==1){
+	if(timeslotList.size()==3 && idx.intValue()==2){
 		isForNewAdvOrdSlots = true;
 	}
-
-	// If there are 2 advance order timeslots then show standard delivery header accordingly
-	if((timeslotList.size()>2 && isAdvOrderGap && idx.intValue()==2) ||
-		(timeslotList.size()==2 && isAdvOrderGap && idx.intValue()==1) ||
-		(!isAdvOrderGap && idx.intValue()==1)){
-	//if(idx.intValue() == 1){
 	
-	showAdvanceOrderBand=false;
+	if((timeslotList.size() > 1 && idx.intValue()==0)){
+		showAdvanceOrderBand=false;
 %>
-	<span class="title13 tsAdvanceHeader">Standard Delivery Timeslots<BR></span>
+	<span class="title13 fleft tsAdvanceHeader">Standard Delivery Timeslots<BR></span>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
 			
 <%} else { 
