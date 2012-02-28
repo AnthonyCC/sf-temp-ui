@@ -30,11 +30,11 @@ import com.freshdirect.analytics.model.RollData;
 public class RollDAOImpl implements IRollDAO {
 
 		
-	private static final String ROLL_SELECT=" select avg(unavailable_pct)* count(distinct(customer_id))/100 cnt, createdate,  zone, cutoff from mis.roll_event " +
+	private static final String ROLL_SELECT=" select avg(unavailable_pct)* count(distinct(customer_id)) cnt, createdate,  zone, cutoff from mis.roll_event " +
 			"where to_char(delivery_date, 'mm/dd/yyyy') = ? and zone=? and unavailable_pct >0 group by zone, cutoff,  createdate " +
 			"order by  createdate asc";
 	
-	private static final String ROLL_SELECT_BYZONE =" select avg(unavailable_pct)* count(distinct(customer_id))/100 cnt, zone, cutoff, sector from mis.roll_event " +
+	private static final String ROLL_SELECT_BYZONE =" select avg(unavailable_pct)* count(distinct(customer_id)) cnt, zone, cutoff, sector from mis.roll_event " +
 			"where to_char(delivery_date, 'mm/dd/yyyy') = ? and unavailable_pct >0 group by zone, cutoff, sector" +
 			" order by  zone,cutoff, sector";
 

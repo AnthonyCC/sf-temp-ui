@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -63,7 +64,11 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 		
 	private static final String CAPACITY_QUERY_FORECAST = "select capacity,order_count, " +
 			"delivery_date, timeslot_start, timeslot_end, zone, snapshot_time from MIS.order_rate where delivery_date in ( ?, ?) and zone = ?";
-			
+	
+	private static final String CAPACITY_QUERY_FORECAST_EX = "select sum(capacity) capacity,sum(order_count) order_count, snapshot_time from MIS.order_rate where delivery_date in" +
+			" (?,?) and  ((snapshot_time between ? and ?) or (snapshot_time between ? and ?)) group by snapshot_time order by snapshot_time asc";
+	
+	
 	private static final String CURRENT_DATE_ORDER_RATE = "select  snapshot_time, zone, cutoff, sum(order_count) order_count, " +
 			"sum(capacity) capacity from mis.order_rate where snapshot_time between to_date(?,'mm/dd/yyyy')  and  to_date(?,'mm/dd/yyyy') and delivery_date = to_date(?,'mm/dd/yyyy') " +
 			"and zone = ? group by snapshot_time, cutoff, zone order by snapshot_time, cutoff, zone asc";
@@ -73,8 +78,12 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 	
 	private static final String MAX_SNAPSHOT_DELIVERY_DATE = "select o.capacity, o.snapshot_time, o.timeslot_start, o.timeslot_end, o.cutoff, o.zone from " +
 			"mis.order_rate o ,(select max(snapshot_time) sh, O.CUTOFF co from mis.order_rate o where o.delivery_date = to_date(?,'mm/dd/yyyy') " +
-			"and o.zone = ? group by O.CUTOFF) t where o.delivery_date = to_date(?,'mm/dd/yyyy') and o.zone = ? and O.SNAPSHOT_TIME=t.sh " +
+			"and o.zone = ? and snapshot_time >=to_date(?,'mm/dd/yyyy') group by O.CUTOFF) t where o.delivery_date = to_date(?,'mm/dd/yyyy') and o.zone = ? and O.SNAPSHOT_TIME=t.sh " +
 			"and O.CUTOFF=t.co";
+	
+	private static final String MAX_SNAPSHOT_DELIVERY_DATE_EX = "select sum(o.capacity) capacity, snapshot_time from mis.order_rate o where snapshot_time = " +
+			"(select max(snapshot_time) sh from mis.order_rate o where o.delivery_date = to_date(?,'mm/dd/yyyy') and snapshot_time >=to_date(?,'mm/dd/yyyy')) " +
+			"group by snapshot_time";
 	
 	private static final String ORDER_COUNT_QRY = "select sum(order_count) as oCount, zone,cutoff " +
 			" from MIS.order_rate where delivery_date = to_date(?,'mm/dd/yyyy') and zone = ? and trunc(snapshot_time) < to_date(?,'mm/dd/yyyy') group by zone,cutoff";
@@ -411,6 +420,52 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 		return capacityMap;
 	}
 	
+	private Map<Date, Integer[]> getFDTotalForecastCapacityMap(final Date day1, final Date day2)
+	{
+		
+		final  Map<Date, Integer[]> capacityMap = new HashMap<Date, Integer[]>();
+		final Calendar cal=Calendar.getInstance();
+		
+		 PreparedStatementCreator creator=new PreparedStatementCreator() {
+	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+	                PreparedStatement ps =
+	                    connection.prepareStatement(CAPACITY_QUERY_FORECAST_EX);
+	                ps.setDate(1, new java.sql.Date(day1.getTime()));
+	    			ps.setDate(2, new java.sql.Date(day2.getTime()));
+	    			cal.setTimeInMillis(day1.getTime());
+	    			cal.set(Calendar.DATE, -1);
+	    			ps.setDate(3, new java.sql.Date(cal.getTimeInMillis()));
+	    			ps.setDate(4, new java.sql.Date(day1.getTime()));
+	    			cal.setTimeInMillis(day2.getTime());
+	    			cal.set(Calendar.DATE, -1);
+	    			ps.setDate(5, new java.sql.Date(cal.getTimeInMillis()));
+	    			ps.setDate(6, new java.sql.Date(day2.getTime()));
+	                return ps;
+	            }
+	        };
+	        
+	        jdbcTemplate.query(creator,
+		       		  new RowCallbackHandler() 
+		        		{
+		       		      public void processRow(ResultSet rs) throws SQLException 
+		       		      {
+
+		       		    	do 
+		       		    	{
+		       		    		Date snapshot = rs.getTimestamp("snapshot_time");
+		       					Integer capacity = rs.getInt("capacity");
+		       					Integer orders = rs.getInt("order_count");
+		       					Integer[] metrics = new Integer[]{capacity,orders};
+		       					capacityMap.put(snapshot, metrics);
+		       				}
+		       		    	   while(rs.next());
+		    		
+		       		      }
+		        		}
+		 );		
+		
+		return capacityMap;
+	}
 	
 	public List<Date>  getHolidays()
 	{
@@ -457,7 +512,9 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 		voCopy.setCutoffTime(vo.getCutoffTime());
 		voCopy.setCapacity(vo.getCapacity());
 		voCopy.setZone(vo.getZone());
+		if(vo.getStartTime()!=null)
 		voCopy.setStartTimeFormatted(tdf.format(vo.getStartTime()));
+		if(vo.getCutoffTime()!=null)
 		voCopy.setCutoffTimeFormatted(tdf.format(vo.getCutoffTime()));
 
 		return voCopy;
@@ -468,16 +525,25 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 		final List<OrderRateVO> inputList = new ArrayList<OrderRateVO>();
 		List<OrderRateVO> outputList = new ArrayList<OrderRateVO>();
 		final DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
-		
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(baseDate);
+		cal.add(Calendar.DATE, -1);
+		Date minSnapshotDate = cal.getTime();
+		final String minSnapshotDateStr = df.format(minSnapshotDate);
 		Date snapshot = null;
+		
+		if(!"0".equals(zone))
+		{
 		 PreparedStatementCreator creator=new PreparedStatementCreator() {
 	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 	                PreparedStatement ps =
 	                    connection.prepareStatement(MAX_SNAPSHOT_DELIVERY_DATE);
 	                ps.setString(1, deliveryDate);
 	    			ps.setString(2, zone);
-	    			ps.setString(3, deliveryDate);
-	    			ps.setString(4, zone);
+	    			ps.setString(3, minSnapshotDateStr);
+	    			ps.setString(4, deliveryDate);
+	    			ps.setString(5, zone);
 	                return ps;
 	            }
 	        };
@@ -592,7 +658,102 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 				}	
 			}
 			
-		
+		}
+		else
+		{
+			PreparedStatementCreator creator=new PreparedStatementCreator() {
+	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+	                PreparedStatement ps =
+	                    connection.prepareStatement(MAX_SNAPSHOT_DELIVERY_DATE_EX);
+	                ps.setString(1, deliveryDate);
+	    			ps.setString(2, minSnapshotDateStr);
+	                return ps;
+	            }
+	        };
+			
+	        jdbcTemplate.query(creator,
+		       		  new RowCallbackHandler() 
+		        		{
+		       		      public void processRow(ResultSet rs) throws SQLException 
+		       		      {
+
+		       		    	do 
+		       		    	{
+		       					OrderRateVO vo = new OrderRateVO();
+		       					vo.setBaseDate(baseDate);
+		   
+		       					vo.setSnapshotTime(new Date(rs.getTimestamp("snapshot_time").getTime()));
+		       					vo.setSnapshotTimeFmt(sdf.format(new Date(rs.getTimestamp("snapshot_time").getTime())));
+		       					vo.setCapacity(rs.getInt("capacity"));
+		       					inputList.add(vo);
+		       					
+		       				}
+		       		    	   while(rs.next());
+		    		
+		       		      }
+		        		}
+		 );		
+			
+			Map<Date, Integer[]> forecastMap = getFDTotalForecastCapacityMap(day1, day2);
+			
+			Iterator<OrderRateVO> voIterator = inputList.iterator();
+			
+			while(voIterator.hasNext())
+			{
+				OrderRateVO tempVO = voIterator.next();
+				boolean done =false;
+				
+				
+				
+				int days1 = (int)DateUtil.diffInDays(baseDate, day1) * -1;
+				int days2 = (int)DateUtil.diffInDays(baseDate, day2) * -1;
+				Date snapshot7 = OrderRateUtil.getDate(tempVO.getSnapshotTime(), days1);
+				Date snapshot14 = OrderRateUtil.getDate(tempVO.getSnapshotTime(), days2);
+				
+				snapshot = tempVO.getSnapshotTime();
+				
+				while(snapshot.before(baseDate))
+				{
+					OrderRateVO outputVO = copyBaseAttributes(tempVO);	
+					
+					snapshot =  OrderRateUtil.addTime(snapshot);
+					snapshot7 = OrderRateUtil.addTime(snapshot7);
+					snapshot14 = OrderRateUtil.addTime(snapshot14);
+					if(forecastMap.get(snapshot7)!=null
+							 && forecastMap.get(snapshot14)!=null)
+				
+						outputVO.setProjectedRate(OrderRateUtil.roundValue( new Float(forecastMap.get(snapshot7)[1] 
+								+ forecastMap.get(snapshot14)[1]) / 2));
+					
+					else
+						outputVO.setProjectedRate(0);
+					
+								
+					float weightedProjection = 0;
+				
+					if(forecastMap.get(snapshot7)!=null
+							 && forecastMap.get(snapshot14)!=null
+							 && (forecastMap.get(snapshot7)[0] + forecastMap.get(snapshot14)[0] > 0) )
+					
+							weightedProjection = OrderRateUtil.roundValue(new Float( outputVO.getProjectedRate() * outputVO.getCapacity() /
+									((forecastMap.get(snapshot7)[0]+ forecastMap.get(snapshot14)[0])/2)));
+					
+					else
+							weightedProjection = 0;
+					
+					outputVO.setWeightedProjectRate(weightedProjection);
+					
+					
+					
+					outputVO.setSnapshotTime(snapshot);
+					outputVO.setSnapshotTimeFmt(sdf.format(snapshot));
+					
+					outputList.add(outputVO);
+					
+				}	
+			}
+			
+		}
 		 return outputList;
 		
 	}
