@@ -624,12 +624,12 @@ public class RegistrationAction extends WebActionSupport {
 			actionResult.addError(!actionResult.hasError(EnumUserInfoName.EMAIL.getCode())
 				&& !EmailUtil.isValidEmailAddress(emailAddress), EnumUserInfoName.EMAIL.getCode(),
 				SystemMessageList.MSG_EMAIL_FORMAT);
-
-			if ("".equals(repeatEmailAddress)) {
-				actionResult.addError(new ActionError(EnumUserInfoName.REPEAT_EMAIL.getCode(), SystemMessageList.MSG_REQUIRED));
-			} else if (!emailAddress.equals(repeatEmailAddress)) {
+			
+			if (!emailAddress.equals(repeatEmailAddress)) {
 				actionResult.addError(new ActionError(EnumUserInfoName.REPEAT_EMAIL.getCode(), SystemMessageList.MSG_EMAIL_REPEAT));
-			}
+			} else if ("".equals(repeatEmailAddress)) {
+				actionResult.addError(new ActionError(EnumUserInfoName.REPEAT_EMAIL.getCode(), SystemMessageList.MSG_REQUIRED));
+			} 
 
 			actionResult.addError(!"".equals(altEmailAddress) && !EmailUtil.isValidEmailAddress(altEmailAddress),
 				EnumUserInfoName.ALT_EMAIL.getCode(), SystemMessageList.MSG_EMAIL_FORMAT);

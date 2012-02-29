@@ -151,6 +151,7 @@ public interface MessageCodes {
     
     public static final String ERR_REPEATEMAIL_REQUIRED = "ERR_REPEATEMAIL_REQUIRED";
     public static final String ERR_REPEATEMAIL_REQUIRED_MSG = "Repeat Email is required.";
+    public static final String ERR_REPEATEMAIL_MISMATCH_MSG = "Please enter your email again - it doesn't match what you entered above.";
     
     public static final String ERR_PASSWORD_REQUIRED = "ERR_PASSWORD_REQUIRED";
     public static final String ERR_PASSWORD_REQUIRED_MSG = "Password is required.";
@@ -243,7 +244,7 @@ public interface MessageCodes {
             translations.put("dlvfirstname", new ErrorMessage(ERR_FIRSTNAME_REQUIRED, ERR_FIRSTNAME_REQUIRED_MSG));
             translations.put("dlvlastname", new ErrorMessage(ERR_LASTNAME_REQUIRED, ERR_LASTNAME_REQUIRED_MSG));
             translations.put("email", new ErrorMessage(ERR_EMAIL_REQUIRED, ERR_EMAIL_REQUIRED_MSG));
-            translations.put("repeat_email", new ErrorMessage(ERR_REPEATEMAIL_REQUIRED, ERR_REPEATEMAIL_REQUIRED_MSG));
+            translations.put("repeat_email", new ErrorMessage(ERR_REPEATEMAIL_REQUIRED, ERR_REPEATEMAIL_MISMATCH_MSG));
             translations.put("password", new ErrorMessage(ERR_PASSWORD_REQUIRED, ERR_PASSWORD_REQUIRED_MSG));
             //translations.put("repeat_password", new ErrorMessage(ERR_REPEAT_PASSWORD_MISMATCH, ERR_REPEAT_PASSWORD_MISMATCH_MSG));
             translations.put("password_hint", new ErrorMessage(ERR_PASSWORDHINT_REQUIRED, ERR_PASSWORDHINT_REQUIRED_MSG));
