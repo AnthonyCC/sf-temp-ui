@@ -30,11 +30,15 @@ import com.freshdirect.analytics.model.RollData;
 public class RollDAOImpl implements IRollDAO {
 
 		
-	private static final String ROLL_SELECT=" select avg(unavailable_pct)* count(distinct(customer_id)) cnt, createdate,  zone, cutoff from mis.roll_event " +
+	private static final String ROLL_SELECT=" select avg(unavailable_pct)* count(distinct(customer_id))/100 cnt, createdate,  zone, cutoff from mis.roll_event " +
 			"where to_char(delivery_date, 'mm/dd/yyyy') = ? and zone=? and unavailable_pct >0 group by zone, cutoff,  createdate " +
 			"order by  createdate asc";
 	
-	private static final String ROLL_SELECT_BYZONE =" select avg(unavailable_pct)* count(distinct(customer_id)) cnt, zone, cutoff, sector from mis.roll_event " +
+	private static final String ROLL_SELECT_EX="select avg(unavailable_pct)* count(distinct(customer_id))/100 cnt, createdate from mis.roll_event " +
+			"where to_char(delivery_date, 'mm/dd/yyyy') = ? and unavailable_pct >0 group by createdate " +
+			"order by  createdate asc";
+	
+	private static final String ROLL_SELECT_BYZONE =" select avg(unavailable_pct)* count(distinct(customer_id))/100 cnt, zone, cutoff, sector from mis.roll_event " +
 			"where to_char(delivery_date, 'mm/dd/yyyy') = ? and unavailable_pct >0 group by zone, cutoff, sector" +
 			" order by  zone,cutoff, sector";
 
@@ -52,6 +56,9 @@ public class RollDAOImpl implements IRollDAO {
 		final DateFormat df = new SimpleDateFormat("hh:mm a");
 		
 		final List<RollData> dataList = new ArrayList<RollData>();
+		
+		if(!"0".equals(zone))
+		{
 		 PreparedStatementCreator creator=new PreparedStatementCreator() {
 	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 	                PreparedStatement ps =
@@ -70,7 +77,7 @@ public class RollDAOImpl implements IRollDAO {
 		       		    	do 
 		       		    	{
 		    		    		RollData data = new RollData();
-		    		    		data.setCnt(rs.getInt("cnt"));
+		    		    		data.setCnt(rs.getFloat("cnt"));
 		    		    		data.setCutOff(new Date(rs.getTimestamp("cutoff").getTime()));
 		    		    		data.setCutoffTimeFormatted(df.format(new Date(rs.getTimestamp("cutoff").getTime())));
 		    		    		data.setZone(rs.getString("zone"));
@@ -87,6 +94,41 @@ public class RollDAOImpl implements IRollDAO {
 		       		      }
 		        		}
 		 );	
+		}
+		else
+		{
+			 PreparedStatementCreator creator=new PreparedStatementCreator() {
+		            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+		                PreparedStatement ps =
+		                    connection.prepareStatement(ROLL_SELECT_EX);
+		                ps.setString(1, deliveryDate);
+		                return ps;
+		            }
+		        };
+		        jdbcTemplate.query(creator,
+			       		  new RowCallbackHandler() 
+			        		{
+			       		      public void processRow(ResultSet rs) throws SQLException 
+			       		      {
+
+			       		    	do 
+			       		    	{
+			    		    		RollData data = new RollData();
+			    		    		data.setCnt(rs.getFloat("cnt"));
+			    		    		cal.setTime(new Date(rs.getTimestamp("createdate").getTime()));
+			    		    		cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE) - cal.get(Calendar.MINUTE)%30);
+			    		    		data.setSnapshotTime(cal.getTime());
+			    		    		data.setSnapshotTimeFormatted(sdf.format(cal.getTime()));
+			    		    		
+			    		    		dataList.add(data);
+			    		    		
+			    		    	}
+			       		    	   while(rs.next());
+			    		
+			       		      }
+			        		}
+			 );	
+		}
 		 return dataList;
 		
 	}
@@ -113,7 +155,7 @@ public class RollDAOImpl implements IRollDAO {
 		       		    	do 
 		       		    	{
 		    		    		RollData data = new RollData();
-		    		    		data.setCnt(rs.getInt("cnt"));
+		    		    		data.setCnt(rs.getFloat("cnt"));
 		    		    		data.setCutOff(new Date(rs.getTimestamp("cutoff").getTime()));
 		    		    		data.setCutoffTimeFormatted(df.format(new Date(rs.getTimestamp("cutoff").getTime())));
 		    		    		data.setZone(rs.getString("zone"));

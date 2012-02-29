@@ -37,6 +37,10 @@ public class BounceDAOImpl implements IBounceDAO  {
 			"type in ('DELIVERYINFO', 'CHECKOUT','RESERVED_SLOT') and to_char(delivery_date, 'mm/dd/yyyy') = ? group by  zone, cutoff,sector " +
 			"order by zone,cutoff,sector  asc";
 	
+	private static final String BOUNCE_SELECT_EX = "select count(distinct(customer_id)) cnt, createdate from mis.bounce_event where status = 'NEW' and " +
+			"type in ('DELIVERYINFO', 'CHECKOUT','RESERVED_SLOT') and to_char(delivery_date, 'mm/dd/yyyy') = ?  group by createdate " +
+			"order by  createdate  asc";
+            
 	private JdbcTemplate jdbcTemplate;
 
 	public void setDataSource(DataSource dataSource) {
@@ -51,6 +55,8 @@ public class BounceDAOImpl implements IBounceDAO  {
 		final List<BounceData> dataList = new ArrayList<BounceData>();
 		final Calendar cal = Calendar.getInstance();
 
+		if(!"0".equals(zone))
+		{
 			 PreparedStatementCreator creator=new PreparedStatementCreator() {
 		            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 		                PreparedStatement ps =
@@ -86,7 +92,41 @@ public class BounceDAOImpl implements IBounceDAO  {
 		       		      }
 		        		}
 		 );
-	
+		}
+		else
+		{
+			 PreparedStatementCreator creator=new PreparedStatementCreator() {
+		            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+		                PreparedStatement ps =
+		                    connection.prepareStatement(BOUNCE_SELECT_EX);
+		                	ps.setString(1, deliveryDate);
+		                return ps;
+		            }
+		        };
+		        jdbcTemplate.query(creator,
+		       		  new RowCallbackHandler() 
+		        		{
+		       		      public void processRow(ResultSet rs) throws SQLException 
+		       		      {
+
+		       		    	do 
+		       		    	{
+		    	
+					    		BounceData data = new BounceData();
+					    		data.setCnt(rs.getInt("cnt"));
+					    		cal.setTime(new Date(rs.getTimestamp("createdate").getTime()));
+					    		cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE) - cal.get(Calendar.MINUTE)%30);
+					    		data.setSnapshotTime(cal.getTime());
+					    		data.setSnapshotTimeFormatted(sdf.format(cal.getTime()));
+					    		dataList.add(data);
+		       		    		
+		       		    	}
+		       		    	   while(rs.next());
+		    		
+		       		      }
+		        		}
+		 );
+		}
 		 return dataList;
 		
 	}

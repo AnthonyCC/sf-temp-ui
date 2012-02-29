@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class RollData {
 
-	private int cnt;
+	private float cnt;
 	private String zone;
 	private String sector;
 	private Date cutOff;
@@ -31,10 +31,10 @@ public class RollData {
 	public void setSnapshotTimeFormatted(String snapshotTimeFormatted) {
 		this.snapshotTimeFormatted = snapshotTimeFormatted;
 	}
-	public int getCnt() {
+	public float getCnt() {
 		return cnt;
 	}
-	public void setCnt(int cnt) {
+	public void setCnt(float cnt) {
 		this.cnt = cnt;
 	}
 	public String getZone() {
