@@ -700,9 +700,17 @@
 							<td colspan="3">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
 						</tr>	   
 				<%
-					} // TODO: missing else branch.
+					} else {// TODO: missing else branch.%>					
+					<tr valign="top" class="orderSummary">
+							<td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= promoCode%>','small')"><%= promotion .getDescription()%></a></b>:</td>
+							<td colspan="1" align="right">-<%=JspMethods.formatPrice(discount.getAmount())%></td>
+							<td><!--  --></td>
+							<td colspan="3"></td>						</tr>	 
+
+				<% }
 				}
 				%>
+
 			<%-- is this code still needed? 20100802 
 				if (cart.getTotalDiscountValue() > 0) { 
 					discounts = cart.getDiscounts();
