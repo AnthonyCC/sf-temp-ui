@@ -8,7 +8,7 @@
             <generator class="assigned" />
         </id>
        
-       <many-to-one name="sector" class="com.freshdirect.transadmin.model.Sector" fetch="select" lazy="false" >
+       <many-to-one name="sector" class="com.freshdirect.transadmin.model.Sector" lazy="false" >
             <column name="SECTOR_NAME" length="50" />
         </many-to-one>
         

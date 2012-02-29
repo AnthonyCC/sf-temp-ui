@@ -216,7 +216,9 @@ public class GeographyProviderController extends JsonRpcController  implements I
 		List<Sector> result = new ArrayList<Sector>();
 		Collection SectorDataLst = domainManagerService.getSector();
 		for (Object o : SectorDataLst){
-			result.add((Sector) o);
+			Sector s = (Sector) o;
+			s.setSectorZipcodes(null);
+			result.add(s);
 		}		
 		return result;
 	}
@@ -234,15 +236,16 @@ public class GeographyProviderController extends JsonRpcController  implements I
 		}
 		try{
 			for(int i=0;i < _SectorData.length;i++) {
-				Sector _SectorModel = new Sector(_SectorData[i][0], _SectorData[i][1], _SectorData[i][2]);
-				if(!previousSectors.containsKey(_SectorModel.getName()))
-					newSectors.add(_SectorModel);
+				Sector _sectorModel = new Sector(_SectorData[i][0], _SectorData[i][1], _SectorData[i][2]);
+				if(!previousSectors.containsKey(_sectorModel.getName()))
+					newSectors.add(_sectorModel);
 				else
-					previousSectors.remove(_SectorModel.getName());
-					newSectors.add(_SectorModel);
+					previousSectors.remove(_sectorModel.getName());
+					newSectors.add(_sectorModel);
 			}
-			if(previousSectors != null && previousSectors.size() > 0)
+			if(previousSectors != null && previousSectors.size() > 0){			
 				domainManagerService.removeEntity(previousSectors.values());
+			}
 			if(newSectors.size() > 0) {				
 				domainManagerService.saveEntityList(newSectors);
 			}

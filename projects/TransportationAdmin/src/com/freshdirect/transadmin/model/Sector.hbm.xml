@@ -15,5 +15,12 @@
             <column name="ACTIVE" length="1" />
         </property> 
         
+        <set name="sectorZipcodes" inverse="true" lazy="false" cascade="all,delete-orphan">
+            <key>
+                <column name="SECTOR_NAME" length="50" not-null="true" />
+            </key>
+            <one-to-many class="com.freshdirect.transadmin.model.SectorZipcode" />
+        </set>
+        
     </class>
 </hibernate-mapping>

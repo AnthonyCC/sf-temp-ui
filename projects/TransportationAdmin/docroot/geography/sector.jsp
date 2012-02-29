@@ -70,9 +70,9 @@
 						  <ec:column property="zipcode" sortable="true" title="Zip Code"/>
 						  <ec:column property="county" sortable="true" title="County"/> 
 						  <ec:column property="state" sortable="true" title="State"/> 
-						  <ec:column property="sector.name" title="Sector Name"/>
-						  <ec:column property="sector.description" title="Sector Description"/>
-						  <ec:column property="sector.active" title="Active"/>
+						  <ec:column property="sector.name" sortable="true" title="Sector Name"/>
+						  <ec:column property="sector.description" sortable="true" title="Sector Description"/>
+						  <ec:column property="sector.active" sortable="true" title="Active"/>
 						 </ec:row>
 					  </ec:table>
 				   </form>
