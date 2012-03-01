@@ -1,1 +1,0 @@
-INSERT INTO cms.attributedefinition (NAME,ID,CONTENTTYPE_ID,ATTRIBUTETYPE_CODE,INHERITABLE,REQUIRED,LABEL,CARDINALITY_CODE,LOOKUP_CODE) VALUES ('retainOriginalSkuOrder','Product.retainOriginalSkuOrder','Product','B','T','F','Retain Original SKU Order','One',NULL);

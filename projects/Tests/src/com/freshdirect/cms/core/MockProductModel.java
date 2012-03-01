@@ -1985,11 +1985,6 @@ public class MockProductModel extends MockContentNodeModel implements
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public boolean isRetainOriginalSkuOrder() {
-		return false;
-	}
 	
 	@Override
 	public 	boolean showDefaultSustainabilityRating() {

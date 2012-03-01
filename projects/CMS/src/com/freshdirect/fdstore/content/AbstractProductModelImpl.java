@@ -596,11 +596,6 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		}
 		return null;
 	}
-	
-	@Override
-	public boolean isRetainOriginalSkuOrder() {
-		return getAttribute("retainOriginalSkuOrder", false);
-	}
 
 	@Override
 	public 	boolean showDefaultSustainabilityRating() {

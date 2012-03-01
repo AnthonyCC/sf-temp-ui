@@ -597,7 +597,6 @@
 								<attribute>skus</attribute>
 								<component>VariationMatrix</component>
 							</CmsCustomField>
-							<CmsField><attribute>retainOriginalSkuOrder</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<!-- Gift Card changes -->
@@ -727,7 +726,6 @@
 					<CmsField><attribute>RELATED_PRODUCTS</attribute></CmsField>
 					<CmsField><attribute>RELATED_RECIPES</attribute></CmsField>
 					<CmsField><attribute>ymalSets</attribute></CmsField>
-					<CmsField><attribute>retainOriginalSkuOrder</attribute></CmsField>
 				</fields>
 			</CmsSection>
 			<CmsSection>

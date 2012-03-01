@@ -14,13 +14,10 @@ final int W_PRODUCT_MULTIPLE_SKUS_SEC_DOMAIN = 15;
 
     Map matrix = new TreeMap(domainValueComp);
     
-    /* Primary domain values ordered as SKU list. */
-    List<DomainValue> priDomainValues = new LinkedList<DomainValue>();
-    
     Iterator skui = skus.iterator();
     while ( skui.hasNext() ) {
         SkuModel sku = (SkuModel)skui.next();
-		List<DomainValue> domainValues = sku.getVariationMatrix();
+	List<DomainValue> domainValues = sku.getVariationMatrix();
         if (domainValues.size()==0) {
             continue;
         }
@@ -32,18 +29,12 @@ final int W_PRODUCT_MULTIPLE_SKUS_SEC_DOMAIN = 15;
             List coll = new ArrayList();
             coll.add(sku);
             matrix.put(key, coll);
-            priDomainValues.add(key);
         }
 
     }
 
     // === really big loop ===
-    Iterator keyIter;
-    if(productNode.isRetainOriginalSkuOrder()) {
-    	keyIter = priDomainValues.iterator();	
-    } else {
-    	keyIter = matrix.keySet().iterator(); //default
-    }
+    Iterator keyIter = matrix.keySet().iterator();
     
     while ( keyIter.hasNext() ) {
         DomainValue priDomainValue = (DomainValue) keyIter.next();

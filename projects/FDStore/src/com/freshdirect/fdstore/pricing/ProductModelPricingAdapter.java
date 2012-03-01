@@ -1405,11 +1405,6 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
 	@Override
-	public boolean isRetainOriginalSkuOrder() {
-		return prodModel.isRetainOriginalSkuOrder();
-	}
-
-	@Override
 	public boolean showDefaultSustainabilityRating() {
 		return this.prodModel.showDefaultSustainabilityRating();
 	}

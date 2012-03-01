@@ -974,13 +974,4 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	public boolean showDefaultSustainabilityRating();
 	
 	public FDGroup getFDGroup() throws FDResourceException;
-	
-	/**
-	 * If this is set to <code>true</code> order of SKUs on the storefront will be the same as in CMS.
-	 * If it's <code>false</code>, SKU order will be determined by domain values.
-	 * Default value is <code>false</code>
-	 * This attribute is inheritable.
-	 * @return Value of <code>retainOriginalSkuOrder</code> flag.
-	 */
-	public boolean isRetainOriginalSkuOrder();
 }

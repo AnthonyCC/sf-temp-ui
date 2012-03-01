@@ -578,7 +578,6 @@
 				<EnumValue value="4" label="4"/>
 				<EnumValue value="5" label="5"/>
 			</EnumDef>
-			<AttributeDef type="B" name="retainOriginalSkuOrder"  label="Retain Original SKU Order" inheritable="true"/>
 		</AttributeDefs>
 		
 		
