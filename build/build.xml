@@ -1456,10 +1456,12 @@
 
 	<macrodef name="makeAxisProject">
 		<attribute name="project" />
+		<attribute name="application" />
 		<attribute name="classpathref" default=""/>
         <attribute name="source" default="${javac.source}"/>	
 		<attribute name="service-name" default=""/>	
 		<sequential>
+			<mkdir dir="${release.dir}/applications"/>
 			<mkdir dir="${work.dir}/@{project}/target" />
 			<mkdir dir="${work.dir}/@{project}/target/META-INF" />
 			<trycatch>
@@ -1505,7 +1507,7 @@
 			
 			<jar basedir="${work.dir}/@{project}/target" destfile="${work.dir}/@{project}/axis2/WEB-INF/services/@{service-name}.aar" />
 			
-			<jar destfile="${work.dir}/@{project}.war">
+			<jar destfile="${release.dir}/applications/@{application}.war">
 				<manifest>
                     <attribute name="Specification-Version" value="${build.counter}"/>
                     <attribute name="Specification-Vendor" value="FreshDirect LLC"/>
@@ -2197,6 +2199,7 @@
 		
 		<makeAxisProject
 					project="FDServices" 
+					application="FDServices" 
 					classpathref="FDServices.classpath"
 					service-name="FDService"/>
 	</target>
