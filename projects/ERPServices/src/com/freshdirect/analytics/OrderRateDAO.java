@@ -35,9 +35,9 @@ public class OrderRateDAO {
 			"to_date(to_char(t.base_date-1, 'MM/DD/YYYY')||' '|| to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YYYY HH:MI:SS AM') > SYSDATE ) t  " +
 			"left outer join (SELECT s.ID  , DI.STARTTIME, DI.ENDTIME, DI.CUTOFFTIME, DI.ZONE FROM cust.sale s," +
 			" cust.salesaction sa, cust.deliveryinfo di WHERE s.ID=sa.SALE_ID AND s.CUSTOMER_ID=sa.CUSTOMER_ID" +
-			" AND DI.SALESACTION_ID = SA.ID AND sa.ACTION_TYPE IN ('CRO','MOD')  and s.status <>'CAN' and S.CROMOD_DATE = SA.ACTION_DATE" +
-			" AND sa.REQUESTED_DATE > TRUNC(SYSDATE) AND s.type='REG' AND S.CROMOD_DATE BETWEEN < SYSDATE )" +
-			" a on to_char(a.STARTTIME, 'MM/DD/YYYY HH:MI:SS AM') = to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.START_TIME, 'HH:MI:SS AM') " +
+			" AND DI.SALESACTION_ID = SA.ID AND sa.ACTION_TYPE IN ('CRO')" +
+			" AND sa.REQUESTED_DATE > TRUNC(SYSDATE) AND s.type='REG' and s.status <>'CAN'  AND S.CROMOD_DATE BETWEEN (SYSDATE-1/48) " +
+			" AND SYSDATE) a on to_char(a.STARTTIME, 'MM/DD/YYYY HH:MI:SS AM') = to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.START_TIME, 'HH:MI:SS AM') " +
 			" and  to_char(a.ENDTIME, 'MM/DD/YYYY HH:MI:SS AM') = to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.END_TIME, 'HH:MI:SS AM') " +
 			" and a.zone = t.zone_code group by t.base_date,  to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.START_TIME, 'HH:MI:SS AM') ," +
 			" to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.END_TIME, 'HH:MI:SS AM') , " +
