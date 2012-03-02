@@ -977,9 +977,9 @@ public class FDPromotionManagerNewDAO {
 			ps.setString(2, promotionId);
 			ps.setString(3, scr.getState_option());
 			ArrayDescriptor states = ArrayDescriptor.createDescriptor("CUST.PROMO_STATE_COUNTY_LIST", conn);
-			ARRAY newArray = new ARRAY(states, conn, scr.getStateArray());
+			ARRAY newArray = new ARRAY(states, conn, null !=scr.getStateArray()?scr.getStateArray():scr.getStates().toArray());
 			ps.setArray(4, newArray);			
-			ARRAY newArray2 = new ARRAY(states, conn, scr.getCountyArray());
+			ARRAY newArray2 = new ARRAY(states, conn, null !=scr.getCountyArray()?scr.getCountyArray():scr.getCounty().toArray());
 			ps.setArray(5, newArray2);
 			ps.setString(6, scr.getCounty_option());
 			ps.execute();
