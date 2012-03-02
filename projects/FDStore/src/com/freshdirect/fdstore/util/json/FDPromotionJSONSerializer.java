@@ -35,7 +35,9 @@ import com.freshdirect.fdstore.promotion.management.FDPromoContentModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoCustStrategyModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoDlvTimeSlotModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoDlvZoneStrategyModel;
+import com.freshdirect.fdstore.promotion.management.FDPromoDollarDiscount;
 import com.freshdirect.fdstore.promotion.management.FDPromoPaymentStrategyModel;
+import com.freshdirect.fdstore.promotion.management.FDPromoStateCountyRestriction;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
 import com.freshdirect.fdstore.promotion.management.WSAdminInfo;
 import com.freshdirect.fdstore.promotion.management.WSPromotionInfo;
@@ -57,7 +59,8 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 		FDPromoContentModel.class, FDPromoCustStrategyModel.class,
 		FDPromoPaymentStrategyModel.class, FDPromotionNewModel.class,
 		FDPromoChangeModel.class, FDPromoChangeDetailModel.class,
-		FDPromoDlvZoneStrategyModel.class, FDPromoDlvTimeSlotModel.class, WSPromotionInfo.class,WSAdminInfo.class, EnumPromotionStatus.class
+		FDPromoDlvZoneStrategyModel.class, FDPromoDlvTimeSlotModel.class, WSPromotionInfo.class,WSAdminInfo.class, EnumPromotionStatus.class,
+		FDPromoDollarDiscount.class,FDPromoStateCountyRestriction.class
 	};
 
 	private static Class<?>[] _JSONClasses = new Class[] { JSONObject.class };
@@ -518,11 +521,11 @@ public class FDPromotionJSONSerializer extends AbstractSerializer {
 				LOGGER.error("Failed to decode Apache enum " + valueType, e);
 			}
 		} else if (java.lang.Double.class.isAssignableFrom(valueType)) {
-			return Double.parseDouble((String) rhs);
+			return Double.parseDouble((String.valueOf(rhs)));
 		} else if (java.lang.Float.class.isAssignableFrom(valueType)) {
-			return Float.parseFloat((String) rhs);
+			return Float.parseFloat(String.valueOf(rhs));
 		} else if (boolean.class.isAssignableFrom(valueType) || java.lang.Boolean.class.isAssignableFrom(valueType)) {
-			return Boolean.parseBoolean((String) rhs);
+			return Boolean.parseBoolean(String.valueOf(rhs));
 		} else {
 			LOGGER.debug("[getDeserializedValue] Type: " + valueType + " <- " + rhs);
 			

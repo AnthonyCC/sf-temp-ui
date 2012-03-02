@@ -216,6 +216,8 @@ public class FDPromotionManagerNewDAO {
 			promotion.setDlvZoneStrategies(loadPromoDlvZoneStrategies(conn, id));
 			promotion.setDlvDates(loadPromoDlvDates(conn, id));
 			promotion.setAttributeList(loadAttributeList(conn, id));
+			promotion.setStateCountyList(loadStateCountyRestrictions(conn,  id));
+			promotion.setDollarOffList(loadDollarOffers(conn,  id));
 		}
 		return promotion;
 	}
@@ -1805,6 +1807,8 @@ public class FDPromotionManagerNewDAO {
 			promotion.setDlvZoneStrategies(loadPromoDlvZoneStrategies(conn,  pk.getId()));
 			promotion.setDlvDates(loadPromoDlvDates(conn,  pk.getId()));
 			promotion.setAttributeList(loadAttributeList(conn,  pk.getId()));
+			promotion.setStateCountyList(loadStateCountyRestrictions(conn,  pk.getId()));
+			promotion.setDollarOffList(loadDollarOffers(conn,  pk.getId()));
 
 		}
 		return promotion;
