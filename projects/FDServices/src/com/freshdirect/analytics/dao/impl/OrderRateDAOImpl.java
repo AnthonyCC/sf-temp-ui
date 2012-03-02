@@ -35,11 +35,15 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 
 	private static final Category LOGGER = Logger.getLogger(OrderRateDAOImpl.class);
 		
-	private static String GET_ORDERSBY_DATE_CUTOFF = "select sum(order_count) order_count, zone,cutoff from mis.order_rate r where delivery_date = to_date(?,'mm/dd/yyyy')  " +
-			"group by zone,cutoff  order by zone,cutoff asc";
+	private static String GET_ORDERSBY_DATE_CUTOFF = "select count(*) order_count, di.zone zone ,di. cutofftime cutoff from cust.sale s , cust.salesaction sa," +
+			" cust.deliveryinfo di where s.id = sa.sale_id and s.cromod_date = sa.action_date and s.type='REG' and s.status <>'CAN' AND S.CROMOD_DATE<sysdate and sa.action_type " +
+			"in ('CRO','MOD') and sa.requested_date = to_date(?,'mm/dd/yyyy') and sa.id = di.salesaction_id   group by zone,cutofftime  " +
+			"order by di.zone,di. cutofftime asc";
 	
-	private static String GET_ORDERSBY_ZONE_TIMESLOT = "select sum(order_count) order_count, zone, timeslot_start, cutoff from mis.order_rate r where r.delivery_date = to_date(?,'mm/dd/yyyy') " +
-			" and zone = ? group by zone, timeslot_start, cutoff  order by zone, timeslot_start, cutoff asc";
+	private static String GET_ORDERSBY_ZONE_TIMESLOT = "select count(*) order_count, di.zone zone ,di.starttime timeslot_start, di.cutofftime cutoff from " +
+			"cust.sale s , cust.salesaction sa, cust.deliveryinfo di where s.id = sa.sale_id and s.cromod_date = sa.action_date and s.type='REG' and " +
+			"s.status <>'CAN' AND S.CROMOD_DATE<sysdate and sa.action_type in ('CRO','MOD') and sa.requested_date = to_date(?,'mm/dd/yyyy') and zone = ? and sa.id = di.salesaction_id" +
+			"  group by zone, di.starttime,cutofftime  order by di.zone,di.starttime, di. cutofftime asc";
 	
 	private static String GET_RESOURCES_DATE_CUTOFF = "select sum(resource_count) resource_count, area, cutoff_datetime  " +
 			"from transp.wave_instance w where delivery_date = to_date(?,'mm/dd/yyyy') and status = 'SYN' " +
@@ -85,11 +89,14 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 			"(select max(snapshot_time) sh from mis.order_rate o where o.delivery_date = to_date(?,'mm/dd/yyyy') and snapshot_time >=to_date(?,'mm/dd/yyyy')) " +
 			"group by snapshot_time";
 	
-	private static final String ORDER_COUNT_QRY = "select sum(order_count) as oCount, zone,cutoff " +
-			" from MIS.order_rate where delivery_date = to_date(?,'mm/dd/yyyy') and zone = ? and trunc(snapshot_time) < to_date(?,'mm/dd/yyyy') group by zone,cutoff";
+	private static final String ORDER_COUNT_QRY = "select count(*) oCount, di.zone zone , di.cutofftime cutoff from cust.sale s , cust.salesaction sa, " +
+			"cust.deliveryinfo di where s.id = sa.sale_id and s.cromod_date = sa.action_date and s.type='REG' AND S.CROMOD_DATE<to_date(?,'mm/dd/yyyy') " +
+			"and sa.action_type in ('CRO','MOD') and s.status <>'CAN' and sa.requested_date = to_date(?,'mm/dd/yyyy') and zone = ? and sa.id = di.salesaction_id " +
+			"group by  di.zone,di. cutofftime order by di.zone,di.cutofftime asc";
 	
-	private static final String ORDER_COUNT_QRY_EX = "select sum(order_count) as oCount from MIS.order_rate where delivery_date = to_date(?,'mm/dd/yyyy') " +
-			"and trunc(snapshot_time) < to_date( ?,'mm/dd/yyyy')";
+	private static final String ORDER_COUNT_QRY_EX = "select count(*) oCount from cust.sale s , cust.salesaction sa, cust.deliveryinfo di where " +
+			"s.id = sa.sale_id and s.cromod_date = sa.action_date and s.type='REG' AND S.CROMOD_DATE<to_date(?,'mm/dd/yyyy') and " +
+			"sa.action_type in ('CRO','MOD') and s.status <>'CAN' and sa.requested_date = to_date(?,'mm/dd/yyyy') and sa.id = di.salesaction_id ";
 
 
 	private JdbcTemplate jdbcTemplate;
@@ -857,9 +864,10 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 			            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 			                PreparedStatement ps =
 			                    connection.prepareStatement(ORDER_COUNT_QRY);
-			                ps.setString(1, deliveryDate);
-							ps.setString(2, zone);
-							ps.setString(3, currentDate);
+			                ps.setString(1, currentDate);
+			                ps.setString(2, deliveryDate);
+							ps.setString(3, zone);
+							
 			                return ps;
 			            }
 			        };
@@ -893,8 +901,9 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 			            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 			                PreparedStatement ps =
 			                    connection.prepareStatement(ORDER_COUNT_QRY_EX);
-			                ps.setString(1, deliveryDate);
-							ps.setString(2, currentDate);
+			                ps.setString(1, currentDate);
+			                ps.setString(2, deliveryDate);
+							
 			                return ps;
 			            }
 			        };
