@@ -43,3 +43,6 @@ var OasConfig = {
 };
 </script>
 <script src="<?php bloginfo('template_url'); ?>/js/oas.js" type="text/javascript" language="javascript"></script>
+<link href="<?php bloginfo('template_url'); ?>/assets/css/common/globalnav_and_footer.css" rel="stylesheet" type="text/css" />
+<link href="<?php bloginfo('template_url'); ?>/assets/css/common/typography.css" rel="stylesheet" type="text/css" />
+<link href="<?php bloginfo('template_url'); ?>/assets/css/global.css" rel="stylesheet" type="text/css" />

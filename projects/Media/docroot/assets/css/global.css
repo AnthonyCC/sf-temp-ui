@@ -984,3 +984,18 @@ div.control, div.slotRow, div.time {
 	.modOrdInfo .ordNumb {
 		font-family: Verdana;
 	}
+	
+.dotted_separator_h {
+	background: url("../../media_stat/images/layout/dot_grey_h.gif") repeat-x scroll left top transparent;
+	height: 1px;
+	padding: 0;
+	overflow: hidden;
+}
+
+.dotted_separator_v {
+	background: url("../../media_stat/images/layout/dot_grey_v.gif") repeat-y scroll left center transparent;
+	width: 1px;
+	padding: 0;
+}
+
+	

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
 public class StoreModel extends ContentNodeModelImpl {
 	private static final long serialVersionUID = -7256497583339960753L;
@@ -62,5 +62,9 @@ public class StoreModel extends ContentNodeModelImpl {
 			return myfds.get(0);
 		else
 			return null;
+	}
+	
+	public Html getEditorial(){
+		return FDAttributeFactory.constructHtml(this, "EDITORIAL");
 	}
 }

@@ -11,7 +11,10 @@
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import="com.freshdirect.cms.ContentKey"%>
+<%@ page import="com.freshdirect.fdstore.content.StoreModel"%>
 <%@ page import='java.text.*' %>
+<%@ page import='java.util.*' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -49,21 +52,8 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	boolean location2Media = false;
 	if(null != segmentMessage && segmentMessage.isLocation2()) {
         	location2Media = true;
-        }
-        String mktgPath = "";
-        String winbackPath = "";
-    /* This was HP Phase 1 which has been replaced by HP Phase 2 APPDEV-484 
-    if(!user.isCampaignMsgLimitViewed() && (!user.getWinbackPath().equals("false") || !user.getMarketingPromoPath().equals("false"))) {
-	        location2Media = true;
-	        mktgPath = user.getMarketingPromoPath().trim();
-	        winbackPath = user.getWinbackPath().trim();
-        } 
-        */
-        if(location2Media) {
-        	request.setAttribute("listPos", "SystemMessage,HPLeftTop,HPLeftMiddle,HPLeftBottom,HPWideBottom,HPWideTop");
-        } else {
-        	request.setAttribute("listPos", "SystemMessage,HPLeftTop,HPLeftMiddle,HPLeftBottom,HPMiddleBottom,HPRightBottom,HPWideBottom,HPWideTop");
-        }
+    }
+   	request.setAttribute("listPos", "SystemMessage,HPFeatureTop,HPFeature,HPTab1,HPTab2,HPTab3,HPTab4,HPFeatureBottom,HPWideBottom");
 %>
 
 <% 
@@ -75,80 +65,11 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
  
 		<div class="holder">
 		
-		<%-- PROMO 1 --%>
-			<div class="ad ad1">
-				<div class="adbox">
-					<table width="100%" height="100%">
-						<tr>
-						<td align="center">
-						<%if ( mainPromo ) {%>
-							<%@ include file="includes/home/i_main_promo.jspf" %>
-						<%} else if (FDStoreProperties.isAdServerEnabled()) {%>
-							<SCRIPT LANGUAGE=JavaScript>
-							<!--
-							OAS_AD('HPLeftTop');
-							//-->
-							</SCRIPT>
-						
-						<%}else {%>
-							<%@ include file="includes/home/i_current_promo.jspf" %>
-						<%}%>
-						</td>
-						</tr>
-					</table>
-					<div class="adbox_bottom"></div>
-				</div>
-			</div> 
-		<%-- END PROMO 1 --%>
-			
-		<%-- PROMO 2--%>
-			<div class="ad ad2">
-				<div class="adbox">
-					<table width="100%" height="100%">
-						<tr>
-						<td align="center">
-						<% if (FDStoreProperties.isAdServerEnabled()) { %>
-							<SCRIPT LANGUAGE=JavaScript>
-							<!--
-							OAS_AD('HPLeftMiddle');
-							//-->
-							</SCRIPT>
-						<% } else { %>
-							<a href="/about/index.jsp"><img src="/media_stat/images/template/homepages/promos/farm_fresh_hdr.gif" width="170" height="42" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br><a href="/about/index.jsp">Click here to learn more<br>about FreshDirect!</a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="20" border="0"><br><a href="/about/index.jsp"><img src="/media_stat/images/template/homepages/promos/corn.jpg" width="195" height="85" border="0" vspace="0"></a>
-						<% } %>
-						</td>
-						</tr>
-					</table>
-					<div class="adbox_bottom"></div>
-				</div>
-			</div> 
-		<%-- END PROMO 2--%>
-		
-		
-		<%-- PROMO 3--%>	
-			<div class="ad ad3">
-				<div class="adbox">
-					<table width="100%" height="100%">
-						<tr>
-						<td align="center">
-							<SCRIPT LANGUAGE=JavaScript>
-							<!--
-							OAS_AD('HPLeftBottom');
-							//-->
-							</SCRIPT>
-						</td>
-						</tr>
-					</table>
-					<div class="adbox_bottom"></div>
-				</div>
-			</div> 
-		<%-- END PROMO 3--%>
-			
 		<%-- MAIN CONTENT--%>
-		
+
 		
 			<div class="content"> 
-			
+	
 				<% if (showAltHome && !location2Media) {
 			String mediaPath = null;
 	          	if(validOrderCount < 1){
@@ -244,7 +165,7 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 	   			} 			
 	   			if (orderHistoryInfo != null && orderHistoryInfo.size() != 0 && pendingOrderCount > 0) {
 	   			%>
-	   				<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 6px;">
+	   				<table width="100%" cellpadding="0" cellspacing="0" border="0">
 	   				<%
 	   				for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
 	   				     FDOrderInfoI orderInfo = (FDOrderInfoI) hIter.next();
@@ -312,27 +233,79 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 			</table>
 
 		<% } %>
-	   		<img src="/media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="8"><br>
-	   		<%@ include file="/includes/i_departments.jspf" %> 
+
+			<div class="oas_feature_frame" style="padding-top: 10px;">
+				<span>
+					<script type="text/javascript">
+						OAS_AD('HPFeatureTop');
+					</script>
+				</span>
+			</div>			
+
+			<div class="oas_feature_left left">
+				<script type="text/javascript">
+					OAS_AD('HPFeature');
+				</script>
+	   		</div>
+	   		<div class="oas_feature_right right">
+	   			<div class="dotted_separator_h"></div>
+	   			<div class="oas_feature_right_tab">
+		   			<script type="text/javascript">
+						OAS_AD('HPTab1');
+					</script>
+				</div>
+	   			<div class="dotted_separator_h"></div>
+	   			<div class="oas_feature_right_tab">
+		   			<script type="text/javascript">
+						OAS_AD('HPTab2');
+					</script>
+				</div>
+	   			<div class="dotted_separator_h"></div>
+	   			<div class="oas_feature_right_tab">
+		   			<script type="text/javascript">
+						OAS_AD('HPTab3');
+					</script>
+				</div>
+	   			<div class="dotted_separator_h"></div>
+	   			<div class="oas_feature_right_tab">
+		   			<script type="text/javascript">
+						OAS_AD('HPTab4');
+					</script>
+				</div>
+	   			<div class="dotted_separator_h"></div>
+	   		</div>
+	   		<div class="clear" style="font-size: 0px;"></div>
 	   		
-	   	
+			<div class="oas_feature_frame">
+				<span>
+		   			<script type="text/javascript">
+						OAS_AD('HPFeatureBottom');
+					</script>
+				</span>
+			</div>			
 	   		
+	   		<%
+	   		StoreModel store = (StoreModel) ContentFactory.getInstance().getContentNode("Store", "FreshDirect");
+	   		if (store != null) {
+	    		Html edtMed = store.getEditorial();
+				if ( edtMed != null ) { %>
+				<fd:IncludeHtml html="<%= edtMed %>"/>
+			<%
+				} else {
+					String categoryLinks = FDStoreProperties.getHPCategoryLinksFallback();
+					if ( categoryLinks != null ) {
+			%><fd:IncludeMedia name="<%= categoryLinks %>"></fd:IncludeMedia><%
+					}
+				}
+			} %>
+	   		<img src="/media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="16"><br>
 	   <%-- END MAIN CONTENT--%>
 	   		
-	   	<%-- PROMO 4 BOTTOM--%>
-			<div class="ad4">
-				<div class="adbox4">
-					<span>
-						<SCRIPT LANGUAGE=JavaScript>
-						<!--
-						OAS_AD('HPWideBottom');
-						//-->
-						</SCRIPT>
-					</span>
-					<div class="adbox_bottom4"></div>
-				</div>			
-			</div> 
-		<%-- END PROMO 4 BOTTOM--%>
+		<div class="oas_home_bottom">
+   			<script type="text/javascript">
+				OAS_AD('HPWideBottom');
+			</script>
+		</div>			
 		</div> 
 	</div>
 </fd:GetSegmentMessage>

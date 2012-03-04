@@ -45,7 +45,7 @@ final int W_NEWPRODUCTS_DFGS_RIGHT = 191;
 			<tr>
 				<td colspan="2" align="right" style="margin-right: 48px"><br />
 				<br />
-				<a href="/newproducts.jsp"><img style="margin-right: 48px" src="/media_stat/images/template/newproduct/newprod_findhere.gif" width="660" height="41" border="0" /></a></td>
+				<a href="/newproducts.jsp"><img style="margin-right: 58px" src="/media_stat/images/template/newproduct/newprod_findhere.gif" width="660" height="41" border="0" /></a></td>
 					
 			</tr>
 		</tmpl:put>

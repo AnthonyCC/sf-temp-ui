@@ -47,50 +47,58 @@
 		<td width="54"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/help/index.jsp" onMouseover="swapImage('NAV_HELP_IMG','<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav/nav_button_get_help_r.gif')" onMouseout="swapImage('NAV_HELP_IMG','<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav/nav_button_get_help.gif')"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav/nav_button_get_help.gif" name="NAV_HELP_IMG" width="54" height="26" alt="GET HELP" border="0"></a></td>
 	</tr>
 </table>
-	
 
-<table width="970" border="0" cellpadding="0" cellspacing="0">
-	<tr><td><img src="<?php bloginfo('template_url'); ?>/media_stat/images/layout/clear.gif" width="1" height="6" alt="" /></td></tr>
-	<tr><td><!-- <?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav/topnav_off.png -->
-		<table border="0" cellpadding="0" cellspacing="0" class="globalnav">
-		  <tr height="25" class="firstrow">
-		    <td width="32" rowspan="2"><a href="/index.jsp"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/_home_u.png" alt="Home" width="32" height="25"/></a></td>
-		    <td width="51"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=fru&trk=gnav"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/fru.png" alt="Fruit" width="51" height="25"/></a></td>
-		    <td width="78"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=veg&trk=gnav"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/veg.png" alt="Vegetables" width="78" height="25"/></a></td>
-		    <td width="48"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=mea&trk=gnav"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/mea.png" alt="Meat" width="48" height="25"/></a></td>
-		    <td width="66"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=sea&trk=gnav"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/sea.png" alt="Seafood"/ width="66" height="25"></a></td>
-		    <td width="44"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=del&trk=gnav"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/del.png" alt="Deli" width="44" height="25"/></a></td>
-		    <td width="56"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=che&trk=gnav"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/che.png" alt="Cheese" width="56" height="25"/></a></td>
-		    <td width="51"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=dai&trk=gnav"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/dai.png" alt="Dairy" width="51" height="25"/></a></td>
-		    <td width="132"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/00.png" width="132" height="25"/></td>
-		    <td width="102"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=fdi&trk=gnav"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/fdi.png" alt="4-Minute Meals" width="102" height="25"/></a></td>
-		    <td width="99"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=rtc&trk=gnav"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/rtc.png" alt="Ready to Cook" width="99" height="25"/></a></td>
-		    <td width="76"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=hmr&trk=gnav"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/hmr.png" alt="Heat & Eat" width="76" height="25"/></a></td>
-		    <td width="58"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=bak&trk=gnav"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/bak.png" alt="Bakery" width="58" height="25"/></a></td>
-		    <td width="66"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=cat&trk=gnav"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/cat.png" alt="Catering" width="66" height="25"/></a></td>
-		    <td width="11"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/01_u.png" width="11" height="25"/></td>
-		  </tr>
-		</table>
-	
-		<table border="0" cellpadding="0" cellspacing="0">
-		  <tr height="25" class="secondrow">
-		    <td width="32" rowspan="2"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/index.jsp"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/_home_l.png" alt="Home" width="32" height="25"/></a></td>
-		    <td width="92"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=wgd&trk=gnav"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/wgd.png" alt="What's Good" width="92" height="25"/></a></td>
-		    <td width="66"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=orgnat&trk=gnav"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/orgnat.png" alt="Organic" width="66" height="25"/></a></td>
-		    <td width="51"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=local&trk=gnav"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/local.png" alt="Local" width="51" height="25"/></a></td>
-		    <td width="61"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=kos&trk=gnav"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/kos.png" alt="Kosher" width="61" height="25"/></a></td>
-		    <td width="61"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=rec&trk=gnav"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/rec.png" alt="Recipes" width="61" height="25"/></a></td>
-		    <td width="152"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/02.png" width="152" height="25"/></td>
-		    <td width="50"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=pas&trk=gnav"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/pas.png" alt="Pasta" width="50" height="25"/></a></td>
-		    <td width="58"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=cof&trk=gnav"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/cof.png" alt="Coffee" width="58" height="25"/></a></td>
-		    <td width="66"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=gro&trk=gnav"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/gro.png" alt="Grocery" width="66" height="25"/></a></td>
-		    <td width="109"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=hba&trk=gnav"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/hba.png" alt="Health & Beauty" width="109" height="25"/></a></td>
-		    <td width="57"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=big&trk=gnav"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/big.png" alt="Buy Big" width="57" height="25"/></a></td>
-		    <td width="58"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=fro&trk=gnav"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/fro.png" alt="Frozen" width="58" height="25"/></a></td>
-		    <td width="46"><a href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=usq&trk=gnav"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/usq.png" alt="USQ" width="46" height="25"/></a></td>
-		    <td width="11"><img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav50/upper/01_l.png" width="11" height="25"/></td>
-		  </tr>
-		</table>
-	</td></tr>
-	<tr><td><img src="<?php bloginfo('template_url'); ?>/media_stat/images/layout/clear.gif" width="1" height="3" alt="" /></td></tr>
-</table>
+
+
+<!--[if IE 6]>
+<div class="ie6">
+<![endif]-->
+<div class="globalnavcontainer" style="margin-top:6px">
+	<div class="globalnav-left">
+		<img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/globalnav_and_footer/header_border_left.png" width="11" height="50"/>
+	</div>
+
+	<div class="globalnav-top">
+		<div class="left">
+			<span class="nodot" id="globalnavitem-fru-pad"><a class="globalnavitem" id="globalnavitem-fru" href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=fru&trk=gnav">Fruit</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-veg" href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=veg&trk=gnav">Vegetables</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-mea" href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=mea&trk=gnav">Meat</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-sea" href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=sea&trk=gnav">Seafood</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-del" href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=del&trk=gnav">Deli</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-che" href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=che&trk=gnav">Cheese</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-dai" href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=dai&trk=gnav">Dairy</a></span>
+		</div>
+		<div class="right">
+			<span class="nodot"><a class="globalnavitem" id="globalnavitem-fdi" href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=fdi&trk=gnav">4-Minute Meals</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-rtc" href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=rtc&trk=gnav">Ready To Cook</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-hmr" href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=hmr&trk=gnav">Heat &amp; Eat</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-bak" href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=bak&trk=gnav">Bakery</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-cat" href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=cat&trk=gnav">Catering</a></span>
+		</div>
+	</div>
+	<div class="globalnav-middle"></div>
+	<div class="globalnav-bottom">
+		<div class="left">
+			<span class="nodot" id="globalnavitem-wgd-pad"><a class="globalnavitem" id="globalnavitem-wgd" href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=wgd&trk=gnav">What's Good</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-orgnat" href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=orgnat&trk=gnav">Organic</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-local" href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=local&trk=gnav">Local</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-kos" href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=kos&trk=gnav">Kosher</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-rec" href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=rec&trk=gnav">Recipes</a></span>
+		</div>
+		<div class="right">
+			<span class="nodot"><a class="globalnavitem" id="globalnavitem-pas" href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=pas&trk=gnav">Pasta</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-cof" href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=cof&trk=gnav">Coffee</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-gro" href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=gro&trk=gnav">Grocery</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-hba" href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=hba&trk=gnav">Health &amp; Beauty</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-big" href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=big&trk=gnav">Buy Big</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-fro" href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=fro&trk=gnav">Frozen</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-usq" href="<?php echo get_option('fdc_fd_storefront_base'); ?>/department.jsp?deptId=usq&trk=gnav">Wine</a></span>
+		</div>
+	</div>
+	<div class="globalnav-right">
+		<img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/globalnav_and_footer/header_border_right.png" width="11" height="50"/>
+	</div>
+</div>
+<!--[if IE 6]>
+</div>
+<![endif]-->

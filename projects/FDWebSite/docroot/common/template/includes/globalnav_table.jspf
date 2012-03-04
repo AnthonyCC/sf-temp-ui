@@ -1,144 +1,65 @@
-<!-- /media_stat/images/navigation/global_nav/topnav_<%= navigation %>.png -->
-<table border="0" cellpadding="0" cellspacing="0" class="globalnav">
-  <tr height="25" class="firstrow">
-<% if ("home".equals(navigation)) { %>
-    <td width="32" rowspan="2"><a href="/index.jsp"><img src="/media_stat/images/navigation/global_nav50/upper/_home_u_selected.png" alt="Home" width="32" height="25"/></a></td>
-<% } else { %>
-    <td width="32" rowspan="2"><a href="/index.jsp"><img src="/media_stat/images/navigation/global_nav50/upper/_home_u.png" alt="Home" width="32" height="25"/></a></td>
-<% } %>
-<%if ("fru".equals(navigation)) { %>
-    <td width="51"><a href="/department.jsp?deptId=fru&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/fru_selected.png" alt="Fruit" width="51" height="25"/></a></td>
-<% } else { %>
-    <td width="51"><a href="/department.jsp?deptId=fru&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/fru.png" alt="Fruit" width="51" height="25"/></a></td>
-<% } %>    
-<%if ("veg".equals(navigation)) { %>
-    <td width="78"><a href="/department.jsp?deptId=veg&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/veg_selected.png" alt="Vegetables" width="78" height="25"/></a></td>
-<% } else { %>
-    <td width="78"><a href="/department.jsp?deptId=veg&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/veg.png" alt="Vegetables" width="78" height="25"/></a></td>
-<% } %>    
-<%if ("mea".equals(navigation)) { %>
-    <td width="48"><a href="/department.jsp?deptId=mea&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/mea_selected.png" alt="Meat" width="48" height="25"/></a></td>
-<% } else { %>
-    <td width="48"><a href="/department.jsp?deptId=mea&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/mea.png" alt="Meat" width="48" height="25"/></a></td>
-<% } %>    
-<%if ("sea".equals(navigation)) { %>
-    <td width="66"><a href="/department.jsp?deptId=sea&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/sea_selected.png" alt="Seafood" width="66" height="25"/></a></td>
-<% } else { %>    
-    <td width="66"><a href="/department.jsp?deptId=sea&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/sea.png" alt="Seafood"/ width="66" height="25"></a></td>
-<% } %>    
-<%if ("del".equals(navigation)) { %>
-    <td width="44"><a href="/department.jsp?deptId=del&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/del_selected.png" alt="Deli" width="44" height="25"/></a></td>
-<% } else { %>
-    <td width="44"><a href="/department.jsp?deptId=del&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/del.png" alt="Deli" width="44" height="25"/></a></td>
-<% } %>    
-<%if ("che".equals(navigation)) { %>
-    <td width="56"><a href="/department.jsp?deptId=che&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/che_selected.png" alt="Cheese" width="56" height="25"/></a></td>
-<% } else { %>
-    <td width="56"><a href="/department.jsp?deptId=che&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/che.png" alt="Cheese" width="56" height="25"/></a></td>
-<% } %>    
-<%if ("dai".equals(navigation)) { %>
-    <td width="51"><a href="/department.jsp?deptId=dai&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/dai_selected.png" alt="Dairy" width="51" height="25"/></a></td>
-<% } else { %>
-    <td width="51"><a href="/department.jsp?deptId=dai&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/dai.png" alt="Dairy" width="51" height="25"/></a></td>
-<% } %>    
-    <td width="132"><img src="/media_stat/images/navigation/global_nav50/upper/00.png" width="132" height="25"/></td>
-<%if ("fdi".equals(navigation)) { %>
-    <td width="102"><a href="/department.jsp?deptId=fdi&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/fdi_selected.png" alt="4-Minute Meals" width="102" height="25"/></a></td>
-<% } else { %>
-    <td width="102"><a href="/department.jsp?deptId=fdi&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/fdi.png" alt="4-Minute Meals" width="102" height="25"/></a></td>
-<% } %>    
-<%if ("rtc".equals(navigation)) { %>
-    <td width="99"><a href="/department.jsp?deptId=rtc&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/rtc_selected.png" alt="Ready to Cook" width="99" height="25"/></a></td>
-<% } else { %>
-    <td width="99"><a href="/department.jsp?deptId=rtc&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/rtc.png" alt="Ready to Cook" width="99" height="25"/></a></td>
-<% } %>    
-<%if ("hmr".equals(navigation)) { %>
-    <td width="76"><a href="/department.jsp?deptId=hmr&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/hmr_selected.png" alt="Heat & Eat" width="76" height="25"/></a></td>
-<% } else { %>    
-    <td width="76"><a href="/department.jsp?deptId=hmr&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/hmr.png" alt="Heat & Eat" width="76" height="25"/></a></td>
-<% } %>    
-<%if ("bak".equals(navigation)) { %>
-    <td width="58"><a href="/department.jsp?deptId=bak&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/bak_selected.png" alt="Bakery" width="58" height="25"/></a></td>
-<% } else { %>
-    <td width="58"><a href="/department.jsp?deptId=bak&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/bak.png" alt="Bakery" width="58" height="25"/></a></td>
-<% } %>    
-<%if ("cat".equals(navigation)) { %>
-    <td width="66"><a href="/department.jsp?deptId=cat&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/cat_selected.png" alt="Catering" width="66" height="25"/></a></td>
-<% } else { %>    
-    <td width="66"><a href="/department.jsp?deptId=cat&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/cat.png" alt="Catering" width="66" height="25"/></a></td>
-<% } %>    
-    <td width="11"><img src="/media_stat/images/navigation/global_nav50/upper/01_u.png" width="11" height="25"/></td>
-  </tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0">
-  <tr height="25" class="secondrow">
-<% if ("home".equals(navigation)) { %>
-    <td width="32" rowspan="2"><a href="/index.jsp"><img src="/media_stat/images/navigation/global_nav50/upper/_home_l_selected.png" alt="Home" width="32" height="25"/></a></td>
-<% } else { %>
-    <td width="32" rowspan="2"><a href="/index.jsp"><img src="/media_stat/images/navigation/global_nav50/upper/_home_l.png" alt="Home" width="32" height="25"/></a></td>
-<% } %>
-<% if ("wgd".equals(navigation)) { %>
-    <td width="92"><a href="/department.jsp?deptId=wgd&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/wgd_selected.png" alt="What's Good" width="92" height="25"/></a></td>
-<% } else { %>
-    <td width="92"><a href="/department.jsp?deptId=wgd&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/wgd.png" alt="What's Good" width="92" height="25"/></a></td>
-<% } %>    
-<% if ("orgnat".equals(navigation)) { %>
-    <td width="66"><a href="/department.jsp?deptId=orgnat&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/orgnat_selected.png" alt="Organic" width="66" height="25"/></a></td>
-<% } else { %>
-    <td width="66"><a href="/department.jsp?deptId=orgnat&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/orgnat.png" alt="Organic" width="66" height="25"/></a></td>
-<% } %>    
-<% if ("local".equals(navigation)) { %>
-    <td width="51"><a href="/department.jsp?deptId=local&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/local_selected.png" alt="Local" width="51" height="25"/></a></td>
-<% } else { %>
-    <td width="51"><a href="/department.jsp?deptId=local&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/local.png" alt="Local" width="51" height="25"/></a></td>
-<% } %>    
-<% if ("kos".equals(navigation)) { %>
-    <td width="61"><a href="/department.jsp?deptId=kos&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/kos_selected.png" alt="Kosher" width="61" height="25"/></a></td>
-<% } else { %>
-    <td width="61"><a href="/department.jsp?deptId=kos&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/kos.png" alt="Kosher" width="61" height="25"/></a></td>
-<% } %>    
-<% if ("rec".equals(navigation)) { %>
-    <td width="61"><a href="/department.jsp?deptId=rec&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/rec_selected.png" alt="Recipes" width="61" height="25"/></a></td>
-<% } else { %>
-    <td width="61"><a href="/department.jsp?deptId=rec&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/rec.png" alt="Recipes" width="61" height="25"/></a></td>
-<% } %>    
-    <td width="152"><img src="/media_stat/images/navigation/global_nav50/upper/02.png" width="152" height="25"/></td>
-<% if ("pas".equals(navigation)) { %>
-    <td width="50"><a href="/department.jsp?deptId=pas&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/pas_selected.png" alt="Pasta" width="50" height="25"/></a></td>
-<% } else { %>
-    <td width="50"><a href="/department.jsp?deptId=pas&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/pas.png" alt="Pasta" width="50" height="25"/></a></td>
-<% } %>    
-<% if ("cof".equals(navigation)) { %>
-    <td width="58"><a href="/department.jsp?deptId=cof&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/cof_selected.png" alt="Coffee" width="58" height="25"/></a></td>
-<% } else { %>
-    <td width="58"><a href="/department.jsp?deptId=cof&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/cof.png" alt="Coffee" width="58" height="25"/></a></td>
-<% } %>    
-<% if ("gro".equals(navigation)) { %>
-    <td width="66"><a href="/department.jsp?deptId=gro&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/gro_selected.png" alt="Grocery" width="66" height="25"/></a></td>
-<% } else { %>
-    <td width="66"><a href="/department.jsp?deptId=gro&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/gro.png" alt="Grocery" width="66" height="25"/></a></td>
-<% } %>    
-<% if ("hba".equals(navigation)) { %>
-    <td width="109"><a href="/department.jsp?deptId=hba&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/hba_selected.png" alt="Health & Beauty" width="109" height="25"/></a></td>
-<% } else { %>
-    <td width="109"><a href="/department.jsp?deptId=hba&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/hba.png" alt="Health & Beauty" width="109" height="25"/></a></td>
-<% } %>    
-<% if ("big".equals(navigation)) { %>
-    <td width="57"><a href="/department.jsp?deptId=big&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/big_selected.png" alt="Buy Big" width="57" height="25"/></a></td>
-<% } else { %>
-    <td width="57"><a href="/department.jsp?deptId=big&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/big.png" alt="Buy Big" width="57" height="25"/></a></td>
-<% } %>    
-<% if ("fro".equals(navigation)) { %>
-    <td width="58"><a href="/department.jsp?deptId=fro&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/fro_selected.png" alt="Frozen" width="58" height="25"/></a></td>
-<% } else { %>
-    <td width="58"><a href="/department.jsp?deptId=fro&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/fro.png" alt="Frozen" width="58" height="25"/></a></td>
-<% } %>    
-<% if ("usq".equals(navigation)) { %>
-    <td width="46"><a href="/department.jsp?deptId=usq&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/usq_selected.png" alt="USQ" width="46" height="25"/></a></td>
-<% } else { %>
-    <td width="46"><a href="/department.jsp?deptId=usq&trk=gnav"><img src="/media_stat/images/navigation/global_nav50/upper/usq.png" alt="USQ" width="46" height="25"/></a></td>
-<% } %>    
-    <td width="11"><img src="/media_stat/images/navigation/global_nav50/upper/01_l.png" width="11" height="25"/></td>
-  </tr>
-</table>
+<fd:css href="/assets/css/common/globalnav_and_footer.css"></fd:css>
 
+<!--[if IE 6]>
+<div class="ie6">
+<![endif]-->
+<div class="globalnavcontainer">
+	<div class="globalnav-left">
+		<img src="/media_stat/images/navigation/globalnav_and_footer/header_border_left.png" width="11" height="50"/>
+	</div>
+
+	<div class="globalnav-top">
+		<div class="left">
+			<span class="nodot" id="globalnavitem-fru-pad"><a class="globalnavitem" id="globalnavitem-fru" href="/department.jsp?deptId=fru&trk=gnav">Fruit</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-veg" href="/department.jsp?deptId=veg&trk=gnav">Vegetables</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-mea" href="/department.jsp?deptId=mea&trk=gnav">Meat</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-sea" href="/department.jsp?deptId=sea&trk=gnav">Seafood</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-del" href="/department.jsp?deptId=del&trk=gnav">Deli</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-che" href="/department.jsp?deptId=che&trk=gnav">Cheese</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-dai" href="/department.jsp?deptId=dai&trk=gnav">Dairy</a></span>
+		</div>
+		<div class="right">
+			<span class="nodot"><a class="globalnavitem" id="globalnavitem-fdi" href="/department.jsp?deptId=fdi&trk=gnav">4-Minute Meals</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-rtc" href="/department.jsp?deptId=rtc&trk=gnav">Ready To Cook</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-hmr" href="/department.jsp?deptId=hmr&trk=gnav">Heat &amp; Eat</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-bak" href="/department.jsp?deptId=bak&trk=gnav">Bakery</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-cat" href="/department.jsp?deptId=cat&trk=gnav">Catering</a></span>
+		</div>
+	</div>
+	<div class="globalnav-middle"></div>
+	<div class="globalnav-bottom">
+		<div class="left">
+			<span class="nodot" id="globalnavitem-wgd-pad"><a class="globalnavitem" id="globalnavitem-wgd" href="/department.jsp?deptId=wgd&trk=gnav">What's Good</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-orgnat" href="/department.jsp?deptId=orgnat&trk=gnav">Organic</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-local" href="/department.jsp?deptId=local&trk=gnav">Local</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-kos" href="/department.jsp?deptId=kos&trk=gnav">Kosher</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-rec" href="/department.jsp?deptId=rec&trk=gnav">Recipes</a></span>
+		</div>
+		<div class="right">
+			<span class="nodot"><a class="globalnavitem" id="globalnavitem-pas" href="/department.jsp?deptId=pas&trk=gnav">Pasta</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-cof" href="/department.jsp?deptId=cof&trk=gnav">Coffee</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-gro" href="/department.jsp?deptId=gro&trk=gnav">Grocery</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-hba" href="/department.jsp?deptId=hba&trk=gnav">Health &amp; Beauty</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-big" href="/department.jsp?deptId=big&trk=gnav">Buy Big</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-fro" href="/department.jsp?deptId=fro&trk=gnav">Frozen</a></span>
+			<span><a class="globalnavitem" id="globalnavitem-usq" href="/department.jsp?deptId=usq&trk=gnav">Wine</a></span>
+		</div>
+	</div>
+	<div class="globalnav-right">
+		<img src="/media_stat/images/navigation/globalnav_and_footer/header_border_right.png" width="11" height="50"/>
+	</div>
+</div>
+<!--[if IE 6]>
+</div>
+<![endif]-->
+
+<script type="text/javascript" language="javascript">
+var globalnavitem = document.getElementById('globalnavitem-<%=navigation%>'); 
+if (globalnavitem != null) { 
+	globalnavitem.className += " globalnavitem-selected";
+}
+var globalnavitempad = document.getElementById('globalnavitem-<%=navigation%>-pad'); 
+if (globalnavitempad != null) { 
+	globalnavitempad.className = "nodot-selected";
+}
+</script>

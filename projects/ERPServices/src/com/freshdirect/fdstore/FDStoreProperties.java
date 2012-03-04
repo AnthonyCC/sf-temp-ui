@@ -242,6 +242,7 @@ public class FDStoreProperties {
     // freshness guaranteed on/off sku prefix based
     private static final String FRESHNESS_GUARANTEED_PREFIXES = "fdstore.freshnessGuaranteedPrefixes";
     private static final String HPLETTER_MEDIA_ENABLED = "fdstore.isHomePageMediaEnabled";
+    private static final String HP_CATEGORY_LINKS_FALLBACK = "fdstore.homePage.categoryLinksPathFallback";
 
     //Deals changes.
     private static final String DEALS_SKU_PREFIX = "fdstore.deals.skuPrefix";
@@ -1614,6 +1615,10 @@ public class FDStoreProperties {
 
     public static boolean IsHomePageMediaEnabled() {
         return Boolean.valueOf(get(HPLETTER_MEDIA_ENABLED)).booleanValue();
+    }
+    
+    public static String getHPCategoryLinksFallback() {
+    	return get(HP_CATEGORY_LINKS_FALLBACK);
     }
 
     public static String getTemporaryDirectory() {

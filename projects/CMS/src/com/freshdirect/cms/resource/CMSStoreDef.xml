@@ -80,6 +80,9 @@
 			<RelationshipDef name="myFD" navigable="true" cardinality="Many">
 				<DestinationDef contentType="MyFD" />
 			</RelationshipDef>
+			<RelationshipDef name="EDITORIAL" cardinality="One"  label="Editorial" >
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
 	<!--

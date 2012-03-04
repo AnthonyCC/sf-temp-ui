@@ -547,3 +547,11 @@ function fd_comments_popup_link( $zero = false, $one = false, $more = false, $cs
 }
 
 endif;
+
+if ( ! function_exists( 'fd_is_ie6' ) ) :
+
+function fd_is_ie6( ) {
+	return preg_match('/MSIE\s+6\.0/i', $_SERVER['HTTP_USER_AGENT']);
+}
+
+endif;

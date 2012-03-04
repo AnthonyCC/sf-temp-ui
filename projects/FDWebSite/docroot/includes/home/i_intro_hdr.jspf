@@ -2,7 +2,7 @@
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr align="center"><td><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
 <% if (user.getLevel() < FDUserI.RECOGNIZED) { %>
-     <tr align="center"><td>
+     <tr align="left"><td>
      <% if(user.isDepotUser()){
                String depotName = com.freshdirect.fdstore.FDDepotManager.getInstance().getDepot(user.getDepotCode()).getName(); %>
                <font class="title14">Welcome to FreshDirect <%=depotName%> Depot.</font>
@@ -13,7 +13,7 @@
 	Learn more <a href="/about/index.jsp">About Us</a>, or get <a href="/help/<% if(user.isDepotUser()){ %>delivery_info_depot.jsp<% } else { %>delivery_info.jsp<% } %>">Delivery & Pickup Info</a>.<br>
      </td></tr>
 <% } else if (validOrderCount == 0) { %>
-     <tr align="center"><td><font class="title14">Welcome <%=custFirstName%>. Thank you for signing up!</font><br><font class="text9">(If you're not <font color="#336600"><%=custFirstName%>, <a href="/logout.jsp?logoutPage=site_access">click here</a>!</font>)</font>
+     <tr align="left"><td><font class="title14">Welcome <%=custFirstName%>. Thank you for signing up!</font><br><font class="text9">(If you're not <font color="#336600"><%=custFirstName%>, <a href="/logout.jsp?logoutPage=site_access">click here</a>!</font>)</font>
      <% if (user.isEligibleForSignupPromotion()){ 
 	 		Promotion promo = (Promotion) user.getEligibleSignupPromotion();
 			%>
@@ -31,13 +31,8 @@
 
 		 if (user.isEligibleForSignupPromotion()) { //has promo 
 				SignupDiscountRule rule = user.getSignupDiscountRule();
-		
-       		  	if (user.isChefsTable() || user.isDlvPassActive()) { %>
-       		  		<tr align="left"> 
-       		 	<% } else { %> 
-       		 	 	<tr align="center"> 
-       		 	<% } %>
-         
+%>
+	  		<tr align="left"> 
 			<td>
 			 <font class="title14">Welcome back, <%=custFirstName%>!</font><br><font class="text9">(If you're not <font color="#336600"><%=custFirstName%>, <a href="/logout.jsp?logoutPage=site_access">click here</A>!</font>)</font>
 			 <% if (rule != null) { %>
@@ -48,15 +43,9 @@
 			</tr>
 	
      		<% } else { %>
-     		     <% if (user.isChefsTable() || user.isDlvPassActive()) { %>
-     		     	<tr align="left"> 
-     		     <% } else { %> 
-     		     	<tr align="center"> 
-     		     <% } %>
-          
+	     	<tr align="left"> 
      		     <td><font class="title14">Welcome back, <%=custFirstName%>!</font>&nbsp;&nbsp;
      		     <font class="text9">(If you're not <font color="#336600"><%=custFirstName%>, <a href="/logout.jsp?logoutPage=site_access">click here</A>!</font>)</font></td></tr>
-     
      		<% } 
  
 
@@ -77,17 +66,13 @@
 	//------------------------------------------------------------------------------------------------------------------ 
 	//-------USING SEGMENT MESSAGE IN GetSegmentMessageTag--------------------------------------
 	//------------------------------------------------------------------------------------------------------------------ 	
-	} else if (segmentMessage != null && segmentMessage.isLocation1()) { 
-		String alignment = "left";
-		if (segmentMessage.isCenterMessage()) { 
-			alignment = "center";
-		} %>
-	       	<tr align="<%=alignment%>"> 
+	} else if (segmentMessage != null && segmentMessage.isLocation1()) {  %>
+	       	<tr align="left">
 		<td><font class="title14"><%= segmentMessage.getGreeting()%><%=custFirstName%>!</font>&nbsp;&nbsp;
 		          <font class="text9">(If you're not <font color="#336600"><%=custFirstName%>, <a href="/logout.jsp?logoutPage=site_access">click here</A>!</font>)</font></td></tr>
      
-		<tr align="<%=alignment%>"><td><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td></tr>
-		<tr align="<%=alignment%>"><td><font class="title12"><%=segmentMessage.getMessage()%></font>&nbsp;&nbsp;
+		<tr align="left"><td><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td></tr>
+		<tr align="left"><td><font class="title12"><%=segmentMessage.getMessage()%></font>&nbsp;&nbsp;
 		<font class="title11"><font color="#336600"><%=segmentMessage.getMessageLink()%></font></font></td></tr>
 	<% } 
 

@@ -11,6 +11,15 @@
 <% //expanded page dimensions
 final int W_FOOTER_TOTAL = 970;
 %>
+
+<%-- twitter api 
+<script>!function(d,s,id){
+	var js,fjs=d.getElementsByTagName(s)[0];
+	if(!d.getElementById(id)){js=d.createElement(s);
+	js.id=id;js.src="//platform.twitter.com/widgets.js";
+	fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+</script>
+--%>
 <center>
 <table width="<%=W_FOOTER_TOTAL %>" cellpadding="0" cellspacing="0" border="0" >
 	<tr>
@@ -52,22 +61,55 @@ final int W_FOOTER_TOTAL = 970;
 	</td>
 	</tr>
 	<tr>
-		<td align="center" class="text11bold">
-			<img src="/media_stat/images/layout/clear.gif" width="1" height="14" alt="" />
-			<br /><a href="/index.jsp">Home</a>
-			&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
-			&nbsp;&nbsp;<a href="/your_account/manage_account.jsp">Your Account</a>
-			&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
-			&nbsp;&nbsp;<a href="/search.jsp">Search</a>
-			&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
-			&nbsp;&nbsp;<a href="/help/index.jsp">Help/FAQ</a>
-			&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
-			&nbsp;&nbsp;<a href="/help/index.jsp">Contact Us</a>
-			<br /><img src="/media_stat/images/layout/clear.gif" width="1" height="20" alt="" />
+		<td align="center" class="text11bold" style="padding: 5px 0px;">
+			<% if (!new BrowserInfo(request).isIE6()) { %>
+			<div class="addthis_toolbox addthis_default_style left" style="width: 270px; padding-top: 8px;">
+				<a class="addthis_button_facebook_like" fb:like:href="http://www.facebook.com/FreshDirect" fb:like:layout="button_count" fb:like:width="95" fb:like:height="25"></a>
+				<a class="addthis_button_twitter_follow_native" tf:screen_name="freshdirect" tf:width="80px" tf:show-screen-name="false" tf:show-count="false"></a>
+				<div style="width: 81px; overflow: hidden;">
+				<a class="addthis_button_google_plusone" g:plusone:href="https://plus.google.com/107881041343024996566" g:plusone:size="medium"></a>
+				<div class="atclear"></div>
+				</div>
+				<div class="atclear"></div>
+			</div>
+			<script type="text/javascript">
+				var addthis_config = {
+					data_ga_property: 'UA-20535945-1',
+					data_ga_social : true
+				};
+			</script>
+			<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4d69806100449805"></script>
+			<% } else { %>
+			<div class="left" style="width: 270px; height: 20px; margin: 0px; padding: 0px;"></div>
+			<% } %>
+			<div style="float:left; width:1px; height:40px; margin: 0px 12px 0px 0px" class="dotted_separator_v"></div>
+			<div style="float:left">
+				<a href="/category.jsp?catId=mobile&trk=bnav"><img style="float: left" src="/media_stat/images/navigation/footer_parts_w/mobile_apps.gif" width="25" height="36" alt="Our Mobile Apps"/></a>
+				<a href="/category.jsp?catId=mobile&trk=bnav" style="padding: 10px 5px 0px 5px; float: left">Our Mobile Apps</a>
+			</div>
+			<div style="float:left; width:1px; height:40px; margin: 0px 12px" class="dotted_separator_v"></div>
+			<div style="float:left">
+				<a href="/department.jsp?deptId=COS&trk=bnav"><img style="float: left" src="/media_stat/images/navigation/footer_parts_w/at_the_office.gif" width="22" height="36" alt="At The Office"/></a>
+				<a href="/department.jsp?deptId=COS&trk=bnav" style="padding: 10px 5px 0px 5px; float: left">At The Office</a>
+			</div>
+			<div style="float:left; width:1px; height:40px; margin: 0px 10px" class="dotted_separator_v"></div>
+			<div style="float:right; padding: 10px 5px 0px 5px">
+				<a href="/index.jsp">Home</a>
+				&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
+				&nbsp;&nbsp;<a href="/your_account/manage_account.jsp">Your Account</a>
+				&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
+				&nbsp;&nbsp;<a href="/help/index.jsp">Help/FAQ</a>
+				&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
+				&nbsp;&nbsp;<a href="/help/index.jsp">Contact Us</a>
+			</div>
 		</td>
 	</tr>
 	<tr>
-		<td align="center" class="text11">
+		<td align="center" class="text11bold">
+			<div style="width:100%; height:1px" class="dotted_separator_h"></div>
+		</td>
+	<tr>
+		<td align="center" class="text11" style="padding-top: 10px">
 			<%@ include file="/shared/template/includes/copyright.jspf" %>
 			<br /><img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" />
 			<br /><a href="/help/privacy_policy.jsp">Privacy Policy</a>
