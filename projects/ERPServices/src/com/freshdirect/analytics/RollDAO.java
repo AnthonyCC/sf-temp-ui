@@ -31,15 +31,15 @@ public class RollDAO {
 
 	private static final Category LOGGER = LoggerFactory.getInstance(RollDAO.class);
 	
-	private static final String ROLL_INSERT="INSERT INTO MIS.roll_event (ID, CUSTOMER_ID, CREATEDATE, UNAVAILABLE_PCT, ZONE, CUTOFF, LOG_ID, DELIVERY_DATE) " +
-			"VALUES (?,?,?,?,?,?,?,?)";
+	private static final String ROLL_INSERT="INSERT INTO MIS.roll_event (ID, CUSTOMER_ID, CREATEDATE, UNAVAILABLE_PCT, ZONE, CUTOFF, LOG_ID, DELIVERY_DATE, SECTOR) " +
+			"VALUES (?,?,?,?,?,?,?,?,?)";
 	
-	private static final String ROLL_SELECT=" select count(distinct(customer_id)) cnt, createdate,  zone, cutoff from mis.roll_event " +
-			"where to_char(delivery_date, 'mm/dd/yyyy') = ? and zone=? group by zone, cutoff,  createdate " +
+	private static final String ROLL_SELECT="select avg(unavailable_pct)* count(distinct(customer_id))/100  cnt, createdate,  zone, cutoff from mis.roll_event " +
+			"where to_char(delivery_date, 'mm/dd/yyyy') = ? and zone=? and unavailable_pct >0 group by zone, cutoff,  createdate " +
 			"order by  createdate asc";
 	
-	private static final String ROLL_SELECT_BYZONE =" select count(distinct(customer_id)) cnt, zone, cutoff, sector from mis.roll_event " +
-			"where to_char(delivery_date, 'mm/dd/yyyy') = ? group by zone, cutoff, sector" +
+	private static final String ROLL_SELECT_BYZONE =" select avg(unavailable_pct)* count(distinct(customer_id))/100  cnt, zone, cutoff, sector from mis.roll_event " +
+			"where to_char(delivery_date, 'mm/dd/yyyy') = ?  and unavailable_pct >0 group by zone, cutoff, sector" +
 			" order by  zone,cutoff, sector";
 	
 	public static void insert(Connection conn, List<RollEvent> roll) 
@@ -59,6 +59,7 @@ public class RollDAO {
 				    ps.setTimestamp(6,  new java.sql.Timestamp(rollEvent.getCutOff().getTime()));
 				    ps.setString(7, rollEvent.getLogId());
 				    ps.setDate(8, new java.sql.Date(rollEvent.getDeliveryDate().getTime()));
+				    ps.setString(9, rollEvent.getSector());
 				    ps.addBatch();
 		    	}
 		    	ps.executeBatch();

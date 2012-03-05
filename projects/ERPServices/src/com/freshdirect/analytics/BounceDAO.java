@@ -27,8 +27,8 @@ public class BounceDAO {
 
 	private static final Category LOGGER = LoggerFactory.getInstance(BounceDAO.class);
 	
-	private static final String BOUNCE_INSERT="INSERT INTO MIS.bounce_event (id, customer_id, status, createdate, delivery_date, cutoff, zone, log_id, type) " +
-			"VALUES (?,?,?,?,?,?,?,?,?)";
+	private static final String BOUNCE_INSERT="INSERT INTO MIS.bounce_event (id, customer_id, status, createdate, delivery_date, cutoff, zone, log_id, type, sector) " +
+			"VALUES (?,?,?,?,?,?,?,?,?,?)";
 	private static final String CANCEL_BOUNCE = "update MIS.bounce_event set status = 'CANCELLED', lastupdate=sysdate where id in (SELECT be.id FROM cust.sale s, " +
 			"cust.salesaction sa, MIS.bounce_event be WHERE s.ID=sa.SALE_ID AND s.CUSTOMER_ID=sa.CUSTOMER_ID  and be.customer_id = s.customer_id" +
 			" and s.CROMOD_DATE=sa.ACTION_DATE AND sa.ACTION_TYPE IN ('CRO', 'MOD') AND sa.REQUESTED_DATE > TRUNC(SYSDATE)  and be.status = 'NEW' " +
@@ -65,6 +65,7 @@ public class BounceDAO {
 				    ps.setString(7, bounceEvent.getZone());
 				    ps.setString(8, bounceEvent.getLogId());
 				    ps.setString(9, bounceEvent.getPageType());
+				    ps.setString(10, bounceEvent.getSector());
 				    ps.addBatch();
 		    	}
 		    	ps.executeBatch();
