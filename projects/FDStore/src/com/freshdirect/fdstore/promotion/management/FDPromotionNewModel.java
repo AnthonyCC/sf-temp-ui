@@ -548,14 +548,14 @@ public class FDPromotionNewModel extends ModelSupport {
 	}
 
 	public void clearAuditChanges() {
-		if (this.auditChanges == null)
+		if (this.auditChanges == null|| this.auditChanges.size()==0 ||this.auditChanges.isEmpty())
 			this.auditChanges = new ArrayList<FDPromoChangeModel>();
 
 		this.auditChanges.clear();
 	}
 
 	public void addAuditChange(FDPromoChangeModel aChange) {
-		if (this.auditChanges == null)
+		if (this.auditChanges == null|| this.auditChanges.size()==0 ||this.auditChanges.isEmpty())
 			this.auditChanges = new ArrayList<FDPromoChangeModel>();
 
 		this.auditChanges.add(aChange);

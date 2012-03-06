@@ -76,7 +76,8 @@ public class PromoPublisher {
 
 		for (FDPromotionNewModel promo : promoList) {
 			// -- remove change logs
-			promo.setAuditChanges(Collections.<FDPromoChangeModel>emptyList());
+			//promo.setAuditChanges(Collections.<FDPromoChangeModel>emptyList());
+			promo.clearAuditChanges();
 			// -- remove assigned customer IDs
 			promo.setAssignedCustomerUserIds("");
 			
