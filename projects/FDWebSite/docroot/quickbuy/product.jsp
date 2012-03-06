@@ -1,6 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page import="java.net.URL"%>
 <%@ page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@ page import="com.freshdirect.framework.webapp.ActionResult"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.CartName" %>
@@ -10,17 +11,31 @@
 <fd:ProductGroup id='productNode' categoryId='<%= request.getParameter("catId") %>' productId='<%= request.getParameter("productId") %>'>
 <%
 	final String tgAction = "addToCart";
-	final String srcPage = request.getParameter("referer");
-	final String srcTitle = request.getParameter("refTitle");
+	final String srcPage = request.getParameter("referer"); // mandatory parameter 
+	final String srcTitle = request.getParameter("refTitle"); // mandatory parameter
 	final String uid = request.getParameter("uid");
 	
+	String protocol;
+	String host;
+	
+	// extract HTTP protocol and host info
+	try {
+		URL url = new URL( srcPage );
+		protocol = url.getProtocol();
+		host = url.getHost();
+	} catch (MalformedURLException exc) {
+		throw new JspException(exc);
+	}
+
 	StringBuilder buf = new StringBuilder();
+	// Workaround enforces URL to stick to the same protocol when redirect response is bounced back
+	buf.append(protocol);
+	buf.append("://");
+	buf.append(host);
 	buf.append("/quickbuy/confirm.jsp");
-	if (srcPage != null) {
-		buf.append("?referer=").append(URLEncoder.encode(srcPage, "UTF-8"));
-		if (srcTitle != null && !"".equals(srcTitle)) {
-			buf.append("&amp;refTitle=").append(srcTitle);
-		}
+	buf.append("?referer=").append(URLEncoder.encode(srcPage, "UTF-8"));
+	if (srcTitle != null && !"".equals(srcTitle)) {
+		buf.append("&refTitle=").append(srcTitle);
 	}
 	final String sPage = buf.toString();
 	
