@@ -12,6 +12,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <% //expanded page dimensions
+final int W_QUICKSHOP_CCL_ITEM_MODIFY_LEFT = 218;
 final int W_QUICKSHOP_CCL_ITEM_MODIFY_TOTAL = 601;
 %>
 <fd:CheckLoginStatus guestAllowed='false' recognizedAllowed='false' />
@@ -92,7 +93,7 @@ To remove it from your list click "remove item". To return to the page where you
 </TABLE>
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="407">
 <TR VALIGN="TOP">
-    <TD WIDTH="187" ALIGN="RIGHT" CLASS="text11">
+    <TD WIDTH="<%= W_QUICKSHOP_CCL_ITEM_MODIFY_LEFT %>" ALIGN="RIGHT" CLASS="text11">
         <!-- Product include start -->
 		
 <%
