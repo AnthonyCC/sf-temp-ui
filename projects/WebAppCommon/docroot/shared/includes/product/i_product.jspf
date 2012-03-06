@@ -37,6 +37,7 @@ This include expects the following:
 <%-- ========================================================= INITIALZE ========================================================================= --%>
 <%@ include file="/shared/includes/product/i_product_initialize.jspf"%>
 
+
 <%
 final ProductModel __prd = (ProductModel) productNode;
 final String __cartMode = cartMode;
@@ -154,7 +155,7 @@ if ( skuSize == 0 ) {
 
 %>	<input type="hidden" name="productId" value='<%= __tempLine.getProductName() %>'>
 	<input type="hidden" name="catId" value='<%= __tempLine.getCategoryName() %>'>
-		<table style="margin-top: 8px; width: <%= W_PERISHABLE_PRODUCT_LEFT %>px;" cellpadding="0" cellspacing="0" border="0" <% if (alignRight) { %>align="right"<% } %>>
+		<table width="100%" style="margin-top: 8px;" cellpadding="0" cellspacing="0" border="0" <% if (alignRight) { %>align="right"<% } %>>
 			<tr><td style="<%= CSSTableStyle %>">
 			
         		
