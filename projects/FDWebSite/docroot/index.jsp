@@ -151,62 +151,7 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 		  } else if(!showAltHome && !location2Media) {   
 	     %>
 	   	<%@ include file="includes/home/i_intro_hdr.jspf"%>
-	   		<% if (user.getLevel() >= FDUserI.RECOGNIZED) { %>
-	   						
-	   			<fd:OrderHistoryInfo id='orderHistoryInfo'>
-	   			<%
-	   			// also need to know how many orders the customer has that are not still pending
-	   			int pendingOrderCount = 0;
-	   			for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
-	   				FDOrderInfoI orderInfo = (FDOrderInfoI) hIter.next();
-	   				if (orderInfo.isPending()) {
-	   					pendingOrderCount++;
-	   				}
-	   			} 			
-	   			if (orderHistoryInfo != null && orderHistoryInfo.size() != 0 && pendingOrderCount > 0) {
-	   			%>
-	   				<table width="100%" cellpadding="0" cellspacing="0" border="0">
-	   				<%
-	   				for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
-	   				     FDOrderInfoI orderInfo = (FDOrderInfoI) hIter.next();
-						 String ordDeliveryType = orderInfo.getDeliveryType().toString();
-						//gift cards
-						String gcCodePersonal = EnumDeliveryType.GIFT_CARD_PERSONAL.getCode();
-						String gcCodeCorporate = EnumDeliveryType.GIFT_CARD_CORPORATE.getCode();
-						//robin hood
-						String donatePersonal = EnumDeliveryType.DONATION_INDIVIDUAL.getCode();
-						String donateCorporate = EnumDeliveryType.DONATION_BUSINESS.getCode();
-	   				     
-						if (orderInfo.isPending() && orderInfo.getOrderStatus() != EnumSaleStatus.REFUSED_ORDER 
-							&& (!(ordDeliveryType).equals(gcCodePersonal) && !(ordDeliveryType).equals(gcCodeCorporate))
-							&& (!(ordDeliveryType).equals(donatePersonal) && !(ordDeliveryType).equals(donateCorporate))          
-						){
-	   				%>
-	   				       <tr><td><img src="/media_stat/images/layout/clear.gif" width="310" height="6"></td>
-	   					<td><img src="/media_stat/images/layout/clear.gif" width="150" height="6"></td></tr>
-	   				       <tr><td colspan="2" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
-	   				       <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td></tr>
-	   				       <tr><td><font class="text9"><b>Your order will be delivered on:</b></font> 
-	   				       		<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>">
-	   				       		<%= new SimpleDateFormat("EEE MM/dd/yy").format(orderInfo.getRequestedDate()) %> 
-	   				       		@ <%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%></a></td>
-	   				       <td align="right">
-	   				       <% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
-	   						<font class="text9">To make changes, <a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>">click here</a>.</font>
-	   				       <% } else { %>
-	   						&nbsp;
-	   				       <% } %></td></tr>
-	   
-	   				     <% } else if (orderInfo.getOrderStatus() == EnumSaleStatus.REFUSED_ORDER) { %>
-	   					       <tr><td colspan="2" class="text10rbold"><b>Pending Order: Please contact us at <%=user.getCustomerServiceContact()%> as soon as possible to reschedule delivery.</b></td></tr>	
-	   				<%   }
-	   				     break;
-	   				} 
-	   				%>
-	   				</table>
-	   		     <% } %>
-	   		     </fd:OrderHistoryInfo>
-	   		<% } %>
+	   		
 	   		<% if(user.isEligibleForPreReservation() && user.getReservation() != null){
 	   			FDReservation rsv = user.getReservation();
 	   		%>
@@ -248,31 +193,26 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 				</script>
 	   		</div>
 	   		<div class="oas_feature_right right">
-	   			<div class="dotted_separator_h"></div>
 	   			<div class="oas_feature_right_tab">
 		   			<script type="text/javascript">
 						OAS_AD('HPTab1');
 					</script>
 				</div>
-	   			<div class="dotted_separator_h"></div>
 	   			<div class="oas_feature_right_tab">
 		   			<script type="text/javascript">
 						OAS_AD('HPTab2');
 					</script>
 				</div>
-	   			<div class="dotted_separator_h"></div>
 	   			<div class="oas_feature_right_tab">
 		   			<script type="text/javascript">
 						OAS_AD('HPTab3');
 					</script>
 				</div>
-	   			<div class="dotted_separator_h"></div>
 	   			<div class="oas_feature_right_tab">
 		   			<script type="text/javascript">
 						OAS_AD('HPTab4');
 					</script>
 				</div>
-	   			<div class="dotted_separator_h"></div>
 	   		</div>
 	   		<div class="clear" style="font-size: 0px;"></div>
 	   		
@@ -298,7 +238,6 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 					}
 				}
 			} %>
-	   		<img src="/media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="16"><br>
 	   <%-- END MAIN CONTENT--%>
 	   		
 		<div class="oas_home_bottom">
