@@ -202,7 +202,8 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 			%>
 <%-- **************************************** END Shelf Life ****************************************************************************** --%>
 			<%-- [APPDEV-2241] Carousel STARTS here --%>
-			<% if (isWebApp) { %>
+			<% // [APPBUG-677] disable YMAL recommender in quickshop pages
+				if (!request.getRequestURI().startsWith("/quickshop")) { %>
 			<div id="ymal_pdtl_container" class="carousel-box" style="padding-top: 32px;">
 				<div style="text-align: center; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px dotted gray;">
 					<img src="/media_stat/images/template/ymal_title.gif" alt="YMAL" width="140" height="12" style="border: 0">
