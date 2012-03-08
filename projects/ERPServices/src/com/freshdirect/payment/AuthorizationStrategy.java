@@ -125,10 +125,7 @@ public class AuthorizationStrategy extends PaymentStrategy {
 		this.usqAuthInfo.setAuthorizations(this.sale.getApprovedAuthorizations(this.usqAuthInfo.affiliate, pm));
 		
 		List<AuthorizationInfo> auths = new ArrayList<AuthorizationInfo>();
-		AuthorizationInfo fdInfo = fdAuthInfo.getAuthInfo(pm);				
-		if(fdInfo.getAmount() > 0) {
-			auths.add(fdInfo);
-		}
+		
 		
 		AuthorizationInfo bcInfo = bcAuthInfo.getAuthInfo(pm);		
 		if(bcInfo.getAmount() > 0) {
@@ -139,7 +136,11 @@ public class AuthorizationStrategy extends PaymentStrategy {
 		if(usqInfo.getAmount() > 0) {
 			auths.add(usqInfo);
 		}
-
+		/** Move fdAuth to the end to prevent auth holds when usq auths fail */
+		AuthorizationInfo fdInfo = fdAuthInfo.getAuthInfo(pm);				
+		if(fdInfo.getAmount() > 0) {
+			auths.add(fdInfo);
+		}
 		ErpChargeInvoiceModel chargeInvoice = this.sale.getLastChargeInvoice();
 		if (chargeInvoice != null && chargeInvoice.getAmount() > 0) {
 			auths.add(new AuthorizationInfo(sale.getPK().getId(), sale.getCustomerPk().getId(), fdAuthInfo.affiliate, chargeInvoice.getAmount(), pm, true));
