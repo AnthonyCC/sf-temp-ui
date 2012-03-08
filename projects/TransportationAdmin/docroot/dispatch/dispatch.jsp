@@ -190,14 +190,18 @@
                        }
                    }
 
-                   function updateStatusCallBack(result, exception){
-                	    var newForm = document.forms["newSubmit"];
-                	    var dateField = document.getElementById("dispDate").value;
-                      	newForm.action=location.href;
-                      	newForm.dispDate.value=dateField;
-                      	setFilter(document.getElementById("ec"),newForm);                    	
-                      	newForm.submit();
-                      	addSysMessage('Records updated successfully', false);
+                   function updateStatusCallBack(result, exception) {  
+                	   if(result != null && result) {
+                		   alert('Records updated successfully');   
+                	   } else {
+                		   alert('Error updating dispatch status');                		   
+                	   }
+                	   var newForm = document.forms["newSubmit"];
+                	   var dateField = document.getElementById("dispDate").value;
+                       newForm.action=location.href;
+                       newForm.dispDate.value=dateField;
+                       setFilter(document.getElementById("ec"),newForm);                    	
+                       newForm.submit();
                    }
                   
                   function addSysMessage(msg, isError) {

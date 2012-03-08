@@ -32,9 +32,14 @@
 		
 		<tr><td><input onclick="addEntry($F('ddate'), $F('route'), null, $F('messageDesc'), $F('source'), $F('userId'), null);" value="Send" type="button"><br>
 	
-		</table>
-		<jsp:useBean id="JSONRPCBridge" scope="session" class="com.metaparadigm.jsonrpc.JSONRPCBridge" />
-		<% JSONRPCBridge.registerObject("manager", AirclicManager.getInstance()); %> 
+		</table>		
+		<% 
+		JSONRPCBridge j = JSONRPCBridge.getGlobalBridge();
+		if(j != null) {
+			j.registerObject("manager", AirclicManager.getInstance());
+		}
+		    
+		%> 
 		
 
 		
