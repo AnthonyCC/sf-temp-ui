@@ -146,7 +146,7 @@
                 	   addSysMessage('', false);
                 	   var table = document.getElementById(tableId);
                        var checkboxList = table.getElementsByTagName("input");
-                       var dateField = document.getElementById("dispDate").value;    
+
                        var myJSONObject = {"dispatch" :[]};
                        var status; 
                        var prevRow = 0;
@@ -177,7 +177,7 @@
                        			dispatchObj.phoneAssigned = true; 
                        		  else if(status=='dispatched')
                        			dispatchObj.isDispatched = true;
-                       		  else if(status=='isCheckedIn')
+                       		  else if(status=='checkedIn')
                          			dispatchObj.isCheckedIn = true;
                            }
                     	   prevRow = currentRow;
@@ -186,14 +186,18 @@
                        if(myJSONObject.dispatch.length==0){
                     	    addSysMessage('Please Select a Row!', true); 
                        } else {
-                    	    jsonrpcClient.AsyncDispatchProvider.updateDispatchStatus(myJSONObject, '<%= com.freshdirect.transadmin.security.SecurityManager.getUserName(request)%>');
-	                       	var newForm=document.forms["newSubmit"];
-	                       	newForm.action=location.href;	                     
-	                       	newForm.dispDate.value=dateField;
-	                       	setFilter(document.getElementById("ec"),newForm);                    	
-	                       	newForm.submit();
-	                       	addSysMessage('Records updated successfully', false); 
+                    	    var result = jsonrpcClient.AsyncDispatchProvider.updateDispatchStatus(updateStatusCallBack, myJSONObject, '<%= com.freshdirect.transadmin.security.SecurityManager.getUserName(request)%>');
                        }
+                   }
+
+                   function updateStatusCallBack(result, exception){
+                	    var newForm = document.forms["newSubmit"];
+                	    var dateField = document.getElementById("dispDate").value;
+                      	newForm.action=location.href;
+                      	newForm.dispDate.value=dateField;
+                      	setFilter(document.getElementById("ec"),newForm);                    	
+                      	newForm.submit();
+                      	addSysMessage('Records updated successfully', false);
                    }
                   
                   function addSysMessage(msg, isError) {
