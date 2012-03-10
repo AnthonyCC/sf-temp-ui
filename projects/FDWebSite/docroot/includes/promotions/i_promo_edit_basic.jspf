@@ -192,6 +192,13 @@
 					<td class="promo_detail_label"><input type="checkbox" id="ruleBased" name="ruleBased" <%=(promotion.isRuleBased())?"checked ":"" %>/></td>
 					<td class="alignL"><span class="gray">Additional rules apply requiring publish</span></td>
 				</tr>
+				<tr class="flatRow">
+					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"><input type="checkbox" id="referralpromo" name="referralpromo" value="on"  <%=(promotion.isReferralPromo())?"checked ":"" %>/></td>
+					<td class="alignL"><span class="gray">This is a referral promotion (Used for Refer A Friend feature)</span></td>
+				</tr>
 				
 			</table>
 		</td>

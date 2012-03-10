@@ -18,6 +18,7 @@ public class FDCustomerCreditModel implements java.io.Serializable {
 	private String approvedBy;
 	private EnumComplaintLineMethod method;
 	private EnumSaleType orderType;
+	private String refSaleId;
 	
 	public double getAmount(){
 		return customerCreditModel.getAmount();
@@ -120,6 +121,14 @@ public class FDCustomerCreditModel implements java.io.Serializable {
 
 	public void setOrderType(String orderType) {
 		this.orderType = EnumSaleType.getSaleType(orderType);
+	}
+
+	public void setRefSaleId(String refSaleId) {
+		this.refSaleId = refSaleId;
+	}
+
+	public String getRefSaleId() {
+		return refSaleId;
 	}
 
 }

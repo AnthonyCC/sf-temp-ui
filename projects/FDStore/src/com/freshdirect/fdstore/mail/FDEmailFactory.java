@@ -365,6 +365,17 @@ public class FDEmailFactory {
 
 		return email;
 	}
+	
+	public XMLEmailI createReferAFriendInvitationEmail(String name, String userMessage, String systemMessage, String legal, String refLink) {
+		FDReferAFriendInvEmail email = new FDReferAFriendInvEmail(name, userMessage, systemMessage, legal, refLink);
+		return email;
+	}
+	
+	public XMLEmailI createReferAFriendCreditEmail(String referralName, String message) {
+		FDReferAFriendCreditEmail email = new FDReferAFriendCreditEmail(referralName, message);
+		return email;
+	}
+	
 	////////
 
 	protected String getFromAddress(String depotCode) {
@@ -1129,5 +1140,6 @@ public class FDEmailFactory {
 
 		return email;
 	}
+	
 	
 }

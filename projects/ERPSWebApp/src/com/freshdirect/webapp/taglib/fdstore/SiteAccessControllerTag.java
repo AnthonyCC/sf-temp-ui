@@ -2,6 +2,7 @@ package com.freshdirect.webapp.taglib.fdstore;
 
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.Enumeration;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +25,8 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUser;
+import com.freshdirect.fdstore.referral.FDReferralManager;
+import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -123,7 +126,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		ActionResult result = new ActionResult();
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 
-		if ("POST".equalsIgnoreCase(request.getMethod())) {
+		if ("POST".equalsIgnoreCase(request.getMethod()) || "modalboxpost".equals(request.getParameter("actionName"))) {
+			LOGGER.debug("[*****Moreinfopage is coming as*****]"+this.moreInfoPage);
 			try {
 				if ("saveEmail".equalsIgnoreCase(action)) {
 					saveEmail(request, result);
@@ -134,6 +138,21 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					DlvServiceSelectionResult serviceResult = checkByZipCode(request, result);
 					if(serviceResult!=null)
 						setRequestedServiceTypeDlvStatus(serviceResult.getServiceStatus(this.serviceType));
+					
+					/* APPDEV-1888 - Check to see if email is present and validate	 */
+					boolean isReferralRegistration = "true".equals(request.getParameter("referralRegistration"))?true:false;
+					if(isReferralRegistration) {
+						LOGGER.debug("[*****Processing referral registration, validating email*******]");
+						String email = request.getParameter("email");
+						if(!validEmail(email, result)) {
+							LOGGER.debug("[*****Something is wrong, redirecting to:*****]" + failureHomePage);
+							if(failureHomePage != null)
+								failureHomePage = failureHomePage + "&email_error=true";
+							pageContext.setAttribute(resultName, result);
+							return EVAL_BODY_BUFFERED;
+						}						
+					}
+					
 					if (result.isSuccess()) {
 						newSession();
 						
@@ -150,8 +169,12 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 									this.createUser(EnumServiceType.PICKUP, serviceResult.getAvailableServices());
 								}
 							}
-							//System.out.println(" WEB this.serviceType :"+this.serviceType);
-							doRedirect(successPage);
+							//System.out.println(" WEB this.serviceType :"+this.serviceType);	
+							if(isReferralRegistration) {
+								doRedirect(this.moreInfoPage);
+							} else {
+								doRedirect(successPage);
+							}
 						} else {
 							EnumDeliveryStatus dlvStatus = serviceResult.getServiceStatus(this.serviceType);
 							//System.out.println(" NOTWEB this.serviceType :"+this.serviceType);
@@ -161,6 +184,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 							} else { 
 								this.createUser(EnumServiceType.PICKUP, serviceResult.getAvailableServices());
 							}
+							
+							LOGGER.debug("[*****Moreinfopage is coming as*****]"+this.moreInfoPage);
 						
 							if (this.moreInfoPage != null && this.moreInfoPage.indexOf('?') < 0) {
 								this.moreInfoPage += "?serviceType=" + this.serviceType.getName();
@@ -205,10 +230,20 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 								}
 							}						
 							if (EnumDeliveryStatus.PARTIALLY_DELIVER.equals(dlvStatus)) {
+								if(isReferralRegistration) {
+									//Change overlay type for referral partial delivery
+									String refMoreInfoPage = moreInfoPage.replaceAll("ol=moreInfo", "ol=partialmoreInfo");
+									return doRedirect(refMoreInfoPage);
+								}
 								return doRedirect(moreInfoPage);
 							}							
 							if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
-								return doRedirect(successPage);
+								if(isReferralRegistration) {
+									return doRedirect(this.moreInfoPage);
+								} else {
+									return doRedirect(successPage);
+								}
+								//return doRedirect(successPage);
 							}
 							return doRedirect(failureHomePage);
 						}
@@ -225,6 +260,56 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		}
 		pageContext.setAttribute(resultName, result);
 		return EVAL_BODY_BUFFERED;
+	}
+
+	private boolean validEmail(String email, ActionResult result) {		
+		
+		String err_msg = "Please make sure your email address is in the format you@isp.com";//SystemMessageList.MSG_EMAIL_FORMAT;
+		//err_msg.replaceAll("\"", "\\\"");
+		
+		if(email == null || email.length() == 0) {
+			result.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), err_msg));
+			return false;
+		}
+		
+		if(email != null)
+			email = email.trim();
+		
+		if ((email != null) && (!"".equals(email)) && (!com.freshdirect.mail.EmailUtil.isValidEmailAddress(email))) {
+			result.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), err_msg));
+			return false;
+		}
+		
+		//check if the email is already taken
+		try {
+			String dupeCustID = FDCustomerManager.dupeEmailAddress(email);
+			if(dupeCustID != null) {
+				if(FDReferralManager.getReferralDisplayFlag(dupeCustID)) {
+					//Customer has atleast one settled order
+					result.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),"You already have an account and are ineligible for this referral offer. Please <a href=\'/login/login_main.jsp\'>log in</a> to start shopping."));
+					//store this customer as ineligible trial
+					FDReferralManager.storeFailedAttempt(email,dupeCustID, this.address.getZipCode(),"","", (String) this.pageContext.getSession().getAttribute("REFERRALNAME"),"EXISTING CUSTOMER");
+					return false;
+				} else {
+					//Customer is already registered, but no settled order
+					if(FDReferralManager.isCustomerReferred(dupeCustID)) {
+						//Customer has been referred by some other referral already
+						result.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),"You already signed up for the new customer referral program. Please <a href=\'/login/login_main.jsp\'>log in</a> to start shopping."));
+						return false;
+					} else {
+						//Customer is not referred yet. Let them complete light signup.
+						//Load user object
+						this.pageContext.getSession().setAttribute("EXISTING_CUSTOMERID", dupeCustID);
+					}
+				}
+			}
+		} catch (FDResourceException e) {
+			LOGGER.error("Email check failed for:" + email, e);
+		}
+		
+		pageContext.getSession().setAttribute("REFERRAL_EMAIL", email);
+
+		return true;
 	}
 
 	private int doRedirect(String url) throws JspException {
@@ -352,6 +437,22 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			this.createUser(st, serviceResult.getAvailableServices());
     	       		
 			String page = getRedirectPage(this.serviceType, serviceAvailability);
+			
+			boolean isReferralRegistration = "true".equals(request.getParameter("referralRegistration"))?true:false;
+			if(isReferralRegistration) {
+				if(page.equals(this.successPage)) {
+					this.moreInfoPage = "/registration/referee_signup2.jsp";
+					//we need to offer user to signup for referral registration
+					if (this.moreInfoPage != null && this.moreInfoPage.indexOf('?') < 0) {
+						this.moreInfoPage += "?serviceType=" + this.serviceType.getName();
+					} else {
+						this.moreInfoPage += "&serviceType=" + this.serviceType.getName();
+					}
+					//Add address into session.
+					pageContext.getSession().setAttribute("REFERRAL_ADDRESS", this.address);
+					return this.doRedirect(moreInfoPage);
+				}
+			}
 			return this.doRedirect(page);
 
 		} catch (FDInvalidAddressException ae) {
@@ -458,51 +559,66 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 		
-
-		if ((user == null) || ((user.getZipCode() == null) && (user.getDepotCode() == null))) {
-			//
-			// if there is no user object or a dummy user object created in
-			// CallCenter, make a new using this zipcode
-			// make sure to hang on to the cart that might be in progress in
-			// CallCenter
-			//
-			FDCartModel oldCart = null;
-			if (user != null) {
-				oldCart = user.getShoppingCart();
-			}
-			user = new FDSessionUser(FDCustomerManager.createNewUser(this.address, serviceType), session);
+		if(session.getAttribute("EXISTING_CUSTOMERID") != null && "true".equals(pageContext.getRequest().getParameter("referralRegistration"))) {
+			//Refer a friend registration for existing customer who is not referred by any other customer and with zero orders.
+			//update fd user with the zipcode.
+			String eCustID = (String)session.getAttribute("EXISTING_CUSTOMERID");
+			String fduserId = FDReferralManager.updateFDUser(eCustID, this.address.getZipCode(), serviceType);
+			//Set the address values into user objects just like below.
+			FDUser user1 = new FDUser(new PrimaryKey(fduserId));
+			user1.setZipCode(this.address.getZipCode());
+			user = new FDSessionUser(user1, session);
 			user.setAddress(this.address);
 			user.setSelectedServiceType(serviceType);
-			//Added the following line for zone pricing to keep user service type up-to-date.
-			user.setZPServiceType(serviceType);
-			user.setAvailableServices(availableServices);
-
-			
-			if (oldCart != null) {
-				user.setShoppingCart(oldCart);
-			}
-
 			CookieMonster.storeCookie(user, response);
 			session.setAttribute(SessionName.USER, user);
+		} else {		
 
-		} else {	
-			//
-			// otherwise, just update the zipcode in their existing object if
-			// they haven't yet registered
-			//
-			if (user.getLevel() < FDUser.RECOGNIZED) {
+			if ((user == null) || ((user.getZipCode() == null) && (user.getDepotCode() == null))) {
+				//
+				// if there is no user object or a dummy user object created in
+				// CallCenter, make a new using this zipcode
+				// make sure to hang on to the cart that might be in progress in
+				// CallCenter
+				//
+				FDCartModel oldCart = null;
+				if (user != null) {
+					oldCart = user.getShoppingCart();
+				}
+				user = new FDSessionUser(FDCustomerManager.createNewUser(this.address, serviceType), session);
 				user.setAddress(this.address);
 				user.setSelectedServiceType(serviceType);
 				//Added the following line for zone pricing to keep user service type up-to-date.
 				user.setZPServiceType(serviceType);
 				user.setAvailableServices(availableServices);
-				//Need to reset the pricing context so the pricing context can be recalculated.
-				user.resetPricingContext();
+	
+				
+				if (oldCart != null) {
+					user.setShoppingCart(oldCart);
+				}
+	
 				CookieMonster.storeCookie(user, response);
-				FDCustomerManager.storeUser(user.getUser());
 				session.setAttribute(SessionName.USER, user);
+	
+			} else {	
+				//
+				// otherwise, just update the zipcode in their existing object if
+				// they haven't yet registered
+				//
+				if (user.getLevel() < FDUser.RECOGNIZED) {
+					user.setAddress(this.address);
+					user.setSelectedServiceType(serviceType);
+					//Added the following line for zone pricing to keep user service type up-to-date.
+					user.setZPServiceType(serviceType);
+					user.setAvailableServices(availableServices);
+					//Need to reset the pricing context so the pricing context can be recalculated.
+					user.resetPricingContext();
+					CookieMonster.storeCookie(user, response);
+					FDCustomerManager.storeUser(user.getUser());
+					session.setAttribute(SessionName.USER, user);
+				}
+							
 			}
-						
 		}
         //The previous recommendations of the current session need to be removed.
         session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);

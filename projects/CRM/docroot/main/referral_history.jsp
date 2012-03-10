@@ -13,202 +13,167 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='bean' prefix='bean' %>
 
-<%!
-private static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
 
-private static Comparator REF_NAME = new Comparator () {
-    public int compare(Object o1, Object o2) {
-        FDReferralReportLine r1 = (FDReferralReportLine)o1;
-        FDReferralReportLine r2 = (FDReferralReportLine)o2;
-        
-        return r1.getName().compareTo(r2.getName());
-    }
-};
-private static Comparator REF_EMAIL_ADDR = new Comparator () {
-    public int compare(Object o1, Object o2) {
-        FDReferralReportLine r1 = (FDReferralReportLine)o1;
-        FDReferralReportLine r2 = (FDReferralReportLine)o2;
-        
-        return r1.getEmailAddress().compareTo(r2.getEmailAddress());
-    }
-};
-private static Comparator EMAIL_ADDR_2 = new Comparator () {
-    public int compare(Object o1, Object o2) {
-        FDReferralReportLine r1 = (FDReferralReportLine)o1;
-        FDReferralReportLine r2 = (FDReferralReportLine)o2;
-	
-		String  sea1 = 	r1.getEmailAddress2();
-		String  sea2 = 	r2.getEmailAddress2();
-		
-		if (sea1 == null) {	sea1 = ""; }
-		if (sea2 == null) {	sea2 = ""; }
-		
-        return sea1.compareTo(sea2);
-    }
-};
-private static Comparator REF_DATE = new Comparator () {
-    public int compare(Object o1, Object o2) {
-        FDReferralReportLine r1 = (FDReferralReportLine)o1;
-        FDReferralReportLine r2 = (FDReferralReportLine)o2;
-        
-        return r1.getReferralDate().compareTo(r2.getReferralDate());
-    }
-};
-private static Comparator REF_STATUS = new Comparator () {
-    public int compare(Object o1, Object o2) {
-        FDReferralReportLine r1 = (FDReferralReportLine)o1;
-        FDReferralReportLine r2 = (FDReferralReportLine)o2;
-        
-        return r1.getReferralStatus().compareTo(r2.getReferralStatus());
-    }
-};
-private static Comparator REF_PROG_DESC = new Comparator () {
-    public int compare(Object o1, Object o2) {
-        FDReferralReportLine r1 = (FDReferralReportLine)o1;
-        FDReferralReportLine r2 = (FDReferralReportLine)o2;
-        
-        return r1.getReferralProgramDesc().compareTo(r2.getReferralProgramDesc());
-    }
-};
-private static Comparator REF_PROG_STATUS = new Comparator () {
-    public int compare(Object o1, Object o2) {
-        FDReferralReportLine r1 = (FDReferralReportLine)o1;
-        FDReferralReportLine r2 = (FDReferralReportLine)o2;
-        
-        return r1.getReferralProgramStatus().compareTo(r2.getReferralProgramStatus());
-    }
-};
-private static Comparator REF_PROG_START_DATE = new Comparator () {
-    public int compare(Object o1, Object o2) {
-        FDReferralReportLine r1 = (FDReferralReportLine)o1;
-        FDReferralReportLine r2 = (FDReferralReportLine)o2;
-        
-        return r1.getReferralProgramStartDate().compareTo(r2.getReferralProgramStartDate());
-    }
-};
-private static Comparator REF_PROG_EXP_DATE = new Comparator () {
-    public int compare(Object o1, Object o2) {
-        FDReferralReportLine r1 = (FDReferralReportLine)o1;
-        FDReferralReportLine r2 = (FDReferralReportLine)o2;
-        
-        return r1.getReferralProgramExpirationDate().compareTo(r2.getReferralProgramExpirationDate());
-    }
-};
-
-private static Comparator NUM_DEL_ORDERS = new Comparator () {
-    public int compare(Object o1, Object o2) {
-        FDReferralReportLine r1 = (FDReferralReportLine)o1;
-        FDReferralReportLine r2 = (FDReferralReportLine)o2;
-        
-        return r1.getNumDeliveredOrders()-r2.getNumDeliveredOrders();
-    }
-};
-
-public final static Map REFERRAL_COMPARATORS = new HashMap();
-static {
-	REFERRAL_COMPARATORS.put("name", REF_NAME);
-	REFERRAL_COMPARATORS.put("emailAddress", REF_EMAIL_ADDR);
-	REFERRAL_COMPARATORS.put("emailAddress2", EMAIL_ADDR_2);
-	REFERRAL_COMPARATORS.put("referralDate", REF_DATE);
-	REFERRAL_COMPARATORS.put("referralStatus", REF_STATUS);
-	REFERRAL_COMPARATORS.put("numDeliveredOrders", NUM_DEL_ORDERS);
-	REFERRAL_COMPARATORS.put("referralProgramDescription", REF_PROG_DESC);
-	REFERRAL_COMPARATORS.put("referralProgramStatus", REF_PROG_STATUS);
-	REFERRAL_COMPARATORS.put("referralProgramStartDate", REF_PROG_START_DATE);
-	REFERRAL_COMPARATORS.put("referralProgramExpirationDate", REF_PROG_EXP_DATE);
-}
-%>
 <%
-
-String reportType = request.getParameter("rpt_type");
-if (reportType == null) {
-	reportType = "REFERRER";
-}
- 
+SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
 FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 FDIdentity identity = user.getIdentity();
 List referralRptList = new ArrayList();
 
-if ("REFERRER".equalsIgnoreCase(reportType)) {
-	referralRptList = FDReferralManager.loadReferralReportFromReferrerCustomerId(identity.getErpCustomerPK());
-} else {
-	referralRptList = FDReferralManager.loadReferralReportFromReferralCustomerId(identity.getErpCustomerPK());
+referralRptList = FDReferralManager.getManageInvitesForCRM(identity.getErpCustomerPK());
+org.json.JSONObject jobj = new org.json.JSONObject();
+jobj.put("totalRecords", referralRptList.size());
+org.json.JSONArray jsonItems = new org.json.JSONArray();
+for(int i=0; i< referralRptList.size(); i++) {
+	ManageInvitesModel mim = (ManageInvitesModel) referralRptList.get(i);
+	String scredit = "";
+	org.json.JSONObject obj = new org.json.JSONObject();
+	obj.put("referee", mim.getRecipientEmail());
+	obj.put("date", mim.getSentDate());
+	obj.put("status", mim.getStatus());
+	obj.put("credit", mim.getCredit()!=null?JspMethods.formatPrice(Double.parseDouble(mim.getCredit())):"");
+	obj.put("custid", mim.getRecipientCustId()!=null?"<a href='/main/summary.jsp?erpCustId="+ mim.getRecipientCustId() + "'>" + mim.getRecipientCustId() + "</a>":"");
+	obj.put("order", mim.getSaleId()!=null?"<a href='/main/order_details.jsp?orderId= " + mim.getSaleId() + "'>" + mim.getSaleId() + "</a>":"");
+	obj.put("rcredit", mim.getCreditIssuedDate() != null?DATE_FORMATTER.format(mim.getCreditIssuedDate()):"");
+	jsonItems.put(obj);
 }
 
-JspTableSorter sort = new JspTableSorter(request);
+jobj.put("records", jsonItems);
+					
+String jsonString = jobj.toString();
+%>
+<style>
+	.yui-skin-sam .yui-pg-container {
+		text-align: right;
+		padding-right: 30px;
+	}
 
-Comparator comp = (Comparator)REFERRAL_COMPARATORS.get(sort.getSortBy());
-if (comp == null) {
-	Collections.sort(referralRptList, new ReverseComparator(REF_DATE));
-} else {
-	if (comp.equals(REF_DATE)) {
-		Collections.sort(referralRptList, sort.isAscending() ? new ReverseComparator(comp) : comp);
-	} else {
-		Collections.sort(referralRptList, sort.isAscending() ? comp : new ReverseComparator(comp));
+	.yui-skin-sam .yui-dt table {
+		width: 100% !important;
+		BORDER: 0px !important;
+		font-family: Verdana,Arial,sans-serif !important;
+	}
+	
+	.yui-skin-sam .yui-dt thead {		
+		font-size: 11px;
+		font-weight: bold !important;
+		border: none;
+	}
+	
+	.yui-skin-sam .yui-dt th, .yui-skin-sam .yui-dt th a {
+		font-weight:bold !important;
+		text-decoration:underline !important;
+		font-size: 10pt;
+	}
+	
+	.yui-skin-sam th.yui-dt-asc .yui-dt-liner	{
+		background: none !important;
+	}
+	
+	.yui-skin-sam th.yui-dt-asc, .yui-skin-sam th.yui-dt-desc {
+		background: url("/assets/yui-2.9.0/assets/skins/sam/sprite.png") repeat-x scroll 0 0 #D8D8DA !important;
+	}
+	
+	.yui-skin-sam .yui-dt th, .yui-skin-sam .yui-dt td {
+		border-width: 0 !important;
+		text-align: left;		
+	}
+	
+	.yui-dt-label {
+		font-size: 11px;
+		font-weight: bold !important;
+	}
+	
+	.yui-skin-sam tr.yui-dt-even td.yui-dt-asc, .yui-skin-sam tr.yui-dt-even td.yui-dt-desc {
+		background-color: #FFFFFF !important;
+	}
+	
+	.yui-skin-sam tr.yui-dt-odd, .yui-skin-sam tr.yui-dt-odd td.yui-dt-asc, .yui-skin-sam tr.yui-dt-odd td.yui-dt-desc {
+		background-color: #EEEEEE !important;		
+	}
+	
+	
+	.yui-skin-sam .yui-pg-page {
+		border: 0px !important;
+		padding: 2px !important;		
+	}
+	
+	#yui-history-iframe {
+	  position:absolute;
+	  top:0; left:0;
+	  width:1px; height:1px; /* avoid scrollbars */
+	  visibility:hidden;
+	}
+	
+	.yui-skin-sam .yui-dt-paginator {
+		font-weight: bold;
+	}
+	
+	.yui-skin-sam .yui-pg-first, .yui-skin-sam .yui-pg-previous, .yui-skin-sam .yui-pg-next, .yui-skin-sam .yui-pg-last, .yui-skin-sam .yui-pg-current, .yui-skin-sam .yui-pg-pages, .yui-skin-sam .yui-pg-page {
+		font-family: Verdana,Arial,sans-serif !important;
+		font-size: 9px;
+		font-weight: bold;
 	}
 }
-%>
+</style>
+<!-- Combo-handled YUI CSS files: -->
+<fd:css href="/assets/yui-2.9.0/paginator/assets/skins/sam/paginator.css" />
+<fd:css href="/assets/yui-2.9.0/datatable/assets/skins/sam/datatable.css" />
+
+<!-- Combo-handled YUI JS files: -->
+<fd:javascript  src="/assets/yui-2.9.0/yahoo-dom-event/yahoo-dom-event.js" />
+<fd:javascript  src="/assets/yui-2.9.0/connection/connection-min.js" />
+<fd:javascript  src="/assets/yui-2.9.0/element/element-min.js" />
+<fd:javascript  src="/assets/yui-2.9.0/paginator/paginator-min.js"/>
+<fd:javascript  src="/assets/yui-2.9.0/datasource/datasource-min.js" />
+<fd:javascript  src="/assets/yui-2.9.0/datatable/datatable-min.js" />
+<fd:javascript  src="/assets/yui-2.9.0/json/json-min.js" />
+
 <tmpl:insert template='/template/top_nav.jsp'>
-<tmpl:put name='title' direct='true'>Referral History - <%=(("REFERRER".equalsIgnoreCase(reportType))) ? "Referrals Sent" : "Referrals Received"%></tmpl:put>
+<tmpl:put name='title' direct='true'>Referral History</tmpl:put>
 <tmpl:put name='content' direct='true'>
-<div class="list_header">
-<table border="0" cellspacing="2" cellpadding="0 width="100%" class=list_header_text">
-    <tr>
-        <td><a href="?rpt_type=REFERRER" class="list_header_text">Referrals Sent</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="?rpt_type=REFERRAL" class="list_header_text">Referrals Received</a></td>
-    </tr>
-    <tr>
-        <td class="list_header_text"><%=referralRptList.size()%> <%=(("REFERRER".equalsIgnoreCase(reportType))) ? "Referrals Sent" : "Referrals Received"%></td>
-    </tr>
-</table>
-</div>
-<div class="list_header">
-    <table border="0" cellspacing="2" cellpadding="0 width="100%" class="list_header_text">
-        <tr>
-            <td width="2%"></td>
-            <td width="13%"><a href="?<%= sort.getFieldParams("name") %>" class="list_header_text"><%=(("REFERRER".equalsIgnoreCase(reportType))) ? "Sent To" : "Sender"%></a></td>
-            <td width="18%"><a href="?<%= sort.getFieldParams("emailAddress") %>" class="list_header_text">Email</a></td>
-            <td width="8%"><a href="?<%= sort.getFieldParams("referralDate") %>" class="list_header_text">Date</a></td>
-            <td width="10%"><a href="?<%= sort.getFieldParams("referralStatus") %>" class="list_header_text">Ref. Status</a></td>
-            <td width="18%"><a href="?<%= sort.getFieldParams("emailAddress2") %>" class="list_header_text"><%=(("REFERRER".equalsIgnoreCase(reportType))) ? "Signup Email" : "Sent To"%></a></td>
-            <td width="5%" class="list_header_text"><a href="?<%= sort.getFieldParams("numDeliveredOrders") %>" class="list_header_text">Orders</a></td>
-            <td width="8%"><a href="?<%= sort.getFieldParams("referralProgramDescription") %>" class="list_header_text">Program</a></td>
-            <td width="10%"><a href="?<%= sort.getFieldParams("referralProgramStatus") %>" class="list_header_text">Status</a></td>
-            <td width="8%"><a href="?<%= sort.getFieldParams("referralProgramExpirationDate") %>" class="list_header_text">Exp.</a></td>
-            <td><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td>
-        </tr>
-    </table>
-</div>
-<div class="list_content">
-<table border="0" cellspacing="0" cellpadding="2" width='100%'>
-<%
-    int counter = 0;
-    for(Iterator i = referralRptList.iterator(); i.hasNext();){
-        FDReferralReportLine r = (FDReferralReportLine) i.next();
-        counter++;
-        if (r.getIsReferralAccepted()) {
-        	r.setReferralStatus(EnumReferralStatus.SIGNUP);
-        }
-%>
-            <tr valign="top" <%= counter % 2 == 0 ? "class='list_odd_row'" : "" %> style="padding-top: 3px; padding-bottom: 3px;">
-                <td width="2%"></td>
-                <td width="13%"><%= (r.getIsReferralAccepted()) ? "*" : "" %><%=r.getName()%></td>
-                <td width="18%"><%=r.getEmailAddress()%></td>
-                <td width="8%"><%=DATE_FORMATTER.format(r.getReferralDate())%></td>
-                <td width="10%"><%=r.getReferralStatus()%></td>
-                <td width="18%"><%=r.getEmailAddress2()%></td>
-                <td width="5%"><%=r.getNumDeliveredOrders()%></td>
-                <td width="8%"><a href="javascript:pop('/media/editorial/tell_a_friend/<%=r.getReferralProgramCampaignCode().toLowerCase()%>.html',400,585);"><%=r.getReferralProgramCampaignCode()%></a></td>
-                <td width="10%"><%=r.getReferralProgramStatus()%></td>
-                <td width="8%"><%=DATE_FORMATTER.format(r.getReferralProgramExpirationDate())%></td>
-	            <td><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td>
-            </tr>
-            <tr class="list_separator" style="padding: 0px;">
-                <td colspan="11"></td>
-            </tr>
-<%
-    }
-%>
-</table>
-</div>    
+
+<div id="pagenums"></div>
+<div id="dynamicdata"></div> 
+
+
+
+			<script type="text/javascript">
+				YAHOO.util.Event.addListener(window, "load", function() {
+					YAHOO.example.ClientPagination = function() {
+						var myColumnDefs = [
+							{key:"referee", label:"Referee", sortable:true},
+							{key:"date", label:"Date Sent", sortable:true},
+							{key:"status", label:"Status", sortable:true},
+							{key:"credit", label:"Credit Amount To Referral", sortable:true},
+							{key:"custid", label:"New Customer ID", sortable:true},
+							{key:"order", label:"New Customer Order#", sortable:true},
+							{key:"rcredit", label:"Referral Credit Received", sortable:true}
+						];
+
+						var myDataSource = new YAHOO.util.DataSource(<%= jsonString %>);
+						myDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
+						myDataSource.responseSchema = {
+							resultsList: "records",
+							fields: ["referee","date","status","credit","custid","order","rcredit"]
+						};
+
+						var oConfigs = {								
+								initialRequest: "results=10504",
+								paginator: new YAHOO.widget.Paginator({ rowsPerPage:15,
+									template : "<style='padding:10px;'>Page: {PageLinks}",
+									containers  : 'pagenums'
+								}) // Enables pagination 
+						};
+						var myDataTable = new YAHOO.widget.DataTable("dynamicdata", myColumnDefs,
+								myDataSource, oConfigs);
+								
+						return {
+							oDS: myDataSource,
+							oDT: myDataTable
+						};
+					}();
+				});
+				</script>  
 </tmpl:put>
 </tmpl:insert>

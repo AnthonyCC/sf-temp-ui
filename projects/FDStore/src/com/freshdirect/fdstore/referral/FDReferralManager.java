@@ -5,6 +5,7 @@
 package com.freshdirect.fdstore.referral;
 
 import java.rmi.RemoteException;
+
 import java.util.List;
 
 import javax.ejb.CreateException;
@@ -13,10 +14,14 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.customer.ErpCustomerCreditModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerNewSB;
 import com.freshdirect.fdstore.referral.ejb.FDReferralManagerHome;
 import com.freshdirect.fdstore.referral.ejb.FDReferralManagerSB;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -913,5 +918,281 @@ public class FDReferralManager {
 			}		
 
 	  }
+	  
+	  public static ReferralPromotionModel getReferralPromotionDetails(String userId) throws FDResourceException{
+		  lookupManagerHome();
+
+			try {
+				FDReferralManagerSB sb = managerHome.create();
+				return sb.getReferralPromotionDetails(userId);
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}		
+
+	  }
+	  
+	  public static void sendMails(String recipient_list, String mail_message, FDUser user, String rpid, String serverName) throws FDResourceException{
+		  lookupManagerHome();
+
+			try {
+				FDReferralManagerSB sb = managerHome.create();
+				sb.sendMails(recipient_list, mail_message, user, rpid, serverName);
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}		
+
+	  }
+	  
+	  public static List<ManageInvitesModel> getManageInvites(String customerId) throws FDResourceException{
+		  lookupManagerHome();
+
+			try {
+				FDReferralManagerSB sb = managerHome.create();
+				return sb.getManageInvites(customerId);
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}		
+
+	  }
+	  
+	  public static List<ErpCustomerCreditModel> getUserCredits(String customerId) throws FDResourceException{
+		  lookupManagerHome();
+
+			try {
+				FDReferralManagerSB sb = managerHome.create();
+				return sb.getUserCredits(customerId);
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}		
+
+	  }
+	  
+	  public static List<ManageInvitesModel> getManageInvitesForCRM(String customerId) throws FDResourceException{
+		  lookupManagerHome();
+
+			try {
+				FDReferralManagerSB sb = managerHome.create();
+				return sb.getManageInvitesForCRM(customerId);
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}		
+
+	  }
+	  
+	  public static Double getAvailableCredit(String customerId) throws FDResourceException {
+		  lookupManagerHome(); 
+
+		  try {
+			  FDReferralManagerSB sb = managerHome.create();
+			  return sb.getAvailableCredit(customerId);
+		  } catch (CreateException ce) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(ce, "Error creating session bean");
+		  } catch (RemoteException re) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(re, "Error talking to session bean");
+		  }		
+	  }
+	  
+	  public static Boolean getReferralDisplayFlag(String customerId) throws FDResourceException {
+		  lookupManagerHome(); 
+
+		  try {
+			  FDReferralManagerSB sb = managerHome.create();
+			  return sb.getReferralDisplayFlag(customerId);
+		  } catch (CreateException ce) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(ce, "Error creating session bean");
+		  } catch (RemoteException re) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(re, "Error talking to session bean");
+		  }		
+	  }
+	  
+	  public static List<ReferralPromotionModel> getSettledSales() throws FDResourceException {
+		  lookupManagerHome(); 
+
+		  try {
+			  FDReferralManagerSB sb = managerHome.create();
+			  return sb.getSettledSales();
+		  } catch (CreateException ce) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(ce, "Error creating session bean");
+		  } catch (RemoteException re) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(re, "Error talking to session bean");
+		  }		
+	  }
+	  
+	  public static String getReferralLink(String customerId) throws FDResourceException {
+		  lookupManagerHome(); 
+
+		  try {
+			  FDReferralManagerSB sb = managerHome.create();
+			  return sb.getReferralLink(customerId);
+		  } catch (CreateException ce) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(ce, "Error creating session bean");
+		  } catch (RemoteException re) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(re, "Error talking to session bean");
+		  }		
+	  }
+	  
+	  public static String getLatestSTLSale(String customerId) throws FDResourceException {
+		  lookupManagerHome(); 
+
+		  try {
+			  FDReferralManagerSB sb = managerHome.create();
+			  return sb.getLatestSTLSale(customerId);
+		  } catch (CreateException ce) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(ce, "Error creating session bean");
+		  } catch (RemoteException re) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(re, "Error talking to session bean");
+		  }		
+	  }
+	  
+	  public static boolean isCustomerReferred(String customerId) throws FDResourceException {
+		  lookupManagerHome(); 
+
+		  try {
+			  FDReferralManagerSB sb = managerHome.create();
+			  return sb.isCustomerReferred(customerId);
+		  } catch (CreateException ce) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(ce, "Error creating session bean");
+		  } catch (RemoteException re) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(re, "Error talking to session bean");
+		  }		
+	  }
+	  
+	  public static String updateFDUser(String customerId, String zipCode, EnumServiceType serviceType) throws FDResourceException {
+		  lookupManagerHome(); 
+
+		  try {
+			  FDReferralManagerSB sb = managerHome.create();
+			  return sb.updateFDUser(customerId, zipCode, serviceType);
+		  } catch (CreateException ce) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(ce, "Error creating session bean");
+		  } catch (RemoteException re) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(re, "Error talking to session bean");
+		  }		
+	  }
+	  
+	  public static void updateCustomerInfo(String customerId, String firstName, String lastName) throws FDResourceException {
+		  lookupManagerHome(); 
+
+		  try {
+			  FDReferralManagerSB sb = managerHome.create();
+			  sb.updateCustomerInfo(customerId, firstName, lastName);
+		  } catch (CreateException ce) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(ce, "Error creating session bean");
+		  } catch (RemoteException re) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(re, "Error talking to session bean");
+		  }		
+	  }
+	  
+	  public static void updateCustomerPW(String customerId, String pwdHash) throws FDResourceException {
+		  lookupManagerHome(); 
+
+		  try {
+			  FDReferralManagerSB sb = managerHome.create();
+			  sb.updateCustomerPW(customerId, pwdHash);
+		  } catch (CreateException ce) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(ce, "Error creating session bean");
+		  } catch (RemoteException re) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(re, "Error talking to session bean");
+		  }		
+	  }
+	  
+	  public static void updateFdCustomer(String customerId, String pwdHint) throws FDResourceException {
+		  lookupManagerHome(); 
+
+		  try {
+			  FDReferralManagerSB sb = managerHome.create();
+			  sb.updateFdCustomer(customerId, pwdHint);
+		  } catch (CreateException ce) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(ce, "Error creating session bean");
+		  } catch (RemoteException re) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(re, "Error talking to session bean");
+		  }		
+	  }
+
+	public static void storeFailedAttempt(String email, String dupeCustID, String zipCode, String firstName, String lastName, String referral, String reason) throws FDResourceException {
+		lookupManagerHome(); 
+
+		  try {
+			  FDReferralManagerSB sb = managerHome.create();
+			  sb.storeFailedAttempt(email, dupeCustID, zipCode, firstName, lastName, referral, reason);
+		  } catch (CreateException ce) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(ce, "Error creating session bean");
+		  } catch (RemoteException re) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(re, "Error talking to session bean");
+		  }			
+	}
+
+	public static boolean isUniqueFNLNZipCombo(String firstName, String lastName, String zipCode) throws FDResourceException {
+		lookupManagerHome(); 
+
+		  try {
+			  FDReferralManagerSB sb = managerHome.create();
+			  return sb.isUniqueFNLNZipCombo(firstName, lastName, zipCode);
+		  } catch (CreateException ce) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(ce, "Error creating session bean");
+		  } catch (RemoteException re) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(re, "Error talking to session bean");
+		  }
+	}
+	
+	public static String getReferralName(String referralId) throws FDResourceException {
+		  lookupManagerHome(); 
+
+		  try {
+			  FDReferralManagerSB sb = managerHome.create();
+			  return sb.getReferralName(referralId);
+		  } catch (CreateException ce) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(ce, "Error creating session bean");
+		  } catch (RemoteException re) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(re, "Error talking to session bean");
+		  }		
+	  }
+
 
 }

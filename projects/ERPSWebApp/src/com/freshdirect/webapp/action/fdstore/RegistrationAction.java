@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.action.fdstore;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
@@ -27,8 +28,10 @@ import com.freshdirect.fdstore.StateCounty;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.RegistrationResult;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
+import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.fdstore.survey.EnumSurveyType;
 import com.freshdirect.fdstore.survey.FDSurvey;
 import com.freshdirect.fdstore.survey.FDSurveyFactory;
@@ -45,6 +48,7 @@ import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.webapp.action.WebActionSupport;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
+import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
 import com.freshdirect.webapp.taglib.fdstore.DeliveryAddressValidator;
 import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -52,6 +56,7 @@ import com.freshdirect.webapp.taglib.fdstore.PaymentMethodName;
 import com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
+import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.util.AccountUtil;
 
 public class RegistrationAction extends WebActionSupport {
@@ -65,6 +70,7 @@ public class RegistrationAction extends WebActionSupport {
 	private String successPage;
 	private String fraudPage;
 	boolean restrictedAddress = false;
+	private String referralId;
 
 	public RegistrationAction(int regType) {
 		this.regType = regType;
@@ -88,6 +94,14 @@ public class RegistrationAction extends WebActionSupport {
 
 	public void setFraudPage(String fraudPage) {
 		this.fraudPage = fraudPage;
+	}
+
+	public void setReferralId(String referralId) {
+		this.referralId = referralId;
+	}
+
+	public String getReferralId() {
+		return referralId;
 	}
 
 	public String execute() throws Exception {
@@ -274,6 +288,22 @@ public class RegistrationAction extends WebActionSupport {
 		if (!actionResult.isSuccess() /*&& !ALLOW_ALL*/) {
 			return ERROR;
 		}
+		
+		ErpCustomerModel erpCustomer = aInfo.getErpCustomerModel();
+		ErpCustomerInfoModel customerInfo = new ErpCustomerInfoModel();
+		aInfo.decorateCustomerInfo(customerInfo);
+		cInfo.decorateCustomerInfo(customerInfo);
+		
+		if(session.getAttribute("REFERRALNAME") != null ) {
+			//Check for new rule. Reject user registration if a same FirstName + LastName + Zipcode 
+			//combo already exists in the database.
+			if(!FDReferralManager.isUniqueFNLNZipCombo(cInfo.firstName, cInfo.lastName, user.getAddress().getZipCode())) {
+				//record the error
+				FDReferralManager.storeFailedAttempt(customerInfo.getEmail(),"", user.getAddress().getZipCode(),customerInfo.getFirstName(),customerInfo.getLastName(), (String) session.getAttribute("REFERRALNAME"),"FNLNZipCode Match");
+				actionResult.addError(new ActionError(EnumUserInfoName.REPEAT_EMAIL.getCode(),"You already have an account and are ineligible for this referral offer. Please <a href=\'/login/login_main.jsp\'>log in</a> to start shopping or call Customer Service for assistance."));
+				return ERROR;
+			}
+		}
 
 		//
 		// Scrub the delivery address contained within the request
@@ -300,94 +330,111 @@ public class RegistrationAction extends WebActionSupport {
 	        addr.setZipCode(zipCode);
 			this.reclassifyUser(user, addr,serviceType , serviceResult);
 		}
+		
+		if(session.getAttribute("EXISTING_CUSTOMERID") != null ) {
+			//Refer a friend registration for existing customer who is not referred by any other customer and with zero orders.
+			String eCustId = (String) session.getAttribute("EXISTING_CUSTOMERID");			
+			//Update FN, LN in CUSTOMERINFO 
+			FDReferralManager.updateCustomerInfo(eCustId, customerInfo.getFirstName(), customerInfo.getLastName());
+			//Update PW in CUSTOMER
+			FDReferralManager.updateCustomerPW(eCustId, erpCustomer.getPasswordHash());
+			//Update SecretAnswer in FDCUSTOMER
+			FDReferralManager.updateFdCustomer(eCustId, aInfo.getPasswordHint());
+			//Login user and save user object
+			FDIdentity identity = FDCustomerManager.login(customerInfo.getEmail(),aInfo.password);
+            LOGGER.info("Identity : erpId = " + identity.getErpCustomerPK() + " : fdId = " + identity.getFDCustomerPK());
+            
+            FDUser loginUser = FDCustomerManager.recognize(identity);   
+            
+            UserUtil.createSessionUser(request, this.getWebActionContext().getResponse(), loginUser);
+            
+		} else {
 
-		//
-		// Absence of an FDIdentity in session means this is a new registration.
-		// Presence of an FDIdentity might indicate a registered user but failed predicate function
-		// (like adding a credit card in CallCenter), so don't attempt to re-register if one is found.
-		//
-		if (user.getIdentity() == null) {
-
-			ErpCustomerModel erpCustomer = aInfo.getErpCustomerModel();
-			ErpCustomerInfoModel customerInfo = new ErpCustomerInfoModel();
-			aInfo.decorateCustomerInfo(customerInfo);
-			cInfo.decorateCustomerInfo(customerInfo);
-			customerInfo.setRegRefTrackingCode(user.getLastRefTrackingCode());
-			// changes done by gopal
-			customerInfo.setReferralProgId(user.getLastRefProgId());
-			customerInfo.setReferralProgInvtId(user.getLastRefProgInvtId());
-			
-			erpCustomer.setCustomerInfo(customerInfo);
-			ErpAddressModel erpAddress = null;
-			if(address != null && address.getAddress1() != null && address.getAddress1().length() > 0) {//Only true when customer came from partial zip check page in IPhone.
-				erpAddress = new ErpAddressModel(address);
-				erpAddress.setFirstName(customerInfo.getFirstName());
-				erpAddress.setLastName(customerInfo.getLastName());
-				erpAddress.setPhone(customerInfo.getHomePhone());
-				erpAddress.setAddressInfo(address.getAddressInfo());
-				erpAddress.setServiceType(serviceType);
-				erpCustomer.addShipToAddress(erpAddress);
-			} else {
-				erpAddress=new ErpAddressModel();
-				erpAddress.setFirstName(customerInfo.getFirstName());
-				erpAddress.setLastName(customerInfo.getLastName());
-				erpAddress.setPhone(customerInfo.getHomePhone());
-				//Need to set dummy sap billing info for SAP processing.
-				erpAddress.setAddress1("23-30 borden ave");
-				erpAddress.setCity("Long Island City");
-				erpAddress.setState("NY");
-				erpAddress.setCountry("US");
-				erpAddress.setZipCode("11101");
-				/*
-				 * Alternatively we can pass the actual city,state and zipcode to SAP.
-				 */
-				//Lookup state and city by zipcode.
-				/*
-				StateCounty scinfo = FDDeliveryManager.getInstance().lookupStateCountyByZip(addInfo.getZipCode());
-				erpAddress.setCity(scinfo.getCity());
-				erpAddress.setState(scinfo.getState());
-				erpAddress.setCountry("US");
-				erpAddress.setZipCode(addInfo.getZipCode());
-				*/
-				erpAddress.setServiceType(serviceType);
-				erpCustomer.setSapBillToAddress(erpAddress);
-			}
-
-			FDCustomerModel fdCustomer = new FDCustomerModel();
-
-			fdCustomer.setPasswordHint(aInfo.getPasswordHint());
-			fdCustomer.setDepotCode(user.getDepotCode());
-			fdCustomer.setDepotCode(user.getDepotCode());
-
-			FDSurveyResponse survey = aInfo.getMarketingSurvey(new SurveyKey(EnumSurveyType.REGISTRATION_SURVEY, serviceType), request);
-
-			try {
-				FDIdentity regIdent = this.doRegistration(fdCustomer, erpCustomer, survey, serviceType);
-				//user.getShoppingCart().setZoneInfo(zoneInfo);
-				user.setIdentity(regIdent);
-				user.invalidateCache();
-				user.isLoggedIn(true);
-				user.setZipCode(erpAddress.getZipCode());
-				if(address != null) {
-					//This is from partial zip check page from where we will have a valid address.
-					user.setSelectedServiceType(AddressUtil.getDeliveryServiceType(erpAddress));
-					//Added the following line for zone pricing to keep user service type up-to-date.
-					user.setZPServiceType(AddressUtil.getDeliveryServiceType(erpAddress));
+			//
+			// Absence of an FDIdentity in session means this is a new registration.
+			// Presence of an FDIdentity might indicate a registered user but failed predicate function
+			// (like adding a credit card in CallCenter), so don't attempt to re-register if one is found.
+			//
+			if (user.getIdentity() == null) {
+				
+				customerInfo.setRegRefTrackingCode(user.getLastRefTrackingCode());
+				// changes done by gopal
+				customerInfo.setReferralProgId(user.getLastRefProgId());
+				customerInfo.setReferralProgInvtId(user.getLastRefProgInvtId());
+				
+				erpCustomer.setCustomerInfo(customerInfo);
+				ErpAddressModel erpAddress = null;
+				if(address != null && address.getAddress1() != null && address.getAddress1().length() > 0) {//Only true when customer came from partial zip check page in IPhone.
+					erpAddress = new ErpAddressModel(address);
+					erpAddress.setFirstName(customerInfo.getFirstName());
+					erpAddress.setLastName(customerInfo.getLastName());
+					erpAddress.setPhone(customerInfo.getHomePhone());
+					erpAddress.setAddressInfo(address.getAddressInfo());
+					erpAddress.setServiceType(serviceType);
+					erpCustomer.addShipToAddress(erpAddress);
 				} else {
-					//This is from regular zip Check oage.
-					user.setSelectedServiceType(serviceType);
-					user.setZPServiceType(serviceType);
+					erpAddress=new ErpAddressModel();
+					erpAddress.setFirstName(customerInfo.getFirstName());
+					erpAddress.setLastName(customerInfo.getLastName());
+					erpAddress.setPhone(customerInfo.getHomePhone());
+					//Need to set dummy sap billing info for SAP processing.
+					erpAddress.setAddress1("23-30 borden ave");
+					erpAddress.setCity("Long Island City");
+					erpAddress.setState("NY");
+					erpAddress.setCountry("US");
+					erpAddress.setZipCode("11101");
+					/*
+					 * Alternatively we can pass the actual city,state and zipcode to SAP.
+					 */
+					//Lookup state and city by zipcode.
+					/*
+					StateCounty scinfo = FDDeliveryManager.getInstance().lookupStateCountyByZip(addInfo.getZipCode());
+					erpAddress.setCity(scinfo.getCity());
+					erpAddress.setState(scinfo.getState());
+					erpAddress.setCountry("US");
+					erpAddress.setZipCode(addInfo.getZipCode());
+					*/
+					erpAddress.setServiceType(serviceType);
+					erpCustomer.setSapBillToAddress(erpAddress);
 				}
-				user.updateUserState();
-				//Set the Default Delivery pass status.
-				FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null,0,0,0,false,0,null,0);
-				user.getUser().setDlvPassInfo(dlvpassInfo);
-				session.setAttribute(SessionName.USER, user);
-			} catch (ErpDuplicateUserIdException de) {
-				LOGGER.warn("User registration failed due to duplicate id", de);
-				actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_UNIQUE_USERNAME));
+	
+				FDCustomerModel fdCustomer = new FDCustomerModel();
+	
+				fdCustomer.setPasswordHint(aInfo.getPasswordHint());
+				fdCustomer.setDepotCode(user.getDepotCode());
+				fdCustomer.setDepotCode(user.getDepotCode());
+	
+				FDSurveyResponse survey = aInfo.getMarketingSurvey(new SurveyKey(EnumSurveyType.REGISTRATION_SURVEY, serviceType), request);
+	
+				try {
+					FDIdentity regIdent = this.doRegistration(fdCustomer, erpCustomer, survey, serviceType);
+					//user.getShoppingCart().setZoneInfo(zoneInfo);
+					user.setIdentity(regIdent);
+					user.invalidateCache();
+					user.isLoggedIn(true);
+					user.setZipCode(erpAddress.getZipCode());
+					if(address != null) {
+						//This is from partial zip check page from where we will have a valid address.
+						user.setSelectedServiceType(AddressUtil.getDeliveryServiceType(erpAddress));
+						//Added the following line for zone pricing to keep user service type up-to-date.
+						user.setZPServiceType(AddressUtil.getDeliveryServiceType(erpAddress));
+					} else {
+						//This is from regular zip Check oage.
+						user.setSelectedServiceType(serviceType);
+						user.setZPServiceType(serviceType);
+					}
+					user.updateUserState();
+					//Set the Default Delivery pass status.
+					FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null,0,0,0,false,0,null,0);
+					user.getUser().setDlvPassInfo(dlvpassInfo);
+					session.setAttribute(SessionName.USER, user);
+					
+				} catch (ErpDuplicateUserIdException de) {
+					LOGGER.warn("User registration failed due to duplicate id", de);
+					actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_UNIQUE_USERNAME));
+				}
+	
 			}
-
 		}
 		return SUCCESS;
 		

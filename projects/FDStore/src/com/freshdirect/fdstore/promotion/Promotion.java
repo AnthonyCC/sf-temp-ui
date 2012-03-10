@@ -175,8 +175,9 @@ public class Promotion extends ModelSupport implements PromotionI {
 			PromotionStrategyI strategy = i.next();
 			int response = strategy.evaluate(this.promotionCode, context);
 
-			 //System.out.println("Evaluated " + this.promotionCode + " / " +
-			 //strategy.getClass().getName() + " -> " + response);
+			 System.out.println("Evaluated " + this.promotionCode + " / " +
+			 strategy.getClass().getName() + " -> " + response + " / executing strategy -> " + strategy);
+			 
 
 			switch (response) {
 

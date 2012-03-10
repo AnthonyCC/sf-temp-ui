@@ -6,6 +6,7 @@ import com.freshdirect.mktAdmin.constants.EnumFileContentType;
 import com.freshdirect.mktAdmin.exception.MktAdminApplicationException;
 import com.freshdirect.mktAdmin.model.FileDownloadBean;
 import com.freshdirect.mktAdmin.model.FileUploadBean;
+import com.freshdirect.mktAdmin.model.ReferralAdminModel;
 
 public interface FileParser {
 
@@ -13,5 +14,7 @@ public interface FileParser {
 	public Collection parseFile(FileUploadBean fileUploadBean) throws MktAdminApplicationException;
 	
 	public String generateFile(FileDownloadBean fileUploadBean) throws MktAdminApplicationException;
+	
+	public Collection<String> parseRefFile(ReferralAdminModel rModel) throws MktAdminApplicationException;
 	
 }

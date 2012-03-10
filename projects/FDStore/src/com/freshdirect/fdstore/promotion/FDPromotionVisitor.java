@@ -137,6 +137,21 @@ public class FDPromotionVisitor {
          long startTime = System.currentTimeMillis();
          FDPromotionEligibility eligibilities = new FDPromotionEligibility();
          int counter = 0;
+         
+         //Evaluate the referral promotions
+         if(context.getRedeemedPromotion() == null) {
+        	 //User did not use any redemption code, so its ok to check the eligibility of the referral promotion
+	         Collection<PromotionI> referralPromotions = context.getUser().getReferralPromoList();         
+	         for (Iterator<PromotionI> i = referralPromotions.iterator(); i.hasNext();) {        	 
+	             PromotionI autopromotion  = (PromotionI) i.next(); 
+	             String promoCode = autopromotion.getPromotionCode();
+	             LOGGER.debug("---------------------------------------------------Referral promotion: " + promoCode);
+	             boolean e = autopromotion.evaluate(context);
+	             eligibilities.setEligibility(promoCode, e);
+	             if(e && autopromotion.isFavoritesOnly()) eligibilities.addRecommendedPromo(promoCode); 
+	         }
+         }
+         
          //Get All Automatic Promo codes.  Evaluate them.
          Collection promotions = PromotionFactory.getInstance().getAllAutomaticPromotions(); 
          for (Iterator i = promotions.iterator(); i.hasNext();) {

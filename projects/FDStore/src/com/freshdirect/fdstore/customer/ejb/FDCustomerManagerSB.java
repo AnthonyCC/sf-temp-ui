@@ -454,7 +454,7 @@ public interface FDCustomerManagerSB extends EJBObject {
      * @throws FDResourceException if an error occured while accessing remote resources
      * @throws ErpComplaintException if order was not in proper state to accept complaints
      */
-    public void addComplaint(ErpComplaintModel complaint, String saleId,String erpCustomerId,String fdCustomerId, boolean autoApproveAuthorized, Double limit  ) throws FDResourceException, ErpComplaintException, RemoteException;
+    public PrimaryKey addComplaint(ErpComplaintModel complaint, String saleId,String erpCustomerId,String fdCustomerId, boolean autoApproveAuthorized, Double limit  ) throws FDResourceException, ErpComplaintException, RemoteException;
     
     public void approveComplaint(String complaintId, boolean isApproved, String csrId, boolean sendMail,Double limit) throws FDResourceException, ErpComplaintException, RemoteException;
     
@@ -767,10 +767,9 @@ public interface FDCustomerManagerSB extends EJBObject {
 	
 	public ErpAuthorizationModel verify(FDActionInfo info,ErpPaymentMethodI paymentMethod) throws FDResourceException,ErpAuthorizationException, RemoteException;
 	
-	//public void recordReferral(String customerId, String referralId, String customerEmail) throws FDResourceException, RemoteException;
+	public String recordReferral(String customerId, String referralId, String customerEmail) throws FDResourceException, RemoteException;
 	
-	//public boolean dupeEmailAddress(String email) throws FDResourceException, RemoteException;
-	//public String dupeEmailAddress(String email) throws FDResourceException, RemoteException;
+	public String dupeEmailAddress(String email) throws FDResourceException, RemoteException;
 	
 	public void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery) throws FDResourceException, RemoteException;
 	
@@ -780,7 +779,6 @@ public interface FDCustomerManagerSB extends EJBObject {
 	
 	public void storeAllMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery, String goGreen, String phone, String ext, boolean isCorpUser) throws FDResourceException, RemoteException;
 	
-	public boolean isInitialDisplay(String customerId) throws FDResourceException, RemoteException;
-	
 	public void authorizeSale(String salesId, boolean force) throws FDResourceException, RemoteException;
 }
+

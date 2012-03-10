@@ -79,7 +79,7 @@
 
 
 
-<body onload="<%=request.getAttribute("bodyOnLoad")%>" onunload="<%=request.getAttribute("bodyOnUnload")%>">
+<body onload="<%=request.getAttribute("bodyOnLoad")%>" onunload="<%=request.getAttribute("bodyOnUnload")%>" CLASS="yui-skin-sam">
 	<div class="crm_container">
 		<div class="content">
 		<%@ include file="/includes/context_help.jspf" %>

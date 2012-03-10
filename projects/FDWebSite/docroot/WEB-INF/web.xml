@@ -83,6 +83,10 @@
 		<servlet-class>com.freshdirect.webapp.oauth.provider.UserDataServlet</servlet-class>
 	</servlet>
 
+	<servlet>
+		<servlet-name>referralregistration</servlet-name>
+		<jsp-file>/registration/referee_signup.jsp</jsp-file>
+	</servlet>
    
    <servlet-mapping>
      <servlet-name>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-name>
@@ -112,7 +116,12 @@
 	<servlet-mapping>
 		<servlet-name>UserDataServlet</servlet-name>
 		<url-pattern>/oauth/user_data</url-pattern>
-	</servlet-mapping>	
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>referralregistration</servlet-name>
+		<url-pattern>/invite/*</url-pattern>
+	</servlet-mapping>
 
     <session-config>
         <session-timeout>30</session-timeout>

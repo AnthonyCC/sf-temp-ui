@@ -89,6 +89,10 @@
 						<td class="alignL"><span class="gray">Additional rules apply requiring publish</span></td>
 					</tr>
 				<% } %>
+				<tr>
+						<td class="promo_detail_label">Refferral Promo:</td>
+						<td class="alignL"><%= promotion.isReferralPromo()?"Yes":"No" %></td>
+				</tr>
 			</table>
 		</td>
 		<%-- offer descrip moved into /includes/promotions/i_promo_status.jsp --%>

@@ -1282,5 +1282,43 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setMergePendCart(FDCartModel mergePendCart) {
 		this.user.setMergePendCart(mergePendCart);
 	}
+	
+	public void setReferralLink() {
+		this.user.setReferralLink();
+	}
+
+	public String getReferralLink() {
+		return this.user.getReferralLink();
+	}
+
+	public void setReferralPrgmId(String referralPrgmId) {
+		this.user.setReferralPrgmId(referralPrgmId);
+	}
+
+	public String getReferralPrgmId() {
+		return this.user.getReferralPrgmId();
+	}
+
+	public void setReferralCustomerId(String referralCustomerId) {
+		this.user.setReferralCustomerId(referralCustomerId);
+	}
+
+	public String getReferralCustomerId() {
+		return this.user.getReferralCustomerId();
+	}
+	
+	public List<PromotionI> getReferralPromoList() {
+		return this.user.getReferralPromoList();
+	}
+	
+	public double getAvailableCredit() {
+		return this.user.getAvailableCredit();
+	}
+	
+	public boolean isReferralProgramAvailable() {
+		return this.user.isReferralProgramAvailable();		
+	}
+
+
 }
 

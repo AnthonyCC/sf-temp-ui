@@ -4544,4 +4544,11 @@
 		<bodycontent>JSP</bodycontent>
 		<info></info>
 	</tag>
+	
+	<tag>
+		<name>ReferAFriend</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.referral.ReferAFriendControllerTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+	</tag>
 </taglib>

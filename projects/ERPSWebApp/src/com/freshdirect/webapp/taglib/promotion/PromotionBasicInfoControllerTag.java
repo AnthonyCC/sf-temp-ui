@@ -146,6 +146,12 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 		this.promotion.setRuleBased("on".equals(NVL.apply(request.getParameter("ruleBased"), "off")));
 		this.promotion.setApplyFraud("on".equals(NVL.apply(request.getParameter("dontApplyFraud"), "off"))); //opposite
 		this.promotion.setNeedCustomerList("on".equals(NVL.apply(request.getParameter("eligibilityList"), "off")));
+		if("on".equals(request.getParameter("referralpromo"))) {
+			this.promotion.setReferralPromo(true);
+		} else {
+			this.promotion.setReferralPromo(false);
+		}
+		
 				
 		HttpSession session = pageContext.getSession();
 		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
@@ -321,6 +327,9 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 				result.addError(true, "redemptionCodeDuplicate", " An active promotion exists with the same redemption code, please update to save changes.");
 			}else if(FDPromotionNewManager.isRedemptionCodeExists(promotion.getRedemptionCode(),promotion.getId())){
 				result.addError(true, "redemptionCodeDuplicate", " An active promotion exists with the same redemption code, please update to save changes.");				
+			}else  if(promotion.isReferralPromo()) {
+				//promotion should be an automatic promotion for referral program
+				result.addError(true, "automaticpromo", " Referral Promotion should be automatic. Please clear the Redemption code.");
 			}
 		}
 		if(null == promotion.getOfferDesc() ||"".equals(promotion.getOfferDesc())){

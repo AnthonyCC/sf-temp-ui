@@ -919,7 +919,7 @@ FDIdentity identity = user.getIdentity();
 			%>
 			<tr>
 			 	<td colspan="6" align="right">
-					<span class="text11">You have <%= JspMethods.formatPrice(customerCreditHistory.getRemainingAmount()) %> credit. Credits will be applied during check out.</span><br>
+					<span class="text11">You have <%= JspMethods.formatPrice(customerCreditHistory.getRemainingAmount()) %> in credits that will be applied during final check out.</span><br>
 				</td>
 			</tr>
 			<%

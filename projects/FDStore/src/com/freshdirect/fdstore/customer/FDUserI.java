@@ -471,4 +471,22 @@ public interface FDUserI extends java.io.Serializable {
 	public List<FDOrderInfoI> getPendingOrders(boolean incGiftCardOrds, boolean incDonationOrds, boolean sorted) throws FDResourceException;
 	public FDCartModel getMergePendCart();
 	public void setMergePendCart(FDCartModel mergePendCart);	
+	
+	public void setReferralLink();
+
+	public String getReferralLink();
+
+	public void setReferralPrgmId(String referralPrgmId);
+
+	public String getReferralPrgmId();
+
+	public void setReferralCustomerId(String referralCustomerId);
+
+	public String getReferralCustomerId();
+	
+	public List<PromotionI> getReferralPromoList();
+	
+	public double getAvailableCredit();
+	
+	public boolean isReferralProgramAvailable();
 }

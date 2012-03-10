@@ -5,12 +5,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.sql.DataSource;
 
@@ -22,6 +25,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.object.BatchSqlUpdate;
 
+import com.freshdirect.mktAdmin.model.ReferralPromotionModel;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mktAdmin.constants.EnumCompetitorStatusType;
@@ -29,10 +33,11 @@ import com.freshdirect.mktAdmin.constants.EnumCompetitorType;
 import com.freshdirect.mktAdmin.dao.MarketAdminDAOIntf;
 import com.freshdirect.mktAdmin.model.CompetitorAddressModel;
 import com.freshdirect.mktAdmin.model.CustomerAddressModel;
+import com.freshdirect.mktAdmin.model.ReferralAdminModel;
 import com.freshdirect.mktAdmin.model.RestrictedPromoCustomerModel;
 import com.freshdirect.mktAdmin.util.CustomerModel;
 
-public  class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
+public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 
 	private JdbcTemplate jdbcTemplate;
 	
@@ -752,9 +757,587 @@ public  class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 				cm.setCustomerId(rset.getString("CUSTOMER_ID"));
 				list.add(cm);
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			LOGGER.error("Error getting UPSCustomer list", e);
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					conn.close();
+				if (rset != null)
+					rset.close();
+			} catch (Exception e) {
+			}
 		}
 		return list;
 	}
+
+	public final static String GET_PROMOTIONS = "select ID, CODE from cust.promotion_new p where REFERRAL_PROMO = 'Y'";
+
+	public List<ReferralPromotionModel> getReferralPromotions() {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		List<ReferralPromotionModel> list = new ArrayList<ReferralPromotionModel>();
+		try {
+			conn = this.jdbcTemplate.getDataSource().getConnection();
+			pstmt = conn.prepareStatement(GET_PROMOTIONS);
+			rset = pstmt.executeQuery();
+			while (rset.next()) {
+				ReferralPromotionModel rpm = new ReferralPromotionModel();
+				rpm.setPromotionId(rset.getString("ID"));
+				rpm.setDescription(rset.getString("CODE"));
+				list.add(rpm);
+			}
+		} catch (Exception e) {
+			LOGGER.error("Error getting UPSCustomer list", e);
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					conn.close();
+				if (rset != null)
+					rset.close();
+			} catch (Exception e) {
+			}
+		}
+		return list;
+	}
+
+	private static final String GET_USER = "select count(*) " +
+		    "from CUST.REFERRAL_PRGM rp, " +
+		    "CUST.REFERRAL_CUSTOMER_LIST rcl " +
+		    "where  RCL.ERP_CUSTOMER_ID = ? " + 
+		    "and    RCL.REFERAL_PRGM_ID = RP.ID " +
+		    "and    trunc(RP.EXPIRATION_DATE) > trunc(sysdate) " +
+		    "and    (rp.Delete_flag is null or rp.delete_flag != 'Y')"; 
+
+	private static final String GET_USER_BY_REFID = "select count(*) " +
+		    "from CUST.REFERRAL_PRGM rp, " +
+		    "CUST.REFERRAL_CUSTOMER_LIST rcl " +
+		    "where  RCL.ERP_CUSTOMER_ID = ? " + 
+		    "and    RCL.REFERAL_PRGM_ID = RP.ID " +
+		    "and    RP.ID != ? " +
+		    "and    trunc(RP.EXPIRATION_DATE) > trunc(sysdate) " + 
+		    "and    (rp.Delete_flag is null or rp.delete_flag != 'Y')"; 
+
+	public boolean isValidCustomer(String cid, String referralId) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		try {
+			conn = this.jdbcTemplate.getDataSource().getConnection();
+			if (referralId != null && referralId.length() > 0) {
+				pstmt = conn.prepareStatement(GET_USER_BY_REFID);
+				pstmt.setString(2, referralId);
+			} else {
+				pstmt = conn.prepareStatement(GET_USER);
+			}
+			pstmt.setString(1, cid);
+			rset = pstmt.executeQuery();
+			while (rset.next()) {
+				int cnt = rset.getInt(1);
+				if (cnt == 0) {
+					return true;
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error("Error validating customer email", e);
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					conn.close();
+				if (rset != null)
+					rset.close();
+			} catch (Exception e) {
+			}
+		}
+		return false;
+	}
+
+	private static final String CHECK_USER = "select ID from cust.customer where upper(user_id) = upper(?)";
+
+	public String isValidUserId(String email) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		String cid = null;
+		try {
+			conn = this.jdbcTemplate.getDataSource().getConnection();
+			pstmt = conn.prepareStatement(CHECK_USER);
+			pstmt.setString(1, email);
+			rset = pstmt.executeQuery();
+			if (rset.next()) {
+				cid = rset.getString(1);
+			}
+		} catch (Exception e) {
+			LOGGER.error("Error validating customer email", e);
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					conn.close();
+				if (rset != null)
+					rset.close();
+			} catch (Exception e) {
+			}
+		}
+		return cid;
+	}
+
+	private static final String INSERT_REFPROMO = "insert into  CUST.REFERRAL_PRGM (ID, EXPIRATION_DATE, GIVE_TEXT, GET_TEXT, DESCRIPTION, "
+			+ "PROMOTION_ID, REFERRAL_FEE, DEFAULT_PROMO, SHARE_HEADER, SHARE_TEXT, GIVE_HEADER, GET_HEADER, NOTES, "
+			+ "FB_IMAGE_PATH, FB_HEADLINE, FB_TEXT, TWITTER_TEXT, RL_PAGE_TEXT, RL_PAGE_LEGAL, INV_EMAIL_SUBJECT, " 
+			+ "INV_EMAIL_TEXT, INV_EMAIL_LEGAL, REF_CRE_EMAIL_SUB, REF_CRE_EMAIL_TEXT, add_by_date, add_by_user) "
+			+ "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, sysdate, ?)";
+
+	public String createRefPromo(ReferralAdminModel rModel) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		
+		String rcet = rModel.getReferralCreditEmailText();
+		String separator = System.getProperty("line.separator");
+		rcet = rcet.replaceAll(separator, "<br/>\n");
+		
+		String iet = rModel.getInviteEmailText();
+		iet = iet.replaceAll(separator, "<br/>\n");
+		
+		String rpt = rModel.getReferralPageText();
+		rpt = rpt.replaceAll(separator, "<br/>\n");
+		
+		try {
+			conn = this.jdbcTemplate.getDataSource().getConnection();
+			String id = SequenceGenerator.getNextId(conn, "CUST");
+			pstmt = conn.prepareStatement(INSERT_REFPROMO);
+			pstmt.setString(1, id);
+			java.util.Date convertToDate = null;
+			try {
+				convertToDate = format.parse(rModel.getExpirationDate());
+			} catch (ParseException e) {
+			}
+			pstmt.setDate(2, new java.sql.Date(convertToDate.getTime()));
+			pstmt.setString(3, rModel.getGiveText());
+			pstmt.setString(4, rModel.getGetText());
+			pstmt.setString(5, rModel.getDescription());
+			pstmt.setString(6, rModel.getPromotionId());
+			pstmt.setInt(7, Integer.parseInt(rModel.getReferralFee()));
+			pstmt.setString(8, rModel.getDefaultPromo()?"Y":"N");
+			pstmt.setString(9, rModel.getShareHeader());
+			pstmt.setString(10, rModel.getShareText());
+			pstmt.setString(11, rModel.getGiveHeader());
+			pstmt.setString(12, rModel.getGetHeader());
+			pstmt.setString(13, rModel.getNotes());
+			pstmt.setString(14, rModel.getFbFile());
+			pstmt.setString(15, rModel.getFbHeadline());
+			pstmt.setString(16, rModel.getFbText());
+			pstmt.setString(17, rModel.getTwitterText());
+			pstmt.setString(18, rpt);
+			pstmt.setString(19, rModel.getReferralPageLegal());
+			pstmt.setString(20, rModel.getInviteEmailSubject());
+			pstmt.setString(21, iet);
+			pstmt.setString(22, rModel.getInviteEmailLegal());
+			pstmt.setString(23, rModel.getReferralCreditEmailSubject());
+			pstmt.setString(24, rcet);
+			pstmt.setString(25, rModel.getAddByUser());
+			pstmt.execute();
+			return id;
+		} catch (Exception e) {
+			LOGGER.error("Failed with insert into CUST.REFERRAL_PRGM", e);
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					conn.close();
+				if (rset != null)
+					rset.close();
+			} catch (Exception e) {
+			}
+		}
+		return null;
+	}
+
+	private static final String INSERT_USERS = "insert into CUST.REFERRAL_CUSTOMER_LIST(REFERAL_PRGM_ID, ERP_CUSTOMER_ID) values(?,?)";
+
+	public List<String> addReferralCustomers(Collection<String> collection,
+			String referralId) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		Iterator<String> iter = collection.iterator();
+		List<String> invalidUsers = new ArrayList<String>();
+		try {
+			deleteRefPromoCustomers(referralId);
+			conn = this.jdbcTemplate.getDataSource().getConnection();
+			while (iter.hasNext()) {
+				String email = (String) iter.next();
+				// check if user is valid CUSTOMER
+				String cid = isValidUserId(email);
+				if (cid != null) {
+					// check if this email is already linked to another referral promo
+					if (isValidCustomer(cid, referralId)) {
+						// We have a valid user email. Insert into the table
+						pstmt = conn.prepareStatement(INSERT_USERS);
+						pstmt.setString(1, referralId);
+						pstmt.setString(2, cid);
+						pstmt.execute();
+
+					} else {
+						invalidUsers.add(email);
+					}
+				} else {
+					invalidUsers.add(email);
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error("Failed with insert into CUST.REFERRAL_PRGM", e);
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					conn.close();
+				if (rset != null)
+					rset.close();
+			} catch (Exception e) {
+			}
+		}
+		return invalidUsers;
+	}
+
+	private static final String GET_REF_PROMOTIONS = "select  rp.DESCRIPTION, P.description as promo_description, SHARE_HEADER, SHARE_TEXT, GET_HEADER, GET_TEXT, GIVE_HEADER, GIVE_TEXT, REFERRAL_FEE,rp.EXPIRATION_DATE, " + 
+            "DEFAULT_PROMO, NOTES,  rp.ID, PROMOTION_ID from CUST.REFERRAL_PRGM rp, " +
+            "cust.promotion_new p " +
+            "where RP.PROMOTION_ID = p.id " +
+            "and (rp.Delete_flag is null or rp.delete_flag != 'Y')";
+
+	private static final SimpleDateFormat format = new SimpleDateFormat(
+			"MM/dd/yyyy");
+
+	public List<ReferralAdminModel> getAllRefPromotions() throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		List<ReferralAdminModel> list = new ArrayList<ReferralAdminModel>();
+		try {
+			conn = this.jdbcTemplate.getDataSource().getConnection();
+			pstmt = conn.prepareStatement(GET_REF_PROMOTIONS);
+			rset = pstmt.executeQuery();
+			while (rset.next()) {
+				ReferralAdminModel rAdm = new ReferralAdminModel();
+				rAdm.setReferralId(rset.getString("ID"));
+				rAdm.setDescription(rset.getString("DESCRIPTION"));
+				String date = format.format(rset.getDate("EXPIRATION_DATE"));
+				rAdm.setExpirationDate(date);
+				rAdm.setGetText(rset.getString("GET_TEXT"));
+				rAdm.setGiveText(rset.getString("GIVE_TEXT"));
+				rAdm.setPromotionId(rset.getString("PROMOTION_ID"));
+				rAdm.setReferralFee(rset.getString("REFERRAL_FEE"));
+				rAdm.setDefaultPromo(("Y".equals(rset.getString("DEFAULT_PROMO")))?true:false);
+				rAdm.setShareHeader(rset.getString("SHARE_HEADER"));
+				rAdm.setShareText(rset.getString("SHARE_TEXT"));
+				rAdm.setGiveHeader(rset.getString("GIVE_HEADER"));
+				rAdm.setGetHeader(rset.getString("GET_HEADER"));
+				rAdm.setNotes(rset.getString("NOTES"));
+				rAdm.setPromoDescription(rset.getString("promo_description"));
+				list.add(rAdm);
+			}
+		} catch (Exception e) {
+			LOGGER.error("Error getting Referral promo list", e);
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					conn.close();
+				if (rset != null)
+					rset.close();
+			} catch (Exception e) {
+			}
+		}
+		return list;
+	}
+
+	private static final String DELETE_PROMO = "update CUST.REFERRAL_PRGM set Delete_flag='Y', change_by_date = sysdate, change_by_user=? where ID = ?";
+
+	public void deleteRefPromos(List<String> ids, String username) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = this.jdbcTemplate.getDataSource().getConnection();
+			Iterator iter = ids.iterator();
+			while (iter.hasNext()) {
+				String id = (String) iter.next();
+				pstmt = conn.prepareStatement(DELETE_PROMO);
+				pstmt.setString(1, username);
+				pstmt.setString(2, id);
+				pstmt.execute();
+			}
+		} catch (Exception e) {
+			LOGGER.error("Error getting Referral promo list", e);
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					conn.close();
+			} catch (Exception e) {
+			}
+		}
+	}
+
+	private static final String DELETE_PROMO_CUSTOMERS = "delete CUST.REFERRAL_CUSTOMER_LIST where REFERAL_PRGM_ID = ?";
+
+	public void deleteRefPromoCustomers(String id) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = this.jdbcTemplate.getDataSource().getConnection();
+			pstmt = conn.prepareStatement(DELETE_PROMO_CUSTOMERS);
+			pstmt.setString(1, id);
+			pstmt.execute();
+		} catch (Exception e) {
+			LOGGER.error("Error getting Referral promo list", e);
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					conn.close();
+			} catch (Exception e) {
+			}
+		}
+	}
+
+	private static final String GET_REF_PROMOTION = "select  rp.DESCRIPTION, P.CODE , SHARE_HEADER, SHARE_TEXT, GET_HEADER, GET_TEXT, GIVE_HEADER, GIVE_TEXT, " +
+			"REFERRAL_FEE,rp.EXPIRATION_DATE, DEFAULT_PROMO, NOTES,  rp.ID, PROMOTION_ID, rp.FB_IMAGE_PATH, rp.FB_HEADLINE, rp.FB_TEXT, rp.TWITTER_TEXT, " + 
+			"rp.RL_PAGE_TEXT, rp.RL_PAGE_LEGAL, rp.INV_EMAIL_SUBJECT, rp.INV_EMAIL_TEXT, rp.INV_EMAIL_LEGAL, rp.REF_CRE_EMAIL_SUB, rp.REF_CRE_EMAIL_TEXT " +
+			"from CUST.REFERRAL_PRGM rp, " +
+				  "cust.promotion_new p " +
+			"where rp.id = ? " + 
+			"and RP.PROMOTION_ID = p.id";
+
+	public ReferralAdminModel getRefPromotionInfo(String id)
+			throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		try {
+			conn = this.jdbcTemplate.getDataSource().getConnection();
+			pstmt = conn.prepareStatement(GET_REF_PROMOTION);
+			pstmt.setString(1, id);
+			rset = pstmt.executeQuery();
+			while (rset.next()) {
+				ReferralAdminModel rAdm = new ReferralAdminModel();
+				rAdm.setReferralId(rset.getString("ID"));
+				rAdm.setDescription(rset.getString("DESCRIPTION"));
+				String date = format.format(rset.getDate("EXPIRATION_DATE"));
+				rAdm.setExpirationDate(date);
+				rAdm.setGetText(rset.getString("GET_TEXT"));
+				rAdm.setGiveText(rset.getString("GIVE_TEXT"));
+				rAdm.setPromotionId(rset.getString("PROMOTION_ID"));
+				rAdm.setReferralFee(rset.getString("REFERRAL_FEE"));
+				rAdm.setDefaultPromo("Y".equals(rset.getString("DEFAULT_PROMO"))?true:false);
+				rAdm.setShareHeader(rset.getString("SHARE_HEADER"));
+				rAdm.setShareText(rset.getString("SHARE_TEXT"));
+				rAdm.setGiveHeader(rset.getString("GIVE_HEADER"));
+				rAdm.setGetHeader(rset.getString("GET_HEADER"));
+				rAdm.setNotes(rset.getString("NOTES"));
+				rAdm.setFbFile(rset.getString("FB_IMAGE_PATH"));
+				rAdm.setFbHeadline(rset.getString("FB_HEADLINE"));
+				rAdm.setFbText(rset.getString("FB_TEXT"));
+				rAdm.setTwitterText(rset.getString("TWITTER_TEXT"));
+				String rpt = rset.getString("RL_PAGE_TEXT");
+				if(rpt != null)
+					rpt = rpt.replaceAll("<br/>", "\n");
+				rAdm.setReferralPageText(rpt);
+				rAdm.setReferralPageLegal(rset.getString("RL_PAGE_LEGAL"));
+				rAdm.setInviteEmailSubject(rset.getString("INV_EMAIL_SUBJECT"));
+				String iet = rset.getString("INV_EMAIL_TEXT");
+				if(iet != null)
+					iet = iet.replaceAll("<br/>", "\n");
+				rAdm.setInviteEmailText(iet);
+				rAdm.setInviteEmailLegal(rset.getString("INV_EMAIL_LEGAL"));
+				rAdm.setReferralCreditEmailSubject(rset.getString("REF_CRE_EMAIL_SUB"));
+				String rcet = rset.getString("REF_CRE_EMAIL_TEXT");
+				if(rcet != null)
+					rcet = rcet.replaceAll("<br/>", "\n");
+				rAdm.setReferralCreditEmailText(rcet);
+				return rAdm;
+			}
+		} catch (Exception e) {
+			LOGGER.error("Error getting referral promo for:" + id, e);
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					conn.close();
+				if (rset != null)
+					rset.close();
+			} catch (Exception e) {
+			}
+		}
+		return null;
+	}
+
+	private static final String GET_REF_PROMO_USERS = "select EMAIL from CUST.REFERRAL_CUSTOMER_LIST where REFERAL_PRGM_ID=?";
+
+	public String getRefPromoUsers(String id) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		try {
+			conn = this.jdbcTemplate.getDataSource().getConnection();
+			pstmt = conn.prepareStatement(GET_REF_PROMO_USERS);
+			pstmt.setString(1, id);
+			rset = pstmt.executeQuery();
+			StringBuffer sb = new StringBuffer();
+			while (rset.next()) {
+				sb.append(rset.getString("EMAIL"));
+				sb.append(",");
+			}
+			return sb.toString();
+		} catch (Exception e) {
+			LOGGER.error("Error getting referral promo for:" + id, e);
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					conn.close();
+				if (rset != null)
+					rset.close();
+			} catch (Exception e) {
+			}
+		}
+		return null;
+	}
+
+	private static final String UPDATE_REFPROMO = "update CUST.REFERRAL_PRGM set EXPIRATION_DATE=?, GIVE_TEXT=?, GET_TEXT=?, "
+			+ "DESCRIPTION=?, PROMOTION_ID=?, REFERRAL_FEE=?, DEFAULT_PROMO=?, SHARE_HEADER=?, SHARE_TEXT=?, GIVE_HEADER=?, "
+			+ "GET_HEADER=?, NOTES=?, FB_IMAGE_PATH=?, FB_HEADLINE=?, FB_TEXT=?, TWITTER_TEXT=?, RL_PAGE_TEXT=?, RL_PAGE_LEGAL=?, " 
+			+ "INV_EMAIL_SUBJECT=?, INV_EMAIL_TEXT=?, INV_EMAIL_LEGAL=?, REF_CRE_EMAIL_SUB=?, REF_CRE_EMAIL_TEXT=?, "
+			+ "change_by_date = sysdate, change_by_user=? "
+			+ "where ID=?";
+
+	public void editRefPromo(ReferralAdminModel rModel) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		
+		String rcet = rModel.getReferralCreditEmailText();
+		String separator = System.getProperty("line.separator");
+		rcet = rcet.replaceAll(separator, "<br/>\n");
+		
+		String iet = rModel.getInviteEmailText();
+		iet = iet.replaceAll(separator, "<br/>\n");
+		
+		String rpt = rModel.getReferralPageText();
+		rpt = rpt.replaceAll(separator, "<br/>\n");
+
+		
+		
+		try {
+			conn = this.jdbcTemplate.getDataSource().getConnection();
+			pstmt = conn.prepareStatement(UPDATE_REFPROMO);
+			java.util.Date convertToDate = null;
+			try {
+				convertToDate = format.parse(rModel.getExpirationDate());
+			} catch (ParseException e) {
+			}
+			pstmt.setDate(1, new java.sql.Date(convertToDate.getTime()));
+			pstmt.setString(2, rModel.getGiveText());
+			pstmt.setString(3, rModel.getGetText());
+			pstmt.setString(4, rModel.getDescription());
+			pstmt.setString(5, rModel.getPromotionId());
+			pstmt.setInt(6, Integer.parseInt(rModel.getReferralFee()));			
+			pstmt.setString(7, rModel.getDefaultPromo()?"Y":"N");
+			pstmt.setString(8, rModel.getShareHeader());
+			pstmt.setString(9, rModel.getShareText());
+			pstmt.setString(10, rModel.getGiveHeader());
+			pstmt.setString(11, rModel.getGetHeader());
+			pstmt.setString(12, rModel.getNotes());
+			pstmt.setString(13, rModel.getFbFile());
+			pstmt.setString(14, rModel.getFbHeadline());
+			pstmt.setString(15, rModel.getFbText());
+			pstmt.setString(16, rModel.getTwitterText());
+			pstmt.setString(17, rpt);
+			pstmt.setString(18, rModel.getReferralPageLegal());
+			pstmt.setString(19, rModel.getInviteEmailSubject());
+			pstmt.setString(20, iet);
+			pstmt.setString(21, rModel.getInviteEmailLegal());
+			pstmt.setString(22, rModel.getReferralCreditEmailSubject());
+			pstmt.setString(23, rcet);
+			pstmt.setString(24, rModel.getAddByUser());
+			pstmt.setString(25, rModel.getReferralId());
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			LOGGER.error("Failed with insert into CUST.REFERRAL_PRGM", e);
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					conn.close();
+				if (rset != null)
+					rset.close();
+			} catch (Exception e) {
+			}
+		}
+	}
+	
+	public static final String GET_DEFAULT_PROMO = "select count(*) " +
+				"from  CUST.REFERRAL_PRGM rp " +
+				"where RP.DEFAULT_PROMO = 'Y' " +
+				"and   trunc(RP.EXPIRATION_DATE) > trunc(sysdate) " +
+				"and   RP.ID != ? " + 
+				"and  (rp.Delete_flag is null or rp.delete_flag != 'Y')";
+	
+	public static final String GET_DEFAULT_PROMO1 = "select count(*) " +
+		"from  CUST.REFERRAL_PRGM rp " +
+		"where RP.DEFAULT_PROMO = 'Y' " +
+		"and   trunc(RP.EXPIRATION_DATE) > trunc(sysdate)" +
+		"and  (rp.Delete_flag is null or rp.delete_flag != 'Y')";
+	
+	public boolean defaultPromoExists (String referral_id) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		try {
+			conn = this.jdbcTemplate.getDataSource().getConnection();
+			if(referral_id != null) {
+				pstmt = conn.prepareStatement(GET_DEFAULT_PROMO);
+				pstmt.setString(1, referral_id);
+			} else {
+				pstmt = conn.prepareStatement(GET_DEFAULT_PROMO1);
+			}
+			rset = pstmt.executeQuery();
+			while (rset.next()) {
+				int cnt = rset.getInt(1);
+				if(cnt > 0)
+					return true;
+			}
+		} catch (Exception e) {
+			LOGGER.error("Error getting referral promo for:" + referral_id, e);
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					conn.close();
+				if (rset != null)
+					rset.close();
+			} catch (Exception e) {
+			}
+		}
+		return false;
+	}
+
 }

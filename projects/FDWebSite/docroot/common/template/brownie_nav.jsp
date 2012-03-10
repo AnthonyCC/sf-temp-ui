@@ -1,81 +1,107 @@
-<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
-<html>
+
+<% //expanded page dimensions
+final int W_DNAV_TOTAL = 970;
+%>
+<html xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
     <title><tmpl:get name='title'/></title>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-	<meta http-equiv="X-UA-Compatible" content="IE=8" />
-	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<%@ include file="/common/template/includes/metatags.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+	<fd:css href="/assets/css/brownie_points.css"/>
+	
+	<fd:css href="/assets/css/TextboxList.css"/>
+	
+	<% if(!"fb".equals(request.getParameter("current"))) { %>
+		<script type="text/javascript" src="/assets/javascript/mootools-1.2.1-core-yc.js"></script>	
+	
+		<script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 
-	<fd:javascript src="/assets/javascript/timeslots.js"/>
-     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	<fd:css href="/assets/css/giftcards.css"/>
-    <fd:css href="/assets/css/timeslots.css"/>
-	 <%
-		if ( (request.getRequestURI().indexOf("/your_account/giftcards.jsp")>-1) || (request.getRequestURI().indexOf("/your_account/gc_order_details.jsp")>-1) ) {
-			//do nothing
-		} else { %>
-			<%@ include file="/shared/template/includes/ccl.jspf" %>
-	<% } %>
+		<!-- required for TextboxList -->
+		<script type="text/javascript" src="/assets/javascript/GrowingInput.js"></script>
+					
+		<script type="text/javascript" src="/assets/javascript/TextboxList.js"></script>
+	
+		<script type="text/javascript" src="https://www.plaxo.com/css/m/js/util.js"></script>
+		<script type="text/javascript" src="https://www.plaxo.com/css/m/js/basic.js"></script>
+		<script type="text/javascript" src="https://www.plaxo.com/css/m/js/abc_launcher.js"></script>
+	
+		<script type="text/javascript"><!--
+			var t2;
+			window.addEvent('load', function(){
+				// With custom adding keys 
+				t2 = new TextboxList('form_tags_input', {bitsOptions:{editable:{addKeys: [188,Event.Keys.enter]}}});
+			});
+			
+			
+			
+			function onABCommComplete() {
+			  // OPTIONAL: do something here after the new data has been populated in your text area
+			  var eCount = 0;
+			  var element = document.getElementById("recipient_list")
+			  if(element != null) {
+				  var data = element.value;  
+				  //window.alert("data:" + data);			  
+				  if(data.trim().length > 0) {
+					var currentTagTokens = data.split( "," );
+					for(i=0;i<currentTagTokens.length;i++) {
+						var email = currentTagTokens[i].substring(currentTagTokens[i].indexOf("<") + 1, currentTagTokens[i].indexOf(">"));
+						//window.alert("email:"+email);
+						t2.add(email);
+					}
+				  }
+				  element.value = "";
+			   }
+			   //document.getElementById("emailnumber").innerHTML=eCount;
+			}
+		//--></script>	
+<% } %>
+
+<script type="text/javascript" src="/assets/javascript/ZeroClipboard.js"></script>
+<script type="text/javascript" src="/assets/javascript/curvycorners.js"></script>
+<script type="text/javascript" src="/assets/javascript/shadedborder.js"></script>
+
 </head>
-<BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333" CLASS="text10 yui-skin-sam">
-<CENTER>
-<%@ include file="/common/template/includes/globalnav.jspf" %> 
-<TABLE WIDTH="745" BORDER="0" CELLPADDING="0" CELLSPACING="0">
-<TR><td WIDTH="6" COLSPAN="2" ROWSPAN="2"><img src="/media_stat/images/layout/top_left_curve.gif" width="6" height="6" border="0"></td>
-<td width="733" valign="top" BGCOLOR="#999966"><img src="/media_stat/images/layout/999966.gif" width="733" height="1" border="0"></td>
-<td WIDTH="6" COLSPAN="2" ROWSPAN="2"><img src="/media_stat/images/layout/top_right_curve.gif" width="6" height="6" border="0"></td>
-</TR>
+<body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#ff9900" text="#333333">
+<%@ include file="/common/template/includes/globalnav.jspf" %> 		
+<CENTER class="text10">
+<TABLE WIDTH="<%=W_DNAV_TOTAL%>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 <TR>
-<td width="733" valign="top"><img src="/media_stat/images/layout/clear.gif" width="733" height="5" border="0"></td>
+<td width="<%=W_DNAV_TOTAL%>" valign="top"><img src="/media_stat/images/layout/clear.gif" width="<%=W_DNAV_TOTAL%>" height="5" border="0"></td>
 </TR>
 
 <TR>
-<TD WIDTH="1" BGCOLOR="#999966"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="34"></TD>
-<TD WIDTH="743" COLSPAN="3">
+<TD WIDTH="<%=W_DNAV_TOTAL%>">
 <%@ include file="/common/template/includes/deptnav.jspf" %></TD>
-<TD WIDTH="1" BGCOLOR="#999966"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="34"></TD>
 </TR>
 <TR>
-<TD WIDTH="745" BGCOLOR="#999966" COLSPAN="7"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1"></TD>
+<TD WIDTH="<%=W_DNAV_TOTAL%>" BGCOLOR="#999966" COLSPAN="7"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1"></TD>
 </TR>
 
 <TR VALIGN="TOP">
-<TD BGCOLOR="#999966" VALIGN="BOTTOM" WIDTH="1"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1"></TD>
-<TD width="743" colspan="3" align="center">
-<img src="/media_stat/images/layout/clear.gif" height="20" width="743"><br>
+<TD width="<%=W_DNAV_TOTAL%>" align="center">
+<img src="/media_stat/images/layout/clear.gif" height="20" width="<%=W_DNAV_TOTAL%>"><br>
 <!-- content lands here -->
 <tmpl:get name='content'/>
 <!-- content ends above here-->
 <br><br></TD>
-<TD BGCOLOR="#999966" VALIGN="BOTTOM" WIDTH="1"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1"></TD>
 </TR>
 
 <%-- spacers --%>
 <tr valign="top">
-	<td bgcolor="#999966"><img src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
-	<td><img src="/media_stat/images/layout/clear.gif" height="1" width="5"></td>
-	<td><img src="/media_stat/images/layout/clear.gif" height="1" width="733"></td>
-	<td><img src="/media_stat/images/layout/clear.gif" height="1" width="5"></td>
-	<td bgcolor="#999966"><img src="/media_stat/images/clear.gif" width="1" height="1"></td>
+	<td><img src="/media_stat/images/layout/clear.gif" height="1" width="<%=W_DNAV_TOTAL%>"></td>
 </tr>
 
 <TR VALIGN="BOTTOM">
-<td WIDTH="6" COLSPAN="2" ROWSPAN="2"><img src="/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6" border="0"></td>
-<td width="733"><img src="/media_stat/images/layout/clear.gif" width="733" height="5" border="0"></td>
-<td WIDTH="6" COLSPAN="2" ROWSPAN="2"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6" border="0"></td>
-</TR>
-<TR>
-<td width="733" BGCOLOR="#999966" VALIGN="BOTTOM"><img src="/media_stat/images/layout/999966.gif" width="733" height="1" border="0"></td>
+<td width="<%=W_DNAV_TOTAL%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_DNAV_TOTAL%>" height="5" border="0"></td>
 </TR>
 </TABLE>
-<%@ include file="/common/template/includes/footer.jspf" %>
 </CENTER>
-</BODY>
+<%@ include file="/common/template/includes/footer.jspf" %>
 </HTML>

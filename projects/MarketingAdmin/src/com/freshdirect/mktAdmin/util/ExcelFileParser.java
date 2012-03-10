@@ -25,10 +25,71 @@ import com.freshdirect.mktAdmin.model.CompetitorAddressModel;
 import com.freshdirect.mktAdmin.model.CustomerAddressModel;
 import com.freshdirect.mktAdmin.model.FileDownloadBean;
 import com.freshdirect.mktAdmin.model.FileUploadBean;
+import com.freshdirect.mktAdmin.model.ReferralAdminModel;
 
 public class ExcelFileParser implements FileParser {
 
 	private final static Category LOGGER = LoggerFactory.getInstance(ExcelFileParser.class);
+	
+	public Collection parseRefFile(ReferralAdminModel rModel) throws MktAdminApplicationException {
+		InputStream input=null;
+		POIFSFileSystem fs=null;
+		List modelList=null;
+		try
+		{
+			input = new ByteArrayInputStream(rModel.getBytes());
+			fs = new POIFSFileSystem(input);
+			HSSFWorkbook wb = new HSSFWorkbook(fs);			   
+	        modelList=new ArrayList();
+	
+	               for (int k = 0; k < wb.getNumberOfSheets(); k++)
+	               {
+	            	   LOGGER.debug("Sheet " + k);
+	                   HSSFSheet sheet = wb.getSheetAt(k);
+	                   int       rows  = sheet.getPhysicalNumberOfRows();
+	                   LOGGER.debug("rows " + rows);
+	                   for (int r = 0; r < rows; r++)
+	                   {                	   
+	                       HSSFRow row   =  sheet.getRow(r);	                       	                       	                       
+	                       if(r==0 ){
+	                    	   try{
+	                    		   validateExcelFileColumns(row);   
+	                    	   }catch(MktAdminApplicationException e){
+	                    		   if(r==0 && "104".equalsIgnoreCase(e.getErrorCode())){
+	                    			   // could be first row is empty. stupid uploaded file. lets see another one
+	                    			   r++;
+	                    			   HSSFRow rowOne   =  sheet.getRow(r);
+	                    			   validateExcelFileColumns(rowOne);
+	                    			   continue;
+	                    		   }
+	                    	   }
+	                    	   
+	                    	   continue;
+	                       }
+	                       	                       
+	                       
+	                       if(row==null) 
+	                    	   continue; 
+	                       
+                                              
+	                       HSSFCell nameCell  = row.getCell((short)0);	                       
+	                       if(nameCell.getStringCellValue()==null || nameCell.getStringCellValue().trim().length()==0){
+	                    	   continue;
+	                       }
+	                       
+	                       modelList.add(nameCell.getStringCellValue());
+	                   }
+	               }
+				} catch (Exception e) {
+					//TODO
+				} finally
+				{
+					try{
+					if(input!=null) input.close();
+					}catch(IOException ignore){}
+				}		
+               return modelList;
+	}
 	
 	public Collection parseFile(FileUploadBean fileUploadBean) throws MktAdminApplicationException {
 		// TODO Auto-generated method stub
@@ -312,5 +373,13 @@ public class ExcelFileParser implements FileParser {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public void validateExcelFileColumns(HSSFRow row) throws MktAdminApplicationException {
+		HSSFCell nameCell  = row.getCell((short)0);
+	    System.out.println("nameCell.getStringCellValue()"+nameCell.getStringCellValue());
+	    if(!"CUSTOMER_FDID".equalsIgnoreCase(nameCell.getStringCellValue())){
+	   	 throw new MktAdminApplicationException("105",new String[]{"First","CUSTOMER_FDID"});
+	    }
+    }
 	
 }

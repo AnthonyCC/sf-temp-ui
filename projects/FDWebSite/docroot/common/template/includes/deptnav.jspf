@@ -48,12 +48,12 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 				folderMap.put("Reminder Service","/your_account/reminder_service.jsp");
 				folderMap.put("Your Shopping Lists","/quickshop/all_lists.jsp");
 				folderMap.put("Your Profile","/your_account/customer_profile_summary.jsp");
-				/*
+				
 				if(user.isReferralProgramAvailable()) {
 					folderMap.put("Refer A Friend","/your_account/brownie_points.jsp");
 				}
-				folderMap.put("Account Credits","/your_account/creadits.jsp");
-				*/
+				folderMap.put("Account Credits","/your_account/credits.jsp");
+				
 				int maxRows = 3;
 				int maxCols = folderMap.size() / maxRows+(folderMap.size()%maxRows!=0?1:0);
 				Iterator<String> itr=folderMap.keySet().iterator();

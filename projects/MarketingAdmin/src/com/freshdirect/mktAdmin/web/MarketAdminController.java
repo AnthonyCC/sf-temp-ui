@@ -291,6 +291,11 @@ public class MarketAdminController extends MultiActionController implements Init
 		this.marketAdminService = marketAdminService;
 	}
 	
+	public ModelAndView createRefPromoHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		
+		return new ModelAndView("createRefPage");
+	}
+	
 	
 	
 	

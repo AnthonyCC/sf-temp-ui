@@ -114,6 +114,8 @@ public class EnumAccountActivityType implements java.io.Serializable {
 	public final static EnumAccountActivityType		REFER_A_FRIEND						= new EnumAccountActivityType( "ReferAFriend", "Referral Sent." );
 	public final static EnumAccountActivityType		VOICE_SHOT						    = new EnumAccountActivityType( "Voiceshot", "Voiceshot Sent" );
 	public final static EnumAccountActivityType		REFERRAL_CREDIT 				    = new EnumAccountActivityType( "Referral Credit", "Referral Credit" );
+	public final static EnumAccountActivityType		REFEREE_SIGNEDUP 				    = new EnumAccountActivityType( "Referee SignedUp", "Referee Signed Up" );
+	public final static EnumAccountActivityType		REFEREE_OFFER_REDEEMED			    = new EnumAccountActivityType( "Referee Redeem", "Referee Offer Redeemed" );
 	public final static EnumAccountActivityType		GO_GREEN 				            = new EnumAccountActivityType( "Go Green", "Go Green Flag" );
 	public final static EnumAccountActivityType		DELIVERY_NOTIFICATION	            = new EnumAccountActivityType( "Del Notif.", "Delivery Notification text message option" );
 	public final static EnumAccountActivityType		OFFER_NOTIFICATION	                = new EnumAccountActivityType( "Offer Notif.", "Offer Notification text message option" );

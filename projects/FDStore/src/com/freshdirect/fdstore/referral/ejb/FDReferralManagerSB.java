@@ -9,9 +9,13 @@ import java.util.List;
 
 import javax.ejb.EJBObject;
 
+import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.customer.ErpCustomerCreditModel;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.referral.ManageInvitesModel;
 import com.freshdirect.fdstore.referral.ReferralCampaign;
 import com.freshdirect.fdstore.referral.ReferralChannel;
 import com.freshdirect.fdstore.referral.ReferralHistory;
@@ -19,6 +23,7 @@ import com.freshdirect.fdstore.referral.ReferralObjective;
 import com.freshdirect.fdstore.referral.ReferralPartner;
 import com.freshdirect.fdstore.referral.ReferralProgram;
 import com.freshdirect.fdstore.referral.ReferralProgramInvitaionModel;
+import com.freshdirect.fdstore.referral.ReferralPromotionModel;
 import com.freshdirect.fdstore.referral.ReferralSearchCriteria;
 
 /**
@@ -135,5 +140,43 @@ public interface FDReferralManagerSB extends EJBObject {
 	 public abstract List getReferralPartners(ReferralSearchCriteria criteria)throws FDResourceException, RemoteException;
 	  
 	 public abstract List getReferralObjective(ReferralSearchCriteria criteria)throws FDResourceException, RemoteException;
+	 
+	 public abstract ReferralPromotionModel getReferralPromotionDetails(String userId)throws FDResourceException, RemoteException;
+	 
+	 public abstract void sendMails(String recipient_list, String mail_message, FDUser identity, String rpid, String serverName) throws FDResourceException, RemoteException;
+	 
+	 public abstract List<ManageInvitesModel> getManageInvites(String customerId)throws FDResourceException, RemoteException;
+	 
+	 public abstract List<ErpCustomerCreditModel> getUserCredits(String customerId)throws FDResourceException, RemoteException;
+	 
+	 public abstract List<ManageInvitesModel> getManageInvitesForCRM(String customerId)throws FDResourceException, RemoteException;
+	 
+	 public abstract Double getAvailableCredit(String customerId)throws FDResourceException, RemoteException;
+	 
+	 public abstract Boolean getReferralDisplayFlag(String customerId)throws FDResourceException, RemoteException;
+	 
+	 public abstract List<ReferralPromotionModel> getSettledSales()throws FDResourceException, RemoteException;
+	 
+	 public abstract String getReferralLink(String customerId)throws FDResourceException, RemoteException;
+	 
+	 public abstract String getLatestSTLSale(String customerId)throws FDResourceException, RemoteException;
+	 
+	 public abstract void saveCustomerCredit(String referral_customer_id, String customer_id, int ref_fee, String sale, String complaintId, String refPrgmId) throws FDResourceException, RemoteException;
+	 
+	 public abstract boolean isCustomerReferred(String customerId)throws FDResourceException, RemoteException;
+	 
+	 public abstract String updateFDUser(String customerId, String zipCode, EnumServiceType serviceType)throws FDResourceException, RemoteException;
+	 
+	 public abstract void updateCustomerInfo(String customerId, String firstName, String lastName)throws FDResourceException, RemoteException;
+	 
+	 public abstract void updateCustomerPW(String customerId, String pwdHash)throws FDResourceException, RemoteException;
+	 
+	 public abstract void updateFdCustomer(String customerId, String pwdHint)throws FDResourceException, RemoteException;
+	 
+	 public abstract void storeFailedAttempt(String email, String dupeCustID, String zipCode, String firstName, String lastName, String referral, String reason) throws FDResourceException, RemoteException;
+	 
+	 public abstract boolean isUniqueFNLNZipCombo(String firstName, String lastName, String zipCode) throws FDResourceException, RemoteException;
+	 
+	 public abstract String getReferralName(String referralId) throws FDResourceException, RemoteException;
 	 
 }

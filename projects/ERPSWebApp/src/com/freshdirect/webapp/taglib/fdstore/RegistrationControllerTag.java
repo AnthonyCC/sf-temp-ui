@@ -8,6 +8,7 @@
  */
 package com.freshdirect.webapp.taglib.fdstore;
 
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,12 +19,16 @@ import org.apache.log4j.Category;
 import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
+import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateAddressException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpInvalidPasswordException;
+import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.fdstore.FDDepotManager;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
@@ -33,12 +38,14 @@ import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mail.EmailUtil;
+import com.freshdirect.webapp.action.Action;
 import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.fdstore.RegistrationAction;
 import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
@@ -113,6 +120,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				this.setSuccessPage(ra.getSuccessPage()); //reset if changed.
 
 			} else if ("registerEx".equalsIgnoreCase(actionName)) {
+				this.pageContext.getSession().removeAttribute("RAFREGISTRATION");
 				RegistrationAction ra = new RegistrationAction(this.registrationType);
 
 				HttpContext ctx =
@@ -123,21 +131,37 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 
 				ra.setHttpContext(ctx);
 				ra.setResult(actionResult);
-				ra.executeEx();
-				/* APPDEV-1888 Refer a Friend
+				/* APPDEV-1888 Refer a Friend */
 				String result = ra.executeEx();
 				if((Action.SUCCESS).equals(result)) {
 					//if referral information is available, record it.
 					if(this.pageContext.getSession().getAttribute("REFERRALNAME") != null) {
 						try {						
+							user = (FDSessionUser) session.getAttribute(USER);
+							LOGGER.debug(user.getIdentity().getErpCustomerPK());
+							LOGGER.debug(user.getUserId());
+							LOGGER.debug((String) this.pageContext.getSession().getAttribute("REFERRALNAME"));
 							LOGGER.debug("Adding referral record for CID:" + user.getIdentity().getErpCustomerPK() + "-email:" + user.getUserId() + "-reflink:" + (String) this.pageContext.getSession().getAttribute("REFERRALNAME"));
-							FDCustomerManager.recordReferral(user.getIdentity().getErpCustomerPK(), (String) this.pageContext.getSession().getAttribute("REFERRALNAME"), user.getUserId());
+							String customerId = user.getIdentity().getErpCustomerPK();
+							String referralCustomerId = FDCustomerManager.recordReferral(customerId, (String) this.pageContext.getSession().getAttribute("REFERRALNAME"), user.getUserId());
+							//Record the referee signup in referral activitylog
+							ErpActivityRecord rec = new ErpActivityRecord();
+							rec.setActivityType(EnumAccountActivityType.REFEREE_SIGNEDUP);
+							rec.setSource(EnumTransactionSource.WEBSITE);
+							rec.setInitiator("CUSTOMER");
+							rec.setCustomerId(referralCustomerId);
+							rec.setDate(new Date());
+							rec.setNote("<a href=\"/main/summary.jsp?erpCustId=" + customerId + "\">"+user.getUserId() + "</a> <a href=\"/main/summary.jsp?erpCustId=" + customerId + "\">ID #" + customerId + "</a>");
+							new ErpLogActivityCommand(FDServiceLocator.getInstance(), rec).execute();
+							this.pageContext.getSession().setAttribute("RAFREGISTRATION", "COMPLETE");
+							this.pageContext.getSession().removeAttribute("REFERRAL_EMAIL");
+							this.pageContext.getSession().removeAttribute("EXISTING_CUSTOMERID");
+							this.setSuccessPage("/registration/referee_signup2.jsp");
 						} catch (Exception e) {
 							LOGGER.error("Exception when trying to update FDCustomer with referral ID",e);
 						}
 					}
 				}
-				*/
 
 			}else if ("addDeliveryAddressEx".equalsIgnoreCase(actionName)) {
 				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, actionResult, actionName);
@@ -235,7 +259,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 			
 			
 			//save it to DB			
-			FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
+			FDSessionUser user = (FDSessionUser) session.getAttribute(USER);				
 			try {
 				FDCustomerManager.storeAllMobilePreferences(user.getIdentity().getErpCustomerPK(), mobile_number, text_offers, text_delivery, go_green, busphone, ext, user.isCorporateUser());
 			} catch (FDResourceException e) {

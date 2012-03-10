@@ -26,6 +26,8 @@ public class ErpCustomerCreditModel extends ErpCreditModel {
 	private PrimaryKey complaintPk;
 	private double remainingAmount = 0;
 	private Date createDate;
+	private String cDate;
+	private String saleId;
 
 	public ErpCustomerCreditModel() {
 		super();
@@ -64,6 +66,22 @@ public class ErpCustomerCreditModel extends ErpCreditModel {
 	
 	public void setCreateDate(Date createDate){
 		this.createDate = createDate;
+	}
+
+	public void setcDate(String cDate) {
+		this.cDate = cDate;
+	}
+
+	public String getcDate() {
+		return cDate;
+	}
+
+	public void setSaleId(String saleId) {
+		this.saleId = saleId;
+	}
+
+	public String getSaleId() {
+		return saleId;
 	}
 }
 

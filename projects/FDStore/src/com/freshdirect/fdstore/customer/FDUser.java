@@ -80,10 +80,9 @@ import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.SignupDiscountRule;
 import com.freshdirect.fdstore.promotion.WaiveDeliveryCharge;
-/*APPDEV-1888
+/*APPDEV-1888*/
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewManager;
 import com.freshdirect.fdstore.referral.FDReferralManager;
-*/
 import com.freshdirect.fdstore.rules.EligibilityCalculator;
 import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
@@ -225,14 +224,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 	private boolean showPendingOrderOverlay = true;
 	private FDCartModel mergePendCart = new FDCartModel();
 
-	/*Appdev-1888
+	/*Appdev-1888 */
 	private String referralLink;
 	private String referralPrgmId;
 	private String referralCustomerId;
 	List<PromotionI> referralPromoList = new ArrayList<PromotionI>();
 	Double totalCredit = null;
 	Boolean referralFlag = null;
-	*/
 
 	public FDUserDlvPassInfo getDlvPassInfo() {
 		return dlvPassInfo;
@@ -395,27 +393,25 @@ public class FDUser extends ModelSupport implements FDUserI {
 			: PromotionFactory.getInstance().getPromotion(this.redeemedPromotionCode);
 	}
 
-	/*APPDEV-1888
+	/*APPDEV-1888*/
 	public List<PromotionI> getReferralPromoList() {
 		return referralPromoList;
 	}
 
 	public void setReferralPromoList() throws FDResourceException {
 		// get all referral promotions
-		referralPromoList = FDPromotionNewManager.getReferralPromotions(this
-				.getIdentity().getErpCustomerPK());
+		if(this.getIdentity() != null)
+			referralPromoList = FDPromotionNewManager.getReferralPromotions(this.getIdentity().getErpCustomerPK());
 	}
-	*/
 
     public void updateUserState(){
 		try {
 			this.getShoppingCart().recalculateTaxAndBottleDeposit(getZipCode());
 			this.getShoppingCart().updateSurcharges(new FDRulesContextImpl(this));
-			/*APPDEV-1888
+			/*APPDEV-1888*/
 			if (this.getReferralPromoList().size() == 0) {
 				this.setReferralPromoList();
-			}
-			*/
+			}			
 			this.applyPromotions();
 		} catch (FDResourceException e) {
 			throw new FDRuntimeException(e.getMessage());
@@ -2148,12 +2144,19 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 	}
 
-	/*
-	public void setReferralLink(String referralLink) {
-		this.referralLink = referralLink;
+	
+	public void setReferralLink() {
+		try {
+			this.referralLink = FDReferralManager.getReferralLink(this
+					.getIdentity().getErpCustomerPK());
+		} catch (FDResourceException e) {
+			LOGGER.error("Exception getting referralLink", e);
+		};
 	}
 
 	public String getReferralLink() {
+		if(referralLink == null)
+			setReferralLink();
 		return referralLink;
 	}
 
@@ -2195,12 +2198,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 
 	public void setReferralPromoAvailable() {
-		try {
+		try {			
 			referralFlag = FDReferralManager.getReferralDisplayFlag(this.getIdentity().getErpCustomerPK());
+			LOGGER.debug("Getting ref display for :" + this.getIdentity().getErpCustomerPK() + "-and flag is:" + referralFlag);
 		} catch (FDResourceException e) {
 			LOGGER.error("Exception getting totalCredit", e);
 		}
 	}
-	*/
+	
 
 }

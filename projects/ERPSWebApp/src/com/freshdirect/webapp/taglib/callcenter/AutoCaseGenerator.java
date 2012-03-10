@@ -110,35 +110,37 @@ public class AutoCaseGenerator {
 		}
 		
 
-		// fill in additional fields
-		String value;
-		value = request.getParameter("ci_media");
-		if (value != null)
-			newCase.setCrmCaseMedia(value);
-
-		value = request.getParameter("ci_moreissue");
-		if (value != null)
-			newCase.setMoreThenOneIssue(value);
-
-		value = request.getParameter("ci_1st_ctct");
-		if (value != null)
-			newCase.setFirstContactForIssue(value);
-
-		value = request.getParameter("ci_isres");
-		if (value != null)
-			newCase.setFirstContactResolved(value);
-
-		value = request.getParameter("ci_reason_nr");
-		if (value != null)
-			newCase.setResonForNotResolve(value);
-
-		value = request.getParameter("ci_satisf");
-		if (value != null)
-			newCase.setSatisfiedWithResolution(value);
-
-		value = request.getParameter("ci_ctone");
-		if (value != null)
-			newCase.setCustomerTone(value);
+		if(request != null) {
+			// fill in additional fields
+			String value;
+			value = request.getParameter("ci_media");
+			if (value != null)
+				newCase.setCrmCaseMedia(value);
+	
+			value = request.getParameter("ci_moreissue");
+			if (value != null)
+				newCase.setMoreThenOneIssue(value);
+	
+			value = request.getParameter("ci_1st_ctct");
+			if (value != null)
+				newCase.setFirstContactForIssue(value);
+	
+			value = request.getParameter("ci_isres");
+			if (value != null)
+				newCase.setFirstContactResolved(value);
+	
+			value = request.getParameter("ci_reason_nr");
+			if (value != null)
+				newCase.setResonForNotResolve(value);
+	
+			value = request.getParameter("ci_satisf");
+			if (value != null)
+				newCase.setSatisfiedWithResolution(value);
+	
+			value = request.getParameter("ci_ctone");
+			if (value != null)
+				newCase.setCustomerTone(value);
+		}
 		
 		
 		// Add note action about details

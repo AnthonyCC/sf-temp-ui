@@ -11,11 +11,87 @@
 <%@ taglib uri="http://jakarta.apache.org/struts/tags-logic-1.0" prefix='logic'%>
 <%@ taglib uri="/WEB-INF/shared/tld/freshdirect.tld" prefix='fd' %>
 <%@ taglib uri="/WEB-INF/tld/crm.tld" prefix="crm" %>
-<style type="text/css">
+<style>
 .case_content_red_field {
 color: #CC0000;
 font-weight: bold;
 font-size: 10pt;
+}
+
+	.yui-skin-sam .yui-pg-container {
+		text-align: right;
+	}
+
+	.yui-skin-sam .yui-dt table {
+		width: 100% !important;
+		BORDER: 0px !important;
+		font-family: Verdana,Arial,sans-serif !important;
+	}
+	
+	.yui-skin-sam .yui-dt thead {		
+		font-size: 11px;
+		font-weight: bold !important;
+		border: none;
+	}
+	
+	.yui-skin-sam .yui-dt th, .yui-skin-sam .yui-dt th a {
+		font-weight:bold !important;
+		text-decoration:underline !important;
+		font-size: 10pt;
+	}
+	
+	.yui-skin-sam th.yui-dt-asc .yui-dt-liner	{
+		background: none !important;
+	}
+	
+	.yui-skin-sam th.yui-dt-asc, .yui-skin-sam th.yui-dt-desc {
+		background: url("/assets/yui-2.9.0/assets/skins/sam/sprite.png") repeat-x scroll 0 0 #D8D8DA !important;
+	}
+	
+	.yui-skin-sam .yui-dt th, .yui-skin-sam .yui-dt td {
+		border-width: 0 !important;
+		text-align: left;		
+	}
+	
+	.yui-dt-label {
+		font-size: 11px;
+		font-weight: bold !important;
+	}
+	
+	.yui-skin-sam tr.yui-dt-even td.yui-dt-asc, .yui-skin-sam tr.yui-dt-even td.yui-dt-desc {
+		background-color: #FFFFFF !important;
+	}
+	
+	.yui-skin-sam tr.yui-dt-odd, .yui-skin-sam tr.yui-dt-odd td.yui-dt-asc, .yui-skin-sam tr.yui-dt-odd td.yui-dt-desc {
+		background-color: #EEEEEE !important;		
+	}
+	
+	
+	.yui-skin-sam .yui-dt-liner {
+		text-align: center;
+	}
+	
+	.yui-skin-sam .yui-pg-page {
+		border: 0px !important;
+		padding: 2px !important;		
+	}
+	
+	#yui-history-iframe {
+	  position:absolute;
+	  top:0; left:0;
+	  width:1px; height:1px; /* avoid scrollbars */
+	  visibility:hidden;
+	}
+	
+	.yui-skin-sam .yui-dt-paginator {
+		font-weight: bold;
+	}
+	
+	.yui-skin-sam .yui-pg-first, .yui-skin-sam .yui-pg-previous, .yui-skin-sam .yui-pg-next, .yui-skin-sam .yui-pg-last, .yui-skin-sam .yui-pg-current, .yui-skin-sam .yui-pg-pages, .yui-skin-sam .yui-pg-page {
+		font-family: Verdana,Arial,sans-serif !important;
+		font-size: 9px;
+		font-weight: bold;
+	}
 }
 </style>
 <crm:GetFDUser id="user">
@@ -84,7 +160,46 @@ if(null != activities){
 }
 
 Map map =(HashMap)pageContext.getAttribute("filterList");
+
+
+org.json.JSONObject jobj = new org.json.JSONObject();
+jobj.put("totalRecords", activities.size());
+org.json.JSONArray jsonItems = new org.json.JSONArray();
+for(int i=0; i< activities.size(); i++) {
+	com.freshdirect.customer.ErpActivityRecord activity = (com.freshdirect.customer.ErpActivityRecord) activities.get(i);
+	String action = "<b>" + activity.getActivityType().getName() + "</b>" + ((activity.getNote() != null && !"".equals(activity.getNote())) ? " - " +activity.getNote() : "");
+	if (activity.getChangeOrderId() != null) { 
+		action = action + "<i>(Order #: " + activity.getChangeOrderId() + ")</i>";
+	} 
+	if (activity.getStandingOrderId() != null) { 
+		action = action + "<i>(Standing Order #: " + activity.getStandingOrderId() + ")</i>";
+	} 
+	
+	org.json.JSONObject obj = new org.json.JSONObject();
+	obj.put("adate", CCFormatter.formatDateTime(activity.getDate()));
+	obj.put("action", action);
+	obj.put("actionby", activity.getMasqueradeAgent() == null ? activity.getInitiator() : (activity.getMasqueradeAgent() + " as " + activity.getInitiator()));
+	obj.put("source", activity.getSource().getName());
+	jsonItems.put(obj);
+}
+
+jobj.put("records", jsonItems);
+	
+String jsonString = jobj.toString();
 %>
+<!-- Combo-handled YUI CSS files: -->
+<fd:css href="/assets/yui-2.9.0/paginator/assets/skins/sam/paginator.css" />
+<fd:css href="/assets/yui-2.9.0/datatable/assets/skins/sam/datatable.css" />
+
+<!-- Combo-handled YUI JS files: -->
+<fd:javascript  src="/assets/yui-2.9.0/yahoo-dom-event/yahoo-dom-event.js" />
+<fd:javascript  src="/assets/yui-2.9.0/connection/connection-min.js" />
+<fd:javascript  src="/assets/yui-2.9.0/element/element-min.js" />
+<fd:javascript  src="/assets/yui-2.9.0/paginator/paginator-min.js"/>
+<fd:javascript  src="/assets/yui-2.9.0/datasource/datasource-min.js" />
+<fd:javascript  src="/assets/yui-2.9.0/datatable/datatable-min.js" />
+<fd:javascript  src="/assets/yui-2.9.0/json/json-min.js" />
+
 <tmpl:insert template='/template/top_nav.jsp'>
 
 	<tmpl:put name='title' direct='true'>Activity Log</tmpl:put>
@@ -167,44 +282,50 @@ Map map =(HashMap)pageContext.getAttribute("filterList");
 			</table>
 			</form>
 			</div>
-		<div class="list_header">
-		<table width="100%" cellpadding="0" cellspacing="2" border="0" class="list_header_text">
-			<tr>
-				<td width="1%"></td>
-				<td width="18%"><a href="?<%= sort.getFieldParams("date") %>" class="list_header_text">Date | Time</a></td>
-				<td width="52%"><a href="?<%= sort.getFieldParams("activity") %>" class="list_header_text">Action</a></td>
-				<td width="14%"><a href="?<%= sort.getFieldParams("initiator") %>" class="list_header_text">By</a></td>
-				<td width="14%"><a href="?<%= sort.getFieldParams("source") %>" class="list_header_text">Source</a></td>
-				<td><img src="/media_stat/crm/images/clear.gif" width="8" height="1"></td>
-			</tr>
-		</table>
-		</div>
+			<table width="100%" cellpadding="0" cellspacing="0" border="0" class="list_content_text">
+			<tr><td>
+			<div id="pagenums"></div>
+			<div id="dynamicdata"></div> 
+			</td></tr>
+			</table>
+			
+			<script type="text/javascript">
+				YAHOO.util.Event.addListener(window, "load", function() {
+					YAHOO.example.ClientPagination = function() {
+						var myColumnDefs = [
+							{key:"adate", label:"Date | Time", sortable:true},
+							{key:"action", label:"Action", sortable:true},
+							{key:"actionby", label:"By", sortable:true},
+							{key:"source", label:"Source", sortable:true}
+						];
 
-		<div class="list_content">
-		<table width="100%" cellpadding="0" cellspacing="0" border="0" class="list_content_text">
-		<% if (null != activities && activities.size() > 0) {%>
-			<logic:iterate id="activity" collection="<%= activities %>" type="com.freshdirect.customer.ErpActivityRecord"> 
-			<tr valign="top"">
-				<td width="1%"></td>
-				<td width="18%"><%= CCFormatter.formatDateTime(activity.getDate()) %></td>
-				<td width="52%"><b><%= activity.getActivityType().getName() %></b><%= (activity.getNote() != null && !"".equals(activity.getNote())) ? " - " : "" %><%= activity.getNote() %>
-					<% if (activity.getChangeOrderId() != null) { %><i>(Order #: <%= activity.getChangeOrderId() %>)</i><% } %>
-					<% if (activity.getStandingOrderId() != null) { %><i>(Standing Order #: <%= activity.getStandingOrderId() %>)</i><% } %>
-				</td>
-				<td width="14%"><%= activity.getMasqueradeAgent() == null ? activity.getInitiator() : activity.getMasqueradeAgent() + " as " + activity.getInitiator() %></td>
-				<td width="14%"><%= activity.getSource().getName() %></td>
-			</tr>
-			<tr class="list_separator" style="padding: 0px;"><td colspan="5"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>
-			</logic:iterate>
-		<% } else { %>
-			<tr>
-				<td></td>
-				<td colspan="5"><br><i>No activity logged.</i></td>
-				<td></td>
-			</tr>
-		<% } %>
-		</table>
-		</div>
+						var myDataSource = new YAHOO.util.DataSource(<%= jsonString %>);
+						myDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
+						myDataSource.responseSchema = {
+							resultsList: "records",
+							fields: ["adate","action","actionby","source"]
+						};
+
+						var oConfigs = {
+								paginator: new YAHOO.widget.Paginator({
+									rowsPerPage: 15
+								}),
+								initialRequest: "results=10504",
+								paginator: new YAHOO.widget.Paginator({ rowsPerPage:15,
+									template : "Page: {PageLinks}",
+									containers  : 'pagenums'
+								}) // Enables pagination 
+						};
+						var myDataTable = new YAHOO.widget.DataTable("dynamicdata", myColumnDefs,
+								myDataSource, oConfigs);
+								
+						return {
+							oDS: myDataSource,
+							oDT: myDataTable
+						};
+					}();
+				});
+				</script>
 
 	</tmpl:put>
 

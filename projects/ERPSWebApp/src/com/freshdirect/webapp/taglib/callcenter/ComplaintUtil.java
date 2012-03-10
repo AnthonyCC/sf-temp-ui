@@ -162,6 +162,7 @@ public class ComplaintUtil {
         else if ( "buy big".equalsIgnoreCase(dept) ){ r = "BIG"; }
         else if ( "local".equalsIgnoreCase(dept) ){ r = "LOC"; }
         else if ( "what's good".equalsIgnoreCase(dept) ){ r = "WGD"; }
+        else if ( "RAF".equalsIgnoreCase(dept) ){ r = "RAF"; }
       /*  else if ( "Gift Cards Test Department".equalsIgnoreCase(dept)){r = "GCD";}*/
 
         return r;

@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore.promotion.management.ejb;
 
+import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -957,6 +958,18 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		} finally {
             close(conn);
 		}		
+	}
+	
+	public List<PromotionI> getReferralPromotions(String customerId) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return FDPromotionNewDAO.getReferralPromotions(customerId, conn);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+            close(conn);
+		}	
 	}
 
 }

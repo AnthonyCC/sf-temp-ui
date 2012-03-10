@@ -3830,12 +3830,12 @@ public class FDCustomerManager {
 		}
 	}
 	
-	/* APPDEV-1888
-	public static void recordReferral(String customerId, String referralId, String customerEmail) throws FDResourceException {
+	/* APPDEV-1888 */
+	public static String recordReferral(String customerId, String referralId, String customerEmail) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			sb.recordReferral(customerId, referralId, customerEmail);
+			return sb.recordReferral(customerId, referralId, customerEmail);
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -3859,7 +3859,7 @@ public class FDCustomerManager {
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
-	*/
+	
 
 	public static void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery) throws FDResourceException {
 		lookupManagerHome();
@@ -3937,21 +3937,8 @@ public class FDCustomerManager {
 	
 	private static void logActivity(ErpActivityRecord record) {
 		new ErpLogActivityCommand(LOCATOR, record).execute();
-	}
+	}	
 	
-	public static boolean isInitialDisplay(String customerId) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			return sb.isInitialDisplay(customerId);
-		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		}
-	}
 	
 	public static void sendEmail(XMLEmailI email) throws FDResourceException {
 		lookupMailerGatewayHome();

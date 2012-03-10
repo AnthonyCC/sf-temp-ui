@@ -1,14 +1,15 @@
 package com.freshdirect.mktAdmin.service;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
+import com.freshdirect.mktAdmin.model.ReferralPromotionModel;
 import com.freshdirect.mktAdmin.constants.EnumFileType;
 import com.freshdirect.mktAdmin.exception.MktAdminApplicationException;
 import com.freshdirect.mktAdmin.model.CompetitorAddressModel;
 import com.freshdirect.mktAdmin.model.FileUploadBean;
 import com.freshdirect.mktAdmin.model.FileUploadedInfo;
+import com.freshdirect.mktAdmin.model.ReferralAdminModel;
 import com.freshdirect.mktAdmin.model.RestrictionSearchBean;
 
 public interface MarketAdminServiceIntf {
@@ -52,4 +53,22 @@ public interface MarketAdminServiceIntf {
 	public void newReplacePromoRestrictedCustomers(Collection collection) throws MktAdminApplicationException;
 	
 	public FileUploadedInfo parseMktAdminAutoUploadFile(FileUploadBean bean) throws MktAdminApplicationException;
+	
+	public List<ReferralPromotionModel> getReferralPromotions() throws MktAdminApplicationException;
+	
+	public String validateCustomerList(String userList, String referralId) throws MktAdminApplicationException;
+	
+	public String createRefPromo(ReferralAdminModel rModel) throws MktAdminApplicationException;
+	
+	public List<ReferralAdminModel> getAllRefPromotions() throws MktAdminApplicationException;
+	
+	public void deleteRefPromos(List<String> ids, String username) throws MktAdminApplicationException;
+	
+	public ReferralAdminModel getRefPromotionInfo(String id) throws MktAdminApplicationException;
+	
+	public void editRefPromo(ReferralAdminModel rModel) throws MktAdminApplicationException;
+	
+	public  List<String> addReferralCustomers(Collection<String> collection, String referralId) throws MktAdminApplicationException;
+	
+	public  boolean defaultPromoExists(String referral_id) throws MktAdminApplicationException;
 }

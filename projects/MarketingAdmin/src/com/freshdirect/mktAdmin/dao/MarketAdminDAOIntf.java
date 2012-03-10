@@ -2,8 +2,13 @@ package com.freshdirect.mktAdmin.dao;
 
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.mktAdmin.exception.MktAdminApplicationException;
+import com.freshdirect.mktAdmin.model.ReferralAdminModel;
+import com.freshdirect.mktAdmin.model.ReferralPromotionModel;
 import com.freshdirect.mktAdmin.model.CompetitorAddressModel;
 import com.freshdirect.mktAdmin.model.CustomerAddressModel;
 
@@ -50,5 +55,23 @@ public interface MarketAdminDAOIntf {
 	public Map getCustomerIdsForEmailAddress(String emailAddress[]) throws SQLException;
 	
 	public void deleteRestrictedCustomer(String promotionCode) throws SQLException;
+	
+	public List<ReferralPromotionModel> getReferralPromotions() throws SQLException;
+	
+	public boolean isValidCustomer(String email, String referralId) throws SQLException;
+	
+	public String createRefPromo(ReferralAdminModel rModel) throws SQLException;
+	
+	public List<ReferralAdminModel> getAllRefPromotions() throws SQLException;
+	
+	public void deleteRefPromos(List<String> ids, String username) throws SQLException;
+	
+	public ReferralAdminModel getRefPromotionInfo(String id) throws SQLException;
+	
+	public void editRefPromo(ReferralAdminModel rModel) throws SQLException;
+	
+	public  List<String> addReferralCustomers(Collection<String> collection, String referralId) throws SQLException;
+	
+	public boolean defaultPromoExists(String referral_id) throws SQLException;
 			
 }

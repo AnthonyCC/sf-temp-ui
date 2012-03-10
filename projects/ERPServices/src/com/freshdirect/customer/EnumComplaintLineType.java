@@ -18,6 +18,7 @@ public class EnumComplaintLineType implements java.io.Serializable {
     public final static EnumComplaintLineType MISCELLANEOUS		= new EnumComplaintLineType(2, "MISC", "Miscellaneous");
     public final static EnumComplaintLineType FULL_REFUND		= new EnumComplaintLineType(3, "FULL", "Full Refund");
     public final static EnumComplaintLineType SEVENTY_FIVE_PCT	= new EnumComplaintLineType(4, "75PT", "75% Refund");
+    public final static EnumComplaintLineType REFERRAL	        = new EnumComplaintLineType(5, "RAF", "Refer A Friend");
 
     private EnumComplaintLineType(int id, String statusCode, String name) {
         this.id = id;
@@ -42,6 +43,7 @@ public class EnumComplaintLineType implements java.io.Serializable {
     private String name;
 
     public static EnumComplaintLineType getComplaintLineType(String code) {
+    	//System.out.println("Checking code: " + code);
 		if ( "ORLN".equalsIgnoreCase(code) ) {
 			return ORDER_LINE;
 		} else if ( "DEPT".equalsIgnoreCase(code) ) {
@@ -52,6 +54,8 @@ public class EnumComplaintLineType implements java.io.Serializable {
 			return FULL_REFUND;
 		} else if ( "75PT".equalsIgnoreCase(code) ) {
 			return SEVENTY_FIVE_PCT;
+		} else if ( "RAF".equalsIgnoreCase(code) ) {
+			return REFERRAL;
 		} else
 			return null;
 	}

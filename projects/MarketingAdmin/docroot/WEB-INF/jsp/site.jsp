@@ -22,7 +22,7 @@
 		<title>Marketing Admin ::  Spring Framework </title>
 		<style type="text/css">
 		<!--
-			td { padding:3px; }
+			td { padding:3px; font-family:verdana,arial,helvetica,sans-serif; font-size:12px;}
 			div#top {position:absolute; top: 0px; left: 0px; background-color: #E4EFF3;background-image: url(logo.gif);background-position: 100px 1px;background-repeat: no-repeat; height: 50px; width:100%; padding:0px; border: none;margin: 0;}
             
         .competitorHeader

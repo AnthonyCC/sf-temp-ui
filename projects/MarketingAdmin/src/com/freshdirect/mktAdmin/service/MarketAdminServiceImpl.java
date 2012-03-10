@@ -4,11 +4,13 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.mail.MessagingException;
 
@@ -18,6 +20,7 @@ import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.promotion.FDPromotionNewModelFactory;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
+import com.freshdirect.mktAdmin.model.ReferralPromotionModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.mktAdmin.constants.EnumCompetitorStatusType;
@@ -32,6 +35,7 @@ import com.freshdirect.mktAdmin.model.CustomerAddressModel;
 import com.freshdirect.mktAdmin.model.FileDownloadBean;
 import com.freshdirect.mktAdmin.model.FileUploadBean;
 import com.freshdirect.mktAdmin.model.FileUploadedInfo;
+import com.freshdirect.mktAdmin.model.ReferralAdminModel;
 import com.freshdirect.mktAdmin.model.RestrictedPromoCustomerModel;
 import com.freshdirect.mktAdmin.model.RestrictionListUploadBean;
 import com.freshdirect.mktAdmin.model.RestrictionSearchBean;
@@ -947,6 +951,96 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 				LOGGER.error("Error while getting the UPS Outage customer list", e);
 			}
 			return null;
+		}
+		
+		public List<ReferralPromotionModel> getReferralPromotions() throws MktAdminApplicationException {
+			try {
+				return mktAdminDAOImpl.getReferralPromotions();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+		
+		public String validateCustomerList(String userList, String referralId) throws MktAdminApplicationException {
+			StringTokenizer stokens = new StringTokenizer(userList, ",");
+			StringBuffer sb = new StringBuffer();
+			while(stokens.hasMoreTokens()) {
+				String email = stokens.nextToken();
+				try {
+					if(!getMktAdminDAOImpl().isValidCustomer(email, referralId)) {
+						sb.append(email);
+						sb.append(", ");
+					}
+				} catch (SQLException e) {
+					LOGGER.error("Error validating users emails", e);
+				}
+			}
+			if(sb.length() > 0)
+				return sb.toString();
+			return null;
+		}
+		
+		public String createRefPromo(ReferralAdminModel rModel) throws MktAdminApplicationException {
+			try {
+				return getMktAdminDAOImpl().createRefPromo(rModel);
+			} catch (SQLException e) {
+				LOGGER.error("Error inserting referral promo", e);
+			}
+			return null;
+		}
+		
+		public List<ReferralAdminModel> getAllRefPromotions() throws MktAdminApplicationException {
+			try {
+				return getMktAdminDAOImpl().getAllRefPromotions();
+			} catch (SQLException e) {
+				LOGGER.error("Error inserting referral promo", e);
+			}
+			return null;
+		}
+		
+		public void deleteRefPromos(List<String> ids, String username) throws MktAdminApplicationException {
+			try {
+				getMktAdminDAOImpl().deleteRefPromos(ids, username);
+			} catch (SQLException e) {
+				LOGGER.error("Error inserting referral promo", e);
+			}
+		}
+		
+		public ReferralAdminModel getRefPromotionInfo(String id) throws MktAdminApplicationException {
+			try {
+				return getMktAdminDAOImpl().getRefPromotionInfo(id);
+			} catch (SQLException e) {
+				LOGGER.error("Error getting referral promo for:" + id, e);
+			}
+			return null;
+		}
+		
+		public void editRefPromo(ReferralAdminModel rModel) throws MktAdminApplicationException {
+			try {
+				getMktAdminDAOImpl().editRefPromo(rModel);
+			} catch (SQLException e) {
+				LOGGER.error("Error inserting referral promo", e);
+			}
+		}
+		
+		public List<String> addReferralCustomers(Collection<String> collection, String referralId) throws MktAdminApplicationException {
+			try {
+				return getMktAdminDAOImpl().addReferralCustomers(collection, referralId);
+			} catch (SQLException e) {
+				LOGGER.error("Error inserting referral promo", e);
+			}
+			return null;
+		}
+		
+		public boolean defaultPromoExists(String referral_id) throws MktAdminApplicationException {
+			try {
+				return getMktAdminDAOImpl().defaultPromoExists(referral_id);
+			} catch (SQLException e) {
+				LOGGER.error("Error inserting referral promo", e);
+			}
+			return false;
 		}
 			
 }

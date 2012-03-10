@@ -148,7 +148,7 @@ public class FDUserDAO {
 	private static final String LOAD_FROM_IDENTITY_QUERY =
 		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE,fdu.HPLETTER_VISITED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
 		"erpc.active, ci.receive_news,fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID, fdu.ZP_SERVICE_TYPE " +
-		//",fdc.referer_customer_id, fdc.referral_prgm_id " +
+		",fdc.referer_customer_id " +
 		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci " +
 		"WHERE fdu.FDCUSTOMER_ID=fdc.id and fdc.ERP_CUSTOMER_ID=erpc.ID and erpc.id=? " +
 		"AND erpc.id = ci.customer_id";
@@ -178,7 +178,7 @@ public class FDUserDAO {
 	private static final String LOAD_FROM_EMAIL_QUERY =
 		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE,fdu.HPLETTER_VISITED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
 		"erpc.active, ci.receive_news,fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID, fdu.ZP_SERVICE_TYPE  " +
-		//",fdc.referer_customer_id, fdc.referral_prgm_id " +
+		",fdc.referer_customer_id " +
 		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci " +
 		"WHERE fdu.FDCUSTOMER_ID=fdc.id and fdc.ERP_CUSTOMER_ID=erpc.ID and erpc.user_id=? " +
 		"AND erpc.id = ci.customer_id";
@@ -204,10 +204,11 @@ public class FDUserDAO {
 	private static final String LOAD_FROM_COOKIE_QUERY =
 		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE, fdu.HPLETTER_VISITED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
 		"erpc.active, ci.receive_news, fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID, fdu.ZP_SERVICE_TYPE " +
-		//",fdc.referral_link, fdc.referer_customer_id, fdc.referral_prgm_id " +
-		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci " +
+		",rl.referral_link, fdc.referer_customer_id " +
+		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci, CUST.REFERRAL_LINK rl  " +
 		"WHERE fdu.cookie=? and fdu.FDCUSTOMER_ID=fdc.id(+) and fdc.ERP_CUSTOMER_ID=erpc.ID(+) " +
-		"AND erpc.id = ci.customer_id(+)";
+		"AND erpc.id = ci.customer_id(+) " +
+		"and  RL.CUSTOMER_ID(+)  = ERPC.ID";
 
 	public static FDUser reconnizeWithCookie(Connection conn, String cookie) throws SQLException {
 		LOGGER.debug("attempting to load FDUser from cookie");
@@ -273,8 +274,7 @@ public class FDUserDAO {
 			user.setCohortName(rs.getString("COHORT_ID"));
 			
 			//APPDEV-1888 referral info
-			//user.setReferralPrgmId(rs.getString("referral_prgm_id"));
-			//user.setReferralCustomerId(rs.getString("referer_customer_id"));
+			user.setReferralCustomerId(rs.getString("referer_customer_id"));
 		} else {
 			user = new FDUser();
 		}
@@ -504,29 +504,4 @@ public class FDUserDAO {
 		}
 	}
 	
-	public static boolean isInitialDisplay(Connection conn, String customerId) {
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			ps = conn.prepareStatement("select 1 from cust.customerinfo ci where customer_id = ? " +
-									   "and CI.DELIVERY_NOTIFICATION is null and CI.OFFERS_NOTIFICATION is null " +
-									   "and CI.GO_GREEN is null and CI.MOBILE_NUMBER is null " +
-									   "and CI.MOBILE_PREFERENCE_FLAG is null");				
-			ps.setString(1, customerId);
-			rs = ps.executeQuery();
-			if(rs.next()) {
-				return true;
-			}
-		} catch (Exception e) {
-			LOGGER.error("Error updating mobile preferences", e);
-		} finally {
-			try {
-				if(ps != null)
-					ps.close();
-				if(rs != null)
-					rs.close();
-			} catch (Exception e1) {}
-		}
-		return false;
-	}
 }

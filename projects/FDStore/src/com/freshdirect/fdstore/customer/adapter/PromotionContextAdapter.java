@@ -414,9 +414,16 @@ public class PromotionContextAdapter implements PromotionContextI {
 		if(promo.isRedemption() || this.isMaxDiscountAmount(promotionAmt, promo.getPriority(), applied)){
 			//Clear the previous discount.
 			lineItem.removeLineItemDiscount();
+			double pAmt = ((lineItem.getPrice()/lineItem.getQuantity())-promotionAmt>=0.0?promotionAmt:lineItem.getPrice()/lineItem.getQuantity());
+			if(skuLimit > 0 && lineItem.getUnitPrice().indexOf("lb") != -1) {
+				//For lineitems with LB, consider quantity as 1
+				if(lineItem.getPrice() > promotionAmt)
+					pAmt = promotionAmt;
+				else
+					pAmt = lineItem.getPrice();
+			}
 			//Add this discount.
-			Discount discount = new Discount(promo.getPromotionCode(), EnumDiscountType.DOLLAR_OFF, (lineItem.getPrice()/lineItem.getQuantity())-promotionAmt>=0.0?promotionAmt
-					:lineItem.getPrice()/lineItem.getQuantity());
+			Discount discount = new Discount(promo.getPromotionCode(), EnumDiscountType.DOLLAR_OFF, pAmt);
 			discount.setSkuLimit(skuLimit);
 			lineItem.setDiscount(discount);
 			return true;

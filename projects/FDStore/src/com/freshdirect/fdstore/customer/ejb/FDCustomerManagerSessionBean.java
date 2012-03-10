@@ -160,7 +160,7 @@ import com.freshdirect.fdstore.mail.FDGiftCardEmailFactory;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.ejb.FDPromotionNewDAO;
-//import com.freshdirect.fdstore.referral.ejb.FDReferAFriendDAO;
+import com.freshdirect.fdstore.referral.ejb.FDReferAFriendDAO;
 import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.request.FDProductRequestDAO;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
@@ -2646,7 +2646,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * @throws ErpComplaintException
 	 *             if order was not in proper state to accept complaints
 	 */
-	public void addComplaint(ErpComplaintModel complaint, String saleId,
+	public PrimaryKey addComplaint(ErpComplaintModel complaint, String saleId,
 			String erpCustomerId, String fdCustomerId, boolean autoApproveAuthorized, Double limit )
 			throws FDResourceException, ErpComplaintException {
 		try {
@@ -2655,6 +2655,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			PrimaryKey cPk = sb.addComplaint(complaint, saleId,  autoApproveAuthorized, limit );
 			ErpComplaintModel alteredComplaint = sb.getComplaintInfo(saleId,
 					cPk.getId()).getComplaint();
+			
+			System.out.println(alteredComplaint.okToSendEmailOnCreate());
+			System.out.println(alteredComplaint.getStatus());
+			System.out.println(alteredComplaint.okToSendEmailOnCreate());
+			System.out.println(alteredComplaint.okToSendEmailOnApproval());
+			
 			if (alteredComplaint.okToSendEmailOnCreate()
 					|| (alteredComplaint.getStatus().equals(
 							EnumComplaintStatus.APPROVED) && (alteredComplaint
@@ -2677,6 +2683,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				alteredComplaint.getCustomerEmail().setMailSent(true);
 				sb.updateEmailSentFlag(alteredComplaint.getCustomerEmail());
 			}
+			return cPk;
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -3843,6 +3850,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				credit.setIssuedBy(rs.getString("CREATED_BY"));
 				credit.setApprovedBy(rs.getString("APPROVED_BY"));
 				credit.setOrderType(rs.getString("TYPE"));
+				
+				if("Referral".equals(rs.getString("DEPARTMENT"))) {
+					//Get the order number that helped to earn this credit
+					credit.setRefSaleId(getReferralSaleID(identity.getErpCustomerPK(), rs.getString("COMPLAINT_ID")));
+				}
 
 				lst.add(credit);
 				prevCredit = credit;
@@ -3867,6 +3879,39 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 
 		}
+	}
+
+	private String getReferralSaleID(String customerId, String complaintId) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			conn = this.getConnection();
+			ps = conn.prepareStatement("select ci.credit_sale_id from cust.customer_invites ci where CI.REFERRAL_CUSTOMER_ID = ?  and CI.COMPLAINT_ID = ?");
+			ps.setString(1, customerId);
+			ps.setString(2, complaintId);
+			rs = ps.executeQuery();
+
+			if (rs.next()) {
+				return rs.getString(1);
+			}
+				
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (ps != null) {
+					ps.close();
+				}
+			} catch (SQLException e) {				
+			}
+			close(conn);
+		}
+		return "";
 	}
 
 	public void storeCustomerRequest(FDCustomerRequest cr)
@@ -6250,12 +6295,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		
 	}
 
-	/*
-	public void recordReferral(String customerId, String referralId, String customerEmail) throws FDResourceException, RemoteException {
+	
+	public String recordReferral(String customerId, String referralId, String customerEmail) throws FDResourceException, RemoteException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			FDReferAFriendDAO.recordReferral(customerId, referralId, customerEmail, conn);
+			return FDReferAFriendDAO.recordReferral(customerId, referralId, customerEmail, conn);
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
@@ -6273,8 +6318,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} finally {
 			close(conn);
 		}
-	}
-	*/
+	}	
 	
 	public void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery) throws FDResourceException {
 		Connection conn = null;
@@ -6324,18 +6368,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	public boolean isInitialDisplay(String customerId) throws FDResourceException {
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			return FDUserDAO.isInitialDisplay(conn, customerId);
-		} catch (SQLException sqle) {
-			throw new FDResourceException(sqle);
-		} finally {
-			close(conn);
-		}
-	}
-
 
 }
 

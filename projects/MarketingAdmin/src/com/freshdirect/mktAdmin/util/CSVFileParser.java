@@ -33,6 +33,7 @@ import com.freshdirect.mktAdmin.exception.MktAdminApplicationException;
 import com.freshdirect.mktAdmin.exception.MktAdminSystemException;
 import com.freshdirect.mktAdmin.model.FileDownloadBean;
 import com.freshdirect.mktAdmin.model.FileUploadBean;
+import com.freshdirect.mktAdmin.model.ReferralAdminModel;
 import com.freshdirect.mktAdmin.model.RestrictedPromoCustomerModel;
 import com.freshdirect.mktAdmin.model.RestrictionListUploadBean;
 
@@ -41,6 +42,43 @@ public class CSVFileParser implements FileParser {
 	private final static Category LOGGER = LoggerFactory.getInstance(CSVFileParser.class);
 	
 	private static final String FILE_COLUMN_HEADER[]=new String[]{"CUSTOMER_FDID","EMAIL_ADDRESS","FIRST_NAME","LAST_NAME"};
+	
+	public Collection<String> parseRefFile(ReferralAdminModel rModel) throws MktAdminApplicationException {
+		InputStream input=null;
+		List<String> list = new ArrayList<String>();
+		try
+		{
+			input = new ByteArrayInputStream(rModel.getBytes());				
+			CSVReader reader=new CSVReader(new InputStreamReader(input), ',', '\\');
+			String[] nextLine;
+			boolean isHearderRead=false;
+			while ((nextLine = reader.readNext()) != null) {
+				if(!isHearderRead){
+		           isHearderRead=true;	                    	   
+		           if(!FILE_COLUMN_HEADER[0].equalsIgnoreCase(nextLine[0])){
+		             	throw new MktAdminApplicationException("119",new String[]{"First",FILE_COLUMN_HEADER[0]});
+		           }
+		           continue;
+				}
+		               
+		        if(nextLine==null) 
+		        	continue; 
+		               
+		        if(nextLine[0]==null || nextLine[0].trim().length()<2){                    	  
+		        	continue;
+		        }
+		           
+		        list.add(nextLine[0]);
+			}
+		} catch (Exception e) {
+			LOGGER.error("Error parsing the file", e);
+		} finally {
+			try{
+				if(input!=null) input.close();
+			}catch(IOException ignore){}
+		}		
+        return list;
+	}
 	
 	public Collection parseFile(FileUploadBean fileUploadBean) throws MktAdminApplicationException {
 		// TODO Auto-generated method stub

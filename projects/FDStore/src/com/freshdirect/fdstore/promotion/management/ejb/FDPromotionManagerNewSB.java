@@ -123,5 +123,7 @@ public interface FDPromotionManagerNewSB extends EJBObject {
 	public List<WSAdminInfo> getActualAmountSpentByDays() throws FDResourceException, RemoteException;
 	
 	public List<WSPromotionInfo> getAllActiveWSPromotions(java.util.Date effectiveDate) throws FDResourceException, RemoteException;
+	
+	public List<PromotionI> getReferralPromotions(String customerId) throws FDResourceException, RemoteException;
 }
 
