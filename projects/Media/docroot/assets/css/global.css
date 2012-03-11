@@ -1,4 +1,3 @@
-
 /* global, non-browser specific, css */
 
 @font-face {
@@ -101,6 +100,7 @@ A.list		    { line-height: 12px; }
 .title10 	     { font-size: 9px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 
 .text11		     { font-size: 10px; font-family: Verdana, Arial, sans-serif; }
+.text11italics	 { font-size: 11px; font-style: italic; font-family: Verdana, Arial, sans-serif; }
 
 .text11g	     { font-size: 10px; color: #336600; font-family: Verdana, Arial, sans-serif; }
 .text11gbold	 { font-size: 10px; color: #336600; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
@@ -114,12 +114,14 @@ A.list		    { line-height: 12px; }
 .title11 		 { font-size: 10px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 
 .text12 		 { font-size: 11px; font-family: Verdana, Arial, sans-serif; }
+.text12px 		 { font-size: 12px; font-family: Verdana, Arial, sans-serif; }
 .text12bold 	 { font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .text12rbold	 { font-size: 11px; font-weight: bold; color: #CC0000; font-family: Verdana, Arial, sans-serif; }
 .text12wbold     { font-size: 11px; color: #FFFFFF; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .title12 		 { font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .text13bold 	 { font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .title13g2		 { font-size: 13px;  line-height: 18px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+.text14bold 	 { font-size: 14px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .title17 	     { font-size: 16px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .title18or	     { font-size: 18px; color: #f93; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 
@@ -872,106 +874,201 @@ div.control, div.slotRow, div.time {
 		float: right;
 		text-align: left;
 		font-size: 11px;
+		width: 185px;
 	}
 	.index_ordMod_cont .ordModifyButCont a {
 		font-weight: normal;		
 	}
-	
-	.butCont {
-		border-collapse: collapse;
-		padding: 0;
-		margin: 0;
-		line-height: 30px;
-	}
-	.butCont .butText, .butCont .butText:active, .butCont .butText:link, .butCont .butText:visited {
-		display: block;
-		height: 100%;
-		padding: 0 3px;
-		color: #fff;
-		font-family: Verdana, Futura;
-		font-size: 13px;
-		text-shadow: #666 1px 1px 1px;
-		border: 0;
-		text-decoration: none;
-	}
-	.butCont .butTextGreen, .butCont .butTextGreen:active, .butCont .butTextGreen:link, .butCont .butTextGreen:visited {
-		color: #360;
-	}
-	.butCont .butText img {
-		margin-bottom: -3px;
-	}
-	
-	.butBrownLeft, .butBrownMiddle, .butBrownRight {
-		height: 30px;
-	}
-	.butBrownLeft, .butBrownRight {
-		width: 5px;
-		padding-left: 0px;
-		padding-right: 0px;
-	}
-	.butBrownLeft {
-		background: transparent url('/media/images/buttons/button_brown_left.gif') no-repeat;
-	}
-	.butBrownMiddle {
-		background: transparent url('/media/images/buttons/button_brown_middle.gif') repeat-x;
-	}
-	.butBrownRight {
-		background: transparent url('/media/images/buttons/button_brown_right.gif') no-repeat;
-	}
-	
-	.butOrangeLeft, .butOrangeMiddle, .butOrangeRight {
-		height: 30px;
-	}
-	.butOrangeLeft, .butOrangeRight {
-		width: 5px;
-		padding-left: 0px;
-		padding-right: 0px;
-	}
-	.butOrangeLeft {
-		background: transparent url('/media/images/buttons/button_orange_left.gif') no-repeat;
-	}
-	.butOrangeMiddle {
-		background: transparent url('/media/images/buttons/button_orange_middle.gif') repeat-x;
-	}
-	.butOrangeRight {
-		background: transparent url('/media/images/buttons/button_orange_right.gif') no-repeat;
-	}
-	
-	.butRedLeft, .butRedMiddle, .butRedRight {
-		height: 30px;
-	}
-	.butRedLeft, .butRedRight {
-		width: 5px;
-		padding-left: 0px;
-		padding-right: 0px;
-	}
-	.butRedLeft {
-		background: transparent url('/media/images/buttons/button_red_left.gif') no-repeat;
-	}
-	.butRedMiddle {
-		background: transparent url('/media/images/buttons/button_red_middle.gif') repeat-x;
-	}
-	.butRedRight {
-		background: transparent url('/media/images/buttons/button_red_right.gif') no-repeat;
-	}
-	
-	.butWhiteLeft, .butWhiteMiddle, .butWhiteRight {
-		height: 30px;
-	}
-	.butWhiteLeft, .butWhiteRight {
-		width: 5px;
-		padding-left: 0px;
-		padding-right: 0px;
-	}
-	.butWhiteLeft {
-		background: transparent url('/media/images/buttons/button_white_left.gif') no-repeat;
-	}
-	.butWhiteMiddle {
-		background: transparent url('/media/images/buttons/button_white_middle.gif') repeat-x;
-	}
-	.butWhiteRight {
-		background: transparent url('/media/images/buttons/button_white_right.gif') no-repeat;
-	}
+
+/* html "buttons" */
+	/* 30px height */
+		.butCont {
+			border-collapse: collapse;
+			padding: 0;
+			margin: 0;
+			line-height: 30px;
+		}
+	/* 20px height */
+		.butCont20h {
+			border-collapse: collapse;
+			padding: 0;
+			margin: 0;
+			line-height: 20px;
+		}
+	/* generic, 13px font */
+		.butCont .butText, .butCont .butText:active, .butCont .butText:link, .butCont .butText:visited,
+		.butCont20h .butText, .butCont20h .butText:active, .butCont20h .butText:link, .butCont20h .butText:visited
+		{
+			display: block;
+			height: 100%;
+			padding: 0 3px;
+			color: #fff;
+			font-family: Futura, Verdana;
+			font-size: 13px;
+			border: 0;
+			text-decoration: none;
+		}
+	/* generic, 18px font */
+		.butCont .butTextTitle18, .butCont .butTextTitle18:active, .butCont .butTextTitle18:link, .butCont .butTextTitle18:visited {
+			display: block;
+			height: 100%;
+			padding: 0 3px;
+			color: #fff;
+			font-family: Futura, Verdana;
+			font-size: 18px;
+			border: 0;
+			text-decoration: none;
+		}
+	/* green text color */
+		.butCont .butTextGreen, .butCont .butTextGreen:active, .butCont .butTextGreen:link, .butCont .butTextGreen:visited {
+			color: #360;
+		}
+	/* button with arrow image */
+		.butCont .butText img {
+			margin-bottom: -3px;
+		}
+
+	/* all colors, shared styles */
+		.butBrownLeft, .butBrownMiddle, .butBrownRight,
+		.butOrangeLeft, .butOrangeMiddle, .butOrangeRight,
+		.butRedLeft, .butRedMiddle, .butRedRight,
+		.butWhiteLeft, .butWhiteMiddle, .butWhiteRight,
+		.butBlueLeft, .butBlueMiddle, .butBlueRight,
+		.butPurpleLeft, .butPurpleMiddle, .butPurpleRight
+		{
+			height: 30px;
+		}
+		.butBrownLeft20h, .butBrownMiddle20h, .butBrownRight20h,
+		.butOrangeLeft20h, .butOrangeMiddle20h, .butOrangeRight20h,
+		.butRedLeft20h, .butRedMiddle20h, .butRedRight20h,
+		.butWhiteLeft20h, .butWhiteMiddle20h, .butWhiteRight20h,
+		.butBlueLeft20h, .butBlueMiddle20h, .butBlueRight20h,
+		.butPurpleLeft20h, .butPurpleMiddle20h, .butPurpleRight20h
+		{
+			height: 20px;
+		}
+	/* middle excluded from these styles */
+		.butBrownLeft, .butBrownRight, .butBrownLeft20h, .butBrownRight20h,
+		.butOrangeLeft, .butOrangeRight, .butOrangeLeft20h, .butOrangeRight20h,
+		.butRedLeft, .butRedRight, .butRedLeft20h, .butRedRight20h,
+		.butWhiteLeft, .butWhiteRight, .butWhiteLeft20h, .butWhiteRight20h,
+		.butBlueLeft, .butBlueRight, .butBlueLeft20h, .butBlueRight20h,
+		.butPurpleLeft, .butPurpleRight, .butPurpleLeft20h, .butPurpleRight20h
+		{
+			width: 5px;
+			padding-left: 0px;
+			padding-right: 0px;
+		}
+	/* color-specific styles, 30px height */
+		.butBrownLeft {
+			background: transparent url('/media/images/buttons/button_brown_left.gif') no-repeat;
+		}
+		.butBrownMiddle {
+			background: transparent url('/media/images/buttons/button_brown_middle.gif') repeat-x;
+		}
+		.butBrownRight {
+			background: transparent url('/media/images/buttons/button_brown_right.gif') no-repeat;
+		}
+		.butOrangeLeft {
+			background: transparent url('/media/images/buttons/button_orange_left.gif') no-repeat;
+		}
+		.butOrangeMiddle {
+			background: transparent url('/media/images/buttons/button_orange_middle.gif') repeat-x;
+		}
+		.butOrangeRight {
+			background: transparent url('/media/images/buttons/button_orange_right.gif') no-repeat;
+		}
+		.butRedLeft {
+			background: transparent url('/media/images/buttons/button_red_left.gif') no-repeat;
+		}
+		.butRedMiddle {
+			background: transparent url('/media/images/buttons/button_red_middle.gif') repeat-x;
+		}
+		.butRedRight {
+			background: transparent url('/media/images/buttons/button_red_right.gif') no-repeat;
+		}
+		.butWhiteLeft {
+			background: transparent url('/media/images/buttons/button_white_left.gif') no-repeat;
+		}
+		.butWhiteMiddle {
+			background: transparent url('/media/images/buttons/button_white_middle.gif') repeat-x;
+		}
+		.butWhiteRight {
+			background: transparent url('/media/images/buttons/button_white_right.gif') no-repeat;
+		}
+		.butBlueLeft {
+			background: transparent url('/media/images/buttons/button_blue_left.gif') no-repeat;
+		}
+		.butBlueMiddle {
+			background: transparent url('/media/images/buttons/button_blue_middle.gif') repeat-x;
+		}
+		.butBlueRight {
+			background: transparent url('/media/images/buttons/button_blue_right.gif') no-repeat;
+		}
+		.butPurpleLeft {
+		background: transparent url('/media/images/buttons/button_purple_left.gif') no-repeat;
+		}
+		.butPurpleMiddle {
+			background: transparent url('/media/images/buttons/button_purple_middle.gif') repeat-x;
+		}
+		.butPurpleRight {
+			background: transparent url('/media/images/buttons/button_purple_right.gif') no-repeat;
+		}
+	/* color-specific styles, 20px height */
+		.butBrownLeft20h {
+			background: transparent url('/media/images/buttons/button_brown_left_20h.gif') no-repeat;
+		}
+		.butBrownMiddle20h {
+			background: transparent url('/media/images/buttons/button_brown_middle_20h.gif') repeat-x;
+		}
+		.butBrownRight20h {
+			background: transparent url('/media/images/buttons/button_brown_right_20h.gif') no-repeat;
+		}
+		.butOrangeLeft20h {
+			background: transparent url('/media/images/buttons/button_orange_left_20h.gif') no-repeat;
+		}
+		.butOrangeMiddle20h {
+			background: transparent url('/media/images/buttons/button_orange_middle_20h.gif') repeat-x;
+		}
+		.butOrangeRight20h {
+			background: transparent url('/media/images/buttons/button_orange_right_20h.gif') no-repeat;
+		}
+		.butRedLeft20h {
+			background: transparent url('/media/images/buttons/button_red_left_20h.gif') no-repeat;
+		}
+		.butRedMiddle20h {
+			background: transparent url('/media/images/buttons/button_red_middle_20h.gif') repeat-x;
+		}
+		.butRedRight20h {
+			background: transparent url('/media/images/buttons/button_red_right_20h.gif') no-repeat;
+		}
+		.butWhiteLeft20h {
+			background: transparent url('/media/images/buttons/button_white_left_20h.gif') no-repeat;
+		}
+		.butWhiteMiddle20h {
+			background: transparent url('/media/images/buttons/button_white_middle_20h.gif') repeat-x;
+		}
+		.butWhiteRight20h {
+			background: transparent url('/media/images/buttons/button_white_right_20h.gif') no-repeat;
+		}
+		.butBlueLeft20h {
+			background: transparent url('/media/images/buttons/button_blue_left_20h.gif') no-repeat;
+		}
+		.butBlueMiddle20h {
+			background: transparent url('/media/images/buttons/button_blue_middle_20h.gif') repeat-x;
+		}
+		.butBlueRight20h {
+			background: transparent url('/media/images/buttons/button_blue_right_20h.gif') no-repeat;
+		}
+		.butPurpleLeft20h {
+		background: transparent url('/media/images/buttons/button_purple_left_20h.gif') no-repeat;
+		}
+		.butPurpleMiddle20h {
+			background: transparent url('/media/images/buttons/button_purple_middle_20h.gif') repeat-x;
+		}
+		.butPurpleRight20h {
+			background: transparent url('/media/images/buttons/button_purple_right_20h.gif') no-repeat;
+		}
 	
 	.modOrdInfo {
 		color: #336699;
@@ -985,17 +1082,98 @@ div.control, div.slotRow, div.time {
 		font-family: Verdana;
 	}
 	
-.dotted_separator_h {
-	background: url("../../media_stat/images/layout/dot_grey_h.gif") repeat-x scroll left top transparent;
-	height: 1px;
-	padding: 0;
-	overflow: hidden;
-}
-
-.dotted_separator_v {
-	background: url("../../media_stat/images/layout/dot_grey_v.gif") repeat-y scroll left center transparent;
-	width: 1px;
-	padding: 0;
-}
-
-	
+	.regOrderBGColor {
+		background-color: #669933;
+	}
+	.modOrderBGColor {
+		background-color: #5684c2;
+	}
+	.receipt_details {
+		vertical-align: top;
+		text-align: left;
+	}
+	.receipt_leftColumn {
+		font-size: 16px;
+		font-family: Verdana;
+		padding-right: 20px;
+		vertical-align: top;
+	}
+	.receipt_leftColumn .why {
+		font-size: 26px;
+	}
+	.receipt_leftColumn .dateTime {
+		color: #FF992D;
+		font-weight: bold;
+	}
+	.receipt_rightColumn {
+		background-color: #E9EDD4;
+	}
+	.receipt_rightColumn .orderDetails a {
+		font-size: 12px;
+		font-weight: bold;
+		text-decoration: none;
+	}
+	.receipt_rightColumn .orderDetails a:hover {
+		text-decoration: underline;
+	}
+	.receipt_rightColumn div {
+		clear: both;
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+	.receipt_rightColumn div div {
+		padding-left: 0;
+		padding-right: 0;
+	}
+	.receipt_rightColumn .success {
+		font-family: "Century Gothic";
+		font-weight: bold;
+		font-size: 26px;
+	}
+	.receipt_rightColumn .success img {
+		margin-right: 6px;
+	}
+	.receipt_rightColumn .success div {
+		padding-left: 25px;
+	}
+	.receipt_rightColumn .orderTotal {
+		color: #333;
+		background-color: #F3F5E7;
+		padding-top: 6px;
+		padding-bottom: 6px;
+	}
+	.receipt_rightColumn .recipeContainer {
+		background-color: #fff;
+	}
+	.receipt_rightColumn #recipeSource {
+		text-align: left;
+		width: 100%;
+		font-size: 7pt;
+	}
+	.receipt_rightColumn #recipeSource h2 {
+		font-family: Verdana, sans-serif;
+		color: #f93;
+		text-transform: uppercase;
+		margin: 0;
+		font-size: 9pt;
+	}
+	#receiptCartDetails {
+		display: none;
+	}
+	.hline {
+		background: url("/media/editorial/site_access/images/dots_h.gif") repeat-x scroll 0 0 transparent;
+		font-size: 1px;
+		height: 1px;
+		line-height: 1px;
+	}
+	.dotted_separator_h {
+		background: url("../../media_stat/images/layout/dot_grey_h.gif") repeat-x scroll left top transparent;
+		height: 1px;
+		padding: 0;
+		overflow: hidden;
+	}
+	.dotted_separator_v {
+		background: url("../../media_stat/images/layout/dot_grey_v.gif") repeat-y scroll left center transparent;
+		width: 1px;
+		padding: 0;
+	}
