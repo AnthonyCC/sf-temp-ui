@@ -153,7 +153,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 							rec.setNote("<a href=\"/main/summary.jsp?erpCustId=" + customerId + "\">"+user.getUserId() + "</a> <a href=\"/main/summary.jsp?erpCustId=" + customerId + "\">ID #" + customerId + "</a>");
 							new ErpLogActivityCommand(FDServiceLocator.getInstance(), rec).execute();
 							this.pageContext.getSession().removeAttribute("EXISTING_CUSTOMERID");
-							this.setSuccessPage("/registration/referee_signup3.jsp");
+							this.setSuccessPage("/registration/referee_signup2.jsp");
 						} catch (Exception e) {
 							LOGGER.error("Exception when trying to update FDCustomer with referral ID",e);
 						}

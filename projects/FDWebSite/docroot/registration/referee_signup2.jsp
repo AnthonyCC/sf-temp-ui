@@ -95,7 +95,6 @@
 </style>
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0">
 
-
 	<fd:RegistrationController actionName='registerEx' successPage='<%= successPage %>' fraudPage='<%= failurePage %>' result='result'>
 	<%
 		String email = (String) session.getAttribute("REFERRAL_EMAIL");
@@ -104,6 +103,17 @@
 		String lastname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode()), "");
 		String password = NVL.apply(request.getParameter(EnumUserInfoName.PASSWORD.getCode()), "");
 		String passwordhint = NVL.apply(request.getParameter(EnumUserInfoName.PASSWORD_HINT.getCode()), "");		
+
+		if(FDReferralManager.isReferreSignUpComplete(email)) {
+			//phew finally complete
+			System.out.println("Did not come here?====================================================================================");
+		%>
+			<script language="javascript">
+				window.location.href="/index.jsp";
+			</script>
+		<%		 
+		} else {
+			System.out.println("went to else part?====================================================================================\n" +session.getAttribute("REFERRAL_EMAIL") + "\n" + (String)session.getAttribute("RAFREGISTRATION"));
 
 	%>
 	<div style="width:400px;height:530px;overflow-y: auto; overflow-x: hide;">
@@ -172,6 +182,8 @@
 	<script language="javascript">
 		setFormDefaults();
 	</script>
+	<% } %>
 	</fd:RegistrationController>
+	
 </body>
 </html>
