@@ -4,6 +4,7 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 <%@ page import="com.freshdirect.common.address.AddressModel" %>
+<%@ page import="com.freshdirect.fdstore.referral.FDReferralManager"%>
 
 <%@ taglib uri="freshdirect" prefix="fd" %>
 
@@ -94,8 +95,9 @@
 </style>
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0">
 <%
+	String email = (String) session.getAttribute("REFERRAL_EMAIL");
 
-		if("COMPLETE".equals((String)session.getAttribute("RAFREGISTRATION")) && session.getAttribute("REFERRAL_EMAIL") == null) {
+		if(FDReferralManager.isReferreSignUpComplete(email)) {
 			//phew finally complete
 			System.out.println("Did not come here?====================================================================================");
 		%>
@@ -110,7 +112,6 @@
 
 	<fd:RegistrationController actionName='registerEx' successPage='<%= successPage %>' fraudPage='<%= failurePage %>' result='result'>
 	<%
-		String email = (String) session.getAttribute("REFERRAL_EMAIL");
 		String repeat_email = NVL.apply(request.getParameter(EnumUserInfoName.REPEAT_EMAIL.getCode()), "");
 		String firstname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode()), "");
 		String lastname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode()), "");

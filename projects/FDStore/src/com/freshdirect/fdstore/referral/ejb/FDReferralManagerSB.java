@@ -179,4 +179,6 @@ public interface FDReferralManagerSB extends EJBObject {
 	 
 	 public abstract String getReferralName(String referralId) throws FDResourceException, RemoteException;
 	 
+	 public abstract boolean isReferreSignUpComplete(String email) throws FDResourceException, RemoteException;
+	 
 }

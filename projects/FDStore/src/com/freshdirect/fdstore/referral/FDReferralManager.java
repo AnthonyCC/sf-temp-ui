@@ -1193,6 +1193,21 @@ public class FDReferralManager {
 			  throw new FDResourceException(re, "Error talking to session bean");
 		  }		
 	  }
+	
+	public static boolean isReferreSignUpComplete(String email) throws FDResourceException {
+		  lookupManagerHome(); 
+
+		  try {
+			  FDReferralManagerSB sb = managerHome.create();
+			  return sb.isReferreSignUpComplete(email);
+		  } catch (CreateException ce) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(ce, "Error creating session bean");
+		  } catch (RemoteException re) {
+			  invalidateManagerHome();
+			  throw new FDResourceException(re, "Error talking to session bean");
+		  }		
+	  }
 
 
 }

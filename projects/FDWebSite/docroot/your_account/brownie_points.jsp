@@ -48,6 +48,7 @@ String browserType=(String)request.getHeader("User-Agent");
 <%
 	String referralUrl = "http://" + request.getServerName() + "/invite/" + user.getReferralLink();
 	ReferralPromotionModel rpModel = FDReferralManager.getReferralPromotionDetails(customerIdentity.getErpCustomerPK());
+	if(rpModel != null) {
 	System.out.println(rpModel.toString());
 	
 	String email_txt = rpModel.getReferralPageText();
@@ -328,16 +329,12 @@ String browserType=(String)request.getHeader("User-Agent");
 										}
 										var post_on_wall_but = '<table class="butCont" style=\"line-height: 20px;\">' + 
 																		'<tr>' + 
-																		'<td class=\"butBlueLeft20\"> </td>' +
-																		'<td class=\"butBlueMiddle20\" valign=\"middle\"><a href=\"#\" onclick=\"postToFeed()\" class=\"previewbut\" style=\"color:#ffffff;text-shadow:none;font-weight:bold;vertical-align:middle;padding:7px;text-decoration:none;\">Post on wall</a></td>' +
-																		'<td class=\"butBlueRight20\"> </td>' +
+																		'<td class=\"butBlueMiddle20\" valign=\"middle\"><a href=\"#\" onclick=\"postToFeed()\" class=\"previewbut\" style=\"color:#ffffff;text-shadow:none;font-weight:bold;vertical-align:middle;padding:7px;text-decoration:none;\"><img src="/media_stat/images/buttons/post_on_wall.jpg" /></a></td>' +
 																		'</tr>' +
 																	'</table>';
 										var preview_but = '<div style=\"padding-left:15px;float:left;\"><table class="butCont" style=\"line-height: 20px;\">' + 
 																		'<tr>' + 
-																		'<td class=\"butBlueLeft20\"> </td>' +
-																		'<td class=\"butBlueMiddle20\" valign=\"middle\"><a href=\"#\" onclick=\"callFBUI()\" class=\"previewbut\" style=\"color:#ffffff;text-shadow:none;font-weight:bold;vertical-align:middle;padding:7px;text-decoration:none;\">Send Message</a></td>' +
-																		'<td class=\"butBlueRight20\"> </td>' +
+																		'<td class=\"butBlueMiddle20\" valign=\"middle\"><a href=\"#\" onclick=\"callFBUI()\" class=\"previewbut\" style=\"color:#ffffff;text-shadow:none;font-weight:bold;vertical-align:middle;padding:7px;text-decoration:none;\"><img src="/media_stat/images/buttons/send_message.jpg" /></a></td>' +
 																		'</tr>' +
 																	'</table></div>';
 										function getFriends(){
@@ -423,7 +420,59 @@ String browserType=(String)request.getHeader("User-Agent");
 	</td></tr>
 	
 
-	
+	<% } else { %>
+		<!-- promotion is null, so display a 404 message -->
+		<table border="0" cellpadding="0" cellspacing="0" width="<%=W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL%>">
+		<tr>
+			<td align="center">
+			<!-- 
+				<img src="/media_stat/images/template/error/error_01.gif" alt="ERR" border="0"><img src="/media_stat/images/template/error/error_02.jpg"  alt="O" border="0"><img src="/media_stat/images/template/error/error_03.gif"  alt="R" border="0">
+			 -->
+			</td>
+		</tr>
+		<tr>
+		    <TD>
+
+					<br><br>
+					<table cellspacing="0" cellpadding="0" border="0" width="100%">
+					<tr>
+					    <td rowspan="5" width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+					    <td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_lft_crnr.gif" width="18" height="5" border="0"></td>
+					    <td colspan="2" bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
+					    <td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_rt_crnr.gif" width="6" height="5" border="0"></td>
+					    <td rowspan="5"><img src="/media_stat/images/layout/clear.gif" width="10" height="1" alt="" border="0"></td>
+					</tr>
+					<tr>
+					    <td rowspan="3"><img src="/media_stat/images/layout/clear.gif" width="10" height="1" alt="" border="0"></td>
+					    <td width="100%"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
+					</tr>
+					<tr>
+					    <td width="18" bgcolor="#CC3300"><img src="/media_stat/images/template/system_msgs/exclaim_CC3300.gif" width="18" height="22" border="0" alt="!"></td>
+					    <td class="text11rbold">
+														
+								Sorry, the Web site is unable to process that request. We apologize for any inconvenience. Please check back later.
+								<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
+						
+						</td>
+					    <td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
+					    <td bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
+					</tr>
+					<tr>
+					    <td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_bt_lft_crnr.gif" width="18" height="5" border="0"></td>
+					    <td><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
+					    <td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_bt_rt_crnr.gif" width="6" height="5" border="0"></td>
+					</tr>
+					<tr>
+					    <td colspan="2" bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
+					</tr>
+					</table>
+					<br>			
+					<br><br>
+
+			</TD>
+		</tr></table>
+
+	<% } %>
 	
 
 <!-- End of promotion bar -->						

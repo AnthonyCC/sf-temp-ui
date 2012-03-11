@@ -320,15 +320,17 @@ public class RegistrationAction extends WebActionSupport {
 		
 			address.setServiceType(user.getSelectedServiceType());
 			DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkAddress(address);
-
-			this.reclassifyUser(user, address, serviceType, serviceResult);
+			
+			if(session.getAttribute("EXISTING_CUSTOMERID") == null )				
+				this.reclassifyUser(user, address, serviceType, serviceResult);
 		} else {
 			//Directly from Zip Check page
 			String zipCode = user.getZipCode();
 			DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkZipCode(zipCode);
 	        AddressModel addr = new AddressModel();
 	        addr.setZipCode(zipCode);
-			this.reclassifyUser(user, addr,serviceType , serviceResult);
+	        if(session.getAttribute("EXISTING_CUSTOMERID") == null )
+	        	this.reclassifyUser(user, addr,serviceType , serviceResult);
 		}
 		
 		if(session.getAttribute("EXISTING_CUSTOMERID") != null ) {

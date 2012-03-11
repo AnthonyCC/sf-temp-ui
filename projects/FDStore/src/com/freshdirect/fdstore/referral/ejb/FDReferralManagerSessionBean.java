@@ -1473,5 +1473,18 @@ public class FDReferralManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
+	public boolean isReferreSignUpComplete(String email) throws FDResourceException, RemoteException {
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+			return FDReferAFriendDAO.isReferreSignUpComplete(conn, email);
+		} catch (SQLException e) {
+			this.getSessionContext().setRollbackOnly();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}
+	
 
 }

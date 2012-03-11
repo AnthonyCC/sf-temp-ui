@@ -50,8 +50,8 @@
 	}
 
 	/* moreInfo, redirect back to the same page, and pass in the overlayType */
-	 String moreInfoPage = "https://" + request.getServerName() + "/registration/referee_signup.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=moreInfo";
-        String failurePage =  "https://" + request.getServerName() + "/registration/referee_signup.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=na&serviceType="+serviceType;
+	 String moreInfoPage = "/registration/referee_signup.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=moreInfo";
+        String failurePage =  "/registration/referee_signup.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=na&serviceType="+serviceType;
     
     //--------OAS Page Variables-----------------------
 	request.setAttribute("sitePage", "www.freshdirect.com/site_access/site_access.jsp");
@@ -143,9 +143,9 @@
 				<% if ( !"".equals(overlayType) && !"true".equals(email_error)) { %>
 					<% if ( "moreInfo".equalsIgnoreCase(overlayType) ) { System.out.println("overlay is more infoo......................");%>						
 						<% if ( isCorporate ) { %>
-							_page_options.overlayURL = '<%=  "https://" + request.getServerName() + "/registration/referee_signup2.jsp?successPage=" + URLEncoder.encode(successPage) + "&serviceType=CORPORATE" %>';
+							_page_options.overlayURL = '<%=  "referee_signup2.jsp?successPage=" + URLEncoder.encode(successPage) + "&serviceType=CORPORATE" %>';
 						<% }else{ %>
-							_page_options.overlayURL = '<%=  "https://" + request.getServerName() + "/registration/referee_signup2.jsp?successPage=" + URLEncoder.encode(successPage) + "&serviceType=HOME" %>';
+							_page_options.overlayURL = '<%=  "referee_signup2.jsp?successPage=" + URLEncoder.encode(successPage) + "&serviceType=HOME" %>';
 						<% } %>
 					<% } %>
 					<% if ( "partialmoreInfo".equalsIgnoreCase(overlayType) ) { %>

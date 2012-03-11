@@ -22,8 +22,10 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -563,10 +565,15 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			//Refer a friend registration for existing customer who is not referred by any other customer and with zero orders.
 			//update fd user with the zipcode.
 			String eCustID = (String)session.getAttribute("EXISTING_CUSTOMERID");
-			String fduserId = FDReferralManager.updateFDUser(eCustID, this.address.getZipCode(), serviceType);
+			String fdCustId = FDReferralManager.updateFDUser(eCustID, this.address.getZipCode(), serviceType);
 			//Set the address values into user objects just like below.
-			FDUser user1 = new FDUser(new PrimaryKey(fduserId));
-			user1.setZipCode(this.address.getZipCode());
+			FDIdentity identity = new FDIdentity(eCustID, fdCustId);
+			FDUser user1 = null;
+			try {
+				user1 = FDCustomerManager.recognize(identity);
+			} catch (FDAuthenticationException e) {
+				LOGGER.error("Authentication error", e);
+			}
 			user = new FDSessionUser(user1, session);
 			user.setAddress(this.address);
 			user.setSelectedServiceType(serviceType);

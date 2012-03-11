@@ -793,7 +793,7 @@ public class FDReferAFriendDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = conn.prepareStatement("update cust.fduser set zipcode=?, service_type=? where fdcustomer_id = ?");
+			ps = conn.prepareStatement("update cust.fduser set zipcode=?, service_type=? where fdcustomer_id = (select ID from cust.fdcustomer where erp_customer_id = ?)");
 			ps.setString(1, zipCode);
 			if(serviceType != null)
 				ps.setString(2, serviceType.getName());
@@ -804,7 +804,7 @@ public class FDReferAFriendDAO {
 			
 			ps.close();
 			
-			ps = conn.prepareStatement("select ID from cust.fduser where fdcustomer_id = ?");
+			ps = conn.prepareStatement("select ID from cust.fdcustomer where erp_customer_id = ?");
 			ps.setString(1, customer_id);
 			rs = ps.executeQuery();
 			if(rs.next()) {
@@ -919,5 +919,29 @@ public class FDReferAFriendDAO {
 				ps.close();
 		}
 		return null;	
+	}
+	
+	public static boolean isReferreSignUpComplete(Connection conn, String email) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rset = null;
+		try {
+			ps = conn.prepareStatement( "select count(*) from " + 
+										"cust.customer c, " +
+										"cust.fdcustomer fc " +
+										"where upper(c.user_id) = upper(?) " +
+										"and c.id = fc.erp_customer_id " +
+										"and FC.REFERER_CUSTOMER_ID is not null");
+			ps.setString(1, email);
+			rset = ps.executeQuery();
+			while(rset.next()) {
+				int cnt = rset.getInt(1);
+				if(cnt > 0)
+					return true;
+			}
+		} finally {
+			if (ps != null)
+				ps.close();
+		}
+		return false;	
 	}
 }
