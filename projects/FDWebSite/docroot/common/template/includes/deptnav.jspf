@@ -1,3 +1,5 @@
+<%@ page import="com.freshdirect.fdstore.referral.FDReferralManager"%>
+<%@ page import="com.freshdirect.fdstore.referral.ReferralPromotionModel"%>
 <%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
 <%@page import="com.freshdirect.fdstore.content.Image"%>
 <%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
@@ -50,7 +52,14 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 				folderMap.put("Your Profile","/your_account/customer_profile_summary.jsp");
 				
 				if(user.isReferralProgramAvailable()) {
-					folderMap.put("Refer A Friend","/your_account/brownie_points.jsp");
+					FDIdentity customerIdentity = null;
+					if (user!=null && user.getLevel() == 2){
+						customerIdentity = user.getIdentity();
+					}
+					ReferralPromotionModel rpModel = FDReferralManager.getReferralPromotionDetails(customerIdentity.getErpCustomerPK());
+					if(rpModel != null) {
+						folderMap.put("Refer A Friend","/your_account/brownie_points.jsp");
+					}
 				}
 				folderMap.put("Account Credits","/your_account/credits.jsp");
 				

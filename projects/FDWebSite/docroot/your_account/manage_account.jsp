@@ -1,3 +1,5 @@
+<%@ page import="com.freshdirect.fdstore.referral.FDReferralManager"%>
+<%@ page import="com.freshdirect.fdstore.referral.ReferralPromotionModel"%>
 <%@ page import = "com.freshdirect.customer.EnumSaleStatus" %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -180,13 +182,21 @@ your account information, this is the place to do it.<br></td>
 				Check your received and purchased Gift Cards
 				<br><br>
 		<% } %>
-		<% if(user.isReferralProgramAvailable()) { %>
+		<% if(user.isReferralProgramAvailable()) { 
+			FDIdentity customerIdentity = null;
+			if (user!=null && user.getLevel() == 2){
+				customerIdentity = user.getIdentity();
+			}
+			ReferralPromotionModel rpModel = FDReferralManager.getReferralPromotionDetails(customerIdentity.getErpCustomerPK());
+			if(rpModel != null) {
+		%>
+		
         <font class="text13bold">
 		<a href="<%=response.encodeURL("/your_account/brownie_points.jsp")%>">Refer A Friend</a> </font>  <font class="text13bold" color="#990000"></font>
 		<br>
 		Invite your friends and earn $$$ credits.
 		<br><br>
-		<% } %>
+		<% } } %>
 		<font class="text13bold">
 		<a href="<%=response.encodeURL("/your_account/credits.jsp")%>">Account Credits</a> </font>  <font class="text13bold" color="#990000"></font>
 		<br>
