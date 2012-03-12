@@ -19,9 +19,6 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 
-
-	
-	
 <% //expanded page dimension
 final int W_INDEX_TOTAL = 970;
 final int W_INDEX_CENTER_PADDING = 20;
@@ -44,8 +41,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	<tmpl:put name='title' direct='true'>Welcome to FreshDirect</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 
-
-<fd:css href="/assets/css/homepage/homepage.css"/>
+		<fd:css href="/assets/css/homepage/homepage.css"/>
 <fd:GetSegmentMessage id='segmentMessage' user="<%=user%>">
 
 <%
@@ -106,15 +102,16 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 					%>
 						<div class="index_ordMod_cont" id="index_table_ordModify_0">
 		   					<div class="index_ordMod_cont_child">
-								<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="orderNumb"><%= orderInfo.getErpSalesId() %></a>
-								<span style="padding-left: 30px;"><span class="dow"><%= new SimpleDateFormat("EEEEE").format(orderInfo.getRequestedDate()) %></span> <%= new SimpleDateFormat("MM/dd/yyyy").format(orderInfo.getRequestedDate()) %> 
-									<span class="pipeSep">|</span> <%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%></span>
-	
+		   						<div class="ordModifyInfoCont">
+									<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="orderNumb"><%= orderInfo.getErpSalesId() %></a>
+									<span style="padding-left: 30px;"><span class="dow"><%= new SimpleDateFormat("EEEEE").format(orderInfo.getRequestedDate()) %></span> <%= new SimpleDateFormat("MM/dd/yyyy").format(orderInfo.getRequestedDate()) %> 
+										<span class="pipeSep">|</span> <%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%></span>
+								</div>
 								<div class="ordModifyButCont">
+									<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="ordModifyViewDetails">view details&nbsp;</a>
 									<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
 										<form name="modify_order" id="modify_order" method="POST" action="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">
 									<% } %>
-									<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="">view details</a>&nbsp;
 									<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
 											<input type="hidden" name="orderId" value="<%= orderInfo.getErpSalesId() %>" />
 											<input type="hidden" name="action" value="modify" />
@@ -167,15 +164,16 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 					%>
 						<div class="index_ordMod_cont" id="index_table_ordModify_1">
 		   					<div class="index_ordMod_cont_child">
-								<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="orderNumb"><%= orderInfo.getErpSalesId() %></a>
-								<span style="padding-left: 30px;"><span class="dow"><%= new SimpleDateFormat("EEEEE").format(orderInfo.getRequestedDate()) %></span> <%= new SimpleDateFormat("MM/dd/yyyy").format(orderInfo.getRequestedDate()) %> 
-									<span class="pipeSep">|</span> <%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%></span>
-	
+		   						<div class="ordModifyInfoCont">
+									<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="orderNumb"><%= orderInfo.getErpSalesId() %></a>
+									<span style="padding-left: 30px;"><span class="dow"><%= new SimpleDateFormat("EEEEE").format(orderInfo.getRequestedDate()) %></span> <%= new SimpleDateFormat("MM/dd/yyyy").format(orderInfo.getRequestedDate()) %> 
+										<span class="pipeSep">|</span> <%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%></span>
+								</div>
 								<div class="ordModifyButCont">
+									<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="ordModifyViewDetails">view details&nbsp;</a>
 									<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
 										<form name="modify_order" id="modify_order" method="POST" action="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">
 									<% } %>
-									<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="">view details</a>&nbsp;
 									<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
 											<input type="hidden" name="orderId" value="<%= orderInfo.getErpSalesId() %>" />
 											<input type="hidden" name="action" value="modify" />

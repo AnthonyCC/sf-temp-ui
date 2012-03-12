@@ -847,6 +847,10 @@ div.control, div.slotRow, div.time {
 		height: 30px;
 		line-height: 30px;
 	}
+	.index_ordMod_cont_child .ordModifyInfoCont {
+		width: 500px;
+		float: left;
+	}
 
 	.index_ordMod_cont a, .index_ordMod_cont a:active, .index_ordMod_cont a:link, .index_ordMod_cont a:visited {
 		font-family: Verdana, Arial, sans-serif;
@@ -862,7 +866,6 @@ div.control, div.slotRow, div.time {
 	.index_ordMod_cont a.orderNumb {
 		font-size: 12px;
 	}
-	
 	.index_ordMod_cont span.dow {
 		font-weight: bold;		
 	}
@@ -870,6 +873,7 @@ div.control, div.slotRow, div.time {
 	.index_ordMod_cont span.pipeSep {
 		color: #D8D8D8;
 	}
+	
 	.index_ordMod_cont .ordModifyButCont {
 		float: right;
 		text-align: left;
@@ -878,6 +882,9 @@ div.control, div.slotRow, div.time {
 	}
 	.index_ordMod_cont .ordModifyButCont a {
 		font-weight: normal;		
+	}
+	.index_ordMod_cont .ordModifyButCont .ordModifyViewDetails {
+		float: left;
 	}
 
 /* html "buttons" */
@@ -1176,4 +1183,7 @@ div.control, div.slotRow, div.time {
 		background: url("../../media_stat/images/layout/dot_grey_v.gif") repeat-y scroll left center transparent;
 		width: 1px;
 		padding: 0;
+	}
+	#topSearchTerms {
+		z-index: 50 ! important;
 	}
