@@ -87,7 +87,7 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 	
 	private static final String MAX_SNAPSHOT_DELIVERY_DATE_EX = "select sum(o.capacity) capacity, snapshot_time from mis.order_rate o where snapshot_time = " +
 			"(select max(snapshot_time) sh from mis.order_rate o where o.delivery_date = to_date(?,'mm/dd/yyyy') and snapshot_time >=to_date(?,'mm/dd/yyyy')) " +
-			"group by snapshot_time";
+			"  and o.delivery_date = to_date(?,'mm/dd/yyyy') group by snapshot_time";
 	
 	private static final String ORDER_COUNT_QRY = "select count(*) oCount, di.zone zone , di.cutofftime cutoff from cust.sale s , cust.salesaction sa, " +
 			"cust.deliveryinfo di where s.id = sa.sale_id and s.cromod_date = sa.action_date and s.type='REG' AND S.CROMOD_DATE<to_date(?,'mm/dd/yyyy') " +
@@ -595,8 +595,8 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 				
 				
 				
-				int days1 = (int)DateUtil.diffInDays(tempVO.getBaseDate(), day1) * -1;
-				int days2 = (int)DateUtil.diffInDays(tempVO.getBaseDate(), day2) * -1;
+				int days1 = (int)DateUtil.getDiffInDays(tempVO.getBaseDate(), day1) * -1;
+				int days2 = (int)DateUtil.getDiffInDays(tempVO.getBaseDate(), day2) * -1;
 				Date snapshot7 = OrderRateUtil.getDate(tempVO.getSnapshotTime(), days1);
 				Date startTime7 = OrderRateUtil.getDate(tempVO.getStartTime(),days1);
 				Date endTime7 = OrderRateUtil.getDate(tempVO.getEndTime(),days1);
@@ -674,6 +674,7 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 	                    connection.prepareStatement(MAX_SNAPSHOT_DELIVERY_DATE_EX);
 	                ps.setString(1, deliveryDate);
 	    			ps.setString(2, minSnapshotDateStr);
+	    			 ps.setString(3, deliveryDate);
 	                return ps;
 	            }
 	        };
@@ -712,8 +713,8 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 				
 				
 				
-				int days1 = (int)DateUtil.diffInDays(baseDate, day1) * -1;
-				int days2 = (int)DateUtil.diffInDays(baseDate, day2) * -1;
+				int days1 = (int)DateUtil.getDiffInDays(baseDate, day1) * -1;
+				int days2 = (int)DateUtil.getDiffInDays(baseDate, day2) * -1;
 				Date snapshot7 = OrderRateUtil.getDate(tempVO.getSnapshotTime(), days1);
 				Date snapshot14 = OrderRateUtil.getDate(tempVO.getSnapshotTime(), days2);
 				
@@ -746,7 +747,7 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 									((forecastMap.get(snapshot7)[0]+ forecastMap.get(snapshot14)[0])/2)));
 					
 					else
-							weightedProjection = 0;
+							weightedProjection = outputVO.getProjectedRate();
 					
 					outputVO.setWeightedProjectRate(weightedProjection);
 					

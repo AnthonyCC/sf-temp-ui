@@ -9,10 +9,10 @@ public class DateUtil {
 	public final static long HOUR = 60 * MINUTE;
 	public final static long DAY = 24 * HOUR;
 	
-	public static float diffInDays(Date d1, Date d2) {
-		
-		return Math.abs((float) (d1.getTime() - d2.getTime()) / (float) DAY);
+
+	/* @return get absolute difference between d1/d2 in days, rounded to nearest */
+	public static int getDiffInDays(Date d1, Date d2) {
+		return Math.abs((int) Math.round(((d1.getTime() - d2.getTime()) / (float) DAY)));
 	}
-	
 
 } 
