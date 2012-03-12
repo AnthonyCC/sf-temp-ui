@@ -63,7 +63,7 @@ final int W_FOOTER_TOTAL = 970;
 	<tr>
 		<td align="center" class="text11bold" style="padding: 5px 0px;">
 			<% if (!new BrowserInfo(request).isIE6()) { %>
-			<div class="addthis_toolbox addthis_default_style left" style="width: 270px; padding-top: 8px;">
+			<div class="addthis_toolbox addthis_default_style left" style="width: 270px; padding-top: 8px; float: left;">
 				<a class="addthis_button_facebook_like" fb:like:href="http://www.facebook.com/FreshDirect" fb:like:layout="button_count" fb:like:width="95" fb:like:height="25"></a>
 				<a class="addthis_button_twitter_follow_native" tf:screen_name="freshdirect" tf:width="80px" tf:show-screen-name="false" tf:show-count="false"></a>
 				<div style="width: 81px; overflow: hidden;">
