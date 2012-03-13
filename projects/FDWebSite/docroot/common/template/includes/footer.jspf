@@ -77,8 +77,12 @@ final int W_FOOTER_TOTAL = 970;
 					data_ga_property: 'UA-20535945-1',
 					data_ga_social : true
 				};
+				var addThisScript = document.createElement('script');
+				addThisScript.type= 'text/javascript';
+				var addThisUrl = location.protocol + "//s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4d69806100449805";
+				addThisScript.src= addThisUrl;
+				document.body.appendChild(addThisScript);
 			</script>
-			<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4d69806100449805"></script>
 			<% } else { %>
 			<div class="left" style="width: 270px; height: 20px; margin: 0px; padding: 0px;"></div>
 			<% } %>

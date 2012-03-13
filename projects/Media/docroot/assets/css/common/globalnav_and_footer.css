@@ -119,6 +119,14 @@ a.globalnavitem:active{
 	overflow:hidden;
 }
 
+.globalnav-footer .left {
+	float: left;
+}
+
+.globalnav-footer .right {
+	float: right;
+}
+
 .globalnav-footer .globalnavitem {
 	background:url('../../../media_stat/images/navigation/globalnav_and_footer/footer.png') no-repeat;
 }
