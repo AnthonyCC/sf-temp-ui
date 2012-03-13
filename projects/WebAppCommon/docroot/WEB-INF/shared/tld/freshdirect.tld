@@ -4550,5 +4550,20 @@
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.referral.ReferAFriendControllerTag</tagclass>
 		<bodycontent>JSP</bodycontent>
 		<info></info>
+		<attribute>
+			<name>successPage</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>fraudPage</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>result</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
 	</tag>
 </taglib>

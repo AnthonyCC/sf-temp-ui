@@ -52,8 +52,12 @@ response.setHeader("Cache-Control", "no-cache");
 		background: none !important;
 	}
 	
-	.yui-skin-sam th.yui-dt-asc, .yui-skin-sam th.yui-dt-desc {
-		background: url("/assets/yui-2.9.0/assets/skins/sam/sprite.png") repeat-x scroll 0 0 #D8D8DA !important;
+	.yui-skin-sam th.yui-dt-asc, .yui-skin-sam th.yui-dt-desc, .yui-skin-sam th.yui-dt-asc, .yui-skin-sam th.yui-dt-desc {
+		background: #DDDDDD !important;
+	}
+	
+	.yui-skin-sam .yui-dt th {
+		background: #DDDDDD !important;
 	}
 	
 	.yui-skin-sam .yui-dt th, .yui-skin-sam .yui-dt td {
@@ -128,6 +132,8 @@ response.setHeader("Cache-Control", "no-cache");
 
 <!-- * start the actual summary info * -->
 
+<% List<ManageInvitesModel> mimList = FDReferralManager.getManageInvites(customerIdentity.getErpCustomerPK()); %>
+
 <table cellpadding="0" cellspacing="0" border="0" width="100%">
 	<tr>
 		<td class="t20px bolded">
@@ -152,7 +158,7 @@ response.setHeader("Cache-Control", "no-cache");
 	<tr>
 		<td colspan="2">
 			<div id="pagenums"></div>
-			<div id="dynamicdata"></div>
+			<div id="dynamicdata"><% if (mimList.size() == 0) { %><center><b>You do not have any referrals at this time</b></center><%}%></div>
 		</td>			
 	</tr>	
 	<tr>
@@ -187,7 +193,7 @@ response.setHeader("Cache-Control", "no-cache");
 </tr>
 
 </TABLE>
-
+<% if(mimList.size() > 0 ) { %>
 <script type="text/javascript">
 YAHOO.example.DynamicData = function() {
     // Column definitions
@@ -242,6 +248,6 @@ YAHOO.example.DynamicData = function() {
 }();
 
 </script>
-
+<% } %>
 	</tmpl:put>
 </tmpl:insert>

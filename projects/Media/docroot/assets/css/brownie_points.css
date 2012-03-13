@@ -116,6 +116,10 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 10px; height: 100%; }
 	border-radius: 5px;
 	padding:5px;
 	width:100%;
+	font-family: arial, Helvetica,sans-serif !important; 
+	color: #333333;
+	font-size: 14px;
+	padding:10px;
 }
 
 #mail_message .sb-inner {background:white;}
@@ -138,6 +142,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 10px; height: 100%; }
 	background: url(/media_stat/images/profile/invitelink_box.jpg) no-repeat !important;
 	background-color:  #F0F0F0;
 	height: 39px;
+	padding-left: 9px;
+	padding-top: 9px;
 }
 		
 #dollartext {

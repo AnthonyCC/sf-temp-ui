@@ -1,3 +1,4 @@
+<%@ page import="com.freshdirect.mail.EmailUtil" %>
 <%@ page import="com.freshdirect.fdstore.referral.FDReferralManager"%>
 <%@ page import="com.freshdirect.fdstore.referral.ReferralPromotionModel"%>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
@@ -43,7 +44,9 @@ String browserType=(String)request.getHeader("User-Agent");
 <tmpl:put name='title' direct='true'>FreshDirect - Your Profile</tmpl:put>
 <tmpl:put name='content' direct='true'>
 
-<fd:ReferAFriend>
+<fd:ReferAFriend result="result" successPage="<%= successPage %>">
+
+
 
 <%
 	String referralUrl = "http://" + request.getServerName() + "/invite/" + user.getReferralLink();
@@ -62,6 +65,24 @@ String browserType=(String)request.getHeader("User-Agent");
 	
 	request.setAttribute("sitePage", "www.freshdirect.com/your_account/brownie_points.jsp");
 	request.setAttribute("listPos", "RAFBanner,RAFLeftHeader");
+	
+	boolean valid = true;
+	if("sendmails".equals(request.getParameter("action"))) {
+		//check the emails
+		String recipient_list = request.getParameter("form_tags_input");
+		StringTokenizer stokens = new StringTokenizer(recipient_list, ",");		
+		if(stokens.countTokens() == 0) {
+			valid = false;
+		} else {
+			while(stokens.hasMoreTokens()) {
+				String recipient = stokens.nextToken();
+				if(!EmailUtil.isValidEmailAddress(recipient)) {
+					valid = false;
+					break;
+				}					
+			}
+		}
+	}
 %>	
 <script language="javascript">
 	var clip = null;
@@ -178,7 +199,7 @@ String browserType=(String)request.getHeader("User-Agent");
 							<div id="fbbox">
 								<div id="testbox1">
 								<% if("email".equals(current)) { %>
-									<% if("sendmails".equals(request.getParameter("action"))) {
+									<% if("sendmails".equals(request.getParameter("action")) && valid) {
 									//request submitted
 									%>
 										<div style="float:left;width:100%;padding:20px;">
@@ -199,6 +220,10 @@ String browserType=(String)request.getHeader("User-Agent");
 										<div class="form_tags" style="width:90%;padding-left:15px;float:left;"><input type="text" name="form_tags_input" value="" id="form_tags_input" />
 										&nbsp;<img src="/media_stat/images/profile/or.jpg">&nbsp;<a href="#" onclick="showPlaxoABChooser('recipient_list', '/your_account/plaxo_cb.jsp'); return false"><img src="/media_stat/images/buttons/import_address.jpg"/></a>									
 										</div>
+										
+										<% if (!valid) { %>
+											<div style="width:90%;padding-left:15px;float:left;color:red;font-weight:bold;">Please enter valid email addresses</div>
+										<% } %>
 											
 										<div id="greytext" style="float:left;width:90%;padding-top:15px;padding-left:15px;">
 											Enter personal message <span>(optional)</span>
@@ -395,8 +420,8 @@ String browserType=(String)request.getHeader("User-Agent");
 				<td width="1%"></td>
 				<td id="infobox" valign="top">
 					<div style="padding: 5px 15px;">
-						<p id="greytext" align="left">Your Personal Link</p><br/>
-						<div id="d_clip_button" class="copylink"><%= request.getServerName() + "/invite/" + user.getReferralLink() %></div><br/>
+						<p id="greytext" align="left">Your Personal Link</p>
+						<div id="d_clip_button" class="copylink"><%= request.getServerName() + "/invite/" + user.getReferralLink() %></div>
 					</div>
 					<hr id="hrline" />
 					

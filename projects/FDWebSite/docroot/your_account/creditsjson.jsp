@@ -63,7 +63,7 @@ request.setAttribute("listPos", "HPLeftTop");
 	jobj.put("totalAmount", JspMethods.formatPrice(totalAmount));
 	org.json.JSONArray jsonItems = new org.json.JSONArray();
 	
-	for(int i=index;i > endIdx; i--) {
+	for(int i=index;i >= endIdx; i--) {
 		org.json.JSONObject obj = new org.json.JSONObject();
 		ErpCustomerCreditModel cm = (ErpCustomerCreditModel) mimList.get(i);
 		obj.put("date", cm.getcDate());

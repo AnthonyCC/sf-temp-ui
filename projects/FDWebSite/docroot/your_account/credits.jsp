@@ -68,8 +68,12 @@ request.setAttribute("listPos", "HPLeftTop");
 		background: none !important;
 	}
 	
-	.yui-skin-sam th.yui-dt-asc, .yui-skin-sam th.yui-dt-desc {
-		background: url("/assets/yui-2.9.0/assets/skins/sam/sprite.png") repeat-x scroll 0 0 #D8D8DA !important;
+	.yui-skin-sam th.yui-dt-asc, .yui-skin-sam th.yui-dt-desc, .yui-skin-sam th.yui-dt-asc, .yui-skin-sam th.yui-dt-desc {
+		background: #DDDDDD !important;
+	}
+	
+	.yui-skin-sam .yui-dt th {
+		background: #DDDDDD !important;
 	}
 	
 	.yui-skin-sam .yui-dt th, .yui-skin-sam .yui-dt td {
@@ -121,7 +125,7 @@ request.setAttribute("listPos", "HPLeftTop");
 	.t20px { font-size: 20px; }
 	.tOrange { color: orange; }
 	.bolded { font-weight: bold; }
-	.tcredits {background-color:#C9EFFF;font-size:11px;font-weight:normal;padding:5px;border-radius: 10px;-moz-border-radius: 10px;-webkit-border-radius: 10px;}	
+	.tcredits {background-color:#D0E1F1;font-size:11px;font-weight:normal;padding:5px;border-radius: 3px;-moz-border-radius: 3px;-webkit-border-radius: 3px;}	
 
 </style>
 <!-- Combo-handled YUI CSS files: -->
@@ -143,14 +147,16 @@ request.setAttribute("listPos", "HPLeftTop");
 
 <!-- * start the actual summary info * -->
 
-
+<%
+	List<ErpCustomerCreditModel> mimList = FDReferralManager.getUserCredits(customerIdentity.getErpCustomerPK());
+%>
 <table cellpadding="0" cellspacing="0" border="0" width="100%">
 	<tr>
 		<td class="t20px bolded">
 			Freshdirect Account Credits <br/> <span class="t11px" style="font-weight:normal;">Please review your orders. To check the status of an order, click on the order number.</span>
 		</td>
 		<td align="right">
-			<span class="tcredits">Total remaining credits: <span id="totalAmount" class="t11px bolded"></span></span>
+			<span class="tcredits">Total remaining credits: <span id="totalAmount" class="t11px bolded"><% if (mimList.size() == 0) { %>$0.00<% } %></span></span>
 		</td>
 	</tr>
 	<tr>
@@ -166,7 +172,7 @@ request.setAttribute("listPos", "HPLeftTop");
 	<tr>
 		<td colspan="2">
 			<div id="pagenums"></div>
-			<div id="dynamicdata"></div> 			
+			<div id="dynamicdata"><% if (mimList.size() == 0) { %><center><b>You do not have credits at this time</b></center><%}%></div> 			
 		</td>
 	</tr>	
 </table>
@@ -186,6 +192,7 @@ request.setAttribute("listPos", "HPLeftTop");
 
 </TABLE>
 
+<% if (mimList.size() > 0) { %>
 <script type="text/javascript">
 YAHOO.example.DynamicData = function() {
 
@@ -252,6 +259,6 @@ YAHOO.example.DynamicData = function() {
 }();
 
 </script>
-
+<% } %>
 	</tmpl:put>
 </tmpl:insert>

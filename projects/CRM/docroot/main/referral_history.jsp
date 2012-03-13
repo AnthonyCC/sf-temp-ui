@@ -33,7 +33,7 @@ for(int i=0; i< referralRptList.size(); i++) {
 	obj.put("status", mim.getStatus());
 	obj.put("credit", mim.getCredit()!=null?JspMethods.formatPrice(Double.parseDouble(mim.getCredit())):"");
 	obj.put("custid", mim.getRecipientCustId()!=null?"<a href='/main/summary.jsp?erpCustId="+ mim.getRecipientCustId() + "'>" + mim.getRecipientCustId() + "</a>":"");
-	obj.put("order", mim.getSaleId()!=null?"<a href='/main/order_details.jsp?orderId= " + mim.getSaleId() + "'>" + mim.getSaleId() + "</a>":"");
+	obj.put("order", mim.getSaleId()!=null?"<a href='/main/order_details.jsp?orderId=" + mim.getSaleId() + "'>" + mim.getSaleId() + "</a>":"");
 	obj.put("rcredit", mim.getCreditIssuedDate() != null?DATE_FORMATTER.format(mim.getCreditIssuedDate()):"");
 	jsonItems.put(obj);
 }
@@ -70,8 +70,12 @@ String jsonString = jobj.toString();
 		background: none !important;
 	}
 	
-	.yui-skin-sam th.yui-dt-asc, .yui-skin-sam th.yui-dt-desc {
-		background: url("/assets/yui-2.9.0/assets/skins/sam/sprite.png") repeat-x scroll 0 0 #D8D8DA !important;
+	.yui-skin-sam th.yui-dt-asc, .yui-skin-sam th.yui-dt-desc, .yui-skin-sam th.yui-dt-asc, .yui-skin-sam th.yui-dt-desc {
+		background: #DDDDDD !important;
+	}
+	
+	.yui-skin-sam .yui-dt th {
+		background: #DDDDDD !important;
 	}
 	
 	.yui-skin-sam .yui-dt th, .yui-skin-sam .yui-dt td {
@@ -114,6 +118,14 @@ String jsonString = jobj.toString();
 		font-size: 9px;
 		font-weight: bold;
 	}
+	
+	.t11px { font-size: 11px; }
+	.t12px { font-size: 12px; }
+	.t20px { font-size: 20px; }
+	.tOrange { color: orange; }
+	.bolded { font-weight: bold; }
+	.tcredits {background-color:#C9EFFF;font-size:11px;font-weight:normal;padding:5px;border-radius: 10px;-moz-border-radius: 10px;-webkit-border-radius: 10px;}	
+
 }
 </style>
 <!-- Combo-handled YUI CSS files: -->
@@ -135,8 +147,24 @@ String jsonString = jobj.toString();
 
 <div id="pagenums"></div>
 <div id="dynamicdata"></div> 
-
-
+<table>
+<tr>
+		<td colspan="2">
+			<!-- Legend-->
+			<br/><br/>
+			<div id="legend" style="float:left;">
+			<span class="t11px bolded">Legend</span>
+			<ul>
+				<li>No response – no reply to the email you sent</li>
+				<li>Signed up – responded and eligibility was pre-approved</li>
+				<li>Offer redeemed --approved as as first time residential customer and received their first order.</li>
+				<li>Offer not redeemed – entered another discount code </li>
+				<li>Inelgible – recipient was already a customer or was previously referred by another customer</li>
+			</ul>
+			</div>
+		</td>
+	</tr>
+</table>
 
 			<script type="text/javascript">
 				YAHOO.util.Event.addListener(window, "load", function() {

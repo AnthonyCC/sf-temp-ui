@@ -44,8 +44,12 @@ font-size: 10pt;
 		background: none !important;
 	}
 	
-	.yui-skin-sam th.yui-dt-asc, .yui-skin-sam th.yui-dt-desc {
-		background: url("/assets/yui-2.9.0/assets/skins/sam/sprite.png") repeat-x scroll 0 0 #D8D8DA !important;
+	.yui-skin-sam th.yui-dt-asc, .yui-skin-sam th.yui-dt-desc, .yui-skin-sam th.yui-dt-asc, .yui-skin-sam th.yui-dt-desc {
+		background: #DDDDDD !important;
+	}
+	
+	.yui-skin-sam .yui-dt th {
+		background: #DDDDDD !important;
 	}
 	
 	.yui-skin-sam .yui-dt th, .yui-skin-sam .yui-dt td {
