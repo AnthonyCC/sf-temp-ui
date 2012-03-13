@@ -15,8 +15,6 @@ html,body {
 .oas_feature_left {
 	width: 683px;
 	text-align: left;
-	min-height: 85px;
-	_height: 85px;
 }
 
 .oas_feature_right {
@@ -24,15 +22,11 @@ html,body {
 }
 
 .oas_feature_right .oas_feature_right_tab {
-	min-height: 20px;
-	_height: 20px;
 }
 
 .oas_home_bottom {
 	width: 970px;
 	padding-top: 5px;
 	padding-bottom: 10px;
-	min-height: 70px;
-	_height: 70px;
 }
 
