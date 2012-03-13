@@ -33,9 +33,7 @@
 					<td width="70%">
 						<p><b>Dear <xsl:value-of select="name" /></b></p>
 						<br/>
-						<pre>
-						<xsl:value-of select="userMessage" />
-						</pre>
+						<xsl:value-of select="userMessage" disable-output-escaping="yes"/>
 					</td>
 					<td width="30%">
 						<img src="http://www.freshdirect.com/media_stat/images/profile/earned.jpg" alt="FreshDirect" border="0"/>

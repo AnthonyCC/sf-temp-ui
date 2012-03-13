@@ -902,14 +902,8 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 		ResultSet rset = null;
 		
 		String rcet = rModel.getReferralCreditEmailText();
-		String separator = System.getProperty("line.separator");
-		rcet = rcet.replaceAll(separator, "<br/>\n");
-		
 		String iet = rModel.getInviteEmailText();
-		iet = iet.replaceAll(separator, "<br/>\n");
-		
 		String rpt = rModel.getReferralPageText();
-		rpt = rpt.replaceAll(separator, "<br/>\n");
 		
 		try {
 			conn = this.jdbcTemplate.getDataSource().getConnection();
@@ -1154,20 +1148,14 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 				rAdm.setFbText(rset.getString("FB_TEXT"));
 				rAdm.setTwitterText(rset.getString("TWITTER_TEXT"));
 				String rpt = rset.getString("RL_PAGE_TEXT");
-				if(rpt != null)
-					rpt = rpt.replaceAll("<br/>", "\n");
 				rAdm.setReferralPageText(rpt);
 				rAdm.setReferralPageLegal(rset.getString("RL_PAGE_LEGAL"));
 				rAdm.setInviteEmailSubject(rset.getString("INV_EMAIL_SUBJECT"));
 				String iet = rset.getString("INV_EMAIL_TEXT");
-				if(iet != null)
-					iet = iet.replaceAll("<br/>", "\n");
 				rAdm.setInviteEmailText(iet);
 				rAdm.setInviteEmailLegal(rset.getString("INV_EMAIL_LEGAL"));
 				rAdm.setReferralCreditEmailSubject(rset.getString("REF_CRE_EMAIL_SUB"));
 				String rcet = rset.getString("REF_CRE_EMAIL_TEXT");
-				if(rcet != null)
-					rcet = rcet.replaceAll("<br/>", "\n");
 				rAdm.setReferralCreditEmailText(rcet);
 				return rAdm;
 			}
@@ -1233,16 +1221,8 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 		ResultSet rset = null;
 		
 		String rcet = rModel.getReferralCreditEmailText();
-		String separator = System.getProperty("line.separator");
-		rcet = rcet.replaceAll(separator, "<br/>\n");
-		
 		String iet = rModel.getInviteEmailText();
-		iet = iet.replaceAll(separator, "<br/>\n");
-		
 		String rpt = rModel.getReferralPageText();
-		rpt = rpt.replaceAll(separator, "<br/>\n");
-
-		
 		
 		try {
 			conn = this.jdbcTemplate.getDataSource().getConnection();
