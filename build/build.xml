@@ -46,9 +46,10 @@
 		<pathelement location="${weblogic.home}/server/lib/weblogic.jar"/>
 		<pathelement location="${weblogic.home}/server/lib/wlclient.jar"/>
 		<pathelement location="${weblogic.home}/server/lib/CR189281_debug.jar"/>
-        <pathelement location="${weblogic.home}/server/lib/webserviceclient.jar"/>
-        <pathelement location="${weblogic.home}/server/lib/webserviceclient+ssl.jar"/>
-        <pathelement location="${weblogic.home}/server/lib/webservices.jar"/>        
+        	<pathelement location="${weblogic.home}/server/lib/webserviceclient.jar"/>
+        	<pathelement location="${weblogic.home}/server/lib/webserviceclient+ssl.jar"/>
+	        <pathelement location="${weblogic.home}/server/lib/webservices.jar"/>
+	        <pathelement location="${weblogic.home}/server/lib/api.jar"/>
 	</path>
 
 	<path id="common.classpath">
