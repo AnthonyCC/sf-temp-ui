@@ -108,11 +108,8 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 										<span class="pipeSep">|</span> <%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%></span>
 								</div>
 								<div class="ordModifyButCont">
-									<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="ordModifyViewDetails">view details&nbsp;</a>
 									<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
-										<form name="modify_order" id="modify_order" method="POST" action="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">
-									<% } %>
-									<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
+										<form name="modify_order" id="modify_order" method="GET" action="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">
 											<input type="hidden" name="orderId" value="<%= orderInfo.getErpSalesId() %>" />
 											<input type="hidden" name="action" value="modify" />
 											<table class="butCont fright" style="margin-left: 10px;">
@@ -123,8 +120,7 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 												</tr>
 											</table>
 										</form>
-												
-										
+										<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="ordModifyViewDetails">view details&nbsp;</a>
 									<% } else { %>
 										&nbsp;
 									<% } %>
@@ -170,11 +166,8 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 										<span class="pipeSep">|</span> <%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%></span>
 								</div>
 								<div class="ordModifyButCont">
-									<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="ordModifyViewDetails">view details&nbsp;</a>
 									<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
-										<form name="modify_order" id="modify_order" method="POST" action="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">
-									<% } %>
-									<% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
+										<form name="modify_order" id="modify_order" method="GET" action="/your_account/modify_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>&action=modify">
 											<input type="hidden" name="orderId" value="<%= orderInfo.getErpSalesId() %>" />
 											<input type="hidden" name="action" value="modify" />
 											<table class="butCont fright" style="margin-left: 10px;">
@@ -185,8 +178,7 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 												</tr>
 											</table>
 										</form>
-												
-										
+										<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>" class="ordModifyViewDetails">view details&nbsp;</a>
 									<% } else { %>
 										&nbsp;
 									<% } %>

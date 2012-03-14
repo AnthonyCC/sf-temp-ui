@@ -878,13 +878,13 @@ div.control, div.slotRow, div.time {
 		float: right;
 		text-align: left;
 		font-size: 11px;
-		width: 185px;
+		width: 400px;
 	}
 	.index_ordMod_cont .ordModifyButCont a {
 		font-weight: normal;		
 	}
 	.index_ordMod_cont .ordModifyButCont .ordModifyViewDetails {
-		float: left;
+		float: right;
 	}
 
 /* html "buttons" */
@@ -910,7 +910,7 @@ div.control, div.slotRow, div.time {
 			height: 100%;
 			padding: 0 3px;
 			color: #fff;
-			font-family: Futura, Verdana;
+			font-family: Verdana, Arial, sans-serif;
 			font-size: 13px;
 			border: 0;
 			text-decoration: none;
@@ -921,7 +921,7 @@ div.control, div.slotRow, div.time {
 			height: 100%;
 			padding: 0 3px;
 			color: #fff;
-			font-family: Futura, Verdana;
+			font-family: Verdana, Arial, sans-serif;
 			font-size: 18px;
 			border: 0;
 			text-decoration: none;
