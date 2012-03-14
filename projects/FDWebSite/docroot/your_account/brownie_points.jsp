@@ -101,7 +101,7 @@ String browserType=(String)request.getHeader("User-Agent");
 	function my_mouse_over(client) {
 		// we can cheat a little here -- update the text on mouse over
 		clip.setText( '<%= request.getServerName() + "/invite/" + user.getReferralLink() %>' );
-	}
+	}	
 	
 	</script>	
 					
@@ -214,29 +214,35 @@ String browserType=(String)request.getHeader("User-Agent");
 										<input type="hidden" name="action" value="sendmails"/>
 										<input type="hidden" name="recipient_list" id="recipient_list" >
 										<input type="hidden" name="rpid" value="<%= rpModel.getReferral_prgm_id() %>" />
-										<div id="greytext" style="float:left;width:90%;padding-left:15px;padding-top:15px;">
+										<table width="100%" style="float:left;">
+										<tr> <td colspan="3" id="greytext" style="padding-left:15px;padding-top:15px;width:90%;">
 											Type email address(es) <span>(Separate email addresses with commas)</span>
-										</div>
-										<div class="form_tags" style="width:90%;padding-left:15px;float:left;"><input type="text" name="form_tags_input" value="" id="form_tags_input" />
-										&nbsp;<img src="/media_stat/images/profile/or.jpg">&nbsp;<a href="#" onclick="showPlaxoABChooser('recipient_list', '/your_account/plaxo_cb.jsp'); return false"><img src="/media_stat/images/buttons/import_address.jpg"/></a>									
-										</div>
+										</td></tr>
+										<tr><td width="420px">
+											<div class="form_tags" style="width:100%;padding-left:15px;float:left;"><input type="text" name="form_tags_input" value="" id="form_tags_input"/> </div></td>
+										<td width="2%" align="center"><img src="/media_stat/images/profile/or.jpg"></td><td  width="28%" align="left" valign="top"><a href="#" onclick="showPlaxoABChooser('recipient_list', '/your_account/plaxo_cb.jsp'); return false"><img src="/media_stat/images/buttons/import_address.jpg"/></a></td></tr>
 										
 										<% if (!valid) { %>
 											<div style="width:90%;padding-left:15px;float:left;color:red;font-weight:bold;">Please enter valid email addresses</div>
 										<% } %>
-											
+										
+										<tr><td colspan="3">
 										<div id="greytext" style="float:left;width:90%;padding-top:15px;padding-left:15px;">
 											Enter personal message <span>(optional)</span>
-											<br/><br/>
+											<br/>
 											<textarea id="mail_message" name="mail_message" rows="6" cols="40"><%= email_txt %></textarea>
 										</div>
-										<br/>
-										<div id="orangebutton">
+										</td></tr>
+										<tr><td colspan="3">
+										<div id="orangebutton" style="padding:10px;">
 											<center>
 											<input type="image" src="/media_stat/images/buttons/send_email.jpg" /> <br/>
 											<span class="greytext_normal"><br/><a href="/your_account/manage_invites.jsp">manage sent invites</a></span>
 											</center>
 										</div>
+										</td></tr>
+										</table>
+										
 									</form>
 									<% } %>
 								<% } else if ("fb".equals(current)) { %>
@@ -259,10 +265,10 @@ String browserType=(String)request.getHeader("User-Agent");
 													 // logged in and connected user, someone you know
 													 document.getElementById('hide_login').style.display = "none";
 													 document.getElementById('hide_login').innerHTML = "";						
-													 //window.alert('calling friends');
+													 window.alert('calling friends');
 													 getFriends();
 												 } else {
-													//window.alert('not logged in');
+													window.alert('not logged in');
 													document.getElementById('hide_login').style.display = "";
 												 }
 											 });
@@ -305,7 +311,7 @@ String browserType=(String)request.getHeader("User-Agent");
 												};
 
 												function callback(response) {
-												  alert("Post ID: " + response['post_id']);
+												  //alert("Post ID: " + response['post_id']);
 												}
 
 												FB.ui(obj, callback);
@@ -367,7 +373,7 @@ String browserType=(String)request.getHeader("User-Agent");
 												var divInfo = document.getElementById("friends");
 												var friends = response.data;					
 												divInfo.innerHTML = "";
-												var htmlString = "<br/><div class=\"text12bold\" style=\"float:left;padding:15px;color:#777777\">Tell your Friends <a href=\"#\" onclick=\"getFriends()\"> <img src=\"/media_stat/images/buttons/refresh.jpg\" /></a></div><div style=\"float:right;padding:15px;\">" + post_on_wall_but + "</div>  <br/> <hr width=\"100%\" style=\"float:left;background-color:#FFFFFF; border: 1px solid #C0C0C0; border-style: none none solid;\"> <br/> <table width=\"100%\" cellpadding=\"2px\">";
+												var htmlString = "<br/><div class=\"text12bold\" style=\"float:left;padding:15px;color:#777777\">Tell your Friends <a href=\"#fbarea\" onclick=\"getFriends()\" name=\"fbarea\"> <img src=\"/media_stat/images/buttons/refresh.jpg\" /></a></div><div style=\"float:right;padding:15px;\">" + post_on_wall_but + "</div>  <br/> <hr width=\"100%\" style=\"float:left;background-color:#FFFFFF; border: 1px solid #C0C0C0; border-style: none none solid;\"> <br/> <table width=\"100%\" cellpadding=\"2px\">";
 												var j = randomFromTo(0, friends.length);
 												//alert("friends.length:"+ friends.length + "-j:" + j);
 												var cnt = 0;

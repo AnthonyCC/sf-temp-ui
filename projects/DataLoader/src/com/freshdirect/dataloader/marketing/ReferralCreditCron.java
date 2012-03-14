@@ -171,7 +171,6 @@ public class ReferralCreditCron {
 
 	        message = message.replace("<first name>", refereeCm.getFirstName());
 	        message = message.replace("<last name>", refereeCm.getLastName());
-	        message = message.replace("<br/>", "\n");
 	        
 	        FDCustomerInfo fdCustInfo = fdsb.getCustomerInfo(new FDIdentity(referral_customer_id, model.getFDCustomerId()));
 	        String depotCode = fdCustInfo.getDepotCode();

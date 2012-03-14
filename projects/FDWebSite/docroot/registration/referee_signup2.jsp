@@ -169,7 +169,7 @@
 			<br/><br/>
 			<span class="bodyCopy">Security Question <span class="star">*</span> </span> <br/>
 			<span class="text12">What is your town of birth or mother's  maiden name? </span><br/><br/>
-			<input type="text"  maxlength="5" class="text11" size="10" name="<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>" onfocus="fillVals(this.id, '','Answer');" onblur="fillVals(this.id, 'Def','Answer');" id="secret_answer"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>' id='errorMsg'> <span class="text11rbold"><br /><%=errorMsg%></span></fd:ErrorHandler>
+			<input type="text"  maxlength="25" class="text11" size="10" name="<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>" onfocus="fillVals(this.id, '','Answer');" onblur="fillVals(this.id, 'Def','Answer');" id="secret_answer"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>' id='errorMsg'> <span class="text11rbold"><br /><%=errorMsg%></span></fd:ErrorHandler>
 			<br/><br/>
 			<div class="fright hline" id=""><!-- --></div>
 			

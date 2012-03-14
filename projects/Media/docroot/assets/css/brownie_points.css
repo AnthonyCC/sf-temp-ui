@@ -16,6 +16,12 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 10px; height: 100%; }
 
 .textboxlist-bits .sb-inner {background: #FFFFFF;}
 
+.fb_edge_comment_widget, .fb_dialog  .fb_dialog_advanced {
+    
+	left: 300px !important;
+	top: 50px !important;
+}
+
 /* style for sliding menu pointer starts */
 #menu{
 	margin:0 auto;
