@@ -421,7 +421,7 @@ FDIdentity identity = user.getIdentity();
 											width="96" height="14" border="0" alt="COLLAPSE LIST" style="vertical-align: middle;">
 									</span>
 								</span>
-								<div id="clicode_autocomplete_<%= idx %>" style="width: 125px; position: absolute; top: 100%; _top: 20px; left: 0px;"></div>
+								<div id="clicode_autocomplete_<%= idx %>" class="termsStyle" style="width: 125px; position: absolute; top: 100%; _top: 20px; left: 0px;"></div>
 								</div>
 							</td>
 						</tr>

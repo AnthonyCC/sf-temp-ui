@@ -619,7 +619,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		coord.node.cells[2].style.overflow = 'visible';
 		coord.node.cells[2].innerHTML = '<div style="position: relative; vertical-align: middle; overflow: visible;">' + 
 			'<input type="text" autocomplete="off" size="25" maxlength="30" class="text10" style="border: 1px solid black; width: 125px; position: static;">' +
-			'<div style="width: 125px; position: absolute; top: 100%; _top: 20px; left: 0px;"></div></div>';
+			'<div class="termsStyle" style="width: 125px; position: absolute; top: 100%; _top: 20px; left: 0px;"></div></div>';
 		coord.node.cells[2].firstChild.firstChild.value = ccs[coord.idx][coord.i].clientCode;
 		YAHOO.util.Event.addListener(coord.node.cells[2].firstChild.firstChild, "keypress", ClientCodes.disableEnter);
 		coord.node.cells[2].firstChild.firstChild.id = _PREFIX + "clientcode_" + coord.idx + "_" + coord.i;
