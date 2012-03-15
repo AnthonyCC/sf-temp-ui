@@ -153,6 +153,18 @@ public class LoginControllerTag extends AbstractControllerTag {
                  this.setSuccessPage("/department.jsp?deptId=COS");;
         	  }
           }
+          
+          //ticktie for refer a friend program
+          if(session.getAttribute("TICK_TIE_CUSTOMER") != null) {
+        	  String ticktie = (String) session.getAttribute("TICK_TIE_CUSTOMER");
+        	  String custID = ticktie.substring(0, ticktie.indexOf("|"));
+        	  String refName = ticktie.substring(ticktie.indexOf("|"));
+        	  if(custID.equals(identity.getErpCustomerPK())) {
+        		  //the session is for this user only
+        		  String referralCustomerId = FDCustomerManager.recordReferral(custID, (String) this.pageContext.getSession().getAttribute("REFERRALNAME"), user.getUserId());
+        		  LOGGER.debug("Tick and tie:" + user.getUserId() + " with:" + referralCustomerId);
+        	  }
+          }
             
         } catch (FDResourceException fdre) {
             LOGGER.warn("Resource error during authentication", fdre);

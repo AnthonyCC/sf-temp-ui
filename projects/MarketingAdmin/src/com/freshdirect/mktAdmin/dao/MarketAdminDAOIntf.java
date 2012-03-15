@@ -73,5 +73,7 @@ public interface MarketAdminDAOIntf {
 	public  List<String> addReferralCustomers(Collection<String> collection, String referralId) throws SQLException;
 	
 	public boolean defaultPromoExists(String referral_id) throws SQLException;
+	
+	public  List<String> getRefPromoUserList(String referral_id) throws SQLException;
 			
 }

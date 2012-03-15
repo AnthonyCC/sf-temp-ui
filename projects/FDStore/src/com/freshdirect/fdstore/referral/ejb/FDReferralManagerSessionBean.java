@@ -1199,7 +1199,7 @@ public class FDReferralManagerSessionBean extends FDSessionBeanSupport {
 			//Send message
 			conn = this.getConnection();
 			ReferralPromotionModel rpModel = FDReferAFriendDAO.getReferralPromotionDetailsById(conn, rpid);
-			String name = user.getFirstName() + " " + user.getLastName();
+			String name = user.getFirstName();
 			String invEmailTxt = rpModel.getInviteEmailText();
 			String refLink = "http://" + serverName + "/invite/" + user.getReferralLink();
 			invEmailTxt = invEmailTxt.replaceAll("<personal url>", refLink);

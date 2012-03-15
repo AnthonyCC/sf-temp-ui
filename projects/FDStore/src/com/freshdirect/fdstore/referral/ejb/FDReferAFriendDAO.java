@@ -454,7 +454,7 @@ public class FDReferAFriendDAO {
 													  "where  upper(CI.FRIENDS_EMAIL) = upper(?) " + 
 													  "and    CI.REFERRAL_CUSTOMER_ID = ?";	
 	
-	private static final String UPD_CUST_INVITE_REC = "update CUST.CUSTOMER_INVITES set FRIENDS_CUSTOMER_ID=? where FRIENDS_EMAIL=? and referral_customer_id=?";
+	private static final String UPD_CUST_INVITE_REC = "update CUST.CUSTOMER_INVITES set FRIENDS_CUSTOMER_ID=? where upper(FRIENDS_EMAIL)=upper(?) and referral_customer_id=?";
 	
 	private static final String INS_CUST_INVITE_REC = "insert into CUST.CUSTOMER_INVITES(FRIENDS_CUSTOMER_ID, FRIENDS_EMAIL, REFERRAL_CUSTOMER_ID, SENT_DATE, REFERRED_REF_PRGM_ID) " +
 													  "values(?,?,?,sysdate,?)";

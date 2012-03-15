@@ -56,6 +56,13 @@ public class ReferralAdminController extends AbstractMktAdminForm {
 			} catch (MktAdminApplicationException e) {
 				LOGGER.error("Error loading promotions", e);
 			}		 
+		} else if(request.getRequestURI().indexOf("viewCustList.do") != -1) {
+			//This is a view for cusotmer list
+			try {
+				refData.put("custList", getMarketAdminService().getRefPromoUserList(request.getParameter("ref_id")));
+			} catch (MktAdminApplicationException e) {
+				LOGGER.error("Error loading promotions", e);
+			}	
 		} else {
 			try {
 				System.out.println(getMarketAdminService().getReferralPromotions());

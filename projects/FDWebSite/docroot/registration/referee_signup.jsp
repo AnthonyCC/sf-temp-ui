@@ -176,13 +176,23 @@
 
 		
 			<%@ include file="/includes/net_insight/i_tag_footer.jspf" %>
-			<%
-				/* Publicis Pixel */
-				SemPixelModel semPixel_PUB = FDSemPixelCache.getInstance().getSemPixel("Publicis");
+			<script type="text/javascript">
+					gaq.push([
+						'_setReferrerOverride', '/registration/referee_signup.jsp?utm_medium=internal&utm_source=raf&utm_campaign=raf'
+							   ]);
 
-				//add a param to the params sent to the FTL
-				semPixel_PUB.setParam("curPage", request.getRequestURI());
-			%><fd:SemPixelIncludeMedia pixelNames="Publicis" />
+			</script>
+
+			<%
+				if (FDSemPixelCache.getInstance().getSemPixel("GoogleAnalytics").isEnabled()) {
+					SemPixelModel semPixel_GA1 = FDSemPixelCache.getInstance().getSemPixel("GoogleAnalytics");
+
+					/* Create params string here, also check for "&" in url already before appending so you don't do ? twice */
+
+					semPixel_GA1.setParam("curPage", request.getRequestURI()+"&utm_medium=internal&utm_source=raf&utm_campaign=raf");
+				}
+
+			%>
 		</fd:SiteAccessController>
 		<% }  else { 
 			response.sendRedirect("/index.jsp");

@@ -321,37 +321,17 @@ public class RegistrationAction extends WebActionSupport {
 			address.setServiceType(user.getSelectedServiceType());
 			DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkAddress(address);
 			
-			if(session.getAttribute("EXISTING_CUSTOMERID") == null )				
-				this.reclassifyUser(user, address, serviceType, serviceResult);
+			this.reclassifyUser(user, address, serviceType, serviceResult);
 		} else {
 			//Directly from Zip Check page
 			String zipCode = user.getZipCode();
 			DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkZipCode(zipCode);
 	        AddressModel addr = new AddressModel();
 	        addr.setZipCode(zipCode);
-	        if(session.getAttribute("EXISTING_CUSTOMERID") == null )
-	        	this.reclassifyUser(user, addr,serviceType , serviceResult);
+        	this.reclassifyUser(user, addr,serviceType , serviceResult);
 		}
 		
-		if(session.getAttribute("EXISTING_CUSTOMERID") != null ) {
-			//Refer a friend registration for existing customer who is not referred by any other customer and with zero orders.
-			String eCustId = (String) session.getAttribute("EXISTING_CUSTOMERID");			
-			//Update FN, LN in CUSTOMERINFO 
-			FDReferralManager.updateCustomerInfo(eCustId, customerInfo.getFirstName(), customerInfo.getLastName());
-			//Update PW in CUSTOMER
-			FDReferralManager.updateCustomerPW(eCustId, erpCustomer.getPasswordHash());
-			//Update SecretAnswer in FDCUSTOMER
-			FDReferralManager.updateFdCustomer(eCustId, aInfo.getPasswordHint());
-			//Login user and save user object
-			FDIdentity identity = FDCustomerManager.login(customerInfo.getEmail(),aInfo.password);
-            LOGGER.info("Identity : erpId = " + identity.getErpCustomerPK() + " : fdId = " + identity.getFDCustomerPK());
-            
-            FDUser loginUser = FDCustomerManager.recognize(identity);   
-            
-            UserUtil.createSessionUser(request, this.getWebActionContext().getResponse(), loginUser);
-            
-		} else {
-
+		
 			//
 			// Absence of an FDIdentity in session means this is a new registration.
 			// Presence of an FDIdentity might indicate a registered user but failed predicate function
@@ -437,7 +417,7 @@ public class RegistrationAction extends WebActionSupport {
 				}
 	
 			}
-		}
+		
 		return SUCCESS;
 		
 	}

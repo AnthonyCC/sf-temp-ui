@@ -124,6 +124,7 @@
 	<div class="fright hline" id=""><!-- --></div>
 	<div id="form_feilds" style="float:left">
 		<form id="refaddress" name="refaddress" method="post" action="">
+			<input type="hidden" name="submission" value="done" />	
 			<input type="hidden" name="actionName" value="ordermobilepref" />	
 			<input type="hidden" name="successPage" value="<%= successPage %>" />
 			<input type="hidden" name="serviceType" value="<%= serviceType %>" />

@@ -508,6 +508,8 @@ public class FDStoreProperties {
 	private final static String PROP_GIVEX_WEB_SERVER_URL  = "fdstore.givex.web.url";
 	
 	private final static String PROP_DAY_OF_WEEK_FOR_COS_MON_AUTHS="fdstore.cos.montue.auth.dayofweek";
+	
+	private final static String FACEBOOK_APP_KEY = "facebook.app.key";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1012,6 +1014,7 @@ public class FDStoreProperties {
         defaults.put(PROP_DAY_OF_WEEK_FOR_COS_MON_AUTHS, "6");
 		defaults.put(PROP_FD_GIVEX_WEB_USER_PASSWD, "fd8848admin");
 		defaults.put(PROP_GIVEX_WEB_SERVER_URL, "https://dev-wwws.givex.com/portal/login.py?_LANGUAGE_:en");
+		defaults.put(FACEBOOK_APP_KEY, "176418392468226");
         refresh();
     }
 
@@ -2594,5 +2597,9 @@ public class FDStoreProperties {
 	}
     public static int getDayOfWeekForCOSMondayAuths() {
         return  Integer.parseInt(get(PROP_DAY_OF_WEEK_FOR_COS_MON_AUTHS));
+    }
+    
+    public static String getFacebookAppKey() {
+        return  config.getProperty(FACEBOOK_APP_KEY);
     }
 }

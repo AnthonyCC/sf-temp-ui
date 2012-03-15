@@ -299,9 +299,14 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 						result.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),"You already signed up for the new customer referral program. Please <a href=\'/login/login_main.jsp\'>log in</a> to start shopping."));
 						return false;
 					} else {
-						//Customer is not referred yet. Let them complete light signup.
+						//Customer is not referred yet. Just tick and tie and ask them to login.
 						//Load user object
-						this.pageContext.getSession().setAttribute("EXISTING_CUSTOMERID", dupeCustID);
+						//this.pageContext.getSession().setAttribute("EXISTING_CUSTOMERID", dupeCustID);
+						//String referralCustomerId = FDCustomerManager.recordReferral(dupeCustID, (String) this.pageContext.getSession().getAttribute("REFERRALNAME"), email);
+						this.pageContext.getSession().setAttribute("TICK_TIE_CUSTOMER", dupeCustID + "|" + (String) this.pageContext.getSession().getAttribute("REFERRALNAME"));
+						//LOGGER.debug("Tick and tie:" + email + " with:" + referralCustomerId);
+						result.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),"You already signed up. Please <a href=\'/login/login_main.jsp\'>log in</a> to your account to use your Referral offer."));
+						return false;
 					}
 				}
 			}
@@ -452,7 +457,9 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					}
 					//Add address into session.
 					pageContext.getSession().setAttribute("REFERRAL_ADDRESS", this.address);
-					return this.doRedirect(moreInfoPage);
+					//return this.doRedirect(moreInfoPage);
+					pageContext.getSession().setAttribute("DISPLAY", "STEP2");
+					return EVAL_BODY_BUFFERED;
 				}
 			}
 			return this.doRedirect(page);
@@ -559,27 +566,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		HttpSession session = pageContext.getSession();
 		HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 
-		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-		
-		if(session.getAttribute("EXISTING_CUSTOMERID") != null && "true".equals(pageContext.getRequest().getParameter("referralRegistration"))) {
-			//Refer a friend registration for existing customer who is not referred by any other customer and with zero orders.
-			//update fd user with the zipcode.
-			String eCustID = (String)session.getAttribute("EXISTING_CUSTOMERID");
-			String fdCustId = FDReferralManager.updateFDUser(eCustID, this.address.getZipCode(), serviceType);
-			//Set the address values into user objects just like below.
-			FDIdentity identity = new FDIdentity(eCustID, fdCustId);
-			FDUser user1 = null;
-			try {
-				user1 = FDCustomerManager.recognize(identity);
-			} catch (FDAuthenticationException e) {
-				LOGGER.error("Authentication error", e);
-			}
-			user = new FDSessionUser(user1, session);
-			user.setAddress(this.address);
-			user.setSelectedServiceType(serviceType);
-			CookieMonster.storeCookie(user, response);
-			session.setAttribute(SessionName.USER, user);
-		} else {		
+		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);		
 
 			if ((user == null) || ((user.getZipCode() == null) && (user.getDepotCode() == null))) {
 				//
@@ -625,8 +612,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					session.setAttribute(SessionName.USER, user);
 				}
 							
-			}
-		}
+			}		
         //The previous recommendations of the current session need to be removed.
         session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
         session.removeAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);

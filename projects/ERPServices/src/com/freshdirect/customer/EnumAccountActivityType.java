@@ -120,6 +120,8 @@ public class EnumAccountActivityType implements java.io.Serializable {
 	public final static EnumAccountActivityType		DELIVERY_NOTIFICATION	            = new EnumAccountActivityType( "Del Notif.", "Delivery Notification text message option" );
 	public final static EnumAccountActivityType		OFFER_NOTIFICATION	                = new EnumAccountActivityType( "Offer Notif.", "Offer Notification text message option" );
 	public final static EnumAccountActivityType		NO_THANKS	                        = new EnumAccountActivityType( "No Thanks", "Mobile Preferences - No thanks" );
+	public final static EnumAccountActivityType		REFEREE_FNLNZIP_CHECK               = new EnumAccountActivityType( "Referee-FNLNZip", "Referee FN-LN-Zip check Failed" );
+	public final static EnumAccountActivityType		DISABLE_REFERRAL_PROMO				= new EnumAccountActivityType( "Disable RAFPromo", "Disable Referral Promotion" );
 	
     private EnumAccountActivityType(String code, String name) {
         this.id = idCounter++;

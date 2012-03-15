@@ -248,7 +248,7 @@
 					</tr>					
 					<tr><td>Customer Email List</td>					
 					<td><spring1:bind path="command.userListFile">					
-					<input type="file" name="userListFile"/>
+					<input type="file" name="userListFile"/> &nbsp;<a href="#" onclick="javascript:window.open('viewCustList.do?ref_id=<%=request.getParameter("ref_id")%>','','height=300,width=700,menubar=no,status=no,titlebar=no,toolbar=no,scrollbars=yes')">View Customers mapped to this promotion</a>
 					<br/> <span style="color:blue;font-size:11px;font-style:italic;">Add CSV file with just user email addresses. **Cusomter List is not required if Default promo is selected.**</span>
 					<c1:if test="${not empty status.errorMessage}" >
 						<br/>
@@ -261,7 +261,7 @@
 						<spring1:bind path="command.userListFileHolder">	
 							<input type="hidden" name="userListFileHolder" value="<%= model1.getName() %>"/>						
 						</spring1:bind>
-					<% } %>	
+					<% } %>						
 					</td>
 					</tr>
 					</tr>

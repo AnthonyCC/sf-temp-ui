@@ -1042,5 +1042,14 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 			}
 			return false;
 		}
+		
+		public  List<String> getRefPromoUserList(String referral_id) throws MktAdminApplicationException {
+			try {
+				return getMktAdminDAOImpl().getRefPromoUserList(referral_id);
+			} catch (SQLException e) {
+				LOGGER.error("Error inserting referral promo", e);
+			}
+			return null;
+		}
 			
 }

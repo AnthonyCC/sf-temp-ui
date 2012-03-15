@@ -45,6 +45,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.promotion.PromotionI;
+import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -116,7 +117,20 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 
 		try {
 			boolean foundFraud =
-				FDCustomerManager.addShipToAddress(AccountActivityUtil.getActionInfo(session), !user.isDepotUser(), erpAddress);			
+				FDCustomerManager.addShipToAddress(AccountActivityUtil.getActionInfo(session), !user.isDepotUser(), erpAddress);
+			
+			/*APPDEV-1888*/
+			//Check if customer is a referred customer
+			if(user.getReferralCustomerId() != null) {
+				/*Check if firstname + lastname + zipcode are matching with any other customer and flag this user*/
+				if(!FDReferralManager.isUniqueFNLNZipCombo(user.getFirstName(), user.getLastName(), erpAddress.getZipCode())) {
+					//record the error
+					FDCustomerManager.addFNLNZipCodeFraud(AccountActivityUtil.getActionInfo(session));
+					foundFraud = true;
+				}
+			}
+			
+			
 			if (foundFraud) {
 //				session.setAttribute(SessionName.SIGNUP_WARNING, MessageFormat.format(
 //					SystemMessageList.MSG_NOT_UNIQUE_INFO,

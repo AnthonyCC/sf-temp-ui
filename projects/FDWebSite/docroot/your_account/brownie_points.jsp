@@ -44,7 +44,27 @@ String browserType=(String)request.getHeader("User-Agent");
 <tmpl:put name='title' direct='true'>FreshDirect - Your Profile</tmpl:put>
 <tmpl:put name='content' direct='true'>
 
-<fd:ReferAFriend result="result" successPage="<%= successPage %>">
+<%
+	boolean valid = true;
+	if("sendmails".equals(request.getParameter("action"))) {
+		//check the emails
+		String recipient_list = request.getParameter("form_tags_input");
+		StringTokenizer stokens = new StringTokenizer(recipient_list, ",");		
+		if(stokens.countTokens() == 0) {
+			valid = false;
+		} else {
+			while(stokens.hasMoreTokens()) {
+				String recipient = stokens.nextToken();
+				if(!EmailUtil.isValidEmailAddress(recipient)) {
+					valid = false;
+					break;
+				}					
+			}
+		}
+	}
+%>
+
+<fd:ReferAFriend>
 
 
 
@@ -65,26 +85,9 @@ String browserType=(String)request.getHeader("User-Agent");
 	
 	request.setAttribute("sitePage", "www.freshdirect.com/your_account/brownie_points.jsp");
 	request.setAttribute("listPos", "RAFBanner,RAFLeftHeader");
-	
-	boolean valid = true;
-	if("sendmails".equals(request.getParameter("action"))) {
-		//check the emails
-		String recipient_list = request.getParameter("form_tags_input");
-		StringTokenizer stokens = new StringTokenizer(recipient_list, ",");		
-		if(stokens.countTokens() == 0) {
-			valid = false;
-		} else {
-			while(stokens.hasMoreTokens()) {
-				String recipient = stokens.nextToken();
-				if(!EmailUtil.isValidEmailAddress(recipient)) {
-					valid = false;
-					break;
-				}					
-			}
-		}
-	}
 %>	
 <script language="javascript">
+	var curvyCornersVerbose = false; 
 	var clip = null;
 		
 	window.onload= function copy_function() {
@@ -223,7 +226,9 @@ String browserType=(String)request.getHeader("User-Agent");
 							</div>
 							<div id="fbbox">
 								<div id="testbox1">
-								<% if("email".equals(current)) { %>
+								<% if("email".equals(current)) { 
+									System.out.println("^^^^^^^^^^^^^^^^^^^^^^^"+request.getParameter("action") + "-" + valid);
+								%>
 									<% if("sendmails".equals(request.getParameter("action")) && valid) {
 									//request submitted
 									%>
@@ -248,7 +253,9 @@ String browserType=(String)request.getHeader("User-Agent");
 										<td width="2%" align="center"><img src="/media_stat/images/profile/or.jpg"></td><td  width="28%" align="left" valign="top"><a href="#" onclick="showPlaxoABChooser('recipient_list', '/your_account/plaxo_cb.jsp'); return false"><img src="/media_stat/images/buttons/import_address.jpg"/></a></td></tr>
 										
 										<% if (!valid) { %>
+											<tr><td colspan="3">
 											<div style="width:90%;padding-left:15px;float:left;color:red;font-weight:bold;">Please enter valid email addresses</div>
+											</td></tr>
 										<% } %>
 										
 										<tr><td colspan="3">
@@ -261,7 +268,12 @@ String browserType=(String)request.getHeader("User-Agent");
 										<tr><td colspan="3">
 										<div id="orangebutton" style="padding:10px;">
 											<center>
-											<input type="image" src="/media_stat/images/buttons/send_email.jpg" /> <br/>
+											<!--<input type="image" src="/media_stat/images/buttons/send_email.jpg" /> <br/>-->
+											<table><tr>
+												<td class="butOrangeLeft"><!-- --></td>
+												<td class="butOrangeMiddle"><a class="butText" style="font-weight:bold;text-shadow:none;vertical-align:middle;text-decoration:none;color:white;padding:60px;font-size:14px;" href="#" onclick="document.sendmails.submit();">send email</a></td>
+												<td class="butOrangeRight"><!-- --></td>
+											</tr></table>
 											<span class="greytext_normal"><br/><a href="/your_account/manage_invites.jsp">manage sent invites</a></span>
 											</center>
 										</div>
@@ -278,7 +290,7 @@ String browserType=(String)request.getHeader("User-Agent");
 									<div id="friends"></div>									
 									<script language="javascript">
 										window.fbAsyncInit = function() {
-										 FB.init({appId: '176418392468226', 												  
+										 FB.init({appId: '<%=FDStoreProperties.getFacebookAppKey()%>', 												  
 												  status: true, 
 												  cookie: true, 
 												  xfbml: true});
@@ -290,10 +302,10 @@ String browserType=(String)request.getHeader("User-Agent");
 													 // logged in and connected user, someone you know
 													 document.getElementById('hide_login').style.display = "none";
 													 document.getElementById('hide_login').innerHTML = "";						
-													 window.alert('calling friends');
+													 //window.alert('calling friends');
 													 getFriends();
 												 } else {
-													window.alert('not logged in');
+													//window.alert('not logged in');
 													document.getElementById('hide_login').style.display = "";
 												 }
 											 });
@@ -390,7 +402,7 @@ String browserType=(String)request.getHeader("User-Agent");
 																	'</table>';
 										var preview_but = '<div style=\"padding-left:15px;float:left;\"><table class="butCont" style=\"line-height: 20px;\">' + 
 																		'<tr>' + 
-																		'<td class=\"butBlueMiddle20\" valign=\"middle\"><a href=\"#\" onclick=\"callFBUI()\" class=\"previewbut\" style=\"color:#ffffff;text-shadow:none;font-weight:bold;vertical-align:middle;padding:7px;text-decoration:none;\"><img src="/media_stat/images/buttons/send_message.jpg" /></a></td>' +
+																		'<td class=\"butBlueMiddle20\" valign=\"middle\"><a href=\"#fbarea\" onclick=\"callFBUI()\" class=\"previewbut\" style=\"color:#ffffff;text-shadow:none;font-weight:bold;vertical-align:middle;padding:7px;text-decoration:none;\"><img src="/media_stat/images/buttons/send_message.jpg" /></a></td>' +
 																		'</tr>' +
 																	'</table></div>';
 										function getFriends(){
@@ -451,7 +463,7 @@ String browserType=(String)request.getHeader("User-Agent");
 				<td width="1%"></td>
 				<td id="infobox" valign="top">
 					<div style="padding: 5px 15px;">
-						<p id="greytext" align="left">Your Personal Link</p>
+						<p id="greytext" align="left">Your Personal Link <span class="greytext_normal">(click on the link to copy)</span></p>
 						<div id="d_clip_button" class="copylink"><%= request.getServerName() + "/invite/" + user.getReferralLink() %></div>
 					</div>
 					<hr id="hrline" />
@@ -551,7 +563,7 @@ String browserType=(String)request.getHeader("User-Agent");
 </TABLE>
 
 <!--[if lt IE 9 ]>
-<script language="javascript" type="text/javascript">
+<script language="javascript" type="text/javascript">	
 	if (!window.$) {
       window.$ = function(id) { return document.getElementById(id); }
     }

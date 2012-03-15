@@ -3860,6 +3860,23 @@ public class FDCustomerManager {
 		}
 	}
 	
+	public static void addFNLNZipCodeFraud(FDActionInfo info) throws FDResourceException {
+		
+		lookupManagerHome();
+		
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			sb.addFNLNZipCodeFraud(info);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+
+	
 
 	public static void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery) throws FDResourceException {
 		lookupManagerHome();

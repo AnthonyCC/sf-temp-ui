@@ -1175,7 +1175,7 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 		return null;
 	}
 
-	private static final String GET_REF_PROMO_USERS = "select EMAIL from CUST.REFERRAL_CUSTOMER_LIST where REFERAL_PRGM_ID=?";
+	private static final String GET_REF_PROMO_USERS = "select upper(c.user_id) as user_id  from CUST.REFERRAL_CUSTOMER_LIST cl, cust.customer c where cl.REFERAL_PRGM_ID=? and CL.ERP_CUSTOMER_ID = c.id";        
 
 	public String getRefPromoUsers(String id) throws SQLException {
 		Connection conn = null;
@@ -1188,7 +1188,7 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 			rset = pstmt.executeQuery();
 			StringBuffer sb = new StringBuffer();
 			while (rset.next()) {
-				sb.append(rset.getString("EMAIL"));
+				sb.append(rset.getString("USER_ID"));
 				sb.append(",");
 			}
 			return sb.toString();
@@ -1318,6 +1318,36 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 			}
 		}
 		return false;
+	}
+	
+	public  List<String> getRefPromoUserList(String referral_id) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		List<String> userList = new ArrayList<String>();
+		try {
+			conn = this.jdbcTemplate.getDataSource().getConnection();
+			pstmt = conn.prepareStatement(GET_REF_PROMO_USERS);
+			pstmt.setString(1, referral_id);
+			rset = pstmt.executeQuery();
+			while (rset.next()) {
+				userList.add(rset.getString("USER_ID"));
+			}
+			return userList;
+		} catch (Exception e) {
+			LOGGER.error("Error getting referral promo for:" + referral_id, e);
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					conn.close();
+				if (rset != null)
+					rset.close();
+			} catch (Exception e) {
+			}
+		}
+		return null;
 	}
 
 }

@@ -17,6 +17,7 @@ public class EnumFraudReason extends Enum {
 	public static final EnumFraudReason DUP_PHONE = new EnumFraudReason("DUP_PHONE","Duplicate phone number.")	;
 	public static final EnumFraudReason MAX_GC_ORDER_TOTAL = new EnumFraudReason("MAX_GC_ORDER_TOTAL", "Order amount above maximum ($5000)");
 	public static final EnumFraudReason MAX_ORDER_COUNT_LIMIT = new EnumFraudReason("MAX_ORDER_COUNT_LIMIT", "more then 3 orders in last 24 hrs");
+	public static final EnumFraudReason REFEREE_FN_LN_ZIP = new EnumFraudReason("DUP_FN_LN_ZIP", "Duplicate FN-LN-Zip combo");
 	private final String description;
 
 	public EnumFraudReason(String name, String description) {

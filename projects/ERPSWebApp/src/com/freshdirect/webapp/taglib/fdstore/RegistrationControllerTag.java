@@ -120,6 +120,12 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				this.setSuccessPage(ra.getSuccessPage()); //reset if changed.
 
 			} else if ("registerEx".equalsIgnoreCase(actionName)) {
+				if(session.getAttribute("REFERRALNAME") != null ) {
+					if(!"done".equals(request.getParameter("submission"))) {
+						actionResult.addError(new ActionError("Dummy","Dummy"));
+						return true;
+					}
+				}
 				RegistrationAction ra = new RegistrationAction(this.registrationType);
 
 				HttpContext ctx =
@@ -152,7 +158,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 							rec.setDate(new Date());
 							rec.setNote("<a href=\"/main/summary.jsp?erpCustId=" + customerId + "\">"+user.getUserId() + "</a> <a href=\"/main/summary.jsp?erpCustId=" + customerId + "\">ID #" + customerId + "</a>");
 							new ErpLogActivityCommand(FDServiceLocator.getInstance(), rec).execute();
-							this.pageContext.getSession().removeAttribute("EXISTING_CUSTOMERID");
+							//this.pageContext.getSession().removeAttribute("EXISTING_CUSTOMERID");
 							this.setSuccessPage("/registration/referee_signup2.jsp");
 							this.setAjax(true);
 						} catch (Exception e) {

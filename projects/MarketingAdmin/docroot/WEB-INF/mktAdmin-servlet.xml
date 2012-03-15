@@ -72,6 +72,7 @@
 				<prop key="/createRefPromo.do">createReferralAdminController</prop>
 				<prop key="/viewRefPromo.do">viewReferralAdminController</prop>
 				<prop key="/editRefPromo.do">editReferralAdminController</prop>
+				<prop key="/viewCustList.do">viewRefCustController</prop>
 			</props>
 		</property>
 	</bean>
@@ -188,6 +189,13 @@
         <property name="successView" value="editRefRedirect"/>
         <property name="marketAdminService" ref="marketAdminService"/>
 		<property name="validator" ref="referralFormValidator"/>
+    </bean>
+	
+	<bean id="viewRefCustController" class="com.freshdirect.mktAdmin.web.ReferralAdminController">
+        <property name="commandClass" value="com.freshdirect.mktAdmin.model.ReferralAdminModel"/>
+        <property name="formView" value="viewCustListForm"/>
+        <property name="successView" value="viewCustListRedirect"/>
+        <property name="marketAdminService" ref="marketAdminService"/>
     </bean>
 
 	<bean id="competitorFormValidator" class="com.freshdirect.mktAdmin.validation.CompetitorFormValidator"/>

@@ -19,21 +19,21 @@ System.out.println("IN REFEREE_ADDRESS.jsp======================================
     String failurePage = "delivery.jsp?successPage="+ URLEncoder.encode(successPage)+"&serviceType="+serviceType;
 	String failureCorporatePage	= "/survey/cos_site_access_survey.jsp?successPage="+ URLEncoder.encode(successPage);
 %>	
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-<head>
-	<title>FreshDirect</title>
-	<%@ include file="/common/template/includes/metatags.jspf" %>
-	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	<%-- NOT CCL @ include file="/shared/template/includes/ccl.jspf" --%>
-</head>
-<body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0">
-<script>
-</script>
+
+<%
+	String action = "checkByAddress";
+	if(session.getAttribute("DISPLAY") != null) {
+		action = "doNothing";
+	}
+%>
 	<fd:SiteAccessController action='checkByAddress' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' failureCorporatePage='<%= failureCorporatePage %>' result='result'>
 	<%
+		if(session.getAttribute("DISPLAY") != null || "doNothing".equals(action)) {
+		%>
+			<jsp:include page="/registration/referee_signup2.jsp" flush="false"/>
+		<%
+		} else {
+		
 		String fldAddress1 = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode()), "");
 		String fldAddress2 = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ADDRESS_2.getCode()), "");
 		String fldApartment = NVL.apply(request.getParameter(EnumUserInfoName.DLV_APARTMENT.getCode()), "");
@@ -48,6 +48,19 @@ System.out.println("IN REFEREE_ADDRESS.jsp======================================
 			}
 		}
 	%>
+	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	<html>
+	<head>
+		<title>FreshDirect</title>
+		<%@ include file="/common/template/includes/metatags.jspf" %>
+		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+		<%-- NOT CCL @ include file="/shared/template/includes/ccl.jspf" --%>
+	</head>
+	<body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0">
+	<script>
+	</script>
 	<center>
 	<table border="0" cellpadding="0" cellspacing="0" width="550" height="100%" style="margin: 10px;">
 		<tr valign="middle">
@@ -152,8 +165,10 @@ System.out.println("IN REFEREE_ADDRESS.jsp======================================
 				</form>
 			</td>
 		</tr>
-	</table>
+	</table>	
 	</center>
+	</body>
+	</html>
+	<% } %>
 	</fd:SiteAccessController>
-</body>
-</html>
+

@@ -780,5 +780,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public void storeAllMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery, String goGreen, String phone, String ext, boolean isCorpUser) throws FDResourceException, RemoteException;
 	
 	public void authorizeSale(String salesId, boolean force) throws FDResourceException, RemoteException;
+	
+	public void addFNLNZipCodeFraud(FDActionInfo info) throws FDResourceException, RemoteException;
 }
 

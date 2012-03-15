@@ -71,4 +71,6 @@ public interface MarketAdminServiceIntf {
 	public  List<String> addReferralCustomers(Collection<String> collection, String referralId) throws MktAdminApplicationException;
 	
 	public  boolean defaultPromoExists(String referral_id) throws MktAdminApplicationException;
+	
+	public  List<String> getRefPromoUserList(String referral_id) throws MktAdminApplicationException;
 }
