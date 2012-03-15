@@ -40,35 +40,17 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 10px; height: 100%; }
 			line-height:59px;
 			border-right: 1px solid #C0C0C0;
 		}
-			#menu li a{
-				display:block;
-				float:left;
-				line-height:59px;
-				text-decoration:none;
-				padding:0 20px;				
+			#menu li a {
+				display: block;
+				line-height: 59px;
+				text-decoration: none;
+				height: 100%;
 			}
-				#menu li a:hover{
-					color:#fff;
-					background:url(/media_stat/images/profile/pointer.jpg) no-repeat bottom;
-					height: 62px;
-					z-index:9999;
-					position:relative;
-				}
-			#menu li a.current{
-				display:block;
-				float:left;
-				background:url(/media_stat/images/profile/pointer.jpg) no-repeat bottom;
-				line-height:59px;
-				text-decoration:none;
-				padding:0 20px;	
-				height: 62px;
-				z-index:9999;
-				position:relative;
+			#menu li a.current, #menu li a:hover{
+				background: url('/media_stat/images/profile/pointer.jpg') no-repeat 50% 96%;
+				z-index: 35;
+				position: relative;
 			}
-				#menu li a:hover.current{
-					color:#fff;
-					height: 62px;
-				}
 /* style for sliding menu pointer ends */
 
 
@@ -292,3 +274,42 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 10px; height: 100%; }
 	font-size:12px;
 	font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
 }
+	#fbmenu #menu a { 
+		padding: 10px 20px 0 20px;
+	}	
+	#fbmenu #menu a, #fbmenu #menu a:visited {
+		color: #fff;
+	}
+	#fbmenu #menu a:hover, #fbmenu #menu a:active {
+		color: #f93;
+	}
+	#fbmenu #menu a.current:hover, #fbmenu #menu a.current:active {
+		color: #fff;
+	}
+	#fbmenu #menu a .line1 {
+		font-size: 10px;
+		line-height: 10px;
+	}
+	#fbmenu #menu a .line2 {
+		font-size: 16px;
+		line-height: 16px;
+	}
+	#fbmenu #menu img {
+		float: left;
+		padding-right: 8px;
+	}
+	#fbmenu #menu .em {
+		width: 130px;
+	}
+	#fbmenu #menu .fb, #fbmenu #menu .tw {
+		width: 155px;
+	}
+	#fbmenu #menu .em img {
+		padding-top: 6px;
+	}
+	#fbmenu #menu .fb img {
+		padding-top: 3px;
+	}
+	#fbmenu #menu .tw img {
+		padding-top: 4px;
+	}

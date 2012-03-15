@@ -95,15 +95,25 @@ String browserType=(String)request.getHeader("User-Agent");
 		clip.addEventListener('mouseOver', my_mouse_over);
 			
 		clip.glue( 'd_clip_button' );
-	}
-		
+	};
 		
 	function my_mouse_over(client) {
 		// we can cheat a little here -- update the text on mouse over
 		clip.setText( '<%= request.getServerName() + "/invite/" + user.getReferralLink() %>' );
-	}	
-	
-	</script>	
+	}
+
+	var curButton = null;
+	function currentSectionArrow(id, over) {
+		if  (curButton == null) { curButton = YAHOO.util.Dom.getElementsByClassName('current')[0]; }
+		if (over && id != curButton.id) {
+			YAHOO.util.Dom.replaceClass(curButton, 'current', 'currentWas');
+		}
+		if (!over) {
+			YAHOO.util.Dom.replaceClass(curButton, 'currentWas', 'current');
+		}
+	} 
+
+</script>	
 					
 
 <% if("fb".equals(request.getParameter("current"))) { %>
@@ -190,9 +200,24 @@ String browserType=(String)request.getHeader("User-Agent");
 							<div id="fbmenu">
 								<div id="menu">
 									<ul>
-										<li><a href="/your_account/brownie_points.jsp?current=email"<%= "email".equals(current)?" class=\"current\"":""%>><img src="/media_stat/images/profile/share_email.jpg" style="padding:5px;"/></a></li>
-										<li><a href="/your_account/brownie_points.jsp?current=fb"<%= "fb".equals(current)?" class=\"current\"":""%>><img src="/media_stat/images/profile/share_fb.jpg" style="padding:5px;"/></a></li>
-										<li><a href="/your_account/brownie_points.jsp?current=twitter"<%= "twitter".equals(current)?" class=\"current\"":""%>><img src="/media_stat/images/profile/share_twitter.jpg" style="padding:5px;"/></a></li>
+										<li class="em">
+											<a href="/your_account/brownie_points.jsp?current=email"<%= "email".equals(current)?" class=\"current\"":""%> id="raf_em" onmouseover="currentSectionArrow(this.id, true)" onmouseout="currentSectionArrow(this.id)">
+												<img src="/media_stat/images/profile/share_email.png" />
+												<span class="line1">share with<br /></span><span class="line2">Email</span>
+											</a>
+										</li>
+										<li class="fb">
+											<a href="/your_account/brownie_points.jsp?current=fb"<%= "fb".equals(current)?" class=\"current\"":""%> id="raf_fb" onmouseover="currentSectionArrow(this.id, true)" onmouseout="currentSectionArrow(this.id)">
+												<img src="/media_stat/images/profile/share_fb.png"/>
+												<span class="line1">share with<br /></span><span class="line2">Facebook</span>
+											</a>
+										</li>
+										<li class="tw">
+											<a href="/your_account/brownie_points.jsp?current=twitter"<%= "twitter".equals(current)?" class=\"current\"":""%> id="raf_tw" onmouseover="currentSectionArrow(this.id, true)" onmouseout="currentSectionArrow(this.id)">
+												<img src="/media_stat/images/profile/share_twitter.png" />
+												<span class="line1">share with<br /></span><span class="line2">Twitter</span>
+											</a>
+										</li>
 									</ul>	
 								</div>								
 							</div>
