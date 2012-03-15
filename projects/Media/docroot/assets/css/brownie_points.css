@@ -283,9 +283,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 10px; height: 100%; }
 	#fbmenu #menu a:hover, #fbmenu #menu a:active {
 		color: #f93;
 	}
-	#fbmenu #menu a.current:hover, #fbmenu #menu a.current:active {
-		color: #fff;
-	}
 	#fbmenu #menu a .line1 {
 		font-size: 10px;
 		line-height: 10px;
