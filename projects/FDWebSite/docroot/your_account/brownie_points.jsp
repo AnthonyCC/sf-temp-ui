@@ -96,6 +96,11 @@ String browserType=(String)request.getHeader("User-Agent");
 		ZeroClipboard.setMoviePath( '/assets/javascript/ZeroClipboard.swf' );
 			
 		clip.addEventListener('mouseOver', my_mouse_over);
+		
+		clip.addEventListener('complete',function(client,text) {
+			slert('done');
+					document.getElementById('d_clip_button').style.backgroundcolor='pink';
+				});
 			
 		clip.glue( 'd_clip_button' );
 	};
@@ -448,9 +453,10 @@ String browserType=(String)request.getHeader("User-Agent");
 										</script>
 								<% } else if ("twitter".equals(current)) { %>
 									<br/><br/>&nbsp;&nbsp;
-									<a href="#" onclick="window.open('http://twitter.com/share?text=<%= twitter_Text %>&amp;count=none', 'Twitter', 'height=400,width=600');" class="twitterbutton" >Sign In</a>	
+									<a href="#" onclick="window.open('https://twitter.com/intent/tweet?text=<%= twitter_Text %>&amp;count=none&original_referrer=www.freshdirect.com', 'Twitter', 'height=400,width=600');" class="twitterbutton" >Sign In</a>	
 									<script language="Javascript">
-										window.open("http://twitter.com/share?text=<%= twitter_Text %>&amp;count=none", "Twitter", "height=400,width=600");
+										window.open("https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Ftwitter.com%2Fabout%2Fresources%2Fbuttons&source=tweetbutton&text=<%=twitter_Text%>&url=http%3A%2F%2Fwww.freshdirect.com%2Finvite%2F<%=user.getReferralLink()%>","Twitter", "height=400,width=600");
+										//window.open("https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Ftwitter.com%2Fabout%2Fresources%2Fbuttons&source=tweetbutton&text=<%=twitter_Text%>&url=http%3A%2F%2Fwww.freshdirect.com%2Finvite%2F<%=user.getReferralLink()%>", "Twitter", "height=400,width=600");
 									</script>
 								<% } %>
 							</div>
@@ -464,7 +470,7 @@ String browserType=(String)request.getHeader("User-Agent");
 				<td id="infobox" valign="top">
 					<div style="padding: 5px 15px;">
 						<p id="greytext" align="left">Your Personal Link <span class="greytext_normal">(click on the link to copy)</span></p>
-						<div id="d_clip_button" class="copylink"><%= request.getServerName() + "/invite/" + user.getReferralLink() %></div>
+						<div id="d_clip_button" class="copylink" onclick="this.style.backgroundColor='#F78C0D !important';"><%= request.getServerName() + "/invite/" + user.getReferralLink() %></div>
 					</div>
 					<hr id="hrline" />
 					
@@ -570,6 +576,7 @@ String browserType=(String)request.getHeader("User-Agent");
 	
     var myBorder = RUZEE.ShadedBorder.create({ corner:5, edges:"tlr" });
     myBorder.render('fbmenu');
+	
   </script>
 <![endif]-->
 </fd:ReferAFriend>

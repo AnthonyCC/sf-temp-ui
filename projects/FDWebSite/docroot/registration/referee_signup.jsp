@@ -177,9 +177,12 @@
 		
 			<%@ include file="/includes/net_insight/i_tag_footer.jspf" %>
 			<script type="text/javascript">
-					gaq.push([
+					var _gaq = _gaq || [];
+					_gaq.push([
 						'_setReferrerOverride', '/registration/referee_signup.jsp?utm_medium=internal&utm_source=raf&utm_campaign=raf'
 							   ]);
+					
+					(function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
 
 			</script>
 
@@ -189,7 +192,7 @@
 
 					/* Create params string here, also check for "&" in url already before appending so you don't do ? twice */
 
-					semPixel_GA1.setParam("curPage", request.getRequestURI()+"&utm_medium=internal&utm_source=raf&utm_campaign=raf");
+					semPixel_GA1.setParam("curPage", "/registration/referee_signup?utm_medium=internal&utm_source=raf&utm_campaign=raf");
 				}
 
 			%>

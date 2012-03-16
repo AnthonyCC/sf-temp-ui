@@ -357,28 +357,28 @@ public class FDReferAFriendDAO {
 	}
 	
 	private static final String GET_CREDIT_LIST = 
-								"select distinct cc.create_date, to_char(CC.CREATE_DATE, 'MM/DD/YYYY') formatted_create_date, " + 
-								    "decode(CC.DEPARTMENT, 'RAF', 'Referral', 'Refund') type, " +
-								    "'' as SALE_ID, CC.ORIGINAL_AMOUNT , CC.AMOUNT, CC.ID, cc.AFFILIATE " + 
-								    "from CUST.CUSTOMERCREDIT cc, " +
-								    "CUST.COMPLAINT c " +
-								    "where CC.COMPLAINT_ID = C.ID " + 
-								    "and     cc.CUSTOMER_ID =  ? " +
-								"union " +
-								"select distinct SA.ACTION_DATE as create_date, to_char(CC.CREATE_DATE, 'MM/DD/YYYY') formatted_create_date, " + 
-			                        "decode(CC.DEPARTMENT, 'RAF', 'Referral', 'Refund') type, " + 
-			                        "sa.sale_id, 0 as ORIGINAL_AMOUNT , sum(ac.AMOUNT), '' as ID, cc.AFFILIATE " +
-			                        "from CUST.CUSTOMERCREDIT cc, " +
-			                        "CUST.COMPLAINT c, " +
-			                        "CUST.APPLIEDCREDIT ac, " +
-			                        "CUST.SALESACTION sa " +
-			                        "where CC.COMPLAINT_ID = C.ID " + 
-			                        "and     cc.CUSTOMER_ID =  ? " +
-			                        "and     CC.ID = AC.CUSTOMERCREDIT_ID " +
-			                        "and     AC.SALESACTION_ID = SA.ID " +
-			                        "group by (SA.ACTION_DATE, to_char(CC.CREATE_DATE, 'MM/DD/YYYY'), " +
-			                        "CC.DEPARTMENT, sa.sale_id, cc.AFFILIATE) " +
-								"order by 1";
+							"select cc.create_date, to_char(CC.CREATE_DATE, 'MM/DD/YYYY') formatted_create_date, " +  
+						        "decode(CC.DEPARTMENT, 'RAF', 'Referral', 'Refund') type , " +
+						        "'' as SALE_ID, CC.ORIGINAL_AMOUNT , CC.AMOUNT, CC.ID, cc.AFFILIATE " +  
+						        "from CUST.CUSTOMERCREDIT cc, " +
+						        "CUST.COMPLAINT c " +
+						        "where CC.COMPLAINT_ID = C.ID " +  
+						        "and     cc.CUSTOMER_ID =  ? " +
+						        "and    C.APPROVED_DATE is not null " +
+						    "union " +
+						    "select SA.ACTION_DATE as create_date, to_char(CC.CREATE_DATE, 'MM/DD/YYYY') formatted_create_date, " +  
+						        "decode(CC.DEPARTMENT, 'RAF', 'Referral', 'Refund') type, " +
+						        "sa.sale_id, 0 as ORIGINAL_AMOUNT , ac.AMOUNT, '' as ID, cc.AFFILIATE " + 
+						        "from CUST.CUSTOMERCREDIT cc, " +
+						        "CUST.COMPLAINT c, " +
+						        "CUST.APPLIEDCREDIT ac, " + 
+						        "CUST.SALESACTION sa, " +
+						        "cust.sale s " +
+						        "where       cc.CUSTOMER_ID =  ? " +
+						        "and  CC.ID = AC.CUSTOMERCREDIT_ID " +
+						        "and  AC.SALESACTION_ID = sa.id and S.CROMOD_DATE=sa.action_date and sa.action_type in ('CRO','MOD') " +
+						        "and  sa.sale_id = s.id   and s.status!='CAN' " +
+						    "order by 1";
 
 	public static List<ErpCustomerCreditModel> getUserCredits(Connection conn,
 			String customerId) throws SQLException {

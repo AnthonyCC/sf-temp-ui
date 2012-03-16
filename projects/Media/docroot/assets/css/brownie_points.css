@@ -113,13 +113,13 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 10px; height: 100%; }
 #mail_message .sb-inner {background:white;}
 
 .copylink {
-/*
+	<!--[if !IE]> -->
 	-moz-border-radius: 5px;
-	-moz-box-shadow: 3px 3px 1px #909090;
+	-moz-box-shadow: 1px 1px 1px #909090;
 	-webkit-border-radius: 5px;
-	-webkit-box-shadow: 3px 3px 1px #909090;
+	-webkit-box-shadow: 1px 1px 1px #909090;
+	<!-- <![endif]-->
 	background: none repeat scroll 0 0 #FFFFFF !important; 
-	*/
 	text-decoration: none;
 	border: 0 none;
 	color: #669900;
@@ -127,12 +127,52 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 10px; height: 100%; }
 	font-size:12px;
 	font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
 	font-weight: bold;
-	background: url(/media_stat/images/profile/invitelink_box.jpg) no-repeat !important;
-	background-color:  #F0F0F0;
-	height: 39px;
+	/*background: url(/media_stat/images/profile/invitelink_box.jpg) no-repeat !important;*/
+	background-color:  #FFFFFF;
+	/*height: 39px;*/
 	padding-left: 9px;
-	padding-top: 9px;
+	padding-top: 9px;	
 }
+
+.active {
+	<!--[if !IE]> -->
+	-moz-border-radius: 5px;
+	-moz-box-shadow: 1px 1px 1px #F78C0D;
+	-webkit-border-radius: 5px;
+	-webkit-box-shadow: 1px 1px 1px #F78C0D;
+	<!-- <![endif]-->
+	background: none repeat scroll 0 0 #F78C0D !important; 
+	text-decoration: none;
+	border: 0 none;
+	color: #333333;
+	padding: 7px;
+	font-size:12px;
+	font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-weight: bold;
+	/*background: url(/media_stat/images/profile/invitelink_box.jpg) no-repeat !important;*/
+	background-color:  #F78C0D;
+	/*height: 39px;*/
+	padding-left: 9px;
+	padding-top: 9px;	
+}
+
+.copylinkie {
+
+	background: none repeat scroll 0 0 #FFFFFF !important; 
+	text-decoration: none;
+	border: 0 none;
+	color: #669900;
+	padding: 7px;
+	font-size:12px;
+	font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-weight: bold;
+	/*background: url(/media_stat/images/profile/invitelink_box.jpg) no-repeat !important;*/
+	background-color:  #F0F0F0;
+	/*height: 39px;*/
+	padding-left: 9px;
+	padding-top: 9px;	
+}
+
 		
 #dollartext {
 	color:#F78C0D;

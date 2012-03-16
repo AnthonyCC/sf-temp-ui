@@ -148,6 +148,9 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 						String email = request.getParameter("email");
 						if(!validEmail(email, result)) {
 							LOGGER.debug("[*****Something is wrong, redirecting to:*****]" + failureHomePage);
+							if(this.pageContext.getSession().getAttribute("MSG_FOR_LOGIN_PAGE") != null) {
+								return doRedirect("/login/login_main.jsp?successPage=%2Findex.jsp");
+							}
 							if(failureHomePage != null)
 								failureHomePage = failureHomePage + "&email_error=true";
 							pageContext.setAttribute(resultName, result);
@@ -288,7 +291,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			if(dupeCustID != null) {
 				if(FDReferralManager.getReferralDisplayFlag(dupeCustID)) {
 					//Customer has atleast one settled order
-					result.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),"You already have an account and are ineligible for this referral offer. Please <a href=\'/login/login_main.jsp\'>log in</a> to start shopping."));
+					this.pageContext.getSession().setAttribute("MSG_FOR_LOGIN_PAGE", "You already have an account and are ineligible for this referral offer. Please log in to start shopping.");
 					//store this customer as ineligible trial
 					FDReferralManager.storeFailedAttempt(email,dupeCustID, this.address.getZipCode(),"","", (String) this.pageContext.getSession().getAttribute("REFERRALNAME"),"EXISTING CUSTOMER");
 					return false;
@@ -296,16 +299,12 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					//Customer is already registered, but no settled order
 					if(FDReferralManager.isCustomerReferred(dupeCustID)) {
 						//Customer has been referred by some other referral already
-						result.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),"You already signed up for the new customer referral program. Please <a href=\'/login/login_main.jsp\'>log in</a> to start shopping."));
+						this.pageContext.getSession().setAttribute("MSG_FOR_LOGIN_PAGE", "You already signed up for the new customer referral program. Please log in to start shopping.");
 						return false;
 					} else {
 						//Customer is not referred yet. Just tick and tie and ask them to login.
-						//Load user object
-						//this.pageContext.getSession().setAttribute("EXISTING_CUSTOMERID", dupeCustID);
-						//String referralCustomerId = FDCustomerManager.recordReferral(dupeCustID, (String) this.pageContext.getSession().getAttribute("REFERRALNAME"), email);
 						this.pageContext.getSession().setAttribute("TICK_TIE_CUSTOMER", dupeCustID + "|" + (String) this.pageContext.getSession().getAttribute("REFERRALNAME"));
-						//LOGGER.debug("Tick and tie:" + email + " with:" + referralCustomerId);
-						result.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),"You already signed up. Please <a href=\'/login/login_main.jsp\'>log in</a> to your account to use your Referral offer."));
+						this.pageContext.getSession().setAttribute("MSG_FOR_LOGIN_PAGE", "You already signed up. Please log in to your account to use your Referral offer.");
 						return false;
 					}
 				}

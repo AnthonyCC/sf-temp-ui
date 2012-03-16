@@ -164,6 +164,7 @@ public class LoginControllerTag extends AbstractControllerTag {
         		  String referralCustomerId = FDCustomerManager.recordReferral(custID, (String) this.pageContext.getSession().getAttribute("REFERRALNAME"), user.getUserId());
         		  LOGGER.debug("Tick and tie:" + user.getUserId() + " with:" + referralCustomerId);
         	  }
+        	  session.removeAttribute("TICK_TIE_CUSTOMER");
           }
             
         } catch (FDResourceException fdre) {

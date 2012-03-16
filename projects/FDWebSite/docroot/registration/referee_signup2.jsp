@@ -182,6 +182,7 @@
 	</div>
 	<script language="javascript">
 		setFormDefaults();
+		window.onload=fillVals('confirm_email', '','Verify your email');
 	</script>
 	<% } %>
 	</fd:RegistrationController>

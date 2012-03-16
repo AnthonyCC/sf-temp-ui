@@ -19,7 +19,7 @@ final int W_DNAV_TOTAL = 970;
 	<fd:css href="/assets/css/TextboxList.css"/>
 	
 	<% if(!"fb".equals(request.getParameter("current"))) { %>
-		<script type="text/javascript" src="/assets/javascript/mootools-1.2.1-core-yc.js"></script>	
+		<script type="text/javascript" src="/assets/javascript/jquery-1.7.1.js"></script>	
 	
 		<script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 
@@ -34,12 +34,10 @@ final int W_DNAV_TOTAL = 970;
 	
 		<script type="text/javascript"><!--
 			var t2;
-			window.addEvent('load', function(){
+			$(function(){
 				// With custom adding keys 
-				t2 = new TextboxList('form_tags_input', {bitsOptions:{editable:{addKeys: [188,Event.Keys.enter]}}});
+				t2 = new $.TextboxList('#form_tags_input', {bitsOptions:{editable:{addKeys: [188,13]}}});
 			});
-			
-			
 			
 			function onABCommComplete() {
 			  // OPTIONAL: do something here after the new data has been populated in your text area
@@ -64,7 +62,6 @@ final int W_DNAV_TOTAL = 970;
 <% } %>
 
 <script type="text/javascript" src="/assets/javascript/ZeroClipboard.js"></script>
-<script type="text/javascript" src="/assets/javascript/curvycorners.js"></script>
 <script type="text/javascript" src="/assets/javascript/shadedborder.js"></script>
 
 </head>
