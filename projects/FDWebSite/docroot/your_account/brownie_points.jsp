@@ -125,24 +125,23 @@ String browserType=(String)request.getHeader("User-Agent");
 					
 
 <% if("fb".equals(request.getParameter("current"))) { %>
-<script language="text/javascript">
 	<script language="text/javascript">
-           function login(){
-                FB.api('/me', function(response) {
-                    document.getElementById('hide_login').style.display = "none";
-                    document.getElementById('hide_login').innerHTML = "";						
-                });
-            }
-            function logout(){
-                document.getElementById('login').style.display = "none";
-            }
-			
-			function wallpost() {
-				FB.ui({ method: 'feed', 
-				message: 'Facebook for Websites is super-cool'});
-			}
-			
- </script>
+		function login(){
+			FB.api('/me', function(response) {
+				document.getElementById('hide_login').style.display = "none";
+				document.getElementById('hide_login').innerHTML = "";						
+			});
+		}
+		function logout(){
+			document.getElementById('login').style.display = "none";
+		}
+		
+		function wallpost() {
+			FB.ui({ method: 'feed', 
+			message: 'Facebook for Websites is super-cool'});
+		}
+	</script>
+	<div id="fb-root"></div>
 <% } %>
 
 
@@ -290,10 +289,16 @@ String browserType=(String)request.getHeader("User-Agent");
 								<% } else if ("fb".equals(current)) { %>
 									<br/>									
 									<div id="login"></div>
-									<div id="fb-root"></div>
 									<span id="hide_login" style="padding:15px;float:left;display:none;"><fb:login-button onlogin="window.location.reload();">Login</fb:login-button></span>
-									<div id="friends"></div>									
+									<div id="friends">
+										<div style="height: 326px; position:relative;">
+											<div style="height: 50px; position: absolute; top: 45%; left: 150px; margin-top: -25px;">
+												<img src="/media_stat/images/navigation/spinner.gif" class="fleft" /><span style="line-height: 50px; float: left; font-size: 22px;">Loading Your Friend List...</span>
+											</div>
+										</div>
+									</div>									
 									<script language="javascript">
+										
 										window.fbAsyncInit = function() {
 										 FB.init({appId: '<%=FDStoreProperties.getFacebookAppKey()%>', 												  
 												  status: true, 
@@ -305,13 +310,13 @@ String browserType=(String)request.getHeader("User-Agent");
 											 FB.getLoginStatus(function(response) {
 												if (response.status == 'connected') {
 													 // logged in and connected user, someone you know
-													 document.getElementById('hide_login').style.display = "none";
-													 document.getElementById('hide_login').innerHTML = "";						
+													 $('#hide_login').hide();						
 													 //window.alert('calling friends');
-													 getFriends();
+													 
+													getFriends();
 												 } else {
 													//window.alert('not logged in');
-													document.getElementById('hide_login').style.display = "";
+													$('#hide_login').show();
 												 }
 											 });
 											 
@@ -400,53 +405,47 @@ String browserType=(String)request.getHeader("User-Agent");
 											);
 
 										}
-										var post_on_wall_but = '<table class="butCont" style=\"line-height: 20px;\">' + 
-																		'<tr>' + 
-																		'<td class=\"butBlueMiddle20\" valign=\"middle\"><a href=\"#\" onclick=\"postToFeed()\" class=\"previewbut\" style=\"color:#ffffff;text-shadow:none;font-weight:bold;vertical-align:middle;padding:7px;text-decoration:none;\"><img src="/media_stat/images/buttons/post_on_wall.jpg" /></a></td>' +
-																		'</tr>' +
-																	'</table>';
-										var preview_but = '<div style=\"padding-left:15px;float:left;\"><table class="butCont" style=\"line-height: 20px;\">' + 
-																		'<tr>' + 
-																		'<td class=\"butBlueMiddle20\" valign=\"middle\"><a href=\"#fbarea\" onclick=\"callFBUI()\" class=\"previewbut\" style=\"color:#ffffff;text-shadow:none;font-weight:bold;vertical-align:middle;padding:7px;text-decoration:none;\"><img src="/media_stat/images/buttons/send_message.jpg" /></a></td>' +
-																		'</tr>' +
-																	'</table></div>';
+										var post_on_wall_but = '<div class="fright"><table class="butCont">' +
+						                '<tr><td class="butBlueMiddle20" valign="middle"><a href="#" onclick="postToFeed(); return false;" class="previewbut"><img src="/media_stat/images/buttons/post_on_wall.jpg" /></a></td></tr>' +
+						                '</table></div>';
+								        var preview_but = '<div class="fright"><table class="butCont">' +
+								                '<tr><td class="butBlueMiddle20" valign="middle"><a href="#fbarea" onclick="callFBUI(); return false;" class="previewbut"><img src="/media_stat/images/buttons/send_message.jpg" /></a></td></tr>' +
+								                '</table></div>';
+		
+								        function fbGetFriendCont(i, friendObj) {
+								            return '<table width=\"100%\">'+
+								                    '<tr>'+
+								                        '<td valign="center" width="10%"><input type="checkbox" id="friend' + i + '" name="friend' + i + '" value="'+ friendObj.id + '" /></td>'+
+								                        '<td width="30%"><img id="' + friendObj.id + '" src="' + friendObj.picture + '" /></td>'+
+								                        '<td valign="center" align="left" width="60%">' + friendObj.name + '</td>'+
+								                    '</tr>'+
+								                '</table>';
+								        }
 										function getFriends(){
 											FB.api('/me/friends?fields=name,picture,id', function(response) {
-												var divInfo = document.getElementById("friends");
-												var friends = response.data;					
-												divInfo.innerHTML = "";
-												var htmlString = "<br/><div class=\"text12bold\" style=\"float:left;padding:15px;color:#777777\">Tell your Friends <a href=\"#fbarea\" onclick=\"getFriends()\" name=\"fbarea\"> <img src=\"/media_stat/images/buttons/refresh.jpg\" /></a></div><div style=\"float:right;padding:15px;\">" + post_on_wall_but + "</div>  <br/> <hr width=\"100%\" style=\"float:left;background-color:#FFFFFF; border: 1px solid #C0C0C0; border-style: none none solid;\"> <br/> <table width=\"100%\" cellpadding=\"2px\">";
-												var j = randomFromTo(0, friends.length);
-												//alert("friends.length:"+ friends.length + "-j:" + j);
-												var cnt = 0;
-												for (var i = j; i < friends.length; i++) {						
-													//alert(fpicture);
-													if(cnt == 0) {
-														htmlString += "<tr>";
-													}
-													if(cnt == 3 || cnt == 6) {
-														htmlString += "</tr><tr><td colspan=\"3\">&nbsp;</td></tr><tr>";
-													}
-													if(cnt<9) {							
-														htmlString += "<td valign=\"center\"><table width=\"100%\"><tr><td valign=\"center\" width=\"10%\"><input type=\"checkbox\" id=\"friend" + cnt + "\" name=\"friend" + cnt + "\" value=\""+ friends[i].id + "\"/></td>" ;
-														htmlString += "<td width=\"30%\"><img id=\"" + friends[i].id +"\" src=\"\" /></td><td valign=\"center\" align=\"left\" width=\"60%\">";
-														htmlString += friends[i].name +"</td></tr></table></td>";							
-														getPicture(friends[i].id);
-													}
-													cnt++;						
-												}
-												if(cnt < 9) {
-													for(i=cnt; i<9;i++) {
-														var k = randomFromTo(0, j);
-														//alert(fpicture);
-														htmlString += "<tr><td valign=\"center\"><input type=\"checkbox\" id=\"friend" + cnt + "\" name=\"friend" + cnt + "\" value=\""+ friends[k].id + "\"/></td>" ;
-														htmlString += "<td><img src=\"\" /></td><td valign=\"center\" align=\"left\">";
-														htmlString += friends[k].name + "</td></tr>";		
-														getPicture(friends[k].id);
-													}
-												}
-												htmlString += "</table><br/><hr width=\"100%\" style=\"float:left;background-color:#FFFFFF; border: 1px solid #C0C0C0; border-style: none none solid;\"><br/><br/>"+preview_but+"<br/><br/>";
-												divInfo.innerHTML = htmlString;
+												var friendsDiv = $('#friends');
+									            friendsDiv.empty();
+									            var friends = response.data;
+									            if (friends.length == 0) { friendsDiv.append('You have no friends.'); return; }
+
+									            friendsDiv.append('<div id="fb_wallpost" /><hr />');
+									                $('#fb_wallpost').html(post_on_wall_but).append('<br style="clear: right;" />');
+									            friendsDiv.append('<div id="fb_friendsList" />');
+									                if (friends.length > 9) { $('#fb_friendsList').addClass('fbMore'); };
+									            friendsDiv.append('<hr /><div id="fb_preview" />');
+									                $('#fb_preview').html(preview_but).append('<br style="clear: right;" />');
+
+									            $('#fb_friendsList').append('<table id="fb_friendsListCont" width="100%" cellpadding="2" />');
+									            var friendsListCont = $('#fb_friendsListCont');
+									            var curRow = null;
+									            $.each(friends, function(index, elem) {
+									                if (index % 3 == 0) {
+									                    curRow = friendsListCont.append('<tr class="fb_friendRow" />').find('tr.fb_friendRow:last');
+									                    friendsListCont.append('<tr><td colspan="3" class="fb_friendRowSpacer">&nbsp;</td></tr>');
+									                }
+									                curRow.append(function() { return '<td width="33%">'+fbGetFriendCont(index, elem)+'</td>'; });
+									            });
+									            if (friends.length % 3 != 0) { curRow.append('<td class="spacer">&nbsp;</td>').children('td.spacer').attr('colSpan', 3 - (friends.length % 3) ); }
 
 											});
 										}

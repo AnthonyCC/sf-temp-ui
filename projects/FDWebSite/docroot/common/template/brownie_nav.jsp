@@ -18,8 +18,8 @@ final int W_DNAV_TOTAL = 970;
 	
 	<fd:css href="/assets/css/TextboxList.css"/>
 	
-	<% if(!"fb".equals(request.getParameter("current"))) { %>
-		<script type="text/javascript" src="/assets/javascript/jquery-1.7.1.js"></script>	
+		<fd:javascript src="/assets/javascript/jquery-1.7.1.js" />
+	<% if(!"fb".equals(request.getParameter("current"))) { %>	
 	
 		<script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 

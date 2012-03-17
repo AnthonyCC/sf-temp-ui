@@ -199,9 +199,9 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 10px; height: 100%; }
 	*/
 	border-top: 1px solid #CDCDC8;
 	border-left: 1px solid #CDCDC8;
-	border-right: 1px solid #CDCDC8;	
-	border-color:CDCDC8;	
-	min-height:350px;		
+	border-right: 1px solid #CDCDC8;
+	border-color:CDCDC8;
+	height: 326px;
 	position: relative;
 	color: rgba(0,0,0, .8);
 	line-height: 1.5;
@@ -350,3 +350,33 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 10px; height: 100%; }
 	#fbmenu #menu .tw img {
 		padding-top: 4px;
 	}
+	
+	 #friends hr {
+	     background-color: #FFFFFF;
+	     border: 1px solid #C0C0C0;
+	     border-style: none none solid;
+	     clear: right;
+	 }
+	 #friends .fbMore {
+	     height: 185px;
+	     overflow-y: scroll;
+	 }
+	 #friends #fb_preview {
+	     padding-top: 20px;
+	 }
+	 #friends .butCont {
+	     line-height: 20px;
+	 }
+	 #friends .previewbut {
+	     color: #fff;
+	     text-shadow: none;
+	     font-weight: bold;
+	     vertical-align: middle;
+	     text-decoration:none;
+	 }
+	 #friends #fb_wallpost, #friends #fb_preview {
+	 	padding: 12px 15px;
+	 }
+	 #friends .fb_friendRow td {
+	 	text-align: center;
+	 }
