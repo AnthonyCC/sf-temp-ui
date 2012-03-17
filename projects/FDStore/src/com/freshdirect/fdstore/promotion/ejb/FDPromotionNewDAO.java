@@ -62,6 +62,7 @@ import com.freshdirect.fdstore.promotion.PromotionStrategyI;
 import com.freshdirect.fdstore.promotion.RecommendationStrategy;
 import com.freshdirect.fdstore.promotion.RecommendedLineItemStrategy;
 import com.freshdirect.fdstore.promotion.RedemptionCodeStrategy;
+import com.freshdirect.fdstore.promotion.ReferAFriendStrategy;
 import com.freshdirect.fdstore.promotion.RuleBasedPromotionStrategy;
 import com.freshdirect.fdstore.promotion.SampleLineApplicator;
 import com.freshdirect.fdstore.promotion.SampleStrategy;
@@ -69,7 +70,6 @@ import com.freshdirect.fdstore.promotion.SkuLimitStrategy;
 import com.freshdirect.fdstore.promotion.StateCountyStrategy;
 import com.freshdirect.fdstore.promotion.WaiveChargeApplicator;
 import com.freshdirect.fdstore.promotion.management.FDPromoDollarDiscount;
-import com.freshdirect.fdstore.promotion.management.FDPromoStateCountyRestriction;
 import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerNewDAO;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -1543,13 +1543,23 @@ public class FDPromotionNewDAO {
 		ps.setString(1, customerId);
 		ResultSet rs = ps.executeQuery();
 		List<PromotionI> promotions =  loadPromotions(conn, rs, null);
+		while(rs.next()) {
+			Promotion promotion = constructPromotionFromResultSet(conn, rs);
+			promotion.addStrategy(new ReferAFriendStrategy());
+			promotions.add(promotion);
+		}
+		
 		if(promotions.size() == 0) {
 			//see if there is a default promo available
 			query = GET_DEFAULT_REF_PROMO.replace("STATUSES", getStatusReplacementString());
 			ps = conn.prepareStatement(query);
 			ps.setString(1, customerId);
 			rs = ps.executeQuery();
-			promotions =  loadPromotions(conn, rs, null);
+			while(rs.next()) {
+				Promotion promotion = constructPromotionFromResultSet(conn, rs);
+				promotion.addStrategy(new ReferAFriendStrategy());
+				promotions.add(promotion);
+			}
 		}
 		rs.close();
 		ps.close();

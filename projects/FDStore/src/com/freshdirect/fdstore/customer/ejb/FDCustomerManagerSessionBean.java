@@ -1325,18 +1325,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	public void addFNLNZipCodeFraud(FDActionInfo info) throws FDResourceException {
-		try {
-			this.logActivity(info
-				.createActivity(
-					EnumAccountActivityType.REFEREE_FNLNZIP_CHECK,
-					EnumFraudReason.REFEREE_FN_LN_ZIP.getDescription()));
-			this.setReferralPromotionEligibility(info);
-		} catch (Exception re) {
-			throw new FDResourceException(re);
-		} 
-	}
-
 	/**
 	 * update a ship to address for the customer
 	 * 
@@ -3382,23 +3370,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	public void setReferralPromotionEligibility(FDActionInfo info) throws FDResourceException {
-		try {
-			FDCustomerEB fdCustomerEB = this.getFdCustomerHome()
-					.findByErpCustomerId(info.getIdentity().getErpCustomerPK());
-			fdCustomerEB.setProfileAttribute("refer_a_friend", "deny");
-
-			if (info != null) {
-				logActivity(info
-						.createActivity(EnumAccountActivityType.DISABLE_REFERRAL_PROMO));
-			}
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		} catch (FinderException ce) {
-			throw new FDResourceException(ce);
-		}
-	}
-
 	public String getDepotCode(FDIdentity identity) throws FDResourceException {
 		try {
 			FDCustomerEB eb = getFdCustomerHome().findByPrimaryKey(

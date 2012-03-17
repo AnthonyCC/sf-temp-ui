@@ -489,4 +489,8 @@ public interface FDUserI extends java.io.Serializable {
 	public double getAvailableCredit();
 	
 	public boolean isReferralProgramAvailable();
+	
+	public void setReferralPromotionFraud(boolean fraud);
+	
+	public boolean isReferralPromotionFraud(); 
 }

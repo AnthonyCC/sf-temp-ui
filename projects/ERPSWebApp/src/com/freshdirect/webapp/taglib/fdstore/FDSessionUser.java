@@ -1318,6 +1318,14 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public boolean isReferralProgramAvailable() {
 		return this.user.isReferralProgramAvailable();		
 	}
+	
+	public void setReferralPromotionFraud(boolean fraud) {
+		this.user.setReferralPromotionFraud(fraud);
+	}
+	
+	public boolean isReferralPromotionFraud() {
+		return this.user.isReferralPromotionFraud();
+	}
 
 
 }

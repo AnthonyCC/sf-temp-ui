@@ -231,6 +231,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	List<PromotionI> referralPromoList = new ArrayList<PromotionI>();
 	Double totalCredit = null;
 	Boolean referralFlag = null;
+	boolean referralFraud = false;
 
 	public FDUserDlvPassInfo getDlvPassInfo() {
 		return dlvPassInfo;
@@ -399,8 +400,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 
 	public void setReferralPromoList() throws FDResourceException {
-		// get all referral promotions
-		if(this.getIdentity() != null)
+		// load referral promotion only to refer a friend target customers
+		if(this.getIdentity() != null && this.getReferralCustomerId() != null)
 			referralPromoList = FDPromotionNewManager.getReferralPromotions(this.getIdentity().getErpCustomerPK());
 	}
 
@@ -2204,6 +2205,14 @@ public class FDUser extends ModelSupport implements FDUserI {
 		} catch (FDResourceException e) {
 			LOGGER.error("Exception getting totalCredit", e);
 		}
+	}
+	
+	public void setReferralPromotionFraud(boolean fraud) {
+		this.referralFraud = fraud;
+	}
+	
+	public boolean isReferralPromotionFraud() {
+		return referralFraud;
 	}
 	
 
