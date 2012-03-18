@@ -24,9 +24,9 @@ final int W_DNAV_TOTAL = 970;
 		<script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 
 		<!-- required for TextboxList -->
-		<script type="text/javascript" src="/assets/javascript/GrowingInput.js"></script>
+		<fd:javascript src="/assets/javascript/GrowingInput.js" />
 					
-		<script type="text/javascript" src="/assets/javascript/TextboxList.js"></script>
+		<fd:javascript src="/assets/javascript/TextboxList.js" />
 	
 		<script type="text/javascript" src="https://www.plaxo.com/css/m/js/util.js"></script>
 		<script type="text/javascript" src="https://www.plaxo.com/css/m/js/basic.js"></script>
@@ -36,7 +36,7 @@ final int W_DNAV_TOTAL = 970;
 			var t2;
 			$(function(){
 				// With custom adding keys 
-				t2 = new $.TextboxList('#form_tags_input', {bitsOptions:{editable:{addKeys: [188,13]}}});
+				t2 = new $.TextboxList('#form_tags_input', {bitsOptions:{editable:{addKeys: [188,13],addOnBlur: true}}});
 			});
 			
 			function onABCommComplete() {
@@ -61,8 +61,8 @@ final int W_DNAV_TOTAL = 970;
 		//--></script>	
 <% } %>
 
-<script type="text/javascript" src="/assets/javascript/ZeroClipboard.js"></script>
-<script type="text/javascript" src="/assets/javascript/shadedborder.js"></script>
+<fd:javascript src="/assets/javascript/ZeroClipboard.js" />
+<fd:javascript src="/assets/javascript/shadedborder.js" />
 
 </head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#ff9900" text="#333333">

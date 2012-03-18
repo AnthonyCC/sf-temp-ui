@@ -312,7 +312,8 @@ $.TextboxListBit = function(type, value, textboxlist, _options){
 			if (options.growing) new $.GrowingInput(element, options.growingOptions);		
 			element.focus(function(){ focus(true); }).blur(function(){
 				blur(true);
-				if (options.addOnBlur) toBox(); 
+				/*if (options.addOnBlur) toBox(); */
+				if (options.addOnBlur && element.val() != '') { toBox(); }
 			});				
 			if (options.addKeys || options.stopEnter){
 				element.keydown(function(ev){
@@ -321,14 +322,11 @@ $.TextboxListBit = function(type, value, textboxlist, _options){
 					if (options.stopEnter && ev.which === 13) evStop();
 					if ($.inArray(ev.which, splat(options.addKeys)) != -1){
 						evStop();
-						toBox();
+						//toBox();
+						if (element.val() != '') { toBox(); }
 					}
 				});
 			}
-
-			element.blur(function(ev) {
-					toBox();
-			});
 		}		
 		
 	};

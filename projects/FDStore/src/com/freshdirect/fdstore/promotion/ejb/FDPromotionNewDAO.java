@@ -1515,7 +1515,7 @@ public class FDPromotionNewDAO {
 				"and     RCL.REFERAL_PRGM_ID = RP.ID " +
 				"and     RP.EXPIRATION_DATE > trunc(sysdate) " + 
 				"and     RP.PROMOTION_ID = P.ID " +
-				"and     p.status STATUSES " +
+				"and     p.status = 'LIVE' " +
 				"and    (p.expiration_date > (sysdate-7) or p.expiration_date is null) " +  
 				"and     p.redemption_code is null " +
 				"and    (rp.Delete_flag is null or rp.delete_flag != 'Y')" +
@@ -1531,32 +1531,33 @@ public class FDPromotionNewDAO {
 				"and     RP.EXPIRATION_DATE > trunc(sysdate) " +
 				"and     RP.DEFAULT_PROMO = 'Y' " +
 				"and     RP.PROMOTION_ID = P.ID " +
-				"and     p.status STATUSES " +
+				"and     p.status = 'LIVE' " +
 				"and    (p.expiration_date > (sysdate-7) or p.expiration_date is null) " +   
 				"and     p.redemption_code is null " +
 				"and    (rp.Delete_flag is null or rp.delete_flag != 'Y')";
 
 	public static List<PromotionI> getReferralPromotions(String customerId, Connection conn) throws SQLException {
-		String query = GET_REF_PROMO.replace("STATUSES", getStatusReplacementString());
-		LOGGER.debug("Query is "+query);
-		PreparedStatement ps = conn.prepareStatement(query);
+		LOGGER.debug("Query is "+GET_REF_PROMO);
+		PreparedStatement ps = conn.prepareStatement(GET_REF_PROMO);
 		ps.setString(1, customerId);
 		ResultSet rs = ps.executeQuery();
-		List<PromotionI> promotions =  loadPromotions(conn, rs, null);
+		List<PromotionI> promotions =  new ArrayList<PromotionI>();
 		while(rs.next()) {
 			Promotion promotion = constructPromotionFromResultSet(conn, rs);
+			System.out.println("Adding ReferAFriendStrategy for promocode" + promotion.getPromotionCode());
 			promotion.addStrategy(new ReferAFriendStrategy());
 			promotions.add(promotion);
 		}
 		
 		if(promotions.size() == 0) {
 			//see if there is a default promo available
-			query = GET_DEFAULT_REF_PROMO.replace("STATUSES", getStatusReplacementString());
-			ps = conn.prepareStatement(query);
+			LOGGER.debug("Query is "+GET_DEFAULT_REF_PROMO);
+			ps = conn.prepareStatement(GET_DEFAULT_REF_PROMO);
 			ps.setString(1, customerId);
 			rs = ps.executeQuery();
 			while(rs.next()) {
 				Promotion promotion = constructPromotionFromResultSet(conn, rs);
+				System.out.println("Adding ReferAFriendStrategy for promocode" + promotion.getPromotionCode());
 				promotion.addStrategy(new ReferAFriendStrategy());
 				promotions.add(promotion);
 			}
