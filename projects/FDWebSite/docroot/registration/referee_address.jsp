@@ -16,7 +16,7 @@ System.out.println("IN REFEREE_ADDRESS.jsp======================================
 	boolean isCorporate = "corporate".equalsIgnoreCase(serviceType);
 	/* will we ever end up using the moreInfo from here? */
 	String moreInfoPage = "/registration/referee_signup.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=moreInfo";
-    String failurePage = "delivery.jsp?successPage="+ URLEncoder.encode(successPage)+"&serviceType="+serviceType;
+    String failurePage = "/site_access/delivery.jsp?successPage="+ URLEncoder.encode(successPage)+"&serviceType="+serviceType;
 	String failureCorporatePage	= "/survey/cos_site_access_survey.jsp?successPage="+ URLEncoder.encode(successPage);
 %>	
 
