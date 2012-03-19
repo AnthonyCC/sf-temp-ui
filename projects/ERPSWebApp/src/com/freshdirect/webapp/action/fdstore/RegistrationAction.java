@@ -297,10 +297,11 @@ public class RegistrationAction extends WebActionSupport {
 		if(session.getAttribute("REFERRALNAME") != null ) {
 			//Check for new rule. Reject user registration if a same FirstName + LastName + Zipcode 
 			//combo already exists in the database.
-			if(!FDReferralManager.isUniqueFNLNZipCombo(cInfo.firstName, cInfo.lastName, user.getAddress().getZipCode())) {
+			if(!FDReferralManager.isUniqueFNLNZipCombo(cInfo.firstName, cInfo.lastName, user.getAddress().getZipCode(), null)) {
 				//record the error
 				FDReferralManager.storeFailedAttempt(customerInfo.getEmail(),"", user.getAddress().getZipCode(),customerInfo.getFirstName(),customerInfo.getLastName(), (String) session.getAttribute("REFERRALNAME"),"FNLNZipCode Match");
 				actionResult.addError(new ActionError(EnumUserInfoName.REPEAT_EMAIL.getCode(),"You already have an account and are ineligible for this referral offer. Please <a href=\'/login/login_main.jsp\'>log in</a> to start shopping or call Customer Service for assistance."));
+				session.setAttribute("MSG_FOR_LOGIN_PAGE", "You already have an account and are ineligible for this referral offer. Please log in to start shopping or call Customer Service for assistance.");
 				return ERROR;
 			}
 		}
