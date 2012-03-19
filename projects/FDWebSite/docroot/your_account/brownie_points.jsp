@@ -289,9 +289,9 @@ String browserType=(String)request.getHeader("User-Agent");
 								<% } else if ("fb".equals(current)) { %>
 									<br/>									
 									<div id="login"></div>
-									<span id="hide_login" style="padding:15px;float:left;display:none;"><fb:login-button onlogin="window.location.reload();">Login</fb:login-button></span>
+									<span id="hide_login" style="padding:15px;float:left;display:none;"><fb:login-button onlogin="window.fbAsyncInit();">Login</fb:login-button></span>
 									<div id="friends">
-										<div style="height: 326px; position:relative;">
+										<div style="height: 326px; position:relative; display: none;" id="fb_friendsListLoading">
 											<div style="height: 50px; position: absolute; top: 45%; left: 150px; margin-top: -25px;">
 												<img src="/media_stat/images/navigation/spinner.gif" class="fleft" /><span style="line-height: 50px; float: left; font-size: 22px;">Loading Your Friend List...</span>
 											</div>
@@ -312,6 +312,8 @@ String browserType=(String)request.getHeader("User-Agent");
 													 // logged in and connected user, someone you know
 													 $('#hide_login').hide();						
 													 //window.alert('calling friends');
+													 //show loading screen
+													 if ($('#fb_friendsListLoading')) { $('#fb_friendsListLoading').show(); }
 													 
 													getFriends();
 												 } else {
