@@ -239,7 +239,7 @@ String browserType=(String)request.getHeader("User-Agent");
 										<div style="float:left;width:100%;padding:20px;">
 											<table><tr><td><img src="/media_stat/images/profile/success.png" border="0"/></td>
 											<td><span style="color:#777777;" class="text12bold">Your email has been sent to your friends. </span><br/>
-											<a href="/your_account/manage_invites.jsp" style="font-weight:normal;">Manage sent invites</a>&nbsp;&nbsp;&nbsp;
+											<a href="/your_account/manage_invites.jsp" style="font-weight:normal;">View sent invites</a>&nbsp;&nbsp;&nbsp;
 											<a href="/your_account/brownie_points.jsp?current=email" style="font-weight:normal;">Invite more friends</a>
 											</td></tr></table>
 										</div>
@@ -278,7 +278,7 @@ String browserType=(String)request.getHeader("User-Agent");
 												<td class="butOrangeMiddle"><a class="butText" style="font-weight:bold;text-shadow:none;vertical-align:middle;text-decoration:none;color:white;padding:60px;font-size:14px;" href="#" onclick="document.sendmails.submit();">send email</a></td>
 												<td class="butOrangeRight"><!-- --></td>
 											</tr></table>
-											<span class="greytext_normal"><br/><a href="/your_account/manage_invites.jsp">manage sent invites</a></span>
+											<span class="greytext_normal"><br/><a href="/your_account/manage_invites.jsp">view sent invites</a></span>
 											</center>
 										</div>
 										</td></tr>
@@ -419,7 +419,7 @@ String browserType=(String)request.getHeader("User-Agent");
 								                    '<tr>'+
 								                        '<td valign="center" width="10%"><input type="checkbox" id="friend' + i + '" name="friend' + i + '" value="'+ friendObj.id + '" /></td>'+
 								                        '<td width="30%"><img id="' + friendObj.id + '" src="' + friendObj.picture + '" /></td>'+
-								                        '<td valign="center" align="left" width="60%">' + friendObj.name + '</td>'+
+								                        '<td valign="center" align="left" width="60%" style="text-align:left;">' + friendObj.name + '</td>'+
 								                    '</tr>'+
 								                '</table>';
 								        }

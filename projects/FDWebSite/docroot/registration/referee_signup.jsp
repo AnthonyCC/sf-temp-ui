@@ -70,6 +70,7 @@
 
 		<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+	
 	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	</head>
@@ -175,27 +176,8 @@
 			<fd:IncludeMedia name="/media/editorial/site_access/referral_site_access.html" />
 
 		
-			<%@ include file="/includes/net_insight/i_tag_footer.jspf" %>
-			<script type="text/javascript">
-					var _gaq = _gaq || [];
-					_gaq.push([
-						'_setReferrerOverride', '/registration/referee_signup.jsp?utm_medium=internal&utm_source=raf&utm_campaign=raf'
-							   ]);
-					
-					(function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
+			<%@ include file="/includes/net_insight/i_tag_footer.jspf" %>			
 
-			</script>
-
-			<%
-				if (FDSemPixelCache.getInstance().getSemPixel("GoogleAnalytics").isEnabled()) {
-					SemPixelModel semPixel_GA1 = FDSemPixelCache.getInstance().getSemPixel("GoogleAnalytics");
-
-					/* Create params string here, also check for "&" in url already before appending so you don't do ? twice */
-
-					semPixel_GA1.setParam("curPage", "/registration/referee_signup?utm_medium=internal&utm_source=raf&utm_campaign=raf");
-				}
-
-			%>
 		</fd:SiteAccessController>
 		<% }  else { 
 			response.sendRedirect("/index.jsp");

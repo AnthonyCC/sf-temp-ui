@@ -20,4 +20,16 @@
 		semPixel_GA.setParam("GAKey", FDStoreProperties.getGoogleAnalyticsKey());
 	%>
 	<fd:SemPixelIncludeMedia pixelNames="GoogleAnalytics" />
+	<%
+		if(request.getRequestURI().endsWith("referee_signup.jsp") || request.getRequestURI().indexOf("invite") != -1) {
+	%>
+		<script type="text/javascript">
+			if (_gaq) {
+				_gaq.push([
+					'_setReferrerOverride', '/registration/referee_signup.jsp?utm_medium=internal&utm_source=raf&utm_campaign=raf'
+				]);
+				_gaq.push(['_trackPageview', '/registration/referee_signup.jsp?utm_medium=internal&utm_source=raf&utm_campaign=raf']); 
+			}
+		</script>
+	<% } %>
 	<fd:IncludeMedia name="/media/editorial/site_pages/javascript.html"/>

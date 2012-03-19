@@ -55,6 +55,7 @@ import com.freshdirect.fdstore.lists.FDCustomerRecipeList;
 import com.freshdirect.fdstore.lists.FDCustomerShoppingList;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
+import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
@@ -655,6 +656,11 @@ public class SubmitOrderAction extends WebActionSupport {
 			// SmartStore
 			//  record customer and variant for the particular order
 			FDCustomerManager.logCustomerVariants(user, orderNumber);
+			
+			/*APPDEV-1888 - record if the referral promo is not applied due to unique FN+LN+Zipcode rule.*/
+			if(user.isReferralPromotionFraud()) {
+				FDReferralManager.storeFailedAttempt(user.getUserId(),"", user.getShoppingCart().getDeliveryAddress().getZipCode(),user.getFirstName(),user.getLastName(), "","Checkout FNLNZipCode Fraud");
+			}
 			
 			
 			//if customer utilized a prereserved slot then remove it from the user.

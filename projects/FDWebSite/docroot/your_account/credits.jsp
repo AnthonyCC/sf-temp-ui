@@ -170,7 +170,7 @@ request.setAttribute("listPos", "HPLeftTop");
 		</td>
 	</tr>
 	<tr>
-		<td colspan="2">
+		<td colspan="2" CLASS="yui-skin-sam">
 			<div id="pagenums"></div>
 			<div id="dynamicdata"><% if (mimList.size() == 0) { %><center><b>You do not have credits at this time</b></center><%}%></div> 			
 		</td>

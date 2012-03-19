@@ -108,12 +108,22 @@
 			//phew finally complete
 			System.out.println("Did not come here?====================================================================================");
 		%>
+			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
 			<script language="javascript">
 				window.location.href="/index.jsp";
 			</script>
 		<%		 
 		} else {
 			System.out.println("went to else part?====================================================================================\n" +session.getAttribute("REFERRAL_EMAIL") + "\n" + (String)session.getAttribute("RAFREGISTRATION"));
+			
+			if(session.getAttribute("MSG_FOR_LOGIN_PAGE") != null) {
+			%>
+				<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
+				<script language="javascript">
+					window.location.href="/login/login_main.jsp?successPage=%2Findex.jsp";
+				</script>
+			<%	
+			} else {
 
 	%>
 	<div style="width:400px;height:530px;overflow-y: auto; overflow-x: hide;">
@@ -184,7 +194,7 @@
 		setFormDefaults();
 		window.onload=fillVals('confirm_email', '','Verify your email');
 	</script>
-	<% } %>
+	<% } } %>
 	</fd:RegistrationController>
 	
 </body>

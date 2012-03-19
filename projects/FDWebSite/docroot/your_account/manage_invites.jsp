@@ -137,7 +137,7 @@ response.setHeader("Cache-Control", "no-cache");
 <table cellpadding="0" cellspacing="0" border="0" width="100%">
 	<tr>
 		<td class="t20px bolded">
-			Manage Referrals
+			View Referrals
 		</td>
 	</tr>
 	<tr>
@@ -156,7 +156,7 @@ response.setHeader("Cache-Control", "no-cache");
 		</td>
 	</tr>
 	<tr>
-		<td colspan="2">
+		<td colspan="2" CLASS="yui-skin-sam">
 			<div id="pagenums"></div>
 			<div id="dynamicdata"><% if (mimList.size() == 0) { %><center><b>You do not have any referrals at this time</b></center><%}%></div>
 		</td>			
