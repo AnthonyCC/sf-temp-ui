@@ -878,15 +878,25 @@ public class FDReferAFriendDAO {
 		}
 	}
 	
-	public static boolean isUniqueFNLNZipCombo(Connection conn, String firstName, String lastName, String zipCode) throws SQLException {
+	public static boolean isUniqueFNLNZipCombo(Connection conn, String firstName, String lastName, String zipCode, String customerId) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rset = null;
 		try {
-			ps = conn.prepareStatement("select ci.customer_id from cust.customerinfo ci, cust.address a " +
-									   "where uppeR(CI.FIRST_NAME) = upper(?) " +
-									   "and   upper(CI.LAST_NAME) = uppeR(?) " +
-									   "and   CI.CUSTOMER_ID = A.CUSTOMER_ID " +
-									   "and   A.ZIP = ?");
+			if(customerId != null) {
+				ps = conn.prepareStatement("select ci.customer_id from cust.customerinfo ci, cust.address a " +
+										   "where uppeR(CI.FIRST_NAME) = upper(?) " +
+										   "and   upper(CI.LAST_NAME) = uppeR(?) " +
+										   "and   CI.CUSTOMER_ID = A.CUSTOMER_ID " +
+										   "and   A.ZIP = ? " +
+										   "and ci.customer_id != ?");
+				ps.setString(4, customerId);
+			} else {
+				ps = conn.prepareStatement("select ci.customer_id from cust.customerinfo ci, cust.address a " +
+						   "where uppeR(CI.FIRST_NAME) = upper(?) " +
+						   "and   upper(CI.LAST_NAME) = uppeR(?) " +
+						   "and   CI.CUSTOMER_ID = A.CUSTOMER_ID " +
+						   "and   A.ZIP = ?");				
+			}
 			ps.setString(1, firstName);
 			ps.setString(2, lastName);
 			ps.setString(3, zipCode);

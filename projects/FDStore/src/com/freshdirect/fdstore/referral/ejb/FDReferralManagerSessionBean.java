@@ -1447,11 +1447,11 @@ public class FDReferralManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	public boolean isUniqueFNLNZipCombo(String firstName, String lastName, String zipCode) throws FDResourceException {
+	public boolean isUniqueFNLNZipCombo(String firstName, String lastName, String zipCode, String customerId) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
-			return FDReferAFriendDAO.isUniqueFNLNZipCombo(conn, firstName, lastName, zipCode);
+			return FDReferAFriendDAO.isUniqueFNLNZipCombo(conn, firstName, lastName, zipCode, customerId);
 		} catch (SQLException e) {
 			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e);

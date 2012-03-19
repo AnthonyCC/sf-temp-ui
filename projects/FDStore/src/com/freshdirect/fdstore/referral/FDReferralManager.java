@@ -1164,12 +1164,12 @@ public class FDReferralManager {
 		  }			
 	}
 
-	public static boolean isUniqueFNLNZipCombo(String firstName, String lastName, String zipCode) throws FDResourceException {
+	public static boolean isUniqueFNLNZipCombo(String firstName, String lastName, String zipCode, String customerId) throws FDResourceException {
 		lookupManagerHome(); 
 
 		  try {
 			  FDReferralManagerSB sb = managerHome.create();
-			  return sb.isUniqueFNLNZipCombo(firstName, lastName, zipCode);
+			  return sb.isUniqueFNLNZipCombo(firstName, lastName, zipCode, customerId);
 		  } catch (CreateException ce) {
 			  invalidateManagerHome();
 			  throw new FDResourceException(ce, "Error creating session bean");

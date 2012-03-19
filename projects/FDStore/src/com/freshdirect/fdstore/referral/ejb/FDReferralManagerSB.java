@@ -175,7 +175,7 @@ public interface FDReferralManagerSB extends EJBObject {
 	 
 	 public abstract void storeFailedAttempt(String email, String dupeCustID, String zipCode, String firstName, String lastName, String referral, String reason) throws FDResourceException, RemoteException;
 	 
-	 public abstract boolean isUniqueFNLNZipCombo(String firstName, String lastName, String zipCode) throws FDResourceException, RemoteException;
+	 public abstract boolean isUniqueFNLNZipCombo(String firstName, String lastName, String zipCode, String customerId) throws FDResourceException, RemoteException;
 	 
 	 public abstract String getReferralName(String referralId) throws FDResourceException, RemoteException;
 	 

@@ -21,9 +21,9 @@ public class ReferAFriendStrategy implements PromotionStrategyI {
 				try {
 					FDUserI user = context.getUser();
 					String firstName = user.getFirstName();				
-					String lastName = user.getLastName();
+					String lastName = user.getLastName();					
 					LOGGER.debug("Checking for FN+LN+ZipCode Fraud Rule:" + firstName + "+" + lastName + "+" + zipCode);
-					if(!FDReferralManager.isUniqueFNLNZipCombo(firstName, lastName, zipCode)) {
+					if(!FDReferralManager.isUniqueFNLNZipCombo(firstName, lastName, zipCode, user.getIdentity().getErpCustomerPK())) {
 						//Referral promotion cannot be applied
 						context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.ERROR_DUPE_FN_LN_ZIP.getErrorCode());
 						user.setReferralPromotionFraud(true);
