@@ -85,9 +85,10 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 			"and o.zone = ? and snapshot_time >=to_date(?,'mm/dd/yyyy') group by O.CUTOFF) t where o.delivery_date = to_date(?,'mm/dd/yyyy') and o.zone = ? and O.SNAPSHOT_TIME=t.sh " +
 			"and O.CUTOFF=t.co";
 	
-	private static final String MAX_SNAPSHOT_DELIVERY_DATE_EX = "select sum(o.capacity) capacity, snapshot_time from mis.order_rate o where snapshot_time = " +
-			"(select max(snapshot_time) sh from mis.order_rate o where o.delivery_date = to_date(?,'mm/dd/yyyy') and snapshot_time >=to_date(?,'mm/dd/yyyy')) " +
-			"  and o.delivery_date = to_date(?,'mm/dd/yyyy') group by snapshot_time";
+	private static final String MAX_SNAPSHOT_DELIVERY_DATE_EX = "select sum(o.capacity) capacity, max(snapshot_time) from mis.order_rate o , " +
+			"(select max(o1.snapshot_time) sh,o1.cutoff co  from mis.order_rate o1 where o1.delivery_date = to_date(?,'mm/dd/yyyy') and " +
+			"o1.snapshot_time >=to_date(?,'mm/dd/yyyy') group by o1.cutoff) t where o.delivery_date = to_date(?,'mm/dd/yyyy') and " +
+			"O.SNAPSHOT_TIME=t.sh and O.CUTOFF=t.co";
 	
 	private static final String ORDER_COUNT_QRY = "select count(*) oCount, di.zone zone , di.cutofftime cutoff from cust.sale s , cust.salesaction sa, " +
 			"cust.deliveryinfo di where s.id = sa.sale_id and s.cromod_date = sa.action_date and s.type='REG' AND S.CROMOD_DATE<to_date(?,'mm/dd/yyyy') " +
