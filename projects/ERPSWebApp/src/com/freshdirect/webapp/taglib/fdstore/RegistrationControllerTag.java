@@ -149,6 +149,8 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 							LOGGER.debug("Adding referral record for CID:" + user.getIdentity().getErpCustomerPK() + "-email:" + user.getUserId() + "-reflink:" + (String) this.pageContext.getSession().getAttribute("REFERRALNAME"));
 							String customerId = user.getIdentity().getErpCustomerPK();
 							String referralCustomerId = FDCustomerManager.recordReferral(customerId, (String) this.pageContext.getSession().getAttribute("REFERRALNAME"), user.getUserId());
+							user.setReferralCustomerId(referralCustomerId);
+							session.setAttribute(USER, user);
 							//Record the referee signup in referral activitylog
 							ErpActivityRecord rec = new ErpActivityRecord();
 							rec.setActivityType(EnumAccountActivityType.REFEREE_SIGNEDUP);
