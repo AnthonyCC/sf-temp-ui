@@ -201,7 +201,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 10px; height: 100%; }
 	border-left: 1px solid #CDCDC8;
 	border-right: 1px solid #CDCDC8;
 	border-color:CDCDC8;
-	height: 326px;
+	min-height: 326px;
 	position: relative;
 	color: rgba(0,0,0, .8);
 	line-height: 1.5;
