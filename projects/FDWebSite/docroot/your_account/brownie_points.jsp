@@ -410,7 +410,7 @@ String browserType=(String)request.getHeader("User-Agent");
 															'<tr>'+
 																'<td valign="center" width="10%"><input	type="checkbox"	id="friend'	+ i	+ '" name="friend' + i + '"	value="'+ friendObj.id + '"	/></td>'+
 																'<td width="30%"><img id="' + friendObj.id + '"	src="https://graph.facebook.com/' + friendObj.id + '/picture" alt="profile image" /></td>'+
-																'<td valign="center" align="left" width="60%">'	+ friendObj.name + '</td>'+
+																'<td valign="center" align="left" width="60%" style="text-align:left;">'	+ friendObj.name + '</td>'+
 															'</tr>'+
 														'</table>';
 												}
