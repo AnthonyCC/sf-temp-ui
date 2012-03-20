@@ -408,4 +408,31 @@ public class ErpGrpInfoDAO {
 		}
 		return groups;
 	}
+	public static final String GET_LATEST_ACTIVE_GROUP="select SAP_ID,VERSION from erps.grp_scale_master gcm where GCM.SAP_ID=? and "+ 
+	" version=(select max(version) from  erps.grp_scale_master gcm where GCM.SAP_ID=?) and gcm.active='X' ";
+	public static FDGroup getLatestActiveGroup(Connection con,String group) throws SQLException{
+		Connection conn = con;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		FDGroup _group=null;
+		try {
+			ps = conn.prepareStatement(GET_LATEST_ACTIVE_GROUP);
+			ps.setString(1, group);
+			ps.setString(2, group);
+			
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				 _group=new FDGroup( rs.getString("SAP_ID"),rs.getInt("VERSION"));
+			}
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			if (rs != null)
+				rs.close();
+			if (ps != null)
+				ps.close();
+		}
+		return _group;
+	}
 }

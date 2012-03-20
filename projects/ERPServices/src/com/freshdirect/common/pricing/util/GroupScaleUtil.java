@@ -4,16 +4,15 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.freshdirect.common.pricing.MaterialPrice;
-import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDGroupNotFoundException;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.GrpZonePriceModel;
+
 
 public class GroupScaleUtil {
 	public static MaterialPrice getGroupScalePrice(FDGroup group, String pricingZoneId) throws FDResourceException{
@@ -136,5 +135,9 @@ public class GroupScaleUtil {
 			throw fe;
 		}
 		return null;
+	}
+	
+	public static FDGroup getLatestActiveGroup(String groupId) throws FDResourceException, FDGroupNotFoundException {
+			return FDCachedFactory.getLatestActiveGroup(groupId);
 	}
 }

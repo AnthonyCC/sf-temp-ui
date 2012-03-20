@@ -555,4 +555,8 @@ public class FDCachedFactory {
 
             return copyInfo;
 	}
+	
+	public static FDGroup getLatestActiveGroup(String groupId) throws FDResourceException, FDGroupNotFoundException {
+		return FDFactory.getLatestActiveGroup(groupId);
+	}
 }

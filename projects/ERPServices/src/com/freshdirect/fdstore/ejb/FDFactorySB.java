@@ -123,5 +123,6 @@ public interface FDFactorySB extends EJBObject {
 	public List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws RemoteException, FDResourceException;
 
 	public void refreshNewAndBackViews() throws RemoteException, FDResourceException; 
+	public FDGroup getLatestActiveGroup(String groupId) throws RemoteException, FDGroupNotFoundException;
 }
 

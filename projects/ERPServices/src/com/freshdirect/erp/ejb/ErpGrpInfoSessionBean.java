@@ -201,6 +201,28 @@ public class ErpGrpInfoSessionBean extends SessionBeanSupport{
 		}
 		return groups;
 	}
-    
+	public FDGroup getLatestActiveGroup(String groupID) throws RemoteException, FDGroupNotFoundException {
+		Connection conn = null;
+		FDGroup group = null;
+		
+		try {
+			conn = getConnection();
+			group = ErpGrpInfoDAO.getLatestActiveGroup(conn, groupID);
+			if (group == null )
+				throw new FDGroupNotFoundException("Group "+groupID+" not found.");
+		} catch (SQLException sqle) {
+			LOGGER.error("Unable to load all loadAllGrpInfoMaster ", sqle);
+			throw new EJBException(sqle);
+		} finally {
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException sqle) {
+				LOGGER.error("Unable to close db resources", sqle);
+				throw new EJBException(sqle);
+			}
+		}
+		return group;
+	}
 	
 }

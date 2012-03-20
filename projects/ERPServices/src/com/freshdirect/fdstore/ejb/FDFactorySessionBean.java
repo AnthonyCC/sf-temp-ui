@@ -539,4 +539,22 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 			throw new FDResourceException(re);
 		}		
 	}
+	
+	public FDGroup  getLatestActiveGroup(String groupId) throws FDGroupNotFoundException, FDResourceException {
+		if (this.grpHome==null) {
+			this.lookupGrpInfoHome();
+		}
+		try {
+			// find ErpProduct by sku & version
+					
+			ErpGrpInfoSB infoSB = grpHome.create();		
+			return infoSB.getLatestActiveGroup(groupId);
+
+		} catch (CreateException fe) {
+			throw new FDResourceException(fe);
+		} catch (RemoteException re) {
+			this.productHome=null;
+			throw new FDResourceException(re);
+		}
+    }
 }
