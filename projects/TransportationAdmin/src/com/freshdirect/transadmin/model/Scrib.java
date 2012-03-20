@@ -211,106 +211,110 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 		long time=getMaxReturnTimeDisplay().getTime()-getWaveStart().getTime();
 		return new Date(time);
 	}
-	public Date getStemToTime()
-	{
-		long time=0;
-		if(zone.getStemToTime()!=null)time=zone.getStemToTime().intValue()*60*1000;		
-		return new Date(time-TimeZone.getDefault().getRawOffset());
+
+	public Date getStemToTime() {
+		long time = 0;
+		if (zone != null && zone.getStemToTime() != null)
+			time = zone.getStemToTime().intValue() * 60 * 1000;
+		else if (originFacility.getLeadToTime() != null)
+			time = originFacility.getLeadToTime().intValue() * 60 * 1000;
+		return new Date(time - TimeZone.getDefault().getRawOffset());
 	}
-	public Date getStemFromTime()
-	{
-		long time=0;
-		if(zone.getStemFromTime()!=null)
-		{	time=zone.getStemFromTime().intValue()*60*1000;		
-			return new Date(time-TimeZone.getDefault().getRawOffset());
+
+	public Date getStemFromTime() {
+		long time = 0;
+		if (zone != null && zone.getStemFromTime() != null) {
+			time = zone.getStemFromTime().intValue() * 60 * 1000;
+		} else if (originFacility.getLeadFromTime() != null) {
+			time = originFacility.getLeadFromTime().intValue() * 60 * 1000;
 		}
-		return null;
+		return new Date(time - TimeZone.getDefault().getRawOffset());
 	}
 	
-	public String getEndDlvTimeS() 
-	{
+	public String getEndDlvTimeS() {
 		try {
-			if(lastDeliveryTime!=null)return TransStringUtil.getServerTime(lastDeliveryTime);
-		} catch (ParseException e) 
-		{
-			
+			if (lastDeliveryTime != null)
+				return TransStringUtil.getServerTime(lastDeliveryTime);
+		} catch (ParseException e) {
+
 		}
 		return null;
-		
+
 	}
-	public void setEndDlvTimeS(String endDlvTimeS) 
-	{
-		try 
-		{
-			if(endDlvTimeS!=null&&endDlvTimeS.length()>0)lastDeliveryTime=TransStringUtil.getServerTime(endDlvTimeS);
-			else lastDeliveryTime=null;
-		} catch (ParseException e) 
-		{
-			
-		}
-	}
-	public String getFirstDlvTimeS() 
-	{
+
+	public void setEndDlvTimeS(String endDlvTimeS) {
 		try {
-			if(firstDeliveryTime!=null)return TransStringUtil.getServerTime(firstDeliveryTime);
-		} catch (ParseException e) 
-		{
-			
-		}
-		return null;
-	}
-	public void setFirstDlvTimeS(String firstDlvTimeS) 
-	{
-		try 
-		{
-			if(firstDlvTimeS!=null&&firstDlvTimeS.length()>0)firstDeliveryTime=TransStringUtil.getServerTime(firstDlvTimeS);
-			else firstDeliveryTime=null;
-		} catch (ParseException e) 
-		{
-			
+			if (endDlvTimeS != null && endDlvTimeS.length() > 0)
+				lastDeliveryTime = TransStringUtil.getServerTime(endDlvTimeS);
+			else
+				lastDeliveryTime = null;
+		} catch (ParseException e) {
+
 		}
 	}
-	public String getMaxReturnTimeS() 
-	{
+
+	public String getFirstDlvTimeS() {
 		try {
-			if(maxReturnTime!=null)return TransStringUtil.getServerTime(maxReturnTime);
-			
-		} catch (ParseException e) 
-		{
-			
+			if (firstDeliveryTime != null)
+				return TransStringUtil.getServerTime(firstDeliveryTime);
+		} catch (ParseException e) {
+
 		}
 		return null;
 	}
-	public void setMaxReturnTimeS(String maxReturnTimeS) 
-	{
-		try 
-		{
-			if(maxReturnTimeS!=null&&maxReturnTimeS.length()>0)maxReturnTime=TransStringUtil.getServerTime(maxReturnTimeS);
-			else maxReturnTime=null;
-		} catch (ParseException e) 
-		{
-			
+
+	public void setFirstDlvTimeS(String firstDlvTimeS) {
+		try {
+			if (firstDlvTimeS != null && firstDlvTimeS.length() > 0)
+				firstDeliveryTime = TransStringUtil
+						.getServerTime(firstDlvTimeS);
+			else
+				firstDeliveryTime = null;
+		} catch (ParseException e) {
+
 		}
 	}
-	public String getStartTimeS() 
-	{
+
+	public String getMaxReturnTimeS() {
 		try {
-			if(startTime!=null)return TransStringUtil.getServerTime(startTime);
-		} catch (ParseException e) 
-		{
-			
+			if (maxReturnTime != null)
+				return TransStringUtil.getServerTime(maxReturnTime);
+
+		} catch (ParseException e) {
+
 		}
 		return null;
 	}
-	public void setStartTimeS(String startTimeS) 
-	{
-		try 
-		{
-			if(startTimeS!=null&&startTimeS.length()>0)startTime=TransStringUtil.getServerTime(startTimeS);
-			else startTime=null;
-		} catch (ParseException e) 
-		{
-			
+
+	public void setMaxReturnTimeS(String maxReturnTimeS) {
+		try {
+			if (maxReturnTimeS != null && maxReturnTimeS.length() > 0)
+				maxReturnTime = TransStringUtil.getServerTime(maxReturnTimeS);
+			else
+				maxReturnTime = null;
+		} catch (ParseException e) {
+
+		}
+	}
+
+	public String getStartTimeS() {
+		try {
+			if (startTime != null)
+				return TransStringUtil.getServerTime(startTime);
+		} catch (ParseException e) {
+
+		}
+		return null;
+	}
+
+	public void setStartTimeS(String startTimeS) {
+		try {
+			if (startTimeS != null && startTimeS.length() > 0)
+				startTime = TransStringUtil.getServerTime(startTimeS);
+			else
+				startTime = null;
+		} catch (ParseException e) {
+
 		}
 	}
 
@@ -356,26 +360,25 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 		this.cutOffTime = cutOffTime;
 	}
 	
-	public String getCutOffTimeS() 
-	{
+	public String getCutOffTimeS() {
 		try {
-			if(cutOffTime!=null)return TransStringUtil.getServerTime(cutOffTime);
-		} catch (ParseException e) 
-		{
-			
+			if (cutOffTime != null)
+				return TransStringUtil.getServerTime(cutOffTime);
+		} catch (ParseException e) {
+
 		}
 		return null;
-		
+
 	}
-	public void setCutOffTimeS(String cutOffTimeS) 
-	{
-		try 
-		{
-			if(cutOffTimeS!=null&&cutOffTimeS.length()>0)cutOffTime=TransStringUtil.getServerTime(cutOffTimeS);
-			else cutOffTime=null;
-		} catch (ParseException e) 
-		{
-			
+
+	public void setCutOffTimeS(String cutOffTimeS) {
+		try {
+			if (cutOffTimeS != null && cutOffTimeS.length() > 0)
+				cutOffTime = TransStringUtil.getServerTime(cutOffTimeS);
+			else
+				cutOffTime = null;
+		} catch (ParseException e) {
+
 		}
 	}
 
@@ -425,17 +428,18 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 			return null;
 
 		StringBuffer buf = new StringBuffer();
-		buf.append(originFacility.getName()+" - "+destinationFacility.getName());
+		buf.append(originFacility.getName() + " - "
+				+ destinationFacility.getName());
 
 		return buf.toString();
 	}
 
-	public void setFacilityS(String facilityS) 	{
-		if(facilityS != null && facilityS.length() > 0){ 
+	public void setFacilityS(String facilityS) {
+		if (facilityS != null && facilityS.length() > 0) {
 			originFacility = new TrnFacility();
 			destinationFacility = new TrnFacility();
 			String[] facilityLst = TransStringUtil.splitStringForValue1(facilityS);
-			if(facilityLst != null && facilityLst.length > 0){
+			if (facilityLst != null && facilityLst.length > 0) {
 				originFacility.setName(facilityLst[0].trim());
 				destinationFacility.setName(facilityLst[1].trim());
 			}
@@ -443,6 +447,6 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 			originFacility = null;
 			destinationFacility = null;
 		}
-	} 
+	}
 	
 }
