@@ -362,22 +362,14 @@ String browserType=(String)request.getHeader("User-Agent");
 
 												function callFBUI()	{
 													//process FBUI here
-													//First	get	the	selected email addresses
-													var	toString = [];
-													var	cnt	= 0;
-
-													for(var i = 0; i < 9; i++) {
-														var	felement = $('#friend' + i);
-														if(felement	!= null	&& felement.checked) {
-															//friend is	selected so	add	them to	the	string
-															//toString += felement.value + ",";
-															toString[cnt] =	felement.value;
-															cnt++;
-														}
-													}
-												
-												
-													//alert(toString.toString());
+													var toString = [];
+													//get friends list checkboxes
+													var friendsListCheckboxes = $('#fb_friendsList').find('input[type="checkbox"]');
+													$.each(friendsListCheckboxes, function(index, elem){
+													    if (elem.checked) {
+													        toString.push(elem.value); //add checked ones to toString list
+													    }
+													});
 												
 													FB.ui({
 														method: 'send',
