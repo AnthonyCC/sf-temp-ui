@@ -19,17 +19,21 @@
 		SemPixelModel semPixel_GA = FDSemPixelCache.getInstance().getSemPixel("GoogleAnalytics");
 		semPixel_GA.setParam("GAKey", FDStoreProperties.getGoogleAnalyticsKey());
 	%>
-	<fd:SemPixelIncludeMedia pixelNames="GoogleAnalytics" />
 	<%
 		if(request.getRequestURI().endsWith("referee_signup.jsp") || request.getRequestURI().indexOf("invite") != -1) {
 	%>
-		<script type="text/javascript">
-			if (_gaq) {
-				_gaq.push([
-					'_setReferrerOverride', '/registration/referee_signup.jsp?utm_medium=internal&utm_source=raf&utm_campaign=raf'
-				]);
-				_gaq.push(['_trackPageview', '/registration/referee_signup.jsp?utm_medium=internal&utm_source=raf&utm_campaign=raf']); 
-			}
-		</script>
-	<% } %>
+		 <script type="text/javascript">                     
+					   var _gaq = _gaq || [];
+                      _gaq.push(['_setAccount', 'UA-20535945-1']);
+                      _gaq.push(['_setDomainName', '.freshdirect.com']);
+					  _gaq.push(['_setCustomVar',1,'RAF','Responder',1]);					 
+					 _gaq.push(['_trackPageview', '/registration/referee_signup.jsp']); 
+					  _gaq.push(['_setReferrerOverride', '/registration/referee_signup.jsp?utm_medium=internal&utm_source=raf&utm_campaign=raf']);
+                       (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
+
+         </script>
+        <% } else { %>
+        <fd:SemPixelIncludeMedia pixelNames="GoogleAnalytics" />
+        <% } %>
+
 	<fd:IncludeMedia name="/media/editorial/site_pages/javascript.html"/>

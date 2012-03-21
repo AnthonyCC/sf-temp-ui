@@ -3,6 +3,7 @@ package com.freshdirect.customer.ejb;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -201,7 +202,50 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 						customer = new CustomerAdapter(false, erpCustomer, null, ((ErpPaymentMethodI)erpCustomer.getPaymentMethods().get(0)).getAddress());
 					} else {
 						//In case of IPhone both delivery and billing addresses are empty. 
-						customer = new CustomerAdapter(false, erpCustomer, null, erpCustomer.getSapBillToAddress());
+						/*APPDEV-1888 
+						 * If customers are registered via referral light signup, then the address will not be filled in for them.
+						 * Add default address so that the registration on sap side can be completed. 
+						 * */
+						Connection conn = null;
+						PreparedStatement pstmt = null;
+						ResultSet rset = null;
+						try {
+							conn = this.getConnection();
+							pstmt = conn.prepareStatement("select FD.REFERER_CUSTOMER_ID from cust.fdcustomer fd where FD.ERP_CUSTOMER_ID = ?");
+							pstmt.setString(1, customerPK.getId());
+							rset = pstmt.executeQuery();
+							if(rset.next()) {
+								ErpAddressModel erpAddress=new ErpAddressModel();
+								erpAddress.setFirstName(erpCustomer.getCustomerInfo().getFirstName());
+								erpAddress.setLastName(erpCustomer.getCustomerInfo().getLastName());
+								erpAddress.setPhone(erpCustomer.getCustomerInfo().getHomePhone());
+								//Need to set dummy sap billing info for SAP processing.
+								erpAddress.setAddress1("23-30 borden ave");
+								erpAddress.setCity("Long Island City");
+								erpAddress.setState("NY");
+								erpAddress.setCountry("US");
+								erpAddress.setZipCode("11101");
+								
+								//erpAddress.setServiceType(serviceType);
+								erpCustomer.setSapBillToAddress(erpAddress);
+								customer = new CustomerAdapter(false, erpCustomer, null, erpAddress);
+							} else {
+								customer = new CustomerAdapter(false, erpCustomer, null, erpCustomer.getSapBillToAddress());
+							}
+						} catch (SQLException e) {
+							e.printStackTrace();
+						} finally {
+							try {
+								if (conn != null) 
+									conn.close();
+								if(pstmt != null)
+									pstmt.close();
+								if(rset != null)
+									rset.close();
+							} catch (SQLException ex) {
+								LOGGER.warn("Unable to close connection", ex);
+							}							
+						}
 					}
 				}
 			}

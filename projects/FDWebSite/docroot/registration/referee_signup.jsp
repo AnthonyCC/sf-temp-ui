@@ -69,10 +69,13 @@
 		<title>FreshDirect</title>
 
 		<%@ include file="/common/template/includes/metatags.jspf" %>
-	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-	
-	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
-	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+		<meta http-equiv="X-UA-Compatible" content="IE=8">
+		<meta name="msvalidate.01" content="2E163086C8383686A98EE1B694357FE7" />
+
+		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+		<fd:javascript src="/assets/javascript/swfobject.js" />
+		
+		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	</head>
 	<body bgcolor="#ffffff" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">		
 		

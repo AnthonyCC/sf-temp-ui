@@ -180,7 +180,7 @@
 							{key:"department", label:"Department", sortable:true},
 							{key:"status", label:"Status", sortable:true},
 							{key:"scredit", label:"Store Credit", sortable:true},
-							{key:"cashback", label:"Cach Back", sortable:true},
+							{key:"cashback", label:"Cash Back", sortable:true},
 							{key:"issuedby", label:"Issued By", sortable:true},
 							{key:"approvedby", label:"Approved By", sortable:true}
 						];
