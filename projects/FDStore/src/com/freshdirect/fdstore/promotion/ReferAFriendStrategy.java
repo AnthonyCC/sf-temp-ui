@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.promotion;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.referral.FDReferralManager;
@@ -21,13 +22,15 @@ public class ReferAFriendStrategy implements PromotionStrategyI {
 				try {
 					FDUserI user = context.getUser();
 					String firstName = user.getFirstName();				
-					String lastName = user.getLastName();					
-					LOGGER.debug("Checking for FN+LN+ZipCode Fraud Rule:" + firstName + "+" + lastName + "+" + zipCode);
-					if(!FDReferralManager.isUniqueFNLNZipCombo(firstName, lastName, zipCode, user.getIdentity().getErpCustomerPK())) {
-						//Referral promotion cannot be applied
-						context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.ERROR_DUPE_FN_LN_ZIP.getErrorCode());
-						user.setReferralPromotionFraud(true);
-						return DENY;
+					String lastName = user.getLastName();
+					LOGGER.debug("Checking for FN+LN+ZipCode Fraud Rule:" + firstName + "+" + lastName + "+" + zipCode + "+" + user.getShoppingCart().getDeliveryAddress().getServiceType());
+					if(user.getShoppingCart().getDeliveryAddress().getServiceType() != EnumServiceType.PICKUP) {
+						if(!FDReferralManager.isUniqueFNLNZipCombo(firstName, lastName, zipCode, user.getIdentity().getErpCustomerPK())) {
+							//Referral promotion cannot be applied
+							context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.ERROR_DUPE_FN_LN_ZIP.getErrorCode());
+							user.setReferralPromotionFraud(true);
+							return DENY;
+						}
 					}
 				} catch (FDResourceException e) {
 					LOGGER.error("Error applying referral promotion", e);

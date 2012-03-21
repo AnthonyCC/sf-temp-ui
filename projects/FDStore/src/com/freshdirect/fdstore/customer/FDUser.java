@@ -399,10 +399,14 @@ public class FDUser extends ModelSupport implements FDUserI {
 		return referralPromoList;
 	}
 
-	public void setReferralPromoList() throws FDResourceException {
+	public void setReferralPromoList() {
 		// load referral promotion only to refer a friend target customers
 		if(this.getIdentity() != null && this.getReferralCustomerId() != null)
-			referralPromoList = FDPromotionNewManager.getReferralPromotions(this.getIdentity().getErpCustomerPK());
+			try {
+				referralPromoList = FDPromotionNewManager.getReferralPromotions(this.getIdentity().getErpCustomerPK());
+			} catch (FDResourceException e) {
+				LOGGER.error("Error getting referral promotions.",e);
+			}
 	}
 
     public void updateUserState(){

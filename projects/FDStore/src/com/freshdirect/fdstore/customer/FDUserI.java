@@ -484,6 +484,8 @@ public interface FDUserI extends java.io.Serializable {
 
 	public String getReferralCustomerId();
 	
+	public void setReferralPromoList();
+	
 	public List<PromotionI> getReferralPromoList();
 	
 	public double getAvailableCredit();

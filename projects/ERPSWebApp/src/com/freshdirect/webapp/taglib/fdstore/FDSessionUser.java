@@ -1311,6 +1311,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		return this.user.getReferralPromoList();
 	}
 	
+	public void setReferralPromoList() {
+		this.user.setReferralPromoList();
+	}
+	
 	public double getAvailableCredit() {
 		return this.user.getAvailableCredit();
 	}
