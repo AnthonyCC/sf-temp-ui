@@ -70,8 +70,8 @@ public class OrderRateSessionBean extends SessionBeanSupport {
 			{
 				OrderRateVO vo = voIterator.next();
 				
-				int days1 = (int)DateUtil.diffInDays(vo.getBaseDate(), sampleMap.get(vo.getBaseDate())[0]) * -1;
-				int days2 = (int)DateUtil.diffInDays(vo.getBaseDate(), sampleMap.get(vo.getBaseDate())[1]) * -1;
+				int days1 = (int)DateUtil.getDiffInDays(vo.getBaseDate(), sampleMap.get(vo.getBaseDate())[0]) * -1;
+				int days2 = (int)DateUtil.getDiffInDays(vo.getBaseDate(), sampleMap.get(vo.getBaseDate())[1]) * -1;
 				Date snapshot7 = OrderRateUtil.getDate(timeStamp, days1);
 				Date startTime7 = OrderRateUtil.getDate(vo.getStartTime(),days1);
 				Date endTime7 = OrderRateUtil.getDate(vo.getEndTime(),days1);
