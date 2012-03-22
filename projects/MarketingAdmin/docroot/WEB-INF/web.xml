@@ -162,6 +162,15 @@
     	<taglib-location>/WEB-INF/tld/spring-form.tld</taglib-location> 
   	</taglib>  
 
+	<security-constraint>
+		<web-resource-collection>
+		<web-resource-name>Unrestricted</web-resource-name>
+		<description>All users can view</description>
+		<url-pattern>/mktAdmin_autoUpload</url-pattern>
+		<http-method>POST</http-method>
+		<http-method>GET</http-method>
+		</web-resource-collection>
+	</security-constraint>
 
 	<security-constraint>
 		<display-name/>

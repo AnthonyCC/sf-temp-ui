@@ -845,7 +845,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 
 	public EnumServiceType getUserServiceType(){
-		return this.userServiceType != null ? this.userServiceType : EnumServiceType.HOME ;
+		return this.userServiceType != null ? this.userServiceType : (null !=getSelectedServiceType()?getSelectedServiceType():EnumServiceType.HOME);//EnumServiceType.HOME ;
 	}
 
 	public void setUserServiceType(EnumServiceType serviceType) {

@@ -32,8 +32,8 @@ public class MarketAdminAutoUploadCron {
 			//http://localhost:7001/mktAdmin/mktAdmin_autoUpload
 			//http://adm01.stdev03.nyc1.freshdirect.com:7011/MrktAdmin/mktAdmin_autoUpload
 			meth.addRequestHeader("User-Agent", "PromoCustAutoUpload/1.0");
-			Credentials credentials =	new UsernamePasswordCredentials( FDStoreProperties.getMktAdminUserName(), FDStoreProperties.getMktAdminPassword());
-			state.setCredentials( null, null, credentials );
+			/*Credentials credentials =	new UsernamePasswordCredentials( FDStoreProperties.getMktAdminUserName(), FDStoreProperties.getMktAdminPassword());
+			state.setCredentials( null, null, credentials );*/
 
 			/*meth.setRequestHeader("Content-Type", "text/html");
 			meth.setRequestBody("No Body");

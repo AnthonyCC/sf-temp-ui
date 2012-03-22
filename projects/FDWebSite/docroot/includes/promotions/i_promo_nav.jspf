@@ -71,6 +71,7 @@
 			<a href="/promotion/promo_create.jsp">Create</a>
 		</div>
 	<% } %>
+	<% if(CrmSecurityManager.hasAccessToPage(agent.getRole().getLdapRoleName(),"publishPromo")){ %>
 	<% if (promo_search) { %>
 		<div class="promo_sub_nav_on">
 			Publish
@@ -79,7 +80,7 @@
 		<div class="promo_sub_nav">
 			<a href="/promotion/promo_publish.jsp">Publish</a>
 		</div>
-	<% } %>
+	<% } }%>
 <% } else if(FDStoreProperties.isPromoPublishNodeMaster() && CrmSecurityManager.hasAccessToPage(agent.getRole().getLdapRoleName(),"promo_create.jsp")) { %>
 	<% if (promo_home || promo_view) { %>
 		<div class="promo_sub_nav_on">

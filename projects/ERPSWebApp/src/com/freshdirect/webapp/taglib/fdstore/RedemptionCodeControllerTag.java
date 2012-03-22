@@ -220,7 +220,7 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 					 * applied header discount-the automatice ones. If yes then throw an error
 					 * message to the user.
 					 */
-					if(prevdiscounts.size() > 0 && promotion.isHeaderDiscount()){
+					if(prevdiscounts.size() > 0 && promotion.isHeaderDiscount()&& !promotion.isCombineOffer()){
 						actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_OVERRIDE_AUTOMATIC);
 						request.setAttribute("redeem_override_msg", SystemMessageList.MSG_REDEMPTION_OVERRIDE_AUTOMATIC);
 					}
