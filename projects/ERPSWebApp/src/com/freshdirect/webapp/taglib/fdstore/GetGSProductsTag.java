@@ -28,6 +28,7 @@ import com.freshdirect.erp.ErpFactory;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDGroup;
+import com.freshdirect.fdstore.FDGroupNotFoundException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.GroupScalePricing;
@@ -63,9 +64,15 @@ public class GetGSProductsTag extends BodyTagSupport {
 		FDUserI user = (FDUserI)pageContext.getSession().getAttribute(SessionName.USER);
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
 		try{
+			
 			List<String> skuList = null;
 			if (grpId != null && !"".equals(grpId)) {
-				FDGroup group = new FDGroup(grpId, Integer.parseInt(version));
+				FDGroup group =null;
+				if(version==null || (version!=null && "".equals(version.trim()))) {
+					group=GroupScaleUtil.getLatestActiveGroup(grpId);
+				} else {			
+					group = new FDGroup(grpId, Integer.parseInt(version));
+				}
 				MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, user.getPricingZoneId());
 				if (matPrice != null) {
 					String grpQty = "0";
@@ -155,6 +162,9 @@ public class GetGSProductsTag extends BodyTagSupport {
 			
 		}catch(FDResourceException fe){
 			throw new JspException(fe);
+		} catch (FDGroupNotFoundException e) {
+			// TODO Auto-generated catch block
+			throw new JspException(e);
 		}
 		return EVAL_BODY_BUFFERED;
 	}
