@@ -74,18 +74,18 @@ public class OrderRateDAOImpl implements IOrderRateDAO {
 	
 	
 	private static final String CURRENT_DATE_ORDER_RATE = "select  snapshot_time, zone, cutoff, sum(order_count) order_count, " +
-			"sum(capacity) capacity from mis.order_rate where snapshot_time between to_date(?,'mm/dd/yyyy')  and  to_date(?,'mm/dd/yyyy') and delivery_date = to_date(?,'mm/dd/yyyy') " +
+			"sum(capacity) capacity from mis.order_rate where snapshot_time > to_date(?,'mm/dd/yyyy')  and snapshot_time < to_date(?,'mm/dd/yyyy') and delivery_date = to_date(?,'mm/dd/yyyy') " +
 			"and zone = ? group by snapshot_time, cutoff, zone order by snapshot_time, cutoff, zone asc";
 	
 	private static final String CURRENT_DATE_ORDER_RATE_EX = "select  snapshot_time, sum(order_count) order_count, sum(capacity) capacity from mis.order_rate " +
-			"where snapshot_time between to_date(?,'mm/dd/yyyy')  and  to_date(?,'mm/dd/yyyy') and delivery_date = to_date( ?,'mm/dd/yyyy') group by snapshot_time order by snapshot_time asc";
+			"where snapshot_time > to_date(?,'mm/dd/yyyy')  and snapshot_time < to_date(?,'mm/dd/yyyy') and delivery_date = to_date( ?,'mm/dd/yyyy') group by snapshot_time order by snapshot_time asc";
 	
 	private static final String MAX_SNAPSHOT_DELIVERY_DATE = "select o.capacity, o.snapshot_time, o.timeslot_start, o.timeslot_end, o.cutoff, o.zone from " +
 			"mis.order_rate o ,(select max(snapshot_time) sh, O.CUTOFF co from mis.order_rate o where o.delivery_date = to_date(?,'mm/dd/yyyy') " +
 			"and o.zone = ? and snapshot_time >=to_date(?,'mm/dd/yyyy') group by O.CUTOFF) t where o.delivery_date = to_date(?,'mm/dd/yyyy') and o.zone = ? and O.SNAPSHOT_TIME=t.sh " +
 			"and O.CUTOFF=t.co";
 	
-	private static final String MAX_SNAPSHOT_DELIVERY_DATE_EX = "select sum(o.capacity) capacity, max(snapshot_time) from mis.order_rate o , " +
+	private static final String MAX_SNAPSHOT_DELIVERY_DATE_EX = "select sum(o.capacity) capacity, max(o.snapshot_time) snapshot_time from mis.order_rate o , " +
 			"(select max(o1.snapshot_time) sh,o1.cutoff co  from mis.order_rate o1 where o1.delivery_date = to_date(?,'mm/dd/yyyy') and " +
 			"o1.snapshot_time >=to_date(?,'mm/dd/yyyy') group by o1.cutoff) t where o.delivery_date = to_date(?,'mm/dd/yyyy') and " +
 			"O.SNAPSHOT_TIME=t.sh and O.CUTOFF=t.co";
