@@ -1470,6 +1470,9 @@ public class FDCustomerManager {
 			if(ex instanceof ErpAddressVerificationException) throw (ErpAddressVerificationException)ex;
 
 			throw new FDResourceException(re, "Error talking to session bean");
+		} catch (InvalidCardException ie) {
+			invalidateManagerHome();
+			throw new FDResourceException(ie, "Error creating session bean InvalidCardException");
 		}
 	}
 
@@ -1561,6 +1564,9 @@ public class FDCustomerManager {
 		}catch (ErpSaleNotFoundException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error talking to session bean");
+		} catch (InvalidCardException ie) {
+			invalidateManagerHome();
+			throw new FDResourceException(ie, "Error talking to session bean InvalidCardException");
 		}
 	}
 
@@ -3318,9 +3324,7 @@ public class FDCustomerManager {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
-		} catch (InvalidCardException ice) {
-			throw new FDResourceException(ice);
-		}
+		} 
 	}
 
 	public static void transferGiftCardBalance(FDIdentity identity,
@@ -3758,6 +3762,9 @@ public class FDCustomerManager {
 			} catch (RemoteException re) {
 				invalidateManagerHome();
 				throw new FDResourceException(re, "Error talking to bean");
+			} catch (SQLException ie) {
+				invalidateManagerHome();
+				throw new FDResourceException(ie, "Error talking to bean SQLException");
 			}				
 				
 
