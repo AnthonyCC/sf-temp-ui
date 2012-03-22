@@ -443,6 +443,8 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			event.setResponseTime(responseTime);
 			event.setAddress(getAddressString(address));
 			event.setEventDate(new Date());
+			event.setLatitude(address.getLatitude());
+			event.setLongitude(address.getLongitude());
 			
 	
 			List<TimeslotEventDetailModel> slots = new ArrayList<TimeslotEventDetailModel>();

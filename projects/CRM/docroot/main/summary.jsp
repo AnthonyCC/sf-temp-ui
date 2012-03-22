@@ -153,6 +153,12 @@ if(null != orderId){
 					<td align="right" class="cust_module_content_note">Employee Id:&nbsp;&nbsp;</td>
 					<td><%=custInfo.getEmployeeId()%></td>
 				</tr>
+				<%if(custInfo.getDisplayName()!=null && !"".equals(custInfo.getDisplayName())){ %>
+				<tr>
+					<td align="right" class="cust_module_content_note">Display Name:&nbsp;&nbsp;</td>
+					<td><%=custInfo.getDisplayName()%></td>
+				</tr>
+				<%} %>
 			</table>
 		</td>
 

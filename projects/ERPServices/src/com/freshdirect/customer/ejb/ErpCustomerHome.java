@@ -22,6 +22,6 @@ public interface ErpCustomerHome extends EJBHome {
 	public ErpCustomerEB findByUserId(String userId) throws FinderException, RemoteException;
 
 	public ErpCustomerEB findByUserIdAndPasswordHash(String userId, String passwordHash) throws FinderException, RemoteException;
-
+	
 }
 

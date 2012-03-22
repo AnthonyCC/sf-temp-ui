@@ -9,7 +9,6 @@
 
 package com.freshdirect.fdstore.customer.ejb;
 
-import java.rmi.RemoteException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.sql.Connection;
@@ -592,5 +591,10 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		 
 		this.pymtVerifyAttempts=0;
 		this.setModified();
+	}
+
+
+	public void setInitiator(String attribute, String initiator) {
+		this.profile.setInitiator(attribute, initiator);
 	}
 }

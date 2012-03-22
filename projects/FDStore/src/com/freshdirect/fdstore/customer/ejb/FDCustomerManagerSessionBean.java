@@ -73,6 +73,7 @@ import com.freshdirect.customer.ErpCustomerEmailModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateAddressException;
+import com.freshdirect.customer.ErpDuplicateDisplayNameException;
 import com.freshdirect.customer.ErpDuplicatePaymentMethodException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpFraudException;
@@ -1152,6 +1153,38 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
+	
+	public boolean isDisplayNameUsed(String displayName,String custId) throws ErpDuplicateDisplayNameException {
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try{
+			con = this.getConnection();
+			ps = con.prepareStatement("SELECT 1 FROM CUST.CUSTOMERINFO WHERE UPPER(DISPLAY_NAME) = UPPER(?) and CUSTOMER_ID <> ?");
+
+			ps.setString(1, displayName);
+			ps.setString(2, custId);
+			
+			rs = ps.executeQuery();
+
+			if(rs.next()){
+				throw new ErpDuplicateDisplayNameException("Display name is already used. Please choose a different display name");
+			}
+			
+		}catch(SQLException se){
+			
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(ps != null) ps.close();
+				if(con != null) con.close();
+			} catch(SQLException ex) {
+				//eat it for the time being
+			}
+		}
+		return false;
+	}
 	/**
 	 * update the customer info
 	 * 
@@ -1211,6 +1244,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (CreateException ex) {
 			throw new FDResourceException(ex);
 		}
+		
 	}
 
 	public void updateUserId(FDActionInfo info, String userId)
@@ -1728,6 +1762,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		try {
 			FDCustomerEB eb = getFdCustomerHome().findByPrimaryKey(
 					new PrimaryKey(identity.getFDCustomerPK()));
+			eb.setInitiator(key, info.getInitiator());
 			eb.setProfileAttribute(key, value);
 			if (info != null) {
 				this

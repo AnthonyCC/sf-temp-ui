@@ -26,6 +26,7 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateAddressException;
+import com.freshdirect.customer.ErpDuplicateDisplayNameException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpInvalidPasswordException;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
@@ -214,6 +215,11 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				//coming from order receipt screen. store all of them together.
 				this.storeMobilePreferences(request, actionResult);
 			}
+			else if("changeDisplayName".equals(actionName)) {
+				//coming from order receipt screen. store all of them together.
+				this.performChangeDisplayName(request, actionResult);
+			}
+			
 
 		} catch (Exception ex) {
 			LOGGER.error("Error performing action " + actionName, ex);
@@ -534,6 +540,37 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		}
 	}
 
+	protected void performChangeDisplayName(HttpServletRequest request, ActionResult result) throws FDResourceException {
+		ErpCustomerInfoModel cim = null;
+		String displayName = request.getParameter("displayName");
+		
+		
+		if (displayName!=null && !"".equals(displayName)) {
+			
+				FDIdentity identity = getIdentity();
+				
+				cim = FDCustomerFactory.getErpCustomerInfo(identity);
+				cim.setDisplayName(displayName);
+				try
+				{
+					FDCustomerManager.isDisplayNameUsed(displayName, identity.getErpCustomerPK());
+				}
+				catch(ErpDuplicateDisplayNameException fde)
+				{
+					result.addError(true, "displayName", 
+								fde.getMessage());
+				}
+				if (!result.isSuccess()) {
+					return;
+				}
+
+				FDCustomerManager.updateCustomerInfo(AccountActivityUtil.getActionInfo(pageContext.getSession()), cim);
+
+			} 
+	}
+	
+	
+	
 	protected void performChangeContactInfo(HttpServletRequest request, ActionResult result) throws FDResourceException {
 		String lastName = request.getParameter("last_name");
 		String firstName = request.getParameter("first_name");

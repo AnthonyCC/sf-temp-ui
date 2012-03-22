@@ -36,4 +36,5 @@ public interface FDCustomerEB extends EntityBeanRemoteI, FDCustomerI {
 	public int getPymtVerifyAttempts()  throws RemoteException;
 	public void resetPymtVerifyAttempts() throws RemoteException;
     public int incrementPymtVerifyAttempts() throws RemoteException;
+    public void setInitiator(String profileAttribute, String initiator) throws RemoteException;
 }

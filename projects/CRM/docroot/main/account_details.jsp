@@ -246,6 +246,12 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
                             <td align="right" class="cust_module_content_note">Employee Id:&nbsp;&nbsp;</td>
                             <td><%=custInfo.getEmployeeId()%></td>
                         </tr>
+                        <%if(custInfo.getDisplayName()!=null && !"".equals(custInfo.getDisplayName())){ %>
+                         <tr>
+                            <td align="right" class="cust_module_content_note">Display Name:&nbsp;&nbsp;</td>
+                            <td><%=custInfo.getDisplayName()%></td>
+                        </tr>
+                        <%} %>
                         <%if (!forPrint) {%>
                             <tr><td colspan="2" height="8"></td></tr>
                             <tr>

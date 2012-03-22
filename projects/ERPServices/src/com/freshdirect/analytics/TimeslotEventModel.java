@@ -29,6 +29,8 @@ public class TimeslotEventModel extends EventModel {
 	private boolean filter;
 	private long logoutTime;
 	private String sector;
+	private double latitude;
+	private double longitude;
 	private List<TimeslotEventDetailModel> detail;
 	public TimeslotEventModel(String transactionSource, boolean dlvPassApplied, double deliveryCharge, boolean deliveryChargeWaived, boolean zoneCtActive)
 	{
@@ -165,5 +167,21 @@ public class TimeslotEventModel extends EventModel {
 
 	public void setSector(String sector) {
 		this.sector = sector;
+	}
+
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
 	}
 }

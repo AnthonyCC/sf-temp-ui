@@ -28,6 +28,8 @@ public class ErpCustomerInfoModel extends ModelSupport {
 	private String middleName;
 	private String lastName;
 
+	private String displayName;
+	
 	private String email;
 	private String alternateEmail;
 	private boolean emailPlaintext;
@@ -306,6 +308,14 @@ public class ErpCustomerInfoModel extends ModelSupport {
 
 	public void setNoContactPhone(boolean noContactPhone) {
 		this.noContactPhone = noContactPhone;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
 
 }

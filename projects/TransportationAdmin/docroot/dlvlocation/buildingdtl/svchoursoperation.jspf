@@ -38,7 +38,7 @@ function togglesvc(checked, svcHoursOpen, svcHoursClose,svcComment,hoursField, h
 						 	</td>
 						    <td align="left">Comment</td>
 						    <td>				    
-								<form:input maxlength="50" size="40" disabled="true" path="svcCommentMon" />
+								<form:input maxlength="255" size="40" disabled="true" path="svcCommentMon" />
 						 	</td>
 						 </tr>							 
 						 <tr>
@@ -55,7 +55,7 @@ function togglesvc(checked, svcHoursOpen, svcHoursClose,svcComment,hoursField, h
 						 	</td>
 						    <td align="left">Comment</td>
 						    <td>				    
-								<form:input maxlength="50" size="40" disabled="true" path="svcCommentTue" />
+								<form:input maxlength="255" size="40" disabled="true" path="svcCommentTue" />
 						 	</td>
 						 </tr>			
 						 
@@ -74,7 +74,7 @@ function togglesvc(checked, svcHoursOpen, svcHoursClose,svcComment,hoursField, h
 						 	</td>
 						    <td align="left">Comment</td>
 						    <td>				    
-								<form:input maxlength="50" size="40" disabled="true" path="svcCommentWed" />
+								<form:input maxlength="255" size="40" disabled="true" path="svcCommentWed" />
 						 	</td>
 						 </tr>			
 						 				 
@@ -92,7 +92,7 @@ function togglesvc(checked, svcHoursOpen, svcHoursClose,svcComment,hoursField, h
 						 	</td>
 						    <td align="left">Comment</td>
 						    <td>				    
-								<form:input maxlength="50" size="40" disabled="true" path="svcCommentThu" />
+								<form:input maxlength="255" size="40" disabled="true" path="svcCommentThu" />
 						 	</td>
 						 </tr>							 
 						 <tr>
@@ -109,7 +109,7 @@ function togglesvc(checked, svcHoursOpen, svcHoursClose,svcComment,hoursField, h
 						 	</td>
 						    <td align="left">Comment</td>
 						    <td>				    
-								<form:input maxlength="50" size="40" disabled="true" path="svcCommentFri" />
+								<form:input maxlength="255" size="40" disabled="true" path="svcCommentFri" />
 						 	</td>
 						 </tr>							 
 						 <tr>
@@ -126,7 +126,7 @@ function togglesvc(checked, svcHoursOpen, svcHoursClose,svcComment,hoursField, h
 						 	</td>
 						    <td align="left">Comment</td>
 						    <td>				    
-								<form:input maxlength="50" size="40" disabled="true" path="svcCommentSat" />
+								<form:input maxlength="255" size="40" disabled="true" path="svcCommentSat" />
 						 	</td>
 						 </tr>							 
 						 						 
@@ -144,7 +144,7 @@ function togglesvc(checked, svcHoursOpen, svcHoursClose,svcComment,hoursField, h
 						 	</td>
 						    <td align="left">Comment</td>
 						    <td>				    
-								<form:input maxlength="50" size="40" disabled="true" path="svcCommentSun" />
+								<form:input maxlength="255" size="40" disabled="true" path="svcCommentSun" />
 						 	</td>
 						 </tr>							 
 						 

@@ -29,7 +29,7 @@
         </property> 
         
         <property name="serviceComments" type="string">
-            <column name="SERVICE_COMMENTS" length="30" />
+            <column name="SERVICE_COMMENTS" length="255" />
         </property> 
         <!-- <many-to-one name="deliveryBuilding" class="com.freshdirect.transadmin.model.DlvBuilding" update="false" insert="false" fetch="select">
             <column name="DELIVERY_BUILDING_ID" length="16" not-null="true" />

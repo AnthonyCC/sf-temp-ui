@@ -511,6 +511,11 @@ public class FDStoreProperties {
 	
 	private final static String FACEBOOK_APP_KEY = "facebook.app.key";
 
+	private final static String PROP_WEBPURIFY_URL="fdstore.webpurify.url";
+	
+	private final static String PROP_WEBPURIFY_KEY="fdstore.webpurify.key";
+	
+	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1014,7 +1019,12 @@ public class FDStoreProperties {
         defaults.put(PROP_DAY_OF_WEEK_FOR_COS_MON_AUTHS, "6");
 		defaults.put(PROP_FD_GIVEX_WEB_USER_PASSWD, "fd8848admin");
 		defaults.put(PROP_GIVEX_WEB_SERVER_URL, "https://dev-wwws.givex.com/portal/login.py?_LANGUAGE_:en");
+
+		defaults.put(PROP_WEBPURIFY_URL, "http://api1.webpurify.com/services/rest/?api_key=%API_KEY%&method=%METHOD%&format=json&lang=%LANG%&callback=%CALLBACK%&text=%TEXT%");
+		defaults.put(PROP_WEBPURIFY_KEY, "3abce4fd5f2505565dd98f9700167eba");
+
 		defaults.put(FACEBOOK_APP_KEY, "176418392468226");
+
         refresh();
     }
 
@@ -1064,6 +1074,15 @@ public class FDStoreProperties {
         return get(PROP_DLV_INSTRUCTION_SPECIAL_CHAR);
     }
 
+    public static String getProfanityCheckURL() {
+        return get(PROP_WEBPURIFY_URL);
+    }
+    
+    public static String getProfanityCheckPass() {
+        return get(PROP_WEBPURIFY_KEY);
+    }
+
+    
     public static String getProviderURL() {
         return get(PROP_PROVIDER_URL);
     }

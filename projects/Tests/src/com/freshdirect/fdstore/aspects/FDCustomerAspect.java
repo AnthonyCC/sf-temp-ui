@@ -227,6 +227,13 @@ public abstract class FDCustomerAspect extends BaseAspect {
 				// TODO Auto-generated method stub
 				
 			}
+
+			@Override
+			public void setInitiator(String profileAttribute, String initiator)
+					throws RemoteException {
+				// TODO Auto-generated method stub
+				
+			}
         };
     }
 

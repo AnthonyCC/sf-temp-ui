@@ -1,14 +1,14 @@
+package com.freshdirect.webapp.taglib.crm;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
 
-	package com.freshdirect.webapp.taglib.crm;
-
-	import javax.servlet.http.HttpServletRequest;
-	import javax.servlet.jsp.JspException;
-	
-	import com.freshdirect.fdstore.FDResourceException;
-	import com.freshdirect.fdstore.customer.FDCustomerManager;
-	import com.freshdirect.fdstore.customer.FDUserI;
-	import com.freshdirect.framework.webapp.ActionResult;
-	import com.freshdirect.webapp.taglib.AbstractControllerTag;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.webapp.taglib.AbstractControllerTag;
+import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 
 	public class CrmVIPSettingControllerTag extends AbstractControllerTag {
 	
@@ -23,7 +23,8 @@
 				try{
 					String vipSetting= "true".equalsIgnoreCase(request.getParameter("vipSetting")) ? "true" : "false";
 					if(CrmSession.verifyCaseAttachment(pageContext.getSession(), actionResult)){
-						FDCustomerManager.setProfileAttribute(this.user.getIdentity(),"VIPCustomer",vipSetting);
+						FDActionInfo info = AccountActivityUtil.getActionInfo(pageContext.getSession());
+						FDCustomerManager.setProfileAttribute(this.user.getIdentity(),"VIPCustomer",vipSetting,info);
 						user.invalidateCache();
 					}
 				}catch(FDResourceException ex){

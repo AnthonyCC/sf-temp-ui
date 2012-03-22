@@ -91,11 +91,8 @@ public class AirclicManagerSessionBean extends SessionBeanSupport {
 				Set<String> userIds = getUserId(textMessage);
 				saveMessageInQueue(textMessage);
 				sendMessage(userIds, textMessage);
-				if (userIds != null && userIds.size() > 0) {
-					updateMessage(textMessage);
-					return "Message sent to Airclic";
-				}
-				return "Unable to find user(s). Message Queued";				
+				updateMessage(textMessage);
+				return "Message Sent to Airclic";
 			}
 		} catch (Exception e) {			
 			throw new DlvResourceException(e);
@@ -267,8 +264,7 @@ public class AirclicManagerSessionBean extends SessionBeanSupport {
 					textMessage = i.next();
 					Set<String> userIds = getUserId(textMessage);
 					sendMessage(userIds, textMessage);
-					if (userIds != null && userIds.size() > 0) 
-						updateMessage(textMessage);
+					updateMessage(textMessage);
 					
 
 				} catch (Exception e) {

@@ -200,7 +200,7 @@ public class RoutingServicesProperties {
 		defaults.put(PROP_HANDOFF_MAILSUBJECT, "HandOff Process Notification");
 		
 		defaults.put(PROP_DEFAULT_ORDERSIZE, "5");
-		defaults.put(PROP_DEFAULT_SERVICETIME, "180");
+		defaults.put(PROP_DEFAULT_SERVICETIME, "3");
 		
 		defaults.put(PROP_HANDOFF_DISPATCHCORRELATIONENABLED, "true");
 		

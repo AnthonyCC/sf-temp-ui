@@ -1,8 +1,27 @@
 <%@ page import="com.freshdirect.customer.ErpCustomerInfoModel"%>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="crm" prefix="crm" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
+<script src="../shared/javascript/jquery-1.6.4.js" type="text/javascript" charset="utf-8"></script>
+<script src="../shared/javascript/webpurify.jQuery.js" type="text/javascript" charset="utf-8"></script>
 
+		
+		<script type="text/javascript">
+		
+		jQuery(document).ready(function() {
+				jQuery.webpurify.init("<%=FDStoreProperties.getProfanityCheckURL()%>","<%=FDStoreProperties.getProfanityCheckPass()%>");
+			});
+			
+			function checkForProfanity(){
+				jQuery.webpurify.check( jQuery("#displayName").val(), function(isProfane){
+					if(!isProfane)
+						document.name_contact_info.submit();
+					else
+						jQuery("#profaneText").html("We found profane text in display name. Please use different word");
+				});
+			}	
+		</script>
 <tmpl:insert template='/template/top_nav_changed_dtd.jsp'>
 
     <tmpl:put name='title' direct='true'>Account Details > Edit Name & Contact Info</tmpl:put>
@@ -19,13 +38,15 @@
 				<table width="100%" cellpadding="0" cellspacing="0">
 					<tr>
 						<td class="cust_module_header_text">Edit Name & Contact Information</td>
-						<td width="50%"><a href="/main/account_details.jsp" class="cancel">CANCEL</a>&nbsp;&nbsp;<a href="javascript:document.name_contact_info.submit();" class="save">SAVE</a></td>
+						<td width="50%"><a href="/main/account_details.jsp" class="cancel">CANCEL</a>&nbsp;&nbsp;<a onclick="checkForProfanity();" 
+						 class="save">SAVE</a></td>
 						<td><fd:ErrorHandler result="<%=result%>" name="case_not_attached" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
 						<td align="center" class="note">* Required</td>
 					</tr>
 				</table>
 			</div>
 			<div class="cust_module_content">
+			<span class="error" id="profaneText"></span>
 				<table cellpadding="3" cellspacing="5" class="cust_module_text" align="center">
 					<tr>
 						<td align="right">Title:&nbsp;&nbsp;</td>
@@ -83,6 +104,11 @@
 					<tr>
 						<td align="right">* Employee Id:&nbsp;&nbsp;</td>
 						<td colspan="3"><input type="text" class="input_text" style="width: 150px;" name="employeeId" value="<%=customerInfo.getEmployeeId() %>"></td>
+					</tr>
+					<tr>
+						<td align="right">Display Name:&nbsp;&nbsp;</td>
+						<td colspan="3"><input type="text" maxlength="30" class="input_text" style="width: 150px;" name="displayName" id="displayName" value="<%=customerInfo.getDisplayName() %>">
+						<fd:ErrorHandler result="<%=result%>" name="displayName" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 					</tr>
 				</table><br>
 			</div>

@@ -123,6 +123,7 @@ public class EnumUserInfoName implements Serializable {
 	public final static EnumUserInfoName					GC_AMOUNT								= new EnumUserInfoName( "gcAmount", "GC Amount" );
 	public final static EnumUserInfoName					MOBILE_NUMBER							= new EnumUserInfoName( "mobile_number", "Mobile Number" );
 	public final static EnumUserInfoName					TEXT_OPTION								= new EnumUserInfoName( "text_option", "Text Messaging Preferences" );
+	public final static EnumUserInfoName					DISPLAY_NAME							= new EnumUserInfoName( "displayName", "displayName" );
 	
 	private int id;
 	private String code;

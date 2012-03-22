@@ -17,7 +17,23 @@ final int W_YA_SIGNIN_INFO = 970;
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - User Name, Password, & Contact Info</tmpl:put>
     <tmpl:put name='content' direct='true'>
 <fd:javascript src="/assets/javascript/phone_number.js"/>
-
+<script src="../shared/javascript/jquery-1.6.4.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="../shared/javascript/webpurify.jQuery.js"></script>
+		
+		<script type="text/javascript">
+		
+		jQuery(document).ready(function() {
+			jQuery.webpurify.init("<%=FDStoreProperties.getProfanityCheckURL()%>","<%=FDStoreProperties.getProfanityCheckPass()%>");
+		});
+		
+		function checkForProfanity(){
+			jQuery.webpurify.check( jQuery("#displayName").val(), function(isProfane){
+				if(!isProfane)
+					document.name_contact_info.submit();
+			});
+		}	
+		</script>
+		
 <fd:RegistrationController actionName='<%=request.getParameter("actionName")%>' result='result'>
 
 <%
@@ -49,6 +65,7 @@ String receive_emailLevel =""; //
 String noContactMail = ""; //
 String noContactPhone = ""; //
 
+String displayName = "";
 
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 FDIdentity identity  = user.getIdentity();
@@ -66,6 +83,8 @@ busPhoneExt = cm.getBusinessPhone()==null?"":cm.getBusinessPhone().getExtension(
 
 cellPhone = cm.getCellPhone()==null?"":cm.getCellPhone().getPhone();
 cellPhoneExt = cm.getCellPhone()==null?"":cm.getCellPhone().getExtension();
+
+displayName = cm.getDisplayName();
 
 title = cm.getTitle();
 
@@ -123,7 +142,9 @@ if (request.getParameter("isSendHTMLEmail")!=null) {
 if (request.getParameter("receive_mail")!=null) {
     sendNewsLetter = request.getParameter("receive_mail");
 }
-
+if (request.getParameter("displayName")!=null) {
+	displayName = request.getParameter("displayName");
+}
 sendNewsLetter = cm.isReceiveNewsletter()?"yes":"no";
 
 sendPlainTextEmail= cm.isEmailPlaintext()?"yes":"no";
@@ -196,7 +217,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 							EnumUserInfoName.DLV_FIRST_NAME.getCode(), EnumUserInfoName.DLV_LAST_NAME.getCode(),
 							EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode(), EnumUserInfoName.DLV_EMPLOYEE_ID.getCode(),
 							EnumUserInfoName.ALT_EMAIL.getCode(), EnumUserInfoName.DLV_WORK_PHONE.getCode(),
-							EnumUserInfoName.DLV_CELL_PHONE.getCode(), "mobile_number", "text_option"}; 
+							EnumUserInfoName.DLV_CELL_PHONE.getCode(),EnumUserInfoName.DISPLAY_NAME.getCode(), "mobile_number", "text_option"}; 
 %>
 <fd:ErrorHandler result='<%=result%>' field='<%=checkInfoForm%>'>
 	<% String errorMsg = SystemMessageList.MSG_MISSING_INFO; %>	
@@ -291,6 +312,29 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	</tr>
 </form>
 
+
+<tr>
+	<td colspan="6">
+		<img src="/media_stat/images/navigation/change_your_contact_info.gif" width="234" height="13" border="0" alt="CHANGE YOUR DISPLAY NAME" align="absbottom"> &nbsp;&nbsp;&nbsp;&nbsp; <br>
+    <img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5">
+	</td>
+</tr>
+<form method="post" name="updateDisplayName">
+<input type="hidden" name="actionName" value="changeDisplayName">
+
+
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"></td></tr>
+<tr>
+	<td colspan="2" align="right" style="padding-right:5px;" class="text12">Display Name</td>
+	<td><input class="text9" size="28" maxlength="20" type="text" name="displayName" value="<%=displayName%>" style="width:150px; padding:1px;"></td>
+	<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DISPLAY_NAME.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		</td>
+	<td align="right"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_password" src="/media_stat/images/buttons/save_changes.gif" onclick="javascript:checkForProfanity();" width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></td>
+	
+</tr>
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"></td></tr>
+</form>
+
 <form method="post" name="updateContactInformation">
 <input type="hidden" name="actionName" value="changeContactInfo">
 <tr>
@@ -299,6 +343,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
     <img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5">
 	</td>
 </tr>
+
 
 <tr>
 	<td colspan="2" align="right" class="text12" style="padding-right:5px;">Title</td>

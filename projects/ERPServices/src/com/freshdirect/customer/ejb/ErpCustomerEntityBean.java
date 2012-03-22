@@ -598,7 +598,9 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 			}
 		}
 	}
+	
 
+	
 	private boolean isDuplicate(String userId, Connection conn) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement("SELECT ID FROM CUST.CUSTOMER WHERE USER_ID = LOWER(?) AND ID <> ?");
 		ps.setString(1, userId);

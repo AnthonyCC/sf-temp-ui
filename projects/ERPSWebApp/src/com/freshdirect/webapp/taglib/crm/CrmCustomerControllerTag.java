@@ -1,16 +1,21 @@
 package com.freshdirect.webapp.taglib.crm;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.customer.ErpCustomerInfoModel;
+import com.freshdirect.customer.ErpDuplicateDisplayNameException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class CrmCustomerControllerTag extends AbstractControllerTag {
 
@@ -20,6 +25,12 @@ public class CrmCustomerControllerTag extends AbstractControllerTag {
 		this.customerInfo = customerInfo;
 	}
 
+	protected FDIdentity getIdentity() {
+		HttpSession session = pageContext.getSession();
+		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+		return (user == null) ? null : user.getIdentity();
+	}
+	
 	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 
 		try {
@@ -66,6 +77,7 @@ public class CrmCustomerControllerTag extends AbstractControllerTag {
 		this.customerInfo.setAlternateEmail(NVL.apply(request.getParameter("altEmail"), "").trim());
 		this.customerInfo.setWorkDepartment(NVL.apply(request.getParameter("workDepartment"), "").trim());
 		this.customerInfo.setEmployeeId(NVL.apply(request.getParameter("employeeId"), "").trim());
+		this.customerInfo.setDisplayName(NVL.apply(request.getParameter("displayName"), "").trim());
 	}
 
 	private void validateCustomerInfo(ActionResult actionResult) {
@@ -78,6 +90,22 @@ public class CrmCustomerControllerTag extends AbstractControllerTag {
 				&& PhoneNumber.normalize(this.customerInfo.getBusinessPhone().getPhone()).length() != 10, "busPhone", "requires 10 digits: 3 digit area-code + 7 digit local number");
 		actionResult.addError(this.customerInfo.getCellPhone() != null
 				&& PhoneNumber.normalize(this.customerInfo.getCellPhone().getPhone()).length() != 10, "cellPhone", "requires 10 digits: 3 digit area-code + 7 digit local number");
+		
+		if (this.customerInfo.getDisplayName()!=null && !"".equals(this.customerInfo.getDisplayName())) 
+		{
+			try
+			{
+				FDCustomerManager.isDisplayNameUsed(this.customerInfo.getDisplayName(), getIdentity().getErpCustomerPK());
+			}
+			catch(ErpDuplicateDisplayNameException fde)
+			{
+					actionResult.addError(true, "displayName", 
+							fde.getMessage());
+			} catch (FDResourceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public static class TagEI extends AbstractControllerTag.TagEI {
