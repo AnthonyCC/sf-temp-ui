@@ -22,77 +22,73 @@
 <html>
 <head>
 	<title>FreshDirect</title>
-	<%@ include file="/common/template/includes/metatags.jspf" %>
-	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	<%-- NOT CCL @ include file="/shared/template/includes/ccl.jspf" --%>
-</head>
-<style>
-	.text11 {
-		width: 70%;
-		height: 20px;
-		font-size: 12px;
-		line-height: 12px;
-		color: #666;
-	}
-	
-	.bodyCopy {
-		font-size: 11px;
-		color: #000;
-		text-align: left;
-		font-weight: bold;
-		line-height:25px;
-	}
-	
-	.text9 {
-		font-size: 11px;
-		color: #928F8E;
-		text-align: left;
-	}
-	
-	a:active {
-		color:#336600;
-		text-decoration:none;
-	}
-	
-	.text12 {
-		font-family: Verdana,Arial,sans-serif;
-		font-size: 11px;
-		font-weight: normal;
-	}
-	
-	.star {
-		color: #FF9900;
-	}
-	
-	.inputDef {
-		width: 70%;
-		height: 20px;
-		font-size: 12px;
-		line-height: 12px;
-		color: #999;
-	}
-	
-	.inputUser {
-		width: 70%;
-		height: 20px;
-		font-size: 12px;
-		line-height: 12px;
-		color: #666;
-	}
-	
-	.hline {
-			background: url("/media/editorial/site_access/images/dots_h.gif") repeat-x scroll 0 0 transparent;
-			font-size: 1px;
-			height: 1px;
-			line-height: 1px;
-			width: 400px !important;
+	<style>
+		.text11 {
+			width: 70%;
+			height: 20px;
+			font-size: 12px;
+			line-height: 12px;
+			color: #666;
 		}
 		
-		.fright {
-			float: right;
+		.bodyCopy {
+			font-size: 11px;
+			color: #000;
+			text-align: left;
+			font-weight: bold;
+			line-height:25px;
 		}
-</style>
+		
+		.text9 {
+			font-size: 11px;
+			color: #928F8E;
+			text-align: left;
+		}
+		
+		a:active {
+			color:#336600;
+			text-decoration:none;
+		}
+		
+		.text12 {
+			font-family: Verdana,Arial,sans-serif;
+			font-size: 11px;
+			font-weight: normal;
+		}
+		
+		.star {
+			color: #FF9900;
+		}
+		
+		.inputDef {
+			width: 70%;
+			height: 20px;
+			font-size: 12px;
+			line-height: 12px;
+			color: #999;
+		}
+		
+		.inputUser {
+			width: 70%;
+			height: 20px;
+			font-size: 12px;
+			line-height: 12px;
+			color: #666;
+		}
+		
+		.hline {
+				background: url("/media/editorial/site_access/images/dots_h.gif") repeat-x scroll 0 0 transparent;
+				font-size: 1px;
+				height: 1px;
+				line-height: 1px;
+				width: 400px !important;
+			}
+			
+			.fright {
+				float: right;
+			}
+	</style>
+</head>
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0">
 
 	<fd:RegistrationController actionName='registerEx' successPage='<%= successPage %>' fraudPage='<%= failurePage %>' result='result'>
@@ -132,7 +128,7 @@
 		<br/><span class="text9">Sign up now to enjoy great quality food, delivered to your door.</span>
 	</div>
 	<div class="fright hline" id=""><!-- --></div>
-	<div id="form_feilds" style="float:left">
+	<div id="form_feilds" style="">
 		<form id="refaddress" name="refaddress" method="post" action="">
 			<input type="hidden" name="submission" value="done" />	
 			<input type="hidden" name="actionName" value="ordermobilepref" />	
@@ -186,14 +182,10 @@
 			
 			<br/>
 			<span class="text9">By signing up, you agree to the <a href="javascript:popup('/registration/user_agreement.jsp','large')" style="font-weight:normal;">Terms of use</a></span><br/><br/>
-			<a href="#" onclick="doRemoteOverlay1('referee_signup2.jsp'); return false;""><img src="/media_stat/images/profile/start_shopping.jpg" border="0"></a>
+			<a href="#" onclick="doRemoteOverlay1('referee_signup2.jsp'); return false;"><img src="/media_stat/images/profile/start_shopping.jpg" border="0"></a>
 		</form>
 	</div>
 	</div>
-	<script language="javascript">
-		setFormDefaults();
-		window.onload=fillVals('confirm_email', '','Verify your email');
-	</script>
 	<% } } %>
 	</fd:RegistrationController>
 	
