@@ -365,6 +365,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 		DeliveryPassException,
 		FDPaymentInadequateException,
 		ErpTransactionException,
+		InvalidCardException,
 		RemoteException;
 
 	/**
@@ -398,6 +399,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 		DeliveryPassException,
 		FDPaymentInadequateException,
 		ErpAddressVerificationException,
+		InvalidCardException,
 		RemoteException;
 
     /**
@@ -700,9 +702,9 @@ public interface FDCustomerManagerSB extends EJBObject {
     
     public List getGiftCardRecepientsForOrder(String saleId) throws FDResourceException, RemoteException;
     
-    public ErpGiftCardModel validateAndGetGiftCardBalance(String givexNum) throws InvalidCardException, RemoteException;
+    public ErpGiftCardModel validateAndGetGiftCardBalance(String givexNum) throws FDResourceException, RemoteException;
     
-    public void transferGiftCardBalance(FDIdentity identity,String fromGivexNum,String toGivexNum,double amount) throws RemoteException;
+    public void transferGiftCardBalance(FDIdentity identity,String fromGivexNum,String toGivexNum,double amount) throws FDResourceException, RemoteException;
     
     public String[] sendGiftCardCancellationEmail(String saleId, String certNum, boolean toRecipient, boolean toPurchaser, boolean newRecipient, String newRecipientEmail) throws RemoteException, FDResourceException;
     
@@ -763,6 +765,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 			ErpAddressVerificationException,
 			InvalidCardException,
 			FDPaymentInadequateException,
+			SQLException,
 			RemoteException;
 	
 	public ErpAuthorizationModel verify(FDActionInfo info,ErpPaymentMethodI paymentMethod) throws FDResourceException,ErpAuthorizationException, RemoteException;

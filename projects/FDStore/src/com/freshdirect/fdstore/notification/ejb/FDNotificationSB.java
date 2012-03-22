@@ -14,7 +14,7 @@ public interface FDNotificationSB extends EJBObject{
 	
 	public Collection<FDNotification> loadCustomerNotifications(FDIdentity identity) throws FDResourceException, RemoteException;
 	
-	public Collection<FDNotification> loadAllNotifications() throws RemoteException;
+	public Collection<FDNotification> loadAllNotifications() throws FDResourceException, RemoteException;
 	
 	public void checkNotificationForCustomer(FDActionInfo info,FDIdentity identity, FDNotification notification) throws FDResourceException, RemoteException;
 	

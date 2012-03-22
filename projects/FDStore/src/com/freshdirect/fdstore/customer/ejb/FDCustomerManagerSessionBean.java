@@ -1457,10 +1457,15 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			ErpCreateOrderModel createOrder, Set<String> usedPromotionCodes,
 			String reservationId, boolean sendEmail, CustomerRatingI cra,
 			CrmAgentRole agentRole, EnumDlvPassStatus status)
-			throws FDResourceException, ErpFraudException,
-			ErpAuthorizationException, ReservationException,
-			DeliveryPassException, FDPaymentInadequateException,
-			ErpTransactionException, InvalidCardException, ErpAddressVerificationException {
+			throws FDResourceException,
+			ErpFraudException,
+			ErpAuthorizationException,
+			ErpAddressVerificationException,
+			ReservationException,
+			DeliveryPassException,
+			FDPaymentInadequateException,
+			ErpTransactionException,
+			InvalidCardException {
 
 		PrimaryKey pk = null;
 		FDIdentity identity = info.getIdentity();
@@ -6161,7 +6166,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			DeliveryPassException, 
 			ErpAddressVerificationException,
 			InvalidCardException,
-			FDPaymentInadequateException, SQLException {
+			FDPaymentInadequateException,
+			SQLException {
 			try {
 				EnumDlvPassStatus status = getDlvPassInfo(identity).getStatus();
 				FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomerFromErpId(identity.getErpCustomerPK());
