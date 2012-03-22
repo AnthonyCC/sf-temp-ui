@@ -360,17 +360,7 @@ String browserType=(String)request.getHeader("User-Agent");
 													FB.ui(obj, callback);
 												}
 
-												function callFBUI()	{
-													//process FBUI here
-													var toString = [];
-													//get friends list checkboxes
-													var friendsListCheckboxes = $('#fb_friendsList').find('input[type="checkbox"]');
-													$.each(friendsListCheckboxes, function(index, elem){
-													    if (elem.checked) {
-													        toString.push(elem.value); //add checked ones to toString list
-													    }
-													});
-												
+												function sendFBMsg(friendId)	{												
 													FB.ui({
 														method: 'send',
 														name: '<%=	fb_headline	%>',
@@ -378,7 +368,7 @@ String browserType=(String)request.getHeader("User-Agent");
 														picture: 'http://www.freshdirect.com/<%= rpModel.getFbFile() %>',
 														caption: 'Caption',
 														description: '<%= rpModel.getFbText() %>',
-														to: toString	  
+														to: friendId
 													}, function(response) {
 														if (response &&	response.request_ids) {
 														   //alert('Post was published.' + response);
@@ -393,16 +383,16 @@ String browserType=(String)request.getHeader("User-Agent");
 												var	post_on_wall_but = '<div class="fright"><table class="butCont">' +
 												'<tr><td class="butBlueMiddle20" valign="middle"><a	href="#" onclick="postToFeed();	return false;" class="previewbut"><img src="/media_stat/images/buttons/post_on_wall.jpg" /></a></td></tr>' +
 												'</table></div>';
-												var	preview_but	= '<div	class="fright"><table class="butCont">'	+
+												/*var	preview_but	= '<div	class="fright"><table class="butCont">'	+
 														'<tr><td class="butBlueMiddle20" valign="middle"><a	href="#fbarea" onclick="callFBUI();	return false;" class="previewbut"><img src="/media_stat/images/buttons/send_message.jpg" /></a></td></tr>' +
-														'</table></div>';
+														'</table></div>';*/
 				
 												function fbGetFriendCont(i,	friendObj) {
 													return '<table width=\"100%\">'+
 															'<tr>'+
-																'<td valign="center" width="10%"><input	type="checkbox"	id="friend'	+ i	+ '" name="friend' + i + '"	value="'+ friendObj.id + '"	/></td>'+
-																'<td width="30%"><img id="' + friendObj.id + '"	src="https://graph.facebook.com/' + friendObj.id + '/picture" alt="profile image" /></td>'+
-																'<td valign="center" align="left" width="60%" style="text-align:left;">'	+ friendObj.name + '</td>'+
+																'<td style="width: 80px;"><img id="' + friendObj.id + '" src="https://graph.facebook.com/' + friendObj.id + '/picture" alt="profile image" /></td>'+
+																'<td valign="center" align="left" style="width: 134px; text-align:left;">' + friendObj.name + '</td>'+
+																'<td valign="center" style="width: 90px;"><input type="image" src="/media_stat/images/buttons/send_message.jpg" id="friend_' + friendObj.id + '" name="friend_' + friendObj.id + '" /></td>'+
 															'</tr>'+
 														'</table>';
 												}
@@ -418,20 +408,28 @@ String browserType=(String)request.getHeader("User-Agent");
 															$('#fb_wallpost').html(post_on_wall_but).append('<br style="clear: right;" />');
 														friendsDiv.append('<div	id="fb_friendsList"	/>');
 															if (friends.length > 9)	{ $('#fb_friendsList').addClass('fbMore'); };
-														friendsDiv.append('<hr /><div id="fb_preview" />');
-															$('#fb_preview').html(preview_but).append('<br style="clear: right;" />');
+														/*
+															friendsDiv.append('<hr /><div id="fb_preview" />');
+																$('#fb_preview').html(preview_but).append('<br style="clear: right;" />');
+														*/
+														friendsDiv.append('<hr />');
 
 														$('#fb_friendsList').append('<table	id="fb_friendsListCont"	width="100%" cellpadding="2" />');
 														var	friendsListCont	= $('#fb_friendsListCont');
 														var	curRow = null;
 														$.each(friends,	function(index,	elem) {
-															if (index %	3 == 0)	{
+															if (index %	2 == 0)	{
 																curRow = friendsListCont.append('<tr class="fb_friendRow" />').find('tr.fb_friendRow:last');
 																friendsListCont.append('<tr><td	colspan="3"	class="fb_friendRowSpacer">&nbsp;</td></tr>');
+															}else{
+																curRow.find('td:last').css({ borderRight: '1px solid #ccc' });
 															}
-															curRow.append(function() { return '<td width="33%">'+fbGetFriendCont(index,	elem)+'</td>'; });
+															curRow.append(function() { return '<td width="50%">'+fbGetFriendCont(index,	elem)+'</td>'; });
 														});
-														if (friends.length % 3 != 0) { curRow.append('<td class="spacer">&nbsp;</td>').children('td.spacer').attr('colSpan', 3 - (friends.length % 3) ); }
+														if (friends.length % 2 != 0) {
+															curRow.append('<td class="spacer">&nbsp;</td>');
+														}
+														$('#friends').on('click', 'input[type=image]', function () { sendFBMsg( (this.id).split('_')[1] ); });
 
 													});
 												}
