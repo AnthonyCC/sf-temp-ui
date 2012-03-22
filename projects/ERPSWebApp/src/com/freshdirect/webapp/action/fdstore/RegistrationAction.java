@@ -633,7 +633,7 @@ public class RegistrationAction extends WebActionSupport {
 
 			if ("".equals(repeatEmailAddress)) {
 				actionResult.addError(new ActionError(EnumUserInfoName.REPEAT_EMAIL.getCode(), SystemMessageList.MSG_REQUIRED));
-			} else if (!emailAddress.equals(repeatEmailAddress)) {
+			} else if (!emailAddress.equalsIgnoreCase(repeatEmailAddress)) {
 				actionResult.addError(new ActionError(EnumUserInfoName.REPEAT_EMAIL.getCode(), SystemMessageList.MSG_EMAIL_REPEAT));
 			}
 
@@ -655,7 +655,7 @@ public class RegistrationAction extends WebActionSupport {
 				&& !EmailUtil.isValidEmailAddress(emailAddress), EnumUserInfoName.EMAIL.getCode(),
 				SystemMessageList.MSG_EMAIL_FORMAT);
 			
-			if (!emailAddress.equals(repeatEmailAddress)) {
+			if (!emailAddress.equalsIgnoreCase(repeatEmailAddress)) {
 				actionResult.addError(new ActionError(EnumUserInfoName.REPEAT_EMAIL.getCode(), SystemMessageList.MSG_EMAIL_REPEAT));
 			} else if ("".equals(repeatEmailAddress)) {
 				actionResult.addError(new ActionError(EnumUserInfoName.REPEAT_EMAIL.getCode(), SystemMessageList.MSG_REQUIRED));

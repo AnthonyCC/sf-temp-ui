@@ -159,7 +159,10 @@
 			
 			<br/><br/>
 			<span class="bodyCopy">Confirm Email Address <span class="star">*</span> </span>
-			<br/><input type="text" class="text11 inputDef" maxlength="128" size="21" name="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" value="<%=repeat_email%>" onfocus="fillVals(this.id, '','Verify your email');" onblur="fillVals(this.id, 'Def','Verify your email');" id="confirm_email"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>' id='errorMsg'><br /><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+			<br/><input type="text" class="text11 inputDef" maxlength="128" size="21" name="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" value="<%=repeat_email%>" onfocus="fillVals(this.id, '','Verify your email');" onblur="fillVals(this.id, 'Def','Verify your email');" id="confirm_email">
+			<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>' id='errorMsg'>
+			<br /><div class="text11rbold" style="width:300px;text-align: left;"><%=errorMsg%></div>
+			</fd:ErrorHandler>
 			
 			<br/><br/>
 			<span class="bodyCopy">Password <span class="star">*</span> </span> <br/>

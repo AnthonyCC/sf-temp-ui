@@ -82,6 +82,11 @@ public class LoginControllerTag extends AbstractControllerTag {
             HttpSession session = pageContext.getSession();
             FDSessionUser currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
             
+            if(session.getAttribute("TICK_TIE_CUSTOMER") != null) {
+            	session.removeAttribute(SessionName.USER);
+            	currentUser = null;
+            }
+            
             HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
             
             LOGGER.info("loginUser is " + loginUser.getFirstName() + " Level = " + loginUser.getLevel());
