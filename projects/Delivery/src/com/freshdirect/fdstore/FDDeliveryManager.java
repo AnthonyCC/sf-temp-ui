@@ -1116,6 +1116,8 @@ public class FDDeliveryManager {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
+		} catch (DlvResourceException de) {
+			throw new FDResourceException(de);
 		}
 	}
 	public int blockTimeslotCapacity(Date sourceDate
@@ -1127,6 +1129,8 @@ public class FDDeliveryManager {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
+		} catch (DlvResourceException de) {
+			throw new FDResourceException(de);
 		}
 	}
 	
@@ -1139,6 +1143,8 @@ public class FDDeliveryManager {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
+		} catch (DlvResourceException de) {
+			throw new FDResourceException(de);
 		}
 	}
 

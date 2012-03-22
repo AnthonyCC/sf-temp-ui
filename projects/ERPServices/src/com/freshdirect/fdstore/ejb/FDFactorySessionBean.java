@@ -275,7 +275,7 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 	 *
 	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
 	 */
-	public ErpZoneMasterInfo getZoneInfo(String zoneId) throws FDSkuNotFoundException, FDResourceException {
+	public ErpZoneMasterInfo getZoneInfo(String zoneId) throws FDResourceException {
 		if (this.zoneHome==null) {
 			this.lookupZoneInfoHome();
 		}
@@ -306,7 +306,7 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 	 *
 	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
 	 */
-	public Collection getZoneInfos(String zoneIds[]) throws FDSkuNotFoundException, FDResourceException {
+	public Collection getZoneInfos(String zoneIds[]) throws FDResourceException {
 		if (this.zoneHome==null) {
 			this.lookupZoneInfoHome();
 		}

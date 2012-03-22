@@ -22,7 +22,7 @@ public interface GiftCardManagerSB extends EJBObject {
 	
 	public List loadRecipentsForOrder(String saleId) throws RemoteException;	
 	
-	public void resendGiftCard(String saleId,List recepientList,EnumTransactionSource source) throws RemoteException;
+	public void resendGiftCard(String saleId,List recepientList,EnumTransactionSource source) throws RemoteException, FDResourceException;
 	
 	public List getGiftCardRecepientsForCustomer(String customerId) throws RemoteException,FDResourceException;
 	
@@ -44,11 +44,11 @@ public interface GiftCardManagerSB extends EJBObject {
 	
 	public List getGiftCardModel(GenericSearchCriteria resvCriteria) throws  RemoteException;
 
-	public List getGiftCardOrdersForCustomer(String erpCustomerPK) throws RemoteException;
+	public List getGiftCardOrdersForCustomer(String erpCustomerPK) throws RemoteException, FDResourceException;
 
-	public Object getGiftCardRedeemedOrders(String erpCustomerPK, String certNum)  throws RemoteException;	
+	public Object getGiftCardRedeemedOrders(String erpCustomerPK, String certNum)  throws RemoteException, FDResourceException;	
 	
-	public Object getGiftCardRedeemedOrders(String certNum)  throws RemoteException;	
+	public Object getGiftCardRedeemedOrders(String certNum)  throws RemoteException, FDResourceException;	
 		
 	public List getAllDeletedGiftCard(String erpCustomerPK) throws RemoteException, FDResourceException;
 
@@ -58,7 +58,7 @@ public interface GiftCardManagerSB extends EJBObject {
 		
 	public ErpGiftCardModel validateAndGetGiftCardBalance(String givexNum) throws RemoteException, InvalidCardException;
 	 
-	public void transferGiftCardBalance(String fromGivexNum,String toGivexNum,double amount) throws RemoteException;
+	public void transferGiftCardBalance(String fromGivexNum,String toGivexNum,double amount) throws RemoteException, InvalidCardException;
 		
 	public ErpGCDlvInformationHolder loadGiftCardRecipentByGivexNum(String fromGivexNum)throws RemoteException;
 	

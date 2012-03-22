@@ -5563,6 +5563,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
+		} catch (InvalidCardException ce) {
+			throw new FDResourceException(ce);
 		}
 	}
 

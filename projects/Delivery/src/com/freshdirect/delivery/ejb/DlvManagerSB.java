@@ -202,23 +202,23 @@ public interface DlvManagerSB extends EJBObject {
 			, Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree
 			, Set<String> inSyncZones, Map<String, TrnFacilityType> routingLocationMap) throws DlvResourceException, RemoteException;
 	List<Date> getFutureTimeslotDates() throws DlvResourceException, RemoteException;
-	public void deleteZeroSyncWaveInstance(IRoutingSchedulerIdentity schedulerId) throws RemoteException;
+	public void deleteZeroSyncWaveInstance(IRoutingSchedulerIdentity schedulerId) throws DlvResourceException, RemoteException;
 	void purgeSchedulerByIdentity(IRoutingSchedulerIdentity schedulerId) throws DlvResourceException, RemoteException;
 	
 	Set<String> getInSyncWaveInstanceZones(Date deliveryDate) throws DlvResourceException, RemoteException;
 	
 	public void logTimeslots(TimeslotEventModel event) throws RemoteException;
 	
-	void fixDisassociatedTimeslots()throws RemoteException;
+	void fixDisassociatedTimeslots()throws DlvResourceException, RemoteException;
 	
 	public TimeslotEventModel buildEvent(List<FDTimeslot> timeSlots, TimeslotEventModel event, 
 			DlvReservationModel reservation, IOrderModel order, 
 			ContactAddressModel address, EventType eventType, int responseTime) throws RemoteException;
 	
 	int blockTimeslotCapacity(Date sourceDate
-			, Date cutoffDate, String[] area, Date startTime, Date endTime) throws RemoteException;
+			, Date cutoffDate, String[] area, Date startTime, Date endTime) throws DlvResourceException, RemoteException;
 	int unBlockTimeslotCapacity(Date sourceDate
-			, Date cutoffDate, String[] area, Date startTime, Date endTime) throws RemoteException;
+			, Date cutoffDate, String[] area, Date startTime, Date endTime) throws DlvResourceException, RemoteException;
 
 	Map<String, TrnFacilityType> retrieveTrnFacilitys()throws RemoteException;
 	

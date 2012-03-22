@@ -933,14 +933,17 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 				
 			}
 			
-		}catch (FinderException fe) {
+		} catch (FinderException fe) {
 			LOGGER.warn("FinderExceptin while trying to locate Sale Entity Bean", fe);
 			throw new EJBException(fe);
 		} catch (RemoteException re) {
 			LOGGER.warn("RemoteException while trying to talk to Sale Entity Bean", re);
 			throw new EJBException(re);
-		}catch (SQLException se) {
+		} catch (SQLException se) {
 			LOGGER.warn("FinderExceptin while trying to pre authorize sales", se);
+			throw new EJBException(se);
+		}  catch (ErpTransactionException se) {
+			LOGGER.warn("ErpTransactionException while trying preAuthorizeSales(updateGCAuthorization)", se);
 			throw new EJBException(se);
 		} 
 
@@ -1023,7 +1026,10 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 		}catch (SQLException se) {
 			LOGGER.warn("FinderExceptin while trying to pre authorize sales", se);
 			throw new EJBException(se);
-		}
+		}  catch (ErpTransactionException se) {
+			LOGGER.warn("ErpTransactionException while trying reversePreAuthForCancelOrders(updateGCAuthorization)", se);
+			throw new EJBException(se);
+		} 
 		return errorList;
 	}
 	
