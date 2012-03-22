@@ -1235,7 +1235,7 @@ public class GeographyDAO {
 		ResultSet rs = ps.executeQuery();		
 		if (rs.next()) {
 			String quality = rs.getString("GEO_CONFIDENCE");
-			if(quality != null && "gcHigh".equalsIgnoreCase(quality)) {
+			if(quality != null /*&& "gcHigh".equalsIgnoreCase(quality) Commented for APPDEV-2132 */) {
 				AddressInfo info = address.getAddressInfo() == null ? new AddressInfo() : address.getAddressInfo();
 				info.setLatitude(rs.getDouble("LATITUDE"));
 				info.setLongitude(rs.getDouble("LONGITUDE"));				

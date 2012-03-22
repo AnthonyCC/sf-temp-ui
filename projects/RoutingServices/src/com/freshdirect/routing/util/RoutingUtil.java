@@ -35,7 +35,7 @@ public class RoutingUtil {
 	}
 	
 	public static boolean isGeocodeAcceptable(String confidence, String quality) {
-		return EnumGeocodeConfidenceType.HIGH.getName().equals(confidence);
+		return confidence != null && confidence.trim().length() > 0;// Commented for APPDEV-2132 EnumGeocodeConfidenceType.HIGH.getName().equals(confidence);
 	}
 	
 	public static List getZipCodes(String zipCode) {
