@@ -129,14 +129,14 @@ String browserType=(String)request.getHeader("User-Agent");
 		<% if("fb".equals(request.getParameter("current"))) { %>
 			<div id="fb-root"></div>
 		<% } %>
-		<!-- Start of promotion bar -->	
+		
 		<table width="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL %>" border="0" cellpadding="0" cellspacing="0">
 			<tr>
 				<td width="970" valign="top"><img src="/media_stat/images/layout/clear.gif" width="970" height="5" border="0"></td>
 			</tr>
 			<tr>
 				<td width="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL %>">
-					<!-- OAS ADD comes here. The big brownie banner -->
+					
 					<div style="width:970;align:center;">
 						<script language="JavaScript">			
 							OAS_AD('RAFBanner');				
@@ -146,11 +146,11 @@ String browserType=(String)request.getHeader("User-Agent");
 			</tr>
 			<tr>
 				<td width="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL %>">
-					<!-- SHARE GIVE GET--->
+					
 					<table width="100%">
 						<tr>
 							<td width="230">
-								<!--Spot for OAS image -->
+								
 								<script language="JavaScript">
 									OAS_AD('RAFLeftHeader');
 								</script> 
@@ -184,11 +184,11 @@ String browserType=(String)request.getHeader("User-Agent");
 				</td>
 			</tr>
 			<tr>
-				<td width="100%"> <!-- sharing box -->
+				<td width="100%">
 					<table id="bottomlayer" width="100%" border="0">
 						<tr>
 							<td id="sharebox" style="width:60%;background-color: #ffffff;" valign="top">
-								<!--FB TWITTER and PLAXO ---->
+								
 								<div id="fbmenu">
 									<div id="menu">
 										<ul>
@@ -244,7 +244,8 @@ String browserType=(String)request.getHeader("User-Agent");
 															<div class="form_tags" style="width:100%;padding-left:15px;float:left;"><input type="text" name="form_tags_input" value="" id="form_tags_input" /></div>
 														</td>
 														<td width="2%" align="center"><img src="/media_stat/images/profile/or.jpg"></td>
-														<td width="28%" align="left" valign="top"><a href="#" onclick="showPlaxoABChooser('recipient_list', '/your_account/plaxo_cb.jsp'); return false;"><img src="/media_stat/images/buttons/import_address.jpg" /></a></td>
+														<td width="28%" align="left" valign="top"><a href="#" onclick="showPlaxoABChooser('recipient_list', '/your_account/plaxo_cb.jsp'); return false;" class="cs_import"><img src="/media_stat/images/buttons/import_address.jpg" /></a>
+														</td>
 													</tr>
 													
 													<% if (!valid) { %>
@@ -275,7 +276,7 @@ String browserType=(String)request.getHeader("User-Agent");
 														<td colspan="3">
 															<div id="orangebutton" style="padding:10px;">
 																<center>
-																<!-- <input type="image" src="/media_stat/images/buttons/send_email.jpg" /> <br /> -->
+																
 																<table><tr>
 																	<td class="butOrangeLeft"><!-- --></td>
 																	<td class="butOrangeMiddle"><a class="butText" style="font-weight:bold;text-shadow:none;vertical-align:middle;text-decoration:none;color:white;padding:60px;font-size:14px;" href="#" onclick="document.sendmails.submit();">send email</a></td>
@@ -503,13 +504,11 @@ String browserType=(String)request.getHeader("User-Agent");
 	
 
 	<% } else { %>
-		<!-- promotion is null, so display a 404 message -->
+		
 		<table border="0" cellpadding="0" cellspacing="0" width="<%=W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL%>">
 			<tr>
 				<td align="center">
-				<!-- 
-					<img src="/media_stat/images/template/error/error_01.gif" alt="ERR" border="0"><img src="/media_stat/images/template/error/error_02.jpg"  alt="O" border="0"><img src="/media_stat/images/template/error/error_03.gif"  alt="R" border="0">
-				 -->
+				
 				</td>
 			</tr>
 			<tr>
@@ -556,12 +555,12 @@ String browserType=(String)request.getHeader("User-Agent");
 	<% } %>
 	
 
-<!-- End of promotion bar -->						
+
 
 <table>
 	<TR VALIGN="TOP">
 		<TD width="970" align="center">
-			<!-- * end the actual summary info * -->
+			
 			<br /><br />
 			<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL %>" HEIGHT="1" BORDER="0"><br />
 			<FONT CLASS="space4pix"><br /><br /></FONT>

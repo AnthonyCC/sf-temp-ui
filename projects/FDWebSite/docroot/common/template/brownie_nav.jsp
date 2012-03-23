@@ -28,10 +28,7 @@ final int W_DNAV_TOTAL = 970;
 					
 		<fd:javascript src="/assets/javascript/TextboxList.js" />
 	
-		<script type="text/javascript" src="https://www.plaxo.com/css/m/js/util.js"></script>
-		<script type="text/javascript" src="https://www.plaxo.com/css/m/js/basic.js"></script>
-		<script type="text/javascript" src="https://www.plaxo.com/css/m/js/abc_launcher.js"></script>
-	
+		
 		<script type="text/javascript"><!--
 			var t2;
 			$(function(){
@@ -61,7 +58,7 @@ final int W_DNAV_TOTAL = 970;
 			  if(element != null) {
 				  var data = element.value;  
 				  //window.alert("data:" + data);			  
-				  if(data.trim().length > 0) {
+				  if(data.length > 0) {
 					var currentTagTokens = data.split( "," );
 					for(i=0;i<currentTagTokens.length;i++) {
 						var email = currentTagTokens[i].substring(currentTagTokens[i].indexOf("<") + 1, currentTagTokens[i].indexOf(">"));
@@ -74,6 +71,21 @@ final int W_DNAV_TOTAL = 970;
 			   //document.getElementById("emailnumber").innerHTML=eCount;
 			}
 		//--></script>	
+		
+		<% if("true".equals(FDStoreProperties.getCouldSpongeAddressImports())) { %>
+			<script type="text/javascript" src="https://api.cloudsponge.com/address_books.js"></script>
+			<script type="text/javascript">
+				var csPageOptions = {  
+					domain_key:'<%= FDStoreProperties.getCloudSpongeDomainKey() %>',   
+					textarea_id:'recipient_list'
+				};
+				var onImportComplete = onABCommComplete;
+			</script>
+		<% } else { %>
+			<script type="text/javascript" src="https://www.plaxo.com/css/m/js/util.js"></script>
+            <script type="text/javascript" src="https://www.plaxo.com/css/m/js/basic.js"></script>
+            <script type="text/javascript" src="https://www.plaxo.com/css/m/js/abc_launcher.js"></script>
+		<% } %>
 <% } %>
 
 <fd:javascript src="/assets/javascript/ZeroClipboard.js" />

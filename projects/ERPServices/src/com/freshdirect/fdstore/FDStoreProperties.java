@@ -515,6 +515,9 @@ public class FDStoreProperties {
 	
 	private final static String PROP_WEBPURIFY_KEY="fdstore.webpurify.key";
 	
+	private final static String CLOUD_SPONGE_DOMAIN_KEY = "cloudsponge.domain.key";
+	private final static String CLOUD_SPONGE_ADDRESS_IMPORTS = "cloudsponge.usage";
+	
 	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1024,7 +1027,10 @@ public class FDStoreProperties {
 		defaults.put(PROP_WEBPURIFY_KEY, "3abce4fd5f2505565dd98f9700167eba");
 
 		defaults.put(FACEBOOK_APP_KEY, "176418392468226");
-
+		
+		defaults.put(CLOUD_SPONGE_DOMAIN_KEY, "K3D6375BGJRXBSJR8456");
+		defaults.put(CLOUD_SPONGE_ADDRESS_IMPORTS, "true");
+		
         refresh();
     }
 
@@ -2621,4 +2627,13 @@ public class FDStoreProperties {
     public static String getFacebookAppKey() {
         return  config.getProperty(FACEBOOK_APP_KEY);
     }
+    
+    public static String getCloudSpongeDomainKey() {
+        return  config.getProperty(CLOUD_SPONGE_DOMAIN_KEY);
+    }
+    
+    public static String getCouldSpongeAddressImports() {
+        return  config.getProperty(CLOUD_SPONGE_ADDRESS_IMPORTS);
+    }
+    
 }
