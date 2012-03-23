@@ -576,6 +576,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 		if (EnumComplaintStatus.REJECTED.equals(newComplaint.getStatus())) {
 			allowedStatus.add(EnumSaleStatus.ENROUTE);
+			allowedStatus.add(EnumSaleStatus.CAPTURE_PENDING);
 		}
 
 		assertStatus(allowedStatus.toArray(new EnumSaleStatus[allowedStatus.size()]));
