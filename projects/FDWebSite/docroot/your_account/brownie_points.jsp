@@ -45,6 +45,7 @@ String browserType=(String)request.getHeader("User-Agent");
 <tmpl:put name='content' direct='true'>
 	<%
 		boolean valid = true;
+		boolean msg_valid = true;
 		if("sendmails".equals(request.getParameter("action"))) {
 			//check the emails
 			String recipient_list = request.getParameter("form_tags_input");
@@ -59,6 +60,13 @@ String browserType=(String)request.getHeader("User-Agent");
 						break;
 					}					
 				}
+			}
+			
+			if(request.getParameter("mail_message") == null || request.getParameter("mail_message").length() == 0) {
+				msg_valid = false;
+			}
+			if(request.getParameter("mail_message").length() > 160) {
+				msg_valid = false;
 			}
 		}
 	%>
@@ -256,6 +264,13 @@ String browserType=(String)request.getHeader("User-Agent");
 															</div>
 														</td>
 													</tr>
+													<% if (!msg_valid) { %>
+														<tr>
+															<td colspan="3">
+																<div style="width:90%;padding-left:15px;float:left;color:red;font-weight:bold;">Your personal message should not be more than 160 characters.</div>
+															</td>
+														</tr>
+													<% } %>
 													<tr>
 														<td colspan="3">
 															<div id="orangebutton" style="padding:10px;">

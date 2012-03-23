@@ -55,10 +55,12 @@ public class ReferAFriendControllerTag extends com.freshdirect.framework.webapp.
 				}
 			}
 			if(valid) {			
-				try {
-					FDReferralManager.sendMails(recipient_list, mail_message, user.getUser(), rpid, request.getServerName());
-				} catch (FDResourceException e) {
-					LOGGER.error("Error reading emails",e);
+				if(mail_message.length() <= 160) {
+					try {
+						FDReferralManager.sendMails(recipient_list, mail_message, user.getUser(), rpid, request.getServerName());
+					} catch (FDResourceException e) {
+						LOGGER.error("Error reading emails",e);
+					}
 				}
 			} 
 		}

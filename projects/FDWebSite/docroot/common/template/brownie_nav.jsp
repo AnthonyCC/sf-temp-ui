@@ -37,6 +37,21 @@ final int W_DNAV_TOTAL = 970;
 			$(function(){
 				// With custom adding keys 
 				t2 = new $.TextboxList('#form_tags_input', {bitsOptions:{editable:{addKeys: [188,13],addOnBlur: true}}});
+				<%
+					if("sendmails".equals(request.getParameter("action"))) {
+						//check the emails
+						String recipient_list = request.getParameter("form_tags_input");
+						StringTokenizer stokens = new StringTokenizer(recipient_list, ",");		
+						if(stokens.countTokens() > 0) {
+							while(stokens.hasMoreTokens()) {
+								String recipient = stokens.nextToken();
+								%>
+									t2.add('<%=recipient%>');
+								<%
+							}
+						}
+					}
+				%>
 			});
 			
 			function onABCommComplete() {

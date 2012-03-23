@@ -137,11 +137,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 10px; height: 100%; }
 .active {
 	<!--[if !IE]> -->
 	-moz-border-radius: 5px;
-	-moz-box-shadow: 1px 1px 1px #F78C0D;
+	-moz-box-shadow: 1px 1px 1px #e9c39b;
 	-webkit-border-radius: 5px;
-	-webkit-box-shadow: 1px 1px 1px #F78C0D;
+	-webkit-box-shadow: 1px 1px 1px #e9c39b;
 	<!-- <![endif]-->
-	background: none repeat scroll 0 0 #F78C0D !important; 
+	background: none repeat scroll 0 0 #e9c39b !important; 
 	text-decoration: none;
 	border: 0 none;
 	color: #333333;
@@ -150,7 +150,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 10px; height: 100%; }
 	font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
 	font-weight: bold;
 	/*background: url(/media_stat/images/profile/invitelink_box.jpg) no-repeat !important;*/
-	background-color:  #F78C0D;
+	background-color:  #e9c39b;
 	/*height: 39px;*/
 	padding-left: 9px;
 	padding-top: 9px;	
