@@ -21,14 +21,12 @@ import javax.ejb.ObjectNotFoundException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.customer.ErpCreditCardModel;
 import com.freshdirect.customer.ErpCustomerAlertModel;
 import com.freshdirect.customer.ErpCustomerCreditModel;
 import com.freshdirect.customer.ErpCustomerI;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
-import com.freshdirect.customer.ErpECheckModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.customer.ErpTransactionException;
@@ -680,6 +678,16 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 				double originalAmount = customerCredit.getOriginalAmount();
 				double updatedRemainingAmount=MathUtil.roundDecimal(remainingAmount + delta);
 				if ( ( originalAmount < updatedRemainingAmount ) || ( 0 > updatedRemainingAmount ) ) {
+					StringBuilder msg=new StringBuilder();
+					msg.append("Credit delta too large; exceeds maximum or minimum boundary conditions.");
+					msg.append(" customerCreditId :" +customerCreditId);
+					msg.append(" originalAmount :" +originalAmount);
+					msg.append(" remainingAmount :" +remainingAmount);
+					msg.append(" delta :" +delta);
+					msg.append(" updatedRemainingAmount :" +updatedRemainingAmount);
+					msg.append(" ( originalAmount < updatedRemainingAmount ):"+( originalAmount < updatedRemainingAmount ));
+					msg.append(" ( 0 > updatedRemainingAmount ):"+( 0 > updatedRemainingAmount ));
+				    LOGGER.error(msg.toString());
 					throw new EJBException("Credit delta too large; exceeds maximum or minimum boundary conditions.");
 				} else {
 					customerCredit.setRemainingAmount(updatedRemainingAmount);
