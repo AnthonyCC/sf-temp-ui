@@ -119,7 +119,7 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 				
 				if(hasArg) {
 					
-					List<UnassignedDlvReservationModel> _unassignedReservations = dlvManager.getUnassignedReservations(startDate.getTime());
+					List<UnassignedDlvReservationModel> _unassignedReservations = dlvManager.getUnassignedReservations(startDate.getTime(),false);
 					
 					if(_unassignedReservations!=null && !_unassignedReservations.isEmpty()) {
 						
@@ -129,7 +129,7 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 					
 					for(int i=0; i<DEFAULT_DAYS; i++) {
 						
-						List<UnassignedDlvReservationModel> _unassignedReservations = dlvManager.getUnassignedReservations(startDate.getTime());
+						List<UnassignedDlvReservationModel> _unassignedReservations = dlvManager.getUnassignedReservations(startDate.getTime(),false);
 						System.out.println("Total unassigned reservations for :"+startDate.getTime()+"->"+(_unassignedReservations!=null ? _unassignedReservations.size() : 0));
 						if(_unassignedReservations!=null && !_unassignedReservations.isEmpty()) {
 							unassignedReservations.addAll(_unassignedReservations);

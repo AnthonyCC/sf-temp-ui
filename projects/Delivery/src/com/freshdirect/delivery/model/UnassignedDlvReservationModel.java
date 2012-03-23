@@ -12,12 +12,13 @@ import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
 public class UnassignedDlvReservationModel extends DlvReservationModel {
 
 	private ContactAddressModel address;
+	private String cutoff;
 
 	
 	public UnassignedDlvReservationModel(PrimaryKey pk, String orderId,
 			String customerId, int statusCode, Date expirationDateTime,
 			String timeslotId, String zoneId, EnumReservationType type,
-			ContactAddressModel address, Date deliveryDate, String zoneCode,
+			ContactAddressModel address, Date deliveryDate,String cutoff, String zoneCode,
 			RoutingActivityType unassignedActivityType, boolean inUPS,
 			Double overrideOrderSize, Double overrideServiceTime,
 			Double reservedOrderSize, Double reservedServiceTime,
@@ -29,6 +30,7 @@ public class UnassignedDlvReservationModel extends DlvReservationModel {
 				reservedOrderSize, reservedServiceTime, noOfCartons, noOfCases,
 				noOfFreezers, status, metricsSource);
 		this.address=address;
+		this.cutoff = cutoff;
 		
 	}
 
@@ -40,5 +42,7 @@ public class UnassignedDlvReservationModel extends DlvReservationModel {
 	public ContactAddressModel getAddress(){
 		return address;
 	}
-
+	public String getCutoff(){
+		return cutoff;
+	}
 }

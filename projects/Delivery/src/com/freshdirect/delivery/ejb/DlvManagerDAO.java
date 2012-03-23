@@ -458,6 +458,7 @@ public class DlvManagerDAO {
 			EnumReservationType.getEnum(rs.getString("TYPE")),
 			rs.getString("ADDRESS")!=null?getAddress(rs):null,
 			rs.getDate("BASE_DATE"),
+			rs.getString("CUTOFF_TIME"),
 			rs.getString("ZONE_CODE"),
 			RoutingActivityType.getEnum( rs.getString("UNASSIGNED_ACTION")) ,
 			"X".equalsIgnoreCase(rs.getString("IN_UPS"))?true:false
@@ -1236,8 +1237,8 @@ public class DlvManagerDAO {
 	}
 	//List<DlvReservationModel> getUnassignedReservations()
 	
-	private static final String FETCH_UNASSIGNED_RESERVATIONS_QUERY="SELECT  R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, "+
-	" T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE" +
+	private static String FETCH_UNASSIGNED_RESERVATIONS_QUERY="SELECT  R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, "+
+	" T.BASE_DATE,to_char(T.CUTOFF_TIME, 'HH:MI AM') CUTOFF_TIME, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE" +
 	", R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE " +
 	", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES, " +
 	" A.ID as ADDRESS, A.FIRST_NAME,A.LAST_NAME,A.ADDRESS1,A.ADDRESS2,A.APARTMENT,A.CITY,A.STATE,A.ZIP,A.COUNTRY, "+
@@ -1246,11 +1247,26 @@ public class DlvManagerDAO {
 	" A.COMPANY_NAME,A.ALT_CONTACT_PHONE,A.ALT_CONTACT_EXT,A.UNATTENDED_FLAG,A.UNATTENDED_INSTR,A.CUSTOMER_ID "+
 	" FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z,CUST.ADDRESS A "+
 	" WHERE R.ADDRESS_ID=A.ID(+) AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND t.BASE_DATE=TRUNC(?) " +
-	"AND (unassigned_action IS NOT NULL OR (UPDATE_STATUS IS NOT NULL AND UPDATE_STATUS <> 'SUS'))  " +
-	"ORDER BY R.unassigned_action, R.UPDATE_STATUS NULLS LAST ";
+	"AND (unassigned_action IS NOT NULL OR (UPDATE_STATUS IS NOT NULL AND UPDATE_STATUS <> 'SUS'))  ";
 	
-	public static List<UnassignedDlvReservationModel> getUnassignedReservations(Connection conn, Date _date)  throws SQLException {
-		PreparedStatement ps =
+	
+	
+	public static List<UnassignedDlvReservationModel> getUnassignedReservations(Connection conn, Date _date,boolean includeCutoff)  throws SQLException {
+		
+	String INCLUDE_CUTOFF = "  to_char(t.cutoff_time, 'HH:MI AM') <= to_char(SYSDATE, 'HH:MI AM')";
+	String ORDERBY_DATECUTOFF = "ORDER BY T.BASE_DATE,T.CUTOFF_TIME DESC";
+	String ORDERBY = "ORDER BY R.unassigned_action, R.UPDATE_STATUS NULLS LAST ";
+	
+	if(includeCutoff)
+	{
+		FETCH_UNASSIGNED_RESERVATIONS_QUERY += INCLUDE_CUTOFF;
+		FETCH_UNASSIGNED_RESERVATIONS_QUERY += ORDERBY_DATECUTOFF;
+	}
+	else
+	{
+		FETCH_UNASSIGNED_RESERVATIONS_QUERY += ORDERBY;
+	}
+	PreparedStatement ps =
 			conn.prepareStatement(FETCH_UNASSIGNED_RESERVATIONS_QUERY);
 		
 		ps.setDate(1, new java.sql.Date(_date.getTime()));

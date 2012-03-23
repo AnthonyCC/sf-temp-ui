@@ -150,7 +150,7 @@ public interface DlvManagerSB extends EJBObject {
 	
 	public void releaseReservationEx(DlvReservationModel reservation,ContactAddressModel address, TimeslotEventModel event) throws  RemoteException;
 	
-	public List<UnassignedDlvReservationModel> getUnassignedReservations(Date _date) throws DlvResourceException, RemoteException;
+	public List<UnassignedDlvReservationModel> getUnassignedReservations(Date _date, boolean includeCutoff) throws DlvResourceException, RemoteException;
 	
 	List<UnassignedDlvReservationModel> getReRouteReservations() throws DlvResourceException, RemoteException;
 	

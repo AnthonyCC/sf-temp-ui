@@ -2200,11 +2200,11 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		}
 
 	}
-	public List<UnassignedDlvReservationModel> getUnassignedReservations(Date _date) throws DlvResourceException {
+	public List<UnassignedDlvReservationModel> getUnassignedReservations(Date _date,boolean includeCutoff) throws DlvResourceException {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
-			return DlvManagerDAO.getUnassignedReservations(conn,_date);
+			return DlvManagerDAO.getUnassignedReservations(conn,_date,includeCutoff);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			LOGGER.warn("DlvManagerSB getUnassignedReservations(): " + e);
