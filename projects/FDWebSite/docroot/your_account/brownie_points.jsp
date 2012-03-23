@@ -390,9 +390,9 @@ String browserType=(String)request.getHeader("User-Agent");
 												function fbGetFriendCont(i,	friendObj) {
 													return '<table width=\"100%\">'+
 															'<tr>'+
-																'<td style="width: 80px;"><img id="' + friendObj.id + '" src="https://graph.facebook.com/' + friendObj.id + '/picture" alt="profile image" /></td>'+
+																'<td style="width: 80px; height: 50px;"><img id="' + friendObj.id + '" src="https://graph.facebook.com/' + friendObj.id + '/picture" alt="profile image" /></td>'+
 																'<td valign="center" align="left" style="width: 134px; text-align:left;">' + friendObj.name + '</td>'+
-																'<td valign="center" style="width: 90px;"><input type="image" src="/media_stat/images/buttons/send_message.jpg" id="friend_' + friendObj.id + '" name="friend_' + friendObj.id + '" /></td>'+
+																'<td valign="center" style="width: 90px;"><input type="image" src="/media_stat/images/buttons/send_message.jpg" id="friend_' + friendObj.id + '" name="friendSend" value="send" /></td>'+
 															'</tr>'+
 														'</table>';
 												}
@@ -429,7 +429,14 @@ String browserType=(String)request.getHeader("User-Agent");
 														if (friends.length % 2 != 0) {
 															curRow.append('<td class="spacer">&nbsp;</td>');
 														}
-														$('#friends').on('click', 'input[type=image]', function () { sendFBMsg( (this.id).split('_')[1] ); });
+														$('#friends input[name="friendSend"]').each(function(elem, index) {
+															$(this).on('click', function (event) {
+																event.stopPropagation();
+																event.preventDefault();
+																
+																sendFBMsg( (this.id).split('_')[1] );
+															});
+														});
 
 													});
 												}

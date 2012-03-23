@@ -22,72 +22,6 @@
 <html>
 <head>
 	<title>FreshDirect</title>
-	<style>
-		.text11 {
-			width: 70%;
-			height: 20px;
-			font-size: 12px;
-			line-height: 12px;
-			color: #666;
-		}
-		
-		.bodyCopy {
-			font-size: 11px;
-			color: #000;
-			text-align: left;
-			font-weight: bold;
-			line-height:25px;
-		}
-		
-		.text9 {
-			font-size: 11px;
-			color: #928F8E;
-			text-align: left;
-		}
-		
-		a:active {
-			color:#336600;
-			text-decoration:none;
-		}
-		
-		.text12 {
-			font-family: Verdana,Arial,sans-serif;
-			font-size: 11px;
-			font-weight: normal;
-		}
-		
-		.star {
-			color: #FF9900;
-		}
-		
-		.inputDef {
-			width: 70%;
-			height: 20px;
-			font-size: 12px;
-			line-height: 12px;
-			color: #999;
-		}
-		
-		.inputUser {
-			width: 70%;
-			height: 20px;
-			font-size: 12px;
-			line-height: 12px;
-			color: #666;
-		}
-		
-		.hline {
-				background: url("/media/editorial/site_access/images/dots_h.gif") repeat-x scroll 0 0 transparent;
-				font-size: 1px;
-				height: 1px;
-				line-height: 1px;
-				width: 400px !important;
-			}
-			
-			.fright {
-				float: right;
-			}
-	</style>
 </head>
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0">
 
@@ -123,13 +57,13 @@
 
 	%>
 	<div style="width:400px;height:530px;overflow-y: auto; overflow-x: hide;">
-	<div id="top_image" style="float:left;padding-bottom:10px;width:100%;">
+	<div id="top_image" style="float: left; padding-bottom: 10px; width: 100%;">
 		<img src="/media_stat/images/profile/signup_easy.jpg" border="0"/>
-		<br/><span class="text9">Sign up now to enjoy great quality food, delivered to your door.</span>
+		<br /><span class="text9">Sign up now to enjoy great quality food, delivered to your door.</span>
 	</div>
-	<div class="fright hline" id=""><!-- --></div>
+	<div class="fright hline" id="" style="background-color: #ccc;"><!-- --></div>
 	<div id="form_feilds" style="">
-		<form id="refaddress" name="refaddress" method="post" action="">
+		<form id="refaddress" name="refaddress" method="post" action="" style="padding: 0; margin: 0;">
 			<input type="hidden" name="submission" value="done" />	
 			<input type="hidden" name="actionName" value="ordermobilepref" />	
 			<input type="hidden" name="successPage" value="<%= successPage %>" />
@@ -153,38 +87,38 @@
 				<input type="hidden" name="state" value="<%= state %>" />
 				<input type="hidden" name="zipcode" value="<%= zipcode %>" />
 			<% } %>
-			<br/>
+			<br />
 			<span class="bodyCopy">Email Address <span class="star">*</span></span>
-			<br/><%=email%>
+			<br /><%=email%>
 			
-			<br/><br/>
+			<br /><br />
 			<span class="bodyCopy">Confirm Email Address <span class="star">*</span> </span>
-			<br/><input type="text" class="text11 inputDef" maxlength="128" size="21" name="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" value="<%=repeat_email%>" onfocus="fillVals(this.id, '','Verify your email');" onblur="fillVals(this.id, 'Def','Verify your email');" id="confirm_email">
+			<br /><input type="text" class="text11ref inputDef" maxlength="128" size="21" name="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" value="<%=repeat_email%>" onfocus="fillVals(this.id, '','Verify your email');" onblur="fillVals(this.id, 'Def','Verify your email');" id="confirm_email"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>' id='errorMsg'><br /><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 			<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>' id='errorMsg'>
 			<br /><div class="text11rbold" style="width:300px;text-align: left;"><%=errorMsg%></div>
 			</fd:ErrorHandler>
 			
-			<br/><br/>
-			<span class="bodyCopy">Password <span class="star">*</span> </span> <br/>
-			<input type="password"  class="text11 inputUser" size="21" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" id="password1"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'> <span class="text11rbold"><br/><%=errorMsg%></span></fd:ErrorHandler>
+			<br /><br />
+			<span class="bodyCopy">Password <span class="star">*</span> </span> <br />
+			<input type="password"  class="text11ref inputUser" size="21" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" id="password1"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'> <span class="text11rbold"><br /><%=errorMsg%></span></fd:ErrorHandler>
 			
-			<br/><br/>
-			<span class="bodyCopy">First Name <span class="star">*</span> </span> <br/>
-			<input type="text" class="text11 inputUser" maxlength="25" size="21" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" value="<%=firstname%>" onfocus="fillVals(this.id, '','Enter your firstname');" onblur="fillVals(this.id, 'Def','Enter your firstname');" id="first_name"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" id='errorMsg'><br /><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+			<br /><br />
+			<span class="bodyCopy">First Name <span class="star">*</span> </span> <br />
+			<input type="text" class="text11ref inputUser" maxlength="25" size="21" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" value="<%=firstname%>" onfocus="fillVals(this.id, '','Enter your firstname');" onblur="fillVals(this.id, 'Def','Enter your firstname');" id="first_name"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" id='errorMsg'><br /><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 			
-			<br/><br/>
-			<span class="bodyCopy">Last Name <span class="star">*</span> </span> <br/>
-			<input type="text"  maxlength="25" class="text11 inputUser" size="21" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" value="<%=lastname%>" onfocus="fillVals(this.id, '','Enter your lastname');" onblur="fillVals(this.id, 'Def','Enter your lastname');" id="last_name"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>' id='errorMsg'> <span class="text11rbold"><br /><%=errorMsg%></span></fd:ErrorHandler>
+			<br /><br />
+			<span class="bodyCopy">Last Name <span class="star">*</span> </span> <br />
+			<input type="text"  maxlength="25" class="text11ref inputUser" size="21" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" value="<%=lastname%>" onfocus="fillVals(this.id, '','Enter your lastname');" onblur="fillVals(this.id, 'Def','Enter your lastname');" id="last_name"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>' id='errorMsg'> <span class="text11rbold"><br /><%=errorMsg%></span></fd:ErrorHandler>
 			
-			<br/><br/>
-			<span class="bodyCopy">Security Question <span class="star">*</span> </span> <br/>
-			<span class="text12">What is your town of birth or mother's  maiden name? </span><br/><br/>
-			<input type="text"  maxlength="25" class="text11 inputUser" size="10" name="<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>" onfocus="fillVals(this.id, '','Answer');" onblur="fillVals(this.id, 'Def','Answer');" id="secret_answer"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>' id='errorMsg'> <span class="text11rbold"><br /><%=errorMsg%></span></fd:ErrorHandler>
-			<br/><br/>
+			<br /><br />
+			<span class="bodyCopy">Security Question <span class="star">*</span> </span> <br />
+			<span class="text12">What is your town of birth or mother's  maiden name? </span><br /><br />
+			<input type="text"  maxlength="25" class="text11ref inputUser" size="10" name="<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>" onfocus="fillVals(this.id, '','Answer');" onblur="fillVals(this.id, 'Def','Answer');" id="secret_answer"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>' id='errorMsg'> <span class="text11rbold"><br /><%=errorMsg%></span></fd:ErrorHandler>
+			<br /><br />
 			<div class="fright hline" id=""><!-- --></div>
 			
-			<br/>
-			<span class="text9">By signing up, you agree to the <a href="javascript:popup('/registration/user_agreement.jsp','large')" style="font-weight:normal;">Terms of use</a></span><br/><br/>
+			<br />
+			<span class="text9">By signing up, you agree to the <a href="javascript:popup('/registration/user_agreement.jsp','large')" style="font-weight:normal;">Terms of use</a></span><br /><br />
 			<a href="#" onclick="doRemoteOverlay1('referee_signup2.jsp'); return false;"><img src="/media_stat/images/profile/start_shopping.jpg" border="0"></a>
 		</form>
 	</div>
